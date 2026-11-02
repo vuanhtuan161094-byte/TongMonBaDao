@@ -84,7 +84,7 @@ func _build_progress_panel() -> Control:
 	content.add_theme_constant_override("separation", 10)
 	card.add_child(content)
 	var hall_art := UI.illustration("hall")
-	hall_art.custom_minimum_size = Vector2(300, 132)
+	hall_art.custom_minimum_size = Vector2(342, 174)
 	hall_art.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	content.add_child(hall_art)
 	var metrics := HBoxContainer.new()
