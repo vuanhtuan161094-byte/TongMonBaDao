@@ -31,15 +31,19 @@ func _run() -> void:
         if source_image == null or source_image.is_empty() or not source_image.has_alpha():
             _fail("Source A model %s lost its imported alpha channel" % spec["model"])
             return
+        source_image.convert(Image.FORMAT_RGBA8)
+        var rgba: PackedByteArray = source_image.get_data()
+        var image_width: int = source_image.get_width()
         var has_clear := false
         var has_opaque := false
         var has_semitransparent := false
         for y in range(0,source_image.get_height(),8):
-            for x in range(0,source_image.get_width(),8):
-                var alpha: float = source_image.get_pixel(x,y).a
-                has_clear = has_clear or alpha <= 0.001
-                has_opaque = has_opaque or alpha >= 0.999
-                has_semitransparent = has_semitransparent or (alpha > 0.001 and alpha < 0.999)
+            for x in range(0,image_width,8):
+                var alpha_byte: int = rgba[(y*image_width+x)*4+3]
+                var alpha: float = float(alpha_byte)/255.0
+                has_clear = has_clear or alpha_byte <= 0
+                has_opaque = has_opaque or alpha_byte >= 255
+                has_semitransparent = has_semitransparent or (alpha_byte > 0 and alpha_byte < 255)
                 if has_clear and has_opaque and has_semitransparent:
                     break
             if has_clear and has_opaque and has_semitransparent:
