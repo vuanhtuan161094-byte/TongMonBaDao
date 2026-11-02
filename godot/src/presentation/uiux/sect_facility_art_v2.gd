@@ -31,7 +31,7 @@ func _ready() -> void:
     if _art == null:
         var legacy: Control = LEGACY_ART.new()
         legacy.name = "LegacyArtFallback"
-        legacy.facility_kind = facility_kind
+        legacy.set("facility_kind", facility_kind)
         legacy.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
         add_child(legacy)
     tooltip_text = "Source A · SHA256 đã kiểm chứng" if _original_source else "Tranh minh họa V2 · không phải asset Source A"
