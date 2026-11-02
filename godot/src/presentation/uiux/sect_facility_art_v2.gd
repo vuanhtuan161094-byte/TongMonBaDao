@@ -9,6 +9,7 @@ const LEGACY_ART = preload("res://src/presentation/uiux/sect_facility_illustrati
 const HALL_STUDY = preload("res://art/uiux/hall_paint_v2.svg")
 const RESIDENCE_STUDY = preload("res://art/uiux/residence_paint_v2.svg")
 const GUIDANCE_STUDY = preload("res://art/uiux/guidance_paint_v2.svg")
+const CANDIDATE_STUDY = preload("res://art/uiux/candidate_neutral_v2.svg")
 const SOURCE_HALL_ID := "pv01_assets/main_hall/510052.png"
 
 var facility_kind := "hall"
@@ -30,6 +31,8 @@ func _ready() -> void:
                 _art = RESIDENCE_STUDY
             "guidance":
                 _art = GUIDANCE_STUDY
+            "candidate":
+                _art = CANDIDATE_STUDY
             _:
                 _art = HALL_STUDY
     if _art == null:
