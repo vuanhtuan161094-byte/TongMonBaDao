@@ -195,17 +195,17 @@ func _run() -> void:
                 "SaveService failed to write B1 live state"):
             return
         var saved_ids: Array[String] = []
-        var candidate_ids: Array[String] = []
+        var saved_candidate_ids: Array[String] = []
         for raw_id in state.disciples.keys():
             saved_ids.append(str(raw_id))
         for raw_id in state.recruitment_candidates.keys():
-            candidate_ids.append(str(raw_id))
+            saved_candidate_ids.append(str(raw_id))
         saved_ids.sort()
-        candidate_ids.sort()
+        saved_candidate_ids.sort()
         var hall_building: BuildingState = SectHallSystemV1.hall(state)
         var expected: Dictionary = {
             "disciple_ids":saved_ids,
-            "candidate_ids":candidate_ids,
+            "candidate_ids":saved_candidate_ids,
             "accepted_id":accepted_id,
             "tokens":state.sect.disciple_recruitment_tokens,
             "capacity":state.sect.disciple_capacity,
