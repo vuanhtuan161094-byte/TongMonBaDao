@@ -13,7 +13,7 @@ func _fail(message: String) -> void:
 func _run() -> void:
     var gate = SOURCE_A.new()
     var verified_hall: Texture2D = gate.texture_for("pv01_assets/main_hall/510052.png")
-    for kind in ["hall", "residence", "guidance"]:
+    for kind in ["hall", "residence", "guidance", "candidate"]:
         var art = ART.new()
         art.facility_kind = kind
         art.custom_minimum_size = Vector2(340, 165)
@@ -33,5 +33,5 @@ func _run() -> void:
             return
         art.queue_free()
         await process_frame
-    print("TRI_B1_ART_V2_PASS source_a_hall=%s svg_residence=1 svg_guidance=1" % str(verified_hall != null))
+    print("TRI_B1_ART_V2_PASS source_a_hall=%s svg_residence=1 svg_guidance=1 svg_candidate=1" % str(verified_hall != null))
     quit(0)
