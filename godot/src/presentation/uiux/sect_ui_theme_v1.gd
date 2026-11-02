@@ -114,12 +114,15 @@ static func portrait_slot(display_name: String, texture_value: Variant, size: Ve
 		texture_rect.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 		card.add_child(texture_rect)
 	else:
-		var initial := "?"
-		if not display_name.is_empty():
-			initial = display_name.substr(0, 1)
-		var placeholder := label(initial, 25, PAPER, true)
-		placeholder.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		placeholder.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		# Do not render the repeated first letter of "Chưa bổ nhiệm" as a fake portrait.
+		# A neutral silhouette is used only when the host supplies no real texture.
+		var placeholder = ICON_SCRIPT.new()
+		placeholder.name = "UnassignedPortraitGlyph"
+		placeholder.kind = "person"
+		placeholder.tint = MUTED if display_name.is_empty() or display_name == "Chưa bổ nhiệm" else GOLD
+		placeholder.custom_minimum_size = Vector2(28, 28)
+		placeholder.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+		placeholder.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 		card.add_child(placeholder)
 	return card
 
