@@ -16,7 +16,7 @@ const BLUE := Color(0.42, 0.69, 0.75, 1.0)
 const BORDER := Color(0.46, 0.55, 0.45, 0.45)
 
 const ICON_SCRIPT = preload("res://src/presentation/uiux/sect_ui_icon_v1.gd")
-const ILLUSTRATION_SCRIPT = preload("res://src/presentation/uiux/sect_facility_illustration_v1.gd")
+const ILLUSTRATION_SCRIPT = preload("res://src/presentation/uiux/sect_facility_art_v2.gd")
 
 static func panel(node_name: String, accent: Color, tone: Color) -> PanelContainer:
 	var result := PanelContainer.new()
@@ -24,8 +24,11 @@ static func panel(node_name: String, accent: Color, tone: Color) -> PanelContain
 	var style := StyleBoxFlat.new()
 	style.bg_color = tone
 	style.border_color = accent
-	style.set_border_width_all(1)
-	style.set_corner_radius_all(14)
+	style.set_border_width_all(2)
+	style.set_corner_radius_all(12)
+	style.shadow_color = Color(0.015, 0.035, 0.04, 0.55)
+	style.shadow_size = 5
+	style.shadow_offset = Vector2(0, 3)
 	style.content_margin_left = 12
 	style.content_margin_right = 12
 	style.content_margin_top = 10
@@ -153,7 +156,10 @@ static func _button_style(primary: bool, accent: Color, opacity: float) -> Style
 	style.bg_color.a = opacity
 	style.border_color = accent
 	style.set_border_width_all(1)
-	style.set_corner_radius_all(10)
+	style.set_corner_radius_all(9)
+	style.shadow_color = Color(0.025, 0.035, 0.032, 0.42)
+	style.shadow_size = 3
+	style.shadow_offset = Vector2(0, 2)
 	style.content_margin_left = 12
 	style.content_margin_right = 12
 	style.content_margin_top = 7
