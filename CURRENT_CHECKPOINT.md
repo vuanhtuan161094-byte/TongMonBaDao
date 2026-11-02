@@ -1,3 +1,14 @@
+# TRI-03 CHECKPOINT — PR #67 (2026-11-02)
+
+- Live code SHA tested: [`8979dca68495a74ad272ca4c861034040bf385f7`](https://github.com/vuanhtuan161094-byte/TongMonBaDao/commit/8979dca68495a74ad272ca4c861034040bf385f7); branch: `integration/tri-facility-a-b-playable-20261102`.
+- Official Godot 4.7.2 O2 workflow: [41402324227 SUCCESS](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/41402324227); actual four-screen map/B1 1280×720 capture artifact: [13122450868](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/41402324227/artifacts/13122450868).
+- PASS on exact SHA: project import/parse, O2, P3.7C1/Dẫn Tiên, B1 contract/live callbacks, independent two-process SaveService reload, DD092, Source A alpha/render capture, and P3.6A. See `docs/uiux/B1_TRIFACILITY_UI_QA_20261102.md` for markers and matrix.
+- TRI-03 code delta: two B1/map management button minimum heights raised to 48 px. Source A 510052/510076/510111 hashes unchanged; Guidance facility art is separate from the neutral candidate portrait fallback.
+- **PENDING USER:** physical Windows mouse playthrough and 1280×720 review, gameplay Save → Return → Reload through GUI, Android device/touch, owner visual sign-off. CI screenshots are automated Ubuntu/Xvfb Godot renders, not physical Windows acceptance.
+- Windows exact-branch checkout was not produced: canonical E game folder remains untouched at main `5e6fdd966bdf710b71e2a1539bb712e44069a4bb` with existing untracked QA files; Git/GCM HTTPS authentication failed. No user save was accessed or modified. PR remains Draft; no merge.
+
+---
+
 # CURRENT CHECKPOINT — ONE GAME INTEGRATION
 
 Updated 2026-10-31 (Asia/Saigon). This file supersedes the archived RC status below.
