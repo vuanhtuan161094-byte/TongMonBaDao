@@ -20,6 +20,7 @@ func _initialize() -> void:
     call_deferred("_capture")
 
 func _capture() -> void:
+    print("TRI02_CAPTURE_STAGE=start")
     var argv := OS.get_cmdline_user_args()
     if argv.is_empty():
         _fail("Pass isolated absolute screenshot output directory after --.")
@@ -35,12 +36,15 @@ func _capture() -> void:
         _fail("Could not instantiate the real P3.2 main scene.")
         return
     root.add_child(game)
+    print("TRI02_CAPTURE_STAGE=scene_added")
     await process_frame
     await process_frame
+    print("TRI02_CAPTURE_STAGE=two_frames")
     if game.get("state") == null or not bool(game.get("runtime_ready")):
         _fail("P3.2 live runtime did not start with the isolated QA save.")
         return
 
+    print("TRI02_CAPTURE_STAGE=runtime_ready")
     var state: SimulationState = game.get("state") as SimulationState
     if not SectHallSystemV1.installed(state):
         var install: Dictionary = SectHallSystemV1.ensure_live(state)
@@ -62,6 +66,7 @@ func _capture() -> void:
     var constants: Dictionary = world_script.get_script_constant_map()
     var texture_map: Dictionary = constants.get("HOUSE_TEXTURES",{})
     var size_map: Dictionary = constants.get("HOUSE_SIZES",{})
+    print("TRI02_CAPTURE_STAGE=verify_map_art")
     for kind in REQUIRED_MAP_ART:
         var relative: String = REQUIRED_MAP_ART[kind]
         if str(texture_map.get(kind,"")) != relative or not loaded_art.has(relative):
@@ -79,6 +84,7 @@ func _capture() -> void:
         if not _verify_source_alpha(relative,kind):
             return
 
+    print("TRI02_CAPTURE_STAGE=map_art_verified")
     if not await _save_frame(out_dir,"00_p3_2_map_context.png"):
         return
     if not await _open_from_map("hall","510052",SectMapPresentation.DEST_MAIN_HALL,"OpenDaiDienScreenV1",out_dir,CAPTURE_FILES["hall"]):
@@ -127,17 +133,21 @@ func _verify_source_alpha(relative: String, kind: String) -> bool:
     return true
 
 func _open_from_map(kind: String, model_id: String, destination: StringName, button_name: String, out_dir: String, filename: String) -> bool:
+    print("TRI02_CAPTURE_STAGE=open_%s" % kind)
     game.call("_open_building",destination)
     await process_frame
     await process_frame
+    print("TRI02_CAPTURE_STAGE=building_panel_%s" % kind)
     var button := _find_button(game,button_name)
     if button == null or button.disabled:
         _fail("Live P3.2 facility button is absent or disabled: %s." % button_name)
         return false
+    print("TRI02_CAPTURE_STAGE=button_found_%s" % kind)
     button.pressed.emit()
     await process_frame
     await process_frame
     await RenderingServer.frame_post_draw
+    print("TRI02_CAPTURE_STAGE=button_emitted_%s" % kind)
     var screen_name := "DanTienScreenV2" if button_name == "OpenDanTienScreenV2" else "DaiDienScreenV1"
     var screen := game.get_node_or_null(screen_name)
     if screen == null:
@@ -189,7 +199,9 @@ func _find_button(node: Node, expected_name: String) -> Button:
     return null
 
 func _save_frame(out_dir: String, filename: String) -> bool:
+    print("TRI02_CAPTURE_STAGE=frame_post_draw_%s" % filename)
     await RenderingServer.frame_post_draw
+    print("TRI02_CAPTURE_STAGE=frame_rendered_%s" % filename)
     var rendered: Image = root.get_texture().get_image()
     if rendered == null or rendered.is_empty() or rendered.get_size() != Vector2i(1280,720):
         _fail("Godot rendered no native 1280x720 frame for %s." % filename)
