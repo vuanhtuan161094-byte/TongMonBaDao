@@ -1,3 +1,41 @@
+## FINAL DELIVERY — Windows playable RC status (2026-11-02)
+
+**Status: BLOCKED for physical Windows delivery; automated focused QA PASS.** Live PR #67 HEAD was checked as `df6f55ee63d36c77e52b5d9eaf3c5743349b935a`; code/capture SHA tested by official Godot 4.7.2 is `8979dca68495a74ad272ca4c861034040bf385f7`. PR stays Draft and unmerged.
+
+### Exact-SHA evidence
+
+[Godot 4.7.2 O2 workflow 41402324227](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/41402324227) completed SUCCESS: import/parse, O2, P3.7C1/Dẫn Tiên, B1 contract/live callbacks, independent two-process SaveService reload, DD092, Source A checks, four 1280×720 map/B1 captures and P3.6A. [Capture artifact](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/41402324227/artifacts/13122450868). This was Ubuntu/Xvfb/llvmpipe, not Windows mouse acceptance.
+
+### E: source and launcher
+
+- Canonical `E:\TongMonBaDaoWorkspace\01_Game\TongMonBaDao` is unchanged on `main` @ `5e6fdd966bdf710b71e2a1539bb712e44069a4bb`, with the existing seven untracked QA entries preserved. No user save was accessed.
+- Exact-source folder `E:\TongMonBaDaoWorkspace\01_Game\TongMonBaDao_PR67_QA` and launcher `E:\TongMonBaDaoWorkspace\01_Game\CHOI-GAME-THU.cmd` are **not present**. The official binary exists at `E:\TongMonBaDaoWorkspace\04_Tools\Godot\Godot_v4.7.2-stable_win64.exe` and reports `4.7.2.stable.official.ed1daf0bf`.
+- Local Git does not contain commit `df6f55ee63d36c77e52b5d9eaf3c5743349b935a` (`git cat-file -e` failed). E: main is 259 commits behind PR base `970af33b` by ancestry; it cannot serve as a PR67 checkout.
+- Fetch attempts: Git HTTPS/GCM returned `SEC_E_NO_CREDENTIALS`; disabling the helper for a read-only OpenSSL attempt could not prompt without a TTY; codeload and the signed Actions artifact URL both returned Windows `Authentication failed`; Node fetch also failed. The authorized GitHub connector provides metadata/text but not a local binary source archive.
+- No launcher was created against a missing checkout, so it cannot be mistaken for a playable PR67 build.
+
+### O6 / GP-01 / GP-02A locator assessment
+
+Static review at PR #67 shows those older tests search for `GuidanceRecruitOrder` and `AcceptCandidate_<id>`. Current B1 controls are named `UseRecruitmentOrder` and `AcceptCandidate`; the live adapter connects those controls to canonical RecruitmentSystem callbacks. The exact-SHA O2 live integration gate passes real recruitment and independent reload. This supports a **legacy test-locator mismatch**, not evidence that recruitment gameplay is broken. No fake controls were added and no assertion was weakened. The complete O6/GP runs remain **PENDING** on Windows.
+
+### Final gates
+
+| Gate | Status |
+|---|---|
+| Exact-SHA Godot 4.7.2 automated focused suite and 4 captures | PASS |
+| Windows PR67 QA checkout and one-click playable launcher | BLOCKED — source transfer/auth unavailable |
+| Windows 1280×720 mouse playthrough of three facilities | PENDING USER |
+| GUI Save → exit → launcher → Reload receipt verification | PENDING USER |
+| Android/touch and owner visual acceptance | PENDING USER |
+
+Safe workaround: restore official Git Credential Manager sign-in in the Windows session (no token/password in chat), then fetch this existing branch into the isolated QA folder. The canonical game directory and untracked files must remain untouched. Do not claim PLAYABLE RC until the launcher runs this exact PR source.
+
+---
+
+## O6/GP legacy locator review
+
+The older `p3_o6_m1_release_rehearsal_test.gd`, `gp_01_v2_mine_vertical_slice_test.gd`, and `gp_02a_v2_cultivation_panel_test.gd` locate `GuidanceRecruitOrder` and per-candidate `AcceptCandidate_<id>`. The B1 Dẫn Tiên controls are `UseRecruitmentOrder` and `AcceptCandidate`, and `tri_facility_b1_live_integration_test.gd` asserts those controls and the canonical live recruitment callbacks. O2 on the exact code SHA passes live recruitment plus SaveService cross-process reload. This indicates the legacy locators are incompatible with the current B1 surface; it does not prove the whole O6/GP scenarios pass. Those full tests remain pending Windows exact-source execution. No fake controls or weakened assertions were added.
+
 ## TRI-03 — Windows playable acceptance & UI polish status (2026-11-02)
 
 **PR #67 code commit tested:** [`8979dca68495a74ad272ca4c861034040bf385f7`](https://github.com/vuanhtuan161094-byte/TongMonBaDao/commit/8979dca68495a74ad272ca4c861034040bf385f7). Official Godot 4.7.2 workflow [41402324227](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/41402324227) completed **SUCCESS** on this exact commit. Four real Godot 1280×720 P3.2/B1 captures are in [artifact 13122450868](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/41402324227/artifacts/13122450868). The run used Ubuntu/Xvfb/llvmpipe: this is automated real-render evidence, **not Windows mouse acceptance**.
