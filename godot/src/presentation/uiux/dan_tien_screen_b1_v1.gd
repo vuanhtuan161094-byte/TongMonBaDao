@@ -230,7 +230,7 @@ func _candidate_portrait(candidate: Dictionary) -> Control:
 	var texture_value: Variant = candidate.get("portrait")
 	if bool(candidate.get("source_art_approved", false)) and texture_value is Texture2D:
 		return UI.portrait_slot(str(candidate.get("name", "")), texture_value, Vector2(118, 150))
-	var guidance_art := UI.illustration("guidance")
+	var guidance_art := UI.illustration("candidate")
 	guidance_art.custom_minimum_size = Vector2(168, 150)
 	guidance_art.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	guidance_art.size_flags_vertical = Control.SIZE_SHRINK_CENTER
