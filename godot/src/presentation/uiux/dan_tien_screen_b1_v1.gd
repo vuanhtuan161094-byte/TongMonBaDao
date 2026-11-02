@@ -260,7 +260,7 @@ func _build_radar_panel() -> Control:
 		radar.call("set_values", candidate.get("tam_values", []), candidate.get("tu_values", []))
 	content.add_child(UI.section_heading("Thông tin", "leaf", UI.GOLD))
 	var metrics := GridContainer.new()
-	metrics.columns = 4
+	metrics.columns = 2
 	metrics.add_theme_constant_override("h_separation", 8)
 	metrics.add_theme_constant_override("v_separation", 7)
 	var metric_rows: Array = _vm.get("metrics", candidate.get("metrics", []))
