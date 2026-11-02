@@ -1,0 +1,67 @@
+ERROR: Condition "err != OK" is true.
+   at: initialize (drivers/gles3/shader_gles3.cpp:802)
+ERROR: Condition "err != OK" is true.
+   at: initialize (drivers/gles3/shader_gles3.cpp:802)
+ERROR: Condition "err != OK" is true.
+   at: initialize (drivers/gles3/shader_gles3.cpp:802)
+ERROR: Condition "err != OK" is true.
+   at: initialize (drivers/gles3/shader_gles3.cpp:802)
+ERROR: Condition "err != OK" is true.
+   at: initialize (drivers/gles3/shader_gles3.cpp:802)
+ERROR: Condition "err != OK" is true.
+   at: initialize (drivers/gles3/shader_gles3.cpp:802)
+ERROR: Condition "err != OK" is true.
+   at: initialize (drivers/gles3/shader_gles3.cpp:802)
+ERROR: Condition "err != OK" is true.
+   at: initialize (drivers/gles3/shader_gles3.cpp:802)
+ERROR: Condition "err != OK" is true.
+   at: initialize (drivers/gles3/shader_gles3.cpp:802)
+ERROR: Condition "err != OK" is true.
+   at: initialize (drivers/gles3/shader_gles3.cpp:802)
+ERROR: Condition "err != OK" is true.
+   at: initialize (drivers/gles3/shader_gles3.cpp:802)
+ERROR: Condition "err != OK" is true.
+   at: initialize (drivers/gles3/shader_gles3.cpp:802)
+ERROR: Condition "err != OK" is true.
+   at: initialize (drivers/gles3/shader_gles3.cpp:802)
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+
+================================================================
+CrashHandlerException: Program crashed with signal 11
+Engine version: Godot Engine v4.7.2.stable.official (ed1daf0bf001b61586d9930840f2f1394092c079)
+Dumping the backtrace. Please include this when reporting the bug on: https://github.com/godotengine/godot/issues
+Load address: 7ff523c20000
+
+[1] 7ff667cf4d61 (main+40d4d61) - no debug info in PE/COFF executable
+[2] 7ffb5323ce45 (ntdll.dll+8ce45) - no debug info in PE/COFF executable
+[3] 7ffb532528be (ntdll.dll+a28be) - no debug info in PE/COFF executable
+[4] 7ffb53202553 (ntdll.dll+52553) - no debug info in PE/COFF executable
+[5] 7ffb532513cd (ntdll.dll+a13cd) - no debug info in PE/COFF executable
+[6] 7ffaee0bece8 (ig11icd64.dll+78ece8) - no debug info in PE/COFF executable
+[7] 7ffaee0bf7f1 (ig11icd64.dll+78f7f1) - no debug info in PE/COFF executable
+[8] 7ffaed9bf551 (ig11icd64.dll+8f551) - no debug info in PE/COFF executable
+[9] 7ffaee07ee7d (ig11icd64.dll+74ee7d) - no debug info in PE/COFF executable
+[10] 7ffaee463ba8 (ig11icd64.dll+b33ba8) - no debug info in PE/COFF executable
+[11] 7ffaee4619f5 (ig11icd64.dll+b319f5) - no debug info in PE/COFF executable
+[12] 7ffaee464c0d (ig11icd64.dll+b34c0d) - no debug info in PE/COFF executable
+[13] 7ffaee365a05 (ig11icd64.dll+a35a05) - no debug info in PE/COFF executable
+[14] 7ff66514d4bd (main+152d4bd) - no debug info in PE/COFF executable
+[15] 7ff66515c956 (main+153c956) - no debug info in PE/COFF executable
+[16] 7ff66515f1ef (main+153f1ef) - no debug info in PE/COFF executable
+[17] 7ff6673bd9df (main+379d9df) - no debug info in PE/COFF executable
+[18] 7ff6673bdc02 (main+379dc02) - no debug info in PE/COFF executable
+[19] 7ff666ea37bc (main+32837bc) - no debug info in PE/COFF executable
+[20] 7ff666ea6040 (main+3286040) - no debug info in PE/COFF executable
+[21] 7ff666fa440c (main+338440c) - no debug info in PE/COFF executable
+[22] 7ff663c7dba1 (main+5dba1) - no debug info in PE/COFF executable
+[23] 7ff663c22ef0 (main+2ef0) - no debug info in PE/COFF executable
+[24] 7ff663c72b41 (main+52b41) - no debug info in PE/COFF executable
+[25] 7ff663c72b7d (main+52b7d) - no debug info in PE/COFF executable
+[26] 7ff663c210c8 (main+10c8) - no debug info in PE/COFF executable
+[27] 7ff663c213f5 (main+13f5) - no debug info in PE/COFF executable
+[28] 7ffb512c7373 (kernel32.dll+17373) - no debug info in PE/COFF executable
+[29] 7ffb531fcc90 (ntdll.dll+4cc90) - no debug info in PE/COFF executable
+[30] -1 (main+-7ff663c20001) - no debug info in PE/COFF executable
+-- END OF C++ BACKTRACE --
+================================================================

@@ -1,0 +1,8 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 - Build 31.0.101.2125 - Compatibility - Using Device: Intel - Intel(R) Iris(R) Plus Graphics
+
+TRI_MAP_BUILD_QA_FIXTURE hall_level=11 warehouse_seed=isolated_in_memory_only
+TRI_MAP_BUILD_PLACEMENT_PASS plot=86,108 screen=602.5,181.5
+TRI_MAP_BUILD_TRANSACTION_PASS building=residence_002 site=86,108 cost={ "linh_moc": 500, "thanh_thiet": 320, "spirit_stones": 10000 } receipt=1 save=1
+TRI_MAP_RELOCATION_TRANSACTION_PASS building=residence_002 old=86,108 new=92,108 receipt=1 exact_once=1 occupied_guard=1 save=1
+TRI_MAP_BUILD_PROCESS1_SAVED path=C:/Users/Admin/Documents/Codex/TMB_TRI03_OWNER_FINAL_PUSH_20261103/outputs/tri03_owner_final_20261103/qa_profile_exact_84aa5bf/Godot/app_userdata/Tong Mon Ba Dao/tri03_map_build_roundtrip.json expected=C:/Users/Admin/Documents/Codex/TMB_TRI03_OWNER_FINAL_PUSH_20261103/outputs/tri03_owner_final_20261103/qa_profile_exact_84aa5bf/Godot/app_userdata/Tong Mon Ba Dao/tri03_map_build_expected.json

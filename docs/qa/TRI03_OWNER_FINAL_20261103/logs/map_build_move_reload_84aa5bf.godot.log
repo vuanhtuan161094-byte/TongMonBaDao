@@ -1,0 +1,4 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+TRI_MAP_BUILD_CROSS_PROCESS_RELOAD_PASS building=residence_002 site=92,108 exact_once=1 costs=preserved
+TRI_MAP_RELOCATION_CROSS_PROCESS_PASS building=residence_002 old=86,108 new=92,108 exact_once=1
