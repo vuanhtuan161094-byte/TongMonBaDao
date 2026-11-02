@@ -19,7 +19,7 @@ func _draw() -> void:
 	if size.x < 80.0 or size.y < 80.0:
 		return
 	var center := Vector2(size.x * 0.5, size.y * 0.47)
-	var radius := minf(size.x * 0.31, size.y * 0.31)
+	var radius := minf(size.x * 0.34, size.y * 0.34)
 	for ring in range(1, 5):
 		var points := PackedVector2Array()
 		for axis in range(84):
@@ -29,6 +29,10 @@ func _draw() -> void:
 		draw_polyline(points, GRID_COLOR, 1.0, true)
 	_draw_series(center, radius, values_tam, TAM_LABELS.size(), TAM_COLOR, -PI * 0.5)
 	_draw_series(center, radius, values_tu, TU_LABELS.size(), TU_COLOR, -PI * 0.5 + PI / 4.0)
+	# Two independent scales, one shared centered radar. Label each axis, not
+	# just the colored polygons; colors remain consistent with the legend.
+	_draw_axis_labels(center, radius, TAM_LABELS, TAM_COLOR, -PI * 0.5)
+	_draw_axis_labels(center, radius, TU_LABELS, TU_COLOR, -PI * 0.5 + PI / 4.0)
 	var legend_y := size.y - 16.0
 	draw_circle(Vector2(24, legend_y), 4.0, TAM_COLOR)
 	draw_string(ThemeDB.fallback_font, Vector2(34, legend_y + 4.0), "Tam", HORIZONTAL_ALIGNMENT_LEFT, -1, 11, TEXT_COLOR)
@@ -36,6 +40,14 @@ func _draw() -> void:
 	draw_string(ThemeDB.fallback_font, Vector2(99, legend_y + 4.0), "Tứ", HORIZONTAL_ALIGNMENT_LEFT, -1, 11, TEXT_COLOR)
 
 const TEXT_COLOR := Color(0.85, 0.89, 0.81, 0.95)
+
+func _draw_axis_labels(center: Vector2, radius: float, labels: Array, tint: Color, angle_start: float) -> void:
+	for index in range(labels.size()):
+		var angle := angle_start + TAU * float(index) / float(labels.size())
+		var p := center + Vector2(cos(angle), sin(angle)) * (radius + 16.0)
+		draw_string(ThemeDB.fallback_font, Vector2(p.x - 58.0, p.y + 4.0),
+			str(labels[index]), HORIZONTAL_ALIGNMENT_CENTER, 116, 11, tint)
+
 
 func _draw_series(center: Vector2, radius: float, data: Array, axis_count: int, tint: Color, angle_start: float) -> void:
 	if data.size() != axis_count:
