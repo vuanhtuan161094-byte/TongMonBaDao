@@ -100,7 +100,7 @@ func _render() -> void:
     var detail := Button.new()
     detail.name = "OpenCanonicalFacilityManagement"
     detail.text = "QUẢN LÝ ĐẦY ĐỦ"
-    detail.custom_minimum_size = Vector2(190, 42)
+    detail.custom_minimum_size = Vector2(190, 48)
     detail.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
     detail.offset_left = -334
     detail.offset_right = -132

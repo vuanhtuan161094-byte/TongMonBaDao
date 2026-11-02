@@ -50,7 +50,7 @@ static func label(text_value: String, font_size: int, color: Color, bold: bool) 
 static func button(text_value: String, primary: bool, accent: Color) -> Button:
 	var result := Button.new()
 	result.text = text_value
-	result.custom_minimum_size = Vector2(52, 46)
+	result.custom_minimum_size = Vector2(52, 48)
 	result.focus_mode = Control.FOCUS_ALL
 	result.add_theme_font_size_override("font_size", 15)
 	result.add_theme_color_override("font_color", TEXT)
