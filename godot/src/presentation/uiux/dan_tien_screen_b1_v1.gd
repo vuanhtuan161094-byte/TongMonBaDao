@@ -266,7 +266,7 @@ func _build_radar_panel() -> Control:
 	var metric_rows: Array = _vm.get("metrics", candidate.get("metrics", []))
 	for metric in metric_rows.slice(0, 4):
 		var metric_card := UI.metric_card(str(metric.get("label", "")), str(metric.get("value", "")), str(metric.get("icon", "leaf")), UI.GOLD)
-		metric_card.custom_minimum_size.x = 167
+		metric_card.custom_minimum_size.x = 285
 		metric_card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		metrics.add_child(metric_card)
 	content.add_child(metrics)
