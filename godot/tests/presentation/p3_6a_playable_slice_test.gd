@@ -170,7 +170,10 @@ func _verify_actor_tokens_are_player_readable() -> bool:
         if modular.status_label == null or modular.status_label.visible:
             return _fail("Always-on actor status text still clutters the main map: %s" % key)
 
-        if not modular.production_body_active():
+        # A verified baked Source A sprite is a real on-map visual; do not
+        # require the neutral silhouette on top of an already-rendered sprite.
+        # The fallback remains mandatory if neither production body nor baked art exists.
+        if not modular.production_body_active() and not modular.baked_visual_active():
             var fallback := modular.get_node_or_null("FallbackVisual") as Control
             if fallback == null or not fallback.visible:
                 return _fail("Unsupported rig has no neutral humanoid fallback: %s" % key)
