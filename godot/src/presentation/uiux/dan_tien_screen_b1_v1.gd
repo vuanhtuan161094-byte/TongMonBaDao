@@ -11,6 +11,7 @@ signal closed
 
 const UI = preload("res://src/presentation/uiux/sect_ui_theme_v1.gd")
 const RADAR_SCRIPT = preload("res://src/presentation/uiux/sect_d7_radar_v1.gd")
+const FACILITY_ART = preload("res://src/presentation/uiux/sect_facility_art_v2.gd")
 var _vm: Dictionary = {}
 var _reject_armed := false
 var _accept_armed := false
@@ -62,6 +63,13 @@ func _make_shell() -> MarginContainer:
 	column.add_theme_constant_override("separation", 10)
 	margin.add_child(column)
 	var header := HBoxContainer.new()
+	header.add_theme_constant_override("separation", 10)
+	var building_art: Control = FACILITY_ART.new()
+	building_art.name = "GuidanceFacilityArt"
+	building_art.set("facility_kind", "guidance")
+	building_art.custom_minimum_size = Vector2(142, 100)
+	building_art.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	header.add_child(building_art)
 	var stack := VBoxContainer.new()
 	stack.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	stack.add_child(UI.label("DẪN TIÊN ĐÀI", 25, UI.PAPER, true))
