@@ -28,7 +28,7 @@ func _run() -> void:
             return
         var source_path := "res://art/source_a_env02a/" + str(spec["relative"])
         var source_image := Image.load_from_file(ProjectSettings.globalize_path(source_path))
-        if source_image == null or source_image.is_empty() or not source_image.has_alpha():
+        if source_image == null or source_image.is_empty() or not source_image.detect_alpha() != Image.ALPHA_NONE:
             _fail("Source A model %s lost its imported alpha channel" % spec["model"])
             return
         source_image.convert(Image.FORMAT_RGBA8)

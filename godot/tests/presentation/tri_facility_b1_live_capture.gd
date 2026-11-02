@@ -105,7 +105,7 @@ func _capture() -> void:
 func _verify_source_alpha(relative: String, kind: String) -> bool:
     var source_path := ProjectSettings.globalize_path("res://art/source_a_env02a/" + relative)
     var source_image := Image.new()
-    if source_image.load(source_path) != OK or source_image.is_empty() or not source_image.has_alpha():
+    if source_image.load(source_path) != OK or source_image.is_empty() or not source_image.detect_alpha() != Image.ALPHA_NONE:
         _fail("Source A %s original PNG did not preserve its alpha channel." % kind)
         return false
     source_image.convert(Image.FORMAT_RGBA8)
