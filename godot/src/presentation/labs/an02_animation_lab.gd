@@ -262,8 +262,48 @@ func sample_evidence() -> Dictionary:
         "source_clip":actual,
         "frame_index":int(frame.get("frame",-1)),
         "frame_loaded":not frame.is_empty() and frame.get("texture") != null,
+        "source_texture_size":_source_texture_size(frame),
+        "source_anchor":frame.get("anchor",Vector2.ZERO),
+        "source_mirrored":_is_source_mirrored(frame),
+        "anchor_within_texture":_anchor_within_texture(frame),
+        "preview_foot_error_px":_preview_foot_error(frame),
         "presentation_only":true
     }
+
+## View-only QA geometry: never changes combat/simulation state.
+func _source_texture_size(frame: Dictionary) -> Vector2:
+    if frame.is_empty():
+        return Vector2.ZERO
+    var texture := frame.get("texture") as Texture2D
+    return texture.get_size() if texture != null else Vector2.ZERO
+
+func _is_source_mirrored(frame: Dictionary) -> bool:
+    if frame.is_empty():
+        return false
+    var requested_left := _facing().x < -0.001
+    var native_left := int(frame.get("source_face_x",-1)) < 0
+    return requested_left != native_left
+
+func _anchor_within_texture(frame: Dictionary) -> bool:
+    var dimensions := _source_texture_size(frame)
+    var anchor: Vector2 = frame.get("anchor",Vector2.ZERO)
+    return dimensions.x > 0.0 and dimensions.y > 0.0 \
+        and anchor.x >= 0.0 and anchor.y >= 0.0 \
+        and anchor.x <= dimensions.x and anchor.y <= dimensions.y
+
+func _preview_foot_error(frame: Dictionary) -> float:
+    if _sprite == null or frame.is_empty() or _sprite.texture == null:
+        return INF
+    var dimensions := _source_texture_size(frame)
+    var anchor: Vector2 = frame.get("anchor",Vector2.ZERO)
+    var source_x := dimensions.x - anchor.x if _sprite.flip_h else anchor.x
+    var rendered_foot := _sprite.position + Vector2(source_x,anchor.y) * _sprite.scale
+    return rendered_foot.distance_to(PREVIEW_FOOT)
+
+func set_preview_elapsed_for_qa(seconds: float) -> void:
+    _elapsed = maxf(0.0,seconds)
+    if is_node_ready():
+        _render_frame()
 
 func configure_preview(actor_index: int, action_index: int, direction_index: int, shadow: bool) -> void:
     _actor_index = clampi(actor_index,0,ACTORS.size()-1)
@@ -291,13 +331,11 @@ func _render_frame() -> void:
     var texture: Texture2D = frame["texture"]
     var anchor: Vector2 = frame["anchor"]
     var ratio := float(frame["scale"]) * PREVIEW_ENLARGE
-    var desired_left := _facing().x < -0.001
-    var native_left := int(frame["source_face_x"]) < 0
-    var mirrored := desired_left != native_left
+    var mirrored := _is_source_mirrored(frame)
     _sprite.texture = texture
     _sprite.flip_h = mirrored
     _sprite.scale = Vector2.ONE * ratio
-    var source_x: float = texture.get_size().x - anchor.x if mirrored else anchor.x
+    var source_x: float = _source_texture_size(frame).x - anchor.x if mirrored else anchor.x
     _sprite.position = PREVIEW_FOOT - Vector2(source_x,anchor.y) * ratio
     _sprite.material = _shadow_material if _shadow else null
     _sprite.modulate = Color.WHITE
