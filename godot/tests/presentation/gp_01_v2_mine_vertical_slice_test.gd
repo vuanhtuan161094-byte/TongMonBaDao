@@ -204,7 +204,7 @@ func _run() -> void:
         and final_actor.v2_birth_profile == saved_birth
         and final_actor.worksite_building_id == mine.id
         and final_actor.profession_xp.get("mining", 0.0) > xp_before
-        and final_state.to_dict() == expected.to_dict(),
+        and _state_semantically_equal(final_state.to_dict(),expected.to_dict()),
         "Offline recovery diverged from one real Mine completion/EXP/state."):
         print("GP01_OFFLINE_FACTS ore_expected=%d ore_actual=%d batches_expected=%d batches_actual=%d cycle_empty=%s birth_equal=%s worksite_expected=%s worksite_actual=%s mining_xp_before=%.6f mining_xp_after=%.6f state_equal=%s" % [
             ore_before+batch,warehouse.quantity(final_state,&"thanh_thiet"),batches_before+1,
@@ -356,6 +356,29 @@ func _collect_state_diffs(expected_value: Variant, actual_value: Variant,
                 return
     elif expected_value != actual_value:
         differences.append("%s expected=%s actual=%s" % [path,str(expected_value).substr(0,180),str(actual_value).substr(0,180)])
+
+func _state_semantically_equal(left: Variant, right: Variant) -> bool:
+    # JSON has no distinct integer token, so reload can produce 1.0 instead of 1.
+    # Compare exact numeric value while ignoring only the integer/float type tag.
+    var left_numeric := left is int or left is float
+    var right_numeric := right is int or right is float
+    if left_numeric or right_numeric:
+        return left_numeric and right_numeric and left == right
+    if left is Dictionary and right is Dictionary:
+        if left.size() != right.size():
+            return false
+        for key in left.keys():
+            if not right.has(key) or not _state_semantically_equal(left[key],right[key]):
+                return false
+        return true
+    if left is Array and right is Array:
+        if left.size() != right.size():
+            return false
+        for index in range(left.size()):
+            if not _state_semantically_equal(left[index],right[index]):
+                return false
+        return true
+    return left == right
 
 func _check(valid: bool, message: String) -> bool:
     if not valid:
