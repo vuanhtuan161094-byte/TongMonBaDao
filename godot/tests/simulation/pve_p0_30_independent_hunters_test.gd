@@ -265,6 +265,48 @@ func _run() -> void:
             +str(while_travelling)):
         return
     print("PVE_P0_TRAVEL_ORIGIN_CAMP_PASS camps=2 monsters=20 physical_zone=C01 target=C20")
+    # A hunter may stand precisely on the canonical monster spawn tile.
+    # Activation must keep the slot identity but place the new monster on a
+    # nearby legal free cell, rather than create an overlapping sprite/collider.
+    var occupied_slot := PveMultiCampPopulationV1.slot_id(0,0)
+    var occupied_at: Vector2 = options["slot_positions"][occupied_slot]
+    var crowded_actor: Dictionary = _new_party(options["camp_positions"])[0]
+    crowded_actor["position"] = occupied_at
+    var crowded_battle := MapBattleV2.new(20261105)
+    var crowded_start := crowded_battle.setup_open_world(
+        "p0_occupied_monster_spawn",[crowded_actor],[],options)
+    if not _check(bool(crowded_start.get("ok",false)),
+            "actual slot location is not a legal world coordinate"):
+        return
+    var crowded_session := HuntingPveRunV2.new()
+    crowded_session.battle = crowded_battle
+    crowded_session.mode = "multicamp"
+    crowded_session.camp_index = 0
+    crowded_session.camp_population = _registry(options)
+    crowded_session.camp_slot_ids = []
+    crowded_session.spawn_data = {"reward_seed":20261105}
+    var safe_spawned := PveDistributedWorldV1.synchronize(crowded_session)
+    if not _check(bool(safe_spawned.get("ok",false))
+            and crowded_battle._count_monster_records() == 10,
+            "occupied Source A spawn blocked legal neighboring spawn cells"):
+        return
+    var monsters_collide := false
+    var original_slot_preserved := false
+    for mob_value in crowded_battle.actors.values():
+        var mob: Dictionary = mob_value
+        if str(mob.get("side","")) != "monster":
+            continue
+        monsters_collide = monsters_collide or (
+            mob["position"] as Vector2).distance_squared_to(occupied_at) < 0.64
+        if str(mob.get("spawn_slot_id","")) == occupied_slot:
+            original_slot_preserved = (
+                mob["position"] as Vector2).distance_squared_to(occupied_at) >= 0.64 \
+                and str(mob.get("id","")).contains(occupied_slot)
+    if not _check(not monsters_collide and original_slot_preserved,
+            "new monster overlapped existing hunter or changed official slot ID"):
+        return
+    print("PVE_P0_SAFE_MONSTER_RESPAWN_PASS slot="+occupied_slot
+        +" active_monsters=10 no_overlap=true")
     print("PVE_P0_30_HUNTERS_PASS checks=%d engine=Godot4.7.2" % checks)
     world.queue_free()
     quit(0)
