@@ -56,9 +56,9 @@ func _run() -> void:
             "Walk must move legs through an actual skeletal gait"):
         return
     actor.select_motion("attack")
-    actor.seek(0.1)
+    actor.seek(0.22)
     var attack_windup: Quaternion = actor.bone_pose("upper_arm_R")
-    actor.seek(0.38)
+    actor.seek(0.46)
     var attack_strike: Quaternion = actor.bone_pose("upper_arm_R")
     actor.seek(1.1)
     var attack_recover: Quaternion = actor.bone_pose("upper_arm_R")
