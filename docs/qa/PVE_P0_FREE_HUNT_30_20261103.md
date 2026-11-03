@@ -117,3 +117,21 @@ No changes have been made in `godot/src/presentation/p3_2_landscape_sect.gd` or 
 - PR #67 remains Draft, unmerged; `main` unchanged.
 - All patches are still isolated under `feature/pve-p0-free-hunt-30-20261103`, with one dedicated QA workflow and permanent tests; **do not cherry-pick the entire feature branch**. Review the two existing independent PVE-01B backend changes when integrating, because this branch also includes its saved-gate fix.
 - Windows/Android: **PENDING USER**. No performance or UX claims without screenshots and actual device input.
+
+
+## 8. P0 independent living roster — user-directed continuation (2026-11-03)
+
+**OWNER:** Finish PvE backend alone; defer P3.2 and Codex integration. One Source A world is authoritative; individual disciples do **not** need a mandatory party. Changes isolated to `feature/pve-p0-free-hunt-30-20261103`, not PR67 or `main`.
+
+**P0-ROSTER-01 CODED, NOT YET GODOT GREEN on latest SHA:**
+- `MapBattleV2.add_world_disciple(row)`: creates one complete canonical live combat actor with original loadout and optional V6.3 skills; clamps total humans at 30 and individual voluntary `party_id` at six; preserves one combat timeline and event journal.
+- `MapBattleV2.withdraw_world_disciple(id)`: removes **one** owned actor while at least one teammate is alive, without calling terminal settlement. Blocks return if the actor is involved in pending kills, casts, burn/weaken or V6.3 poison effect provenance, because dropping their caster ID would corrupt a future Save/Reload. Last member uses the existing explicit whole-world `Về tông môn` action.
+- `PveP0CommandsV1.join_one(owner,id,role,party_id)`: validates actual Sect V2 disciple, injury, one active job, existing run reservation, real Source A walkable entrance, and then reserves existing active encounter + checkpoints that exact world. No synthetic candidate or free EXP.
+- `PveP0CommandsV1.return_one(owner,id)`: commits only the returning person's canonical HP/Injury (HP=1 and recover at +120 ticks if downed), returns them to Sect and clears active PvE reservation. Remaining hunters, their real HP, earned XP, rewards, monster state and original encounter ID remain unchanged. All new commands return `save_required=true`; the future P3.2 owner must invoke the existing SaveService async barrier. Both commands undo local changes if the in-memory checkpoint fails.
+- New Godot assertions: `pve_p0_natural_solo_reward_test.gd` now accepts **two actual V2 candidates in one New Game** (six founders + two, within eight real beds), deploys one, kills ten normal monsters via actual HP0 combat test API, then joins/returns second; rejects duplicate join/return and last-hunter withdrawal, finally cold-reloads the continuing first hunter and verifies second is back at Sect, with the same 10 receipts/XP/warehouse.
+- Engine 30-actor fixture now explicitly refuses a synthetic 31st actor without changing the live roster. This is cap testing only, **not** New Game recruitment of 30.
+- Workflow `.github/workflows/pve-p0-free-hunt.yml` parses the new command source and executes both headless suites and legacy nearby regressions when GitHub Actions jobs can start.
+
+**QA limitation:** The latest P0 workflow [run 41608607713](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/41608607713) finished FAILURE after seconds without exposing any executed job steps. Official Godot 4.7.2 **has not executed this new dynamic roster code**, so status is CODED/QA BLOCKED, not PASS or playable. Earlier [run 41599909474](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/41599909474) was GREEN on an older SHA for 30x20, one original V2 solo HP0 loot/EXP/cold reload and party isolation only; it does **not** validate join/return.
+
+**Next backend-only gates:** (1) Godot parser and both focused tests at exact new SHA, (2) same-slot monster death→generation2→3, real per-kill receipt/XP once each, 30+ minute offscreen bounded backlog, (3) normal and injured single-character return with live teammates, (4) bounded 30 world actors in 20 zones with stable runtime cost. No 130-person fixture for natural New Game, no P3.2 edit, no merge, Windows mouse/Android PENDING USER.
