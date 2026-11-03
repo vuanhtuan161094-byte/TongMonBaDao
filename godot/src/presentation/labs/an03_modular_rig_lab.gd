@@ -3,7 +3,7 @@ extends Node3D
 ## The model is a geometry guide only. Original owner's Shadow 3D mesh not present.
 const ACTOR := preload("res://src/presentation/labs/an03_modular_character.gd")
 const ACTIONS := ["idle","walk","attack"]
-var _actor: Node3D
+var _actor
 var _clock_label: Label
 var _status_label: Label
 var _action_select: OptionButton
