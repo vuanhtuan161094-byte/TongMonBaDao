@@ -323,28 +323,115 @@ func _run() -> void:
     var gate_pass: bool = bool(actor.get("v63_combat_enabled", false)) \
         and actor.get("v63_skill_loadout", []).has(SKILL_ID)
     if not gate_pass:
-        print("PVE01A_TEST_FIRST_EXPECTED_RED V63_ON_IN_SAVE_BUT_MULTICAMP_ACTOR_HAS_NO_ACTIVE_EQUIPPED_SKILL")
+        print("PVE01B_V63_GATE_STILL_RED V63_ON_IN_SAVE_BUT_MULTICAMP_ACTOR_HAS_NO_ACTIVE_EQUIPPED_SKILL")
     if not _check(gate_pass,
-            "persisted V63 ON was not propagated into the authentic 6v10 actor; PVE-01B pending"):
+            "persisted V63 ON was not propagated into the authentic 6v10 actor"):
         return
 
-    if not _check(bool(runtime.save(START_WALL).get("ok", false)),
-            "mid-combat SaveService commit failed"):
+    # Prove that an authentic, equipped V6.3 skill actually casts and
+    # reduces enemy HP. Use an independent Battle snapshot probe, not a
+    # synthetic damage injection or made-up reward/XP authority.
+    var probe_snapshot: Dictionary = MapBattleSnapshotV2.save(battle)
+    var probe_rehydrated: Dictionary = MapBattleSnapshotV2.load(probe_snapshot)
+    if not _check(bool(probe_snapshot.get("ok", false))
+            and bool(probe_rehydrated.get("ok", false)),
+            "V6.3 on-battle combat probe cannot snapshot/restore"):
         return
-    var new_runtime := LiveGameRuntimeV2.new()
-    var reopened := new_runtime.start(SAVE_PATH, START_WALL, SEED)
-    if not _check(bool(reopened.get("ok", false)) and bool(reopened.get("loaded", false)),
-            "new runtime failed independent SaveService reopen"):
+    var probe: MapBattleV2 = probe_rehydrated.get("battle", null)
+    var actual_casts := 0
+    var positive_skill_hits := 0
+    var positive_delta := 0.0
+    var frames := 0
+    for _frame in range(1000):
+        if not probe.active or positive_skill_hits > 0:
+            break
+        var step_result := probe.step(false)
+        if not _check(bool(step_result.get("ok", false)),
+                "real skill rotation probe cannot advance: " + str(step_result)):
+            return
+        frames += 1
+        for event in probe.events:
+            if str(event.get("type", "")) == "skill_cast" \
+                    and str(event.get("combat_family", "")) == "v63_human" \
+                    and str(event.get("actor_id", "")) == str(skilled_id):
+                actual_casts += 1
+            if str(event.get("type", "")) == "v63_skill_hit" \
+                    and str(event.get("caster", "")) == str(skilled_id) \
+                    and float(event.get("damage", 0.0)) > 0.0 \
+                    and float(event.get("target_hp_after", INF)) < float(event.get("target_hp_before", INF)):
+                positive_skill_hits += 1
+                positive_delta += float(event.get("target_hp_before", 0.0)) - float(event.get("target_hp_after", 0.0))
+        # The event ring is authoritative within the battle and can be cleared
+        # only on this independent battle probe; the original run is untouched.
+        probe.events.clear()
+    if not _check(actual_casts > 0 and positive_skill_hits > 0 and positive_delta > 0.0,
+            "V6.3 ON has no authentic cast + positive monster HP loss in 1000 battle frames"):
         return
-    var after := HuntingPveRunV2.resume_active(new_runtime.state(), ENCOUNTER,
-        new_runtime.owner.scheduler.v63_preview_overrides)
-    if not _check(bool(after.get("ok", false)), "independent V63 6v10 restore failed"):
+    print("PVE01B_V63_ACTUAL_SKILL_DAMAGE_PASS " + JSON.stringify({
+        "casts":actual_casts,"positive_hits":positive_skill_hits,
+        "enemy_hp_delta":positive_delta,"probe_frames":frames,
+        "source":"MapBattleV2.step on isolated Source A world snapshot"
+    }))
+
+    # Cached simulation first, then save and a second operating-system
+    # Godot process with a cold-cache shared-clock restore. No fake direct
+    # scheduler advancement and no duplicate Warehouse reward/receipt.
+    var original_warehouse: Dictionary = state.sect.warehouse_resources.duplicate(true)
+    var cached_poll := runtime.poll(START_WALL + 1, -1, 4)
+    if not _check(bool(cached_poll.get("ok", false))
+            and int(cached_poll.get("frames_run", 0)) > 0
+            and runtime.owner.get_active_multicamp_session(ENCOUNTER) != null,
+            "V6.3 cached scheduler failed to advance one canonical battle batch: " + str(cached_poll)):
         return
-    var after_actor: Dictionary = after["session"].battle.actors.get(str(skilled_id), {})
-    if not _check(bool(after_actor.get("v63_combat_enabled", false))
-            and after_actor.get("v63_skill_loadout", []).has(SKILL_ID),
-            "V63 equipped skill/gate disappeared across Save/exit/reload"):
+    var cached_resume := HuntingPveRunV2.resume_active(
+        state, ENCOUNTER, runtime.owner.scheduler.v63_preview_overrides)
+    if not _check(bool(cached_resume.get("ok", false))
+            and bool(cached_resume["session"].battle.actors[str(skilled_id)].get("v63_combat_enabled", false)),
+            "cached scheduler lost V6.3 opt-in"):
         return
-    print("PVE01A_V63_6V10_GATE_PASS seed=%d 6v10=true persisted_reload=true" % SEED)
+    if not _check(bool(runtime.save(START_WALL + 1).get("ok", false)),
+            "canonical V6.3 SaveService checkpoint failed"):
+        return
+    var child_output: Array = []
+    var command := PackedStringArray([
+        "--headless", "--path", ProjectSettings.globalize_path("res://"),
+        "-s", "res://tests/simulation/pve_01a_6v10_v63_gate_contract_test.gd",
+        "--", "process2"
+    ])
+    var child_exit: int = OS.execute(OS.get_executable_path(), command, child_output, true)
+    var child_log := ""
+    for row in child_output:
+        child_log += str(row)
+    print("PVE01B_PROCESS2_TRANSCRIPT_BEGIN")
+    print(child_log)
+    print("PVE01B_PROCESS2_TRANSCRIPT_END")
+    if not _check(child_exit == 0
+            and child_log.contains("PVE01B_PROCESS2_RELOAD_CLOCK_EXACT_ONCE_PASS"),
+            "independent process-2 Godot Save/Reload/offline clock failed, exit=%d" % child_exit):
+        return
+    var verified_disk: SimulationState = SaveService.new().load_from_path(SAVE_PATH)
+    if not _check(verified_disk != null and verified_disk.sect.v2_pve_active_runs.size() == 1
+            and HuntingPveRunV2.active_multicamp_id(verified_disk) == ENCOUNTER
+            and verified_disk.sect.v2_pve_reward_claims.is_empty()
+            and verified_disk.sect.v2_pve_settlement_receipts.is_empty()
+            and verified_disk.sect.warehouse_resources == original_warehouse
+            and verified_disk.runtime_last_wall_unix >= START_WALL + 2,
+            "cross-process save created duplicate authority, reward, or lost clock"):
+        return
+    var verified_preview: Dictionary = V63FeatureGates.persisted_preview_overrides(verified_disk)
+    var verified_battle := HuntingPveRunV2.resume_active(
+        verified_disk, ENCOUNTER, verified_preview)
+    if not _check(bool(verified_battle.get("ok", false))
+            and bool(verified_battle["session"].battle.actors[str(skilled_id)].get("v63_combat_enabled", false))
+            and verified_battle["session"].battle.actors[str(skilled_id)].get("v63_skill_loadout", []).has(SKILL_ID),
+            "disk after process-2 lost V6.3 enabled equipped skill"):
+        return
+    print("PVE01B_V63_6V10_GATE_PASS " + JSON.stringify({
+        "seed":SEED,"actual_source_a_6v10":true,"on":true,"off":true,
+        "cast_and_hp_delta":true,"cached_clock":true,"cold_clock":true,
+        "two_godot_processes":true,"warehouse_unchanged":true,
+        "reward_claims":verified_disk.sect.v2_pve_reward_claims.size(),
+        "settlements":verified_disk.sect.v2_pve_settlement_receipts.size()
+    }))
     _cleanup()
     quit(0)
