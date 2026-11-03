@@ -77,3 +77,43 @@ godot --headless --path godot -s res://tests/simulation/pve_p0_natural_solo_rewa
 All PVE-P0 code is on branch `feature/pve-p0-free-hunt-30-20261103`, based on fixed PR67 SHA. To revert safely **before any integration**, abandon that branch; PR67 and `main` remain untouched and legacy code unaffected. If adopting, the exclusive integration writer must cherry-pick only reviewed production code/test blobs, verify PR HEAD and diff, run official Godot 4.7.2 focused/cumulative and user-facing scene QA, and preserve valid legacy saves. Avoid merging entire branch or leaving the temporary O2-child CI bridge; restore O2 byte-for-byte before final handoff. Any 30-player integrated demo acceptance requires separate authored roster/economy progression beyond opening Hall's current 12-disciple cap.
 
 **Status:** Backend P0 architecture and focused engine tests GREEN at recorded SHA; final optional-team regression pending; PR67 UI integration and full playable/visual acceptance OPEN. This is a testable P0 feature branch, not an assertion that the shipped game already has all P0 functions.
+
+
+## 7. Follow-up code pass — 2026-11-03; NOT yet a shipped P0
+
+**Source HEAD before this report update:** `a7b551b6238bfe74c770f60889ce18c8ae9b18af`. The latest code **has NOT passed Godot** on that exact SHA. The last confirmed official GREEN remains [run 41599909474](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/41599909474) from previously tested source `659457f099b1e1415da12cbf2d018a3444f32b82`. [Run 41599326867](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/41599326867) earlier confirmed 18 assertions for 30x20 and 43 assertions for a genuine New Game V2 solo kill/loot/EXP/cold process. **These PASS claims are limited to their respective tested SHAs.**
+
+### New source changes after the last GREEN
+
+| File | New correction / purpose | Current status |
+|---|---|---|
+| `pve_distributed_world_v1.gd` | Keep **departure** monsters active while a real hunter walks toward another zone, prefetch destination without teleport. On monster activation, search a nearby legal free cell if an existing live disciple occupies the canonical slot; do not invent/clone a spawn or shift its slot ID. If no safe cell exists, keep it READY and retry later. | **CODED; GODOT PENDING** |
+| `map_battle_v2.gd` | `order_group_move(..., arrival_policy="keep")` preserves independent AUTO/HOLD on each moving actor; explicit auto/hold still supported. | **CODED; GODOT PENDING** |
+| `pve_sect_world_view_v1.gd` | P0 distributed world starts with **no implicitly selected 30-member squad**, preventing a single minimap click from ordering every hunter. Legacy six-actor view keeps its old selection contract. Adds small AUTO/HOLD buttons and `hunt_policy_ordered(ids,policy)` signal, **hidden until the P3.2 owner connects the authoritative callback**, so there is no deceptive inert gameplay control. | **CODED; GODOT PENDING; P3.2 CALLBACK OPEN** |
+| `pve_p0_commands_v1.gd` (new) | Stable owner-only API: `build_members`, `deploy`, `move`, `hunt_policy`. Rejects duplicate/injured/occupied actors, caps 30 per world and 6 per real voluntary party, defaults each missing party to `solo:id`, uses Source A topology, cached single world runtime, persisted V6.3 gate and a game-state checkpoint. Success **returns `save_required=true`** for gameplay to call the existing SaveService barrier; no second clock or UI-side battle mutation. | **CODED; GODOT PENDING; P3.2 CALLSITE OPEN** |
+| `pve_p0_30_independent_hunters_test.gd` | Adds departure-vs-destination zone retention, HOLD-after-travel, occupied-spawn collision, no implicit 30-person selection, disabled-without-listener AUTO/HOLD, selected minimap and same-party heal isolation. | **TEST WRITTEN; NOT RUN AFTER CHANGES** |
+| `pve_p0_natural_solo_reward_test.gd` | Uses the new actual-runtime `PveP0CommandsV1.deploy` rather than invoking a private battle start; validates `move`, `hunt_policy`, malformed selection refusal, cold process preserving HOLD. Still one authentic New Game recruit, and the ten HP0 are **test-API kills**, not organic solo victory. | **TEST WRITTEN; NOT RUN AFTER CHANGES** |
+| `.github/workflows/pve-p0-free-hunt.yml` | Adds permanent official Godot 4.7.2 import, parser, natural solo, 30x20, existing Source A input/formation and per-kill Codex regression checks. Does not require a temporary O2 test bridge. | **WORKFLOW CREATED; RUNNER BLOCKED** |
+
+### GitHub Actions infrastructure limitation
+
+Run [41600657130](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/41600657130) (the existing unchanged O2 regression) and dedicated P0 runs including [41601242834](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/41601242834) and [41602300262](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/41602300262) returned **FAILURE after 2–5 seconds with zero reported job steps**. This is **not** a GDScript assertion failure, import failure or gameplay result: no job test steps executed. The GitHub API exposes neither step details nor downloaded logs for those attempts, so the exact infrastructure cause (e.g. account Actions quota/billing restriction) **is unconfirmed**. Do not mask this as PASS. Once a runner is available, rerun the dedicated workflow on the final SHA.
+
+### TRI-03 integration contract — exclusive P3.2 writer only
+
+No changes have been made in `godot/src/presentation/p3_2_landscape_sect.gd` or PR67. The writer must:
+1. Change the source player-facing hunter picker from exactly six to **1–30** healthy V2 participants; do not auto-assign a 6-member party. Use `PveP0CommandsV1.build_members(state, selected_ids, role_map, optional_real_party_ids)` to validate before confirmation.
+2. On Source A deployment, call `PveP0CommandsV1.deploy(runtime_session.owner, encounter_id, seed, selected_ids, b3_pve_world_view.get_open_world_options(), role_map, optional_real_party_ids)`; this automatically opts in the real 20-zone distributed world without faking any roster or resource.
+3. Bind `b3_pve_world_view.hunt_policy_ordered.connect(_on_p0_hunt_policy)`. The callback must call `PveP0CommandsV1.hunt_policy(runtime_session.owner,ids,policy)`, then `await _save_runtime_async_barrier()`, and show feedback for failure. Controls only appear after this authoritative listener is connected.
+4. Route the existing `move_ordered` signal through `PveP0CommandsV1.move(runtime_session.owner,ids,destination,"keep")` and then the same SaveService barrier; this avoids 30 individual partial move orders and preserves solo HOLD status when moving.
+5. Keep **Về tông môn** as a real retreat. Add a separate **Đóng bản đồ** button to hide the view and let the canonical runtime keep hunting, with a clear way to reopen. Never call retreat on view-close.
+6. Do not merge P0 to PR67 until the official engine parser, 30x20, New Game natural solo rewards, offscreen/cold reload and exact integrated SHA regressions are GREEN; Windows physical mouse and Android still **PENDING USER**.
+
+**Important currently missing gameplay:** Adding a new recruit **into an already active hunt** and returning **one selected hunter without retreating the whole world** have not been implemented. Current P0 enables *initial deployment of 1–30* and individual commands inside that same run, not dynamic participant join/leave; record this as an OPEN playable P0 requirement, not as supported behavior. 30 recruited from a naturally progressing New Game also requires legitimate Hall/residence progression, and is not proved by the synthetic 30-actor simulation fixture.
+
+### Exact ownership and rollback
+
+- Production scene `p3_2_landscape_sect.gd`: **TRI-03 only**. No parallel edits on this feature branch.
+- PR #67 remains Draft, unmerged; `main` unchanged.
+- All patches are still isolated under `feature/pve-p0-free-hunt-30-20261103`, with one dedicated QA workflow and permanent tests; **do not cherry-pick the entire feature branch**. Review the two existing independent PVE-01B backend changes when integrating, because this branch also includes its saved-gate fix.
+- Windows/Android: **PENDING USER**. No performance or UX claims without screenshots and actual device input.
