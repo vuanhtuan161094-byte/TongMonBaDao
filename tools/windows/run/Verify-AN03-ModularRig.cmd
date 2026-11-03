@@ -48,6 +48,12 @@ if errorlevel 1 (
   echo AN03_IMPORT_FAIL -- see "%IMPORT_LOG%"
   exit /b 10
 )
+findstr /R /C:"^SCRIPT ERROR:" /C:"^ERROR:" "%IMPORT_LOG%" >nul
+if not errorlevel 1 (
+  echo AN03_IMPORT_LOG_ERRORS: Godot reported script/import errors despite exit 0
+  echo Inspect "%IMPORT_LOG%"
+  exit /b 15
+)
 echo [AN03] FOCUSED SKELETON / MOTION / WEAPON SOCKET
 "%TMB_GODOT%" --headless --path "%PROJECT%" --script res://tests/presentation/an03_modular_rig_contract_test.gd > "%FOCUSED_LOG%" 2>&1
 if errorlevel 1 (
@@ -58,6 +64,11 @@ findstr /C:"AN03_MODULAR_RIG_FOCUSED PASS" "%FOCUSED_LOG%" >nul
 if errorlevel 1 (
   echo AN03_FOCUSED_FAIL: explicit PASS marker missing -- "%FOCUSED_LOG%"
   exit /b 12
+)
+findstr /R /C:"^SCRIPT ERROR:" /C:"^ERROR:" "%FOCUSED_LOG%" >nul
+if not errorlevel 1 (
+  echo AN03_FOCUSED_LOG_ERRORS -- inspect "%FOCUSED_LOG%"
+  exit /b 16
 )
 echo [AN03] Official import + focused PASS for procedural guide at %HEAD%
 if /I not "%~1"=="/capture" (
@@ -74,6 +85,11 @@ findstr /C:"AN03_GUI_CAPTURE PASS" "%GUI_LOG%" >nul
 if errorlevel 1 (
   echo AN03_GUI_FAIL: explicit PASS marker missing -- "%GUI_LOG%"
   exit /b 14
+)
+findstr /R /C:"^SCRIPT ERROR:" /C:"^ERROR:" "%GUI_LOG%" >nul
+if not errorlevel 1 (
+  echo AN03_GUI_LOG_ERRORS -- inspect "%GUI_LOG%"
+  exit /b 17
 )
 echo [AN03] GUI screenshots: "%QA%\captures"
 echo [AN03] TECHNICAL PROTOTYPE PASS at %HEAD%. Owner Shadow art remains BLOCKED_BY_MODEL.
