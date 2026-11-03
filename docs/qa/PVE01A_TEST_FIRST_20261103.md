@@ -94,3 +94,38 @@ Actual official log:
 - New \`pve_01a_6v10_v63_gate_contract_test.gd\`: source parsed in official editor import, but standalone test not invoked by workflow. Runtime 6v10, expected RED at V6.3 gate, and cross-process Save/Reload are **NOT_TESTED**. Command listed above must be executed in the next authorized/runtime-capable gate.
 
 **Acceptance:** PVE-01A D7 root cause / scoped test fix = **FOCUSED PASS**. PVE-01A as a complete packet remains **QA OPEN** due cumulative E3 failure and standalone 6v10 gate not executed. No gameplay or save migration; no merger into PR #67/main. Windows/Android **PENDING USER**.
+
+## PVE-01A.1 — E3 canonical Residence repair and standalone RED evidence (03/11/2026)
+
+**Authorization:** owner explicitly allowed the additional E3 presentation test file, existing PVE-01A test files, and docs/qa evidence. Production `BuildingSystem`, `SectResidenceSystemV1`, `RecruitmentSystem`, CombatStats, UI, SaveService and feature gates were NOT modified. PR #67/main remain untouched. E3 uses only an isolated `user://dv2_03_e3_body_building_ui_test.json` profile.
+
+### Root cause and minimal fix
+
+- Fresh game has 6 founders, 1 active Lv1 Residence, exactly 8 beds; Hall rank-1 population limit is 12.
+- The old `_recruit` raised `state.sect.disciple_capacity` directly, but production `RecruitmentSystem.accept_candidate()` always invokes `SectResidenceSystemV1.refresh_capacity()` under an installed Hall, resetting legal capacity to min(rank cap, actual beds)=8. Third new recruit fails `capacity_full`.
+- In the E3 test ONLY, `_prepare_residence_for_three_recruits()` computes the real canonical Residence Lv1→Lv2 upgrade cost, supplies a **test-only** canonical Warehouse/treasury budget, then calls `BuildingSystem.start_upgrade(state,residence_001,stable_request_id)` with actual debit/receipt. It advances the isolated simulation through 12 real BuildingSystem ticks until Level 2, verifies 10 legal beds and idempotent receipt replay, then admits 3 genuine V2 candidates using `RecruitmentSystem.accept_candidate` with no capacity override. Hall stays Lv1. Only then is the original 9-stone Body Training test wallet configured.
+- **No direct changes to House level, production values, starter roster, rank limit, recruitment gate, state schema or user save.** This is a legitimate QA prerequisite, not evidence the player can buy/upgrade it from fresh New Game in 12 wall-clock seconds.
+
+Official **Godot v4.7.2.stable.official.ed1daf0bf** on commit `d10d607c8e5213b412ca263e3bf23da6a8e2a256`:
+- https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/41580609681 — **DV2-03 workflow SUCCESS (31 steps)**.
+- `DV2_03_E3_CANONICAL_RESIDENCE_PREREQ_PASS {"beds":10,"founders":6,"hall_level":1,"house_id":"residence_001","legal_capacity":10,"level":2,"paid_receipt":"e3_qa_residence_lv2_one_receipt","source":"isolated_qa_warehouse_and_treasury","upgrade_work_ticks":12}`.
+- `DV2-03E3 REAL RÈN THÂN MAP + TWO-SLOT UI: PASS`.
+
+### Independent Source A PvE 6v10: actual RED reproduced
+
+To avoid claiming a standalone test ran when only the editor parsed it, a **temporary** subprocess call was added to E3 **only on commit** `b6b244e0434c2bb171b3f6f0f7120ba5da86330b`. It launched `OS.get_executable_path()` using `--headless --path <project> -s res://tests/simulation/pve_01a_6v10_v63_gate_contract_test.gd` in a **separate actual Godot process**. The parent CI asserted the expected RED result, recorded the complete transcript and succeeded. The temporary subprocess runner was then **removed** from E3 at commit `aad81571402feb90983564eae5f4ed352b818b02` (final E3 test stays single-purpose).
+
+- Run: https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/41580924908, official Godot 4.7.2 job **SUCCESS**; child exit code **1** (intentional RED).
+- `PVE01A_FRESH_NEW_GAME_OBSERVATION {"can_start_6v10_without_recruitment":false,"initial_roster":6,"naturally_ready_v2":0}`: natural New Game does **not** provide 6 eligible V2 hunters.
+- `PVE01A_6V10_BASELINE_PASS {"disciples":6,"monsters":10,"source_map":"sect_isometric_source_a_pve_v1","source_sha":"c0e6b9952ce6303718938f5705a0327d0a14b136"}`: six existing authentic V2 members selected from committed 130-roster QA seed and ten live Source A world monsters. These were fixture participants, not natural New Game hunters.
+- `PVE01A_TEST_FIRST_EXPECTED_RED V63_ON_IN_SAVE_BUT_MULTICAMP_ACTOR_HAS_NO_ACTIVE_EQUIPPED_SKILL`.
+- `PVE01A_6V10_V63_GATE_FAIL: persisted V63 ON was not propagated into the authentic 6v10 actor; PVE-01B pending`.
+- `PVE01A_TEMP_STANDALONE_RUN_RESULT {"baseline_6v10":true,"child_exit":1,"engine":"4.7.2-stable (official)","expected_v63_red":true}`.
+
+Interpretation: **6v10 battle creation and identity PASS, V6.3 multicamp gate FAIL reproduced by real Godot; Save/Reload after the gate is not yet reached and remains NOT_TESTED for the V63-enabled path.** This is not an AI rotation/visual/Android acceptance or loot completion.
+
+### Clean-up / rollback
+
+- Permanent changes are test-only: `godot/tests/simulation/dv2_03_realm_body_progress_test.gd`, `godot/tests/simulation/pve_01a_6v10_v63_gate_contract_test.gd`, `godot/tests/presentation/dv2_03_p3_body_training_building_ui_test.gd`, and this `docs/qa` evidence file.
+- The new 6v10 test remains deliberately RED and is not part of DV2-03's habitual positive suite. The temporary CI subprocess adapter has been removed.
+- Revert only this feature branch's test commits or abandon the branch; do not cherry-pick a RED PvE gate into PR #67 without an explicit PVE-01B integration plan. No save schema change or migration needed. Windows physical mouse/Android **PENDING USER**.
