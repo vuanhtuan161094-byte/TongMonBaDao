@@ -39,6 +39,7 @@ var _action_index := 0
 var _direction_index := 0
 var _shadow := true
 var _clock := 0.0
+var _clip_probe_cache: Dictionary = {}
 
 func _ready() -> void:
     set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -180,6 +181,9 @@ func _action() -> String:
     return str(ACTIONS[_action_index])
 
 func _probe_clip(actor_key: String, action: String) -> Dictionary:
+    var cache_key := actor_key + "|" + action
+    if _clip_probe_cache.has(cache_key):
+        return _clip_probe_cache[cache_key]
     if not FileAccess.file_exists(MANIFEST):
         return {}
     var manifest = JSON.parse_string(FileAccess.get_file_as_string(MANIFEST))
@@ -214,7 +218,7 @@ func _probe_clip(actor_key: String, action: String) -> Dictionary:
             continue
         for candidate in candidates:
             if frames.has_animation(candidate) and frames.get_frame_count(candidate) > 0:
-                return {
+                var details := {
                     "asset":asset_id,
                     "clip":candidate,
                     "frames":frames.get_frame_count(candidate),
@@ -223,6 +227,8 @@ func _probe_clip(actor_key: String, action: String) -> Dictionary:
                     "loop":frames.get_animation_loop(candidate),
                     "fallback":not _is_native_action(action,candidate)
                 }
+                _clip_probe_cache[cache_key] = details
+                return details
     return {}
 
 func _is_native_action(action: String, clip: String) -> bool:
