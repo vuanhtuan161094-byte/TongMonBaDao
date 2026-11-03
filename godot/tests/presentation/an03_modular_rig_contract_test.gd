@@ -38,6 +38,18 @@ func _run() -> void:
     if not _check(not bool(starting.get("eight_way_authored",true)),
             "no authored eight-direction sprite assets"):
         return
+    var skeleton: Skeleton3D = actor.get_bone_node()
+    var head_index := skeleton.find_bone("head")
+    if not _check(head_index >= 0 and
+            skeleton.get_bone_pose_position(head_index).distance_to(
+                skeleton.get_bone_rest(head_index).origin) < 0.001,
+            "Godot 4 pose must retain the bone REST position; zero pose collapses rig"):
+        return
+    var hips_index := skeleton.find_bone("hips")
+    if not _check(hips_index >= 0 and
+            skeleton.get_bone_pose_position(hips_index).y > 1.0,
+            "root hips must remain above ground, not collapse to origin"):
+        return
     actor.pause()
     actor.select_motion("idle")
     actor.seek(0.0)
