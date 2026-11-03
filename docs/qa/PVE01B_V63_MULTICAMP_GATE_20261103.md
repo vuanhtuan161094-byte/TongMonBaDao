@@ -55,3 +55,16 @@ godot --headless --path godot -s res://tests/simulation/pve_save_return_reload_e
 godot --headless --path godot -s res://tests/simulation/v63_d8_preview_resume_gate_test.gd
 \`\`\`
 Do not run a physical Windows or Android assertion on a headless Linux runner.
+
+
+## Post-adapter clean checkout gate status
+
+The commit \`ca9fe45914cd9a479babeb32134f1c8f3a59d531\` restored E3 EXACTLY to its PVE-01A baseline blob, and contains the production two-file V6.3 patch plus the positive test suite. The later docs commit does not change source/test blobs.
+
+- **DV2-03 clean-code official workflow**: https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/41584031672 — **SUCCESS, 31/31 GitHub job steps** on \`ca9fe459\`. No temporary PvE E3 hook remains. This is distinct from the actual standalone PvE two-process GREEN evidence captured on identical production + PvE test blobs at \`bac70d49\`.
+- **P3.7 Backend cumulative on clean code**: https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/41584031644 — in progress at latest record. This runs the full P0 parse/invariants/save/load/reproducibility/benchmark/smoke set; report its actual final result, not assumed PASS.
+- **GP-02C1 Injury** on initial PVE01B backend patch: https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/41582871437 — SUCCESS, 27 steps.
+- **DV2-02 Combat Stats** on initial backend change \`a10a1280\`: https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/41582871417 — **FAIL** at \`dv2_02_five_level_balance_test.gd:52\` ("One group balance session could not initialize"), while stat core, monster, 3v3/6v6 map combat, snapshot and five-tier PvE reward tests earlier in that workflow passed. The failing balance test calls \`HuntingPveRunV2.begin()\` directly, **not** the modified \`begin_multicamp()\`. Its old fixture runs a long series of fights on the same state and does not report the underlying \`begin\` error code. No causal attribution to PVE01B is justified without a baseline A/B reproduction. Its code is outside this packet's allowlist and has NOT been changed. Mark broad regression **OPEN**, do not relabel the DV2-02 whole workflow PASS.
+- **Economy-A** on initial backend patch: https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/41582871508 — still running at this evidence revision; never claim PASS without conclusion.
+
+**Explicit owner acceptance boundaries:** The PVE-01B focused two-process skill gate is GREEN and isolated from TRI-03 P3.2. Broad regression still requires the pending P3.7 conclusion and investigation of DV2-02 balance; no gameplay, balance, loot or test edits outside this allowlist were attempted. Windows/Android native PVE visual playtest remains **PENDING USER**. Handoff to PR #67 must be separately coordinated with its exclusive integration writer.
