@@ -275,7 +275,7 @@ func _source_texture_size(frame: Dictionary) -> Vector2:
     if frame.is_empty():
         return Vector2.ZERO
     var texture := frame.get("texture") as Texture2D
-    return texture.get_size() if texture != null else Vector2.ZERO
+    return Vector2(texture.get_size()) if texture != null else Vector2.ZERO
 
 func _is_source_mirrored(frame: Dictionary) -> bool:
     if frame.is_empty():
