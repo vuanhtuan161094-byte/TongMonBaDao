@@ -36,9 +36,15 @@ set "IMPORT_LOG=%LOGS%\import_%TAG%.log"
 set "FOCUSED_LOG=%LOGS%\focused_%TAG%.log"
 set "GUI_LOG=%LOGS%\gui_%TAG%.log"
 echo [AN02] Git exact SHA: %EXACT_SHA%
-echo [AN02] Engine version:
-"%TMB_GODOT%" --version
+echo [AN02] Checking official Godot 4.7.2 engine:
+"%TMB_GODOT%" --version > "%LOGS%\engine_version_%TAG%.log" 2>&1
 if errorlevel 1 exit /b 7
+type "%LOGS%\engine_version_%TAG%.log"
+findstr /C:"4.7.2.stable.official" "%LOGS%\engine_version_%TAG%.log" >nul
+if errorlevel 1 (
+  echo AN02_QA_BLOCKED: requires exactly Godot 4.7.2 stable official build
+  exit /b 8
+)
 echo [AN02] Official engine import:
 "%TMB_GODOT%" --headless --path "%PROJECT%" --editor --import > "%IMPORT_LOG%" 2>&1
 if errorlevel 1 (
