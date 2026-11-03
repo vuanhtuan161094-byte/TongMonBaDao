@@ -128,6 +128,34 @@ static func validate_saved(session: HuntingPveRunV2) -> String:
             return "p0_dormant_actor_invalid"
     return ""
 
+static func safe_spawn_position(battle: MapBattleV2,slot_position: Vector2) -> Vector2:
+    # A freshly activated or respawned mob may not overlap a living hunter.
+    # The slot identity stays at its authored coordinate; only the visible
+    # actor is offset by a few WALKABLE cells if the slot itself is occupied.
+    # Empty geometry returns Vector2.INF: keep the life READY, retry later.
+    var original := Vector2i(floori(slot_position.x),floori(slot_position.y))
+    for radius in range(0,6):
+        for dy in range(-radius,radius+1):
+            for dx in range(-radius,radius+1):
+                if maxi(absi(dx),absi(dy)) != radius:
+                    continue
+                var candidate := original+Vector2i(dx,dy)
+                var point := Vector2(candidate)+Vector2(0.5,0.5)
+                if not battle.is_world_position_allowed(point):
+                    continue
+                var occupied := false
+                for actor_value in battle.actors.values():
+                    var actor: Dictionary = actor_value
+                    if float(actor.get("hp",0.0)) <= 0.0:
+                        continue
+                    var other: Vector2 = actor.get("position",Vector2.INF)
+                    if point.distance_squared_to(other) < 0.64:
+                        occupied = true
+                        break
+                if not occupied:
+                    return point
+    return Vector2.INF
+
 static func synchronize(session: HuntingPveRunV2) -> Dictionary:
     if session == null or session.battle == null or not session.battle.world_mode:
         return {"ok":false,"reason":"p0_distributed_world_not_active"}
@@ -209,7 +237,13 @@ static func synchronize(session: HuntingPveRunV2) -> Dictionary:
             var position := Vector2(float(slot.get("world_x",-1)),float(slot.get("world_y",-1)))
             if not session.battle.is_world_position_allowed(position):
                 return {"ok":false,"reason":"p0_spawn_not_walkable"}
-            row["position"] = position
+            var spawn_position := safe_spawn_position(session.battle,position)
+            if not is_finite(spawn_position.x):
+                # A crowded spawn cannot interrupt the whole world clock.
+                # Leave the registered slot READY and retry next simulation
+                # frame without creating a new life or issuing any loot.
+                continue
+            row["position"] = spawn_position
             row["home_position"] = position
             var added := session.battle.add_continuous_monster(row)
             if not bool(added.get("ok",false)):
