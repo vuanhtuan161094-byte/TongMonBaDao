@@ -30,6 +30,7 @@ static func build_members(state: SimulationState, selected_ids: Array,
                 or not [&"IDLE",&"EVALUATE",&"HOLD"].has(member.current_action) \
                 or not member.active_pve_encounter_id.is_empty() \
                 or not member.work_cycle_state.is_empty() \
+                or not member.work_progress.is_empty() \
                 or not member.worksite_building_id.is_empty():
             return {"ok":false,"reason":"p0_member_busy_injured_or_outside_sect"}
         var buildings := BuildingSystem.new()
