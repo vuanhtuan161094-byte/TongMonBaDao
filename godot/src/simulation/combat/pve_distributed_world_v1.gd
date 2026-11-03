@@ -126,6 +126,41 @@ static func validate_saved(session: HuntingPveRunV2) -> String:
         var actor := _decode_dormant(dormant[raw_id])
         if not _validate_dormant_actor(session,slot_id,actor):
             return "p0_dormant_actor_invalid"
+    # One receipt per slot is retained across generations. Validate that a
+    # cold-loaded world cannot reuse a paid life or accept a fake generation.
+    var slots: Dictionary = registry.get("slots",{})
+    var rewards = registry.get("p0_kill_rewards",{})
+    if not (rewards is Dictionary) or rewards.size() > slots.size():
+        return "p0_reward_ledger_invalid"
+    for raw_slot_id in rewards.keys():
+        var slot_id := str(raw_slot_id)
+        if not slots.has(slot_id) or not (rewards[raw_slot_id] is Dictionary):
+            return "p0_reward_receipt_unknown_slot"
+        var receipt: Dictionary = rewards[raw_slot_id]
+        var slot: Dictionary = slots[slot_id]
+        var life := int(receipt.get("generation",0))
+        var current_life := int(slot.get("generation",0))
+        var expected_kill := "%s:slot:%s:g%d" % [b.encounter_id,slot_id,life]
+        if int(receipt.get("version",0)) != PvePerKillRewardV1.VERSION \
+                or life < 1 or life > current_life \
+                or str(receipt.get("slot_id","")) != slot_id \
+                or str(receipt.get("kill_id","")) != expected_kill \
+                or str(receipt.get("killer_actor_id","")).is_empty() \
+                or not ["DROPPED","NO_DROP"].has(str(receipt.get("disposition",""))) \
+                or not (receipt.get("items",null) is Dictionary) \
+                or not (receipt.get("actor_xp",null) is Dictionary):
+            return "p0_reward_receipt_identity_invalid"
+        if life == current_life and (str(slot.get("phase","")) == "READY" \
+                or str(slot.get("kill_id","")) != expected_kill):
+            return "p0_reward_receipt_life_mismatch"
+    for raw_slot_id in slots.keys():
+        var slot_id := str(raw_slot_id)
+        var slot: Dictionary = slots[raw_slot_id]
+        if str(slot.get("phase","")) == "COOLDOWN":
+            var paid = rewards.get(slot_id,{})
+            if not (paid is Dictionary) \
+                    or str(paid.get("kill_id","")) != str(slot.get("kill_id","")):
+                return "p0_cooldown_without_paid_receipt"
     return ""
 
 static func safe_spawn_position(battle: MapBattleV2,slot_position: Vector2) -> Vector2:
