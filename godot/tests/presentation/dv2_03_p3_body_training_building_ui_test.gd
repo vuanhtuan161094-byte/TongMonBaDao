@@ -251,29 +251,4 @@ func _run() -> void:
         "E3.1 freed training place cannot be reused from actual UI."):
         return
     print("DV2-03E3 REAL RÈN THÂN MAP + TWO-SLOT UI: PASS")
-    # TEMPORARY PVE-01A.1 evidence runner: launch a separate official Godot
-    # process for the standalone RED contract, then REMOVE this block after
-    # saving its CI log evidence. This is NOT part of the shipped E3 test.
-    var output: Array = []
-    var args := PackedStringArray([
-        "--headless", "--path", ProjectSettings.globalize_path("res://"),
-        "-s", "res://tests/simulation/pve_01a_6v10_v63_gate_contract_test.gd"
-    ])
-    var exit_code: int = OS.execute(OS.get_executable_path(),args,output,true)
-    var transcript := ""
-    for chunk in output:
-        transcript += str(chunk)
-    print("PVE01A_SEPARATE_PROCESS_TRANSCRIPT_BEGIN")
-    print(transcript)
-    print("PVE01A_SEPARATE_PROCESS_TRANSCRIPT_END")
-    var baseline_ok: bool = transcript.contains("PVE01A_6V10_BASELINE_PASS")
-    var red_ok: bool = transcript.contains("PVE01A_TEST_FIRST_EXPECTED_RED")
-    print("PVE01A_TEMP_STANDALONE_RUN_RESULT "+JSON.stringify({
-        "child_exit":exit_code,"baseline_6v10":baseline_ok,
-        "expected_v63_red":red_ok,
-        "engine":Engine.get_version_info().get("string","unknown")
-    }))
-    if not _check(exit_code == 1 and baseline_ok and red_ok,
-            "PVE-01A separate Godot 6v10 RED receipt absent; inspect child transcript."):
-        return
     _finish(true)
