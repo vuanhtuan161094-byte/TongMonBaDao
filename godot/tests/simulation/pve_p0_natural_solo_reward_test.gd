@@ -178,6 +178,67 @@ func _run() -> void:
             and str(session.battle.actors[str(picked)].get("hunt_policy","")) == "hold",
             "mixed valid/invalid command partially changed the real solo hunter"):
         return
+    # A SECOND real candidate (not an invented test actor) joins and
+    # returns while the first hunter's world, loot journal and HP persist.
+    # The starter Residence has precisely eight beds: founder6 + V2x2.
+    var candidates_after: Array = state.recruitment_candidates.keys()
+    candidates_after.sort()
+    if not _ok(not candidates_after.is_empty(),
+            "New Game must retain another genuine recruitable V2 candidate"):
+        return
+    var second_id := StringName(str(candidates_after[0]))
+    var second_accept := RecruitmentSystem.new().accept_candidate(state,second_id)
+    if not _ok(bool(second_accept.get("ok",false))
+            and state.disciples.size() == 8
+            and DiscipleRealmProgressV2.progression_ready(state.disciples[second_id]),
+            "second real V2 admission blocked within eight legitimate beds"):
+        return
+    var join := PveP0CommandsV1.join_one(
+        runtime.owner,str(second_id))
+    if not _ok(bool(join.get("ok",false))
+            and bool(join.get("save_required",false))
+            and str(join.get("party_id","")) == "solo:"+str(second_id)
+            and session.battle._count_alive("disciple") == 2
+            and session.battle.actors.has(str(second_id))
+            and state.disciples[second_id].active_pve_encounter_id == "p0_natural_one_hunter",
+            "real second V2 cannot join ongoing solo Source A hunt: "+str(join)):
+        return
+    var twice := PveP0CommandsV1.join_one(
+        runtime.owner,str(second_id))
+    if not _ok(not bool(twice.get("ok",true))
+            and session.battle._count_alive("disciple") == 2,
+            "same person joined twice and bypassed actor cap"):
+        return
+    var returned := PveP0CommandsV1.return_one(
+        runtime.owner,str(second_id))
+    if not _ok(bool(returned.get("ok",false))
+            and bool(returned.get("save_required",false))
+            and session.battle._count_alive("disciple") == 1
+            and session.battle.active
+            and session.battle.actors.has(str(picked))
+            and not session.battle.actors.has(str(second_id))
+            and state.disciples[second_id].active_pve_encounter_id.is_empty()
+            and state.disciples[second_id].region_id == &"sect"
+            and state.disciples[second_id].injury_level == 0
+            and session.camp_population["p0_kill_rewards"].size() == 10
+            and state.sect.warehouse_resources == after_warehouse,
+            "returning one hunter ended the whole world or duplicated reward: "+str(returned)):
+        return
+    var redundant_return := PveP0CommandsV1.return_one(
+        runtime.owner,str(second_id))
+    var last_refused := PveP0CommandsV1.return_one(
+        runtime.owner,str(picked))
+    if not _ok(not bool(redundant_return.get("ok",true))
+            and not bool(last_refused.get("ok",true))
+            and str(last_refused.get("reason","")) == "p0_last_hunter_use_return_to_sect"
+            and session.battle._count_alive("disciple") == 1,
+            "last-hunter return or duplicate return bypassed terminal retreat"):
+        return
+    print("PVE_P0_NATURAL_JOIN_RETURN_PASS "+JSON.stringify({
+        "genuine_recruits":2,"world_still_active":true,
+        "remaining_hunters":1,"receipts_unchanged":10,
+        "no_duplicate_join_or_return":true,"last_hunter_retreat_required":true
+    }))
     var stored := session._persist_live_state()
     if not _ok(bool(stored.get("ok",false)),"active full world checkpoint failed"):
         return
