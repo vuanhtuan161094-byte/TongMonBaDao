@@ -58,6 +58,7 @@ jobs:
           for script in \
             res://src/simulation/combat/pve_distributed_world_v1.gd \
             res://src/simulation/combat/pve_per_kill_reward_v1.gd \
+            res://src/simulation/combat/pve_p0_commands_v1.gd \
             res://src/simulation/combat/hunting_pve_run_v2.gd \
             res://src/simulation/combat/map_battle_v2.gd \
             res://src/simulation/combat/map_battle_snapshot_v2.gd \
@@ -70,7 +71,7 @@ jobs:
       - name: P0 real 30 hunters in 20 areas, guard, target travel and team buffs
         run: godot --headless --path godot -s res://tests/simulation/pve_p0_30_independent_hunters_test.gd
 
-      - name: P0 natural New Game solo 10 HP0, XP, drops, no duplicate, cold process reload
+      - name: P0 New Game real V2 solo 10 HP0, second recruit joins/returns, cold reload
         run: godot --headless --path godot -s res://tests/simulation/pve_p0_natural_solo_reward_test.gd
 
       - name: Existing real Source A minimap and camera input regression
