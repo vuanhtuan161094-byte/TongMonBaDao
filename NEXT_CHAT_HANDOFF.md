@@ -1,5 +1,14 @@
 # NEXT CHAT HANDOFF — ONE GAME V6.5 / HS-09 QA
 
+## AN-03.1 REVIEW/HARDENING — 2026-11-03 (GODOT PENDING)
+
+PR #71 source baseline 7aba0c758d32a3bb50f84ce8f8fa045f5aa9145f. Separate AN-03 branch only. Verified live branch and main unchanged prior to additional QA commits. Official Godot 4.7.2 on Windows E:/Linux runtime NOT accessible (no executable/mounted E:, network DNS blocked); no workflow run, no real PNG captures or imported model. QA remains PENDING_ENGINE/PENDING_USER, NOT PASS.
+
+Code fixes based on Godot 4.7 API reference: PackedScene.instantiate() returned Node type inference in AN-03 tests changed to dynamically typed instances for custom methods. 768x768 actual GPU bake now rejects blank/nonalpha/small/clipped/repeated frames, writes 46 per-frame SHA256; 1280x720 GUI script requires four distinct capture hashes. Focused QA confirms actual BoneAttachment3D binds hand_R. Official Windows script rejects Godot script/runtime ERROR diagnostic lines even on exit 0. One-click MO_AN03_RUN_ALL.cmd calls QA + bake and packages AN03_EVIDENCE.zip with exact SHA/log/PNG/exit codes; outputs/an03_lab ignored by git. This is static review and code, **not proof any test executed**. Owner's high-quality Shadow rigged GLB still missing; procedural mesh GUIDE not final.
+Read docs/animation/AN03_MODULAR_RIG_PILOT_20261103.md. Continue only in AN-03 separate worktree/PR; do not change PR #68/#69, main, PvE, Combat V2, SaveService, default game launch or canonical save.
+
+---
+
 ## 2026-11-03 — AN-03 MODULAR RIG TECHNICAL PILOT (isolated, NOT art-complete)
 
 Owner authorized start of reusable character/weapon/animation implementation after considering Tripo export cost; only first three movements (Idle/Walk/Attack), no mandatory paid export. Built a standalone technical Skeleton3D guide with 18 bones, rigid hair/armor/coat/body attachment slots, default-unarmed removable sword via BoneAttachment3D hand_R, continuous same-skeleton Idle/Walk/Attack, independent 1280x720 GUI Lab, Godot 4.7.2 focused contract, genuine GUI capture script and single-angle 768x768 RGBA bake script (46 planned frames) with separate isolated Windows launchers. Branch feature/an03-modular-rig-weapon-socket-20261103 from PR #69 HEAD 1f083854defb3324722a1f05d2780c69c9cd3dd0. No changes to main, RC, PR #68/#69 source branches, Combat V2, PvE, SaveService, game startup or saves.
