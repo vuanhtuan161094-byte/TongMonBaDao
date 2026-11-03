@@ -46,7 +46,7 @@ func _run() -> void:
     light.rotation_degrees = Vector3(-48,-24,0)
     light.light_energy = 1.7
     stage.add_child(light)
-    var actor := ACTOR.new()
+    var actor = ACTOR.new()
     actor.name = "SingleRigForAllBakedClips"
     stage.add_child(actor)
     await process_frame
