@@ -4,6 +4,16 @@ Date: 2026-11-03. Source PR #69 HEAD 1f083854defb3324722a1f05d2780c69c9cd3dd0; b
 
 **Owner instruction:** Begin coding a reusable character skeleton, body/hair/armor, independently replaceable weapon and separate VFX. Only three first animations: Idle, Walk, Attack. No paid Tripo/Blender required for the technical proof. No modification to PvE, Combat V2, SaveService, main, gameplay entry or real saves.
 
+## AN-03.3 STATIC SOCKET FOLLOW AUDIT — 2026-11-03
+
+Checked live PR #71 HEAD 143d98b2bbc9a5af0fd516d84ec7797c1050c748 before editing. The existing focused contract checked BoneAttachment3D existence and bone_idx but **did not check that its world transform follows the animated right hand**; a detached/frozen attachment could therefore pass. Corrected this contract gap in godot/tests/presentation/an03_modular_rig_contract_test.gd by sampling the world transform of the hand_R bone versus BoneAttachment3D at two Attack instants. New assertions require socket-bone agreement within 0.02 world units and a nonzero physical position change during the strike. The check waits for scene frames so that Godot's skeleton-to-attachment update can propagate. It changes **only the dedicated lab test**, not combat/hit logic, animation source, rig architecture, VFX or save state.
+
+API evidence (read-only): Godot official Skeleton3D includes get_bone_global_pose, reset_bone_poses, add_bone and set_bone_pose_rotation; BoneAttachment3D copies the parent skeleton's designated bone transform and exposes bone_idx. These docs validate expected API usage, NOT behavior in this engine build. The idle/walk/attack code intentionally has no foot IK; in-place gait smoothness and foot slip are **PENDING VISUAL**, not reported PASS. Actual GPU bake PNGs are still missing, so no image-derived bugs can be claimed.
+
+Environment probe: container Linux; godot/godot4 unavailable, Windows E: not mounted, PowerShell not installed. Import/parse/focused 1280x720 GUI, alpha bounds, 46 actual 768px baked PNGs **NOT EXECUTED**. Do not claim runtime PASS. Next: run MO_AN03_START_ISOLATED_QA.cmd from Windows on an unused QA worktree, provide AN03_EVIDENCE.zip and make only log-backed corrections. The procedural mesh remains GUIDE ONLY, with owner Shadow GLB/FBX absent and no Tripo purchase authorization.
+
+---
+
 ## AN-03.1 QA HARDENING — 2026-11-03
 
 Based on official Godot 4.7 API docs, PackedScene.instantiate() variables in the focused/GUI test are now kept dynamically typed to avoid invalid custom-method calls on a statically inferred Node. This is a static-source repair, NOT engine parse evidence.
