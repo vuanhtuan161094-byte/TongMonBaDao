@@ -6,7 +6,7 @@
 
 > **LIVE HEAD UPDATE:** 2026-11-03 05:50Z: PR #67 moved to `36532c39f294e1eb56d73d8ce0c0eb7cb68c5567` while this handoff was being prepared. Commit modifies TRI-03 UI, Residence construction authority, icon atlas, map and visual tests, but **NOT** either PVE-01B backend file. Cherry-pick blob preflight remains byte-identical. Nevertheless, recheck HEAD immediately before actual integration; any additional PR edits invalidate the assumed scope. PR67 CI on that SHA at 05:51Z: **6 SUCCESS, 9 FAILURE, 1 IN_PROGRESS** — release gate OPEN. Failed old DV2-03 oracle is not yet in PR67; PVE01A test fix exists only on its own branch. O2/GP/O6 real selected-candidate picker regressions or stale locators require triage by TRI-03, not PVE01B backend writer. This new G0–G2 commit is NOT owner-accepted/playable based merely on its title.
 
-- PR: [#67](https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/67), branch `integration/tri-facility-a-b-playable-20261102`. **Latest observed HEAD `36532c39f294e1eb56d73d8ce0c0eb7cb68c5567`**, feat(tri-03): G0–G2 New Game/facility flow, Draft/unmerged. Earlier handoff baseline HEAD was `c136600f5579871d476e0feca2d78ea3c74e6b1f`. Main `c0c1382f119599497b52d8ee8abd9e830a883f1e`.
+- PR: [#67](https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/67), branch `integration/tri-facility-a-b-playable-20261102`. **Latest code HEAD `36532c39f294e1eb56d73d8ce0c0eb7cb68c5567`; latest observed PR HEAD docs `8db93495a9e671dcb26e3a1a78d54ed0f01941c8`**, feat(tri-03): G0–G2 New Game/facility flow, Draft/unmerged. Earlier handoff baseline HEAD was `c136600f5579871d476e0feca2d78ea3c74e6b1f`. Main `c0c1382f119599497b52d8ee8abd9e830a883f1e`.
 - PVE QA baseline parent `3ea7916ffcc61bf5e561d5f1b1fe41cd10f9c7f1`; positive PVE-01B branch `feature/pve01b-v63-multicamp-gate-20261103`, clean code/test verified at `ca9fe45914cd9a479babeb32134f1c8f3a59d531`, final initial QA handoff `1dbf226fc09c2dfe65e0605e9845b47ac45ebdd9`.
 - **One integration writer only** (TRI-03 / G0). P3.2 file stays exclusively with the original writer. No code was written to #67 or `main` by this handoff. GitHub has no way to prove that a separate local writer does not have unpushed edits: check working tree/locks immediately before adoption.
 - The following two exact PR #67 file blobs **still match at new HEAD `36532c39...`** and at old HEAD `c136600f...`, also matching the PVE-01A pre-patch parent: `hunting_pve_run_v2.gd` = `882123cbf8e02ee37288bf90bd35caa07f568d12`; `simulation_runtime_clock_v2.gd` = `13a4ea0a8cbae2863c982495047e85643afb8a59`. The two code commits were created from that parent, each touching exactly ONE backend file.
@@ -91,6 +91,19 @@ Source authority on PR #67:
 6. Physical Windows mouse input, human eye UI review and Android/touch **PENDING USER**. Don't report full playable G0/G1/G2 acceptance until these are proved.
 
 **Integration permission:** NOT GRANTED by this handoff alone. This document is a file-scoped patch proposal and test contract, not an implementation change in PR #67.
+
+
+## Evidence-follow-up: TRI-03 G0–G2 documentation HEAD `8db93495`
+
+After the G0–G2 code commit `36532c39...`, TRI-03 published a **docs/evidence-only commit** `8db93495a9e671dcb26e3a1a78d54ed0f01941c8` (parent `36532c39...`), which updates checkpoint/handoff and adds Windows QA matrix, logs and PNGs. Neither PVE backend blob changed. Current PR67 HEAD at that check: `8db93495...`, still Draft/unmerged; user should fetch live again before any cherry-pick.
+
+Primary fresh evidence:
+- [TRI-03 G0–G2 test matrix](https://github.com/vuanhtuan161094-byte/TongMonBaDao/blob/8db93495a9e671dcb26e3a1a78d54ed0f01941c8/docs/qa/TRI03_OWNER_FINAL_20261103/G0_G1_G2_EVIDENCE/TEST_MATRIX.csv).
+- [Evidence index and capture gallery](https://github.com/vuanhtuan161094-byte/TongMonBaDao/blob/8db93495a9e671dcb26e3a1a78d54ed0f01941c8/docs/qa/TRI03_OWNER_FINAL_20261103/G0_G1_G2_EVIDENCE/EVIDENCE_INDEX.md).
+
+This evidence upgrades **New Game→PAID ANNEX BUILD START→REAL V2 RECRUIT (roster 7)→workforce assignment→Save→independent process Reload** from static to **focused actual Windows windowed OpenGL test PASS**. The second Residence costs 40 Wood/30 Ore/500 Spirit Stones using *canonical starter stock*, no injected test resources; a site occupied by a disciple was correctly rejected. Construction remained **in progress with its 60-tick timer** in the saved receipt; the evidence did NOT prove that annex construction completed, that six V2 disciples were eventually accepted, or that a player entered PvE from that fresh New Game. Windowed input was **harness-injected, not owner's physical mouse**; local Git HEAD was `27ed01c...` with 49/49 pinned source blobs matching `36532c39...`, not a clean exact-SHA checkout.
+
+G0 full clean source 14-case rerun, G0→PvE complete six-V2 journey, owner physical Windows input, Android and owner UI signoff remain **PENDING**. GitHub's independently fetched exact-SHA CI on `36532c39...` (6 success / 9 fail / 1 in progress at prior poll) must not be overwritten by locally focused PASS on a source overlay. These are separate scopes and evidence grades.
 
 ## Latest PR #67 CI (new G0–G2 commit) — DELTA NOT ATTRIBUTABLE TO PVE01B
 
