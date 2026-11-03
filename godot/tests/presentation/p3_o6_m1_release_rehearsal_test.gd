@@ -337,7 +337,11 @@ func _run() -> void:
     var mine_batches_at_save := int(mine.metrics.get("production_batches", 0))
     var field_batches_at_save := int(field.metrics.get("production_batches", 0))
 
-    ui.call("_autosave_runtime")
+    # Await the canonical async-save barrier before scene teardown; Object.call does not await coroutines.
+    var autosave_result: Dictionary = await ui.call("_save_runtime_async_barrier")
+    if not bool(autosave_result.get("ok",false)):
+        _fail("O6 canonical async SaveService barrier failed before restart.")
+        return
     if not FileAccess.file_exists(SAVE_PATH):
         _fail("O6 active runtime save was not written.")
         return
@@ -354,9 +358,14 @@ func _run() -> void:
     if state.disciples.size() != saved_roster or not state.disciples.has(recruit_id):
         _fail("O6 restart lost/duplicated recruited disciple.")
         return
+    # Virtual actors materialize only when selected and inside the viewport. Re-focus the restored disciple via the map action before asserting a single actor.
+    ui.call("_open_disciple",recruit_id)
+    await process_frame
+    ui.call("_refresh_all")
+    await process_frame
     actors = ui.get("actor_nodes")
     if not actors.has(str(recruit_id)) or ui.find_children("ModularDisciple_%s" % str(recruit_id), "", true, false).size() != 1:
-        _fail("O6 restart did not restore exactly one recruit actor.")
+        _fail("O6 focus action did not materialize exactly one restored recruit actor in the viewport.")
         return
 
     mine = buildings.primary_building(state, BuildingSystem.TYPE_MINE)

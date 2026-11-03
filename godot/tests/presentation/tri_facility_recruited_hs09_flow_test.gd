@@ -80,7 +80,11 @@ func _run() -> void:
 		return
 	await process_frame
 	await process_frame
-	var deep := game.get_node_or_null("popup_layer/DiscipleDeepScreen") as Panel
+	# popup_layer is runtime-created and intentionally has no fixed scene path.
+	var popup_layer := game.get("popup_layer") as Control
+	var deep: Panel
+	if popup_layer != null:
+		deep = popup_layer.find_child("DiscipleDeepScreen",true,false) as Panel
 	if not _require(deep != null and StringName(game.get("selected_id")) == recruit_id,
 		"B1 XEM HỒ SƠ did not open the canonical HS-09 deep profile for this disciple"):
 		return
@@ -95,7 +99,9 @@ func _run() -> void:
 	if not await _press(quick_assign,"HS-09 Phân công"):
 		return
 	await process_frame
-	var assignment := game.get_node_or_null("popup_layer/DiscipleQuickAssignment") as Panel
+	var assignment: Panel
+	if popup_layer != null:
+		assignment = popup_layer.find_child("DiscipleQuickAssignment",true,false) as Panel
 	if not _require(assignment != null and StringName(game.get("selected_id")) == recruit_id,
 		"HS-09 did not open canonical disciple assignment for the recruited disciple"):
 		return

@@ -206,6 +206,11 @@ func _run() -> void:
         and final_actor.profession_xp.get("mining", 0.0) > xp_before
         and final_state.to_dict() == expected.to_dict(),
         "Offline recovery diverged from one real Mine completion/EXP/state."):
+        var actual_payload: Dictionary = final_state.to_dict()
+        var expected_payload: Dictionary = expected.to_dict()
+        for key in expected_payload.keys():
+            if actual_payload.get(key) != expected_payload[key]:
+                print("GP01_STATE_DIFF key=%s expected=%s actual=%s" % [str(key),str(expected_payload[key]).substr(0,400),str(actual_payload.get(key)).substr(0,400)])
         return
     var loaded_xp := float(final_actor.profession_xp["mining"])
     if not _check(_near(

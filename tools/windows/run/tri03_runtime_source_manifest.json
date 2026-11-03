@@ -2,7 +2,7 @@
   "schema_version": 1,
   "branch": "integration/tri-facility-a-b-playable-20261102",
   "base_sha": "27ed01cd8f377994e5e50bac9ede84e78e8895bd",
-  "source_fingerprint": "1ca56b0aa72a411d36cca4a1e9b9cd0fb70e784fa08d37176d6be1d0cf5a968e",
+  "source_fingerprint": "89d4be917d63996b906f1785cc6d4f1144d50d0b6236d70160888485d5bda8cf",
   "files": [
     {
       "path": "godot/src/presentation/dai_dien_screen_v1.gd",
@@ -54,7 +54,7 @@
     },
     {
       "path": "godot/tests/presentation/gp_01_v2_mine_vertical_slice_test.gd",
-      "git_blob_sha": "4ccba9b26e7132f37712f3695825d4b16f0c6873"
+      "git_blob_sha": "1346c02f974b8646feabd008b5f29f8c6f37752a"
     },
     {
       "path": "godot/tests/presentation/gp_02a_v2_cultivation_panel_test.gd",
@@ -66,7 +66,7 @@
     },
     {
       "path": "godot/tests/presentation/p3_o6_m1_release_rehearsal_test.gd",
-      "git_blob_sha": "08dd899c49ab2b26c9e96266f746b7aeae2985d7"
+      "git_blob_sha": "8a4a99d463be9c1aa8b03566c0761f13236a4f0f"
     },
     {
       "path": "godot/tests/presentation/tri_facility_b1_art_v2_test.gd",
@@ -90,7 +90,7 @@
     },
     {
       "path": "godot/tests/presentation/tri_facility_recruited_hs09_flow_test.gd",
-      "git_blob_sha": "d0991681b1d541ca84cfa229c84742770ff31dba"
+      "git_blob_sha": "b294c093b396e8c7c59a739708da34be7c14450d"
     },
     {
       "path": "godot/src/simulation/governance/sect_residence_site_v1.gd",
