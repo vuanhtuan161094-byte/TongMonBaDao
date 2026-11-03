@@ -570,6 +570,9 @@ func _spawn_ready_world_respawns() -> Dictionary:
 func _record_open_world_kills() -> Dictionary:
     var recorded := 0
     var codex_rewards_granted := false
+    var p0_rewards_granted := false
+    var p0_receipts := 0
+    var distributed := PveDistributedWorldV1.enabled(camp_population)
     for event in battle.pending_kill_events():
         var receipt := PveMultiCampPopulationV1.record_authoritative_battle_kill(
             camp_population,battle,event,world_respawn_delay,true)
@@ -582,11 +585,22 @@ func _record_open_world_kills() -> Dictionary:
         if not bool(reward_plan.get("ok",false)):
             return {"ok":false,"reason":"open_world_codex_reward_plan_rejected","detail":reward_plan.get("reason","unknown")}
         var items: Dictionary = reward_plan.get("items",{})
+        # The P0 ledger settles this exact HP0 kill once. Retry after any
+        # interrupted Codex settlement sees the prior P0 receipt and cannot
+        # grant warehouse items or Tu Vi/Body XP a second time.
+        var p0_award: Dictionary = {}
+        if distributed:
+            p0_award = PvePerKillRewardV1.commit(owner_state,battle,
+                camp_population,event,int(spawn_data.get("reward_seed",0)))
+            if not bool(p0_award.get("ok",false)):
+                return {"ok":false,"reason":"p0_real_kill_reward_failed",
+                    "detail":p0_award.get("reason","unknown"),
+                    "barrier":bool(p0_award.get("barrier",false))}
+            p0_receipts += 1
+            p0_rewards_granted = p0_rewards_granted or not (
+                p0_award.get("items",{}) as Dictionary).is_empty()
         var ack: Dictionary = {}
-        if items.is_empty():
-            ack = PveMultiCampPopulationV1.acknowledge_no_reward_receipt(
-                camp_population,slot_id,kill_id,"LOOT_PENDING")
-        else:
+        if not items.is_empty():
             var settlement := V63SectArchiveSystem.settle_codex_kill_drop_once(
                 owner_state,battle.encounter_id,kill_id,str(event.get("species_id","")),
                 items,v63_preview_overrides)
@@ -595,14 +609,26 @@ func _record_open_world_kills() -> Dictionary:
             ack = PveMultiCampPopulationV1.acknowledge_codex_reward_receipt(
                 camp_population,slot_id,kill_id,kill_id)
             codex_rewards_granted = true
+        elif distributed:
+            ack = PveMultiCampPopulationV1.acknowledge_paid_receipt(
+                camp_population,slot_id,kill_id)
+            if bool(ack.get("ok",false)):
+                var slot: Dictionary = camp_population["slots"][slot_id]
+                slot["reward_disposition"] = "P0_KILL_SETTLED"
+                slot["reward_receipt_id"] = kill_id
+        else:
+            ack = PveMultiCampPopulationV1.acknowledge_no_reward_receipt(
+                camp_population,slot_id,kill_id,"LOOT_PENDING")
         if not bool(ack.get("ok",false)):
             return {"ok":false,"reason":"open_world_reward_receipt_failed","detail":ack.get("reason","unknown")}
         if not battle.acknowledge_kill_event(kill_id):
             return {"ok":false,"reason":"open_world_combat_kill_ack_failed"}
         camp_population["world_total_kills"] = int(camp_population.get("world_total_kills",0))+1
         recorded += 1
-    return {"ok":true,"recorded":recorded,"rewards_granted":codex_rewards_granted,
-        "codex_rewards_granted":codex_rewards_granted}
+    return {"ok":true,"recorded":recorded,
+        "rewards_granted":codex_rewards_granted or p0_rewards_granted,
+        "codex_rewards_granted":codex_rewards_granted,
+        "p0_rewards_granted":p0_rewards_granted,"p0_receipts":p0_receipts}
 
 func _next_ready_world_camp() -> int:
     for offset in range(1,PveMultiCampPopulationV1.CAMP_COUNT+1):
