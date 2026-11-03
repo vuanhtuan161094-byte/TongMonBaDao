@@ -76,3 +76,21 @@ Expected behavior before PVE-01B: all setup assertions + PVE01A_6V10_BASELINE_PA
 - **P3.7 full cumulative:** record its actual result independently.
 
 Rollback: feature branch is descendant of c136600f and contains only authorized test/evidence files. Revert feature branch commits in reverse order or abandon the branch; PR #67/main and user saves remain untouched. Do not cherry-pick this packet to PR #67 while test/cumulative gates are unresolved.
+
+
+## Final exact-code recheck, 2026-11-03
+
+**Code/test SHA rechecked:** \`b759dde5e3c0ddda2793988616788300233ebcd1\`.
+**Run:** https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/41579993344
+**Job:** 125732318482, official \`4.7.2.stable.official.ed1daf0bf\`.
+
+Actual official log:
+- \`Parse complete Godot project\`: SUCCESS. This parses the committed test source, **not** standalone execution of the new 6v10 test.
+- \`PVE01A_DV203_D7_LEGACY_INDEPENDENT_ORACLE_PASS channels=3 potential_mode=D7_realm_only legacy_mode=full_core\`: observed.
+- \`DV2-03 2×300 REAL TRACKS + XP SOURCES + BREAKTHROUGH GATES + SAVE: PASS\`: observed with exit 0.
+- 14 following DV2 subtests through \`DV2-03E3.1 SLOT TRANSFER ...: PASS\`: observed with individual exit 0.
+- **Workflow FAILURE** at \`dv2_03_p3_body_training_building_ui_test.gd:81\`: \`E3 requires three authentic V2 disciples.\` Exact test source is identical between main and PR branch (blob \`80f82b37914119819e261d38b15f027045126947\`). Its \`_recruit\` raises \`disciple_capacity\` but production \`RecruitmentSystem.accept_candidate\` refreshes capacity from SectResidence when Hall is installed; test-only capacity inflation can therefore be ineffective. **High-confidence fixture cause, not fixed or proven by standalone retest.** This file is out of PVE-01A allowlist.
+- P3.7 Backend: https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/41579993377 — \`Run P3.7 full cumulative gate\` still IN_PROGRESS at final review, **not PASS**.
+- New \`pve_01a_6v10_v63_gate_contract_test.gd\`: source parsed in official editor import, but standalone test not invoked by workflow. Runtime 6v10, expected RED at V6.3 gate, and cross-process Save/Reload are **NOT_TESTED**. Command listed above must be executed in the next authorized/runtime-capable gate.
+
+**Acceptance:** PVE-01A D7 root cause / scoped test fix = **FOCUSED PASS**. PVE-01A as a complete packet remains **QA OPEN** due cumulative E3 failure and standalone 6v10 gate not executed. No gameplay or save migration; no merger into PR #67/main. Windows/Android **PENDING USER**.
