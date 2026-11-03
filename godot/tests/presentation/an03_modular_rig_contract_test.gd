@@ -17,7 +17,7 @@ func _check(ok: bool, why: String) -> bool:
     return false
 
 func _run() -> void:
-    var actor := ACTOR.new()
+    var actor = ACTOR.new()
     root.add_child(actor)
     await process_frame
     var starting: Dictionary = actor.get_lab_evidence()
@@ -95,7 +95,7 @@ func _run() -> void:
         return
     actor.queue_free()
     await process_frame
-    var lab := LAB.instantiate()
+    var lab = LAB.instantiate()
     root.add_child(lab)
     await process_frame
     if not _check(lab is Node3D and lab.get_sample_actor() is Node3D,
