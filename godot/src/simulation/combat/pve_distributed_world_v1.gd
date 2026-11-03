@@ -35,18 +35,29 @@ static func requested_camps(session: HuntingPveRunV2) -> Array[int]:
     var centers: Array = session.camp_population.get("world_camp_positions",[])
     var ids: Array = session.battle.actors.keys()
     ids.sort()
+    var destination_zones: Array[int] = []
     for raw_id in ids:
         var actor: Dictionary = session.battle.actors[raw_id]
         if str(actor.get("side","")) != "disciple" or float(actor.get("hp",0.0)) <= 0.0:
             continue
-        var position: Vector2 = actor.get("position",Vector2.ZERO)
-        # Destination will become the actor's local hunt area after traveling;
-        # activate that zone before arrival to avoid a barren destination.
+        # Keep the *physical* camp active while its hunter is walking.
+        # Replacing current position with the destination deactivated living
+        # monsters under the hunter long before arrival. Preload the target as
+        # an additional zone, never as a replacement for the present zone.
+        var at: Vector2 = actor.get("position",Vector2.ZERO)
+        var current_zone := zone_for_point(centers,at)
+        if current_zone >= 0 and not result.has(current_zone):
+            result.append(current_zone)
         if bool(actor.get("move_order_active",false)):
-            position = actor.get("move_order_position",position)
-        var zone := zone_for_point(centers,position)
-        if zone >= 0 and not result.has(zone):
-            result.append(zone)
+            var target: Vector2 = actor.get("move_order_position",at)
+            var destination_zone := zone_for_point(centers,target)
+            if destination_zone >= 0 and not destination_zones.has(destination_zone):
+                destination_zones.append(destination_zone)
+    # Physical occupancy always takes priority. World has exactly 20 camps;
+    # this does not create new zones, NPC lives, or more than 40 live actors.
+    for target_zone in destination_zones:
+        if not result.has(target_zone):
+            result.append(target_zone)
     result.sort()
     return result
 
