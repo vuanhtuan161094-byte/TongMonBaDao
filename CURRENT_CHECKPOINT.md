@@ -1,5 +1,14 @@
 # CURRENT CHECKPOINT — ONE GAME INTEGRATION
 
+## AN-03.2 QA worktree bootstrap — 2026-11-03
+
+PR #71 moved from owner-named 7aba0c758d32a3bb50f84ce8f8fa045f5aa9145f to live 9533c03e8753c6c28012cfda0d5842117ec1cc23 before this continuation; 16 prior hardening commits already existed. Verified official Godot 4.7.2 unavailable in Linux container and no Windows E drive or actual AN03_EVIDENCE.zip/logs mounted, so **no runtime results, screenshot or 46 baked PNGs can be claimed**. Static source/API check against official Godot class XML confirms Skeleton3D.add_bone returns int, reset_bone_poses exists, BoneAttachment3D.bone_idx property/getter exists. No fabricated error claim.
+
+Added **MO_AN03_START_ISOLATED_QA.cmd** + **tools/windows/run/Start-AN03-IsolatedQA.ps1**: non-destructively fetch feature branch, create fresh detached E:\\TongMonBaDaoWorkspace\\QA_Evidence\\AN03\\repo worktree, verify SHA, invoke existing MO_AN03_RUN_ALL.cmd official import/focused/1280x720 GUI/46 frame GPU bake/evidence zip. Refuses to overwrite an existing QA worktree and never resets/cleans/merges game checkout. User must run once on actual Windows and return AN03_EVIDENCE.zip for real log-driven fixes. If worktree already exists, use its MO_AN03_RUN_ALL.cmd directly after checking SHA. Model still guide-only; PvE/Combat V2/SaveService/main untouched.
+
+---
+
+
 ## AN-03.1 REVIEW/HARDENING — 2026-11-03 (GODOT PENDING)
 
 PR #71 source baseline 7aba0c758d32a3bb50f84ce8f8fa045f5aa9145f. Separate AN-03 branch only. Verified live branch and main unchanged prior to additional QA commits. Official Godot 4.7.2 on Windows E:/Linux runtime NOT accessible (no executable/mounted E:, network DNS blocked); no workflow run, no real PNG captures or imported model. QA remains PENDING_ENGINE/PENDING_USER, NOT PASS.
