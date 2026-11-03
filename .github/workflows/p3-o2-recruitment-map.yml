@@ -128,7 +128,7 @@ jobs:
       - name: TRI-03 new-game recruitment -> HS-09 -> assignment -> isolated cross-process Save/Reload
         shell: bash
         env:
-          TMB_TRI03_FLOW_SAVE_PATH: ${{ github.workspace }}/godot/outputs/tri03_recruited_hs09_flow/live.json
+          TMB_TRI03_FLOW_SAVE_PATH: user://tri03_recruited_hs09_flow_${{ github.run_id }}_${{ github.run_attempt }}.json
         run: |
           set -euo pipefail
           mkdir -p godot/outputs/tri03_recruited_hs09_flow
