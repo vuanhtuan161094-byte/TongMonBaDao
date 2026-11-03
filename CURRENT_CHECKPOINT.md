@@ -1,5 +1,16 @@
 # CURRENT CHECKPOINT — ONE GAME INTEGRATION
 
+## AN-03.4 WINDOWS GODOT QA — 2026-11-03
+
+Executed in an isolated Windows worktree at `E:\\codex\\2026-10-21\\t-ng-m-n-b-o-4\\work\\issue71_an03_qa_wt` with official Godot `4.7.2.stable.official.ed1daf0bf`. Import/parse passed, focused Skeleton3D/socket contract passed (22 checks), real 1280x720 GUI capture passed (4 screenshots), and actual renderer bake passed (18 Idle + 12 Walk + 16 Attack = 46 RGBA PNGs at 768x768). ZIP: `godot/outputs/an03_lab/AN03_EVIDENCE.zip` in the local QA worktree; SHA-256 `E75DE92FE65CA2D75741C8B463F61D715CC25B48DAFBF12E2D9D5331D38E726E`.
+
+The first run exposed two reproducible launcher defects: Godot's Windows root-certificate-store diagnostic was treated as a fatal error, and the trailing slash in the packager's quoted `-RepositoryRoot` argument broke packaging. Both were narrowly fixed on the AN-03 feature branch and the full run passed afterward. The same certificate-store diagnostic remains in engine logs; other `ERROR:` / `SCRIPT ERROR:` lines still fail QA.
+
+Scope note: the local isolated QA snapshot was based on local project SHA `5e6fdd966bdf710b71e2a1539bb712e44069a4bb`, with PR #71 implementation files copied from verified upstream blobs. This validates the AN-03 source files and fixes, but is not a full checkout of PR #71's base branch. The procedure's result is technical GUIDE-only: procedural mesh, 18-bone Skeleton3D; no owner Shadow GLB, no approved character art, no 8-way directions, and no owner visual pass. Do not infer grounded-foot or Android performance acceptance from this run.
+
+No changes to PR #68/#69 source branches, main, PvE, Combat V2, SaveService, game entry or saves; PR #71 remains draft.
+
+
 ## AN-03.3 STATIC SOCKET-FOLLOW AUDIT — 2026-11-03
 
 Owner requested further static review only: no Windows Godot logs yet. Verified PR #71 at 143d98b2bbc9a5af0fd516d84ec7797c1050c748 before the current patch. Concrete focused-test gap: existing contract checked hand_R bone selection but not actual attachment world-transform movement. Added attack windup/strike assertions comparing BoneAttachment3D.world transform to Skeleton3D.get_bone_global_pose(hand_R) and detecting nonzero movement. Official Godot API docs support those methods; not evidence of a runtime pass. Only AN-03 contract test and animation documentation/checkpoints touched.
