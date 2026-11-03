@@ -232,27 +232,6 @@ func _run() -> void:
     _dispose_scene()
     await process_frame
     _cleanup_save()
-    # QA-only O2 bridge, rerun 4: validate V6.3 party isolation and cold-restore P0.
-    # Both child processes must independently exit 0; no suppressed RED.
-    for child_script in [
-        "pve_p0_30_independent_hunters_test.gd",
-        "pve_p0_natural_solo_reward_test.gd"
-    ]:
-        var child_output: Array = []
-        var arguments := PackedStringArray([
-            "--headless","--path",ProjectSettings.globalize_path("res://"),
-            "-s","res://tests/simulation/"+child_script
-        ])
-        var child_exit := OS.execute(OS.get_executable_path(),arguments,child_output,true)
-        print("PVE_P0_CHILD_BEGIN script="+child_script)
-        for transcript in child_output:
-            print(str(transcript))
-        print("PVE_P0_CHILD_END script="+child_script+" exit="+str(child_exit))
-        if child_exit != 0:
-            push_error("PVE_P0_TEST_FIRST_RED "+child_script+" exit="+str(child_exit))
-            quit(1)
-            return
-    print("PVE_P0_TEST_FIRST_GREEN both_standalone_processes=true")
     quit(0)
 
 func _recruitable_candidate_ids() -> Array:
