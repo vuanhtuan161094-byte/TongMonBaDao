@@ -1668,6 +1668,70 @@ func _close_pve_party_picker() -> void:
         pve_party_picker_shade.visible = false
     pve_party_picker_join_mode = false
 
+func _open_p0_join_picker() -> void:
+    if runtime_session == null or runtime_session.owner == null or state == null:
+        return
+    var encounter_id := HuntingPveRunV2.active_multicamp_id(state)
+    if encounter_id.is_empty():
+        _set_b3_hunt_feedback("Chưa có bãi săn đang hoạt động.")
+        return
+    var current := _active_multicamp_session(encounter_id)
+    if not bool(current.get("ok",false)) or not PveDistributedWorldV1.enabled(
+            (current.get("session") as HuntingPveRunV2).camp_population):
+        _set_b3_hunt_feedback("Bãi săn hiện tại không hỗ trợ thêm người.")
+        return
+    pve_party_picker_join_mode = true
+    pve_party_selected_ids.clear()
+    pve_party_picker_feedback.text = ""
+    _populate_pve_party_picker()
+    pve_party_picker_shade.visible = true
+
+func _withdraw_selected_p0_hunter() -> void:
+    if runtime_session == null or runtime_session.owner == null or b3_pve_world_view == null:
+        return
+    var selected: Array[String] = b3_pve_world_view.selected_actor_ids
+    if selected.size() != 1:
+        _set_b3_hunt_feedback("Chọn đúng một đệ tử trên bản đồ để rút riêng.")
+        return
+    var returned := PveP0CommandsV1.return_one(runtime_session.owner,str(selected[0]))
+    if not bool(returned.get("ok",false)):
+        _set_b3_hunt_feedback("Chưa rút được: %s" % str(returned.get("reason","unknown")))
+        return
+    var saved := await _save_runtime_async_barrier()
+    if not bool(saved.get("ok",false)):
+        _set_b3_hunt_feedback("Đã rút trong phiên; Save chưa hoàn thành: %s" % str(saved.get("reason",saved.get("error","unknown"))))
+        return
+    _set_b3_hunt_feedback("Đã rút riêng một người; những người khác vẫn săn.")
+    _refresh_all()
+    _refresh_b3_hunt_panel()
+
+func _close_p0_hunt_map() -> void:
+    if runtime_session == null or b3_hunt_panel == null:
+        return
+    var saved := await _save_runtime_async_barrier()
+    if not bool(saved.get("ok",false)):
+        _set_b3_hunt_feedback("Chưa đóng bản đồ: Save không thành công (%s)" % str(saved.get("reason",saved.get("error","unknown"))))
+        return
+    b3_hunt_panel.get_parent().visible = false
+    active_hunt_mode = "care"
+    _set_production_underlay_frozen(false)
+    _refresh_all()
+
+func _on_p0_hunt_policy_ordered(actor_ids: Array, policy: String) -> void:
+    if runtime_session == null or runtime_session.owner == null:
+        return
+    var changed := PveP0CommandsV1.hunt_policy(
+        runtime_session.owner,actor_ids,policy)
+    if not bool(changed.get("ok",false)):
+        _set_b3_hunt_feedback("Lệnh săn không hợp lệ: %s" % str(changed.get("reason","unknown")))
+        return
+    var saved := await _save_runtime_async_barrier()
+    _set_b3_hunt_feedback("Đã đặt %s cho %d người." % [
+        "TỰ SĂN" if policy == "auto" else "GIỮ VỊ TRÍ",actor_ids.size()]
+        if bool(saved.get("ok",false))
+        else "Lệnh đã gửi nhưng Save chưa thành công.")
+    _refresh_b3_hunt_panel()
+
 func _populate_pve_party_picker() -> void:
     if pve_party_picker_list == null or state == null:
         return
@@ -6016,6 +6080,17 @@ func _on_open_world_move_ordered(actor_ids: Array, destination: Vector2) -> void
         _set_b3_hunt_feedback("Không ra lệnh di chuyển: world không khôi phục được.")
         return
     var session: HuntingPveRunV2 = restored["session"]
+    if PveDistributedWorldV1.enabled(session.camp_population):
+        var moved := PveP0CommandsV1.move(runtime_session.owner,actor_ids,destination)
+        if not bool(moved.get("ok",false)):
+            _set_b3_hunt_feedback("Không di chuyển được: %s" % str(moved.get("reason","unknown")))
+            return
+        var persisted := await _save_runtime_async_barrier()
+        _set_b3_hunt_feedback("Đã ra lệnh di chuyển %d đệ tử." % actor_ids.size()
+            if bool(persisted.get("ok",false))
+            else "Đã ra lệnh nhưng Save chưa thành công.")
+        _refresh_b3_hunt_panel()
+        return
     var eligible: Array[String] = []
     for raw_id in actor_ids:
         var id := str(raw_id)
@@ -6213,7 +6288,7 @@ func _refresh_multicamp_hunt_panel() -> void:
     if running:
         multicamp_encounter_id = encounter
         var restore_started_usec := Time.get_ticks_usec() if performance_logging_enabled else 0
-        var restored := HuntingPveRunV2.resume_active(state,encounter,_current_v63_preview_overrides())
+        var restored := _active_multicamp_session(encounter)
         if performance_logging_enabled:
             _record_hunt_refresh_stage("snapshot_restore",Time.get_ticks_usec()-restore_started_usec)
         if not bool(restored.get("ok",false)):
@@ -6281,6 +6356,12 @@ func _refresh_multicamp_hunt_panel() -> void:
     b3_hunt_deploy_button.visible = false
     b3_hunt_return_button.text = "Về tông môn" if running else "Đóng kết quả"
     b3_hunt_save_button.disabled = runtime_session == null or runtime_session.owner.runtime_write_blocked
+    var p0_running := running and PveDistributedWorldV1.enabled(population)
+    p0_add_hunter_button.visible = p0_running
+    p0_withdraw_hunter_button.visible = p0_running
+    p0_close_map_button.visible = p0_running
+    p0_withdraw_hunter_button.disabled = not p0_running         or b3_pve_world_view.selected_actor_ids.size() != 1
+    b3_hunt_auto_button.visible = not p0_running
 
     var team_lines: Array[String] = []
     var first_disciple_id := ""
@@ -6320,7 +6401,7 @@ func _refresh_multicamp_hunt_panel() -> void:
         + "Thế giới 192×192 · 20 khu sinh quái · C01 chỉ là vùng xuất phát\n"
         + "Đội %d đệ tử thật · %d quái tại vùng · %d đang sống · hạ %d tổng · %.1fs\n"
         + "HP / Injury\n%s\n"
-        + "Hồi sinh mỗi vùng theo clock chung · LOOT_PENDING: chưa có bảng rơi từng quái được duyệt."
+        + ("Hồi sinh theo clock chung · mỗi kill thưởng Tu Vi, Luyện Thể và vật phẩm vào Kho." if PveDistributedWorldV1.enabled(population) else "Phần thưởng legacy theo receipt.")
     ) % [str(population.get("world_source_map","Source A forest world")),camp_id,status,
         team_lines.size(),total_monsters,alive_monsters,kill_count,battle.now,member_text]
     if performance_logging_enabled:
@@ -6384,6 +6465,15 @@ func _set_hunt_presentation_layout(use_live_map: bool) -> void:
         b3_hunt_auto_button.offset_right = 294.0
         b3_hunt_auto_button.offset_bottom = -14.0
         b3_hunt_deploy_button.visible = false
+        for entry in [[p0_add_hunter_button,308.0,448.0],
+                [p0_withdraw_hunter_button,460.0,608.0],
+                [p0_close_map_button,620.0,768.0]]:
+            var control: Button = entry[0]
+            control.set_anchors_preset(Control.PRESET_BOTTOM_LEFT)
+            control.offset_left = float(entry[1])
+            control.offset_top = -60.0
+            control.offset_right = float(entry[2])
+            control.offset_bottom = -14.0
         b3_hunt_return_button.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
         b3_hunt_return_button.offset_left = -164.0
         b3_hunt_return_button.offset_top = -60.0
@@ -6413,6 +6503,9 @@ func _set_hunt_presentation_layout(use_live_map: bool) -> void:
             v63_combat_hud.size = Vector2(370,472)
             v63_combat_hud.visible = false
         b3_hunt_world_status.visible = false
+        for control in [p0_add_hunter_button,p0_withdraw_hunter_button,p0_close_map_button]:
+            control.visible = false
+        b3_hunt_auto_button.visible = true
         b3_hunt_title.text = "THẾ GIỚI SĂN QUÁI — LIỀN MẠCH"
         b3_hunt_title.position = Vector2(24,14)
         b3_hunt_title.size = Vector2(1100,32)
