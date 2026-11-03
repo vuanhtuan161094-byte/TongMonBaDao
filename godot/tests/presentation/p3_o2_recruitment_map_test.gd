@@ -232,21 +232,6 @@ func _run() -> void:
     _dispose_scene()
     await process_frame
     _cleanup_save()
-    # TEMPORARY QA-only launcher for the official Godot visual-copy contract.
-    # This bridge is removed after CI evidence; O2 acceptance stays unchanged.
-    var output: Array = []
-    var args := PackedStringArray([
-        "--headless","--path",ProjectSettings.globalize_path("res://"),
-        "-s","res://tests/presentation/pve_opt01_source_a_viewrow_copy_contract_test.gd"
-    ])
-    var exit_code: int = OS.execute(OS.get_executable_path(),args,output,true)
-    for chunk in output:
-        print(str(chunk))
-    print("PVE_OPT01_STANDALONE_EXIT="+str(exit_code))
-    if exit_code != 0:
-        print("PVE_OPT01_TEST_FIRST_RED")
-    else:
-        print("PVE_OPT01_TEST_FIRST_GREEN")
     quit(0)
 
 func _recruitable_candidate_ids() -> Array:
