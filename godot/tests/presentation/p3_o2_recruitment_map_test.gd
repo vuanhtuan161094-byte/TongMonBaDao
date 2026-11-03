@@ -232,7 +232,7 @@ func _run() -> void:
     _dispose_scene()
     await process_frame
     _cleanup_save()
-    # QA-only O2 bridge. This is removed after official Godot evidence.
+    # QA-only O2 bridge, rerun 3: natural P3 finite-ARENA preflight then Source A.
     # Both child processes must independently exit 0; no suppressed RED.
     for child_script in [
         "pve_p0_30_independent_hunters_test.gd",
