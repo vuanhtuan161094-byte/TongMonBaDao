@@ -101,8 +101,12 @@ func _run() -> void:
         _fail("O3 Mine UI does not expose the real haul phase.")
         return
 
-    # Save/reload while carrying ore: no early or duplicate deposit.
-    ui.call("_autosave_runtime")
+    # Save/reload while carrying ore. Await SaveService before teardown so its
+    # worker has finished and the exact mid-cycle snapshot is durable.
+    var midcycle_save: Dictionary = await ui.call("_save_runtime_async_barrier")
+    if not bool(midcycle_save.get("ok",false)):
+        _fail("O3 canonical async SaveService barrier failed at mid-cycle.")
+        return
     if not FileAccess.file_exists(SAVE_PATH):
         _fail("O3 mid-cycle runtime save was not written.")
         return
@@ -167,8 +171,12 @@ func _run() -> void:
         _fail("O3 Warehouse panel disagrees with canonical ore.")
         return
 
-    # A completed batch must remain exact across another disk reload.
-    ui.call("_autosave_runtime")
+    # A completed batch must remain exact across another disk reload. Join
+    # the canonical async save before destroying the scene that owns it.
+    var completed_save: Dictionary = await ui.call("_save_runtime_async_barrier")
+    if not bool(completed_save.get("ok",false)):
+        _fail("O3 canonical async SaveService barrier failed after deposit.")
+        return
     _dispose_scene()
     await process_frame
     if not await _open_scene():
