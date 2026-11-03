@@ -56,7 +56,32 @@ func _run() -> void:
             skeleton.get_bone_pose_position(hips_index).y > 1.0,
             "root hips must remain above ground, not collapse to origin"):
         return
+    # The existence of a BoneAttachment3D is not sufficient. It must
+    # track the ACTUAL right-hand bone after the arm moves through Attack.
     actor.pause()
+    actor.select_motion("attack")
+    actor.seek(0.15)
+    await process_frame
+    await process_frame
+    var hand_idx := skeleton.find_bone("hand_R")
+    var hand_before: Transform3D = skeleton.global_transform * \
+        skeleton.get_bone_global_pose(hand_idx)
+    var socket_before: Transform3D = bound_socket.global_transform
+    if not _check(socket_before.origin.distance_to(hand_before.origin) < 0.02,
+            "right-hand weapon socket does not track hand_R world position at windup"):
+        return
+    actor.seek(0.43)
+    await process_frame
+    await process_frame
+    var hand_after: Transform3D = skeleton.global_transform * \
+        skeleton.get_bone_global_pose(hand_idx)
+    var socket_after: Transform3D = bound_socket.global_transform
+    if not _check(socket_after.origin.distance_to(hand_after.origin) < 0.02,
+            "right-hand socket detaches from hand_R during strike"):
+        return
+    if not _check(socket_before.origin.distance_to(socket_after.origin) > 0.02,
+            "right-hand socket did not physically move during Attack"):
+        return
     actor.select_motion("idle")
     actor.seek(0.0)
     var idle0: Quaternion = actor.bone_pose("upper_arm_R")
