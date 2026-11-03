@@ -79,22 +79,21 @@ func _run() -> void:
     if not _ok(bool(options.get("ok",false)) and options.get("camp_positions",[]).size() == 20,
             "actual Source A world with 20 zones missing"):
         return
-    var profile := DiscipleRealmProgressV2.current(disciple)
-    var cult: Dictionary = profile["cultivation"]
-    var body: Dictionary = profile["body"]
-    var member := {
-        "disciple_id":str(picked),"role":"frontline","party_id":"solo:"+str(picked),
-        # The canonical begin() first validates its 36x20 ARENA, then
-        # begin_multicamp repositions to the REAL Source A spawn points.
-        "position":Vector2(8.0,9.0),
-        "realm":int(cult["realm"]),"floor":int(cult["floor"]),
-        "body_realm":int(body["realm"]),"body_floor":int(body["floor"])
-    }
-    var session := HuntingPveRunV2.new()
-    var opened := session.begin_multicamp(runtime.owner,
-        "p0_natural_one_hunter",SEED,[member],10,options)
+    var solo_formed := PveP0CommandsV1.build_members(state,[str(picked)])
+    var duplicate_refused := PveP0CommandsV1.build_members(
+        state,[str(picked),str(picked)])
+    if not _ok(bool(solo_formed.get("ok",false))
+            and (solo_formed.get("members",[]) as Array).size() == 1
+            and str(solo_formed["members"][0]["party_id"]) == "solo:"+str(picked)
+            and not bool(duplicate_refused.get("ok",true)),
+            "canonical solo entry rejected or allowed duplicate disciples"):
+        return
+    var opened := PveP0CommandsV1.deploy(runtime.owner,
+        "p0_natural_one_hunter",SEED,[str(picked)],options)
+    var session := runtime.owner.get_active_multicamp_session()
     if not _ok(bool(opened.get("ok",false))
             and int(opened.get("party_size",0)) == 1
+            and session != null
             and session.battle._count_alive("monster") == 10
             and PveDistributedWorldV1.enabled(session.camp_population),
             "one authentic V2 hunter cannot enter real distributed Source A world: "+str(opened)):
@@ -156,6 +155,29 @@ func _run() -> void:
         "body_xp":after_xp["body"]["xp"],"materials_dropped":any_drop,
         "distinct_life_replays_do_not_duplicate":true
     }))
+    # Real command facade, not a renderer-side actor mutation: movement
+    # and HOLD update the canonical cached battle and durable envelope.
+    var move_cmd := PveP0CommandsV1.move(
+        runtime.owner,[str(picked)],options["camp_positions"][19])
+    if not _ok(bool(move_cmd.get("ok",false))
+            and bool(move_cmd.get("save_required",false))
+            and bool(session.battle.actors[str(picked)].get("move_order_active",false)),
+            "canonical P0 command could not order solo to far Source A zone: "+str(move_cmd)):
+        return
+    var hold_cmd := PveP0CommandsV1.hunt_policy(
+        runtime.owner,[str(picked)],"hold")
+    if not _ok(bool(hold_cmd.get("ok",false))
+            and bool(hold_cmd.get("save_required",false))
+            and not bool(session.battle.actors[str(picked)].get("move_order_active",false))
+            and str(session.battle.actors[str(picked)].get("hunt_policy","")) == "hold",
+            "canonical solo HOLD did not cancel pursuit/previous move safely"):
+        return
+    var invalid_command := PveP0CommandsV1.move(
+        runtime.owner,[str(picked),"unknown_hunter"],options["camp_positions"][19])
+    if not _ok(not bool(invalid_command.get("ok",true))
+            and str(session.battle.actors[str(picked)].get("hunt_policy","")) == "hold",
+            "mixed valid/invalid command partially changed the real solo hunter"):
+        return
     var stored := session._persist_live_state()
     if not _ok(bool(stored.get("ok",false)),"active full world checkpoint failed"):
         return
@@ -214,6 +236,8 @@ func _reload_child(disciple_id: String) -> void:
             and float(xp["body"]["xp"]) > 0.0
             and session.battle._count_alive("disciple") == 1
             and session.battle._count_alive("monster") == 0
+            and str(session.battle.actors[disciple_id].get("hunt_policy","")) == "hold"
+            and not bool(session.battle.actors[disciple_id].get("move_order_active",false))
             and PveDistributedWorldV1.enabled(session.camp_population),
             "cold reload lost active solo hunt, XP or exactly ten receipts"):
         return
