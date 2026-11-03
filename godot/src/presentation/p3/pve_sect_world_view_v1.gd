@@ -370,6 +370,17 @@ func _focus_minimap(screen: Vector2) -> void:
 	var uv := (screen-minimap_inner_rect().position)/minimap_inner_rect().size
 	var bounds: Rect2 = topology.get("bounds",Rect2(Vector2.ZERO,Vector2(SectIsometricWorldV1.GRID)))
 	var cell := Vector2(clampf(uv.x,0.0,1.0)*bounds.size.x,clampf(uv.y,0.0,1.0)*bounds.size.y)
+	# Age-of-Empires-style minimap command: selected hunters GO to the
+	# clicked area. No selected actors means an ordinary camera focus.
+	# Only emit an order; the canonical P3.2 owner validates and persists it.
+	if not selected_actor_ids.is_empty() and battle != null and battle.world_mode:
+		var navigation: Dictionary = battle.world_navigation
+		var walkable := PveOpenWorldTopologyV1._nearest_walkable(
+			navigation,Vector2i(floori(cell.x),floori(cell.y)))
+		if walkable.x >= 0:
+			move_ordered.emit(selected_actor_ids.duplicate(),
+				Vector2(walkable)+Vector2(0.5,0.5))
+		return
 	world.camera.position = SectIsometricWorldV1.project(cell)
 	_clamp_camera()
 
