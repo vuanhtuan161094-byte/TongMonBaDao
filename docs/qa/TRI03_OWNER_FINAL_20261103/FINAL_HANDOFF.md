@@ -40,3 +40,11 @@ Only Residence has canonical map placement authority. New Game starts Hall Lv1 w
 Prior Windows retry failed in GLES shader initialization with signal 11 through ig11icd64.dll. Current map and HS-09 render runs succeeded, but repeated clean-launch stability is still UNVERIFIED; cause is not established. All Godot stderr streams retain the environment warning about reading the root certificate store.
 
 Physical mouse end-to-end playthrough, Android/touch, full natural construction progression, repeated graphics stability and final full CI acceptance remain PENDING. This is not PLAYABLE/GUI PASS.
+
+## Exact-code follow-up on a166252
+
+Three independent Windows OpenGL capture processes (PIDs 3524, 18952, 1020) each completed exit 0 using fresh isolated profiles. No QA process remains running. The prior shader/Intel crash was not reproduced in these three runs; this does not establish absence of intermittent failure. Original logs include inline base64 image previews; those preview lines are omitted from the appended text archive, while original PNGs/logs remain on E:.
+
+[Current build gate, 1280x720](screenshots/current/01_new_game_build_catalog_gate.jpg) · [Actual HS-09 profile, 1280x720](screenshots/current/07_hs09_real_recruit_profile.jpg). JPEG copies are quality-90 encodings of the original Godot PNGs; no UI was composited.
+
+CI snapshot on exact code a166252: 8 success (O1/O3/O4/O5/O6/O7/O8/P3.6A), 1 failure (DV2-03), 7 still running (O2, P3.7, GP01, GP02A/B1/C1, Economy-A). Full CI remains open. [Actions for this code SHA](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions?query=head_sha%3Aa166252e634127337c9d74ee125f02e4a477a2d1).
