@@ -14,3 +14,6 @@ outputs/endgame_qa_20261025/userdata/
 
 # PVE profiler isolated gameplay QA saves and frame-time logs.
 outputs/pve_perf_qa_20261026/
+
+# AN-03 isolated Godot import/GUI PNG/bake output. Never commit QA profiles or renders.
+outputs/an03_lab/

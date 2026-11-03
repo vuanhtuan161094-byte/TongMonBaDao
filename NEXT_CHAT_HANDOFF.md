@@ -1,5 +1,50 @@
 # NEXT CHAT HANDOFF — ONE GAME V6.5 / HS-09 QA
 
+## AN-03.4 WINDOWS QA RESULT — 2026-11-03
+
+Official Godot 4.7.2 Windows run completed: import/parse PASS; focused 18-bone Skeleton3D and animated `hand_R` socket contract PASS (22 checks); 1280x720 GUI PASS (4 authentic captures); renderer bake PASS (46 actual 768x768 RGBA frames: Idle 18, Walk 12, Attack 16). Evidence ZIP is local at `E:\\codex\\2026-10-21\\t-ng-m-n-b-o-4\\work\\issue71_an03_qa_wt\\godot\\outputs\\an03_lab\\AN03_EVIDENCE.zip`, SHA-256 `E75DE92FE65CA2D75741C8B463F61D715CC25B48DAFBF12E2D9D5331D38E726E`.
+
+Fixed two reproduced launcher issues on the AN-03 branch: narrow allow-list for the known Windows certificate-store diagnostic; `%ROOT%.` packager argument to avoid quoted trailing-slash parsing. One rerun passed all gates. The diagnostic remains visible in logs; unrelated error diagnostics still fail.
+
+Evidence scope is bounded: isolated local project base SHA `5e6fdd966bdf710b71e2a1539bb712e44069a4bb` plus PR #71 source files verified against upstream blobs, not a complete checkout of PR #71 base. Results apply to the tested AN-03 implementation files. The model is still procedural guide geometry, not Shadow art/GLB; no 8-way, foot-plant, Android performance or owner visual acceptance is claimed. PR #71 stays draft; PR #68/#69, main, gameplay and saves remain untouched.
+
+
+## AN-03.3 STATIC SOCKET-FOLLOW AUDIT — 2026-11-03
+
+Owner requested further static review only: no Windows Godot logs yet. Verified PR #71 at 143d98b2bbc9a5af0fd516d84ec7797c1050c748 before the current patch. Concrete focused-test gap: existing contract checked hand_R bone selection but not actual attachment world-transform movement. Added attack windup/strike assertions comparing BoneAttachment3D.world transform to Skeleton3D.get_bone_global_pose(hand_R) and detecting nonzero movement. Official Godot API docs support those methods; not evidence of a runtime pass. Only AN-03 contract test and animation documentation/checkpoints touched.
+
+No official Godot 4.7.2 executable, mounted Windows E:, PowerShell or actual evidence ZIP in this Linux session. Godot import/parse, focused test, 1280x720 GUI, 46 RGBA baked PNGs, foot-slip and Shadow artistic acceptance all remain **PENDING / NOT EXECUTED**. Model is still procedural guide, not owner Shadow mesh. Tripo 3D is not mandatory for the technical QA, but an approved 3D model or equivalent art pipeline is required for final-quality character visuals; no payment authorized. Next: execute Windows QA and share AN03_EVIDENCE.zip for log-based repairs. No change to PR #68/#69, main, Combat V2, PvE, SaveService, game save.
+
+---
+
+
+## AN-03.2 QA worktree bootstrap — 2026-11-03
+
+PR #71 moved from owner-named 7aba0c758d32a3bb50f84ce8f8fa045f5aa9145f to live 9533c03e8753c6c28012cfda0d5842117ec1cc23 before this continuation; 16 prior hardening commits already existed. Verified official Godot 4.7.2 unavailable in Linux container and no Windows E drive or actual AN03_EVIDENCE.zip/logs mounted, so **no runtime results, screenshot or 46 baked PNGs can be claimed**. Static source/API check against official Godot class XML confirms Skeleton3D.add_bone returns int, reset_bone_poses exists, BoneAttachment3D.bone_idx property/getter exists. No fabricated error claim.
+
+Added **MO_AN03_START_ISOLATED_QA.cmd** + **tools/windows/run/Start-AN03-IsolatedQA.ps1**: non-destructively fetch feature branch, create fresh detached E:\\TongMonBaDaoWorkspace\\QA_Evidence\\AN03\\repo worktree, verify SHA, invoke existing MO_AN03_RUN_ALL.cmd official import/focused/1280x720 GUI/46 frame GPU bake/evidence zip. Refuses to overwrite an existing QA worktree and never resets/cleans/merges game checkout. User must run once on actual Windows and return AN03_EVIDENCE.zip for real log-driven fixes. If worktree already exists, use its MO_AN03_RUN_ALL.cmd directly after checking SHA. Model still guide-only; PvE/Combat V2/SaveService/main untouched.
+
+---
+
+
+## AN-03.1 REVIEW/HARDENING — 2026-11-03 (GODOT PENDING)
+
+PR #71 source baseline 7aba0c758d32a3bb50f84ce8f8fa045f5aa9145f. Separate AN-03 branch only. Verified live branch and main unchanged prior to additional QA commits. Official Godot 4.7.2 on Windows E:/Linux runtime NOT accessible (no executable/mounted E:, network DNS blocked); no workflow run, no real PNG captures or imported model. QA remains PENDING_ENGINE/PENDING_USER, NOT PASS.
+
+Code fixes based on Godot 4.7 API reference: PackedScene.instantiate() returned Node type inference in AN-03 tests changed to dynamically typed instances for custom methods. 768x768 actual GPU bake now rejects blank/nonalpha/small/clipped/repeated frames, writes 46 per-frame SHA256; 1280x720 GUI script requires four distinct capture hashes. Focused QA confirms actual BoneAttachment3D binds hand_R. Official Windows script rejects Godot script/runtime ERROR diagnostic lines even on exit 0. One-click MO_AN03_RUN_ALL.cmd calls QA + bake and packages AN03_EVIDENCE.zip with exact SHA/log/PNG/exit codes; outputs/an03_lab ignored by git. This is static review and code, **not proof any test executed**. Owner's high-quality Shadow rigged GLB still missing; procedural mesh GUIDE not final.
+Read docs/animation/AN03_MODULAR_RIG_PILOT_20261103.md. Continue only in AN-03 separate worktree/PR; do not change PR #68/#69, main, PvE, Combat V2, SaveService, default game launch or canonical save.
+
+---
+
+## 2026-11-03 — AN-03 MODULAR RIG TECHNICAL PILOT (isolated, NOT art-complete)
+
+Owner authorized start of reusable character/weapon/animation implementation after considering Tripo export cost; only first three movements (Idle/Walk/Attack), no mandatory paid export. Built a standalone technical Skeleton3D guide with 18 bones, rigid hair/armor/coat/body attachment slots, default-unarmed removable sword via BoneAttachment3D hand_R, continuous same-skeleton Idle/Walk/Attack, independent 1280x720 GUI Lab, Godot 4.7.2 focused contract, genuine GUI capture script and single-angle 768x768 RGBA bake script (46 planned frames) with separate isolated Windows launchers. Branch feature/an03-modular-rig-weapon-socket-20261103 from PR #69 HEAD 1f083854defb3324722a1f05d2780c69c9cd3dd0. No changes to main, RC, PR #68/#69 source branches, Combat V2, PvE, SaveService, game startup or saves.
+
+CRITICAL HONESTY: This is procedural GUIDE geometry and code, NOT the owner's illustrated Shadow mesh and NOT a fully weighted skinned model; actual Hắc Ảnh Kiếm Tu GLB/FBX absent because Tripo paid export blocked. No true 8-way authored sprites. Official engine 4.7.2 is unavailable on this Linux container: parse/import/focused test, real 1280x720 screenshot and actual 46 frame bake all PENDING ENGINE/WINDOWS; no claim of animation visual quality or smooth foot plant. See docs/animation/AN03_MODULAR_RIG_PILOT_20261103.md. Next allowed work: reproduce QA on Windows isolated E drive worktree, repair failures on this branch, then separately approve a real skin/model input before artistic acceptance.
+
+---
+
+
 ## AN-02.1 PATCH BRANCH — 2026-11-03
 Source PR #68 HEAD d35a8affb4cef0e45c9d98c403c983554587f584. Standalone patch: fix/an02-1-shadow-lab-qa-20261103. SourceA asset.json vs animations.tres static 7/7 pack / 24/24 clip metadata PASS; 7/7 source anchor bounds static PASS. Lab adds anchor/mirror/time QA, focused test additions, actual GUI framebuffer capture script, official-Godot-version-gated Windows QA command MO_AN02_QA.cmd. No Combat V2/PvE/save/balance/default main scene changes; no PR #68 or main mutation.
 All official Godot 4.7.2 import/parser/shader/runtime/screenshots are PENDING ENGINE; Windows E: and Godot executable inaccessible from Linux and GitHub release DNS failed. Windows/Android owner real hardware PENDING USER. The conceptual Shadow art is not engine capture.
