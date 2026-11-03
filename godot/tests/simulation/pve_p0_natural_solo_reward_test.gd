@@ -44,9 +44,9 @@ func _world() -> Dictionary:
 
 func _run() -> void:
     var cli := OS.get_cmdline_user_args()
-    if cli.size() >= 3 and str(cli[0]) == "reload":
+    if cli.size() >= 4 and str(cli[0]) == "reload":
         path = str(cli[1])
-        _reload_child(str(cli[2]))
+        _reload_child(str(cli[2]),str(cli[3]))
         return
     path = SAVE_PREFIX+str(OS.get_process_id())+".json"
     _clean()
@@ -257,7 +257,7 @@ func _run() -> void:
     var params := PackedStringArray([
         "--headless","--path",ProjectSettings.globalize_path("res://"),
         "-s","res://tests/simulation/pve_p0_natural_solo_reward_test.gd",
-        "--","reload",path,str(picked)
+        "--","reload",path,str(picked),str(second_id)
     ])
     var exit_code := OS.execute(OS.get_executable_path(),params,output,true)
     print("PVE_P0_NATURAL_PROCESS2_BEGIN")
@@ -272,7 +272,7 @@ func _run() -> void:
     print("PVE_P0_NATURAL_SOLO_PASS checks=%d" % checks)
     quit(0)
 
-func _reload_child(disciple_id: String) -> void:
+func _reload_child(disciple_id: String, returned_id: String) -> void:
     if not _ok(path.begins_with(SAVE_PREFIX) and FileAccess.file_exists(path),
             "unsafe or missing QA-only save path"):
         return
@@ -290,8 +290,14 @@ func _reload_child(disciple_id: String) -> void:
         return
     var session: HuntingPveRunV2 = saved_run["session"]
     var xp := DiscipleRealmProgressV2.current(member)
+    var returned: DiscipleState = state.disciples.get(StringName(returned_id),null)
     var rewards: Dictionary = session.camp_population.get("p0_kill_rewards",{})
-    if not _ok(rewards.size() == 10
+    if not _ok(returned != null
+            and returned.active_pve_encounter_id.is_empty()
+            and returned.region_id == &"sect"
+            and DiscipleRealmProgressV2.progression_ready(returned)
+            and not session.battle.actors.has(returned_id)
+            and rewards.size() == 10
             and int(session.camp_population.get("world_total_kills",0)) == 10
             and float(xp["cultivation"]["xp"]) > 0.0
             and float(xp["body"]["xp"]) > 0.0
@@ -305,6 +311,7 @@ func _reload_child(disciple_id: String) -> void:
     print("PVE_P0_NATURAL_SAVE_RELOAD_PASS "+JSON.stringify({
         "kills":10,"reward_receipts":rewards.size(),
         "cultivation_xp":xp["cultivation"]["xp"],"body_xp":xp["body"]["xp"],
-        "active_hunters":1,"live_monsters_waiting_respawn":0
+        "active_hunters":1,"returned_recruit_at_sect":true,
+        "live_monsters_waiting_respawn":0
     }))
     quit(0)
