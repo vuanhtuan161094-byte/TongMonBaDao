@@ -2,7 +2,7 @@
   "schema_version": 1,
   "branch": "integration/tri-facility-a-b-playable-20261102",
   "base_sha": "27ed01cd8f377994e5e50bac9ede84e78e8895bd",
-  "source_fingerprint": "9825a8272871beeb31fc724449846df220f3995cb66a342f1576653cb74a317b",
+  "source_fingerprint": "1ca56b0aa72a411d36cca4a1e9b9cd0fb70e784fa08d37176d6be1d0cf5a968e",
   "files": [
     {
       "path": "godot/src/presentation/dai_dien_screen_v1.gd",
@@ -90,7 +90,7 @@
     },
     {
       "path": "godot/tests/presentation/tri_facility_recruited_hs09_flow_test.gd",
-      "git_blob_sha": "f47c78acd72c8b79e968ca54e640b3b6e7ee9ba9"
+      "git_blob_sha": "d0991681b1d541ca84cfa229c84742770ff31dba"
     },
     {
       "path": "godot/src/simulation/governance/sect_residence_site_v1.gd",

@@ -202,7 +202,7 @@ func _accept_visible_candidate() -> StringName:
 			continue
 		var pick := _find_button(game,"CandidatePick_%s" % str(id))
 		if pick == null:
-			var search := _find_button(game,"CandidateSearch") as LineEdit
+			var search := game.find_child("CandidateSearch",true,false) as LineEdit
 			if search == null:
 				continue
 			search.text = candidate.display_name
