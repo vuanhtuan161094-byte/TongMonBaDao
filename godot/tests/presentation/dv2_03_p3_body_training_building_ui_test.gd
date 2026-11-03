@@ -251,7 +251,7 @@ func _run() -> void:
         "E3.1 freed training place cannot be reused from actual UI."):
         return
     print("DV2-03E3 REAL RÈN THÂN MAP + TWO-SLOT UI: PASS")
-    # Temporary rerun #2: collect process-2 clock/receipt diagnostics.
+    # Temporary rerun #3: checkpoint explicit SaveService after live frame clock.
     # TEMPORARY PVE-01B CI EVIDENCE ONLY. Launch the authorized PvE
     # contract in a second official Godot process. This adapter will be
     # removed from E3 once the independent run has real CI log evidence.
