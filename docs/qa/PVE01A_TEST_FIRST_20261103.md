@@ -129,3 +129,11 @@ Interpretation: **6v10 battle creation and identity PASS, V6.3 multicamp gate FA
 - Permanent changes are test-only: `godot/tests/simulation/dv2_03_realm_body_progress_test.gd`, `godot/tests/simulation/pve_01a_6v10_v63_gate_contract_test.gd`, `godot/tests/presentation/dv2_03_p3_body_training_building_ui_test.gd`, and this `docs/qa` evidence file.
 - The new 6v10 test remains deliberately RED and is not part of DV2-03's habitual positive suite. The temporary CI subprocess adapter has been removed.
 - Revert only this feature branch's test commits or abandon the branch; do not cherry-pick a RED PvE gate into PR #67 without an explicit PVE-01B integration plan. No save schema change or migration needed. Windows physical mouse/Android **PENDING USER**.
+
+## Post-clean exact-code verification
+
+- Permanent E3 test (temporary subprocess removed): commit `aad81571402feb90983564eae5f4ed352b818b02`.
+- DV2-03 official Godot 4.7.2: https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/41581162692 — **SUCCESS**, 31 GitHub job steps successful on that exact code SHA, with the new D7/legacy oracle marker and canonical Residence E3 PASS.
+- P3.7 Backend full cumulative: https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/41581162683 — **IN_PROGRESS at the first final evidence update**; never count as PASS unless the linked job reaches a successful conclusion. This is a nine-stage P0 gate parsing all src/tests scripts and running decision, economy, invariants, save/load, determinism, benchmark and smoke.
+- Main SHA was `c0c1382f119599497b52d8ee8abd9e830a883f1e`; PR #67 Draft HEAD was `c136600f5579871d476e0feca2d78ea3c74e6b1f` before final evidence write; no production branch writes by this packet.
+- All changes on the isolated feature branch remain within the explicit owner allowlist. **Windows GUI and Android PENDING USER.**
