@@ -14,7 +14,7 @@ func _run() -> void:
     if DisplayServer.get_name() == "headless":
         _fail("real GUI required")
         return
-    var lab := LAB.instantiate()
+    var lab = LAB.instantiate()
     root.add_child(lab)
     await process_frame
     if root.size != Vector2i(1280,720):
