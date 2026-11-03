@@ -232,7 +232,7 @@ func _run() -> void:
     _dispose_scene()
     await process_frame
     _cleanup_save()
-    # TEMPORARY QA-only CI bridge.  Standalone G0 natural E2E runs in a
+    # TEMPORARY QA-only CI bridge. Rerun #2 after whitespace parser fix;
     # separate official Godot executable and returns its real exit code/log.
     # Parent O2 stays independent; this bridge is removed after evidence.
     var natural_output: Array = []
