@@ -16,7 +16,7 @@ if "%QA_EXIT%"=="0" (
   echo [AN03] QA failed; skipping GPU bake to preserve failure evidence.
 )
 echo [AN03] Packaging available engine logs, snapshots and frames...
-powershell -NoProfile -ExecutionPolicy Bypass -File "%ROOT%tools\windows\run\Package-AN03-Evidence.ps1" -RepositoryRoot "%ROOT%" -QaExitCode %QA_EXIT% -BakeExitCode %BAKE_EXIT%
+powershell -NoProfile -ExecutionPolicy Bypass -File "%ROOT%tools\windows\run\Package-AN03-Evidence.ps1" -RepositoryRoot "%ROOT%." -QaExitCode %QA_EXIT% -BakeExitCode %BAKE_EXIT%
 set "PACKAGE_EXIT=%ERRORLEVEL%"
 if not "%PACKAGE_EXIT%"=="0" echo [AN03] Evidence packaging FAILED: %PACKAGE_EXIT%
 echo [AN03] QA exit=%QA_EXIT%, bake exit=%BAKE_EXIT%, package exit=%PACKAGE_EXIT%
