@@ -43,7 +43,7 @@ Physical mouse end-to-end playthrough, Android/touch, full natural construction 
 
 ## Exact-code follow-up on a166252
 
-Three independent Windows OpenGL capture processes (PIDs 3524, 18952, 1020) each completed exit 0 using fresh isolated profiles. No QA process remains running. The prior shader/Intel crash was not reproduced in these three runs; this does not establish absence of intermittent failure. Original logs include inline base64 image previews; those preview lines are omitted from the appended text archive, while original PNGs/logs remain on E:.
+Three independent Windows OpenGL capture processes (PIDs 3524, 18952, 1020) each completed exit 0 using fresh isolated profiles. All three newly opened capture processes exited; pre-existing PIDs 6428 and 14692 were left untouched. The prior shader/Intel crash was not reproduced in these three runs; this does not establish absence of intermittent failure. Original logs include inline base64 image previews; those preview lines are omitted from the appended text archive, while original PNGs/logs remain on E:.
 
 [Current build gate, 1280x720](screenshots/current/01_new_game_build_catalog_gate.jpg) · [Actual HS-09 profile, 1280x720](screenshots/current/07_hs09_real_recruit_profile.jpg). JPEG copies are quality-90 encodings of the original Godot PNGs; no UI was composited.
 
