@@ -29,6 +29,12 @@ func _run() -> void:
     if not _check(not bool(starting.get("weapon_equipped",true)),
             "character must start unarmed"):
         return
+    var bound_socket := actor.get_node_or_null(
+        "SharedHumanoidSkeleton3D/Attach_hand_R") as BoneAttachment3D
+    if not _check(bound_socket != null and
+            bound_socket.get_bone_idx() == actor.get_bone_node().find_bone("hand_R"),
+            "right-hand socket must bind to the actual hand_R skeleton bone"):
+        return
     if not _check(bool(starting.get("weapon_is_independent",false)),
             "sword must not be baked into the body geometry"):
         return
