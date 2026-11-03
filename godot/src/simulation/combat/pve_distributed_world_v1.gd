@@ -140,7 +140,7 @@ static func validate_saved(session: HuntingPveRunV2) -> String:
         var slot: Dictionary = slots[slot_id]
         var life := int(receipt.get("generation",0))
         var current_life := int(slot.get("generation",0))
-        var expected_kill := "%s:slot:%s:g%d" % [b.encounter_id,slot_id,life]
+        var expected_kill := "%s:slot:%s:g%d" % [session.battle.encounter_id,slot_id,life]
         if int(receipt.get("version",0)) != PvePerKillRewardV1.VERSION \
                 or life < 1 or life > current_life \
                 or str(receipt.get("slot_id","")) != slot_id \
