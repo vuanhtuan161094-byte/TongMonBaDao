@@ -196,19 +196,22 @@ func _process(delta: float) -> void:
     _apply_pose()
 
 func _axis(name: String, axis: Vector3, angle: float) -> void:
-    _skeleton.set_bone_pose_rotation(int(_bone_index[name]),Quaternion(axis,angle))
+    var index := int(_bone_index[name])
+    var rest_rotation: Quaternion = _skeleton.get_bone_rest(index).basis.get_rotation_quaternion()
+    _skeleton.set_bone_pose_rotation(index,rest_rotation * Quaternion(axis,angle))
 
 func _apply_pose() -> void:
     if _skeleton == null:
         return
-    for index in range(_skeleton.get_bone_count()):
-        _skeleton.set_bone_pose_rotation(index,Quaternion.IDENTITY)
-        _skeleton.set_bone_pose_position(index,Vector3.ZERO)
+    # In Godot 4, bone pose INCLUDES the rest transform: zeroing every
+    # position collapses the character at the parent joint. Preserve rest.
+    _skeleton.reset_bone_poses()
     if _motion == "idle":
         var phase := fposmod(_elapsed,PERIODS["idle"]) / PERIODS["idle"] * TAU
         var breathe := sin(phase)
-        _skeleton.set_bone_pose_position(int(_bone_index["hips"]),
-            Vector3(0,0.018*breathe,0))
+        var hips_index := int(_bone_index["hips"])
+        _skeleton.set_bone_pose_position(hips_index,
+            _skeleton.get_bone_rest(hips_index).origin + Vector3(0,0.018*breathe,0))
         _axis("spine",Vector3.FORWARD,0.022*breathe)
         _axis("head",Vector3.FORWARD,-0.025*breathe)
         _axis("upper_arm_L",Vector3.FORWARD,0.045*breathe)
@@ -219,7 +222,9 @@ func _apply_pose() -> void:
     elif _motion == "walk":
         var phase := fposmod(_elapsed,PERIODS["walk"]) / PERIODS["walk"] * TAU
         var step := sin(phase)
-        _skeleton.set_bone_pose_position(int(_bone_index["hips"]),
+        var hips_index := int(_bone_index["hips"])
+        _skeleton.set_bone_pose_position(hips_index,
+            _skeleton.get_bone_rest(hips_index).origin +
             Vector3(0,0.048*absf(sin(phase)),0))
         _axis("thigh_L",Vector3.RIGHT,0.50*step)
         _axis("thigh_R",Vector3.RIGHT,-0.50*step)
