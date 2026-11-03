@@ -141,7 +141,11 @@ static func _advance_multicamp(state: SimulationState, scheduler: SimulationSche
     var session := active_multicamp_session
     if session == null or session.owner_state != state or session.battle == null \
             or session.mode != "multicamp" or str(session.battle.encounter_id) != encounter:
-        var restored := HuntingPveRunV2.resume_active(state,encounter)
+        # PVE-01B: a cache miss (including fresh process/offline catch-up)
+        # must inherit the canonical runtime's persisted V6.3 opt-in. Passing
+        # the default empty overrides silently disables learned skills.
+        var restored := HuntingPveRunV2.resume_active(
+            state,encounter,scheduler.v63_preview_overrides)
         if not bool(restored.get("ok",false)):
             return restored
         session = restored["session"]
