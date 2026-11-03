@@ -749,6 +749,52 @@ func add_continuous_monster(row: Dictionary) -> Dictionary:
         "slot_generation":actor["slot_generation"],"species_id":actor["species_id"]})
     return {"ok":true,"actor_id":actor_id,"active_monsters":_count_alive("monster")}
 
+func suspend_world_monster(actor_id: String) -> Dictionary:
+    # Remove the live AI actor WITHOUT destroying its slot generation.
+    # The owner stores the full actor snapshot in a dormant zone ledger.
+    if not world_mode or not continuous_mode or not active or not actors.has(actor_id):
+        return {"ok":false,"reason":"p0_suspend_requires_active_world_monster"}
+    var actor: Dictionary = actors[actor_id]
+    if str(actor.get("side","")) != "monster":
+        return {"ok":false,"reason":"p0_suspend_not_monster"}
+    for event in _pending_kill_events:
+        if str(event.get("monster_instance_id","")) == actor_id:
+            return {"ok":false,"reason":"p0_suspend_pending_kill"}
+    actors.erase(actor_id)
+    var safe_casts: Array = []
+    for cast in pending_casts:
+        if str(cast.get("caster","")) == actor_id or str(cast.get("target_id","")) == actor_id:
+            continue
+        safe_casts.append(cast)
+    pending_casts = safe_casts
+    return {"ok":true,"slot_id":str(actor.get("spawn_slot_id",""))}
+
+func reactivate_world_monster(row: Dictionary) -> Dictionary:
+    # Rehydrate a genuinely existing slot/life (not a new spawn and NOT loot).
+    var id := str(row.get("id",""))
+    var slot := str(row.get("spawn_slot_id",""))
+    var generation := int(row.get("slot_generation",0))
+    var at = row.get("position",null)
+    var stats = row.get("stats",{})
+    if not world_mode or not continuous_mode or not active or id.is_empty() or slot.is_empty() \
+            or actors.has(id) or _count_monster_records() >= MAX_MONSTERS \
+            or str(row.get("side","")) != "monster" or generation <= 0 \
+            or generation != int(_last_spawn_generation.get(slot,0)) \
+            or not (at is Vector2) or not _position_allowed(at) \
+            or not (stats is Dictionary) or float(stats.get("max_hp",0.0)) <= 0.0 \
+            or float(row.get("hp",0.0)) <= 0.0 \
+            or float(row.get("hp",0.0)) > float(row.get("max_hp",0.0)):
+        return {"ok":false,"reason":"p0_invalid_dormant_life"}
+    for other in actors.values():
+        if str(other.get("side","")) == "monster" \
+                and str(other.get("spawn_slot_id","")) == slot:
+            return {"ok":false,"reason":"p0_duplicate_active_spawn_slot"}
+    var restored: Dictionary = row.duplicate(true)
+    restored["linked_disciple"] = null
+    actors[id] = restored
+    _event("monster_reactivated",{"actor_id":id,"spawn_slot_id":slot,"generation":generation})
+    return {"ok":true,"actor_id":id}
+
 func remove_downed_monster(actor_id: String) -> bool:
     if not continuous_mode or not actors.has(actor_id):
         return false
