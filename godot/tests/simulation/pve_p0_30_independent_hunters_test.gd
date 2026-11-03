@@ -225,6 +225,43 @@ func _run() -> void:
         "requested_zone":"C20","ordered_actor":"hunter_20",
         "no_selection_pans":true
     }))
+    # Regression: minimap travel must not switch OFF the departure zone's
+    # active monsters while the hunter is still physically standing there.
+    # Both departure C01 and target C20 are real authorized world zones.
+    var solo_battle := MapBattleV2.new(20261104)
+    var solo_started := solo_battle.setup_open_world(
+        "p0_travel_origin_and_target",[_new_party(options["camp_positions"])[0]],[],options)
+    if not _check(bool(solo_started.get("ok",false)),
+            "solo travel regression could not start official Source A map"):
+        return
+    var solo_session := HuntingPveRunV2.new()
+    solo_session.battle = solo_battle
+    solo_session.mode = "multicamp"
+    solo_session.camp_index = 0
+    solo_session.camp_population = _registry(options)
+    solo_session.camp_slot_ids = []
+    solo_session.spawn_data = {"reward_seed":20261104}
+    var departure := PveDistributedWorldV1.synchronize(solo_session)
+    if not _check(bool(departure.get("ok",false))
+            and departure.get("camps",[]) == [0]
+            and solo_battle._count_monster_records() == 10,
+            "departure camp must begin with its ten real spawn slots"):
+        return
+    var travel := solo_battle.order_group_move(
+        ["hunter_00"],options["camp_positions"][19])
+    var while_travelling := PveDistributedWorldV1.synchronize(solo_session)
+    if not _check(bool(travel.get("ok",false))
+            and bool(while_travelling.get("ok",false))
+            and while_travelling.get("camps",[]) == [0,19]
+            and solo_battle._count_monster_records() == 20
+            and bool(solo_battle.actors["hunter_00"].get("move_order_active",false))
+            and PveDistributedWorldV1.zone_for_point(
+                solo_session.camp_population["world_camp_positions"],
+                solo_battle.actors["hunter_00"]["position"]) == 0,
+            "traveling solo lost origin camp monsters before physical arrival: "
+            +str(while_travelling)):
+        return
+    print("PVE_P0_TRAVEL_ORIGIN_CAMP_PASS camps=2 monsters=20 physical_zone=C01 target=C20")
     print("PVE_P0_30_HUNTERS_PASS checks=%d engine=Godot4.7.2" % checks)
     world.queue_free()
     quit(0)
