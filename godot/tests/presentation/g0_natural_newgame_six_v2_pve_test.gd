@@ -19,292 +19,292 @@ func _initialize() -> void:
 	call_deferred("_run")
 
 func _run() -> void:
-    var cli := OS.get_cmdline_user_args()
-    if cli.size() >= 2 and str(cli[0]) == "process2":
-        save_path = str(cli[1])
-        _process2_reload()
-        return
-    save_path = SAVE_PREFIX + "natural_six_v2_" + str(OS.get_process_id()) + ".json"
-    if not save_path.begins_with(SAVE_PREFIX):
-        _fail("Natural New Game test save path escaped isolated QA namespace")
-        return
-    _cleanup_save()
-    ProjectSettings.set_setting("runtime/live_save_path",save_path)
-    if not await _open_game():
-        return
-    var runtime: LiveGameRuntimeV2 = game.get("runtime_session")
-    if not _require(runtime != null and runtime.save_path == save_path,
-            "Natural New Game failed to bind isolated SaveService path"):
-        return
-    var natural_v2_initial := _ready_v2_ids()
-    if not _require(state.disciples.size() == 6 and state.sect.disciple_capacity == 8
-            and natural_v2_initial.is_empty(),
-            "Natural New Game must start 6 legacy founders, 8 beds, 0 PvE-ready V2"):
-        return
-    print("G0_NATURAL_NEWGAME_BASELINE_PASS " + JSON.stringify({
-        "founders":6, "ready_v2":0, "beds":SectResidenceSystemV1.total_beds(state),
-        "tokens":state.sect.disciple_recruitment_tokens,
-        "initial_candidates":state.recruitment_candidates.size(),
-        "initial_stones":state.sect.spirit_stones
-    }))
-    if not await _verify_natural_new_game_build_gate():
-        return
-    var house: BuildingState = state.buildings.get("residence_002")
-    if not _require(house != null and house.status == BuildingSystem.STATUS_CONSTRUCTING
-            and SectResidenceSystemV1.total_beds(state) == 8,
-            "Annex construction must not grant any beds before actual completion"):
-        return
-    var start_tick := state.tick
-    var duration := SectResidenceSystemV1.construction_duration_ticks(2)
-    # Test accelerates clock by running the ONE canonical production scheduler,
-    # never sets building.status, finish_tick, disciple_capacity or inventory.
-    # 60 simulation-minute steps are legitimate game rules, not wall-clock sleep.
-    runtime.owner.scheduler.run_ticks(duration - 1)
-    if not _require(state.tick == start_tick + duration - 1
-            and house.status == BuildingSystem.STATUS_CONSTRUCTING
-            and SectResidenceSystemV1.total_beds(state) == 8,
-            "Annex prematurely completed or scheduler tick accounting incorrect"):
-        return
-    runtime.owner.scheduler.run_ticks(1)
-    if not _require(house.status == BuildingSystem.STATUS_ACTIVE
-            and state.tick == start_tick + duration
-            and SectResidenceSystemV1.total_beds(state) == 16
-            and SectResidenceSystemV1.current_limit(state) == 12
-            and SectHallSystemV1.rank_population_limit(state) == 12,
-            "Actual 60-tick annex completion did not expose 16 beds / 12 legal seats"):
-        return
-    var receipt: Dictionary = state.sect.hall_governance.get("residence_build_receipts",{})
-    if not _require(receipt.get(g1_build_request_id,"") == "residence_002"
-            and SectHallSystemV1.validate(state).is_empty(),
-            "Completed real annex lost its canonical paid receipt or Hall invariant"):
-        return
-    print("G0_NATURAL_ANNEX_COMPLETE_PASS " + JSON.stringify({
-        "start_tick":start_tick, "end_tick":state.tick,
-        "duration":duration, "beds":SectResidenceSystemV1.total_beds(state),
-        "limit":SectResidenceSystemV1.current_limit(state),
-        "paid_receipt":g1_build_request_id
-    }))
-    if not await _open_guidance_ui():
-        return
-    var accepted: Array[String] = []
-    var recruited_ids: Dictionary = {}
-    for index in range(6):
-        var available := _eligible_candidates()
-        if available.is_empty():
-            var order := _find_button(game,"UseRecruitmentOrder")
-            if order != null and not order.disabled and state.sect.disciple_recruitment_tokens > 0:
-                var before_token := state.sect.disciple_recruitment_tokens
-                if not await _press(order,"real Chiêu Mộ Lệnh for V2 member %d" % (index+1)):
-                    return
-                if not _require(state.sect.disciple_recruitment_tokens == before_token-1,
-                        "Guidance paid order was not debited exactly once"):
-                    return
-            available = _eligible_candidates()
-        # Real Dẫn Tiên arrivals on a later day are allowed. Do not inject
-        # a candidate or a token when the queue is empty.
-        if available.is_empty():
-            var day_before := RecruitmentSystem.new().guidance_day_index(state)
-            runtime.owner.scheduler.run_ticks(RecruitmentSystem.GUIDANCE_DAY_TICKS)
-            if not _require(RecruitmentSystem.new().guidance_day_index(state) > day_before,
-                    "Scheduler could not advance Dẫn Tiên to next authentic daily arrival"):
-                return
-            available = _eligible_candidates()
-            print("G0_NATURAL_GUIDANCE_NEXT_DAY " + JSON.stringify({
-                "day":RecruitmentSystem.new().guidance_day_index(state),
-                "candidate_count":state.recruitment_candidates.size(),
-                "eligible":available.size(),
-                "tokens":state.sect.disciple_recruitment_tokens
-            }))
-        if available.is_empty():
-            _fail("BLOCKER_CANDIDATE_SUPPLY: no authentic V2 candidate after real paid order or daily arrival for recruit %d" % (index+1))
-            return
-        var before := state.disciples.size()
-        var recruit_id: StringName = await _accept_visible_candidate()
-        if recruit_id == &"":
-            return
-        var disciple: DiscipleState = state.disciples.get(recruit_id)
-        if not _require(disciple != null
-                and not recruited_ids.has(str(recruit_id))
-                and state.disciples.size() == before + 1
-                and DiscipleRealmProgressV2.progression_ready(disciple)
-                and DiscipleBirthProfileV2.valid_complete_birth(disciple.v2_birth_profile)
-                and disciple.hp > 0.0 and disciple.injury_level == 0,
-                "Natural B1 recruit was duplicate, legacy, injured, dead or not admitted"):
-            return
-        recruited_ids[str(recruit_id)] = true
-        accepted.append(str(recruit_id))
-        print("G0_NATURAL_RECRUIT_ACCEPT_PASS " + JSON.stringify({
-            "ordinal":index+1, "id":str(recruit_id), "roster":state.disciples.size(),
-            "tokens":state.sect.disciple_recruitment_tokens,
-            "ready_v2":_ready_v2_ids().size()
-        }))
-    if not _require(accepted.size() == 6 and state.disciples.size() == 12
-            and SectResidenceSystemV1.current_limit(state) == 12
-            and _ready_v2_ids().size() == 6,
-            "After six legal recruitments New Game must have 12 roster and six PvE-ready V2"):
-        return
-    # After 6 admissions, close B1 and use the REAL P3.2 party selection
-    # button, rather than starting a hand-constructed PvE QA fixture.
-    var adapter: Node = game.get_node_or_null("DanTienScreenV2/TriFacilityB1LiveAdapterV1")
-    if adapter != null:
-        adapter.call("_close_host")
-        await process_frame
-    game.call("_open_pve_party_picker")
-    await process_frame
-    var selected: Array = game.get("pve_party_selected_ids")
-    var start_button := game.get("pve_party_picker_start") as Button
-    if not _require(selected.size() == 6 and start_button != null
-            and not start_button.disabled and _party_is_only_authentic_v2(selected, recruited_ids),
-            "P3.2 real 6-member picker did not admit six genuine healthy idle V2 recruits"):
-        return
-    print("G0_NATURAL_PVE_SELECTOR_PASS " + JSON.stringify({
-        "selected":selected.map(func(x):return str(x)), "ready_v2":_ready_v2_ids().size(),
-        "button_enabled":not start_button.disabled
-    }))
-    if not await _press(start_button,"P3.2 enter actual Source A Thanh Trúc Lâm"):
-        return
-    var encounter_id := HuntingPveRunV2.active_multicamp_id(state)
-    var resumed := HuntingPveRunV2.resume_active(state, encounter_id)
-    if not _require(not encounter_id.is_empty() and bool(resumed.get("ok",false))
-            and state.sect.v2_pve_active_runs.size() == 1,
-            "P3.2 player-facing PvE action did not create one durable world encounter"):
-        return
-    var session: HuntingPveRunV2 = resumed["session"]
-    var live_actors := _battle_actor_counts(session.battle)
-    if not _require(int(live_actors.get("disciples",0)) == 6
-            and int(live_actors.get("monsters",0)) == 10
-            and state.sect.v2_pve_reward_claims.is_empty()
-            and state.sect.v2_pve_settlement_receipts.is_empty(),
-            "Player-started Source A battle is not authentic 6v10 or grants early loot"):
-        return
-    print("G0_NATURAL_SOURCE_A_6V10_PASS " + JSON.stringify({
-        "encounter_id":encounter_id,"disciples":live_actors.get("disciples"),
-        "monsters":live_actors.get("monsters"),"roster":state.disciples.size()
-    }))
-    var warehouse_before: Dictionary = state.sect.warehouse_resources.duplicate(true)
-    var saved: Dictionary = await game.call("_save_runtime_async_barrier")
-    if not _require(bool(saved.get("ok",false)) and FileAccess.file_exists(save_path),
-            "New Game→6V2→PvE SaveService barrier failed: " + str(saved)):
-        return
-    var child: Array = []
-    var args := PackedStringArray([
-        "--headless","--path",ProjectSettings.globalize_path("res://"),
-        "-s","res://tests/presentation/g0_natural_newgame_six_v2_pve_test.gd",
-        "--","process2",save_path
-    ])
-    var exit_code := OS.execute(OS.get_executable_path(),args,child,true)
-    var transcript := ""
-    for line in child:
-        transcript += str(line)
-    print("G0_NATURAL_PROCESS2_BEGIN")
-    print(transcript)
-    print("G0_NATURAL_PROCESS2_END")
-    if not _require(exit_code == 0 and transcript.contains("G0_NATURAL_PROCESS2_SAVE_RELOAD_PASS")
-            and state.sect.warehouse_resources == warehouse_before
-            and state.sect.v2_pve_reward_claims.is_empty()
-            and state.sect.v2_pve_settlement_receipts.is_empty(),
-            "Cross-process real Source A Save/Reload failed or generated premature loot; exit=%d" % exit_code):
-        return
-    print("G0_NATURAL_NEWGAME_SIX_V2_PVE_PASS "+JSON.stringify({
-        "founders":6,"recruited_v2":6,"roster":12,
-        "annex_completed":true,"source_a_6v10":true,
-        "save_reload_second_process":true,"loot_not_fabricated":true
-    }))
-    _close_game()
-    _cleanup_save()
-    quit(0)
+	var cli := OS.get_cmdline_user_args()
+	if cli.size() >= 2 and str(cli[0]) == "process2":
+		save_path = str(cli[1])
+		_process2_reload()
+		return
+	save_path = SAVE_PREFIX + "natural_six_v2_" + str(OS.get_process_id()) + ".json"
+	if not save_path.begins_with(SAVE_PREFIX):
+		_fail("Natural New Game test save path escaped isolated QA namespace")
+		return
+	_cleanup_save()
+	ProjectSettings.set_setting("runtime/live_save_path",save_path)
+	if not await _open_game():
+		return
+	var runtime: LiveGameRuntimeV2 = game.get("runtime_session")
+	if not _require(runtime != null and runtime.save_path == save_path,
+			"Natural New Game failed to bind isolated SaveService path"):
+		return
+	var natural_v2_initial := _ready_v2_ids()
+	if not _require(state.disciples.size() == 6 and state.sect.disciple_capacity == 8
+			and natural_v2_initial.is_empty(),
+			"Natural New Game must start 6 legacy founders, 8 beds, 0 PvE-ready V2"):
+		return
+	print("G0_NATURAL_NEWGAME_BASELINE_PASS " + JSON.stringify({
+		"founders":6, "ready_v2":0, "beds":SectResidenceSystemV1.total_beds(state),
+		"tokens":state.sect.disciple_recruitment_tokens,
+		"initial_candidates":state.recruitment_candidates.size(),
+		"initial_stones":state.sect.spirit_stones
+	}))
+	if not await _verify_natural_new_game_build_gate():
+		return
+	var house: BuildingState = state.buildings.get("residence_002")
+	if not _require(house != null and house.status == BuildingSystem.STATUS_CONSTRUCTING
+			and SectResidenceSystemV1.total_beds(state) == 8,
+			"Annex construction must not grant any beds before actual completion"):
+		return
+	var start_tick := state.tick
+	var duration := SectResidenceSystemV1.construction_duration_ticks(2)
+	# Test accelerates clock by running the ONE canonical production scheduler,
+	# never sets building.status, finish_tick, disciple_capacity or inventory.
+	# 60 simulation-minute steps are legitimate game rules, not wall-clock sleep.
+	runtime.owner.scheduler.run_ticks(duration - 1)
+	if not _require(state.tick == start_tick + duration - 1
+			and house.status == BuildingSystem.STATUS_CONSTRUCTING
+			and SectResidenceSystemV1.total_beds(state) == 8,
+			"Annex prematurely completed or scheduler tick accounting incorrect"):
+		return
+	runtime.owner.scheduler.run_ticks(1)
+	if not _require(house.status == BuildingSystem.STATUS_ACTIVE
+			and state.tick == start_tick + duration
+			and SectResidenceSystemV1.total_beds(state) == 16
+			and SectResidenceSystemV1.current_limit(state) == 12
+			and SectHallSystemV1.rank_population_limit(state) == 12,
+			"Actual 60-tick annex completion did not expose 16 beds / 12 legal seats"):
+		return
+	var receipt: Dictionary = state.sect.hall_governance.get("residence_build_receipts",{})
+	if not _require(receipt.get(g1_build_request_id,"") == "residence_002"
+			and SectHallSystemV1.validate(state).is_empty(),
+			"Completed real annex lost its canonical paid receipt or Hall invariant"):
+		return
+	print("G0_NATURAL_ANNEX_COMPLETE_PASS " + JSON.stringify({
+		"start_tick":start_tick, "end_tick":state.tick,
+		"duration":duration, "beds":SectResidenceSystemV1.total_beds(state),
+		"limit":SectResidenceSystemV1.current_limit(state),
+		"paid_receipt":g1_build_request_id
+	}))
+	if not await _open_guidance_ui():
+		return
+	var accepted: Array[String] = []
+	var recruited_ids: Dictionary = {}
+	for index in range(6):
+		var available := _eligible_candidates()
+		if available.is_empty():
+			var order := _find_button(game,"UseRecruitmentOrder")
+			if order != null and not order.disabled and state.sect.disciple_recruitment_tokens > 0:
+				var before_token := state.sect.disciple_recruitment_tokens
+				if not await _press(order,"real Chiêu Mộ Lệnh for V2 member %d" % (index+1)):
+					return
+				if not _require(state.sect.disciple_recruitment_tokens == before_token-1,
+						"Guidance paid order was not debited exactly once"):
+					return
+			available = _eligible_candidates()
+		# Real Dẫn Tiên arrivals on a later day are allowed. Do not inject
+		# a candidate or a token when the queue is empty.
+		if available.is_empty():
+			var day_before := RecruitmentSystem.new().guidance_day_index(state)
+			runtime.owner.scheduler.run_ticks(RecruitmentSystem.GUIDANCE_DAY_TICKS)
+			if not _require(RecruitmentSystem.new().guidance_day_index(state) > day_before,
+					"Scheduler could not advance Dẫn Tiên to next authentic daily arrival"):
+				return
+			available = _eligible_candidates()
+			print("G0_NATURAL_GUIDANCE_NEXT_DAY " + JSON.stringify({
+				"day":RecruitmentSystem.new().guidance_day_index(state),
+				"candidate_count":state.recruitment_candidates.size(),
+				"eligible":available.size(),
+				"tokens":state.sect.disciple_recruitment_tokens
+			}))
+		if available.is_empty():
+			_fail("BLOCKER_CANDIDATE_SUPPLY: no authentic V2 candidate after real paid order or daily arrival for recruit %d" % (index+1))
+			return
+		var before := state.disciples.size()
+		var recruit_id: StringName = await _accept_visible_candidate()
+		if recruit_id == &"":
+			return
+		var disciple: DiscipleState = state.disciples.get(recruit_id)
+		if not _require(disciple != null
+				and not recruited_ids.has(str(recruit_id))
+				and state.disciples.size() == before + 1
+				and DiscipleRealmProgressV2.progression_ready(disciple)
+				and DiscipleBirthProfileV2.valid_complete_birth(disciple.v2_birth_profile)
+				and disciple.hp > 0.0 and disciple.injury_level == 0,
+				"Natural B1 recruit was duplicate, legacy, injured, dead or not admitted"):
+			return
+		recruited_ids[str(recruit_id)] = true
+		accepted.append(str(recruit_id))
+		print("G0_NATURAL_RECRUIT_ACCEPT_PASS " + JSON.stringify({
+			"ordinal":index+1, "id":str(recruit_id), "roster":state.disciples.size(),
+			"tokens":state.sect.disciple_recruitment_tokens,
+			"ready_v2":_ready_v2_ids().size()
+		}))
+	if not _require(accepted.size() == 6 and state.disciples.size() == 12
+			and SectResidenceSystemV1.current_limit(state) == 12
+			and _ready_v2_ids().size() == 6,
+			"After six legal recruitments New Game must have 12 roster and six PvE-ready V2"):
+		return
+	# After 6 admissions, close B1 and use the REAL P3.2 party selection
+	# button, rather than starting a hand-constructed PvE QA fixture.
+	var adapter: Node = game.get_node_or_null("DanTienScreenV2/TriFacilityB1LiveAdapterV1")
+	if adapter != null:
+		adapter.call("_close_host")
+		await process_frame
+	game.call("_open_pve_party_picker")
+	await process_frame
+	var selected: Array = game.get("pve_party_selected_ids")
+	var start_button := game.get("pve_party_picker_start") as Button
+	if not _require(selected.size() == 6 and start_button != null
+			and not start_button.disabled and _party_is_only_authentic_v2(selected, recruited_ids),
+			"P3.2 real 6-member picker did not admit six genuine healthy idle V2 recruits"):
+		return
+	print("G0_NATURAL_PVE_SELECTOR_PASS " + JSON.stringify({
+		"selected":selected.map(func(x):return str(x)), "ready_v2":_ready_v2_ids().size(),
+		"button_enabled":not start_button.disabled
+	}))
+	if not await _press(start_button,"P3.2 enter actual Source A Thanh Trúc Lâm"):
+		return
+	var encounter_id := HuntingPveRunV2.active_multicamp_id(state)
+	var resumed := HuntingPveRunV2.resume_active(state, encounter_id)
+	if not _require(not encounter_id.is_empty() and bool(resumed.get("ok",false))
+			and state.sect.v2_pve_active_runs.size() == 1,
+			"P3.2 player-facing PvE action did not create one durable world encounter"):
+		return
+	var session: HuntingPveRunV2 = resumed["session"]
+	var live_actors := _battle_actor_counts(session.battle)
+	if not _require(int(live_actors.get("disciples",0)) == 6
+			and int(live_actors.get("monsters",0)) == 10
+			and state.sect.v2_pve_reward_claims.is_empty()
+			and state.sect.v2_pve_settlement_receipts.is_empty(),
+			"Player-started Source A battle is not authentic 6v10 or grants early loot"):
+		return
+	print("G0_NATURAL_SOURCE_A_6V10_PASS " + JSON.stringify({
+		"encounter_id":encounter_id,"disciples":live_actors.get("disciples"),
+		"monsters":live_actors.get("monsters"),"roster":state.disciples.size()
+	}))
+	var warehouse_before: Dictionary = state.sect.warehouse_resources.duplicate(true)
+	var saved: Dictionary = await game.call("_save_runtime_async_barrier")
+	if not _require(bool(saved.get("ok",false)) and FileAccess.file_exists(save_path),
+			"New Game→6V2→PvE SaveService barrier failed: " + str(saved)):
+		return
+	var child: Array = []
+	var args := PackedStringArray([
+		"--headless","--path",ProjectSettings.globalize_path("res://"),
+		"-s","res://tests/presentation/g0_natural_newgame_six_v2_pve_test.gd",
+		"--","process2",save_path
+	])
+	var exit_code := OS.execute(OS.get_executable_path(),args,child,true)
+	var transcript := ""
+	for line in child:
+		transcript += str(line)
+	print("G0_NATURAL_PROCESS2_BEGIN")
+	print(transcript)
+	print("G0_NATURAL_PROCESS2_END")
+	if not _require(exit_code == 0 and transcript.contains("G0_NATURAL_PROCESS2_SAVE_RELOAD_PASS")
+			and state.sect.warehouse_resources == warehouse_before
+			and state.sect.v2_pve_reward_claims.is_empty()
+			and state.sect.v2_pve_settlement_receipts.is_empty(),
+			"Cross-process real Source A Save/Reload failed or generated premature loot; exit=%d" % exit_code):
+		return
+	print("G0_NATURAL_NEWGAME_SIX_V2_PVE_PASS "+JSON.stringify({
+		"founders":6,"recruited_v2":6,"roster":12,
+		"annex_completed":true,"source_a_6v10":true,
+		"save_reload_second_process":true,"loot_not_fabricated":true
+	}))
+	_close_game()
+	_cleanup_save()
+	quit(0)
 
 func _process2_reload() -> void:
-    if not save_path.begins_with(SAVE_PREFIX) or not FileAccess.file_exists(save_path):
-        _fail("G0 process-2 save path invalid or unavailable")
-        return
-    var owner := LiveGameRuntimeV2.new()
-    var started := owner.start(save_path,int(Time.get_unix_time_from_system())+1)
-    if not _require(bool(started.get("ok",false)) and bool(started.get("loaded",false)),
-            "G0 process-2 cannot load genuine player SaveService snapshot: "+str(started)):
-        return
-    state = owner.state()
-    var v2_ids := _ready_v2_ids()
-    var house: BuildingState = state.buildings.get("residence_002")
-    var encounter_id := HuntingPveRunV2.active_multicamp_id(state)
-    var resumed := HuntingPveRunV2.resume_active(state,encounter_id)
-    if not _require(state.disciples.size() == 12 and v2_ids.size() == 6
-            and house != null and house.status == BuildingSystem.STATUS_ACTIVE
-            and SectResidenceSystemV1.total_beds(state) == 16
-            and SectResidenceSystemV1.current_limit(state) == 12
-            and not encounter_id.is_empty() and state.sect.v2_pve_active_runs.size() == 1
-            and bool(resumed.get("ok",false))
-            and state.sect.v2_pve_reward_claims.is_empty()
-            and state.sect.v2_pve_settlement_receipts.is_empty(),
-            "G0 second process lost canonical six-V2 roster, active 6v10, annex or receipts"):
-        return
-    var counts := _battle_actor_counts((resumed["session"] as HuntingPveRunV2).battle)
-    if not _require(int(counts.get("disciples",0)) == 6 and int(counts.get("monsters",0)) == 10,
-            "G0 second-process Source A actor identity 6v10 did not persist"):
-        return
-    print("G0_NATURAL_PROCESS2_SAVE_RELOAD_PASS "+JSON.stringify({
-        "roster":state.disciples.size(),"v2_eligible":v2_ids.size(),
-        "houses":SectResidenceSystemV1.all_houses(state).size(),
-        "encounter":encounter_id,"actors":counts,"reward_claims":0,"settlements":0
-    }))
-    quit(0)
+	if not save_path.begins_with(SAVE_PREFIX) or not FileAccess.file_exists(save_path):
+		_fail("G0 process-2 save path invalid or unavailable")
+		return
+	var owner := LiveGameRuntimeV2.new()
+	var started := owner.start(save_path,int(Time.get_unix_time_from_system())+1)
+	if not _require(bool(started.get("ok",false)) and bool(started.get("loaded",false)),
+			"G0 process-2 cannot load genuine player SaveService snapshot: "+str(started)):
+		return
+	state = owner.state()
+	var v2_ids := _ready_v2_ids()
+	var house: BuildingState = state.buildings.get("residence_002")
+	var encounter_id := HuntingPveRunV2.active_multicamp_id(state)
+	var resumed := HuntingPveRunV2.resume_active(state,encounter_id)
+	if not _require(state.disciples.size() == 12 and v2_ids.size() == 6
+			and house != null and house.status == BuildingSystem.STATUS_ACTIVE
+			and SectResidenceSystemV1.total_beds(state) == 16
+			and SectResidenceSystemV1.current_limit(state) == 12
+			and not encounter_id.is_empty() and state.sect.v2_pve_active_runs.size() == 1
+			and bool(resumed.get("ok",false))
+			and state.sect.v2_pve_reward_claims.is_empty()
+			and state.sect.v2_pve_settlement_receipts.is_empty(),
+			"G0 second process lost canonical six-V2 roster, active 6v10, annex or receipts"):
+		return
+	var counts := _battle_actor_counts((resumed["session"] as HuntingPveRunV2).battle)
+	if not _require(int(counts.get("disciples",0)) == 6 and int(counts.get("monsters",0)) == 10,
+			"G0 second-process Source A actor identity 6v10 did not persist"):
+		return
+	print("G0_NATURAL_PROCESS2_SAVE_RELOAD_PASS "+JSON.stringify({
+		"roster":state.disciples.size(),"v2_eligible":v2_ids.size(),
+		"houses":SectResidenceSystemV1.all_houses(state).size(),
+		"encounter":encounter_id,"actors":counts,"reward_claims":0,"settlements":0
+	}))
+	quit(0)
 
 func _ready_v2_ids() -> Array[String]:
-    var ids: Array[String] = []
-    if state == null:
-        return ids
-    for id in state.disciples.keys():
-        var d: DiscipleState = state.disciples[id]
-        if DiscipleRealmProgressV2.progression_ready(d):
-            ids.append(str(id))
-    ids.sort()
-    return ids
+	var ids: Array[String] = []
+	if state == null:
+		return ids
+	for id in state.disciples.keys():
+		var d: DiscipleState = state.disciples[id]
+		if DiscipleRealmProgressV2.progression_ready(d):
+			ids.append(str(id))
+	ids.sort()
+	return ids
 
 func _eligible_candidates() -> Array[StringName]:
-    var ids: Array[StringName] = []
-    for raw_id in state.recruitment_candidates.keys():
-        var candidate: CandidateState = state.recruitment_candidates[raw_id]
-        if candidate != null and DiscipleBirthProfileV2.valid_complete_birth(candidate.v2_birth_profile):
-            ids.append(StringName(str(raw_id)))
-    ids.sort()
-    return ids
+	var ids: Array[StringName] = []
+	for raw_id in state.recruitment_candidates.keys():
+		var candidate: CandidateState = state.recruitment_candidates[raw_id]
+		if candidate != null and DiscipleBirthProfileV2.valid_complete_birth(candidate.v2_birth_profile):
+			ids.append(StringName(str(raw_id)))
+	ids.sort()
+	return ids
 
 func _party_is_only_authentic_v2(selected: Array, recruited_ids: Dictionary) -> bool:
-    for raw_id in selected:
-        var id := StringName(str(raw_id))
-        if not recruited_ids.has(str(id)) or not state.disciples.has(id):
-            return false
-        var d: DiscipleState = state.disciples[id]
-        if not DiscipleRealmProgressV2.progression_ready(d) or d.hp <= 0.0 \
-                or d.injury_level != 0 or d.region_id != &"sect" \
-                or not [&"IDLE",&"HOLD",&"EVALUATE"].has(d.current_action) \
-                or not d.active_pve_encounter_id.is_empty() \
-                or not d.work_cycle_state.is_empty() or d.worksite_building_id != &"":
-            return false
-    return true
+	for raw_id in selected:
+		var id := StringName(str(raw_id))
+		if not recruited_ids.has(str(id)) or not state.disciples.has(id):
+			return false
+		var d: DiscipleState = state.disciples[id]
+		if not DiscipleRealmProgressV2.progression_ready(d) or d.hp <= 0.0 \
+				or d.injury_level != 0 or d.region_id != &"sect" \
+				or not [&"IDLE",&"HOLD",&"EVALUATE"].has(d.current_action) \
+				or not d.active_pve_encounter_id.is_empty() \
+				or not d.work_cycle_state.is_empty() or d.worksite_building_id != &"":
+			return false
+	return true
 
 func _open_guidance_ui() -> bool:
-    var target := _find_button(game,"BuildingHit_guidance")
-    if not await _press(target,"real map Dẫn Tiên entry"):
-        return false
-    var open_guidance := _find_button(game,"OpenDanTienScreenV2")
-    if not await _press(open_guidance,"B1 Dẫn Tiên open"):
-        return false
-    return _require(game.get_node_or_null("DanTienScreenV2/TriFacilityB1LiveAdapterV1") != null,
-        "B1 real adapter did not appear after Guidance UI opened")
+	var target := _find_button(game,"BuildingHit_guidance")
+	if not await _press(target,"real map Dẫn Tiên entry"):
+		return false
+	var open_guidance := _find_button(game,"OpenDanTienScreenV2")
+	if not await _press(open_guidance,"B1 Dẫn Tiên open"):
+		return false
+	return _require(game.get_node_or_null("DanTienScreenV2/TriFacilityB1LiveAdapterV1") != null,
+		"B1 real adapter did not appear after Guidance UI opened")
 
 func _battle_actor_counts(battle: MapBattleV2) -> Dictionary:
-    var disciple_count := 0
-    var monster_count := 0
-    if battle == null:
-        return {}
-    for raw_id in battle.actors.keys():
-        var actor: Dictionary = battle.actors[raw_id]
-        if str(actor.get("side","")) == "disciple":
-            disciple_count += 1
-        elif str(actor.get("side","")) == "monster":
-            monster_count += 1
-    return {"disciples":disciple_count,"monsters":monster_count}
+	var disciple_count := 0
+	var monster_count := 0
+	if battle == null:
+		return {}
+	for raw_id in battle.actors.keys():
+		var actor: Dictionary = battle.actors[raw_id]
+		if str(actor.get("side","")) == "disciple":
+			disciple_count += 1
+		elif str(actor.get("side","")) == "monster":
+			monster_count += 1
+	return {"disciples":disciple_count,"monsters":monster_count}
 
 func _verify_natural_new_game_build_gate() -> bool:
 	var hall := SectHallSystemV1.hall(state)
