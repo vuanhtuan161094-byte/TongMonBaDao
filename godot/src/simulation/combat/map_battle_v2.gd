@@ -193,6 +193,8 @@ func setup(id: String, party: Array, monsters: Array, keep_encounter_open: bool 
             world_actor["home_position"] = world_actor["position"]
             if str(world_actor["side"]) == "monster":
                 world_actor["patrol_phase"] = int(hash(str(world_actor.get("spawn_slot_id",""))) % 4)
+            elif str(world_actor["side"]) == "disciple":
+                world_actor["home_position"] = world_actor["position"]
     return {"ok":true,"encounter_id":id}
 
 func setup_open_world(id: String, party: Array, monsters: Array, options: Dictionary) -> Dictionary:
@@ -798,6 +800,12 @@ func _nearest_enemy(actor: Dictionary) -> Dictionary:
         if str(other["side"]) == str(actor["side"]) or float(other["hp"]) <= 0.0:
             continue
         var distance := (actor["position"] as Vector2).distance_squared_to(other["position"])
+        # Independent local hunters do not cross the entire 192x192 world
+        # simply because another zone has the nearest living monster.
+        if world_mode and str(actor.get("side","")) == "disciple":
+            var radius := float(actor.get("hunt_radius",0.0))
+            if radius > 0.0 and distance > radius*radius:
+                continue
         if distance+0.00001 < best_distance:
             best = other
             best_distance = distance
