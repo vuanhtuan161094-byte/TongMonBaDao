@@ -146,7 +146,7 @@ func _run() -> void:
         return
     var state: SimulationState = runtime.state()
     var party := _select_real_v2_party(state)
-    if not _check(party.size() == 6, "canonical QA recruitment could not create six authentic V2 actors"):
+    if not _check(party.size() == 6, "130-roster QA fixture did not provide six free authentic V2 actors"):
         return
     state.sect.v63_archive_opt_in = true
     state.sect.v63_skill_combat_opt_in = true
