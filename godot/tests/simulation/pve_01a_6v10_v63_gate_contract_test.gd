@@ -24,7 +24,7 @@ func _check(ok: bool, why: String) -> bool:
 
 func _cleanup() -> void:
     for suffix in ["", ".tmp", ".bak"]:
-        var path := SAVE_PATH + suffix
+        var path: String = SAVE_PATH + str(suffix)
         if FileAccess.file_exists(path):
             DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
 
@@ -196,7 +196,7 @@ func _run() -> void:
     }))
 
     var actor: Dictionary = battle.actors.get(str(skilled_id), {})
-    var gate_pass := bool(actor.get("v63_combat_enabled", false)) \
+    var gate_pass: bool = bool(actor.get("v63_combat_enabled", false)) \
         and actor.get("v63_skill_loadout", []).has(SKILL_ID)
     if not gate_pass:
         print("PVE01A_TEST_FIRST_EXPECTED_RED V63_ON_IN_SAVE_BUT_MULTICAMP_ACTOR_HAS_NO_ACTIVE_EQUIPPED_SKILL")
