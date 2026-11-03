@@ -232,6 +232,26 @@ func _run() -> void:
     _dispose_scene()
     await process_frame
     _cleanup_save()
+    # TEMPORARY QA-only CI bridge.  Standalone G0 natural E2E runs in a
+    # separate official Godot executable and returns its real exit code/log.
+    # Parent O2 stays independent; this bridge is removed after evidence.
+    var natural_output: Array = []
+    var args := PackedStringArray([
+        "--headless","--path",ProjectSettings.globalize_path("res://"),
+        "-s","res://tests/presentation/g0_natural_newgame_six_v2_pve_test.gd"
+    ])
+    var child_exit: int = OS.execute(OS.get_executable_path(),args,natural_output,true)
+    var transcript := ""
+    for row in natural_output:
+        transcript += str(row)
+    print("G0_NATURAL_STANDALONE_BEGIN")
+    print(transcript)
+    print("G0_NATURAL_STANDALONE_END")
+    print("G0_NATURAL_STANDALONE_EXIT="+str(child_exit))
+    if child_exit != 0:
+        print("G0_NATURAL_TEST_FIRST_RED exit="+str(child_exit))
+    else:
+        print("G0_NATURAL_TEST_FIRST_GREEN")
     quit(0)
 
 func _recruitable_candidate_ids() -> Array:
