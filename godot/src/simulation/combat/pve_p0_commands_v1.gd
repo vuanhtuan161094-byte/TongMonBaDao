@@ -289,10 +289,10 @@ static func return_one(owner: SimulationRuntimeOwnerV2,
         disciple.hp = float(previous["hp"])
         disciple.injury_level = int(previous["injury_level"])
         disciple.injury_recover_at_tick = int(previous["injury_recover_at_tick"])
-        disciple.region_id = previous["region_id"]
-        disciple.target_region_id = previous["target_region_id"]
-        disciple.current_action = previous["current_action"]
-        disciple.active_pve_encounter_id = previous["reservation"]
+        disciple.region_id = StringName(str(previous["region_id"]))
+        disciple.target_region_id = StringName(str(previous["target_region_id"]))
+        disciple.current_action = StringName(str(previous["current_action"]))
+        disciple.active_pve_encounter_id = str(previous["reservation"])
         return {"ok":false,"reason":"p0_return_checkpoint_failed",
             "detail":checkpoint.get("reason","unknown")}
     return {"ok":true,"returned":disciple_id,"injured":downed,
