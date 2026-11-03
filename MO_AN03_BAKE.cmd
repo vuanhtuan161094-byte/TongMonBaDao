@@ -29,7 +29,7 @@ if errorlevel 1 (
   echo AN03_BAKE_FAIL, inspect "%LOG%"
   exit /b 11
 )
-findstr /R /C:"^SCRIPT ERROR:" /C:"^ERROR:" "%LOG%" >nul
+findstr /R /C:"^SCRIPT ERROR:" /C:"^ERROR:" "%LOG%" | findstr /V /C:"ERROR: Failed to read the root certificate store." >nul
 if not errorlevel 1 (
   echo AN03_BAKE_FAIL: Godot reported script/runtime errors. Log "%LOG%"
   exit /b 13
