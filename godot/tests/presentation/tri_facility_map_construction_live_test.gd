@@ -106,6 +106,8 @@ func _run() -> void:
         var gate: Dictionary = SectResidenceSystemV1.can_construct(state,candidate)
         if not bool(gate.get("ok",false)):
             continue
+        if not str(game.call("_residence_site_actor_conflict_reason",candidate)).is_empty():
+            continue
         var world_point := SectIsometricWorldV1.project(Vector2(candidate))
         var local_view := SectIsometricWorldV1.VIEW_SIZE*0.5 + (world_point-camera.position)*camera.zoom.x
         var candidate_screen := local_view+SectIsometricWorldV1.MAP_SCREEN_OFFSET

@@ -9,7 +9,8 @@ set "GODOT=E:\TongMonBaDaoWorkspace\04_Tools\Godot\Godot_v4.7.2-stable_win64.exe
 set "GIT=C:\Program Files\Git\cmd\git.exe"
 set "VERIFY=%GAME_ROOT%\tools\windows\run\Verify-TRI03Source.ps1"
 set "STARTER=%GAME_ROOT%\tools\windows\run\Start-TRI03Game.ps1"
-set "PROFILE=E:\TongMonBaDaoWorkspace\03_QA_Logs\TRI03_OWNER_FINAL_20261103\owner_play_profile"
+set "PROFILE=E:\TongMonBaDaoWorkspace\03_QA_Logs\TRI03_OWNER_FINAL_20261103\one_game_playtest_profile"
+if defined TMB_TRI03_PLAY_PROFILE set "PROFILE=%TMB_TRI03_PLAY_PROFILE%"
 set "IMPORT_STAMP=%PROFILE%\last_import_fingerprint.txt"
 set "IMPORT_LOG=%PROFILE%\Logs\godot_import.log"
 set "PLAY_LOG=%PROFILE%\Logs\godot_play.log"
@@ -44,7 +45,7 @@ if not exist "%PROFILE%\AppData\Roaming" mkdir "%PROFILE%\AppData\Roaming"
 if not exist "%PROFILE%\AppData\Local" mkdir "%PROFILE%\AppData\Local"
 if not exist "%PROFILE%\Logs" mkdir "%PROFILE%\Logs"
 
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%VERIFY%" -GameRoot "%GAME_ROOT%"
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%VERIFY%" -GameRoot "%GAME_ROOT%" -ProfileRoot "%PROFILE%"
 if errorlevel 1 (
   echo Source verification failed. No game was launched.
   pause

@@ -145,7 +145,7 @@ func _build_sites_panel() -> Control:
 	management_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	management_scroll.add_child(content)
 	card.add_child(management_scroll)
-	content.add_child(UI.section_heading("Mở rộng khu cư trú", "hall", UI.JADE))
+	content.add_child(UI.section_heading("Mở rộng khu cư trú", "guide", UI.JADE))
 	var selected_id := str(_vm.get("selected_residence_id", ""))
 	var selected_site := _find_site(selected_id)
 	var house_row := HBoxContainer.new()
@@ -183,7 +183,7 @@ func _build_sites_panel() -> Control:
 	var upgrade_content := VBoxContainer.new()
 	upgrade_content.add_theme_constant_override("separation",6)
 	upgrade_block.add_child(upgrade_content)
-	upgrade_content.add_child(UI.section_heading("Nâng xá · +2 giường mỗi cấp", "bed", UI.GOLD))
+	upgrade_content.add_child(UI.section_heading("Nâng xá · +2 giường mỗi cấp", "upgrade", UI.GOLD))
 	var upgrade_costs: Array[String] = []
 	for cost in _vm.get("upgrade_costs",[]):
 		upgrade_costs.append("%s %s" % [str(cost.get("name","")),str(cost.get("amount",""))])
@@ -200,7 +200,7 @@ func _build_sites_panel() -> Control:
 	var build_content := VBoxContainer.new()
 	build_content.add_theme_constant_override("separation",6)
 	building_block.add_child(build_content)
-	build_content.add_child(UI.section_heading("Xây thêm nhà", "hall", UI.JADE))
+	build_content.add_child(UI.section_heading("Xây thêm nhà", "build", UI.JADE))
 	var hall_level := int(_vm.get("hall_level",0))
 	var hall_required := int(_vm.get("next_house_hall_level",11))
 	var next_house := int(_vm.get("next_house_number",2))
@@ -224,7 +224,7 @@ func _build_sites_panel() -> Control:
 	var assignment_content := VBoxContainer.new()
 	assignment_content.add_theme_constant_override("separation",6)
 	assignment_block.add_child(assignment_content)
-	assignment_content.add_child(UI.section_heading("Phân phòng", "person", UI.GOLD))
+	assignment_content.add_child(UI.section_heading("Phân phòng", "assignment", UI.GOLD))
 	var assignment_row := HBoxContainer.new()
 	assignment_row.add_theme_constant_override("separation",8)
 	var disciple_picker := _option_picker("ResidenceRoomDisciple",_vm.get("room_disciple_options",[]),str(_vm.get("room_assignment_disciple_id","")))

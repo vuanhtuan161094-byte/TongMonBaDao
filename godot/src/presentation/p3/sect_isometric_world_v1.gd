@@ -17,39 +17,11 @@ const NEW_GAME_FOCUS_CELL := Vector2(92,96)
 # Option B is a presentation-only layout seed in the existing 48x48 starter.
 # The model's route origin is the reserved gate point; no actor spawn or
 # SimulationState field is changed by this map-only coordinate.
-const TYPE_ANCHORS := {
-    "main_hall": Vector2i(81,89),
-    "warehouse": Vector2i(95,91),
-    "forge": Vector2i(95,95),
-    "residence": Vector2i(76,97),
-    "cultivation": Vector2i(88,81),
-    "ren_than_duong": Vector2i(77,93),
-    "medicine": Vector2i(76,102),
-    "alchemy_hall": Vector2i(98,86),
-    "mine": Vector2i(92,83),
-    "linh_forest": Vector2i(82,104),
-    "spirit_field": Vector2i(103,93),
-    "guidance": Vector2i(78,84),
-    "gate": Vector2i(96,102)
-}
+const TYPE_ANCHORS := SectResidenceSiteV1.LEGACY_MAP_ANCHORS
 # A deliberate New Game composition: the Hall is the hub, Residence sits to
 # the west, Guidance to the south, and Warehouse/Forge form the east work wing.
 # This is a versioned visual layout; old saves retain their original anchors.
-const TYPE_ANCHORS_NEW_GAME := {
-    "main_hall": Vector2i(81,89),
-    "warehouse": Vector2i(98,88),
-    "forge": Vector2i(107,87),
-    "residence": Vector2i(76,97),
-    "cultivation": Vector2i(89,80),
-    "ren_than_duong": Vector2i(77,82),
-    "medicine": Vector2i(74,105),
-    "alchemy_hall": Vector2i(106,84),
-    "mine": Vector2i(74,82),
-    "linh_forest": Vector2i(74,90),
-    "spirit_field": Vector2i(108,96),
-    "guidance": Vector2i(100,104),
-    "gate": Vector2i(96,102)
-}
+const TYPE_ANCHORS_NEW_GAME := SectResidenceSiteV1.NEW_GAME_MAP_ANCHORS
 const PRODUCER_TYPES := {
     "main_hall":"main_hall",
     "mine":"mine",

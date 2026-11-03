@@ -45,13 +45,35 @@ func _run() -> void:
 		and SectHallSystemV1.hall(state).level == int(expected.get("hall_level",-1)),
 		"independent reload changed buildings, Residence count or Hall level"):
 		return
+	var house_id := str(expected.get("g1_house_id",""))
+	var house = state.buildings.get(house_id)
+	var site := Vector2i(int(expected.get("g1_site_x",-999)),int(expected.get("g1_site_y",-999)))
+	var build_request_id := str(expected.get("g1_build_request_id",""))
+	var build_receipts: Variant = state.sect.hall_governance.get("residence_build_receipts",{})
+	var expected_cost: Variant = expected.get("g1_cost",{})
+	var warehouse := WarehouseSystem.new()
+	if not _check(house is BuildingState
+		and house.status == BuildingSystem.STATUS_CONSTRUCTING
+		and SectResidenceSiteV1.origin_of(house) == site
+		and int(house.production_state.get("construction_finish_tick",-1)) == int(expected.get("g1_finish_tick",-2))
+		and SectResidenceSystemV1.construction_remaining_ticks(state,house)
+			== int(expected.get("g1_duration_ticks",-1))
+		and build_receipts is Dictionary
+		and build_receipts.get(build_request_id,"") == house_id
+		and expected_cost is Dictionary
+		and warehouse.available_quantity(state,StringName(BuildingSystem.MATERIAL_WOOD)) == int(expected.get("g1_wood_after",-1))
+		and warehouse.available_quantity(state,StringName(BuildingSystem.MATERIAL_ORE)) == int(expected.get("g1_ore_after",-1))
+		and state.sect.spirit_stones == int(expected.get("g1_stones_after",-1)),
+		"independent reload lost the paid New Game Residence site, timer, exactly-once receipt or resource debit"):
+		return
 	if not _check(SectHallSystemV1.validate(state).is_empty()
 		and state.validate_invariants().is_empty(),
 		"independent reload left canonical Hall / Residence / simulation invariants invalid"):
 		return
-	print("TRI03_RECRUIT_HS09_CROSS_PROCESS_RELOAD_PASS disciple=%s roster=%d worksite=%s tokens=%d candidates=%d" % [
+	print("TRI03_RECRUIT_HS09_CROSS_PROCESS_RELOAD_PASS disciple=%s roster=%d worksite=%s tokens=%d candidates=%d house=%s site=%s timer=%d receipt=%s" % [
 		str(disciple_id),state.disciples.size(),str(disciple.worksite_building_id),
-		state.sect.disciple_recruitment_tokens,state.recruitment_candidates.size()
+		state.sect.disciple_recruitment_tokens,state.recruitment_candidates.size(),
+		house_id,str(site),SectResidenceSystemV1.construction_remaining_ticks(state,house),build_request_id
 	])
 	for path in [save_path,save_path+".bak",save_path+".tmp",manifest_path]:
 		if FileAccess.file_exists(path):

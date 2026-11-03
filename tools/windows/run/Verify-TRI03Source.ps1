@@ -1,12 +1,22 @@
 param(
     [Parameter(Mandatory = $true)]
-    [string] $GameRoot
+    [string] $GameRoot,
+    [string] $ProfileRoot = ""
 )
 
 $ErrorActionPreference = 'Stop'
+if ([string]::IsNullOrWhiteSpace($ProfileRoot)) {
+    $ProfileRoot = 'E:\TongMonBaDaoWorkspace\03_QA_Logs\TRI03_OWNER_FINAL_20261103\one_game_playtest_profile'
+}
+$qaRoot = [IO.Path]::GetFullPath('E:\TongMonBaDaoWorkspace\03_QA_Logs').TrimEnd('\')
+$profileFull = [IO.Path]::GetFullPath($ProfileRoot).TrimEnd('\')
+if (-not $profileFull.StartsWith($qaRoot + [IO.Path]::DirectorySeparatorChar, [StringComparison]::OrdinalIgnoreCase)) {
+    [Console]::Error.WriteLine('TRI03_SOURCE_VERIFY_FAIL: QA profile must be under E:\TongMonBaDaoWorkspace\03_QA_Logs.')
+    exit 5
+}
 $git = 'C:\Program Files\Git\cmd\git.exe'
 $manifestPath = Join-Path $GameRoot 'tools\windows\run\tri03_runtime_source_manifest.json'
-$profile = 'E:\TongMonBaDaoWorkspace\03_QA_Logs\TRI03_OWNER_FINAL_20261103\owner_play_profile'
+$profile = $profileFull
 $verifyLog = Join-Path $profile 'Logs\source_verify.txt'
 $safeRoot = [IO.Path]::GetFullPath($GameRoot).TrimEnd('\')
 $safeDirectory = $safeRoot.Replace('\', '/')

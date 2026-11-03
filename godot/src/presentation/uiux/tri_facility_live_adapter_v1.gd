@@ -1,6 +1,6 @@
 extends Control
-## B1 view-model/callback bridge: delegates all mutations to existing canonical UI/actions.
-## The original full management screen remains underneath and is always accessible.
+## B1 view-model/callback bridge: one visible facility surface delegates all mutations to canonical UI/actions.
+## The host stays hidden while this adapter is open and supplies state, portraits and callback authority only.
 
 const HALL_B1 = preload("res://src/presentation/uiux/dai_dien_screen_b1_v1.gd")
 const HOUSE_B1 = preload("res://src/presentation/uiux/de_tu_xa_screen_b1_v1.gd")
@@ -369,10 +369,10 @@ func _guidance_model() -> Dictionary:
             "origin":_ui_name(str(candidate.origin_id), UI_ORIGIN_NAMES) if not str(candidate.origin_id).is_empty() else "Xuất thân chưa ghi",
             "personality":"%s · %s · %d tuổi / thọ %d" % [_ui_name(str(candidate.race_id), UI_RACE_NAMES) if not str(candidate.race_id).is_empty() else "Chưa rõ chủng tộc", "Nữ" if str(candidate.sex_id) == "female" else "Nam",candidate.age,candidate.max_lifespan],
             "status":"%s · Hồ sơ sinh %s" % [source, "hợp lệ" if valid_birth else "chưa hợp lệ"],
-            "tam_values":[candidate.aptitude, candidate.constitution, candidate.mind_nature],
+            "tam_values":[candidate.aptitude, candidate.constitution],
             "tu_values":[candidate.potential, candidate.comprehension, candidate.fortune, candidate.charisma],
-            "tam_summary":"Tư %.0f · Cốt %.0f · Tâm %.0f" % [candidate.aptitude,candidate.constitution,candidate.mind_nature],
-            "tu_summary":"Tiềm %.0f · Tuệ %.0f · Duyên %.0f · Mị %.0f" % [candidate.potential,candidate.comprehension,candidate.fortune,candidate.charisma],
+            "tam_summary":"Tư Chất %.0f · Căn Cốt %.0f · Tiềm Lực %.0f" % [candidate.aptitude,candidate.constitution,candidate.potential],
+            "tu_summary":"Thông Tuệ %.0f · Cơ Duyên %.0f · Mị Lực %.0f" % [candidate.comprehension,candidate.fortune,candidate.charisma],
             "root_values":_candidate_root_values(candidate),
             "special_identity":_candidate_disclosed_identity(candidate),
             "role_fit":role_fit,
@@ -381,8 +381,8 @@ func _guidance_model() -> Dictionary:
             "metrics":[
                 {"label":"PHẨM","value":quality,"icon":"rank"},
                 {"label":"TUỔI","value":str(candidate.age),"icon":"person"},
-                {"label":"LINH CĂN","value":_ui_name(str(candidate.spiritual_root_quality), UI_ROOT_NAMES),"icon":"leaf"},
-                {"label":"NGHỀ","value":profession,"icon":"guide"}
+				{"label":"LINH CĂN","value":_ui_name(str(candidate.spiritual_root_quality), UI_ROOT_NAMES),"icon":"root"},
+				{"label":"NGHỀ","value":profession,"icon":"profession"}
             ],
             "can_accept":can_roster_accept and valid_birth and available_if_guidance_enabled(),
             "accept_reason":"" if can_roster_accept and valid_birth else ("Chỗ ở đã đủ; hãy mở rộng Đệ Tử Xá." if not can_roster_accept else "Hồ sơ sinh chưa hợp lệ; không thể nhận."),
@@ -507,7 +507,7 @@ func _recruited_disciple_model() -> Dictionary:
         "age":disciple.age,
         "root":_ui_name(str(disciple.spiritual_root_quality),UI_ROOT_NAMES),
         "profession":_ui_profession_traits(disciple.profession_traits),
-        "stats":"Tư %.0f · Cốt %.0f · Tâm %.0f · Tiềm %.0f · Tuệ %.0f · Duyên %.0f · Mị %.0f" % [disciple.aptitude,disciple.constitution,disciple.mind_nature,disciple.potential,disciple.comprehension,disciple.fortune,disciple.charisma],
+        "stats":"Tư %.0f · Cốt %.0f · Duyên %.0f · Tuệ %.0f · Mị %.0f · Tiềm %.0f" % [disciple.aptitude,disciple.constitution,disciple.fortune,disciple.comprehension,disciple.charisma,disciple.potential],
         "portrait":texture
     }
 
@@ -537,15 +537,6 @@ func _ui_profession_traits(traits: Array) -> String:
     for trait_id in traits:
         names.append(str(UI_PROFESSION_NAMES.get(str(trait_id),"Thiên phú khác")))
     return " · ".join(names)
-
-func _open_full_details() -> void:
-    if _host == null:
-        return
-    if _mode == "residence":
-        _host.call("_tab", 5)
-    elif _mode == "hall":
-        _host.call("_tab", 0)
-    queue_free()
 
 func _host_feedback() -> String:
     if _host == null:

@@ -277,7 +277,7 @@ func _run() -> void:
     await process_frame
 
     var attributes := str(ui.call("_disciple_tab_text","Thuộc tính",disciple))
-    if not attributes.contains("ẢNH HƯỞNG D7") or not attributes.contains("Tiềm Lực: +0,05% Tu Vi RealmCore") or not attributes.contains("Tâm Tính: Luyện Tâm chưa mở"):
+    if not attributes.contains("ẢNH HƯỞNG LỤC DUY") or not attributes.contains("Tiềm Lực: +0,05% Tu Vi RealmCore") or attributes.contains("Tâm Tính"):
         _fail("attribute explanations are missing or do not match V2 authority")
         return
     ui.call("_open_disciple_deep_screen",disciple.id,"Thuộc tính")

@@ -1,5 +1,23 @@
 extends Control
-## Original vector glyphs; no external sprite sheet or third-party UI artwork.
+## Shared Source A-compatible presentation icon atlas.
+## The atlas is original AI-generated artwork; it is not Source A or a licensed source asset.
+
+const ICON_ATLAS: Texture2D = preload("res://art/uiux/sect_management_icons_generated_v1.png")
+const ICON_CELLS := {
+	"gold": Vector2i(0, 0), "spirit_stone": Vector2i(0, 0),
+	"leaf": Vector2i(1, 0), "wood": Vector2i(1, 0),
+	"resource": Vector2i(2, 0), "ore": Vector2i(2, 0),
+	"recruit_order": Vector2i(3, 0),
+	"bed": Vector2i(0, 1),
+	"guide": Vector2i(1, 1), "gate": Vector2i(1, 1), "hall": Vector2i(1, 1), "temple": Vector2i(1, 1),
+	"build": Vector2i(2, 1), "upgrade": Vector2i(3, 1),
+	"timer": Vector2i(0, 2),
+	"person": Vector2i(1, 2), "portrait": Vector2i(1, 2), "worker": Vector2i(1, 2),
+	"assignment": Vector2i(2, 2),
+	"rank": Vector2i(3, 2), "quality": Vector2i(3, 2),
+	"root": Vector2i(0, 3), "search": Vector2i(1, 3),
+	"map": Vector2i(2, 3), "office": Vector2i(3, 3), "profession": Vector2i(3, 3)
+}
 
 var kind := "jade"
 var tint := Color(0.85, 0.66, 0.34, 1.0)
@@ -14,6 +32,27 @@ func _draw() -> void:
 		return
 	var offset := (size - Vector2(24.0, 24.0) * scale_factor) * 0.5
 	draw_set_transform(offset, 0.0, Vector2(scale_factor, scale_factor))
+	if ICON_CELLS.has(kind):
+		var cell: Vector2i = ICON_CELLS[kind]
+		var atlas_size := ICON_ATLAS.get_size()
+		var left := roundi(float(cell.x) * atlas_size.x / 4.0)
+		var right := roundi(float(cell.x + 1) * atlas_size.x / 4.0)
+		var top := roundi(float(cell.y) * atlas_size.y / 4.0)
+		var bottom := roundi(float(cell.y + 1) * atlas_size.y / 4.0)
+		var source := Rect2(Vector2(left, top), Vector2(right - left, bottom - top))
+		draw_texture_rect_region(ICON_ATLAS, Rect2(Vector2.ZERO, Vector2(24.0, 24.0)), source)
+		draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+		return
+	_draw_fallback_glyph()
+	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+
+static func has_atlas_icon(icon_kind: String) -> bool:
+	return ICON_CELLS.has(icon_kind)
+
+static func atlas_cell(icon_kind: String) -> Vector2i:
+	return ICON_CELLS.get(icon_kind, Vector2i(-1, -1))
+
+func _draw_fallback_glyph() -> void:
 	var pale := Color(0.92, 0.86, 0.69, 0.95)
 	var dark := Color(0.08, 0.15, 0.15, 1.0)
 	match kind:
@@ -70,4 +109,3 @@ func _draw() -> void:
 			draw_circle(Vector2(12, 12), 8.0, tint)
 			draw_line(Vector2(12, 4), Vector2(12, 20), pale, 1.4, true)
 			draw_line(Vector2(4, 12), Vector2(20, 12), pale, 1.4, true)
-	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)

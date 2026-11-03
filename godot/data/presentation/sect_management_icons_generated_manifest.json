@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "asset_path": "res://art/uiux/sect_management_icons_generated_v1.png",
+  "sha256": "6116f6768d3d1157deb0cd7873da64bc160a05353ea0ffb31494a52431c84533",
+  "dimensions": [1263, 1245],
+  "atlas_cells": [4, 4],
+  "provenance": {
+    "type": "original_generated_artwork",
+    "tool": "OpenAI ImageGen",
+    "source_a_asset": false,
+    "source_a_approval_claimed": false,
+    "owner_art_approval": "pending",
+    "note": "Created under owner authorization for the TRI-03 UI icon inventory. This is not Source A, not extracted from ZQZS, and not a character portrait."
+  },
+  "regions": {
+    "spirit_stone": [0, 0],
+    "spirit_wood": [1, 0],
+    "ore": [2, 0],
+    "recruitment_order": [3, 0],
+    "bed": [0, 1],
+    "facility_gate": [1, 1],
+    "construction": [2, 1],
+    "upgrade": [3, 1],
+    "timer": [0, 2],
+    "worker": [1, 2],
+    "assignment": [2, 2],
+    "quality": [3, 2],
+    "spiritual_root": [0, 3],
+    "search": [1, 3],
+    "map": [2, 3],
+    "sect_office": [3, 3]
+  }
+}

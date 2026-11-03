@@ -65,26 +65,25 @@ static func button(text_value: String, primary: bool, accent: Color) -> Button:
 static func section_heading(title: String, icon_kind: String, accent: Color) -> HBoxContainer:
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 8)
-	var icon = ICON_SCRIPT.new()
-	icon.kind = icon_kind
-	icon.tint = accent
-	icon.custom_minimum_size = Vector2(24, 24)
-	row.add_child(icon)
+	row.add_child(icon(icon_kind, 26, accent))
 	var title_label := label(title, 17, PAPER, true)
 	title_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	row.add_child(title_label)
 	return row
+
+static func icon(icon_kind: String, size: int = 24, accent: Color = GOLD) -> Control:
+	var result = ICON_SCRIPT.new()
+	result.kind = icon_kind
+	result.tint = accent
+	result.custom_minimum_size = Vector2(size, size)
+	return result
 
 static func metric_card(title: String, value: String, icon_kind: String, accent: Color) -> PanelContainer:
 	var card := panel("MetricCard", accent, SURFACE_LIGHT)
 	card.custom_minimum_size = Vector2(142, 66)
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 9)
-	var icon = ICON_SCRIPT.new()
-	icon.kind = icon_kind
-	icon.tint = accent
-	icon.custom_minimum_size = Vector2(28, 28)
-	row.add_child(icon)
+	row.add_child(icon(icon_kind, 30, accent))
 	var stack := VBoxContainer.new()
 	stack.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	stack.add_theme_constant_override("separation", 1)
@@ -118,11 +117,8 @@ static func portrait_slot(display_name: String, texture_value: Variant, size: Ve
 	else:
 		# Do not render the repeated first letter of "Chưa bổ nhiệm" as a fake portrait.
 		# A neutral silhouette is used only when the host supplies no real texture.
-		var placeholder = ICON_SCRIPT.new()
+		var placeholder := icon("person", 32, MUTED if display_name.is_empty() or display_name == "Chưa bổ nhiệm" else GOLD)
 		placeholder.name = "UnassignedPortraitGlyph"
-		placeholder.kind = "person"
-		placeholder.tint = MUTED if display_name.is_empty() or display_name == "Chưa bổ nhiệm" else GOLD
-		placeholder.custom_minimum_size = Vector2(28, 28)
 		placeholder.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 		placeholder.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 		card.add_child(placeholder)
@@ -131,11 +127,7 @@ static func portrait_slot(display_name: String, texture_value: Variant, size: Ve
 static func resource_item(resource_name: String, amount: String, icon_kind: String) -> HBoxContainer:
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 6)
-	var icon = ICON_SCRIPT.new()
-	icon.kind = icon_kind
-	icon.tint = GOLD
-	icon.custom_minimum_size = Vector2(20, 20)
-	row.add_child(icon)
+	row.add_child(icon(icon_kind, 22, GOLD))
 	var name_label := label(resource_name, 12, MUTED, false)
 	name_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	name_label.autowrap_mode = TextServer.AUTOWRAP_OFF

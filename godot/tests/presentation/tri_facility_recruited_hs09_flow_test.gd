@@ -1,12 +1,19 @@
 extends SceneTree
-## Real P3.2 map -> B1 Dẫn Tiên -> recruit -> HS-09 -> assign -> Save/Reload.
-## UI buttons are activated by this harness; this is not physical mouse QA.
+## Real New Game -> paid map construction -> B1 Dẫn Tiên -> recruit -> HS-09
+## assignment -> Save/Reload. UI events run in Godot; this is not physical mouse QA.
 const SAVE_PREFIX := "user://tri03_recruited_hs09_flow_"
 
 var game: Control
 var state: SimulationState
 var save_path := ""
 var capture_dir := ""
+var g1_build_request_id := ""
+var g1_house_id := ""
+var g1_house_site := SectResidenceSiteV1.UNSELECTED
+var g1_build_cost: Dictionary = {}
+var g1_wood_after := -1
+var g1_ore_after := -1
+var g1_stones_after := -1
 
 func _initialize() -> void:
 	call_deferred("_run")
@@ -44,9 +51,14 @@ func _run() -> void:
 	if not _require(starter_route_visible,
 		"new-game residence has no validated, visibly rendered route from the sect gate"):
 		return
-	for plot in SectResidenceSiteV1.available_plots(state):
+	var available_plots := SectResidenceSiteV1.available_plots(state)
+	if not _require(not available_plots.is_empty(),
+		"fresh game has no collision-free Residence plots"):
+		return
+	for sample_index in [0,int(available_plots.size()/2),available_plots.size()-1]:
+		var plot: Vector2i = available_plots[sample_index]
 		if not _require(not SectResidenceSiteV1.path_to_door(state,plot).is_empty(),
-			"a catalogued residence lot has no clear path to its door: %s" % str(plot)):
+			"sampled legal Residence lot has no path to its exterior door: %s" % str(plot)):
 			return
 	if not await _verify_natural_new_game_build_gate():
 		return
@@ -79,13 +91,13 @@ func _run() -> void:
 	var tokens_after_accept := state.sect.disciple_recruitment_tokens
 	var adapter := game.get_node_or_null("DanTienScreenV2/TriFacilityB1LiveAdapterV1")
 	var disciple_model: Dictionary = adapter.call("_recruited_disciple_model") if adapter != null else {}
-	var expected_stats := "Tư %.0f · Cốt %.0f · Tâm %.0f · Tiềm %.0f · Tuệ %.0f · Duyên %.0f · Mị %.0f" % [
-		recruited.aptitude,recruited.constitution,recruited.mind_nature,recruited.potential,
-		recruited.comprehension,recruited.fortune,recruited.charisma
+	var expected_stats := "Tư %.0f · Cốt %.0f · Duyên %.0f · Tuệ %.0f · Mị %.0f · Tiềm %.0f" % [
+		recruited.aptitude,recruited.constitution,recruited.fortune,recruited.comprehension,
+		recruited.charisma,recruited.potential
 	]
 	if not _require(disciple_model.get("stats","") == expected_stats
 		and disciple_model.get("portrait") is Texture2D,
-		"recruit reveal does not expose this real disciple's exact seven stats and Source A portrait"):
+		"recruit reveal does not expose this real disciple's six canonical stats and Source A portrait"):
 		return
 	if not await _capture_frame("04_recruitment_success_reveal.png"):
 		return
@@ -167,7 +179,17 @@ func _run() -> void:
 		"recruitment_tokens":state.sect.disciple_recruitment_tokens,
 		"building_count":state.buildings.size(),
 		"hall_level":SectHallSystemV1.hall(state).level,
-		"residence_count":SectResidenceSystemV1.all_houses(state).size()
+		"residence_count":SectResidenceSystemV1.all_houses(state).size(),
+		"g1_house_id":g1_house_id,
+		"g1_site_x":g1_house_site.x,
+		"g1_site_y":g1_house_site.y,
+		"g1_finish_tick":int(state.buildings[g1_house_id].production_state.get("construction_finish_tick",-1)),
+		"g1_duration_ticks":SectResidenceSystemV1.construction_duration_ticks(2),
+		"g1_build_request_id":g1_build_request_id,
+		"g1_cost":g1_build_cost,
+		"g1_wood_after":g1_wood_after,
+		"g1_ore_after":g1_ore_after,
+		"g1_stones_after":g1_stones_after
 	}
 	var expected_file := FileAccess.open(expected_path,FileAccess.WRITE)
 	if not _require(expected_file != null,"could not write the isolated cross-process reload manifest"):
@@ -194,46 +216,212 @@ func _verify_natural_new_game_build_gate() -> bool:
 		return false
 	var buildings_before := state.buildings.size()
 	var event_count_before := state.building_event_count
+	var warehouse := WarehouseSystem.new()
+	var wood_before := warehouse.available_quantity(state,StringName(BuildingSystem.MATERIAL_WOOD))
+	var ore_before := warehouse.available_quantity(state,StringName(BuildingSystem.MATERIAL_ORE))
+	var stones_before := state.sect.spirit_stones
+	g1_build_cost = SectResidenceSystemV1.build_cost(state).duplicate(true)
+	var real_gate := SectResidenceSystemV1.can_construct(state)
+	if not _require(bool(real_gate.get("ok",false)),
+		"canonical New Game stock cannot pay for its first optional Residence expansion: %s" % str(real_gate)):
+		return false
+	if not _require(wood_before >= int(g1_build_cost.get(BuildingSystem.MATERIAL_WOOD,0))
+		and ore_before >= int(g1_build_cost.get(BuildingSystem.MATERIAL_ORE,0))
+		and stones_before >= int(g1_build_cost.get("spirit_stones",0)),
+		"real New Game Warehouse/treasury is below the displayed Residence cost"):
+		return false
 	game.call("_enter_build_mode")
 	await process_frame
 	var catalog := _find_button(game,"BuildCatalogResidence")
 	var catalog_art := game.find_child("BuildCatalogResidenceArt",true,false) as Control
-	var open_hall := _find_button(game,"BuildModeOpenHall")
 	var description := game.get("build_mode_description") as Label
-	if not await _capture_frame("01_new_game_build_catalog_gate.png"):
+	if not await _capture_frame("01_new_game_build_catalog_ready.png"):
 		return false
 	if not _require(catalog_art != null
 		and bool(catalog_art.get("_original_source"))
 		and str(catalog_art.get("_source_model_id")) == "510076",
 		"player build catalog did not render the SHA-gated Source A Residence model 510076"):
 		return false
-	if not _require(catalog != null and catalog.disabled
-		and catalog.tooltip_text.contains("Đại Điện Lv1/11")
-		and catalog.tooltip_text.contains("40/500 Mộc")
+	if not _require(catalog != null and not catalog.disabled
+		and catalog.tooltip_text.contains("Đủ điều kiện")
+		and catalog.tooltip_text.contains("40/40 Mộc")
+		and catalog.tooltip_text.contains("40/30 Thiết")
+		and catalog.tooltip_text.contains("500/500 Linh Thạch")
 		and description != null and description.text.contains("Đại Điện Lv1")
-		and description.text.contains("mở ở Lv11"),
-		"fresh build catalog failed to explain the real Hall Lv11 annex gate"):
+		and description.text.contains("mở ở Lv1"),
+		"New Game build catalog does not explain current access/cost: tooltip=%s description=%s" % [
+			catalog.tooltip_text if catalog != null else "<missing>",
+			description.text if description != null else "<missing>"]):
 		return false
-	if not await _press(open_hall,"construction prerequisite route to Đại Điện"):
+	if not await _press(catalog,"choose paid Residence from the real build catalog"):
 		return false
 	await process_frame
-	var adapter := game.get_node_or_null("DaiDienScreenV1/TriFacilityB1LiveAdapterV1")
-	var hall_upgrade := _find_button(adapter,"UpgradeHall") if adapter != null else null
-	var hall_model: Dictionary = adapter.call("_hall_model") if adapter != null else {}
-	if not _require(hall_upgrade != null and int(hall_model.get("building_level",0)) == 1,
-		"build-mode prerequisite did not route to the real canonical Hall upgrade screen"):
+	if not _require(str(game.get("build_mode_kind")) == "construct",
+		"Residence catalog did not enter the canonical map placement mode"):
 		return false
-	if not await _capture_frame("02_new_game_hall_upgrade_path.png"):
+	var iso := game.get("iso_world") as SectIsometricWorldV1
+	var camera := iso.get("camera") as Camera2D if iso != null else null
+	if not _require(iso != null and camera != null,
+		"P3.2 map camera is unavailable during real construction"):
 		return false
-	var hall_screen := game.get_node_or_null("DaiDienScreenV1")
-	if hall_screen != null:
-		hall_screen.queue_free()
-		await process_frame
-	if not _require(state.buildings.size() == buildings_before
-		and state.building_event_count == event_count_before,
-		"viewing the build gate/prerequisite mutated canonical buildings"):
+	var actor_cells := _actor_ground_cells()
+	var actor_plot := SectResidenceSiteV1.UNSELECTED
+	var actor_plot_point := Vector2.ZERO
+	for candidate in SectResidenceSiteV1.available_plots(state):
+		if not _plot_overlaps_actor_cell(candidate,actor_cells):
+			continue
+		var candidate_point := _visible_residence_plot_screen_point(candidate,camera,game)
+		if candidate_point.x < 0.0:
+			continue
+		actor_plot = candidate
+		actor_plot_point = candidate_point
+		break
+	if not _require(actor_plot != SectResidenceSiteV1.UNSELECTED,
+		"fresh map has no visible legal plot occupied by a real disciple actor for collision QA"):
 		return false
+	_send_map_click(actor_plot_point)
+	await process_frame
+	var blocked_confirm := _find_button(game,"ConfirmMapConstruction")
+	var blocked_label := game.get("build_mode_site_label") as Label
+	if not _require(Vector2i(game.get("build_mode_site")) == actor_plot
+		and blocked_confirm != null and blocked_confirm.disabled
+		and blocked_label != null and blocked_label.text.contains("đang đứng")
+		and state.buildings.size() == buildings_before
+		and state.building_event_count == event_count_before
+		and warehouse.available_quantity(state,StringName(BuildingSystem.MATERIAL_WOOD)) == wood_before
+		and warehouse.available_quantity(state,StringName(BuildingSystem.MATERIAL_ORE)) == ore_before
+		and state.sect.spirit_stones == stones_before,
+		"live disciple collision did not block placement without charging or mutating state"):
+		return false
+	if not await _capture_frame("02a_actor_occupied_plot_rejected.png"):
+		return false
+	var target := SectResidenceSiteV1.UNSELECTED
+	var screen_point := Vector2.ZERO
+	for candidate in SectResidenceSiteV1.available_plots(state):
+		if _plot_overlaps_actor_cell(candidate,actor_cells):
+			continue
+		var candidate_screen := _visible_residence_plot_screen_point(candidate,camera,game)
+		if candidate_screen.x < 0.0:
+			continue
+		target = candidate
+		screen_point = candidate_screen
+		break
+	if not _require(target != SectResidenceSiteV1.UNSELECTED,
+		"could not find a legal, visible New Game plot for the actual P3.2 input path"):
+		return false
+	_send_map_click(screen_point)
+	await process_frame
+	if not _require(Vector2i(game.get("build_mode_site")) == target,
+		"map pointer event did not choose the visible legal plot"):
+		return false
+	var confirm := _find_button(game,"ConfirmMapConstruction")
+	if not _require(confirm != null and not confirm.disabled,
+		"a real valid New Game plot did not enable the paid construction button"):
+		return false
+	if not await _capture_frame("02_new_game_residence_valid_placement.png"):
+		return false
+	g1_build_request_id = "map-house:%d:%d:%d:new" % [state.tick,target.x,target.y]
+	if not await _press(confirm,"confirm canonical paid Residence construction"):
+		return false
+	await process_frame
+	var built: BuildingState = state.buildings.get("residence_002")
+	var cost := g1_build_cost
+	var wood_after := warehouse.available_quantity(state,StringName(BuildingSystem.MATERIAL_WOOD))
+	var ore_after := warehouse.available_quantity(state,StringName(BuildingSystem.MATERIAL_ORE))
+	var stones_after := state.sect.spirit_stones
+	var receipts: Dictionary = state.sect.hall_governance.get("residence_build_receipts",{})
+	var duration := SectResidenceSystemV1.construction_duration_ticks(2)
+	var operation_text := str(game.call("_residence_operation_text"))
+	if not _require(built != null and built.status == BuildingSystem.STATUS_CONSTRUCTING
+		and SectResidenceSiteV1.origin_of(built) == target
+		and int(built.production_state.get("construction_finish_tick",-1)) == state.tick+duration
+		and SectResidenceSystemV1.construction_remaining_ticks(state,built) == duration
+		and operation_text.contains("Đang thi công")
+		and operation_text.contains("còn %d nhịp" % duration),
+		"real UI build did not create the selected paid House with its canonical timer/site"):
+		return false
+	if not _require(state.buildings.size() == buildings_before+1
+		and state.building_event_count == event_count_before+1
+		and receipts.get(g1_build_request_id,"") == "residence_002"
+		and wood_after == wood_before-int(cost[BuildingSystem.MATERIAL_WOOD])
+		and ore_after == ore_before-int(cost[BuildingSystem.MATERIAL_ORE])
+		and stones_after == stones_before-int(cost["spirit_stones"]),
+		"canonical construction did not debit exact resources once and write one durable receipt"):
+		return false
+	g1_house_id = str(built.id)
+	g1_house_site = target
+	g1_wood_after = wood_after
+	g1_ore_after = ore_after
+	g1_stones_after = stones_after
+	var replay := SectResidenceSystemV1.construct(state,g1_build_request_id,target)
+	if not _require(bool(replay.get("already_settled",false))
+		and state.buildings.size() == buildings_before+1
+		and warehouse.available_quantity(state,StringName(BuildingSystem.MATERIAL_WOOD)) == wood_after
+		and warehouse.available_quantity(state,StringName(BuildingSystem.MATERIAL_ORE)) == ore_after
+		and state.sect.spirit_stones == stones_after,
+		"replaying the real map construction duplicated the House or charged again"):
+		return false
+	if not await _capture_frame("03_new_game_paid_residence_constructing.png"):
+		return false
+	var close_building := _find_button(game,"CloseBuildingOperation")
+	if close_building != null and not close_building.disabled:
+		if not await _press(close_building,"close the new House operation panel"):
+			return false
+	if not _require(state.buildings.size() == buildings_before+1
+		and SectResidenceSystemV1.all_houses(state).size() == 2
+		and SectHallSystemV1.validate(state).is_empty(),
+		"closing the UI changed the paid Residence or canonical Hall/bed invariants"):
+		return false
+	print("TRI03_G1_NEW_GAME_BUILD_PASS house=%s site=%d,%d cost=%s actor_blocked=1 exactly_once=1 timer=%d route=1" % [
+			 g1_house_id,g1_house_site.x,g1_house_site.y,str(g1_build_cost),SectResidenceSystemV1.construction_duration_ticks(2)])
 	return true
+
+func _actor_ground_cells() -> Array[Vector2i]:
+	var result: Array[Vector2i] = []
+	var positions: Dictionary = game.get("actor_virtual_positions")
+	for raw_id in positions.keys():
+		if not state.disciples.has(StringName(str(raw_id))):
+			continue
+		var top_left: Vector2 = positions[raw_id]
+		var foot := top_left+DiscipleActorVisualCatalog.ACTOR_FOOT_POINT
+		var map_point := foot-SectIsometricWorldV1.LEGACY_ANCHOR \
+			+ SectIsometricWorldV1.project(Vector2(SectIsometricWorldV1.CENTER_CELL))
+		var fractional := SectIsometricWorldV1.inverse(map_point)
+		result.append(Vector2i(roundi(fractional.x),roundi(fractional.y)))
+	return result
+
+func _plot_overlaps_actor_cell(site: Vector2i, actor_cells: Array[Vector2i]) -> bool:
+	var footprint := Rect2i(site,SectResidenceSiteV1.HOUSE_FOOTPRINT)
+	var door := SectResidenceSiteV1.doorway(site)
+	for cell in actor_cells:
+		if footprint.has_point(cell) or door == cell:
+			return true
+	return false
+
+func _visible_residence_plot_screen_point(site: Vector2i, camera: Camera2D,
+		map_game: Control) -> Vector2:
+	var world_point := SectIsometricWorldV1.project(Vector2(site))
+	var local_view := SectIsometricWorldV1.VIEW_SIZE*0.5 + (world_point-camera.position)*camera.zoom.x
+	var screen_point := local_view+SectIsometricWorldV1.MAP_SCREEN_OFFSET
+	if not SectMapCamera.is_map_screen_point(screen_point):
+		return Vector2(-1,-1)
+	if Rect2(Vector2(18,144),Vector2(392,510)).has_point(screen_point):
+		return Vector2(-1,-1)
+	if Vector2i(map_game.call("_cell_at_map_screen",screen_point)) != site:
+		return Vector2(-1,-1)
+	return screen_point
+
+func _send_map_click(screen_point: Vector2) -> void:
+	var down := InputEventMouseButton.new()
+	down.button_index = MOUSE_BUTTON_LEFT
+	down.position = screen_point
+	down.pressed = true
+	game.call("_input",down)
+	var up := InputEventMouseButton.new()
+	up.button_index = MOUSE_BUTTON_LEFT
+	up.position = screen_point
+	up.pressed = false
+	game.call("_input",up)
 
 func _accept_visible_candidate() -> StringName:
 	var ids: Array = state.recruitment_candidates.keys()

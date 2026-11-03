@@ -82,9 +82,15 @@ static func maximum_instances(state: SimulationState) -> int:
     var hall := SectHallSystemV1.hall(state)
     if hall == null:
         return 1
-    # One main residence from the start; new fixed-site annexes every 10 Hall levels.
-    return mini(10, 1 + int((hall.level - 1) / 10))
+    # G1 early-play gate: the first paid annex is available at the founding Hall.
+    # Later annexes retain the existing 10-level cadence, so only the first
+    # housing expansion moves forward for New Game accessibility.
+    return mini(10, maxi(2, 1 + int((hall.level - 1) / 10)))
 
+static func required_hall_level_for_instance(ordinal: int) -> int:
+    if ordinal <= 2:
+        return 1
+    return 1 + (ordinal - 1) * 10
 static func current_limit(state: SimulationState) -> int:
     if not SectHallSystemV1.installed(state):
         return state.sect.disciple_capacity
@@ -150,12 +156,14 @@ static func ensure_live(state: SimulationState) -> Dictionary:
 
 static func build_cost(state: SimulationState) -> Dictionary:
     var ordinal := all_houses(state).size() + 1
+    # Provisional G1 first-expansion cost stays tied to real starter stock.
+    # House #2 costs 40 Wood, 30 Ore and 500 Spirit Stones; no free grant or
+    # test-only resource path is used. Higher houses scale by the same ordinal.
     return {
-        BuildingSystem.MATERIAL_WOOD: 250 * ordinal,
-        BuildingSystem.MATERIAL_ORE: 160 * ordinal,
-        "spirit_stones": 5000 * ordinal
+        BuildingSystem.MATERIAL_WOOD: 20 * ordinal,
+        BuildingSystem.MATERIAL_ORE: 15 * ordinal,
+        "spirit_stones": 250 * ordinal
     }
-
 static func can_construct(state: SimulationState,
         selected_site: Vector2i = SectResidenceSiteV1.UNSELECTED) -> Dictionary:
     if not SectHallSystemV1.installed(state) or int(state.sect.hall_governance.get("residence_schema", 0)) != SCHEMA_VERSION:

@@ -79,7 +79,7 @@ func _make_shell() -> MarginContainer:
 	var stack := VBoxContainer.new()
 	stack.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	stack.add_child(UI.label("DẪN TIÊN ĐÀI", 25, UI.PAPER, true))
-	stack.add_child(UI.label("Ứng viên • Tam Căn / Tứ Tính • tiếp dẫn", 12, UI.MUTED, false))
+	stack.add_child(UI.label("Ứng viên • Lục Duy • tiếp dẫn", 12, UI.MUTED, false))
 	header.add_child(stack)
 	var close_button := UI.button("ĐÓNG", false, UI.GOLD)
 	close_button.pressed.connect(func(): closed.emit())
@@ -175,7 +175,7 @@ func _build_candidate_panel() -> Control:
 	content.add_theme_constant_override("separation", 9)
 	content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.add_child(content)
-	content.add_child(UI.section_heading("Ứng viên", "guide", UI.GOLD))
+	content.add_child(UI.section_heading("Ứng viên", "recruit_order", UI.GOLD))
 	var capacity := UI.panel("RecruitmentCapacity",UI.RED if bool(_vm.get("capacity_full",false)) else UI.JADE,UI.SURFACE_LIGHT)
 	capacity.custom_minimum_size.y = 52
 	var capacity_row := HBoxContainer.new()
@@ -218,16 +218,20 @@ func _build_candidate_panel() -> Control:
 		var candidate_scroll := ScrollContainer.new()
 		candidate_scroll.name = "CandidateChoiceScroll"
 		candidate_scroll.custom_minimum_size.y = 58
-		candidate_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
+		candidate_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 		candidate_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 		var candidate_choices := HBoxContainer.new()
+		candidate_choices.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		candidate_choices.add_theme_constant_override("separation",6)
-		for row in pool:
+		var first_choice := clampi(_candidate_index-1,0,maxi(0,pool.size()-3))
+		for choice_index in range(first_choice,mini(pool.size(),first_choice+3)):
+			var row: Dictionary = pool[choice_index]
 			var row_id := str(row.get("id",""))
 			var selected := row_id == _candidate_id()
 			var choice := UI.button("%s\n%s" % [str(row.get("name","Ứng viên")),str(row.get("quality","Phẩm chưa rõ"))],selected,UI.GOLD if selected else UI.JADE)
 			choice.name = "CandidatePick_%s" % row_id
-			choice.custom_minimum_size = Vector2(134,54)
+			choice.custom_minimum_size = Vector2(122,54)
+			choice.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			choice.disabled = selected
 			choice.pressed.connect(_select_candidate_by_id.bind(row_id))
 			candidate_choices.add_child(choice)
@@ -246,8 +250,8 @@ func _build_candidate_panel() -> Control:
 	detail.add_child(UI.label("Phẩm: %s" % str(candidate.get("quality","—")),13,UI.GOLD,true))
 	profile.add_child(detail)
 	content.add_child(profile)
-	content.add_child(UI.label("Tam Căn · " + str(candidate.get("tam_summary","—")),12,UI.JADE,false))
-	content.add_child(UI.label("Tứ Tính · " + str(candidate.get("tu_summary","—")),12,UI.GOLD,false))
+	content.add_child(UI.label("Lục Duy · " + str(candidate.get("tam_summary","—")),12,UI.JADE,false))
+	content.add_child(UI.label(str(candidate.get("tu_summary","—")),12,UI.GOLD,false))
 	content.add_child(UI.label(str(candidate.get("root_values","Linh Căn chưa có dữ liệu")),12,UI.TEXT,false))
 	content.add_child(UI.label(str(candidate.get("special_identity","Các tầng ẩn chưa được khai mở")),11,UI.MUTED,false))
 	content.add_child(UI.label(str(candidate.get("role_fit","Chưa đủ dữ liệu tương hợp")),11,UI.JADE,false))
@@ -267,18 +271,23 @@ func _build_candidate_panel() -> Control:
 	reject.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	reject.pressed.connect(_on_reject_pressed)
 	decisions.add_child(reject)
-	panel_content.add_child(UI.section_heading("Quyết định", "check", UI.JADE))
+	panel_content.add_child(UI.section_heading("Quyết định", "office", UI.JADE))
 	panel_content.add_child(decisions)
 	content.add_child(UI.label(str(_vm.get("accept_gate","")),11,UI.MUTED,false))
 	content.add_child(_build_guidance_management())
 	var management := VBoxContainer.new()
 	management.add_theme_constant_override("separation", 6)
+	var order_row := HBoxContainer.new()
+	order_row.add_theme_constant_override("separation", 9)
+	order_row.add_child(UI.icon("recruit_order", 34, UI.GOLD))
 	var order := UI.button("CHIÊU MỘ LỆNH · CÒN %d" % int(_vm.get("recruitment_tokens", 0)), true, UI.JADE)
 	order.name = "UseRecruitmentOrder"
+	order.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	order.disabled = not bool(_vm.get("can_use_order", false))
 	order.tooltip_text = "Tốn 1 Chiêu Mộ Lệnh để tạo ứng viên; không tuyển trực tiếp." if not order.disabled else "Cần còn lệnh, hàng chờ dưới 30 và Dẫn Tiên Đài đang mở."
 	order.pressed.connect(func(): recruitment_order_requested.emit())
-	management.add_child(order)
+	order_row.add_child(order)
+	management.add_child(order_row)
 	content.add_child(management)
 	var pager := HBoxContainer.new()
 	var previous := UI.button("‹ ỨNG VIÊN TRƯỚC", false, UI.JADE)
@@ -360,7 +369,7 @@ func _build_guidance_management() -> Control:
 	var content := VBoxContainer.new()
 	content.add_theme_constant_override("separation",5)
 	panel.add_child(content)
-	content.add_child(UI.section_heading("Tiếp Dẫn chính / phụ", "person", UI.GOLD))
+	content.add_child(UI.section_heading("Tiếp Dẫn chính / phụ", "assignment", UI.GOLD))
 	var options: Array = _vm.get("guidance_options",[])
 	var main_id := str(_vm.get("guidance_main_id",""))
 	var main_row := HBoxContainer.new()
@@ -435,7 +444,7 @@ func _build_radar_panel() -> Control:
 	var content := VBoxContainer.new()
 	content.add_theme_constant_override("separation", 7)
 	card.add_child(content)
-	content.add_child(UI.section_heading("D7 • Căn cơ", "rank", UI.JADE))
+	content.add_child(UI.section_heading("Lục Duy • Căn cơ", "root", UI.JADE))
 	var radar: Control
 	var radar_factory: Variant = _vm.get("radar_factory")
 	if radar_factory is Callable and radar_factory.is_valid():
@@ -445,12 +454,14 @@ func _build_radar_panel() -> Control:
 	if radar == null:
 		radar = RADAR_SCRIPT.new()
 	radar.name = "FoundationRadar"
-	radar.custom_minimum_size = Vector2(420, 355)
+	# The chart remains readable at landscape 720p while leaving room for all
+	# four real identity metrics below it without clipping the second row.
+	radar.custom_minimum_size = Vector2(420, 260)
 	radar.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	content.add_child(radar)
 	if radar.has_method("set_values"):
 		radar.call("set_values", candidate.get("tam_values", []), candidate.get("tu_values", []))
-	content.add_child(UI.section_heading("Thông tin", "leaf", UI.GOLD))
+	content.add_child(UI.section_heading("Thông tin", "search", UI.GOLD))
 	var metrics := GridContainer.new()
 	metrics.columns = 2
 	metrics.add_theme_constant_override("h_separation", 8)

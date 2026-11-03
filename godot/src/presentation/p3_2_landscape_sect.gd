@@ -2224,6 +2224,8 @@ func _leave_build_mode(clear_selection: bool = true) -> void:
         build_mode_panel.visible = false
     if iso_world != null:
         iso_world.clear_placement_preview()
+        if iso_viewport != null:
+            iso_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
     if clear_selection:
         build_mode_kind = ""
         build_mode_house_id = &""
@@ -2237,6 +2239,8 @@ func _begin_residence_construction() -> void:
         build_mode_feedback.text = ""
     if iso_world != null:
         iso_world.clear_placement_preview()
+        if iso_viewport != null:
+            iso_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
     _refresh_build_mode_panel()
 
 func _begin_residence_relocation(house_id: StringName) -> void:
@@ -2247,6 +2251,8 @@ func _begin_residence_relocation(house_id: StringName) -> void:
         build_mode_feedback.text = ""
     if iso_world != null:
         iso_world.clear_placement_preview()
+        if iso_viewport != null:
+            iso_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
     _refresh_build_mode_panel()
 
 func _clear_build_mode_selection() -> void:
@@ -2257,6 +2263,8 @@ func _clear_build_mode_selection() -> void:
         build_mode_feedback.text = ""
     if iso_world != null:
         iso_world.clear_placement_preview()
+        if iso_viewport != null:
+            iso_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
     _refresh_build_mode_panel()
 
 func _select_build_mode_site(site: Vector2i) -> void:
@@ -2269,9 +2277,37 @@ func _select_build_mode_site(site: Vector2i) -> void:
         check = SectResidenceSystemV1.can_construct(state,site)
     else:
         check = SectResidenceSystemV1.can_move_house(state,build_mode_house_id,site)
+    if bool(check.get("ok",false)):
+        var actor_conflict := _residence_site_actor_conflict_reason(site)
+        if not actor_conflict.is_empty():
+            check = {"ok":false,"reason":actor_conflict}
     if iso_world != null:
         iso_world.set_placement_preview({"site":site,"ok":bool(check.get("ok",false))})
+        if iso_viewport != null:
+            iso_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
     _refresh_build_mode_panel(check)
+
+func _residence_site_actor_conflict_reason(site: Vector2i) -> String:
+    if state == null or actor_virtual_positions.is_empty():
+        return ""
+    var footprint := Rect2i(site,SectResidenceSiteV1.HOUSE_FOOTPRINT)
+    var doorway := SectResidenceSiteV1.doorway(site)
+    for raw_id in actor_virtual_positions.keys():
+        var disciple_id := StringName(str(raw_id))
+        if not state.disciples.has(disciple_id):
+            continue
+        var top_left: Vector2 = actor_virtual_positions[raw_id]
+        var actor_foot := top_left+DiscipleActorVisualCatalog.ACTOR_FOOT_POINT
+        # actor_virtual_positions use the legacy Control's local coordinate;
+        # map it back through the shared PV01 project/inverse pair so the
+        # canonical site footprint is compared with the actor's ground tile.
+        var isometric_point := actor_foot-SectIsometricWorldV1.LEGACY_ANCHOR \
+            + SectIsometricWorldV1.project(Vector2(SectIsometricWorldV1.CENTER_CELL))
+        var fractional_cell := SectIsometricWorldV1.inverse(isometric_point)
+        var actor_cell := Vector2i(roundi(fractional_cell.x),roundi(fractional_cell.y))
+        if footprint.has_point(actor_cell) or doorway == actor_cell:
+            return "house_plot_actor_occupied"
+    return ""
 
 func _refresh_build_mode_panel(last_check: Dictionary = {}) -> void:
     if build_mode_panel == null or state == null:
@@ -2282,11 +2318,11 @@ func _refresh_build_mode_panel(last_check: Dictionary = {}) -> void:
     var usable_capacity := SectResidenceSystemV1.current_limit(state)
     var free_places := maxi(0,usable_capacity-state.disciples.size())
     var hall_level := int(hall.level) if hall != null else 0
-    var next_hall_gate := mini(100,1+houses.size()*10)
+    var next_hall_gate := SectResidenceSystemV1.required_hall_level_for_instance(houses.size()+1)
     var gate_text := _construction_gate_text()
-    var text := "Đệ Tử Xá %d/%d · %d giường · %d chỗ trống.\nĐại Điện Lv%d · lô kế mở ở Lv%d.\n%s" % [
+    var text := "Đệ Tử Xá %d/%d · %d giường · còn %d chỗ.\nĐại Điện Lv%d · lô kế mở ở Lv%d." % [
         houses.size(),SectResidenceSystemV1.maximum_instances(state),SectResidenceSystemV1.total_beds(state),free_places,
-        hall_level,next_hall_gate,gate_text
+        hall_level,next_hall_gate
     ]
     if hall == null:
         text = "Đại Điện chưa mở hệ thống Đệ Tử Xá."
@@ -2326,9 +2362,15 @@ func _refresh_build_mode_panel(last_check: Dictionary = {}) -> void:
         check = SectResidenceSystemV1.can_construct(state,build_mode_site)
     elif check.is_empty() and build_mode_kind == "relocate" and build_mode_site != SectResidenceSiteV1.UNSELECTED:
         check = SectResidenceSystemV1.can_move_house(state,build_mode_house_id,build_mode_site)
+    if build_mode_kind in ["construct","relocate"] \
+            and build_mode_site != SectResidenceSiteV1.UNSELECTED \
+            and bool(check.get("ok",false)):
+        var actor_conflict := _residence_site_actor_conflict_reason(build_mode_site)
+        if not actor_conflict.is_empty():
+            check = {"ok":false,"reason":actor_conflict}
     if build_mode_site_label != null:
         if build_mode_site == SectResidenceSiteV1.UNSELECTED:
-            build_mode_site_label.text = "Chọn công trình hoặc nhà trống, rồi bấm lô xanh.\nLối ra và va chạm được kiểm tra trước khi khởi công."
+            build_mode_site_label.text = "Chọn công trình hoặc nhà trống, rồi chạm một khoảng đất trống.\nBóng nhà và lối ra sẽ cho biết vị trí hợp lệ."
         else:
             var door := SectResidenceSiteV1.doorway(build_mode_site)
             var site_status := "HỢP LỆ" if bool(check.get("ok",false)) else _build_reason_text(str(check.get("reason","site_invalid")))
@@ -2374,7 +2416,8 @@ func _build_reason_text(reason: String) -> String:
         "main_hall_instance_limit":
             var hall := SectHallSystemV1.hall(state)
             var current_hall_level := int(hall.level) if hall != null else 0
-            var required_hall_level := mini(100,1+SectResidenceSystemV1.all_houses(state).size()*10)
+            var required_hall_level := SectResidenceSystemV1.required_hall_level_for_instance(
+                SectResidenceSystemV1.all_houses(state).size()+1)
             return "Cần Đại Điện Lv%d để mở lô nhà kế tiếp (hiện Lv%d). Nâng cấp từ nút Đại Điện." % [required_hall_level,current_hall_level]
         "missing_material": return "Thiếu nguyên liệu: cần thêm tài nguyên trong Kho."
         "missing_spirit_stones": return "Thiếu Linh Thạch trong Kho."
@@ -2382,6 +2425,7 @@ func _build_reason_text(reason: String) -> String:
         "house_plot_outside_open_area": return "Lô nằm ngoài khu đất đã quy hoạch."
         "house_plot_occupied": return "Lô hoặc lối ra chồng với công trình/lối đi khác."
         "house_plot_unreachable": return "Lô chưa nối được lối đi từ cổng Tông Môn."
+        "house_plot_actor_occupied": return "Đệ tử đang đứng trên lô hoặc lối ra; hãy chọn ô khác."
         "house_occupied": return "Nhà còn đệ tử được phân phòng; chuyển họ trước khi dời."
         "house_not_idle": return "Nhà đang xây hoặc nâng cấp."
         "starter_house_fixed": return "Đệ Tử Xá khởi đầu cố định."
@@ -2420,7 +2464,7 @@ func _construction_gate_text() -> String:
     if reason == "main_hall_instance_limit":
         var hall := SectHallSystemV1.hall(state)
         var current_level := int(hall.level) if hall != null else 0
-        var required_level := mini(100,1+houses.size()*10)
+        var required_level := SectResidenceSystemV1.required_hall_level_for_instance(houses.size()+1)
         return "Đại Điện Lv%d/%d mới mở lô kế. %s" % [current_level,required_level,resource_text]
     if reason == "missing_material":
         var material := str(check.get("material_id","tài nguyên"))
@@ -2438,7 +2482,10 @@ func _confirm_build_mode_action() -> void:
     var request_id := "map-house:%d:%d:%d:%s" % [state.tick,build_mode_site.x,build_mode_site.y,
         str(build_mode_house_id) if build_mode_kind == "relocate" else "new"]
     var result: Dictionary
-    if build_mode_kind == "construct":
+    var actor_conflict := _residence_site_actor_conflict_reason(build_mode_site)
+    if not actor_conflict.is_empty():
+        result = {"ok":false,"reason":actor_conflict}
+    elif build_mode_kind == "construct":
         result = SectResidenceSystemV1.construct(state,request_id,build_mode_site)
     else:
         result = SectResidenceSystemV1.move_house(state,request_id,build_mode_house_id,build_mode_site)
@@ -2870,7 +2917,7 @@ func _build_needs_priority_controls(title: String) -> void:
     ], state.sect.needs_priority, "_set_needs_priority_from_building")
 
 func _build_guidance_recruitment_controls() -> void:
-    _add_management_section_label("CHIÊU MỘ · HỒ SƠ D7")
+    _add_management_section_label("CHIÊU MỘ · HỒ SƠ LỤC DUY")
     var entry := Button.new()
     entry.name = "OpenDanTienScreenV2"
     entry.text = "MỞ DẪN TIÊN ĐÀI · TUYỂN ĐỆ TỬ"
@@ -2881,7 +2928,7 @@ func _build_guidance_recruitment_controls() -> void:
 
     var queue_label := Label.new()
     queue_label.name = "DanTienQueueSummary"
-    queue_label.text = "Ứng viên: %d/%d · Lệnh: %d · Đệ tử: %d/%d\nXem Tam Căn/Tứ Tính, Linh Căn, thiên hướng nghề, D7 và chân dung Source A phù hợp." % [
+    queue_label.text = "Ứng viên: %d/%d · Lệnh: %d · Đệ tử: %d/%d\nXem Lục Duy, Linh Căn, thiên hướng nghề và chân dung Source A phù hợp." % [
         state.recruitment_candidates.size(), RecruitmentSystem.C2_QUEUE_CAP,
         state.sect.disciple_recruitment_tokens,
         state.disciples.size(), state.sect.disciple_capacity
@@ -4475,19 +4522,36 @@ func _residence_operation_text() -> String:
     var overloaded := population > state.sect.lodging_capacity
     var recovery_pct := NeedsSystem.new().rest_recovery_multiplier(state) * 100.0
     var rest_lines := _action_disciple_lines([&"REST"])
+    var house_lines: Array[String] = []
+    for house in SectResidenceSystemV1.all_houses(state):
+        if house.status == BuildingSystem.STATUS_CONSTRUCTING:
+            house_lines.append("• Đệ Tử Xá %02d · Đang thi công · còn %d nhịp" % [
+                house.instance_index,SectResidenceSystemV1.construction_remaining_ticks(state,house)
+            ])
+        elif house.status == BuildingSystem.STATUS_UPGRADING:
+            house_lines.append("• Đệ Tử Xá %02d · Đang nâng cấp lên Lv%d" % [
+                house.instance_index,house.level+1
+            ])
+        else:
+            house_lines.append("• Đệ Tử Xá %02d · Lv%d · %d giường" % [
+                house.instance_index,house.level,SectResidenceSystemV1.beds_for_level(house.level)
+            ])
+    if house_lines.is_empty():
+        house_lines.append("• Chưa có Đệ Tử Xá")
     return (
         "Sức chứa: %d / %d\n"
         + "Tình trạng: %s\n"
         + "Hệ số hồi phục hiện tại: %.0f%%\n"
         + "Vật tư: %d\n"
         + "Đang nghỉ: %d\n\n"
+        + "CÔNG TRÌNH CƯ TRÚ\n%s\n\n"
         + "ĐỆ TỬ ĐANG NGHỈ\n%s\n\n"
         + "Gọi đệ tử về nghỉ hoặc mở rộng chỗ ở khi tông môn quá tải."
     ) % [
         population, state.sect.lodging_capacity,
         "QUÁ TẢI" if overloaded else "Ổn định",
         recovery_pct, state.sect.supply_stock,
-        _count_action(&"REST"),
+        _count_action(&"REST"),"\n".join(house_lines),
         rest_lines
     ]
 
@@ -6950,11 +7014,11 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "T�
         radar.name = "HS09OverviewRadar" if is_overview_tab else "HS09AttributeRadar"
         radar.compact = is_overview_tab
         radar.position = Vector2(18,52)
-        radar.size = Vector2(216,220) if is_overview_tab else Vector2(274,286)
+        radar.size = Vector2(256,250) if is_overview_tab else Vector2(274,286)
         radar.mouse_filter = Control.MOUSE_FILTER_IGNORE
         if radar.apply_snapshot(profile_snapshot):
             content_panel.add_child(radar)
-            var text_x := 248.0 if is_overview_tab else 302.0
+            var text_x := 284.0 if is_overview_tab else 302.0
             details_scroll.position = Vector2(text_x,52)
             details_scroll.size = Vector2(content_width - text_x - 18.0,286)
             content.custom_minimum_size = Vector2(details_scroll.size.x - 22.0,0)
@@ -7454,12 +7518,10 @@ func _v2_foundation_values_text(foundation_snapshot: Dictionary) -> String:
                 str(labels.get(key,key)),_foundation_exact_number(value),
                 _foundation_exact_number(born),sign,_foundation_exact_number(absf(change))
             ]
-        var tam := "\n  ".join([
-            format_row.call("aptitude"),format_row.call("constitution"),format_row.call("mind_nature")
-        ])
-        var tu := "\n  ".join([
-            format_row.call("potential"),format_row.call("comprehension"),
-            format_row.call("fortune"),format_row.call("charisma")
+        var six_stat_rows := "\n  ".join([
+            format_row.call("aptitude"),format_row.call("constitution"),
+            format_row.call("fortune"),format_row.call("comprehension"),
+            format_row.call("charisma"),format_row.call("potential")
         ])
         var quality_line := ""
         if foundation_snapshot.has("quality_birth_total") and foundation_snapshot.has("quality_current_total"):
@@ -7470,7 +7532,7 @@ func _v2_foundation_values_text(foundation_snapshot: Dictionary) -> String:
                 birth_name,float(foundation_snapshot["quality_birth_total"]),
                 current_name,float(foundation_snapshot["quality_current_total"])
             ]
-        return "Tam Căn\n  %s\nTứ Tính\n  %s%s" % [tam,tu,quality_line]
+        return "Lục Duy · sinh / hiện tại / thay đổi\n  %s%s" % [six_stat_rows,quality_line]
     return "Tư Chất %s · Căn Cốt %s · Cơ Duyên %s\nThông Tuệ %s · Mị Lực %s · Tiềm Lực %s" % [
         _v2_foundation_score(float(current.get("aptitude",0.0)),version),
         _v2_foundation_score(float(current.get("constitution",0.0)),version),
@@ -7488,9 +7550,9 @@ func _foundation_exact_number(value: float) -> String:
 func _v2_foundation_meaning_text(model_version: int) -> String:
     if model_version >= FoundationSystem.MODEL_D7:
         return (
-            "ẢNH HƯỞNG D7 · điểm hiện tại\n"
+            "ẢNH HƯỞNG LỤC DUY · điểm hiện tại\n"
             + "Tư Chất: +0,25% Tu Vi tự nhiên/điểm · Căn Cốt: +0,20% EXP Luyện Thể/điểm\n"
-            + "Tâm Tính: Luyện Tâm chưa mở · Tiềm Lực: +0,05% Tu Vi RealmCore HP/Công/Thủ/điểm\n"
+            + "Tiềm Lực: +0,05% Tu Vi RealmCore HP/Công/Thủ/điểm\n"
             + "Thông Tuệ: +0,15% học tập/nghề hợp lệ/điểm · Cơ Duyên: +1 điểm kiểm tra RNG · Mị Lực: điểm xã hội/Dẫn Tiên"
         )
     return (

@@ -132,7 +132,7 @@ func _build_offices_panel() -> Control:
 	var content := VBoxContainer.new()
 	content.add_theme_constant_override("separation", 10)
 	card.add_child(content)
-	content.add_child(UI.section_heading("Bảy chức vụ", "person", UI.JADE))
+	content.add_child(UI.section_heading("Bảy chức vụ", "office", UI.JADE))
 	content.add_child(UI.label("Bổ nhiệm hoặc miễn nhiệm ngay tại đây. Mỗi đệ tử chỉ giữ một chức vụ; điều kiện phụ thuộc cấp Đại Điện và tình trạng đệ tử.",11,UI.MUTED,false))
 	var grid := GridContainer.new()
 	grid.columns = 2
@@ -152,7 +152,7 @@ func _build_offices_panel() -> Control:
 	upgrade_row.add_theme_constant_override("separation", 10)
 	var costs_column := VBoxContainer.new()
 	costs_column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	costs_column.add_child(UI.section_heading("Nâng cấp Đại Điện", "resource", UI.GOLD))
+	costs_column.add_child(UI.section_heading("Nâng cấp Đại Điện", "upgrade", UI.GOLD))
 	var costs := HBoxContainer.new()
 	costs.add_theme_constant_override("separation", 9)
 	for cost in _vm.get("upgrade_costs", []).slice(0, 3):
