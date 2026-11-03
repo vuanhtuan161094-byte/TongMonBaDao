@@ -214,10 +214,10 @@ static func join_one(owner: SimulationRuntimeOwnerV2, disciple_id: String,
     if not bool(attached.get("ok",false)):
         return attached
     actor["disciple"] = null
+    var prior_events: Array = session.battle.events.duplicate(true)
     var added := session.battle.add_world_disciple(actor)
     if not bool(added.get("ok",false)):
         return added
-    var prior_events: Array = session.battle.events.duplicate(true)
     # The new event is useful for UI but must disappear on an unsuccessful
     # checkpoint, just like the actor and the canonical reservation.
     var prior_reservation := disciple.active_pve_encounter_id
