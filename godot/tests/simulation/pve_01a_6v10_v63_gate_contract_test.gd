@@ -160,6 +160,19 @@ func _process2_resume() -> void:
             "process-2 checkpoint after offline advance could not restore"):
         return
     var resumed_battle: MapBattleV2 = after["session"].battle
+    var actor_after: Dictionary = resumed_battle.actors.get(skilled_id, {})
+    print("PVE01B_PROCESS2_DIAGNOSTICS " + JSON.stringify({
+        "before_time":before_time, "after_time":resumed_battle.now,
+        "clock_advanced":resumed_battle.now > before_time,
+        "actor_enabled":bool(actor_after.get("v63_combat_enabled", false)),
+        "actor_loadout":actor_after.get("v63_skill_loadout", []),
+        "active_runs":state.sect.v2_pve_active_runs.size(),
+        "reward_claim_count":state.sect.v2_pve_reward_claims.size(),
+        "settlement_count":state.sect.v2_pve_settlement_receipts.size(),
+        "warehouse_equal":state.sect.warehouse_resources == warehouse_before,
+        "frames_run":int(advanced.get("frames_run", 0)),
+        "runtime_write_blocked":runtime.owner.runtime_write_blocked
+    }))
     if not _check(resumed_battle.now > before_time
             and bool(resumed_battle.actors[skilled_id].get("v63_combat_enabled", false))
             and resumed_battle.actors[skilled_id].get("v63_skill_loadout", []).has(SKILL_ID)
