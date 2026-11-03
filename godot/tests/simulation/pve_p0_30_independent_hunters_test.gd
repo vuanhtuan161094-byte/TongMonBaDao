@@ -154,11 +154,11 @@ func _run() -> void:
     var reactivated := PveDistributedWorldV1.synchronize(session)
     if not _check(bool(reactivated.get("ok",false)) and battle._count_monster_records() == 40
             and session.camp_slot_ids.size() == 40
-            and session.camp_population["p0_dormant_monsters"].is_empty(),
-            "dormant monsters could not reactivate without duplicate new lives: "+str(reactivated)):
+            and session.camp_population["p0_dormant_monsters"].size() == 8,
+            "20 zones use 2/10 active slots each; eight C01 mobs must stay dormant: "+str(reactivated)):
         return
     print("PVE_P0_WORLD_LOD_RESTORE_PASS "+JSON.stringify({
-        "condensed":10,"distributed":40,"camp_count":20,"dormant_after_reactivation":0
+        "condensed":10,"distributed":40,"camp_count":20,"dormant_after_reactivation":8
     }))
     # Real presentation minimap orders only selected IDs; with nobody
     # selected the same click is a camera-focus command.
