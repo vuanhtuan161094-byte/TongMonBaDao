@@ -1,5 +1,14 @@
 # NEXT CHAT HANDOFF — ONE GAME V6.5 / HS-09 QA
 
+## AN-03.3 STATIC SOCKET-FOLLOW AUDIT — 2026-11-03
+
+Owner requested further static review only: no Windows Godot logs yet. Verified PR #71 at 143d98b2bbc9a5af0fd516d84ec7797c1050c748 before the current patch. Concrete focused-test gap: existing contract checked hand_R bone selection but not actual attachment world-transform movement. Added attack windup/strike assertions comparing BoneAttachment3D.world transform to Skeleton3D.get_bone_global_pose(hand_R) and detecting nonzero movement. Official Godot API docs support those methods; not evidence of a runtime pass. Only AN-03 contract test and animation documentation/checkpoints touched.
+
+No official Godot 4.7.2 executable, mounted Windows E:, PowerShell or actual evidence ZIP in this Linux session. Godot import/parse, focused test, 1280x720 GUI, 46 RGBA baked PNGs, foot-slip and Shadow artistic acceptance all remain **PENDING / NOT EXECUTED**. Model is still procedural guide, not owner Shadow mesh. Tripo 3D is not mandatory for the technical QA, but an approved 3D model or equivalent art pipeline is required for final-quality character visuals; no payment authorized. Next: execute Windows QA and share AN03_EVIDENCE.zip for log-based repairs. No change to PR #68/#69, main, Combat V2, PvE, SaveService, game save.
+
+---
+
+
 ## AN-03.2 QA worktree bootstrap — 2026-11-03
 
 PR #71 moved from owner-named 7aba0c758d32a3bb50f84ce8f8fa045f5aa9145f to live 9533c03e8753c6c28012cfda0d5842117ec1cc23 before this continuation; 16 prior hardening commits already existed. Verified official Godot 4.7.2 unavailable in Linux container and no Windows E drive or actual AN03_EVIDENCE.zip/logs mounted, so **no runtime results, screenshot or 46 baked PNGs can be claimed**. Static source/API check against official Godot class XML confirms Skeleton3D.add_bone returns int, reset_bone_poses exists, BoneAttachment3D.bone_idx property/getter exists. No fabricated error claim.
