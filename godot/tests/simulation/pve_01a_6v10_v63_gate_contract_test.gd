@@ -155,9 +155,19 @@ func _process2_resume() -> void:
             and int(advanced.get("frames_run", 0)) > 0,
             "process-2 cold-cache shared-clock advance failed: " + str(advanced)):
         return
+    # Open-world movement/damage frames update the live cached session.
+    # Their large world snapshot is intentionally checkpointed only on a
+    # durable event or explicit SaveService save, not every 0.25s frame.
+    var live_session: HuntingPveRunV2 = runtime.owner.get_active_multicamp_session(ENCOUNTER)
+    if not _check(live_session != null and live_session.battle.now > before_time,
+            "process-2 cold-cache live session did not advance after 4 frames"):
+        return
+    if not _check(bool(runtime.save(START_WALL + 2).get("ok", false)),
+            "process-2 explicit SaveService snapshot commit failed"):
+        return
     var after := HuntingPveRunV2.resume_active(state, ENCOUNTER, overrides)
     if not _check(bool(after.get("ok", false)),
-            "process-2 checkpoint after offline advance could not restore"):
+            "process-2 checkpoint after explicit save could not restore"):
         return
     var resumed_battle: MapBattleV2 = after["session"].battle
     var actor_after: Dictionary = resumed_battle.actors.get(skilled_id, {})
@@ -181,9 +191,6 @@ func _process2_resume() -> void:
             and state.sect.v2_pve_settlement_receipts.is_empty()
             and state.sect.warehouse_resources == warehouse_before,
             "process-2 lost skill/clock/active hunt or duplicated receipt/warehouse payout"):
-        return
-    if not _check(bool(runtime.save(START_WALL + 2).get("ok", false)),
-            "process-2 canonical snapshot commit failed"):
         return
     print("PVE01B_PROCESS2_RELOAD_CLOCK_EXACT_ONCE_PASS " + JSON.stringify({
         "active_runs":state.sect.v2_pve_active_runs.size(),
