@@ -1,6 +1,8 @@
 # NEXT CHAT HANDOFF — ONE GAME V6.5 / HS-09 QA
 
 ## AN-01 / AN-02 SHADOW ANIMATION LAB — 2026-11-03 (isolated)
+One-click Windows launcher: MO_ANIMATION_LAB.cmd (branch-only); checks E:\\Godot_v4.7.2-stable_win64.exe or TMB_GODOT, uses isolated APPDATA. NOT TESTED ON WINDOWS.
+
 Work only on feature/an01-an02-shadow-animation-lab-20261103 from RC 970af33b23076c80d677cf5898a721a27504708f. Added new .agents/skills/tmb-sprite-animation/SKILL.md, docs/animation/*, godot/scenes/labs/an02_animation_lab.tscn, godot/src/presentation/labs/an02_animation_lab.gd + shader and a focused presentation test. Main scene, PvE, skill logic, Combat V2, SaveService and canonical user saves untouched. The Shadow look is an unapproved visual-only silhouette shader on verified Source A male frames and does not provide genuine 8-way clips. User saw an image mockup in chat, NOT an engine screenshot.
 Run official Godot 4.7.2 scene manually: res://scenes/labs/an02_animation_lab.tscn. Focused headless: godot --headless --path godot --script res://tests/presentation/an02_animation_lab_contract_test.gd. Current container lacks official Godot, so test execution is PENDING_ENGINE (do not report PASS). Verify 1/6/30 actor performance, offsets/feet/mirror and 1280×720 actual screenshot, then owner art approval. Windows GUI/Android PENDING USER. Do not merge main or automatically integrate Shadow with gameplay.
 
