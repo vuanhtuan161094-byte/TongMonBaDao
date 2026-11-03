@@ -232,23 +232,27 @@ func _run() -> void:
     _dispose_scene()
     await process_frame
     _cleanup_save()
-    # QA-ONLY TEMPORARY BRIDGE; original O2 file restored after evidence.
-    # Real official Godot child exit controls this CI job's result.
-    var child_output: Array = []
-    var arguments := PackedStringArray([
-        "--headless","--path",ProjectSettings.globalize_path("res://"),
-        "-s","res://tests/simulation/pve_p0_30_independent_hunters_test.gd"
-    ])
-    var child_exit := OS.execute(OS.get_executable_path(),arguments,child_output,true)
-    print("PVE_P0_30_CHILD_BEGIN")
-    for transcript in child_output:
-        print(str(transcript))
-    print("PVE_P0_30_CHILD_END exit="+str(child_exit))
-    if child_exit != 0:
-        push_error("PVE_P0_TEST_FIRST_RED: standalone Godot child exit "+str(child_exit))
-        quit(1)
-        return
-    print("PVE_P0_TEST_FIRST_GREEN")
+    # QA-only O2 bridge. This is removed after official Godot evidence.
+    # Both child processes must independently exit 0; no suppressed RED.
+    for child_script in [
+        "pve_p0_30_independent_hunters_test.gd",
+        "pve_p0_natural_solo_reward_test.gd"
+    ]:
+        var child_output: Array = []
+        var arguments := PackedStringArray([
+            "--headless","--path",ProjectSettings.globalize_path("res://"),
+            "-s","res://tests/simulation/"+child_script
+        ])
+        var child_exit := OS.execute(OS.get_executable_path(),arguments,child_output,true)
+        print("PVE_P0_CHILD_BEGIN script="+child_script)
+        for transcript in child_output:
+            print(str(transcript))
+        print("PVE_P0_CHILD_END script="+child_script+" exit="+str(child_exit))
+        if child_exit != 0:
+            push_error("PVE_P0_TEST_FIRST_RED "+child_script+" exit="+str(child_exit))
+            quit(1)
+            return
+    print("PVE_P0_TEST_FIRST_GREEN both_standalone_processes=true")
     quit(0)
 
 func _recruitable_candidate_ids() -> Array:
