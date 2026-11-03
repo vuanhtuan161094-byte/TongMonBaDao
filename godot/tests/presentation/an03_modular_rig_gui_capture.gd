@@ -30,6 +30,7 @@ func _run() -> void:
         {"id":"03_attack_unarmed","clip":"attack","weapon":false,"t":0.35},
         {"id":"04_attack_sword_socket","clip":"attack","weapon":true,"t":0.35}
     ]
+    var actual_image_hashes: Dictionary = {}
     for pose in poses:
         lab.configure_for_capture(str(pose["clip"]),bool(pose["weapon"]),float(pose["t"]))
         for _i in range(5):
@@ -42,7 +43,16 @@ func _run() -> void:
         if image.save_png(file) != OK:
             _fail("could not save PNG: " + file)
             return
-        print("AN03_GUI_IMAGE: " + ProjectSettings.globalize_path(file))
+        var digest := FileAccess.get_sha256(file)
+        if digest.length() != 64:
+            _fail("could not hash actual screenshot " + file)
+            return
+        if actual_image_hashes.has(digest):
+            _fail("identical screenshots across distinct motions/weapon states")
+            return
+        actual_image_hashes[digest] = true
+        print("AN03_GUI_IMAGE: " + ProjectSettings.globalize_path(file)
+            + " | sha256=" + digest)
     print("AN03_GUI_CAPTURE PASS | screenshots=4 | GUIDE MODEL only, no owner Shadow mesh")
     lab.queue_free()
     quit(0)
