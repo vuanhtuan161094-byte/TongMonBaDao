@@ -276,6 +276,14 @@ func _load_exact(path: String) -> SimulationState:
         candidate_ids.sort()
         for raw_id in candidate_ids:
             workforce.ensure_p3_7_candidate_profile(state, state.recruitment_candidates[raw_id])
+    # DD-07: protect real Hall/Residence ownership before declaring the
+    # primary save valid. Invalid saves must fall back to the .bak through
+    # load_from_path(), not be quietly reset during live bootstrap.
+    if state != null and not state.sect.hall_governance.is_empty():
+        var hall_errors := SectHallSystemV1.validate(state)
+        if not hall_errors.is_empty():
+            push_error("DD-07: invalid saved Hall/Residence: " + "; ".join(PackedStringArray(hall_errors)))
+            return null
     return state
 
 # Detect features that an older reader would silently drop or normalize.
@@ -337,6 +345,26 @@ func _is_payload_shape_valid(data: Dictionary) -> bool:
         return false
     if not (data.get("regions") is Array):
         return false
+
+    # DD-08: the dictionary-based State decoder overwrites rows with duplicate
+    # IDs. On Hall V2 saves that can silently remove a paid House or disciple.
+    # Reject the raw wire payload before from_dict() erases that evidence.
+    var sect_payload: Dictionary = data["sect"]
+    if sect_payload.has("hall_governance"):
+        if not (data.get("buildings") is Array):
+            return false
+        for collection in ["buildings", "disciples"]:
+            var seen: Dictionary = {}
+            for raw_row in data[collection]:
+                if not (raw_row is Dictionary):
+                    return false
+                var raw_id = raw_row.get("id", null)
+                if not (raw_id is String or raw_id is StringName):
+                    return false
+                var key := str(raw_id)
+                if key.is_empty() or seen.has(key):
+                    return false
+                seen[key] = true
 
     return true
 

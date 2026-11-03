@@ -53,10 +53,10 @@ func _run() -> void:
             return
 
     # Recruit through the genuine Guidance UI, with token debit and Accept.
-    ui.call("_open_building", SectMapPresentation.DEST_GUIDANCE)
-    await process_frame
+    if not await _open_guidance_surface():
+        return
     var tokens := state.sect.disciple_recruitment_tokens
-    if not await _press("GuidanceRecruitOrder"):
+    if not await _press("UseRecruitmentOrder"):
         return
     if not _check(state.sect.disciple_recruitment_tokens == tokens - 1,
         "Real Dẫn Tiên order did not debit one token."):
@@ -71,7 +71,7 @@ func _run() -> void:
             break
     if not _check(chosen != &"", "Dẫn Tiên produced no genuine V2 candidate."):
         return
-    if not await _press("AcceptCandidate_%s" % str(chosen)):
+    if not await _select_and_accept_candidate_via_b1(chosen):
         return
     if not _check(state.disciples.has(chosen), "V2 candidate was not accepted."):
         return
@@ -264,6 +264,47 @@ func _press(name: String) -> bool:
     if button == null or button.disabled:
         return _fail("Missing or disabled real player control: " + name)
     button.emit_signal("pressed")
+    await process_frame
+    return true
+
+func _open_guidance_surface() -> bool:
+    var hit := ui.find_child("BuildingHit_guidance",true,false) as Button
+    if hit == null:
+        return _fail("Missing real map hit target for Dẫn Tiên Đài.")
+    hit.pressed.emit()
+    await process_frame
+    return await _press("OpenDanTienScreenV2")
+
+func _select_and_accept_candidate_via_b1(candidate_id: StringName) -> bool:
+    var candidate: CandidateState = state.recruitment_candidates.get(candidate_id)
+    var b1_surface := ui.get_node_or_null("DanTienScreenV2/TriFacilityB1LiveAdapterV1") as Control
+    if b1_surface == null or not b1_surface.is_visible_in_tree():
+        return _fail("Active B1 guidance surface is unavailable.")
+    var search := b1_surface.find_child("CandidateSearch",true,false) as LineEdit
+    if candidate == null or search == null:
+        return _fail("B1 search/candidate control was missing.")
+    search.text = candidate.display_name
+    search.text_submitted.emit(search.text)
+    await process_frame
+    var pick := b1_surface.find_child("CandidatePick_%s" % str(candidate_id),true,false) as Button
+    if pick == null:
+        return _fail("B1 candidate picker did not expose the selected authentic candidate.")
+    if not pick.disabled:
+        pick.pressed.emit()
+        await process_frame
+    else:
+        var host := ui.get_node_or_null("DanTienScreenV2")
+        if host == null or StringName(host.get("selected_candidate_id")) != candidate_id:
+            return _fail("Disabled B1 candidate row was not the currently selected candidate.")
+    var accept := b1_surface.find_child("AcceptCandidate",true,false) as Button
+    if accept == null or accept.disabled:
+        return _fail("B1 Accept control was missing or disabled for an eligible candidate.")
+    accept.pressed.emit()
+    await process_frame
+    accept = b1_surface.find_child("AcceptCandidate",true,false) as Button
+    if accept == null or not accept.text.contains("XÁC NHẬN"):
+        return _fail("B1 Accept did not present its visible second confirmation.")
+    accept.pressed.emit()
     await process_frame
     return true
 

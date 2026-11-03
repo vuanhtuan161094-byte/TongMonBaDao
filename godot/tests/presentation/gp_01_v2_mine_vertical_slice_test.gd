@@ -39,10 +39,10 @@ func _run() -> void:
         ), "Could not hold founding disciple."):
             return
 
-    ui.call("_open_building", SectMapPresentation.DEST_GUIDANCE)
-    await process_frame
+    if not await _open_guidance_surface():
+        return
     var token_before := state.sect.disciple_recruitment_tokens
-    if not await _press("GuidanceRecruitOrder"):
+    if not await _press("UseRecruitmentOrder"):
         return
     if not _check(state.sect.disciple_recruitment_tokens == token_before - 1,
         "Dẫn Tiên did not consume one real recruitment order."):
@@ -60,7 +60,7 @@ func _run() -> void:
     var birth_before: Dictionary = (
         state.recruitment_candidates[recruit_id] as CandidateState
     ).v2_birth_profile.duplicate(true)
-    if not await _press("AcceptCandidate_%s" % str(recruit_id)):
+    if not await _select_and_accept_candidate_via_b1(recruit_id):
         return
     if not _check(state.disciples.has(recruit_id), "Dẫn Tiên accept did not create a disciple."):
         return
@@ -204,8 +204,19 @@ func _run() -> void:
         and final_actor.v2_birth_profile == saved_birth
         and final_actor.worksite_building_id == mine.id
         and final_actor.profession_xp.get("mining", 0.0) > xp_before
-        and final_state.to_dict() == expected.to_dict(),
+        and _state_semantically_equal(final_state.to_dict(),expected.to_dict()),
         "Offline recovery diverged from one real Mine completion/EXP/state."):
+        print("GP01_OFFLINE_FACTS ore_expected=%d ore_actual=%d batches_expected=%d batches_actual=%d cycle_empty=%s birth_equal=%s worksite_expected=%s worksite_actual=%s mining_xp_before=%.6f mining_xp_after=%.6f state_equal=%s" % [
+            ore_before+batch,warehouse.quantity(final_state,&"thanh_thiet"),batches_before+1,
+            int(final_mine.metrics.get("production_batches",0)),str(final_actor.work_cycle_state.is_empty()),
+            str(final_actor.v2_birth_profile == saved_birth),str(mine.id),str(final_actor.worksite_building_id),
+            xp_before,float(final_actor.profession_xp.get("mining",0.0)),
+            str(final_state.to_dict() == expected.to_dict())
+        ])
+        var state_diffs: Array[String] = []
+        _collect_state_diffs(expected.to_dict(),final_state.to_dict(),"state",state_diffs)
+        for difference in state_diffs:
+            print("GP01_STATE_DIFF %s" % difference)
         return
     var loaded_xp := float(final_actor.profession_xp["mining"])
     if not _check(_near(
@@ -266,12 +277,111 @@ func _press(name: String) -> bool:
     await process_frame
     return true
 
+func _open_guidance_surface() -> bool:
+    var hit := ui.find_child("BuildingHit_guidance",true,false) as Button
+    if hit == null:
+        return _fail("Missing real map hit target for Dẫn Tiên Đài.")
+    hit.pressed.emit()
+    await process_frame
+    return await _press("OpenDanTienScreenV2")
+
+func _select_and_accept_candidate_via_b1(candidate_id: StringName) -> bool:
+    var candidate: CandidateState = state.recruitment_candidates.get(candidate_id)
+    var b1_surface := ui.get_node_or_null("DanTienScreenV2/TriFacilityB1LiveAdapterV1") as Control
+    if b1_surface == null or not b1_surface.is_visible_in_tree():
+        return _fail("Active B1 guidance surface is unavailable.")
+    var search := b1_surface.find_child("CandidateSearch",true,false) as LineEdit
+    if candidate == null or search == null:
+        return _fail("B1 search/candidate control was missing.")
+    search.text = candidate.display_name
+    search.text_submitted.emit(search.text)
+    await process_frame
+    var pick := b1_surface.find_child("CandidatePick_%s" % str(candidate_id),true,false) as Button
+    if pick == null:
+        return _fail("B1 candidate picker did not expose the selected authentic candidate.")
+    if not pick.disabled:
+        pick.pressed.emit()
+        await process_frame
+    else:
+        var host := ui.get_node_or_null("DanTienScreenV2")
+        if host == null or StringName(host.get("selected_candidate_id")) != candidate_id:
+            return _fail("Disabled B1 candidate row was not the currently selected candidate.")
+    var accept := b1_surface.find_child("AcceptCandidate",true,false) as Button
+    if accept == null or accept.disabled:
+        return _fail("B1 Accept control was missing or disabled for an eligible candidate.")
+    accept.pressed.emit()
+    await process_frame
+    accept = b1_surface.find_child("AcceptCandidate",true,false) as Button
+    if accept == null or not accept.text.contains("XÁC NHẬN"):
+        return _fail("B1 Accept did not present its visible second confirmation.")
+    accept.pressed.emit()
+    await process_frame
+    return true
+
 func _dispose_scene() -> void:
     if ui != null and is_instance_valid(ui):
         root.remove_child(ui)
         ui.queue_free()
     ui = null
     state = null
+
+func _collect_state_diffs(expected_value: Variant, actual_value: Variant,
+        path: String, differences: Array[String]) -> void:
+    if differences.size() >= 24:
+        return
+    if typeof(expected_value) != typeof(actual_value):
+        differences.append("%s type expected=%s (%s) actual=%s (%s)" % [
+            path,type_string(typeof(expected_value)),str(expected_value).substr(0,120),
+            type_string(typeof(actual_value)),str(actual_value).substr(0,120)
+        ])
+        return
+    if expected_value is Dictionary and actual_value is Dictionary:
+        var keys: Array = expected_value.keys()
+        for key in actual_value.keys():
+            if not keys.has(key):
+                keys.append(key)
+        keys.sort()
+        for key in keys:
+            var child_path := "%s.%s" % [path,str(key)]
+            if not expected_value.has(key) or not actual_value.has(key):
+                differences.append("%s expected=%s actual=%s" % [child_path,str(expected_value.get(key,"<missing>")),str(actual_value.get(key,"<missing>"))])
+            else:
+                _collect_state_diffs(expected_value[key],actual_value[key],child_path,differences)
+            if differences.size() >= 24:
+                return
+    elif expected_value is Array and actual_value is Array:
+        if expected_value.size() != actual_value.size():
+            differences.append("%s.length expected=%d actual=%d" % [path,expected_value.size(),actual_value.size()])
+        var count := mini(expected_value.size(),actual_value.size())
+        for index in range(count):
+            _collect_state_diffs(expected_value[index],actual_value[index],"%s[%d]" % [path,index],differences)
+            if differences.size() >= 24:
+                return
+    elif expected_value != actual_value:
+        differences.append("%s expected=%s actual=%s" % [path,str(expected_value).substr(0,180),str(actual_value).substr(0,180)])
+
+func _state_semantically_equal(left: Variant, right: Variant) -> bool:
+    # JSON has no distinct integer token, so reload can produce 1.0 instead of 1.
+    # Compare exact numeric value while ignoring only the integer/float type tag.
+    var left_numeric := left is int or left is float
+    var right_numeric := right is int or right is float
+    if left_numeric or right_numeric:
+        return left_numeric and right_numeric and left == right
+    if left is Dictionary and right is Dictionary:
+        if left.size() != right.size():
+            return false
+        for key in left.keys():
+            if not right.has(key) or not _state_semantically_equal(left[key],right[key]):
+                return false
+        return true
+    if left is Array and right is Array:
+        if left.size() != right.size():
+            return false
+        for index in range(left.size()):
+            if not _state_semantically_equal(left[index],right[index]):
+                return false
+        return true
+    return left == right
 
 func _check(valid: bool, message: String) -> bool:
     if not valid:

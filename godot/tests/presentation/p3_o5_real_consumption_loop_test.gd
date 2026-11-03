@@ -18,7 +18,9 @@ func _init() -> void:
     call_deferred("_run")
 
 func _run() -> void:
-    _cleanup_save()
+    if not _cleanup_save():
+        quit(2)
+        return
     ProjectSettings.set_setting("runtime/live_save_path", SAVE_PATH)
     if not await _open_scene():
         return
@@ -27,6 +29,7 @@ func _run() -> void:
     if mine == null:
         _fail("O5 live scene has no authoritative Mine.")
         return
+    var mine_units_before_test := int(mine.metrics.get("units_produced", 0))
     var active := buildings.active_worker_ids(state, mine)
     if active.is_empty():
         _fail("O5 fresh Mine has no active worker.")
@@ -213,14 +216,24 @@ func _run() -> void:
 
     # Mid-upgrade persistence: progress survives, no cost is charged twice.
     scheduler.run_ticks(4)
-    var mid_progress := mine.upgrade_progress
-    if mid_progress <= 0.0 or not mine.is_upgrading():
+    if mine.upgrade_progress <= 0.0 or not mine.is_upgrading():
         _fail("O5 timed Mine upgrade did not advance.")
         return
+    # The test advances scheduler ticks directly. Re-anchor the persisted wall
+    # clock to that deterministic test point so elapsed test runtime is not
+    # accidentally applied as extra offline production at the Save barrier.
+    state.runtime_last_wall_unix = int(Time.get_unix_time_from_system())
     var iron_paid := warehouse.quantity(state, &"thanh_thiet")
     var wood_paid := warehouse.quantity(state, &"linh_moc")
     var stones_paid := state.sect.spirit_stones
-    ui.call("_autosave_runtime")
+    var mid_upgrade_save: Dictionary = await ui.call("_save_runtime_async_barrier")
+    if not bool(mid_upgrade_save.get("ok",false)):
+        _fail("O5 SaveService barrier failed before mid-upgrade reload: %s" % str(mid_upgrade_save))
+        return
+    if not mine.is_upgrading() or mine.upgrade_target_level != 2:
+        _fail("O5 canonical wall-clock catch-up completed the upgrade before the mid-upgrade snapshot.")
+        return
+    var mid_progress := mine.upgrade_progress
     _dispose_scene()
     await process_frame
     if not await _open_scene():
@@ -258,7 +271,10 @@ func _run() -> void:
         _fail("O5 Mine upgrade completion charged resources again.")
         return
 
-    ui.call("_autosave_runtime")
+    var completed_upgrade_save: Dictionary = await ui.call("_save_runtime_async_barrier")
+    if not bool(completed_upgrade_save.get("ok",false)):
+        _fail("O5 SaveService barrier failed before final reload: %s" % str(completed_upgrade_save))
+        return
     _dispose_scene()
     await process_frame
     if not await _open_scene():
@@ -270,11 +286,17 @@ func _run() -> void:
     if state.sect.equipment_items.size() != starter_items + 1 or not state.sect.equipment_items.has(str(crafted_id)):
         _fail("O5 final reload duplicated or lost crafted equipment.")
         return
-    if warehouse.quantity(state, &"thanh_thiet") != starter_iron:
-        _fail("O5 conservation failed: five Mine batches minus craft/upgrade did not return to reserved starter iron.")
+    var mined_iron := int(mine.metrics.get("units_produced", 0)) - mine_units_before_test
+    var expected_final_iron := starter_iron + mined_iron - 3 - ore_need
+    if expected_final_iron < starter_iron or warehouse.quantity(state, &"thanh_thiet") != expected_final_iron:
+        _fail("O5 Mine/Forge/upgrade iron ledger mismatch: starter=%d mined=%d craft=3 upgrade=%d expected=%d actual=%d batches=%d" % [
+            starter_iron,mined_iron,ore_need,expected_final_iron,
+            warehouse.quantity(state, &"thanh_thiet"),int(mine.metrics.get("production_batches",0))])
         return
-    if warehouse.available_quantity(state, &"thanh_thiet") != 0:
-        _fail("O5 final starter iron reserve was not preserved.")
+    var expected_available_iron := expected_final_iron - starter_iron
+    if warehouse.available_quantity(state, &"thanh_thiet") != expected_available_iron:
+        _fail("O5 final reserve/available iron mismatch: expected available=%d actual=%d" % [
+            expected_available_iron,warehouse.available_quantity(state, &"thanh_thiet")])
         return
 
     var errors := state.validate_invariants()
@@ -285,10 +307,12 @@ func _run() -> void:
         _fail("O5 final state violates invariants: %s" % " | ".join(errors))
         return
 
-    print("P3 O5 REAL PRODUCE-SPEND LOOP TEST PASS")
     _dispose_scene()
     await process_frame
-    _cleanup_save()
+    if not _cleanup_save():
+        quit(2)
+        return
+    print("P3 O5 REAL PRODUCE-SPEND LOOP TEST PASS")
     quit(0)
 
 func _mine_one_batch(miner_id: StringName, mine: BuildingState, ordinal: int) -> bool:
@@ -356,10 +380,20 @@ func _stop_timers(node: Node) -> void:
     for child in node.get_children():
         _stop_timers(child)
 
-func _cleanup_save() -> void:
-    if FileAccess.file_exists(SAVE_PATH):
-        DirAccess.remove_absolute(ProjectSettings.globalize_path(SAVE_PATH))
+func _cleanup_save() -> bool:
+    # SaveService retains a valid .bak beside the primary test save. Remove all
+    # test-only transaction artifacts before a run so a failed prior test can
+    # never become this run's fresh-game baseline.
+    for suffix in ["", ".tmp", ".bak"]:
+        var path: String = SAVE_PATH + str(suffix)
+        if not FileAccess.file_exists(path):
+            continue
+        var remove_error := DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
+        if remove_error != OK:
+            push_error("O5 could not remove stale QA save artifact %s: %s" % [path, error_string(remove_error)])
+            return false
     ProjectSettings.set_setting("runtime/live_save_path", LiveGameRuntimeV2.DEFAULT_SAVE_PATH)
+    return true
 
 func _fail(message: String) -> bool:
     push_error(message)

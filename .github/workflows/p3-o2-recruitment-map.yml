@@ -5,13 +5,34 @@ on:
   workflow_dispatch:
   push:
     paths:
+      - 'godot/data/presentation/map25_source_a_verified.json'
+      - 'godot/data/presentation/tri_facility_source_a_manifest.json'
+      - 'godot/art/source_a_env02a/pv01_assets/**'
+      - 'godot/src/presentation/p3/sect_isometric_world_v1.gd'
+      - 'godot/tests/presentation/sect_map25_verified_art_gate_test.gd'
       - 'godot/src/presentation/p3/sect_map_presentation.gd'
       - 'godot/src/presentation/p3_1_landscape_sect.gd'
       - 'godot/src/presentation/p3_2_landscape_sect.gd'
+      - 'godot/src/presentation/p3/sect_isometric_world_v1.gd'
+      - 'godot/src/simulation/governance/sect_residence_site_v1.gd'
       - 'godot/tests/presentation/p3_o2_recruitment_map_test.gd'
+      - 'godot/tests/presentation/p3_6a_playable_slice_test.gd'
+      - 'godot/tests/presentation/tri_facility_b1_live_integration_test.gd'
+      - 'godot/tests/presentation/tri_facility_recruited_hs09_flow_test.gd'
+      - 'godot/tests/presentation/tri_facility_recruited_hs09_reload_verify.gd'
+      - 'godot/tests/presentation/tri_facility_map_construction_live_test.gd'
+      - 'godot/tests/presentation/tri_facility_map_construction_reload_verify.gd'
+      - 'godot/tests/presentation/tri_facility_b1_live_reload_verify.gd'
+      - 'godot/tests/presentation/tri_facility_b1_live_capture.gd'
+      - 'godot/src/presentation/uiux/**'
+      - 'godot/art/uiux/**'
+      - 'godot/tests/presentation/tri_facility_b1_art_v2_test.gd'
       - '.github/workflows/p3-o2-recruitment-map.yml'
 
       - 'godot/tests/presentation/p3_o6_m1_release_rehearsal_test.gd'
+      - 'godot/tests/presentation/gp_01_v2_mine_vertical_slice_test.gd'
+      - 'godot/tests/presentation/gp_02a_v2_cultivation_panel_test.gd'
+      - 'godot/tests/presentation/p3_o5_real_consumption_loop_test.gd'
 permissions:
   contents: read
 
@@ -59,11 +80,126 @@ jobs:
             godot --headless --path godot --check-only --script "$script"
           done
 
+      - name: Parse TRI-03 recruited HS-09 player-flow test
+        run: godot --headless --path godot --check-only --script res://tests/presentation/tri_facility_recruited_hs09_flow_test.gd
+
+      - name: Parse owner P0 legacy-locator and O5 persistence regressions
+        shell: bash
+        run: |
+          set -euo pipefail
+          for script in \
+            res://tests/presentation/gp_01_v2_mine_vertical_slice_test.gd \
+            res://tests/presentation/gp_02a_v2_cultivation_panel_test.gd \
+            res://tests/presentation/p3_o5_real_consumption_loop_test.gd \
+            res://tests/presentation/p3_o6_m1_release_rehearsal_test.gd; do
+            godot --headless --path godot --check-only --script "$script"
+          done
+
+      - name: Parse Residence path validation and independent reload test
+        run: |
+          godot --headless --path godot --check-only --script res://src/simulation/governance/sect_residence_site_v1.gd
+          godot --headless --path godot --check-only --script res://src/presentation/p3/sect_isometric_world_v1.gd
+          godot --headless --path godot --check-only --script res://tests/presentation/tri_facility_recruited_hs09_reload_verify.gd
+
       - name: Run O2 recruitment to live actor persistence
         run: godot --headless --path godot -s res://tests/presentation/p3_o2_recruitment_map_test.gd
 
       - name: Run Dẫn Tiên backend regression
         run: godot --headless --path godot -s res://tests/simulation/p3_7c1_foundation_guidance_test.gd
 
+      - name: TRI-01 B1 screen contract (canonical roles, rooms, candidates)
+        run: godot --headless --path godot -s res://tests/presentation/b1_trifacility_ui_contract_test.gd
+
+      - name: TRI-02 Source A renderer scripts parse; runtime assertions execute in P3.2 capture
+        run: |
+          godot --headless --path godot --check-only --script res://src/presentation/uiux/sect_facility_art_v2.gd
+          godot --headless --path godot --check-only --script res://tests/presentation/tri_facility_b1_art_v2_test.gd
+
+      - name: TRI-01 live callbacks and independent second-process SaveService reload
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p godot/outputs/tri01_b1_crossprocess
+          export TMB_TRI_B1_SAVE_PATH="$PWD/godot/outputs/tri01_b1_crossprocess/saved.json"
+          export TMB_TRI_B1_EXPECTED_PATH="$PWD/godot/outputs/tri01_b1_crossprocess/expected.json"
+          godot --headless --path godot -s res://tests/presentation/tri_facility_b1_live_integration_test.gd
+          godot --headless --path godot -s res://tests/presentation/tri_facility_b1_live_reload_verify.gd
+
+      - name: TRI-03 new-game recruitment -> HS-09 -> assignment -> isolated cross-process Save/Reload
+        shell: bash
+        env:
+          TMB_TRI03_FLOW_SAVE_PATH: user://tri03_recruited_hs09_flow_${{ github.run_id }}_${{ github.run_attempt }}.json
+        run: |
+          set -euo pipefail
+          mkdir -p godot/outputs/tri03_recruited_hs09_flow
+          timeout --signal=TERM --kill-after=10s 180s xvfb-run -a -s "-screen 0 1280x720x24" godot --path godot --resolution 1280x720 --rendering-method gl_compatibility --script res://tests/presentation/tri_facility_recruited_hs09_flow_test.gd -- "$PWD/godot/outputs/tri03_recruited_hs09_flow"
+          godot --headless --path godot -s res://tests/presentation/tri_facility_recruited_hs09_reload_verify.gd
+
+      - name: TRI-03 actual map placement and independent Save/Reload harness
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p godot/outputs/tri03_map_build
+          timeout --signal=TERM --kill-after=10s 180s xvfb-run -a -s "-screen 0 1280x720x24" godot --path godot --resolution 1280x720 --rendering-method gl_compatibility --script res://tests/presentation/tri_facility_map_construction_live_test.gd -- "$PWD/godot/outputs/tri03_map_build"
+          godot --headless --path godot -s res://tests/presentation/tri_facility_map_construction_reload_verify.gd
+
+      - name: Run GP-01, GP-02A, O5 and O6 owner P0 regressions on this exact source
+        shell: bash
+        if: always()
+        run: |
+          set +e
+          mkdir -p godot/outputs/tri03_owner_regressions
+          failed=0
+          run_one() {
+            local name="$1" script="$2" marker="$3"
+            local log="godot/outputs/tri03_owner_regressions/${name}.log"
+            godot --headless --path godot -s "$script" >"$log" 2>&1
+            local rc=$?
+            printf 'TRI03_OWNER_TEST name=%s exit=%s marker=%s\n' "$name" "$rc" "$marker"
+            if [ "$rc" -ne 0 ] || ! grep -Fq "$marker" "$log"; then
+              failed=1
+              printf 'TRI03_OWNER_TEST_FAIL name=%s\n' "$name"
+              tail -n 80 "$log"
+            fi
+          }
+          run_one gp01 res://tests/presentation/gp_01_v2_mine_vertical_slice_test.gd 'GP-01 V2 GUIDANCE -> WORKSITE -> MINE -> WAREHOUSE -> OFFLINE EXACTLY-ONCE: PASS'
+          run_one gp02a res://tests/presentation/gp_02a_v2_cultivation_panel_test.gd 'GP-02A V2 CULTIVATION PANEL + SAFE BUSY COMMAND + SAVE/RELOAD + P2 ISOLATION PASS'
+          run_one o5 res://tests/presentation/p3_o5_real_consumption_loop_test.gd 'P3 O5 REAL PRODUCE-SPEND LOOP TEST PASS'
+          run_one o6 res://tests/presentation/p3_o6_m1_release_rehearsal_test.gd 'P3 O6 M1 END-TO-END RELEASE REHEARSAL PASS'
+          exit "$failed"
+
+      - name: TRI-01 exterior-door chosen plot regression
+        run: godot --headless --path godot -s res://tests/dai_dien_dd092_door_plot_test.gd
+
+      - name: Capture Godot 4.7.2 actual P3.2 map and B1 windows at 1280x720
+        shell: bash
+        run: |
+          set -euo pipefail
+          command -v xvfb-run
+          mkdir -p godot/outputs/tri02_source_a_live
+          timeout --signal=TERM --kill-after=10s 180s xvfb-run -a -s "-screen 0 1280x720x24" godot --path godot --rendering-method gl_compatibility --script res://tests/presentation/tri_facility_b1_live_capture.gd -- "$PWD/godot/outputs/tri02_source_a_live"
+
+      - name: Upload actual P3.2 map-context and B1 screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tri02-source-a-p32-live-${{ github.sha }}
+          path: godot/outputs/tri02_source_a_live/*.png
+          if-no-files-found: warn
+
+      - name: Upload TRI-03 placement, recruited HS-09 and assignment frames
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tri03-playable-flow-${{ github.sha }}
+          path: |
+            godot/outputs/tri03_recruited_hs09_flow/*.png
+            godot/outputs/tri03_map_build/*.png
+            godot/outputs/tri03_owner_regressions/*.log
+          if-no-files-found: warn
+
       - name: Run existing P3.6A scene regression
         run: godot --headless --path godot -s res://tests/presentation/p3_6a_playable_slice_test.gd
+
+# Re-run the TRI-03 P0 acceptance on the consolidated source tree.
+# Owner P0 exact-tree CI rerun trigger.

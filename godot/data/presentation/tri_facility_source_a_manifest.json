@@ -1,0 +1,100 @@
+{
+  "schema_version": 1,
+  "task": "TRI-02 Source A visual intake",
+  "catalog_repository": "ZQZS-Source-Knowledge",
+  "catalog_path": "transferkit/Catalog/BUILDING_VISUAL_INDEX.csv",
+  "usage": "internal authorized project only",
+  "external_redistribution": "not verified; do not publish/repackage outside the authorized project",
+  "assets": {
+    "hall": {
+      "model_id": "510052",
+      "game_png": "godot/art/source_a_env02a/pv01_assets/main_hall/510052.png",
+      "source_directory": "E:\\GameAssetExtract\\Assets\\Characters\\AndroidData_character\\spinelib\\build\\510052_skeletondata",
+      "source_png": "510052_Texture2D_4854329250475331136.png",
+      "png_sha256": "b6bf88c35e3edc33aba822124296af15a5c8491a05c28f6b5d7b342d20d5325c",
+      "dimensions_px": [
+        1104,
+        740
+      ],
+      "alpha": "transparent and semi-transparent pixels verified",
+      "atlas": {
+        "file": "510052.atlas_TextAsset_5041341162892146218.bin",
+        "sha256": "69dc956d8ee7bed005c31a2e1120abc17a9fdd901c4f81f6481d2a921acf31cd",
+        "region": "one region 510052; xy 0,0; size 1102x739 of 1104x740"
+      },
+      "skeleton": {
+        "file": "510052.skel_TextAsset_8448608836757760153.bin",
+        "sha256": "9e400ab40c6c3272bd862dbff81b5865b5c02aa133f7aa6d712aa8b2851fab73",
+        "runtime_use": "not used for static facility illustration"
+      },
+      "classification": "complete static building sprite; a single near-full-image region, not a multi-part atlas",
+      "luminance_texture": {
+        "file": "510052_lum_Texture2D_-6334658015622499388.png",
+        "sha256": "db8a49b339afd8d93e5cbf8477a7b8d3e3d3bae12014e78b3bacd241de94c8ed",
+        "bytes": 20042,
+        "usage": "Catalog dependency; visually verified as a lighting/luminance mask, but not composited because the original blend/material conversion is not validated for Godot."
+      },
+      "rights_status": "A_USER_AUTHORIZED_LAB; redistribution scope must be verified before external shipping."
+    },
+    "residence": {
+      "model_id": "510076",
+      "game_png": "godot/art/source_a_env02a/pv01_assets/residence/510076.png",
+      "source_directory": "E:\\GameAssetExtract\\Assets\\Characters\\AndroidData_character\\spinelib\\build\\510076_skeletondata",
+      "source_png": "510076_Texture2D_815792867394781754.png",
+      "png_sha256": "f8e05d7376fc5ddc7b25f56673b6d5f444b10fd759da06a5929ec4f38a68d320",
+      "dimensions_px": [
+        536,
+        416
+      ],
+      "alpha": "transparent and semi-transparent pixels verified",
+      "atlas": {
+        "file": "510076.atlas_TextAsset_7656183474786191410.bin",
+        "sha256": "97371a65bf06f117ccaf18d94b6842366d257537722d5fecaeb478bac6912ae3",
+        "region": "one region 510076; xy 0,0; size 533x416 of 536x416"
+      },
+      "skeleton": {
+        "file": "510076.skel_TextAsset_9093754999670857354.bin",
+        "sha256": "242872479f236ad49650f78482f2f20aa3f122bb0f37244c329f27aab5ab55f8",
+        "runtime_use": "not used for static facility illustration"
+      },
+      "classification": "complete static building sprite; a single near-full-image region, not a multi-part atlas",
+      "luminance_texture": {
+        "file": "510076_lum_Texture2D_-7084962920268462182.png",
+        "sha256": "5dd6fc0559196397779751c5d8bfe543130dde10ebf088984d2e4dfac4fe5bbb",
+        "bytes": 50464,
+        "usage": "Catalog dependency; visually verified as a lighting/luminance mask, but not composited because the original blend/material conversion is not validated for Godot."
+      },
+      "rights_status": "A_USER_AUTHORIZED_LAB; redistribution scope must be verified before external shipping."
+    },
+    "guidance": {
+      "model_id": "510111",
+      "game_png": "godot/art/source_a_env02a/pv01_assets/guidance/510111.png",
+      "source_directory": "E:\\GameAssetExtract\\Assets\\Characters\\AndroidData_character\\spinelib\\build\\510111_skeletondata",
+      "source_png": "510111_Texture2D_3239249786622463018.png",
+      "png_sha256": "90b7c595f3b77788c99924ef2eb7ba4b8ede794ccffda1c6808263ba3c711762",
+      "dimensions_px": [
+        532,
+        592
+      ],
+      "alpha": "transparent and semi-transparent pixels verified",
+      "atlas": {
+        "file": "510111.atlas_TextAsset_-3656091933687014973.bin",
+        "sha256": "1460001cc428c100fe3e6009d55e34a753e4ce2b38e09eb65bbd50ba90046da3",
+        "region": "one region 510111; xy 0,0; size 530x591 of 532x592"
+      },
+      "skeleton": {
+        "file": "510111.skel_TextAsset_5767170797914256296.bin",
+        "sha256": "d7331e602f2ccc8959380c0ea64172fa9fb29959da7ef2982f8f7324baab3499",
+        "runtime_use": "not used for static facility illustration"
+      },
+      "classification": "complete static building sprite; a single near-full-image region, not a multi-part atlas",
+      "luminance_texture": {
+        "file": "510111_lum_Texture2D_5128554600285391511.png",
+        "sha256": "4a636e29eab2504c00209b65eb031910532cd782afdecc6ba3427ce3c68788b4",
+        "bytes": 7683,
+        "usage": "Catalog dependency; visually verified as a lighting/luminance mask, but not composited because the original blend/material conversion is not validated for Godot."
+      },
+      "rights_status": "A_USER_AUTHORIZED_LAB; redistribution scope must be verified before external shipping."
+    }
+  }
+}

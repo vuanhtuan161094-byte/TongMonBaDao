@@ -258,7 +258,10 @@ func _run() -> void:
     var field_units_at_save := int(field.metrics.get("units_produced", 0))
     var saved_field_yield := int(saved_plot.get("routine_yield", 0))
 
-    ui.call("_autosave_runtime")
+    var active_save: Dictionary = await ui.call("_save_runtime_async_barrier")
+    if not bool(active_save.get("ok",false)):
+        _fail("O9 canonical async SaveService barrier failed for active four-system state.")
+        return
     if not FileAccess.file_exists(SAVE_PATH):
         _fail("O9 active four-system save was not written.")
         return
@@ -408,7 +411,10 @@ func _run() -> void:
     var final_herb := warehouse.quantity(state, &"thanh_linh_thao")
     var final_pill := warehouse.quantity(state, NeedsSystem.HEALING_PILL_ID)
     var final_items := state.sect.equipment_items.size()
-    ui.call("_autosave_runtime")
+    var final_save: Dictionary = await ui.call("_save_runtime_async_barrier")
+    if not bool(final_save.get("ok",false)):
+        _fail("O9 canonical async SaveService barrier failed before final reload.")
+        return
     _dispose_scene()
     await process_frame
     if not await _open_scene():

@@ -20,7 +20,9 @@ func _init() -> void:
     call_deferred("_run")
 
 func _run() -> void:
-    _cleanup_save()
+    if not _cleanup_save():
+        _fail("O6 could not clear its isolated main/tmp/backup save files.")
+        return
     ProjectSettings.set_setting("runtime/live_save_path", SAVE_PATH)
     if not await _open_scene():
         return
@@ -39,16 +41,15 @@ func _run() -> void:
         _fail("O6 fresh canonical starter Warehouse baseline is missing.")
         return
 
-    # --- Recruitment through the real Dẫn Tiên player surface.
+    # --- Recruitment through the real map hit target and B1 Dẫn Tiên surface.
     if not await _open_building_hit(SectMapPresentation.DEST_GUIDANCE):
         return
-    var tokens_before := state.sect.disciple_recruitment_tokens
-    var order := ui.find_child("GuidanceRecruitOrder", true, false) as Button
-    if order == null or order.disabled:
-        _fail("O6 Guidance order is not player-accessible on fresh state.")
+    if not await _press("OpenDanTienScreenV2"):
         return
-    order.emit_signal("pressed")
     await process_frame
+    var tokens_before := state.sect.disciple_recruitment_tokens
+    if not await _press("UseRecruitmentOrder"):
+        return
     if state.sect.disciple_recruitment_tokens != tokens_before - 1:
         _fail("O6 Guidance order did not debit exactly one recruitment token.")
         return
@@ -58,26 +59,28 @@ func _run() -> void:
         _fail("O6 real Guidance order produced no authentic V2 candidate.")
         return
     var recruit_id := StringName(recruitable[0])
-    var accept := ui.find_child("AcceptCandidate_%s" % str(recruit_id), true, false) as Button
-    if accept == null or accept.disabled:
-        _fail("O6 authentic candidate has no enabled Accept action.")
+    if not await _select_and_accept_candidate_via_b1(recruit_id):
         return
-    accept.emit_signal("pressed")
-    await process_frame
     if state.disciples.size() != 7 or not state.disciples.has(recruit_id):
         _fail("O6 Accept did not add exactly one canonical recruit.")
         return
+    # Actors are viewport-selected. Use the player's actual reveal action to
+    # focus the new disciple before asserting that its Source A actor exists.
+    if not await _press("RecruitedDiscipleWorld"):
+        return
+    await process_frame
+    await process_frame
+    ui.call("_refresh_all")
+    await process_frame
     var actors: Dictionary = ui.get("actor_nodes")
     if not actors.has(str(recruit_id)):
-        _fail("O6 accepted recruit did not become a live map actor.")
+        _fail("O6 map-focus action did not materialize the selected recruit in the viewport.")
         return
     if ui.find_children("ModularDisciple_%s" % str(recruit_id), "", true, false).size() != 1:
         _fail("O6 accepted recruit produced duplicate/missing modular actors.")
         return
-    ui.call("_open_disciple", recruit_id)
-    await process_frame
     if StringName(ui.get("selected_id")) != recruit_id:
-        _fail("O6 recruited live actor is not selectable.")
+        _fail("O6 TỚI NHÂN VẬT did not select the recruited actor.")
         return
 
     # Assign the recruited disciple to the real Spirit Field via UI.
@@ -323,23 +326,36 @@ func _run() -> void:
         _fail("O6 queued Mine command was not canonical before restart.")
         return
 
+    # This rehearsal advances the scheduler directly. Re-anchor the wall clock
+    # after that accelerated setup so SaveService cannot count the test's own
+    # execution time a second time as offline simulation.
+    state.runtime_last_wall_unix = int(Time.get_unix_time_from_system())
+    # Await the canonical async-save barrier before scene teardown; Object.call does not await coroutines.
+    var autosave_result: Dictionary = await ui.call("_save_runtime_async_barrier")
+    if not bool(autosave_result.get("ok",false)):
+        _fail("O6 canonical async SaveService barrier failed before restart.")
+        return
+    if not FileAccess.file_exists(SAVE_PATH):
+        _fail("O6 active runtime save was not written.")
+        return
+    # Compare against the state actually committed by the save barrier, not an
+    # earlier tick that may legitimately advance during persistence.
     var saved_tick := state.tick
     var saved_roster := state.disciples.size()
     var saved_iron := warehouse.quantity(state, &"thanh_thiet")
     var saved_wood := warehouse.quantity(state, &"linh_moc")
     var saved_stones := state.sect.spirit_stones
     var saved_items := state.sect.equipment_items.size()
+    active_plot = _plot_for_worker(field,recruit_id)
+    if active_plot.is_empty():
+        _fail("O6 active Field plot settled before the restart snapshot.")
+        return
     var saved_finish_tick := int(active_plot.get("finish_tick", -1))
     var saved_crop_id := StringName(active_plot.get("crop_id", ""))
     var saved_field_output := crops.output_resource_id(saved_crop_id)
     var saved_field_output_qty := warehouse.quantity(state, saved_field_output)
     var mine_batches_at_save := int(mine.metrics.get("production_batches", 0))
     var field_batches_at_save := int(field.metrics.get("production_batches", 0))
-
-    ui.call("_autosave_runtime")
-    if not FileAccess.file_exists(SAVE_PATH):
-        _fail("O6 active runtime save was not written.")
-        return
     _dispose_scene()
     await process_frame
     if not await _open_scene():
@@ -353,9 +369,14 @@ func _run() -> void:
     if state.disciples.size() != saved_roster or not state.disciples.has(recruit_id):
         _fail("O6 restart lost/duplicated recruited disciple.")
         return
+    # Virtual actors materialize only when selected and inside the viewport. Re-focus the restored disciple via the map action before asserting a single actor.
+    ui.call("_open_disciple",recruit_id)
+    await process_frame
+    ui.call("_refresh_all")
+    await process_frame
     actors = ui.get("actor_nodes")
     if not actors.has(str(recruit_id)) or ui.find_children("ModularDisciple_%s" % str(recruit_id), "", true, false).size() != 1:
-        _fail("O6 restart did not restore exactly one recruit actor.")
+        _fail("O6 focus action did not materialize exactly one restored recruit actor in the viewport.")
         return
 
     mine = buildings.primary_building(state, BuildingSystem.TYPE_MINE)
@@ -443,10 +464,13 @@ func _run() -> void:
         _fail("O6 final M1 state violates invariants: %s" % " | ".join(errors))
         return
 
-    print("P3 O6 M1 END-TO-END RELEASE REHEARSAL PASS")
     _dispose_scene()
     await process_frame
-    _cleanup_save()
+    if not _cleanup_save():
+        push_error("O6 could not remove its isolated save artifacts after PASS.")
+        quit(2)
+        return
+    print("P3 O6 M1 END-TO-END RELEASE REHEARSAL PASS")
     quit(0)
 
 func _mine_one_explicit_batch(miner_id: StringName, mine: BuildingState, ordinal: int) -> bool:
@@ -527,6 +551,39 @@ func _press(node_name: String) -> bool:
     await process_frame
     return true
 
+func _select_and_accept_candidate_via_b1(candidate_id: StringName) -> bool:
+    var candidate: CandidateState = state.recruitment_candidates.get(candidate_id)
+    var b1_surface := ui.get_node_or_null("DanTienScreenV2/TriFacilityB1LiveAdapterV1") as Control
+    if b1_surface == null or not b1_surface.is_visible_in_tree():
+        return _fail("Active B1 guidance surface is unavailable.")
+    var search := b1_surface.find_child("CandidateSearch",true,false) as LineEdit
+    if candidate == null or search == null:
+        return _fail("O6 B1 search/candidate control was missing.")
+    search.text = candidate.display_name
+    search.text_submitted.emit(search.text)
+    await process_frame
+    var pick := b1_surface.find_child("CandidatePick_%s" % str(candidate_id),true,false) as Button
+    if pick == null:
+        return _fail("O6 B1 candidate picker did not expose the authentic candidate.")
+    if not pick.disabled:
+        pick.pressed.emit()
+        await process_frame
+    else:
+        var host := ui.get_node_or_null("DanTienScreenV2")
+        if host == null or StringName(host.get("selected_candidate_id")) != candidate_id:
+            return _fail("O6 disabled B1 candidate row was not the selected candidate.")
+    var accept := b1_surface.find_child("AcceptCandidate",true,false) as Button
+    if accept == null or accept.disabled:
+        return _fail("O6 B1 has no enabled canonical Accept action for the selected candidate.")
+    accept.pressed.emit()
+    await process_frame
+    accept = b1_surface.find_child("AcceptCandidate",true,false) as Button
+    if accept == null or not accept.text.contains("XÁC NHẬN"):
+        return _fail("O6 B1 candidate acceptance did not expose its second confirmation.")
+    accept.pressed.emit()
+    await process_frame
+    return true
+
 func _open_scene() -> bool:
     var scene := load("res://scenes/p3/p3_2_landscape_sect.tscn") as PackedScene
     if scene == null:
@@ -563,10 +620,18 @@ func _stop_timers(node: Node) -> void:
     for child in node.get_children():
         _stop_timers(child)
 
-func _cleanup_save() -> void:
-    if FileAccess.file_exists(SAVE_PATH):
-        DirAccess.remove_absolute(ProjectSettings.globalize_path(SAVE_PATH))
+func _cleanup_save() -> bool:
+    var ok := true
+    for suffix in ["", ".tmp", ".bak"]:
+        var path: String = SAVE_PATH + str(suffix)
+        if not FileAccess.file_exists(path):
+            continue
+        var error := DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
+        if error != OK:
+            push_error("O6 could not remove isolated QA save artifact (%s): %s" % [suffix,error])
+            ok = false
     ProjectSettings.set_setting("runtime/live_save_path", LiveGameRuntimeV2.DEFAULT_SAVE_PATH)
+    return ok
 
 func _fail(message: String) -> bool:
     push_error(message)

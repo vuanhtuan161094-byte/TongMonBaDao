@@ -1,5 +1,7 @@
 extends "res://src/presentation/p3_1_landscape_sect.gd"
 
+const TRI_B1_LIVE_ADAPTER = preload("res://src/presentation/uiux/tri_facility_live_adapter_v1.gd")
+const TRI_FACILITY_ART = preload("res://src/presentation/uiux/sect_facility_art_v2.gd")
 const ZOOM_STEP := 1.12
 const CAMERA_TWEEN_SECONDS := 0.22
 const FOCUS_MARKER_SIZE := Vector2(82.0, 82.0)
@@ -166,6 +168,17 @@ var disciple_summary_meta: Label
 var disciple_summary_body: Label
 var summary_feedback := ""
 
+var build_mode_button: Button
+var build_mode_panel: Panel
+var build_mode_description: Label
+var build_mode_feedback: Label
+var build_mode_site_label: Label
+var build_mode_confirm: Button
+var build_mode_move_list: VBoxContainer
+var build_mode_active := false
+var build_mode_kind := ""
+var build_mode_house_id: StringName = &""
+var build_mode_site := SectResidenceSiteV1.UNSELECTED
 var building_operation_panel: Panel
 var building_operation_title: Label
 var building_operation_body: Label
@@ -291,6 +304,7 @@ func _ready() -> void:
     _build_camera_controls()
     _build_disciple_summary_panel()
     _build_building_operation_panel()
+    _build_construction_ui()
     _build_living_cue_layer()
     _seed_map_worksite_receipts()
     _refresh_map_worksite_cues()
@@ -304,6 +318,11 @@ func _ready() -> void:
     _resume_saved_b3_hunt()
 
 func _exit_tree() -> void:
+    # P3.1 owns the canonical final save. Preserve that lifecycle when the
+    # P3.2 presentation is torn down; runtime_ready is still true here during
+    # a normal game exit. QA disposal deliberately clears it after an awaited
+    # async-save barrier and therefore remains non-writing.
+    super._exit_tree()
     _flush_raw_frame_log()
     if raw_frame_log != null:
         raw_frame_log.close()
@@ -334,7 +353,15 @@ func _spawn_all_disciples() -> void:
         var disciple_id := StringName(raw_id)
         actor_destinations[str(disciple_id)] = str(_initial_destination(state.disciples[disciple_id]))
 
+func _point_over_build_mode_panel(screen_point: Vector2) -> bool:
+    return build_mode_panel != null and build_mode_panel.visible \
+        and Rect2(build_mode_panel.position,build_mode_panel.size).has_point(screen_point)
+
 func _input(event: InputEvent) -> void:
+    if event is InputEventMouseButton and _point_over_build_mode_panel((event as InputEventMouseButton).position):
+        return
+    if event is InputEventScreenTouch and _point_over_build_mode_panel((event as InputEventScreenTouch).position):
+        return
     # Map picking must see a physical tap before Control descendants consume
     # the release. Drag still goes through the same canonical map transform.
     if _popup_is_open():
@@ -368,6 +395,12 @@ func _input(event: InputEvent) -> void:
             get_viewport().set_input_as_handled()
 
 func _unhandled_input(event: InputEvent) -> void:
+    if event is InputEventMouseButton and _point_over_build_mode_panel((event as InputEventMouseButton).position):
+        return
+    if event is InputEventMouseMotion and _point_over_build_mode_panel((event as InputEventMouseMotion).position):
+        return
+    if event is InputEventScreenTouch and _point_over_build_mode_panel((event as InputEventScreenTouch).position):
+        return
     if _popup_is_open():
         _clear_pointer_state()
         return
@@ -667,6 +700,13 @@ func _refresh_focus_readout() -> void:
         focus_readout.text = focused_label if has_focus_target else ""
 
 func _reset_camera(animate: bool = true) -> void:
+    if state != null and int(state.sect.world_layout_version) == 2:
+        var focus_delta: Vector2 = SectIsometricWorldV1.project(SectIsometricWorldV1.NEW_GAME_FOCUS_CELL) \
+            - SectIsometricWorldV1.project(SectIsometricWorldV1.CENTER_CELL)
+        var focus_world := SectIsometricWorldV1.LEGACY_ANCHOR+focus_delta
+        var layout_transform := SectMapCamera.focus_transform(focus_world,0.75)
+        _apply_camera(float(layout_transform["zoom"]),layout_transform["position"],animate)
+        return
     var transform := SectMapCamera.reset_transform()
     var target_position: Vector2 = transform["position"]
     _apply_camera(float(transform["zoom"]), target_position, animate)
@@ -770,8 +810,18 @@ func _camera_center() -> Vector2:
     return SectMapCamera.VIEW_RECT.position + SectMapCamera.VIEW_RECT.size * 0.5
 
 func _popup_is_open() -> bool:
-    return (popup_layer != null and popup_layer.get_child_count() > 0) \
-        or (pve_party_picker_shade != null and pve_party_picker_shade.visible)
+    if (popup_layer != null and popup_layer.get_child_count() > 0) \
+            or (pve_party_picker_shade != null and pve_party_picker_shade.visible):
+        return true
+    # B1 facility screens sit outside popup_layer. Keep map pointer handling
+    # from consuming their button releases before Control dispatches clicks.
+    for overlay_name in [
+        "DaiDienScreenV1", "DaiDienScreenB1V1", "DeTuXaScreenB1V1",
+        "DanTienScreenV2", "DanTienScreenB1V1"
+    ]:
+        if get_node_or_null(overlay_name) != null:
+            return true
+    return false
 
 func _clear_pointer_state() -> void:
     touch_points.clear()
@@ -781,6 +831,8 @@ func _clear_pointer_state() -> void:
     mouse_pointer_dragged = false
 
 func _open_building(destination: StringName, instance_id: StringName = &"") -> void:
+    if build_mode_active:
+        _leave_build_mode(false)
     _close_disciple_summary(true)
     _clear_popup()
     selected_building = destination
@@ -820,6 +872,7 @@ func _install_main_isometric_world() -> void:
 
     iso_world = SectIsometricWorldV1.new()
     iso_world.name = "SectIsoWorld192"
+    iso_world.configure_map_layout_version(int(state.sect.world_layout_version))
     iso_viewport.add_child(iso_world)
     iso_world.refresh_from_state(state)
     for node in map_layer.get_children():
@@ -840,7 +893,47 @@ func _disable_legacy_hit_input(parent: Node) -> void:
 func _iso_actor_point(destination: StringName, building_id: StringName = &"") -> Vector2:
     if iso_world == null:
         return SectMapPresentation.position_for_destination(destination)
-    return SectIsometricWorldV1.virtual_legacy_point(destination,building_id)
+    var saved_origin := SectResidenceSiteV1.UNSELECTED
+    if state != null and building_id != &"":
+        var actual = state.buildings.get(str(building_id))
+        if actual is BuildingState and actual.building_type == BuildingSystem.TYPE_RESIDENCE:
+            saved_origin = SectResidenceSiteV1.origin_of(actual)
+    return SectIsometricWorldV1.virtual_legacy_point(destination,building_id,saved_origin,
+        int(state.sect.world_layout_version) if state != null else 0)
+
+func _sect_actor_door_offset(disciple: DiscipleState, index: int,
+        idle_slots: Dictionary, destination: StringName) -> Vector2:
+    # DD-09.2: actors stop in a small queue at the outdoor interaction tile,
+    # not scattered across a building interior or on the roof.
+    if destination in [SectMapPresentation.DEST_COURTYARD, SectMapPresentation.DEST_GATE]:
+        return _endgame_actor_offset(disciple,index,idle_slots)
+    return Vector2(float(posmod(index, 5) - 2) * 6.0, 0.0)
+
+func _sect_effective_door_destination(disciple: DiscipleState, destination: StringName) -> StringName:
+    # Keep a worker staged at the same workshop door between simulation
+    # minute actions. Active REST/TRAIN_BODY/HEAL/etc must follow the action,
+    # never be overridden by an old resource worksite reservation.
+    if disciple.current_action not in [&"EVALUATE", &"IDLE"]:
+        return destination
+    var id := disciple.worksite_building_id
+    if id != &"" and state.buildings.has(str(id)):
+        var building: BuildingState = state.buildings[str(id)]
+        var worksite_dest := _sect_production_destination(building.building_type)
+        if worksite_dest != &"":
+            return worksite_dest
+    return destination
+
+func _sect_door_worksite_id(disciple: DiscipleState, destination: StringName) -> StringName:
+    # REST uses the actual rented House. A stale workshop ID never overrides
+    # the resting destination; no AStar navigation runs in sect presentation.
+    if destination == SectMapPresentation.DEST_RESIDENCE and SectHallSystemV1.installed(state):
+        return StringName(SectResidenceSystemV1.house_of(state,disciple.id))
+    var worksite_id := disciple.worksite_building_id
+    if worksite_id != &"" and state.buildings.has(str(worksite_id)):
+        var site: BuildingState = state.buildings[str(worksite_id)]
+        if _sect_production_destination(site.building_type) == destination:
+            return worksite_id
+    return &""
 
 func _iso_two_direction_delta(delta: Vector2, old_facing: StringName) -> Vector2:
     # Source A pool has horizontal authored facing. Vertical travel preserves
@@ -850,9 +943,19 @@ func _iso_two_direction_delta(delta: Vector2, old_facing: StringName) -> Vector2
         x = -1.0 if old_facing == &"left" else 1.0
     return Vector2(-1.0 if x < 0.0 else 1.0,0.0)
 
+func _cell_at_map_screen(screen_point: Vector2) -> Vector2i:
+    var fractional := SectIsometricWorldV1.inverse(iso_world.screen_to_world(screen_point))
+    return Vector2i(roundi(fractional.x),roundi(fractional.y))
+
 func _try_iso_map_pick(screen_point: Vector2) -> bool:
     if iso_world == null or not SectMapCamera.is_map_screen_point(screen_point):
         return false
+    if _point_over_build_mode_panel(screen_point):
+        return false
+    if build_mode_active:
+        _select_build_mode_site(_cell_at_map_screen(screen_point))
+        get_viewport().set_input_as_handled()
+        return true
     if _popup_is_open() or _building_operation_is_open() or _disciple_summary_is_open():
         return false
     var picked := iso_world.pick_at_screen(screen_point)
@@ -868,12 +971,16 @@ func _try_iso_map_pick(screen_point: Vector2) -> bool:
 
 func _sect_production_destination(building_type: StringName) -> StringName:
     match building_type:
+        BuildingSystem.TYPE_MAIN_HALL:
+            return SectMapPresentation.DEST_MAIN_HALL
         BuildingSystem.TYPE_MINE:
             return SectMapPresentation.DEST_MINE
         BuildingSystem.TYPE_LINH_FOREST:
             return SectMapPresentation.DEST_LINH_FOREST
         BuildingSystem.TYPE_SPIRIT_FIELD:
             return SectMapPresentation.DEST_SPIRIT_FIELD
+        BuildingSystem.TYPE_RESIDENCE:
+            return SectMapPresentation.DEST_RESIDENCE
     return &""
 
 func _workforce_occupants(building: BuildingState) -> Array[StringName]:
@@ -1090,7 +1197,10 @@ func _open_disciple_quick_assignment(disciple_id: StringName, preserve_summary_o
             if occupants.size() == 1 and state.disciples.has(occupants[0]):
                 busy_worker = state.disciples[occupants[0]].display_name
             var occupation := "Chưa có người" if occupants.is_empty() else (busy_worker if busy_worker != "" else "%d người" % occupants.size())
-            info.text = "%s · Lv%d · %s\n%s" % [str(building.id),building.level,occupation,("Đang phụ trách" if already_owner else "Có thể nhận việc" if reason == "" else reason)]
+            var building_label := str(item["name"])
+            if instances.size() > 1:
+                building_label += " %02d" % building.instance_index
+            info.text = "%s · Lv%d · %s\n%s" % [building_label,building.level,occupation,("Đang phụ trách" if already_owner else "Có thể nhận việc" if reason == "" else reason)]
             info.custom_minimum_size = Vector2(448,52)
             info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
             info.add_theme_font_size_override("font_size",12)
@@ -1721,16 +1831,11 @@ func _sync_actor_positions() -> void:
         var disciple: DiscipleState = state.disciples[disciple_id]
         var previous := StringName(actor_destinations.get(key, str(SectMapPresentation.DEST_COURTYARD)))
         var destination := SectMapPresentation.destination_for_action(disciple.current_action, previous)
+        destination = _sect_effective_door_destination(disciple,destination)
         actor_destinations[key] = str(destination)
 
-        var worksite_id := disciple.worksite_building_id
-        if worksite_id != &"" and state.buildings.has(str(worksite_id)):
-            var site: BuildingState = state.buildings[str(worksite_id)]
-            var site_destination := _sect_production_destination(site.building_type)
-            if site_destination != &"":
-                destination = site_destination
-                actor_destinations[key] = str(destination)
-        var world_foot := _iso_actor_point(destination,worksite_id) + _endgame_actor_offset(disciple,index,idle_slots)
+        var worksite_id := _sect_door_worksite_id(disciple,destination)
+        var world_foot := _iso_actor_point(destination,worksite_id) + _sect_actor_door_offset(disciple,index,idle_slots,destination)
         var target := world_foot - DiscipleActorVisualCatalog.ACTOR_FOOT_POINT
         actor_virtual_positions[key] = target
         var actor := actor_nodes.get(key) as Control
@@ -1826,14 +1931,12 @@ func _actor_anchor_offset(actor: Control) -> Vector2:
     return Vector2(30.0, 30.0)
 
 func _refresh_actor_status_label_visibility() -> void:
-    # Dense endgame maps can show 100 real workers. Their action remains in
-    # the selected disciple/building panel; only the focused disciple gets a
-    # floating world label, preventing the whole map from becoming unreadable.
-    var focused_key := str(focused_id) if focused_kind == &"disciple" else ""
+    # Selected action state is in the details panel and actor tooltip.
+    # Never re-enable a world-space label after actor.sync_action() hid it.
     for raw_id in actor_status_labels.keys():
         var status := actor_status_labels[raw_id] as Label
         if status != null and is_instance_valid(status):
-            status.visible = str(raw_id) == focused_key
+            status.visible = false
 
 func _stage_a_live_assets_ready() -> bool:
     return (
@@ -1895,15 +1998,10 @@ func _install_modular_live_actors() -> void:
         var disciple: DiscipleState = state.disciples[disciple_id]
         var destination := StringName(actor_destinations.get(key, str(_initial_destination(disciple))))
         destination = SectMapPresentation.destination_for_action(disciple.current_action,destination)
+        destination = _sect_effective_door_destination(disciple,destination)
         actor_destinations[key] = str(destination)
-        var worksite_id := disciple.worksite_building_id
-        if worksite_id != &"" and state.buildings.has(str(worksite_id)):
-            var site: BuildingState = state.buildings[str(worksite_id)]
-            var site_destination := _sect_production_destination(site.building_type)
-            if site_destination != &"":
-                destination = site_destination
-                actor_destinations[key] = str(destination)
-        var world_foot := _iso_actor_point(destination,worksite_id) + _endgame_actor_offset(disciple,index,idle_slots)
+        var worksite_id := _sect_door_worksite_id(disciple,destination)
+        var world_foot := _iso_actor_point(destination,worksite_id) + _sect_actor_door_offset(disciple,index,idle_slots,destination)
         next_positions[key] = world_foot - DiscipleActorVisualCatalog.ACTOR_FOOT_POINT
         modular_live_actor_ids[key] = true
     for raw_id in actor_nodes.keys().duplicate():
@@ -1964,6 +2062,448 @@ func _recycle_modular_actor(key: String) -> void:
     else:
         actor.free()
 
+func _build_construction_ui() -> void:
+    build_mode_button = Button.new()
+    build_mode_button.name = "MapBuildModeEntry"
+    build_mode_button.text = "XÂY DỰNG"
+    build_mode_button.position = Vector2(20,88)
+    build_mode_button.size = Vector2(176,48)
+    build_mode_button.z_index = 28
+    build_mode_button.add_theme_font_size_override("font_size",15)
+    build_mode_button.add_theme_color_override("font_color",PAPER_LIGHT)
+    build_mode_button.add_theme_stylebox_override("normal",_style(JADE_DARK,PAPER_LIGHT,2,10))
+    build_mode_button.add_theme_stylebox_override("hover",_style(JADE,GOLD,2,10))
+    build_mode_button.pressed.connect(_enter_build_mode)
+    add_child(build_mode_button)
+
+    build_mode_panel = Panel.new()
+    build_mode_panel.name = "MapBuildModePanel"
+    build_mode_panel.position = Vector2(18,144)
+    build_mode_panel.size = Vector2(392,558)
+    build_mode_panel.z_index = 70
+    build_mode_panel.visible = false
+    build_mode_panel.mouse_filter = Control.MOUSE_FILTER_STOP
+    build_mode_panel.add_theme_stylebox_override("panel",_style(PAPER_LIGHT,INK,3,14))
+    add_child(build_mode_panel)
+
+    var title := _label(build_mode_panel,"KIẾN THIẾT TÔNG MÔN",Vector2(16,12),Vector2(318,30),18)
+    title.add_theme_color_override("font_color",CINNABAR.darkened(0.15))
+    var close := Button.new()
+    close.name = "CloseBuildMode"
+    close.text = "×"
+    close.position = Vector2(342,8)
+    close.size = Vector2(40,40)
+    close.pressed.connect(_leave_build_mode.bind(true))
+    build_mode_panel.add_child(close)
+
+    build_mode_description = _label(build_mode_panel,"",Vector2(18,52),Vector2(354,76),12)
+    build_mode_description.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+    build_mode_description.add_theme_color_override("font_color",INK)
+    var catalog := _label(build_mode_panel,"ĐẶT TRÊN BẢN ĐỒ",Vector2(18,130),Vector2(354,22),11)
+    catalog.add_theme_color_override("font_color",JADE_DARK)
+    var build_house := Button.new()
+    build_house.name = "BuildCatalogResidence"
+    build_house.text = "ĐỆ TỬ XÁ  ·  CHỌN VỊ TRÍ TRÊN BẢN ĐỒ"
+    build_house.position = Vector2(66,156)
+    build_house.size = Vector2(306,42)
+    build_house.add_theme_stylebox_override("normal",_style(JADE_DARK,PAPER_LIGHT,1,8))
+    build_house.add_theme_color_override("font_color",PAPER_LIGHT)
+    build_house.pressed.connect(_begin_residence_construction)
+    build_mode_panel.add_child(build_house)
+
+    # This is the only player-placeable facility backed by a canonical paid
+    # map-placement transaction. Use the existing SHA-gated Source A art
+    # renderer so a missing/invalid PNG falls back honestly to the approved
+    # residence study artwork, never a raw or mislabeled atlas.
+    var build_art := TRI_FACILITY_ART.new() as Control
+    build_art.name = "BuildCatalogResidenceArt"
+    build_art.position = Vector2(20,156)
+    build_art.size = Vector2(42,42)
+    build_art.custom_minimum_size = Vector2(42,42)
+    build_art.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    build_art.set("facility_kind","residence")
+    build_art.tooltip_text = "Đệ Tử Xá · Model Source A 510076 khi SHA hợp lệ; fallback được ghi rõ."
+    build_mode_panel.add_child(build_art)
+
+    var fixed_hint := _label(build_mode_panel,"",Vector2(18,202),Vector2(354,58),10)
+    fixed_hint.text = "Đệ Tử Xá: có giao dịch xây và dời an toàn.\nCác công trình khác giữ vị trí khởi lập; chưa có lệnh xây/dời."
+    fixed_hint.add_theme_color_override("font_color",Color(0.24,0.22,0.18,0.82))
+
+    var open_hall := Button.new()
+    open_hall.name = "BuildModeOpenHall"
+    open_hall.text = "MỞ ĐẠI ĐIỆN · XEM ĐIỀU KIỆN MỞ LÔ"
+    open_hall.position = Vector2(18,260)
+    open_hall.size = Vector2(354,38)
+    open_hall.add_theme_stylebox_override("normal",_style(JADE,PAPER_LIGHT,1,8))
+    open_hall.add_theme_color_override("font_color",PAPER_LIGHT)
+    open_hall.pressed.connect(_open_hall_from_build_mode)
+    build_mode_panel.add_child(open_hall)
+
+    var move_heading := _label(build_mode_panel,"DI DỜI NHÀ PHỤ ĐỦ ĐIỀU KIỆN",Vector2(18,302),Vector2(354,22),11)
+    move_heading.add_theme_color_override("font_color",JADE_DARK)
+    var move_scroll := ScrollContainer.new()
+    move_scroll.name = "RelocatableResidenceList"
+    move_scroll.position = Vector2(18,326)
+    move_scroll.size = Vector2(354,70)
+    move_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+    build_mode_move_list = VBoxContainer.new()
+    build_mode_move_list.name = "RelocatableResidenceItems"
+    build_mode_move_list.custom_minimum_size.x = 338
+    move_scroll.add_child(build_mode_move_list)
+    build_mode_panel.add_child(move_scroll)
+
+    build_mode_feedback = _label(build_mode_panel,"",Vector2(18,398),Vector2(354,44),11)
+    build_mode_feedback.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+    build_mode_feedback.add_theme_color_override("font_color",JADE_DARK)
+    build_mode_site_label = _label(build_mode_panel,"Chọn Đệ Tử Xá hoặc một căn nhà trống, sau đó bấm lô đất trên bản đồ.",Vector2(18,444),Vector2(354,56),11)
+    build_mode_site_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+    build_mode_site_label.add_theme_color_override("font_color",INK)
+    build_mode_confirm = Button.new()
+    build_mode_confirm.name = "ConfirmMapConstruction"
+    build_mode_confirm.text = "XÁC NHẬN"
+    build_mode_confirm.position = Vector2(18,510)
+    build_mode_confirm.size = Vector2(172,38)
+    build_mode_confirm.disabled = true
+    build_mode_confirm.add_theme_stylebox_override("normal",_style(CINNABAR,PAPER_LIGHT,2,8))
+    build_mode_confirm.add_theme_color_override("font_color",PAPER_LIGHT)
+    build_mode_confirm.pressed.connect(_confirm_build_mode_action)
+    build_mode_panel.add_child(build_mode_confirm)
+    var cancel := Button.new()
+    cancel.name = "CancelMapConstruction"
+    cancel.text = "HỦY CHỌN"
+    cancel.position = Vector2(198,510)
+    cancel.size = Vector2(174,38)
+    cancel.pressed.connect(_clear_build_mode_selection)
+    build_mode_panel.add_child(cancel)
+    _refresh_build_mode_panel()
+
+func _enter_build_mode() -> void:
+    _close_disciple_summary(true)
+    _close_building_operation_panel(true)
+    _clear_popup()
+    build_mode_active = true
+    build_mode_kind = ""
+    build_mode_house_id = &""
+    build_mode_site = SectResidenceSiteV1.UNSELECTED
+    if build_mode_feedback != null:
+        build_mode_feedback.text = ""
+    if build_mode_panel != null:
+        build_mode_panel.visible = true
+    _focus_buildable_residence_area()
+    _refresh_build_mode_panel()
+
+func _focus_buildable_residence_area() -> void:
+    if state == null or iso_world == null:
+        return
+    var plots: Array[Vector2i] = []
+    var center := Vector2.ZERO
+    # Focus the legal geometry even when a real Hall/resource gate is still
+    # closed, so the player can see where the next annex will go and why it
+    # cannot yet be confirmed.
+    for site in SectResidenceSiteV1.available_plots(state):
+        plots.append(site)
+        center += Vector2(site)
+    if plots.is_empty():
+        return
+    center /= float(plots.size())
+    # Keep legal lots in the unobstructed right-hand part of the map beside
+    # the construction panel, at a zoom that shows the complete plot group.
+    var focus_cell := center+Vector2(-5.0,5.0)
+    var focus_world := SectIsometricWorldV1.LEGACY_ANCHOR \
+        + SectIsometricWorldV1.project(focus_cell) \
+        - SectIsometricWorldV1.project(SectIsometricWorldV1.CENTER_CELL)
+    var transform := SectMapCamera.focus_transform(focus_world,0.75)
+    _apply_camera(float(transform["zoom"]),transform["position"],false)
+
+func _open_hall_from_build_mode() -> void:
+    _leave_build_mode(true)
+    _open_dai_dien_screen_v1()
+func _leave_build_mode(clear_selection: bool = true) -> void:
+    build_mode_active = false
+    if build_mode_panel != null:
+        build_mode_panel.visible = false
+    if iso_world != null:
+        iso_world.clear_placement_preview()
+        if iso_viewport != null:
+            iso_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
+    if clear_selection:
+        build_mode_kind = ""
+        build_mode_house_id = &""
+        build_mode_site = SectResidenceSiteV1.UNSELECTED
+
+func _begin_residence_construction() -> void:
+    build_mode_kind = "construct"
+    build_mode_house_id = &""
+    build_mode_site = SectResidenceSiteV1.UNSELECTED
+    if build_mode_feedback != null:
+        build_mode_feedback.text = ""
+    if iso_world != null:
+        iso_world.clear_placement_preview()
+        if iso_viewport != null:
+            iso_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
+    _refresh_build_mode_panel()
+
+func _begin_residence_relocation(house_id: StringName) -> void:
+    build_mode_kind = "relocate"
+    build_mode_house_id = house_id
+    build_mode_site = SectResidenceSiteV1.UNSELECTED
+    if build_mode_feedback != null:
+        build_mode_feedback.text = ""
+    if iso_world != null:
+        iso_world.clear_placement_preview()
+        if iso_viewport != null:
+            iso_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
+    _refresh_build_mode_panel()
+
+func _clear_build_mode_selection() -> void:
+    build_mode_kind = ""
+    build_mode_house_id = &""
+    build_mode_site = SectResidenceSiteV1.UNSELECTED
+    if build_mode_feedback != null:
+        build_mode_feedback.text = ""
+    if iso_world != null:
+        iso_world.clear_placement_preview()
+        if iso_viewport != null:
+            iso_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
+    _refresh_build_mode_panel()
+
+func _select_build_mode_site(site: Vector2i) -> void:
+    if not build_mode_active or build_mode_kind.is_empty():
+        build_mode_feedback.text = _wrap_build_mode_text("Chọn công trình ở danh mục trước, rồi chạm vào vị trí đặt trên bản đồ.",50)
+        return
+    build_mode_site = site
+    var check: Dictionary
+    if build_mode_kind == "construct":
+        check = SectResidenceSystemV1.can_construct(state,site)
+    else:
+        check = SectResidenceSystemV1.can_move_house(state,build_mode_house_id,site)
+    if bool(check.get("ok",false)):
+        var actor_conflict := _residence_site_actor_conflict_reason(site)
+        if not actor_conflict.is_empty():
+            check = {"ok":false,"reason":actor_conflict}
+    if iso_world != null:
+        iso_world.set_placement_preview({"site":site,"ok":bool(check.get("ok",false))})
+        if iso_viewport != null:
+            iso_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
+    _refresh_build_mode_panel(check)
+
+func _residence_site_actor_conflict_reason(site: Vector2i) -> String:
+    if state == null or actor_virtual_positions.is_empty():
+        return ""
+    var footprint := Rect2i(site,SectResidenceSiteV1.HOUSE_FOOTPRINT)
+    var doorway := SectResidenceSiteV1.doorway(site)
+    for raw_id in actor_virtual_positions.keys():
+        var disciple_id := StringName(str(raw_id))
+        if not state.disciples.has(disciple_id):
+            continue
+        var top_left: Vector2 = actor_virtual_positions[raw_id]
+        var actor_foot := top_left+DiscipleActorVisualCatalog.ACTOR_FOOT_POINT
+        # actor_virtual_positions use the legacy Control's local coordinate;
+        # map it back through the shared PV01 project/inverse pair so the
+        # canonical site footprint is compared with the actor's ground tile.
+        var isometric_point := actor_foot-SectIsometricWorldV1.LEGACY_ANCHOR \
+            + SectIsometricWorldV1.project(Vector2(SectIsometricWorldV1.CENTER_CELL))
+        var fractional_cell := SectIsometricWorldV1.inverse(isometric_point)
+        var actor_cell := Vector2i(roundi(fractional_cell.x),roundi(fractional_cell.y))
+        if footprint.has_point(actor_cell) or doorway == actor_cell:
+            return "house_plot_actor_occupied"
+    return ""
+
+func _refresh_build_mode_panel(last_check: Dictionary = {}) -> void:
+    if build_mode_panel == null or state == null:
+        return
+    var houses := SectResidenceSystemV1.all_houses(state)
+    var hall := SectHallSystemV1.hall(state)
+    var rank_limit := SectHallSystemV1.rank_population_limit(state)
+    var usable_capacity := SectResidenceSystemV1.current_limit(state)
+    var free_places := maxi(0,usable_capacity-state.disciples.size())
+    var hall_level := int(hall.level) if hall != null else 0
+    var next_hall_gate := SectResidenceSystemV1.required_hall_level_for_instance(houses.size()+1)
+    var gate_text := _construction_gate_text()
+    var text := "Đệ Tử Xá %d/%d · %d giường · còn %d chỗ.\nĐại Điện Lv%d · lô kế mở ở Lv%d." % [
+        houses.size(),SectResidenceSystemV1.maximum_instances(state),SectResidenceSystemV1.total_beds(state),free_places,
+        hall_level,next_hall_gate
+    ]
+    if hall == null:
+        text = "Đại Điện chưa mở hệ thống Đệ Tử Xá."
+    if build_mode_description != null:
+        build_mode_description.text = _wrap_build_mode_text(text,48)
+    var catalog_house := build_mode_panel.find_child("BuildCatalogResidence",true,false) as Button
+    if catalog_house != null:
+        var construct_gate := SectResidenceSystemV1.can_construct(state)
+        catalog_house.disabled = not bool(construct_gate.get("ok",false))
+        catalog_house.text = "ĐẶT ĐỆ TỬ XÁ · %d/%d NHÀ" % [houses.size(),SectResidenceSystemV1.maximum_instances(state)]
+        catalog_house.tooltip_text = gate_text
+    if build_mode_move_list != null:
+        for child in build_mode_move_list.get_children():
+            build_mode_move_list.remove_child(child)
+            child.queue_free()
+        var display_index := 0
+        for house in houses:
+            if house.instance_index <= 1:
+                continue
+            display_index += 1
+            var site := SectResidenceSiteV1.origin_of(house)
+            var can_move := SectResidenceSystemV1.can_move_house(state,house.id,site)
+            var move := Button.new()
+            move.name = "MoveResidence_%02d" % house.instance_index
+            move.text = "Đệ Tử Xá %02d · %s" % [house.instance_index,
+                "trống, có thể dời" if bool(can_move.get("ok",false)) else _build_reason_text(str(can_move.get("reason","không thể dời")))]
+            move.custom_minimum_size = Vector2(338,34)
+            move.disabled = not bool(can_move.get("ok",false))
+            move.pressed.connect(_begin_residence_relocation.bind(house.id))
+            build_mode_move_list.add_child(move)
+        if display_index == 0:
+            var none := _label(build_mode_move_list,"Chưa có nhà phụ nào đủ điều kiện dời.",Vector2.ZERO,Vector2(338,30),10)
+            none.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+
+    var check := last_check
+    if check.is_empty() and build_mode_kind == "construct" and build_mode_site != SectResidenceSiteV1.UNSELECTED:
+        check = SectResidenceSystemV1.can_construct(state,build_mode_site)
+    elif check.is_empty() and build_mode_kind == "relocate" and build_mode_site != SectResidenceSiteV1.UNSELECTED:
+        check = SectResidenceSystemV1.can_move_house(state,build_mode_house_id,build_mode_site)
+    if build_mode_kind in ["construct","relocate"] \
+            and build_mode_site != SectResidenceSiteV1.UNSELECTED \
+            and bool(check.get("ok",false)):
+        var actor_conflict := _residence_site_actor_conflict_reason(build_mode_site)
+        if not actor_conflict.is_empty():
+            check = {"ok":false,"reason":actor_conflict}
+    if build_mode_site_label != null:
+        if build_mode_site == SectResidenceSiteV1.UNSELECTED:
+            build_mode_site_label.text = "Chọn công trình hoặc nhà trống, rồi chạm một khoảng đất trống.\nBóng nhà và lối ra sẽ cho biết vị trí hợp lệ."
+        else:
+            var door := SectResidenceSiteV1.doorway(build_mode_site)
+            var site_status := "HỢP LỆ" if bool(check.get("ok",false)) else _build_reason_text(str(check.get("reason","site_invalid")))
+            build_mode_site_label.text = _wrap_build_mode_text("Lô (%d,%d) · cửa (%d,%d): %s" % [build_mode_site.x,build_mode_site.y,door.x,door.y,site_status],45)
+    if build_mode_feedback != null and build_mode_feedback.text.is_empty():
+        if build_mode_kind == "construct":
+            build_mode_feedback.text = _wrap_build_mode_text("Chi phí nhà kế: %s · thi công %d nhịp." % [
+                _construction_cost_summary(SectResidenceSystemV1.build_cost(state)),
+                SectResidenceSystemV1.construction_duration_ticks(houses.size()+1)
+            ],50)
+        elif build_mode_kind == "relocate":
+            build_mode_feedback.text = _wrap_build_mode_text("Chỉ nhà phụ đã xây xong, đang trống và không nâng cấp mới được di dời. Phí và tài nguyên không đổi.",50)
+        else:
+            build_mode_feedback.text = _wrap_build_mode_text("Đặt nhà phụ mở theo cấp Đại Điện; công trình khởi lập độc bản hiện giữ nguyên vị trí.",50)
+    if build_mode_confirm != null:
+        build_mode_confirm.disabled = build_mode_kind.is_empty() or build_mode_site == SectResidenceSiteV1.UNSELECTED or not bool(check.get("ok",false))
+        build_mode_confirm.text = "KHỞI CÔNG" if build_mode_kind == "construct" else ("DỜI NHÀ" if build_mode_kind == "relocate" else "XÁC NHẬN")
+
+func _wrap_build_mode_text(raw_text: String, max_chars: int) -> String:
+    var output := PackedStringArray()
+    for paragraph in raw_text.split("\n",false):
+        var line := ""
+        for word in paragraph.split(" ",false):
+            if not line.is_empty() and line.length()+1+word.length() > max_chars:
+                output.append(line)
+                line = word
+            else:
+                line = word if line.is_empty() else line+" "+word
+        if not line.is_empty():
+            output.append(line)
+    return "\n".join(output)
+func _construction_cost_summary(cost: Dictionary) -> String:
+    var names := {BuildingSystem.MATERIAL_WOOD:"Linh Mộc",BuildingSystem.MATERIAL_ORE:"Thanh Thiết","spirit_stones":"Linh Thạch"}
+    var parts := PackedStringArray()
+    var keys: Array = cost.keys()
+    keys.sort()
+    for key in keys:
+        parts.append("%s %d" % [str(names.get(str(key),str(key))),int(cost[key])])
+    return " · ".join(parts)
+
+func _build_reason_text(reason: String) -> String:
+    match reason:
+        "main_hall_instance_limit":
+            var hall := SectHallSystemV1.hall(state)
+            var current_hall_level := int(hall.level) if hall != null else 0
+            var required_hall_level := SectResidenceSystemV1.required_hall_level_for_instance(
+                SectResidenceSystemV1.all_houses(state).size()+1)
+            return "Cần Đại Điện Lv%d để mở lô nhà kế tiếp (hiện Lv%d). Nâng cấp từ nút Đại Điện." % [required_hall_level,current_hall_level]
+        "missing_material": return "Thiếu nguyên liệu: cần thêm tài nguyên trong Kho."
+        "missing_spirit_stones": return "Thiếu Linh Thạch trong Kho."
+        "invalid_house_plot": return "Lô không nằm trong khu xây dựng."
+        "house_plot_outside_open_area": return "Lô nằm ngoài khu đất đã quy hoạch."
+        "house_plot_occupied": return "Lô hoặc lối ra chồng với công trình/lối đi khác."
+        "house_plot_unreachable": return "Lô chưa nối được lối đi từ cổng Tông Môn."
+        "house_plot_actor_occupied": return "Đệ tử đang đứng trên lô hoặc lối ra; hãy chọn ô khác."
+        "house_occupied": return "Nhà còn đệ tử được phân phòng; chuyển họ trước khi dời."
+        "house_not_idle": return "Nhà đang xây hoặc nâng cấp."
+        "starter_house_fixed": return "Đệ Tử Xá khởi đầu cố định."
+        "residence_not_enabled": return "Đại Điện chưa mở hệ thống Đệ Tử Xá."
+        "invalid_request_id": return "Thao tác hết hạn; hãy chọn lại lô."
+        "residence_id_collision": return "Mã công trình đã tồn tại; không trừ tài nguyên."
+        "conflicting_house_move_replay": return "Mã thao tác đã được dùng cho vị trí khác."
+        "no_free_house_plot": return "Không còn lô hợp lệ trong khu đất hiện có."
+        "max_level": return "Công trình đã đạt cấp tối đa."
+        "missing_building": return "Không tìm thấy công trình."
+        "main_hall_level_gate": return "Đại Điện chưa mở cấp nâng tiếp theo."
+        "already_upgrading": return "Công trình đang nâng cấp."
+        "building_not_active": return "Công trình chưa sẵn sàng."
+        "insufficient_workforce": return "Thiếu thời gian lao động để hoàn tất."
+        _: return reason.replace("_"," ").capitalize()
+
+func _construction_gate_text() -> String:
+    var check := SectResidenceSystemV1.can_construct(state)
+    var houses := SectResidenceSystemV1.all_houses(state)
+    var cost := SectResidenceSystemV1.build_cost(state)
+    var warehouse := WarehouseSystem.new()
+    var wood_need := int(cost.get(BuildingSystem.MATERIAL_WOOD,0))
+    var ore_need := int(cost.get(BuildingSystem.MATERIAL_ORE,0))
+    var stone_need := int(cost.get("spirit_stones",0))
+    var wood_have := warehouse.available_quantity(state,StringName(BuildingSystem.MATERIAL_WOOD))
+    var ore_have := warehouse.available_quantity(state,StringName(BuildingSystem.MATERIAL_ORE))
+    var stone_have := state.sect.spirit_stones
+    var resource_text := "Nhà #%d · %d/%d Mộc · %d/%d Thiết · %d/%d Linh Thạch." % [
+        houses.size()+1,wood_have,wood_need,ore_have,ore_need,stone_have,stone_need
+    ]
+    if bool(check.get("ok",false)):
+        return "Đủ điều kiện · %s · thi công %d nhịp." % [
+            resource_text,SectResidenceSystemV1.construction_duration_ticks(houses.size()+1)
+        ]
+    var reason := str(check.get("reason","construction_unavailable"))
+    if reason == "main_hall_instance_limit":
+        var hall := SectHallSystemV1.hall(state)
+        var current_level := int(hall.level) if hall != null else 0
+        var required_level := SectResidenceSystemV1.required_hall_level_for_instance(houses.size()+1)
+        return "Đại Điện Lv%d/%d mới mở lô kế. %s" % [current_level,required_level,resource_text]
+    if reason == "missing_material":
+        var material := str(check.get("material_id","tài nguyên"))
+        var names := {BuildingSystem.MATERIAL_WOOD:"Linh Mộc",BuildingSystem.MATERIAL_ORE:"Thanh Thiết"}
+        return "Thiếu %s: cần %d, hiện có %d." % [
+            str(names.get(material,material)),int(check.get("need",0)),int(check.get("have",0))
+        ]
+    if reason == "missing_spirit_stones":
+        return "Thiếu Linh Thạch: cần %d, hiện có %d." % [int(check.get("need",0)),int(check.get("have",0))]
+    return "%s %s" % [_build_reason_text(reason),resource_text]
+
+func _confirm_build_mode_action() -> void:
+    if build_mode_kind.is_empty() or build_mode_site == SectResidenceSiteV1.UNSELECTED:
+        return
+    var request_id := "map-house:%d:%d:%d:%s" % [state.tick,build_mode_site.x,build_mode_site.y,
+        str(build_mode_house_id) if build_mode_kind == "relocate" else "new"]
+    var result: Dictionary
+    var actor_conflict := _residence_site_actor_conflict_reason(build_mode_site)
+    if not actor_conflict.is_empty():
+        result = {"ok":false,"reason":actor_conflict}
+    elif build_mode_kind == "construct":
+        result = SectResidenceSystemV1.construct(state,request_id,build_mode_site)
+    else:
+        result = SectResidenceSystemV1.move_house(state,request_id,build_mode_house_id,build_mode_site)
+    if not bool(result.get("ok",false)):
+        build_mode_feedback.text = _wrap_build_mode_text(_build_reason_text(str(result.get("reason","unknown"))),50)
+        _refresh_build_mode_panel(result)
+        return
+    var moved_id := StringName(str(result.get("building_id",result.get("house_id",""))))
+    build_mode_feedback.text = _wrap_build_mode_text("Đã khởi công Đệ Tử Xá." if build_mode_kind == "construct" else "Đã dời Đệ Tử Xá đến vị trí mới.",50)
+    if iso_world != null:
+        iso_world.refresh_from_state(state)
+        iso_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
+    _refresh_map_worksite_cues()
+    var should_open_house := build_mode_kind == "construct"
+    _leave_build_mode(true)
+    _refresh_all()
+    if should_open_house and moved_id != &"":
+        _open_building(SectMapPresentation.DEST_RESIDENCE,moved_id)
 func _build_building_operation_panel() -> void:
     building_operation_panel = Panel.new()
     building_operation_panel.name = "BuildingOperationPanel"
@@ -2171,6 +2711,13 @@ func _rebuild_building_management_controls() -> void:
             pass
 
 func _build_main_hall_policy_controls() -> void:
+    _add_management_section_label("ĐẠI ĐIỆN · QUẢN TRỊ")
+    var hall_button := Button.new()
+    hall_button.name = "OpenDaiDienScreenV1"
+    hall_button.text = "MỞ ĐẠI ĐIỆN · CHƯỞNG MÔN / TRƯỞNG LÃO"
+    hall_button.custom_minimum_size = Vector2(384, 42)
+    hall_button.pressed.connect(_open_dai_dien_screen_v1)
+    building_management_container.add_child(hall_button)
     _build_economy_a_hall_controls()
     _add_management_section_label("CHÍNH SÁCH LAO ĐỘNG")
     _add_policy_button_row([
@@ -2192,6 +2739,63 @@ func _build_main_hall_policy_controls() -> void:
         {"label":"Chiến đấu", "value":EquipmentSystem.POLICY_COMBAT},
         {"label":"Tiết kiệm", "value":EquipmentSystem.POLICY_FRUGAL}
     ], state.sect.equipment_policy, "_set_equipment_policy_from_building")
+
+func _open_dai_dien_screen_v1() -> void:
+    if state == null or get_node_or_null("DaiDienScreenV1") != null:
+        return
+    var screen := DaiDienScreenV1.new()
+    screen.name = "DaiDienScreenV1"
+    screen.attach_state(state)
+    screen.state_changed.connect(_on_dai_dien_state_changed)
+    screen.z_index = 120
+    add_child(screen)
+    screen.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+    _attach_tri_b1_screen(screen, "hall")
+
+func _attach_tri_b1_screen(host: Control, mode: String) -> void:
+    if host.has_method("_set_b1_surface_active"):
+        host.call("_set_b1_surface_active",true)
+    var adapter: Control = TRI_B1_LIVE_ADAPTER.new()
+    adapter.call("configure", host, state, recruitment_system, mode)
+    host.add_child(adapter)
+    adapter.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+
+func _open_dai_dien_housing_v1() -> void:
+    _open_dai_dien_screen_v1()
+    var hall_view := get_node_or_null("DaiDienScreenV1") as DaiDienScreenV1
+    if hall_view != null:
+        hall_view._tab(5)
+        var b1 = hall_view.get_node_or_null("TriFacilityB1LiveAdapterV1")
+        if b1 != null:
+            b1.call("show_mode", "residence")
+
+func _start_b1_residence_build(site_id: String = "") -> void:
+    var selected_site := SectResidenceSiteV1.UNSELECTED
+    var parts := site_id.split(":")
+    if parts.size() == 3 and parts[0] == "plot":
+        selected_site = Vector2i(int(parts[1]),int(parts[2]))
+        if not bool(SectResidenceSystemV1.can_construct(state,selected_site).get("ok",false)):
+            selected_site = SectResidenceSiteV1.UNSELECTED
+    var hall_screen := get_node_or_null("DaiDienScreenV1")
+    if hall_screen != null:
+        hall_screen.queue_free()
+    _enter_build_mode()
+    _begin_residence_construction()
+    if selected_site != SectResidenceSiteV1.UNSELECTED:
+        _select_build_mode_site(selected_site)
+
+func _start_b1_residence_plan() -> void:
+    var hall_screen := get_node_or_null("DaiDienScreenV1")
+    if hall_screen != null:
+        hall_screen.queue_free()
+    _enter_build_mode()
+    _begin_residence_construction()
+
+func _on_dai_dien_state_changed() -> void:
+    # _refresh_all() already refreshes the 192x192 map once; avoid double scans.
+    _refresh_all()
+    if selected_building == SectMapPresentation.DEST_MAIN_HALL:
+        _refresh_building_operation_content()
 
 # ECONOMY-A player actions are actual simulation transactions; no fake income.
 func _build_economy_a_hall_controls() -> void:
@@ -2313,7 +2917,7 @@ func _build_needs_priority_controls(title: String) -> void:
     ], state.sect.needs_priority, "_set_needs_priority_from_building")
 
 func _build_guidance_recruitment_controls() -> void:
-    _add_management_section_label("CHIÊU MỘ · HỒ SƠ D7")
+    _add_management_section_label("CHIÊU MỘ · HỒ SƠ LỤC DUY")
     var entry := Button.new()
     entry.name = "OpenDanTienScreenV2"
     entry.text = "MỞ DẪN TIÊN ĐÀI · TUYỂN ĐỆ TỬ"
@@ -2324,7 +2928,7 @@ func _build_guidance_recruitment_controls() -> void:
 
     var queue_label := Label.new()
     queue_label.name = "DanTienQueueSummary"
-    queue_label.text = "Ứng viên: %d/%d · Lệnh: %d · Đệ tử: %d/%d\nXem Tam Căn/Tứ Tính, Linh Căn, thiên hướng nghề, D7 và chân dung Source A phù hợp." % [
+    queue_label.text = "Ứng viên: %d/%d · Lệnh: %d · Đệ tử: %d/%d\nXem Lục Duy, Linh Căn, thiên hướng nghề và chân dung Source A phù hợp." % [
         state.recruitment_candidates.size(), RecruitmentSystem.C2_QUEUE_CAP,
         state.sect.disciple_recruitment_tokens,
         state.disciples.size(), state.sect.disciple_capacity
@@ -2430,6 +3034,7 @@ func _open_dan_tien_screen_v2() -> void:
     screen.state_changed.connect(_on_dan_tien_screen_v2_changed)
     add_child(screen)
     screen.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+    _attach_tri_b1_screen(screen, "guidance")
 
 func _on_dan_tien_screen_v2_changed() -> void:
     # The real runtime remains the sole roster/save authority.
@@ -2515,6 +3120,14 @@ func _build_lodging_expansion_control() -> void:
     row.add_theme_constant_override("separation", 8)
     building_management_container.add_child(row)
 
+    if SectHallSystemV1.installed(state):
+        var live := Button.new()
+        live.name = "OpenResidenceManagementV1"
+        live.text = "QUẢN LÝ ĐỆ TỬ XÁ · NÂNG CẤP / XÂY THÊM"
+        live.custom_minimum_size = Vector2(384, 43)
+        live.pressed.connect(_open_dai_dien_housing_v1)
+        row.add_child(live)
+        return
     var info := Label.new()
     info.text = "Hiện %d chỗ · Vật tư %d" % [state.sect.lodging_capacity, state.sect.supply_stock]
     info.custom_minimum_size = Vector2(236, 34)
@@ -3909,19 +4522,36 @@ func _residence_operation_text() -> String:
     var overloaded := population > state.sect.lodging_capacity
     var recovery_pct := NeedsSystem.new().rest_recovery_multiplier(state) * 100.0
     var rest_lines := _action_disciple_lines([&"REST"])
+    var house_lines: Array[String] = []
+    for house in SectResidenceSystemV1.all_houses(state):
+        if house.status == BuildingSystem.STATUS_CONSTRUCTING:
+            house_lines.append("• Đệ Tử Xá %02d · Đang thi công · còn %d nhịp" % [
+                house.instance_index,SectResidenceSystemV1.construction_remaining_ticks(state,house)
+            ])
+        elif house.status == BuildingSystem.STATUS_UPGRADING:
+            house_lines.append("• Đệ Tử Xá %02d · Đang nâng cấp lên Lv%d" % [
+                house.instance_index,house.level+1
+            ])
+        else:
+            house_lines.append("• Đệ Tử Xá %02d · Lv%d · %d giường" % [
+                house.instance_index,house.level,SectResidenceSystemV1.beds_for_level(house.level)
+            ])
+    if house_lines.is_empty():
+        house_lines.append("• Chưa có Đệ Tử Xá")
     return (
         "Sức chứa: %d / %d\n"
         + "Tình trạng: %s\n"
         + "Hệ số hồi phục hiện tại: %.0f%%\n"
         + "Vật tư: %d\n"
         + "Đang nghỉ: %d\n\n"
+        + "CÔNG TRÌNH CƯ TRÚ\n%s\n\n"
         + "ĐỆ TỬ ĐANG NGHỈ\n%s\n\n"
         + "Gọi đệ tử về nghỉ hoặc mở rộng chỗ ở khi tông môn quá tải."
     ) % [
         population, state.sect.lodging_capacity,
         "QUÁ TẢI" if overloaded else "Ổn định",
         recovery_pct, state.sect.supply_stock,
-        _count_action(&"REST"),
+        _count_action(&"REST"),"\n".join(house_lines),
         rest_lines
     ]
 
@@ -4407,6 +5037,8 @@ func _refresh_all() -> void:
         _refresh_map_worksite_cues()
         map_worksite_cues_dirty = false
         map_worksite_refresh_elapsed = 0.0
+    if build_mode_panel != null and build_mode_panel.visible:
+        _refresh_build_mode_panel()
     if _building_operation_is_open():
         _refresh_building_operation_content()
 
@@ -4587,7 +5219,8 @@ func _refresh_map_worksite_cues() -> void:
         var building: BuildingState = state.buildings[raw_id]
         if not _map_worksite_is_supported(building):
             continue
-        var anchor := SectIsometricWorldV1.virtual_legacy_point(building.building_type,building.id)
+        var anchor := SectIsometricWorldV1.virtual_legacy_point(building.building_type,building.id,
+            SectResidenceSiteV1.UNSELECTED,int(state.sect.world_layout_version))
         var screen := SectMapCamera.world_to_screen(anchor,map_layer.position,map_layer.scale.x)
         if not SectMapCamera.VIEW_RECT.grow(95.0).has_point(screen):
             continue
@@ -6381,11 +7014,11 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "T�
         radar.name = "HS09OverviewRadar" if is_overview_tab else "HS09AttributeRadar"
         radar.compact = is_overview_tab
         radar.position = Vector2(18,52)
-        radar.size = Vector2(216,220) if is_overview_tab else Vector2(274,286)
+        radar.size = Vector2(256,250) if is_overview_tab else Vector2(274,286)
         radar.mouse_filter = Control.MOUSE_FILTER_IGNORE
         if radar.apply_snapshot(profile_snapshot):
             content_panel.add_child(radar)
-            var text_x := 248.0 if is_overview_tab else 302.0
+            var text_x := 284.0 if is_overview_tab else 302.0
             details_scroll.position = Vector2(text_x,52)
             details_scroll.size = Vector2(content_width - text_x - 18.0,286)
             content.custom_minimum_size = Vector2(details_scroll.size.x - 22.0,0)
@@ -6695,10 +7328,12 @@ func _disciple_overview_tab_text(disciple: DiscipleState) -> String:
     var work: Dictionary = snapshot.get("work",{})
     var progression: Dictionary = snapshot.get("progression",{})
     var v63: Dictionary = snapshot.get("v63",{})
+    var sex_label: String = str({"male":"Nam","female":"Nữ"}.get(str(identity.get("sex_id","")),"Chưa xác định"))
+    var race_label: String = str({"human":"Nhân tộc"}.get(str(identity.get("race_id","")),"Chưa xác định"))
     var lines: Array[String] = [
         "Thân phận: %s · %s · %s" % [
-            str(identity.get("sex_id","unknown")),
-            str(identity.get("race_id","unknown")),
+            sex_label,
+            race_label,
             str(identity.get("quality_name",""))
         ],
         "Tuổi: %d · Tuổi thọ cơ sở/tối đa: %d/%d" % [
@@ -6883,12 +7518,10 @@ func _v2_foundation_values_text(foundation_snapshot: Dictionary) -> String:
                 str(labels.get(key,key)),_foundation_exact_number(value),
                 _foundation_exact_number(born),sign,_foundation_exact_number(absf(change))
             ]
-        var tam := "\n  ".join([
-            format_row.call("aptitude"),format_row.call("constitution"),format_row.call("mind_nature")
-        ])
-        var tu := "\n  ".join([
-            format_row.call("potential"),format_row.call("comprehension"),
-            format_row.call("fortune"),format_row.call("charisma")
+        var six_stat_rows := "\n  ".join([
+            format_row.call("aptitude"),format_row.call("constitution"),
+            format_row.call("fortune"),format_row.call("comprehension"),
+            format_row.call("charisma"),format_row.call("potential")
         ])
         var quality_line := ""
         if foundation_snapshot.has("quality_birth_total") and foundation_snapshot.has("quality_current_total"):
@@ -6899,7 +7532,7 @@ func _v2_foundation_values_text(foundation_snapshot: Dictionary) -> String:
                 birth_name,float(foundation_snapshot["quality_birth_total"]),
                 current_name,float(foundation_snapshot["quality_current_total"])
             ]
-        return "Tam Căn\n  %s\nTứ Tính\n  %s%s" % [tam,tu,quality_line]
+        return "Lục Duy · sinh / hiện tại / thay đổi\n  %s%s" % [six_stat_rows,quality_line]
     return "Tư Chất %s · Căn Cốt %s · Cơ Duyên %s\nThông Tuệ %s · Mị Lực %s · Tiềm Lực %s" % [
         _v2_foundation_score(float(current.get("aptitude",0.0)),version),
         _v2_foundation_score(float(current.get("constitution",0.0)),version),
@@ -6917,9 +7550,9 @@ func _foundation_exact_number(value: float) -> String:
 func _v2_foundation_meaning_text(model_version: int) -> String:
     if model_version >= FoundationSystem.MODEL_D7:
         return (
-            "ẢNH HƯỞNG D7 · điểm hiện tại\n"
+            "ẢNH HƯỞNG LỤC DUY · điểm hiện tại\n"
             + "Tư Chất: +0,25% Tu Vi tự nhiên/điểm · Căn Cốt: +0,20% EXP Luyện Thể/điểm\n"
-            + "Tâm Tính: Luyện Tâm chưa mở · Tiềm Lực: +0,05% Tu Vi RealmCore HP/Công/Thủ/điểm\n"
+            + "Tiềm Lực: +0,05% Tu Vi RealmCore HP/Công/Thủ/điểm\n"
             + "Thông Tuệ: +0,15% học tập/nghề hợp lệ/điểm · Cơ Duyên: +1 điểm kiểm tra RNG · Mị Lực: điểm xã hội/Dẫn Tiên"
         )
     return (

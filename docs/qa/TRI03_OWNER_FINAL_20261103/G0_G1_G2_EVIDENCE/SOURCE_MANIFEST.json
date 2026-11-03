@@ -1,0 +1,242 @@
+{
+  "repository": "vuanhtuan161094-byte/TongMonBaDao",
+  "pr": 67,
+  "branch": "integration/tri-facility-a-b-playable-20261102",
+  "base_commit": "c136600f5579871d476e0feca2d78ea3c74e6b1f",
+  "code_commit": "36532c39f294e1eb56d73d8ce0c0eb7cb68c5567",
+  "code_tree": "bfc1f92da8d79aab3963c8b7e6a6502c348cfdd2",
+  "local_test_overlay_head": "27ed01cd8f377994e5e50bac9ede84e78e8895bd",
+  "local_test_overlay_branch": "integration/tri-facility-a-b-playable-20261102",
+  "test_context": "Windows source overlay; 49 runtime manifest pin blobs match code_commit tree; not a clean checkout at code_commit",
+  "godot_version": "4.7.2.stable.official.ed1daf0bf",
+  "runtime_source_fingerprint": "38089b4c852d21fd7e492949461ec37170a22ad46e562f68a8a81efe03e84793",
+  "runtime_pin_count": 49,
+  "runtime_pin_tree_mismatches": 0,
+  "runtime_pins": [
+    {
+      "path": "CHOI-GAME.cmd",
+      "git_blob_sha": "c111938b585fdce797a283368d32ee9932642a25"
+    },
+    {
+      "path": "godot/art/source_a_env02a/pv01_assets/guidance/510111.png",
+      "git_blob_sha": "06853546dbbb2b8df3006f0b0dc7956e32b18c0c"
+    },
+    {
+      "path": "godot/art/source_a_env02a/pv01_assets/main_hall/510052.png",
+      "git_blob_sha": "b67257af57682b2077e6e60b3e8d71c958116dd1"
+    },
+    {
+      "path": "godot/art/source_a_env02a/pv01_assets/residence/510076.png",
+      "git_blob_sha": "7d6db8e40da68529e65e2041ca3713bcc7f347cb"
+    },
+    {
+      "path": "godot/art/uiux/guidance_paint_v2.svg",
+      "git_blob_sha": "1124943677170f66dec29a539abe8423195e7c84"
+    },
+    {
+      "path": "godot/art/uiux/hall_paint_v2.svg",
+      "git_blob_sha": "6ab405b759516365fc28ee07aea6952269b009b1"
+    },
+    {
+      "path": "godot/art/uiux/residence_paint_v2.svg",
+      "git_blob_sha": "03cc11b867c6a7eb644093cf4af1cb8f19d9bd4c"
+    },
+    {
+      "path": "godot/art/uiux/sect_management_icons_generated_v1.png",
+      "git_blob_sha": "9694c54229698ca2f14e00f4293e33d691c25336"
+    },
+    {
+      "path": "godot/data/presentation/sect_management_icons_generated_manifest.json",
+      "git_blob_sha": "1ae258d9d50094ce776ed1871ff6eab04b161c22"
+    },
+    {
+      "path": "godot/data/presentation/tri_facility_source_a_manifest.json",
+      "git_blob_sha": "1bbf5b2d60513ee3a2026f937f49a4de0a42cd01"
+    },
+    {
+      "path": "godot/project.godot",
+      "git_blob_sha": "bbdc4dc2fc16358297840cc06a932c2ea20094ce"
+    },
+    {
+      "path": "godot/scenes/p3/p3_2_landscape_sect.tscn",
+      "git_blob_sha": "ac8bcb5c317b833310dcd050f0b4264fd66de358"
+    },
+    {
+      "path": "godot/src/presentation/dai_dien_screen_v1.gd",
+      "git_blob_sha": "302cd99417905ebcb52ea8f5652b7ae589ce033b"
+    },
+    {
+      "path": "godot/src/presentation/dan_tien_screen_v2.gd",
+      "git_blob_sha": "6dac146befbbfc3f90bf5a048d2ca506bc1d90e9"
+    },
+    {
+      "path": "godot/src/presentation/p3_2_landscape_sect.gd",
+      "git_blob_sha": "f8b4f90ab1cd8c9f8061817c4b5cffdaa8ef1400"
+    },
+    {
+      "path": "godot/src/presentation/p3/hs09_dual_foundation_radar.gd",
+      "git_blob_sha": "aaccc17638e38d549d2d82fdaf428d8d70067e06"
+    },
+    {
+      "path": "godot/src/presentation/p3/sect_isometric_world_v1.gd",
+      "git_blob_sha": "75d0b6aa474341e9b3860ea678520f218279fc3e"
+    },
+    {
+      "path": "godot/src/presentation/p3/sect_map25_source_art.gd",
+      "git_blob_sha": "f18651f9b224b558ef1512a13aaa589dfda117c4"
+    },
+    {
+      "path": "godot/src/presentation/uiux/dai_dien_screen_b1_v1.gd",
+      "git_blob_sha": "2bf41d94d9c78d1eb4181b99f22fb9fa6ddff3ae"
+    },
+    {
+      "path": "godot/src/presentation/uiux/dan_tien_screen_b1_v1.gd",
+      "git_blob_sha": "b37bbdc536c102cd248e064dfaaf395c28dbfdec"
+    },
+    {
+      "path": "godot/src/presentation/uiux/de_tu_xa_screen_b1_v1.gd",
+      "git_blob_sha": "13e10a348b4ae2cc59e824a20c2ad1e679adaac8"
+    },
+    {
+      "path": "godot/src/presentation/uiux/sect_d7_radar_v1.gd",
+      "git_blob_sha": "e54fc7cc53f50731f3683d8777dd1c5cee568ad2"
+    },
+    {
+      "path": "godot/src/presentation/uiux/sect_facility_art_v2.gd",
+      "git_blob_sha": "0b47c04efe3d9b5955034975e551372842223004"
+    },
+    {
+      "path": "godot/src/presentation/uiux/sect_ui_icon_v1.gd",
+      "git_blob_sha": "9102668aa1c97ccd160bca1dee039d601bddda69"
+    },
+    {
+      "path": "godot/src/presentation/uiux/sect_ui_theme_v1.gd",
+      "git_blob_sha": "e543d8950cab0cfbb682bf35b4507d47e303e91b"
+    },
+    {
+      "path": "godot/src/presentation/uiux/tri_facility_live_adapter_v1.gd",
+      "git_blob_sha": "64984c4b8b17674eb63e147f8f39854c2dcde2ad"
+    },
+    {
+      "path": "godot/src/simulation/core/p3_7_factory.gd",
+      "git_blob_sha": "f2543f11c6378f128cfc98544763da647ebf6805"
+    },
+    {
+      "path": "godot/src/simulation/governance/sect_residence_site_v1.gd",
+      "git_blob_sha": "0cbf1d4e836dcfa27e527e2530685ec7193ff3d5"
+    },
+    {
+      "path": "godot/src/simulation/governance/sect_residence_system_v1.gd",
+      "git_blob_sha": "c218e5247d642876e145025c249979ebf5e05a8e"
+    },
+    {
+      "path": "godot/src/simulation/state/sect_state.gd",
+      "git_blob_sha": "5ad4c8a30bd2eef4758063526a74a9c31b4dcbb4"
+    },
+    {
+      "path": "godot/tests/presentation/b1_trifacility_ui_contract_test.gd",
+      "git_blob_sha": "59dd1ee92b018e0929479093feb9c3fb238888d7"
+    },
+    {
+      "path": "godot/tests/presentation/gp_01_v2_mine_vertical_slice_test.gd",
+      "git_blob_sha": "9fb440f953afa4e5e81b6db6b9835223e2c81618"
+    },
+    {
+      "path": "godot/tests/presentation/gp_02a_v2_cultivation_panel_test.gd",
+      "git_blob_sha": "c5e89df3340e0db57cedcb76c4f6ddd347e15077"
+    },
+    {
+      "path": "godot/tests/presentation/hs09_disciple_profile_test.gd",
+      "git_blob_sha": "cb213d462aefd569d2349069f92b46f466b0bf13"
+    },
+    {
+      "path": "godot/tests/presentation/p3_o3_real_mine_loop_test.gd",
+      "git_blob_sha": "bb90f3a45b36b767ba136b20f1e94d43d2c44c25"
+    },
+    {
+      "path": "godot/tests/presentation/p3_o5_real_consumption_loop_test.gd",
+      "git_blob_sha": "97a182b0ecdb78123b9173e0f1d84d77bcde82c4"
+    },
+    {
+      "path": "godot/tests/presentation/p3_o6_m1_release_rehearsal_test.gd",
+      "git_blob_sha": "ac282555c41d98e383e848590341faf323c2413c"
+    },
+    {
+      "path": "godot/tests/presentation/p3_o9_m2_production_rehearsal_test.gd",
+      "git_blob_sha": "dfe9e7a152ba8a107f6edcc11ae2629b6b0749b7"
+    },
+    {
+      "path": "godot/tests/presentation/sect_g1_disciple_radar_test.gd",
+      "git_blob_sha": "fa1176f356ee6713f33f402a7d26a1bb115dbb54"
+    },
+    {
+      "path": "godot/tests/presentation/sect_ui_icon_atlas_test.gd",
+      "git_blob_sha": "8dd1609742555ea32bc87d795c11022c8e2e73e5"
+    },
+    {
+      "path": "godot/tests/presentation/tri_facility_b1_art_v2_test.gd",
+      "git_blob_sha": "d2f30367cf72cedfdfbbf743da54b7cf25acdead"
+    },
+    {
+      "path": "godot/tests/presentation/tri_facility_b1_live_capture.gd",
+      "git_blob_sha": "a7c3044c088be562db968b353db469c3d1a7c4d2"
+    },
+    {
+      "path": "godot/tests/presentation/tri_facility_b1_live_integration_test.gd",
+      "git_blob_sha": "55762fe69cf5ba9c8e673056d77bb2dcb70ba669"
+    },
+    {
+      "path": "godot/tests/presentation/tri_facility_map_construction_live_test.gd",
+      "git_blob_sha": "c9c4a950ce96270930c34b010ea403d30c27690d"
+    },
+    {
+      "path": "godot/tests/presentation/tri_facility_map_construction_reload_verify.gd",
+      "git_blob_sha": "51659a704ad9b65c0a008d98e87296f861f6ffba"
+    },
+    {
+      "path": "godot/tests/presentation/tri_facility_recruited_hs09_flow_test.gd",
+      "git_blob_sha": "9d95a1860f50e1d94fe3f3373b1f9950e686b70e"
+    },
+    {
+      "path": "godot/tests/presentation/tri_facility_recruited_hs09_reload_verify.gd",
+      "git_blob_sha": "9946b9f9b54f662f232cb657771da8ee2b3270e6"
+    },
+    {
+      "path": "tools/windows/run/Start-TRI03Game.ps1",
+      "git_blob_sha": "54aa090f00d69e140cf98719218bfb029ac763b8"
+    },
+    {
+      "path": "tools/windows/run/Verify-TRI03Source.ps1",
+      "git_blob_sha": "eddfc05ae316602468e6f2b2969c2b9742a89268"
+    }
+  ],
+  "included_unpinned_import_metadata": [
+    "godot/art/uiux/sect_management_icons_generated_v1.png.import"
+  ],
+  "source_a_assets": [
+    {
+      "model": "510052",
+      "role": "Dai Dien",
+      "sha256": "b6bf88c35e3edc33aba822124296af15a5c8491a05c28f6b5d7b342d20d5325c"
+    },
+    {
+      "model": "510076",
+      "role": "De Tu Xa",
+      "sha256": "f8e05d7376fc5ddc7b25f56673b6d5f444b10fd759da06a5929ec4f38a68d320"
+    },
+    {
+      "model": "510111",
+      "role": "Dan Tien Dai",
+      "sha256": "90b7c595f3b77788c99924ef2eb7ba4b8ede794ccffda1c6808263ba3c711762"
+    }
+  ],
+  "generated_artwork": [
+    {
+      "path": "godot/art/uiux/sect_management_icons_generated_v1.png",
+      "sha256": "6116f6768d3d1157deb0cd7873da64bc160a05353ea0ffb31494a52431c84533",
+      "status": "original generated UI icon atlas; not Source A; owner approval pending"
+    }
+  ],
+  "qa_profile": "E:\\TongMonBaDaoWorkspace\\03_QA_Logs\\TRI03_OWNER_FINAL_20261103\\G2\\final_g1_g2\\ProfileFlowIconFinal",
+  "launcher": "E:\\TongMonBaDaoWorkspace\\01_Game\\TongMonBaDao\\CHOI-GAME.cmd"
+}

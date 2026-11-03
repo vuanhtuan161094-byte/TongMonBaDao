@@ -13,28 +13,21 @@ const VIEW_SIZE := Vector2(1280,570)
 const MAP_SCREEN_OFFSET := Vector2(0,72)
 const LEGACY_ANCHOR := Vector2(768,354)
 const CENTER_CELL := Vector2(90,92)
+const NEW_GAME_FOCUS_CELL := Vector2(92,96)
 # Option B is a presentation-only layout seed in the existing 48x48 starter.
 # The model's route origin is the reserved gate point; no actor spawn or
 # SimulationState field is changed by this map-only coordinate.
-const TYPE_ANCHORS := {
-    "main_hall": Vector2i(81,89),
-    "warehouse": Vector2i(95,91),
-    "forge": Vector2i(95,95),
-    "residence": Vector2i(76,97),
-    "cultivation": Vector2i(88,81),
-    "ren_than_duong": Vector2i(77,93),
-    "medicine": Vector2i(76,102),
-    "alchemy_hall": Vector2i(98,86),
-    "mine": Vector2i(92,83),
-    "linh_forest": Vector2i(82,104),
-    "spirit_field": Vector2i(103,93),
-    "guidance": Vector2i(78,84),
-    "gate": Vector2i(96,102)
-}
+const TYPE_ANCHORS := SectResidenceSiteV1.LEGACY_MAP_ANCHORS
+# A deliberate New Game composition: the Hall is the hub, Residence sits to
+# the west, Guidance to the south, and Warehouse/Forge form the east work wing.
+# This is a versioned visual layout; old saves retain their original anchors.
+const TYPE_ANCHORS_NEW_GAME := SectResidenceSiteV1.NEW_GAME_MAP_ANCHORS
 const PRODUCER_TYPES := {
+    "main_hall":"main_hall",
     "mine":"mine",
     "linh_forest":"linh_forest",
-    "spirit_field":"spirit_field"
+    "spirit_field":"spirit_field",
+    "residence":"residence"
 }
 # Deterministic QA display slots for canonical endgame instances. These are
 # presentation-only because P3.2 has no persisted per-building placement yet.
@@ -42,15 +35,22 @@ const PRODUCER_TYPES := {
 const PRODUCER_DISTRICTS := {
     "mine":{"origin":Vector2i(16,18),"columns":6,"column_step":6,"row_step":6},
     "linh_forest":{"origin":Vector2i(16,126),"columns":6,"column_step":6,"row_step":6},
-    "spirit_field":{"origin":Vector2i(130,72),"columns":8,"column_step":5,"row_step":7}
+    "spirit_field":{"origin":Vector2i(130,72),"columns":8,"column_step":5,"row_step":7},
+    # Deterministic temporary village annex sites; not editable placement.
+    "residence":{"origin":Vector2i(86,108),"columns":6,"column_step":6,"row_step":6}
 }
 const HOUSE_TEXTURES := {
     "main_hall":"pv01_assets/main_hall/510052.png",
+    "residence":"pv01_assets/residence/510076.png",
+    "guidance":"pv01_assets/guidance/510111.png",
     "warehouse":"pv01_assets/warehouse/510102.png",
     "forge":"pv01_assets/forge/520081.png"
 }
+# Target rectangles retain each source sprite's measured aspect ratio.
 const HOUSE_SIZES := {
     "main_hall":Vector2(300,201),
+    "residence":Vector2(174,135.03),
+    "guidance":Vector2(182,202.54),
     "warehouse":Vector2(162,138),
     "forge":Vector2(205,164)
 }
@@ -73,6 +73,25 @@ const HOUSE_FOOTPRINT_CENTERS := {
     "main_hall":Vector2(3.0,2.0),
     "warehouse":Vector2(1.0,0.5),
     "forge":Vector2(1.0,1.0)
+}
+# DD-09.2: Destination = OUTSIDE the door, not inside the building sprite.
+# Entrance offsets are one ground tile beyond the known footprint.
+# No roads/entrance graph are needed to accept construction: characters move
+# directly to this exterior interaction cell in the sect-only presentation.
+# PvE's independent navigation and terrain collision remain unchanged.
+const EXTERIOR_DOOR_OFFSETS := {
+    "main_hall":Vector2i(3,-1),
+    "warehouse":Vector2i(1,-1),
+    "forge":Vector2i(1,-1),
+    "residence":Vector2i(1,-1),
+    "mine":Vector2i(1,3),
+    "linh_forest":Vector2i(0,2),
+    "spirit_field":Vector2i(0,2),
+    "alchemy_hall":Vector2i(1,3),
+    "cultivation":Vector2i(0,2),
+    "ren_than_duong":Vector2i(0,2),
+    "medicine":Vector2i(0,2),
+    "guidance":Vector2i(0,2)
 }
 const ROAD_TEXTURES := {
     "cross":"stone_cross.png",
@@ -136,7 +155,12 @@ var road_overlays_by_chunk: Dictionary = {}
 var draw_revision := 0
 var fallback_art_count := 0
 var lab_geometry: SectIsoMapModelV1
+var map_layout_version := 0
+var placement_preview: Dictionary = {}
 var preview_roads: Dictionary = {}
+var static_preview_roads: Dictionary = {}
+var residence_layout_signature := ""
+var residence_road_signature := ""
 var preview_routes: Dictionary = {}
 var lab_routes_ready := false
 var source_art: SectMap25SourceArt
@@ -144,6 +168,8 @@ var render_art: Dictionary = {}
 # Experimental visual-only artwork is separate from source_art.status().
 var candidate_site_art: Dictionary = {}
 var decoration_items_by_chunk: Dictionary = {}
+# Visual-only suppression of decorative plants under real House footprints.
+var house_reserved_tiles: Dictionary = {}
 var pve_static_draw_queue: Array[Dictionary] = []
 var pve_detailed_site_ids: Dictionary = {}
 var pve_static_queue_dirty := true
@@ -184,6 +210,26 @@ const PVE_FOREST_ASSETS := PVE_TREE_ASSETS + PVE_BAMBOO_ASSETS + PVE_ROCK_ASSETS
 const PVE_BRIDGE_ROWS := [32,92,150]
 
 
+func configure_map_layout_version(version: int) -> void:
+    # This must be called before add_child(), because _ready() seeds its road
+    # presentation from the same layout version as the canonical save marker.
+    map_layout_version = version if version == 2 else 0
+
+func anchors_for_layout(version: int = -1) -> Dictionary:
+    var resolved := map_layout_version if version < 0 else version
+    return TYPE_ANCHORS_NEW_GAME if resolved == 2 else TYPE_ANCHORS
+
+func anchor_for(destination: StringName, version: int = -1) -> Vector2i:
+    return Vector2i(anchors_for_layout(version).get(str(destination),Vector2i(90,92)))
+
+func set_placement_preview(preview: Dictionary) -> void:
+    placement_preview = preview.duplicate(true)
+    queue_redraw()
+
+func clear_placement_preview() -> void:
+    placement_preview.clear()
+    queue_redraw()
+
 func _ready() -> void:
     pve_performance_logging_enabled = OS.get_environment("TMB_PVE_PERF_LOG") == "1"
     camera = Camera2D.new()
@@ -203,6 +249,7 @@ func _ready() -> void:
         _seed_pve_landscape()
     else:
         _seed_env02a_geometry()
+    static_preview_roads = preview_roads.duplicate(true)
     _load_verified_source_art()
     _update_chunks()
     set_process(pve_landscape)
@@ -337,8 +384,9 @@ static func _pve_minimap_texture(navigation: Dictionary,path_cells: Dictionary =
 # or paid construction. It is rebuilt from static content, never saved.
 func _seed_env02a_geometry() -> void:
     lab_geometry = SectIsoMapModelV1.new(GRID,SPAWN_CELL)
+    var anchors := anchors_for_layout()
     for kind in ["main_hall","warehouse","forge"]:
-        var origin: Vector2i = TYPE_ANCHORS[kind]
+        var origin: Vector2i = anchors[kind]
         var placement := lab_geometry.place(kind,kind,origin)
         if not bool(placement.get("ok",false)):
             lab_routes_ready = false
@@ -356,11 +404,11 @@ func _seed_env02a_geometry() -> void:
         {"id":"courtyard_to_main_hall","from":ROADS_JUNCTION,"to":hdoor},
         {"id":"courtyard_to_warehouse","from":ROADS_JUNCTION,"to":sdoor},
         {"id":"courtyard_to_forge","from":ROADS_JUNCTION,"to":fdoor},
-        {"id":"courtyard_to_mine","from":ROADS_JUNCTION,"to":TYPE_ANCHORS["mine"]+PRODUCER_ROUTE_APPROACH["mine"]},
-        {"id":"courtyard_to_linh_forest","from":ROADS_JUNCTION,"to":TYPE_ANCHORS["linh_forest"]+PRODUCER_ROUTE_APPROACH["linh_forest"]},
-        {"id":"courtyard_to_spirit_field","from":ROADS_JUNCTION,"to":TYPE_ANCHORS["spirit_field"]+PRODUCER_ROUTE_APPROACH["spirit_field"]},
-        {"id":"courtyard_to_residence","from":ROADS_JUNCTION,"to":TYPE_ANCHORS["residence"]},
-        {"id":"courtyard_to_cultivation","from":ROADS_JUNCTION,"to":TYPE_ANCHORS["cultivation"]}
+        {"id":"courtyard_to_mine","from":ROADS_JUNCTION,"to":anchors["mine"]+PRODUCER_ROUTE_APPROACH["mine"]},
+        {"id":"courtyard_to_linh_forest","from":ROADS_JUNCTION,"to":anchors["linh_forest"]+PRODUCER_ROUTE_APPROACH["linh_forest"]},
+        {"id":"courtyard_to_spirit_field","from":ROADS_JUNCTION,"to":anchors["spirit_field"]+PRODUCER_ROUTE_APPROACH["spirit_field"]},
+        {"id":"courtyard_to_residence","from":ROADS_JUNCTION,"to":anchors["residence"]},
+        {"id":"courtyard_to_cultivation","from":ROADS_JUNCTION,"to":anchors["cultivation"]}
     ]
     # The previous seed rebuilt a full 192x192 AStarGrid2D for each of
     # nine road routes, then three more times to recheck the doorways.
@@ -450,7 +498,7 @@ func _load_verified_source_art() -> void:
             if not STARTER.has_point(tile) or occupied.has(tile) or preview_roads.has(tile):
                 continue
             var marker_clear := true
-            for raw_anchor in TYPE_ANCHORS.values():
+            for raw_anchor in anchors_for_layout().values():
                 if (tile-Vector2i(raw_anchor)).length_squared() <= 2:
                     marker_clear = false
                     break
@@ -474,8 +522,15 @@ func _load_verified_source_art() -> void:
     art_source_status = source_art.status()
     art_loaded_count = int(art_source_status.get("accepted_count",0))
     # The user is not shown an invented Source A completion status.
-    fallback_art_count = HOUSE_TEXTURES.size()-mini(HOUSE_TEXTURES.size(),render_art.size())
+    fallback_art_count = HOUSE_TEXTURES.size()-_verified_house_art_count()
     queue_redraw()
+
+func _verified_house_art_count() -> int:
+    var loaded := 0
+    for value in HOUSE_TEXTURES.values():
+        if render_art.has(str(value)):
+            loaded += 1
+    return loaded
 
 func _road_key(cell: Vector2i) -> String:
     var neighbors := 0
@@ -530,16 +585,29 @@ static func visual_anchor(destination: StringName, cell: Vector2i) -> Vector2:
     # For all other destinations the existing V1 anchor remains authoritative.
     return Vector2(cell)+HOUSE_FOOTPRINT_CENTERS.get(str(destination),Vector2.ZERO)
 
-static func virtual_legacy_point(destination: StringName, building_id: StringName = &"") -> Vector2:
-    var cell: Vector2i = TYPE_ANCHORS.get(str(destination),Vector2i(90,92))
-    if building_id != &"":
-        var sequence := maxi(int(str(building_id).get_slice("_",str(building_id).get_slice_count("_")-1)),1)
-        cell = producer_cell(destination,sequence)
-    return LEGACY_ANCHOR+project(visual_anchor(destination,cell))-project(CENTER_CELL)
+static func exterior_door_cell(destination: StringName, instance_index: int = 1,
+        saved_origin: Vector2i = SectResidenceSiteV1.UNSELECTED,
+        layout_version: int = 0) -> Vector2i:
+    var origin := saved_origin if saved_origin != SectResidenceSiteV1.UNSELECTED else producer_cell(destination,instance_index,layout_version)
+    # The courtyard/gate are open ground, not enterable building interiors.
+    return origin + EXTERIOR_DOOR_OFFSETS.get(str(destination), Vector2i.ZERO)
 
-static func producer_cell(destination: StringName, instance_index: int) -> Vector2i:
+static func virtual_legacy_point(destination: StringName, building_id: StringName = &"",
+        saved_origin: Vector2i = SectResidenceSiteV1.UNSELECTED,
+        layout_version: int = 0) -> Vector2:
+    var sequence := 1
+    if building_id != &"":
+        sequence = maxi(int(str(building_id).get_slice("_",str(building_id).get_slice_count("_")-1)),1)
+    # Actual House coordinates are canonical BuildingState fields, not a
+    # second world placement ledger. Display art/picking use same site.
+    var entrance := exterior_door_cell(destination,sequence,saved_origin,layout_version)
+    return LEGACY_ANCHOR+project(Vector2(entrance))-project(CENTER_CELL)
+
+static func producer_cell(destination: StringName, instance_index: int,
+        layout_version: int = 0) -> Vector2i:
     var key := str(destination)
-    var anchor: Vector2i = TYPE_ANCHORS.get(key,Vector2i(90,92))
+    var anchors: Dictionary = TYPE_ANCHORS_NEW_GAME if layout_version == 2 else TYPE_ANCHORS
+    var anchor: Vector2i = anchors.get(key,Vector2i(90,92))
     if instance_index <= 1 or not PRODUCER_DISTRICTS.has(key):
         return anchor
     var district: Dictionary = PRODUCER_DISTRICTS[key]
@@ -553,6 +621,20 @@ static func producer_cell(destination: StringName, instance_index: int) -> Vecto
 func refresh_from_state(state: SimulationState) -> void:
     if state == null:
         return
+    map_layout_version = state.sect.world_layout_version
+    house_reserved_tiles.clear()
+    # Draw a paid construction site/House cleanly: decorative trees cannot
+    # stand on the roof, footprint, or its exterior door interaction cell.
+    for record in state.buildings.values():
+        if not (record is BuildingState) or record.building_type != BuildingSystem.TYPE_RESIDENCE:
+            continue
+        var origin := SectResidenceSiteV1.origin_of(record)
+        var footprint := Rect2i(origin,SectResidenceSiteV1.HOUSE_FOOTPRINT)
+        for yy in range(footprint.position.y,footprint.end.y):
+            for xx in range(footprint.position.x,footprint.end.x):
+                house_reserved_tiles[Vector2i(xx,yy)] = true
+        house_reserved_tiles[SectResidenceSiteV1.doorway(origin)] = true
+    _refresh_residence_road_paths(state)
     var rows: Array[Dictionary] = []
     # One indexed pass over canonical buildings. Prior implementation scanned
     # the full state.buildings collection once for EACH producer destination.
@@ -569,27 +651,80 @@ func refresh_from_state(state: SimulationState) -> void:
         (producer_buckets[key] as Array).sort_custom(
             func(a: BuildingState,b: BuildingState) -> bool:
                 return str(a.id)<str(b.id))
+    var anchors := anchors_for_layout(map_layout_version)
     for raw_dest in TYPE_ANCHORS.keys():
         var dest := StringName(raw_dest)
         if PRODUCER_TYPES.has(str(dest)):
             # Only actual canonical instances; exact old ordering preserved.
             var matching: Array = producer_buckets.get(str(PRODUCER_TYPES[str(dest)]),[])
+            # Old P0/P3.7 fixture saves still draw their existing generic
+            # Residence landmark; new live saves draw actual house IDs.
+            if matching.is_empty() and dest in [SectMapPresentation.DEST_RESIDENCE, SectMapPresentation.DEST_MAIN_HALL]:
+                rows.append(_row(dest,&"","Đệ Tử Xá" if dest == SectMapPresentation.DEST_RESIDENCE else "Đại Điện",1,false,SectResidenceSiteV1.UNSELECTED,map_layout_version))
             for building in matching:
-                rows.append(_row(dest,building.id,str(building.display_name),building.instance_index,true))
+                var live_label := str(building.display_name)
+                if building.building_type == BuildingSystem.TYPE_RESIDENCE \
+                        and building.status == BuildingSystem.STATUS_CONSTRUCTING:
+                    live_label += " · đang xây"
+                var owned_site: Vector2i = SectResidenceSiteV1.UNSELECTED
+                if building.building_type == BuildingSystem.TYPE_RESIDENCE:
+                    owned_site = SectResidenceSiteV1.origin_of(building)
+                rows.append(_row(dest,building.id,live_label,building.instance_index,true,owned_site,map_layout_version))
         else:
             # A visual landmark/destination is NOT a BuildingState.
-            rows.append(_row(dest,&"",str(dest).replace("_"," ").capitalize(),1,false))
+            rows.append(_row(dest,&"",str(dest).replace("_"," ").capitalize(),1,false,SectResidenceSiteV1.UNSELECTED,map_layout_version))
     rows.sort_custom(func(a: Dictionary,b: Dictionary) -> bool:
         var pa: Vector2 = a["world"]
         var pb: Vector2 = b["world"]
         return pa.y < pb.y)
     display_instances = rows
-    fallback_art_count = maxi(0,rows.size()-int(render_art.has(HOUSE_TEXTURES["main_hall"]))-int(render_art.has(HOUSE_TEXTURES["warehouse"]))-int(render_art.has(HOUSE_TEXTURES["forge"])))
+    fallback_art_count = maxi(0,rows.size()-_verified_house_art_count())
     pve_static_queue_dirty = true
     queue_redraw()
 
-func _row(dest: StringName, instance_id: StringName, text_label: String, index: int, managed: bool) -> Dictionary:
-    var cell: Vector2i = producer_cell(dest,index) if managed else TYPE_ANCHORS.get(str(dest),Vector2i(90,92))
+func _refresh_residence_road_paths(state: SimulationState) -> void:
+    if pve_landscape or static_preview_roads.is_empty():
+        return
+    var houses := SectResidenceSystemV1.all_houses(state)
+    var layout_parts: PackedStringArray = []
+    for house in houses:
+        layout_parts.append("%s:%d,%d" % [str(house.id),
+            SectResidenceSiteV1.origin_of(house).x,SectResidenceSiteV1.origin_of(house).y])
+    var layout_key := "|".join(layout_parts)
+    if layout_key == residence_layout_signature:
+        return
+    residence_layout_signature = layout_key
+    var roads := static_preview_roads.duplicate(true)
+    var signature_rows: Array[String] = []
+    for house in houses:
+        var origin := SectResidenceSiteV1.origin_of(house)
+        var path := SectResidenceSiteV1.path_to_door(state,origin,str(house.id))
+        if path.is_empty():
+            continue
+        var path_parts: PackedStringArray = []
+        for cell in path:
+            roads[cell] = true
+            path_parts.append("%d,%d" % [cell.x,cell.y])
+        signature_rows.append("%s:%s:%s" % [str(house.id),str(origin),";".join(path_parts)])
+    signature_rows.sort()
+    var next_signature := "|".join(signature_rows)
+    if next_signature == residence_road_signature:
+        return
+    residence_road_signature = next_signature
+    if roads == preview_roads:
+        return
+    preview_roads = roads
+    # Player construction/relocation is infrequent. Rebuild cached ground and
+    # Source A road/vegetation overlays only when a doorway route really moves.
+    ground_chunk_meshes.clear()
+    _load_verified_source_art()
+
+func _row(dest: StringName, instance_id: StringName, text_label: String, index: int,
+        managed: bool, saved_origin: Vector2i = SectResidenceSiteV1.UNSELECTED,
+        layout_version: int = 0) -> Dictionary:
+    var cell: Vector2i = producer_cell(dest,index,layout_version) if managed else anchor_for(dest,layout_version)
+    if saved_origin != SectResidenceSiteV1.UNSELECTED:
+        cell = saved_origin
     return {
         "destination":dest,
         "building_id":instance_id,
@@ -959,6 +1094,8 @@ func _draw() -> void:
             queue.append({"y":(item["world"] as Vector2).y,"kind":"building","data":item})
     for chunk_id in active_chunks:
         for item in decoration_items_by_chunk.get(chunk_id,[]):
+            if not pve_landscape and house_reserved_tiles.has(item["cell"]):
+                continue
             if _visible_world(item["world"]):
                 queue.append({"y":(item["world"] as Vector2).y,"kind":"vegetation","data":item})
     if pve_landscape and pve_battle != null:
@@ -1000,6 +1137,7 @@ func _draw() -> void:
         else:
             _draw_building(place,str(item["destination"]),bool(item["managed"]),
                 detailed.has(str(item["building_id"])))
+    _draw_placement_preview()
 
 func _ensure_pve_static_draw_queue() -> void:
     var camera_changed := not pve_static_queue_has_view or not pve_static_queue_camera_position.is_equal_approx(camera.position) or not is_equal_approx(pve_static_queue_zoom,camera.zoom.x)
@@ -1013,6 +1151,8 @@ func _ensure_pve_static_draw_queue() -> void:
             queue.append({"y":(item["world"] as Vector2).y,"kind":"building","data":item})
     for chunk_id in active_chunks:
         for item in decoration_items_by_chunk.get(chunk_id,[]):
+            if not pve_landscape and house_reserved_tiles.has(item["cell"]):
+                continue
             if _visible_world(item["world"]):
                 queue.append({"y":(item["world"] as Vector2).y,"kind":"vegetation","data":item})
     queue.sort_custom(func(a: Dictionary,b: Dictionary) -> bool:
@@ -1184,6 +1324,36 @@ func _is_road(cell: Vector2i) -> bool:
     if pve_landscape:
         return in_world and pve_bridge_at(cell) and preview_roads.has(cell)
     return STARTER.has_point(cell) and preview_roads.has(cell)
+
+func _draw_placement_preview() -> void:
+    if placement_preview.is_empty():
+        return
+    var origin: Vector2i = placement_preview.get("site",SectResidenceSiteV1.UNSELECTED)
+    if origin == SectResidenceSiteV1.UNSELECTED:
+        return
+    var valid := bool(placement_preview.get("ok",false))
+    var fill := Color(0.24,0.86,0.57,0.30) if valid else Color(0.96,0.24,0.22,0.30)
+    var stroke := Color(0.39,1.0,0.69,0.92) if valid else Color(1.0,0.39,0.29,0.95)
+    for y in range(SectResidenceSiteV1.HOUSE_FOOTPRINT.y):
+        for x in range(SectResidenceSiteV1.HOUSE_FOOTPRINT.x):
+            var center := project(Vector2(origin+Vector2i(x,y)))
+            var tile := PackedVector2Array([
+                center+Vector2(0,-HALF_H),center+Vector2(HALF_W,0),
+                center+Vector2(0,HALF_H),center+Vector2(-HALF_W,0)
+            ])
+            draw_colored_polygon(tile,fill)
+            draw_polyline(PackedVector2Array([tile[0],tile[1],tile[2],tile[3],tile[0]]),stroke,2.0,true)
+    var door: Vector2i = SectResidenceSiteV1.doorway(origin)
+    var door_center := project(Vector2(door))
+    draw_circle(door_center,8.0,Color(0.25,0.80,1.0,0.95))
+    draw_circle(door_center,3.0,Color(0.94,0.98,0.91,1.0))
+    var art_key := str(HOUSE_TEXTURES["residence"])
+    if render_art.has(art_key):
+        var texture: Texture2D = render_art[art_key]
+        var target: Vector2 = HOUSE_SIZES["residence"]
+        var anchor := project(Vector2(origin))
+        var tint := Color(0.75,1.0,0.82,0.50) if valid else Color(1.0,0.65,0.60,0.46)
+        draw_texture_rect(texture,Rect2(anchor+Vector2(0,-target.y*0.28)-target*0.5,target),false,tint)
 
 func _draw_compact_producer(p: Vector2,kind: String,overview: bool) -> void:
     # Clean compact symbols replace oversized repeated unapproved SVG roofs

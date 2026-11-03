@@ -136,6 +136,10 @@ func _configure_live_state(live_state: SimulationState) -> Dictionary:
     # existing saves, add this owned facility exactly once to live V2 games.
     if BuildingSystem.new().ensure_body_training_facility(live_state) == null:
         return {"ok":false,"reason":"body_training_facility_migration_failed"}
+    # DD-01: exactly one Hall and versioned appointment ledger for live V2.
+    var hall_ready := SectHallSystemV1.ensure_live(live_state)
+    if not bool(hall_ready.get("ok", false)):
+        return {"ok":false,"reason":str(hall_ready.get("reason", "hall_initialization_failed"))}
 
     return {"ok":true}
 

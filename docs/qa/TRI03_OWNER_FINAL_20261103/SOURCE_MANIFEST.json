@@ -1,0 +1,92 @@
+{
+  "remote_base": "27ed01cd8f377994e5e50bac9ede84e78e8895bd",
+  "tested_code_commit": "84aa5bf53a7538aef93d7e7f2a64e2d78c4a9587",
+  "tested_git_tree": "c2a9c67501fb72cb04d39172ef39fba365778f3b",
+  "files": [
+    {
+      "path": "godot/src/presentation/dai_dien_screen_v1.gd",
+      "git_blob": "302cd99417905ebcb52ea8f5652b7ae589ce033b",
+      "worktree_sha256": "51664EFDD9EC764C515DE14454A044261CE408B1AFB6FCCF23016F29B3F9C640"
+    },
+    {
+      "path": "godot/src/presentation/dan_tien_screen_v2.gd",
+      "git_blob": "6dac146befbbfc3f90bf5a048d2ca506bc1d90e9",
+      "worktree_sha256": "DF89B50EB47471AAE45FC86AA34D0467A05C1506F955C164AAE6ADDE4E156E76"
+    },
+    {
+      "path": "godot/src/presentation/p3/sect_isometric_world_v1.gd",
+      "git_blob": "a18a84459cd15525d8e7da105440eb80e81132e8",
+      "worktree_sha256": "3BFA42F8E19FE908A58379F7786A0FDB24E3931059EA0147E887FC074499C62F"
+    },
+    {
+      "path": "godot/src/presentation/p3_2_landscape_sect.gd",
+      "git_blob": "e1a0458c5ec75fd1a115078088e5baf3a03f403b",
+      "worktree_sha256": "50E227600AB71D3C00797F817B377F3C2E4B91079A859EA58492B8E0F6A23D1F"
+    },
+    {
+      "path": "godot/src/presentation/uiux/dai_dien_screen_b1_v1.gd",
+      "git_blob": "1d5c2aee7ac80d7159c7d68e2ca0bcfffeb8ab75",
+      "worktree_sha256": "E6295582D0C1D07C793A47702FCB9D4D688FD0C5C64D94AA8189E5CE28223EAD"
+    },
+    {
+      "path": "godot/src/presentation/uiux/dan_tien_screen_b1_v1.gd",
+      "git_blob": "2f2fd8be203f3ea82870d773e149c16bd2bf0e68",
+      "worktree_sha256": "9FD735145A4768039C051365E5E2411B2351F35CE43C1BDA02333E542A8B10C1"
+    },
+    {
+      "path": "godot/src/presentation/uiux/de_tu_xa_screen_b1_v1.gd",
+      "git_blob": "40048faa259b598b441e886725aa6de3e5113cfa",
+      "worktree_sha256": "D4B6EF0359C112EADEBF1783DB29C668A13BD01EDBEC48EA4690E617F21EECB1"
+    },
+    {
+      "path": "godot/src/presentation/uiux/tri_facility_live_adapter_v1.gd",
+      "git_blob": "ee0fddaac557e08dddfcabd68bf1d9607689c61c",
+      "worktree_sha256": "E833A138A530B0DBB670573842F18E2A13D1036FE4677D012ACB6025A0686C70"
+    },
+    {
+      "path": "godot/src/simulation/core/p3_7_factory.gd",
+      "git_blob": "f2543f11c6378f128cfc98544763da647ebf6805",
+      "worktree_sha256": "100C325A2B737FD855BD3F28287F33CAE0786236688548B36F9AC6B359BC8990"
+    },
+    {
+      "path": "godot/src/simulation/governance/sect_residence_system_v1.gd",
+      "git_blob": "a6a0846ef2f4df250ad5d4f081a209ba515648a6",
+      "worktree_sha256": "43FE9D82C1208B9E2B0BEFE414BFEA1D78CA703A7D9419D018BF9C281680C8A6"
+    },
+    {
+      "path": "godot/src/simulation/state/sect_state.gd",
+      "git_blob": "5ad4c8a30bd2eef4758063526a74a9c31b4dcbb4",
+      "worktree_sha256": "513FDA913CD098F02B23F689A3EE41607822BFB6E5B60AC27A6EDF7B318D4C25"
+    },
+    {
+      "path": "godot/tests/presentation/b1_trifacility_ui_contract_test.gd",
+      "git_blob": "59dd1ee92b018e0929479093feb9c3fb238888d7",
+      "worktree_sha256": "F801679C278AEDF0D221547C0676A9B8D004E97EA5A2867AD5A8D3A72D467E1F"
+    },
+    {
+      "path": "godot/tests/presentation/tri_facility_b1_art_v2_test.gd",
+      "git_blob": "d2f30367cf72cedfdfbbf743da54b7cf25acdead",
+      "worktree_sha256": "659E0B17CF2D3BB008F65EEFFFB581CD8E32BADAD9B4E41A1CCA11135C5E938C"
+    },
+    {
+      "path": "godot/tests/presentation/tri_facility_b1_live_capture.gd",
+      "git_blob": "a7c3044c088be562db968b353db469c3d1a7c4d2",
+      "worktree_sha256": "3FBD6785D149DEE1367227826CF62DC22C8C28088C052841ABDA774F6A7AE796"
+    },
+    {
+      "path": "godot/tests/presentation/tri_facility_b1_live_integration_test.gd",
+      "git_blob": "55762fe69cf5ba9c8e673056d77bb2dcb70ba669",
+      "worktree_sha256": "D7F7C715B17C206EE0544B149C384BD05E7957DD2E9ABF1D6A3E93162DC72FEC"
+    },
+    {
+      "path": "godot/tests/presentation/tri_facility_map_construction_live_test.gd",
+      "git_blob": "980369d135945ba55349bc353527c4d24c9bce74",
+      "worktree_sha256": "8B818D4E76099D59EB5229D5488438AD91841E0A14855E20A9B27F726E9661EA"
+    },
+    {
+      "path": "godot/tests/presentation/tri_facility_map_construction_reload_verify.gd",
+      "git_blob": "51659a704ad9b65c0a008d98e87296f861f6ffba",
+      "worktree_sha256": "D4B080E2111DB9DB36B355AF1527436A0D121461A69F55C11323354009AC6CEE"
+    }
+  ]
+}

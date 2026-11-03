@@ -27,24 +27,24 @@ func _run() -> void:
 
     var radar := HS09DualFoundationRadar.new()
     var synthetic := {"ok":true,"foundations":{"model_version":3,"current":{
-        "aptitude":12.0,"constitution":24.0,"mind_nature":36.0,
+        "aptitude":12.0,"constitution":24.0,"mind_nature":9999.0,
         "potential":100.0,"comprehension":200.0,"fortune":300.0,"charisma":400.0
     }}}
     if not radar.apply_snapshot(synthetic):
-        _fail("valid seven-point snapshot rejected")
+        _fail("valid D7 snapshot with six canonical stats rejected")
         return
-    if radar.tam_can_values != [12.0,24.0,36.0] or radar.tu_tinh_values != [100.0,200.0,300.0,400.0]:
-        _fail("radar changed or misordered the original points")
+    if radar.dimension_values.size() != 6 or radar.dimension_values != [12.0,24.0,300.0,200.0,400.0,100.0]:
+        _fail("visible HS-09 chart must expose only the six canonical stats and omit mind compatibility")
         return
-    if radar.tam_can_ceiling != 40.0 or radar.tu_tinh_ceiling != 400.0:
-        _fail("Tam Căn and Tứ Tính do not have independent drawing scales")
+    if radar.chart_ceiling != 400.0 or radar.dimension_values.has(9999.0):
+        _fail("non-gameplay mind compatibility changed the visible chart scale")
         return
-    var saved_tam := radar.tam_can_values.duplicate()
+    var saved_values := radar.dimension_values.duplicate()
     if radar.apply_snapshot({"ok":true,"foundations":{"model_version":3,"current":{"aptitude":1.0}}}):
-        _fail("incomplete foundation snapshot accepted")
+        _fail("incomplete six-stat foundation snapshot accepted")
         return
-    if radar.tam_can_values != saved_tam:
-        _fail("rejected snapshot modified the previously valid radar")
+    if radar.dimension_values != saved_values:
+        _fail("rejected snapshot modified the previously valid canonical chart")
         return
     radar.free()
 
