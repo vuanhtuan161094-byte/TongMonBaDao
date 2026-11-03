@@ -399,13 +399,25 @@ static func _try_human_cast(battle: MapBattleV2, actor: Dictionary, enemy: Dicti
         return true
     return false
 
+static func _same_p0_support_party(caster: Dictionary, ally: Dictionary) -> bool:
+    # NPC monster-side support keeps its legacy faction behavior.
+    # Independent sect hunters are not automatically one 30-person party.
+    # Solo actors may always heal/guard THEMSELVES.
+    if str(caster.get("side","")) != "disciple":
+        return true
+    if str(caster.get("id","")) == str(ally.get("id","")):
+        return true
+    var group := str(caster.get("party_id",""))
+    return not group.is_empty() and group == str(ally.get("party_id",""))
+
 static func _support_target(battle: MapBattleV2, actor: Dictionary, skill: Dictionary) -> Dictionary:
     if str(skill.effect) == "guard":
         return actor
     var candidates: Array = []
     for raw_id in battle.actors.keys():
         var ally: Dictionary = battle.actors[raw_id]
-        if str(ally.side) != str(actor.side) or float(ally.hp) <= 0.0:
+        if str(ally.side) != str(actor.side) or float(ally.hp) <= 0.0 \
+                or not _same_p0_support_party(actor,ally):
             continue
         if (actor["position"] as Vector2).distance_to(ally["position"]) <= float(skill.range):
             if str(skill.get("effect", "")) == "heal":
@@ -653,7 +665,8 @@ static func _cast_targets(battle: MapBattleV2, caster: Dictionary, cast: Diction
         for raw_id in ids:
             var target: Dictionary = battle.actors[raw_id]
             var same_side := str(target.get("side","")) == str(caster.get("side",""))
-            if float(target.get("hp",0.0)) <= 0.0 or same_side != allies:
+            if float(target.get("hp",0.0)) <= 0.0 or same_side != allies \
+                    or (allies and not _same_p0_support_party(caster,target)):
                 continue
             if (target.position as Vector2).distance_to(center) <= float(cast.get("radius",0.0)):
                 result.append(target)
@@ -671,7 +684,8 @@ static func _cast_targets(battle: MapBattleV2, caster: Dictionary, cast: Diction
         for raw_id in ids:
             var candidate: Dictionary = battle.actors[raw_id]
             var same_side := str(candidate.get("side", "")) == str(caster.get("side", ""))
-            if float(candidate.get("hp", 0.0)) <= 0.0 or same_side != allies:
+            if float(candidate.get("hp", 0.0)) <= 0.0 or same_side != allies \
+                    or (allies and not _same_p0_support_party(caster,candidate)):
                 continue
             var offset: Vector2 = candidate["position"] - origin
             var along := offset.dot(direction)
@@ -684,7 +698,7 @@ static func _cast_targets(battle: MapBattleV2, caster: Dictionary, cast: Diction
     var target: Dictionary = battle.actors.get(str(cast.get("target_id","")),{})
     if not target.is_empty() and float(target.get("hp",0.0)) > 0.0:
         var same_side := str(target.get("side","")) == str(caster.get("side",""))
-        if same_side == allies:
+        if same_side == allies and (not allies or _same_p0_support_party(caster,target)):
             result.append(target)
     return result
 
