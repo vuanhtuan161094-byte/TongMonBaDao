@@ -2,7 +2,7 @@
   "schema_version": 1,
   "branch": "integration/tri-facility-a-b-playable-20261102",
   "base_sha": "27ed01cd8f377994e5e50bac9ede84e78e8895bd",
-  "source_fingerprint": "89d4be917d63996b906f1785cc6d4f1144d50d0b6236d70160888485d5bda8cf",
+  "source_fingerprint": "792b68e183834ccefd2a348a37611f7800dba33da140a77d9d04643d516b52b1",
   "files": [
     {
       "path": "godot/src/presentation/dai_dien_screen_v1.gd",
@@ -54,7 +54,7 @@
     },
     {
       "path": "godot/tests/presentation/gp_01_v2_mine_vertical_slice_test.gd",
-      "git_blob_sha": "1346c02f974b8646feabd008b5f29f8c6f37752a"
+      "git_blob_sha": "e1451661dc03c2c54262ddb26b8ef3f942e362b2"
     },
     {
       "path": "godot/tests/presentation/gp_02a_v2_cultivation_panel_test.gd",

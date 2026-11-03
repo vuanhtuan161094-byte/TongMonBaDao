@@ -206,11 +206,10 @@ func _run() -> void:
         and final_actor.profession_xp.get("mining", 0.0) > xp_before
         and final_state.to_dict() == expected.to_dict(),
         "Offline recovery diverged from one real Mine completion/EXP/state."):
-        var actual_payload: Dictionary = final_state.to_dict()
-        var expected_payload: Dictionary = expected.to_dict()
-        for key in expected_payload.keys():
-            if actual_payload.get(key) != expected_payload[key]:
-                print("GP01_STATE_DIFF key=%s expected=%s actual=%s" % [str(key),str(expected_payload[key]).substr(0,400),str(actual_payload.get(key)).substr(0,400)])
+        var state_diffs: Array[String] = []
+        _collect_state_diffs(expected.to_dict(),final_state.to_dict(),"state",state_diffs)
+        for difference in state_diffs:
+            print("GP01_STATE_DIFF %s" % difference)
         return
     var loaded_xp := float(final_actor.profession_xp["mining"])
     if not _check(_near(
@@ -315,6 +314,35 @@ func _dispose_scene() -> void:
         ui.queue_free()
     ui = null
     state = null
+
+func _collect_state_diffs(expected_value: Variant, actual_value: Variant,
+        path: String, differences: Array[String]) -> void:
+    if differences.size() >= 24:
+        return
+    if expected_value is Dictionary and actual_value is Dictionary:
+        var keys: Array = expected_value.keys()
+        for key in actual_value.keys():
+            if not keys.has(key):
+                keys.append(key)
+        keys.sort()
+        for key in keys:
+            var child_path := "%s.%s" % [path,str(key)]
+            if not expected_value.has(key) or not actual_value.has(key):
+                differences.append("%s expected=%s actual=%s" % [child_path,str(expected_value.get(key,"<missing>")),str(actual_value.get(key,"<missing>"))])
+            else:
+                _collect_state_diffs(expected_value[key],actual_value[key],child_path,differences)
+            if differences.size() >= 24:
+                return
+    elif expected_value is Array and actual_value is Array:
+        if expected_value.size() != actual_value.size():
+            differences.append("%s.length expected=%d actual=%d" % [path,expected_value.size(),actual_value.size()])
+        var count := mini(expected_value.size(),actual_value.size())
+        for index in range(count):
+            _collect_state_diffs(expected_value[index],actual_value[index],"%s[%d]" % [path,index],differences)
+            if differences.size() >= 24:
+                return
+    elif expected_value != actual_value:
+        differences.append("%s expected=%s actual=%s" % [path,str(expected_value).substr(0,180),str(actual_value).substr(0,180)])
 
 func _check(valid: bool, message: String) -> bool:
     if not valid:
