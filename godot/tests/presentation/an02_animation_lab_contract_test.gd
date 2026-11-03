@@ -41,6 +41,14 @@ func _run() -> void:
             if not _check(bool(data.get("presentation_only",false)),
                     "lab must remain view-only"):
                 return
+            if not _check(bool(data.get("anchor_within_texture",false))
+                    and float(data.get("preview_foot_error_px",INF)) <= 0.1,
+                    "Source A source anchor/preview foot drift: actor %d action %d" % [actor_index,action_index]):
+                return
+            var dimensions: Vector2 = data.get("source_texture_size",Vector2.ZERO)
+            if not _check(dimensions.x > 0.0 and dimensions.y > 0.0,
+                    "invalid actual atlas subtexture size"):
+                return
     lab.configure_preview(2,6,0,false)
     var cast: Dictionary = lab.sample_evidence()
     if not _check(bool(cast.get("source_clip",{}).get("fallback",false))
@@ -65,6 +73,52 @@ func _run() -> void:
                 and str(facing.get("direction_fidelity","")) == "FACING_ONLY_MIRRORED",
                 "eight-direction control must not fabricate authored source art"):
             return
+        if not _check(bool(facing.get("anchor_within_texture",false))
+                and float(facing.get("preview_foot_error_px",INF)) <= 0.1,
+                "flip/anchor drift at requested direction %d" % direction_index):
+            return
+        # Source A's original physical facing is LEFT. Only horizontal mirror
+        # is available in this lab, even when the selector names 8 directions.
+        var expected_flip := direction_index in [0,1,2,6,7]
+        if not _check(bool(facing.get("source_mirrored",not expected_flip)) == expected_flip,
+                "mirrored source facing disagreement at %d" % direction_index):
+            return
+    # Actual adapter fallback: Boss has "run" but no native "walk".
+    lab.configure_preview(4,1,0,false)
+    var boss_walk: Dictionary = lab.sample_evidence()
+    if not _check(bool(boss_walk.get("source_clip",{}).get("fallback",false))
+            and str(boss_walk.get("source_clip",{}).get("clip","")) == "run",
+            "Boss walk must visibly report the run fallback"):
+        return
+    # SpriteFrames stores 21 frames for the 30-logical-frame Boss dead
+    # animation. Its per-frame duration must remain 1 sec, not 21/30 sec.
+    lab.configure_preview(4,5,0,false)
+    var boss_dead: Dictionary = lab.sample_evidence()
+    if not _check(int(boss_dead.get("source_clip",{}).get("frames",0)) == 21
+            and absf(float(boss_dead.get("source_clip",{}).get("duration",0.0)) - 1.0) < 0.01,
+            "Boss death logical duration must be 1 sec for 21 stored frames"):
+        return
+    lab.set_preview_elapsed_for_qa(100.0)
+    var boss_dead_end: Dictionary = lab.sample_evidence()
+    if not _check(int(boss_dead_end.get("frame_index",-1)) == 20,
+            "nonlooping Boss dead must hold its final frame"):
+        return
+    # Authentic male attack1 is 29 non-looping frames.
+    lab.configure_preview(1,3,0,false)
+    lab.set_preview_elapsed_for_qa(100.0)
+    var male_attack_end: Dictionary = lab.sample_evidence()
+    if not _check(int(male_attack_end.get("frame_index",-1)) == 28,
+            "nonlooping male attack must hold frame 28 of 29"):
+        return
+    # Stand is a looping clip, so advancing by >1 full cycle does not freeze.
+    lab.configure_preview(1,0,0,false)
+    lab.set_preview_elapsed_for_qa(0.0)
+    var idle_first: Dictionary = lab.sample_evidence()
+    lab.set_preview_elapsed_for_qa(0.31)
+    var idle_later: Dictionary = lab.sample_evidence()
+    if not _check(int(idle_first.get("frame_index",-1)) != int(idle_later.get("frame_index",-1)),
+            "looping stand clip did not advance frames"):
+        return
     lab.configure_preview(1,3,0,false)
     if not _check(source_sprite.material == null,
             "normal Source A preview must not retain Shadow material"):
