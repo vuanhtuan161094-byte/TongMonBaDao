@@ -9,6 +9,7 @@ var world: PveSectWorldViewV1
 var battle: MapBattleV2
 var session: HuntingPveRunV2
 var sent: Array = []
+var hunt_commands: Array = []
 
 func _init() -> void:
     call_deferred("_run")
@@ -67,6 +68,9 @@ func _registry(options: Dictionary) -> Dictionary:
 
 func _on_move(ids: Array,point: Vector2) -> void:
     sent.append({"ids":ids.duplicate(),"point":point})
+
+func _on_hunt_policy(ids: Array,policy: String) -> void:
+    hunt_commands.append({"ids":ids.duplicate(),"policy":policy})
 
 func _run() -> void:
     var options := _make_world()
@@ -206,6 +210,27 @@ func _run() -> void:
         return
     world.show_authority_snapshot(battle,session.camp_population,0,{},{})
     world.move_ordered.connect(_on_move)
+    var auto_button := world.get_node_or_null("PveP0HuntAuto") as Button
+    var hold_button := world.get_node_or_null("PveP0HuntHold") as Button
+    if not _check(world.selected_actor_ids.is_empty()
+            and auto_button != null and hold_button != null
+            and not auto_button.visible and not hold_button.visible,
+            "P0 must not auto-select all 30 hunters; unbound command buttons must be hidden"):
+        return
+    world.hunt_policy_ordered.connect(_on_hunt_policy)
+    world.selected_actor_ids = ["hunter_20"]
+    world.refresh_hunt_controls()
+    if not _check(auto_button.visible and hold_button.visible
+            and not auto_button.disabled and not hold_button.disabled,
+            "bound P0 AUTO/HOLD buttons unavailable for selected solo hunter"):
+        return
+    hold_button.pressed.emit()
+    if not _check(hunt_commands.size() == 1
+            and hunt_commands[0]["ids"] == ["hunter_20"]
+            and str(hunt_commands[0]["policy"]) == "hold"
+            and str(battle.actors["hunter_20"].get("hunt_policy","")) == "hold",
+            "HOLD must emit selected solo IDs without unsaved direct UI mutation"):
+        return
     var at: Vector2 = options["camp_positions"][19]
     var before := world.camera_center
     world.selected_actor_ids = ["hunter_20"]
