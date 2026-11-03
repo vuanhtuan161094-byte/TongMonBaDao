@@ -1,5 +1,14 @@
 # CURRENT CHECKPOINT — ONE GAME INTEGRATION
 
+## 2026-11-03 — AN-03 MODULAR RIG TECHNICAL PILOT (isolated, NOT art-complete)
+
+Owner authorized start of reusable character/weapon/animation implementation after considering Tripo export cost; only first three movements (Idle/Walk/Attack), no mandatory paid export. Built a standalone technical Skeleton3D guide with 18 bones, rigid hair/armor/coat/body attachment slots, default-unarmed removable sword via BoneAttachment3D hand_R, continuous same-skeleton Idle/Walk/Attack, independent 1280x720 GUI Lab, Godot 4.7.2 focused contract, genuine GUI capture script and single-angle 768x768 RGBA bake script (46 planned frames) with separate isolated Windows launchers. Branch feature/an03-modular-rig-weapon-socket-20261103 from PR #69 HEAD 1f083854defb3324722a1f05d2780c69c9cd3dd0. No changes to main, RC, PR #68/#69 source branches, Combat V2, PvE, SaveService, game startup or saves.
+
+CRITICAL HONESTY: This is procedural GUIDE geometry and code, NOT the owner's illustrated Shadow mesh and NOT a fully weighted skinned model; actual Hắc Ảnh Kiếm Tu GLB/FBX absent because Tripo paid export blocked. No true 8-way authored sprites. Official engine 4.7.2 is unavailable on this Linux container: parse/import/focused test, real 1280x720 screenshot and actual 46 frame bake all PENDING ENGINE/WINDOWS; no claim of animation visual quality or smooth foot plant. See docs/animation/AN03_MODULAR_RIG_PILOT_20261103.md. Next allowed work: reproduce QA on Windows isolated E drive worktree, repair failures on this branch, then separately approve a real skin/model input before artistic acceptance.
+
+---
+
+
 ## 2026-11-03 — AN-02.1 SHADOW LAB STATIC QA, ENGINE PENDING
 
 Base PR #68 exact HEAD d35a8affb4cef0e45c9d98c403c983554587f584. Isolated patch branch fix/an02-1-shadow-lab-qa-20261103. No changes to PR #68, RC, main or PvE/Combat V2/SaveService/balance. Source audit: 7/7 authentic Source A packs and 24/24 clips match asset.json vs animations.tres counts, loop flags and durations; 7/7 anchor bounds static match. Boss dead 21 stored/30 logical frames -> 1.0 sec. AN-02.1 adds foot and mirror invariants, deterministic timeline QA, tests for fallbacks and final frames, Windows official Godot 4.7.2 import/focused/GUI capture launcher, and actual GUI framebuffer capture script. ALL remain runtime-UNVERIFIED.
