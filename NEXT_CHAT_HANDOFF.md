@@ -1,3 +1,18 @@
+# TRI-03 G0 → G1 → G2 update — 2026-11-03
+
+**Latest source commit:** `36532c39f294e1eb56d73d8ce0c0eb7cb68c5567` on `integration/tri-facility-a-b-playable-20261102`, parent `c136600f5579871d476e0feca2d78ea3c74e6b1f`. PR #67 remains Draft, open and unmerged. The completed evidence set is in [G0_G1_G2_EVIDENCE](docs/qa/TRI03_OWNER_FINAL_20261103/G0_G1_G2_EVIDENCE/EVIDENCE_INDEX.md).
+
+- G0 current-source focused Save/Reload regressions: PASS. Full 14-case G0 rerun from a clean checkout of this source commit: PENDING; prior 14/14 is historical evidence only.
+- G1 New Game paid Residence construction, actor-occupied placement rejection, real candidate recruitment/profile/assignment, Save, and second-process Reload: PASS in a windowed OpenGL harness at 1280×720. Input was harness-injected.
+- G2 B1 UI contract/live callback tests and 1280×720 Godot captures: PASS. Source A 510052/510076/510111 hashes unchanged. Generated 16-icon UI atlas is explicitly original generated art, not Source A, and awaits owner approval.
+- The Windows checkout remains local HEAD `27ed01cd8f377994e5e50bac9ede84e78e8895bd` with existing dirty/generated QA files preserved. Its 49 pinned source blobs match the source commit’s Git tree exactly; this is not a clean Git checkout at the source commit.
+- The one-click launcher verified and opened the normal Godot window (PID 13624), left open for the owner. UI Computer Use did not enumerate that Godot window, so physical Windows mouse acceptance is PENDING. Android/touch and owner visual sign-off are also PENDING.
+- Godot stderr contains a non-fatal Windows root-certificate-store warning. No parse errors were found; certificate checks were not disabled. No owner default save was touched.
+
+Evidence: [matrix](docs/qa/TRI03_OWNER_FINAL_20261103/G0_G1_G2_EVIDENCE/TEST_MATRIX.csv), [filtered logs](docs/qa/TRI03_OWNER_FINAL_20261103/G0_G1_G2_EVIDENCE/RAW_LOGS_FILTERED.txt), [source and asset hashes](docs/qa/TRI03_OWNER_FINAL_20261103/G0_G1_G2_EVIDENCE/SOURCE_MANIFEST.json). This status supersedes the older checkpoint text below.
+
+---
+
 ## FINAL DELIVERY — Windows playable RC status (2026-11-02)
 
 **Status: BLOCKED for physical Windows delivery; automated focused QA PASS.** Live PR #67 HEAD was checked as `df6f55ee63d36c77e52b5d9eaf3c5743349b935a`; code/capture SHA tested by official Godot 4.7.2 is `8979dca68495a74ad272ca4c861034040bf385f7`. PR stays Draft and unmerged.

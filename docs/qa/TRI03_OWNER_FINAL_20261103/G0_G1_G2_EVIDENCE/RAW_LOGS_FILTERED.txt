@@ -1,0 +1,337 @@
+===== Godot import stdout errors/version =====
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+ERROR: Failed to read the root certificate store.
+
+
+
+
+===== Godot import stderr =====
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+
+
+
+
+===== sect_ui_icon_atlas stdout =====
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+SECT_UI_ICON_ATLAS_PASS icons=16 alpha=1 provenance=original_generated not_source_a=1
+
+
+
+
+===== sect_ui_icon_atlas stderr =====
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+WARNING: Loaded resource as image file, this will not work on export: 'res://art/uiux/sect_management_icons_generated_v1.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load (core/io/image.cpp:2770)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://tests/presentation/sect_ui_icon_atlas_test.gd:16)
+
+
+
+
+===== hs09_disciple_profile stdout =====
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+HS09 DISCIPLE PROFILE / DUAL RADAR / FEATURE-GATE READ MODEL PASS
+
+
+
+
+===== hs09_disciple_profile stderr =====
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+
+
+
+
+===== sect_g1_disciple_radar stdout =====
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+G1 DISCIPLE RADAR + VERIFIED SOURCE A POOL: PASS
+
+
+
+
+===== sect_g1_disciple_radar stderr =====
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+
+
+
+
+===== b1_trifacility_ui_contract stdout =====
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+TRI01_B1_UI_CONTRACT_PASS
+
+
+
+
+===== b1_trifacility_ui_contract stderr =====
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+
+
+
+
+===== tri_facility_b1_live_integration stdout =====
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+TRI_B1_LIVE_PASS hall=1 residence=1 guidance=1 real_recruit=1 save_service_roundtrip=1
+
+
+
+
+===== tri_facility_b1_live_integration stderr =====
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+
+
+
+
+===== dai_dien_dd092_door_plot stdout =====
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+DD092_DOOR_PLOT_PASS road_gate=none chosen_plot=1 exterior_door=1 save_reload=1 conflict=1
+
+
+
+
+===== dai_dien_dd092_door_plot stderr =====
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+
+
+
+
+===== dai_dien_housing_full_loop stdout =====
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+DAI_DIEN_HOUSING_FULL_LOOP_PASS recruit=8to9 beds=8to10 house_instances=2 price_once=1 rank=2 save_reload=1 godot_ui=1
+
+
+
+
+===== dai_dien_housing_full_loop stderr =====
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+
+
+
+
+===== sect_door_only_navigation stdout =====
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+DD09_DOOR_ONLY_PASS exterior_entrances=14 no_interior_path=1 no_road_build_gate=1
+
+
+
+
+===== sect_door_only_navigation stderr =====
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+
+
+
+
+===== p3_6a_playable_slice stdout =====
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+P3.6A PLAYABLE SLICE TEST PASS
+
+
+
+
+===== p3_6a_playable_slice stderr =====
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+
+
+
+
+===== p3_o2_recruitment_map stdout =====
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+P3 O2 RECRUITMENT MAP TEST PASS
+
+
+
+
+===== p3_o2_recruitment_map stderr =====
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+
+
+
+
+===== save_service_async_roundtrip stdout =====
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+SAVE SERVICE ASYNC ROUNDTRIP PASS checks=10 snapshot_isolated=true joins_before_sync=true prior_backup_valid=true
+
+
+
+
+===== save_service_async_roundtrip stderr =====
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+
+
+
+
+===== p0_save_roundtrip stdout =====
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+P0 SAVE ROUNDTRIP TEST PASS
+tick=3000 money=1630 disciples=6
+
+
+
+
+===== p0_save_roundtrip stderr =====
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+ERROR: SaveService: malformed save payload for version 4.
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _load_exact (res://src/simulation/save/save_service.gd:243)
+       [1] load_from_path (res://src/simulation/save/save_service.gd:192)
+       [2] _test_invalid_payload_rejection (res://tests/simulation/p0_save_roundtrip_test.gd:72)
+       [3] _run (res://tests/simulation/p0_save_roundtrip_test.gd:41)
+ERROR: SaveService: invalid negative save version -1.
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _load_exact (res://src/simulation/save/save_service.gd:215)
+       [1] load_from_path (res://src/simulation/save/save_service.gd:192)
+       [2] _test_invalid_payload_rejection (res://tests/simulation/p0_save_roundtrip_test.gd:79)
+       [3] _run (res://tests/simulation/p0_save_roundtrip_test.gd:41)
+
+
+
+
+===== dai_dien_dd07_save_recovery stdout =====
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+DD07_SAVE_RECOVERY_PASS unsupported_schema=1 corrupt_payload_type=1 legacy=1 orphan_hall=1 orphan_house=1 backup_recovery=1
+
+
+
+
+===== dai_dien_dd07_save_recovery stderr =====
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+ERROR: DD-07: invalid saved Hall/Residence: Hall invalid ledger: assignments
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _load_exact (res://src/simulation/save/save_service.gd:285)
+       [1] _save_payload_to_path (res://src/simulation/save/save_service.gd:114)
+       [2] save_to_path (res://src/simulation/save/save_service.gd:22)
+       [3] _run (res://tests/dai_dien_dd07_save_recovery_test.gd:143)
+ERROR: DD-07: invalid saved Hall/Residence: Hall governance schema unsupported or malformed.
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _load_exact (res://src/simulation/save/save_service.gd:285)
+       [1] load_from_path (res://src/simulation/save/save_service.gd:192)
+       [2] _run (res://tests/dai_dien_dd07_save_recovery_test.gd:170)
+
+
+
+
+===== New Game → paid Residence → real recruit → assignment save stdout =====
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 - Build 31.0.101.2125 - Compatibility - Using Device: Intel - Intel(R) Iris(R) Plus Graphics
+
+TRI03_G1_NEW_GAME_BUILD_PASS house=residence_002 site=94,73 cost={ "linh_moc": 40, "thanh_thiet": 30, "spirit_stones": 500 } actor_blocked=1 exactly_once=1 timer=60 route=1
+TRI03_RECRUIT_HS09_ASSIGN_SAVE_PREPARED recruit=candidate_0004 roster=7 worksite=spirit_field_001 tokens=2 save=user://tri03_recruited_hs09_flow_final_20261103_icons.json
+
+
+
+
+===== New Game flow stderr =====
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+
+
+
+
+===== Second Godot process Save/Reload stdout =====
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+TRI03_RECRUIT_HS09_CROSS_PROCESS_RELOAD_PASS disciple=candidate_0004 roster=7 worksite=spirit_field_001 tokens=2 candidates=8 house=residence_002 site=(94, 73) timer=60 receipt=map-house:0:94:73:new
+
+
+
+
+===== Second process stderr =====
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+
+
+
+
+===== Windowed B1 capture markers =====
+TRI02_CAPTURE_STAGE=start
+TRI02_CAPTURE_STAGE=scene_added
+TRI02_CAPTURE_STAGE=two_frames
+TRI02_CAPTURE_STAGE=runtime_ready
+TRI02_CAPTURE_STAGE=verify_map_art
+TRI02_SOURCE_ALPHA_PASS model=main_hall clear=1 opaque=1 antialias=1
+TRI02_SOURCE_ALPHA_PASS model=residence clear=1 opaque=1 antialias=1
+TRI02_SOURCE_ALPHA_PASS model=guidance clear=1 opaque=1 antialias=1
+TRI02_CAPTURE_STAGE=map_art_verified
+TRI02_CAPTURE_STAGE=frame_post_draw_00_p3_2_map_context.png
+TRI02_CAPTURE_STAGE=frame_rendered_00_p3_2_map_context.png
+TRI02_CAPTURE_STAGE=frame_post_draw_04_build_mode_new_game_gates.png
+TRI02_CAPTURE_STAGE=frame_rendered_04_build_mode_new_game_gates.png
+TRI02_CAPTURE_STAGE=open_hall
+TRI02_CAPTURE_STAGE=building_panel_hall
+TRI02_CAPTURE_STAGE=button_found_hall
+TRI02_CAPTURE_STAGE=button_emitted_hall
+TRI02_CAPTURE_STAGE=frame_post_draw_01_hall_live_state.png
+TRI02_CAPTURE_STAGE=frame_rendered_01_hall_live_state.png
+TRI02_CAPTURE_STAGE=open_residence
+TRI02_CAPTURE_STAGE=building_panel_residence
+TRI02_CAPTURE_STAGE=button_found_residence
+TRI02_CAPTURE_STAGE=button_emitted_residence
+TRI02_CAPTURE_STAGE=frame_post_draw_02_residence_live_state.png
+TRI02_CAPTURE_STAGE=frame_rendered_02_residence_live_state.png
+TRI02_B1_MAP_PLAN_ROUTE_PASS route=real_p3_2_build_mode
+TRI02_CAPTURE_STAGE=open_guidance
+TRI02_CAPTURE_STAGE=building_panel_guidance
+TRI02_CAPTURE_STAGE=button_found_guidance
+TRI02_CAPTURE_STAGE=button_emitted_guidance
+TRI02_CAPTURE_STAGE=frame_post_draw_03_guidance_live_state.png
+TRI02_CAPTURE_STAGE=frame_rendered_03_guidance_live_state.png
+TRI02_CAPTURE_STAGE=frame_post_draw_05_recruitment_success_reveal_qa_fixture.png
+TRI02_CAPTURE_STAGE=frame_rendered_05_recruitment_success_reveal_qa_fixture.png
+TRI03_RECRUITMENT_REVEAL_CAPTURE_PASS disciple=candidate_0003 roster=7 source_a_portrait=1 save_reload=1
+TRI02_P32_CONTEXT_CAPTURE_PASS map=1 hall=1 residence=1 guidance=1 size=1280x720
+
+
+===== Windowed B1 capture stderr =====
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+
+
+
+
+===== Normal launcher log =====
+[Tue 11/03/2026 12:40:33.87] checkout_head=27ed01cd8f377994e5e50bac9ede84e78e8895bd pr_source_parent=c136600f5579871d476e0feca2d78ea3c74e6b1f fingerprint=38089b4c852d21fd7e492949461ec37170a22ad46e562f68a8a81efe03e84793 godot=4.7.2.stable.official.ed1daf0bf
+[2026-11-03T05:40:34.3389194Z] launch_process_created pid=13624 godot=$PATH stdout=$PATH stderr=$PATH
+[2026-11-03T05:40:47.9868468Z] window_ready pid=13624 hwnd=3475118 title="Tong Mon Ba Dao (DEBUG)"
+
+
+
+
+===== Launcher source verification log =====
+source_fingerprint=38089b4c852d21fd7e492949461ec37170a22ad46e562f68a8a81efe03e84793
+checkout_head=27ed01cd8f377994e5e50bac9ede84e78e8895bd
+upstream_pr_source=c136600f5579871d476e0feca2d78ea3c74e6b1f
+TRI03_SOURCE_VERIFY_PASS checkout_base=27ed01cd8f377994e5e50bac9ede84e78e8895bd checkout_head=27ed01cd8f377994e5e50bac9ede84e78e8895bd branch=integration/tri-facility-a-b-playable-20261102 upstream_pr_source=c136600f5579871d476e0feca2d78ea3c74e6b1f source_fingerprint=38089b4c852d21fd7e492949461ec37170a22ad46e562f68a8a81efe03e84793 files=49
+
+
+===== clean GUI start 3 + DV2-03 summary =====
+{"test":"clean_gui_start_3","exit":0,"marker":"TRI02_P32_CONTEXT_CAPTURE_PASS map=1 hall=1 residence=1 guidance=1 size=1280x720"}
+{"test":"dv2_03_runtime_clock","exit":0,"marker":"DV2-03 ONLINE/OFFLINE RUNTIME CLOCK EQUIVALENCE: PASS"}
