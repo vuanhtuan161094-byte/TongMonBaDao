@@ -243,8 +243,58 @@ func _run() -> void:
             "Source A 192x192 world topology/identity invalid"):
         return
 
-    # Deliberately use the CURRENT game API without an imaginary new argument.
-    # PVE-01B should fix the authority's persisted-flag propagation, not this test.
+    # Gate-OFF is a genuine negative control: clone the QA setup AFTER the
+    # disciple legally learns/equips his skill. Only disable the opt-in on the
+    # copied canonical save. This catches accidental globally-enabled gates.
+    var off_seed: SimulationState = SaveService.new().load_from_path(SAVE_PATH)
+    if not _check(off_seed != null
+            and off_seed.disciples[skilled_id].v63_equipped_skill_ids.has(SKILL_ID),
+            "gate-OFF control must retain a legitimately equipped skill"):
+        return
+    off_seed.sect.v63_skill_combat_opt_in = false
+    if not _check(V63FeatureGates.persisted_preview_overrides(off_seed).is_empty()
+            and SaveService.new().save_to_path(off_seed, OFF_SAVE_PATH) == OK,
+            "gate-OFF isolated QA save failed"):
+        return
+    var off_runtime := LiveGameRuntimeV2.new()
+    var off_open := off_runtime.start(OFF_SAVE_PATH, START_WALL, SEED)
+    if not _check(bool(off_open.get("ok", false)) and bool(off_open.get("loaded", false))
+            and off_runtime.owner.scheduler.v63_preview_overrides.is_empty(),
+            "gate-OFF runtime incorrectly inherited ON flags"):
+        return
+    var off_start := HuntingPveRunV2.new().begin_multicamp(
+        off_runtime.owner, OFF_ENCOUNTER, SEED + 1, party, 10, options)
+    if not _check(bool(off_start.get("ok", false))
+            and int(off_start.get("party_size", 0)) == 6
+            and int(off_start.get("monster_count", 0)) == 10,
+            "gate-OFF canonical 6v10 failed to start: " + str(off_start)):
+        return
+    var off_state: SimulationState = off_runtime.state()
+    var off_resumed := HuntingPveRunV2.resume_active(
+        off_state, OFF_ENCOUNTER, off_runtime.owner.scheduler.v63_preview_overrides)
+    if not _check(bool(off_resumed.get("ok", false)),
+            "gate-OFF active hunt did not restore"):
+        return
+    var off_actor: Dictionary = off_resumed["session"].battle.actors.get(str(skilled_id), {})
+    if not _check(not bool(off_actor.get("v63_combat_enabled", false))
+            and off_actor.get("v63_skill_loadout", []).is_empty()
+            and off_state.disciples[skilled_id].v63_equipped_skill_ids.has(SKILL_ID),
+            "gate-OFF equipped skill was activated or legitimate skill identity lost"):
+        return
+    var off_poll := off_runtime.poll(START_WALL + 1, -1, 4)
+    var off_after := HuntingPveRunV2.resume_active(
+        off_state, OFF_ENCOUNTER, off_runtime.owner.scheduler.v63_preview_overrides)
+    if not _check(bool(off_poll.get("ok", false))
+            and bool(off_after.get("ok", false))
+            and not bool(off_after["session"].battle.actors[str(skilled_id)].get("v63_combat_enabled", false))
+            and off_state.sect.v2_pve_reward_claims.is_empty()
+            and off_state.sect.v2_pve_settlement_receipts.is_empty(),
+            "gate-OFF activated during cached scheduler tick or created duplicate claims"):
+        return
+    print("PVE01B_V63_GATE_OFF_PASS 6v10=true learned_skill_preserved=true activated=false scheduler_off=true")
+
+    # Use the real public live API; PVE-01B production fix must derive the
+    # gate from persisted opt-in, rather than requiring a special UI override.
     var launched := HuntingPveRunV2.new().begin_multicamp(
         runtime.owner, ENCOUNTER, SEED, party, 10, options)
     if not _check(bool(launched.get("ok", false))
