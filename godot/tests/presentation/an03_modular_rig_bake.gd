@@ -81,6 +81,8 @@ func _run() -> void:
             return
         actor.select_motion(action)
         actor.pause()
+        var hashes: Array[String] = []
+        var visible_heights: Array[int] = []
         for frame_index in range(frames):
             # Important: last frame of non-looping attack includes recovery,
             # but looped clips omit their duplicate final/initial pose.
@@ -92,11 +94,36 @@ func _run() -> void:
             if image == null or image.get_width() != SIZE.x or image.get_height() != SIZE.y:
                 _fail("wrong viewport pixels at " + action + " " + str(frame_index))
                 return
+            # Avoid the old "large canvas, tiny/blank character" failure.
+            if image.detect_alpha() == Image.ALPHA_NONE or image.get_pixel(0,0).a > 0.05:
+                _fail("alpha/background invalid at " + action + " frame " + str(frame_index))
+                return
+            var used: Rect2i = image.get_used_rect()
+            if used.size.y < int(SIZE.y * 0.40) or used.size.x < int(SIZE.x * 0.08):
+                _fail("character is blank or too small: " + action
+                    + " frame " + str(frame_index) + " bounds " + str(used))
+                return
+            if used.position.x <= 0 or used.position.y <= 0 or                     used.end.x >= SIZE.x or used.end.y >= SIZE.y:
+                _fail("sprite touches frame edge: " + action
+                    + " frame " + str(frame_index) + " bounds " + str(used))
+                return
             var filename := "%s/%s_%03d.png" % [frame_dir,action,frame_index]
             if image.save_png(filename) != OK:
                 _fail("failed actual framebuffer save: " + filename)
                 return
+            var digest := FileAccess.get_sha256(filename)
+            if digest.length() != 64:
+                _fail("could not hash rendered PNG: " + filename)
+                return
+            hashes.append(digest)
+            visible_heights.append(used.size.y)
             total += 1
+        var distinct_hashes: Dictionary = {}
+        for digest in hashes:
+            distinct_hashes[digest] = true
+        if distinct_hashes.size() < max(2,int(frames/4)):
+            _fail("mostly identical frames; no real visible motion for " + action)
+            return
         manifest["animations"].append({
             "name":action,
             "frames":frames,
@@ -104,7 +131,11 @@ func _run() -> void:
             "fps_effective":float(frames)/duration,
             "loop":bool(row["loop"]),
             "height_px":SIZE.y,
-            "direction":"fixed_camera_only"
+            "direction":"fixed_camera_only",
+            "minimum_visible_height_px":visible_heights.min(),
+            "maximum_visible_height_px":visible_heights.max(),
+            "unique_rendered_frames":distinct_hashes.size(),
+            "frame_sha256":hashes
         })
         print("AN03_BAKE_CLIP " + action + " frames=" + str(frames))
     var manifest_file := folder + "/manifest.json"
