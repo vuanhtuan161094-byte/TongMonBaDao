@@ -264,7 +264,10 @@ func show_authority_snapshot(snapshot: MapBattleV2, world_population: Dictionary
 	population = world_population.duplicate(false)
 	camp_index = clampi(current_camp_index,0,PveMultiCampPopulationV1.CAMP_COUNT-1)
 	_disciples = disciples.duplicate(false)
-	_view_rows = view_rows.duplicate(true)
+	# The native Source A world renderer snapshots these rows exactly once
+	# in SectIsometricWorldV1.set_pve_snapshot(). Avoid an intermediate deep
+	# copy on every visible-world HUD refresh; the outer view never mutates it.
+	_view_rows = view_rows
 	if battle == null:
 		selected_actor_ids.clear()
 		world.set_pve_snapshot(null,{},selected_actor_ids)
