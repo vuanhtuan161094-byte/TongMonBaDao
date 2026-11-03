@@ -9,6 +9,7 @@ const START_WALL := 1800001103
 const SEED := 20261103
 const ENCOUNTER := "pve01a:c01:6v10:20261103"
 const SKILL_ID := "tmb.skill.bow.liep_anh.active_01.human"
+const QA_SEED_SAVE := "res://outputs/endgame_qa_20261026/gameplay/roster_130/endgame_capture_save_1792953798.json"
 
 func _init() -> void:
     call_deferred("_run")
@@ -41,32 +42,46 @@ func _world_options() -> Dictionary:
     topology["auto_hunt"] = true
     return topology
 
-func _recruit_isolated_v2_party(state: SimulationState) -> Array:
-    # The live New Game founders are legacy. This enlarged-capacity fixture
-    # must never be confused with natural New Game PvE availability.
-    state.sect.disciple_capacity = maxi(
-        state.sect.disciple_capacity, state.disciples.size() + 6)
-    var roles := ["frontline", "ranged", "mage", "healer", "frontline", "ranged"]
+func _eligible_for_pve(state: SimulationState, disciple: DiscipleState) -> bool:
+    if disciple == null or not DiscipleRealmProgressV2.progression_ready(disciple):
+        return false
+    if disciple.hp <= 0.0 or disciple.injury_level != 0 or not disciple.active_pve_encounter_id.is_empty():
+        return false
+    if disciple.region_id != &"sect" or not [&"EVALUATE", &"IDLE", &"HOLD"].has(disciple.current_action):
+        return false
+    if not disciple.work_cycle_state.is_empty() or disciple.worksite_building_id != &"" or not disciple.work_progress.is_empty():
+        return false
+    var buildings := BuildingSystem.new()
+    return not buildings.disciple_has_active_spirit_plot(state, disciple.id) \
+        and not buildings.disciple_has_active_timed_recipe(state, disciple.id) \
+        and buildings.active_resource_timer_for_worker(state, disciple.id).is_empty() \
+        and not DiscipleBodyTrainingFacilityV2.has_reserved_slot(state, disciple)
+
+func _select_real_v2_party(state: SimulationState) -> Array:
+    # Select existing authentic V2 disciples in the committed 130-roster QA
+    # fixture. No capacity/resource/realm mutation or fake recruitment.
+    var ids: Array = state.disciples.keys()
+    ids.sort()
+    var roles := ["frontline", "frontline", "mage", "healer", "ranged", "ranged"]
     var party: Array = []
-    for index in range(6):
-        var candidate := DiscipleGeneratorOpenPoints.new().generate_candidate(
-            state, DiscipleGeneratorV2.SOURCE_ORDINARY, SEED + index + 101)
-        if candidate == null or not DiscipleBirthProfileV2.valid_complete_birth(candidate.v2_birth_profile):
-            return []
-        state.recruitment_candidates[candidate.id] = candidate
-        var admitted := RecruitmentSystem.new().accept_candidate(state, candidate.id)
-        if not bool(admitted.get("ok", false)):
-            return []
-        var disciple: DiscipleState = state.disciples.get(candidate.id)
-        if disciple == null or not DiscipleRealmProgressV2.progression_ready(disciple):
-            return []
-        disciple.current_action = &"HOLD"
+    for raw_id in ids:
+        var disciple: DiscipleState = state.disciples[StringName(raw_id)]
+        if not _eligible_for_pve(state, disciple):
+            continue
+        var p: Dictionary = DiscipleRealmProgressV2.current(disciple)
+        var qi: Dictionary = p["cultivation"]
+        var body: Dictionary = p["body"]
+        var i := party.size()
         party.append({
             "disciple_id": str(disciple.id),
             "party_id": "pve01a_test_party",
-            "role": roles[index],
-            "position": Vector2(8.0 + float(index % 3) * 2.0, 8.0 + float(int(index / 3)) * 2.0)
+            "role": roles[i],
+            "position": Vector2(8.0 + float(i % 3) * 0.55, 8.7 + float(int(i / 3)) * 0.55),
+            "realm": int(qi["realm"]), "floor": int(qi["floor"]),
+            "body_realm": int(body["realm"]), "body_floor": int(body["floor"])
         })
+        if party.size() == 6:
+            break
     return party
 
 func _equip_real_human_skill(state: SimulationState, disciple_id: StringName,
@@ -97,23 +112,40 @@ func _equip_real_human_skill(state: SimulationState, disciple_id: StringName,
 
 func _run() -> void:
     _cleanup()
-    var runtime := LiveGameRuntimeV2.new()
-    var opened := runtime.start(SAVE_PATH, START_WALL, SEED)
-    if not _check(bool(opened.get("ok", false)) and bool(opened.get("created", false)),
+    var fresh := LiveGameRuntimeV2.new()
+    var fresh_open := fresh.start(SAVE_PATH, START_WALL, SEED)
+    if not _check(bool(fresh_open.get("ok", false)) and bool(fresh_open.get("created", false)),
             "fresh canonical New Game runtime failed"):
         return
-    var state: SimulationState = runtime.state()
+    var fresh_state: SimulationState = fresh.state()
     var natural_v2 := 0
-    for raw_disciple in state.disciples.values():
+    for raw_disciple in fresh_state.disciples.values():
         if DiscipleRealmProgressV2.progression_ready(raw_disciple):
             natural_v2 += 1
     print("PVE01A_FRESH_NEW_GAME_OBSERVATION " + JSON.stringify({
-        "initial_roster": state.disciples.size(),
+        "initial_roster": fresh_state.disciples.size(),
         "naturally_ready_v2": natural_v2,
         "can_start_6v10_without_recruitment": natural_v2 >= 6
     }))
 
-    var party := _recruit_isolated_v2_party(state)
+    # Reset the isolated test slot to a canonical endgame QA roster, rather
+    # than bypassing the production Sect Residence limit via disciple_capacity.
+    var staged: SimulationState = SaveService.new().load_from_path(QA_SEED_SAVE)
+    if not _check(staged != null and staged.disciples.size() == 130,
+            "the committed authentic 130-disciple Source A QA seed is unavailable"):
+        return
+    staged.runtime_last_wall_unix = START_WALL
+    staged.runtime_unconsumed_wall_seconds = 0.0
+    if not _check(SaveService.new().save_to_path(staged, SAVE_PATH) == OK,
+            "could not stage an independent SaveService copy of the QA fixture"):
+        return
+    var runtime := LiveGameRuntimeV2.new()
+    var opened := runtime.start(SAVE_PATH, START_WALL, SEED)
+    if not _check(bool(opened.get("ok", false)) and bool(opened.get("loaded", false)),
+            "canonical owner could not load isolated QA seed"):
+        return
+    var state: SimulationState = runtime.state()
+    var party := _select_real_v2_party(state)
     if not _check(party.size() == 6, "canonical QA recruitment could not create six authentic V2 actors"):
         return
     state.sect.v63_archive_opt_in = true
