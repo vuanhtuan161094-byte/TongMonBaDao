@@ -751,6 +751,117 @@ func add_continuous_monster(row: Dictionary) -> Dictionary:
         "slot_generation":actor["slot_generation"],"species_id":actor["species_id"]})
     return {"ok":true,"actor_id":actor_id,"active_monsters":_count_alive("monster")}
 
+func add_world_disciple(row: Dictionary) -> Dictionary:
+    # Late joining is one explicit human actor, not a second encounter or
+    # a spawned fixture. The owner must first validate the canonical recruit.
+    if not world_mode or not continuous_mode or not active:
+        return {"ok":false,"reason":"p0_join_requires_live_world"}
+    var actor_id := str(row.get("id",""))
+    var party_id := str(row.get("party_id",""))
+    var role := str(row.get("role",""))
+    var pos = row.get("position",null)
+    var stats = row.get("stats",{})
+    if actor_id.is_empty() or actors.has(actor_id) or party_id.is_empty() \
+            or not ["frontline","ranged","mage","healer"].has(role) \
+            or not (pos is Vector2) or not is_world_position_allowed(pos) \
+            or not (stats is Dictionary) or stats.is_empty():
+        return {"ok":false,"reason":"p0_invalid_join_identity_or_position"}
+    var existing_people := 0
+    var existing_party := 0
+    for actor_value in actors.values():
+        var prior: Dictionary = actor_value
+        if str(prior.get("side","")) != "disciple":
+            continue
+        existing_people += 1
+        if str(prior.get("party_id","")) == party_id:
+            existing_party += 1
+    if existing_people >= MAX_DISCIPLES:
+        return {"ok":false,"reason":"p0_world_hunter_cap"}
+    if existing_party >= 6:
+        return {"ok":false,"reason":"p0_voluntary_party_full"}
+    var max_hp := float(stats.get("max_hp",0.0))
+    var hp := float(row.get("hp",max_hp))
+    if not is_finite(hp) or not is_finite(max_hp) or max_hp <= 0.0 \
+            or hp <= 0.0 or hp > max_hp \
+            or float(stats.get("attack",0.0)) <= 0.0:
+        return {"ok":false,"reason":"p0_invalid_join_combat_stats"}
+    var added: Dictionary = {
+        "id":actor_id,"side":"disciple","party_id":party_id,
+        "role":role,"tier":"disciple","race_id":"nhan_toc",
+        "position":pos,"home_position":pos,
+        "stats":stats.duplicate(true),"hp":hp,"max_hp":max_hp,
+        "resistances":row.get("resistances",{}).duplicate(true),
+        "range":float(row.get("basic_range",1.5 if role == "frontline" else (4.8 if role == "healer" else 5.5))),
+        "move_speed":float(row.get("move_speed",2.35 if role == "frontline" else 2.05)),
+        "basic_ratio":float(row.get("basic_ratio",1.0)),
+        "basic_interval":float(row.get("basic_interval",1.6)),
+        "skill_loadout":row.get("skill_loadout",[]).duplicate(true),
+        "skill_factors":row.get("skill_factors",{}).duplicate(true),
+        "skill_ready":{},
+        "context_sources":row.get("context_sources",[]).duplicate(true),
+        "next_basic":now,"next_skill":now,
+        "guard_until":-1.0,"learned_guard_until":-1.0,
+        "learned_guard_factor":1.0,"status_effects":{},
+        "linked_disciple":null,
+        "hunt_policy":"auto","hunt_after_move":"auto",
+        "hunt_radius":PveDistributedWorldV1.HUNT_RADIUS
+    }
+    # Preserve the exact optional V6.3 loadout attached by the canonical
+    # human-skill author, never re-roll it on joining an ongoing world.
+    for field in ["v63_skill_loadout","v63_skill_ready","v63_combat_enabled",
+            "v63_passive_ids","v63_combat_branch_id","v63_combat_lineage",
+            "v63_innate_skill_id","v63_basic_skill_id","basic_element",
+            "v63_divine_stage","v63_combat_generation","v63_blood_mode",
+            "v63_base_max_hp","v63_shield_received_factor"]:
+        if row.has(field):
+            added[field] = row[field].duplicate(true) \
+                if row[field] is Array or row[field] is Dictionary else row[field]
+    actors[actor_id] = added
+    _event("disciple_joined_world",{
+        "actor_id":actor_id,"party_id":party_id,"position":pos})
+    return {"ok":true,"actor_id":actor_id,"participants":existing_people+1}
+
+func withdraw_world_disciple(actor_id: String) -> Dictionary:
+    # Preserve all outstanding combat authority: a dying monster's pending
+    # journal could still credit this killer, while orphaned casts/DoT would
+    # invalidate the saved battle on cold reload. Refuse until it settles.
+    if not world_mode or not continuous_mode or not active \
+            or not actors.has(actor_id):
+        return {"ok":false,"reason":"p0_no_active_world_participant"}
+    var actor: Dictionary = actors[actor_id]
+    if str(actor.get("side","")) != "disciple":
+        return {"ok":false,"reason":"p0_withdraw_only_disciple"}
+    var others_alive := 0
+    for other_id in actors.keys():
+        var other: Dictionary = actors[other_id]
+        if str(other.get("side","")) == "disciple" \
+                and str(other_id) != actor_id and float(other.get("hp",0.0)) > 0.0:
+            others_alive += 1
+    if others_alive == 0:
+        return {"ok":false,"reason":"p0_last_hunter_use_return_to_sect"}
+    if not _pending_kill_events.is_empty():
+        return {"ok":false,"reason":"p0_pending_kill_must_settle_before_withdraw"}
+    for cast_value in pending_casts:
+        var cast: Dictionary = cast_value
+        if str(cast.get("caster","")) == actor_id \
+                or str(cast.get("target_id","")) == actor_id:
+            return {"ok":false,"reason":"p0_member_has_pending_cast"}
+    for target_value in actors.values():
+        var target: Dictionary = target_value
+        var statuses: Dictionary = target.get("status_effects",{})
+        for key in statuses.keys():
+            if str(key) == "v63_poison":
+                for value in statuses[key]:
+                    if str(value.get("owner_id","")) == actor_id:
+                        return {"ok":false,"reason":"p0_member_poison_still_active"}
+            elif statuses[key] is Dictionary \
+                    and str(statuses[key].get("caster","")) == actor_id:
+                return {"ok":false,"reason":"p0_member_status_still_active"}
+    actors.erase(actor_id)
+    _event("disciple_withdrew_world",{
+        "actor_id":actor_id,"remaining_alive":others_alive})
+    return {"ok":true,"actor_id":actor_id,"remaining_alive":others_alive}
+
 func suspend_world_monster(actor_id: String) -> Dictionary:
     # Remove the live AI actor WITHOUT destroying its slot generation.
     # The owner stores the full actor snapshot in a dormant zone ledger.
