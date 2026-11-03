@@ -127,7 +127,10 @@ func setup(id: String, party: Array, monsters: Array, keep_encounter_open: bool 
             "context_sources":row.get("context_sources",[]).duplicate(true),
             "next_basic":0.0,"next_skill":0.0,"guard_until":-1.0,
             "learned_guard_until":-1.0,"learned_guard_factor":1.0,"status_effects":{},
-            "linked_disciple":row.get("disciple",null)
+            "linked_disciple":row.get("disciple",null),
+            "hunt_policy":str(row.get("hunt_policy","auto")),
+            "hunt_after_move":str(row.get("hunt_policy","auto")),
+            "hunt_radius":float(row.get("hunt_radius",0.0))
         })
         var v63_disciple_actor: Dictionary = entries[entries.size()-1]
         for field in ["v63_skill_loadout","v63_skill_ready","v63_combat_enabled","v63_passive_ids","v63_combat_branch_id","v63_combat_lineage","v63_innate_skill_id","v63_basic_skill_id","basic_element","v63_divine_stage","v63_combat_generation","v63_blood_mode","v63_base_max_hp","v63_shield_received_factor"]:
@@ -233,7 +236,10 @@ func _position_allowed(position: Vector2) -> bool:
     var blocked = world_navigation["blocked"]
     return int(blocked[cell.y*width+cell.x]) == 0
 
-func order_group_move(actor_ids: Array, destination: Vector2) -> Dictionary:
+func order_group_move(actor_ids: Array, destination: Vector2,
+        arrive_policy: String = "auto") -> Dictionary:
+    if not ["auto","hold"].has(arrive_policy):
+        return {"ok":false,"reason":"invalid_arrival_hunt_policy"}
     if not world_mode or not active:
         return {"ok":false,"reason":"open_world_move_unavailable"}
     var ordered: Array[String] = []
@@ -289,8 +295,34 @@ func order_group_move(actor_ids: Array, destination: Vector2) -> Dictionary:
         var actor: Dictionary = actors[ordered[index]]
         actor["move_order_position"] = destinations[index]
         actor["move_order_active"] = true
+        actor["hunt_after_move"] = arrive_policy
         _event("move_order",{"actor_id":ordered[index],"position":actor["move_order_position"]})
     return {"ok":true,"actor_ids":ordered,"destination":Vector2(base_cell)+Vector2(0.5,0.5)}
+func set_disciple_hunt_policy(actor_ids: Array, policy: String) -> Dictionary:
+    # Independent actor policy; no party membership is required. Validate
+    # ALL requested actors before mutating any command, including on reload.
+    if not world_mode or not active or not ["auto","hold"].has(policy):
+        return {"ok":false,"reason":"invalid_individual_hunt_policy"}
+    var ordered: Array[String] = []
+    for raw_id in actor_ids:
+        var id := str(raw_id)
+        var actor: Dictionary = actors.get(id,{})
+        if id.is_empty() or ordered.has(id) or actor.is_empty() \
+                or str(actor.get("side","")) != "disciple" or float(actor.get("hp",0.0)) <= 0.0:
+            return {"ok":false,"reason":"invalid_individual_hunt_member"}
+        ordered.append(id)
+    if ordered.is_empty():
+        return {"ok":false,"reason":"no_selected_hunters"}
+    ordered.sort()
+    for id in ordered:
+        var actor: Dictionary = actors[id]
+        actor["hunt_policy"] = policy
+        actor["hunt_after_move"] = policy
+        actor["move_order_active"] = false
+        actor["home_position"] = actor["position"]
+        _event("individual_hunt_policy",{"actor_id":id,"policy":policy})
+    return {"ok":true,"actor_ids":ordered,"policy":policy}
+
 func set_auto_hunt(enabled: bool) -> Dictionary:
     if not world_mode or not active:
         return {"ok":false,"reason":"open_world_auto_unavailable"}
@@ -547,10 +579,15 @@ func step(viewed_map: bool = false) -> Dictionary:
             var ordered_position: Vector2 = actor.get("move_order_position",actor["position"])
             if (actor["position"] as Vector2).distance_to(ordered_position) <= 0.45:
                 actor["move_order_active"] = false
+                actor["home_position"] = actor["position"]
+                actor["hunt_policy"] = str(actor.get("hunt_after_move","auto"))
             else:
                 _move_world_actor(actor,ordered_position,float(actor.get("move_speed",2.0)))
                 continue
-        var target: Dictionary = _nearest_enemy(actor)
+        var holding := world_mode and str(actor["side"]) == "disciple" \
+                and str(actor.get("hunt_policy","auto")) == "hold"
+        var target: Dictionary = _nearest_enemy_in_range(actor,float(actor.get("range",1.5))) \
+                if holding else _nearest_enemy(actor)
         if world_mode and str(actor["side"]) == "monster" and not target.is_empty():
             var aggro_range := float(actor.get("aggro_range",8.0))
             if (actor["position"] as Vector2).distance_to(target["position"]) > aggro_range:
@@ -577,10 +614,14 @@ func step(viewed_map: bool = false) -> Dictionary:
             var path := _world_path(actor["position"],target["position"])
             var route_distance := 0.0 if floori((actor["position"] as Vector2).x) == floori((target["position"] as Vector2).x) and floori((actor["position"] as Vector2).y) == floori((target["position"] as Vector2).y) else _world_route_distance(actor["position"],path)
             if route_distance > attack_range+0.08:
+                if holding:
+                    continue
                 _move_world_actor(actor,target["position"],float(actor.get("move_speed",2.0)),attack_range)
                 continue
             distance = route_distance
         if distance > attack_range:
+            if holding:
+                continue
             var delta := minf(float(actor["move_speed"])*STEP_SECONDS,maxf(0.0,distance-attack_range+0.02))
             if delta > 0.0:
                 if world_mode:
