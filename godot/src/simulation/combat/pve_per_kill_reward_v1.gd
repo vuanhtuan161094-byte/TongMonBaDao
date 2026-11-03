@@ -98,25 +98,42 @@ static func commit(state: SimulationState,battle: MapBattleV2,
         population: Dictionary,event: Dictionary,world_seed: int) -> Dictionary:
     if state == null or battle == null or not bool(population.get("p0_distributed_world",false)):
         return {"ok":false,"reason":"p0_reward_not_enabled"}
-    var plan := preview(state,battle,event,world_seed)
-    if not bool(plan.get("ok",false)):
-        return plan
-    var slot_id := str(plan["slot_id"])
-    var kill_id := str(plan["kill_id"])
-    var generation := int(plan["generation"])
+    # The last receipt is intentionally retained across respawns. A replay of
+    # an already-paid life returns that receipt even after the combat journal
+    # has been ACKed. It never grants rewards again.
+    var slot_id := str(event.get("spawn_slot_id",""))
+    var kill_id := str(event.get("kill_id",""))
+    var generation := int(event.get("slot_generation",0))
+    var ledger: Dictionary = population.get("p0_kill_rewards",{})
+    var earlier: Dictionary = ledger.get(slot_id,{})
+    if not earlier.is_empty():
+        if str(earlier.get("kill_id","")) == kill_id \
+                and int(earlier.get("generation",0)) == generation:
+            if str(earlier.get("killer_actor_id","")) != str(event.get("killer_actor_id","")) \
+                    or str(earlier.get("species","")) != str(event.get("species_id","")):
+                return {"ok":false,"reason":"p0_replayed_kill_identity_mismatch"}
+            return {"ok":true,"duplicate":true,"receipt":earlier.duplicate(true),
+                "items":earlier.get("items",{}),"actor_xp":earlier.get("actor_xp",{})}
+        if int(earlier.get("generation",0)) >= generation:
+            return {"ok":false,"reason":"p0_duplicate_or_rewound_slot_life"}
     var slot: Dictionary = population.get("slots",{}).get(slot_id,{})
     if slot.is_empty() or int(slot.get("generation",0)) != generation \
             or str(slot.get("kill_id","")) != kill_id \
             or not ["UNPAID_HP0","COOLDOWN"].has(str(slot.get("phase",""))):
         return {"ok":false,"reason":"p0_kill_slot_generation_not_pending"}
-    var ledger: Dictionary = population.get("p0_kill_rewards",{})
-    var earlier: Dictionary = ledger.get(slot_id,{})
-    if not earlier.is_empty():
-        if str(earlier.get("kill_id","")) == kill_id:
-            return {"ok":true,"duplicate":true,"receipt":earlier.duplicate(true),
-                "items":earlier.get("items",{}),"actor_xp":earlier.get("actor_xp",{})}
-        if int(earlier.get("generation",0)) >= generation:
-            return {"ok":false,"reason":"p0_duplicate_or_rewound_slot_life"}
+    # Never allow a caller-supplied imitation of HP0 to mint Tu Vi, Luyen The
+    # or materials. Only the exact pending Combat V2 journal entry is payable.
+    var authoritative := false
+    for pending_value in battle.pending_kill_events():
+        var official: Dictionary = pending_value
+        if official == event:
+            authoritative = true
+            break
+    if not authoritative:
+        return {"ok":false,"reason":"p0_kill_not_in_authoritative_journal"}
+    var plan := preview(state,battle,event,world_seed)
+    if not bool(plan.get("ok",false)):
+        return plan
 
     var warehouse := WarehouseSystem.new()
     if not state.sect.p3_7_resources_enabled:
