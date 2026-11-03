@@ -8,7 +8,7 @@ $ErrorActionPreference = 'Stop'
 $repo = (Resolve-Path -LiteralPath $RepositoryRoot).Path
 $qa = Join-Path $repo 'godot\outputs\an03_lab'
 if (-not (Test-Path -LiteralPath $qa)) {
-    throw "AN03 evidence directory missing: $qa"
+    New-Item -ItemType Directory -Path $qa -Force | Out-Null
 }
 $stage = Join-Path $qa ('bundle_' + [Guid]::NewGuid().ToString('N'))
 New-Item -ItemType Directory -Path $stage -Force | Out-Null
