@@ -1015,6 +1015,8 @@ func save_state() -> Dictionary:
         saved["camp_monster_count"] = camp_slot_ids.size()
         saved["world_mode"] = battle.world_mode
         saved["world_respawn_delay"] = world_respawn_delay
+        if PveDistributedWorldV1.enabled(camp_population):
+            saved["p0_distributed_world"] = true
     return saved
 
 # The live character HP owner stays separate until DV2-03's real HP track
@@ -1100,7 +1102,15 @@ static func restore_state(state: SimulationState, saved: Dictionary, preview_ove
                     float(camp_registry.get("world_respawn_delay",-1.0)))
         elif resumed.world_mode:
             world_identity_valid = false
-        if not camps_valid or not world_identity_valid or PveMultiCampPopulationV1.verify_structure(camp_registry) != "" or camp_slots.size() != 10 or int(saved.get("camp_monster_count",0)) != 10 or not is_finite(phase) or phase < 0.0 or phase >= 60.0 or fmod(phase,MapBattleV2.STEP_SECONDS) != 0.0:
+        var p0_enabled := world_mode_saved and PveDistributedWorldV1.enabled(camp_registry)
+        var valid_slot_count := (camp_slots.size() >= 1 and camp_slots.size() <= MapBattleV2.MAX_MONSTERS) if p0_enabled else camp_slots.size() == 10
+        var marked_slot_count := int(saved.get("camp_monster_count",0)) == camp_slots.size() if p0_enabled else int(saved.get("camp_monster_count",0)) == 10
+        if bool(saved.get("p0_distributed_world",false)) != p0_enabled \
+                or not camps_valid or not world_identity_valid \
+                or PveMultiCampPopulationV1.verify_structure(camp_registry) != "" \
+                or not valid_slot_count or not marked_slot_count \
+                or not is_finite(phase) or phase < 0.0 or phase >= 60.0 \
+                or fmod(phase,MapBattleV2.STEP_SECONDS) != 0.0:
             return {"ok":false,"reason":"invalid_multicamp_population_checkpoint"}
     elif resumed.continuous_mode:
         return {"ok":false,"reason":"unexpected_continuous_hunt_snapshot"}
@@ -1153,8 +1163,16 @@ static func restore_state(state: SimulationState, saved: Dictionary, preview_ove
             var skill_key := str(skill_id)
             if not owner_disciple.v63_equipped_skill_ids.has(skill_key) or not owner_disciple.v63_learned_skill_nodes.has(skill_key):
                 return {"ok":false,"reason":"saved_skill_not_personally_equipped"}
-    if mode_value == "multicamp" and (seen_monsters != 10 or seen_slots.size() != 10 or seen_disciples <= 0 or seen_disciples > 6):
-        return {"ok":false,"reason":"incomplete_multicamp_roster"}
+    if mode_value == "multicamp":
+        var p0_enabled := PveDistributedWorldV1.enabled(camp_registry)
+        if p0_enabled:
+            if seen_disciples <= 0 or seen_disciples > MapBattleV2.MAX_DISCIPLES \
+                    or seen_monsters > MapBattleV2.MAX_MONSTERS \
+                    or seen_monsters != seen_slots.size():
+                return {"ok":false,"reason":"invalid_p0_distributed_actor_count"}
+        elif seen_monsters != 10 or seen_slots.size() != 10 \
+                or seen_disciples <= 0 or seen_disciples > 6:
+            return {"ok":false,"reason":"incomplete_multicamp_roster"}
     if mode_value == "encounter" and (seen_monsters != expected.size() or seen_disciples <= 0):
         return {"ok":false,"reason":"incomplete_saved_combat_roster"}
     var session := HuntingPveRunV2.new()
@@ -1175,4 +1193,8 @@ static func restore_state(state: SimulationState, saved: Dictionary, preview_ove
     session.camp_slot_ids = camp_slots.duplicate()
     session.minute_phase = phase
     session.world_respawn_delay = float(saved.get("world_respawn_delay",0.0)) if resumed.world_mode else 0.0
+    if PveDistributedWorldV1.enabled(session.camp_population):
+        var p0_error := PveDistributedWorldV1.validate_saved(session)
+        if not p0_error.is_empty():
+            return {"ok":false,"reason":p0_error}
     return {"ok":true,"session":session}
