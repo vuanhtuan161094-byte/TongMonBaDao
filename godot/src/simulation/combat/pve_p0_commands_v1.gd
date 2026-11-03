@@ -172,3 +172,129 @@ static func hunt_policy(owner: SimulationRuntimeOwnerV2, ids: Array,
         return checkpoint
     return {"ok":true,"ordered_ids":selected["ids"],
         "policy":policy,"save_required":true}
+
+
+static func join_one(owner: SimulationRuntimeOwnerV2, disciple_id: String,
+        role: String = "frontline", party_id: String = "") -> Dictionary:
+    # New member walks onto the real world at its fixed entrance. No local
+    # teleport to a remote hunting zone, free resource, or phantom recruit.
+    var current := _active(owner)
+    if not bool(current.get("ok",false)):
+        return current
+    var session: HuntingPveRunV2 = current["session"]
+    if not session.battle.active or session.battle._count_alive("disciple") <= 0:
+        return {"ok":false,"reason":"p0_world_not_accepting_joiners"}
+    var parties := {}
+    if not party_id.is_empty():
+        parties[disciple_id] = party_id
+    var formed := build_members(owner.state,[disciple_id],
+        {disciple_id:role},parties)
+    if not bool(formed.get("ok",false)):
+        return formed
+    # The active encounter may already have a legacy reservation snapshot
+    # for this same disciple; never double-deploy an ID across worlds.
+    if session.battle.actors.has(disciple_id) \
+            or HuntingPveRunV2._actor_in_active_saved_run(owner.state,disciple_id):
+        return {"ok":false,"reason":"p0_hunter_already_active"}
+    var entry := Vector2(SectIsometricWorldV1.PVE_SPAWN_CELL)+Vector2(0.5,0.5)
+    var position := PveDistributedWorldV1.safe_spawn_position(session.battle,entry)
+    if not is_finite(position.x) or not is_finite(position.y):
+        return {"ok":false,"reason":"p0_world_entrance_occupied"}
+    var record: Dictionary = formed["members"][0]
+    var disciple: DiscipleState = owner.state.disciples[StringName(disciple_id)]
+    var actor := DiscipleCombatLoadoutV2.build(
+        owner.state,disciple,
+        int(record["realm"]),int(record["floor"]),
+        int(record["body_realm"]),int(record["body_floor"]),
+        str(record["role"]),position,str(record["party_id"]))
+    if not bool(actor.get("ok",false)):
+        return actor
+    var attached := V63HumanSkillCombatSystem.attach_disciple_loadout(
+        owner.state,actor,session.v63_preview_overrides)
+    if not bool(attached.get("ok",false)):
+        return attached
+    actor["disciple"] = null
+    var added := session.battle.add_world_disciple(actor)
+    if not bool(added.get("ok",false)):
+        return added
+    var prior_events: Array = session.battle.events.duplicate(true)
+    # The new event is useful for UI but must disappear on an unsuccessful
+    # checkpoint, just like the actor and the canonical reservation.
+    var prior_reservation := disciple.active_pve_encounter_id
+    disciple.active_pve_encounter_id = session.battle.encounter_id
+    var checkpoint := session._persist_live_state()
+    if not bool(checkpoint.get("ok",false)):
+        session.battle.actors.erase(disciple_id)
+        session.battle.events = prior_events
+        disciple.active_pve_encounter_id = prior_reservation
+        return {"ok":false,"reason":"p0_join_checkpoint_failed",
+            "detail":checkpoint.get("reason","unknown")}
+    return {"ok":true,"joined":disciple_id,
+        "party_id":str(record["party_id"]),
+        "participants":int(added.get("participants",0)),
+        "entry_position":position,
+        "save_required":true}
+
+static func return_one(owner: SimulationRuntimeOwnerV2,
+        disciple_id: String) -> Dictionary:
+    # Withdraw exactly one character. Never finish/settle the whole world.
+    # Returning the last living hunter remains the existing explicit
+    # "Về tông môn" retreat command; it has its own terminal receipt.
+    var current := _active(owner)
+    if not bool(current.get("ok",false)):
+        return current
+    var session: HuntingPveRunV2 = current["session"]
+    var actor: Dictionary = session.battle.actors.get(disciple_id,{})
+    if str(actor.get("side","")) != "disciple":
+        return {"ok":false,"reason":"p0_not_an_active_hunter"}
+    var disciple: DiscipleState = owner.state.disciples.get(
+        StringName(disciple_id),null)
+    if disciple == null or disciple.active_pve_encounter_id != session.battle.encounter_id:
+        return {"ok":false,"reason":"p0_hunter_reservation_mismatch"}
+    var hp := float(actor.get("hp",-1.0))
+    var max_hp := float(actor.get("max_hp",0.0))
+    if not is_finite(hp) or not is_finite(max_hp) \
+            or hp < 0.0 or max_hp <= 0.0 or hp > max_hp \
+            or disciple.max_hp <= 0.0:
+        return {"ok":false,"reason":"p0_invalid_return_hp"}
+    var downed := hp <= 0.0
+    var returned_hp := 1.0 if downed else minf(
+        disciple.max_hp,CombatStatsV2.rescale_current_hp(
+            hp,max_hp,disciple.max_hp))
+    var actor_snapshot := actor.duplicate(true)
+    var old_events := session.battle.events.duplicate(true)
+    var previous := {
+        "hp":disciple.hp,
+        "injury_level":disciple.injury_level,
+        "injury_recover_at_tick":disciple.injury_recover_at_tick,
+        "region_id":disciple.region_id,
+        "target_region_id":disciple.target_region_id,
+        "current_action":disciple.current_action,
+        "reservation":disciple.active_pve_encounter_id
+    }
+    var withdrew := session.battle.withdraw_world_disciple(disciple_id)
+    if not bool(withdrew.get("ok",false)):
+        return withdrew
+    disciple.hp = returned_hp
+    disciple.injury_level = 1 if downed else 0
+    disciple.injury_recover_at_tick = owner.state.tick+120 if downed else 0
+    disciple.region_id = &"sect"
+    disciple.target_region_id = &""
+    disciple.current_action = &"EVALUATE"
+    disciple.active_pve_encounter_id = ""
+    var checkpoint := session._persist_live_state()
+    if not bool(checkpoint.get("ok",false)):
+        session.battle.actors[disciple_id] = actor_snapshot
+        session.battle.events = old_events
+        disciple.hp = float(previous["hp"])
+        disciple.injury_level = int(previous["injury_level"])
+        disciple.injury_recover_at_tick = int(previous["injury_recover_at_tick"])
+        disciple.region_id = previous["region_id"]
+        disciple.target_region_id = previous["target_region_id"]
+        disciple.current_action = previous["current_action"]
+        disciple.active_pve_encounter_id = previous["reservation"]
+        return {"ok":false,"reason":"p0_return_checkpoint_failed",
+            "detail":checkpoint.get("reason","unknown")}
+    return {"ok":true,"returned":disciple_id,"injured":downed,
+        "hp":returned_hp,"remaining_alive":int(withdrew["remaining_alive"]),
+        "save_required":true}
