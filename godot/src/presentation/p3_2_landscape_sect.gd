@@ -6283,6 +6283,7 @@ func _refresh_multicamp_hunt_panel() -> void:
     _set_hunt_presentation_layout(true)
     var encounter := HuntingPveRunV2.active_multicamp_id(state)
     var battle: MapBattleV2
+    var running_session: HuntingPveRunV2
     var receipt: Dictionary = {}
     var running := not encounter.is_empty()
     if running:
@@ -6298,8 +6299,8 @@ func _refresh_multicamp_hunt_panel() -> void:
             b3_hunt_auto_button.disabled = true
             b3_hunt_deploy_button.visible = false
             return
-        var session: HuntingPveRunV2 = restored["session"]
-        battle = session.battle
+        running_session = restored["session"]
+        battle = running_session.battle
     elif not multicamp_encounter_id.is_empty():
         var raw_receipt = state.sect.v2_pve_settlement_receipts.get(multicamp_encounter_id,{})
         if raw_receipt is Dictionary:
@@ -6319,7 +6320,8 @@ func _refresh_multicamp_hunt_panel() -> void:
         return
 
     var envelope: Dictionary = state.sect.v2_pve_active_runs.get(encounter,{})
-    var population: Dictionary = envelope.get("camp_population",{})
+    var population: Dictionary = running_session.camp_population if running_session != null         else envelope.get("camp_population",{})
+    var rendered_camp := running_session.camp_index if running_session != null         else int(envelope.get("camp_index",0))
     var hud_update_started_usec := Time.get_ticks_usec() if performance_logging_enabled else 0
     if battle.world_mode:
         var prepare_world_started_usec := Time.get_ticks_usec() if performance_logging_enabled else 0
@@ -6332,7 +6334,7 @@ func _refresh_multicamp_hunt_panel() -> void:
             if performance_logging_enabled:
                 _record_hunt_refresh_stage("visual_rows",Time.get_ticks_usec()-visual_rows_started_usec)
             var view_update_started_usec := Time.get_ticks_usec() if performance_logging_enabled else 0
-            b3_hunt_arena.show_open_world_snapshot(battle,population,int(envelope.get("camp_index",0)),state.disciples,visual_rows)
+            b3_hunt_arena.show_open_world_snapshot(battle,population,rendered_camp,state.disciples,visual_rows)
             if performance_logging_enabled:
                 _record_hunt_refresh_stage("world_view_update",Time.get_ticks_usec()-view_update_started_usec)
         else:
@@ -6391,7 +6393,7 @@ func _refresh_multicamp_hunt_panel() -> void:
     var status := "Đội tự tìm đường, đánh tại chỗ bằng Combat V2" if running else ("Tổ đội đã bị hạ" if outcome == "defeat" else "Tổ đội đã về tông môn")
     var kill_count := int(population.get("world_total_kills",receipt.get("kills",0)))
     var alive_monsters := battle._count_alive("monster")
-    _set_hunt_status(battle,camp_id,total_monsters,alive_monsters)
+    _set_hunt_status(battle,camp_id,total_monsters,alive_monsters,population)
     b3_hunt_facts.visible = false
     v63_combat_hud.visible = true
     v63_combat_hud.set_authority(state,battle,not _current_v63_preview_overrides().is_empty())
@@ -6528,7 +6530,7 @@ func _set_hunt_presentation_layout(use_live_map: bool) -> void:
         b3_hunt_return_button.size = Vector2(122,46)
 
 func _set_hunt_status(battle: MapBattleV2, camp_id: String, total_monsters: int,
-        alive_monsters: int) -> void:
+        alive_monsters: int, population: Dictionary = {}) -> void:
     if b3_hunt_world_status == null or battle == null:
         return
     var members := 0
@@ -6540,8 +6542,21 @@ func _set_hunt_status(battle: MapBattleV2, camp_id: String, total_monsters: int,
         members += 1
         total_hp += maxf(0.0,float(actor.get("hp",0.0)))
         maximum_hp += maxf(1.0,float(actor.get("max_hp",1.0)))
-    b3_hunt_world_status.text = "Đội săn %d/6 · sống %d · HP %.0f/%.0f\n%s · quái %d/%d · %.1fs\nChiến lợi phẩm: chưa xác nhận" % [
-        members,battle._count_alive("disciple"),total_hp,maximum_hp,camp_id,alive_monsters,total_monsters,battle.now]
+    if PveDistributedWorldV1.enabled(population):
+        var rewarded_kills := int(population.get("world_total_kills",0))
+        b3_hunt_world_status.text = (
+            "Thợ săn %d/30 · sống %d · HP %.0f/%.0f\n"
+            + "%s · quái %d/%d · đã hạ %d\n"
+            + "Thưởng: Tu Vi / Luyện Thể · đồ vào Kho"
+        ) % [members,battle._count_alive("disciple"),total_hp,maximum_hp,
+            camp_id,alive_monsters,total_monsters,rewarded_kills]
+    else:
+        b3_hunt_world_status.text = (
+            "Đội săn %d/6 · sống %d · HP %.0f/%.0f\n"
+            + "%s · quái %d/%d · %.1fs\n"
+            + "Chiến lợi phẩm theo receipt"
+        ) % [members,battle._count_alive("disciple"),total_hp,maximum_hp,
+            camp_id,alive_monsters,total_monsters,battle.now]
 
 func _refresh_b3_hunt_panel() -> void:
     if b3_hunt_panel == null or not b3_hunt_panel.get_parent().visible or state == null:
