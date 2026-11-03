@@ -1,5 +1,12 @@
 # NEXT CHAT HANDOFF — ONE GAME V6.5 / HS-09 QA
 
+## AN-02.1 PATCH BRANCH — 2026-11-03
+Source PR #68 HEAD d35a8affb4cef0e45c9d98c403c983554587f584. Standalone patch: fix/an02-1-shadow-lab-qa-20261103. SourceA asset.json vs animations.tres static 7/7 pack / 24/24 clip metadata PASS; 7/7 source anchor bounds static PASS. Lab adds anchor/mirror/time QA, focused test additions, actual GUI framebuffer capture script, official-Godot-version-gated Windows QA command MO_AN02_QA.cmd. No Combat V2/PvE/save/balance/default main scene changes; no PR #68 or main mutation.
+All official Godot 4.7.2 import/parser/shader/runtime/screenshots are PENDING ENGINE; Windows E: and Godot executable inaccessible from Linux and GitHub release DNS failed. Windows/Android owner real hardware PENDING USER. The conceptual Shadow art is not engine capture.
+Read docs/animation/AN02_1_GODOT_QA_REPORT_20261103.md for the complete non-destructive isolated Windows E: worktree and command. Run QA on the exact branch, retain logs/screenshots, fix any failures there, report SHA/exit/log and request owner visual approval before integration. Do not merge main or PR #68.
+
+---
+
 ## AN-01 / AN-02 SHADOW ANIMATION LAB — 2026-11-03 (isolated)
 One-click Windows launcher: MO_ANIMATION_LAB.cmd (branch-only); checks E:\\Godot_v4.7.2-stable_win64.exe or TMB_GODOT, uses isolated APPDATA. NOT TESTED ON WINDOWS.
 
