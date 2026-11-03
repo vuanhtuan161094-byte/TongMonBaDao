@@ -202,3 +202,4 @@ jobs:
         run: godot --headless --path godot -s res://tests/presentation/p3_6a_playable_slice_test.gd
 
 # Re-run the TRI-03 P0 acceptance on the consolidated source tree.
+# Owner P0 exact-tree CI rerun trigger.
