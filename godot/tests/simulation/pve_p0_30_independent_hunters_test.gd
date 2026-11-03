@@ -160,6 +160,40 @@ func _run() -> void:
     print("PVE_P0_WORLD_LOD_RESTORE_PASS "+JSON.stringify({
         "condensed":10,"distributed":40,"camp_count":20,"dormant_after_reactivation":8
     }))
+    # V6.3 support must affect SAME voluntary party only, not all 30
+    # independent hunters standing nearby. This checks both targeting and AoE.
+    var h0: Dictionary = battle.actors["hunter_00"]
+    var h1: Dictionary = battle.actors["hunter_01"]
+    var solo: Dictionary = battle.actors["hunter_20"]
+    var anchor: Vector2 = options["camp_positions"][0]
+    h0["position"] = anchor
+    h1["position"] = anchor+Vector2(0.5,0.0)
+    solo["position"] = anchor+Vector2(0.0,0.5)
+    h0["hp"] = 500.0
+    h1["hp"] = 400.0
+    solo["hp"] = 100.0
+    var support_skill := {"effect":"heal","range":9.0,"power":0.2}
+    var team_target := V63HumanSkillCombatSystem._support_target(
+        battle,h0,support_skill)
+    if not _check(str(team_target.get("id","")) == "hunter_01",
+            "V6.3 heal targeted lower-HP unaffiliated solo hunter instead of team member"):
+        return
+    var solo_target := V63HumanSkillCombatSystem._support_target(
+        battle,solo,support_skill)
+    if not _check(str(solo_target.get("id","")) == "hunter_20",
+            "solo disciple must be able to heal self but not another voluntary party"):
+        return
+    var aoe_cast := {"shape":"circle","center":anchor,"radius":9.0,"maximum":6}
+    var targets := V63HumanSkillCombatSystem._cast_targets(battle,h0,aoe_cast,"heal")
+    var teammates := targets.map(func(x: Dictionary): return str(x.get("id","")))
+    if not _check(teammates.has("hunter_00") and teammates.has("hunter_01")
+            and not teammates.has("hunter_20"),
+            "V6.3 area healing leaked across optional party boundary"):
+        return
+    print("PVE_P0_OPTIONAL_PARTY_SUPPORT_PASS "+JSON.stringify({
+        "team_members":["hunter_00","hunter_01"],"solo":"hunter_20",
+        "aoe_excludes_unauthorized_solo":true
+    }))
     # Real presentation minimap orders only selected IDs; with nobody
     # selected the same click is a camera-focus command.
     world = PveSectWorldViewV1.new()
