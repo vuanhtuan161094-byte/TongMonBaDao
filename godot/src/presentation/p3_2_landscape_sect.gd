@@ -203,6 +203,9 @@ var b3_hunt_auto_button: Button
 var b3_hunt_deploy_button: Button
 var b3_hunt_return_button: Button
 var b3_hunt_save_button: Button
+var p0_add_hunter_button: Button
+var p0_withdraw_hunter_button: Button
+var p0_close_map_button: Button
 var b3_hunt_disciple_id: StringName = &""
 var b3_hunt_refresh_elapsed := 0.0
 var production_underlay_frozen := false
@@ -223,6 +226,7 @@ var v63_archive_screen: Control
 var v63_preview_overrides: Dictionary = {}
 var pve_party_picker_checks: Dictionary = {}
 var pve_party_selected_ids: Array[StringName] = []
+var pve_party_picker_join_mode := false
 var iso_view_container: SubViewportContainer
 var iso_viewport: SubViewport
 var iso_world: SectIsometricWorldV1
@@ -1315,7 +1319,7 @@ func _build_pve_quick_entry() -> void:
     button.add_theme_color_override("font_color",PAPER_LIGHT)
     button.add_theme_stylebox_override("normal",_style(JADE_DARK,Color("544729"),2,10))
     button.add_theme_stylebox_override("hover",_style(JADE, GOLD,3,10))
-    button.tooltip_text = "Chọn sáu đệ tử V2 khỏe, rảnh để vào Thanh Trúc Lâm"
+    button.tooltip_text = "Vào Thanh Trúc Lâm: đi một mình hoặc chọn tối đa 30 đệ tử"
     button.pressed.connect(_open_pve_party_picker)
     bottom.add_child(button)
 
@@ -1324,7 +1328,7 @@ func _build_pve_party_picker() -> void:
     pve_party_picker_shade.name = "PvePartyPickerShade"
     pve_party_picker_shade.color = Color(0.02,0.035,0.04,0.78)
     pve_party_picker_shade.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-    pve_party_picker_shade.z_index = 105
+    pve_party_picker_shade.z_index = 115
     pve_party_picker_shade.mouse_filter = Control.MOUSE_FILTER_STOP
     pve_party_picker_shade.visible = false
     add_child(pve_party_picker_shade)
@@ -1333,7 +1337,7 @@ func _build_pve_party_picker() -> void:
     pve_party_picker_panel.name = "PvePartyPicker"
     pve_party_picker_panel.position = Vector2(170,54)
     pve_party_picker_panel.size = Vector2(940,610)
-    pve_party_picker_panel.z_index = 106
+    pve_party_picker_panel.z_index = 116
     pve_party_picker_panel.add_theme_stylebox_override("panel",_style(PAPER_LIGHT,INK,3,14))
     pve_party_picker_shade.add_child(pve_party_picker_panel)
 
@@ -1346,7 +1350,7 @@ func _build_pve_party_picker() -> void:
     pve_party_picker_panel.add_child(title)
 
     var instructions := Label.new()
-    instructions.text = "Chọn đúng 6 đệ tử V2 khỏe và rảnh. Người đang làm việc, bị thương hoặc còn ở một bãi săn khác sẽ không thể vào đội."
+    instructions.text = "Đi săn tự do: chọn 1–30 đệ tử V2 khỏe, rảnh; mặc định mỗi người săn riêng. Boss vẫn yêu cầu đúng đội 6 người."
     instructions.position = Vector2(26,54)
     instructions.size = Vector2(884,38)
     instructions.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -1411,7 +1415,7 @@ func _build_pve_party_picker() -> void:
 
     pve_party_picker_start = Button.new()
     pve_party_picker_start.name = "PvePartyPickerStart"
-    pve_party_picker_start.text = "Vào Thanh Trúc Lâm"
+    pve_party_picker_start.text = "Vào bãi săn"
     pve_party_picker_start.position = Vector2(622,558)
     pve_party_picker_start.size = Vector2(142,38)
     pve_party_picker_start.add_theme_font_size_override("font_size",13)
@@ -1662,6 +1666,7 @@ func _open_pve_party_picker() -> void:
 func _close_pve_party_picker() -> void:
     if pve_party_picker_shade != null:
         pve_party_picker_shade.visible = false
+    pve_party_picker_join_mode = false
 
 func _populate_pve_party_picker() -> void:
     if pve_party_picker_list == null or state == null:
@@ -1695,11 +1700,6 @@ func _populate_pve_party_picker() -> void:
                 still_eligible.append(id)
                 break
     pve_party_selected_ids = still_eligible
-    if pve_party_selected_ids.is_empty():
-        for row in eligible:
-            if pve_party_selected_ids.size() >= 6:
-                break
-            pve_party_selected_ids.append(StringName(row["id"]))
     for row in eligible:
         var id := StringName(row["id"])
         var disciple: DiscipleState = state.disciples[id]
@@ -1724,18 +1724,21 @@ func _populate_pve_party_picker() -> void:
     if blocked_lines.size() > 5:
         blocked_text += " · và %d lý do khác" % [blocked_lines.size()-5]
     pve_party_picker_reasons.text = (
-        "Cần 6 người đủ điều kiện; có %d. " % eligible.size()
-        + "Điều kiện: V2 sẵn sàng, HP còn, không bị thương, ở tông môn, không có việc/timer/ruộng/lò/rèn thân hoặc bãi săn khác.\n"
+        ("Chọn 1 người rảnh để vào phiên săn đang chạy. " if pve_party_picker_join_mode
+         else "Đi săn riêng 1–30 người; Boss chỉ nhận đúng 6. ")
+        + "Hiện có %d đủ điều kiện. " % eligible.size()
+        + "Cấm HP=0, Injury, công việc/timer/ruộng/lò/rèn thân hoặc thế giới khác.\n"
         + blocked_text)
     _update_pve_party_picker_controls(eligible.size())
 
 func _on_pve_party_member_toggled(checked: bool,id: StringName) -> void:
     if checked:
-        if pve_party_selected_ids.size() >= 6:
+        var maximum := 1 if pve_party_picker_join_mode else MapBattleV2.MAX_DISCIPLES
+        if pve_party_selected_ids.size() >= maximum:
             var checkbox := pve_party_picker_checks.get(id) as CheckBox
             if checkbox != null:
                 checkbox.set_pressed_no_signal(false)
-            pve_party_picker_feedback.text = "Đội săn tối đa 6 người. Bỏ chọn một người trước."
+            pve_party_picker_feedback.text = "Chọn tối đa %d người trong lượt này." % maximum
             _update_pve_party_picker_controls(pve_party_picker_checks.size())
             return
         if not pve_party_selected_ids.has(id):
@@ -1746,45 +1749,73 @@ func _on_pve_party_member_toggled(checked: bool,id: StringName) -> void:
     _update_pve_party_picker_controls(pve_party_picker_checks.size())
 
 func _update_pve_party_picker_controls(eligible_count: int) -> void:
-    if pve_party_picker_count == null:
+    if pve_party_picker_count == null or state == null:
         return
-    pve_party_picker_count.text = "Đã chọn %d / 6  ·  đủ điều kiện %d" % [
-        pve_party_selected_ids.size(),eligible_count]
-    if pve_party_selected_ids.size() < 6 and eligible_count < 6:
-        pve_party_picker_feedback.text = "Chưa đủ sáu người. Cho đệ tử về tông môn, chờ việc kết thúc hoặc hồi phục rồi thử lại."
-    var blocked_by_run := not state.sect.b3_hunt.is_empty() or not state.sect.v2_pve_active_runs.is_empty()
-    var party_ready := pve_party_selected_ids.size() == 6 and eligible_count >= 6 and not blocked_by_run
+    var selected_count := pve_party_selected_ids.size()
+    var limit := 1 if pve_party_picker_join_mode else MapBattleV2.MAX_DISCIPLES
+    pve_party_picker_count.text = "Đã chọn %d / %d  ·  đủ điều kiện %d" % [
+        selected_count,limit,eligible_count]
+    if selected_count == 0 and eligible_count == 0:
+        pve_party_picker_feedback.text = "Chưa có đệ tử V2 khỏe và rảnh để đi săn."
+    var active_world := HuntingPveRunV2.active_multicamp_id(state)
+    var active_elsewhere := not state.sect.b3_hunt.is_empty()         or HuntingPveRunV2.active_single_encounter_id(state) != ""
+    var new_world_ready := active_world.is_empty() and state.sect.v2_pve_active_runs.is_empty()
+    var join_ready := not active_world.is_empty() and not active_elsewhere
+    var can_start := selected_count > 0 and selected_count <= limit         and not active_elsewhere and (join_ready if pve_party_picker_join_mode else new_world_ready)
     if pve_party_picker_start != null:
-        pve_party_picker_start.disabled = not party_ready
+        pve_party_picker_start.disabled = not can_start
+        pve_party_picker_start.text = "Thêm vào bãi săn" if pve_party_picker_join_mode else "Vào bãi săn"
     if pve_party_picker_boss_start != null:
-        pve_party_picker_boss_start.disabled = not party_ready or pve_party_picker_boss_selector == null \
-            or pve_party_picker_boss_selector.item_count == 0
+        pve_party_picker_boss_start.disabled = pve_party_picker_join_mode             or selected_count != 6 or not new_world_ready or active_elsewhere             or pve_party_picker_boss_selector == null             or pve_party_picker_boss_selector.item_count == 0
+    if pve_party_picker_boss_selector != null:
+        pve_party_picker_boss_selector.disabled = pve_party_picker_join_mode
 
 func _start_multicamp_hunt_for_picked_party() -> void:
-    if pve_party_selected_ids.size() != 6:
-        pve_party_picker_feedback.text = "Hãy chọn đúng 6 đệ tử đủ điều kiện."
+    if runtime_session == null or runtime_session.owner == null or state == null:
         return
-    var party := _multicamp_party_for_ids(pve_party_selected_ids)
-    if party.size() != 6:
-        pve_party_picker_feedback.text = "Đội vừa thay đổi trạng thái. Hãy làm mới lựa chọn; người bận hoặc bị thương không thể vào."
-        _populate_pve_party_picker()
+    var selected: Array = []
+    for id in pve_party_selected_ids:
+        selected.append(str(id))
+    if selected.is_empty() or selected.size() > MapBattleV2.MAX_DISCIPLES:
+        pve_party_picker_feedback.text = "Chọn từ 1 tới 30 đệ tử."
         return
-    if not state.sect.b3_hunt.is_empty():
-        pve_party_picker_feedback.text = "Thế giới săn B3 CARE đang hoạt động; hãy kết thúc hoặc trở về trước."
+    if pve_party_picker_join_mode:
+        if selected.size() != 1:
+            pve_party_picker_feedback.text = "Mỗi lượt thêm một đệ tử."
+            return
+        var joined := PveP0CommandsV1.join_one(runtime_session.owner,str(selected[0]))
+        if not bool(joined.get("ok",false)):
+            pve_party_picker_feedback.text = "Chưa thêm được đệ tử: %s" % str(joined.get("reason","unknown"))
+            return
+        var persisted := await _save_runtime_async_barrier()
+        if not bool(persisted.get("ok",false)):
+            pve_party_picker_feedback.text = "Đã thêm trong phiên nhưng Save chưa hoàn thành: %s" % str(persisted.get("reason",persisted.get("error","unknown")))
+            return
+        var active_id := HuntingPveRunV2.active_multicamp_id(state)
+        _close_pve_party_picker()
+        _open_multicamp_panel(StringName(str(selected[0])),active_id)
+        _refresh_all()
+        return
+    if not state.sect.b3_hunt.is_empty() or not state.sect.v2_pve_active_runs.is_empty():
+        pve_party_picker_feedback.text = "Đang có một phiên săn khác; hãy mở lại phiên đó."
         return
     var encounter_id := "pve:thanh_truc_lam:c01:%d:%d:%d" % [
         state.seed,state.tick,state.sect.v2_pve_settlement_receipts.size()]
     var world_options := b3_pve_world_view.get_open_world_options()
     if not bool(world_options.get("ok",false)):
-        pve_party_picker_feedback.text = "Không dựng được bản đồ Source A: %s" % str(world_options.get("reason","dữ liệu bản đồ chưa sẵn sàng"))
+        pve_party_picker_feedback.text = "Không dựng được Source A: %s" % str(world_options.get("reason","map unavailable"))
         return
-    var session := HuntingPveRunV2.new()
-    var result := session.begin_multicamp(runtime_session.owner,encounter_id,
-        state.seed ^ state.tick ^ state.sect.v2_pve_settlement_receipts.size(),party,10,world_options)
+    var result := PveP0CommandsV1.deploy(runtime_session.owner,encounter_id,
+        state.seed ^ state.tick ^ state.sect.v2_pve_settlement_receipts.size(),
+        selected,world_options)
     if not bool(result.get("ok",false)):
-        pve_party_picker_feedback.text = "Chưa thể vào Thanh Trúc Lâm: %s" % str(result.get("reason","không đủ điều kiện"))
+        pve_party_picker_feedback.text = "Không thể vào bãi: %s" % str(result.get("reason","unknown"))
         return
-    var first_id := StringName(str(party[0].get("disciple_id","")))
+    var saved := await _save_runtime_async_barrier()
+    if not bool(saved.get("ok",false)):
+        pve_party_picker_feedback.text = "Bãi đã khởi tạo nhưng Save chưa hoàn tất: %s" % str(saved.get("reason",saved.get("error","unknown")))
+        return
+    var first_id := StringName(str(selected[0]))
     _close_pve_party_picker()
     _open_multicamp_panel(first_id,encounter_id)
     _refresh_all()
@@ -5560,9 +5591,9 @@ func _refresh_disciple_summary_content() -> void:
                 var camp_battle: MapBattleV2 = decoded["battle"]
                 already_in_camp = camp_battle.actors.has(str(selected_id))
         camp_hunt_button.visible = authentic_v2
-        camp_hunt_button.text = "Mở bãi đang săn" if already_in_camp else "Săn tổ đội · 10 quái"
-        camp_hunt_button.disabled = not already_in_camp and (not _multicamp_member_eligible(state.disciples[selected_id]) or not active_camp_id.is_empty() or not state.sect.b3_hunt.is_empty())
-        camp_hunt_button.tooltip_text = "Dùng tối đa 6 đệ tử V2 thật; Combat V2 và SaveService của màn chính." if not camp_hunt_button.disabled else "Đệ tử đang bận, bị thương hoặc thế giới săn khác đang hoạt động."
+        camp_hunt_button.text = "Mở bãi đang săn" if already_in_camp else ("Tham gia bãi đang săn" if not active_camp_id.is_empty() else "Đi săn tự do")
+        camp_hunt_button.disabled = not already_in_camp and (not _multicamp_member_eligible(state.disciples[selected_id]) or not state.sect.b3_hunt.is_empty())
+        camp_hunt_button.tooltip_text = "Săn riêng hoặc lập tổ tối đa 6; chung bản đồ 30 người. SaveService thật." if not camp_hunt_button.disabled else "Đệ tử đang bận, bị thương hoặc thế giới săn khác đang hoạt động."
     var identity: Dictionary = snapshot["identity"]
     var quality := str(identity.get("quality_name", "—"))
     if quality.is_empty():
@@ -5621,6 +5652,7 @@ func _build_b3_hunt_panel() -> void:
     b3_hunt_panel.move_child(b3_hunt_arena,0)
     b3_pve_world_view = b3_hunt_arena.sect_world
     b3_pve_world_view.move_ordered.connect(_on_open_world_move_ordered)
+    b3_pve_world_view.hunt_policy_ordered.connect(_on_p0_hunt_policy_ordered)
 
     var facts_panel := Panel.new()
     facts_panel.name = "B3MainHuntFactsPanel"
@@ -5705,6 +5737,26 @@ func _build_b3_hunt_panel() -> void:
     b3_hunt_return_button.add_theme_stylebox_override("normal",_style(CINNABAR,PAPER_LIGHT,2,8))
     b3_hunt_return_button.pressed.connect(_return_from_b3_hunt)
     b3_hunt_panel.add_child(b3_hunt_return_button)
+    p0_add_hunter_button = Button.new()
+    p0_add_hunter_button.name = "PveP0AddHunter"
+    p0_add_hunter_button.text = "+ Đệ tử"
+    p0_add_hunter_button.pressed.connect(_open_p0_join_picker)
+    p0_add_hunter_button.visible = false
+    b3_hunt_panel.add_child(p0_add_hunter_button)
+    p0_withdraw_hunter_button = Button.new()
+    p0_withdraw_hunter_button.name = "PveP0WithdrawHunter"
+    p0_withdraw_hunter_button.text = "Rút 1 người"
+    p0_withdraw_hunter_button.tooltip_text = "Chọn đúng một đệ tử trên bản đồ, sau đó rút riêng"
+    p0_withdraw_hunter_button.pressed.connect(_withdraw_selected_p0_hunter)
+    p0_withdraw_hunter_button.visible = false
+    b3_hunt_panel.add_child(p0_withdraw_hunter_button)
+    p0_close_map_button = Button.new()
+    p0_close_map_button.name = "PveP0CloseMap"
+    p0_close_map_button.text = "Đóng bản đồ"
+    p0_close_map_button.tooltip_text = "Ẩn bản đồ, không rút người và không dừng săn"
+    p0_close_map_button.pressed.connect(_close_p0_hunt_map)
+    p0_close_map_button.visible = false
+    b3_hunt_panel.add_child(p0_close_map_button)
 
 func _resume_saved_b3_hunt() -> void:
     var active_camp_id := HuntingPveRunV2.active_multicamp_id(state)
@@ -5792,43 +5844,30 @@ func _start_multicamp_hunt_for_selected() -> void:
     if not existing.is_empty():
         var restored := _active_multicamp_session(existing)
         if not bool(restored.get("ok",false)):
-            summary_feedback = "Không mở được bãi đã lưu: %s" % str(restored.get("reason","save không hợp lệ"))
+            summary_feedback = "Không mở được bãi đã lưu: %s" % str(restored.get("reason","invalid save"))
             _refresh_disciple_summary_content()
             return
         var saved_session: HuntingPveRunV2 = restored["session"]
-        if not saved_session.battle.actors.has(str(selected_id)):
-            summary_feedback = "Bãi đang có một tổ đội khác."
+        if saved_session.battle.actors.has(str(selected_id)):
+            _open_multicamp_panel(selected_id,existing)
+            return
+        var joined := PveP0CommandsV1.join_one(runtime_session.owner,str(selected_id))
+        if not bool(joined.get("ok",false)):
+            summary_feedback = "Chưa tham gia được: %s" % str(joined.get("reason","unknown"))
+            _refresh_disciple_summary_content()
+            return
+        var persisted := await _save_runtime_async_barrier()
+        if not bool(persisted.get("ok",false)):
+            summary_feedback = "Đã tham gia trong phiên; Save lỗi: %s" % str(persisted.get("reason",persisted.get("error","unknown")))
             _refresh_disciple_summary_content()
             return
         _open_multicamp_panel(selected_id,existing)
+        _refresh_all()
         return
-    if not state.sect.b3_hunt.is_empty():
-        summary_feedback = "Thế giới B3 CARE đang hoạt động."
-        _refresh_disciple_summary_content()
-        return
-    var party := _multicamp_party_for_selected(selected_id)
-    if party.is_empty():
-        summary_feedback = "Cần đúng 6 đệ tử V2 khỏe, rảnh. Dùng nút Săn quái để xem điều kiện và chọn đội."
-        _refresh_disciple_summary_content()
-        return
-    var encounter_id := "pve:thanh_truc_lam:c01:%d:%d:%d" % [
-        state.seed,state.tick,state.sect.v2_pve_settlement_receipts.size()
-    ]
-    var world_options := b3_pve_world_view.get_open_world_options()
-    if not bool(world_options.get("ok",false)):
-        summary_feedback = "Không dựng được world Source A: %s" % str(world_options.get("reason","lưới bản đồ chưa sẵn sàng"))
-        _refresh_disciple_summary_content()
-        return
-    var session := HuntingPveRunV2.new()
-    var result := session.begin_multicamp(runtime_session.owner,encounter_id,
-        state.seed ^ state.tick ^ state.sect.v2_pve_settlement_receipts.size(),
-        party,10,world_options)
-    if not bool(result.get("ok",false)):
-        summary_feedback = "Chưa thể vào bãi: %s" % str(result.get("reason","không đủ điều kiện"))
-        _refresh_disciple_summary_content()
-        return
-    _open_multicamp_panel(selected_id,encounter_id)
-    _refresh_all()
+    _open_pve_party_picker()
+    if pve_party_picker_shade != null and pve_party_picker_shade.visible             and _multicamp_member_eligible(state.disciples[selected_id]):
+        pve_party_selected_ids = [selected_id]
+        _populate_pve_party_picker()
 
 func _multicamp_party_for_selected(first_id: StringName) -> Array:
     if not state.disciples.has(first_id) or not _multicamp_member_eligible(state.disciples[first_id]):
