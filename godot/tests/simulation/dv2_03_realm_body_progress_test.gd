@@ -121,12 +121,36 @@ func _run() -> void:
         _close(disciple.hp/disciple.max_hp,hp_ratio_before_growth),
         "Floor growth did not update live V2 Max HP while preserving current HP ratio."):
         return
-    var compared := CombatStatsV2.derive(1,3,1,2,disciple.potential)
-    if not _check(_close(float(stats["stats"]["max_hp"]),float(compared["stats"]["max_hp"])) and
-        _close(float(stats["stats"]["attack"]),float(compared["stats"]["attack"])) and
-        _close(float(stats["stats"]["defense"]),float(compared["stats"]["defense"])),
-        "Persistent Tu Vi/Body coordinates produced incorrect canonical combat stats."):
+    # PVE-01A: test the *authored* D7 potential rule, independently of
+    # the function under test. D7 multiplies only the cultivation realm
+    # contribution; legacy multiplies realm + body. The old assertion compared
+    # a D7 disciple against CombatStatsV2.derive's legacy default.
+    if not _check(disciple.foundation_model_version >= FoundationSystem.MODEL_D7,
+        "Real recruited test disciple unexpectedly lost its D7 foundation model."):
         return
+    var compared := CombatStatsV2.derive(1,3,1,2,disciple.potential,[],true)
+    var legacy := CombatStatsV2.derive(1,3,1,2,disciple.potential,[],false)
+    if not _check(bool(compared.get("ok",false)) and bool(legacy.get("ok",false)),
+        "Both D7 and legacy stat-mode oracles must be valid."):
+        return
+    var potential_factor := 1.0+0.0005*disciple.potential
+    # At Pham Nhan 3 / Pham Than 2 the realm growth is 1.03^2 and body
+    # growth is 1.03^1; realm 1 has 1.65^0=1 for both tracks.
+    var realm_growth := pow(1.03,2)
+    var body_growth := pow(1.03,1)
+    for channel in CombatStatsV2.CORE_CHANNELS:
+        var realm_piece := float(CombatStatsV2.REALM_BASE[channel])*realm_growth
+        var body_piece := float(CombatStatsV2.BODY_BASE[channel])*body_growth
+        var expected_d7 := realm_piece*potential_factor+body_piece
+        var expected_legacy := (realm_piece+body_piece)*potential_factor
+        if not _check(_close(float(stats["stats"][channel]),expected_d7) and
+            _close(float(compared["stats"][channel]),expected_d7),
+            "D7 independent realm-only potential oracle failed for "+str(channel)):
+            return
+        if not _check(_close(float(legacy["stats"][channel]),expected_legacy) and
+            not _close(expected_d7,expected_legacy),
+            "Legacy full-core potential oracle lost its distinct formula for "+str(channel)):
+            return
 
     # Gate floor 10 is NOT an automatic promotion; all natural overflow stays
     # out of generic banked Tich Tu unless a separate Fate mechanic owns it.
