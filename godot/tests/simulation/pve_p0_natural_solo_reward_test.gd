@@ -84,7 +84,9 @@ func _run() -> void:
     var body: Dictionary = profile["body"]
     var member := {
         "disciple_id":str(picked),"role":"frontline","party_id":"solo:"+str(picked),
-        "position":options["party_spawn_points"][0],
+        # The canonical begin() first validates its 36x20 ARENA, then
+        # begin_multicamp repositions to the REAL Source A spawn points.
+        "position":Vector2(8.0,9.0),
         "realm":int(cult["realm"]),"floor":int(cult["floor"]),
         "body_realm":int(body["realm"]),"body_floor":int(body["floor"])
     }
