@@ -1,5 +1,13 @@
 # CURRENT CHECKPOINT — ONE GAME INTEGRATION
 
+## 2026-11-03 — AN-02.1 SHADOW LAB STATIC QA, ENGINE PENDING
+
+Base PR #68 exact HEAD d35a8affb4cef0e45c9d98c403c983554587f584. Isolated patch branch fix/an02-1-shadow-lab-qa-20261103. No changes to PR #68, RC, main or PvE/Combat V2/SaveService/balance. Source audit: 7/7 authentic Source A packs and 24/24 clips match asset.json vs animations.tres counts, loop flags and durations; 7/7 anchor bounds static match. Boss dead 21 stored/30 logical frames -> 1.0 sec. AN-02.1 adds foot and mirror invariants, deterministic timeline QA, tests for fallbacks and final frames, Windows official Godot 4.7.2 import/focused/GUI capture launcher, and actual GUI framebuffer capture script. ALL remain runtime-UNVERIFIED.
+Environment is Linux without E: mount or Godot executable, GitHub DNS download blocked. Godot 4.7.2 import, GDScript/shader parse, focused runtime and actual 1280×720 captures PENDING_ENGINE/WINDOWS; owner Shadow visual approval and Android PENDING USER. A prior image mockup is not screenshot evidence.
+Local Windows isolated worktree QA instructions and actual commands: docs/animation/AN02_1_GODOT_QA_REPORT_20261103.md. One-click script in feature branch: MO_AN02_QA.cmd; never run on main. Any runtime failure must be repaired within this isolated patch branch before integration.
+
+---
+
 ## 2026-11-03 — AN-01 + AN-02 Shadow animation lab, ISOLATED BRANCH
 Owner authorized AN-01/AN-02 animation audit and standalone lab plus experimental Shadow character style. Branch: feature/an01-an02-shadow-animation-lab-20261103, based on RC 970af33b23076c80d677cf5898a721a27504708f (main at start c0c1382f119599497b52d8ee8abd9e830a883f1e). The new asset matrix documents authentic Source A clip counts. New tmb-sprite-animation skill, AGENTS routing, dedicated Godot scene, shader and focused test are separate from gameplay.
 Shadow = visual-only shader applied to real disciple_male SpriteFrames; it is NOT an authored 8-way actor, weapon socket, skill, VFX impact or gameplay authority. All eight direction controls show FACING_ONLY_MIRRORED. Female cast -> attack1 is explicitly marked adapter fallback. No combat/save/default main scene changes, no main merge and no user profile touched.
