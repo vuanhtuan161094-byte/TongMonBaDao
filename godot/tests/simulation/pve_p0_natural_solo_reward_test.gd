@@ -265,9 +265,38 @@ func _run() -> void:
         print(str(item))
     print("PVE_P0_NATURAL_PROCESS2_END")
     if not _ok(exit_code == 0 and "".join(PackedStringArray(output)).contains(
-            "PVE_P0_NATURAL_SAVE_RELOAD_PASS"),
-            "second actual Godot process failed cold receipts/EXP reload, exit="+str(exit_code)):
+            "PVE_P0_NATURAL_SAVE_RELOAD_PASS")
+            and "".join(PackedStringArray(output)).contains("PVE_P0_RESPAWN_GEN2_PASS"),
+            "second Godot process failed first cold reload or generation-2 kill, exit="+str(exit_code)):
         return
+    # The child wrote the generation-2 receipt to the same QA-only path.
+    # Read it in a separate LiveGameRuntime, not the parent's cached owner.
+    var fresh_runtime := LiveGameRuntimeV2.new()
+    var fresh_open := fresh_runtime.start(path,NOW+1)
+    if not _ok(bool(fresh_open.get("ok",false)) and bool(fresh_open.get("loaded",false)),
+            "generation-2 cold SaveService replay rejected: "+str(fresh_open)):
+        return
+    var reloaded := HuntingPveRunV2.resume_active(
+        fresh_runtime.state(),"p0_natural_one_hunter")
+    if not _ok(bool(reloaded.get("ok",false)),
+            "generation-2 cold battle restore rejected: "+str(reloaded)):
+        return
+    var second_world: HuntingPveRunV2 = reloaded["session"]
+    var first_slot := str(first_event["spawn_slot_id"])
+    var second_receipt: Dictionary = second_world.camp_population["p0_kill_rewards"].get(
+        first_slot,{})
+    if not _ok(int(second_receipt.get("generation",0)) == 2
+            and str(second_receipt.get("kill_id","")) == "p0_natural_one_hunter:slot:"+first_slot+":g2"
+            and int(second_world.camp_population.get("world_total_kills",0)) == 11
+            and second_world.camp_population["p0_kill_rewards"].size() == 10
+            and second_world.battle.pending_kill_events().is_empty()
+            and second_world.battle.active,
+            "cold reload lost second-generation exactly-once receipt or running world"):
+        return
+    print("PVE_P0_RESPAWN_COLD_RELOAD_PASS "+JSON.stringify({
+        "generation":2,"total_paid_kills":11,"bounded_receipts":10,
+        "pending_journal":0,"world_active":true
+    }))
     _clean()
     print("PVE_P0_NATURAL_SOLO_PASS checks=%d" % checks)
     quit(0)
@@ -314,4 +343,121 @@ func _reload_child(disciple_id: String, returned_id: String) -> void:
         "active_hunters":1,"returned_recruit_at_sect":true,
         "live_monsters_waiting_respawn":0
     }))
+    if not _test_second_generation(runtime,session,member,disciple_id):
+        return
     quit(0)
+
+func _test_second_generation(runtime: LiveGameRuntimeV2,
+        session: HuntingPveRunV2,member: DiscipleState,
+        disciple_id: String) -> bool:
+    # Run the real world clock frames without creating a P3 map view.
+    # All ten original monster slots were paid once and are cooling down.
+    if not _ok(runtime.owner.cache_active_multicamp_session(session),
+            "second-process world session was not cached on runtime owner"):
+        return false
+    var receipts: Dictionary = session.camp_population["p0_kill_rewards"]
+    var slot_ids: Array = receipts.keys()
+    slot_ids.sort()
+    var slot_id := str(slot_ids[0])
+    var old_receipt: Dictionary = receipts[slot_id].duplicate(true)
+    var before_progress := DiscipleRealmProgressV2.current(member)
+    var old_stock := runtime.state().sect.warehouse_resources.duplicate(true)
+    var frames := 0
+    while frames < 150:
+        var step := session.advance(false)
+        if not _ok(bool(step.get("ok",false)),
+                "offscreen cooldown simulation stopped at frame %d: %s" % [frames,str(step)]):
+            return false
+        frames += 1
+        if int(session.camp_population["slots"][slot_id]["generation"]) >= 2:
+            break
+    var slot: Dictionary = session.camp_population["slots"][slot_id]
+    var new_actor_id := "p0_natural_one_hunter/"+slot_id+"/g2"
+    if not _ok(int(slot.get("generation",0)) == 2
+            and str(slot.get("phase","")) == "READY"
+            and not slot.has("reward_receipt_id")
+            and not slot.has("reward_disposition")
+            and session.battle.actors.has(new_actor_id)
+            and float(session.battle.actors[new_actor_id].get("hp",0.0)) > 0.0
+            and str(old_receipt.get("kill_id","")) != "p0_natural_one_hunter:slot:"+slot_id+":g2",
+            "same registered monster slot did not respawn as distinct generation 2"):
+        return false
+    # Cold-load ledger corruption must fail closed, not silently award again.
+    var corrupted := session.save_state()
+    var bad_registry: Dictionary = corrupted["camp_population"]
+    var bad_receipt: Dictionary = bad_registry["p0_kill_rewards"][slot_id]
+    bad_receipt["generation"] = 999
+    var rejected := HuntingPveRunV2.restore_state(runtime.state(),corrupted)
+    if not _ok(not bool(rejected.get("ok",true))
+            and str(rejected.get("reason","")) == "p0_reward_receipt_identity_invalid",
+            "tampered paid-life generation survived world restoration"):
+        return false
+    var damage := session.battle.apply_continuous_damage_tick(
+        disciple_id,new_actor_id,"p0_second_life_real_hp0",2000.0)
+    var pending := session.battle.pending_kill_events()
+    if not _ok(bool(damage.get("ok",false)) and pending.size() == 1
+            and str(pending[0].get("spawn_slot_id","")) == slot_id
+            and int(pending[0].get("slot_generation",0)) == 2,
+            "second-generation combat did not produce genuine HP0 journal"):
+        return false
+    var recorded := PveMultiCampPopulationV1.record_authoritative_battle_kill(
+        session.camp_population,session.battle,pending[0],
+        session.world_respawn_delay,true)
+    if not _ok(bool(recorded.get("ok",false)),
+            "second-generation canonical population kill was rejected"):
+        return false
+    var forgery: Dictionary = pending[0].duplicate(true)
+    forgery["damage_kind"] = "tampered"
+    var refused := PvePerKillRewardV1.commit(
+        runtime.state(),session.battle,session.camp_population,forgery,
+        int(session.spawn_data.get("reward_seed",0)))
+    if not _ok(not bool(refused.get("ok",true))
+            and str(refused.get("reason","")) == "p0_kill_not_in_authoritative_journal"
+            and runtime.state().sect.warehouse_resources == old_stock
+            and DiscipleRealmProgressV2.current(member) == before_progress,
+            "modified HP0 event minted items or cultivation/body progress"):
+        return false
+    var settled := session._record_open_world_kills()
+    var new_receipt: Dictionary = session.camp_population["p0_kill_rewards"].get(slot_id,{})
+    var after_progress := DiscipleRealmProgressV2.current(member)
+    var after_stock := runtime.state().sect.warehouse_resources.duplicate(true)
+    if not _ok(bool(settled.get("ok",false))
+            and int(settled.get("recorded",0)) == 1
+            and int(session.camp_population.get("world_total_kills",0)) == 11
+            and session.camp_population["p0_kill_rewards"].size() == 10
+            and int(new_receipt.get("generation",0)) == 2
+            and str(new_receipt.get("kill_id","")) != str(old_receipt.get("kill_id",""))
+            and after_progress != before_progress
+            and session.battle.pending_kill_events().is_empty(),
+            "second real HP0 failed exact-once Tu Vi/Body or bounded reward ledger"):
+        return false
+    var old_fake := {
+        "spawn_slot_id":slot_id,"kill_id":str(old_receipt["kill_id"]),
+        "slot_generation":1
+    }
+    var stale := PvePerKillRewardV1.commit(
+        runtime.state(),session.battle,session.camp_population,old_fake,
+        int(session.spawn_data.get("reward_seed",0)))
+    var current_repeat := pending[0].duplicate(true)
+    var duplicate := PvePerKillRewardV1.commit(
+        runtime.state(),session.battle,session.camp_population,current_repeat,
+        int(session.spawn_data.get("reward_seed",0)))
+    if not _ok(not bool(stale.get("ok",true))
+            and bool(duplicate.get("ok",false))
+            and bool(duplicate.get("duplicate",false))
+            and runtime.state().sect.warehouse_resources == after_stock
+            and DiscipleRealmProgressV2.current(member) == after_progress,
+            "stale or replayed monster life duplicated Tu Vi, body or materials"):
+        return false
+    var checkpoint := session._persist_live_state()
+    var saved := runtime.save(NOW+1)
+    if not _ok(bool(checkpoint.get("ok",false))
+            and bool(saved.get("ok",false)),
+            "SaveService could not persist second-generation receipt"):
+        return false
+    print("PVE_P0_RESPAWN_GEN2_PASS "+JSON.stringify({
+        "simulated_frames":frames,"generation":2,
+        "total_paid_kills":11,"bounded_receipts":10,
+        "replay_no_extra_awards":true,"cold_reload_next":true
+    }))
+    return true
