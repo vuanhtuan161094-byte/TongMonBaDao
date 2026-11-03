@@ -220,6 +220,10 @@ static func advance_respawns(registry: Dictionary, world_seconds: float) -> Dict
         slot["due_at"] = 0.0
         slot["kill_id"] = ""
         slot["receipt_acknowledged"] = false
+        # Paid-life metadata belongs to the previous generation only. The
+        # bounded P0 ledger retains the historical receipt independently.
+        slot.erase("reward_disposition")
+        slot.erase("reward_receipt_id")
         count += 1
     registry["last_seconds"] = world_seconds
     return {"ok":true,"respawned":count,"rewards_granted":false}
