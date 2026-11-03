@@ -1,5 +1,14 @@
 # NEXT CHAT HANDOFF — ONE GAME V6.5 / HS-09 QA
 
+## AN-03.4 WINDOWS QA RESULT — 2026-11-03
+
+Official Godot 4.7.2 Windows run completed: import/parse PASS; focused 18-bone Skeleton3D and animated `hand_R` socket contract PASS (22 checks); 1280x720 GUI PASS (4 authentic captures); renderer bake PASS (46 actual 768x768 RGBA frames: Idle 18, Walk 12, Attack 16). Evidence ZIP is local at `E:\\codex\\2026-10-21\\t-ng-m-n-b-o-4\\work\\issue71_an03_qa_wt\\godot\\outputs\\an03_lab\\AN03_EVIDENCE.zip`, SHA-256 `E75DE92FE65CA2D75741C8B463F61D715CC25B48DAFBF12E2D9D5331D38E726E`.
+
+Fixed two reproduced launcher issues on the AN-03 branch: narrow allow-list for the known Windows certificate-store diagnostic; `%ROOT%.` packager argument to avoid quoted trailing-slash parsing. One rerun passed all gates. The diagnostic remains visible in logs; unrelated error diagnostics still fail.
+
+Evidence scope is bounded: isolated local project base SHA `5e6fdd966bdf710b71e2a1539bb712e44069a4bb` plus PR #71 source files verified against upstream blobs, not a complete checkout of PR #71 base. Results apply to the tested AN-03 implementation files. The model is still procedural guide geometry, not Shadow art/GLB; no 8-way, foot-plant, Android performance or owner visual acceptance is claimed. PR #71 stays draft; PR #68/#69, main, gameplay and saves remain untouched.
+
+
 ## AN-03.3 STATIC SOCKET-FOLLOW AUDIT — 2026-11-03
 
 Owner requested further static review only: no Windows Godot logs yet. Verified PR #71 at 143d98b2bbc9a5af0fd516d84ec7797c1050c748 before the current patch. Concrete focused-test gap: existing contract checked hand_R bone selection but not actual attachment world-transform movement. Added attack windup/strike assertions comparing BoneAttachment3D.world transform to Skeleton3D.get_bone_global_pose(hand_R) and detecting nonzero movement. Official Godot API docs support those methods; not evidence of a runtime pass. Only AN-03 contract test and animation documentation/checkpoints touched.
