@@ -251,24 +251,4 @@ func _run() -> void:
         "E3.1 freed training place cannot be reused from actual UI."):
         return
     print("DV2-03E3 REAL RÈN THÂN MAP + TWO-SLOT UI: PASS")
-    # Temporary rerun #3: checkpoint explicit SaveService after live frame clock.
-    # TEMPORARY PVE-01B CI EVIDENCE ONLY. Launch the authorized PvE
-    # contract in a second official Godot process. This adapter will be
-    # removed from E3 once the independent run has real CI log evidence.
-    var pve_output: Array = []
-    var args := PackedStringArray([
-        "--headless", "--path", ProjectSettings.globalize_path("res://"),
-        "-s", "res://tests/simulation/pve_01a_6v10_v63_gate_contract_test.gd"
-    ])
-    var pve_exit: int = OS.execute(OS.get_executable_path(), args, pve_output, true)
-    var pve_text := ""
-    for row in pve_output:
-        pve_text += str(row)
-    print("PVE01B_STANDALONE_SOURCE_A_TEST_BEGIN")
-    print(pve_text)
-    print("PVE01B_STANDALONE_SOURCE_A_TEST_END")
-    print("PVE01B_STANDALONE_EXIT="+str(pve_exit))
-    if not _check(pve_exit == 0 and pve_text.contains("PVE01B_V63_6V10_GATE_PASS"),
-            "PVE-01B independent Godot 6v10 runtime suite failed, see transcript."):
-        return
     _finish(true)
