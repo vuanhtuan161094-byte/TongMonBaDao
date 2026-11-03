@@ -20,6 +20,12 @@ func _check(ok: bool,reason: String) -> bool:
     quit(1)
     return false
 
+func _freeze_test_clock(state: SimulationState) -> void:
+    # This UI contract pauses its timers; advance the canonical wall baseline
+    # to now before each SaveService barrier to avoid artificial offline catch-up.
+    state.runtime_last_wall_unix = int(Time.get_unix_time_from_system())
+    state.runtime_unconsumed_wall_seconds = 0.0
+
 func _cleanup() -> void:
     if ui != null:
         for key in ["runtime_poll_timer","autosave_timer"]:
@@ -31,7 +37,7 @@ func _cleanup() -> void:
         ui = null
     if qa_path.begins_with(QA_PREFIX):
         for suffix in ["",".tmp",".bak"]:
-            var f := qa_path+suffix
+            var f: String = qa_path+str(suffix)
             if FileAccess.file_exists(f):
                 DirAccess.remove_absolute(ProjectSettings.globalize_path(f))
 
@@ -54,6 +60,16 @@ func _run() -> void:
             and runtime != null and runtime.owner.state == state,
             "P3.2 UI not bound to canonical New Game runtime"):
         return
+
+    # Freeze wall-clock advancement during this command/save UI contract test.
+    # Combat cadence and offline progression are covered by simulation tests.
+    var poll_timer := ui.get("runtime_poll_timer") as Timer
+    if poll_timer != null:
+        poll_timer.stop()
+    var autosave_timer := ui.get("autosave_timer") as Timer
+    if autosave_timer != null:
+        autosave_timer.stop()
+    _freeze_test_clock(state)
     if not _check(state.disciples.size() == 6,
             "New Game baseline is not 6 authentic founder disciples"):
         return
@@ -84,14 +100,25 @@ func _run() -> void:
             and ui.get("pve_party_selected_ids").size() == 1,
             "one authentic V2 disciple cannot start solo while Boss stays six-only"):
         return
+    _freeze_test_clock(state)
     await ui.call("_start_multicamp_hunt_for_picked_party")
     var encounter := HuntingPveRunV2.active_multicamp_id(state)
     var session := runtime.owner.get_active_multicamp_session(encounter)
+    var feedback_label := ui.get("pve_party_picker_feedback") as Label
+    var diagnostic := {
+        "encounter":encounter,"session_exists":session != null,
+        "feedback":feedback_label.text if feedback_label != null else "missing",
+        "active_run_ids":state.sect.v2_pve_active_runs.keys(),
+        "settlement_receipt_ids":state.sect.v2_pve_settlement_receipts.keys(),
+        "state_same_owner":state == runtime.owner.state,
+        "runtime_write_blocked":runtime.owner.runtime_write_blocked,
+        "active_hunt_mode":str(ui.get("active_hunt_mode"))
+    }
     if not _check(not encounter.is_empty() and session != null
             and PveDistributedWorldV1.enabled(session.camp_population)
             and session.battle._count_alive("disciple") == 1
             and session.battle.active,
-            "player-facing P0 button failed to deploy one real recruit"):
+            "player-facing P0 button failed to deploy one real recruit: "+JSON.stringify(diagnostic)):
         return
     var view := ui.get("b3_pve_world_view") as PveSectWorldViewV1
     if not _check(view != null and view.hunt_policy_ordered.has_connections()
@@ -100,16 +127,28 @@ func _run() -> void:
         return
     var selected: Array[String] = [str(first_id)]
     view.selected_actor_ids = selected
+    _freeze_test_clock(state)
     await ui.call("_on_p0_hunt_policy_ordered",selected,"hold")
     if not _check(str(session.battle.actors[str(first_id)].get("hunt_policy","")) == "hold",
             "selected human HOLD command did not reach Combat V2 authority"):
         return
+    _freeze_test_clock(state)
     await ui.call("_close_p0_hunt_map")
+    var close_diag := {
+        "panel_parent_visible":ui.get("b3_hunt_panel").get_parent().visible,
+        "battle_active":session.battle.active,
+        "actor_present":session.battle.actors.has(str(first_id)),
+        "encounter_after":HuntingPveRunV2.active_multicamp_id(state),
+        "owner_encounter_after":HuntingPveRunV2.active_multicamp_id(runtime.owner.state),
+        "state_same_owner":state == runtime.owner.state,
+        "active_hunt_mode":str(ui.get("active_hunt_mode")),
+        "feedback":(ui.get("pve_party_picker_feedback") as Label).text
+    }
     if not _check(not ui.get("b3_hunt_panel").get_parent().visible
             and session.battle.active
             and session.battle.actors.has(str(first_id))
             and HuntingPveRunV2.active_multicamp_id(state) == encounter,
-            "closing the map must not withdraw or end the hunt"):
+            "closing the map must not withdraw or end the hunt: "+JSON.stringify(close_diag)):
         return
     ui.call("_open_pve_party_picker")
     if not _check(ui.get("b3_hunt_panel").get_parent().visible,
@@ -134,6 +173,7 @@ func _run() -> void:
             and not start.disabled and boss.disabled,
             "live-world add-one picker blocked or Boss incorrectly enabled"):
         return
+    _freeze_test_clock(state)
     await ui.call("_start_multicamp_hunt_for_picked_party")
     if not _check(session.battle._count_alive("disciple") == 2
             and session.battle.actors.has(str(second_id))
@@ -141,6 +181,7 @@ func _run() -> void:
             "second recruit did not join active P0 world"):
         return
     view.selected_actor_ids = [str(second_id)]
+    _freeze_test_clock(state)
     await ui.call("_withdraw_selected_p0_hunter")
     if not _check(session.battle.active
             and session.battle._count_alive("disciple") == 1

@@ -454,7 +454,7 @@ func _test_second_generation(runtime: LiveGameRuntimeV2,
     var stale := PvePerKillRewardV1.commit(
         runtime.state(),session.battle,session.camp_population,old_fake,
         int(session.spawn_data.get("reward_seed",0)))
-    var current_repeat := pending[0].duplicate(true)
+    var current_repeat: Dictionary = pending[0].duplicate(true)
     var duplicate := PvePerKillRewardV1.commit(
         runtime.state(),session.battle,session.camp_population,current_repeat,
         int(session.spawn_data.get("reward_seed",0)))

@@ -19,6 +19,7 @@ const MAX_EXTERNAL_DAMAGE_IDS := 4096
 const MAX_CONTINUOUS_BATCH_STEPS := 20000
 const MAX_REMEMBERED_SPAWN_SLOTS := 1024
 const MAX_WORLD_PATH_CACHE_ENTRIES := 128
+const WORLD_MOVE_FORMATION_MIN_GAP_CELLS := 2.5
 
 var rng: GameRng
 var now: float = 0.0
@@ -289,7 +290,8 @@ func order_group_move(actor_ids: Array, destination: Vector2,
     # snap to the same walkable tile near rocks, streams or world bounds.
     for index in range(ordered.size()):
         var desired: Vector2i = base_cell+offsets[index%offsets.size()]
-        var walkable := _nearest_walkable_unreserved_cell(desired,reserved,actor_regions)
+        var walkable := _nearest_walkable_unreserved_cell(
+            desired,reserved,actor_regions,WORLD_MOVE_FORMATION_MIN_GAP_CELLS)
         if walkable.x < 0:
             return {"ok":false,"reason":"move_formation_has_insufficient_walkable_cells"}
         reserved[walkable] = true
@@ -340,7 +342,8 @@ func set_auto_hunt(enabled: bool) -> Dictionary:
 # edge because an offset may begin just outside the valid grid.
 func _nearest_walkable_unreserved_cell(
         origin: Vector2i, reserved: Dictionary,
-        reachable_regions: Array[Dictionary] = []) -> Vector2i:
+        reachable_regions: Array[Dictionary] = [],
+        minimum_separation: float = 0.0) -> Vector2i:
     if not world_mode or world_navigation.is_empty():
         var fallback := _nearest_walkable_cell(origin)
         return fallback if fallback.x >= 0 and not reserved.has(fallback) else Vector2i(-1,-1)
@@ -356,6 +359,14 @@ func _nearest_walkable_unreserved_cell(
                     continue
                 var cell := Vector2i(x,y)
                 if reserved.has(cell) or int(blocked[y*width+x]) != 0:
+                    continue
+                var separated := true
+                if minimum_separation > 0.0:
+                    for used_cell in reserved:
+                        if Vector2(cell).distance_to(Vector2(used_cell)) < minimum_separation:
+                            separated = false
+                            break
+                if not separated:
                     continue
                 var reachable_from_every_actor := true
                 for region in reachable_regions:
