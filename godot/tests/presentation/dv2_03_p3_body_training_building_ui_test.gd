@@ -24,14 +24,83 @@ func _finish(ok: bool) -> void:
     ProjectSettings.set_setting("runtime/live_save_path",LiveGameRuntimeV2.DEFAULT_SAVE_PATH)
     quit(0 if ok else 1)
 
+# E3 QA-only prerequisite: upgrade the ACTUAL starter Residence via
+# canonical paid BuildingSystem authority. A fake disciple_capacity increase
+# is overwritten by SectResidenceSystemV1.refresh_capacity on recruitment.
+# The starter has 8 beds for 6 founders; one Lv2 upgrade gives 10 beds for 9.
+# Production Hall rank/instance limits, receipts and build time still apply.
+func _prepare_residence_for_three_recruits() -> bool:
+    var hall_building := SectHallSystemV1.hall(state)
+    var houses := SectResidenceSystemV1.all_houses(state)
+    if hall_building == null or houses.size() != 1:
+        return _check(false,"E3 requires one authoritative starter Residence and Hall.")
+    var house: BuildingState = houses[0]
+    if not _check(house.level == 1 and house.status == BuildingSystem.STATUS_ACTIVE
+            and state.disciples.size() == 6
+            and SectResidenceSystemV1.total_beds(state) == 8
+            and SectResidenceSystemV1.current_limit(state) == 8,
+            "E3 initial six-founder / eight-bed Home contract changed."):
+        return false
+    var system := BuildingSystem.new()
+    var cost := system.upgrade_cost(house)
+    if not _check(not cost.is_empty(),"E3 canonical starter Residence upgrade cost missing."):
+        return false
+    var warehouse := WarehouseSystem.new()
+    # Fixture-only stock, supplied through the one canonical Warehouse.
+    # No synthetic building levels, free admissions, or altered production code.
+    for material in [BuildingSystem.MATERIAL_WOOD,BuildingSystem.MATERIAL_ORE]:
+        var need := int(cost.get(material,0))
+        var gap := maxi(0,need-system._resource_available(state,StringName(material)))
+        if gap > 0 and not _check(warehouse.add(state,StringName(material),gap),
+                "E3 fixture could not stage canonical Residence upgrade material: "+str(material)):
+            return false
+    state.sect.spirit_stones = maxi(state.sect.spirit_stones,int(cost.get("spirit_stones",0)))
+    var before_stones := state.sect.spirit_stones
+    var request_id := "e3_qa_residence_lv2_one_receipt"
+    var start := system.start_upgrade(state,house.id,request_id)
+    if not _check(bool(start.get("ok",false)) and not bool(start.get("already_settled",false))
+            and house.status == BuildingSystem.STATUS_UPGRADING
+            and house.upgrade_target_level == 2
+            and state.sect.spirit_stones == before_stones-int(cost.get("spirit_stones",0)),
+            "E3 canonical Residence paid upgrade failed: "+str(start)):
+        return false
+    # Advance ONLY the isolated fixture's real simulation ticks to satisfy
+    # the required work; do not assign beds while the building is upgrading.
+    var ticks := 0
+    while house.status == BuildingSystem.STATUS_UPGRADING and ticks < 64:
+        state.tick += 1
+        system.process_tick(state)
+        ticks += 1
+    SectResidenceSystemV1.refresh_capacity(state)
+    var replay := system.start_upgrade(state,house.id,request_id)
+    var legal_limit := SectResidenceSystemV1.current_limit(state)
+    if not _check(house.level == 2 and house.status == BuildingSystem.STATUS_ACTIVE
+            and SectResidenceSystemV1.total_beds(state) == 10
+            and legal_limit >= 9 and state.sect.disciple_capacity >= 9
+            and bool(replay.get("ok",false)) and bool(replay.get("already_settled",false))
+            and state.sect.spirit_stones == before_stones-int(cost.get("spirit_stones",0)),
+            "E3 paid Residence Lv2 did not yield legal beds or exactly-once receipt: "+str(replay)):
+        return false
+    print("DV2_03_E3_CANONICAL_RESIDENCE_PREREQ_PASS " + JSON.stringify({
+        "house_id":str(house.id),"level":house.level,
+        "hall_level":hall_building.level,"beds":SectResidenceSystemV1.total_beds(state),
+        "legal_capacity":legal_limit,"founders":state.disciples.size(),
+        "upgrade_work_ticks":ticks,"paid_receipt":request_id,
+        "source":"isolated_qa_warehouse_and_treasury"
+    }))
+    return true
+
 func _recruit(index: int) -> DiscipleState:
-    state.sect.disciple_capacity = maxi(state.sect.disciple_capacity,state.disciples.size()+1)
     var candidate := DiscipleGeneratorOpenPoints.new().generate_candidate(
         state,DiscipleGeneratorV2.SOURCE_ORDINARY,index
     )
+    if candidate == null or not DiscipleBirthProfileV2.valid_complete_birth(candidate.v2_birth_profile):
+        push_error("E3 authentic V2 candidate generation failed for "+str(index))
+        return null
     state.recruitment_candidates[candidate.id] = candidate
     var accepted := RecruitmentSystem.new().accept_candidate(state,candidate.id)
     if not bool(accepted.get("ok",false)):
+        push_error("E3 canonical Residence admission failed: "+str(accepted))
         return null
     var disciple: DiscipleState = state.disciples[candidate.id]
     disciple.region_id = &"sect"
@@ -74,11 +143,16 @@ func _run() -> void:
         "E3 map is not backed by the real two-slot facility."):
         return
 
-    state.sect.spirit_stones = 9 # Test-only wallet; not a production reward.
+    if not _prepare_residence_for_three_recruits():
+        return
+    state.sect.spirit_stones = 9 # Test-only wallet for the later paid Body minute.
     var a := _recruit(6051)
     var b := _recruit(6052)
     var c := _recruit(6053)
-    if not _check(a != null and b != null and c != null,"E3 requires three authentic V2 disciples."):
+    if not _check(a != null and b != null and c != null
+            and state.disciples.size() == 9
+            and SectResidenceSystemV1.current_limit(state) >= state.disciples.size(),
+            "E3 requires three authentic V2 disciples housed under canonical Residence authority."):
         return
     (token as Button).pressed.emit()
     var panel: Panel = ui.get("building_operation_panel") as Panel
