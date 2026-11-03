@@ -253,6 +253,8 @@ func _run() -> void:
     if not _ok(bool(saved.get("ok",false)) and FileAccess.file_exists(path),
             "canonical SaveService could not persist offscreen kill receipts"):
         return
+    var progression_before_second_life := DiscipleRealmProgressV2.current(
+        state.disciples[picked])
     var output: Array = []
     var params := PackedStringArray([
         "--headless","--path",ProjectSettings.globalize_path("res://"),
@@ -285,17 +287,31 @@ func _run() -> void:
     var first_slot := str(first_event["spawn_slot_id"])
     var second_receipt: Dictionary = second_world.camp_population["p0_kill_rewards"].get(
         first_slot,{})
+    var warehouse_matches := true
+    var warehouse := WarehouseSystem.new()
+    var gen2_items: Dictionary = second_receipt.get("items",{})
+    for raw_item in gen2_items.keys():
+        var resource_id := StringName(str(raw_item))
+        if warehouse.quantity(fresh_runtime.state(),resource_id) != (
+                warehouse.quantity(state,resource_id)+int(gen2_items[raw_item])):
+            warehouse_matches = false
+            break
+    var persisted_progress := DiscipleRealmProgressV2.current(
+        fresh_runtime.state().disciples[picked])
     if not _ok(int(second_receipt.get("generation",0)) == 2
             and str(second_receipt.get("kill_id","")) == "p0_natural_one_hunter:slot:"+first_slot+":g2"
             and int(second_world.camp_population.get("world_total_kills",0)) == 11
             and second_world.camp_population["p0_kill_rewards"].size() == 10
             and second_world.battle.pending_kill_events().is_empty()
-            and second_world.battle.active,
-            "cold reload lost second-generation exactly-once receipt or running world"):
+            and second_world.battle.active
+            and persisted_progress != progression_before_second_life
+            and warehouse_matches,
+            "cold reload lost generation-2 Tu Vi/Body, material quantities or running world"):
         return
     print("PVE_P0_RESPAWN_COLD_RELOAD_PASS "+JSON.stringify({
         "generation":2,"total_paid_kills":11,"bounded_receipts":10,
-        "pending_journal":0,"world_active":true
+        "pending_journal":0,"world_active":true,"cultivation_and_body_persisted":true,
+        "material_quantities_persisted":true
     }))
     _clean()
     print("PVE_P0_NATURAL_SOLO_PASS checks=%d" % checks)
