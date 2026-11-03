@@ -500,7 +500,7 @@ func _run() -> void:
 				if path.size() > 1:
 					path_around_terrain = true
 		if not _check(ordered_count == 6 and unique_slots.size() == 6
-			and minimum_slot_distance >= 2.5 and path_around_terrain,
+			and minimum_slot_distance >= 3.5 and path_around_terrain,
 				"clicking open ground did not issue six spaced saved pathfinding orders through the Source A forest obstacle grid; orders=%d slots=%d min_spacing=%.2f selected=%s alive=%d target=%s" % [
 				ordered_count,unique_slots.size(),minimum_slot_distance,str(map.selected_actor_ids),battle._count_alive("disciple"),str(move_target)]):
 			return
@@ -534,7 +534,7 @@ func _run() -> void:
 			for second in range(first+1,visual_formation_positions.size()):
 				minimum_visual_spacing = minf(minimum_visual_spacing,
 					visual_formation_positions[first].distance_to(visual_formation_positions[second]))
-		if not _check(slots_by_actor.size() == 6 and unique_slots.size() == 6 and minimum_visual_spacing >= 2.5,
+		if not _check(slots_by_actor.size() == 6 and unique_slots.size() == 6 and minimum_visual_spacing >= 3.5,
 			"the real six-disciple move command did not create six spaced walkable formation slots; actors=%d slots=%d min_spacing=%.2f" % [
 			slots_by_actor.size(),unique_slots.size(),minimum_visual_spacing]):
 			return
