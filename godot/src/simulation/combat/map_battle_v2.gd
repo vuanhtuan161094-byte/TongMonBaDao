@@ -10,6 +10,7 @@ const MAX_SECONDS := 90.0
 const MAX_EVENTS := 2400
 const ARENA := Rect2(Vector2.ZERO,Vector2(36.0,20.0))
 const MAX_DISCIPLES := 30
+const P0_LOCAL_HUNT_RADIUS := 18.0
 const MAX_MONSTERS := 40
 const MAX_TARGETS_AOE := 3
 # Backpressure rather than dropping durable HP0 records when PH1 has not ACKed.
@@ -804,7 +805,7 @@ func add_world_disciple(row: Dictionary) -> Dictionary:
         "learned_guard_factor":1.0,"status_effects":{},
         "linked_disciple":null,
         "hunt_policy":"auto","hunt_after_move":"auto",
-        "hunt_radius":PveDistributedWorldV1.HUNT_RADIUS
+        "hunt_radius":P0_LOCAL_HUNT_RADIUS
     }
     # Preserve the exact optional V6.3 loadout attached by the canonical
     # human-skill author, never re-roll it on joining an ongoing world.
