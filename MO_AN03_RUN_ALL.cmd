@@ -1,5 +1,5 @@
 @echo off
-setlocal EnableExtensions
+setlocal EnableExtensions EnableDelayedExpansion
 rem One-click official Windows QA+GPU bake on AN-03 isolated Git worktree.
 rem Never fetch, reset, checkout, clean or merge; no game/save state touched.
 set "ROOT=%~dp0"
@@ -11,7 +11,7 @@ set "QA_EXIT=%ERRORLEVEL%"
 if "%QA_EXIT%"=="0" (
   echo [AN03] Visual QA finished; starting real GPU bake.
   call "%ROOT%MO_AN03_BAKE.cmd"
-  set "BAKE_EXIT=%ERRORLEVEL%"
+  set "BAKE_EXIT=!ERRORLEVEL!"
 ) else (
   echo [AN03] QA failed; skipping GPU bake to preserve failure evidence.
 )
