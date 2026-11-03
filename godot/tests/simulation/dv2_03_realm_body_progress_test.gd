@@ -151,6 +151,8 @@ func _run() -> void:
             not _close(expected_d7,expected_legacy),
             "Legacy full-core potential oracle lost its distinct formula for "+str(channel)):
             return
+    print("PVE01A_DV203_D7_LEGACY_INDEPENDENT_ORACLE_PASS channels=3" +
+        " potential_mode=D7_realm_only legacy_mode=full_core")
 
     # Gate floor 10 is NOT an automatic promotion; all natural overflow stays
     # out of generic banked Tich Tu unless a separate Fate mechanic owns it.
