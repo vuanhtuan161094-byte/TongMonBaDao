@@ -439,6 +439,12 @@ func _advance_multicamp(viewed_map: bool) -> Dictionary:
 func _advance_open_world(viewed_map: bool) -> Dictionary:
     if battle == null or not battle.world_mode:
         return {"ok":false,"reason":"open_world_snapshot_missing"}
+    var distributed := PveDistributedWorldV1.enabled(camp_population)
+    var pre_lod: Dictionary = {"ok":true,"changed":false}
+    if distributed:
+        pre_lod = PveDistributedWorldV1.synchronize(self)
+        if not bool(pre_lod.get("ok",false)):
+            return pre_lod
     var stepped := battle.step(viewed_map)
     if not bool(stepped.get("ok",false)):
         return stepped
@@ -453,17 +459,22 @@ func _advance_open_world(viewed_map: bool) -> Dictionary:
         return corpse_cleanup
     var recorded_kills := int(kills.get("recorded",0))
     var respawned := int(population_step.get("respawned",0))
-    if respawned > 0:
+    if respawned > 0 and not distributed:
         var respawn_spawns := _spawn_ready_world_respawns()
         if not bool(respawn_spawns.get("ok",false)):
             return respawn_spawns
-    var zone_changed := false
+    var post_lod: Dictionary = {"ok":true,"changed":false}
+    if distributed and battle._count_alive("disciple") > 0:
+        post_lod = PveDistributedWorldV1.synchronize(self)
+        if not bool(post_lod.get("ok",false)):
+            return post_lod
+    var zone_changed := bool(pre_lod.get("changed",false)) or bool(post_lod.get("changed",false))
     if battle._count_alive("disciple") == 0:
         battle.active = false
         battle.outcome = "defeat"
         battle._event("battle_end",{"outcome":"defeat","elapsed":battle.now,
             "downed_disciples":battle.downed_disciples,"cause":"all_party_members_downed"})
-    elif battle._count_alive("monster") == 0:
+    elif battle._count_alive("monster") == 0 and not distributed:
         var next_camp := _next_ready_world_camp()
         if next_camp >= 0:
             var spawned := _spawn_open_world_camp(next_camp)
@@ -494,7 +505,8 @@ func _advance_open_world(viewed_map: bool) -> Dictionary:
         "camp_id":PveMultiCampPopulationV1.camp_id(camp_index),
         "respawned":respawned,"recorded_kills":recorded_kills,
         "barrier":durable_barrier,
-        "loot_disposition":"CODEX_SETTLED" if bool(kills.get("codex_rewards_granted",false)) else "LOOT_PENDING",
+        "loot_disposition":"P0_KILL_ROLL" if distributed else (
+            "CODEX_SETTLED" if bool(kills.get("codex_rewards_granted",false)) else "LOOT_PENDING"),
         "rewards_granted":bool(kills.get("codex_rewards_granted",false)),
         "outcome":battle.outcome,"time":battle.now,
         "alive_disciples":battle._count_alive("disciple"),
