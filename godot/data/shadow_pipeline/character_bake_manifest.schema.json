@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tongmonbadao.invalid/schemas/character-bake-manifest-v1.json",
+  "title": "TMB Character Bake Manifest v1",
+  "type": "object",
+  "required": ["schema_version", "asset_id", "status", "source", "engine", "fps", "cell_size", "directions", "frames_per_page", "conversion", "pivot", "required_clip_states", "missing_required_clips", "clips", "pages", "owner_visual_acceptance"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "asset_id": {"type": "string", "minLength": 1},
+    "status": {"enum": ["READY_FOR_VISUAL_REVIEW", "INCOMPLETE_REQUIRED_CLIPS"]},
+    "source": {
+      "type": "object",
+      "required": ["path", "sha256", "format"],
+      "properties": {
+        "path": {"type": "string", "pattern": "^res://"},
+        "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "format": {"enum": ["glb", "gltf", "fbx"]}
+      },
+      "additionalProperties": true
+    },
+    "engine": {"type": "object", "required": ["name", "version"], "properties": {"name": {"type": "string"}, "version": {"type": "string"}}},
+    "fps": {"type": "integer", "minimum": 1, "maximum": 60},
+    "cell_size": {"type": "array", "prefixItems": [{"type": "integer", "minimum": 1}, {"type": "integer", "minimum": 1}], "minItems": 2, "maxItems": 2},
+    "directions": {"type": "array", "minItems": 4, "maxItems": 8, "items": {"type": "integer", "minimum": 0, "maximum": 359}, "uniqueItems": true},
+    "frames_per_page": {"type": "integer", "minimum": 1},
+    "conversion": {"type": "object"},
+    "pivot": {"type": "object"},
+    "required_clip_states": {"type": "object"},
+    "missing_required_clips": {"type": "array", "items": {"type": "string"}},
+    "clips": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "source_clip", "duration_seconds", "fps", "frame_count", "pages"],
+        "properties": {
+          "name": {"type": "string", "minLength": 1},
+          "source_clip": {"type": "string", "minLength": 1},
+          "duration_seconds": {"type": "number", "exclusiveMinimum": 0},
+          "fps": {"type": "integer", "minimum": 1, "maximum": 60},
+          "frame_count": {"type": "integer", "minimum": 1},
+          "pages": {"type": "array", "minItems": 1, "items": {"type": "string", "pattern": "^res://"}}
+        },
+        "additionalProperties": true
+      }
+    },
+    "pages": {"type": "array", "items": {"type": "object"}},
+    "owner_visual_acceptance": {"const": "PENDING"}
+  },
+  "additionalProperties": false
+}
+
