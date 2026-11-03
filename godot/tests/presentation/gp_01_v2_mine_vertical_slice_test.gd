@@ -206,6 +206,13 @@ func _run() -> void:
         and final_actor.profession_xp.get("mining", 0.0) > xp_before
         and final_state.to_dict() == expected.to_dict(),
         "Offline recovery diverged from one real Mine completion/EXP/state."):
+        print("GP01_OFFLINE_FACTS ore_expected=%d ore_actual=%d batches_expected=%d batches_actual=%d cycle_empty=%s birth_equal=%s worksite_expected=%s worksite_actual=%s mining_xp_before=%.6f mining_xp_after=%.6f state_equal=%s" % [
+            ore_before+batch,warehouse.quantity(final_state,&"thanh_thiet"),batches_before+1,
+            int(final_mine.metrics.get("production_batches",0)),str(final_actor.work_cycle_state.is_empty()),
+            str(final_actor.v2_birth_profile == saved_birth),str(mine.id),str(final_actor.worksite_building_id),
+            xp_before,float(final_actor.profession_xp.get("mining",0.0)),
+            str(final_state.to_dict() == expected.to_dict())
+        ])
         var state_diffs: Array[String] = []
         _collect_state_diffs(expected.to_dict(),final_state.to_dict(),"state",state_diffs)
         for difference in state_diffs:
