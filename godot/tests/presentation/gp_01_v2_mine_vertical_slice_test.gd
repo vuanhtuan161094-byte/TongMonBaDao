@@ -326,6 +326,12 @@ func _collect_state_diffs(expected_value: Variant, actual_value: Variant,
         path: String, differences: Array[String]) -> void:
     if differences.size() >= 24:
         return
+    if typeof(expected_value) != typeof(actual_value):
+        differences.append("%s type expected=%s (%s) actual=%s (%s)" % [
+            path,type_string(typeof(expected_value)),str(expected_value).substr(0,120),
+            type_string(typeof(actual_value)),str(actual_value).substr(0,120)
+        ])
+        return
     if expected_value is Dictionary and actual_value is Dictionary:
         var keys: Array = expected_value.keys()
         for key in actual_value.keys():
