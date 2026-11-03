@@ -160,7 +160,12 @@ func begin_multicamp(owner: SimulationRuntimeOwnerV2, encounter_id: String,
     var selected := HuntingMapV2.choose_level(state,PveMultiCampPopulationV1.ZONE,1)
     if not bool(selected.get("ok",false)):
         return selected
-    var started := begin(state,PveMultiCampPopulationV1.ZONE,encounter_id,seed,party_members)
+    # PVE-01B: multicamp is started by the canonical owner, not a preview UI.
+    # Resolve opt-in from the persisted save itself, never an unsaved caller
+    # parameter or a globally enabled feature flag. Legacy/OFF stays OFF.
+    var persisted_gates := V63FeatureGates.persisted_preview_overrides(state)
+    var started := begin(state,PveMultiCampPopulationV1.ZONE,encounter_id,seed,
+        party_members,"",persisted_gates)
     if not bool(started.get("ok",false)):
         return started
 
