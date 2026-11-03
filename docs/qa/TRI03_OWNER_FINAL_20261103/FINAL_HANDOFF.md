@@ -1,26 +1,42 @@
-# TRI-03 OWNER FINAL — 2026-11-03
+# TRI-03 P0 Windows follow-up — 2026-11-03
 
-**Code source tested:** commit 84aa5bf53a7538aef93d7e7f2a64e2d78c4a9587; Git tree c2a9c67501fb72cb04d39172ef39fba365778f3b. Parent code chain: b123ac2 → 73560f6 → 84aa5bf. PR #67 was observed at base 27ed01cd8f377994e5e50bac9ede84e78e8895bd before publishing. No merge was performed.
+Status: implementation checkpoint; full owner playable acceptance remains OPEN. PR #67 stays Draft.
 
-## What is now playable in the branch source
+## Runtime identity and launcher
 
-- The New Game sect map uses a deliberate V2 composition and Source A art. At 1280×720 the fit view shows the Hall hub, Residence, Guidance, Warehouse/Forge wing, roads and map controls together. Before/after frames are under screenshots/before and screenshots/after.
-- XÂY DỰNG opens the real P3.2 map placement flow. The only construction authority currently implemented is paid Đệ Tử Xá placement; the catalog says other building types do not support placement instead of exposing fake enabled buttons. The New Game state has Hall Lv1 and correctly shows the current Hall Lv11 gate; a new residence is not an immediate free build.
-- The live P3.2 placement path selects a valid site through mouse-event hit testing, uses the canonical cost/receipt, shows the real map ghost, completes through canonical residence state, permits moving an eligible empty annex, blocks starter/occupied moves, and keeps replay exactly-once after relocation. The dedicated placement fixture seeds Hall Lv11 and resources only in memory; it does not edit a player save or change game balance.
-- The Dẫn Tiên B1 screen shows the real queue, separate Tam/Tứ radar, canonical capacity, two-step accept/reject and recruitment-order state. A New Game screenshot confirms 6/8 disciples and 6/8 beds, with two real available places. The reveal names the new disciple, shows a mapped Source A portrait, and exposes Profile/Assignment/World actions. A SaveService roundtrip retains the new canonical roster identity.
-- On a successful reveal, duplicate feedback no longer pushes the decision row below the 720px view. The Source A building art stays SHA-gated by the existing manifest.
+Launcher: E:\TongMonBaDaoWorkspace\01_Game\TongMonBaDao\CHOI-GAME.cmd
 
-## Verification
+Local checkout branch is integration/tri-facility-a-b-playable-20261102; local Git HEAD remains 27ed01cd8f377994e5e50bac9ede84e78e8895bd with preserved working changes and generated import files. This is a verified source overlay, not a clean checkout of the published commit. Upstream source parent is 7f732c74bc87d4f579d6a90442b036f1040995da.
 
-The matrix contains exact process exit codes and PASS markers. On code source 84aa5bf: Godot 4.7.2 import, B1 layout/contract/art/live recruitment, independent B1 reload, DD092, Hall/Housing, async SaveService, P3.6A, P3.7B1 Warehouse, live P3.2 build/relocation and independent relocation reload all exited 0. The first visual capture run executed the unchanged source content committed as 84aa5bf and exited 0, producing the listed 1280×720 frames and the successful Source A recruitment reveal. A retry after the commit stalled at scene_added and Windows marked the QA window not responding; that retry is explicitly recorded as HUNG, not PASS. The QA process was closed after WM_CLOSE failed; no user process was terminated.
+Current runtime fingerprint: db30cfb372ec539331f8dbaa66f331be82e80fe0818224b1d5cb9a41a0da3fce (40 pinned files). Each changed code blob in this commit was checked against the local Git hash used by the launcher. The launcher verifies all changed Godot source, prints the actual local HEAD and fingerprint, imports when the fingerprint changes, and checks for a responsive game window. Official binary: 4.7.2.stable.official.ed1daf0bf. Preflight exit 0.
 
-Godot stderr reported the Windows environment warning “Failed to read the root certificate store”; focused scripts had no parse/script errors. The B1 art fixture reports anonymous_fallback for its deliberately unmapped test candidate; the captured newly recruited disciple resolved a mapped Source A portrait. Do not interpret the fixture fallback as approved portrait art.
+Save profile is isolated under E:\TongMonBaDaoWorkspace\03_QA_Logs\TRI03_OWNER_FINAL_20261103\owner_play_profile. Default player saves were not opened or overwritten.
 
-## Acceptance still pending
+## Implemented and exercised
 
-- Physical Windows mouse playthrough and owner visual acceptance are PENDING_USER; UI capture uses injected Godot button/input events. Android/touch is PENDING_USER.
-- Build placement is only supported for Residence because that is the only existing canonical construction authority. Other building types are initialized/upgradable but not map-buildable; adding their authorities would require separate system design and is outside this tested patch.
-- New Game cannot place a second house until the canonical Hall Lv11 requirement is reached. No gate, economy, costs, or starting resources were changed. The placement proof uses an isolated in-memory prerequisite fixture, so the full natural progression to Hall Lv11 remains unverified here.
-- The final repeated capture attempt hung at first scene startup, so Windows GUI stability needs owner confirmation despite the earlier identical-source render pass.
+- Canonical Residence placement and eligible annex relocation retain paid costs, site/door/path/collision checks and exactly-once receipts.
+- Recruit -> real HS-09 deep profile -> Workforce assignment -> Save -> independent-process Reload passed. Reload retained candidate_0007, roster 7, spirit_field_001 and recruitment tokens 2.
+- Current 1280x720 build-mode hint is fully readable and explains supported construction.
+- Launcher start helper distinguishes process creation from an actually responsive game window.
 
-All QA saves used isolated profile paths. The user's default save was not opened or modified. E source sync was file-hash checked and the C2 versions were backed up in the adjacent backup_before_sync_* folders. E's Git HEAD itself remains 27ed01cd…; only selected source files were copied into its existing dirty checkout. Launcher path: E:\TongMonBaDaoWorkspace\01_Game\TongMonBaDao\CHOI-GAME.cmd, official Godot 4.7.2. It remains on its pre-existing local HEAD guard and uses a separate QA profile.
+## Windows test evidence
+
+The 14-case core matrix passed with exit 0: import, B1 contract/art/live save, independent B1 reload, P3.6A, P3.7C1, Warehouse, DD092, O2, GP01, GP02A, O5 and O6. This matrix predates the final display-only build-hint edit; it is not presented as a complete final-SHA rerun.
+
+After that edit, current fingerprint db30cf passed import, B1 contract, real OpenGL map placement/relocation capture, independent map reload, recruited HS-09/assignment render flow, and independent recruit reload. Map reload markers: TRI_MAP_BUILD_CROSS_PROCESS_RELOAD_PASS and TRI_MAP_RELOCATION_CROSS_PROCESS_PASS, exit 0. HS-09 reload marker: TRI03_RECRUIT_HS09_CROSS_PROCESS_RELOAD_PASS, exit 0.
+
+[Matrix](TEST_MATRIX.csv) · [Unmodified stdout/stderr combined with file delimiters](raw_logs_current.txt)
+
+Original latest PNGs are retained locally in real_rendered_frames_post_patch_20261103 under the QA root. Captures are actual Godot OpenGL frames using injected UI input, not physical mouse acceptance. Renderer: OpenGL 3.3 Compatibility, Intel Iris Plus, driver 31.0.101.2125.
+
+## CI triage and remaining acceptance
+
+Historical 20a9bfd CI: 9 success / 9 failure. Actual logs identified stale GuidanceRecruitOrder locators in GP/O6; tests now exercise UseRecruitmentOrder and its canonical debit. O5 direct scheduler advancement left its wall-clock anchor stale before the save barrier; the test now reanchors the test clock while retaining upgrade/progress/resource assertions. Current local GP01/GP02A/O5/O6 exit 0. Production SaveService and economy were not changed.
+
+DV2-02 group initialization and DV2-03 canonical combat-stat failures remain separate unresolved regression debt. No claim of full repository CI PASS; new-commit Actions status must be read separately.
+
+Only Residence has canonical map placement authority. New Game starts Hall Lv1 with one house; the next Residence requires Hall Lv11 and real resources. Placement captures use explicitly seeded in-memory QA prerequisites. Natural New Game -> production -> Hall Lv11 -> player-built house remains UNVERIFIED. Other initial unique buildings retain fixed positions; no fake build or direct state mutation was introduced.
+
+Prior Windows retry failed in GLES shader initialization with signal 11 through ig11icd64.dll. Current map and HS-09 render runs succeeded, but repeated clean-launch stability is still UNVERIFIED; cause is not established. All Godot stderr streams retain the environment warning about reading the root certificate store.
+
+Physical mouse end-to-end playthrough, Android/touch, full natural construction progression, repeated graphics stability and final full CI acceptance remain PENDING. This is not PLAYABLE/GUI PASS.

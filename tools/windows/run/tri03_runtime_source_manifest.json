@@ -1,9 +1,50 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "branch": "integration/tri-facility-a-b-playable-20261102",
   "base_sha": "27ed01cd8f377994e5e50bac9ede84e78e8895bd",
-  "source_fingerprint": "b00e72345f3a5b20cd9239ab8dc6ebe229e70e3de4793d455ae434f8cb2c115c",
+  "upstream_pr_sha": "7f732c74bc87d4f579d6a90442b036f1040995da",
+  "source_fingerprint": "db30cfb372ec539331f8dbaa66f331be82e80fe0818224b1d5cb9a41a0da3fce",
   "files": [
+    {
+      "path": "CHOI-GAME.cmd",
+      "git_blob_sha": "ac72de4fd28350c4f701d49a23be96b10f987f6a"
+    },
+    {
+      "path": "godot/art/source_a_env02a/pv01_assets/guidance/510111.png",
+      "git_blob_sha": "06853546dbbb2b8df3006f0b0dc7956e32b18c0c"
+    },
+    {
+      "path": "godot/art/source_a_env02a/pv01_assets/main_hall/510052.png",
+      "git_blob_sha": "b67257af57682b2077e6e60b3e8d71c958116dd1"
+    },
+    {
+      "path": "godot/art/source_a_env02a/pv01_assets/residence/510076.png",
+      "git_blob_sha": "7d6db8e40da68529e65e2041ca3713bcc7f347cb"
+    },
+    {
+      "path": "godot/art/uiux/guidance_paint_v2.svg",
+      "git_blob_sha": "1124943677170f66dec29a539abe8423195e7c84"
+    },
+    {
+      "path": "godot/art/uiux/hall_paint_v2.svg",
+      "git_blob_sha": "6ab405b759516365fc28ee07aea6952269b009b1"
+    },
+    {
+      "path": "godot/art/uiux/residence_paint_v2.svg",
+      "git_blob_sha": "03cc11b867c6a7eb644093cf4af1cb8f19d9bd4c"
+    },
+    {
+      "path": "godot/data/presentation/tri_facility_source_a_manifest.json",
+      "git_blob_sha": "1bbf5b2d60513ee3a2026f937f49a4de0a42cd01"
+    },
+    {
+      "path": "godot/project.godot",
+      "git_blob_sha": "bbdc4dc2fc16358297840cc06a932c2ea20094ce"
+    },
+    {
+      "path": "godot/scenes/p3/p3_2_landscape_sect.tscn",
+      "git_blob_sha": "ac8bcb5c317b833310dcd050f0b4264fd66de358"
+    },
     {
       "path": "godot/src/presentation/dai_dien_screen_v1.gd",
       "git_blob_sha": "302cd99417905ebcb52ea8f5652b7ae589ce033b"
@@ -13,12 +54,16 @@
       "git_blob_sha": "6dac146befbbfc3f90bf5a048d2ca506bc1d90e9"
     },
     {
+      "path": "godot/src/presentation/p3_2_landscape_sect.gd",
+      "git_blob_sha": "5b7bd26d7785476e7a7645aba0b3dcca480a4202"
+    },
+    {
       "path": "godot/src/presentation/p3/sect_isometric_world_v1.gd",
       "git_blob_sha": "975a8c1f7c32012b5e6abd2a4e6c51ed19c516ba"
     },
     {
-      "path": "godot/src/presentation/p3_2_landscape_sect.gd",
-      "git_blob_sha": "aa7e64a4242523ba4a5ed94c41f27f441809d4ad"
+      "path": "godot/src/presentation/p3/sect_map25_source_art.gd",
+      "git_blob_sha": "f18651f9b224b558ef1512a13aaa589dfda117c4"
     },
     {
       "path": "godot/src/presentation/uiux/dai_dien_screen_b1_v1.gd",
@@ -31,6 +76,10 @@
     {
       "path": "godot/src/presentation/uiux/de_tu_xa_screen_b1_v1.gd",
       "git_blob_sha": "40048faa259b598b441e886725aa6de3e5113cfa"
+    },
+    {
+      "path": "godot/src/presentation/uiux/sect_facility_art_v2.gd",
+      "git_blob_sha": "0b47c04efe3d9b5955034975e551372842223004"
     },
     {
       "path": "godot/src/presentation/uiux/tri_facility_live_adapter_v1.gd",
@@ -70,11 +119,11 @@
     },
     {
       "path": "godot/tests/presentation/p3_o5_real_consumption_loop_test.gd",
-      "git_blob_sha": "859f929c4e48b7e3c99c395e45d9b681fa3cda2a"
+      "git_blob_sha": "97a182b0ecdb78123b9173e0f1d84d77bcde82c4"
     },
     {
       "path": "godot/tests/presentation/p3_o6_m1_release_rehearsal_test.gd",
-      "git_blob_sha": "8a4a99d463be9c1aa8b03566c0761f13236a4f0f"
+      "git_blob_sha": "ac282555c41d98e383e848590341faf323c2413c"
     },
     {
       "path": "godot/tests/presentation/p3_o9_m2_production_rehearsal_test.gd",
@@ -102,11 +151,19 @@
     },
     {
       "path": "godot/tests/presentation/tri_facility_recruited_hs09_flow_test.gd",
-      "git_blob_sha": "b294c093b396e8c7c59a739708da34be7c14450d"
+      "git_blob_sha": "1c4ca1c8e02b67482ede4b9679a2edb5186cbb9b"
     },
     {
       "path": "godot/tests/presentation/tri_facility_recruited_hs09_reload_verify.gd",
-      "git_blob_sha": "bff466c0a182095f2def79a3ee189479e04798e8"
+      "git_blob_sha": "1cb5b980893cc2f9d5279365529596814bfc6766"
+    },
+    {
+      "path": "tools/windows/run/Start-TRI03Game.ps1",
+      "git_blob_sha": "54aa090f00d69e140cf98719218bfb029ac763b8"
+    },
+    {
+      "path": "tools/windows/run/Verify-TRI03Source.ps1",
+      "git_blob_sha": "3e37bb08e2689a9a3f9a74940212cfd660afae80"
     }
   ]
 }

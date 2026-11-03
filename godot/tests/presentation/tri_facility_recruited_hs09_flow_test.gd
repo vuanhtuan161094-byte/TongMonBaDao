@@ -18,9 +18,19 @@ func _run() -> void:
 		DirAccess.make_dir_recursive_absolute(capture_dir)
 	save_path = OS.get_environment("TMB_TRI03_FLOW_SAVE_PATH")
 	if save_path.is_empty():
-		save_path = ProjectSettings.globalize_path(SAVE_PREFIX + str(OS.get_process_id()) + ".json")
+		save_path = SAVE_PREFIX + str(OS.get_process_id()) + ".json"
+	if not save_path.begins_with(SAVE_PREFIX):
+		_fail("test save path must stay under the unique user:// TRI-03 QA namespace")
+		return
+	_cleanup_save()
 	ProjectSettings.set_setting("runtime/live_save_path",save_path)
 	if not await _open_game():
+		return
+	if not await _capture_frame("00_new_game_sect_map.png"):
+		return
+	var runtime := game.get("runtime_session") as LiveGameRuntimeV2
+	if not _require(runtime != null and runtime.save_path == save_path,
+		"P3 scene did not bind SaveService to this isolated QA save path"):
 		return
 	if not _require(state.disciples.size() == 6 and state.sect.disciple_capacity == 8,
 		"fresh P3.2 state must retain the canonical 6/8 roster"):
@@ -56,6 +66,8 @@ func _run() -> void:
 	if not _require(state.sect.disciple_recruitment_tokens == token_count-1,
 		"real B1 order button did not debit exactly one canonical token"):
 		return
+	if not await _capture_frame("03_dan_tien_candidates_after_order.png"):
+		return
 	var recruit_id := await _accept_visible_candidate()
 	if recruit_id == &"":
 		return
@@ -75,6 +87,8 @@ func _run() -> void:
 		and disciple_model.get("portrait") is Texture2D,
 		"recruit reveal does not expose this real disciple's exact seven stats and Source A portrait"):
 		return
+	if not await _capture_frame("04_recruitment_success_reveal.png"):
+		return
 	var profile := _find_button(game,"RecruitedDiscipleProfile")
 	if not await _press(profile,"XEM HỒ SƠ"):
 		return
@@ -87,6 +101,12 @@ func _run() -> void:
 		deep = popup_layer.find_child("DiscipleDeepScreen",true,false) as Panel
 	if not _require(deep != null and StringName(game.get("selected_id")) == recruit_id,
 		"B1 XEM HỒ SƠ did not open the canonical HS-09 deep profile for this disciple"):
+		return
+	var overview_text := str(game.call("_disciple_overview_tab_text",state.disciples[recruit_id]))
+	if not _require(overview_text.contains("Nhân tộc")
+		and not overview_text.contains("male") and not overview_text.contains("female")
+		and not overview_text.contains("human"),
+		"HS-09 exposed an untranslated sex/race enum instead of player-facing labels"):
 		return
 	if not await _capture_frame("07_hs09_real_recruit_profile.png"):
 		return
@@ -104,6 +124,11 @@ func _run() -> void:
 		assignment = popup_layer.find_child("DiscipleQuickAssignment",true,false) as Panel
 	if not _require(assignment != null and StringName(game.get("selected_id")) == recruit_id,
 		"HS-09 did not open canonical disciple assignment for the recruited disciple"):
+		return
+	var mine_status := assignment.find_child("QuickAssignStatus_mine_001",true,false) as Label
+	if not _require(mine_status != null and mine_status.text.begins_with("MỎ KHOÁNG")
+		and not mine_status.text.contains("mine_001"),
+		"HS-09 assignment leaked a raw internal building ID to the player"):
 		return
 	if not await _capture_frame("08_hs09_assignment_real_recruit.png"):
 		return
@@ -126,6 +151,9 @@ func _run() -> void:
 		return
 	var saved: Dictionary = await game.call("_save_runtime_async_barrier")
 	if not _require(bool(saved.get("ok",false)),"SaveService async barrier failed: %s" % str(saved)):
+		return
+	if not _require(FileAccess.file_exists(save_path),
+		"SaveService reported success but did not publish the isolated QA save file"):
 		return
 	var expected_worksite := str(recruited.worksite_building_id)
 	var expected_group := str(recruited.work_group_id)
@@ -169,8 +197,16 @@ func _verify_natural_new_game_build_gate() -> bool:
 	game.call("_enter_build_mode")
 	await process_frame
 	var catalog := _find_button(game,"BuildCatalogResidence")
+	var catalog_art := game.find_child("BuildCatalogResidenceArt",true,false) as Control
 	var open_hall := _find_button(game,"BuildModeOpenHall")
 	var description := game.get("build_mode_description") as Label
+	if not await _capture_frame("01_new_game_build_catalog_gate.png"):
+		return false
+	if not _require(catalog_art != null
+		and bool(catalog_art.get("_original_source"))
+		and str(catalog_art.get("_source_model_id")) == "510076",
+		"player build catalog did not render the SHA-gated Source A Residence model 510076"):
+		return false
 	if not _require(catalog != null and catalog.disabled
 		and catalog.tooltip_text.contains("Đại Điện Lv1/11")
 		and catalog.tooltip_text.contains("40/500 Mộc")
@@ -186,6 +222,8 @@ func _verify_natural_new_game_build_gate() -> bool:
 	var hall_model: Dictionary = adapter.call("_hall_model") if adapter != null else {}
 	if not _require(hall_upgrade != null and int(hall_model.get("building_level",0)) == 1,
 		"build-mode prerequisite did not route to the real canonical Hall upgrade screen"):
+		return false
+	if not await _capture_frame("02_new_game_hall_upgrade_path.png"):
 		return false
 	var hall_screen := game.get_node_or_null("DaiDienScreenV1")
 	if hall_screen != null:

@@ -6,7 +6,7 @@ param(
 $ErrorActionPreference = 'Stop'
 $git = 'C:\Program Files\Git\cmd\git.exe'
 $manifestPath = Join-Path $GameRoot 'tools\windows\run\tri03_runtime_source_manifest.json'
-$profile = 'E:\TongMonBaDaoWorkspace\03_QA_Logs\TRI03_OWNER_FINAL_20261103\playable_rc_profile'
+$profile = 'E:\TongMonBaDaoWorkspace\03_QA_Logs\TRI03_OWNER_FINAL_20261103\owner_play_profile'
 $verifyLog = Join-Path $profile 'Logs\source_verify.txt'
 $safeRoot = [IO.Path]::GetFullPath($GameRoot).TrimEnd('\')
 $safeDirectory = $safeRoot.Replace('\', '/')
@@ -28,8 +28,12 @@ try {
 } catch {
     Stop-Verification "Source manifest is not valid JSON: $($_.Exception.Message)" 4
 }
-if ($manifest.schema_version -ne 1 -or $manifest.branch -ne 'integration/tri-facility-a-b-playable-20261102') {
+if ($manifest.schema_version -ne 2 -or $manifest.branch -ne 'integration/tri-facility-a-b-playable-20261102') {
     Stop-Verification 'Manifest schema or required PR 67 branch does not match.' 5
+}
+$upstreamSha = [string]$manifest.upstream_pr_sha
+if ($upstreamSha -notmatch '^[0-9a-fA-F]{40}$') {
+    Stop-Verification 'Manifest must pin the verified PR source commit SHA.' 5
 }
 
 $head = (& $git -c "safe.directory=$safeDirectory" -C $safeRoot rev-parse HEAD 2>&1 | Out-String).Trim()
@@ -52,6 +56,9 @@ foreach ($entry in $manifest.files) {
     $pins[$path] = ([string]$entry.git_blob_sha).ToLowerInvariant()
 }
 if ($pins.Count -lt 10) { Stop-Verification 'Manifest contains too few pinned source files.' 10 }
+if (-not $pins.ContainsKey('CHOI-GAME.cmd') -or -not $pins.ContainsKey('tools/windows/run/Verify-TRI03Source.ps1')) {
+    Stop-Verification 'Manifest must pin both the user launcher and its source verifier.' 10
+}
 
 $fingerprintLines = @(
     $manifest.files | ForEach-Object {
@@ -102,7 +109,7 @@ foreach ($path in ($changedPaths | Sort-Object -Unique)) {
 }
 
 New-Item -ItemType Directory -Force -Path (Split-Path -Parent $verifyLog) | Out-Null
-$report = "TRI03_SOURCE_VERIFY_PASS base=$($manifest.base_sha) checkout_head=$head branch=$branch source_fingerprint=$actualFingerprint files=$($pins.Count)"
-[IO.File]::WriteAllText($verifyLog,"source_fingerprint=$actualFingerprint`r`ncheckout_head=$head`r`n$report`r`n",[Text.UTF8Encoding]::new($false))
+$report = "TRI03_SOURCE_VERIFY_PASS checkout_base=$($manifest.base_sha) checkout_head=$head branch=$branch upstream_pr_source=$upstreamSha source_fingerprint=$actualFingerprint files=$($pins.Count)"
+[IO.File]::WriteAllText($verifyLog,"source_fingerprint=$actualFingerprint`r`ncheckout_head=$head`r`nupstream_pr_source=$upstreamSha`r`n$report`r`n",[Text.UTF8Encoding]::new($false))
 Write-Output $report
 exit 0

@@ -20,7 +20,9 @@ func _init() -> void:
     call_deferred("_run")
 
 func _run() -> void:
-    _cleanup_save()
+    if not _cleanup_save():
+        _fail("O6 could not clear its isolated main/tmp/backup save files.")
+        return
     ProjectSettings.set_setting("runtime/live_save_path", SAVE_PATH)
     if not await _open_scene():
         return
@@ -324,19 +326,10 @@ func _run() -> void:
         _fail("O6 queued Mine command was not canonical before restart.")
         return
 
-    var saved_tick := state.tick
-    var saved_roster := state.disciples.size()
-    var saved_iron := warehouse.quantity(state, &"thanh_thiet")
-    var saved_wood := warehouse.quantity(state, &"linh_moc")
-    var saved_stones := state.sect.spirit_stones
-    var saved_items := state.sect.equipment_items.size()
-    var saved_finish_tick := int(active_plot.get("finish_tick", -1))
-    var saved_crop_id := StringName(active_plot.get("crop_id", ""))
-    var saved_field_output := crops.output_resource_id(saved_crop_id)
-    var saved_field_output_qty := warehouse.quantity(state, saved_field_output)
-    var mine_batches_at_save := int(mine.metrics.get("production_batches", 0))
-    var field_batches_at_save := int(field.metrics.get("production_batches", 0))
-
+    # This rehearsal advances the scheduler directly. Re-anchor the wall clock
+    # after that accelerated setup so SaveService cannot count the test's own
+    # execution time a second time as offline simulation.
+    state.runtime_last_wall_unix = int(Time.get_unix_time_from_system())
     # Await the canonical async-save barrier before scene teardown; Object.call does not await coroutines.
     var autosave_result: Dictionary = await ui.call("_save_runtime_async_barrier")
     if not bool(autosave_result.get("ok",false)):
@@ -345,6 +338,24 @@ func _run() -> void:
     if not FileAccess.file_exists(SAVE_PATH):
         _fail("O6 active runtime save was not written.")
         return
+    # Compare against the state actually committed by the save barrier, not an
+    # earlier tick that may legitimately advance during persistence.
+    var saved_tick := state.tick
+    var saved_roster := state.disciples.size()
+    var saved_iron := warehouse.quantity(state, &"thanh_thiet")
+    var saved_wood := warehouse.quantity(state, &"linh_moc")
+    var saved_stones := state.sect.spirit_stones
+    var saved_items := state.sect.equipment_items.size()
+    active_plot = _plot_for_worker(field,recruit_id)
+    if active_plot.is_empty():
+        _fail("O6 active Field plot settled before the restart snapshot.")
+        return
+    var saved_finish_tick := int(active_plot.get("finish_tick", -1))
+    var saved_crop_id := StringName(active_plot.get("crop_id", ""))
+    var saved_field_output := crops.output_resource_id(saved_crop_id)
+    var saved_field_output_qty := warehouse.quantity(state, saved_field_output)
+    var mine_batches_at_save := int(mine.metrics.get("production_batches", 0))
+    var field_batches_at_save := int(field.metrics.get("production_batches", 0))
     _dispose_scene()
     await process_frame
     if not await _open_scene():
@@ -453,10 +464,13 @@ func _run() -> void:
         _fail("O6 final M1 state violates invariants: %s" % " | ".join(errors))
         return
 
-    print("P3 O6 M1 END-TO-END RELEASE REHEARSAL PASS")
     _dispose_scene()
     await process_frame
-    _cleanup_save()
+    if not _cleanup_save():
+        push_error("O6 could not remove its isolated save artifacts after PASS.")
+        quit(2)
+        return
+    print("P3 O6 M1 END-TO-END RELEASE REHEARSAL PASS")
     quit(0)
 
 func _mine_one_explicit_batch(miner_id: StringName, mine: BuildingState, ordinal: int) -> bool:
@@ -603,10 +617,18 @@ func _stop_timers(node: Node) -> void:
     for child in node.get_children():
         _stop_timers(child)
 
-func _cleanup_save() -> void:
-    if FileAccess.file_exists(SAVE_PATH):
-        DirAccess.remove_absolute(ProjectSettings.globalize_path(SAVE_PATH))
+func _cleanup_save() -> bool:
+    var ok := true
+    for suffix in ["", ".tmp", ".bak"]:
+        var path: String = SAVE_PATH + str(suffix)
+        if not FileAccess.file_exists(path):
+            continue
+        var error := DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
+        if error != OK:
+            push_error("O6 could not remove isolated QA save artifact (%s): %s" % [suffix,error])
+            ok = false
     ProjectSettings.set_setting("runtime/live_save_path", LiveGameRuntimeV2.DEFAULT_SAVE_PATH)
+    return ok
 
 func _fail(message: String) -> bool:
     push_error(message)

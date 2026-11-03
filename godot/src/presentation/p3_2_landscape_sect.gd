@@ -1,6 +1,7 @@
 extends "res://src/presentation/p3_1_landscape_sect.gd"
 
 const TRI_B1_LIVE_ADAPTER = preload("res://src/presentation/uiux/tri_facility_live_adapter_v1.gd")
+const TRI_FACILITY_ART = preload("res://src/presentation/uiux/sect_facility_art_v2.gd")
 const ZOOM_STEP := 1.12
 const CAMERA_TWEEN_SECONDS := 0.22
 const FOCUS_MARKER_SIZE := Vector2(82.0, 82.0)
@@ -1196,7 +1197,10 @@ func _open_disciple_quick_assignment(disciple_id: StringName, preserve_summary_o
             if occupants.size() == 1 and state.disciples.has(occupants[0]):
                 busy_worker = state.disciples[occupants[0]].display_name
             var occupation := "Chưa có người" if occupants.is_empty() else (busy_worker if busy_worker != "" else "%d người" % occupants.size())
-            info.text = "%s · Lv%d · %s\n%s" % [str(building.id),building.level,occupation,("Đang phụ trách" if already_owner else "Có thể nhận việc" if reason == "" else reason)]
+            var building_label := str(item["name"])
+            if instances.size() > 1:
+                building_label += " %02d" % building.instance_index
+            info.text = "%s · Lv%d · %s\n%s" % [building_label,building.level,occupation,("Đang phụ trách" if already_owner else "Có thể nhận việc" if reason == "" else reason)]
             info.custom_minimum_size = Vector2(448,52)
             info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
             info.add_theme_font_size_override("font_size",12)
@@ -2100,17 +2104,29 @@ func _build_construction_ui() -> void:
     var build_house := Button.new()
     build_house.name = "BuildCatalogResidence"
     build_house.text = "ĐỆ TỬ XÁ  ·  CHỌN VỊ TRÍ TRÊN BẢN ĐỒ"
-    build_house.position = Vector2(18,156)
-    build_house.size = Vector2(354,42)
+    build_house.position = Vector2(66,156)
+    build_house.size = Vector2(306,42)
     build_house.add_theme_stylebox_override("normal",_style(JADE_DARK,PAPER_LIGHT,1,8))
     build_house.add_theme_color_override("font_color",PAPER_LIGHT)
     build_house.pressed.connect(_begin_residence_construction)
     build_mode_panel.add_child(build_house)
 
+    # This is the only player-placeable facility backed by a canonical paid
+    # map-placement transaction. Use the existing SHA-gated Source A art
+    # renderer so a missing/invalid PNG falls back honestly to the approved
+    # residence study artwork, never a raw or mislabeled atlas.
+    var build_art := TRI_FACILITY_ART.new() as Control
+    build_art.name = "BuildCatalogResidenceArt"
+    build_art.position = Vector2(20,156)
+    build_art.size = Vector2(42,42)
+    build_art.custom_minimum_size = Vector2(42,42)
+    build_art.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    build_art.set("facility_kind","residence")
+    build_art.tooltip_text = "Đệ Tử Xá · Model Source A 510076 khi SHA hợp lệ; fallback được ghi rõ."
+    build_mode_panel.add_child(build_art)
+
     var fixed_hint := _label(build_mode_panel,"",Vector2(18,202),Vector2(354,58),10)
-    fixed_hint.text = _wrap_build_mode_text(
-        "Đại Điện, Kho, Mỏ, Linh Lâm, Linh Điền, Luyện Đan, Rèn Thân và Dẫn Tiên là công trình khởi lập độc bản. Chưa có giao dịch dời/đặt an toàn cho ID và việc làm, nên chúng giữ vị trí hiện tại.",
-        52)
+    fixed_hint.text = "Đệ Tử Xá: có giao dịch xây và dời an toàn.\nCác công trình khác giữ vị trí khởi lập; chưa có lệnh xây/dời."
     fixed_hint.add_theme_color_override("font_color",Color(0.24,0.22,0.18,0.82))
 
     var open_hall := Button.new()
@@ -7248,10 +7264,12 @@ func _disciple_overview_tab_text(disciple: DiscipleState) -> String:
     var work: Dictionary = snapshot.get("work",{})
     var progression: Dictionary = snapshot.get("progression",{})
     var v63: Dictionary = snapshot.get("v63",{})
+    var sex_label: String = str({"male":"Nam","female":"Nữ"}.get(str(identity.get("sex_id","")),"Chưa xác định"))
+    var race_label: String = str({"human":"Nhân tộc"}.get(str(identity.get("race_id","")),"Chưa xác định"))
     var lines: Array[String] = [
         "Thân phận: %s · %s · %s" % [
-            str(identity.get("sex_id","unknown")),
-            str(identity.get("race_id","unknown")),
+            sex_label,
+            race_label,
             str(identity.get("quality_name",""))
         ],
         "Tuổi: %d · Tuổi thọ cơ sở/tối đa: %d/%d" % [

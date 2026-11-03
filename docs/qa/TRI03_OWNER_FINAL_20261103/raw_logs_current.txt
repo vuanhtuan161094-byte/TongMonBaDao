@@ -1,0 +1,228 @@
+===== core14 / final_matrix_0820\Logs\import.stdout.log =====
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Started Project initialization (5 steps)[39m[0m
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Scanning file structure...[39m[0m
+[  16% ] [90m[1mfirst_scan_filesystem[22m | Loading global class names...[39m[0m
+[  33% ] [90m[1mfirst_scan_filesystem[22m | Verifying GDExtensions...[39m[0m
+[  50% ] [90m[1mfirst_scan_filesystem[22m | Creating autoload scripts...[39m[0m
+[  66% ] [90m[1mfirst_scan_filesystem[22m | Initializing plugins...[39m[0m
+[  83% ] [90m[1mfirst_scan_filesystem[22m | Starting file scan...[39m[0m
+[92m[ DONE ][39m [1mfirst_scan_filesystem[22m
+[0m
+[   0% ] [90m[1mloading_editor_layout[22m | Started Loading editor (5 steps)[39m[0m
+[   0% ] [90m[1mloading_editor_layout[22m | Loading editor layout...[39m[0m
+[  16% ] [90m[1mloading_editor_layout[22m | Loading docks...[39m[0m
+[  33% ] [90m[1mloading_editor_layout[22m | Reopening scenes...[39m[0m
+[  50% ] [90m[1mloading_editor_layout[22m | Loading central editor layout...[39m[0m
+[  66% ] [90m[1mloading_editor_layout[22m | Loading plugin window layout...[39m[0m
+[  83% ] [90m[1mloading_editor_layout[22m | Editor layout ready.[39m[0m
+[92m[ DONE ][39m [1mloading_editor_layout[22m
+[0m
+
+===== core14 / final_matrix_0820\Logs\import.stderr.log =====
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+
+===== core14 / final_matrix_0820\Logs\b1_contract.stdout.log =====
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+TRI01_B1_UI_CONTRACT_PASS
+
+===== core14 / final_matrix_0820\Logs\b1_contract.stderr.log =====
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+
+===== core14 / final_matrix_0820\Logs\b1_art.stdout.log =====
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+TRI_B1_ART_V2_PASS source_a_models=510052,510076,510111 candidate=anonymous_fallback
+
+===== core14 / final_matrix_0820\Logs\b1_art.stderr.log =====
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+
+===== core14 / final_matrix_0820\Logs\b1_live_save.stdout.log =====
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+TRI_B1_PROCESS1_SAVED path=E:\TongMonBaDaoWorkspace\03_QA_Logs\TRI03_OWNER_FINAL_20261103\final_matrix_0820\Save\b1_state.json accepted=candidate_0002 roster=7
+TRI_B1_LIVE_PASS hall=1 residence=1 guidance=1 real_recruit=1 save_service_roundtrip=1
+
+===== core14 / final_matrix_0820\Logs\b1_live_save.stderr.log =====
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+
+===== core14 / final_matrix_0820\Logs\b1_live_reload.stdout.log =====
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+TRI_B1_CROSS_PROCESS_RELOAD_PASS roster=7 queue=1 houses=1 accepted=candidate_0002
+
+===== core14 / final_matrix_0820\Logs\b1_live_reload.stderr.log =====
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+
+===== core14 / final_matrix_0820\Logs\p3_6a.stdout.log =====
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+P3.6A PLAYABLE SLICE TEST PASS
+
+===== core14 / final_matrix_0820\Logs\p3_6a.stderr.log =====
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+
+===== core14 / final_matrix_0820\Logs\p3_7c1.stdout.log =====
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+P3.7C1 FOUNDATION + DAN TIEN RECRUITMENT TEST PASS
+
+===== core14 / final_matrix_0820\Logs\p3_7c1.stderr.log =====
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+
+===== core14 / final_matrix_0820\Logs\p3_7b1_warehouse.stdout.log =====
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+P3.7B1 RESOURCE REGISTRY + WAREHOUSE TEST PASS
+
+===== core14 / final_matrix_0820\Logs\p3_7b1_warehouse.stderr.log =====
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+
+===== core14 / final_matrix_0820\Logs\dd092.stdout.log =====
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+DD092_DOOR_PLOT_PASS road_gate=none chosen_plot=1 exterior_door=1 save_reload=1 conflict=1
+
+===== core14 / final_matrix_0820\Logs\dd092.stderr.log =====
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+
+===== core14 / final_matrix_0820\Logs\o2.stdout.log =====
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+P3 O2 RECRUITMENT MAP TEST PASS
+
+===== core14 / final_matrix_0820\Logs\o2.stderr.log =====
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+
+===== core14 / final_matrix_0820\Logs\gp01.stdout.log =====
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+GP-01 V2 GUIDANCE -> WORKSITE -> MINE -> WAREHOUSE -> OFFLINE EXACTLY-ONCE: PASS
+
+===== core14 / final_matrix_0820\Logs\gp01.stderr.log =====
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+
+===== core14 / final_matrix_0820\Logs\gp02a.stdout.log =====
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+GP-02A V2 CULTIVATION PANEL + SAFE BUSY COMMAND + SAVE/RELOAD + P2 ISOLATION PASS
+
+===== core14 / final_matrix_0820\Logs\gp02a.stderr.log =====
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+
+===== core14 / final_matrix_0820\Logs\o5.stdout.log =====
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+P3 O5 REAL PRODUCE-SPEND LOOP TEST PASS
+
+===== core14 / final_matrix_0820\Logs\o5.stderr.log =====
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+
+===== core14 / final_matrix_0820\Logs\o6.stdout.log =====
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+P3 O6 M1 END-TO-END RELEASE REHEARSAL PASS
+
+===== core14 / final_matrix_0820\Logs\o6.stderr.log =====
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+
+===== core14 / final_matrix_0820\Logs\post_patch_import.stdout.log =====
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Started Project initialization (5 steps)[39m[0m
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Scanning file structure...[39m[0m
+[  16% ] [90m[1mfirst_scan_filesystem[22m | Loading global class names...[39m[0m
+[  33% ] [90m[1mfirst_scan_filesystem[22m | Verifying GDExtensions...[39m[0m
+[  50% ] [90m[1mfirst_scan_filesystem[22m | Creating autoload scripts...[39m[0m
+[  66% ] [90m[1mfirst_scan_filesystem[22m | Initializing plugins...[39m[0m
+[  83% ] [90m[1mfirst_scan_filesystem[22m | Starting file scan...[39m[0m
+[92m[ DONE ][39m [1mfirst_scan_filesystem[22m
+[0m
+[   0% ] [90m[1mloading_editor_layout[22m | Started Loading editor (5 steps)[39m[0m
+[   0% ] [90m[1mloading_editor_layout[22m | Loading editor layout...[39m[0m
+[  16% ] [90m[1mloading_editor_layout[22m | Loading docks...[39m[0m
+[  33% ] [90m[1mloading_editor_layout[22m | Reopening scenes...[39m[0m
+[  50% ] [90m[1mloading_editor_layout[22m | Loading central editor layout...[39m[0m
+[  66% ] [90m[1mloading_editor_layout[22m | Loading plugin window layout...[39m[0m
+[  83% ] [90m[1mloading_editor_layout[22m | Editor layout ready.[39m[0m
+[92m[ DONE ][39m [1mloading_editor_layout[22m
+[0m
+
+===== core14 / final_matrix_0820\Logs\post_patch_import.stderr.log =====
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+
+===== core14 / final_matrix_0820\Logs\post_patch_b1_contract.stdout.log =====
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+TRI01_B1_UI_CONTRACT_PASS
+
+===== core14 / final_matrix_0820\Logs\post_patch_b1_contract.stderr.log =====
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+
+===== map_build / map_build_profile_post_patch\Logs\map_build_live.stdout.log =====
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 - Build 31.0.101.2125 - Compatibility - Using Device: Intel - Intel(R) Iris(R) Plus Graphics
+
+TRI_MAP_BUILD_QA_FIXTURE hall_level=11 warehouse_seed=isolated_in_memory_only
+TRI_MAP_BUILD_PLACEMENT_PASS plot=86,108 screen=602.5,181.5
+TRI_MAP_BUILD_TRANSACTION_PASS building=residence_002 site=86,108 cost={ "linh_moc": 500, "thanh_thiet": 320, "spirit_stones": 10000 } receipt=1 save=1
+TRI_MAP_RELOCATION_TRANSACTION_PASS building=residence_002 old=86,108 new=92,108 receipt=1 exact_once=1 occupied_guard=1 save=1
+TRI_MAP_BUILD_PROCESS1_SAVED path=E:/TongMonBaDaoWorkspace/03_QA_Logs/TRI03_OWNER_FINAL_20261103/map_build_profile_post_patch/AppData/Roaming/Godot/app_userdata/Tong Mon Ba Dao/tri03_map_build_roundtrip.json expected=E:/TongMonBaDaoWorkspace/03_QA_Logs/TRI03_OWNER_FINAL_20261103/map_build_profile_post_patch/AppData/Roaming/Godot/app_userdata/Tong Mon Ba Dao/tri03_map_build_expected.json
+
+===== map_build / map_build_profile_post_patch\Logs\map_build_live.stderr.log =====
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+
+===== map_build / map_build_profile_post_patch\Logs\map_build_reload2.stdout.log =====
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+TRI_MAP_BUILD_CROSS_PROCESS_RELOAD_PASS building=residence_002 site=92,108 exact_once=1 costs=preserved
+TRI_MAP_RELOCATION_CROSS_PROCESS_PASS building=residence_002 old=86,108 new=92,108 exact_once=1
+
+===== map_build / map_build_profile_post_patch\Logs\map_build_reload2.stderr.log =====
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+
+===== hs09_flow / hs09_profile_post_patch\Logs\hs09_flow.stdout.log =====
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 - Build 31.0.101.2125 - Compatibility - Using Device: Intel - Intel(R) Iris(R) Plus Graphics
+
+TRI03_RECRUIT_HS09_ASSIGN_SAVE_PREPARED recruit=candidate_0007 roster=7 worksite=spirit_field_001 tokens=2 save=user://tri03_recruited_hs09_flow_ownerfinal_20261103.json
+
+===== hs09_flow / hs09_profile_post_patch\Logs\hs09_flow.stderr.log =====
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+
+===== hs09_flow / hs09_profile_post_patch\Logs\hs09_reload.stdout.log =====
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+TRI03_RECRUIT_HS09_CROSS_PROCESS_RELOAD_PASS disciple=candidate_0007 roster=7 worksite=spirit_field_001 tokens=2 candidates=8
+
+===== hs09_flow / hs09_profile_post_patch\Logs\hs09_reload.stderr.log =====
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+
+===== launcher_source_verification =====
+source_fingerprint=db30cfb372ec539331f8dbaa66f331be82e80fe0818224b1d5cb9a41a0da3fce
+checkout_head=27ed01cd8f377994e5e50bac9ede84e78e8895bd
+upstream_pr_source=7f732c74bc87d4f579d6a90442b036f1040995da
+TRI03_SOURCE_VERIFY_PASS checkout_base=27ed01cd8f377994e5e50bac9ede84e78e8895bd checkout_head=27ed01cd8f377994e5e50bac9ede84e78e8895bd branch=integration/tri-facility-a-b-playable-20261102 upstream_pr_source=7f732c74bc87d4f579d6a90442b036f1040995da source_fingerprint=db30cfb372ec539331f8dbaa66f331be82e80fe0818224b1d5cb9a41a0da3fce files=40
+

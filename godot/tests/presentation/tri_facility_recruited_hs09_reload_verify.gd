@@ -55,5 +55,9 @@ func _run() -> void:
 	])
 	for path in [save_path,save_path+".bak",save_path+".tmp",manifest_path]:
 		if FileAccess.file_exists(path):
-			DirAccess.remove_absolute(path)
+			var error := DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
+			if error != OK:
+				push_error("TRI03_RECRUIT_HS09_RELOAD_CLEANUP_FAIL: %s (%d)" % [path,error])
+				quit(2)
+				return
 	quit(0)
