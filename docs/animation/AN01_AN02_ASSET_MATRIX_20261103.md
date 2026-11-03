@@ -20,3 +20,6 @@ Skill data has animation_key/vfx_key entries for V6.3 Nhân/Tiên/Thần but nam
 Acceptance gates: exact SHA, static file inventory, Godot 4.7.2 editor import, headless scene smoke, actual 1280x720 capture, foot/alpha/frame inspection, source SHA, direction and action fallback truth, 1/6/30 actor frame-time and memory, and Windows/Android owner review. PENDING_ENGINE/PENDING_USER are not PASS.
 Standalone scene: res://scenes/labs/an02_animation_lab.tscn. Focused test: res://tests/presentation/an02_animation_lab_contract_test.gd.
 Allowed changes: dedicated skill, new isolated lab scene/script/shader/test, animation docs and limited routing/handoff only. No main scene, gameplay, SaveService, combat, PvE, skill balance or merge.
+
+## Windows one-click proof launcher (on this branch only)
+Once the feature branch is checked out safely in a separate worktree on E:, double-click MO_ANIMATION_LAB.cmd. It calls tools/windows/run/Run-AN02-AnimationLab.cmd, checks the lab scene and official Godot executable, and uses isolated APPDATA/LOCALAPPDATA under godot/outputs/an02_lab. It does NOT start the main game or reuse its save. If Godot is installed elsewhere set the TMB_GODOT environment variable. Launcher itself has not been executed on Windows here; status PENDING USER.
