@@ -239,8 +239,8 @@ func _position_allowed(position: Vector2) -> bool:
     return int(blocked[cell.y*width+cell.x]) == 0
 
 func order_group_move(actor_ids: Array, destination: Vector2,
-        arrive_policy: String = "auto") -> Dictionary:
-    if not ["auto","hold"].has(arrive_policy):
+        arrive_policy: String = "keep") -> Dictionary:
+    if not ["keep","auto","hold"].has(arrive_policy):
         return {"ok":false,"reason":"invalid_arrival_hunt_policy"}
     if not world_mode or not active:
         return {"ok":false,"reason":"open_world_move_unavailable"}
@@ -297,7 +297,9 @@ func order_group_move(actor_ids: Array, destination: Vector2,
         var actor: Dictionary = actors[ordered[index]]
         actor["move_order_position"] = destinations[index]
         actor["move_order_active"] = true
-        actor["hunt_after_move"] = arrive_policy
+        # "keep" preserves each actor's own policy in mixed solo/team orders.
+        actor["hunt_after_move"] = str(actor.get("hunt_policy","auto")) \
+            if arrive_policy == "keep" else arrive_policy
         _event("move_order",{"actor_id":ordered[index],"position":actor["move_order_position"]})
     return {"ok":true,"actor_ids":ordered,"destination":Vector2(base_cell)+Vector2(0.5,0.5)}
 func set_disciple_hunt_policy(actor_ids: Array, policy: String) -> Dictionary:
