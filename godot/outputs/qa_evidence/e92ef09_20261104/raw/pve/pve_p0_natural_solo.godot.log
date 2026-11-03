@@ -1,0 +1,17 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+PVE_P0_REAL_KILLS_XP_PASS {"body_xp":279.5,"cultivation_xp":856.875,"distinct_life_replays_do_not_duplicate":true,"kills":10,"materials_dropped":true,"receipts":10}
+PVE_P0_NATURAL_JOIN_RETURN_PASS {"genuine_recruits":2,"last_hunter_retreat_required":true,"no_duplicate_join_or_return":true,"receipts_unchanged":10,"remaining_hunters":1,"world_still_active":true}
+PVE_P0_NATURAL_PROCESS2_BEGIN
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+PVE_P0_NATURAL_SAVE_RELOAD_PASS {"active_hunters":1,"body_xp":279.5,"cultivation_xp":856.875,"kills":10,"live_monsters_waiting_respawn":0,"returned_recruit_at_sect":true,"reward_receipts":10}
+PVE_P0_RESPAWN_GEN2_PASS {"bounded_receipts":10,"cold_reload_next":true,"generation":2,"replay_no_extra_awards":true,"simulated_frames":116,"total_paid_kills":11}
+
+PVE_P0_NATURAL_PROCESS2_END
+PVE_P0_RESPAWN_COLD_RELOAD_PASS {"bounded_receipts":10,"cultivation_and_body_persisted":true,"generation":2,"material_quantities_persisted":true,"pending_journal":0,"total_paid_kills":11,"world_active":true}
+PVE_P0_NATURAL_SOLO_PASS checks=56

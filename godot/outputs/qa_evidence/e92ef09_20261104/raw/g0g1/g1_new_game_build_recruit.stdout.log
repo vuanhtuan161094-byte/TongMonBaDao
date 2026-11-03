@@ -1,0 +1,4 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+TRI03_G1_NEW_GAME_BUILD_PASS house=residence_002 site=94,73 cost={ "linh_moc": 40, "thanh_thiet": 30, "spirit_stones": 500 } actor_blocked=1 exactly_once=1 timer=60 route=1
+TRI03_RECRUIT_HS09_ASSIGN_SAVE_PREPARED recruit=candidate_0009 roster=7 worksite=spirit_field_001 tokens=2 save=user://tri03_recruited_hs09_flow_e92ef09.json
