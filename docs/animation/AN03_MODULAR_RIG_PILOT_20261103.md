@@ -4,6 +4,16 @@ Date: 2026-11-03. Source PR #69 HEAD 1f083854defb3324722a1f05d2780c69c9cd3dd0; b
 
 **Owner instruction:** Begin coding a reusable character skeleton, body/hair/armor, independently replaceable weapon and separate VFX. Only three first animations: Idle, Walk, Attack. No paid Tripo/Blender required for the technical proof. No modification to PvE, Combat V2, SaveService, main, gameplay entry or real saves.
 
+## AN-03.1 QA HARDENING — 2026-11-03
+
+Based on official Godot 4.7 API docs, PackedScene.instantiate() variables in the focused/GUI test are now kept dynamically typed to avoid invalid custom-method calls on a statically inferred Node. This is a static-source repair, NOT engine parse evidence.
+
+The 768x768 bake script now rejects blank, too-small, clipped, opaque-background and mostly-duplicate frames. It writes real per-frame SHA256 in the output manifest. GUI capture checks four distinct screenshots; focused test checks right-hand BoneAttachment3D is bound to the hand_R bone. The version-gated Windows runner rejects ERROR/SCRIPT ERROR diagnostics even with exit code 0. Outputs are ignored in godot/.gitignore.
+
+One-click Windows worktree command: MO_AN03_RUN_ALL.cmd. It executes official Godot QA, real GPU sprite bake and bundles logs/PNG/manifest, result exit codes and Git SHA using tools/windows/run/Package-AN03-Evidence.ps1. Share godot/outputs/an03_lab/AN03_EVIDENCE.zip back for actual log/screenshot inspection. The runner was NOT executed in this Linux container (Godot 4.7.2 and E: unavailable). All engine/Windows/GUI/46-PNG bake remain PENDING USER, high-fidelity Shadow model BLOCKED_BY_MODEL_INPUT.
+
+---
+
 ## Implementation vs. visual acceptance
 
 | Feature | Actual source | QA status |
