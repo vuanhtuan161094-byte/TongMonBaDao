@@ -1,10 +1,12 @@
 extends SceneTree
 
-# PVE-01A TEST-FIRST. This is a genuine Source A 6v10 V2 run, with a
-# deliberately RED V6.3 integration assertion until PVE-01B is authorized.
-# The six new V2 recruits and one archived manual exist ONLY in this isolated
-# QA save. Never claim they are free resources for a normal New Game.
+# PVE-01B regression: Source A 6v10 ON/OFF V6.3 gates, real skill
+# damage, cached/uncached clock, two OS-process Save/Reload, and no duplicate
+# settlement. Test actors come from the 130-roster QA seed; no free New Game
+# recruits or player-owned item entitlements are created.
 const SAVE_PATH := "user://pve01a_6v10_v63_gate_20261103.json"
+const OFF_SAVE_PATH := "user://pve01b_6v10_gate_off_20261103.json"
+const OFF_ENCOUNTER := "pve01b:c01:6v10:off"
 const START_WALL := 1800001103
 const SEED := 20261103
 const ENCOUNTER := "pve01a:c01:6v10:20261103"
@@ -23,10 +25,11 @@ func _check(ok: bool, why: String) -> bool:
     return true
 
 func _cleanup() -> void:
-    for suffix in ["", ".tmp", ".bak"]:
-        var path: String = SAVE_PATH + str(suffix)
-        if FileAccess.file_exists(path):
-            DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
+    for base_path in [SAVE_PATH, OFF_SAVE_PATH]:
+        for suffix in ["", ".tmp", ".bak"]:
+            var path: String = str(base_path) + str(suffix)
+            if FileAccess.file_exists(path):
+                DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
 
 func _world_options() -> Dictionary:
     var navigation: Dictionary = SectIsometricWorldV1.pve_navigation_grid()
@@ -110,7 +113,78 @@ func _equip_real_human_skill(state: SimulationState, disciple_id: StringName,
     return bool(V63HumanSkillCombatSystem.equip_skill(
         state, disciple, SKILL_ID, preview).get("ok", false))
 
+# This phase runs only in a new Godot executable launched by process one.
+# Process two consumes the persisted snapshot through the canonical runtime
+# clock, not an in-process new RuntimeOwner or a direct battle snapshot import.
+func _process2_resume() -> void:
+    var runtime := LiveGameRuntimeV2.new()
+    var opened := runtime.start(SAVE_PATH, START_WALL + 1, SEED)
+    if not _check(bool(opened.get("ok", false)) and bool(opened.get("loaded", false)),
+            "process-2 could not load canonical SaveService hunt: " + str(opened)):
+        return
+    var state: SimulationState = runtime.state()
+    var overrides: Dictionary = runtime.owner.scheduler.v63_preview_overrides
+    if not _check(bool(overrides.get("human_skill_combat", false))
+            and V63HumanSkillCombatSystem.is_enabled(state, overrides),
+            "process-2 lost the persisted V6.3 opt-in"):
+        return
+    var encounter: String = HuntingPveRunV2.active_multicamp_id(state)
+    if not _check(encounter == ENCOUNTER and state.sect.v2_pve_active_runs.size() == 1,
+            "process-2 did not restore the single authoritative multicamp"):
+        return
+    var before := HuntingPveRunV2.resume_active(state, ENCOUNTER, overrides)
+    if not _check(bool(before.get("ok", false)),
+            "process-2 could not rehydrate V6.3 enabled battle"):
+        return
+    var battle: MapBattleV2 = before["session"].battle
+    var skilled_id: String = ""
+    for id in battle.actors.keys():
+        var actor: Dictionary = battle.actors[id]
+        if str(actor.get("side", "")) == "disciple" and actor.get("v63_skill_loadout", []).has(SKILL_ID):
+            skilled_id = str(id)
+    if not _check(not skilled_id.is_empty()
+            and bool(battle.actors[skilled_id].get("v63_combat_enabled", false)),
+            "process-2 V6.3 actor/learned equipped skill is disabled"):
+        return
+    var warehouse_before: Dictionary = state.sect.warehouse_resources.duplicate(true)
+    var before_time: float = battle.now
+    # The cache is absent in a new process. This exercises the shared-clock
+    # restore path from SimulationRuntimeClockV2 rather than a UI resume.
+    var advanced := runtime.poll(START_WALL + 2, -1, 4)
+    if not _check(bool(advanced.get("ok", false))
+            and int(advanced.get("frames_run", 0)) > 0,
+            "process-2 cold-cache shared-clock advance failed: " + str(advanced)):
+        return
+    var after := HuntingPveRunV2.resume_active(state, ENCOUNTER, overrides)
+    if not _check(bool(after.get("ok", false)),
+            "process-2 checkpoint after offline advance could not restore"):
+        return
+    var resumed_battle: MapBattleV2 = after["session"].battle
+    if not _check(resumed_battle.now > before_time
+            and bool(resumed_battle.actors[skilled_id].get("v63_combat_enabled", false))
+            and resumed_battle.actors[skilled_id].get("v63_skill_loadout", []).has(SKILL_ID)
+            and state.sect.v2_pve_active_runs.size() == 1
+            and state.sect.v2_pve_reward_claims.is_empty()
+            and state.sect.v2_pve_settlement_receipts.is_empty()
+            and state.sect.warehouse_resources == warehouse_before,
+            "process-2 lost skill/clock/active hunt or duplicated receipt/warehouse payout"):
+        return
+    if not _check(bool(runtime.save(START_WALL + 2).get("ok", false)),
+            "process-2 canonical snapshot commit failed"):
+        return
+    print("PVE01B_PROCESS2_RELOAD_CLOCK_EXACT_ONCE_PASS " + JSON.stringify({
+        "active_runs":state.sect.v2_pve_active_runs.size(),
+        "before_time":before_time,"after_time":resumed_battle.now,
+        "frames_run":int(advanced.get("frames_run", 0)),
+        "skills_enabled":true,"rewards":state.sect.v2_pve_reward_claims.size(),
+        "settlements":state.sect.v2_pve_settlement_receipts.size()
+    }))
+    quit(0)
+
 func _run() -> void:
+    if OS.get_cmdline_user_args().has("process2"):
+        _process2_resume()
+        return
     _cleanup()
     var fresh := LiveGameRuntimeV2.new()
     var fresh_open := fresh.start(SAVE_PATH, START_WALL, SEED)
