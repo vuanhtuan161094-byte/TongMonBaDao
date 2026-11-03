@@ -4,11 +4,13 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - feature/pve-p0-free-hunt-30-20261103
+      - integration/pve-p0-playable-ui-20261103
     paths:
       - 'godot/src/simulation/combat/**'
       - 'godot/src/simulation/core/simulation_runtime_clock_v2.gd'
       - 'godot/src/presentation/p3/pve_sect_world_view_v1.gd'
+      - 'godot/src/presentation/p3_2_landscape_sect.gd'
+      - 'godot/tests/presentation/pve_p0_ui_player_entry_test.gd'
       - 'godot/tests/simulation/pve_p0_*'
       - '.github/workflows/pve-p0-free-hunt.yml'
 permissions:
@@ -63,6 +65,8 @@ jobs:
             res://src/simulation/combat/map_battle_v2.gd \
             res://src/simulation/combat/map_battle_snapshot_v2.gd \
             res://src/presentation/p3/pve_sect_world_view_v1.gd \
+            res://src/presentation/p3_2_landscape_sect.gd \
+            res://tests/presentation/pve_p0_ui_player_entry_test.gd \
             res://tests/simulation/pve_p0_30_independent_hunters_test.gd \
             res://tests/simulation/pve_p0_natural_solo_reward_test.gd; do
             godot --headless --path godot --check-only --script "$script"
@@ -73,6 +77,12 @@ jobs:
 
       - name: P0 New Game real V2 solo 10 HP0, second recruit joins/returns, cold reload
         run: godot --headless --path godot -s res://tests/simulation/pve_p0_natural_solo_reward_test.gd
+
+      - name: P0 player entry on main 1280x720 scene
+        run: godot --headless --path godot -s res://tests/presentation/pve_p0_ui_player_entry_test.gd
+
+      - name: Existing modular P3.2 live-map regression
+        run: godot --headless --path godot -s res://tests/presentation/p3_2_live_modular_map_test.gd
 
       - name: Existing real Source A minimap and camera input regression
         run: godot --headless --path godot -s res://tests/presentation/pve_aux02_world_input_contract_test.gd
