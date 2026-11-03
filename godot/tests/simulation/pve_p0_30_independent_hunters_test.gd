@@ -247,10 +247,13 @@ func _run() -> void:
             and solo_battle._count_monster_records() == 10,
             "departure camp must begin with its ten real spawn slots"):
         return
+    var hold_before_move := solo_battle.set_disciple_hunt_policy(["hunter_00"],"hold")
     var travel := solo_battle.order_group_move(
         ["hunter_00"],options["camp_positions"][19])
     var while_travelling := PveDistributedWorldV1.synchronize(solo_session)
-    if not _check(bool(travel.get("ok",false))
+    if not _check(bool(hold_before_move.get("ok",false))
+            and bool(travel.get("ok",false))
+            and str(solo_battle.actors["hunter_00"].get("hunt_after_move","")) == "hold"
             and bool(while_travelling.get("ok",false))
             and while_travelling.get("camps",[]) == [0,19]
             and solo_battle._count_monster_records() == 20
