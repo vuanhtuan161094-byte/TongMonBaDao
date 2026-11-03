@@ -1,5 +1,32 @@
 # AN-03 Modular rig + detachable weapon + actual Godot 3D-to-sprite pilot
 
+## AN-03.4 WINDOWS GODOT 4.7.2 QA — 2026-11-03
+
+### Result
+
+Executed on Windows with official `4.7.2.stable.official.ed1daf0bf` from an isolated worktree under `E:\\codex`. The test snapshot used local project base `5e6fdd966bdf710b71e2a1539bb712e44069a4bb`; PR #71 implementation files were copied from the approved feature branch and verified against upstream blob SHAs. This is a source-file QA result, not a complete checkout of PR #71's base commit.
+
+- Import/parse: **PASS**.
+- Focused Skeleton3D, distinct Idle/Walk/Attack pose checks, detachable weapon and animated `hand_R` socket: **PASS, 22 checks**.
+- Real Godot GUI at **1280x720**: **PASS, 4 framebuffer screenshots** (Idle, Walk, Attack, Attack with sword).
+- Renderer bake: **PASS, 46 actual RGBA PNGs, 768x768** (Idle 18, Walk 12, Attack 16); manifest records per-frame SHA256 and bounds.
+- Evidence packager: **PASS**. ZIP: `E:\\codex\\2026-10-21\\t-ng-m-n-b-o-4\\work\\issue71_an03_qa_wt\\godot\\outputs\\an03_lab\\AN03_EVIDENCE.zip`, 2,282,811 bytes, SHA-256 `E75DE92FE65CA2D75741C8B463F61D715CC25B48DAFBF12E2D9D5331D38E726E`. Includes 4 GUI PNGs, 46 baked PNGs, manifest, logs and result JSON.
+
+### Evidence-backed launcher repairs
+
+The first run reproduced two defects, then the complete workflow was rerun successfully:
+1. Godot in this Windows environment writes `ERROR: Failed to read the root certificate store.` while otherwise importing/capturing/baking successfully. The launcher now ignores only this exact diagnostic; all other error/script-error lines remain fatal.
+2. Passing `-RepositoryRoot "%ROOT%"` when `%ROOT%` ends in a backslash caused PowerShell argument parsing to fail. The launcher now passes `"%ROOT%."`.
+
+Engine logs retain the certificate-store diagnostic as environmental evidence. No other engine/script error was observed in the passing run.
+
+### Limits
+
+The rendered asset is the **procedural 18-bone technical guide**, not a high-fidelity Shadow character and not a weighted owner GLB/FBX. The socket follows the animated right-hand bone in the focused contract; the sword can be toggled in the lab. No artistic acceptance, planted-foot acceptance, 8-way direction set, Android performance or gameplay integration is claimed. The owner model remains missing; Tripo was not used or purchased. The actual ZIP is local and not committed to the repository.
+
+No change to PR #68/#69 source branches, main, PvE, Combat V2, SaveService, game entry or saves. PR #71 remains draft; no merge was performed.
+
+
 Date: 2026-11-03. Source PR #69 HEAD 1f083854defb3324722a1f05d2780c69c9cd3dd0; branch: feature/an03-modular-rig-weapon-socket-20261103.
 
 **Owner instruction:** Begin coding a reusable character skeleton, body/hair/armor, independently replaceable weapon and separate VFX. Only three first animations: Idle, Walk, Attack. No paid Tripo/Blender required for the technical proof. No modification to PvE, Combat V2, SaveService, main, gameplay entry or real saves.
