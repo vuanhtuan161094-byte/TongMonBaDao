@@ -1,5 +1,13 @@
 # CURRENT CHECKPOINT — ONE GAME INTEGRATION
 
+## 2026-11-03 — AN-01 + AN-02 Shadow animation lab, ISOLATED BRANCH
+Owner authorized AN-01/AN-02 animation audit and standalone lab plus experimental Shadow character style. Branch: feature/an01-an02-shadow-animation-lab-20261103, based on RC 970af33b23076c80d677cf5898a721a27504708f (main at start c0c1382f119599497b52d8ee8abd9e830a883f1e). The new asset matrix documents authentic Source A clip counts. New tmb-sprite-animation skill, AGENTS routing, dedicated Godot scene, shader and focused test are separate from gameplay.
+Shadow = visual-only shader applied to real disciple_male SpriteFrames; it is NOT an authored 8-way actor, weapon socket, skill, VFX impact or gameplay authority. All eight direction controls show FACING_ONLY_MIRRORED. Female cast -> attack1 is explicitly marked adapter fallback. No combat/save/default main scene changes, no main merge and no user profile touched.
+**QA: STATIC SOURCE INSPECTION ONLY**: all required paths and scoped diff checked, code bracket checks and design/clip matrix reviewed; no official Godot 4.7.2 executable in current execution container. Focused Godot smoke test added but **PENDING_ENGINE, NOT PASS**. Actual 1280×720 Windows GUI capture, performance at 1/6/30 actors, Android and owner art acceptance PENDING USER. Mockup generated in chat is art concept, NOT Godot screenshot.
+Next: use the official Godot 4.7.2 runtime to run independent scene and focused test, capture actual video and screenshot, inspect frame/foot/pivot/mirror accuracy, fix failures on this branch only and request owner approval for Shadow visual before any game integration.
+
+---
+
 Updated 2026-10-31 (Asia/Saigon). This file supersedes the archived RC status below.
 
 ## Current candidate
