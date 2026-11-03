@@ -23,14 +23,14 @@ if (-not (Test-Path -LiteralPath $parent)) {
     New-Item -ItemType Directory -Path $parent -Force | Out-Null
 }
 Write-Host "[AN03] Fetching ONLY the dedicated feature branch, no canonical checkout changes"
-Invoke-Git @('-C', $CanonicalRepo, 'fetch', 'origin',
+Invoke-Git -Args @('-C', $CanonicalRepo, 'fetch', 'origin',
     ('refs/heads/' + $Branch + ':refs/remotes/origin/' + $Branch))
 $remoteSha = (& git -C $CanonicalRepo rev-parse ('refs/remotes/origin/' + $Branch)).Trim()
 if ($LASTEXITCODE -ne 0 -or $remoteSha -notmatch '^[a-f0-9]{40}$') {
     throw 'Could not verify feature SHA. Worktree not created.'
 }
 Write-Host "[AN03] Feature SHA: $remoteSha"
-Invoke-Git @('-C', $CanonicalRepo, 'worktree', 'add', '--detach',
+Invoke-Git -Args @('-C', $CanonicalRepo, 'worktree', 'add', '--detach',
     $QaWorktree, ('refs/remotes/origin/' + $Branch))
 $actualSha = (& git -C $QaWorktree rev-parse HEAD).Trim()
 if ($LASTEXITCODE -ne 0 -or $actualSha -ne $remoteSha) {
