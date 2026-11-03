@@ -48,7 +48,7 @@ if errorlevel 1 (
   echo AN03_IMPORT_FAIL -- see "%IMPORT_LOG%"
   exit /b 10
 )
-findstr /R /C:"^SCRIPT ERROR:" /C:"^ERROR:" "%IMPORT_LOG%" >nul
+findstr /R /C:"^SCRIPT ERROR:" /C:"^ERROR:" "%IMPORT_LOG%" | findstr /V /C:"ERROR: Failed to read the root certificate store." >nul
 if not errorlevel 1 (
   echo AN03_IMPORT_LOG_ERRORS: Godot reported script/import errors despite exit 0
   echo Inspect "%IMPORT_LOG%"
@@ -65,7 +65,7 @@ if errorlevel 1 (
   echo AN03_FOCUSED_FAIL: explicit PASS marker missing -- "%FOCUSED_LOG%"
   exit /b 12
 )
-findstr /R /C:"^SCRIPT ERROR:" /C:"^ERROR:" "%FOCUSED_LOG%" >nul
+findstr /R /C:"^SCRIPT ERROR:" /C:"^ERROR:" "%FOCUSED_LOG%" | findstr /V /C:"ERROR: Failed to read the root certificate store." >nul
 if not errorlevel 1 (
   echo AN03_FOCUSED_LOG_ERRORS -- inspect "%FOCUSED_LOG%"
   exit /b 16
@@ -86,7 +86,7 @@ if errorlevel 1 (
   echo AN03_GUI_FAIL: explicit PASS marker missing -- "%GUI_LOG%"
   exit /b 14
 )
-findstr /R /C:"^SCRIPT ERROR:" /C:"^ERROR:" "%GUI_LOG%" >nul
+findstr /R /C:"^SCRIPT ERROR:" /C:"^ERROR:" "%GUI_LOG%" | findstr /V /C:"ERROR: Failed to read the root certificate store." >nul
 if not errorlevel 1 (
   echo AN03_GUI_LOG_ERRORS -- inspect "%GUI_LOG%"
   exit /b 17
