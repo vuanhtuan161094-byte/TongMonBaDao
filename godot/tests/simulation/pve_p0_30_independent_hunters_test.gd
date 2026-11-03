@@ -105,6 +105,18 @@ func _run() -> void:
             and session.camp_population.get("slots",{}).size() == 200,
             "20 occupied areas must load only 40/200 monsters: "+str(first)):
         return
+    # Engine-only synthetic 31st actor is rejected without changing the
+    # true 30-hunter world. This cannot be used as New Game recruitment QA.
+    var overflow: Dictionary = party[0].duplicate(true)
+    overflow["id"] = "hunter_30"
+    overflow["party_id"] = "solo_30"
+    var forbidden := battle.add_world_disciple(overflow)
+    if not _check(not bool(forbidden.get("ok",true))
+            and str(forbidden.get("reason","")) == "p0_world_hunter_cap"
+            and not battle.actors.has("hunter_30")
+            and battle._count_alive("disciple") == 30,
+            "31st synthetic actor bypassed 30-hunter authority"):
+        return
     var valid := PveDistributedWorldV1.validate_saved(session)
     if not _check(valid.is_empty(),"distributed world validation failed: "+valid):
         return
