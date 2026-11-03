@@ -261,6 +261,7 @@ Use `.agents/skills/tmb-project-director/SKILL.md` for complex TMB work, then on
 - `tmb-autoplay-ai`: safe hunt/recovery policy and One Active Job transitions.
 - `tmb-godot-evidence`: official runtime, persistence/replay, regression and platform evidence.
 - `tmb-asset-gate`: provenance, manifests, animation/import evidence.
+- `tmb-sprite-animation`: real Source A frame/clip audit, direction/anchor/socket fidelity, standalone Animation Lab and view-only Shadow prototype (never gameplay/skill authority).
 - `tmb-ui-playtest`: real landscape UI journeys, readability and input evidence.
 
 These skills support the authority order above; they never expand CODE/asset/merge permissions or replace canonical runtime. Latest explicit owner decisions and authoritative source win over stale skill examples. Do not auto-load all six or spawn agents merely because six skills exist. Source registry and discovery evidence: `docs/AI_AGENT_SKILLS_TMB_2026-10-22.md` and `docs/AI_AGENT_SKILLS_AUTO_DISCOVERY_CARE_QA_2026-10-22.md`. Main/PR/QA status remains in CURRENT_CHECKPOINT and NEXT_CHAT_HANDOFF.
