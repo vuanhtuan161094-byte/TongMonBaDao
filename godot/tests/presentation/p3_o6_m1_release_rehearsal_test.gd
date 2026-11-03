@@ -553,13 +553,16 @@ func _press(node_name: String) -> bool:
 
 func _select_and_accept_candidate_via_b1(candidate_id: StringName) -> bool:
     var candidate: CandidateState = state.recruitment_candidates.get(candidate_id)
-    var search := ui.find_child("CandidateSearch",true,false) as LineEdit
+    var b1_surface := ui.get_node_or_null("DanTienScreenV2/TriFacilityB1LiveAdapterV1") as Control
+    if b1_surface == null or not b1_surface.is_visible_in_tree():
+        return _fail("Active B1 guidance surface is unavailable.")
+    var search := b1_surface.find_child("CandidateSearch",true,false) as LineEdit
     if candidate == null or search == null:
         return _fail("O6 B1 search/candidate control was missing.")
     search.text = candidate.display_name
     search.text_submitted.emit(search.text)
     await process_frame
-    var pick := ui.find_child("CandidatePick_%s" % str(candidate_id),true,false) as Button
+    var pick := b1_surface.find_child("CandidatePick_%s" % str(candidate_id),true,false) as Button
     if pick == null:
         return _fail("O6 B1 candidate picker did not expose the authentic candidate.")
     if not pick.disabled:
@@ -569,12 +572,12 @@ func _select_and_accept_candidate_via_b1(candidate_id: StringName) -> bool:
         var host := ui.get_node_or_null("DanTienScreenV2")
         if host == null or StringName(host.get("selected_candidate_id")) != candidate_id:
             return _fail("O6 disabled B1 candidate row was not the selected candidate.")
-    var accept := ui.find_child("AcceptCandidate",true,false) as Button
+    var accept := b1_surface.find_child("AcceptCandidate",true,false) as Button
     if accept == null or accept.disabled:
         return _fail("O6 B1 has no enabled canonical Accept action for the selected candidate.")
     accept.pressed.emit()
     await process_frame
-    accept = ui.find_child("AcceptCandidate",true,false) as Button
+    accept = b1_surface.find_child("AcceptCandidate",true,false) as Button
     if accept == null or not accept.text.contains("XÁC NHẬN"):
         return _fail("O6 B1 candidate acceptance did not expose its second confirmation.")
     accept.pressed.emit()
