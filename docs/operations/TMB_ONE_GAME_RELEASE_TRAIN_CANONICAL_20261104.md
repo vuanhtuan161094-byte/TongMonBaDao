@@ -19,23 +19,24 @@
 
 ## 3. PR backlog và cách đọc đúng
 
-Đã giảm **61 PR đang mở → 24** (đợt dọn 2026-11-04); 37 PR đóng hành chính, **không xóa branch/commits và không merge main**.
+Đã giảm **61 PR đang mở → 18** (đợt dọn 2026-11-04); 43 PR đóng hành chính, **không xóa branch/commits và không merge main**.
 
-### 37 PR đã đóng
+### 43 PR đã đóng
 
 - **18 PR là tổ tiên trong lịch sử commit của #72 (đã có commit, không đồng nghĩa mọi GUI đã PASS):** #24 #25 #26 #27 #28 #31 #32 #33 #38 #39 #51 #52 #57 #58 #60 #62 #63 #65.
 - **7 PR design/lab/historical không được coi là production code đã tích hợp:** #3 #4 #5 #11 #21 #35 #40. Code và lịch sử được giữ lại trên branch.
 - **9 PR archive đợt hai (không khẳng định đã được port vào #72):** #34 (preview bãi săn), #44/#45/#48/#50 (VFX/Save/QA diagnostics), #49 (hướng dẫn hai Codex cũ), #59 (G0 historical evidence), #68/#69 (tiền thân labs AN; #71/#74 kế thừa). **Quan trọng:** R1/R4 phải đối chiếu các testcase và manifest hữu dụng từ #44/#45/#48/#50, không xóa các test do PR đóng.
 - **3 PR archive bổ sung:** #13 (LAY-01 chỉ tài liệu thiết kế theo diff PR), #53 (handoff V6.3/Source-A-VFX theo diff PR, lưu tài liệu để R1 tra cứu), #55 (công cụ JX VFX/gallery độc lập chưa duyệt dùng trong game). Branch và code vẫn lưu giữ, không coi là đã tích hợp chức năng.
+- **6 PR đóng sau đối chiếu API/test với PR #72:** #29/#30 Combat S1, #46/#47 PvE movement/formation, #61 SX01 JSON, #64 Hall/Residence. Đã ghi căn cứ và nhánh cũ giữ lại; #46 có test diagnostic riêng chưa port, phải xét ở R4. Xem [ma trận chi tiết](TMB_PR72_FUNCTION_PARITY_MATRIX_20261104.md).
 
-### 24 PR vẫn mở tại checkpoint
+### 18 PR vẫn mở tại checkpoint
 
 - **Release candidate:** #72.
 - **Dependency/base:** #67. Giữ đến khi PR #72 retarget `main` một cách an toàn.
-- **20 PR chưa được kết luận parity; đóng hoặc forward-port chỉ sau kiểm tra:** #2 #6 #7 #8 #9 #10 #12 #14 #16 #17 #18 #19 #20 #29 #30 #46 #47 #61 #64 #66.
+- **14 PR chức năng chưa kết luận parity / còn yêu cầu tích hợp:** #2 #6 #7 #8 #9 #10 #12 #14 #16 #17 #18 #19 #20 #66. Xem [ma trận 20 PR](TMB_PR72_FUNCTION_PARITY_MATRIX_20261104.md).
   - Cụm workforce/economy/map #2/#6–#20 (riêng #13 đã archive design PR) có lịch sử khác PR #72, có thể đã bị superseded chức năng nhưng **chưa chứng minh**.
-  - Combat/PvE/QA đang mở #29/#30/#46/#47 cần so mã hiện hành, test, reward, graphics và correctness; các branch QA cũ #34/#44/#45/#48/#50 vẫn còn dù PR đã được archive.
-  - #61 SX01 JSON normalization, #64 Hall/Residence, #66 B1 UI cần quyết định `PORT | SUPERSEDED` theo file/function; #13/#53/#55/#59 đã archive nhưng tài liệu/tool/evidence vẫn còn để tra cứu, không cho lỗi cũ ghi đè canonical.
+  - Combat/PvE QA cũ #29/#30/#46/#47 đã đóng sau khi xác nhận code/test parity; riêng diagnostic clock/save từ #46 vẫn là R4 QA debt. Các branch QA khác #34/#44/#45/#48/#50 cũng còn dù PR đã archive.
+  - #61 SX01 JSON và #64 Hall/Residence đã chứng minh API/source/test parity, đóng hành chính (không merge); **#66 B1 UI vẫn mở do radar Tam Căn/Tứ Tính trên source #72 đang vẽ sáu chỉ số**. #13/#53/#55/#59 đã archive, tài liệu/tool/evidence còn để tra cứu.
 - **Animation/asset labs còn mở (không phải production):** #71 #74. Hai nhánh gốc #68/#69 đã đóng PR nhưng được giữ làm ancestor/nguồn tham khảo. Không tự thay thế Source A renderer trong game; cần Owner Visual PASS + Godot QA.
 
 **Quy tắc dọn:** `CLOSED_UNMERGED_SUPERSEDED` không có nghĩa `MERGED_TO_MAIN`, cũng không có nghĩa `CODE_LOST`; giữ nhánh và commit. Chỉ đóng PR đang hoạt động khi có lý do và bất kỳ chức năng chưa port được ghi thành debt trong Issue #56.
