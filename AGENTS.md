@@ -11,7 +11,7 @@ Owner direction: **ONE GAME → final `main`; only [PR #72](https://github.com/v
 - Old README/checkpoint/handoff contents were archived under `docs/archive/checkpoints/`. Do not follow the archived version's branch, phase, or commands.
 - Character UI labels must respect Owner's **Tam Căn / Tứ Tính** correction. Check live canonical stat authority and UI before editing code; do not add a duplicate `Tâm Tính` gameplay stat from the label alone.
 - The request to use **Codex to execute R0–R5 is explicitly authorized by Owner**; older text discouraging Codex is historical. Still enforce one writer per overlapping subsystem, exact-SHA QA, provenance and non-destructive workflow.
-- PR backlog cleanup is **administrative**, not `main` merge: 61 → 36 open, 25 closed and branches/history retained (2026-11-04 snapshot); each remaining branch must be classified before its code is retired.
+- PR backlog cleanup is **administrative**, not `main` merge: 61 → 27 open, 34 closed and branches/history retained (2026-11-04 snapshot); each remaining branch must be classified before its code is retired.
 
 ---
 
