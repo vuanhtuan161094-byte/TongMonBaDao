@@ -25,7 +25,7 @@ Evidence: [QA matrix](https://github.com/vuanhtuan161094-byte/TongMonBaDao/blob/
 
 ## Cleanup and release gates
 
-- PR backlog at this checkpoint: **61 → 27 open; 34 closed, no branches/commits deleted and no changes merged into `main`**. 18 old PRs are Git ancestors of #72; 7 outdated docs/labs and 9 archived QA/preview/animation PRs are closed without a claim of functional inclusion. Review 23 still-open diverged non-release PRs plus unique tests/assets from archived branches; animation labs #71/#74 are not yet production. Exact lists in [the canonical register](docs/operations/TMB_ONE_GAME_RELEASE_TRAIN_CANONICAL_20261104.md).
+- PR backlog at this checkpoint: **61 → 24 open; 37 closed, no branches/commits deleted and no changes merged into `main`**. 18 old PRs are Git ancestors of #72; 7 outdated docs/labs and 9 archived QA/preview/animation PRs are closed without a claim of functional inclusion. Review 20 still-open diverged non-release PRs plus unique tests/assets from archived branches; animation labs #71/#74 are not yet production. Exact lists in [the canonical register](docs/operations/TMB_ONE_GAME_RELEASE_TRAIN_CANONICAL_20261104.md).
 - **R0 NOT PASS:** must verify backup of ~196 existing dirty/untracked E: items + saves, SHA/hash manifest, and remaining PR parity. This GitHub-only documentation cleanup does NOT touch E:.
 - **R1 NOT PASS:** forward-port only genuinely missing approved functionality (especially #61 policy, #64 Hall/Residence, #66 B1 UI), without overwriting newer canonical code; retain Tam Căn/Tứ Tính naming requirements after authority review.
 - **R2 NOT PASS:** resolve launcher/GLES3 Windows process blocker safely, 3 clean starts.
