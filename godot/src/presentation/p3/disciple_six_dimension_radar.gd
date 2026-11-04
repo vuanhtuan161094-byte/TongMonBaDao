@@ -1,7 +1,7 @@
 class_name DiscipleSixDimensionRadar
 extends Control
 
-# Presentation-only: never normalizes, caps or modifies canonical six stats.
+# Presentation-only: never normalizes, caps or modifies canonical foundation data.
 const KEYS := ["aptitude","constitution","fortune","comprehension","charisma","potential"]
 const NAMES := ["Tư Chất","Căn Cốt","Cơ Duyên","Thông Tuệ","Mị Lực","Tiềm Lực"]
 const D7_KEYS := ["aptitude","constitution","mind_nature","potential","comprehension","fortune","charisma"]
@@ -36,7 +36,7 @@ func apply_snapshot(snapshot: Dictionary) -> bool:
         maximum = maxf(maximum,value)
     dimension_values = values
     chart_ceiling = maxf(1.0,maximum) if model_version < 2 else _drawing_ceiling(maximum)
-    tooltip_text = ("D7 · Tam Căn/Tứ Tính hiện tại" if model_version >= FoundationSystem.MODEL_D7 else "Lục Duy hiện tại") + " · Thang vẽ tự điều chỉnh, không phải giới hạn chỉ số"
+    tooltip_text = ("D7 · Tam Căn/Tứ Tính hiện tại" if model_version >= FoundationSystem.MODEL_D7 else "Thuộc tính nền tảng kế thừa") + " · Thang vẽ tự điều chỉnh, không phải giới hạn chỉ số"
     queue_redraw()
     return true
 

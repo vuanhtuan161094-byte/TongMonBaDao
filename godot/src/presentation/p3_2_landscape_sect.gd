@@ -3023,7 +3023,7 @@ func _build_guidance_recruitment_controls() -> void:
 
     var queue_label := Label.new()
     queue_label.name = "DanTienQueueSummary"
-    queue_label.text = "Ứng viên: %d/%d · Lệnh: %d · Đệ tử: %d/%d\nXem Lục Duy, Linh Căn, thiên hướng nghề và chân dung Source A phù hợp." % [
+    queue_label.text = "Ứng viên: %d/%d · Lệnh: %d · Đệ tử: %d/%d\nXem hồ sơ Tam Căn / Tứ Tính, Linh Căn, thiên hướng nghề và chân dung Source A phù hợp." % [
         state.recruitment_candidates.size(), RecruitmentSystem.C2_QUEUE_CAP,
         state.sect.disciple_recruitment_tokens,
         state.disciples.size(), state.sect.disciple_capacity
@@ -7665,10 +7665,12 @@ func _v2_foundation_values_text(foundation_snapshot: Dictionary) -> String:
                 str(labels.get(key,key)),_foundation_exact_number(value),
                 _foundation_exact_number(born),sign,_foundation_exact_number(absf(change))
             ]
-        var six_stat_rows := "\n  ".join([
-            format_row.call("aptitude"),format_row.call("constitution"),
-            format_row.call("fortune"),format_row.call("comprehension"),
-            format_row.call("charisma"),format_row.call("potential")
+        var tam_can_rows := "\n  ".join([
+            format_row.call("aptitude"),format_row.call("constitution"),format_row.call("mind_nature")
+        ])
+        var tu_tinh_rows := "\n  ".join([
+            format_row.call("potential"),format_row.call("comprehension"),
+            format_row.call("fortune"),format_row.call("charisma")
         ])
         var quality_line := ""
         if foundation_snapshot.has("quality_birth_total") and foundation_snapshot.has("quality_current_total"):
@@ -7679,8 +7681,8 @@ func _v2_foundation_values_text(foundation_snapshot: Dictionary) -> String:
                 birth_name,float(foundation_snapshot["quality_birth_total"]),
                 current_name,float(foundation_snapshot["quality_current_total"])
             ]
-        return "Lục Duy · sinh / hiện tại / thay đổi\n  %s%s" % [six_stat_rows,quality_line]
-    return "Tư Chất %s · Căn Cốt %s · Cơ Duyên %s\nThông Tuệ %s · Mị Lực %s · Tiềm Lực %s" % [
+        return "Tam Căn / Tứ Tính · sinh / hiện tại / thay đổi\nTam Căn:\n  %s\nTứ Tính:\n  %s%s" % [tam_can_rows,tu_tinh_rows,quality_line]
+    return "Nền tảng kế thừa · Tư Chất %s · Căn Cốt %s · Cơ Duyên %s\nThông Tuệ %s · Mị Lực %s · Tiềm Lực %s" % [
         _v2_foundation_score(float(current.get("aptitude",0.0)),version),
         _v2_foundation_score(float(current.get("constitution",0.0)),version),
         _v2_foundation_score(float(current.get("fortune",0.0)),version),
@@ -7697,13 +7699,13 @@ func _foundation_exact_number(value: float) -> String:
 func _v2_foundation_meaning_text(model_version: int) -> String:
     if model_version >= FoundationSystem.MODEL_D7:
         return (
-            "ẢNH HƯỞNG LỤC DUY · điểm hiện tại\n"
-            + "Tư Chất: +0,25% Tu Vi tự nhiên/điểm · Căn Cốt: +0,20% EXP Luyện Thể/điểm\n"
-            + "Tiềm Lực: +0,05% Tu Vi RealmCore HP/Công/Thủ/điểm\n"
-            + "Thông Tuệ: +0,15% học tập/nghề hợp lệ/điểm · Cơ Duyên: +1 điểm kiểm tra RNG · Mị Lực: điểm xã hội/Dẫn Tiên"
+            "Tam Căn · dữ liệu hiện tại: Tư Chất +0,25% Tu Vi tự nhiên/điểm · Căn Cốt +0,20% EXP Luyện Thể/điểm.\n"
+            + "Tâm Tính được tính vào tổng phẩm chất D7; hiện chưa có hiệu ứng gameplay riêng.\n"
+            + "Tứ Tính · Tiềm Lực +0,05% Tu Vi RealmCore HP/Công/Thủ/điểm · Thông Tuệ +0,15% học tập/nghề hợp lệ/điểm\n"
+            + "Cơ Duyên: +1 điểm kiểm tra RNG · Mị Lực: điểm xã hội/Dẫn Tiên"
         )
     return (
-        "ẢNH HƯỞNG LỤC DUY (điểm hiện tại)\n"
+        "Hiệu ứng thuộc tính của hồ sơ nền tảng kế thừa (điểm hiện tại)\n"
         + "Tư Chất: +0,25% / điểm vào Tu Vi tự nhiên\n"
         + "Căn Cốt: +0,20% / điểm vào EXP Luyện Thể\n"
         + "Thông Tuệ: +0,15% / điểm vào học / EXP nghề hợp lệ\n"

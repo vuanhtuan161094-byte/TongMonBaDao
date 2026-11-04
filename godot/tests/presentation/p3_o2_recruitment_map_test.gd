@@ -283,8 +283,10 @@ func _stop_timers(node: Node) -> void:
         _stop_timers(child)
 
 func _cleanup_save() -> void:
-    if FileAccess.file_exists(SAVE_PATH):
-        DirAccess.remove_absolute(ProjectSettings.globalize_path(SAVE_PATH))
+    for suffix in ["", ".tmp", ".bak"]:
+        var path: String = SAVE_PATH + str(suffix)
+        if FileAccess.file_exists(path):
+            DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
     ProjectSettings.set_setting("runtime/live_save_path", LiveGameRuntimeV2.DEFAULT_SAVE_PATH)
 
 func _fail(message: String) -> bool:

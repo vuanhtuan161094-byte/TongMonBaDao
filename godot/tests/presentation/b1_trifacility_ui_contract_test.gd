@@ -160,15 +160,24 @@ func _run() -> void:
 	guidance.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	guidance.bind_view_model({
 		"candidates": [
-			{"id": "cand-1", "name": "Ứng viên", "tam_values": [30, 50, 60], "tu_values": [10, 20, 30, 40], "can_accept": true, "can_reject": true},
-			{"id": "cand-2", "name": "Liễu Vân", "tam_values": [40, 50, 60], "tu_values": [11, 21, 31, 41], "can_accept": false, "can_reject": true},
-			{"id": "cand-3", "name": "Tô Minh", "tam_values": [50, 60, 70], "tu_values": [12, 22, 32, 42], "can_accept": true, "can_reject": true}
+			{"id": "cand-1", "name": "Ứng viên", "foundation_model_version": 3, "tam_values": [30, 50, 60], "tu_values": [10, 20, 30, 40], "tam_summary": "Tư Chất 30 · Căn Cốt 50 · Tâm Tính 60", "tu_summary": "Tiềm Lực 10 · Thông Tuệ 20 · Cơ Duyên 30 · Mị Lực 40", "tam_note": "Tâm Tính được tính trong tổng phẩm chất D7; hiện chưa có hiệu ứng gameplay riêng.", "can_accept": true, "can_reject": true},
+			{"id": "cand-2", "name": "Liễu Vân", "foundation_model_version": 3, "tam_values": [40, 50, 60], "tu_values": [11, 21, 31, 41], "tam_summary": "Tư Chất 40 · Căn Cốt 50 · Tâm Tính 60", "tu_summary": "Tiềm Lực 11 · Thông Tuệ 21 · Cơ Duyên 31 · Mị Lực 41", "can_accept": false, "can_reject": true},
+			{"id": "cand-3", "name": "Tô Minh", "foundation_model_version": 3, "tam_values": [50, 60, 70], "tu_values": [12, 22, 32, 42], "tam_summary": "Tư Chất 50 · Căn Cốt 60 · Tâm Tính 70", "tu_summary": "Tiềm Lực 12 · Thông Tuệ 22 · Cơ Duyên 32 · Mị Lực 42", "can_accept": true, "can_reject": true}
 		],
 		"can_accept": true, "can_reject": true, "can_use_order": true, "recruitment_tokens": 2,
         "guidance_options":[{"id":"disciple_001","name":"Thanh Vân","eligible":true},{"id":"disciple_002","name":"Liễu Vân","eligible":true}],
         "guidance_main_id":"", "guidance_assistant_ids":[], "guidance_slots":2, "guidance_max_assistants":1, "can_assign_guidance":true
 	})
 	await process_frame
+	var candidate_radar := guidance.find_child("FoundationRadar", true, false) as Control
+	if candidate_radar == null or candidate_radar.get("dimension_values") != [30.0, 50.0, 60.0, 10.0, 20.0, 30.0, 40.0]:
+		_fail("Dẫn Tiên radar must render the three Tam Căn and four Tứ Tính values in D7 order.")
+		return
+	var candidate_stats := guidance.find_child("CandidateStats", true, false)
+	var guidance_text := _all_node_text(guidance)
+	if candidate_stats == null or not guidance_text.contains("Tam Căn / Tứ Tính") or not guidance_text.contains("Tâm Tính được tính trong tổng phẩm chất D7") or guidance_text.contains("Lục Duy"):
+		_fail("Dẫn Tiên must label Tam Căn/Tứ Tính and explain Tâm Tính without a gameplay claim.")
+		return
 	var candidate_ids: Array[String] = []
 	guidance.accept_candidate_requested.connect(func(id: String): candidate_ids.append(id))
 	var accept_button := _find_button(guidance, "AcceptCandidate")
@@ -288,3 +297,11 @@ func _run() -> void:
 			return
 	print("TRI01_B1_UI_CONTRACT_PASS")
 	quit(0)
+
+func _all_node_text(node: Node) -> String:
+	var result := ""
+	if node is Label:
+		result += (node as Label).text + "\n"
+	for child in node.get_children():
+		result += _all_node_text(child)
+	return result

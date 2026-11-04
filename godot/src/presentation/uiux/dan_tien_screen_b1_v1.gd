@@ -79,7 +79,7 @@ func _make_shell() -> MarginContainer:
 	var stack := VBoxContainer.new()
 	stack.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	stack.add_child(UI.label("DẪN TIÊN ĐÀI", 25, UI.PAPER, true))
-	stack.add_child(UI.label("Ứng viên • Lục Duy • tiếp dẫn", 12, UI.MUTED, false))
+	stack.add_child(UI.label("Ứng viên • Tam Căn / Tứ Tính • tiếp dẫn", 12, UI.MUTED, false))
 	header.add_child(stack)
 	var close_button := UI.button("ĐÓNG", false, UI.GOLD)
 	close_button.pressed.connect(func(): closed.emit())
@@ -250,8 +250,10 @@ func _build_candidate_panel() -> Control:
 	detail.add_child(UI.label("Phẩm: %s" % str(candidate.get("quality","—")),13,UI.GOLD,true))
 	profile.add_child(detail)
 	content.add_child(profile)
-	content.add_child(UI.label("Lục Duy · " + str(candidate.get("tam_summary","—")),12,UI.JADE,false))
+	content.add_child(UI.label("Tam Căn · " + str(candidate.get("tam_summary","—")),12,UI.JADE,false))
 	content.add_child(UI.label(str(candidate.get("tu_summary","—")),12,UI.GOLD,false))
+	if not str(candidate.get("tam_note", "")).is_empty():
+		content.add_child(UI.label(str(candidate.get("tam_note", "")),10,UI.MUTED,false))
 	content.add_child(UI.label(str(candidate.get("root_values","Linh Căn chưa có dữ liệu")),12,UI.TEXT,false))
 	content.add_child(UI.label(str(candidate.get("special_identity","Các tầng ẩn chưa được khai mở")),11,UI.MUTED,false))
 	content.add_child(UI.label(str(candidate.get("role_fit","Chưa đủ dữ liệu tương hợp")),11,UI.JADE,false))
@@ -444,7 +446,7 @@ func _build_radar_panel() -> Control:
 	var content := VBoxContainer.new()
 	content.add_theme_constant_override("separation", 7)
 	card.add_child(content)
-	content.add_child(UI.section_heading("Lục Duy • Căn cơ", "root", UI.JADE))
+	content.add_child(UI.section_heading("Tam Căn / Tứ Tính • Căn cơ", "root", UI.JADE))
 	var radar: Control
 	var radar_factory: Variant = _vm.get("radar_factory")
 	if radar_factory is Callable and radar_factory.is_valid():
