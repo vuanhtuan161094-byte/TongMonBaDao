@@ -1,5 +1,20 @@
 # AGENTS.md — TÔNG MÔN BÁ ĐẠO
 
+## CURRENT RELEASE-TRAIN OVERRIDE — 2026-11-04 (read first)
+
+Owner direction: **ONE GAME → final `main`; only [PR #72](https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/72) is the active gameplay integration candidate.** Live gate/work owner: [Issue #56](https://github.com/vuanhtuan161094-byte/TongMonBaDao/issues/56); concise factual source: [canonical release register](docs/operations/TMB_ONE_GAME_RELEASE_TRAIN_CANONICAL_20261104.md); live status: [CURRENT_CHECKPOINT.md](CURRENT_CHECKPOINT.md) and [NEXT_CHAT_HANDOFF.md](NEXT_CHAT_HANDOFF.md).
+
+**This paragraph supersedes dated instructions below on which PR/RC/launcher/QA lane to run, not their still-valid safety/architecture rules.** Do not resume work on old #52/#67/`one-game-v65` based on historical notes; PR #67 is #72's ancestor/base. Do not start a new gameplay branch or a duplicate roadmap. When instructions disagree, use the latest explicit user decision, Issue #56's release gates, live source SHA, then current architecture; do not interpret older QA/status as a current PASS.
+
+- Work only after safe backup of the owner's ~196 E: dirty/untracked items and saves. No forced reset/clean/checkout or save overwrite. Do not merge `main` until R0–R4 required acceptance and `main` divergence reconciliation; a user-approved target does not imply bypassing release gates.
+- The latest Windows QA is **headless-only PASS** (Godot 4.7.2, 15/15 exit 0); Windows real GUI **NOT PLAYABLE PASS** (GLES3 Intel `ig11icd64.dll` crash, PID problem), and Android is pending. Do not report legacy `LOOT_PENDING`: P0 natural test has real reward/receipt on tested SHA, but actual same-save Windows GUI remains unproven.
+- Old README/checkpoint/handoff contents were archived under `docs/archive/checkpoints/`. Do not follow the archived version's branch, phase, or commands.
+- Character UI labels must respect Owner's **Tam Căn / Tứ Tính** correction. Check live canonical stat authority and UI before editing code; do not add a duplicate `Tâm Tính` gameplay stat from the label alone.
+- The request to use **Codex to execute R0–R5 is explicitly authorized by Owner**; older text discouraging Codex is historical. Still enforce one writer per overlapping subsystem, exact-SHA QA, provenance and non-destructive workflow.
+- PR backlog cleanup is **administrative**, not `main` merge: 61 → 36 open, 25 closed and branches/history retained (2026-11-04 snapshot); each remaining branch must be classified before its code is retired.
+
+---
+
 This file is the repository operating contract.
 
 ## 1. Authority order
