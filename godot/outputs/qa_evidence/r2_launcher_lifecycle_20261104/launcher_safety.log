@@ -1,7 +1,17 @@
 UTC=2026-11-04T09:51:36.8018371Z
-PRE_PIDS=2188
+SOURCE_HEAD_TESTED=fa89cf1a1ffcabb4401292d1d74f8523539a7e4d
+GODOT_BINARY_VERSION=4.7.2.stable.official.ed1daf0bf
+LAUNCHER_SOURCE_BLOB=93b6c008f4eb8a5414f9e06fd6d6c95a0a95551d
+SAFETY_TEST_BLOB=da3f0b350bac21b0ce0b78b0a6cfa6dc931669df
+PRE_EXISTING_GODOT_PIDS=2188
 TRI03_LAUNCHER_SAFETY_TEST_PASS checks=12
 SAFETY_TEST_EXIT=0
-TMB_LAUNCH_BLOCKED_EXISTING_GODOT: PID(s) 2188; close the existing Godot process before relaunching.
+TMB_LAUNCH_BLOCKED_EXISTING_GODOT: PID(s) 2188; no new Godot process was started.
 GUARD_EXIT=13
-POST_PIDS=2188
+POST_GODOT_PIDS=2188
+PROCESS_QUERY=Get-CimInstance/tasklist command line, executable path, owner and window metadata denied by Windows; PID remains Godot_v4.7.2-stable_win64.exe with no window handle.
+TERMINATION_ATTEMPT_DEFAULT=Stop-Process -Id 2188 -> Access denied
+TERMINATION_ATTEMPT_ELEVATED_FORCE=Stop-Process -Id 2188 -Force -> Access denied
+R2_REAL_LAUNCH=BLOCKED: existing Godot PID prevents sequential launcher runs; process was not force-terminated.
+GITHUB_ACTIONS_RUN=41810459060
+GITHUB_ACTIONS_RESULT=NOT_STARTED: account payments failed or spending limit needs increase; no test steps ran.
