@@ -3,7 +3,7 @@
   "branch": "integration/pve-p0-playable-ui-20261103",
   "base_sha": "27ed01cd8f377994e5e50bac9ede84e78e8895bd",
   "upstream_pr_sha": "c99f22153b34628f7e94f69de0285514e788b9cb",
-  "source_fingerprint": "2b8b8b60a661b4789f2b18c87ab4763431a7378d8354ce231e36928ec1d5636e",
+  "source_fingerprint": "961f2cc08b534f93723cf04c3355f76d0937ad9b169a81c98df82013ddc85b97",
   "files": [
     {
       "path": "CHOI-GAME.cmd",
@@ -528,18 +528,6 @@
     {
       "path": "godot/tests/simulation/pve_p0_natural_solo_reward_test.gd",
       "git_blob_sha": "871639940e9f79e5f9ceb195f91419c9a1e36d6f"
-    },
-    {
-      "path": "outputs/endgame_qa_20261025/perf/live_save_snapshot_metadata.json",
-      "git_blob_sha": "d2e49e4da9822a890ba28fb3669a6a4a1bf3e669"
-    },
-    {
-      "path": "outputs/map_d1b/logs/windows_benchmark_evidence.json",
-      "git_blob_sha": "1e376fbd7046214c7b30f887284d8fe6446c257f"
-    },
-    {
-      "path": "outputs/map_d1b/portable_package/Run_Map_D1B.cmd",
-      "git_blob_sha": "9313697bcc62ab9a9dd7af1cac87fb1eb64f17d3"
     },
     {
       "path": "tools/windows/bootstrap/Install-P3-2-Female-StageA.cmd",
