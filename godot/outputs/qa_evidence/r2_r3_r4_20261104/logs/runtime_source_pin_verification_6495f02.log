@@ -1,0 +1,10 @@
+date_utc=2026-11-04T15:32:49.6410573Z
+checkout=<QA_GAME_ROOT>
+checkout_head=e888c010d6cfb09a97ce48af19d1a2f42a401240
+checkout_branch=
+manifest_entries=135
+manifest_fingerprint_expected=961f2cc08b534f93723cf04c3355f76d0937ad9b169a81c98df82013ddc85b97
+manifest_fingerprint_actual=961f2cc08b534f93723cf04c3355f76d0937ad9b169a81c98df82013ddc85b97
+fingerprint_valid=True
+pin_mismatch_count=0
+PASS_RUNTIME_SOURCE_PINS

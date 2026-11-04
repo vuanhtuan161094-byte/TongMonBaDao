@@ -1,0 +1,12 @@
+official_godot=4.7.2.stable.official.ed1daf0bf
+main_scene=res://scenes/p3/p3_2_landscape_sect.tscn
+project_display_config=1280x720
+processes=13876,11252,8188
+result=3/3 direct native-window launches exited 0; each had nonzero window handle; all used isolated QA AppData
+dpi_probe=120; client API logical size 1024x576 maps to 1280x720 physical
+renderer=Intel Iris Plus Graphics, OpenGL 3.3 Compatibility
+parse_or_script_errors=0; root_certificate_store_error=1 with bundled CA fallback
+capture=screen CopyFromScreen failed with invalid handle; PrintWindow returned blank OpenGL frame; no native screenshot accepted
+launcher=these runs bypassed CHOI-GAME because its source verifier correctly refuses synthetic detached Git metadata
+PID_2188=untouched
+capture_only_probe=one longer 600-frame probe exceeded 15-second observation window; only our own PID 13348 was stopped; excluded from result

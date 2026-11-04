@@ -1,0 +1,4 @@
+TRI03_LAUNCHER_SAFETY_TEST_PASS checks=25
+exit_code=0
+PowerShell=Windows PowerShell 5.1
+PID 2188 simulated as foreign session metadata; no real process was stopped.

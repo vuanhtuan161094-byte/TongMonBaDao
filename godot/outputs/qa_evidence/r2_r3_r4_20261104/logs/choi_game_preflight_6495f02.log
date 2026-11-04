@@ -1,0 +1,4 @@
+exit_code=6 TMB_VERIFY_ONLY=1 TMB_TRI03_PLAY_PROFILE=<QA_LOG_ROOT>\profile\choi_preflight_6495f02 output:
+TRI03_SOURCE_VERIFY_FAIL: Checkout branch is not the PR 67 feature branch (found '').
+Source verification failed. No game was launched.
+Press any key to continue . . . 

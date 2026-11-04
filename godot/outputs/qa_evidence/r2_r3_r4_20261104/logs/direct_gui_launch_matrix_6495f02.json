@@ -1,0 +1,41 @@
+[
+  {
+    "run": 1,
+    "pid": 13876,
+    "exit_code": 0,
+    "window_handle": 4915274,
+    "window_title": "",
+    "client_width": 1024,
+    "client_height": 576,
+    "screenshot": "CAPTURE_ERROR: Exception calling \"CopyFromScreen\" with \"5\" argument(s): \"The handle is invalid.\"",
+    "script_parse_errors": 0,
+    "root_certificate_warning": 1,
+    "log": "E:\\TongMonBaDaoWorkspace\\03_QA_Logs\\PR72_R2_R3_R4_20261104\\profile\\direct_gui_1_6495f02\\Godot_4.7.2_game.log"
+  },
+  {
+    "run": 2,
+    "pid": 11252,
+    "exit_code": 0,
+    "window_handle": 5046346,
+    "window_title": "",
+    "client_width": 1024,
+    "client_height": 576,
+    "screenshot": "CAPTURE_ERROR: Exception calling \"CopyFromScreen\" with \"5\" argument(s): \"The handle is invalid.\"",
+    "script_parse_errors": 0,
+    "root_certificate_warning": 1,
+    "log": "E:\\TongMonBaDaoWorkspace\\03_QA_Logs\\PR72_R2_R3_R4_20261104\\profile\\direct_gui_2_6495f02\\Godot_4.7.2_game.log"
+  },
+  {
+    "run": 3,
+    "pid": 8188,
+    "exit_code": 0,
+    "window_handle": 5177418,
+    "window_title": "",
+    "client_width": 1024,
+    "client_height": 576,
+    "screenshot": "CAPTURE_ERROR: Exception calling \"CopyFromScreen\" with \"5\" argument(s): \"The handle is invalid.\"",
+    "script_parse_errors": 0,
+    "root_certificate_warning": 1,
+    "log": "E:\\TongMonBaDaoWorkspace\\03_QA_Logs\\PR72_R2_R3_R4_20261104\\profile\\direct_gui_3_6495f02\\Godot_4.7.2_game.log"
+  }
+]

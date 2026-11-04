@@ -1,7 +1,7 @@
 gate,test,exit_code,result,notes
 Import,Godot 4.7.2 editor import,0,PASS,Stage A installed and reimported; Windows certificate-store warning only
 R2,launcher safety regression PowerShell 5.1,0,PASS,25 checks; foreign-session unknown PID 2188 warning-only
-R2,CHOI-GAME.cmd preflight,6,BLOCKED,No process launched; QA clone detached at e888c010 and verifier rejected branch identity
+R2,CHOI-GAME.cmd preflight,6,BLOCKED,No game launched; exact current verifier rejects synthetic detached QA branch with blank branch name; gate is Git identity not PID collision
 R2,three clean launcher GUI opens,NOT_RUN,PENDING,No owner-session game window; PID 2188 untouched
 R3,phase 1 New Game build recruit mine PvE Save,0,PASS,40 checks on isolated QA save
 R3,phase 2 cold reload continue production generation-2 kill Save,0,PASS,146 checks; 11 kills and 10 bounded unique slot receipts
@@ -23,5 +23,10 @@ R4,p3_o3_real_mine_loop_test,0,PASS,Production loop
 R4,p3_o8_alchemy_loop_test,0,PASS,Field pill consumer loop
 R4,p3_o9_m2_production_rehearsal_test,0,PASS,Multi-producer rehearsal
 R4,pve_multicamp_p3_2_live_integration_test,0,PASS,20 zones 6-party 10 monsters Injury120 Save/Load exact-once receipts
-R4,B1 1280x720 windowed screenshot harness,NOT_CAPTURED,PASS_MARKER,6 rendered PNGs; button input by test harness; mouse and exit code pending
+R4,B1 1280x720 windowed screenshot harness,NOT_CAPTURED,PASS_MARKER,6 actual Godot renders; harness-driven controls; OS exit code not captured; physical mouse pending
 R4,physical Windows mouse play,NOT_RUN,PENDING,Computer Use did not see QA game window in its session
+R2,Runtime source manifest verification (135 pins),0,PASS,135/135 pinned files matched; fingerprint 961f2cc08b534f93723cf04c3355f76d0937ad9b169a81c98df82013ddc85b97; detached synthetic Git metadata is separately reported
+R2,Direct Godot 4.7.2 main-scene window open/close (3 runs),0,PASS,Distinct PIDs 13876/11252/8188; native window handles created; 1280x720 physical resolution confirmed by DPI 120 probe; no script/parse errors; isolated AppData; not launched through CHOI-GAME
+R2,CHOI-GAME current exact-source preflight,6,BLOCKED,Fail-closed before launch: branch name blank on synthetic local HEAD e888c010; not blocked by PID 2188; direct game tests ran separately
+R2,Native desktop screenshot capture,NOT_CAPTURED,PENDING,CopyFromScreen handle unavailable and PrintWindow returned blank OpenGL frame; six actual 1280x720 engine-harness renders are linked above
+R4,Physical mouse/owner-session gameplay,NOT_RUN,PENDING,Godot window runs were in Codex session; native owner mouse input was not available; harness clicks are not physical input
