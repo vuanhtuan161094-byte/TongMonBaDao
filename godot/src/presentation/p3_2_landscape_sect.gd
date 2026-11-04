@@ -4457,11 +4457,15 @@ func _spirit_field_operation_text() -> String:
     var active_ids := buildings.active_worker_ids(state, field)
     var growing := 0
     var plot_lines: Array[String] = []
+    var plot_index := 0
     for raw_plot in plots:
         var plot: Dictionary = raw_plot
         var plot_id := str(plot.get("plot_id", "?"))
+        var plot_number := plot_id.trim_prefix("plot_").to_int()
+        var plot_name := "Luống %d" % (plot_number if plot_number > 0 else plot_index + 1)
+        plot_index += 1
         if StringName(plot.get("status", "")) != BuildingSystem.PLOT_GROWING:
-            plot_lines.append("• %s · Trống" % plot_id)
+            plot_lines.append("• %s · Trống" % plot_name)
             continue
         growing += 1
         var crop_id := StringName(plot.get("crop_id", ""))
@@ -4471,7 +4475,7 @@ func _spirit_field_operation_text() -> String:
             worker_name = (state.disciples[worker_id] as DiscipleState).display_name
         var remaining := maxi(int(plot.get("finish_tick", state.tick)) - state.tick, 0)
         plot_lines.append("• %s · %s · %s · còn %d phút · đã trả %d LT" % [
-            plot_id,
+            plot_name,
             spirit_crop_registry.display_name(crop_id),
             worker_name,
             remaining,
