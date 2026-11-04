@@ -8,7 +8,7 @@
 - **PR #67** là nhánh base hiện tại của #72, không merge riêng và không đóng/đổi base tùy tiện.
 - **`main`** là đích phát hành cuối cùng, hiện chưa có PR #72. `main` có commit riêng ở `AGENTS.md` chưa nằm trong #72; phải hòa giải trước R5.
 - **Không tạo RC/game độc lập mới**, không mở thêm PR cho từng lỗi; chỉ một người chỉnh shared gameplay P3.2/Save/Combat; không blind cherry-pick hoặc reset/clean E.
-- **Windows workspace owner:** `E:\TongMonBaDaoWorkspace\01_Game\TongMonBaDao`. Chưa kiểm chứng đã sao lưu khoảng 196 dirty/untracked local và save; **R0 chưa PASS**. Một launcher duy nhất phải được chọn, sửa và xác minh thực tế (`CHOI-GAME.cmd` / `MO_GAME.cmd` trong những ghi chép cũ); không giả định tên hoặc shortcut cũ hợp lệ.
+- **Windows workspace owner:** `E:\TongMonBaDaoWorkspace\01_Game\TongMonBaDao`. **R0 PASS:** 196 source working items + 94 save backed up/hash verified at `E:\\TongMonBaDaoWorkspace\\90_Archive\\TMB_R0_BACKUP_20261104_145049`, manifest SHA-256 `EA753053E1DFBFD490E725C7FDD86B26FF565EA4BB10920805AA74571EDEF509`. Một launcher duy nhất phải được chọn, sửa và xác minh thực tế (`CHOI-GAME.cmd` / `MO_GAME.cmd` trong những ghi chép cũ); không giả định tên hoặc shortcut cũ hợp lệ.
 
 ## 2. Kết quả QA đã có và giới hạn
 
@@ -43,9 +43,9 @@
 
 ## 4. Chuỗi công việc — chạy theo thứ tự, không phân tán
 
-- [ ] **R0 / bảo toàn:** sao lưu E dirty + save + SHA256/manifest; inventory và quyết định 30 PR phần còn lại; xác minh HEAD và file owners.
-- [ ] **R1 / hợp nhất game:** forward-port đúng phần đã được duyệt nhưng chưa có từ PR khác vào **chỉ #72**; preserve One Active Job, Injury 0/1/120 ticks, SaveService, Warehouse, 27 Tông Môn ranks, PvE 20×30; giữ đúng nhãn **Tam Căn / Tứ Tính** theo quyết định Owner, đối chiếu authority trước khi sửa thuộc tính.
-- [ ] **R2 / launcher Windows:** xử lý crash GLES3/Intel an toàn, 3 clean starts, xác nhận một launcher đúng checkout và fingerprint.
+- [x] **R0 / bảo toàn PASS (Codex):** backup 196 working + 94 save, verified manifest. 14 remaining gameplay PRs disposition documented by current parity matrix. No player save overwritten.
+- [x] **R1 / canonical integration PASS (Codex):** code/test SHA `b56b6fe8fa29ae663994a65098a56b60c3b42513`; Godot 4.7.2 import + 19 focused tests **20/20 exit 0**; Tam Căn 3/Tứ Tính 4 presentation fixed, no new Tâm Tính gameplay. Old Economy bulk/caps/FoundationGrowth remain DESIGN_HOLD and out of this release until approved.
+- [ ] **R2 / launcher Windows — ACTIVE:** solve Intel `ig11icd64.dll` / OpenGL path and lifecycle of `CHOI-GAME.cmd` → `Start-TRI03Game.ps1` safely; project already `gl_compatibility`, do not prescribe switching to what is already used. Three clean opens/exits + real 1280×720 GUI. Continue R3/R4/R5 automatically when gates pass.
 - [ ] **R3 / cùng một save:** New Game → xây Đệ Tử Xá → tuyển → Mỏ/Kho → 1–30 thợ săn + 20 vùng → kill receipt → Tu Vi/Luyện Thể/loot → Save/Exit/Reload → tiếp tục chơi.
 - [ ] **R4 / QA:** official Godot 4.7.2, full/focused regression SX/PvE/Boss/Save/injury và GUI mouse thật 1280×720. Android nếu có môi trường/thiết bị kiểm chứng, không giả PASS.
 - [ ] **R5 / release:** retarget PR #72 vào `main` sau khi hòa giải commit riêng và PASS gates; merge 1 lần, chạy post-merge SHA, release tag, đồng bộ launcher E an toàn, đóng PR cũ có lý do.
