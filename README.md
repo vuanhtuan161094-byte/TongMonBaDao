@@ -19,11 +19,11 @@ Workspace Owner: `E:\TongMonBaDaoWorkspace\01_Game\TongMonBaDao`.
 
 Godot bắt buộc: **4.7.2.stable.official**; thiết kế hiển thị **landscape 1280×720**.
 
-**Chưa được xác nhận launcher chạy ổn định trên PR #72.** Lượt mở Windows thứ hai gặp crash `ig11icd64.dll` khi khởi tạo GLES3 và còn PID không truy vấn/đóng được. Tên launcher cũ xuất hiện là `MO_GAME.cmd` và `CHOI-GAME.cmd`; hãy để quy trình R2 của Codex xác minh một launcher chính thức thực tế. **Không chạy scripts Sync-Main/Preview cũ tùy tiện, không overwrite checkout/save cá nhân.**
+**R2 ACTIVE / launcher vẫn chưa được xác nhận chạy ổn định trên PR #72.** Lượt mở Windows thứ hai gặp crash `ig11icd64.dll` khi khởi tạo OpenGL và còn PID không truy vấn/đóng được. `godot/project.godot` đã là `gl_compatibility`, không thể coi chuyển sang Compatibility là giải pháp. Tên launcher cũ xuất hiện là `MO_GAME.cmd` và `CHOI-GAME.cmd`; hãy để quy trình R2 của Codex xác minh một launcher chính thức thực tế. **Không chạy scripts Sync-Main/Preview cũ tùy tiện, không overwrite checkout/save cá nhân.**
 
 ## Mức độ đã kiểm thử
 
-- Godot 4.7.2 import + 14 focused tests: **15/15 exit 0** ở code SHA `e92ef09fc2c9b2ccb870910577b295881ccc6527` (evidence PR #72).
+- **R0 PASS:** 196 working items + 94 save được sao lưu và kiểm tra hash (xem Issue #56). **R1 PASS (canonical):** Godot 4.7.2 import + 19 focused tests **20/20 exit 0** ở code SHA `b56b6fe8fa29ae663994a65098a56b60c3b42513`; UI D7 Tam Căn(3)/Tứ Tính(4) đã sửa. Các luật bulk/cap/FoundationGrowth chưa được duyệt vẫn DESIGN_HOLD, không tự nhập.
 - World PvE: **20 vùng, 30 hunter tối đa, 40 monster hoạt động / 200 spawn slots**. Test tự động PASS. Natural solo: 10 kills/10 receipts, Tu Vi/Luyện Thể/loot thật, respawn generation 2, cold Save/Reload PASS.
 - **Chưa PASS:** GUI chuột Windows thật, 3 clean starts, và trọn vòng New Game → xây → tuyển → sản xuất → PvE → loot → Save/Exit/Reload trên cùng save. Android/touch cũng chưa nghiệm thu.
 
@@ -35,4 +35,4 @@ Godot bắt buộc: **4.7.2.stable.official**; thiết kế hiển thị **lands
 4. Giữ quyết định nhãn nhân vật **Tam Căn / Tứ Tính** trong giao diện Dẫn Tiên theo chỉ đạo Owner; kiểm tra game authority trước khi sửa cơ chế.
 5. Lịch sử tiến độ và hướng dẫn launch cũ được lưu tại `docs/archive/checkpoints/`, **không còn là hướng dẫn hiện hành**.
 
-**Một mục tiêu duy nhất: hoàn thành R0–R5, nghiệm thu theo exact SHA, merge bản đạt chuẩn vào `main` và bàn giao launcher chơi được.**
+**Một mục tiêu duy nhất:** R0–R1 đã PASS; **tiếp tục R2→R3→R4→R5 không dừng giữa các gate**, nghiệm thu exact SHA, merge bản đạt chuẩn vào `main` và bàn giao launcher chơi được. [Chỉ thị Codex mới nhất](https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/72#issuecomment-6627064335).
