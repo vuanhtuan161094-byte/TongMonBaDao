@@ -1,0 +1,5 @@
+COMMAND=CHOI-GAME.cmd in isolated QA tree, verify-only
+EXIT_CODE=6
+Source verification failed; no Godot game process was launched.
+TRI03_SOURCE_VERIFY_FAIL: Checkout branch is not the PR feature branch (found empty; QA copy is detached at e888c010d6cfb09a97ce48af19d1a2f42a401240).
+PID 2188 was not terminated or modified.

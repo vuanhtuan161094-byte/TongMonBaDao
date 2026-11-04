@@ -64,7 +64,10 @@ func _run() -> void:
 	for id in battle.actors.keys():
 		actor_ids.append(str(id))
 	actor_ids.sort()
-	map.show_authority_snapshot(battle, {}, 0, {}, {})
+	# This fixture creates a Combat V2 distributed open world above; pass the
+	# same canonical mode bit used by P3.2 so the legacy six-member default
+	# selection cannot turn a minimap camera-focus click into a move order.
+	map.show_authority_snapshot(battle, {"p0_distributed_world": true}, 0, {}, {})
 	map.move_ordered.connect(_on_move_ordered)
 	if not _check(_actors_walkable(battle),
 		"one of the six fixture actors starts outside walkable bounds"):
@@ -228,6 +231,14 @@ func _run() -> void:
 	var blocked_cell := _find_click_cell(false, camps[0], false)
 	if not _check(open_cell.x >= 0 and safe_open_cell.x >= 0 and blocked_cell.x >= 0,
 		"could not find visible walkable and blocked Source A click targets"):
+		return
+	# P0 starts with no implicit selection. Build the six-member selection via
+	# the production map click path before expecting a group movement order.
+	for raw_id in actor_ids:
+		var actor: Dictionary = battle.actors[raw_id]
+		map._select_or_move_map(map.world_to_screen(actor.get("position", Vector2.ZERO)), true)
+	if not _check(map.selected_actor_ids.size() == 6,
+		"P0 click-selection path did not select all six intended hunters"):
 		return
 	var before_open := move_count
 	_inject_click(map.world_to_screen(Vector2(open_cell) + Vector2(0.5, 0.5)))

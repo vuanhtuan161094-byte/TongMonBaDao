@@ -1,0 +1,122 @@
+=== b1_trifacility_ui_contract_test (runner exit 0) ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+TRI01_B1_UI_CONTRACT_PASS
+=== b1_trifacility_layout_test (runner exit 0) ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+=== sect_g1_disciple_radar_test (runner exit 0) ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+G1 DISCIPLE RADAR + VERIFIED SOURCE A POOL: PASS
+=== hs09_disciple_profile_test (runner exit 0) ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+HS09 DISCIPLE PROFILE / DUAL RADAR / FEATURE-GATE READ MODEL PASS
+=== pve_group_move_unique_formation_test (runner exit 0) ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+PVE FORMATION UNIQUE: PASS checks=10 slots=6 deterministic=true snapshot=true atomic_failure=true physical_mouse=NOT_TESTED
+=== pve_p0_30_independent_hunters_test (runner exit 0) ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+PVE_P0_30X20_ACTIVE_PASS {"active_monsters":40,"areas":20,"hunters":30,"mandatory_team":false,"registered_slots":200,"six_team_members":6}
+PVE_P0_WORLD_LOD_RESTORE_PASS {"camp_count":20,"condensed":10,"distributed":40,"dormant_after_reactivation":8}
+PVE_P0_OPTIONAL_PARTY_SUPPORT_PASS {"aoe_excludes_unauthorized_solo":true,"solo":"hunter_20","team_members":["hunter_00","hunter_01"]}
+PVE_P0_MINIMAP_SOLO_ORDER_PASS {"no_selection_pans":true,"ordered_actor":"hunter_20","requested_zone":"C20"}
+PVE_P0_TRAVEL_ORIGIN_CAMP_PASS camps=2 monsters=20 physical_zone=C01 target=C20
+PVE_P0_SAFE_MONSTER_RESPAWN_PASS slot=C01:S01 active_monsters=10 no_overlap=true
+PVE_P0_30_HUNTERS_PASS checks=31 engine=Godot4.7.2
+=== pve_p0_natural_solo_reward_test (runner exit 0) ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+PVE_P0_REAL_KILLS_XP_PASS {"body_xp":279.5,"cultivation_xp":856.875,"distinct_life_replays_do_not_duplicate":true,"kills":10,"materials_dropped":true,"receipts":10}
+PVE_P0_NATURAL_JOIN_RETURN_PASS {"genuine_recruits":2,"last_hunter_retreat_required":true,"no_duplicate_join_or_return":true,"receipts_unchanged":10,"remaining_hunters":1,"world_still_active":true}
+PVE_P0_NATURAL_PROCESS2_BEGIN
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+PVE_P0_NATURAL_SAVE_RELOAD_PASS {"active_hunters":1,"body_xp":279.5,"cultivation_xp":856.875,"kills":10,"live_monsters_waiting_respawn":0,"returned_recruit_at_sect":true,"reward_receipts":10}
+PVE_P0_RESPAWN_GEN2_PASS {"bounded_receipts":10,"cold_reload_next":true,"generation":2,"replay_no_extra_awards":true,"simulated_frames":116,"total_paid_kills":11}
+
+PVE_P0_NATURAL_PROCESS2_END
+PVE_P0_RESPAWN_COLD_RELOAD_PASS {"bounded_receipts":10,"cultivation_and_body_persisted":true,"generation":2,"material_quantities_persisted":true,"pending_journal":0,"total_paid_kills":11,"world_active":true}
+PVE_P0_NATURAL_SOLO_PASS checks=56
+=== pve_p0_ui_player_entry_test (runner exit 0) ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+PVE_P0_UI_PLAYER_ENTRY_PASS checks=19
+=== save_service_async_roundtrip_test (runner exit 0) ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+SAVE SERVICE ASYNC ROUNDTRIP PASS checks=10 snapshot_isolated=true joins_before_sync=true prior_backup_valid=true
+=== p3_2_live_modular_map_test_rerun (exit 0) ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+P3.2 selected-only diagnostic before focus chosen=lam_an selected= virtual=(512.0, -4.0) actor_nodes=0 screen=(485.5, 30.0) view=[P: (0.0, 72.0), S: (1280.0, 570.0)]
+P3.2 selected-only diagnostic after focus chosen=lam_an selected=lam_an virtual=(512.0, -4.0) actor_nodes=1 projected_rect=[P: (580.6, 294.9), S: (118.8, 124.2)] view=[P: (0.0, 72.0), S: (1280.0, 570.0)] camera_position=(-110.6, 300.3) zoom=1.35 tween_valid=false tween_running=false
+P3.2 LIVE MODULAR FEMALE MAP INTEGRATION TEST PASS
+=== pve_aux02_world_input_contract_test_fixed2 (exit 0) ===
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+PVE AUX-02 WORLD INPUT CONTRACT PASS checks=2202 source_sha=c0e6b9952ce6303718938f5705a0327d0a14b136 map=sect_isometric_source_a_pve_v1 zones=20 group=6 transitions=20 minimap=20/20 camera=roundtrip_zoom_pan injected_pointer=true blocked_snap=true movement_save_restore=6/6 pursuit=true physical_mouse=NOT_TESTED
+=== r4_finish_matrix.csv ===
+Test,ExitCode,Marker,Status,DurationSeconds
+"res://tests/simulation/gp_02c1_injury_settlement_test.gd",0,"GP-02C1 T01-T23 FOCUSED TERMINAL/RECOVERY/COMPATIBILITY PASS",PASS,29.39
+"res://tests/presentation/p3_o1_canonical_warehouse_ui_test.gd",0,"P3 O1 CANONICAL WAREHOUSE UI TEST PASS",PASS,11.09
+"res://tests/presentation/p3_o3_real_mine_loop_test.gd",0,"P3 O3 REAL MINE LOOP TEST PASS",PASS,27.31
+"res://tests/presentation/p3_o8_alchemy_loop_test.gd",0,"P3 O8 ALCHEMY FIELD-PILL-CONSUMER TEST PASS",PASS,17.21
+"res://tests/presentation/p3_o9_m2_production_rehearsal_test.gd",0,"P3 O9 M2 MULTI-PRODUCER REHEARSAL PASS",PASS,21.24
+"res://tests/presentation/pve_multicamp_p3_2_live_integration_test.gd",0,"PVE SOURCE A CONTINUOUS WORLD P3.2 INTEGRATION PASS sha= renderer=SectIsometricWorldV1 map=192x192 zones=20 party=6 real_monsters=10 reserved=6 shared_clock_seconds=55.75 actions=189 path_order=true zone_hop=PASS result=defeat kills=2 injury120=PASS minimap=live camera=pan_zoom active_save_load=true p0_per_kill_receipts=true no_duplicate_or_fabricated_rewards=true",PASS,72.73
+=== B1 windowed rendered screenshot harness ===
+EXIT_CODE=NOT_CAPTURED; final pass marker observed; physical mouse=NOT_TESTED
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 - Build 31.0.101.2125 - Compatibility - Using Device: Intel - Intel(R) Iris(R) Plus Graphics
+
+TRI02_CAPTURE_STAGE=start
+TRI02_CAPTURE_STAGE=scene_added
+TRI02_CAPTURE_STAGE=two_frames
+TRI02_CAPTURE_STAGE=runtime_ready
+TRI02_CAPTURE_STAGE=verify_map_art
+TRI02_SOURCE_ALPHA_SCAN_START model=main_hall size=1104x740
+TRI02_SOURCE_ALPHA_PASS model=main_hall clear=1 opaque=1 antialias=1
+TRI02_SOURCE_ALPHA_SCAN_START model=residence size=536x416
+TRI02_SOURCE_ALPHA_PASS model=residence clear=1 opaque=1 antialias=1
+TRI02_SOURCE_ALPHA_SCAN_START model=guidance size=532x592
+TRI02_SOURCE_ALPHA_PASS model=guidance clear=1 opaque=1 antialias=1
+TRI02_CAPTURE_STAGE=map_art_verified
+TRI02_CAPTURE_STAGE=frame_post_draw_00_p3_2_map_context.png
+TRI02_CAPTURE_STAGE=frame_rendered_00_p3_2_map_context.png
+TRI02_P32_CAPTURE_OK path=E:\TongMonBaDaoWorkspace\03_QA_Logs\PR72_R2_R3_R4_20261104\screenshots/00_p3_2_map_context.png size=1280x720
+TRI02_BUILD_MODE_STATE residence_catalog=true confirm_disabled=true
+TRI02_CAPTURE_STAGE=frame_post_draw_04_build_mode_new_game_gates.png
+TRI02_CAPTURE_STAGE=frame_rendered_04_build_mode_new_game_gates.png
+TRI02_P32_CAPTURE_OK path=E:\TongMonBaDaoWorkspace\03_QA_Logs\PR72_R2_R3_R4_20261104\screenshots/04_build_mode_new_game_gates.png size=1280x720
+TRI02_CAPTURE_STAGE=open_hall
+TRI02_CAPTURE_STAGE=building_panel_hall
+TRI02_CAPTURE_STAGE=button_found_hall
+TRI02_CAPTURE_STAGE=button_emitted_hall
+TRI02_CAPTURE_STAGE=frame_post_draw_01_hall_live_state.png
+TRI02_CAPTURE_STAGE=frame_rendered_01_hall_live_state.png
+TRI02_P32_CAPTURE_OK path=E:\TongMonBaDaoWorkspace\03_QA_Logs\PR72_R2_R3_R4_20261104\screenshots/01_hall_live_state.png size=1280x720
+TRI02_CAPTURE_STAGE=open_residence
+TRI02_CAPTURE_STAGE=building_panel_residence
+TRI02_CAPTURE_STAGE=button_found_residence
+TRI02_CAPTURE_STAGE=button_emitted_residence
+TRI02_CAPTURE_STAGE=frame_post_draw_02_residence_live_state.png
+TRI02_CAPTURE_STAGE=frame_rendered_02_residence_live_state.png
+TRI02_P32_CAPTURE_OK path=E:\TongMonBaDaoWorkspace\03_QA_Logs\PR72_R2_R3_R4_20261104\screenshots/02_residence_live_state.png size=1280x720
+TRI02_B1_MAP_PLAN_ROUTE_PASS route=real_p3_2_build_mode
+TRI02_CAPTURE_STAGE=open_guidance
+TRI02_CAPTURE_STAGE=building_panel_guidance
+TRI02_CAPTURE_STAGE=button_found_guidance
+TRI02_CAPTURE_STAGE=button_emitted_guidance
+TRI02_CAPTURE_STAGE=frame_post_draw_03_guidance_live_state.png
+TRI02_CAPTURE_STAGE=frame_rendered_03_guidance_live_state.png
+TRI02_P32_CAPTURE_OK path=E:\TongMonBaDaoWorkspace\03_QA_Logs\PR72_R2_R3_R4_20261104\screenshots/03_guidance_live_state.png size=1280x720
+TRI02_CAPTURE_STAGE=frame_post_draw_05_recruitment_success_reveal_qa_fixture.png
+TRI02_CAPTURE_STAGE=frame_rendered_05_recruitment_success_reveal_qa_fixture.png
+TRI02_P32_CAPTURE_OK path=E:\TongMonBaDaoWorkspace\03_QA_Logs\PR72_R2_R3_R4_20261104\screenshots/05_recruitment_success_reveal_qa_fixture.png size=1280x720
+TRI03_RECRUITMENT_REVEAL_CAPTURE_PASS disciple=candidate_0007 roster=7 source_a_portrait=1 save_reload=1
+TRI02_P32_CONTEXT_CAPTURE_PASS map=1 hall=1 residence=1 guidance=1 size=1280x720

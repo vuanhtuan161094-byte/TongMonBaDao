@@ -1,0 +1,27 @@
+gate,test,exit_code,result,notes
+Import,Godot 4.7.2 editor import,0,PASS,Stage A installed and reimported; Windows certificate-store warning only
+R2,launcher safety regression PowerShell 5.1,0,PASS,25 checks; foreign-session unknown PID 2188 warning-only
+R2,CHOI-GAME.cmd preflight,6,BLOCKED,No process launched; QA clone detached at e888c010 and verifier rejected branch identity
+R2,three clean launcher GUI opens,NOT_RUN,PENDING,No owner-session game window; PID 2188 untouched
+R3,phase 1 New Game build recruit mine PvE Save,0,PASS,40 checks on isolated QA save
+R3,phase 2 cold reload continue production generation-2 kill Save,0,PASS,146 checks; 11 kills and 10 bounded unique slot receipts
+R3,phase 3 third cold process verify,0,PASS,4 checks; three separate Godot processes and same QA save
+R4,b1_trifacility_ui_contract_test,0,PASS,Live contract harness
+R4,b1_trifacility_layout_test,0,PASS,Exit zero; test has no explicit stdout marker
+R4,sect_g1_disciple_radar_test,0,PASS,Source A pool and radar
+R4,hs09_disciple_profile_test,0,PASS,Profile and dual-radar read model
+R4,p3_2_live_modular_map_test,0,PASS,After Stage A import; selected actor focused inside viewport
+R4,pve_aux02_world_input_contract_test,0,PASS,2202 checks; P0 fixture uses production selection path before group move
+R4,pve_group_move_unique_formation_test,0,PASS,10 checks; six unique slots and snapshot restore
+R4,pve_p0_30_independent_hunters_test,0,PASS,31 checks; 30 hunters and 20 zones
+R4,pve_p0_natural_solo_reward_test,0,PASS,56 checks; authentic receipts XP loot and cold reload
+R4,pve_p0_ui_player_entry_test,0,PASS,19 checks
+R4,save_service_async_roundtrip_test,0,PASS,10 checks; async snapshot isolation and join-before-sync
+R4,gp_02c1_injury_settlement_test,0,PASS,T01-T23; expected fail-closed compatibility diagnostic in stderr
+R4,p3_o1_canonical_warehouse_ui_test,0,PASS,Canonical warehouse UI
+R4,p3_o3_real_mine_loop_test,0,PASS,Production loop
+R4,p3_o8_alchemy_loop_test,0,PASS,Field pill consumer loop
+R4,p3_o9_m2_production_rehearsal_test,0,PASS,Multi-producer rehearsal
+R4,pve_multicamp_p3_2_live_integration_test,0,PASS,20 zones 6-party 10 monsters Injury120 Save/Load exact-once receipts
+R4,B1 1280x720 windowed screenshot harness,NOT_CAPTURED,PASS_MARKER,6 rendered PNGs; button input by test harness; mouse and exit code pending
+R4,physical Windows mouse play,NOT_RUN,PENDING,Computer Use did not see QA game window in its session

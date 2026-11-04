@@ -11,7 +11,9 @@ on:
       - 'godot/src/presentation/p3/pve_sect_world_view_v1.gd'
       - 'godot/src/presentation/p3_2_landscape_sect.gd'
       - 'godot/tests/presentation/pve_p0_ui_player_entry_test.gd'
+      - 'godot/tests/presentation/pve_aux02_world_input_contract_test.gd'
       - 'godot/tests/simulation/pve_p0_*'
+      - 'godot/tests/simulation/one_game_r3_continuous_save_test.gd'
       - 'tools/windows/run/Start-TRI03Game.ps1'
       - 'tools/windows/run/tri03_launcher_support.ps1'
       - 'tools/windows/run/tri03_runtime_source_manifest.json'
@@ -75,8 +77,10 @@ jobs:
             res://src/presentation/p3/pve_sect_world_view_v1.gd \
             res://src/presentation/p3_2_landscape_sect.gd \
             res://tests/presentation/pve_p0_ui_player_entry_test.gd \
+            res://tests/presentation/pve_aux02_world_input_contract_test.gd \
             res://tests/simulation/pve_p0_30_independent_hunters_test.gd \
-            res://tests/simulation/pve_p0_natural_solo_reward_test.gd; do
+            res://tests/simulation/pve_p0_natural_solo_reward_test.gd \
+            res://tests/simulation/one_game_r3_continuous_save_test.gd; do
             godot --headless --path godot --check-only --script "$script"
           done
 
@@ -85,6 +89,17 @@ jobs:
 
       - name: P0 New Game real V2 solo 10 HP0, second recruit joins/returns, cold reload
         run: godot --headless --path godot -s res://tests/simulation/pve_p0_natural_solo_reward_test.gd
+
+      - name: R3 continuous New Game, production and PvE across three cold processes
+        shell: bash
+        run: |
+          set -euo pipefail
+          export XDG_CONFIG_HOME="${RUNNER_TEMP}/tmb-r3-config"
+          export XDG_DATA_HOME="${RUNNER_TEMP}/tmb-r3-data"
+          export XDG_CACHE_HOME="${RUNNER_TEMP}/tmb-r3-cache"
+          godot --headless --path godot -s res://tests/simulation/one_game_r3_continuous_save_test.gd -- create
+          godot --headless --path godot -s res://tests/simulation/one_game_r3_continuous_save_test.gd -- continue
+          godot --headless --path godot -s res://tests/simulation/one_game_r3_continuous_save_test.gd -- verify
 
       - name: P0 player entry on main 1280x720 scene
         run: godot --headless --path godot -s res://tests/presentation/pve_p0_ui_player_entry_test.gd

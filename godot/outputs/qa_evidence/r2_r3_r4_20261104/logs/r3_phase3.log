@@ -1,0 +1,8 @@
+GODOT_VERSION=4.7.2.stable.official.ed1daf0bf
+EXIT_CODE=0
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ONE_GAME_R3_THREE_PROCESS_SAME_SAVE_PASS {"generation2_receipt_persisted":true,"hp0_kills":11,"hunter":"candidate_0008","mine_batches":6.0,"new_game":true,"paid_residence":"residence_002","processes":3,"save":"<QA_PROFILE>/AppData/Godot/app_userdata/Tong Mon Ba Dao/qa_r3_one_game_lineage_20261104.json","unique_slot_receipts":10,"warehouse_exact":true}
+ONE_GAME_R3_PHASE3_CHECKS=4
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)

@@ -1,0 +1,9 @@
+GODOT_VERSION=4.7.2.stable.official.ed1daf0bf
+EXIT_CODE=0
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ONE_GAME_R3_RELOAD_DIAGNOSTIC {"expected_mine_batches":5,"expected_receipts":1,"expected_residences":2,"expected_roster":7,"expected_warehouse":{"huyen_thiet":1.0,"linh_moc":3.0,"linh_tuy":21.0,"thanh_linh_thao":1.0,"thanh_thiet":29.0,"tinh_lang_bi":8.0,"yeu_dan":24.0},"hunter_found":true,"mine_batches":5,"mine_found":true,"receipts":1,"residences":2,"roster":7,"warehouse":{"huyen_thiet":1,"linh_moc":3,"linh_tuy":21,"thanh_linh_thao":1,"thanh_thiet":29,"tinh_lang_bi":8,"yeu_dan":24}}
+ONE_GAME_R3_COLD_RELOAD_CONTINUED_PRODUCTION_HUNT_PASS {"body_xp":317.35,"cultivation_xp":905.4375,"first_kill":{"actual_damage":133.0,"at_seconds":0.0,"damage_kind":"dot","kill_id":"r3_one_game_lineage_hunt:slot:C01:S01:g1","killer_actor_id":"candidate_0008","monster_instance_id":"r3_one_game_lineage_hunt/C01:S01/g1","slot_generation":1.0,"spawn_slot_id":"C01:S01","species_id":"truc_thu","world_id":"r3_one_game_lineage_hunt"},"generation2_receipt":{"actor_xp":{"candidate_0008":{"body":25.0,"cultivation":75.0}},"disposition":"DROPPED","generation":2,"items":{"linh_moc":1},"kill_id":"r3_one_game_lineage_hunt:slot:C01:S01:g2","killer_actor_id":"candidate_0008","slot_id":"C01:S01","species":"truc_thu","version":1},"hunter_id":"candidate_0008","mine_batches":6,"mine_id":"mine_001","mine_warehouse_ore":31,"pve_kills":11,"pve_receipts":10,"residence_build_receipt_count":1.0,"residence_count":2.0,"residence_id":"residence_002","roster_count":7.0,"save_path":"user://qa_r3_one_game_lineage_20261104.json","warehouse":{"huyen_thiet":1,"linh_moc":4,"linh_tuy":21,"thanh_linh_thao":1,"thanh_thiet":31,"tinh_lang_bi":8,"yeu_dan":24}}
+ONE_GAME_R3_PHASE2_CHECKS=146
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)

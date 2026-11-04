@@ -34,11 +34,20 @@ try {
         Write-Output 'TMB_LAUNCH_ALREADY_RUNNING: use the existing game window; no second Godot process was started.'
         $finalExitCode = 0
     } else {
-        $existing = @(Get-TRI03ExistingGodotProcesses -GodotPath $GodotPath)
+        $sessionId = [Diagnostics.Process]::GetCurrentProcess().SessionId
+        $assessments = @(Get-TRI03ExistingGodotProcesses -GodotPath $GodotPath -ProjectPath $ProjectPath -CurrentSessionId $sessionId)
+        foreach ($assessment in $assessments | Where-Object { -not $_.BlocksLaunch }) {
+            if ($assessment.Reason -eq 'same_session_different_project') {
+                Write-TRI03LauncherLog -Message ('unrelated_godot_ignored pid={0} session={1} reason={2}' -f $assessment.Id, $assessment.SessionId, $assessment.Reason)
+            } else {
+                Write-TRI03LauncherLog -Message ('unknown_process_identity pid={0} session={1} reason={2}; project_mutex_remains_authoritative=1' -f $assessment.Id, $assessment.SessionId, $assessment.Reason)
+            }
+        }
+        $existing = @($assessments | Where-Object { $_.BlocksLaunch })
         if ($existing.Count -gt 0) {
-            $ids = ($existing | ForEach-Object { $_.Id }) -join ','
-            Write-TRI03LauncherLog -Message ('existing_godot_blocked pids={0}; no new process started' -f $ids)
-            Write-Output ('TMB_LAUNCH_BLOCKED_EXISTING_GODOT: PID(s) {0}; close the existing Godot process before relaunching.' -f $ids)
+            $details = ($existing | ForEach-Object { '{0}:{1}' -f $_.Id, $_.Reason }) -join ','
+            Write-TRI03LauncherLog -Message ('existing_godot_blocked session={0} identities={1}; no new process started' -f $sessionId, $details)
+            Write-Output ('TMB_LAUNCH_BLOCKED_EXISTING_GODOT: same-session process identity is {0}; no second game was started.' -f $details)
             $finalExitCode = 13
         } else {
             $runId = New-TRI03RunId
