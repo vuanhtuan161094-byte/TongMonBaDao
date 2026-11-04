@@ -496,15 +496,23 @@ func _build_camera_controls() -> void:
     focus_readout.mouse_filter = Control.MOUSE_FILTER_IGNORE
     panel.add_child(focus_readout)
 
+    var hint_background := Panel.new()
+    hint_background.name = "CameraHintBackground"
+    hint_background.position = Vector2(690, 598)
+    hint_background.size = Vector2(494, 34)
+    hint_background.z_index = 19
+    hint_background.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    hint_background.add_theme_stylebox_override("panel", _style(Color(0.06, 0.14, 0.12, 0.92), JADE, 1, 7))
+    add_child(hint_background)
     var hint := Label.new()
     camera_hint = hint
     hint.text = "Chụm 2 ngón: zoom  •  Kéo: di chuyển  •  Chạm đúp: phóng nhanh"
-    hint.position = Vector2(704, 606)
-    hint.size = Vector2(480, 26)
+    hint.position = Vector2(698, 602)
+    hint.size = Vector2(478, 26)
     hint.z_index = 20
     hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
     hint.add_theme_font_size_override("font_size", 11)
-    hint.add_theme_color_override("font_color", Color(0.16, 0.16, 0.13, 0.74))
+    hint.add_theme_color_override("font_color", Color(0.96, 0.92, 0.80, 1.0))
     hint.mouse_filter = Control.MOUSE_FILTER_IGNORE
     add_child(hint)
 

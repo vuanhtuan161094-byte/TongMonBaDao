@@ -3,7 +3,7 @@
   "branch": "integration/pve-p0-playable-ui-20261103",
   "base_sha": "27ed01cd8f377994e5e50bac9ede84e78e8895bd",
   "upstream_pr_sha": "c99f22153b34628f7e94f69de0285514e788b9cb",
-  "source_fingerprint": "961f2cc08b534f93723cf04c3355f76d0937ad9b169a81c98df82013ddc85b97",
+  "source_fingerprint": "41abb98bb79746302b835e6c17a49cfd41b4096831da64f1ae96a0333c665adc",
   "files": [
     {
       "path": "CHOI-GAME.cmd",
@@ -335,7 +335,7 @@
     },
     {
       "path": "godot/src/presentation/p3_2_landscape_sect.gd",
-      "git_blob_sha": "b0fd2484a41bfb44ef7540c8fc58b5ea35d4c374"
+      "git_blob_sha": "cd3fff95b9ff2ec5f1c1ee5c6d71741e247f852e"
     },
     {
       "path": "godot/src/presentation/p3/hs09_dual_foundation_radar.gd",
