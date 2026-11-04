@@ -32,4 +32,4 @@ foreach ($target in @($starterPath,(Join-Path $run 'tri03_launcher_support.ps1')
     [void][Management.Automation.Language.Parser]::ParseFile($target,[ref]$tokens,[ref]$errors)
     Assert-TRI03 (@($errors).Count -eq 0) ('parse errors in ' + $target)
 }
-Write-Output 'TRI03_LAUNCHER_SAFETY_TEST_PASS checks=10'
+Write-Output 'TRI03_LAUNCHER_SAFETY_TEST_PASS checks=12'
