@@ -3,7 +3,7 @@
   "branch": "integration/pve-p0-playable-ui-20261103",
   "base_sha": "27ed01cd8f377994e5e50bac9ede84e78e8895bd",
   "upstream_pr_sha": "c99f22153b34628f7e94f69de0285514e788b9cb",
-  "source_fingerprint": "623465355cefe86990b5eb842f7758e77b1776719a065c346417193b7b1b95c0",
+  "source_fingerprint": "2b8b8b60a661b4789f2b18c87ab4763431a7378d8354ce231e36928ec1d5636e",
   "files": [
     {
       "path": "CHOI-GAME.cmd",
@@ -335,11 +335,11 @@
     },
     {
       "path": "godot/src/presentation/p3_2_landscape_sect.gd",
-      "git_blob_sha": "acca40bb208722316707fe669d4679def6bbf460"
+      "git_blob_sha": "b0fd2484a41bfb44ef7540c8fc58b5ea35d4c374"
     },
     {
       "path": "godot/src/presentation/p3/hs09_dual_foundation_radar.gd",
-      "git_blob_sha": "aaccc17638e38d549d2d82fdaf428d8d70067e06"
+      "git_blob_sha": "3a896cb200be2a1c3de394489b4e6ca4d4f89b28"
     },
     {
       "path": "godot/src/presentation/p3/pve_sect_world_view_v1.gd",
@@ -359,7 +359,7 @@
     },
     {
       "path": "godot/src/presentation/uiux/dan_tien_screen_b1_v1.gd",
-      "git_blob_sha": "b37bbdc536c102cd248e064dfaaf395c28dbfdec"
+      "git_blob_sha": "d75b7a4185db6f9137ffe7aa47b83b675a55c55f"
     },
     {
       "path": "godot/src/presentation/uiux/de_tu_xa_screen_b1_v1.gd",
@@ -367,7 +367,7 @@
     },
     {
       "path": "godot/src/presentation/uiux/sect_d7_radar_v1.gd",
-      "git_blob_sha": "e54fc7cc53f50731f3683d8777dd1c5cee568ad2"
+      "git_blob_sha": "eafbd51b0cfc8e45fc5e45e21885f529200c46c7"
     },
     {
       "path": "godot/src/presentation/uiux/sect_facility_art_v2.gd",
@@ -383,7 +383,7 @@
     },
     {
       "path": "godot/src/presentation/uiux/tri_facility_live_adapter_v1.gd",
-      "git_blob_sha": "64984c4b8b17674eb63e147f8f39854c2dcde2ad"
+      "git_blob_sha": "bce92b80241927bf9bd3c98eac2aafa4fe32ce40"
     },
     {
       "path": "godot/src/simulation/combat/hunting_pve_run_v2.gd",
@@ -439,7 +439,7 @@
     },
     {
       "path": "godot/tests/presentation/b1_trifacility_ui_contract_test.gd",
-      "git_blob_sha": "59dd1ee92b018e0929479093feb9c3fb238888d7"
+      "git_blob_sha": "25b2e5e3d3684c3becf8e62a23f97ec00becf964"
     },
     {
       "path": "godot/tests/presentation/gp_01_v2_mine_vertical_slice_test.gd",
@@ -451,11 +451,11 @@
     },
     {
       "path": "godot/tests/presentation/hs09_disciple_profile_test.gd",
-      "git_blob_sha": "cb213d462aefd569d2349069f92b46f466b0bf13"
+      "git_blob_sha": "e8ec946d59d629f5036b2a5bf4c18c601aa2c9b2"
     },
     {
       "path": "godot/tests/presentation/p3_o3_real_mine_loop_test.gd",
-      "git_blob_sha": "bb90f3a45b36b767ba136b20f1e94d43d2c44c25"
+      "git_blob_sha": "428e0e011ec68085ad79bcf429ff20dec777dc87"
     },
     {
       "path": "godot/tests/presentation/p3_o5_real_consumption_loop_test.gd",
@@ -467,7 +467,7 @@
     },
     {
       "path": "godot/tests/presentation/p3_o9_m2_production_rehearsal_test.gd",
-      "git_blob_sha": "dfe9e7a152ba8a107f6edcc11ae2629b6b0749b7"
+      "git_blob_sha": "8cfd9c07299c828176694f5c8a1a9a7f6a8149d9"
     },
     {
       "path": "godot/tests/presentation/pve_aux02_world_input_contract_test.gd",
@@ -483,7 +483,7 @@
     },
     {
       "path": "godot/tests/presentation/sect_g1_disciple_radar_test.gd",
-      "git_blob_sha": "fa1176f356ee6713f33f402a7d26a1bb115dbb54"
+      "git_blob_sha": "3c030e4cbb003912494fbcb3c7e07f4cdb4dd8a3"
     },
     {
       "path": "godot/tests/presentation/sect_ui_icon_atlas_test.gd",
@@ -531,15 +531,15 @@
     },
     {
       "path": "outputs/endgame_qa_20261025/perf/live_save_snapshot_metadata.json",
-      "git_blob_sha": "5a7ce326beb4ea9a25404b092e2227e48c93ad63"
+      "git_blob_sha": "d2e49e4da9822a890ba28fb3669a6a4a1bf3e669"
     },
     {
       "path": "outputs/map_d1b/logs/windows_benchmark_evidence.json",
-      "git_blob_sha": "9f5259bacd5bfdafe79f6abec0aacc5f53b9bdb7"
+      "git_blob_sha": "1e376fbd7046214c7b30f887284d8fe6446c257f"
     },
     {
       "path": "outputs/map_d1b/portable_package/Run_Map_D1B.cmd",
-      "git_blob_sha": "fe6bd2b751846391dcac9d5cbf5a331098c53022"
+      "git_blob_sha": "9313697bcc62ab9a9dd7af1cac87fb1eb64f17d3"
     },
     {
       "path": "tools/windows/bootstrap/Install-P3-2-Female-StageA.cmd",
