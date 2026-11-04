@@ -4,12 +4,12 @@
 
 ## Mục tiêu
 
-One game, one authority, one final `main`, one working launcher. **Không tạo PR/branch gameplay song song.** Chỉ PR #72 là source candidate; hiện là Draft, chưa merge. PR #67 là ancestor/base của #72; không merge lặp. 25 PR cũ đã đóng hành chính, không xóa code/branch; còn 36 PR tại lúc chụp trạng thái 2026-11-04.
+One game, one authority, one final `main`, one working launcher. **Không tạo PR/branch gameplay song song.** Chỉ PR #72 là source candidate; hiện là Draft, chưa merge. PR #67 là ancestor/base của #72; không merge lặp. 34 PR cũ đã đóng hành chính, không xóa code/branch; còn 27 PR tại checkpoint 2026-11-04.
 
 ## Bắt đầu công việc (thứ tự bắt buộc)
 
 1. **R0 — E: safety first.** Trên Windows, `git status` / `git worktree list` / tiến trình Godot đang chạy; backup đầy đủ khoảng 196 dirty/untracked source và save + manifest SHA256. Không `git reset --hard`, `git clean`, checkout cưỡng bức hay xóa người chơi.
-2. **R0 — conclude remaining 30 diverged PRs**, verify substantive behavior/QA in current PR #72 rather than assuming old git commit ancestry. Classify each `PORT_TO_72 | FUNCTIONALLY_SUPERSEDED | ARCHIVE_ONLY`. Old economy/workforce #2/#6–#20; combat/PvE #29/#30/#34/#44–#50; docs/tools/QA #53/#55/#59; #61 policy, #64 Hall/Residence, #66 B1 UI. Four animation labs #68/#69/#71/#74 remain experimental until Owner Visual + QA.
+2. **R0 — conclude remaining 23 open diverged PRs**, verify substantive behavior/QA in current PR #72 rather than assuming old git commit ancestry. Classify each `PORT_TO_72 | FUNCTIONALLY_SUPERSEDED | ARCHIVE_ONLY`. Old economy/workforce #2/#6–#20; combat/PvE #29/#30/#46/#47; #53 VFX/skills, #55 tooling, #61 policy, #64 Hall/Residence, #66 B1 UI. Archived unique QA/tests from #34/#44/#45/#48/#50/#59 must still be reviewed at R1/R4. Animation labs #71/#74 remain experimental until Owner Visual + QA; #68/#69 PRs are closed, branches retained.
 3. **R1 — code:** only forward-port missing approved production behavior to PR #72; preserve SaveService, One Active Job, Injury 0/1/120 ticks, Warehouse, 20-zone/30-hunter PvE, 27 sect ranks; keep Tam Căn / Tứ Tính UI naming as requested after checking canonical stat authority.
 4. **R2 — Windows launcher:** investigate `ig11icd64.dll` GLES3 crash and inaccessible PID safely; 3 clean launch/exit cycles. Select/verify actual `CHOI-GAME.cmd` or `MO_GAME.cmd` one-click entry from E, do not bypass fingerprint.
 5. **R3 — one QA save full journey:** New Game → Housing → real recruit → Mine → Warehouse → solo + join/withdraw PvE → kill receipts/real Tu Vi+Luyện Thể+loot → Save/Exit → independent cold Reload → continue, no duplicate.
