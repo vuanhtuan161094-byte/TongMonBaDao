@@ -38,8 +38,10 @@ try {
 } catch {
     Stop-Verification "Source manifest is not valid JSON: $($_.Exception.Message)" 4
 }
-if ($manifest.schema_version -ne 2 -or $manifest.branch -ne 'integration/tri-facility-a-b-playable-20261102') {
-    Stop-Verification 'Manifest schema or required PR 67 branch does not match.' 5
+if ($manifest.schema_version -ne 2 -or $manifest.branch -notin @(
+        'integration/tri-facility-a-b-playable-20261102',
+        'integration/pve-p0-playable-ui-20261103')) {
+    Stop-Verification 'Manifest schema or supported integrated-game branch does not match.' 5
 }
 $upstreamSha = [string]$manifest.upstream_pr_sha
 if ($upstreamSha -notmatch '^[0-9a-fA-F]{40}$') {
@@ -56,6 +58,10 @@ if ($LASTEXITCODE -ne 0 -or $branch -ne $manifest.branch) {
 if ($LASTEXITCODE -ne 0) {
     Stop-Verification "Checkout HEAD $head is not based on the verified PR source base $($manifest.base_sha)." 8
 }
+& $git -c "safe.directory=$safeDirectory" -C $safeRoot merge-base --is-ancestor $upstreamSha $head *> $null
+if ($LASTEXITCODE -ne 0) {
+    Stop-Verification "Checkout HEAD $head does not contain the pinned upstream source commit $upstreamSha." 8
+}
 
 $pins = @{}
 foreach ($entry in $manifest.files) {
@@ -67,7 +73,7 @@ foreach ($entry in $manifest.files) {
 }
 if ($pins.Count -lt 10) { Stop-Verification 'Manifest contains too few pinned source files.' 10 }
 if (-not $pins.ContainsKey('CHOI-GAME.cmd') -or -not $pins.ContainsKey('tools/windows/run/Verify-TRI03Source.ps1')) {
-    Stop-Verification 'Manifest must pin both the user launcher and its source verifier.' 10
+    Stop-Verification 'Manifest must pin the user launcher and source verifier.' 10
 }
 
 $fingerprintLines = @(
@@ -110,6 +116,7 @@ foreach ($line in $statusLines) {
 }
 $sourceExtensions = @('.gd', '.tscn', '.tres', '.gdshader', '.svg', '.png', '.json', '.cfg')
 foreach ($path in ($changedPaths | Sort-Object -Unique)) {
+    if ($path -eq 'tools/windows/run/tri03_runtime_source_manifest.json') { continue }
     if ($path.EndsWith('.import')) { continue }
     if ($path.StartsWith('godot/outputs/') -or $path.StartsWith('godot/.godot/')) { continue }
     $extension = [IO.Path]::GetExtension($path).ToLowerInvariant()

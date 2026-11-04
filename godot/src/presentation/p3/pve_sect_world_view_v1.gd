@@ -3,6 +3,7 @@ extends Control
 
 signal move_ordered(actor_ids: Array, destination: Vector2)
 signal selection_changed(actor_ids: Array)
+signal hunt_policy_ordered(actor_ids: Array, policy: String)
 
 const MINIMAP_MARGIN := 10.0
 const MIN_ZOOM := 0.28
@@ -44,6 +45,8 @@ var _disciples: Dictionary = {}
 var _view_rows: Dictionary = {}
 var _zoom_in_button: Button
 var _zoom_out_button: Button
+var _hunt_auto_button: Button
+var _hunt_hold_button: Button
 var performance_logging_enabled := false
 var performance_vfx_draw_count := 0
 var performance_vfx_draw_usec_total := 0
@@ -107,6 +110,7 @@ func _ready() -> void:
 	_overlay.draw_handler = Callable(self,"_draw_overlay")
 	add_child(_overlay)
 	_create_zoom_controls()
+	_create_hunt_controls()
 	_overlay.queue_redraw()
 
 func _notification(what: int) -> void:
@@ -159,6 +163,56 @@ func _create_zoom_controls() -> void:
 		add_child(button)
 	_zoom_in_button.pressed.connect(_zoom_in_at_center)
 	_zoom_out_button.pressed.connect(_zoom_out_at_center)
+
+func _create_hunt_controls() -> void:
+	# Compact game commands below the two zoom icons. Never display enabled
+	# actions until the exclusive P3.2 writer connects the authoritative
+	# runtime+SaveService callbacks; avoid inert/misleading UI.
+	_hunt_auto_button = _make_zoom_button(
+		"PveP0HuntAuto","⚔ Tự săn","Đệ tử đã chọn tự săn gần vị trí đang đứng")
+	_hunt_hold_button = _make_zoom_button(
+		"PveP0HuntHold","◆ Giữ","Đệ tử đã chọn giữ vị trí, đánh trong tầm")
+	for entry in [[_hunt_auto_button,280.0],[_hunt_hold_button,326.0]]:
+		var button: Button = entry[0]
+		button.set_anchors_preset(Control.PRESET_TOP_LEFT)
+		button.offset_left = 12.0
+		button.offset_top = float(entry[1])
+		button.offset_right = 124.0
+		button.offset_bottom = float(entry[1])+40.0
+		button.custom_minimum_size = Vector2(112,40)
+		button.add_theme_font_size_override("font_size",15)
+		add_child(button)
+	_hunt_auto_button.pressed.connect(func(): _emit_hunt_policy("auto"))
+	_hunt_hold_button.pressed.connect(func(): _emit_hunt_policy("hold"))
+	refresh_hunt_controls()
+
+func refresh_hunt_controls() -> void:
+	if _hunt_auto_button == null or _hunt_hold_button == null:
+		return
+	var p0 := battle != null and battle.world_mode \
+		and PveDistributedWorldV1.enabled(population)
+	var authoritative_listener := hunt_policy_ordered.has_connections()
+	for button in [_hunt_auto_button,_hunt_hold_button]:
+		button.visible = p0 and authoritative_listener
+		button.disabled = not p0 or not authoritative_listener \
+			or selected_actor_ids.is_empty()
+
+func _emit_hunt_policy(policy: String) -> void:
+	if not ["auto","hold"].has(policy) or selected_actor_ids.is_empty() \
+		or not hunt_policy_ordered.has_connections() \
+		or battle == null or not battle.world_mode \
+		or not PveDistributedWorldV1.enabled(population):
+		return
+	var selected: Array[String] = []
+	for raw_id in selected_actor_ids:
+		var id := str(raw_id)
+		var actor: Dictionary = battle.actors.get(id,{})
+		if str(actor.get("side","")) != "disciple" \
+			or float(actor.get("hp",0.0)) <= 0.0:
+			return
+		selected.append(id)
+	selected.sort()
+	hunt_policy_ordered.emit(selected,policy)
 
 func _make_zoom_button(node_name: String,text_value: String,tooltip: String) -> Button:
 	var button := Button.new()
@@ -267,6 +321,7 @@ func show_authority_snapshot(snapshot: MapBattleV2, world_population: Dictionary
 	_view_rows = view_rows.duplicate(true)
 	if battle == null:
 		selected_actor_ids.clear()
+		refresh_hunt_controls()
 		world.set_pve_snapshot(null,{},selected_actor_ids)
 		_overlay.queue_redraw()
 		return
@@ -279,9 +334,13 @@ func show_authority_snapshot(snapshot: MapBattleV2, world_population: Dictionary
 	for id in selected_actor_ids:
 		if current_disciples.has(id):
 			kept.append(id)
-	if kept.is_empty():
+	# Legacy six-member pilot starts with the whole squad selected. P0
+	# independent world MUST start with no implicit selection: otherwise a
+	# single minimap click unintentionally orders every deployed hunter.
+	if kept.is_empty() and not PveDistributedWorldV1.enabled(population):
 		kept = current_disciples.duplicate()
 	selected_actor_ids = kept
+	refresh_hunt_controls()
 	world.set_pve_snapshot(battle,_view_rows,selected_actor_ids,topology.get("camp_positions",[]))
 	_overlay.queue_redraw()
 
@@ -346,6 +405,7 @@ func _select_or_move_map(screen: Vector2,shift: bool) -> void:
 		else:
 			selected_actor_ids = [nearest]
 		selection_changed.emit(selected_actor_ids.duplicate())
+		refresh_hunt_controls()
 		world.pve_selected_actor_ids = selected_actor_ids.duplicate()
 		world.queue_redraw()
 		_overlay.queue_redraw()
@@ -370,6 +430,17 @@ func _focus_minimap(screen: Vector2) -> void:
 	var uv := (screen-minimap_inner_rect().position)/minimap_inner_rect().size
 	var bounds: Rect2 = topology.get("bounds",Rect2(Vector2.ZERO,Vector2(SectIsometricWorldV1.GRID)))
 	var cell := Vector2(clampf(uv.x,0.0,1.0)*bounds.size.x,clampf(uv.y,0.0,1.0)*bounds.size.y)
+	# Age-of-Empires-style minimap command: selected hunters GO to the
+	# clicked area. No selected actors means an ordinary camera focus.
+	# Only emit an order; the canonical P3.2 owner validates and persists it.
+	if not selected_actor_ids.is_empty() and battle != null and battle.world_mode:
+		var navigation: Dictionary = battle.world_navigation
+		var walkable := PveOpenWorldTopologyV1._nearest_walkable(
+			navigation,Vector2i(floori(cell.x),floori(cell.y)))
+		if walkable.x >= 0:
+			move_ordered.emit(selected_actor_ids.duplicate(),
+				Vector2(walkable)+Vector2(0.5,0.5))
+		return
 	world.camera.position = SectIsometricWorldV1.project(cell)
 	_clamp_camera()
 

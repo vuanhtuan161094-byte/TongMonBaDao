@@ -1,0 +1,219 @@
+==== Godot 4.7.2 official editor import | --editor --headless import | exit=0 ====
+-- STDOUT --
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Started Project initialization (5 steps)[39m[0m
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Scanning file structure...[39m[0m
+[  16% ] [90m[1mfirst_scan_filesystem[22m | Loading global class names...[39m[0m
+[  33% ] [90m[1mfirst_scan_filesystem[22m | Verifying GDExtensions...[39m[0m
+[  50% ] [90m[1mfirst_scan_filesystem[22m | Creating autoload scripts...[39m[0m
+[  66% ] [90m[1mfirst_scan_filesystem[22m | Initializing plugins...[39m[0m
+[  83% ] [90m[1mfirst_scan_filesystem[22m | Starting file scan...[39m[0m
+[92m[ DONE ][39m [1mfirst_scan_filesystem[22m
+[0m
+[   0% ] [90m[1mloading_editor_layout[22m | Started Loading editor (5 steps)[39m[0m
+[   0% ] [90m[1mloading_editor_layout[22m | Loading editor layout...[39m[0m
+[  16% ] [90m[1mloading_editor_layout[22m | Loading docks...[39m[0m
+[92m[ DONE ][39m [1mloading_editor_layout[22m
+[0m
+-- STDERR --
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+==== B1 tri-facility UI contract | tests/presentation/b1_trifacility_ui_contract_test.gd | exit=0 ====
+-- STDOUT --
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+TRI01_B1_UI_CONTRACT_PASS
+-- STDERR --
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+==== Sect G1 D7 radar + Source A pool | tests/presentation/sect_g1_disciple_radar_test.gd | exit=0 ====
+-- STDOUT --
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+G1 DISCIPLE RADAR + VERIFIED SOURCE A POOL: PASS
+-- STDERR --
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+==== HS09 D7 profile | tests/presentation/hs09_disciple_profile_test.gd | exit=0 ====
+-- STDOUT --
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+HS09 DISCIPLE PROFILE / DUAL RADAR / FEATURE-GATE READ MODEL PASS
+-- STDERR --
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+==== DV2-03 P3 V2 disciple profile | tests/presentation/dv2_03_p3_v2_disciple_profile_test.gd | exit=0 ====
+-- STDOUT --
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+DV2-03 P3 AUTHENTIC V2 DISCIPLE PROFILE: PASS
+-- STDERR --
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+==== P3.2 disciple UI compatibility | tests/presentation/p3_2_disciple_ui_test.gd | exit=0 ====
+-- STDOUT --
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+P3.2 DISCIPLE UI LEGACY COMPATIBILITY TEST PASS
+-- STDERR --
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+==== GP-02B1 occupation guard / offline | tests/simulation/gp_02b1_v2_occupation_guard_test.gd | exit=0 ====
+-- STDOUT --
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+GP-02B1 V2 BACKEND OCCUPATION + OFFLINE + LEGACY ISOLATION: PASS
+-- STDERR --
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+==== P0 economy contract | tests/simulation/p0_economy_contract_test.gd | exit=0 ====
+-- STDOUT --
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+P0 ECONOMY CONTRACT TEST PASS
+-- STDERR --
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+==== P3.7C1 foundation + Dẫn Tiên | tests/simulation/p3_7c1_foundation_guidance_test.gd | exit=0 ====
+-- STDOUT --
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+P3.7C1 FOUNDATION + DAN TIEN RECRUITMENT TEST PASS
+-- STDERR --
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+==== P3.7B1 warehouse | tests/simulation/p3_7b1_warehouse_test.gd | exit=0 ====
+-- STDOUT --
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+P3.7B1 RESOURCE REGISTRY + WAREHOUSE TEST PASS
+-- STDERR --
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+==== ECONOMY-A playable Save/Offline | tests/simulation/economy_a_playable_test.gd | exit=0 ====
+-- STDOUT --
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ECONOMY-A PLAYABLE V2 TIMERS + WAGES + MARKET + PERSONAL + SAVE + OFFLINE: PASS
+-- STDERR --
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+==== P3 O1 Warehouse UI | tests/presentation/p3_o1_canonical_warehouse_ui_test.gd | exit=0 ====
+-- STDOUT --
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+P3 O1 CANONICAL WAREHOUSE UI TEST PASS
+-- STDERR --
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+==== P3 O2 recruitment map | tests/presentation/p3_o2_recruitment_map_test.gd | exit=0 ====
+-- STDOUT --
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+P3 O2 RECRUITMENT MAP TEST PASS
+-- STDERR --
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+==== P3 O3 real Mine loop | tests/presentation/p3_o3_real_mine_loop_test.gd | exit=0 ====
+-- STDOUT --
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+P3 O3 REAL MINE LOOP TEST PASS
+-- STDERR --
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+==== P3 O4 real Spirit Field loop | tests/presentation/p3_o4_spirit_field_loop_test.gd | exit=0 ====
+-- STDOUT --
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+P3 O4 REAL SPIRIT FIELD LOOP TEST PASS
+-- STDERR --
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+==== P3 O5 produce-consume loop | tests/presentation/p3_o5_real_consumption_loop_test.gd | exit=0 ====
+-- STDOUT --
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+P3 O5 REAL PRODUCE-SPEND LOOP TEST PASS
+-- STDERR --
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+==== P3 O7 Linh Lâm + SaveService | tests/presentation/p3_o7_linh_forest_test.gd | exit=0 ====
+-- STDOUT --
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+P3 O7 LINH FOREST GENERIC BUILDING JOB TEST PASS
+-- STDERR --
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+==== P3 O8 alchemy field-pill consumer | tests/presentation/p3_o8_alchemy_loop_test.gd | exit=0 ====
+-- STDOUT --
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+P3 O8 ALCHEMY FIELD-PILL-CONSUMER TEST PASS
+-- STDERR --
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+==== P3 O9 M2 multi-producer rehearsal | tests/presentation/p3_o9_m2_production_rehearsal_test.gd | exit=0 ====
+-- STDOUT --
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+P3 O9 M2 MULTI-PRODUCER REHEARSAL PASS
+-- STDERR --
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+==== DaiDien housing construction / save-reload | tests/dai_dien_housing_full_loop_test.gd | exit=0 ====
+-- STDOUT --
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+DAI_DIEN_HOUSING_FULL_LOOP_PASS recruit=8to9 beds=8to10 house_instances=2 price_once=1 rank=2 save_reload=1 godot_ui=1
+-- STDERR --
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+==== DIAGNOSTIC / FIXED ATTEMPTS ====
+O3 initial exit=1: stale QA-only p3_o3_mine_loop_test.json.bak loaded because cleanup removed only the primary save. Original backup preserved at 90_Archive\TMB_R0_BACKUP_20261104_145049\qa_test_artifacts\p3_o3_mine_loop_test.preexisting-qa-backup.json.bak; SHA-256 406F1B89506B1BBF6B514DE8A63BBCA18259285201F9BA6FA15D0E28EB34911B. Test cleanup now clears its own .tmp/.bak artifacts; final O3 exit=0.
+O7 initial exit=1: test started _autosave_runtime asynchronously, then tore down the scene before awaiting completion; reload read a stale mid-cycle snapshot and emitted Thread-without-join warning. Test now awaits _save_runtime_async_barrier before teardown; final O7 exit=0 and stderr has no Thread warning. No SaveService gameplay code changed.
+
+==== FINAL post-patch Godot 4.7.2 editor import | exit=0 | no parse errors ====
+-- STDOUT --
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Started Project initialization (5 steps)[39m[0m
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Scanning file structure...[39m[0m
+[  16% ] [90m[1mfirst_scan_filesystem[22m | Loading global class names...[39m[0m
+[  33% ] [90m[1mfirst_scan_filesystem[22m | Verifying GDExtensions...[39m[0m
+[  50% ] [90m[1mfirst_scan_filesystem[22m | Creating autoload scripts...[39m[0m
+[  66% ] [90m[1mfirst_scan_filesystem[22m | Initializing plugins...[39m[0m
+[  83% ] [90m[1mfirst_scan_filesystem[22m | Starting file scan...[39m[0m
+[92m[ DONE ][39m [1mfirst_scan_filesystem[22m
+[0m
+[   0% ] [90m[1mupdate_scripts_classes[22m | Started Registering global classes... (7 steps)[39m[0m
+[   0% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  12% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  25% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  37% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  50% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  62% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  75% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[92m[ DONE ][39m [1mupdate_scripts_classes[22m
+[0m
+[   0% ] [90m[1mreimport[22m | Started (Re)Importing Assets (1 steps)[39m[0m
+[   0% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[   0% ] [90m[1mreimport[22m | Executing pre-reimport operations...[39m[0m
+[   0% ] [90m[1mreimport[22m | QA_MATRIX.csv[39m[0m
+[  50% ] [90m[1mreimport[22m | Finalizing Asset Import...[39m[0m
+[92m[ DONE ][39m [1mreimport[22m
+[0m
+[   0% ] [90m[1mreimport[22m | Started (Re)Importing Assets (1 steps)[39m[0m
+[   0% ] [90m[1mreimport[22m | Executing post-reimport operations...[39m[0m
+[92m[ DONE ][39m [1mreimport[22m
+[0m
+[   0% ] [90m[1mloading_editor_layout[22m | Started Loading editor (5 steps)[39m[0m
+[   0% ] [90m[1mloading_editor_layout[22m | Loading editor layout...[39m[0m
+[  16% ] [90m[1mloading_editor_layout[22m | Loading docks...[39m[0m
+[92m[ DONE ][39m [1mloading_editor_layout[22m
+[0m
+-- STDERR --
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)

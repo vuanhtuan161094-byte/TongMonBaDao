@@ -1,0 +1,3 @@
+"attempt","sha","godot","pid","launcher_preflight_exit","game_window_ready","normal_start","runtime","log"
+"1","e92ef09fc2c9b2ccb870910577b295881ccc6527","4.7.2.stable.official.ed1daf0bf","15164","0","PASS","PASS","closed gracefully by this QA session","launcher_playtest_profile\Logs\launcher.log; initial successful run at 01:15"
+"2","e92ef09fc2c9b2ccb870910577b295881ccc6527","4.7.2.stable.official.ed1daf0bf","17172","0","FAIL","FAIL","Godot signal 11 in ig11icd64.dll after 90s not-ready; WM_CLOSE attempted then session-owned crash PID force-terminated","launcher_playtest_profile\Logs\launcher.log; launcher.log.stderr.log; logs\exact_e92ef09_g0g1\launcher_restarts\launch_1.*.log"

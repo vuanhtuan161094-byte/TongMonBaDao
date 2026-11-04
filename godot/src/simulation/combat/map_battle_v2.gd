@@ -10,6 +10,7 @@ const MAX_SECONDS := 90.0
 const MAX_EVENTS := 2400
 const ARENA := Rect2(Vector2.ZERO,Vector2(36.0,20.0))
 const MAX_DISCIPLES := 30
+const P0_LOCAL_HUNT_RADIUS := 18.0
 const MAX_MONSTERS := 40
 const MAX_TARGETS_AOE := 3
 # Backpressure rather than dropping durable HP0 records when PH1 has not ACKed.
@@ -18,6 +19,7 @@ const MAX_EXTERNAL_DAMAGE_IDS := 4096
 const MAX_CONTINUOUS_BATCH_STEPS := 20000
 const MAX_REMEMBERED_SPAWN_SLOTS := 1024
 const MAX_WORLD_PATH_CACHE_ENTRIES := 128
+const WORLD_MOVE_FORMATION_MIN_GAP_CELLS := 3.5
 
 var rng: GameRng
 var now: float = 0.0
@@ -127,7 +129,10 @@ func setup(id: String, party: Array, monsters: Array, keep_encounter_open: bool 
             "context_sources":row.get("context_sources",[]).duplicate(true),
             "next_basic":0.0,"next_skill":0.0,"guard_until":-1.0,
             "learned_guard_until":-1.0,"learned_guard_factor":1.0,"status_effects":{},
-            "linked_disciple":row.get("disciple",null)
+            "linked_disciple":row.get("disciple",null),
+            "hunt_policy":str(row.get("hunt_policy","auto")),
+            "hunt_after_move":str(row.get("hunt_policy","auto")),
+            "hunt_radius":float(row.get("hunt_radius",0.0))
         })
         var v63_disciple_actor: Dictionary = entries[entries.size()-1]
         for field in ["v63_skill_loadout","v63_skill_ready","v63_combat_enabled","v63_passive_ids","v63_combat_branch_id","v63_combat_lineage","v63_innate_skill_id","v63_basic_skill_id","basic_element","v63_divine_stage","v63_combat_generation","v63_blood_mode","v63_base_max_hp","v63_shield_received_factor"]:
@@ -190,6 +195,8 @@ func setup(id: String, party: Array, monsters: Array, keep_encounter_open: bool 
             world_actor["home_position"] = world_actor["position"]
             if str(world_actor["side"]) == "monster":
                 world_actor["patrol_phase"] = int(hash(str(world_actor.get("spawn_slot_id",""))) % 4)
+            elif str(world_actor["side"]) == "disciple":
+                world_actor["home_position"] = world_actor["position"]
     return {"ok":true,"encounter_id":id}
 
 func setup_open_world(id: String, party: Array, monsters: Array, options: Dictionary) -> Dictionary:
@@ -233,7 +240,10 @@ func _position_allowed(position: Vector2) -> bool:
     var blocked = world_navigation["blocked"]
     return int(blocked[cell.y*width+cell.x]) == 0
 
-func order_group_move(actor_ids: Array, destination: Vector2) -> Dictionary:
+func order_group_move(actor_ids: Array, destination: Vector2,
+        arrive_policy: String = "keep") -> Dictionary:
+    if not ["keep","auto","hold"].has(arrive_policy):
+        return {"ok":false,"reason":"invalid_arrival_hunt_policy"}
     if not world_mode or not active:
         return {"ok":false,"reason":"open_world_move_unavailable"}
     var ordered: Array[String] = []
@@ -280,7 +290,8 @@ func order_group_move(actor_ids: Array, destination: Vector2) -> Dictionary:
     # snap to the same walkable tile near rocks, streams or world bounds.
     for index in range(ordered.size()):
         var desired: Vector2i = base_cell+offsets[index%offsets.size()]
-        var walkable := _nearest_walkable_unreserved_cell(desired,reserved,actor_regions)
+        var walkable := _nearest_walkable_unreserved_cell(
+            desired,reserved,actor_regions,WORLD_MOVE_FORMATION_MIN_GAP_CELLS)
         if walkable.x < 0:
             return {"ok":false,"reason":"move_formation_has_insufficient_walkable_cells"}
         reserved[walkable] = true
@@ -289,8 +300,36 @@ func order_group_move(actor_ids: Array, destination: Vector2) -> Dictionary:
         var actor: Dictionary = actors[ordered[index]]
         actor["move_order_position"] = destinations[index]
         actor["move_order_active"] = true
+        # "keep" preserves each actor's own policy in mixed solo/team orders.
+        actor["hunt_after_move"] = str(actor.get("hunt_policy","auto")) \
+            if arrive_policy == "keep" else arrive_policy
         _event("move_order",{"actor_id":ordered[index],"position":actor["move_order_position"]})
     return {"ok":true,"actor_ids":ordered,"destination":Vector2(base_cell)+Vector2(0.5,0.5)}
+func set_disciple_hunt_policy(actor_ids: Array, policy: String) -> Dictionary:
+    # Independent actor policy; no party membership is required. Validate
+    # ALL requested actors before mutating any command, including on reload.
+    if not world_mode or not active or not ["auto","hold"].has(policy):
+        return {"ok":false,"reason":"invalid_individual_hunt_policy"}
+    var ordered: Array[String] = []
+    for raw_id in actor_ids:
+        var id := str(raw_id)
+        var actor: Dictionary = actors.get(id,{})
+        if id.is_empty() or ordered.has(id) or actor.is_empty() \
+                or str(actor.get("side","")) != "disciple" or float(actor.get("hp",0.0)) <= 0.0:
+            return {"ok":false,"reason":"invalid_individual_hunt_member"}
+        ordered.append(id)
+    if ordered.is_empty():
+        return {"ok":false,"reason":"no_selected_hunters"}
+    ordered.sort()
+    for id in ordered:
+        var actor: Dictionary = actors[id]
+        actor["hunt_policy"] = policy
+        actor["hunt_after_move"] = policy
+        actor["move_order_active"] = false
+        actor["home_position"] = actor["position"]
+        _event("individual_hunt_policy",{"actor_id":id,"policy":policy})
+    return {"ok":true,"actor_ids":ordered,"policy":policy}
+
 func set_auto_hunt(enabled: bool) -> Dictionary:
     if not world_mode or not active:
         return {"ok":false,"reason":"open_world_auto_unavailable"}
@@ -303,7 +342,8 @@ func set_auto_hunt(enabled: bool) -> Dictionary:
 # edge because an offset may begin just outside the valid grid.
 func _nearest_walkable_unreserved_cell(
         origin: Vector2i, reserved: Dictionary,
-        reachable_regions: Array[Dictionary] = []) -> Vector2i:
+        reachable_regions: Array[Dictionary] = [],
+        minimum_separation: float = 0.0) -> Vector2i:
     if not world_mode or world_navigation.is_empty():
         var fallback := _nearest_walkable_cell(origin)
         return fallback if fallback.x >= 0 and not reserved.has(fallback) else Vector2i(-1,-1)
@@ -319,6 +359,14 @@ func _nearest_walkable_unreserved_cell(
                     continue
                 var cell := Vector2i(x,y)
                 if reserved.has(cell) or int(blocked[y*width+x]) != 0:
+                    continue
+                var separated := true
+                if minimum_separation > 0.0:
+                    for used_cell in reserved:
+                        if Vector2(cell).distance_to(Vector2(used_cell)) < minimum_separation:
+                            separated = false
+                            break
+                if not separated:
                     continue
                 var reachable_from_every_actor := true
                 for region in reachable_regions:
@@ -547,10 +595,15 @@ func step(viewed_map: bool = false) -> Dictionary:
             var ordered_position: Vector2 = actor.get("move_order_position",actor["position"])
             if (actor["position"] as Vector2).distance_to(ordered_position) <= 0.45:
                 actor["move_order_active"] = false
+                actor["home_position"] = actor["position"]
+                actor["hunt_policy"] = str(actor.get("hunt_after_move","auto"))
             else:
                 _move_world_actor(actor,ordered_position,float(actor.get("move_speed",2.0)))
                 continue
-        var target: Dictionary = _nearest_enemy(actor)
+        var holding := world_mode and str(actor["side"]) == "disciple" \
+                and str(actor.get("hunt_policy","auto")) == "hold"
+        var target: Dictionary = _nearest_enemy_in_range(actor,float(actor.get("range",1.5))) \
+                if holding else _nearest_enemy(actor)
         if world_mode and str(actor["side"]) == "monster" and not target.is_empty():
             var aggro_range := float(actor.get("aggro_range",8.0))
             if (actor["position"] as Vector2).distance_to(target["position"]) > aggro_range:
@@ -577,10 +630,14 @@ func step(viewed_map: bool = false) -> Dictionary:
             var path := _world_path(actor["position"],target["position"])
             var route_distance := 0.0 if floori((actor["position"] as Vector2).x) == floori((target["position"] as Vector2).x) and floori((actor["position"] as Vector2).y) == floori((target["position"] as Vector2).y) else _world_route_distance(actor["position"],path)
             if route_distance > attack_range+0.08:
+                if holding:
+                    continue
                 _move_world_actor(actor,target["position"],float(actor.get("move_speed",2.0)),attack_range)
                 continue
             distance = route_distance
         if distance > attack_range:
+            if holding:
+                continue
             var delta := minf(float(actor["move_speed"])*STEP_SECONDS,maxf(0.0,distance-attack_range+0.02))
             if delta > 0.0:
                 if world_mode:
@@ -706,6 +763,163 @@ func add_continuous_monster(row: Dictionary) -> Dictionary:
         "slot_generation":actor["slot_generation"],"species_id":actor["species_id"]})
     return {"ok":true,"actor_id":actor_id,"active_monsters":_count_alive("monster")}
 
+func add_world_disciple(row: Dictionary) -> Dictionary:
+    # Late joining is one explicit human actor, not a second encounter or
+    # a spawned fixture. The owner must first validate the canonical recruit.
+    if not world_mode or not continuous_mode or not active:
+        return {"ok":false,"reason":"p0_join_requires_live_world"}
+    var actor_id := str(row.get("id",""))
+    var party_id := str(row.get("party_id",""))
+    var role := str(row.get("role",""))
+    var pos = row.get("position",null)
+    var stats = row.get("stats",{})
+    if actor_id.is_empty() or actors.has(actor_id) or party_id.is_empty() \
+            or not ["frontline","ranged","mage","healer"].has(role) \
+            or not (pos is Vector2) or not is_world_position_allowed(pos) \
+            or not (stats is Dictionary) or stats.is_empty():
+        return {"ok":false,"reason":"p0_invalid_join_identity_or_position"}
+    var existing_people := 0
+    var existing_party := 0
+    for actor_value in actors.values():
+        var prior: Dictionary = actor_value
+        if str(prior.get("side","")) != "disciple":
+            continue
+        existing_people += 1
+        if str(prior.get("party_id","")) == party_id:
+            existing_party += 1
+    if existing_people >= MAX_DISCIPLES:
+        return {"ok":false,"reason":"p0_world_hunter_cap"}
+    if existing_party >= 6:
+        return {"ok":false,"reason":"p0_voluntary_party_full"}
+    var max_hp := float(stats.get("max_hp",0.0))
+    var hp := float(row.get("hp",max_hp))
+    if not is_finite(hp) or not is_finite(max_hp) or max_hp <= 0.0 \
+            or hp <= 0.0 or hp > max_hp \
+            or float(stats.get("attack",0.0)) <= 0.0:
+        return {"ok":false,"reason":"p0_invalid_join_combat_stats"}
+    var added: Dictionary = {
+        "id":actor_id,"side":"disciple","party_id":party_id,
+        "role":role,"tier":"disciple","race_id":"nhan_toc",
+        "position":pos,"home_position":pos,
+        "stats":stats.duplicate(true),"hp":hp,"max_hp":max_hp,
+        "resistances":row.get("resistances",{}).duplicate(true),
+        "range":float(row.get("basic_range",1.5 if role == "frontline" else (4.8 if role == "healer" else 5.5))),
+        "move_speed":float(row.get("move_speed",2.35 if role == "frontline" else 2.05)),
+        "basic_ratio":float(row.get("basic_ratio",1.0)),
+        "basic_interval":float(row.get("basic_interval",1.6)),
+        "skill_loadout":row.get("skill_loadout",[]).duplicate(true),
+        "skill_factors":row.get("skill_factors",{}).duplicate(true),
+        "skill_ready":{},
+        "context_sources":row.get("context_sources",[]).duplicate(true),
+        "next_basic":now,"next_skill":now,
+        "guard_until":-1.0,"learned_guard_until":-1.0,
+        "learned_guard_factor":1.0,"status_effects":{},
+        "linked_disciple":null,
+        "hunt_policy":"auto","hunt_after_move":"auto",
+        "hunt_radius":P0_LOCAL_HUNT_RADIUS
+    }
+    # Preserve the exact optional V6.3 loadout attached by the canonical
+    # human-skill author, never re-roll it on joining an ongoing world.
+    for field in ["v63_skill_loadout","v63_skill_ready","v63_combat_enabled",
+            "v63_passive_ids","v63_combat_branch_id","v63_combat_lineage",
+            "v63_innate_skill_id","v63_basic_skill_id","basic_element",
+            "v63_divine_stage","v63_combat_generation","v63_blood_mode",
+            "v63_base_max_hp","v63_shield_received_factor"]:
+        if row.has(field):
+            added[field] = row[field].duplicate(true) \
+                if row[field] is Array or row[field] is Dictionary else row[field]
+    actors[actor_id] = added
+    _event("disciple_joined_world",{
+        "actor_id":actor_id,"party_id":party_id,"position":pos})
+    return {"ok":true,"actor_id":actor_id,"participants":existing_people+1}
+
+func withdraw_world_disciple(actor_id: String) -> Dictionary:
+    # Preserve all outstanding combat authority: a dying monster's pending
+    # journal could still credit this killer, while orphaned casts/DoT would
+    # invalidate the saved battle on cold reload. Refuse until it settles.
+    if not world_mode or not continuous_mode or not active \
+            or not actors.has(actor_id):
+        return {"ok":false,"reason":"p0_no_active_world_participant"}
+    var actor: Dictionary = actors[actor_id]
+    if str(actor.get("side","")) != "disciple":
+        return {"ok":false,"reason":"p0_withdraw_only_disciple"}
+    var others_alive := 0
+    for other_id in actors.keys():
+        var other: Dictionary = actors[other_id]
+        if str(other.get("side","")) == "disciple" \
+                and str(other_id) != actor_id and float(other.get("hp",0.0)) > 0.0:
+            others_alive += 1
+    if others_alive == 0:
+        return {"ok":false,"reason":"p0_last_hunter_use_return_to_sect"}
+    if not _pending_kill_events.is_empty():
+        return {"ok":false,"reason":"p0_pending_kill_must_settle_before_withdraw"}
+    for cast_value in pending_casts:
+        var cast: Dictionary = cast_value
+        if str(cast.get("caster","")) == actor_id \
+                or str(cast.get("target_id","")) == actor_id:
+            return {"ok":false,"reason":"p0_member_has_pending_cast"}
+    for target_value in actors.values():
+        var target: Dictionary = target_value
+        var statuses: Dictionary = target.get("status_effects",{})
+        for key in statuses.keys():
+            if str(key) == "v63_poison":
+                for value in statuses[key]:
+                    if str(value.get("owner_id","")) == actor_id:
+                        return {"ok":false,"reason":"p0_member_poison_still_active"}
+            elif statuses[key] is Dictionary \
+                    and str(statuses[key].get("caster","")) == actor_id:
+                return {"ok":false,"reason":"p0_member_status_still_active"}
+    actors.erase(actor_id)
+    _event("disciple_withdrew_world",{
+        "actor_id":actor_id,"remaining_alive":others_alive})
+    return {"ok":true,"actor_id":actor_id,"remaining_alive":others_alive}
+
+func suspend_world_monster(actor_id: String) -> Dictionary:
+    # Remove the live AI actor WITHOUT destroying its slot generation.
+    # The owner stores the full actor snapshot in a dormant zone ledger.
+    if not world_mode or not continuous_mode or not active or not actors.has(actor_id):
+        return {"ok":false,"reason":"p0_suspend_requires_active_world_monster"}
+    var actor: Dictionary = actors[actor_id]
+    if str(actor.get("side","")) != "monster":
+        return {"ok":false,"reason":"p0_suspend_not_monster"}
+    for event in _pending_kill_events:
+        if str(event.get("monster_instance_id","")) == actor_id:
+            return {"ok":false,"reason":"p0_suspend_pending_kill"}
+    actors.erase(actor_id)
+    var safe_casts: Array = []
+    for cast in pending_casts:
+        if str(cast.get("caster","")) == actor_id or str(cast.get("target_id","")) == actor_id:
+            continue
+        safe_casts.append(cast)
+    pending_casts = safe_casts
+    return {"ok":true,"slot_id":str(actor.get("spawn_slot_id",""))}
+
+func reactivate_world_monster(row: Dictionary) -> Dictionary:
+    # Rehydrate a genuinely existing slot/life (not a new spawn and NOT loot).
+    var id := str(row.get("id",""))
+    var slot := str(row.get("spawn_slot_id",""))
+    var generation := int(row.get("slot_generation",0))
+    var at = row.get("position",null)
+    var stats = row.get("stats",{})
+    if not world_mode or not continuous_mode or not active or id.is_empty() or slot.is_empty() \
+            or actors.has(id) or _count_monster_records() >= MAX_MONSTERS \
+            or str(row.get("side","")) != "monster" or generation <= 0 \
+            or generation != int(_last_spawn_generation.get(slot,0)) \
+            or not (at is Vector2) or not _position_allowed(at) \
+            or not (stats is Dictionary) or float(stats.get("max_hp",0.0)) <= 0.0 \
+            or float(row.get("hp",0.0)) <= 0.0 \
+            or float(row.get("hp",0.0)) > float(row.get("max_hp",0.0)):
+        return {"ok":false,"reason":"p0_invalid_dormant_life"}
+    for other in actors.values():
+        if str(other.get("side","")) == "monster" \
+                and str(other.get("spawn_slot_id","")) == slot:
+            return {"ok":false,"reason":"p0_duplicate_active_spawn_slot"}
+    var restored: Dictionary = row.duplicate(true)
+    restored["linked_disciple"] = null
+    actors[id] = restored
+    _event("monster_reactivated",{"actor_id":id,"spawn_slot_id":slot,"generation":generation})
+    return {"ok":true,"actor_id":id}
+
 func remove_downed_monster(actor_id: String) -> bool:
     if not continuous_mode or not actors.has(actor_id):
         return false
@@ -757,6 +971,12 @@ func _nearest_enemy(actor: Dictionary) -> Dictionary:
         if str(other["side"]) == str(actor["side"]) or float(other["hp"]) <= 0.0:
             continue
         var distance := (actor["position"] as Vector2).distance_squared_to(other["position"])
+        # Independent local hunters do not cross the entire 192x192 world
+        # simply because another zone has the nearest living monster.
+        if world_mode and str(actor.get("side","")) == "disciple":
+            var radius := float(actor.get("hunt_radius",0.0))
+            if radius > 0.0 and distance > radius*radius:
+                continue
         if distance+0.00001 < best_distance:
             best = other
             best_distance = distance

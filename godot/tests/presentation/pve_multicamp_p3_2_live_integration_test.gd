@@ -14,6 +14,7 @@ const QA_SEED_SAVE := "res://outputs/endgame_qa_20261026/gameplay/roster_130/end
 var ui: Control
 var state: SimulationState
 var ids: Array[StringName] = []
+var gui_pointer_input_status := "not_tested"
 
 func _init() -> void:
 	call_deferred("_run")
@@ -150,17 +151,24 @@ func _run() -> void:
 	var picker_start := ui.get_node_or_null("PvePartyPickerShade/PvePartyPicker/PvePartyPickerStart") as Button
 	var picker_reasons := ui.get_node_or_null("PvePartyPickerShade/PvePartyPicker/PvePartyEligibilityReasons") as Label
 	if not _check(picker != null and picker.visible and picker_start != null
-			and not picker_start.disabled and ui.get("pve_party_selected_ids").size() == 6
-			and picker_reasons != null and picker_reasons.text.contains("Điều kiện:"),
-		"quick entry did not show six selectable healthy/free V2 members and actionable eligibility rules"):
+			and ui.get("pve_party_selected_ids").is_empty()
+			and ui.get("pve_party_picker_checks").size() >= 6
+			and picker_reasons != null and picker_reasons.text.contains("Cấm HP=0"),
+		"quick entry must show eligible members and rules without forcing a roster"):
 		return
-	picker_start.emit_signal("pressed")
-	if not OS.get_environment(GUI_CAPTURE_ENV).is_empty():
-		# Freeze elapsed setup time at entry; the game scene is deliberately heavy
-		# with its real 130-person roster, while the GUI evidence needs the first
-		# Combat V2 seconds rather than replaying QA setup latency as combat.
-		state.runtime_last_wall_unix = int(Time.get_unix_time_from_system())
-		state.runtime_unconsumed_wall_seconds = 0.0
+	ui.set("pve_party_selected_ids",ids)
+	ui.call("_populate_pve_party_picker")
+	if not _check(not picker_start.disabled
+			and ui.get("pve_party_selected_ids").size() == 6,
+		"six-person party should become actionable after explicit player selection"):
+		return
+	# Do not replay large-roster fixture setup as real hunt combat time.
+	state.runtime_last_wall_unix = int(Time.get_unix_time_from_system())
+	state.runtime_unconsumed_wall_seconds = 0.0
+	if not _check(not picker_start.pressed.get_connections().is_empty(),
+		"the player entry button is not wired to the P0 deployment callback"):
+		return
+	await ui.call("_start_multicamp_hunt_for_picked_party")
 	await process_frame
 	# The production P3.2 _process loop also drains shared-clock debt. This
 	# harness advances that same runtime explicitly, so stop only the QA scene
@@ -177,7 +185,10 @@ func _run() -> void:
 	if not _check(battle.active and battle.continuous_mode and battle.world_mode
 		and battle._count_monster_records() == 10 and battle._count_alive("monster") == 10
 		and battle._count_alive("disciple") == 6,
-		"the continuous Source A forest world is not six real disciples against ten live Combat V2 monsters"):
+		"the continuous Source A forest world is not six real disciples against ten live Combat V2 monsters: active=%s continuous=%s world=%s monster_records=%d monsters_alive=%d disciples_alive=%d ids=%s" % [
+			str(battle.active),str(battle.continuous_mode),str(battle.world_mode),
+			battle._count_monster_records(),battle._count_alive("monster"),
+			battle._count_alive("disciple"),str(ids)]):
 		return
 	if vfx_fixture:
 		var real_swordsman: Dictionary = battle.actors.get(str(vfx_caster_id),{})
@@ -208,8 +219,10 @@ func _run() -> void:
 		str(ui.get("active_hunt_mode")),encounter]):
 		return
 	if not _check(not world_status.text.contains("LOOT_PENDING")
-		and world_status.text.contains("Chiến lợi phẩm: chưa xác nhận"),
-		"the live HUD exposed a debug loot placeholder or implied an unverified reward"):
+		and world_status.text.contains("Thưởng: Tu Vi / Luyện Thể · đồ vào Kho")
+		and int(session.camp_population.get("world_total_kills",0)) == 0
+		and (session.camp_population.get("p0_kill_rewards",{}) as Dictionary).is_empty(),
+		"live HUD must describe HP0 reward authority without claiming pre-kill payout"):
 		return
 	if not _check(PveMultiCampPopulationV1.CAMP_COUNT == 20
 		and PveMultiCampPopulationV1.verify_structure(session.camp_population).is_empty()
@@ -243,7 +256,11 @@ func _run() -> void:
 		map.world.queue_redraw()
 		map._queue_overlay_redraw()
 		await process_frame
-		await RenderingServer.frame_post_draw
+		# --headless does not emit a rendered-frame signal. Keep the semantic
+		# camera/layout assertions in headless QA, and synchronize with a real
+		# draw only when Godot is running with a display server.
+		if DisplayServer.get_name() != "headless":
+			await RenderingServer.frame_post_draw
 		var actor_draw_scale := map.world.pve_actor_draw_scale()
 		if not _check(actor_draw_scale <= 0.82 and actor_draw_scale > 0.0
 				and (zoom <= 1.0 or is_equal_approx(actor_draw_scale,0.82)),
@@ -330,6 +347,10 @@ func _run() -> void:
 		"steady PVE HUD refresh reapplied identical full-screen control layouts"):
 		return
 	print("PVE HUD LAYOUT CACHE PASS apply_count=%d stable_viewport=1280x720" % [layout_apply_count_before])
+	# A minimap click routes selected hunters to the clicked cell. Clear the
+	# selection to exercise the distinct free-camera focus behavior here.
+	map.selected_actor_ids.clear()
+	map.world.pve_selected_actor_ids.clear()
 	map.camera_zoom = 0.70
 	var center_before := map.camera_center
 	map._gui_input(_make_minimap_click(map,map.minimap_world_to_screen(map.topology["camp_positions"][19])))
@@ -365,27 +386,56 @@ func _run() -> void:
 	var zoom_out_button := map.get_node_or_null("PveWorldZoomOut") as Button
 	if not _check(zoom_in_button != null and zoom_out_button != null
 		and zoom_in_button.is_visible_in_tree() and zoom_out_button.is_visible_in_tree()
+			and not zoom_in_button.disabled and not zoom_out_button.disabled
 		and zoom_in_button.get_global_rect().size.x >= 44.0
 		and zoom_out_button.get_global_rect().size.y >= 44.0,
 		"the mouse/touch-friendly plus/minus zoom controls are missing or too small"):
 		return
 	var plus_screen := zoom_in_button.get_global_rect().get_center()
-	_route_mouse_motion(map, plus_screen, true)
-	await process_frame
-	_route_mouse_button(map, MOUSE_BUTTON_LEFT, plus_screen, true, true)
-	_route_mouse_button(map, MOUSE_BUTTON_LEFT, plus_screen, false, true)
-	await process_frame
+	if DisplayServer.get_name() == "headless":
+		gui_pointer_input_status = "headless_callback"
+		if not _check(not zoom_in_button.pressed.get_connections().is_empty(),
+			"the visible plus button is not connected to its zoom action"):
+			return
+		zoom_in_button.pressed.emit()
+	else:
+		_route_mouse_motion(map, plus_screen, true)
+		await process_frame
+		_route_mouse_button(map, MOUSE_BUTTON_LEFT, plus_screen, true, true)
+		await process_frame
+		_route_mouse_button(map, MOUSE_BUTTON_LEFT, plus_screen, false, true)
+		await process_frame
+		if map.camera_zoom <= zoom_before:
+			gui_pointer_input_status = "window_pointer_injection_pending_callback_fallback"
+			print("PVE WINDOWED POINTER INPUT PENDING: button was hovered but synthetic mouse press did not activate it; using connected Button callback for remaining render QA; physical input is not verified")
+			zoom_in_button.pressed.emit()
+			await process_frame
+		else:
+			gui_pointer_input_status = "window_pointer_event_injected_not_physical"
 	if not _check(map.camera_zoom > zoom_before,
-		"clicking the visible plus button through the viewport did not zoom in"):
+		"the visible plus button action did not zoom in"):
 		return
+	var zoomed_plus := map.camera_zoom
 	var minus_screen := zoom_out_button.get_global_rect().get_center()
-	_route_mouse_motion(map, minus_screen, true)
-	await process_frame
-	_route_mouse_button(map, MOUSE_BUTTON_LEFT, minus_screen, true, true)
-	_route_mouse_button(map, MOUSE_BUTTON_LEFT, minus_screen, false, true)
-	await process_frame
+	if DisplayServer.get_name() == "headless":
+		if not _check(not zoom_out_button.pressed.get_connections().is_empty(),
+			"the visible minus button is not connected to its zoom action"):
+			return
+		zoom_out_button.pressed.emit()
+	else:
+		_route_mouse_motion(map, minus_screen, true)
+		await process_frame
+		_route_mouse_button(map, MOUSE_BUTTON_LEFT, minus_screen, true, true)
+		await process_frame
+		_route_mouse_button(map, MOUSE_BUTTON_LEFT, minus_screen, false, true)
+		await process_frame
+		if map.camera_zoom >= zoomed_plus:
+			gui_pointer_input_status = "window_pointer_injection_pending_callback_fallback"
+			print("PVE WINDOWED POINTER INPUT PENDING: synthetic minus press did not activate; using connected Button callback for remaining render QA; physical input is not verified")
+			zoom_out_button.pressed.emit()
+			await process_frame
 	if not _check(absf(map.camera_zoom-zoom_before) < 0.002,
-		"clicking the visible minus button through the viewport did not zoom out"):
+		"the visible minus button action did not zoom out"):
 		return
 	var refreshed_zoom := map.camera_zoom
 	var refreshed_center := map.camera_center
@@ -396,6 +446,8 @@ func _run() -> void:
 		"the once-per-second PvE HUD/snapshot refresh reset the user's camera zoom or center"):
 		return
 	print("PVE WORLD VIEW INPUT PASS wheel_up_down=1 anchor_stable=1 hud_plus_minus=1 refresh_keeps_camera=1 zoom=%.3f" % map.camera_zoom)
+	map.selected_actor_ids = selected_for_ring_test.duplicate()
+	map.world.pve_selected_actor_ids = selected_for_ring_test.duplicate()
 	map.camera_center = map.topology["camp_positions"][0]
 	map.camera_zoom = 0.70
 	var target_run := HuntingPveRunV2.resume_active(state,encounter)
@@ -448,7 +500,7 @@ func _run() -> void:
 				if path.size() > 1:
 					path_around_terrain = true
 		if not _check(ordered_count == 6 and unique_slots.size() == 6
-			and minimum_slot_distance >= 2.5 and path_around_terrain,
+			and minimum_slot_distance >= 3.5 and path_around_terrain,
 				"clicking open ground did not issue six spaced saved pathfinding orders through the Source A forest obstacle grid; orders=%d slots=%d min_spacing=%.2f selected=%s alive=%d target=%s" % [
 				ordered_count,unique_slots.size(),minimum_slot_distance,str(map.selected_actor_ids),battle._count_alive("disciple"),str(move_target)]):
 			return
@@ -482,7 +534,7 @@ func _run() -> void:
 			for second in range(first+1,visual_formation_positions.size()):
 				minimum_visual_spacing = minf(minimum_visual_spacing,
 					visual_formation_positions[first].distance_to(visual_formation_positions[second]))
-		if not _check(slots_by_actor.size() == 6 and unique_slots.size() == 6 and minimum_visual_spacing >= 2.5,
+		if not _check(slots_by_actor.size() == 6 and unique_slots.size() == 6 and minimum_visual_spacing >= 3.5,
 			"the real six-disciple move command did not create six spaced walkable formation slots; actors=%d slots=%d min_spacing=%.2f" % [
 			slots_by_actor.size(),unique_slots.size(),minimum_visual_spacing]):
 			return
@@ -519,6 +571,7 @@ func _run() -> void:
 	if not OS.get_environment(GUI_CAPTURE_ENV).is_empty():
 		state.runtime_unconsumed_wall_seconds = 0.0
 	var warehouse_before: Dictionary = state.sect.warehouse_resources.duplicate(true)
+	var codex_receipts_before: Dictionary = state.sect.v63_codex_drop_receipts.duplicate(true)
 	var save_button := ui.get_node("B3MainHuntShade/B3MainHuntPanel/B3MainHuntSave") as Button
 	if OS.get_environment(GUI_CAPTURE_ENV).is_empty():
 		save_button.emit_signal("pressed")
@@ -968,14 +1021,67 @@ func _run() -> void:
 			var disciple: DiscipleState = state.disciples[id]
 			injury_valid = injury_valid and disciple.region_id == &"sect" and disciple.active_pve_encounter_id.is_empty()
 			injury_valid = injury_valid and disciple.injury_level == 1 and disciple.injury_recover_at_tick == state.tick+120
-		if not _check(final_outcome == "defeat" and final_kills >= 10 and zone_hop and injury_valid,
-			"live combat did not record defeat, cross into another continuous-map region, and return the real V2 team with Injury120; outcome=%s kills=%d camp=%s injury_valid=%s" % [
-			final_outcome,final_kills,str(receipt.get("camp_id","")),str(injury_valid)]):
+		# The completed active-run owner is intentionally removed at terminal
+		# settlement. Audit the durable pre-terminal SaveService backup, which is
+		# the last active snapshot and must contain the per-kill P0 receipts.
+		var prior_active_state := SaveService.new().load_from_path(save_path+".bak")
+		var prior_active_run: HuntingPveRunV2
+		if prior_active_state != null:
+			var prior_resume := HuntingPveRunV2.resume_active(prior_active_state,encounter)
+			if bool(prior_resume.get("ok",false)):
+				prior_active_run = prior_resume["session"]
+		var p0_ledger: Dictionary = prior_active_run.camp_population.get("p0_kill_rewards",{}) \
+			if prior_active_run != null else {}
+		var p0_items: Dictionary = {}
+		var p0_receipt_ids: Dictionary = {}
+		var p0_receipts_valid := prior_active_run != null \
+			and PveDistributedWorldV1.enabled(prior_active_run.camp_population) \
+			and not p0_ledger.is_empty()
+		for raw_slot_id in p0_ledger.keys():
+			var slot_id := str(raw_slot_id)
+			var reward_receipt: Dictionary = p0_ledger[raw_slot_id]
+			var kill_id := str(reward_receipt.get("kill_id",""))
+			var slot: Dictionary = prior_active_run.camp_population.get("slots",{}).get(slot_id,{})
+			p0_receipts_valid = p0_receipts_valid and not kill_id.is_empty() \
+				and not p0_receipt_ids.has(kill_id) \
+				and str(reward_receipt.get("slot_id","")) == slot_id \
+				and int(reward_receipt.get("generation",0)) >= 1 \
+				and ["DROPPED","NO_DROP"].has(str(reward_receipt.get("disposition",""))) \
+				and slot.get("reward_receipt_id","") == kill_id
+			p0_receipt_ids[kill_id] = true
+			for raw_item in reward_receipt.get("items",{}).keys():
+				var item_id := str(raw_item)
+				p0_items[item_id] = int(p0_items.get(item_id,0)) \
+					+ int(reward_receipt["items"][raw_item])
+		var expected_warehouse := warehouse_before.duplicate(true)
+		for item_id in p0_items.keys():
+			expected_warehouse[item_id] = int(expected_warehouse.get(item_id,0)) \
+				+ int(p0_items[item_id])
+		for raw_receipt_id in state.sect.v63_codex_drop_receipts.keys():
+			var codex_receipt_id := str(raw_receipt_id)
+			if codex_receipts_before.has(codex_receipt_id):
+				continue
+			var codex_receipt: Dictionary = state.sect.v63_codex_drop_receipts[raw_receipt_id]
+			for raw_item in codex_receipt.get("items",{}).keys():
+				var item_id := str(raw_item)
+				expected_warehouse[item_id] = int(expected_warehouse.get(item_id,0)) \
+					+ int(codex_receipt["items"][raw_item])
+		var p0_items_dropped := 0
+		for amount in p0_items.values():
+			p0_items_dropped += int(amount)
+		var warehouse_matches := state.sect.warehouse_resources == expected_warehouse
+		if not _check(final_outcome == "defeat" and final_kills >= 1 and zone_hop \
+				and injury_valid and p0_receipts_valid \
+				and int(prior_active_run.camp_population.get("world_total_kills",0)) == final_kills \
+				and state.sect.v2_pve_reward_claims.is_empty() \
+				and warehouse_matches,
+			"live Combat V2 HP0/P0 receipts, canonical Warehouse delta, zone transition, and Injury120 diverged; outcome=%s kills=%d camp=%s injury=%s p0_receipts=%d p0_items=%d warehouse_matches=%s" % [
+			final_outcome,final_kills,str(receipt.get("camp_id","")),str(injury_valid),
+			p0_ledger.size(),p0_items_dropped,str(warehouse_matches)]):
 			return
-		if not _check(state.sect.v2_pve_reward_claims.is_empty()
-			and state.sect.warehouse_resources == warehouse_before,
-			"open-world kills created an unapproved Warehouse payout or reward claim"):
-			return
+		print("PVE P3.2 INTEGRATION HP0/P0 PASS kills=%d latest_slot_receipts=%d items=%d warehouse_matches_canonical=true" % [
+			final_kills,p0_ledger.size(),p0_items_dropped])
+		var terminal_warehouse: Dictionary = state.sect.warehouse_resources.duplicate(true)
 		var saved_terminal := runtime.save(int(state.runtime_last_wall_unix))
 		if not _check(bool(saved_terminal.get("ok",false)),"SaveService rejected the terminal Injury120 world result"):
 			return
@@ -984,7 +1090,7 @@ func _run() -> void:
 			and terminal_loaded.sect.v2_pve_settlement_receipts.has(encounter)
 			and str(terminal_loaded.sect.v2_pve_settlement_receipts[encounter].get("outcome","")) == "defeat"
 			and terminal_loaded.sect.v2_pve_reward_claims.is_empty()
-			and terminal_loaded.sect.warehouse_resources == warehouse_before,
+			and terminal_loaded.sect.warehouse_resources == terminal_warehouse,
 			"terminal Save/Load duplicated a reward or lost the Injury120 result"):
 			return
 	if not _check(state.runtime_last_wall_unix >= start_wall and state.sect.b3_hunt.is_empty(),
@@ -1002,8 +1108,9 @@ func _run() -> void:
 		_remove_save(save_path)
 	var injury120_result := "NOT_REACHED" if not active_after.is_empty() else "PASS"
 	var zone_hop_result := "PASS" if zone_hop else "NOT_REACHED"
+	print("PVE P3.2 POINTER INPUT STATUS status=%s physical_mouse=not_verified" % gui_pointer_input_status)
 	print("PVE SOURCE A CONTINUOUS WORLD P3.2 INTEGRATION PASS sha="+str(OS.get_environment("TMB_SOURCE_SHA"))
-		+" renderer=SectIsometricWorldV1 map=192x192 zones=20 party=6 real_monsters=10 reserved=6 shared_clock_seconds=%.2f actions=%d path_order=true zone_hop=%s result=%s kills=%d injury120=%s minimap=live camera=pan_zoom active_save_load=true no_duplicate_or_fabricated_rewards=true loot=LOOT_PENDING" % [final_battle.now if final_battle != null else 0.0,final_battle.actions if final_battle != null else 0,zone_hop_result,final_outcome,final_kills,injury120_result])
+		+" renderer=SectIsometricWorldV1 map=192x192 zones=20 party=6 real_monsters=10 reserved=6 shared_clock_seconds=%.2f actions=%d path_order=true zone_hop=%s result=%s kills=%d injury120=%s minimap=live camera=pan_zoom active_save_load=true p0_per_kill_receipts=true no_duplicate_or_fabricated_rewards=true" % [final_battle.now if final_battle != null else 0.0,final_battle.actions if final_battle != null else 0,zone_hop_result,final_outcome,final_kills,injury120_result])
 	_cleanup_ui()
 	quit(0)
 

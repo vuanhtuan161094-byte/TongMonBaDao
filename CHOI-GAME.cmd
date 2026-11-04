@@ -7,9 +7,10 @@ if "%GAME_ROOT:~-1%"=="\" set "GAME_ROOT=%GAME_ROOT:~0,-1%"
 set "PROJECT=%GAME_ROOT%\godot"
 set "GODOT=E:\TongMonBaDaoWorkspace\04_Tools\Godot\Godot_v4.7.2-stable_win64.exe"
 set "GIT=C:\Program Files\Git\cmd\git.exe"
+set "STAGEA_INSTALLER=%GAME_ROOT%\tools\windows\bootstrap\Install-P3-2-Female-StageA.cmd"
 set "VERIFY=%GAME_ROOT%\tools\windows\run\Verify-TRI03Source.ps1"
 set "STARTER=%GAME_ROOT%\tools\windows\run\Start-TRI03Game.ps1"
-set "PROFILE=E:\TongMonBaDaoWorkspace\03_QA_Logs\TRI03_OWNER_FINAL_20261103\one_game_playtest_profile"
+set "PROFILE=E:\TongMonBaDaoWorkspace\03_QA_Logs\MASTER_PVE_INTEGRATION_20261103\PR72_73c8_GODOT_20261103\launcher_playtest_profile"
 if defined TMB_TRI03_PLAY_PROFILE set "PROFILE=%TMB_TRI03_PLAY_PROFILE%"
 set "IMPORT_STAMP=%PROFILE%\last_import_fingerprint.txt"
 set "IMPORT_LOG=%PROFILE%\Logs\godot_import.log"
@@ -26,20 +27,45 @@ if not exist "%PROJECT%\project.godot" (
   exit /b 3
 )
 if not exist "%GIT%" (
-  echo Git required to verify the PR 67 source is missing: "%GIT%"
+  echo Git required to verify the integrated PR 67 plus PvE P0 source is missing: "%GIT%"
   pause
   exit /b 4
 )
+if not exist "%STAGEA_INSTALLER%" (
+  echo Female Stage A verified asset installer is missing: "%STAGEA_INSTALLER%"
+  pause
+  exit /b 5
+)
 if not exist "%VERIFY%" (
-  echo PR 67 source verifier is missing: "%VERIFY%"
+  echo Source verifier for the integrated game build is missing: "%VERIFY%"
   pause
   exit /b 5
 )
 if not exist "%STARTER%" (
-  echo PR 67 verified game starter is missing: "%STARTER%"
+  echo Verified game starter is missing: "%STARTER%"
   pause
   exit /b 5
 )
+
+powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "$p=Join-Path '%PROJECT%' 'assets\p3\character_creator\parts\female_normal_v1'; $n=if(Test-Path -LiteralPath $p){@(Get-ChildItem -LiteralPath $p -Recurse -File -Filter '*.png').Count}else{0}; if($n -ne 42){exit 1}"
+if errorlevel 1 goto :install_stage_a
+goto :stage_a_ready
+
+:install_stage_a
+echo Restoring the verified Female Stage A assets from the tracked 42-PNG package...
+set "STAGE_A_INSTALL_ONLY=1"
+set "P3_AUTO_PREVIEW=1"
+call "%STAGEA_INSTALLER%"
+set "STAGE_A_INSTALL_ONLY="
+set "P3_AUTO_PREVIEW="
+if errorlevel 1 goto :stage_a_install_failed
+goto :stage_a_ready
+
+:stage_a_install_failed
+echo Female Stage A restoration failed. The game was not launched.
+exit /b 15
+
+:stage_a_ready
 
 if not exist "%PROFILE%\AppData\Roaming" mkdir "%PROFILE%\AppData\Roaming"
 if not exist "%PROFILE%\AppData\Local" mkdir "%PROFILE%\AppData\Local"
@@ -77,7 +103,7 @@ if not defined PR_SOURCE_SHA set "PR_SOURCE_SHA=unavailable"
 if /I "%TMB_VERIFY_ONLY%"=="1" (
   echo Source verification passed.
   echo Local Git checkout HEAD: %CHECKOUT_HEAD%
-  echo Verified PR 67 source parent: %PR_SOURCE_SHA%
+  echo Verified PR source parent: %PR_SOURCE_SHA%
   echo Runtime fingerprint: %SOURCE_FINGERPRINT%
   echo Official Godot: %GODOT_VERSION%
   >>"%PROFILE%\Logs\launcher.log" echo [%date% %time%] preflight_only=1 checkout_head=%CHECKOUT_HEAD% pr_source_parent=%PR_SOURCE_SHA% fingerprint=%SOURCE_FINGERPRINT% godot=%GODOT_VERSION%
@@ -102,9 +128,9 @@ if /I not "%IMPORTED_FINGERPRINT%"=="%SOURCE_FINGERPRINT%" (
   >"%IMPORT_STAMP%" echo %SOURCE_FINGERPRINT%
 )
 
-echo Starting TONG MON BA DAO PR 67 source-verified game at 1280x720.
+echo Starting TONG MON BA DAO integrated Source A + PvE P0 game at 1280x720.
 echo Local Git checkout HEAD: %CHECKOUT_HEAD% (see source verifier for pinned runtime identity)
-echo Verified PR 67 source parent: %PR_SOURCE_SHA%
+echo Verified PR source parent: %PR_SOURCE_SHA%
 echo Source fingerprint: %SOURCE_FINGERPRINT%
 echo Godot: %GODOT_VERSION%
 echo Isolated QA save profile: %APPDATA%\Godot\app_userdata\Tong Mon Ba Dao

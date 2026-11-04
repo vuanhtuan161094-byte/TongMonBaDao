@@ -1,0 +1,273 @@
+WorkerThreadPool: 8 threads, 2 max low-priority.
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+TextServer: Added interface "Dummy"
+TextServer: Added interface "ICU / HarfBuzz / Graphite (Built-in)"
+Accessibility: AccessKit driver loaded.
+Native OpenGL API detected: 3.3: Intel - Intel(R) Iris(R) Plus Graphics
+Accessibility: window 0 adapter created.
+SDL: Init OK!
+Using "winink" pen tablet driver...
+OpenGL API 3.3.0 - Build 31.0.101.2125 - Compatibility - Using Device: Intel - Intel(R) Iris(R) Plus Graphics
+WASAPI: Activated output_device using IAudioClient3 interface
+WASAPI: wFormatTag = 65534
+WASAPI: nChannels = 2
+WASAPI: nSamplesPerSec = 48000
+WASAPI: nAvgBytesPerSec = 384000
+WASAPI: nBlockAlign = 8
+WASAPI: wBitsPerSample = 32
+WASAPI: cbSize = 22
+WASAPI: mix_rate = 48000
+WASAPI: fundamental_period_frames = 480
+WASAPI: min_period_frames = 480
+WASAPI: max_period_frames = 480
+WASAPI: selected a period frame size of 480
+WASAPI: detected 2 channels
+WASAPI: audio buffer frames: 480 calculated latency: 10ms
+
+TextServer: Primary interface set to: "ICU / HarfBuzz / Graphite (Built-in)".
+CORE API HASH: 2004498165
+EDITOR API HASH: 1696660745
+SceneTreeFTI: traversal method DEFAULT
+Loaded builtin CA certificates
+Loading resource: res://scenes/p3/p3_2_landscape_sect.tscn remapped: res://scenes/p3/p3_2_landscape_sect.tscn
+Loading resource: res://src/presentation/p3_2_landscape_sect.gd remapped: res://src/presentation/p3_2_landscape_sect.gd
+Loading resource: res://art/uiux/sect_management_icons_generated_v1.png remapped: res://art/uiux/sect_management_icons_generated_v1.png
+Loading resource: res://.godot/imported/sect_management_icons_generated_v1.png-40fc673977ac64df3d8330b9644733e9.ctex remapped: res://.godot/imported/sect_management_icons_generated_v1.png-40fc673977ac64df3d8330b9644733e9.ctex
+Completed load for: 'res://art/uiux/sect_management_icons_generated_v1.png' remapped 'res://art/uiux/sect_management_icons_generated_v1.png' at thread -1
+Loading resource: res://art/uiux/hall_paint_v2.svg remapped: res://art/uiux/hall_paint_v2.svg
+Loading resource: res://.godot/imported/hall_paint_v2.svg-74de436666b46303fda303980440da30.ctex remapped: res://.godot/imported/hall_paint_v2.svg-74de436666b46303fda303980440da30.ctex
+Completed load for: 'res://art/uiux/hall_paint_v2.svg' remapped 'res://art/uiux/hall_paint_v2.svg' at thread -1
+Loading resource: res://art/uiux/residence_paint_v2.svg remapped: res://art/uiux/residence_paint_v2.svg
+Loading resource: res://.godot/imported/residence_paint_v2.svg-8893225499e55efb02fa1f78ebba34d3.ctex remapped: res://.godot/imported/residence_paint_v2.svg-8893225499e55efb02fa1f78ebba34d3.ctex
+Completed load for: 'res://art/uiux/residence_paint_v2.svg' remapped 'res://art/uiux/residence_paint_v2.svg' at thread -1
+Loading resource: res://art/uiux/guidance_paint_v2.svg remapped: res://art/uiux/guidance_paint_v2.svg
+Loading resource: res://.godot/imported/guidance_paint_v2.svg-22ec7b8b3ef7fcd0d1466dd276f28994.ctex remapped: res://.godot/imported/guidance_paint_v2.svg-22ec7b8b3ef7fcd0d1466dd276f28994.ctex
+Completed load for: 'res://art/uiux/guidance_paint_v2.svg' remapped 'res://art/uiux/guidance_paint_v2.svg' at thread -1
+Loading resource: res://art/uiux/candidate_neutral_v2.svg remapped: res://art/uiux/candidate_neutral_v2.svg
+Loading resource: res://.godot/imported/candidate_neutral_v2.svg-fb14784e70c405374c9d93e25f87e95f.ctex remapped: res://.godot/imported/candidate_neutral_v2.svg-fb14784e70c405374c9d93e25f87e95f.ctex
+Completed load for: 'res://art/uiux/candidate_neutral_v2.svg' remapped 'res://art/uiux/candidate_neutral_v2.svg' at thread -1
+Loading resource: res://assets/combat_v4/jx1_ui/bar_hp.png remapped: res://assets/combat_v4/jx1_ui/bar_hp.png
+Loading resource: res://.godot/imported/bar_hp.png-61691597c1297ce4e7c39aba3be9471b.ctex remapped: res://.godot/imported/bar_hp.png-61691597c1297ce4e7c39aba3be9471b.ctex
+Completed load for: 'res://assets/combat_v4/jx1_ui/bar_hp.png' remapped 'res://assets/combat_v4/jx1_ui/bar_hp.png' at thread -1
+Loading resource: res://art/source_a_env02a/env01_assets/vegetation/570036.png remapped: res://art/source_a_env02a/env01_assets/vegetation/570036.png
+Loading resource: res://.godot/imported/570036.png-b60fcc1f44eb1f3ac3f8561f0fc80641.ctex remapped: res://.godot/imported/570036.png-b60fcc1f44eb1f3ac3f8561f0fc80641.ctex
+Completed load for: 'res://art/source_a_env02a/env01_assets/vegetation/570036.png' remapped 'res://art/source_a_env02a/env01_assets/vegetation/570036.png' at thread -1
+Loading resource: res://art/source_a_env02a/env01_assets/vegetation/570041.png remapped: res://art/source_a_env02a/env01_assets/vegetation/570041.png
+Loading resource: res://.godot/imported/570041.png-f8a14abb72f201f69497ac40b0e86996.ctex remapped: res://.godot/imported/570041.png-f8a14abb72f201f69497ac40b0e86996.ctex
+Completed load for: 'res://art/source_a_env02a/env01_assets/vegetation/570041.png' remapped 'res://art/source_a_env02a/env01_assets/vegetation/570041.png' at thread -1
+Loading resource: res://art/source_a_env02a/env01_assets/vegetation/570073.png remapped: res://art/source_a_env02a/env01_assets/vegetation/570073.png
+Loading resource: res://.godot/imported/570073.png-8c4c1b50e7c5bd75363383c4818eef62.ctex remapped: res://.godot/imported/570073.png-8c4c1b50e7c5bd75363383c4818eef62.ctex
+Completed load for: 'res://art/source_a_env02a/env01_assets/vegetation/570073.png' remapped 'res://art/source_a_env02a/env01_assets/vegetation/570073.png' at thread -1
+Loading resource: res://art/source_a_env02a/env01_assets/terrain/stone_variant.png remapped: res://art/source_a_env02a/env01_assets/terrain/stone_variant.png
+Loading resource: res://.godot/imported/stone_variant.png-1604f25bcd81127d820301504eb89396.ctex remapped: res://.godot/imported/stone_variant.png-1604f25bcd81127d820301504eb89396.ctex
+Completed load for: 'res://art/source_a_env02a/env01_assets/terrain/stone_variant.png' remapped 'res://art/source_a_env02a/env01_assets/terrain/stone_variant.png' at thread -1
+Completed load for: 'res://src/presentation/p3_2_landscape_sect.gd' remapped 'res://src/presentation/p3_2_landscape_sect.gd' at thread -1
+Completed load for: 'res://scenes/p3/p3_2_landscape_sect.tscn' remapped 'res://scenes/p3/p3_2_landscape_sect.tscn' at thread -1
+Loading resource: res://assets/actors/1113028_1/animations.tres remapped: res://assets/actors/1113028_1/animations.tres
+Loading resource: res://assets/actors/1113028_1/atlas_000.webp remapped: res://assets/actors/1113028_1/atlas_000.webp
+Loading resource: res://.godot/imported/atlas_000.webp-54679f8637a044bfcfd5b0629982b834.ctex remapped: res://.godot/imported/atlas_000.webp-54679f8637a044bfcfd5b0629982b834.ctex
+Completed load for: 'res://assets/actors/1113028_1/atlas_000.webp' remapped 'res://assets/actors/1113028_1/atlas_000.webp' at thread -1
+Loading resource: res://assets/actors/1113028_1/atlas_001.webp remapped: res://assets/actors/1113028_1/atlas_001.webp
+Loading resource: res://.godot/imported/atlas_001.webp-fa9363ed656221192ff40a45e14819f8.ctex remapped: res://.godot/imported/atlas_001.webp-fa9363ed656221192ff40a45e14819f8.ctex
+Completed load for: 'res://assets/actors/1113028_1/atlas_001.webp' remapped 'res://assets/actors/1113028_1/atlas_001.webp' at thread -1
+Completed load for: 'res://assets/actors/1113028_1/animations.tres' remapped 'res://assets/actors/1113028_1/animations.tres' at thread -1
+Loading resource: res://assets/actors/v5_sa_female_1113028_1/animations.tres remapped: res://assets/actors/v5_sa_female_1113028_1/animations.tres
+Loading resource: res://assets/actors/v5_sa_female_1113028_1/atlas_000.webp remapped: res://assets/actors/v5_sa_female_1113028_1/atlas_000.webp
+Loading resource: res://.godot/imported/atlas_000.webp-553e37966dd24a5495e74a2bbc1f1775.ctex remapped: res://.godot/imported/atlas_000.webp-553e37966dd24a5495e74a2bbc1f1775.ctex
+Completed load for: 'res://assets/actors/v5_sa_female_1113028_1/atlas_000.webp' remapped 'res://assets/actors/v5_sa_female_1113028_1/atlas_000.webp' at thread -1
+Loading resource: res://assets/actors/v5_sa_female_1113028_1/atlas_001.webp remapped: res://assets/actors/v5_sa_female_1113028_1/atlas_001.webp
+Loading resource: res://.godot/imported/atlas_001.webp-3157cf67c16557a4d8c825175e79f708.ctex remapped: res://.godot/imported/atlas_001.webp-3157cf67c16557a4d8c825175e79f708.ctex
+Completed load for: 'res://assets/actors/v5_sa_female_1113028_1/atlas_001.webp' remapped 'res://assets/actors/v5_sa_female_1113028_1/atlas_001.webp' at thread -1
+Completed load for: 'res://assets/actors/v5_sa_female_1113028_1/animations.tres' remapped 'res://assets/actors/v5_sa_female_1113028_1/animations.tres' at thread -1
+Loading resource: res://assets/actors/v5_sa_male_body_1110201/animations.tres remapped: res://assets/actors/v5_sa_male_body_1110201/animations.tres
+Loading resource: res://assets/actors/v5_sa_male_body_1110201/atlas_000.webp remapped: res://assets/actors/v5_sa_male_body_1110201/atlas_000.webp
+Loading resource: res://.godot/imported/atlas_000.webp-06926466988042e37eb3c96e5e17d42e.ctex remapped: res://.godot/imported/atlas_000.webp-06926466988042e37eb3c96e5e17d42e.ctex
+Completed load for: 'res://assets/actors/v5_sa_male_body_1110201/atlas_000.webp' remapped 'res://assets/actors/v5_sa_male_body_1110201/atlas_000.webp' at thread -1
+Loading resource: res://assets/actors/v5_sa_male_body_1110201/atlas_001.webp remapped: res://assets/actors/v5_sa_male_body_1110201/atlas_001.webp
+Loading resource: res://.godot/imported/atlas_001.webp-97d27872b74530821fff43ed7fd2aaa0.ctex remapped: res://.godot/imported/atlas_001.webp-97d27872b74530821fff43ed7fd2aaa0.ctex
+Completed load for: 'res://assets/actors/v5_sa_male_body_1110201/atlas_001.webp' remapped 'res://assets/actors/v5_sa_male_body_1110201/atlas_001.webp' at thread -1
+Loading resource: res://assets/actors/v5_sa_male_body_1110201/atlas_002.webp remapped: res://assets/actors/v5_sa_male_body_1110201/atlas_002.webp
+Loading resource: res://.godot/imported/atlas_002.webp-b64859e325957c3710259270588dc1c7.ctex remapped: res://.godot/imported/atlas_002.webp-b64859e325957c3710259270588dc1c7.ctex
+Completed load for: 'res://assets/actors/v5_sa_male_body_1110201/atlas_002.webp' remapped 'res://assets/actors/v5_sa_male_body_1110201/atlas_002.webp' at thread -1
+Completed load for: 'res://assets/actors/v5_sa_male_body_1110201/animations.tres' remapped 'res://assets/actors/v5_sa_male_body_1110201/animations.tres' at thread -1
+Loading resource: res://assets/actors/v5_sa_monster_1113031_1/animations.tres remapped: res://assets/actors/v5_sa_monster_1113031_1/animations.tres
+Loading resource: res://assets/actors/v5_sa_monster_1113031_1/atlas_000.webp remapped: res://assets/actors/v5_sa_monster_1113031_1/atlas_000.webp
+Loading resource: res://.godot/imported/atlas_000.webp-4265f9bbdb8b240294c7c6256ec42195.ctex remapped: res://.godot/imported/atlas_000.webp-4265f9bbdb8b240294c7c6256ec42195.ctex
+Completed load for: 'res://assets/actors/v5_sa_monster_1113031_1/atlas_000.webp' remapped 'res://assets/actors/v5_sa_monster_1113031_1/atlas_000.webp' at thread -1
+Loading resource: res://assets/actors/v5_sa_monster_1113031_1/atlas_001.webp remapped: res://assets/actors/v5_sa_monster_1113031_1/atlas_001.webp
+Loading resource: res://.godot/imported/atlas_001.webp-f74b7ae2584b1171f769a198373f46ea.ctex remapped: res://.godot/imported/atlas_001.webp-f74b7ae2584b1171f769a198373f46ea.ctex
+Completed load for: 'res://assets/actors/v5_sa_monster_1113031_1/atlas_001.webp' remapped 'res://assets/actors/v5_sa_monster_1113031_1/atlas_001.webp' at thread -1
+Loading resource: res://assets/actors/v5_sa_monster_1113031_1/atlas_002.webp remapped: res://assets/actors/v5_sa_monster_1113031_1/atlas_002.webp
+Loading resource: res://.godot/imported/atlas_002.webp-9131fa85fa88d9aa211db32d8405f338.ctex remapped: res://.godot/imported/atlas_002.webp-9131fa85fa88d9aa211db32d8405f338.ctex
+Completed load for: 'res://assets/actors/v5_sa_monster_1113031_1/atlas_002.webp' remapped 'res://assets/actors/v5_sa_monster_1113031_1/atlas_002.webp' at thread -1
+Completed load for: 'res://assets/actors/v5_sa_monster_1113031_1/animations.tres' remapped 'res://assets/actors/v5_sa_monster_1113031_1/animations.tres' at thread -1
+Loading resource: res://assets/actors/v5_sa_boss_410041_1/animations.tres remapped: res://assets/actors/v5_sa_boss_410041_1/animations.tres
+Loading resource: res://assets/actors/v5_sa_boss_410041_1/atlas_000.webp remapped: res://assets/actors/v5_sa_boss_410041_1/atlas_000.webp
+Loading resource: res://.godot/imported/atlas_000.webp-e07eb62315eb3ba6602370c22a7ec056.ctex remapped: res://.godot/imported/atlas_000.webp-e07eb62315eb3ba6602370c22a7ec056.ctex
+Completed load for: 'res://assets/actors/v5_sa_boss_410041_1/atlas_000.webp' remapped 'res://assets/actors/v5_sa_boss_410041_1/atlas_000.webp' at thread -1
+Loading resource: res://assets/actors/v5_sa_boss_410041_1/atlas_001.webp remapped: res://assets/actors/v5_sa_boss_410041_1/atlas_001.webp
+Loading resource: res://.godot/imported/atlas_001.webp-dfee61c0aeda4b67b370397382224f26.ctex remapped: res://.godot/imported/atlas_001.webp-dfee61c0aeda4b67b370397382224f26.ctex
+Completed load for: 'res://assets/actors/v5_sa_boss_410041_1/atlas_001.webp' remapped 'res://assets/actors/v5_sa_boss_410041_1/atlas_001.webp' at thread -1
+Loading resource: res://assets/actors/v5_sa_boss_410041_1/atlas_002.webp remapped: res://assets/actors/v5_sa_boss_410041_1/atlas_002.webp
+Loading resource: res://.godot/imported/atlas_002.webp-f98c6d9dd87ad1cafd7f83395cc9e376.ctex remapped: res://.godot/imported/atlas_002.webp-f98c6d9dd87ad1cafd7f83395cc9e376.ctex
+Completed load for: 'res://assets/actors/v5_sa_boss_410041_1/atlas_002.webp' remapped 'res://assets/actors/v5_sa_boss_410041_1/atlas_002.webp' at thread -1
+Loading resource: res://assets/actors/v5_sa_boss_410041_1/atlas_003.webp remapped: res://assets/actors/v5_sa_boss_410041_1/atlas_003.webp
+Loading resource: res://.godot/imported/atlas_003.webp-b659799525be8b8133b35e3f67a8f14f.ctex remapped: res://.godot/imported/atlas_003.webp-b659799525be8b8133b35e3f67a8f14f.ctex
+Completed load for: 'res://assets/actors/v5_sa_boss_410041_1/atlas_003.webp' remapped 'res://assets/actors/v5_sa_boss_410041_1/atlas_003.webp' at thread -1
+Loading resource: res://assets/actors/v5_sa_boss_410041_1/atlas_004.webp remapped: res://assets/actors/v5_sa_boss_410041_1/atlas_004.webp
+Loading resource: res://.godot/imported/atlas_004.webp-860a18af5eb6dfd928f494b22fb34b2c.ctex remapped: res://.godot/imported/atlas_004.webp-860a18af5eb6dfd928f494b22fb34b2c.ctex
+Completed load for: 'res://assets/actors/v5_sa_boss_410041_1/atlas_004.webp' remapped 'res://assets/actors/v5_sa_boss_410041_1/atlas_004.webp' at thread -1
+Completed load for: 'res://assets/actors/v5_sa_boss_410041_1/animations.tres' remapped 'res://assets/actors/v5_sa_boss_410041_1/animations.tres' at thread -1
+Loading resource: res://art/map_d2_candidate/mine_worksite_v1.svg remapped: res://art/map_d2_candidate/mine_worksite_v1.svg
+Loading resource: res://.godot/imported/mine_worksite_v1.svg-e17872301f287a45e2630514f3cb66dd.ctex remapped: res://.godot/imported/mine_worksite_v1.svg-e17872301f287a45e2630514f3cb66dd.ctex
+Completed load for: 'res://art/map_d2_candidate/mine_worksite_v1.svg' remapped 'res://art/map_d2_candidate/mine_worksite_v1.svg' at thread -1
+Loading resource: res://art/map_d2_candidate/linh_forest_worksite_v1.svg remapped: res://art/map_d2_candidate/linh_forest_worksite_v1.svg
+Loading resource: res://.godot/imported/linh_forest_worksite_v1.svg-f9ba04af84347cc67322579714b9d57e.ctex remapped: res://.godot/imported/linh_forest_worksite_v1.svg-f9ba04af84347cc67322579714b9d57e.ctex
+Completed load for: 'res://art/map_d2_candidate/linh_forest_worksite_v1.svg' remapped 'res://art/map_d2_candidate/linh_forest_worksite_v1.svg' at thread -1
+Loading resource: res://art/map_d2_candidate/spirit_field_worksite_v1.svg remapped: res://art/map_d2_candidate/spirit_field_worksite_v1.svg
+Loading resource: res://.godot/imported/spirit_field_worksite_v1.svg-2665bf4a593beda76d5de1cc1315fba4.ctex remapped: res://.godot/imported/spirit_field_worksite_v1.svg-2665bf4a593beda76d5de1cc1315fba4.ctex
+Completed load for: 'res://art/map_d2_candidate/spirit_field_worksite_v1.svg' remapped 'res://art/map_d2_candidate/spirit_field_worksite_v1.svg' at thread -1
+Loading resource: res://art/source_a_env02a/pv01_assets/main_hall/510052.png remapped: res://art/source_a_env02a/pv01_assets/main_hall/510052.png
+Loading resource: res://.godot/imported/510052.png-559006883682278a99304005e534a681.ctex remapped: res://.godot/imported/510052.png-559006883682278a99304005e534a681.ctex
+Completed load for: 'res://art/source_a_env02a/pv01_assets/main_hall/510052.png' remapped 'res://art/source_a_env02a/pv01_assets/main_hall/510052.png' at thread -1
+Loading resource: res://art/source_a_env02a/pv01_assets/residence/510076.png remapped: res://art/source_a_env02a/pv01_assets/residence/510076.png
+Loading resource: res://.godot/imported/510076.png-029c1b6856f4f53a291f338d85b116b0.ctex remapped: res://.godot/imported/510076.png-029c1b6856f4f53a291f338d85b116b0.ctex
+Completed load for: 'res://art/source_a_env02a/pv01_assets/residence/510076.png' remapped 'res://art/source_a_env02a/pv01_assets/residence/510076.png' at thread -1
+Loading resource: res://art/source_a_env02a/pv01_assets/guidance/510111.png remapped: res://art/source_a_env02a/pv01_assets/guidance/510111.png
+Loading resource: res://.godot/imported/510111.png-150078f4eca350c8f1d242fd4e13c200.ctex remapped: res://.godot/imported/510111.png-150078f4eca350c8f1d242fd4e13c200.ctex
+Completed load for: 'res://art/source_a_env02a/pv01_assets/guidance/510111.png' remapped 'res://art/source_a_env02a/pv01_assets/guidance/510111.png' at thread -1
+Loading resource: res://art/source_a_env02a/pv01_assets/warehouse/510102.png remapped: res://art/source_a_env02a/pv01_assets/warehouse/510102.png
+Loading resource: res://.godot/imported/510102.png-4b2cd6a93d07e40749a8908cf5e8cda4.ctex remapped: res://.godot/imported/510102.png-4b2cd6a93d07e40749a8908cf5e8cda4.ctex
+Completed load for: 'res://art/source_a_env02a/pv01_assets/warehouse/510102.png' remapped 'res://art/source_a_env02a/pv01_assets/warehouse/510102.png' at thread -1
+Loading resource: res://art/source_a_env02a/pv01_assets/forge/520081.png remapped: res://art/source_a_env02a/pv01_assets/forge/520081.png
+Loading resource: res://.godot/imported/520081.png-4f755d2cbfd198fc15d49949c04a1fbc.ctex remapped: res://.godot/imported/520081.png-4f755d2cbfd198fc15d49949c04a1fbc.ctex
+Completed load for: 'res://art/source_a_env02a/pv01_assets/forge/520081.png' remapped 'res://art/source_a_env02a/pv01_assets/forge/520081.png' at thread -1
+Loading resource: res://art/source_a_env02a/env01_assets/terrain/stone_courtyard.png remapped: res://art/source_a_env02a/env01_assets/terrain/stone_courtyard.png
+Loading resource: res://.godot/imported/stone_courtyard.png-a94430a0348c202cd204f0389bcd9683.ctex remapped: res://.godot/imported/stone_courtyard.png-a94430a0348c202cd204f0389bcd9683.ctex
+Completed load for: 'res://art/source_a_env02a/env01_assets/terrain/stone_courtyard.png' remapped 'res://art/source_a_env02a/env01_assets/terrain/stone_courtyard.png' at thread -1
+Loading resource: res://art/source_a_env02a/env01_assets/terrain/stone_border.png remapped: res://art/source_a_env02a/env01_assets/terrain/stone_border.png
+Loading resource: res://.godot/imported/stone_border.png-7e29a72e93f73fc2955e7d0e35baca64.ctex remapped: res://.godot/imported/stone_border.png-7e29a72e93f73fc2955e7d0e35baca64.ctex
+Completed load for: 'res://art/source_a_env02a/env01_assets/terrain/stone_border.png' remapped 'res://art/source_a_env02a/env01_assets/terrain/stone_border.png' at thread -1
+Loading resource: res://art/source_a_env02a/env01_assets/terrain/stone_runes.png remapped: res://art/source_a_env02a/env01_assets/terrain/stone_runes.png
+Loading resource: res://.godot/imported/stone_runes.png-7dd287223402d0cf6dab5774c2dfb69e.ctex remapped: res://.godot/imported/stone_runes.png-7dd287223402d0cf6dab5774c2dfb69e.ctex
+Completed load for: 'res://art/source_a_env02a/env01_assets/terrain/stone_runes.png' remapped 'res://art/source_a_env02a/env01_assets/terrain/stone_runes.png' at thread -1
+Loading resource: res://art/source_a_env02a/env01_assets/roads/stone_cross.png remapped: res://art/source_a_env02a/env01_assets/roads/stone_cross.png
+Loading resource: res://.godot/imported/stone_cross.png-6d493641f2c70e36050794cad1b031e6.ctex remapped: res://.godot/imported/stone_cross.png-6d493641f2c70e36050794cad1b031e6.ctex
+Completed load for: 'res://art/source_a_env02a/env01_assets/roads/stone_cross.png' remapped 'res://art/source_a_env02a/env01_assets/roads/stone_cross.png' at thread -1
+Loading resource: res://art/source_a_env02a/env01_assets/roads/stone_junction.png remapped: res://art/source_a_env02a/env01_assets/roads/stone_junction.png
+Loading resource: res://.godot/imported/stone_junction.png-133d05f96493d8e46961be7e263f0b27.ctex remapped: res://.godot/imported/stone_junction.png-133d05f96493d8e46961be7e263f0b27.ctex
+Completed load for: 'res://art/source_a_env02a/env01_assets/roads/stone_junction.png' remapped 'res://art/source_a_env02a/env01_assets/roads/stone_junction.png' at thread -1
+Loading resource: res://art/source_a_env02a/env01_assets/roads/stone_axis_a.png remapped: res://art/source_a_env02a/env01_assets/roads/stone_axis_a.png
+Loading resource: res://.godot/imported/stone_axis_a.png-f9b239b969881272d55822707a542165.ctex remapped: res://.godot/imported/stone_axis_a.png-f9b239b969881272d55822707a542165.ctex
+Completed load for: 'res://art/source_a_env02a/env01_assets/roads/stone_axis_a.png' remapped 'res://art/source_a_env02a/env01_assets/roads/stone_axis_a.png' at thread -1
+Loading resource: res://art/source_a_env02a/env01_assets/roads/stone_axis_b.png remapped: res://art/source_a_env02a/env01_assets/roads/stone_axis_b.png
+Loading resource: res://.godot/imported/stone_axis_b.png-db42c5343fc23e3a0b238333d1b42615.ctex remapped: res://.godot/imported/stone_axis_b.png-db42c5343fc23e3a0b238333d1b42615.ctex
+Completed load for: 'res://art/source_a_env02a/env01_assets/roads/stone_axis_b.png' remapped 'res://art/source_a_env02a/env01_assets/roads/stone_axis_b.png' at thread -1
+Loading resource: res://art/source_a_env02a/env01_assets/roads/stone_branch.png remapped: res://art/source_a_env02a/env01_assets/roads/stone_branch.png
+Loading resource: res://.godot/imported/stone_branch.png-3e80e1c5eef29cb2c2611d471c92a036.ctex remapped: res://.godot/imported/stone_branch.png-3e80e1c5eef29cb2c2611d471c92a036.ctex
+Completed load for: 'res://art/source_a_env02a/env01_assets/roads/stone_branch.png' remapped 'res://art/source_a_env02a/env01_assets/roads/stone_branch.png' at thread -1
+Loading resource: res://art/source_a_env02a/env01_assets/roads/stone_scatter.png remapped: res://art/source_a_env02a/env01_assets/roads/stone_scatter.png
+Loading resource: res://.godot/imported/stone_scatter.png-d2e39be4c6ff3fe024928d7547571603.ctex remapped: res://.godot/imported/stone_scatter.png-d2e39be4c6ff3fe024928d7547571603.ctex
+Completed load for: 'res://art/source_a_env02a/env01_assets/roads/stone_scatter.png' remapped 'res://art/source_a_env02a/env01_assets/roads/stone_scatter.png' at thread -1
+Loading resource: res://art/source_a_env02a/env01_assets/vegetation/570037.png remapped: res://art/source_a_env02a/env01_assets/vegetation/570037.png
+Loading resource: res://.godot/imported/570037.png-bb4547982d0c509050b38cb0cc5c8603.ctex remapped: res://.godot/imported/570037.png-bb4547982d0c509050b38cb0cc5c8603.ctex
+Completed load for: 'res://art/source_a_env02a/env01_assets/vegetation/570037.png' remapped 'res://art/source_a_env02a/env01_assets/vegetation/570037.png' at thread -1
+Loading resource: res://art/source_a_env02a/env01_assets/vegetation/570038.png remapped: res://art/source_a_env02a/env01_assets/vegetation/570038.png
+Loading resource: res://.godot/imported/570038.png-e0f26844da8cf03496e501a80f2d1fad.ctex remapped: res://.godot/imported/570038.png-e0f26844da8cf03496e501a80f2d1fad.ctex
+Completed load for: 'res://art/source_a_env02a/env01_assets/vegetation/570038.png' remapped 'res://art/source_a_env02a/env01_assets/vegetation/570038.png' at thread -1
+Loading resource: res://art/source_a_env02a/env01_assets/vegetation/570171.png remapped: res://art/source_a_env02a/env01_assets/vegetation/570171.png
+Loading resource: res://.godot/imported/570171.png-c6f73902570ffa56b6bcb2f3a37fd100.ctex remapped: res://.godot/imported/570171.png-c6f73902570ffa56b6bcb2f3a37fd100.ctex
+Completed load for: 'res://art/source_a_env02a/env01_assets/vegetation/570171.png' remapped 'res://art/source_a_env02a/env01_assets/vegetation/570171.png' at thread -1
+Loading resource: res://art/source_a_env02a/env01_assets/vegetation/570172.png remapped: res://art/source_a_env02a/env01_assets/vegetation/570172.png
+Loading resource: res://.godot/imported/570172.png-80bebd4428a6fd6065bca3e067bd7f16.ctex remapped: res://.godot/imported/570172.png-80bebd4428a6fd6065bca3e067bd7f16.ctex
+Completed load for: 'res://art/source_a_env02a/env01_assets/vegetation/570172.png' remapped 'res://art/source_a_env02a/env01_assets/vegetation/570172.png' at thread -1
+Loading resource: res://art/source_a_env02a/env01_assets/vegetation/570181.png remapped: res://art/source_a_env02a/env01_assets/vegetation/570181.png
+Loading resource: res://.godot/imported/570181.png-9fd13695b19923ba11e7e5339a584542.ctex remapped: res://.godot/imported/570181.png-9fd13695b19923ba11e7e5339a584542.ctex
+Completed load for: 'res://art/source_a_env02a/env01_assets/vegetation/570181.png' remapped 'res://art/source_a_env02a/env01_assets/vegetation/570181.png' at thread -1
+Loading resource: res://art/source_a_env02a/env01_assets/vegetation/570182.png remapped: res://art/source_a_env02a/env01_assets/vegetation/570182.png
+Loading resource: res://.godot/imported/570182.png-4c47f281f770cb4aab1a0804eb50f52a.ctex remapped: res://.godot/imported/570182.png-4c47f281f770cb4aab1a0804eb50f52a.ctex
+Completed load for: 'res://art/source_a_env02a/env01_assets/vegetation/570182.png' remapped 'res://art/source_a_env02a/env01_assets/vegetation/570182.png' at thread -1
+Loading resource: res://art/source_a_env02a/env01_assets/vegetation/570042.png remapped: res://art/source_a_env02a/env01_assets/vegetation/570042.png
+Loading resource: res://.godot/imported/570042.png-c314264adbe5bb7a559899cc79c8e998.ctex remapped: res://.godot/imported/570042.png-c314264adbe5bb7a559899cc79c8e998.ctex
+Completed load for: 'res://art/source_a_env02a/env01_assets/vegetation/570042.png' remapped 'res://art/source_a_env02a/env01_assets/vegetation/570042.png' at thread -1
+Loading resource: res://art/source_a_env02a/env01_assets/vegetation/570043.png remapped: res://art/source_a_env02a/env01_assets/vegetation/570043.png
+Loading resource: res://.godot/imported/570043.png-056b7aa309d6945caf1c5deeacddd6d0.ctex remapped: res://.godot/imported/570043.png-056b7aa309d6945caf1c5deeacddd6d0.ctex
+Completed load for: 'res://art/source_a_env02a/env01_assets/vegetation/570043.png' remapped 'res://art/source_a_env02a/env01_assets/vegetation/570043.png' at thread -1
+Loading resource: res://art/source_a_env02a/env01_assets/vegetation/570144.png remapped: res://art/source_a_env02a/env01_assets/vegetation/570144.png
+Loading resource: res://.godot/imported/570144.png-7458ffe77e79755013afe91a62f764f5.ctex remapped: res://.godot/imported/570144.png-7458ffe77e79755013afe91a62f764f5.ctex
+Completed load for: 'res://art/source_a_env02a/env01_assets/vegetation/570144.png' remapped 'res://art/source_a_env02a/env01_assets/vegetation/570144.png' at thread -1
+Loading resource: res://art/source_a_env02a/env01_assets/vegetation/570185.png remapped: res://art/source_a_env02a/env01_assets/vegetation/570185.png
+Loading resource: res://.godot/imported/570185.png-8d58257ec4cb5baf1fa6fc52d8a47c24.ctex remapped: res://.godot/imported/570185.png-8d58257ec4cb5baf1fa6fc52d8a47c24.ctex
+Completed load for: 'res://art/source_a_env02a/env01_assets/vegetation/570185.png' remapped 'res://art/source_a_env02a/env01_assets/vegetation/570185.png' at thread -1
+Loading resource: res://art/source_a_env02a/env01_assets/vegetation/570186.png remapped: res://art/source_a_env02a/env01_assets/vegetation/570186.png
+Loading resource: res://.godot/imported/570186.png-01027763145c6345f8423c310162202d.ctex remapped: res://.godot/imported/570186.png-01027763145c6345f8423c310162202d.ctex
+Completed load for: 'res://art/source_a_env02a/env01_assets/vegetation/570186.png' remapped 'res://art/source_a_env02a/env01_assets/vegetation/570186.png' at thread -1
+Loading resource: res://art/source_a_env02a/env01_assets/vegetation/570187.png remapped: res://art/source_a_env02a/env01_assets/vegetation/570187.png
+Loading resource: res://.godot/imported/570187.png-68a2ff970dbe1ee0384a4d93db50e0ef.ctex remapped: res://.godot/imported/570187.png-68a2ff970dbe1ee0384a4d93db50e0ef.ctex
+Completed load for: 'res://art/source_a_env02a/env01_assets/vegetation/570187.png' remapped 'res://art/source_a_env02a/env01_assets/vegetation/570187.png' at thread -1
+Loading resource: res://art/source_a_env02a/env01_assets/vegetation/570397.png remapped: res://art/source_a_env02a/env01_assets/vegetation/570397.png
+Loading resource: res://.godot/imported/570397.png-eee5fbbfc03806f7f5c9d68b457f2d58.ctex remapped: res://.godot/imported/570397.png-eee5fbbfc03806f7f5c9d68b457f2d58.ctex
+Completed load for: 'res://art/source_a_env02a/env01_assets/vegetation/570397.png' remapped 'res://art/source_a_env02a/env01_assets/vegetation/570397.png' at thread -1
+Loading resource: res://art/map_d2_candidate/mine_worksite_v1.svg remapped: res://art/map_d2_candidate/mine_worksite_v1.svg
+Loading resource: res://.godot/imported/mine_worksite_v1.svg-e17872301f287a45e2630514f3cb66dd.ctex remapped: res://.godot/imported/mine_worksite_v1.svg-e17872301f287a45e2630514f3cb66dd.ctex
+Completed load for: 'res://art/map_d2_candidate/mine_worksite_v1.svg' remapped 'res://art/map_d2_candidate/mine_worksite_v1.svg' at thread -1
+Loading resource: res://art/map_d2_candidate/linh_forest_worksite_v1.svg remapped: res://art/map_d2_candidate/linh_forest_worksite_v1.svg
+Loading resource: res://.godot/imported/linh_forest_worksite_v1.svg-f9ba04af84347cc67322579714b9d57e.ctex remapped: res://.godot/imported/linh_forest_worksite_v1.svg-f9ba04af84347cc67322579714b9d57e.ctex
+Completed load for: 'res://art/map_d2_candidate/linh_forest_worksite_v1.svg' remapped 'res://art/map_d2_candidate/linh_forest_worksite_v1.svg' at thread -1
+Loading resource: res://art/map_d2_candidate/spirit_field_worksite_v1.svg remapped: res://art/map_d2_candidate/spirit_field_worksite_v1.svg
+Loading resource: res://.godot/imported/spirit_field_worksite_v1.svg-2665bf4a593beda76d5de1cc1315fba4.ctex remapped: res://.godot/imported/spirit_field_worksite_v1.svg-2665bf4a593beda76d5de1cc1315fba4.ctex
+Completed load for: 'res://art/map_d2_candidate/spirit_field_worksite_v1.svg' remapped 'res://art/map_d2_candidate/spirit_field_worksite_v1.svg' at thread -1
+Loading resource: res://art/source_a_env02a/pv01_assets/main_hall/510052.png remapped: res://art/source_a_env02a/pv01_assets/main_hall/510052.png
+Loading resource: res://.godot/imported/510052.png-559006883682278a99304005e534a681.ctex remapped: res://.godot/imported/510052.png-559006883682278a99304005e534a681.ctex
+Completed load for: 'res://art/source_a_env02a/pv01_assets/main_hall/510052.png' remapped 'res://art/source_a_env02a/pv01_assets/main_hall/510052.png' at thread -1
+Loading resource: res://art/source_a_env02a/pv01_assets/residence/510076.png remapped: res://art/source_a_env02a/pv01_assets/residence/510076.png
+Loading resource: res://.godot/imported/510076.png-029c1b6856f4f53a291f338d85b116b0.ctex remapped: res://.godot/imported/510076.png-029c1b6856f4f53a291f338d85b116b0.ctex
+Completed load for: 'res://art/source_a_env02a/pv01_assets/residence/510076.png' remapped 'res://art/source_a_env02a/pv01_assets/residence/510076.png' at thread -1
+Loading resource: res://art/source_a_env02a/pv01_assets/guidance/510111.png remapped: res://art/source_a_env02a/pv01_assets/guidance/510111.png
+Loading resource: res://.godot/imported/510111.png-150078f4eca350c8f1d242fd4e13c200.ctex remapped: res://.godot/imported/510111.png-150078f4eca350c8f1d242fd4e13c200.ctex
+Completed load for: 'res://art/source_a_env02a/pv01_assets/guidance/510111.png' remapped 'res://art/source_a_env02a/pv01_assets/guidance/510111.png' at thread -1
+Loading resource: res://art/source_a_env02a/pv01_assets/warehouse/510102.png remapped: res://art/source_a_env02a/pv01_assets/warehouse/510102.png
+Loading resource: res://.godot/imported/510102.png-4b2cd6a93d07e40749a8908cf5e8cda4.ctex remapped: res://.godot/imported/510102.png-4b2cd6a93d07e40749a8908cf5e8cda4.ctex
+Completed load for: 'res://art/source_a_env02a/pv01_assets/warehouse/510102.png' remapped 'res://art/source_a_env02a/pv01_assets/warehouse/510102.png' at thread -1
+Loading resource: res://art/source_a_env02a/pv01_assets/forge/520081.png remapped: res://art/source_a_env02a/pv01_assets/forge/520081.png
+Loading resource: res://.godot/imported/520081.png-4f755d2cbfd198fc15d49949c04a1fbc.ctex remapped: res://.godot/imported/520081.png-4f755d2cbfd198fc15d49949c04a1fbc.ctex
+Completed load for: 'res://art/source_a_env02a/pv01_assets/forge/520081.png' remapped 'res://art/source_a_env02a/pv01_assets/forge/520081.png' at thread -1
+Loading resource: res://art/source_a_env02a/env01_assets/vegetation/570037.png remapped: res://art/source_a_env02a/env01_assets/vegetation/570037.png
+Loading resource: res://.godot/imported/570037.png-bb4547982d0c509050b38cb0cc5c8603.ctex remapped: res://.godot/imported/570037.png-bb4547982d0c509050b38cb0cc5c8603.ctex
+Completed load for: 'res://art/source_a_env02a/env01_assets/vegetation/570037.png' remapped 'res://art/source_a_env02a/env01_assets/vegetation/570037.png' at thread -1
+Loading resource: res://art/source_a_env02a/env01_assets/vegetation/570038.png remapped: res://art/source_a_env02a/env01_assets/vegetation/570038.png
+Loading resource: res://.godot/imported/570038.png-e0f26844da8cf03496e501a80f2d1fad.ctex remapped: res://.godot/imported/570038.png-e0f26844da8cf03496e501a80f2d1fad.ctex
+Completed load for: 'res://art/source_a_env02a/env01_assets/vegetation/570038.png' remapped 'res://art/source_a_env02a/env01_assets/vegetation/570038.png' at thread -1
+Loading resource: res://art/source_a_env02a/env01_assets/vegetation/570171.png remapped: res://art/source_a_env02a/env01_assets/vegetation/570171.png
+Loading resource: res://.godot/imported/570171.png-c6f73902570ffa56b6bcb2f3a37fd100.ctex remapped: res://.godot/imported/570171.png-c6f73902570ffa56b6bcb2f3a37fd100.ctex
+Completed load for: 'res://art/source_a_env02a/env01_assets/vegetation/570171.png' remapped 'res://art/source_a_env02a/env01_assets/vegetation/570171.png' at thread -1
+Loading resource: res://art/source_a_env02a/env01_assets/vegetation/570172.png remapped: res://art/source_a_env02a/env01_assets/vegetation/570172.png
+Loading resource: res://.godot/imported/570172.png-80bebd4428a6fd6065bca3e067bd7f16.ctex remapped: res://.godot/imported/570172.png-80bebd4428a6fd6065bca3e067bd7f16.ctex
+Completed load for: 'res://art/source_a_env02a/env01_assets/vegetation/570172.png' remapped 'res://art/source_a_env02a/env01_assets/vegetation/570172.png' at thread -1
+Loading resource: res://art/source_a_env02a/env01_assets/vegetation/570181.png remapped: res://art/source_a_env02a/env01_assets/vegetation/570181.png
+Loading resource: res://.godot/imported/570181.png-9fd13695b19923ba11e7e5339a584542.ctex remapped: res://.godot/imported/570181.png-9fd13695b19923ba11e7e5339a584542.ctex
+Completed load for: 'res://art/source_a_env02a/env01_assets/vegetation/570181.png' remapped 'res://art/source_a_env02a/env01_assets/vegetation/570181.png' at thread -1
+Loading resource: res://art/source_a_env02a/env01_assets/vegetation/570182.png remapped: res://art/source_a_env02a/env01_assets/vegetation/570182.png
+Loading resource: res://.godot/imported/570182.png-4c47f281f770cb4aab1a0804eb50f52a.ctex remapped: res://.godot/imported/570182.png-4c47f281f770cb4aab1a0804eb50f52a.ctex
+Completed load for: 'res://art/source_a_env02a/env01_assets/vegetation/570182.png' remapped 'res://art/source_a_env02a/env01_assets/vegetation/570182.png' at thread -1
+Loading resource: res://art/source_a_env02a/env01_assets/vegetation/570042.png remapped: res://art/source_a_env02a/env01_assets/vegetation/570042.png
+Loading resource: res://.godot/imported/570042.png-c314264adbe5bb7a559899cc79c8e998.ctex remapped: res://.godot/imported/570042.png-c314264adbe5bb7a559899cc79c8e998.ctex
+Completed load for: 'res://art/source_a_env02a/env01_assets/vegetation/570042.png' remapped 'res://art/source_a_env02a/env01_assets/vegetation/570042.png' at thread -1
+Loading resource: res://art/source_a_env02a/env01_assets/vegetation/570043.png remapped: res://art/source_a_env02a/env01_assets/vegetation/570043.png
+Loading resource: res://.godot/imported/570043.png-056b7aa309d6945caf1c5deeacddd6d0.ctex remapped: res://.godot/imported/570043.png-056b7aa309d6945caf1c5deeacddd6d0.ctex
+Completed load for: 'res://art/source_a_env02a/env01_assets/vegetation/570043.png' remapped 'res://art/source_a_env02a/env01_assets/vegetation/570043.png' at thread -1
+Loading resource: res://art/source_a_env02a/env01_assets/vegetation/570144.png remapped: res://art/source_a_env02a/env01_assets/vegetation/570144.png
+Loading resource: res://.godot/imported/570144.png-7458ffe77e79755013afe91a62f764f5.ctex remapped: res://.godot/imported/570144.png-7458ffe77e79755013afe91a62f764f5.ctex
+Completed load for: 'res://art/source_a_env02a/env01_assets/vegetation/570144.png' remapped 'res://art/source_a_env02a/env01_assets/vegetation/570144.png' at thread -1
+Loading resource: res://art/source_a_env02a/env01_assets/vegetation/570185.png remapped: res://art/source_a_env02a/env01_assets/vegetation/570185.png
+Loading resource: res://.godot/imported/570185.png-8d58257ec4cb5baf1fa6fc52d8a47c24.ctex remapped: res://.godot/imported/570185.png-8d58257ec4cb5baf1fa6fc52d8a47c24.ctex
+Completed load for: 'res://art/source_a_env02a/env01_assets/vegetation/570185.png' remapped 'res://art/source_a_env02a/env01_assets/vegetation/570185.png' at thread -1
+Loading resource: res://art/source_a_env02a/env01_assets/vegetation/570186.png remapped: res://art/source_a_env02a/env01_assets/vegetation/570186.png
+Loading resource: res://.godot/imported/570186.png-01027763145c6345f8423c310162202d.ctex remapped: res://.godot/imported/570186.png-01027763145c6345f8423c310162202d.ctex
+Completed load for: 'res://art/source_a_env02a/env01_assets/vegetation/570186.png' remapped 'res://art/source_a_env02a/env01_assets/vegetation/570186.png' at thread -1
+Loading resource: res://art/source_a_env02a/env01_assets/vegetation/570187.png remapped: res://art/source_a_env02a/env01_assets/vegetation/570187.png
+Loading resource: res://.godot/imported/570187.png-68a2ff970dbe1ee0384a4d93db50e0ef.ctex remapped: res://.godot/imported/570187.png-68a2ff970dbe1ee0384a4d93db50e0ef.ctex
+Completed load for: 'res://art/source_a_env02a/env01_assets/vegetation/570187.png' remapped 'res://art/source_a_env02a/env01_assets/vegetation/570187.png' at thread -1
+Loading resource: res://art/source_a_env02a/env01_assets/vegetation/570397.png remapped: res://art/source_a_env02a/env01_assets/vegetation/570397.png
+Loading resource: res://.godot/imported/570397.png-eee5fbbfc03806f7f5c9d68b457f2d58.ctex remapped: res://.godot/imported/570397.png-eee5fbbfc03806f7f5c9d68b457f2d58.ctex
+Completed load for: 'res://art/source_a_env02a/env01_assets/vegetation/570397.png' remapped 'res://art/source_a_env02a/env01_assets/vegetation/570397.png' at thread -1

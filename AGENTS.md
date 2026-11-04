@@ -1,5 +1,20 @@
 # AGENTS.md — TÔNG MÔN BÁ ĐẠO
 
+## CURRENT RELEASE-TRAIN OVERRIDE — 2026-11-04 (read first)
+
+Owner direction: **ONE GAME → final `main`; only [PR #72](https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/72) is the active gameplay integration candidate.** Live gate/work owner: [Issue #56](https://github.com/vuanhtuan161094-byte/TongMonBaDao/issues/56); concise factual source: [canonical release register](docs/operations/TMB_ONE_GAME_RELEASE_TRAIN_CANONICAL_20261104.md); live status: [CURRENT_CHECKPOINT.md](CURRENT_CHECKPOINT.md) and [NEXT_CHAT_HANDOFF.md](NEXT_CHAT_HANDOFF.md).
+
+**This paragraph supersedes dated instructions below on which PR/RC/launcher/QA lane to run, not their still-valid safety/architecture rules.** Do not resume work on old #52/#67/`one-game-v65` based on historical notes; PR #67 is #72's ancestor/base. Do not start a new gameplay branch or a duplicate roadmap. When instructions disagree, use the latest explicit user decision, Issue #56's release gates, live source SHA, then current architecture; do not interpret older QA/status as a current PASS.
+
+- **R0 backup verified on 2026-11-04:** 196 working items + 94 saves, SHA256 manifest `EA753053E1DFBFD490E725C7FDD86B26FF565EA4BB10920805AA74571EDEF509`. Preserve these E: backups and user saves; no forced reset/clean/checkout. Do not merge `main` until R2–R4 release-critical QA PASS and main divergence reconciliation.
+- **R1 canonical Godot headless PASS** at code SHA `b56b6fe8fa29ae663994a65098a56b60c3b42513`: 20/20 import+focused test exit 0, D7 Tam Căn(3)/Tứ Tính(4) UI fixed. Windows real GUI **NOT PLAYABLE PASS** (`ig11icd64.dll` OpenGL/Intel crash, PID problem), Android pending; `godot/project.godot` already uses `gl_compatibility`. **Continue R2→R3→R4→R5 automatically** under [Owner order](https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/72#issuecomment-6627064335), no stopping between gates. Do not report legacy `LOOT_PENDING`: P0 natural test has real reward/receipt on tested SHA, but actual same-save Windows GUI remains unproven.
+- Old README/checkpoint/handoff contents were archived under `docs/archive/checkpoints/`. Do not follow the archived version's branch, phase, or commands.
+- Character UI labels must respect Owner's **Tam Căn / Tứ Tính** correction. Check live canonical stat authority and UI before editing code; do not add a duplicate `Tâm Tính` gameplay stat from the label alone.
+- The request to use **Codex to execute R0–R5 is explicitly authorized by Owner**; older text discouraging Codex is historical. Still enforce one writer per overlapping subsystem, exact-SHA QA, provenance and non-destructive workflow.
+- PR backlog cleanup is **administrative**, not `main` merge: 61 → 18 open, 43 closed and branches/history retained (2026-11-04 snapshot); the 14 still-open gameplay PRs have a PORT/SUPERSEDED/DESIGN_HOLD matrix per R1; independent animation labs remain separate.
+
+---
+
 This file is the repository operating contract.
 
 ## 1. Authority order

@@ -1,0 +1,5 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+TRI03_RECRUIT_HS09_CROSS_PROCESS_RELOAD_PASS disciple=candidate_0009 roster=7 worksite=spirit_field_001 tokens=2 candidates=8 house=residence_002 site=(94, 73) timer=60 receipt=map-house:0:94:73:new

@@ -31,17 +31,17 @@ func _run() -> void:
         "potential":100.0,"comprehension":200.0,"fortune":300.0,"charisma":400.0
     }}}
     if not radar.apply_snapshot(synthetic):
-        _fail("valid D7 snapshot with six canonical stats rejected")
+        _fail("valid D7 Tam Căn/Tứ Tính snapshot rejected")
         return
-    if radar.dimension_values.size() != 6 or radar.dimension_values != [12.0,24.0,300.0,200.0,400.0,100.0]:
-        _fail("visible HS-09 chart must expose only the six canonical stats and omit mind compatibility")
+    if radar.dimension_values.size() != 7 or radar.dimension_values != [12.0,24.0,9999.0,100.0,200.0,300.0,400.0]:
+        _fail("visible HS-09 D7 chart must show all three Tam Căn and four Tứ Tính values")
         return
-    if radar.chart_ceiling != 400.0 or radar.dimension_values.has(9999.0):
-        _fail("non-gameplay mind compatibility changed the visible chart scale")
+    if radar.chart_ceiling != 10000.0 or not radar.tooltip_text.contains("Tam Căn (3) / Tứ Tính (4)"):
+        _fail("D7 Tâm Tính profile value or category caption is missing from the read-only chart")
         return
     var saved_values := radar.dimension_values.duplicate()
     if radar.apply_snapshot({"ok":true,"foundations":{"model_version":3,"current":{"aptitude":1.0}}}):
-        _fail("incomplete six-stat foundation snapshot accepted")
+        _fail("incomplete seven-value D7 foundation snapshot accepted")
         return
     if radar.dimension_values != saved_values:
         _fail("rejected snapshot modified the previously valid canonical chart")

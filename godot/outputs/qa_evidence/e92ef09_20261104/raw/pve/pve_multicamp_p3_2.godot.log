@@ -1,0 +1,33 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+PVE P3.2 INTEGRATION START headless=true vfx_fixture=false
+PVE P3.2 INPUT_VIEWPORT size=(1280, 720)
+PVE P3.2 INTEGRATION scene_ready disciples=130
+PVE P3.2 INTEGRATION hunt_started encounter=pve:thanh_truc_lam:c01:20261025:120:0
+PVE ACTOR SCREEN SCALE PASS zoom=0.80 actor_draw_scale=0.656 cap=0.82
+PVE SELECTION RING GAP PASS zoom=0.80 visible=6 min_edge_gap_px=6.37
+PVE ACTOR SCREEN SCALE PASS zoom=1.35 actor_draw_scale=0.820 cap=0.82
+PVE SELECTION RING GAP PASS zoom=1.35 visible=6 min_edge_gap_px=26.90
+PVE PATH CACHE PASS path_cells=80 cache_hits=1 deterministic=true
+PVE WORLD VIEW CACHE PASS prepare_calls=83 topology_builds=1 minimap_builds=0 source_sha=c0e6b9952ce6303718938f5705a0327d0a14b136
+PVE HUD LAYOUT CACHE PASS apply_count=1 stable_viewport=1280x720
+PVE WORLD VIEW INPUT PASS wheel_up_down=1 anchor_stable=1 hud_plus_minus=1 refresh_keeps_camera=1 zoom=0.700
+PVE P3.2 INTEGRATION movement_slots positions={ "candidate_0056": (88.5, 72.5), "candidate_0059": (86.5, 69.5), "candidate_0066": (85.5, 74.5), "candidate_0078": (90.5, 69.5), "candidate_0081": (92.5, 75.5), "candidate_0085": (89.5, 78.5) }
+PVE P3.2 INTEGRATION movement_verified orders=6 formation_slots=6 min_spacing=3.61
+PVE P3.2 INTEGRATION active_save_load_verified
+PVE P3.2 INTEGRATION save_load_snapshot_ready
+PVE P3.2 INTEGRATION in_memory_snapshot_ready
+PVE P3.2 INTEGRATION shared_clock_step=0
+PVE P3.2 INTEGRATION shared_clock_step=10
+PVE P3.2 INTEGRATION shared_clock_step=20
+PVE P3.2 INTEGRATION shared_clock_step=30
+PVE P3.2 INTEGRATION shared_clock_step=40
+PVE P3.2 INTEGRATION FRAME BUDGET PASS requested=1 max_batch=1 batches=47 drained_render_frames=138 pending=53.000 barrier_saves=authoritative_kill_respawn_zone
+PVE P3.2 INTEGRATION shared_clock_progress elapsed=1 frames=1 baseline_actions=54 baseline_time=6.000 remainder=53.000
+PVE P3.2 INTEGRATION shared_clock_complete active=false
+PVE P3.2 INTEGRATION HP0/P0 PASS kills=4 latest_slot_receipts=4 items=1 warehouse_matches_canonical=true
+PVE P3.2 INTEGRATION clock_and_b3_care_verified
+PVE P3.2 POINTER INPUT STATUS status=headless_callback physical_mouse=not_verified
+PVE SOURCE A CONTINUOUS WORLD P3.2 INTEGRATION PASS sha=e92ef09fc2c9b2ccb870910577b295881ccc6527 renderer=SectIsometricWorldV1 map=192x192 zones=20 party=6 real_monsters=10 reserved=6 shared_clock_seconds=52.25 actions=180 path_order=true zone_hop=PASS result=defeat kills=4 injury120=PASS minimap=live camera=pan_zoom active_save_load=true p0_per_kill_receipts=true no_duplicate_or_fabricated_rewards=true

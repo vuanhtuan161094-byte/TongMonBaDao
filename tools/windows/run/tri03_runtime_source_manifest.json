@@ -1,13 +1,121 @@
 {
   "schema_version": 2,
-  "branch": "integration/tri-facility-a-b-playable-20261102",
+  "branch": "integration/pve-p0-playable-ui-20261103",
   "base_sha": "27ed01cd8f377994e5e50bac9ede84e78e8895bd",
-  "upstream_pr_sha": "c136600f5579871d476e0feca2d78ea3c74e6b1f",
-  "source_fingerprint": "38089b4c852d21fd7e492949461ec37170a22ad46e562f68a8a81efe03e84793",
+  "upstream_pr_sha": "c99f22153b34628f7e94f69de0285514e788b9cb",
+  "source_fingerprint": "016d5ca799c1f583ca91faa9def2bc085e8ee76fe525b194a2e9941a93b70b62",
   "files": [
     {
       "path": "CHOI-GAME.cmd",
-      "git_blob_sha": "c111938b585fdce797a283368d32ee9932642a25"
+      "git_blob_sha": "58065f32cfe0ff41605089e4f0d4317af453986b"
+    },
+    {
+      "path": "docs/qa/TRI03_OWNER_FINAL_20261103/G0_G1_G2_EVIDENCE/SOURCE_MANIFEST.json",
+      "git_blob_sha": "105782d106c87d3cfe9d5dcddff73aca3b0ac816"
+    },
+    {
+      "path": "docs/qa/TRI03_OWNER_FINAL_20261103/G0_G1_G2_EVIDENCE/screenshots/after/guidance.png",
+      "git_blob_sha": "7fe8f7589096778fbdca13d8b94f69dd592f1ffe"
+    },
+    {
+      "path": "docs/qa/TRI03_OWNER_FINAL_20261103/G0_G1_G2_EVIDENCE/screenshots/after/hall.png",
+      "git_blob_sha": "e8624272b06bd8203c60940c0d7f07fbed615a19"
+    },
+    {
+      "path": "docs/qa/TRI03_OWNER_FINAL_20261103/G0_G1_G2_EVIDENCE/screenshots/after/residence.png",
+      "git_blob_sha": "65e3b434b978d09ce02a626a969cb51cd786c642"
+    },
+    {
+      "path": "docs/qa/TRI03_OWNER_FINAL_20261103/G0_G1_G2_EVIDENCE/screenshots/before/guidance.png",
+      "git_blob_sha": "9be5e1f64f5b58b8cc611008eea8959627516b5e"
+    },
+    {
+      "path": "docs/qa/TRI03_OWNER_FINAL_20261103/G0_G1_G2_EVIDENCE/screenshots/before/hall.png",
+      "git_blob_sha": "5d02b07b7d9abce49143828d7aa7f5049e6d39d9"
+    },
+    {
+      "path": "docs/qa/TRI03_OWNER_FINAL_20261103/G0_G1_G2_EVIDENCE/screenshots/before/residence.png",
+      "git_blob_sha": "02981efbcefe37d78b71e676f3127d4fd0c6b899"
+    },
+    {
+      "path": "docs/qa/TRI03_OWNER_FINAL_20261103/G0_G1_G2_EVIDENCE/screenshots/gameplay/00_new_game_map.png",
+      "git_blob_sha": "9316b3d096652bc284cd24e80e7abff728b183de"
+    },
+    {
+      "path": "docs/qa/TRI03_OWNER_FINAL_20261103/G0_G1_G2_EVIDENCE/screenshots/gameplay/01_build_catalog.png",
+      "git_blob_sha": "2776f13402bf6367996296e72f0369c9e6ff1cfc"
+    },
+    {
+      "path": "docs/qa/TRI03_OWNER_FINAL_20261103/G0_G1_G2_EVIDENCE/screenshots/gameplay/02_occupied_plot_rejected.png",
+      "git_blob_sha": "f9a68125e21d8d759677cfc6df02e1119395c35b"
+    },
+    {
+      "path": "docs/qa/TRI03_OWNER_FINAL_20261103/G0_G1_G2_EVIDENCE/screenshots/gameplay/03_paid_second_residence.png",
+      "git_blob_sha": "b057c26848b2059357d36abf0e6c68b711923cbf"
+    },
+    {
+      "path": "docs/qa/TRI03_OWNER_FINAL_20261103/G0_G1_G2_EVIDENCE/screenshots/gameplay/04_recruited_hs09_profile.png",
+      "git_blob_sha": "02bc286636952b40023ae33d9f26c60521c95c15"
+    },
+    {
+      "path": "docs/qa/TRI03_OWNER_FINAL_20261103/G0_G1_G2_EVIDENCE/screenshots/gameplay/05_assignment_ready.png",
+      "git_blob_sha": "d895bb968f423359348a0685324967393c97a647"
+    },
+    {
+      "path": "docs/qa/TRI03_OWNER_FINAL_20261103/SOURCE_MANIFEST.json",
+      "git_blob_sha": "c52f1004858838b58e1a9fd529b7bdb23972ddff"
+    },
+    {
+      "path": "docs/qa/TRI03_OWNER_FINAL_20261103/screenshots/after/00_p3_2_map_context.png",
+      "git_blob_sha": "55db6bdc155f76df945230184daf66267e891934"
+    },
+    {
+      "path": "docs/qa/TRI03_OWNER_FINAL_20261103/screenshots/after/01_hall_live_state.png",
+      "git_blob_sha": "5d02b07b7d9abce49143828d7aa7f5049e6d39d9"
+    },
+    {
+      "path": "docs/qa/TRI03_OWNER_FINAL_20261103/screenshots/after/02_residence_live_state.png",
+      "git_blob_sha": "160ff65c5bff6d2171d95a0d235e8a6cf4a3ec19"
+    },
+    {
+      "path": "docs/qa/TRI03_OWNER_FINAL_20261103/screenshots/after/03_guidance_live_state.png",
+      "git_blob_sha": "9be5e1f64f5b58b8cc611008eea8959627516b5e"
+    },
+    {
+      "path": "docs/qa/TRI03_OWNER_FINAL_20261103/screenshots/after/04_build_mode_new_game_gates.png",
+      "git_blob_sha": "2ee8d28f61898e68b2a2dddf524b2fb5ddc11e44"
+    },
+    {
+      "path": "docs/qa/TRI03_OWNER_FINAL_20261103/screenshots/after/05_map_residence_valid_placement_qa_fixture.png",
+      "git_blob_sha": "b573cebd81d5c69706ec47b61077bc9aa42b15b1"
+    },
+    {
+      "path": "docs/qa/TRI03_OWNER_FINAL_20261103/screenshots/after/05_recruitment_success_reveal_qa_fixture.png",
+      "git_blob_sha": "b41bf8d5d1e33be8085d06b7b8a49e5b0889a4ad"
+    },
+    {
+      "path": "docs/qa/TRI03_OWNER_FINAL_20261103/screenshots/after/06_map_residence_started_qa_fixture.png",
+      "git_blob_sha": "abaa7f765730ec6756ca6b7d15a52b8c423f8700"
+    },
+    {
+      "path": "docs/qa/TRI03_OWNER_FINAL_20261103/screenshots/after/07_map_residence_relocated_qa_fixture.png",
+      "git_blob_sha": "79a486be6b7ac7210723e473b4ef9e1f6c956d27"
+    },
+    {
+      "path": "docs/qa/TRI03_OWNER_FINAL_20261103/screenshots/before/00_p3_2_map_context.png",
+      "git_blob_sha": "6eea3cbf46f72370c13bd7f3ce921c864052e75a"
+    },
+    {
+      "path": "docs/qa/TRI03_OWNER_FINAL_20261103/screenshots/before/01_hall_live_state.png",
+      "git_blob_sha": "8c4408cbc14ddf2c863e218e203d17fef5165fa3"
+    },
+    {
+      "path": "docs/qa/TRI03_OWNER_FINAL_20261103/screenshots/before/02_residence_live_state.png",
+      "git_blob_sha": "9f47d0c4225aa0cb77c00447d4a750b824e91939"
+    },
+    {
+      "path": "docs/qa/TRI03_OWNER_FINAL_20261103/screenshots/before/03_guidance_live_state.png",
+      "git_blob_sha": "e6777630c97b292d6911a5b9227dfba0013d0c47"
     },
     {
       "path": "godot/art/source_a_env02a/pv01_assets/guidance/510111.png",
@@ -38,16 +146,180 @@
       "git_blob_sha": "9694c54229698ca2f14e00f4293e33d691c25336"
     },
     {
+      "path": "godot/assets/p3/character_creator/parts/female_normal_v1/body/body_01/body_01_down_arm_l.png",
+      "git_blob_sha": "84d56db1f48ee198d8a95936b9d0b7ad105c416e"
+    },
+    {
+      "path": "godot/assets/p3/character_creator/parts/female_normal_v1/body/body_01/body_01_down_arm_r.png",
+      "git_blob_sha": "77e894df36e832a27c02d14be50ef67dfb2c40e5"
+    },
+    {
+      "path": "godot/assets/p3/character_creator/parts/female_normal_v1/body/body_01/body_01_down_head.png",
+      "git_blob_sha": "7ee0bcc4565de4cf3276a7780fc37352af54e895"
+    },
+    {
+      "path": "godot/assets/p3/character_creator/parts/female_normal_v1/body/body_01/body_01_down_leg_l.png",
+      "git_blob_sha": "19ec8a9fc1b5d44538cfec1836ded9cc34623cda"
+    },
+    {
+      "path": "godot/assets/p3/character_creator/parts/female_normal_v1/body/body_01/body_01_down_leg_r.png",
+      "git_blob_sha": "bb2030300c05504db8f3bf0d4f7a62a260cf982a"
+    },
+    {
+      "path": "godot/assets/p3/character_creator/parts/female_normal_v1/body/body_01/body_01_down_torso.png",
+      "git_blob_sha": "927b5892b04865365f7842d626b8a213fb4f2d50"
+    },
+    {
+      "path": "godot/assets/p3/character_creator/parts/female_normal_v1/body/body_01/body_01_right_arm_l.png",
+      "git_blob_sha": "7b591877f36a487333fd015ea6f7c22e1995cfd9"
+    },
+    {
+      "path": "godot/assets/p3/character_creator/parts/female_normal_v1/body/body_01/body_01_right_arm_r.png",
+      "git_blob_sha": "3f6dc19f779f1f27ebb50fa24923565674a733ab"
+    },
+    {
+      "path": "godot/assets/p3/character_creator/parts/female_normal_v1/body/body_01/body_01_right_head.png",
+      "git_blob_sha": "83bcb820a40703baf511bd64150a2018b57e3d51"
+    },
+    {
+      "path": "godot/assets/p3/character_creator/parts/female_normal_v1/body/body_01/body_01_right_leg_l.png",
+      "git_blob_sha": "9104e9bf59b103e47a2def47046cdaa56c0d7864"
+    },
+    {
+      "path": "godot/assets/p3/character_creator/parts/female_normal_v1/body/body_01/body_01_right_leg_r.png",
+      "git_blob_sha": "50201262ef095ee6f92e0af42bd9e269932ddb6f"
+    },
+    {
+      "path": "godot/assets/p3/character_creator/parts/female_normal_v1/body/body_01/body_01_right_torso.png",
+      "git_blob_sha": "203bbfd2c0a2742d974f1bea5941120fb9bc07e6"
+    },
+    {
+      "path": "godot/assets/p3/character_creator/parts/female_normal_v1/body/body_01/body_01_up_arm_l.png",
+      "git_blob_sha": "dc233b6efaba2294a0ce6ce5727bbc85e9d1a01f"
+    },
+    {
+      "path": "godot/assets/p3/character_creator/parts/female_normal_v1/body/body_01/body_01_up_arm_r.png",
+      "git_blob_sha": "9b424f25b2e932d6a9342714b3781d98b2068dc9"
+    },
+    {
+      "path": "godot/assets/p3/character_creator/parts/female_normal_v1/body/body_01/body_01_up_head.png",
+      "git_blob_sha": "da681a2952969c992eeed07e09ae1740db4cb388"
+    },
+    {
+      "path": "godot/assets/p3/character_creator/parts/female_normal_v1/body/body_01/body_01_up_leg_l.png",
+      "git_blob_sha": "959b08bd938b425bda0cfcd9d9319ab95efd42d4"
+    },
+    {
+      "path": "godot/assets/p3/character_creator/parts/female_normal_v1/body/body_01/body_01_up_leg_r.png",
+      "git_blob_sha": "22f3bc6696ca6ecbeec48a1a1443820c35d38cbd"
+    },
+    {
+      "path": "godot/assets/p3/character_creator/parts/female_normal_v1/body/body_01/body_01_up_torso.png",
+      "git_blob_sha": "72aac75f9c3e56a94a8b0cc6a3d2ed5f6a2459a9"
+    },
+    {
+      "path": "godot/assets/p3/character_creator/parts/female_normal_v1/face/face_01/face_01_down.png",
+      "git_blob_sha": "b2ad1c2b7c41edee5764430bf2a90991bfd70dd5"
+    },
+    {
+      "path": "godot/assets/p3/character_creator/parts/female_normal_v1/face/face_01/face_01_right.png",
+      "git_blob_sha": "50fc4859a0ca9298975aa3bff63ffee56e9c0d07"
+    },
+    {
+      "path": "godot/assets/p3/character_creator/parts/female_normal_v1/face/face_01/face_01_up.png",
+      "git_blob_sha": "0d7a4fffd12ba55a0a3517ad712342d672189da9"
+    },
+    {
+      "path": "godot/assets/p3/character_creator/parts/female_normal_v1/hair/hair_01/hair_01_down_back.png",
+      "git_blob_sha": "67a05f2e8bd4d3332c174ff9d73ae0cd4e6ec80f"
+    },
+    {
+      "path": "godot/assets/p3/character_creator/parts/female_normal_v1/hair/hair_01/hair_01_down_front.png",
+      "git_blob_sha": "ae495766d65796affe647bcd16255208dd08620b"
+    },
+    {
+      "path": "godot/assets/p3/character_creator/parts/female_normal_v1/hair/hair_01/hair_01_right_back.png",
+      "git_blob_sha": "227ad07dfa0f01e8d3f97dfb0244eccd2710328f"
+    },
+    {
+      "path": "godot/assets/p3/character_creator/parts/female_normal_v1/hair/hair_01/hair_01_right_front.png",
+      "git_blob_sha": "e53e1cde5b28b329fbc4b4a2d0ae74ddf5bf5520"
+    },
+    {
+      "path": "godot/assets/p3/character_creator/parts/female_normal_v1/hair/hair_01/hair_01_up_back.png",
+      "git_blob_sha": "8889c0e4873d54bec9b1c266de9d26b54d1fcd87"
+    },
+    {
+      "path": "godot/assets/p3/character_creator/parts/female_normal_v1/hair/hair_01/hair_01_up_front.png",
+      "git_blob_sha": "a6532ff8092f6dfed26e3d504f8772b181eb2b1f"
+    },
+    {
+      "path": "godot/assets/p3/character_creator/parts/female_normal_v1/head_accessory/horn_01/horn_01_down.png",
+      "git_blob_sha": "74ed306dc43151c01a7facb7d4c2657a7ad3ff3e"
+    },
+    {
+      "path": "godot/assets/p3/character_creator/parts/female_normal_v1/head_accessory/horn_01/horn_01_right.png",
+      "git_blob_sha": "94170237ae2a1ff395aba01784868e72a0a39920"
+    },
+    {
+      "path": "godot/assets/p3/character_creator/parts/female_normal_v1/head_accessory/horn_01/horn_01_up.png",
+      "git_blob_sha": "b61797d0f8d7396d1166ef93235c35a4b98ca95a"
+    },
+    {
+      "path": "godot/assets/p3/character_creator/parts/female_normal_v1/outfit/outfit_01/outfit_01_down_arm_l.png",
+      "git_blob_sha": "208080f001d39ac50556aa7b365be13daf16ac92"
+    },
+    {
+      "path": "godot/assets/p3/character_creator/parts/female_normal_v1/outfit/outfit_01/outfit_01_down_arm_r.png",
+      "git_blob_sha": "a05d72f0c8f1b200fa49ae82ff0eba7cf711e78c"
+    },
+    {
+      "path": "godot/assets/p3/character_creator/parts/female_normal_v1/outfit/outfit_01/outfit_01_down_skirt.png",
+      "git_blob_sha": "703362011fe1b03c2ba1d6d4facd147b708221ce"
+    },
+    {
+      "path": "godot/assets/p3/character_creator/parts/female_normal_v1/outfit/outfit_01/outfit_01_down_torso.png",
+      "git_blob_sha": "0910aed1ad8c6f9e8b19f5680a971889a6ca4155"
+    },
+    {
+      "path": "godot/assets/p3/character_creator/parts/female_normal_v1/outfit/outfit_01/outfit_01_right_arm_l.png",
+      "git_blob_sha": "675b463db066fc34d79971b85209a6836d246990"
+    },
+    {
+      "path": "godot/assets/p3/character_creator/parts/female_normal_v1/outfit/outfit_01/outfit_01_right_arm_r.png",
+      "git_blob_sha": "9348b5fadd3b2c697cbcd90679182586175be7e5"
+    },
+    {
+      "path": "godot/assets/p3/character_creator/parts/female_normal_v1/outfit/outfit_01/outfit_01_right_skirt.png",
+      "git_blob_sha": "6be7a92299a00ebacc739590615841a8ec8cfe81"
+    },
+    {
+      "path": "godot/assets/p3/character_creator/parts/female_normal_v1/outfit/outfit_01/outfit_01_right_torso.png",
+      "git_blob_sha": "fde3b24b33624c7f6b3878f010d56e5046906ecf"
+    },
+    {
+      "path": "godot/assets/p3/character_creator/parts/female_normal_v1/outfit/outfit_01/outfit_01_up_arm_l.png",
+      "git_blob_sha": "7c61b3986cb32677f812dbed3269eb0821d71793"
+    },
+    {
+      "path": "godot/assets/p3/character_creator/parts/female_normal_v1/outfit/outfit_01/outfit_01_up_arm_r.png",
+      "git_blob_sha": "b093025e628e0cf511f829cded09e709965e3120"
+    },
+    {
+      "path": "godot/assets/p3/character_creator/parts/female_normal_v1/outfit/outfit_01/outfit_01_up_skirt.png",
+      "git_blob_sha": "7b293cb77941497da5340d9853b54dac600b3513"
+    },
+    {
+      "path": "godot/assets/p3/character_creator/parts/female_normal_v1/outfit/outfit_01/outfit_01_up_torso.png",
+      "git_blob_sha": "0d7a4fffd12ba55a0a3517ad712342d672189da9"
+    },
+    {
       "path": "godot/data/presentation/sect_management_icons_generated_manifest.json",
       "git_blob_sha": "1ae258d9d50094ce776ed1871ff6eab04b161c22"
     },
     {
       "path": "godot/data/presentation/tri_facility_source_a_manifest.json",
       "git_blob_sha": "1bbf5b2d60513ee3a2026f937f49a4de0a42cd01"
-    },
-    {
-      "path": "godot/project.godot",
-      "git_blob_sha": "bbdc4dc2fc16358297840cc06a932c2ea20094ce"
     },
     {
       "path": "godot/scenes/p3/p3_2_landscape_sect.tscn",
@@ -66,6 +338,10 @@
       "git_blob_sha": "aaccc17638e38d549d2d82fdaf428d8d70067e06"
     },
     {
+      "path": "godot/src/presentation/p3/pve_sect_world_view_v1.gd",
+      "git_blob_sha": "2c2c69f390afde1b064f256ccbf052494b820225"
+    },
+    {
       "path": "godot/src/presentation/p3/sect_isometric_world_v1.gd",
       "git_blob_sha": "75d0b6aa474341e9b3860ea678520f218279fc3e"
     },
@@ -75,7 +351,7 @@
     },
     {
       "path": "godot/src/presentation/p3_2_landscape_sect.gd",
-      "git_blob_sha": "f8b4f90ab1cd8c9f8061817c4b5cffdaa8ef1400"
+      "git_blob_sha": "acca40bb208722316707fe669d4679def6bbf460"
     },
     {
       "path": "godot/src/presentation/uiux/dai_dien_screen_b1_v1.gd",
@@ -110,8 +386,44 @@
       "git_blob_sha": "64984c4b8b17674eb63e147f8f39854c2dcde2ad"
     },
     {
+      "path": "godot/src/simulation/combat/hunting_pve_run_v2.gd",
+      "git_blob_sha": "09933eed3828200e07eea9204f917789415b2260"
+    },
+    {
+      "path": "godot/src/simulation/combat/map_battle_snapshot_v2.gd",
+      "git_blob_sha": "d1797d105ae55eca9f37ac517b246ba511eb5172"
+    },
+    {
+      "path": "godot/src/simulation/combat/map_battle_v2.gd",
+      "git_blob_sha": "4a8f6b1efcfeb83cc4614915409b7fbd128ac600"
+    },
+    {
+      "path": "godot/src/simulation/combat/pve_distributed_world_v1.gd",
+      "git_blob_sha": "2fdf84a18b86e0359e733033188b5f7ab5e6e27f"
+    },
+    {
+      "path": "godot/src/simulation/combat/pve_multi_camp_population_v1.gd",
+      "git_blob_sha": "4d28f5f706af309f4c4a58e7952c0d7bef37e9da"
+    },
+    {
+      "path": "godot/src/simulation/combat/pve_p0_commands_v1.gd",
+      "git_blob_sha": "b4dffa61447ac008b7e53dba02cac5df658caf59"
+    },
+    {
+      "path": "godot/src/simulation/combat/pve_per_kill_reward_v1.gd",
+      "git_blob_sha": "2cc4b1f3f7fabaf696e0702ce9d3633793983597"
+    },
+    {
+      "path": "godot/src/simulation/combat/v63_human_skill_combat_system.gd",
+      "git_blob_sha": "563aab7f96f14c9dfe9df4f0abde5f43675ed88e"
+    },
+    {
       "path": "godot/src/simulation/core/p3_7_factory.gd",
       "git_blob_sha": "f2543f11c6378f128cfc98544763da647ebf6805"
+    },
+    {
+      "path": "godot/src/simulation/core/simulation_runtime_clock_v2.gd",
+      "git_blob_sha": "342b4553b19a720d802492e654b6fba613268e84"
     },
     {
       "path": "godot/src/simulation/governance/sect_residence_site_v1.gd",
@@ -131,11 +443,11 @@
     },
     {
       "path": "godot/tests/presentation/gp_01_v2_mine_vertical_slice_test.gd",
-      "git_blob_sha": "9fb440f953afa4e5e81b6db6b9835223e2c81618"
+      "git_blob_sha": "70b3749ce3fedbca5ebab798814e3f575805d4ff"
     },
     {
       "path": "godot/tests/presentation/gp_02a_v2_cultivation_panel_test.gd",
-      "git_blob_sha": "c5e89df3340e0db57cedcb76c4f6ddd347e15077"
+      "git_blob_sha": "9c38a69c7e5f64a0a144235027f9ad75d6ba4e2a"
     },
     {
       "path": "godot/tests/presentation/hs09_disciple_profile_test.gd",
@@ -151,11 +463,19 @@
     },
     {
       "path": "godot/tests/presentation/p3_o6_m1_release_rehearsal_test.gd",
-      "git_blob_sha": "ac282555c41d98e383e848590341faf323c2413c"
+      "git_blob_sha": "edd52f73d7806108938fe9bf658467b1c24b4897"
     },
     {
       "path": "godot/tests/presentation/p3_o9_m2_production_rehearsal_test.gd",
       "git_blob_sha": "dfe9e7a152ba8a107f6edcc11ae2629b6b0749b7"
+    },
+    {
+      "path": "godot/tests/presentation/pve_multicamp_p3_2_live_integration_test.gd",
+      "git_blob_sha": "5d5feb72290e960312f65b5160a93347096a1938"
+    },
+    {
+      "path": "godot/tests/presentation/pve_p0_ui_player_entry_test.gd",
+      "git_blob_sha": "e3e5abecb9808970369fb79dc1c34b213b8087d6"
     },
     {
       "path": "godot/tests/presentation/sect_g1_disciple_radar_test.gd",
@@ -194,12 +514,40 @@
       "git_blob_sha": "9946b9f9b54f662f232cb657771da8ee2b3270e6"
     },
     {
+      "path": "godot/tests/simulation/pve_p0_30_independent_hunters_test.gd",
+      "git_blob_sha": "ec230fba2d93a0335ffa339591cb974209cfa117"
+    },
+    {
+      "path": "godot/tests/simulation/pve_p0_natural_solo_reward_test.gd",
+      "git_blob_sha": "871639940e9f79e5f9ceb195f91419c9a1e36d6f"
+    },
+    {
+      "path": "outputs/endgame_qa_20261025/perf/live_save_snapshot_metadata.json",
+      "git_blob_sha": "5a7ce326beb4ea9a25404b092e2227e48c93ad63"
+    },
+    {
+      "path": "outputs/map_d1b/logs/windows_benchmark_evidence.json",
+      "git_blob_sha": "9f5259bacd5bfdafe79f6abec0aacc5f53b9bdb7"
+    },
+    {
+      "path": "outputs/map_d1b/portable_package/Run_Map_D1B.cmd",
+      "git_blob_sha": "fe6bd2b751846391dcac9d5cbf5a331098c53022"
+    },
+    {
+      "path": "tools/windows/bootstrap/Install-P3-2-Female-StageA.cmd",
+      "git_blob_sha": "d292658a1c2090dcece886e7ebee67ec92a980ea"
+    },
+    {
       "path": "tools/windows/run/Start-TRI03Game.ps1",
-      "git_blob_sha": "54aa090f00d69e140cf98719218bfb029ac763b8"
+      "git_blob_sha": "93b6c008f4eb8a5414f9e06fd6d6c95a0a95551d"
     },
     {
       "path": "tools/windows/run/Verify-TRI03Source.ps1",
-      "git_blob_sha": "eddfc05ae316602468e6f2b2969c2b9742a89268"
+      "git_blob_sha": "91f924efa5e18f03d2d1415e6d3354317385a379"
+    },
+    {
+      "path": "tools/windows/run/tri03_launcher_support.ps1",
+      "git_blob_sha": "e6475636587e087a8428a3071251f5f10f3ed9f7"
     }
   ]
 }

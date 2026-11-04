@@ -1,0 +1,9 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+PVE_P0_30X20_ACTIVE_PASS {"active_monsters":40,"areas":20,"hunters":30,"mandatory_team":false,"registered_slots":200,"six_team_members":6}
+PVE_P0_WORLD_LOD_RESTORE_PASS {"camp_count":20,"condensed":10,"distributed":40,"dormant_after_reactivation":8}
+PVE_P0_OPTIONAL_PARTY_SUPPORT_PASS {"aoe_excludes_unauthorized_solo":true,"solo":"hunter_20","team_members":["hunter_00","hunter_01"]}
+PVE_P0_MINIMAP_SOLO_ORDER_PASS {"no_selection_pans":true,"ordered_actor":"hunter_20","requested_zone":"C20"}
+PVE_P0_TRAVEL_ORIGIN_CAMP_PASS camps=2 monsters=20 physical_zone=C01 target=C20
+PVE_P0_SAFE_MONSTER_RESPAWN_PASS slot=C01:S01 active_monsters=10 no_overlap=true
+PVE_P0_30_HUNTERS_PASS checks=31 engine=Godot4.7.2

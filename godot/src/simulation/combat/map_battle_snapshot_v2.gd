@@ -256,6 +256,27 @@ static func _restore_payload(data: Dictionary) -> Dictionary:
             is_nan(learned_factor) or is_inf(learned_factor) or learned_factor < 0.01 or learned_factor > 1.0):
             return {"ok":false,"reason":"invalid_learned_guard"}
         if side == "disciple":
+            # P0 player-issued solo AUTO / HOLD orders must be deterministic,
+            # bounded, and impossible to mutate into arbitrary save payload.
+            # Older V1–V4 snapshots default safely to AUTO.
+            if battle.world_mode:
+                var hunt_mode := str(actor.get("hunt_policy","auto"))
+                var after_move := str(actor.get("hunt_after_move",hunt_mode))
+                var radius_value = actor.get("hunt_radius",0.0)
+                var home_value = actor.get("home_position",pos)
+                if not ["auto","hold"].has(hunt_mode) \
+                        or not ["auto","hold"].has(after_move) \
+                        or not (radius_value is float or radius_value is int) \
+                        or not is_finite(float(radius_value)) \
+                        or float(radius_value) < 0.0 \
+                        or float(radius_value) > 256.0 \
+                        or not (home_value is Vector2) \
+                        or not battle.is_world_position_allowed(home_value):
+                    return {"ok":false,"reason":"invalid_p0_actor_hunt_policy_snapshot"}
+                actor["hunt_policy"] = hunt_mode
+                actor["hunt_after_move"] = after_move
+                actor["hunt_radius"] = float(radius_value)
+                actor["home_position"] = home_value
             disciples += 1
             var party_id := str(actor.get("party_id",""))
             party_sizes[party_id] = int(party_sizes.get(party_id,0))+1

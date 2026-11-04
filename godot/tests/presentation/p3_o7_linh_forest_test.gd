@@ -125,7 +125,10 @@ func _run() -> void:
         return
 
     # Mid-cycle persistence preserves carried output and phase without deposit.
-    ui.call("_autosave_runtime")
+    var mid_cycle_save: Dictionary = await ui.call("_save_runtime_async_barrier")
+    if not bool(mid_cycle_save.get("ok", false)):
+        _fail("O7 mid-cycle asynchronous SaveService barrier failed.")
+        return
     _dispose_scene()
     await process_frame
     if not await _open_scene():
@@ -312,8 +315,10 @@ func _stop_timers(node: Node) -> void:
         _stop_timers(child)
 
 func _cleanup_save() -> void:
-    if FileAccess.file_exists(SAVE_PATH):
-        DirAccess.remove_absolute(ProjectSettings.globalize_path(SAVE_PATH))
+    for suffix in ["", ".tmp", ".bak"]:
+        var path: String = SAVE_PATH + str(suffix)
+        if FileAccess.file_exists(path):
+            DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
     ProjectSettings.set_setting("runtime/live_save_path", LiveGameRuntimeV2.DEFAULT_SAVE_PATH)
 
 func _fail(message: String) -> bool:
