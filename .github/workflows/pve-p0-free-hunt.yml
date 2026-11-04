@@ -12,6 +12,10 @@ on:
       - 'godot/src/presentation/p3_2_landscape_sect.gd'
       - 'godot/tests/presentation/pve_p0_ui_player_entry_test.gd'
       - 'godot/tests/simulation/pve_p0_*'
+      - 'tools/windows/run/Start-TRI03Game.ps1'
+      - 'tools/windows/run/tri03_launcher_support.ps1'
+      - 'tools/windows/run/tri03_runtime_source_manifest.json'
+      - 'tools/windows/qa/Test-TRI03LauncherSafety.ps1'
       - '.github/workflows/pve-p0-free-hunt.yml'
 permissions:
   contents: read
@@ -38,6 +42,10 @@ jobs:
 
       - name: Confirm official version
         run: godot --version
+
+      - name: Launcher single-process and lifecycle regression
+        shell: pwsh
+        run: ./tools/windows/qa/Test-TRI03LauncherSafety.ps1
 
       - name: Restore canonical female Stage A runtime pack
         shell: bash
