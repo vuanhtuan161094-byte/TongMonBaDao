@@ -3,7 +3,7 @@
   "branch": "integration/pve-p0-playable-ui-20261103",
   "base_sha": "27ed01cd8f377994e5e50bac9ede84e78e8895bd",
   "upstream_pr_sha": "c99f22153b34628f7e94f69de0285514e788b9cb",
-  "source_fingerprint": "882083c7322f74cc6ca3418c489dbc9a8fd9d22f76210006befa677fe0051515",
+  "source_fingerprint": "5ee31bc7dbde980bb4c500b98b0f9ee3c3e9d3f3e9ae97bc64c35625ef039bfe",
   "files": [
     {
       "path": "CHOI-GAME.cmd",
@@ -623,11 +623,11 @@
     },
     {
       "path": "tools/windows/qa/Test-TRI03OfflinePackage.ps1",
-      "git_blob_sha": "e5d0204eeb61698524ae5fee4c8d493f807ea9c9"
+      "git_blob_sha": "c37cca970e1ccbbcc9905734e245aff18c517e69"
     },
     {
       "path": "tools/windows/run/Build-TRI03OfflinePackage.ps1",
-      "git_blob_sha": "d4a3db61f578bf03b3c4053adeac23d92c9fe687"
+      "git_blob_sha": "d7e6780d8c05ea4fd4443e0e1690d4afa3e7c1cb"
     },
     {
       "path": "tools/windows/run/Start-TRI03Game.ps1",

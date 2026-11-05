@@ -7,7 +7,7 @@ param(
 $ErrorActionPreference='Stop'
 function Stop-Build([string]$Message,[int]$Code=1){[Console]::Error.WriteLine("TRI03_OFFLINE_BUILD_FAIL: $Message");exit $Code}
 function Sha256([string]$Path){$s=[IO.File]::OpenRead($Path);$a=[Security.Cryptography.SHA256]::Create();try{return([BitConverter]::ToString($a.ComputeHash($s))).Replace('-','').ToLowerInvariant()}finally{$a.Dispose();$s.Dispose()}}
-function Fingerprint([string[]]$Lines){[Array]::Sort($Lines,[StringComparer]::Ordinal);$d=[Text.Encoding]::UTF8.GetBytes(($Lines-join[Environment]::NewLine)+[Environment]::NewLine);$a=[Security.Cryptography.SHA256]::Create();try{return([BitConverter]::ToString($a.ComputeHash($d))).Replace('-','').ToLowerInvariant()}finally{$a.Dispose()}}
+function Fingerprint([string[]]$Lines){[Array]::Sort($Lines,[StringComparer]::Ordinal);$d=[Text.Encoding]::UTF8.GetBytes(($Lines-join[char]10)+[char]10);$a=[Security.Cryptography.SHA256]::Create();try{return([BitConverter]::ToString($a.ComputeHash($d))).Replace('-','').ToLowerInvariant()}finally{$a.Dispose()}}
 function QuoteArg([string]$Value){return '"' + $Value.Replace('"','\"') + '"'}
 try{
  $root=[IO.Path]::GetFullPath($GameRoot).TrimEnd('\')
@@ -87,10 +87,12 @@ foreach($line in ($verifyText -split '[\r\n]+')){
  if($LASTEXITCODE-ne0-or$godotVersion-ne'4.7.2.stable.official.ed1daf0bf'){Stop-Build "Unexpected Godot build: $godotVersion" 11}
  $importLog=Join-Path $ProfileRoot 'Logs\offline_package_import.log'
  New-Item -ItemType Directory -Force -Path (Split-Path -Parent $importLog)|Out-Null
- & $godot --headless --editor --path $stage --import --quit --verbose --log-file $importLog
+ $godotProject=Join-Path $stage 'godot'
+if(-not(Test-Path -LiteralPath (Join-Path $godotProject 'project.godot') -PathType Leaf)){Stop-Build 'Exported Godot project is missing.' 11}
+& $godot --headless --editor --path $godotProject --import --quit --verbose --log-file $importLog
  $importCode=$LASTEXITCODE
  if($importCode-ne0){Stop-Build "Godot import failed with exit $importCode; log=$importLog; staging left at $stage." 11}
- if(Test-Path -LiteralPath $importLog){$bad=Select-String -LiteralPath $importLog -Pattern 'SCRIPT ERROR:|Parse Error:'; if($bad){Stop-Build "Godot import emitted a script/parse error; log=$importLog." 11}}
+ if(Test-Path -LiteralPath $importLog){$bad=Select-String -LiteralPath $importLog -Pattern 'SCRIPT ERROR:|Parse Error:|Error: Can''t run project:'; if($bad){Stop-Build "Godot import emitted a script/parse error; log=$importLog." 11}}
 $files=@()
  foreach($item in Get-ChildItem -LiteralPath $stage -Force -Recurse -ErrorAction Stop){
   if(($item.Attributes-band[IO.FileAttributes]::ReparsePoint)-ne0){Stop-Build "Reparse point found in export: $($item.FullName)" 11}

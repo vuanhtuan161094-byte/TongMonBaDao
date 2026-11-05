@@ -24,6 +24,13 @@ foreach($line in ($reportSample -split '[\r\n]+')){
  if($separator -gt 0){$reportValues[$line.Substring(0,$separator)]=$line.Substring($separator+1).Trim()}
 }
 Assert ($reportValues['source_fingerprint']-eq('a'*64)-and$reportValues['checkout_head']-eq('b'*40)-and$reportValues['upstream_pr_source']-eq('c'*40)) 'CRLF report preserves all pinned identity fields'
+$fingerprintFunction=[regex]::Match($builderText,'(?m)^function Fingerprint\([^\r\n]+' )
+Assert ($fingerprintFunction.Success) 'builder fingerprint function is present'
+Invoke-Expression $fingerprintFunction.Value
+$fingerprintLines=@('z=2','a=1')
+Assert ((Fingerprint $fingerprintLines)-eq(Finger $fingerprintLines)) 'builder uses verifier LF canonicalization'
+Assert ($builderText.Contains('--path $godotProject --import --quit')) 'builder imports the Godot project subdirectory'
+Assert ($builderText.Contains("Error: Can''t run project:")) 'builder rejects a no-main-scene import error'
 New-Item -ItemType Directory -Force -Path (Join-Path $pkg 'godot'),(Join-Path $pkg 'tools\windows\run'),(Join-Path $pkg 'godot\assets\p3\character_creator\parts\female_normal_v1')|Out-Null
 [IO.File]::WriteAllText((Join-Path $pkg 'godot\project.godot'),'config_version=5',[Text.UTF8Encoding]::new($false))
 [IO.File]::WriteAllText((Join-Path $pkg 'CHOI-GAME.cmd'),'echo game',[Text.UTF8Encoding]::new($false))
