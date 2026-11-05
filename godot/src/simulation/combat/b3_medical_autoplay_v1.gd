@@ -71,9 +71,14 @@ static func review(state: SimulationState, battle: MapBattleV2) -> void:
     var workforce := WorkforceSystem.new()
     if d.hp/d.max_hp < MIN_HP_RATIO and p["auto_heal"]:
         var pill_id := MedicineAllocationV2.best_available(state, d, MedicineCatalogueV2.FAMILY_HEAL)
-        if pill_id == &"":
+        # CARE and SX01 share the same no-waste rule. If no meaningful
+        # legacy recovery is possible, fall back to the existing REST path
+        # without touching Warehouse, B3 satiety, or receipt sequence.
+        if pill_id == &"" and MedicineAllocationV2.legacy_heal_useful_for_auto(d):
             pill_id = &"hoi_xuan_dan"
-        var used := B3PillSatietyV1.consume(state,d,pill_id,B3PillSatietyV1.next_sequence(d))
+        var used := {"ok":false}
+        if pill_id != &"":
+            used = B3PillSatietyV1.consume(state,d,pill_id,B3PillSatietyV1.next_sequence(d))
         if used["ok"]:
             p["heals"] = int(p["heals"])+1
             p["status"] = "PILL_RECOVERY"
