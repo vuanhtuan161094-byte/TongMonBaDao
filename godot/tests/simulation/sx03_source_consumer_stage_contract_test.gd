@@ -60,7 +60,7 @@ func _run() -> void:
         crop_outputs[output_id] = true
 
     # Only legacy and actually authored SX02 recipes count as current consumers.
-    # The other 236 medicine identities are catalogued future content, NOT loot
+    # Higher-tier medicine identities are catalogued future content, NOT loot
     # and NOT craftable unless a real source and an authored recipe are added.
     var authored: Array[StringName] = []
     for raw_id in AlchemyRecipeRegistry.DEFINITIONS.keys():
@@ -128,8 +128,8 @@ func _run() -> void:
     var future_tuvi := MedicineCatalogueV2.definition(
         MedicineCatalogueV2.item_id(MedicineCatalogueV2.FAMILY_TUVI, high_realm, 1))
     var first_floor := DiscipleProgressionBalanceV2.floor_cost(high_realm, 1)
-    print("SX03 REVIEW_REQUIRED authored-future Tu Vi dose at realm %d = %.2f%% of floor-1 EXP;"
-        + " no recipe may be fabricated from this catalogue entry."
+    print(("SX03 REVIEW_REQUIRED authored-future Tu Vi dose at realm %d = %.2f%% of floor-1 EXP;"
+        + " no recipe may be fabricated from this catalogue entry.")
         % [high_realm, 100.0 * float(future_tuvi.get("potency", 0)) / float(maxi(first_floor, 1))])
 
     if failures.is_empty():
