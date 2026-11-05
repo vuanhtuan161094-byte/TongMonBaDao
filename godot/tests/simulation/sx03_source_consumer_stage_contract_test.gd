@@ -132,6 +132,34 @@ func _run() -> void:
             legacy_map_found = true
     _expect(legacy_map_found,
         "Existing Bạch Thạch Khê instanced reward is discoverable and distinct from 20-camp P0")
+
+    # A genuine HP0 in the P0 continuous world already has a chance to
+    # award Thanh Linh Thảo from Trúc Thử. The UI must disclose this route
+    # without claiming that Tử Vân Thảo also drops in that world.
+    var p0_herb := MedicineResourceSourceV1.routes_for_ingredient(&"thanh_linh_thao")
+    var continuous_sources: Array = p0_herb.get("continuous_pve_p0", [])
+    var p0_herb_found := false
+    for p0_source in continuous_sources:
+        if str(p0_source.get("species_id", "")) == "truc_thu" \
+                and int(p0_source.get("camp_count", 0)) == 20 \
+                and is_equal_approx(float(p0_source.get("chance_per_species_kill", 0.0)), 0.05) \
+                and int(p0_source.get("amount", 0)) == 1:
+            p0_herb_found = true
+    _expect(p0_herb_found, "P0 Trúc Thử real 5% per kill Thanh Linh source is discoverable")
+    _expect((advanced_herb.get("continuous_pve_p0", []) as Array).is_empty(),
+        "No fictional P0 Tử Vân Thảo drop is advertised")
+    var r1_routes := MedicineResourceSourceV1.routes_for_recipe(
+        MedicineCatalogueV2.recipe_id("heal", 1))
+    var r1_inputs: Array = r1_routes.get("inputs", [])
+    var r1_uses_world := false
+    for ingredient in r1_inputs:
+        if str(ingredient.get("ingredient_id", "")) == "thanh_linh_thao" \
+                and not (ingredient.get("source", {}).get("continuous_pve_p0", []) as Array).is_empty():
+            r1_uses_world = true
+    _expect(r1_uses_world, "Realm-1 healing recipe links actual P0 world herb source")
+    _expect(MedicineResourceSourceV1.guidance_text(
+        MedicineCatalogueV2.recipe_id("heal", 1)).contains("Trúc Thử"),
+        "Mobile alchemy source label includes the real loot-ready monster")
     _expect(not bool(MedicineResourceSourceV1.routes_for_recipe(
         MedicineCatalogueV2.recipe_id("tuvi",3)).get("ok",false)),
         "An unsourced realm-3 pill never gets a fabricated acquisition route")
