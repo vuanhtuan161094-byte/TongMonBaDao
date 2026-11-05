@@ -4,6 +4,20 @@ extends RefCounted
 # Deterministic allocation of existing Warehouse stock. No item minting.
 # Both Sect AI and B3 CARE call this owner; catalogue remains pure data.
 
+# BAL-04A: the old Hoi Xuan Dan still heals exactly 55 HP and remains
+# manually usable at any realm. Auto use is only worthwhile if the ACTUAL
+# restore (also capped by missing HP) is at least 2% of maximum HP.
+const MIN_LEGACY_AUTO_HEAL_RATIO := 0.02
+
+
+static func legacy_heal_useful_for_auto(disciple: DiscipleState) -> bool:
+    if disciple == null or not is_finite(disciple.max_hp) or not is_finite(disciple.hp) or disciple.max_hp <= 0.0:
+        return false
+    var effective_heal := minf(NeedsSystem.HEALING_PILL_HP,
+        maxf(disciple.max_hp - disciple.hp, 0.0))
+    return effective_heal > 0.0 and effective_heal / disciple.max_hp >= MIN_LEGACY_AUTO_HEAL_RATIO
+
+
 # Choose from real Warehouse stock without bypassing locks/reserves.
 # Prefer the strongest useful medicine, breaking equal-heal ties toward the
 # less potent pill to avoid throwing away rarer high-grade medicine.
