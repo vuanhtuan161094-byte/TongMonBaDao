@@ -71,7 +71,17 @@ $verifier=Join-Path $root 'tools\windows\run\Verify-TRI03Source.ps1'
  $female=Join-Path $stage 'godot\assets\p3\character_creator\parts\female_normal_v1'
  $femaleCount=if(Test-Path -LiteralPath $female){@(Get-ChildItem -LiteralPath $female -Recurse -File -Filter '*.png').Count}else{0}
  if($femaleCount-ne42){Stop-Build "Stage A installed $femaleCount PNGs; expected 42." 10}
- $files=@()
+  $godot='E:\TongMonBaDaoWorkspace\04_Tools\Godot\Godot_v4.7.2-stable_win64.exe'
+ if(-not(Test-Path -LiteralPath $godot -PathType Leaf)){Stop-Build 'Official Godot 4.7.2 is missing; cannot pre-import package.' 11}
+ $godotVersion=(& $godot --version 2>&1|Out-String).Trim()
+ if($LASTEXITCODE-ne0-or$godotVersion-ne'4.7.2.stable.official.ed1daf0bf'){Stop-Build "Unexpected Godot build: $godotVersion" 11}
+ $importLog=Join-Path $ProfileRoot 'Logs\offline_package_import.log'
+ New-Item -ItemType Directory -Force -Path (Split-Path -Parent $importLog)|Out-Null
+ & $godot --headless --editor --path $stage --import --quit --verbose --log-file $importLog
+ $importCode=$LASTEXITCODE
+ if($importCode-ne0){Stop-Build "Godot import failed with exit $importCode; log=$importLog; staging left at $stage." 11}
+ if(Test-Path -LiteralPath $importLog){$bad=Select-String -LiteralPath $importLog -Pattern 'SCRIPT ERROR:|Parse Error:'; if($bad){Stop-Build "Godot import emitted a script/parse error; log=$importLog." 11}}
+$files=@()
  foreach($item in Get-ChildItem -LiteralPath $stage -Force -Recurse -ErrorAction Stop){
   if(($item.Attributes-band[IO.FileAttributes]::ReparsePoint)-ne0){Stop-Build "Reparse point found in export: $($item.FullName)" 11}
   if($item.PSIsContainer){continue}
