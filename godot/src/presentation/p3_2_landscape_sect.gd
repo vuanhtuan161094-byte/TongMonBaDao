@@ -4017,12 +4017,27 @@ func _build_alchemy_management() -> void:
         var recipe := AlchemyRecipeRegistry.new().definition(new_recipe)
         var button := Button.new()
         button.name = "SX02Recipe_%s" % str(new_recipe)
-        button.text = "%s · Điện Lv%d" % [str(recipe.get("name", new_recipe)), int(recipe.get("required_hall_level", 1))]
+        button.text = "%s · Điện Lv%d / Nghề Lv%d" % [
+            str(recipe.get("name", new_recipe)),
+            int(recipe.get("required_hall_level", 1)),
+            int(recipe.get("required_profession_level", 0))
+        ]
         button.custom_minimum_size = Vector2(360, 32)
         button.disabled = hall.level < int(recipe.get("required_hall_level", 1))
-        button.tooltip_text = "Phẩm được xác định bởi Đan Sư + cấp Điện khi khởi tạo mẻ. Thiếu nguyên liệu sẽ không khởi tạo mẻ."
+        button.tooltip_text = MedicineResourceSourceV1.guidance_text(new_recipe) \
+            + "\nPhẩm được xác định bởi Đan Sư và cấp Điện khi bắt đầu mẻ; không cấp tài nguyên miễn phí."
         button.pressed.connect(Callable(self, "_sx01_select_recipe_from_ui").bind(hall.id, new_recipe))
         building_management_container.add_child(button)
+    # Mobile landscape has no hover. Show the selected recipe's actual
+    # Field/instanced-map source in the management panel, not tooltip only.
+    var selected_recipe := StringName(hall.production_state.get("recipe_id", "hoi_xuan_dan"))
+    var route_hint := Label.new()
+    route_hint.name = "AlchemySelectedRecipeSources"
+    route_hint.text = MedicineResourceSourceV1.guidance_text(selected_recipe)
+    route_hint.custom_minimum_size = Vector2(360, 0)
+    route_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+    route_hint.add_theme_font_size_override("font_size", 12)
+    building_management_container.add_child(route_hint)
     for pill_key in ["target_hoi_xuan_dan", "target_tu_khi_dan"]:
         for delta in [-6, 6]:
             var button := Button.new()
