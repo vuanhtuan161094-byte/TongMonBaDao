@@ -61,7 +61,7 @@ static func parse_recipe(id: StringName) -> Dictionary:
 # B3 receipt saved before BAL-04A. Never recompute an old receipt with V2 math.
 static func potency_for_version(id: StringName, medicine_version: int) -> int:
     var data := parse_item(id)
-    if data.is_empty() or medicine_version not in [LEGACY_VERSION, VERSION]:
+    if data.is_empty() or (medicine_version != LEGACY_VERSION and medicine_version != VERSION):
         return 0
     var realm := int(data["realm"])
     var quality_factor := float(QUALITY_FACTORS[int(data["quality"]) - 1])
