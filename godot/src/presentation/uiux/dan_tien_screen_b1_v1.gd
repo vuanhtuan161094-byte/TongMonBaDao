@@ -330,8 +330,11 @@ func _candidate_badge(title: String, value: String, icon_kind: String, accent: C
 	title_label.autowrap_mode = TextServer.AUTOWRAP_OFF
 	labels.add_child(title_label)
 	var value_label := UI.label(value, 12, UI.PAPER, true)
+	# A two-line value is preferable to hiding the candidate's actual realm.
 	value_label.custom_minimum_size.x = 74
-	value_label.autowrap_mode = TextServer.AUTOWRAP_OFF
+	value_label.custom_minimum_size.y = 29
+	value_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	value_label.max_lines_visible = 2
 	value_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	value_label.tooltip_text = value
 	labels.add_child(value_label)
