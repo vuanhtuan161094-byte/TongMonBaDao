@@ -39,7 +39,9 @@ const DEFINITIONS := {
         "output_resource_id": "tu_van_thao",
         "realm_grade": "truc_co",
         "realm_rank": 2,
-        "required_field_level": 30,
+        # BAL-04A: available at Field Lv10 after the actual Lv10
+        # Linh Tuyen Chi Tam milestone; no grant, bypass, or free recipe.
+        "required_field_level": 10,
         "plant_cost_spirit_stones": 14,
         "base_cycle_ticks": 24,
         "base_yield": 3,
