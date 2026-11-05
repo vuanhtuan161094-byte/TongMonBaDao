@@ -27,6 +27,22 @@ func _run() -> void:
 		if not screen.is_visible_in_tree():
 			_fail("%s did not render as the active screen." % screen_name)
 			return
+		# Regression for the 720p overflow reported in the real Residence screenshot.
+		# These primary actions must remain fully visible, not merely present in the tree.
+		if screen_name == "residence":
+			var footer := screen.find_child("ResidenceStickyActions", true, false) as Control
+			var manage := screen.find_child("ManageResidenceRooms", true, false) as Button
+			var assign := screen.find_child("AssignResidenceRoom", true, false) as Button
+			if footer == null or manage == null or assign == null:
+				_fail("Residence primary-action footer or buttons are missing.")
+				return
+			var visible_rect := screen.get_global_rect()
+			for action in [manage, assign]:
+				var action_rect := action.get_global_rect()
+				if not action.is_visible_in_tree() or not visible_rect.encloses(action_rect) \
+						or action_rect.size.x < 48.0 or action_rect.size.y < 40.0:
+					_fail("Residence action is clipped or too small: %s" % action.name)
+					return
 	var notice: Label = gallery.get("_notice")
 	if notice == null or not notice.text.contains("PREVIEW") or not notice.text.contains("DỮ LIỆU MẪU"):
 		_fail("Preview must disclose fixture data in the visible footer.")
