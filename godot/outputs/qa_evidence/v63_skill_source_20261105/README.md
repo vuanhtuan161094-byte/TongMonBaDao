@@ -8,7 +8,7 @@
 - Full Cung/Bow simulation coverage: 183/183 catalogue IDs, 81 active/ultimate, 81 passive, 15 innate, 3 basic, 3 mobility; zero matrix failures. Six-disciple simulation confirms positive damage from all six and snapshot restoration.
 - `SKILL_ID_MATRIX.csv` inventories all 549 Human/Immortal/Divine catalogue records. Only the 183 Cung IDs have a full per-ID matrix. Quyền/Độc are explicitly marked `NOT_EXHAUSTIVE`; focused samples do not imply all-ID coverage.
 - Each Godot run emits a Windows root-certificate-store warning on stderr (`Failed to read the root certificate store`); all test exit codes are 0 and all expected markers are present. No test parse or assertion failures observed.
-- GUI mouse acceptance and screenshot are **PENDING**: the Windows desktop automation target did not expose the Godot window. The Tàng Kinh UI test is automated/headless and is not physical GUI acceptance.
+- GUI mouse acceptance and screenshot are **PENDING**: the Windows desktop automation target did not expose the Godot window. The Tàng Kinh UI test is automated/headless and is not physical GUI acceptance. A single game startup smoke was captured earlier on baseline `5497f798`, before the UI patch; it is not evidence for this patched commit and no post-patch GUI screenshot is claimed.
 - Skill feature gates remain default OFF. `v63_content_registry.json` reports `D1_UNWIRED_NOT_PLAYABLE`; the archive catalog has `drop_profiles: []` and the validator rejects unauthorized live drop profiles. Therefore this evidence does **not** establish normal gameplay acquisition of skill manuals or a playable skill progression release.
 - QA used an isolated profile and did not access or modify the player's save.
 
