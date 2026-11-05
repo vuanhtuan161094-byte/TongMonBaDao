@@ -1,21 +1,20 @@
 @echo off
 setlocal EnableExtensions DisableDelayedExpansion
 set "GAME_ROOT=%~dp0"
-rem A trailing backslash before a closing quote is consumed by Windows argument parsing.
-rem This checkout is always a directory, so trim exactly that final separator.
 if "%GAME_ROOT:~-1%"=="\" set "GAME_ROOT=%GAME_ROOT:~0,-1%"
 set "PROJECT=%GAME_ROOT%\godot"
 set "GODOT=E:\TongMonBaDaoWorkspace\04_Tools\Godot\Godot_v4.7.2-stable_win64.exe"
 set "GIT=C:\Program Files\Git\cmd\git.exe"
 set "STAGEA_INSTALLER=%GAME_ROOT%\tools\windows\bootstrap\Install-P3-2-Female-StageA.cmd"
-set "VERIFY=%GAME_ROOT%\tools\windows\run\Verify-TRI03Source.ps1"
+set "VERIFY_GIT=%GAME_ROOT%\tools\windows\run\Verify-TRI03Source.ps1"
+set "VERIFY_OFFLINE=%GAME_ROOT%\tools\windows\run\Verify-TRI03OfflinePackage.ps1"
+set "OFFLINE_MANIFEST=%GAME_ROOT%\tri03_offline_package_manifest.json"
 set "STARTER=%GAME_ROOT%\tools\windows\run\Start-TRI03Game.ps1"
 set "PROFILE=E:\TongMonBaDaoWorkspace\03_QA_Logs\MASTER_PVE_INTEGRATION_20261103\PR72_73c8_GODOT_20261103\launcher_playtest_profile"
 if defined TMB_TRI03_PLAY_PROFILE set "PROFILE=%TMB_TRI03_PLAY_PROFILE%"
 set "IMPORT_STAMP=%PROFILE%\last_import_fingerprint.txt"
 set "IMPORT_LOG=%PROFILE%\Logs\godot_import.log"
 set "PLAY_LOG=%PROFILE%\Logs\godot_play.log"
-
 if not exist "%GODOT%" (
   echo Official Godot 4.7.2 was not found: "%GODOT%"
   pause
@@ -26,30 +25,60 @@ if not exist "%PROJECT%\project.godot" (
   pause
   exit /b 3
 )
-if not exist "%GIT%" (
-  echo Git required to verify the integrated PR 67 plus PvE P0 source is missing: "%GIT%"
-  pause
-  exit /b 4
-)
-if not exist "%STAGEA_INSTALLER%" (
-  echo Female Stage A verified asset installer is missing: "%STAGEA_INSTALLER%"
-  pause
-  exit /b 5
-)
-if not exist "%VERIFY%" (
-  echo Source verifier for the integrated game build is missing: "%VERIFY%"
-  pause
-  exit /b 5
-)
 if not exist "%STARTER%" (
   echo Verified game starter is missing: "%STARTER%"
   pause
   exit /b 5
 )
+if exist "%GAME_ROOT%\.git" goto :git_checkout
+if exist "%OFFLINE_MANIFEST%" goto :offline_package
+echo Refusing to launch: source is neither a genuine Git checkout nor a verified offline package.
+pause
+exit /b 4
 
+:git_checkout
+set "PACKAGE_KIND=genuine_git_checkout"
+if not exist "%GIT%" (
+  echo Git is required to verify this checkout: "%GIT%"
+  pause
+  exit /b 4
+)
+if not exist "%STAGEA_INSTALLER%" (
+  echo Female Stage A installer is missing: "%STAGEA_INSTALLER%"
+  pause
+  exit /b 5
+)
+if not exist "%VERIFY_GIT%" (
+  echo Git checkout source verifier is missing: "%VERIFY_GIT%"
+  pause
+  exit /b 5
+)
+set "VERIFY=%VERIFY_GIT%"
+goto :prepare_profile
+
+:offline_package
+set "PACKAGE_KIND=verified_offline_package"
+if not exist "%VERIFY_OFFLINE%" (
+  echo Offline package verifier is missing: "%VERIFY_OFFLINE%"
+  pause
+  exit /b 5
+)
+if not defined TMB_TRI03_PLAY_PROFILE set "PROFILE=E:\TongMonBaDaoWorkspace\03_QA_Logs\PR72_OFFLINE_PACKAGE_PLAY_PROFILE"
+set "VERIFY=%VERIFY_OFFLINE%"
+goto :prepare_profile
+
+:prepare_profile
+set "IMPORT_STAMP=%PROFILE%\last_import_fingerprint.txt"
+set "IMPORT_LOG=%PROFILE%\Logs\godot_import.log"
+set "PLAY_LOG=%PROFILE%\Logs\godot_play.log"
+if not exist "%PROFILE%\AppData\Roaming" mkdir "%PROFILE%\AppData\Roaming"
+if not exist "%PROFILE%\AppData\Local" mkdir "%PROFILE%\AppData\Local"
+if not exist "%PROFILE%\Logs" mkdir "%PROFILE%\Logs"
+
+if /I "%PACKAGE_KIND%"=="verified_offline_package" goto :check_offline_stage_a
 powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "$p=Join-Path '%PROJECT%' 'assets\p3\character_creator\parts\female_normal_v1'; $n=if(Test-Path -LiteralPath $p){@(Get-ChildItem -LiteralPath $p -Recurse -File -Filter '*.png').Count}else{0}; if($n -ne 42){exit 1}"
 if errorlevel 1 goto :install_stage_a
-goto :stage_a_ready
+goto :verify_source
 
 :install_stage_a
 echo Restoring the verified Female Stage A assets from the tracked 42-PNG package...
@@ -58,43 +87,43 @@ set "P3_AUTO_PREVIEW=1"
 call "%STAGEA_INSTALLER%"
 set "STAGE_A_INSTALL_ONLY="
 set "P3_AUTO_PREVIEW="
-if errorlevel 1 goto :stage_a_install_failed
-goto :stage_a_ready
+if errorlevel 1 (
+  echo Female Stage A restoration failed. The game was not launched.
+  exit /b 15
+)
+goto :verify_source
 
-:stage_a_install_failed
-echo Female Stage A restoration failed. The game was not launched.
-exit /b 15
+:check_offline_stage_a
+powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "$p=Join-Path '%PROJECT%' 'assets\p3\character_creator\parts\female_normal_v1'; $n=if(Test-Path -LiteralPath $p){@(Get-ChildItem -LiteralPath $p -Recurse -File -Filter '*.png').Count}else{0}; if($n -ne 42){exit 1}"
+if errorlevel 1 (
+  echo Offline package is incomplete: all 42 verified Female Stage A PNGs are required.
+  pause
+  exit /b 15
+)
 
-:stage_a_ready
-
-if not exist "%PROFILE%\AppData\Roaming" mkdir "%PROFILE%\AppData\Roaming"
-if not exist "%PROFILE%\AppData\Local" mkdir "%PROFILE%\AppData\Local"
-if not exist "%PROFILE%\Logs" mkdir "%PROFILE%\Logs"
-
+:verify_source
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%VERIFY%" -GameRoot "%GAME_ROOT%" -ProfileRoot "%PROFILE%"
 if errorlevel 1 (
   echo Source verification failed. No game was launched.
   pause
   exit /b 6
 )
-
-for /f "usebackq delims=" %%V in (`"%GODOT%" --version`) do set "GODOT_VERSION=%%V"
+for /f "delims=" %%V in ('"%GODOT%" --version') do set "GODOT_VERSION=%%V"
 if /I not "%GODOT_VERSION%"=="4.7.2.stable.official.ed1daf0bf" (
   echo Unexpected Godot binary: %GODOT_VERSION%
   pause
   exit /b 7
 )
-
 set "APPDATA=%PROFILE%\AppData\Roaming"
 set "LOCALAPPDATA=%PROFILE%\AppData\Local"
 set "SOURCE_FINGERPRINT="
 set "CHECKOUT_HEAD="
 set "PR_SOURCE_SHA="
-for /f "usebackq tokens=2 delims==" %%F in (`findstr /B /C:"source_fingerprint=" "%PROFILE%\Logs\source_verify.txt"`) do set "SOURCE_FINGERPRINT=%%F"
-for /f "usebackq tokens=2 delims==" %%H in (`findstr /B /C:"checkout_head=" "%PROFILE%\Logs\source_verify.txt"`) do set "CHECKOUT_HEAD=%%H"
-for /f "usebackq tokens=2 delims==" %%P in (`findstr /B /C:"upstream_pr_source=" "%PROFILE%\Logs\source_verify.txt"`) do set "PR_SOURCE_SHA=%%P"
+for /f "tokens=2 delims==" %%F in ('findstr /B /C:"source_fingerprint=" "%PROFILE%\Logs\source_verify.txt"') do set "SOURCE_FINGERPRINT=%%F"
+for /f "tokens=2 delims==" %%H in ('findstr /B /C:"checkout_head=" "%PROFILE%\Logs\source_verify.txt"') do set "CHECKOUT_HEAD=%%H"
+for /f "tokens=2 delims==" %%P in ('findstr /B /C:"upstream_pr_source=" "%PROFILE%\Logs\source_verify.txt"') do set "PR_SOURCE_SHA=%%P"
 if not defined SOURCE_FINGERPRINT (
-  echo Source verifier did not produce a runtime fingerprint.
+  echo Source verifier did not produce a runtime/package fingerprint.
   pause
   exit /b 8
 )
@@ -102,17 +131,18 @@ if not defined CHECKOUT_HEAD set "CHECKOUT_HEAD=unavailable"
 if not defined PR_SOURCE_SHA set "PR_SOURCE_SHA=unavailable"
 if /I "%TMB_VERIFY_ONLY%"=="1" (
   echo Source verification passed.
-  echo Local Git checkout HEAD: %CHECKOUT_HEAD%
+  echo Source method: %PACKAGE_KIND%
+  echo Verified source identity: %CHECKOUT_HEAD%
   echo Verified PR source parent: %PR_SOURCE_SHA%
-  echo Runtime fingerprint: %SOURCE_FINGERPRINT%
+  echo Runtime/package fingerprint: %SOURCE_FINGERPRINT%
   echo Official Godot: %GODOT_VERSION%
-  >>"%PROFILE%\Logs\launcher.log" echo [%date% %time%] preflight_only=1 checkout_head=%CHECKOUT_HEAD% pr_source_parent=%PR_SOURCE_SHA% fingerprint=%SOURCE_FINGERPRINT% godot=%GODOT_VERSION%
+  >>"%PROFILE%\Logs\launcher.log" echo [%date% %time%] preflight_only=1 source_method=%PACKAGE_KIND% source_identity=%CHECKOUT_HEAD% pr_source_parent=%PR_SOURCE_SHA% fingerprint=%SOURCE_FINGERPRINT% godot=%GODOT_VERSION%
   exit /b 0
 )
 set "IMPORTED_FINGERPRINT="
 if exist "%IMPORT_STAMP%" set /p IMPORTED_FINGERPRINT=<"%IMPORT_STAMP%"
 if /I not "%IMPORTED_FINGERPRINT%"=="%SOURCE_FINGERPRINT%" (
-  echo Importing verified PR 67 source fingerprint %SOURCE_FINGERPRINT%...
+  echo Importing verified source fingerprint %SOURCE_FINGERPRINT%...
   "%GODOT%" --headless --editor --path "%PROJECT%" --import --quit --verbose --log-file "%IMPORT_LOG%"
   if errorlevel 1 (
     echo Godot import failed. See "%IMPORT_LOG%"
@@ -127,14 +157,14 @@ if /I not "%IMPORTED_FINGERPRINT%"=="%SOURCE_FINGERPRINT%" (
   )
   >"%IMPORT_STAMP%" echo %SOURCE_FINGERPRINT%
 )
-
-echo Starting TONG MON BA DAO integrated Source A + PvE P0 game at 1280x720.
-echo Local Git checkout HEAD: %CHECKOUT_HEAD% (see source verifier for pinned runtime identity)
+echo Starting TONG MON BA DAO at 1280x720.
+echo Source method: %PACKAGE_KIND%
+echo Verified source identity: %CHECKOUT_HEAD%
 echo Verified PR source parent: %PR_SOURCE_SHA%
-echo Source fingerprint: %SOURCE_FINGERPRINT%
+echo Runtime/package fingerprint: %SOURCE_FINGERPRINT%
 echo Godot: %GODOT_VERSION%
-echo Isolated QA save profile: %APPDATA%\Godot\app_userdata\Tong Mon Ba Dao
->>"%PROFILE%\Logs\launcher.log" echo [%date% %time%] checkout_head=%CHECKOUT_HEAD% pr_source_parent=%PR_SOURCE_SHA% fingerprint=%SOURCE_FINGERPRINT% godot=%GODOT_VERSION%
+echo Isolated save profile: %APPDATA%\Godot\app_userdata\Tong Mon Ba Dao
+>>"%PROFILE%\Logs\launcher.log" echo [%date% %time%] source_method=%PACKAGE_KIND% source_identity=%CHECKOUT_HEAD% pr_source_parent=%PR_SOURCE_SHA% fingerprint=%SOURCE_FINGERPRINT% godot=%GODOT_VERSION%
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%STARTER%" -GodotPath "%GODOT%" -ProjectPath "%PROJECT%" -PlayLog "%PLAY_LOG%" -LauncherLog "%PROFILE%\Logs\launcher.log" -TimeoutSeconds 90
 if errorlevel 1 (
   echo Game process did not become ready. See "%PLAY_LOG%" and "%PROFILE%\Logs\launcher.log"
