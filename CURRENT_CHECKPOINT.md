@@ -2,6 +2,18 @@
 
 > **Only current status checkpoint.** Earlier contents were preserved verbatim in [the historical archive](docs/archive/checkpoints/CURRENT_CHECKPOINT_LEGACY_PRE_RELEASE_TRAIN_20261104.md). **Do not execute historical PR #52/#67 instructions or treat their test SHAs as live.** [Live coordination: Issue #56](https://github.com/vuanhtuan161094-byte/TongMonBaDao/issues/56) · [Release-train canonical](docs/operations/TMB_ONE_GAME_RELEASE_TRAIN_CANONICAL_20261104.md).
 
+
+## BAL-04A — code on PR #72, 2026-11-05; Godot QA OPEN
+
+**Owner approved A**, exact in-scope source + test checkpoint before this document update: `e0e49e577482c9ce399ee2b6e81062dbfa8e3b5a`; re-fetch current HEAD before further writes. **No new branch or main merge.**
+
+- **Code:** Hồi Xuân Đan legacy stays +55HP, automated SX01 and CARE now require effective recovery `min(55,missing_hp) / max_hp >= 2%`; user manual use unchanged.
+- **Code:** ranked Tu Vi pill `potency=round(realm_total_xp * 0.001 * quality_factor)`; `MedicineCatalogueV2.VERSION=2`; v1 historical receipts retain the old `10000*1.65^(realm-1)*grade` verification. B3 rejects graded medicine above owner's current cultivation realm before Warehouse debit. B3 satiety remains 1,000,000/day; legacy 10,000 fixed Tu Khí Đan unaffected.
+- **Code:** `tu_van_thao` crop unlock at Field Lv10 (previously Lv30); unchanged Spirit Field Lv10 upgrade needs one genuine Linh Tuyền Chi Tâm from 100 harvested fragments, base 5% per harvest; r2 alchemy still needs paid ingredients, Alchemy Hall Lv10 and profession ≥3. **No fabricated source/reward/recipe r3+**.
+- **QA committed:** `sx01_pill_policy_test.gd`, `sx02_medicine_catalogue_test.gd`, `sx03_source_consumer_stage_contract_test.gd`, new `sx03_bal04a_legacy_save_medicine_test.gd`; existing B3 CARE/satiety + SX02 runtime registered in `.github/workflows/p3-o8-alchemy-loop.yml`. 30-realm independent math stage simulation in `docs/design/TMB_BAL04A_REALM_STAGE_SIMULATION_20261105.md`.
+- **Evidence classification:** math/source assertions only; **no Godot 4.7.2 exit-0 evidence in this packet**, no native Windows mouse or Android. The most recent CI workflow runs in GitHub returned failure without usable job logs: cannot attribute them to gameplay vs infrastructure. **BAL-04A remains QA_PENDING**. R5 merge still blocked until official focused + affected regression + GUI acceptance.
+- **Remaining design debt:** phase-wide natural New Game pace, r2 Field-Lv10/Heart farm duration, SX01 AUTO_DEMAND only handles legacy recipe demand, production Lv100 endgame scale versus sinks, later realm r3–30 ingredient sources. Do not silently code those under BAL-04A.
+
 ## Release ownership (verified 2026-11-04)
 
 - Repo: `vuanhtuan161094-byte/TongMonBaDao`. Exact engine: **Godot 4.7.2.stable.official**. Target: 1280×720 landscape; canonical Windows workspace `E:\TongMonBaDaoWorkspace\01_Game\TongMonBaDao`.
