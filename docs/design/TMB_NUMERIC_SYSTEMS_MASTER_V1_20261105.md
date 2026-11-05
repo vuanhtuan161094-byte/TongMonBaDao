@@ -53,7 +53,7 @@
 | Packet | Đầu vào → đầu ra | Bảng số liệu cần chốt trước code | Vùng dữ liệu phải bảo vệ |
 |---|---|---|---|
 | BAL-01 CHARACTER | tuyển/sinh → D7, linh căn, huyết mạch, thể chất, thiên phú, mệnh cách, thân phận | phân phối sinh, rarity theo nguồn, derived effects, gain cap, re-roll/đột phá, giá trị từng điểm và điều kiện kích hoạt | identity seed, bản ghi sinh một lần, không reroll khi reload |
-| BAL-02 REALM | hoạt động/đan/tu luyện → EXP → 300 tầng mỗi track | EXP từng tầng, gate boss/đột phá, thời gian đích p10/p50/p90, chi phí thất bại/hồi phục | Tu Vi / Luyện Thể riêng, earned EXP, save progress |
+| BAL-02 REALM | hoạt động/đan/tu luyện → EXP → 300 tầng mỗi track | **Hiện có** `DiscipleProgressionBalanceV2.REALM_TOTAL_XP` (r1=10,000,000; r30=10,240,200,000), 10 FLOOR_WEIGHT_PER_MILLE, BASE_TUVI_PER_MINUTE=1,000 và CULTIVATE_MULTIPLIER=2.0; cần kiểm toán p10/p50/p90, gate và sự phù hợp 3/12/24 tháng | Tu Vi / Luyện Thể riêng, earned EXP, save progress |
 | BAL-03 PROFESSION | 1 active job → thời gian → EXP nghề + sản lượng | XP curve theo Lv, bonus/tốc, nguyên liệu, sản phẩm, xác suất hiếm, rare factor có giới hạn | Workforce, scheduler, 1 writer/worker |
 | BAL-04 ECONOMY | Mine/Forest/Field/PvE → Kho → xây/craft/đan/sử dụng | catalogue resource ID, recipe ID, qty, duration, unlock, sinks, AUTO_DEMAND, cost-coverage | một Warehouse authority, exact-once settlement |
 | BAL-05 COMBAT | stats + skill tags → hit/status/crit/mitigation → HP/receipt | ATK/DEF/HP, attack cadence, cast/GCD/ICD, boss defenses, DoT tick, PVE role target | Combat state, status, no duplicate reward |
@@ -67,7 +67,7 @@
 
 ## 3. Quy tắc xây công thức đề xuất (chưa khóa giá trị đầu vào)
 
-1. EXP: `xp_requirement(track,realm,floor) = approved_curve_table[key]` hoặc hàm deterministic được đối chiếu đủ 300 tầng. Phải mô phỏng p10/p50/p90 ở nhịp chơi ít nạp/không nạp; không tự điền `base`/growth từ tài liệu cũ.
+1. EXP: runtime đã có `DiscipleProgressionBalanceV2.REALM_TOTAL_XP` và `FLOOR_WEIGHT_PER_MILLE`, **không được tạo bảng khác**. Kiểm toán đủ 300 tầng, mô phỏng p10/p50/p90 ở nhịp 3/12/24 tháng trước khi đổi current curve. `base=1,000 Tu Vi/phút`, `CULTIVATE_MULTIPLIER=2` là baseline hiện hành, không chứng minh đủ tốc độ endgame.
 2. Sản xuất: `effective_duration = max(positive_min, base_duration / permitted_speed_multiplier)`; `output_qty = approved_output_formula(level,worker,crop,boost)`. Snapshot timestamp + recipe + worker + policy; reload không thực hiện hai lần và cancel theo luật hiện hành.
 3. AUTO_DEMAND: tính **thiếu hụt ròng** `target_stock - available_stock - reserved_incoming + reserved_outgoing`, xét dependency và nguyên liệu, chọn recipe hợp lệ; nếu không có recipe thì hiển thị blocker, **không mint** nguồn vật liệu.
 4. Đan/craft: chi phí, reserve, trạng thái `PENDING→RESOLVED→CLAIMED` hoặc cấu trúc canonical tương đương; rng seeded một lần, không random lại khi restart/cancel; sản phẩm unique item gắn receipt.
@@ -129,3 +129,12 @@ Một hàng canonical khi chuẩn bị đưa vào `godot/data`:
 - Không nói GitHub Actions/Windows/Android PASS nếu không có log thực thi ở đúng source SHA.
 
 **Bước triển khai hợp lý:** khóa packet **BAL-04 bảng source→consumer, 0 softlock, 0 nguồn giả**, xuất catalogue + công thức + test-case; trước khi chỉnh runtime phải lập file allowlist/migration/test theo `AGENTS.md`.
+
+## 8. Phát hiện source tại 05/11/2026 (BAL-04, trước code cân bằng)
+
+- `MedicineCatalogueV2` có **240 SKU metadata** (30 cảnh × 2 nhóm × 4 phẩm), nhưng chỉ **4 công thức thật** ở cảnh 1–2. Phần còn lại không có nghĩa đã chế tạo/nguồn rơi.
+- Đan legacy `hoi_xuan_dan` chỉ hồi 55 HP; SX01 có fallback tự dùng khi thiếu thuốc phẩm. Quyết định giới hạn tiện ích tự động ở late **PENDING OWNER**.
+- Đan Tu Vi mới dùng `potency=10000*1.65^(realm-1)*QUALITY_FACTOR`, trong khi XP realm table gần tăng `×1.27`; **POTENTIAL LATE OVERPOWER**: tại cảnh 20 phẩm 1 bằng khoảng 206% XP tầng 1, cảnh 30 khoảng 2,829% XP tầng 1 (nếu có nguồn hợp pháp); chưa được phép sửa do user chưa chốt formula mới.
+- Linh Điền cần cấp 30 để mở `tu_van_thao`, trong khi đó là vật liệu của thuốc cảnh 2. Để đến Lv30 cần Linh Tuyền Chi Tâm ở các mốc 10,20,30; 100 mảnh → 1 Tâm; xác suất cơ sở hiện tại 5% mỗi lượt thu hoạch. Đây là **progression-gate risk** cần kiểm thử real-save/time, không được phát thuốc miễn phí.
+- `BuildingSystem.spirit_field_yield_factor` hiện dùng `1+0.005*(Lv-1)` và mốc 20/75/100; **không tự coi đã đạt yêu cầu đầu cuối ×10.000 tại Lv100**. Cần owner duyệt curve tổng thể và sink trước khi sửa.
+- Source các phát hiện: `godot/src/simulation/building/{spirit_crop_registry,medicine_catalogue_v2,building_system,sx01_pill_policy}.gd`, `godot/src/simulation/cultivation/{b3_pill_satiety_v1,disciple_progression_balance_v2}.gd`. Oracle GDScript tại `godot/tests/simulation/sx03_source_consumer_stage_contract_test.gd`, chưa chạy Godot trong phiên này.
