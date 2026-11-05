@@ -61,8 +61,22 @@ func _run() -> void:
 		_fail("Hall promotion must use supplied eligibility.")
 		return
 	promote_button.pressed.emit()
-	if promoted.size() != 1 or hall.find_child("UpgradeHall", true, false) == null:
-		_fail("Hall action intents or upgrade control missing.")
+	if promoted.size() != 1:
+		_fail("Hall promotion intent did not reach canonical owner.")
+		return
+	var progress_panel := hall.find_child("HallProgress", true, false)
+	var upgrade_hall := _find_button(hall, "UpgradeHall")
+	if progress_panel == null or upgrade_hall == null or not progress_panel.is_ancestor_of(upgrade_hall):
+		_fail("Hall upgrade control must remain in the building progress pane.")
+		return
+	if upgrade_hall.disabled:
+		_fail("Hall upgrade must follow canonical can_upgrade eligibility.")
+		return
+	var hall_upgrade_intents: Array[bool] = []
+	hall.hall_upgrade_requested.connect(func(): hall_upgrade_intents.append(true))
+	upgrade_hall.pressed.emit()
+	if hall_upgrade_intents != [true]:
+		_fail("Hall upgrade must still emit the original canonical intent.")
 		return
 	var dismissed_roles: Array[String] = []
 	hall.office_dismissal_requested.connect(func(role_id: String): dismissed_roles.append(role_id))
