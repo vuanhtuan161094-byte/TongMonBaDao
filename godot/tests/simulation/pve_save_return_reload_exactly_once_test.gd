@@ -34,7 +34,6 @@ func _cleanup() -> void:
 func _make_party(state: SimulationState) -> Array:
 	var party: Array = []
 	var roles := ["frontline","ranged","mage","healer","frontline","ranged"]
-	state.sect.disciple_capacity = maxi(state.sect.disciple_capacity,state.disciples.size()+6)
 	for index in range(6):
 		var candidate := DiscipleGeneratorOpenPoints.new().generate_candidate(
 			state,DiscipleGeneratorV2.SOURCE_ORDINARY,SEED+index+1
@@ -56,6 +55,47 @@ func _make_party(state: SimulationState) -> Array:
 			"position":Vector2(8.0+float(index%3)*2.0,8.0+float(int(index/3))*2.0)
 		})
 	return party
+
+func _open_canonical_team_capacity(runtime: LiveGameRuntimeV2,
+		state: SimulationState) -> Dictionary:
+	var required_roster := state.disciples.size() + 6
+	if SectResidenceSystemV1.current_limit(state) >= required_roster:
+		return {"ok":true,"wall":START_WALL,"built":false}
+	var sites := SectResidenceSiteV1.available_plots(state)
+	if sites.is_empty():
+		return {"ok":false,"reason":"no legal canonical Residence site"}
+	var costs: Dictionary = SectResidenceSystemV1.build_cost(state)
+	var warehouse := WarehouseSystem.new()
+	var stock_before: Dictionary = {}
+	for resource_id in costs:
+		if str(resource_id) != "spirit_stones":
+			stock_before[str(resource_id)] = warehouse.quantity(state,StringName(str(resource_id)))
+	var stones_before := state.sect.spirit_stones
+	var built := SectResidenceSystemV1.construct(state,"aux01_capacity_residence_002",sites[0])
+	if not bool(built.get("ok",false)):
+		return {"ok":false,"reason":"canonical paid Residence construction failed: %s" % str(built)}
+	for resource_id in costs:
+		var key := str(resource_id)
+		if key == "spirit_stones":
+			if state.sect.spirit_stones != stones_before - int(costs[resource_id]):
+				return {"ok":false,"reason":"Residence did not debit its exact canonical spirit-stone cost"}
+		elif warehouse.quantity(state,StringName(key)) != int(stock_before.get(key,0)) - int(costs[resource_id]):
+			return {"ok":false,"reason":"Residence did not debit its exact canonical %s cost" % key}
+	var ticks := SectResidenceSystemV1.construction_duration_ticks(2)
+	var completion_wall := START_WALL + ticks * 60
+	var advanced := runtime.poll(completion_wall)
+	var residence: BuildingState = state.buildings.get(str(built.get("building_id","")))
+	return {
+		"ok":bool(advanced.get("ok",false))
+				and int(advanced.get("steps_run",0)) >= ticks
+				and residence != null
+				and residence.status == BuildingSystem.STATUS_ACTIVE
+				and SectResidenceSystemV1.total_beds(state) >= required_roster
+				and SectResidenceSystemV1.current_limit(state) >= required_roster,
+		"wall":completion_wall,
+		"built":true,
+		"reason":"canonical Residence failed to finish or provide six legal recruit slots: %s" % str(advanced)
+	}
 
 func _world_options() -> Dictionary:
 	var navigation: Dictionary = SectIsometricWorldV1.pve_navigation_grid()
@@ -106,6 +146,11 @@ func _run() -> void:
 		"isolated canonical runtime could not create its QA save"):
 		return
 	var state: SimulationState = runtime.state()
+	var capacity_setup := _open_canonical_team_capacity(runtime,state)
+	if not _check(bool(capacity_setup.get("ok",false)),
+		"could not open six-person party capacity through paid canonical housing: %s" % str(capacity_setup)):
+		return
+	var party_wall := int(capacity_setup.get("wall",START_WALL))
 	var party := _make_party(state)
 	if not _check(party.size() == 6,
 		"fixture could not recruit six initialized V2 disciples"):
@@ -118,7 +163,7 @@ func _run() -> void:
 	if not _check(not options.is_empty() and str(options.get("source_blob_sha","")) == str(options.get("navigation",{}).get("source_blob_sha","")),
 		"pinned Source A world topology is unavailable or inconsistent"):
 		return
-	if not _check(bool(runtime.save(START_WALL).get("ok",false)),
+	if not _check(bool(runtime.save(party_wall).get("ok",false)),
 		"canonical runtime could not save the seeded V2 party"):
 		return
 	var begun := HuntingPveRunV2.new().begin_multicamp(
@@ -150,7 +195,7 @@ func _run() -> void:
 	var start_session: HuntingPveRunV2 = start_run["session"]
 	var start_battle: MapBattleV2 = start_session.battle
 	var battle_time_before := start_battle.now
-	var poll_wall := START_WALL+1
+	var poll_wall := party_wall+1
 	var first_poll := runtime.poll(poll_wall)
 	var first_session: HuntingPveRunV2 = runtime.owner.get_active_multicamp_session()
 	if not _check(bool(first_poll.get("ok",false))
