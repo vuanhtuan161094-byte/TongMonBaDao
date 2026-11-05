@@ -1,0 +1,250 @@
+{
+  "schema": "TMB_NUMERIC_REFERENCE_V1",
+  "status": "DESIGN_REFERENCE_ONLY_NOT_RUNTIME",
+  "source_note": "Values transcribed from owner-locked design specifications, NOT asserted as Godot runtime implementation.",
+  "authority": [
+    "docs/DV2_REALM_BODY_COMBAT_CURVES_V1_PROPOSAL.md",
+    "docs/COMBAT_STATS_V2_SPEC.md",
+    "docs/P3_7_PROFESSION_WORK_MODIFIER_SPEC.md",
+    "docs/REALM_LADDER_V2_SPEC.md",
+    "docs/WEAPON_EQUIPMENT_V2_SPEC.md",
+    "docs/EQUIPMENT_SETS_V2_SPEC.md",
+    "Issue #56 / PR #72"
+  ],
+  "realm_body_core": {
+    "realm_range": [
+      1,
+      30
+    ],
+    "floor_range": [
+      1,
+      10
+    ],
+    "major_realm_factor": 1.65,
+    "floor_factor": 1.03,
+    "realm_base": {
+      "max_hp": 100,
+      "attack": 20,
+      "defense": 12
+    },
+    "body_base": {
+      "max_hp": 90,
+      "attack": 3,
+      "defense": 7
+    },
+    "potential_core_rate_per_point": 0.0005,
+    "computation": "G(r,f)=1.65^(r-1)*1.03^(f-1); stat=(realm_base*G(realm)+body_base*G(body))*(1+potential*0.0005)",
+    "rounding": "Only at display; no intermediate rounding."
+  },
+  "innate_effects": {
+    "aptitude_cultivation_exp_per_point": 0.0025,
+    "bone_body_exp_per_point": 0.002,
+    "comprehension_profession_xp_per_point": 0.0015,
+    "potential_core_per_point": 0.0005,
+    "fortune_fixed_combat_bonus": null,
+    "charm_fixed_combat_bonus": null
+  },
+  "combat": {
+    "base_crit_chance": 0.05,
+    "base_critical_extra_damage": 0.5,
+    "base_lifesteal": 0,
+    "base_anti_lifesteal": 0,
+    "defense_mitigation_k_per_attacker_attack": 2,
+    "formula": "DEF_eff=max(0,DEF*(1-penetration)); K=2*max(0,attacker_current_ATK); defense_factor=K/(K+DEF_eff) for K>0; attack-scaled direct damage=0 for attacker_ATK<=0"
+  },
+  "professions": {
+    "speed_factor_per_level": 0.01,
+    "formula": "factor=1+0.01*profession_level",
+    "compatibility_note": "Design formula; legacy P2 stages must be checked before runtime migration."
+  },
+  "equipment": {
+    "ordinary_slot_count": 10,
+    "realm_min": 1,
+    "realm_max": 30,
+    "quality_min": 1,
+    "quality_max": 12,
+    "quality_line_capacity": [
+      {
+        "grade": 1,
+        "ordinary": 0,
+        "rare": 0,
+        "inscription": 0
+      },
+      {
+        "grade": 2,
+        "ordinary": 1,
+        "rare": 0,
+        "inscription": 0
+      },
+      {
+        "grade": 3,
+        "ordinary": 2,
+        "rare": 0,
+        "inscription": 0
+      },
+      {
+        "grade": 4,
+        "ordinary": 3,
+        "rare": 0,
+        "inscription": 0
+      },
+      {
+        "grade": 5,
+        "ordinary": 3,
+        "rare": 0,
+        "inscription": 0
+      },
+      {
+        "grade": 6,
+        "ordinary": 4,
+        "rare": 0,
+        "inscription": 0
+      },
+      {
+        "grade": 7,
+        "ordinary": 4,
+        "rare": 1,
+        "inscription": 0
+      },
+      {
+        "grade": 8,
+        "ordinary": 5,
+        "rare": 1,
+        "inscription": 0
+      },
+      {
+        "grade": 9,
+        "ordinary": 5,
+        "rare": 1,
+        "inscription": 0
+      },
+      {
+        "grade": 10,
+        "ordinary": 5,
+        "rare": 2,
+        "inscription": 0
+      },
+      {
+        "grade": 11,
+        "ordinary": 6,
+        "rare": 2,
+        "inscription": 0
+      },
+      {
+        "grade": 12,
+        "ordinary": 6,
+        "rare": 2,
+        "inscription": 1
+      }
+    ],
+    "set_count": 24,
+    "combat_sets": 18,
+    "profession_sets": 6,
+    "set_activation_pieces": [
+      2,
+      3,
+      4
+    ]
+  },
+  "pve": {
+    "max_world_hunters": 30,
+    "zone_count": 20,
+    "max_active_monsters": 40,
+    "registered_spawn_slots": 200,
+    "optional_team_max": 6
+  },
+  "discipline": {
+    "one_active_job": true,
+    "injury_flag_values": [
+      0,
+      1
+    ],
+    "injury_recovery_ticks": 120
+  },
+  "intentionally_unset": {
+    "cultivation_xp_curve": null,
+    "body_xp_curve": null,
+    "equipment_roll_probabilities": null,
+    "loot_drop_rates": null,
+    "forge_upgrade_caps": null,
+    "building_level_costs": null,
+    "bulk_production_numbers": null,
+    "legacy_expansion_cap": null,
+    "legacy_foundation_growth": null
+  },
+  "oracles": {
+    "realm_body_cases": [
+      {
+        "cultivation": [
+          1,
+          1
+        ],
+        "body": [
+          1,
+          1
+        ],
+        "potential": 0,
+        "expected": {
+          "max_hp": 190,
+          "attack": 23,
+          "defense": 19
+        }
+      },
+      {
+        "cultivation": [
+          2,
+          1
+        ],
+        "body": [
+          1,
+          1
+        ],
+        "potential": 0,
+        "expected": {
+          "max_hp": 255,
+          "attack": 36,
+          "defense": 26.8
+        }
+      },
+      {
+        "cultivation": [
+          1,
+          1
+        ],
+        "body": [
+          1,
+          1
+        ],
+        "potential": 1000,
+        "expected": {
+          "max_hp": 285,
+          "attack": 34.5,
+          "defense": 28.5
+        }
+      }
+    ],
+    "defense_cases": [
+      {
+        "attack": 23,
+        "defense": 19,
+        "penetration": 0,
+        "initial_damage": 23,
+        "expected_damage": 16.276923076923076
+      },
+      {
+        "attack": 23,
+        "defense": 19,
+        "penetration": 0.2,
+        "initial_damage": 23,
+        "expected_damage": 17.287581699346404
+      },
+      {
+        "attack": 0,
+        "defense": 19,
+        "penetration": 0,
+        "initial_damage": 0,
+        "expected_damage": 0
+      }
+    ]
+  }
+}
