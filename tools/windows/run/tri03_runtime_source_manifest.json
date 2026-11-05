@@ -3,7 +3,7 @@
   "branch": "integration/pve-p0-playable-ui-20261103",
   "base_sha": "27ed01cd8f377994e5e50bac9ede84e78e8895bd",
   "upstream_pr_sha": "c99f22153b34628f7e94f69de0285514e788b9cb",
-  "source_fingerprint": "272fa8c4a489f2410770da037b98c0f2b375b4b6d082032967bd802040fdc1e0",
+  "source_fingerprint": "8e0a02b5b6a563ce4b578b466c16f1343dec79a7e266b85987e63ca354d21c46",
   "files": [
     {
       "path": "CHOI-GAME.cmd",
@@ -334,8 +334,16 @@
       "git_blob_sha": "6dac146befbbfc3f90bf5a048d2ca506bc1d90e9"
     },
     {
+      "path": "godot/src/presentation/p2_3_techniques.gd",
+      "git_blob_sha": "8a50001f4ed9138d0f6319963ceb3e2e40d0a999"
+    },
+    {
       "path": "godot/src/presentation/p3_2_landscape_sect.gd",
-      "git_blob_sha": "96bf537667149f34896b35880417ab973d5c8ed0"
+      "git_blob_sha": "6ab642e1d1e3b0148bd41dfbfb9b7236d5a38847"
+    },
+    {
+      "path": "godot/src/presentation/p3/disciple_six_dimension_radar.gd",
+      "git_blob_sha": "007d69bf3357c759f6804d6558518e20960d9555"
     },
     {
       "path": "godot/src/presentation/p3/hs09_dual_foundation_radar.gd",
@@ -355,19 +363,19 @@
     },
     {
       "path": "godot/src/presentation/uiux/dai_dien_screen_b1_v1.gd",
-      "git_blob_sha": "2bf41d94d9c78d1eb4181b99f22fb9fa6ddff3ae"
+      "git_blob_sha": "ad372d70db7db24f9ec2f27be3ce5815f8038cef"
     },
     {
       "path": "godot/src/presentation/uiux/dan_tien_screen_b1_v1.gd",
-      "git_blob_sha": "d75b7a4185db6f9137ffe7aa47b83b675a55c55f"
+      "git_blob_sha": "91186da49aac97dd3ff0682113a91d4c70b1aae0"
     },
     {
       "path": "godot/src/presentation/uiux/de_tu_xa_screen_b1_v1.gd",
-      "git_blob_sha": "13e10a348b4ae2cc59e824a20c2ad1e679adaac8"
+      "git_blob_sha": "32dbf3da93413f67dc05c1f4d5638e574dcb673f"
     },
     {
       "path": "godot/src/presentation/uiux/sect_d7_radar_v1.gd",
-      "git_blob_sha": "eafbd51b0cfc8e45fc5e45e21885f529200c46c7"
+      "git_blob_sha": "ce11b61584df6e0ee8e07bb3d17544c524cce31c"
     },
     {
       "path": "godot/src/presentation/uiux/sect_facility_art_v2.gd",
@@ -379,11 +387,39 @@
     },
     {
       "path": "godot/src/presentation/uiux/sect_ui_theme_v1.gd",
-      "git_blob_sha": "e543d8950cab0cfbb682bf35b4507d47e303e91b"
+      "git_blob_sha": "261ed72418ff6e87eaef871393c0a747770bc9d1"
     },
     {
       "path": "godot/src/presentation/uiux/tri_facility_live_adapter_v1.gd",
       "git_blob_sha": "bce92b80241927bf9bd3c98eac2aafa4fe32ce40"
+    },
+    {
+      "path": "godot/src/simulation/building/building_system.gd",
+      "git_blob_sha": "e44cb5e5ff0f76bfa3d2b70566caf5d4ec872abb"
+    },
+    {
+      "path": "godot/src/simulation/building/medicine_allocation_v2.gd",
+      "git_blob_sha": "b81f5cb9cbaedf1db20d0bff243ab6bda6b3e0e7"
+    },
+    {
+      "path": "godot/src/simulation/building/medicine_catalogue_v2.gd",
+      "git_blob_sha": "9bed60986d3d2cee2c07035ca0eb4dbb69453399"
+    },
+    {
+      "path": "godot/src/simulation/building/medicine_resource_source_v1.gd",
+      "git_blob_sha": "3c3f90915cc00beb33540f786d089419e5c17ac2"
+    },
+    {
+      "path": "godot/src/simulation/building/spirit_crop_registry.gd",
+      "git_blob_sha": "48e96357c87ca2c97f05b30f15b37b0ca97fcf6b"
+    },
+    {
+      "path": "godot/src/simulation/building/sx01_pill_policy.gd",
+      "git_blob_sha": "bbbe95293a4a08e06443c2ed9447b6bc40b24107"
+    },
+    {
+      "path": "godot/src/simulation/combat/b3_medical_autoplay_v1.gd",
+      "git_blob_sha": "b9e2e43b975d64850bf16928afeddb97245dfa6d"
     },
     {
       "path": "godot/src/simulation/combat/hunting_pve_run_v2.gd",
@@ -426,6 +462,10 @@
       "git_blob_sha": "342b4553b19a720d802492e654b6fba613268e84"
     },
     {
+      "path": "godot/src/simulation/cultivation/b3_pill_satiety_v1.gd",
+      "git_blob_sha": "e53bf9525dd39308b1095b78ad803bf02a2da194"
+    },
+    {
       "path": "godot/src/simulation/governance/sect_residence_site_v1.gd",
       "git_blob_sha": "0cbf1d4e836dcfa27e527e2530685ec7193ff3d5"
     },
@@ -438,8 +478,12 @@
       "git_blob_sha": "5ad4c8a30bd2eef4758063526a74a9c31b4dcbb4"
     },
     {
+      "path": "godot/tests/presentation/b1_trifacility_layout_test.gd",
+      "git_blob_sha": "4a7dcdaa182bbbb86b1e8bafb81c2f75e6b99c7b"
+    },
+    {
       "path": "godot/tests/presentation/b1_trifacility_ui_contract_test.gd",
-      "git_blob_sha": "25b2e5e3d3684c3becf8e62a23f97ec00becf964"
+      "git_blob_sha": "eca55f24a96260395cf3ecdd16a2b8997240ba0f"
     },
     {
       "path": "godot/tests/presentation/gp_01_v2_mine_vertical_slice_test.gd",
@@ -454,6 +498,14 @@
       "git_blob_sha": "e8ec946d59d629f5036b2a5bf4c18c601aa2c9b2"
     },
     {
+      "path": "godot/tests/presentation/p3_o1_canonical_warehouse_ui_test.gd",
+      "git_blob_sha": "1914dbaa8ee1c82b795e1a56e740c4ff97e0f96e"
+    },
+    {
+      "path": "godot/tests/presentation/p3_o2_recruitment_map_test.gd",
+      "git_blob_sha": "cc07a4800a6d56c317e53e38fe0e93e977bdb49f"
+    },
+    {
       "path": "godot/tests/presentation/p3_o3_real_mine_loop_test.gd",
       "git_blob_sha": "428e0e011ec68085ad79bcf429ff20dec777dc87"
     },
@@ -464,6 +516,14 @@
     {
       "path": "godot/tests/presentation/p3_o6_m1_release_rehearsal_test.gd",
       "git_blob_sha": "edd52f73d7806108938fe9bf658467b1c24b4897"
+    },
+    {
+      "path": "godot/tests/presentation/p3_o7_linh_forest_test.gd",
+      "git_blob_sha": "0d9fe6710d9fd99c5f44bc1e6c84d121fa1f750e"
+    },
+    {
+      "path": "godot/tests/presentation/p3_o8_alchemy_loop_test.gd",
+      "git_blob_sha": "b06ac8a52d0dce349eb816efa4110b3b28e9ab8b"
     },
     {
       "path": "godot/tests/presentation/p3_o9_m2_production_rehearsal_test.gd",
@@ -483,7 +543,7 @@
     },
     {
       "path": "godot/tests/presentation/sect_g1_disciple_radar_test.gd",
-      "git_blob_sha": "3c030e4cbb003912494fbcb3c7e07f4cdb4dd8a3"
+      "git_blob_sha": "30ca242e9f287ff7119a1256fca2dcbb60e33968"
     },
     {
       "path": "godot/tests/presentation/sect_ui_icon_atlas_test.gd",
@@ -518,6 +578,10 @@
       "git_blob_sha": "9946b9f9b54f662f232cb657771da8ee2b3270e6"
     },
     {
+      "path": "godot/tests/presentation/v63_d3_learning_ui_test.gd",
+      "git_blob_sha": "1b21ffe96fb84d486b3024f77ce065926d6e5e76"
+    },
+    {
       "path": "godot/tests/simulation/one_game_r3_continuous_save_test.gd",
       "git_blob_sha": "80903ac4ed21f20f41cf2eefc216151e1a6b2d57"
     },
@@ -528,6 +592,30 @@
     {
       "path": "godot/tests/simulation/pve_p0_natural_solo_reward_test.gd",
       "git_blob_sha": "871639940e9f79e5f9ceb195f91419c9a1e36d6f"
+    },
+    {
+      "path": "godot/tests/simulation/pve_save_return_reload_exactly_once_test.gd",
+      "git_blob_sha": "1cb7271253b22ea7a96916abbcbd108570931b1d"
+    },
+    {
+      "path": "godot/tests/simulation/sx01_pill_policy_test.gd",
+      "git_blob_sha": "832e1a4bb73002b13aa2c2ee30f1e3037e76c340"
+    },
+    {
+      "path": "godot/tests/simulation/sx02_alchemy_profession_availability_test.gd",
+      "git_blob_sha": "76aa714b7d00e204f9682f3fd311de4afa2a15a2"
+    },
+    {
+      "path": "godot/tests/simulation/sx02_medicine_catalogue_test.gd",
+      "git_blob_sha": "fca797604dfd90b49067e8035bbaa08ad9ff044c"
+    },
+    {
+      "path": "godot/tests/simulation/sx03_bal04a_legacy_save_medicine_test.gd",
+      "git_blob_sha": "4707fac479d8e0606cda50dd5a16f8f3681e5648"
+    },
+    {
+      "path": "godot/tests/simulation/sx03_source_consumer_stage_contract_test.gd",
+      "git_blob_sha": "6f531bc5be9aec8e0f77545edfca56266b9cab20"
     },
     {
       "path": "tools/windows/bootstrap/Install-P3-2-Female-StageA.cmd",
