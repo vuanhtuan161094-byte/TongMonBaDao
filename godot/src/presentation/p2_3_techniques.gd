@@ -12,6 +12,7 @@ var techniques := TechniqueSystem.new()
 var roots := SpiritualRootSystem.new()
 var archive_warehouse := WarehouseSystem.new()
 var archive_codices: Array[Dictionary] = []
+var archive_drop_profiles_available := false
 var learning_techniques: Array[Dictionary] = []
 var disciple_ids: Array[StringName] = []
 var disciple_index := 0
@@ -50,6 +51,9 @@ func _ready() -> void:
     if scheduler != null:
         scheduler.v63_preview_overrides = learning_preview_overrides.duplicate(true)
     archive_codices = V63SectArchiveSystem.codices()
+    var archive_catalogue := V63SectArchiveSystem.load_catalogue()
+    archive_drop_profiles_available = bool(archive_catalogue.get("ok",false)) \
+        and not archive_catalogue.get("data",{}).get("drop_profiles",[]).is_empty()
     learning_techniques = V63LearningSystem.techniques()
     for index in range(archive_codices.size()):
         if bool(archive_codices[index].get("archivable",false)):
@@ -344,9 +348,13 @@ func _refresh_archive_ui() -> void:
     var fragment_count := archive_warehouse.quantity(state,fragment_id) if not fragment_id.is_empty() else 0
     var restore_candidate := int(codex.get("restore_fragments_candidate",0))
     var available := V63SectArchiveSystem.available_disciple_count(state,codex_id,archive_preview_overrides)
-    archive_label.text = "%s | %s\nArchive: %s | Quyển trong Kho: %d | Tàn quyển: %d/%d (%s) | %d đệ tử có truyền thụ" % [
+    var source_hint := ""
+    if enabled and bool(codex.get("archivable",false)) and not archive_drop_profiles_available \
+            and manual_count <= 0 and fragment_count < restore_candidate:
+        source_hint = "\nChưa cấu hình bảng rơi Bí Kíp; chỉ dùng được quyển hoặc mảnh đã có trong Kho."
+    archive_label.text = "%s | %s\nArchive: %s | Quyển trong Kho: %d | Tàn quyển: %d/%d (%s) | %d đệ tử có truyền thụ%s" % [
         str(codex.get("name",codex_id)),codex_id,"Bật" if enabled else "ĐANG TẮT",
-        manual_count,fragment_count,restore_candidate,str(codex.get("balance_status","")),available]
+        manual_count,fragment_count,restore_candidate,str(codex.get("balance_status","")),available,source_hint]
     archive_manual_button.disabled = not enabled or not bool(codex.get("archivable",false)) or archived or manual_count <= 0
     archive_restore_button.disabled = not enabled or not bool(codex.get("archivable",false)) or fragment_count < restore_candidate or restore_candidate <= 0
     archive_research_button.disabled = not enabled or not archived or manual_count <= 0

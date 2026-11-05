@@ -34,11 +34,6 @@ func _run() -> void:
         _fail("D3 picker must expose only 12 Human foundation candidates, got %d" % techniques.size())
         return
     var first: Dictionary = techniques[0]
-    var codex := V63SectArchiveSystem.codex_definition(str(first.get("source_codex_id", "")))
-    if codex.is_empty() or not WarehouseSystem.new().add(state, StringName(codex.manual_item_id), 1):
-        _fail("could not seed the real source manual in the canonical Warehouse")
-        return
-
     var packed: PackedScene = load("res://scenes/p2/p2_3_techniques.tscn")
     if packed == null:
         _fail("could not load existing P2.3 techniques screen")
@@ -49,8 +44,19 @@ func _run() -> void:
     ui.learning_preview_overrides = PREVIEW
     root.add_child(ui)
     await process_frame
+    if not ui.archive_manual_button.disabled or not ui.archive_label.text.contains("Chưa cấu hình bảng rơi Bí Kíp"):
+        _fail("missing approved drop profiles were not explained as an acquisition blocker")
+        return
+    var codex := V63SectArchiveSystem.codex_definition(str(first.get("source_codex_id", "")))
+    if codex.is_empty() or not WarehouseSystem.new().add(state, StringName(codex.manual_item_id), 1):
+        _fail("could not seed the test manual in the canonical Warehouse")
+        return
+    ui._refresh_archive_ui()
     if ui.archive_manual_button.disabled:
         _fail("D2 archive controls did not use the real Warehouse manual")
+        return
+    if ui.archive_label.text.contains("Chưa cấu hình bảng rơi Bí Kíp"):
+        _fail("source warning remained after a manual was present in the Warehouse")
         return
     ui.archive_manual_button.pressed.emit()
     await process_frame
