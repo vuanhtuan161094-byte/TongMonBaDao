@@ -48,10 +48,20 @@ $verifier=Join-Path $root 'tools\windows\run\Verify-TRI03Source.ps1'
  $verifyLog=Join-Path $ProfileRoot 'Logs\source_verify.txt'
  if(-not(Test-Path -LiteralPath $verifyLog)){Stop-Build 'Git source verifier did not write its evidence.' 8}
  $verifyText=Get-Content -LiteralPath $verifyLog -Raw
- $sourceFingerprint=([regex]::Match($verifyText,'(?m)^source_fingerprint=([0-9a-f]{64})$')).Groups[1].Value
- $verifiedHead=([regex]::Match($verifyText,'(?m)^checkout_head=([0-9a-f]{40})$')).Groups[1].Value
- $upstream=([regex]::Match($verifyText,'(?m)^upstream_pr_source=([0-9a-f]{40})$')).Groups[1].Value
- if($verifiedHead-ne$head-or-not$sourceFingerprint-or-not$upstream){Stop-Build 'Git source report does not identify the expected HEAD/pins.' 8}
+$reportValues=@{}
+foreach($line in ($verifyText -split '[\r\n]+')){
+ $separator=$line.IndexOf('=')
+ if($separator -le 0){continue}
+ $key=$line.Substring(0,$separator).Trim()
+ if($key -in @('source_fingerprint','checkout_head','upstream_pr_source')){$reportValues[$key]=$line.Substring($separator+1).Trim()}
+}
+ $sourceFingerprint=[string]$reportValues['source_fingerprint']
+ $verifiedHead=[string]$reportValues['checkout_head']
+ $upstream=[string]$reportValues['upstream_pr_source']
+
+
+
+ if($verifiedHead -ne $head -or $sourceFingerprint -notmatch '^[0-9a-f]{64}$' -or $upstream -notmatch '^[0-9a-f]{40}$'){Stop-Build 'Git source report does not identify the expected HEAD/pins.' 8}
  $stage=Join-Path $parent ('.tmb-package-stage-'+[Guid]::NewGuid().ToString('N'))
  New-Item -ItemType Directory -Path $stage|Out-Null
  $archive=Join-Path $parent ('.tmb-package-'+[Guid]::NewGuid().ToString('N')+'.tar')

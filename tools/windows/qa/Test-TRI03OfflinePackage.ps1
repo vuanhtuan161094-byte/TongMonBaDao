@@ -1,4 +1,4 @@
-param([string]$VerifierPath=(Join-Path $PSScriptRoot 'Verify-TRI03OfflinePackage.ps1'),[string]$LauncherPath='',[string]$BuilderPath=(Join-Path $PSScriptRoot 'Build-TRI03OfflinePackage.ps1'))
+param([string]$VerifierPath=(Join-Path $PSScriptRoot '..\run\Verify-TRI03OfflinePackage.ps1'),[string]$LauncherPath='',[string]$BuilderPath=(Join-Path $PSScriptRoot '..\run\Build-TRI03OfflinePackage.ps1'))
 $ErrorActionPreference='Stop'
 $root=Join-Path $env:TEMP ('TMB-TRI03-OFFLINE-TEST-'+[Guid]::NewGuid().ToString('N'))
 $pkg=Join-Path $root 'package';$profile=Join-Path $root 'profile';$filesRoot=$pkg
@@ -15,6 +15,15 @@ function WritePackageManifest{
 function RunVerifier { $out = & powershell.exe -NoProfile -ExecutionPolicy Bypass -File $VerifierPath -GameRoot $pkg -ProfileRoot $profile 2>&1; $script:Last = $LASTEXITCODE; return ($out | Out-String) }
 $checks=0
 function Assert([bool]$condition,[string]$name){$script:checks++;if(-not$condition){throw "TRI03_OFFLINE_TEST_FAIL: $name"}}
+$builderText=Get-Content -LiteralPath $BuilderPath -Raw
+Assert ($builderText.Contains("-split '[\r\n]+'")) 'builder parses Windows CRLF verifier logs'
+$reportSample="source_fingerprint="+('a'*64)+"`r`ncheckout_head="+('b'*40)+"`r`nupstream_pr_source="+('c'*40)+"`r`n"
+$reportValues=@{}
+foreach($line in ($reportSample -split '[\r\n]+')){
+ $separator=$line.IndexOf('=')
+ if($separator -gt 0){$reportValues[$line.Substring(0,$separator)]=$line.Substring($separator+1).Trim()}
+}
+Assert ($reportValues['source_fingerprint']-eq('a'*64)-and$reportValues['checkout_head']-eq('b'*40)-and$reportValues['upstream_pr_source']-eq('c'*40)) 'CRLF report preserves all pinned identity fields'
 New-Item -ItemType Directory -Force -Path (Join-Path $pkg 'godot'),(Join-Path $pkg 'tools\windows\run'),(Join-Path $pkg 'godot\assets\p3\character_creator\parts\female_normal_v1')|Out-Null
 [IO.File]::WriteAllText((Join-Path $pkg 'godot\project.godot'),'config_version=5',[Text.UTF8Encoding]::new($false))
 [IO.File]::WriteAllText((Join-Path $pkg 'CHOI-GAME.cmd'),'echo game',[Text.UTF8Encoding]::new($false))
