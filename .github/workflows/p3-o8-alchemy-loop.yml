@@ -7,6 +7,7 @@ on:
       - 'godot/src/simulation/building/medicine_catalogue_v2.gd'
       - 'godot/src/simulation/building/medicine_allocation_v2.gd'
       - 'godot/src/simulation/building/spirit_crop_registry.gd'
+      - 'godot/src/simulation/building/medicine_resource_source_v1.gd'
       - 'godot/src/simulation/building/sx01_pill_policy.gd'
       - 'godot/src/simulation/cultivation/b3_pill_satiety_v1.gd'
       - 'godot/src/simulation/cultivation/disciple_progression_balance_v2.gd'
@@ -105,6 +106,7 @@ jobs:
             res://src/simulation/building/medicine_catalogue_v2.gd \
             res://src/simulation/building/medicine_allocation_v2.gd \
             res://src/simulation/building/spirit_crop_registry.gd \
+            res://src/simulation/building/medicine_resource_source_v1.gd \
             res://src/simulation/building/sx01_pill_policy.gd \
             res://src/simulation/cultivation/b3_pill_satiety_v1.gd \
             res://src/simulation/combat/b3_medical_autoplay_v1.gd \
