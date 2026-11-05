@@ -21,8 +21,12 @@ func _run() -> void:
 		await process_frame
 		await process_frame
 		var screen: Control = gallery.get("_active_screen")
-		if screen == null or screen.size.x < 1200.0 or screen.size.y < 680.0:
-			_fail("%s must occupy the 1280x720 preview viewport." % screen_name)
+		# The gallery reserves a 52px tab bar; content height is 668px at 1280x720.
+		# Compare against the actual host rather than demanding a 680px child.
+		var host := gallery.get("_screen_host") as Control
+		if screen == null or host == null or screen.size.x < 1200.0 \
+				or screen.size.distance_to(host.size) > 2.0 or host.size.y < gallery.size.y - 60.0:
+			_fail("%s must fill the usable 1280x720 gallery content area." % screen_name)
 			return
 		if not screen.is_visible_in_tree():
 			_fail("%s did not render as the active screen." % screen_name)
