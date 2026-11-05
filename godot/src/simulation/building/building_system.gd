@@ -827,6 +827,12 @@ func alchemy_can_start(state: SimulationState, disciple: DiscipleState) -> Dicti
         return {"ok": false, "reason": "sx01_target_or_ingredients_unavailable"}
     if hall.level < alchemy_registry.required_hall_level(recipe_id):
         return {"ok": false, "reason": "alchemy_hall_level_too_low"}
+    # The availability read-model and the actual work transaction must enforce
+    # the SAME profession gate. Otherwise tier-2 recipes appear actionable for
+    # an untrained worker, only to be rejected after the player presses WORK.
+    var profession_level := WorkforceSystem.new().profession_level_for_state(state, disciple, PROF_ALCHEMY)
+    if profession_level < alchemy_registry.required_profession_level(recipe_id):
+        return {"ok": false, "reason": "profession_level_too_low"}
     var requirements := alchemy_registry.inputs(recipe_id)
     if not warehouse.can_consume_requirements(state, requirements):
         return {"ok": false, "reason": "insufficient_or_reserved_inputs"}
