@@ -106,3 +106,18 @@ Mục tiêu Owner: khoảng **3 tháng hết Nhân, 12 tháng vào Thần, 24 th
 - Với thay đổi runtime: yêu cầu 1 vòng crop thật → craft thật → B3 consume thật, cùng với realm eligibility, EXP amount, exact-once, Save/Reload qua 3 tiến trình và Godot official 4.7.2.
 - Không tự lấy số liệu lịch sử làm mới; resource không có nguồn `ID/source` rõ hoặc consumer thật thì vẫn **DESIGN_HOLD**.
 - Bất kỳ packet nào thêm recipe r3–30 đều phải có nguyên liệu mới có source/tiến trình phù hợp và nguồn cung không phá softlock.
+
+---
+
+## 6. Kết quả CHỐT Phương án A và implementation checkpoint (05/11/2026)
+
+**Trạng thái mới hơn các mục PROPOSED phía trên:** Owner đã chọn **A**. Mã nguồn đã đổi; số liệu cũ trong các bảng mục 1–3 là **PRE-BAL04A baseline** để so sánh, KHÔNG phải hiệu lực runtime hiện tại. Mốc chính xác đọc ở commit và tài liệu mô phỏng mới.
+
+- `MedicineCatalogueV2.VERSION=2`. Thuốc Tu Vi phân cảnh giới cấp `r`, phẩm `q`: `round(DiscipleProgressionBalanceV2.realm_total_xp(r) * 0.001 * QUALITY_FACTORS[q-1])`. R1/q1=10.000 EXP, R2/q1=12.700 EXP; r20/q1=938.200; r30/q1=10.240.200. Không sửa đan legacy `tu_khi_dan` =10.000.
+- `MedicineCatalogueV2.potency_for_version(id,1)` giữ công thức cũ của receipt lịch sử. `B3PillSatietyV1.validate` dùng potency đúng phiên bản receipt; số kiểm tra tamper/replay vẫn chặn chỉnh sửa. **Không đổi global SaveService version/seed/schema**.
+- `MedicineAllocationV2.legacy_heal_useful_for_auto` kiểm tra `min(55, max_hp - hp) / max_hp >= 0.02`. `SX01PillPolicy.review` và `B3MedicalAutoplayV1.review` dùng cùng helper; manual HXD không bị khóa, Injury 120 không đổi. CARE nghỉ thay vì tiêu HXD vô ích.
+- `SpiritCropRegistry.tu_van_thao.required_field_level = 10`. Vẫn cần 1 Linh Tuyền Chi Tâm ở cổng nâng Lv10, fragment harvest có nguồn 5% và 100 mảnh/Tâm; herb có giá gieo 14 Linh Thạch/cycle và đầu ra 3. Công thức r2 vẫn cần Lv10 Luyện Đan Điện, nghề ≥3 và input thực.
+- B3 tiêu thuốc graded vượt cảnh Tu Vi bị từ chối **trước khi trừ Warehouse**. Điều này khép lối tắt dùng thuốc vượt giai đoạn qua manual B3, đồng bộ với auto allocation.
+- **Bài test đã commit nhưng Godot 4.7.2 chưa chạy trong phiên này**: SX02 Catalogue, SX01 auto policy, SX03 source consumer, SX03 legacy save/receipt, các bài B3/Safe/SaveService cũ. Các tự kiểm chứng biểu thức và mã nguồn không được đánh đồng Godot PASS.
+
+**Bảng số đủ 30 cảnh và mô phỏng mốc 3/12/24 tháng:** `docs/design/TMB_BAL04A_REALM_STAGE_SIMULATION_20261105.md`. Tiếp tục nghiệm thu qua Godot Actions hoặc Windows trước khi merge main; PR #72 vẫn Draft.
