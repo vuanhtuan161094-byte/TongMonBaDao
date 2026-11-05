@@ -162,15 +162,17 @@
     "injury_recovery_ticks": 120
   },
   "intentionally_unset": {
-    "cultivation_xp_curve": null,
-    "body_xp_curve": null,
+    "cultivation_xp_curve": "RUNTIME_EXISTS: DiscipleProgressionBalanceV2.REALM_TOTAL_XP + FLOOR_WEIGHT_PER_MILLE; owner pacing acceptance pending",
+    "body_xp_curve": "RUNTIME_EXISTS: same 300-floor XP costs, sources/rates differ; owner pacing acceptance pending",
     "equipment_roll_probabilities": null,
     "loot_drop_rates": null,
     "forge_upgrade_caps": null,
     "building_level_costs": null,
     "bulk_production_numbers": null,
     "legacy_expansion_cap": null,
-    "legacy_foundation_growth": null
+    "legacy_foundation_growth": null,
+    "medicine_tuvi_potency_balanced": null,
+    "medicine_legacy_late_auto_use_threshold": null
   },
   "oracles": {
     "realm_body_cases": [
@@ -246,5 +248,11 @@
         "expected_damage": 0
       }
     ]
-  }
+  },
+  "known_pacing_risks": [
+    "MedicineCatalogueV2 Tu Vi potency scales ~1.65^realm while DiscipleProgressionBalanceV2 realm requirements ~1.27^realm; high-tier pill may exceed first-floor requirement by large multiples.",
+    "SX01 legacy Hoi Xuan Dan +55 absolute HP can still be used automatically at late realm; realm-sensitive auto-use policy not yet approved.",
+    "Tier-2 Tử Vân Thảo requires Spirit Field Lv30 and intermediate milestone hearts; natural progression time must be tested.",
+    "Current Lv100 Spirit Field routine yield formula does not directly implement owner desired x10,000 total scale; balance/overflow/sinks need approval."
+  ]
 }
