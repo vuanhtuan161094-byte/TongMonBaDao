@@ -39,8 +39,42 @@ static func routes_for_ingredient(resource_id: StringName) -> Dictionary:
             "name":str(map_data.get("name", raw_id)),
             "rare":is_rare
         })
+    # The canonical P0 world is a separate continuous route: only an
+    # authoritative kill reward with a real, loot-ready species can provide
+    # the resource. Discover existing drop tables; never synthesize loot.
+    var continuous_pve_sources: Array[Dictionary] = []
+    var world_zone := PveMultiCampPopulationV1.ZONE
+    if HuntingMapV2.REGION_CONTENT.has(world_zone):
+        var world_species: Dictionary = HuntingMapV2.REGION_CONTENT[world_zone].get("normal", {})
+        var species_ids: Array = PvePerKillRewardV1.DROP_TABLES.keys()
+        species_ids.sort()
+        for raw_species in species_ids:
+            var species_id := str(raw_species)
+            if not world_species.has(species_id) or not MonsterCatalogueV2.SPECIES.has(species_id):
+                continue
+            var species: Dictionary = MonsterCatalogueV2.SPECIES[species_id]
+            if not bool(species.get("loot_ready", false)):
+                continue
+            for raw_drop in PvePerKillRewardV1.DROP_TABLES[species_id]:
+                if not (raw_drop is Dictionary):
+                    continue
+                var drop: Dictionary = raw_drop
+                var chance := float(drop.get("chance", 0.0))
+                var amount := int(drop.get("amount", 0))
+                if str(drop.get("id", "")) != str(resource_id) or chance <= 0.0 or chance > 1.0 or amount <= 0:
+                    continue
+                continuous_pve_sources.append({
+                    "kind": "continuous_pve_p0",
+                    "region_id": world_zone,
+                    "camp_count": PveMultiCampPopulationV1.CAMP_COUNT,
+                    "species_id": species_id,
+                    "species_name": str(species.get("name", species_id)),
+                    "chance_per_species_kill": chance,
+                    "amount": amount
+                })
     return {"ok":true,"ingredient_id":str(resource_id),
-        "spirit_fields":crop_sources,"instanced_maps":instance_map_sources}
+        "spirit_fields":crop_sources,"instanced_maps":instance_map_sources,
+        "continuous_pve_p0":continuous_pve_sources}
 
 static func routes_for_recipe(recipe_id: StringName) -> Dictionary:
     var registry := AlchemyRecipeRegistry.new()
@@ -56,7 +90,7 @@ static func routes_for_recipe(recipe_id: StringName) -> Dictionary:
         var source := routes_for_ingredient(StringName(raw_id))
         if not bool(source.get("ok",false)):
             return source
-        if source.get("spirit_fields",[]).is_empty() and source.get("instanced_maps",[]).is_empty():
+        if source.get("spirit_fields",[]).is_empty() and source.get("instanced_maps",[]).is_empty() and source.get("continuous_pve_p0",[]).is_empty():
             return {"ok":false,"reason":"ingredient_without_authored_source","ingredient_id":str(raw_id)}
         inputs.append({"ingredient_id":str(raw_id),"quantity":int(requirements[raw_id]),
             "source":source})
@@ -79,9 +113,16 @@ static func guidance_text(recipe_id: StringName) -> String:
                 str(hunting_map.get("name","")),
                 " (hiếm)" if bool(hunting_map.get("rare",false)) else ""
             ])
+        for p0_route in source.get("continuous_pve_p0",[]):
+            choices.append("PvE liên tục %d khu: hạ %s (%.1f%% mỗi lần hạ đúng loài, ×%d)" % [
+                int(p0_route.get("camp_count",0)),
+                str(p0_route.get("species_name","")),
+                100.0 * float(p0_route.get("chance_per_species_kill",0.0)),
+                int(p0_route.get("amount",0))
+            ])
         notes.append("%s ×%d: %s" % [
             resources.display_name(StringName(row.get("ingredient_id",""))),
             int(row.get("quantity",0)),
             "; ".join(choices)
         ])
-    return "\n".join(notes) + "\nBản đồ săn theo cấp khác với PvE liên tục 20 khu."
+    return "\n".join(notes) + "\nBản đồ săn theo cấp và PvE liên tục là hai chế độ khác nhau; chỉ thắng trận/hạ quái thật mới nhận vật phẩm."
