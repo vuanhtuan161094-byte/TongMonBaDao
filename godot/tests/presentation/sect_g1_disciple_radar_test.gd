@@ -160,8 +160,50 @@ func _run() -> void:
         _fail("off-map Source A cache does not match the verified scene pool")
         return
     # Recruit an authentic V2 actor through the real state/recruitment API.
-    # The initial sect roster may include historical P2 compatibility actors.
-    state.sect.disciple_capacity = maxi(state.sect.disciple_capacity,state.disciples.size()+1)
+    # The live scene may start at the eight-bed canonical limit, so open one
+    # legal slot with the actual paid Residence transaction instead of
+    # bypassing housing authority by writing disciple_capacity.
+    var required_roster := state.disciples.size() + 1
+    if SectResidenceSystemV1.current_limit(state) < required_roster:
+        var residence_sites := SectResidenceSiteV1.available_plots(state)
+        if residence_sites.is_empty():
+            _fail("no legal Residence site to open one real recruitment slot")
+            return
+        var build_costs: Dictionary = SectResidenceSystemV1.build_cost(state)
+        var warehouse := WarehouseSystem.new()
+        var stock_before: Dictionary = {}
+        for resource_id in build_costs:
+            if str(resource_id) != "spirit_stones":
+                stock_before[str(resource_id)] = warehouse.quantity(state,StringName(str(resource_id)))
+        var stones_before := state.sect.spirit_stones
+        var residence_build := SectResidenceSystemV1.construct(
+            state,"g1_radar_capacity_residence_002",residence_sites[0])
+        if not bool(residence_build.get("ok",false)):
+            _fail("canonical paid Residence construction failed: %s" % str(residence_build))
+            return
+        for resource_id in build_costs:
+            var resource_key := str(resource_id)
+            if resource_key == "spirit_stones":
+                if state.sect.spirit_stones != stones_before - int(build_costs[resource_id]):
+                    _fail("Residence did not debit its canonical spirit-stone cost")
+                    return
+            elif warehouse.quantity(state,StringName(resource_key)) != int(stock_before.get(resource_key,0)) - int(build_costs[resource_id]):
+                _fail("Residence did not debit its canonical %s cost" % resource_key)
+                return
+        var construction_ticks := SectResidenceSystemV1.construction_duration_ticks(2)
+        var live_runtime: LiveGameRuntimeV2 = ui.get("runtime_session")
+        if live_runtime == null or live_runtime.owner == null or live_runtime.owner.scheduler == null:
+            _fail("real scene scheduler is unavailable to finish Residence construction")
+            return
+        # Drive the same canonical per-minute scheduler used by RuntimeClock;
+        # avoid jumping the wall clock while the interactive scene is alive.
+        live_runtime.owner.scheduler.run_ticks(construction_ticks)
+        var residence: BuildingState = state.buildings.get(str(residence_build.get("building_id","")))
+        if residence == null \
+                or residence.status != BuildingSystem.STATUS_ACTIVE \
+                or SectResidenceSystemV1.current_limit(state) < required_roster:
+            _fail("canonical Residence did not complete and open real housing capacity")
+            return
     # Use the canonical deterministic generator, but choose an index whose
     # generated candidate id is not already occupied by the fixture roster.
     var generation_index := 778
