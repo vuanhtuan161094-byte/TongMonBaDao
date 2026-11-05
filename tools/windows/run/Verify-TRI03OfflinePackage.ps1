@@ -16,6 +16,19 @@ function Get-Sha256Hex([string] $Path) {
 }
 function Get-GitBlobSha1([string] $Path) {
     $data = [IO.File]::ReadAllBytes($Path)
+    # .gitattributes keeps Windows scripts as CRLF in worktrees; Git blob IDs use LF.
+    if ([IO.Path]::GetExtension($Path).ToLowerInvariant() -in @('.cmd', '.bat', '.ps1')) {
+        $normalized = [System.Collections.Generic.List[byte]]::new($data.Length)
+        for ($index = 0; $index -lt $data.Length; $index++) {
+            if ($data[$index] -eq 13 -and $index + 1 -lt $data.Length -and $data[$index + 1] -eq 10) {
+                $normalized.Add([byte]10)
+                $index++
+            } else {
+                $normalized.Add($data[$index])
+            }
+        }
+        $data = $normalized.ToArray()
+    }
     $header = [Text.Encoding]::ASCII.GetBytes(('blob {0}' -f $data.Length) + [char]0)
     $payload = New-Object byte[] ($header.Length + $data.Length)
     [Buffer]::BlockCopy($header, 0, $payload, 0, $header.Length)
