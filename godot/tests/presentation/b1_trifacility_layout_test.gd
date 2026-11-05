@@ -42,7 +42,7 @@ func _run() -> void:
 				return
 			var visible_rect := screen.get_global_rect()
 			for action in [manage, assign]:
-				var action_rect := action.get_global_rect()
+				var action_rect: Rect2 = action.get_global_rect()
 				if not action.is_visible_in_tree() or not visible_rect.encloses(action_rect) \
 						or action_rect.size.x < 48.0 or action_rect.size.y < 40.0:
 					_fail("Residence action is clipped or too small: %s" % action.name)
