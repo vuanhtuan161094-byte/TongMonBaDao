@@ -4,8 +4,12 @@ extends RefCounted
 # One canonical medicine identity shared by ResourceRegistry, Alchemy, B3 and UI.
 # 30 major cultivation realms x 4 product qualities x two functional families.
 # A definition is NOT proof of craftability: only authored, sourced recipes run.
-# Numeric potency/quality thresholds here are provisional balancing, NOT owner lock.
-const VERSION := 1
+# BAL-04A owner-approved 2026-11-05: Tu Vi potency now follows 0.1% of
+# the canonical current realm XP total; healing and quality factors are unchanged.
+# Version only marks new medicine receipts: old v1 receipts stay verifiable.
+const VERSION := 2
+const LEGACY_VERSION := 1
+const TUVI_REALM_XP_FRACTION := 0.001
 const MAX_REALM := 30
 const MAX_QUALITY := 4
 const FAMILY_HEAL := "heal"
@@ -53,6 +57,23 @@ static func parse_recipe(id: StringName) -> Dictionary:
         return {}
     return {"family": family, "realm": realm}
 
+# Historical deterministic potency is necessary to validate the last
+# B3 receipt saved before BAL-04A. Never recompute an old receipt with V2 math.
+static func potency_for_version(id: StringName, medicine_version: int) -> int:
+    var data := parse_item(id)
+    if data.is_empty() or medicine_version not in [LEGACY_VERSION, VERSION]:
+        return 0
+    var realm := int(data["realm"])
+    var quality_factor := float(QUALITY_FACTORS[int(data["quality"]) - 1])
+    if str(data["family"]) == FAMILY_HEAL or medicine_version == LEGACY_VERSION:
+        var previous_base := 55.0 if str(data["family"]) == FAMILY_HEAL else 10000.0
+        return roundi(previous_base * pow(1.65, float(realm - 1)) * quality_factor)
+    var realm_xp := DiscipleProgressionBalanceV2.realm_total_xp(realm)
+    if realm_xp <= 0:
+        return 0
+    return roundi(float(realm_xp) * TUVI_REALM_XP_FRACTION * quality_factor)
+
+
 static func definition(id: StringName) -> Dictionary:
     var data := parse_item(id)
     if data.is_empty():
@@ -60,8 +81,7 @@ static func definition(id: StringName) -> Dictionary:
     var realm := int(data["realm"])
     var quality := int(data["quality"])
     var family := str(data["family"])
-    var base := 55.0 if family == FAMILY_HEAL else 10000.0
-    var potency := roundi(base * pow(1.65, float(realm - 1)) * float(QUALITY_FACTORS[quality - 1]))
+    var potency := potency_for_version(id, VERSION)
     var period := "nhan" if realm <= 10 else ("tien" if realm <= 20 else "than")
     return {
         "name": "%s · %s · %s" % ["Hồi Nguyên Đan" if family == FAMILY_HEAL else "Tụ Linh Đan", REALMS[realm - 1], QUALITIES[quality - 1]],
@@ -105,8 +125,8 @@ static func recipe_definition(id: StringName) -> Dictionary:
     if realm == 1:
         requirements = {"thanh_linh_thao": 3} if family == FAMILY_HEAL else {"thanh_linh_thao": 2, "linh_coc": 1}
     elif realm == 2:
-        # Tử Vân Thảo has a real Field-Lv30 harvest; this early tier remains
-        # locked until the player legitimately produces/obtains that herb.
+        # Tử Vân Thảo is field-gated at Lv10 from BAL-04A. It must still be
+        # earned through an actual planted harvest; this grants no free herbs.
         requirements = {"tu_van_thao": 2, "thanh_linh_thao": 2} if family == FAMILY_HEAL else {"tu_van_thao": 2, "linh_coc": 2}
     return {
         "name": str(definition(item_id(family, realm, 1)).get("name", "")),
