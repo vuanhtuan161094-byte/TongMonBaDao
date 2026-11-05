@@ -112,6 +112,30 @@ func _run() -> void:
                 "future medicine cannot be silently crafted without authored inputs: "
                 + str(id))
 
+    # Route discovery is read-only and must never imply a continuous-world
+    # P0 source for a legacy instanced HuntingMapV2 encounter.
+    for recipe_id in authored:
+        var sourced := MedicineResourceSourceV1.routes_for_recipe(recipe_id)
+        _expect(bool(sourced.get("ok",false)),
+            "authored medicine recipe has actual Field/instanced-map source guidance: " + str(recipe_id))
+        _expect(not MedicineResourceSourceV1.guidance_text(recipe_id).is_empty(),
+            "player-facing source guidance exists for authored recipe: " + str(recipe_id))
+    var advanced_herb := MedicineResourceSourceV1.routes_for_ingredient(&"tu_van_thao")
+    var advanced_fields: Array = advanced_herb.get("spirit_fields",[])
+    _expect(advanced_fields.size() == 1 and
+        int(advanced_fields[0].get("field_level",0)) == 10,
+        "Tử Vân remains genuinely Field Lv10, not an automatic unlock")
+    var instanced_sources: Array = advanced_herb.get("instanced_maps",[])
+    var legacy_map_found := false
+    for map_source in instanced_sources:
+        if str(map_source.get("region_id","")) == "bach_thach_khe":
+            legacy_map_found = true
+    _expect(legacy_map_found,
+        "Existing Bạch Thạch Khê instanced reward is discoverable and distinct from 20-camp P0")
+    _expect(not bool(MedicineResourceSourceV1.routes_for_recipe(
+        MedicineCatalogueV2.recipe_id("tuvi",3)).get("ok",false)),
+        "An unsourced realm-3 pill never gets a fabricated acquisition route")
+
     _expect(B3PillSatietyV1.CAPACITY == 1000000,
         "owner-locked daily pill satiety budget remains 1,000,000")
     _expect(recipes.validate_definitions().is_empty(),
