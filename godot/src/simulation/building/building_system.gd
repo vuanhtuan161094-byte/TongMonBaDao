@@ -1631,6 +1631,24 @@ func _select_crop(state: SimulationState, field: BuildingState, data: Dictionary
                     if cursor < running:
                         return crop_id
 
+    # A player's fixed graded recipe needs real ingredients, not the stock
+    # targets of the two legacy pills. AUTO_DEMAND may plant a missing crop
+    # only after the actual alchemy hall unlock; FIXED and PRIORITY above
+    # retain their complete precedence. No resource is granted here.
+    if mode == FIELD_POLICY_AUTO_DEMAND and state.sect.p3_7_resources_enabled:
+        var legacy_demand := SX01PillPolicy.active(state) \
+            and bool(state.sect.sx01_pill_policy.get("auto_production", false)) \
+            and str(state.sect.sx01_pill_policy.get("recipe_mode", "fixed")) == "demand"
+        if not legacy_demand:
+            var graded_hall := primary_building(state, TYPE_ALCHEMY_HALL)
+            if graded_hall != null:
+                var graded_recipe := StringName(graded_hall.production_state.get("recipe_id", ""))
+                var graded_rule := MedicineCatalogueV2.recipe_definition(graded_recipe)
+                if not graded_rule.is_empty() and graded_hall.level >= int(graded_rule.get("required_hall_level", 1)):
+                    var needed_crop := _select_missing_graded_recipe_crop(state, eligible, graded_recipe)
+                    if needed_crop != &"":
+                        return needed_crop
+
     # SX-01 only owns the existing AUTO_DEMAND route. Never override a
     # player's FIXED or PRIORITY field strategy, or mint crop outputs.
     if mode == FIELD_POLICY_AUTO_DEMAND and SX01PillPolicy.active(state) \
@@ -1672,6 +1690,41 @@ func _select_crop(state: SimulationState, field: BuildingState, data: Dictionary
             best_score = score
             best = crop_id
     return best
+
+# Read-only planning from the actual chosen recipe, on-hand Warehouse
+# stock and already-growing plots. Deficit/yield normalizes unlike crops;
+# stable ID tie-break preserves deterministic Save/Reload behavior.
+func _select_missing_graded_recipe_crop(state: SimulationState,
+        eligible: Array[StringName], recipe_id: StringName) -> StringName:
+    var requirements := AlchemyRecipeRegistry.new().inputs(recipe_id)
+    if requirements.is_empty():
+        return &""
+    var growing: Dictionary = {}
+    for existing_field in _buildings_of_type(state, TYPE_SPIRIT_FIELD):
+        for raw_plot in spirit_field_plots(state, existing_field):
+            if not (raw_plot is Dictionary) or str(raw_plot.get("status", "")) != str(PLOT_GROWING):
+                continue
+            var planted_id := StringName(raw_plot.get("crop_id", ""))
+            if not crop_registry.has(planted_id):
+                continue
+            var output_id := str(crop_registry.output_resource_id(planted_id))
+            growing[output_id] = int(growing.get(output_id, 0)) + maxi(int(raw_plot.get("routine_yield", 0)), 0)
+    var selected: StringName = &""
+    var best_deficit_per_yield := 0.0
+    for crop_id in eligible:
+        var resource_id := crop_registry.output_resource_id(crop_id)
+        var needed := int(requirements.get(str(resource_id), 0))
+        if needed <= 0:
+            continue
+        var have := warehouse.available_quantity(state, resource_id)
+        var outstanding := maxi(0, needed - have - int(growing.get(str(resource_id), 0)))
+        if outstanding <= 0:
+            continue
+        var score := float(outstanding) / float(maxi(crop_registry.base_yield(crop_id), 1))
+        if selected == &"" or score > best_deficit_per_yield or (is_equal_approx(score, best_deficit_per_yield) and str(crop_id) < str(selected)):
+            selected = crop_id
+            best_deficit_per_yield = score
+    return selected
 
 func _crop_affinity_factor(disciple: DiscipleState, crop_id: StringName) -> float:
     var affinity := crop_registry.affinity_elements(crop_id)
