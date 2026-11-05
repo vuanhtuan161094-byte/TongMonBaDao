@@ -12,7 +12,7 @@
 |---|---|---|---|---|---|
 | `thanh_thiet` | Mỏ `carry_cycle` | có Mỏ, worker hợp lệ | công đoạn làm `4.0`; có vận chuyển | `2` units/batch | xây/nâng cấp; không coi giá bán là nguồn |
 | `linh_moc` | Linh Lâm `carry_cycle` | có Linh Lâm, worker hợp lệ | công đoạn `4.0`; có vận chuyển | `2` units/batch | xây/nâng cấp |
-| `thanh_linh_thao` | Linh Điền | Field Lv1 | `4` Linh Thạch, `12` ticks | `3` cây, job EXP cơ sở `10` | 4 công thức: HXD/TQD/r1 heal+tuvi và r2 heal |
+| `thanh_linh_thao` | Linh Điền | Field Lv1 | `4` Linh Thạch, `12` ticks | `3` cây, job EXP cơ sở `10` | 5 công thức: HXD, TQD, r1 heal, r1 tuvi và r2 heal |
 | `linh_coc` | Linh Điền | Field Lv1 | `3` Linh Thạch, `10` ticks | `5` đơn vị, EXP cơ sở `8` | TQD legacy, r1 TuVi, r2 TuVi |
 | `tu_van_thao` | Linh Điền | **Field Lv30** | `14` Linh Thạch, `24` ticks | `3` cây, EXP cơ sở `16` | hai công thức thuốc cảnh giới 2 |
 
