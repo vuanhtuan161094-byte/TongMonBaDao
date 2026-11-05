@@ -119,22 +119,41 @@ func _run() -> void:
     _expect(crops.validate_definitions().is_empty(),
         "all existing field crop definitions remain valid")
 
-    # Explicit design alarms. These are NOT declared fixed by this test.
+    # BAL-04A owner-approved milestones: no implicit level-9 Tử Vân
+    # access, and level-10 access still depends on an actual paid upgrade.
+    _expect(not crops.eligible_crop_ids(9).has(SpiritCropRegistry.CROP_TU_VAN_THAO),
+        "stage-2 herb cannot be farmed at Field Lv9")
+    _expect(crops.eligible_crop_ids(10).has(SpiritCropRegistry.CROP_TU_VAN_THAO),
+        "stage-2 herb is eligible at Field Lv10")
+    _expect(BuildingSystem.MILESTONE_COMPONENTS["spirit_field"][10] ==
+        BuildingSystem.MATERIAL_LINH_TUYEN_HEART,
+        "Field Lv10 is still gated by real milestone heart")
+    _expect(BuildingSystem.LINH_TUYEN_FRAGMENT_PER_HEART == 100
+        and is_equal_approx(BuildingSystem.LINH_TUYEN_FRAGMENT_BASE_CHANCE, 0.05),
+        "100 real 5%-drop fragments are still needed per heart")
+    _expect(MedicineAllocationV2.MIN_LEGACY_AUTO_HEAL_RATIO == 0.02,
+        "legacy auto recovery uses the 2% HP-worth-it rule")
+
     var high_realm := 20
     var legacy_hp := NeedsSystem.HEALING_PILL_HP
     var same_realm_core_hp := 190.0 * pow(1.65, float(high_realm - 1))
-    print("SX03 REVIEW_REQUIRED legacy Hoi Xuan effect at realm %d = %.5f%% of same-realm core HP."
+    print("SX03 BAL04A legacy Hoi Xuan effect at realm %d = %.5f%% of core HP; auto skips it."
         % [high_realm, 100.0 * legacy_hp / same_realm_core_hp])
     var future_tuvi := MedicineCatalogueV2.definition(
         MedicineCatalogueV2.item_id(MedicineCatalogueV2.FAMILY_TUVI, high_realm, 1))
     var first_floor := DiscipleProgressionBalanceV2.floor_cost(high_realm, 1)
-    print(("SX03 REVIEW_REQUIRED authored-future Tu Vi dose at realm %d = %.2f%% of floor-1 EXP;"
-        + " no recipe may be fabricated from this catalogue entry.")
-        % [high_realm, 100.0 * float(future_tuvi.get("potency", 0)) / float(maxi(first_floor, 1))])
+    _expect(int(future_tuvi.get("potency", 0)) ==
+        roundi(float(DiscipleProgressionBalanceV2.realm_total_xp(high_realm)) * 0.001),
+        "high-tier preview potency references actual per-realm XP requirement")
+    _expect(int(future_tuvi.get("potency", 0)) < first_floor,
+        "future high-tier q1 medicine cannot skip a full local floor")
+    print("SX03 BAL04A proposed-future Tu Vi r20 dose = %.2f%% of floor-1 EXP;"
+        % [100.0 * float(future_tuvi.get("potency", 0)) / float(maxi(first_floor, 1))])
+    # No new recipes for r3..30 were created to make this test green.
 
     if failures.is_empty():
-        print("SX03 SOURCE-CONSUMER CONTRACT PASS (%d checks); numeric-stage balance REVIEW_REQUIRED." % checks)
+        print("SX03 SOURCE-CONSUMER CONTRACT PASS (%d checks); BAL-04A stage bounds checked." % checks)
     else:
-        print("SX03 SOURCE-CONSUMER CONTRACT FAIL (%d/%d); stage balance REVIEW_REQUIRED."
+        print("SX03 SOURCE-CONSUMER CONTRACT FAIL (%d/%d); BAL-04A stage bounds checked."
             % [failures.size(), checks])
     quit(1 if not failures.is_empty() else 0)
