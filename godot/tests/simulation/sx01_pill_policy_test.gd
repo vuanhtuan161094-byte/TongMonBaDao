@@ -61,6 +61,28 @@ func run() -> void:
         "one item consumed, no extra output")
     check(B3PillSatietyV1.spent_today(state, d) == 10,
         "shared B3 satiety +10")
+    # BAL-04A isolated high-HP stage probe: the old +55HP potion is not
+    # wasted by SX01, while the player's manual-use right is unchanged.
+    var canonical_max_hp := d.max_hp
+    d.max_hp = 5000.0
+    d.hp = 500.0
+    check(not MedicineAllocationV2.legacy_heal_useful_for_auto(d),
+        "55HP / 5000HP is less than 2% and auto heal must skip")
+    check(warehouse.add(state, &"hoi_xuan_dan", 1),
+        "isolated high-realm auto-use probe holds one real item")
+    var sequence_before := int(d.b3_pill_state.get("sequence", 0))
+    state.tick = 10
+    SX01PillPolicy.review(state)
+    check(warehouse.quantity(state, &"hoi_xuan_dan") == 1
+        and int(d.b3_pill_state.get("sequence", 0)) == sequence_before
+        and B3PillSatietyV1.spent_today(state, d) == 10,
+        "ineffective auto HXD leaves Warehouse, receipt and satiety unchanged")
+    d.max_hp = 2750.0
+    d.hp = 1000.0
+    check(MedicineAllocationV2.legacy_heal_useful_for_auto(d),
+        "55HP / 2750HP is exactly the permitted 2% boundary")
+    d.max_hp = canonical_max_hp
+    d.hp = d.max_hp
     check(not SX01PillPolicy.configure(state, "recipe_mode", "invalid")["ok"],
         "bad recipe mode rejected")
 
