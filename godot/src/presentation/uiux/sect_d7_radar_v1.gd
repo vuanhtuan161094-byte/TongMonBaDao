@@ -4,6 +4,7 @@ extends Control
 const D7_KEYS := ["aptitude", "constitution", "mind_nature", "potential", "comprehension", "fortune", "charisma"]
 const D7_LABELS := ["Tư Chất", "Căn Cốt", "Tâm Tính", "Tiềm Lực", "Thông Tuệ", "Cơ Duyên", "Mị Lực"]
 const JADE := Color(0.30, 0.77, 0.67, 0.92)
+const GOLD := Color(0.92, 0.72, 0.34, 0.95)
 const GRID := Color(0.45, 0.61, 0.55, 0.47)
 const TEXT := Color(0.85, 0.89, 0.81, 0.98)
 var dimension_values: Array[float] = []
@@ -44,15 +45,24 @@ func _draw() -> void:
 		draw_line(center, center + direction * radius, GRID, 1.0, true)
 		var value := dimension_values[index]
 		polygon.append(center + direction * radius * clampf(value / max_value, 0.0, 1.0))
-		var label_point := center + direction * (radius + 15.0)
-		draw_string(font, Vector2(label_point.x - 43.0, label_point.y + 3.0), D7_LABELS[index], HORIZONTAL_ALIGNMENT_CENTER, 86.0, 9, JADE)
-		draw_string(font, Vector2(label_point.x - 34.0, label_point.y + 14.0), "%.0f" % value, HORIZONTAL_ALIGNMENT_CENTER, 68.0, 9, TEXT)
+		var label_point := center + direction * (radius + 16.0)
+		var axis_color := JADE if index < 3 else GOLD
+		draw_string(font, Vector2(label_point.x - 48.0, label_point.y + 3.0), D7_LABELS[index], HORIZONTAL_ALIGNMENT_CENTER, 96.0, 11, axis_color)
+		draw_string(font, Vector2(label_point.x - 34.0, label_point.y + 16.0), "%.0f" % value, HORIZONTAL_ALIGNMENT_CENTER, 68.0, 10, TEXT)
 	var fill := JADE
 	fill.a = 0.16
 	draw_colored_polygon(polygon, fill)
 	var closed := polygon.duplicate()
 	closed.append(polygon[0])
-	draw_polyline(closed, JADE, 2.0, true)
-	for point in polygon:
-		draw_circle(point, 3.0, JADE)
-	draw_string(font, Vector2(0.0, size.y - 2.0), "TAM CĂN (3)  ·  TỨ TÍNH (4)", HORIZONTAL_ALIGNMENT_CENTER, size.x, 9, TEXT)
+	for index in range(polygon.size()):
+		var next_index := (index + 1) % polygon.size()
+		var edge_color := Color(0.83, 0.78, 0.46, 0.95)
+		if index < 2:
+			edge_color = JADE
+		elif index >= 3:
+			edge_color = GOLD
+		draw_line(polygon[index], polygon[next_index], edge_color, 2.5, true)
+	for index in range(polygon.size()):
+		draw_circle(polygon[index], 4.0, JADE if index < 3 else GOLD)
+	draw_string(font, Vector2(0.0, size.y - 4.0), "TAM CĂN · 3 TRỤC", HORIZONTAL_ALIGNMENT_CENTER, size.x * 0.5, 11, JADE)
+	draw_string(font, Vector2(size.x * 0.5, size.y - 4.0), "TỨ TÍNH · 4 TRỤC", HORIZONTAL_ALIGNMENT_CENTER, size.x * 0.5, 11, GOLD)

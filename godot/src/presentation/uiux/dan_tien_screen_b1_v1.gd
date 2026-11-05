@@ -158,7 +158,7 @@ func _on_accept_pressed() -> void:
 func _build_candidate_panel() -> Control:
 	var candidate := _candidate()
 	var card := UI.panel("CandidateProfile", UI.GOLD, UI.SURFACE)
-	card.custom_minimum_size.x = 448
+	card.custom_minimum_size.x = 500
 	card.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	var panel_content := VBoxContainer.new()
 	panel_content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -230,7 +230,7 @@ func _build_candidate_panel() -> Control:
 			var selected := row_id == _candidate_id()
 			var choice := UI.button("%s\n%s" % [str(row.get("name","Ứng viên")),str(row.get("quality","Phẩm chưa rõ"))],selected,UI.GOLD if selected else UI.JADE)
 			choice.name = "CandidatePick_%s" % row_id
-			choice.custom_minimum_size = Vector2(122,54)
+			choice.custom_minimum_size = Vector2(138,60)
 			choice.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			choice.disabled = selected
 			choice.pressed.connect(_select_candidate_by_id.bind(row_id))
@@ -242,22 +242,22 @@ func _build_candidate_panel() -> Control:
 	profile.add_child(_candidate_portrait(candidate))
 	var detail := VBoxContainer.new()
 	detail.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	detail.add_child(UI.label(str(candidate.get("name", "Không có ứng viên phù hợp")), 21, UI.PAPER, true))
-	detail.add_child(UI.label(str(candidate.get("realm", "—")), 14, UI.JADE, true))
-	detail.add_child(UI.label(str(candidate.get("origin", "—")), 12, UI.MUTED, false))
-	detail.add_child(UI.label(str(candidate.get("personality", "—")), 12, UI.TEXT, false))
-	detail.add_child(UI.label(str(candidate.get("status", "Chờ đánh giá")), 12, UI.GOLD, false))
-	detail.add_child(UI.label("Phẩm: %s" % str(candidate.get("quality","—")),13,UI.GOLD,true))
+	var candidate_name := UI.label(str(candidate.get("name", "Không có ứng viên phù hợp")), 22, UI.PAPER, true)
+	candidate_name.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	detail.add_child(candidate_name)
+	var identity_badges := HBoxContainer.new()
+	identity_badges.add_theme_constant_override("separation", 6)
+	identity_badges.add_child(_candidate_badge("PHẨM", str(candidate.get("quality", "—")), "rank", UI.GOLD))
+	identity_badges.add_child(_candidate_badge("CẢNH GIỚI", str(candidate.get("realm", "—")), "root", UI.JADE))
+	detail.add_child(identity_badges)
+	detail.add_child(_candidate_info_row("search", str(candidate.get("origin", "—")), UI.MUTED))
+	detail.add_child(_candidate_info_row("person", str(candidate.get("personality", "—")), UI.TEXT))
+	detail.add_child(_candidate_info_row("check", str(candidate.get("status", "Chờ đánh giá")), UI.GOLD))
 	profile.add_child(detail)
 	content.add_child(profile)
-	content.add_child(UI.label("Tam Căn · " + str(candidate.get("tam_summary","—")),12,UI.JADE,false))
-	content.add_child(UI.label(str(candidate.get("tu_summary","—")),12,UI.GOLD,false))
-	if not str(candidate.get("tam_note", "")).is_empty():
-		content.add_child(UI.label(str(candidate.get("tam_note", "")),10,UI.MUTED,false))
-	content.add_child(UI.label(str(candidate.get("root_values","Linh Căn chưa có dữ liệu")),12,UI.TEXT,false))
-	content.add_child(UI.label(str(candidate.get("special_identity","Các tầng ẩn chưa được khai mở")),11,UI.MUTED,false))
-	content.add_child(UI.label(str(candidate.get("role_fit","Chưa đủ dữ liệu tương hợp")),11,UI.JADE,false))
-	content.add_child(UI.label("Xem lý do khóa trong Nút Nhận; từ chối luôn cần xác nhận lần hai.",10,UI.MUTED,false))
+	content.add_child(_candidate_info_row("root", str(candidate.get("root_values", "Linh Căn chưa có dữ liệu")), UI.JADE))
+	content.add_child(_candidate_info_row("root", str(candidate.get("special_identity", "Các tầng ẩn chưa được khai mở")), UI.MUTED))
+	content.add_child(_candidate_info_row("assignment", str(candidate.get("role_fit", "Chưa đủ dữ liệu tương hợp")), UI.JADE))
 	var decisions := HBoxContainer.new()
 	decisions.add_theme_constant_override("separation", 8)
 	var accept := UI.button("XÁC NHẬN NHẬN ĐỆ TỬ" if _accept_armed else "NHẬN ĐỆ TỬ", true, UI.JADE)
@@ -274,8 +274,15 @@ func _build_candidate_panel() -> Control:
 	reject.pressed.connect(_on_reject_pressed)
 	decisions.add_child(reject)
 	panel_content.add_child(UI.section_heading("Quyết định", "office", UI.JADE))
+	var gate_reason := str(candidate.get("accept_reason", _vm.get("accept_gate", ""))).strip_edges()
+	if not gate_reason.is_empty():
+		var gate_label := UI.label(gate_reason, 11, UI.RED if accept.disabled else UI.JADE, false)
+		gate_label.name = "CandidateEligibilityReason"
+		gate_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		gate_label.custom_minimum_size.y = 26
+		gate_label.tooltip_text = gate_reason
+		panel_content.add_child(gate_label)
 	panel_content.add_child(decisions)
-	content.add_child(UI.label(str(_vm.get("accept_gate","")),11,UI.MUTED,false))
 	content.add_child(_build_guidance_management())
 	var management := VBoxContainer.new()
 	management.add_theme_constant_override("separation", 6)
@@ -307,15 +314,61 @@ func _build_candidate_panel() -> Control:
 	content.add_child(pager)
 	return card
 
+func _candidate_badge(title: String, value: String, icon_kind: String, accent: Color) -> Control:
+	var badge := UI.panel("CandidateIdentityBadge", accent, UI.SURFACE_LIGHT)
+	badge.custom_minimum_size = Vector2(132, 52)
+	badge.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var row := HBoxContainer.new()
+	row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_theme_constant_override("separation", 6)
+	row.add_child(UI.icon(icon_kind, 22, accent))
+	var labels := VBoxContainer.new()
+	labels.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	labels.add_theme_constant_override("separation", 0)
+	var title_label := UI.label(title, 9, UI.MUTED, false)
+	title_label.custom_minimum_size.x = 74
+	title_label.autowrap_mode = TextServer.AUTOWRAP_OFF
+	labels.add_child(title_label)
+	var value_label := UI.label(value, 12, UI.PAPER, true)
+	value_label.custom_minimum_size.x = 74
+	value_label.autowrap_mode = TextServer.AUTOWRAP_OFF
+	value_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	value_label.tooltip_text = value
+	labels.add_child(value_label)
+	row.add_child(labels)
+	badge.add_child(row)
+	return badge
+
+func _candidate_info_row(icon_kind: String, value: String, accent: Color) -> Control:
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 6)
+	var icon := UI.icon(icon_kind, 18, accent)
+	icon.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	row.add_child(icon)
+	var detail := UI.label(value, 11, UI.TEXT, false)
+	detail.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	detail.custom_minimum_size.y = 22
+	detail.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	detail.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	detail.tooltip_text = value
+	row.add_child(detail)
+	return row
+
 func _candidate_portrait(candidate: Dictionary) -> Control:
 	var texture_value: Variant = candidate.get("portrait")
-	if bool(candidate.get("source_art_approved", false)) and texture_value is Texture2D:
-		var portrait_control := UI.portrait_slot(str(candidate.get("name","")),texture_value,Vector2(128,160))
-		portrait_control.name = "VerifiedSourceACandidatePreview"
-		return portrait_control
-	var neutral := UI.portrait_slot(str(candidate.get("name","")),null,Vector2(128,160))
-	neutral.name = "CandidateUnverifiedPortrait"
-	return neutral
+	var verified := bool(candidate.get("source_art_approved", false)) and texture_value is Texture2D
+	var portrait := UI.portrait_slot(str(candidate.get("name", "")), texture_value if verified else null, Vector2(156, 188))
+	portrait.name = "VerifiedSourceACandidatePreview" if verified else "CandidateUnverifiedPortrait"
+	var stack := VBoxContainer.new()
+	stack.name = "CandidatePortraitBlock"
+	stack.custom_minimum_size = Vector2(156, 210)
+	stack.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	stack.add_child(portrait)
+	var caption := UI.label("ẢNH SOURCE A" if verified else "CHƯA CÓ ẢNH ĐÃ DUYỆT", 9, UI.GOLD if verified else UI.MUTED, true)
+	caption.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	caption.tooltip_text = "Chân dung lấy từ actor Source A đã qua cổng xác thực." if verified else "Không có chân dung Source A đã xác thực cho ứng viên này; dùng biểu tượng trung tính."
+	stack.add_child(caption)
+	return stack
 
 func _select_candidate_by_id(candidate_id: String) -> void:
 	var pool: Array = _filtered_candidates()
@@ -463,6 +516,13 @@ func _build_radar_panel() -> Control:
 	content.add_child(radar)
 	if radar.has_method("set_values"):
 		radar.call("set_values", candidate.get("tam_values", []), candidate.get("tu_values", []))
+	var tam_note := str(candidate.get("tam_note", "")).strip_edges()
+	if not tam_note.is_empty():
+		var foundation_note := UI.label(tam_note, 10, UI.MUTED, false)
+		foundation_note.name = "CandidateFoundationNote"
+		foundation_note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		foundation_note.custom_minimum_size.y = 24
+		content.add_child(foundation_note)
 	content.add_child(UI.section_heading("Thông tin", "search", UI.GOLD))
 	var metrics := GridContainer.new()
 	metrics.columns = 2

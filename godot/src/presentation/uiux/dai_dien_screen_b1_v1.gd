@@ -133,7 +133,7 @@ func _build_offices_panel() -> Control:
 	content.add_theme_constant_override("separation", 10)
 	card.add_child(content)
 	content.add_child(UI.section_heading("Bảy chức vụ", "office", UI.JADE))
-	content.add_child(UI.label("Bổ nhiệm hoặc miễn nhiệm ngay tại đây. Mỗi đệ tử chỉ giữ một chức vụ; điều kiện phụ thuộc cấp Đại Điện và tình trạng đệ tử.",11,UI.MUTED,false))
+	content.add_child(UI.label("Một đệ tử chỉ giữ một chức vụ. Chọn người đang đủ điều kiện.",11,UI.MUTED,false))
 	var grid := GridContainer.new()
 	grid.columns = 2
 	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -147,7 +147,7 @@ func _build_offices_panel() -> Control:
 		var office: Dictionary = office_map.get(role_id, {})
 		grid.add_child(_office_card(role_id, office))
 	content.add_child(grid)
-	content.add_child(UI.label("Nâng cấp dùng tài nguyên thật trong Kho; thăng bậc hiển thị đủ điều kiện còn thiếu.",11,UI.MUTED,false))
+	content.add_child(UI.label("Chi phí lấy từ Kho; điều kiện còn thiếu hiện ở bảng thăng bậc.",10,UI.MUTED,false))
 	var upgrade_row := HBoxContainer.new()
 	upgrade_row.add_theme_constant_override("separation", 10)
 	var costs_column := VBoxContainer.new()
@@ -171,29 +171,29 @@ func _build_offices_panel() -> Control:
 
 func _office_card(role_id: String, office: Dictionary) -> Control:
 	var card := UI.panel("Office_%s" % role_id, UI.BORDER, UI.SURFACE_LIGHT)
-	card.custom_minimum_size = Vector2(245, 98)
+	card.custom_minimum_size = Vector2(245, 104)
 	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 9)
 	card.add_child(row)
-	row.add_child(UI.portrait_slot(str(office.get("disciple_name", "")), office.get("portrait"), Vector2(48, 48)))
+	row.add_child(UI.portrait_slot(str(office.get("disciple_name", "")), office.get("portrait"), Vector2(54, 54)))
 	var details := VBoxContainer.new()
 	details.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	details.add_child(UI.label(str(office.get("role_label", ROLE_LABELS[role_id])), 13, UI.PAPER, true))
+	details.add_child(UI.label(str(office.get("role_label", ROLE_LABELS[role_id])), 14, UI.PAPER, true))
 	var disciple_name := str(office.get("disciple_name", "Chưa bổ nhiệm"))
-	details.add_child(UI.label(disciple_name, 12, UI.TEXT, false))
-	details.add_child(UI.label(str(office.get("office_rank", "—")), 10, UI.MUTED, false))
+	details.add_child(UI.label(disciple_name, 13, UI.TEXT, false))
+	details.add_child(UI.label(str(office.get("office_rank", "—")), 11, UI.MUTED, false))
 	row.add_child(details)
 	var actions := VBoxContainer.new()
 	actions.add_theme_constant_override("separation", 4)
 	var choose := UI.button("BỔ NHIỆM", false, UI.JADE)
 	choose.name = "ChooseOffice"
-	choose.custom_minimum_size = Vector2(88, 32)
+	choose.custom_minimum_size = Vector2(90, 34)
 	choose.pressed.connect(_request_office_selection.bind(role_id))
 	actions.add_child(choose)
 	var dismiss := UI.button("MIỄN NHIỆM", false, UI.RED)
 	dismiss.name = "DismissOffice"
-	dismiss.custom_minimum_size = Vector2(88, 32)
+	dismiss.custom_minimum_size = Vector2(90, 34)
 	dismiss.disabled = not bool(office.get("can_dismiss", false))
 	dismiss.pressed.connect(func(): office_dismissal_requested.emit(role_id))
 	actions.add_child(dismiss)

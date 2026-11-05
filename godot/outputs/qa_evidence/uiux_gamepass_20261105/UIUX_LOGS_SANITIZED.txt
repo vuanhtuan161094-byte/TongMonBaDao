@@ -1,0 +1,37 @@
+Godot UI/UX focused evidence (sanitized)
+Engine: Godot 4.7.2.stable.official.ed1daf0bf
+
+[final UI contract]
+TRI01_B1_UI_CONTRACT_PASS
+exit=0
+
+[live B1 integration]
+TRI_B1_LIVE_PASS hall=1 residence=1 guidance=1 real_recruit=1 save_service_roundtrip=1
+exit=0
+
+[HS09]
+HS09 DISCIPLE PROFILE / DUAL RADAR / FEATURE-GATE READ MODEL PASS
+exit=0
+
+[D7 radar]
+G1 DISCIPLE RADAR + VERIFIED SOURCE A POOL: PASS
+exit=0
+
+[Source A art]
+TRI_B1_ART_V2_PASS source_a_models=510052,510076,510111 candidate=anonymous_fallback
+exit=0
+
+[live P3.2 capture]
+TRI02_SOURCE_ALPHA_PASS model=main_hall clear=1 opaque=1 antialias=1
+TRI02_SOURCE_ALPHA_PASS model=residence clear=1 opaque=1 antialias=1
+TRI02_SOURCE_ALPHA_PASS model=guidance clear=1 opaque=1 antialias=1
+TRI02_B1_MAP_PLAN_ROUTE_PASS route=real_p3_2_build_mode
+TRI03_RECRUITMENT_REVEAL_CAPTURE_PASS disciple=candidate_0006 roster=7 source_a_portrait=1 save_reload=1
+TRI02_P32_CONTEXT_CAPTURE_PASS map=1 hall=1 residence=1 guidance=1 size=1280x720
+exit=0, capture harness with gl_compatibility + opengl3_angle
+
+[environment notes]
+- Godot import exit=0; repeated filesystem scanner Cannot go into subdir messages and Failed to read the root certificate store were observed. No GDScript parse error was observed.
+- Initial UI-contract run exit=1 because a required compact D7 explanatory note had been removed. The note was restored; the unchanged test then passed.
+- Default Intel OpenGL capture crashed in ig11icd64.dll with 0xC0000005. ANGLE compatibility capture succeeded.
+- Paths and local account names removed. No save contents or credentials included.

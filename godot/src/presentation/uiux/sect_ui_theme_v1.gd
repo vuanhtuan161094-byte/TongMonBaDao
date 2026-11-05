@@ -117,7 +117,8 @@ static func portrait_slot(display_name: String, texture_value: Variant, size: Ve
 	else:
 		# Do not render the repeated first letter of "Chưa bổ nhiệm" as a fake portrait.
 		# A neutral silhouette is used only when the host supplies no real texture.
-		var placeholder := icon("person", 32, MUTED if display_name.is_empty() or display_name == "Chưa bổ nhiệm" else GOLD)
+		var silhouette_size := int(clampf(minf(size.x, size.y) * 0.42, 32.0, 72.0))
+		var placeholder := icon("person", silhouette_size, MUTED if display_name.is_empty() or display_name == "Chưa bổ nhiệm" else GOLD)
 		placeholder.name = "UnassignedPortraitGlyph"
 		placeholder.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 		placeholder.size_flags_vertical = Control.SIZE_SHRINK_CENTER

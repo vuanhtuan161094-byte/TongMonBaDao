@@ -95,7 +95,26 @@ func _build_rooms_panel() -> Control:
 	metrics.add_child(beds_metric)
 	content.add_child(metrics)
 	content.add_child(UI.section_heading("Giường & đệ tử", "person", UI.JADE))
-	content.add_child(UI.label("Số giường và đệ tử đang ở được hiển thị theo từng Đệ Tử Xá.", 10, UI.MUTED, false))
+	var bed_legend := HBoxContainer.new()
+	bed_legend.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	bed_legend.add_theme_constant_override("separation", 7)
+	var occupied_legend := HBoxContainer.new()
+	occupied_legend.add_theme_constant_override("separation", 4)
+	occupied_legend.add_child(UI.icon("person", 18, UI.JADE))
+	var occupied_label := UI.label("Đang ở", 10, UI.MUTED, false)
+	occupied_label.custom_minimum_size.x = 58
+	occupied_label.autowrap_mode = TextServer.AUTOWRAP_OFF
+	occupied_legend.add_child(occupied_label)
+	bed_legend.add_child(occupied_legend)
+	var empty_bed_legend := HBoxContainer.new()
+	empty_bed_legend.add_theme_constant_override("separation", 4)
+	empty_bed_legend.add_child(UI.icon("bed", 18, UI.GOLD))
+	var empty_bed_label := UI.label("Giường trống", 10, UI.MUTED, false)
+	empty_bed_label.custom_minimum_size.x = 88
+	empty_bed_label.autowrap_mode = TextServer.AUTOWRAP_OFF
+	empty_bed_legend.add_child(empty_bed_label)
+	bed_legend.add_child(empty_bed_legend)
+	content.add_child(bed_legend)
 	var bed_scroll := ScrollContainer.new()
 	bed_scroll.name = "ResidenceBedScroll"
 	bed_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
