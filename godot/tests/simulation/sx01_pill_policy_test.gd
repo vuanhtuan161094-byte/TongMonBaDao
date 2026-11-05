@@ -119,6 +119,45 @@ func run() -> void:
     check(SX01PillPolicy.planned_recipe(state, hall) == &"",
         "hard reservation stops next job")
 
+    # Fixture-only field selector probe. Restore all state before the
+    # canonical SaveService regression: this test does not grow/free-mint
+    # a single herb, heart, item, EXP point or actual level-up.
+    var field := buildings.primary_building(state, BuildingSystem.TYPE_SPIRIT_FIELD)
+    if check(field != null, "existing canonical Spirit Field for graded demand"):
+        var original_hall_level := hall.level
+        var original_field_level := field.level
+        var original_hall_production := hall.production_state.duplicate(true)
+        var original_field_production := field.production_state.duplicate(true)
+        var original_stock := state.sect.warehouse_resources.duplicate(true)
+        var original_stones := state.sect.spirit_stones
+        var original_recipe_mode := str(state.sect.sx01_pill_policy["recipe_mode"])
+        state.sect.sx01_pill_policy["recipe_mode"] = "fixed"
+        hall.level = 10
+        hall.production_state["recipe_id"] = str(MedicineCatalogueV2.recipe_id("heal", 2))
+        field.level = 10
+        field.production_state = {"policy_mode": str(BuildingSystem.FIELD_POLICY_AUTO_DEMAND), "plots": []}
+        state.sect.spirit_stones = 100
+        # Abundant Thanh Linh deliberately neutralizes its own demand even
+        # with the earlier reserve; Tử Vân is missing in real Warehouse stock.
+        state.sect.warehouse_resources = {"thanh_linh_thao": 100}
+        check(buildings._select_crop(state, field, field.production_state) == &"tu_van_thao",
+            "AUTO_DEMAND chooses missing real r2 herb for fixed r2 healing recipe")
+        field.level = 9
+        check(buildings._select_crop(state, field, field.production_state) != &"tu_van_thao",
+            "AUTO_DEMAND cannot bypass Tử Vân Field Lv10 gate")
+        field.level = 10
+        field.production_state["policy_mode"] = str(BuildingSystem.FIELD_POLICY_FIXED)
+        field.production_state["fixed_crop_id"] = "linh_coc"
+        check(buildings._select_crop(state, field, field.production_state) == &"linh_coc",
+            "player's fixed crop policy always outranks graded auto demand")
+        hall.level = original_hall_level
+        hall.production_state = original_hall_production
+        field.level = original_field_level
+        field.production_state = original_field_production
+        state.sect.warehouse_resources = original_stock
+        state.sect.spirit_stones = original_stones
+        state.sect.sx01_pill_policy["recipe_mode"] = original_recipe_mode
+
     var saved := SaveService.new().save_to_path(state, path)
     check(saved == OK, "SaveService commit")
     var reloaded := SaveService.new().load_from_path(path)
