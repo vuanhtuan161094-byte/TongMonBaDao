@@ -132,6 +132,10 @@ func _run() -> void:
 	if assign_room == null or assign_room.disabled:
 		_fail("Room assignment must follow real eligibility and available choices.")
 		return
+	var fixed_actions := residence.find_child("ResidenceStickyActions", true, false) as HBoxContainer
+	if fixed_actions == null or assign_room.get_parent() != fixed_actions or manage_rooms.get_parent() != fixed_actions:
+		_fail("Residence primary assignment and map actions must remain outside management scrolling.")
+		return
 	assign_room.pressed.emit()
 	if room_intents != [["disciple_001","north"]]:
 		_fail("Room assignment must emit the actual selected disciple and canonical house IDs.")
