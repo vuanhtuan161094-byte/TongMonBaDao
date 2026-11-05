@@ -43,12 +43,39 @@ func run() -> void:
                 "tuvi identity rank/grade")
             expect(int(h["potency"]) > previous_hp and int(t["potency"]) > previous_tuvi,
                 "within-realm quality increases both potencies")
+            var xp_total := DiscipleProgressionBalanceV2.realm_total_xp(realm)
+            var expected_tuvi := roundi(float(xp_total) * 0.001
+                * float(MedicineCatalogueV2.QUALITY_FACTORS[quality - 1]))
+            expect(int(t["potency"]) == expected_tuvi,
+                "BAL-04A Tu Vi potency is exactly 0.1% current realm EXP x grade")
+            expect(int(t["potency"]) < DiscipleProgressionBalanceV2.floor_cost(realm, 1),
+                "graded Tu Vi dose never exceeds a single floor at its realm")
+            expect(MedicineCatalogueV2.potency_for_version(tuvi, 1) ==
+                roundi(10000.0 * pow(1.65, float(realm - 1))
+                    * float(MedicineCatalogueV2.QUALITY_FACTORS[quality - 1])),
+                "historic medicine v1 potency remains verifiable")
             previous_hp = int(h["potency"])
             previous_tuvi = int(t["potency"])
     expect(MedicineCatalogueV2.definition(MedicineCatalogueV2.item_id("heal", 1, 1))["potency"] == 55,
         "tier 1 low-grade heal starts at legacy baseline without mutating legacy ID")
     expect(MedicineCatalogueV2.definition(MedicineCatalogueV2.item_id("tuvi", 1, 1))["potency"] == 10000,
         "tier 1 low-grade Tu Vi starts at legacy baseline")
+    expect(MedicineCatalogueV2.definition(MedicineCatalogueV2.item_id("tuvi", 2, 1))["potency"] == 12700,
+        "tier 2 low-grade Tu Vi takes 0.1% of 12,700,000 EXP, not previous 16,500")
+    expect(MedicineCatalogueV2.potency_for_version(
+        MedicineCatalogueV2.item_id("tuvi", 2, 1), 1) == 16500,
+        "existing v1 rank-2 medicine receipts retain original 16,500 EXP")
+    expect(MedicineCatalogueV2.potency_for_version(
+        MedicineCatalogueV2.item_id("tuvi", 2, 1), 99) == 0,
+        "unrecognized future/historic receipt versions fail closed")
+    expect(SpiritCropRegistry.new().eligible_crop_ids(9).has(&"tu_van_thao") == false,
+        "Tu Van Thao cannot be planted before Lv10")
+    expect(SpiritCropRegistry.new().eligible_crop_ids(10).has(&"tu_van_thao"),
+        "Tu Van Thao unlocks at Lv10 without granting stock")
+    expect(BuildingSystem.MILESTONE_COMPONENTS["spirit_field"][10] ==
+        BuildingSystem.MATERIAL_LINH_TUYEN_HEART
+        and BuildingSystem.LINH_TUYEN_FRAGMENT_PER_HEART == 100,
+        "Field Lv10 source still requires real Linh Tuyen milestone/100 fragments")
     expect(not recipes.has(MedicineCatalogueV2.recipe_id("heal", 30)),
         "no unsourced realm-30 recipe")
     expect(not recipes.has(MedicineCatalogueV2.recipe_id("tuvi", 3)),
