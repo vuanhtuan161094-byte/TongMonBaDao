@@ -124,6 +124,31 @@ func _build_progress_panel() -> Control:
 	promotion.disabled = not bool(_vm.get("can_promote", false))
 	promotion.pressed.connect(func(): promotion_requested.emit())
 	content.add_child(promotion)
+	# Put the building upgrade beside the building/rank information. This
+	# uses the otherwise empty progress pane and leaves all seven role cards
+	# unobstructed. All costs and permissions remain host-view-model owned.
+	var upgrade_divider := HSeparator.new()
+	upgrade_divider.name = "HallUpgradeDivider"
+	content.add_child(upgrade_divider)
+	var upgrade_row := HBoxContainer.new()
+	upgrade_row.add_theme_constant_override("separation", 10)
+	var costs_column := VBoxContainer.new()
+	costs_column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	costs_column.add_child(UI.section_heading("Nâng cấp Đại Điện", "upgrade", UI.GOLD))
+	var costs := VBoxContainer.new()
+	costs.add_theme_constant_override("separation", 3)
+	for cost in _vm.get("upgrade_costs", []).slice(0, 3):
+		var item := UI.resource_item(str(cost.get("name", "")), str(cost.get("amount", "")), str(cost.get("icon", "resource")))
+		item.custom_minimum_size.x = 0
+		costs.add_child(item)
+	costs_column.add_child(costs)
+	upgrade_row.add_child(costs_column)
+	var upgrade := UI.button("NÂNG CẤP", true, UI.JADE)
+	upgrade.name = "UpgradeHall"
+	upgrade.disabled = not bool(_vm.get("can_upgrade", false))
+	upgrade.pressed.connect(func(): hall_upgrade_requested.emit())
+	upgrade_row.add_child(upgrade)
+	content.add_child(upgrade_row)
 	return card
 
 func _build_offices_panel() -> Control:
@@ -147,26 +172,7 @@ func _build_offices_panel() -> Control:
 		var office: Dictionary = office_map.get(role_id, {})
 		grid.add_child(_office_card(role_id, office))
 	content.add_child(grid)
-	content.add_child(UI.label("Chi phí lấy từ Kho; điều kiện còn thiếu hiện ở bảng thăng bậc.",10,UI.MUTED,false))
-	var upgrade_row := HBoxContainer.new()
-	upgrade_row.add_theme_constant_override("separation", 10)
-	var costs_column := VBoxContainer.new()
-	costs_column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	costs_column.add_child(UI.section_heading("Nâng cấp Đại Điện", "upgrade", UI.GOLD))
-	var costs := HBoxContainer.new()
-	costs.add_theme_constant_override("separation", 9)
-	for cost in _vm.get("upgrade_costs", []).slice(0, 3):
-		var item := UI.resource_item(str(cost.get("name", "")), str(cost.get("amount", "")), str(cost.get("icon", "resource")))
-		item.custom_minimum_size.x = 148
-		costs.add_child(item)
-	costs_column.add_child(costs)
-	upgrade_row.add_child(costs_column)
-	var upgrade := UI.button("NÂNG CẤP", true, UI.JADE)
-	upgrade.name = "UpgradeHall"
-	upgrade.disabled = not bool(_vm.get("can_upgrade", false))
-	upgrade.pressed.connect(func(): hall_upgrade_requested.emit())
-	upgrade_row.add_child(upgrade)
-	content.add_child(upgrade_row)
+
 	return card
 
 func _office_card(role_id: String, office: Dictionary) -> Control:
