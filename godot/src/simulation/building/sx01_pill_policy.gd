@@ -162,7 +162,10 @@ static func review(state: SimulationState) -> void:
             and disciple.hp < disciple.max_hp:
             if bool(B3PillSatietyV1.enable(state, disciple).get("ok", false)):
                 var medicine_id := MedicineAllocationV2.best_available(state, disciple, MedicineCatalogueV2.FAMILY_HEAL)
-                if medicine_id == &"" and warehouse.available_quantity(state, HXD) > 0:
+                # The legacy +55 HP pill must not be wasted on huge late
+                # health pools. Do not change manual use or graded heals.
+                if medicine_id == &"" and warehouse.available_quantity(state, HXD) > 0 \
+                    and MedicineAllocationV2.legacy_heal_useful_for_auto(disciple):
                     medicine_id = HXD
                 if medicine_id != &"":
                     var healed := B3PillSatietyV1.consume(state, disciple, medicine_id, B3PillSatietyV1.next_sequence(disciple))
