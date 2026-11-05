@@ -1,6 +1,6 @@
 {
   "schema": "TMB_NUMERIC_REFERENCE_V1",
-  "status": "DESIGN_REFERENCE_ONLY_NOT_RUNTIME",
+  "status": "LOCKED_REFERENCE_WITH_BAL04A_IMPLEMENTATION_NOT_YET_GODOT_VERIFIED",
   "source_note": "Values transcribed from owner-locked design specifications, NOT asserted as Godot runtime implementation.",
   "authority": [
     "docs/DV2_REALM_BODY_COMBAT_CURVES_V1_PROPOSAL.md",
@@ -170,9 +170,7 @@
     "building_level_costs": null,
     "bulk_production_numbers": null,
     "legacy_expansion_cap": null,
-    "legacy_foundation_growth": null,
-    "medicine_tuvi_potency_balanced": null,
-    "medicine_legacy_late_auto_use_threshold": null
+    "legacy_foundation_growth": null
   },
   "oracles": {
     "realm_body_cases": [
@@ -250,9 +248,34 @@
     ]
   },
   "known_pacing_risks": [
-    "MedicineCatalogueV2 Tu Vi potency scales ~1.65^realm while DiscipleProgressionBalanceV2 realm requirements ~1.27^realm; high-tier pill may exceed first-floor requirement by large multiples.",
-    "SX01 legacy Hoi Xuan Dan +55 absolute HP can still be used automatically at late realm; realm-sensitive auto-use policy not yet approved.",
-    "Tier-2 Tử Vân Thảo requires Spirit Field Lv30 and intermediate milestone hearts; natural progression time must be tested.",
-    "Current Lv100 Spirit Field routine yield formula does not directly implement owner desired x10,000 total scale; balance/overflow/sinks need approval."
-  ]
+    "Medicine post-BAL04A now scales from actual per-realm EXP. 30 realms still need played pacing against 3/12/24 month goals.",
+    "Tier-2 Tu Van Thao now unlocks at Field Lv10; actual Lv10 requires one earned Linh Tuyen Chi Tam and a viable upgraded hall/worker.",
+    "Legacy TQD fixed 10,000 Tu Vi can still be used in late stages; alternative auto policy requires separate review.",
+    "Current Lv100 Spirit Field routine yield does not implement Owner's full desired x10,000 scale; future policy must balance sinks and integer safety."
+  ],
+  "implemented_bal04a": {
+    "approved_at": "2026-11-05",
+    "branch": "integration/pve-p0-playable-ui-20261103",
+    "runtime_status": "CODE_COMMITTED_QA_PENDING",
+    "medicine_catalogue_version": 2,
+    "historic_receipt_version_supported": 1,
+    "tuvi_potency_realm_xp_fraction": 0.001,
+    "tuvi_grade_factors": [
+      1,
+      1.25,
+      1.55,
+      2
+    ],
+    "legacy_hoi_xuan_hp_flat": 55,
+    "legacy_auto_heal_min_effective_hp_ratio": 0.02,
+    "tu_van_thao_field_unlock_level": 10,
+    "live_source": "MedicineCatalogueV2, B3PillSatietyV1, SX01PillPolicy, B3MedicalAutoplayV1, MedicineAllocationV2, SpiritCropRegistry",
+    "caveat": "does not make unreal r3-r30 medicine recipes craftable"
+  },
+  "qa_evidence": {
+    "math_reference": "30/30 q1-q4 doses below local first floor under current XP curve",
+    "godot": "NOT_RUN_AT_COMMIT_TIME",
+    "windows": "NOT_RUN",
+    "save_migration": "TEST_COMMITTED_NOT_RUN"
+  }
 }
