@@ -25,8 +25,8 @@ func set_values(tam_values: Array, tu_values: Array) -> void:
 func _draw() -> void:
 	if size.x < 180.0 or size.y < 150.0 or dimension_values.size() != D7_LABELS.size():
 		return
-	var center := Vector2(size.x * 0.5, size.y * 0.42)
-	var radius := minf(size.x * 0.235, size.y * 0.28)
+	var center := Vector2(size.x * 0.5, size.y * 0.46)
+	var radius := minf(size.x * 0.235, size.y * 0.31)
 	var max_value := 1.0
 	for value in dimension_values:
 		max_value = maxf(max_value, value)
@@ -47,8 +47,8 @@ func _draw() -> void:
 		polygon.append(center + direction * radius * clampf(value / max_value, 0.0, 1.0))
 		var label_point := center + direction * (radius + 16.0)
 		var axis_color := JADE if index < 3 else GOLD
-		draw_string(font, Vector2(label_point.x - 48.0, label_point.y + 3.0), D7_LABELS[index], HORIZONTAL_ALIGNMENT_CENTER, 96.0, 11, axis_color)
-		draw_string(font, Vector2(label_point.x - 34.0, label_point.y + 16.0), "%.0f" % value, HORIZONTAL_ALIGNMENT_CENTER, 68.0, 10, TEXT)
+		draw_string(font, Vector2(label_point.x - 48.0, label_point.y + 3.0), D7_LABELS[index], HORIZONTAL_ALIGNMENT_CENTER, 96.0, 13, axis_color)
+		draw_string(font, Vector2(label_point.x - 34.0, label_point.y + 16.0), "%.0f" % value, HORIZONTAL_ALIGNMENT_CENTER, 68.0, 12, TEXT)
 	var fill := JADE
 	fill.a = 0.16
 	draw_colored_polygon(polygon, fill)
