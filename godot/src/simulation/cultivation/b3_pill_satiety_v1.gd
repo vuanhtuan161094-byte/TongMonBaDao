@@ -66,6 +66,13 @@ static func consume(state: SimulationState, d: DiscipleState, pill: StringName, 
     var legacy := COSTS.has(str(pill))
     if sequence != last+1 or sequence > MAX_SEQUENCE or (not legacy and medicine.is_empty()):
         return {"ok":false,"reason":"invalid_pill_sequence_or_content"}
+    # The manual path must obey the same progression gate as auto allocation.
+    # No future-rank medicine effect may bypass content progression merely
+    # because an item stack already exists (including in an old save).
+    if not legacy:
+        var current_realm := int(d.v2_realm_progress.get("cultivation", {}).get("realm", 0))
+        if int(medicine.get("realm_rank", 0)) > current_realm:
+            return {"ok":false,"reason":"medicine_realm_not_reached"}
     var tuvi_pill := pill == &"tu_khi_dan" or str(medicine.get("pill_family", "")) == MedicineCatalogueV2.FAMILY_TUVI
     if (B3MedicalAutoplayV1.busy(state,d) and not (tuvi_pill and safe_cultivation_pill_window(state,d))) \
         or not state.sect.p3_7_resources_enabled:
@@ -147,8 +154,17 @@ static func validate(state: SimulationState, d: DiscipleState) -> String:
     var legacy := COSTS.has(pill)
     if not legacy and medicine.is_empty(): return "unknown_satiety_pill"
     var cost := int(COSTS[pill]) if legacy else int(medicine.get("satiety_cost", 0))
-    if not legacy and (not whole(receipt.get("medicine_version")) or int(receipt["medicine_version"]) != MedicineCatalogueV2.VERSION or not whole(receipt.get("medicine_potency")) or int(receipt["medicine_potency"]) != int(medicine.get("potency", -1))):
-        return "invalid_medicine_receipt_version_or_potency"
+    # Receipt effect is bound to its historical catalogue version, not the
+    # current definition. Existing V1 saves remain valid without mutating
+    # inventory, EXP, receipt sequence, or the global SaveService schema.
+    var receipt_potency := 0
+    if not legacy:
+        if not whole(receipt.get("medicine_version")) or not whole(receipt.get("medicine_potency")):
+            return "invalid_medicine_receipt_version_or_potency"
+        receipt_potency = MedicineCatalogueV2.potency_for_version(
+            StringName(pill), int(receipt["medicine_version"]))
+        if receipt_potency <= 0 or int(receipt["medicine_potency"]) != receipt_potency:
+            return "invalid_medicine_receipt_version_or_potency"
     for field in ["sequence","day","tick","cost","spent_after","injury","recover_tick"]:
         if not whole(receipt.get(field)): return "invalid_pill_receipt_"+field
     if str(receipt.get("state","")) != "COMMITTED" or int(receipt["sequence"]) != int(p["sequence"]) or int(receipt["day"]) != int(p["day"]) or int(receipt["tick"]) < 0 or int(receipt["tick"]) > state.tick or int(int(receipt["tick"])/DAY_TICKS) != int(p["day"]) or int(receipt["cost"]) != cost or int(receipt["spent_after"]) != int(p["spent"]) or int(p["spent"]) < int(receipt["cost"]): return "pill_receipt_counter_conflict"
@@ -157,8 +173,8 @@ static func validate(state: SimulationState, d: DiscipleState) -> String:
     var xp := float(receipt["tuvi"])
     if not is_finite(hp) or not is_finite(xp) or hp < -0.0000001: return "invalid_pill_effect"
     var is_healing := pill == "hoi_xuan_dan" or str(medicine.get("pill_family", "")) == MedicineCatalogueV2.FAMILY_HEAL
-    var healing_limit := NeedsSystem.HEALING_PILL_HP if legacy else float(medicine.get("potency", 0))
-    var tuvi_limit := TUVI if legacy else float(medicine.get("potency", 0))
+    var healing_limit := NeedsSystem.HEALING_PILL_HP if legacy else float(receipt_potency)
+    var tuvi_limit := TUVI if legacy else float(receipt_potency)
     if is_healing and (hp <= 0.0 or hp > healing_limit or xp != 0.0):
         return "pill_effect_conflict"
     # Fixed Tu Vi can increase realm floors and HP proportionally by V2 law.
