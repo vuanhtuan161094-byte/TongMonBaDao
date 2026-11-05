@@ -163,7 +163,13 @@ func _build_sites_panel() -> Control:
 	management_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	management_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	management_scroll.add_child(content)
-	card.add_child(management_scroll)
+	# Keep the two main actions visible at 720p while the longer management form scrolls.
+	var frame := VBoxContainer.new()
+	frame.name = "ResidenceManagementFrame"
+	frame.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	frame.add_theme_constant_override("separation", 8)
+	card.add_child(frame)
+	frame.add_child(management_scroll)
 	content.add_child(UI.section_heading("Mở rộng khu cư trú", "guide", UI.JADE))
 	var selected_id := str(_vm.get("selected_residence_id", ""))
 	var selected_site := _find_site(selected_id)
@@ -258,13 +264,19 @@ func _build_sites_panel() -> Control:
 	assign.name = "AssignResidenceRoom"
 	assign.disabled = disciple_picker.disabled or room_picker.disabled or not bool(_vm.get("can_assign_room",false))
 	assign.pressed.connect(func(): room_assignment_requested.emit(str(disciple_picker.get_item_metadata(disciple_picker.selected)),str(room_picker.get_item_metadata(room_picker.selected))))
-	assignment_content.add_child(assign)
 	content.add_child(assignment_block)
 
 	var manage := UI.button("QUY HOẠCH / DỜI NHÀ TRÊN BẢN ĐỒ",false,UI.GOLD)
 	manage.name = "ManageResidenceRooms"
 	manage.pressed.connect(func(): room_management_requested.emit())
-	content.add_child(manage)
+	var action_footer := HBoxContainer.new()
+	action_footer.name = "ResidenceStickyActions"
+	action_footer.add_theme_constant_override("separation", 8)
+	assign.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	manage.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	action_footer.add_child(assign)
+	action_footer.add_child(manage)
+	frame.add_child(action_footer)
 	return card
 
 func _option_picker(node_name: String, options: Array, selected_id: String) -> OptionButton:
