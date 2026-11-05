@@ -89,10 +89,33 @@ foreach($line in ($verifyText -split '[\r\n]+')){
  New-Item -ItemType Directory -Force -Path (Split-Path -Parent $importLog)|Out-Null
  $godotProject=Join-Path $stage 'godot'
 if(-not(Test-Path -LiteralPath (Join-Path $godotProject 'project.godot') -PathType Leaf)){Stop-Build 'Exported Godot project is missing.' 11}
-& $godot --headless --editor --path $godotProject --import --quit --verbose --log-file $importLog
+$importProfile=Join-Path $ProfileRoot 'godot_import_profile'
+$importAppData=Join-Path $importProfile 'AppData\Roaming'
+$importLocalAppData=Join-Path $importProfile 'AppData\Local'
+New-Item -ItemType Directory -Force -Path $importAppData,$importLocalAppData|Out-Null
+$oldAppData=$env:APPDATA;$oldLocalAppData=$env:LOCALAPPDATA
+try{
+ $env:APPDATA=$importAppData;$env:LOCALAPPDATA=$importLocalAppData
+ & $godot --headless --editor --path $godotProject --import --quit --verbose --log-file $importLog
  $importCode=$LASTEXITCODE
+}finally{$env:APPDATA=$oldAppData;$env:LOCALAPPDATA=$oldLocalAppData}
  if($importCode-ne0){Stop-Build "Godot import failed with exit $importCode; log=$importLog; staging left at $stage." 11}
  if(Test-Path -LiteralPath $importLog){$bad=Select-String -LiteralPath $importLog -Pattern 'SCRIPT ERROR:|Parse Error:|Error: Can''t run project:'; if($bad){Stop-Build "Godot import emitted a script/parse error; log=$importLog." 11}}
+$settleStarted=[DateTime]::UtcNow
+$settleDeadline=$settleStarted.AddSeconds(120)
+$lastMetadataFingerprint=$null
+$metadataStableSince=$settleStarted
+$metadataReady=$false
+while([DateTime]::UtcNow -lt $settleDeadline){
+ $metadataLines=@(Get-ChildItem -LiteralPath $godotProject -Force -Recurse -File -ErrorAction Stop|Where-Object {$relative=$_.FullName.Substring($godotProject.Length).TrimStart('\').Replace('\','/');(-not$relative.StartsWith('.godot/',[StringComparison]::OrdinalIgnoreCase))-and($_.Name.EndsWith('.import',[StringComparison]::OrdinalIgnoreCase)-or$_.Name.EndsWith('.uid',[StringComparison]::OrdinalIgnoreCase))}|ForEach-Object {$relative=$_.FullName.Substring($godotProject.Length).TrimStart('\').Replace('\','/');'{0}|{1}|{2}'-f$relative,[long]$_.Length,[long]$_.LastWriteTimeUtc.Ticks})
+ $metadataFingerprint=Fingerprint $metadataLines
+ $metadataNow=[DateTime]::UtcNow
+ if($metadataFingerprint-ne$lastMetadataFingerprint){$lastMetadataFingerprint=$metadataFingerprint;$metadataStableSince=$metadataNow}
+ if(($metadataNow-$settleStarted).TotalSeconds-ge30-and($metadataNow-$metadataStableSince).TotalSeconds-ge5){$metadataReady=$true;break}
+ Start-Sleep -Seconds 1
+}
+if(-not$metadataReady){Stop-Build 'Godot import metadata did not settle within 120 seconds.' 11}
+Write-Output ('TRI03_IMPORT_METADATA_SETTLED sidecars={0} wait_seconds={1:N1}'-f$metadataLines.Count,([DateTime]::UtcNow-$settleStarted).TotalSeconds)
 $files=@()
  foreach($item in Get-ChildItem -LiteralPath $stage -Force -Recurse -ErrorAction Stop){
   if(($item.Attributes-band[IO.FileAttributes]::ReparsePoint)-ne0){Stop-Build "Reparse point found in export: $($item.FullName)" 11}
@@ -119,8 +142,10 @@ $files=@()
  $json=$packageManifest|ConvertTo-Json -Depth 8
  [IO.File]::WriteAllText((Join-Path $stage 'tri03_offline_package_manifest.json'),$json,[Text.UTF8Encoding]::new($false))
  $offlineVerifyArgs='-NoProfile -ExecutionPolicy Bypass -File '+(QuoteArg $offlineVerifier)+' -GameRoot '+(QuoteArg $stage)+' -ProfileRoot '+(QuoteArg $ProfileRoot)
- $op=Start-Process -FilePath $pwsh -ArgumentList $offlineVerifyArgs -Wait -PassThru -WindowStyle Hidden
- if($op.ExitCode-ne0){Stop-Build "Offline package verification failed with exit $($op.ExitCode); staging left at $stage." 12}
+ $verifyStdout=Join-Path $ProfileRoot 'Logs\offline_verify.stdout.log'
+$verifyStderr=Join-Path $ProfileRoot 'Logs\offline_verify.stderr.log'
+$op=Start-Process -FilePath $pwsh -ArgumentList $offlineVerifyArgs -Wait -PassThru -WindowStyle Hidden -RedirectStandardOutput $verifyStdout -RedirectStandardError $verifyStderr
+ if($op.ExitCode-ne0){Stop-Build "Offline package verification failed with exit $($op.ExitCode); stdout=$verifyStdout stderr=$verifyStderr; staging left at $stage." 12}
  Move-Item -LiteralPath $stage -Destination $dest
  Write-Output "TRI03_OFFLINE_BUILD_PASS source_head=$head package_fingerprint=$packageFingerprint files=$($files.Count) female_stage_a_pngs=$femaleCount path=$dest"
  Write-Output "Offline package SHA-256 manifest: $dest\tri03_offline_package_manifest.json"

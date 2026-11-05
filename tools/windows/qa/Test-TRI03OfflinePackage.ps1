@@ -31,6 +31,12 @@ $fingerprintLines=@('z=2','a=1')
 Assert ((Fingerprint $fingerprintLines)-eq(Finger $fingerprintLines)) 'builder uses verifier LF canonicalization'
 Assert ($builderText.Contains('--path $godotProject --import --quit')) 'builder imports the Godot project subdirectory'
 Assert ($builderText.Contains("Error: Can''t run project:")) 'builder rejects a no-main-scene import error'
+Assert ($builderText.Contains('$env:APPDATA=$importAppData;$env:LOCALAPPDATA=$importLocalAppData')) 'Godot import uses QA-isolated Windows profile paths'
+Assert ($builderText.Contains('$env:APPDATA=$oldAppData;$env:LOCALAPPDATA=$oldLocalAppData')) 'Godot import restores inherited Windows profile environment'
+Assert ($builderText.Contains('godot_import_profile')) 'Godot import editor data is isolated under the QA profile'
+Assert ($builderText.Contains('TRI03_IMPORT_METADATA_SETTLED')) 'builder records when generated Godot sidecars settle'
+Assert ($builderText.Contains('Godot import metadata did not settle within 120 seconds.')) 'builder fails closed if Godot sidecars keep changing'
+Assert ($builderText.Contains('RedirectStandardOutput $verifyStdout -RedirectStandardError $verifyStderr')) 'offline verifier output and errors are retained in logs'
 New-Item -ItemType Directory -Force -Path (Join-Path $pkg 'godot'),(Join-Path $pkg 'tools\windows\run'),(Join-Path $pkg 'godot\assets\p3\character_creator\parts\female_normal_v1')|Out-Null
 [IO.File]::WriteAllText((Join-Path $pkg 'godot\project.godot'),'config_version=5',[Text.UTF8Encoding]::new($false))
 [IO.File]::WriteAllText((Join-Path $pkg 'CHOI-GAME.cmd'),'echo game',[Text.UTF8Encoding]::new($false))
