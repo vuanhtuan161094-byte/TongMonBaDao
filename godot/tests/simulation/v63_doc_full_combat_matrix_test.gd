@@ -63,7 +63,7 @@ func _run() -> void:
     _check(int(slot_counts.get("basic",0)) == 3 and int(slot_counts.get("mobility",0)) == 3,
         "basic/mobility catalogue slot counts changed")
     print("DOC_MATRIX_SUMMARY "+JSON.stringify({
-        "integration_base_head":"70fc703a14108c42c32c5ca554c002504b6f96c3",
+        "source_scope":"RUN_ON_CURRENT_CHECKOUT_HEAD",
         "catalogue_ids":matrix_ids.size(),
         "slot_counts":slot_counts,
         "active_ultimate_cases":action_cases,
@@ -224,10 +224,10 @@ func _probe_action(skill: Dictionary) -> void:
     var caster: Dictionary = battle.actors[str(actor.id)]
     var enemy: Dictionary = battle.actors[str(monsters[0].id)]
     if effect == "cleanse":
-        var ally: Dictionary = battle.actors[support_id]
-        var statuses: Dictionary = ally.get("status_effects", {})
+        var cleanse_ally: Dictionary = battle.actors[support_id]
+        var statuses: Dictionary = cleanse_ally.get("status_effects", {})
         statuses["weaken"] = {"until":15.0, "factor":0.85}
-        ally["status_effects"] = statuses
+        cleanse_ally["status_effects"] = statuses
     if effect == "consume_poison":
         var real_source := "tmb.skill.poison.doc_cham.active_02.human"
         if not _check(str(V63HumanSkillCombatSystem.skill_definition(real_source).get("effect", "")) == "poison", id+" poison source not authored"):
