@@ -54,7 +54,8 @@ static func _bone(canvas: CanvasItem, root: Vector2, a: Vector2, b: Vector2,
     canvas.draw_circle(pb, width * scale * 0.42, color)
 
 static func render(canvas: CanvasItem, actor: Dictionary, root: Vector2, school: String,
-        pose: String, seconds: float, scale: float, facing: float = 1.0) -> void:
+        pose: String, seconds: float, scale: float, facing: float = 1.0,
+        pose_elapsed: float = 0.0) -> void:
     var monster := str(actor.get("side", "")) == "monster"
     var boss := str(actor.get("tier", "")) == "boss"
     var colors := _palette(school, monster, boss)
@@ -64,14 +65,25 @@ static func render(canvas: CanvasItem, actor: Dictionary, root: Vector2, school:
     var actor_seed := absi(hash(str(actor.get("id", "")))) % 11
     var walk := sin(seconds * 13.0 + float(actor_seed % 7)) if state == "walk" else 0.0
     var breathing := sin(seconds * 2.8 + float(actor_seed)) * 0.85
-    var attack := sin(seconds * 19.0) if state == "attack" else 0.0
-    var cast := sin(seconds * 9.0) if state == "cast" else 0.0
+    # Attack is a single authored anticipation -> strike -> recovery motion,
+    # never a free-running sine wave that randomly resets on each event.
+    var attack_phase := clampf(pose_elapsed / 0.42, 0.0, 1.0)
+    var attack := smoothstep(0.12, 0.43, attack_phase) * (1.0 - smoothstep(0.72, 1.0, attack_phase))
+    var cast := sin(seconds * 6.5) if state == "cast" else 0.0
     var lean := 0.0
-    if state == "walk": lean = 0.055 * walk
-    if state == "attack": lean = 0.19 + 0.13 * attack
-    if state == "cast": lean = -0.11 + cast * 0.035
-    if state == "hit": lean = -0.25
-    if state == "death": lean = -1.08
+    if state == "walk":
+        lean = 0.06 * walk
+    elif state == "attack":
+        match school:
+            "bow": lean = -0.04 + 0.10 * attack
+            "fist": lean = -0.17 + 0.37 * attack
+            "poison": lean = -0.14 + 0.24 * attack
+    elif state == "cast":
+        lean = -0.10 + cast * 0.025
+    elif state == "hit":
+        lean = -0.25
+    elif state == "death":
+        lean = -1.08
     var body_origin := root + Vector2(0, breathing * scale)
     if state == "death": body_origin += Vector2(0, 5 * scale)
 
@@ -80,8 +92,11 @@ static func render(canvas: CanvasItem, actor: Dictionary, root: Vector2, school:
     if state != "death":
         var boots := colors.shadow
         # Split legs rotate out of phase in Walk rather than a single bob.
-        _bone(canvas, body_origin, Vector2(-4, -15), Vector2(-6 - walk * 4.0, -1), scale, facing, lean, 4.6, boots)
-        _bone(canvas, body_origin, Vector2(4, -15), Vector2(6 + walk * 4.0, -1), scale, facing, lean, 4.6, boots)
+        var stance := attack * 6.0 if state == "attack" and school == "fist" else 0.0
+        _bone(canvas, body_origin, Vector2(-4, -15), Vector2(-6 - walk * 4.0 - stance * 0.3, -1),
+            scale, facing, lean, 4.6, boots)
+        _bone(canvas, body_origin, Vector2(4, -15), Vector2(6 + walk * 4.0 + stance, -1),
+            scale, facing, lean, 4.6, boots)
     else:
         _bone(canvas, body_origin, Vector2(-4, -15), Vector2(-8, -3), scale, facing, lean, 4.5, colors.shadow)
         _bone(canvas, body_origin, Vector2(4, -15), Vector2(9, -3), scale, facing, lean, 4.5, colors.shadow)
@@ -98,6 +113,20 @@ static func render(canvas: CanvasItem, actor: Dictionary, root: Vector2, school:
     _poly(canvas, body_origin, [
         Vector2(-4, -24), Vector2(5, -24), Vector2(8, -12), Vector2(-7, -12)
     ], colors.light.darkened(0.25), scale, facing, lean)
+    # Distinct ornamental lapels, waist cord and fluttering coat panels.
+    var hem_sway := sin(seconds * 6.0) * 2.0 + attack * 4.0
+    _poly(canvas, body_origin, [
+        Vector2(-8, -20), Vector2(-2, -15), Vector2(-6, -4),
+        Vector2(-13 - hem_sway, -3)
+    ], colors.light.darkened(0.12), scale, facing, lean)
+    _poly(canvas, body_origin, [
+        Vector2(5, -19), Vector2(9, -16), Vector2(14 + hem_sway, -3),
+        Vector2(5, -6)
+    ], colors.coat.lightened(0.16), scale, facing, lean)
+    canvas.draw_line(_p(body_origin, -8, -19, scale, facing, lean),
+        _p(body_origin, 7, -19, scale, facing, lean), colors.metal, 1.3 * scale, true)
+    canvas.draw_circle(_p(body_origin, 0, -19, scale, facing, lean),
+        2.2 * scale, colors.glow)
 
     var back_hand := Vector2(-17, -17)
     var front_hand := Vector2(17, -17)
@@ -105,11 +134,31 @@ static func render(canvas: CanvasItem, actor: Dictionary, root: Vector2, school:
         back_hand += Vector2(-walk * 4.5, walk * 2.0)
         front_hand += Vector2(walk * 4.5, -walk * 2.0)
     elif state == "attack":
-        back_hand = Vector2(-17, -21)
-        front_hand = Vector2(22 + attack * 3.0, -23 - attack * 5.0)
+        # The three schools have visibly different combat silhouettes.
+        # Bow holds the bow arm while the string hand moves forward on release.
+        # Fist plants a foot and extends a heavy straight punch.
+        # Poison whips a needle from behind the shoulder.
+        match school:
+            "bow":
+                back_hand = Vector2(-2.0 + attack * 13.0, -30.0 + attack * 1.5)
+                front_hand = Vector2(23.0, -31.0)
+            "fist":
+                back_hand = Vector2(-21.0 + attack * 3.0, -23.0)
+                front_hand = Vector2(8.0 + attack * 31.0, -21.0 - attack * 6.0)
+            "poison":
+                back_hand = Vector2(-18.0, -31.0)
+                front_hand = Vector2(8.0 + attack * 27.0, -36.0 + attack * 9.0)
     elif state == "cast":
-        back_hand = Vector2(-18, -28 + cast * 2.0)
-        front_hand = Vector2(21, -29 - cast * 2.0)
+        match school:
+            "bow":
+                back_hand = Vector2(-1.0 + cast * 0.8, -29.0)
+                front_hand = Vector2(24.0, -31.0 + cast * 0.8)
+            "fist":
+                back_hand = Vector2(-18.0, -24.0 + cast)
+                front_hand = Vector2(9.0 + cast * 1.0, -34.0)
+            "poison":
+                back_hand = Vector2(-11.0 + cast, -30.0)
+                front_hand = Vector2(13.0, -40.0 + cast * 1.5)
     elif state == "hit":
         back_hand = Vector2(-17, -13)
         front_hand = Vector2(22, -11)
@@ -138,6 +187,14 @@ static func render(canvas: CanvasItem, actor: Dictionary, root: Vector2, school:
     var right_eye := _p(body_origin, 4.0, -40, scale, facing, lean)
     canvas.draw_circle(left_eye, 1.1 * scale, colors.glow)
     canvas.draw_circle(right_eye, 1.1 * scale, colors.glow)
+    # Eyelids, eyebrow angle and cheek sheen change with impact/effort.
+    var eye_narrow := 1.5 if state in ["attack", "hit"] else 0.0
+    canvas.draw_line(left_eye + Vector2(-2 * scale, (-2 + eye_narrow) * scale),
+        left_eye + Vector2(2 * scale, (-2 - eye_narrow) * scale), colors.hair, 1.1 * scale, true)
+    canvas.draw_line(right_eye + Vector2(-2 * scale, (-2 - eye_narrow) * scale),
+        right_eye + Vector2(2 * scale, (-2 + eye_narrow) * scale), colors.hair, 1.1 * scale, true)
+    canvas.draw_circle(_p(body_origin, 7.0, -35.0, scale, facing, lean),
+        1.1 * scale, colors.skin.lightened(0.28))
     var jewel := _p(body_origin, 0, -51, scale, facing, lean)
     canvas.draw_circle(jewel, 2.5 * scale, colors.metal)
     canvas.draw_circle(jewel, 1.35 * scale, colors.glow)
@@ -170,32 +227,60 @@ static func render(canvas: CanvasItem, actor: Dictionary, root: Vector2, school:
     # Equipable weapon attachment: no baked weapon in the character body.
     if not monster and state in ["attack", "cast"]:
         draw_weapon(canvas, _p(body_origin, front_hand.x, front_hand.y, scale, facing, lean), school,
-            state, seconds, scale, facing, colors)
+            state, seconds, scale, facing, colors,
+            _p(body_origin, back_hand.x, back_hand.y, scale, facing, lean), attack)
     if state == "cast":
         var focus := _p(body_origin, front_hand.x + 4, front_hand.y - 2, scale, facing, lean)
         canvas.draw_arc(focus, (6 + sin(seconds * 12.0) * 1.0) * scale,
             0, TAU, 24, colors.glow, 2.0 * scale, true)
 
 static func draw_weapon(canvas: CanvasItem, hand: Vector2, school: String, pose: String,
-        seconds: float, scale: float, facing: float, colors: Dictionary) -> void:
+        seconds: float, scale: float, facing: float, colors: Dictionary,
+        other_hand: Vector2, attack_amount: float) -> void:
     # This function is intentionally separate from the paper-doll renderer.
     var tip := hand + Vector2(14 * facing, -11) * scale
     var metal: Color = colors.metal
     match school:
         "bow":
-            var bow_center := hand + Vector2(8 * facing, -2) * scale
-            canvas.draw_arc(bow_center, 13.0 * scale, -1.1, 1.1, 28, metal, 2.8 * scale, true)
-            canvas.draw_line(bow_center + Vector2(5 * facing, -12) * scale,
-                bow_center + Vector2(5 * facing, 12) * scale, Color("ddd7e8"), 1.2 * scale, true)
-            if pose == "attack":
-                canvas.draw_line(hand, tip + Vector2(9 * facing, 0), colors.glow, 2.0 * scale, true)
+            # Bow limbs, curved grip and two moving string halves. During Cast
+            # the draw hand visibly pulls back; Attack releases it forward.
+            var bow_center := hand + Vector2(7.0 * facing, -2.0) * scale
+            var upper := bow_center + Vector2(3.0 * facing, -17.0) * scale
+            var lower := bow_center + Vector2(3.0 * facing, 17.0) * scale
+            var string_hand := other_hand if pose == "cast" else other_hand.lerp(bow_center, attack_amount)
+            canvas.draw_arc(bow_center, 17.0 * scale, -1.05, 1.05, 28, metal, 3.0 * scale, true)
+            canvas.draw_line(upper, string_hand, Color("ded4df"), 1.5 * scale, true)
+            canvas.draw_line(string_hand, lower, Color("ded4df"), 1.5 * scale, true)
+            canvas.draw_circle(bow_center, 3.0 * scale, colors.glow)
+            if pose == "cast" or attack_amount < 0.75:
+                var arrow_tip := bow_center + Vector2(18.0 * facing, -1.0) * scale
+                canvas.draw_line(string_hand, arrow_tip, Color("f4dda0"), 2.1 * scale, true)
+                canvas.draw_colored_polygon(PackedVector2Array([
+                    arrow_tip + Vector2(5.0 * facing, 0.0) * scale,
+                    arrow_tip + Vector2(-2.0 * facing, -2.4) * scale,
+                    arrow_tip + Vector2(-2.0 * facing, 2.4) * scale
+                ]), colors.glow)
         "poison":
+            # Thin detachable needle plus a small sigil with three orbiting
+            # droplets; no poison damage is generated by presentation.
             canvas.draw_line(hand, tip, metal, 2.4 * scale, true)
             canvas.draw_circle(tip, 4.2 * scale, colors.glow)
             for i in range(3):
                 var p := tip + Vector2(sin(seconds * 9.0 + i * 2.0) * 6.0,
                     -5.0 - float(i) * 4.5) * scale
                 canvas.draw_circle(p, maxf(1.0, 2.2 - float(i) * 0.4) * scale, colors.glow)
+            if pose == "attack":
+                canvas.draw_line(hand, hand + Vector2(-13.0 * facing, 3.0) * scale,
+                    Color("8ce9b7", 0.65), maxf(1.0, attack_amount * 3.0) * scale, true)
         "fist":
+            # Wrist/knuckle highlight follows the striking hand, while the
+            # other hand remains tucked in a defensive guard.
             canvas.draw_circle(hand, 7.5 * scale, colors.glow)
             canvas.draw_arc(hand, 9.0 * scale, 0, TAU, 18, metal, 2.0 * scale, true)
+            canvas.draw_circle(other_hand, 5.0 * scale, metal.darkened(0.15))
+            if pose == "attack":
+                for i in range(3):
+                    var trail_y := (float(i) - 1.0) * 4.0
+                    canvas.draw_line(hand + Vector2(-15.0 * facing, trail_y) * scale,
+                        hand + Vector2(-4.0 * facing, trail_y) * scale,
+                        colors.glow, maxf(0.8, attack_amount * 2.0) * scale, true)
