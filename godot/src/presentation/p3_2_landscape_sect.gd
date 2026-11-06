@@ -8393,7 +8393,7 @@ func _build_disciple_equipment_manager(parent: ScrollContainer, disciple: Discip
 
     var note := Label.new()
     note.name = "EquipmentCombatV2Note"
-    note.text = "Combat V2 dùng thủ, tốc đánh/chạy, tầm/tỷ lệ đòn cơ bản và kỹ năng khớp Đường/Hệ. Chiến lực cũ không cộng thành ATK. Ô mở tự động được scheduler xét theo chính sách và ví."
+    note.text = "Kho Tông Môn: cấp phát miễn phí. Phường Thị: mua bằng ví cá nhân. Khóa ô để giữ trang bị đã chọn."
     note.custom_minimum_size = Vector2(manager.custom_minimum_size.x,36)
     note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
     note.add_theme_font_size_override("font_size",11)
@@ -8503,20 +8503,29 @@ func _build_disciple_equipment_manager(parent: ScrollContainer, disciple: Discip
         remove_button.pressed.connect(Callable(self,"_unequip_disciple_item_to_storage").bind(disciple.id,slot))
         row.add_child(remove_button)
 
+        var comparison := Label.new()
+        comparison.name = "EquipmentPreview_%s" % slot_key
+        comparison.custom_minimum_size = Vector2(manager.custom_minimum_size.x,46)
+        comparison.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+        comparison.add_theme_font_size_override("font_size",11)
+        comparison.add_theme_color_override("font_color",INK)
+        manager.add_child(comparison)
         if picker.item_count > 0:
             picker.item_selected.connect(Callable(self,"_update_disciple_equipment_action").bind(picker,equip_button,disciple.wallet))
+            picker.item_selected.connect(Callable(self,"_update_disciple_equipment_preview").bind(picker,comparison,equipped))
             _update_disciple_equipment_action(picker.selected,picker,equip_button,disciple.wallet)
-
-        if not equipped.is_empty():
-            var stats := Label.new()
-            stats.name = "EquipmentStats_%s" % slot_key
-            stats.text = _disciple_equipment_effect_text(equipped)
-            stats.custom_minimum_size = Vector2(manager.custom_minimum_size.x,18)
-            stats.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-            stats.add_theme_font_size_override("font_size",10)
-            stats.add_theme_color_override("font_color",INK)
-            manager.add_child(stats)
+            _update_disciple_equipment_preview(picker.selected,picker,comparison,equipped)
     _ensure_disabled_controls_readable(manager)
+
+
+func _update_disciple_equipment_preview(index: int, picker: OptionButton, comparison: Label, currently_equipped: Dictionary) -> void:
+    var old_text := "Không có" if currently_equipped.is_empty() else _disciple_equipment_effect_text(currently_equipped).trim_prefix("Thuộc tính vật phẩm: ")
+    var chosen: Dictionary = {}
+    if index >= 0 and index < picker.item_count:
+        chosen = state.sect.equipment_items.get(str(picker.get_item_metadata(index)), {})
+    var new_text := "Chưa có vật phẩm" if chosen.is_empty() else _disciple_equipment_effect_text(chosen).trim_prefix("Thuộc tính vật phẩm: ")
+    comparison.text = "Đang mặc: %s\nSẽ mặc: %s" % [old_text, new_text]
+    comparison.tooltip_text = comparison.text
 
 
 func _update_disciple_equipment_action(index: int, picker: OptionButton, action: Button, wallet: int) -> void:

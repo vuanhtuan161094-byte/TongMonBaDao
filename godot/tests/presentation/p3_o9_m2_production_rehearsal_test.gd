@@ -138,6 +138,9 @@ func _run() -> void:
         _fail("O9 could not identify the unique item created by the real Forge transaction.")
         return
     var crafted_item: Dictionary = state.sect.equipment_items[str(crafted_item_id)]
+    if StringName(crafted_item.get("location", "")) != EquipmentSystem.LOCATION_STORAGE:
+        _fail("O9 Forge must put the real crafted item into Sect Warehouse.")
+        return
     var buyer_id: StringName = &""
     var buyer_wallet := -1
     for raw_disciple_id in state.disciples.keys():
@@ -145,12 +148,25 @@ func _run() -> void:
         if candidate_disciple.wallet > buyer_wallet:
             buyer_id = candidate_disciple.id
             buyer_wallet = candidate_disciple.wallet
-    if buyer_id == &"" or buyer_wallet < int(crafted_item.get("price",0)):
-        _fail("O9 real starter roster has no disciple wallet that can afford the forged item.")
+    if buyer_id == &"":
+        _fail("O9 lacks a real disciple to receive Sect equipment.")
         return
     var buyer: DiscipleState = state.disciples[buyer_id]
     var buyer_wallet_before := buyer.wallet
     var treasury_before_purchase := state.sect.treasury
+    # Explicitly listed Phuong Thi goods cannot bypass payment at backend level.
+    if not equipment_system.move_to_shop(state, crafted_item_id):
+        _fail("O9 cannot list the real item for the shop ownership check.")
+        return
+    if equipment_system.manual_equip(state, buyer_id, crafted_item_id):
+        _fail("O9 unpaid shop item was equipped directly.")
+        return
+    if buyer.wallet != buyer_wallet_before or state.sect.treasury != treasury_before_purchase:
+        _fail("O9 rejected unpaid issue changed funds.")
+        return
+    if not equipment_system.move_to_storage(state, crafted_item_id):
+        _fail("O9 cannot return the unsold item to Sect Warehouse.")
+        return
     ui.call("_open_disciple_deep_screen",buyer_id,"Trang bị")
     await process_frame
     var weapon_picker := ui.find_child("EquipmentPicker_weapon",true,false) as OptionButton
@@ -164,12 +180,12 @@ func _run() -> void:
             crafted_option = option_index
             break
     if crafted_option < 0:
-        _fail("O9 forged shop item is missing from the disciple's compatible weapon picker.")
+        _fail("O9 forged warehouse item is missing from the disciple's weapon picker.")
         return
     weapon_picker.select(crafted_option)
     weapon_picker.emit_signal("item_selected",crafted_option)
-    if equip_button.disabled or equip_button.text != "Mua & mặc":
-        _fail("O9 shop item did not expose an affordable canonical purchase action.")
+    if equip_button.disabled or equip_button.text != "Mặc":
+        _fail("O9 warehouse item must be issued free, not purchased.")
         return
     equip_button.emit_signal("pressed")
     await process_frame
@@ -178,32 +194,32 @@ func _run() -> void:
         StringName(equipped_item.get("location","")) != EquipmentSystem.LOCATION_EQUIPPED
         or str(equipped_item.get("owner_id","")) != str(buyer_id)
         or str(buyer.equipped_items.get(str(EquipmentSystem.SLOT_WEAPON),"")) != str(crafted_item_id)
-        or buyer.wallet != buyer_wallet_before - int(crafted_item.get("price",0))
-        or state.sect.treasury != treasury_before_purchase + int(crafted_item.get("price",0))
+        or buyer.wallet != buyer_wallet_before
+        or state.sect.treasury != treasury_before_purchase
     ):
-        _fail("O9 equipment UI did not use the real purchase/equip transaction exactly once.")
+        _fail("O9 free warehouse issue changed funds or failed ownership.")
         return
 
     var purchase_wallet := buyer.wallet
     var purchase_treasury := state.sect.treasury
+    # Warehouse issue locks the slot by default. Unlock, then relock.
     var slot_lock_button := ui.find_child("EquipmentAuto_weapon",true,false) as Button
-    if slot_lock_button == null or slot_lock_button.text != "Khóa ô":
-        _fail("O9 equipped shop item did not expose the canonical slot-lock action.")
-        return
-    slot_lock_button.emit_signal("pressed")
-    await process_frame
-    if not bool(buyer.locked_equipment_slots.get(str(EquipmentSystem.SLOT_WEAPON),false)):
-        _fail("O9 UI did not lock the equipped slot.")
-        return
-
-    slot_lock_button = ui.find_child("EquipmentAuto_weapon",true,false) as Button
     if slot_lock_button == null or slot_lock_button.text != "Mở tự động":
-        _fail("O9 locked slot did not expose return-to-auto.")
+        _fail("O9 free warehouse issue did not lock the selected slot.")
         return
     slot_lock_button.emit_signal("pressed")
     await process_frame
     if bool(buyer.locked_equipment_slots.get(str(EquipmentSystem.SLOT_WEAPON),false)):
-        _fail("O9 return-to-auto did not clear the canonical slot lock.")
+        _fail("O9 auto-policy action did not unlock the slot.")
+        return
+    slot_lock_button = ui.find_child("EquipmentAuto_weapon",true,false) as Button
+    if slot_lock_button == null or slot_lock_button.text != "Khóa ô":
+        _fail("O9 unlocked slot did not expose its relock action.")
+        return
+    slot_lock_button.emit_signal("pressed")
+    await process_frame
+    if not bool(buyer.locked_equipment_slots.get(str(EquipmentSystem.SLOT_WEAPON),false)):
+        _fail("O9 player relock action failed.")
         return
 
     var unequip_button := ui.find_child("EquipmentUnequip_weapon",true,false) as Button

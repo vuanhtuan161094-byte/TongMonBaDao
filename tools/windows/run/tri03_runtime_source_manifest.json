@@ -3,7 +3,7 @@
   "branch": "integration/pve-p0-playable-ui-20261103",
   "base_sha": "27ed01cd8f377994e5e50bac9ede84e78e8895bd",
   "upstream_pr_sha": "c99f22153b34628f7e94f69de0285514e788b9cb",
-  "source_fingerprint": "5722a9b8713b56ca11f109500039cd07143360e277e1e307f4f1170bacfea320",
+  "source_fingerprint": "e2342804f9a2f4f2ccef252bcd7769fcb42d3cb6bb62dc181e8e1a261ef7401c",
   "files": [
     {
       "path": "CHOI-GAME.cmd",
@@ -367,7 +367,7 @@
     },
     {
       "path": "godot/src/presentation/p3_2_landscape_sect.gd",
-      "git_blob_sha": "5d243626ca1dfc5c7b8ea6a5c2c5d8f1d1b5f39d"
+      "git_blob_sha": "f4d11d4c16f9e11bf6a1423b3fce05d458a08f54"
     },
     {
       "path": "godot/src/presentation/uiux/dai_dien_screen_b1_v1.gd",
@@ -474,6 +474,10 @@
       "git_blob_sha": "e53bf9525dd39308b1095b78ad803bf02a2da194"
     },
     {
+      "path": "godot/src/simulation/equipment/equipment_system.gd",
+      "git_blob_sha": "5ba2c5261cc1cf911d3d2723f7bc0430d71932c3"
+    },
+    {
       "path": "godot/src/simulation/governance/sect_residence_site_v1.gd",
       "git_blob_sha": "0cbf1d4e836dcfa27e527e2530685ec7193ff3d5"
     },
@@ -559,7 +563,7 @@
     },
     {
       "path": "godot/tests/presentation/p3_o9_m2_production_rehearsal_test.gd",
-      "git_blob_sha": "fb736910d66c6bd5b8d542ec5539f7243cdb0691"
+      "git_blob_sha": "9bb0eb2cc0ae342695e667dc15b320a2ce6d9395"
     },
     {
       "path": "godot/tests/presentation/pve_aux02_world_input_contract_test.gd",

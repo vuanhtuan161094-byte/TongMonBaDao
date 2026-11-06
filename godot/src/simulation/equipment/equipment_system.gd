@@ -283,7 +283,8 @@ func manual_equip(state: SimulationState, disciple_id: StringName, item_id: Stri
     if not state.sect.equipment_enabled or not state.disciples.has(disciple_id) or not state.sect.equipment_items.has(str(item_id)):
         return false
     var item: Dictionary = state.sect.equipment_items[str(item_id)]
-    if StringName(item.get("location", "")) == LOCATION_EQUIPPED:
+    # Free issue is limited to Sect Warehouse. Phuong Thi goods require payment.
+    if StringName(item.get("location", "")) != LOCATION_STORAGE:
         return false
     var disciple: DiscipleState = state.disciples[disciple_id]
     if not _equip_item(state, disciple, item_id):
