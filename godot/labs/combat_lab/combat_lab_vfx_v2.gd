@@ -117,13 +117,40 @@ static func render(canvas: CanvasItem, cue: Dictionary, p: Vector2, source: Vect
                         p + ray * (14.0 + 17.0 * t) * zoom_factor, base, 1.8 * zoom_factor)
                 _diamond(canvas, p, (7.0 + 4.0 * t) * zoom_factor, c)
         "cast":
-            var ring := (7.0 + 8.0 * t) * zoom_factor
-            _hex(canvas, p, ring, base, t * TAU * 0.65)
-            _hex(canvas, p, ring * 0.68, c, -t * TAU * 0.55)
-            for i in range(6):
-                var a := TAU * float(i) / 6.0 + t * 4.0
-                canvas.draw_circle(p + Vector2.from_angle(a) * ring,
-                    2.5 * zoom_factor, base)
+            # Different magical silhouettes, not the same ring recolored.
+            # All art is read-only and bounded to at most eight accents.
+            var ring := (8.0 + 8.0 * t) * zoom_factor
+            if school == "bow":
+                # Converging arrowheads and a drawn golden moon-bow.
+                var arc_origin := p + Vector2(6.0, -2.0) * zoom_factor
+                canvas.draw_arc(arc_origin, ring, -1.10, 1.10, 26, base, 2.6 * zoom_factor, true)
+                _streak(canvas, arc_origin + Vector2(-5.0, -ring * 0.85),
+                    arc_origin + Vector2(-5.0, ring * 0.85), c, 1.3 * zoom_factor)
+                for i in range(3):
+                    var trail := float(i) * 5.5 * zoom_factor
+                    _diamond(canvas, p + Vector2((9.0 + t * 8.0) * zoom_factor - trail,
+                        (-6.0 + float(i) * 6.0) * zoom_factor),
+                        (2.5 + t * 1.2) * zoom_factor, base)
+            elif school == "fist":
+                # Stone-like impact sigil with four approaching shock plates.
+                _hex(canvas, p, ring, base, PI / 6.0)
+                for i in range(4):
+                    var a := float(i) * TAU / 4.0 + PI / 4.0
+                    var edge := p + Vector2.from_angle(a) * ring
+                    var inward := p + Vector2.from_angle(a) * ring * 0.55
+                    _streak(canvas, edge, inward, c, 3.4 * zoom_factor)
+                    _diamond(canvas, edge, 3.0 * zoom_factor, base)
+            elif school == "poison":
+                # Two counter-rotating venom spirals and droplet seeds.
+                for i in range(8):
+                    var a := float(i) * TAU / 8.0 + t * 3.0
+                    var radial := (ring * 0.45 + 4.5 * float(i % 3) * zoom_factor)
+                    var drop := p + Vector2.from_angle(a) * radial
+                    canvas.draw_circle(drop, (1.8 + float(i % 3) * 0.6) * zoom_factor,
+                        base if i % 2 == 0 else c)
+                _hex(canvas, p, ring * 0.55, c, -t * TAU)
+            else:
+                _hex(canvas, p, ring, base, t * TAU * 0.65)
         "guard":
             var shield_radius := (14.0 + 3.5 * sin(t * PI)) * zoom_factor
             _hex(canvas, p + Vector2(0, -13 * zoom_factor), shield_radius, base, 0.0)
