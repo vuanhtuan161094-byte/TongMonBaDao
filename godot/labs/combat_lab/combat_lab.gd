@@ -48,6 +48,7 @@ func _ready() -> void:
     _build_ui()
     _refresh_branches()
     _refresh_skills()
+    _apply_capture_preset()
     _start_battle()
     _select_zoom(2.0)
     var requested_zoom := float(OS.get_environment("TMB_COMBAT_LAB_ZOOM"))
@@ -55,7 +56,9 @@ func _ready() -> void:
         _select_zoom(requested_zoom)
     var screenshot := OS.get_environment("TMB_COMBAT_LAB_SCREENSHOT")
     if not screenshot.is_empty():
-        get_tree().create_timer(4.0).timeout.connect(func(): _save_screenshot(screenshot))
+        var requested_delay := OS.get_environment("TMB_COMBAT_LAB_CAPTURE_DELAY")
+        var screenshot_delay := clampf(requested_delay.to_float(), 0.25, 12.0) if not requested_delay.is_empty() else 4.0
+        get_tree().create_timer(screenshot_delay).timeout.connect(func(): _save_screenshot(screenshot))
 
 func _process(delta: float) -> void:
     if battle != null and auto_run and battle.active:
@@ -450,6 +453,29 @@ func _preview_selected_skill() -> void:
         _set_error("Chiêu không hợp lệ ở khoảng cách/đối tượng hoặc trạng thái hiện tại")
         return
     state_label.text = "THỬ CHIÊU · " + str(V63HumanSkillCombatSystem.skill_definition(skill_id).get("name", skill_id)) + " · STEP để phóng"
+
+func _apply_capture_preset() -> void:
+    # QA-only environment selectors; normal F6 player interaction is unchanged.
+    # Each screenshot process can use a different school and zoom while still
+    # creating a real finite MapBattleV2 encounter from canonical catalogues.
+    var school_key := OS.get_environment("TMB_COMBAT_LAB_SCHOOL").strip_edges().to_lower()
+    var school_index := SCHOOL_KEYS.find(school_key)
+    if school_index >= 0:
+        school_option.select(school_index)
+        _refresh_branches()
+    var generation_key := OS.get_environment("TMB_COMBAT_LAB_GENERATION").strip_edges().to_lower()
+    var generation_index := GENERATION_KEYS.find(generation_key)
+    if generation_index >= 0:
+        generation_option.select(generation_index)
+        _refresh_skills()
+    var enemy_keys := ["normal", "elite", "boss"]
+    var enemy_index := enemy_keys.find(OS.get_environment("TMB_COMBAT_LAB_ENEMY").strip_edges().to_lower())
+    if enemy_index >= 0:
+        enemy_option.select(enemy_index)
+        _refresh_boss_visibility()
+    var requested_party := OS.get_environment("TMB_COMBAT_LAB_PARTY").strip_edges()
+    if requested_party.is_valid_int():
+        party_count.value = clampi(int(requested_party), 1, 6)
 
 func _start_battle() -> void:
     if school_option == null: return
