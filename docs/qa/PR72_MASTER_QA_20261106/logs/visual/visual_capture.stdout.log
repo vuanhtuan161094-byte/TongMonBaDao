@@ -1,0 +1,16 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 - Build 31.0.101.2125 - Compatibility - Using Device: Intel - Intel(R) Iris(R) Plus Graphics
+
+CAPTURE_CONTEXT source_sha=5ef179b81dfef6f2d72a38d866e94fc828e179eb viewport=(1280, 720) state_tick=0 buildings=8 disciples=6
+CAPTURE_PASS name=01_main_map_source_a size=1280x720 path=E:\TongMonBaDaoWorkspace\03_QA_Logs\PR72_QA_CHECKOUT_20261105_GIT_EOL\godot\outputs\qa_evidence\pr72_master_20261106\visual_5ef179b\screenshots/01_main_map_source_a.png
+CAPTURE_PASS name=01b_main_map_idle_walk_dialogue size=1280x720 path=E:\TongMonBaDaoWorkspace\03_QA_Logs\PR72_QA_CHECKOUT_20261105_GIT_EOL\godot\outputs\qa_evidence\pr72_master_20261106\visual_5ef179b\screenshots/01b_main_map_idle_walk_dialogue.png
+CAPTURE_PASS name=02_main_map_pan_zoom size=1280x720 path=E:\TongMonBaDaoWorkspace\03_QA_Logs\PR72_QA_CHECKOUT_20261105_GIT_EOL\godot\outputs\qa_evidence\pr72_master_20261106\visual_5ef179b\screenshots/02_main_map_pan_zoom.png
+CAPTURE_PASS name=03_mine_production size=1280x720 path=E:\TongMonBaDaoWorkspace\03_QA_Logs\PR72_QA_CHECKOUT_20261105_GIT_EOL\godot\outputs\qa_evidence\pr72_master_20261106\visual_5ef179b\screenshots/03_mine_production.png
+CAPTURE_PASS name=04_linh_lam_production size=1280x720 path=E:\TongMonBaDaoWorkspace\03_QA_Logs\PR72_QA_CHECKOUT_20261105_GIT_EOL\godot\outputs\qa_evidence\pr72_master_20261106\visual_5ef179b\screenshots/04_linh_lam_production.png
+CAPTURE_PASS name=05_linh_dien_production size=1280x720 path=E:\TongMonBaDaoWorkspace\03_QA_Logs\PR72_QA_CHECKOUT_20261105_GIT_EOL\godot\outputs\qa_evidence\pr72_master_20261106\visual_5ef179b\screenshots/05_linh_dien_production.png
+CAPTURE_PASS name=06_canonical_warehouse size=1280x720 path=E:\TongMonBaDaoWorkspace\03_QA_Logs\PR72_QA_CHECKOUT_20261105_GIT_EOL\godot\outputs\qa_evidence\pr72_master_20261106\visual_5ef179b\screenshots/06_canonical_warehouse.png
+CAPTURE_PASS name=07_v2_disciple_profile_luc_duy size=1280x720 path=E:\TongMonBaDaoWorkspace\03_QA_Logs\PR72_QA_CHECKOUT_20261105_GIT_EOL\godot\outputs\qa_evidence\pr72_master_20261106\visual_5ef179b\screenshots/07_v2_disciple_profile_luc_duy.png
+CAPTURE_PASS name=08_care_combat_v5_source_a size=1280x720 path=E:\TongMonBaDaoWorkspace\03_QA_Logs\PR72_QA_CHECKOUT_20261105_GIT_EOL\godot\outputs\qa_evidence\pr72_master_20261106\visual_5ef179b\screenshots/08_care_combat_v5_source_a.png
+CAPTURE_PASS name=09_main_map_after_hunt_return size=1280x720 path=E:\TongMonBaDaoWorkspace\03_QA_Logs\PR72_QA_CHECKOUT_20261105_GIT_EOL\godot\outputs\qa_evidence\pr72_master_20261106\visual_5ef179b\screenshots/09_main_map_after_hunt_return.png
+CAPTURE_STATE {"auto":false,"disciple_id":"candidate_73021","disciple_name":"Mạc Linh","hp":192.3,"injury":0,"max_hp":192.3,"paid_kills":0,"save_path":"user://master_recovery_visual_capture.json","tick":0,"warehouse_total":0,"world_id":"b3:vs1:bach_thach_khe:31012026:0"}
+MASTER RECOVERY 1280x720 VISUAL CAPTURE PASS

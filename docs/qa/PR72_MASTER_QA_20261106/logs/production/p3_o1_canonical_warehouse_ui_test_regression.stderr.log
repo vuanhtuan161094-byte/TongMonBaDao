@@ -1,0 +1,8 @@
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+ERROR: O1 operations Warehouse panel disagrees with WarehouseSystem.
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _fail (res://tests/presentation/p3_o1_canonical_warehouse_ui_test.gd:186)
+       [1] _check_opening_ui (res://tests/presentation/p3_o1_canonical_warehouse_ui_test.gd:64)
+       [2] _run (res://tests/presentation/p3_o1_canonical_warehouse_ui_test.gd:34)

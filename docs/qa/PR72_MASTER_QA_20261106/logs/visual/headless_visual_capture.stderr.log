@@ -1,0 +1,19 @@
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+ERROR: Parameter "t" is null.
+   at: texture_2d_get (./servers/rendering/dummy/storage/texture_storage.h:110)
+   GDScript backtrace (most recent call first):
+       [0] _capture (res://tests/presentation/master_recovery_visual_capture.gd:42)
+       [1] _wait_frames (res://tests/presentation/master_recovery_visual_capture.gd:34)
+ERROR: capture image has wrong size for 01_main_map_source_a
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _capture (res://tests/presentation/master_recovery_visual_capture.gd:44)
+       [1] _wait_frames (res://tests/presentation/master_recovery_visual_capture.gd:34)
+ERROR: MASTER RECOVERY VISUAL CAPTURE FAIL: main map capture failed
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _fail (res://tests/presentation/master_recovery_visual_capture.gd:14)
+       [1] _run (res://tests/presentation/master_recovery_visual_capture.gd:116)
+       [2] _capture (res://tests/presentation/master_recovery_visual_capture.gd:45)
+       [3] _wait_frames (res://tests/presentation/master_recovery_visual_capture.gd:34)

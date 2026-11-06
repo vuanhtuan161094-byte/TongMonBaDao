@@ -1,0 +1,10 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+TMB_ENDGAME_MAP_DENSITY STAGE begin
+TMB_ENDGAME_MAP_DENSITY STAGE isolated_fixture_ready offline_catchup=0
+TMB_ENDGAME_MAP_DENSITY STAGE scene_resource_loaded
+TMB_ENDGAME_MAP_DENSITY STAGE scene_instantiated
+TMB_ENDGAME_MAP_DENSITY STAGE scene_added
+TMB_ENDGAME_MAP_DENSITY STAGE ready_frames_complete
+TMB_ENDGAME_MAP_DENSITY STAGE runtime_ready
+TMB_ENDGAME_MAP_DENSITY PASS {"actor_pool":0,"actors_clipped_to_map_view":true,"idle_ambient_bubble_timed":true,"idle_max_radius":120.498977661133,"idle_min_spacing":35.2428970336914,"idle_roster_spread_positions":30,"materialized_actor_nodes":6,"overhead_labels_bounded_and_contextual":true,"pool_freed_on_scene_teardown":true,"producer_instances":100,"recycled_to":"candidate_0062","selected_virtual_disciple":"candidate_0063","simulation_state_unchanged":true,"unique_positions":100,"virtual_map_positions":130,"visible_actor_cap":16}
