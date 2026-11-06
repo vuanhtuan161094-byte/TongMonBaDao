@@ -184,6 +184,75 @@ func _run() -> void:
         _fail("O9 equipment UI did not use the real purchase/equip transaction exactly once.")
         return
 
+    var purchase_wallet := buyer.wallet
+    var purchase_treasury := state.sect.treasury
+    var slot_lock_button := ui.find_child("EquipmentAuto_weapon",true,false) as Button
+    if slot_lock_button == null or slot_lock_button.text != "Khóa ô":
+        _fail("O9 equipped shop item did not expose the canonical slot-lock action.")
+        return
+    slot_lock_button.emit_signal("pressed")
+    await process_frame
+    if not bool(buyer.locked_equipment_slots.get(str(EquipmentSystem.SLOT_WEAPON),false)):
+        _fail("O9 UI did not lock the equipped slot.")
+        return
+
+    slot_lock_button = ui.find_child("EquipmentAuto_weapon",true,false) as Button
+    if slot_lock_button == null or slot_lock_button.text != "Mở tự động":
+        _fail("O9 locked slot did not expose return-to-auto.")
+        return
+    slot_lock_button.emit_signal("pressed")
+    await process_frame
+    if bool(buyer.locked_equipment_slots.get(str(EquipmentSystem.SLOT_WEAPON),false)):
+        _fail("O9 return-to-auto did not clear the canonical slot lock.")
+        return
+
+    var unequip_button := ui.find_child("EquipmentUnequip_weapon",true,false) as Button
+    if unequip_button == null or unequip_button.disabled:
+        _fail("O9 equipped item did not expose unequip-to-storage.")
+        return
+    unequip_button.emit_signal("pressed")
+    await process_frame
+    equipped_item = state.sect.equipment_items.get(str(crafted_item_id),{})
+    if (
+        StringName(equipped_item.get("location","")) != EquipmentSystem.LOCATION_STORAGE
+        or str(equipped_item.get("owner_id","")) != ""
+        or buyer.equipped_items.has(str(EquipmentSystem.SLOT_WEAPON))
+        or state.sect.equipment_items.size() != item_count_before + 1
+    ):
+        _fail("O9 unequip did not return the same unique item to storage.")
+        return
+
+    weapon_picker = ui.find_child("EquipmentPicker_weapon",true,false) as OptionButton
+    equip_button = ui.find_child("EquipmentEquip_weapon",true,false) as Button
+    var stored_option := -1
+    if weapon_picker != null:
+        for option_index in range(weapon_picker.item_count):
+            if str(weapon_picker.get_item_metadata(option_index)) == str(crafted_item_id):
+                stored_option = option_index
+                break
+    if weapon_picker == null or equip_button == null or stored_option < 0:
+        _fail("O9 storage item did not return to the real equipment picker.")
+        return
+    weapon_picker.select(stored_option)
+    weapon_picker.emit_signal("item_selected",stored_option)
+    if equip_button.disabled or equip_button.text != "Mặc":
+        _fail("O9 canonical storage item did not expose a no-cost manual equip action.")
+        return
+    equip_button.emit_signal("pressed")
+    await process_frame
+    equipped_item = state.sect.equipment_items.get(str(crafted_item_id),{})
+    if (
+        StringName(equipped_item.get("location","")) != EquipmentSystem.LOCATION_EQUIPPED
+        or str(equipped_item.get("owner_id","")) != str(buyer_id)
+        or str(buyer.equipped_items.get(str(EquipmentSystem.SLOT_WEAPON),"")) != str(crafted_item_id)
+        or not bool(buyer.locked_equipment_slots.get(str(EquipmentSystem.SLOT_WEAPON),false))
+        or buyer.wallet != purchase_wallet
+        or state.sect.treasury != purchase_treasury
+        or state.sect.equipment_items.size() != item_count_before + 1
+    ):
+        _fail("O9 storage re-equip changed funds, duplicated the item, or failed to lock ownership.")
+        return
+
     if not await _open_building(SectMapPresentation.DEST_SPIRIT_FIELD):
         return
     if not await _press("FieldPlant_%s" % str(field_worker_id)):
@@ -308,6 +377,7 @@ func _run() -> void:
     var saved_buyer_wallet := state.disciples[buyer_id].wallet
     var saved_buyer_treasury := state.sect.treasury
     var saved_equipment_owner := str(state.sect.equipment_items[str(crafted_item_id)].get("owner_id",""))
+    var saved_weapon_locked := bool(state.disciples[buyer_id].locked_equipment_slots.get(str(EquipmentSystem.SLOT_WEAPON),false))
     var saved_mine_cycle: Dictionary = state.disciples[miner_id].work_cycle_state.duplicate(true)
     var saved_forest_cycle: Dictionary = state.disciples[forest_worker_id].work_cycle_state.duplicate(true)
     var saved_plot: Dictionary = active_plot.duplicate(true)
@@ -350,6 +420,7 @@ func _run() -> void:
         or str(state.sect.equipment_items.get(str(crafted_item_id),{}).get("location","")) != str(EquipmentSystem.LOCATION_EQUIPPED)
         or str(state.sect.equipment_items.get(str(crafted_item_id),{}).get("owner_id","")) != saved_equipment_owner
         or str(state.disciples[buyer_id].equipped_items.get(str(EquipmentSystem.SLOT_WEAPON),"")) != str(crafted_item_id)
+        or bool(state.disciples[buyer_id].locked_equipment_slots.get(str(EquipmentSystem.SLOT_WEAPON),false)) != saved_weapon_locked
     ):
         _fail("O9 reload changed Warehouse/item/equipped ownership state before scheduler continuation.")
         return

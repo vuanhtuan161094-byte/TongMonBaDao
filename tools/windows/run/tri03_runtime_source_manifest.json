@@ -3,7 +3,7 @@
   "branch": "integration/pve-p0-playable-ui-20261103",
   "base_sha": "27ed01cd8f377994e5e50bac9ede84e78e8895bd",
   "upstream_pr_sha": "c99f22153b34628f7e94f69de0285514e788b9cb",
-  "source_fingerprint": "ba4def935df82e0b220f6d5d6e4a04c6698c2a72d975dc5ccaf138166b2d7fea",
+  "source_fingerprint": "5722a9b8713b56ca11f109500039cd07143360e277e1e307f4f1170bacfea320",
   "files": [
     {
       "path": "CHOI-GAME.cmd",
@@ -555,11 +555,11 @@
     },
     {
       "path": "godot/tests/presentation/p3_o8_alchemy_loop_test.gd",
-      "git_blob_sha": "87dc0050479ff75c2b369c69e9b499be3d8e527d"
+      "git_blob_sha": "c39829f1762d2e2d2711e88cc0732332e2986a0c"
     },
     {
       "path": "godot/tests/presentation/p3_o9_m2_production_rehearsal_test.gd",
-      "git_blob_sha": "304a065763f4e3fcd1e775d5421b2ac91a83a70c"
+      "git_blob_sha": "fb736910d66c6bd5b8d542ec5539f7243cdb0691"
     },
     {
       "path": "godot/tests/presentation/pve_aux02_world_input_contract_test.gd",

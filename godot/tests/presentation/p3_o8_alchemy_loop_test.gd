@@ -173,6 +173,12 @@ func _run() -> void:
     if workforce.assign_group(state, alchemist_id, &"") or workforce.issue_command(state, alchemist_id, WorkforceSystem.COMMAND_HOLD, "", 20):
         _fail("O8 active timed recipe did not reserve its worker.")
         return
+    ui.call("_open_disciple_quick_assignment",alchemist_id)
+    await process_frame
+    var active_withdraw_button := ui.find_child("QuickAssignmentWithdraw",true,false) as Button
+    if active_withdraw_button == null or not active_withdraw_button.disabled or not active_withdraw_button.tooltip_text.contains("Luyện Đan"):
+        _fail("O8 Quick Assignment allowed withdrawal while the canonical timed Alchemy job was active.")
+        return
 
     var saved_id := str(job.get("job_id", ""))
     var saved_finish := int(job.get("finish_tick", -1))
