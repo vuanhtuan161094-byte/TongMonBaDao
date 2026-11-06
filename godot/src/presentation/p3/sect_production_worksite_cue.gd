@@ -17,6 +17,7 @@ var progress: ProgressBar
 var percentage: Label
 var receipt: Label
 var receipt_tween: Tween
+var delivery_item_label := "sản phẩm"
 var last_display_signature := ""
 
 func _ready() -> void:
@@ -110,6 +111,7 @@ func _ready() -> void:
     receipt.add_theme_font_size_override("font_size",13)
     receipt.add_theme_color_override("font_color",Color(0.08,0.31,0.21))
     receipt.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+    receipt.clip_text = true
     # Green text alone disappears against terrain. Keep the receipt tied to
     # a real Warehouse-settled production delta, only improve readability.
     var receipt_background := StyleBoxFlat.new()
@@ -136,14 +138,30 @@ func display(snapshot: Dictionary) -> void:
     var worker_text := "Người: %s" % str(snapshot.get("worker","Chưa phân công"))
     var detail_text := str(snapshot.get("detail",""))
     var display_detail := str(snapshot.get("display_detail",detail_text))
+    delivery_item_label = str(snapshot.get("output_name","")).strip_edges()
+    if delivery_item_label.is_empty():
+        # Mine/forest snapshots put the exact resource in the heading and
+        # compact output in display_detail; field snapshots put the crop
+        # name before the multiplication sign in display_detail.
+        var quantity_marker := display_detail.find(" ×")
+        if quantity_marker > 0:
+            delivery_item_label = display_detail.substr(0,quantity_marker).strip_edges()
+        else:
+            var heading_marker := title_text.rfind(" · ")
+            if heading_marker >= 0:
+                var heading_suffix := title_text.substr(heading_marker+3).strip_edges()
+                if not heading_suffix.contains("/") and not heading_suffix.ends_with("ô"):
+                    delivery_item_label = heading_suffix
+    if delivery_item_label.is_empty():
+        delivery_item_label = "sản phẩm"
     var received_count := maxi(0,int(snapshot.get("received",0)))
     var received_text := "Đã nhập: %s" % _map_quantity(received_count)
     var fraction := clampf(float(snapshot.get("progress",0.0)),0.0,100.0)
     var active := bool(snapshot.get("active",false))
     # A full timer is NOT a completed warehouse receipt.
     var waiting := bool(snapshot.get("waiting",false))
-    var signature := "%s|%s|%s|%s|%s|%.2f|%s|%s" % [
-        title_text,worker_text,detail_text,display_detail,received_text,fraction,str(active),str(waiting)
+    var signature := "%s|%s|%s|%s|%s|%s|%.2f|%s|%s" % [
+        title_text,worker_text,detail_text,display_detail,delivery_item_label,received_text,fraction,str(active),str(waiting)
     ]
     if signature == last_display_signature:
         return
@@ -169,7 +187,8 @@ func show_delivered(amount: int) -> void:
         return
     if receipt_tween != null and receipt_tween.is_valid():
         receipt_tween.kill()
-    receipt.text = "+%d đã vào kho" % amount
+    receipt.text = "+%d %s → Kho" % [amount,delivery_item_label]
+    receipt.tooltip_text = "+%d %s đã nhập kho" % [amount,delivery_item_label]
     receipt.visible = true
     receipt.modulate.a = 1.0
     receipt_tween = create_tween()

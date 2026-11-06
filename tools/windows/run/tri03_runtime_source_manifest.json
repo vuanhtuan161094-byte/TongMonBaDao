@@ -3,11 +3,15 @@
   "branch": "integration/pve-p0-playable-ui-20261103",
   "base_sha": "27ed01cd8f377994e5e50bac9ede84e78e8895bd",
   "upstream_pr_sha": "c99f22153b34628f7e94f69de0285514e788b9cb",
-  "source_fingerprint": "dc24d0a5f19156fb2d4fbcd9bc8247e1e10fd57d5cf88e760f601a9cda43c7fc",
+  "source_fingerprint": "260735c04b43cc79085b2a707577138a9061dbd898852ac8f84af64dc50b1924",
   "files": [
     {
       "path": "CHOI-GAME.cmd",
       "git_blob_sha": "374265ed6284f9da8d06c54a7933513d49fe507b"
+    },
+    {
+      "path": "docs/qa/TRI03_OWNER_FINAL_20261103/G0_G1_G2_EVIDENCE/SOURCE_MANIFEST.json",
+      "git_blob_sha": "105782d106c87d3cfe9d5dcddff73aca3b0ac816"
     },
     {
       "path": "docs/qa/TRI03_OWNER_FINAL_20261103/G0_G1_G2_EVIDENCE/screenshots/after/guidance.png",
@@ -58,8 +62,8 @@
       "git_blob_sha": "d895bb968f423359348a0685324967393c97a647"
     },
     {
-      "path": "docs/qa/TRI03_OWNER_FINAL_20261103/G0_G1_G2_EVIDENCE/SOURCE_MANIFEST.json",
-      "git_blob_sha": "105782d106c87d3cfe9d5dcddff73aca3b0ac816"
+      "path": "docs/qa/TRI03_OWNER_FINAL_20261103/SOURCE_MANIFEST.json",
+      "git_blob_sha": "c52f1004858838b58e1a9fd529b7bdb23972ddff"
     },
     {
       "path": "docs/qa/TRI03_OWNER_FINAL_20261103/screenshots/after/00_p3_2_map_context.png",
@@ -112,10 +116,6 @@
     {
       "path": "docs/qa/TRI03_OWNER_FINAL_20261103/screenshots/before/03_guidance_live_state.png",
       "git_blob_sha": "e6777630c97b292d6911a5b9227dfba0013d0c47"
-    },
-    {
-      "path": "docs/qa/TRI03_OWNER_FINAL_20261103/SOURCE_MANIFEST.json",
-      "git_blob_sha": "c52f1004858838b58e1a9fd529b7bdb23972ddff"
     },
     {
       "path": "godot/art/source_a_env02a/pv01_assets/guidance/510111.png",
@@ -338,10 +338,6 @@
       "git_blob_sha": "8a50001f4ed9138d0f6319963ceb3e2e40d0a999"
     },
     {
-      "path": "godot/src/presentation/p3_2_landscape_sect.gd",
-      "git_blob_sha": "124155d68190586bb374045ac109bfaf18ccf1cf"
-    },
-    {
       "path": "godot/src/presentation/p3/disciple_six_dimension_radar.gd",
       "git_blob_sha": "007d69bf3357c759f6804d6558518e20960d9555"
     },
@@ -364,6 +360,14 @@
     {
       "path": "godot/src/presentation/p3/sect_map25_source_art.gd",
       "git_blob_sha": "f18651f9b224b558ef1512a13aaa589dfda117c4"
+    },
+    {
+      "path": "godot/src/presentation/p3/sect_production_worksite_cue.gd",
+      "git_blob_sha": "befebda1e96250dea65d6dc85fd333ad9e4951b5"
+    },
+    {
+      "path": "godot/src/presentation/p3_2_landscape_sect.gd",
+      "git_blob_sha": "124155d68190586bb374045ac109bfaf18ccf1cf"
     },
     {
       "path": "godot/src/presentation/uiux/dai_dien_screen_b1_v1.gd",
@@ -534,6 +538,10 @@
       "git_blob_sha": "115b07bfa6a5884f41fb6cb0326864536272d4d2"
     },
     {
+      "path": "godot/tests/presentation/p3_o4_spirit_field_loop_test.gd",
+      "git_blob_sha": "feb8381080171c69d07e5463762904f3902b0e95"
+    },
+    {
       "path": "godot/tests/presentation/p3_o5_real_consumption_loop_test.gd",
       "git_blob_sha": "97a182b0ecdb78123b9173e0f1d84d77bcde82c4"
     },
@@ -568,6 +576,10 @@
     {
       "path": "godot/tests/presentation/sect_g1_disciple_radar_test.gd",
       "git_blob_sha": "30ca242e9f287ff7119a1256fca2dcbb60e33968"
+    },
+    {
+      "path": "godot/tests/presentation/sect_production_worksite_receipt_test.gd",
+      "git_blob_sha": "b16ee0a6e059aeeba52659175f503f1e04f3cb95"
     },
     {
       "path": "godot/tests/presentation/sect_ui_icon_atlas_test.gd",
@@ -658,10 +670,6 @@
       "git_blob_sha": "2408cdd8803193bb00a8f055b8cf1d036482a58b"
     },
     {
-      "path": "tools/windows/run/tri03_launcher_support.ps1",
-      "git_blob_sha": "1da6740d7700456b16f9730dc81b3dddd22b263c"
-    },
-    {
       "path": "tools/windows/run/Verify-TRI03OfflinePackage.ps1",
       "git_blob_sha": "cc61153c3e99eafdd913e56fcfe4b6d818f4dd54"
     },
@@ -670,8 +678,8 @@
       "git_blob_sha": "91f924efa5e18f03d2d1415e6d3354317385a379"
     },
     {
-      "path": "godot/tests/presentation/p3_o4_spirit_field_loop_test.gd",
-      "git_blob_sha": "feb8381080171c69d07e5463762904f3902b0e95"
+      "path": "tools/windows/run/tri03_launcher_support.ps1",
+      "git_blob_sha": "1da6740d7700456b16f9730dc81b3dddd22b263c"
     }
   ]
 }
