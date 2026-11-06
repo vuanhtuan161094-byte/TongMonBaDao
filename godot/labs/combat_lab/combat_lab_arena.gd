@@ -76,7 +76,7 @@ func consume_events(rows: Array[Dictionary]) -> void:
     for event in rows:
         var kind := str(event.get("type", ""))
         var source_actor_id := str(event.get("caster", event.get("attacker", event.get("actor_id", ""))))
-        var target_id := str(event.get("target", event.get("target_id", "")))
+        var target_id := str(event.get("target", event.get("target_id", event.get("actor_id", ""))))
         var source_skill := str(event.get("skill_id", ""))
         if not source_skill.is_empty() and kind in ["skill_cast", "skill_release"]:
             last_skill_by_actor[source_actor_id] = source_skill
