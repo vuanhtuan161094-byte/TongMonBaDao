@@ -23,59 +23,143 @@ func set_status(value: String) -> void:
     status_line = value
     queue_redraw()
 
+func _set_pose(actor_id: String, pose: String, lifetime_ms: int) -> void:
+    if battle == null or not battle.actors.has(actor_id):
+        return
+    var now_ms := Time.get_ticks_msec()
+    var state: Dictionary = actor_states.get(actor_id, {})
+    if state.is_empty():
+        state = {"pose":"idle", "until":0, "last_position":battle.actors[actor_id].get("position", Vector2.ZERO)}
+    if str(state.get("pose", "")) == "death":
+        return
+    state["pose"] = pose
+    state["until"] = now_ms + lifetime_ms
+    actor_states[actor_id] = state
+
+func pose_for_actor(actor_id: String) -> String:
+    # Public read-only visual probe. No simulation writes.
+    if battle == null or not battle.actors.has(actor_id):
+        return "idle"
+    if float(battle.actors[actor_id].get("hp", 0.0)) <= 0.0:
+        return "death"
+    var state: Dictionary = actor_states.get(actor_id, {})
+    if Time.get_ticks_msec() < int(state.get("until", 0)):
+        return str(state.get("pose", "idle"))
+    return "idle"
+
+func _track_movement(actor: Dictionary) -> void:
+    var id := str(actor.get("id", ""))
+    var pos: Vector2 = actor.get("position", Vector2.ZERO)
+    var state: Dictionary = actor_states.get(id, {})
+    if state.is_empty():
+        actor_states[id] = {"pose":"idle", "until":0, "last_position":pos}
+        return
+    var old_pos: Vector2 = state.get("last_position", pos)
+    state["last_position"] = pos
+    if pos.distance_to(old_pos) > 0.015 and Time.get_ticks_msec() >= int(state.get("until", 0)):
+        state["pose"] = "walk"
+        state["until"] = Time.get_ticks_msec() + 200
+    actor_states[id] = state
+
 func consume_events(rows: Array[Dictionary]) -> void:
     if battle == null:
         return
     var now_ms := Time.get_ticks_msec()
     for event in rows:
         var kind := str(event.get("type", ""))
+        var source_actor_id := str(event.get("caster", event.get("attacker", event.get("actor_id", ""))))
+        var target_id := str(event.get("target", event.get("target_id", "")))
+        var source_skill := str(event.get("skill_id", ""))
+        if not source_skill.is_empty() and kind in ["skill_cast", "skill_release"]:
+            last_skill_by_actor[source_actor_id] = source_skill
+        if kind == "skill_cast":
+            var duration := clampi(roundi((float(event.get("release_at", 0.0)) - float(event.get("time", 0.0))) * 1000.0), 300, 1200)
+            _set_pose(source_actor_id, "cast", duration)
+        elif kind == "skill_release":
+            _set_pose(source_actor_id, "attack", 420)
+        elif kind == "hit" and float(event.get("damage", 0.0)) > 0.0:
+            # Attack is cued by the committed hit, never shown as a speculative pre-hit strike.
+            _set_pose(source_actor_id, "attack", 360)
+            _set_pose(target_id, "hit", 230)
+        elif kind in ["downed", "death"]:
+            _set_pose(target_id, "death", 2400)
+        elif kind == "v63_mobility":
+            _set_pose(str(event.get("actor_id", "")), "walk", 280)
+        elif kind == "telegraph":
+            _set_pose(source_actor_id, "cast", 700)
         if kind == "hit":
             var hit_kind := str(event.get("kind", ""))
             if hit_kind == "v63_poison" or (hit_kind == "dot" and _has_damage_tick_record(event, rows)):
+                # status_tick/damage_tick is the singular presentation authority for DoT.
                 continue
         var actor_id := str(event.get("target", event.get("actor_id", event.get("caster", event.get("attacker", "")))))
         var pos := _actor_position(actor_id)
         var cue_kind := ""
         var label := ""
-        var color := Color("f2d9a0")
+        var school_kind := school
+        if battle.actors.has(source_actor_id):
+            var actor: Dictionary = battle.actors[source_actor_id]
+            if str(actor.get("side", "")) == "monster":
+                school_kind = "boss" if str(actor.get("tier", "")) == "boss" else "fist"
+        var color: Color = VfxV2.school_color(school_kind)
         var radius := 0.0
-        var source_actor_id := str(event.get("caster", event.get("attacker", event.get("actor_id", ""))))
         match kind:
             "skill_cast", "cast":
-                cue_kind = "cast"; color = Color("b890ff"); label = "THI PHÁP"
+                cue_kind = "cast"
             "skill_release":
-                var definition: Dictionary = CombatLabRosterAdapter.skill_definitions().get(str(event.get("skill_id", "")), {})
+                var real_skill_id := str(event.get("skill_id", last_skill_by_actor.get(source_actor_id, "")))
+                var definition: Dictionary = CombatLabRosterAdapter.skill_definitions().get(real_skill_id, {})
+                var effect := str(definition.get("effect", ""))
                 if float(definition.get("projectile_speed", 0.0)) > 0.0:
-                    cue_kind = "projectile"; color = Color("d5bdff")
+                    cue_kind = "projectile"
+                elif effect == "guard":
+                    cue_kind = "guard"
+                elif effect in ["heal", "cleanse"]:
+                    cue_kind = "cast"
                 elif str(definition.get("shape", "")) == "circle":
-                    cue_kind = "aoe"; color = Color("e3a0ff"); radius = float(definition.get("radius", 0.0))
+                    cue_kind = "aoe"
+                    radius = float(definition.get("radius", 0.0))
             "hit":
-                cue_kind = "impact"; color = Color("ffb278")
+                cue_kind = "impact"
                 label = str(roundi(float(event.get("damage", 0.0))))
                 if bool(event.get("critical", false)):
-                    label = "BẠO KÍCH " + label; color = Color("fff09a")
+                    label = "BẠO KÍCH " + label
+                    color = Color("fff09a")
             "v63_skill_hit", "skill_hit":
-                # These semantic events follow the committed `hit`; render the
-                # committed packet exactly once, plus independent status/heal events.
+                # Numeric settlement has already been rendered from canonical hit.
                 continue
             "skill_miss":
-                cue_kind = "miss"; color = Color("c1b6cf"); label = "TRƯỢT"
+                cue_kind = "miss"; label = "TRƯỢT"
             "evade":
-                cue_kind = "miss"; color = Color("a8e3ee"); label = "NÉ"
+                cue_kind = "miss"; label = "NÉ"
             "heal":
-                cue_kind = "heal"; color = Color("82f0a1"); label = "+" + str(roundi(float(event.get("amount", 0.0))))
+                cue_kind = "heal"
+                color = Color("79edba")
+                label = "+" + str(roundi(float(event.get("amount", 0.0))))
+            "cleanse":
+                cue_kind = "cleanse"; color = Color("b9faff"); label = "GIẢI"
+            "poison_consumed":
+                cue_kind = "poison"; color = Color("a0dc69"); label = "PHỆ ĐỘC"
+            "blood_frenzy":
+                cue_kind = "blood_frenzy"; color = Color("e44b70"); label = "HUYẾT CUỒNG"
             "status_applied":
-                cue_kind = "status"; color = Color("8fe878") if str(event.get("status", "")) == "poison" else Color("afa0ff")
-                label = "ĐỘC" if str(event.get("status", "")) == "poison" else str(event.get("status", "")).to_upper()
+                var status := str(event.get("status", ""))
+                if status == "poison":
+                    cue_kind = "poison"; color = Color("8fe878"); label = "TRÚNG ĐỘC"
+                elif status == "guard":
+                    cue_kind = "guard"; color = Color("b0dafa"); label = "HỘ THỂ"
+                elif status == "mark":
+                    cue_kind = "mark"; color = Color("ae9bff"); label = "ẤN"
             "status_tick":
                 cue_kind = "poison" if str(event.get("status", "")) == "poison" else "impact"
                 color = Color("91ec71") if cue_kind == "poison" else Color("ffad77")
                 var tick_damage := float(event.get("damage", 0.0))
-                label = ("ĐỘC " if cue_kind == "poison" else "DOT ") + str(roundi(tick_damage)) if tick_damage > 0.0 else str(event.get("status", "DOT")).to_upper()
+                label = ("ĐỘC " if cue_kind == "poison" else "DOT ") + str(roundi(tick_damage)) if tick_damage > 0.0 else ""
             "damage_tick":
-                cue_kind = "impact"; color = Color("91ec71"); label = "DOT " + str(roundi(float(event.get("damage", 0.0))))
+                cue_kind = "impact"; color = Color("91ec71")
+                label = "DOT " + str(roundi(float(event.get("damage", 0.0))))
             "telegraph":
-                cue_kind = "telegraph"; color = Color("ff5368"); label = "NGUY HIỂM"
+                cue_kind = "telegraph"; color = Color("ff5368"); label = "BOSS"
                 var center: Variant = event.get("center", pos)
                 if center is Vector2: pos = center
                 radius = maxf(0.0, float(event.get("radius", 0.0)))
@@ -83,26 +167,39 @@ func consume_events(rows: Array[Dictionary]) -> void:
                 cue_kind = "area_burst"; color = Color("ff6671")
                 var area_center: Variant = event.get("center", pos)
                 if area_center is Vector2: pos = area_center
-                label = "AOE · " + str(int(event.get("target_count", 0)))
+                label = "AOE"
             "downed":
-                cue_kind = "death"; color = Color("8b8299"); label = "GỤC"
+                cue_kind = "death"; color = Color("8b8299")
             "v63_boss_phase":
-                cue_kind = "boss_phase"; color = Color("ff6c54"); label = "BOSS · PHA " + str(event.get("phase", ""))
+                cue_kind = "boss_phase"; color = Color("ff6c54")
+                label = "BOSS · PHA " + str(event.get("phase", ""))
+            "v63_mobility":
+                cue_kind = "mobility"
+                var mobility_pos: Variant = event.get("position", pos)
+                if mobility_pos is Vector2: pos = mobility_pos
         if cue_kind.is_empty():
             continue
-        var cue_life := 220.0 if cue_kind == "projectile" else 1100.0
+        var cue_life := 370.0 if cue_kind == "projectile" else (900.0 if cue_kind == "telegraph" else 790.0)
         var cue_from := _actor_position(source_actor_id)
-        cues.append({"kind": cue_kind, "position": pos, "from_position": cue_from, "text": label, "color": color,
-            "radius": radius, "source_actor_id": source_actor_id,
-            "created": now_ms - (160 if cue_kind == "projectile" else 0), "life": cue_life,
-            "source_index": int(event.get("lab_source_index", -1)), "time": float(event.get("time", 0.0))})
+        cues.append({
+            "kind":cue_kind, "position":pos, "from_position":cue_from,
+            "text":label, "color":color, "radius":radius, "school":school_kind,
+            "skill_id":source_skill, "source_actor_id":source_actor_id,
+            "created":now_ms, "life":cue_life,
+            "source_index":int(event.get("lab_source_index", -1)),
+            "time":float(event.get("time", 0.0))
+        })
         if cues.size() > MAX_CUES: cues.pop_front()
         if kind == "hit" and float(event.get("lifesteal", 0.0)) > 0.0:
             var life_heal := roundi(float(event.get("lifesteal", 0.0)))
-            cues.append({"kind": "heal", "position": cue_from, "from_position": cue_from, "text": "+" + str(life_heal),
-                "color": Color("82f0a1"), "radius": 0.0, "source_actor_id": source_actor_id,
-                "created": now_ms, "life": 1100.0, "source_index": int(event.get("lab_source_index", -1)),
-                "time": float(event.get("time", 0.0))})
+            cues.append({
+                "kind":"heal", "position":cue_from, "from_position":cue_from,
+                "text":"+" + str(life_heal), "color":Color("82f0a1"),
+                "radius":0.0, "school":school_kind, "source_actor_id":source_actor_id,
+                "created":now_ms, "life":900.0,
+                "source_index":int(event.get("lab_source_index", -1)),
+                "time":float(event.get("time", 0.0))
+            })
             if cues.size() > MAX_CUES: cues.pop_front()
     queue_redraw()
 
@@ -150,77 +247,59 @@ func _draw() -> void:
 
 func _draw_actor(actor: Dictionary) -> void:
     var actor_id := str(actor.get("id", ""))
-    var center := _world_to_local(actor.get("position", Vector2.ZERO))
-    var monster := str(actor.get("side", "")) == "monster"
+    var foot := _world_to_local(actor.get("position", Vector2.ZERO))
     var boss := str(actor.get("tier", "")) == "boss"
-    var down := float(actor.get("hp", 0.0)) <= 0.0
-    var scale := 1.45 if boss else 1.0
-    var robe := Color("674791") if not monster else (Color("842b43") if boss else Color("536c4e"))
-    var trim := Color("e8ca7b") if not monster else (Color("ff8071") if boss else Color("b8c98a"))
-    if down: robe = robe.darkened(0.62)
-    draw_circle(center + Vector2(0, 14 * scale), 15 * scale, Color(0, 0, 0, 0.45))
-    # Temporary static Lab fixture. Combat movement and VFX come from real battle events.
-    draw_rect(Rect2(center + Vector2(-8 * scale, -5 * scale), Vector2(16 * scale, 19 * scale)), robe, true)
-    draw_colored_polygon(PackedVector2Array([center + Vector2(-10 * scale, 0), center + Vector2(0, 9 * scale), center + Vector2(10 * scale, 0), center + Vector2(14 * scale, 16 * scale), center + Vector2(-14 * scale, 16 * scale)]), trim.darkened(0.25))
-    draw_circle(center + Vector2(0, -15 * scale), 8.0 * scale, Color("15121d"))
-    draw_circle(center + Vector2(-2.7 * scale, -15 * scale), 1.25 * scale, Color("dfb4ff"))
-    draw_circle(center + Vector2(2.7 * scale, -15 * scale), 1.25 * scale, Color("dfb4ff"))
-    draw_line(center + Vector2(-5 * scale, 14 * scale), center + Vector2(-7 * scale, 22 * scale), trim, 2.5 * scale)
-    draw_line(center + Vector2(5 * scale, 14 * scale), center + Vector2(7 * scale, 22 * scale), trim, 2.5 * scale)
-    if not monster: _draw_weapon(center, school, scale, trim)
-    var hp_ratio := clampf(float(actor.get("hp", 0)) / maxf(1.0, float(actor.get("max_hp", 1))), 0.0, 1.0)
-    var bar := Rect2(center + Vector2(-16 * scale, -29 * scale), Vector2(32 * scale, 4 * scale))
-    draw_rect(bar, Color("292531"), true)
-    draw_rect(Rect2(bar.position, Vector2(bar.size.x * hp_ratio, bar.size.y)), Color("81d99a") if not monster else Color("e56d74"), true)
+    var monster := str(actor.get("side", "")) == "monster"
+    _track_movement(actor)
+    var pose := pose_for_actor(actor_id)
+    var actor_scale := (1.50 if boss else 1.0) * (0.55 + 0.29 * zoom)
+    var facing := -1.0 if monster else 1.0
+    var seconds := float(Time.get_ticks_msec()) / 1000.0
+    ActorRigV2.render(self, actor, foot, school, pose, seconds, actor_scale, facing)
+
+    # Place health bars ABOVE the tallest character, not under feet.
+    var hp_ratio := clampf(float(actor.get("hp", 0.0)) /
+        maxf(1.0, float(actor.get("max_hp", 1.0))), 0.0, 1.0)
+    var width := 37.0 * actor_scale
+    var bar := Rect2(foot + Vector2(-width * 0.5, -79.0 * actor_scale),
+        Vector2(width, 4.0 * actor_scale))
+    draw_rect(bar, Color("201c2c"), true)
+    draw_rect(Rect2(bar.position, Vector2(bar.size.x * hp_ratio, bar.size.y)),
+        Color("89e0aa") if not monster else Color("ec7884"), true)
+    if boss:
+        draw_rect(bar.grow(2.0), Color("dfb66a"), false, 1.0)
     var name := actor_id.replace("lab_disciple_", "ĐT ")
-    draw_string(ThemeDB.fallback_font, center + Vector2(-25 * scale, 38 * scale), name, HORIZONTAL_ALIGNMENT_CENTER, 50 * scale, 10, Color("e6dfef"))
-func _draw_weapon(center: Vector2, weapon_school: String, scale: float, trim: Color) -> void:
-    # Separate Lab-only weapon drawing path; body and weapon use no imported C2 art.
-    match weapon_school:
-        "bow":
-            draw_arc(center + Vector2(14 * scale, -1), 9 * scale, -1.2, 1.2, 12, Color("d6c5f6"), 2 * scale)
-            draw_line(center + Vector2(14 * scale, -10 * scale), center + Vector2(14 * scale, 8 * scale), trim, 1.2 * scale)
-        "poison":
-            draw_line(center + Vector2(13 * scale, 1), center + Vector2(24 * scale, -10 * scale), Color("a9ec82"), 3 * scale)
-        _:
-            draw_line(center + Vector2(12 * scale, 3), center + Vector2(23 * scale, -8 * scale), trim, 4 * scale)
+    var label_pos := foot + Vector2(-15.0 * actor_scale, 14.0 * actor_scale)
+    draw_string(ThemeDB.fallback_font, label_pos, name,
+        HORIZONTAL_ALIGNMENT_CENTER, 36.0 * actor_scale,
+        clampi(roundi(10.0 * actor_scale), 9, 17), Color("e6dfef"))
 
 func _draw_cues() -> void:
-    var time := Time.get_ticks_msec()
+    var current_time := Time.get_ticks_msec()
     var live: Array[Dictionary] = []
     for cue in cues:
-        var age := float(time - int(cue.created))
-        if age >= float(cue.life): continue
+        var age := float(current_time - int(cue.get("created", current_time)))
+        var duration := maxf(1.0, float(cue.get("life", 1.0)))
+        if age >= duration:
+            continue
         live.append(cue)
-        var t := age / maxf(1.0, float(cue.life))
-        var p := _world_to_local(cue.position)
-        var color: Color = cue.color
-        color.a *= 1.0 - t
-        var lift := t * 28.0
-        match str(cue.kind):
-            "telegraph", "aoe":
-                var r := float(cue.radius) * size.x / WORLD.size.x * (0.86 + t * 0.14)
-                draw_arc(p, r, 0, TAU, 40, color, 3 if cue.kind == "telegraph" else 2)
-                if cue.kind == "telegraph": draw_circle(p, r, Color(color.r, color.g, color.b, 0.09 * (1.0 - t)))
-            "projectile":
-                var projectile_start := _world_to_local(cue.get("from_position", cue.position))
-                var projectile_point := projectile_start.lerp(p, t)
-                draw_circle(projectile_point, 3.5, color)
-                draw_line(projectile_start, projectile_point, color, 2)
-            "area_burst": draw_arc(p, 12 + t * 18, 0, TAU, 28, color, 2)
-            "death": draw_arc(p, 12 + t * 18, 0, TAU, 24, color, 2)
-            "cast": draw_arc(p, 9 + t * 15, 0, TAU, 24, color, 2)
-            "heal", "poison":
-                for i in range(3):
-                    var x := p.x + sin(t * TAU + float(i) * 2.1) * 8
-                    draw_circle(Vector2(x, p.y - float(i) * 6 - lift * 0.4), 2.2, color)
-            _:
-                for i in range(5):
-                    var angle := float(i) * TAU / 5.0 + t * 8
-                    draw_circle(p + Vector2(cos(angle), sin(angle)) * (4 + t * 12), maxf(1.0, 2.8 * (1.0 - t)), color)
-        if not str(cue.text).is_empty():
-            draw_string(ThemeDB.fallback_font, p + Vector2(8, -12 - lift), str(cue.text), HORIZONTAL_ALIGNMENT_LEFT, 170, 12, color)
+        var t := clampf(age / duration, 0.0, 1.0)
+        var p := _world_to_local(cue.get("position", Vector2.ZERO))
+        var start := _world_to_local(cue.get("from_position", cue.get("position", Vector2.ZERO)))
+        var radius_px := float(cue.get("radius", 0.0)) * size.x / WORLD.size.x * zoom
+        VfxV2.render(self, cue, p, start, t, radius_px, zoom)
+        var label := str(cue.get("text", ""))
+        if label.is_empty():
+            continue
+        var c: Color = cue.get("color", Color.WHITE)
+        c.a *= 1.0 - t
+        # Only committed damage/heal/status values enter floating text.
+        var label_pos := p + Vector2(8.0 * zoom, -18.0 * zoom - 24.0 * zoom * t)
+        draw_string(ThemeDB.fallback_font, label_pos, label,
+            HORIZONTAL_ALIGNMENT_LEFT, 190.0,
+            clampi(roundi(12.0 + zoom * 0.75), 12, 17), c)
     cues = live
+
 func set_zoom(value: float) -> void:
     zoom = clampf(value, 1.0, 6.0)
     queue_redraw()
