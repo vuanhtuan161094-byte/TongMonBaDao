@@ -1,5 +1,17 @@
 # NEXT CHAT / CODEX HANDOFF — RELEASE TRAIN PR #72 → MAIN (2026-11-04)
 
+## MASTER BACKLOG INTAKE — 2026-11-06
+
+The owner prompt/workbook are now available and hash-identified in [input status](docs/qa/PR72_MASTER_QA_20261106/INPUTS_STATUS.md). The full [requirement register](docs/qa/TMB_PR72_REQUIREMENT_REGISTER_20261106.md), [158-case matrix](docs/qa/TMB_PR72_FEATURE_ACCEPTANCE_MATRIX_20261106.csv), and [10 E2E journeys](docs/qa/TMB_PR72_E2E_JOURNEYS_20261106.md) retain 35 requirements, 158 cases in 18 systems, 10 journeys, and 15 source gaps. Matrix source fidelity check: all 158 rows × 11 original columns matched the workbook (0 mismatches); five execution fields are additional.
+
+- PR #72 branch: `integration/pve-p0-playable-ui-20261103`; live HEAD at intake `857ce164442a3a845d554b6ab1315abf92c85281` (Draft; no merge/new branch).
+- Runtime/test evidence SHA `5ef179b81dfef6f2d72a38d866e94fc828e179eb`; focused P3.2/density/P3.4B/O3 source SHA `374f2d47d887c828218e3a296b6c8370aff070e7`; production runtime files are unchanged across that later test/manifest-only delta.
+- Matrix annotations: 11 `PASS_HEADLESS`, 2 `PASS_GUI_HARNESS`, 9 `IN_PROGRESS`, 136 `CHUA_NGHIEM_THU`. E2E: six `IN_PROGRESS`, two `BLOCKED_SOURCE`, two `CHUA_NGHIEM_THU`; complete E2E PASS 0/10.
+- Gate A (P0 playable) is **not accepted**: the three-process isolated R3 headless save journey has logs, but native owner-session GUI/physical mouse is pending and this is not the full continuous player journey. Gate B is partial: logged focused regression evidence exists, but not the complete 158-case regression. Gate C source/design gaps stay open; Gate D viewport harness frames are not physical acceptance; Gate E full cumulative regression is not complete.
+- No production/runtime code or player save changed in the master-register update. The existing running Godot PID 16616 was left untouched.
+
+Continue from the unmet cases in the register; do not repeat passing tests unless their code/input changed, and do not relabel harness evidence as physical GUI PASS.
+
 **Không tiếp tục trên PR #52, #67, `one-game-v65` hoặc các SHA tháng 10.** Các hướng dẫn cũ được bảo tồn trong [bản archive](docs/archive/checkpoints/NEXT_CHAT_HANDOFF_LEGACY_PRE_RELEASE_TRAIN_20261104.md), **không còn hiệu lực để thực thi**. Đọc [Issue #56 — live R0–R5](https://github.com/vuanhtuan161094-byte/TongMonBaDao/issues/56), [PR #72](https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/72) và [canonical release register](docs/operations/TMB_ONE_GAME_RELEASE_TRAIN_CANONICAL_20261104.md).
 
 ## Mục tiêu

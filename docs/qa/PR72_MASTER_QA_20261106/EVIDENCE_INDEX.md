@@ -2,8 +2,10 @@
 
 Current code/test commit: `5ef179b81dfef6f2d72a38d866e94fc828e179eb` on `integration/pve-p0-playable-ui-20261103`; Draft PR #72. The previous `374f2d4`→`5ef179b` delta changes the source-pin manifest and stale Warehouse UI assertions only; no production gameplay/runtime implementation changed in this test-fix commit.
 
-- [Execution matrix subset](EXECUTION_MATRIX_SUBSET.csv) records exact commands/results and evidence paths. It is not the missing master matrix.
-- [Master input status](INPUTS_STATUS.md) records why the 35/158/10 register cannot be truthfully built yet.
+- [Requirement register](../TMB_PR72_REQUIREMENT_REGISTER_20261106.md) retains all 35 owner requirements and source/gap dispositions.
+- [Full acceptance matrix](../TMB_PR72_FEATURE_ACCEPTANCE_MATRIX_20261106.csv) retains 158 cases / 18 systems and adds exact-SHA execution fields; 11 original source columns were compared cell-by-cell with zero mismatches.
+- [E2E journeys](../TMB_PR72_E2E_JOURNEYS_20261106.md) retains J01–J10 and current limitations.
+- [Master input status](INPUTS_STATUS.md) records the resolved source intake and hashes. The earlier unavailable-input note in comment 6678470482 is superseded; the execution subset remains historical subset evidence.
 - `logs/r3/`: three independent Godot processes over one isolated QA save (40/146/4 checks, all exit 0).
 - `logs/production/`: O1 Warehouse, O4 Linh Điền, O7 Linh Lâm, launcher safety and original stale-assertion failures.
 - `logs/focused/`: P3.2 map, density, P3.4B assignment, and O3 mine loop. These ran at `374f2d4`, whose later delta contains no production runtime change.
