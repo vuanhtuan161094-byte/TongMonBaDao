@@ -87,7 +87,7 @@ func consume_events(rows: Array[Dictionary]) -> void:
         var kind := str(event.get("type", ""))
         var source_actor_id := str(event.get("caster", event.get("attacker", event.get("actor_id", ""))))
         var target_id := str(event.get("target", event.get("target_id", event.get("actor_id", ""))))
-        var source_skill := str(event.get("skill_id", ""))
+        var source_skill := str(event.get("skill_id", event.get("source_skill_id", "")))
         if not source_skill.is_empty() and kind in ["skill_cast", "skill_release"]:
             last_skill_by_actor[source_actor_id] = source_skill
         if kind == "skill_cast":
@@ -134,7 +134,12 @@ func consume_events(rows: Array[Dictionary]) -> void:
                 var real_skill_id := str(event.get("skill_id", last_skill_by_actor.get(source_actor_id, "")))
                 var definition: Dictionary = CombatLabRosterAdapter.skill_definitions().get(real_skill_id, {})
                 var effect := str(definition.get("effect", ""))
-                if float(definition.get("projectile_speed", 0.0)) > 0.0:
+                if school_kind == "poison" and effect == "poison" and str(definition.get("shape", "")) == "circle":
+                    # This is a post-release visual indicator for an authored
+                    # circle skill, NOT a new area/status authority.
+                    cue_kind = "venom_cloud"
+                    radius = maxf(0.0, float(definition.get("radius", 0.0)))
+                elif float(definition.get("projectile_speed", 0.0)) > 0.0:
                     # Projectile was scheduled from the real skill_cast event.
                     # Release is the authoritative impact deadline, not launch.
                     cue_kind = ""
@@ -165,22 +170,36 @@ func consume_events(rows: Array[Dictionary]) -> void:
             "cleanse":
                 cue_kind = "cleanse"; color = Color("b9faff"); label = "GIẢI"
             "poison_consumed":
-                cue_kind = "poison"; color = Color("a0dc69"); label = "PHỆ ĐỘC"
+                var taken := int(event.get("stacks", 0))
+                if taken > 0:
+                    cue_kind = "venom_burst"
+                    color = Color("b8eb83")
+                    label = "PHỆ ĐỘC ×" + str(taken)
             "blood_frenzy":
                 cue_kind = "blood_frenzy"; color = Color("e44b70"); label = "HUYẾT CUỒNG"
             "status_applied":
                 var status := str(event.get("status", ""))
                 if status == "poison":
-                    cue_kind = "poison"; color = Color("8fe878"); label = "TRÚNG ĐỘC"
+                    var added := int(event.get("added", 0))
+                    if added > 0:
+                        cue_kind = "poison_apply"
+                        color = Color("a5f28e")
+                        label = "ĐỘC +" + str(added)
                 elif status == "guard":
                     cue_kind = "guard"; color = Color("b0dafa"); label = "HỘ THỂ"
                 elif status == "mark":
                     cue_kind = "mark"; color = Color("ae9bff"); label = "ẤN"
             "status_tick":
-                cue_kind = "poison" if str(event.get("status", "")) == "poison" else "impact"
-                color = Color("91ec71") if cue_kind == "poison" else Color("ffad77")
                 var tick_damage := float(event.get("damage", 0.0))
-                label = ("ĐỘC " if cue_kind == "poison" else "DOT ") + str(roundi(tick_damage)) if tick_damage > 0.0 else ""
+                if str(event.get("status", "")) == "poison":
+                    if tick_damage > 0.0:
+                        cue_kind = "poison_tick"
+                        color = Color("a5f28e")
+                        label = "ĐỘC " + str(roundi(tick_damage))
+                elif tick_damage > 0.0:
+                    cue_kind = "impact"
+                    color = Color("ffad77")
+                    label = "DOT " + str(roundi(tick_damage))
             "damage_tick":
                 cue_kind = "impact"; color = Color("91ec71")
                 label = "DOT " + str(roundi(float(event.get("damage", 0.0))))
@@ -205,6 +224,35 @@ func consume_events(rows: Array[Dictionary]) -> void:
                 if mobility_pos is Vector2: pos = mobility_pos
         if cue_kind.is_empty():
             continue
+        if cue_kind == "poison_tick":
+            # Multiple committed owned stacks can tick in one 0.25s engine step.
+            # Aggregate *actual* numeric damage per target/owner/skill/time
+            # to avoid 30 overlapping floating numbers (no invented damage).
+            var actual_tick := float(event.get("damage", 0.0))
+            var tick_at := float(event.get("time", battle.now))
+            var grouped := false
+            for index in range(cues.size() - 1, -1, -1):
+                var prior_tick: Dictionary = cues[index]
+                if str(prior_tick.get("kind", "")) != "poison_tick":
+                    continue
+                if str(prior_tick.get("target_actor_id", "")) != target_id:
+                    continue
+                if str(prior_tick.get("source_actor_id", "")) != source_actor_id:
+                    continue
+                if str(prior_tick.get("skill_id", "")) != source_skill:
+                    continue
+                if absf(float(prior_tick.get("time", -1.0)) - tick_at) > 0.00001:
+                    continue
+                var merged_count := int(prior_tick.get("stack_count", 1)) + 1
+                var merged_damage := float(prior_tick.get("damage_total", 0.0)) + actual_tick
+                prior_tick["stack_count"] = merged_count
+                prior_tick["damage_total"] = merged_damage
+                prior_tick["text"] = "ĐỘC " + str(roundi(merged_damage)) + " ×" + str(merged_count)
+                cues[index] = prior_tick
+                grouped = true
+                break
+            if grouped:
+                continue
         var cue_life := 370.0 if cue_kind == "projectile" else (900.0 if cue_kind == "telegraph" else 790.0)
         var display_skill_id := source_skill
         if display_skill_id.is_empty():
@@ -219,6 +267,7 @@ func consume_events(rows: Array[Dictionary]) -> void:
             "kind":cue_kind, "position":pos, "from_position":cue_from,
             "text":label, "color":color, "radius":radius, "school":school_kind,
             "skill_id":display_skill_id, "generation":display_generation, "source_actor_id":source_actor_id,
+            "target_actor_id":target_id, "stack_count":1, "damage_total":float(event.get("damage", 0.0)),
             "created":now_ms, "life":cue_life,
             "source_index":int(event.get("lab_source_index", -1)),
             "time":float(event.get("time", 0.0))
