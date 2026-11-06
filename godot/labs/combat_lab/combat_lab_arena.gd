@@ -40,14 +40,16 @@ func set_visual_time(value: float) -> void:
 func _set_pose(actor_id: String, pose: String, lifetime_ms: int) -> void:
     if battle == null or not battle.actors.has(actor_id):
         return
-    var now_ms := Time.get_ticks_msec()
     var state: Dictionary = actor_states.get(actor_id, {})
     if state.is_empty():
-        state = {"pose":"idle", "until":0, "last_position":battle.actors[actor_id].get("position", Vector2.ZERO)}
+        state = {"pose":"idle", "until":0.0, "started":visual_time,
+            "last_position":battle.actors[actor_id].get("position", Vector2.ZERO)}
     if str(state.get("pose", "")) == "death":
         return
+    # Pose time follows the Lab's battle presentation clock. HOLD freezes it.
     state["pose"] = pose
-    state["until"] = now_ms + lifetime_ms
+    state["started"] = visual_time
+    state["until"] = visual_time + float(lifetime_ms) / 1000.0
     actor_states[actor_id] = state
 
 func pose_for_actor(actor_id: String) -> String:
@@ -57,7 +59,7 @@ func pose_for_actor(actor_id: String) -> String:
     if float(battle.actors[actor_id].get("hp", 0.0)) <= 0.0:
         return "death"
     var state: Dictionary = actor_states.get(actor_id, {})
-    if Time.get_ticks_msec() < int(state.get("until", 0)):
+    if visual_time < float(state.get("until", 0.0)):
         return str(state.get("pose", "idle"))
     return "idle"
 
@@ -66,13 +68,15 @@ func _track_movement(actor: Dictionary) -> void:
     var pos: Vector2 = actor.get("position", Vector2.ZERO)
     var state: Dictionary = actor_states.get(id, {})
     if state.is_empty():
-        actor_states[id] = {"pose":"idle", "until":0, "last_position":pos}
+        actor_states[id] = {"pose":"idle", "until":0.0, "started":visual_time,
+            "last_position":pos}
         return
     var old_pos: Vector2 = state.get("last_position", pos)
     state["last_position"] = pos
-    if pos.distance_to(old_pos) > 0.015 and Time.get_ticks_msec() >= int(state.get("until", 0)):
+    if pos.distance_to(old_pos) > 0.015 and visual_time >= float(state.get("until", 0.0)):
         state["pose"] = "walk"
-        state["until"] = Time.get_ticks_msec() + 200
+        state["started"] = visual_time
+        state["until"] = visual_time + 0.20
     actor_states[id] = state
 
 func consume_events(rows: Array[Dictionary]) -> void:
@@ -315,8 +319,10 @@ func _draw_actor(actor: Dictionary) -> void:
                 break
     var actor_scale := (1.50 if boss else 1.0) * (0.55 + 0.29 * zoom)
     var facing := -1.0 if monster else 1.0
-    var seconds := float(Time.get_ticks_msec()) / 1000.0
-    ActorRigV2.render(self, actor, foot, school, pose, seconds, actor_scale, facing)
+    var seconds := visual_time
+    var state: Dictionary = actor_states.get(actor_id, {})
+    var pose_elapsed := maxf(0.0, visual_time - float(state.get("started", visual_time)))
+    ActorRigV2.render(self, actor, foot, school, pose, seconds, actor_scale, facing, pose_elapsed)
 
     # Place health bars ABOVE the tallest character, not under feet.
     var hp_ratio := clampf(float(actor.get("hp", 0.0)) /
