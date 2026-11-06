@@ -80,6 +80,17 @@ func _run() -> void:
         if str(state.sect.sx01_pill_policy.get("recipe_mode","")) != original_recipe_mode:
             _fail("O8 recipe policy mode did not return to its pre-test value.")
             return
+    # Restore the legacy recipe after the V2 UI selection probe; the first loop below specifically validates the existing Hoi Xuan consumer.
+    var legacy_recipe_button := ui.find_child("SX01Recipe_HXD",true,false) as Button
+    if legacy_recipe_button == null or legacy_recipe_button.disabled:
+        _fail("O8 could not restore the selected legacy Hoi Xuan recipe through its UI button.")
+        return
+    legacy_recipe_button.emit_signal("pressed")
+    await process_frame
+    hall = buildings.primary_building(state,BuildingSystem.TYPE_ALCHEMY_HALL)
+    if StringName(hall.production_state.get("recipe_id","")) != AlchemyRecipeRegistry.RECIPE_HOI_XUAN_DAN:
+        _fail("O8 legacy Hoi Xuan recipe selection did not update canonical state.")
+        return
     if not await _press("Group_alchemy_crew_%s" % str(alchemist_id)):
         return
 
@@ -224,6 +235,10 @@ func _run() -> void:
     if warehouse.quantity(state, NeedsSystem.HEALING_PILL_ID) != pill_before + 1:
         _fail("O8 timed completion did not deposit exactly one canonical pill.")
         return
+    ui.call("_refresh_all")
+    if not str(ui.call("_warehouse_operation_text")).contains("Hồi Xuân Đan"):
+        _fail("O8 completed canonical Hoi Xuan item is missing from the real Warehouse panel.")
+        return
     if not buildings.alchemy_jobs(state, hall).is_empty():
         _fail("O8 completed job was not removed atomically.")
         return
@@ -287,8 +302,8 @@ func _run() -> void:
     if not str(ui.call("_alchemy_operation_text")).contains("Hồi Xuân Đan"):
         _fail("O8 Alchemy panel is not projecting canonical output.")
         return
-    if not str(ui.call("_warehouse_operation_text")).contains("Hồi Xuân Đan"):
-        _fail("O8 Warehouse panel omits canonical pill.")
+    if str(ui.call("_warehouse_operation_text")).contains("Hồi Xuân Đan"):
+        _fail("O8 Warehouse panel still shows a Hoi Xuan item after the only unit was consumed.")
         return
 
     if not await _exercise_v2_recipe_cycle(field_worker_id,alchemist_id):
@@ -469,6 +484,56 @@ func _exercise_v2_recipe_cycle(field_worker_id: StringName, alchemist_id: String
     hall = buildings.primary_building(state,BuildingSystem.TYPE_ALCHEMY_HALL)
     if warehouse.quantity(state,output_id)!=output_before+1 or not buildings.alchemy_jobs(state,hall).is_empty():
         return _fail("O8 completed V2 recipe replayed or lost its product after cold reload.")
+
+    # Fresh New Game begins with the legacy founding roster. Recruit one of
+    # the already-present V2 candidates through the real Dẫn Tiên UI; never
+    # manufacture a V2 profile or progress flag in this production-path test.
+    var v2_target_exists := false
+    for raw_id in state.disciples.keys():
+        if DiscipleRealmProgressV2.progression_ready(state.disciples[raw_id]):
+            v2_target_exists = true
+            break
+    if not v2_target_exists:
+        if not await _open_building(SectMapPresentation.DEST_GUIDANCE):
+            return false
+        var open_dan_tien := ui.find_child("OpenDanTienScreenV2",true,false) as Button
+        if open_dan_tien == null or open_dan_tien.disabled:
+            return _fail("O8 cannot open canonical Dẫn Tiên recruitment from the Guidance building.")
+        open_dan_tien.emit_signal("pressed")
+        await process_frame
+        var dan_tien := ui.find_child("DanTienScreenV2",true,false) as Control
+        var candidate_ids: Array = state.recruitment_candidates.keys()
+        candidate_ids.sort()
+        if dan_tien == null or candidate_ids.is_empty():
+            return _fail("O8 Dẫn Tiên UI has no real candidate to recruit for the V2 pill-use path.")
+        var recruit_id := StringName(candidate_ids[0])
+        var candidate_button := dan_tien.find_child("DanTienCandidate_%s" % str(recruit_id),true,false) as Button
+        if candidate_button == null or candidate_button.disabled:
+            return _fail("O8 cannot select the real V2 candidate in Dẫn Tiên UI.")
+        candidate_button.emit_signal("pressed")
+        await process_frame
+        var decision_actions := dan_tien.find_child("CandidateDecisionActions",true,false) as HBoxContainer
+        var accept_button: Button
+        if decision_actions != null:
+            for child in decision_actions.get_children():
+                if child is Button and (child as Button).text == "NHẬN ĐỆ TỬ":
+                    accept_button = child as Button
+                    break
+        if accept_button == null or accept_button.disabled:
+            return _fail("O8 Dẫn Tiên has no enabled canonical accept action for the selected candidate.")
+        accept_button.emit_signal("pressed")
+        await process_frame
+        if not state.disciples.has(recruit_id) or not DiscipleRealmProgressV2.progression_ready(state.disciples[recruit_id]):
+            return _fail("O8 canonical Dẫn Tiên acceptance did not initialize the recruited V2 disciple.")
+        var close_button: Button
+        for child in dan_tien.find_children("*","Button",true,false):
+            if (child as Button).text.begins_with("ĐÓNG"):
+                close_button = child as Button
+                break
+        if close_button == null:
+            return _fail("O8 Dẫn Tiên UI could not close after canonical recruitment.")
+        close_button.emit_signal("pressed")
+        await process_frame
 
     # Use the newly made pill through the real Dược Phòng button. HP is
     # wounded here as a test fixture; pill, receipt, satiety and SaveService
