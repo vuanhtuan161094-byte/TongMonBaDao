@@ -26,6 +26,7 @@ var boss_option: OptionButton
 var zoom_option: OptionButton
 var active_slots: Array[OptionButton] = []
 var ultimate_slot: OptionButton
+var skill_preview_option: OptionButton
 var state_label: Label
 var roster_label: Label
 var stats_label: Label
@@ -145,6 +146,13 @@ func _build_ui() -> void:
     ultimate_slot = OptionButton.new()
     ultimate_slot.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     controls.add_child(ultimate_slot)
+    _label(controls, "THỬ TỪNG CHIÊU · DỮ LIỆU THẬT", 12, Color("c4b3e1"))
+    skill_preview_option = OptionButton.new()
+    skill_preview_option.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+    controls.add_child(skill_preview_option)
+    var cast_preview_button := _button(controls, "THỬ CHIÊU (HOLD)", Color("4a6073"))
+    cast_preview_button.tooltip_text = "Tạm dừng AUTO, thử đúng kỹ năng đã học/trang bị. Không bỏ qua hồi chiêu."
+    cast_preview_button.pressed.connect(_preview_selected_skill)
     _label(controls, "ĐỐI THỦ", 14, Color("c9b9dd"))
     enemy_option = _option(controls, "Đối thủ", ["Thường · Hắc Lang", "Tinh Anh · Nham Giáp", "Boss V6.3 thật"])
     enemy_option.item_selected.connect(func(_i: int): _refresh_boss_visibility())
@@ -317,6 +325,23 @@ func _refresh_skills() -> void:
         active_slots[index].disabled = active.is_empty()
     _fill_skill_option(ultimate_slot, ultimate, 0)
     ultimate_slot.disabled = ultimate.is_empty()
+    if skill_preview_option != null:
+        var previous_id := ""
+        if skill_preview_option.item_count > 0 and skill_preview_option.selected >= 0:
+            previous_id = str(skill_preview_option.get_item_metadata(skill_preview_option.selected))
+        skill_preview_option.clear()
+        for row in active + ultimate:
+            var name := str(row.get("name", row.get("id", "")))
+            var item_id := str(row.get("id", ""))
+            skill_preview_option.add_item(name)
+            skill_preview_option.set_item_metadata(skill_preview_option.item_count - 1, item_id)
+        if skill_preview_option.item_count > 0:
+            var selected := 0
+            for index in range(skill_preview_option.item_count):
+                if str(skill_preview_option.get_item_metadata(index)) == previous_id:
+                    selected = index
+                    break
+            skill_preview_option.select(selected)
 
 func _fill_skill_option(option: OptionButton, rows: Array[Dictionary], selected_index: int) -> void:
     option.clear()
@@ -351,6 +376,57 @@ func _selected_loadout() -> Array[String]:
     result.append(str(ultimate_slot.get_item_metadata(ultimate_slot.selected)))
     for index in range(5): result.append(str(passives[index].id))
     return result
+
+func _preview_selected_skill() -> void:
+    # Lab-only controlled cast, real skill engine. No new damage authority and
+    # no cooldown override. In normal PvE this button does not exist.
+    if battle == null or not battle.active or skill_preview_option == null:
+        return
+    if skill_preview_option.item_count == 0 or skill_preview_option.selected < 0:
+        return
+    _set_auto(false)
+    var skill_id := str(skill_preview_option.get_item_metadata(skill_preview_option.selected))
+    var disciple_ids: Array = []
+    var enemy_ids: Array = []
+    for raw_id in battle.actors.keys():
+        var actor: Dictionary = battle.actors[raw_id]
+        if float(actor.get("hp", 0.0)) <= 0.0:
+            continue
+        if str(actor.get("side", "")) == "disciple":
+            disciple_ids.append(raw_id)
+        elif str(actor.get("side", "")) == "monster":
+            enemy_ids.append(raw_id)
+    disciple_ids.sort()
+    enemy_ids.sort()
+    if disciple_ids.is_empty() or enemy_ids.is_empty():
+        _set_error("Không có đệ tử/đối thủ còn sống để thử chiêu")
+        return
+    var caster: Dictionary = battle.actors[disciple_ids[0]]
+    var target: Dictionary = battle.actors[enemy_ids[0]]
+    var old_loadout: Array = caster.get("v63_skill_loadout", []).duplicate(true)
+    if not old_loadout.has(skill_id):
+        _set_error("Kỹ năng chưa được trang bị trong đội hình Lab")
+        return
+    if not caster.get("v63_pending_cast", {}).is_empty():
+        _set_error("Đệ tử đang thi triển chiêu trước")
+        return
+    var ready: Dictionary = caster.get("v63_skill_ready", {})
+    if battle.now < float(ready.get(skill_id, 0.0)):
+        _set_error("Kỹ năng đang hồi chiêu: %.1fs" % (float(ready.get(skill_id, 0.0)) - battle.now))
+        return
+    var priority: Array = [skill_id]
+    for raw_id in old_loadout:
+        if str(raw_id) != skill_id:
+            priority.append(raw_id)
+    caster["v63_skill_loadout"] = priority
+    var cast_started := V63HumanSkillCombatSystem.try_cast(battle, caster, target)
+    caster["v63_skill_loadout"] = old_loadout
+    _consume_events()
+    _refresh_hud()
+    if not cast_started:
+        _set_error("Chiêu không hợp lệ ở khoảng cách/đối tượng hoặc trạng thái hiện tại")
+        return
+    state_label.text = "THỬ CHIÊU · " + str(V63HumanSkillCombatSystem.skill_definition(skill_id).get("name", skill_id)) + " · STEP để phóng"
 
 func _start_battle() -> void:
     if school_option == null: return
