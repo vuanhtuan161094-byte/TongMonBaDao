@@ -414,11 +414,9 @@ func _preview_selected_skill() -> void:
     if battle.now < float(ready.get(skill_id, 0.0)):
         _set_error("Kỹ năng đang hồi chiêu: %.1fs" % (float(ready.get(skill_id, 0.0)) - battle.now))
         return
-    var priority: Array = [skill_id]
-    for raw_id in old_loadout:
-        if str(raw_id) != skill_id:
-            priority.append(raw_id)
-    caster["v63_skill_loadout"] = priority
+    # Isolate only the selected skill. If it cannot be cast, no other
+    # equipped skill may silently substitute for the requested preview.
+    caster["v63_skill_loadout"] = [skill_id]
     var cast_started := V63HumanSkillCombatSystem.try_cast(battle, caster, target)
     caster["v63_skill_loadout"] = old_loadout
     _consume_events()
