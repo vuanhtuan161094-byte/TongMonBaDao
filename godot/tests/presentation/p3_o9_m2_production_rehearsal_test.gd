@@ -108,6 +108,9 @@ func _run() -> void:
         _fail("O9 newly produced Mine+Forest stock did not enable Thanh Thiet Kiem.")
         return
     var item_count_before := state.sect.equipment_items.size()
+    var item_ids_before: Array[String] = []
+    for raw_item_id in state.sect.equipment_items.keys():
+        item_ids_before.append(str(raw_item_id))
     var iron_before_craft := warehouse.quantity(state, &"thanh_thiet")
     var wood_before_craft := warehouse.quantity(state, &"linh_moc")
     craft.emit_signal("pressed")
@@ -123,6 +126,62 @@ func _run() -> void:
         return
     if state.sect.equipment_items.size() != item_count_before + 1:
         _fail("O9 shared Mine+Forest consumer did not create exactly one item.")
+        return
+
+    var crafted_item_id: StringName = &""
+    for raw_item_id in state.sect.equipment_items.keys():
+        var candidate_item: Dictionary = state.sect.equipment_items[str(raw_item_id)]
+        if not item_ids_before.has(str(raw_item_id)) and str(candidate_item.get("recipe_id","")) == str(RECIPE_ID):
+            crafted_item_id = StringName(raw_item_id)
+            break
+    if crafted_item_id == &"":
+        _fail("O9 could not identify the unique item created by the real Forge transaction.")
+        return
+    var crafted_item: Dictionary = state.sect.equipment_items[str(crafted_item_id)]
+    var buyer_id: StringName = &""
+    var buyer_wallet := -1
+    for raw_disciple_id in state.disciples.keys():
+        var candidate_disciple: DiscipleState = state.disciples[raw_disciple_id]
+        if candidate_disciple.wallet > buyer_wallet:
+            buyer_id = candidate_disciple.id
+            buyer_wallet = candidate_disciple.wallet
+    if buyer_id == &"" or buyer_wallet < int(crafted_item.get("price",0)):
+        _fail("O9 real starter roster has no disciple wallet that can afford the forged item.")
+        return
+    var buyer: DiscipleState = state.disciples[buyer_id]
+    var buyer_wallet_before := buyer.wallet
+    var treasury_before_purchase := state.sect.treasury
+    ui.call("_open_disciple_deep_screen",buyer_id,"Trang bị")
+    await process_frame
+    var weapon_picker := ui.find_child("EquipmentPicker_weapon",true,false) as OptionButton
+    var equip_button := ui.find_child("EquipmentEquip_weapon",true,false) as Button
+    if weapon_picker == null or equip_button == null:
+        _fail("O9 live disciple profile did not expose the actual equipment controls.")
+        return
+    var crafted_option := -1
+    for option_index in range(weapon_picker.item_count):
+        if str(weapon_picker.get_item_metadata(option_index)) == str(crafted_item_id):
+            crafted_option = option_index
+            break
+    if crafted_option < 0:
+        _fail("O9 forged shop item is missing from the disciple's compatible weapon picker.")
+        return
+    weapon_picker.select(crafted_option)
+    weapon_picker.emit_signal("item_selected",crafted_option)
+    if equip_button.disabled or equip_button.text != "Mua & mặc":
+        _fail("O9 shop item did not expose an affordable canonical purchase action.")
+        return
+    equip_button.emit_signal("pressed")
+    await process_frame
+    var equipped_item: Dictionary = state.sect.equipment_items.get(str(crafted_item_id),{})
+    if (
+        StringName(equipped_item.get("location","")) != EquipmentSystem.LOCATION_EQUIPPED
+        or str(equipped_item.get("owner_id","")) != str(buyer_id)
+        or str(buyer.equipped_items.get(str(EquipmentSystem.SLOT_WEAPON),"")) != str(crafted_item_id)
+        or buyer.wallet != buyer_wallet_before - int(crafted_item.get("price",0))
+        or state.sect.treasury != treasury_before_purchase + int(crafted_item.get("price",0))
+    ):
+        _fail("O9 equipment UI did not use the real purchase/equip transaction exactly once.")
         return
 
     if not await _open_building(SectMapPresentation.DEST_SPIRIT_FIELD):
@@ -246,6 +305,9 @@ func _run() -> void:
     var saved_herb := warehouse.quantity(state, &"thanh_linh_thao")
     var saved_pill := warehouse.quantity(state, NeedsSystem.HEALING_PILL_ID)
     var saved_items := state.sect.equipment_items.size()
+    var saved_buyer_wallet := state.disciples[buyer_id].wallet
+    var saved_buyer_treasury := state.sect.treasury
+    var saved_equipment_owner := str(state.sect.equipment_items[str(crafted_item_id)].get("owner_id",""))
     var saved_mine_cycle: Dictionary = state.disciples[miner_id].work_cycle_state.duplicate(true)
     var saved_forest_cycle: Dictionary = state.disciples[forest_worker_id].work_cycle_state.duplicate(true)
     var saved_plot: Dictionary = active_plot.duplicate(true)
@@ -283,8 +345,13 @@ func _run() -> void:
         or warehouse.quantity(state, &"thanh_linh_thao") != saved_herb
         or warehouse.quantity(state, NeedsSystem.HEALING_PILL_ID) != saved_pill
         or state.sect.equipment_items.size() != saved_items
+        or state.disciples[buyer_id].wallet != saved_buyer_wallet
+        or state.sect.treasury != saved_buyer_treasury
+        or str(state.sect.equipment_items.get(str(crafted_item_id),{}).get("location","")) != str(EquipmentSystem.LOCATION_EQUIPPED)
+        or str(state.sect.equipment_items.get(str(crafted_item_id),{}).get("owner_id","")) != saved_equipment_owner
+        or str(state.disciples[buyer_id].equipped_items.get(str(EquipmentSystem.SLOT_WEAPON),"")) != str(crafted_item_id)
     ):
-        _fail("O9 reload changed Warehouse/item state before scheduler continuation.")
+        _fail("O9 reload changed Warehouse/item/equipped ownership state before scheduler continuation.")
         return
     if not _same_cycle(saved_mine_cycle, state.disciples[miner_id].work_cycle_state):
         _fail("O9 reload lost/restarted the exact Mine carry cycle.")

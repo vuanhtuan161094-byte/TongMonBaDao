@@ -3,7 +3,7 @@
   "branch": "integration/pve-p0-playable-ui-20261103",
   "base_sha": "27ed01cd8f377994e5e50bac9ede84e78e8895bd",
   "upstream_pr_sha": "c99f22153b34628f7e94f69de0285514e788b9cb",
-  "source_fingerprint": "260735c04b43cc79085b2a707577138a9061dbd898852ac8f84af64dc50b1924",
+  "source_fingerprint": "ba4def935df82e0b220f6d5d6e4a04c6698c2a72d975dc5ccaf138166b2d7fea",
   "files": [
     {
       "path": "CHOI-GAME.cmd",
@@ -367,7 +367,7 @@
     },
     {
       "path": "godot/src/presentation/p3_2_landscape_sect.gd",
-      "git_blob_sha": "124155d68190586bb374045ac109bfaf18ccf1cf"
+      "git_blob_sha": "5d243626ca1dfc5c7b8ea6a5c2c5d8f1d1b5f39d"
     },
     {
       "path": "godot/src/presentation/uiux/dai_dien_screen_b1_v1.gd",
@@ -539,7 +539,7 @@
     },
     {
       "path": "godot/tests/presentation/p3_o4_spirit_field_loop_test.gd",
-      "git_blob_sha": "feb8381080171c69d07e5463762904f3902b0e95"
+      "git_blob_sha": "c5924ff4a4c3d15cfc689d29d6b16a33f4ac0f41"
     },
     {
       "path": "godot/tests/presentation/p3_o5_real_consumption_loop_test.gd",
@@ -555,11 +555,11 @@
     },
     {
       "path": "godot/tests/presentation/p3_o8_alchemy_loop_test.gd",
-      "git_blob_sha": "b06ac8a52d0dce349eb816efa4110b3b28e9ab8b"
+      "git_blob_sha": "87dc0050479ff75c2b369c69e9b499be3d8e527d"
     },
     {
       "path": "godot/tests/presentation/p3_o9_m2_production_rehearsal_test.gd",
-      "git_blob_sha": "8cfd9c07299c828176694f5c8a1a9a7f6a8149d9"
+      "git_blob_sha": "304a065763f4e3fcd1e775d5421b2ac91a83a70c"
     },
     {
       "path": "godot/tests/presentation/pve_aux02_world_input_contract_test.gd",

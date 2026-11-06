@@ -48,6 +48,21 @@ func _run() -> void:
         return
     if not await _open_building(SectMapPresentation.DEST_ALCHEMY_HALL):
         return
+    hall = buildings.primary_building(state,BuildingSystem.TYPE_ALCHEMY_HALL)
+    var original_hall_production := hall.production_state.duplicate(true)
+    var original_policy := state.sect.sx01_pill_policy.duplicate(true)
+    var original_building_event_count := state.building_event_count
+    var v2_preview_recipe := MedicineCatalogueV2.recipe_id(MedicineCatalogueV2.FAMILY_HEAL,1)
+    var preview_state := hall.production_state.duplicate(true)
+    preview_state["recipe_id"] = str(v2_preview_recipe)
+    hall.production_state = preview_state
+    var v2_recipe_summary := str(ui.call("_alchemy_operation_text"))
+    hall.production_state = original_hall_production
+    state.sect.sx01_pill_policy = original_policy
+    state.building_event_count = original_building_event_count
+    if not v2_recipe_summary.contains("Thanh Linh Thảo ×3") or not v2_recipe_summary.contains("Hồi Nguyên Đan") or v2_recipe_summary.contains("Linh Cốc ×"):
+        _fail("O8 Alchemy summary did not show the selected V2 recipe's canonical ingredient and product.")
+        return
     if not await _press("Group_alchemy_crew_%s" % str(alchemist_id)):
         return
 

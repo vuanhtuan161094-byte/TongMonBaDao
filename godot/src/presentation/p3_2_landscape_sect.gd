@@ -1200,6 +1200,55 @@ func _disciple_avatar_button(disciple: DiscipleState, edge: float) -> Button:
     avatar.add_child(stage)
     return avatar
 
+func _quick_assignment_withdraw_block_reason(disciple: DiscipleState) -> String:
+    if not disciple.active_pve_encounter_id.is_empty():
+        return "Đệ tử đang tham chiến; không thể rút khỏi công việc."
+    var buildings := BuildingSystem.new()
+    var resource_job := buildings.active_resource_timer_for_worker(state,disciple.id)
+    if not resource_job.is_empty():
+        var resource_name := ResourceRegistry.new().display_name(StringName(resource_job.get("resource_id","")))
+        var remaining := maxi(int(resource_job.get("finish_tick",state.tick))-state.tick,0)
+        return "Mẻ %s đang chạy; còn %d phút tới khi nhập Kho." % [resource_name,remaining]
+    if buildings.disciple_has_active_spirit_plot(state,disciple.id):
+        for raw_building in state.buildings.values():
+            if not (raw_building is BuildingState) or raw_building.building_type != BuildingSystem.TYPE_SPIRIT_FIELD:
+                continue
+            for raw_plot in buildings.spirit_field_plots(state,raw_building):
+                if raw_plot is Dictionary and str(raw_plot.get("assigned_worker_id","")) == str(disciple.id):
+                    var remaining := maxi(int(raw_plot.get("finish_tick",state.tick))-state.tick,0)
+                    return "Đang chăm Linh Điền; còn %d phút tới khi thu hoạch." % remaining
+        return "Đệ tử đang giữ một ô Linh Điền; chỉ rút sau khi thu hoạch."
+    var alchemy_job := buildings.active_alchemy_job_for_worker(state,disciple.id)
+    if not alchemy_job.is_empty():
+        var remaining := maxi(int(alchemy_job.get("finish_tick",state.tick))-state.tick,0)
+        return "Mẻ Luyện Đan đang chạy; còn %d phút tới khi hoàn thành." % remaining
+    return ""
+
+
+func _withdraw_disciple_from_quick_assignment(disciple_id: StringName, to_summary: bool) -> void:
+    if not state.disciples.has(disciple_id):
+        return
+    var disciple: DiscipleState = state.disciples[disciple_id]
+    var blocked := _quick_assignment_withdraw_block_reason(disciple)
+    if not blocked.is_empty():
+        _open_disciple_quick_assignment(disciple_id,to_summary,blocked)
+        return
+    if disciple.work_group_id == &"" and disciple.worksite_building_id == &"":
+        _open_disciple_quick_assignment(disciple_id,to_summary,"Đệ tử hiện không có công việc cần rút.")
+        return
+    if not workforce.assign_group(state,disciple_id,&""):
+        _open_disciple_quick_assignment(disciple_id,to_summary,"Workforce V2 chưa thể rút đệ tử khỏi việc này.")
+        return
+    var message := "Đã rút đệ tử khỏi công việc. Sản phẩm đã nhập Kho được giữ nguyên."
+    if runtime_session == null or runtime_session.owner == null:
+        message += " Cảnh báo: phiên lưu chưa sẵn sàng."
+    else:
+        var persisted: Dictionary = runtime_session.save()
+        if not bool(persisted.get("ok",false)):
+            message += " Cảnh báo: SaveService chưa lưu được thay đổi."
+    _open_disciple_quick_assignment(disciple_id,to_summary,message)
+
+
 func _open_disciple_quick_assignment(disciple_id: StringName, preserve_summary_origin: bool = false, feedback_message: String = "") -> void:
     if not state.disciples.has(disciple_id):
         return
@@ -1233,19 +1282,46 @@ func _open_disciple_quick_assignment(disciple_id: StringName, preserve_summary_o
     scroll.name = "DiscipleQuickAssignmentScroll"
     scroll.position = Vector2(22,92)
     scroll.size = Vector2(614,427)
-    if _can_cancel_queued_assignment_command(disciple):
-        var cancel_pending := Button.new()
-        cancel_pending.name = "QuickAssignmentCancelPendingCommand"
-        cancel_pending.text = "Hủy lệnh chờ"
-        cancel_pending.position = Vector2(22,88)
-        cancel_pending.size = Vector2(177,42)
-        cancel_pending.add_theme_font_size_override("font_size",14)
-        cancel_pending.add_theme_stylebox_override("normal",_style(CINNABAR,PAPER_LIGHT,1,8))
-        cancel_pending.tooltip_text = "Chỉ hủy lệnh chưa chạy; không xóa sản phẩm, công việc đang chạy hoặc công trình."
-        cancel_pending.pressed.connect(Callable(self,"_cancel_quick_assignment_pending_command").bind(disciple_id,returning_to_summary))
-        panel.add_child(cancel_pending)
-        var pending_tip := _label(panel,"Đệ tử đang có lệnh chờ. Hủy để chọn công việc mới.",Vector2(209,93),Vector2(415,34),12)
-        pending_tip.add_theme_color_override("font_color",INK)
+    var has_pending_command := _can_cancel_queued_assignment_command(disciple)
+    var has_work_assignment := disciple.work_group_id != &"" or disciple.worksite_building_id != &""
+    if has_pending_command or has_work_assignment:
+        var next_control_x := 22.0
+        if has_pending_command:
+            var cancel_button := Button.new()
+            cancel_button.name = "QuickAssignmentCancelPendingCommand"
+            cancel_button.text = "Hủy lệnh chờ"
+            cancel_button.position = Vector2(next_control_x,88)
+            cancel_button.size = Vector2(154,42)
+            cancel_button.add_theme_font_size_override("font_size",13)
+            cancel_button.add_theme_stylebox_override("normal",_style(CINNABAR,PAPER_LIGHT,1,8))
+            cancel_button.tooltip_text = "Chỉ hủy lệnh chưa chạy; không xóa sản phẩm, công việc đang chạy hoặc công trình."
+            cancel_button.pressed.connect(Callable(self,"_cancel_quick_assignment_pending_command").bind(disciple_id,returning_to_summary))
+            panel.add_child(cancel_button)
+            next_control_x += 162.0
+        var hint_x := next_control_x
+        if has_work_assignment:
+            var withdraw_reason := _quick_assignment_withdraw_block_reason(disciple)
+            var withdraw_button := Button.new()
+            withdraw_button.name = "QuickAssignmentWithdraw"
+            withdraw_button.text = "Rút khỏi việc"
+            withdraw_button.position = Vector2(next_control_x,88)
+            withdraw_button.size = Vector2(160,42)
+            withdraw_button.add_theme_font_size_override("font_size",13)
+            withdraw_button.add_theme_stylebox_override("normal",_style(Color(0.88,0.82,0.67),INK,1,8))
+            withdraw_button.disabled = not withdraw_reason.is_empty()
+            withdraw_button.tooltip_text = withdraw_reason if not withdraw_reason.is_empty() else "Chu kỳ chưa hoàn tất sẽ dừng; sản phẩm đã nhập Kho được giữ nguyên."
+            withdraw_button.pressed.connect(Callable(self,"_withdraw_disciple_from_quick_assignment").bind(disciple_id,returning_to_summary))
+            panel.add_child(withdraw_button)
+            hint_x += 168.0
+        var hint_text := "Hủy lệnh chờ để chọn công việc mới." if has_pending_command else "Có thể rút người khỏi đội và xưởng."
+        var current_block_reason := _quick_assignment_withdraw_block_reason(disciple) if has_work_assignment else ""
+        if not current_block_reason.is_empty():
+            hint_text = current_block_reason
+        elif has_work_assignment:
+            hint_text = "Rút sẽ hủy chu kỳ chưa hoàn tất; sản phẩm đã nhập Kho không mất."
+        var hint_width := 638.0 - hint_x
+        var control_hint := _label(panel,hint_text,Vector2(hint_x,92),Vector2(maxf(hint_width,170.0),40),12)
+        control_hint.add_theme_color_override("font_color",INK)
         scroll.position = Vector2(22,140)
         scroll.size = Vector2(614,379)
     panel.add_child(scroll)
@@ -4589,32 +4665,89 @@ func _alchemy_operation_text() -> String:
     var hall := buildings.primary_building(state, BuildingSystem.TYPE_ALCHEMY_HALL)
     if hall == null:
         return "Luyện Đan Điện chưa tồn tại."
+    var registry := AlchemyRecipeRegistry.new()
+    var resources := ResourceRegistry.new()
     var jobs := buildings.alchemy_jobs(state, hall)
+    var current_recipe := StringName(hall.production_state.get("recipe_id", "hoi_xuan_dan"))
+    var recipe_data := registry.definition(current_recipe)
+    var recipe_name := str(recipe_data.get("name", "Đan phương chưa khả dụng"))
+    var status := "TỰ ĐỘNG" if SX01PillPolicy.active(state) and str(state.sect.sx01_pill_policy.get("recipe_mode", "")) == "demand" else "CỐ ĐỊNH"
+
+    var ingredient_lines: Array[String] = []
+    var ingredient_ids: Array = registry.inputs(current_recipe).keys()
+    ingredient_ids.sort()
+    var warehouse_system := WarehouseSystem.new()
+    for raw_id in ingredient_ids:
+        var resource_id := StringName(raw_id)
+        var recipe_inputs := registry.inputs(current_recipe)
+        var need := int(recipe_inputs.get(raw_id, recipe_inputs.get(str(raw_id), 0)))
+        var total := warehouse_system.quantity(state, resource_id)
+        var available := warehouse_system.available_quantity(state, resource_id)
+        ingredient_lines.append("• %s ×%d · Kho %s · dùng được %s" % [
+            resources.display_name(resource_id), need,
+            _compact_number(total), _compact_number(available)
+        ])
+    if ingredient_lines.is_empty():
+        ingredient_lines.append("• Chưa có công thức hợp lệ.")
+
+    var output_id := registry.output_resource_id(current_recipe)
+    var output_quantity := registry.output_quantity(current_recipe)
+    var output_name := resources.display_name(output_id) if output_id != &"" else "Chưa có sản phẩm"
+    var output_stock := warehouse_system.quantity(state, output_id) if output_id != &"" else 0
+    var output_available := warehouse_system.available_quantity(state, output_id) if output_id != &"" else 0
+    var output_effect := _alchemy_product_effect_text(current_recipe, output_id)
+    var is_v2_recipe := not MedicineCatalogueV2.parse_recipe(current_recipe).is_empty()
+    var output_header := "SẢN PHẨM CƠ SỞ" if is_v2_recipe else "SẢN PHẨM"
+    var stock_caption := "Kho phẩm cơ sở" if is_v2_recipe else "Kho sản phẩm"
+    var quality_note := "Mẻ đang luyện giữ nguyên công thức đã chọn; sản phẩm chỉ nhập Kho khi hoàn thành."
+    if is_v2_recipe:
+        quality_note = "Phẩm của đan V2 được chốt theo Đan Sư và cấp Điện khi bắt đầu mẻ; vật phẩm thực tế hiện trong Kho."
+
     var lines: Array[String] = []
     for raw_job in jobs:
         var job: Dictionary = raw_job
         var worker_id := StringName(job.get("worker_id", ""))
         var name: String = state.disciples[worker_id].display_name if state.disciples.has(worker_id) else str(worker_id)
-        var pill := str(AlchemyRecipeRegistry.new().definition(StringName(job.get("recipe_id",""))).get("name", "Đan dược"))
-        lines.append("• %s · %s · còn %d phút" % [name, pill, maxi(int(job.get("finish_tick", state.tick)) - state.tick, 0)])
-    var recipe_name := str(AlchemyRecipeRegistry.new().definition(StringName(hall.production_state.get("recipe_id", "hoi_xuan_dan"))).get("name", "Hồi Xuân Đan"))
-    var status := "TỰ ĐỘNG" if SX01PillPolicy.active(state) and str(state.sect.sx01_pill_policy.get("recipe_mode", "")) == "demand" else "CỐ ĐỊNH"
+        var job_output_id := StringName(job.get("output_resource_id", output_id))
+        var job_output_name := resources.display_name(job_output_id) if job_output_id != &"" else output_name
+        lines.append("• %s · %s ×%d · còn %d phút" % [
+            name, job_output_name, maxi(int(job.get("output_quantity", output_quantity)), 0),
+            maxi(int(job.get("finish_tick", state.tick)) - state.tick, 0)
+        ])
+
     return (
         "LUYỆN ĐAN ĐIỆN · Lv%d\n"
         + "Đan Sư: %d/%d · Mẻ đang luyện: %d\n"
         + "Đan phương: %s · %s\n"
-        + "Thanh Linh Thảo: %s · Linh Cốc: %s\n"
-        + "Hồi Xuân Đan: %s · Tụ Khí Đan: %s\n"
-        + "Hồi Xuân: 3 Thảo → +55 HP\n"
-        + "Tụ Khí: 2 Thảo + 1 Cốc → +10.000 Tu Vi\n\n"
+        + "MỖI MẺ CẦN\n%s\n"
+        + "%s: %s ×%d\n"
+        + "%s\n"
+        + "%s: %s · dùng được %s\n"
+        + "%s\n\n"
         + "MẺ ĐANG LUYỆN\n%s"
     ) % [
         hall.level, buildings.active_worker_ids(state, hall).size(), buildings.worker_slots(hall),
-        jobs.size(), recipe_name, status,
-        _warehouse_pair(&"thanh_linh_thao", true), _warehouse_pair(&"linh_coc", true),
-        _warehouse_pair(&"hoi_xuan_dan", true), _warehouse_pair(&"tu_khi_dan", true),
+        jobs.size(), recipe_name, status, "\n".join(ingredient_lines),
+        output_header, output_name, output_quantity, output_effect, stock_caption,
+        _compact_number(output_stock), _compact_number(output_available), quality_note,
         "Không có" if lines.is_empty() else "\n".join(lines)
     ]
+
+
+func _alchemy_product_effect_text(recipe_id: StringName, output_id: StringName) -> String:
+    if recipe_id == AlchemyRecipeRegistry.RECIPE_HOI_XUAN_DAN:
+        return "Công dụng: hồi tối đa %d HP." % int(NeedsSystem.HEALING_PILL_HP)
+    if recipe_id == AlchemyRecipeRegistry.RECIPE_TU_KHI_DAN:
+        return "Công dụng: tăng 10.000 Tu Vi theo đan phương Tụ Khí hiện hành."
+    var medicine := MedicineCatalogueV2.definition(output_id)
+    if medicine.is_empty():
+        return "Công dụng được ghi trên vật phẩm sau khi nhập Kho."
+    var potency := maxi(int(medicine.get("potency", 0)), 0)
+    var family := StringName(medicine.get("pill_family", ""))
+    var quality_name := str(medicine.get("quality_name", "Hạ Phẩm"))
+    var effect := "hồi tối đa %d HP" % potency if family == MedicineCatalogueV2.FAMILY_HEAL else "tăng %d Tu Vi" % potency
+    return "Công dụng %s cơ sở: %s; phẩm thực tế do Đan Sư và cấp Điện chốt khi bắt đầu." % [quality_name, effect]
+
 
 func _linh_forest_operation_text() -> String:
     var members := _disciples_in_work_group(&"forestry_crew")
@@ -7557,7 +7690,11 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "T�
     content.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
     content.add_theme_font_size_override("font_size", 15)
     content.add_theme_color_override("font_color", INK)
-    details_scroll.add_child(content)
+    if tab_name == "Trang bị":
+        content.visible = false
+        _build_disciple_equipment_manager(details_scroll,disciple)
+    else:
+        details_scroll.add_child(content)
 
     var profile_snapshot := _disciple_snapshot(disciple)
     var authentic_v2 := bool(profile_snapshot.get("authentic_v2", false))
@@ -8240,6 +8377,264 @@ func _v63_technique_tab_text(snapshot: Dictionary) -> String:
     ]
 
 
+func _build_disciple_equipment_manager(parent: ScrollContainer, disciple: DiscipleState) -> void:
+    var manager := VBoxContainer.new()
+    manager.name = "DiscipleEquipmentManager"
+    manager.custom_minimum_size = Vector2(maxf(parent.size.x-18.0,560.0),0)
+    manager.add_theme_constant_override("separation",5)
+    parent.add_child(manager)
+
+    var wallet := Label.new()
+    wallet.name = "EquipmentWallet"
+    wallet.text = "Ví cá nhân: %d · Ngân khố tông môn: %d" % [disciple.wallet,state.sect.treasury]
+    wallet.add_theme_font_size_override("font_size",13)
+    wallet.add_theme_color_override("font_color",INK)
+    manager.add_child(wallet)
+
+    var note := Label.new()
+    note.name = "EquipmentCombatV2Note"
+    note.text = "Combat V2 dùng thủ, tốc đánh/chạy, tầm/tỷ lệ đòn cơ bản và kỹ năng khớp Đường/Hệ. Chiến lực cũ không cộng thành ATK. Ô mở tự động được scheduler xét theo chính sách và ví."
+    note.custom_minimum_size = Vector2(manager.custom_minimum_size.x,36)
+    note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+    note.add_theme_font_size_override("font_size",11)
+    note.add_theme_color_override("font_color",INK)
+    manager.add_child(note)
+
+    if not state.sect.equipment_enabled:
+        var unavailable := Label.new()
+        unavailable.text = "Trang bị chưa được mở trong trạng thái này."
+        unavailable.add_theme_color_override("font_color",CINNABAR)
+        manager.add_child(unavailable)
+        return
+    if not tab_status_text.is_empty():
+        var feedback := Label.new()
+        feedback.name = "EquipmentActionFeedback"
+        feedback.text = tab_status_text
+        feedback.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+        feedback.custom_minimum_size = Vector2(manager.custom_minimum_size.x,24)
+        feedback.add_theme_font_size_override("font_size",11)
+        feedback.add_theme_color_override("font_color",CINNABAR)
+        manager.add_child(feedback)
+
+    var item_ids: Array = state.sect.equipment_items.keys()
+    item_ids.sort()
+    for raw_slot in EquipmentSystem.VALID_SLOTS:
+        var slot := StringName(raw_slot)
+        var slot_key := str(slot)
+        var equipped := equipment_system.equipped_item(state,disciple,slot)
+        var locked := bool(disciple.locked_equipment_slots.get(slot_key,false))
+        var current_name := "Chưa trang bị"
+        if not equipped.is_empty():
+            current_name = "%s · %s" % [
+                str(equipped.get("name",equipped.get("id","?"))),
+                equipment_system.quality_name(StringName(equipped.get("quality","pham")))
+            ]
+        var current_label := Label.new()
+        current_label.name = "EquipmentCurrent_%s" % slot_key
+        current_label.text = "%s: %s · %s" % [
+            _equipment_slot_name(slot),current_name,"Ô khóa" if locked else "Tự động"
+        ]
+        current_label.custom_minimum_size = Vector2(manager.custom_minimum_size.x,20)
+        current_label.add_theme_font_size_override("font_size",12)
+        current_label.add_theme_color_override("font_color",INK)
+        manager.add_child(current_label)
+
+        var row := HBoxContainer.new()
+        row.name = "EquipmentControls_%s" % slot_key
+        row.custom_minimum_size = Vector2(manager.custom_minimum_size.x,38)
+        row.add_theme_constant_override("separation",5)
+        manager.add_child(row)
+
+        var picker := OptionButton.new()
+        picker.name = "EquipmentPicker_%s" % slot_key
+        picker.custom_minimum_size = Vector2(250,36)
+        picker.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+        picker.add_theme_font_size_override("font_size",11)
+        for raw_item_id in item_ids:
+            var item_id := str(raw_item_id)
+            var item: Dictionary = state.sect.equipment_items[item_id]
+            if str(item.get("slot","")) != slot_key or StringName(item.get("location","")) == EquipmentSystem.LOCATION_EQUIPPED:
+                continue
+            var location := StringName(item.get("location",""))
+            var where := "Kho" if location == EquipmentSystem.LOCATION_STORAGE else "Cửa hàng"
+            var suffix := " · giá %d" % int(item.get("price",0)) if location == EquipmentSystem.LOCATION_SHOP else ""
+            picker.add_item("%s · %s · %s%s" % [
+                str(item.get("name",item_id)),
+                equipment_system.quality_name(StringName(item.get("quality","pham"))),
+                where,suffix
+            ])
+            picker.set_item_metadata(picker.item_count-1,item_id)
+        if picker.item_count == 0:
+            picker.add_item("Không có vật phẩm phù hợp")
+            picker.disabled = true
+            picker.set_item_metadata(0,"")
+        else:
+            picker.select(0)
+        row.add_child(picker)
+
+        var equip_button := Button.new()
+        equip_button.name = "EquipmentEquip_%s" % slot_key
+        equip_button.text = "Trang bị"
+        equip_button.custom_minimum_size = Vector2(88,36)
+        equip_button.add_theme_font_size_override("font_size",11)
+        equip_button.add_theme_color_override("font_color",PAPER_LIGHT)
+        equip_button.add_theme_stylebox_override("normal",_style(JADE_DARK,INK,1,6))
+        equip_button.pressed.connect(Callable(self,"_equip_selected_disciple_item").bind(disciple.id,slot,picker))
+        row.add_child(equip_button)
+
+        var auto_button := Button.new()
+        auto_button.name = "EquipmentAuto_%s" % slot_key
+        auto_button.text = "Mở tự động" if locked else "Khóa ô"
+        auto_button.custom_minimum_size = Vector2(86,36)
+        auto_button.add_theme_font_size_override("font_size",10)
+        auto_button.add_theme_color_override("font_color",INK)
+        auto_button.add_theme_stylebox_override("normal",_style(Color(0.88,0.82,0.67),INK,1,6))
+        auto_button.pressed.connect(Callable(self,"_toggle_disciple_equipment_slot").bind(disciple.id,slot,locked))
+        row.add_child(auto_button)
+
+        var remove_button := Button.new()
+        remove_button.name = "EquipmentUnequip_%s" % slot_key
+        remove_button.text = "Tháo"
+        remove_button.disabled = equipped.is_empty()
+        remove_button.custom_minimum_size = Vector2(58,36)
+        remove_button.add_theme_font_size_override("font_size",10)
+        remove_button.add_theme_color_override("font_color",INK)
+        remove_button.add_theme_stylebox_override("normal",_style(Color(0.88,0.82,0.67),INK,1,6))
+        remove_button.pressed.connect(Callable(self,"_unequip_disciple_item_to_storage").bind(disciple.id,slot))
+        row.add_child(remove_button)
+
+        if picker.item_count > 0:
+            picker.item_selected.connect(Callable(self,"_update_disciple_equipment_action").bind(picker,equip_button,disciple.wallet))
+            _update_disciple_equipment_action(picker.selected,picker,equip_button,disciple.wallet)
+
+        if not equipped.is_empty():
+            var stats := Label.new()
+            stats.name = "EquipmentStats_%s" % slot_key
+            stats.text = _disciple_equipment_effect_text(equipped)
+            stats.custom_minimum_size = Vector2(manager.custom_minimum_size.x,18)
+            stats.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+            stats.add_theme_font_size_override("font_size",10)
+            stats.add_theme_color_override("font_color",INK)
+            manager.add_child(stats)
+    _ensure_disabled_controls_readable(manager)
+
+
+func _update_disciple_equipment_action(index: int, picker: OptionButton, action: Button, wallet: int) -> void:
+    if index < 0 or index >= picker.item_count:
+        action.disabled = true
+        return
+    var item_id := str(picker.get_item_metadata(index))
+    var item: Dictionary = state.sect.equipment_items.get(item_id,{})
+    if item.is_empty():
+        action.text = "Trang bị"
+        action.disabled = true
+        return
+    var location := StringName(item.get("location",""))
+    if location == EquipmentSystem.LOCATION_SHOP:
+        var price := int(item.get("price",0))
+        action.text = "Mua & mặc"
+        action.disabled = price <= 0 or wallet < price
+        action.tooltip_text = "Mua với %d từ ví cá nhân %d; tiền chuyển vào ngân khố." % [price,wallet]
+    elif location == EquipmentSystem.LOCATION_STORAGE:
+        action.text = "Mặc"
+        action.disabled = false
+        action.tooltip_text = "Mặc vật phẩm đang ở Kho; không tiêu thêm tài nguyên."
+    else:
+        action.text = "Trang bị"
+        action.disabled = true
+
+
+func _equip_selected_disciple_item(disciple_id: StringName, slot: StringName, picker: OptionButton) -> void:
+    if not state.sect.equipment_enabled or runtime_session == null or runtime_session.owner == null or runtime_session.owner.runtime_write_blocked:
+        tab_status_text = "Runtime hoặc hệ trang bị chưa sẵn sàng; chưa thay đổi vật phẩm."
+        _open_disciple_deep_screen(disciple_id,"Trang bị",true)
+        return
+    if picker.selected < 0 or picker.selected >= picker.item_count:
+        tab_status_text = "Hãy chọn vật phẩm trước."
+        _open_disciple_deep_screen(disciple_id,"Trang bị",true)
+        return
+    var item_id := StringName(str(picker.get_item_metadata(picker.selected)))
+    var item: Dictionary = state.sect.equipment_items.get(str(item_id),{})
+    if item.is_empty() or StringName(item.get("slot","")) != slot:
+        tab_status_text = "Vật phẩm không còn khả dụng cho ô này."
+        _open_disciple_deep_screen(disciple_id,"Trang bị",true)
+        return
+    var location := StringName(item.get("location",""))
+    var changed := false
+    var message := ""
+    if location == EquipmentSystem.LOCATION_SHOP:
+        var price := int(item.get("price",0))
+        var disciple: DiscipleState = state.disciples[disciple_id]
+        if disciple.wallet < price:
+            message = "Ví cá nhân không đủ %d để mua vật phẩm." % price
+        else:
+            changed = equipment_system.purchase_and_equip(state,disciple,StringName(item_id))
+            message = "Đã mua và mặc %s." % str(item.get("name",item_id)) if changed else "Giao dịch trang bị bị từ chối; không trừ tiền."
+    elif location == EquipmentSystem.LOCATION_STORAGE:
+        changed = equipment_system.manual_equip(state,disciple_id,StringName(item_id),true)
+        message = "Đã mặc %s từ Kho và khóa ô." % str(item.get("name",item_id)) if changed else "Không thể mặc vật phẩm này."
+    else:
+        message = "Vật phẩm đã được đệ tử khác mặc."
+    tab_status_text = message
+    if changed:
+        var saved: Dictionary = runtime_session.save()
+        if not bool(saved.get("ok",false)):
+            tab_status_text += " Cảnh báo: SaveService chưa xác nhận lưu."
+    _open_disciple_deep_screen(disciple_id,"Trang bị",true)
+
+
+func _toggle_disciple_equipment_slot(disciple_id: StringName, slot: StringName, locked: bool) -> void:
+    if not state.sect.equipment_enabled or runtime_session == null or runtime_session.owner == null or runtime_session.owner.runtime_write_blocked:
+        tab_status_text = "Runtime hoặc hệ trang bị chưa sẵn sàng; ô chưa đổi."
+        _open_disciple_deep_screen(disciple_id,"Trang bị",true)
+        return
+    var changed := equipment_system.return_slot_to_auto(state,disciple_id,slot) if locked else equipment_system.set_slot_lock(state,disciple_id,slot,true)
+    tab_status_text = "Ô đã trả về tự động." if changed and locked else ("Ô đã khóa." if changed else "Không thể đổi trạng thái ô.")
+    if changed:
+        var saved: Dictionary = runtime_session.save()
+        if not bool(saved.get("ok",false)):
+            tab_status_text += " Cảnh báo: SaveService chưa xác nhận lưu."
+    _open_disciple_deep_screen(disciple_id,"Trang bị",true)
+
+
+func _unequip_disciple_item_to_storage(disciple_id: StringName, slot: StringName) -> void:
+    if not state.sect.equipment_enabled or runtime_session == null or runtime_session.owner == null or runtime_session.owner.runtime_write_blocked:
+        tab_status_text = "Runtime hoặc hệ trang bị chưa sẵn sàng; vật phẩm chưa tháo."
+        _open_disciple_deep_screen(disciple_id,"Trang bị",true)
+        return
+    var changed := equipment_system.unequip_to_storage(state,disciple_id,slot)
+    tab_status_text = "Đã tháo vật phẩm và đưa về Kho." if changed else "Ô này hiện không có vật phẩm để tháo."
+    if changed:
+        var saved: Dictionary = runtime_session.save()
+        if not bool(saved.get("ok",false)):
+            tab_status_text += " Cảnh báo: SaveService chưa xác nhận lưu."
+    _open_disciple_deep_screen(disciple_id,"Trang bị",true)
+
+
+func _disciple_equipment_effect_text(item: Dictionary) -> String:
+    var stats: Dictionary = item.get("stats",{})
+    var lines: Array[String] = []
+    var defense := float(stats.get("defense_reduction",0.0))
+    if not is_zero_approx(defense):
+        lines.append("Giảm sát thương %.1f%%" % (defense*100.0))
+    var attack_speed := float(stats.get("basic_speed",0.0))
+    if not is_zero_approx(attack_speed):
+        lines.append("Tốc đánh %s%.1f%%" % ["+" if attack_speed >= 0.0 else "",attack_speed*100.0])
+    var move_speed := float(stats.get("move_speed",0.0))
+    if not is_zero_approx(move_speed):
+        lines.append("Tốc chạy %s%.1f%%" % ["+" if move_speed >= 0.0 else "",move_speed*100.0])
+    var range_bonus := float(stats.get("basic_range",0.0))
+    if not is_zero_approx(range_bonus):
+        lines.append("Tầm đánh %s%.2f" % ["+" if range_bonus >= 0.0 else "",range_bonus])
+    var basic_ratio := float(stats.get("basic_ratio",0.0))
+    if not is_zero_approx(basic_ratio):
+        lines.append("Tỷ lệ đòn cơ bản %s%.1f%%" % ["+" if basic_ratio >= 0.0 else "",basic_ratio*100.0])
+    var skill_effect := float(stats.get("skill_effect",0.0))
+    if not is_zero_approx(skill_effect):
+        lines.append("Kỹ năng khớp Đường/Hệ %s%.1f%%" % ["+" if skill_effect >= 0.0 else "",skill_effect*100.0])
+    return "Thuộc tính vật phẩm: " + (" · ".join(lines) if not lines.is_empty() else "không có kênh Combat V2 tương thích.")
+
+
 func _equipment_tab_text(disciple: DiscipleState) -> String:
     var snapshot := _disciple_snapshot(disciple)
     if not bool(snapshot.get("ok", false)):
@@ -8269,9 +8664,9 @@ func _equipment_tab_text(disciple: DiscipleState) -> String:
     if bool(snapshot.get("authentic_v2", false)):
         return (
             "Trang bị hiện tại:\n%s\n\n"
-            + "Hệ trang bị hoàn chỉnh chưa khả dụng cho hồ sơ này; các vật phẩm tương thích cũ không được tự tính vào chỉ số chiến đấu mới.\n"
-            + "Ví cá nhân: %d"
-        ) % ["\n".join(lines), int(life["wallet"])]
+            + "Combat V2 đọc các kênh tương thích của vật phẩm đã mặc; chỉ số chiến lực cũ không tự cộng thành ATK.\n"
+            + "Ví cá nhân: %d\n%s"
+        ) % ["\n".join(lines), int(life["wallet"]), tab_status_text]
 
     var equip_power := equipment_system.combat_power_bonus(state, disciple)
     var damage_reduction := (1.0 - equipment_system.incoming_damage_multiplier(state, disciple)) * 100.0

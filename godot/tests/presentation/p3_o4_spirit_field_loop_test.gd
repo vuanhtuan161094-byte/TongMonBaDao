@@ -115,6 +115,15 @@ func _run() -> void:
         _fail("O4 backend accepted duplicate field work for a reserved worker.")
         return
 
+    ui.call("_open_disciple_quick_assignment",target_id)
+    await process_frame
+    var active_withdraw_button := ui.find_child("QuickAssignmentWithdraw",true,false) as Button
+    if active_withdraw_button == null or not active_withdraw_button.disabled or not active_withdraw_button.tooltip_text.contains("Linh Điền"):
+        _fail("O4 Quick Assignment did not keep a growing Field worker reserved or explain the lock.")
+        return
+    ui.call("_open_building",SectMapPresentation.DEST_SPIRIT_FIELD)
+    await process_frame
+
     var output_before := warehouse.quantity(state, output_id)
     var batches_before := int(field.metrics.get("production_batches", 0))
     var units_before := int(field.metrics.get("units_produced", 0))
@@ -194,10 +203,16 @@ func _run() -> void:
         ])
         return
 
-    if not await _press_button("FieldGroup_%s" % str(target_id)):
+    ui.call("_open_disciple_quick_assignment",target_id)
+    await process_frame
+    var withdraw_button := ui.find_child("QuickAssignmentWithdraw",true,false) as Button
+    if withdraw_button == null or withdraw_button.disabled:
+        _fail("O4 idle post-harvest worker has no enabled Rút khỏi việc action.")
         return
-    if target.work_group_id != &"":
-        _fail("O4 post-harvest worker was not released from Đội Linh Thực.")
+    withdraw_button.emit_signal("pressed")
+    await process_frame
+    if target.work_group_id != &"" or target.worksite_building_id != &"":
+        _fail("O4 quick withdrawal did not release the canonical crew and worksite.")
         return
     if not workforce.issue_command(state, target_id, WorkforceSystem.COMMAND_HOLD, "", 120):
         _fail("O4 could not hold the released worker for duplicate-harvest probe.")
@@ -213,6 +228,9 @@ func _run() -> void:
 
     field = buildings.primary_building(state, BuildingSystem.TYPE_SPIRIT_FIELD)
     target = state.disciples[target_id]
+    if target.work_group_id != &"" or target.worksite_building_id != &"":
+        _fail("O4 Save/Reload did not preserve the explicit worker withdrawal.")
+        return
     if warehouse.quantity(state, output_id) != post_harvest_qty:
         _fail("O4 post-harvest reload duplicated or lost crop output.")
         return
