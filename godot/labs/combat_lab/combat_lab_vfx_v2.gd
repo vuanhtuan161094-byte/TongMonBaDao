@@ -31,6 +31,11 @@ static func _hex(canvas: CanvasItem, p: Vector2, radius: float, color: Color, ph
         canvas.draw_line(p + Vector2.from_angle(a0) * radius,
             p + Vector2.from_angle(a1) * radius, color, 2.0, true)
 
+# Interpolation must reach 100% precisely at the authoritative impact time.
+# No acceleration that makes the arrow visually strike before combat settles.
+static func projectile_progress(t: float) -> float:
+    return clampf(t, 0.0, 1.0)
+
 static func render(canvas: CanvasItem, cue: Dictionary, p: Vector2, source: Vector2,
         t: float, radius_px: float, zoom: float) -> void:
     var kind := str(cue.get("kind", ""))
@@ -45,7 +50,7 @@ static func render(canvas: CanvasItem, cue: Dictionary, p: Vector2, source: Vect
     var radius := clampf(radius_px, 0.0, 1600.0)
     match kind:
         "projectile":
-            var traveled := clampf(t * 1.75, 0.0, 1.0)
+            var traveled := projectile_progress(t)
             var head := source.lerp(p, traveled)
             var direction := (p - source).normalized()
             if direction.length_squared() <= 0.01: direction = Vector2.RIGHT
