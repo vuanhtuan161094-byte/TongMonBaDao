@@ -14,6 +14,7 @@ var scheduler: SimulationScheduler
 var buildings := BuildingSystem.new()
 var warehouse := WarehouseSystem.new()
 var workforce := WorkforceSystem.new()
+var equipment_system := EquipmentSystem.new()
 
 func _init() -> void:
     call_deferred("_run")
@@ -450,7 +451,7 @@ func _run() -> void:
     var saved_herb := warehouse.quantity(state, &"thanh_linh_thao")
     var saved_pill := warehouse.quantity(state, NeedsSystem.HEALING_PILL_ID)
     var saved_items := state.sect.equipment_items.size()
-    var saved_buyer_wallet := state.disciples[buyer_id].wallet
+    var saved_buyer_wallet: int = int(state.disciples[buyer_id].wallet)
     var saved_buyer_treasury := state.sect.treasury
     var saved_equipment_owner := str(state.sect.equipment_items[str(crafted_item_id)].get("owner_id",""))
     var saved_weapon_locked := bool(state.disciples[buyer_id].locked_equipment_slots.get(str(EquipmentSystem.SLOT_WEAPON),false))
