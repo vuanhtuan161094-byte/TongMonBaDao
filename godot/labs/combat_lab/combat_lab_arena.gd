@@ -111,6 +111,7 @@ func consume_events(rows: Array[Dictionary]) -> void:
                 continue
         var actor_id := str(event.get("target", event.get("actor_id", event.get("caster", event.get("attacker", "")))))
         var pos := _actor_position(actor_id)
+        var cast_target_pos := pos
         var cue_kind := ""
         var label := ""
         var school_kind := school
@@ -123,6 +124,8 @@ func consume_events(rows: Array[Dictionary]) -> void:
         match kind:
             "skill_cast", "cast":
                 cue_kind = "cast"
+                # Wind-up aura originates at the caster, not the target.
+                pos = _actor_position(source_actor_id)
             "skill_release":
                 var real_skill_id := str(event.get("skill_id", last_skill_by_actor.get(source_actor_id, "")))
                 var definition: Dictionary = CombatLabRosterAdapter.skill_definitions().get(real_skill_id, {})
@@ -232,7 +235,7 @@ func consume_events(rows: Array[Dictionary]) -> void:
                 var impact_at := float(event.get("release_at", launch_at))
                 if impact_at > launch_at + 0.001:
                     cues.append({
-                        "kind":"projectile", "position":pos, "from_position":cue_from,
+                        "kind":"projectile", "position":cast_target_pos, "from_position":cue_from,
                         "text":"", "color":color, "radius":0.0, "school":school_kind,
                         "skill_id":source_skill, "generation":display_generation,
                         "source_actor_id":source_actor_id, "launch_at":launch_at, "impact_at":impact_at,
