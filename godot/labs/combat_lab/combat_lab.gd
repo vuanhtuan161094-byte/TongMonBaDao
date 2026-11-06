@@ -73,6 +73,10 @@ func _process(delta: float) -> void:
     if frame_accumulator >= VISUAL_FRAME_INTERVAL:
         frame_accumulator = fmod(frame_accumulator, VISUAL_FRAME_INTERVAL)
         if arena != null:
+            var display_seconds := battle.now if battle != null else 0.0
+            if battle != null and auto_run and battle.active:
+                display_seconds += accumulator
+            arena.call("set_visual_time", display_seconds)
             arena.queue_redraw()
     hud_accumulator += delta
     if hud_accumulator >= HUD_UPDATE_INTERVAL:
