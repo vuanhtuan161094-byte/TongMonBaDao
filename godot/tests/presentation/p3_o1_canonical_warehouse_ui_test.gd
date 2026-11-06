@@ -51,6 +51,8 @@ func _run() -> void:
 func _check_opening_ui() -> bool:
     var iron := warehouse.quantity(state, &"thanh_thiet")
     var wood := warehouse.quantity(state, &"linh_moc")
+    var iron_name := ResourceRegistry.new().display_name(&"thanh_thiet")
+    var iron_total_text := str(ui.call("_compact_number", iron))
     if iron < P37Factory.INITIAL_BUILD_ORE or wood < P37Factory.INITIAL_BUILD_WOOD:
         return _fail("O1 opening starter materials missing from canonical Warehouse.")
     var label: Label = ui.get("resource_label") as Label
@@ -60,7 +62,8 @@ func _check_opening_ui() -> bool:
     if not legacy_detail.contains("Thanh Thiết: %d (dùng %d)" % [iron, iron]):
         return _fail("O1 base warehouse popup disagrees with WarehouseSystem.")
     var detail := str(ui.call("_warehouse_operation_text"))
-    if not detail.contains("Thanh Thiết: %d (dùng %d)" % [iron, iron]):
+    var warehouse_line := "• %s ×%s · dùng được %s" % [iron_name, iron_total_text, iron_total_text]
+    if not detail.contains(warehouse_line):
         return _fail("O1 operations Warehouse panel disagrees with WarehouseSystem.")
     if not str(ui.call("_mine_operation_text")).contains("Thanh Thiết tồn (dùng): %d (dùng %d)" % [iron, iron]):
         return _fail("O1 Mine panel does not show truthful stock.")
@@ -104,7 +107,11 @@ func _check_real_mine_deposit() -> bool:
         return _fail("O1 UI did not refresh after actual Mine deposit.")
     if not str(ui.call("_mine_operation_text")).contains("Thanh Thiết tồn (dùng): %d (dùng %d)" % [after, after]):
         return _fail("O1 Mine panel stayed stale after actual output.")
-    if not str(ui.call("_warehouse_operation_text")).contains("Thanh Thiết: %d (dùng %d)" % [after, after]):
+    var after_text := str(ui.call("_compact_number", after))
+    var warehouse_line := "• %s ×%s · dùng được %s" % [
+        ResourceRegistry.new().display_name(&"thanh_thiet"), after_text, after_text
+    ]
+    if not str(ui.call("_warehouse_operation_text")).contains(warehouse_line):
         return _fail("O1 Warehouse panel stayed stale after actual output.")
     return true
 
@@ -118,6 +125,13 @@ func _check_reserve_lock_craft_and_reload() -> bool:
     var preview := str(ui.call("_recipe_material_status", RECIPE_ID))
     if warehouse.available_quantity(state, &"thanh_thiet") != 2 or not preview.contains("Thanh Thiết tồn %d / dùng 2 / cần 3" % iron):
         return _fail("O1 reserved stock was not distinguished from usable stock.")
+    var reserved_line := "• %s ×%s · dùng được 2 · giữ %s" % [
+        ResourceRegistry.new().display_name(&"thanh_thiet"),
+        str(ui.call("_compact_number", iron)),
+        str(ui.call("_compact_number", iron - 2))
+    ]
+    if not str(ui.call("_warehouse_operation_text")).contains(reserved_line):
+        return _fail("O1 Warehouse did not render total, usable, and reserved iron distinctly.")
     if EquipmentSystem.new().can_craft(state, RECIPE_ID) or preview.contains("Đủ nguyên liệu"):
         return _fail("O1 preview bypassed the reserve rule.")
     ui.call("_craft_from_building", RECIPE_ID)
@@ -139,7 +153,11 @@ func _check_reserve_lock_craft_and_reload() -> bool:
     var label: Label = ui.get("resource_label") as Label
     if not label.text.contains("Thiết %d/0" % remainder):
         return _fail("O1 top bar did not show locked inventory as unusable.")
-    if not str(ui.call("_warehouse_operation_text")).contains("Thanh Thiết: %d (dùng 0)" % remainder):
+    var locked_line := "• %s ×%s · dùng được 0 · ĐANG KHÓA" % [
+        ResourceRegistry.new().display_name(&"thanh_thiet"),
+        str(ui.call("_compact_number", remainder))
+    ]
+    if not str(ui.call("_warehouse_operation_text")).contains(locked_line):
         return _fail("O1 warehouse panel did not show resource lock.")
     var locked_preview := str(ui.call("_recipe_material_status", RECIPE_ID))
     if not locked_preview.contains("Thanh Thiết tồn %d / dùng 0 / cần 3" % remainder):

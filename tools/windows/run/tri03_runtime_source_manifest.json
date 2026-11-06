@@ -3,7 +3,7 @@
   "branch": "integration/pve-p0-playable-ui-20261103",
   "base_sha": "27ed01cd8f377994e5e50bac9ede84e78e8895bd",
   "upstream_pr_sha": "c99f22153b34628f7e94f69de0285514e788b9cb",
-  "source_fingerprint": "5c7d7ec8f59a0a9f7de7187dc1296a8385c4ab48d97c5ca4824991a257d7c915",
+  "source_fingerprint": "dc24d0a5f19156fb2d4fbcd9bc8247e1e10fd57d5cf88e760f601a9cda43c7fc",
   "files": [
     {
       "path": "CHOI-GAME.cmd",
@@ -523,7 +523,7 @@
     },
     {
       "path": "godot/tests/presentation/p3_o1_canonical_warehouse_ui_test.gd",
-      "git_blob_sha": "1914dbaa8ee1c82b795e1a56e740c4ff97e0f96e"
+      "git_blob_sha": "cddc6b51ac66579035b5816bc4dc7677146eb811"
     },
     {
       "path": "godot/tests/presentation/p3_o2_recruitment_map_test.gd",
@@ -543,7 +543,7 @@
     },
     {
       "path": "godot/tests/presentation/p3_o7_linh_forest_test.gd",
-      "git_blob_sha": "0d9fe6710d9fd99c5f44bc1e6c84d121fa1f750e"
+      "git_blob_sha": "47dfc8f1e84e32f911c9d1d94639d4d2c0a8c0af"
     },
     {
       "path": "godot/tests/presentation/p3_o8_alchemy_loop_test.gd",
@@ -668,6 +668,10 @@
     {
       "path": "tools/windows/run/Verify-TRI03Source.ps1",
       "git_blob_sha": "91f924efa5e18f03d2d1415e6d3354317385a379"
+    },
+    {
+      "path": "godot/tests/presentation/p3_o4_spirit_field_loop_test.gd",
+      "git_blob_sha": "feb8381080171c69d07e5463762904f3902b0e95"
     }
   ]
 }

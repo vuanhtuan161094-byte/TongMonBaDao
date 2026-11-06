@@ -231,7 +231,16 @@ func _run() -> void:
     if not forest_text.contains("Linh Mộc tồn (dùng): %d (dùng %d)" % [qty, usable]):
         _fail("O7 Linh Lam panel disagrees with canonical Warehouse.")
         return
-    if not str(ui.call("_warehouse_operation_text")).contains("Linh Mộc: %d (dùng %d)" % [qty, usable]):
+    var wood_rule := warehouse.rule(state, &"linh_moc")
+    var reserve := maxi(int(wood_rule.get("reserve_min", 0)), 0)
+    var reserve_note := " · giữ %s" % str(ui.call("_compact_number", reserve)) if reserve > 0 else ""
+    var warehouse_line := "• %s ×%s · dùng được %s%s" % [
+        ResourceRegistry.new().display_name(&"linh_moc"),
+        str(ui.call("_compact_number", qty)),
+        str(ui.call("_compact_number", usable)),
+        reserve_note
+    ]
+    if not str(ui.call("_warehouse_operation_text")).contains(warehouse_line):
         _fail("O7 Kho panel disagrees with canonical Linh Moc.")
         return
 

@@ -176,12 +176,22 @@ func _run() -> void:
     await process_frame
     var field_text := str(ui.call("_spirit_field_operation_text"))
     var warehouse_text := str(ui.call("_warehouse_operation_text"))
-    var pair := "%d (dùng %d)" % [
-        warehouse.quantity(state, output_id),
-        warehouse.available_quantity(state, output_id)
+    var output_name := ResourceRegistry.new().display_name(output_id)
+    var output_total := warehouse.quantity(state, output_id)
+    var output_available := warehouse.available_quantity(state, output_id)
+    var field_pair := "%d (dùng %d)" % [output_total, output_available]
+    var warehouse_line := "• %s ×%s · dùng được %s" % [
+        output_name,
+        str(ui.call("_compact_number", output_total)),
+        str(ui.call("_compact_number", output_available))
     ]
-    if not field_text.contains(pair) or not warehouse_text.contains(pair):
-        _fail("O4 Linh Điền and Kho panels disagree with canonical harvested stock.")
+    if (
+        not field_text.contains("%s: %s" % [output_name, field_pair])
+        or not warehouse_text.contains(warehouse_line)
+    ):
+        _fail("O4 Linh Điền/Kho did not render the same canonical %s stock (%d total, %d usable)." % [
+            output_name, output_total, output_available
+        ])
         return
 
     if not await _press_button("FieldGroup_%s" % str(target_id)):
