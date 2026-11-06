@@ -28,6 +28,11 @@ static func _poison_tint(branch: String) -> Color:
         "duoc_doc": return Color("8af3db")
     return Color("a68cf4")
 
+static func _tinted(hex_code: String, opacity: float) -> Color:
+    var color := Color(hex_code)
+    color.a = opacity
+    return color
+
 static func _streak(canvas: CanvasItem, start: Vector2, finish: Vector2,
         color: Color, width: float) -> void:
     canvas.draw_line(start, finish, color.darkened(0.38), width + 3.0, true)
@@ -88,7 +93,7 @@ static func render(canvas: CanvasItem, cue: Dictionary, p: Vector2, source: Vect
                         for i in range(3):
                             var tip_offset := direction.orthogonal() * float(i - 1) * 3.1 * zoom_factor
                             _streak(canvas, head - direction * (13.0 + float(i) * 3.0) * zoom_factor + tip_offset,
-                                head - direction * 2.0 * zoom_factor + tip_offset, Color("d1f5ad", venom.a), 1.1 * zoom_factor)
+                                head - direction * 2.0 * zoom_factor + tip_offset, _tinted("d1f5ad", venom.a), 1.1 * zoom_factor)
                     "co_doc":
                         # Coiling gu-serpent silhouette: two sinusoidal venom strands.
                         for i in range(7):
@@ -96,14 +101,14 @@ static func render(canvas: CanvasItem, cue: Dictionary, p: Vector2, source: Vect
                             var center := head - direction * distance
                             var sway := direction.orthogonal() * sin(float(i) * 1.15 - t * 13.0) * 4.2 * zoom_factor
                             canvas.draw_circle(center + sway, maxf(1.0, (3.6 - i * 0.35)) * zoom_factor, venom)
-                        _diamond(canvas, head, 5.5 * zoom_factor, Color("edfbac", venom.a))
+                        _diamond(canvas, head, 5.5 * zoom_factor, _tinted("edfbac", venom.a))
                     "duoc_doc":
                         # Medicine-seal projectile: center bead and four herbal petals.
                         canvas.draw_circle(head, 5.0 * zoom_factor, venom)
                         for i in range(4):
                             var a := TAU * float(i) / 4.0 + t * 2.5
                             _diamond(canvas, head + Vector2.from_angle(a) * 7.0 * zoom_factor,
-                                2.5 * zoom_factor, Color("d9f8bd", venom.a))
+                                2.5 * zoom_factor, _tinted("d9f8bd", venom.a))
                         _streak(canvas, tail, head, venom, 1.6 * zoom_factor)
             else:
                 _streak(canvas, tail, head, base, 5.0 * zoom_factor)
@@ -193,21 +198,21 @@ static func render(canvas: CanvasItem, cue: Dictionary, p: Vector2, source: Vect
                             var a := (-0.8 + 0.4 * float(i)) + t * 0.6
                             var end := p + Vector2(cos(a) * 18.0, -13.0 + sin(a) * 8.0) * zoom_factor
                             _streak(canvas, end - Vector2(6.0, -5.0) * zoom_factor, end, venom, 1.6 * zoom_factor)
-                            _diamond(canvas, end, 3.4 * zoom_factor, Color("def8bc", venom.a))
+                            _diamond(canvas, end, 3.4 * zoom_factor, _tinted("def8bc", venom.a))
                     "co_doc":
                         for i in range(6):
                             var a := float(i) * TAU / 6.0 + t * 3.4
                             var q := p + Vector2.from_angle(a) * ring
                             canvas.draw_circle(q, 3.0 * zoom_factor, venom)
                             canvas.draw_line(q, q + Vector2.from_angle(a + 1.6) * 5.0 * zoom_factor,
-                                Color("e2f6a4", venom.a), 1.4 * zoom_factor, true)
+                                _tinted("e2f6a4", venom.a), 1.4 * zoom_factor, true)
                         _hex(canvas, p, ring * 0.7, venom, t * TAU)
                     "duoc_doc":
                         _hex(canvas, p, ring * 0.75, venom, -t * TAU * 0.5)
                         for i in range(5):
                             var a := float(i) * TAU / 5.0 + t * 1.4
                             _diamond(canvas, p + Vector2.from_angle(a) * ring,
-                                3.2 * zoom_factor, Color("dcf8b5", venom.a))
+                                3.2 * zoom_factor, _tinted("dcf8b5", venom.a))
                         canvas.draw_circle(p, 4.5 * zoom_factor, venom)
             else:
                 _hex(canvas, p, ring, base, t * TAU * 0.65)
@@ -231,7 +236,7 @@ static func render(canvas: CanvasItem, cue: Dictionary, p: Vector2, source: Vect
                     canvas.draw_circle(q, (2.0 + float(i % 3) * 0.7) * zoom_factor, venom)
                     canvas.draw_line(q, q + Vector2(3.0, -2.0) * zoom_factor, venom, 1.0 * zoom_factor, true)
                 else:
-                    _diamond(canvas, q, 2.2 * zoom_factor, Color("c9ffcf", venom.a))
+                    _diamond(canvas, q, 2.2 * zoom_factor, _tinted("c9ffcf", venom.a))
             if not is_tick:
                 _hex(canvas, p + Vector2(0, -9.0 * zoom_factor), spread, venom, t * TAU * 0.3)
         "venom_burst":
@@ -260,7 +265,7 @@ static func render(canvas: CanvasItem, cue: Dictionary, p: Vector2, source: Vect
                     var a := TAU * float(i) / 6.0 + t * 0.65
                     var tip := p + Vector2.from_angle(a) * (5.0 + 10.0 * t) * zoom_factor
                     tip.y -= t * 17.0 * zoom_factor
-                    _diamond(canvas, tip, (4.2 - t) * zoom_factor, Color("c4fbc7", venom.a))
+                    _diamond(canvas, tip, (4.2 - t) * zoom_factor, _tinted("c4fbc7", venom.a))
                 canvas.draw_circle(p + Vector2(0, -9.0 - 9.0 * t) * zoom_factor,
                     4.0 * zoom_factor, venom)
                 return
@@ -279,7 +284,7 @@ static func render(canvas: CanvasItem, cue: Dictionary, p: Vector2, source: Vect
                 for i in range(6):
                     var a := TAU * float(i) / 6.0 - t * 1.6
                     var q := p + Vector2.from_angle(a) * (6.0 + 14.0 * t) * zoom_factor
-                    _diamond(canvas, q, 3.0 * zoom_factor, Color("c8ffd1", venom.a))
+                    _diamond(canvas, q, 3.0 * zoom_factor, _tinted("c8ffd1", venom.a))
                 _hex(canvas, p, (7.0 + 15.0 * t) * zoom_factor, venom, -t * TAU)
                 return
             var r := (7.0 + 15.0 * t) * zoom_factor
