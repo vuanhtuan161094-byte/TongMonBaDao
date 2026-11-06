@@ -116,6 +116,26 @@ func _run() -> void:
     arena.set_battle(battle, "poison")
     _check(arena.cues.is_empty() and arena.actor_states.is_empty(),
         "reset clears visual state and old VFX")
+    # Geometry oracle: zoom must keep the arena's world center fixed and
+    # enlarge distances monotonically without changing combat world positions.
+    arena.size = Vector2(680.0, 440.0)
+    var center_world := Vector2(18.0, 10.0)
+    var center_expected := arena.size * 0.5
+    var right_world := Vector2(20.0, 10.0)
+    var prior_distance := 0.0
+    var original_world_pos: Vector2 = battle.actors["test_archer"].position
+    for scale_factor in [1.0, 2.0, 4.0, 6.0]:
+        arena.set_zoom(scale_factor)
+        var projected_center: Vector2 = arena._world_to_local(center_world)
+        var projected_right: Vector2 = arena._world_to_local(right_world)
+        var projected_distance := projected_center.distance_to(projected_right)
+        _check(projected_center.distance_to(center_expected) < 0.01,
+            "zoom %.0fx keeps the world-center foot anchor fixed" % scale_factor)
+        _check(projected_distance > prior_distance,
+            "zoom %.0fx scales actor separation monotonically" % scale_factor)
+        prior_distance = projected_distance
+    _check(battle.actors["test_archer"].position == original_world_pos,
+        "1-6x visual zoom never moves the canonical actor")
     _check(V63FeatureGates.all_disabled(), "preview rendering does not enable production skill gates")
     arena.queue_free()
     print("COMBAT_LAB_V2_VISUAL_%s: %d checks, %d failures; PENDING Godot visual/physical mouse acceptance" %
