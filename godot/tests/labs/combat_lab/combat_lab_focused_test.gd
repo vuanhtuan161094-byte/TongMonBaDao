@@ -144,6 +144,15 @@ func _test_ui_controls() -> void:
     _check(is_equal_approx(battle.now, before + MapBattleV2.STEP_SECONDS), "STEP signal advances one canonical battle tick")
     auto_button.pressed.emit()
     _check(bool(lab.get("auto_run")), "AUTO signal resumes canonical battle ticking")
+    var auto_before_step := battle.now
+    step_button.pressed.emit()
+    _check(not bool(lab.get("auto_run")), "STEP while AUTO first returns the Lab to HOLD")
+    _check(is_equal_approx(battle.now, auto_before_step + MapBattleV2.STEP_SECONDS),
+        "STEP while AUTO advances exactly one canonical 0.25-second tick")
+    var after_one_manual_step := battle.now
+    lab.call("_process", 1.0)
+    _check(is_equal_approx(battle.now, after_one_manual_step),
+        "STEP stays paused and does not resume AUTO on the next frame")
     hold_button.pressed.emit()
     var zoom: OptionButton = lab.get("zoom_option")
     zoom.item_selected.emit(2)

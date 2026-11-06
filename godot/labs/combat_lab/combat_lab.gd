@@ -204,7 +204,9 @@ func _build_ui() -> void:
     var start_button := _button(buttons, "TÁI TẠO TRẬN", Color("674a91"))
     start_button.pressed.connect(_start_battle)
     var step_button := _button(buttons, "STEP · 0,25s", Color("3a384b"))
-    step_button.pressed.connect(func(): _step_battle())
+    step_button.pressed.connect(func():
+        _set_auto(false)
+        _step_battle())
     var auto_button := _button(buttons, "AUTO", Color("4d7b5e"))
     auto_button.pressed.connect(func(): _set_auto(true))
     var hold_button := _button(buttons, "HOLD", Color("7d5263"))
