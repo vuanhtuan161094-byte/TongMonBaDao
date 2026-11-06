@@ -52,22 +52,25 @@ func _run() -> void:
     arena.set_battle(battle, "bow")
     var initial_hp := float(battle.actors.lab_v2_dummy.hp)
     var initial_count := battle.events.size()
-    arena.consume_events([
+    var cast_rows: Array[Dictionary] = [
         {"type":"skill_cast", "caster":"test_archer", "target":"lab_v2_dummy",
             "skill_id":"tmb.skill.bow.liep_anh.active_01.human", "time":0.0, "release_at":0.4},
-    ])
+    ]
+    arena.consume_events(cast_rows)
     _check(arena.pose_for_actor("test_archer") == "cast", "authored skill cast cues the animated cast pose")
-    arena.consume_events([
+    var release_rows: Array[Dictionary] = [
         {"type":"skill_release", "caster":"test_archer", "target":"lab_v2_dummy",
             "skill_id":"tmb.skill.bow.liep_anh.active_01.human", "time":0.4},
-    ])
+    ]
+    arena.consume_events(release_rows)
     _check(arena.pose_for_actor("test_archer") == "attack", "committed skill release cues attack")
-    arena.consume_events([
+    var hit_rows: Array[Dictionary] = [
         {"type":"hit", "attacker":"test_archer", "target":"lab_v2_dummy",
             "kind":"v63_skill", "damage":50.0, "critical":true, "lifesteal":5.0},
         {"type":"v63_skill_hit", "caster":"test_archer", "target":"lab_v2_dummy",
             "skill_id":"tmb.skill.bow.liep_anh.active_01.human", "damage":50.0}
-    ])
+    ]
+    arena.consume_events(hit_rows)
     _check(arena.pose_for_actor("lab_v2_dummy") == "hit", "authoritative hit triggers visual reaction")
     var impacts := 0
     var heals := 0
@@ -77,8 +80,9 @@ func _run() -> void:
     _check(impacts == 1 and heals == 1, "one committed hit renders once despite semantic echo")
     _check(float(battle.actors.lab_v2_dummy.hp) == initial_hp, "VFX and rig do not alter monster HP")
     _check(battle.events.size() == initial_count, "presentation does not emit authoritative events")
-    arena.consume_events([{"type":"telegraph", "caster":"lab_v2_dummy", "center":Vector2(11,10),
-        "radius":3.0, "time":1.0}])
+    var warn_rows: Array[Dictionary] = [{"type":"telegraph", "caster":"lab_v2_dummy", "center":Vector2(11,10),
+        "radius":3.0, "time":1.0}]
+    arena.consume_events(warn_rows)
     var has_warning := false
     for cue in arena.cues:
         if str(cue.get("kind", "")) == "telegraph" and is_equal_approx(float(cue.get("radius", -1.0)), 3.0):
@@ -96,7 +100,7 @@ func _run() -> void:
         many.append({"type":"hit", "attacker":"test_archer", "target":"lab_v2_dummy",
             "kind":"basic", "damage":1.0, "lab_source_index":index})
     arena.consume_events(many)
-    _check(arena.cues.size() <= arena.MAX_CUES, "VFX cue pool remains bounded under 100 hits")
+    _check(arena.cues.size() <= 64, "VFX cue pool remains bounded under 100 hits")
     _check(float(battle.actors.lab_v2_dummy.hp) == initial_hp,
         "100 display-only hits never settle damage in MapBattleV2")
     arena.set_battle(battle, "poison")
