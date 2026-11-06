@@ -97,7 +97,8 @@ func _run() -> void:
     _check(arena.cues.size() == cues_before + 1, "DoT hit/status tick does not create double VFX")
     # Canonical downed events carry actor_id (not target). Anchor both the
     # death pose and committed death cue to that same actor.
-    arena.consume_events([{"type":"downed", "actor_id":"lab_v2_dummy", "side":"monster"}])
+    var downed_rows: Array[Dictionary] = [{"type":"downed", "actor_id":"lab_v2_dummy", "side":"monster"}]
+    arena.consume_events(downed_rows)
     var death_cue: Dictionary = arena.cues.back()
     _check(str(death_cue.get("kind", "")) == "death" and
         death_cue.get("position", Vector2.ZERO) == battle.actors["lab_v2_dummy"].position,
