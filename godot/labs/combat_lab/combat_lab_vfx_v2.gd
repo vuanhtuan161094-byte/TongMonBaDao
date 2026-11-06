@@ -41,6 +41,7 @@ static func render(canvas: CanvasItem, cue: Dictionary, p: Vector2, source: Vect
     var base := school_color(school)
     base.a *= alpha
     var zoom_factor := clampf(zoom, 1.0, 6.0)
+    var generation := str(cue.get("generation", "human"))
     var radius := clampf(radius_px, 0.0, 1600.0)
     match kind:
         "projectile":
@@ -173,3 +174,16 @@ static func render(canvas: CanvasItem, cue: Dictionary, p: Vector2, source: Vect
                     4.0 * zoom_factor, c)
         _:
             return
+
+    # Successor-generation art layer only: no changes to hits, timers or
+    # simulation. Human -> Immortal -> Divine gains visibly distinct runework.
+    if generation in ["immortal", "divine"] and kind in ["cast", "impact", "guard", "aoe", "area_burst"]:
+        var sigil_radius := (13.0 + 8.0 * t) * zoom_factor
+        _hex(canvas, p, sigil_radius, base, -t * TAU * 0.35)
+        if generation == "divine":
+            var divine_glow := base.lightened(0.30)
+            divine_glow.a *= 0.68
+            for i in range(5):
+                var angle := float(i) * TAU / 5.0 + t * 0.7
+                _diamond(canvas, p + Vector2.from_angle(angle) * sigil_radius * 1.35,
+                    (2.0 + 1.5 * (1.0 - t)) * zoom_factor, divine_glow)
