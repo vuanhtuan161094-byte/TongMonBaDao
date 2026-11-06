@@ -13,6 +13,7 @@ var school := "bow"
 var cues: Array[Dictionary] = []
 var status_line := "Chưa bắt đầu · LAB_ONLY"
 var zoom := 1.0
+var visual_time := 0.0
 
 func _ready() -> void:
     custom_minimum_size = Vector2(620, 390)
@@ -25,11 +26,16 @@ func set_battle(value: MapBattleV2, weapon_school: String) -> void:
     cues.clear()
     actor_states.clear()
     last_skill_by_actor.clear()
+    visual_time = battle.now if battle != null else 0.0
     queue_redraw()
 
 func set_status(value: String) -> void:
     status_line = value
     queue_redraw()
+
+func set_visual_time(value: float) -> void:
+    # Presentation clock follows battle time; HOLD freezes projectile motion.
+    visual_time = maxf(0.0, value)
 
 func _set_pose(actor_id: String, pose: String, lifetime_ms: int) -> void:
     if battle == null or not battle.actors.has(actor_id):
@@ -122,7 +128,9 @@ func consume_events(rows: Array[Dictionary]) -> void:
                 var definition: Dictionary = CombatLabRosterAdapter.skill_definitions().get(real_skill_id, {})
                 var effect := str(definition.get("effect", ""))
                 if float(definition.get("projectile_speed", 0.0)) > 0.0:
-                    cue_kind = "projectile"
+                    # Projectile was scheduled from the real skill_cast event.
+                    # Release is the authoritative impact deadline, not launch.
+                    cue_kind = ""
                 elif effect == "guard":
                     cue_kind = "guard"
                 elif effect in ["heal", "cleanse"]:
@@ -209,6 +217,29 @@ func consume_events(rows: Array[Dictionary]) -> void:
             "time":float(event.get("time", 0.0))
         })
         if cues.size() > MAX_CUES: cues.pop_front()
+        if kind == "skill_cast" and not source_skill.is_empty():
+            # V6.3 _begin_cast explicitly schedules release after wind-up plus
+            # projectile travel. Draw the projectile BEFORE settlement; do not
+            # spawn a fake second arrow from skill_release (which commits HP).
+            var authored: Dictionary = CombatLabRosterAdapter.skill_definitions().get(source_skill, {})
+            var speed := float(authored.get("projectile_speed", 0.0))
+            var caster: Dictionary = battle.actors.get(source_actor_id, {})
+            if speed > 0.0 and not caster.is_empty():
+                var effective: Dictionary = V63HumanSkillCombatSystem.effective_attack_stats(caster, caster.get("stats", {}))
+                var cast_rate := maxf(0.1, 1.0 + float(effective.get("cast_speed", 0.0)))
+                var start_time := float(event.get("time", battle.now))
+                var launch_at := start_time + maxf(MapBattleV2.STEP_SECONDS, float(authored.get("cast_time", 0.0)) / cast_rate)
+                var impact_at := float(event.get("release_at", launch_at))
+                if impact_at > launch_at + 0.001:
+                    cues.append({
+                        "kind":"projectile", "position":pos, "from_position":cue_from,
+                        "text":"", "color":color, "radius":0.0, "school":school_kind,
+                        "skill_id":source_skill, "generation":display_generation,
+                        "source_actor_id":source_actor_id, "launch_at":launch_at, "impact_at":impact_at,
+                        "created":now_ms, "life":0.0, "source_index":int(event.get("lab_source_index", -1)),
+                        "time":start_time
+                    })
+                    if cues.size() > MAX_CUES: cues.pop_front()
         if kind == "hit" and float(event.get("lifesteal", 0.0)) > 0.0:
             var life_heal := roundi(float(event.get("lifesteal", 0.0)))
             cues.append({
@@ -271,6 +302,14 @@ func _draw_actor(actor: Dictionary) -> void:
     var monster := str(actor.get("side", "")) == "monster"
     _track_movement(actor)
     var pose := pose_for_actor(actor_id)
+    # A ranged caster launches at its authored wind-up, not at the later HP
+    # settlement; render only the pose, never a speculative damage event.
+    if pose == "cast":
+        for cue in cues:
+            if str(cue.get("kind", "")) == "projectile" and str(cue.get("source_actor_id", "")) == actor_id \
+                    and visual_time >= float(cue.get("launch_at", INF)):
+                pose = "attack"
+                break
     var actor_scale := (1.50 if boss else 1.0) * (0.55 + 0.29 * zoom)
     var facing := -1.0 if monster else 1.0
     var seconds := float(Time.get_ticks_msec()) / 1000.0
@@ -297,12 +336,23 @@ func _draw_cues() -> void:
     var current_time := Time.get_ticks_msec()
     var live: Array[Dictionary] = []
     for cue in cues:
-        var age := float(current_time - int(cue.get("created", current_time)))
-        var duration := maxf(1.0, float(cue.get("life", 1.0)))
-        if age >= duration:
-            continue
-        live.append(cue)
-        var t := clampf(age / duration, 0.0, 1.0)
+        var t := 0.0
+        if str(cue.get("kind", "")) == "projectile" and cue.has("impact_at"):
+            var launch_at := float(cue.get("launch_at", 0.0))
+            var impact_at := float(cue.get("impact_at", launch_at))
+            if visual_time > impact_at + MapBattleV2.STEP_SECONDS:
+                continue
+            live.append(cue)
+            if visual_time < launch_at:
+                continue
+            t = clampf((visual_time - launch_at) / maxf(0.001, impact_at - launch_at), 0.0, 1.0)
+        else:
+            var age := float(current_time - int(cue.get("created", current_time)))
+            var duration := maxf(1.0, float(cue.get("life", 1.0)))
+            if age >= duration:
+                continue
+            live.append(cue)
+            t = clampf(age / duration, 0.0, 1.0)
         var p := _world_to_local(cue.get("position", Vector2.ZERO))
         var start := _world_to_local(cue.get("from_position", cue.get("position", Vector2.ZERO)))
         var radius_px := float(cue.get("radius", 0.0)) * size.x / WORLD.size.x * zoom
