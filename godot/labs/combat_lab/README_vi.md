@@ -41,3 +41,30 @@ Test xuất ma trận từng `skill_id` vào `user://combat_lab_skill_matrix.csv
 ## Handoff tích hợp PvE
 
 Để nối roster thật sau này, thay adapter Lab bằng adapter đọc roster/ownership của PvE và giữ nguyên `MapBattleV2` làm engine. Không bỏ fixture vào save. Cần nghiệm thu riêng art nhân vật, input chuột/thực tế và cân bằng trước khi bật bất kỳ gate sản xuất nào.
+## V2 — Animation/VFX độc lập (bổ sung 06/11/2026)
+
+V2 thêm mã hiển thị trực tiếp bên trong Lab; **không** thay engine sát thương, PvE hay save.
+
+- **Chibi rig nguyên bản vẽ bằng code**: `combat_lab_actor_rig_v2.gd`. Các bộ phận đầu, tóc, thân/vạt áo, hai tay/chân xoay độc lập; đủ sáu tư thế `idle / walk / attack / cast / hit / death`. Vũ khí đi qua hàm vẽ riêng và chỉ hiện lúc thi triển/đánh. Chân là điểm neo tọa độ thực của `MapBattleV2`. Đây vẫn là **rig minh họa kỹ thuật bằng vector, không phải MASTER sprite cao cấp được duyệt**.
+- **24 FPS presentation loop** bên trong `combat_lab_arena.gd`, không sửa `MapBattleV2.STEP_SECONDS=0.25`. Nhịp combat authority và nhịp hình ảnh tách riêng.
+- **VFX nguyên bản**: `combat_lab_vfx_v2.gd` vẽ cung tên/hạt sáng vàng, nắm đấm/địa chấn cam, độc xanh ngọc, guard khiên hình lục giác, heal, cleanse, mark, DoT, AoE và cảnh báo Boss. Nhân/Tiên/Thần có lớp dấu ấn phân biệt. Tất cả số damage/HP chỉ đọc từ **sự kiện đã commit**.
+- **Thử riêng từng kỹ năng trang bị**: chọn một trong 4 chiêu chủ động và Tuyệt Kỹ, nhấn `THỬ CHIÊU (HOLD)`, rồi nhấn `STEP · 0,25s` để hoàn tất cast. Dùng consumer V6.3 thật, không mở khóa kỹ năng hoặc bỏ qua cooldown/range. Nếu skill không hợp lệ, thông báo và không cast thay thế skill khác.
+- Ngân sách hiệu ứng: tối đa 64 cue đang tồn tại trong Lab, hoạt ảnh không thay đổi HP, cooldown, loot, save. Lab không sử dụng asset thương mại chưa được duyệt.
+
+### Kiểm thử V2 an toàn trên máy Windows RAM 8GB
+
+Khi **không còn tiến trình Godot nào chạy** và RAM trống ít nhất 3 GiB, chạy từ root repo với Godot 4.7.2 official:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File tools/windows/qa/Run-TMBCombatLabV2.ps1 -GodotExe "E:\\TongMonBaDaoWorkspace\\04_Tools\\Godot\\Godot_v4.7.2-stable_win64_console.exe"
+```
+
+Runner từ chối chạy nếu Godot đã mở hoặc RAM thấp, không kill PID, dùng profile `APPDATA` riêng và test lần lượt: Godot import, focused Lab V1, focused Lab V2. **Lệnh này chưa được chạy/ghi PASS trên commit V2 trong phiên tạo code**. Nếu cần nghiệm thu hình ảnh, phải chạy GUI thực sự và chụp ảnh mới, không dùng ảnh V1 hay hình concept làm bằng chứng.
+
+### Bắt buộc để nghiệm thu cuối
+
+1. Godot official import/parse/focused exit 0 trên **exact V2 SHA**.
+2. Ảnh hoặc video **từ scene Godot V2 thật** cho cả Cung/Quyền/Độc với sáu tư thế + Boss; thử 1×/2×/4×/6×, kiểm tra crop/foot anchor và FPS.
+3. Artist-reviewed, original full-resolution character master/sprite rig. Rig vector lập trình hiện tại là `ART_PLACEHOLDER_V2`, không được ghi là art hoàn chỉnh.
+4. Khi nối vào PvE liên tục, xử lý ID/cursor của event ring trong một patch authority được duyệt riêng; V2 vẫn chỉ dùng finite encounter.
+5. Quyền/Độc 9 ID `NOT_TESTED` cùng 26 quy tắc Độc Thần `DESIGN_PENDING` được giữ nguyên theo quyết định hoãn của Owner.
