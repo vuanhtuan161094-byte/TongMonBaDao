@@ -86,8 +86,11 @@ func consume_events(rows: Array[Dictionary]) -> void:
         elif kind == "skill_release":
             _set_pose(source_actor_id, "attack", 420)
         elif kind == "hit" and float(event.get("damage", 0.0)) > 0.0:
-            # Attack is cued by the committed hit, never shown as a speculative pre-hit strike.
-            _set_pose(source_actor_id, "attack", 360)
+            # DoT/reflect are autonomous settlements: never replay a weapon swing
+            # for the original caster when poison, burn or reflection ticks.
+            var hit_kind := str(event.get("kind", ""))
+            if hit_kind not in ["v63_poison", "dot", "burn", "reflect", "reflection"]:
+                _set_pose(source_actor_id, "attack", 360)
             _set_pose(target_id, "hit", 230)
         elif kind in ["downed", "death"]:
             _set_pose(target_id, "death", 2400)
