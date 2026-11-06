@@ -384,6 +384,24 @@ func _draw_actor(actor: Dictionary) -> void:
         Color("89e0aa") if not monster else Color("ec7884"), true)
     if boss:
         draw_rect(bar.grow(2.0), Color("dfb66a"), false, 1.0)
+    # Persistent poisoned-state badge comes directly from live, owned V6.3
+    # status stacks. No simulated stack count or extra on-hit particles.
+    if float(actor.get("hp", 0.0)) > 0.0:
+        var live_statuses: Dictionary = actor.get("status_effects", {})
+        var real_poison_stacks: Array = live_statuses.get("v63_poison", [])
+        if not real_poison_stacks.is_empty():
+            var stack_count := real_poison_stacks.size()
+            var badge_scale := clampf(actor_scale, 0.75, 1.5)
+            var badge_center := bar.position + Vector2(bar.size.x + 11.0 * badge_scale,
+                2.0 * badge_scale)
+            draw_circle(badge_center, 7.5 * badge_scale, Color("202c2b", 0.92))
+            draw_circle(badge_center, 5.8 * badge_scale, Color("88df9f"))
+            draw_circle(badge_center + Vector2(0.0, -2.0 * badge_scale),
+                2.0 * badge_scale, Color("d6ffbb"))
+            draw_string(ThemeDB.fallback_font,
+                badge_center + Vector2(8.0 * badge_scale, 4.0 * badge_scale),
+                str(stack_count), HORIZONTAL_ALIGNMENT_LEFT, 26.0 * badge_scale,
+                clampi(roundi(9.0 * badge_scale), 9, 14), Color("cdf7d4"))
     var name := actor_id.replace("lab_disciple_", "ĐT ")
     var label_pos := foot + Vector2(-15.0 * actor_scale, 14.0 * actor_scale)
     draw_string(ThemeDB.fallback_font, label_pos, name,
