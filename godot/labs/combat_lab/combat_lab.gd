@@ -337,7 +337,11 @@ func _refresh_preview_choice() -> void:
         previous_id = str(skill_preview_option.get_item_metadata(skill_preview_option.selected))
     skill_preview_option.clear()
     var seen := {}
-    for slot in active_slots + [ultimate_slot]:
+    var equipped_options: Array = []
+    for action_slot in active_slots:
+        equipped_options.append(action_slot)
+    equipped_options.append(ultimate_slot)
+    for slot in equipped_options:
         if slot == null or slot.item_count == 0 or slot.selected < 0:
             continue
         var skill_id := str(slot.get_item_metadata(slot.selected))
