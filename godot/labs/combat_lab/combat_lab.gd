@@ -141,11 +141,13 @@ func _build_ui() -> void:
         slot.size_flags_horizontal = Control.SIZE_EXPAND_FILL
         slot.tooltip_text = "Kỹ năng chủ động %d/4" % (index + 1)
         controls.add_child(slot)
+        slot.item_selected.connect(func(_i: int): _refresh_preview_choice())
         active_slots.append(slot)
     _label(controls, "TUYỆT KỸ", 12, Color("b9a9cf"))
     ultimate_slot = OptionButton.new()
     ultimate_slot.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     controls.add_child(ultimate_slot)
+    ultimate_slot.item_selected.connect(func(_i: int): _refresh_preview_choice())
     _label(controls, "THỬ TỪNG CHIÊU · DỮ LIỆU THẬT", 12, Color("c4b3e1"))
     skill_preview_option = OptionButton.new()
     skill_preview_option.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -325,23 +327,34 @@ func _refresh_skills() -> void:
         active_slots[index].disabled = active.is_empty()
     _fill_skill_option(ultimate_slot, ultimate, 0)
     ultimate_slot.disabled = ultimate.is_empty()
-    if skill_preview_option != null:
-        var previous_id := ""
-        if skill_preview_option.item_count > 0 and skill_preview_option.selected >= 0:
-            previous_id = str(skill_preview_option.get_item_metadata(skill_preview_option.selected))
-        skill_preview_option.clear()
-        for row in active + ultimate:
-            var name := str(row.get("name", row.get("id", "")))
-            var item_id := str(row.get("id", ""))
-            skill_preview_option.add_item(name)
-            skill_preview_option.set_item_metadata(skill_preview_option.item_count - 1, item_id)
-        if skill_preview_option.item_count > 0:
-            var selected := 0
-            for index in range(skill_preview_option.item_count):
-                if str(skill_preview_option.get_item_metadata(index)) == previous_id:
-                    selected = index
-                    break
-            skill_preview_option.select(selected)
+    _refresh_preview_choice()
+
+func _refresh_preview_choice() -> void:
+    if skill_preview_option == null:
+        return
+    var previous_id := ""
+    if skill_preview_option.item_count > 0 and skill_preview_option.selected >= 0:
+        previous_id = str(skill_preview_option.get_item_metadata(skill_preview_option.selected))
+    skill_preview_option.clear()
+    var seen := {}
+    for slot in active_slots + [ultimate_slot]:
+        if slot == null or slot.item_count == 0 or slot.selected < 0:
+            continue
+        var skill_id := str(slot.get_item_metadata(slot.selected))
+        if skill_id.is_empty() or seen.has(skill_id):
+            continue
+        seen[skill_id] = true
+        var definition: Dictionary = V63HumanSkillCombatSystem.skill_definition(skill_id)
+        skill_preview_option.add_item(str(definition.get("name", skill_id)))
+        skill_preview_option.set_item_metadata(skill_preview_option.item_count - 1, skill_id)
+    if skill_preview_option.item_count == 0:
+        return
+    var selected := 0
+    for index in range(skill_preview_option.item_count):
+        if str(skill_preview_option.get_item_metadata(index)) == previous_id:
+            selected = index
+            break
+    skill_preview_option.select(selected)
 
 func _fill_skill_option(option: OptionButton, rows: Array[Dictionary], selected_index: int) -> void:
     option.clear()
