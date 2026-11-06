@@ -46,7 +46,7 @@ Test xuất ma trận từng `skill_id` vào `user://combat_lab_skill_matrix.csv
 V2 thêm mã hiển thị trực tiếp bên trong Lab; **không** thay engine sát thương, PvE hay save.
 
 - **Chibi rig nguyên bản vẽ bằng code**: `combat_lab_actor_rig_v2.gd`. Các bộ phận đầu, tóc, thân/vạt áo, hai tay/chân xoay độc lập; đủ sáu tư thế `idle / walk / attack / cast / hit / death`. Vũ khí đi qua hàm vẽ riêng và chỉ hiện lúc thi triển/đánh. Chân là điểm neo tọa độ thực của `MapBattleV2`. Đây vẫn là **rig minh họa kỹ thuật bằng vector, không phải MASTER sprite cao cấp được duyệt**.
-- **24 FPS presentation loop** bên trong `combat_lab_arena.gd`, không sửa `MapBattleV2.STEP_SECONDS=0.25`. Nhịp combat authority và nhịp hình ảnh tách riêng.
+- **Yêu cầu render ở 24 Hz** từ `combat_lab.gd`, độc lập với nhịp HUD 0,15 giây; rig trong `combat_lab_arena.gd` đọc thời gian hiển thị. Đây là tần suất cập nhật được lập trình, **chưa phải FPS đã đo trên GPU**. Không sửa `MapBattleV2.STEP_SECONDS=0.25`.
 - **VFX nguyên bản**: `combat_lab_vfx_v2.gd` vẽ cung tên/hạt sáng vàng, nắm đấm/địa chấn cam, độc xanh ngọc, guard khiên hình lục giác, heal, cleanse, mark, DoT, AoE và cảnh báo Boss. Nhân/Tiên/Thần có lớp dấu ấn phân biệt. Tất cả số damage/HP chỉ đọc từ **sự kiện đã commit**.
 - **Thử riêng từng kỹ năng trang bị**: chọn một trong 4 chiêu chủ động và Tuyệt Kỹ, nhấn `THỬ CHIÊU (HOLD)`, rồi nhấn `STEP · 0,25s` để hoàn tất cast. Dùng consumer V6.3 thật, không mở khóa kỹ năng hoặc bỏ qua cooldown/range. Nếu skill không hợp lệ, thông báo và không cast thay thế skill khác.
 - Ngân sách hiệu ứng: tối đa 64 cue đang tồn tại trong Lab, hoạt ảnh không thay đổi HP, cooldown, loot, save. Lab không sử dụng asset thương mại chưa được duyệt.
@@ -68,3 +68,25 @@ Runner từ chối chạy nếu Godot đã mở hoặc RAM thấp, không kill P
 3. Artist-reviewed, original full-resolution character master/sprite rig. Rig vector lập trình hiện tại là `ART_PLACEHOLDER_V2`, không được ghi là art hoàn chỉnh.
 4. Khi nối vào PvE liên tục, xử lý ID/cursor của event ring trong một patch authority được duyệt riêng; V2 vẫn chỉ dùng finite encounter.
 5. Quyền/Độc 9 ID `NOT_TESTED` cùng 26 quy tắc Độc Thần `DESIGN_PENDING` được giữ nguyên theo quyết định hoãn của Owner.
+
+### Bản vá timing và giao diện sau V2
+
+- Hiệu ứng gục đọc `downed.actor_id`, đặt tại đúng tọa độ đệ tử/quái bị hạ.
+- Hào quang lúc niệm xuất hiện ở **người thi triển**, không phải mục tiêu. Với kỹ năng có đạn bay, Lab dùng `skill_cast.release_at`, `cast_time` và `cast_speed` từ consumer thật để lên lịch đường bay **sau niệm và trước deadline release**. `skill_release` không tạo thêm đạn bay sau hit; bản thân damage vẫn chỉ lấy từ `MapBattleV2`. HOLD giữ nguyên đồng hồ trình diễn, STEP tăng đúng một tick.
+- Zoom `1×/2×/4×/6×` giữ tâm thế giới; có thêm các oracle geometry/actor-unchanged trong `combat_lab_v2_visual_test.gd`. **Chưa có ảnh Godot mới xác nhận không clipping/chồng hình ở từng mức.**
+- Năm biến môi trường QA tùy chọn: `TMB_COMBAT_LAB_SCHOOL=bow|fist|poison`, `TMB_COMBAT_LAB_GENERATION=human|immortal|divine`, `TMB_COMBAT_LAB_ENEMY=normal|elite|boss`, `TMB_COMBAT_LAB_PARTY=1..6` và `TMB_COMBAT_LAB_ZOOM=1|2|4|6`. Scene bình thường không bị ảnh hưởng.
+
+Chụp **một lần/một tiến trình**, sau khi kiểm tra không có Godot khác và RAM trống >=3 GiB; không chạy cùng các tác vụ Codex đang mở Editor:
+
+```powershell
+$env:TMB_COMBAT_LAB_SCHOOL="fist"
+$env:TMB_COMBAT_LAB_GENERATION="human"
+$env:TMB_COMBAT_LAB_ENEMY="boss"
+$env:TMB_COMBAT_LAB_PARTY="6"
+$env:TMB_COMBAT_LAB_ZOOM="2"
+$env:TMB_COMBAT_LAB_SCREENSHOT="$env:TEMP\combat_lab_fist_2x.png"
+$env:TMB_COMBAT_LAB_CAPTURE_DELAY="4"
+& 'E:\TongMonBaDaoWorkspace\04_Tools\Godot\Godot_v4.7.2-stable_win64.exe' --path 'E:\TongMonBaDaoWorkspace\01_Game\TongMonBaDao\godot' 'res://labs/combat_lab/combat_lab.tscn'
+```
+
+Lặp tuần tự cho Cung, Quyền, Độc và mỗi zoom, đổi tên PNG tương ứng; phân loại rõ `GUI_GODOT` so với `NATIVE_MOUSE`. Ví dụ trên chỉ mô tả **cách chạy**, không phải log PASS. Không thay vũ khí/sprite MASTER khi chưa có asset gốc được Owner duyệt, không bật combat production.
