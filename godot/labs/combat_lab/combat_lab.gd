@@ -74,7 +74,8 @@ func _process(delta: float) -> void:
         frame_accumulator = fmod(frame_accumulator, VISUAL_FRAME_INTERVAL)
         if arena != null:
             var display_seconds := battle.now if battle != null else 0.0
-            if battle != null and auto_run and battle.active:
+            if battle != null and battle.active:
+                # HOLD retains the last partial presentation time; no rewind.
                 display_seconds += accumulator
             arena.call("set_visual_time", display_seconds)
             arena.queue_redraw()
