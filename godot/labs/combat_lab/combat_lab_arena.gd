@@ -394,7 +394,7 @@ func _draw_actor(actor: Dictionary) -> void:
             var badge_scale := clampf(actor_scale, 0.75, 1.5)
             var badge_center := bar.position + Vector2(bar.size.x + 11.0 * badge_scale,
                 2.0 * badge_scale)
-            draw_circle(badge_center, 7.5 * badge_scale, Color("202c2b", 0.92))
+            draw_circle(badge_center, 7.5 * badge_scale, Color(0.125, 0.173, 0.169, 0.92))
             draw_circle(badge_center, 5.8 * badge_scale, Color("88df9f"))
             draw_circle(badge_center + Vector2(0.0, -2.0 * badge_scale),
                 2.0 * badge_scale, Color("d6ffbb"))
