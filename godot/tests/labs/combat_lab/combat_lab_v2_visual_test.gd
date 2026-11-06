@@ -41,6 +41,10 @@ func _run() -> void:
     _check(VfxScript.school_color("bow") != VfxScript.school_color("fist"), "Cung and Quyền signatures differ")
     _check(VfxScript.school_color("fist") != VfxScript.school_color("poison"), "Quyền and Độc signatures differ")
     _check(VfxScript.MAX_PARTICLES_PER_CUE <= 12, "bounded VFX budget")
+    _check(is_equal_approx(VfxScript.projectile_progress(0.0), 0.0)
+        and is_equal_approx(VfxScript.projectile_progress(0.5), 0.5)
+        and is_equal_approx(VfxScript.projectile_progress(1.0), 1.0),
+        "projectile reaches its target exactly at the authoritative impact time")
     var battle := MapBattleV2.new(1720702)
     var ready := battle.setup("lab_v2_visual", [_disciple("test_archer")], [_monster()], false)
     if not bool(ready.get("ok", false)):
