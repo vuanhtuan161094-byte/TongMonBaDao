@@ -13,6 +13,21 @@ static func school_color(school: String) -> Color:
         "boss": return Color("ff4f76")
     return Color("cdbbea")
 
+# Branch identities use the canonical V6.3 skill ID. These change visual
+# signatures only; they never create poison stacks, ticks or heal events.
+static func poison_branch(skill_id: String) -> String:
+    if ".co_doc." in skill_id:
+        return "co_doc"
+    if ".duoc_doc." in skill_id:
+        return "duoc_doc"
+    return "doc_cham"
+
+static func _poison_tint(branch: String) -> Color:
+    match branch:
+        "co_doc": return Color("c0ed69")
+        "duoc_doc": return Color("8af3db")
+    return Color("a68cf4")
+
 static func _streak(canvas: CanvasItem, start: Vector2, finish: Vector2,
         color: Color, width: float) -> void:
     canvas.draw_line(start, finish, color.darkened(0.38), width + 3.0, true)
@@ -47,6 +62,9 @@ static func render(canvas: CanvasItem, cue: Dictionary, p: Vector2, source: Vect
     base.a *= alpha
     var zoom_factor := clampf(zoom, 1.0, 6.0)
     var generation := str(cue.get("generation", "human"))
+    var branch := poison_branch(str(cue.get("skill_id", cue.get("source_skill_id", ""))))
+    var venom := _poison_tint(branch)
+    venom.a *= alpha
     var radius := clampf(radius_px, 0.0, 1600.0)
     match kind:
         "projectile":
@@ -62,12 +80,31 @@ static func render(canvas: CanvasItem, cue: Dictionary, p: Vector2, source: Vect
                     var behind := head - direction * (8 + index * 7) * zoom_factor
                     canvas.draw_circle(behind, (2.8 - index * 0.65) * zoom_factor, base)
             elif school == "poison":
-                _streak(canvas, tail, head, Color(c.r * 0.75, c.g, c.b * 0.7, c.a), 2.2 * zoom_factor)
-                for index in range(5):
-                    var residue := head - direction * float(index * 5) * zoom_factor
-                    residue += direction.orthogonal() * sin(t * 17.0 + index * 2.0) * 4.0 * zoom_factor
-                    canvas.draw_circle(residue, (2.6 + index * 0.45) * zoom_factor,
-                        Color(c.r * 0.70, c.g, c.b, c.a * (1.0 - index * 0.10)))
+                match branch:
+                    "doc_cham":
+                        # Three clearly legible dark-purple poisoned needles.
+                        _streak(canvas, head - direction * (25.0 * zoom_factor), head, venom, 2.0 * zoom_factor)
+                        _diamond(canvas, head + direction * 4.0 * zoom_factor, 5.0 * zoom_factor, venom)
+                        for i in range(3):
+                            var tip_offset := direction.orthogonal() * float(i - 1) * 3.1 * zoom_factor
+                            _streak(canvas, head - direction * (13.0 + float(i) * 3.0) * zoom_factor + tip_offset,
+                                head - direction * 2.0 * zoom_factor + tip_offset, Color("d1f5ad", venom.a), 1.1 * zoom_factor)
+                    "co_doc":
+                        # Coiling gu-serpent silhouette: two sinusoidal venom strands.
+                        for i in range(7):
+                            var distance := float(i) * 3.0 * zoom_factor
+                            var center := head - direction * distance
+                            var sway := direction.orthogonal() * sin(float(i) * 1.15 - t * 13.0) * 4.2 * zoom_factor
+                            canvas.draw_circle(center + sway, maxf(1.0, (3.6 - i * 0.35)) * zoom_factor, venom)
+                        _diamond(canvas, head, 5.5 * zoom_factor, Color("edfbac", venom.a))
+                    "duoc_doc":
+                        # Medicine-seal projectile: center bead and four herbal petals.
+                        canvas.draw_circle(head, 5.0 * zoom_factor, venom)
+                        for i in range(4):
+                            var a := TAU * float(i) / 4.0 + t * 2.5
+                            _diamond(canvas, head + Vector2.from_angle(a) * 7.0 * zoom_factor,
+                                2.5 * zoom_factor, Color("d9f8bd", venom.a))
+                        _streak(canvas, tail, head, venom, 1.6 * zoom_factor)
             else:
                 _streak(canvas, tail, head, base, 5.0 * zoom_factor)
                 _hex(canvas, head, 6.0 * zoom_factor, c, t * TAU)
@@ -104,11 +141,19 @@ static func render(canvas: CanvasItem, cue: Dictionary, p: Vector2, source: Vect
                     _diamond(canvas, p + ray * spread, 2.6 * zoom_factor, c)
                 canvas.draw_arc(p, spread * 0.7, 0.0, TAU, 32, c, 3.0 * zoom_factor, true)
             elif school == "poison":
-                for i in range(8):
-                    var a := TAU * float(i) / 8.0 + t * 3.4
-                    var q := p + Vector2.from_angle(a) * (7.0 + 14.0 * t) * zoom_factor
-                    canvas.draw_circle(q, maxf(1.0, (3.3 - 1.7 * t)) * zoom_factor, base)
-                _hex(canvas, p, (9.0 + 10.0 * t) * zoom_factor, c, t * 1.1)
+                # Impact style follows the cast branch but carries no damage.
+                var burst := (7.0 + 17.0 * t) * zoom_factor
+                for i in range(6):
+                    var ang := TAU * float(i) / 6.0 + t * (3.0 if branch == "co_doc" else 0.6)
+                    var q := p + Vector2.from_angle(ang) * burst
+                    if branch == "doc_cham":
+                        _streak(canvas, p + Vector2.from_angle(ang) * burst * 0.35,
+                            q, venom, 1.5 * zoom_factor)
+                    elif branch == "co_doc":
+                        canvas.draw_circle(q, (2.6 + float(i % 2)) * zoom_factor, venom)
+                    else:
+                        _diamond(canvas, q, 3.2 * zoom_factor, venom)
+                _hex(canvas, p, (8.0 + 11.0 * t) * zoom_factor, venom, -t * TAU)
             else:
                 for i in range(6):
                     var a := TAU * float(i) / 6.0 - 0.4
@@ -141,14 +186,29 @@ static func render(canvas: CanvasItem, cue: Dictionary, p: Vector2, source: Vect
                     _streak(canvas, edge, inward, c, 3.4 * zoom_factor)
                     _diamond(canvas, edge, 3.0 * zoom_factor, base)
             elif school == "poison":
-                # Two counter-rotating venom spirals and droplet seeds.
-                for i in range(8):
-                    var a := float(i) * TAU / 8.0 + t * 3.0
-                    var radial := (ring * 0.45 + 4.5 * float(i % 3) * zoom_factor)
-                    var drop := p + Vector2.from_angle(a) * radial
-                    canvas.draw_circle(drop, (1.8 + float(i % 3) * 0.6) * zoom_factor,
-                        base if i % 2 == 0 else c)
-                _hex(canvas, p, ring * 0.55, c, -t * TAU)
+                # Distinct posture read: hovering needles, gu-bugs, herbal vial.
+                match branch:
+                    "doc_cham":
+                        for i in range(5):
+                            var a := (-0.8 + 0.4 * float(i)) + t * 0.6
+                            var end := p + Vector2(cos(a) * 18.0, -13.0 + sin(a) * 8.0) * zoom_factor
+                            _streak(canvas, end - Vector2(6.0, -5.0) * zoom_factor, end, venom, 1.6 * zoom_factor)
+                            _diamond(canvas, end, 3.4 * zoom_factor, Color("def8bc", venom.a))
+                    "co_doc":
+                        for i in range(6):
+                            var a := float(i) * TAU / 6.0 + t * 3.4
+                            var q := p + Vector2.from_angle(a) * ring
+                            canvas.draw_circle(q, 3.0 * zoom_factor, venom)
+                            canvas.draw_line(q, q + Vector2.from_angle(a + 1.6) * 5.0 * zoom_factor,
+                                Color("e2f6a4", venom.a), 1.4 * zoom_factor, true)
+                        _hex(canvas, p, ring * 0.7, venom, t * TAU)
+                    "duoc_doc":
+                        _hex(canvas, p, ring * 0.75, venom, -t * TAU * 0.5)
+                        for i in range(5):
+                            var a := float(i) * TAU / 5.0 + t * 1.4
+                            _diamond(canvas, p + Vector2.from_angle(a) * ring,
+                                3.2 * zoom_factor, Color("dcf8b5", venom.a))
+                        canvas.draw_circle(p, 4.5 * zoom_factor, venom)
             else:
                 _hex(canvas, p, ring, base, t * TAU * 0.65)
         "guard":
@@ -156,14 +216,54 @@ static func render(canvas: CanvasItem, cue: Dictionary, p: Vector2, source: Vect
             _hex(canvas, p + Vector2(0, -13 * zoom_factor), shield_radius, base, 0.0)
             _hex(canvas, p + Vector2(0, -13 * zoom_factor), shield_radius * 0.74, c, PI / 6.0)
             _diamond(canvas, p + Vector2(0, -13 * zoom_factor), 5 * zoom_factor, base)
-        "poison":
+        "poison", "poison_apply", "poison_tick":
+            # Apply: rising toxin seal. Tick: tight acidic pulse. No implied
+            # extra damage, stacks or tick rate from the drawing itself.
+            var is_tick := kind == "poison_tick"
+            var spread := (4.5 + (6.0 if is_tick else 14.0) * t) * zoom_factor
+            var count := 5 if is_tick else 8
+            for i in range(count):
+                var ang := TAU * float(i) / float(count) + t * (3.8 if branch == "co_doc" else 1.5)
+                var q := p + Vector2.from_angle(ang) * spread + Vector2(0, -9.0 * t * zoom_factor)
+                if branch == "doc_cham":
+                    _diamond(canvas, q, (2.4 - 0.7 * t) * zoom_factor, venom)
+                elif branch == "co_doc":
+                    canvas.draw_circle(q, (2.0 + float(i % 3) * 0.7) * zoom_factor, venom)
+                    canvas.draw_line(q, q + Vector2(3.0, -2.0) * zoom_factor, venom, 1.0 * zoom_factor, true)
+                else:
+                    _diamond(canvas, q, 2.2 * zoom_factor, Color("c9ffcf", venom.a))
+            if not is_tick:
+                _hex(canvas, p + Vector2(0, -9.0 * zoom_factor), spread, venom, t * TAU * 0.3)
+        "venom_burst":
+            # Co Độc consumes only committed stacks; collapse then snap.
+            var inward := (21.0 - 17.0 * t) * zoom_factor
             for i in range(8):
-                var a := TAU * float(i) / 8.0 + t * 2.4
-                var outward := (5.0 + 8.0 * t) * zoom_factor
-                var q := p + Vector2.from_angle(a) * outward + Vector2(0, -t * 18.0 * zoom_factor)
-                canvas.draw_circle(q, (2.2 + (i % 3)) * zoom_factor, c)
-            canvas.draw_arc(p, (8.0 + 6.0 * t) * zoom_factor, 0.0, TAU, 20, base, 1.5 * zoom_factor, true)
+                var a := TAU * float(i) / 8.0 + t * 0.8
+                var q := p + Vector2.from_angle(a) * inward
+                _streak(canvas, q, q + Vector2.from_angle(a + PI) * 7.0 * zoom_factor,
+                    venom, 2.0 * zoom_factor)
+            _hex(canvas, p, (5.0 + 9.0 * sin(t * PI)) * zoom_factor, venom, t * 2.0)
+        "venom_cloud":
+            # Cloud radius comes from the real skill definition; never invent
+            # ground coverage or create a game-world status zone.
+            var cloud_radius := maxf(7.0 * zoom_factor, radius)
+            for i in range(8):
+                var ang := TAU * float(i) / 8.0 + 0.35 * t
+                var center := p + Vector2.from_angle(ang) * cloud_radius * (0.35 + 0.4 * t)
+                canvas.draw_circle(center, (4.0 + 5.0 * t) * zoom_factor,
+                    Color(venom.r, venom.g, venom.b, venom.a * 0.18))
+            canvas.draw_arc(p, cloud_radius, 0.0, TAU, 40, venom, 1.7 * zoom_factor, true)
         "heal":
+            if school == "poison" and branch == "duoc_doc":
+                # Medicinal recovery is a rising lotus, not a poison explosion.
+                for i in range(6):
+                    var a := TAU * float(i) / 6.0 + t * 0.65
+                    var tip := p + Vector2.from_angle(a) * (5.0 + 10.0 * t) * zoom_factor
+                    tip.y -= t * 17.0 * zoom_factor
+                    _diamond(canvas, tip, (4.2 - t) * zoom_factor, Color("c4fbc7", venom.a))
+                canvas.draw_circle(p + Vector2(0, -9.0 - 9.0 * t) * zoom_factor,
+                    4.0 * zoom_factor, venom)
+                return
             for i in range(4):
                 var a := TAU * float(i) / 4.0 + t * 2.0
                 var q := p + Vector2.from_angle(a) * 11.0 * zoom_factor
@@ -174,6 +274,14 @@ static func render(canvas: CanvasItem, cue: Dictionary, p: Vector2, source: Vect
             canvas.draw_line(p + Vector2(0, -13) * zoom_factor,
                 p + Vector2(0, -1) * zoom_factor, c, 3.0 * zoom_factor, true)
         "cleanse":
+            if school == "poison" and branch == "duoc_doc":
+                # Floating herbal leaves cleanse an actual status; no fake heal.
+                for i in range(6):
+                    var a := TAU * float(i) / 6.0 - t * 1.6
+                    var q := p + Vector2.from_angle(a) * (6.0 + 14.0 * t) * zoom_factor
+                    _diamond(canvas, q, 3.0 * zoom_factor, Color("c8ffd1", venom.a))
+                _hex(canvas, p, (7.0 + 15.0 * t) * zoom_factor, venom, -t * TAU)
+                return
             var r := (7.0 + 15.0 * t) * zoom_factor
             for i in range(8):
                 var a := TAU * float(i) / 8.0
