@@ -3,7 +3,7 @@
   "branch": "integration/pve-p0-playable-ui-20261103",
   "base_sha": "27ed01cd8f377994e5e50bac9ede84e78e8895bd",
   "upstream_pr_sha": "c99f22153b34628f7e94f69de0285514e788b9cb",
-  "source_fingerprint": "7113c26992cbedb5e4100f4a14d94f827f3340257637132bc910ba8b2cb6aa94",
+  "source_fingerprint": "15d4bec5e8e152f44953c5653e2c29c25504d60f94b259d40d46aabb0db24bd4",
   "files": [
     {
       "path": "CHOI-GAME.cmd",
@@ -684,6 +684,66 @@
     {
       "path": "tools/windows/run/tri03_launcher_support.ps1",
       "git_blob_sha": "1da6740d7700456b16f9730dc81b3dddd22b263c"
+    },
+    {
+      "path": "godot/labs/combat_lab/combat_lab_actor_rig_v2.gd",
+      "git_blob_sha": "bf44163c22f7c6566a772cd9b6baa9688c797829"
+    },
+    {
+      "path": "godot/labs/combat_lab/combat_lab_arena.gd",
+      "git_blob_sha": "68e225e41a31d47f3903d44c372e8fc7a0a40428"
+    },
+    {
+      "path": "godot/labs/combat_lab/combat_lab_event_bridge.gd",
+      "git_blob_sha": "cec2d8048a500fdfed1927c08d5883264f3809d6"
+    },
+    {
+      "path": "godot/labs/combat_lab/combat_lab_roster_adapter.gd",
+      "git_blob_sha": "f14160c986b2a95035b3c35e02dd46415135e8ac"
+    },
+    {
+      "path": "godot/labs/combat_lab/combat_lab_vfx_v2.gd",
+      "git_blob_sha": "9682bf39b2696368806a90ff403ec49794c315bd"
+    },
+    {
+      "path": "godot/labs/combat_lab/combat_lab.gd",
+      "git_blob_sha": "2f0c773e133589dcd2094f98f1218f8c4017c474"
+    },
+    {
+      "path": "godot/labs/combat_lab/combat_lab.tscn",
+      "git_blob_sha": "1f76684a2facf5b6ec4ab5ed4781be3e847caf6a"
+    },
+    {
+      "path": "godot/src/simulation/core/simulation_runtime_owner_v2.gd",
+      "git_blob_sha": "ccf1c2cba9af3e5f05560c681e4d011a5634c28e"
+    },
+    {
+      "path": "godot/tests/labs/combat_lab/combat_lab_focused_test.gd",
+      "git_blob_sha": "6c322d7355acff106495cabafd6abb546fe79b6f"
+    },
+    {
+      "path": "godot/tests/labs/combat_lab/combat_lab_v2_visual_test.gd",
+      "git_blob_sha": "b28aa46b572503aa5a9e252ede84a802b53e0b32"
+    },
+    {
+      "path": "godot/tests/labs/combat_lab/evidence/combat_lab_preview_1x.png",
+      "git_blob_sha": "b12cbcdcf28bc5660c9f4dbcc5b4d79d8f7ff84c"
+    },
+    {
+      "path": "godot/tests/labs/combat_lab/evidence/combat_lab_preview_2x.png",
+      "git_blob_sha": "640335727de8a8b6a48fd9778a8363c845e0970a"
+    },
+    {
+      "path": "godot/tests/labs/combat_lab/evidence/combat_lab_preview_4x.png",
+      "git_blob_sha": "5e90cc7f12cb4e516e3f79d3ed314e7953fe5156"
+    },
+    {
+      "path": "godot/tests/labs/combat_lab/evidence/combat_lab_preview_6x.png",
+      "git_blob_sha": "473f62a09faca6f4b120cf6e968f4cf12bb2e686"
+    },
+    {
+      "path": "godot/tests/simulation/v63_doc_full_combat_matrix_test.gd",
+      "git_blob_sha": "18755139d9556b455e72726cf7460168460270af"
     }
   ]
 }
