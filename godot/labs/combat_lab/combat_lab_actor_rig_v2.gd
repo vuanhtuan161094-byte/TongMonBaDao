@@ -127,6 +127,28 @@ static func render(canvas: CanvasItem, actor: Dictionary, root: Vector2, school:
         _p(body_origin, 7, -19, scale, facing, lean), colors.metal, 1.3 * scale, true)
     canvas.draw_circle(_p(body_origin, 0, -19, scale, facing, lean),
         2.2 * scale, colors.glow)
+    if school == "poison" and not monster:
+        # Laboratory-only poison master silhouette: ceremonial scarf, paired
+        # medicine vials and a nether talisman; not baked to the weapon.
+        _poly(canvas, body_origin, [
+            Vector2(-7, -29), Vector2(8, -29), Vector2(11, -24),
+            Vector2(2, -22), Vector2(-10, -24)
+        ], Color("72518b"), scale, facing, lean)
+        _poly(canvas, body_origin, [
+            Vector2(-8, -23), Vector2(-13, -18),
+            Vector2(-13 - sin(seconds * 4.0) * 2.0, -3),
+            Vector2(-7, -10)
+        ], Color("9c72b5"), scale, facing, lean)
+        for vial in range(3):
+            var vial_x := -7.0 + float(vial) * 7.0
+            var vial_center := _p(body_origin, vial_x, -15.0, scale, facing, lean)
+            canvas.draw_rect(Rect2(vial_center + Vector2(-1.6, -2.2) * scale,
+                Vector2(3.2, 5.0) * scale), Color("73dec0"), true)
+            canvas.draw_circle(vial_center + Vector2(0, 1.1 * scale),
+                1.1 * scale, Color("d4fbbd"))
+        var talisman := _p(body_origin, 0, -25, scale, facing, lean)
+        _diamond_talisman(canvas, talisman, 4.2 * scale,
+            Color("c4b0e5"), Color("8ef4bb"))
 
     var back_hand := Vector2(-17, -17)
     var front_hand := Vector2(17, -17)
@@ -205,11 +227,22 @@ static func render(canvas: CanvasItem, actor: Dictionary, root: Vector2, school:
         canvas.draw_line(_p(body_origin, -9, -47, scale, facing, lean), tail, colors.hair, 5.0 * scale, true)
         canvas.draw_circle(tail, 4.0 * scale, colors.hair)
     if school == "poison" and not monster:
-        # Raised side ornaments and twin trailing hair locks.
+        # Twin locks sway differently during casting and a needle release.
+        var poison_sway := sin(seconds * 4.2) * 1.8 + (attack * 5.0 if state == "attack" else 0.0)
         canvas.draw_circle(_p(body_origin, -11, -49, scale, facing, lean), 3.3 * scale, colors.light)
         canvas.draw_circle(_p(body_origin, 11, -49, scale, facing, lean), 3.3 * scale, colors.light)
-        _bone(canvas, body_origin, Vector2(-11, -43), Vector2(-14 + walk, -18), scale, facing, lean, 3.1, colors.hair)
-        _bone(canvas, body_origin, Vector2(11, -43), Vector2(13 - walk, -17), scale, facing, lean, 3.1, colors.hair)
+        _bone(canvas, body_origin, Vector2(-11, -43), Vector2(-14 - poison_sway, -18),
+            scale, facing, lean, 3.1, colors.hair)
+        _bone(canvas, body_origin, Vector2(11, -43), Vector2(13 - poison_sway * 0.5, -17),
+            scale, facing, lean, 3.1, colors.hair)
+        if state == "cast":
+            # Three orbiting poison beads are bound to the casting hand.
+            var casting_hand := _p(body_origin, front_hand.x, front_hand.y, scale, facing, lean)
+            for i in range(3):
+                var ang := TAU * float(i) / 3.0 + seconds * 3.5
+                var orb := casting_hand + Vector2.from_angle(ang) * 8.0 * scale
+                canvas.draw_circle(orb, 2.2 * scale, colors.glow)
+                canvas.draw_circle(orb, 0.9 * scale, Color("dcffca"))
     if school == "fist" and not monster:
         # Large wrist guards distinguish gauntlet attacks.
         canvas.draw_circle(_p(body_origin, back_hand.x, back_hand.y, scale, facing, lean), 5.0 * scale, colors.metal.darkened(0.15))
@@ -233,6 +266,16 @@ static func render(canvas: CanvasItem, actor: Dictionary, root: Vector2, school:
         var focus := _p(body_origin, front_hand.x + 4, front_hand.y - 2, scale, facing, lean)
         canvas.draw_arc(focus, (6 + sin(seconds * 12.0) * 1.0) * scale,
             0, TAU, 24, colors.glow, 2.0 * scale, true)
+
+static func _diamond_talisman(canvas: CanvasItem, center: Vector2, size_px: float,
+        outline: Color, core: Color) -> void:
+    canvas.draw_colored_polygon(PackedVector2Array([
+        center + Vector2(0, -size_px),
+        center + Vector2(size_px * 0.62, 0),
+        center + Vector2(0, size_px),
+        center + Vector2(-size_px * 0.62, 0)
+    ]), outline)
+    canvas.draw_circle(center, size_px * 0.34, core)
 
 static func draw_weapon(canvas: CanvasItem, hand: Vector2, school: String, pose: String,
         seconds: float, scale: float, facing: float, colors: Dictionary,
