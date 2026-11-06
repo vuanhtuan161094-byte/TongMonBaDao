@@ -6,6 +6,8 @@ const SCHOOL_KEYS := ["bow", "fist", "poison"]
 const SCHOOL_LABELS := ["Cung", "Quyền", "Độc"]
 const GENERATION_KEYS := ["human", "immortal", "divine"]
 const GENERATION_LABELS := ["Nhân", "Tiên", "Thần"]
+const VISUAL_FRAME_INTERVAL := 1.0 / 24.0
+const HUD_UPDATE_INTERVAL := 0.15
 const BOSS_IDS := [
     "tmb.boss.thiet_giap_son_vien", "tmb.boss.xich_viem_lang_vuong", "tmb.boss.bach_doc_chu_hau",
     "tmb.boss.loi_nguc_tien_tuong", "tmb.boss.han_nguyet_ao_hau", "tmb.boss.u_minh_co_tien",
@@ -36,6 +38,7 @@ var event_log: Array[String] = []
 var auto_run := true
 var accumulator := 0.0
 var frame_accumulator := 0.0
+var hud_accumulator := 0.0
 var fixture_states: Array[SimulationState] = []
 var fixture_actors: Array[Dictionary] = []
 
@@ -61,12 +64,17 @@ func _process(delta: float) -> void:
             accumulator -= MapBattleV2.STEP_SECONDS
             _step_battle()
             if not battle.active: break
+    # The actor rig animates at 24 Hz independently of the slower HUD.
+    # Keep both visual and HUD rendering read-only to the battle authority.
     frame_accumulator += delta
-    if frame_accumulator >= 0.15:
-        frame_accumulator = 0.0
-        _refresh_hud()
+    if frame_accumulator >= VISUAL_FRAME_INTERVAL:
+        frame_accumulator = fmod(frame_accumulator, VISUAL_FRAME_INTERVAL)
         if arena != null:
             arena.queue_redraw()
+    hud_accumulator += delta
+    if hud_accumulator >= HUD_UPDATE_INTERVAL:
+        hud_accumulator = fmod(hud_accumulator, HUD_UPDATE_INTERVAL)
+        _refresh_hud()
 
 func _build_ui() -> void:
     set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
