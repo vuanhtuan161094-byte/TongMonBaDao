@@ -180,6 +180,11 @@ func consume_events(rows: Array[Dictionary]) -> void:
         if cue_kind.is_empty():
             continue
         var cue_life := 370.0 if cue_kind == "projectile" else (900.0 if cue_kind == "telegraph" else 790.0)
+        var display_skill_id := source_skill
+        if display_skill_id.is_empty():
+            display_skill_id = str(last_skill_by_actor.get(source_actor_id, ""))
+        var display_definition: Dictionary = CombatLabRosterAdapter.skill_definitions().get(display_skill_id, {})
+        var display_generation := str(display_definition.get("generation", display_definition.get("tier", "human")))
         var cue_from := _actor_position(source_actor_id)
         if kind == "v63_mobility" and actor_states.has(source_actor_id):
             var prior: Dictionary = actor_states[source_actor_id]
@@ -187,7 +192,7 @@ func consume_events(rows: Array[Dictionary]) -> void:
         cues.append({
             "kind":cue_kind, "position":pos, "from_position":cue_from,
             "text":label, "color":color, "radius":radius, "school":school_kind,
-            "skill_id":source_skill, "source_actor_id":source_actor_id,
+            "skill_id":display_skill_id, "generation":display_generation, "source_actor_id":source_actor_id,
             "created":now_ms, "life":cue_life,
             "source_index":int(event.get("lab_source_index", -1)),
             "time":float(event.get("time", 0.0))
