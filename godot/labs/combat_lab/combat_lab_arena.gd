@@ -82,7 +82,7 @@ func _track_movement(actor: Dictionary) -> void:
 func consume_events(rows: Array[Dictionary]) -> void:
     if battle == null:
         return
-    var now_ms := Time.get_ticks_msec()
+    var now_ms := roundi(visual_time * 1000.0)
     for event in rows:
         var kind := str(event.get("type", ""))
         var source_actor_id := str(event.get("caster", event.get("attacker", event.get("actor_id", ""))))
@@ -342,7 +342,8 @@ func _draw_actor(actor: Dictionary) -> void:
         clampi(roundi(10.0 * actor_scale), 9, 17), Color("e6dfef"))
 
 func _draw_cues() -> void:
-    var current_time := Time.get_ticks_msec()
+    # HOLD freezes all existing spell/impact effects, not only projectiles.
+    var current_time := roundi(visual_time * 1000.0)
     var live: Array[Dictionary] = []
     for cue in cues:
         var t := 0.0
