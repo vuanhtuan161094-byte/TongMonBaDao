@@ -1,5 +1,11 @@
 extends Control
 
+const ActorRigV2 = preload("res://labs/combat_lab/combat_lab_actor_rig_v2.gd")
+const VfxV2 = preload("res://labs/combat_lab/combat_lab_vfx_v2.gd")
+
+var actor_states: Dictionary = {}
+var last_skill_by_actor: Dictionary = {}
+
 const WORLD := Rect2(Vector2.ZERO, Vector2(36.0, 20.0))
 const MAX_CUES := 64
 var battle: MapBattleV2
@@ -17,6 +23,8 @@ func set_battle(value: MapBattleV2, weapon_school: String) -> void:
     battle = value
     school = weapon_school
     cues.clear()
+    actor_states.clear()
+    last_skill_by_actor.clear()
     queue_redraw()
 
 func set_status(value: String) -> void:
