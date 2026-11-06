@@ -61,11 +61,18 @@ func _run() -> void:
     var scheduled_projectiles := 0
     var launch_at := -1.0
     var impact_at := -1.0
+    var cast_origin_ok := false
+    var projectile_endpoint_ok := false
     for cue in arena.cues:
+        if str(cue.get("kind", "")) == "cast":
+            cast_origin_ok = cast_origin_ok or cue.get("position", Vector2.ZERO) == battle.actors["test_archer"].position
         if str(cue.get("kind", "")) == "projectile":
+            projectile_endpoint_ok = projectile_endpoint_ok or cue.get("position", Vector2.ZERO) == battle.actors["lab_v2_dummy"].position
             scheduled_projectiles += 1
             launch_at = float(cue.get("launch_at", -1.0))
             impact_at = float(cue.get("impact_at", -1.0))
+    _check(cast_origin_ok and projectile_endpoint_ok,
+        "cast aura anchors to caster; projectile endpoint anchors to target")
     _check(scheduled_projectiles == 1 and launch_at > 0.0 and impact_at > launch_at,
         "skill_cast schedules one real projectile AFTER wind-up and BEFORE impact")
     _check(is_equal_approx(impact_at, 0.8), "projectile timing ends at canonical cast deadline")
