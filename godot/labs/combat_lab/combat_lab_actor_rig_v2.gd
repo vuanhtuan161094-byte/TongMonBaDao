@@ -61,8 +61,9 @@ static func render(canvas: CanvasItem, actor: Dictionary, root: Vector2, school:
     var state := pose if valid_pose(pose) else "idle"
     if float(actor.get("hp", 0.0)) <= 0.0:
         state = "death"
-    var walk := sin(seconds * 13.0 + float(abs(hash(str(actor.get("id", "")))) % 7)) if state == "walk" else 0.0
-    var breathing := sin(seconds * 2.8 + float(abs(hash(str(actor.get("id", "")))) % 11)) * 0.85
+    var actor_seed := absi(hash(str(actor.get("id", "")))) % 11
+    var walk := sin(seconds * 13.0 + float(actor_seed % 7)) if state == "walk" else 0.0
+    var breathing := sin(seconds * 2.8 + float(actor_seed)) * 0.85
     var attack := sin(seconds * 19.0) if state == "attack" else 0.0
     var cast := sin(seconds * 9.0) if state == "cast" else 0.0
     var lean := 0.0
