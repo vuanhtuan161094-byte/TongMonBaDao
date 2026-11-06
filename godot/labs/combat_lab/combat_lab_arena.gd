@@ -1,6 +1,7 @@
 extends Control
 
 const ActorRigV2 = preload("res://labs/combat_lab/combat_lab_actor_rig_v2.gd")
+const PoisonAtlasV1 = preload("res://labs/combat_lab/combat_lab_poison_atlas_v1.gd")
 const VfxV2 = preload("res://labs/combat_lab/combat_lab_vfx_v2.gd")
 
 var actor_states: Dictionary = {}
@@ -14,6 +15,7 @@ var cues: Array[Dictionary] = []
 var status_line := "Chưa bắt đầu · LAB_ONLY"
 var zoom := 1.0
 var visual_time := 0.0
+var poison_atlas_warning_emitted := false
 
 func _ready() -> void:
     custom_minimum_size = Vector2(620, 390)
@@ -79,6 +81,15 @@ func _track_movement(actor: Dictionary) -> void:
         state["until"] = visual_time + 0.20
     actor_states[id] = state
 
+func _pose_lifetime_ms(actor_id: String, pose: String, fallback_ms: int) -> int:
+    if school != "poison" or battle == null or not battle.actors.has(actor_id):
+        return fallback_ms
+    var actor: Dictionary = battle.actors[actor_id]
+    if str(actor.get("side", "")) == "monster":
+        return fallback_ms
+    var atlas_duration := PoisonAtlasV1.clip_duration_ms(pose)
+    return atlas_duration if atlas_duration > 0 else fallback_ms
+
 func consume_events(rows: Array[Dictionary]) -> void:
     if battle == null:
         return
@@ -94,16 +105,16 @@ func consume_events(rows: Array[Dictionary]) -> void:
             var duration := clampi(roundi((float(event.get("release_at", 0.0)) - float(event.get("time", 0.0))) * 1000.0), 300, 1200)
             _set_pose(source_actor_id, "cast", duration)
         elif kind == "skill_release":
-            _set_pose(source_actor_id, "attack", 420)
+            _set_pose(source_actor_id, "attack", _pose_lifetime_ms(source_actor_id, "attack", 420))
         elif kind == "hit" and float(event.get("damage", 0.0)) > 0.0:
             # DoT/reflect are autonomous settlements: never replay a weapon swing
             # for the original caster when poison, burn or reflection ticks.
             var hit_kind := str(event.get("kind", ""))
             if hit_kind not in ["v63_poison", "dot", "burn", "reflect", "reflection"]:
                 _set_pose(source_actor_id, "attack", 360)
-            _set_pose(target_id, "hit", 230)
+            _set_pose(target_id, "hit", _pose_lifetime_ms(target_id, "hit", 230))
         elif kind in ["downed", "death"]:
-            _set_pose(target_id, "death", 2400)
+            _set_pose(target_id, "death", _pose_lifetime_ms(target_id, "death", 2400))
         elif kind == "v63_mobility":
             _set_pose(str(event.get("actor_id", "")), "walk", 280)
         elif kind == "telegraph":
@@ -371,7 +382,12 @@ func _draw_actor(actor: Dictionary) -> void:
     var seconds := visual_time
     var state: Dictionary = actor_states.get(actor_id, {})
     var pose_elapsed := maxf(0.0, visual_time - float(state.get("started", visual_time)))
-    ActorRigV2.render(self, actor, foot, school, pose, seconds, actor_scale, facing, pose_elapsed)
+    if school == "poison" and not monster:
+        if not PoisonAtlasV1.draw(self, foot, pose, seconds, pose_elapsed, actor_scale, facing) and not poison_atlas_warning_emitted:
+            push_warning("Combat Lab: Nữ Độc Tu atlas is unavailable; no substitute character is rendered.")
+            poison_atlas_warning_emitted = true
+    else:
+        ActorRigV2.render(self, actor, foot, school, pose, seconds, actor_scale, facing, pose_elapsed)
 
     # Place health bars ABOVE the tallest character, not under feet.
     var hp_ratio := clampf(float(actor.get("hp", 0.0)) /

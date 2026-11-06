@@ -1,0 +1,236 @@
+{
+  "character_id": "nu_doc_tu_grok_01",
+  "display_name": "Nữ Độc Tu – Vạn Độc Xà Ấn",
+  "origin": "Six user-provided Grok Image-to-Video MP4 files, 2026-11-03",
+  "intended_engine": "Godot 4.7.2",
+  "cell_width": 224,
+  "cell_height": 272,
+  "foot_anchor": [
+    112,
+    245
+  ],
+  "authoring_view": "three-quarter right; left direction is mirrored with AnimatedSprite2D.flip_h",
+  "gameplay_recommended_scale": 0.32,
+  "color_key": "per-frame median RGB from outer background patches, soft distance matte with edge RGB despill",
+  "runtime_role": "visual-only sprite animation: no damage, projectile/hit event, EXP or save authority",
+  "animations": {
+    "idle": {
+      "source_video": "1000021558.mp4",
+      "source_video_sha256": "6504b4ca98049acb936d9b65f85dd187cba31b74136402f2e287b0b5fd60973b",
+      "source_resolution": [
+        480,
+        640
+      ],
+      "source_fps": 24,
+      "source_duration_seconds": 6.0417,
+      "source_range_seconds": [
+        0,
+        5.95
+      ],
+      "sheet": "res://labs/combat_lab/assets/nu_doc_tu_grok_01/sheets/idle.png",
+      "sheet_sha256": "768068e58a8a9aa26a775d1f486e7a61137029718bea198090e4d10d3dcb8405",
+      "columns": 8,
+      "rows": 8,
+      "frames": 60,
+      "cell_width": 224,
+      "cell_height": 272,
+      "sampling_fps": 10,
+      "playback_fps": 10,
+      "loop": true,
+      "source_scale": 0.328,
+      "nonempty_frames": 60,
+      "frames_with_visible_alpha_touching_canvas_edge": 0,
+      "foot_anchor": [
+        112,
+        245
+      ],
+      "gameplay_recommended_scale": 0.32
+    },
+    "walk": {
+      "source_video": "1000021557.mp4",
+      "source_video_sha256": "d87132315720ba8a58615e147b9b93d333bd18915967c5ca0affc692dd50c1be",
+      "source_resolution": [
+        480,
+        640
+      ],
+      "source_fps": 24,
+      "source_duration_seconds": 6.0417,
+      "source_range_seconds": [
+        0,
+        5.95
+      ],
+      "sheet": "res://labs/combat_lab/assets/nu_doc_tu_grok_01/sheets/walk.png",
+      "sheet_sha256": "f1cc5ccafcd7b9bbb5a10ee65c180ee881d1f1edf27c9ead6d271a1f936247d2",
+      "columns": 8,
+      "rows": 9,
+      "frames": 72,
+      "cell_width": 224,
+      "cell_height": 272,
+      "sampling_fps": 12,
+      "playback_fps": 16,
+      "loop": true,
+      "source_scale": 0.425,
+      "nonempty_frames": 72,
+      "frames_with_visible_alpha_touching_canvas_edge": 0,
+      "foot_anchor": [
+        112,
+        245
+      ],
+      "gameplay_recommended_scale": 0.32
+    },
+    "attack": {
+      "source_video": "1000021555.mp4",
+      "source_video_sha256": "0d6d1e975ec681e2397f9c6e6e3257183ea3a4ca8756c1fdc993d74e289537e1",
+      "source_resolution": [
+        480,
+        640
+      ],
+      "source_fps": 24,
+      "source_duration_seconds": 6.0417,
+      "source_range_seconds": [
+        0.55,
+        5.95
+      ],
+      "sheet": "res://labs/combat_lab/assets/nu_doc_tu_grok_01/sheets/attack.png",
+      "sheet_sha256": "cc37a26e3ae00de29ea97fcf0bf3276f41a6031393d0e2e9d608048261eb8b67",
+      "columns": 8,
+      "rows": 9,
+      "frames": 65,
+      "cell_width": 224,
+      "cell_height": 272,
+      "sampling_fps": 12,
+      "playback_fps": 25,
+      "loop": false,
+      "source_scale": 0.425,
+      "nonempty_frames": 65,
+      "frames_with_visible_alpha_touching_canvas_edge": 0,
+      "foot_anchor": [
+        112,
+        245
+      ],
+      "gameplay_recommended_scale": 0.32
+    },
+    "cast": {
+      "source_video": "1000021556.mp4",
+      "source_video_sha256": "1724d54d324dc654ab16068a816aabf8752ec58e91be63bf6c58828f19b5ced0",
+      "source_resolution": [
+        480,
+        640
+      ],
+      "source_fps": 24,
+      "source_duration_seconds": 6.0417,
+      "source_range_seconds": [
+        0.4,
+        5.95
+      ],
+      "sheet": "res://labs/combat_lab/assets/nu_doc_tu_grok_01/sheets/cast.png",
+      "sheet_sha256": "2ff108fc6ae359e68efd60c830811f2f2306ec710a7c4de16d303e52a02d52b5",
+      "columns": 8,
+      "rows": 9,
+      "frames": 67,
+      "cell_width": 224,
+      "cell_height": 272,
+      "sampling_fps": 12,
+      "playback_fps": 23,
+      "loop": false,
+      "source_scale": 0.425,
+      "nonempty_frames": 67,
+      "frames_with_visible_alpha_touching_canvas_edge": 0,
+      "foot_anchor": [
+        112,
+        245
+      ],
+      "gameplay_recommended_scale": 0.32
+    },
+    "hit": {
+      "source_video": "1000021554.mp4",
+      "source_video_sha256": "ee42046139f28ec7d0c4ab7e7136958d4cdd006e4e3fbec193afa02777152850",
+      "source_resolution": [
+        480,
+        640
+      ],
+      "source_fps": 24,
+      "source_duration_seconds": 6.0417,
+      "source_range_seconds": [
+        0.45,
+        5.95
+      ],
+      "sheet": "res://labs/combat_lab/assets/nu_doc_tu_grok_01/sheets/hit.png",
+      "sheet_sha256": "6acefed4217f7b26da12c08505988382ace5e8488456764e068498c10728e66f",
+      "columns": 8,
+      "rows": 9,
+      "frames": 67,
+      "cell_width": 224,
+      "cell_height": 272,
+      "sampling_fps": 12,
+      "playback_fps": 28,
+      "loop": false,
+      "source_scale": 0.425,
+      "nonempty_frames": 67,
+      "frames_with_visible_alpha_touching_canvas_edge": 0,
+      "foot_anchor": [
+        112,
+        245
+      ],
+      "gameplay_recommended_scale": 0.32
+    },
+    "defeated": {
+      "source_video": "1000021553.mp4",
+      "source_video_sha256": "e6bf4ddeeb00827b37e74332e831f86a715a7739867310e45b73480f70b7d991",
+      "source_resolution": [
+        480,
+        640
+      ],
+      "source_fps": 24,
+      "source_duration_seconds": 6.0417,
+      "source_range_seconds": [
+        1.1,
+        5.95
+      ],
+      "sheet": "res://labs/combat_lab/assets/nu_doc_tu_grok_01/sheets/defeated.png",
+      "sheet_sha256": "e96a62c79b8baef8ba42ef2e0857074addbbb75c5bdba64e8053d4b36f17da3f",
+      "columns": 8,
+      "rows": 8,
+      "frames": 59,
+      "cell_width": 224,
+      "cell_height": 272,
+      "sampling_fps": 12,
+      "playback_fps": 24,
+      "loop": false,
+      "source_scale": 0.425,
+      "nonempty_frames": 59,
+      "frames_with_visible_alpha_touching_canvas_edge": 0,
+      "foot_anchor": [
+        112,
+        245
+      ],
+      "gameplay_recommended_scale": 0.32
+    }
+  },
+  "source_package": "D:/Downloads/TMB_NuDocTu_Grok_Godot_472.zip",
+  "source_package_sha256": "3BCE69AF3BDAD1096CBDBB9E70035EAC95133011E6FBDD8C7F40A708E5054939",
+  "asset_identity": "User-provided Grok visual override; not Source A",
+  "schema_version": 1,
+  "asset_status": "EXISTING_USER_PROVIDED_ATLAS_COPY",
+  "asset_integrity": "ALL_SIX_SHEET_SHA256_MATCHES_EXISTING_SOURCE_MANIFEST",
+  "source_manifest_sha256": "16c307c3b9fada88a8bb017adcc50b81ce6b2d592ddbec444963f1b1289816a6",
+  "integration": {
+    "kind": "combat_lab_visual_only",
+    "local_source_root": "E:/TongMonBaDaoWorkspace/01_Game/QA_WORKTREES/PR72_OFFLINE_VERIFIED_20261104/profile/walkthrough_qa/GrokSixAnimationPreview/assets/characters/nu_doc_tu_grok_01/sheets",
+    "atlas_transform": "six existing PNG sheets copied byte-for-byte; no re-bake, crop, or downscale",
+    "original_video_files": "Not found after exact-name search in E:\\TongMonBaDaoWorkspace and E:\\codex; absent from referenced D:\\Downloads paths.",
+    "source_package": "TMB_NuDocTu_Grok_Godot_472.zip was absent from D:\\Downloads and not found by exact-name search in the checked E:\\ workspace/Codex roots.",
+    "import_and_gui_verification": "PENDING; Godot was not launched for this task",
+    "embedded_effect_note": "Attack/cast source frames contain green spell glow in the character atlas; the six original sheets are untouched. Existing Combat Lab Poison VFX remains event-driven and may overlap those baked pixels.",
+    "pose_mapping": {
+      "idle": "idle",
+      "walk": "walk",
+      "cast": "cast",
+      "attack": "attack",
+      "hit": "hit",
+      "death": "defeated"
+    },
+    "source_manifest_path": "E:/TongMonBaDaoWorkspace/01_Game/QA_WORKTREES/PR72_OFFLINE_VERIFIED_20261104/profile/walkthrough_qa/GrokSixAnimationPreview/assets/characters/nu_doc_tu_grok_01/manifest.json",
+    "foot_anchor_runtime_verification": "PENDING_GODOT; source anchor [112,245] is retained unchanged across all frames. Alpha bounds vary by pose, so visual foot stability is not claimed without engine preview."
+  }
+}

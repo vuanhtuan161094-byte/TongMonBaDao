@@ -3,7 +3,7 @@
   "branch": "integration/pve-p0-playable-ui-20261103",
   "base_sha": "27ed01cd8f377994e5e50bac9ede84e78e8895bd",
   "upstream_pr_sha": "c99f22153b34628f7e94f69de0285514e788b9cb",
-  "source_fingerprint": "5bc96b78b97e1144c196f377be6f3a205c68843593d39c2aa6affa0eba176d3a",
+  "source_fingerprint": "be76e3a154941ea0e2edcd28cc087b9800f2a31201d4f7f235679389a945cc26",
   "files": [
     {
       "path": "CHOI-GAME.cmd",
@@ -691,7 +691,7 @@
     },
     {
       "path": "godot/labs/combat_lab/combat_lab_arena.gd",
-      "git_blob_sha": "68e225e41a31d47f3903d44c372e8fc7a0a40428"
+      "git_blob_sha": "52a0377ea0f8967dda3337ed7044618887bc3880"
     },
     {
       "path": "godot/labs/combat_lab/combat_lab_event_bridge.gd",
@@ -744,6 +744,38 @@
     {
       "path": "godot/tests/simulation/v63_doc_full_combat_matrix_test.gd",
       "git_blob_sha": "18755139d9556b455e72726cf7460168460270af"
+    },
+    {
+      "path": "godot/labs/combat_lab/combat_lab_poison_atlas_v1.gd",
+      "git_blob_sha": "71e206aed603e1444f88dc0e6ffddd2aa7f470c4"
+    },
+    {
+      "path": "godot/labs/combat_lab/assets/nu_doc_tu_grok_01/manifest.json",
+      "git_blob_sha": "b9ad6049efa69527ba1cb3adbfa9200a67959b19"
+    },
+    {
+      "path": "godot/labs/combat_lab/assets/nu_doc_tu_grok_01/sheets/idle.png",
+      "git_blob_sha": "82fd6107c055d55eb87ff4c0f2534c99330584bb"
+    },
+    {
+      "path": "godot/labs/combat_lab/assets/nu_doc_tu_grok_01/sheets/walk.png",
+      "git_blob_sha": "39bd5490771d0baa9fbf8f8d1411d76dbf960ffa"
+    },
+    {
+      "path": "godot/labs/combat_lab/assets/nu_doc_tu_grok_01/sheets/cast.png",
+      "git_blob_sha": "d1c93bf0b52c3fd6256199bf4e1f46da9eec7e34"
+    },
+    {
+      "path": "godot/labs/combat_lab/assets/nu_doc_tu_grok_01/sheets/attack.png",
+      "git_blob_sha": "fa1bc12a2ef4da083dca277d623c73c08e82a7d9"
+    },
+    {
+      "path": "godot/labs/combat_lab/assets/nu_doc_tu_grok_01/sheets/hit.png",
+      "git_blob_sha": "e9f42688d9c17d5abfbdfc6401bc5db934a4a315"
+    },
+    {
+      "path": "godot/labs/combat_lab/assets/nu_doc_tu_grok_01/sheets/defeated.png",
+      "git_blob_sha": "31d6e1f08c17bc46019a9a28b6b1b96984c7305b"
     }
   ]
 }
