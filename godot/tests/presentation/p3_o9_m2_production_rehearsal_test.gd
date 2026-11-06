@@ -154,19 +154,79 @@ func _run() -> void:
     var buyer: DiscipleState = state.disciples[buyer_id]
     var buyer_wallet_before := buyer.wallet
     var treasury_before_purchase := state.sect.treasury
-    # Explicitly listed Phuong Thi goods cannot bypass payment at backend level.
-    if not equipment_system.move_to_shop(state, crafted_item_id):
-        _fail("O9 cannot list the real item for the shop ownership check.")
+    # List the actual crafted Warehouse item and recall it through Warehouse UI.
+    if not await _open_building(SectMapPresentation.DEST_WAREHOUSE):
         return
+    var inventory_picker := ui.find_child("EquipmentInventoryItemPicker",true,false) as OptionButton
+    var inventory_move := ui.find_child("EquipmentInventoryMove",true,false) as Button
+    var inventory_option := -1
+    if inventory_picker != null:
+        for option_index in range(inventory_picker.item_count):
+            if str(inventory_picker.get_item_metadata(option_index)) == str(crafted_item_id):
+                inventory_option = option_index
+                break
+    if inventory_picker == null or inventory_move == null or inventory_option < 0:
+        _fail("O9 Warehouse UI did not list the real forged item.")
+        return
+    inventory_picker.select(inventory_option)
+    inventory_picker.emit_signal("item_selected",inventory_option)
+    if inventory_move.disabled or inventory_move.text != "Đưa lên Phường Thị":
+        _fail("O9 Warehouse item had no real list-to-shop action.")
+        return
+    var inventory_detail := ui.find_child("EquipmentInventoryItemDetail",true,false) as Label
+    if inventory_detail == null or not inventory_detail.text.contains(str(crafted_item.get("price",0))):
+        _fail("O9 Warehouse UI did not show the canonical listing price.")
+        return
+    inventory_move.emit_signal("pressed")
+    inventory_move.emit_signal("pressed")
+    await process_frame
+    crafted_item = state.sect.equipment_items.get(str(crafted_item_id),{})
+    if (
+        StringName(crafted_item.get("location","")) != EquipmentSystem.LOCATION_SHOP
+        or buyer.wallet != buyer_wallet_before
+        or state.sect.treasury != treasury_before_purchase
+        or state.sect.equipment_items.size() != item_count_before + 1
+    ):
+        _fail("O9 listing changed money or duplicated the forged item.")
+        return
+
+    # A shop listing cannot be received for free through the manual issue API.
     if equipment_system.manual_equip(state, buyer_id, crafted_item_id):
         _fail("O9 unpaid shop item was equipped directly.")
         return
     if buyer.wallet != buyer_wallet_before or state.sect.treasury != treasury_before_purchase:
         _fail("O9 rejected unpaid issue changed funds.")
         return
-    if not equipment_system.move_to_storage(state, crafted_item_id):
-        _fail("O9 cannot return the unsold item to Sect Warehouse.")
+
+    inventory_picker = ui.find_child("EquipmentInventoryItemPicker",true,false) as OptionButton
+    inventory_move = ui.find_child("EquipmentInventoryMove",true,false) as Button
+    inventory_option = -1
+    if inventory_picker != null:
+        for option_index in range(inventory_picker.item_count):
+            if str(inventory_picker.get_item_metadata(option_index)) == str(crafted_item_id):
+                inventory_option = option_index
+                break
+    if inventory_picker == null or inventory_move == null or inventory_option < 0:
+        _fail("O9 listed item disappeared from Warehouse controls before recall.")
         return
+    inventory_picker.select(inventory_option)
+    inventory_picker.emit_signal("item_selected",inventory_option)
+    if inventory_move.disabled or inventory_move.text != "Thu hồi hàng chưa bán về Kho":
+        _fail("O9 shop listing did not expose an unsold-item recall action.")
+        return
+    inventory_move.emit_signal("pressed")
+    await process_frame
+    crafted_item = state.sect.equipment_items.get(str(crafted_item_id),{})
+    if (
+        StringName(crafted_item.get("location","")) != EquipmentSystem.LOCATION_STORAGE
+        or str(crafted_item.get("owner_id","")) != ""
+        or state.sect.equipment_items.size() != item_count_before + 1
+        or buyer.wallet != buyer_wallet_before
+        or state.sect.treasury != treasury_before_purchase
+    ):
+        _fail("O9 recall did not return the same unsold item to Warehouse without payment.")
+        return
+
     ui.call("_open_disciple_deep_screen",buyer_id,"Trang bị")
     await process_frame
     var weapon_picker := ui.find_child("EquipmentPicker_weapon",true,false) as OptionButton

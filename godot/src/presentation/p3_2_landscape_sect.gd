@@ -3166,6 +3166,7 @@ func _rebuild_building_management_controls() -> void:
             _build_main_hall_policy_controls()
         SectMapPresentation.DEST_WAREHOUSE:
             _build_economy_a_market_controls()
+            _build_equipment_inventory_controls()
         SectMapPresentation.DEST_MINE:
             _build_work_management(WorkforceSystem.PROF_MINING, &"mining_crew", "Đội Khai Khoáng", "Khai khoáng")
             _build_mine_upgrade_control()
@@ -3370,6 +3371,133 @@ func _build_economy_a_market_controls() -> void:
         buy_row.disabled = buyable <= 0 or buy_price <= 0 or state.sect.spirit_stones < buy_price*buyable
         buy_row.pressed.connect(Callable(self,"_economy_a_buy_from_ui").bind(resource_id,buyable))
         building_management_container.add_child(buy_row)
+
+func _build_equipment_inventory_controls() -> void:
+    if not state.sect.equipment_enabled:
+        return
+    _add_management_section_label("TRANG BỊ · KHO TÔNG MÔN / PHƯỜNG THỊ")
+    var item_ids: Array[StringName] = []
+    for raw_id in state.sect.equipment_items.keys():
+        var item: Dictionary = state.sect.equipment_items[str(raw_id)]
+        var location := StringName(item.get("location",""))
+        if location in [EquipmentSystem.LOCATION_STORAGE,EquipmentSystem.LOCATION_SHOP]:
+            item_ids.append(StringName(raw_id))
+    item_ids.sort()
+    if item_ids.is_empty():
+        var empty := Label.new()
+        empty.text = "Kho trang bị hiện trống. Luyện Khí sẽ đưa thành phẩm mới vào đây."
+        empty.custom_minimum_size = Vector2(384,28)
+        empty.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+        building_management_container.add_child(empty)
+        return
+
+    var picker := OptionButton.new()
+    picker.name = "EquipmentInventoryItemPicker"
+    picker.custom_minimum_size = Vector2(384,34)
+    for item_id in item_ids:
+        var item: Dictionary = state.sect.equipment_items[str(item_id)]
+        var location := StringName(item.get("location",""))
+        picker.add_item("%s · %s · %s" % [
+            str(item.get("name",item_id)),
+            equipment_system.quality_name(StringName(item.get("quality","pham"))),
+            "Kho Tông Môn" if location == EquipmentSystem.LOCATION_STORAGE else "Phường Thị"
+        ])
+        picker.set_item_metadata(picker.item_count-1,str(item_id))
+    picker.select(0)
+    building_management_container.add_child(picker)
+
+    var detail := Label.new()
+    detail.name = "EquipmentInventoryItemDetail"
+    detail.custom_minimum_size = Vector2(384,46)
+    detail.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+    detail.add_theme_font_size_override("font_size",11)
+    detail.add_theme_color_override("font_color",INK)
+    building_management_container.add_child(detail)
+
+    var move := Button.new()
+    move.name = "EquipmentInventoryMove"
+    move.custom_minimum_size = Vector2(384,36)
+    move.add_theme_font_size_override("font_size",12)
+    move.add_theme_stylebox_override("normal",_style(JADE_DARK,PAPER_LIGHT,1,7))
+    move.pressed.connect(Callable(self,"_move_equipment_inventory_item_from_ui").bind(picker))
+    building_management_container.add_child(move)
+    picker.item_selected.connect(Callable(self,"_update_equipment_inventory_selection").bind(picker,detail,move))
+    _update_equipment_inventory_selection(picker.selected,picker,detail,move)
+
+
+func _update_equipment_inventory_selection(index: int, picker: OptionButton, detail: Label, move: Button) -> void:
+    if index < 0 or index >= picker.item_count:
+        detail.text = "Chọn vật phẩm trong Kho hoặc Phường Thị."
+        move.text = "Chuyển vật phẩm"
+        move.disabled = true
+        return
+    var item_id := StringName(str(picker.get_item_metadata(index)))
+    var item: Dictionary = state.sect.equipment_items.get(str(item_id),{})
+    if item.is_empty():
+        detail.text = "Vật phẩm không còn trong Kho."
+        move.text = "Chuyển vật phẩm"
+        move.disabled = true
+        return
+    var location := StringName(item.get("location",""))
+    var price := maxi(int(item.get("price",0)),0)
+    var effect := _disciple_equipment_effect_text(item).trim_prefix("Thuộc tính vật phẩm: ")
+    detail.text = "%s · %s · Giá niêm yết %d Linh Thạch\n%s" % [
+        str(item.get("name",item_id)),
+        "Trong Kho Tông Môn" if location == EquipmentSystem.LOCATION_STORAGE else "Đang niêm yết ở Phường Thị",
+        price,effect
+    ]
+    var writable := runtime_session != null and runtime_session.owner != null and not runtime_session.owner.runtime_write_blocked
+    if location == EquipmentSystem.LOCATION_STORAGE:
+        move.text = "Đưa lên Phường Thị"
+        move.tooltip_text = "Niêm yết vật phẩm hiện có; không tạo item hoặc thu tiền. Người mặc từ Phường Thị phải trả giá bằng ví."
+    elif location == EquipmentSystem.LOCATION_SHOP:
+        move.text = "Thu hồi hàng chưa bán về Kho"
+        move.tooltip_text = "Chỉ thu hồi vật phẩm chưa được mua/mặc; không hoàn tiền vì chưa có giao dịch."
+    else:
+        move.text = "Vật phẩm đang được sử dụng"
+        move.tooltip_text = "Chỉ vật phẩm chưa mặc mới được chuyển giữa Kho và Phường Thị."
+    move.disabled = not writable or location not in [EquipmentSystem.LOCATION_STORAGE,EquipmentSystem.LOCATION_SHOP]
+    if not writable:
+        detail.text += "\nRuntime lưu đang bận; chuyển kho tạm khóa."
+
+
+func _move_equipment_inventory_item_from_ui(picker: OptionButton) -> void:
+    if picker == null or not is_instance_valid(picker) or bool(picker.get_meta("equipment_move_pending",false)):
+        return
+    picker.set_meta("equipment_move_pending",true)
+    if runtime_session == null or runtime_session.owner == null or runtime_session.owner.runtime_write_blocked:
+        building_management_feedback = "Runtime lưu đang bận; vật phẩm chưa được chuyển."
+        _refresh_building_operation_content()
+        return
+    if picker.selected < 0 or picker.selected >= picker.item_count:
+        building_management_feedback = "Hãy chọn vật phẩm trong Kho hoặc Phường Thị."
+        _refresh_building_operation_content()
+        return
+    var item_id := StringName(str(picker.get_item_metadata(picker.selected)))
+    var item: Dictionary = state.sect.equipment_items.get(str(item_id),{})
+    var location := StringName(item.get("location",""))
+    var moved := false
+    if location == EquipmentSystem.LOCATION_STORAGE:
+        moved = equipment_system.move_to_shop(state,item_id)
+    elif location == EquipmentSystem.LOCATION_SHOP:
+        moved = equipment_system.move_to_storage(state,item_id)
+    if not moved:
+        building_management_feedback = "Không chuyển được vật phẩm; chỉ hàng chưa mặc mới đổi được vị trí."
+        _refresh_building_operation_content()
+        return
+    var saved: Dictionary = runtime_session.save()
+    var updated: Dictionary = state.sect.equipment_items.get(str(item_id),{})
+    var new_location := StringName(updated.get("location",""))
+    building_management_feedback = (
+        "Đã đưa %s lên Phường Thị · giá %d Linh Thạch. Chưa phát sinh giao dịch tiền."
+        % [str(updated.get("name",item_id)),int(updated.get("price",0))]
+        if new_location == EquipmentSystem.LOCATION_SHOP
+        else "Đã thu hồi %s chưa bán về Kho Tông Môn." % str(updated.get("name",item_id))
+    )
+    if not bool(saved.get("ok",false)):
+        building_management_feedback += " Cảnh báo: SaveService chưa xác nhận lưu."
+    _refresh_building_operation_content()
+
 
 func _economy_a_buy_from_ui(resource_id: StringName, qty: int) -> void:
     var request_id := "panel-buy:%s:%d" % [str(resource_id),state.sect.economy_a_event_count+1]
@@ -4649,14 +4777,14 @@ func _sx01_use_pill_from_ui(disciple_id: StringName, pill_id: StringName) -> voi
         return
     var disciple: DiscipleState = state.disciples[disciple_id]
     var sequence := B3PillSatietyV1.next_sequence(disciple)
+    var medicine := MedicineCatalogueV2.definition(pill_id)
+    var pill_name := "Hồi Xuân Đan" if pill_id == &"hoi_xuan_dan" else ("Tụ Khí Đan" if pill_id == &"tu_khi_dan" else str(medicine.get("name",pill_id)))
     # Use the existing durable owner boundary, not UI-side HP/EXP edits.
     var result := B3MedicalAutoplayV1.use_pill(runtime_session.owner, disciple_id, pill_id, sequence)
     building_management_feedback = (
-        "Đã dùng %s cho %s (biên nhận %d)." % [
-            "Hồi Xuân Đan" if pill_id == &"hoi_xuan_dan" else "Tụ Khí Đan",
-            disciple.display_name, sequence
-        ] if bool(result.get("ok",false))
-        else "Không thể dùng Đan: %s" % str(result.get("reason","không đủ điều kiện"))
+        "Đã dùng %s cho %s (biên nhận %d)." % [pill_name,disciple.display_name,sequence]
+        if bool(result.get("ok",false))
+        else "Không thể dùng %s: %s" % [pill_name,str(result.get("reason","không đủ điều kiện"))]
     )
     _refresh_building_operation_content()
 
@@ -4669,17 +4797,25 @@ func _alchemy_operation_text() -> String:
     var resources := ResourceRegistry.new()
     var jobs := buildings.alchemy_jobs(state, hall)
     var current_recipe := StringName(hall.production_state.get("recipe_id", "hoi_xuan_dan"))
+    var demand_mode := SX01PillPolicy.active(state) and str(state.sect.sx01_pill_policy.get("recipe_mode", "")) == "demand"
+    var plan_waiting := false
+    if demand_mode:
+        var planned_recipe := SX01PillPolicy.planned_recipe(state,hall)
+        if planned_recipe != &"":
+            current_recipe = planned_recipe
+        else:
+            plan_waiting = true
     var recipe_data := registry.definition(current_recipe)
     var recipe_name := str(recipe_data.get("name", "Đan phương chưa khả dụng"))
-    var status := "TỰ ĐỘNG" if SX01PillPolicy.active(state) and str(state.sect.sx01_pill_policy.get("recipe_mode", "")) == "demand" else "CỐ ĐỊNH"
+    var status := "TỰ ĐỘNG · CHỜ ĐIỀU KIỆN" if plan_waiting else ("TỰ ĐỘNG" if demand_mode else "CỐ ĐỊNH")
 
     var ingredient_lines: Array[String] = []
-    var ingredient_ids: Array = registry.inputs(current_recipe).keys()
+    var recipe_inputs := registry.inputs(current_recipe)
+    var ingredient_ids: Array = recipe_inputs.keys()
     ingredient_ids.sort()
     var warehouse_system := WarehouseSystem.new()
     for raw_id in ingredient_ids:
         var resource_id := StringName(raw_id)
-        var recipe_inputs := registry.inputs(current_recipe)
         var need := int(recipe_inputs.get(raw_id, recipe_inputs.get(str(raw_id), 0)))
         var total := warehouse_system.quantity(state, resource_id)
         var available := warehouse_system.available_quantity(state, resource_id)

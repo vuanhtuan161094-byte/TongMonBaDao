@@ -49,20 +49,37 @@ func _run() -> void:
     if not await _open_building(SectMapPresentation.DEST_ALCHEMY_HALL):
         return
     hall = buildings.primary_building(state,BuildingSystem.TYPE_ALCHEMY_HALL)
-    var original_hall_production := hall.production_state.duplicate(true)
-    var original_policy := state.sect.sx01_pill_policy.duplicate(true)
-    var original_building_event_count := state.building_event_count
-    var v2_preview_recipe := MedicineCatalogueV2.recipe_id(MedicineCatalogueV2.FAMILY_HEAL,1)
-    var preview_state := hall.production_state.duplicate(true)
-    preview_state["recipe_id"] = str(v2_preview_recipe)
-    hall.production_state = preview_state
+    var v2_recipe := MedicineCatalogueV2.recipe_id(MedicineCatalogueV2.FAMILY_HEAL,1)
+    var enable_v2_policy := ui.find_child("SX01Enable",true,false) as Button
+    if enable_v2_policy != null:
+        enable_v2_policy.emit_signal("pressed")
+        await process_frame
+    var original_recipe_mode := str(state.sect.sx01_pill_policy.get("recipe_mode","demand"))
+    var v2_recipe_button := ui.find_child("SX02Recipe_%s" % str(v2_recipe),true,false) as Button
+    if v2_recipe_button == null or v2_recipe_button.disabled:
+        _fail("O8 real Alchemy UI did not expose the authored realm-1 healing recipe.")
+        return
+    v2_recipe_button.emit_signal("pressed")
+    await process_frame
+    hall = buildings.primary_building(state,BuildingSystem.TYPE_ALCHEMY_HALL)
+    if StringName(hall.production_state.get("recipe_id","")) != v2_recipe:
+        _fail("O8 clicking the authored V2 recipe did not update canonical Alchemy state.")
+        return
     var v2_recipe_summary := str(ui.call("_alchemy_operation_text"))
-    hall.production_state = original_hall_production
-    state.sect.sx01_pill_policy = original_policy
-    state.building_event_count = original_building_event_count
     if not v2_recipe_summary.contains("Thanh Linh Thảo ×3") or not v2_recipe_summary.contains("Hồi Nguyên Đan") or v2_recipe_summary.contains("Linh Cốc ×"):
         _fail("O8 Alchemy summary did not show the selected V2 recipe's canonical ingredient and product.")
         return
+    var current_recipe_mode := str(state.sect.sx01_pill_policy.get("recipe_mode",""))
+    if current_recipe_mode != original_recipe_mode:
+        var mode_button := ui.find_child("SX01RecipeMode",true,false) as Button
+        if mode_button == null:
+            _fail("O8 actual policy UI could not restore its recipe mode after the selection proof.")
+            return
+        mode_button.emit_signal("pressed")
+        await process_frame
+        if str(state.sect.sx01_pill_policy.get("recipe_mode","")) != original_recipe_mode:
+            _fail("O8 recipe policy mode did not return to its pre-test value.")
+            return
     if not await _press("Group_alchemy_crew_%s" % str(alchemist_id)):
         return
 
@@ -274,6 +291,9 @@ func _run() -> void:
         _fail("O8 Warehouse panel omits canonical pill.")
         return
 
+    if not await _exercise_v2_recipe_cycle(field_worker_id,alchemist_id):
+        return
+
     var errors := state.validate_invariants()
     errors.append_array(BuildingSystem.new().validate_invariants(state))
     errors.append_array(WarehouseSystem.new().validate_invariants(state))
@@ -297,6 +317,230 @@ func _run() -> void:
 # Exercise the actual UI autosave path AND verify durability before
 # releasing its scene-owned runtime. This is a test barrier, not a gameplay
 # change or a relaxation of the timed-job/warehouse assertions.
+func _exercise_v2_recipe_cycle(field_worker_id: StringName, alchemist_id: StringName) -> bool:
+    if not await _open_building(SectMapPresentation.DEST_ALCHEMY_HALL):
+        return false
+    var hall := buildings.primary_building(state,BuildingSystem.TYPE_ALCHEMY_HALL)
+    if hall == null:
+        return _fail("O8 V2 recipe cycle lost the Alchemy Hall.")
+
+    # Stop new legacy batches, then let the already-paid Hồi Xuân batch finish.
+    if bool(hall.production_state.get("recipe_enabled",true)):
+        if not await _press("AlchemyRecipeToggle"):
+            return false
+    for _i in range(100):
+        hall = buildings.primary_building(state,BuildingSystem.TYPE_ALCHEMY_HALL)
+        if buildings.alchemy_jobs(state,hall).is_empty():
+            break
+        scheduler.step()
+    if not buildings.alchemy_jobs(state,hall).is_empty():
+        return _fail("O8 legacy timed job did not finish before selecting the V2 recipe.")
+
+    # Harvest only through the actual Field action. No resource injection.
+    var herb_id := &"thanh_linh_thao"
+    var field := buildings.primary_building(state,BuildingSystem.TYPE_SPIRIT_FIELD)
+    for _i in range(260):
+        if warehouse.available_quantity(state,herb_id) >= 3:
+            break
+        if not buildings.disciple_has_active_spirit_plot(state,field_worker_id,field):
+            if not await _open_building(SectMapPresentation.DEST_SPIRIT_FIELD):
+                return false
+            var plant := ui.find_child("FieldPlant_%s" % str(field_worker_id),true,false) as Button
+            if plant != null and not plant.disabled:
+                plant.emit_signal("pressed")
+                await process_frame
+        scheduler.step()
+        field = buildings.primary_building(state,BuildingSystem.TYPE_SPIRIT_FIELD)
+    if warehouse.available_quantity(state,herb_id) < 3:
+        return _fail("O8 could not grow three real Thanh Linh Thảo through the Field UI.")
+    # Freeze the grower once stock is ready so the ingredient delta below has
+    # only the one canonical Alchemy consumer.
+    for _i in range(100):
+        if not buildings.disciple_has_active_spirit_plot(state,field_worker_id,field):
+            break
+        scheduler.step()
+    if buildings.disciple_has_active_spirit_plot(state,field_worker_id,field):
+        return _fail("O8 Field plot did not settle before the V2 Alchemy transaction.")
+    if not workforce.issue_command(state,field_worker_id,WorkforceSystem.COMMAND_HOLD,"",120):
+        return _fail("O8 could not hold the settled Field worker before the V2 Alchemy transaction.")
+    if not workforce.issue_command(state,alchemist_id,WorkforceSystem.COMMAND_HOLD,"",120):
+        return _fail("O8 could not isolate the real V2 Alchemist before starting the job.")
+
+    if not await _open_building(SectMapPresentation.DEST_ALCHEMY_HALL):
+        return false
+    hall = buildings.primary_building(state,BuildingSystem.TYPE_ALCHEMY_HALL)
+    var recipe_id := MedicineCatalogueV2.recipe_id(MedicineCatalogueV2.FAMILY_HEAL,1)
+    var recipe_button := ui.find_child("SX02Recipe_%s" % str(recipe_id),true,false) as Button
+    if recipe_button == null or recipe_button.disabled:
+        return _fail("O8 authored realm-1 recipe button is missing or gated in the real game state.")
+    recipe_button.emit_signal("pressed")
+    await process_frame
+    hall = buildings.primary_building(state,BuildingSystem.TYPE_ALCHEMY_HALL)
+    if StringName(hall.production_state.get("recipe_id","")) != recipe_id:
+        return _fail("O8 UI recipe selection did not persist the canonical V2 recipe ID.")
+    var summary := str(ui.call("_alchemy_operation_text"))
+    if not summary.contains("Thanh Linh Thảo ×3") or not summary.contains("Hồi Nguyên Đan") or summary.contains("Linh Cốc ×"):
+        return _fail("O8 selected V2 recipe summary does not match its canonical ingredients/product.")
+    var herb_before_start := warehouse.quantity(state,herb_id)
+    var product_ids: Array[StringName] = []
+    for quality in range(1,MedicineCatalogueV2.MAX_QUALITY+1):
+        product_ids.append(MedicineCatalogueV2.item_id(MedicineCatalogueV2.FAMILY_HEAL,1,quality))
+    var product_stock_before := 0
+    for product_id in product_ids:
+        product_stock_before += warehouse.quantity(state,product_id)
+
+    # Turn the authored recipe on, then use its normal worker action if the
+    # standing policy has not already started the same real job.
+    hall = buildings.primary_building(state,BuildingSystem.TYPE_ALCHEMY_HALL)
+    if not bool(hall.production_state.get("recipe_enabled",false)):
+        if not await _press("AlchemyRecipeToggle"):
+            return false
+    var jobs := buildings.alchemy_jobs(state,hall)
+    if jobs.is_empty():
+        var work := ui.find_child("Work_alchemy_%s" % str(alchemist_id),true,false) as Button
+        if work == null or work.disabled:
+            return _fail("O8 selected V2 recipe did not expose an enabled Alchemy worker action.")
+        work.emit_signal("pressed")
+        await process_frame
+    for _i in range(12):
+        hall = buildings.primary_building(state,BuildingSystem.TYPE_ALCHEMY_HALL)
+        jobs = buildings.alchemy_jobs(state,hall)
+        if not jobs.is_empty():
+            break
+        scheduler.step()
+    if jobs.size() != 1 or StringName(jobs[0].get("recipe_id","")) != recipe_id:
+        return _fail("O8 actual Alchemy UI did not start exactly one authored V2 recipe.")
+    var job: Dictionary = jobs[0]
+    var output_id := StringName(job.get("output_resource_id",""))
+    var output_before := warehouse.quantity(state,output_id)
+    if int(job.get("inputs",{}).get(str(herb_id),0)) != 3:
+        return _fail("O8 V2 job snapshot did not reserve its authored three-herb input.")
+    if warehouse.quantity(state,herb_id) != herb_before_start-3:
+        return _fail("O8 V2 recipe did not consume exactly three real herbs once.")
+    if output_id == &"" or MedicineCatalogueV2.definition(output_id).is_empty():
+        return _fail("O8 V2 job did not freeze a real canonical graded product.")
+    var job_id := str(job.get("job_id",""))
+    var finish_tick := int(job.get("finish_tick",-1))
+    if not await _press("AlchemyRecipeToggle"):
+        return false
+    hall = buildings.primary_building(state,BuildingSystem.TYPE_ALCHEMY_HALL)
+    if bool(hall.production_state.get("recipe_enabled",true)):
+        return _fail("O8 could not stop a second V2 batch while preserving the active one.")
+
+    if not await _autosave_and_join_at_scene_boundary():
+        return false
+    _dispose_scene()
+    await process_frame
+    if not await _open_scene():
+        return false
+    hall = buildings.primary_building(state,BuildingSystem.TYPE_ALCHEMY_HALL)
+    jobs = buildings.alchemy_jobs(state,hall)
+    if (
+        jobs.size()!=1 or str(jobs[0].get("job_id",""))!=job_id
+        or int(jobs[0].get("finish_tick",-2))!=finish_tick
+        or StringName(jobs[0].get("recipe_id",""))!=recipe_id
+        or warehouse.quantity(state,herb_id)!=herb_before_start-3
+        or warehouse.quantity(state,output_id)!=output_before
+    ):
+        return _fail("O8 cold reload changed the active V2 job, input debit, or pre-completion output.")
+    var xp_before := workforce.profession_xp(state.disciples[alchemist_id],WorkforceSystem.PROF_ALCHEMY)
+    while state.tick < finish_tick:
+        scheduler.step()
+    if (
+        warehouse.quantity(state,output_id)!=output_before+1
+        or warehouse.quantity(state,herb_id)!=herb_before_start-3
+        or not buildings.alchemy_jobs(state,hall).is_empty()
+        or workforce.profession_xp(state.disciples[alchemist_id],WorkforceSystem.PROF_ALCHEMY)<=xp_before
+    ):
+        return _fail("O8 completed V2 job did not deposit one item, consume one recipe, and grant profession XP.")
+    var product_stock_after := 0
+    for product_id in product_ids:
+        product_stock_after += warehouse.quantity(state,product_id)
+    if product_stock_after != product_stock_before+1:
+        return _fail("O8 authored V2 completion did not add exactly one item across its quality family.")
+
+    # A cold reload after completion must not replay the pill output.
+    if not await _autosave_and_join_at_scene_boundary():
+        return false
+    _dispose_scene()
+    await process_frame
+    if not await _open_scene():
+        return false
+    hall = buildings.primary_building(state,BuildingSystem.TYPE_ALCHEMY_HALL)
+    if warehouse.quantity(state,output_id)!=output_before+1 or not buildings.alchemy_jobs(state,hall).is_empty():
+        return _fail("O8 completed V2 recipe replayed or lost its product after cold reload.")
+
+    # Use the newly made pill through the real Dược Phòng button. HP is
+    # wounded here as a test fixture; pill, receipt, satiety and SaveService
+    # still run through their canonical authorities.
+    var target_id: StringName = &""
+    var ids: Array = state.disciples.keys()
+    ids.sort()
+    for raw_id in ids:
+        var candidate: DiscipleState = state.disciples[raw_id]
+        if candidate.region_id != &"sect" or not DiscipleRealmProgressV2.progression_ready(candidate):
+            continue
+        if B3PillSatietyV1.manual_use_is_activity_blocked(state,candidate,output_id):
+            continue
+        target_id = candidate.id
+        break
+    if target_id == &"":
+        return _fail("O8 found no eligible disciple for the real V2 Dược Phòng action.")
+    var target: DiscipleState = state.disciples[target_id]
+    var potency := int(MedicineCatalogueV2.definition(output_id).get("potency",0))
+    target.hp = maxf(1.0,target.max_hp-float(potency))
+    var hp_before := target.hp
+    var pills_before_use := warehouse.quantity(state,output_id)
+    var sequence_before := int(target.b3_pill_state.get("sequence",0))
+
+    if not await _open_building(SectMapPresentation.DEST_MEDICINE):
+        return false
+    var picker := ui.find_child("SX02MedicinePicker",true,false) as OptionButton
+    var selected := -1
+    if picker != null:
+        for i in range(picker.item_count):
+            if str(picker.get_item_metadata(i)) == str(output_id):
+                selected = i
+                break
+    if picker == null or selected < 0:
+        return _fail("O8 Dược Phòng did not expose the real produced V2 pill in its selector.")
+    picker.select(selected)
+    picker.emit_signal("item_selected",selected)
+    await process_frame
+    var use := ui.find_child("SX02Use_%s" % str(target_id),true,false) as Button
+    if use == null or use.disabled:
+        return _fail("O8 produced V2 pill has no enabled real use action for the eligible disciple.")
+    use.emit_signal("pressed")
+    await process_frame
+    target = state.disciples[target_id]
+    if (
+        not is_equal_approx(target.hp,minf(target.max_hp,hp_before+float(potency)))
+        or warehouse.quantity(state,output_id)!=pills_before_use-1
+        or int(target.b3_pill_state.get("sequence",0))!=sequence_before+1
+        or str(target.b3_pill_state.get("receipt",{}).get("pill",""))!=str(output_id)
+    ):
+        return _fail("O8 V2 Dược Phòng did not apply the canonical effect and exactly-once receipt.")
+
+    var hp_after_use := target.hp
+    var sequence_after_use := int(target.b3_pill_state.get("sequence",0))
+    var pill_count_after_use := warehouse.quantity(state,output_id)
+    if not await _autosave_and_join_at_scene_boundary():
+        return false
+    _dispose_scene()
+    await process_frame
+    if not await _open_scene():
+        return false
+    target = state.disciples[target_id]
+    if (
+        not is_equal_approx(target.hp,hp_after_use)
+        or warehouse.quantity(state,output_id)!=pill_count_after_use
+        or int(target.b3_pill_state.get("sequence",0))!=sequence_after_use
+        or str(target.b3_pill_state.get("receipt",{}).get("pill",""))!=str(output_id)
+    ):
+        return _fail("O8 cold reload replayed or lost V2 pill effect, stock, or receipt.")
+    return true
+
+
 func _autosave_and_join_at_scene_boundary() -> bool:
     if ui == null:
         return _fail("O8 cannot checkpoint a missing scene.")

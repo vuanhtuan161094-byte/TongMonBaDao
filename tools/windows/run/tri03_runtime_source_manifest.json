@@ -3,7 +3,7 @@
   "branch": "integration/pve-p0-playable-ui-20261103",
   "base_sha": "27ed01cd8f377994e5e50bac9ede84e78e8895bd",
   "upstream_pr_sha": "c99f22153b34628f7e94f69de0285514e788b9cb",
-  "source_fingerprint": "e2342804f9a2f4f2ccef252bcd7769fcb42d3cb6bb62dc181e8e1a261ef7401c",
+  "source_fingerprint": "11817c52d0bdd1cb2e4c6d9e559fcd8169dcf9a1c283d79ccfd707ff15999352",
   "files": [
     {
       "path": "CHOI-GAME.cmd",
@@ -367,7 +367,7 @@
     },
     {
       "path": "godot/src/presentation/p3_2_landscape_sect.gd",
-      "git_blob_sha": "f4d11d4c16f9e11bf6a1423b3fce05d458a08f54"
+      "git_blob_sha": "e6ec668b0e14a0cef5b9cc77616eb6d035e1989c"
     },
     {
       "path": "godot/src/presentation/uiux/dai_dien_screen_b1_v1.gd",
@@ -559,11 +559,11 @@
     },
     {
       "path": "godot/tests/presentation/p3_o8_alchemy_loop_test.gd",
-      "git_blob_sha": "c39829f1762d2e2d2711e88cc0732332e2986a0c"
+      "git_blob_sha": "39811b6af0d3c0a9d63feb8c79a84517706913d0"
     },
     {
       "path": "godot/tests/presentation/p3_o9_m2_production_rehearsal_test.gd",
-      "git_blob_sha": "9bb0eb2cc0ae342695e667dc15b320a2ce6d9395"
+      "git_blob_sha": "89d6167a2657a6dda0a5677f5221277935a92dda"
     },
     {
       "path": "godot/tests/presentation/pve_aux02_world_input_contract_test.gd",
