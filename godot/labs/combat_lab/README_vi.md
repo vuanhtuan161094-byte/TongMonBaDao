@@ -53,13 +53,13 @@ V2 thêm mã hiển thị trực tiếp bên trong Lab; **không** thay engine s
 
 ### Kiểm thử V2 an toàn trên máy Windows RAM 8GB
 
-Khi **không còn tiến trình Godot nào chạy** và RAM trống ít nhất 3 GiB, chạy từ root repo với Godot 4.7.2 official:
+Máy 8 GB RAM **không bắt buộc có 3 GiB RAM trống**. Runner kiểm tra RAM khả dụng trước MỖI tiến trình; mặc định yêu cầu tối thiểu **1.024 MiB RAM khả dụng**, chỉ chạy tuần tự và vẫn từ chối nếu có Godot đang chạy. Đây là ngưỡng thử nghiệm tối thiểu, **không phải cam kết máy không treo/BSOD**. Khi RAM thấp, ưu tiên Smoke headless; không mở thêm GUI.
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File tools/windows/qa/Run-TMBCombatLabV2.ps1 -GodotExe "E:\\TongMonBaDaoWorkspace\\04_Tools\\Godot\\Godot_v4.7.2-stable_win64_console.exe"
 ```
 
-Runner từ chối chạy nếu Godot đã mở hoặc RAM thấp, không kill PID, dùng profile `APPDATA` riêng và test lần lượt: Godot import, focused Lab V1, focused Lab V2. **Lệnh này chưa được chạy/ghi PASS trên commit V2 trong phiên tạo code**. Nếu cần nghiệm thu hình ảnh, phải chạy GUI thực sự và chụp ảnh mới, không dùng ảnh V1 hay hình concept làm bằng chứng.
+Mặc định runner chạy `-Mode Smoke`: Godot import headless, parse và chạy **chỉ focused visual Lab V2**; không chạy ma trận 549 ID. Khi tài nguyên tốt hơn, chọn `-Mode Full` để chạy thêm Lab V1. Runner không kill PID, dùng profile `APPDATA` riêng và chặn khi dưới mức `-MinimumAvailableMB` (mặc định 1024); không giảm ngưỡng này xuống dưới 1024 MiB. **Lệnh này chưa được chạy/ghi PASS trên commit V2 trong phiên tạo code**. Nếu cần nghiệm thu hình ảnh, phải chạy GUI thực sự và chụp ảnh mới, không dùng ảnh V1 hay hình concept làm bằng chứng.
 
 ### Bắt buộc để nghiệm thu cuối
 
@@ -90,3 +90,11 @@ $env:TMB_COMBAT_LAB_CAPTURE_DELAY="4"
 ```
 
 Lặp tuần tự cho Cung, Quyền, Độc và mỗi zoom, đổi tên PNG tương ứng; phân loại rõ `GUI_GODOT` so với `NATIVE_MOUSE`. Ví dụ trên chỉ mô tả **cách chạy**, không phải log PASS. Không thay vũ khí/sprite MASTER khi chưa có asset gốc được Owner duyệt, không bật combat production.
+
+### Lệnh QA cho máy 8 GB RAM
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File tools/windows/qa/Run-TMBCombatLabV2.ps1 -GodotExe "E:\\TongMonBaDaoWorkspace\\04_Tools\\Godot\\Godot_v4.7.2-stable_win64_console.exe" -Mode Smoke
+```
+
+Chỉ dùng `-Mode Full` khi không có Godot đang chạy, hệ thống còn đủ RAM và Smoke PASS. Không tự tắt tiến trình Godot đang làm việc của chủ dự án; `BLOCKED_OTHER_GODOT` không phải lỗi game. Vẫn giữ trạng thái **QA_PENDING** cho đến khi test chạy và có log exit code thật trên đúng HEAD.
