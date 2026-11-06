@@ -1,0 +1,550 @@
+skill_id,generation,school,slot,status,reason
+tmb.skill.bow.basic.divine.base,divine,bow,basic,PASS,CombatStatsV2 basic hit reduced HP
+tmb.skill.bow.basic.human,,bow,basic,PASS,CombatStatsV2 basic hit reduced HP
+tmb.skill.bow.basic.immortal.base,immortal,bow,basic,PASS,CombatStatsV2 basic hit reduced HP
+tmb.skill.bow.liep_anh.active_01.divine.a,divine,bow,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.liep_anh.active_01.divine.b,divine,bow,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.liep_anh.active_01.human,,bow,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.liep_anh.active_01.immortal.a,immortal,bow,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.liep_anh.active_01.immortal.b,immortal,bow,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.liep_anh.active_02.divine.a,divine,bow,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.liep_anh.active_02.divine.b,divine,bow,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.liep_anh.active_02.human,,bow,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.liep_anh.active_02.immortal.a,immortal,bow,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.liep_anh.active_02.immortal.b,immortal,bow,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.liep_anh.active_03.divine.a,divine,bow,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.liep_anh.active_03.divine.b,divine,bow,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.liep_anh.active_03.human,,bow,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.liep_anh.active_03.immortal.a,immortal,bow,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.liep_anh.active_03.immortal.b,immortal,bow,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.liep_anh.active_04.divine.a,divine,bow,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.liep_anh.active_04.divine.b,divine,bow,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.liep_anh.active_04.human,,bow,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.liep_anh.active_04.immortal.a,immortal,bow,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.liep_anh.active_04.immortal.b,immortal,bow,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.liep_anh.innate.divine.a,divine,bow,innate,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.liep_anh.innate.divine.b,divine,bow,innate,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.liep_anh.innate.human,,bow,innate,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.liep_anh.innate.immortal.a,immortal,bow,innate,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.liep_anh.innate.immortal.b,immortal,bow,innate,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.liep_anh.passive_01.divine.a,divine,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.liep_anh.passive_01.divine.b,divine,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.liep_anh.passive_01.human,,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.liep_anh.passive_01.immortal.a,immortal,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.liep_anh.passive_01.immortal.b,immortal,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.liep_anh.passive_02.divine.a,divine,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.liep_anh.passive_02.divine.b,divine,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.liep_anh.passive_02.human,,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.liep_anh.passive_02.immortal.a,immortal,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.liep_anh.passive_02.immortal.b,immortal,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.liep_anh.passive_03.divine.a,divine,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.liep_anh.passive_03.divine.b,divine,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.liep_anh.passive_03.human,,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.liep_anh.passive_03.immortal.a,immortal,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.liep_anh.passive_03.immortal.b,immortal,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.liep_anh.passive_04.divine.a,divine,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.liep_anh.passive_04.divine.b,divine,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.liep_anh.passive_04.human,,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.liep_anh.passive_04.immortal.a,immortal,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.liep_anh.passive_04.immortal.b,immortal,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.liep_anh.passive_05.divine.a,divine,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.liep_anh.passive_05.divine.b,divine,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.liep_anh.passive_05.human,,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.liep_anh.passive_05.immortal.a,immortal,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.liep_anh.passive_05.immortal.b,immortal,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.liep_anh.passive_05.rare_passive.a,divine,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.liep_anh.passive_05.rare_passive.b,divine,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.liep_anh.ultimate.divine.a,divine,bow,ultimate,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.liep_anh.ultimate.divine.b,divine,bow,ultimate,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.liep_anh.ultimate.human,,bow,ultimate,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.liep_anh.ultimate.immortal.a,immortal,bow,ultimate,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.liep_anh.ultimate.immortal.b,immortal,bow,ultimate,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.liep_anh.ultimate.rare.a,divine,bow,ultimate,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.liep_anh.ultimate.rare.b,divine,bow,ultimate,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.linh_tien.active_01.divine.a,divine,bow,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.linh_tien.active_01.divine.b,divine,bow,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.linh_tien.active_01.human,,bow,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.linh_tien.active_01.immortal.a,immortal,bow,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.linh_tien.active_01.immortal.b,immortal,bow,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.linh_tien.active_02.divine.a,divine,bow,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.linh_tien.active_02.divine.b,divine,bow,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.linh_tien.active_02.human,,bow,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.linh_tien.active_02.immortal.a,immortal,bow,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.linh_tien.active_02.immortal.b,immortal,bow,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.linh_tien.active_03.divine.a,divine,bow,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.linh_tien.active_03.divine.b,divine,bow,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.linh_tien.active_03.human,,bow,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.linh_tien.active_03.immortal.a,immortal,bow,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.linh_tien.active_03.immortal.b,immortal,bow,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.linh_tien.active_04.divine.a,divine,bow,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.linh_tien.active_04.divine.b,divine,bow,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.linh_tien.active_04.human,,bow,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.linh_tien.active_04.immortal.a,immortal,bow,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.linh_tien.active_04.immortal.b,immortal,bow,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.linh_tien.innate.divine.a,divine,bow,innate,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.linh_tien.innate.divine.b,divine,bow,innate,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.linh_tien.innate.human,,bow,innate,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.linh_tien.innate.immortal.a,immortal,bow,innate,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.linh_tien.innate.immortal.b,immortal,bow,innate,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.linh_tien.passive_01.divine.a,divine,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.linh_tien.passive_01.divine.b,divine,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.linh_tien.passive_01.human,,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.linh_tien.passive_01.immortal.a,immortal,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.linh_tien.passive_01.immortal.b,immortal,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.linh_tien.passive_02.divine.a,divine,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.linh_tien.passive_02.divine.b,divine,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.linh_tien.passive_02.human,,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.linh_tien.passive_02.immortal.a,immortal,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.linh_tien.passive_02.immortal.b,immortal,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.linh_tien.passive_03.divine.a,divine,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.linh_tien.passive_03.divine.b,divine,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.linh_tien.passive_03.human,,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.linh_tien.passive_03.immortal.a,immortal,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.linh_tien.passive_03.immortal.b,immortal,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.linh_tien.passive_04.divine.a,divine,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.linh_tien.passive_04.divine.b,divine,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.linh_tien.passive_04.human,,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.linh_tien.passive_04.immortal.a,immortal,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.linh_tien.passive_04.immortal.b,immortal,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.linh_tien.passive_05.divine.a,divine,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.linh_tien.passive_05.divine.b,divine,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.linh_tien.passive_05.human,,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.linh_tien.passive_05.immortal.a,immortal,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.linh_tien.passive_05.immortal.b,immortal,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.linh_tien.passive_05.rare_passive.a,divine,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.linh_tien.passive_05.rare_passive.b,divine,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.linh_tien.ultimate.divine.a,divine,bow,ultimate,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.linh_tien.ultimate.divine.b,divine,bow,ultimate,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.linh_tien.ultimate.human,,bow,ultimate,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.linh_tien.ultimate.immortal.a,immortal,bow,ultimate,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.linh_tien.ultimate.immortal.b,immortal,bow,ultimate,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.linh_tien.ultimate.rare.a,divine,bow,ultimate,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.linh_tien.ultimate.rare.b,divine,bow,ultimate,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.mobility.divine.base,divine,bow,mobility,PASS,existing V6.3 mobility changed actor position
+tmb.skill.bow.mobility.human,,bow,mobility,PASS,existing V6.3 mobility changed actor position
+tmb.skill.bow.mobility.immortal.base,immortal,bow,mobility,PASS,existing V6.3 mobility changed actor position
+tmb.skill.bow.thien_vu.active_01.divine.a,divine,bow,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.thien_vu.active_01.divine.b,divine,bow,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.thien_vu.active_01.human,,bow,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.thien_vu.active_01.immortal.a,immortal,bow,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.thien_vu.active_01.immortal.b,immortal,bow,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.thien_vu.active_02.divine.a,divine,bow,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.thien_vu.active_02.divine.b,divine,bow,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.thien_vu.active_02.human,,bow,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.thien_vu.active_02.immortal.a,immortal,bow,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.thien_vu.active_02.immortal.b,immortal,bow,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.thien_vu.active_03.divine.a,divine,bow,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.thien_vu.active_03.divine.b,divine,bow,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.thien_vu.active_03.human,,bow,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.thien_vu.active_03.immortal.a,immortal,bow,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.thien_vu.active_03.immortal.b,immortal,bow,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.thien_vu.active_04.divine.a,divine,bow,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.thien_vu.active_04.divine.b,divine,bow,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.thien_vu.active_04.human,,bow,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.thien_vu.active_04.immortal.a,immortal,bow,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.thien_vu.active_04.immortal.b,immortal,bow,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.thien_vu.innate.divine.a,divine,bow,innate,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.thien_vu.innate.divine.b,divine,bow,innate,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.thien_vu.innate.human,,bow,innate,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.thien_vu.innate.immortal.a,immortal,bow,innate,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.thien_vu.innate.immortal.b,immortal,bow,innate,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.thien_vu.passive_01.divine.a,divine,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.thien_vu.passive_01.divine.b,divine,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.thien_vu.passive_01.human,,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.thien_vu.passive_01.immortal.a,immortal,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.thien_vu.passive_01.immortal.b,immortal,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.thien_vu.passive_02.divine.a,divine,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.thien_vu.passive_02.divine.b,divine,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.thien_vu.passive_02.human,,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.thien_vu.passive_02.immortal.a,immortal,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.thien_vu.passive_02.immortal.b,immortal,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.thien_vu.passive_03.divine.a,divine,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.thien_vu.passive_03.divine.b,divine,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.thien_vu.passive_03.human,,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.thien_vu.passive_03.immortal.a,immortal,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.thien_vu.passive_03.immortal.b,immortal,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.thien_vu.passive_04.divine.a,divine,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.thien_vu.passive_04.divine.b,divine,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.thien_vu.passive_04.human,,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.thien_vu.passive_04.immortal.a,immortal,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.thien_vu.passive_04.immortal.b,immortal,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.thien_vu.passive_05.divine.a,divine,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.thien_vu.passive_05.divine.b,divine,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.thien_vu.passive_05.human,,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.thien_vu.passive_05.immortal.a,immortal,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.thien_vu.passive_05.immortal.b,immortal,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.thien_vu.passive_05.rare_passive.a,divine,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.thien_vu.passive_05.rare_passive.b,divine,bow,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.bow.thien_vu.ultimate.divine.a,divine,bow,ultimate,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.thien_vu.ultimate.divine.b,divine,bow,ultimate,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.thien_vu.ultimate.human,,bow,ultimate,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.thien_vu.ultimate.immortal.a,immortal,bow,ultimate,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.thien_vu.ultimate.immortal.b,immortal,bow,ultimate,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.thien_vu.ultimate.rare.a,divine,bow,ultimate,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.bow.thien_vu.ultimate.rare.b,divine,bow,ultimate,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.ba_quyen.active_01.divine.a,divine,fist,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.ba_quyen.active_01.divine.b,divine,fist,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.ba_quyen.active_01.human,,fist,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.ba_quyen.active_01.immortal.a,immortal,fist,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.ba_quyen.active_01.immortal.b,immortal,fist,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.ba_quyen.active_02.divine.a,divine,fist,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.ba_quyen.active_02.divine.b,divine,fist,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.ba_quyen.active_02.human,,fist,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.ba_quyen.active_02.immortal.a,immortal,fist,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.ba_quyen.active_02.immortal.b,immortal,fist,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.ba_quyen.active_03.divine.a,divine,fist,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.ba_quyen.active_03.divine.b,divine,fist,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.ba_quyen.active_03.human,,fist,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.ba_quyen.active_03.immortal.a,immortal,fist,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.ba_quyen.active_03.immortal.b,immortal,fist,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.ba_quyen.active_04.divine.a,divine,fist,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.ba_quyen.active_04.divine.b,divine,fist,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.ba_quyen.active_04.human,,fist,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.ba_quyen.active_04.immortal.a,immortal,fist,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.ba_quyen.active_04.immortal.b,immortal,fist,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.ba_quyen.innate.divine.a,divine,fist,innate,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.ba_quyen.innate.divine.b,divine,fist,innate,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.ba_quyen.innate.human,,fist,innate,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.ba_quyen.innate.immortal.a,immortal,fist,innate,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.ba_quyen.innate.immortal.b,immortal,fist,innate,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.ba_quyen.passive_01.divine.a,divine,fist,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.ba_quyen.passive_01.divine.b,divine,fist,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.ba_quyen.passive_01.human,,fist,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.ba_quyen.passive_01.immortal.a,immortal,fist,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.ba_quyen.passive_01.immortal.b,immortal,fist,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.ba_quyen.passive_02.divine.a,divine,fist,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.ba_quyen.passive_02.divine.b,divine,fist,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.ba_quyen.passive_02.human,,fist,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.ba_quyen.passive_02.immortal.a,immortal,fist,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.ba_quyen.passive_02.immortal.b,immortal,fist,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.ba_quyen.passive_03.divine.a,divine,fist,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.ba_quyen.passive_03.divine.b,divine,fist,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.ba_quyen.passive_03.human,,fist,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.ba_quyen.passive_03.immortal.a,immortal,fist,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.ba_quyen.passive_03.immortal.b,immortal,fist,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.ba_quyen.passive_04.divine.a,divine,fist,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.ba_quyen.passive_04.divine.b,divine,fist,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.ba_quyen.passive_04.human,,fist,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.ba_quyen.passive_04.immortal.a,immortal,fist,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.ba_quyen.passive_04.immortal.b,immortal,fist,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.ba_quyen.passive_05.divine.a,divine,fist,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.ba_quyen.passive_05.divine.b,divine,fist,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.ba_quyen.passive_05.human,,fist,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.ba_quyen.passive_05.immortal.a,immortal,fist,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.ba_quyen.passive_05.immortal.b,immortal,fist,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.ba_quyen.passive_05.rare_passive.a,divine,fist,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.ba_quyen.passive_05.rare_passive.b,divine,fist,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.ba_quyen.ultimate.divine.a,divine,fist,ultimate,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.ba_quyen.ultimate.divine.b,divine,fist,ultimate,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.ba_quyen.ultimate.human,,fist,ultimate,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.ba_quyen.ultimate.immortal.a,immortal,fist,ultimate,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.ba_quyen.ultimate.immortal.b,immortal,fist,ultimate,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.ba_quyen.ultimate.rare.a,divine,fist,ultimate,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.ba_quyen.ultimate.rare.b,divine,fist,ultimate,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.basic.divine.base,divine,fist,basic,PASS,CombatStatsV2 basic hit reduced HP
+tmb.skill.fist.basic.human,,fist,basic,PASS,CombatStatsV2 basic hit reduced HP
+tmb.skill.fist.basic.immortal.base,immortal,fist,basic,PASS,CombatStatsV2 basic hit reduced HP
+tmb.skill.fist.huyet_quyen.active_01.divine.a,divine,fist,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.huyet_quyen.active_01.divine.b,divine,fist,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.huyet_quyen.active_01.human,,fist,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.huyet_quyen.active_01.immortal.a,immortal,fist,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.huyet_quyen.active_01.immortal.b,immortal,fist,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.huyet_quyen.active_02.divine.a,divine,fist,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.huyet_quyen.active_02.divine.b,divine,fist,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.huyet_quyen.active_02.human,,fist,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.huyet_quyen.active_02.immortal.a,immortal,fist,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.huyet_quyen.active_02.immortal.b,immortal,fist,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.huyet_quyen.active_03.divine.a,divine,fist,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.huyet_quyen.active_03.divine.b,divine,fist,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.huyet_quyen.active_03.human,,fist,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.huyet_quyen.active_03.immortal.a,immortal,fist,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.huyet_quyen.active_03.immortal.b,immortal,fist,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.huyet_quyen.active_04.divine.a,divine,fist,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.huyet_quyen.active_04.divine.b,divine,fist,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.huyet_quyen.active_04.human,,fist,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.huyet_quyen.active_04.immortal.a,immortal,fist,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.huyet_quyen.active_04.immortal.b,immortal,fist,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.huyet_quyen.innate.divine.a,divine,fist,innate,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.huyet_quyen.innate.divine.b,divine,fist,innate,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.huyet_quyen.innate.human,,fist,innate,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.huyet_quyen.innate.immortal.a,immortal,fist,innate,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.huyet_quyen.innate.immortal.b,immortal,fist,innate,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.huyet_quyen.passive_01.divine.a,divine,fist,passive,NOT_TESTED,catalog effect has no matching generic or specialized runtime consumer
+tmb.skill.fist.huyet_quyen.passive_01.divine.b,divine,fist,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.huyet_quyen.passive_01.human,,fist,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.huyet_quyen.passive_01.immortal.a,immortal,fist,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.huyet_quyen.passive_01.immortal.b,immortal,fist,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.huyet_quyen.passive_02.divine.a,divine,fist,passive,NOT_TESTED,catalog effect has no matching generic or specialized runtime consumer
+tmb.skill.fist.huyet_quyen.passive_02.divine.b,divine,fist,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.huyet_quyen.passive_02.human,,fist,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.huyet_quyen.passive_02.immortal.a,immortal,fist,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.huyet_quyen.passive_02.immortal.b,immortal,fist,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.huyet_quyen.passive_03.divine.a,divine,fist,passive,NOT_TESTED,catalog effect has no matching generic or specialized runtime consumer
+tmb.skill.fist.huyet_quyen.passive_03.divine.b,divine,fist,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.huyet_quyen.passive_03.human,,fist,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.huyet_quyen.passive_03.immortal.a,immortal,fist,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.huyet_quyen.passive_03.immortal.b,immortal,fist,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.huyet_quyen.passive_04.divine.a,divine,fist,passive,NOT_TESTED,catalog effect has no matching generic or specialized runtime consumer
+tmb.skill.fist.huyet_quyen.passive_04.divine.b,divine,fist,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.huyet_quyen.passive_04.human,,fist,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.huyet_quyen.passive_04.immortal.a,immortal,fist,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.huyet_quyen.passive_04.immortal.b,immortal,fist,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.huyet_quyen.passive_05.divine.a,divine,fist,passive,NOT_TESTED,catalog effect has no matching generic or specialized runtime consumer
+tmb.skill.fist.huyet_quyen.passive_05.divine.b,divine,fist,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.huyet_quyen.passive_05.human,,fist,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.huyet_quyen.passive_05.immortal.a,immortal,fist,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.huyet_quyen.passive_05.immortal.b,immortal,fist,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.huyet_quyen.passive_05.rare_passive.a,divine,fist,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.huyet_quyen.passive_05.rare_passive.b,divine,fist,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.huyet_quyen.ultimate.divine.a,divine,fist,ultimate,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.huyet_quyen.ultimate.divine.b,divine,fist,ultimate,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.huyet_quyen.ultimate.human,,fist,ultimate,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.huyet_quyen.ultimate.immortal.a,immortal,fist,ultimate,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.huyet_quyen.ultimate.immortal.b,immortal,fist,ultimate,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.huyet_quyen.ultimate.rare.a,divine,fist,ultimate,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.huyet_quyen.ultimate.rare.b,divine,fist,ultimate,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.kim_cang.active_01.divine.a,divine,fist,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.kim_cang.active_01.divine.b,divine,fist,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.kim_cang.active_01.human,,fist,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.kim_cang.active_01.immortal.a,immortal,fist,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.kim_cang.active_01.immortal.b,immortal,fist,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.kim_cang.active_02.divine.a,divine,fist,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.kim_cang.active_02.divine.b,divine,fist,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.kim_cang.active_02.human,,fist,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.kim_cang.active_02.immortal.a,immortal,fist,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.kim_cang.active_02.immortal.b,immortal,fist,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.kim_cang.active_03.divine.a,divine,fist,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.kim_cang.active_03.divine.b,divine,fist,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.kim_cang.active_03.human,,fist,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.kim_cang.active_03.immortal.a,immortal,fist,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.kim_cang.active_03.immortal.b,immortal,fist,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.kim_cang.active_04.divine.a,divine,fist,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.kim_cang.active_04.divine.b,divine,fist,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.kim_cang.active_04.human,,fist,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.kim_cang.active_04.immortal.a,immortal,fist,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.kim_cang.active_04.immortal.b,immortal,fist,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.kim_cang.innate.divine.a,divine,fist,innate,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.kim_cang.innate.divine.b,divine,fist,innate,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.kim_cang.innate.human,,fist,innate,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.kim_cang.innate.immortal.a,immortal,fist,innate,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.kim_cang.innate.immortal.b,immortal,fist,innate,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.kim_cang.passive_01.divine.a,divine,fist,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.kim_cang.passive_01.divine.b,divine,fist,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.kim_cang.passive_01.human,,fist,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.kim_cang.passive_01.immortal.a,immortal,fist,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.kim_cang.passive_01.immortal.b,immortal,fist,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.kim_cang.passive_02.divine.a,divine,fist,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.kim_cang.passive_02.divine.b,divine,fist,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.kim_cang.passive_02.human,,fist,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.kim_cang.passive_02.immortal.a,immortal,fist,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.kim_cang.passive_02.immortal.b,immortal,fist,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.kim_cang.passive_03.divine.a,divine,fist,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.kim_cang.passive_03.divine.b,divine,fist,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.kim_cang.passive_03.human,,fist,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.kim_cang.passive_03.immortal.a,immortal,fist,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.kim_cang.passive_03.immortal.b,immortal,fist,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.kim_cang.passive_04.divine.a,divine,fist,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.kim_cang.passive_04.divine.b,divine,fist,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.kim_cang.passive_04.human,,fist,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.kim_cang.passive_04.immortal.a,immortal,fist,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.kim_cang.passive_04.immortal.b,immortal,fist,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.kim_cang.passive_05.divine.a,divine,fist,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.kim_cang.passive_05.divine.b,divine,fist,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.kim_cang.passive_05.human,,fist,passive,PASS,V6.3 heal consumer applied passive heal_factor
+tmb.skill.fist.kim_cang.passive_05.immortal.a,immortal,fist,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.kim_cang.passive_05.immortal.b,immortal,fist,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.kim_cang.passive_05.rare_passive.a,divine,fist,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.kim_cang.passive_05.rare_passive.b,divine,fist,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.fist.kim_cang.ultimate.divine.a,divine,fist,ultimate,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.kim_cang.ultimate.divine.b,divine,fist,ultimate,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.kim_cang.ultimate.human,,fist,ultimate,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.kim_cang.ultimate.immortal.a,immortal,fist,ultimate,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.kim_cang.ultimate.immortal.b,immortal,fist,ultimate,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.kim_cang.ultimate.rare.a,divine,fist,ultimate,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.kim_cang.ultimate.rare.b,divine,fist,ultimate,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.fist.mobility.divine.base,divine,fist,mobility,PASS,existing V6.3 mobility changed actor position
+tmb.skill.fist.mobility.human,,fist,mobility,PASS,existing V6.3 mobility changed actor position
+tmb.skill.fist.mobility.immortal.base,immortal,fist,mobility,PASS,existing V6.3 mobility changed actor position
+tmb.skill.poison.basic.divine.base,divine,poison,basic,PASS,CombatStatsV2 basic hit reduced HP
+tmb.skill.poison.basic.human,,poison,basic,PASS,CombatStatsV2 basic hit reduced HP
+tmb.skill.poison.basic.immortal.base,immortal,poison,basic,PASS,CombatStatsV2 basic hit reduced HP
+tmb.skill.poison.co_doc.active_01.divine.a,divine,poison,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.co_doc.active_01.divine.b,divine,poison,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.co_doc.active_01.human,,poison,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.co_doc.active_01.immortal.a,immortal,poison,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.co_doc.active_01.immortal.b,immortal,poison,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.co_doc.active_02.divine.a,divine,poison,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.co_doc.active_02.divine.b,divine,poison,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.co_doc.active_02.human,,poison,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.co_doc.active_02.immortal.a,immortal,poison,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.co_doc.active_02.immortal.b,immortal,poison,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.co_doc.active_03.divine.a,divine,poison,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.co_doc.active_03.divine.b,divine,poison,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.co_doc.active_03.human,,poison,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.co_doc.active_03.immortal.a,immortal,poison,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.co_doc.active_03.immortal.b,immortal,poison,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.co_doc.active_04.divine.a,divine,poison,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.co_doc.active_04.divine.b,divine,poison,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.co_doc.active_04.human,,poison,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.co_doc.active_04.immortal.a,immortal,poison,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.co_doc.active_04.immortal.b,immortal,poison,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.co_doc.innate.divine.a,divine,poison,innate,PASS,V6.3 poison consumer applied innate poison_factor
+tmb.skill.poison.co_doc.innate.divine.b,divine,poison,innate,PASS,existing effective stat consumer produced expected delta
+tmb.skill.poison.co_doc.innate.human,,poison,innate,PASS,existing effective stat consumer produced expected delta
+tmb.skill.poison.co_doc.innate.immortal.a,immortal,poison,innate,PASS,V6.3 poison consumer applied innate poison_factor
+tmb.skill.poison.co_doc.innate.immortal.b,immortal,poison,innate,PASS,existing effective stat consumer produced expected delta
+tmb.skill.poison.co_doc.passive_01.divine.a,divine,poison,passive,PASS,V6.3 poison consumer applied passive poison_factor
+tmb.skill.poison.co_doc.passive_01.divine.b,divine,poison,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.poison.co_doc.passive_01.human,,poison,passive,PASS,V6.3 poison consumer applied passive poison_factor
+tmb.skill.poison.co_doc.passive_01.immortal.a,immortal,poison,passive,PASS,V6.3 poison consumer applied passive poison_factor
+tmb.skill.poison.co_doc.passive_01.immortal.b,immortal,poison,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.poison.co_doc.passive_02.divine.a,divine,poison,passive,PASS,V6.3 poison consumer applied passive poison_factor
+tmb.skill.poison.co_doc.passive_02.divine.b,divine,poison,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.poison.co_doc.passive_02.human,,poison,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.poison.co_doc.passive_02.immortal.a,immortal,poison,passive,PASS,V6.3 poison consumer applied passive poison_factor
+tmb.skill.poison.co_doc.passive_02.immortal.b,immortal,poison,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.poison.co_doc.passive_03.divine.a,divine,poison,passive,PASS,V6.3 poison consumer applied passive poison_factor
+tmb.skill.poison.co_doc.passive_03.divine.b,divine,poison,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.poison.co_doc.passive_03.human,,poison,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.poison.co_doc.passive_03.immortal.a,immortal,poison,passive,PASS,V6.3 poison consumer applied passive poison_factor
+tmb.skill.poison.co_doc.passive_03.immortal.b,immortal,poison,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.poison.co_doc.passive_04.divine.a,divine,poison,passive,PASS,V6.3 poison consumer applied passive poison_factor
+tmb.skill.poison.co_doc.passive_04.divine.b,divine,poison,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.poison.co_doc.passive_04.human,,poison,passive,PASS,V6.3 poison consumer applied passive poison_factor
+tmb.skill.poison.co_doc.passive_04.immortal.a,immortal,poison,passive,PASS,V6.3 poison consumer applied passive poison_factor
+tmb.skill.poison.co_doc.passive_04.immortal.b,immortal,poison,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.poison.co_doc.passive_05.divine.a,divine,poison,passive,PASS,V6.3 poison consumer applied passive poison_factor
+tmb.skill.poison.co_doc.passive_05.divine.b,divine,poison,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.poison.co_doc.passive_05.human,,poison,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.poison.co_doc.passive_05.immortal.a,immortal,poison,passive,PASS,V6.3 poison consumer applied passive poison_factor
+tmb.skill.poison.co_doc.passive_05.immortal.b,immortal,poison,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.poison.co_doc.passive_05.rare_passive.a,divine,poison,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.poison.co_doc.passive_05.rare_passive.b,divine,poison,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.poison.co_doc.ultimate.divine.a,divine,poison,ultimate,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.co_doc.ultimate.divine.b,divine,poison,ultimate,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.co_doc.ultimate.human,,poison,ultimate,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.co_doc.ultimate.immortal.a,immortal,poison,ultimate,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.co_doc.ultimate.immortal.b,immortal,poison,ultimate,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.co_doc.ultimate.rare.a,divine,poison,ultimate,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.co_doc.ultimate.rare.b,divine,poison,ultimate,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.doc_cham.active_01.divine.a,divine,poison,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.doc_cham.active_01.divine.b,divine,poison,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.doc_cham.active_01.human,,poison,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.doc_cham.active_01.immortal.a,immortal,poison,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.doc_cham.active_01.immortal.b,immortal,poison,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.doc_cham.active_02.divine.a,divine,poison,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.doc_cham.active_02.divine.b,divine,poison,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.doc_cham.active_02.human,,poison,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.doc_cham.active_02.immortal.a,immortal,poison,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.doc_cham.active_02.immortal.b,immortal,poison,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.doc_cham.active_03.divine.a,divine,poison,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.doc_cham.active_03.divine.b,divine,poison,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.doc_cham.active_03.human,,poison,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.doc_cham.active_03.immortal.a,immortal,poison,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.doc_cham.active_03.immortal.b,immortal,poison,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.doc_cham.active_04.divine.a,divine,poison,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.doc_cham.active_04.divine.b,divine,poison,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.doc_cham.active_04.human,,poison,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.doc_cham.active_04.immortal.a,immortal,poison,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.doc_cham.active_04.immortal.b,immortal,poison,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.doc_cham.innate.divine.a,divine,poison,innate,PASS,V6.3 poison consumer applied innate poison_factor
+tmb.skill.poison.doc_cham.innate.divine.b,divine,poison,innate,PASS,existing effective stat consumer produced expected delta
+tmb.skill.poison.doc_cham.innate.human,,poison,innate,PASS,existing effective stat consumer produced expected delta
+tmb.skill.poison.doc_cham.innate.immortal.a,immortal,poison,innate,PASS,V6.3 poison consumer applied innate poison_factor
+tmb.skill.poison.doc_cham.innate.immortal.b,immortal,poison,innate,PASS,existing effective stat consumer produced expected delta
+tmb.skill.poison.doc_cham.passive_01.divine.a,divine,poison,passive,PASS,V6.3 poison consumer applied passive poison_factor
+tmb.skill.poison.doc_cham.passive_01.divine.b,divine,poison,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.poison.doc_cham.passive_01.human,,poison,passive,PASS,V6.3 poison consumer applied passive poison_factor
+tmb.skill.poison.doc_cham.passive_01.immortal.a,immortal,poison,passive,PASS,V6.3 poison consumer applied passive poison_factor
+tmb.skill.poison.doc_cham.passive_01.immortal.b,immortal,poison,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.poison.doc_cham.passive_02.divine.a,divine,poison,passive,PASS,V6.3 poison consumer applied passive poison_factor
+tmb.skill.poison.doc_cham.passive_02.divine.b,divine,poison,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.poison.doc_cham.passive_02.human,,poison,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.poison.doc_cham.passive_02.immortal.a,immortal,poison,passive,PASS,V6.3 poison consumer applied passive poison_factor
+tmb.skill.poison.doc_cham.passive_02.immortal.b,immortal,poison,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.poison.doc_cham.passive_03.divine.a,divine,poison,passive,PASS,V6.3 poison consumer applied passive poison_factor
+tmb.skill.poison.doc_cham.passive_03.divine.b,divine,poison,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.poison.doc_cham.passive_03.human,,poison,passive,PASS,V6.3 poison consumer applied passive poison_factor
+tmb.skill.poison.doc_cham.passive_03.immortal.a,immortal,poison,passive,PASS,V6.3 poison consumer applied passive poison_factor
+tmb.skill.poison.doc_cham.passive_03.immortal.b,immortal,poison,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.poison.doc_cham.passive_04.divine.a,divine,poison,passive,PASS,V6.3 poison consumer applied passive poison_factor
+tmb.skill.poison.doc_cham.passive_04.divine.b,divine,poison,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.poison.doc_cham.passive_04.human,,poison,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.poison.doc_cham.passive_04.immortal.a,immortal,poison,passive,PASS,V6.3 poison consumer applied passive poison_factor
+tmb.skill.poison.doc_cham.passive_04.immortal.b,immortal,poison,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.poison.doc_cham.passive_05.divine.a,divine,poison,passive,PASS,V6.3 poison consumer applied passive poison_factor
+tmb.skill.poison.doc_cham.passive_05.divine.b,divine,poison,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.poison.doc_cham.passive_05.human,,poison,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.poison.doc_cham.passive_05.immortal.a,immortal,poison,passive,PASS,V6.3 poison consumer applied passive poison_factor
+tmb.skill.poison.doc_cham.passive_05.immortal.b,immortal,poison,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.poison.doc_cham.passive_05.rare_passive.a,divine,poison,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.poison.doc_cham.passive_05.rare_passive.b,divine,poison,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.poison.doc_cham.ultimate.divine.a,divine,poison,ultimate,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.doc_cham.ultimate.divine.b,divine,poison,ultimate,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.doc_cham.ultimate.human,,poison,ultimate,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.doc_cham.ultimate.immortal.a,immortal,poison,ultimate,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.doc_cham.ultimate.immortal.b,immortal,poison,ultimate,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.doc_cham.ultimate.rare.a,divine,poison,ultimate,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.doc_cham.ultimate.rare.b,divine,poison,ultimate,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.duoc_doc.active_01.divine.a,divine,poison,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.duoc_doc.active_01.divine.b,divine,poison,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.duoc_doc.active_01.human,,poison,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.duoc_doc.active_01.immortal.a,immortal,poison,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.duoc_doc.active_01.immortal.b,immortal,poison,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.duoc_doc.active_02.divine.a,divine,poison,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.duoc_doc.active_02.divine.b,divine,poison,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.duoc_doc.active_02.human,,poison,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.duoc_doc.active_02.immortal.a,immortal,poison,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.duoc_doc.active_02.immortal.b,immortal,poison,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.duoc_doc.active_03.divine.a,divine,poison,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.duoc_doc.active_03.divine.b,divine,poison,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.duoc_doc.active_03.human,,poison,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.duoc_doc.active_03.immortal.a,immortal,poison,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.duoc_doc.active_03.immortal.b,immortal,poison,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.duoc_doc.active_04.divine.a,divine,poison,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.duoc_doc.active_04.divine.b,divine,poison,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.duoc_doc.active_04.human,,poison,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.duoc_doc.active_04.immortal.a,immortal,poison,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.duoc_doc.active_04.immortal.b,immortal,poison,active,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.duoc_doc.innate.divine.a,divine,poison,innate,NOT_TESTED,heal_factor is not consumed from innate ID by current V6.3 runtime
+tmb.skill.poison.duoc_doc.innate.divine.b,divine,poison,innate,PASS,V6.3 poison consumer applied innate poison_factor
+tmb.skill.poison.duoc_doc.innate.human,,poison,innate,NOT_TESTED,heal_factor is not consumed from innate ID by current V6.3 runtime
+tmb.skill.poison.duoc_doc.innate.immortal.a,immortal,poison,innate,NOT_TESTED,heal_factor is not consumed from innate ID by current V6.3 runtime
+tmb.skill.poison.duoc_doc.innate.immortal.b,immortal,poison,innate,PASS,V6.3 poison consumer applied innate poison_factor
+tmb.skill.poison.duoc_doc.passive_01.divine.a,divine,poison,passive,PASS,V6.3 heal consumer applied passive heal_factor
+tmb.skill.poison.duoc_doc.passive_01.divine.b,divine,poison,passive,PASS,V6.3 poison consumer applied passive poison_factor
+tmb.skill.poison.duoc_doc.passive_01.human,,poison,passive,PASS,V6.3 heal consumer applied passive heal_factor
+tmb.skill.poison.duoc_doc.passive_01.immortal.a,immortal,poison,passive,PASS,V6.3 heal consumer applied passive heal_factor
+tmb.skill.poison.duoc_doc.passive_01.immortal.b,immortal,poison,passive,PASS,V6.3 poison consumer applied passive poison_factor
+tmb.skill.poison.duoc_doc.passive_02.divine.a,divine,poison,passive,PASS,V6.3 heal consumer applied passive heal_factor
+tmb.skill.poison.duoc_doc.passive_02.divine.b,divine,poison,passive,PASS,V6.3 poison consumer applied passive poison_factor
+tmb.skill.poison.duoc_doc.passive_02.human,,poison,passive,NOT_TESTED,catalog effect has no matching generic or specialized runtime consumer
+tmb.skill.poison.duoc_doc.passive_02.immortal.a,immortal,poison,passive,PASS,V6.3 heal consumer applied passive heal_factor
+tmb.skill.poison.duoc_doc.passive_02.immortal.b,immortal,poison,passive,PASS,V6.3 poison consumer applied passive poison_factor
+tmb.skill.poison.duoc_doc.passive_03.divine.a,divine,poison,passive,PASS,V6.3 heal consumer applied passive heal_factor
+tmb.skill.poison.duoc_doc.passive_03.divine.b,divine,poison,passive,PASS,V6.3 poison consumer applied passive poison_factor
+tmb.skill.poison.duoc_doc.passive_03.human,,poison,passive,PASS,V6.3 heal consumer applied passive heal_factor
+tmb.skill.poison.duoc_doc.passive_03.immortal.a,immortal,poison,passive,PASS,V6.3 heal consumer applied passive heal_factor
+tmb.skill.poison.duoc_doc.passive_03.immortal.b,immortal,poison,passive,PASS,V6.3 poison consumer applied passive poison_factor
+tmb.skill.poison.duoc_doc.passive_04.divine.a,divine,poison,passive,PASS,V6.3 heal consumer applied passive heal_factor
+tmb.skill.poison.duoc_doc.passive_04.divine.b,divine,poison,passive,PASS,V6.3 poison consumer applied passive poison_factor
+tmb.skill.poison.duoc_doc.passive_04.human,,poison,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.poison.duoc_doc.passive_04.immortal.a,immortal,poison,passive,PASS,V6.3 heal consumer applied passive heal_factor
+tmb.skill.poison.duoc_doc.passive_04.immortal.b,immortal,poison,passive,PASS,V6.3 poison consumer applied passive poison_factor
+tmb.skill.poison.duoc_doc.passive_05.divine.a,divine,poison,passive,PASS,V6.3 heal consumer applied passive heal_factor
+tmb.skill.poison.duoc_doc.passive_05.divine.b,divine,poison,passive,PASS,V6.3 poison consumer applied passive poison_factor
+tmb.skill.poison.duoc_doc.passive_05.human,,poison,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.poison.duoc_doc.passive_05.immortal.a,immortal,poison,passive,PASS,V6.3 heal consumer applied passive heal_factor
+tmb.skill.poison.duoc_doc.passive_05.immortal.b,immortal,poison,passive,PASS,V6.3 poison consumer applied passive poison_factor
+tmb.skill.poison.duoc_doc.passive_05.rare_passive.a,divine,poison,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.poison.duoc_doc.passive_05.rare_passive.b,divine,poison,passive,PASS,existing effective stat consumer produced expected delta
+tmb.skill.poison.duoc_doc.ultimate.divine.a,divine,poison,ultimate,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.duoc_doc.ultimate.divine.b,divine,poison,ultimate,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.duoc_doc.ultimate.human,,poison,ultimate,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.duoc_doc.ultimate.immortal.a,immortal,poison,ultimate,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.duoc_doc.ultimate.immortal.b,immortal,poison,ultimate,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.duoc_doc.ultimate.rare.a,divine,poison,ultimate,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.duoc_doc.ultimate.rare.b,divine,poison,ultimate,PASS,MapBattleV2 V6.3 cast/release/effect/cooldown verified
+tmb.skill.poison.mobility.divine.base,divine,poison,mobility,PASS,existing V6.3 mobility changed actor position
+tmb.skill.poison.mobility.human,,poison,mobility,PASS,existing V6.3 mobility changed actor position
+tmb.skill.poison.mobility.immortal.base,immortal,poison,mobility,PASS,existing V6.3 mobility changed actor position

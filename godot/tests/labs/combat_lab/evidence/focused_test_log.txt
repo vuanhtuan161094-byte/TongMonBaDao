@@ -1,0 +1,15 @@
+COMBAT LAB FOCUSED TEST — FINAL RUN
+Date: 2026-11-06
+Godot: 4.7.2.stable.official.ed1daf0bf
+Profile: isolated APPDATA/LOCALAPPDATA under E:\codex\work\combat_lab_pr72_snapshot\_isolated_userdata
+Command: Godot_v4.7.2-stable_win64.exe --headless --path <isolated project> --script res://tests/labs/combat_lab/combat_lab_focused_test.gd
+Process exit: 0
+
+COMBAT_LAB_FOCUSED_START Godot=4.7.2-stable (official)
+COMBAT_LAB_SKILL_MATRIX {"active":243,"basic":9,"counts":{"FAIL":0,"NOT_TESTED":9,"PASS":540},"innate":45,"mobility":9,"passive":243,"total":549}
+COMBAT_LAB_FOCUSED_RESULT=PASS failures=0
+
+Additional assertions in the same run: default loadouts for 9 school/generation combinations; invalid/duplicate skill rejection; six-disciple real MapBattleV2 setup/tick; interactive button/zoom signal exercise (HOLD/STEP/AUTO/reset); identical fixed-seed event traces; event cursor idempotency; MAX_EVENTS finite cap and documented world ring limitation; VFX semantic duplicate suppression; normal finite encounter with no kill/reward receipt; actual crit/lifesteal and elemental-resistance settlement; Boss V6.3 installation/AI telegraph without rewards.
+
+Environment note: Godot prints “Failed to read the root certificate store” on this Windows image. It does not affect project import or this test; process exits 0.
+Follow-up after final HUD label-only change: GDScript check-only and direct scene smoke exited 0; official Editor import rerun exited 0; final real GUI screenshots recaptured at all four zoom values.
