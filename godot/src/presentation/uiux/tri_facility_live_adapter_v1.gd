@@ -196,6 +196,7 @@ func _house_model() -> Dictionary:
     var bed_slots: Array[Dictionary] = []
     var house_options: Array[Dictionary] = []
     var room_house_options: Array[Dictionary] = []
+    var assigned_resident_ids: Dictionary = {}
     var house_display_number := 0
     for house in houses:
         if not (house is BuildingState):
@@ -210,6 +211,8 @@ func _house_model() -> Dictionary:
                 if _state.disciples.has(disciple_id):
                     residents.append(str(disciple_id))
         residents.sort()
+        for resident_id in residents:
+            assigned_resident_ids[resident_id] = true
         var capacity := 0 if house.status == BuildingSystem.STATUS_CONSTRUCTING else SectResidenceSystemV1.beds_for_level(house.level)
         var upgrade_check: Dictionary = buildings.can_start_upgrade(_state, house.id)
         sites.append({
@@ -218,8 +221,13 @@ func _house_model() -> Dictionary:
             "resident_summary":"%d/%d giường" % [residents.size(), capacity],
             "built":true, "can_build":false, "can_upgrade":bool(upgrade_check.get("ok", false))
         })
+        var house_option_state := "Lv%d" % house.level
+        if house.status == BuildingSystem.STATUS_CONSTRUCTING:
+            house_option_state = "Đang xây · còn %d nhịp" % SectResidenceSystemV1.construction_remaining_ticks(_state,house)
+        elif house.status == BuildingSystem.STATUS_UPGRADING:
+            house_option_state = "Đang nâng · Lv%d→%d" % [house.level,house.upgrade_target_level]
         house_options.append({
-            "id":str(house.id), "name":"Đệ Tử Xá %02d · Lv%d" % [house_display_number,house.level],
+            "id":str(house.id), "name":"Đệ Tử Xá %02d · %s" % [house_display_number,house_option_state],
             "ready":house.status in [BuildingSystem.STATUS_ACTIVE,BuildingSystem.STATUS_UPGRADING]
         })
         if house.status in [BuildingSystem.STATUS_ACTIVE,BuildingSystem.STATUS_UPGRADING]:
@@ -312,7 +320,11 @@ func _house_model() -> Dictionary:
         })
     return {
         "building_level":selected_house.level if selected_house != null else 1,
-        "room_count_label":"%d nhà · %d giường" % [houses.size(), SectResidenceSystemV1.total_beds(_state)],
+        "room_count_label":"%d căn · %d giường" % [houses.size(), SectResidenceSystemV1.total_beds(_state)],
+        "residence_type_summary":"1 loại công trình · tối đa %d căn; mỗi căn nâng cấp riêng." % SectResidenceSystemV1.maximum_instances(_state),
+        "room_assignment_summary":"%d đệ tử đã xếp giường · %d chưa xếp phòng" % [
+            assigned_resident_ids.size(),maxi(_state.disciples.size()-assigned_resident_ids.size(),0)
+        ],
         "selected_residence_id":_selected_site_id,
         "bed_slots":bed_slots, "sites":sites, "house_options":house_options,
         "room_disciple_options":room_disciple_options, "room_house_options":room_house_options,

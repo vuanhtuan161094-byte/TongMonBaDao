@@ -57,7 +57,7 @@ func _make_shell() -> MarginContainer:
 	var stack := VBoxContainer.new()
 	stack.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	stack.add_child(UI.label("ĐỆ TỬ XÁ", 25, UI.PAPER, true))
-	stack.add_child(UI.label("Phòng ở • cư trú • quy hoạch lô đất", 12, UI.MUTED, false))
+	stack.add_child(UI.label(str(_vm.get("residence_type_summary","1 loại công trình · có thể xây nhiều căn.")), 12, UI.MUTED, false))
 	header.add_child(stack)
 	var close_button := UI.button("ĐÓNG", false, UI.GOLD)
 	close_button.pressed.connect(func(): closed.emit())
@@ -94,6 +94,7 @@ func _build_rooms_panel() -> Control:
 	beds_metric.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	metrics.add_child(beds_metric)
 	content.add_child(metrics)
+	content.add_child(UI.label(str(_vm.get("room_assignment_summary","Phân phòng quản lý giường nghỉ của đệ tử.")),11,UI.MUTED,false))
 	content.add_child(UI.section_heading("Giường & đệ tử", "person", UI.JADE))
 	var bed_legend := HBoxContainer.new()
 	bed_legend.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -171,6 +172,7 @@ func _build_sites_panel() -> Control:
 	card.add_child(frame)
 	frame.add_child(management_scroll)
 	content.add_child(UI.section_heading("Mở rộng khu cư trú", "guide", UI.JADE))
+	content.add_child(UI.label("Đây là nơi xếp giường, không phải giao nghề. Muốn phân đệ tử vào Mỏ, Linh Lâm hoặc Linh Điền, mở công trình đó trên bản đồ; tại đó xem người đang làm và sản lượng.",12,UI.MUTED,false))
 	var selected_id := str(_vm.get("selected_residence_id", ""))
 	var selected_site := _find_site(selected_id)
 	var house_row := HBoxContainer.new()

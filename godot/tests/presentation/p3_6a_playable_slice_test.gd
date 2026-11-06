@@ -139,9 +139,8 @@ func _verify_building_tokens_are_player_readable() -> bool:
     return true
 
 func _verify_actor_tokens_are_player_readable() -> bool:
-    # P3.2 intentionally materializes pooled actors only for the focused/
-    # visible viewport. Do not require every canonical disciple to allocate a
-    # map Control at once; O2 already checks selected-only actor materialization.
+    # P3.2 materializes nearby idle/transiting actors in a bounded viewport
+    # pool. Do not require every canonical disciple to allocate a map Control.
     var disciple_ids: Array = state.disciples.keys()
     disciple_ids.sort()
     if disciple_ids.is_empty():

@@ -1,5 +1,6 @@
 extends SceneTree
 
+const MAX_EXPECTED_VISIBLE_ACTORS := 16
 var ui: Control
 
 func _init() -> void:
@@ -37,7 +38,15 @@ func _run() -> void:
         _fail("Live map has no disciples.")
         return
 
-    var chosen_id := StringName(ids[0])
+    var chosen_id: StringName = &""
+    for raw_id in ids:
+        var candidate: DiscipleState = state.disciples[StringName(raw_id)]
+        if bool(ui.call("_is_idle_map_actor",candidate)):
+            chosen_id = StringName(raw_id)
+            break
+    if chosen_id == &"":
+        _fail("Live-map presentation regression needs at least one canonical idle disciple.")
+        return
     var chosen: DiscipleState = state.disciples[chosen_id]
     var before_action := chosen.current_action
     var before_region := chosen.region_id
@@ -55,10 +64,12 @@ func _run() -> void:
     var screen_before := Vector2.ZERO
     if map_layer != null:
         screen_before = map_layer.get_global_transform() * Vector2(actor_virtual_positions[key])
-    print("P3.2 selected-only diagnostic before focus chosen=%s selected=%s virtual=%s actor_nodes=%d screen=%s view=%s" % [str(chosen_id), str(selected_before), str(actor_virtual_positions[key]), actor_nodes_before.size(), str(screen_before), str(SectMapCamera.VIEW_RECT)])
+    print("P3.2 bounded-NPC diagnostic before focus chosen=%s selected=%s virtual=%s actor_nodes=%d screen=%s view=%s" % [str(chosen_id), str(selected_before), str(actor_virtual_positions[key]), actor_nodes_before.size(), str(screen_before), str(SectMapCamera.VIEW_RECT)])
 
     # Use the same selection/focus path as the map UI. The production renderer
-    # intentionally materializes only the selected disciple inside the viewport.
+    # materializes idle residents and short assignment transits within a bounded viewport pool.
+    if actor_nodes_before.has(key):
+        ui.call("_recycle_modular_actor",key)
     ui.call("_open_disciple", chosen_id)
     if StringName(ui.get("selected_id")) != chosen_id:
         _fail("Live map selection path did not select the chosen canonical disciple.")
@@ -95,20 +106,27 @@ func _run() -> void:
     var projected_actor_rect := Rect2(projected_top_left, projected_size)
     var focus_tween_valid := focus_tween != null and focus_tween.is_valid()
     var focus_tween_running := focus_tween_valid and focus_tween.is_running()
-    print("P3.2 selected-only diagnostic after focus chosen=%s selected=%s virtual=%s actor_nodes=%d projected_rect=%s view=%s camera_position=%s zoom=%s tween_valid=%s tween_running=%s" % [str(chosen_id), str(selected_after), str(virtual_position), actor_nodes.size(), str(projected_actor_rect), str(SectMapCamera.VIEW_RECT), str(map_layer_after.position), str(ui.get("map_zoom")), str(focus_tween_valid), str(focus_tween_running)])
+    print("P3.2 bounded-NPC diagnostic after focus chosen=%s selected=%s virtual=%s actor_nodes=%d projected_rect=%s view=%s camera_position=%s zoom=%s tween_valid=%s tween_running=%s" % [str(chosen_id), str(selected_after), str(virtual_position), actor_nodes.size(), str(projected_actor_rect), str(SectMapCamera.VIEW_RECT), str(map_layer_after.position), str(ui.get("map_zoom")), str(focus_tween_valid), str(focus_tween_running)])
 
     if not actor_nodes.has(key):
         _fail("Selected disciple was not materialized through the live selection/focus path.")
         return
-    if actor_nodes.size() != 1:
-        _fail("Selected-only actor visibility allocated %d scene actors; expected exactly one selected in-view actor." % actor_nodes.size())
+    if actor_nodes.size() > MAX_EXPECTED_VISIBLE_ACTORS:
+        _fail("Nearby idle/transiting actor pool exceeded its presentation cap: %d > %d." % [actor_nodes.size(),MAX_EXPECTED_VISIBLE_ACTORS])
         return
     if actor_virtual_positions.size() != state.disciples.size():
         _fail("Non-materialized canonical disciples were not retained in the virtual actor registry.")
         return
-    for raw_id in state.disciples.keys():
-        if str(raw_id) != key and actor_nodes.has(str(raw_id)):
-            _fail("An unselected disciple was materialized outside the selected-only viewport path.")
+    for raw_id in actor_nodes.keys():
+        var visible_id := StringName(str(raw_id))
+        if not state.disciples.has(visible_id):
+            _fail("Viewport actor did not resolve to a canonical disciple.")
+            return
+        var visible_disciple: DiscipleState = state.disciples[visible_id]
+        var visible_phase := StringName(visible_disciple.work_cycle_state.get("phase",""))
+        var is_short_transit := visible_disciple.work_group_id != &"" and visible_phase == &"travel_out"
+        if not bool(ui.call("_is_idle_map_actor",visible_disciple)) and not is_short_transit:
+            _fail("A busy/working disciple remained visible outside the short travel transition.")
             return
 
     if not SectMapCamera.VIEW_RECT.encloses(projected_actor_rect):
@@ -150,8 +168,16 @@ func _run() -> void:
 
     modular.position = original_position
     ui.call("_sync_actor_positions")
-    if modular.status_label.text != SectMapPresentation.action_label(chosen.current_action):
-        _fail("Live modular actor status is not reading the real simulation action.")
+    var canonical_status := SectMapPresentation.action_label(chosen.current_action).to_upper()
+    var status_is_canonical := modular.status_label.text == canonical_status
+    var transition_deadline: Dictionary = ui.get("actor_transition_deadline_msec")
+    var status_is_real_destination := (
+        modular.status_label.text.begins_with("ĐẾN ")
+        and transition_deadline.has(key)
+        and Time.get_ticks_msec() < int(transition_deadline[key])
+    )
+    if not status_is_canonical and not status_is_real_destination:
+        _fail("Live modular actor status is not showing its canonical action or active destination: %s (canonical %s)." % [modular.status_label.text,canonical_status])
         return
 
     print("P3.2 LIVE MODULAR FEMALE MAP INTEGRATION TEST PASS")

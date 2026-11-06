@@ -143,10 +143,14 @@ func _verify_no_fake_heal() -> bool:
     for button in buttons:
         var button_name := str(button.name).to_lower()
         var button_text := button.text.to_lower()
-        if button_name.contains("heal") or button_text.contains("heal") or button_text.contains("trị thương"):
+        # SX01HealThreshold and medicine-policy buttons are real policy controls,
+        # not fabricated disciple commands. Only reject treatment-looking orders.
+        if button_name.begins_with("order_") and (
+            button_name.contains("heal") or button_text.contains("heal")
+            or button_text.contains("trị thương") or button_text.contains("thuốc")
+            or button_text.contains("trị")
+        ):
             return _fail("Medicine Hall exposed a fake HEAL/direct-treatment action.")
-        if button_name.begins_with("order_") and (button_text.contains("thuốc") or button_text.contains("trị")):
-            return _fail("Medicine Hall exposed a fabricated disciple treatment order.")
 
     return true
 

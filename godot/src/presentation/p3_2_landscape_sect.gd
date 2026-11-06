@@ -11,6 +11,25 @@ const B3_HUNT_REFRESH_SECONDS := 1.0
 const MAP_WORKSITE_MAX_CUES := 4
 const MAP_WORKSITE_REFRESH_SECONDS := 0.25
 const MAX_RETAINED_ACTOR_POOL := 72
+const MAX_VISIBLE_SECT_DISCIPLE_ACTORS := 16
+const MAX_VISIBLE_ACTORS_PER_DESTINATION := 6
+const IDLE_PATROL_DESTINATIONS := [
+    SectMapPresentation.DEST_COURTYARD,
+    SectMapPresentation.DEST_MAIN_HALL,
+    SectMapPresentation.DEST_RESIDENCE,
+    SectMapPresentation.DEST_CULTIVATION,
+    SectMapPresentation.DEST_WAREHOUSE,
+    SectMapPresentation.DEST_MEDICINE,
+    SectMapPresentation.DEST_GATE
+]
+const IDLE_AMBIENT_LINES := [
+    "Linh khí thật dễ chịu.",
+    "Ta đi dạo một vòng.",
+    "Đường tu còn dài.",
+    "Tông môn thật yên bình.",
+    "Chờ Chưởng Môn giao việc.",
+    "Linh Điền xanh tốt quá."
+]
 const PERFORMANCE_SAMPLE_SECONDS := 3.0
 var _v63_hunt_resource_registry := ResourceRegistry.new()
 var sx02_selected_medicine: StringName = &""
@@ -157,6 +176,19 @@ var modular_live_actor_ids: Dictionary = {}
 var actor_virtual_positions: Dictionary = {}
 var actor_pool: Array[ModularDiscipleActor] = []
 var actor_position_tweens: Dictionary = {}
+var actor_position_tween_targets: Dictionary = {}
+var actor_idle_wander_destinations: Dictionary = {}
+var actor_idle_wander_indices: Dictionary = {}
+var actor_idle_wander_due_msec: Dictionary = {}
+var actor_transition_origins: Dictionary = {}
+var actor_transition_deadline_msec: Dictionary = {}
+var actor_last_actions: Dictionary = {}
+var actor_ambient_bubbles: Dictionary = {}
+var warehouse_display_resource_ids: Array[StringName] = []
+var npc_motion_elapsed := 0.0
+var npc_ambient_elapsed := 0.0
+var npc_ambient_delay := 6.0
+var npc_ambient_cursor := 0
 var source_a_portrait_textures: Dictionary = {}
 
 var camera_controls_panel: Panel
@@ -299,6 +331,7 @@ func _ready() -> void:
     performance_logging_enabled = OS.get_environment("TMB_PVE_PERF_LOG") == "1"
     _open_raw_frame_log()
     female_motion_library = FemaleNormalV1MotionLibrary.build()
+    warehouse_display_resource_ids = _v63_hunt_resource_registry.all_resource_ids()
     _install_modular_live_actors()
     _install_main_isometric_world()
     _sync_actor_positions()
@@ -336,6 +369,7 @@ func _exit_tree() -> void:
         if tween != null and tween.is_running():
             tween.kill()
     actor_position_tweens.clear()
+    actor_position_tween_targets.clear()
     # Recycled actors live outside the scene tree between viewport changes;
     # release them explicitly when P3.2 is torn down/reloaded.
     for actor in actor_pool:
@@ -345,10 +379,9 @@ func _exit_tree() -> void:
 
 func _spawn_all_disciples() -> void:
     # P3.1 builds a VBox/portrait/status subtree per canonical disciple here.
-    # P3.2 owns the pooled Source A actor layer, so creating and immediately
-    # freeing that legacy presentation doubles startup work on endgame saves.
-    # Keep the destination projection; _install_modular_live_actors() later
-    # materializes only viewport-selected actors without touching simulation.
+    # P3.2 owns the pooled Source A actor layer, so avoid creating and freeing
+    # a second UI subtree per roster member. The viewport actor pool materializes
+    # only nearby idle residents and short assignment transits.
     if state == null:
         return
     var ids: Array = state.disciples.keys()
@@ -746,28 +779,74 @@ func _apply_camera(zoom: float, position: Vector2, animate: bool) -> void:
     _refresh_zoom_readout()
 
 func _refresh_world_actor_visibility() -> void:
-    # Production is readable with one selected disciple on the map. All other
-    # disciples remain in SimulationState and continue their jobs; they simply
-    # do not allocate animated scene actors until selected. The PvE world uses
-    # its separate renderer and still shows the full six-member party.
+    # Materialize a bounded set of sect NPCs in the camera viewport. Selected
+    # and working disciples take priority; off-screen and remote disciples keep
+    # their canonical simulation state without allocating presentation actors.
     if map_layer == null or state == null:
         return
     var view := SectMapCamera.VIEW_RECT
     var visible_ids: Dictionary = {}
-    var selected_key := str(selected_id)
-    if not selected_key.is_empty() and state.disciples.has(selected_id) and actor_virtual_positions.has(selected_key) \
-            and not _selected_worker_is_inside_producer(state.disciples[selected_id]):
-        var local_top_left: Vector2 = actor_virtual_positions[selected_key]
-        var screen_transform: Transform2D = map_layer.get_global_transform()
+    var candidates: Array[Dictionary] = []
+    var screen_transform: Transform2D = map_layer.get_global_transform()
+    var actor_size := DiscipleActorVisualCatalog.ACTOR_BOX_SIZE
+    var ids: Array = state.disciples.keys()
+    ids.sort()
+    for raw_id in ids:
+        var disciple_id := StringName(raw_id)
+        var key := str(disciple_id)
+        if not actor_virtual_positions.has(key):
+            continue
+        var disciple: DiscipleState = state.disciples[disciple_id]
+        if disciple.region_id != &"sect" or not disciple.active_pve_encounter_id.is_empty():
+            continue
+        var idle_in_sect := _is_idle_map_actor(disciple)
+        var phase := StringName(disciple.work_cycle_state.get("phase",""))
+        var travelling_to_work := disciple.work_group_id != &"" and phase == &"travel_out"
+        var visual_transition := Time.get_ticks_msec() < int(actor_transition_deadline_msec.get(key,0))
+        # Busy workers are represented by the worksite panel while inside. Show
+        # idle residents and short assignment transitions on the sect map.
+        if not idle_in_sect and not travelling_to_work and not visual_transition:
+            continue
+        var local_top_left: Vector2 = actor_virtual_positions[key]
         var screen_top_left: Vector2 = screen_transform * local_top_left
-        var actor_size := DiscipleActorVisualCatalog.ACTOR_BOX_SIZE
         var screen_size := Vector2(
             absf(screen_transform.x.x)*actor_size.x+absf(screen_transform.y.x)*actor_size.y,
             absf(screen_transform.x.y)*actor_size.x+absf(screen_transform.y.y)*actor_size.y
         )
         var rect := Rect2(screen_top_left,screen_size)
-        if rect.position.x >= view.position.x and rect.position.y >= view.position.y and rect.end.x <= view.end.x and rect.end.y <= view.end.y:
-            visible_ids[selected_key] = true
+        if not view.encloses(rect):
+            continue
+        var is_selected := disciple_id == selected_id and focused_kind != &"building"
+        var priority := 4
+        if is_selected:
+            priority = 0
+        elif travelling_to_work or visual_transition:
+            priority = 1
+        elif disciple.current_action in [&"IDLE",&"EVALUATE"]:
+            priority = 2
+        candidates.append({
+            "key":key,
+            "destination":str(actor_destinations.get(key,SectMapPresentation.DEST_COURTYARD)),
+            "priority":priority
+        })
+    candidates.sort_custom(func(a: Dictionary,b: Dictionary) -> bool:
+        var priority_a := int(a.get("priority",4))
+        var priority_b := int(b.get("priority",4))
+        if priority_a != priority_b:
+            return priority_a < priority_b
+        return str(a.get("key","")) < str(b.get("key",""))
+    )
+    var destination_counts: Dictionary = {}
+    for candidate in candidates:
+        if visible_ids.size() >= MAX_VISIBLE_SECT_DISCIPLE_ACTORS:
+            break
+        var key := str(candidate.get("key",""))
+        var destination := str(candidate.get("destination",SectMapPresentation.DEST_COURTYARD))
+        var count := int(destination_counts.get(destination,0))
+        if count >= MAX_VISIBLE_ACTORS_PER_DESTINATION:
+            continue
+        destination_counts[destination] = count + 1
+        visible_ids[key] = true
     for raw_id in actor_nodes.keys().duplicate():
         var key := str(raw_id)
         if not visible_ids.has(key):
@@ -1909,8 +1988,8 @@ func _open_disciple(disciple_id: StringName) -> void:
 
 func _reconcile_live_actors() -> void:
     # O2: recruitment mutates the authoritative roster after scene startup.
-    # Keep one virtual location per canonical ID; only viewport-selected IDs
-    # are represented by scene nodes.
+    # Keep one virtual location per canonical ID; only nearby idle/transiting
+    # actors are represented by bounded viewport scene nodes.
     var needs_install := false
     for raw_id in state.disciples.keys():
         var key := str(raw_id)
@@ -1932,16 +2011,35 @@ func _sync_actor_positions() -> void:
         var disciple_id := StringName(ids[index])
         var key := str(disciple_id)
         var disciple: DiscipleState = state.disciples[disciple_id]
+        var had_virtual_position := actor_virtual_positions.has(key)
+        var previous_virtual_position: Vector2 = actor_virtual_positions.get(key,Vector2.ZERO)
         var previous := StringName(actor_destinations.get(key, str(SectMapPresentation.DEST_COURTYARD)))
-        var destination := SectMapPresentation.destination_for_action(disciple.current_action, previous)
-        destination = _sect_effective_door_destination(disciple,destination)
+        var previous_action := StringName(actor_last_actions.get(key,str(disciple.current_action)))
+        var action_changed := had_virtual_position and previous_action != disciple.current_action
+        var destination := _idle_destination_for(key,index) if _is_idle_wandering_actor(disciple) \
+            else SectMapPresentation.destination_for_action(disciple.current_action, previous)
+        if not _is_idle_wandering_actor(disciple):
+            destination = _sect_effective_door_destination(disciple,destination)
+            actor_idle_wander_destinations.erase(key)
+            actor_idle_wander_indices.erase(key)
+            actor_idle_wander_due_msec.erase(key)
         actor_destinations[key] = str(destination)
 
         var worksite_id := _sect_door_worksite_id(disciple,destination)
-        var world_foot := _iso_actor_point(destination,worksite_id) + _sect_actor_door_offset(disciple,index,idle_slots,destination)
+        var actor_offset := _endgame_actor_offset(disciple,index,idle_slots) if _is_idle_wandering_actor(disciple) \
+            else _sect_actor_door_offset(disciple,index,idle_slots,destination)
+        var world_foot := _iso_actor_point(destination,worksite_id) + actor_offset
         var target := world_foot - DiscipleActorVisualCatalog.ACTOR_FOOT_POINT
         actor_virtual_positions[key] = target
         var actor := actor_nodes.get(key) as Control
+        var cycle_phase := StringName(disciple.work_cycle_state.get("phase",""))
+        if action_changed and previous != destination:
+            actor_transition_deadline_msec[key] = Time.get_ticks_msec() + 4000
+            if actor == null and had_virtual_position:
+                actor_transition_origins[key] = previous_virtual_position
+        elif actor == null and had_virtual_position and cycle_phase == &"travel_out" and previous != destination:
+            actor_transition_origins[key] = previous_virtual_position
+        actor_last_actions[key] = str(disciple.current_action)
         if actor == null or not is_instance_valid(actor):
             continue
         var delta := target - actor.position
@@ -1949,10 +2047,11 @@ func _sync_actor_positions() -> void:
         # An off-screen/unselected person still works in SimulationState.
         # Skip hidden walk VFX and per-actor tweens; snap the presentation
         # position so newly visible actors cannot drift from canonical jobs.
-        var animate_actor := actor.visible and SectMapCamera.VIEW_RECT.intersects(actor.get_global_rect())
+        var animate_actor := actor.visible and SectMapCamera.VIEW_RECT.encloses(actor.get_global_rect())
+        var continuing_walk := _actor_tween_matches_target(actor,target)
         if actor is ModularDiscipleActor:
             var modular := actor as ModularDiscipleActor
-            if delta.length() > 1.0 and animate_actor:
+            if delta.length() > 1.0 and animate_actor and not continuing_walk:
                 var direction := DiscipleActorVisualCatalog.direction_for_delta(delta, modular.facing)
                 if (
                     modular.rig_id == DiscipleActorVisualCatalog.RIG_FEMALE_NORMAL_V1
@@ -2004,6 +2103,19 @@ func _idle_staging_ordinals(ids: Array) -> Dictionary:
         ordinal += 1
     return result
 
+func _is_idle_wandering_actor(disciple: DiscipleState) -> bool:
+    # HOLD means the disciple stays in the sect, not frozen at a world point.
+    # If no canonical job/remote activity owns them, they remain visible and
+    # wander within the sect presentation just like other idle residents.
+    return _is_idle_map_actor(disciple)
+
+func _idle_destination_for(key: String, index: int) -> StringName:
+    if not actor_idle_wander_destinations.has(key):
+        actor_idle_wander_destinations[key] = str(SectMapPresentation.DEST_COURTYARD)
+        actor_idle_wander_indices[key] = posmod(index,IDLE_PATROL_DESTINATIONS.size())
+        actor_idle_wander_due_msec[key] = Time.get_ticks_msec() + 2500 + posmod(index,6)*350
+    return StringName(actor_idle_wander_destinations.get(key,str(SectMapPresentation.DEST_COURTYARD)))
+
 func _is_idle_map_actor(disciple: DiscipleState) -> bool:
     return (
         disciple != null
@@ -2019,12 +2131,12 @@ func _endgame_actor_offset(disciple: DiscipleState, index: int, idle_slots: Dict
     var key := str(disciple.id)
     if not idle_slots.has(key):
         return _actor_offset(index)
-    # Idle disciples gather around the courtyard in a compact deterministic
-    # spiral. Their sprites may overlap naturally, but no two receive exactly
-    # the same position. Rendering remains bounded by the viewport LOD pool.
+    # Idle disciples use a deterministic, spread-out staging spiral around each
+    # public waypoint. This is presentation-only and stays bounded by the
+    # viewport actor pool.
     var ordinal := int(idle_slots[key])
     const GOLDEN_ANGLE := 2.399963229728653
-    var radius := 9.0 * sqrt(float(ordinal)+1.0)
+    var radius := 22.0 * sqrt(float(ordinal)+1.0)
     var angle := float(ordinal) * GOLDEN_ANGLE
     return Vector2(cos(angle),sin(angle))*radius
 
@@ -2034,12 +2146,157 @@ func _actor_anchor_offset(actor: Control) -> Vector2:
     return Vector2(30.0, 30.0)
 
 func _refresh_actor_status_label_visibility() -> void:
-    # Selected action state is in the details panel and actor tooltip.
-    # Never re-enable a world-space label after actor.sync_action() hid it.
-    for raw_id in actor_status_labels.keys():
-        var status := actor_status_labels[raw_id] as Label
-        if status != null and is_instance_valid(status):
+    # Show an occasional speech bubble for idle residents, plus a few concise
+    # travel labels. Working disciples disappear into the worksite presentation.
+    var visible_worker_cues := 0
+    var visible_status_rects: Array[Rect2] = []
+    var ids: Array = actor_nodes.keys()
+    ids.sort()
+    if not selected_id.is_empty():
+        ids.erase(str(selected_id))
+        ids.push_front(str(selected_id))
+    for raw_id in ids:
+        var key := str(raw_id)
+        var status := actor_status_labels.get(key) as Label
+        var actor := actor_nodes.get(key) as Control
+        if status == null or actor == null or not is_instance_valid(status) or not is_instance_valid(actor):
+            continue
+        var disciple_id := StringName(key)
+        if not state.disciples.has(disciple_id):
             status.visible = false
+            continue
+        var disciple: DiscipleState = state.disciples[disciple_id]
+        var is_selected := disciple_id == selected_id
+        var destination := StringName(actor_destinations.get(key,""))
+        var phase := StringName(disciple.work_cycle_state.get("phase",""))
+        var travelling_to_work := disciple.work_group_id != &"" and phase == &"travel_out"
+        var visual_transition := Time.get_ticks_msec() < int(actor_transition_deadline_msec.get(key,0))
+        var bubble: Dictionary = actor_ambient_bubbles.get(key,{})
+        var now_msec := Time.get_ticks_msec()
+        if not bubble.is_empty() and int(bubble.get("expires_msec",0)) <= now_msec:
+            actor_ambient_bubbles.erase(key)
+            bubble.clear()
+        if _is_idle_wandering_actor(disciple) and not bubble.is_empty():
+            _present_actor_status_label(status,str(bubble.get("text","")),visible_status_rects)
+            continue
+        if is_selected and (_is_idle_map_actor(disciple) or travelling_to_work or visual_transition):
+            _present_actor_status_label(status,_actor_map_status_text(disciple),visible_status_rects)
+            continue
+        if not travelling_to_work and not visual_transition or visible_worker_cues >= 3:
+            status.visible = false
+            continue
+        if _present_actor_status_label(status,_actor_map_status_text(disciple),visible_status_rects):
+            visible_worker_cues += 1
+
+func _present_actor_status_label(status: Label, text: String, visible_rects: Array[Rect2]) -> bool:
+    status.text = text
+    status.visible = true
+    var candidate_rect := status.get_global_rect()
+    for visible_rect in visible_rects:
+        if candidate_rect.intersects(visible_rect):
+            status.visible = false
+            return false
+    visible_rects.append(candidate_rect)
+    return true
+
+func _actor_map_status_text(disciple: DiscipleState) -> String:
+    var key := str(disciple.id)
+    if Time.get_ticks_msec() < int(actor_transition_deadline_msec.get(key,0)):
+        return "ĐẾN " + _destination_short_label(StringName(actor_destinations.get(key,"")))
+    var cycle: Dictionary = disciple.work_cycle_state
+    var phase := StringName(cycle.get("phase",""))
+    match phase:
+        &"travel_out":
+            return "TỚI " + _destination_short_label(StringName(actor_destinations.get(str(disciple.id),"")))
+        &"mining":
+            return "ĐANG KHAI THÁC"
+        &"harvesting":
+            return "ĐANG THU HOẠCH"
+        &"haul_back":
+            return "VỀ KHO · ×%d" % maxi(int(cycle.get("carried_units",0)),0)
+    return SectMapPresentation.action_label(disciple.current_action).to_upper()
+
+func _destination_short_label(destination: StringName) -> String:
+    match destination:
+        SectMapPresentation.DEST_MINE: return "MỎ"
+        SectMapPresentation.DEST_LINH_FOREST: return "LINH LÂM"
+        SectMapPresentation.DEST_SPIRIT_FIELD: return "LINH ĐIỀN"
+        SectMapPresentation.DEST_FORGE: return "LUYỆN KHÍ"
+        SectMapPresentation.DEST_ALCHEMY_HALL: return "LUYỆN ĐAN"
+        SectMapPresentation.DEST_CULTIVATION: return "TU LUYỆN"
+        SectMapPresentation.DEST_BODY_TRAINING: return "RÈN THÂN"
+        _: return "CÔNG TRÌNH"
+
+func _advance_idle_disciple_walks() -> void:
+    if state == null or map_layer == null:
+        return
+    var now_msec := Time.get_ticks_msec()
+    var ids: Array = state.disciples.keys()
+    ids.sort()
+    var idle_slots := _idle_staging_ordinals(ids)
+    for index in range(ids.size()):
+        var disciple_id := StringName(ids[index])
+        var key := str(disciple_id)
+        var disciple: DiscipleState = state.disciples[disciple_id]
+        if not _is_idle_wandering_actor(disciple):
+            continue
+        if not actor_idle_wander_destinations.has(key):
+            _idle_destination_for(key,index)
+        if now_msec < int(actor_idle_wander_due_msec.get(key,now_msec + 1000)):
+            continue
+        var actor := actor_nodes.get(key) as ModularDiscipleActor
+        if actor != null and is_instance_valid(actor) and _actor_tween_matches_target(actor,Vector2(actor_virtual_positions.get(key,actor.position))):
+            continue
+        var waypoint_index := int(actor_idle_wander_indices.get(key,0))
+        waypoint_index = posmod(waypoint_index + 1,IDLE_PATROL_DESTINATIONS.size())
+        actor_idle_wander_indices[key] = waypoint_index
+        var destination := StringName(IDLE_PATROL_DESTINATIONS[waypoint_index])
+        actor_idle_wander_destinations[key] = str(destination)
+        actor_destinations[key] = str(destination)
+        var worksite_id := _sect_door_worksite_id(disciple,destination)
+        var world_foot := _iso_actor_point(destination,worksite_id) \
+            + _endgame_actor_offset(disciple,index,idle_slots)
+        var target := world_foot - DiscipleActorVisualCatalog.ACTOR_FOOT_POINT
+        var delay := 6500 + posmod(index * 431 + waypoint_index * 977,5000)
+        actor_idle_wander_due_msec[key] = now_msec + delay
+        actor_virtual_positions[key] = target
+        if actor == null or not is_instance_valid(actor) or not actor.visible:
+            continue
+        var delta := target - actor.position
+        if delta.length() <= 14.0:
+            continue
+        actor.play_walk_for_delta(delta)
+        _animate_actor_position(actor,target)
+
+func _show_next_idle_ambient_line() -> void:
+    if state == null or actor_nodes.is_empty():
+        npc_ambient_delay = 4.0
+        return
+    var keys: Array = actor_nodes.keys()
+    keys.sort()
+    var idle_keys: Array[String] = []
+    for raw_key in keys:
+        var key := str(raw_key)
+        var disciple_id := StringName(key)
+        if not state.disciples.has(disciple_id):
+            continue
+        var actor := actor_nodes.get(key) as Control
+        if actor == null or not is_instance_valid(actor) or not actor.visible:
+            continue
+        if _is_idle_wandering_actor(state.disciples[disciple_id]):
+            idle_keys.append(key)
+    if idle_keys.is_empty():
+        npc_ambient_delay = 4.0
+        return
+    var key := idle_keys[posmod(npc_ambient_cursor,idle_keys.size())]
+    var line := str(IDLE_AMBIENT_LINES[posmod(npc_ambient_cursor,IDLE_AMBIENT_LINES.size())])
+    npc_ambient_cursor += 1
+    actor_ambient_bubbles[key] = {
+        "text":line,
+        "expires_msec":Time.get_ticks_msec() + 2900
+    }
+    npc_ambient_delay = 8.0 + float(posmod(npc_ambient_cursor,5)) * 1.25
+    _refresh_actor_status_label_visibility()
 
 func _stage_a_live_assets_ready() -> bool:
     return (
@@ -2057,16 +2314,45 @@ func _cancel_actor_position_tween(actor: Control) -> void:
         if tween.is_running():
             tween.kill()
         actor_position_tweens.erase(instance_id)
+    actor_position_tween_targets.erase(instance_id)
+
+func _actor_tween_matches_target(actor: Control, target: Vector2) -> bool:
+    if actor == null or not is_instance_valid(actor):
+        return false
+    var instance_id := actor.get_instance_id()
+    var tween := actor_position_tweens.get(instance_id) as Tween
+    if tween == null or not tween.is_running() or not actor_position_tween_targets.has(instance_id):
+        return false
+    return Vector2(actor_position_tween_targets[instance_id]).distance_to(target) <= 1.0
 
 func _animate_actor_position(actor: Control, target: Vector2) -> void:
+    if _actor_tween_matches_target(actor,target):
+        return
     _cancel_actor_position_tween(actor)
     var instance_id := actor.get_instance_id()
+    var travel_distance := actor.position.distance_to(target)
     var tween := create_tween()
     actor_position_tweens[instance_id] = tween
+    actor_position_tween_targets[instance_id] = target
     tween.set_trans(Tween.TRANS_QUAD)
     tween.set_ease(Tween.EASE_IN_OUT)
-    tween.tween_property(actor, "position", target, 0.32)
-    tween.finished.connect(_forget_actor_position_tween.bind(instance_id, tween))
+    var duration := clampf(travel_distance / 260.0,0.7,1.8)
+    tween.tween_property(actor, "position", target, duration)
+    tween.finished.connect(_finish_actor_position_tween.bind(actor,instance_id,tween))
+
+func _finish_actor_position_tween(actor: Control, instance_id: int, tween: Tween) -> void:
+    if actor_position_tweens.get(instance_id) != tween:
+        return
+    actor_position_tweens.erase(instance_id)
+    actor_position_tween_targets.erase(instance_id)
+    if actor == null or not is_instance_valid(actor):
+        return
+    var disciple_id := StringName(str(actor.name).trim_prefix("ModularDisciple_"))
+    actor_transition_deadline_msec.erase(str(disciple_id))
+    actor_transition_origins.erase(str(disciple_id))
+    if state.disciples.has(disciple_id):
+        (actor as ModularDiscipleActor).sync_action((state.disciples[disciple_id] as DiscipleState).current_action)
+        _refresh_actor_status_label_visibility()
 
 func _forget_actor_position_tween(instance_id: int, tween: Tween) -> void:
     if actor_position_tweens.get(instance_id) == tween:
@@ -2135,11 +2421,30 @@ func _materialize_modular_actor(key: String) -> void:
     if source_a_scene != null and not actor.production_body_active():
         actor.set_baked_visual(source_a_scene)
     actor.sync_action(disciple.current_action)
-    actor.position = actor_virtual_positions[key]
+    var target: Vector2 = actor_virtual_positions[key]
+    var spawn_position := target
+    var travel_phase := StringName(disciple.work_cycle_state.get("phase","")) == &"travel_out"
+    var show_transition := Time.get_ticks_msec() < int(actor_transition_deadline_msec.get(key,0))
+    if show_transition and actor_transition_origins.has(key):
+        spawn_position = Vector2(actor_transition_origins[key])
+        actor_transition_origins.erase(key)
+    elif travel_phase:
+        var ids: Array = state.disciples.keys()
+        ids.sort()
+        var actor_index := maxi(ids.find(disciple.id),0)
+        var idle_slots := _idle_staging_ordinals(ids)
+        spawn_position = _iso_actor_point(SectMapPresentation.DEST_COURTYARD) \
+            + _endgame_actor_offset(disciple,actor_index,idle_slots) \
+            - DiscipleActorVisualCatalog.ACTOR_FOOT_POINT
+    actor.position = spawn_position
     map_layer.add_child(actor)
     actor_nodes[key] = actor
     actor_status_labels[key] = actor.status_label
     modular_live_actor_ids[key] = true
+    var arrival_delta := target - spawn_position
+    if (travel_phase or show_transition) and arrival_delta.length() > 1.0 and SectMapCamera.VIEW_RECT.encloses(actor.get_global_rect()):
+        actor.play_walk_for_delta(arrival_delta)
+        _animate_actor_position(actor,target)
 
 func _take_modular_actor() -> ModularDiscipleActor:
     if not actor_pool.is_empty():
@@ -2153,6 +2458,7 @@ func _recycle_modular_actor(key: String) -> void:
     var actor := actor_nodes.get(key) as ModularDiscipleActor
     actor_nodes.erase(key)
     actor_status_labels.erase(key)
+    actor_ambient_bubbles.erase(key)
     if actor == null or not is_instance_valid(actor):
         return
     _cancel_actor_position_tween(actor)
@@ -2719,7 +3025,7 @@ func _refresh_building_operation_content() -> void:
             operation_text = operation_text.substr(0,roster_boundary)
         var active_work_status := _active_resource_worksite_status(selected_building)
         if not active_work_status.is_empty():
-            operation_text += "\n\nĐANG THỰC HIỆN\n" + active_work_status
+            operation_text += "\n\nĐỘI & TIẾN ĐỘ\n" + active_work_status
     if selected_production_instance_id != &"" and state.buildings.has(str(selected_production_instance_id)):
         operation_text += "\n\n" + _map_worksite_operation_detail(
             state.buildings[str(selected_production_instance_id)] as BuildingState
@@ -2766,9 +3072,9 @@ func _active_resource_worksite_status(destination: StringName) -> String:
         var cycle_profession := StringName(cycle.get("profession_id",cycle.get("profession","")))
         var timer := BuildingSystem.new().active_resource_timer_for_worker(state,disciple.id)
         var timer_matches := not timer.is_empty() and StringName(timer.get("profession_id","")) == profession_id
-        if cycle_profession != profession_id and not timer_matches:
+        if cycle_profession != profession_id and not timer_matches and not active_ids.has(disciple.id):
             continue
-        var status := _mining_member_status(disciple,true) if profession_id == WorkforceSystem.PROF_MINING else _resource_job_member_status(disciple,profession_id,true)
+        var status := _mining_member_status(disciple,true,building) if profession_id == WorkforceSystem.PROF_MINING else _resource_job_member_status(disciple,profession_id,true,building)
         lines.append("• %s · %s" % [disciple.display_name,status])
     return "\n".join(lines)
 
@@ -3020,7 +3326,7 @@ func _build_needs_priority_controls(title: String) -> void:
     ], state.sect.needs_priority, "_set_needs_priority_from_building")
 
 func _build_guidance_recruitment_controls() -> void:
-    _add_management_section_label("CHIÊU MỘ · HỒ SƠ LỤC DUY")
+    _add_management_section_label("CHIÊU MỘ · HỒ SƠ TAM CĂN / TỨ TÍNH")
     var entry := Button.new()
     entry.name = "OpenDanTienScreenV2"
     entry.text = "MỞ DẪN TIÊN ĐÀI · TUYỂN ĐỆ TỬ"
@@ -4327,15 +4633,19 @@ func _linh_forest_operation_text() -> String:
         lines.append("• %s · Lv%d · %s" % [
             disciple.display_name,
             level,
-            _resource_job_member_status(disciple, WorkforceSystem.PROF_FORESTRY, active_ids.has(disciple.id))
+            _resource_job_member_status(disciple, WorkforceSystem.PROF_FORESTRY, active_ids.has(disciple.id),forest)
         ])
     if lines.is_empty():
         lines.append("• Chưa có thành viên Đội Lâm Nghiệp")
+    var batches := 0 if forest == null else maxi(int(forest.metrics.get("production_batches",0)),0)
+    var units := 0 if forest == null else maxi(int(forest.metrics.get("units_produced",0)),0)
 
     return (
         "SẢN XUẤT\n"
         + "Linh Lâm Lv%d\n"
         + "Linh Mộc tồn (dùng): %s\n"
+        + "Sản lượng chuẩn mỗi mẻ theo cấp: ×%d Linh Mộc\n"
+        + "Đã nhập Kho từ khi xây: %d Linh Mộc · %d mẻ\n"
         + "Chỗ hoạt động: %d/%d\n"
         + "Đang làm Lâm Nghiệp: %d\n"
         + "Thành viên đội: %d\n\n"
@@ -4344,6 +4654,8 @@ func _linh_forest_operation_text() -> String:
     ) % [
         0 if forest == null else forest.level,
         _warehouse_pair(&"linh_moc"),
+        0 if forest == null else building_system.resource_job_batch_units(forest),
+        units,batches,
         active_ids.size(),
         slots,
         _count_action(&"WORK_FORESTRY"),
@@ -4351,33 +4663,41 @@ func _linh_forest_operation_text() -> String:
         "\n".join(lines)
     ]
 
-func _resource_job_member_status(disciple: DiscipleState, profession_id: StringName, has_active_slot: bool) -> String:
+func _resource_job_member_status(disciple: DiscipleState, profession_id: StringName, has_active_slot: bool, building: BuildingState = null) -> String:
+    var output_quantity := 0
+    var output_name := "nguyên liệu"
+    var work_duration := 1.0
+    if building != null:
+        var building_system := BuildingSystem.new()
+        output_quantity = building_system.resource_job_batch_units(building)
+        work_duration = building_system.resource_job_work_duration(building)
+        var definition := building_system.definition_for(building)
+        output_name = ResourceRegistry.new().display_name(StringName(definition.get("resource_id","")))
+    var batch_text := "mẻ ×%d %s" % [output_quantity,output_name] if output_quantity > 0 else "mẻ sản xuất"
     if state.sect.economy_a_enabled:
         var timer := BuildingSystem.new().active_resource_timer_for_worker(state,disciple.id)
         if not timer.is_empty() and StringName(timer.get("profession_id","")) == profession_id:
-            return "Đang sản xuất · còn %d phút" % maxi(int(timer.get("finish_tick",state.tick))-state.tick,0)
+            return "Đang sản xuất · mẻ ×%d · còn %d nhịp" % [maxi(int(timer.get("output_quantity",output_quantity)),0),maxi(int(timer.get("finish_tick",state.tick))-state.tick,0)]
     if not has_active_slot:
         return "Chờ chỗ hoạt động"
     var cycle: Dictionary = disciple.work_cycle_state
     var cycle_profession := StringName(cycle.get("profession_id", cycle.get("profession", "")))
     if cycle_profession != profession_id:
-        return "Sẵn sàng · %s" % SectMapPresentation.action_label(disciple.current_action)
+        return "Sẵn sàng · %s" % batch_text
 
     var phase := StringName(cycle.get("phase", ""))
-    var progress := maxf(float(cycle.get("progress", 0.0)), 0.0)
     match phase:
         &"travel_out":
-            return "Đang tới công trình · %.1f" % progress
+            return "Đang tới %s · %s" % [_destination_short_label(StringName(actor_destinations.get(str(disciple.id),""))).to_lower(),batch_text]
         &"mining":
-            return "Đang khai thác · %.1f" % progress
+            var progress := clampi(roundi(float(cycle.get("progress",0.0))/maxf(work_duration,0.1)*100.0),0,99)
+            return "Đang khai thác %d%% · %s" % [progress,batch_text]
         &"harvesting":
-            return "Đang thu hoạch Linh Mộc · %.1f" % progress
+            return "Đang chăm sóc Linh Điền" if profession_id == WorkforceSystem.PROF_HERBALISM else "Đang thu hoạch · %s" % batch_text
         &"haul_back":
-            return "Vận chuyển về kho · %.1f · mang %d" % [
-                progress, maxi(int(cycle.get("carried_units", 0)), 0)
-            ]
+            return "Đang chở ×%d về Kho" % maxi(int(cycle.get("carried_units",0)),0)
         _:
-            return "Sẵn sàng · %s" % SectMapPresentation.action_label(disciple.current_action)
+            return "Chờ chu kỳ · %s" % batch_text
 
 func _mine_operation_text() -> String:
     var members := _disciples_in_work_group(&"mining_crew")
@@ -4397,16 +4717,18 @@ func _mine_operation_text() -> String:
         var is_active := active_ids.has(disciple.id)
         if not is_active:
             waiting_count += 1
-        var location := (
-            " · điểm %s" % str(disciple.worksite_building_id)
-            if disciple.worksite_building_id != &"" else " · điểm mặc định"
-        )
+        var location := " · điểm mặc định"
+        if disciple.worksite_building_id != &"" and state.buildings.has(str(disciple.worksite_building_id)):
+            var worksite: BuildingState = state.buildings[str(disciple.worksite_building_id)]
+            location = " · Mỏ %02d" % maxi(worksite.instance_index,1)
         lines.append("• %s · Lv%d · %s%s" % [
             disciple.display_name, level,
-            _mining_member_status(disciple, is_active), location
+            _mining_member_status(disciple, is_active,mine), location
         ])
     if lines.is_empty():
         lines.append("• Chưa có thành viên Đội Khai Khoáng")
+    var batches := 0 if mine == null else maxi(int(mine.metrics.get("production_batches",0)),0)
+    var units := 0 if mine == null else maxi(int(mine.metrics.get("units_produced",0)),0)
 
     var upgrade_text := "Ổn định"
     if mine != null and mine.is_upgrading():
@@ -4419,6 +4741,8 @@ func _mine_operation_text() -> String:
         "SẢN XUẤT\n"
         + "Mỏ Lv%d · %s\n"
         + "Thanh Thiết tồn (dùng): %s\n"
+        + "Sản lượng chuẩn mỗi mẻ theo cấp: ×%d Thanh Thiết\n"
+        + "Đã nhập Kho từ khi xây: %d Thanh Thiết · %d mẻ\n"
         + "Chỗ hoạt động: %d/%d\n"
         + "Đang chờ slot Mỏ: %d\n"
         + "Đang khai khoáng: %d\n"
@@ -4429,6 +4753,8 @@ func _mine_operation_text() -> String:
         0 if mine == null else mine.level,
         upgrade_text,
         _warehouse_pair(&"thanh_thiet"),
+        0 if mine == null else building_system.resource_job_batch_units(mine),
+        units,batches,
         active_ids.size(),
         slots,
         waiting_count,
@@ -4437,30 +4763,8 @@ func _mine_operation_text() -> String:
         "\n".join(lines)
     ]
 
-func _mining_member_status(disciple: DiscipleState, has_active_slot: bool) -> String:
-    if state.sect.economy_a_enabled:
-        var timer := BuildingSystem.new().active_resource_timer_for_worker(state,disciple.id)
-        if not timer.is_empty():
-            return "Mẻ timer · còn %d phút" % maxi(int(timer.get("finish_tick",state.tick))-state.tick,0)
-    if not has_active_slot:
-        return "Chờ chỗ hoạt động"
-    var cycle: Dictionary = disciple.work_cycle_state
-    if StringName(cycle.get("profession", "")) != WorkforceSystem.PROF_MINING:
-        return "Sẵn sàng · %s" % SectMapPresentation.action_label(disciple.current_action)
-
-    var phase := StringName(cycle.get("phase", ""))
-    var progress := maxf(float(cycle.get("progress", 0.0)), 0.0)
-    match phase:
-        &"travel_out":
-            return "Đang tới mỏ · %.1f" % progress
-        &"mining":
-            return "Đang khai thác · %.1f" % progress
-        &"haul_back":
-            return "Vận chuyển về kho · %.1f · mang %d" % [
-                progress, maxi(int(cycle.get("carried_units", 0)), 0)
-            ]
-        _:
-            return "Sẵn sàng · %s" % SectMapPresentation.action_label(disciple.current_action)
+func _mining_member_status(disciple: DiscipleState, has_active_slot: bool, mine: BuildingState = null) -> String:
+    return _resource_job_member_status(disciple,WorkforceSystem.PROF_MINING,has_active_slot,mine)
 
 func _spirit_field_operation_text() -> String:
     var buildings := BuildingSystem.new()
@@ -4470,8 +4774,11 @@ func _spirit_field_operation_text() -> String:
 
     var plots := buildings.spirit_field_plots(state, field)
     var active_ids := buildings.active_worker_ids(state, field)
+    var field_members := _disciples_in_work_group(&"herbalism_crew")
     var growing := 0
     var plot_lines: Array[String] = []
+    var member_lines: Array[String] = []
+    var member_plot_status: Dictionary = {}
     var plot_index := 0
     for raw_plot in plots:
         var plot: Dictionary = raw_plot
@@ -4489,28 +4796,49 @@ func _spirit_field_operation_text() -> String:
         if state.disciples.has(worker_id):
             worker_name = (state.disciples[worker_id] as DiscipleState).display_name
         var remaining := maxi(int(plot.get("finish_tick", state.tick)) - state.tick, 0)
-        plot_lines.append("• %s · %s · %s · còn %d phút · đã trả %d LT" % [
+        var crop_name := spirit_crop_registry.display_name(crop_id)
+        var routine_yield := maxi(int(plot.get("routine_yield",spirit_crop_registry.base_yield(crop_id))),1)
+        plot_lines.append("• %s · %s · %s · mẻ ×%d · còn %d nhịp · đã trả %d LT" % [
             plot_name,
-            spirit_crop_registry.display_name(crop_id),
+            crop_name,
             worker_name,
+            routine_yield,
             remaining,
             int(plot.get("paid_spirit_stones", 0))
         ])
+        if worker_id != &"":
+            member_plot_status[str(worker_id)] = "Chăm sóc %s · %s ×%d · còn %d nhịp" % [plot_name,crop_name,routine_yield,remaining]
+
+    for disciple in field_members:
+        var level := workforce.profession_level_for_state(state,disciple,WorkforceSystem.PROF_HERBALISM)
+        var member_status := "Chờ chỗ hoạt động" if not active_ids.has(disciple.id) else "Sẵn sàng gieo · chờ lô trống"
+        if member_plot_status.has(str(disciple.id)):
+            member_status = str(member_plot_status[str(disciple.id)])
+        member_lines.append("• %s · Linh Thực Lv%d · %s" % [
+            disciple.display_name,level,member_status
+        ])
+    if member_lines.is_empty():
+        member_lines.append("• Chưa phân đệ tử vào Đội Linh Thực")
 
     var crop_lines: Array[String] = []
     for crop_id in spirit_crop_registry.eligible_crop_ids(field.level):
-        crop_lines.append("• %s · phí %d LT · nền %d phút · nền %d" % [
+        crop_lines.append("• %s · phí %d LT · chu kỳ nền %d nhịp · sản lượng nền %d" % [
             spirit_crop_registry.display_name(crop_id),
             spirit_crop_registry.cost(crop_id),
             spirit_crop_registry.base_cycle_ticks(crop_id),
             spirit_crop_registry.base_yield(crop_id)
         ])
 
+    var batches := maxi(int(field.metrics.get("production_batches",0)),0)
+    var units := maxi(int(field.metrics.get("units_produced",0)),0)
+
     return (
         "LINH ĐIỀN Lv%d\n"
         + "Chính sách: %s\n"
         + "Linh Thạch Tông Môn: %d\n"
         + "Worker hoạt động: %d/%d · Ô đang trồng: %d/%d\n\n"
+        + "ĐÃ THU HOẠCH: %d đơn vị · %d mẻ (mọi loại cây)\n"
+        + "ĐỘI LINH THỰC\n%s\n\n"
         + "CÂY HỢP LỆ\n%s\n\n"
         + "Ô RUỘNG\n%s\n\n"
         + "KHO THU HOẠCH (tồn / dùng)\n"
@@ -4522,6 +4850,8 @@ func _spirit_field_operation_text() -> String:
         state.sect.spirit_stones,
         active_ids.size(), buildings.worker_slots(field),
         growing, plots.size(),
+        units,batches,
+        "\n".join(member_lines),
         "\n".join(crop_lines),
         "\n".join(plot_lines),
         _warehouse_pair(&"linh_coc", true),
@@ -4644,8 +4974,9 @@ func _residence_operation_text() -> String:
     var overloaded := population > state.sect.lodging_capacity
     var recovery_pct := NeedsSystem.new().rest_recovery_multiplier(state) * 100.0
     var rest_lines := _action_disciple_lines([&"REST"])
+    var houses := SectResidenceSystemV1.all_houses(state)
     var house_lines: Array[String] = []
-    for house in SectResidenceSystemV1.all_houses(state):
+    for house in houses:
         if house.status == BuildingSystem.STATUS_CONSTRUCTING:
             house_lines.append("• Đệ Tử Xá %02d · Đang thi công · còn %d nhịp" % [
                 house.instance_index,SectResidenceSystemV1.construction_remaining_ticks(state,house)
@@ -4661,7 +4992,8 @@ func _residence_operation_text() -> String:
     if house_lines.is_empty():
         house_lines.append("• Chưa có Đệ Tử Xá")
     return (
-        "Sức chứa: %d / %d\n"
+        "Loại công trình: Đệ Tử Xá (1) · đang có %d/%d căn\n"
+        + "Sức chứa: %d / %d\n"
         + "Tình trạng: %s\n"
         + "Hệ số hồi phục hiện tại: %.0f%%\n"
         + "Vật tư: %d\n"
@@ -4670,6 +5002,7 @@ func _residence_operation_text() -> String:
         + "ĐỆ TỬ ĐANG NGHỈ\n%s\n\n"
         + "Gọi đệ tử về nghỉ hoặc mở rộng chỗ ở khi tông môn quá tải."
     ) % [
+        houses.size(),SectResidenceSystemV1.maximum_instances(state),
         population, state.sect.lodging_capacity,
         "QUÁ TẢI" if overloaded else "Ổn định",
         recovery_pct, state.sect.supply_stock,
@@ -4723,32 +5056,81 @@ func _warehouse_operation_text() -> String:
             EquipmentSystem.LOCATION_SHOP: shop_count += 1
             EquipmentSystem.LOCATION_EQUIPPED: equipped_count += 1
 
+    var stock_lines: Array[String] = []
+    var stocked_types := 0
+    var warehouse_system := WarehouseSystem.new()
+    if warehouse_display_resource_ids.is_empty():
+        warehouse_display_resource_ids = _v63_hunt_resource_registry.all_resource_ids()
+    for resource_id in warehouse_display_resource_ids:
+        var amount := _warehouse_inventory_amount(resource_id,warehouse_system)
+        var available := _warehouse_inventory_available(resource_id,warehouse_system)
+        var rule := warehouse_system.rule(state,resource_id) if state.sect.p3_7_resources_enabled else {"reserve_min":0,"locked":false}
+        var reserve := maxi(int(rule.get("reserve_min",0)),0)
+        var locked := bool(rule.get("locked",false))
+        if amount <= 0 and reserve == 0 and not locked:
+            continue
+        if amount > 0:
+            stocked_types += 1
+        var availability_note := " · ĐANG KHÓA" if locked else (" · giữ %d" % reserve if reserve > 0 else "")
+        stock_lines.append("• %s ×%s · dùng được %s%s" % [
+            _v63_hunt_resource_registry.display_name(resource_id),
+            _compact_number(amount),_compact_number(available),availability_note
+        ])
+    if stock_lines.is_empty():
+        stock_lines.append("• Chưa có nguyên liệu trong Kho")
+    var production_lines := _warehouse_production_lines()
+    if production_lines.is_empty():
+        production_lines.append("• Chưa có mẻ sản xuất nào được nhập kho")
+
     return (
         "TIỀN TỆ\n"
         + "Ngân khố: %d · Linh Thạch: %d\n\n"
         + "SINH HOẠT\n"
         + "Thuốc: %d · Vật tư: %d\n\n"
-        + "KHO VẬT LIỆU (tồn / có thể dùng)\n"
-        + "Thanh Thiết: %s · Linh Mộc: %s\n"
-        + "Tinh Lang Bì: %s · Yêu Đan: %s\n"
-        + "Linh Cốc: %s · Thanh Linh Thảo: %s\n"
-        + "Tử Vân Thảo: %s · Hồi Xuân Đan: %s\n\n"
+        + "NGUYÊN LIỆU · %d LOẠI CÓ TỒN · tồn / dùng được\n%s\n\n"
+        + "SẢN LƯỢNG TÍCH LŨY ĐÃ NHẬP KHO\n%s\n\n"
         + "TRANG BỊ\n"
         + "Trong kho: %d · Đang bán: %d · Đã trang bị: %d\n\n"
-        + "Trang bị và vật tư được tổng hợp tại đây."
+        + "Linh Thạch, tiền, thuốc và vật tư là số dư tông môn. Sản lượng trên là số ghi nhận theo từng công trình kể từ khi được xây."
     ) % [
         state.sect.treasury, state.sect.spirit_stones,
         state.sect.medicine_stock, state.sect.supply_stock,
-        _warehouse_pair(&"thanh_thiet"),
-        _warehouse_pair(&"linh_moc"),
-        _warehouse_pair(&"tinh_lang_bi"),
-        _warehouse_pair(&"yeu_dan"),
-        _warehouse_pair(&"linh_coc", true),
-        _warehouse_pair(&"thanh_linh_thao", true),
-        _warehouse_pair(&"tu_van_thao", true),
-        _warehouse_pair(&"hoi_xuan_dan", true),
+        stocked_types,"\n".join(stock_lines),
+        "\n".join(production_lines),
         storage_count, shop_count, equipped_count
     ]
+
+func _warehouse_inventory_amount(resource_id: StringName, warehouse_system: WarehouseSystem) -> int:
+    if state.sect.p3_7_resources_enabled:
+        return warehouse_system.quantity(state,resource_id)
+    return maxi(int(state.sect.forge_materials.get(str(resource_id),0)),0) \
+        + maxi(int(state.sect.technique_materials.get(str(resource_id),0)),0)
+
+func _warehouse_inventory_available(resource_id: StringName, warehouse_system: WarehouseSystem) -> int:
+    if state.sect.p3_7_resources_enabled:
+        return warehouse_system.available_quantity(state,resource_id)
+    return _warehouse_inventory_amount(resource_id,warehouse_system)
+
+func _warehouse_production_lines() -> Array[String]:
+    var result: Array[String] = []
+    var building_ids: Array = state.buildings.keys()
+    building_ids.sort()
+    for raw_id in building_ids:
+        var building: BuildingState = state.buildings[raw_id]
+        var output_name := ""
+        match building.building_type:
+            BuildingSystem.TYPE_MINE: output_name = "Thanh Thiết"
+            BuildingSystem.TYPE_LINH_FOREST: output_name = "Linh Mộc"
+            BuildingSystem.TYPE_SPIRIT_FIELD: output_name = "nông sản gộp"
+            _: continue
+        var batches := maxi(int(building.metrics.get("production_batches",0)),0)
+        var units := maxi(int(building.metrics.get("units_produced",0)),0)
+        if batches <= 0 and units <= 0:
+            continue
+        var ordinal := maxi(building.instance_index,1)
+        var site_name := "Mỏ" if building.building_type == BuildingSystem.TYPE_MINE else ("Linh Lâm" if building.building_type == BuildingSystem.TYPE_LINH_FOREST else "Linh Điền")
+        result.append("• %s %02d · %d mẻ · %d %s" % [site_name,ordinal,batches,units,output_name])
+    return result
 
 func _gate_operation_text() -> String:
     var outside: Array[String] = []
@@ -4855,6 +5237,14 @@ func _process(_delta: float) -> void:
                 performance_hunt_refresh_usec_total += refresh_elapsed_usec
                 performance_hunt_refresh_usec_max = maxi(performance_hunt_refresh_usec_max,refresh_elapsed_usec)
         return
+    npc_motion_elapsed += _delta
+    if npc_motion_elapsed >= 0.5:
+        npc_motion_elapsed = 0.0
+        _advance_idle_disciple_walks()
+    npc_ambient_elapsed += _delta
+    if npc_ambient_elapsed >= npc_ambient_delay:
+        npc_ambient_elapsed = 0.0
+        _show_next_idle_ambient_line()
     if iso_world != null:
         if iso_world.set_legacy_transform(map_layer.scale.x,map_layer.position):
             iso_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
@@ -4864,7 +5254,8 @@ func _process(_delta: float) -> void:
             _refresh_map_worksite_cue_transforms()
             map_worksite_cues_dirty = true
             map_worksite_refresh_elapsed = 0.0
-            _refresh_world_actor_visibility()
+            # Actor culling/materialization is throttled below; do not scan a
+            # large roster on every camera tween/pan frame.
     _refresh_living_cue_positions()
     actor_visibility_refresh_elapsed += _delta
     if actor_visibility_refresh_elapsed >= 0.12:

@@ -1823,6 +1823,14 @@ func _resource_job_batch_units(building: BuildingState) -> int:
     var base := maxi(int(definition_for(building).get("base_batch_units", 2)), 1)
     return base + int(floor(float(building.level) / 10.0))
 
+## Read-only canonical production preview for presentation. Simulation and UI
+## share the same batch/duration rules; this does not reserve or grant stock.
+func resource_job_work_duration(building: BuildingState) -> float:
+    return _resource_job_duration(building)
+
+func resource_job_batch_units(building: BuildingState) -> int:
+    return _resource_job_batch_units(building)
+
 # Keep old helper names for regression/debug compatibility.
 func _mining_duration(mine: BuildingState) -> float:
     return _resource_job_duration(mine)

@@ -4,6 +4,7 @@ const MAIN_SCENE := "res://scenes/p3/p3_2_landscape_sect.tscn"
 const SOURCE_SAVE_PATH := "res://qa/endgame_qa_save.json"
 const SAVE_PATH := "user://endgame_map_density_test_save.json"
 const EXPECTED_PRODUCERS := {"mine": 30, "linh_forest": 30, "spirit_field": 40}
+const MAX_VISIBLE_MAP_ACTORS := 16
 
 func _init() -> void:
 	call_deferred("_run")
@@ -48,10 +49,23 @@ func _run() -> void:
 	var state: SimulationState = scene.get("state")
 	await create_timer(0.4).timeout
 	print("TMB_ENDGAME_MAP_DENSITY STAGE runtime_ready")
+	var mine_panel := str(scene.call("_mine_operation_text"))
+	var forest_panel := str(scene.call("_linh_forest_operation_text"))
+	var field_panel := str(scene.call("_spirit_field_operation_text"))
+	if not mine_panel.contains("Sản lượng chuẩn mỗi mẻ theo cấp") or not mine_panel.contains("Đã nhập Kho từ khi xây"):
+		_fail("mine_management_panel_missing_canonical_batch_yield_or_received_stock")
+		return
+	if not forest_panel.contains("Sản lượng chuẩn mỗi mẻ theo cấp") or not forest_panel.contains("Đã nhập Kho từ khi xây"):
+		_fail("forest_management_panel_missing_canonical_batch_yield_or_received_stock")
+		return
+	if not field_panel.contains("ĐÃ THU HOẠCH") or not field_panel.contains("CÂY HỢP LỆ"):
+		_fail("spirit_field_management_panel_missing_harvest_and_crop_output_data")
+		return
 	var before := JSON.stringify(state.to_dict(), "", true)
 	var world: SectIsometricWorldV1 = scene.get("iso_world")
 	var seen_ids := {}
 	var producer_rows := 0
+	var producer_counts := {"mine":0,"linh_forest":0,"spirit_field":0}
 	var cells := {}
 	for raw_type in EXPECTED_PRODUCERS:
 		var expected := int(EXPECTED_PRODUCERS[raw_type])
@@ -83,10 +97,19 @@ func _run() -> void:
 			_fail("duplicate_producer_display_identity", {"building": id})
 			return
 		seen_ids[id] = true
-		producer_rows += 1
+		var destination := str(row.get("destination",""))
+		if producer_counts.has(destination):
+			producer_counts[destination] = int(producer_counts[destination])+1
+			producer_rows += 1
 	if producer_rows != 100:
-		_fail("endgame_scene_did_not_render_100_real_producer_instances", {"rows": producer_rows})
+		_fail("endgame_scene_did_not_render_100_real_resource_producer_instances", {"rows": producer_rows,"by_type":producer_counts})
 		return
+	for raw_type in EXPECTED_PRODUCERS:
+		var actual := int(producer_counts[str(raw_type)])
+		var expected := int(EXPECTED_PRODUCERS[raw_type])
+		if actual != expected:
+			_fail("endgame_resource_producer_count_changed", {"type":str(raw_type),"expected":expected,"actual":actual})
+			return
 	var idle_slots: Dictionary = scene.call("_idle_staging_ordinals", state.disciples.keys())
 	var idle_positions: Array[Vector2] = []
 	var courtyard: Vector2 = scene.call("_iso_actor_point",&"courtyard")
@@ -107,8 +130,8 @@ func _run() -> void:
 	if idle_positions.size() != 30:
 		_fail("synthetic_endgame_roster_idle_count_changed", {"idle_count": idle_positions.size()})
 		return
-	if max_idle_radius > 9.0 * sqrt(float(idle_positions.size())) + 0.1:
-		_fail("idle_endgame_roster_not_compact", {"max_radius":max_idle_radius,"expected_max":9.0*sqrt(float(idle_positions.size()))})
+	if max_idle_radius > 22.0 * sqrt(float(idle_positions.size())) + 0.1:
+		_fail("idle_endgame_roster_exceeded_its_spread_out_staging_area", {"max_radius":max_idle_radius,"expected_max":22.0*sqrt(float(idle_positions.size()))})
 		return
 	if min_idle_spacing <= 0.1:
 		_fail("idle_endgame_roster_contains_exact_stack", {"min_spacing":min_idle_spacing})
@@ -119,12 +142,22 @@ func _run() -> void:
 	if scene.actor_nodes.size() > SectEndgameVisualBudgetV1.actor_cap(scene.map_zoom):
 		_fail("materialized_actors_exceeded_camera_lod_cap", {"nodes": scene.actor_nodes.size(), "cap": SectEndgameVisualBudgetV1.actor_cap(scene.map_zoom)})
 		return
-	if scene.actor_nodes.size() > 1:
-		_fail("production_map_rendered_multiple_disciples", {"nodes": scene.actor_nodes.size()})
+	if scene.actor_nodes.is_empty():
+		_fail("idle_sect_roster_not_visible_on_production_map", {"nodes": scene.actor_nodes.size()})
+		return
+	if scene.actor_nodes.size() > MAX_VISIBLE_MAP_ACTORS:
+		_fail("production_map_exceeded_bounded_idle_actor_pool", {"nodes": scene.actor_nodes.size(),"cap":MAX_VISIBLE_MAP_ACTORS})
 		return
 	for raw_id in scene.actor_nodes.keys():
-		if str(raw_id) != str(scene.get("selected_id")):
-			_fail("production_map_rendered_an_unselected_disciple", {"actor": str(raw_id), "selected": str(scene.get("selected_id"))})
+		var actor_id := StringName(str(raw_id))
+		if not state.disciples.has(actor_id):
+			_fail("production_map_actor_missing_canonical_disciple", {"actor": str(raw_id)})
+			return
+		var actor_disciple: DiscipleState = state.disciples[actor_id]
+		var phase := StringName(actor_disciple.work_cycle_state.get("phase",""))
+		var short_transit := actor_disciple.work_group_id != &"" and phase == &"travel_out"
+		if not bool(scene.call("_is_idle_map_actor",actor_disciple)) and not short_transit:
+			_fail("production_map_rendered_a_busy_disciple_inside_a_worksite", {"actor":str(raw_id),"action":str(actor_disciple.current_action)})
 			return
 	if scene.actor_nodes.size() >= state.disciples.size():
 		_fail("virtualization_did_not_reduce_materialized_roster", {"nodes": scene.actor_nodes.size(), "roster": state.disciples.size()})
@@ -132,8 +165,11 @@ func _run() -> void:
 	var state_before_clearing_selection := JSON.stringify(state.to_dict(),"",true)
 	scene.set("selected_id",&"")
 	scene.call("_refresh_world_actor_visibility")
-	if scene.actor_nodes.size() != 0:
-		_fail("production_map_rendered_disciples_without_a_selection", {"nodes": scene.actor_nodes.size()})
+	if scene.actor_nodes.is_empty():
+		_fail("idle_disciples_disappeared_when_selection_was_cleared", {"nodes": scene.actor_nodes.size()})
+		return
+	if scene.actor_nodes.size() > MAX_VISIBLE_MAP_ACTORS:
+		_fail("idle_disciples_exceeded_the_bounded_visible_actor_pool", {"nodes":scene.actor_nodes.size()})
 		return
 	if JSON.stringify(state.to_dict(),"",true) != state_before_clearing_selection:
 		_fail("hiding_unselected_production_actors_changed_simulation_state")
@@ -145,13 +181,35 @@ func _run() -> void:
 			if actor_rect.position.x < SectMapCamera.VIEW_RECT.position.x or actor_rect.position.y < SectMapCamera.VIEW_RECT.position.y or actor_rect.end.x > SectMapCamera.VIEW_RECT.end.x or actor_rect.end.y > SectMapCamera.VIEW_RECT.end.y:
 				_fail("live_actor_rendered_over_fixed_hud", {"disciple":str(actor.disciple_id),"instance_id":actor.get_instance_id(),"actor_position":actor.position,"virtual_position":scene.actor_virtual_positions.get(str(actor.disciple_id),Vector2.ZERO),"rect":actor_rect,"view":SectMapCamera.VIEW_RECT})
 				return
-	if _visible_status_labels(scene) != 0:
-		_fail("overview_has_floating_status_label_overlap", {"visible": _visible_status_labels(scene)})
+	scene.call("_refresh_actor_status_label_visibility")
+	if _visible_status_labels(scene) > 4 or not _visible_status_labels_are_contextual(scene,state) \
+			or not _visible_status_labels_are_non_overlapping(scene):
+		_fail("overview_has_unbounded_or_stale_overhead_actor_labels", {"visible": _visible_status_labels(scene)})
+		return
+	var ambient_bubbles: Dictionary = scene.get("actor_ambient_bubbles")
+	ambient_bubbles.clear()
+	scene.call("_refresh_actor_status_label_visibility")
+	scene.call("_show_next_idle_ambient_line")
+	ambient_bubbles = scene.get("actor_ambient_bubbles")
+	if ambient_bubbles.size() != 1:
+		_fail("idle_ambient_line_did_not_select_exactly_one_visible_idle_disciple", {"bubbles":ambient_bubbles.size()})
+		return
+	var ambient_id := StringName(ambient_bubbles.keys()[0])
+	var ambient_label := (scene.get("actor_status_labels") as Dictionary).get(str(ambient_id)) as Label
+	if ambient_label == null or not ambient_label.visible or ambient_label.text != str(ambient_bubbles[str(ambient_id)].get("text","")) \
+			or not _visible_status_labels_are_non_overlapping(scene):
+		_fail("idle_ambient_line_did_not_render_over_its_actual_idle_disciple", {"disciple":str(ambient_id)})
+		return
+	ambient_bubbles[str(ambient_id)]["expires_msec"] = Time.get_ticks_msec()-1
+	(scene.get("actor_transition_deadline_msec") as Dictionary).erase(str(ambient_id))
+	scene.call("_refresh_actor_status_label_visibility")
+	if ambient_label.visible:
+		_fail("idle_ambient_line_did_not_expire_after_its_short_display_window", {"disciple":str(ambient_id),"text":ambient_label.text})
 		return
 	var hidden_id: StringName = &""
 	for raw_id in state.disciples.keys():
 		var candidate_id := StringName(raw_id)
-		if not scene.actor_nodes.has(str(candidate_id)):
+		if not scene.actor_nodes.has(str(candidate_id)) and bool(scene.call("_is_idle_map_actor",state.disciples[candidate_id])):
 			hidden_id = candidate_id
 			break
 	if hidden_id == &"":
@@ -164,21 +222,22 @@ func _run() -> void:
 	if not scene.actor_nodes.has(str(hidden_id)):
 		_fail("selected_virtual_disciple_was_not_materialized_after_camera_focus", {"disciple": hidden_id})
 		return
-	if scene.actor_nodes.size() != 1:
-		_fail("selecting_a_disciple_did_not_keep_production_rendering_bounded_to_one", {"nodes": scene.actor_nodes.size(), "selected": str(hidden_id)})
+	if scene.actor_nodes.size() > MAX_VISIBLE_MAP_ACTORS or not scene.actor_nodes.has(str(hidden_id)):
+		_fail("selected_disciple_did_not_remain_visible_within_the_idle_actor_budget", {"nodes": scene.actor_nodes.size(), "selected": str(hidden_id)})
 		return
 	var second_hidden_id: StringName = &""
 	for raw_id in state.disciples.keys():
 		var candidate_id := StringName(raw_id)
-		if candidate_id != hidden_id and not scene.actor_nodes.has(str(candidate_id)):
+		if candidate_id != hidden_id and not scene.actor_nodes.has(str(candidate_id)) \
+				and bool(scene.call("_is_idle_map_actor",state.disciples[candidate_id])):
 			second_hidden_id = candidate_id
 			break
 	if second_hidden_id == &"":
 		_fail("fixture_did_not_have_a_second_virtualized_disciple")
 		return
 	_select_and_focus_virtual_disciple(scene,second_hidden_id)
-	if scene.actor_nodes.size() != 1 or not scene.actor_nodes.has(str(second_hidden_id)):
-		_fail("selection_change_did_not_recycle_to_exactly_one_production_actor", {"nodes": scene.actor_nodes.size(), "selected": str(second_hidden_id)})
+	if scene.actor_nodes.size() > MAX_VISIBLE_MAP_ACTORS or not scene.actor_nodes.has(str(second_hidden_id)):
+		_fail("selection_change_did_not_keep_the_selected_disciple_inside_the_actor_budget", {"nodes": scene.actor_nodes.size(), "selected": str(second_hidden_id)})
 		return
 	var rebound_actor := scene.actor_nodes.get(str(second_hidden_id)) as ModularDiscipleActor
 	if rebound_actor == null or rebound_actor.disciple_id != second_hidden_id:
@@ -200,12 +259,15 @@ func _run() -> void:
 		if scene.actor_position_tweens.has(actor.get_instance_id()):
 			_fail("pooled_actor_retained_a_live_position_tween", {"instance_id":actor.get_instance_id()})
 			return
-	if _visible_status_labels(scene) != 1:
-		_fail("focused_disciple_status_not_readable", {"visible": _visible_status_labels(scene)})
+	var focused_label := (scene.get("actor_status_labels") as Dictionary).get(str(second_hidden_id)) as Label
+	if focused_label == null or not focused_label.visible or _visible_status_labels(scene) > 4 \
+			or not _visible_status_labels_are_contextual(scene,state) or not _visible_status_labels_are_non_overlapping(scene):
+		_fail("focused_disciple_status_not_readable_or_other_overhead_labels_were_stale", {"visible": _visible_status_labels(scene),"selected":str(second_hidden_id)})
 		return
 	scene._set_focus_target(Vector2.ZERO, &"building", &"mine_001", "focused mine", false)
-	if _visible_status_labels(scene) != 0:
-		_fail("building_selection_left_overlapping_disciple_labels", {"visible": _visible_status_labels(scene)})
+	if _visible_status_labels(scene) > 4 or not _visible_status_labels_are_contextual(scene,state) \
+			or not _visible_status_labels_are_non_overlapping(scene):
+		_fail("building_selection_left_unbounded_or_stale_disciple_labels", {"visible": _visible_status_labels(scene)})
 		return
 	var after := JSON.stringify(state.to_dict(), "", true)
 	if before != after:
@@ -222,7 +284,7 @@ func _run() -> void:
 		if actor_ref.get_ref() != null:
 			_fail("scene_teardown_leaked_pooled_actor")
 			return
-	print("TMB_ENDGAME_MAP_DENSITY PASS " + JSON.stringify({"producer_instances": producer_rows, "unique_positions": cells.size(), "idle_roster_sprites_may_overlap_but_positions_are_unique": idle_positions.size(), "idle_max_radius":max_idle_radius,"idle_min_spacing":min_idle_spacing,"virtual_map_positions": state.disciples.size(), "materialized_actor_nodes": final_materialized_count, "actor_pool": final_pool_count, "pool_freed_on_scene_teardown": true, "selected_virtual_disciple": str(hidden_id), "recycled_to": str(second_hidden_id), "actors_clipped_to_map_view": true, "visible_status_labels_on_overview": 0, "visible_focused_disciple_labels": 1, "simulation_state_unchanged": true}))
+	print("TMB_ENDGAME_MAP_DENSITY PASS " + JSON.stringify({"producer_instances": producer_rows, "unique_positions": cells.size(), "idle_roster_spread_positions": idle_positions.size(), "idle_max_radius":max_idle_radius,"idle_min_spacing":min_idle_spacing,"virtual_map_positions": state.disciples.size(), "materialized_actor_nodes": final_materialized_count, "visible_actor_cap":MAX_VISIBLE_MAP_ACTORS, "actor_pool": final_pool_count, "pool_freed_on_scene_teardown": true, "selected_virtual_disciple": str(hidden_id), "recycled_to": str(second_hidden_id), "actors_clipped_to_map_view": true, "idle_ambient_bubble_timed":true, "overhead_labels_bounded_and_contextual":true, "simulation_state_unchanged": true}))
 	quit(0)
 
 func _visible_status_labels(scene: Control) -> int:
@@ -233,6 +295,51 @@ func _visible_status_labels(scene: Control) -> int:
 		if label != null and is_instance_valid(label) and label.visible:
 			visible += 1
 	return visible
+
+func _visible_status_labels_are_non_overlapping(scene: Control) -> bool:
+	var labels: Dictionary = scene.get("actor_status_labels")
+	var visible_rects: Array[Rect2] = []
+	for raw_key in labels.keys():
+		var label := labels[str(raw_key)] as Label
+		if label == null or not is_instance_valid(label) or not label.visible:
+			continue
+		var candidate := label.get_global_rect()
+		for existing in visible_rects:
+			if candidate.intersects(existing):
+				return false
+		visible_rects.append(candidate)
+	return true
+
+func _visible_status_labels_are_contextual(scene: Control, state: SimulationState) -> bool:
+	var labels: Dictionary = scene.get("actor_status_labels")
+	var bubbles: Dictionary = scene.get("actor_ambient_bubbles")
+	var transitions: Dictionary = scene.get("actor_transition_deadline_msec")
+	var now := Time.get_ticks_msec()
+	for raw_key in labels.keys():
+		var key := str(raw_key)
+		var label := labels[key] as Label
+		if label == null or not is_instance_valid(label) or not label.visible:
+			continue
+		var disciple_id := StringName(key)
+		if not state.disciples.has(disciple_id):
+			return false
+		var disciple: DiscipleState = state.disciples[disciple_id]
+		var bubble: Dictionary = bubbles.get(key,{})
+		if disciple_id == StringName(str(scene.get("selected_id"))) \
+				and label.text == str(scene.call("_actor_map_status_text",disciple)):
+			continue
+		if not bubble.is_empty() and int(bubble.get("expires_msec",0)) > now \
+				and bool(scene.call("_is_idle_map_actor",disciple)) \
+				and label.text == str(bubble.get("text","")):
+			continue
+		if label.text == str(scene.call("_actor_map_status_text",disciple)):
+			var phase := StringName(disciple.work_cycle_state.get("phase",""))
+			var active_transition := int(transitions.get(key,0)) > now
+			var travelling := disciple.work_group_id != &"" and phase == &"travel_out"
+			if active_transition or travelling:
+				continue
+		return false
+	return true
 
 func _select_and_focus_virtual_disciple(scene: Control, disciple_id: StringName) -> void:
 	scene.call("_open_disciple",disciple_id)

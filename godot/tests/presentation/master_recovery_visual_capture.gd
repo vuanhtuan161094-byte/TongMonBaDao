@@ -86,6 +86,10 @@ func _run() -> void:
 	if output_dir.is_empty():
 		output_dir = ProjectSettings.globalize_path("res://../outputs/MASTER_RECOVERY_INTEGRATION_20261023/screenshots")
 	DirAccess.make_dir_recursive_absolute(output_dir)
+	# Headless Windows Godot creates a 64x64 root by default. Size the actual
+	# root viewport before instantiating P3.2 so captures are rendered at the
+	# same 1280x720 logical resolution as the target landscape UI.
+	root.size = Vector2i(1280,720)
 	ProjectSettings.set_setting("runtime/live_save_path",SAVE_PATH)
 	var packed := load("res://scenes/p3/p3_2_landscape_sect.tscn") as PackedScene
 	if packed == null:
@@ -110,6 +114,13 @@ func _run() -> void:
 	])
 	if not await _capture("01_main_map_source_a"):
 		_fail("main map capture failed")
+		return
+	# Allow the real presentation scheduler to animate its idle residents and
+	# emit a timed overhead line before capturing a second map frame. This uses
+	# only the isolated user:// QA profile configured above.
+	await create_timer(7.25).timeout
+	if not await _capture("01b_main_map_idle_walk_dialogue"):
+		_fail("idle disciple movement/dialogue capture failed")
 		return
 	ui.call("_zoom_at",Vector2(640,350),1.4,false)
 	ui.call("_pan_camera",Vector2(-38.0,-22.0))

@@ -369,7 +369,7 @@ func _run() -> void:
     if state.disciples.size() != saved_roster or not state.disciples.has(recruit_id):
         _fail("O6 restart lost/duplicated recruited disciple.")
         return
-    # Virtual actors materialize only when selected and inside the viewport. Re-focus the restored disciple via the map action before asserting a single actor.
+    # Nearby idle/transiting actors use a bounded viewport pool. Re-focus the restored recruit and assert its canonical map actor is unique.
     ui.call("_open_disciple",recruit_id)
     await process_frame
     ui.call("_refresh_all")

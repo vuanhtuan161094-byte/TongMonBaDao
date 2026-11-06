@@ -97,7 +97,9 @@ func _run() -> void:
         _fail("O3 deposited ore before the haul phase actually returned.")
         return
     var body: Label = ui.get("building_operation_body") as Label
-    if body == null or not body.text.contains("Vận chuyển về kho"):
+    var carried_units := int(target.work_cycle_state.get("carried_units", 0))
+    var expected_haul_text := "Đang chở ×%d về Kho" % carried_units
+    if carried_units <= 0 or body == null or not body.text.contains(expected_haul_text):
         _fail("O3 Mine UI does not expose the real haul phase.")
         return
 
@@ -167,7 +169,9 @@ func _run() -> void:
     if not str(ui.call("_mine_operation_text")).contains("Thanh Thiết tồn (dùng): %d (dùng %d)" % [ore_after, ore_after]):
         _fail("O3 Mine panel disagrees with canonical ore.")
         return
-    if not str(ui.call("_warehouse_operation_text")).contains("Thanh Thiết: %d (dùng %d)" % [ore_after, ore_after]):
+    var warehouse_text := str(ui.call("_warehouse_operation_text"))
+    var ore_available := warehouse.available_quantity(state, &"thanh_thiet")
+    if not warehouse_text.contains("• Thanh Thiết ×%d · dùng được %d" % [ore_after, ore_available]):
         _fail("O3 Warehouse panel disagrees with canonical ore.")
         return
 

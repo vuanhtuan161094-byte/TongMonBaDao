@@ -294,8 +294,9 @@ func _ensure_built() -> void:
     status_label.name = "StatusLabel"
     # A narrow but opaque tag avoids invisible dark-on-terrain letters;
     # work actions are text-only until real authored Source A clips exist.
-    status_label.position = Vector2(-11.0, 72.0)
-    status_label.size = Vector2(110.0, 22.0)
+    status_label.position = Vector2(-32.0, -30.0)
+    status_label.size = Vector2(152.0, 26.0)
+    status_label.z_index = 8
     status_label.clip_text = true
     status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
     status_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
