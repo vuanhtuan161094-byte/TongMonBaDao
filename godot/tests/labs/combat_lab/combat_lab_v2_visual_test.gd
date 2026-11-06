@@ -54,16 +54,32 @@ func _run() -> void:
     var initial_count := battle.events.size()
     var cast_rows: Array[Dictionary] = [
         {"type":"skill_cast", "caster":"test_archer", "target":"lab_v2_dummy",
-            "skill_id":"tmb.skill.bow.liep_anh.active_01.human", "time":0.0, "release_at":0.4},
+            "skill_id":"tmb.skill.bow.liep_anh.active_01.human", "time":0.0, "release_at":0.8},
     ]
     arena.consume_events(cast_rows)
     _check(arena.pose_for_actor("test_archer") == "cast", "authored skill cast cues the animated cast pose")
+    var scheduled_projectiles := 0
+    var launch_at := -1.0
+    var impact_at := -1.0
+    for cue in arena.cues:
+        if str(cue.get("kind", "")) == "projectile":
+            scheduled_projectiles += 1
+            launch_at = float(cue.get("launch_at", -1.0))
+            impact_at = float(cue.get("impact_at", -1.0))
+    _check(scheduled_projectiles == 1 and launch_at > 0.0 and impact_at > launch_at,
+        "skill_cast schedules one real projectile AFTER wind-up and BEFORE impact")
+    _check(is_equal_approx(impact_at, 0.8), "projectile timing ends at canonical cast deadline")
     var release_rows: Array[Dictionary] = [
         {"type":"skill_release", "caster":"test_archer", "target":"lab_v2_dummy",
-            "skill_id":"tmb.skill.bow.liep_anh.active_01.human", "time":0.4},
+            "skill_id":"tmb.skill.bow.liep_anh.active_01.human", "time":0.8},
     ]
     arena.consume_events(release_rows)
     _check(arena.pose_for_actor("test_archer") == "attack", "committed skill release cues attack")
+    var release_projectiles := 0
+    for cue in arena.cues:
+        if str(cue.get("kind", "")) == "projectile":
+            release_projectiles += 1
+    _check(release_projectiles == 1, "skill_release does not spawn a second post-damage projectile")
     var hit_rows: Array[Dictionary] = [
         {"type":"hit", "attacker":"test_archer", "target":"lab_v2_dummy",
             "kind":"v63_skill", "damage":50.0, "critical":true, "lifesteal":5.0},
