@@ -30,6 +30,26 @@ $profile = Join-Path $OutputRoot "isolated-godot-profile"
 New-Item -Path (Join-Path $profile "Roaming") -ItemType Directory -Force | Out-Null
 New-Item -Path (Join-Path $profile "Local") -ItemType Directory -Force | Out-Null
 
+# Safe default for the owner's 8 GB Windows machine. Never terminate existing Godot.
+# On a machine with an existing Godot process, wait for the user/operator to
+# close it normally; this runner will not attempt a concurrent import.
+$runningGodot = @(Get-Process -Name "*godot*" -ErrorAction SilentlyContinue)
+if ($runningGodot.Count -gt 0) {
+    $details = ($runningGodot | ForEach-Object { "$($_.ProcessName) PID=$($_.Id)" }) -join "; "
+    throw "BLOCKED_EXISTING_GODOT: $details. Do not start another Godot; no process was killed."
+}
+# A safety cutoff, not a guarantee: headless Godot can still fail for other reasons.
+try {
+    $os = Get-CimInstance Win32_OperatingSystem -ErrorAction Stop
+    $freeBytes = [int64]$os.FreePhysicalMemory * 1024
+    $minimum = [int64]3 * 1024 * 1024 * 1024
+    if ($freeBytes -lt $minimum) {
+        throw ("BLOCKED_LOW_FREE_RAM: {0:N2} GiB free; need at least 3 GiB before starting QA." -f ($freeBytes / 1GB))
+    }
+} catch {
+    throw "BLOCKED_RAM_PREFLIGHT: $($_.Exception.Message). No Godot process started."
+}
+
 $oldAppData = $env:APPDATA
 $oldLocalAppData = $env:LOCALAPPDATA
 $oldXdgData = $env:XDG_DATA_HOME
