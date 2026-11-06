@@ -181,6 +181,9 @@ func consume_events(rows: Array[Dictionary]) -> void:
             continue
         var cue_life := 370.0 if cue_kind == "projectile" else (900.0 if cue_kind == "telegraph" else 790.0)
         var cue_from := _actor_position(source_actor_id)
+        if kind == "v63_mobility" and actor_states.has(source_actor_id):
+            var prior: Dictionary = actor_states[source_actor_id]
+            cue_from = prior.get("last_position", cue_from)
         cues.append({
             "kind":cue_kind, "position":pos, "from_position":cue_from,
             "text":label, "color":color, "radius":radius, "school":school_kind,
