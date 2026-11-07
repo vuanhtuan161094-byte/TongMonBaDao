@@ -3063,7 +3063,7 @@ func _build_building_operation_panel() -> void:
     building_operation_title = _label(building_operation_panel, "", Vector2(22, 10), Vector2(760, 38), 25)
     building_operation_title.add_theme_color_override("font_color", CINNABAR.darkened(0.18))
 
-    var subtitle := _label(building_operation_panel, "TÌNH HÌNH VẬN HÀNH · DỮ LIỆU TÔNG MÔN", Vector2(24, 46), Vector2(760, 20), 11)
+    var subtitle := _label(building_operation_panel, "TÔNG MÔN · ĐIỀU PHỐI NHÂN SỰ & TÀI NGUYÊN", Vector2(24, 46), Vector2(760, 20), 11)
     subtitle.add_theme_color_override("font_color", Color(0.22, 0.20, 0.16, 0.72))
 
     var close := Button.new()
@@ -3240,6 +3240,10 @@ func _style_building_management_actions(root: Node) -> void:
             action.add_theme_color_override("font_hover_color", PAPER_LIGHT)
             action.add_theme_color_override("font_pressed_color", PAPER_LIGHT)
             action.add_theme_color_override("font_disabled_color", INK)
+        elif node is Label:
+            var caption := node as Label
+            if not caption.has_theme_color_override("font_color"):
+                caption.add_theme_color_override("font_color", INK)
         _style_building_management_actions(node)
 
 func _building_operation_headline(operation_text: String) -> String:
@@ -5311,8 +5315,8 @@ func _linh_forest_operation_text() -> String:
         "SẢN XUẤT\n"
         + "Linh Lâm Lv%d\n"
         + "Linh Mộc tồn (dùng): %s\n"
-        + "Sản lượng chuẩn mỗi mẻ theo cấp: ×%d Linh Mộc\n"
-        + "Đã nhập Kho từ khi xây: %d Linh Mộc · %d mẻ\n"
+        + "Mỗi lượt thu hoạch dự kiến: ×%d Linh Mộc\n"
+        + "Thực nhập Linh Kho: %d Linh Mộc · %d lượt\n"
         + "Chỗ hoạt động: %d/%d\n"
         + "Đang làm Lâm Nghiệp: %d\n"
         + "Thành viên đội: %d\n\n"
@@ -5340,11 +5344,12 @@ func _resource_job_member_status(disciple: DiscipleState, profession_id: StringN
         work_duration = building_system.resource_job_work_duration(building)
         var definition := building_system.definition_for(building)
         output_name = ResourceRegistry.new().display_name(StringName(definition.get("resource_id","")))
-    var batch_text := "mẻ ×%d %s" % [output_quantity,output_name] if output_quantity > 0 else "mẻ sản xuất"
+    var work_label := "lượt khai thác" if profession_id == WorkforceSystem.PROF_MINING else "lượt thu hoạch"
+    var batch_text := "%s ×%d %s" % [work_label,output_quantity,output_name] if output_quantity > 0 else "chờ khởi sự"
     if state.sect.economy_a_enabled:
         var timer := BuildingSystem.new().active_resource_timer_for_worker(state,disciple.id)
         if not timer.is_empty() and StringName(timer.get("profession_id","")) == profession_id:
-            return "Đang sản xuất · mẻ ×%d · còn %d nhịp" % [maxi(int(timer.get("output_quantity",output_quantity)),0),maxi(int(timer.get("finish_tick",state.tick))-state.tick,0)]
+            return "Đang %s ×%d · còn %d phút mô phỏng" % [work_label,maxi(int(timer.get("output_quantity",output_quantity)),0),maxi(int(timer.get("finish_tick",state.tick))-state.tick,0)]
     if not has_active_slot:
         return "Chờ chỗ hoạt động"
     var cycle: Dictionary = disciple.work_cycle_state
@@ -5408,8 +5413,8 @@ func _mine_operation_text() -> String:
         "SẢN XUẤT\n"
         + "Mỏ Lv%d · %s\n"
         + "Thanh Thiết tồn (dùng): %s\n"
-        + "Sản lượng chuẩn mỗi mẻ theo cấp: ×%d Thanh Thiết\n"
-        + "Đã nhập Kho từ khi xây: %d Thanh Thiết · %d mẻ\n"
+        + "Mỗi lượt khai thác dự kiến: ×%d Thanh Thiết\n"
+        + "Thực nhập Linh Kho: %d Thanh Thiết · %d lượt\n"
         + "Chỗ hoạt động: %d/%d\n"
         + "Đang chờ slot Mỏ: %d\n"
         + "Đang khai khoáng: %d\n"
@@ -5465,7 +5470,7 @@ func _spirit_field_operation_text() -> String:
         var remaining := maxi(int(plot.get("finish_tick", state.tick)) - state.tick, 0)
         var crop_name := spirit_crop_registry.display_name(crop_id)
         var routine_yield := maxi(int(plot.get("routine_yield",spirit_crop_registry.base_yield(crop_id))),1)
-        plot_lines.append("• %s · %s · %s · mẻ ×%d · còn %d nhịp · đã trả %d LT" % [
+        plot_lines.append("• %s · %s · %s · thu hoạch ×%d · còn %d phút mô phỏng · đã trả %d Linh Thạch" % [
             plot_name,
             crop_name,
             worker_name,
@@ -5503,8 +5508,8 @@ func _spirit_field_operation_text() -> String:
         "LINH ĐIỀN Lv%d\n"
         + "Chính sách: %s\n"
         + "Linh Thạch Tông Môn: %d\n"
-        + "Worker hoạt động: %d/%d · Ô đang trồng: %d/%d\n\n"
-        + "ĐÃ THU HOẠCH: %d đơn vị · %d mẻ (mọi loại cây)\n"
+        + "Đệ tử canh tác: %d/%d · Ô đang trồng: %d/%d\n\n"
+        + "THỰC NHẬP LINH KHO: %d đơn vị · %d lượt thu hoạch\n"
         + "ĐỘI LINH THỰC\n%s\n\n"
         + "CÂY HỢP LỆ\n%s\n\n"
         + "Ô RUỘNG\n%s\n\n"
@@ -8091,7 +8096,7 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "T�
 
     var quick_assign := Button.new()
     quick_assign.name = "DeepQuickAssignment"
-    quick_assign.text = "Phân công"
+    quick_assign.text = "Điều phối đệ tử"
     quick_assign.position = Vector2(751,12)
     quick_assign.size = Vector2(174,44)
     quick_assign.add_theme_font_size_override("font_size",14)
@@ -8140,6 +8145,7 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "T�
     roster_toggle.size = Vector2(40, 40) if disciple_profile_roster_collapsed else Vector2(roster_width - 16.0, 34)
     roster_toggle.add_theme_font_size_override("font_size", 12)
     roster_toggle.add_theme_color_override("font_color", INK)
+    roster_toggle.add_theme_stylebox_override("normal", _style(Color(0.93, 0.87, 0.73), Color(0.43, 0.35, 0.25), 1, 7))
     roster_toggle.pressed.connect(Callable(self, "_toggle_deep_disciple_roster").bind(tab_name))
     roster_panel.add_child(roster_toggle)
 
@@ -8774,8 +8780,8 @@ func _attributes_tab_text(disciple: DiscipleState) -> String:
     ) % [
         cultivation.stage_name(disciple), progress_text, power, chance,
         disciple.hp, disciple.max_hp, disciple.stamina, disciple.wallet,
-        _score(disciple.aptitude), _score(disciple.constitution), _score(disciple.fortune),
-        _score(disciple.comprehension), _score(disciple.charisma), _score(disciple.potential),
+        _foundation_exact_number(disciple.aptitude), _foundation_exact_number(disciple.constitution), _foundation_exact_number(disciple.fortune),
+        _foundation_exact_number(disciple.comprehension), _foundation_exact_number(disciple.charisma), _foundation_exact_number(disciple.potential),
         " · ".join(path_lines), SectMapPresentation.action_label(disciple.current_action),
         tab_status_text
     ]
