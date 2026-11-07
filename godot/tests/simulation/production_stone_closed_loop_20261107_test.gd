@@ -122,6 +122,7 @@ func _run() -> void:
         _fail("no unassigned real Field worker")
         return
     var before_plant := state.sect.spirit_stones
+    var xp_before_plant := workforce.profession_xp(worker,WorkforceSystem.PROF_HERBALISM)
     var planting := workforce.perform_work(state,worker,WorkforceSystem.PROF_HERBALISM)
     if not bool(planting.get("ok",false)):
         _fail("per-plot sowing rejected: "+str(planting))
@@ -129,6 +130,10 @@ func _run() -> void:
     var plots := buildings.spirit_field_plots(state,field)
     if plots.is_empty() or str(plots[0].get("crop_id","")) != "linh_coc" or state.sect.spirit_stones != before_plant-SpiritCropRegistry.new().cost(&"linh_coc"):
         _fail("per-tile crop choice failed or plant price not debited exactly")
+        return
+    var pending_herbal_xp := float(plots[0].get("profession_xp_gain",-1.0))
+    if pending_herbal_xp <= 0.0 or not is_equal_approx(workforce.profession_xp(worker,WorkforceSystem.PROF_HERBALISM),xp_before_plant):
+        _fail("sowing wrongly paid profession EXP before actual harvest")
         return
     if bool(buildings.set_spirit_plot_crop(state,field.id,&"plot_001",&"thanh_linh_thao").get("ok",false)):
         _fail("player rewrote an active paid plot")
@@ -155,6 +160,26 @@ func _run() -> void:
     var stored_stones := restored.sect.spirit_stones
     if not bool(economy.buy_from_npc_v1(restored,&"tam_mach_ban",1,"paid-board-1").get("already_settled",false)) or restored.sect.spirit_stones != stored_stones:
         _fail("milestone purchase replayed on cold reload")
+        return
+    # The pending profession EXP must remain locked after serialization.
+    var restored_worker: DiscipleState = restored.disciples[worker.id]
+    var restored_plot: Dictionary = buildings.spirit_field_plots(restored,restored_field)[0]
+    if not is_equal_approx(float(restored_plot.get("profession_xp_gain",-1.0)),pending_herbal_xp):
+        _fail("Save lost the exact committed Field EXP amount")
+        return
+    var crop_id := StringName(restored_plot.get("crop_id",""))
+    var crop_stock_before := warehouse.quantity(restored,SpiritCropRegistry.new().output_resource_id(crop_id))
+    restored.tick = maxi(restored.tick+1,int(restored_plot.get("finish_tick",restored.tick+1)))
+    buildings.process_tick(restored)
+    if warehouse.quantity(restored,SpiritCropRegistry.new().output_resource_id(crop_id)) <= crop_stock_before:
+        _fail("Field did not genuinely deliver a crop to Warehouse")
+        return
+    if not is_equal_approx(workforce.profession_xp(restored_worker,WorkforceSystem.PROF_HERBALISM)-xp_before_plant,pending_herbal_xp):
+        _fail("Field did not credit exactly the previously committed EXP on harvest")
+        return
+    buildings.process_tick(restored)
+    if not is_equal_approx(workforce.profession_xp(restored_worker,WorkforceSystem.PROF_HERBALISM)-xp_before_plant,pending_herbal_xp):
+        _fail("Field credited duplicate EXP on repeat processing")
         return
 
     # Demand policy must stop when all real + in-flight supply targets are met.
