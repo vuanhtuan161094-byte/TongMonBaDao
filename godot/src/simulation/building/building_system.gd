@@ -130,7 +130,15 @@ const DEFINITIONS := {
         "haul_distance": 6.0,
         "base_work_duration": 4.0,
         "base_batch_units": 2,
-        "upgrade_enabled": false,
+        # Bounded provisional economy: reuse the existing Mine upgrade cost
+        # curve until Linh Lâm-specific balancing is approved. These costs are
+        # actually consumed by start_upgrade; never display a free/fake button.
+        "base_wood_cost": 4,
+        "base_ore_cost": 6,
+        "base_stone_cost": 20,
+        "base_upgrade_work": 8.0,
+        "upgrade_work_per_level": 2.0,
+        "upgrade_enabled": true,
         "requires_milestone_component": false
     },
     "alchemy_hall": {
@@ -1429,7 +1437,13 @@ func validate_invariants(state: SimulationState) -> Array[String]:
                         errors.append("%s has invalid resource-job phase." % disciple.display_name)
                     var expected_resource := StringName(cycle_definition.get("resource_id", ""))
                     var cycle_resource := StringName(disciple.work_cycle_state.get("resource_id", str(expected_resource)))
-                    if expected_resource == &"" or cycle_resource != expected_resource:
+                    # A committed Mine carry cycle keeps its original ore when
+                    # selection changes; both registered ores are canonical.
+                    var valid_resource := (
+                        MINE_ORE_OPTIONS.has(str(cycle_resource))
+                        and ResourceRegistry.DEFINITIONS.has(str(cycle_resource))
+                    ) if cycle_building.building_type == TYPE_MINE else cycle_resource == expected_resource
+                    if expected_resource == &"" or not valid_resource:
                         errors.append("%s has invalid resource-job output identity." % disciple.display_name)
                 elif profession == PROF_HERBALISM:
                     # Legacy pre-plot Field cycle compatibility only.
