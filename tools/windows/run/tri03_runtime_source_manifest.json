@@ -3,7 +3,7 @@
   "branch": "integration/pve-p0-playable-ui-20261103",
   "base_sha": "27ed01cd8f377994e5e50bac9ede84e78e8895bd",
   "upstream_pr_sha": "c99f22153b34628f7e94f69de0285514e788b9cb",
-  "source_fingerprint": "1aed6fadfee4edc42c00cfbb9d4d28abe9de4d3a07ba4f0b6f2f06d356ce519d",
+  "source_fingerprint": "b1ccde75d04db7f9704ea9553803731c698c40a063dfaf82ce724c37ef375727",
   "files": [
     {
       "path": "CHOI-GAME.cmd",
@@ -403,7 +403,7 @@
     },
     {
       "path": "godot/src/simulation/building/building_system.gd",
-      "git_blob_sha": "0ca05034dfc613d2a8b4a0c88ffeb17dd351295c"
+      "git_blob_sha": "2c95dd34f82efc7f9ad3776008fe17eaef0eece7"
     },
     {
       "path": "godot/src/simulation/building/medicine_allocation_v2.gd",
@@ -511,7 +511,7 @@
     },
     {
       "path": "godot/tests/presentation/hs09_disciple_profile_test.gd",
-      "git_blob_sha": "e8ec946d59d629f5036b2a5bf4c18c601aa2c9b2"
+      "git_blob_sha": "d0bcb48ed9f00e6380a54a3d198c3a775c9359f3"
     },
     {
       "path": "godot/tests/presentation/master_recovery_visual_capture.gd",
@@ -539,11 +539,11 @@
     },
     {
       "path": "godot/tests/presentation/p3_o3_real_mine_loop_test.gd",
-      "git_blob_sha": "115b07bfa6a5884f41fb6cb0326864536272d4d2"
+      "git_blob_sha": "b19b3e5dfd0cc78f2f5baafceca5f3e422c620d2"
     },
     {
       "path": "godot/tests/presentation/p3_o4_spirit_field_loop_test.gd",
-      "git_blob_sha": "c5924ff4a4c3d15cfc689d29d6b16a33f4ac0f41"
+      "git_blob_sha": "bc3f8fdd828e61016b3119e942caf08c4fa8d7d6"
     },
     {
       "path": "godot/tests/presentation/p3_o5_real_consumption_loop_test.gd",
@@ -555,7 +555,7 @@
     },
     {
       "path": "godot/tests/presentation/p3_o7_linh_forest_test.gd",
-      "git_blob_sha": "47dfc8f1e84e32f911c9d1d94639d4d2c0a8c0af"
+      "git_blob_sha": "d1ec613931e0c0429307db8fe5cc60ce6044c7ef"
     },
     {
       "path": "godot/tests/presentation/p3_o8_alchemy_loop_test.gd",
@@ -691,7 +691,7 @@
     },
     {
       "path": "godot/labs/combat_lab/combat_lab_arena.gd",
-      "git_blob_sha": "192db50c0a9a55eeb5d0b4e6e3e0fa6dcd643bc6"
+      "git_blob_sha": "01d80c9c68378ff944ab2532cfe5e01477b4936c"
     },
     {
       "path": "godot/labs/combat_lab/combat_lab_event_bridge.gd",
@@ -703,7 +703,7 @@
     },
     {
       "path": "godot/labs/combat_lab/combat_lab_vfx_v2.gd",
-      "git_blob_sha": "9682bf39b2696368806a90ff403ec49794c315bd"
+      "git_blob_sha": "d2cd53f1f36dfeceaac50846eb387419d29f733c"
     },
     {
       "path": "godot/labs/combat_lab/combat_lab.gd",
