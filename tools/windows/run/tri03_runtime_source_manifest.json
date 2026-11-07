@@ -3,7 +3,7 @@
   "branch": "integration/pve-p0-playable-ui-20261103",
   "base_sha": "27ed01cd8f377994e5e50bac9ede84e78e8895bd",
   "upstream_pr_sha": "c99f22153b34628f7e94f69de0285514e788b9cb",
-  "source_fingerprint": "be76e3a154941ea0e2edcd28cc087b9800f2a31201d4f7f235679389a945cc26",
+  "source_fingerprint": "24da707bb56de1598f5dbebfd7dd1db9594518857226d7c489d094ece035ae6f",
   "files": [
     {
       "path": "CHOI-GAME.cmd",
@@ -367,7 +367,7 @@
     },
     {
       "path": "godot/src/presentation/p3_2_landscape_sect.gd",
-      "git_blob_sha": "e6ec668b0e14a0cef5b9cc77616eb6d035e1989c"
+      "git_blob_sha": "c6e18809c2bb0bdc86231446e175924cbc23220f"
     },
     {
       "path": "godot/src/presentation/uiux/dai_dien_screen_b1_v1.gd",

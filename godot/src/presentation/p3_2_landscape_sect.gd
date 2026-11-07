@@ -2,6 +2,8 @@ extends "res://src/presentation/p3_1_landscape_sect.gd"
 
 const TRI_B1_LIVE_ADAPTER = preload("res://src/presentation/uiux/tri_facility_live_adapter_v1.gd")
 const TRI_FACILITY_ART = preload("res://src/presentation/uiux/sect_facility_art_v2.gd")
+const SECT_UI_THEME = preload("res://src/presentation/uiux/sect_ui_theme_v1.gd")
+const SECT_UI_ICON = preload("res://src/presentation/uiux/sect_ui_icon_v1.gd")
 const ZOOM_STEP := 1.12
 const CAMERA_TWEEN_SECONDS := 0.22
 const FOCUS_MARKER_SIZE := Vector2(82.0, 82.0)
@@ -216,6 +218,13 @@ var building_operation_title: Label
 var building_operation_body: Label
 var building_operation_content: VBoxContainer
 var building_management_container: VBoxContainer
+var building_operation_metrics: HBoxContainer
+var building_operation_scroll: ScrollContainer
+var building_operation_live_panel: Panel
+var building_operation_live_scroll: ScrollContainer
+var building_operation_live_content: VBoxContainer
+var building_operation_progress: ProgressBar
+var building_operation_progress_label: Label
 var building_management_feedback := ""
 var selected_building: StringName = &""
 var deep_restore_summary := false
@@ -432,6 +441,12 @@ func _input(event: InputEvent) -> void:
             get_viewport().set_input_as_handled()
 
 func _unhandled_input(event: InputEvent) -> void:
+    if event is InputEventKey:
+        var key_event := event as InputEventKey
+        if key_event.pressed and not key_event.echo and key_event.keycode == KEY_ESCAPE:
+            _close_top_management_screen()
+            get_viewport().set_input_as_handled()
+            return
     if event is InputEventMouseButton and _point_over_build_mode_panel((event as InputEventMouseButton).position):
         return
     if event is InputEventMouseMotion and _point_over_build_mode_panel((event as InputEventMouseMotion).position):
@@ -914,6 +929,26 @@ func _popup_is_open() -> bool:
             return true
     return false
 
+func _close_top_management_screen() -> void:
+    _clear_pointer_state()
+    if popup_layer != null and popup_layer.get_child_count() > 0:
+        if popup_layer.get_node_or_null("DiscipleDeepScreen") != null:
+            _return_to_disciple_summary()
+        else:
+            _clear_popup()
+        return
+    for overlay_name in ["DaiDienScreenV1", "DaiDienScreenB1V1", "DeTuXaScreenB1V1", "DanTienScreenV2", "DanTienScreenB1V1"]:
+        var overlay := get_node_or_null(overlay_name)
+        if overlay != null:
+            overlay.queue_free()
+            opened_disciple_profile = false
+            return
+    if _building_operation_is_open():
+        _close_building_operation_panel(true)
+        return
+    if _disciple_summary_is_open():
+        _close_disciple_summary(true)
+
 func _clear_pointer_state() -> void:
     touch_points.clear()
     last_pinch_distance = 0.0
@@ -924,8 +959,10 @@ func _clear_pointer_state() -> void:
 func _open_building(destination: StringName, instance_id: StringName = &"") -> void:
     if build_mode_active:
         _leave_build_mode(false)
-    _close_disciple_summary(true)
+    _dismiss_facility_screens()
     _clear_popup()
+    opened_disciple_profile = false
+    _close_disciple_summary(true)
     selected_building = destination
     selected_production_instance_id = &""
     var point := _iso_actor_point(destination)
@@ -941,6 +978,12 @@ func _open_building(destination: StringName, instance_id: StringName = &"") -> v
         iso_world.set_selected_visual_site(selected_production_instance_id)
     _show_building_operation_panel()
     _refresh_map_worksite_cues()
+
+func _dismiss_facility_screens() -> void:
+    for overlay_name in ["DaiDienScreenV1", "DaiDienScreenB1V1", "DeTuXaScreenB1V1", "DanTienScreenV2", "DanTienScreenB1V1"]:
+        var overlay := get_node_or_null(overlay_name)
+        if overlay != null:
+            overlay.queue_free()
 
 func _install_main_isometric_world() -> void:
     if map_layer == null or iso_world != null:
@@ -1465,7 +1508,7 @@ func _bottom_action(action: String) -> void:
             return
         var target_id: StringName = selected_id if selected_id != &"" and state.disciples.has(selected_id) else StringName(ids[0])
         deep_restore_summary = false
-        _open_disciple_deep_screen(target_id, "Thuộc tính")
+        _open_disciple_deep_screen(target_id, "Tổng Quan")
         return
     super._bottom_action(action)
 
@@ -2992,60 +3035,100 @@ func _confirm_build_mode_action() -> void:
 func _build_building_operation_panel() -> void:
     building_operation_panel = Panel.new()
     building_operation_panel.name = "BuildingOperationPanel"
-    building_operation_panel.position = Vector2(824, 80)
-    building_operation_panel.size = Vector2(440, 552)
+    building_operation_panel.position = Vector2(48, 78)
+    building_operation_panel.size = Vector2(1184, 552)
     building_operation_panel.z_index = 60
     building_operation_panel.visible = false
     building_operation_panel.mouse_filter = Control.MOUSE_FILTER_STOP
     building_operation_panel.add_theme_stylebox_override("panel", _style(PAPER_LIGHT, INK, 3, 14))
     add_child(building_operation_panel)
 
-    building_operation_title = _label(building_operation_panel, "", Vector2(18, 14), Vector2(350, 34), 22)
+    building_operation_title = _label(building_operation_panel, "", Vector2(22, 10), Vector2(760, 38), 25)
     building_operation_title.add_theme_color_override("font_color", CINNABAR.darkened(0.18))
 
-    var subtitle := _label(building_operation_panel, "Tình hình vận hành", Vector2(18, 48), Vector2(350, 22), 11)
+    var subtitle := _label(building_operation_panel, "TÌNH HÌNH VẬN HÀNH · DỮ LIỆU TÔNG MÔN", Vector2(24, 46), Vector2(760, 20), 11)
     subtitle.add_theme_color_override("font_color", Color(0.22, 0.20, 0.16, 0.72))
 
     var close := Button.new()
     close.name = "CloseBuildingOperation"
     close.text = "×"
-    close.position = Vector2(376, 10)
+    close.position = Vector2(1120, 10)
     close.size = Vector2(48, 48)
     close.add_theme_font_size_override("font_size", 20)
     close.add_theme_stylebox_override("normal", _style(Color(0.86, 0.80, 0.66, 1.0), INK, 1, 16))
     close.pressed.connect(Callable(self, "_close_building_operation_panel").bind(true))
     building_operation_panel.add_child(close)
 
-    var separator := HSeparator.new()
-    separator.position = Vector2(14, 78)
-    separator.size = Vector2(412, 2)
-    building_operation_panel.add_child(separator)
+    building_operation_metrics = HBoxContainer.new()
+    building_operation_metrics.name = "BuildingOperationMetrics"
+    building_operation_metrics.position = Vector2(20, 72)
+    building_operation_metrics.size = Vector2(1144, 68)
+    building_operation_metrics.add_theme_constant_override("separation", 10)
+    building_operation_panel.add_child(building_operation_metrics)
 
-    var scroll := ScrollContainer.new()
-    scroll.name = "BuildingOperationScroll"
-    scroll.position = Vector2(14, 92)
-    scroll.size = Vector2(412, 442)
-    building_operation_panel.add_child(scroll)
-
-    building_operation_content = VBoxContainer.new()
-    building_operation_content.name = "BuildingOperationContent"
-    building_operation_content.custom_minimum_size = Vector2(384, 0)
-    building_operation_content.add_theme_constant_override("separation", 10)
-    scroll.add_child(building_operation_content)
+    var art_frame := Panel.new()
+    art_frame.name = "BuildingOperationArtFrame"
+    art_frame.position = Vector2(20, 150)
+    art_frame.size = Vector2(250, 150)
+    art_frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    art_frame.add_theme_stylebox_override("panel", _style(JADE_DARK, Color(0.11, 0.20, 0.20, 1.0), 2, 12))
+    building_operation_panel.add_child(art_frame)
+    var art_host := Control.new()
+    art_host.name = "BuildingOperationArt"
+    art_host.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+    art_frame.add_child(art_host)
 
     building_operation_body = Label.new()
     building_operation_body.name = "BuildingOperationBody"
-    building_operation_body.custom_minimum_size = Vector2(384, 420)
+    building_operation_body.position = Vector2(286, 150)
+    building_operation_body.size = Vector2(878, 150)
     building_operation_body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
     building_operation_body.add_theme_font_size_override("font_size", 14)
     building_operation_body.add_theme_color_override("font_color", INK)
-    building_operation_content.add_child(building_operation_body)
+    building_operation_panel.add_child(building_operation_body)
+
+    var separator := HSeparator.new()
+    separator.position = Vector2(20, 306)
+    separator.size = Vector2(1144, 2)
+    building_operation_panel.add_child(separator)
+
+    building_operation_scroll = ScrollContainer.new()
+    building_operation_scroll.name = "BuildingOperationScroll"
+    building_operation_scroll.position = Vector2(20, 316)
+    building_operation_scroll.size = Vector2(520, 216)
+    building_operation_panel.add_child(building_operation_scroll)
+
+    building_operation_content = VBoxContainer.new()
+    building_operation_content.name = "BuildingOperationContent"
+    building_operation_content.custom_minimum_size = Vector2(500, 0)
+    building_operation_content.add_theme_constant_override("separation", 10)
+    building_operation_scroll.add_child(building_operation_content)
 
     building_management_container = VBoxContainer.new()
     building_management_container.name = "BuildingManagementControls"
-    building_management_container.custom_minimum_size = Vector2(384, 0)
+    building_management_container.custom_minimum_size = Vector2(500, 0)
     building_management_container.add_theme_constant_override("separation", 7)
     building_operation_content.add_child(building_management_container)
+
+    building_operation_live_panel = Panel.new()
+    building_operation_live_panel.name = "BuildingOperationLivePanel"
+    building_operation_live_panel.position = Vector2(552, 316)
+    building_operation_live_panel.size = Vector2(612, 216)
+    building_operation_live_panel.clip_contents = true
+    building_operation_live_panel.add_theme_stylebox_override("panel", _style(Color(0.48, 0.39, 0.25, 1.0), Color(0.91, 0.86, 0.72, 0.7), 1, 10))
+    building_operation_panel.add_child(building_operation_live_panel)
+    building_operation_live_scroll = ScrollContainer.new()
+    building_operation_live_scroll.name = "BuildingOperationLiveScroll"
+    building_operation_live_scroll.position = Vector2(14, 10)
+    building_operation_live_scroll.size = Vector2(584, 196)
+    building_operation_live_panel.add_child(building_operation_live_scroll)
+    building_operation_live_content = VBoxContainer.new()
+    building_operation_live_content.name = "BuildingOperationLiveContent"
+    building_operation_live_content.custom_minimum_size = Vector2(564, 0)
+    building_operation_live_content.mouse_filter = Control.MOUSE_FILTER_PASS
+    building_operation_live_content.add_theme_constant_override("separation", 6)
+    building_operation_live_scroll.add_child(building_operation_live_content)
+    building_operation_scroll.size = Vector2(520, 216)
 
 func _building_operation_is_open() -> bool:
     return building_operation_panel != null and is_instance_valid(building_operation_panel) and building_operation_panel.visible
@@ -3106,19 +3189,290 @@ func _refresh_building_operation_content() -> void:
         operation_text += "\n\n" + _map_worksite_operation_detail(
             state.buildings[str(selected_production_instance_id)] as BuildingState
         )
-    building_operation_body.text = operation_text + feedback
-    # Keep actionable controls in view for dense management panels.
-    if selected_building == SectMapPresentation.DEST_BODY_TRAINING:
-        building_operation_body.custom_minimum_size.y = 248
-    elif selected_building == SectMapPresentation.DEST_GUIDANCE:
-        building_operation_body.custom_minimum_size.y = 150
-    elif selected_building == SectMapPresentation.DEST_SPIRIT_FIELD:
-        building_operation_body.custom_minimum_size.y = 220
-    elif selected_building in [SectMapPresentation.DEST_MINE,SectMapPresentation.DEST_LINH_FOREST]:
-        building_operation_body.custom_minimum_size.y = 168
-    else:
-        building_operation_body.custom_minimum_size.y = 420
+    building_operation_body.text = _building_operation_headline(operation_text) + feedback
+    building_operation_body.tooltip_text = operation_text + feedback
+    _refresh_building_operation_art()
+    _refresh_building_operation_metrics()
+    _refresh_building_operation_live(operation_text)
+    building_operation_scroll.position = Vector2(20, 316)
+    building_operation_scroll.size = Vector2(520, 216)
+    building_operation_content.custom_minimum_size.x = 500
+    building_operation_live_panel.visible = true
+    building_operation_live_panel.position = Vector2(552, 316)
+    building_operation_live_panel.size = Vector2(612, 216)
     _rebuild_building_management_controls()
+
+func _building_operation_headline(operation_text: String) -> String:
+    var result: Array[String] = []
+    for raw_line in operation_text.split("\n"):
+        var line := str(raw_line).strip_edges()
+        if line.is_empty() or line == "TÌNH HÌNH VẬN HÀNH":
+            continue
+        result.append(line)
+        if result.size() >= 5:
+            break
+    return "\n".join(result) if not result.is_empty() else "Chưa có dữ liệu vận hành."
+
+func _selected_operation_building() -> BuildingState:
+    if state == null:
+        return null
+    if selected_production_instance_id != &"" and state.buildings.has(str(selected_production_instance_id)):
+        return state.buildings[str(selected_production_instance_id)] as BuildingState
+    var building_type: StringName = &""
+    match selected_building:
+        SectMapPresentation.DEST_MAIN_HALL:
+            building_type = BuildingSystem.TYPE_MAIN_HALL
+        SectMapPresentation.DEST_RESIDENCE:
+            building_type = BuildingSystem.TYPE_RESIDENCE
+        SectMapPresentation.DEST_MINE:
+            building_type = BuildingSystem.TYPE_MINE
+        SectMapPresentation.DEST_LINH_FOREST:
+            building_type = BuildingSystem.TYPE_LINH_FOREST
+        SectMapPresentation.DEST_ALCHEMY_HALL:
+            building_type = BuildingSystem.TYPE_ALCHEMY_HALL
+        SectMapPresentation.DEST_SPIRIT_FIELD:
+            building_type = BuildingSystem.TYPE_SPIRIT_FIELD
+        SectMapPresentation.DEST_BODY_TRAINING:
+            building_type = BuildingSystem.TYPE_BODY_TRAINING
+        SectMapPresentation.DEST_GUIDANCE:
+            building_type = BuildingSystem.TYPE_GUIDANCE_PLATFORM
+    if building_type == &"":
+        return null
+    return BuildingSystem.new().primary_building(state, building_type)
+
+func _refresh_building_operation_art() -> void:
+    var frame := building_operation_panel.get_node_or_null("BuildingOperationArtFrame") as Panel
+    var host := building_operation_panel.get_node_or_null("BuildingOperationArtFrame/BuildingOperationArt") as Control
+    if frame == null or host == null:
+        return
+    var art_key := str(selected_building)
+    if str(host.get_meta("art_key", "")) == art_key:
+        return
+    host.set_meta("art_key", art_key)
+    for child in host.get_children():
+        host.remove_child(child)
+        child.queue_free()
+    var source_kind := ""
+    match selected_building:
+        SectMapPresentation.DEST_MAIN_HALL: source_kind = "hall"
+        SectMapPresentation.DEST_RESIDENCE: source_kind = "residence"
+        SectMapPresentation.DEST_GUIDANCE: source_kind = "guidance"
+    if source_kind != "":
+        var source_art := TRI_FACILITY_ART.new() as Control
+        source_art.name = "VerifiedFacilityArt"
+        source_art.set("facility_kind", source_kind)
+        source_art.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+        host.add_child(source_art)
+        return
+    var kind := "profession"
+    match selected_building:
+        SectMapPresentation.DEST_MINE: kind = "ore"
+        SectMapPresentation.DEST_LINH_FOREST: kind = "wood"
+        SectMapPresentation.DEST_SPIRIT_FIELD: kind = "leaf"
+        SectMapPresentation.DEST_BODY_TRAINING: kind = "person"
+        SectMapPresentation.DEST_ALCHEMY_HALL: kind = "flame"
+        SectMapPresentation.DEST_FORGE: kind = "ore"
+        SectMapPresentation.DEST_MEDICINE: kind = "leaf"
+        SectMapPresentation.DEST_CULTIVATION: kind = "root"
+        SectMapPresentation.DEST_GATE: kind = "gate"
+        SectMapPresentation.DEST_WAREHOUSE: kind = "resource"
+        _: kind = "profession"
+    var illustration := Control.new()
+    illustration.name = "FacilityIconIllustration"
+    illustration.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+    illustration.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    host.add_child(illustration)
+    var icon := SECT_UI_ICON.new() as Control
+    icon.name = "FacilityOperationIcon"
+    icon.set("kind", kind)
+    icon.set("tint", GOLD)
+    icon.position = Vector2(88, 27)
+    icon.size = Vector2(72, 72)
+    icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    illustration.add_child(icon)
+    var caption := Label.new()
+    caption.text = _building_name(selected_building)
+    caption.position = Vector2(12, 105)
+    caption.size = Vector2(226, 28)
+    caption.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+    caption.add_theme_font_size_override("font_size", 15)
+    caption.add_theme_color_override("font_color", PAPER_LIGHT)
+    illustration.add_child(caption)
+
+func _refresh_building_operation_metrics() -> void:
+    for child in building_operation_metrics.get_children():
+        building_operation_metrics.remove_child(child)
+        child.queue_free()
+    var building := _selected_operation_building()
+    var level_text := "—"
+    var worker_text := "—"
+    var cycle_text := "Chưa có mẻ"
+    var output_text := "—"
+    var icon_kind := "resource"
+    if building != null:
+        level_text = "Lv%d" % building.level
+        var assigned := BuildingSystem.new().assigned_worker_ids(state, building)
+        worker_text = "%d/%d" % [assigned.size(), BuildingSystem.new().worker_slots(building)]
+        if building.building_type == BuildingSystem.TYPE_BODY_TRAINING:
+            var running := 0
+            for disciple_id in assigned:
+                if state.disciples.has(disciple_id) and state.disciples[disciple_id].current_action == &"TRAIN_BODY":
+                    running += 1
+            cycle_text = "%d đang rèn" % running
+            output_text = "%d lượt đã trả phí" % int(building.production_state.get("paid_training_minutes", 0))
+            icon_kind = "person"
+        else:
+            var snapshot := _map_worksite_snapshot(building)
+            cycle_text = str(snapshot.get("detail", "Chưa có mẻ"))
+            output_text = "Đã nhập %d" % int(snapshot.get("received", building.metrics.get("units_produced", 0)))
+            if building.building_type == BuildingSystem.TYPE_MINE:
+                icon_kind = "ore"
+            elif building.building_type == BuildingSystem.TYPE_LINH_FOREST:
+                icon_kind = "wood"
+            else:
+                icon_kind = "leaf"
+    for entry in [
+        ["CẤP CÔNG TRÌNH", level_text, "upgrade"],
+        ["NHÂN SỰ / CHỖ", worker_text, "worker"],
+        ["MẺ / TIẾN ĐỘ", cycle_text, "timer"],
+        ["SẢN LƯỢNG THẬT", output_text, icon_kind]
+    ]:
+        var card := SECT_UI_THEME.metric_card(str(entry[0]), str(entry[1]), str(entry[2]), GOLD)
+        card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+        card.custom_minimum_size = Vector2(0, 66)
+        building_operation_metrics.add_child(card)
+
+func _refresh_building_operation_live(operation_text: String) -> void:
+    for child in building_operation_live_content.get_children():
+        building_operation_live_content.remove_child(child)
+        child.queue_free()
+    var heading := Label.new()
+    heading.text = "NHÂN SỰ & TIẾN ĐỘ" if selected_building in [
+        SectMapPresentation.DEST_MINE,
+        SectMapPresentation.DEST_LINH_FOREST,
+        SectMapPresentation.DEST_SPIRIT_FIELD,
+        SectMapPresentation.DEST_BODY_TRAINING
+    ] else "CHI TIẾT VẬN HÀNH"
+    heading.add_theme_font_size_override("font_size", 15)
+    heading.add_theme_color_override("font_color", CINNABAR.darkened(0.18))
+    building_operation_live_content.add_child(heading)
+    var building := _selected_operation_building()
+    if building != null and selected_building in [
+        SectMapPresentation.DEST_MINE,
+        SectMapPresentation.DEST_LINH_FOREST,
+        SectMapPresentation.DEST_SPIRIT_FIELD
+    ]:
+        var snapshot := _map_worksite_snapshot(building)
+        building_operation_progress = ProgressBar.new()
+        building_operation_progress.name = "CanonicalWorksiteProgress"
+        building_operation_progress.custom_minimum_size = Vector2(0, 18)
+        building_operation_progress.max_value = 100.0
+        building_operation_progress.value = float(snapshot.get("progress", 0.0)) if bool(snapshot.get("active", false)) else 0.0
+        building_operation_progress.show_percentage = bool(snapshot.get("active", false))
+        building_operation_live_content.add_child(building_operation_progress)
+        building_operation_progress_label = Label.new()
+        building_operation_progress_label.name = "CanonicalWorksiteEta"
+        building_operation_progress_label.text = "%s · %s" % [str(snapshot.get("heading", "")), str(snapshot.get("detail", "Chưa có mẻ"))]
+        building_operation_progress_label.add_theme_font_size_override("font_size", 12)
+        building_operation_live_content.add_child(building_operation_progress_label)
+        var assigned := BuildingSystem.new().assigned_worker_ids(state, building)
+        if assigned.is_empty():
+            _add_live_worker_message("Chưa phân công nhân sự cho công trình này.")
+        else:
+            for disciple_id in assigned:
+                if not state.disciples.has(disciple_id):
+                    continue
+                var disciple: DiscipleState = state.disciples[disciple_id]
+                var status := SectMapPresentation.action_label(disciple.current_action)
+                if selected_building == SectMapPresentation.DEST_MINE:
+                    status = _mining_member_status(disciple, true, building)
+                elif selected_building == SectMapPresentation.DEST_LINH_FOREST:
+                    status = _resource_job_member_status(disciple, WorkforceSystem.PROF_FORESTRY, true, building)
+                elif selected_building == SectMapPresentation.DEST_SPIRIT_FIELD:
+                    status = _field_worker_status(disciple, building)
+                _add_live_worker_card(disciple.display_name, status)
+        return
+    if building != null and selected_building == SectMapPresentation.DEST_BODY_TRAINING:
+        var assigned_body := BuildingSystem.new().assigned_worker_ids(state, building)
+        _add_live_worker_message("Rèn thân ghi EXP và trừ phí theo phút mô phỏng; hệ thống hiện không lưu ETA từng phút để hiển thị thanh tiến độ.")
+        if assigned_body.is_empty():
+            _add_live_worker_message("Chưa phân công đệ tử.")
+        else:
+            for disciple_id in assigned_body:
+                if not state.disciples.has(disciple_id):
+                    continue
+                var disciple: DiscipleState = state.disciples[disciple_id]
+                var last: Dictionary = disciple.last_decision.get("v2_body_training_result", {})
+                var result_text := ""
+                if bool(last.get("ok", false)) and last.has("gained"):
+                    result_text = " · lượt gần nhất +%.0f EXP" % float(last["gained"])
+                _add_live_worker_card(disciple.display_name, "%s%s" % [SectMapPresentation.action_label(disciple.current_action), result_text])
+        return
+    var detail := Label.new()
+    detail.text = operation_text
+    detail.custom_minimum_size = Vector2(560, 0)
+    detail.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+    detail.add_theme_font_size_override("font_size", 13)
+    detail.add_theme_color_override("font_color", INK)
+    building_operation_live_content.add_child(detail)
+
+func _field_worker_status(disciple: DiscipleState, field: BuildingState) -> String:
+    for raw_plot in BuildingSystem.new().spirit_field_plots(state, field):
+        if not (raw_plot is Dictionary):
+            continue
+        var plot: Dictionary = raw_plot
+        if StringName(plot.get("assigned_worker_id", "")) != disciple.id:
+            continue
+        if StringName(plot.get("status", "")) != BuildingSystem.PLOT_GROWING:
+            continue
+        var crop_id := StringName(plot.get("crop_id", ""))
+        var crop_name := spirit_crop_registry.display_name(crop_id)
+        var quantity := maxi(0, int(plot.get("routine_yield", 0)))
+        var remaining := maxi(0, int(plot.get("finish_tick", state.tick)) - state.tick)
+        return "Chăm luống · %s ×%d · còn %d nhịp" % [crop_name, quantity, remaining]
+    return SectMapPresentation.action_label(disciple.current_action)
+
+func _add_live_worker_message(text: String) -> void:
+    var label := Label.new()
+    label.text = text
+    label.custom_minimum_size = Vector2(560, 0)
+    label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+    label.add_theme_font_size_override("font_size", 12)
+    label.add_theme_color_override("font_color", INK)
+    building_operation_live_content.add_child(label)
+
+func _add_live_worker_card(display_name: String, status: String) -> void:
+    var card := PanelContainer.new()
+    card.name = "LiveWorkerCard"
+    card.custom_minimum_size = Vector2(560, 44)
+    card.mouse_filter = Control.MOUSE_FILTER_PASS
+    card.add_theme_stylebox_override("panel", _style(Color(0.58, 0.47, 0.31, 0.55), Color(0.96, 0.92, 0.82, 1.0), 1, 7))
+    var row := HBoxContainer.new()
+    row.add_theme_constant_override("separation", 8)
+    row.mouse_filter = Control.MOUSE_FILTER_PASS
+    var icon := SECT_UI_ICON.new() as Control
+    icon.set("kind", "worker")
+    icon.set("tint", JADE_DARK)
+    icon.custom_minimum_size = Vector2(28, 28)
+    icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    row.add_child(icon)
+    var name_label := Label.new()
+    name_label.text = display_name
+    name_label.custom_minimum_size = Vector2(122, 30)
+    name_label.add_theme_font_size_override("font_size", 13)
+    name_label.add_theme_color_override("font_color", INK)
+    name_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    row.add_child(name_label)
+    var status_label := Label.new()
+    status_label.text = status
+    status_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+    status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+    status_label.add_theme_font_size_override("font_size", 12)
+    status_label.add_theme_color_override("font_color", INK)
+    status_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    row.add_child(status_label)
+    card.add_child(row)
+    building_operation_live_content.add_child(card)
 
 func _active_resource_worksite_status(destination: StringName) -> String:
     var profession_id: StringName
@@ -7668,6 +8022,10 @@ func _open_selected_disciple_detail() -> void:
 func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "Tổng Quan", preserve_feedback: bool = false) -> void:
     if not state.disciples.has(disciple_id):
         return
+    # A profile is a top-level screen. Close facility panels before adding its
+    # dim layer so Warehouse/building controls cannot remain underneath it.
+    _dismiss_facility_screens()
+    _close_building_operation_panel(true)
     selected_id = disciple_id
     opened_disciple_profile = true
     if not preserve_feedback and tab_name != "Huyết Mạch" and tab_name != "Thể Chất":
@@ -7816,8 +8174,8 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "T�
     # Make attribute/Body requirements readable without overlapping action row.
     var details_scroll := ScrollContainer.new()
     details_scroll.name = "DiscipleTabContentScroll"
-    details_scroll.position = Vector2(18, 52)
-    details_scroll.size = Vector2(content_width - 36.0, 286)
+    details_scroll.position = Vector2(18, 118)
+    details_scroll.size = Vector2(content_width - 36.0, 220)
     content_panel.add_child(details_scroll)
     var content := Label.new()
     content.name = "DiscipleTabContentText"
@@ -7835,6 +8193,27 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "T�
     var profile_snapshot := _disciple_snapshot(disciple)
     var authentic_v2 := bool(profile_snapshot.get("authentic_v2", false))
     var is_overview_tab := tab_name == "Tổng Quan"
+    if authentic_v2 and bool(profile_snapshot.get("ok", false)):
+        var progression_snapshot: Dictionary = profile_snapshot.get("progression", {})
+        if bool(progression_snapshot.get("ready", false)):
+            var cultivation_snapshot: Dictionary = progression_snapshot.get("cultivation", {})
+            var body_snapshot: Dictionary = progression_snapshot.get("body", {})
+            _add_disciple_progress_row(content_panel, "TU VI", float(cultivation_snapshot.get("xp", 0.0)), float(cultivation_snapshot.get("required_xp", 0.0)), Vector2(302, 52), content_width - 324.0, JADE_DARK)
+            _add_disciple_progress_row(content_panel, "LUYỆN THỂ", float(body_snapshot.get("xp", 0.0)), float(body_snapshot.get("required_xp", 0.0)), Vector2(302, 82), content_width - 324.0, CINNABAR)
+        else:
+            var progress_note := SECT_UI_THEME.label("Tiến độ Tu Vi / Luyện Thể V2 chưa sẵn sàng", 12, INK, true)
+            progress_note.position = Vector2(302, 58)
+            progress_note.size = Vector2(content_width - 324.0, 30)
+            content_panel.add_child(progress_note)
+    else:
+        var legacy_note := SECT_UI_THEME.label("Hồ sơ cũ · thanh tiến độ V2 chưa khả dụng", 12, INK, true)
+        legacy_note.position = Vector2(302, 58)
+        legacy_note.size = Vector2(content_width - 324.0, 30)
+        content_panel.add_child(legacy_note)
+    if authentic_v2 and is_overview_tab:
+        content.text = _disciple_profile_compact_text(profile_snapshot)
+        details_scroll.position = Vector2(302, 118)
+        details_scroll.size = Vector2(content_width - 324.0, 220)
     if tab_name in ["Thuộc tính", "Tổng Quan"] and bool(profile_snapshot.get("ok",false)):
         if tab_name == "Thuộc tính":
             # Keep the legacy read-only node for existing presentation probes;
@@ -7857,8 +8236,8 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "T�
         if radar.apply_snapshot(profile_snapshot):
             content_panel.add_child(radar)
             var text_x := 284.0 if is_overview_tab else 302.0
-            details_scroll.position = Vector2(text_x,52)
-            details_scroll.size = Vector2(content_width - text_x - 18.0,286)
+            details_scroll.position = Vector2(text_x,118)
+            details_scroll.size = Vector2(content_width - text_x - 18.0,220)
             content.custom_minimum_size = Vector2(details_scroll.size.x - 22.0,0)
             content.add_theme_font_size_override("font_size",13 if is_overview_tab else 14)
     if authentic_v2 and tab_name in ["Thuộc tính", "Tổng Quan"]:
@@ -7881,21 +8260,32 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "T�
         elif tab_name == "Thể Chất":
             _add_tab_action_button(content_panel, "Tôi thể", Vector2(18, 344), "physique_temper")
             _add_tab_action_button(content_panel, "Cải thể", Vector2(140, 344), "physique_transform")
-    elif tab_name == "Thuộc tính":
+    elif authentic_v2:
         _add_tab_action_button(content_panel, "Chuyên tu", Vector2(18, 344), "v2_cultivate")
         _add_tab_action_button(content_panel, "Rèn thân", Vector2(140, 344), "v2_body_train")
-        var gate_preview := DiscipleBodyGateTransactionV2.new().preview_gate(state,selected_id)
-        var gate_button := Button.new()
-        gate_button.name = "BodyGateRealCommit"
-        gate_button.text = "Đột phá Luyện Thể"
-        gate_button.position = Vector2(266, 344)
-        gate_button.size = Vector2(175, 40)
-        gate_button.add_theme_font_size_override("font_size", 12)
-        gate_button.add_theme_stylebox_override("normal", _style(CINNABAR, PAPER_LIGHT, 2, 8))
-        gate_button.disabled = not bool(gate_preview.get("can_commit",false))
-        gate_button.tooltip_text = _body_gate_reason(str(gate_preview.get("reason","")))
-        gate_button.pressed.connect(Callable(self, "_disciple_tab_action").bind("v2_body_gate"))
-        content_panel.add_child(gate_button)
+        if tab_name == "Thuộc tính":
+            var gate_preview := DiscipleBodyGateTransactionV2.new().preview_gate(state,selected_id)
+            var gate_button := Button.new()
+            gate_button.name = "BodyGateRealCommit"
+            gate_button.text = "Đột phá Luyện Thể"
+            gate_button.position = Vector2(266, 344)
+            gate_button.size = Vector2(175, 40)
+            gate_button.add_theme_font_size_override("font_size", 12)
+            gate_button.add_theme_stylebox_override("normal", _style(CINNABAR, PAPER_LIGHT, 2, 8))
+            gate_button.disabled = not bool(gate_preview.get("can_commit",false))
+            gate_button.tooltip_text = _body_gate_reason(str(gate_preview.get("reason","")))
+            gate_button.pressed.connect(Callable(self, "_disciple_tab_action").bind("v2_body_gate"))
+            content_panel.add_child(gate_button)
+    var locate_button := Button.new()
+    locate_button.name = "LocateDiscipleOnMap"
+    locate_button.text = "Định vị trên bản đồ"
+    locate_button.position = Vector2(content_width - 174.0, 344)
+    locate_button.size = Vector2(156, 40)
+    locate_button.add_theme_font_size_override("font_size", 12)
+    locate_button.add_theme_color_override("font_color", PAPER_LIGHT)
+    locate_button.add_theme_stylebox_override("normal", _style(JADE_DARK, INK, 1, 8))
+    locate_button.pressed.connect(Callable(self, "_locate_profile_disciple").bind(disciple_id))
+    content_panel.add_child(locate_button)
 
     var tab_names: Array[String] = ["Tổng Quan", "Thuộc tính", "Công pháp", "Trang bị", "Huyết Mạch", "Thể Chất", "Quan hệ"]
     var tab_start := 18.0 + roster_width + 18.0
@@ -7978,11 +8368,66 @@ func _deep_status_text(disciple: DiscipleState) -> String:
 
 func _return_to_disciple_summary() -> void:
     _clear_popup()
+    opened_disciple_profile = false
+    _close_building_operation_panel(true)
     if deep_restore_summary and selected_id != &"" and state.disciples.has(selected_id):
         _restore_selected_focus_marker()
         _show_disciple_summary()
         return
     _close_disciple_summary(true)
+
+func _locate_profile_disciple(disciple_id: StringName) -> void:
+    if state == null or not state.disciples.has(disciple_id):
+        return
+    var disciple: DiscipleState = state.disciples[disciple_id]
+    var point := _disciple_map_point(disciple_id)
+    _clear_popup()
+    opened_disciple_profile = false
+    deep_restore_summary = false
+    _close_disciple_summary(true)
+    _close_building_operation_panel(true)
+    _set_focus_target(point, &"disciple", disciple_id, disciple.display_name, true)
+
+func _add_disciple_progress_row(parent: Control, label_text: String, xp: float, required: float, position_value: Vector2, width: float, accent: Color) -> void:
+    var label := Label.new()
+    label.text = "%s  %.0f / %.0f" % [label_text, xp, required]
+    label.position = position_value
+    label.size = Vector2(width, 16)
+    label.add_theme_font_size_override("font_size", 11)
+    label.add_theme_color_override("font_color", INK)
+    parent.add_child(label)
+    var bar := ProgressBar.new()
+    bar.name = "DiscipleProgress_%s" % label_text.replace(" ", "_")
+    bar.position = Vector2(position_value.x, position_value.y + 16)
+    bar.size = Vector2(width, 9)
+    bar.max_value = 100.0
+    bar.value = clampf(xp / required * 100.0, 0.0, 100.0) if required > 0.0 else 100.0
+    bar.show_percentage = false
+    var fill := StyleBoxFlat.new()
+    fill.bg_color = accent
+    fill.set_corner_radius_all(4)
+    bar.add_theme_stylebox_override("fill", fill)
+    parent.add_child(bar)
+
+func _disciple_profile_compact_text(snapshot: Dictionary) -> String:
+    var life: Dictionary = snapshot.get("life", {})
+    var progression: Dictionary = snapshot.get("progression", {})
+    var combat: Dictionary = snapshot.get("combat", {})
+    var stats: Dictionary = combat.get("stats", {})
+    if not bool(progression.get("ready", false)):
+        return "HP %.0f / %.0f\n%s\nTu Vi / Luyện Thể V2 chưa sẵn sàng." % [
+            float(life.get("hp", 0.0)), float(life.get("max_hp", 0.0)),
+            SectMapPresentation.action_label(StringName(life.get("current_action", "")))
+        ]
+    var cultivation_value: Dictionary = progression.get("cultivation", {})
+    var body_value: Dictionary = progression.get("body", {})
+    return "HP %.0f / %.0f · Thể lực %.0f / 100\nCông %.1f · Thủ %.1f\n%s tầng %d · %s tầng %d\n%s" % [
+        float(life.get("hp", 0.0)), float(life.get("max_hp", 0.0)), float(life.get("expedition_stamina", 0.0)),
+        float(stats.get("attack", 0.0)), float(stats.get("defense", 0.0)),
+        str(cultivation_value.get("name", "Tu Vi")), int(cultivation_value.get("floor", 0)),
+        str(body_value.get("name", "Luyện Thể")), int(body_value.get("floor", 0)),
+        SectMapPresentation.action_label(StringName(life.get("current_action", "")))
+    ]
 
 func _restore_selected_focus_marker() -> void:
     if selected_id == &"" or not state.disciples.has(selected_id):
