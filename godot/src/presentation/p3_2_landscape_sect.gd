@@ -4590,7 +4590,12 @@ func _add_resource_timer_cards(building: BuildingState) -> void:
         var stock := _warehouse_available(resource_id) if resource_id != &"" else 0
         var stock_line := Label.new()
         stock_line.name = "ResourceBatchStock_%d" % index
-        stock_line.text = "Kho hiện có: %d %s · mẻ này: ×%d" % [stock, registry.display_name(resource_id), quantity]
+        stock_line.text = "Kho %d · mẻ ×%d · bình quân %.2f đơn vị/phút" % [
+            stock, quantity, float(quantity) / float(duration)
+        ]
+        stock_line.tooltip_text = "Sản lượng bình quân lý thuyết của mẻ trong %d phút mô phỏng; tài nguyên chỉ vào Kho khi mẻ hoàn tất. Loại: %s." % [
+            duration,registry.display_name(resource_id)
+        ]
         stock_line.add_theme_font_size_override("font_size", 10)
         stock_line.add_theme_color_override("font_color", JADE_DARK)
         column.add_child(stock_line)
@@ -4653,7 +4658,9 @@ func _add_spirit_field_plot_cards(building: BuildingState) -> void:
         var state_text := "Chờ thu hoạch" if ready else ("Còn %d phút mô phỏng" % remaining if growing else "Sẵn sàng gieo")
         var detail := Label.new()
         detail.text = "%s · %s%s%s" % [worker_name, state_text, yield_text, " · Kho: %d" % crop_stock if crop_id != &"" else ""]
-        detail.tooltip_text = "EXP Linh Thực được cộng khi gieo thành công, không phải khi thu hoạch. Khi ô trống chưa có EXP."
+        detail.tooltip_text = "EXP Linh Thực được cộng khi gieo thành công, không phải khi thu hoạch. Lượt này có sản lượng cơ bản ×%d / %d phút mô phỏng, bình quân %.2f đơn vị/phút trước thưởng may mắn." % [
+            yield_count,duration,float(yield_count)/float(duration)
+        ] if growing else "Ô trống không sản xuất và không cộng EXP."
         detail.add_theme_font_size_override("font_size", 10)
         detail.add_theme_color_override("font_color", INK)
         detail.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
