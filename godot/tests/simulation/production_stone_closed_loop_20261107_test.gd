@@ -14,6 +14,12 @@ func _init() -> void:
 func _run() -> void:
     _cleanup()
     var state := P37Factory.create_state(7110701)
+    var empty_treasury_probe := P37Factory.create_state(7110703)
+    empty_treasury_probe.sect.spirit_stones = 0
+    TechniqueSystem.new().initialize(empty_treasury_probe)
+    if empty_treasury_probe.sect.spirit_stones != 0:
+        _fail("re-initializing an existing technique economy regranted 500 free Stones")
+        return
     var mine := buildings.primary_building(state,BuildingSystem.TYPE_MINE)
     var field := buildings.primary_building(state,BuildingSystem.TYPE_SPIRIT_FIELD)
     if mine == null or field == null:
