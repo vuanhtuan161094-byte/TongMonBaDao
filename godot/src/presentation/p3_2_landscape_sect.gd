@@ -3431,6 +3431,7 @@ func _refresh_building_operation_metrics() -> void:
     var level_text := "—"
     var worker_text := "—"
     var cycle_text := "Chưa khởi khai"
+    var cycle_tooltip := ""
     var output_text := "—"
     var output_tooltip := ""
     var icon_kind := "resource"
@@ -3453,6 +3454,9 @@ func _refresh_building_operation_metrics() -> void:
         else:
             var snapshot := _map_worksite_snapshot(building)
             cycle_text = str(snapshot.get("detail", "Chưa khởi khai"))
+            if building.building_type == BuildingSystem.TYPE_MINE and cycle_text == "Đã giao người · chưa khởi khai":
+                cycle_tooltip = "Đội khai khoáng đã được giao. Chưa có lượt khai thác nào đang chạy."
+                cycle_text = "Chưa bắt đầu"
             var produced := maxi(0, int(building.metrics.get("units_produced", 0)))
             output_text = "%d đơn vị" % produced
             output_tooltip = "Tổng đơn vị đã sản xuất theo bộ đếm công trình. Mẻ hiện tại và ETA xem ở mục Tiến độ."
@@ -3486,6 +3490,8 @@ func _refresh_building_operation_metrics() -> void:
         card.custom_minimum_size = Vector2(0, 66)
         if str(entry[0]) == "ĐÃ SẢN XUẤT":
             card.tooltip_text = output_tooltip
+        elif str(entry[0]) == progress_caption:
+            card.tooltip_text = cycle_tooltip
         building_operation_metrics.add_child(card)
 
 func _refresh_building_operation_live(operation_text: String) -> void:
@@ -3693,7 +3699,7 @@ func _build_worksite_upgrade_control(building: BuildingState) -> void:
         return
     var system := BuildingSystem.new()
     var definition := system.definition_for(building)
-    var display := _building_name(building.id)
+    var display := _sect_production_type_name(building.building_type) if _map_worksite_is_supported(building) else _building_name(building.id)
     _add_management_section_label("NÂNG CẤP %s" % display.to_upper())
     if not bool(definition.get("upgrade_enabled", true)):
         var pending := Label.new()
@@ -4780,8 +4786,17 @@ func _build_work_management(profession_id: StringName, group_id: StringName, gro
         row.set_meta("workforce_candidate", not in_group)
         row.visible = in_group
         var name_label := row.get_child(0) as Label
+        var role_text := "CHƯA PHÂN ĐỘI"
+        if in_group:
+            if profession_id == WorkforceSystem.PROF_MINING:
+                role_text = _mining_member_status(disciple, active_building_ids.has(disciple.id), active_producer)
+            elif profession_id == WorkforceSystem.PROF_FORESTRY:
+                role_text = _resource_job_member_status(disciple, profession_id, active_building_ids.has(disciple.id), active_producer)
+            elif active_building_ids.has(disciple.id):
+                role_text = "Chỗ hoạt động"
+            else:
+                role_text = "Chờ chỗ hoạt động"
         if name_label != null:
-            var role_text := "ĐANG LÀM" if active_building_ids.has(disciple.id) else ("TRONG ĐỘI" if in_group else "CHƯA PHÂN ĐỘI")
             name_label.text = "%s\n%s" % [disciple.display_name,role_text]
             name_label.tooltip_text += " · " + role_text
         var timed_recipe_busy := building_system.disciple_has_active_timed_recipe(state, disciple.id)
@@ -4909,6 +4924,11 @@ func _build_spirit_field_management() -> void:
         var row := _new_management_row(disciple)
         var in_group := disciple.work_group_id == &"herbalism_crew"
         var has_plot := buildings.disciple_has_active_spirit_plot(state, disciple.id, field)
+        var active_slot := active_ids.has(disciple.id)
+        var status_text := "Đang chăm ô trồng" if has_plot else ("Sẵn sàng gieo" if active_slot else ("Chờ chỗ hoạt động" if in_group else "Chưa phân đội"))
+        var field_name_label := row.get_child(0) as Label
+        if field_name_label != null:
+            field_name_label.text = "%s\n%s" % [disciple.display_name, status_text]
 
         var group_button := Button.new()
         group_button.name = "FieldGroup_%s" % str(disciple.id)
@@ -9308,7 +9328,7 @@ func _disciple_overview_tab_text(disciple: DiscipleState) -> String:
         lines.append("Thương Thế: Khỏe mạnh")
     lines.append("Hành động: %s · Nhóm việc: %s" % [
         SectMapPresentation.action_label(StringName(life.get("current_action",""))),
-        str(work.get("group_id",""))
+        _work_group_label_id(StringName(work.get("group_id","")))
     ])
     var active_job_id := str(life.get("active_job_id",""))
     lines.append("Tác vụ đang giữ: %s" % (active_job_id if not active_job_id.is_empty() else "Không có"))
