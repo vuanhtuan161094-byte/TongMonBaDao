@@ -262,10 +262,20 @@ func _verify_profession_learning_and_long_term_level() -> bool:
     FoundationSystem.new().recompute_disciple_quality(actor)
     actor.profession_traits = [str(WorkforceSystem.TRAIT_HERBALIST)]
     actor.profession_trait_grades = {str(WorkforceSystem.TRAIT_HERBALIST): 5}
+    var before_xp := workforce.profession_xp(actor, WorkforceSystem.PROF_HERBALISM)
     var result := workforce.perform_work(state, actor, WorkforceSystem.PROF_HERBALISM)
     var expected := crops.base_work_xp(StringName(result.get("crop_id", ""))) * 1.25
-    if not is_equal_approx(float(result.get("xp_gain", 0.0)), expected):
-        return _fail("Linh Thực talent grade 5 did not add exactly +25% profession XP at neutral Thông Tuệ.")
+    if not bool(result.get("started", false)) or not is_equal_approx(float(result.get("xp_gain_pending", 0.0)), expected):
+        return _fail("Linh Thực talent grade 5 did not lock correct pending EXP.")
+    if not is_equal_approx(workforce.profession_xp(actor,WorkforceSystem.PROF_HERBALISM),before_xp):
+        return _fail("Linh Thực credited profession XP at sowing before Warehouse harvest.")
+    state.tick = maxi(state.tick+1,int(result.get("finish_tick",state.tick+1)))
+    buildings.process_tick(state)
+    if not is_equal_approx(workforce.profession_xp(actor,WorkforceSystem.PROF_HERBALISM)-before_xp,expected):
+        return _fail("Real harvested crop did not credit exact +25% profession XP after Warehouse delivery.")
+    buildings.process_tick(state)
+    if not is_equal_approx(workforce.profession_xp(actor,WorkforceSystem.PROF_HERBALISM)-before_xp,expected):
+        return _fail("Linh Thực harvest granted duplicate XP.")
 
     actor.profession_xp[str(WorkforceSystem.PROF_HERBALISM)] = WorkforceSystem.P3_7_XP_LEVEL_SCALE * 100.0
     if workforce.p3_7_profession_level(actor, WorkforceSystem.PROF_HERBALISM) != 10:
