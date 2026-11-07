@@ -3520,7 +3520,7 @@ func _refresh_building_operation_live(operation_text: String) -> void:
         building_operation_progress.custom_minimum_size = Vector2(0, 16)
         building_operation_progress.max_value = 100.0
         building_operation_progress.value = float(snapshot.get("progress", 0.0)) if bool(snapshot.get("active", false)) else 0.0
-        building_operation_progress.show_percentage = bool(snapshot.get("active", false))
+        building_operation_progress.show_percentage = false
         building_operation_progress.add_theme_stylebox_override("background", _style(Color(0.76, 0.75, 0.66), Color(0.47, 0.42, 0.30), 1, 5))
         building_operation_progress.add_theme_stylebox_override("fill", _style(JADE_DARK, GOLD, 1, 5))
         building_operation_live_content.add_child(building_operation_progress)
@@ -4529,7 +4529,7 @@ func _add_resource_timer_cards(building: BuildingState) -> void:
         progress_bar.custom_minimum_size = Vector2(0, 12)
         progress_bar.max_value = 100.0
         progress_bar.value = progress
-        progress_bar.show_percentage = true
+        progress_bar.show_percentage = false
         progress_bar.add_theme_stylebox_override("background", _style(Color(0.77, 0.74, 0.66), Color(0.48, 0.40, 0.27), 1, 4))
         progress_bar.add_theme_stylebox_override("fill", _style(JADE_DARK, GOLD, 1, 4))
         column.add_child(progress_bar)
@@ -4544,11 +4544,7 @@ func _add_resource_timer_cards(building: BuildingState) -> void:
         stock_line.add_theme_color_override("font_color", JADE_DARK)
         column.add_child(stock_line)
         var eta := Label.new()
-        eta.text = "%s · %s · còn %d phút mô phỏng" % [
-            worker_name,
-            "Chờ nhập Kho" if remaining == 0 else "đang làm",
-            remaining
-        ]
+        eta.text = "Chờ nhập Kho · %s" % worker_name if remaining == 0 else "Còn %d phút mô phỏng · %s" % [remaining, worker_name]
         eta.add_theme_font_size_override("font_size", 11)
         eta.add_theme_color_override("font_color", INK)
         column.add_child(eta)
@@ -4595,7 +4591,7 @@ func _add_spirit_field_plot_cards(building: BuildingState) -> void:
         progress_bar.custom_minimum_size = Vector2(0, 12)
         progress_bar.max_value = 100.0
         progress_bar.value = 100.0 if ready else (100.0 * float(elapsed) / float(duration) if growing else 0.0)
-        progress_bar.show_percentage = growing
+        progress_bar.show_percentage = false
         progress_bar.add_theme_stylebox_override("background", _style(Color(0.77, 0.74, 0.66), Color(0.48, 0.40, 0.27), 1, 4))
         progress_bar.add_theme_stylebox_override("fill", _style(JADE_DARK, GOLD, 1, 4))
         column.add_child(progress_bar)
@@ -4856,7 +4852,8 @@ func _build_work_management(profession_id: StringName, group_id: StringName, gro
             else:
                 role_text = "Chờ chỗ hoạt động"
         if name_label != null:
-            name_label.text = "%s\n%s" % [disciple.display_name,role_text]
+            var source_mark := "✦ " if disciple.recruitment_source != &"" else ""
+            name_label.text = "%s%s\n%s" % [source_mark, disciple.display_name,role_text]
             name_label.tooltip_text += " · " + role_text
         var timed_recipe_busy := building_system.disciple_has_active_timed_recipe(state, disciple.id)
 
@@ -5102,7 +5099,7 @@ func _add_management_section_label(text: String) -> void:
 func _new_management_row(disciple: DiscipleState) -> HBoxContainer:
     var row := HBoxContainer.new()
     row.name = "Person_%s" % str(disciple.id)
-    row.custom_minimum_size = Vector2(484, 48)
+    row.custom_minimum_size = Vector2(484, 54)
     row.add_theme_constant_override("separation", 6)
     building_management_container.add_child(row)
 
@@ -5113,10 +5110,12 @@ func _new_management_row(disciple: DiscipleState) -> HBoxContainer:
         disciple.display_name, disciple.stamina, SectMapPresentation.action_label(disciple.current_action)
     ]
     name.clip_text = true
-    name.custom_minimum_size = Vector2(154, 44)
+    name.custom_minimum_size = Vector2(132, 52)
     name.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
     name.add_theme_font_size_override("font_size", 12)
-    name.add_theme_color_override("font_color", INK)
+    var recruited := disciple.recruitment_source != &""
+    name.add_theme_color_override("font_color", Color(0.41, 0.22, 0.55) if recruited else INK)
+    name.tooltip_text += " · " + ("Đệ tử chiêu mộ" if recruited else "Đệ tử khởi đầu / hồ sơ cũ")
     row.add_child(name)
 
     var portrait_texture := _disciple_source_a_portrait_texture(disciple)
@@ -5137,6 +5136,31 @@ func _new_management_row(disciple: DiscipleState) -> HBoxContainer:
         worker_icon.custom_minimum_size = Vector2(30, 30)
         worker_icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
         row.add_child(worker_icon)
+    var profession_id := WorkforceSystem.PROF_MINING
+    match selected_building:
+        SectMapPresentation.DEST_LINH_FOREST:
+            profession_id = WorkforceSystem.PROF_FORESTRY
+        SectMapPresentation.DEST_SPIRIT_FIELD:
+            profession_id = WorkforceSystem.PROF_HERBALISM
+        SectMapPresentation.DEST_ALCHEMY_HALL:
+            profession_id = WorkforceSystem.PROF_ALCHEMY
+        SectMapPresentation.DEST_FORGE:
+            profession_id = WorkforceSystem.PROF_FORGING
+    var profession_level := workforce.profession_level_for_state(state, disciple, profession_id)
+    var skill := Label.new()
+    skill.name = "WorkforceProfessionLevel"
+    skill.text = "Lv%d" % profession_level
+    skill.custom_minimum_size = Vector2(34, 42)
+    skill.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+    skill.add_theme_font_size_override("font_size", 13)
+    skill.add_theme_color_override("font_color", JADE_DARK)
+    skill.tooltip_text = "Cấp nghề thật · Mỏ Lv%d · Lâm Lv%d · Điền Lv%d · Đan Lv%d" % [
+        workforce.profession_level_for_state(state, disciple, WorkforceSystem.PROF_MINING),
+        workforce.profession_level_for_state(state, disciple, WorkforceSystem.PROF_FORESTRY),
+        workforce.profession_level_for_state(state, disciple, WorkforceSystem.PROF_HERBALISM),
+        workforce.profession_level_for_state(state, disciple, WorkforceSystem.PROF_ALCHEMY)
+    ]
+    row.add_child(skill)
     return row
 
 func _assign_building_group(disciple_id: StringName, group_id: StringName, success_text: String) -> void:
@@ -5850,10 +5874,11 @@ func _resource_job_member_status(disciple: DiscipleState, profession_id: StringN
     var work_duration := 1.0
     if building != null:
         var building_system := BuildingSystem.new()
-        output_quantity = building_system.resource_job_batch_units(building)
-        work_duration = building_system.resource_job_work_duration(building)
         var definition := building_system.definition_for(building)
-        output_name = ResourceRegistry.new().display_name(StringName(definition.get("resource_id","")))
+        var resource_id := building_system.mine_selected_ore(building) if building.building_type == BuildingSystem.TYPE_MINE else StringName(definition.get("resource_id",""))
+        output_quantity = building_system.mine_ore_batch_units(building, resource_id) if building.building_type == BuildingSystem.TYPE_MINE else building_system.resource_job_batch_units(building)
+        work_duration = building_system.resource_job_work_duration(building)
+        output_name = ResourceRegistry.new().display_name(resource_id)
     var work_label := "lượt khai thác" if profession_id == WorkforceSystem.PROF_MINING else "lượt thu hoạch"
     var batch_text := "%s ×%d %s" % [work_label,output_quantity,output_name] if output_quantity > 0 else "chờ khởi sự"
     if state.sect.economy_a_enabled:
@@ -5873,7 +5898,7 @@ func _resource_job_member_status(disciple: DiscipleState, profession_id: StringN
             return "Đang tới %s · %s" % [_destination_short_label(StringName(actor_destinations.get(str(disciple.id),""))).to_lower(),batch_text]
         &"mining":
             var progress := clampi(roundi(float(cycle.get("progress",0.0))/maxf(work_duration,0.1)*100.0),0,99)
-            return "Đang khai thác %d%% · %s" % [progress,batch_text]
+            return "Đang khai thác · %s" % batch_text
         &"harvesting":
             return "Đang chăm sóc Linh Điền" if profession_id == WorkforceSystem.PROF_HERBALISM else "Đang thu hoạch · %s" % batch_text
         &"haul_back":
