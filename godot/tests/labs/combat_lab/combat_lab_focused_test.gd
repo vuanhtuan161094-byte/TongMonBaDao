@@ -101,6 +101,10 @@ func _test_poison_damage_matrix() -> void:
         poison_damage_rows.append(row)
         _check(str(row.get("status", "FAIL")) == "PASS",
             "independent expected damage matches real settlement for %s: %s" % [str(entry[1]), str(row.get("detail", ""))])
+    var dot_row := _probe_poison_dot_tick()
+    poison_damage_rows.append(dot_row)
+    _check(str(dot_row.get("status", "FAIL")) == "PASS",
+        "independent DoT oracle matches real poison tick: %s" % str(dot_row.get("detail", "")))
 
 func _probe_poison_damage(label: String, skill_id: String, stage: int, owned_stacks: int,
         foreign_stacks: int, mark_factor: float) -> Dictionary:
@@ -633,12 +637,104 @@ func _test_crit_lifesteal() -> void:
     var attacker: Dictionary = battle.actors["crit_lifesteal_actor"]
     var target: Dictionary = battle.actors["crit_lifesteal_enemy"]
     var hp_before := float(attacker.hp)
+    var target_hp_before := float(target.hp)
     battle._deal_direct(attacker, target, 1.0, "basic", true)
     var verified := false
+    var hit_event: Dictionary = {}
     for event in battle.events:
         if str(event.get("type", "")) == "hit" and str(event.get("attacker", "")) == "crit_lifesteal_actor":
             verified = bool(event.get("critical", false)) and float(event.get("lifesteal", 0.0)) > 0.0
-    _check(verified and float(attacker.hp) > hp_before, "Crit and lifesteal settle once via CombatStatsV2 and MapBattleV2")
+            hit_event = event
+    var attacker_stats := V63HumanSkillCombatSystem.effective_attack_stats(attacker, attacker.stats)
+    var target_stats := V63HumanSkillCombatSystem.effective_defense_stats(target, target.stats)
+    var attack := float(attacker_stats.get("attack", 0.0))
+    var defense := float(target_stats.get("defense", 0.0)) * (1.0 - clampf(float(attacker_stats.get("defense_penetration", 0.0)), 0.0, 1.0))
+    var expected_damage := attack * maxf(1.0, float(attacker_stats.get("crit_damage", 1.5))) * 2.0 * attack / maxf(0.000001, 2.0 * attack + defense)
+    expected_damage *= 1.0 - clampf(float(target_stats.get("damage_reduction", 0.0)), 0.0, 1.0)
+    expected_damage = minf(target_hp_before, expected_damage)
+    var net_lifesteal := maxf(0.0, float(attacker_stats.get("lifesteal", 0.0)) - float(target_stats.get("lifesteal_reduction", 0.0)))
+    var expected_heal := minf(expected_damage * net_lifesteal, float(attacker.max_hp) - hp_before)
+    var actual_damage := target_hp_before - float(target.hp)
+    var actual_heal := float(attacker.hp) - hp_before
+    var oracle_pass := verified and is_equal_approx(actual_damage, expected_damage) and is_equal_approx(actual_heal, expected_heal)
+    _check(oracle_pass, "Independent crit damage and lifesteal oracle matches committed HP settlement")
+    poison_damage_rows.append({"scenario":"crit_lifesteal_direct", "skill_id":"lab.basic.crit_lifesteal",
+        "name":"Crit + lifesteal · CombatStatsV2", "generation":"lab", "lineage":"", "divine_stage":"",
+        "target_id":"crit_lifesteal_enemy", "hp_before":str(target_hp_before), "hp_after":str(target.hp),
+        "expected_damage":str(expected_damage), "actual_damage":str(actual_damage), "error":str(actual_damage - expected_damage),
+        "status":"PASS" if oracle_pass else "FAIL",
+        "detail":"crit multiplier 2.0; expected heal %.9f, actual heal %.9f; event=%s" % [expected_heal, actual_heal, JSON.stringify(hit_event)]})
+
+func _probe_poison_dot_tick() -> Dictionary:
+    var skill_id := "tmb.skill.poison.doc_cham.active_02.human"
+    var skill: Dictionary = V63HumanSkillCombatSystem.skill_definition(skill_id)
+    if skill.is_empty() or str(skill.get("effect", "")) != "poison":
+        return {"scenario":"poison_dot_tick", "skill_id":skill_id, "status":"FAIL", "detail":"catalog skill is not a real poison action"}
+    var prepared := _prepare_action(skill)
+    if not bool(prepared.get("ok", false)):
+        return {"scenario":"poison_dot_tick", "skill_id":skill_id, "status":"FAIL", "detail":"fixture:" + str(prepared.get("reason", ""))}
+    var battle: MapBattleV2 = prepared.battle
+    var actor: Dictionary = prepared.actor
+    var target: Dictionary = prepared.target
+    actor["stats"]["attack"] = 240.0
+    actor["stats"]["crit_chance"] = 0.0
+    actor["stats"]["defense_penetration"] = 0.0
+    target["stats"]["defense"] = 120.0
+    target["stats"]["damage_reduction"] = 0.10
+    target["resistances"] = {"nether":0.20,"wood":0.0,"fire":0.0,"ice":0.0,"lightning":0.0,"physical":0.0}
+    target["max_hp"] = 1000000.0
+    target["hp"] = 1000000.0
+    target["stats"]["max_hp"] = 1000000.0
+    if not V63HumanSkillCombatSystem.try_cast(battle, actor, target, false):
+        return {"scenario":"poison_dot_tick", "skill_id":skill_id, "status":"FAIL", "detail":"real poison cast rejected"}
+    var pending: Dictionary = actor.get("v63_pending_cast", {})
+    if pending.is_empty():
+        return {"scenario":"poison_dot_tick", "skill_id":skill_id, "status":"FAIL", "detail":"real cast did not schedule release"}
+    battle.now = float(pending.get("ready", 0.0))
+    battle._release_casts()
+    var stacks: Array = target.get("status_effects", {}).get("v63_poison", [])
+    var source_stack: Dictionary = {}
+    for value in stacks:
+        if value is Dictionary and str(value.get("source_skill_id", "")) == skill_id:
+            source_stack = value
+            break
+    if source_stack.is_empty():
+        return {"scenario":"poison_dot_tick", "skill_id":skill_id, "status":"FAIL", "detail":"cast did not apply an owned stack"}
+    var valid_count := stacks.size()
+    var effective_count := float(mini(valid_count, 12)) + float(clampi(valid_count - 12, 0, 12)) * 0.5 + float(maxi(0, valid_count - 24)) * 0.25
+    var diminishing := effective_count / maxf(1.0, float(valid_count))
+    var hp_before := float(target.hp)
+    battle.now = float(source_stack.get("next_tick", INF))
+    V63HumanSkillCombatSystem.process_status_effects(battle)
+    var tick_event: Dictionary = {}
+    for event in battle.events:
+        if str(event.get("type", "")) == "status_tick" and str(event.get("source_skill_id", "")) == skill_id:
+            tick_event = event
+            break
+    if tick_event.is_empty():
+        return {"scenario":"poison_dot_tick", "skill_id":skill_id, "status":"FAIL", "detail":"real source-owned poison tick missing"}
+    var snapshot: Dictionary = source_stack.get("attack_snapshot", {})
+    var attack := float(snapshot.get("attack", 0.0))
+    var penetration := clampf(float(snapshot.get("defense_penetration", 0.0)), 0.0, 1.0)
+    var effective_defense := float(target.stats.get("defense", 0.0)) * (1.0 - penetration)
+    var defense_factor := 2.0 * attack / maxf(0.000001, 2.0 * attack + effective_defense)
+    var element := str(source_stack.get("element", "nether"))
+    var resistance := clampf(float(target.resistances.get(element, 0.0)), 0.0, 1.0)
+    var reduction := clampf(float(target.stats.get("damage_reduction", 0.0)), 0.0, 1.0)
+    var expected := minf(hp_before, attack * float(source_stack.get("ratio", 0.0)) * diminishing * defense_factor * (1.0 - resistance) * (1.0 - reduction))
+    var actual := float(tick_event.get("damage", 0.0))
+    var hp_delta := hp_before - float(target.hp)
+    var dot_hit: Dictionary = {}
+    for event in battle.events:
+        if str(event.get("type", "")) == "hit" and str(event.get("kind", "")) == "v63_poison" and str(event.get("damage_source", "")) == "poison_dot":
+            dot_hit = event
+            break
+    var no_crit_or_leech := not dot_hit.is_empty() and not bool(dot_hit.get("critical", false)) and is_zero_approx(float(dot_hit.get("lifesteal", 0.0)))
+    var ok := is_equal_approx(actual, expected) and is_equal_approx(hp_delta, expected) and no_crit_or_leech
+    return {"scenario":"poison_dot_tick", "skill_id":skill_id, "name":str(skill.get("name", "")), "generation":"human", "lineage":"", "divine_stage":"",
+        "target_id":str(target.id), "hp_before":str(hp_before), "hp_after":str(target.hp), "expected_damage":str(expected),
+        "actual_damage":str(actual), "error":str(actual - expected), "status":"PASS" if ok else "FAIL",
+        "detail":"real owner stack tick; independent ratio/DEF/element/reduction+diminishing oracle; no crit/lifesteal"}
 func _test_elemental_resistance() -> void:
     var attacker := _actor("element_attacker", Vector2(10, 10))
     attacker["stats"]["crit_chance"] = 0.0
@@ -996,3 +1092,4 @@ func _write_matrix() -> void:
         file.store_line(",".join(cells))
     file.close()
     print("COMBAT_LAB_SKILL_MATRIX_FILE=" + ProjectSettings.globalize_path(output_path) if output_path.begins_with("user://") else "COMBAT_LAB_SKILL_MATRIX_FILE=" + output_path)
+
