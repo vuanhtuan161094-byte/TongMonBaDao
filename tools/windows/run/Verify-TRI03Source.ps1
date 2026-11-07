@@ -100,8 +100,11 @@ foreach ($path in $pins.Keys) {
     }
     # Compare tracked sources to their exact Git tree blob. On Windows, hash-object
     # may apply EOL filters that differ from the committed blob for mixed-EOL files.
-    $treeBlob = (& $git -c "safe.directory=$safeDirectory" -C $safeRoot rev-parse --verify "HEAD:$path" 2>$null | Out-String).Trim().ToLowerInvariant()
-    if ($LASTEXITCODE -eq 0 -and $treeBlob -match '^[0-9a-f]{40}$') {
+    # ls-tree returns no line for a pack-restored asset without emitting a fatal error.
+    $treeLine = (& $git -c "safe.directory=$safeDirectory" -C $safeRoot ls-tree HEAD -- $path 2>$null | Out-String).Trim()
+    if ($LASTEXITCODE -eq 0 -and -not [string]::IsNullOrWhiteSpace($treeLine)) {
+        $treeParts = $treeLine -split '\s+', 4
+        $treeBlob = [string]$treeParts[2]
         if ($treeBlob -ne $pins[$path]) {
             Stop-Verification "Pinned Git source mismatch: $path (expected $($pins[$path]), found $treeBlob)." 13
         }
