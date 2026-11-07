@@ -34,6 +34,9 @@ func _run() -> void:
     var other_id: StringName = initial_active[1]
     ui.call("_open_building", SectMapPresentation.DEST_MINE)
     await process_frame
+    if ui.find_child("Upgrade_mine",true,false) == null:
+        _fail("O3 missing the visible real Mine upgrade control.")
+        return
 
     # New real Mine ore selector: production choice is backend-owned, not a
     # decorative preview. A fresh mine must remain fully backward-compatible.
