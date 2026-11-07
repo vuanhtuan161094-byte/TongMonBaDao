@@ -3955,6 +3955,18 @@ func _build_economy_a_hall_controls() -> void:
     summary.custom_minimum_size = Vector2(384,32)
     summary.add_theme_font_size_override("font_size",12)
     building_management_container.add_child(summary)
+    var cashflow := EconomySystem.new().daily_market_cashflow(state)
+    var sources := Label.new()
+    sources.name = "EconomyA_RealIncome"
+    sources.text = "Hôm nay: bán nguyên liệu +%d LT · mua vật tư -%d LT · trả lương -%d LT" % [
+        int(cashflow.get("income",0)),int(cashflow.get("purchases",0)),int(cashflow.get("wages",0))
+    ]
+    sources.tooltip_text = "Số thật từ receipt của Phường Thị và lương. Không bao gồm tiêu Linh Thạch cho gieo trồng, nâng cấp, chiêu mộ/kỹ năng; quỹ thực ở trên là số dư chính xác. Tài nguyên phải sản xuất/kiếm thật rồi bán tại Kho."
+    sources.custom_minimum_size = Vector2(384,42)
+    sources.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+    sources.add_theme_font_size_override("font_size",11)
+    sources.add_theme_color_override("font_color",JADE_DARK)
+    building_management_container.add_child(sources)
     var heal_toggle := Button.new()
     heal_toggle.name = "EconomyA_AutoHP"
     heal_toggle.text = "Tự chữa HP: BẬT" if bool(policy.get("auto_hp_service",false)) else "Tự chữa HP: TẮT"
