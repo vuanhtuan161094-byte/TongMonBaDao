@@ -45,6 +45,11 @@ func _run() -> void:
     if ui.find_child("Upgrade_%s" % str(field.id),true,false) == null or ui.find_child("FieldProfessionXpGuide",true,false) == null:
         _fail("O4 UI has no paid Field upgrade or honest per-crop profession XP guide.")
         return
+    if not await _press_button("PlotCropCycle_plot_001"):
+        return
+    if str(field.production_state.get("plot_crop_preferences",{}).get("plot_001","")) != "linh_coc":
+        _fail("O4 real crop-selection button did not persist individual Plot 01 policy.")
+        return
 
     var target_id := _find_unassigned_disciple()
     if target_id == &"":
@@ -93,6 +98,9 @@ func _run() -> void:
         return
 
     var crop_id := StringName(plot.get("crop_id", ""))
+    if crop_id != &"linh_coc":
+        _fail("O4 planting ignored Plot 01 player-selected crop.")
+        return
     var output_id := crops.output_resource_id(crop_id)
     var paid := int(plot.get("paid_spirit_stones", 0))
     if not [3, 4].has(paid) or paid != crops.cost(crop_id):
