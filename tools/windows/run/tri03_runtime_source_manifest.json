@@ -3,7 +3,7 @@
   "branch": "integration/pve-p0-playable-ui-20261103",
   "base_sha": "27ed01cd8f377994e5e50bac9ede84e78e8895bd",
   "upstream_pr_sha": "c99f22153b34628f7e94f69de0285514e788b9cb",
-  "source_fingerprint": "f2252a80ffcc942976496b24d1ee1065ad87d36abc88c6235828b35383083491",
+  "source_fingerprint": "b2e757a419cc2db624953e81ee36e5d48555dc6a240264a507c20423e2d49ccd",
   "files": [
     {
       "path": "CHOI-GAME.cmd",
@@ -679,7 +679,7 @@
     },
     {
       "path": "tools/windows/run/Verify-TRI03Source.ps1",
-      "git_blob_sha": "3b91d4318066389c64e1ca7075c4b2397dfa299a"
+      "git_blob_sha": "8b4d1848e183678200d68460b080b825cc10fbd3"
     },
     {
       "path": "tools/windows/run/tri03_launcher_support.ps1",
@@ -776,6 +776,46 @@
     {
       "path": "godot/labs/combat_lab/assets/nu_doc_tu_grok_01/sheets/defeated.png",
       "git_blob_sha": "31d6e1f08c17bc46019a9a28b6b1b96984c7305b"
+    },
+    {
+      "path": "godot/src/presentation/p3_1_landscape_sect.gd",
+      "git_blob_sha": "6b77399fa273d94540ffaf5223d4f6a966b19433"
+    },
+    {
+      "path": "godot/src/simulation/core/live_game_runtime_v2.gd",
+      "git_blob_sha": "936bd679e7562016c3c8d3c114ab7302f9ec2e28"
+    },
+    {
+      "path": "godot/src/simulation/economy/economy_system.gd",
+      "git_blob_sha": "30648b475e45d452658f871d94f38952d04c557d"
+    },
+    {
+      "path": "godot/src/simulation/state/building_state.gd",
+      "git_blob_sha": "cd328332036a2b9d83f7c965e327340a3b7310c8"
+    },
+    {
+      "path": "godot/src/simulation/technique/technique_system.gd",
+      "git_blob_sha": "05230924415ee4d1092ece4041d200f3ebcfd46a"
+    },
+    {
+      "path": "godot/src/simulation/workforce/workforce_system.gd",
+      "git_blob_sha": "98062445820417e872283496f038c70a58fd0381"
+    },
+    {
+      "path": "godot/tests/presentation/economy_a_landscape_ui_test.gd",
+      "git_blob_sha": "911053c1acfa023656b00a5b816cb03c73a7c549"
+    },
+    {
+      "path": "godot/tests/simulation/p3_7a2_spirit_field_test.gd",
+      "git_blob_sha": "4dec78d43d141730f6f1b6f9bad32561418ead9f"
+    },
+    {
+      "path": "godot/tests/simulation/production_exp_upgrade_contract_20261107_test.gd",
+      "git_blob_sha": "2ad78370558ac9e25278dc5790bfd5969dfe57b2"
+    },
+    {
+      "path": "godot/tests/simulation/production_stone_closed_loop_20261107_test.gd",
+      "git_blob_sha": "5a9d0576a2637beadcffcb7d0f006027a282896a"
     }
   ]
 }
