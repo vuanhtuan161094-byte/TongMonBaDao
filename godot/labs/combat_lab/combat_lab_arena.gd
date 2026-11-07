@@ -1,501 +1,3 @@
-extends Control
-
-const ActorRigV2 = preload("res://labs/combat_lab/combat_lab_actor_rig_v2.gd")
-const PoisonAtlasV1 = preload("res://labs/combat_lab/combat_lab_poison_atlas_v1.gd")
-const VfxV2 = preload("res://labs/combat_lab/combat_lab_vfx_v2.gd")
-
-var actor_states: Dictionary = {}
-var last_skill_by_actor: Dictionary = {}
-
-const WORLD := Rect2(Vector2.ZERO, Vector2(36.0, 20.0))
-const MAX_CUES := 64
-var battle: MapBattleV2
-var school := "bow"
-var cues: Array[Dictionary] = []
-var status_line := "ChÆ°a báº¯t Ä‘áº§u Â· LAB_ONLY"
-var zoom := 1.0
-var visual_time := 0.0
-var poison_atlas_warning_emitted := false
-
-func _ready() -> void:
-    custom_minimum_size = Vector2(620, 390)
-    mouse_filter = Control.MOUSE_FILTER_IGNORE
-    clip_contents = true
-
-func set_battle(value: MapBattleV2, weapon_school: String) -> void:
-    battle = value
-    school = weapon_school
-    cues.clear()
-    actor_states.clear()
-    last_skill_by_actor.clear()
-    visual_time = battle.now if battle != null else 0.0
-    queue_redraw()
-
-func set_status(value: String) -> void:
-    status_line = value
-    queue_redraw()
-
-func set_visual_time(value: float) -> void:
-    # Presentation clock follows battle time; HOLD freezes projectile motion.
-    visual_time = maxf(0.0, value)
-
-func _set_pose(actor_id: String, pose: String, lifetime_ms: int, event_time: float = -1.0) -> void:
-    if battle == null or not battle.actors.has(actor_id):
-        return
-    var state: Dictionary = actor_states.get(actor_id, {})
-    if state.is_empty():
-        state = {"pose":"idle", "until":0.0, "started":visual_time,
-            "last_position":battle.actors[actor_id].get("position", Vector2.ZERO)}
-    if str(state.get("pose", "")) == "death":
-        return
-    var is_poison_disciple := school == "poison" and str(battle.actors[actor_id].get("side", "")) != "monster"
-    var pose_start := visual_time
-    if is_poison_disciple and event_time >= 0.0:
-        pose_start = event_time
-    # A canonical skill_release already starts the complete Attack clip. A
-    # later hit event for that same swing must not restart it mid-frame.
-    if is_poison_disciple and pose == "attack" and str(state.get("pose", "")) == "attack" \
-            and pose_start < float(state.get("until", 0.0)):
-        return
-    # Poison atlas timing follows the event's battle timestamp; the other
-    # Combat Lab rigs keep their existing presentation clock. HOLD freezes it.
-    state["pose"] = pose
-    state["started"] = pose_start
-    state["until"] = pose_start + float(lifetime_ms) / 1000.0
-    actor_states[actor_id] = state
-
-func pose_for_actor(actor_id: String) -> String:
-    # Public read-only visual probe. No simulation writes.
-    if battle == null or not battle.actors.has(actor_id):
-        return "idle"
-    if float(battle.actors[actor_id].get("hp", 0.0)) <= 0.0:
-        return "death"
-    var state: Dictionary = actor_states.get(actor_id, {})
-    if visual_time < float(state.get("until", 0.0)):
-        return str(state.get("pose", "idle"))
-    return "idle"
-
-func _track_movement(actor: Dictionary) -> void:
-    var id := str(actor.get("id", ""))
-    var pos: Vector2 = actor.get("position", Vector2.ZERO)
-    var state: Dictionary = actor_states.get(id, {})
-    if state.is_empty():
-        actor_states[id] = {"pose":"idle", "until":0.0, "started":visual_time,
-            "last_position":pos}
-        return
-    var old_pos: Vector2 = state.get("last_position", pos)
-    state["last_position"] = pos
-    if pos.distance_to(old_pos) > 0.015 and visual_time >= float(state.get("until", 0.0)):
-        state["pose"] = "walk"
-        state["started"] = visual_time
-        state["until"] = visual_time + 0.20
-    actor_states[id] = state
-
-func _pose_lifetime_ms(actor_id: String, pose: String, fallback_ms: int) -> int:
-    if school != "poison" or battle == null or not battle.actors.has(actor_id):
-        return fallback_ms
-    var actor: Dictionary = battle.actors[actor_id]
-    if str(actor.get("side", "")) == "monster":
-        return fallback_ms
-    var atlas_duration := PoisonAtlasV1.clip_duration_ms(pose)
-    return atlas_duration if atlas_duration > 0 else fallback_ms
-
-func consume_events(rows: Array[Dictionary]) -> void:
-    if battle == null:
-        return
-    var now_ms := roundi(visual_time * 1000.0)
-    for event in rows:
-        var kind := str(event.get("type", ""))
-        var source_actor_id := str(event.get("caster", event.get("attacker", event.get("actor_id", ""))))
-        var target_id := str(event.get("target", event.get("target_id", event.get("actor_id", ""))))
-        var source_skill := str(event.get("skill_id", event.get("source_skill_id", "")))
-        var event_time := float(event.get("time", visual_time))
-        if not source_skill.is_empty() and kind in ["skill_cast", "skill_release"]:
-            last_skill_by_actor[source_actor_id] = source_skill
-        if kind == "skill_cast":
-            if school == "poison" and battle.actors.has(source_actor_id) \
-                    and str(battle.actors[source_actor_id].get("side", "")) != "monster":
-                var cast_window := maxf(0.0, float(event.get("release_at", event_time)) - event_time)
-                if cast_window > 0.0:
-                    _set_pose(source_actor_id, "cast", roundi(cast_window * 1000.0), event_time)
-            else:
-                var duration := clampi(roundi((float(event.get("release_at", 0.0)) - event_time) * 1000.0), 300, 1200)
-                _set_pose(source_actor_id, "cast", duration)
-        elif kind == "skill_release":
-            _set_pose(source_actor_id, "attack", _pose_lifetime_ms(source_actor_id, "attack", 420), event_time)
-        elif kind == "hit" and float(event.get("damage", 0.0)) > 0.0:
-            # DoT/reflect are autonomous settlements: never replay a weapon swing
-            # for the original caster when poison, burn or reflection ticks.
-            var hit_kind := str(event.get("kind", ""))
-            if hit_kind not in ["v63_poison", "dot", "burn", "reflect", "reflection"]:
-                _set_pose(source_actor_id, "attack", 360, event_time)
-            _set_pose(target_id, "hit", _pose_lifetime_ms(target_id, "hit", 230), event_time)
-        elif kind in ["downed", "death"]:
-            _set_pose(target_id, "death", _pose_lifetime_ms(target_id, "death", 2400), event_time)
-        elif kind == "v63_mobility":
-            _set_pose(str(event.get("actor_id", "")), "walk", 280, event_time)
-        elif kind == "telegraph":
-            _set_pose(source_actor_id, "cast", 700, event_time)
-        if kind == "hit":
-            var hit_kind := str(event.get("kind", ""))
-            if hit_kind == "v63_poison" or (hit_kind == "dot" and _has_damage_tick_record(event, rows)):
-                # status_tick/damage_tick is the singular presentation authority for DoT.
-                continue
-        var actor_id := str(event.get("target", event.get("actor_id", event.get("caster", event.get("attacker", "")))))
-        var pos := _actor_position(actor_id)
-        var cast_target_pos := pos
-        var cue_kind := ""
-        var label := ""
-        var school_kind := school
-        if battle.actors.has(source_actor_id):
-            var actor: Dictionary = battle.actors[source_actor_id]
-            if str(actor.get("side", "")) == "monster":
-                school_kind = "boss" if str(actor.get("tier", "")) == "boss" else "fist"
-        var suppress_baked_poison_cast := kind == "skill_cast" and school_kind == "poison" \
-            and battle.actors.has(source_actor_id) \
-            and str(battle.actors[source_actor_id].get("side", "")) != "monster"
-        var color: Color = VfxV2.school_color(school_kind)
-        var radius := 0.0
-        match kind:
-            "skill_cast", "cast":
-                cue_kind = "cast"
-                # Wind-up aura originates at the caster, not the target.
-                pos = _actor_position(source_actor_id)
-            "skill_release":
-                var real_skill_id := str(event.get("skill_id", last_skill_by_actor.get(source_actor_id, "")))
-                var definition: Dictionary = CombatLabRosterAdapter.skill_definitions().get(real_skill_id, {})
-                var effect := str(definition.get("effect", ""))
-                if school_kind == "poison" and str(definition.get("shape", "")) == "circle" \
-                        and float(definition.get("radius", 0.0)) > 0.0:
-                    # This is a post-release visual indicator for an authored
-                    # circle skill (including consume/mark variants), NOT a
-                    # new area/status or damage authority.
-                    cue_kind = "venom_cloud"
-                    radius = maxf(0.0, float(definition.get("radius", 0.0)))
-                elif float(definition.get("projectile_speed", 0.0)) > 0.0:
-                    # Projectile was scheduled from the real skill_cast event.
-                    # Release is the authoritative impact deadline, not launch.
-                    cue_kind = ""
-                elif effect == "guard":
-                    cue_kind = "guard"
-                elif effect in ["heal", "cleanse"]:
-                    if school_kind == "poison":
-                        # The canonical heal/cleanse event below is the visible
-                        # result; avoid an extra generic release aura.
-                        cue_kind = ""
-                    else:
-                        cue_kind = "cast"
-                elif str(definition.get("shape", "")) == "circle":
-                    cue_kind = "aoe"
-                    radius = float(definition.get("radius", 0.0))
-            "hit":
-                cue_kind = "impact"
-                label = str(roundi(float(event.get("damage", 0.0))))
-                if bool(event.get("critical", false)):
-                    label = "Báº O KÃCH " + label
-                    color = Color("fff09a")
-            "v63_skill_hit", "skill_hit":
-                # Numeric settlement has already been rendered from canonical hit.
-                continue
-            "skill_miss":
-                cue_kind = "miss"; label = "TRÆ¯á»¢T"
-            "evade":
-                cue_kind = "miss"; label = "NÃ‰"
-            "heal":
-                cue_kind = "heal"
-                color = Color("79edba")
-                label = "+" + str(roundi(float(event.get("amount", 0.0))))
-            "cleanse":
-                cue_kind = "cleanse"; color = Color("b9faff"); label = "GIáº¢I"
-            "poison_consumed":
-                var taken := int(event.get("stacks", 0))
-                if taken > 0:
-                    cue_kind = "venom_burst"
-                    color = Color("b8eb83")
-                    label = "PHá»† Äá»˜C Ã—" + str(taken)
-            "blood_frenzy":
-                cue_kind = "blood_frenzy"; color = Color("e44b70"); label = "HUYáº¾T CUá»’NG"
-            "status_applied":
-                var status := str(event.get("status", ""))
-                if status == "poison":
-                    var added := int(event.get("added", 0))
-                    if added > 0:
-                        cue_kind = "poison_apply"
-                        color = Color("a5f28e")
-                        label = "Äá»˜C +" + str(added)
-                elif status == "guard":
-                    cue_kind = "guard"; color = Color("b0dafa"); label = "Há»˜ THá»‚"
-                elif status == "mark":
-                    cue_kind = "mark"; color = Color("ae9bff"); label = "áº¤N"
-            "status_tick":
-                var tick_damage := float(event.get("damage", 0.0))
-                if str(event.get("status", "")) == "poison":
-                    if tick_damage > 0.0:
-                        cue_kind = "poison_tick"
-                        color = Color("a5f28e")
-                        label = "Äá»˜C " + str(roundi(tick_damage))
-                elif tick_damage > 0.0:
-                    cue_kind = "impact"
-                    color = Color("ffad77")
-                    label = "DOT " + str(roundi(tick_damage))
-            "damage_tick":
-                cue_kind = "impact"; color = Color("91ec71")
-                label = "DOT " + str(roundi(float(event.get("damage", 0.0))))
-            "telegraph":
-                cue_kind = "telegraph"; color = Color("ff5368"); label = "BOSS"
-                var center: Variant = event.get("center", pos)
-                if center is Vector2: pos = center
-                radius = maxf(0.0, float(event.get("radius", 0.0)))
-            "area_release":
-                cue_kind = "area_burst"; color = Color("ff6671")
-                var area_center: Variant = event.get("center", pos)
-                if area_center is Vector2: pos = area_center
-                label = "AOE"
-            "downed":
-                cue_kind = "death"; color = Color("8b8299")
-            "v63_boss_phase":
-                cue_kind = "boss_phase"; color = Color("ff6c54")
-                label = "BOSS Â· PHA " + str(event.get("phase", ""))
-            "v63_mobility":
-                cue_kind = "mobility"
-                var mobility_pos: Variant = event.get("position", pos)
-                if mobility_pos is Vector2: pos = mobility_pos
-        if suppress_baked_poison_cast:
-            # Charging glow is already painted into the real Poison atlas.
-            # Keep processing this event so its authored needle projectile
-            # still appears between cast and authoritative release.
-            cue_kind = ""
-        if cue_kind.is_empty() and kind != "skill_cast":
-            continue
-        if cue_kind == "poison_tick":
-            # Multiple committed owned stacks can tick in one 0.25s engine step.
-            # Aggregate *actual* numeric damage per target/owner/skill/time
-            # to avoid 30 overlapping floating numbers (no invented damage).
-            var actual_tick := float(event.get("damage", 0.0))
-            var tick_at := float(event.get("time", battle.now))
-            var grouped := false
-            for index in range(cues.size() - 1, -1, -1):
-                var prior_tick: Dictionary = cues[index]
-                if str(prior_tick.get("kind", "")) != "poison_tick":
-                    continue
-                if str(prior_tick.get("target_actor_id", "")) != target_id:
-                    continue
-                if str(prior_tick.get("source_actor_id", "")) != source_actor_id:
-                    continue
-                if str(prior_tick.get("skill_id", "")) != source_skill:
-                    continue
-                if absf(float(prior_tick.get("time", -1.0)) - tick_at) > 0.00001:
-                    continue
-                var merged_count := int(prior_tick.get("stack_count", 1)) + 1
-                var merged_damage := float(prior_tick.get("damage_total", 0.0)) + actual_tick
-                prior_tick["stack_count"] = merged_count
-                prior_tick["damage_total"] = merged_damage
-                prior_tick["text"] = "Äá»˜C " + str(roundi(merged_damage)) + " Ã—" + str(merged_count)
-                cues[index] = prior_tick
-                grouped = true
-                break
-            if grouped:
-                continue
-        var cue_life := 370.0 if cue_kind == "projectile" else (900.0 if cue_kind == "telegraph" else 790.0)
-        var display_skill_id := source_skill
-        if display_skill_id.is_empty():
-            display_skill_id = str(last_skill_by_actor.get(source_actor_id, ""))
-        var display_definition: Dictionary = CombatLabRosterAdapter.skill_definitions().get(display_skill_id, {})
-        var display_generation := str(display_definition.get("generation", display_definition.get("tier", "human")))
-        var cue_from := _actor_position(source_actor_id)
-        if kind == "v63_mobility" and actor_states.has(source_actor_id):
-            var prior: Dictionary = actor_states[source_actor_id]
-            cue_from = prior.get("last_position", cue_from)
-        if not cue_kind.is_empty():
-            cues.append({
-                "kind":cue_kind, "position":pos, "from_position":cue_from,
-                "text":label, "color":color, "radius":radius, "school":school_kind,
-                "skill_id":display_skill_id, "generation":display_generation, "source_actor_id":source_actor_id,
-                "target_actor_id":target_id, "stack_count":1, "damage_total":float(event.get("damage", 0.0)),
-                "created":now_ms, "life":cue_life,
-                "source_index":int(event.get("lab_source_index", -1)),
-                "time":float(event.get("time", 0.0))
-            })
-            if cues.size() > MAX_CUES: cues.pop_front()
-        if kind == "skill_cast" and not source_skill.is_empty():
-            # V6.3 _begin_cast explicitly schedules release after wind-up plus
-            # projectile travel. Draw the projectile BEFORE settlement; do not
-            # spawn a fake second arrow from skill_release (which commits HP).
-            var authored: Dictionary = CombatLabRosterAdapter.skill_definitions().get(source_skill, {})
-            var speed := float(authored.get("projectile_speed", 0.0))
-            var caster: Dictionary = battle.actors.get(source_actor_id, {})
-            if speed > 0.0 and not caster.is_empty():
-                var effective: Dictionary = V63HumanSkillCombatSystem.effective_attack_stats(caster, caster.get("stats", {}))
-                var cast_rate := maxf(0.1, 1.0 + float(effective.get("cast_speed", 0.0)))
-                var start_time := float(event.get("time", battle.now))
-                var launch_at := start_time + maxf(MapBattleV2.STEP_SECONDS, float(authored.get("cast_time", 0.0)) / cast_rate)
-                var impact_at := float(event.get("release_at", launch_at))
-                if impact_at > launch_at + 0.001:
-                    cues.append({
-                        "kind":"projectile", "position":cast_target_pos, "from_position":cue_from,
-                        "text":"", "color":color, "radius":0.0, "school":school_kind,
-                        "skill_id":source_skill, "generation":display_generation,
-                        "source_actor_id":source_actor_id, "launch_at":launch_at, "impact_at":impact_at,
-                        "created":now_ms, "life":0.0, "source_index":int(event.get("lab_source_index", -1)),
-                        "time":start_time
-                    })
-                    if cues.size() > MAX_CUES: cues.pop_front()
-        if kind == "hit" and float(event.get("lifesteal", 0.0)) > 0.0:
-            var life_heal := roundi(float(event.get("lifesteal", 0.0)))
-            cues.append({
-                "kind":"heal", "position":cue_from, "from_position":cue_from,
-                "text":"+" + str(life_heal), "color":Color("82f0a1"),
-                "radius":0.0, "school":school_kind, "source_actor_id":source_actor_id,
-                "created":now_ms, "life":900.0,
-                "source_index":int(event.get("lab_source_index", -1)),
-                "time":float(event.get("time", 0.0))
-            })
-            if cues.size() > MAX_CUES: cues.pop_front()
-    queue_redraw()
-
-func _has_damage_tick_record(hit_event: Dictionary, rows: Array[Dictionary]) -> bool:
-    for candidate in rows:
-        if str(candidate.get("type", "")) != "damage_tick":
-            continue
-        if str(candidate.get("attacker", "")) != str(hit_event.get("attacker", "")):
-            continue
-        if str(candidate.get("target", "")) != str(hit_event.get("target", "")):
-            continue
-        if is_equal_approx(float(candidate.get("damage", -1.0)), float(hit_event.get("damage", -2.0))):
-            return true
-    return false
-func _actor_position(actor_id: String) -> Vector2:
-    if battle != null and battle.actors.has(actor_id):
-        return battle.actors[actor_id].get("position", Vector2(18, 10))
-    return Vector2(18, 10)
-
-func _world_to_local(point: Vector2) -> Vector2:
-    var margin := Vector2(30, 28)
-    var span := size - margin * 2.0
-    var centered := Vector2((point.x / WORLD.size.x - 0.5) * span.x, (point.y / WORLD.size.y - 0.5) * span.y)
-    return margin + span * 0.5 + centered * zoom
-
-func _draw() -> void:
-    draw_rect(Rect2(Vector2.ZERO, size), Color("10101a"), true)
-    draw_rect(Rect2(Vector2.ZERO, size), Color("403653"), false, 1.0)
-    var margin := Vector2(30, 28)
-    var span := size - margin * 2.0
-    draw_rect(Rect2(margin, span), Color("171725"), true)
-    for i in range(19):
-        var x := margin.x + float(i) * span.x / 18.0
-        draw_line(Vector2(x, margin.y), Vector2(x, margin.y + span.y), Color(0.65, 0.55, 0.8, 0.065), 1.0)
-    for i in range(11):
-        var y := margin.y + float(i) * span.y / 10.0
-        draw_line(Vector2(margin.x, y), Vector2(margin.x + span.x, y), Color(0.65, 0.55, 0.8, 0.065), 1.0)
-    draw_circle(Vector2(size.x * 0.5, size.y * 0.52), minf(size.x, size.y) * 0.30, Color(0.42, 0.24, 0.64, 0.055))
-    draw_string(ThemeDB.fallback_font, Vector2(14, 20), status_line, HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Color("cfc1e1"))
-    if battle != null:
-        var ids: Array = battle.actors.keys()
-        ids.sort_custom(func(a: Variant, b: Variant) -> bool: return float(battle.actors[a].position.y) < float(battle.actors[b].position.y))
-        for id in ids: _draw_actor(battle.actors[id])
-    _draw_cues()
-
-func _draw_actor(actor: Dictionary) -> void:
-    var actor_id := str(actor.get("id", ""))
-    var foot := _world_to_local(actor.get("position", Vector2.ZERO))
-    var boss := str(actor.get("tier", "")) == "boss"
-    var monster := str(actor.get("side", "")) == "monster"
-    _track_movement(actor)
-    var pose := pose_for_actor(actor_id)
-    # Other Combat Lab schools retain their existing authored launch pose.
-    # Poison stays in Cast until its authoritative skill_release event.
-    if school != "poison" and pose == "cast":
-        for cue in cues:
-            if str(cue.get("kind", "")) == "projectile" and str(cue.get("source_actor_id", "")) == actor_id \
-                    and visual_time >= float(cue.get("launch_at", INF)):
-                pose = "attack"
-                break
-    var actor_scale := (1.50 if boss else 1.0) * (0.55 + 0.29 * zoom)
-    var facing := -1.0 if monster else 1.0
-    var seconds := visual_time
-    var state: Dictionary = actor_states.get(actor_id, {})
-    var pose_elapsed := maxf(0.0, visual_time - float(state.get("started", visual_time)))
-    if school == "poison" and not monster:
-        var cast_window := maxf(0.0, float(state.get("until", 0.0)) - float(state.get("started", visual_time))) if pose == "cast" else -1.0
-        if not PoisonAtlasV1.draw(self, foot, pose, seconds, pose_elapsed, actor_scale, facing, cast_window) and not poison_atlas_warning_emitted:
-            push_warning("Combat Lab: Ná»¯ Äá»™c Tu atlas is unavailable; no substitute character is rendered.")
-            poison_atlas_warning_emitted = true
-    else:
-        ActorRigV2.render(self, actor, foot, school, pose, seconds, actor_scale, facing, pose_elapsed)
-
-    # Place health bars ABOVE the tallest character, not under feet.
-    var hp_ratio := clampf(float(actor.get("hp", 0.0)) /
-        maxf(1.0, float(actor.get("max_hp", 1.0))), 0.0, 1.0)
-    var width := 37.0 * actor_scale
-    var bar := Rect2(foot + Vector2(-width * 0.5, -79.0 * actor_scale),
-        Vector2(width, 4.0 * actor_scale))
-    draw_rect(bar, Color("201c2c"), true)
-    draw_rect(Rect2(bar.position, Vector2(bar.size.x * hp_ratio, bar.size.y)),
-        Color("89e0aa") if not monster else Color("ec7884"), true)
-    if boss:
-        draw_rect(bar.grow(2.0), Color("dfb66a"), false, 1.0)
-    # Persistent poisoned-state badge comes directly from live, owned V6.3
-    # status stacks. No simulated stack count or extra on-hit particles.
-    if float(actor.get("hp", 0.0)) > 0.0:
-        var live_statuses: Dictionary = actor.get("status_effects", {})
-        var real_poison_stacks: Array = live_statuses.get("v63_poison", [])
-        if not real_poison_stacks.is_empty():
-            var stack_count := real_poison_stacks.size()
-            var badge_scale := clampf(actor_scale, 0.75, 1.5)
-            var badge_center := bar.position + Vector2(bar.size.x + 11.0 * badge_scale,
-                2.0 * badge_scale)
-            draw_circle(badge_center, 7.5 * badge_scale, Color(0.125, 0.173, 0.169, 0.92))
-            draw_circle(badge_center, 5.8 * badge_scale, Color("88df9f"))
-            draw_circle(badge_center + Vector2(0.0, -2.0 * badge_scale),
-                2.0 * badge_scale, Color("d6ffbb"))
-            draw_string(ThemeDB.fallback_font,
-                badge_center + Vector2(8.0 * badge_scale, 4.0 * badge_scale),
-                str(stack_count), HORIZONTAL_ALIGNMENT_LEFT, 26.0 * badge_scale,
-                clampi(roundi(9.0 * badge_scale), 9, 14), Color("cdf7d4"))
-    var name := actor_id.replace("lab_disciple_", "ÄT ")
-    var label_pos := foot + Vector2(-15.0 * actor_scale, 14.0 * actor_scale)
-    draw_string(ThemeDB.fallback_font, label_pos, name,
-        HORIZONTAL_ALIGNMENT_CENTER, 36.0 * actor_scale,
-        clampi(roundi(10.0 * actor_scale), 9, 17), Color("e6dfef"))
-
-func _draw_cues() -> void:
-    # HOLD freezes all existing spell/impact effects, not only projectiles.
-    var current_time := roundi(visual_time * 1000.0)
-    var live: Array[Dictionary] = []
-    for cue in cues:
-        var t := 0.0
-        if str(cue.get("kind", "")) == "projectile" and cue.has("impact_at"):
-            var launch_at := float(cue.get("launch_at", 0.0))
-            var impact_at := float(cue.get("impact_at", launch_at))
-            if visual_time > impact_at + MapBattleV2.STEP_SECONDS:
-                continue
-            live.append(cue)
-            if visual_time < launch_at:
-                continue
-            t = clampf((visual_time - launch_at) / maxf(0.001, impact_at - launch_at), 0.0, 1.0)
-        else:
-            var age := float(current_time - int(cue.get("created", current_time)))
-            var duration := maxf(1.0, float(cue.get("life", 1.0)))
-            if age >= duration:
-                continue
-            live.append(cue)
-            t = clampf(age / duration, 0.0, 1.0)
-        var p := _world_to_local(cue.get("position", Vector2.ZERO))
-        var start := _world_to_local(cue.get("from_position", cue.get("position", Vector2.ZERO)))
-        var radius_px := float(cue.get("radius", 0.0)) * size.x / WORLD.size.x * zoom
-        VfxV2.render(self, cue, p, start, t, radius_px, zoom)
-        var label := str(cue.get("text", ""))
-        if label.is_empty():
-            continue
-        var c: Color = cue.get("color", Color.WHITE)
-        c.a *= 1.0 - t
-        # Only committed damage/heal/status values enter floating text.
-        var label_pos := p + Vector2(8.0 * zoom, -18.0 * zoom - 24.0 * zoom * t)
-        draw_string(ThemeDB.fallback_font, label_pos, label,
-            HORIZONTAL_ALIGNMENT_LEFT, 190.0,
-            clampi(roundi(12.0 + zoom * 0.75), 12, 17), c)
-    cues = live
-
-func set_zoom(value: float) -> void:
-    zoom = clampf(value, 1.0, 6.0)
-    queue_redraw()
+YªçŠx³¬uç%j·Â+ar‰ì¶ë•ë_¢ºŞjË"‚v›•ëÚ®&›•ëj¹âğjÇ^rV«yÜ"¶(Ën±é^µú+­æ¬²('i¹^½ªâi¹^±•áÑ•¹‘Ì½¹ÑÉ½°()½¹ÍĞÑ½ÉI¥XÈ€ôÁÉ•±½… ‰É•Ìè¼½±…‰Ì½½µ‰…Ñ}±…ˆ½½µ‰…Ñ}±…‰}…Ñ½É}É¥}ØÈ¹ˆ¤)½¹ÍĞA½¥Í½¹Ñ±…ÍXÄ€ôÁÉ•±½… ‰É•Ìè¼½±…‰Ì½½µ‰…Ñ}±…ˆ½½µ‰…Ñ}±…‰}Á½¥Í½¹}…Ñ±…Í}ØÄ¹ˆ¤)½¹ÍĞY™áXÈ€ôÁÉ•±½… ‰É•Ìè¼½±…‰Ì½½µ‰…Ñ}±…ˆ½½µ‰…Ñ}±…‰}Ù™á}ØÈ¹ˆ¤()Ù…È…Ñ½É}ÍÑ…Ñ•Ìè¥Ñ¥½¹…Éä€ôíô)Ù…È±…ÍÑ}Í­¥±±}‰å}…Ñ½Èè¥Ñ¥½¹…Éä€ôíô()½¹ÍĞ]=I1€èôI•ĞÈ¡Y•Ñ½ÈÈ¹iI<°Y•Ñ½ÈÈ ÌØ¸À°€ÈÀ¸À¤¤)½¹ÍĞ5a}UL€èô€ØĞ)Ù…È‰…ÑÑ±”è5…Á	…ÑÑ±•XÈ)Ù…ÈÍ¡½½°€èô€‰‰½Üˆ)Ù…ÈÕ•ÌèÉÉ…åm¥Ñ¥½¹…Éåt€ômt)Ù…ÈÍÑ…ÑÕÍ}±¥¹”€èô€‰£Á„‹†ê½ĞƒG†êÔƒ
+Ü1	}=91dˆ)Ù…Èé½½´€èô€Ä¸À)Ù…ÈÙ¥ÍÕ…±}Ñ¥µ”€èô€À¸À)Ù…ÈÁ½¥Í½¹}…Ñ±…Í}İ…É¹¥¹}•µ¥ÑÑ•€èô™…±Í”()™Õ¹Œ}É•…‘ä ¤€´øÙ½¥è(€€€ÕÍÑ½µ}µ¥¹¥µÕµ}Í¥é”€ôY•Ñ½ÈÈ ØÈÀ°€ÌäÀ¤(€€€µ½ÕÍ•}™¥±Ñ•È€ô½¹ÑÉ½°¹5=UM}%1QI}%9=I(€€€±¥Á}½¹Ñ•¹ÑÌ€ôÑÉÕ”()™Õ¹ŒÍ•Ñ}‰…ÑÑ±”¡Ù…±Õ”è5…Á	…ÑÑ±•XÈ°İ•…Á½¹}Í¡½½°èMÑÉ¥¹œ¤€´øÙ½¥è(€€€‰…ÑÑ±”€ôÙ…±Õ”(€€€Í¡½½°€ôİ•…Á½¹}Í¡½½°(€€€Õ•Ì¹±•…È ¤(€€€…Ñ½É}ÍÑ…Ñ•Ì¹±•…È ¤(€€€±…ÍÑ}Í­¥±±}‰å}…Ñ½È¹±•…È ¤(€€€Ù¥ÍÕ…±}Ñ¥µ”€ô‰…ÑÑ±”¹¹½Ü¥˜‰…ÑÑ±”€„ô¹Õ±°•±Í”€À¸À(€€€ÅÕ•Õ•}É•‘É…Ü ¤()™Õ¹ŒÍ•Ñ}ÍÑ…ÑÕÌ¡Ù…±Õ”èMÑÉ¥¹œ¤€´øÙ½¥è(€€€ÍÑ…ÑÕÍ}±¥¹”€ôÙ…±Õ”(€€€ÅÕ•Õ•}É•‘É…Ü ¤()™Õ¹ŒÍ•Ñ}Ù¥ÍÕ…±}Ñ¥µ”¡Ù…±Õ”è™±½…Ğ¤€´øÙ½¥è(€€€€ŒAÉ•Í•¹Ñ…Ñ¥½¸±½¬™½±±½İÌ‰…ÑÑ±”Ñ¥µ”ì!=1™É••é•ÌÁÉ½©•Ñ¥±”µ½Ñ¥½¸¸(€€€Ù¥ÍÕ…±}Ñ¥µ”€ôµ…á˜ À¸À°Ù…±Õ”¤()™Õ¹Œ}Í•Ñ}Á½Í”¡…Ñ½É}¥èMÑÉ¥¹œ°Á½Í”èMÑÉ¥¹œ°±¥™•Ñ¥µ•}µÌè¥¹Ğ°•Ù•¹Ñ}Ñ¥µ”è™±½…Ğ€ô€´Ä¸À¤€´øÙ½¥è(€€€¥˜‰…ÑÑ±”€ôô¹Õ±°½È¹½Ğ‰…ÑÑ±”¹…Ñ½ÉÌ¹¡…Ì¡…Ñ½É}¥¤è(€€€€€€€É•ÑÕÉ¸(€€€Ù…ÈÍÑ…Ñ”è¥Ñ¥½¹…Éä€ô…Ñ½É}ÍÑ…Ñ•Ì¹•Ğ¡…Ñ½É}¥°íô¤(€€€¥˜ÍÑ…Ñ”¹¥Í}•µÁÑä ¤è(€€€€€€€ÍÑ…Ñ”€ôì‰Á½Í”ˆè‰¥‘±”ˆ°€‰Õ¹Ñ¥°ˆèÀ¸À°€‰ÍÑ…ÉÑ•ˆéÙ¥ÍÕ…±}Ñ¥µ”°(€€€€€€€€€€€€‰±…ÍÑ}Á½Í¥Ñ¥½¸ˆé‰…ÑÑ±”¹…Ñ½ÉÍm…Ñ½É}¥‘t¹•Ğ ‰Á½Í¥Ñ¥½¸ˆ°Y•Ñ½ÈÈ¹iI<¥ô(€€€¥˜ÍÑÈ¡ÍÑ…Ñ”¹•Ğ ‰Á½Í”ˆ°€ˆˆ¤¤€ôô€‰‘•…Ñ ˆè(€€€€€€€É•ÑÕÉ¸(€€€Ù…È¥Í}Á½¥Í½¹}‘¥Í¥Á±”€èôÍ¡½½°€ôô€‰Á½¥Í½¸ˆ…¹ÍÑÈ¡‰…ÑÑ±”¹…Ñ½ÉÍm…Ñ½É}¥‘t¹•Ğ ‰Í¥‘”ˆ°€ˆˆ¤¤€„ô€‰µ½¹ÍÑ•Èˆ(€€€Ù…ÈÁ½Í•}ÍÑ…ÉĞ€èôÙ¥ÍÕ…±}Ñ¥µ”(€€€¥˜¥Í}Á½¥Í½¹}‘¥Í¥Á±”…¹•Ù•¹Ñ}Ñ¥µ”€øô€À¸Àè(€€€€€€€Á½Í•}ÍÑ…ÉĞ€ô•Ù•¹Ñ}Ñ¥µ”(€€€€Œ…¹½¹¥…°Í­¥±±}É•±•…Í”…±É•…‘äÍÑ…ÉÑÌÑ¡”½µÁ±•Ñ”ÑÑ…¬±¥À¸(€€€€Œ±…Ñ•È¡¥Ğ•Ù•¹Ğ™½ÈÑ¡…ĞÍ…µ”Íİ¥¹œµÕÍĞ¹½ĞÉ•ÍÑ…ÉĞ¥Ğµ¥µ™É…µ”¸(€€€¥˜¥Í}Á½¥Í½¹}‘¥Í¥Á±”…¹Á½Í”€ôô€‰…ÑÑ…¬ˆ…¹ÍÑÈ¡ÍÑ…Ñ”¹•Ğ ‰Á½Í”ˆ°€ˆˆ¤¤€ôô€‰…ÑÑ…¬ˆp(€€€€€€€€€€€…¹Á½Í•}ÍÑ…ÉĞ€ğ™±½…Ğ¡ÍÑ…Ñ”¹•Ğ ‰Õ¹Ñ¥°ˆ°€À¸À¤¤è(€€€€€€€É•ÑÕÉ¸(€€€€ŒA½¥Í½¸…Ñ±…ÌÑ¥µ¥¹œ™½±±½İÌÑ¡”•Ù•¹ĞÌ‰…ÑÑ±”Ñ¥µ•ÍÑ…µÀìÑ¡”½Ñ¡•È(€€€€Œ½µ‰…Ğ1…ˆÉ¥Ì­••ÀÑ¡•¥È•á¥ÍÑ¥¹œÁÉ•Í•¹Ñ…Ñ¥½¸±½¬¸!=1™É••é•Ì¥Ğ¸(€€€ÍÑ…Ñ•l‰Á½Í”‰t€ôÁ½Í”(€€€ÍÑ…Ñ•l‰ÍÑ…ÉÑ•‰t€ôÁ½Í•}ÍÑ…ÉĞ(€€€ÍÑ…Ñ•l‰Õ¹Ñ¥°‰t€ôÁ½Í•}ÍÑ…ÉĞ€¬™±½…Ğ¡±¥™•Ñ¥µ•}µÌ¤€¼€ÄÀÀÀ¸À(€€€…Ñ½É}ÍÑ…Ñ•Ím…Ñ½É}¥‘t€ôÍÑ…Ñ”()™Õ¹ŒÁ½Í•}™½É}…Ñ½È¡…Ñ½É}¥èMÑÉ¥¹œ¤€´øMÑÉ¥¹œè(€€€€ŒAÕ‰±¥ŒÉ•…µ½¹±äÙ¥ÍÕ…°ÁÉ½‰”¸9¼Í¥µÕ±…Ñ¥½¸İÉ¥Ñ•Ì¸(€€€¥˜‰…ÑÑ±”€ôô¹Õ±°½È¹½Ğ‰…ÑÑ±”¹…Ñ½ÉÌ¹¡…Ì¡…Ñ½É}¥¤è(€€€€€€€É•ÑÕÉ¸€‰¥‘±”ˆ(€€€¥˜™±½…Ğ¡‰…ÑÑ±”¹…Ñ½ÉÍm…Ñ½É}¥‘t¹•Ğ ‰¡Àˆ°€À¸À¤¤€ğô€À¸Àè(€€€€€€€É•ÑÕÉ¸€‰‘•…Ñ ˆ(€€€Ù…ÈÍÑ…Ñ”è¥Ñ¥½¹…Éä€ô…Ñ½É}ÍÑ…Ñ•Ì¹•Ğ¡…Ñ½É}¥°íô¤(€€€¥˜Ù¥ÍÕ…±}Ñ¥µ”€ğ™±½…Ğ¡ÍÑ…Ñ”¹•Ğ ‰Õ¹Ñ¥°ˆ°€À¸À¤¤è(€€€€€€€É•ÑÕÉ¸ÍÑÈ¡ÍÑ…Ñ”¹•Ğ ‰Á½Í”ˆ°€‰¥‘±”ˆ¤¤(€€€É•ÑÕÉ¸€‰¥‘±”ˆ()™Õ¹Œ}ÑÉ…­}µ½Ù•µ•¹Ğ¡…Ñ½Èè¥Ñ¥½¹…Éä¤€´øÙ½¥è(€€€Ù…È¥€èôÍÑÈ¡…Ñ½È¹•Ğ ‰¥ˆ°€ˆˆ¤¤(€€€Ù…ÈÁ½ÌèY•Ñ½ÈÈ€ô…Ñ½È¹•Ğ ‰Á½Í¥Ñ¥½¸ˆ°Y•Ñ½ÈÈ¹iI<¤(€€€Ù…ÈÍÑ…Ñ”è¥Ñ¥½¹…Éä€ô…Ñ½É}ÍÑ…Ñ•Ì¹•Ğ¡¥°íô¤(€€€¥˜ÍÑ…Ñ”¹¥Í}•µÁÑä ¤è(€€€€€€€…Ñ½É}ÍÑ…Ñ•Ím¥‘t€ôì‰Á½Í”ˆè‰¥‘±”ˆ°€‰Õ¹Ñ¥°ˆèÀ¸À°€‰ÍÑ…ÉÑ•ˆéÙ¥ÍÕ…±}Ñ¥µ”°(€€€€€€€€€€€€‰±…ÍÑ}Á½Í¥Ñ¥½¸ˆéÁ½Íô(€€€€€€€É•ÑÕÉ¸(€€€Ù…È½±‘}Á½ÌèY•Ñ½ÈÈ€ôÍÑ…Ñ”¹•Ğ ‰±…ÍÑ}Á½Í¥Ñ¥½¸ˆ°Á½Ì¤(€€€ÍÑ…Ñ•l‰±…ÍÑ}Á½Í¥Ñ¥½¸‰t€ôÁ½Ì(€€€¥˜Á½Ì¹‘¥ÍÑ…¹•}Ñ¼¡½±‘}Á½Ì¤€ø€À¸ÀÄÔ…¹Ù¥ÍÕ…±}Ñ¥µ”€øô™±½…Ğ¡ÍÑ…Ñ”¹•Ğ ‰Õ¹Ñ¥°ˆ°€À¸À¤¤è(€€€€€€€ÍÑ…Ñ•l‰Á½Í”‰t€ô€‰İ…±¬ˆ(€€€€€€€ÍÑ…Ñ•l‰ÍÑ…ÉÑ•‰t€ôÙ¥ÍÕ…±}Ñ¥µ”(€€€€€€€ÍÑ…Ñ•l‰Õ¹Ñ¥°‰t€ôÙ¥ÍÕ…±}Ñ¥µ”€¬€À¸ÈÀ(€€€…Ñ½É}ÍÑ…Ñ•Ím¥‘t€ôÍÑ…Ñ”()™Õ¹Œ}Á½Í•}±¥™•Ñ¥µ•}µÌ¡…Ñ½É}¥èMÑÉ¥¹œ°Á½Í”èMÑÉ¥¹œ°™…±±‰…­}µÌè¥¹Ğ¤€´ø¥¹Ğè(€€€¥˜Í¡½½°€„ô€‰Á½¥Í½¸ˆ½È‰…ÑÑ±”€ôô¹Õ±°½È¹½Ğ‰…ÑÑ±”¹…Ñ½ÉÌ¹¡…Ì¡…Ñ½É}¥¤è(€€€€€€€É•ÑÕÉ¸™…±±‰…­}µÌ(€€€Ù…È…Ñ½Èè¥Ñ¥½¹…Éä€ô‰…ÑÑ±”¹…Ñ½ÉÍm…Ñ½É}¥‘t(€€€¥˜ÍÑÈ¡…Ñ½È¹•Ğ ‰Í¥‘”ˆ°€ˆˆ¤¤€ôô€‰µ½¹ÍÑ•Èˆè(€€€€€€€É•ÑÕÉ¸™…±±‰…­}µÌ(€€€Ù…È…Ñ±…Í}‘ÕÉ…Ñ¥½¸€èôA½¥Í½¹Ñ±…ÍXÄ¹±¥Á}‘ÕÉ…Ñ¥½¹}µÌ¡Á½Í”¤(€€€É•ÑÕÉ¸…Ñ±…Í}‘ÕÉ…Ñ¥½¸¥˜…Ñ±…Í}‘ÕÉ…Ñ¥½¸€ø€À•±Í”™…±±‰…­}µÌ()™Õ¹Œ½¹ÍÕµ•}•Ù•¹ÑÌ¡É½İÌèÉÉ…åm¥Ñ¥½¹…Éåt¤€´øÙ½¥è(€€€¥˜‰…ÑÑ±”€ôô¹Õ±°è(€€€€€€€É•ÑÕÉ¸(€€€Ù…È¹½İ}µÌ€èôÉ½Õ¹‘¤¡Ù¥ÍÕ…±}Ñ¥µ”€¨€ÄÀÀÀ¸À¤(€€€™½È•Ù•¹Ğ¥¸É½İÌè(€€€€€€€Ù…È­¥¹€èôÍÑÈ¡•Ù•¹Ğ¹•Ğ ‰ÑåÁ”ˆ°€ˆˆ¤¤(€€€€€€€Ù…ÈÍ½ÕÉ•}…Ñ½É}¥€èôÍÑÈ¡•Ù•¹Ğ¹•Ğ ‰…ÍÑ•Èˆ°•Ù•¹Ğ¹•Ğ ‰…ÑÑ…­•Èˆ°•Ù•¹Ğ¹•Ğ ‰…Ñ½É}¥ˆ°€ˆˆ¤¤¤¤(€€€€€€€Ù…ÈÑ…É•Ñ}¥€èôÍÑÈ¡•Ù•¹Ğ¹•Ğ ‰Ñ…É•Ğˆ°•Ù•¹Ğ¹•Ğ ‰Ñ…É•Ñ}¥ˆ°•Ù•¹Ğ¹•Ğ ‰…Ñ½É}¥ˆ°€ˆˆ¤¤¤¤(€€€€€€€Ù…ÈÍ½ÕÉ•}Í­¥±°€èôÍÑÈ¡•Ù•¹Ğ¹•Ğ ‰Í­¥±±}¥ˆ°•Ù•¹Ğ¹•Ğ ‰Í½ÕÉ•}Í­¥±±}¥ˆ°€ˆˆ¤¤¤(€€€€€€€Ù…È•Ù•¹Ñ}Ñ¥µ”€èô™±½…Ğ¡•Ù•¹Ğ¹•Ğ ‰Ñ¥µ”ˆ°Ù¥ÍÕ…±}Ñ¥µ”¤¤(€€€€€€€¥˜¹½ĞÍ½ÕÉ•}Í­¥±°¹¥Í}•µÁÑä ¤…¹­¥¹¥¸l‰Í­¥±±}…ÍĞˆ°€‰Í­¥±±}É•±•…Í”‰tè(€€€€€€€€€€€±…ÍÑ}Í­¥±±}‰å}…Ñ½ÉmÍ½ÕÉ•}…Ñ½É}¥‘t€ôÍ½ÕÉ•}Í­¥±°(€€€€€€€¥˜­¥¹€ôô€‰Í­¥±±}…ÍĞˆè(€€€€€€€€€€€¥˜Í¡½½°€ôô€‰Á½¥Í½¸ˆ…¹‰…ÑÑ±”¹…Ñ½ÉÌ¹¡…Ì¡Í½ÕÉ•}…Ñ½É}¥¤p(€€€€€€€€€€€€€€€€€€€…¹ÍÑÈ¡‰…ÑÑ±”¹…Ñ½ÉÍmÍ½ÕÉ•}…Ñ½É}¥‘t¹•Ğ ‰Í¥‘”ˆ°€ˆˆ¤¤€„ô€‰µ½¹ÍÑ•Èˆè(€€€€€€€€€€€€€€€Ù…È…ÍÑ}İ¥¹‘½Ü€èôµ…á˜ À¸À°™±½…Ğ¡•Ù•¹Ğ¹•Ğ ‰É•±•…Í•}…Ğˆ°•Ù•¹Ñ}Ñ¥µ”¤¤€´•Ù•¹Ñ}Ñ¥µ”¤(€€€€€€€€€€€€€€€¥˜…ÍÑ}İ¥¹‘½Ü€ø€À¸Àè(€€€€€€€€€€€€€€€€€€€}Í•Ñ}Á½Í”¡Í½ÕÉ•}…Ñ½É}¥°€‰…ÍĞˆ°É½Õ¹‘¤¡…ÍÑ}İ¥¹‘½Ü€¨€ÄÀÀÀ¸À¤°•Ù•¹Ñ}Ñ¥µ”¤(€€€€€€€€€€€•±Í”è(€€€€€€€€€€€€€€€Ù…È‘ÕÉ…Ñ¥½¸€èô±…µÁ¤¡É½Õ¹‘¤ ¡™±½…Ğ¡•Ù•¹Ğ¹•Ğ ‰É•±•…Í•}…Ğˆ°€À¸À¤¤€´•Ù•¹Ñ}Ñ¥µ”¤€¨€ÄÀÀÀ¸À¤°€ÌÀÀ°€ÄÈÀÀ¤(€€€€€€€€€€€€€€€}Í•Ñ}Á½Í”¡Í½ÕÉ•}…Ñ½É}¥°€‰…ÍĞˆ°‘ÕÉ…Ñ¥½¸¤(€€€€€€€•±¥˜­¥¹€ôô€‰Í­¥±±}É•±•…Í”ˆè(€€€€€€€€€€€}Í•Ñ}Á½Í”¡Í½ÕÉ•}…Ñ½É}¥°€‰…ÑÑ…¬ˆ°}Á½Í•}±¥™•Ñ¥µ•}µÌ¡Í½ÕÉ•}…Ñ½É}¥°€‰…ÑÑ…¬ˆ°€ĞÈÀ¤°•Ù•¹Ñ}Ñ¥µ”¤(€€€€€€€•±¥˜­¥¹€ôô€‰¡¥Ğˆ…¹™±½…Ğ¡•Ù•¹Ğ¹•Ğ ‰‘…µ…”ˆ°€À¸À¤¤€ø€À¸Àè(€€€€€€€€€€€€Œ½P½É•™±•Ğ…É”…ÕÑ½¹½µ½ÕÌÍ•ÑÑ±•µ•¹ÑÌè¹•Ù•ÈÉ•Á±…ä„İ•…Á½¸Íİ¥¹œ(€€€€€€€€€€€€Œ™½ÈÑ¡”½É¥¥¹…°…ÍÑ•Èİ¡•¸Á½¥Í½¸°‰ÕÉ¸½ÈÉ•™±•Ñ¥½¸Ñ¥­Ì¸(€€€€€€€€€€€Ù…È¡¥Ñ}­¥¹€èôÍÑÈ¡•Ù•¹Ğ¹•Ğ ‰­¥¹ˆ°€ˆˆ¤¤(€€€€€€€€€€€¥˜¡¥Ñ}­¥¹¹½Ğ¥¸l‰ØØÍ}Á½¥Í½¸ˆ°€‰‘½Ğˆ°€‰‰ÕÉ¸ˆ°€‰É•™±•Ğˆ°€‰É•™±•Ñ¥½¸‰tè(€€€€€€€€€€€€€€€}Í•Ñ}Á½Í”¡Í½ÕÉ•}…Ñ½É}¥°€‰…ÑÑ…¬ˆ°€ÌØÀ°•Ù•¹Ñ}Ñ¥µ”¤(€€€€€€€€€€€}Í•Ñ}Á½Í”¡Ñ…É•Ñ}¥°€‰¡¥Ğˆ°}Á½Í•}±¥™•Ñ¥µ•}µÌ¡Ñ…É•Ñ}¥°€‰¡¥Ğˆ°€ÈÌÀ¤°•Ù•¹Ñ}Ñ¥µ”¤(€€€€€€€•±¥˜­¥¹¥¸l‰‘½İ¹•ˆ°€‰‘•…Ñ ‰tè(€€€€€€€€€€€}Í•Ñ}Á½Í”¡Ñ…É•Ñ}¥°€‰‘•…Ñ ˆ°}Á½Í•}±¥™•Ñ¥µ•}µÌ¡Ñ…É•Ñ}¥°€‰‘•…Ñ ˆ°€ÈĞÀÀ¤°•Ù•¹Ñ}Ñ¥µ”¤(€€€€€€€•±¥˜­¥¹€ôô€‰ØØÍ}µ½‰¥±¥Ñäˆè(€€€€€€€€€€€}Í•Ñ}Á½Í”¡ÍÑÈ¡•Ù•¹Ğ¹•Ğ ‰…Ñ½É}¥ˆ°€ˆˆ¤¤°€‰İ…±¬ˆ°€ÈàÀ°•Ù•¹Ñ}Ñ¥µ”¤(€€€€€€€•±¥˜­¥¹€ôô€‰Ñ•±•É…Á ˆè(€€€€€€€€€€€}Í•Ñ}Á½Í”¡Í½ÕÉ•}…Ñ½É}¥°€‰…ÍĞˆ°€ÜÀÀ°•Ù•¹Ñ}Ñ¥µ”¤(€€€€€€€¥˜­¥¹€ôô€‰¡¥Ğˆè(€€€€€€€€€€€Ù…È¡¥Ñ}­¥¹€èôÍÑÈ¡•Ù•¹Ğ¹•Ğ ‰­¥¹ˆ°€ˆˆ¤¤(€€€€€€€€€€€¥˜¡¥Ñ}­¥¹€ôô€‰ØØÍ}Á½¥Í½¸ˆ½È€¡¡¥Ñ}­¥¹€ôô€‰‘½Ğˆ…¹}¡…Í}‘…µ…•}Ñ¥­}É•½É¡•Ù•¹Ğ°É½İÌ¤¤è(€€€€€€€€€€€€€€€€ŒÍÑ…ÑÕÍ}Ñ¥¬½‘…µ…•}Ñ¥¬¥ÌÑ¡”Í¥¹Õ±…ÈÁÉ•Í•¹Ñ…Ñ¥½¸…ÕÑ¡½É¥Ñä™½È½P¸(€€€€€€€€€€€€€€€½¹Ñ¥¹Õ”(€€€€€€€Ù…È…Ñ½É}¥€èôÍÑÈ¡•Ù•¹Ğ¹•Ğ ‰Ñ…É•Ğˆ°•Ù•¹Ğ¹•Ğ ‰…Ñ½É}¥ˆ°•Ù•¹Ğ¹•Ğ ‰…ÍÑ•Èˆ°•Ù•¹Ğ¹•Ğ ‰…ÑÑ…­•Èˆ°€ˆˆ¤¤¤¤¤(€€€€€€€Ù…ÈÁ½Ì€èô}…Ñ½É}Á½Í¥Ñ¥½¸¡…Ñ½É}¥¤(€€€€€€€Ù…È…ÍÑ}Ñ…É•Ñ}Á½Ì€èôÁ½Ì(€€€€€€€Ù…ÈÕ•}­¥¹€èô€ˆˆ(€€€€€€€Ù…È±…‰•°€èô€ˆˆ(€€€€€€€Ù…ÈÍ¡½½±}­¥¹€èôÍ¡½½°(€€€€€€€¥˜‰…ÑÑ±”¹…Ñ½ÉÌ¹¡…Ì¡Í½ÕÉ•}…Ñ½É}¥¤è(€€€€€€€€€€€Ù…È…Ñ½Èè¥Ñ¥½¹…Éä€ô‰…ÑÑ±”¹…Ñ½ÉÍmÍ½ÕÉ•}…Ñ½É}¥‘t(€€€€€€€€€€€¥˜ÍÑÈ¡…Ñ½È¹•Ğ ‰Í¥‘”ˆ°€ˆˆ¤¤€ôô€‰µ½¹ÍÑ•Èˆè(€€€€€€€€€€€€€€€Í¡½½±}­¥¹€ô€‰‰½ÍÌˆ¥˜ÍÑÈ¡…Ñ½È¹•Ğ ‰Ñ¥•Èˆ°€ˆˆ¤¤€ôô€‰‰½ÍÌˆ•±Í”€‰™¥ÍĞˆ(€€€€€€€Ù…È½±½Èè½±½È€ôY™áXÈ¹Í¡½½±}½±½È¡Í¡½½±}­¥¹¤(€€€€€€€Ù…ÈÉ…‘¥ÕÌ€èô€À¸À(€€€€€€€µ…Ñ ­¥¹è(€€€€€€€€€€€€‰Í­¥±±}…ÍĞˆ°€‰…ÍĞˆè(€€€€€€€€€€€€€€€Õ•}­¥¹€ô€‰…ÍĞˆ(€€€€€€€€€€€€€€€€Œ]¥¹µÕÀ…ÕÉ„½É¥¥¹…Ñ•Ì…ĞÑ¡”…ÍÑ•È°¹½ĞÑ¡”Ñ…É•Ğ¸(€€€€€€€€€€€€€€€Á½Ì€ô}…Ñ½É}Á½Í¥Ñ¥½¸¡Í½ÕÉ•}…Ñ½É}¥¤(€€€€€€€€€€€€‰Í­¥±±}É•±•…Í”ˆè(€€€€€€€€€€€€€€€Ù…ÈÉ•…±}Í­¥±±}¥€èôÍÑÈ¡•Ù•¹Ğ¹•Ğ ‰Í­¥±±}¥ˆ°±…ÍÑ}Í­¥±±}‰å}…Ñ½È¹•Ğ¡Í½ÕÉ•}…Ñ½É}¥°€ˆˆ¤¤¤(€€€€€€€€€€€€€€€Ù…È‘•™¥¹¥Ñ¥½¸è¥Ñ¥½¹…Éä€ô½µ‰…Ñ1…‰I½ÍÑ•É‘…ÁÑ•È¹Í­¥±±}‘•™¥¹¥Ñ¥½¹Ì ¤¹•Ğ¡É•…±}Í­¥±±}¥°íô¤(€€€€€€€€€€€€€€€Ù…È•™™•Ğ€èôÍÑÈ¡‘•™¥¹¥Ñ¥½¸¹•Ğ ‰•™™•Ğˆ°€ˆˆ¤¤(€€€€€€€€€€€€€€€¥˜Í¡½½±}­¥¹€ôô€‰Á½¥Í½¸ˆ…¹•™™•Ğ¥¸l‰¡•…°ˆ°€‰±•…¹Í”‰tè(€€€€€€€€€€€€€€€€€€€€ŒÃ†îŒƒC†îeŒÉ•¹‘•ÉÌ½¹±ä¥ÑÌ…¹½¹¥…°¡•…°½±•…¹Í”É•ÍÕ±Ğì(€€€€€€€€€€€€€€€€€€€€Œ…¸…ÕÑ¡½É•É…‘¥ÕÌµÕÍĞ¹½ĞÑÕÉ¸µ•‘¥¥¹…°µ…¥Œ¥¹Ñ¼„(€€€€€€€€€€€€€€€€€€€€ŒÙ•¹½´±½Õ¸(€€€€€€€€€€€€€€€€€€€Õ•}­¥¹€ô€ˆˆ(€€€€€€€€€€€€€€€•±¥˜Í¡½½±}­¥¹€ôô€‰Á½¥Í½¸ˆ…¹ÍÑÈ¡‘•™¥¹¥Ñ¥½¸¹•Ğ ‰Í¡…Á”ˆ°€ˆˆ¤¤€ôô€‰¥É±”ˆp(€€€€€€€€€€€€€€€€€€€€€€€…¹™±½…Ğ¡‘•™¥¹¥Ñ¥½¸¹•Ğ ‰É…‘¥ÕÌˆ°€À¸À¤¤€ø€À¸Àè(€€€€€€€€€€€€€€€€€€€€ŒQ¡¥Ì¥Ì„Á½ÍĞµÉ•±•…Í”Ù¥ÍÕ…°¥¹‘¥…Ñ½È™½È…¸…ÕÑ¡½É•(€€€€€€€€€€€€€€€€€€€€Œ¥É±”Í­¥±°€¡¥¹±Õ‘¥¹œ½¹ÍÕµ”½µ…É¬Ù…É¥…¹ÑÌ¤°9=P„(€€€€€€€€€€€€€€€€€€€€Œ¹•Ü…É•„½ÍÑ…ÑÕÌ½È‘…µ…”…ÕÑ¡½É¥Ñä¸(€€€€€€€€€€€€€€€€€€€Õ•}­¥¹€ô€‰Ù•¹½µ}±½Õˆ(€€€€€€€€€€€€€€€€€€€É…‘¥ÕÌ€ôµ…á˜ À¸À°™±½…Ğ¡‘•™¥¹¥Ñ¥½¸¹•Ğ ‰É…‘¥ÕÌˆ°€À¸À¤¤¤(€€€€€€€€€€€€€€€•±¥˜™±½…Ğ¡‘•™¥¹¥Ñ¥½¸¹•Ğ ‰ÁÉ½©•Ñ¥±•}ÍÁ••ˆ°€À¸À¤¤€ø€À¸Àè(€€€€€€€€€€€€€€€€€€€€ŒAÉ½©•Ñ¥±”İ…ÌÍ¡•‘Õ±•™É½´Ñ¡”É•…°Í­¥±±}…ÍĞ•Ù•¹Ğ¸(€€€€€€€€€€€€€€€€€€€€ŒI•±•…Í”¥ÌÑ¡”…ÕÑ¡½É¥Ñ…Ñ¥Ù”¥µÁ…Ğ‘•…‘±¥¹”°¹½Ğ±…Õ¹ ¸(€€€€€€€€€€€€€€€€€€€Õ•}­¥¹€ô€ˆˆ(€€€€€€€€€€€€€€€•±¥˜•™™•Ğ€ôô€‰Õ…Éˆè(€€€€€€€€€€€€€€€€€€€Õ•}­¥¹€ô€‰Õ…Éˆ(€€€€€€€€€€€€€€€•±¥˜•™™•Ğ¥¸l‰¡•…°ˆ°€‰±•…¹Í”‰tè(€€€€€€€€€€€€€€€€€€€¥˜Í¡½½±}­¥¹€ôô€‰Á½¥Í½¸ˆè(€€€€€€€€€€€€€€€€€€€€€€€€ŒQ¡”…¹½¹¥…°¡•…°½±•…¹Í”•Ù•¹Ğ‰•±½Ü¥ÌÑ¡”Ù¥Í¥‰±”(€€€€€€€€€€€€€€€€€€€€€€€€ŒÉ•ÍÕ±Ğì…Ù½¥…¸•áÑÉ„•¹•É¥ŒÉ•±•…Í”…ÕÉ„¸(€€€€€€€€€€€€€€€€€€€€€€€Õ•}­¥¹€ô€ˆˆ(€€€€€€€€€€€€€€€€€€€•±Í”è(€€€€€€€€€€€€€€€€€€€€€€€Õ•}­¥¹€ô€‰…ÍĞˆ(€€€€€€€€€€€€€€€•±¥˜ÍÑÈ¡‘•™¥¹¥Ñ¥½¸¹•Ğ ‰Í¡…Á”ˆ°€ˆˆ¤¤€ôô€‰¥É±”ˆè(€€€€€€€€€€€€€€€€€€€Õ•}­¥¹€ô€‰…½”ˆ(€€€€€€€€€€€€€€€€€€€É…‘¥ÕÌ€ô™±½…Ğ¡‘•™¥¹¥Ñ¥½¸¹•Ğ ‰É…‘¥ÕÌˆ°€À¸À¤¤(€€€€€€€€€€€€‰¡¥Ğˆè(€€€€€€€€€€€€€€€Õ•}­¥¹€ô€‰¥µÁ…Ğˆ(€€€€€€€€€€€€€€€±…‰•°€ôÍÑÈ¡É½Õ¹‘¤¡™±½…Ğ¡•Ù•¹Ğ¹•Ğ ‰‘…µ…”ˆ°€À¸À¤¤¤¤(€€€€€€€€€€€€€€€¥˜‰½½°¡•Ù•¹Ğ¹•Ğ ‰É¥Ñ¥…°ˆ°™…±Í”¤¤è(€€€€€€€€€€€€€€€€€€€±…‰•°€ô€‰†ê</5 €ˆ€¬±…‰•°(€€€€€€€€€€€€€€€€€€€½±½È€ô½±½È ‰™™˜Àå„ˆ¤(€€€€€€€€€€€€‰ØØÍ}Í­¥±±}¡¥Ğˆ°€‰Í­¥±±}¡¥Ğˆè(€€€€€€€€€€€€€€€€Œ9Õµ•É¥ŒÍ•ÑÑ±•µ•¹Ğ¡…Ì…±É•…‘ä‰••¸É•¹‘•É•™É½´…¹½¹¥…°¡¥Ğ¸(€€€€€€€€€€€€€€€½¹Ñ¥¹Õ”(€€€€€€€€€€€€‰Í­¥±±}µ¥ÍÌˆè(€€€€€€€€€€€€€€€Õ•}­¥¹€ô€‰µ¥ÍÌˆì±…‰•°€ô€‰QK¿†î‰Pˆ(€€€€€€€€€€€€‰•Ù…‘”ˆè(€€€€€€€€€€€€€€€Õ•}­¥¹€ô€‰µ¥ÍÌˆì±…‰•°€ô€‰;$ˆ(€€€€€€€€€€€€‰¡•…°ˆè(€€€€€€€€€€€€€€€Õ•}­¥¹€ô€‰¡•…°ˆ(€€€€€€€€€€€€€€€½±½È€ô½±½È ˆÜå•‘‰„ˆ¤(€€€€€€€€€€€€€€€±…‰•°€ô€ˆ¬ˆ€¬ÍÑÈ¡É½Õ¹‘¤¡™±½…Ğ¡•Ù•¹Ğ¹•Ğ ‰…µ½Õ¹Ğˆ°€À¸À¤¤¤¤(€€€€€€€€€€€€‰±•…¹Í”ˆè(€€€€€€€€€€€€€€€Õ•}­¥¹€ô€‰±•…¹Í”ˆì½±½È€ô½±½È ‰ˆå™…™˜ˆ¤ì±…‰•°€ô€‰'†ê‰$ˆ(€€€€€€€€€€€€‰Á½¥Í½¹}½¹ÍÕµ•ˆè(€€€€€€€€€€€€€€€Ù…ÈÑ…­•¸€èô¥¹Ğ¡•Ù•¹Ğ¹•Ğ ‰ÍÑ…­Ìˆ°€À¤¤(€€€€€€€€€€€€€€€¥˜Ñ…­•¸€ø€Àè(€€€€€€€€€€€€€€€€€€€Õ•}­¥¹€ô€‰Ù•¹½µ}‰ÕÉÍĞˆ(€€€€€€€€€€€€€€€€€€€½±½È€ô½±½È ‰ˆá•ˆàÌˆ¤(€€€€€€€€€€€€€€€€€€€±…‰•°€ô€‰A#†îƒC†îaƒ\ˆ€¬ÍÑÈ¡Ñ…­•¸¤(€€€€€€€€€€€€‰‰±½½‘}™É•¹éäˆè(€€€€€€€€€€€€€€€Õ•}­¥¹€ô€‰‰±½½‘}™É•¹éäˆì½±½È€ô½±½È ‰”ĞÑˆÜÀˆ¤ì±…‰•°€ô€‰!Ug†êùPW†îI9ˆ(€€€€€€€€€€€€‰ÍÑ…ÑÕÍ}…ÁÁ±¥•ˆè(€€€€€€€€€€€€€€€Ù…ÈÍÑ…ÑÕÌ€èôÍÑÈ¡•Ù•¹Ğ¹•Ğ ‰ÍÑ…ÑÕÌˆ°€ˆˆ¤¤(€€€€€€€€€€€€€€€¥˜ÍÑ…ÑÕÌ€ôô€‰Á½¥Í½¸ˆè(€€€€€€€€€€€€€€€€€€€Ù…È…‘‘•€èô¥¹Ğ¡•Ù•¹Ğ¹•Ğ ‰…‘‘•ˆ°€À¤¤(€€€€€€€€€€€€€€€€€€€¥˜…‘‘•€ø€Àè(€€€€€€€€€€€€€€€€€€€€€€€Õ•}­¥¹€ô€‰Á½¥Í½¹}…ÁÁ±äˆ(€€€€€€€€€€€€€€€€€€€€€€€½±½È€ô½±½È ‰„Õ˜Èá”ˆ¤(€€€€€€€€€€€€€€€€€€€€€€€±…‰•°€ô€‹C†îa€¬ˆ€¬ÍÑÈ¡…‘‘•¤(€€€€€€€€€€€€€€€•±¥˜ÍÑ…ÑÕÌ€ôô€‰Õ…Éˆè(€€€€€€€€€€€€€€€€€€€Õ•}­¥¹€ô€‰Õ…Éˆì½±½È€ô½±½È ‰ˆÁ‘…™„ˆ¤ì±…‰•°€ô€‰#†î`Q#†îˆ(€€€€€€€€€€€€€€€•±¥˜ÍÑ…ÑÕÌ€ôô€‰µ…É¬ˆè(€€€€€€€€€€€€€€€€€€€Õ•}­¥¹€ô€‰µ…É¬ˆì½±½È€ô½±½È ‰…”å‰™˜ˆ¤ì±…‰•°€ô€‹†ê‘8ˆ(€€€€€€€€€€€€‰ÍÑ…ÑÕÍ}Ñ¥¬ˆè(€€€€€€€€€€€€€€€Ù…ÈÑ¥­}‘…µ…”€èô™±½…Ğ¡•Ù•¹Ğ¹•Ğ ‰‘…µ…”ˆ°€À¸À¤¤(€€€€€€€€€€€€€€€¥˜ÍÑÈ¡•Ù•¹Ğ¹•Ğ ‰ÍÑ…ÑÕÌˆ°€ˆˆ¤¤€ôô€‰Á½¥Í½¸ˆè(€€€€€€€€€€€€€€€€€€€¥˜Ñ¥­}‘…µ…”€ø€À¸Àè(€€€€€€€€€€€€€€€€€€€€€€€Õ•}­¥¹€ô€‰Á½¥Í½¹}Ñ¥¬ˆ(€€€€€€€€€€€€€€€€€€€€€€€½±½È€ô½±½È ‰„Õ˜Èá”ˆ¤(€€€€€€€€€€€€€€€€€€€€€€€±…‰•°€ô€‹C†îa€ˆ€¬ÍÑÈ¡É½Õ¹‘¤¡Ñ¥­}‘…µ…”¤¤(€€€€€€€€€€€€€€€•±¥˜Ñ¥­}‘…µ…”€ø€À¸Àè(€€€€€€€€€€€€€€€€€€€Õ•}­¥¹€ô€‰¥µÁ…Ğˆ(€€€€€€€€€€€€€€€€€€€½±½È€ô½±½È ‰™™…ÜÜˆ¤(€€€€€€€€€€€€€€€€€€€±…‰•°€ô€‰=P€ˆ€¬ÍÑÈ¡É½Õ¹‘¤¡Ñ¥­}‘…µ…”¤¤(€€€€€€€€€€€€‰‘…µ…•}Ñ¥¬ˆè(€€€€€€€€€€€€€€€Õ•}­¥¹€ô€‰¥µÁ…Ğˆì½±½È€ô½±½È ˆäÅ•ŒÜÄˆ¤(€€€€€€€€€€€€€€€±…‰•°€ô€‰=P€ˆ€¬ÍÑÈ¡É½Õ¹‘¤¡™±½…Ğ¡•Ù•¹Ğ¹•Ğ ‰‘…µ…”ˆ°€À¸À¤¤¤¤(€€€€€€€€€€€€‰Ñ•±•É…Á ˆè(€€€€€€€€€€€€€€€Õ•}­¥¹€ô€‰Ñ•±•É…Á ˆì½±½È€ô½±½È ‰™˜ÔÌØàˆ¤ì±…‰•°€ô€‰	=MLˆ(€€€€€€€€€€€€€€€Ù…È•¹Ñ•ÈèY…É¥…¹Ğ€ô•Ù•¹Ğ¹•Ğ ‰•¹Ñ•Èˆ°Á½Ì¤(€€€€€€€€€€€€€€€¥˜•¹Ñ•È¥ÌY•Ñ½ÈÈèÁ½Ì€ô•¹Ñ•È(€€€€€€€€€€€€€€€É…‘¥ÕÌ€ôµ…á˜ À¸À°™±½…Ğ¡•Ù•¹Ğ¹•Ğ ‰É…‘¥ÕÌˆ°€À¸À¤¤¤(€€€€€€€€€€€€‰…É•…}É•±•…Í”ˆè(€€€€€€€€€€€€€€€Õ•}­¥¹€ô€‰…É•…}‰ÕÉÍĞˆì½±½È€ô½±½È ‰™˜ØØÜÄˆ¤(€€€€€€€€€€€€€€€Ù…È…É•…}•¹Ñ•ÈèY…É¥…¹Ğ€ô•Ù•¹Ğ¹•Ğ ‰•¹Ñ•Èˆ°Á½Ì¤(€€€€€€€€€€€€€€€¥˜…É•…}•¹Ñ•È¥ÌY•Ñ½ÈÈèÁ½Ì€ô…É•…}•¹Ñ•È(€€€€€€€€€€€€€€€±…‰•°€ô€‰=ˆ(€€€€€€€€€€€€‰‘½İ¹•ˆè(€€€€€€€€€€€€€€€Õ•}­¥¹€ô€‰‘•…Ñ ˆì½±½È€ô½±½È ˆáˆàÈääˆ¤(€€€€€€€€€€€€‰ØØÍ}‰½ÍÍ}Á¡…Í”ˆè(€€€€€€€€€€€€€€€Õ•}­¥¹€ô€‰‰½ÍÍ}Á¡…Í”ˆì½±½È€ô½±½È ‰™˜ÙŒÔĞˆ¤(€€€€€€€€€€€€€€€±…‰•°€ô€‰	=MLƒ
+ÜA!€ˆ€¬ÍÑÈ¡•Ù•¹Ğ¹•Ğ ‰Á¡…Í”ˆ°€ˆˆ¤¤(€€€€€€€€€€€€‰ØØÍ}µ½‰¥±¥Ñäˆè(€€€€€€€€€€€€€€€Õ•}­¥¹€ô€‰µ½‰¥±¥Ñäˆ(€€€€€€€€€€€€€€€Ù…Èµ½‰¥±¥Ñå}Á½ÌèY…É¥…¹Ğ€ô•Ù•¹Ğ¹•Ğ ‰Á½Í¥Ñ¥½¸ˆ°Á½Ì¤(€€€€€€€€€€€€€€€¥˜µ½‰¥±¥Ñå}Á½Ì¥ÌY•Ñ½ÈÈèÁ½Ì€ôµ½‰¥±¥Ñå}Á½Ì(€€€€€€€¥˜Õ•}­¥¹¹¥Í}•µÁÑä ¤…¹­¥¹€„ô€‰Í­¥±±}…ÍĞˆè(€€€€€€€€€€€½¹Ñ¥¹Õ”(€€€€€€€¥˜Õ•}­¥¹€ôô€‰Á½¥Í½¹}Ñ¥¬ˆè(€€€€€€€€€€€€Œ5Õ±Ñ¥Á±”½µµ¥ÑÑ•½İ¹•ÍÑ…­Ì…¸Ñ¥¬¥¸½¹”€À¸ÈÕÌ•¹¥¹”ÍÑ•À¸(€€€€€€€€€€€€ŒÉ•…Ñ”€©…ÑÕ…°¨¹Õµ•É¥Œ‘…µ…”Á•ÈÑ…É•Ğ½½İ¹•È½Í­¥±°½Ñ¥µ”(€€€€€€€€€€€€ŒÑ¼…Ù½¥€ÌÀ½Ù•É±…ÁÁ¥¹œ™±½…Ñ¥¹œ¹Õµ‰•ÉÌ€¡¹¼¥¹Ù•¹Ñ•‘…µ…”¤¸(€€€€€€€€€€€Ù…È…ÑÕ…±}Ñ¥¬€èô™±½…Ğ¡•Ù•¹Ğ¹•Ğ ‰‘…µ…”ˆ°€À¸À¤¤(€€€€€€€€€€€Ù…ÈÑ¥­}…Ğ€èô™±½…Ğ¡•Ù•¹Ğ¹•Ğ ‰Ñ¥µ”ˆ°‰…ÑÑ±”¹¹½Ü¤¤(€€€€€€€€€€€Ù…ÈÉ½ÕÁ•€èô™…±Í”(€€€€€€€€€€€™½È¥¹‘•à¥¸É…¹”¡Õ•Ì¹Í¥é” ¤€´€Ä°€´Ä°€´Ä¤è(€€€€€€€€€€€€€€€Ù…ÈÁÉ¥½É}Ñ¥¬è¥Ñ¥½¹…Éä€ôÕ•Ím¥¹‘•át(€€€€€€€€€€€€€€€¥˜ÍÑÈ¡ÁÉ¥½É}Ñ¥¬¹•Ğ ‰­¥¹ˆ°€ˆˆ¤¤€„ô€‰Á½¥Í½¹}Ñ¥¬ˆè(€€€€€€€€€€€€€€€€€€€½¹Ñ¥¹Õ”(€€€€€€€€€€€€€€€¥˜ÍÑÈ¡ÁÉ¥½É}Ñ¥¬¹•Ğ ‰Ñ…É•Ñ}…Ñ½É}¥ˆ°€ˆˆ¤¤€„ôÑ…É•Ñ}¥è(€€€€€€€€€€€€€€€€€€€½¹Ñ¥¹Õ”(€€€€€€€€€€€€€€€¥˜ÍÑÈ¡ÁÉ¥½É}Ñ¥¬¹•Ğ ‰Í½ÕÉ•}…Ñ½É}¥ˆ°€ˆˆ¤¤€„ôÍ½ÕÉ•}…Ñ½É}¥è(€€€€€€€€€€€€€€€€€€€½¹Ñ¥¹Õ”(€€€€€€€€€€€€€€€¥˜ÍÑÈ¡ÁÉ¥½É}Ñ¥¬¹•Ğ ‰Í­¥±±}¥ˆ°€ˆˆ¤¤€„ôÍ½ÕÉ•}Í­¥±°è(€€€€€€€€€€€€€€€€€€€½¹Ñ¥¹Õ”(€€€€€€€€€€€€€€€¥˜…‰Í˜¡™±½…Ğ¡ÁÉ¥½É}Ñ¥¬¹•Ğ ‰Ñ¥µ”ˆ°€´Ä¸À¤¤€´Ñ¥­}…Ğ¤€ø€À¸ÀÀÀÀÄè(€€€€€€€€€€€€€€€€€€€½¹Ñ¥¹Õ”(€€€€€€€€€€€€€€€Ù…Èµ•É•‘}½Õ¹Ğ€èô¥¹Ğ¡ÁÉ¥½É}Ñ¥¬¹•Ğ ‰ÍÑ…­}½Õ¹Ğˆ°€Ä¤¤€¬€Ä(€€€€€€€€€€€€€€€Ù…Èµ•É•‘}‘…µ…”€èô™±½…Ğ¡ÁÉ¥½É}Ñ¥¬¹•Ğ ‰‘…µ…•}Ñ½Ñ…°ˆ°€À¸À¤¤€¬…ÑÕ…±}Ñ¥¬(€€€€€€€€€€€€€€€ÁÉ¥½É}Ñ¥­l‰ÍÑ…­}½Õ¹Ğ‰t€ôµ•É•‘}½Õ¹Ğ(€€€€€€€€€€€€€€€ÁÉ¥½É}Ñ¥­l‰‘…µ…•}Ñ½Ñ…°‰t€ôµ•É•‘}‘…µ…”(€€€€€€€€€€€€€€€ÁÉ¥½É}Ñ¥­l‰Ñ•áĞ‰t€ô€‹C†îa€ˆ€¬ÍÑÈ¡É½Õ¹‘¤¡µ•É•‘}‘…µ…”¤¤€¬€ˆƒ\ˆ€¬ÍÑÈ¡µ•É•‘}½Õ¹Ğ¤(€€€€€€€€€€€€€€€Õ•Ím¥¹‘•át€ôÁÉ¥½É}Ñ¥¬(€€€€€€€€€€€€€€€É½ÕÁ•€ôÑÉÕ”(€€€€€€€€€€€€€€€‰É•…¬(€€€€€€€€€€€¥˜É½ÕÁ•è(€€€€€€€€€€€€€€€½¹Ñ¥¹Õ”(€€€€€€€Ù…ÈÕ•}±¥™”€èô€ÌÜÀ¸À¥˜Õ•}­¥¹€ôô€‰ÁÉ½©•Ñ¥±”ˆ•±Í”€ äÀÀ¸À¥˜Õ•}­¥¹€ôô€‰Ñ•±•É…Á ˆ•±Í”€ÜäÀ¸À¤(€€€€€€€Ù…È‘¥ÍÁ±…å}Í­¥±±}¥€èôÍ½ÕÉ•}Í­¥±°(€€€€€€€¥˜‘¥ÍÁ±…å}Í­¥±±}¥¹¥Í}•µÁÑä ¤è(€€€€€€€€€€€‘¥ÍÁ±…å}Í­¥±±}¥€ôÍÑÈ¡±…ÍÑ}Í­¥±±}‰å}…Ñ½È¹•Ğ¡Í½ÕÉ•}…Ñ½É}¥°€ˆˆ¤¤(€€€€€€€Ù…È‘¥ÍÁ±…å}‘•™¥¹¥Ñ¥½¸è¥Ñ¥½¹…Éä€ô½µ‰…Ñ1…‰I½ÍÑ•É‘…ÁÑ•È¹Í­¥±±}‘•™¥¹¥Ñ¥½¹Ì ¤¹•Ğ¡‘¥ÍÁ±…å}Í­¥±±}¥°íô¤(€€€€€€€Ù…È‘¥ÍÁ±…å}•¹•É…Ñ¥½¸€èôÍÑÈ¡‘¥ÍÁ±…å}‘•™¥¹¥Ñ¥½¸¹•Ğ ‰•¹•É…Ñ¥½¸ˆ°‘¥ÍÁ±…å}‘•™¥¹¥Ñ¥½¸¹•Ğ ‰Ñ¥•Èˆ°€‰¡Õµ…¸ˆ¤¤¤(€€€€€€€Ù…ÈÕ•}™É½´€èô}…Ñ½É}Á½Í¥Ñ¥½¸¡Í½ÕÉ•}…Ñ½É}¥¤(€€€€€€€¥˜­¥¹€ôô€‰ØØÍ}µ½‰¥±¥Ñäˆ…¹…Ñ½É}ÍÑ…Ñ•Ì¹¡…Ì¡Í½ÕÉ•}…Ñ½É}¥¤è(€€€€€€€€€€€Ù…ÈÁÉ¥½Èè¥Ñ¥½¹…Éä€ô…Ñ½É}ÍÑ…Ñ•ÍmÍ½ÕÉ•}…Ñ½É}¥‘t(€€€€€€€€€€€Õ•}™É½´€ôÁÉ¥½È¹•Ğ ‰±…ÍÑ}Á½Í¥Ñ¥½¸ˆ°Õ•}™É½´¤(€€€€€€€¥˜¹½ĞÕ•}­¥¹¹¥Í}•µÁÑä ¤è(€€€€€€€€€€€Õ•Ì¹…ÁÁ•¹¡ì(€€€€€€€€€€€€€€€€‰­¥¹ˆéÕ•}­¥¹°€‰Á½Í¥Ñ¥½¸ˆéÁ½Ì°€‰™É½µ}Á½Í¥Ñ¥½¸ˆéÕ•}™É½´°(€€€€€€€€€€€€€€€€‰Ñ•áĞˆé±…‰•°°€‰½±½Èˆé½±½È°€‰É…‘¥ÕÌˆéÉ…‘¥ÕÌ°€‰Í¡½½°ˆéÍ¡½½±}­¥¹°(€€€€€€€€€€€€€€€€‰Í­¥±±}¥ˆé‘¥ÍÁ±…å}Í­¥±±}¥°€‰•¹•É…Ñ¥½¸ˆé‘¥ÍÁ±…å}•¹•É…Ñ¥½¸°€‰Í½ÕÉ•}…Ñ½É}¥ˆéÍ½ÕÉ•}…Ñ½É}¥°(€€€€€€€€€€€€€€€€‰Ñ…É•Ñ}…Ñ½É}¥ˆéÑ…É•Ñ}¥°€‰ÍÑ…­}½Õ¹ĞˆèÄ°€‰‘…µ…•}Ñ½Ñ…°ˆé™±½…Ğ¡•Ù•¹Ğ¹•Ğ ‰‘…µ…”ˆ°€À¸À¤¤°(€€€€€€€€€€€€€€€€‰•™™•ĞˆéÍÑÈ¡‘¥ÍÁ±…å}‘•™¥¹¥Ñ¥½¸¹•Ğ ‰•™™•Ğˆ°•Ù•¹Ğ¹•Ğ ‰•™™•Ğˆ°€ˆˆ¤¤¤°(€€€€€€€€€€€€€€€€‰Í¡…Á”ˆéÍÑÈ¡‘¥ÍÁ±…å}‘•™¥¹¥Ñ¥½¸¹•Ğ ‰Í¡…Á”ˆ°•Ù•¹Ğ¹•Ğ ‰Í¡…Á”ˆ°€ˆˆ¤¤¤°(€€€€€€€€€€€€€€€€‰Ñ…É•Ñ}±¥µ¥Ğˆé¥¹Ğ¡‘¥ÍÁ±…å}‘•™¥¹¥Ñ¥½¸¹•Ğ ‰Ñ…É•Ñ}±¥µ¥Ğˆ°•Ù•¹Ğ¹•Ğ ‰Ñ…É•Ñ}±¥µ¥Ğˆ°€À¤¤¤°(€€€€€€€€€€€€€€€€‰•Ù•¹Ñ}ÑåÁ”ˆé­¥¹°€‰½µµ¥ÑÑ•‘}Ñ¥µ”ˆé™±½…Ğ¡•Ù•¹Ğ¹•Ğ ‰Ñ¥µ”ˆ°‰…ÑÑ±”¹¹½Ü¤¤°(€€€€€€€€€€€€€€€€‰½µµ¥ÑÑ•‘}ÍÑ…­Ìˆé¥¹Ğ¡•Ù•¹Ğ¹•Ğ ‰ÍÑ…­Ìˆ°•Ù•¹Ğ¹•Ğ ‰…‘‘•ˆ°€À¤¤¤°(€€€€€€€€€€€€€€€€‰É•…Ñ•ˆé¹½İ}µÌ°€‰±¥™”ˆéÕ•}±¥™”°(€€€€€€€€€€€€€€€€‰Í½ÕÉ•}¥¹‘•àˆé¥¹Ğ¡•Ù•¹Ğ¹•Ğ ‰±…‰}Í½ÕÉ•}¥¹‘•àˆ°€´Ä¤¤°(€€€€€€€€€€€€€€€€‰Ñ¥µ”ˆé™±½…Ğ¡•Ù•¹Ğ¹•Ğ ‰Ñ¥µ”ˆ°€À¸À¤¤(€€€€€€€€€€€ô¤(€€€€€€€€€€€¥˜Õ•Ì¹Í¥é” ¤€ø5a}ULèÕ•Ì¹Á½Á}™É½¹Ğ ¤(€€€€€€€¥˜­¥¹€ôô€‰Í­¥±±}…ÍĞˆ…¹¹½ĞÍ½ÕÉ•}Í­¥±°¹¥Í}•µÁÑä ¤è(€€€€€€€€€€€€ŒXØ¸Ì}‰•¥¹}…ÍĞ•áÁ±¥¥Ñ±äÍ¡•‘Õ±•ÌÉ•±•…Í”…™Ñ•Èİ¥¹µÕÀÁ±ÕÌ(€€€€€€€€€€€€ŒÁÉ½©•Ñ¥±”ÑÉ…Ù•°¸É…ÜÑ¡”ÁÉ½©•Ñ¥±”	=IÍ•ÑÑ±•µ•¹Ğì‘¼¹½Ğ(€€€€€€€€€€€€ŒÍÁ…İ¸„™…­”Í•½¹…ÉÉ½Ü™É½´Í­¥±±}É•±•…Í”€¡İ¡¥ ½µµ¥ÑÌ!@¤¸(€€€€€€€€€€€Ù…È…ÕÑ¡½É•è¥Ñ¥½¹…Éä€ô½µ‰…Ñ1…‰I½ÍÑ•É‘…ÁÑ•È¹Í­¥±±}‘•™¥¹¥Ñ¥½¹Ì ¤¹•Ğ¡Í½ÕÉ•}Í­¥±°°íô¤(€€€€€€€€€€€Ù…ÈÍÁ••€èô™±½…Ğ¡…ÕÑ¡½É•¹•Ğ ‰ÁÉ½©•Ñ¥±•}ÍÁ••ˆ°€À¸À¤¤(€€€€€€€€€€€Ù…È…ÍÑ•Èè¥Ñ¥½¹…Éä€ô‰…ÑÑ±”¹…Ñ½ÉÌ¹•Ğ¡Í½ÕÉ•}…Ñ½É}¥°íô¤(€€€€€€€€€€€¥˜ÍÁ••€ø€À¸À…¹¹½Ğ…ÍÑ•È¹¥Í}•µÁÑä ¤è(€€€€€€€€€€€€€€€Ù…È•™™•Ñ¥Ù”è¥Ñ¥½¹…Éä€ôXØÍ!Õµ…¹M­¥±±½µ‰…ÑMåÍÑ•´¹•™™•Ñ¥Ù•}…ÑÑ…­}ÍÑ…ÑÌ¡…ÍÑ•È°…ÍÑ•È¹•Ğ ‰ÍÑ…ÑÌˆ°íô¤¤(€€€€€€€€€€€€€€€Ù…È…ÍÑ}É…Ñ”€èôµ…á˜ À¸Ä°€Ä¸À€¬™±½…Ğ¡•™™•Ñ¥Ù”¹•Ğ ‰…ÍÑ}ÍÁ••ˆ°€À¸À¤¤¤(€€€€€€€€€€€€€€€Ù…ÈÍÑ…ÉÑ}Ñ¥µ”€èô™±½…Ğ¡•Ù•¹Ğ¹•Ğ ‰Ñ¥µ”ˆ°‰…ÑÑ±”¹¹½Ü¤¤(€€€€€€€€€€€€€€€Ù…È±…Õ¹¡}…Ğ€èôÍÑ…ÉÑ}Ñ¥µ”€¬µ…á˜¡5…Á	…ÑÑ±•XÈ¹MQA}M=9L°™±½…Ğ¡…ÕÑ¡½É•¹•Ğ ‰…ÍÑ}Ñ¥µ”ˆ°€À¸À¤¤€¼…ÍÑ}É…Ñ”¤(€€€€€€€€€€€€€€€Ù…È¥µÁ…Ñ}…Ğ€èô™±½…Ğ¡•Ù•¹Ğ¹•Ğ ‰É•±•…Í•}…Ğˆ°±…Õ¹¡}…Ğ¤¤(€€€€€€€€€€€€€€€¥˜¥µÁ…Ñ}…Ğ€ø±…Õ¹¡}…Ğ€¬€À¸ÀÀÄè(€€€€€€€€€€€€€€€€€€€Õ•Ì¹…ÁÁ•¹¡ì(€€€€€€€€€€€€€€€€€€€€€€€€‰­¥¹ˆè‰ÁÉ½©•Ñ¥±”ˆ°€‰Á½Í¥Ñ¥½¸ˆé…ÍÑ}Ñ…É•Ñ}Á½Ì°€‰™É½µ}Á½Í¥Ñ¥½¸ˆéÕ•}™É½´°(€€€€€€€€€€€€€€€€€€€€€€€€‰Ñ•áĞˆèˆˆ°€‰½±½Èˆé½±½È°€‰É…‘¥ÕÌˆèÀ¸À°€‰Í¡½½°ˆéÍ¡½½±}­¥¹°(€€€€€€€€€€€€€€€€€€€€€€€€‰Í­¥±±}¥ˆéÍ½ÕÉ•}Í­¥±°°€‰•¹•É…Ñ¥½¸ˆé‘¥ÍÁ±…å}•¹•É…Ñ¥½¸°(€€€€€€€€€€€€€€€€€€€€€€€€‰•™™•ĞˆéÍÑÈ¡…ÕÑ¡½É•¹•Ğ ‰•™™•Ğˆ°€ˆˆ¤¤°€‰Í¡…Á”ˆéÍÑÈ¡…ÕÑ¡½É•¹•Ğ ‰Í¡…Á”ˆ°€ˆˆ¤¤°(€€€€€€€€€€€€€€€€€€€€€€€€‰Ñ…É•Ñ}±¥µ¥Ğˆé¥¹Ğ¡…ÕÑ¡½É•¹•Ğ ‰Ñ…É•Ñ}±¥µ¥Ğˆ°€À¤¤°€‰•Ù•¹Ñ}ÑåÁ”ˆè‰Í­¥±±}…ÍĞˆ°(€€€€€€€€€€€€€€€€€€€€€€€€‰½µµ¥ÑÑ•‘}Ñ¥µ”ˆéÍÑ…ÉÑ}Ñ¥µ”°(€€€€€€€€€€€€€€€€€€€€€€€€‰Í½ÕÉ•}…Ñ½É}¥ˆéÍ½ÕÉ•}…Ñ½É}¥°€‰±…Õ¹¡}…Ğˆé±…Õ¹¡}…Ğ°€‰¥µÁ…Ñ}…Ğˆé¥µÁ…Ñ}…Ğ°(€€€€€€€€€€€€€€€€€€€€€€€€‰É•…Ñ•ˆé¹½İ}µÌ°€‰±¥™”ˆèÀ¸À°€‰Í½ÕÉ•}¥¹‘•àˆé¥¹Ğ¡•Ù•¹Ğ¹•Ğ ‰±…‰}Í½ÕÉ•}¥¹‘•àˆ°€´Ä¤¤°(€€€€€€€€€€€€€€€€€€€€€€€€‰Ñ¥µ”ˆéÍÑ…ÉÑ}Ñ¥µ”(€€€€€€€€€€€€€€€€€€€ô¤(€€€€€€€€€€€€€€€€€€€¥˜Õ•Ì¹Í¥é” ¤€ø5a}ULèÕ•Ì¹Á½Á}™É½¹Ğ ¤(€€€€€€€¥˜­¥¹€ôô€‰¡¥Ğˆ…¹™±½…Ğ¡•Ù•¹Ğ¹•Ğ ‰±¥™•ÍÑ•…°ˆ°€À¸À¤¤€ø€À¸Àè(€€€€€€€€€€€Ù…È±¥™•}¡•…°€èôÉ½Õ¹‘¤¡™±½…Ğ¡•Ù•¹Ğ¹•Ğ ‰±¥™•ÍÑ•…°ˆ°€À¸À¤¤¤(€€€€€€€€€€€Õ•Ì¹…ÁÁ•¹¡ì(€€€€€€€€€€€€€€€€‰­¥¹ˆè‰¡•…°ˆ°€‰Á½Í¥Ñ¥½¸ˆéÕ•}™É½´°€‰™É½µ}Á½Í¥Ñ¥½¸ˆéÕ•}™É½´°(€€€€€€€€€€€€€€€€‰Ñ•áĞˆèˆ¬ˆ€¬ÍÑÈ¡±¥™•}¡•…°¤°€‰½±½Èˆé½±½È ˆàÉ˜Á„Äˆ¤°(€€€€€€€€€€€€€€€€‰É…‘¥ÕÌˆèÀ¸À°€‰Í¡½½°ˆéÍ¡½½±}­¥¹°€‰Í½ÕÉ•}…Ñ½É}¥ˆéÍ½ÕÉ•}…Ñ½É}¥°(€€€€€€€€€€€€€€€€‰É•…Ñ•ˆé¹½İ}µÌ°€‰±¥™”ˆèäÀÀ¸À°(€€€€€€€€€€€€€€€€‰Í½ÕÉ•}¥¹‘•àˆé¥¹Ğ¡•Ù•¹Ğ¹•Ğ ‰±…‰}Í½ÕÉ•}¥¹‘•àˆ°€´Ä¤¤°(€€€€€€€€€€€€€€€€‰Ñ¥µ”ˆé™±½…Ğ¡•Ù•¹Ğ¹•Ğ ‰Ñ¥µ”ˆ°€À¸À¤¤(€€€€€€€€€€€ô¤(€€€€€€€€€€€¥˜Õ•Ì¹Í¥é” ¤€ø5a}ULèÕ•Ì¹Á½Á}™É½¹Ğ ¤(€€€ÅÕ•Õ•}É•‘É…Ü ¤()™Õ¹Œ}¡…Í}‘…µ…•}Ñ¥­}É•½É¡¡¥Ñ}•Ù•¹Ğè¥Ñ¥½¹…Éä°É½İÌèÉÉ…åm¥Ñ¥½¹…Éåt¤€´ø‰½½°è(€€€™½È…¹‘¥‘…Ñ”¥¸É½İÌè(€€€€€€€¥˜ÍÑÈ¡…¹‘¥‘…Ñ”¹•Ğ ‰ÑåÁ”ˆ°€ˆˆ¤¤€„ô€‰‘…µ…•}Ñ¥¬ˆè(€€€€€€€€€€€½¹Ñ¥¹Õ”(€€€€€€€¥˜ÍÑÈ¡…¹‘¥‘…Ñ”¹•Ğ ‰…ÑÑ…­•Èˆ°€ˆˆ¤¤€„ôÍÑÈ¡¡¥Ñ}•Ù•¹Ğ¹•Ğ ‰…ÑÑ…­•Èˆ°€ˆˆ¤¤è(€€€€€€€€€€€½¹Ñ¥¹Õ”(€€€€€€€¥˜ÍÑÈ¡…¹‘¥‘…Ñ”¹•Ğ ‰Ñ…É•Ğˆ°€ˆˆ¤¤€„ôÍÑÈ¡¡¥Ñ}•Ù•¹Ğ¹•Ğ ‰Ñ…É•Ğˆ°€ˆˆ¤¤è(€€€€€€€€€€€½¹Ñ¥¹Õ”(€€€€€€€¥˜¥Í}•ÅÕ…±}…ÁÁÉ½à¡™±½…Ğ¡…¹‘¥‘…Ñ”¹•Ğ ‰‘…µ…”ˆ°€´Ä¸À¤¤°™±½…Ğ¡¡¥Ñ}•Ù•¹Ğ¹•Ğ ‰‘…µ…”ˆ°€´È¸À¤¤¤è(€€€€€€€€€€€É•ÑÕÉ¸ÑÉÕ”(€€€É•ÑÕÉ¸™…±Í”)™Õ¹Œ}…Ñ½É}Á½Í¥Ñ¥½¸¡…Ñ½É}¥èMÑÉ¥¹œ¤€´øY•Ñ½ÈÈè(€€€¥˜‰…ÑÑ±”€„ô¹Õ±°…¹‰…ÑÑ±”¹…Ñ½ÉÌ¹¡…Ì¡…Ñ½É}¥¤è(€€€€€€€É•ÑÕÉ¸‰…ÑÑ±”¹…Ñ½ÉÍm…Ñ½É}¥‘t¹•Ğ ‰Á½Í¥Ñ¥½¸ˆ°Y•Ñ½ÈÈ Äà°€ÄÀ¤¤(€€€É•ÑÕÉ¸Y•Ñ½ÈÈ Äà°€ÄÀ¤()™Õ¹Œ}İ½É±‘}Ñ½}±½…°¡Á½¥¹ĞèY•Ñ½ÈÈ¤€´øY•Ñ½ÈÈè(€€€Ù…Èµ…É¥¸€èôY•Ñ½ÈÈ ÌÀ°€Èà¤(€€€Ù…ÈÍÁ…¸€èôÍ¥é”€´µ…É¥¸€¨€È¸À(€€€Ù…È•¹Ñ•É•€èôY•Ñ½ÈÈ ¡Á½¥¹Ğ¹à€¼]=I1¹Í¥é”¹à€´€À¸Ô¤€¨ÍÁ…¸¹à°€¡Á½¥¹Ğ¹ä€¼]=I1¹Í¥é”¹ä€´€À¸Ô¤€¨ÍÁ…¸¹ä¤(€€€É•ÑÕÉ¸µ…É¥¸€¬ÍÁ…¸€¨€À¸Ô€¬•¹Ñ•É•€¨é½½´()™Õ¹Œ}‘É…Ü ¤€´øÙ½¥è(€€€‘É…İ}É•Ğ¡I•ĞÈ¡Y•Ñ½ÈÈ¹iI<°Í¥é”¤°½±½È ˆÄÀÄÀÅ„ˆ¤°ÑÉÕ”¤(€€€‘É…İ}É•Ğ¡I•ĞÈ¡Y•Ñ½ÈÈ¹iI<°Í¥é”¤°½±½È ˆĞÀÌØÔÌˆ¤°™…±Í”°€Ä¸À¤(€€€Ù…Èµ…É¥¸€èôY•Ñ½ÈÈ ÌÀ°€Èà¤(€€€Ù…ÈÍÁ…¸€èôÍ¥é”€´µ…É¥¸€¨€È¸À(€€€‘É…İ}É•Ğ¡I•ĞÈ¡µ…É¥¸°ÍÁ…¸¤°½±½È ˆÄÜÄÜÈÔˆ¤°ÑÉÕ”¤(€€€™½È¤¥¸É…¹” Ää¤è(€€€€€€€Ù…Èà€èôµ…É¥¸¹à€¬™±½…Ğ¡¤¤€¨ÍÁ…¸¹à€¼€Äà¸À(€€€€€€€‘É…İ}±¥¹”¡Y•Ñ½ÈÈ¡à°µ…É¥¸¹ä¤°Y•Ñ½ÈÈ¡à°µ…É¥¸¹ä€¬ÍÁ…¸¹ä¤°½±½È À¸ØÔ°€À¸ÔÔ°€À¸à°€À¸ÀØÔ¤°€Ä¸À¤(€€€™½È¤¥¸É…¹” ÄÄ¤è(€€€€€€€Ù…Èä€èôµ…É¥¸¹ä€¬™±½…Ğ¡¤¤€¨ÍÁ…¸¹ä€¼€ÄÀ¸À(€€€€€€€‘É…İ}±¥¹”¡Y•Ñ½ÈÈ¡µ…É¥¸¹à°ä¤°Y•Ñ½ÈÈ¡µ…É¥¸¹à€¬ÍÁ…¸¹à°ä¤°½±½È À¸ØÔ°€À¸ÔÔ°€À¸à°€À¸ÀØÔ¤°€Ä¸À¤(€€€‘É…İ}¥É±”¡Y•Ñ½ÈÈ¡Í¥é”¹à€¨€À¸Ô°Í¥é”¹ä€¨€À¸ÔÈ¤°µ¥¹˜¡Í¥é”¹à°Í¥é”¹ä¤€¨€À¸ÌÀ°½±½È À¸ĞÈ°€À¸ÈĞ°€À¸ØĞ°€À¸ÀÔÔ¤¤(€€€‘É…İ}ÍÑÉ¥¹œ¡Q¡•µ•¹™…±±‰…­}™½¹Ğ°Y•Ñ½ÈÈ ÄĞ°€ÈÀ¤°ÍÑ…ÑÕÍ}±¥¹”°!=I%i=9Q1}1%959Q}1P°€´Ä°€ÄÌ°½±½È ‰™ŒÅ”Äˆ¤¤(€€€¥˜‰…ÑÑ±”€„ô¹Õ±°è(€€€€€€€Ù…È¥‘ÌèÉÉ…ä€ô‰…ÑÑ±”¹…Ñ½ÉÌ¹­•åÌ ¤(€€€€€€€¥‘Ì¹Í½ÉÑ}ÕÍÑ½´¡™Õ¹Œ¡„èY…É¥…¹Ğ°ˆèY…É¥…¹Ğ¤€´ø‰½½°èÉ•ÑÕÉ¸™±½…Ğ¡‰…ÑÑ±”¹…Ñ½ÉÍm…t¹Á½Í¥Ñ¥½¸¹ä¤€ğ™±½…Ğ¡‰…ÑÑ±”¹…Ñ½ÉÍm‰t¹Á½Í¥Ñ¥½¸¹ä¤¤(€€€€€€€™½È¥¥¸¥‘Ìè}‘É…İ}…Ñ½È¡‰…ÑÑ±”¹…Ñ½ÉÍm¥‘t¤(€€€}‘É…İ}Õ•Ì ¤()™Õ¹Œ}‘É…İ}…Ñ½È¡…Ñ½Èè¥Ñ¥½¹…Éä¤€´øÙ½¥è(€€€Ù…È…Ñ½É}¥€èôÍÑÈ¡…Ñ½È¹•Ğ ‰¥ˆ°€ˆˆ¤¤(€€€Ù…È™½½Ğ€èô}İ½É±‘}Ñ½}±½…°¡…Ñ½È¹•Ğ ‰Á½Í¥Ñ¥½¸ˆ°Y•Ñ½ÈÈ¹iI<¤¤(€€€Ù…È‰½ÍÌ€èôÍÑÈ¡…Ñ½È¹•Ğ ‰Ñ¥•Èˆ°€ˆˆ¤¤€ôô€‰‰½ÍÌˆ(€€€Ù…Èµ½¹ÍÑ•È€èôÍÑÈ¡…Ñ½È¹•Ğ ‰Í¥‘”ˆ°€ˆˆ¤¤€ôô€‰µ½¹ÍÑ•Èˆ(€€€}ÑÉ…­}µ½Ù•µ•¹Ğ¡…Ñ½È¤(€€€Ù…ÈÁ½Í”€èôÁ½Í•}™½É}…Ñ½È¡…Ñ½É}¥¤(€€€€Œ=Ñ¡•È½µ‰…Ğ1…ˆÍ¡½½±ÌÉ•Ñ…¥¸Ñ¡•¥È•á¥ÍÑ¥¹œ…ÕÑ¡½É•±…Õ¹ Á½Í”¸(€€€€ŒA½¥Í½¸ÍÑ…åÌ¥¸…ÍĞÕ¹Ñ¥°¥ÑÌ…ÕÑ¡½É¥Ñ…Ñ¥Ù”Í­¥±±}É•±•…Í”•Ù•¹Ğ¸(€€€¥˜Í¡½½°€„ô€‰Á½¥Í½¸ˆ…¹Á½Í”€ôô€‰…ÍĞˆè(€€€€€€€™½ÈÕ”¥¸Õ•Ìè(€€€€€€€€€€€¥˜ÍÑÈ¡Õ”¹•Ğ ‰­¥¹ˆ°€ˆˆ¤¤€ôô€‰ÁÉ½©•Ñ¥±”ˆ…¹ÍÑÈ¡Õ”¹•Ğ ‰Í½ÕÉ•}…Ñ½É}¥ˆ°€ˆˆ¤¤€ôô…Ñ½É}¥p(€€€€€€€€€€€€€€€€€€€…¹Ù¥ÍÕ…±}Ñ¥µ”€øô™±½…Ğ¡Õ”¹•Ğ ‰±…Õ¹¡}…Ğˆ°%9¤¤è(€€€€€€€€€€€€€€€Á½Í”€ô€‰…ÑÑ…¬ˆ(€€€€€€€€€€€€€€€‰É•…¬(€€€Ù…È…Ñ½É}Í…±”€èô€ Ä¸ÔÀ¥˜‰½ÍÌ•±Í”€Ä¸À¤€¨€ À¸ÔÔ€¬€À¸Èä€¨é½½´¤(€€€Ù…È™…¥¹œ€èô€´Ä¸À¥˜µ½¹ÍÑ•È•±Í”€Ä¸À(€€€Ù…ÈÍ•½¹‘Ì€èôÙ¥ÍÕ…±}Ñ¥µ”(€€€Ù…ÈÍÑ…Ñ”è¥Ñ¥½¹…Éä€ô…Ñ½É}ÍÑ…Ñ•Ì¹•Ğ¡…Ñ½É}¥°íô¤(€€€Ù…ÈÁ½Í•}•±…ÁÍ•€èôµ…á˜ À¸À°Ù¥ÍÕ…±}Ñ¥µ”€´™±½…Ğ¡ÍÑ…Ñ”¹•Ğ ‰ÍÑ…ÉÑ•ˆ°Ù¥ÍÕ…±}Ñ¥µ”¤¤¤(€€€¥˜Í¡½½°€ôô€‰Á½¥Í½¸ˆ…¹¹½Ğµ½¹ÍÑ•Èè(€€€€€€€Ù…È…ÍÑ}İ¥¹‘½Ü€èôµ…á˜ À¸À°™±½…Ğ¡ÍÑ…Ñ”¹•Ğ ‰Õ¹Ñ¥°ˆ°€À¸À¤¤€´™±½…Ğ¡ÍÑ…Ñ”¹•Ğ ‰ÍÑ…ÉÑ•ˆ°Ù¥ÍÕ…±}Ñ¥µ”¤¤¤¥˜Á½Í”€ôô€‰…ÍĞˆ•±Í”€´Ä¸À(€€€€€€€¥˜¹½ĞA½¥Í½¹Ñ±…ÍXÄ¹‘É…Ü¡Í•±˜°™½½Ğ°Á½Í”°Í•½¹‘Ì°Á½Í•}•±…ÁÍ•°…Ñ½É}Í…±”°™…¥¹œ°…ÍÑ}İ¥¹‘½Ü¤…¹¹½ĞÁ½¥Í½¹}…Ñ±…Í}İ…É¹¥¹}•µ¥ÑÑ•è(€€€€€€€€€€€ÁÕÍ¡}İ…É¹¥¹œ ‰½µ‰…Ğ1…ˆè;†î¼ƒC†îeŒQÔ…Ñ±…Ì¥ÌÕ¹…Ù…¥±…‰±”ì¹¼ÍÕ‰ÍÑ¥ÑÕÑ”¡…É…Ñ•È¥ÌÉ•¹‘•É•¸ˆ¤(€€€€€€€€€€€Á½¥Í½¹}…Ñ±…Í}İ…É¹¥¹}•µ¥ÑÑ•€ôÑÉÕ”(€€€•±Í”è(€€€€€€€Ñ½ÉI¥XÈ¹É•¹‘•È¡Í•±˜°…Ñ½È°™½½Ğ°Í¡½½°°Á½Í”°Í•½¹‘Ì°…Ñ½É}Í…±”°™…¥¹œ°Á½Í•}•±…ÁÍ•¤((€€€€ŒA±…”¡•…±Ñ ‰…ÉÌ	=YÑ¡”Ñ…±±•ÍĞ¡…É…Ñ•È°¹½ĞÕ¹‘•È™••Ğ¸(€€€Ù…È¡Á}É…Ñ¥¼€èô±…µÁ˜¡™±½…Ğ¡…Ñ½È¹•Ğ ‰¡Àˆ°€À¸À¤¤€¼(€€€€€€€µ…á˜ Ä¸À°™±½…Ğ¡…Ñ½È¹•Ğ ‰µ…á}¡Àˆ°€Ä¸À¤¤¤°€À¸À°€Ä¸À¤(€€€Ù…Èİ¥‘Ñ €èô€ÌÜ¸À€¨…Ñ½É}Í…±”(€€€Ù…È‰…È€èôI•ĞÈ¡™½½Ğ€¬Y•Ñ½ÈÈ µİ¥‘Ñ €¨€À¸Ô°€´Üä¸À€¨…Ñ½É}Í…±”¤°(€€€€€€€Y•Ñ½ÈÈ¡İ¥‘Ñ °€Ğ¸À€¨…Ñ½É}Í…±”¤¤(€€€‘É…İ}É•Ğ¡‰…È°½±½È ˆÈÀÅŒÉŒˆ¤°ÑÉÕ”¤(€€€‘É…İ}É•Ğ¡I•ĞÈ¡‰…È¹Á½Í¥Ñ¥½¸°Y•Ñ½ÈÈ¡‰…È¹Í¥é”¹à€¨¡Á}É…Ñ¥¼°‰…È¹Í¥é”¹ä¤¤°(€€€€€€€½±½È ˆàå”Á…„ˆ¤¥˜¹½Ğµ½¹ÍÑ•È•±Í”½±½È ‰•ŒÜààĞˆ¤°ÑÉÕ”¤(€€€¥˜‰½ÍÌè(€€€€€€€‘É…İ}É•Ğ¡‰…È¹É½Ü È¸À¤°½±½È ‰‘™ˆØÙ„ˆ¤°™…±Í”°€Ä¸À¤(€€€€ŒA•ÉÍ¥ÍÑ•¹ĞÁ½¥Í½¹•µÍÑ…Ñ”‰…‘”½µ•Ì‘¥É•Ñ±ä™É½´±¥Ù”°½İ¹•XØ¸Ì(€€€€ŒÍÑ…ÑÕÌÍÑ…­Ì¸9¼Í¥µÕ±…Ñ•ÍÑ…¬½Õ¹Ğ½È•áÑÉ„½¸µ¡¥ĞÁ…ÉÑ¥±•Ì¸(€€€¥˜™±½…Ğ¡…Ñ½È¹•Ğ ‰¡Àˆ°€À¸À¤¤€ø€À¸Àè(€€€€€€€Ù…È±¥Ù•}ÍÑ…ÑÕÍ•Ìè¥Ñ¥½¹…Éä€ô…Ñ½È¹•Ğ ‰ÍÑ…ÑÕÍ}•™™•ÑÌˆ°íô¤(€€€€€€€Ù…ÈÉ•…±}Á½¥Í½¹}ÍÑ…­ÌèÉÉ…ä€ô±¥Ù•}ÍÑ…ÑÕÍ•Ì¹•Ğ ‰ØØÍ}Á½¥Í½¸ˆ°mt¤(€€€€€€€¥˜¹½ĞÉ•…±}Á½¥Í½¹}ÍÑ…­Ì¹¥Í}•µÁÑä ¤è(€€€€€€€€€€€Ù…ÈÍÑ…­}½Õ¹Ğ€èôÉ•…±}Á½¥Í½¹}ÍÑ…­Ì¹Í¥é” ¤(€€€€€€€€€€€Ù…È‰…‘•}Í…±”€èô±…µÁ˜¡…Ñ½É}Í…±”°€À¸ÜÔ°€Ä¸Ô¤(€€€€€€€€€€€Ù…È‰…‘•}•¹Ñ•È€èô‰…È¹Á½Í¥Ñ¥½¸€¬Y•Ñ½ÈÈ¡‰…È¹Í¥é”¹à€¬€ÄÄ¸À€¨‰…‘•}Í…±”°(€€€€€€€€€€€€€€€€È¸À€¨‰…‘•}Í…±”¤(€€€€€€€€€€€‘É…İ}¥É±”¡‰…‘•}•¹Ñ•È°€Ü¸Ô€¨‰…‘•}Í…±”°½±½È À¸ÄÈÔ°€À¸ÄÜÌ°€À¸ÄØä°€À¸äÈ¤¤(€€€€€€€€€€€‘É…İ}¥É±”¡‰…‘•}•¹Ñ•È°€Ô¸à€¨‰…‘•}Í…±”°½±½È ˆàá‘˜å˜ˆ¤¤(€€€€€€€€€€€‘É…İ}¥É±”¡‰…‘•}•¹Ñ•È€¬Y•Ñ½ÈÈ À¸À°€´È¸À€¨‰…‘•}Í…±”¤°(€€€€€€€€€€€€€€€€È¸À€¨‰…‘•}Í…±”°½±½È ‰Ù™™‰ˆˆ¤¤(€€€€€€€€€€€‘É…İ}ÍÑÉ¥¹œ¡Q¡•µ•¹™…±±‰…­}™½¹Ğ°(€€€€€€€€€€€€€€€‰…‘•}•¹Ñ•È€¬Y•Ñ½ÈÈ à¸À€¨‰…‘•}Í…±”°€Ğ¸À€¨‰…‘•}Í…±”¤°(€€€€€€€€€€€€€€€ÍÑÈ¡ÍÑ…­}½Õ¹Ğ¤°!=I%i=9Q1}1%959Q}1P°€ÈØ¸À€¨‰…‘•}Í…±”°(€€€€€€€€€€€€€€€±…µÁ¤¡É½Õ¹‘¤ ä¸À€¨‰…‘•}Í…±”¤°€ä°€ÄĞ¤°½±½È ‰‘˜İĞˆ¤¤(€€€Ù…È¹…µ”€èô…Ñ½É}¥¹É•Á±…” ‰±…‰}‘¥Í¥Á±•|ˆ°€‹AP€ˆ¤(€€€Ù…È±…‰•±}Á½Ì€èô™½½Ğ€¬Y•Ñ½ÈÈ ´ÄÔ¸À€¨…Ñ½É}Í…±”°€ÄĞ¸À€¨…Ñ½É}Í…±”¤(€€€‘É…İ}ÍÑÉ¥¹œ¡Q¡•µ•¹™…±±‰…­}™½¹Ğ°±…‰•±}Á½Ì°¹…µ”°(€€€€€€€!=I%i=9Q1}1%959Q}9QH°€ÌØ¸À€¨…Ñ½É}Í…±”°(€€€€€€€±…µÁ¤¡É½Õ¹‘¤ ÄÀ¸À€¨…Ñ½É}Í…±”¤°€ä°€ÄÜ¤°½±½È ‰”Ù‘™•˜ˆ¤¤()™Õ¹Œ}‘É…İ}Õ•Ì ¤€´øÙ½¥è(€€€€Œ!=1™É••é•Ì…±°•á¥ÍÑ¥¹œÍÁ•±°½¥µÁ…Ğ•™™•ÑÌ°¹½Ğ½¹±äÁÉ½©•Ñ¥±•Ì¸(€€€Ù…ÈÕÉÉ•¹Ñ}Ñ¥µ”€èôÉ½Õ¹‘¤¡Ù¥ÍÕ…±}Ñ¥µ”€¨€ÄÀÀÀ¸À¤(€€€Ù…È±¥Ù”èÉÉ…åm¥Ñ¥½¹…Éåt€ômt(€€€™½ÈÕ”¥¸Õ•Ìè(€€€€€€€Ù…ÈĞ€èô€À¸À(€€€€€€€¥˜ÍÑÈ¡Õ”¹•Ğ ‰­¥¹ˆ°€ˆˆ¤¤€ôô€‰ÁÉ½©•Ñ¥±”ˆ…¹Õ”¹¡…Ì ‰¥µÁ…Ñ}…Ğˆ¤è(€€€€€€€€€€€Ù…È±…Õ¹¡}…Ğ€èô™±½…Ğ¡Õ”¹•Ğ ‰±…Õ¹¡}…Ğˆ°€À¸À¤¤(€€€€€€€€€€€Ù…È¥µÁ…Ñ}…Ğ€èô™±½…Ğ¡Õ”¹•Ğ ‰¥µÁ…Ñ}…Ğˆ°±…Õ¹¡}…Ğ¤¤(€€€€€€€€€€€¥˜Ù¥ÍÕ…±}Ñ¥µ”€ø¥µÁ…Ñ}…Ğ€¬5…Á	…ÑÑ±•XÈ¹MQA}M=9Lè(€€€€€€€€€€€€€€€½¹Ñ¥¹Õ”(€€€€€€€€€€€±¥Ù”¹…ÁÁ•¹¡Õ”¤(€€€€€€€€€€€¥˜Ù¥ÍÕ…±}Ñ¥µ”€ğ±…Õ¹¡}…Ğè(€€€€€€€€€€€€€€€½¹Ñ¥¹Õ”(€€€€€€€€€€€Ğ€ô±…µÁ˜ ¡Ù¥ÍÕ…±}Ñ¥µ”€´±…Õ¹¡}…Ğ¤€¼µ…á˜ À¸ÀÀÄ°¥µÁ…Ñ}…Ğ€´±…Õ¹¡}…Ğ¤°€À¸À°€Ä¸À¤(€€€€€€€•±Í”è(€€€€€€€€€€€Ù…È…”€èô™±½…Ğ¡ÕÉÉ•¹Ñ}Ñ¥µ”€´¥¹Ğ¡Õ”¹•Ğ ‰É•…Ñ•ˆ°ÕÉÉ•¹Ñ}Ñ¥µ”¤¤¤(€€€€€€€€€€€Ù…È‘ÕÉ…Ñ¥½¸€èôµ…á˜ Ä¸À°™±½…Ğ¡Õ”¹•Ğ ‰±¥™”ˆ°€Ä¸À¤¤¤(€€€€€€€€€€€¥˜…”€øô‘ÕÉ…Ñ¥½¸è(€€€€€€€€€€€€€€€½¹Ñ¥¹Õ”(€€€€€€€€€€€±¥Ù”¹…ÁÁ•¹¡Õ”¤(€€€€€€€€€€€Ğ€ô±…µÁ˜¡…”€¼‘ÕÉ…Ñ¥½¸°€À¸À°€Ä¸À¤(€€€€€€€Ù…ÈÀ€èô}İ½É±‘}Ñ½}±½…°¡Õ”¹•Ğ ‰Á½Í¥Ñ¥½¸ˆ°Y•Ñ½ÈÈ¹iI<¤¤(€€€€€€€Ù…ÈÍÑ…ÉĞ€èô}İ½É±‘}Ñ½}±½…°¡Õ”¹•Ğ ‰™É½µ}Á½Í¥Ñ¥½¸ˆ°Õ”¹•Ğ ‰Á½Í¥Ñ¥½¸ˆ°Y•Ñ½ÈÈ¹iI<¤¤¤(€€€€€€€Ù…ÈÉ…‘¥ÕÍ}Áà€èô™±½…Ğ¡Õ”¹•Ğ ‰É…‘¥ÕÌˆ°€À¸À¤¤€¨Í¥é”¹à€¼]=I1¹Í¥é”¹à€¨é½½´(€€€€€€€Y™áXÈ¹É•¹‘•È¡Í•±˜°Õ”°À°ÍÑ…ÉĞ°Ğ°É…‘¥ÕÍ}Áà°é½½´¤(€€€€€€€Ù…È±…‰•°€èôÍÑÈ¡Õ”¹•Ğ ‰Ñ•áĞˆ°€ˆˆ¤¤(€€€€€€€¥˜±…‰•°¹¥Í}•µÁÑä ¤è(€€€€€€€€€€€½¹Ñ¥¹Õ”(€€€€€€€Ù…ÈŒè½±½È€ôÕ”¹•Ğ ‰½±½Èˆ°½±½È¹]!%Q¤(€€€€€€€Œ¹„€¨ô€Ä¸À€´Ğ(€€€€€€€€Œ=¹±ä½µµ¥ÑÑ•‘…µ…”½¡•…°½ÍÑ…ÑÕÌÙ…±Õ•Ì•¹Ñ•È™±½…Ñ¥¹œÑ•áĞ¸(€€€€€€€Ù…È±…‰•±}Á½Ì€èôÀ€¬Y•Ñ½ÈÈ à¸À€¨é½½´°€´Äà¸À€¨é½½´€´€ÈĞ¸À€¨é½½´€¨Ğ¤(€€€€€€€‘É…İ}ÍÑÉ¥¹œ¡Q¡•µ•¹™…±±‰…­}™½¹Ğ°±…‰•±}Á½Ì°±…‰•°°(€€€€€€€€€€€!=I%i=9Q1}1%959Q}1P°€ÄäÀ¸À°(€€€€€€€€€€€±…µÁ¤¡É½Õ¹‘¤ ÄÈ¸À€¬é½½´€¨€À¸ÜÔ¤°€ÄÈ°€ÄÜ¤°Œ¤(€€€Õ•Ì€ô±¥Ù”()™Õ¹ŒÍ•Ñ}é½½´¡Ù…±Õ”è™±½…Ğ¤€´øÙ½¥è(€€€é½½´€ô±…µÁ˜¡Ù…±Õ”°€Ä¸À°€Ø¸À¤(€€€ÅÕ•Õ•}É•‘É…Ü ¤(

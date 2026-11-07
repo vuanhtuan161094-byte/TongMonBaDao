@@ -30,6 +30,8 @@ var zoom_option: OptionButton
 var active_slots: Array[OptionButton] = []
 var ultimate_slot: OptionButton
 var skill_preview_option: OptionButton
+var advanced_loadout: VBoxContainer
+var advanced_loadout_button: Button
 var poison_catalog_heading: Label
 var poison_catalog_option: OptionButton
 var poison_skill_detail_label: Label
@@ -119,10 +121,10 @@ func _build_ui() -> void:
     margin.add_theme_constant_override("margin_bottom", 14)
     add_child(margin)
     var root := VBoxContainer.new()
-    root.add_theme_constant_override("separation", 10)
+    root.add_theme_constant_override("separation", 8)
     margin.add_child(root)
     var header := HBoxContainer.new()
-    header.custom_minimum_size.y = 52
+    header.custom_minimum_size.y = 46
     root.add_child(header)
     var title := Label.new()
     title.text = "TÔNG MÔN BÁ ĐẠO   /   COMBAT LAB"
@@ -139,7 +141,7 @@ func _build_ui() -> void:
     body.size_flags_vertical = Control.SIZE_EXPAND_FILL
     body.add_theme_constant_override("separation", 12)
     root.add_child(body)
-    var left_panel := _make_panel(286)
+    var left_panel := _make_panel(300)
     body.add_child(left_panel)
     var controls_scroll := ScrollContainer.new()
     controls_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -171,25 +173,32 @@ func _build_ui() -> void:
     party_count.value = 3
     party_count.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     count_row.add_child(party_count)
-    _label(controls, "4 KỸ NĂNG CHỦ ĐỘNG", 12, Color("b9a9cf"))
+    advanced_loadout_button = _button(controls, "LOADOUT CHI TIẾT  ▸", Color("30283b"))
+    advanced_loadout_button.pressed.connect(_toggle_advanced_loadout)
+    advanced_loadout = VBoxContainer.new()
+    advanced_loadout.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+    advanced_loadout.add_theme_constant_override("separation", 5)
+    advanced_loadout.visible = false
+    controls.add_child(advanced_loadout)
+    _label(advanced_loadout, "4 KỸ NĂNG CHỦ ĐỘNG", 12, Color("b9a9cf"))
     for index in range(4):
         var slot := OptionButton.new()
         slot.size_flags_horizontal = Control.SIZE_EXPAND_FILL
         slot.tooltip_text = "Kỹ năng chủ động %d/4" % (index + 1)
-        controls.add_child(slot)
+        advanced_loadout.add_child(slot)
         slot.item_selected.connect(func(_i: int): _refresh_preview_choice())
         active_slots.append(slot)
-    _label(controls, "TUYỆT KỸ", 12, Color("b9a9cf"))
+    _label(advanced_loadout, "TUYỆT KỸ", 12, Color("b9a9cf"))
     ultimate_slot = OptionButton.new()
     ultimate_slot.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-    controls.add_child(ultimate_slot)
+    advanced_loadout.add_child(ultimate_slot)
     ultimate_slot.item_selected.connect(func(_i: int): _refresh_preview_choice())
-    _label(controls, "THỬ TỪNG CHIÊU · DỮ LIỆU THẬT", 12, Color("c4b3e1"))
+    _label(advanced_loadout, "THỬ TỪNG CHIÊU · DỮ LIỆU THẬT", 12, Color("c4b3e1"))
     skill_preview_option = OptionButton.new()
     skill_preview_option.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-    controls.add_child(skill_preview_option)
+    advanced_loadout.add_child(skill_preview_option)
     skill_preview_option.item_selected.connect(_on_preview_skill_selected)
-    var cast_preview_button := _button(controls, "THỬ CHIÊU (HOLD)", Color("4a6073"))
+    var cast_preview_button := _button(advanced_loadout, "THỬ CHIÊU (HOLD)", Color("4a6073"))
     cast_preview_button.tooltip_text = "Tạm dừng AUTO, thử đúng kỹ năng đã học/trang bị. Không bỏ qua hồi chiêu."
     cast_preview_button.pressed.connect(_preview_selected_skill)
     poison_catalog_heading = _label(controls, "DANH MỤC ĐỘC TU · CẢNH GIỚI / NHÁNH", 12, Color("c4b3e1"))
@@ -236,7 +245,7 @@ func _build_ui() -> void:
     arena.set_script(ArenaScript)
     arena.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     arena.size_flags_vertical = Control.SIZE_FILL
-    arena.custom_minimum_size = Vector2(630, 380)
+    arena.custom_minimum_size = Vector2(630, 420)
     center_column.add_child(arena)
     var buttons := HBoxContainer.new()
     buttons.add_theme_constant_override("separation", 8)
@@ -257,30 +266,30 @@ func _build_ui() -> void:
     state_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     buttons.add_child(state_label)
 
-    var right_panel := _make_panel(294)
-    body.add_child(right_panel)
-    var right := VBoxContainer.new()
-    right.size_flags_vertical = Control.SIZE_EXPAND_FILL
-    right.add_theme_constant_override("separation", 7)
-    right_panel.add_child(right)
-    mode_label = _label(right, "MÔ PHỎNG V6.3 · LAB_ONLY", 12, Color("bd9fff"))
-    _label(right, "ĐỘI HÌNH / HP", 14, Color("d8cce9"))
-    roster_label = _label(right, "", 12, Color("e5ddeb"))
-    roster_label.custom_minimum_size.y = 155
-    var sep := HSeparator.new(); right.add_child(sep)
-    _label(right, "STAT BREAKDOWN · CONSUMER V2", 13, Color("d8cce9"))
-    stats_label = _label(right, "", 11, Color("b9aec7"))
-    stats_label.custom_minimum_size.y = 136
-    var sep2 := HSeparator.new(); right.add_child(sep2)
-    _label(right, "ĐỘC TU · SKILL / STACK THẬT", 13, Color("d8cce9"))
-    poison_current_skill_label = _label(right, "Skill: —", 11, Color("d3c2e4"))
-    poison_current_skill_label.custom_minimum_size.y = 42
-    poison_stack_label = _label(right, "Độc trên quái: 0", 11, Color("a5f28e"))
-    var sep3 := HSeparator.new(); right.add_child(sep3)
-    _label(right, "SỰ KIỆN CHIẾN ĐẤU", 13, Color("d8cce9"))
-    events_label = _label(right, "", 11, Color("c8bed5"))
-    events_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
-    events_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+    var hud_panel := _make_panel(0)
+    hud_panel.custom_minimum_size.y = 100
+    hud_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+    center_column.add_child(hud_panel)
+    var hud := VBoxContainer.new()
+    hud.add_theme_constant_override("separation", 2)
+    hud_panel.add_child(hud)
+    var hud_top := HBoxContainer.new()
+    hud_top.add_theme_constant_override("separation", 10)
+    hud.add_child(hud_top)
+    mode_label = _label(hud_top, "V6.3 · LAB_ONLY", 11, Color("bd9fff"))
+    roster_label = _label(hud, "", 11, Color("e5ddeb"))
+    roster_label.custom_minimum_size.y = 26
+    roster_label.clip_text = false
+    roster_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+    stats_label = _label(hud, "", 10, Color("b9aec7"))
+    stats_label.clip_text = false
+    poison_current_skill_label = _label(hud_top, "Skill: —", 11, Color("d3c2e4"))
+    poison_current_skill_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+    poison_stack_label = _label(hud_top, "Độc: 0", 11, Color("a5f28e"))
+    events_label = _label(hud, "", 9, Color("c8bed5"))
+    events_label.clip_text = true
+    events_label.autowrap_mode = TextServer.AUTOWRAP_OFF
+    events_label.custom_minimum_size.y = 12
     _apply_theme()
 
 func _make_panel(width: float) -> PanelContainer:
@@ -298,6 +307,12 @@ func _make_panel(width: float) -> PanelContainer:
     style.content_margin_bottom = 10
     panel.add_theme_stylebox_override("panel", style)
     return panel
+
+func _toggle_advanced_loadout() -> void:
+    if advanced_loadout == null or advanced_loadout_button == null:
+        return
+    advanced_loadout.visible = not advanced_loadout.visible
+    advanced_loadout_button.text = "LOADOUT CHI TIẾT  ▾" if advanced_loadout.visible else "LOADOUT CHI TIẾT  ▸"
 
 func _label(parent: Node, value: String, font_size: int = 12, color: Color = Color("e5ddeb")) -> Label:
     var label := Label.new()
@@ -949,6 +964,7 @@ func _build_lab_monsters(enemy_kind: String, boss_id: String) -> Array:
 
 func _set_error(message: String) -> void:
     state_label.text = "LỖI FIXTURE"
+    state_label.tooltip_text = message
     if events_label != null: events_label.text = message
     if arena != null: arena.call("set_status", "LAB_ONLY  ·  cấu hình chưa hợp lệ")
 
@@ -989,7 +1005,7 @@ func _refresh_hud() -> void:
         var maximum := float(actor.get("max_hp", 1.0))
         var tag := "ĐT" if str(actor.get("side", "")) == "disciple" else ("BOSS" if str(actor.get("tier", "")) == "boss" else "QUÁI")
         roster.append("%s  %s  %d / %d HP" % [tag, str(id).replace("lab_disciple_", "#"), roundi(current), roundi(maximum)])
-    roster_label.text = "\n".join(roster)
+    roster_label.text = "   ·   ".join(roster)
     if not fixture_actors.is_empty():
         var stats := CombatLabRosterAdapter.stat_breakdown(fixture_actors[0])
         var fixture_id := str(fixture_actors[0].get("id", ""))
@@ -1005,11 +1021,11 @@ func _refresh_hud() -> void:
         var ready: Dictionary = live_actor.get("v63_skill_ready", {})
         for skill_id in ready:
             if float(ready[skill_id]) > battle.now: cooldown_count += 1
-        stats_label.text = "HP %s  ·  ATK %s  ·  DEF %s\nBạo kích %.1f%%  ·  Hút sinh lực %.1f%%\nTốc niệm %.2f  ·  Hồi chiêu %.2f\nHiệu ứng %.2f\nĐang niệm: %s\nKỹ năng hồi chiêu: %d" % [
+        stats_label.text = "HP %s  ·  ATK %s  ·  DEF %s  ·  Crit %.1f%%  ·  Hút sinh lực %.1f%%  ·  Niệm %.2f  ·  CD %.2f" % [
             _fmt(float(stats.max_hp)), _fmt(float(stats.attack)), _fmt(float(stats.defense)),
             float(stats.crit_chance) * 100.0, float(stats.lifesteal) * 100.0,
-            float(stats.cast_speed), float(stats.cooldown_recovery), float(stats.effect_hit), cast_state, cooldown_count]
-    events_label.text = "\n".join(event_log)
+            float(stats.cast_speed), float(stats.cooldown_recovery)]
+    events_label.text = event_log.back() if not event_log.is_empty() else ""
     _refresh_poison_combat_summary()
 
 func _refresh_poison_combat_summary() -> void:
@@ -1029,7 +1045,7 @@ func _refresh_poison_combat_summary() -> void:
         var branch := str(definition.get("branch", ""))
         var shape := str(definition.get("shape", "unspecified")).replace("_", " ")
         var prefix := "Đang đánh" if not last_combat_skill_id.is_empty() else "Đang xem"
-        poison_current_skill_label.text = "%s: %s\n%s · %s · %s" % [
+        poison_current_skill_label.text = "%s: %s · %s · %s · %s" % [
             prefix, str(definition.get("name", skill_id)), _generation_label(generation), _branch_label(branch), shape]
     var stack_rows := PackedStringArray()
     if battle != null:
