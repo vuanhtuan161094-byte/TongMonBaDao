@@ -79,6 +79,10 @@ func _run() -> void:
         _fail("cannot buy a real Mine upgrade component")
         return
     var stones_after_buy := state.sect.spirit_stones
+    var daily_report := economy.daily_market_cashflow(state)
+    if int(daily_report.get("income",-1)) != earned or int(daily_report.get("purchases",-1)) != board_cost:
+        _fail("Hall daily cashflow does not reconcile exact NPC sale/purchase receipts")
+        return
     if stones_after_buy != initial_stones+earned-board_cost:
         _fail("Tầm Mạch Bàn purchase did not cost genuine Stones")
         return
