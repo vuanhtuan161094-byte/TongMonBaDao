@@ -5451,10 +5451,14 @@ func _main_hall_operation_text() -> String:
     ]
 
 func _build_alchemy_management() -> void:
-    _build_work_management(WorkforceSystem.PROF_ALCHEMY, &"alchemy_crew", "Đội Luyện Đan", "Luyện đan")
     var hall := BuildingSystem.new().primary_building(state, BuildingSystem.TYPE_ALCHEMY_HALL)
     if hall == null:
+        _add_management_section_label("LUYỆN ĐAN ĐIỆN CHƯA SẴN SÀNG")
         return
+    # Backend already had paid upgrade authority; the player must actually
+    # be able to reach it before the recipe and workforce scroll area.
+    _build_worksite_upgrade_control(hall)
+    _build_work_management(WorkforceSystem.PROF_ALCHEMY, &"alchemy_crew", "Đội Luyện Đan", "Luyện đan")
     _add_management_section_label("ĐAN PHƯƠNG · HỒI XUÂN / TỤ KHÍ")
     var enabled := bool(hall.production_state.get("recipe_enabled", true))
     var toggle := Button.new()
