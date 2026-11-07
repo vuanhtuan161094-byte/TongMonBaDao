@@ -439,6 +439,7 @@ func _build_top_bar() -> void:
     var top := Panel.new()
     top.position = Vector2.ZERO
     top.size = Vector2(1280, 72)
+    top.z_index = 90 # Keep the map actor layer from drawing over the player HUD.
     top.add_theme_stylebox_override("panel", _style(JADE_DARK, Color(0.06, 0.10, 0.08, 1.0), 3, 0))
     add_child(top)
 
@@ -467,6 +468,7 @@ func _build_bottom_bar() -> void:
     bottom.name = "PlayerBottomBar"
     bottom.position = Vector2(0, 642)
     bottom.size = Vector2(1280, 78)
+    bottom.z_index = 90 # Actors are added after the HUD; render the navigation bar above them.
     bottom.add_theme_stylebox_override("panel", _style(Color(0.88, 0.82, 0.66, 0.98), INK, 2, 0))
     add_child(bottom)
 
