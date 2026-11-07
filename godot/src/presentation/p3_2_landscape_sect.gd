@@ -5884,7 +5884,12 @@ func _resource_job_member_status(disciple: DiscipleState, profession_id: StringN
     if state.sect.economy_a_enabled:
         var timer := BuildingSystem.new().active_resource_timer_for_worker(state,disciple.id)
         if not timer.is_empty() and StringName(timer.get("profession_id","")) == profession_id:
-            return "Đang %s ×%d · còn %d phút mô phỏng" % [work_label,maxi(int(timer.get("output_quantity",output_quantity)),0),maxi(int(timer.get("finish_tick",state.tick))-state.tick,0)]
+            var timer_resource := StringName(timer.get("resource_id", ""))
+            return "Còn %d phút mô phỏng · %s ×%d %s" % [
+                maxi(int(timer.get("finish_tick",state.tick))-state.tick,0),
+                work_label, maxi(int(timer.get("output_quantity",output_quantity)),0),
+                ResourceRegistry.new().display_name(timer_resource)
+            ]
     if not has_active_slot:
         return "Chờ chỗ hoạt động"
     var cycle: Dictionary = disciple.work_cycle_state
@@ -5937,6 +5942,9 @@ func _mine_operation_text() -> String:
     var batches := 0 if mine == null else maxi(int(mine.metrics.get("production_batches",0)),0)
     var units := 0 if mine == null else maxi(int(mine.metrics.get("units_produced",0)),0)
 
+    var selected_ore := building_system.mine_selected_ore(mine)
+    var selected_name := ResourceRegistry.new().display_name(selected_ore)
+    var planned_batch := building_system.mine_ore_batch_units(mine, selected_ore) if mine != null else 0
     var upgrade_text := "Ổn định"
     if mine != null and mine.is_upgrading():
         upgrade_text = "Nâng Lv%d→%d · %.0f/%.0f" % [
@@ -5947,9 +5955,10 @@ func _mine_operation_text() -> String:
     return (
         "SẢN XUẤT\n"
         + "Mỏ Lv%d · %s\n"
+        + "Khoáng đã chọn: %s · tồn (dùng): %s\n"
         + "Thanh Thiết tồn (dùng): %s\n"
-        + "Mỗi lượt khai thác dự kiến: ×%d Thanh Thiết\n"
-        + "Thực nhập Linh Kho: %d Thanh Thiết · %d lượt\n"
+        + "Mỗi lượt khai thác dự kiến: ×%d %s\n"
+        + "Tổng sản lượng Mỏ: %d đơn vị · %d lượt\n"
         + "Chỗ hoạt động: %d/%d\n"
         + "Đang chờ slot Mỏ: %d\n"
         + "Đang khai khoáng: %d\n"
@@ -5959,8 +5968,10 @@ func _mine_operation_text() -> String:
     ) % [
         0 if mine == null else mine.level,
         upgrade_text,
+        selected_name,
+        _warehouse_pair(selected_ore),
         _warehouse_pair(&"thanh_thiet"),
-        0 if mine == null else building_system.resource_job_batch_units(mine),
+        planned_batch,selected_name,
         units,batches,
         active_ids.size(),
         slots,
