@@ -4685,9 +4685,17 @@ func _add_spirit_field_plot_cards(building: BuildingState) -> void:
         var state_text := "Chờ thu hoạch" if ready else ("Còn %d phút mô phỏng" % remaining if growing else "Sẵn sàng gieo")
         var detail := Label.new()
         detail.text = "%s · %s%s%s" % [worker_name, state_text, yield_text, " · Kho: %d" % crop_stock if crop_id != &"" else ""]
+        if growing:
+            if plot.has("profession_xp_gain"):
+                detail.text += " · +%.2f EXP khi thu hoạch" % maxf(float(plot.get("profession_xp_gain",0.0)),0.0)
+            else:
+                detail.tooltip_text = "Mẻ cũ đã nhận EXP nghề ở thời điểm gieo, không cộng thêm khi thu hoạch."
         detail.tooltip_text = "EXP Linh Thực chỉ cộng sau khi thu hoạch nhập Kho thành công. Lượt này có sản lượng cơ bản ×%d / %d phút mô phỏng, bình quân %.2f đơn vị/phút trước thưởng may mắn." % [
             yield_count,duration,float(yield_count)/float(duration)
-        ] if growing else "Ô trống không sản xuất và không cộng EXP."
+        ] if growing and plot.has("profession_xp_gain") else (
+            "Mẻ save cũ đã được cộng EXP lúc gieo, không nhận lần hai." if growing else
+            "Ô trống không sản xuất và không cộng EXP."
+        )
         detail.add_theme_font_size_override("font_size", 10)
         detail.add_theme_color_override("font_color", INK)
         detail.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
