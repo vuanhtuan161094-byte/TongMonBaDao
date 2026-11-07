@@ -3749,13 +3749,14 @@ func _build_worksite_upgrade_control(building: BuildingState) -> void:
         return
     var cost := system.upgrade_cost(building)
     var check := system.can_start_upgrade(state, building.id)
-    info.text = "Lv%d → Lv%d · Linh Thạch %d/%d · cần %.0f điểm công việc (%s)." % [
-        building.level,
-        building.level + 1,
-        state.sect.spirit_stones,
-        int(cost.get("spirit_stones", 0)),
-        system.upgrade_required_work(building), _upgrade_eta_text(building, true)
+    info.text = "Lv%d→%d · Gỗ %d/%d · Thiết %d/%d · Linh Thạch %d/%d · %.0f phút mô phỏng." % [
+        building.level, building.level + 1,
+        _warehouse_available(StringName(BuildingSystem.MATERIAL_WOOD)), int(cost.get(BuildingSystem.MATERIAL_WOOD, 0)),
+        _warehouse_available(StringName(BuildingSystem.MATERIAL_ORE)), int(cost.get(BuildingSystem.MATERIAL_ORE, 0)),
+        state.sect.spirit_stones, int(cost.get("spirit_stones", 0)),
+        system.upgrade_required_work(building)
     ]
+    info.tooltip_text = "Vật liệu tiêu thụ một lần lúc bắt đầu; chờ đủ phút mô phỏng mới lên cấp."
     button.text = "Nâng cấp %s lên Lv%d" % [display, building.level + 1]
     button.disabled = not bool(check.get("ok", false))
     if button.disabled:
@@ -4554,7 +4555,8 @@ func _add_resource_timer_cards(building: BuildingState) -> void:
         stock_line.add_theme_color_override("font_color", JADE_DARK)
         column.add_child(stock_line)
         var eta := Label.new()
-        eta.text = "Chờ nhập Kho · %s" % worker_name if remaining == 0 else "Còn %d phút mô phỏng · %s" % [remaining, worker_name]
+        eta.text = ("Chờ nhập Kho · %s" if remaining == 0 else "Còn %d phút mô phỏng · %s" % remaining) + (" · +%.1f EXP nghề khi nhập kho" % maxf(float(job.get("profession_xp_gain", 0.0)), 0.0))
+        eta.tooltip_text = "EXP nghề thực tế đã chốt trong mẻ này; chưa cộng cho đến khi nhập kho thành công. Người phụ trách: %s" % worker_name
         eta.add_theme_font_size_override("font_size", 11)
         eta.add_theme_color_override("font_color", INK)
         column.add_child(eta)
@@ -4607,10 +4609,11 @@ func _add_spirit_field_plot_cards(building: BuildingState) -> void:
         column.add_child(progress_bar)
         var remaining := maxi(0, finish_tick - state.tick) if growing else 0
         var crop_stock := _warehouse_available(crop_id) if crop_id != &"" else 0
-        var yield_text := " · mẻ cơ bản ×%d (trước hệ số thu hoạch)" % yield_count if growing else ""
-        var state_text := "Chờ thu hoạch" if ready else ("Đang sinh trưởng · còn %d phút mô phỏng" % remaining if growing else "Sẵn sàng gieo")
+        var yield_text := " · dự kiến ×%d (chưa tính may mắn)" % yield_count if growing else ""
+        var state_text := "Chờ thu hoạch" if ready else ("Còn %d phút mô phỏng" % remaining if growing else "Sẵn sàng gieo")
         var detail := Label.new()
         detail.text = "%s · %s%s%s" % [worker_name, state_text, yield_text, " · Kho: %d" % crop_stock if crop_id != &"" else ""]
+        detail.tooltip_text = "EXP Linh Thực được cộng khi gieo thành công, không phải khi thu hoạch. Khi ô trống chưa có EXP."
         detail.add_theme_font_size_override("font_size", 10)
         detail.add_theme_color_override("font_color", INK)
         detail.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -4667,6 +4670,10 @@ func _building_upgrade_reason(result: Dictionary) -> String:
             return "Chưa có công trình nâng cấp hợp lệ."
         "upgrade_content_pending":
             return "Nội dung nâng cấp chưa được xác lập."
+        "main_hall_level_gate":
+            return "Đại Điện hiện chỉ cho phép công trình nâng tới Lv%d." % int(result.get("maximum", 0))
+        "milestone_component_not_defined":
+            return "Chưa có vật phẩm mở mốc Lv%d." % int(result.get("target_level", 0))
         "":
             return "Sẵn sàng."
         _:
@@ -5153,15 +5160,27 @@ func _new_management_row(disciple: DiscipleState) -> HBoxContainer:
             profession_id = WorkforceSystem.PROF_ALCHEMY
         SectMapPresentation.DEST_FORGE:
             profession_id = WorkforceSystem.PROF_FORGING
-    var profession_level := workforce.profession_level_for_state(state, disciple, profession_id)
+    var progress_info := workforce.profession_xp_progress(state, disciple, profession_id)
+    var profession_level := int(progress_info.get("level", 0))
+    var expected_xp := workforce.expected_profession_xp_gain(state, disciple, profession_id)
     var skill := Label.new()
     skill.name = "WorkforceProfessionLevel"
-    skill.text = "Lv%d" % profession_level
-    skill.custom_minimum_size = Vector2(34, 42)
+    skill.text = "Lv%d\n%s" % [
+        profession_level,
+        "EXP theo cây" if profession_id == WorkforceSystem.PROF_HERBALISM else "+%.1f XP" % expected_xp
+    ]
+    skill.custom_minimum_size = Vector2(72, 42)
     skill.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-    skill.add_theme_font_size_override("font_size", 13)
+    skill.add_theme_font_size_override("font_size", 11)
     skill.add_theme_color_override("font_color", JADE_DARK)
-    skill.tooltip_text = "Cấp nghề thật · Mỏ Lv%d · Lâm Lv%d · Điền Lv%d · Đan Lv%d" % [
+    var threshold := float(progress_info.get("next_threshold", -1.0))
+    var progress_label := "Đã đạt cấp nghề tối đa." if threshold < 0.0 else "%.1f/%.0f EXP · còn %.1f EXP lên Lv%d" % [
+        float(progress_info.get("xp", 0.0)), threshold,
+        float(progress_info.get("remaining_xp", 0.0)), profession_level + 1
+    ]
+    skill.tooltip_text = "Cấp nghề Lv%d · %s · %s\nMỏ Lv%d · Lâm Lv%d · Điền Lv%d · Đan Lv%d" % [
+        profession_level, progress_label,
+        "EXP theo giống gieo (+hệ số)" if profession_id == WorkforceSystem.PROF_HERBALISM else "+%.1f EXP sau khi hoàn tất lượt thật" % expected_xp,
         workforce.profession_level_for_state(state, disciple, WorkforceSystem.PROF_MINING),
         workforce.profession_level_for_state(state, disciple, WorkforceSystem.PROF_FORESTRY),
         workforce.profession_level_for_state(state, disciple, WorkforceSystem.PROF_HERBALISM),
