@@ -4989,6 +4989,14 @@ func _build_spirit_field_management() -> void:
     policy_summary.add_theme_font_size_override("font_size", 10)
     policy_summary.add_theme_color_override("font_color", JADE_DARK)
     building_management_container.add_child(policy_summary)
+    var xp_note := Label.new()
+    xp_note.name = "FieldProfessionXpGuide"
+    xp_note.text = "EXP nghề khi gieo (chưa nhân hệ số): Linh Cốc +8 · Thanh Linh Thảo +10 · Tử Vân Thảo +16 (Lv10)."
+    xp_note.tooltip_text = "Đây là EXP Linh Thực cơ bản, không phải Tu Vi. EXP được cộng khi gieo thành công; mỗi đệ tử có hệ số học nghề riêng. Tử Vân Thảo cần Linh Điền Lv10."
+    xp_note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+    xp_note.add_theme_font_size_override("font_size", 10)
+    xp_note.add_theme_color_override("font_color", JADE_DARK)
+    building_management_container.add_child(xp_note)
 
     _add_management_section_label("PHÂN CÔNG & GIEO TRỒNG")
     var active_ids := buildings.active_worker_ids(state, field)
@@ -5165,11 +5173,22 @@ func _new_management_row(disciple: DiscipleState) -> HBoxContainer:
     var progress_info := workforce.profession_xp_progress(state, disciple, profession_id)
     var profession_level := int(progress_info.get("level", 0))
     var expected_xp := workforce.expected_profession_xp_gain(state, disciple, profession_id)
+    var crop_xp_known := false
+    if profession_id == WorkforceSystem.PROF_HERBALISM:
+        var field_preview := BuildingSystem.new().primary_building(state, BuildingSystem.TYPE_SPIRIT_FIELD)
+        if field_preview != null and StringName(field_preview.production_state.get("policy_mode","")) == BuildingSystem.FIELD_POLICY_FIXED:
+            var fixed_crop := StringName(field_preview.production_state.get("fixed_crop_id",""))
+            if spirit_crop_registry.has(fixed_crop):
+                expected_xp = workforce.expected_profession_xp_gain(
+                    state, disciple, profession_id, spirit_crop_registry.base_work_xp(fixed_crop),
+                    BuildingSystem.new().spirit_field_xp_factor(field_preview)
+                )
+                crop_xp_known = true
     var skill := Label.new()
     skill.name = "WorkforceProfessionLevel"
     skill.text = "Lv%d\n%s" % [
         profession_level,
-        "EXP theo cây" if profession_id == WorkforceSystem.PROF_HERBALISM else "+%.1f XP" % expected_xp
+        "EXP theo cây" if profession_id == WorkforceSystem.PROF_HERBALISM and not crop_xp_known else "≈+%.2f XP" % expected_xp
     ]
     skill.custom_minimum_size = Vector2(72, 42)
     skill.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
@@ -5182,7 +5201,7 @@ func _new_management_row(disciple: DiscipleState) -> HBoxContainer:
     ]
     skill.tooltip_text = "Cấp nghề Lv%d · %s · %s\nMỏ Lv%d · Lâm Lv%d · Điền Lv%d · Đan Lv%d" % [
         profession_level, progress_label,
-        "EXP theo giống gieo (+hệ số)" if profession_id == WorkforceSystem.PROF_HERBALISM else "+%.1f EXP sau khi hoàn tất lượt thật" % expected_xp,
+        "EXP theo giống gieo (+hệ số); nhận lúc gieo" if profession_id == WorkforceSystem.PROF_HERBALISM and not crop_xp_known else "≈+%.2f EXP dự kiến, khi ghi nhận lượt thật" % expected_xp,
         workforce.profession_level_for_state(state, disciple, WorkforceSystem.PROF_MINING),
         workforce.profession_level_for_state(state, disciple, WorkforceSystem.PROF_FORESTRY),
         workforce.profession_level_for_state(state, disciple, WorkforceSystem.PROF_HERBALISM),
