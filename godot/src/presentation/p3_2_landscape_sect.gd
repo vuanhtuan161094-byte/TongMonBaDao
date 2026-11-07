@@ -3991,27 +3991,40 @@ func _economy_a_cycle_spend_limit_from_ui() -> void:
 
 func _build_economy_a_market_controls() -> void:
     if not state.sect.economy_a_enabled:
+        _add_management_section_label("PHƯỜNG THỊ · CHƯA KÍCH HOẠT")
+        var enable := Button.new()
+        enable.name = "EconomyA_EnableFromWarehouse"
+        enable.text = "Mở Phường Thị thật · Bán nguyên liệu lấy Linh Thạch"
+        enable.tooltip_text = "Áp dụng cho save cũ chưa tham gia kinh tế nguyên liệu; không cấp tài nguyên miễn phí."
+        enable.custom_minimum_size = Vector2(384,38)
+        enable.pressed.connect(_economy_a_enable_from_ui)
+        building_management_container.add_child(enable)
         return
     var economy := EconomySystem.new()
     economy.sync_market_day(state)
     _add_management_section_label("PHƯỜNG THỊ · GIAO DỊCH NGUYÊN LIỆU")
     var quota := Label.new()
-    quota.text = "Hạn mức bán %d · mua %d sản phẩm/ngày." % [economy.market_remaining(state),economy.market_buy_remaining(state)]
+    quota.text = "Tông Môn có %d LT · Có thể bán %d và mua %d đơn vị hôm nay." % [
+        state.sect.spirit_stones,economy.market_remaining(state),economy.market_buy_remaining(state)
+    ]
+    quota.tooltip_text = "Kiếm LT: Mỏ/Linh Lâm/Linh Điền sản xuất → nhập Linh Kho → bán nguyên liệu ở đây. Bán chỉ trừ kho đủ, không bán hàng đang bị khóa dự trữ. Lượt giới hạn theo ngày mô phỏng (1.440 phút)."
     quota.custom_minimum_size = Vector2(384,28)
     building_management_container.add_child(quota)
-    for raw_id in ["linh_moc","thanh_thiet","thanh_linh_thao","linh_coc"]:
+    for raw_id in EconomySystem.V2_MARKET_CATALOG:
         var resource_id := StringName(raw_id)
         var available := WarehouseSystem.new().available_quantity(state,resource_id)
-        var price := int(ResourceRegistry.new().definition(resource_id).get("market_value",0))
-        var max_sale := int(state.sect.economy_a_policy.get("market_max_per_sale",5))
-        var sellable := mini(available,mini(max_sale,economy.market_remaining(state)))
-        var row := Button.new()
-        row.name = "EconomyA_Sell_%s" % raw_id
-        row.text = "Bán %s ×%d · +%d LT" % [ResourceRegistry.new().display_name(resource_id),sellable,price*sellable]
-        row.custom_minimum_size = Vector2(384,36)
-        row.disabled = sellable <= 0 or price <= 0
-        row.pressed.connect(Callable(self,"_economy_a_sell_from_ui").bind(resource_id,sellable))
-        building_management_container.add_child(row)
+        var price := economy.market_sell_price(resource_id)
+        if price > 0:
+            var max_sale := int(state.sect.economy_a_policy.get("market_max_per_sale",5))
+            var sellable := mini(available,mini(max_sale,economy.market_remaining(state)))
+            var row := Button.new()
+            row.name = "EconomyA_Sell_%s" % raw_id
+            row.text = "Bán %s ×%d · +%d LT" % [ResourceRegistry.new().display_name(resource_id),sellable,price*sellable]
+            row.custom_minimum_size = Vector2(384,36)
+            row.disabled = sellable <= 0
+            row.tooltip_text = "Bán khoáng/dược liệu có thật. Người chơi nhận đúng %d LT/đơn vị, tồn kho giảm khi giao dịch thành công." % price
+            row.pressed.connect(Callable(self,"_economy_a_sell_from_ui").bind(resource_id,sellable))
+            building_management_container.add_child(row)
         var merchant_stock := int(state.sect.economy_a_market_stock.get(raw_id,0))
         var buy_price := economy.market_purchase_price(state,resource_id)
         var buyable := mini(merchant_stock,mini(int(state.sect.economy_a_policy.get("market_max_per_buy",5)),economy.market_buy_remaining(state)))
@@ -4019,6 +4032,8 @@ func _build_economy_a_market_controls() -> void:
         var buy_row := Button.new()
         buy_row.name = "EconomyA_Buy_%s" % raw_id
         buy_row.text = "Mua %s ×%d · -%d LT · Chợ còn %d" % [ResourceRegistry.new().display_name(resource_id),buyable,buy_price*buyable,merchant_stock]
+        if raw_id == "tam_mach_ban":
+            buy_row.tooltip_text = "Tầm Mạch Bàn dùng để mở mốc Mỏ Lv10/20/30/50/75/100; nguồn NPC 1 chiếc/ngày mô phỏng, phải trả Linh Thạch thực, không có quà miễn phí."
         buy_row.custom_minimum_size = Vector2(384,36)
         buy_row.disabled = buyable <= 0 or buy_price <= 0 or state.sect.spirit_stones < buy_price*buyable
         buy_row.pressed.connect(Callable(self,"_economy_a_buy_from_ui").bind(resource_id,buyable))
