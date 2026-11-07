@@ -3788,13 +3788,14 @@ func _rebuild_building_management_controls() -> void:
             _build_economy_a_market_controls()
             _build_equipment_inventory_controls()
         SectMapPresentation.DEST_MINE:
-            _build_work_management(WorkforceSystem.PROF_MINING, &"mining_crew", "Đội Khai Khoáng", "Khai khoáng")
+            # Upgrades stay visible without scrolling through every disciple.
             _build_mine_upgrade_control()
+            _build_work_management(WorkforceSystem.PROF_MINING, &"mining_crew", "Đội Khai Khoáng", "Khai khoáng")
         SectMapPresentation.DEST_LINH_FOREST:
-            _build_work_management(WorkforceSystem.PROF_FORESTRY, &"forestry_crew", "Đội Lâm Nghiệp", "Thu hoạch")
             var forest := BuildingSystem.new().primary_building(state, BuildingSystem.TYPE_LINH_FOREST)
             if forest != null:
                 _build_worksite_upgrade_control(forest)
+            _build_work_management(WorkforceSystem.PROF_FORESTRY, &"forestry_crew", "Đội Lâm Nghiệp", "Thu hoạch")
         SectMapPresentation.DEST_ALCHEMY_HALL:
             _build_alchemy_management()
         SectMapPresentation.DEST_SPIRIT_FIELD:
@@ -4934,6 +4935,8 @@ func _build_spirit_field_management() -> void:
         _add_management_section_label("LINH ĐIỀN CHƯA SẴN SÀNG")
         return
 
+    # Put actual upgrade control first, not after the scrollable roster.
+    _build_worksite_upgrade_control(field)
     _add_management_section_label("CHÍNH SÁCH CÂY TRỒNG")
     var policy_row := HBoxContainer.new()
     policy_row.custom_minimum_size = Vector2(384, 36)
@@ -5036,7 +5039,6 @@ func _build_spirit_field_management() -> void:
             "Đã ra lệnh gieo trồng: %s." % disciple.display_name
         ))
         row.add_child(plant_button)
-    _build_worksite_upgrade_control(field)
 
 func _set_spirit_field_policy_from_ui(field_id: StringName, mode: StringName, crop_id: StringName) -> void:
     var ok := BuildingSystem.new().set_spirit_field_policy(state, field_id, mode, crop_id)
