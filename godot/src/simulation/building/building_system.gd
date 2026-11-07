@@ -599,6 +599,36 @@ func set_spirit_field_policy(state: SimulationState, field_id: StringName, mode:
     state.building_event_count += 1
     return true
 
+# Player-authored per-plot preference. A growing plot cannot be changed.
+# A blank preference delegates to the existing field-wide crop policy.
+func set_spirit_plot_crop(state: SimulationState, field_id: StringName, plot_id: StringName, crop_id: StringName) -> Dictionary:
+    if state == null or not state.buildings.has(str(field_id)):
+        return {"ok":false,"reason":"field_missing"}
+    var field: BuildingState = state.buildings[str(field_id)]
+    if field.building_type != TYPE_SPIRIT_FIELD:
+        return {"ok":false,"reason":"wrong_building"}
+    if crop_id != &"" and not crop_registry.eligible_crop_ids(field.level).has(crop_id):
+        return {"ok":false,"reason":"crop_locked_or_unknown"}
+    var data := _ensure_spirit_field_state(state,field)
+    var plot_found := false
+    for raw_plot in data.get("plots",[]):
+        if raw_plot is Dictionary and str(raw_plot.get("plot_id","")) == str(plot_id):
+            if StringName(raw_plot.get("status","")) != PLOT_EMPTY:
+                return {"ok":false,"reason":"plot_already_growing"}
+            plot_found = true
+            break
+    if not plot_found:
+        return {"ok":false,"reason":"plot_missing"}
+    var preferences: Dictionary = data.get("plot_crop_preferences",{}).duplicate(true)
+    if crop_id == &"":
+        preferences.erase(str(plot_id))
+    else:
+        preferences[str(plot_id)] = str(crop_id)
+    data["plot_crop_preferences"] = preferences
+    field.production_state = data
+    state.building_event_count += 1
+    return {"ok":true,"plot_id":str(plot_id),"crop_id":str(crop_id)}
+
 func cancel_spirit_plot(state: SimulationState, field_id: StringName, plot_id: StringName) -> bool:
     if not state.buildings.has(str(field_id)):
         return false
@@ -1089,13 +1119,11 @@ func perform_spirit_field_step(state: SimulationState, disciple: DiscipleState, 
 
     var data := _ensure_spirit_field_state(state, field)
     var plots: Array = data.get("plots", [])
-    var plot_index := _first_empty_plot_index(plots)
-    if plot_index < 0:
-        return {"ok": false, "completed": false, "reason": "no_empty_plot"}
-
-    var crop_id := _select_crop(state, field, data)
-    if crop_id == &"":
-        return {"ok": false, "completed": false, "reason": "no_affordable_crop"}
+    var planned := _first_startable_spirit_plot(state,field,data)
+    if planned.is_empty():
+        return {"ok": false, "completed": false, "reason": "no_affordable_or_needed_crop"}
+    var plot_index := int(planned.get("index",-1))
+    var crop_id := StringName(planned.get("crop_id",""))
 
     var plant_cost := crop_registry.cost(crop_id)
     if state.sect.spirit_stones < plant_cost:
@@ -1588,6 +1616,7 @@ func _ensure_spirit_field_state(state: SimulationState, field: BuildingState) ->
         "policy_mode": str(FIELD_POLICY_AUTO_DEMAND),
         "fixed_crop_id": "",
         "priority_weights": {},
+        "plot_crop_preferences": {},
         "plant_sequence": 0,
         "plots": []
     }
@@ -1662,17 +1691,33 @@ func _first_empty_plot_index(plots: Array) -> int:
 
 func _field_has_startable_plot(state: SimulationState, field: BuildingState) -> bool:
     var data := _ensure_spirit_field_state(state, field)
-    if _first_empty_plot_index(data.get("plots", [])) < 0:
-        return false
-    return _select_crop(state, field, data) != &""
+    return not _first_startable_spirit_plot(state,field,data).is_empty()
 
-func _select_crop(state: SimulationState, field: BuildingState, data: Dictionary) -> StringName:
+func _first_startable_spirit_plot(state: SimulationState,field: BuildingState,data: Dictionary) -> Dictionary:
+    var plots: Array = data.get("plots",[])
+    for index in range(plots.size()):
+        var plot = plots[index]
+        if not (plot is Dictionary) or StringName(plot.get("status","")) != PLOT_EMPTY:
+            continue
+        var crop_id := _select_crop(state,field,data,str(plot.get("plot_id","")))
+        if crop_id != &"":
+            return {"index":index,"crop_id":str(crop_id)}
+    return {}
+
+func _select_crop(state: SimulationState, field: BuildingState, data: Dictionary, plot_id: String = "") -> StringName:
     var eligible: Array[StringName] = []
     for crop_id in crop_registry.eligible_crop_ids(field.level):
         if state.sect.spirit_stones >= crop_registry.cost(crop_id):
             eligible.append(crop_id)
     if eligible.is_empty():
         return &""
+
+    # A tile's explicit crop wins over the general field policy. Insufficient
+    # Stones leaves that particular tile idle instead of planting something else.
+    var preferences: Dictionary = data.get("plot_crop_preferences",{})
+    var chosen := StringName(preferences.get(plot_id,""))
+    if chosen != &"":
+        return chosen if eligible.has(chosen) else &""
 
     var mode := StringName(data.get("policy_mode", str(FIELD_POLICY_AUTO_DEMAND)))
     if mode == FIELD_POLICY_FIXED:
@@ -1747,13 +1792,20 @@ func _select_crop(state: SimulationState, field: BuildingState, data: Dictionary
             return &"linh_coc"
         return &""
 
-    var best := eligible[0]
-    var best_score := -1.0e30
+    # AUTO_DEMAND must stop at the real stock target. Previously it
+    # unconditionally chose a crop and drained Stones forever after storage
+    # was full. Include growing output to avoid overplanting four parallel plots.
+    var best := &""
+    var best_score := 0.0
     for crop_id in eligible:
         var target := float(crop_registry.stock_target(crop_id))
         var quantity := float(warehouse.quantity(state, crop_registry.output_resource_id(crop_id))) if state.sect.p3_7_resources_enabled else 0.0
+        for field_item in _buildings_of_type(state,TYPE_SPIRIT_FIELD):
+            for pending in _ensure_spirit_field_state(state,field_item).get("plots",[]):
+                if pending is Dictionary and str(pending.get("status","")) == str(PLOT_GROWING) and str(pending.get("crop_id","")) == str(crop_id):
+                    quantity += float(pending.get("routine_yield",0))
         var score := (target - quantity) / maxf(target, 1.0)
-        if score > best_score or (is_equal_approx(score, best_score) and str(crop_id) < str(best)):
+        if score > best_score or (is_equal_approx(score,best_score) and best != &"" and str(crop_id) < str(best)):
             best_score = score
             best = crop_id
     return best
