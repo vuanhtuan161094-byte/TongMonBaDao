@@ -122,8 +122,11 @@ func settle_work_wage(state: SimulationState, worker: DiscipleState, job_id: Str
 # stocks one paid Tầm Mạch Bàn per day for the real Mine Lv10+ gates.
 # Selling building components back would enable artificial market recycling.
 const V2_MARKET_SELLABLE := ["linh_moc", "thanh_thiet", "thanh_linh_thao", "linh_coc", "huyen_thiet"]
-const V2_MARKET_CATALOG := ["linh_moc", "thanh_thiet", "thanh_linh_thao", "linh_coc", "huyen_thiet", "tam_mach_ban"]
-const V2_MARKET_DAILY_SPECIAL_STOCK := {"tam_mach_ban": 1}
+const V2_MARKET_CATALOG := ["linh_moc", "thanh_thiet", "thanh_linh_thao", "linh_coc", "huyen_thiet", "tam_mach_ban", "linh_tuyen_chi_tam_manh"]
+# A second earned source for the 100-fragment Field heart beyond rare actual
+# harvest drops. Each fragment is paid, is never resellable to this NPC, and
+# conversion still needs 100 real owned fragments.
+const V2_MARKET_DAILY_SPECIAL_STOCK := {"tam_mach_ban": 1, "linh_tuyen_chi_tam_manh": 20}
 
 # Merchant stock is separate from the Sect Warehouse and legacy P2 market.
 # Daily replenishment uses the canonical simulation tick; existing stock from
@@ -222,6 +225,10 @@ func buy_from_npc_v1(state: SimulationState, resource_id: StringName, quantity: 
     state.sect.economy_a_market_stock[str(resource_id)] = available-quantity
     state.sect.economy_a_market_units_bought += quantity
     state.sect.spirit_stones -= cost
+    if resource_id == &"linh_tuyen_chi_tam_manh":
+        # Keep the existing exact 100 fragments -> one real heart rule.
+        # A purchase never creates a heart until the Warehouse has 100.
+        BuildingSystem.new().convert_linh_tuyen_fragments(state)
     var day := int(state.tick / V2_DAY_TICKS)
     var receipt := {"kind":"market_buy","request_id":request_id,"resource_id":str(resource_id),"quantity":quantity,"unit_price":unit_price,"cost":cost,"day":day,"tick":state.tick}
     state.sect.economy_a_receipts[receipt_id] = receipt
