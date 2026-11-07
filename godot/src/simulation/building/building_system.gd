@@ -1176,7 +1176,12 @@ func _start_resource_timer(state: SimulationState, producer: BuildingState, acto
     var policy := state.sect.economy_a_policy
     var base_duration := clampi(int(policy.get("resource_duration_ticks",10)),1,1440)
     var steward_factor := 1.0 - SectHallSystemV1.role_effect(state, SectHallSystemV1.OFFICE_STEWARD)
-    var duration := maxi(1,int(ceil(float(base_duration) * steward_factor / maxf(speed,0.25))))
+    # Apply the same level-dependent extraction speed in both old carry-cycle
+    # and new V2 timer jobs. Pin the resulting duration at job creation so
+    # upgrades never retroactively shorten an already paid/started timer.
+    var raw_work_duration := maxf(float(definition.get("base_work_duration", 4.0)), 0.1)
+    var building_time_factor := _resource_job_duration(producer) / raw_work_duration
+    var duration := maxi(1,int(ceil(float(base_duration) * building_time_factor * steward_factor / maxf(speed,0.25))))
     var data := producer.production_state.duplicate(true)
     var jobs := resource_timer_jobs(producer)
     var sequence := maxi(int(data.get("economy_a_sequence",0)),0)+1
