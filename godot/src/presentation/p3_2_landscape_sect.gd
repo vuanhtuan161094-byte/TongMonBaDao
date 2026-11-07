@@ -3130,6 +3130,15 @@ func _build_building_operation_panel() -> void:
     building_operation_body.add_theme_color_override("font_color", INK)
     building_operation_panel.add_child(building_operation_body)
 
+    # Dedicated first-screen Mine ore picker: no scrolling to reach the action.
+    var ore_picker := HBoxContainer.new()
+    ore_picker.name = "MineOreHero"
+    ore_picker.position = Vector2(286, 218)
+    ore_picker.size = Vector2(878, 78)
+    ore_picker.add_theme_constant_override("separation", 12)
+    ore_picker.visible = false
+    building_operation_panel.add_child(ore_picker)
+
     var separator := HSeparator.new()
     separator.position = Vector2(20, 306)
     separator.size = Vector2(1144, 2)
@@ -3256,6 +3265,10 @@ func _refresh_building_operation_content(rebuild_management_controls: bool = tru
                 break
     building_operation_body.text = operation_headline + feedback
     building_operation_body.tooltip_text = operation_text + feedback
+    var mine_open := selected_building == SectMapPresentation.DEST_MINE
+    building_operation_body.size.y = 66.0 if mine_open else 150.0
+    building_operation_body.clip_text = mine_open
+    _refresh_mine_ore_hero()
     _refresh_building_operation_art()
     _refresh_building_operation_metrics()
     _refresh_building_operation_live(operation_text)
@@ -3774,7 +3787,6 @@ func _rebuild_building_management_controls() -> void:
             _build_economy_a_market_controls()
             _build_equipment_inventory_controls()
         SectMapPresentation.DEST_MINE:
-            _build_mine_ore_controls()
             _build_work_management(WorkforceSystem.PROF_MINING, &"mining_crew", "Đội Khai Khoáng", "Khai khoáng")
             _build_mine_upgrade_control()
         SectMapPresentation.DEST_LINH_FOREST:
@@ -4366,51 +4378,49 @@ func _build_lodging_expansion_control() -> void:
     button.pressed.connect(_expand_lodging_from_building)
     row.add_child(button)
 
-func _build_mine_ore_controls() -> void:
+func _refresh_mine_ore_hero() -> void:
+    var picker := building_operation_panel.get_node_or_null("MineOreHero") as HBoxContainer
+    if picker == null:
+        return
+    picker.visible = selected_building == SectMapPresentation.DEST_MINE
+    if not picker.visible:
+        return
+    for child in picker.get_children():
+        picker.remove_child(child)
+        child.queue_free()
     var system := BuildingSystem.new()
-    var mine := system.primary_building(state, BuildingSystem.TYPE_MINE)
+    var mine := _selected_operation_building()
     if mine == null:
         return
-    _add_management_section_label("CHỌN KHOÁNG KHAI THÁC")
-    var choices := HBoxContainer.new()
-    choices.name = "MineOreChoices"
-    choices.add_theme_constant_override("separation", 8)
-    building_management_container.add_child(choices)
     var selected := system.mine_selected_ore(mine)
     var registry := ResourceRegistry.new()
     for ore_key in ["thanh_thiet", "huyen_thiet"]:
         var ore_id := StringName(ore_key)
-        var definition: Dictionary = BuildingSystem.MINE_ORE_OPTIONS[ore_key]
-        var need := int(definition.get("required_level", 1))
-        var available := mine.level >= need
-        var chosen := ore_id == selected
+        var option: Dictionary = BuildingSystem.MINE_ORE_OPTIONS[ore_key]
+        var required_level := int(option.get("required_level", 1))
+        var unlocked := mine.level >= required_level
+        var chosen := selected == ore_id
+        var ore_name := registry.display_name(ore_id)
         var button := Button.new()
         button.name = "MineOre_%s" % ore_key
         button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-        button.custom_minimum_size = Vector2(0, 54)
-        var name := registry.display_name(ore_id)
-        var amount := system.mine_ore_batch_units(mine, ore_id)
-        button.text = "%s %s\n×%d / lượt · Mỏ Lv%d" % [
-            "◆" if chosen else "◇", name, amount, need
+        button.custom_minimum_size = Vector2(0, 74)
+        button.text = "%s %s\n×%d / lượt · %s" % [
+            "◆" if chosen else "◇",
+            ore_name, system.mine_ore_batch_units(mine, ore_id),
+            "Đã chọn" if chosen else ("Cần Mỏ Lv%d" % required_level if not unlocked else "Chọn khai thác")
         ]
-        button.tooltip_text = (
-            "Đang chọn · các lượt mới sẽ khai thác %s." % name if chosen
-            else ("Cần Mỏ Lv%d để khai thác %s." % [need, name] if not available
-            else "Chọn %s cho các lượt khai thác mới; không đổi khoáng của mẻ đang chạy." % name)
-        )
-        button.disabled = not available
-        button.add_theme_font_size_override("font_size", 11)
+        button.tooltip_text = "Chỉ mẻ mới đổi khoáng; mẻ đang chạy giữ nguyên tài nguyên đã ghi."
+        button.disabled = not unlocked
+        button.add_theme_font_size_override("font_size", 14)
         button.add_theme_color_override("font_color", PAPER_LIGHT if chosen else INK)
-        button.add_theme_color_override("font_disabled_color", Color(0.35, 0.34, 0.29))
-        button.add_theme_stylebox_override("normal", _style(JADE_DARK if chosen else Color(0.91, 0.86, 0.72), GOLD if chosen else Color(0.52, 0.45, 0.31), 2 if chosen else 1, 8))
+        button.add_theme_color_override("font_disabled_color", Color(0.39, 0.36, 0.30))
+        button.add_theme_stylebox_override("normal", _style(
+            JADE_DARK if chosen else Color(0.91, 0.85, 0.69),
+            GOLD if chosen else Color(0.55, 0.45, 0.28), 2, 9
+        ))
         button.pressed.connect(Callable(self, "_select_mine_ore_from_ui").bind(ore_id))
-        choices.add_child(button)
-    var note := Label.new()
-    note.name = "MineOreSelected"
-    note.text = "Đang chọn: %s · đổi khoáng áp dụng từ mẻ kế tiếp." % registry.display_name(selected)
-    note.add_theme_font_size_override("font_size", 11)
-    note.add_theme_color_override("font_color", JADE_DARK)
-    building_management_container.add_child(note)
+        picker.add_child(button)
 
 func _select_mine_ore_from_ui(ore_id: StringName) -> void:
     var system := BuildingSystem.new()
