@@ -157,6 +157,76 @@ func _run() -> void:
         _fail("opening the read-only HS-09 profile changed game state")
         return
 
+    # Owner contract: the six founders and every newly recruited V2 disciple
+    # MUST use the exact same profile FORM. Only saved values/availability vary.
+    var starter_id := disciple_id
+    var founding_profile := disciple.to_dict()
+    ui.call("_open_disciple_deep_screen",starter_id,"Tổng Quan")
+    await process_frame
+    deep = popups.get_node_or_null("DiscipleDeepScreen") as Panel
+    if deep == null:
+        _fail("founder could not open shared profile")
+        return
+    var shared_form_nodes := ["HS09OverviewRadar","DiscipleProgress_TU_VI",
+        "DiscipleProgress_LUYỆN_THỂ","ProfileAction_v2_cultivate",
+        "ProfileAction_v2_body_train","DeepQuickAssignment","LocateDiscipleOnMap"]
+    var starter_geometry: Dictionary = {}
+    for form_name in shared_form_nodes:
+        var control := deep.find_child(form_name,true,false) as Control
+        if control == null:
+            _fail("founder shared profile missing "+form_name)
+            return
+        starter_geometry[form_name] = control.position
+    if deep.find_child("DiscipleProfileProvenance",true,false) != null:
+        _fail("source/legacy badges illegally split the common profile layout")
+        return
+    if deep.find_child("DiscipleUnavailable_LUYỆN_THỂ",true,false) == null:
+        _fail("founder missing honest no-data state in the common Luyen The slot")
+        return
+
+    var candidate_ids: Array = state.recruitment_candidates.keys()
+    candidate_ids.sort()
+    var recruit_id := StringName("")
+    for raw_candidate_id in candidate_ids:
+        var candidate: CandidateState = state.recruitment_candidates[raw_candidate_id]
+        if DiscipleBirthProfileV2.valid_complete_birth(candidate.v2_birth_profile):
+            recruit_id = StringName(raw_candidate_id)
+            break
+    if recruit_id == &"":
+        _fail("new game did not expose a complete authentic V2 recruit for form parity")
+        return
+    var acceptance := RecruitmentSystem.new().accept_candidate(state,recruit_id)
+    if not bool(acceptance.get("ok",false)) or not state.disciples.has(recruit_id):
+        _fail("could not recruit a real V2 disciple for form parity: "+str(acceptance))
+        return
+    var recruited: DiscipleState = state.disciples[recruit_id]
+    if not DiscipleRealmProgressV2.progression_ready(recruited):
+        _fail("recruited test disciple does not have canonical V2 progression")
+        return
+    var recruit_before := recruited.to_dict()
+    ui.call("_open_disciple_deep_screen",recruit_id,"Tổng Quan")
+    await process_frame
+    deep = popups.get_node_or_null("DiscipleDeepScreen") as Panel
+    if deep == null:
+        _fail("recruit could not open shared profile")
+        return
+    for form_name in shared_form_nodes:
+        var recruit_control := deep.find_child(form_name,true,false) as Control
+        if recruit_control == null or recruit_control.position != starter_geometry[form_name]:
+            _fail("founder/recruit layout divergence at "+form_name)
+            return
+    if deep.find_child("DiscipleProfileProvenance",true,false) != null:
+        _fail("recruit must not use a special source/V2 badge or unique form")
+        return
+    for tab_index in range(EXPECTED_TABS.size()):
+        var tab := deep.get_node_or_null("DeepDiscipleTab_%d" % tab_index) as Button
+        if tab == null or tab.text != EXPECTED_TABS[tab_index]:
+            _fail("recruited disciple does not share the same seven-tab navigation")
+            return
+    if recruited.to_dict() != recruit_before or disciple.to_dict() != founding_profile:
+        _fail("rendering one shared founder/recruit profile mutated saved disciple data")
+        return
+
     ui.queue_free()
     await process_frame
     ui = null
