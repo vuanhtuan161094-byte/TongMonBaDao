@@ -9115,35 +9115,28 @@ func _toggle_deep_disciple_roster(tab_name: String) -> void:
 
 func _deep_status_text(disciple: DiscipleState) -> String:
     var snapshot := _disciple_snapshot(disciple)
-    if bool(snapshot.get("ok", false)) and bool(snapshot.get("authentic_v2", false)):
-        var life: Dictionary = snapshot["life"]
-        var progression: Dictionary = snapshot["progression"]
-        if not bool(progression.get("ready", false)):
-            return "Tiến độ chưa sẵn sàng\nHP %.0f/%.0f\n%s" % [
-                float(life["hp"]), float(life["max_hp"]),
-                SectMapPresentation.action_label(StringName(life["current_action"]))
-            ]
-        var tuvi: Dictionary = progression["cultivation"]
-        var body: Dictionary = progression["body"]
-        var destination := StringName(actor_destinations.get(str(disciple.id), str(SectMapPresentation.DEST_COURTYARD)))
-        return "%s tầng %d\n%s tầng %d\nHP %.0f/%.0f · Thể lực viễn chinh %.0f/100\n%s · %s" % [
-            str(tuvi["name"]), int(tuvi["floor"]),
-            str(body["name"]), int(body["floor"]),
-            float(life["hp"]), float(life["max_hp"]), float(life["expedition_stamina"]),
-            SectMapPresentation.action_label(StringName(life["current_action"])),
-            _building_name(destination)
-        ]
-
-    var required := cultivation.required_progress(disciple)
-    var progress_text := "Đã viên mãn" if required <= 0.0 else "%.0f / %.0f" % [disciple.cultivation_progress, required]
+    var progression: Dictionary = snapshot.get("progression", {})
+    var life: Dictionary = snapshot.get("life", {})
+    var authentic := bool(snapshot.get("authentic_v2", false)) and bool(progression.get("ready", false))
+    var tuvi_text := ""
+    var body_text := "Chưa có dữ liệu"
+    if authentic:
+        var tuvi: Dictionary = progression.get("cultivation", {})
+        var body: Dictionary = progression.get("body", {})
+        tuvi_text = "%s tầng %d" % [str(tuvi.get("name", "")), int(tuvi.get("floor", 0))]
+        body_text = "%s tầng %d" % [str(body.get("name", "")), int(body.get("floor", 0))]
+    else:
+        var legacy_system := CultivationSystem.new()
+        tuvi_text = legacy_system.stage_name(disciple)
     var destination := StringName(actor_destinations.get(str(disciple.id), str(SectMapPresentation.DEST_COURTYARD)))
-    return "%s\nHP %.0f/%.0f · Thể lực %.0f/100\nTu vi %s\n%s · %s" % [
-        cultivation.stage_name(disciple),
-        disciple.hp, disciple.max_hp, disciple.stamina,
-        progress_text,
+    return "Tu Vi: %s\nLuyện Thể: %s\nHP %.0f/%.0f · Thể lực %.0f/100\n%s · %s" % [
+        tuvi_text, body_text,
+        float(life.get("hp", disciple.hp)), float(life.get("max_hp", disciple.max_hp)),
+        float(life.get("expedition_stamina", disciple.stamina)),
         SectMapPresentation.action_label(disciple.current_action),
         _building_name(destination)
     ]
+
 
 func _return_to_disciple_summary() -> void:
     _clear_popup()
@@ -9212,25 +9205,30 @@ func _add_disciple_progress_row(parent: Control, label_text: String, xp: float, 
     bar.add_theme_stylebox_override("fill", fill)
     parent.add_child(bar)
 
-func _disciple_profile_compact_text(snapshot: Dictionary) -> String:
+func _disciple_profile_compact_text(snapshot: Dictionary, disciple: DiscipleState) -> String:
     var life: Dictionary = snapshot.get("life", {})
     var progression: Dictionary = snapshot.get("progression", {})
-    var combat: Dictionary = snapshot.get("combat", {})
-    var stats: Dictionary = combat.get("stats", {})
-    if not bool(progression.get("ready", false)):
-        return "HP %.0f / %.0f\n%s\nTu Vi / Luyện Thể V2 chưa sẵn sàng." % [
-            float(life.get("hp", 0.0)), float(life.get("max_hp", 0.0)),
-            SectMapPresentation.action_label(StringName(life.get("current_action", "")))
-        ]
-    var cultivation_value: Dictionary = progression.get("cultivation", {})
-    var body_value: Dictionary = progression.get("body", {})
-    return "HP %.0f / %.0f · Thể lực %.0f / 100\nCông %.1f · Thủ %.1f\n%s tầng %d · %s tầng %d\n%s" % [
-        float(life.get("hp", 0.0)), float(life.get("max_hp", 0.0)), float(life.get("expedition_stamina", 0.0)),
-        float(stats.get("attack", 0.0)), float(stats.get("defense", 0.0)),
-        str(cultivation_value.get("name", "Tu Vi")), int(cultivation_value.get("floor", 0)),
-        str(body_value.get("name", "Luyện Thể")), int(body_value.get("floor", 0)),
-        SectMapPresentation.action_label(StringName(life.get("current_action", "")))
+    var authentic := bool(snapshot.get("authentic_v2", false)) and bool(progression.get("ready", false))
+    var tuvi_text := ""
+    var body_text := "Chưa có dữ liệu"
+    var combat_text := "Chiến lực: %.1f · Công/Thủ chưa có dữ liệu" % disciple.combat_power
+    if authentic:
+        var cultivation_value: Dictionary = progression.get("cultivation", {})
+        var body_value: Dictionary = progression.get("body", {})
+        var combat: Dictionary = snapshot.get("combat", {})
+        var stats: Dictionary = combat.get("stats", {})
+        tuvi_text = "%s tầng %d" % [str(cultivation_value.get("name", "")), int(cultivation_value.get("floor", 0))]
+        body_text = "%s tầng %d" % [str(body_value.get("name", "")), int(body_value.get("floor", 0))]
+        combat_text = "Công %.1f · Thủ %.1f" % [float(stats.get("attack", 0.0)), float(stats.get("defense", 0.0))]
+    else:
+        tuvi_text = CultivationSystem.new().stage_name(disciple)
+    return "HP %.0f/%.0f · Thể lực %.0f/100\n%s\nTu Vi: %s\nLuyện Thể: %s\n%s" % [
+        float(life.get("hp", disciple.hp)), float(life.get("max_hp", disciple.max_hp)),
+        float(life.get("expedition_stamina", disciple.stamina)),
+        combat_text, tuvi_text, body_text,
+        SectMapPresentation.action_label(disciple.current_action)
     ]
+
 
 func _restore_selected_focus_marker() -> void:
     if selected_id == &"" or not state.disciples.has(selected_id):
