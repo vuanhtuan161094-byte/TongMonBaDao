@@ -164,6 +164,10 @@ var has_focus_target := false
 var tab_status_text := ""
 var disciple_profile_search_query := ""
 var disciple_profile_roster_collapsed := false
+var disciple_profile_sort_mode := 0
+var disciple_profile_active_tab_name := "Tổng Quan"
+var disciple_profile_tab_scroll_positions: Dictionary = {}
+var disciple_quick_assignment_return_to_summary := false
 var technique_system := TechniqueSystem.new()
 var equipment_system := EquipmentSystem.new()
 var needs_system := NeedsSystem.new()
@@ -226,6 +230,8 @@ var building_operation_live_content: VBoxContainer
 var building_operation_progress: ProgressBar
 var building_operation_progress_label: Label
 var building_management_feedback := ""
+var building_management_last_sim_tick := -1
+var building_management_last_refresh_frame := -1
 var selected_building: StringName = &""
 var deep_restore_summary := false
 var screen_pointer_dragged := false
@@ -1313,6 +1319,7 @@ func _open_disciple_quick_assignment(disciple_id: StringName, preserve_summary_o
         return
     var disciple: DiscipleState = state.disciples[disciple_id]
     var returning_to_summary := _disciple_summary_is_open() or preserve_summary_origin
+    disciple_quick_assignment_return_to_summary = returning_to_summary
     selected_id = disciple_id
     _hide_disciple_summary()
     _clear_popup()
@@ -1474,7 +1481,7 @@ func _return_from_disciple_quick_assignment(disciple_id: StringName, to_summary:
     if to_summary:
         _show_disciple_summary()
     else:
-        _open_disciple_deep_screen(disciple_id,"Thuộc tính")
+        _open_disciple_deep_screen(disciple_id,disciple_profile_active_tab_name,true)
 
 func _disciple_quick_assign_target(disciple_id: StringName, building_id: StringName) -> void:
     if not state.disciples.has(disciple_id) or not state.buildings.has(str(building_id)):
@@ -1486,24 +1493,49 @@ func _disciple_quick_assign_target(disciple_id: StringName, building_id: StringN
     var disciple: DiscipleState = state.disciples[disciple_id]
     var reason := _workforce_candidate_reason(disciple,building,_workforce_occupants(building))
     if reason != "" and reason != "Đang phụ trách":
-        _open_disciple_quick_assignment(disciple_id,false,reason)
+        _open_disciple_quick_assignment(disciple_id,disciple_quick_assignment_return_to_summary,reason)
         return
     if reason == "Đang phụ trách":
         _open_building(destination,building_id)
         return
     var previous_group := disciple.work_group_id
+    var previous_worksite := disciple.worksite_building_id
     var ok := workforce.assign_group(state,disciple_id,building.worker_group_id)
     if ok:
         ok = workforce.assign_worksite(state,disciple_id,building_id)
     if not ok:
+        # Restore the original canonical assignment if the second half fails.
+        # assign_group may clear a worksite whose crew no longer matches.
         if disciple.work_group_id != previous_group:
             workforce.assign_group(state,disciple_id,previous_group)
-        _open_disciple_quick_assignment(disciple_id,false,"Workforce V2 từ chối thay đổi công việc.")
+        if disciple.worksite_building_id != previous_worksite:
+            workforce.assign_worksite(state,disciple_id,previous_worksite)
+        _open_disciple_quick_assignment(disciple_id,disciple_quick_assignment_return_to_summary,"Workforce V2 từ chối thay đổi; phân công trước đã được khôi phục.")
         return
-    if runtime_session != null:
-        runtime_session.save()
-    _open_building(destination,building_id)
+
+    var assignment_feedback := "Đã phân công tới %s. Hành động hiện tại: %s." % [
+        _building_name(building_id),SectMapPresentation.action_label(disciple.current_action)
+    ]
+    if not disciple.active_job_id.is_empty():
+        assignment_feedback += " Tác vụ đang giữ: %s." % str(disciple.active_job_id)
+    elif not disciple.work_cycle_state.is_empty():
+        assignment_feedback += " Chu kỳ hiện tại: %s." % str(disciple.work_cycle_state.get("phase",disciple.work_cycle_state.get("status","đang xử lý")))
+    elif not disciple.direct_command.is_empty():
+        assignment_feedback += " Có lệnh chờ xử lý."
+    else:
+        assignment_feedback += " Chưa có mã tác vụ/chu kỳ chạy; giao việc không đồng nghĩa đã thu sản phẩm."
+    if runtime_session == null:
+        assignment_feedback += " Phiên Save chưa sẵn sàng."
+    else:
+        var persisted: Dictionary = runtime_session.save()
+        if bool(persisted.get("ok",false)):
+            assignment_feedback += " Đã lưu phân công."
+        else:
+            assignment_feedback += " CẢNH BÁO: Save thất bại (%s)." % str(persisted.get("reason",persisted.get("error","unknown")))
     _refresh_all()
+    # Keep the player in the same assignment flow; the drawer shows the real
+    # group/worksite and does not claim production started until a job exists.
+    _open_disciple_quick_assignment(disciple_id,disciple_quick_assignment_return_to_summary,assignment_feedback)
 
 func _open_notice(title_text: String, body: String) -> void:
     _close_disciple_summary(true)
@@ -3189,7 +3221,7 @@ func _close_building_operation_panel(clear_selection: bool = true) -> void:
         _refresh_focus_readout()
         _refresh_actor_status_label_visibility()
 
-func _refresh_building_operation_content() -> void:
+func _refresh_building_operation_content(rebuild_management_controls: bool = true) -> void:
     if not _building_operation_is_open() or selected_building == &"":
         return
     building_operation_title.text = _building_name(selected_building)
@@ -3222,8 +3254,11 @@ func _refresh_building_operation_content() -> void:
     building_operation_live_panel.visible = true
     building_operation_live_panel.position = Vector2(552, 316)
     building_operation_live_panel.size = Vector2(612, 216)
-    _rebuild_building_management_controls()
-    _style_building_management_actions(building_management_container)
+    if rebuild_management_controls:
+        _rebuild_building_management_controls()
+        _style_building_management_actions(building_management_container)
+        building_management_last_sim_tick = state.tick
+        building_management_last_refresh_frame = Engine.get_process_frames()
     building_operation_scroll.set_deferred("scroll_vertical", left_scroll_position)
     building_operation_live_scroll.set_deferred("scroll_vertical", right_scroll_position)
 
@@ -3375,10 +3410,23 @@ func _refresh_building_operation_metrics() -> void:
                 icon_kind = "wood"
             else:
                 icon_kind = "leaf"
+    var progress_caption := "TRẠNG THÁI"
+    if building != null:
+        match building.building_type:
+            BuildingSystem.TYPE_MINE:
+                progress_caption = "KHAI KHOÁNG / ETA"
+            BuildingSystem.TYPE_LINH_FOREST:
+                progress_caption = "THU LÂM / ETA"
+            BuildingSystem.TYPE_SPIRIT_FIELD:
+                progress_caption = "SINH TRƯỞNG / ETA"
+            BuildingSystem.TYPE_BODY_TRAINING:
+                progress_caption = "LƯỢT RÈN THÂN"
+            _:
+                progress_caption = "TRẠNG THÁI"
     for entry in [
         ["CẤP CÔNG TRÌNH", level_text, "upgrade"],
         ["NHÂN SỰ / CHỖ", worker_text, "worker"],
-        ["CHU KỲ / TIẾN ĐỘ", cycle_text, "timer"],
+        [progress_caption, cycle_text, "timer"],
         ["SẢN LƯỢNG THẬT", output_text, icon_kind]
     ]:
         var card := SECT_UI_THEME.metric_card(str(entry[0]), str(entry[1]), str(entry[2]), GOLD)
@@ -3682,7 +3730,7 @@ func _on_dai_dien_state_changed() -> void:
     # _refresh_all() already refreshes the 192x192 map once; avoid double scans.
     _refresh_all()
     if selected_building == SectMapPresentation.DEST_MAIN_HALL:
-        _refresh_building_operation_content()
+        _refresh_building_management_controls_only()
 
 # ECONOMY-A player actions are actual simulation transactions; no fake income.
 func _build_economy_a_hall_controls() -> void:
@@ -4054,7 +4102,7 @@ func _on_dan_tien_screen_v2_changed() -> void:
     # The real runtime remains the sole roster/save authority.
     _refresh_all()
     if selected_building == SectMapPresentation.DEST_GUIDANCE:
-        _refresh_building_operation_content()
+        _refresh_building_management_controls_only()
 
 func _candidate_recruitable(candidate: CandidateState) -> bool:
     if candidate == null:
@@ -4070,7 +4118,7 @@ func _guidance_recruit_with_order() -> void:
     else:
         building_management_feedback = _recruitment_feedback(str(result.get("reason", "generation_failed")))
     _refresh_all()
-    _refresh_building_operation_content()
+    _refresh_building_management_controls_only()
 
 func _accept_guidance_candidate(candidate_id: StringName) -> void:
     var candidate: CandidateState = state.recruitment_candidates.get(candidate_id)
@@ -4083,7 +4131,7 @@ func _accept_guidance_candidate(candidate_id: StringName) -> void:
     # Refresh immediately so a successful authoritative roster mutation creates
     # its real map actor without waiting for a wall-clock poll.
     _refresh_all()
-    _refresh_building_operation_content()
+    _refresh_building_management_controls_only()
 
 func _reject_guidance_candidate(candidate_id: StringName) -> void:
     var candidate: CandidateState = state.recruitment_candidates.get(candidate_id)
@@ -4094,7 +4142,7 @@ func _reject_guidance_candidate(candidate_id: StringName) -> void:
     else:
         building_management_feedback = _recruitment_feedback(str(result.get("reason", "reject_failed")))
     _refresh_all()
-    _refresh_building_operation_content()
+    _refresh_building_management_controls_only()
 
 func _recruitment_feedback(reason: String) -> String:
     match reason:
@@ -4228,7 +4276,7 @@ func _start_building_upgrade_from_ui(building_id: StringName) -> void:
     else:
         building_management_feedback = "Không thể nâng cấp Mỏ: %s" % _building_upgrade_reason(result)
     _refresh_all()
-    _refresh_building_operation_content()
+    _refresh_building_management_controls_only()
 
 func _start_dan_tien_upgrade_from_ui() -> void:
     var buildings := BuildingSystem.new()
@@ -4242,7 +4290,7 @@ func _start_dan_tien_upgrade_from_ui() -> void:
         else:
             building_management_feedback = "Không thể nâng cấp Dẫn Tiên Đài: %s" % _building_upgrade_reason(result)
     _refresh_all()
-    _refresh_building_operation_content()
+    _refresh_building_management_controls_only()
 
 func _building_upgrade_reason(result: Dictionary) -> String:
     var reason := str(result.get("reason", ""))
@@ -6205,6 +6253,18 @@ func _record_pathfinding_duration(elapsed_usec: int) -> void:
     performance_move_pathfinding_usec_total += elapsed_usec
     performance_move_pathfinding_usec_max = maxi(performance_move_pathfinding_usec_max,elapsed_usec)
 
+func _refresh_building_management_controls_only() -> void:
+    if not _building_operation_is_open() or building_management_container == null:
+        return
+    var current_frame := Engine.get_process_frames()
+    if building_management_last_refresh_frame == current_frame:
+        return
+    _rebuild_building_management_controls()
+    _style_building_management_actions(building_management_container)
+    building_management_last_sim_tick = state.tick
+    building_management_last_refresh_frame = current_frame
+
+
 func _refresh_all() -> void:
     super._refresh_all()
     if state == null:
@@ -6225,7 +6285,7 @@ func _refresh_all() -> void:
     if build_mode_panel != null and build_mode_panel.visible:
         _refresh_build_mode_panel()
     if _building_operation_is_open():
-        _refresh_building_operation_content()
+        _refresh_building_operation_content(building_management_last_sim_tick != state.tick)
 
 func _pve_hunt_overlay_is_open() -> bool:
     if b3_hunt_panel == null or not is_instance_valid(b3_hunt_panel):
@@ -8071,6 +8131,12 @@ func _open_selected_disciple_detail() -> void:
 func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "Tổng Quan", preserve_feedback: bool = false) -> void:
     if not state.disciples.has(disciple_id):
         return
+    if opened_disciple_profile and popup_layer != null:
+        var prior_scroll := popup_layer.find_child("DiscipleTabContentScroll",true,false) as ScrollContainer
+        if prior_scroll != null:
+            var prior_key := "%s|%s" % [str(selected_id),disciple_profile_active_tab_name]
+            disciple_profile_tab_scroll_positions[prior_key] = prior_scroll.scroll_vertical
+    disciple_profile_active_tab_name = tab_name
     # A profile is a top-level screen. Close facility panels before adding its
     # dim layer so Warehouse/building controls cannot remain underneath it.
     _dismiss_facility_screens()
@@ -8162,10 +8228,25 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "T�
         roster_search.text_changed.connect(Callable(self, "_apply_deep_disciple_roster_filter"))
         roster_panel.add_child(roster_search)
 
+        var sort_options := OptionButton.new()
+        sort_options.name = "DeepRosterSort"
+        sort_options.position = Vector2(8,82)
+        sort_options.size = Vector2(roster_width - 16.0,28)
+        sort_options.add_item("Tên A-Z",0)
+        sort_options.add_item("Phẩm chất",1)
+        sort_options.add_item("Nghề nghiệp",2)
+        sort_options.add_item("Công việc",3)
+        sort_options.add_item("Cảnh giới",4)
+        sort_options.select(clampi(disciple_profile_sort_mode,0,4))
+        sort_options.add_theme_font_size_override("font_size",12)
+        sort_options.add_theme_color_override("font_color",INK)
+        sort_options.item_selected.connect(Callable(self,"_on_deep_disciple_roster_sort_changed").bind(disciple_id,tab_name))
+        roster_panel.add_child(sort_options)
+
         var roster_scroll := ScrollContainer.new()
         roster_scroll.name = "DeepDiscipleRosterScroll"
-        roster_scroll.position = Vector2(8, 84)
-        roster_scroll.size = Vector2(roster_width - 16.0, 368)
+        roster_scroll.position = Vector2(8, 114)
+        roster_scroll.size = Vector2(roster_width - 16.0, 338)
         roster_panel.add_child(roster_scroll)
 
         var roster := VBoxContainer.new()
@@ -8175,17 +8256,45 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "T�
         roster_scroll.add_child(roster)
 
         var ids: Array = state.disciples.keys()
-        ids.sort()
+        var roster_sort_keys: Dictionary = {}
+        var roster_snapshots: Dictionary = {}
+        for raw_id in ids:
+            var roster_disciple: DiscipleState = state.disciples[StringName(raw_id)]
+            var roster_snapshot := _disciple_snapshot(roster_disciple)
+            roster_snapshots[str(raw_id)] = roster_snapshot
+            roster_sort_keys[str(raw_id)] = _deep_disciple_roster_sort_key(roster_disciple,roster_snapshot,disciple_profile_sort_mode)
+        ids.sort_custom(func(a: Variant,b: Variant) -> bool:
+            return str(roster_sort_keys.get(str(a),"")) < str(roster_sort_keys.get(str(b),""))
+        )
+        var legacy_cultivation_system := CultivationSystem.new()
         for raw_id in ids:
             var id := StringName(raw_id)
             var roster_disciple: DiscipleState = state.disciples[id]
+            var roster_snapshot: Dictionary = roster_snapshots.get(str(id),{})
+            var roster_identity: Dictionary = roster_snapshot.get("identity",{})
+            var roster_progression: Dictionary = roster_snapshot.get("progression",{})
+            var roster_cultivation: Dictionary = roster_progression.get("cultivation",{})
+            var roster_realm := str(roster_cultivation.get("name",legacy_cultivation_system.stage_name(roster_disciple)))
+            var roster_quality := str(roster_identity.get("quality_name","Phẩm chất chưa xác định"))
+            var roster_status := SectMapPresentation.action_label(roster_disciple.current_action)
+            var roster_work: Dictionary = roster_snapshot.get("work",{})
+            var roster_worksite := str(roster_work.get("worksite_building_id",""))
+            var roster_group := str(roster_work.get("group_id",""))
+            if not roster_worksite.is_empty():
+                roster_status += " · " + _building_name(StringName(roster_worksite))
+            elif roster_group.is_empty():
+                roster_status = "Đang rảnh · " + roster_status
+            else:
+                roster_status += " · Nhóm " + roster_group
             var entry := Button.new()
             entry.name = "DeepRosterEntry_%d" % roster.get_child_count()
-            entry.text = roster_disciple.display_name
-            entry.custom_minimum_size = Vector2(roster_width - 36.0, 44)
-            entry.add_theme_font_size_override("font_size", 14)
+            entry.text = "%s\n%s · %s\n%s" % [roster_disciple.display_name,roster_quality,roster_realm,roster_status]
+            entry.tooltip_text = "%s · %s · %s · %s" % [roster_disciple.display_name,roster_quality,roster_realm,roster_status]
+            entry.custom_minimum_size = Vector2(roster_width - 36.0, 66)
+            entry.add_theme_font_size_override("font_size", 11)
             entry.add_theme_color_override("font_color", INK)
             entry.add_theme_color_override("font_hover_color", INK)
+            entry.alignment = HORIZONTAL_ALIGNMENT_LEFT
             var is_selected := id == selected_id
             entry.add_theme_stylebox_override("normal", _style(Color(0.97, 0.90, 0.70, 1.0) if is_selected else Color(0.91, 0.86, 0.72, 1.0), GOLD if is_selected else Color(0.45, 0.37, 0.25, 1.0), 2 if is_selected else 1, 8))
             entry.pressed.connect(Callable(self, "_open_disciple_deep_screen").bind(id, tab_name))
@@ -8275,25 +8384,41 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "T�
             progress_note.size = Vector2(content_width - 324.0, 30)
             content_panel.add_child(progress_note)
     else:
-        var legacy_note := SECT_UI_THEME.label("Hồ sơ cũ · thanh tiến độ V2 chưa khả dụng", 12, INK, true)
-        legacy_note.position = Vector2(302, 58)
-        legacy_note.size = Vector2(content_width - 324.0, 30)
-        content_panel.add_child(legacy_note)
+        var legacy_cultivation := CultivationSystem.new()
+        var legacy_required := legacy_cultivation.required_progress(disciple)
+        if bool(profile_snapshot.get("ok",false)) and legacy_required > 0.0:
+            _add_disciple_progress_row(content_panel,"TU VI · SAVE CŨ",disciple.cultivation_progress,legacy_required,Vector2(302,52),content_width-324.0,JADE_DARK)
+            var legacy_note := SECT_UI_THEME.label("Luyện Thể V2 chưa được lưu trong hồ sơ cũ · không quy đổi dữ liệu",11,INK,true)
+            legacy_note.position = Vector2(302,84)
+            legacy_note.size = Vector2(content_width-324.0,30)
+            content_panel.add_child(legacy_note)
+        elif bool(profile_snapshot.get("ok",false)):
+            var legacy_note := SECT_UI_THEME.label("Tu Vi đã viên mãn · Luyện Thể V2 chưa có trong hồ sơ cũ",11,INK,true)
+            legacy_note.position = Vector2(302,58)
+            legacy_note.size = Vector2(content_width-324.0,30)
+            content_panel.add_child(legacy_note)
+        else:
+            var legacy_note := SECT_UI_THEME.label("Không đọc được tiến độ từ hồ sơ này.",11,INK,true)
+            legacy_note.position = Vector2(302,58)
+            legacy_note.size = Vector2(content_width-324.0,30)
+            content_panel.add_child(legacy_note)
     if authentic_v2 and is_overview_tab:
         content.text = _disciple_profile_compact_text(profile_snapshot)
         details_scroll.position = Vector2(302, 118)
         details_scroll.size = Vector2(content_width - 324.0, 220)
     if tab_name in ["Thuộc tính", "Tổng Quan"] and bool(profile_snapshot.get("ok",false)):
+        var compatibility_radar: DiscipleSixDimensionRadar = null
+        var compatibility_radar_ready := false
         if tab_name == "Thuộc tính":
-            # Keep the legacy read-only node for existing presentation probes;
-            # the visible HS-09 overlay below is the approved dual-radar view.
-            var compatibility_radar := DiscipleSixDimensionRadar.new()
+            # Keep the six-dimension legacy node for existing presentation probes.
+            compatibility_radar = DiscipleSixDimensionRadar.new()
             compatibility_radar.name = "DiscipleFoundationRadar"
             compatibility_radar.position = Vector2(18,52)
             compatibility_radar.size = Vector2(274,286)
             compatibility_radar.mouse_filter = Control.MOUSE_FILTER_IGNORE
             compatibility_radar.visible = false
-            if compatibility_radar.apply_snapshot(profile_snapshot):
+            compatibility_radar_ready = compatibility_radar.apply_snapshot(profile_snapshot)
+            if compatibility_radar_ready:
                 content_panel.add_child(compatibility_radar)
 
         var radar := HS09DualFoundationRadar.new()
@@ -8302,13 +8427,32 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "T�
         radar.position = Vector2(18,52)
         radar.size = Vector2(256,250) if is_overview_tab else Vector2(274,286)
         radar.mouse_filter = Control.MOUSE_FILTER_IGNORE
-        if radar.apply_snapshot(profile_snapshot):
+        var hs09_radar_ready := radar.apply_snapshot(profile_snapshot)
+        var text_x := 284.0 if is_overview_tab else 302.0
+        if hs09_radar_ready:
             content_panel.add_child(radar)
-            var text_x := 284.0 if is_overview_tab else 302.0
             details_scroll.position = Vector2(text_x,118)
             details_scroll.size = Vector2(content_width - text_x - 18.0,220)
             content.custom_minimum_size = Vector2(details_scroll.size.x - 22.0,0)
             content.add_theme_font_size_override("font_size",13 if is_overview_tab else 14)
+        else:
+            radar.free()
+            var fallback_radar := compatibility_radar
+            if fallback_radar == null:
+                fallback_radar = DiscipleSixDimensionRadar.new()
+                fallback_radar.name = "LegacyFoundationRadarFallback"
+                fallback_radar.position = Vector2(18,52)
+                fallback_radar.size = Vector2(256,250) if is_overview_tab else Vector2(274,286)
+                fallback_radar.mouse_filter = Control.MOUSE_FILTER_IGNORE
+                compatibility_radar_ready = fallback_radar.apply_snapshot(profile_snapshot)
+            if compatibility_radar_ready:
+                fallback_radar.visible = true
+                if fallback_radar.get_parent() == null:
+                    content_panel.add_child(fallback_radar)
+                details_scroll.position = Vector2(text_x,118)
+                details_scroll.size = Vector2(content_width - text_x - 18.0,220)
+                content.custom_minimum_size = Vector2(details_scroll.size.x - 22.0,0)
+                content.add_theme_font_size_override("font_size",13 if is_overview_tab else 14)
     if not authentic_v2:
         if tab_name == "Huyết Mạch":
             _add_tab_action_button(content_panel, "Thức tỉnh", Vector2(18, 344), "bloodline_awaken")
@@ -8359,7 +8503,44 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "T�
         tab.add_theme_stylebox_override("normal", _style(Color(0.97, 0.88, 0.64, 1.0) if active else Color(0.88, 0.82, 0.67, 1.0), GOLD if active else Color(0.45, 0.37, 0.25, 1.0), 2 if active else 1, 7))
         tab.pressed.connect(Callable(self, "_open_disciple_deep_screen").bind(selected_id, str(tab_names[index])))
         panel.add_child(tab)
+    details_scroll.set_deferred("scroll_vertical",int(disciple_profile_tab_scroll_positions.get("%s|%s" % [str(disciple_id),tab_name],0)))
     _ensure_disabled_controls_readable(panel)
+
+
+func _on_deep_disciple_roster_sort_changed(index: int, disciple_id: StringName, tab_name: String) -> void:
+    disciple_profile_sort_mode = clampi(index,0,4)
+    _open_disciple_deep_screen(disciple_id,tab_name,true)
+
+
+func _deep_disciple_roster_sort_key(disciple: DiscipleState, snapshot: Dictionary, sort_mode: int) -> String:
+    var identity: Dictionary = snapshot.get("identity",{})
+    var work: Dictionary = snapshot.get("work",{})
+    var progression: Dictionary = snapshot.get("progression",{})
+    var cultivation_value: Dictionary = progression.get("cultivation",{})
+    var name_key := disciple.display_name.strip_edges().to_lower()
+    match sort_mode:
+        1:
+            return "%s|%s" % [str(identity.get("quality_name","")).to_lower(),name_key]
+        2:
+            var professions: Dictionary = work.get("professions",{})
+            var profession_ids: Array = professions.keys()
+            profession_ids.sort()
+            var profession_parts: Array[String] = []
+            for raw_profession_id in profession_ids:
+                var profession: Dictionary = professions.get(raw_profession_id,{})
+                profession_parts.append("%s:%04d" % [str(raw_profession_id),int(profession.get("level",0))])
+            return "%s|%s" % [";".join(profession_parts),name_key]
+        3:
+            return "%s|%s|%s|%s" % [
+                SectMapPresentation.action_label(disciple.current_action).to_lower(),
+                str(work.get("worksite_building_id","")).to_lower(),
+                str(work.get("group_id","")).to_lower(),name_key
+            ]
+        4:
+            var realm_rank := int(cultivation_value.get("floor",disciple.cultivation_stage_index))
+            return "%04d|%s" % [9999 - realm_rank,name_key]
+        _:
+            return name_key
 
 
 func _disciple_profile_tab_label(tab_name: String) -> String:
@@ -8447,7 +8628,7 @@ func _locate_profile_disciple(disciple_id: StringName) -> void:
 
 func _add_disciple_progress_row(parent: Control, label_text: String, xp: float, required: float, position_value: Vector2, width: float, accent: Color) -> void:
     var label := Label.new()
-    label.text = "%s  %.0f / %.0f" % [label_text, xp, required]
+    label.text = ("%s  Đã viên mãn" % label_text) if required <= 0.0 else "%s  %.0f / %.0f" % [label_text, xp, required]
     label.position = position_value
     label.size = Vector2(width, 16)
     label.add_theme_font_size_override("font_size", 11)
@@ -8529,14 +8710,14 @@ func _disciple_tab_action(action: String) -> void:
                 var persisted := runtime_session.save()
                 if not bool(persisted.get("ok",false)):
                     tab_status_text += " CẢNH BÁO: chưa lưu được tiến độ."
-        _open_disciple_deep_screen(selected_id,"Thuộc tính",true)
+        _open_disciple_deep_screen(selected_id,disciple_profile_active_tab_name,true)
         return
     if action == "v2_cultivate" or action == "v2_body_train":
         var track := "body" if action == "v2_body_train" else "cultivation"
         tab_status_text = _v2_training_ui_feedback(_queue_v2_training(track),track)
         # Normal tab navigation clears old feedback; this explicit action
         # refresh must retain the real backend receipt/rejection for the player.
-        _open_disciple_deep_screen(selected_id,"Thuộc tính",true)
+        _open_disciple_deep_screen(selected_id,disciple_profile_active_tab_name,true)
         return
     var requested_tab := "Huyết Mạch" if action.begins_with("bloodline_") else "Thể Chất"
     if bool(snapshot.get("ok", false)) and bool(snapshot.get("authentic_v2", false)):
@@ -8702,7 +8883,7 @@ func _disciple_overview_tab_text(disciple: DiscipleState) -> String:
         lines.append("Nơi làm việc: %s" % _building_name(StringName(worksite_id)))
     if bool(snapshot.get("authentic_v2",false)):
         lines.append(_v2_profession_summary_text(snapshot))
-    if bool(progression.get("ready",false)):
+    if bool(snapshot.get("authentic_v2",false)) and bool(progression.get("ready",false)):
         var cultivation: Dictionary = progression.get("cultivation",{})
         var body: Dictionary = progression.get("body",{})
         lines.append("Tu Vi: %s tầng %d · Luyện Thể: %s tầng %d" % [
@@ -8711,8 +8892,14 @@ func _disciple_overview_tab_text(disciple: DiscipleState) -> String:
             str(body.get("name","")),
             int(body.get("floor",0))
         ])
+    elif not bool(snapshot.get("authentic_v2",false)):
+        var legacy_cultivation := CultivationSystem.new()
+        var legacy_required := legacy_cultivation.required_progress(disciple)
+        var legacy_progress := "Đã viên mãn" if legacy_required <= 0.0 else "%.0f/%.0f EXP" % [disciple.cultivation_progress,legacy_required]
+        lines.append("Tu Vi hồ sơ cũ: %s · %s" % [legacy_cultivation.stage_name(disciple),legacy_progress])
+        lines.append("Luyện Thể V2: chưa có trong dữ liệu save cũ")
     else:
-        lines.append("Tu Vi/Luyện Thể: dữ liệu chưa sẵn sàng")
+        lines.append("Tu Vi / Luyện Thể V2: dữ liệu chưa sẵn sàng")
     var gates: Dictionary = v63.get("feature_gates",{})
     lines.append("V6.3 gate · Tàng Kinh Các %s · Học công pháp %s · Combat %s/%s" % [
         "ON" if bool(gates.get("sect_codex",false)) else "OFF",
