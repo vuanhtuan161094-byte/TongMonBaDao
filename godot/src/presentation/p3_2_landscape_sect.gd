@@ -4862,8 +4862,7 @@ func _build_work_management(profession_id: StringName, group_id: StringName, gro
             else:
                 role_text = "Chờ chỗ hoạt động"
         if name_label != null:
-            var source_mark := "✦ " if disciple.recruitment_source != &"" else ""
-            name_label.text = "%s%s\n%s" % [source_mark, disciple.display_name,role_text]
+            name_label.text = "%s\n%s" % [disciple.display_name,role_text]
             name_label.tooltip_text += " · " + role_text
         var timed_recipe_busy := building_system.disciple_has_active_timed_recipe(state, disciple.id)
 
@@ -5123,9 +5122,7 @@ func _new_management_row(disciple: DiscipleState) -> HBoxContainer:
     name.custom_minimum_size = Vector2(132, 52)
     name.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
     name.add_theme_font_size_override("font_size", 12)
-    var recruited := disciple.recruitment_source != &""
-    name.add_theme_color_override("font_color", Color(0.41, 0.22, 0.55) if recruited else INK)
-    name.tooltip_text += " · " + ("Đệ tử chiêu mộ" if recruited else "Đệ tử khởi đầu / hồ sơ cũ")
+    name.add_theme_color_override("font_color", INK)
     row.add_child(name)
 
     var portrait_texture := _disciple_source_a_portrait_texture(disciple)
@@ -9459,8 +9456,7 @@ func _disciple_overview_tab_text(disciple: DiscipleState) -> String:
     var worksite_id := str(work.get("worksite_building_id",""))
     if not worksite_id.is_empty():
         lines.append("Nơi làm việc: %s" % _building_name(StringName(worksite_id)))
-    if bool(snapshot.get("authentic_v2",false)):
-        lines.append(_v2_profession_summary_text(snapshot))
+    lines.append(_v2_profession_summary_text(snapshot))
     if bool(snapshot.get("authentic_v2",false)) and bool(progression.get("ready",false)):
         var cultivation: Dictionary = progression.get("cultivation",{})
         var body: Dictionary = progression.get("body",{})
@@ -9474,10 +9470,10 @@ func _disciple_overview_tab_text(disciple: DiscipleState) -> String:
         var legacy_cultivation := CultivationSystem.new()
         var legacy_required := legacy_cultivation.required_progress(disciple)
         var legacy_progress := "Đã viên mãn" if legacy_required <= 0.0 else "%.0f/%.0f EXP" % [disciple.cultivation_progress,legacy_required]
-        lines.append("Tu Vi hồ sơ cũ: %s · %s" % [legacy_cultivation.stage_name(disciple),legacy_progress])
-        lines.append("Luyện Thể V2: chưa có trong dữ liệu save cũ")
+        lines.append("Tu Vi: %s · %s" % [legacy_cultivation.stage_name(disciple),legacy_progress])
+        lines.append("Luyện Thể: Chưa có dữ liệu")
     else:
-        lines.append("Tu Vi / Luyện Thể V2: dữ liệu chưa sẵn sàng")
+        lines.append("Tu Vi / Luyện Thể: Chưa có dữ liệu")
     var gates: Dictionary = v63.get("feature_gates",{})
     lines.append("V6.3 gate · Tàng Kinh Các %s · Học công pháp %s · Combat %s/%s" % [
         "ON" if bool(gates.get("sect_codex",false)) else "OFF",
@@ -9538,7 +9534,7 @@ func _attributes_tab_text(disciple: DiscipleState) -> String:
         "Pháp %.1f" % float(disciple.cultivation_path_xp.get("spell", 0.0))
     ]
     return (
-        "Cảnh giới: %s\nTu vi: %s\nChiến lực hiệu dụng: %.1f\nXác suất đột phá hiện tại: %.1f%%\n"
+        "Tu Vi: %s · %s\nLuyện Thể: Chưa có dữ liệu\nChiến lực: %.1f · Đột phá: %.1f%%\n"
         + "HP %.0f/%.0f · Thể lực %.0f/100 · Ví %d\n\n"
         + "Tư Chất %s · Căn Cốt %s · Cơ Duyên %s\nThông Tuệ %s · Mị Lực %s · Tiềm Lực %s\n\n"
         + "Tích lũy đường tu: %s\nHành động hiện tại: %s\n%s"
@@ -9549,7 +9545,7 @@ func _attributes_tab_text(disciple: DiscipleState) -> String:
         _foundation_exact_number(disciple.comprehension), _foundation_exact_number(disciple.charisma), _foundation_exact_number(disciple.potential),
         " · ".join(path_lines), SectMapPresentation.action_label(disciple.current_action),
         tab_status_text
-    ]
+    ] + "\n\n" + _v2_profession_summary_text(snapshot)
 
 
 func _v2_attributes_tab_text(snapshot: Dictionary) -> String:
