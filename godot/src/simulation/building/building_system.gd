@@ -1682,7 +1682,7 @@ func _normalize_plot(value: Variant, index: int) -> Dictionary:
     var crop_id := StringName(value.get("crop_id", ""))
     if not crop_registry.has(crop_id):
         return _empty_plot(plot_id)
-    return {
+    var normalized := {
         "plot_id": plot_id,
         "crop_id": str(crop_id),
         "status": str(PLOT_GROWING),
@@ -1693,7 +1693,10 @@ func _normalize_plot(value: Variant, index: int) -> Dictionary:
         "routine_yield": maxi(int(value.get("routine_yield", crop_registry.base_yield(crop_id))), 1),
         "rare_factor": maxf(float(value.get("rare_factor", 1.0)), 0.0),
         "economy_a_wage_job_id": str(value.get("economy_a_wage_job_id", ""))
-    } + ({"profession_xp_gain":maxf(float(value.get("profession_xp_gain",0.0)),0.0)} if value.has("profession_xp_gain") else {})
+    }
+    if value.has("profession_xp_gain"):
+        normalized["profession_xp_gain"] = maxf(float(value.get("profession_xp_gain",0.0)),0.0)
+    return normalized
 
 func _empty_plot(plot_id: String) -> Dictionary:
     return {
