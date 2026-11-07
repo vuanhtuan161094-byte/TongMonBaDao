@@ -403,7 +403,17 @@ func _point_over_build_mode_panel(screen_point: Vector2) -> bool:
     return build_mode_panel != null and build_mode_panel.visible \
         and Rect2(build_mode_panel.position,build_mode_panel.size).has_point(screen_point)
 
+# _input is called before GUI controls. A tap on an open facility is NOT a map click.
+func _point_over_building_management(screen_point: Vector2) -> bool:
+    return _building_operation_is_open() and building_operation_panel.get_global_rect().has_point(screen_point)
+
 func _input(event: InputEvent) -> void:
+    if event is InputEventMouseButton and _point_over_building_management((event as InputEventMouseButton).position):
+        _clear_pointer_state()
+        return
+    if event is InputEventScreenTouch and _point_over_building_management((event as InputEventScreenTouch).position):
+        _clear_pointer_state()
+        return
     if event is InputEventMouseButton and _point_over_build_mode_panel((event as InputEventMouseButton).position):
         return
     if event is InputEventScreenTouch and _point_over_build_mode_panel((event as InputEventScreenTouch).position):
@@ -447,6 +457,12 @@ func _unhandled_input(event: InputEvent) -> void:
             _close_top_management_screen()
             get_viewport().set_input_as_handled()
             return
+    if event is InputEventMouseButton and _point_over_building_management((event as InputEventMouseButton).position):
+        return
+    if event is InputEventMouseMotion and _point_over_building_management((event as InputEventMouseMotion).position):
+        return
+    if event is InputEventScreenTouch and _point_over_building_management((event as InputEventScreenTouch).position):
+        return
     if event is InputEventMouseButton and _point_over_build_mode_panel((event as InputEventMouseButton).position):
         return
     if event is InputEventMouseMotion and _point_over_build_mode_panel((event as InputEventMouseMotion).position):
@@ -2453,9 +2469,10 @@ func _animate_actor_position(actor: Control, target: Vector2) -> void:
     var tween := create_tween()
     actor_position_tweens[instance_id] = tween
     actor_position_tween_targets[instance_id] = target
-    tween.set_trans(Tween.TRANS_QUAD)
+    # Presentation walking only. Real jobs, map targets and simulation ticks unchanged.
+    tween.set_trans(Tween.TRANS_LINEAR)
     tween.set_ease(Tween.EASE_IN_OUT)
-    var duration := clampf(travel_distance / 260.0,0.7,1.8)
+    var duration := maxf(travel_distance / 125.0,0.65)
     tween.tween_property(actor, "position", target, duration)
     tween.finished.connect(_finish_actor_position_tween.bind(actor,instance_id,tween))
 
@@ -3115,7 +3132,7 @@ func _build_building_operation_panel() -> void:
     building_operation_live_panel.position = Vector2(552, 316)
     building_operation_live_panel.size = Vector2(612, 216)
     building_operation_live_panel.clip_contents = true
-    building_operation_live_panel.add_theme_stylebox_override("panel", _style(Color(0.48, 0.39, 0.25, 1.0), Color(0.91, 0.86, 0.72, 0.7), 1, 10))
+    building_operation_live_panel.add_theme_stylebox_override("panel", _style(Color(0.93, 0.88, 0.75, 1.0), Color(0.51, 0.43, 0.28, 1.0), 1, 10))
     building_operation_panel.add_child(building_operation_live_panel)
     building_operation_live_scroll = ScrollContainer.new()
     building_operation_live_scroll.name = "BuildingOperationLiveScroll"
@@ -3137,6 +3154,9 @@ func _show_building_operation_panel() -> void:
     if building_operation_panel == null or selected_building == &"":
         return
     building_operation_panel.visible = true
+    # Hide the map's higher-z focus ring while a management screen is visible.
+    if focus_marker != null:
+        focus_marker.visible = false
     if camera_controls_panel != null:
         camera_controls_panel.visible = false
     if camera_hint != null:
@@ -3173,6 +3193,8 @@ func _refresh_building_operation_content() -> void:
     if not _building_operation_is_open() or selected_building == &"":
         return
     building_operation_title.text = _building_name(selected_building)
+    var left_scroll_position := building_operation_scroll.scroll_vertical
+    var right_scroll_position := building_operation_live_scroll.scroll_vertical
     var feedback := ""
     if building_management_feedback != "":
         feedback = "\n\n%s" % building_management_feedback
@@ -3201,6 +3223,24 @@ func _refresh_building_operation_content() -> void:
     building_operation_live_panel.position = Vector2(552, 316)
     building_operation_live_panel.size = Vector2(612, 216)
     _rebuild_building_management_controls()
+    _style_building_management_actions(building_management_container)
+    building_operation_scroll.set_deferred("scroll_vertical", left_scroll_position)
+    building_operation_live_scroll.set_deferred("scroll_vertical", right_scroll_position)
+
+func _style_building_management_actions(root: Node) -> void:
+    for node in root.get_children():
+        if node is Button:
+            var action := node as Button
+            var base_color := CINNABAR if action.text.begins_with("Rút") else JADE_DARK
+            action.add_theme_stylebox_override("normal", _style(base_color, GOLD, 1, 7))
+            action.add_theme_stylebox_override("hover", _style(base_color.lightened(0.12), GOLD, 2, 7))
+            action.add_theme_stylebox_override("pressed", _style(base_color.darkened(0.12), GOLD, 2, 7))
+            action.add_theme_stylebox_override("disabled", _style(Color(0.85, 0.83, 0.76), Color(0.50, 0.46, 0.37), 1, 7))
+            action.add_theme_color_override("font_color", PAPER_LIGHT)
+            action.add_theme_color_override("font_hover_color", PAPER_LIGHT)
+            action.add_theme_color_override("font_pressed_color", PAPER_LIGHT)
+            action.add_theme_color_override("font_disabled_color", INK)
+        _style_building_management_actions(node)
 
 func _building_operation_headline(operation_text: String) -> String:
     var result: Array[String] = []
@@ -3306,7 +3346,7 @@ func _refresh_building_operation_metrics() -> void:
     var building := _selected_operation_building()
     var level_text := "—"
     var worker_text := "—"
-    var cycle_text := "Chưa có mẻ"
+    var cycle_text := "Chưa khởi khai"
     var output_text := "—"
     var icon_kind := "resource"
     if building != null:
@@ -3323,7 +3363,7 @@ func _refresh_building_operation_metrics() -> void:
             icon_kind = "person"
         else:
             var snapshot := _map_worksite_snapshot(building)
-            cycle_text = str(snapshot.get("detail", "Chưa có mẻ"))
+            cycle_text = str(snapshot.get("detail", "Chưa khởi khai"))
             output_text = "Đã nhập %d" % int(snapshot.get("received", building.metrics.get("units_produced", 0)))
             if building.building_type == BuildingSystem.TYPE_MINE:
                 icon_kind = "ore"
@@ -3334,7 +3374,7 @@ func _refresh_building_operation_metrics() -> void:
     for entry in [
         ["CẤP CÔNG TRÌNH", level_text, "upgrade"],
         ["NHÂN SỰ / CHỖ", worker_text, "worker"],
-        ["MẺ / TIẾN ĐỘ", cycle_text, "timer"],
+        ["CHU KỲ / TIẾN ĐỘ", cycle_text, "timer"],
         ["SẢN LƯỢNG THẬT", output_text, icon_kind]
     ]:
         var card := SECT_UI_THEME.metric_card(str(entry[0]), str(entry[1]), str(entry[2]), GOLD)
@@ -3369,11 +3409,14 @@ func _refresh_building_operation_live(operation_text: String) -> void:
         building_operation_progress.max_value = 100.0
         building_operation_progress.value = float(snapshot.get("progress", 0.0)) if bool(snapshot.get("active", false)) else 0.0
         building_operation_progress.show_percentage = bool(snapshot.get("active", false))
+        building_operation_progress.add_theme_stylebox_override("background", _style(Color(0.76, 0.75, 0.66), Color(0.47, 0.42, 0.30), 1, 5))
+        building_operation_progress.add_theme_stylebox_override("fill", _style(JADE_DARK, GOLD, 1, 5))
         building_operation_live_content.add_child(building_operation_progress)
         building_operation_progress_label = Label.new()
         building_operation_progress_label.name = "CanonicalWorksiteEta"
-        building_operation_progress_label.text = "%s · %s" % [str(snapshot.get("heading", "")), str(snapshot.get("detail", "Chưa có mẻ"))]
-        building_operation_progress_label.add_theme_font_size_override("font_size", 12)
+        building_operation_progress_label.text = "%s · %s" % [str(snapshot.get("heading", "")), str(snapshot.get("detail", "Chưa khởi khai"))]
+        building_operation_progress_label.add_theme_font_size_override("font_size", 13)
+        building_operation_progress_label.add_theme_color_override("font_color", INK)
         building_operation_live_content.add_child(building_operation_progress_label)
         var assigned := BuildingSystem.new().assigned_worker_ids(state, building)
         if assigned.is_empty():
@@ -3446,7 +3489,7 @@ func _add_live_worker_card(display_name: String, status: String) -> void:
     card.name = "LiveWorkerCard"
     card.custom_minimum_size = Vector2(560, 44)
     card.mouse_filter = Control.MOUSE_FILTER_PASS
-    card.add_theme_stylebox_override("panel", _style(Color(0.58, 0.47, 0.31, 0.55), Color(0.96, 0.92, 0.82, 1.0), 1, 7))
+    card.add_theme_stylebox_override("panel", _style(Color(0.86, 0.80, 0.65, 1.0), Color(0.52, 0.43, 0.27, 1.0), 1, 7))
     var row := HBoxContainer.new()
     row.add_theme_constant_override("separation", 8)
     row.mouse_filter = Control.MOUSE_FILTER_PASS
@@ -4587,7 +4630,8 @@ func _assign_building_group(disciple_id: StringName, group_id: StringName, succe
         return
     var ok := workforce.assign_group(state, disciple_id, group_id)
     building_management_feedback = success_text if ok else "Không thể đổi phân công lúc này."
-    _refresh_building_operation_content()
+    # Rebuild outside the pressed-button signal to keep the active UI stable.
+    call_deferred("_refresh_building_operation_content")
 
 func _assign_mine_worksite(disciple_id: StringName, building_id: StringName) -> void:
     if not state.disciples.has(disciple_id):
@@ -4597,7 +4641,7 @@ func _assign_mine_worksite(disciple_id: StringName, building_id: StringName) -> 
         "Đã cập nhật điểm làm việc; slot hoạt động do công trình quyết định."
         if ok else "Không thể cập nhật điểm làm việc lúc này."
     )
-    _refresh_building_operation_content()
+    call_deferred("_refresh_building_operation_content")
 
 func _issue_building_order(disciple_id: StringName, kind: StringName, target: String, success_text: String) -> void:
     if not state.disciples.has(disciple_id):
@@ -4612,7 +4656,7 @@ func _issue_building_order(disciple_id: StringName, kind: StringName, target: St
     else:
         var ok := workforce.issue_command(state, disciple_id, kind, target, 40)
         building_management_feedback = success_text if ok else "Không thể ra lệnh lúc này."
-    _refresh_building_operation_content()
+    call_deferred("_refresh_building_operation_content")
 
 # Display only two actual slots, rather than offering imaginary building
 # capacity or a parallel character roster. Rows are backed by persisted V2
@@ -6262,13 +6306,13 @@ func _map_worksite_snapshot(building: BuildingState) -> Dictionary:
                 if active_worker_id != &"":
                     result["worker"] = state.disciples[active_worker_id].display_name if state.disciples.has(active_worker_id) else str(active_worker_id)
                 result["heading"] = "%s · %s" % [type_title,ResourceRegistry.new().display_name(output_id)]
-                result["detail"] = "Mẻ ×%d · %s" % [maxi(0,int(job.get("output_quantity",0))),"Chờ nhập kho" if finish_tick <= state.tick else "còn %dp" % (finish_tick-state.tick)]
+                result["detail"] = "Khai thác ×%d · %s" % [maxi(0,int(job.get("output_quantity",0))),"Chờ nhập Linh Kho" if finish_tick <= state.tick else "còn %d phút mô phỏng" % (finish_tick-state.tick)]
                 result["display_detail"] = "×%s · %s" % [SectProductionWorksiteCue._map_quantity(maxi(0,int(job.get("output_quantity",0)))),"chờ kho" if finish_tick <= state.tick else "%dp" % (finish_tick-state.tick)]
                 result["progress"] = 100.0*float(elapsed)/float(total)
                 result["active"] = true
                 result["waiting"] = finish_tick <= state.tick
                 return result
-        result["detail"] = "Chờ mẻ tiếp" if int(result["received"]) > 0 else ("Chưa có mẻ" if not assigned.is_empty() else "Chưa phân công")
+        result["detail"] = "Chờ lượt khai thác tiếp" if int(result["received"]) > 0 else ("Đã giao người · chưa khởi khai" if not assigned.is_empty() else "Chưa phân công")
         return result
     var plot_data = building.production_state.get("plots",[])
     if not (plot_data is Array):
@@ -6300,7 +6344,7 @@ func _map_worksite_snapshot(building: BuildingState) -> Dictionary:
     var total := maxi(1,finish_tick-start_tick)
     var elapsed := clampi(state.tick-start_tick,0,total)
     var yield_count := maxi(0,int(nearest.get("routine_yield",0)))
-    result["detail"] = "Thường ×%d · %s" % [yield_count,"Chờ nhập kho" if finish_tick <= state.tick else "còn %dp" % (finish_tick-state.tick)]
+    result["detail"] = "Linh thảo ×%d · %s" % [yield_count,"Chờ nhập Linh Kho" if finish_tick <= state.tick else "còn %d phút mô phỏng" % (finish_tick-state.tick)]
     result["display_detail"] = "%s ×%s · %s" % [spirit_crop_registry.display_name(StringName(nearest.get("crop_id",""))),SectProductionWorksiteCue._map_quantity(yield_count),"chờ kho" if finish_tick <= state.tick else "%dp" % (finish_tick-state.tick)]
     result["progress"] = 100.0*float(elapsed)/float(total)
     result["active"] = true
@@ -8105,6 +8149,8 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "T�
         roster_search.position = Vector2(8, 46)
         roster_search.size = Vector2(roster_width - 16.0, 32)
         roster_search.placeholder_text = "Tìm đệ tử"
+        roster_search.add_theme_color_override("font_color", INK)
+        roster_search.add_theme_color_override("font_placeholder_color", Color(0.29, 0.27, 0.22))
         roster_search.text = disciple_profile_search_query
         roster_search.add_theme_font_size_override("font_size", 13)
         roster_search.text_changed.connect(Callable(self, "_apply_deep_disciple_roster_filter"))
@@ -8148,10 +8194,27 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "T�
     showcase.add_theme_stylebox_override("panel", _style(Color(0.76, 0.84, 0.72, 1.0), Color(0.31, 0.40, 0.28, 1.0), 2, 80))
     panel.add_child(showcase)
 
-    var initial := _label(showcase, disciple.display_name.substr(0, 1), Vector2(70, 66), Vector2(160, 150), 86)
-    initial.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-    initial.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-    initial.add_theme_color_override("font_color", JADE_DARK)
+    # Reuse verified character visuals for legacy saves without fabricating V2 XP.
+    var portrait_texture := _disciple_source_a_portrait_texture(disciple)
+    if portrait_texture != null:
+        var portrait := TextureRect.new()
+        portrait.name = "SourceAProfilePortrait"
+        portrait.texture = portrait_texture
+        portrait.position = Vector2(30, 20)
+        portrait.size = Vector2(240, 210)
+        portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+        portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+        portrait.mouse_filter = Control.MOUSE_FILTER_IGNORE
+        showcase.add_child(portrait)
+    else:
+        var fallback_avatar := _disciple_avatar_button(disciple, 192.0)
+        fallback_avatar.name = "VisualCatalogPortraitFallback"
+        fallback_avatar.position = Vector2(54, 20)
+        fallback_avatar.size = Vector2(192, 192)
+        fallback_avatar.mouse_filter = Control.MOUSE_FILTER_IGNORE
+        fallback_avatar.focus_mode = Control.FOCUS_NONE
+        fallback_avatar.add_theme_stylebox_override("normal", _style(Color(0.79, 0.85, 0.75, 0.0), JADE_DARK, 0, 8))
+        showcase.add_child(fallback_avatar)
 
     var center_name := _label(showcase, disciple.display_name, Vector2(20, 232), Vector2(260, 32), 22)
     center_name.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -8240,19 +8303,6 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "T�
             details_scroll.size = Vector2(content_width - text_x - 18.0,220)
             content.custom_minimum_size = Vector2(details_scroll.size.x - 22.0,0)
             content.add_theme_font_size_override("font_size",13 if is_overview_tab else 14)
-    if authentic_v2 and tab_name in ["Thuộc tính", "Tổng Quan"]:
-        var source_scene := DiscipleSourceAVisualPool.scene_for_disciple(disciple)
-        if source_scene != null:
-            var source_actor := source_scene.instantiate() as AnimatedSprite2D
-            if source_actor != null:
-                initial.visible = false
-                source_actor.name = "VerifiedSourceAProfileActor"
-                source_actor.position = Vector2(150,148)
-                source_actor.scale = Vector2(1.0,1.0)
-                if source_actor.sprite_frames != null and source_actor.sprite_frames.has_animation(&"stand"):
-                    source_actor.play(&"stand")
-                    source_actor.pause()
-                showcase.add_child(source_actor)
     if not authentic_v2:
         if tab_name == "Huyết Mạch":
             _add_tab_action_button(content_panel, "Thức tỉnh", Vector2(18, 344), "bloodline_awaken")
@@ -8303,6 +8353,7 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "T�
         tab.add_theme_stylebox_override("normal", _style(Color(0.97, 0.88, 0.64, 1.0) if active else Color(0.88, 0.82, 0.67, 1.0), GOLD if active else Color(0.45, 0.37, 0.25, 1.0), 2 if active else 1, 7))
         tab.pressed.connect(Callable(self, "_open_disciple_deep_screen").bind(selected_id, str(tab_names[index])))
         panel.add_child(tab)
+    _ensure_disabled_controls_readable(panel)
 
 
 func _disciple_profile_tab_label(tab_name: String) -> String:
