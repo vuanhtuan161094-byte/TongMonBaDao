@@ -218,6 +218,51 @@ func _run() -> void:
     if deep.find_child("DiscipleProfileProvenance",true,false) != null:
         _fail("recruit must not use a special source/V2 badge or unique form")
         return
+    # Compare seven real tab shells, controls and geometry across both origins.
+    var profile_actor_ids := [starter_id, recruit_id]
+    for shared_tab in semantic_tabs:
+        var first_geometry: Dictionary = {}
+        for shared_actor_index in range(profile_actor_ids.size()):
+            ui.call("_open_disciple_deep_screen",profile_actor_ids[shared_actor_index],shared_tab)
+            await process_frame
+            deep = popups.get_node_or_null("DiscipleDeepScreen") as Panel
+            if deep == null:
+                _fail("missing shared profile for "+shared_tab)
+                return
+            var common_nodes: Array[String] = [
+                "DeepDiscipleRosterPanel","DeepQuickAssignment","BackToMapContext",
+                "DiscipleTabContentScroll","DiscipleProgress_TU_VI",
+                "DiscipleProgress_LUYỆN_THỂ","LocateDiscipleOnMap"
+            ]
+            if shared_tab == "Tổng Quan":
+                common_nodes.append("HS09OverviewRadar")
+            elif shared_tab == "Thuộc tính":
+                common_nodes.append("HS09AttributeRadar")
+                common_nodes.append("BodyGateRealCommit")
+            match shared_tab:
+                "Huyết Mạch":
+                    common_nodes.append("ProfileAction_bloodline_awaken")
+                    common_nodes.append("ProfileAction_bloodline_refine")
+                "Thể Chất":
+                    common_nodes.append("ProfileAction_physique_temper")
+                    common_nodes.append("ProfileAction_physique_transform")
+                _:
+                    common_nodes.append("ProfileAction_v2_cultivate")
+                    common_nodes.append("ProfileAction_v2_body_train")
+            for common_name in common_nodes:
+                var common_node := deep.find_child(common_name,true,false) as Control
+                if common_node == null:
+                    _fail("missing common profile node "+shared_tab+" / "+common_name)
+                    return
+                var geometry := [common_node.position,common_node.size]
+                if shared_actor_index == 0:
+                    first_geometry[common_name] = geometry
+                elif not first_geometry.has(common_name) or first_geometry[common_name] != geometry:
+                    _fail("founder/recruit geometry split: "+shared_tab+" / "+common_name)
+                    return
+            if deep.find_child("DiscipleProfileProvenance",true,false) != null:
+                _fail("provenance badge reappeared in shared profile "+shared_tab)
+                return
     for tab_index in range(EXPECTED_TABS.size()):
         var tab := deep.get_node_or_null("DeepDiscipleTab_%d" % tab_index) as Button
         if tab == null or tab.text != EXPECTED_TABS[tab_index]:
