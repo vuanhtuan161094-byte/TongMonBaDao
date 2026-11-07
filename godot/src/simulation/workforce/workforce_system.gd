@@ -230,6 +230,32 @@ func p3_7_profession_level(disciple: DiscipleState, profession_id: StringName) -
 func profession_level_for_state(state: SimulationState, disciple: DiscipleState, profession_id: StringName) -> int:
     return p3_7_profession_level(disciple, profession_id) if state.p3_7_buildings_enabled else profession_level(disciple, profession_id)
 
+# Shared read-only profession-XP preview: the same coefficients as the
+# production commit path. Not a reward transaction and never changes the save.
+func expected_profession_xp_gain(state: SimulationState, disciple: DiscipleState, profession_id: StringName, base_xp: float = BASE_WORK_XP, facility_factor: float = 1.0) -> float:
+    if state == null or disciple == null or not VALID_PROFESSIONS.has(profession_id):
+        return 0.0
+    return maxf(base_xp, 0.0) * _learning_multiplier(state, disciple, profession_id) * maxf(facility_factor, 0.0)
+
+func profession_xp_progress(state: SimulationState, disciple: DiscipleState, profession_id: StringName) -> Dictionary:
+    if state == null or disciple == null or not VALID_PROFESSIONS.has(profession_id):
+        return {}
+    var xp := profession_xp(disciple, profession_id)
+    var level := profession_level_for_state(state, disciple, profession_id)
+    var next_threshold := -1.0
+    if state.p3_7_buildings_enabled:
+        next_threshold = P3_7_XP_LEVEL_SCALE * pow(float(level + 1), 2.0)
+    else:
+        var thresholds := [35.0, 100.0, 220.0, 380.0, 600.0, 900.0]
+        if level < thresholds.size():
+            next_threshold = float(thresholds[level])
+    return {
+        "level": level,
+        "xp": xp,
+        "next_threshold": next_threshold,
+        "remaining_xp": maxf(0.0, next_threshold - xp) if next_threshold >= 0.0 else 0.0
+    }
+
 func issue_command(state: SimulationState, disciple_id: StringName, kind: StringName, target: String = "", ttl: int = 40) -> bool:
     if not state.sect.workforce_enabled or not state.disciples.has(disciple_id) or not VALID_COMMANDS.has(kind):
         return false
