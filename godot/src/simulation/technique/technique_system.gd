@@ -163,8 +163,11 @@ var warehouse := WarehouseSystem.new()
 func initialize(state: SimulationState) -> void:
     if not state.sect.spiritual_roots_enabled:
         return
+    # Opening capital is granted exactly once when the technique economy is
+    # first installed. A later initialize() must NEVER refill a spent treasury.
+    var first_activation := not state.sect.techniques_enabled
     state.sect.techniques_enabled = true
-    if state.sect.spirit_stones <= 0:
+    if first_activation and state.sect.spirit_stones <= 0:
         state.sect.spirit_stones = INITIAL_SECT_SPIRIT_STONES
 
     var disciple_ids: Array = state.disciples.keys()
