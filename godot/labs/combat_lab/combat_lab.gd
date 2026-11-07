@@ -29,6 +29,13 @@ var zoom_option: OptionButton
 var active_slots: Array[OptionButton] = []
 var ultimate_slot: OptionButton
 var skill_preview_option: OptionButton
+var poison_catalog_heading: Label
+var poison_catalog_option: OptionButton
+var poison_skill_detail_label: Label
+var poison_load_button: Button
+var poison_boss_preset_button: Button
+var poison_current_skill_label: Label
+var poison_stack_label: Label
 var state_label: Label
 var roster_label: Label
 var stats_label: Label
@@ -41,11 +48,22 @@ var frame_accumulator := 0.0
 var hud_accumulator := 0.0
 var fixture_states: Array[SimulationState] = []
 var fixture_actors: Array[Dictionary] = []
+var selected_catalog_skill_id := ""
+var last_combat_skill_id := ""
+var passive_override_id := ""
+var basic_override_id := ""
+var mobility_override_id := ""
 
 func _ready() -> void:
     custom_minimum_size = Vector2(1280, 720)
     bridge = EventBridgeScript.new()
     _build_ui()
+    # Combat Lab opens on the requested showcase. All three enemy tiers and
+    # party sizes remain selectable from the same Lab controls.
+    school_option.select(SCHOOL_KEYS.find("poison"))
+    party_count.value = 6
+    enemy_option.select(2)
+    _refresh_boss_visibility()
     _refresh_branches()
     _refresh_skills()
     _apply_capture_preset()
@@ -168,9 +186,21 @@ func _build_ui() -> void:
     skill_preview_option = OptionButton.new()
     skill_preview_option.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     controls.add_child(skill_preview_option)
+    skill_preview_option.item_selected.connect(_on_preview_skill_selected)
     var cast_preview_button := _button(controls, "THỬ CHIÊU (HOLD)", Color("4a6073"))
     cast_preview_button.tooltip_text = "Tạm dừng AUTO, thử đúng kỹ năng đã học/trang bị. Không bỏ qua hồi chiêu."
     cast_preview_button.pressed.connect(_preview_selected_skill)
+    poison_catalog_heading = _label(controls, "DANH MỤC ĐỘC TU · CẢNH GIỚI / NHÁNH", 12, Color("c4b3e1"))
+    poison_catalog_option = OptionButton.new()
+    poison_catalog_option.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+    poison_catalog_option.item_selected.connect(_on_poison_catalog_selected)
+    controls.add_child(poison_catalog_option)
+    poison_skill_detail_label = _label(controls, "Chọn skill để xem mô tả và trạng thái hỗ trợ.", 11, Color("b9e6b1"))
+    poison_load_button = _button(controls, "NẠP SKILL & TẠO LẠI TRẬN", Color("476a4f"))
+    poison_load_button.tooltip_text = "Chỉ nạp slot mà V6.3 cho phép; nội tại chưa có slot loadout Lab sẽ chỉ hiển thị."
+    poison_load_button.pressed.connect(_load_selected_poison_skill)
+    poison_boss_preset_button = _button(controls, "ĐỘC TU · 6 vs BOSS", Color("5d3e75"))
+    poison_boss_preset_button.pressed.connect(_apply_poison_boss_preset)
     _label(controls, "ĐỐI THỦ", 14, Color("c9b9dd"))
     enemy_option = _option(controls, "Đối thủ", ["Thường · Hắc Lang", "Tinh Anh · Nham Giáp", "Boss V6.3 thật"])
     enemy_option.item_selected.connect(func(_i: int): _refresh_boss_visibility())
@@ -230,8 +260,13 @@ func _build_ui() -> void:
     var sep := HSeparator.new(); right.add_child(sep)
     _label(right, "STAT BREAKDOWN · CONSUMER V2", 13, Color("d8cce9"))
     stats_label = _label(right, "", 11, Color("b9aec7"))
-    stats_label.custom_minimum_size.y = 118
+    stats_label.custom_minimum_size.y = 136
     var sep2 := HSeparator.new(); right.add_child(sep2)
+    _label(right, "ĐỘC TU · SKILL / STACK THẬT", 13, Color("d8cce9"))
+    poison_current_skill_label = _label(right, "Skill: —", 11, Color("d3c2e4"))
+    poison_current_skill_label.custom_minimum_size.y = 42
+    poison_stack_label = _label(right, "Độc trên quái: 0", 11, Color("a5f28e"))
+    var sep3 := HSeparator.new(); right.add_child(sep3)
     _label(right, "SỰ KIỆN CHIẾN ĐẤU", 13, Color("d8cce9"))
     events_label = _label(right, "", 11, Color("c8bed5"))
     events_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -325,11 +360,25 @@ func _lineage() -> String:
 
 func _refresh_branches() -> void:
     if branch_option == null: return
+    var previous_branch := _branch()
     branch_option.clear()
     var rows := CombatLabRosterAdapter.school_branches(_school())
     for row in rows: branch_option.add_item(str(row.get("name", row.get("id", ""))))
     for index in range(rows.size()): branch_option.set_item_metadata(index, str(rows[index].get("id", "")))
-    if rows.size() > 0: branch_option.select(0)
+    if rows.size() > 0:
+        if _school() != "poison":
+            branch_option.select(0)
+            _refresh_skills()
+            return
+        var selected_branch := previous_branch
+        if selected_branch.is_empty() or not _branch_rows_have_id(rows, selected_branch):
+            selected_branch = "doc_cham" if _school() == "poison" else str(rows[0].get("id", ""))
+        var selected_index := 0
+        for index in range(rows.size()):
+            if str(rows[index].get("id", "")) == selected_branch:
+                selected_index = index
+                break
+        branch_option.select(selected_index)
     _refresh_skills()
 
 func _refresh_skills() -> void:
@@ -340,12 +389,19 @@ func _refresh_skills() -> void:
     var lineage := _lineage()
     var active := CombatLabRosterAdapter.skill_options(school, generation, "active", branch, lineage)
     var ultimate := CombatLabRosterAdapter.skill_options(school, generation, "ultimate", branch, lineage)
+    var basics := CombatLabRosterAdapter.skill_options(school, generation, "basic", branch, lineage)
+    var mobility := CombatLabRosterAdapter.skill_options(school, generation, "mobility", branch, lineage)
+    var passives := CombatLabRosterAdapter.skill_options(school, generation, "passive", branch, lineage)
+    if not _rows_have_id(passives, passive_override_id): passive_override_id = ""
+    if not _rows_have_id(basics, basic_override_id): basic_override_id = ""
+    if not _rows_have_id(mobility, mobility_override_id): mobility_override_id = ""
     for index in range(active_slots.size()):
         _fill_skill_option(active_slots[index], active, mini(index, maxi(active.size() - 1, 0)))
         active_slots[index].disabled = active.is_empty()
     _fill_skill_option(ultimate_slot, ultimate, 0)
     ultimate_slot.disabled = ultimate.is_empty()
     _refresh_preview_choice()
+    _refresh_poison_catalog()
 
 func _refresh_preview_choice() -> void:
     if skill_preview_option == null:
@@ -385,6 +441,235 @@ func _fill_skill_option(option: OptionButton, rows: Array[Dictionary], selected_
         option.set_item_metadata(option.item_count - 1, str(row.get("id", "")))
     if option.item_count > 0: option.select(clampi(selected_index, 0, option.item_count - 1))
 
+func _refresh_poison_catalog() -> void:
+    if poison_catalog_option == null:
+        return
+    var is_poison := _school() == "poison"
+    poison_catalog_heading.visible = is_poison
+    poison_catalog_option.visible = is_poison
+    poison_skill_detail_label.visible = is_poison
+    poison_load_button.visible = is_poison
+    poison_boss_preset_button.visible = is_poison
+    if not is_poison:
+        poison_catalog_option.clear()
+        selected_catalog_skill_id = ""
+        poison_skill_detail_label.text = ""
+        return
+
+    var previous_id := selected_catalog_skill_id
+    if poison_catalog_option.item_count > 0 and poison_catalog_option.selected >= 0:
+        previous_id = str(poison_catalog_option.get_item_metadata(poison_catalog_option.selected))
+    poison_catalog_option.clear()
+    var rows := _poison_catalog_rows()
+    poison_catalog_heading.text = "DANH MỤC ĐỘC TU · %d SKILL · %s / %s" % [
+        rows.size(), _generation_label(_generation()), _branch_label(_branch())]
+    for row in rows:
+        var slot := str(row.get("slot", "unknown"))
+        var tier := str(row.get("generation", row.get("tier", "human")))
+        var name := str(row.get("name", row.get("id", "")))
+        var lineage := str(row.get("lineage", ""))
+        var candidate_tag := " · CANDIDATE" if str(row.get("balance_status", "")) == "candidate" else ""
+        var unavailable_tag := " · DESIGN-ONLY" if slot == "innate" and not bool(row.get("archivable", false)) else ""
+        var lineage_tag := " · " + lineage.to_upper() if not lineage.is_empty() else ""
+        poison_catalog_option.add_item("%s · %s · %s%s%s%s" % [
+            _catalog_slot_label(slot), _generation_label(tier), name, lineage_tag, candidate_tag, unavailable_tag])
+        poison_catalog_option.set_item_metadata(poison_catalog_option.item_count - 1, str(row.get("id", "")))
+    if poison_catalog_option.item_count == 0:
+        selected_catalog_skill_id = ""
+        poison_skill_detail_label.text = "Catalog không có skill cho lựa chọn này."
+        poison_load_button.disabled = true
+        return
+    var selected_index := 0
+    for index in range(poison_catalog_option.item_count):
+        if str(poison_catalog_option.get_item_metadata(index)) == previous_id:
+            selected_index = index
+            break
+    poison_catalog_option.select(selected_index)
+    selected_catalog_skill_id = str(poison_catalog_option.get_item_metadata(selected_index))
+    _refresh_poison_skill_details()
+
+func _poison_catalog_rows() -> Array[Dictionary]:
+    var rows: Array[Dictionary] = []
+    var generation := _generation()
+    var branch := _branch()
+    var lineage := _lineage()
+    for raw in CombatLabRosterAdapter.skill_definitions().values():
+        if not (raw is Dictionary):
+            continue
+        var row: Dictionary = raw
+        if str(row.get("school", "")) != "poison":
+            continue
+        if str(row.get("generation", row.get("tier", "human"))) != generation:
+            continue
+        var row_branch := str(row.get("branch", ""))
+        if not row_branch.is_empty() and row_branch != branch:
+            continue
+        var row_lineage := str(row.get("lineage", ""))
+        if generation in ["immortal", "divine"] and not row_lineage.is_empty() and row_lineage != lineage:
+            continue
+        rows.append(row.duplicate(true))
+    rows.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+        var a_slot := _catalog_slot_order(str(a.get("slot", "")))
+        var b_slot := _catalog_slot_order(str(b.get("slot", "")))
+        if a_slot != b_slot:
+            return a_slot < b_slot
+        var a_order := int(a.get("order", a.get("index", 0)))
+        var b_order := int(b.get("order", b.get("index", 0)))
+        if a_order != b_order:
+            return a_order < b_order
+        return str(a.get("id", "")) < str(b.get("id", ""))
+    )
+    return rows
+
+func _catalog_slot_order(slot: String) -> int:
+    var slots := ["basic", "mobility", "active", "ultimate", "passive", "innate"]
+    var index := slots.find(slot)
+    return index if index >= 0 else slots.size()
+
+func _catalog_slot_label(slot: String) -> String:
+    match slot:
+        "basic": return "CƠ BẢN"
+        "mobility": return "THÂN PHÁP"
+        "active": return "CHỦ ĐỘNG"
+        "ultimate": return "TUYỆT KỸ"
+        "passive": return "BỊ ĐỘNG"
+        "innate": return "NỘI TẠI"
+    return slot.to_upper()
+
+func _generation_label(generation: String) -> String:
+    var index := GENERATION_KEYS.find(generation)
+    return GENERATION_LABELS[index] if index >= 0 else generation
+
+func _branch_label(branch: String) -> String:
+    match branch:
+        "doc_cham": return "Độc Châm"
+        "co_doc": return "Cổ Độc"
+        "duoc_doc": return "Dược Độc"
+    return branch if not branch.is_empty() else "Chung"
+
+func _rows_have_id(rows: Array[Dictionary], skill_id: String) -> bool:
+    if skill_id.is_empty():
+        return false
+    for row in rows:
+        if str(row.get("id", "")) == skill_id:
+            return true
+    return false
+
+func _branch_rows_have_id(rows: Array[Dictionary], branch: String) -> bool:
+    for row in rows:
+        if str(row.get("id", "")) == branch:
+            return true
+    return false
+
+func _on_poison_catalog_selected(index: int) -> void:
+    if index < 0 or index >= poison_catalog_option.item_count:
+        return
+    selected_catalog_skill_id = str(poison_catalog_option.get_item_metadata(index))
+    _refresh_poison_skill_details()
+
+func _on_preview_skill_selected(index: int) -> void:
+    if index < 0 or index >= skill_preview_option.item_count or _school() != "poison":
+        return
+    selected_catalog_skill_id = str(skill_preview_option.get_item_metadata(index))
+    for catalog_index in range(poison_catalog_option.item_count):
+        if str(poison_catalog_option.get_item_metadata(catalog_index)) == selected_catalog_skill_id:
+            poison_catalog_option.select(catalog_index)
+            break
+    _refresh_poison_skill_details()
+
+func _refresh_poison_skill_details() -> void:
+    if poison_skill_detail_label == null or _school() != "poison":
+        return
+    var definition: Dictionary = CombatLabRosterAdapter.skill_definitions().get(selected_catalog_skill_id, {})
+    if definition.is_empty():
+        poison_skill_detail_label.text = "Chọn skill để xem mô tả và trạng thái hỗ trợ."
+        poison_load_button.disabled = true
+        return
+    var slot := str(definition.get("slot", "unknown"))
+    var tier := str(definition.get("generation", definition.get("tier", "human")))
+    var branch := str(definition.get("branch", ""))
+    var shape := str(definition.get("shape", "unspecified"))
+    var target_limit := int(definition.get("target_limit", 0))
+    var target_text := "Loại mục tiêu: %s" % shape.replace("_", " ")
+    if target_limit > 0:
+        target_text += " · tối đa %d" % target_limit
+    var radius := float(definition.get("radius", 0.0))
+    if radius > 0.0:
+        target_text += " · bán kính %.1f" % radius
+    var poison_stacks := int(definition.get("poison_stacks", 0))
+    var skill_name := str(definition.get("name", selected_catalog_skill_id))
+    var effect := str(definition.get("effect", "unspecified"))
+    var runtime_tag := "V6.3 Lab · có thể nạp" if bool(definition.get("archivable", false)) or slot in ["basic", "mobility"] else "DESIGN-ONLY trong loadout Lab · chỉ duyệt"
+    if str(definition.get("balance_status", "")) == "candidate":
+        runtime_tag += " · CANDIDATE"
+    poison_skill_detail_label.text = "%s\n%s · %s · %s\n%s\n%s · độc %d stack · CD %.1fs\n%s" % [
+        skill_name, _generation_label(tier), _branch_label(branch), _catalog_slot_label(slot), target_text,
+        effect, poison_stacks, float(definition.get("cooldown", 0.0)), runtime_tag]
+    poison_load_button.disabled = not (bool(definition.get("archivable", false)) or slot in ["basic", "mobility"])
+    poison_load_button.text = "NẠP SKILL & TẠO LẠI TRẬN" if not poison_load_button.disabled else "NỘI TẠI · CHỈ DUYỆT"
+
+func _load_selected_poison_skill() -> void:
+    if selected_catalog_skill_id.is_empty() or _school() != "poison":
+        return
+    var definition: Dictionary = CombatLabRosterAdapter.skill_definitions().get(selected_catalog_skill_id, {})
+    if definition.is_empty():
+        return
+    var slot := str(definition.get("slot", ""))
+    var loaded := false
+    match slot:
+        "active":
+            var target_index := 0
+            for index in range(active_slots.size()):
+                var current_id := str(active_slots[index].get_item_metadata(active_slots[index].selected))
+                if current_id == selected_catalog_skill_id:
+                    target_index = index
+                    break
+                var current: Dictionary = CombatLabRosterAdapter.skill_definitions().get(current_id, {})
+                if str(current.get("family_id", "")) == str(definition.get("family_id", "")):
+                    target_index = index
+                    break
+            loaded = _select_skill_option(active_slots[target_index], selected_catalog_skill_id)
+        "ultimate":
+            loaded = _select_skill_option(ultimate_slot, selected_catalog_skill_id)
+        "passive":
+            passive_override_id = selected_catalog_skill_id
+            loaded = true
+        "basic":
+            basic_override_id = selected_catalog_skill_id
+            loaded = true
+        "mobility":
+            mobility_override_id = selected_catalog_skill_id
+            loaded = true
+    if not loaded:
+        _set_error("Slot này chưa có đường nạp trong Combat Lab")
+        return
+    _refresh_preview_choice()
+    _start_battle()
+    if slot in ["active", "ultimate"]:
+        for index in range(skill_preview_option.item_count):
+            if str(skill_preview_option.get_item_metadata(index)) == selected_catalog_skill_id:
+                skill_preview_option.select(index)
+                break
+    _refresh_poison_combat_summary()
+
+func _select_skill_option(option: OptionButton, skill_id: String) -> bool:
+    for index in range(option.item_count):
+        if str(option.get_item_metadata(index)) == skill_id:
+            option.select(index)
+            return true
+    return false
+
+func _apply_poison_boss_preset() -> void:
+    school_option.select(SCHOOL_KEYS.find("poison"))
+    generation_option.select(GENERATION_KEYS.find("human"))
+    lineage_option.select(0)
+    party_count.value = 6
+    enemy_option.select(2)
+    _refresh_boss_visibility()
+    _refresh_branches()
+    _refresh_skills()
+    _start_battle()
+
 func _fill_bosses() -> void:
     boss_option.clear()
     for id in BOSS_IDS:
@@ -403,13 +688,33 @@ func _selected_loadout() -> Array[String]:
     var mobility := CombatLabRosterAdapter.skill_options(_school(), _generation(), "mobility", _branch(), _lineage())
     var passives := CombatLabRosterAdapter.skill_options(_school(), _generation(), "passive", _branch(), _lineage())
     if basics.is_empty() or mobility.is_empty() or passives.size() < 5 or ultimate_slot.item_count == 0: return result
-    result.append(str(basics[0].id))
-    result.append(str(mobility[0].id))
+    result.append(basic_override_id if not basic_override_id.is_empty() else str(basics[0].get("id", "")))
+    result.append(mobility_override_id if not mobility_override_id.is_empty() else str(mobility[0].get("id", "")))
     for slot in active_slots:
         if slot.item_count == 0: return []
         result.append(str(slot.get_item_metadata(slot.selected)))
     result.append(str(ultimate_slot.get_item_metadata(ultimate_slot.selected)))
-    for index in range(5): result.append(str(passives[index].id))
+    if passive_override_id.is_empty():
+        for index in range(5): result.append(str(passives[index].get("id", "")))
+    else:
+        var selected_passives: Array[Dictionary] = []
+        var seen_passive_families: Dictionary = {}
+        for passive in passives:
+            if str(passive.get("id", "")) == passive_override_id:
+                selected_passives.append(passive)
+                seen_passive_families[str(passive.get("family_id", ""))] = true
+                break
+        if selected_passives.is_empty(): return []
+        for passive in passives:
+            if selected_passives.size() >= 5:
+                break
+            var family := str(passive.get("family_id", ""))
+            if seen_passive_families.has(family):
+                continue
+            seen_passive_families[family] = true
+            selected_passives.append(passive)
+        if selected_passives.size() < 5: return []
+        for passive in selected_passives: result.append(str(passive.get("id", "")))
     return result
 
 func _preview_selected_skill() -> void:
@@ -510,6 +815,7 @@ func _start_battle() -> void:
     fixture_actors = setup.actors
     bridge.reset(battle)
     event_log.clear()
+    last_combat_skill_id = ""
     auto_run = true
     accumulator = 0.0
     arena.call("set_battle", battle, _school())
@@ -536,6 +842,14 @@ func _consume_events() -> void:
     var rows := bridge.poll(battle)
     arena.call("consume_events", rows)
     for event in rows:
+        var event_type := str(event.get("type", ""))
+        var event_skill_id := str(event.get("skill_id", event.get("source_skill_id", "")))
+        if event_type in ["skill_cast", "skill_release", "skill_hit"] and not event_skill_id.is_empty():
+            var event_skill: Dictionary = CombatLabRosterAdapter.skill_definitions().get(event_skill_id, {})
+            var event_source_id := str(event.get("caster", event.get("attacker", event.get("actor_id", ""))))
+            var event_source: Dictionary = battle.actors.get(event_source_id, {})
+            if str(event_skill.get("school", "")) == "poison" and str(event_source.get("side", "")) == "disciple":
+                last_combat_skill_id = event_skill_id
         event_log.append("%05.1fs  %s" % [float(event.get("time", 0.0)), str(event.get("type", "event"))])
     if event_log.size() > 8: event_log = event_log.slice(event_log.size() - 8)
 
@@ -572,6 +886,39 @@ func _refresh_hud() -> void:
             float(stats.crit_chance) * 100.0, float(stats.lifesteal) * 100.0,
             float(stats.cast_speed), float(stats.cooldown_recovery), float(stats.effect_hit), cast_state, cooldown_count]
     events_label.text = "\n".join(event_log)
+    _refresh_poison_combat_summary()
+
+func _refresh_poison_combat_summary() -> void:
+    if poison_current_skill_label == null or poison_stack_label == null:
+        return
+    var poison_selected := _school() == "poison"
+    poison_current_skill_label.visible = poison_selected
+    poison_stack_label.visible = poison_selected
+    if not poison_selected:
+        return
+    var skill_id := last_combat_skill_id if not last_combat_skill_id.is_empty() else selected_catalog_skill_id
+    var definition: Dictionary = CombatLabRosterAdapter.skill_definitions().get(skill_id, {})
+    if definition.is_empty():
+        poison_current_skill_label.text = "Skill: chưa chọn"
+    else:
+        var generation := str(definition.get("generation", definition.get("tier", "human")))
+        var branch := str(definition.get("branch", ""))
+        var shape := str(definition.get("shape", "unspecified")).replace("_", " ")
+        var prefix := "Đang đánh" if not last_combat_skill_id.is_empty() else "Đang xem"
+        poison_current_skill_label.text = "%s: %s\n%s · %s · %s" % [
+            prefix, str(definition.get("name", skill_id)), _generation_label(generation), _branch_label(branch), shape]
+    var stack_rows := PackedStringArray()
+    if battle != null:
+        for actor_id in battle.actors.keys():
+            var actor: Dictionary = battle.actors[actor_id]
+            if str(actor.get("side", "")) != "monster":
+                continue
+            var statuses: Dictionary = actor.get("status_effects", {})
+            var stacks: Array = statuses.get("v63_poison", [])
+            var count := stacks.size()
+            var enemy_name := "Boss" if str(actor.get("tier", "")) == "boss" else ("Tinh anh" if str(actor.get("tier", "")) == "elite" else "Quái")
+            stack_rows.append("%s ×%d" % [enemy_name, count])
+    poison_stack_label.text = "Độc trên quái: " + (" · ".join(stack_rows) if not stack_rows.is_empty() else "0 stack")
 
 func _fmt(value: float) -> String:
     return str(roundi(value))

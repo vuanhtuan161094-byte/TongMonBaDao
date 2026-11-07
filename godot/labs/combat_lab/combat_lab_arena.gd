@@ -39,7 +39,7 @@ func set_visual_time(value: float) -> void:
     # Presentation clock follows battle time; HOLD freezes projectile motion.
     visual_time = maxf(0.0, value)
 
-func _set_pose(actor_id: String, pose: String, lifetime_ms: int) -> void:
+func _set_pose(actor_id: String, pose: String, lifetime_ms: int, event_time: float = -1.0) -> void:
     if battle == null or not battle.actors.has(actor_id):
         return
     var state: Dictionary = actor_states.get(actor_id, {})
@@ -48,10 +48,20 @@ func _set_pose(actor_id: String, pose: String, lifetime_ms: int) -> void:
             "last_position":battle.actors[actor_id].get("position", Vector2.ZERO)}
     if str(state.get("pose", "")) == "death":
         return
-    # Pose time follows the Lab's battle presentation clock. HOLD freezes it.
+    var is_poison_disciple := school == "poison" and str(battle.actors[actor_id].get("side", "")) != "monster"
+    var pose_start := visual_time
+    if is_poison_disciple and event_time >= 0.0:
+        pose_start = event_time
+    # A canonical skill_release already starts the complete Attack clip. A
+    # later hit event for that same swing must not restart it mid-frame.
+    if is_poison_disciple and pose == "attack" and str(state.get("pose", "")) == "attack" \
+            and pose_start < float(state.get("until", 0.0)):
+        return
+    # Poison atlas timing follows the event's battle timestamp; the other
+    # Combat Lab rigs keep their existing presentation clock. HOLD freezes it.
     state["pose"] = pose
-    state["started"] = visual_time
-    state["until"] = visual_time + float(lifetime_ms) / 1000.0
+    state["started"] = pose_start
+    state["until"] = pose_start + float(lifetime_ms) / 1000.0
     actor_states[actor_id] = state
 
 func pose_for_actor(actor_id: String) -> String:
@@ -99,26 +109,33 @@ func consume_events(rows: Array[Dictionary]) -> void:
         var source_actor_id := str(event.get("caster", event.get("attacker", event.get("actor_id", ""))))
         var target_id := str(event.get("target", event.get("target_id", event.get("actor_id", ""))))
         var source_skill := str(event.get("skill_id", event.get("source_skill_id", "")))
+        var event_time := float(event.get("time", visual_time))
         if not source_skill.is_empty() and kind in ["skill_cast", "skill_release"]:
             last_skill_by_actor[source_actor_id] = source_skill
         if kind == "skill_cast":
-            var duration := clampi(roundi((float(event.get("release_at", 0.0)) - float(event.get("time", 0.0))) * 1000.0), 300, 1200)
-            _set_pose(source_actor_id, "cast", duration)
+            if school == "poison" and battle.actors.has(source_actor_id) \
+                    and str(battle.actors[source_actor_id].get("side", "")) != "monster":
+                var cast_window := maxf(0.0, float(event.get("release_at", event_time)) - event_time)
+                if cast_window > 0.0:
+                    _set_pose(source_actor_id, "cast", roundi(cast_window * 1000.0), event_time)
+            else:
+                var duration := clampi(roundi((float(event.get("release_at", 0.0)) - event_time) * 1000.0), 300, 1200)
+                _set_pose(source_actor_id, "cast", duration)
         elif kind == "skill_release":
-            _set_pose(source_actor_id, "attack", _pose_lifetime_ms(source_actor_id, "attack", 420))
+            _set_pose(source_actor_id, "attack", _pose_lifetime_ms(source_actor_id, "attack", 420), event_time)
         elif kind == "hit" and float(event.get("damage", 0.0)) > 0.0:
             # DoT/reflect are autonomous settlements: never replay a weapon swing
             # for the original caster when poison, burn or reflection ticks.
             var hit_kind := str(event.get("kind", ""))
             if hit_kind not in ["v63_poison", "dot", "burn", "reflect", "reflection"]:
-                _set_pose(source_actor_id, "attack", 360)
-            _set_pose(target_id, "hit", _pose_lifetime_ms(target_id, "hit", 230))
+                _set_pose(source_actor_id, "attack", 360, event_time)
+            _set_pose(target_id, "hit", _pose_lifetime_ms(target_id, "hit", 230), event_time)
         elif kind in ["downed", "death"]:
-            _set_pose(target_id, "death", _pose_lifetime_ms(target_id, "death", 2400))
+            _set_pose(target_id, "death", _pose_lifetime_ms(target_id, "death", 2400), event_time)
         elif kind == "v63_mobility":
-            _set_pose(str(event.get("actor_id", "")), "walk", 280)
+            _set_pose(str(event.get("actor_id", "")), "walk", 280, event_time)
         elif kind == "telegraph":
-            _set_pose(source_actor_id, "cast", 700)
+            _set_pose(source_actor_id, "cast", 700, event_time)
         if kind == "hit":
             var hit_kind := str(event.get("kind", ""))
             if hit_kind == "v63_poison" or (hit_kind == "dot" and _has_damage_tick_record(event, rows)):
@@ -134,6 +151,9 @@ func consume_events(rows: Array[Dictionary]) -> void:
             var actor: Dictionary = battle.actors[source_actor_id]
             if str(actor.get("side", "")) == "monster":
                 school_kind = "boss" if str(actor.get("tier", "")) == "boss" else "fist"
+        var suppress_baked_poison_cast := kind == "skill_cast" and school_kind == "poison" \
+            and battle.actors.has(source_actor_id) \
+            and str(battle.actors[source_actor_id].get("side", "")) != "monster"
         var color: Color = VfxV2.school_color(school_kind)
         var radius := 0.0
         match kind:
@@ -145,9 +165,11 @@ func consume_events(rows: Array[Dictionary]) -> void:
                 var real_skill_id := str(event.get("skill_id", last_skill_by_actor.get(source_actor_id, "")))
                 var definition: Dictionary = CombatLabRosterAdapter.skill_definitions().get(real_skill_id, {})
                 var effect := str(definition.get("effect", ""))
-                if school_kind == "poison" and effect == "poison" and str(definition.get("shape", "")) == "circle":
+                if school_kind == "poison" and str(definition.get("shape", "")) == "circle" \
+                        and float(definition.get("radius", 0.0)) > 0.0:
                     # This is a post-release visual indicator for an authored
-                    # circle skill, NOT a new area/status authority.
+                    # circle skill (including consume/mark variants), NOT a
+                    # new area/status or damage authority.
                     cue_kind = "venom_cloud"
                     radius = maxf(0.0, float(definition.get("radius", 0.0)))
                 elif float(definition.get("projectile_speed", 0.0)) > 0.0:
@@ -157,7 +179,12 @@ func consume_events(rows: Array[Dictionary]) -> void:
                 elif effect == "guard":
                     cue_kind = "guard"
                 elif effect in ["heal", "cleanse"]:
-                    cue_kind = "cast"
+                    if school_kind == "poison":
+                        # The canonical heal/cleanse event below is the visible
+                        # result; avoid an extra generic release aura.
+                        cue_kind = ""
+                    else:
+                        cue_kind = "cast"
                 elif str(definition.get("shape", "")) == "circle":
                     cue_kind = "aoe"
                     radius = float(definition.get("radius", 0.0))
@@ -233,7 +260,12 @@ func consume_events(rows: Array[Dictionary]) -> void:
                 cue_kind = "mobility"
                 var mobility_pos: Variant = event.get("position", pos)
                 if mobility_pos is Vector2: pos = mobility_pos
-        if cue_kind.is_empty():
+        if suppress_baked_poison_cast:
+            # Charging glow is already painted into the real Poison atlas.
+            # Keep processing this event so its authored needle projectile
+            # still appears between cast and authoritative release.
+            cue_kind = ""
+        if cue_kind.is_empty() and kind != "skill_cast":
             continue
         if cue_kind == "poison_tick":
             # Multiple committed owned stacks can tick in one 0.25s engine step.
@@ -274,16 +306,17 @@ func consume_events(rows: Array[Dictionary]) -> void:
         if kind == "v63_mobility" and actor_states.has(source_actor_id):
             var prior: Dictionary = actor_states[source_actor_id]
             cue_from = prior.get("last_position", cue_from)
-        cues.append({
-            "kind":cue_kind, "position":pos, "from_position":cue_from,
-            "text":label, "color":color, "radius":radius, "school":school_kind,
-            "skill_id":display_skill_id, "generation":display_generation, "source_actor_id":source_actor_id,
-            "target_actor_id":target_id, "stack_count":1, "damage_total":float(event.get("damage", 0.0)),
-            "created":now_ms, "life":cue_life,
-            "source_index":int(event.get("lab_source_index", -1)),
-            "time":float(event.get("time", 0.0))
-        })
-        if cues.size() > MAX_CUES: cues.pop_front()
+        if not cue_kind.is_empty():
+            cues.append({
+                "kind":cue_kind, "position":pos, "from_position":cue_from,
+                "text":label, "color":color, "radius":radius, "school":school_kind,
+                "skill_id":display_skill_id, "generation":display_generation, "source_actor_id":source_actor_id,
+                "target_actor_id":target_id, "stack_count":1, "damage_total":float(event.get("damage", 0.0)),
+                "created":now_ms, "life":cue_life,
+                "source_index":int(event.get("lab_source_index", -1)),
+                "time":float(event.get("time", 0.0))
+            })
+            if cues.size() > MAX_CUES: cues.pop_front()
         if kind == "skill_cast" and not source_skill.is_empty():
             # V6.3 _begin_cast explicitly schedules release after wind-up plus
             # projectile travel. Draw the projectile BEFORE settlement; do not
@@ -369,9 +402,9 @@ func _draw_actor(actor: Dictionary) -> void:
     var monster := str(actor.get("side", "")) == "monster"
     _track_movement(actor)
     var pose := pose_for_actor(actor_id)
-    # A ranged caster launches at its authored wind-up, not at the later HP
-    # settlement; render only the pose, never a speculative damage event.
-    if pose == "cast":
+    # Other Combat Lab schools retain their existing authored launch pose.
+    # Poison stays in Cast until its authoritative skill_release event.
+    if school != "poison" and pose == "cast":
         for cue in cues:
             if str(cue.get("kind", "")) == "projectile" and str(cue.get("source_actor_id", "")) == actor_id \
                     and visual_time >= float(cue.get("launch_at", INF)):
@@ -383,7 +416,8 @@ func _draw_actor(actor: Dictionary) -> void:
     var state: Dictionary = actor_states.get(actor_id, {})
     var pose_elapsed := maxf(0.0, visual_time - float(state.get("started", visual_time)))
     if school == "poison" and not monster:
-        if not PoisonAtlasV1.draw(self, foot, pose, seconds, pose_elapsed, actor_scale, facing) and not poison_atlas_warning_emitted:
+        var cast_window := maxf(0.0, float(state.get("until", 0.0)) - float(state.get("started", visual_time))) if pose == "cast" else -1.0
+        if not PoisonAtlasV1.draw(self, foot, pose, seconds, pose_elapsed, actor_scale, facing, cast_window) and not poison_atlas_warning_emitted:
             push_warning("Combat Lab: Nữ Độc Tu atlas is unavailable; no substitute character is rendered.")
             poison_atlas_warning_emitted = true
     else:

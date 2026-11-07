@@ -3,7 +3,7 @@
   "branch": "integration/pve-p0-playable-ui-20261103",
   "base_sha": "27ed01cd8f377994e5e50bac9ede84e78e8895bd",
   "upstream_pr_sha": "c99f22153b34628f7e94f69de0285514e788b9cb",
-  "source_fingerprint": "24da707bb56de1598f5dbebfd7dd1db9594518857226d7c489d094ece035ae6f",
+  "source_fingerprint": "88f0ede927e7a4d4e7b082bb83c60f4ae41166fd15d19cff0c1dfe9aef8dc82c",
   "files": [
     {
       "path": "CHOI-GAME.cmd",
@@ -691,7 +691,7 @@
     },
     {
       "path": "godot/labs/combat_lab/combat_lab_arena.gd",
-      "git_blob_sha": "52a0377ea0f8967dda3337ed7044618887bc3880"
+      "git_blob_sha": "192db50c0a9a55eeb5d0b4e6e3e0fa6dcd643bc6"
     },
     {
       "path": "godot/labs/combat_lab/combat_lab_event_bridge.gd",
@@ -707,7 +707,7 @@
     },
     {
       "path": "godot/labs/combat_lab/combat_lab.gd",
-      "git_blob_sha": "2f0c773e133589dcd2094f98f1218f8c4017c474"
+      "git_blob_sha": "0bcb0e3162cae33869d0c85cd21aaafa0943a0a9"
     },
     {
       "path": "godot/labs/combat_lab/combat_lab.tscn",
@@ -747,7 +747,7 @@
     },
     {
       "path": "godot/labs/combat_lab/combat_lab_poison_atlas_v1.gd",
-      "git_blob_sha": "71e206aed603e1444f88dc0e6ffddd2aa7f470c4"
+      "git_blob_sha": "696eb343ca973d15a34ec1993e6969d9e780e6cb"
     },
     {
       "path": "godot/labs/combat_lab/assets/nu_doc_tu_grok_01/manifest.json",

@@ -40,13 +40,17 @@ static func clip_duration_ms(pose: String) -> int:
     var fps := maxf(1.0, float(row.get("playback_fps", 1.0)))
     return maxi(1, roundi(float(count) * 1000.0 / fps))
 
-static func frame_index(clip: String, visual_time: float, pose_elapsed: float) -> int:
+static func frame_index(clip: String, visual_time: float, pose_elapsed: float,
+        playback_duration: float = -1.0) -> int:
     var row: Dictionary = _clips().get(clip, {})
     var count := int(row.get("frames", 0))
     if count <= 0:
         return -1
     var fps := maxf(1.0, float(row.get("playback_fps", 1.0)))
     var is_loop := bool(row.get("loop", false))
+    if not is_loop and playback_duration > 0.0:
+        var progress := clampf(pose_elapsed / playback_duration, 0.0, 0.999999)
+        return mini(floori(progress * float(count)), count - 1)
     var clock := visual_time if is_loop else pose_elapsed
     var raw := maxi(0, floori(maxf(0.0, clock) * fps))
     return posmod(raw, count) if is_loop else mini(raw, count - 1)
@@ -66,7 +70,7 @@ static func _texture_for_clip(clip: String, row: Dictionary) -> Texture2D:
 
 static func draw(canvas: CanvasItem, foot: Vector2, pose: String,
         visual_time: float, pose_elapsed: float, actor_scale: float,
-        facing: float = 1.0) -> bool:
+        facing: float = 1.0, playback_duration: float = -1.0) -> bool:
     var clip := clip_for_pose(pose)
     var row: Dictionary = _clips().get(clip, {})
     if row.is_empty():
@@ -80,7 +84,7 @@ static func draw(canvas: CanvasItem, foot: Vector2, pose: String,
     var columns := int(row.get("columns", 0))
     var rows := int(row.get("rows", 0))
     var count := int(row.get("frames", 0))
-    var frame := frame_index(clip, visual_time, pose_elapsed)
+    var frame := frame_index(clip, visual_time, pose_elapsed, playback_duration)
     if cell_width <= 0 or cell_height <= 0 or columns <= 0 or rows <= 0 or frame < 0:
         return false
     if frame >= count or frame >= columns * rows:
