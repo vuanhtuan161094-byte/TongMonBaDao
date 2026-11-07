@@ -4734,10 +4734,16 @@ func _building_upgrade_reason(result: Dictionary) -> String:
         "already_upgrading":
             return "Đang có lượt nâng cấp."
         "missing_material":
-            return "Thiếu %s: dùng được %d/%d." % [
-                EquipmentSystem.new().material_name(StringName(result.get("material_id", ""))),
+            var missing_id := StringName(result.get("material_id", ""))
+            var source_hint := ""
+            if missing_id == &"tam_mach_ban":
+                source_hint = " Mua Tầm Mạch Bàn bằng Linh Thạch thật tại Kho → Phường Thị (giới hạn NPC mỗi ngày)."
+            elif missing_id == &"linh_tuyen_chi_tam":
+                source_hint = " Thu hoạch Linh Điền lấy Mảnh Linh Tuyền Chi Tâm; 100 mảnh ghép thành 1 Chi Tâm."
+            return "Thiếu %s: dùng được %d/%d.%s" % [
+                EquipmentSystem.new().material_name(missing_id),
                 int(result.get("have", 0)),
-                int(result.get("need", 0))
+                int(result.get("need", 0)),source_hint
             ]
         "missing_spirit_stones":
             return "Thiếu Linh Thạch: %d/%d." % [
