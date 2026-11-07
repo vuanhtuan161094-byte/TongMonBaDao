@@ -42,6 +42,9 @@ func _run() -> void:
     if StringName(ui.get("selected_building")) != SectMapPresentation.DEST_SPIRIT_FIELD:
         _fail("O4 Linh Điền token did not open its management panel.")
         return
+    if ui.find_child("Upgrade_%s" % str(field.id),true,false) == null or ui.find_child("FieldProfessionXpGuide",true,false) == null:
+        _fail("O4 UI has no paid Field upgrade or honest per-crop profession XP guide.")
+        return
 
     var target_id := _find_unassigned_disciple()
     if target_id == &"":
