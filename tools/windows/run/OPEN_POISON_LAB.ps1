@@ -16,27 +16,27 @@ try {
     $git = Get-Command 'git.exe' -ErrorAction SilentlyContinue
     if (-not $git) { $git = Get-Command 'git' -ErrorAction SilentlyContinue }
     if (-not $git) { Stop-Lab 'Không tìm thấy Git để xác minh nguồn PR #72.' }
-    $actualBranch = (& $git.Source -C $repo branch --show-current 2>&1 | Out-String).Trim()
+    $actualBranch = (& $git.Source -c "safe.directory=$repo" -C $repo branch --show-current 2>&1 | Out-String).Trim()
     if ($LASTEXITCODE -ne 0) { Stop-Lab "Không đọc được branch của checkout: $actualBranch" }
     if (-not [string]::IsNullOrWhiteSpace($actualBranch) -and $actualBranch -ne $requiredBranch) {
         Stop-Lab "Sai branch: đang ở '$actualBranch', cần '$requiredBranch'."
     }
-    $head = (& $git.Source -C $repo rev-parse HEAD 2>&1 | Out-String).Trim()
+    $head = (& $git.Source -c "safe.directory=$repo" -C $repo rev-parse HEAD 2>&1 | Out-String).Trim()
     if ($LASTEXITCODE -ne 0 -or $head -notmatch '^[0-9a-fA-F]{40}$') {
         Stop-Lab "Không đọc được Git HEAD hợp lệ cho project: $repo"
     }
-    & $git.Source -C $repo cat-file -e "$minimumRevision^{commit}" 2>$null
+    & $git.Source -c "safe.directory=$repo" -C $repo cat-file -e "$minimumRevision^{commit}" 2>$null
     if ($LASTEXITCODE -ne 0) {
         Stop-Lab "Checkout cũ: thiếu Poison VFX v3 tối thiểu từ commit $minimumRevision. Hãy đồng bộ PR #72 an toàn."
     }
-    & $git.Source -C $repo merge-base --is-ancestor $minimumRevision $head 2>$null
+    & $git.Source -c "safe.directory=$repo" -C $repo merge-base --is-ancestor $minimumRevision $head 2>$null
     if ($LASTEXITCODE -ne 0) {
         Stop-Lab "Checkout cũ: HEAD $($head.Substring(0, 12)) chưa chứa Poison VFX v3 ($minimumRevision)."
     }
     if (-not [string]::IsNullOrWhiteSpace($actualBranch)) {
-        $upstream = (& $git.Source -C $repo rev-parse --abbrev-ref --symbolic-full-name '@{upstream}' 2>$null | Out-String).Trim()
+        $upstream = (& $git.Source -c "safe.directory=$repo" -C $repo rev-parse --abbrev-ref --symbolic-full-name '@{upstream}' 2>$null | Out-String).Trim()
         if ($LASTEXITCODE -eq 0 -and -not [string]::IsNullOrWhiteSpace($upstream)) {
-            $divergence = (& $git.Source -C $repo rev-list --left-right --count "$head...$upstream" 2>&1 | Out-String).Trim()
+            $divergence = (& $git.Source -c "safe.directory=$repo" -C $repo rev-list --left-right --count "$head...$upstream" 2>&1 | Out-String).Trim()
             if ($LASTEXITCODE -eq 0) {
                 $counts = $divergence -split '\s+'
                 if ($counts.Count -ge 2 -and [int]$counts[1] -gt 0) {
