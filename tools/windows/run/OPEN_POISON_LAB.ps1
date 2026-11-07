@@ -1,4 +1,4 @@
-$ErrorActionPreference = 'Stop'
+﻿$ErrorActionPreference = 'Stop'
 
 function Stop-Lab([string]$Message) {
     Write-Host "POISON_LAB_BLOCKED: $Message" -ForegroundColor Red
