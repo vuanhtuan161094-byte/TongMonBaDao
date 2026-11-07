@@ -8657,6 +8657,28 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "T�
 
     var title := _label(panel, "Hồ sơ đệ tử", Vector2(20, 12), Vector2(220, 34), 23)
     title.add_theme_color_override("font_color", CINNABAR.darkened(0.18))
+    var profile_disciple: DiscipleState = state.disciples[disciple_id]
+    var profile_snapshot := _disciple_snapshot(profile_disciple)
+    var authentic_v2 := bool(profile_snapshot.get("authentic_v2", false))
+    var recruited := profile_disciple.recruitment_source != &""
+    var identity: Dictionary = profile_snapshot.get("identity", {})
+    var quality_name := str(identity.get("quality_name", "")).strip_edges()
+    var provenance_label := Label.new()
+    provenance_label.name = "DiscipleProfileProvenance"
+    provenance_label.position = Vector2(248, 16)
+    provenance_label.size = Vector2(465, 34)
+    provenance_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+    provenance_label.add_theme_font_size_override("font_size", 13)
+    provenance_label.add_theme_color_override("font_color", GOLD if authentic_v2 else Color(0.35, 0.34, 0.29))
+    provenance_label.text = "%s · %s%s" % [
+        "Chiêu mộ" if recruited else "Đệ tử khởi đầu",
+        "Hồ sơ V2" if authentic_v2 else "Hồ sơ cũ",
+        " · %s" % quality_name if authentic_v2 and not quality_name.is_empty() else ""
+    ]
+    provenance_label.tooltip_text = "Dữ liệu thật từ hồ sơ đã lưu; hồ sơ cũ không tự nhận thuộc tính V2."
+    panel.add_child(provenance_label)
+    if authentic_v2 and recruited:
+        panel.add_theme_stylebox_override("panel", _style(PAPER_LIGHT, GOLD, 3, 18))
 
     var quick_assign := Button.new()
     quick_assign.name = "DeepQuickAssignment"
