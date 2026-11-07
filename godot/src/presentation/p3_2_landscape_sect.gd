@@ -4045,7 +4045,9 @@ func _build_economy_a_market_controls() -> void:
         buy_row.name = "EconomyA_Buy_%s" % raw_id
         buy_row.text = "Mua %s ×%d · -%d LT · Chợ còn %d" % [ResourceRegistry.new().display_name(resource_id),buyable,buy_price*buyable,merchant_stock]
         if raw_id == "tam_mach_ban":
-            buy_row.tooltip_text = "Tầm Mạch Bàn dùng để mở mốc Mỏ Lv10/20/30/50/75/100; nguồn NPC 1 chiếc/ngày mô phỏng, phải trả Linh Thạch thực, không có quà miễn phí."
+            buy_row.tooltip_text = "Tầm Mạch Bàn dùng để mở mốc Mỏ Lv10/20/30/50/75/100; NPC 1 chiếc/ngày mô phỏng, phải trả Linh Thạch thực."
+        elif raw_id == "linh_tuyen_chi_tam_manh":
+            buy_row.tooltip_text = "Mua mảnh Linh Tuyền Chi Tâm thật để ghép Chi Tâm nâng cấp Linh Điền. Đủ 100 mảnh trong Linh Kho sẽ tự chuyển thành 1 Chi Tâm. Mảnh cũng rơi hiếm từ thu hoạch thật."
         buy_row.custom_minimum_size = Vector2(384,36)
         buy_row.disabled = buyable <= 0 or buy_price <= 0 or state.sect.spirit_stones < buy_price*buyable
         buy_row.pressed.connect(Callable(self,"_economy_a_buy_from_ui").bind(resource_id,buyable))
@@ -4739,7 +4741,7 @@ func _building_upgrade_reason(result: Dictionary) -> String:
             if missing_id == &"tam_mach_ban":
                 source_hint = " Mua Tầm Mạch Bàn bằng Linh Thạch thật tại Kho → Phường Thị (giới hạn NPC mỗi ngày)."
             elif missing_id == &"linh_tuyen_chi_tam":
-                source_hint = " Thu hoạch Linh Điền lấy Mảnh Linh Tuyền Chi Tâm; 100 mảnh ghép thành 1 Chi Tâm."
+                source_hint = " Thu hoạch Linh Điền hoặc mua mảnh thật tại Kho → Phường Thị; đúng 100 mảnh ghép thành 1 Chi Tâm."
             return "Thiếu %s: dùng được %d/%d.%s" % [
                 EquipmentSystem.new().material_name(missing_id),
                 int(result.get("have", 0)),
