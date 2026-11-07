@@ -64,6 +64,10 @@ func _run() -> void:
 
     if not await _open_forest():
         return
+    var upgrade := ui.find_child("Upgrade_%s" % str(forest.id),true,false) as Button
+    if upgrade == null:
+        _fail("O7 Linh Lam does not expose its real upgrade control.")
+        return
     if not await _press("Group_forestry_crew_%s" % str(worker_id)):
         return
     if worker.work_group_id != &"forestry_crew" or not buildings.active_worker_ids(state, forest).has(worker_id):
