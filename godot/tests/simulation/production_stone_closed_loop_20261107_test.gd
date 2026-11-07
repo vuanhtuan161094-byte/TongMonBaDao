@@ -93,6 +93,24 @@ func _run() -> void:
     if bool(economy.buy_from_npc_v1(state,&"tam_mach_ban",1,"paid-board-2").get("ok",false)):
         _fail("special merchant stocked more than one board in same day")
         return
+    # The real Field milestone remains 100 fragments -> one Heart, including
+    # fragments actually purchased with earned/seeded Sect funds. Only the
+    # fixture seeds 96 pieces to isolate the final exact conversion boundary.
+    var shards_id := &"linh_tuyen_chi_tam_manh"
+    var hearts_id := &"linh_tuyen_chi_tam"
+    if not warehouse.add(state,shards_id,96):
+        _fail("cannot prepare 100-fragment QA boundary")
+        return
+    var hearts_before := warehouse.quantity(state,hearts_id)
+    var money_before_shards := state.sect.spirit_stones
+    var shard_cost := economy.market_purchase_price(state,shards_id)
+    var purchased_shards := economy.buy_from_npc_v1(state,shards_id,4,"paid-shards-1")
+    if not bool(purchased_shards.get("ok",false)) or warehouse.quantity(state,shards_id) != 0 or warehouse.quantity(state,hearts_id) != hearts_before+1 or state.sect.spirit_stones != money_before_shards-4*shard_cost:
+        _fail("purchased 100th fragment failed exact payable Heart conversion")
+        return
+    if not bool(economy.buy_from_npc_v1(state,shards_id,4,"paid-shards-1").get("already_settled",false)) or warehouse.quantity(state,hearts_id) != hearts_before+1:
+        _fail("replayed fragment purchase duplicated Linh Tuyen Chi Tam")
+        return
 
     # A QA-only level probe, not an upgrade grant in normal gameplay.
     if not warehouse.set_rule(state,&"thanh_thiet",0,false):
