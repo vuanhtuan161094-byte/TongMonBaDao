@@ -90,7 +90,7 @@ static func render(canvas: CanvasItem, actor: Dictionary, root: Vector2, school:
     # Stable ground contact; the actor's world position is always at the feet.
     canvas.draw_circle(root + Vector2(0, -1), 12.0 * scale, Color(0.015, 0.012, 0.03, 0.26))
     if state != "death":
-        var boots := colors.shadow
+        var boots: Color = colors.shadow
         # Split legs rotate out of phase in Walk rather than a single bob.
         var stance := attack * 6.0 if state == "attack" and school == "fist" else 0.0
         _bone(canvas, body_origin, Vector2(-4, -15), Vector2(-6 - walk * 4.0 - stance * 0.3, -1),

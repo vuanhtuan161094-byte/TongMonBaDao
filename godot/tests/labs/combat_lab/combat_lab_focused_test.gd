@@ -9,14 +9,18 @@ var passive_probes := 0
 var innate_probes := 0
 var basic_probes := 0
 var mobility_probes := 0
+var pending_probes := 0
 var matrix: Array[Dictionary] = []
 var serial := 0
+var poison_only := false
+var poison_damage_rows: Array[Dictionary] = []
 
 func _initialize() -> void:
     call_deferred("_run")
 
 func _run() -> void:
     print("COMBAT_LAB_FOCUSED_START Godot=" + Engine.get_version_info().string)
+    poison_only = OS.get_environment("TMB_COMBAT_LAB_POISON_ONLY").strip_edges() == "1"
     _check(V63FeatureGates.all_disabled(), "V6.3 feature gates remain OFF by default")
     var definitions := CombatLabRosterAdapter.skill_definitions()
     _check(definitions.size() == 549, "expected 549 V6.3 skill IDs, got %d" % definitions.size())
@@ -31,13 +35,20 @@ func _run() -> void:
     _test_crit_lifesteal()
     _test_elemental_resistance()
     _test_boss_source()
+    _test_poison_atlas_assets()
     _test_skill_matrix(definitions)
+    if poison_only:
+        _test_poison_damage_matrix()
+        _test_poison_aoe_and_single_target()
+        _test_poison_support_effects()
     _write_matrix()
+    _write_poison_damage_report()
     var counts := {"PASS": 0, "FAIL": 0, "NOT_TESTED": 0}
     for row in matrix: counts[str(row.status)] = int(counts.get(str(row.status), 0)) + 1
     print("COMBAT_LAB_SKILL_MATRIX " + JSON.stringify({"total": matrix.size(), "counts": counts,
         "active": active_probes, "passive": passive_probes, "innate": innate_probes,
-        "basic": basic_probes, "mobility": mobility_probes}))
+        "basic": basic_probes, "mobility": mobility_probes, "design_pending": pending_probes,
+        "poison_only": poison_only}))
     print("COMBAT_LAB_FOCUSED_RESULT=" + ("PASS" if failures == 0 and int(counts.FAIL) == 0 else "FAIL") + " failures=" + str(failures))
     quit(0 if failures == 0 and int(counts.FAIL) == 0 else 1)
 
@@ -45,6 +56,346 @@ func _check(value: bool, message: String) -> void:
     if not value:
         failures += 1
         push_error("COMBAT_LAB_FAIL " + message)
+
+func _test_poison_atlas_assets() -> void:
+    var path := "res://labs/combat_lab/assets/nu_doc_tu_grok_01/manifest.json"
+    var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(path))
+    _check(parsed is Dictionary and parsed.get("animations", null) is Dictionary,
+        "six user-provided Poison animation sheets have a readable manifest")
+    if not (parsed is Dictionary and parsed.get("animations", null) is Dictionary):
+        return
+    var animations: Dictionary = parsed.animations
+    for clip in ["idle", "walk", "cast", "attack", "hit", "defeated"]:
+        var row: Dictionary = animations.get(clip, {})
+        var sheet := str(row.get("sheet", ""))
+        var absolute := ProjectSettings.globalize_path(sheet)
+        var exists := not sheet.is_empty() and FileAccess.file_exists(sheet)
+        _check(exists, "Poison %s atlas sheet exists at %s" % [clip, sheet])
+        if not exists:
+            continue
+        _check(FileAccess.get_sha256(absolute) == str(row.get("sheet_sha256", "")),
+            "Poison %s atlas SHA-256 matches its manifest" % clip)
+        var texture: Resource = ResourceLoader.load(sheet)
+        _check(texture is Texture2D and (texture as Texture2D).get_width() >= int(row.get("columns", 0)) * int(row.get("cell_width", 0))
+            and (texture as Texture2D).get_height() >= int(row.get("rows", 0)) * int(row.get("cell_height", 0)),
+            "Poison %s atlas imports and covers all manifest cells" % clip)
+        _check(CombatLabPoisonAtlasV1.frame_index(clip, 1.0, 1.0) >= 0,
+            "Poison %s manifest maps to a real animation frame" % clip)
+
+func _test_poison_damage_matrix() -> void:
+    var cases := [
+        ["human_direct", "tmb.skill.poison.doc_cham.active_01.human", 1, 0, 0, 1.0],
+        ["human_poison_direct", "tmb.skill.poison.doc_cham.active_02.human", 1, 0, 0, 1.0],
+        ["immortal_lineage_a", "tmb.skill.poison.doc_cham.active_01.immortal.a", 1, 0, 0, 1.0],
+        ["immortal_lineage_b", "tmb.skill.poison.doc_cham.active_01.immortal.b", 1, 0, 0, 1.0],
+        ["divine_a_stage1", "tmb.skill.poison.doc_cham.active_01.divine.a", 1, 0, 0, 1.0],
+        ["divine_a_stage2", "tmb.skill.poison.doc_cham.active_01.divine.a", 2, 0, 0, 1.0],
+        ["divine_a_stage3", "tmb.skill.poison.doc_cham.active_01.divine.a", 3, 0, 0, 1.0],
+        ["divine_b_stage3", "tmb.skill.poison.doc_cham.active_01.divine.b", 3, 0, 0, 1.0],
+        ["co_doc_mark", "tmb.skill.poison.co_doc.active_01.immortal.b", 1, 0, 0, 1.0],
+        ["co_doc_owned_consume", "tmb.skill.poison.co_doc.active_02.immortal.b", 1, 2, 1, 1.12],
+        ["duoc_doc_damage", "tmb.skill.poison.duoc_doc.active_01.human", 1, 0, 0, 1.0]
+    ]
+    for entry in cases:
+        var row := _probe_poison_damage(str(entry[0]), str(entry[1]), int(entry[2]), int(entry[3]), int(entry[4]), float(entry[5]))
+        poison_damage_rows.append(row)
+        _check(str(row.get("status", "FAIL")) == "PASS",
+            "independent expected damage matches real settlement for %s: %s" % [str(entry[1]), str(row.get("detail", ""))])
+
+func _probe_poison_damage(label: String, skill_id: String, stage: int, owned_stacks: int,
+        foreign_stacks: int, mark_factor: float) -> Dictionary:
+    var skill: Dictionary = V63HumanSkillCombatSystem.skill_definition(skill_id)
+    if skill.is_empty() or str(skill.get("divine_rule_status", "")) == "DESIGN_PENDING":
+        return {"scenario":label,"skill_id":skill_id,"status":"FAIL","detail":"missing or DESIGN_PENDING skill"}
+    var prepared := _prepare_action(skill)
+    if not bool(prepared.get("ok", false)):
+        return {"scenario":label,"skill_id":skill_id,"status":"FAIL","detail":"fixture:" + str(prepared.get("reason", ""))}
+    var battle: MapBattleV2 = prepared.battle
+    var actor: Dictionary = prepared.actor
+    var target: Dictionary = prepared.target
+    actor["stats"]["attack"] = 240.0
+    actor["stats"]["crit_chance"] = 0.0
+    actor["stats"]["defense_penetration"] = 0.0
+    actor["v63_divine_stage"] = clampi(stage, 1, 3)
+    target["stats"]["defense"] = 120.0
+    target["stats"]["damage_reduction"] = 0.10
+    target["resistances"] = {"nether":0.20,"wood":0.0,"fire":0.0,"ice":0.0,"lightning":0.0,"physical":0.0}
+    target["max_hp"] = 1000000.0
+    target["hp"] = 1000000.0
+    target["stats"]["max_hp"] = 1000000.0
+    if owned_stacks + foreign_stacks > 0:
+        var stacks: Array[Dictionary] = []
+        for index in range(owned_stacks + foreign_stacks):
+            stacks.append({"owner_id":str(actor.id) if index < owned_stacks else "foreign_owner",
+                "source_skill_id":"fixture_source", "stack_ordinal":index + 1, "ratio":0.01,
+                "element":"nether", "next_tick":100.0, "expires_at":100.0})
+        target["status_effects"] = {"v63_poison":stacks}
+    if mark_factor > 1.0:
+        target["v63_marks"] = {str(actor.id):{"owner_id":str(actor.id),"skill_id":"fixture_mark",
+            "damage_factor":mark_factor,"until":100.0}}
+    var hp_before := float(target.hp)
+    if not V63HumanSkillCombatSystem.try_cast(battle, actor, target, false):
+        return {"scenario":label,"skill_id":skill_id,"status":"FAIL","detail":"actual V6.3 cast rejected"}
+    var pending: Dictionary = actor.get("v63_pending_cast", {})
+    var cast_started := float(pending.get("ready", -1.0))
+    if pending.is_empty():
+        return {"scenario":label,"skill_id":skill_id,"status":"FAIL","detail":"cast did not schedule a real release"}
+    battle.now = cast_started
+    battle._release_casts()
+    var hp_after := float(target.hp)
+    var hit_count := 0
+    for event in battle.events:
+        if str(event.get("type", "")) == "hit" and str(event.get("attacker", "")) == str(actor.id) and str(event.get("target", "")) == str(target.id) and str(event.get("kind", "")) == "v63_skill":
+            hit_count += 1
+    var ratio := float(skill.get("damage_ratio", 0.0))
+    var generation := str(skill.get("generation", skill.get("tier", "human")))
+    if generation == "divine":
+        ratio *= [1.0, 1.12, 1.24][clampi(stage, 1, 3) - 1]
+    if str(skill.get("effect", "")) == "consume_poison":
+        ratio += minf(0.75, float(owned_stacks) * 0.05)
+    ratio *= mark_factor
+    var attack := float(actor.stats.get("attack", 0.0))
+    var defense := float(target.stats.get("defense", 0.0)) * (1.0 - clampf(float(actor.stats.get("defense_penetration", 0.0)), 0.0, 1.0))
+    var defense_factor := 2.0 * attack / maxf(0.000001, 2.0 * attack + defense)
+    var resistance := clampf(float(target.resistances.get(str(skill.get("element", "")), 0.0)), 0.0, 1.0)
+    var reduction := clampf(float(target.stats.get("damage_reduction", 0.0)), 0.0, 1.0)
+    # Independent contract oracle: raw ATK × authored ratio × defense factor × elemental mitigation × damage reduction.
+    var expected := minf(hp_before, attack * ratio * defense_factor * (1.0 - resistance) * (1.0 - reduction))
+    var actual := hp_before - hp_after
+    var ok := hit_count == 1 and is_equal_approx(actual, expected)
+    if str(skill.get("effect", "")) == "consume_poison":
+        var retained: Array = target.get("status_effects", {}).get("v63_poison", [])
+        ok = ok and retained.size() == foreign_stacks and _event_count(battle, "poison_consumed") == 1
+    return {"scenario":label,"skill_id":skill_id,"name":str(skill.get("name", "")),"generation":generation,
+        "lineage":str(skill.get("lineage", "")),"divine_stage":str(stage),"target_id":str(target.id),
+        "hp_before":str(hp_before),"hp_after":str(hp_after),"expected_damage":str(expected),
+        "actual_damage":str(actual),"error":str(actual - expected),"status":"PASS" if ok else "FAIL",
+        "detail":"MapBattleV2 hit=%d; independent ratio/DEF/resistance/reduction oracle%s" % [hit_count,
+            "; owned stacks consumed, foreign stack retained" if str(skill.get("effect", "")) == "consume_poison" else ""]}
+
+func _test_poison_aoe_and_single_target() -> void:
+    _run_poison_aoe_case("aoe_three_in_plus_one_outside", 3)
+    _run_poison_aoe_case("aoe_five_in_over_limit_plus_one_outside", 5)
+    _test_poison_single_target_case()
+
+func _run_poison_aoe_case(label: String, inside_count: int) -> void:
+    var skill_id := "tmb.skill.poison.doc_cham.active_03.human"
+    var skill: Dictionary = V63HumanSkillCombatSystem.skill_definition(skill_id)
+    var caster := _actor("aoe_caster", Vector2(6.0, 7.5))
+    caster["v63_skill_loadout"] = [skill_id]
+    caster["v63_combat_branch_id"] = "doc_cham"
+    var ally := _actor("aoe_ally", Vector2(12.2, 10.0))
+    var monsters: Array = []
+    var points: Array[Vector2] = [Vector2(12.0, 10.0), Vector2(10.2, 8.5), Vector2(10.4, 11.6),
+        Vector2(13.7, 8.1), Vector2(13.8, 11.7)]
+    for index in range(inside_count):
+        var monster := _enemy("aoe_enemy_%02d" % index, points[index])
+        monster["hp"] = 1000000.0
+        monster["max_hp"] = 1000000.0
+        monster["stats"]["max_hp"] = 1000000.0
+        monster["stats"]["attack"] = 1.0
+        monster["stats"]["defense"] = 120.0
+        monster["stats"]["damage_reduction"] = 0.10
+        monster["resistances"] = {"nether":0.20,"wood":0.0,"fire":0.0,"ice":0.0,"lightning":0.0,"physical":0.0}
+        monsters.append(monster)
+    var outside := _enemy("aoe_enemy_outside", Vector2(16.5, 10.0))
+    outside["hp"] = 1000000.0
+    outside["max_hp"] = 1000000.0
+    outside["stats"]["max_hp"] = 1000000.0
+    outside["stats"]["attack"] = 1.0
+    outside["stats"]["defense"] = 120.0
+    outside["stats"]["damage_reduction"] = 0.10
+    outside["resistances"] = {"nether":0.20,"wood":0.0,"fire":0.0,"ice":0.0,"lightning":0.0,"physical":0.0}
+    monsters.append(outside)
+    var battle := MapBattleV2.new(880000 + inside_count)
+    _check(bool(battle.setup(label, [caster, ally], monsters, false).get("ok", false)), label + " MapBattle setup")
+    if not battle.active:
+        return
+    caster = battle.actors.aoe_caster
+    ally = battle.actors.aoe_ally
+    var primary: Dictionary = battle.actors.aoe_enemy_00
+    caster["stats"]["attack"] = 240.0
+    caster["stats"]["crit_chance"] = 0.0
+    caster["stats"]["defense_penetration"] = 0.0
+    var cast_started := V63HumanSkillCombatSystem.try_cast(battle, caster, primary, false)
+    _check(cast_started, label + " actual V6.3 cast starts")
+    if not cast_started:
+        return
+    var pending: Dictionary = caster.v63_pending_cast
+    var selected := V63HumanSkillCombatSystem._cast_targets(battle, caster, pending, "poison")
+    var selected_ids: Array[String] = []
+    for row in selected: selected_ids.append(str(row.id))
+    _check(selected.size() == int(skill.target_limit), label + " _cast_targets respects catalog target_limit")
+    _check(selected_ids.has("aoe_enemy_00") and not selected_ids.has("aoe_enemy_outside"),
+        label + " selects in-radius targets and excludes the outside target")
+    _check(not selected_ids.has("aoe_ally"), label + " never selects an ally in the radius")
+    var before_hp: Dictionary = {}
+    for raw_id in battle.actors:
+        if str(battle.actors[raw_id].get("side", "")) == "monster":
+            before_hp[str(raw_id)] = float(battle.actors[raw_id].hp)
+    battle.now = float(pending.ready)
+    battle._release_casts()
+    var hit_ids: Array[String] = []
+    var direct_hits := 0
+    for event in battle.events:
+        if str(event.get("type", "")) == "hit" and str(event.get("kind", "")) == "v63_skill" and str(event.get("attacker", "")) == "aoe_caster":
+            direct_hits += 1
+            hit_ids.append(str(event.get("target", "")))
+    var target_errors := 0
+    for raw_id in battle.actors:
+        var actor: Dictionary = battle.actors[raw_id]
+        if str(actor.get("side", "")) != "monster":
+            continue
+        var actual := float(before_hp[str(raw_id)]) - float(actor.hp)
+        if hit_ids.has(str(raw_id)):
+            var attack := float(caster.stats.attack)
+            var defense := float(actor.stats.defense)
+            var expected := minf(float(before_hp[str(raw_id)]), attack * float(skill.damage_ratio) * (2.0 * attack / (2.0 * attack + defense)) * 0.8 * 0.9)
+            if not is_equal_approx(actual, expected): target_errors += 1
+        elif not is_zero_approx(actual):
+            target_errors += 1
+    _check(direct_hits == int(skill.target_limit) and hit_ids.size() == direct_hits,
+        label + " has one committed hit per selected target and no hit beyond the limit")
+    _check(target_errors == 0, label + " HP deltas match independent formula; unselected HP is unchanged")
+    _check(_event_count(battle, "status_applied") == int(skill.target_limit),
+        label + " applies poison once per actually hit target")
+    var arena := ArenaScript.new()
+    get_root().add_child(arena)
+    arena.set_battle(battle, "poison")
+    arena.set_visual_time(battle.now)
+    var events_before_visual := battle.events.size()
+    arena.consume_events(CombatLabEventBridge.new().poll(battle))
+    var clouds := 0
+    var projectiles := 0
+    var impacts := 0
+    var poison_marks := 0
+    for cue in arena.cues:
+        if str(cue.get("skill_id", "")) != skill_id:
+            continue
+        match str(cue.get("kind", "")):
+            "venom_cloud":
+                clouds += 1
+                _check(is_equal_approx(float(cue.get("radius", 0.0)), float(skill.radius)), label + " poison cloud radius matches authored skill radius")
+            "projectile": projectiles += 1
+            "impact": impacts += 1
+            "poison_apply": poison_marks += 1
+    _check(clouds == 1 and projectiles == 1 and impacts == direct_hits and poison_marks == direct_hits,
+        label + " event-only Poison VFX follows real cast/projectile/hit/apply records")
+    _check(battle.events.size() == events_before_visual and int(arena.cues.size()) <= ArenaScript.MAX_CUES,
+        label + " presentation neither writes combat events nor settles extra damage")
+    poison_damage_rows.append({"scenario":label,"skill_id":skill_id,"name":str(skill.name),
+        "generation":"human","lineage":"","divine_stage":"","target_id":"multiple",
+        "hp_before":"per-target in event fixture","hp_after":"selected %d; excluded %d" % [direct_hits, monsters.size() + 1 - direct_hits],
+        "expected_damage":"manual ATK/DEF/nether-resistance/reduction oracle per selected target",
+        "actual_damage":"%d MapBattleV2 hits; %d poison applications" % [direct_hits, direct_hits],"error":"0" if target_errors == 0 else str(target_errors),
+        "status":"PASS" if target_errors == 0 and direct_hits == int(skill.target_limit) else "FAIL",
+        "detail":"_cast_targets real radius %.2f, limit %d, VFX anchored at authored center" % [float(skill.radius), int(skill.target_limit)]})
+    arena.queue_free()
+
+func _test_poison_single_target_case() -> void:
+    var skill_id := "tmb.skill.poison.doc_cham.active_01.human"
+    var caster := _actor("single_caster", Vector2(6.0, 7.5))
+    caster["v63_skill_loadout"] = [skill_id]
+    var enemies: Array = []
+    for index in range(3):
+        enemies.append(_enemy("single_enemy_%02d" % index, Vector2(12.0 + float(index) * 0.5, 10.0)))
+    var battle := MapBattleV2.new(880010)
+    _check(bool(battle.setup("poison_single_target", [caster], enemies, false).get("ok", false)), "single Poison scenario MapBattle setup")
+    if not battle.active: return
+    caster = battle.actors.single_caster
+    var target: Dictionary = battle.actors.single_enemy_00
+    var selected := V63HumanSkillCombatSystem._cast_targets(battle, caster,
+        {"shape":"single_target","target_id":str(target.id),"maximum":1}, "damage")
+    _check(selected.size() == 1 and str(selected[0].id) == str(target.id), "single-target Poison skill does not select nearby enemies")
+    _check(V63HumanSkillCombatSystem.try_cast(battle, caster, target, false), "single-target Poison V6.3 cast starts")
+    var pending: Dictionary = caster.v63_pending_cast
+    battle.now = float(pending.ready)
+    battle._release_casts()
+    var hit_ids: Array[String] = []
+    for event in battle.events:
+        if str(event.get("type", "")) == "hit" and str(event.get("kind", "")) == "v63_skill":
+            hit_ids.append(str(event.get("target", "")))
+    _check(hit_ids == [str(target.id)], "single-target Poison scene commits damage to exactly the chosen target")
+
+func _test_poison_support_effects() -> void:
+    _probe_poison_support("poison_heal", "tmb.skill.poison.duoc_doc.active_02.human", true)
+    _probe_poison_support("poison_cleanse", "tmb.skill.poison.duoc_doc.active_03.human", false)
+
+func _probe_poison_support(label: String, skill_id: String, is_heal: bool) -> void:
+    var skill: Dictionary = V63HumanSkillCombatSystem.skill_definition(skill_id)
+    var prepared := _prepare_action(skill)
+    if not bool(prepared.get("ok", false)):
+        _check(false, label + " fixture failed")
+        return
+    var battle: MapBattleV2 = prepared.battle
+    var caster: Dictionary = prepared.actor
+    var ally_id := str(prepared.get("ally_id", ""))
+    var ally: Dictionary = battle.actors.get(ally_id, {})
+    if ally.is_empty():
+        _check(false, label + " ally missing")
+        return
+    if is_heal:
+        ally["hp"] = 40000.0
+    else:
+        ally["status_effects"] = {"weaken":{"until":30.0,"factor":0.8}}
+    var hp_before := float(ally.hp)
+    var expected_heal := minf(float(ally.max_hp) * clampf(float(skill.power), 0.0, 0.5), float(ally.max_hp) - hp_before) if is_heal else 0.0
+    var enemy: Dictionary = prepared.target
+    var cast_started := V63HumanSkillCombatSystem.try_cast(battle, caster, enemy, false)
+    _check(cast_started, label + " V6.3 support AI selects a valid ally")
+    if not cast_started: return
+    var pending: Dictionary = caster.v63_pending_cast
+    _check(str(pending.get("target_id", "")) == ally_id, label + " cast targets the ally, not the enemy")
+    battle.now = float(pending.ready)
+    battle._release_casts()
+    if is_heal:
+        var actual_heal := float(ally.hp) - hp_before
+        var ok := is_equal_approx(actual_heal, expected_heal)
+        _check(ok, "Dược Độc actual heal equals authored power × ally max HP, capped by missing HP")
+        poison_damage_rows.append({"scenario":label,"skill_id":skill_id,"name":str(skill.name),"generation":"human","lineage":"","divine_stage":"",
+            "target_id":ally_id,"hp_before":str(hp_before),"hp_after":str(ally.hp),"expected_damage":str(expected_heal),
+            "actual_damage":str(actual_heal),"error":str(actual_heal - expected_heal),"status":"PASS" if ok else "FAIL",
+            "detail":"real heal event and ally-target selection"})
+    else:
+        var cleared: bool = not ally.get("status_effects", {}).has("weaken")
+        _check(cleared and _event_count_for_skill(battle, "cleanse", skill_id) == 1,
+            "Dược Độc cleanse removes an actual debuff and emits one canonical event")
+        poison_damage_rows.append({"scenario":label,"skill_id":skill_id,"name":str(skill.name),"generation":"human","lineage":"","divine_stage":"",
+            "target_id":ally_id,"hp_before":str(hp_before),"hp_after":str(ally.hp),"expected_damage":"—","actual_damage":"—",
+            "error":"—","status":"PASS" if cleared else "FAIL","detail":"real cleanse event removed weaken from ally"})
+
+func _event_count_for_skill(battle: MapBattleV2, event_type: String, skill_id: String) -> int:
+    var result := 0
+    for event in battle.events:
+        if str(event.get("type", "")) == event_type and str(event.get("skill_id", "")) == skill_id:
+            result += 1
+    return result
+
+func _event_count(battle: MapBattleV2, event_type: String) -> int:
+    var result := 0
+    for event in battle.events:
+        if str(event.get("type", "")) == event_type:
+            result += 1
+    return result
+
+func _write_poison_damage_report() -> void:
+    var output_path := OS.get_environment("TMB_COMBAT_LAB_DAMAGE_PATH").strip_edges()
+    if output_path.is_empty(): return
+    var file := FileAccess.open(output_path, FileAccess.WRITE)
+    if file == null:
+        push_error("COMBAT_LAB_POISON_DAMAGE_REPORT_WRITE_FAILED")
+        failures += 1
+        return
+    var columns := PackedStringArray(["scenario","skill_id","name","generation","lineage","divine_stage","target_id",
+        "hp_before","hp_after","expected_damage","actual_damage","error","status","detail"])
+    file.store_line(",".join(columns))
+    for row in poison_damage_rows:
+        var cells := PackedStringArray()
+        for column in columns:
+            cells.append('"' + str(row.get(column, "")).replace('"', '""') + '"')
+        file.store_line(",".join(cells))
+    file.close()
+    print("COMBAT_LAB_POISON_DAMAGE_REPORT=" + output_path)
 
 func _test_loadout_and_party() -> void:
     for school in CombatLabRosterAdapter.SCHOOL_ORDER:
@@ -55,6 +406,10 @@ func _test_loadout_and_party() -> void:
             var branch := str(branches[0].get("id", ""))
             var lineage := "a"
             var spec := CombatLabRosterAdapter.default_loadout(school, generation, branch, lineage)
+            if school == "poison" and generation == "divine" and not bool(spec.get("ok", false)):
+                _check(spec.get("errors", []).has("active_catalog_below_four") or spec.get("errors", []).has("passive_catalog_below_five"),
+                    "Poison Divine DESIGN_PENDING nodes cannot be silently used to fill a Lab loadout")
+                continue
             _check(bool(spec.get("ok", false)), "default %s/%s loadout validates: %s" % [school, generation, str(spec.get("errors", []))])
             if not bool(spec.get("ok", false)): continue
             var fixture := CombatLabRosterAdapter.build_party(1, school, generation, branch, lineage, spec.skill_ids)
@@ -124,6 +479,8 @@ func _test_ui_controls() -> void:
     var auto_button: Button
     var step_button: Button
     var reset_button: Button
+    var aoe_preset_button: Button
+    var boss_preset_button: Button
     for candidate in buttons:
         if not candidate is Button: continue
         match str(candidate.text):
@@ -131,9 +488,13 @@ func _test_ui_controls() -> void:
             "AUTO": auto_button = candidate
             "STEP · 0,25s": step_button = candidate
             "TÁI TẠO TRẬN": reset_button = candidate
-    _check(hold_button != null and auto_button != null and step_button != null and reset_button != null,
+            "ĐỘC CHÂM · QUẦN CÔNG 3/4": aoe_preset_button = candidate
+            "ĐỘC TU · 6 vs BOSS + QUÁI": boss_preset_button = candidate
+    _check((hold_button != null and auto_button != null and step_button != null and reset_button != null
+        and aoe_preset_button != null and boss_preset_button != null),
         "standalone UI builds actual interactive controls")
-    if hold_button == null or auto_button == null or step_button == null or reset_button == null:
+    if (hold_button == null or auto_button == null or step_button == null or reset_button == null
+        or aoe_preset_button == null or boss_preset_button == null):
         lab.free()
         return
     hold_button.pressed.emit()
@@ -162,6 +523,14 @@ func _test_ui_controls() -> void:
     reset_button.pressed.emit()
     battle = lab.get("battle")
     _check(battle.actors.size() == 7, "recreate button starts six disciples against an actual opponent")
+    aoe_preset_button.pressed.emit()
+    battle = lab.get("battle")
+    _check(battle.actors.size() == 5 and battle.actors.has("lab_aoe_00") and battle.actors.has("lab_aoe_outside"),
+        "one-tap Poison AOE preset creates three in-radius targets and one outside")
+    boss_preset_button.pressed.emit()
+    battle = lab.get("battle")
+    _check(battle.actors.size() == 10 and battle.actors.has("lab_boss") and battle.actors.has("lab_boss_add_01")
+        and int(lab.get("party_count").value) == 6, "one-tap Poison preset creates six disciples versus a real V6.3 Boss and three adds")
     lab.free()
 func _test_event_bridge() -> void:
     var party: Array = [_actor("bridge_actor", Vector2(10, 10))]
@@ -215,9 +584,9 @@ func _test_vfx_deduplication() -> void:
     for cue in arena.cues:
         if str(cue.kind) == "impact": impact_count += 1
         elif str(cue.kind) == "heal": heal_count += 1
-        elif str(cue.kind) == "poison": poison_count += 1
+        elif str(cue.kind) == "poison_tick": poison_count += 1
     _check(impact_count == 2 and heal_count == 1 and poison_count == 1 and arena.cues.size() == 4,
-        "VFX renders authoritative hit/DoT once and lifesteal once despite duplicate semantic events")
+        "VFX renders authoritative hit/Poison tick/DoT once and lifesteal once despite duplicate semantic events")
     arena.queue_free()
 func _test_real_battle() -> void:
     var branch := "liep_anh"
@@ -314,9 +683,46 @@ func _test_skill_matrix(definitions: Dictionary) -> void:
     for id_value in ids:
         var id := str(id_value)
         var skill: Dictionary = definitions[id]
-        var result := {"skill_id": id, "generation": str(skill.get("generation", "")), "school": str(skill.get("school", "")), "slot": str(skill.get("slot", "")), "status": "NOT_TESTED", "reason": "unsupported_slot"}
+        if poison_only and str(skill.get("school", "")) != "poison":
+            continue
+        var result := {
+            "skill_id": id,
+            "name": str(skill.get("name", "")),
+            "branch": str(skill.get("branch", "")),
+            "generation": str(skill.get("generation", skill.get("tier", "human"))),
+            "lineage": str(skill.get("lineage", "")),
+            "required_divine_stage": str(skill.get("required_divine_stage", "")),
+            "school": str(skill.get("school", "")),
+            "slot": str(skill.get("slot", "")),
+            "effect": str(skill.get("effect", "")),
+            "damage_ratio": str(skill.get("damage_ratio", "")),
+            "power": str(skill.get("power", "")),
+            "element": str(skill.get("element", "")),
+            "range": str(skill.get("range", "")),
+            "shape": str(skill.get("shape", "")),
+            "radius": str(skill.get("radius", "")),
+            "target_limit": str(skill.get("target_limit", "")),
+            "cast_time": str(skill.get("cast_time", "")),
+            "cooldown": str(skill.get("cooldown", "")),
+            "projectile_speed": str(skill.get("projectile_speed", "")),
+            "duration": str(skill.get("duration", "")),
+            "poison_stacks": str(skill.get("poison_stacks", "")),
+            "combat_trait": str(skill.get("combat_trait", "")),
+            "divine_rule": str(skill.get("divine_rule", "")),
+            "divine_rule_status": str(skill.get("divine_rule_status", "")),
+            "balance_status": str(skill.get("balance_status", "")),
+            "source_codex_id": str(skill.get("source_codex_id", "")),
+            "animation_key": str(skill.get("animation_key", "")),
+            "vfx_key": str(skill.get("vfx_key", "")),
+            "status": "NOT_TESTED",
+            "reason": "unsupported_slot"
+        }
         if str(skill.get("id", "")) != id or not id.begins_with("tmb.skill."):
             result.status = "FAIL"; result.reason = "invalid_catalog_identity"
+        elif str(skill.get("divine_rule_status", "")) == "DESIGN_PENDING":
+            result.status = "DESIGN_PENDING"
+            result.reason = "owner-deferred Divine rule; catalog fields audited, combat semantics not executed"
+            pending_probes += 1
         else:
             match str(skill.get("slot", "")):
                 "active", "ultimate":
@@ -568,13 +974,25 @@ func _probe_mobility(skill: Dictionary) -> Dictionary:
     return {"status": "FAIL", "reason": "mobility position/event missing"}
 
 func _write_matrix() -> void:
-    var file := FileAccess.open("user://combat_lab_skill_matrix.csv", FileAccess.WRITE)
+    var output_path := OS.get_environment("TMB_COMBAT_LAB_MATRIX_PATH").strip_edges()
+    if output_path.is_empty(): output_path = "user://combat_lab_skill_matrix.csv"
+    var file := FileAccess.open(output_path, FileAccess.WRITE)
     if file == null:
         push_error("COMBAT_LAB_MATRIX_WRITE_FAILED")
         failures += 1
         return
-    file.store_line("skill_id,generation,school,slot,status,reason")
+    var columns := PackedStringArray([
+        "skill_id", "name", "branch", "generation", "lineage", "required_divine_stage", "school", "slot", "effect",
+        "damage_ratio", "power", "element", "range", "shape", "radius", "target_limit", "cast_time", "cooldown",
+        "projectile_speed", "duration", "poison_stacks", "combat_trait", "divine_rule", "divine_rule_status",
+        "balance_status", "source_codex_id", "animation_key", "vfx_key", "status", "reason"
+    ])
+    file.store_line(",".join(columns))
     for row in matrix:
-        file.store_line("%s,%s,%s,%s,%s,%s" % [row.skill_id, row.generation, row.school, row.slot, row.status, str(row.reason).replace(",", ";")])
+        var cells := PackedStringArray()
+        for column in columns:
+            var value := str(row.get(column, "" )).replace('"', '""')
+            cells.append('"' + value + '"')
+        file.store_line(",".join(cells))
     file.close()
-    print("COMBAT_LAB_SKILL_MATRIX_FILE=" + ProjectSettings.globalize_path("user://combat_lab_skill_matrix.csv"))
+    print("COMBAT_LAB_SKILL_MATRIX_FILE=" + ProjectSettings.globalize_path(output_path) if output_path.begins_with("user://") else "COMBAT_LAB_SKILL_MATRIX_FILE=" + output_path)

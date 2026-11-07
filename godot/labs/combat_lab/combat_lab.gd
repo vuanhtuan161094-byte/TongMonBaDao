@@ -25,6 +25,7 @@ var lineage_option: OptionButton
 var party_count: SpinBox
 var enemy_option: OptionButton
 var boss_option: OptionButton
+var encounter_option: OptionButton
 var zoom_option: OptionButton
 var active_slots: Array[OptionButton] = []
 var ultimate_slot: OptionButton
@@ -34,6 +35,7 @@ var poison_catalog_option: OptionButton
 var poison_skill_detail_label: Label
 var poison_load_button: Button
 var poison_boss_preset_button: Button
+var poison_aoe_preset_button: Button
 var poison_current_skill_label: Label
 var poison_stack_label: Label
 var state_label: Label
@@ -199,11 +201,19 @@ func _build_ui() -> void:
     poison_load_button = _button(controls, "NẠP SKILL & TẠO LẠI TRẬN", Color("476a4f"))
     poison_load_button.tooltip_text = "Chỉ nạp slot mà V6.3 cho phép; nội tại chưa có slot loadout Lab sẽ chỉ hiển thị."
     poison_load_button.pressed.connect(_load_selected_poison_skill)
-    poison_boss_preset_button = _button(controls, "ĐỘC TU · 6 vs BOSS", Color("5d3e75"))
+    poison_aoe_preset_button = _button(controls, "ĐỘC CHÂM · QUẦN CÔNG 3/4", Color("557047"))
+    poison_aoe_preset_button.pressed.connect(_apply_poison_aoe_preset)
+    poison_boss_preset_button = _button(controls, "ĐỘC TU · 6 vs BOSS + QUÁI", Color("5d3e75"))
     poison_boss_preset_button.pressed.connect(_apply_poison_boss_preset)
     _label(controls, "ĐỐI THỦ", 14, Color("c9b9dd"))
     enemy_option = _option(controls, "Đối thủ", ["Thường · Hắc Lang", "Tinh Anh · Nham Giáp", "Boss V6.3 thật"])
     enemy_option.item_selected.connect(func(_i: int): _refresh_boss_visibility())
+    _label(controls, "BỐ CỤC MỤC TIÊU · LAB_ONLY", 12, Color("c4b3e1"))
+    encounter_option = _option(controls, "Bố cục", [
+        "Đơn mục tiêu", "Độc Châm · 3 trong vùng + 1 ngoài",
+        "AOE · 5 trong vùng + 1 ngoài", "Boss V6.3 + 3 quái phụ"])
+    encounter_option.select(0)
+    encounter_option.item_selected.connect(_on_encounter_selected)
     boss_option = OptionButton.new()
     boss_option.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     controls.add_child(boss_option)
@@ -450,6 +460,7 @@ func _refresh_poison_catalog() -> void:
     poison_skill_detail_label.visible = is_poison
     poison_load_button.visible = is_poison
     poison_boss_preset_button.visible = is_poison
+    poison_aoe_preset_button.visible = is_poison
     if not is_poison:
         poison_catalog_option.clear()
         selected_catalog_skill_id = ""
@@ -471,8 +482,9 @@ func _refresh_poison_catalog() -> void:
         var candidate_tag := " · CANDIDATE" if str(row.get("balance_status", "")) == "candidate" else ""
         var unavailable_tag := " · DESIGN-ONLY" if slot == "innate" and not bool(row.get("archivable", false)) else ""
         var lineage_tag := " · " + lineage.to_upper() if not lineage.is_empty() else ""
-        poison_catalog_option.add_item("%s · %s · %s%s%s%s" % [
-            _catalog_slot_label(slot), _generation_label(tier), name, lineage_tag, candidate_tag, unavailable_tag])
+        var pending_tag := " · DESIGN_PENDING" if str(row.get("divine_rule_status", "")) == "DESIGN_PENDING" else ""
+        poison_catalog_option.add_item("%s · %s · %s%s%s%s%s" % [
+            _catalog_slot_label(slot), _generation_label(tier), name, lineage_tag, candidate_tag, unavailable_tag, pending_tag])
         poison_catalog_option.set_item_metadata(poison_catalog_option.item_count - 1, str(row.get("id", "")))
     if poison_catalog_option.item_count == 0:
         selected_catalog_skill_id = ""
@@ -599,13 +611,16 @@ func _refresh_poison_skill_details() -> void:
     var poison_stacks := int(definition.get("poison_stacks", 0))
     var skill_name := str(definition.get("name", selected_catalog_skill_id))
     var effect := str(definition.get("effect", "unspecified"))
+    var design_pending := str(definition.get("divine_rule_status", "")) == "DESIGN_PENDING"
     var runtime_tag := "V6.3 Lab · có thể nạp" if bool(definition.get("archivable", false)) or slot in ["basic", "mobility"] else "DESIGN-ONLY trong loadout Lab · chỉ duyệt"
+    if design_pending:
+        runtime_tag = "DESIGN_PENDING · chưa có cơ chế được duyệt · chỉ duyệt metadata"
     if str(definition.get("balance_status", "")) == "candidate":
         runtime_tag += " · CANDIDATE"
     poison_skill_detail_label.text = "%s\n%s · %s · %s\n%s\n%s · độc %d stack · CD %.1fs\n%s" % [
         skill_name, _generation_label(tier), _branch_label(branch), _catalog_slot_label(slot), target_text,
         effect, poison_stacks, float(definition.get("cooldown", 0.0)), runtime_tag]
-    poison_load_button.disabled = not (bool(definition.get("archivable", false)) or slot in ["basic", "mobility"])
+    poison_load_button.disabled = design_pending or not (bool(definition.get("archivable", false)) or slot in ["basic", "mobility"])
     poison_load_button.text = "NẠP SKILL & TẠO LẠI TRẬN" if not poison_load_button.disabled else "NỘI TẠI · CHỈ DUYỆT"
 
 func _load_selected_poison_skill() -> void:
@@ -665,9 +680,51 @@ func _apply_poison_boss_preset() -> void:
     lineage_option.select(0)
     party_count.value = 6
     enemy_option.select(2)
+    encounter_option.select(3)
+    _select_boss("tmb.boss.bach_doc_chu_hau")
     _refresh_boss_visibility()
     _refresh_branches()
     _refresh_skills()
+    _select_poison_skill("tmb.skill.poison.doc_cham.active_03.human")
+    _load_selected_poison_skill()
+
+func _apply_poison_aoe_preset() -> void:
+    school_option.select(SCHOOL_KEYS.find("poison"))
+    generation_option.select(GENERATION_KEYS.find("human"))
+    lineage_option.select(0)
+    party_count.value = 1
+    enemy_option.select(0)
+    encounter_option.select(1)
+    _refresh_boss_visibility()
+    _refresh_branches()
+    _refresh_skills()
+    _select_poison_skill("tmb.skill.poison.doc_cham.active_03.human")
+    _load_selected_poison_skill()
+
+func _select_poison_skill(skill_id: String) -> bool:
+    for index in range(poison_catalog_option.item_count):
+        if str(poison_catalog_option.get_item_metadata(index)) == skill_id:
+            poison_catalog_option.select(index)
+            selected_catalog_skill_id = skill_id
+            _refresh_poison_skill_details()
+            return true
+    return false
+
+func _select_boss(boss_id: String) -> bool:
+    for index in range(boss_option.item_count):
+        if str(boss_option.get_item_metadata(index)) == boss_id:
+            boss_option.select(index)
+            return true
+    return false
+
+func _on_encounter_selected(index: int) -> void:
+    if index == 3:
+        enemy_option.select(2)
+        if boss_option.item_count > 0 and boss_option.selected < 0:
+            boss_option.select(0)
+    elif enemy_option.selected == 2:
+        enemy_option.select(0)
+    _refresh_boss_visibility()
     _start_battle()
 
 func _fill_bosses() -> void:
@@ -680,7 +737,8 @@ func _fill_bosses() -> void:
     if boss_option.item_count > 0: boss_option.select(0)
 
 func _refresh_boss_visibility() -> void:
-    if boss_option != null: boss_option.visible = enemy_option.selected == 2
+    if boss_option != null:
+        boss_option.visible = enemy_option.selected == 2 or (encounter_option != null and encounter_option.selected == 3)
 
 func _selected_loadout() -> Array[String]:
     var result: Array[String] = []
@@ -780,10 +838,30 @@ func _apply_capture_preset() -> void:
     if generation_index >= 0:
         generation_option.select(generation_index)
         _refresh_skills()
+    var branch_key := OS.get_environment("TMB_COMBAT_LAB_BRANCH").strip_edges().to_lower()
+    if not branch_key.is_empty():
+        for index in range(branch_option.item_count):
+            if str(branch_option.get_item_metadata(index)) == branch_key:
+                branch_option.select(index)
+                _refresh_skills()
+                break
+    var lineage_key := OS.get_environment("TMB_COMBAT_LAB_LINEAGE").strip_edges().to_lower()
+    if lineage_key in ["a", "b"]:
+        lineage_option.select(0 if lineage_key == "a" else 1)
+        _refresh_skills()
     var enemy_keys := ["normal", "elite", "boss"]
     var enemy_index := enemy_keys.find(OS.get_environment("TMB_COMBAT_LAB_ENEMY").strip_edges().to_lower())
     if enemy_index >= 0:
         enemy_option.select(enemy_index)
+        _refresh_boss_visibility()
+    var encounter_key := OS.get_environment("TMB_COMBAT_LAB_ENCOUNTER").strip_edges().to_lower()
+    var encounter_keys := ["single", "aoe3", "aoe5", "boss_adds"]
+    var encounter_index := encounter_keys.find(encounter_key)
+    if encounter_index >= 0:
+        encounter_option.select(encounter_index)
+        if encounter_index == 3:
+            enemy_option.select(2)
+            _select_boss("tmb.boss.bach_doc_chu_hau")
         _refresh_boss_visibility()
     var requested_party := OS.get_environment("TMB_COMBAT_LAB_PARTY").strip_edges()
     if requested_party.is_valid_int():
@@ -798,13 +876,10 @@ func _start_battle() -> void:
         return
     var enemy_kind: String = str(["normal", "elite", "boss"][enemy_option.selected])
     var boss_id := str(boss_option.get_item_metadata(boss_option.selected)) if boss_option.item_count > 0 else ""
-    var enemy := CombatLabRosterAdapter.build_enemy(enemy_kind, boss_id, "lab_enemy")
-    if not bool(enemy.get("ok", false)):
-        _set_error("Không tạo được đối thủ từ catalog thật: " + str(enemy.get("detail", enemy.get("reason", ""))))
+    var monsters := _build_lab_monsters(enemy_kind, boss_id)
+    if monsters.is_empty():
+        _set_error("Không tạo được đội quái từ catalog thật")
         return
-    var monster: Dictionary = enemy.actor
-    if enemy_kind != "boss": monster["position"] = Vector2(26, 10)
-    var monsters: Array = [monster]
     var candidate := MapBattleV2.new(515151)
     var ready := candidate.setup("combat_lab_preview", setup.party, monsters, false)
     if not bool(ready.get("ok", false)):
@@ -822,6 +897,55 @@ func _start_battle() -> void:
     arena.call("set_status", "LAB_ONLY  ·  " + GENERATION_LABELS[generation_option.selected] + " · " + SCHOOL_LABELS[school_option.selected])
     _consume_events()
     _refresh_hud()
+
+func _build_lab_monsters(enemy_kind: String, boss_id: String) -> Array:
+    var monsters: Array = []
+    if encounter_option != null and encounter_option.selected == 3:
+        var boss := CombatLabRosterAdapter.build_enemy("boss", boss_id, "lab_boss")
+        if not bool(boss.get("ok", false)):
+            return []
+        var boss_actor: Dictionary = boss.actor
+        boss_actor["id"] = "lab_boss"
+        boss_actor["position"] = Vector2(28.0, 10.0)
+        monsters.append(boss_actor)
+        var add_positions: Array[Vector2] = [Vector2(26.0, 8.4), Vector2(25.7, 10.0), Vector2(26.0, 11.6)]
+        for index in range(add_positions.size()):
+            var add := CombatLabRosterAdapter.build_enemy("normal", "", "lab_boss_add_%02d" % (index + 1))
+            if not bool(add.get("ok", false)):
+                return []
+            var add_actor: Dictionary = add.actor
+            add_actor["position"] = add_positions[index]
+            add_actor["move_speed"] = 0.0
+            monsters.append(add_actor)
+        return monsters
+
+    if encounter_option != null and encounter_option.selected in [1, 2]:
+        var inside_count := 3 if encounter_option.selected == 1 else 5
+        var positions: Array[Vector2] = [Vector2(12.0, 10.0), Vector2(10.2, 8.5), Vector2(10.4, 11.6),
+            Vector2(13.7, 8.1), Vector2(13.8, 11.7)]
+        for index in range(inside_count):
+            var enemy := CombatLabRosterAdapter.build_enemy(enemy_kind, "", "lab_aoe_%02d" % index)
+            if not bool(enemy.get("ok", false)):
+                return []
+            var actor: Dictionary = enemy.actor
+            actor["position"] = positions[index]
+            actor["move_speed"] = 0.0
+            monsters.append(actor)
+        var outside := CombatLabRosterAdapter.build_enemy(enemy_kind, "", "lab_aoe_outside")
+        if not bool(outside.get("ok", false)):
+            return []
+        var outside_actor: Dictionary = outside.actor
+        outside_actor["position"] = Vector2(16.5, 10.0)
+        outside_actor["move_speed"] = 0.0
+        monsters.append(outside_actor)
+        return monsters
+
+    var single := CombatLabRosterAdapter.build_enemy(enemy_kind, boss_id, "lab_enemy")
+    if not bool(single.get("ok", false)):
+        return []
+    var single_actor: Dictionary = single.actor
+    if enemy_kind != "boss": single_actor["position"] = Vector2(26, 10)
+    return [single_actor]
 
 func _set_error(message: String) -> void:
     state_label.text = "LỖI FIXTURE"

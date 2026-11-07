@@ -43,6 +43,10 @@ static func skill_options(school: String, generation: String, slot: String, bran
         var row_lineage := str(row.get("lineage", ""))
         if generation in ["immortal", "divine"] and slot in ["active", "ultimate", "passive"] and row_lineage != lineage:
             continue
+        # Divine Poison nodes whose mechanics are explicitly owner-deferred are
+        # browseable in the catalog UI, but must not enter a Lab loadout/AI cast.
+        if school == "poison" and str(row.get("divine_rule_status", "")) == "DESIGN_PENDING":
+            continue
         if bool(row.get("archivable", false)) == false and slot not in ["basic", "mobility"]:
             continue
         rows.append(row.duplicate(true))
@@ -100,6 +104,8 @@ static func validate_loadout(ids: Array, school: String, generation: String, bra
             continue
         var def: Dictionary = definitions[id]
         var slot := str(def.get("slot", ""))
+        if school == "poison" and str(def.get("divine_rule_status", "")) == "DESIGN_PENDING":
+            errors.append("poison_design_pending_not_loadable:" + id)
         if str(def.get("school", "")) != school or str(def.get("generation", def.get("tier", "human"))) != generation:
             errors.append("skill_school_or_generation_mismatch:" + id)
         if slot in ["active", "ultimate", "passive"] and str(def.get("branch", "")) != branch:
