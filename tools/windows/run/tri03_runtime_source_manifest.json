@@ -3,7 +3,7 @@
   "branch": "integration/pve-p0-playable-ui-20261103",
   "base_sha": "27ed01cd8f377994e5e50bac9ede84e78e8895bd",
   "upstream_pr_sha": "c99f22153b34628f7e94f69de0285514e788b9cb",
-  "source_fingerprint": "c5d7fa0f127e4ae6c9433e3b700daa966d765418191c37a7c9ceaa7ca239a833",
+  "source_fingerprint": "0b8688512f218e2ab0af533222e2a216fa562c487cac348fbebcdf0c008f8286",
   "files": [
     {
       "path": "CHOI-GAME.cmd",
@@ -367,7 +367,7 @@
     },
     {
       "path": "godot/src/presentation/p3_2_landscape_sect.gd",
-      "git_blob_sha": "54e113449e214d9dab808658d227e00f6d3c85b8"
+      "git_blob_sha": "e98a103da6147c53a323b17975ee83e0296f4b8b"
     },
     {
       "path": "godot/src/presentation/uiux/dai_dien_screen_b1_v1.gd",
@@ -687,7 +687,7 @@
     },
     {
       "path": "godot/labs/combat_lab/combat_lab_actor_rig_v2.gd",
-      "git_blob_sha": "bf44163c22f7c6566a772cd9b6baa9688c797829"
+      "git_blob_sha": "cd7a714516d7749fee4686cf6b678e0a27c71517"
     },
     {
       "path": "godot/labs/combat_lab/combat_lab_arena.gd",
@@ -699,7 +699,7 @@
     },
     {
       "path": "godot/labs/combat_lab/combat_lab_roster_adapter.gd",
-      "git_blob_sha": "9dd75618373c133f49f02419e5161309cc5e5e31"
+      "git_blob_sha": "832fdd1aeea6de829d32bfc0afa9fbba6e0525b4"
     },
     {
       "path": "godot/labs/combat_lab/combat_lab_vfx_v2.gd",
@@ -707,7 +707,7 @@
     },
     {
       "path": "godot/labs/combat_lab/combat_lab.gd",
-      "git_blob_sha": "0bcb0e3162cae33869d0c85cd21aaafa0943a0a9"
+      "git_blob_sha": "93e6fcccd30b8e5f8d55a23dfa00b5e3c636d534"
     },
     {
       "path": "godot/labs/combat_lab/combat_lab.tscn",
@@ -719,7 +719,7 @@
     },
     {
       "path": "godot/tests/labs/combat_lab/combat_lab_focused_test.gd",
-      "git_blob_sha": "dfadc5b84b76bde918b97373a41a4fed4867189f"
+      "git_blob_sha": "98a2a6ec8e1af463fc661fa723b47534536457eb"
     },
     {
       "path": "godot/tests/labs/combat_lab/combat_lab_v2_visual_test.gd",
