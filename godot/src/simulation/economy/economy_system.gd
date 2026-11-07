@@ -118,7 +118,12 @@ func settle_work_wage(state: SimulationState, worker: DiscipleState, job_id: Str
     state.sect.economy_a_event_count += 1
     return {"ok":true,"already_settled":false,"receipt":receipt.duplicate(true)}
 
-const V2_MARKET_CATALOG := ["linh_moc", "thanh_thiet", "thanh_linh_thao", "linh_coc"]
+# Resource-sale income is earned against Warehouse stock. The NPC also
+# stocks one paid Tầm Mạch Bàn per day for the real Mine Lv10+ gates.
+# Selling building components back would enable artificial market recycling.
+const V2_MARKET_SELLABLE := ["linh_moc", "thanh_thiet", "thanh_linh_thao", "linh_coc", "huyen_thiet"]
+const V2_MARKET_CATALOG := ["linh_moc", "thanh_thiet", "thanh_linh_thao", "linh_coc", "huyen_thiet", "tam_mach_ban"]
+const V2_MARKET_DAILY_SPECIAL_STOCK := {"tam_mach_ban": 1}
 
 # Merchant stock is separate from the Sect Warehouse and legacy P2 market.
 # Daily replenishment uses the canonical simulation tick; existing stock from
@@ -131,8 +136,9 @@ func sync_market_day(state: SimulationState) -> void:
         return
     var target := maxi(int(state.sect.economy_a_policy.get("market_stock_target",20)),0)
     for raw_id in V2_MARKET_CATALOG:
+        var restock_target := int(V2_MARKET_DAILY_SPECIAL_STOCK.get(raw_id,target))
         state.sect.economy_a_market_stock[raw_id] = maxi(
-            int(state.sect.economy_a_market_stock.get(raw_id,0)),target)
+            int(state.sect.economy_a_market_stock.get(raw_id,0)),restock_target)
     state.sect.economy_a_market_stock_day = day
     state.sect.economy_a_market_units_bought = 0
     if state.sect.economy_a_market_day != day:
@@ -147,12 +153,15 @@ func market_buy_remaining(state: SimulationState) -> int:
     return maxi(int(state.sect.economy_a_policy.get("market_daily_units",20))-bought,0)
 
 func market_sell_price(resource_id: StringName) -> int:
-    if not V2_MARKET_CATALOG.has(str(resource_id)):
+    if not V2_MARKET_SELLABLE.has(str(resource_id)):
         return 0
     return int(ResourceRegistry.new().definition(resource_id).get("market_value",0))
 
 func market_purchase_price(state: SimulationState, resource_id: StringName) -> int:
-    return market_sell_price(resource_id)*maxi(int(state.sect.economy_a_policy.get("market_buy_markup",2)),1)
+    if not V2_MARKET_CATALOG.has(str(resource_id)):
+        return 0
+    var base_value := int(ResourceRegistry.new().definition(resource_id).get("market_value",0))
+    return base_value * maxi(int(state.sect.economy_a_policy.get("market_buy_markup",2)),1)
 
 # Player buys from durable NPC stock; Warehouse receives the actual item before
 # Sect Stones are debited. Every rejection leaves currency and goods unchanged.
