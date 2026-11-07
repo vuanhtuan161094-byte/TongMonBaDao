@@ -35,6 +35,50 @@ func _run() -> void:
     ui.call("_open_building", SectMapPresentation.DEST_MINE)
     await process_frame
 
+    # New real Mine ore selector: production choice is backend-owned, not a
+    # decorative preview. A fresh mine must remain fully backward-compatible.
+    var default_ore_button := ui.find_child("MineOre_thanh_thiet", true, false) as Button
+    var advanced_ore_button := ui.find_child("MineOre_huyen_thiet", true, false) as Button
+    if default_ore_button == null or advanced_ore_button == null:
+        _fail("O3 Mine does not expose both canonical ore choices.")
+        return
+    if default_ore_button.disabled or not advanced_ore_button.disabled:
+        _fail("O3 Mine ore level gate is incorrect at Lv1.")
+        return
+    if buildings.mine_selected_ore(mine) != &"thanh_thiet":
+        _fail("O3 new/old Mine must default to Thanh Thiet.")
+        return
+    var denied := buildings.select_mine_ore(state, mine.id, &"huyen_thiet")
+    if bool(denied.get("ok", false)) or buildings.mine_selected_ore(mine) != &"thanh_thiet":
+        _fail("O3 backend allowed locked Huyen Thiet at Lv1.")
+        return
+
+    # Exercise the exact on-screen control at the unlock level; restore the
+    # state before the existing full O3 mining/save/reload test proceeds.
+    mine.level = 10
+    ui.call("_refresh_building_operation_content")
+    await process_frame
+    if not await _press_button("MineOre_huyen_thiet"):
+        return
+    if buildings.mine_selected_ore(mine) != &"huyen_thiet":
+        _fail("O3 ore UI did not mutate the canonical Mine state.")
+        return
+    var persisted_mine := BuildingState.from_dict(mine.to_dict()) as BuildingState
+    if buildings.mine_selected_ore(persisted_mine) != &"huyen_thiet":
+        _fail("O3 ore selection did not survive the saved building envelope.")
+        return
+    if buildings.mine_ore_batch_units(mine, &"huyen_thiet") >= buildings.resource_job_batch_units(mine):
+        _fail("O3 Huyen Thiet must have its distinct reduced batch size.")
+        return
+    if not await _press_button("MineOre_thanh_thiet"):
+        return
+    mine.level = 1
+    ui.call("_refresh_building_operation_content")
+    await process_frame
+    if buildings.mine_selected_ore(mine) != &"thanh_thiet":
+        _fail("O3 Mine did not restore its original ore selection.")
+        return
+
     # Use the actual player-facing group buttons to isolate one real worker,
     # then prove re-assignment through the same UI path.
     if not await _press_button("Group_mining_crew_%s" % str(other_id)):
