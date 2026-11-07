@@ -49,6 +49,11 @@ func start(
 
     if created:
         SX01PillPolicy.install_new_game(live_state)
+        # New Game must have an earned Stone path from its very first day.
+        # Legacy saves keep their existing opt-in Economy-A contract.
+        var market_activation := EconomySystem.new().enable_v1(live_state)
+        if not bool(market_activation.get("ok", false)):
+            return {"ok": false, "reason": "new_game_economy_unavailable", "detail": str(market_activation.get("reason", ""))}
 
     var attached := owner.attach(live_state,now)
     if not bool(attached.get("ok",false)):
