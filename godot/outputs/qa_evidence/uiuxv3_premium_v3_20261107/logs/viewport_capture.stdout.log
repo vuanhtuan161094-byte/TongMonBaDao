@@ -1,0 +1,11 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 - Build 31.0.101.2125 - Compatibility - Using Device: Intel - Intel(R) Iris(R) Plus Graphics
+
+CAPTURE_CONTEXT base_sha=96f6b09a3711abb481d3b9dd5509accd04cd264c working_delta=uiuxv3 engine=4.7.2-stable (official) viewport=(1280, 720)
+VIEWPORT_CAPTURE_OK name=01_map path=E:\TongMonBaDaoWorkspace\03_QA_Logs\PR72_UIUXV3_LIVE_QA_0dedb9fc\captures_after_uiuxv3/01_map.png size=1280x720
+VIEWPORT_CAPTURE_OK name=mine path=E:\TongMonBaDaoWorkspace\03_QA_Logs\PR72_UIUXV3_LIVE_QA_0dedb9fc\captures_after_uiuxv3/mine.png size=1280x720
+VIEWPORT_CAPTURE_OK name=linh_lam path=E:\TongMonBaDaoWorkspace\03_QA_Logs\PR72_UIUXV3_LIVE_QA_0dedb9fc\captures_after_uiuxv3/linh_lam.png size=1280x720
+VIEWPORT_CAPTURE_OK name=linh_dien path=E:\TongMonBaDaoWorkspace\03_QA_Logs\PR72_UIUXV3_LIVE_QA_0dedb9fc\captures_after_uiuxv3/linh_dien.png size=1280x720
+VIEWPORT_CAPTURE_OK name=ho_so_legacy path=E:\TongMonBaDaoWorkspace\03_QA_Logs\PR72_UIUXV3_LIVE_QA_0dedb9fc\captures_after_uiuxv3/ho_so_legacy.png size=1280x720
+VIEWPORT_CAPTURE_OK name=ho_so_v2 path=E:\TongMonBaDaoWorkspace\03_QA_Logs\PR72_UIUXV3_LIVE_QA_0dedb9fc\captures_after_uiuxv3/ho_so_v2.png size=1280x720
+TMB_UIUXV3_CAPTURE_PASS legacy=lam_an v2=candidate_73021 output=E:\TongMonBaDaoWorkspace\03_QA_Logs\PR72_UIUXV3_LIVE_QA_0dedb9fc\captures_after_uiuxv3

@@ -1,0 +1,4 @@
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+WARNING: UID duplicate detected between res://outputs/qa_evidence/v63_skill_source_20261105/SOURCE_HASHES.sha256.translation and res://outputs/qa_evidence/v63_skill_source_20261105/SOURCE_HASHES.csv.
+   at: _process_file_system (editor/file_system/editor_file_system.cpp:1405)
