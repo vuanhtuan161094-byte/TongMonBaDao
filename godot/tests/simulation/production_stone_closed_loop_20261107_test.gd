@@ -188,6 +188,54 @@ func _run() -> void:
         _fail("Field credited duplicate EXP on repeat processing")
         return
 
+    # Cold migration: already-growing legacy plots had their EXP credited at
+    # planting. Remove the new pending key to model an existing saved crop.
+    # Resolving its harvest MUST NOT credit EXP a second time.
+    var legacy := P37Factory.create_state(7110704)
+    var legacy_field := buildings.primary_building(legacy,BuildingSystem.TYPE_SPIRIT_FIELD)
+    var old_worker: DiscipleState = null
+    for raw_id in legacy.disciples.keys():
+        var potential: DiscipleState = legacy.disciples[raw_id]
+        if potential.work_group_id == &"":
+            old_worker = potential
+            break
+    if old_worker == null or not workforce.assign_group(legacy,old_worker.id,&"herbalism_crew"):
+        _fail("cannot set up legacy pending crop migration fixture")
+        return
+    var old_sow := workforce.perform_work(legacy,old_worker,WorkforceSystem.PROF_HERBALISM)
+    if not bool(old_sow.get("started",false)):
+        _fail("could not prepare old in-flight crop")
+        return
+    var old_data := legacy_field.production_state.duplicate(true)
+    var old_plots: Array = old_data.get("plots",[])
+    var old_plot: Dictionary = old_plots[0]
+    var precredited := maxf(float(old_plot.get("profession_xp_gain",0.0)),0.0)
+    old_plot.erase("profession_xp_gain")
+    old_plots[0] = old_plot
+    old_data["plots"] = old_plots
+    legacy_field.production_state = old_data
+    old_worker.profession_xp[str(WorkforceSystem.PROF_HERBALISM)] = workforce.profession_xp(old_worker,WorkforceSystem.PROF_HERBALISM)+precredited
+    var old_before := workforce.profession_xp(old_worker,WorkforceSystem.PROF_HERBALISM)
+    if SaveService.new().save_to_path(legacy,SAVE_PATH) != OK:
+        _fail("could not save legacy pending crop without EXP marker")
+        return
+    var old_reload := SaveService.new().load_from_path(SAVE_PATH)
+    if old_reload == null:
+        _fail("could not load legacy pending crop")
+        return
+    var old_reload_field := buildings.primary_building(old_reload,BuildingSystem.TYPE_SPIRIT_FIELD)
+    var old_reload_plot: Dictionary = buildings.spirit_field_plots(old_reload,old_reload_field)[0]
+    if old_reload_plot.has("profession_xp_gain"):
+        _fail("SaveService injected a new pending EXP marker into an already-paid legacy plot")
+        return
+    var old_finish := int(old_reload_plot.get("finish_tick",0))
+    old_reload.tick = maxi(old_reload.tick+1,old_finish)
+    buildings.process_tick(old_reload)
+    var old_reload_worker: DiscipleState = old_reload.disciples[old_worker.id]
+    if not is_equal_approx(workforce.profession_xp(old_reload_worker,WorkforceSystem.PROF_HERBALISM),old_before):
+        _fail("legacy crop harvest paid profession EXP twice")
+        return
+
     # Demand policy must stop when all real + in-flight supply targets are met.
     var capped := P37Factory.create_state(7110702)
     var capped_field := buildings.primary_building(capped,BuildingSystem.TYPE_SPIRIT_FIELD)
