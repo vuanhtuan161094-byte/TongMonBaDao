@@ -28,6 +28,12 @@ const MILESTONE_LEVELS := [10, 20, 30, 50, 75, 100]
 # stackable-resource authority; legacy buckets are fallback-only for old direct states.
 const MATERIAL_WOOD := "linh_moc"
 const MATERIAL_ORE := "thanh_thiet"
+# Only mineral resources already registered in ResourceRegistry are selectable.
+# Existing saves remain Thanh Thiết by default. Huyền Thiết unlocks at Mine Lv10.
+const MINE_ORE_OPTIONS := {
+    "thanh_thiet": {"required_level": 1, "batch_percent": 100},
+    "huyen_thiet": {"required_level": 10, "batch_percent": 50}
+}
 const MATERIAL_TAM_MACH_BAN := "tam_mach_ban"
 const MATERIAL_HERB := "thanh_linh_thao"
 const MATERIAL_LINH_TUYEN_HEART := "linh_tuyen_chi_tam"
@@ -322,6 +328,46 @@ func primary_building(state: SimulationState, building_type: StringName) -> Buil
         if building is BuildingState and building.building_type == building_type:
             return building
     return null
+
+func mine_selected_ore(mine: BuildingState) -> StringName:
+    if mine == null or mine.building_type != TYPE_MINE:
+        return StringName(MATERIAL_ORE)
+    var requested := str(mine.production_state.get("selected_ore_id", MATERIAL_ORE))
+    if not MINE_ORE_OPTIONS.has(requested):
+        return StringName(MATERIAL_ORE)
+    var option: Dictionary = MINE_ORE_OPTIONS[requested]
+    if mine.level < int(option.get("required_level", 1)):
+        return StringName(MATERIAL_ORE)
+    return StringName(requested)
+
+func mine_ore_batch_units(mine: BuildingState, ore_id: StringName) -> int:
+    var normal := _resource_job_batch_units(mine)
+    if mine == null or mine.building_type != TYPE_MINE:
+        return normal
+    var option: Dictionary = MINE_ORE_OPTIONS.get(str(ore_id), {})
+    if option.is_empty():
+        return normal
+    return maxi(1, int(floor(float(normal) * float(option.get("batch_percent", 100)) / 100.0)))
+
+func select_mine_ore(state: SimulationState, mine_id: StringName, ore_id: StringName) -> Dictionary:
+    if state == null or not state.buildings.has(str(mine_id)):
+        return {"ok": false, "reason": "mine_missing"}
+    var mine: BuildingState = state.buildings[str(mine_id)]
+    if mine.building_type != TYPE_MINE:
+        return {"ok": false, "reason": "wrong_building_type"}
+    var choice: Dictionary = MINE_ORE_OPTIONS.get(str(ore_id), {})
+    if choice.is_empty() or not ResourceRegistry.DEFINITIONS.has(str(ore_id)):
+        return {"ok": false, "reason": "ore_not_supported"}
+    if mine.level < int(choice.get("required_level", 1)):
+        return {"ok": false, "reason": "mine_level_required", "required_level": int(choice.get("required_level", 1))}
+    if mine_selected_ore(mine) == ore_id:
+        return {"ok": true, "changed": false}
+    var data := mine.production_state.duplicate(true)
+    data["selected_ore_id"] = str(ore_id)
+    mine.production_state = data
+    state.building_event_count += 1
+    # Existing timed jobs and in-flight carry cycles keep their original ore.
+    return {"ok": true, "changed": true}
 
 func worker_slots(building: BuildingState) -> int:
     var definition := definition_for(building)
@@ -952,7 +998,7 @@ func perform_resource_job_step(state: SimulationState, disciple: DiscipleState, 
         return {"ok": false, "completed": false, "reason": "invalid_job_definition"}
     var start_phase := StringName(phases[0])
     var work_phase := StringName(definition.get("cycle_work_phase", ""))
-    var resource_id := StringName(definition.get("resource_id", ""))
+    var resource_id := mine_selected_ore(producer) if producer.building_type == TYPE_MINE else StringName(definition.get("resource_id", ""))
     if work_phase == &"" or resource_id == &"":
         return {"ok": false, "completed": false, "reason": "invalid_job_definition"}
 
@@ -969,7 +1015,9 @@ func perform_resource_job_step(state: SimulationState, disciple: DiscipleState, 
             "carried_units": 0
         }
     else:
-        # Normalize old Mine saves forward without renaming their phases.
+        # Preserve the ore being carried when the next-cycle selection changes.
+        # A legacy cycle without resource_id still defaults to canonical ore.
+        resource_id = StringName(cycle.get("resource_id", str(resource_id)))
         cycle["profession"] = str(profession_id)
         cycle["profession_id"] = str(profession_id)
         cycle["resource_id"] = str(resource_id)
@@ -997,7 +1045,7 @@ func perform_resource_job_step(state: SimulationState, disciple: DiscipleState, 
         if progress + 0.000001 >= _resource_job_duration(producer):
             phase = &"haul_back"
             progress = 0.0
-            cycle["carried_units"] = _resource_job_batch_units(producer)
+            cycle["carried_units"] = mine_ore_batch_units(producer, resource_id) if producer.building_type == TYPE_MINE else _resource_job_batch_units(producer)
     elif phase == &"haul_back":
         progress += _movement_speed(state, disciple) * _haul_speed_multiplier(disciple)
         if progress + 0.000001 >= float(definition.get("haul_distance", 6.0)):
@@ -1127,8 +1175,8 @@ func _start_resource_timer(state: SimulationState, producer: BuildingState, acto
     var job := {
         "job_id":"%s:v1:%d" % [str(producer.id),sequence],
         "worker_id":str(actor.id),"profession_id":str(profession_id),
-        "resource_id":str(definition.get("resource_id","")),
-        "output_quantity":_resource_job_batch_units(producer),
+        "resource_id":str(mine_selected_ore(producer)) if producer.building_type == TYPE_MINE else str(definition.get("resource_id","")),
+        "output_quantity":mine_ore_batch_units(producer, mine_selected_ore(producer)) if producer.building_type == TYPE_MINE else _resource_job_batch_units(producer),
         "profession_xp_gain":maxf(xp_gain,0.0),
         "started_tick":state.tick,"finish_tick":state.tick+duration
     }
