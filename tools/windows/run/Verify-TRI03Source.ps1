@@ -136,6 +136,7 @@ $sourceExtensions = @('.gd', '.tscn', '.tres', '.gdshader', '.svg', '.png', '.js
 foreach ($path in ($changedPaths | Sort-Object -Unique)) {
     if ($path -eq 'tools/windows/run/tri03_runtime_source_manifest.json') { continue }
     if ($path.EndsWith('.import')) { continue }
+    if ($path.StartsWith('godot/labs/')) { continue } # Isolated labs are not runtime source payloads.
     if ($path.StartsWith('godot/outputs/') -or $path.StartsWith('godot/.godot/')) { continue }
     $extension = [IO.Path]::GetExtension($path).ToLowerInvariant()
     if ($path.StartsWith('godot/') -and $sourceExtensions -contains $extension -and -not $pins.ContainsKey($path)) {
