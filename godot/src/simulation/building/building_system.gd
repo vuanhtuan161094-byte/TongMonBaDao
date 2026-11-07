@@ -57,7 +57,15 @@ const PLOT_GROWING := &"growing"
 # across all major thresholds, with quantity increasing by milestone level.
 const MILESTONE_COMPONENTS := {
     "mine": {
-        10: MATERIAL_TAM_MACH_BAN
+        # A real repeatable component source is now available at the NPC market.
+        # Keep the original one-board cost at Lv10; higher gates use one board
+        # provisionally, not nonexistent resources or automatic free unlocks.
+        10: MATERIAL_TAM_MACH_BAN,
+        20: MATERIAL_TAM_MACH_BAN,
+        30: MATERIAL_TAM_MACH_BAN,
+        50: MATERIAL_TAM_MACH_BAN,
+        75: MATERIAL_TAM_MACH_BAN,
+        100: MATERIAL_TAM_MACH_BAN
     },
     "spirit_field": {
         10: MATERIAL_LINH_TUYEN_HEART,
