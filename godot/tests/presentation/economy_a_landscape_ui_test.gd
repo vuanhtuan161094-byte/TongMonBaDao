@@ -10,6 +10,9 @@ func _init() -> void:
     call_deferred("_run")
 
 func _run() -> void:
+    for suffix in ["",".bak",".tmp"]:
+        if FileAccess.file_exists(SAVE_PATH+suffix):
+            DirAccess.remove_absolute(ProjectSettings.globalize_path(SAVE_PATH+suffix))
     ProjectSettings.set_setting("runtime/live_save_path",SAVE_PATH)
     var scene := load("res://scenes/p3/p3_2_landscape_sect.tscn") as PackedScene
     if scene == null:
@@ -19,15 +22,13 @@ func _run() -> void:
     root.add_child(ui)
     await process_frame
     state = ui.get("state") as SimulationState
-    if state == null or state.sect.economy_a_enabled:
-        _fail("invalid original fresh-state economy toggle")
+    if state == null or not state.sect.economy_a_enabled:
+        _fail("New Game must start with real market-enabled Stone income")
         return
     ui.call("_open_building",SectMapPresentation.DEST_MAIN_HALL)
     await process_frame
-    if not await _press("EconomyA_Enable"):
-        return
-    if not state.sect.economy_a_enabled:
-        _fail("Economy-A UI button did not change saved simulation authority")
+    if ui.find_child("EconomyA_RealIncome",true,false) == null:
+        _fail("Main Hall lacks receipt-backed Stone income explanation")
         return
     if not await _press("EconomyA_AutoSpendLimit"):
         return
