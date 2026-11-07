@@ -630,26 +630,18 @@ func _perform_p3_7_alchemy(state: SimulationState, disciple: DiscipleState) -> D
     return result
 
 func _perform_p3_7_herbalism(state: SimulationState, disciple: DiscipleState) -> Dictionary:
-    var result := building_system.perform_spirit_field_step(state, disciple, _work_speed(state, disciple, PROF_HERBALISM))
+    # Lock the worker's exact learning multiplier at sowing. The plot owner
+    # settles this amount after a real Warehouse harvest; cancellation earns
+    # nothing. Legacy plots without a stored amount are not paid twice.
+    var learning := _learning_multiplier(state,disciple,PROF_HERBALISM)
+    var result := building_system.perform_spirit_field_step(
+        state, disciple, _work_speed(state, disciple, PROF_HERBALISM), learning
+    )
     if not bool(result.get("ok", false)):
         return result
-
     result["work_cultivation_gain"] = _grant_p3_7_work_cultivation(state, disciple, PROF_HERBALISM)
     disciple.metrics["work_actions"] = int(disciple.metrics.get("work_actions", 0)) + 1
-    if not bool(result.get("completed", false)):
-        return result
-
-    var key := str(PROF_HERBALISM)
-    var base_xp := maxf(float(result.get("base_work_xp", BASE_WORK_XP)), 0.0)
-    var field_xp_factor := maxf(float(result.get("field_xp_factor", 1.0)), 0.0)
-    var xp_gain := base_xp * _learning_multiplier(state, disciple, PROF_HERBALISM) * field_xp_factor
-    disciple.profession_xp[key] = profession_xp(disciple, PROF_HERBALISM) + xp_gain
-    disciple.metrics["work_completions"] = int(disciple.metrics.get("work_completions", 0)) + 1
-    disciple.metrics["herbalism_completions"] = int(disciple.metrics.get("herbalism_completions", 0)) + 1
-    state.sect.workforce_event_count += 1
-    result["xp_gain"] = xp_gain
-
-    if command_kind(disciple) == COMMAND_WORK and command_target(disciple) == PROF_HERBALISM:
+    if bool(result.get("started",false)) and command_kind(disciple) == COMMAND_WORK and command_target(disciple) == PROF_HERBALISM:
         clear_command(state, disciple)
     return result
 
