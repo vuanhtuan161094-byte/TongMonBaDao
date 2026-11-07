@@ -3756,7 +3756,35 @@ func _build_worksite_upgrade_control(building: BuildingState) -> void:
         state.sect.spirit_stones, int(cost.get("spirit_stones", 0)),
         system.upgrade_required_work(building)
     ]
+    var extra_items: PackedStringArray = []
+    for raw_id in cost.keys():
+        var extra_id := str(raw_id)
+        if extra_id in [BuildingSystem.MATERIAL_WOOD,BuildingSystem.MATERIAL_ORE,"spirit_stones"]:
+            continue
+        extra_items.append("%s %d/%d" % [
+            ResourceRegistry.new().display_name(StringName(extra_id)),
+            _warehouse_available(StringName(extra_id)), int(cost[raw_id])
+        ])
+    if not extra_items.is_empty():
+        info.text += "\nMốc cần thêm: " + " · ".join(extra_items)
     info.tooltip_text = "Vật liệu tiêu thụ một lần lúc bắt đầu; chờ đủ phút mô phỏng mới lên cấp."
+    if building.building_type in [BuildingSystem.TYPE_MINE,BuildingSystem.TYPE_LINH_FOREST]:
+        var next_building := BuildingState.from_dict(building.to_dict()) as BuildingState
+        next_building.level = mini(building.level+1, building.max_level)
+        info.tooltip_text += "\nThời gian pha khai thác: %.2f → %.2f phút quy đổi; timer thật làm tròn theo phút. Chỗ việc: %d → %d. Sản lượng cơ bản: ×%d → ×%d." % [
+            system.resource_job_work_duration(building),
+            system.resource_job_work_duration(next_building),
+            system.worker_slots(building),system.worker_slots(next_building),
+            system.resource_job_batch_units(building),system.resource_job_batch_units(next_building)
+        ]
+    elif building.building_type == BuildingSystem.TYPE_SPIRIT_FIELD:
+        info.tooltip_text += "\nHệ số tốc độ: ×%.3f → ×%.3f; sản lượng và số ô tăng theo công thức/mốc, không cam kết thêm nguyên đơn vị mỗi cấp." % [
+            system.spirit_field_speed_factor(building),
+            system.spirit_field_speed_factor(BuildingState.from_dict({
+                "id":str(building.id),"building_type":str(building.building_type),
+                "level":mini(building.level+1,building.max_level)
+            }))
+        ]
     button.text = "Nâng cấp %s lên Lv%d" % [display, building.level + 1]
     button.disabled = not bool(check.get("ok", false))
     if button.disabled:
@@ -4494,6 +4522,17 @@ func _build_mine_upgrade_control() -> void:
         state.sect.spirit_stones, stone_need,
         buildings.upgrade_required_work(mine), _upgrade_eta_text(mine, true)
     ]
+    var extra_costs: PackedStringArray = []
+    for raw_id in cost.keys():
+        var extra_id := str(raw_id)
+        if extra_id in [BuildingSystem.MATERIAL_WOOD,BuildingSystem.MATERIAL_ORE,"spirit_stones"]:
+            continue
+        extra_costs.append("%s %d/%d" % [
+            ResourceRegistry.new().display_name(StringName(extra_id)),
+            _warehouse_available(StringName(extra_id)),int(cost[raw_id])
+        ])
+    if not extra_costs.is_empty():
+        info.text += "\nMốc cần thêm: " + " · ".join(extra_costs)
     button.text = "Nâng cấp Mỏ lên Lv%d" % (mine.level + 1)
     button.disabled = not bool(check.get("ok", false))
     if button.disabled:
