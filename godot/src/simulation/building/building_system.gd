@@ -1118,7 +1118,7 @@ func perform_resource_job_step(state: SimulationState, disciple: DiscipleState, 
         disciple.work_cycle_state = cycle
     return result
 
-func perform_spirit_field_step(state: SimulationState, disciple: DiscipleState, work_speed: float) -> Dictionary:
+func perform_spirit_field_step(state: SimulationState, disciple: DiscipleState, work_speed: float, learning_factor: float = 1.0) -> Dictionary:
     var field := _building_for_disciple(state, TYPE_SPIRIT_FIELD, disciple)
     if field == null or not can_disciple_work(state, field, disciple):
         return {"ok": false, "completed": false, "reason": "no_active_spirit_field_slot"}
@@ -1156,7 +1156,11 @@ func perform_spirit_field_step(state: SimulationState, disciple: DiscipleState, 
         "paid_spirit_stones": plant_cost,
         "routine_yield": routine_yield,
         "rare_factor": rare_factor,
-        "economy_a_wage_job_id": "%s_plot_%06d" % [str(field.id), plant_sequence] if state.sect.economy_a_enabled and DiscipleRealmProgressV2.owns_v2_progression(disciple) else ""
+        "economy_a_wage_job_id": "%s_plot_%06d" % [str(field.id), plant_sequence] if state.sect.economy_a_enabled and DiscipleRealmProgressV2.owns_v2_progression(disciple) else "",
+        # New plots lock exact EXP at sowing, but credit it only after real
+        # output reaches Warehouse. Legacy in-flight plots lack this key and
+        # have already credited EXP at sowing; do not reward them twice.
+        "profession_xp_gain": crop_registry.base_work_xp(crop_id) * maxf(learning_factor,0.0) * spirit_field_xp_factor(field)
     }
     data["plots"] = plots
     data["plant_sequence"] = plant_sequence
@@ -1165,7 +1169,8 @@ func perform_spirit_field_step(state: SimulationState, disciple: DiscipleState, 
 
     return {
         "ok": true,
-        "completed": true,
+        "started": true,
+        "completed": false,
         "work_kind": "start_crop",
         "building_id": str(field.id),
         "plot_id": plot_id,
@@ -1174,6 +1179,7 @@ func perform_spirit_field_step(state: SimulationState, disciple: DiscipleState, 
         "paid_spirit_stones": plant_cost,
         "base_work_xp": crop_registry.base_work_xp(crop_id),
         "field_xp_factor": spirit_field_xp_factor(field),
+        "xp_gain_pending": crop_registry.base_work_xp(crop_id) * maxf(learning_factor,0.0) * spirit_field_xp_factor(field),
         "stamina_cost": 0.0
     }
 
@@ -1558,6 +1564,17 @@ func _resolve_spirit_plot(state: SimulationState, field: BuildingState, plot: Di
     var quantity := maxi(int(plot.get("routine_yield", crop_registry.base_yield(crop_id))), 1) * lucky
     if not _deposit_resource(state, field, str(crop_registry.output_resource_id(crop_id)), quantity):
         return false
+    # New engine versions settle actual profession EXP at harvest once.
+    # Old in-flight plots have no profession_xp_gain and were already paid on
+    # planting in the pre-migration model; skip without guessing historical XP.
+    var completed_worker := StringName(plot.get("assigned_worker_id",""))
+    if plot.has("profession_xp_gain") and state.disciples.has(completed_worker):
+        var harvested_worker: DiscipleState = state.disciples[completed_worker]
+        var xp_gain := maxf(float(plot.get("profession_xp_gain",0.0)),0.0)
+        harvested_worker.profession_xp[str(PROF_HERBALISM)] = float(harvested_worker.profession_xp.get(str(PROF_HERBALISM),0.0)) + xp_gain
+        harvested_worker.metrics["work_completions"] = int(harvested_worker.metrics.get("work_completions",0))+1
+        harvested_worker.metrics["herbalism_completions"] = int(harvested_worker.metrics.get("herbalism_completions",0))+1
+        state.sect.workforce_event_count += 1
     var wage_job_id := str(plot.get("economy_a_wage_job_id", ""))
     var worker_id := StringName(plot.get("assigned_worker_id", ""))
     if state.sect.economy_a_enabled and wage_job_id != "" and state.disciples.has(worker_id):
@@ -1676,7 +1693,7 @@ func _normalize_plot(value: Variant, index: int) -> Dictionary:
         "routine_yield": maxi(int(value.get("routine_yield", crop_registry.base_yield(crop_id))), 1),
         "rare_factor": maxf(float(value.get("rare_factor", 1.0)), 0.0),
         "economy_a_wage_job_id": str(value.get("economy_a_wage_job_id", ""))
-    }
+    } + ({"profession_xp_gain":maxf(float(value.get("profession_xp_gain",0.0)),0.0)} if value.has("profession_xp_gain") else {})
 
 func _empty_plot(plot_id: String) -> Dictionary:
     return {
