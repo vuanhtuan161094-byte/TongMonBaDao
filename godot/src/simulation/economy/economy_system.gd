@@ -145,6 +145,35 @@ func sync_market_day(state: SimulationState) -> void:
         state.sect.economy_a_market_day = day
         state.sect.economy_a_market_units_sold = 0
 
+# Read-only daily accounting from settled canonical receipts. This is a
+# transparent partial ledger: crop expenses and building/technique upgrades
+# have different owners and are intentionally NOT invented here.
+func daily_market_cashflow(state: SimulationState) -> Dictionary:
+    if state == null or not state.sect.economy_a_enabled:
+        return {"income":0,"purchases":0,"wages":0,"net_market_and_wages":0}
+    var day := int(state.tick/V2_DAY_TICKS)
+    var income := 0
+    var purchases := 0
+    var wages := 0
+    for raw_receipt in state.sect.economy_a_receipts.values():
+        if not (raw_receipt is Dictionary):
+            continue
+        var receipt: Dictionary = raw_receipt
+        var receipt_day := int(receipt.get("day",int(receipt.get("tick",-V2_DAY_TICKS))/V2_DAY_TICKS))
+        if receipt_day != day:
+            continue
+        match str(receipt.get("kind","")):
+            "market":
+                income += maxi(int(receipt.get("earned",0)),0)
+            "market_buy":
+                purchases += maxi(int(receipt.get("cost",0)),0)
+            "wage":
+                wages += maxi(int(receipt.get("paid",0)),0)
+    return {
+        "income":income,"purchases":purchases,"wages":wages,
+        "net_market_and_wages":income-purchases-wages
+    }
+
 func market_buy_remaining(state: SimulationState) -> int:
     if state == null or not state.sect.economy_a_enabled:
         return 0
