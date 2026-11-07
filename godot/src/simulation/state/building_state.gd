@@ -158,6 +158,10 @@ static func _plot_dictionary(value: Dictionary) -> Dictionary:
             result[key] = int(raw)
         elif key == "rare_factor":
             result[key] = float(raw)
+        elif key == "profession_xp_gain":
+            # Present only on new harvest-authoritative plots. Old in-flight
+            # saves have no key: XP was already awarded at sowing.
+            result[key] = maxf(float(raw),0.0)
         else:
             result[key] = raw
     return result
