@@ -8667,29 +8667,6 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "T�
 
     var title := _label(panel, "Hồ sơ đệ tử", Vector2(20, 12), Vector2(220, 34), 23)
     title.add_theme_color_override("font_color", CINNABAR.darkened(0.18))
-    var profile_disciple: DiscipleState = state.disciples[disciple_id]
-    var profile_snapshot := _disciple_snapshot(profile_disciple)
-    var authentic_v2 := bool(profile_snapshot.get("authentic_v2", false))
-    var recruited := profile_disciple.recruitment_source != &""
-    var identity: Dictionary = profile_snapshot.get("identity", {})
-    var quality_name := str(identity.get("quality_name", "")).strip_edges()
-    var provenance_label := Label.new()
-    provenance_label.name = "DiscipleProfileProvenance"
-    provenance_label.position = Vector2(248, 16)
-    provenance_label.size = Vector2(465, 34)
-    provenance_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-    provenance_label.add_theme_font_size_override("font_size", 13)
-    provenance_label.add_theme_color_override("font_color", GOLD if authentic_v2 else Color(0.35, 0.34, 0.29))
-    provenance_label.text = "%s · %s%s" % [
-        "Chiêu mộ" if recruited else "Đệ tử khởi đầu",
-        "Hồ sơ V2" if authentic_v2 else "Hồ sơ cũ",
-        " · %s" % quality_name if authentic_v2 and not quality_name.is_empty() else ""
-    ]
-    provenance_label.tooltip_text = "Dữ liệu thật từ hồ sơ đã lưu; hồ sơ cũ không tự nhận thuộc tính V2."
-    panel.add_child(provenance_label)
-    if authentic_v2 and recruited:
-        panel.add_theme_stylebox_override("panel", _style(PAPER_LIGHT, GOLD, 3, 18))
-
     var quick_assign := Button.new()
     quick_assign.name = "DeepQuickAssignment"
     quick_assign.text = "Điều phối đệ tử"
@@ -8949,42 +8926,23 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "T�
     else:
         details_scroll.add_child(content)
 
+    # One presentation form for every disciple. Only authoritative values vary.
     var profile_snapshot := _disciple_snapshot(disciple)
     var authentic_v2 := bool(profile_snapshot.get("authentic_v2", false))
     var is_overview_tab := tab_name == "Tổng Quan"
-    if authentic_v2 and bool(profile_snapshot.get("ok", false)):
-        var progression_snapshot: Dictionary = profile_snapshot.get("progression", {})
-        if bool(progression_snapshot.get("ready", false)):
-            var cultivation_snapshot: Dictionary = progression_snapshot.get("cultivation", {})
-            var body_snapshot: Dictionary = progression_snapshot.get("body", {})
-            _add_disciple_progress_row(content_panel, "TU VI", float(cultivation_snapshot.get("xp", 0.0)), float(cultivation_snapshot.get("required_xp", 0.0)), Vector2(302, 52), content_width - 324.0, JADE_DARK)
-            _add_disciple_progress_row(content_panel, "LUYỆN THỂ", float(body_snapshot.get("xp", 0.0)), float(body_snapshot.get("required_xp", 0.0)), Vector2(302, 82), content_width - 324.0, CINNABAR)
-        else:
-            var progress_note := SECT_UI_THEME.label("Tiến độ Tu Vi / Luyện Thể V2 chưa sẵn sàng", 12, INK, true)
-            progress_note.position = Vector2(302, 58)
-            progress_note.size = Vector2(content_width - 324.0, 30)
-            content_panel.add_child(progress_note)
+    var progression_snapshot: Dictionary = profile_snapshot.get("progression", {})
+    var track_ready := authentic_v2 and bool(progression_snapshot.get("ready", false))
+    if track_ready:
+        var cultivation_snapshot: Dictionary = progression_snapshot.get("cultivation", {})
+        var body_snapshot: Dictionary = progression_snapshot.get("body", {})
+        _add_disciple_progress_row(content_panel, "TU VI", float(cultivation_snapshot.get("xp", 0.0)), float(cultivation_snapshot.get("required_xp", 0.0)), Vector2(302, 52), content_width - 324.0, JADE_DARK)
+        _add_disciple_progress_row(content_panel, "LUYỆN THỂ", float(body_snapshot.get("xp", 0.0)), float(body_snapshot.get("required_xp", 0.0)), Vector2(302, 82), content_width - 324.0, CINNABAR)
     else:
         var legacy_cultivation := CultivationSystem.new()
-        var legacy_required := legacy_cultivation.required_progress(disciple)
-        if bool(profile_snapshot.get("ok",false)) and legacy_required > 0.0:
-            _add_disciple_progress_row(content_panel,"TU VI · SAVE CŨ",disciple.cultivation_progress,legacy_required,Vector2(302,52),content_width-324.0,JADE_DARK)
-            var legacy_note := SECT_UI_THEME.label("Luyện Thể V2 chưa được lưu trong hồ sơ cũ · không quy đổi dữ liệu",11,INK,true)
-            legacy_note.position = Vector2(302,84)
-            legacy_note.size = Vector2(content_width-324.0,30)
-            content_panel.add_child(legacy_note)
-        elif bool(profile_snapshot.get("ok",false)):
-            var legacy_note := SECT_UI_THEME.label("Tu Vi đã viên mãn · Luyện Thể V2 chưa có trong hồ sơ cũ",11,INK,true)
-            legacy_note.position = Vector2(302,58)
-            legacy_note.size = Vector2(content_width-324.0,30)
-            content_panel.add_child(legacy_note)
-        else:
-            var legacy_note := SECT_UI_THEME.label("Không đọc được tiến độ từ hồ sơ này.",11,INK,true)
-            legacy_note.position = Vector2(302,58)
-            legacy_note.size = Vector2(content_width-324.0,30)
-            content_panel.add_child(legacy_note)
-    if authentic_v2 and is_overview_tab:
-        content.text = _disciple_profile_compact_text(profile_snapshot)
+        _add_disciple_progress_row(content_panel, "TU VI", disciple.cultivation_progress, legacy_cultivation.required_progress(disciple), Vector2(302, 52), content_width - 324.0, JADE_DARK)
+        _add_disciple_unavailable_progress_row(content_panel, "LUYỆN THỂ", Vector2(302, 82), content_width - 324.0)
+    if is_overview_tab:
+        content.text = _disciple_profile_compact_text(profile_snapshot, disciple)
         details_scroll.position = Vector2(302, 118)
         details_scroll.size = Vector2(content_width - 324.0, 220)
     if tab_name in ["Thuộc tính", "Tổng Quan"] and bool(profile_snapshot.get("ok",false)):
@@ -9034,29 +8992,31 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "T�
                 details_scroll.size = Vector2(content_width - text_x - 18.0,220)
                 content.custom_minimum_size = Vector2(details_scroll.size.x - 22.0,0)
                 content.add_theme_font_size_override("font_size",13 if is_overview_tab else 14)
-    if not authentic_v2:
-        if tab_name == "Huyết Mạch":
-            _add_tab_action_button(content_panel, "Thức tỉnh", Vector2(18, 344), "bloodline_awaken")
-            _add_tab_action_button(content_panel, "Luyện huyết", Vector2(140, 344), "bloodline_refine")
-        elif tab_name == "Thể Chất":
-            _add_tab_action_button(content_panel, "Tôi thể", Vector2(18, 344), "physique_temper")
-            _add_tab_action_button(content_panel, "Cải thể", Vector2(140, 344), "physique_transform")
-    elif authentic_v2:
-        _add_tab_action_button(content_panel, "Chuyên tu", Vector2(18, 344), "v2_cultivate")
-        _add_tab_action_button(content_panel, "Rèn thân", Vector2(140, 344), "v2_body_train")
-        if tab_name == "Thuộc tính":
-            var gate_preview := DiscipleBodyGateTransactionV2.new().preview_gate(state,selected_id)
-            var gate_button := Button.new()
-            gate_button.name = "BodyGateRealCommit"
-            gate_button.text = "Đột phá Luyện Thể"
-            gate_button.position = Vector2(266, 344)
-            gate_button.size = Vector2(175, 40)
-            gate_button.add_theme_font_size_override("font_size", 12)
-            gate_button.add_theme_stylebox_override("normal", _style(CINNABAR, PAPER_LIGHT, 2, 8))
-            gate_button.disabled = not bool(gate_preview.get("can_commit",false))
-            gate_button.tooltip_text = _body_gate_reason(str(gate_preview.get("reason","")))
-            gate_button.pressed.connect(Callable(self, "_disciple_tab_action").bind("v2_body_gate"))
-            content_panel.add_child(gate_button)
+    # Same action positions on all profiles. An unsupported action is disabled,
+    # never secretly converted to a different cultivation system.
+    match tab_name:
+        "Huyết Mạch":
+            _add_profile_action(content_panel, "Thức tỉnh", Vector2(18, 344), "bloodline_awaken", not authentic_v2)
+            _add_profile_action(content_panel, "Luyện huyết", Vector2(140, 344), "bloodline_refine", not authentic_v2)
+        "Thể Chất":
+            _add_profile_action(content_panel, "Tôi thể", Vector2(18, 344), "physique_temper", not authentic_v2)
+            _add_profile_action(content_panel, "Cải thể", Vector2(140, 344), "physique_transform", not authentic_v2)
+        _:
+            _add_profile_action(content_panel, "Chuyên tu", Vector2(18, 344), "v2_cultivate", track_ready)
+            _add_profile_action(content_panel, "Rèn thân", Vector2(140, 344), "v2_body_train", track_ready)
+    if tab_name == "Thuộc tính":
+        var gate_preview := DiscipleBodyGateTransactionV2.new().preview_gate(state,selected_id) if track_ready else {}
+        var gate_button := Button.new()
+        gate_button.name = "BodyGateRealCommit"
+        gate_button.text = "Đột phá Luyện Thể"
+        gate_button.position = Vector2(266, 344)
+        gate_button.size = Vector2(175, 40)
+        gate_button.add_theme_font_size_override("font_size", 12)
+        gate_button.add_theme_stylebox_override("normal", _style(CINNABAR, PAPER_LIGHT, 2, 8))
+        gate_button.disabled = not bool(gate_preview.get("can_commit",false))
+        gate_button.tooltip_text = _body_gate_reason(str(gate_preview.get("reason",""))) if track_ready else "Chưa có tiến trình Luyện Thể để đột phá."
+        gate_button.pressed.connect(Callable(self, "_disciple_tab_action").bind("v2_body_gate"))
+        content_panel.add_child(gate_button)
     var locate_button := Button.new()
     locate_button.name = "LocateDiscipleOnMap"
     locate_button.text = "Định vị trên bản đồ"
@@ -9207,6 +9167,30 @@ func _locate_profile_disciple(disciple_id: StringName) -> void:
     _close_building_operation_panel(true)
     _set_focus_target(point, &"disciple", disciple_id, disciple.display_name, true)
 
+func _add_disciple_unavailable_progress_row(parent: Control, label_text: String, position_value: Vector2, width: float) -> void:
+    var label := Label.new()
+    label.name = "DiscipleUnavailable_%s" % label_text.replace(" ", "_")
+    label.text = "%s  Chưa có dữ liệu" % label_text
+    label.position = position_value
+    label.size = Vector2(width, 16)
+    label.add_theme_font_size_override("font_size", 11)
+    label.add_theme_color_override("font_color", INK)
+    parent.add_child(label)
+    var bar := ProgressBar.new()
+    bar.name = "DiscipleProgress_%s" % label_text.replace(" ", "_")
+    bar.position = Vector2(position_value.x, position_value.y + 16)
+    bar.size = Vector2(width, 9)
+    bar.max_value = 100.0
+    bar.value = 0.0
+    bar.show_percentage = false
+    bar.tooltip_text = "Chưa có dữ liệu tiến độ, không phải 0 EXP."
+    var fill := StyleBoxFlat.new()
+    fill.bg_color = Color(0.60, 0.59, 0.55)
+    fill.set_corner_radius_all(4)
+    bar.add_theme_stylebox_override("fill", fill)
+    parent.add_child(bar)
+
+
 func _add_disciple_progress_row(parent: Control, label_text: String, xp: float, required: float, position_value: Vector2, width: float, accent: Color) -> void:
     var label := Label.new()
     label.text = ("%s  Đã viên mãn" % label_text) if required <= 0.0 else "%s  %.0f / %.0f" % [label_text, xp, required]
@@ -9261,6 +9245,21 @@ func _open_disciple_tab(tab_name: String) -> void:
     if selected_id == &"" or not state.disciples.has(selected_id):
         return
     _open_disciple_deep_screen(selected_id, tab_name)
+
+func _add_profile_action(parent: Control, text: String, pos: Vector2, action: String, available: bool) -> void:
+    var button := Button.new()
+    button.name = "ProfileAction_%s" % action
+    button.text = text
+    button.position = pos
+    button.size = Vector2(112, 40)
+    button.add_theme_font_size_override("font_size", 13)
+    button.add_theme_stylebox_override("normal", _style(CINNABAR, PAPER_LIGHT, 2, 8))
+    button.disabled = not available
+    button.tooltip_text = "Chưa có dữ liệu/cơ chế phù hợp cho hành động này." if not available else text
+    if available:
+        button.pressed.connect(Callable(self, "_disciple_tab_action").bind(action))
+    parent.add_child(button)
+
 
 func _add_tab_action_button(parent: Control, text: String, pos: Vector2, action: String) -> void:
     var button := Button.new()
