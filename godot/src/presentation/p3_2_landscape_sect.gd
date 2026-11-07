@@ -4983,6 +4983,7 @@ func _build_spirit_field_management() -> void:
 
     # Put actual upgrade control first, not after the scrollable roster.
     _build_worksite_upgrade_control(field)
+    _build_spirit_plot_crop_preferences(field)
     _add_management_section_label("CHÍNH SÁCH CÂY TRỒNG")
     var policy_row := HBoxContainer.new()
     policy_row.custom_minimum_size = Vector2(384, 36)
@@ -5093,6 +5094,53 @@ func _build_spirit_field_management() -> void:
             "Đã ra lệnh gieo trồng: %s." % disciple.display_name
         ))
         row.add_child(plant_button)
+
+func _build_spirit_plot_crop_preferences(field: BuildingState) -> void:
+    _add_management_section_label("Ô RUỘNG · CHỌN CÂY RIÊNG")
+    var preferences: Dictionary = field.production_state.get("plot_crop_preferences",{})
+    for raw_plot in BuildingSystem.new().spirit_field_plots(state,field):
+        if not (raw_plot is Dictionary):
+            continue
+        var plot_id := str(raw_plot.get("plot_id",""))
+        var selected_crop := StringName(preferences.get(plot_id,""))
+        var locked := StringName(raw_plot.get("status","")) == BuildingSystem.PLOT_GROWING
+        var row := HBoxContainer.new()
+        row.name = "PlotCropChoice_%s" % plot_id
+        row.custom_minimum_size = Vector2(0,34)
+        building_management_container.add_child(row)
+        var index := int(plot_id.trim_prefix("plot_"))
+        var choice := Button.new()
+        choice.name = "PlotCropCycle_%s" % plot_id
+        choice.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+        choice.custom_minimum_size = Vector2(0,34)
+        choice.text = "Ô %02d · %s%s" % [
+            index,
+            "Theo chính sách" if selected_crop == &"" else spirit_crop_registry.display_name(selected_crop),
+            " · Đang trồng" if locked else " · Đổi cây"
+        ]
+        choice.disabled = locked
+        choice.tooltip_text = "Chọn giống riêng cho ô trống này; bấm để chuyển giữa các loại cây thật đã mở khóa. Chi phí Linh Thạch chỉ bị trừ khi đệ tử gieo thành công."
+        if not locked:
+            choice.pressed.connect(Callable(self,"_cycle_spirit_plot_crop_from_ui").bind(field.id,plot_id))
+        row.add_child(choice)
+
+func _cycle_spirit_plot_crop_from_ui(field_id: StringName, plot_id: String) -> void:
+    var buildings := BuildingSystem.new()
+    var field := state.buildings.get(str(field_id)) as BuildingState
+    if field == null:
+        return
+    var selected := StringName(field.production_state.get("plot_crop_preferences",{}).get(plot_id,""))
+    var options: Array[StringName] = [&""]
+    options.append_array(spirit_crop_registry.eligible_crop_ids(field.level))
+    var previous := options.find(selected)
+    var next_crop: StringName = options[(previous+1) % options.size()]
+    var response := buildings.set_spirit_plot_crop(state,field_id,StringName(plot_id),next_crop)
+    building_management_feedback = (
+        "Ô %s: %s · chỉ lượt gieo mới áp dụng." % [plot_id, "Theo chính sách" if next_crop == &"" else spirit_crop_registry.display_name(next_crop)]
+        if bool(response.get("ok",false)) else
+        "Không đổi được giống ô %s: %s" % [plot_id,str(response.get("reason","unknown"))]
+    )
+    _refresh_building_operation_content()
 
 func _set_spirit_field_policy_from_ui(field_id: StringName, mode: StringName, crop_id: StringName) -> void:
     var ok := BuildingSystem.new().set_spirit_field_policy(state, field_id, mode, crop_id)
