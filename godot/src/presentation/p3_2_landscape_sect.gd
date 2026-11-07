@@ -3255,8 +3255,20 @@ func _refresh_building_operation_content(rebuild_management_controls: bool = tru
         operation_text += "\n\n" + _map_worksite_operation_detail(
             state.buildings[str(selected_production_instance_id)] as BuildingState
         )
+    var mine_open := selected_building == SectMapPresentation.DEST_MINE
     var operation_headline := _building_operation_headline(operation_text)
-    if selected_building in [SectMapPresentation.DEST_MINE, SectMapPresentation.DEST_LINH_FOREST]:
+    if mine_open:
+        var mine_building := _selected_operation_building()
+        if mine_building != null:
+            var mine_system := BuildingSystem.new()
+            var ore_id := mine_system.mine_selected_ore(mine_building)
+            var ore_name := ResourceRegistry.new().display_name(ore_id)
+            var batch_units := mine_system.mine_ore_batch_units(mine_building, ore_id)
+            var available_units := _warehouse_available(ore_id)
+            operation_headline = "SẢN XUẤT · MỎ Lv%d\n%s · ×%d / mẻ\nKho khả dụng: %d" % [
+                mine_building.level, ore_name, batch_units, available_units
+            ]
+    elif selected_building == SectMapPresentation.DEST_LINH_FOREST:
         var live_status := _active_resource_worksite_status(selected_building)
         for raw_status_line in live_status.split("\n"):
             var status_line := str(raw_status_line).strip_edges()
@@ -3265,9 +3277,8 @@ func _refresh_building_operation_content(rebuild_management_controls: bool = tru
                 break
     building_operation_body.text = operation_headline + feedback
     building_operation_body.tooltip_text = operation_text + feedback
-    var mine_open := selected_building == SectMapPresentation.DEST_MINE
     building_operation_body.size.y = 66.0 if mine_open else 150.0
-    building_operation_body.clip_text = mine_open
+    building_operation_body.clip_text = false
     _refresh_mine_ore_hero()
     _refresh_building_operation_art()
     _refresh_building_operation_metrics()
@@ -3492,12 +3503,19 @@ func _refresh_building_operation_metrics() -> void:
                 progress_caption = "LƯỢT RÈN THÂN"
             _:
                 progress_caption = "TRẠNG THÁI"
-    for entry in [
+    var metric_rows: Array = [
         ["CẤP CÔNG TRÌNH", level_text, "upgrade"],
         ["CHỖ HOẠT ĐỘNG · ĐỘI CHỜ", worker_text, "worker"],
         [progress_caption, cycle_text, "timer"],
         ["ĐÃ SẢN XUẤT", output_text, icon_kind]
+    ]
+    if building != null and building.building_type in [
+        BuildingSystem.TYPE_MINE, BuildingSystem.TYPE_LINH_FOREST, BuildingSystem.TYPE_SPIRIT_FIELD
     ]:
+        metric_rows.append([
+            "SẢN LƯỢNG / PHÚT", _worksite_rate_text(building), "resource"
+        ])
+    for entry in metric_rows:
         var card := SECT_UI_THEME.metric_card(str(entry[0]), str(entry[1]), str(entry[2]), GOLD)
         card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
         card.custom_minimum_size = Vector2(0, 66)
@@ -3505,7 +3523,42 @@ func _refresh_building_operation_metrics() -> void:
             card.tooltip_text = output_tooltip
         elif str(entry[0]) == progress_caption:
             card.tooltip_text = cycle_tooltip
+        elif str(entry[0]) == "SẢN LƯỢNG / PHÚT":
+            card.tooltip_text = "Tổng lượng đang chạy chia cho thời lượng tick mô phỏng đã ghi trong backend. Không có mẻ đang chạy thì không dự báo sản lượng."
         building_operation_metrics.add_child(card)
+
+func _worksite_rate_text(building: BuildingState) -> String:
+    var rate := 0.0
+    if building == null or state == null:
+        return "—"
+    if building.building_type in [BuildingSystem.TYPE_MINE, BuildingSystem.TYPE_LINH_FOREST]:
+        var raw_jobs = building.production_state.get("economy_a_jobs", [])
+        if raw_jobs is Array:
+            for raw_job in raw_jobs:
+                if not (raw_job is Dictionary):
+                    continue
+                var job: Dictionary = raw_job
+                var started_tick := int(job.get("started_tick", state.tick))
+                var finish_tick := int(job.get("finish_tick", state.tick))
+                var duration_ticks := finish_tick - started_tick
+                var output_quantity := maxi(0, int(job.get("output_quantity", 0)))
+                if finish_tick > state.tick and duration_ticks > 0 and output_quantity > 0:
+                    rate += float(output_quantity) / float(duration_ticks)
+    elif building.building_type == BuildingSystem.TYPE_SPIRIT_FIELD:
+        var raw_plots = building.production_state.get("plots", [])
+        if raw_plots is Array:
+            for raw_plot in raw_plots:
+                if not (raw_plot is Dictionary):
+                    continue
+                var plot: Dictionary = raw_plot
+                var started_tick := int(plot.get("started_tick", state.tick))
+                var finish_tick := int(plot.get("finish_tick", state.tick))
+                var duration_ticks := finish_tick - started_tick
+                var yield_units := maxi(0, int(plot.get("routine_yield", 0)))
+                if (StringName(plot.get("status", "")) == BuildingSystem.PLOT_GROWING
+                        and finish_tick > state.tick and duration_ticks > 0 and yield_units > 0):
+                    rate += float(yield_units) / float(duration_ticks)
+    return "Chưa có mẻ" if rate <= 0.0 else "%.2f / phút" % rate
 
 func _refresh_building_operation_live(operation_text: String) -> void:
     for child in building_operation_live_content.get_children():
@@ -8975,7 +9028,7 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "T�
             entry.name = "DeepRosterEntry_%d" % roster.get_child_count()
             entry.text = "%s\n%s · %s\n%s" % [roster_disciple.display_name,roster_quality,roster_realm,roster_status]
             entry.tooltip_text = "%s · %s · %s · %s" % [roster_disciple.display_name,roster_quality,roster_realm,roster_status]
-            entry.custom_minimum_size = Vector2(roster_width - 36.0, 76)
+            entry.custom_minimum_size = Vector2(roster_width - 36.0, 82)
             entry.add_theme_font_size_override("font_size", 10)
             entry.add_theme_color_override("font_color", PAPER_LIGHT)
             entry.add_theme_color_override("font_hover_color", Color(1.0, 0.94, 0.76, 1.0))
@@ -8988,13 +9041,13 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "T�
                 var portrait_row := HBoxContainer.new()
                 portrait_row.name = "VerifiedSourceARosterCard"
                 portrait_row.position = Vector2(8, 5)
-                portrait_row.size = Vector2(roster_width - 52.0, 66)
+                portrait_row.size = Vector2(roster_width - 52.0, 72)
                 portrait_row.add_theme_constant_override("separation", 8)
                 portrait_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
                 var portrait_frame := TextureRect.new()
                 portrait_frame.name = "VerifiedSourceARosterPortrait"
                 portrait_frame.texture = roster_portrait
-                portrait_frame.custom_minimum_size = Vector2(40, 58)
+                portrait_frame.custom_minimum_size = Vector2(44, 64)
                 portrait_frame.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
                 portrait_frame.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
                 portrait_frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -9007,19 +9060,19 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "T�
                 var portrait_name := Label.new()
                 portrait_name.text = roster_disciple.display_name
                 portrait_name.clip_text = true
-                portrait_name.add_theme_font_size_override("font_size", 11)
+                portrait_name.add_theme_font_size_override("font_size", 12)
                 portrait_name.add_theme_color_override("font_color", PAPER_LIGHT)
                 portrait_details.add_child(portrait_name)
                 var portrait_identity := Label.new()
                 portrait_identity.text = "%s · %s" % [roster_quality, roster_realm]
                 portrait_identity.clip_text = true
-                portrait_identity.add_theme_font_size_override("font_size", 9)
+                portrait_identity.add_theme_font_size_override("font_size", 10)
                 portrait_identity.add_theme_color_override("font_color", GOLD)
                 portrait_details.add_child(portrait_identity)
                 var portrait_status := Label.new()
                 portrait_status.text = roster_status
                 portrait_status.clip_text = true
-                portrait_status.add_theme_font_size_override("font_size", 9)
+                portrait_status.add_theme_font_size_override("font_size", 10)
                 portrait_status.add_theme_color_override("font_color", PAPER_LIGHT)
                 portrait_details.add_child(portrait_status)
                 entry.add_child(portrait_row)
