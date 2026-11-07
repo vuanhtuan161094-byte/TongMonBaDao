@@ -1,1 +1,6 @@
-YªçŠx³¬uç%j·Â+ar‰ì¶ë•ë_¢ºÞjË"‚v›•ëÚ®&›•ëj¹âžðjÇ^rV«yÜ"¶(žËn±é^µú+­æ¬²('i¹^½ªâi¹^±•¡¼½™˜)Í•Ñ±½…°)Á½Ý•ÉÍ¡•±°¹•á”€µ9½1½¼€µ9½AÉ½™¥±”€µá•ÕÑ¥½¹A½±¥ä	åÁ…ÍÌ€µ¥±”€ˆ•ù‘ÀÁ=A9}A=%M=9}1¹ÁÌÄˆ)Í•Ð€‰IMU1Pô•II=I1Y0”ˆ)¥˜¹½Ð€ˆ•IMU1P”ˆôôˆÀˆÁ…ÕÍ”)•á¥Ð€½ˆ€•IMU1P”(
+@echo off
+setlocal
+powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File "%~dp0OPEN_POISON_LAB.ps1"
+set "RESULT=%ERRORLEVEL%"
+if not "%RESULT%"=="0" pause
+exit /b %RESULT%

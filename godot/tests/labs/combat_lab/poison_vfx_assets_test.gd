@@ -1,1 +1,68 @@
-Y™Áäx≥¨uÁ%j∑ù¬+arâÏ∂ÎïÎ_¢∫ﬁjÀ"ÇvõïÎ⁄Æ&õïÎjπ‚ûj«^rV´y‹"∂(ûÀn±È^µ˙+≠Ê¨≤('iπ^Ω™‚iπ^±ï·—ïπëÃÅMçïπïQ…ïî()çΩπÕ–ÅYô·X»ÄËÙÅ¡…ï±ΩÖê†â…ïÃËºΩ±ÖâÃΩçΩµâÖ—}±ÖàΩçΩµâÖ—}±Öâ}Ÿô·}ÿ»πùêà§)çΩπÕ–Å59%MQ}AQ ÄËÙÄâ…ïÃËºΩ±ÖâÃΩçΩµâÖ—}±ÖàΩÖÕÕï—ÃΩ¡Ω•ÕΩπ}Ÿô‡Ω¡Ω•ÕΩπ}Ÿô·}µÖπ•ôïÕ–π©ÕΩ∏à()ŸÖ»ÅôÖ•±’…ïÃÄËÙÄ¿()ô’πåÅ}•π•—•Ö±•Èî†§Ä¥¯ÅŸΩ•êË(ÄÄÄÅçÖ±±}ëïôï……ïê†â}…’∏à§()ô’πåÅ}ç°ïç¨°çΩπë•—•Ω∏ËÅâΩΩ∞∞ÅµïÕÕÖùîËÅM—…•πú§Ä¥¯ÅŸΩ•êË(ÄÄÄÅ•òÅπΩ–ÅçΩπë•—•Ω∏Ë(ÄÄÄÄÄÄÄÅôÖ•±’…ïÃÄ¨ÙÄƒ(ÄÄÄÄÄÄÄÅ¡’Õ°}ï……Ω»†âA=%M=9}Ya}MMQ}%0ÄàÄ¨ÅµïÕÕÖùî§()ô’πåÅ}Õ°Ñ»‘ÿ°¡Ö—†ËÅM—…•πú§Ä¥¯ÅM—…•πúË(ÄÄÄÅŸÖ»Åô•±îÄËÙÅ•±ïççïÕÃπΩ¡ï∏°¡Ö—†∞Å•±ïççïÕÃπI§(ÄÄÄÅ•òÅô•±îÄÙÙÅπ’±∞Ë(ÄÄÄÄÄÄÄÅ…ï—’…∏Äàà(ÄÄÄÅŸÖ»ÅçΩπ—ï·–ÄËÙÅ!ÖÕ°•πùΩπ—ï·–ππï‹†§(ÄÄÄÅ•òÅçΩπ—ï·–πÕ—Ö…–°!ÖÕ°•πùΩπ—ï·–π!M!}M!»‘ÿ§ÄÑÙÅ=,Ë(ÄÄÄÄÄÄÄÅô•±îπç±ΩÕî†§(ÄÄÄÄÄÄÄÅ…ï—’…∏Äàà(ÄÄÄÅ›°•±îÅπΩ–Åô•±îπïΩô}…ïÖç°ïê†§Ë(ÄÄÄÄÄÄÄÅçΩπ—ï·–π’¡ëÖ—î°ô•±îπùï—}â’ôôï»†ÿ‘‘Ãÿ§§(ÄÄÄÅô•±îπç±ΩÕî†§(ÄÄÄÅ…ï—’…∏ÅçΩπ—ï·–πô•π•Õ††§π°ï·}ïπçΩëî†§()ô’πåÅ}…’∏†§Ä¥¯ÅŸΩ•êË(ÄÄÄÅŸÖ»ÅµÖπ•ôïÕ—}ô•±îÄËÙÅ•±ïççïÕÃπΩ¡ï∏°59%MQ}AQ ∞Å•±ïççïÕÃπI§(ÄÄÄÅ}ç°ïç¨°µÖπ•ôïÕ—}ô•±îÄÑÙÅπ’±∞∞ÄâµÖπ•ôïÕ–Åï·•Õ—Ãà§(ÄÄÄÅ•òÅµÖπ•ôïÕ—}ô•±îÄÙÙÅπ’±∞Ë(ÄÄÄÄÄÄÄÅ≈’•–†ƒ§(ÄÄÄÄÄÄÄÅ…ï—’…∏(ÄÄÄÅŸÖ»ÅµÖπ•ôïÕ–ËÅYÖ…•Öπ–ÄÙÅ)M=8π¡Ö…Õï}Õ—…•πú°µÖπ•ôïÕ—}ô•±îπùï—}ÖÕ}—ï·–†§§(ÄÄÄÅµÖπ•ôïÕ—}ô•±îπç±ΩÕî†§(ÄÄÄÅ}ç°ïç¨°µÖπ•ôïÕ–Å•ÃÅ•ç—•ΩπÖ…‰ÅÖπêÅ•π–°µÖπ•ôïÕ–πùï–†âÕç°ïµÖ}Ÿï…Õ•Ω∏à∞Ä¿§§ÄÙÙÄƒ∞(ÄÄÄÄÄÄÄÄâµÖπ•ôïÕ–ÅÕç°ïµÑÅŸï…Õ•Ω∏ÄƒÅ¡Ö…ÕïÃà§(ÄÄÄÅ•òÅπΩ–ÅµÖπ•ôïÕ–Å•ÃÅ•ç—•ΩπÖ…‰Ë(ÄÄÄÄÄÄÄÅ≈’•–†ƒ§(ÄÄÄÄÄÄÄÅ…ï—’…∏(ÄÄÄÅŸÖ»ÅÖÕÕï—ÃËÅ……Ö‰ÄÙÅµÖπ•ôïÕ–πùï–†âÖÕÕï—Ãà∞Åmt§(ÄÄÄÅ}ç°ïç¨°ÖÕÕï—ÃπÕ•Èî†§ÄÙÙÄ–∞ÄâôΩ’»ÅΩ…•ù•πÖ∞ÅAΩ•ÕΩ∏Å—ï·—’…îÅµÖÕ—ï…ÃÅ±•Õ—ïêà§(ÄÄÄÅôΩ»Å…Ω‹Å•∏ÅÖÕÕï—ÃË(ÄÄÄÄÄÄÄÅ•òÅπΩ–Å…Ω‹Å•ÃÅ•ç—•ΩπÖ…‰Ë(ÄÄÄÄÄÄÄÄÄÄÄÅ}ç°ïç¨°ôÖ±Õî∞ÄâÖÕÕï–Å…Ω‹Å•ÃÅÖ∏ÅΩâ©ïç–à§(ÄÄÄÄÄÄÄÄÄÄÄÅçΩπ—•π’î(ÄÄÄÄÄÄÄÅŸÖ»Å¡Ö—†ÄËÙÅÕ—»°…Ω‹πùï–†â¡Ö—†à∞Äàà§§(ÄÄÄÄÄÄÄÅŸÖ»Å—ï·—’…îÄËÙÅIïÕΩ’…çï1ΩÖëï»π±ΩÖê°¡Ö—†§ÅÖÃÅQï·—’…î…(ÄÄÄÄÄÄÄÅ}ç°ïç¨°—ï·—’…îÄÑÙÅπ’±∞ÅÖπêÅ—ï·—’…îπùï—}›•ë—††§Ä¯Ä¿ÅÖπêÅ—ï·—’…îπùï—}°ï•ù°–†§Ä¯Ä¿∞(ÄÄÄÄÄÄÄÄÄÄÄÄâ—ï·—’…îÅ•µ¡Ω…—ÃÅÖπêÅ±ΩÖëÃËÄàÄ¨Å¡Ö—†§(ÄÄÄÄÄÄÄÅ}ç°ïç¨°}Õ°Ñ»‘ÿ°¡Ö—†§ÄÙÙÅÕ—»°…Ω‹πùï–†âÕ°Ñ»‘ÿà∞Äàà§§π—Ω}±Ω›ï»†§∞(ÄÄÄÄÄÄÄÄÄÄÄÄâ—ï·—’…îÅM!ÅµÖ—ç°ïÃÅµÖπ•ôïÕ–ËÄàÄ¨Å¡Ö—†§(ÄÄÄÅŸÖ»ÅÖ—±ÖÕïÃËÅ……Ö‰ÄÙÅµÖπ•ôïÕ–πùï–†â¡…ïÕï…Ÿïë}ÕΩ’…çï}Öç—Ω…}Ö—±ÖÕïÃà∞Åmt§(ÄÄÄÅ}ç°ïç¨°Ö—±ÖÕïÃπÕ•Èî†§ÄÙÙÄÿ∞ÄâÖ±∞ÅÕ•‡Å;ÜÓºÉCÜÓeåÅQ‘ÅÖ—±ÖÕïÃÅô•πùï…¡…•π—ïêà§(ÄÄÄÅôΩ»Å…Ω‹Å•∏ÅÖ—±ÖÕïÃË(ÄÄÄÄÄÄÄÅ•òÅ…Ω‹Å•ÃÅ•ç—•ΩπÖ…‰Ë(ÄÄÄÄÄÄÄÄÄÄÄÅŸÖ»Å¡Ö—†ÄËÙÅÕ—»°…Ω‹πùï–†â¡Ö—†à∞Äàà§§(ÄÄÄÄÄÄÄÄÄÄÄÅ}ç°ïç¨°}Õ°Ñ»‘ÿ°¡Ö—†§ÄÙÙÅÕ—»°…Ω‹πùï–†âÕ°Ñ»‘ÿà∞Äàà§§π—Ω}±Ω›ï»†§∞(ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄâÕΩ’…çîÅÖ—±ÖÃÅ’πç°ÖπùïêËÄàÄ¨Å¡Ö—†§(ÄÄÄÄÄÄÄÅï±ÕîË(ÄÄÄÄÄÄÄÄÄÄÄÅ}ç°ïç¨°ôÖ±Õî∞ÄâÖ—±ÖÃÅô•πùï…¡…•π–Å…Ω‹Å•ÃÅÖ∏ÅΩâ©ïç–à§(ÄÄÄÅ}ç°ïç¨°Yô·X»π¡Ω•ÕΩπ}â…Öπç††â—µàπÕ≠•±∞π¡Ω•ÕΩ∏πëΩç}ç°Ö¥πÖç—•Ÿï|¿Ãπ°’µÖ∏à§ÄÙÙÄâëΩç}ç°Ö¥à(ÄÄÄÄÄÄÄÅÖπêÅYô·X»π¡Ω•ÕΩπ}â…Öπç††â—µàπÕ≠•±∞π¡Ω•ÕΩ∏πçΩ}ëΩåπÖç—•Ÿï|¿Ãπ°’µÖ∏à§ÄÙÙÄâçΩ}ëΩåà(ÄÄÄÄÄÄÄÅÖπêÅYô·X»π¡Ω•ÕΩπ}â…Öπç††â—µàπÕ≠•±∞π¡Ω•ÕΩ∏πë’Ωç}ëΩåπÖç—•Ÿï|¿Ãπ°’µÖ∏à§ÄÙÙÄâë’Ωç}ëΩåà∞(ÄÄÄÄÄÄÄÄâçÖπΩπ•çÖ∞ÅÕ≠•±∞Å%ÃÅµÖ¿Å—ºÅ—°îÅ—°…ïîÅŸ•Õ’Ö∞Åâ…Öπç†ÅôÖµ•±•ïÃà§(ÄÄÄÅ¡…•π–†âA=%M=9}Ya}MMQ}IMU1PÙàÄ¨Ä†âAMLàÅ•òÅôÖ•±’…ïÃÄÙÙÄ¿Åï±ÕîÄâ%0à§Ä¨ÄàÅôÖ•±’…ïÃÙàÄ¨ÅÕ—»°ôÖ•±’…ïÃ§§(ÄÄÄÅ≈’•–†¿Å•òÅôÖ•±’…ïÃÄÙÙÄ¿Åï±ÕîÄƒ§(
+extends SceneTree
+
+const VfxV2 := preload("res://labs/combat_lab/combat_lab_vfx_v2.gd")
+const MANIFEST_PATH := "res://labs/combat_lab/assets/poison_vfx/poison_vfx_manifest.json"
+
+var failures := 0
+
+func _initialize() -> void:
+    call_deferred("_run")
+
+func _check(condition: bool, message: String) -> void:
+    if not condition:
+        failures += 1
+        push_error("POISON_VFX_ASSET_FAIL " + message)
+
+func _sha256(path: String) -> String:
+    var file := FileAccess.open(path, FileAccess.READ)
+    if file == null:
+        return ""
+    var context := HashingContext.new()
+    if context.start(HashingContext.HASH_SHA256) != OK:
+        file.close()
+        return ""
+    while not file.eof_reached():
+        context.update(file.get_buffer(65536))
+    file.close()
+    return context.finish().hex_encode()
+
+func _run() -> void:
+    var manifest_file := FileAccess.open(MANIFEST_PATH, FileAccess.READ)
+    _check(manifest_file != null, "manifest exists")
+    if manifest_file == null:
+        quit(1)
+        return
+    var manifest: Variant = JSON.parse_string(manifest_file.get_as_text())
+    manifest_file.close()
+    _check(manifest is Dictionary and int(manifest.get("schema_version", 0)) == 1,
+        "manifest schema version 1 parses")
+    if not manifest is Dictionary:
+        quit(1)
+        return
+    var assets: Array = manifest.get("assets", [])
+    _check(assets.size() == 4, "four original Poison texture masters listed")
+    for row in assets:
+        if not row is Dictionary:
+            _check(false, "asset row is an object")
+            continue
+        var path := str(row.get("path", ""))
+        var texture := ResourceLoader.load(path) as Texture2D
+        _check(texture != null and texture.get_width() > 0 and texture.get_height() > 0,
+            "texture imports and loads: " + path)
+        _check(_sha256(path) == str(row.get("sha256", "")).to_lower(),
+            "texture SHA matches manifest: " + path)
+    var atlases: Array = manifest.get("preserved_source_actor_atlases", [])
+    _check(atlases.size() == 6, "all six N·ªØ ƒê·ªôc Tu atlases fingerprinted")
+    for row in atlases:
+        if row is Dictionary:
+            var path := str(row.get("path", ""))
+            _check(_sha256(path) == str(row.get("sha256", "")).to_lower(),
+                "source atlas unchanged: " + path)
+        else:
+            _check(false, "atlas fingerprint row is an object")
+    _check(VfxV2.poison_branch("tmb.skill.poison.doc_cham.active_03.human") == "doc_cham"
+        and VfxV2.poison_branch("tmb.skill.poison.co_doc.active_03.human") == "co_doc"
+        and VfxV2.poison_branch("tmb.skill.poison.duoc_doc.active_03.human") == "duoc_doc",
+        "canonical skill IDs map to the three visual branch families")
+    print("POISON_VFX_ASSET_RESULT=" + ("PASS" if failures == 0 else "FAIL") + " failures=" + str(failures))
+    quit(0 if failures == 0 else 1)

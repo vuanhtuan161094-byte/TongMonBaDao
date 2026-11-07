@@ -1,1 +1,40 @@
-YªçŠx³¬uç%j·Â+ar‰ì¶ë•ë_¢ºŞjË"‚v›•ëÚ®&›•ëj¹âğjÇ^rV«yÜ"¶(Ën±é^µú+­æ¬²('i¹^½ªâi¹^±mÉ•µ…Át()¥µÁ½ÉÑ•Èô‰Ñ•áÑÕÉ”ˆ)ÑåÁ”ô‰½µÁÉ•ÍÍ•‘Q•áÑÕÉ”Éˆ)Õ¥ô‰Õ¥è¼½Á˜ÍÅĞÉ„ÌÕÑ‰Ôˆ)Á…Ñ ô‰É•Ìè¼¼¹½‘½Ğ½¥µÁ½ÉÑ•½Ù•¹½µ}Íµ½­•}½ÉÉ½Í¥½¸¹Á¹œµ˜İŒÈäÄÈÄÉĞØÈäĞÀÅ„ààİ˜ÅÀÄäá™•˜Ô¹Ñ•àˆ)µ•Ñ…‘…Ñ„õì(‰ÙÉ…µ}Ñ•áÑÕÉ”ˆè™…±Í”)ô()m‘•ÁÍt()Í½ÕÉ•}™¥±”ô‰É•Ìè¼½±…‰Ì½½µ‰…Ñ}±…ˆ½…ÍÍ•ÑÌ½Á½¥Í½¹}Ù™à½Ù•¹½µ}Íµ½­•}½ÉÉ½Í¥½¸¹Á¹œˆ)‘•ÍÑ}™¥±•Ìõl‰É•Ìè¼¼¹½‘½Ğ½¥µÁ½ÉÑ•½Ù•¹½µ}Íµ½­•}½ÉÉ½Í¥½¸¹Á¹œµ˜İŒÈäÄÈÄÉĞØÈäĞÀÅ„ààİ˜ÅÀÄäá™•˜Ô¹Ñ•à‰t()mÁ…É…µÍt()½µÁÉ•ÍÌ½µ½‘”ôÀ)½µÁÉ•ÍÌ½¡¥¡}ÅÕ…±¥Ñäõ™…±Í”)½µÁÉ•ÍÌ½±½ÍÍå}ÅÕ…±¥ÑäôÀ¸Ü)½µÁÉ•ÍÌ½Õ…ÍÑ}±•Ù•°ôÀ)½µÁÉ•ÍÌ½É‘½}ÅÕ…±¥Ñå}±½ÍÌôÀ¸À)½µÁÉ•ÍÌ½¡‘É}½µÁÉ•ÍÍ¥½¸ôÄ)½µÁÉ•ÍÌ½¹½Éµ…±}µ…ÀôÀ)½µÁÉ•ÍÌ½¡…¹¹•±}Á…¬ôÀ)µ¥Áµ…ÁÌ½•¹•É…Ñ”õ™…±Í”)µ¥Áµ…ÁÌ½±¥µ¥Ğô´Ä)É½Õ¡¹•ÍÌ½µ½‘”ôÀ)É½Õ¡¹•ÍÌ½ÍÉ}¹½Éµ…°ôˆˆ)ÁÉ½•ÍÌ½¡…¹¹•±}É•µ…À½É•ôÀ)ÁÉ½•ÍÌ½¡…¹¹•±}É•µ…À½É••¸ôÄ)ÁÉ½•ÍÌ½¡…¹¹•±}É•µ…À½‰±Õ”ôÈ)ÁÉ½•ÍÌ½¡…¹¹•±}É•µ…À½…±Á¡„ôÌ)ÁÉ½•ÍÌ½™¥á}…±Á¡…}‰½É‘•ÈõÑÉÕ”)ÁÉ½•ÍÌ½ÁÉ•µÕ±Ñ}…±Á¡„õ™…±Í”)ÁÉ½•ÍÌ½¹½Éµ…±}µ…Á}¥¹Ù•ÉÑ}äõ™…±Í”)ÁÉ½•ÍÌ½¡‘É}…Í}ÍÉˆõ™…±Í”)ÁÉ½•ÍÌ½¡‘É}±…µÁ}•áÁ½ÍÕÉ”õ™…±Í”)ÁÉ½•ÍÌ½Í¥é•}±¥µ¥ĞôÀ)‘•Ñ•Ñ|Í½½µÁÉ•ÍÍ}Ñ¼ôÄ(
+[remap]
+
+importer="texture"
+type="CompressedTexture2D"
+uid="uid://d0f3qt2a35tbu"
+path="res://.godot/imported/venom_smoke_corrosion.png-f7c291212d4629401a887f1d0198fef5.ctex"
+metadata={
+"vram_texture": false
+}
+
+[deps]
+
+source_file="res://labs/combat_lab/assets/poison_vfx/venom_smoke_corrosion.png"
+dest_files=["res://.godot/imported/venom_smoke_corrosion.png-f7c291212d4629401a887f1d0198fef5.ctex"]
+
+[params]
+
+compress/mode=0
+compress/high_quality=false
+compress/lossy_quality=0.7
+compress/uastc_level=0
+compress/rdo_quality_loss=0.0
+compress/hdr_compression=1
+compress/normal_map=0
+compress/channel_pack=0
+mipmaps/generate=false
+mipmaps/limit=-1
+roughness/mode=0
+roughness/src_normal=""
+process/channel_remap/red=0
+process/channel_remap/green=1
+process/channel_remap/blue=2
+process/channel_remap/alpha=3
+process/fix_alpha_border=true
+process/premult_alpha=false
+process/normal_map_invert_y=false
+process/hdr_as_srgb=false
+process/hdr_clamp_exposure=false
+process/size_limit=0
+detect_3d/compress_to=1
