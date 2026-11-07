@@ -3268,6 +3268,16 @@ func _refresh_building_operation_content(rebuild_management_controls: bool = tru
             operation_headline = "SẢN XUẤT · MỎ Lv%d\n%s · ×%d / mẻ\nKho khả dụng: %d" % [
                 mine_building.level, ore_name, batch_units, available_units
             ]
+            var mine_live_status := _active_resource_worksite_status(selected_building)
+            if not mine_live_status.is_empty():
+                var status_lines := mine_live_status.split("\n", false)
+                var primary_status := str(status_lines[0]) if not status_lines.is_empty() else ""
+                var status_eta_marker := primary_status.find(" · còn khoảng ")
+                if status_eta_marker >= 0:
+                    primary_status = primary_status.substr(0, status_eta_marker)
+                operation_headline = "SẢN XUẤT · MỎ Lv%d\n%s · ×%d / mẻ · Kho %d\n%s" % [
+                    mine_building.level, ore_name, batch_units, available_units, primary_status
+                ]
     elif selected_building == SectMapPresentation.DEST_LINH_FOREST:
         var live_status := _active_resource_worksite_status(selected_building)
         for raw_status_line in live_status.split("\n"):
@@ -3466,7 +3476,12 @@ func _refresh_building_operation_metrics() -> void:
         var active := buildings.active_worker_ids(state, building)
         var slots := maxi(0, buildings.worker_slots(building))
         var waiting := maxi(0, assigned.size() - active.size())
-        worker_text = "%d/%d chỗ · %d chờ" % [active.size(), slots, waiting]
+        var definition := buildings.definition_for(building)
+        var group_id := StringName(definition.get("worker_group_id", ""))
+        var team_count := _disciples_in_work_group(group_id).size() if group_id != &"" else assigned.size()
+        worker_text = "%d · %d · %d/%d · %d" % [
+            team_count, assigned.size(), active.size(), slots, waiting
+        ]
         if building.building_type == BuildingSystem.TYPE_BODY_TRAINING:
             var running := 0
             for disciple_id in assigned:
@@ -3478,12 +3493,26 @@ func _refresh_building_operation_metrics() -> void:
         else:
             var snapshot := _map_worksite_snapshot(building)
             cycle_text = str(snapshot.get("detail", "Chưa khởi khai"))
-            if building.building_type == BuildingSystem.TYPE_MINE and cycle_text == "Đã giao người · chưa khởi khai":
-                cycle_tooltip = "Đội khai khoáng đã được giao. Chưa có lượt khai thác nào đang chạy."
-                cycle_text = "Chưa bắt đầu"
+            cycle_tooltip = cycle_text
+            var eta_marker := cycle_text.find(" · còn khoảng ")
+            if eta_marker >= 0:
+                cycle_text = "Còn " + cycle_text.substr(eta_marker + " · còn khoảng ".length())
+            if building.building_type in [BuildingSystem.TYPE_MINE, BuildingSystem.TYPE_LINH_FOREST] and not bool(snapshot.get("active", false)):
+                if not assigned.is_empty():
+                    cycle_text = "Chờ lượt đầu"
+                    cycle_tooltip = "Đã gán nhân sự. Chưa có chu kỳ sản xuất nào đang chạy. Chi tiết: %s" % cycle_tooltip
+                else:
+                    cycle_text = "Chưa phân công"
             var produced := maxi(0, int(building.metrics.get("units_produced", 0)))
-            output_text = "%d đơn vị" % produced
-            output_tooltip = "Tổng đơn vị đã sản xuất theo bộ đếm công trình. Mẻ hiện tại và ETA xem ở mục Tiến độ."
+            if building.building_type == BuildingSystem.TYPE_MINE:
+                var ore_id := buildings.mine_selected_ore(building)
+                output_text = "%d %s" % [produced, ResourceRegistry.new().display_name(ore_id)]
+            elif building.building_type == BuildingSystem.TYPE_LINH_FOREST:
+                var forest_resource := StringName(definition.get("resource_id", ""))
+                output_text = "%d %s" % [produced, ResourceRegistry.new().display_name(forest_resource)]
+            else:
+                output_text = "%d đơn vị" % produced
+            output_tooltip = "Tổng sản lượng đã ghi nhận sau lần nhập Kho thành công theo bộ đếm BuildingSystem. Đây không phải tồn kho hiện tại; mẻ đang chạy và ETA xem ở mục Tiến độ."
             if building.building_type == BuildingSystem.TYPE_MINE:
                 icon_kind = "ore"
             elif building.building_type == BuildingSystem.TYPE_LINH_FOREST:
@@ -3505,7 +3534,7 @@ func _refresh_building_operation_metrics() -> void:
                 progress_caption = "TRẠNG THÁI"
     var metric_rows: Array = [
         ["CẤP CÔNG TRÌNH", level_text, "upgrade"],
-        ["CHỖ HOẠT ĐỘNG · ĐỘI CHỜ", worker_text, "worker"],
+        ["ĐỘI · GÁN · LÀM/SLOT · CHỜ", worker_text, "worker"],
         [progress_caption, cycle_text, "timer"],
         ["ĐÃ SẢN XUẤT", output_text, icon_kind]
     ]
@@ -3519,18 +3548,26 @@ func _refresh_building_operation_metrics() -> void:
         var card := SECT_UI_THEME.metric_card(str(entry[0]), str(entry[1]), str(entry[2]), GOLD)
         card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
         card.custom_minimum_size = Vector2(0, 66)
+        var value_label := card.find_child("MetricValue", true, false) as Label
+        if value_label != null:
+            var value_length := str(entry[1]).length()
+            value_label.add_theme_font_size_override("font_size", 12 if value_length >= 22 else (13 if value_length >= 18 else 16))
         if str(entry[0]) == "ĐÃ SẢN XUẤT":
             card.tooltip_text = output_tooltip
+        elif str(entry[0]) == "ĐỘI · GÁN · LÀM/SLOT · CHỜ":
+            card.tooltip_text = "Các số lần lượt là: tổng người thuộc đội nghề · số người gắn với công trình · số người đang làm / số chỗ công trình · số người đã gán nhưng đang chờ chỗ. Nguồn: nhóm nghề và BuildingSystem."
         elif str(entry[0]) == progress_caption:
             card.tooltip_text = cycle_tooltip
         elif str(entry[0]) == "SẢN LƯỢNG / PHÚT":
-            card.tooltip_text = "Tổng lượng đang chạy chia cho thời lượng tick mô phỏng đã ghi trong backend. Không có mẻ đang chạy thì không dự báo sản lượng."
+            card.tooltip_text = "Mỏ/Linh Lâm: ước tính từ mẻ timer hoặc chu kỳ mang hàng đủ các pha đi tới, làm việc và về Kho, dùng tốc độ nghề/di chuyển hiện tại. Linh Điền: tổng sản lượng cơ bản của từng ô đang trồng chia thời lượng mẻ. Đây là dự kiến theo trạng thái hiện tại, không phải số đã nhập Kho."
         building_operation_metrics.add_child(card)
 
 func _worksite_rate_text(building: BuildingState) -> String:
-    var rate := 0.0
     if building == null or state == null:
         return "—"
+    var system := BuildingSystem.new()
+    var registry := ResourceRegistry.new()
+    var rate_by_resource: Dictionary = {}
     if building.building_type in [BuildingSystem.TYPE_MINE, BuildingSystem.TYPE_LINH_FOREST]:
         var raw_jobs = building.production_state.get("economy_a_jobs", [])
         if raw_jobs is Array:
@@ -3542,9 +3579,41 @@ func _worksite_rate_text(building: BuildingState) -> String:
                 var finish_tick := int(job.get("finish_tick", state.tick))
                 var duration_ticks := finish_tick - started_tick
                 var output_quantity := maxi(0, int(job.get("output_quantity", 0)))
-                if finish_tick > state.tick and duration_ticks > 0 and output_quantity > 0:
-                    rate += float(output_quantity) / float(duration_ticks)
+                var resource_id := StringName(job.get("resource_id", ""))
+                if finish_tick > state.tick and duration_ticks > 0 and output_quantity > 0 and resource_id != &"":
+                    rate_by_resource[resource_id] = float(rate_by_resource.get(resource_id, 0.0)) + float(output_quantity) / float(duration_ticks)
+        if rate_by_resource.is_empty():
+            var profession_id := StringName(system.definition_for(building).get("profession_id", ""))
+            for worker_value in system.active_worker_ids(state, building):
+                var worker_id := StringName(worker_value)
+                if not state.disciples.has(worker_id):
+                    continue
+                var worker: DiscipleState = state.disciples[worker_id]
+                var cycle: Dictionary = worker.work_cycle_state
+                if not cycle.is_empty():
+                    var cycle_building := StringName(cycle.get("building_id", ""))
+                    var cycle_profession := StringName(cycle.get("profession_id", cycle.get("profession", "")))
+                    if cycle_building != building.id or cycle_profession != profession_id:
+                        continue
+                var profile := _legacy_carry_cycle_profile(building, worker, cycle)
+                var cycle_ticks := maxi(1, int(profile.get("total_ticks", 0)))
+                var quantity := maxi(0, int(profile.get("output_quantity", 0)))
+                var resource_id := StringName(profile.get("resource_id", ""))
+                if quantity > 0 and resource_id != &"":
+                    rate_by_resource[resource_id] = float(rate_by_resource.get(resource_id, 0.0)) + float(quantity) / float(cycle_ticks)
+        if rate_by_resource.is_empty():
+            return "Chưa có mẻ" if system.active_worker_ids(state, building).is_empty() else "Chờ lượt đầu"
+        var rate_ids: Array = rate_by_resource.keys()
+        rate_ids.sort()
+        var rate_parts := PackedStringArray()
+        for raw_id in rate_ids:
+            rate_parts.append("%.2f %s" % [float(rate_by_resource[raw_id]), registry.display_name(StringName(raw_id))])
+        if rate_parts.size() == 1:
+            return "≈ %s/phút" % rate_parts[0]
+        return "≈ %.2f đv/phút (%d loại)" % [_sum_rate_values(rate_by_resource), rate_parts.size()]
     elif building.building_type == BuildingSystem.TYPE_SPIRIT_FIELD:
+        var field_rate := 0.0
+        var waiting_harvest := false
         var raw_plots = building.production_state.get("plots", [])
         if raw_plots is Array:
             for raw_plot in raw_plots:
@@ -3555,10 +3624,99 @@ func _worksite_rate_text(building: BuildingState) -> String:
                 var finish_tick := int(plot.get("finish_tick", state.tick))
                 var duration_ticks := finish_tick - started_tick
                 var yield_units := maxi(0, int(plot.get("routine_yield", 0)))
-                if (StringName(plot.get("status", "")) == BuildingSystem.PLOT_GROWING
-                        and finish_tick > state.tick and duration_ticks > 0 and yield_units > 0):
-                    rate += float(yield_units) / float(duration_ticks)
-    return "Chưa có mẻ" if rate <= 0.0 else "%.2f / phút" % rate
+                if StringName(plot.get("status", "")) == BuildingSystem.PLOT_GROWING and yield_units > 0:
+                    if finish_tick > state.tick and duration_ticks > 0:
+                        field_rate += float(yield_units) / float(duration_ticks)
+                    else:
+                        waiting_harvest = true
+        if field_rate > 0.0:
+            return "≈ %.2f đv/phút" % field_rate
+        return "Chờ nhập Kho" if waiting_harvest else "Chưa có ô trồng"
+    return "—"
+
+func _sum_rate_values(rate_by_resource: Dictionary) -> float:
+    var total := 0.0
+    for raw_value in rate_by_resource.values():
+        total += float(raw_value)
+    return total
+
+func _legacy_carry_cycle_profile(building: BuildingState, disciple: DiscipleState, cycle: Dictionary) -> Dictionary:
+    if building == null or disciple == null or state == null:
+        return {}
+    var system := BuildingSystem.new()
+    var definition := system.definition_for(building)
+    var profession_id := StringName(definition.get("profession_id", ""))
+    var resource_id := StringName(cycle.get("resource_id", "")) if not cycle.is_empty() else &""
+    if resource_id == &"":
+        resource_id = system.mine_selected_ore(building) if building.building_type == BuildingSystem.TYPE_MINE else StringName(definition.get("resource_id", ""))
+    var output_quantity := system.mine_ore_batch_units(building, resource_id) if building.building_type == BuildingSystem.TYPE_MINE else system.resource_job_batch_units(building)
+    if not cycle.is_empty():
+        output_quantity = maxi(output_quantity, int(cycle.get("carried_units", 0)))
+    var move_speed := maxf(system._movement_speed(state, disciple), 0.5)
+    var work_speed := maxf(WorkforceSystem.new()._work_speed(state, disciple, profession_id), 0.25)
+    var work_distance := maxf(float(definition.get("work_distance", 8.0)), 0.0)
+    var haul_distance := maxf(float(definition.get("haul_distance", 6.0)), 0.0)
+    var work_duration := maxf(system.resource_job_work_duration(building), 0.1)
+    var travel_ticks := ceili(work_distance / move_speed)
+    var work_ticks := ceili(work_duration / work_speed)
+    var haul_ticks := ceili(haul_distance / move_speed)
+    var total_ticks := maxi(1, travel_ticks + work_ticks + haul_ticks)
+    var remaining_ticks := total_ticks
+    var progress_percent := 0.0
+    var phase := StringName(cycle.get("phase", "travel_out")) if not cycle.is_empty() else &"travel_out"
+    var phase_progress := maxf(0.0, float(cycle.get("progress", 0.0))) if not cycle.is_empty() else 0.0
+    var work_phase := StringName(definition.get("cycle_work_phase", ""))
+    if not cycle.is_empty():
+        if phase == &"travel_out":
+            var remaining_travel := ceili(maxf(0.0, work_distance - phase_progress) / move_speed)
+            remaining_ticks = remaining_travel + work_ticks + haul_ticks
+        elif phase == work_phase:
+            var remaining_work := ceili(maxf(0.0, work_duration - phase_progress) / work_speed)
+            remaining_ticks = remaining_work + haul_ticks
+        elif phase == &"haul_back":
+            var remaining_haul := ceili(maxf(0.0, haul_distance - phase_progress) / move_speed)
+            remaining_ticks = remaining_haul
+        remaining_ticks = clampi(remaining_ticks, 0, total_ticks)
+        progress_percent = 100.0 * float(total_ticks - remaining_ticks) / float(total_ticks)
+    return {
+        "profession_id": profession_id,
+        "resource_id": resource_id,
+        "output_quantity": output_quantity,
+        "phase": phase,
+        "phase_progress": phase_progress,
+        "remaining_ticks": remaining_ticks,
+        "total_ticks": total_ticks,
+        "progress": progress_percent,
+        "worker_id": str(disciple.id)
+    }
+
+func _legacy_carry_cycle_rows(building: BuildingState) -> Array[Dictionary]:
+    var result: Array[Dictionary] = []
+    if building == null or state == null:
+        return result
+    var system := BuildingSystem.new()
+    var profession_id := StringName(system.definition_for(building).get("profession_id", ""))
+    for worker_value in system.active_worker_ids(state, building):
+        var worker_id := StringName(worker_value)
+        if not state.disciples.has(worker_id):
+            continue
+        var worker: DiscipleState = state.disciples[worker_id]
+        var cycle: Dictionary = worker.work_cycle_state
+        if cycle.is_empty():
+            continue
+        if StringName(cycle.get("building_id", "")) != building.id:
+            continue
+        if StringName(cycle.get("profession_id", cycle.get("profession", ""))) != profession_id:
+            continue
+        var profile := _legacy_carry_cycle_profile(building, worker, cycle)
+        if not profile.is_empty():
+            profile["worker_name"] = worker.display_name
+            profile["phase_status"] = _resource_job_member_status(worker, profession_id, true, building)
+            result.append(profile)
+    result.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+        return int(a.get("remaining_ticks", 0)) < int(b.get("remaining_ticks", 0))
+    )
+    return result
 
 func _refresh_building_operation_live(operation_text: String) -> void:
     for child in building_operation_live_content.get_children():
@@ -3608,9 +3766,12 @@ func _refresh_building_operation_live(operation_text: String) -> void:
         var active_ids := building_system.active_worker_ids(state, building)
         var slots := maxi(0, building_system.worker_slots(building))
         var waiting := maxi(0, assigned.size() - active_ids.size())
+        var crew_definition := building_system.definition_for(building)
+        var crew_group_id := StringName(crew_definition.get("worker_group_id", ""))
+        var total_group_members := _disciples_in_work_group(crew_group_id).size() if crew_group_id != &"" else assigned.size()
         var crew_summary := Label.new()
         crew_summary.name = "CanonicalCrewSummary"
-        crew_summary.text = "Đội %d người · %d/%d chỗ hoạt động · %d đang chờ" % [assigned.size(), active_ids.size(), slots, waiting]
+        crew_summary.text = "Nhóm nghề %d · gắn công trình %d · đang làm %d/%d chỗ · chờ %d" % [total_group_members, assigned.size(), active_ids.size(), slots, waiting]
         crew_summary.add_theme_font_size_override("font_size", 12)
         crew_summary.add_theme_color_override("font_color", JADE_DARK)
         building_operation_live_content.add_child(crew_summary)
@@ -3753,8 +3914,10 @@ func _active_resource_worksite_status(destination: StringName) -> String:
         var cycle := disciple.work_cycle_state
         var cycle_profession := StringName(cycle.get("profession_id",cycle.get("profession","")))
         var timer := BuildingSystem.new().active_resource_timer_for_worker(state,disciple.id)
-        var timer_matches := not timer.is_empty() and StringName(timer.get("profession_id","")) == profession_id
-        if cycle_profession != profession_id and not timer_matches and not active_ids.has(disciple.id):
+        var timer_matches := not timer.is_empty() and StringName(timer.get("profession_id","")) == profession_id and StringName(timer.get("building_id","")) == building.id
+        if not cycle.is_empty() and (cycle_profession != profession_id or StringName(cycle.get("building_id", "")) != building.id) and not timer_matches:
+            continue
+        if cycle.is_empty() and not timer_matches and disciple.worksite_building_id != building.id:
             continue
         var status := _mining_member_status(disciple,true,building) if profession_id == WorkforceSystem.PROF_MINING else _resource_job_member_status(disciple,profession_id,true,building)
         lines.append("• %s · %s" % [disciple.display_name,status])
@@ -4624,7 +4787,12 @@ func _build_mine_upgrade_control() -> void:
 func _add_resource_timer_cards(building: BuildingState) -> void:
     var jobs := BuildingSystem.new().resource_timer_jobs(building)
     if jobs.is_empty():
-        _add_live_worker_message("Chưa có mẻ khai thác đang chạy. Khi có lượt thật, sản phẩm và ETA sẽ hiện tại đây.")
+        var legacy_rows := _legacy_carry_cycle_rows(building)
+        if legacy_rows.is_empty():
+            _add_live_worker_message("Chưa có mẻ timer hoặc chu kỳ mang hàng đang chạy. Chu kỳ cũ chỉ ghi sản lượng khi người làm mang hàng về Kho.")
+            return
+        for index in range(legacy_rows.size()):
+            _add_legacy_resource_cycle_card(building, legacy_rows[index], index)
         return
     var registry := ResourceRegistry.new()
     for index in range(jobs.size()):
@@ -4689,6 +4857,52 @@ func _add_resource_timer_cards(building: BuildingState) -> void:
         column.add_child(eta)
         building_operation_live_content.add_child(card)
 
+func _add_legacy_resource_cycle_card(building: BuildingState, cycle: Dictionary, index: int) -> void:
+    var resource_id := StringName(cycle.get("resource_id", ""))
+    var quantity := maxi(0, int(cycle.get("output_quantity", 0)))
+    var remaining := maxi(0, int(cycle.get("remaining_ticks", 0)))
+    var worker_name := str(cycle.get("worker_name", "Chưa rõ người phụ trách"))
+    var resource_name := ResourceRegistry.new().display_name(resource_id) if resource_id != &"" else "nguyên liệu"
+    var card := PanelContainer.new()
+    card.name = "LegacyResourceCycleCard_%d" % index
+    card.custom_minimum_size = Vector2(0, 82)
+    card.add_theme_stylebox_override("panel", _style(Color(0.91, 0.87, 0.75, 1.0), Color(0.55, 0.44, 0.27, 1.0), 1, 8))
+    var column := VBoxContainer.new()
+    column.add_theme_constant_override("separation", 3)
+    card.add_child(column)
+    var heading := HBoxContainer.new()
+    heading.add_theme_constant_override("separation", 6)
+    var icon := SECT_UI_ICON.new()
+    icon.name = "LegacyCycleResourceIcon"
+    icon.kind = "ore" if building.building_type == BuildingSystem.TYPE_MINE else "wood"
+    icon.custom_minimum_size = Vector2(24, 24)
+    heading.add_child(icon)
+    var title := Label.new()
+    title.text = "%s · ×%d %s" % [worker_name, quantity, resource_name]
+    title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+    title.clip_text = true
+    title.add_theme_font_size_override("font_size", 12)
+    title.add_theme_color_override("font_color", JADE_DARK)
+    heading.add_child(title)
+    column.add_child(heading)
+    var progress_bar := ProgressBar.new()
+    progress_bar.name = "LegacyResourceCycleProgress_%d" % index
+    progress_bar.custom_minimum_size = Vector2(0, 12)
+    progress_bar.max_value = 100.0
+    progress_bar.value = float(cycle.get("progress", 0.0))
+    progress_bar.show_percentage = false
+    progress_bar.add_theme_stylebox_override("background", _style(Color(0.77, 0.74, 0.66), Color(0.48, 0.40, 0.27), 1, 4))
+    progress_bar.add_theme_stylebox_override("fill", _style(JADE_DARK, GOLD, 1, 4))
+    column.add_child(progress_bar)
+    var detail := Label.new()
+    detail.text = str(cycle.get("phase_status", "Đang làm"))
+    detail.tooltip_text = "Ước tính còn lại từ pha và tiến độ thật của chu kỳ; tính theo tốc độ nghề, di chuyển và tải hàng hiện tại. Sản phẩm chỉ nhập Kho khi pha mang hàng hoàn tất."
+    detail.add_theme_font_size_override("font_size", 10)
+    detail.add_theme_color_override("font_color", INK)
+    detail.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+    column.add_child(detail)
+    building_operation_live_content.add_child(card)
+
 func _add_spirit_field_plot_cards(building: BuildingState) -> void:
     var plots: Array = BuildingSystem.new().spirit_field_plots(state, building)
     if plots.is_empty():
@@ -4715,16 +4929,29 @@ func _add_spirit_field_plot_cards(building: BuildingState) -> void:
         var yield_count := maxi(0, int(plot.get("routine_yield", 0)))
         var card := PanelContainer.new()
         card.name = "SpiritPlotCard_%d" % index
-        card.custom_minimum_size = Vector2(0, 76)
+        card.custom_minimum_size = Vector2(0, 92)
         card.add_theme_stylebox_override("panel", _style(Color(0.91, 0.87, 0.75, 1.0), Color(0.55, 0.44, 0.27, 1.0), 1, 8))
         var column := VBoxContainer.new()
         column.add_theme_constant_override("separation", 3)
         card.add_child(column)
+        var header := HBoxContainer.new()
+        header.custom_minimum_size = Vector2(0, 28)
+        header.add_theme_constant_override("separation", 7)
+        var crop_icon := SECT_UI_ICON.new()
+        crop_icon.name = "SpiritPlotCropIcon_%d" % index
+        crop_icon.kind = "leaf" if growing else "root"
+        crop_icon.tint = JADE_DARK if growing else GOLD
+        crop_icon.custom_minimum_size = Vector2(26, 26)
+        header.add_child(crop_icon)
         var title := Label.new()
         title.text = "Ô đất %02d · %s" % [index + 1, crop_name]
+        title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+        title.clip_text = true
+        title.tooltip_text = "Ô đất %02d · %s" % [index + 1, crop_name]
         title.add_theme_font_size_override("font_size", 12)
         title.add_theme_color_override("font_color", JADE_DARK)
-        column.add_child(title)
+        header.add_child(title)
+        column.add_child(header)
         var progress_bar := ProgressBar.new()
         progress_bar.name = "SpiritPlotProgress_%d" % index
         progress_bar.custom_minimum_size = Vector2(0, 12)
@@ -6112,13 +6339,11 @@ func _linh_forest_operation_text() -> String:
 func _resource_job_member_status(disciple: DiscipleState, profession_id: StringName, has_active_slot: bool, building: BuildingState = null) -> String:
     var output_quantity := 0
     var output_name := "nguyên liệu"
-    var work_duration := 1.0
     if building != null:
         var building_system := BuildingSystem.new()
         var definition := building_system.definition_for(building)
         var resource_id := building_system.mine_selected_ore(building) if building.building_type == BuildingSystem.TYPE_MINE else StringName(definition.get("resource_id",""))
         output_quantity = building_system.mine_ore_batch_units(building, resource_id) if building.building_type == BuildingSystem.TYPE_MINE else building_system.resource_job_batch_units(building)
-        work_duration = building_system.resource_job_work_duration(building)
         output_name = ResourceRegistry.new().display_name(resource_id)
     var work_label := "lượt khai thác" if profession_id == WorkforceSystem.PROF_MINING else "lượt thu hoạch"
     var batch_text := "%s ×%d %s" % [work_label,output_quantity,output_name] if output_quantity > 0 else "chờ khởi sự"
@@ -6139,18 +6364,19 @@ func _resource_job_member_status(disciple: DiscipleState, profession_id: StringN
         return "Sẵn sàng · %s" % batch_text
 
     var phase := StringName(cycle.get("phase", ""))
+    var cycle_profile := _legacy_carry_cycle_profile(building, disciple, cycle) if building != null else {}
+    var eta_suffix := " · còn khoảng %d phút mô phỏng" % int(cycle_profile.get("remaining_ticks", 0)) if not cycle_profile.is_empty() else ""
     match phase:
         &"travel_out":
-            return "Đang tới %s · %s" % [_destination_short_label(StringName(actor_destinations.get(str(disciple.id),""))).to_lower(),batch_text]
+            return "Đang tới %s · %s%s" % [_destination_short_label(StringName(actor_destinations.get(str(disciple.id),""))).to_lower(),batch_text,eta_suffix]
         &"mining":
-            var progress := clampi(roundi(float(cycle.get("progress",0.0))/maxf(work_duration,0.1)*100.0),0,99)
-            return "Đang khai thác · %s" % batch_text
+            return "Đang khai thác · %s%s" % [batch_text,eta_suffix]
         &"harvesting":
-            return "Đang chăm sóc Linh Điền" if profession_id == WorkforceSystem.PROF_HERBALISM else "Đang thu hoạch · %s" % batch_text
+            return "Đang chăm sóc Linh Điền" if profession_id == WorkforceSystem.PROF_HERBALISM else "Đang thu hoạch · %s%s" % [batch_text,eta_suffix]
         &"haul_back":
-            return "Đang chở ×%d về Kho" % maxi(int(cycle.get("carried_units",0)),0)
+            return "Đang chở ×%d về Kho%s" % [maxi(int(cycle.get("carried_units",0)),0),eta_suffix]
         _:
-            return "Chờ chu kỳ · %s" % batch_text
+            return "Chờ chu kỳ · %s%s" % [batch_text,eta_suffix]
 
 func _mine_operation_text() -> String:
     var members := _disciples_in_work_group(&"mining_crew")
@@ -7110,13 +7336,26 @@ func _map_worksite_snapshot(building: BuildingState) -> Dictionary:
                 if active_worker_id != &"":
                     result["worker"] = state.disciples[active_worker_id].display_name if state.disciples.has(active_worker_id) else str(active_worker_id)
                 result["heading"] = "%s · %s" % [type_title,ResourceRegistry.new().display_name(output_id)]
-                result["detail"] = "Khai thác ×%d · %s" % [maxi(0,int(job.get("output_quantity",0))),"Chờ nhập Linh Kho" if finish_tick <= state.tick else "còn %d phút mô phỏng" % (finish_tick-state.tick)]
+                result["detail"] = "Khai thác ×%d · %s" % [maxi(0,int(job.get("output_quantity",0))),"Chờ nhập Kho" if finish_tick <= state.tick else "còn %d phút mô phỏng" % (finish_tick-state.tick)]
                 result["display_detail"] = "×%s · %s" % [SectProductionWorksiteCue._map_quantity(maxi(0,int(job.get("output_quantity",0)))),"chờ kho" if finish_tick <= state.tick else "%dp" % (finish_tick-state.tick)]
                 result["progress"] = 100.0*float(elapsed)/float(total)
                 result["active"] = true
                 result["waiting"] = finish_tick <= state.tick
                 return result
-        result["detail"] = "Chờ lượt khai thác tiếp" if int(result["received"]) > 0 else ("Đã giao người · chưa khởi khai" if not assigned.is_empty() else "Chưa phân công")
+        var legacy_rows := _legacy_carry_cycle_rows(building)
+        if not legacy_rows.is_empty():
+            var row: Dictionary = legacy_rows[0]
+            var output_id := StringName(row.get("resource_id", ""))
+            var quantity := maxi(0, int(row.get("output_quantity", 0)))
+            var remaining := maxi(0, int(row.get("remaining_ticks", 0)))
+            result["worker"] = str(row.get("worker_name", result["worker"]))
+            result["heading"] = "%s · %s" % [type_title, ResourceRegistry.new().display_name(output_id)]
+            result["detail"] = str(row.get("phase_status", "Đang làm"))
+            result["display_detail"] = "×%s · %dp" % [SectProductionWorksiteCue._map_quantity(quantity), remaining]
+            result["progress"] = float(row.get("progress", 0.0))
+            result["active"] = true
+            return result
+        result["detail"] = "Chờ lượt khai thác tiếp" if int(result["received"]) > 0 else ("Đã giao người · chờ lượt đầu" if not assigned.is_empty() else "Chưa phân công")
         return result
     var plot_data = building.production_state.get("plots",[])
     if not (plot_data is Array):
@@ -8734,6 +8973,7 @@ func _work_group_label_id(group_id: StringName) -> String:
     match group_id:
         &"mining_crew": return "Đội Khai Khoáng"
         &"forestry_crew": return "Đội Lâm Nghiệp"
+        &"herbalism_crew": return "Đội Linh Thực"
         &"alchemy_crew": return "Đội Luyện Đan"
         &"forge_hall": return "Luyện Khí Đường"
         &"": return "Chưa phân"
@@ -8763,6 +9003,7 @@ func _direct_command_label_data(command: Variant) -> String:
 func _work_group_label(disciple: DiscipleState) -> String:
     match disciple.work_group_id:
         &"mining_crew": return "Đội Khai Khoáng"
+        &"forestry_crew": return "Đội Lâm Nghiệp"
         &"forge_hall": return "Luyện Khí Đường"
         &"herbalism_crew": return "Đội Linh Thực"
         &"": return "Chưa phân"
@@ -8985,6 +9226,7 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "T�
         roster_scroll.name = "DeepDiscipleRosterScroll"
         roster_scroll.position = Vector2(8, 114)
         roster_scroll.size = Vector2(roster_width - 16.0, 338)
+        roster_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
         roster_panel.add_child(roster_scroll)
 
         var roster := VBoxContainer.new()
@@ -9014,16 +9256,18 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "T�
             var roster_cultivation: Dictionary = roster_progression.get("cultivation",{})
             var roster_realm := str(roster_cultivation.get("name",legacy_cultivation_system.stage_name(roster_disciple)))
             var roster_quality := str(roster_identity.get("quality_name","Phẩm chất chưa xác định"))
-            var roster_status := SectMapPresentation.action_label(roster_disciple.current_action)
+            var roster_action_status := SectMapPresentation.action_label(roster_disciple.current_action)
             var roster_work: Dictionary = roster_snapshot.get("work",{})
             var roster_worksite := str(roster_work.get("worksite_building_id",""))
             var roster_group := str(roster_work.get("group_id",""))
+            var roster_status := roster_action_status
             if not roster_worksite.is_empty():
-                roster_status += " · " + _building_name(StringName(roster_worksite))
+                roster_status = "Tại " + _building_name(StringName(roster_worksite))
             elif roster_group.is_empty():
-                roster_status = "Đang rảnh · " + roster_status
+                roster_status = "Rảnh · " + roster_action_status
             else:
-                roster_status += " · Nhóm " + roster_group
+                roster_status = _work_group_label_id(StringName(roster_group))
+            var roster_status_tooltip := "%s · %s · %s" % [roster_action_status, _work_group_label_id(StringName(roster_group)), _building_name(StringName(roster_worksite)) if not roster_worksite.is_empty() else "Chưa gắn công trình"]
             var entry := Button.new()
             entry.name = "DeepRosterEntry_%d" % roster.get_child_count()
             entry.text = "%s\n%s · %s\n%s" % [roster_disciple.display_name,roster_quality,roster_realm,roster_status]
@@ -9036,12 +9280,18 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "T�
             var roster_portrait := _disciple_source_a_portrait_texture(roster_disciple)
             if roster_portrait != null:
                 # The entry remains a Button for keyboard/mouse semantics and existing contracts.
+                # Preserve the canonical name on the Button for search/accessibility,
+                # while omitting hidden multiline metadata that inflated its minimum width.
+                entry.text = roster_disciple.display_name
                 entry.add_theme_color_override("font_color", Color(0, 0, 0, 0))
                 entry.add_theme_color_override("font_hover_color", Color(0, 0, 0, 0))
                 var portrait_row := HBoxContainer.new()
                 portrait_row.name = "VerifiedSourceARosterCard"
-                portrait_row.position = Vector2(8, 5)
-                portrait_row.size = Vector2(roster_width - 52.0, 72)
+                portrait_row.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+                portrait_row.offset_left = 8
+                portrait_row.offset_top = 5
+                portrait_row.offset_right = -8
+                portrait_row.offset_bottom = -5
                 portrait_row.add_theme_constant_override("separation", 8)
                 portrait_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
                 var portrait_frame := TextureRect.new()
@@ -9059,20 +9309,29 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "T�
                 portrait_row.add_child(portrait_details)
                 var portrait_name := Label.new()
                 portrait_name.text = roster_disciple.display_name
+                portrait_name.tooltip_text = roster_disciple.display_name
+                portrait_name.custom_minimum_size.x = 0
+                portrait_name.size_flags_horizontal = Control.SIZE_EXPAND_FILL
                 portrait_name.clip_text = true
                 portrait_name.add_theme_font_size_override("font_size", 12)
                 portrait_name.add_theme_color_override("font_color", PAPER_LIGHT)
                 portrait_details.add_child(portrait_name)
                 var portrait_identity := Label.new()
                 portrait_identity.text = "%s · %s" % [roster_quality, roster_realm]
+                portrait_identity.tooltip_text = "%s · %s" % [roster_quality, roster_realm]
+                portrait_identity.custom_minimum_size.x = 0
+                portrait_identity.size_flags_horizontal = Control.SIZE_EXPAND_FILL
                 portrait_identity.clip_text = true
-                portrait_identity.add_theme_font_size_override("font_size", 10)
+                portrait_identity.add_theme_font_size_override("font_size", 9)
                 portrait_identity.add_theme_color_override("font_color", GOLD)
                 portrait_details.add_child(portrait_identity)
                 var portrait_status := Label.new()
                 portrait_status.text = roster_status
+                portrait_status.tooltip_text = roster_status_tooltip
+                portrait_status.custom_minimum_size.x = 0
+                portrait_status.size_flags_horizontal = Control.SIZE_EXPAND_FILL
                 portrait_status.clip_text = true
-                portrait_status.add_theme_font_size_override("font_size", 10)
+                portrait_status.add_theme_font_size_override("font_size", 9)
                 portrait_status.add_theme_color_override("font_color", PAPER_LIGHT)
                 portrait_details.add_child(portrait_status)
                 entry.add_child(portrait_row)

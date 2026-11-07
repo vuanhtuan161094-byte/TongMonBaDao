@@ -98,9 +98,24 @@ foreach ($path in $pins.Keys) {
     if (-not (Test-Path -LiteralPath $fullPath -PathType Leaf)) {
         Stop-Verification "Pinned runtime source is missing: $path" 12
     }
-    $actualBlob = (& $git -c "safe.directory=$safeDirectory" -C $safeRoot hash-object -- $path 2>&1 | Out-String).Trim().ToLowerInvariant()
-    if ($LASTEXITCODE -ne 0 -or $actualBlob -ne $pins[$path]) {
-        Stop-Verification "Runtime source fingerprint mismatch: $path (expected $($pins[$path]), found $actualBlob)." 13
+    # Compare tracked sources to their exact Git tree blob. On Windows, hash-object
+    # may apply EOL filters that differ from the committed blob for mixed-EOL files.
+    $treeBlob = (& $git -c "safe.directory=$safeDirectory" -C $safeRoot rev-parse --verify "HEAD:$path" 2>$null | Out-String).Trim().ToLowerInvariant()
+    if ($LASTEXITCODE -eq 0 -and $treeBlob -match '^[0-9a-f]{40}$') {
+        if ($treeBlob -ne $pins[$path]) {
+            Stop-Verification "Pinned Git source mismatch: $path (expected $($pins[$path]), found $treeBlob)." 13
+        }
+        & $git -c "safe.directory=$safeDirectory" -C $safeRoot diff --quiet HEAD -- $path
+        if ($LASTEXITCODE -ne 0) {
+            Stop-Verification "Pinned tracked source has local changes: $path" 13
+        }
+    } else {
+        # Some assets (for example the verified Stage A pack) are restored locally
+        # from their pinned transport rather than tracked as individual Git blobs.
+        $actualBlob = (& $git -c "safe.directory=$safeDirectory" -C $safeRoot hash-object --no-filters -- $path 2>&1 | Out-String).Trim().ToLowerInvariant()
+        if ($LASTEXITCODE -ne 0 -or $actualBlob -ne $pins[$path]) {
+            Stop-Verification "Runtime asset fingerprint mismatch: $path (expected $($pins[$path]), found $actualBlob)." 13
+        }
     }
 }
 
