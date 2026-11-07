@@ -4673,7 +4673,7 @@ func _add_spirit_field_plot_cards(building: BuildingState) -> void:
         var state_text := "Chờ thu hoạch" if ready else ("Còn %d phút mô phỏng" % remaining if growing else "Sẵn sàng gieo")
         var detail := Label.new()
         detail.text = "%s · %s%s%s" % [worker_name, state_text, yield_text, " · Kho: %d" % crop_stock if crop_id != &"" else ""]
-        detail.tooltip_text = "EXP Linh Thực được cộng khi gieo thành công, không phải khi thu hoạch. Lượt này có sản lượng cơ bản ×%d / %d phút mô phỏng, bình quân %.2f đơn vị/phút trước thưởng may mắn." % [
+        detail.tooltip_text = "EXP Linh Thực chỉ cộng sau khi thu hoạch nhập Kho thành công. Lượt này có sản lượng cơ bản ×%d / %d phút mô phỏng, bình quân %.2f đơn vị/phút trước thưởng may mắn." % [
             yield_count,duration,float(yield_count)/float(duration)
         ] if growing else "Ô trống không sản xuất và không cộng EXP."
         detail.add_theme_font_size_override("font_size", 10)
@@ -5053,8 +5053,8 @@ func _build_spirit_field_management() -> void:
     building_management_container.add_child(policy_summary)
     var xp_note := Label.new()
     xp_note.name = "FieldProfessionXpGuide"
-    xp_note.text = "EXP nghề khi gieo (chưa nhân hệ số): Linh Cốc +8 · Thanh Linh Thảo +10 · Tử Vân Thảo +16 (Lv10)."
-    xp_note.tooltip_text = "Đây là EXP Linh Thực cơ bản, không phải Tu Vi. EXP được cộng khi gieo thành công; mỗi đệ tử có hệ số học nghề riêng. Tử Vân Thảo cần Linh Điền Lv10."
+    xp_note.text = "EXP khi thu hoạch nhập Kho: Linh Cốc +8 · Thanh Linh Thảo +10 · Tử Vân Thảo +16 (Lv10), trước hệ số."
+    xp_note.tooltip_text = "Đây là EXP Linh Thực cơ bản, không phải Tu Vi. Số EXP chốt từ lúc gieo nhưng chỉ cộng khi sản phẩm vào Linh Kho thật; hủy ô mới không nhận EXP. Ô trồng từ save cũ không được cộng lại EXP."
     xp_note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
     xp_note.add_theme_font_size_override("font_size", 10)
     xp_note.add_theme_color_override("font_color", JADE_DARK)
@@ -5310,7 +5310,7 @@ func _new_management_row(disciple: DiscipleState) -> HBoxContainer:
     ]
     skill.tooltip_text = "Cấp nghề Lv%d · %s · %s\nMỏ Lv%d · Lâm Lv%d · Điền Lv%d · Đan Lv%d" % [
         profession_level, progress_label,
-        "EXP theo giống gieo (+hệ số); nhận lúc gieo" if profession_id == WorkforceSystem.PROF_HERBALISM and not crop_xp_known else "≈+%.2f EXP dự kiến, khi ghi nhận lượt thật" % expected_xp,
+        "EXP theo giống gieo (+hệ số); nhận khi thu hoạch thật" if profession_id == WorkforceSystem.PROF_HERBALISM and not crop_xp_known else "≈+%.2f EXP dự kiến, khi nhận sản phẩm vào Kho" % expected_xp,
         workforce.profession_level_for_state(state, disciple, WorkforceSystem.PROF_MINING),
         workforce.profession_level_for_state(state, disciple, WorkforceSystem.PROF_FORESTRY),
         workforce.profession_level_for_state(state, disciple, WorkforceSystem.PROF_HERBALISM),
