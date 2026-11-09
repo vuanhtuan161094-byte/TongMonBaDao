@@ -261,9 +261,9 @@ func _run() -> void:
     # Demand policy must stop when all real + in-flight supply targets are met.
     var capped := P37Factory.create_state(7110702)
     var capped_field := buildings.primary_building(capped,BuildingSystem.TYPE_SPIRIT_FIELD)
-    for crop_id in SpiritCropRegistry.new().eligible_crop_ids(capped_field.level):
-        var amount := SpiritCropRegistry.new().stock_target(crop_id)
-        if not warehouse.add(capped,SpiritCropRegistry.new().output_resource_id(crop_id),amount):
+    for stock_crop_id in SpiritCropRegistry.new().eligible_crop_ids(capped_field.level):
+        var amount := SpiritCropRegistry.new().stock_target(stock_crop_id)
+        if not warehouse.add(capped,SpiritCropRegistry.new().output_resource_id(stock_crop_id),amount):
             _fail("cannot seed QA stock-target cap probe")
             return
     var capped_worker: DiscipleState = null
