@@ -1,5 +1,12 @@
 # NEXT CHAT / CODEX HANDOFF — RELEASE TRAIN PR #72 → MAIN (2026-11-04)
 
+## PR72 P3.6A HUD PASS / OPEN TEARDOWN + SX03 DEBTS — 2026-11-09
+
+- **Runtime QA SHA:** `7228dfec084e58b360c2ca9d3a1370cbe91cf2aa` on PR #72 Draft. Only `p3_2_landscape_sect.gd` presentation changed: no routine floating status tags, panel focus hides text, one bounded transient ambient bubble, tooltip/profile preserve canonical work status. No gameplay/Save/test changes.
+- **P3.6A focused PASS:** [run #42596992133](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42596992133) Godot 4.7.2 official import, FAST scene checks and Xvfb 1280x720 capture all pass; [preview artifact](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42596992133/artifacts/13664580407). [O7 run #42596992342](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42596992342) SUCCESS (Forest, Mine, P3.6A).
+- **O9 [#42596992095](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42596992095) FAILED overall** after O9, O8, O7 and P3.6A functional tests PASS because strict P3.6A exit detects renderer/text RID leaks (16 textures/22 shaped text/1 font). Existing O9 M2 teardown RID debt remains; DO NOT call full O9 green. **O8 [#42596992146](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42596992146) FAILED overall** after O8/O7/P3.6A PASS due to SX03 source-consumer/BAL-04A 9/202 failed assertions. Outside HUD authority; do not weaken them.
+- **Next options requiring new owner instruction:** (A) isolate/fix P3.6A renderer RID teardown in scene/harness without changing gameplay/Save; (B) independent SX03/BAL-04A source-consumer and 1,000,000/day contract audit. Windows GUI, 3 cold starts, Android 1280x720 and owner visual approval **PENDING USER**. No branch, merge, or release acceptance.
+
 ## NEXT PRIORITY AFTER PR72 P0–P2 QA — 2026-11-09
 
 - **Verified runtime code SHA `19f167a0c97a83f972561d56ae824968b6ec9d3c`** on PR #72 Draft; [O9 run #42594179340](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42594179340): import, SX-07B 117/117, SX07 409/409, SX02 catalogue 1695, SaveService 10, SX02 medicine runtime 47, V57 worksite/transactions/save, O9 rehearsal, O8 and O7 PASS. **Overall workflow FAIL** in P3.6A UI: `Always-on actor status text still clutters the main map: tran_mac`. Do not hide or weaken P3.6A test. Poison V3 [#42594179315](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42594179315) passes strict event-only video workflow, not owner visual QA.
