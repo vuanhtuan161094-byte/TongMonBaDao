@@ -6007,7 +6007,7 @@ func _build_alchemy_management() -> void:
     route_hint.add_theme_font_size_override("font_size", 12)
     building_management_container.add_child(route_hint)
     if not MedicineCatalogueV2.parse_recipe(selected_recipe).is_empty():
-        _add_management_section_label("PHẨM ĐAN · MẺ MỚI 36 VIÊN / 3 PHÚT")
+        _add_management_section_label("PHẨM ĐAN · CHỌN Q1–Q4 CHO MẺ MỚI")
         var current_grade := int(hall.production_state.get("v57_selected_quality",0))
         for grade in range(1,5):
             var pick := Button.new()
@@ -6375,7 +6375,13 @@ func _alchemy_product_effect_text(recipe_id: StringName, output_id: StringName) 
     var potency := maxi(int(medicine.get("potency", 0)), 0)
     var family := StringName(medicine.get("pill_family", ""))
     var quality_name := str(medicine.get("quality_name", "Hạ Phẩm"))
-    var effect := "hồi tối đa %d HP" % potency if family == MedicineCatalogueV2.FAMILY_HEAL else "tăng %d Tu Vi" % potency
+    var effect := "tăng %d Tu Vi" % potency
+    if family == MedicineCatalogueV2.FAMILY_HEAL:
+        effect = "hồi tối đa %d HP" % potency
+    elif family == MedicineCatalogueV2.FAMILY_BODY:
+        effect = "tăng %d EXP Luyện Thể" % potency
+    elif family == MedicineCatalogueV2.FAMILY_BREAK:
+        effect = "cộng %d điểm phần trăm xác suất đột phá Tu Vi" % potency
     return "Công dụng %s cơ sở: %s; phẩm thực tế do Đan Sư và cấp Điện chốt khi bắt đầu." % [quality_name, effect]
 
 

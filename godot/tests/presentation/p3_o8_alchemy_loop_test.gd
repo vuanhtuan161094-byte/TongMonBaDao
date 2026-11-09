@@ -69,6 +69,21 @@ func _run() -> void:
     if not v2_recipe_summary.contains("Thanh Linh Thảo ×3") or not v2_recipe_summary.contains("Hồi Nguyên Đan") or v2_recipe_summary.contains("Linh Cốc ×"):
         _fail("O8 Alchemy summary did not show the selected V2 recipe's canonical ingredient and product.")
         return
+    # Each authored medicine family must display its real consumer effect.
+    # Do not imply Body XP is Tu Vi or Break chance is raw cultivation XP.
+    var body_description := str(ui.call("_alchemy_product_effect_text",
+        MedicineCatalogueV2.recipe_id("body",1),
+        MedicineCatalogueV2.item_id("body",1,1)))
+    var breakthrough_description := str(ui.call("_alchemy_product_effect_text",
+        MedicineCatalogueV2.recipe_id("break",1),
+        MedicineCatalogueV2.item_id("break",1,4)))
+    if not body_description.contains("EXP Luyện Thể") or body_description.contains("Tu Vi"):
+        _fail("O8 Body medicine product preview reports incorrect progress track.")
+        return
+    if not breakthrough_description.contains("8 điểm phần trăm xác suất đột phá Tu Vi"):
+        _fail("O8 Breakthrough medicine preview does not show owner B1 Q4 +8pp.")
+        return
+
     var current_recipe_mode := str(state.sect.sx01_pill_policy.get("recipe_mode",""))
     if current_recipe_mode != original_recipe_mode:
         var mode_button := ui.find_child("SX01RecipeMode",true,false) as Button
