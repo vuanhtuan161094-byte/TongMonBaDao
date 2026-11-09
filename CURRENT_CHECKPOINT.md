@@ -1,5 +1,15 @@
 # CURRENT CHECKPOINT — ONE GAME → MAIN (2026-11-04)
 
+## SX-07B — PRESERVED MINE/FOREST SOURCE SLICE — 2026-11-09 — CODE PARTIAL / QA PENDING
+
+- Source baseline `c80457834fc7eeb5534441cdfab9fae0fddded56`; code packet SHA `cc389cee15a57c44e4c03f223a954f1d503f6f95`. Owner explicitly authorized SX-07B on the existing PR #72 branch; no new branch, no merge or player-save changes.
+- **CODE:** five V5.5-D-preserved item IDs registered with explicit non-tradeable design reference values. Mine selectors (Xích Đồng Lv1, Trúc Cốt Sa Lv10), Forest selectors (Thanh Trúc Lv1, Thanh Trúc Mộc + Lục Văn Sam Lv10); real existing timed/carry jobs freeze item/quantity, settle to canonical Warehouse, profession EXP and wage once. Old Forest saves default to Linh Mộc. Forest carry-cycle and timed-output validation updated.
+- **SOFTLOCK PREVENTION:** current UI does not expose these five material selections; existing 8 early alchemy pilot BOMs preserved, G-proposed early Break r1 and Heal r2 ingredient substitutions **not activated**. No new 111 recipes unblocked.
+- **PROVENANCE:** 630 G material IDs: 11 now registered (6 pre-existing, 5 newly coded); 619 unregistered = 112 V5.5-D-preserved + 507 unverified proposed. All 270 G source profiles still `DESIGN_MAPPING_NOT_RUNTIME`, not real sites. The original V5.4 source CSV is unavailable among verified sources; never claim 507 generated IDs were recovered.
+- **TEST SOURCE ONLY:** `sx07b_preserved_source_job_test.gd` + GitHub workflow registration; tests cover five live-job selections, level gating, frozen job, cold Save/Load, exact Warehouse, EXP, wages and replay. No Godot 4.7.2 exit-0 evidence at `cc389cee15a57c44e4c03f223a954f1d503f6f95` yet. Read `docs/qa/SX07B_PRESERVED_MATERIALS_SOURCE_GATE_20261109.md` for precise status and accepted vs deferred BOM.
+- **NEXT OPTIONS:** (A) SX-07C explicitly authorize source selection UI+early G BOM activation after focused tests; (B) official Godot 4.7.2 focused QA for SX-07B and baseline Save; (C) continue source-name restoration from authoritative V5.4 files, keeping all unverified IDs DESIGN_HOLD. Windows GUI/Android physical gates = **PENDING USER**. No equipment, techniques, PvE overhaul, or merge.
+
+
 ## SX-07 SOURCE PROVENANCE — 2026-11-09 — CODE PARTIAL / QA PENDING
 
 - Authorized packet: owner request SX-07 for the single PR #72 branch `integration/pve-p0-playable-ui-20261103`; **code baseline** `f5280d20614b6dc009a5df7662ad6d8288018958`; **code checkpoint** `c05b1aac9ffe186ebefe56395dfa4ec6abfe6556`. No new branch, no merge or player-save rewrite.

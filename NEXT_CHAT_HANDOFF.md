@@ -1,5 +1,15 @@
 # NEXT CHAT / CODEX HANDOFF — RELEASE TRAIN PR #72 → MAIN (2026-11-04)
 
+## CURRENT SX-07B HANDOFF — 2026-11-09
+
+- Repo: `vuanhtuan161094-byte/TongMonBaDao`, branch `integration/pve-p0-playable-ui-20261103`, PR #72 DRAFT. Baseline `c80457834fc7eeb5534441cdfab9fae0fddded56`; source code SHA `cc389cee15a57c44e4c03f223a954f1d503f6f95`; no branch, main merge, Save/schema change or VFX/equipment/technique edits.
+- **Implemented, not Godot-accepted:** registered five previously preserved V5.5-D material IDs; Mine + Forest per-building output selection, real canonical timed/carry job payment/XP/warehouse and frozen-save behavior; source read-model and validators updated; focused transaction test + workflow trigger.
+- **Blocked intentionally:** GUI source picker not in authorized file allowlist; do not enable V5.6-G substitutions of Xích Đồng/Thanh Trúc/Thanh Trúc Mộc into existing pills until selectable through legitimate player command. Old eight pilot recipes remain. 111/119 recipes still DESIGN_HOLD.
+- **Counts:** 11/630 current runtime overlap (previous six plus five), 619 missing (112 preserved V5.5-D, 507 proposed/unrecovered), 270/270 G profiles not instantiated. Do not claim restored V5.4 source originals. See `docs/qa/SX07B_PRESERVED_MATERIALS_SOURCE_GATE_20261109.md`.
+- **Required tests exact HEAD:** import official 4.7.2; `sx07b_preserved_source_job_test.gd`, `sx07_source_provenance_test.gd`, `sx02_medicine_catalogue_test.gd`; affected `production_exp_upgrade_contract_20261107_test.gd`, `p3_o7_linh_forest_test.gd`, `v57_paid_producers_body_market_test.gd`, `sx02_medicine_runtime_test.gd`, SaveService cold reload. At writing: no official runtime test output, **QA PENDING**.
+- Next work options (user approval): SX-07C wire existing mine/forest selection UI and activate only source-proven G BOM; official focused QA and repair; or source provenance recovery from primary V5.4. All Windows mouse/Android physical acceptance = **PENDING USER**.
+
+
 ## ACTIVE OWNER DIRECTIVE — SX-07 CONTINUATION (2026-11-09)
 
 **Latest approved scope supersedes older R2-start priority for the active authoring packet; R2–R5 release requirements remain open.** Code baseline `c05b1aac9ffe186ebefe56395dfa4ec6abfe6556`. See `CURRENT_CHECKPOINT.md` SX-07 section for precise status and files.
