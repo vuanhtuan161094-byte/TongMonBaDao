@@ -1123,7 +1123,8 @@ const V57_QUALITY_CATALYSTS := {
     1:{},
     2:{"tu_van_thao":1},
     3:{"huyen_thiet":1,"linh_tuy":1},
-    4:{"huyen_thiet":2,"linh_tuy":2,"linh_tuyen_chi_tam_manh":1}
+    # Never consume Linh Tuyen Heart fragments meant for Field milestones.
+    4:{"tu_van_thao":2,"huyen_thiet":2,"tinh_lang_bi":1}
 }
 
 func set_alchemy_quality(state: SimulationState, hall_id: StringName, quality: int) -> Dictionary:
@@ -1150,9 +1151,17 @@ func _v57_alchemy_plan(state: SimulationState, hall: BuildingState,
     var requirements := alchemy_registry.inputs(recipe_id)
     var requested := int(hall.production_state.get("v57_selected_quality",0))
     if requested == 0:
-        return {"ok":true,"requirements":requirements,"output_quantity":alchemy_registry.output_quantity(recipe_id),
+        var output := alchemy_registry.output_resource_id(recipe_id)
+        var parsed_legacy_mode := MedicineCatalogueV2.parse_recipe(recipe_id)
+        if not parsed_legacy_mode.is_empty():
+            # New jobs must explicitly pay catalysts for Q2-Q4, never receive
+            # automatically promoted high-grade outputs from a Q1 ingredient BOM.
+            output = MedicineCatalogueV2.item_id(
+                str(parsed_legacy_mode["family"]),int(parsed_legacy_mode["realm"]),1)
+        return {"ok":true,"requirements":requirements,
+            "output_quantity":alchemy_registry.output_quantity(recipe_id),
             "cycle_ticks":alchemy_registry.base_cycle_ticks(recipe_id),
-            "output_resource_id":str(MedicineCatalogueV2.output_for_job(recipe_id,profession_level,hall.level))}
+            "output_resource_id":str(output)}
     var parsed := MedicineCatalogueV2.parse_recipe(recipe_id)
     if parsed.is_empty() or requested < 1 or requested > 4:
         return {"ok":false,"reason":"invalid_quality_recipe"}
@@ -1166,7 +1175,10 @@ func _v57_alchemy_plan(state: SimulationState, hall: BuildingState,
     return {
         "ok":true,"requirements":requirements,
         "output_resource_id":str(result_id),
-        "output_quantity":36+3*int(profession_level/10),
+        "output_quantity":int(alchemy_registry.output_quantity(recipe_id)) + (
+            int(profession_level/20) if str(parsed["family"]) == MedicineCatalogueV2.FAMILY_BREAK
+            else 3*int(profession_level/10)
+        ),
         "cycle_ticks":3,
         "selected_quality":requested
     }
