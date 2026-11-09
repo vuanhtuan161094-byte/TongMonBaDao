@@ -1803,6 +1803,12 @@ func validate_invariants(state: SimulationState) -> Array[String]:
                 resource_workers[timer_worker] = true
                 if int(timer.get("finish_tick",0)) <= int(timer.get("started_tick",-1)):
                     errors.append("Economy-A invalid resource timer deadline.")
+                var earned_id := str(timer.get("resource_id",""))
+                var valid_earned_id := MINE_ORE_OPTIONS.has(earned_id) \
+                    if building.building_type == TYPE_MINE else FOREST_MATERIAL_OPTIONS.has(earned_id)
+                if not valid_earned_id or not ResourceRegistry.DEFINITIONS.has(earned_id) \
+                        or int(timer.get("output_quantity",0)) <= 0:
+                    errors.append("Economy-A invalid frozen resource output identity/quantity.")
         if building.building_type == TYPE_ALCHEMY_HALL:
             var alchemy_data := _ensure_alchemy_state(building)
             var seen_job_ids: Dictionary = {}
@@ -1878,12 +1884,16 @@ func validate_invariants(state: SimulationState) -> Array[String]:
                         errors.append("%s has invalid resource-job phase." % disciple.display_name)
                     var expected_resource := StringName(cycle_definition.get("resource_id", ""))
                     var cycle_resource := StringName(disciple.work_cycle_state.get("resource_id", str(expected_resource)))
-                    # A committed Mine carry cycle keeps its original ore when
-                    # selection changes; both registered ores are canonical.
-                    var valid_resource := (
-                        MINE_ORE_OPTIONS.has(str(cycle_resource))
-                        and ResourceRegistry.DEFINITIONS.has(str(cycle_resource))
-                    ) if cycle_building.building_type == TYPE_MINE else cycle_resource == expected_resource
+                    # A committed Mine/Forest carry cycle keeps the resource
+                    # frozen when worksite selection changes. Never treat a
+                    # selection change as an opportunity to swap carried loot.
+                    var valid_resource := cycle_resource == expected_resource
+                    if cycle_building.building_type == TYPE_MINE:
+                        valid_resource = MINE_ORE_OPTIONS.has(str(cycle_resource)) \
+                            and ResourceRegistry.DEFINITIONS.has(str(cycle_resource))
+                    elif cycle_building.building_type == TYPE_LINH_FOREST:
+                        valid_resource = FOREST_MATERIAL_OPTIONS.has(str(cycle_resource)) \
+                            and ResourceRegistry.DEFINITIONS.has(str(cycle_resource))
                     if expected_resource == &"" or not valid_resource:
                         errors.append("%s has invalid resource-job output identity." % disciple.display_name)
                 elif profession == PROF_HERBALISM:
