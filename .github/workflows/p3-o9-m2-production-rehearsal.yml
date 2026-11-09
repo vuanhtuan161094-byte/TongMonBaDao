@@ -88,12 +88,6 @@ jobs:
           echo "6a4213b9129ffb3f438c21cbb5326672ddf8915323836bf80cb33b8e5fabfdca  $PACK" | sha256sum --check --strict
           unzip -q "$PACK" -d .
 
-      - name: Diagnose BuildingSystem parser directly
-        shell: bash
-        run: |
-          set -euo pipefail
-          bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://src/simulation/building/building_system.gd
-
       - name: Import project scripts and resources
         run: bash tools/qa/run_godot_strict.sh --headless --path godot --import
 
