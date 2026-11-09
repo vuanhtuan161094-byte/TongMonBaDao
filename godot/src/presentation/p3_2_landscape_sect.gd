@@ -10232,7 +10232,7 @@ func _attributes_tab_text(disciple: DiscipleState) -> String:
         "Pháp %.1f" % float(disciple.cultivation_path_xp.get("spell", 0.0))
     ]
     return (
-        "Tu Vi: %s · %s\nLuyện Thể: Chưa có dữ liệu\nChiến lực: %.1f · Đột phá: %.1f%%\n"
+        "Tu Vi: %s · %s\nLuyện Thể: Chưa có dữ liệu\nChiến lực hiệu dụng: %.1f · Đột phá: %.1f%%\n"
         + "HP %.0f/%.0f · Thể lực %.0f/100 · Ví %d\n\n"
         + "Tư Chất %s · Căn Cốt %s · Cơ Duyên %s\nThông Tuệ %s · Mị Lực %s · Tiềm Lực %s\n\n"
         + "Tích lũy đường tu: %s\nHành động hiện tại: %s\n%s"
