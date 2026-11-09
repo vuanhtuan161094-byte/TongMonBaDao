@@ -231,7 +231,8 @@ func _run() -> void:
             float(before_timer.get("profession_xp_gain",-2.0)))
     )
     var restored_ore := warehouse.quantity(state, &"thanh_thiet")
-    var restorable := restored.v2_birth_profile == v2_birth
+    var restorable := (
+        restored.v2_birth_profile == v2_birth
         and restored.work_cycle_state.is_empty()
         and timer_equal
         and restored.direct_command == before_command
@@ -239,6 +240,7 @@ func _run() -> void:
         and str(restored.v2_realm_progress["training_policy"]) == before_policy
         and _close(float(restored.v2_realm_progress["cultivation"]["xp"]), before_xp)
         and restored_ore == before_ore
+    )
     if not restorable:
         print("GP02A_RESTORE_FACTS birth=",restored.v2_birth_profile == v2_birth,
             " cycle_empty=",restored.work_cycle_state.is_empty(),
