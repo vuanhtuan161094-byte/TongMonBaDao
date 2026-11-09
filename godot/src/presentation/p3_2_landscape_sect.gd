@@ -9611,7 +9611,9 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "Tá»
         gate_button.add_theme_font_size_override("font_size", 12)
         gate_button.add_theme_stylebox_override("normal", _style(CINNABAR, PAPER_LIGHT, 2, 8))
         var can_buy_missing := false
-        if state.sect.economy_a_enabled and bool(gate_preview.get("ok",false)):
+        # A material purchase is meaningful only at an eligible major gate:
+        # never offer paid shopping when level/EXP/content/worker gates fail.
+        if state.sect.economy_a_enabled and str(gate_preview.get("reason","")) == "body_gate_material_missing":
             for component in gate_preview.get("requirements",[]):
                 if component is Dictionary and int(component.get("available",0)) < int(component.get("need",0)) \
                         and not bool(component.get("locked",false)):
