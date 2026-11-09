@@ -9476,17 +9476,18 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "Tá»
     details_scroll.position = Vector2(18, 118)
     details_scroll.size = Vector2(content_width - 36.0, 220)
     content_panel.add_child(details_scroll)
-    var content := Label.new()
-    content.name = "DiscipleTabContentText"
-    content.text = _disciple_tab_text(tab_name, disciple)
-    content.custom_minimum_size = Vector2(content_width - 56.0, 0)
-    content.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-    content.add_theme_font_size_override("font_size", 15)
-    content.add_theme_color_override("font_color", INK)
     if tab_name == "Trang bá»‹":
-        content.visible = false
+        # Equipment renders its own controls; do not allocate an orphan Label.
+        # The former unparented DiscipleTabContentText leaked its font/TextLine RIDs.
         _build_disciple_equipment_manager(details_scroll,disciple)
     else:
+        var content := Label.new()
+        content.name = "DiscipleTabContentText"
+        content.text = _disciple_tab_text(tab_name, disciple)
+        content.custom_minimum_size = Vector2(content_width - 56.0, 0)
+        content.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+        content.add_theme_font_size_override("font_size", 15)
+        content.add_theme_color_override("font_color", INK)
         details_scroll.add_child(content)
 
     # One presentation form for every disciple. Only authoritative values vary.
