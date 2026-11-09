@@ -43,10 +43,11 @@ func _run() -> void:
         "original B3 saturation authority enabled")
     var old_item := MedicineCatalogueV2.item_id("tuvi", 2, 1)
     var current_item := MedicineCatalogueV2.item_id("tuvi", 1, 1)
-    _check(MedicineCatalogueV2.VERSION == 3
+    _check(MedicineCatalogueV2.VERSION == 4
         and MedicineCatalogueV2.potency_for_version(old_item, 1) == 16500
         and MedicineCatalogueV2.potency_for_version(old_item, 2) == 12700
-        and MedicineCatalogueV2.potency_for_version(old_item, 3) == 1234,
+        and MedicineCatalogueV2.potency_for_version(old_item, 3) == 1234
+        and MedicineCatalogueV2.potency_for_version(old_item, 4) == 1234,
         "old and new realm-2 potencies are separate versions")
     var old_realm := int(d.v2_realm_progress["cultivation"]["realm"])
     _check(old_realm == 1, "new real recruit starts at cultivation realm 1")

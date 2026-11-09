@@ -37,7 +37,9 @@ static func best_available(state: SimulationState, disciple: DiscipleState, fami
     var missing := maxf(disciple.max_hp - disciple.hp, 0.0)
     if family == MedicineCatalogueV2.FAMILY_HEAL and missing <= 0.0:
         return &""
-    for realm in range(1, max_realm + 1):
+    # B3.consume only accepts the CURRENT track realm for all graded
+    # HEAL/TUVI pills. An older stronger pill cannot shadow a usable one.
+    for realm in range(max_realm, max_realm + 1):
         for quality in range(1, MedicineCatalogueV2.MAX_QUALITY + 1):
             var id := MedicineCatalogueV2.item_id(family, realm, quality)
             if warehouse.available_quantity(state, id) <= 0:

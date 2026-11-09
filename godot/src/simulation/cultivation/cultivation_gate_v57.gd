@@ -38,7 +38,7 @@ static func preview(state: SimulationState, disciple_id: StringName, pill_id: St
         if not WarehouseSystem.new().can_consume(state,selected,1):
             return {"ok":false,"reason":"breakthrough_pill_unavailable"}
         bonus = int(med.get("potency",0))
-        if not [15,25,35,45].has(bonus):
+        if not MedicineCatalogueV2.BREAKTHROUGH_BONUS_PP.has(bonus):
             return {"ok":false,"reason":"breakthrough_pill_bonus_invalid"}
     else:
         selected = &""

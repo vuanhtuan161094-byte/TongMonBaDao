@@ -27,8 +27,12 @@ func _run() -> void:
         "V2 receipt potency remains unchanged")
     _check(MedicineCatalogueV2.potency_for_version(MedicineCatalogueV2.item_id("tuvi",2,1),1) == 16500,
         "V1 receipt potency remains unchanged")
+    _check(MedicineCatalogueV2.VERSION == 4 and MedicineCatalogueV2.PREVIOUS_VERSION == 2,
+        "B1 catalogue v4 while v2 last receipts remain verifiable")
     _check(MedicineCatalogueV2.potency_for_version(MedicineCatalogueV2.item_id("break",1,4),3) == 45,
-        "Q4 breakthrough bonus 45 percentage points")
+        "historical V3 Q4 breakthrough bonus remains 45pp")
+    _check(MedicineCatalogueV2.potency_for_version(MedicineCatalogueV2.item_id("break",1,4),4) == 8,
+        "current B1 Q4 breakthrough bonus is only 8pp")
     _check(MedicineCatalogueV2.item_id("break",30,1) == &"",
         "no Breakthrough Pill for terminal realm")
     _check(int(MedicineCatalogueV2.definition(MedicineCatalogueV2.item_id("heal",1,1))["satiety_cost"]) == 0,

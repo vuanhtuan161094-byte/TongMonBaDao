@@ -168,6 +168,37 @@ func run() -> void:
             "no replayed B3 debit after reload")
         check(reloaded.disciples[disciple_id].b3_pill_state["sequence"] == d.b3_pill_state["sequence"],
             "B3 idempotent sequence preserved")
+    # Post-save, isolated in-memory probe. An older-rank Q4 medicine is
+    # stronger than current-rank Q1 but must not shadow a B3-usable dose.
+    if reloaded != null:
+        var probe: DiscipleState = reloaded.disciples[disciple_id]
+        probe.v2_realm_progress["cultivation"]["realm"] = 2
+        probe.v2_realm_progress["cultivation"]["floor"] = 1
+        probe.v2_realm_progress["cultivation"]["xp"] = 0.0
+        var old_tuvi := MedicineCatalogueV2.item_id("tuvi", 1, 4)
+        var current_tuvi := MedicineCatalogueV2.item_id("tuvi", 2, 1)
+        check(warehouse.add(reloaded, old_tuvi, 1)
+            and warehouse.add(reloaded, current_tuvi, 1),
+            "fixture owns stronger old-rank and weaker eligible Tu Vi")
+        check(MedicineAllocationV2.best_available(reloaded, probe,
+            MedicineCatalogueV2.FAMILY_TUVI) == current_tuvi,
+            "Tu Vi allocation only selects the B3-usable exact realm")
+        var old_stock := warehouse.quantity(reloaded, old_tuvi)
+        var refused := B3PillSatietyV1.consume(reloaded, probe, old_tuvi,
+            B3PillSatietyV1.next_sequence(probe))
+        check(not bool(refused.get("ok",false))
+            and str(refused.get("reason","")) == "medicine_wrong_realm"
+            and warehouse.quantity(reloaded,old_tuvi) == old_stock,
+            "wrong-realm direct use refuses before stock debit")
+        var old_heal := MedicineCatalogueV2.item_id("heal", 1, 4)
+        var current_heal := MedicineCatalogueV2.item_id("heal", 2, 1)
+        probe.hp = maxf(1.0,probe.max_hp-125.0)
+        check(warehouse.add(reloaded,old_heal,1)
+            and warehouse.add(reloaded,current_heal,1),
+            "fixture owns stronger old-rank and eligible HEAL")
+        check(MedicineAllocationV2.best_available(reloaded,probe,
+            MedicineCatalogueV2.FAMILY_HEAL) == current_heal,
+            "HEAL allocation also honors B3 exact-realm rule")
     var old := SectState.from_dict({})
     check(old != null and old.sx01_pill_policy.is_empty(),
         "old save stays opted out")

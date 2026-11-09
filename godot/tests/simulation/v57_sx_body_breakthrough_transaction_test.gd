@@ -58,14 +58,17 @@ func _run() -> void:
     d.v2_realm_progress["cultivation"]["gate_failures"] = 0
     d.current_action = &"EVALUATE"
     var preview := CultivationGateV57.preview(state,id,break_item)
-    _check(bool(preview.get("ok",false)) and is_equal_approx(float(preview.get("chance",0)),0.70),
-        "25% base plus Q4 45pp is exactly 70%")
+    _check(bool(preview.get("ok",false)) and is_equal_approx(float(preview.get("chance",0)),0.33),
+        "25% base plus B1 Q4 8pp is exactly 33%")
     var rng_before := state.rng_state
     var gate := CultivationGateV57.attempt(state,id,"sx57:QA:first",break_item)
     _check(bool(gate.get("ok",false)) and warehouse.quantity(state,break_item) == 0,
         "breakthrough Q4 consumed exactly once regardless of success")
     _check(state.rng_state == rng_before,
         "manual gate does not corrupt live scheduler RNG stream")
+    var gate_history: Array = d.v2_realm_progress["cultivation"].get("breakthrough_history", [])
+    _check(not gate_history.is_empty() and int(gate_history[-1].get("pill_bonus_pp",0)) == 8,
+        "new gate history pins actual B1 bonus with no retroactive effect")
     _check(not bool(CultivationGateV57.attempt(state,id,"sx57:QA:first",break_item).get("ok",false)),
         "repeated gate event denied without another item debit")
     if bool(gate.get("success",false)):

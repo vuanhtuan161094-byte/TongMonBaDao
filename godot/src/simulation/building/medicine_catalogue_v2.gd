@@ -6,10 +6,12 @@ extends RefCounted
 # A definition is NOT proof of craftability: only authored, sourced recipes run.
 # BAL-04A owner-approved 2026-11-05: Tu Vi potency now follows 0.1% of
 # the canonical current realm XP total; healing and quality factors are unchanged.
-# Version only marks new medicine receipts: old v1 receipts stay verifiable.
-const VERSION := 3
+# Medicine V4 changes ONLY new breakthrough chance. Historical V1/V2/V3
+# receipts and already committed gate-history bonus labels are immutable.
+const VERSION := 4
 const PREVIOUS_VERSION := 2
 const LEGACY_VERSION := 1
+const HISTORICAL_V3_VERSION := 3
 const TUVI_REALM_XP_FRACTION := 0.001
 # Q1 B3: approved realm-specific fixed XP. Q2-Q4 retain the approved
 # quality multipliers, including on Body XP. Historical V1/V2 receipts use
@@ -17,7 +19,8 @@ const TUVI_REALM_XP_FRACTION := 0.001
 const V56_B3_Q1_XP := [1166,1234,1334,1435,1516,1593,1729,1865,1974,2075,
     2184,2311,2464,2609,2761,2935,3112,3283,3470,3668,
     3879,4105,4339,4592,4864,5150,5450,5771,6108,6463]
-const BREAKTHROUGH_BONUS_PP := [15,25,35,45]
+const BREAKTHROUGH_BONUS_PP := [5,6,7,8]
+const HISTORICAL_V3_BREAKTHROUGH_BONUS_PP := [15,25,35,45]
 const MAX_REALM := 30
 const MAX_QUALITY := 4
 const FAMILY_HEAL := "heal"
@@ -73,15 +76,17 @@ static func parse_recipe(id: StringName) -> Dictionary:
 # B3 receipt saved before BAL-04A. Never recompute an old receipt with V2 math.
 static func potency_for_version(id: StringName, medicine_version: int) -> int:
     var data := parse_item(id)
-    if data.is_empty() or not [LEGACY_VERSION,PREVIOUS_VERSION,VERSION].has(medicine_version):
+    if data.is_empty() or not [LEGACY_VERSION,PREVIOUS_VERSION,HISTORICAL_V3_VERSION,VERSION].has(medicine_version):
         return 0
     var realm := int(data["realm"])
     var family := str(data["family"])
     var quality := int(data["quality"])
     var factor := float(QUALITY_FACTORS[quality-1])
     if family == FAMILY_BREAK:
+        if medicine_version == HISTORICAL_V3_VERSION:
+            return int(HISTORICAL_V3_BREAKTHROUGH_BONUS_PP[quality-1])
         return int(BREAKTHROUGH_BONUS_PP[quality-1]) if medicine_version == VERSION else 0
-    if medicine_version < VERSION and family == FAMILY_BODY:
+    if medicine_version < HISTORICAL_V3_VERSION and family == FAMILY_BODY:
         return 0
     if family == FAMILY_HEAL or medicine_version == LEGACY_VERSION:
         var old_base := 55.0 if family == FAMILY_HEAL else 10000.0

@@ -23,6 +23,14 @@ func run() -> void:
     expect(MedicineCatalogueV2.authored_recipes().size() == 8,
         "only genuinely sourced tier-1/2 recipes authored")
     expect(MedicineCatalogueV2.validate_catalogue().is_empty(), "catalogue internally valid")
+    expect(MedicineCatalogueV2.BREAKTHROUGH_BONUS_PP == [5,6,7,8],
+        "owner-approved B1 breakthrough +5/+6/+7/+8 percentage points")
+    for q in range(1,5):
+        var break_item := MedicineCatalogueV2.item_id("break", 1, q)
+        expect(MedicineCatalogueV2.potency_for_version(break_item,4) == 4+q,
+            "new B1 potency for each breakthrough grade")
+        expect(MedicineCatalogueV2.potency_for_version(break_item,3) == q*10+5,
+            "pre-B1 V3 breakthrough history retains each original bonus")
     expect(recipes.validate_definitions().is_empty(), "recipe inputs and warehouse outputs valid")
     expect(resource.validate_definitions().is_empty(), "canonical resource definitions valid")
     for item_id in ids:
