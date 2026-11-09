@@ -57,10 +57,24 @@ func _prepare_ninth_real_bed() -> bool:
         if not _check(forest != null, "E3 missing real Forest to earn Residence wood."):
             return false
         var workers := builder.active_worker_ids(state, forest)
-        if not _check(not workers.is_empty(), "E3 Forest needs an assigned worker to earn wood."):
+        var workforce := WorkforceSystem.new()
+        if workers.is_empty():
+            # The fresh map has no assigned forester. Staff one genuine
+            # founder through the same group/worksite APIs as the player.
+            var ids: Array = state.disciples.keys()
+            ids.sort()
+            for raw_id in ids:
+                var id := StringName(raw_id)
+                if not workforce.assign_group(state, id, &"forestry_crew"):
+                    continue
+                if not workforce.assign_worksite(state, id, forest.id):
+                    continue
+                workers = builder.active_worker_ids(state, forest)
+                if not workers.is_empty():
+                    break
+        if not _check(not workers.is_empty(), "E3 failed to staff the real Forest."):
             return false
         var worker_id: StringName = workers[0]
-        var workforce := WorkforceSystem.new()
         for _minute in range(120):
             if wh.available_quantity(state, wood_id) >= need_wood:
                 break
