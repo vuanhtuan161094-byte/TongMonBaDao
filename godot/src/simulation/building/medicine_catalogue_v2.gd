@@ -172,12 +172,12 @@ static func recipe_definition(id: StringName) -> Dictionary:
             FAMILY_HEAL: inputs = {"thanh_linh_thao":3}
             FAMILY_TUVI: inputs = {"thanh_linh_thao":2,"linh_coc":1}
             FAMILY_BODY: inputs = {"linh_coc":3,"thanh_thiet":2,"linh_moc":1}
-            # V5.6-G preserved Xich Dong / Thanh Truc input IDs.
-            FAMILY_BREAK: inputs = {"linh_coc":2,"thanh_linh_thao":1,
-                "ore_r01_c2":2,"forest_r01_wood2":1,"tinh_lang_bi":1}
+            # Retain runnable legacy pilot until UI can select source-backed
+            # Xich Dong + Thanh Truc outputs (SX-07B, no GUI edits allowed).
+            FAMILY_BREAK: inputs = {"thanh_linh_thao":3,"tinh_lang_bi":1,"linh_moc":1}
     elif realm == 2:
         match family:
-            FAMILY_HEAL: inputs = {"tu_van_thao":3,"forest_r02_wood":1}
+            FAMILY_HEAL: inputs = {"tu_van_thao":2,"thanh_linh_thao":2}
             FAMILY_TUVI: inputs = {"tu_van_thao":2,"linh_coc":2}
             FAMILY_BODY: inputs = {"tu_van_thao":2,"huyen_thiet":2,"linh_moc":1}
             FAMILY_BREAK: inputs = {"tu_van_thao":3,"tinh_lang_bi":2,"linh_moc":1}
@@ -198,8 +198,7 @@ static func recipe_definition(id: StringName) -> Dictionary:
         # worksite adds mineral/wood to Heal/TuVi. Higher ranks and Break
         # still use documented early pilot data, not fabricated G inputs.
         "sx07_bom_status":"V56_G_MATCH_FOR_EXPLICIT_GRADE" if (
-            (realm == 1 and family in [FAMILY_HEAL,FAMILY_TUVI,FAMILY_BODY,FAMILY_BREAK])
-            or (realm == 2 and family == FAMILY_HEAL)
+            realm == 1 and family in [FAMILY_HEAL,FAMILY_TUVI,FAMILY_BODY]
         ) else "EARLY_PILOT_NOT_YET_G_APPROVED"
     }
 
