@@ -2,6 +2,11 @@ name: P3 O9 M2 Multi Producer Rehearsal
 
 on:
   workflow_dispatch:
+  pull_request:
+    paths:
+      - 'godot/src/simulation/building/building_system.gd'
+      - 'godot/tests/simulation/v57_worksite_scale_480_test.gd'
+      - '.github/workflows/p3-o9-m2-production-rehearsal.yml'
   push:
     paths:
       - 'godot/tests/presentation/p3_o9_m2_production_rehearsal_test.gd'
