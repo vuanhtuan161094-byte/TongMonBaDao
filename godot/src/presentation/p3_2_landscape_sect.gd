@@ -4901,7 +4901,8 @@ func _add_resource_timer_cards(building: BuildingState) -> void:
         stock_line.add_theme_color_override("font_color", JADE_DARK)
         column.add_child(stock_line)
         var eta := Label.new()
-        eta.text = ("Chờ nhập Kho · %s" if remaining == 0 else "Còn %d phút mô phỏng · %s" % remaining) + (" · +%.1f EXP nghề khi nhập kho" % maxf(float(job.get("profession_xp_gain", 0.0)), 0.0))
+        var time_label := "Chờ nhập Kho" if remaining == 0 else "Còn %d phút mô phỏng" % remaining
+        eta.text = time_label + (" · +%.1f EXP nghề khi nhập kho" % maxf(float(job.get("profession_xp_gain", 0.0)), 0.0))
         eta.tooltip_text = "EXP nghề thực tế đã chốt trong mẻ này; chưa cộng cho đến khi nhập kho thành công. Người phụ trách: %s" % worker_name
         eta.add_theme_font_size_override("font_size", 11)
         eta.add_theme_color_override("font_color", INK)
