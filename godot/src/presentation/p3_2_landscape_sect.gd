@@ -9581,15 +9581,17 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "T�
                 details_scroll.size = Vector2(content_width - text_x - 18.0,220)
                 content.custom_minimum_size = Vector2(details_scroll.size.x - 22.0,0)
                 content.add_theme_font_size_override("font_size",13 if is_overview_tab else 14)
-    # Same action positions on all profiles. An unsupported action is disabled,
-    # never secretly converted to a different cultivation system.
+    # One shared profile form; never advertise legacy P2 mutation actions
+    # against immutable authentic V2 Bloodline/Physique birth identity.
     match tab_name:
         "Huyết Mạch":
-            _add_profile_action(content_panel, "Thức tỉnh", Vector2(18, 344), "bloodline_awaken", not authentic_v2)
-            _add_profile_action(content_panel, "Luyện huyết", Vector2(140, 344), "bloodline_refine", not authentic_v2)
+            if not authentic_v2:
+                _add_profile_action(content_panel, "Thức tỉnh", Vector2(18, 344), "bloodline_awaken", true)
+                _add_profile_action(content_panel, "Luyện huyết", Vector2(140, 344), "bloodline_refine", true)
         "Thể Chất":
-            _add_profile_action(content_panel, "Tôi thể", Vector2(18, 344), "physique_temper", not authentic_v2)
-            _add_profile_action(content_panel, "Cải thể", Vector2(140, 344), "physique_transform", not authentic_v2)
+            if not authentic_v2:
+                _add_profile_action(content_panel, "Tôi thể", Vector2(18, 344), "physique_temper", true)
+                _add_profile_action(content_panel, "Cải thể", Vector2(140, 344), "physique_transform", true)
         _:
             _add_profile_action(content_panel, "Chuyên tu", Vector2(18, 344), "v2_cultivate", track_ready)
             _add_profile_action(content_panel, "Rèn thân", Vector2(140, 344), "v2_body_train", track_ready)
