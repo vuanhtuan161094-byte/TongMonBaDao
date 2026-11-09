@@ -4025,6 +4025,9 @@ func _rebuild_building_management_controls() -> void:
         building_management_container.remove_child(child)
         child.queue_free()
 
+    if selected_building in [SectMapPresentation.DEST_MINE,SectMapPresentation.DEST_LINH_FOREST,
+            SectMapPresentation.DEST_SPIRIT_FIELD,SectMapPresentation.DEST_ALCHEMY_HALL]:
+        _build_v57_paid_producer_control()
     match selected_building:
         SectMapPresentation.DEST_MAIN_HALL:
             _build_main_hall_policy_controls()
@@ -4063,6 +4066,49 @@ func _rebuild_building_management_controls() -> void:
             _build_direct_order_management(WorkforceSystem.COMMAND_RETURN_SECT, "", "Triệu hồi", true)
         _:
             pass
+
+func _build_v57_paid_producer_control() -> void:
+    var kind: StringName = &""
+    match selected_building:
+        SectMapPresentation.DEST_MINE: kind = BuildingSystem.TYPE_MINE
+        SectMapPresentation.DEST_LINH_FOREST: kind = BuildingSystem.TYPE_LINH_FOREST
+        SectMapPresentation.DEST_SPIRIT_FIELD: kind = BuildingSystem.TYPE_SPIRIT_FIELD
+        SectMapPresentation.DEST_ALCHEMY_HALL: kind = BuildingSystem.TYPE_ALCHEMY_HALL
+    if kind == &"":
+        return
+    var system := BuildingSystem.new()
+    var check := system.preview_production_annex(state,kind)
+    var button := Button.new()
+    button.name = "V57BuildProducer_"+str(kind)
+    var existing := 0
+    for candidate in state.buildings.values():
+        if candidate is BuildingState and candidate.building_type == kind:
+            existing += 1
+    button.text = "+ Xây thêm "+_building_name(selected_building)+" (%d đang có)" % existing
+    button.custom_minimum_size = Vector2(384,36)
+    button.disabled = not bool(check.get("ok",false))
+    var cost: Dictionary = check.get("cost",{})
+    button.tooltip_text = (
+        "Trừ thật: %d Linh Mộc + %d Thanh Thiết + %d Linh Thạch. Công trình tồn tại qua Save/Load." % [
+            int(cost.get("linh_moc",0)),int(cost.get("thanh_thiet",0)),int(cost.get("spirit_stones",0))
+        ]
+        if bool(check.get("ok",false)) else "Chưa xây được: "+str(check.get("reason",""))
+    )
+    button.pressed.connect(Callable(self,"_v57_build_producer_from_ui").bind(kind))
+    building_management_container.add_child(button)
+
+func _v57_build_producer_from_ui(kind: StringName) -> void:
+    var request_id := "ui:v57:annex:%s:%d:%d" % [
+        str(kind),state.tick,state.building_event_count+1
+    ]
+    var result := BuildingSystem.new().build_paid_production_annex(state,kind,request_id)
+    if bool(result.get("ok",false)):
+        building_management_feedback = "Đã xây công trình %s; vật liệu và Linh Thạch đã trừ thật." % str(result.get("building_id",""))
+        _autosave_runtime()
+        _refresh_all()
+    else:
+        building_management_feedback = "Không xây được: "+str(result.get("reason",""))
+    _refresh_building_operation_content()
 
 func _build_main_hall_policy_controls() -> void:
     _add_management_section_label("ĐẠI ĐIỆN · QUẢN TRỊ")
@@ -5868,7 +5914,9 @@ func _main_hall_operation_text() -> String:
     ]
 
 func _build_alchemy_management() -> void:
-    var hall := BuildingSystem.new().primary_building(state, BuildingSystem.TYPE_ALCHEMY_HALL)
+    var hall := _selected_operation_building()
+    if hall == null or hall.building_type != BuildingSystem.TYPE_ALCHEMY_HALL:
+        hall = BuildingSystem.new().primary_building(state,BuildingSystem.TYPE_ALCHEMY_HALL)
     if hall == null:
         _add_management_section_label("LUYỆN ĐAN ĐIỆN CHƯA SẴN SÀNG")
         return
@@ -5952,6 +6000,21 @@ func _build_alchemy_management() -> void:
     route_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
     route_hint.add_theme_font_size_override("font_size", 12)
     building_management_container.add_child(route_hint)
+    if not MedicineCatalogueV2.parse_recipe(selected_recipe).is_empty():
+        _add_management_section_label("PHẨM ĐAN · MẺ MỚI 36 VIÊN / 3 PHÚT")
+        var current_grade := int(hall.production_state.get("v57_selected_quality",0))
+        for grade in range(1,5):
+            var pick := Button.new()
+            pick.name = "V57AlchemyQuality_Q%d" % grade
+            pick.text = ("✓ " if current_grade == grade else "")+"Q%d" % grade
+            pick.custom_minimum_size = Vector2(92,30)
+            pick.disabled = hall.level < int(BuildingSystem.V57_QUALITY_HALL_LEVEL[grade-1])
+            pick.tooltip_text = "Phẩm Q%d cần Điện Lv%d, nghề Lv%d và nguyên liệu xúc tác thật trong Kho." % [
+                grade,int(BuildingSystem.V57_QUALITY_HALL_LEVEL[grade-1]),
+                int(BuildingSystem.V57_QUALITY_PROF_LEVEL[grade-1])
+            ]
+            pick.pressed.connect(Callable(self,"_v57_alchemy_quality_from_ui").bind(hall.id,grade))
+            building_management_container.add_child(pick)
     for pill_key in ["target_hoi_xuan_dan", "target_tu_khi_dan"]:
         for delta in [-6, 6]:
             var button := Button.new()
@@ -5960,6 +6023,16 @@ func _build_alchemy_management() -> void:
             button.custom_minimum_size = Vector2(164, 30)
             button.pressed.connect(Callable(self, "_sx01_adjust_target_from_ui").bind(pill_key, delta))
             building_management_container.add_child(button)
+
+func _v57_alchemy_quality_from_ui(hall_id: StringName, grade: int) -> void:
+    var result := BuildingSystem.new().set_alchemy_quality(state,hall_id,grade)
+    building_management_feedback = (
+        "Đã chọn Q%d cho mẻ mới; mẻ đang chạy giữ nguyên sản phẩm." % grade
+        if bool(result.get("ok",false)) else "Không chọn được phẩm: "+str(result.get("reason",""))
+    )
+    if bool(result.get("ok",false)):
+        _autosave_runtime()
+    _refresh_building_operation_content()
 
 func _sx01_enable_from_ui() -> void:
     SX01PillPolicy.install_new_game(state)
@@ -9503,9 +9576,22 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "T�
         gate_button.size = Vector2(175, 40)
         gate_button.add_theme_font_size_override("font_size", 12)
         gate_button.add_theme_stylebox_override("normal", _style(CINNABAR, PAPER_LIGHT, 2, 8))
-        gate_button.disabled = not bool(gate_preview.get("can_commit",false))
-        gate_button.tooltip_text = _body_gate_reason(str(gate_preview.get("reason",""))) if track_ready else "Chưa có tiến trình Luyện Thể để đột phá."
-        gate_button.pressed.connect(Callable(self, "_disciple_tab_action").bind("v2_body_gate"))
+        var can_buy_missing := false
+        if state.sect.economy_a_enabled and bool(gate_preview.get("ok",false)):
+            for component in gate_preview.get("requirements",[]):
+                if component is Dictionary and int(component.get("available",0)) < int(component.get("need",0)) \
+                        and not bool(component.get("locked",false)):
+                    can_buy_missing = true
+                    break
+        var gate_can_commit := bool(gate_preview.get("can_commit",false))
+        if not gate_can_commit and can_buy_missing:
+            gate_button.text = "Mua vật liệu thiếu"
+        gate_button.disabled = not gate_can_commit and not can_buy_missing
+        gate_button.tooltip_text = "Mua nguyên liệu còn thiếu bằng Linh Thạch tại Phường Thị." if can_buy_missing and not gate_can_commit \
+            else (_body_gate_reason(str(gate_preview.get("reason",""))) if track_ready else "Chưa có tiến trình Luyện Thể.")
+        gate_button.pressed.connect(Callable(self, "_disciple_tab_action").bind(
+            "v2_body_gate" if gate_can_commit else "v57_body_buy_missing"
+        ))
         content_panel.add_child(gate_button)
     var locate_button := Button.new()
     locate_button.name = "LocateDiscipleOnMap"
@@ -9765,6 +9851,10 @@ func _disciple_tab_action(action: String) -> void:
         return
     var disciple: DiscipleState = state.disciples[selected_id]
     var snapshot := _disciple_snapshot(disciple)
+    if action == "v57_body_buy_missing":
+        _v57_buy_first_body_material(selected_id)
+        _open_disciple_deep_screen(selected_id,disciple_profile_active_tab_name,true)
+        return
     if action == "v2_body_gate":
         var gate := DiscipleBodyGateTransactionV2.new()
         var checked := gate.preview_gate(state,selected_id)
@@ -9864,6 +9954,52 @@ func _player_reason_text(reason: String) -> String:
 
 
 # F4 pure V2 read model: one selected disciple, no per-roster scans.
+func _v57_buy_first_body_material(disciple_id: StringName) -> void:
+    var preview := DiscipleBodyGateTransactionV2.new().preview_gate(state,disciple_id)
+    if not bool(preview.get("ok",false)) or not state.sect.economy_a_enabled:
+        tab_status_text = "Phường Thị hoặc hồ sơ Luyện Thể chưa sẵn sàng."
+        return
+    var economy := EconomySystem.new()
+    economy.sync_market_day(state)
+    for component in preview.get("requirements",[]):
+        if not (component is Dictionary):
+            continue
+        var available := int(component.get("available",0))
+        var shortage := maxi(0,int(component.get("need",0))-available)
+        if shortage <= 0:
+            continue
+        if bool(component.get("locked",false)):
+            tab_status_text = "Vật liệu đang khóa; cần mở khóa tại Kho."
+            return
+        var material_id := StringName(component.get("item_id",""))
+        var unit_price := economy.market_purchase_price(state,material_id)
+        if unit_price <= 0:
+            continue
+        var merchant_stock := int(state.sect.economy_a_market_stock.get(str(material_id),0))
+        var quantity := mini(shortage,mini(merchant_stock,mini(
+            int(state.sect.economy_a_policy.get("market_max_per_buy",5)),
+            economy.market_buy_remaining(state)
+        )))
+        quantity = mini(quantity,int(state.sect.spirit_stones/maxi(unit_price,1)))
+        if quantity <= 0:
+            continue
+        var request_id := "ui:v57:body:%s:%d:%s:%d" % [
+            str(disciple_id),int(preview.get("source_realm",0)),
+            str(material_id),state.sect.economy_a_event_count+1
+        ]
+        var result := economy.buy_from_npc_v1(state,material_id,quantity,request_id)
+        if bool(result.get("ok",false)):
+            tab_status_text = "Đã mua %s ×%d, trả %d LT." % [
+                ResourceRegistry.new().display_name(material_id),quantity,quantity*unit_price
+            ]
+            var saved := runtime_session.save() if runtime_ready and runtime_session != null else {"ok":false}
+            if not bool(saved.get("ok",false)):
+                tab_status_text += " Lưu chưa xác nhận."
+        else:
+            tab_status_text = "Không mua được: "+str(result.get("reason",""))
+        return
+    tab_status_text = "Chưa đủ Linh Thạch, hạn mức hoặc hàng NPC để mua vật liệu thiếu."
+
 func _body_gate_preview_text(disciple_id: StringName) -> String:
     var preview := DiscipleBodyGateTransactionV2.new().preview_gate(state,disciple_id)
     if not bool(preview.get("ok",false)):
@@ -9891,7 +10027,7 @@ func _body_gate_preview_text(disciple_id: StringName) -> String:
     if int(preview["source_realm"]) <= 6:
         lines.append("Nguồn: Linh Điền / săn Thanh Trúc Lâm, Bạch Thạch Khê, Hắc Phong Cốc.")
     else:
-        lines.append("Nguồn cao giới chưa có — không thể đột phá bằng vật phẩm giả.")
+        lines.append("Nguồn: mua bằng Linh Thạch ở Phường Thị (có hạn mức/ngày); không cấp vật phẩm miễn phí.")
     return "\n".join(lines)
 
 func _body_gate_reason(reason: String) -> String:
