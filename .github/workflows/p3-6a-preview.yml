@@ -102,3 +102,11 @@ jobs:
           path: godot/reports/p3_6a_preview.png
           if-no-files-found: error
           retention-days: 14
+
+      - name: Strict P3.6A renderer teardown audit (verbose leaks)
+        shell: bash
+        run: |
+          # The original FAST gate only checked GDScript logic; a Godot
+          # process can exit 0 while reporting unfreed RIDs at shutdown.
+          # Keep this step blocking, with no renderer warning exemptions.
+          bash tools/qa/run_godot_strict.sh --verbose --headless --path godot -s res://tests/presentation/p3_6a_playable_slice_test.gd
