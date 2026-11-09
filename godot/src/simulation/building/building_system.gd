@@ -942,7 +942,57 @@ func alchemy_jobs(state: SimulationState, hall: BuildingState = null) -> Array:
         return []
     return Array(_ensure_alchemy_state(target).get("jobs", [])).duplicate(true)
 
+# V5.7 P0: a read-only snapshot of in-flight job ownership. Rebuild after
+# any authoritative building mutation, on a new minute, or on a new state.
+# The cache is NOT serialized and never settles resources or wages.
+var _timed_job_cache_state_id: int = -1
+var _timed_job_cache_tick: int = -1
+var _timed_job_cache_building_revision: int = -1
+var _timed_job_cache_building_count: int = -1
+var _timed_alchemy_by_worker: Dictionary = {}
+var _timed_resource_by_worker: Dictionary = {}
+
+func _refresh_timed_job_index(state: SimulationState) -> void:
+    if (
+        _timed_job_cache_state_id == state.get_instance_id()
+        and _timed_job_cache_tick == state.tick
+        and _timed_job_cache_building_revision == state.building_event_count
+        and _timed_job_cache_building_count == state.buildings.size()
+    ):
+        return
+    var alchemy: Dictionary = {}
+    var resource: Dictionary = {}
+    # Keep historical building iteration order when resolving malformed
+    # duplicate job owners; do not change source transaction semantics.
+    for raw_site in state.buildings.values():
+        if not (raw_site is BuildingState):
+            continue
+        var site: BuildingState = raw_site
+        if site.building_type == TYPE_ALCHEMY_HALL:
+            for raw_job in alchemy_jobs(state, site):
+                if not (raw_job is Dictionary):
+                    continue
+                var key := str(raw_job.get("worker_id", ""))
+                if not key.is_empty() and not alchemy.has(key):
+                    alchemy[key] = raw_job.duplicate(true)
+        elif state.sect.economy_a_enabled and site.building_type in [TYPE_MINE, TYPE_LINH_FOREST]:
+            for raw_job in resource_timer_jobs(site):
+                if not (raw_job is Dictionary):
+                    continue
+                var key := str(raw_job.get("worker_id", ""))
+                if not key.is_empty() and not resource.has(key):
+                    resource[key] = raw_job.duplicate(true)
+    _timed_alchemy_by_worker = alchemy
+    _timed_resource_by_worker = resource
+    _timed_job_cache_state_id = state.get_instance_id()
+    _timed_job_cache_tick = state.tick
+    _timed_job_cache_building_revision = state.building_event_count
+    _timed_job_cache_building_count = state.buildings.size()
+
 func active_alchemy_job_for_worker(state: SimulationState, disciple_id: StringName) -> Dictionary:
+    if state.disciples.size() >= WORKSITE_INDEX_MIN_ROSTER:
+        _refresh_timed_job_index(state)
+        return _timed_alchemy_by_worker.get(str(disciple_id), {}).duplicate(true)
     for hall in _buildings_of_type(state, TYPE_ALCHEMY_HALL):
         for raw_job in alchemy_jobs(state, hall):
             if raw_job is Dictionary and str(raw_job.get("worker_id", "")) == str(disciple_id):
@@ -1270,6 +1320,9 @@ func resource_timer_jobs(building: BuildingState) -> Array:
 func active_resource_timer_for_worker(state: SimulationState, disciple_id: StringName) -> Dictionary:
     if not state.sect.economy_a_enabled:
         return {}
+    if state.disciples.size() >= WORKSITE_INDEX_MIN_ROSTER:
+        _refresh_timed_job_index(state)
+        return _timed_resource_by_worker.get(str(disciple_id), {}).duplicate(true)
     for raw_building in state.buildings.values():
         if not (raw_building is BuildingState):
             continue

@@ -92,6 +92,47 @@ func _run() -> void:
         _fail("same-minute reassignment was stale")
         return
 
+    # A real validated alchemy-job lookup must be indexed without changing
+    # output accounting. A QA-only in-flight job is not settled by this test.
+    var alchemist: DiscipleState = null
+    for actor in state.disciples.values():
+        if actor.work_group_id == &"alchemy_crew":
+            alchemist = actor
+            break
+    if alchemist == null:
+        _fail("missing alchemy worker for job-index test")
+        return
+    var hall: BuildingState = state.buildings["alchemy_hall_002"]
+    var data := hall.production_state.duplicate(true)
+    data["jobs"] = [{
+        "job_id":"v57_index_qa_001",
+        "recipe_id":"hoi_xuan_dan",
+        "worker_id":str(alchemist.id),
+        "started_tick":state.tick,
+        "finish_tick":state.tick + 3,
+        "inputs":{},
+        "output_resource_id":"hoi_xuan_dan",
+        "output_quantity":1,
+        "profession_xp_gain":10.0
+    }]
+    hall.production_state = data
+    state.building_event_count += 1
+    var job := system.active_alchemy_job_for_worker(state, alchemist.id)
+    if str(job.get("job_id", "")) != "v57_index_qa_001":
+        _fail("indexed alchemy job not found")
+        return
+    var job_copy := system.active_alchemy_job_for_worker(state, alchemist.id)
+    job_copy["output_quantity"] = 9999
+    if int(system.active_alchemy_job_for_worker(state, alchemist.id).get("output_quantity", 0)) != 1:
+        _fail("job lookup exposed mutable persisted state")
+        return
+    data["jobs"] = []
+    hall.production_state = data
+    state.building_event_count += 1
+    if not system.active_alchemy_job_for_worker(state, alchemist.id).is_empty():
+        _fail("indexed alchemy job remained after valid mutation")
+        return
+
     # Creation of a new worksite and a new minute must both rebuild safely.
     var new_site := system.create_building(BuildingSystem.TYPE_MINE, 10)
     state.buildings[str(new_site.id)] = new_site
