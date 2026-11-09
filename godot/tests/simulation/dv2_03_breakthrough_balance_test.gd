@@ -21,12 +21,12 @@ func _run() -> void:
 
     if not _assert(
         DiscipleBreakthroughBalanceV2.CULTIVATION_BASE_CHANCE_PERCENT.size()==29 and
-        DiscipleBreakthroughBalanceV2.cultivation_base_chance_percent(1)==100 and
-        DiscipleBreakthroughBalanceV2.cultivation_base_chance_percent(10)==50 and
-        DiscipleBreakthroughBalanceV2.cultivation_base_chance_percent(11)==90 and
-        DiscipleBreakthroughBalanceV2.cultivation_base_chance_percent(20)==35 and
-        DiscipleBreakthroughBalanceV2.cultivation_base_chance_percent(21)==80 and
-        DiscipleBreakthroughBalanceV2.cultivation_base_chance_percent(29)==35,
+        DiscipleBreakthroughBalanceV2.cultivation_base_chance_percent(1)==25 and
+        DiscipleBreakthroughBalanceV2.cultivation_base_chance_percent(10)==25 and
+        DiscipleBreakthroughBalanceV2.cultivation_base_chance_percent(11)==25 and
+        DiscipleBreakthroughBalanceV2.cultivation_base_chance_percent(20)==25 and
+        DiscipleBreakthroughBalanceV2.cultivation_base_chance_percent(21)==25 and
+        DiscipleBreakthroughBalanceV2.cultivation_base_chance_percent(29)==25,
         "Selected canonical Tu Vi gate chances changed unexpectedly."):
         return
 
@@ -57,7 +57,9 @@ func _run() -> void:
     var disciple: DiscipleState = state.disciples[candidate.id]
     var costs := DiscipleProgressionBalanceV2.floor_costs()
 
-    # Realm 1 has 100% base chance, so canonical wrapper is deterministic here.
+    # Realm 1 uses the current B1 base chance of 25%; the deterministic RNG
+    # may legitimately succeed or fail. Verify either branch without inventing
+    # a guaranteed breakthrough.
     disciple.v2_realm_progress["cultivation"]["realm"] = 1
     disciple.v2_realm_progress["cultivation"]["floor"] = 10
     disciple.v2_realm_progress["cultivation"]["xp"] = float(costs["1:10"])
@@ -65,14 +67,16 @@ func _run() -> void:
     var cult := DiscipleRealmProgressV2.attempt_canonical_cultivation_breakthrough(
         disciple,GameRng.new(191),true,"qa-canonical-cult-1"
     )
+    var succeeded := bool(cult.get("success",false))
     if not _assert(bool(cult.get("ok",false)) and
-        bool(cult.get("success",false)) and
-        _close(float(cult.get("chance",0.0)),1.0) and
-        int(cult.get("realm",0))==2,
-        "Canonical realm-1 Tu Vi breakthrough did not use 100% base chance."):
+        _close(float(cult.get("chance",0.0)),0.25) and
+        int(cult.get("realm",0)) == (2 if succeeded else 1) and
+        int(cult.get("same_gate_failures",-1)) == (0 if succeeded else 1) and
+        int(cult.get("floor",0)) == (1 if succeeded else 10),
+        "Canonical realm-1 Tu Vi gate did not apply the 25% base chance and real success/failure branch."):
         return
 
-    # At realm 10 the wrapper must expose exactly 50% before pity, regardless
+    # At realm 10 the wrapper must expose 25% before pity, regardless
     # of whether this deterministic QA RNG happens to pass or fail.
     disciple.v2_realm_progress["cultivation"]["realm"] = 10
     disciple.v2_realm_progress["cultivation"]["floor"] = 10
@@ -82,8 +86,8 @@ func _run() -> void:
         disciple,GameRng.new(711),true,"qa-canonical-cult-10"
     )
     if not _assert(bool(cross_tier.get("ok",false)) and
-        _close(float(cross_tier.get("chance",-1.0)),0.50),
-        "Realm 10->11 did not consume canonical 50% base chance."):
+        _close(float(cross_tier.get("chance",-1.0)),0.25),
+        "Realm 10->11 did not consume canonical 25% base chance."):
         return
 
     # Body gate is 100% deterministic once requirements are externally verified.
