@@ -3333,12 +3333,15 @@ func _style_building_management_actions(root: Node) -> void:
 
 func _building_operation_headline(operation_text: String) -> String:
     var result: Array[String] = []
+    # Body Training's paid-minute/stone audit is line six. Keep it visible
+    # rather than hiding the actual debit ledger in the tooltip.
+    var max_lines := 6 if selected_building == SectMapPresentation.DEST_BODY_TRAINING else 5
     for raw_line in operation_text.split("\n"):
         var line := str(raw_line).strip_edges()
         if line.is_empty() or line == "TÌNH HÌNH VẬN HÀNH":
             continue
         result.append(line)
-        if result.size() >= 5:
+        if result.size() >= max_lines:
             break
     return "\n".join(result) if not result.is_empty() else "Chưa có dữ liệu vận hành."
 
