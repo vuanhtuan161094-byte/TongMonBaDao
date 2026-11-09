@@ -217,6 +217,20 @@ var crop_registry := SpiritCropRegistry.new()
 var alchemy_registry := AlchemyRecipeRegistry.new()
 var profession_modifiers := ProfessionModifierSystem.new()
 
+# V5.7 P0: derived-only worksite index for large rosters. Never persisted.
+# Rebuild on the simulation minute / authoritative workforce or building revision.
+# Small rosters retain the original scan for exact fixture compatibility.
+const WORKSITE_INDEX_MIN_ROSTER := 96
+var _worksite_index_state_id: int = -1
+var _worksite_index_tick: int = -1
+var _worksite_index_workforce_revision: int = -1
+var _worksite_index_building_revision: int = -1
+var _worksite_index_disciple_count: int = -1
+var _worksite_index_building_count: int = -1
+var _worksite_index: Dictionary = {}
+
+
+
 func initialize(state: SimulationState) -> void:
     if not state.sect.workforce_enabled:
         return
@@ -449,8 +463,14 @@ func spirit_field_xp_factor(field: BuildingState) -> float:
 
 func assigned_worker_ids(state: SimulationState, building: BuildingState) -> Array[StringName]:
     var result: Array[StringName] = []
-    if building == null or building.worker_group_id == &"":
+    if state == null or building == null or building.worker_group_id == &"":
         return result
+    if state.disciples.size() >= WORKSITE_INDEX_MIN_ROSTER and state.buildings.get(str(building.id)) == building:
+        _refresh_worksite_index(state)
+        for worker_id in _worksite_index.get(str(building.id), []):
+            result.append(StringName(worker_id))
+        return result
+    # Preserve original semantics for old/small saves and detached QA buildings.
     var primary := primary_building(state, building.building_type)
     var ids: Array = state.disciples.keys()
     ids.sort()
@@ -463,6 +483,62 @@ func assigned_worker_ids(state: SimulationState, building: BuildingState) -> Arr
         elif disciple.worksite_building_id == &"" and primary != null and primary.id == building.id:
             result.append(disciple.id)
     return result
+
+# A single sorted roster traversal replaces a repeated full-roster scan for
+# every worksite query. Exact assignment order remains ID-ascending, so the
+# first worker_slot_count disciples retain their historical job slots.
+func _refresh_worksite_index(state: SimulationState) -> void:
+    var instance_id := state.get_instance_id()
+    if (
+        _worksite_index_state_id == instance_id
+        and _worksite_index_tick == state.tick
+        and _worksite_index_workforce_revision == state.sect.workforce_event_count
+        and _worksite_index_building_revision == state.building_event_count
+        and _worksite_index_disciple_count == state.disciples.size()
+        and _worksite_index_building_count == state.buildings.size()
+    ):
+        return
+    var by_building: Dictionary = {}
+    var primary_by_type: Dictionary = {}
+    var fallback_by_group: Dictionary = {}
+    var building_ids: Array = state.buildings.keys()
+    building_ids.sort()
+    for raw_id in building_ids:
+        var site = state.buildings[raw_id]
+        if not (site is BuildingState):
+            continue
+        var key := str(site.id)
+        by_building[key] = []
+        var kind := str(site.building_type)
+        if not primary_by_type.has(kind):
+            primary_by_type[kind] = key
+            var group := str(site.worker_group_id)
+            if not group.is_empty():
+                if not fallback_by_group.has(group):
+                    fallback_by_group[group] = []
+                fallback_by_group[group].append(key)
+    var disciple_ids: Array = state.disciples.keys()
+    disciple_ids.sort()
+    for raw_id in disciple_ids:
+        var disciple: DiscipleState = state.disciples[raw_id]
+        if disciple.work_group_id == &"":
+            continue
+        var worksite := str(disciple.worksite_building_id)
+        if not worksite.is_empty():
+            if by_building.has(worksite):
+                var assigned_site = state.buildings.get(worksite)
+                if assigned_site is BuildingState and assigned_site.worker_group_id == disciple.work_group_id:
+                    by_building[worksite].append(disciple.id)
+            continue
+        for primary_id in fallback_by_group.get(str(disciple.work_group_id), []):
+            by_building[str(primary_id)].append(disciple.id)
+    _worksite_index = by_building
+    _worksite_index_state_id = instance_id
+    _worksite_index_tick = state.tick
+    _worksite_index_workforce_revision = state.sect.workforce_event_count
+    _worksite_index_building_revision = state.building_event_count
+    _worksite_index_disciple_count = state.disciples.size()
+    _worksite_index_building_count = state.buildings.size()
 
 func active_worker_ids(state: SimulationState, building: BuildingState) -> Array[StringName]:
     var assigned := assigned_worker_ids(state, building)

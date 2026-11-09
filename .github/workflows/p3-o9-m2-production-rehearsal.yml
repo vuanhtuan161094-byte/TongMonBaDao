@@ -5,6 +5,8 @@ on:
   push:
     paths:
       - 'godot/tests/presentation/p3_o9_m2_production_rehearsal_test.gd'
+      - 'godot/src/simulation/building/building_system.gd'
+      - 'godot/tests/simulation/v57_worksite_scale_480_test.gd'
       - '.github/workflows/p3-o9-m2-production-rehearsal.yml'
 
 permissions:
@@ -48,6 +50,12 @@ jobs:
 
       - name: Parse O9 test
         run: godot --headless --path godot --check-only --script res://tests/presentation/p3_o9_m2_production_rehearsal_test.gd
+
+      - name: Parse and run V5.7 480-worksite regression
+        shell: bash
+        run: |
+          godot --headless --path godot --check-only --script res://tests/simulation/v57_worksite_scale_480_test.gd
+          godot --headless --path godot -s res://tests/simulation/v57_worksite_scale_480_test.gd
 
       - name: Run O9 M2 multi-producer rehearsal
         run: godot --headless --path godot -s res://tests/presentation/p3_o9_m2_production_rehearsal_test.gd
