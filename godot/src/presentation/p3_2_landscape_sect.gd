@@ -9476,12 +9476,13 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "Tá»
     details_scroll.position = Vector2(18, 118)
     details_scroll.size = Vector2(content_width - 36.0, 220)
     content_panel.add_child(details_scroll)
+    var content: Label = null
     if tab_name == "Trang bá»‹":
         # Equipment renders its own controls; do not allocate an orphan Label.
         # The former unparented DiscipleTabContentText leaked its font/TextLine RIDs.
         _build_disciple_equipment_manager(details_scroll,disciple)
     else:
-        var content := Label.new()
+        content = Label.new()
         content.name = "DiscipleTabContentText"
         content.text = _disciple_tab_text(tab_name, disciple)
         content.custom_minimum_size = Vector2(content_width - 56.0, 0)
