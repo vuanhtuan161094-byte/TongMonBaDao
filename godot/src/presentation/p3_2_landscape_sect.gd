@@ -9863,27 +9863,7 @@ func _disciple_tab_action(action: String) -> void:
     var disciple: DiscipleState = state.disciples[selected_id]
     var snapshot := _disciple_snapshot(disciple)
     if action == "v57_tuvi_gate":
-        var realm := int(disciple.v2_realm_progress.get("cultivation",{}).get("realm",0))
-        var pills := WarehouseSystem.new()
-        var pill: StringName = &""
-        for quality in [4,3,2,1]:
-            var candidate := MedicineCatalogueV2.item_id(MedicineCatalogueV2.FAMILY_BREAK,realm,quality)
-            if candidate != &"" and pills.can_consume(state,candidate,1):
-                pill = candidate
-                break
-        var request_id := "ui:v57:gate:%s:%d:%d" % [
-            str(selected_id),realm,state.tick
-        ]
-        var attempted := CultivationGateV57.attempt(state,selected_id,request_id,pill)
-        if bool(attempted.get("ok",false)):
-            tab_status_text = "Đột phá thành công!" if bool(attempted.get("success",false)) else "Đột phá thất bại, mất 10% EXP tầng 10."
-            if runtime_ready and runtime_session != null:
-                var saved := runtime_session.save()
-                if not bool(saved.get("ok",false)):
-                    tab_status_text += " Cảnh báo: chưa lưu."
-        else:
-            tab_status_text = "Không thể đột phá: "+str(attempted.get("reason",""))
-        _open_disciple_deep_screen(selected_id,disciple_profile_active_tab_name,true)
+        _v57_show_tuvi_gate_choices()
         return
     if action == "v57_body_buy_missing":
         _v57_buy_first_body_material(selected_id)
@@ -9988,6 +9968,53 @@ func _player_reason_text(reason: String) -> String:
 
 
 # F4 pure V2 read model: one selected disciple, no per-roster scans.
+# Explicit selection: never silently consume Q4 while player expects a
+# baseline 25% breakthrough. Popup is anchored in the existing disciple screen.
+func _v57_show_tuvi_gate_choices() -> void:
+    if selected_id == &"" or not state.disciples.has(selected_id):
+        return
+    var check := CultivationGateV57.preview(state,selected_id)
+    if not bool(check.get("ok",false)):
+        tab_status_text = "Chưa thể đột phá: "+str(check.get("reason",""))
+        _open_disciple_deep_screen(selected_id,disciple_profile_active_tab_name,true)
+        return
+    var popup := PopupMenu.new()
+    popup.name = "V57TuViPillChoice"
+    popup.add_item("Không dùng đan — 25% + pity",0)
+    var realm := int(check["realm"])
+    var warehouse := WarehouseSystem.new()
+    for quality in range(1,5):
+        var item := MedicineCatalogueV2.item_id(MedicineCatalogueV2.FAMILY_BREAK,realm,quality)
+        if item == &"" or not warehouse.can_consume(state,item,1):
+            continue
+        var info := MedicineCatalogueV2.definition(item)
+        popup.add_item("Dùng Q%d — +%d điểm %% (Kho: %d)" % [
+            quality,int(info.get("potency",0)),warehouse.available_quantity(state,item)
+        ],quality)
+    popup.id_pressed.connect(_v57_commit_tuvi_gate)
+    popup_layer.add_child(popup)
+    popup.popup_centered(Vector2i(420,280))
+
+func _v57_commit_tuvi_gate(quality: int) -> void:
+    if selected_id == &"" or not state.disciples.has(selected_id):
+        return
+    var d: DiscipleState = state.disciples[selected_id]
+    var realm := int(d.v2_realm_progress.get("cultivation",{}).get("realm",0))
+    var pill := MedicineCatalogueV2.item_id(MedicineCatalogueV2.FAMILY_BREAK,realm,quality) if quality > 0 else &""
+    var event_id := "ui:v57:gate:%s:%d:%d" % [str(selected_id),realm,state.tick]
+    var outcome := CultivationGateV57.attempt(state,selected_id,event_id,pill)
+    if bool(outcome.get("ok",false)):
+        tab_status_text = "Đột phá thành công!" if bool(outcome.get("success",false)) else "Thất bại: mất 10% EXP tầng 10."
+        if pill != &"":
+            tab_status_text += " Đã dùng Đột Phá Đan Q%d." % quality
+        if runtime_ready and runtime_session != null:
+            var saved := runtime_session.save()
+            if not bool(saved.get("ok",false)):
+                tab_status_text += " Chưa xác nhận lưu."
+    else:
+        tab_status_text = "Không thể đột phá: "+str(outcome.get("reason",""))
+    _open_disciple_deep_screen(selected_id,disciple_profile_active_tab_name,true)
+
 func _v57_buy_first_body_material(disciple_id: StringName) -> void:
     var preview := DiscipleBodyGateTransactionV2.new().preview_gate(state,disciple_id)
     if not bool(preview.get("ok",false)) or not state.sect.economy_a_enabled:

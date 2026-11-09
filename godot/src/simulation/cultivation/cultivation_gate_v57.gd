@@ -13,7 +13,7 @@ static func preview(state: SimulationState, disciple_id: StringName, pill_id: St
     var d: DiscipleState = state.disciples[disciple_id]
     if not DiscipleRealmProgressV2.progression_ready(d) or d.hp <= 0.0             or d.region_id != &"sect" or not d.active_pve_encounter_id.is_empty():
         return {"ok":false,"reason":"gate_actor_unavailable"}
-    if not [&"EVALUATE",&"IDLE",&"HOLD",&"CULTIVATE"].has(d.current_action):
+    if not [&"EVALUATE",&"IDLE",&"HOLD",&"CULTIVATE",&"BREAKTHROUGH"].has(d.current_action):
         return {"ok":false,"reason":"gate_actor_busy"}
     var p: Dictionary = d.v2_realm_progress["cultivation"]
     var realm := int(p["realm"])
