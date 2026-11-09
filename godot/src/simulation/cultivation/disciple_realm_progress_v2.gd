@@ -339,13 +339,13 @@ static func set_auto_breakthrough(disciple: DiscipleState, track: String, enable
 static func attempt_cultivation_breakthrough(
     disciple: DiscipleState, rng: GameRng,
     floor_costs: Dictionary, base_chance: float,
-    requirements_verified: bool, event_id: String
+    requirements_verified: bool, event_id: String, bonus_pp: int = 0
 ) -> Dictionary:
     if rng == null or not progression_ready(disciple):
         return {"ok":false,"reason":"v2_realm_profile_not_ready"}
     if event_id.is_empty() or not requirements_verified:
         return {"ok":false,"reason":"gate_requirements_not_verified"}
-    if is_nan(base_chance) or is_inf(base_chance) or base_chance < 0.0 or base_chance > 1.0:
+    if is_nan(base_chance) or is_inf(base_chance) or base_chance < 0.0 or base_chance > 1.0 or bonus_pp < 0 or bonus_pp > 45:
         return {"ok":false,"reason":"unapproved_breakthrough_chance"}
     var p: Dictionary = disciple.v2_realm_progress["cultivation"]
     var realm := int(p["realm"])
@@ -366,7 +366,7 @@ static func attempt_cultivation_breakthrough(
         if str(event.get("event_id","")) == event_id:
             return {"ok":false,"reason":"breakthrough_event_replayed"}
     var prior_failures := int(p["gate_failures"])
-    var chance := clampf(base_chance+0.05*float(prior_failures),0.0,1.0)
+    var chance := clampf(base_chance+0.05*float(prior_failures)+float(bonus_pp)/100.0,0.0,1.0)
     var roll := rng.randf()
     var success := roll < chance
     var next_state: Dictionary = p.duplicate(true)
@@ -407,7 +407,7 @@ static func attempt_cultivation_breakthrough(
 # floor costs come from the canonical 300-floor progression table.
 static func attempt_canonical_cultivation_breakthrough(
     disciple: DiscipleState, rng: GameRng,
-    requirements_verified: bool, event_id: String
+    requirements_verified: bool, event_id: String, bonus_pp: int = 0
 ) -> Dictionary:
     if not progression_ready(disciple):
         return {"ok":false,"reason":"v2_realm_profile_not_ready"}
@@ -417,7 +417,7 @@ static func attempt_canonical_cultivation_breakthrough(
         return {"ok":false,"reason":"canonical_breakthrough_chance_unavailable"}
     return attempt_cultivation_breakthrough(
         disciple,rng,DiscipleProgressionBalanceV2.floor_costs(),chance,
-        requirements_verified,event_id
+        requirements_verified,event_id,bonus_pp
     )
 
 # Luyện Thể major gates are deterministic by user lock: full floor-10 EXP +

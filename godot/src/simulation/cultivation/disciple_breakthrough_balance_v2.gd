@@ -11,17 +11,14 @@ extends RefCounted
 # authored tempering requirements have both been verified. No RNG, pity or
 # generic failure penalty belongs to Body gates.
 
-const VERSION := 1
+const VERSION := 2
 const GATE_COUNT := 29
 
 # Source realms 1..29.
 const CULTIVATION_BASE_CHANCE_PERCENT := [
-    # Nhân 1->10 and crossing 10->11
-    100,95,90,85,80,75,70,65,60,50,
-    # Tiên 11->20 and crossing 20->21
-    90,85,80,75,70,65,60,55,50,35,
-    # Thần 21->30
-    80,75,70,65,60,55,50,45,35
+    25,25,25,25,25,25,25,25,25,25,
+    25,25,25,25,25,25,25,25,25,25,
+    25,25,25,25,25,25,25,25,25
 ]
 
 const BODY_GATE_MODE := "deterministic_requirements"
