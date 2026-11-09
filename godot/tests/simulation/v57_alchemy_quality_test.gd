@@ -33,7 +33,7 @@ func _run() -> void:
     if workforce.profession_level_for_state(state,actor,WorkforceSystem.PROF_ALCHEMY) < 10:
         _fail("profession level fixture invalid")
         return
-    for key in ["thanh_linh_thao","linh_coc","huyen_thiet","linh_tuy","linh_tuyen_chi_tam_manh"]:
+    for key in ["thanh_linh_thao","linh_coc","huyen_thiet","linh_tuy","tu_van_thao","tinh_lang_bi","linh_moc","thanh_thiet"]:
         if not warehouse.add(state,StringName(key),10):
             _fail("QA ingredient provisioning failed: "+key)
             return

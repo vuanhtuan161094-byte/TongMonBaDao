@@ -43,9 +43,10 @@ func _run() -> void:
         "original B3 saturation authority enabled")
     var old_item := MedicineCatalogueV2.item_id("tuvi", 2, 1)
     var current_item := MedicineCatalogueV2.item_id("tuvi", 1, 1)
-    _check(MedicineCatalogueV2.VERSION == 2
+    _check(MedicineCatalogueV2.VERSION == 3
         and MedicineCatalogueV2.potency_for_version(old_item, 1) == 16500
-        and MedicineCatalogueV2.potency_for_version(old_item, 2) == 12700,
+        and MedicineCatalogueV2.potency_for_version(old_item, 2) == 12700
+        and MedicineCatalogueV2.potency_for_version(old_item, 3) == 1234,
         "old and new realm-2 potencies are separate versions")
     var old_realm := int(d.v2_realm_progress["cultivation"]["realm"])
     _check(old_realm == 1, "new real recruit starts at cultivation realm 1")
@@ -81,7 +82,7 @@ func _run() -> void:
 
     var blocked := B3PillSatietyV1.consume(state, d, old_item, 2)
     _check(not bool(blocked.get("ok", false))
-        and str(blocked.get("reason", "")) == "medicine_realm_not_reached",
+        and str(blocked.get("reason", "")) == "medicine_wrong_realm",
         "rank-2 pill cannot be consumed early through direct B3 interface")
     _check(warehouse.quantity(state, old_item) == qty_before
         and int(d.b3_pill_state.get("sequence", 0)) == 1
@@ -89,9 +90,9 @@ func _run() -> void:
         "early-tier rejection preserves stock, EXP, receipt and sequence")
 
     var current_pill := MedicineCatalogueV2.definition(current_item)
-    _check(int(current_pill["potency"]) == 10000
+    _check(int(current_pill["potency"]) == 1166
         and MedicineCatalogueV2.potency_for_version(current_item, 1) == 10000,
-        "rank-1 core 10k Tu Vi effect preserved across both versions")
+        "V3 rank-1 fixed B3 potency while historical V1 remains 10k")
     _check(SaveService.new().save_to_path(state, path) == OK,
         "historical receipt and unchanged save schema are durable")
     var reloaded := SaveService.new().load_from_path(path)

@@ -101,7 +101,7 @@ func run() -> void:
         "grade-1 pill heals +55, cannot exceed Max HP")
     verify(warehouse.quantity(state, pill) == stock_before,
         "one medicine debit and no double payout")
-    verify(B3PillSatietyV1.spent_today(state, medicine_disciple) == 10,
+    verify(B3PillSatietyV1.spent_today(state, medicine_disciple) == 0,
         "shared B3 budget preserved")
     verify(B3PillSatietyV1.validate(state, medicine_disciple).is_empty(),
         "B3 accepts versioned graded receipt")
@@ -127,8 +127,8 @@ func run() -> void:
             if verify(bool(used_tuvi.get("ok", false)), "new Tu Vi pill commits through original B3"):
                 verify(warehouse.quantity(state, tuvi_pill) == tuvi_before_stock,
                     "exactly one graded Tu Vi pill consumed")
-                verify(B3PillSatietyV1.spent_today(state, medicine_disciple) == 35,
-                    "healing and Tu Vi pills share B3 10+25 satiety")
+                verify(B3PillSatietyV1.spent_today(state, medicine_disciple) == 50,
+                    "healing excludes XP satiety, Tu Vi Q1 costs 50")
                 verify(B3PillSatietyV1.validate(state, medicine_disciple).is_empty(),
                     "dynamic Tu Vi receipt is compatible with B3 validation")
                 verify(str(medicine_disciple.v2_realm_progress["cultivation"]) != str(cultivation_before),
@@ -159,8 +159,8 @@ func run() -> void:
     verify(bool(specialized.get("ok", false)), "Chuyên Tu receives actual graded Tu Vi medicine")
     verify(medicine_disciple.current_action == &"CULTIVATE",
         "Chuyên Tu stays active after pill without starting another job")
-    verify(B3PillSatietyV1.spent_today(state, medicine_disciple) == 60,
-        "specialized pill shares same day meter and costs exactly 25")
+    verify(B3PillSatietyV1.spent_today(state, medicine_disciple) == 100,
+        "specialized Tu Vi pill shares 2M budget and costs exactly 50")
 
     receipt_sequence = int(medicine_disciple.b3_pill_state.get("sequence", 0))
     var final_reload := LiveGameRuntimeV2.new()
