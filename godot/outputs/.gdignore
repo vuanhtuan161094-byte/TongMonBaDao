@@ -1,0 +1,2 @@
+# Archived QA outputs (logs, captured PNGs, CSV matrices) are not game assets.
+# Preserve evidence on Git, but keep it outside Godot editor resource imports.

@@ -73,6 +73,7 @@ on:
       - 'godot/tests/simulation/p3_7a1_building_authority_test.gd'
       - 'godot/tests/simulation/production_exp_upgrade_contract_20261107_test.gd'
       - 'godot/tests/simulation/production_stone_closed_loop_20261107_test.gd'
+      - 'godot/outputs/.gdignore'
       - 'godot/tests/simulation/p3_7a2_spirit_field_test.gd'
       - 'godot/tests/simulation/p3_7b1_warehouse_test.gd'
       - 'godot/tests/simulation/p3_7c1_foundation_guidance_test.gd'
