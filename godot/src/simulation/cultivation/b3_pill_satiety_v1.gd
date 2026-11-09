@@ -2,8 +2,10 @@ class_name B3PillSatietyV1
 extends RefCounted
 
 # Owner-approved CARE pilot. One shared counter, one canonical scheduler day.
-const VERSION := 1
-const CAPACITY := 1000000
+const VERSION := 2
+const PREVIOUS_VERSION := 1
+const PREVIOUS_CAPACITY := 1000000
+const CAPACITY := 2000000
 const DAY_TICKS := 1440
 const COSTS := {"hoi_xuan_dan":10,"tu_khi_dan":25}
 const TUVI := 10000.0
@@ -66,13 +68,16 @@ static func consume(state: SimulationState, d: DiscipleState, pill: StringName, 
     var legacy := COSTS.has(str(pill))
     if sequence != last+1 or sequence > MAX_SEQUENCE or (not legacy and medicine.is_empty()):
         return {"ok":false,"reason":"invalid_pill_sequence_or_content"}
+    if str(medicine.get("pill_family","")) == MedicineCatalogueV2.FAMILY_BREAK:
+        return {"ok":false,"reason":"breakthrough_pill_requires_gate_attempt"}
     # The manual path must obey the same progression gate as auto allocation.
     # No future-rank medicine effect may bypass content progression merely
     # because an item stack already exists (including in an old save).
     if not legacy:
-        var current_realm := int(d.v2_realm_progress.get("cultivation", {}).get("realm", 0))
-        if int(medicine.get("realm_rank", 0)) > current_realm:
-            return {"ok":false,"reason":"medicine_realm_not_reached"}
+        var track := "body" if str(medicine.get("pill_family","")) == MedicineCatalogueV2.FAMILY_BODY else "cultivation"
+        var current_realm := int(d.v2_realm_progress.get(track, {}).get("realm", 0))
+        if int(medicine.get("realm_rank", 0)) != current_realm:
+            return {"ok":false,"reason":"medicine_wrong_realm"}
     var tuvi_pill := pill == &"tu_khi_dan" or str(medicine.get("pill_family", "")) == MedicineCatalogueV2.FAMILY_TUVI
     if (B3MedicalAutoplayV1.busy(state,d) and not (tuvi_pill and safe_cultivation_pill_window(state,d))) \
         or not state.sect.p3_7_resources_enabled:
@@ -111,23 +116,30 @@ static func consume(state: SimulationState, d: DiscipleState, pill: StringName, 
         # Prepare the complete canonical effect before the irreversible debit.
         # Fixed gain bypasses aptitude multipliers and cannot cross a major gate.
         prepared = DiscipleState.from_dict(d.to_dict())
-        var costs: Dictionary = state.sect.v2_training_rules.get("cultivation",{}).get("floor_costs",{})
-        xp_result = DiscipleRealmProgressV2.grant_xp(prepared,"cultivation",fixed_tuvi,"fixed",costs,
-            [{"source_id":"b3/pill/%s" % str(pill),"channel":"cultivation_xp_gain","mode":"percent_add","value":0.0}])
+        var is_body := str(medicine.get("pill_family","")) == MedicineCatalogueV2.FAMILY_BODY
+        var target_track := "body" if is_body else "cultivation"
+        var channel := "body_xp_gain" if is_body else "cultivation_xp_gain"
+        var costs: Dictionary = state.sect.v2_training_rules.get(target_track,{}).get("floor_costs",{})
+        xp_result = DiscipleRealmProgressV2.grant_xp(prepared,target_track,fixed_tuvi,"fixed",costs,
+            [{"source_id":"b3/pill/%s" % str(pill),"channel":channel,"mode":"percent_add","value":0.0}])
         if not xp_result.get("ok",false) or float(xp_result.get("unapplied_overflow",0.0)) > 0.0:
             return {"ok":false,"reason":"pill_xp_gate_or_content_blocked"}
         if not warehouse.consume(state,pill,1):
             return {"ok":false,"reason":"pill_debit_failed"}
         d.v2_realm_progress = prepared.v2_realm_progress.duplicate(true)
-        d.v2_realm_progress["cultivation"]["last_training_event_id"] = "b3:pill:%s:%d" % [d.id,sequence]
+        d.v2_realm_progress[target_track]["last_training_event_id"] = "b3:pill:%s:%d" % [d.id,sequence]
         d.max_hp = prepared.max_hp
         d.hp = prepared.hp
+    p["version"] = VERSION
+    p["capacity"] = CAPACITY
     p["day"] = int(state.tick/DAY_TICKS)
     p["spent"] = spent+cost
     p["sequence"] = sequence
     p["receipt"] = {"sequence":sequence,"pill":str(pill),"state":"COMMITTED",
         "day":p["day"],"tick":state.tick,"cost":cost,"spent_after":p["spent"],
-        "hp_delta":d.hp-hp_before,"tuvi":0.0 if is_healing else fixed_tuvi,
+        "hp_delta":d.hp-hp_before,
+        "tuvi":fixed_tuvi if not is_healing and str(medicine.get("pill_family","")) != MedicineCatalogueV2.FAMILY_BODY else 0.0,
+        "body_xp":fixed_tuvi if str(medicine.get("pill_family","")) == MedicineCatalogueV2.FAMILY_BODY else 0.0,
         "injury":injury_before,"recover_tick":recovery_before}
     if not legacy:
         p["receipt"]["medicine_version"] = MedicineCatalogueV2.VERSION
@@ -143,8 +155,10 @@ static func validate(state: SimulationState, d: DiscipleState) -> String:
     if not DiscipleRealmProgressV2.progression_ready(d): return "satiety_without_v2_owner"
     for field in ["version","capacity","day","spent","sequence"]:
         if not whole(p.get(field)): return "invalid_satiety_"+field
-    if int(p["version"]) != VERSION or int(p["capacity"]) != CAPACITY: return "unsupported_satiety_pilot"
-    if int(p["day"]) < 0 or int(p["day"]) > int(state.tick/DAY_TICKS) or int(p["spent"]) < 0 or int(p["spent"]) > CAPACITY: return "invalid_satiety_day_or_spent"
+    var past_version := int(p["version"]) == PREVIOUS_VERSION and int(p["capacity"]) == PREVIOUS_CAPACITY
+    var current_version := int(p["version"]) == VERSION and int(p["capacity"]) == CAPACITY
+    if not past_version and not current_version: return "unsupported_satiety_pilot"
+    if int(p["day"]) < 0 or int(p["day"]) > int(state.tick/DAY_TICKS) or int(p["spent"]) < 0 or int(p["spent"]) > int(p["capacity"]): return "invalid_satiety_day_or_spent"
     if int(p["sequence"]) < 0 or int(p["sequence"]) > MAX_SEQUENCE or not (p.get("receipt") is Dictionary): return "invalid_satiety_receipt_shape"
     var receipt: Dictionary = p["receipt"]
     if int(p["sequence"]) == 0:
@@ -153,7 +167,11 @@ static func validate(state: SimulationState, d: DiscipleState) -> String:
     var medicine := MedicineCatalogueV2.definition(StringName(pill))
     var legacy := COSTS.has(pill)
     if not legacy and medicine.is_empty(): return "unknown_satiety_pill"
-    var cost := int(COSTS[pill]) if legacy else int(medicine.get("satiety_cost", 0))
+    var receipt_medicine_version := int(receipt.get("medicine_version",0))
+    var cost := int(COSTS[pill]) if legacy else (
+        (10 if str(medicine.get("pill_family","")) == MedicineCatalogueV2.FAMILY_HEAL else 25)
+        if receipt_medicine_version <= MedicineCatalogueV2.PREVIOUS_VERSION else int(medicine.get("satiety_cost",0))
+    )
     # Receipt effect is bound to its historical catalogue version, not the
     # current definition. Existing V1 saves remain valid without mutating
     # inventory, EXP, receipt sequence, or the global SaveService schema.
@@ -171,15 +189,20 @@ static func validate(state: SimulationState, d: DiscipleState) -> String:
     if not (receipt.get("hp_delta") is int or receipt.get("hp_delta") is float) or not (receipt.get("tuvi") is int or receipt.get("tuvi") is float): return "invalid_pill_effect_shape"
     var hp := float(receipt["hp_delta"])
     var xp := float(receipt["tuvi"])
-    if not is_finite(hp) or not is_finite(xp) or hp < -0.0000001: return "invalid_pill_effect"
+    var body_xp := float(receipt.get("body_xp",0.0))
+    if not is_finite(hp) or not is_finite(xp) or not is_finite(body_xp) or hp < -0.0000001:
+        return "invalid_pill_effect"
     var is_healing := pill == "hoi_xuan_dan" or str(medicine.get("pill_family", "")) == MedicineCatalogueV2.FAMILY_HEAL
     var healing_limit := NeedsSystem.HEALING_PILL_HP if legacy else float(receipt_potency)
     var tuvi_limit := TUVI if legacy else float(receipt_potency)
-    if is_healing and (hp <= 0.0 or hp > healing_limit or xp != 0.0):
+    var is_body := str(medicine.get("pill_family","")) == MedicineCatalogueV2.FAMILY_BODY
+    if is_healing and (hp <= 0.0 or hp > healing_limit or xp != 0.0 or body_xp != 0.0):
         return "pill_effect_conflict"
-    # Fixed Tu Vi can increase realm floors and HP proportionally by V2 law.
-    # Preserve legacy TQD receipts that legitimately have positive hp_delta.
-    if not is_healing and xp != tuvi_limit:
+    if is_body and (xp != 0.0 or body_xp != tuvi_limit):
+        return "pill_effect_conflict"
+    # Fixed XP can change floor and HP proportionally. Legacy TQD receipts
+    # with a positive hp_delta remain valid across the capacity migration.
+    if not is_healing and not is_body and (xp != tuvi_limit or body_xp != 0.0):
         return "pill_effect_conflict"
     if not [0,1].has(int(receipt["injury"])) or int(receipt["recover_tick"]) < 0: return "pill_injury_receipt_conflict"
     return ""
