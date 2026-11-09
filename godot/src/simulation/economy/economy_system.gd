@@ -226,9 +226,13 @@ func effective_market_daily_units(state: SimulationState) -> int:
     if state == null:
         return 0
     var baseline := maxi(int(state.sect.economy_a_policy.get("market_daily_units",20)),1)
+    # A smaller roster later in the same market day cannot invalidate
+    # previously settled, legitimate 480-player purchases and sales.
+    var settled := maxi(state.sect.economy_a_market_units_sold,
+        state.sect.economy_a_market_units_bought)
     if state.disciples.size() < 30:
-        return baseline
-    return maxi(baseline,mini(4000,state.disciples.size()*8))
+        return maxi(baseline,settled)
+    return maxi(maxi(baseline,mini(4000,state.disciples.size()*8)),settled)
 
 func market_buy_remaining(state: SimulationState) -> int:
     if state == null or not state.sect.economy_a_enabled:
@@ -301,7 +305,9 @@ func buy_missing_body_gate_materials(state: SimulationState,
     var receipt_id := "market-body-bundle:"+request_id
     if state.sect.economy_a_receipts.has(receipt_id):
         var old: Dictionary = state.sect.economy_a_receipts[receipt_id]
-        if str(old.get("disciple_id","")) != str(disciple_id):
+        var current_realm := int((state.disciples[disciple_id] as DiscipleState).v2_realm_progress.get(
+            "body",{}).get("realm",0))
+        if str(old.get("disciple_id","")) != str(disciple_id) or int(old.get("source_realm",0)) != current_realm:
             return {"ok":false,"reason":"body_bundle_request_conflict"}
         return {"ok":true,"already_settled":true,"receipt":old.duplicate(true)}
     var preview := DiscipleBodyGateTransactionV2.new().preview_gate(state,disciple_id)
@@ -361,9 +367,13 @@ func buy_missing_body_gate_materials(state: SimulationState,
         "day":int(state.tick/V2_DAY_TICKS),"tick":state.tick}
     state.sect.economy_a_receipts[receipt_id] = receipt
     state.sect.economy_a_event_count += 1
+    var after := DiscipleBodyGateTransactionV2.new().preview_gate(state,disciple_id)
+    var missing_after := 0
+    for component in after.get("requirements",[]):
+        if component is Dictionary:
+            missing_after += maxi(0,int(component.get("need",0))-int(component.get("available",0)))
     return {"ok":true,"already_settled":false,"receipt":receipt.duplicate(true),
-        "complete":bool(DiscipleBodyGateTransactionV2.new().preview_gate(
-            state,disciple_id).get("can_commit",false))}
+        "complete":missing_after == 0,"remaining_missing_units":missing_after}
 
 func market_remaining(state: SimulationState) -> int:
     if state == null or not state.sect.economy_a_enabled:
