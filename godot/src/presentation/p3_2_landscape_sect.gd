@@ -2307,47 +2307,36 @@ func _actor_anchor_offset(actor: Control) -> Vector2:
     return Vector2(30.0, 30.0)
 
 func _refresh_actor_status_label_visibility() -> void:
-    # Show an occasional speech bubble for idle residents, plus a few concise
-    # travel labels. Working disciples disappear into the worksite presentation.
-    var visible_worker_cues := 0
-    var visible_status_rects: Array[Rect2] = []
+    # Routine action and destination are available through the actor's tooltip
+    # and the canonical disciple profile. Never paint persistent work/status
+    # tags over the sect actors, especially while a management panel is open.
+    # Keep at most one brief ambient speech bubble on the unobstructed map.
+    var allow_ambient := not opened_disciple_profile \
+        and not _disciple_summary_is_open() and not _building_operation_is_open()
+    var bubble_shown := false
+    var visible_rects: Array[Rect2] = []
+    var now_msec := Time.get_ticks_msec()
     var ids: Array = actor_nodes.keys()
     ids.sort()
-    if not selected_id.is_empty():
-        ids.erase(str(selected_id))
-        ids.push_front(str(selected_id))
     for raw_id in ids:
         var key := str(raw_id)
         var status := actor_status_labels.get(key) as Label
         var actor := actor_nodes.get(key) as Control
         if status == null or actor == null or not is_instance_valid(status) or not is_instance_valid(actor):
             continue
-        var disciple_id := StringName(key)
-        if not state.disciples.has(disciple_id):
-            status.visible = false
-            continue
-        var disciple: DiscipleState = state.disciples[disciple_id]
-        var is_selected := disciple_id == selected_id
-        var destination := StringName(actor_destinations.get(key,""))
-        var phase := StringName(disciple.work_cycle_state.get("phase",""))
-        var travelling_to_work := disciple.work_group_id != &"" and phase == &"travel_out"
-        var visual_transition := Time.get_ticks_msec() < int(actor_transition_deadline_msec.get(key,0))
+        status.visible = false
         var bubble: Dictionary = actor_ambient_bubbles.get(key,{})
-        var now_msec := Time.get_ticks_msec()
         if not bubble.is_empty() and int(bubble.get("expires_msec",0)) <= now_msec:
             actor_ambient_bubbles.erase(key)
-            bubble.clear()
-        if _is_idle_wandering_actor(disciple) and not bubble.is_empty():
-            _present_actor_status_label(status,str(bubble.get("text","")),visible_status_rects)
             continue
-        if is_selected and (_is_idle_map_actor(disciple) or travelling_to_work or visual_transition):
-            _present_actor_status_label(status,_actor_map_status_text(disciple),visible_status_rects)
+        if not allow_ambient or bubble_shown or not actor.visible or bubble.is_empty():
             continue
-        if not travelling_to_work and not visual_transition or visible_worker_cues >= 3:
-            status.visible = false
+        var disciple_id := StringName(key)
+        if not state.disciples.has(disciple_id):
             continue
-        if _present_actor_status_label(status,_actor_map_status_text(disciple),visible_status_rects):
-            visible_worker_cues += 1
+        var disciple: DiscipleState = state.disciples[disciple_id]
+        if _is_idle_wandering_actor(disciple):
+            bubble_shown = _present_actor_status_label(status,str(bubble.get("text","")),visible_rects)
 
 func _present_actor_status_label(status: Label, text: String, visible_rects: Array[Rect2]) -> bool:
     status.text = text
