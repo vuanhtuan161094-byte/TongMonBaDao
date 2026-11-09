@@ -121,8 +121,50 @@ func settle_work_wage(state: SimulationState, worker: DiscipleState, job_id: Str
 # Resource-sale income is earned against Warehouse stock. The NPC also
 # stocks one paid Tầm Mạch Bàn per day for the real Mine Lv10+ gates.
 # Selling building components back would enable artificial market recycling.
+# V5.7: paid NPC route for EXISTING registered Body-gate ingredients.
+# Prices are pilot base values; market markup is applied by the live buyer.
+# These cannot be sold back to the NPC; no exploitative buy->sell loop.
+const V57_BODY_GATE_BASE_PRICES := {
+    "thanh_linh_thao":6,
+    "tinh_lang_bi":10,
+    "tu_van_thao":16,
+    "linh_tuy":14,
+    "huyet_linh_sam":120,
+    "huyet_thu_tinh_huyet":180,
+    "kim_cot_thao":350,
+    "linh_thu_cot_ngoc":600,
+    "tien_tuy_lien":1500,
+    "tien_thu_chan_cot":2500,
+    "bat_hoai_tuy_dich":6500,
+    "dai_la_kim_cot":9500,
+    "than_mach_tinh":23000,
+    "than_thu_cot":38000,
+    "hon_don_tuy_hoa":125000,
+    "bat_diet_than_cot":195000,
+    "an_nhan_gioi":9000,
+    "an_tien_gioi":380000,
+    "an_than_gioi":9500000
+}
+const V57_BODY_GATE_DAILY_STOCK := 40
+
+static func body_gate_source_available(state: SimulationState, source_realm: int) -> bool:
+    if state == null or not state.sect.economy_a_enabled or source_realm < 1 or source_realm > 29:
+        return false
+    var recipe := DiscipleBodyGateContentV2.recipe(source_realm)
+    if recipe.is_empty():
+        return false
+    var registry := ResourceRegistry.new()
+    for field in ["main_id","aux_id"]:
+        var item_id := str(recipe.get(field,""))
+        if not V57_BODY_GATE_BASE_PRICES.has(item_id) or not registry.has(StringName(item_id)):
+            return false
+    var seal_id := str(recipe.get("seal_id",""))
+    return seal_id.is_empty() or (
+        V57_BODY_GATE_BASE_PRICES.has(seal_id) and registry.has(StringName(seal_id))
+    )
+
 const V2_MARKET_SELLABLE := ["linh_moc", "thanh_thiet", "thanh_linh_thao", "linh_coc", "huyen_thiet"]
-const V2_MARKET_CATALOG := ["linh_moc", "thanh_thiet", "thanh_linh_thao", "linh_coc", "huyen_thiet", "tam_mach_ban", "linh_tuyen_chi_tam_manh"]
+const V2_MARKET_CATALOG := ["linh_moc","thanh_thiet","thanh_linh_thao","linh_coc","huyen_thiet","tam_mach_ban","linh_tuyen_chi_tam_manh","tinh_lang_bi","tu_van_thao","linh_tuy","huyet_linh_sam","huyet_thu_tinh_huyet","kim_cot_thao","linh_thu_cot_ngoc","tien_tuy_lien","tien_thu_chan_cot","bat_hoai_tuy_dich","dai_la_kim_cot","than_mach_tinh","than_thu_cot","hon_don_tuy_hoa","bat_diet_than_cot","an_nhan_gioi","an_tien_gioi","an_than_gioi"]
 # A second earned source for the 100-fragment Field heart beyond rare actual
 # harvest drops. Each fragment is paid, is never resellable to this NPC, and
 # conversion still needs 100 real owned fragments.
@@ -139,7 +181,7 @@ func sync_market_day(state: SimulationState) -> void:
         return
     var target := maxi(int(state.sect.economy_a_policy.get("market_stock_target",20)),0)
     for raw_id in V2_MARKET_CATALOG:
-        var restock_target := int(V2_MARKET_DAILY_SPECIAL_STOCK.get(raw_id,target))
+        var restock_target := V57_BODY_GATE_DAILY_STOCK if V57_BODY_GATE_BASE_PRICES.has(raw_id) else int(V2_MARKET_DAILY_SPECIAL_STOCK.get(raw_id,target))
         state.sect.economy_a_market_stock[raw_id] = maxi(
             int(state.sect.economy_a_market_stock.get(raw_id,0)),restock_target)
     state.sect.economy_a_market_stock_day = day
@@ -192,7 +234,9 @@ func market_sell_price(resource_id: StringName) -> int:
 func market_purchase_price(state: SimulationState, resource_id: StringName) -> int:
     if not V2_MARKET_CATALOG.has(str(resource_id)):
         return 0
-    var base_value := int(ResourceRegistry.new().definition(resource_id).get("market_value",0))
+    var base_value := int(V57_BODY_GATE_BASE_PRICES.get(str(resource_id),0))
+    if base_value <= 0:
+        base_value = int(ResourceRegistry.new().definition(resource_id).get("market_value",0))
     return base_value * maxi(int(state.sect.economy_a_policy.get("market_buy_markup",2)),1)
 
 # Player buys from durable NPC stock; Warehouse receives the actual item before

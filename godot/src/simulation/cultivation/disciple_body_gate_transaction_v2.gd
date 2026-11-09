@@ -14,7 +14,8 @@ func _content_ready(state: SimulationState, recipe: Dictionary) -> bool:
     # F3 enables ONLY A/B through authored, registered real PvE/crop routes.
     # Even warehouse fixtures cannot open C-H or any of the three Seals.
     var source_realm := int(recipe.get("source_realm",0))
-    return HuntingMapV2.early_body_sources_ready(state,source_realm)
+    return HuntingMapV2.early_body_sources_ready(state,source_realm) \
+        or (source_realm >= 7 and EconomySystem.body_gate_source_available(state,source_realm))
 
 func _after_debit(_state: SimulationState, _disciple: DiscipleState) -> bool:
     # No production failure injection; F2 tests override to exercise rollback.
