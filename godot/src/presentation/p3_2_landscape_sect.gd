@@ -6072,6 +6072,11 @@ func _build_sx02_medicine_controls() -> void:
     var warehouse := WarehouseSystem.new()
     var available: Array[StringName] = []
     for item_id in MedicineCatalogueV2.all_item_ids():
+        var info := MedicineCatalogueV2.definition(item_id)
+        # Breakthrough Pills are consumed only by the real Tu Vi gate
+        # transaction, never through the generic manual XP/heal button.
+        if str(info.get("pill_family","")) == MedicineCatalogueV2.FAMILY_BREAK:
+            continue
         if warehouse.available_quantity(state, item_id) > 0:
             available.append(item_id)
     if available.is_empty():
@@ -6099,9 +6104,15 @@ func _build_sx02_medicine_controls() -> void:
     var selected_data := MedicineCatalogueV2.definition(sx02_selected_medicine)
     var effects := Label.new()
     effects.name = "SX02MedicinePotency"
+    var pill_family := str(selected_data.get("pill_family",""))
+    var effect_name := "+Tu Vi"
+    if pill_family == MedicineCatalogueV2.FAMILY_HEAL:
+        effect_name = "+HP"
+    elif pill_family == MedicineCatalogueV2.FAMILY_BODY:
+        effect_name = "+Luyện Thể"
     effects.text = "%s %d · Bão hòa %d" % [
-        "+HP" if str(selected_data.get("pill_family","")) == "heal" else "+Tu Vi",
-        int(selected_data.get("potency", 0)), int(selected_data.get("satiety_cost", 0))
+        effect_name,int(selected_data.get("potency",0)),
+        int(selected_data.get("satiety_cost",0))
     ]
     effects.custom_minimum_size = Vector2(384, 24)
     building_management_container.add_child(effects)
