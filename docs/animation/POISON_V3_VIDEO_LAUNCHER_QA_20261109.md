@@ -41,3 +41,18 @@ All changes are launcher, QA harness or CI-only. No `SaveService`, simulation au
 3. Record a genuine Godot 4.7.2 GUI MP4/GIF of three skill branches (cast, flight, impact, DoT/heal), preserve frame time, actual event chronology, screenshots and SHA; inspect 1280x720 and 1–6×. Fix presentation timing only after seeing real frames. Do not merge main.
 
 **Acceptance remains BLOCKED.**
+
+## Account/runner diagnostic update — 2026-11-09 08:44 UTC
+
+**Evidence: systemic pre-runner failure, NOT proven workflow-code failure.**
+- The most recent 1,000 Actions runs from the first ten API pages had **0 successful conclusions**. Unrelated workflows also failed with `steps=[]`.
+- **Last observed successful run:** [41599909474](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/41599909474), 2026-11-03 07:58:45 UTC (P3 O2 Recruitment Map), **25 job steps**, success 08:03:05 UTC.
+- **First observed failure after that:** [41600657130](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/41600657130), 2026-11-03 08:05:03 UTC, the SAME workflow, **0 job steps**.
+- Poison run [42586704812](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42586704812): attempt 1 job `129058156680` had `runner_id=0`, no runner and no steps/artifacts. Attempt 2 was explicitly retried and again completed/failure on 2026-11-09 08:44:36 UTC; new job `129062858340` had `steps=[]`. No Godot or checkout step actually ran.
+- **Possible account-level causes:** private-repository Actions usage/budget exhausted, failed payment, or GitHub hosted-runner entitlement restriction; none is confirmed without user billing or check-run annotations.
+- GitHub Status reported Nov 5–6 Actions incidents resolved. The uninterrupted failures from Nov 3 onward are not explained by that incident alone.
+- GitHub connector does not expose account Billing or check-run annotations; attempting the `/check-runs/.../annotations` and billing endpoints was denied. Therefore **exact backend failure reason UNKNOWN**.
+
+**Recovery:** owner should open GitHub avatar → Settings → Billing and licensing → Usage / Budgets and alerts, confirm Actions compute allowance/payment/budget and stop-usage threshold, then inspect the failure banner in the affected run. Do NOT modify spending caps or payments without owner approval. If usage is healthy, escalate to GitHub Support citing run IDs `41600657130`, `42586704812` and job IDs `129058156680`, `129062858340` for backend runner-provisioning/entitlement review. Self-hosted runner is an alternative requiring explicit owner installation/authorization; not provisioned.
+
+**Acceptance:** video 0/3, updated-SHA official Godot test 0, physical Windows GUI PENDING. No gameplay/SaveService/asset changes. PR #72 remains Draft and unmerged.
