@@ -4,6 +4,7 @@ on:
   workflow_dispatch:
   pull_request:
     paths:
+      - 'godot/tests/simulation/v57_sx_body_breakthrough_transaction_test.gd'
       - 'godot/tests/simulation/v57_sx_contract_guard_test.gd'
       - 'godot/src/simulation/building/medicine_catalogue_v2.gd'
       - 'godot/src/simulation/cultivation/cultivation_gate_v57.gd'
@@ -19,6 +20,7 @@ on:
       - '.github/workflows/p3-o9-m2-production-rehearsal.yml'
   push:
     paths:
+      - 'godot/tests/simulation/v57_sx_body_breakthrough_transaction_test.gd'
       - 'godot/tests/simulation/v57_sx_contract_guard_test.gd'
       - 'godot/src/simulation/building/medicine_catalogue_v2.gd'
       - 'godot/src/simulation/cultivation/cultivation_gate_v57.gd'
@@ -81,6 +83,12 @@ jobs:
         run: |
           godot --headless --path godot --check-only --script res://tests/simulation/v57_worksite_scale_480_test.gd
           godot --headless --path godot -s res://tests/simulation/v57_worksite_scale_480_test.gd
+
+      - name: Run SX57 Body pill and Tu Vi gate receipts
+        shell: bash
+        run: |
+          godot --headless --path godot --check-only --script res://tests/simulation/v57_sx_body_breakthrough_transaction_test.gd
+          godot --headless --path godot -s res://tests/simulation/v57_sx_body_breakthrough_transaction_test.gd
 
       - name: Run SX57 authoring contract
         shell: bash
