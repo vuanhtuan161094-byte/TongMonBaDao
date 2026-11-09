@@ -4,6 +4,10 @@ on:
   workflow_dispatch:
   pull_request:
     paths:
+      - 'godot/src/simulation/building/medicine_resource_source_v1.gd'
+      - 'godot/src/simulation/building/alchemy_recipe_registry.gd'
+      - 'godot/tests/simulation/sx07_source_provenance_test.gd'
+      - 'godot/tests/simulation/sx02_medicine_catalogue_test.gd'
       - 'godot/tests/simulation/v57_sx_body_breakthrough_transaction_test.gd'
       - 'godot/tests/simulation/v57_sx_contract_guard_test.gd'
       - 'godot/src/simulation/building/medicine_catalogue_v2.gd'
@@ -20,6 +24,10 @@ on:
       - '.github/workflows/p3-o9-m2-production-rehearsal.yml'
   push:
     paths:
+      - 'godot/src/simulation/building/medicine_resource_source_v1.gd'
+      - 'godot/src/simulation/building/alchemy_recipe_registry.gd'
+      - 'godot/tests/simulation/sx07_source_provenance_test.gd'
+      - 'godot/tests/simulation/sx02_medicine_catalogue_test.gd'
       - 'godot/tests/simulation/v57_sx_body_breakthrough_transaction_test.gd'
       - 'godot/tests/simulation/v57_sx_contract_guard_test.gd'
       - 'godot/src/simulation/building/medicine_catalogue_v2.gd'
@@ -89,6 +97,15 @@ jobs:
         run: |
           godot --headless --path godot --check-only --script res://tests/simulation/v57_sx_body_breakthrough_transaction_test.gd
           godot --headless --path godot -s res://tests/simulation/v57_sx_body_breakthrough_transaction_test.gd
+
+      - name: SX-07 earned-source provenance and historical catalogue
+        shell: bash
+        run: |
+          set -euo pipefail
+          for script in sx07_source_provenance_test.gd sx02_medicine_catalogue_test.gd; do
+            godot --headless --path godot --check-only --script "res://tests/simulation/$script"
+            godot --headless --path godot -s "res://tests/simulation/$script"
+          done
 
       - name: Run SX57 authoring contract
         shell: bash
