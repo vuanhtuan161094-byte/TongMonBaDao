@@ -106,9 +106,10 @@ func _verify_simple_timer_cost_and_warehouse_harvest() -> bool:
     _normalize_worker(state, actor)
 
     var stones_before := state.sect.spirit_stones
+    var xp_before := float(actor.profession_xp.get("herbalism", 0.0))
     var result := workforce.perform_work(state, actor, WorkforceSystem.PROF_HERBALISM)
-    if not bool(result.get("ok", false)) or not bool(result.get("completed", false)):
-        return _fail("Starting one crop did not complete as one simple work action.")
+    if not bool(result.get("ok", false)) or not bool(result.get("started", false)) or bool(result.get("completed", true)):
+        return _fail("Sowing must create a paid, unfinished Spirit Field timer.")
     var crop_id := StringName(result.get("crop_id", ""))
     if state.sect.spirit_stones != stones_before - crops.cost(crop_id):
         return _fail("Starting a crop did not consume exact Sect Spirit Stones.")
@@ -123,10 +124,23 @@ func _verify_simple_timer_cost_and_warehouse_harvest() -> bool:
     var plot := _growing_plot(state, field)
     if plot.is_empty() or int(plot.get("finish_tick", 0)) <= state.tick:
         return _fail("Crop did not become one authoritative countdown timer.")
-    var before := warehouse.quantity(state, crops.output_resource_id(crop_id))
-    _advance_buildings_to_tick(state, int(plot.get("finish_tick", state.tick + 1)))
-    if warehouse.quantity(state, crops.output_resource_id(crop_id)) <= before:
-        return _fail("Completed crop did not deposit directly into canonical warehouse.")
+    var output_id := crops.output_resource_id(crop_id)
+    var before := warehouse.quantity(state, output_id)
+    var finish_tick := int(plot.get("finish_tick", state.tick + 1))
+    if finish_tick > state.tick + 1:
+        _advance_buildings_to_tick(state, finish_tick - 1)
+    if warehouse.quantity(state, output_id) != before or not is_equal_approx(
+        float(actor.profession_xp.get("herbalism", 0.0)), xp_before):
+        return _fail("Crop supplied goods or profession EXP before its finish tick.")
+    _advance_buildings_to_tick(state, finish_tick)
+    var delivered := warehouse.quantity(state, output_id)
+    var earned_xp := float(actor.profession_xp.get("herbalism", 0.0))
+    if delivered <= before or earned_xp <= xp_before:
+        return _fail("Completed crop did not credit real output and profession EXP.")
+    buildings.process_tick(state)
+    if warehouse.quantity(state, output_id) != delivered or not is_equal_approx(
+        float(actor.profession_xp.get("herbalism", 0.0)), earned_xp):
+        return _fail("Replaying the harvest tick duplicated goods or profession EXP.")
     if not _growing_plot(state, field).is_empty():
         return _fail("Finished plot did not return to empty state.")
     if buildings.disciple_has_active_spirit_plot(state, actor.id, field):

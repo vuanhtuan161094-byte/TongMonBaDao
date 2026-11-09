@@ -169,7 +169,7 @@ func _run() -> void:
     modular.position = original_position
     ui.call("_sync_actor_positions")
     var canonical_status := SectMapPresentation.action_label(chosen.current_action).to_upper()
-    var status_is_canonical := modular.status_label.text == canonical_status
+    var status_is_canonical := modular.status_label.text.to_upper() == canonical_status
     var transition_deadline: Dictionary = ui.get("actor_transition_deadline_msec")
     var status_is_real_destination := (
         modular.status_label.text.begins_with("ĐẾN ")

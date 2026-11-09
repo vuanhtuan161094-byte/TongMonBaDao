@@ -1,7 +1,7 @@
 extends SceneTree
 
 # GP-01: same real Dẫn Tiên V2 recruit -> work group + explicit worksite ->
-# scheduler Mine travel/extraction/haul -> Warehouse -> offline resume exactly
+# scheduler starts a persisted Mine timer -> Warehouse -> offline resume exactly
 # once. No injected resources, EXP, time rewards or fake secondary authority.
 const SAVE_PATH := "user://gp_01_v2_mine_vertical_slice_test.json"
 
@@ -135,19 +135,26 @@ func _run() -> void:
         return
 
     var scheduler: SimulationScheduler = (ui.get("runtime_session") as LiveGameRuntimeV2).scheduler()
-    var reached_haul := false
+    # Economy-A owns a saved building timer, not a disciple carry phase.
+    # Stop at the first real active job, before any goods or profession EXP.
+    var pending_job: Dictionary = {}
     var tick_count := 0
     for _i in range(100):
         scheduler.step()
         tick_count += 1
-        var phase := str(actor.work_cycle_state.get("phase", ""))
-        if phase == "haul_back" and int(actor.work_cycle_state.get("carried_units", 0)) > 0:
-            reached_haul = true
+        pending_job = buildings.active_resource_timer_for_worker(state, recruit_id)
+        if not pending_job.is_empty():
             break
     ui.call("_refresh_all")
-    if not _check(reached_haul and warehouse.quantity(state, &"thanh_thiet") == ore_before
-        and str(ui.call("_mine_operation_text")).contains("Vận chuyển về kho"),
-        "V2 Mine cycle did not reach real carried ore without early deposit."):
+    if not _check(not pending_job.is_empty()
+        and str(pending_job.get("resource_id", "")) == "thanh_thiet"
+        and int(pending_job.get("output_quantity", 0)) > 0
+        and int(pending_job.get("finish_tick", state.tick)) > state.tick
+        and actor.work_cycle_state.is_empty()
+        and warehouse.quantity(state, &"thanh_thiet") == ore_before
+        and str(ui.call("_mine_operation_text")).contains("Còn ")
+        and str(ui.call("_mine_operation_text")).contains("phút mô phỏng"),
+        "V2 Mine did not create a paid pending timer with zero early Warehouse credit."):
         return
     if not _check(float(actor.profession_xp.get("mining", 0.0)) == xp_before,
         "Mining EXP was granted before completing the batch."):
@@ -158,12 +165,12 @@ func _run() -> void:
     ), "V2 Tu Vi natural tick was duplicated or lost during Mine work."):
         return
 
-    var saved_cycle: Dictionary = actor.work_cycle_state.duplicate(true)
+    var saved_job: Dictionary = pending_job.duplicate(true)
     var saved_birth: Dictionary = actor.v2_birth_profile.duplicate(true)
     var runtime: LiveGameRuntimeV2 = ui.get("runtime_session") as LiveGameRuntimeV2
     var wall := state.runtime_last_wall_unix
     if not _check(bool(runtime.save(wall).get("ok", false)),
-        "Cannot save the canonical carried Mine cycle."):
+        "Cannot save the canonical pending Mine timer."):
         return
 
     # Predict with the SAME scheduler and runtime clock on an independent
@@ -182,7 +189,7 @@ func _run() -> void:
         if warehouse.quantity(expected, &"thanh_thiet") > ore_before:
             needed = minutes
             break
-    if not _check(needed > 0, "No paid Mine deposit occurred after carried phase."):
+    if not _check(needed > 0, "No paid Mine deposit occurred after the pending timer."):
         return
 
     _dispose_scene()
@@ -196,11 +203,11 @@ func _run() -> void:
     var final_state := resumed.state()
     var final_actor: DiscipleState = final_state.disciples[recruit_id]
     var final_mine := buildings.primary_building(final_state, BuildingSystem.TYPE_MINE)
-    var definition: Dictionary = BuildingSystem.DEFINITIONS[str(BuildingSystem.TYPE_MINE)]
-    var batch := maxi(int(definition.get("base_batch_units", 1)), 1) + int(floor(float(mine.level) / 10.0))
+    var batch := int(saved_job.get("output_quantity", 0))
     if not _check(warehouse.quantity(final_state, &"thanh_thiet") == ore_before + batch
         and int(final_mine.metrics.get("production_batches", 0)) == batches_before + 1
         and final_actor.work_cycle_state.is_empty()
+        and buildings.active_resource_timer_for_worker(final_state,recruit_id).is_empty()
         and final_actor.v2_birth_profile == saved_birth
         and final_actor.worksite_building_id == mine.id
         and final_actor.profession_xp.get("mining", 0.0) > xp_before

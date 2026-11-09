@@ -1,7 +1,7 @@
 extends SceneTree
 
 # GP-02A: real Dẫn Tiên V2 recruit, V2-only cultivation panel and command
-# bridge, genuine Mine carry-cycle busy rejection, natural Tu Vi once per
+# bridge, genuine paid Mine timer busy rejection, natural Tu Vi once per
 # scheduler minute, and canonical save/reload. P2 legacy remains separate.
 const SAVE_PATH := "user://gp_02a_v2_cultivation_panel_test.json"
 
@@ -136,9 +136,8 @@ func _run() -> void:
         "Second V2 Tu Vi grant in one tick was accepted."):
         return
 
-    # Start a genuine paid Mine cycle and reach haul_back with carried ore.
-    # In between steps the scheduler leaves current_action=EVALUATE, which
-    # must not be mistaken for an idle occupation.
+    # Start the real Economy-A Mine timer and stop before its payout.
+    # current_action alone cannot signal whether a saved job occupies a worker.
     ui.call("_open_building", SectMapPresentation.DEST_MINE)
     await process_frame
     if not await _press("Group_mining_crew_%s" % str(chosen)):
@@ -157,18 +156,21 @@ func _run() -> void:
     var ore_before := warehouse.quantity(state, &"thanh_thiet")
     if not await _press("Work_mining_%s" % str(chosen)):
         return
-    var carried := false
+    var pending_job: Dictionary = {}
     for _i in range(100):
         scheduler.step()
-        if str(actor.work_cycle_state.get("phase", "")) == "haul_back" and int(actor.work_cycle_state.get("carried_units", 0)) > 0:
-            carried = true
+        pending_job = buildings.active_resource_timer_for_worker(state, chosen)
+        if not pending_job.is_empty():
             break
-    if not _check(carried and actor.current_action == &"EVALUATE"
+    if not _check(not pending_job.is_empty()
+        and int(pending_job.get("finish_tick",state.tick)) > state.tick
+        and actor.work_cycle_state.is_empty()
         and warehouse.quantity(state, &"thanh_thiet") == ore_before,
-        "Real Mine carry-cycle not preserved for busy-command test."):
+        "Real Mine timer not reserved without early Warehouse delivery."):
         return
 
-    var before_cycle := actor.work_cycle_state.duplicate(true)
+    var busy_action := actor.current_action
+    var before_timer: Dictionary = pending_job.duplicate(true)
     var before_command := actor.direct_command.duplicate(true)
     var before_group := actor.work_group_id
     var before_worksite := actor.worksite_building_id
@@ -181,8 +183,8 @@ func _run() -> void:
     if not await _press("Order_CULTIVATE_%s" % str(chosen)):
         return
     if not _check(str(ui.get("building_management_feedback")).contains("đang bận")
-        and actor.current_action == &"EVALUATE"
-        and actor.work_cycle_state == before_cycle
+        and actor.current_action == busy_action
+        and buildings.active_resource_timer_for_worker(state,chosen) == before_timer
         and actor.direct_command == before_command
         and actor.work_group_id == before_group
         and actor.worksite_building_id == before_worksite
@@ -197,12 +199,12 @@ func _run() -> void:
     await process_frame
     ui.call("_issue_summary_order", WorkforceSystem.COMMAND_CULTIVATE, "", "Tu luyện")
     if not _check(str(ui.get("summary_feedback")).contains("đang bận")
-        and actor.work_cycle_state == before_cycle
+        and buildings.active_resource_timer_for_worker(state,chosen) == before_timer
         and actor.direct_command == before_command,
         "V2 summary cultivation bypassed the shared busy guard."):
         return
 
-    # Persist a mid-haul rejected order and reload via the live save owner.
+    # Persist a denied order during a pending timed job and cold reload.
     ui.call("_autosave_runtime")
     if not _check(FileAccess.file_exists(SAVE_PATH),
         "Save file missing after denied busy command."):
@@ -213,13 +215,14 @@ func _run() -> void:
         return
     var restored: DiscipleState = state.disciples[chosen]
     if not _check(restored.v2_birth_profile == v2_birth
-        and restored.work_cycle_state == before_cycle
+        and restored.work_cycle_state.is_empty()
+        and buildings.active_resource_timer_for_worker(state,chosen) == before_timer
         and restored.direct_command == before_command
         and restored.worksite_building_id == before_worksite
         and str(restored.v2_realm_progress["training_policy"]) == before_policy
         and _close(float(restored.v2_realm_progress["cultivation"]["xp"]), before_xp)
         and warehouse.quantity(state, &"thanh_thiet") == before_ore,
-        "Save/reload changed V2 cultivation authority or lost carried ore."):
+        "Save/reload changed V2 authority or pending Mine timer."):
         return
 
     scheduler = (ui.get("runtime_session") as LiveGameRuntimeV2).scheduler()
@@ -230,6 +233,7 @@ func _run() -> void:
             delivered = true
             break
     if not _check(delivered and restored.work_cycle_state.is_empty()
+        and buildings.active_resource_timer_for_worker(state,chosen).is_empty()
         and float(restored.profession_xp.get("mining", 0.0)) > 0.0,
         "Rejected Cultivation order broke continuation of the real Mine delivery."):
         return

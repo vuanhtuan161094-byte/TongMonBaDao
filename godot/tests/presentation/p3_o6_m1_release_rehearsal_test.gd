@@ -452,7 +452,7 @@ func _run() -> void:
     if not str(ui.call("_mine_operation_text")).contains("Thanh Thiết tồn (dùng): %d (dùng %d)" % [iron_final, iron_usable]):
         _fail("O6 final Mine panel disagrees with canonical Warehouse.")
         return
-    if not str(ui.call("_warehouse_operation_text")).contains("Thanh Thiết: %d (dùng %d)" % [iron_final, iron_usable]):
+    if not str(ui.call("_warehouse_operation_text")).contains("Thanh Thiết ×%s · dùng được %s" % [str(ui.call("_compact_number",iron_final)), str(ui.call("_compact_number",iron_usable))]):
         _fail("O6 final Warehouse panel disagrees with canonical stock.")
         return
 
