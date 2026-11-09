@@ -1178,7 +1178,7 @@ const V57_QUALITY_CATALYSTS := {
 func set_alchemy_quality(state: SimulationState, hall_id: StringName, quality: int) -> Dictionary:
     if state == null or quality < 0 or quality > 4 or not state.buildings.has(str(hall_id)):
         return {"ok":false,"reason":"invalid_quality_selection"}
-    var hall: BuildingState = state.buildings[str(hall_id]]
+    var hall: BuildingState = state.buildings[str(hall_id)]
     if hall.building_type != TYPE_ALCHEMY_HALL:
         return {"ok":false,"reason":"wrong_building_type"}
     var data := _ensure_alchemy_state(hall)
@@ -1246,7 +1246,7 @@ func alchemy_batch_cost_reference(state: SimulationState, hall_id: StringName,
         recipe_id: StringName, profession_level: int) -> Dictionary:
     if state == null or not state.buildings.has(str(hall_id)):
         return {"ok":false,"reason":"unknown_hall"}
-    var hall: BuildingState = state.buildings[str(hall_id]]
+    var hall: BuildingState = state.buildings[str(hall_id)]
     if hall.building_type != TYPE_ALCHEMY_HALL or not alchemy_registry.has(recipe_id):
         return {"ok":false,"reason":"unavailable_recipe"}
     var plan := _v57_alchemy_plan(state,hall,recipe_id,profession_level)
