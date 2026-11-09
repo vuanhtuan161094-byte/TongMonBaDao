@@ -404,9 +404,10 @@ func _step_disciple(disciple: DiscipleState) -> void:
 
         &"BREAKTHROUGH":
             if DiscipleRealmProgressV2.owns_v2_progression(disciple):
-                disciple.last_decision["v2_breakthrough_result"] = {
-                    "ok":false,"reason":"v2_breakthrough_content_not_authorized"
-                }
+                var event_id := "v57:auto:%s:%d" % [str(disciple.id),state.tick]
+                disciple.last_decision["v2_breakthrough_result"] = CultivationGateV57.attempt(
+                    state,disciple.id,event_id,&"",rng
+                )
             else:
                 cultivation_system.attempt_breakthrough(state, disciple, rng)
             disciple.current_action = &"EVALUATE"

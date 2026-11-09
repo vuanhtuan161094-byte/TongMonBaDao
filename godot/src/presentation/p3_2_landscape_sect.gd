@@ -9567,6 +9567,17 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "T�
         _:
             _add_profile_action(content_panel, "Chuyên tu", Vector2(18, 344), "v2_cultivate", track_ready)
             _add_profile_action(content_panel, "Rèn thân", Vector2(140, 344), "v2_body_train", track_ready)
+    if tab_name == "Tổng Quan" and track_ready:
+        var tuvi_gate := CultivationGateV57.preview(state,selected_id)
+        var tuvi_button := Button.new()
+        tuvi_button.name = "V57TuViGateAction"
+        tuvi_button.text = "Đột phá Tu Vi"
+        tuvi_button.position = Vector2(266,344)
+        tuvi_button.size = Vector2(170,40)
+        tuvi_button.disabled = not bool(tuvi_gate.get("ok",false))
+        tuvi_button.tooltip_text = "Tỷ lệ gốc 25%, thất bại mất 10% EXP tầng 10. Đột Phá Đan có thể tăng xác suất."
+        tuvi_button.pressed.connect(Callable(self,"_disciple_tab_action").bind("v57_tuvi_gate"))
+        content_panel.add_child(tuvi_button)
     if tab_name == "Thuộc tính":
         var gate_preview := DiscipleBodyGateTransactionV2.new().preview_gate(state,selected_id) if track_ready else {}
         var gate_button := Button.new()
@@ -9851,6 +9862,29 @@ func _disciple_tab_action(action: String) -> void:
         return
     var disciple: DiscipleState = state.disciples[selected_id]
     var snapshot := _disciple_snapshot(disciple)
+    if action == "v57_tuvi_gate":
+        var realm := int(disciple.v2_realm_progress.get("cultivation",{}).get("realm",0))
+        var pills := WarehouseSystem.new()
+        var pill: StringName = &""
+        for quality in [4,3,2,1]:
+            var candidate := MedicineCatalogueV2.item_id(MedicineCatalogueV2.FAMILY_BREAK,realm,quality)
+            if candidate != &"" and pills.can_consume(state,candidate,1):
+                pill = candidate
+                break
+        var request_id := "ui:v57:gate:%s:%d:%d" % [
+            str(selected_id),realm,state.tick
+        ]
+        var attempted := CultivationGateV57.attempt(state,selected_id,request_id,pill)
+        if bool(attempted.get("ok",false)):
+            tab_status_text = "Đột phá thành công!" if bool(attempted.get("success",false)) else "Đột phá thất bại, mất 10% EXP tầng 10."
+            if runtime_ready and runtime_session != null:
+                var saved := runtime_session.save()
+                if not bool(saved.get("ok",false)):
+                    tab_status_text += " Cảnh báo: chưa lưu."
+        else:
+            tab_status_text = "Không thể đột phá: "+str(attempted.get("reason",""))
+        _open_disciple_deep_screen(selected_id,disciple_profile_active_tab_name,true)
+        return
     if action == "v57_body_buy_missing":
         _v57_buy_first_body_material(selected_id)
         _open_disciple_deep_screen(selected_id,disciple_profile_active_tab_name,true)
