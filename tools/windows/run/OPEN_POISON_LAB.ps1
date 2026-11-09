@@ -1,5 +1,22 @@
 ﻿$ErrorActionPreference = 'Stop'
 
+# Use streaming .NET SHA-256; Get-FileHash is absent on some Windows PowerShell installations.
+# A missing/unreadable file or unavailable SHA provider fails closed.
+function Get-PoisonLabFileSha256([string] $LiteralPath) {
+    $stream = $null
+    $sha = $null
+    try {
+        $stream = [IO.File]::Open($LiteralPath, [IO.FileMode]::Open,
+            [IO.FileAccess]::Read, [IO.FileShare]::Read)
+        $sha = [Security.Cryptography.SHA256]::Create()
+        if ($null -eq $sha) { throw 'SHA-256 provider unavailable.' }
+        return ([BitConverter]::ToString($sha.ComputeHash($stream))).Replace('-', '').ToLowerInvariant()
+    } finally {
+        if ($null -ne $sha) { $sha.Dispose() }
+        if ($null -ne $stream) { $stream.Dispose() }
+    }
+}
+
 function Stop-Lab([string]$Message) {
     Write-Host "POISON_LAB_BLOCKED: $Message" -ForegroundColor Red
     exit 1
@@ -80,7 +97,7 @@ try {
         if (-not (Test-Path -LiteralPath $assetFile -PathType Leaf)) {
             Stop-Lab "Thiếu asset theo manifest: $assetFile"
         }
-        $actualHash = (Get-FileHash -LiteralPath $assetFile -Algorithm SHA256).Hash.ToLowerInvariant()
+        $actualHash = Get-PoisonLabFileSha256 -LiteralPath $assetFile
         if ($actualHash -ne $expectedHash) {
             Stop-Lab "SHA-256 asset không khớp manifest: $assetFile"
         }
