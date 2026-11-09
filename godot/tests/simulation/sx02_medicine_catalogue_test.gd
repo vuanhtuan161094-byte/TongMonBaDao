@@ -19,8 +19,8 @@ func run() -> void:
     var recipes := AlchemyRecipeRegistry.new()
     var catalog := MedicineCatalogueV2.new()
     var ids := MedicineCatalogueV2.all_item_ids()
-    expect(ids.size() == 240, "30 realms x 2 medicine families x 4 qualities")
-    expect(MedicineCatalogueV2.authored_recipes().size() == 4,
+    expect(ids.size() == 476, "30 realms x 3 medicine families x 4 + 29 breakthrough x 4")
+    expect(MedicineCatalogueV2.authored_recipes().size() == 8,
         "only genuinely sourced tier-1/2 recipes authored")
     expect(MedicineCatalogueV2.validate_catalogue().is_empty(), "catalogue internally valid")
     expect(recipes.validate_definitions().is_empty(), "recipe inputs and warehouse outputs valid")
@@ -44,10 +44,10 @@ func run() -> void:
             expect(int(h["potency"]) > previous_hp and int(t["potency"]) > previous_tuvi,
                 "within-realm quality increases both potencies")
             var xp_total := DiscipleProgressionBalanceV2.realm_total_xp(realm)
-            var expected_tuvi := roundi(float(xp_total) * 0.001
+            var expected_tuvi := roundi(float(MedicineCatalogueV2.V56_B3_Q1_XP[realm - 1])
                 * float(MedicineCatalogueV2.QUALITY_FACTORS[quality - 1]))
             expect(int(t["potency"]) == expected_tuvi,
-                "BAL-04A Tu Vi potency is exactly 0.1% current realm EXP x grade")
+                "V3 B3 fixed realm EXP x grade")
             expect(int(t["potency"]) < DiscipleProgressionBalanceV2.floor_cost(realm, 1),
                 "graded Tu Vi dose never exceeds a single floor at its realm")
             expect(MedicineCatalogueV2.potency_for_version(tuvi, 1) ==
@@ -58,10 +58,13 @@ func run() -> void:
             previous_tuvi = int(t["potency"])
     expect(MedicineCatalogueV2.definition(MedicineCatalogueV2.item_id("heal", 1, 1))["potency"] == 55,
         "tier 1 low-grade heal starts at legacy baseline without mutating legacy ID")
-    expect(MedicineCatalogueV2.definition(MedicineCatalogueV2.item_id("tuvi", 1, 1))["potency"] == 10000,
-        "tier 1 low-grade Tu Vi starts at legacy baseline")
-    expect(MedicineCatalogueV2.definition(MedicineCatalogueV2.item_id("tuvi", 2, 1))["potency"] == 12700,
-        "tier 2 low-grade Tu Vi takes 0.1% of 12,700,000 EXP, not previous 16,500")
+    expect(MedicineCatalogueV2.definition(MedicineCatalogueV2.item_id("tuvi", 1, 1))["potency"] == 1166,
+        "V3 B3 tier 1 potency is 1166; legacy Tu Khi remains 10000")
+    expect(MedicineCatalogueV2.definition(MedicineCatalogueV2.item_id("tuvi", 2, 1))["potency"] == 1234,
+        "V3 B3 tier 2 potency is 1234; V2 historical potency remains 12700")
+    expect(MedicineCatalogueV2.potency_for_version(
+        MedicineCatalogueV2.item_id("tuvi", 2, 1), 2) == 12700,
+        "V2 historical Tu Vi receipt remains verifiable")
     expect(MedicineCatalogueV2.potency_for_version(
         MedicineCatalogueV2.item_id("tuvi", 2, 1), 1) == 16500,
         "existing v1 rank-2 medicine receipts retain original 16,500 EXP")
