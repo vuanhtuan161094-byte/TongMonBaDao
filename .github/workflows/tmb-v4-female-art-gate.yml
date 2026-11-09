@@ -1,0 +1,58 @@
+name: TMB V4 Female Sprite Gate Regression
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - integration/pve-p0-playable-ui-20261103
+    paths:
+      - tools/art/v4_female_sprite_gate.py
+      - .github/workflows/tmb-v4-female-art-gate.yml
+permissions:
+  contents: read
+jobs:
+  gate-regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install image QA dependency
+        run: python -m pip install 'Pillow>=10,<13'
+      - name: Parse gate code
+        run: python -m py_compile tools/art/v4_female_sprite_gate.py
+      - name: Verify invalid old-style sprites fail closed
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import io, json, pathlib, subprocess, sys, zipfile
+          from PIL import Image
+          from importlib.util import spec_from_file_location, module_from_spec
+          spec=spec_from_file_location('gate','tools/art/v4_female_sprite_gate.py')
+          gate=module_from_spec(spec)
+          spec.loader.exec_module(gate)
+          assert gate.APPROVED_SHA256 == '435f8969c3d89468ddbdec837a44365b212b58e01082728c3f21f2b08249c118'
+          path=pathlib.Path('/tmp/rejected_legacy_warp.zip')
+          dummy=io.BytesIO()
+          Image.new('RGBA',(160*2,192*4),(0,0,0,0)).save(dummy,format='PNG')
+          png=dummy.getvalue()
+          data={'source_sha256':gate.APPROVED_SHA256,
+                'direction_order':list(gate.DIRECTIONS),
+                'canvas':[160,192], 'foot_pivot':[80,179],
+                'sprite_type':'deterministic_nonrigid_whole_sprite_warp_not_skeletal_animation',
+                'atlases':{'idle':{'atlas':'idle.png','sha256':gate.sha256(png),'frames_per_direction':2}},
+                'rig':{'authored_parts':[]}}
+          with zipfile.ZipFile(path,'w') as z:
+              z.writestr('legacy/asset_manifest.json',json.dumps(data))
+              z.writestr('legacy/idle.png',png)
+          result=gate.assess(path)
+          assert result['decision'] == 'REJECT_FOR_GAME', result
+          for reason in ['NO_REAL_JOINT_MOTION_WARP_BASED','AUTHORING_PARTS_OR_POSE_RIG_MISSING',
+                         'ARTIST_VISUAL_ACCEPTANCE_MISSING','GODOT_472_REAL_VIDEO_GATE_MISSING',
+                         'OWNER_FINAL_VISUAL_APPROVAL_MISSING']:
+              assert reason in result['reasons'], (reason,result)
+          assert any(x.startswith('CLIPS_MISSING') for x in result['reasons']), result
+          print('GATE_REGRESSION_PASS: old-style warped atlas rejected correctly; no asset accepted')
+          PY
