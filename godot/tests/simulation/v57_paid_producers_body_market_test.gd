@@ -93,6 +93,6 @@ func _fail(message: String) -> void:
 
 func _cleanup() -> void:
     for suffix in ["",".tmp",".bak"]:
-        var path := SAVE_PATH+suffix
+        var path: String = SAVE_PATH + str(suffix)
         if FileAccess.file_exists(path):
             DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
