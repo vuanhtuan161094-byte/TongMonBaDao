@@ -290,6 +290,6 @@ func _fail(why: String) -> void:
 
 func _cleanup() -> void:
     for extension in ["",".tmp",".bak"]:
-        var file := SAVE_PATH+extension
+        var file: String = SAVE_PATH + str(extension)
         if FileAccess.file_exists(file):
             DirAccess.remove_absolute(ProjectSettings.globalize_path(file))
