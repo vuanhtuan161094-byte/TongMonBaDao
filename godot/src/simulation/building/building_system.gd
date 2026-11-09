@@ -1114,6 +1114,63 @@ func set_alchemy_recipe_enabled(state: SimulationState, hall_id: StringName, ena
     state.building_event_count += 1
     return true
 
+# V5.7 explicit quality mode is opt-in per real Alchemy Hall. Zero keeps
+# old save behavior; grades 1..4 craft 36+ profession bonus in 3 base minutes.
+# Rare catalysts are actual Warehouse IDs with earned/paid source routes.
+const V57_QUALITY_HALL_LEVEL := [1,5,10,20]
+const V57_QUALITY_PROF_LEVEL := [0,2,5,10]
+const V57_QUALITY_CATALYSTS := {
+    1:{},
+    2:{"tu_van_thao":1},
+    3:{"huyen_thiet":1,"linh_tuy":1},
+    4:{"huyen_thiet":2,"linh_tuy":2,"linh_tuyen_chi_tam_manh":1}
+}
+
+func set_alchemy_quality(state: SimulationState, hall_id: StringName, quality: int) -> Dictionary:
+    if state == null or quality < 0 or quality > 4 or not state.buildings.has(str(hall_id)):
+        return {"ok":false,"reason":"invalid_quality_selection"}
+    var hall: BuildingState = state.buildings[str(hall_id]]
+    if hall.building_type != TYPE_ALCHEMY_HALL:
+        return {"ok":false,"reason":"wrong_building_type"}
+    var data := _ensure_alchemy_state(hall)
+    var recipe := StringName(data.get("recipe_id",""))
+    if quality > 0 and MedicineCatalogueV2.parse_recipe(recipe).is_empty():
+        return {"ok":false,"reason":"quality_requires_graded_recipe"}
+    if quality > 0 and hall.level < int(V57_QUALITY_HALL_LEVEL[quality-1]):
+        return {"ok":false,"reason":"quality_requires_hall_upgrade"}
+    data["v57_selected_quality"] = quality
+    hall.production_state = data
+    if SX01PillPolicy.active(state):
+        SX01PillPolicy.configure(state,"recipe_mode","fixed")
+    state.building_event_count += 1
+    return {"ok":true,"selected_quality":quality}
+
+func _v57_alchemy_plan(state: SimulationState, hall: BuildingState,
+        recipe_id: StringName, profession_level: int) -> Dictionary:
+    var requirements := alchemy_registry.inputs(recipe_id)
+    var requested := int(hall.production_state.get("v57_selected_quality",0))
+    if requested == 0:
+        return {"ok":true,"requirements":requirements,"output_quantity":alchemy_registry.output_quantity(recipe_id),
+            "cycle_ticks":alchemy_registry.base_cycle_ticks(recipe_id),
+            "output_resource_id":str(MedicineCatalogueV2.output_for_job(recipe_id,profession_level,hall.level))}
+    var parsed := MedicineCatalogueV2.parse_recipe(recipe_id)
+    if parsed.is_empty() or requested < 1 or requested > 4:
+        return {"ok":false,"reason":"invalid_quality_recipe"}
+    if hall.level < int(V57_QUALITY_HALL_LEVEL[requested-1])             or profession_level < int(V57_QUALITY_PROF_LEVEL[requested-1]):
+        return {"ok":false,"reason":"quality_not_unlocked"}
+    for raw_id in V57_QUALITY_CATALYSTS[requested].keys():
+        requirements[raw_id] = int(requirements.get(raw_id,0)) + int(V57_QUALITY_CATALYSTS[requested][raw_id])
+    var result_id := MedicineCatalogueV2.item_id(str(parsed["family"]),int(parsed["realm"]),requested)
+    if result_id == &"":
+        return {"ok":false,"reason":"quality_output_missing"}
+    return {
+        "ok":true,"requirements":requirements,
+        "output_resource_id":str(result_id),
+        "output_quantity":36+3*int(profession_level/10),
+        "cycle_ticks":3,
+        "selected_quality":requested
+    }
+
 func alchemy_can_start(state: SimulationState, disciple: DiscipleState) -> Dictionary:
     if disciple == null or disciple.region_id != &"sect":
         return {"ok": false, "reason": "invalid_worker"}
@@ -1136,10 +1193,14 @@ func alchemy_can_start(state: SimulationState, disciple: DiscipleState) -> Dicti
     var profession_level := WorkforceSystem.new().profession_level_for_state(state, disciple, PROF_ALCHEMY)
     if profession_level < alchemy_registry.required_profession_level(recipe_id):
         return {"ok": false, "reason": "profession_level_too_low"}
-    var requirements := alchemy_registry.inputs(recipe_id)
-    if not warehouse.can_consume_requirements(state, requirements):
+    var plan := _v57_alchemy_plan(state,hall,recipe_id,profession_level)
+    if not bool(plan.get("ok",false)):
+        return plan
+    var requirements: Dictionary = plan["requirements"]
+    if not warehouse.can_consume_requirements(state,requirements):
         return {"ok": false, "reason": "insufficient_or_reserved_inputs"}
-    return {"ok": true, "hall_id": str(hall.id), "recipe_id": str(recipe_id), "requirements": requirements}
+    return {"ok": true, "hall_id": str(hall.id), "recipe_id": str(recipe_id),
+        "requirements": requirements,"plan":plan}
 
 func perform_alchemy_step(state: SimulationState, disciple: DiscipleState, profession_level: int, work_speed: float, profession_xp_gain: float) -> Dictionary:
     var check := alchemy_can_start(state, disciple)
@@ -1159,11 +1220,11 @@ func perform_alchemy_step(state: SimulationState, disciple: DiscipleState, profe
         data["recipe_id"] = str(recipe_id)
     var sequence := int(data.get("job_sequence", 0)) + 1
     var alchemy_factor := 1.0 - SectHallSystemV1.role_effect(state, SectHallSystemV1.OFFICE_ALCHEMIST)
-    var duration := maxi(1, int(ceil(float(alchemy_registry.base_cycle_ticks(recipe_id)) * alchemy_factor / maxf(work_speed, 0.25))))
-    var output_id := alchemy_registry.output_resource_id(recipe_id)
-    var graded_output := MedicineCatalogueV2.output_for_job(recipe_id, profession_level, hall.level)
-    if graded_output != &"":
-        output_id = graded_output
+    var plan: Dictionary = check.get("plan",{})
+    var duration := maxi(1,int(ceil(float(plan.get("cycle_ticks",alchemy_registry.base_cycle_ticks(recipe_id))) * alchemy_factor / maxf(work_speed,0.25))))
+    var output_id := StringName(plan.get("output_resource_id",""))
+    if output_id == &"":
+        output_id = alchemy_registry.output_resource_id(recipe_id)
     var job := {
         "job_id": "%s_job_%06d" % [str(hall.id), sequence],
         "recipe_id": str(recipe_id),
@@ -1172,7 +1233,7 @@ func perform_alchemy_step(state: SimulationState, disciple: DiscipleState, profe
         "finish_tick": state.tick + duration,
         "inputs": requirements.duplicate(true),
         "output_resource_id": str(output_id),
-        "output_quantity": alchemy_registry.output_quantity(recipe_id),
+        "output_quantity": int(plan.get("output_quantity",alchemy_registry.output_quantity(recipe_id))),
         "profession_xp_gain": maxf(profession_xp_gain, 0.0),
         "economy_a_wage_eligible": state.sect.economy_a_enabled and DiscipleRealmProgressV2.owns_v2_progression(disciple)
     }
