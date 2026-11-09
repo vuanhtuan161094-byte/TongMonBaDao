@@ -1,5 +1,16 @@
 # NEXT CHAT / CODEX HANDOFF — RELEASE TRAIN PR #72 → MAIN (2026-11-04)
 
+## ACTIVE OWNER DIRECTIVE — SX-07 CONTINUATION (2026-11-09)
+
+**Latest approved scope supersedes older R2-start priority for the active authoring packet; R2–R5 release requirements remain open.** Code baseline `c05b1aac9ffe186ebefe56395dfa4ec6abfe6556`. See `CURRENT_CHECKPOINT.md` SX-07 section for precise status and files.
+
+- DONE as CODE, **NOT RUNTIME PASS**: fix premature empty recipe definitions, add Mine/Forest/paid NPC provenance, fail-closed source gate for graded jobs, early realm-1 Body BOM alignment, read-only price/quantity oracle, updated 476/8 historic test and new 8/111/32-QA focused source test.
+- DESIGN GAP: 624/630 proposed materials not in runtime registry; 270/270 V5.6-G source profiles are NOT live job sites; 111 recipe definitions still blocked, and 507 proposed new names lack recovered V5.4 source. Eight out-of-630 Body materials exist in runtime but their design BOM origin must be reconciled.
+- NEXT PERMITTED WORK ONLY AFTER OWNER CHOICE: (A) SX-07B trace original IDs and implement validated source slices into real work jobs/PvE loot with deterministic Save receipts, or (B) SX-08 audit LT2/T2/W2 without enabling fictional sources, or (C) focused Godot 4.7.2 QA for current code. No gear, techniques, separate gameplay branch or merge.
+- PRECISE TESTS: `godot --headless --path godot --import`, then `--script res://tests/simulation/sx07_source_provenance_test.gd`, `sx02_medicine_catalogue_test.gd`, `v57_sx_contract_guard_test.gd`, `sx02_medicine_runtime_test.gd`; affected Building/Field/Save regression and 1280×720 GUI remain pending. Never mark PASS unless official execution has exit 0 and exact SHA.
+- Windows E: original backups, saves and launcher remain untouched. Windows GUI / Android = **PENDING USER**.
+
+
 ## MASTER BACKLOG INTAKE — 2026-11-06
 
 The owner prompt/workbook are now available and hash-identified in [input status](docs/qa/PR72_MASTER_QA_20261106/INPUTS_STATUS.md). The full [requirement register](docs/qa/TMB_PR72_REQUIREMENT_REGISTER_20261106.md), [158-case matrix](docs/qa/TMB_PR72_FEATURE_ACCEPTANCE_MATRIX_20261106.csv), and [10 E2E journeys](docs/qa/TMB_PR72_E2E_JOURNEYS_20261106.md) retain 35 requirements, 158 cases in 18 systems, 10 journeys, and 15 source gaps. Matrix source fidelity check: all 158 rows × 11 original columns matched the workbook (0 mismatches); five execution fields are additional.

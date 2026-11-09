@@ -46,3 +46,11 @@ No release/merge until 4.7.2 tests, save-load and actual 1280×720 mouse QA pass
 - Evaluate staged, non-free-provision simulation (60min/one day/30 days) before changing owner-locked balancing numbers.
 
 **No merge. No invented resources. No UI-only reward.**
+
+## SX-07 appended audit — 2026-11-09 (code SHA `c05b1aac9ffe186ebefe56395dfa4ec6abfe6556`)
+
+The V5.6-G 630×270 workbook is **DESIGN, not runtime**: 630 unique material IDs, 270 proposed source profiles, 119 proposed recipes, 476 SKUs and 2,049 proposal BOM rows. Only 6/630 design material IDs exactly match the static `ResourceRegistry.DEFINITIONS` IDs; 624 are not registered. All 270 profiles are `DESIGN_MAPPING_NOT_RUNTIME`, so none may be called a live Mine/Forest/Field output. Eight beast/body IDs outside the 630 proposal exist separately in the runtime ResourceRegistry (116 design BOM lines): this mismatch requires catalogue reconciliation rather than adding duplicate IDs.
+
+SX-07 restored eight **existing early authored** recipes via removal of a dead `return {}` and upgraded actual Mine/Forest/Field/paid-NPC provenance gates. Of 119 identities, **111 remain intentionally not craftable** until real source jobs and materials exist. V5.6-G realm-1 Heal/TuVi/Body BOMs are aligned for explicit-grade mode; five other early recipes retain pilot recipe definitions, not a claim of exact G-balanced cost. Batch cost estimates use registered resource reference resale values and current wage; exclude crop sowing, taxes, time and NPC premium. New test: `godot/tests/simulation/sx07_source_provenance_test.gd`. Official Godot evidence not yet available for current SHA. Windows GUI/Android **PENDING USER**.
+
+Next authorized source packet candidate: reconcile real V5.4 source CSV and first additional full source→timed job/earned PvE receipt→Warehouse→alchemy→consumer slice; **not** mass-register 507 proposed placeholder IDs or fabricate 270 worksite outputs.
