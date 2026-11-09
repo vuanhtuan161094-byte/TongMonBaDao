@@ -334,6 +334,91 @@ func ensure_main_hall(state: SimulationState) -> BuildingState:
     state.building_event_count += 1
     return hall
 
+# V5.7: Real paid producer annexes. Request IDs and debits are persisted on
+# each authoritative BuildingState; retry never creates a duplicate site.
+const PAID_PRODUCER_TYPES := [
+    TYPE_MINE, TYPE_LINH_FOREST, TYPE_ALCHEMY_HALL, TYPE_SPIRIT_FIELD
+]
+const MAX_PRODUCER_INSTANCES := 48
+
+func production_annex_cost(building_type: StringName, ordinal: int) -> Dictionary:
+    if not PAID_PRODUCER_TYPES.has(building_type) or ordinal < 2 or ordinal > MAX_PRODUCER_INSTANCES:
+        return {}
+    var def: Dictionary = DEFINITIONS.get(str(building_type),{})
+    if def.is_empty():
+        return {}
+    var factor := 1.0+0.25*float(ordinal-2)
+    return {
+        MATERIAL_WOOD: maxi(1,ceili(float(def.get("base_wood_cost",1))*factor)),
+        MATERIAL_ORE: maxi(1,ceili(float(def.get("base_ore_cost",1))*factor)),
+        "spirit_stones":maxi(1,ceili(float(def.get("base_stone_cost",1))*factor))
+    }
+
+func preview_production_annex(state: SimulationState, building_type: StringName) -> Dictionary:
+    if state == null or not state.p3_7_buildings_enabled or not state.sect.p3_7_resources_enabled             or not state.sect.economy_a_enabled:
+        return {"ok":false,"reason":"production_annex_requires_economy"}
+    if not PAID_PRODUCER_TYPES.has(building_type):
+        return {"ok":false,"reason":"invalid_producer_type"}
+    var hall := SectHallSystemV1.hall(state)
+    if hall == null:
+        return {"ok":false,"reason":"main_hall_missing"}
+    var highest := 0
+    for site in _buildings_of_type(state,building_type):
+        highest = maxi(highest,site.instance_index)
+    var ordinal := highest+1
+    var maximum := mini(MAX_PRODUCER_INSTANCES,maxi(2,1+int(hall.level/2)))
+    if ordinal > maximum:
+        return {"ok":false,"reason":"producer_hall_level_cap","maximum":maximum}
+    var id := "%s_%03d" % [str(building_type),ordinal]
+    if state.buildings.has(id):
+        return {"ok":false,"reason":"producer_id_conflict"}
+    var cost := production_annex_cost(building_type,ordinal)
+    var materials := cost.duplicate(true)
+    materials.erase("spirit_stones")
+    if not warehouse.can_consume_requirements(state,materials):
+        return {"ok":false,"reason":"producer_materials_missing","cost":cost}
+    if state.sect.spirit_stones < int(cost.get("spirit_stones",0)):
+        return {"ok":false,"reason":"producer_stones_missing","cost":cost}
+    return {"ok":true,"building_type":str(building_type),"ordinal":ordinal,"cost":cost}
+
+func build_paid_production_annex(state: SimulationState, building_type: StringName,
+        request_id: String) -> Dictionary:
+    if state == null or request_id.is_empty() or request_id.length() > 128:
+        return {"ok":false,"reason":"invalid_producer_request"}
+    for raw in state.buildings.values():
+        if not (raw is BuildingState):
+            continue
+        var site: BuildingState = raw
+        if str(site.production_state.get("v57_build_request_id","")) != request_id:
+            continue
+        if site.building_type != building_type:
+            return {"ok":false,"reason":"producer_request_conflict"}
+        return {"ok":true,"already_settled":true,"building_id":str(site.id),
+            "cost":site.production_state.get("v57_paid_cost",{}).duplicate(true)}
+    var preview := preview_production_annex(state,building_type)
+    if not bool(preview.get("ok",false)):
+        return preview
+    var cost: Dictionary = preview["cost"]
+    var materials := cost.duplicate(true)
+    materials.erase("spirit_stones")
+    var built := create_building(building_type,int(preview["ordinal"]))
+    if built == null or state.buildings.has(str(built.id)):
+        return {"ok":false,"reason":"producer_id_conflict"}
+    var price := int(cost["spirit_stones"])
+    if state.sect.spirit_stones < price or not warehouse.consume_requirements(state,materials):
+        return {"ok":false,"reason":"producer_payment_failed"}
+    state.sect.spirit_stones -= price
+    if building_type == TYPE_ALCHEMY_HALL:
+        built.production_state = _default_alchemy_state()
+    elif building_type == TYPE_SPIRIT_FIELD:
+        _ensure_spirit_field_state(state,built)
+    built.production_state["v57_build_request_id"] = request_id
+    built.production_state["v57_paid_cost"] = cost.duplicate(true)
+    state.buildings[str(built.id)] = built
+    state.building_event_count += 1
+    return {"ok":true,"already_settled":false,"building_id":str(built.id),
+        "ordinal":int(preview["ordinal"]),"cost":cost.duplicate(true)}
+
 func create_building(building_type: StringName, instance_index: int = 1) -> BuildingState:
     var definition: Dictionary = DEFINITIONS.get(str(building_type), {})
     if definition.is_empty():

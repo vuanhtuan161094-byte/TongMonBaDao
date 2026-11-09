@@ -27,6 +27,7 @@ const PRODUCER_TYPES := {
     "mine":"mine",
     "linh_forest":"linh_forest",
     "spirit_field":"spirit_field",
+    "alchemy_hall":"alchemy_hall",
     "residence":"residence"
 }
 # Deterministic QA display slots for canonical endgame instances. These are
@@ -36,6 +37,7 @@ const PRODUCER_DISTRICTS := {
     "mine":{"origin":Vector2i(16,18),"columns":6,"column_step":6,"row_step":6},
     "linh_forest":{"origin":Vector2i(16,126),"columns":6,"column_step":6,"row_step":6},
     "spirit_field":{"origin":Vector2i(130,72),"columns":8,"column_step":5,"row_step":7},
+    "alchemy_hall":{"origin":Vector2i(120,12),"columns":6,"column_step":6,"row_step":6},
     # Deterministic temporary village annex sites; not editable placement.
     "residence":{"origin":Vector2i(86,108),"columns":6,"column_step":6,"row_step":6}
 }
