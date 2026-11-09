@@ -47,6 +47,7 @@ on:
       - 'godot/src/simulation/cultivation/disciple_body_gate_transaction_v2.gd'
       - 'godot/src/presentation/p3/sect_isometric_world_v1.gd'
       - 'godot/tests/presentation/p3_o9_m2_production_rehearsal_test.gd'
+      - 'godot/tests/presentation/p3_b_second_worksite_assignment_test.gd'
       - 'godot/src/simulation/building/building_system.gd'
       - 'godot/src/presentation/p3_2_landscape_sect.gd'
       - 'godot/src/simulation/building/production_source_options_v1.gd'
@@ -150,6 +151,11 @@ jobs:
             bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script "res://tests/simulation/$script"
             bash tools/qa/run_godot_strict.sh --headless --path godot -s "res://tests/simulation/$script"
           done
+
+      - name: Gate B two genuine paid worksite selections and cold Save
+        run: |
+          bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://tests/presentation/p3_b_second_worksite_assignment_test.gd
+          bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/presentation/p3_b_second_worksite_assignment_test.gd
 
       - name: Run O9 M2 multi-producer rehearsal (strict renderer teardown)
         run: bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/presentation/p3_o9_m2_production_rehearsal_test.gd
