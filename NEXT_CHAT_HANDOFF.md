@@ -1,8 +1,15 @@
 # NEXT CHAT / CODEX HANDOFF — RELEASE TRAIN PR #72 → MAIN (2026-11-04)
 
+## SX-07B QA EVIDENCE UPDATE — 2026-11-09
+
+- Latest source/test packet SHA: `98642da36abb25f260de0e3dcaba5762d35804c0`, same PR #72 branch. The updated focused test adds five ID provenance checks, non-tradeable value-status checks, actual level-gated source-routing checks, and a fail-closed placeholder assertion. Source code is **CODE PUSHED; GODOT NOT ACCEPTED**.
+- **GitHub Actions actually ran and FAILED**, not merely unstarted: O9 at source SHA `ba891e0d09c43727085c38488323726552216e0f`, run [42585918532](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42585918532), completed failure. Its sole job lasted approximately 2 seconds and GitHub returned **zero step details**. Job-log retrieval returned 404 `BlobNotFound`. Seven workflows failed at this SHA. After the latest test-only packet, O9 [run 42586042509](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42586042509) also completed failure (approximately 2 seconds; zero returned steps). No valid Godot exit-0 proof exists; failure origin is **UNDETERMINED**. Do not assign it to GDScript or infrastructure without logs.
+- The local working environment has no `godot`/`godot4` binary and no full playable GitHub checkout; therefore official 4.7.2 headless reruns were **NOT executed locally**. Static source/contract and 630×270 JSON consistency checks are distinct from engine tests.
+- **NEXT RECOMMENDED:** obtain actual workflow logs or run official Godot 4.7.2 focused import/tests on a trusted available host; fix any deterministic compile/runtime defects before activating further recipe sources or widening the UI selection. Native Windows GUI/Android remain **PENDING USER**.
+
 ## CURRENT SX-07B HANDOFF — 2026-11-09
 
-- Repo: `vuanhtuan161094-byte/TongMonBaDao`, branch `integration/pve-p0-playable-ui-20261103`, PR #72 DRAFT. Baseline `c80457834fc7eeb5534441cdfab9fae0fddded56`; source code SHA `cc389cee15a57c44e4c03f223a954f1d503f6f95`; no branch, main merge, Save/schema change or VFX/equipment/technique edits.
+- Repo: `vuanhtuan161094-byte/TongMonBaDao`, branch `integration/pve-p0-playable-ui-20261103`, PR #72 DRAFT. Baseline `c80457834fc7eeb5534441cdfab9fae0fddded56`; source code SHA `98642da36abb25f260de0e3dcaba5762d35804c0`; no branch, main merge, Save/schema change or VFX/equipment/technique edits.
 - **Implemented, not Godot-accepted:** registered five previously preserved V5.5-D material IDs; Mine + Forest per-building output selection, real canonical timed/carry job payment/XP/warehouse and frozen-save behavior; source read-model and validators updated; focused transaction test + workflow trigger.
 - **Blocked intentionally:** GUI source picker not in authorized file allowlist; do not enable V5.6-G substitutions of Xích Đồng/Thanh Trúc/Thanh Trúc Mộc into existing pills until selectable through legitimate player command. Old eight pilot recipes remain. 111/119 recipes still DESIGN_HOLD.
 - **Counts:** 11/630 current runtime overlap (previous six plus five), 619 missing (112 preserved V5.5-D, 507 proposed/unrecovered), 270/270 G profiles not instantiated. Do not claim restored V5.4 source originals. See `docs/qa/SX07B_PRESERVED_MATERIALS_SOURCE_GATE_20261109.md`.
