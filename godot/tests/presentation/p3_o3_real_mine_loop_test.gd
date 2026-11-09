@@ -42,11 +42,13 @@ func _run() -> void:
     # decorative preview. A fresh mine must remain fully backward-compatible.
     var default_ore_button := ui.find_child("MineOre_thanh_thiet", true, false) as Button
     var advanced_ore_button := ui.find_child("MineOre_huyen_thiet", true, false) as Button
-    if default_ore_button == null or advanced_ore_button == null:
-        _fail("O3 Mine does not expose both canonical ore choices.")
+    var r1_preserved := ui.find_child("MineOre_ore_r01_c2",true,false) as Button
+    var r2_preserved := ui.find_child("MineOre_ore_r02_c2",true,false) as Button
+    if default_ore_button == null or advanced_ore_button == null or r1_preserved == null or r2_preserved == null:
+        _fail("O3 Mine missing four source-backed player-selectable ores.")
         return
-    if default_ore_button.disabled or not advanced_ore_button.disabled:
-        _fail("O3 Mine ore level gate is incorrect at Lv1.")
+    if default_ore_button.disabled or r1_preserved.disabled or not advanced_ore_button.disabled or not r2_preserved.disabled:
+        _fail("O3 Mine preserved-source level gates incorrect at Lv1.")
         return
     if buildings.mine_selected_ore(mine) != &"thanh_thiet":
         _fail("O3 new/old Mine must default to Thanh Thiet.")
@@ -72,6 +74,11 @@ func _run() -> void:
         return
     if buildings.mine_ore_batch_units(mine, &"huyen_thiet") >= buildings.resource_job_batch_units(mine):
         _fail("O3 Huyen Thiet must have its distinct reduced batch size.")
+        return
+    if not await _press_button("MineOre_ore_r02_c2"):
+        return
+    if buildings.mine_selected_ore(mine) != &"ore_r02_c2":
+        _fail("O3 preserved Truc Cot Sa click did not reach the canonical Mine.")
         return
     if not await _press_button("MineOre_thanh_thiet"):
         return

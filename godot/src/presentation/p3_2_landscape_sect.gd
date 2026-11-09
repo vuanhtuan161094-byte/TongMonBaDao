@@ -3245,6 +3245,7 @@ func _refresh_building_operation_content(rebuild_management_controls: bool = tru
             state.buildings[str(selected_production_instance_id)] as BuildingState
         )
     var mine_open := selected_building == SectMapPresentation.DEST_MINE
+    var material_picker_open := selected_building in [SectMapPresentation.DEST_MINE,SectMapPresentation.DEST_LINH_FOREST]
     var operation_headline := _building_operation_headline(operation_text)
     if mine_open:
         var mine_building := _selected_operation_building()
@@ -3268,6 +3269,13 @@ func _refresh_building_operation_content(rebuild_management_controls: bool = tru
                     mine_building.level, ore_name, batch_units, available_units, primary_status
                 ]
     elif selected_building == SectMapPresentation.DEST_LINH_FOREST:
+        var forest_building := _selected_operation_building()
+        if forest_building != null:
+            var forest_system := BuildingSystem.new()
+            var chosen := forest_system.forest_selected_material(forest_building)
+            operation_headline = "SẢN XUẤT · LINH LÂM Lv%d\n%s · ×%d / mẻ · Kho %d" % [
+                forest_building.level,ResourceRegistry.new().display_name(chosen),
+                forest_system.forest_material_batch_units(forest_building,chosen),_warehouse_available(chosen)]
         var live_status := _active_resource_worksite_status(selected_building)
         for raw_status_line in live_status.split("\n"):
             var status_line := str(raw_status_line).strip_edges()
@@ -3276,7 +3284,7 @@ func _refresh_building_operation_content(rebuild_management_controls: bool = tru
                 break
     building_operation_body.text = operation_headline + feedback
     building_operation_body.tooltip_text = operation_text + feedback
-    building_operation_body.size.y = 66.0 if mine_open else 150.0
+    building_operation_body.size.y = 66.0 if material_picker_open else 150.0
     building_operation_body.clip_text = false
     _refresh_mine_ore_hero()
     _refresh_building_operation_art()
@@ -3497,8 +3505,8 @@ func _refresh_building_operation_metrics() -> void:
                 var ore_id := buildings.mine_selected_ore(building)
                 output_text = "%d %s" % [produced, ResourceRegistry.new().display_name(ore_id)]
             elif building.building_type == BuildingSystem.TYPE_LINH_FOREST:
-                var forest_resource := StringName(definition.get("resource_id", ""))
-                output_text = "%d %s" % [produced, ResourceRegistry.new().display_name(forest_resource)]
+                var forest_resource := buildings.forest_selected_material(building)
+                output_text = "%d đơn vị tổng (đang chọn %s)" % [produced,ResourceRegistry.new().display_name(forest_resource)]
             else:
                 output_text = "%d đơn vị" % produced
             output_tooltip = "Tổng sản lượng đã ghi nhận sau lần nhập Kho thành công theo bộ đếm BuildingSystem. Đây không phải tồn kho hiện tại; mẻ đang chạy và ETA xem ở mục Tiến độ."
@@ -4689,59 +4697,67 @@ func _build_lodging_expansion_control() -> void:
     row.add_child(button)
 
 func _refresh_mine_ore_hero() -> void:
+    # One canonical first-screen selector for all existing Mine/Forest outputs.
     var picker := building_operation_panel.get_node_or_null("MineOreHero") as HBoxContainer
     if picker == null:
         return
-    picker.visible = selected_building == SectMapPresentation.DEST_MINE
+    var is_mine := selected_building == SectMapPresentation.DEST_MINE
+    picker.visible = is_mine or selected_building == SectMapPresentation.DEST_LINH_FOREST
     if not picker.visible:
         return
     for child in picker.get_children():
         picker.remove_child(child)
         child.queue_free()
-    var system := BuildingSystem.new()
-    var mine := _selected_operation_building()
-    if mine == null:
+    var bs := BuildingSystem.new()
+    var site := _selected_operation_building()
+    if site == null:
         return
-    var selected := system.mine_selected_ore(mine)
-    var registry := ResourceRegistry.new()
-    for ore_key in ["thanh_thiet", "huyen_thiet"]:
-        var ore_id := StringName(ore_key)
-        var option: Dictionary = BuildingSystem.MINE_ORE_OPTIONS[ore_key]
-        var required_level := int(option.get("required_level", 1))
-        var unlocked := mine.level >= required_level
-        var chosen := selected == ore_id
-        var ore_name := registry.display_name(ore_id)
+    var current := bs.mine_selected_ore(site) if is_mine else bs.forest_selected_material(site)
+    var options: Dictionary = BuildingSystem.MINE_ORE_OPTIONS if is_mine else BuildingSystem.FOREST_MATERIAL_OPTIONS
+    var keys := ["thanh_thiet","ore_r01_c2","huyen_thiet","ore_r02_c2"] if is_mine else ["linh_moc","forest_r01_wood2","forest_r02_wood","forest_r02_wood2"]
+    for key in keys:
+        var resource := StringName(key)
+        var min_level := int(options[key].get("required_level",1))
+        var unlocked := site.level >= min_level
+        var chosen := current == resource
+        var batch := bs.mine_ore_batch_units(site,resource) if is_mine else bs.forest_material_batch_units(site,resource)
         var button := Button.new()
-        button.name = "MineOre_%s" % ore_key
+        button.name = "%s_%s" % ["MineOre" if is_mine else "ForestMaterial",key]
         button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-        button.custom_minimum_size = Vector2(0, 74)
-        button.text = "%s %s\n×%d / lượt · %s" % [
-            "◆" if chosen else "◇",
-            ore_name, system.mine_ore_batch_units(mine, ore_id),
-            "Đã chọn" if chosen else ("Cần Mỏ Lv%d" % required_level if not unlocked else "Chọn khai thác")
-        ]
-        button.tooltip_text = "Chỉ mẻ mới đổi khoáng; mẻ đang chạy giữ nguyên tài nguyên đã ghi."
+        button.custom_minimum_size = Vector2(0,74)
+        button.text = "%s %s\n×%d/lượt · %s" % [
+            "◆" if chosen else "◇",ResourceRegistry.new().display_name(resource),batch,
+            "Đã chọn" if chosen else ("Lv%d" % min_level if not unlocked else "Chọn")]
+        button.tooltip_text = "Chỉ đổi đầu ra lượt mới; mẻ đang chạy vẫn giữ nguyên nguyên liệu, số lượng, ETA, receipt."
         button.disabled = not unlocked
-        button.add_theme_font_size_override("font_size", 14)
-        button.add_theme_color_override("font_color", PAPER_LIGHT if chosen else INK)
-        button.add_theme_color_override("font_disabled_color", Color(0.39, 0.36, 0.30))
-        button.add_theme_stylebox_override("normal", _style(
-            JADE_DARK if chosen else Color(0.91, 0.85, 0.69),
-            GOLD if chosen else Color(0.55, 0.45, 0.28), 2, 9
-        ))
-        button.pressed.connect(Callable(self, "_select_mine_ore_from_ui").bind(ore_id))
+        button.add_theme_font_size_override("font_size",12)
+        button.add_theme_color_override("font_color",PAPER_LIGHT if chosen else INK)
+        button.add_theme_color_override("font_disabled_color",Color(0.39,0.36,0.30))
+        button.add_theme_stylebox_override("normal",_style(
+            JADE_DARK if chosen else Color(0.91,0.85,0.69),
+            GOLD if chosen else Color(0.55,0.45,0.28),2,9))
+        if is_mine:
+            button.pressed.connect(Callable(self,"_select_mine_ore_from_ui").bind(resource))
+        else:
+            button.pressed.connect(Callable(self,"_select_forest_material_from_ui").bind(resource))
         picker.add_child(button)
 
 func _select_mine_ore_from_ui(ore_id: StringName) -> void:
-    var system := BuildingSystem.new()
-    var mine := system.primary_building(state, BuildingSystem.TYPE_MINE)
-    if mine == null:
+    var bs := BuildingSystem.new()
+    var site := _selected_operation_building()
+    if site == null or site.building_type != BuildingSystem.TYPE_MINE:
         return
-    var result := system.select_mine_ore(state, mine.id, ore_id)
-    if bool(result.get("ok", false)):
-        building_management_feedback = "Đã chọn %s cho các lượt mới." % ResourceRegistry.new().display_name(ore_id)
-    else:
-        building_management_feedback = "Không thể chọn khoáng: %s" % str(result.get("reason", "không hợp lệ"))
+    var result := bs.select_mine_ore(state,site.id,ore_id)
+    building_management_feedback = ("Đã chọn %s cho lượt mới." % ResourceRegistry.new().display_name(ore_id)) if bool(result.get("ok",false)) else ("Không thể chọn khoáng: %s" % str(result.get("reason","không hợp lệ")))
+    _refresh_building_operation_content()
+
+func _select_forest_material_from_ui(material_id: StringName) -> void:
+    var bs := BuildingSystem.new()
+    var site := _selected_operation_building()
+    if site == null or site.building_type != BuildingSystem.TYPE_LINH_FOREST:
+        return
+    var result := bs.select_forest_material(state,site.id,material_id)
+    building_management_feedback = ("Đã chọn %s cho lượt mới." % ResourceRegistry.new().display_name(material_id)) if bool(result.get("ok",false)) else ("Không thể chọn lâm sản: %s" % str(result.get("reason","không hợp lệ")))
     _refresh_building_operation_content()
 
 func _build_mine_upgrade_control() -> void:
@@ -6386,26 +6402,24 @@ func _linh_forest_operation_text() -> String:
     var batches := 0 if forest == null else maxi(int(forest.metrics.get("production_batches",0)),0)
     var units := 0 if forest == null else maxi(int(forest.metrics.get("units_produced",0)),0)
 
+    var selected_material := building_system.forest_selected_material(forest)
+    var selected_name := ResourceRegistry.new().display_name(selected_material)
     return (
         "SẢN XUẤT\n"
         + "Linh Lâm Lv%d\n"
-        + "Linh Mộc tồn (dùng): %s\n"
-        + "Mỗi lượt thu hoạch dự kiến: ×%d Linh Mộc\n"
-        + "Thực nhập Linh Kho: %d Linh Mộc · %d lượt\n"
+        + "%s tồn (dùng): %s\n"
+        + "Mẻ kế tiếp: ×%d %s\n"
+        + "Tổng nhập: %d đơn vị · %d lượt (có thể gồm nhiều loại)\n"
         + "Chỗ hoạt động: %d/%d\n"
         + "Đang làm Lâm Nghiệp: %d\n"
         + "Thành viên đội: %d\n\n"
         + "NHÂN SỰ\n%s\n\n"
-        + "Chu kỳ thật: đi tới Linh Lâm → thu hoạch → vận chuyển về Kho. Lv1 nền: 2 Linh Mộc mỗi chu kỳ."
+        + "Lượt mới theo vật liệu đã chọn; mẻ đang chạy giữ output cũ."
     ) % [
         0 if forest == null else forest.level,
-        _warehouse_pair(&"linh_moc"),
-        0 if forest == null else building_system.resource_job_batch_units(forest),
-        units,batches,
-        active_ids.size(),
-        slots,
-        _count_action(&"WORK_FORESTRY"),
-        members.size(),
+        selected_name,_warehouse_pair(selected_material),
+        0 if forest == null else building_system.forest_material_batch_units(forest,selected_material),selected_name,
+        units,batches,active_ids.size(),slots,_count_action(&"WORK_FORESTRY"),members.size(),
         "\n".join(lines)
     ]
 
@@ -6415,8 +6429,8 @@ func _resource_job_member_status(disciple: DiscipleState, profession_id: StringN
     if building != null:
         var building_system := BuildingSystem.new()
         var definition := building_system.definition_for(building)
-        var resource_id := building_system.mine_selected_ore(building) if building.building_type == BuildingSystem.TYPE_MINE else StringName(definition.get("resource_id",""))
-        output_quantity = building_system.mine_ore_batch_units(building, resource_id) if building.building_type == BuildingSystem.TYPE_MINE else building_system.resource_job_batch_units(building)
+        var resource_id := building_system.mine_selected_ore(building) if building.building_type == BuildingSystem.TYPE_MINE else building_system.forest_selected_material(building) if building.building_type == BuildingSystem.TYPE_LINH_FOREST else StringName(definition.get("resource_id",""))
+        output_quantity = building_system.mine_ore_batch_units(building,resource_id) if building.building_type == BuildingSystem.TYPE_MINE else building_system.forest_material_batch_units(building,resource_id) if building.building_type == BuildingSystem.TYPE_LINH_FOREST else building_system.resource_job_batch_units(building)
         output_name = ResourceRegistry.new().display_name(resource_id)
     var work_label := "lượt khai thác" if profession_id == WorkforceSystem.PROF_MINING else "lượt thu hoạch"
     var batch_text := "%s ×%d %s" % [work_label,output_quantity,output_name] if output_quantity > 0 else "chờ khởi sự"
@@ -6877,8 +6891,8 @@ func _warehouse_production_lines() -> Array[String]:
         var building: BuildingState = state.buildings[raw_id]
         var output_name := ""
         match building.building_type:
-            BuildingSystem.TYPE_MINE: output_name = "Thanh Thiết"
-            BuildingSystem.TYPE_LINH_FOREST: output_name = "Linh Mộc"
+            BuildingSystem.TYPE_MINE: output_name = "đơn vị khoáng (tổng)"
+            BuildingSystem.TYPE_LINH_FOREST: output_name = "đơn vị lâm sản (tổng)"
             BuildingSystem.TYPE_SPIRIT_FIELD: output_name = "nông sản gộp"
             _: continue
         var batches := maxi(int(building.metrics.get("production_batches",0)),0)

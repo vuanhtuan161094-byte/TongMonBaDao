@@ -68,6 +68,43 @@ func _run() -> void:
     if upgrade == null:
         _fail("O7 Linh Lam does not expose its real upgrade control.")
         return
+    # Source picker QA: test-only Lv10 probe, then restore fresh Lv1 and
+    # original Linh Moc BEFORE the paid real job / SaveService regression.
+    var base_option := ui.find_child("ForestMaterial_linh_moc",true,false) as Button
+    var r1_option := ui.find_child("ForestMaterial_forest_r01_wood2",true,false) as Button
+    var r2_option := ui.find_child("ForestMaterial_forest_r02_wood",true,false) as Button
+    var r2b_option := ui.find_child("ForestMaterial_forest_r02_wood2",true,false) as Button
+    if base_option == null or r1_option == null or r2_option == null or r2b_option == null:
+        _fail("O7 Forest picker missing one of four real resources.")
+        return
+    if base_option.disabled or r1_option.disabled or not r2_option.disabled or not r2b_option.disabled:
+        _fail("O7 Forest picker misrepresents real source level gates.")
+        return
+    if not await _press("ForestMaterial_forest_r01_wood2"):
+        return
+    if buildings.forest_selected_material(forest) != &"forest_r01_wood2":
+        _fail("O7 Forest R1 player click did not change canonical output.")
+        return
+    var serialized := BuildingState.from_dict(forest.to_dict()) as BuildingState
+    if buildings.forest_selected_material(serialized) != &"forest_r01_wood2":
+        _fail("O7 Forest output choice was lost in BuildingState persistence.")
+        return
+    forest.level = 10
+    ui.call("_refresh_building_operation_content")
+    await process_frame
+    if not await _press("ForestMaterial_forest_r02_wood2"):
+        return
+    if buildings.forest_selected_material(forest) != &"forest_r02_wood2":
+        _fail("O7 Forest R2 player click did not reach the backend.")
+        return
+    if not await _press("ForestMaterial_linh_moc"):
+        return
+    forest.level = 1
+    ui.call("_refresh_building_operation_content")
+    await process_frame
+    if buildings.forest_selected_material(forest) != &"linh_moc":
+        _fail("O7 Forest output was not restored before real-loop QA.")
+        return
     if not await _press("Group_forestry_crew_%s" % str(worker_id)):
         return
     if worker.work_group_id != &"forestry_crew" or not buildings.active_worker_ids(state, forest).has(worker_id):
