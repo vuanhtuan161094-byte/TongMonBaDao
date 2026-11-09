@@ -151,8 +151,8 @@ jobs:
             bash tools/qa/run_godot_strict.sh --headless --path godot -s "res://tests/simulation/$script"
           done
 
-      - name: Run O9 M2 multi-producer rehearsal (track renderer shutdown debt)
-        run: bash tools/qa/run_godot_strict.sh --allow-o9-test-teardown-rid-leaks --headless --path godot -s res://tests/presentation/p3_o9_m2_production_rehearsal_test.gd
+      - name: Run O9 M2 multi-producer rehearsal (strict renderer teardown)
+        run: bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/presentation/p3_o9_m2_production_rehearsal_test.gd
 
       - name: Run O8 Alchemy regression
         run: bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/presentation/p3_o8_alchemy_loop_test.gd
