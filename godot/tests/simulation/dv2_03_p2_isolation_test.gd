@@ -167,7 +167,8 @@ func _run() -> void:
         "V2 HOLD refilled expedition stamina."):
         return
 
-    # BREAKTHROUGH action must never call the old P2 attempt for a V2 owner.
+    # BREAKTHROUGH for a floor-1 V2 owner must fail the real V5.7 gate,
+    # never call the legacy P2 gate or credit a phantom breakthrough.
     var old_stage := disciple.cultivation_stage_index
     var old_p2_xp := disciple.cultivation_progress
     var old_hp := disciple.hp
@@ -182,7 +183,7 @@ func _run() -> void:
         absf(disciple.stamina-old_stamina)<0.000001 and
         int(disciple.v2_realm_progress["cultivation"]["realm"])==int(old_v2["cultivation"]["realm"]) and
         int(disciple.v2_realm_progress["cultivation"]["floor"])==int(old_v2["cultivation"]["floor"]) and
-        str(blocked_gate.get("reason",""))=="v2_breakthrough_content_not_authorized",
+        str(blocked_gate.get("reason",""))=="gate_not_at_final_floor",
         "V2 BREAKTHROUGH leaked into the P2 gate or mutated V2 without authored content."):
         return
 

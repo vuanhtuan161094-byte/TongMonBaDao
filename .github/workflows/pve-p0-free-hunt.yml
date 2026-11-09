@@ -12,6 +12,7 @@ on:
       - 'godot/src/presentation/p3_2_landscape_sect.gd'
       - 'godot/tests/presentation/pve_p0_ui_player_entry_test.gd'
       - 'godot/tests/presentation/pve_aux02_world_input_contract_test.gd'
+      - 'godot/tests/presentation/p3_2_live_modular_map_test.gd'
       - 'godot/tests/simulation/pve_p0_*'
       - 'godot/tests/simulation/one_game_r3_continuous_save_test.gd'
       - 'tools/windows/run/Start-TRI03Game.ps1'

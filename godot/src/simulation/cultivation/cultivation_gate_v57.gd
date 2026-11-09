@@ -3,7 +3,7 @@ extends RefCounted
 
 # SX-04: one real Tu Vi major-gate transaction. No optional pill is needed:
 # base=25%, pity +5pp/failure, -10% floor-10 XP on failure.
-# Optional graded breakthrough pill adds +15/25/35/45 percentage points,
+# Optional graded breakthrough pill adds +5/+6/+7/+8 percentage points,
 # and is debited from the canonical Warehouse exactly once per attempted gate.
 const MAX_REQUEST_LENGTH := 160
 

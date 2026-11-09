@@ -204,25 +204,39 @@ func _run() -> void:
         "V2 summary cultivation bypassed the shared busy guard."):
         return
 
-    # Persist a denied order during a pending timed job and cold reload.
-    ui.call("_autosave_runtime")
-    if not _check(FileAccess.file_exists(SAVE_PATH),
-        "Save file missing after denied busy command."):
+    # The automated test advances simulation manually; re-anchor wall time
+    # and await the canonical async SaveService barrier before scene teardown.
+    state.runtime_last_wall_unix = int(Time.get_unix_time_from_system())
+    var saved_result: Dictionary = await ui.call("_save_runtime_async_barrier")
+    if not _check(bool(saved_result.get("ok",false)) and FileAccess.file_exists(SAVE_PATH),
+        "Canonical SaveService barrier failed after denied busy command."):
         return
     _dispose_scene()
     await process_frame
     if not await _open_scene():
         return
     var restored: DiscipleState = state.disciples[chosen]
+    var restored_timer := buildings.active_resource_timer_for_worker(state,chosen)
     if not _check(restored.v2_birth_profile == v2_birth
         and restored.work_cycle_state.is_empty()
-        and buildings.active_resource_timer_for_worker(state,chosen) == before_timer
+        and restored_timer == before_timer
         and restored.direct_command == before_command
         and restored.worksite_building_id == before_worksite
         and str(restored.v2_realm_progress["training_policy"]) == before_policy
         and _close(float(restored.v2_realm_progress["cultivation"]["xp"]), before_xp)
         and warehouse.quantity(state, &"thanh_thiet") == before_ore,
         "Save/reload changed V2 authority or pending Mine timer."):
+        print("GP02A_RESTORE_FACTS birth=",restored.v2_birth_profile == v2_birth,
+            " cycle_empty=",restored.work_cycle_state.is_empty(),
+            " timer_equal=",restored_timer == before_timer,
+            " timer_before=",var_to_str(before_timer),
+            " timer_after=",var_to_str(restored_timer),
+            " command_equal=",restored.direct_command == before_command,
+            " worksite_equal=",restored.worksite_building_id == before_worksite,
+            " policy_equal=",str(restored.v2_realm_progress["training_policy"]) == before_policy,
+            " xp_before=",before_xp," xp_after=",restored.v2_realm_progress["cultivation"]["xp"],
+            " ore_before=",before_ore,
+            " ore_after=",warehouse.quantity(state,&"thanh_thiet"))
         return
 
     scheduler = (ui.get("runtime_session") as LiveGameRuntimeV2).scheduler()
