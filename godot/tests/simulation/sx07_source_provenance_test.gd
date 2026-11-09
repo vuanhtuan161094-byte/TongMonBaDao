@@ -85,5 +85,14 @@ func _run() -> void:
                         plan.get("requirements",{}))
                     _check(bool(route.get("ok",false)),
                         "Q%d grade BOM has real sources: %s / %s" % [grade,recipe,route])
+                    var cost := system.alchemy_batch_cost_reference(
+                        state,hall.id,recipe,10)
+                    _check(bool(cost.get("ok",false)),
+                        "Q%d cost reference has positive priced inputs: %s / %s" % [
+                            grade,recipe,cost])
+                    _check(int(cost.get("output_quantity",0)) ==
+                        (6 if str(MedicineCatalogueV2.parse_recipe(recipe).get("family","")) ==
+                            MedicineCatalogueV2.FAMILY_BREAK else 39),
+                        "Q%d batch quantity uses real profession bonus: %s" % [grade,recipe])
     print("SX07 SOURCE CONTRACT %d checks; failures=%d" % [checks,failures])
     quit(1 if failures > 0 else 0)
