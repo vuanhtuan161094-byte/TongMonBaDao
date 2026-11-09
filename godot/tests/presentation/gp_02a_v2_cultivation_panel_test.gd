@@ -217,26 +217,40 @@ func _run() -> void:
         return
     var restored: DiscipleState = state.disciples[chosen]
     var restored_timer := buildings.active_resource_timer_for_worker(state,chosen)
-    if not _check(restored.v2_birth_profile == v2_birth
+    # JSON restores number tokens as floats; verify canonical job identity,
+    # provenance, time and amount rather than Dictionary value representation.
+    var timer_equal := not restored_timer.is_empty() and (
+        str(restored_timer.get("job_id","")) == str(before_timer.get("job_id",""))
+        and str(restored_timer.get("worker_id","")) == str(before_timer.get("worker_id",""))
+        and str(restored_timer.get("profession_id","")) == str(before_timer.get("profession_id",""))
+        and str(restored_timer.get("resource_id","")) == str(before_timer.get("resource_id",""))
+        and int(restored_timer.get("started_tick",-1)) == int(before_timer.get("started_tick",-2))
+        and int(restored_timer.get("finish_tick",-1)) == int(before_timer.get("finish_tick",-2))
+        and int(restored_timer.get("output_quantity",-1)) == int(before_timer.get("output_quantity",-2))
+        and is_equal_approx(float(restored_timer.get("profession_xp_gain",-1.0)),
+            float(before_timer.get("profession_xp_gain",-2.0)))
+    )
+    var restored_ore := warehouse.quantity(state, &"thanh_thiet")
+    var restorable := restored.v2_birth_profile == v2_birth
         and restored.work_cycle_state.is_empty()
-        and restored_timer == before_timer
+        and timer_equal
         and restored.direct_command == before_command
         and restored.worksite_building_id == before_worksite
         and str(restored.v2_realm_progress["training_policy"]) == before_policy
         and _close(float(restored.v2_realm_progress["cultivation"]["xp"]), before_xp)
-        and warehouse.quantity(state, &"thanh_thiet") == before_ore,
-        "Save/reload changed V2 authority or pending Mine timer."):
+        and restored_ore == before_ore
+    if not restorable:
         print("GP02A_RESTORE_FACTS birth=",restored.v2_birth_profile == v2_birth,
             " cycle_empty=",restored.work_cycle_state.is_empty(),
-            " timer_equal=",restored_timer == before_timer,
+            " timer_equal=",timer_equal,
             " timer_before=",var_to_str(before_timer),
             " timer_after=",var_to_str(restored_timer),
             " command_equal=",restored.direct_command == before_command,
             " worksite_equal=",restored.worksite_building_id == before_worksite,
             " policy_equal=",str(restored.v2_realm_progress["training_policy"]) == before_policy,
             " xp_before=",before_xp," xp_after=",restored.v2_realm_progress["cultivation"]["xp"],
-            " ore_before=",before_ore,
-            " ore_after=",warehouse.quantity(state,&"thanh_thiet"))
+            " ore_before=",before_ore," ore_after=",restored_ore)
+    if not _check(restorable, "Save/reload changed V2 authority or pending Mine timer."):
         return
 
     scheduler = (ui.get("runtime_session") as LiveGameRuntimeV2).scheduler()
