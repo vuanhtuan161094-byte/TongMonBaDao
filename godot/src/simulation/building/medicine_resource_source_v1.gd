@@ -23,14 +23,14 @@ static func routes_for_ingredient(resource_id: StringName) -> Dictionary:
     # Existing canonical worksite deliveries. A mine can select ores only
     # after the actual Mine level is reached; the Forest is an earned job.
     var mine_sources: Array[Dictionary] = []
-    if ProductionSourceOptionsV1.MINE_ORE_OPTIONS.has(str(resource_id)):
-        var option: Dictionary = ProductionSourceOptionsV1.MINE_ORE_OPTIONS[str(resource_id)]
+    if BuildingSystem.MINE_ORE_OPTIONS.has(str(resource_id)):
+        var option: Dictionary = BuildingSystem.MINE_ORE_OPTIONS[str(resource_id)]
         mine_sources.append({"kind":"mine","building_type":"mine",
             "required_building_level":int(option.get("required_level",1)),
             "worker_profession":"mining","settlement":"sect_main_warehouse"})
     var forest_sources: Array[Dictionary] = []
-    if ProductionSourceOptionsV1.FOREST_MATERIAL_OPTIONS.has(str(resource_id)):
-        var forest_option: Dictionary = ProductionSourceOptionsV1.FOREST_MATERIAL_OPTIONS[str(resource_id)]
+    if BuildingSystem.FOREST_MATERIAL_OPTIONS.has(str(resource_id)):
+        var forest_option: Dictionary = BuildingSystem.FOREST_MATERIAL_OPTIONS[str(resource_id)]
         forest_sources.append({"kind":"linh_forest","building_type":"linh_forest",
             "required_building_level":int(forest_option.get("required_level",1)),
             "worker_profession":"forestry","settlement":"sect_main_warehouse"})

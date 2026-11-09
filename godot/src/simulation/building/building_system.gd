@@ -30,10 +30,20 @@ const MATERIAL_WOOD := "linh_moc"
 const MATERIAL_ORE := "thanh_thiet"
 # Only mineral resources already registered in ResourceRegistry are selectable.
 # Existing saves remain Thanh Thiết by default. Huyền Thiết unlocks at Mine Lv10.
-# Preserve public BuildingSystem constants for existing callers and saves.
-# The independent table removes the BuildingSystem <-> provenance parse cycle.
-const MINE_ORE_OPTIONS = ProductionSourceOptionsV1.MINE_ORE_OPTIONS
-const FOREST_MATERIAL_OPTIONS = ProductionSourceOptionsV1.FOREST_MATERIAL_OPTIONS
+const MINE_ORE_OPTIONS := {
+    "thanh_thiet": {"required_level": 1, "batch_percent": 100},
+    "ore_r01_c2": {"required_level": 1, "batch_percent": 100},
+    "huyen_thiet": {"required_level": 10, "batch_percent": 50},
+    "ore_r02_c2": {"required_level": 10, "batch_percent": 50}
+}
+# Existing real forestry timer/carry-cycle output is controlled per BUILDING,
+# not a new production authority. Legacy Forest defaults to Linh Moc.
+const FOREST_MATERIAL_OPTIONS := {
+    "linh_moc":{"required_level":1,"batch_percent":100},
+    "forest_r01_wood2":{"required_level":1,"batch_percent":100},
+    "forest_r02_wood":{"required_level":10,"batch_percent":100},
+    "forest_r02_wood2":{"required_level":10,"batch_percent":100}
+}
 const MATERIAL_TAM_MACH_BAN := "tam_mach_ban"
 const MATERIAL_HERB := "thanh_linh_thao"
 const MATERIAL_LINH_TUYEN_HEART := "linh_tuyen_chi_tam"
@@ -505,7 +515,7 @@ func forest_material_batch_units(forest: BuildingState, resource_id: StringName)
 func select_forest_material(state: SimulationState, forest_id: StringName, item_id: StringName) -> Dictionary:
     if state == null or not state.buildings.has(str(forest_id)):
         return {"ok":false,"reason":"forest_missing"}
-    var forest: BuildingState = state.buildings[str(forest_id]]
+    var forest: BuildingState = state.buildings[str(forest_id)]
     if forest.building_type != TYPE_LINH_FOREST:
         return {"ok":false,"reason":"wrong_building_type"}
     var choice: Dictionary = FOREST_MATERIAL_OPTIONS.get(str(item_id),{})
