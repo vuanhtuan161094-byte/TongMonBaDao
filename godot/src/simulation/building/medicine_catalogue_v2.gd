@@ -166,28 +166,32 @@ static func recipe_definition(id: StringName) -> Dictionary:
     if not _is_authored(family,realm):
         return {}
     var inputs: Dictionary = {}
+    var legacy_family := family in [FAMILY_HEAL,FAMILY_TUVI]
     if realm == 1:
         match family:
-            FAMILY_HEAL: inputs = {"thanh_linh_thao":3,"linh_moc":1}
-            FAMILY_TUVI: inputs = {"thanh_linh_thao":2,"linh_coc":1,"thanh_thiet":2,"linh_moc":1}
+            FAMILY_HEAL: inputs = {"thanh_linh_thao":3}
+            FAMILY_TUVI: inputs = {"thanh_linh_thao":2,"linh_coc":1}
             FAMILY_BODY: inputs = {"thanh_linh_thao":3,"thanh_thiet":2,"linh_moc":1}
             FAMILY_BREAK: inputs = {"thanh_linh_thao":3,"tinh_lang_bi":1,"linh_moc":1}
     elif realm == 2:
         match family:
-            FAMILY_HEAL: inputs = {"tu_van_thao":2,"thanh_linh_thao":2,"linh_moc":1}
-            FAMILY_TUVI: inputs = {"tu_van_thao":2,"linh_coc":2,"huyen_thiet":1,"linh_moc":1}
+            FAMILY_HEAL: inputs = {"tu_van_thao":2,"thanh_linh_thao":2}
+            FAMILY_TUVI: inputs = {"tu_van_thao":2,"linh_coc":2}
             FAMILY_BODY: inputs = {"tu_van_thao":2,"huyen_thiet":2,"linh_moc":1}
             FAMILY_BREAK: inputs = {"tu_van_thao":3,"tinh_lang_bi":2,"linh_moc":1}
     if inputs.is_empty():
         return {}
+    return {}
     return {
         "name":str(definition(item_id(family,realm,1)).get("name","")),
         "inputs":inputs,
         "output_resource_id":str(item_id(family,realm,1)),
-        "output_quantity":6 if family == FAMILY_BREAK else 36,
+        # The legacy 1-pill SX02 recipe is retained for old saves and B3 QA.
+        # V5.7 explicit Q1-Q4 mode uses the new 36/6-pill, 3-minute plan.
+        "output_quantity":1 if legacy_family else (6 if family == FAMILY_BREAK else 36),
         "required_profession_level":0 if realm == 1 else 3,
         "required_hall_level":1 if realm == 1 else 10,
-        "base_cycle_ticks":3,
+        "base_cycle_ticks":(6 if realm == 1 else 10) if legacy_family else 3,
         "quality_enabled":true
     }
 

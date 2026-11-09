@@ -1167,6 +1167,13 @@ func _v57_alchemy_plan(state: SimulationState, hall: BuildingState,
         return {"ok":false,"reason":"invalid_quality_recipe"}
     if hall.level < int(V57_QUALITY_HALL_LEVEL[requested-1])             or profession_level < int(V57_QUALITY_PROF_LEVEL[requested-1]):
         return {"ok":false,"reason":"quality_not_unlocked"}
+    # V5.6-G grade-mode BOM: 36 output pills consume earned mineral/wood
+    # as well as herbs, unlike the historical one-pill recipe.
+    if str(parsed["family"]) == MedicineCatalogueV2.FAMILY_HEAL:
+        requirements["linh_moc"] = int(requirements.get("linh_moc",0))+1
+    elif str(parsed["family"]) == MedicineCatalogueV2.FAMILY_TUVI:
+        requirements["thanh_thiet"] = int(requirements.get("thanh_thiet",0))+2
+        requirements["linh_moc"] = int(requirements.get("linh_moc",0))+1
     for raw_id in V57_QUALITY_CATALYSTS[requested].keys():
         requirements[raw_id] = int(requirements.get(raw_id,0)) + int(V57_QUALITY_CATALYSTS[requested][raw_id])
     var result_id := MedicineCatalogueV2.item_id(str(parsed["family"]),int(parsed["realm"]),requested)
@@ -1175,7 +1182,7 @@ func _v57_alchemy_plan(state: SimulationState, hall: BuildingState,
     return {
         "ok":true,"requirements":requirements,
         "output_resource_id":str(result_id),
-        "output_quantity":int(alchemy_registry.output_quantity(recipe_id)) + (
+        "output_quantity":(6 if str(parsed["family"]) == MedicineCatalogueV2.FAMILY_BREAK else 36) + (
             int(profession_level/20) if str(parsed["family"]) == MedicineCatalogueV2.FAMILY_BREAK
             else 3*int(profession_level/10)
         ),
