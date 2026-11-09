@@ -1,5 +1,12 @@
 # NEXT CHAT / CODEX HANDOFF — RELEASE TRAIN PR #72 → MAIN (2026-11-04)
 
+## PR72 P3.6A/O9 RID TEARDOWN FIX — 2026-11-09 — STRICT GODOT 4.7.2 PASS
+
+- **Latest tested code SHA `86860cc7d710e339f80a4af65a40d759f3e82d72`**, PR #72 Draft. Orphan `DiscipleTabContentText` Label on equipment tab identified by [verbose leak run #42599146902](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42599146902); UI code avoids constructing this unparented label. Remove obsolete renderer waiver entirely; both O9/P3.6A must reject leaked RIDs.
+- **[Full O9 run #42599906345](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42599906345) SUCCESS**: official Godot import, SX07B/SX07, SaveService, medicine, V57, O9 M2, O8, O7, P3.6A all `GODOT_STRICT_PASS`; no RID exceptions. **[P3.6A Preview #42599756093 attempt 2](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42599756093) SUCCESS** with `--verbose` strict leak audit and 1280×720 scene capture; first attempt failed during CSV asset import with a native `double free or corruption (out)`, exit 134, retry clean; don't mark importer root fixed.
+- **[O7 independent #42599756028](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42599756028) SUCCESS. [O8 independent #42599756106](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42599756106) FAILURE** after functional O8/O7/P3.6A PASS due to `SX03 SOURCE-CONSUMER CONTRACT FAIL (9/202)`, untouched outside HUD/teardown scope. Next separate owner decision: investigation/repair of the 9 SX03/BAL-04A mismatches without invented sources, balance or Save edits. Windows GUI and Android physical playthrough and owner image acceptance **PENDING USER**; no new branch, no main merge.
+- Test-only source transition after SHA `1cd81111` is strict-wrapper+workflow tightening at SHA `86860cc7`; no gameplay or SaveService behavior changed. Any later docs-only commits must retain the tested SHA separately from HEAD.
+
 ## PR72 P3.6A HUD PASS / OPEN TEARDOWN + SX03 DEBTS — 2026-11-09
 
 - **Runtime QA SHA:** `7228dfec084e58b360c2ca9d3a1370cbe91cf2aa` on PR #72 Draft. Only `p3_2_landscape_sect.gd` presentation changed: no routine floating status tags, panel focus hides text, one bounded transient ambient bubble, tooltip/profile preserve canonical work status. No gameplay/Save/test changes.
