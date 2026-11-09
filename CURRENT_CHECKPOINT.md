@@ -1,4 +1,17 @@
-# CURRENT CHECKPOINT — ONE GAME → MAIN (2026-11-04)
+# CURRENT CHECKPOINT — ONE GAME → MAIN (2026-11-04) 
+
+## ACTIONS RUNNER / BILLING GATE — 2026-11-09 — BLOCKED BEFORE GODOT
+
+- Active owner request: restore online official Godot 4.7.2 focused QA for PR #72; investigation only, **no gameplay, workflow or Save edits**, no merge/new branch.
+- Exact checked branch HEAD before docs: `f7138f420268dd1152131173f92a81e19eab3f36`. Repository visibility `private`; repository permission is admin, but GitHub connector provides **NO read/write access to the account's Billing & Licensing usage/budgets or repository Actions permissions**.
+- On run [42586042509](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42586042509), failed original attempt 1 (source SHA `98642da36abb25f260de0e3dcaba5762d35804c0`, job `129055996498`): ~2 s, `runner_name=""`, `steps=[]`. Job log returned 404 `BlobNotFound`.
+- **Controlled rerun invoked and accepted** using GitHub Actions API (`success=true`). Attempt **2** began `2026-11-09T08:45:37Z`, job `129063295431`, completed FAILURE after ~2 s, `runner_name=""`, `steps=[]`. No Checkout, Godot installation, import, script test or Save regression executed. This rerun tests the **old source SHA**, not the latest PR HEAD.
+- Cross-workflow evidence: O9, `P3.7 Backend`, and `Poison V3 Video` runs of 2026-11-09 similarly failed before any runner step; the most recent 100 overall Actions runs are marked failure. Historical run [41597472120](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/41597472120) on 2026-11-03 had a real GitHub-hosted runner and all eight named steps successfully completed, including official Godot 4.7.2 backend tests. Thus prior Actions execution worked; current job creation/runner admission is blocked.
+- Official GitHub status at investigation showed Actions operational; **no confirmed global incident** accounts for this repository's symptom. Highest-priority suspected conditions: **private repo Actions included-minute exhaustion/budget hard-stop/billing authorization, repository/account Actions disabled policy or GitHub runner provisioning fault.** These are hypotheses, NOT a verified billing root cause. Do not label gameplay, Godot or specific workflow YAML as failed when `steps=[]`.
+- **OWNER UI ACTION REQUIRED:** GitHub profile -> Settings -> Billing & Licensing / https://github.com/settings/billing -> Actions usage and Budgets and alerts (look for spent included compute, exhausted Actions product/repository budgets and `Stop usage when budget limit is reached`); repo Settings -> Actions -> General -> permitted actions and enabled Actions. Check run-page banner/annotation for account-disabled or billing failure. If GitHub explicitly says Actions disabled by GitHub, contact GitHub Support; toggling repo settings will not restore access. Do not automatically increase budget or expose private repo; such changes require owner consent.
+- **BLOCKED exact-SHA online QA:** once GitHub assigns an actual runner and at least `Set up job` succeeds, run official 4.7.2 import and focused `sx07b_preserved_source_job_test.gd`, `sx07_source_provenance_test.gd`, `sx02_medicine_catalogue_test.gd`, plus affected Mine/Forest/Save regressions. Collect job ID, SHA, exit codes and logs. Distinguish HEAD at runtime from old rerun. Windows native GUI and Android physical test remain **PENDING USER**.
+- **NEXT:** resolve Actions admission (budget/policy/support), then run minimal online Godot focused QA. No new SX materials/recipes or UX work during this CI gate. **R2–R5 remain open**.
+
 
 ## SX-07B QA EVIDENCE UPDATE — 2026-11-09
 
