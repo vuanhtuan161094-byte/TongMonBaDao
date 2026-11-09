@@ -43,6 +43,26 @@ func _run() -> void:
         "realm 2 ore blocked before paid Mine Lv10")
     _check(not bool(bs.select_forest_material(state,forest.id,&"forest_r02_wood").get("ok",false)),
         "realm 2 wood blocked before paid Forest Lv10")
+    for row in CASES:
+        var material := StringName(row["resource"])
+        var definition := ResourceRegistry.new().definition(material)
+        _check(str(definition.get("source_provenance","")) == "V5.5-D_ID_PRESERVED",
+            "new item must be preserved, never invented")
+        _check(str(definition.get("value_status","")) ==
+            "V56_G_PROPOSED_REFERENCE_NOT_TRADEABLE",
+            "G reference price is not an approved trade price")
+        _check(economy.market_sell_price(material) == 0 \
+            and not EconomySystem.V2_MARKET_CATALOG.has(str(material)),
+            "earned new material cannot be exchanged as phantom Sect LT")
+        var provenance := MedicineResourceSourceV1.routes_for_ingredient(material)
+        var expected_key := "mines" if str(row["kind"]) == "mine" else "forests"
+        var routes: Array = provenance.get(expected_key,[])
+        _check(bool(provenance.get("ok",false)) and routes.size() == 1 \
+            and int(routes[0].get("required_building_level",0)) == int(row["level"]),
+            "earned source route and required upgrade level match design")
+    _check(not ResourceRegistry.new().has(&"v56g_herb_r03_main01"),
+        "unverified V5.6-G placeholder must remain outside runtime")
+
 
     var ids := state.disciples.keys()
     ids.sort()
