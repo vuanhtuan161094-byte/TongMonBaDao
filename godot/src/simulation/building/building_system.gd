@@ -1806,8 +1806,11 @@ func validate_invariants(state: SimulationState) -> Array[String]:
                 var earned_id := str(timer.get("resource_id",""))
                 var valid_earned_id := MINE_ORE_OPTIONS.has(earned_id) \
                     if building.building_type == TYPE_MINE else FOREST_MATERIAL_OPTIONS.has(earned_id)
+                var output_option: Dictionary = MINE_ORE_OPTIONS.get(earned_id,{}) \
+                    if building.building_type == TYPE_MINE else FOREST_MATERIAL_OPTIONS.get(earned_id,{})
                 if not valid_earned_id or not ResourceRegistry.DEFINITIONS.has(earned_id) \
-                        or int(timer.get("output_quantity",0)) <= 0:
+                        or int(timer.get("output_quantity",0)) <= 0 \
+                        or building.level < int(output_option.get("required_level",1)):
                     errors.append("Economy-A invalid frozen resource output identity/quantity.")
         if building.building_type == TYPE_ALCHEMY_HALL:
             var alchemy_data := _ensure_alchemy_state(building)
@@ -1890,10 +1893,14 @@ func validate_invariants(state: SimulationState) -> Array[String]:
                     var valid_resource := cycle_resource == expected_resource
                     if cycle_building.building_type == TYPE_MINE:
                         valid_resource = MINE_ORE_OPTIONS.has(str(cycle_resource)) \
-                            and ResourceRegistry.DEFINITIONS.has(str(cycle_resource))
+                            and ResourceRegistry.DEFINITIONS.has(str(cycle_resource)) \
+                            and cycle_building.level >= int(MINE_ORE_OPTIONS.get(
+                                str(cycle_resource),{}).get("required_level",1))
                     elif cycle_building.building_type == TYPE_LINH_FOREST:
                         valid_resource = FOREST_MATERIAL_OPTIONS.has(str(cycle_resource)) \
-                            and ResourceRegistry.DEFINITIONS.has(str(cycle_resource))
+                            and ResourceRegistry.DEFINITIONS.has(str(cycle_resource)) \
+                            and cycle_building.level >= int(FOREST_MATERIAL_OPTIONS.get(
+                                str(cycle_resource),{}).get("required_level",1))
                     if expected_resource == &"" or not valid_resource:
                         errors.append("%s has invalid resource-job output identity." % disciple.display_name)
                 elif profession == PROF_HERBALISM:
