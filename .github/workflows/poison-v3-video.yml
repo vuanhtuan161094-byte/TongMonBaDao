@@ -1,0 +1,88 @@
+name: Poison V3 Godot Combat Video Evidence
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - integration/pve-p0-playable-ui-20261103
+    paths:
+      - 'godot/tests/labs/combat_lab/poison_v3_video_capture.gd'
+      - 'tools/windows/qa/Test-PoisonLabHashCompatibility.ps1'
+      - 'tools/windows/run/OPEN_POISON_LAB.ps1'
+      - '.github/workflows/poison-v3-video.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install official SHA-pinned Godot 4.7.2 and video tools
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq xvfb ffmpeg
+          curl --fail --location --retry 3 --output /tmp/tmb_godot.zip "https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip"
+          echo "cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4  /tmp/tmb_godot.zip" | sha256sum --check --strict
+          unzip -q /tmp/tmb_godot.zip -d /tmp
+          sudo install -m 0755 /tmp/Godot_v4.7.2-stable_linux.x86_64 /usr/local/bin/godot
+          godot --version
+
+      - name: Test launcher SHA-256 compatibility without launching GUI
+        shell: pwsh
+        run: ./tools/windows/qa/Test-PoisonLabHashCompatibility.ps1
+
+      - name: Restore verified canonical Stage A images
+        shell: bash
+        run: |
+          set -euo pipefail
+          PACK="/tmp/tmb_stage_a_pack.zip"
+          cat .github/assets/p3/female_stage_a/part{01..14}.b64 .github/assets/p3/female_stage_a/part15a.b64 .github/assets/p3/female_stage_a/part15b.b64 .github/assets/p3/female_stage_a/part{16..20}.b64 | tr -d '\r\n\t ' | base64 --decode > "$PACK"
+          test "$(stat -c%s "$PACK")" -eq 44838
+          echo "6a4213b9129ffb3f438c21cbb5326672ddf8915323836bf80cb33b8e5fabfdca  $PACK" | sha256sum --check --strict
+          unzip -q "$PACK" -d .
+
+      - name: Import and parse official Godot 4.7.2 project
+        shell: bash
+        run: |
+          set -euo pipefail
+          godot --headless --path godot --import
+          godot --headless --path godot --check-only --script res://tests/labs/combat_lab/poison_v3_video_capture.gd
+
+      - name: Capture real Godot Combat Lab viewport and committed skill events
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/poison_video"
+          for branch in doc_cham co_doc duoc_doc; do
+            export TMB_POISON_VIDEO_BRANCH="$branch"
+            xvfb-run -a -s "-screen 0 1280x720x24" \
+              godot --path godot --resolution 1280x720 --fixed-fps 24 \
+              --write-movie "$RUNNER_TEMP/poison_video/${branch}.avi" \
+              -s res://tests/labs/combat_lab/poison_v3_video_capture.gd \
+              2>&1 | tee "$RUNNER_TEMP/poison_video/${branch}.log"
+            test -s "$RUNNER_TEMP/poison_video/${branch}.avi"
+            grep -q 'POISON_V3_VIDEO_RESULT=PASS_EVENTS_ONLY' "$RUNNER_TEMP/poison_video/${branch}.log"
+            ffmpeg -y -hide_banner -loglevel error \
+              -i "$RUNNER_TEMP/poison_video/${branch}.avi" \
+              -vf "fps=24,scale=1280:720" -c:v libx264 -preset fast -pix_fmt yuv420p \
+              "$RUNNER_TEMP/poison_video/${branch}.mp4"
+            ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1 "$RUNNER_TEMP/poison_video/${branch}.mp4"
+            rm "$RUNNER_TEMP/poison_video/${branch}.avi"
+          done
+
+      - name: Upload videos and immutable source-SHA logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: poison-v3-godot-movie-${{ github.sha }}
+          path: |
+            ${{ runner.temp }}/poison_video/*.mp4
+            ${{ runner.temp }}/poison_video/*.log
+          if-no-files-found: warn
+          retention-days: 14
