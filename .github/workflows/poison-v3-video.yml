@@ -11,6 +11,8 @@ on:
       - 'tools/windows/qa/Test-PoisonLabHashCompatibility.ps1'
       - 'tools/windows/run/OPEN_POISON_LAB.ps1'
       - '.github/workflows/poison-v3-video.yml'
+      - 'tools/qa/run_godot_strict.sh'
+      - 'godot/src/simulation/building/production_source_options_v1.gd'
   push:
     branches:
       - integration/pve-p0-playable-ui-20261103
@@ -19,6 +21,8 @@ on:
       - 'tools/windows/qa/Test-PoisonLabHashCompatibility.ps1'
       - 'tools/windows/run/OPEN_POISON_LAB.ps1'
       - '.github/workflows/poison-v3-video.yml'
+      - 'tools/qa/run_godot_strict.sh'
+      - 'godot/src/simulation/building/production_source_options_v1.gd'
 
 permissions:
   contents: read
@@ -60,8 +64,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          godot --headless --path godot --import
-          godot --headless --path godot --check-only --script res://tests/labs/combat_lab/poison_v3_video_capture.gd
+          bash tools/qa/run_godot_strict.sh --headless --path godot --import
+          bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://tests/labs/combat_lab/poison_v3_video_capture.gd
 
       - name: Capture real Godot Combat Lab viewport and committed skill events
         shell: bash
@@ -71,7 +75,7 @@ jobs:
           for branch in doc_cham co_doc duoc_doc; do
             export TMB_POISON_VIDEO_BRANCH="$branch"
             xvfb-run -a -s "-screen 0 1280x720x24" \
-              godot --path godot --resolution 1280x720 --fixed-fps 24 \
+              bash tools/qa/run_godot_strict.sh --path godot --resolution 1280x720 --fixed-fps 24 \
               --write-movie "$RUNNER_TEMP/poison_video/${branch}.avi" \
               -s res://tests/labs/combat_lab/poison_v3_video_capture.gd \
               2>&1 | tee "$RUNNER_TEMP/poison_video/${branch}.log"
@@ -93,5 +97,6 @@ jobs:
           path: |
             ${{ runner.temp }}/poison_video/*.mp4
             ${{ runner.temp }}/poison_video/*.log
+            ${{ runner.temp }}/tmb_godot_strict/*.log
           if-no-files-found: warn
           retention-days: 14
