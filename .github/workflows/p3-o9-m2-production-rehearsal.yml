@@ -4,6 +4,8 @@ on:
   workflow_dispatch:
   pull_request:
     paths:
+      - 'godot/tests/simulation/sx07b_preserved_source_job_test.gd'
+      - 'godot/src/simulation/resource/resource_registry.gd'
       - 'godot/src/simulation/building/medicine_resource_source_v1.gd'
       - 'godot/src/simulation/building/alchemy_recipe_registry.gd'
       - 'godot/tests/simulation/sx07_source_provenance_test.gd'
@@ -24,6 +26,8 @@ on:
       - '.github/workflows/p3-o9-m2-production-rehearsal.yml'
   push:
     paths:
+      - 'godot/tests/simulation/sx07b_preserved_source_job_test.gd'
+      - 'godot/src/simulation/resource/resource_registry.gd'
       - 'godot/src/simulation/building/medicine_resource_source_v1.gd'
       - 'godot/src/simulation/building/alchemy_recipe_registry.gd'
       - 'godot/tests/simulation/sx07_source_provenance_test.gd'
@@ -97,6 +101,13 @@ jobs:
         run: |
           godot --headless --path godot --check-only --script res://tests/simulation/v57_sx_body_breakthrough_transaction_test.gd
           godot --headless --path godot -s res://tests/simulation/v57_sx_body_breakthrough_transaction_test.gd
+
+      - name: SX-07B original ID Mine/Forest job and cold Save
+        shell: bash
+        run: |
+          set -euo pipefail
+          godot --headless --path godot --check-only --script res://tests/simulation/sx07b_preserved_source_job_test.gd
+          godot --headless --path godot -s res://tests/simulation/sx07b_preserved_source_job_test.gd
 
       - name: SX-07 earned-source provenance and historical catalogue
         shell: bash
