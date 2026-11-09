@@ -96,18 +96,6 @@ jobs:
       - name: Parse O9 test
         run: bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://tests/presentation/p3_o9_m2_production_rehearsal_test.gd
 
-      - name: Parse and run V5.7 480-worksite regression
-        shell: bash
-        run: |
-          bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://tests/simulation/v57_worksite_scale_480_test.gd
-          bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/simulation/v57_worksite_scale_480_test.gd
-
-      - name: Run SX57 Body pill and Tu Vi gate receipts
-        shell: bash
-        run: |
-          bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://tests/simulation/v57_sx_body_breakthrough_transaction_test.gd
-          bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/simulation/v57_sx_body_breakthrough_transaction_test.gd
-
       - name: SX-07B original ID Mine/Forest job and cold Save
         shell: bash
         run: |
@@ -123,6 +111,27 @@ jobs:
             bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script "res://tests/simulation/$script"
             bash tools/qa/run_godot_strict.sh --headless --path godot -s "res://tests/simulation/$script"
           done
+
+      - name: Canonical SaveService and medicine runtime regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          for script in save_service_async_roundtrip_test.gd sx02_medicine_runtime_test.gd; do
+            bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script "res://tests/simulation/$script"
+            bash tools/qa/run_godot_strict.sh --headless --path godot -s "res://tests/simulation/$script"
+          done
+
+      - name: Parse and run V5.7 480-worksite regression
+        shell: bash
+        run: |
+          bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://tests/simulation/v57_worksite_scale_480_test.gd
+          bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/simulation/v57_worksite_scale_480_test.gd
+
+      - name: Run SX57 Body pill and Tu Vi gate receipts
+        shell: bash
+        run: |
+          bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://tests/simulation/v57_sx_body_breakthrough_transaction_test.gd
+          bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/simulation/v57_sx_body_breakthrough_transaction_test.gd
 
       - name: Run SX57 authoring contract
         shell: bash

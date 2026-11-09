@@ -37,8 +37,8 @@ func _run() -> void:
     d.current_action = &"EVALUATE"
     var body_item := MedicineCatalogueV2.item_id(MedicineCatalogueV2.FAMILY_BODY,1,1)
     _check(warehouse.add(state,body_item,1),"add one test Body pill")
-    var tuvi_before := d.v2_realm_progress["cultivation"].duplicate(true)
-    var body_before := d.v2_realm_progress["body"].duplicate(true)
+    var tuvi_before: Dictionary = d.v2_realm_progress["cultivation"].duplicate(true)
+    var body_before: Dictionary = d.v2_realm_progress["body"].duplicate(true)
     var taken := B3PillSatietyV1.consume(state,d,body_item,B3PillSatietyV1.next_sequence(d))
     _check(bool(taken.get("ok",false)),"Body pill commits using B3")
     _check(str(d.v2_realm_progress["body"]) != str(body_before),"Body EXP progressed")
