@@ -68,9 +68,14 @@ static func attempt(state: SimulationState, disciple_id: StringName, request_id:
     var old_max_hp := d.max_hp
     var rng := external_rng
     if rng == null:
-        rng = GameRng.new(state.seed)
-        if state.rng_state != 0:
-            rng.restore_seed_state(state.rng_state)
+        # The live scheduler already owns the canonical RNG stream. UI gate
+        # clicks must NOT advance state.rng_state independently, or its next
+        # step would overwrite it from a stale in-memory GameRng instance.
+        # Derive a deterministic request-specific substream instead.
+        var derived_seed := posmod(state.seed,2147483647)
+        for index in range(request_id.length()):
+            derived_seed = posmod(derived_seed*31+request_id.unicode_at(index),2147483647)
+        rng = GameRng.new(derived_seed)
     var old_rng_state := rng.snapshot_seed_state()
     var result := DiscipleRealmProgressV2.attempt_canonical_cultivation_breakthrough(
         d,rng,true,request_id,int(check.get("bonus_pp",0))
@@ -91,8 +96,8 @@ static func attempt(state: SimulationState, disciple_id: StringName, request_id:
         last["pill_bonus_pp"] = int(check.get("bonus_pp",0))
         history[history.size()-1] = last
         p["breakthrough_history"] = history
-    if external_rng == null:
-        state.rng_state = rng.snapshot_seed_state()
+    # External scheduler RNG advances normally; manual substreams never
+    # mutate that independent canonical stream.
     result["pill_spent"] = str(selected)
     result["bonus_pp"] = int(check.get("bonus_pp",0))
     return result
