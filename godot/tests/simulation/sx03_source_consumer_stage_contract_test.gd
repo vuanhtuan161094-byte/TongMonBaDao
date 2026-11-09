@@ -85,17 +85,37 @@ func _run() -> void:
             var ingredient := str(raw_input)
             _expect(int(inputs[raw_input]) > 0 and resources.has(StringName(ingredient)),
                 "recipe input is positive and valid: " + str(recipe_id) + " / " + ingredient)
-            _expect(produced.has(ingredient),
-                "every current alchemy ingredient is produced by real mine/forest/field: "
+            # Source truth includes level-gated ores, real instanced-map
+            # rewards and the paid daily market; monster hide cannot grow
+            # in a field. Existing source lookup is strictly read-only.
+            var route: Dictionary = MedicineResourceSourceV1.routes_for_ingredient(StringName(ingredient))
+            var route_count := 0
+            for channel in ["spirit_fields","mines","forests","npc_markets",
+                    "instanced_maps","continuous_pve_p0"]:
+                route_count += (route.get(channel,[]) as Array).size()
+            _expect(bool(route.get("ok",false)) and route_count > 0,
+                "every current ingredient has an implemented earned/paid source: "
                 + str(recipe_id) + " / " + ingredient)
+            if ingredient == "tinh_lang_bi":
+                _expect(not (route.get("instanced_maps",[]) as Array).is_empty(),
+                    "Tinh Lang Bi requires actual instanced HuntingMapV2 loot")
+            if ingredient == "huyen_thiet":
+                var mines: Array = route.get("mines",[])
+                _expect(not mines.is_empty() and int(mines[0].get("required_building_level",0)) == 10,
+                    "Huyen Thiet must remain a Mine Lv10 earned output")
             consumed[ingredient] = int(consumed.get(ingredient, 0)) + 1
 
-        # A craftable SKU must have a B3-recognized effect family, not just a name.
+        # Heal/Tu Vi/Body are B3 transactions. Breakthrough pills are
+        # consumed only by CultivationGateV57.attempt; B3 must reject them.
+        # The SX57 Body/Q4 Gate test separately proves the real debit/replay.
         var medicine := MedicineCatalogueV2.definition(output_id)
-        _expect(B3PillSatietyV1.COSTS.has(str(output_id))
-            or str(medicine.get("pill_family", "")) in
-                [MedicineCatalogueV2.FAMILY_HEAL, MedicineCatalogueV2.FAMILY_TUVI],
-            "crafted medicine has a functioning B3 heal/tuvi consumer: " + str(recipe_id))
+        var family := str(medicine.get("pill_family",""))
+        var b3_consumer := family in [MedicineCatalogueV2.FAMILY_HEAL,
+            MedicineCatalogueV2.FAMILY_TUVI,MedicineCatalogueV2.FAMILY_BODY]
+        var gate_consumer := family == MedicineCatalogueV2.FAMILY_BREAK and \
+            int(medicine.get("potency",0)) in MedicineCatalogueV2.BREAKTHROUGH_BONUS_PP
+        _expect(B3PillSatietyV1.COSTS.has(str(output_id)) or b3_consumer or gate_consumer,
+            "authored pill has a real B3 or Tu Vi gate consumer: " + str(recipe_id))
 
     for crop_output in crop_outputs.keys():
         _expect(consumed.has(str(crop_output)),
@@ -194,12 +214,18 @@ func _run() -> void:
     var future_tuvi := MedicineCatalogueV2.definition(
         MedicineCatalogueV2.item_id(MedicineCatalogueV2.FAMILY_TUVI, high_realm, 1))
     var first_floor := DiscipleProgressionBalanceV2.floor_cost(high_realm, 1)
-    _expect(int(future_tuvi.get("potency", 0)) ==
-        roundi(float(DiscipleProgressionBalanceV2.realm_total_xp(high_realm)) * 0.001),
-        "high-tier preview potency references actual per-realm XP requirement")
+    # BAL-04A V2 (0.1% realm total) is historical receipt math. V5.6 B3
+    # approved a newer, explicit per-realm Q1 table in Medicine V3.
+    var current_item := MedicineCatalogueV2.item_id(MedicineCatalogueV2.FAMILY_TUVI,high_realm,1)
+    var v56_q1 := int(MedicineCatalogueV2.V56_B3_Q1_XP[high_realm-1])
+    _expect(int(future_tuvi.get("potency", 0)) == v56_q1
+        and v56_q1 == 3668
+        and MedicineCatalogueV2.potency_for_version(current_item,MedicineCatalogueV2.PREVIOUS_VERSION) ==
+            roundi(float(DiscipleProgressionBalanceV2.realm_total_xp(high_realm))*0.001),
+        "current V3 realm-20 XP follows locked V5.6 table; V2 receipt math preserved")
     _expect(int(future_tuvi.get("potency", 0)) < first_floor,
         "future high-tier q1 medicine cannot skip a full local floor")
-    print("SX03 BAL04A proposed-future Tu Vi r20 dose = %.2f%% of floor-1 EXP;"
+    print("SX03 V3 current Tu Vi r20 dose = %.2f%% of floor-1 EXP;"
         % [100.0 * float(future_tuvi.get("potency", 0)) / float(maxi(first_floor, 1))])
     # No new recipes for r3..30 were created to make this test green.
 

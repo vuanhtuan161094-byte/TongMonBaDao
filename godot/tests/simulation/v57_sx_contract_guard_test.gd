@@ -33,7 +33,7 @@ func _run() -> void:
         "no Breakthrough Pill for terminal realm")
     _check(int(MedicineCatalogueV2.definition(MedicineCatalogueV2.item_id("heal",1,1))["satiety_cost"]) == 0,
         "new heal pill never spends cultivation/body budget")
-    _check(B3PillSatietyV1.CAPACITY == 2000000,"shared daily budget is 2 million")
+    _check(B3PillSatietyV1.CAPACITY == 1000000,"owner-locked daily shared cap remains 1 million")
     _check(DiscipleBreakthroughBalanceV2.CULTIVATION_BASE_CHANCE_PERCENT.size() == 29,
         "exactly 29 Tu Vi gates")
     for chance in DiscipleBreakthroughBalanceV2.CULTIVATION_BASE_CHANCE_PERCENT:

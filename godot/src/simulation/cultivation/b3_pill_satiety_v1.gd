@@ -2,10 +2,16 @@ class_name B3PillSatietyV1
 extends RefCounted
 
 # Owner-approved CARE pilot. One shared counter, one canonical scheduler day.
-const VERSION := 2
-const PREVIOUS_VERSION := 1
-const PREVIOUS_CAPACITY := 1000000
-const CAPACITY := 2000000
+# Current owner-locked per-disciple/day budget. V2 snapshots previously
+# stored 2,000,000; accept them unchanged as historical receipts, but no
+# further spends may exceed today's 1,000,000 cap. A new day's first commit
+# upgrades the embedded meter without changing SaveService or old receipts.
+const VERSION := 3
+const PREVIOUS_VERSION := 2
+const PREVIOUS_CAPACITY := 2000000
+const ORIGINAL_VERSION := 1
+const ORIGINAL_CAPACITY := 1000000
+const CAPACITY := 1000000
 const DAY_TICKS := 1440
 const COSTS := {"hoi_xuan_dan":10,"tu_khi_dan":25}
 const TUVI := 10000.0
@@ -155,9 +161,11 @@ static func validate(state: SimulationState, d: DiscipleState) -> String:
     if not DiscipleRealmProgressV2.progression_ready(d): return "satiety_without_v2_owner"
     for field in ["version","capacity","day","spent","sequence"]:
         if not whole(p.get(field)): return "invalid_satiety_"+field
+    var original_version := int(p["version"]) == ORIGINAL_VERSION and int(p["capacity"]) == ORIGINAL_CAPACITY
     var past_version := int(p["version"]) == PREVIOUS_VERSION and int(p["capacity"]) == PREVIOUS_CAPACITY
     var current_version := int(p["version"]) == VERSION and int(p["capacity"]) == CAPACITY
-    if not past_version and not current_version: return "unsupported_satiety_pilot"
+    if not original_version and not past_version and not current_version:
+        return "unsupported_satiety_pilot"
     if int(p["day"]) < 0 or int(p["day"]) > int(state.tick/DAY_TICKS) or int(p["spent"]) < 0 or int(p["spent"]) > int(p["capacity"]): return "invalid_satiety_day_or_spent"
     if int(p["sequence"]) < 0 or int(p["sequence"]) > MAX_SEQUENCE or not (p.get("receipt") is Dictionary): return "invalid_satiety_receipt_shape"
     var receipt: Dictionary = p["receipt"]

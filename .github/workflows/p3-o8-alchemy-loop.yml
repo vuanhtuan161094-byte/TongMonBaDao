@@ -18,6 +18,8 @@ on:
       - 'godot/tests/simulation/sx02_alchemy_profession_availability_test.gd'
       - 'godot/tests/simulation/sx03_source_consumer_stage_contract_test.gd'
       - 'godot/tests/simulation/sx03_bal04a_legacy_save_medicine_test.gd'
+      - 'godot/tests/simulation/sx03_satiety_cap_migration_test.gd'
+      - 'godot/tests/simulation/v57_sx_contract_guard_test.gd'
       - 'godot/src/simulation/building/alchemy_recipe_registry.gd'
       - 'godot/src/simulation/building/building_system.gd'
       - 'godot/src/simulation/state/building_state.gd'
@@ -115,7 +117,9 @@ jobs:
             res://tests/simulation/sx02_medicine_runtime_test.gd \
             res://tests/simulation/sx02_alchemy_profession_availability_test.gd \
             res://tests/simulation/sx03_source_consumer_stage_contract_test.gd \
-            res://tests/simulation/sx03_bal04a_legacy_save_medicine_test.gd; do
+            res://tests/simulation/sx03_bal04a_legacy_save_medicine_test.gd \
+            res://tests/simulation/sx03_satiety_cap_migration_test.gd \
+            res://tests/simulation/v57_sx_contract_guard_test.gd; do
             godot --headless --path godot --check-only --script "$script"
           done
 
@@ -126,6 +130,8 @@ jobs:
           godot --headless --path godot -s res://tests/simulation/sx02_medicine_catalogue_test.gd
           godot --headless --path godot -s res://tests/simulation/sx03_source_consumer_stage_contract_test.gd
           godot --headless --path godot -s res://tests/simulation/sx03_bal04a_legacy_save_medicine_test.gd
+          godot --headless --path godot -s res://tests/simulation/sx03_satiety_cap_migration_test.gd
+          godot --headless --path godot -s res://tests/simulation/v57_sx_contract_guard_test.gd
           godot --headless --path godot -s res://tests/simulation/sx01_pill_policy_test.gd
           godot --headless --path godot -s res://tests/simulation/sx02_medicine_runtime_test.gd
           godot --headless --path godot -s res://tests/simulation/sx02_alchemy_profession_availability_test.gd
