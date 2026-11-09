@@ -38,6 +38,62 @@ func _recruit(index: int) -> DiscipleState:
     disciple.current_action = &"EVALUATE"
     return disciple
 
+func _prepare_ninth_real_bed() -> bool:
+    var builder := BuildingSystem.new()
+    var houses := SectResidenceSystemV1.all_houses(state)
+    if not _check(houses.size() >= 1, "E3 needs the real starter Residence."):
+        return false
+    var house: BuildingState = houses[0]
+    var wh := WarehouseSystem.new()
+    var cost := builder.upgrade_cost(house)
+    if cost.is_empty():
+        return _check(false, "E3 starter Residence has no actual upgrade cost.")
+    var need_wood := int(cost.get(BuildingSystem.MATERIAL_WOOD, 0))
+    var wood_id := StringName(BuildingSystem.MATERIAL_WOOD)
+    if wh.available_quantity(state, wood_id) < need_wood:
+        # Earn any shortfall from the canonical Forest job/timer. No fake
+        # materials are injected into the game or the QA fixture.
+        var forest := builder.primary_building(state, BuildingSystem.TYPE_LINH_FOREST)
+        if not _check(forest != null, "E3 missing real Forest to earn Residence wood."):
+            return false
+        var workers := builder.active_worker_ids(state, forest)
+        if not _check(not workers.is_empty(), "E3 Forest needs an assigned worker to earn wood."):
+            return false
+        var worker_id: StringName = workers[0]
+        var workforce := WorkforceSystem.new()
+        for _minute in range(120):
+            if wh.available_quantity(state, wood_id) >= need_wood:
+                break
+            if builder.active_resource_timer_for_worker(state, worker_id).is_empty():
+                var worked := workforce.perform_work(state, state.disciples[worker_id], WorkforceSystem.PROF_FORESTRY)
+                if not _check(bool(worked.get("ok", false)),
+                        "E3 real Forest production failed: " + str(worked)):
+                    return false
+            state.tick += 1
+            builder.process_tick(state)
+    if not _check(wh.available_quantity(state, wood_id) >= need_wood
+            and wh.available_quantity(state, StringName(BuildingSystem.MATERIAL_ORE))
+                >= int(cost.get(BuildingSystem.MATERIAL_ORE, 0)),
+            "E3 Residence lacks actually produced upgrade materials."):
+        return false
+
+    # This UI test isolates Body Training, not the game's Linh Thach earning
+    # curve. The wallet is an explicit QA fixture; its construction debit is
+    # still performed by the real transaction authority (no gameplay grant).
+    state.sect.spirit_stones = int(cost.get("spirit_stones", 0)) + 9
+    var started := builder.start_upgrade(state, house.id, "qa:e3:starter-bed-upgrade")
+    if not _check(bool(started.get("ok", false)) and house.is_upgrading(),
+            "E3 real Residence paid upgrade failed: " + str(started)):
+        return false
+    var duration := int(ceil(house.upgrade_required_work)) + 1
+    for _minute in range(duration):
+        state.tick += 1
+        builder.process_tick(state)
+    return _check(house.level == 2 and not house.is_upgrading()
+        and SectResidenceSystemV1.current_limit(state) >= 9
+        and state.sect.spirit_stones == 9,
+        "E3 real paid Residence upgrade did not unlock the ninth V2 bed.")
+
 func _run() -> void:
     if FileAccess.file_exists(SAVE_PATH):
         DirAccess.remove_absolute(ProjectSettings.globalize_path(SAVE_PATH))
@@ -74,7 +130,12 @@ func _run() -> void:
         "E3 map is not backed by the real two-slot facility."):
         return
 
-    state.sect.spirit_stones = 9 # Test-only wallet; not a production reward.
+    # New Game starts with six founders and eight genuine Residence beds.
+    # E3 needs three *additional* V2 recruits for the two-slot release test.
+    # Expand the real starter Residence through paid BuildingSystem, not by
+    # overriding the recruitment limit or inventing a ninth bed.
+    if not _prepare_ninth_real_bed():
+        return
     var a := _recruit(6051)
     var b := _recruit(6052)
     var c := _recruit(6053)
