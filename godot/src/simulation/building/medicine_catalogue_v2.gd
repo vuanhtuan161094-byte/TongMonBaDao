@@ -181,7 +181,6 @@ static func recipe_definition(id: StringName) -> Dictionary:
             FAMILY_BREAK: inputs = {"tu_van_thao":3,"tinh_lang_bi":2,"linh_moc":1}
     if inputs.is_empty():
         return {}
-    return {}
     return {
         "name":str(definition(item_id(family,realm,1)).get("name","")),
         "inputs":inputs,

@@ -62,6 +62,12 @@ func validate_definitions() -> Array[String]:
         for raw_resource in requirements.keys():
             if not resources.has(StringName(raw_resource)) or int(requirements[raw_resource]) <= 0:
                 errors.append("Alchemy recipe %s has invalid input %s." % [recipe_id, raw_resource])
+        if not MedicineCatalogueV2.parse_recipe(recipe_id).is_empty():
+            var provenance := MedicineResourceSourceV1.routes_for_recipe(recipe_id)
+            if not bool(provenance.get("ok",false)):
+                errors.append("Alchemy recipe %s source missing: %s" % [
+                    recipe_id,str(provenance.get("ingredient_id",provenance.get("reason","unknown")))
+                ])
         var output_id := output_resource_id(recipe_id)
         if output_id == &"" or not resources.has(output_id) or output_quantity(recipe_id) <= 0:
             errors.append("Alchemy recipe %s has invalid output." % recipe_id)

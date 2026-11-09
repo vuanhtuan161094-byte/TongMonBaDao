@@ -20,6 +20,31 @@ static func routes_for_ingredient(resource_id: StringName) -> Dictionary:
             "field_level":int(crop_registry.definition(crop_id).get("required_field_level", 1))
         })
 
+    # Existing canonical worksite deliveries. A mine can select ores only
+    # after the actual Mine level is reached; the Forest is an earned job.
+    var mine_sources: Array[Dictionary] = []
+    if BuildingSystem.MINE_ORE_OPTIONS.has(str(resource_id)):
+        var option: Dictionary = BuildingSystem.MINE_ORE_OPTIONS[str(resource_id)]
+        mine_sources.append({"kind":"mine","building_type":"mine",
+            "required_building_level":int(option.get("required_level",1)),
+            "worker_profession":"mining","settlement":"sect_main_warehouse"})
+    var forest_sources: Array[Dictionary] = []
+    var forest_def: Dictionary = BuildingSystem.DEFINITIONS.get("linh_forest",{})
+    if str(forest_def.get("resource_id","")) == str(resource_id):
+        forest_sources.append({"kind":"linh_forest","building_type":"linh_forest",
+            "required_building_level":1,"worker_profession":"forestry",
+            "settlement":"sect_main_warehouse"})
+
+    # Paid daily merchant inventory is a real source but NOT farming; it needs
+    # actual Spirit Stones and daily merchant stock. Do not label as PvE loot.
+    var npc_sources: Array[Dictionary] = []
+    if EconomySystem.V2_MARKET_CATALOG.has(str(resource_id)):
+        var base_price := int(EconomySystem.V57_BODY_GATE_BASE_PRICES.get(
+            str(resource_id),ResourceRegistry.new().definition(resource_id).get("market_value",0)))
+        if base_price > 0:
+            npc_sources.append({"kind":"npc_market","requires_spirit_stones":true,
+                "base_price":base_price,"daily_stock_limited":true})
+
     # Existing HuntingMapV2 encounter rewards are real code but belong to a
     # different route than continuous PVE-P0. Do NOT treat these as P0 drops.
     var instance_map_sources: Array[Dictionary] = []
@@ -73,7 +98,9 @@ static func routes_for_ingredient(resource_id: StringName) -> Dictionary:
                     "amount": amount
                 })
     return {"ok":true,"ingredient_id":str(resource_id),
-        "spirit_fields":crop_sources,"instanced_maps":instance_map_sources,
+        "spirit_fields":crop_sources,"mines":mine_sources,
+        "forests":forest_sources,"npc_markets":npc_sources,
+        "instanced_maps":instance_map_sources,
         "continuous_pve_p0":continuous_pve_sources}
 
 static func routes_for_recipe(recipe_id: StringName) -> Dictionary:
@@ -83,6 +110,18 @@ static func routes_for_recipe(recipe_id: StringName) -> Dictionary:
     var requirements := registry.inputs(recipe_id)
     if requirements.is_empty():
         return {"ok":false,"reason":"recipe_has_no_inputs"}
+    var checked := routes_for_requirements(requirements)
+    if not bool(checked.get("ok",false)):
+        checked["recipe_id"] = str(recipe_id)
+        return checked
+    checked["recipe_id"] = str(recipe_id)
+    return checked
+
+# Checks the REAL input snapshot of the new batch, including Q2-Q4 catalysts
+# and Mine/Forest/Field inputs. It does NOT deduct stock or mint rewards.
+static func routes_for_requirements(requirements: Dictionary) -> Dictionary:
+    if requirements.is_empty():
+        return {"ok":false,"reason":"recipe_has_no_inputs"}
     var inputs: Array[Dictionary] = []
     var ingredient_ids: Array = requirements.keys()
     ingredient_ids.sort()
@@ -90,11 +129,13 @@ static func routes_for_recipe(recipe_id: StringName) -> Dictionary:
         var source := routes_for_ingredient(StringName(raw_id))
         if not bool(source.get("ok",false)):
             return source
-        if source.get("spirit_fields",[]).is_empty() and source.get("instanced_maps",[]).is_empty() and source.get("continuous_pve_p0",[]).is_empty():
+        if source.get("spirit_fields",[]).is_empty() and source.get("mines",[]).is_empty() \
+                and source.get("forests",[]).is_empty() and source.get("npc_markets",[]).is_empty() \
+                and source.get("instanced_maps",[]).is_empty() and source.get("continuous_pve_p0",[]).is_empty():
             return {"ok":false,"reason":"ingredient_without_authored_source","ingredient_id":str(raw_id)}
         inputs.append({"ingredient_id":str(raw_id),"quantity":int(requirements[raw_id]),
             "source":source})
-    return {"ok":true,"recipe_id":str(recipe_id),"inputs":inputs}
+    return {"ok":true,"inputs":inputs}
 
 static func guidance_text(recipe_id: StringName) -> String:
     var routes := routes_for_recipe(recipe_id)
@@ -108,6 +149,12 @@ static func guidance_text(recipe_id: StringName) -> String:
         var choices: Array[String] = []
         for crop in source.get("spirit_fields",[]):
             choices.append("Linh Điền Lv%d" % int(crop.get("field_level",1)))
+        for mine in source.get("mines",[]):
+            choices.append("Mỏ Lv%d, việc khai thác có giao Kho" % int(mine.get("required_building_level",1)))
+        for forest in source.get("forests",[]):
+            choices.append("Linh Lâm, việc khai thác có giao Kho")
+        for shop in source.get("npc_markets",[]):
+            choices.append("Phường Thị: dùng LT thật, chịu giới hạn nguồn hàng/ngày")
         for hunting_map in source.get("instanced_maps",[]):
             choices.append("Săn theo cấp: %s%s" % [
                 str(hunting_map.get("name","")),

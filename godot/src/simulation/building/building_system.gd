@@ -1216,6 +1216,14 @@ func alchemy_can_start(state: SimulationState, disciple: DiscipleState) -> Dicti
     if not bool(plan.get("ok",false)):
         return plan
     var requirements: Dictionary = plan["requirements"]
+    # Source gate for new batches: even a QA-injected Warehouse stack cannot
+    # authorize a recipe with an orphan, unproven ingredient. Old pending
+    # jobs settle from their original frozen transaction, unchanged.
+    if not MedicineCatalogueV2.parse_recipe(recipe_id).is_empty():
+        var proof := MedicineResourceSourceV1.routes_for_requirements(requirements)
+        if not bool(proof.get("ok",false)):
+            return {"ok":false,"reason":"recipe_source_unavailable",
+                "ingredient_id":str(proof.get("ingredient_id",""))}
     if not warehouse.can_consume_requirements(state,requirements):
         return {"ok": false, "reason": "insufficient_or_reserved_inputs"}
     return {"ok": true, "hall_id": str(hall.id), "recipe_id": str(recipe_id),
