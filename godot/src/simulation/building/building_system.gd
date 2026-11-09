@@ -32,7 +32,17 @@ const MATERIAL_ORE := "thanh_thiet"
 # Existing saves remain Thanh Thiết by default. Huyền Thiết unlocks at Mine Lv10.
 const MINE_ORE_OPTIONS := {
     "thanh_thiet": {"required_level": 1, "batch_percent": 100},
-    "huyen_thiet": {"required_level": 10, "batch_percent": 50}
+    "ore_r01_c2": {"required_level": 1, "batch_percent": 100},
+    "huyen_thiet": {"required_level": 10, "batch_percent": 50},
+    "ore_r02_c2": {"required_level": 10, "batch_percent": 50}
+}
+# Existing real forestry timer/carry-cycle output is controlled per BUILDING,
+# not a new production authority. Legacy Forest defaults to Linh Moc.
+const FOREST_MATERIAL_OPTIONS := {
+    "linh_moc":{"required_level":1,"batch_percent":100},
+    "forest_r01_wood2":{"required_level":1,"batch_percent":100},
+    "forest_r02_wood":{"required_level":10,"batch_percent":100},
+    "forest_r02_wood2":{"required_level":10,"batch_percent":100}
 }
 const MATERIAL_TAM_MACH_BAN := "tam_mach_ban"
 const MATERIAL_HERB := "thanh_linh_thao"
@@ -483,6 +493,44 @@ func select_mine_ore(state: SimulationState, mine_id: StringName, ore_id: String
     state.building_event_count += 1
     # Existing timed jobs and in-flight carry cycles keep their original ore.
     return {"ok": true, "changed": true}
+
+# SX-07B: worksite-level output selection; already running timers/carry-cycles
+# keep their saved resource_id and output_quantity regardless of changes.
+func forest_selected_material(forest: BuildingState) -> StringName:
+    if forest == null or forest.building_type != TYPE_LINH_FOREST:
+        return StringName(MATERIAL_WOOD)
+    var choice := str(forest.production_state.get("selected_forest_material_id",MATERIAL_WOOD))
+    var option: Dictionary = FOREST_MATERIAL_OPTIONS.get(choice,{})
+    if option.is_empty() or forest.level < int(option.get("required_level",1)):
+        return StringName(MATERIAL_WOOD)
+    return StringName(choice)
+
+func forest_material_batch_units(forest: BuildingState, resource_id: StringName) -> int:
+    var original := _resource_job_batch_units(forest)
+    var option: Dictionary = FOREST_MATERIAL_OPTIONS.get(str(resource_id),{})
+    if option.is_empty():
+        return original
+    return maxi(1,int(floor(float(original)*float(option.get("batch_percent",100))/100.0)))
+
+func select_forest_material(state: SimulationState, forest_id: StringName, item_id: StringName) -> Dictionary:
+    if state == null or not state.buildings.has(str(forest_id)):
+        return {"ok":false,"reason":"forest_missing"}
+    var forest: BuildingState = state.buildings[str(forest_id]]
+    if forest.building_type != TYPE_LINH_FOREST:
+        return {"ok":false,"reason":"wrong_building_type"}
+    var choice: Dictionary = FOREST_MATERIAL_OPTIONS.get(str(item_id),{})
+    if choice.is_empty() or not ResourceRegistry.DEFINITIONS.has(str(item_id)):
+        return {"ok":false,"reason":"forest_resource_not_supported"}
+    if forest.level < int(choice.get("required_level",1)):
+        return {"ok":false,"reason":"forest_level_required",
+            "required_level":int(choice.get("required_level",1))}
+    if forest_selected_material(forest) == item_id:
+        return {"ok":true,"changed":false}
+    var data := forest.production_state.duplicate(true)
+    data["selected_forest_material_id"] = str(item_id)
+    forest.production_state = data
+    state.building_event_count += 1
+    return {"ok":true,"changed":true}
 
 func worker_slots(building: BuildingState) -> int:
     var definition := definition_for(building)
@@ -1387,7 +1435,7 @@ func perform_resource_job_step(state: SimulationState, disciple: DiscipleState, 
         return {"ok": false, "completed": false, "reason": "invalid_job_definition"}
     var start_phase := StringName(phases[0])
     var work_phase := StringName(definition.get("cycle_work_phase", ""))
-    var resource_id := mine_selected_ore(producer) if producer.building_type == TYPE_MINE else StringName(definition.get("resource_id", ""))
+    var resource_id := mine_selected_ore(producer) if producer.building_type == TYPE_MINE else forest_selected_material(producer)
     if work_phase == &"" or resource_id == &"":
         return {"ok": false, "completed": false, "reason": "invalid_job_definition"}
 
@@ -1434,7 +1482,7 @@ func perform_resource_job_step(state: SimulationState, disciple: DiscipleState, 
         if progress + 0.000001 >= _resource_job_duration(producer):
             phase = &"haul_back"
             progress = 0.0
-            cycle["carried_units"] = mine_ore_batch_units(producer, resource_id) if producer.building_type == TYPE_MINE else _resource_job_batch_units(producer)
+            cycle["carried_units"] = mine_ore_batch_units(producer, resource_id) if producer.building_type == TYPE_MINE else forest_material_batch_units(producer,resource_id)
     elif phase == &"haul_back":
         progress += _movement_speed(state, disciple) * _haul_speed_multiplier(disciple)
         if progress + 0.000001 >= float(definition.get("haul_distance", 6.0)):
@@ -1576,8 +1624,8 @@ func _start_resource_timer(state: SimulationState, producer: BuildingState, acto
     var job := {
         "job_id":"%s:v1:%d" % [str(producer.id),sequence],
         "worker_id":str(actor.id),"profession_id":str(profession_id),
-        "resource_id":str(mine_selected_ore(producer)) if producer.building_type == TYPE_MINE else str(definition.get("resource_id","")),
-        "output_quantity":mine_ore_batch_units(producer, mine_selected_ore(producer)) if producer.building_type == TYPE_MINE else _resource_job_batch_units(producer),
+        "resource_id":str(mine_selected_ore(producer)) if producer.building_type == TYPE_MINE else str(forest_selected_material(producer)),
+        "output_quantity":mine_ore_batch_units(producer, mine_selected_ore(producer)) if producer.building_type == TYPE_MINE else forest_material_batch_units(producer,forest_selected_material(producer)),
         "profession_xp_gain":maxf(xp_gain,0.0),
         "started_tick":state.tick,"finish_tick":state.tick+duration
     }

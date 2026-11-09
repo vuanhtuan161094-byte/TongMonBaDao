@@ -29,11 +29,11 @@ static func routes_for_ingredient(resource_id: StringName) -> Dictionary:
             "required_building_level":int(option.get("required_level",1)),
             "worker_profession":"mining","settlement":"sect_main_warehouse"})
     var forest_sources: Array[Dictionary] = []
-    var forest_def: Dictionary = BuildingSystem.DEFINITIONS.get("linh_forest",{})
-    if str(forest_def.get("resource_id","")) == str(resource_id):
+    if BuildingSystem.FOREST_MATERIAL_OPTIONS.has(str(resource_id)):
+        var forest_option: Dictionary = BuildingSystem.FOREST_MATERIAL_OPTIONS[str(resource_id)]
         forest_sources.append({"kind":"linh_forest","building_type":"linh_forest",
-            "required_building_level":1,"worker_profession":"forestry",
-            "settlement":"sect_main_warehouse"})
+            "required_building_level":int(forest_option.get("required_level",1)),
+            "worker_profession":"forestry","settlement":"sect_main_warehouse"})
 
     # Paid daily merchant inventory is a real source but NOT farming; it needs
     # actual Spirit Stones and daily merchant stock. Do not label as PvE loot.

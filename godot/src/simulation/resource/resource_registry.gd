@@ -56,6 +56,38 @@ const DEFINITIONS := {
         "market_value": 8,
         "tags": ["construction_mineral", "metal", "crafting_metal"]
     },
+    # SX-07B: five EXISTING V5.5-D preserved material IDs, not generated V5.6-G placeholders.
+    # G values are design reference only, not approved sell/buy prices.
+    "ore_r01_c2":{
+        "name":"Xích Đồng","family":"mineral","realm_grade":"pham",
+        "realm_rank":1,"market_value":10,
+        "value_status":"V56_G_PROPOSED_REFERENCE_NOT_TRADEABLE",
+        "source_provenance":"V5.5-D_ID_PRESERVED","tags":["construction_mineral","metal","sx07b_source_mine"]
+    },
+    "forest_r01_wood2":{
+        "name":"Thanh Trúc","family":"wood","realm_grade":"pham",
+        "realm_rank":1,"market_value":3,
+        "value_status":"V56_G_PROPOSED_REFERENCE_NOT_TRADEABLE",
+        "source_provenance":"V5.5-D_ID_PRESERVED","tags":["crafting_wood","sx07b_source_forest"]
+    },
+    "ore_r02_c2":{
+        "name":"Trúc Cốt Sa","family":"mineral","realm_grade":"truc_co",
+        "realm_rank":2,"market_value":42,
+        "value_status":"V56_G_PROPOSED_REFERENCE_NOT_TRADEABLE",
+        "source_provenance":"V5.5-D_ID_PRESERVED","tags":["metal","sx07b_source_mine"]
+    },
+    "forest_r02_wood":{
+        "name":"Thanh Trúc Mộc","family":"wood","realm_grade":"truc_co",
+        "realm_rank":2,"market_value":8,
+        "value_status":"V56_G_PROPOSED_REFERENCE_NOT_TRADEABLE",
+        "source_provenance":"V5.5-D_ID_PRESERVED","tags":["crafting_wood","sx07b_source_forest"]
+    },
+    "forest_r02_wood2":{
+        "name":"Lục Văn Sam","family":"wood","realm_grade":"truc_co",
+        "realm_rank":2,"market_value":13,
+        "value_status":"V56_G_PROPOSED_REFERENCE_NOT_TRADEABLE",
+        "source_provenance":"V5.5-D_ID_PRESERVED","tags":["crafting_wood","sx07b_source_forest"]
+    },
     "huyen_thiet": {
         "name": "Huyền Thiết",
         "family": "mineral",
