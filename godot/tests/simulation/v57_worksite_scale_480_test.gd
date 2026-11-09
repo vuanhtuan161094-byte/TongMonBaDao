@@ -85,7 +85,7 @@ func _run() -> void:
     var moved := false
     for raw_id in state.disciples.keys():
         var candidate: DiscipleState = state.disciples[raw_id]
-        if candidate.work_group_id == &"alchemy_crew" and candidate.id.begins_with("v57_scale"):
+        if candidate.work_group_id == &"alchemy_crew" and str(candidate.id).begins_with("v57_scale"):
             moved = workforce.assign_worksite(state, candidate.id, &"alchemy_hall_009")
             break
     if not moved or not _check_all(state, system):
