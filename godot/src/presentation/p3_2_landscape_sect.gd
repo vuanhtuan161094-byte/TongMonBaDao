@@ -10029,7 +10029,8 @@ func _v57_commit_tuvi_gate(quality: int) -> void:
 func _v57_buy_first_body_material(disciple_id: StringName) -> void:
     if disciple_id == &"" or not state.disciples.has(disciple_id):
         return
-    var body := state.disciples[disciple_id].v2_realm_progress.get("body",{})
+    var disciple: DiscipleState = state.disciples[disciple_id]
+    var body: Dictionary = disciple.v2_realm_progress.get("body",{})
     var request_id := "ui:v57:body:%s:%d:%d" % [
         str(disciple_id),int(body.get("realm",0)),state.sect.economy_a_event_count+1
     ]
