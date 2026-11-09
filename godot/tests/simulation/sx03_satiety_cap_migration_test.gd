@@ -78,7 +78,7 @@ func _run() -> void:
         _expect(B3PillSatietyV1.validate(reloaded,restored).is_empty(),
             "migrated meter validates under unchanged SaveService schema")
     for suffix in ["",".tmp",".bak"]:
-        var candidate := path + suffix
+        var candidate: String = path + str(suffix)
         if FileAccess.file_exists(candidate):
             DirAccess.remove_absolute(ProjectSettings.globalize_path(candidate))
     print("SX03 SATIETY 2M HISTORICAL -> 1M CURRENT MIGRATION %d checks, %d failures"
