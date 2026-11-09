@@ -1,5 +1,13 @@
 # NEXT CHAT / CODEX HANDOFF — RELEASE TRAIN PR #72 → MAIN (2026-11-04)
 
+## NEXT PRIORITY AFTER PR72 P0–P2 QA — 2026-11-09
+
+- **Verified runtime code SHA `19f167a0c97a83f972561d56ae824968b6ec9d3c`** on PR #72 Draft; [O9 run #42594179340](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42594179340): import, SX-07B 117/117, SX07 409/409, SX02 catalogue 1695, SaveService 10, SX02 medicine runtime 47, V57 worksite/transactions/save, O9 rehearsal, O8 and O7 PASS. **Overall workflow FAIL** in P3.6A UI: `Always-on actor status text still clutters the main map: tran_mac`. Do not hide or weaken P3.6A test. Poison V3 [#42594179315](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42594179315) passes strict event-only video workflow, not owner visual QA.
+- P0 script/root parser repairs and P1 strict workflow implemented. O9 alone has an explicitly logged **renderer RID exit leak QA debt**, not acceptance; wrapper does not suppress GDScript errors or other runtime failures. No Save/gameplay authority changed.
+- **Recommended next separately authorized packet:** fix owner-visible P3.6A always-on actor status label clutter using real UI/viewport contract without changing production or Save; obtain focused engine and screenshot proof. Alternatively isolate and remedy O9 harness teardown RID leaks. Neither is covered by an implicit permission to change unrelated UI.
+- Native Windows physical launcher crash `ig11icd64.dll`, 3 sequential GUI starts, full continuous one-save player journey and Android 1280×720 remain PENDING USER; PR Draft, no merge/new branch. All next QA must use latest exact SHA; do not claim GUI PASS from Linux headless.
+
+
 ## ACTIONS RUNNER / BILLING GATE — 2026-11-09 — BLOCKED BEFORE GODOT
 
 - Active owner request: restore online official Godot 4.7.2 focused QA for PR #72; investigation only, **no gameplay, workflow or Save edits**, no merge/new branch.
