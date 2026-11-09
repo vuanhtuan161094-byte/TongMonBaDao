@@ -1190,6 +1190,50 @@ func _v57_alchemy_plan(state: SimulationState, hall: BuildingState,
         "selected_quality":requested
     }
 
+# SX-07 cost estimate for QA/UI, not a second price authority. Uses
+# ResourceRegistry resale reference values and the current actual wage policy.
+# Field planting, opportunity costs, tax and NPC buy premium are EXCLUDED.
+# Never use it to credit money or to authorize a recipe.
+func alchemy_batch_cost_reference(state: SimulationState, hall_id: StringName,
+        recipe_id: StringName, profession_level: int) -> Dictionary:
+    if state == null or not state.buildings.has(str(hall_id)):
+        return {"ok":false,"reason":"unknown_hall"}
+    var hall: BuildingState = state.buildings[str(hall_id]]
+    if hall.building_type != TYPE_ALCHEMY_HALL or not alchemy_registry.has(recipe_id):
+        return {"ok":false,"reason":"unavailable_recipe"}
+    var plan := _v57_alchemy_plan(state,hall,recipe_id,profession_level)
+    if not bool(plan.get("ok",false)):
+        return plan
+    var proof := MedicineResourceSourceV1.routes_for_requirements(plan.get("requirements",{}))
+    if not bool(proof.get("ok",false)):
+        return {"ok":false,"reason":"unverified_source",
+            "ingredient_id":str(proof.get("ingredient_id",""))}
+    var resources := ResourceRegistry.new()
+    var material_value := 0
+    var unpriced: Array[String] = []
+    for id in plan["requirements"].keys():
+        var amount := int(plan["requirements"][id])
+        var reference := int(resources.definition(StringName(id)).get("market_value",0))
+        if amount <= 0:
+            return {"ok":false,"reason":"invalid_bom_quantity"}
+        if reference <= 0:
+            unpriced.append(str(id))
+        else:
+            material_value += amount*reference
+    var wage := maxi(int(state.sect.economy_a_policy.get("wage_per_batch",2)),0) \
+        if state.sect.economy_a_enabled else 0
+    var quantity := int(plan.get("output_quantity",0))
+    if quantity <= 0:
+        return {"ok":false,"reason":"invalid_output_quantity"}
+    return {"ok":unpriced.is_empty(),"pricing_status":"REFERENCE_ONLY" if unpriced.is_empty() else "MISSING_REFERENCE_PRICES",
+        "missing_reference_prices":unpriced,
+        "materials_reference_lt":material_value,"wage_policy_lt":wage,
+        "total_reference_lt":material_value+wage,
+        "output_quantity":quantity,"per_pill_reference_lt":float(material_value+wage)/float(quantity),
+        "cycle_ticks":int(plan.get("cycle_ticks",0)),
+        "source_provenance":proof,
+        "excludes":["crop_planting_stones","opportunity_cost","tax","npc_buy_premium"]}
+
 func alchemy_can_start(state: SimulationState, disciple: DiscipleState) -> Dictionary:
     if disciple == null or disciple.region_id != &"sect":
         return {"ok": false, "reason": "invalid_worker"}

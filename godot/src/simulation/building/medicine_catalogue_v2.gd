@@ -171,7 +171,7 @@ static func recipe_definition(id: StringName) -> Dictionary:
         match family:
             FAMILY_HEAL: inputs = {"thanh_linh_thao":3}
             FAMILY_TUVI: inputs = {"thanh_linh_thao":2,"linh_coc":1}
-            FAMILY_BODY: inputs = {"thanh_linh_thao":3,"thanh_thiet":2,"linh_moc":1}
+            FAMILY_BODY: inputs = {"linh_coc":3,"thanh_thiet":2,"linh_moc":1}
             FAMILY_BREAK: inputs = {"thanh_linh_thao":3,"tinh_lang_bi":1,"linh_moc":1}
     elif realm == 2:
         match family:
@@ -191,7 +191,13 @@ static func recipe_definition(id: StringName) -> Dictionary:
         "required_profession_level":0 if realm == 1 else 3,
         "required_hall_level":1 if realm == 1 else 10,
         "base_cycle_ticks":(6 if realm == 1 else 10) if legacy_family else 3,
-        "quality_enabled":true
+        "quality_enabled":true,
+        # G-approved early input BOM matches only after the grade-mode
+        # worksite adds mineral/wood to Heal/TuVi. Higher ranks and Break
+        # still use documented early pilot data, not fabricated G inputs.
+        "sx07_bom_status":"V56_G_MATCH_FOR_EXPLICIT_GRADE" if (
+            realm == 1 and family in [FAMILY_HEAL,FAMILY_TUVI,FAMILY_BODY]
+        ) else "EARLY_PILOT_NOT_YET_G_APPROVED"
     }
 
 
