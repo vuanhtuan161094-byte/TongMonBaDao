@@ -4039,7 +4039,9 @@ func _rebuild_building_management_controls() -> void:
             _build_mine_upgrade_control()
             _build_work_management(WorkforceSystem.PROF_MINING, &"mining_crew", "Đội Khai Khoáng", "Khai khoáng")
         SectMapPresentation.DEST_LINH_FOREST:
-            var forest := BuildingSystem.new().primary_building(state, BuildingSystem.TYPE_LINH_FOREST)
+            var forest := _selected_operation_building()
+            if forest == null or forest.building_type != BuildingSystem.TYPE_LINH_FOREST:
+                forest = BuildingSystem.new().primary_building(state, BuildingSystem.TYPE_LINH_FOREST)
             if forest != null:
                 _build_worksite_upgrade_control(forest)
             _build_work_management(WorkforceSystem.PROF_FORESTRY, &"forestry_crew", "Đội Lâm Nghiệp", "Thu hoạch")
@@ -4765,7 +4767,9 @@ func _select_forest_material_from_ui(material_id: StringName) -> void:
 
 func _build_mine_upgrade_control() -> void:
     var buildings := BuildingSystem.new()
-    var mine := buildings.primary_building(state, BuildingSystem.TYPE_MINE)
+    var mine := _selected_operation_building()
+    if mine == null or mine.building_type != BuildingSystem.TYPE_MINE:
+        mine = buildings.primary_building(state, BuildingSystem.TYPE_MINE)
     _add_management_section_label("NÂNG CẤP MỎ")
     if mine == null:
         var missing := Label.new()
@@ -5239,6 +5243,11 @@ func _build_work_management(profession_id: StringName, group_id: StringName, gro
     var active_producer: BuildingState = null
     if building_system.is_building_profession(profession_id):
         active_producer = building_system.building_for_profession(state, profession_id)
+        # A map-selected paid annex is the actual worksite the player edits;
+        # never show the first producer's slots for a second producer.
+        var selected_site := _selected_operation_building()
+        if active_producer != null and selected_site != null and selected_site.building_type == active_producer.building_type:
+            active_producer = selected_site
         if active_producer != null:
             active_building_ids = building_system.active_worker_ids(state, active_producer)
 
@@ -5315,17 +5324,21 @@ func _build_work_management(profession_id: StringName, group_id: StringName, gro
         # GP-01: distinguish crew membership from an explicit, persisted Mine
         # worksite. Full crews may retain waiting members; only active slots
         # receive work orders. No fake worksite/building state is created.
-        if profession_id == WorkforceSystem.PROF_MINING and active_producer != null:
+        if profession_id in [WorkforceSystem.PROF_MINING, WorkforceSystem.PROF_FORESTRY] and active_producer != null:
             var site_button := Button.new()
-            site_button.name = "MineWorksite_%s" % str(disciple.id)
+            site_button.name = ("%sWorksite_%s" % [
+                "Mine" if profession_id == WorkforceSystem.PROF_MINING else "Forest",
+                str(disciple.id)
+            ])
             var assigned_here := disciple.worksite_building_id == active_producer.id
-            site_button.text = "Bỏ điểm" if assigned_here else "Chọn Mỏ"
+            var site_label := "Mỏ" if profession_id == WorkforceSystem.PROF_MINING else "Lâm"
+            site_button.text = "Bỏ điểm" if assigned_here else "Chọn " + site_label
             site_button.custom_minimum_size = Vector2(70, 44)
             site_button.add_theme_font_size_override("font_size", 11)
             site_button.disabled = not in_group or timed_recipe_busy
             site_button.tooltip_text = (
                 "Giữ nhóm nghề; chỉ xóa điểm làm việc cụ thể." if assigned_here
-                else "Đặt điểm làm việc tại Mỏ thật. Nếu hết slot, đệ tử tiếp tục chờ."
+                else "Chọn đúng %s đang mở; hết slot thì đệ tử phải chờ." % site_label
             )
             site_button.pressed.connect(Callable(self, "_assign_mine_worksite").bind(
                 disciple.id, &"" if assigned_here else active_producer.id
@@ -5354,7 +5367,9 @@ func _build_work_management(profession_id: StringName, group_id: StringName, gro
 
 func _build_spirit_field_management() -> void:
     var buildings := BuildingSystem.new()
-    var field := buildings.primary_building(state, BuildingSystem.TYPE_SPIRIT_FIELD)
+    var field := _selected_operation_building()
+    if field == null or field.building_type != BuildingSystem.TYPE_SPIRIT_FIELD:
+        field = buildings.primary_building(state, BuildingSystem.TYPE_SPIRIT_FIELD)
     if field == null:
         _add_management_section_label("LINH ĐIỀN CHƯA SẴN SÀNG")
         return
@@ -6391,7 +6406,9 @@ func _alchemy_product_effect_text(recipe_id: StringName, output_id: StringName) 
 func _linh_forest_operation_text() -> String:
     var members := _disciples_in_work_group(&"forestry_crew")
     var building_system := BuildingSystem.new()
-    var forest := building_system.primary_building(state, BuildingSystem.TYPE_LINH_FOREST)
+    var forest := _selected_operation_building()
+    if forest == null or forest.building_type != BuildingSystem.TYPE_LINH_FOREST:
+        forest = building_system.primary_building(state, BuildingSystem.TYPE_LINH_FOREST)
     var active_ids: Array[StringName] = []
     var slots := 0
     if forest != null:
@@ -6478,7 +6495,9 @@ func _resource_job_member_status(disciple: DiscipleState, profession_id: StringN
 func _mine_operation_text() -> String:
     var members := _disciples_in_work_group(&"mining_crew")
     var building_system := BuildingSystem.new()
-    var mine := building_system.primary_building(state, BuildingSystem.TYPE_MINE)
+    var mine := _selected_operation_building()
+    if mine == null or mine.building_type != BuildingSystem.TYPE_MINE:
+        mine = building_system.primary_building(state, BuildingSystem.TYPE_MINE)
     var active_ids: Array[StringName] = []
     var slots := 0
     if mine != null:
