@@ -219,12 +219,23 @@ func daily_market_cashflow(state: SimulationState) -> Dictionary:
         "net_market_and_wages":income-purchases-wages
     }
 
+# SX-05: market throughput scales only after the Sect actually has 30+
+# owned disciples. All sales still require available Warehouse resources and
+# all purchases still debit real Spirit Stones and merchant stock.
+func effective_market_daily_units(state: SimulationState) -> int:
+    if state == null:
+        return 0
+    var baseline := maxi(int(state.sect.economy_a_policy.get("market_daily_units",20)),1)
+    if state.disciples.size() < 30:
+        return baseline
+    return maxi(baseline,mini(4000,state.disciples.size()*8))
+
 func market_buy_remaining(state: SimulationState) -> int:
     if state == null or not state.sect.economy_a_enabled:
         return 0
     var day := int(state.tick / V2_DAY_TICKS)
     var bought := state.sect.economy_a_market_units_bought if state.sect.economy_a_market_stock_day == day else 0
-    return maxi(int(state.sect.economy_a_policy.get("market_daily_units",20))-bought,0)
+    return maxi(effective_market_daily_units(state)-bought,0)
 
 func market_sell_price(resource_id: StringName) -> int:
     if not V2_MARKET_SELLABLE.has(str(resource_id)):
@@ -279,12 +290,87 @@ func buy_from_npc_v1(state: SimulationState, resource_id: StringName, quantity: 
     state.sect.economy_a_event_count += 1
     return {"ok":true,"already_settled":false,"receipt":receipt.duplicate(true)}
 
+# SX-05: one click can buy the currently missing Body-gate kit without
+# issuing dozens of 5-unit market orders. Partial, source-limited purchases
+# are reported as partial and never claim the gate has become clear.
+# All stock, player funds and Warehouse effects settle under one receipt.
+func buy_missing_body_gate_materials(state: SimulationState,
+        disciple_id: StringName, request_id: String) -> Dictionary:
+    if state == null or not state.sect.economy_a_enabled or request_id.is_empty()             or request_id.length() > 160 or not state.disciples.has(disciple_id):
+        return {"ok":false,"reason":"invalid_body_bundle_request"}
+    var receipt_id := "market-body-bundle:"+request_id
+    if state.sect.economy_a_receipts.has(receipt_id):
+        var old: Dictionary = state.sect.economy_a_receipts[receipt_id]
+        if str(old.get("disciple_id","")) != str(disciple_id):
+            return {"ok":false,"reason":"body_bundle_request_conflict"}
+        return {"ok":true,"already_settled":true,"receipt":old.duplicate(true)}
+    var preview := DiscipleBodyGateTransactionV2.new().preview_gate(state,disciple_id)
+    if not bool(preview.get("ok",false)) or not bool(preview.get("content_available",false)):
+        return {"ok":false,"reason":str(preview.get("reason","body_gate_content_missing"))}
+    sync_market_day(state)
+    var remaining := market_buy_remaining(state)
+    var stones := int(state.sect.spirit_stones)
+    var lines: Array[Dictionary] = []
+    var total_cost := 0
+    var total_qty := 0
+    var warehouse := WarehouseSystem.new()
+    for raw_component in preview.get("requirements",[]):
+        if not (raw_component is Dictionary):
+            continue
+        var comp: Dictionary = raw_component
+        var item := StringName(comp.get("item_id",""))
+        var missing := maxi(0,int(comp.get("need",0))-int(comp.get("available",0)))
+        if missing == 0:
+            continue
+        if bool(comp.get("locked",false)):
+            return {"ok":false,"reason":"body_bundle_warehouse_locked"}
+        var unit := market_purchase_price(state,item)
+        if unit <= 0:
+            return {"ok":false,"reason":"body_bundle_item_not_purchasable"}
+        var merchant := maxi(0,int(state.sect.economy_a_market_stock.get(str(item),0)))
+        var amount := mini(missing,mini(merchant,remaining))
+        amount = mini(amount,int((stones-total_cost)/unit))
+        if amount <= 0:
+            continue
+        if amount > WarehouseSystem.MAX_SAFE_STACK-warehouse.quantity(state,item):
+            return {"ok":false,"reason":"body_bundle_warehouse_overflow"}
+        lines.append({"resource_id":str(item),"quantity":amount,"unit_price":unit})
+        total_cost += amount*unit
+        total_qty += amount
+        remaining -= amount
+    if total_qty <= 0 or total_cost <= 0:
+        return {"ok":false,"reason":"body_bundle_out_of_stock_quota_or_stones"}
+    if total_cost > stones or total_qty > market_buy_remaining(state):
+        return {"ok":false,"reason":"body_bundle_balance_changed"}
+    var resources_before := state.sect.warehouse_resources.duplicate(true)
+    var warehouse_events_before := state.sect.warehouse_event_count
+    for line in lines:
+        if not warehouse.add(state,StringName(line["resource_id"]),int(line["quantity"])):
+            state.sect.warehouse_resources = resources_before
+            state.sect.warehouse_event_count = warehouse_events_before
+            return {"ok":false,"reason":"body_bundle_stock_commit_failed"}
+    for line in lines:
+        var id := str(line["resource_id"])
+        state.sect.economy_a_market_stock[id] = int(state.sect.economy_a_market_stock.get(id,0))-int(line["quantity"])
+    state.sect.economy_a_market_units_bought += total_qty
+    state.sect.spirit_stones -= total_cost
+    var receipt := {"kind":"market_buy","bundle":"body_gate",
+        "disciple_id":str(disciple_id),"source_realm":int(preview.get("source_realm",0)),
+        "request_id":request_id,"lines":lines.duplicate(true),
+        "quantity":total_qty,"cost":total_cost,
+        "day":int(state.tick/V2_DAY_TICKS),"tick":state.tick}
+    state.sect.economy_a_receipts[receipt_id] = receipt
+    state.sect.economy_a_event_count += 1
+    return {"ok":true,"already_settled":false,"receipt":receipt.duplicate(true),
+        "complete":bool(DiscipleBodyGateTransactionV2.new().preview_gate(
+            state,disciple_id).get("can_commit",false))}
+
 func market_remaining(state: SimulationState) -> int:
     if state == null or not state.sect.economy_a_enabled:
         return 0
     var current_day := int(state.tick / V2_DAY_TICKS)
     var spent := state.sect.economy_a_market_units_sold if state.sect.economy_a_market_day == current_day else 0
-    return maxi(int(state.sect.economy_a_policy.get("market_daily_units",20))-spent,0)
+    return maxi(effective_market_daily_units(state)-spent,0)
 
 # NPC purchases create external Stones only against an actual, unreserved Sect
 # Warehouse debit. request_id is user-action idempotency key across reloads.
@@ -400,9 +486,9 @@ func validate_v1(state: SimulationState) -> Array[String]:
         errors.append("Economy-A must use canonical Warehouse.")
     if state.sect.spirit_stones < 0 or state.sect.spirit_stones > V2_MAX_STONES:
         errors.append("Economy-A Sect Stone balance invalid.")
-    if state.sect.economy_a_market_units_sold < 0 or state.sect.economy_a_market_units_sold > int(state.sect.economy_a_policy.get("market_daily_units",20)):
+    if state.sect.economy_a_market_units_sold < 0 or state.sect.economy_a_market_units_sold > effective_market_daily_units(state):
         errors.append("Economy-A market quota invalid.")
-    if state.sect.economy_a_market_units_bought < 0 or state.sect.economy_a_market_units_bought > int(state.sect.economy_a_policy.get("market_daily_units",20)):
+    if state.sect.economy_a_market_units_bought < 0 or state.sect.economy_a_market_units_bought > effective_market_daily_units(state):
         errors.append("Economy-A market buy quota invalid.")
     for raw_id in state.sect.economy_a_market_stock.keys():
         if not V2_MARKET_CATALOG.has(str(raw_id)) or int(state.sect.economy_a_market_stock[raw_id]) < 0 or int(state.sect.economy_a_market_stock[raw_id]) > WarehouseSystem.MAX_SAFE_STACK:

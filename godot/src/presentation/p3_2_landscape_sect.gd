@@ -10016,50 +10016,27 @@ func _v57_commit_tuvi_gate(quality: int) -> void:
     _open_disciple_deep_screen(selected_id,disciple_profile_active_tab_name,true)
 
 func _v57_buy_first_body_material(disciple_id: StringName) -> void:
-    var preview := DiscipleBodyGateTransactionV2.new().preview_gate(state,disciple_id)
-    if not bool(preview.get("ok",false)) or not state.sect.economy_a_enabled:
-        tab_status_text = "Phường Thị hoặc hồ sơ Luyện Thể chưa sẵn sàng."
+    if disciple_id == &"" or not state.disciples.has(disciple_id):
         return
-    var economy := EconomySystem.new()
-    economy.sync_market_day(state)
-    for component in preview.get("requirements",[]):
-        if not (component is Dictionary):
-            continue
-        var available := int(component.get("available",0))
-        var shortage := maxi(0,int(component.get("need",0))-available)
-        if shortage <= 0:
-            continue
-        if bool(component.get("locked",false)):
-            tab_status_text = "Vật liệu đang khóa; cần mở khóa tại Kho."
-            return
-        var material_id := StringName(component.get("item_id",""))
-        var unit_price := economy.market_purchase_price(state,material_id)
-        if unit_price <= 0:
-            continue
-        var merchant_stock := int(state.sect.economy_a_market_stock.get(str(material_id),0))
-        var quantity := mini(shortage,mini(merchant_stock,mini(
-            int(state.sect.economy_a_policy.get("market_max_per_buy",5)),
-            economy.market_buy_remaining(state)
-        )))
-        quantity = mini(quantity,int(state.sect.spirit_stones/maxi(unit_price,1)))
-        if quantity <= 0:
-            continue
-        var request_id := "ui:v57:body:%s:%d:%s:%d" % [
-            str(disciple_id),int(preview.get("source_realm",0)),
-            str(material_id),state.sect.economy_a_event_count+1
+    var body := state.disciples[disciple_id].v2_realm_progress.get("body",{})
+    var request_id := "ui:v57:body:%s:%d:%d" % [
+        str(disciple_id),int(body.get("realm",0)),state.sect.economy_a_event_count+1
+    ]
+    var result := EconomySystem.new().buy_missing_body_gate_materials(state,disciple_id,request_id)
+    if bool(result.get("ok",false)):
+        var receipt: Dictionary = result.get("receipt",{})
+        tab_status_text = "Đã mua %d vật liệu thiếu, trả %d LT." % [
+            int(receipt.get("quantity",0)),int(receipt.get("cost",0))
         ]
-        var result := economy.buy_from_npc_v1(state,material_id,quantity,request_id)
-        if bool(result.get("ok",false)):
-            tab_status_text = "Đã mua %s ×%d, trả %d LT." % [
-                ResourceRegistry.new().display_name(material_id),quantity,quantity*unit_price
-            ]
-            var saved := runtime_session.save() if runtime_ready and runtime_session != null else {"ok":false}
+        if not bool(result.get("complete",false)):
+            tab_status_text += " Vẫn còn vật liệu cần kiếm hoặc mua."
+        if runtime_ready and runtime_session != null:
+            var saved := runtime_session.save()
             if not bool(saved.get("ok",false)):
-                tab_status_text += " Lưu chưa xác nhận."
-        else:
-            tab_status_text = "Không mua được: "+str(result.get("reason",""))
-        return
-    tab_status_text = "Chưa đủ Linh Thạch, hạn mức hoặc hàng NPC để mua vật liệu thiếu."
+                tab_status_text += " Chưa xác nhận lưu."
+    else:
+        tab_status_text = "Không mua được: "+str(result.get("reason",""))
+
 
 func _body_gate_preview_text(disciple_id: StringName) -> String:
     var preview := DiscipleBodyGateTransactionV2.new().preview_gate(state,disciple_id)
