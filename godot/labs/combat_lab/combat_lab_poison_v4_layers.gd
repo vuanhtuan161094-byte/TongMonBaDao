@@ -3,8 +3,13 @@ extends RefCounted
 
 # Render-only V4, selected by an explicit Lab opt-in. Never writes battle state.
 const TAU4 := PI * 2.0
-const LIGHT := Color("effff5")
-const GOLD := Color("ffdb82")
+# Dark-fantasy palette: saturated silhouettes first, restrained light accents.
+# Every effect is limited to a few bounded CanvasItem draws (Android GL compatibility).
+const LIGHT := Color("e7f8d1")
+const GOLD := Color("edc979")
+const NEEDLE_DARK := Color("24163f")
+const GU_DARK := Color("24351c")
+const JADE_DARK := Color("143e3d")
 
 static func school(skill_id: String) -> String:
     if ".co_doc." in skill_id: return "co_doc"
@@ -13,29 +18,35 @@ static func school(skill_id: String) -> String:
 
 static func tint(branch: String) -> Color:
     match branch:
-        "co_doc": return Color("b5ec62")
-        "duoc_doc": return Color("65f3cd")
-    return Color("a28bff")
+        "co_doc": return Color("9acd32")
+        "duoc_doc": return Color("63e6be")
+    return Color("7a5cff")
 
 static func a(c: Color, opacity: float) -> Color:
     return Color(c.r, c.g, c.b, clampf(opacity, 0.0, 0.95))
 
 static func line(canvas: CanvasItem, p: Vector2, q: Vector2, c: Color, opacity: float, width: float = 2.0) -> void:
-    canvas.draw_line(p, q, a(c, opacity * 0.14), width + 9.0, true)
-    canvas.draw_line(p, q, a(c, opacity * 0.48), width + 3.0, true)
-    canvas.draw_line(p, q, a(LIGHT, opacity), width, true)
+    # One dark edge and a crisp colored blade; no large white glow over actors.
+    if opacity <= 0.001: return
+    canvas.draw_line(p, q, a(c.darkened(0.78), opacity * 0.88), width + 2.8, true)
+    canvas.draw_line(p, q, a(c, opacity * 0.82), width, true)
+    canvas.draw_line(p, q, a(LIGHT, opacity * 0.24), maxf(0.65, width * 0.36), true)
 
 static func spark(canvas: CanvasItem, p: Vector2, c: Color, opacity: float, size: float = 2.0) -> void:
     if opacity < 0.002: return
-    canvas.draw_circle(p, size * 2.3, a(c, opacity * 0.12))
-    canvas.draw_circle(p, size * 1.2, a(c, opacity * 0.43))
-    canvas.draw_circle(p, size * 0.52, a(LIGHT, opacity))
+    canvas.draw_circle(p, size * 1.55, a(c.darkened(0.65), opacity * 0.40))
+    canvas.draw_circle(p, size * 0.8, a(c, opacity * 0.85))
+    canvas.draw_circle(p, size * 0.32, a(LIGHT, opacity * 0.54))
 
 static func ring(canvas: CanvasItem, p: Vector2, r: float, c: Color, opacity: float, time: float) -> void:
     if r <= 0 or opacity < 0.002: return
-    canvas.draw_arc(p, r, time, TAU4 + time, 40, a(c, opacity * 0.18), 7.0, true)
-    canvas.draw_arc(p, r, time, TAU4 + time, 40, a(c, opacity * 0.56), 3.0, true)
-    canvas.draw_arc(p, r, time, TAU4 + time, 40, a(LIGHT, opacity), 1.2, true)
+    # Broken rune perimeter instead of three bright concentric rings.
+    for i in range(6):
+        var begin := time + float(i) * TAU4 / 6.0
+        canvas.draw_arc(p, r, begin, begin + TAU4 / 9.0, 6,
+            a(c.darkened(0.32), opacity * 0.62), 2.2, true)
+        canvas.draw_arc(p, r, begin + 0.05, begin + TAU4 / 10.0, 5,
+            a(c, opacity * 0.75), 1.0, true)
 
 # Solid silhouette: translucent beams alone vanish at real 1x gameplay size.
 static func needle(canvas: CanvasItem, origin: Vector2, tip: Vector2,
@@ -50,9 +61,12 @@ static func needle(canvas: CanvasItem, origin: Vector2, tip: Vector2,
         origin + n * width, hilt + n * width * 1.25, tip,
         hilt - n * width * 1.25, origin - n * width
     ])
-    canvas.draw_colored_polygon(border, a(Color("261336"), opacity * 0.90))
-    line(canvas, origin + axis * (length * 0.10), tip, color, opacity * 0.88, maxf(1.1, z * 1.0))
-    spark(canvas, tip, LIGHT, opacity, maxf(1.0, 1.2 * z))
+    canvas.draw_colored_polygon(border, a(NEEDLE_DARK, opacity * 0.94))
+    # Violet metal spine with a thin toxic jade bevel, not a laser.
+    canvas.draw_line(origin + axis * (length * 0.12), tip, a(color, opacity * 0.92),
+        maxf(1.0, 1.18 * z), true)
+    canvas.draw_line(hilt + n * width * 0.22, tip, a(Color("a7f28a"), opacity * 0.48),
+        maxf(0.6, z * 0.42), true)
 
 static func lotus(canvas: CanvasItem, center: Vector2, radius: float, c: Color, opacity: float, t: float) -> void:
     # Six jade petals with dark roots and gold inner edges, not a hexagon.
@@ -66,9 +80,12 @@ static func lotus(canvas: CanvasItem, center: Vector2, radius: float, c: Color, 
         var wide := radius * 0.33
         var petal := PackedVector2Array([base, center + axis * radius * 0.62 + n * wide,
             tip, center + axis * radius * 0.62 - n * wide])
-        canvas.draw_colored_polygon(petal, a(c.darkened(0.56), opacity * 0.91))
-        line(canvas, base, tip, GOLD, opacity * 0.68, maxf(0.9, radius * 0.08))
-    spark(canvas, center, c, opacity, core_radius)
+        canvas.draw_colored_polygon(petal, a(JADE_DARK, opacity * 0.90))
+        var inner := PackedVector2Array([base, center + axis * radius * 0.61 + n * wide * 0.58,
+            center + axis * radius * 0.91, center + axis * radius * 0.61 - n * wide * 0.58])
+        canvas.draw_colored_polygon(inner, a(c, opacity * 0.64))
+        canvas.draw_line(base, tip, a(GOLD, opacity * 0.45), maxf(0.65, radius * 0.035), true)
+    spark(canvas, center, c, opacity, core_radius * 0.72)
 
 static func serpent(canvas: CanvasItem, start: Vector2, head: Vector2, c: Color,
         opacity: float, z: float, t: float) -> void:
@@ -80,17 +97,24 @@ static func serpent(canvas: CanvasItem, start: Vector2, head: Vector2, c: Color,
     for i in range(1, 10):
         var ratio := float(i) / 9.0
         var to := start.lerp(head, ratio) + n * sin(ratio * TAU4 * 1.4 - t * 8.0) * z * 3.5 * (1.0 - ratio)
-        line(canvas, previous, to, c, opacity * (0.65 + ratio * 0.32),
-            maxf(1.3, (2.5 - ratio * 0.9) * z))
+        canvas.draw_line(previous, to, a(GU_DARK, opacity * 0.92),
+            maxf(1.6, (4.1 - ratio * 1.4) * z), true)
+        canvas.draw_line(previous, to, a(c, opacity * (0.55 + ratio * 0.30)),
+            maxf(0.85, (2.5 - ratio * 0.9) * z), true)
         previous = to
     var v := head - d * (4.5 * z)
     canvas.draw_colored_polygon(PackedVector2Array([
-        head + d * 3.7 * z, v + n * 3.0 * z, v - n * 3.0 * z
-    ]), a(c, opacity * 0.92))
-    spark(canvas, head + n * 1.1 * z, GOLD, opacity, maxf(1.0, 0.95 * z))
+        head + d * 4.6 * z, v + n * 3.5 * z, v - n * 3.5 * z
+    ]), a(GU_DARK, opacity * 0.98))
+    canvas.draw_colored_polygon(PackedVector2Array([
+        head + d * 3.1 * z, v + n * 2.0 * z, v - n * 2.0 * z
+    ]), a(c, opacity * 0.86))
+    # Two tiny antique-gold eyes keep the serpent visibly alive at 1x.
+    canvas.draw_circle(head - d * 1.6 * z + n * 1.25 * z,
+        maxf(0.75, 0.65 * z), a(GOLD, opacity * 0.9))
 
 static func debris(canvas: CanvasItem, p: Vector2, radius: float, c: Color, opacity: float, t: float) -> void:
-    for i in range(7):
+    for i in range(4):
         var theta := float(i) * 2.39996
         var rr := radius * (0.3 + 0.65 * absf(sin(float(i + 1) * 1.5 + t * 3.0)))
         spark(canvas, p + Vector2(cos(theta + t) * rr, sin(theta) * rr * 0.4 - t * 9.0), c, opacity * 0.68, 1.25)
@@ -102,7 +126,8 @@ static func render(canvas: CanvasItem, cue: Dictionary, target: Vector2, source:
     var kind := str(cue.get("kind", ""))
     var effect := str(cue.get("effect", ""))
     var shape := str(cue.get("shape", ""))
-    var z := clampf(zoom, 1.0, 6.0)
+    # Shape size is capped independently from camera zoom to protect 1x-6x readability.
+    var z := clampf(zoom, 1.0, 2.4)
     var k := clampf(t, 0.0, 1.0)
     var life := 1.0 - k
     var pulse := sin(k * PI)
@@ -115,9 +140,17 @@ static func render(canvas: CanvasItem, cue: Dictionary, target: Vector2, source:
     if kind in ["venom_cloud", "aoe", "area_burst"] or (shape == "circle" and kind == "skill_release"):
         # No invented radius: only radius_px from authoritative V6.3/event.
         var area := clampf(radius_px, 1.0, 1600.0)
-        ring(canvas, target, area * (0.55 + k * 0.45), c, life * 0.68, k * 0.8)
-        ring(canvas, target, area * (0.45 + k * 0.2), GOLD, life * 0.35, -k * 0.6)
-        debris(canvas, target, area * 0.6, c, life, k)
+        # The outside edge is exactly the canonical skill radius. It is a
+        # warning/feedback boundary only, never the source of a damage hit.
+        for i in range(12):
+            var begin := float(i) * TAU4 / 12.0
+            canvas.draw_arc(target, area, begin, begin + TAU4 / 17.0, 5,
+                a(c, life * 0.56), maxf(1.0, z * 0.8), true)
+        # Low-opacity petals/motes on the floor; leave monsters visible.
+        for i in range(5):
+            var ang := float(i) * TAU4 / 5.0 + k * 0.5
+            var q := target + Vector2.from_angle(ang) * area * (0.18 + k * 0.44)
+            spark(canvas, q, c, life * 0.43, 1.0 * z)
         return
     if kind == "heal" or effect == "heal":
         lotus(canvas, p - Vector2(0, k * 23.0 * z), 20.0 * z, c, life * 0.9, k)
@@ -157,18 +190,22 @@ static func render(canvas: CanvasItem, cue: Dictionary, target: Vector2, source:
             debris(canvas, head - d * (8.0 * z), 7.0 * z, c, 0.36, k)
         "impact":
             if branch == "doc_cham":
-                for i in range(8):
-                    var ray := Vector2.from_angle(float(i) * TAU4 / 8.0)
-                    needle(canvas, p + ray * (3.0 * z), p + ray * (12.0 + 16.0 * k) * z, c, pulse, z * 0.74)
+                # Five angled punctures read as a stabbing strike, not an explosion.
+                for i in range(5):
+                    var ray := Vector2.from_angle((-0.55 + float(i) * 0.27) + d.angle())
+                    needle(canvas, p - ray * (5.0 * z), p + ray * (10.0 + 7.0 * k) * z,
+                        c, pulse * 0.85, z * 0.75)
             elif branch == "co_doc":
-                ring(canvas, p, (9.0 + 18.0 * k) * z, c, pulse, k)
-                serpent(canvas, p - Vector2(18, 5) * z, p + Vector2(12, -4) * z, c, pulse, z, k)
+                # Bite and coil, not an enlarged generic impact halo.
+                serpent(canvas, p - d * 19.0 * z, p + d * 7.0 * z, c, pulse, z, k)
+                spark(canvas, p, GOLD, pulse * 0.54, 1.8 * z)
             else:
                 lotus(canvas, p, (15.0 + 12.0 * k) * z, c, pulse, k)
-            debris(canvas, p, 16.0 * z, c, pulse, k)
+            debris(canvas, p, 9.0 * z, c, pulse * 0.55, k)
         "poison", "poison_apply", "poison_tick":
-            debris(canvas, p - Vector2(0, k * 7.0 * z), 9.0 * z, c, life * 0.65, k)
-            if kind != "poison_tick": ring(canvas, p, 8.0 * z, c, life * 0.44, k)
+            # DoT tick is deliberately quieter than the original impact.
+            debris(canvas, p - Vector2(0, k * 7.0 * z), 6.0 * z, c, life * 0.37, k)
+            if kind != "poison_tick": ring(canvas, p, 7.0 * z, c, life * 0.24, k)
         "venom_burst":
             for i in range(4):
                 var vector := Vector2.from_angle(float(i) * TAU4 / 4.0)
