@@ -1,5 +1,14 @@
 # NEXT CHAT / CODEX HANDOFF — RELEASE TRAIN PR #72 → MAIN (2026-11-04)
 
+## PVB1 — ĐỘC TU 183-ID NHÂN/TIÊN/THẦN: CODE CANDIDATE, GODOT QA OPEN (10/11/2026)
+
+- **Owner authorized code after 183-ID design:** updated poison-only 35 Nhân +68 Tiên +80 Thần/hiếm source definitions (36 effect changes), 35 family IDs, 183 unique display names, all immutable skill IDs. Restored six poison rare-passive registry nodes, strict same-family predecessor for opt-in V63; historical Save stays readable; **V63 feature gates and all source catalogues remain OFF by default**.
+- **Bounded runtime** in `V63PoisonEvolutionV1` and `V63HumanSkillCombatSystem`: DoT × stacked fairness, consume max +0.60 ratio with same-owner stacks only, one-hop Cổ Độc spread radius2.5 ICD6s, mark bonus +0.12 ICD8s, cleanse-counter +0.08 ICD12s, healing from actual rolling 10-minute HP receipts (≤12% MaxHP and ≤35% verified damage), rare Hồi Thiên lethal save 1/90s. Only commit poison/mark/consume after real hit; no phantom VFX damage; preserving existing HP0→fullHP+Injury120, medicine 80% / CD5s Warehouse, paid Injury service 1500/3000LT/30ticks, passive 1000EXP/min and money sources.
+- **Static source parity verified** at code SHA `800023be82ef3acbec01bb172d5429c5d87bbe86`: 183/183 rows, 183 registry nodes, 35 families, six rare passives, 36 effect switches, no source mismatch; 26 Divine rules **CODE_CANDIDATE_QA_PENDING**. **NOT GODOT PASS**.
+- **Test added:** `godot/tests/simulation/v63_poison_evolution_balance_test.gd` with numerical/ownership/Save-serial checks; `godot/tests/simulation/v63_poison_six_vs_eight_pve_simulation_test.gd` 6 Divine A/B hunters vs eight authentic `truc_thu`; current 183-ID combat matrix and V65 contract regression. Official 4.7.2 GitHub workflow `v63-quyen-doc-matrix.yml` configured, but current exact-SHA run logs/job conclusions **NOT RETRIEVED**, no real Windows/Android performance; keep QA OPEN and do not merge.
+- **Evidence/next**: `docs/qa/PVB1_POISON_183_IMPLEMENTATION_AND_QA_20261110.md`. Need actual CI log + exact SHA, fix FAIL, focused + cumulative PVE-P0 incl PVE-CARE03/Save, measured 21 DPS/HPS profiles, 6/12/18 kills/h, 30 hunter/40 monsters, Android VFX/FPS before unlock. No fake QA or buffs/drop/XP.
+
+
 ## PVE-CARE03 — ĐAN HỒI NGUYÊN trong combat P0/B3 + nút ĐIỀU TRỊ V2 (10/11/2026)
 
 - **Owner-approved direct CODE** trên PR #72 Draft, one branch, giữ SaveService, full HP revival + Injury1, 1.000 Tu Vi/min thụ động, 20 bãi/200 spawn slots/40 active monsters không đổi. Runtime and design evidence: `docs/design/PVE_CARE03_REAL_COMBAT_PILL_AND_GUI_20261110.md`.
