@@ -475,6 +475,9 @@ func _draw() -> void:
         draw_line(Vector2(margin.x, y), Vector2(margin.x + span.x, y), Color(0.65, 0.55, 0.8, 0.065), 1.0)
     draw_circle(Vector2(size.x * 0.5, size.y * 0.52), minf(size.x, size.y) * 0.30, Color(0.42, 0.24, 0.64, 0.055))
     draw_string(ThemeDB.fallback_font, Vector2(14, 20), status_line, HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Color("cfc1e1"))
+    # Authoritative AoE/telegraph footprints belong on the floor BEHIND
+    # sprites, not in front of faces/health bars. This is purely draw order.
+    _draw_ground_cues()
     if battle != null:
         var ids: Array = battle.actors.keys()
         ids.sort_custom(func(a: Variant, b: Variant) -> bool: return float(battle.actors[a].position.y) < float(battle.actors[b].position.y))
@@ -569,6 +572,25 @@ func _actor_body_offset_px(actor_id: String) -> float:
     # character has a taller 245px source frame scaled by 0.32.
     return (-26.0 if monster else -37.0) * actor_scale
 
+static func _is_ground_cue(cue: Dictionary) -> bool:
+    return str(cue.get("kind", "")) in ["venom_cloud", "aoe", "area_burst", "telegraph"]
+
+func _draw_ground_cues() -> void:
+    var current_time := roundi(visual_time * 1000.0)
+    for cue in cues:
+        if not _is_ground_cue(cue):
+            continue
+        var duration := maxf(1.0, float(cue.get("life", 1.0)))
+        var age := float(current_time - int(cue.get("created", current_time)))
+        if age < 0.0 or age >= duration:
+            continue
+        var t := clampf(age / duration, 0.0, 1.0)
+        var p := _world_to_local(_cue_target_world_position(cue))
+        var radius_px := float(cue.get("radius", 0.0)) * size.x / WORLD.size.x * zoom
+        var presentation := cue.duplicate()
+        presentation["v4_preview"] = v4_preview_enabled
+        VfxV2.render(self, presentation, p, p, t, radius_px, zoom)
+
 func _draw_cues() -> void:
     # HOLD freezes all existing spell/impact effects, not only projectiles.
     var current_time := roundi(visual_time * 1000.0)
@@ -605,7 +627,8 @@ func _draw_cues() -> void:
             if v4_preview_enabled:
                 visual_cue["v4_target_body_offset"] = _actor_body_offset_px(str(cue.get("target_actor_id", "")))
                 visual_cue["v4_source_body_offset"] = _actor_body_offset_px(str(cue.get("source_actor_id", "")))
-        VfxV2.render(self, visual_cue, p, start, t, radius_px, zoom)
+        if not _is_ground_cue(cue):
+            VfxV2.render(self, visual_cue, p, start, t, radius_px, zoom)
         var label := str(cue.get("text", ""))
         if label.is_empty():
             continue
