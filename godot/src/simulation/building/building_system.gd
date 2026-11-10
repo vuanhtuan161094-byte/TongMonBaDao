@@ -1030,6 +1030,10 @@ func can_start_upgrade(state: SimulationState, building_id: StringName) -> Dicti
         return {"ok": false, "reason": "milestone_component_not_defined", "target_level": target_level}
 
     var cost := sx_v55_upgrade_cost(state,building)
+    # No price envelope is NOT a free upgrade. Also fail closed if the
+    # QA-denominated amount cannot fit the canonical Stone limit.
+    if cost.is_empty():
+        return {"ok":false,"reason":"upgrade_cost_unavailable"}
     var material_ids: Array = cost.keys()
     material_ids.erase("spirit_stones")
     material_ids.sort()
