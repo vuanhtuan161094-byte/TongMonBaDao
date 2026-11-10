@@ -660,14 +660,16 @@ static func release_cast_base(battle: MapBattleV2, cast: Dictionary, caster: Dic
                         if str(stack.get("owner_id", "")) == str(caster.id):
                             owned += 1
                     ratio += minf(0.75, float(owned) * 0.05)
+            var mark_bonus := 0.0
+            var counter_bonus := 0.0
             if str(definition.get("school", "")) == "poison":
-                var mark_bonus := V63PoisonEvolutionV1.peek_mark_bonus(caster, target, battle.now)
+                mark_bonus = V63PoisonEvolutionV1.peek_mark_bonus(caster, target, battle.now)
                 if mark_bonus > 0.0:
                     # _deal_direct applies the ordinary mark amplifier itself.
                     # Divide only the extra packet by that factor to avoid
                     # multiplying the 0.12 ATK proc twice.
                     ratio += mark_bonus / maxf(1.0, marked_damage_factor(caster, target, battle.now))
-                var counter_bonus := V63PoisonEvolutionV1.peek_cleanse_counter(caster, battle.now)
+                counter_bonus = V63PoisonEvolutionV1.peek_cleanse_counter(caster, battle.now)
                 ratio += counter_bonus
             damage = battle._deal_direct(caster,target,ratio,"v63_skill",true,str(cast.element))
             if damage > 0.0 and str(definition.get("school", "")) == "poison":
