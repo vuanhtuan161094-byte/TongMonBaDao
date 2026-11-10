@@ -131,6 +131,19 @@ func _pose_lifetime_ms(actor_id: String, pose: String, fallback_ms: int) -> int:
     var atlas_duration := PoisonAtlasV1.clip_duration_ms(pose)
     return atlas_duration if atlas_duration > 0 else fallback_ms
 
+# Runtime pose cadence follows the CURRENT authoritative attack/cast speed,
+# never the original 2.4s atlas movie clip duration. Long clips are time-
+# remapped by PoisonAtlasV1.frame_index() to fit these windows.
+func _combat_pose_ms(actor_id: String, skill_release: bool) -> int:
+    if battle == null or not battle.actors.has(actor_id):
+        return 320
+    var owner: Dictionary = battle.actors[actor_id]
+    var stats: Dictionary = V63HumanSkillCombatSystem.effective_attack_stats(owner, owner.get("stats", {}))
+    var haste := float(stats.get("cast_speed", 0.0)) if skill_release else float(stats.get("attack_speed", 0.0))
+    var divisor := maxf(0.45, 1.0 + haste)
+    var baseline := 475.0 if skill_release else 290.0
+    return clampi(roundi(baseline / divisor), 105, 540)
+
 func consume_events(rows: Array[Dictionary]) -> void:
     if battle == null:
         return
@@ -152,21 +165,34 @@ func consume_events(rows: Array[Dictionary]) -> void:
         if kind == "skill_cast":
             if school == "poison" and battle.actors.has(source_actor_id) \
                     and str(battle.actors[source_actor_id].get("side", "")) != "monster":
-                var cast_window := maxf(0.0, float(event.get("release_at", event_time)) - event_time)
-                if cast_window > 0.0:
-                    _set_pose(source_actor_id, "cast", roundi(cast_window * 1000.0), event_time)
+                # The release deadline includes projectile flight. A caster
+                # must animate only its actual wind-up, never stand casting
+                # while the needle is already flying toward moving enemies.
+                var skill: Dictionary = CombatLabRosterAdapter.skill_definitions().get(source_skill, {})
+                var owner: Dictionary = battle.actors[source_actor_id]
+                var effective := V63HumanSkillCombatSystem.effective_attack_stats(owner, owner.get("stats", {}))
+                var cast_rate := maxf(0.1, 1.0 + float(effective.get("cast_speed", 0.0)))
+                var windup := maxf(MapBattleV2.STEP_SECONDS, float(skill.get("cast_time", 0.0)) / cast_rate)
+                _set_pose(source_actor_id, "cast", roundi(windup * 1000.0), event_time)
             else:
                 var duration := clampi(roundi((float(event.get("release_at", 0.0)) - event_time) * 1000.0), 300, 1200)
                 _set_pose(source_actor_id, "cast", duration)
         elif kind == "skill_release":
-            _set_pose(source_actor_id, "attack", _pose_lifetime_ms(source_actor_id, "attack", 420), event_time)
+            _set_pose(source_actor_id, "attack", _combat_pose_ms(source_actor_id, true), event_time)
         elif kind == "hit" and float(event.get("damage", 0.0)) > 0.0:
             # DoT/reflect are autonomous settlements: never replay a weapon swing
             # for the original caster when poison, burn or reflection ticks.
             var hit_kind := str(event.get("kind", ""))
             if hit_kind not in ["v63_poison", "dot", "burn", "reflect", "reflection"]:
-                _set_pose(source_actor_id, "attack", 360, event_time)
-            _set_pose(target_id, "hit", _pose_lifetime_ms(target_id, "hit", 230), event_time)
+                _set_pose(source_actor_id, "attack", _combat_pose_ms(source_actor_id, false), event_time)
+            # HP reduction alone NEVER interrupts idle/walk/cast/attack.
+            # One-shot spark + committed damage label are rendered below.
+            # Continuous 1s poison ticks must not retrigger a 2.4s hit clip.
+        elif kind == "status_applied" and str(event.get("status", "")) in [
+                "stun", "freeze", "knockback", "knock_up", "stagger"]:
+            # Only actual authoritative control statuses warrant a full-body
+            # hurt response. This never writes CC or holds simulation actor.
+            _set_pose(target_id, "hit", 300, event_time)
         elif kind in ["downed", "death"]:
             _set_pose(target_id, "death", _pose_lifetime_ms(target_id, "death", 2400), event_time)
         elif kind == "v63_mobility":
