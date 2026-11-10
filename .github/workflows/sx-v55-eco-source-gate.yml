@@ -61,5 +61,12 @@ jobs:
       - name: Canonical source provenance regression
         run: bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/simulation/sx07_source_provenance_test.gd
 
+      - name: Hall W2 real-payment UI and canonical Save (strict)
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://tests/presentation/economy_a_landscape_ui_test.gd
+          bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/presentation/economy_a_landscape_ui_test.gd
+
       - name: Existing Economy-A money-warehouse wage regression
         run: bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/simulation/sx_w2_wage_arrears_save_test.gd
