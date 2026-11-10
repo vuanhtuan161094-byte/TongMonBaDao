@@ -129,3 +129,23 @@ Các kỹ năng hỗ trợ / thân pháp / bị động có `ratio=0` trong **m�
 Một đổi tên có chủ đích: `Sinh Cơ Tán` (ID hiện tại `duoc_doc.active_04`) thành `Hóa Độc Tán` trong thiết kế tương lai vì chức năng đề xuất là tấn công bằng bột phản độc, khác hoàn toàn `Nghịch Độc Phản Chế` vốn phụ trách thanh tẩy. ID vẫn giữ nguyên để Save còn dùng được.
 
 **QA máy đọc trên dữ liệu ứng viên:** 183 unique ID, 35 unique families, 183 tên hiển thị riêng, tất cả hậu duệ có `parent`, giới hạn runtime-compatible được thỏa mãn (với các trường tương thích), 36 thay đổi effect so với source hiện hành phải được review riêng. Đây không phải Godot QA.
+
+## 9. Chi tiết 7 luật Thần — giải quyết 26 DESIGN_PENDING ở mức thiết kế
+
+Có 80 node Thần: 2 successor_action và 6 nhóm khác ×13 node. Hai nhóm single_spread_poison (13) và removed_debuff_counter (13) hiện vẫn cần triển khai code riêng. Công thức và giới hạn dưới đây thuộc **DESIGN_CANDIDATE**, không có nghĩa runtime đã áp dụng.
+
+| Rule ID | Số ID | Điều kiện kích hoạt | Cơ chế đề xuất, có trần | ICD |
+|---|---:|---|---|---:|
+| successor_action | 2 | derived basic/mobility generation; no additional cast | previous family successor replaces old; Divine stage I/II/III direct ratio ×1.00/1.12/1.24; no extra hit | 0s |
+| owned_poison_maintain | 13 | real poison cast while own stacks already at five | refresh lifetime of ONE oldest own stack to min(10s, skill.duration), not create sixth; ≤1 refresh/cast; no extra damage event | 0s |
+| owned_poison_consume | 13 | real consume_poison cast on owned stacks only | S≤5; R=sum(remaining own DoT tick ratios); extra ATK ratio min(.60,.08*S+.40*R); erase only same-owner stacks; 1 settlement/cast/target | 0s |
+| single_spread_poison | 13 | one committed Divine poison application to a primary enemy | ≤1 secondary hostile at radius≤2.5; 1 spread stack at 65% source tick ratio, remaining life≤5s, no new direct hit/chain, caster-target cap5/total cap30; source attribution exact | 6s |
+| marked_target_punish | 13 | first real non-DoT damage by owner on own valid mark | consume 1 own mark; +0.12 ATK direct after verified hit, no crit/lifesteal/proc; caster-target ICD8s; no duplicate mark multiplier | 8s |
+| cleanse_heal_fatal_save | 13 | cleanse event with genuine removed_debuff_count≥1, plus separate rare passive protect | extra heal ≤3% target MaxHP subject shared rolling10m budget, target ICD12s; rare passive self-lethal-save HP=1 once90s when truly equipped, no Injury removal | 12s |
+| removed_debuff_counter | 13 | verified cleanse removed≥1 real debuff then next owner offensive cast within 5s | one primary hostile +0.08 ATK direct, caster ICD12s; zero extra DoT stacks, no crit/lifesteal/proc; never triggers from empty cleanse/reload duplication | 12s |
+
+**Hệ số Thần giai:** ở mốc cảnh giới 21/25/29, code release_cast dùng ×1,00/1,12/1,24 cho **direct ratio**; tuyệt đối không nhân tần suất DoT tick và không cộng thêm tick. Paper proxy ở mục 4 là Thần giai I, chưa tính II/III.
+
+**Oracle:** 2 tầng độc cùng chủ, còn 4 tick ×0,03 ATK/tầng: R=0,24; bonus=min(0,60;0,08×2+0,40×0,24)=0,256 ATK. 5 tầng, còn 8 tick ×0,03: R=1,20; bonus=min(0,60;0,40+0,48)=0,60 ATK. Nếu caster A có 3 tầng và B có 2 tầng trên một Boss, A kích nổ chỉ xóa 3 tầng của A. Nếu mục tiêu phụ ở cách tâm 2,4 ô, tối đa một tầng lan; ở 2,6 ô không được lan. Thanh tẩy xóa 0 trạng thái thì phản công phải 0. Cửa sổ 10 phút r1 có 36 HP sát thương thực, MaxHP=190: hồi kỹ năng tối đa min(22,8;12,6)=12,6 HP.
+
+Để triển khai đúng cần event authority cho sát thương gần đây, last-trigger/ICD theo caster–target, gói status spread không tạo hit giả, trạng thái counter và cold Save/Reload. Không dùng tài liệu ứng viên làm dữ liệu runtime khi chưa duyệt.
