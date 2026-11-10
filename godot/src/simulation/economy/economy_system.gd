@@ -111,6 +111,9 @@ func sx_v55_r12_work_snapshot(state: SimulationState, worker: DiscipleState,
 
 # Preview must be approved BEFORE Warehouse credit, so overflow or malformed
 # saved snapshots cannot create a product while its money receipt is rejected.
+# V5.5-D W2 is an EARNINGS FLOOR, not an additional wage per batch.
+# Topup is the uncovered shortfall: max(0, floor - LT2 gross). Settled
+# topup is a Sect→worker transfer, and only actually paid topup is taxable.
 func sx_v55_r12_can_settle(state: SimulationState, worker: DiscipleState,
         job_id: String, snapshot: Dictionary) -> Dictionary:
     if not sx_v55_r12_enabled(state) or worker == null or job_id.is_empty() \
@@ -128,24 +131,36 @@ func sx_v55_r12_can_settle(state: SimulationState, worker: DiscipleState,
             or str(snapshot.get("plan_id","")).is_empty():
         return {"ok":false,"reason":"invalid_r12_snapshot"}
     var gross := int(rate.get("gross_per_minute",0))*minutes
-    var tax := gross*int(SX_V55_R12_TAX[site])/100
-    var wage := int(rate.get("wage_per_job",0))
-    if int(snapshot.get("gross",-1)) != gross or int(snapshot.get("tax",-1)) != tax \
-            or int(snapshot.get("net",-1)) != gross-tax \
-            or int(snapshot.get("wage",-1)) != wage:
+    var tax_pct := int(SX_V55_R12_TAX[site])
+    var gross_tax := gross*tax_pct/100
+    var wage_floor := int(rate.get("wage_per_job",0))
+    if int(snapshot.get("gross",-1)) != gross or int(snapshot.get("tax",-1)) != gross_tax \
+            or int(snapshot.get("net",-1)) != gross-gross_tax \
+            or int(snapshot.get("wage",-1)) != wage_floor:
         return {"ok":false,"reason":"tampered_r12_work_value"}
-    if gross <= 0 or tax <= 0 or state.sect.spirit_stones > V2_MAX_STONES-tax \
-            or worker.spirit_stones > V2_MAX_STONES-(gross-tax):
+    if gross <= 0 or gross > V2_MAX_STONES:
         return {"ok":false,"reason":"r12_money_overflow"}
+    var topup_due := maxi(wage_floor-gross,0)
     var reserve := maxi(0,int(state.sect.economy_a_policy.get("sect_pay_reserve",0)))
-    var paid := wage if state.sect.spirit_stones+tax >= wage+reserve \
-        and worker.spirit_stones <= V2_MAX_STONES-(gross-tax)-wage else 0
-    return {"ok":true,"gross":gross,"tax":tax,"net":gross-tax,
-        "wage_due":wage,"wage_paid":paid,"realm":realm,"minutes":minutes}
+    var affordable_topup := maxi(0,state.sect.spirit_stones-reserve)
+    var topup_paid := mini(topup_due,affordable_topup)
+    # Design workbook 08_SoCaiT2W2 taxes LT2 + ACTUALLY PAID topup.
+    var taxable := gross+topup_paid
+    var tax := taxable*tax_pct/100
+    var worker_net := taxable-tax
+    var sect_delta := tax-topup_paid
+    if taxable > V2_MAX_STONES \
+            or worker_net < 0 or worker.spirit_stones > V2_MAX_STONES-worker_net \
+            or (sect_delta >= 0 and state.sect.spirit_stones > V2_MAX_STONES-sect_delta) \
+            or (sect_delta < 0 and state.sect.spirit_stones < -sect_delta):
+        return {"ok":false,"reason":"r12_money_overflow"}
+    return {"ok":true,"gross":gross,"tax":tax,"net":worker_net,
+        "taxable":taxable,"wage_floor":wage_floor,
+        "wage_due":topup_due,"wage_paid":topup_paid,
+        "realm":realm,"minutes":minutes}
 
 # Called only after actual Warehouse deposit has succeeded. All money remains
-# within canonical Sect/Disciple balances and existing Economy-A receipts.
-# Gross is a new EARNED work-income source; tax/wage are transfers, not faucets.
+# in existing Sect/Disciple accounts; W2 is a real Sect-funded shortfall only.
 func sx_v55_r12_settle(state: SimulationState, worker: DiscipleState,
         job_id: String, snapshot: Dictionary) -> Dictionary:
     var verdict := sx_v55_r12_can_settle(state,worker,job_id,snapshot)
@@ -156,20 +171,24 @@ func sx_v55_r12_settle(state: SimulationState, worker: DiscipleState,
     var paid := int(verdict["wage_paid"])
     var due := int(verdict["wage_due"])
     state.sect.spirit_stones += tax-paid
-    worker.spirit_stones += net+paid
+    worker.spirit_stones += net
     state.sect.economy_a_receipts["sxv55-work:"+job_id] = {
         "kind":"sx_v55_work_income","job_id":job_id,"worker_id":str(worker.id),
         "plan_id":str(snapshot["plan_id"]),"site":str(snapshot["site"]),
         "realm":int(verdict["realm"]),"minutes":int(verdict["minutes"]),
-        "gross":int(verdict["gross"]),"tax":tax,"net":net,"tick":state.tick
+        "gross":int(verdict["gross"]),"taxable":int(verdict["taxable"]),
+        "tax":tax,"net":net,"w2_floor":int(verdict["wage_floor"]),"tick":state.tick
     }
-    # Existing wage-arrears logic continues to read original 'wage' receipts.
+    # Old wage arrears tooling reads due/paid from the SAME receipt family.
+    # Long jobs with gross >= floor correctly have due=0 and NO phantom debt.
     state.sect.economy_a_receipts["wage:"+job_id] = {
         "kind":"wage","job_id":job_id,"worker_id":str(worker.id),
-        "paid":paid,"due":due,"tick":state.tick}
+        "paid":paid,"due":due,"w2_floor":int(verdict["wage_floor"]),
+        "gross":int(verdict["gross"]),"tick":state.tick}
     state.sect.economy_a_event_count += 2
     return {"ok":true,"already_settled":false,"gross":int(verdict["gross"]),
-        "tax":tax,"net":net,"wage_paid":paid,"wage_due":due}
+        "tax":tax,"net":net,"wage_floor":int(verdict["wage_floor"]),
+        "wage_paid":paid,"wage_due":due}
 
 func enable_v1(state: SimulationState) -> Dictionary:
     if state == null or not state.p3_7_buildings_enabled or not state.sect.p3_7_resources_enabled:
