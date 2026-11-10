@@ -4,6 +4,8 @@ extends RefCounted
 # The Lab VFX is deterministic presentation based on committed combat events.
 # NEVER calls CombatStatsV2/MapBattleV2 damage setters. Render-only primitives.
 const MAX_PARTICLES_PER_CUE := 12
+# Experimental V4 replaces only the poison render path inside Combat Lab; V3 remains default.
+const PoisonV4 = preload("res://labs/combat_lab/combat_lab_poison_v4_layers.gd")
 const DOC_CHAM_NEEDLE: Texture2D = preload("res://labs/combat_lab/assets/poison_vfx/doc_cham_needle.png")
 const CO_DOC_GU_SERPENT: Texture2D = preload("res://labs/combat_lab/assets/poison_vfx/co_doc_gu_serpent.png")
 const DUOC_DOC_JADE_LOTUS: Texture2D = preload("res://labs/combat_lab/assets/poison_vfx/duoc_doc_jade_lotus.png")
@@ -228,7 +230,10 @@ static func render(canvas: CanvasItem, cue: Dictionary, p: Vector2, source: Vect
     venom.a *= alpha
     var radius := clampf(radius_px, 0.0, 1600.0)
     if school == "poison":
-        _render_poison(canvas, cue, p, source, t, radius, zoom_factor)
+        if OS.get_environment("TMB_POISON_V4_PREVIEW") == "1":
+            PoisonV4.render(canvas, cue, p, source, t, radius, zoom_factor)
+        else:
+            _render_poison(canvas, cue, p, source, t, radius, zoom_factor)
         return
     match kind:
         "projectile":
