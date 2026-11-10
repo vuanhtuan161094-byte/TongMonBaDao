@@ -109,6 +109,11 @@ func _run() -> void:
 
     # Existing recipes/Forge inputs remain unchanged before toggle; NEW
     # orders now scale common herb, ore and wood only, never rare body drops.
+    if not _check(buildings.sx_v55_crop_stock_target(state,&"thanh_linh_thao") == 40000
+        and buildings.sx_v55_crop_stock_target(state,&"linh_coc") == 60
+        and buildings.sx_v55_crop_stock_target(state,&"tu_van_thao") == 20,
+        "auto-demand incorrectly multiplied Grain/TuVan without matching real consumer"):
+        return
     var scaled := buildings.sx_v55_common_requirements(state,{
         "thanh_thiet":3,"linh_moc":1,"thanh_linh_thao":2,
         "tinh_lang_bi":1,"tu_van_thao":2})
