@@ -13,6 +13,7 @@ on:
       - 'godot/src/presentation/p3/sect_map_presentation.gd'
       - 'godot/src/presentation/p3_1_landscape_sect.gd'
       - 'godot/tests/presentation/p3_o4_spirit_field_loop_test.gd'
+      - 'godot/tests/presentation/p3_b_second_spirit_field_test.gd'
       - '.github/workflows/p3-o4-spirit-field-loop.yml'
 
       - 'godot/tests/presentation/p3_o6_m1_release_rehearsal_test.gd'
@@ -65,6 +66,13 @@ jobs:
 
       - name: Run O4 real player Spirit Field loop persistence
         run: godot --headless --path godot -s res://tests/presentation/p3_o4_spirit_field_loop_test.gd
+
+      - name: Gate B second Field real worker, paid harvest and Save
+        shell: bash
+        run: |
+          set -euo pipefail
+          godot --headless --path godot --check-only --script res://tests/presentation/p3_b_second_spirit_field_test.gd
+          godot --headless --path godot -s res://tests/presentation/p3_b_second_spirit_field_test.gd
 
       - name: Run P3.7A2 Spirit Field backend regression
         run: godot --headless --path godot -s res://tests/simulation/p3_7a2_spirit_field_test.gd
