@@ -664,24 +664,25 @@ static func release_cast_base(battle: MapBattleV2, cast: Dictionary, caster: Dic
             var counter_bonus := 0.0
             if str(definition.get("school", "")) == "poison":
                 mark_bonus = V63PoisonEvolutionV1.peek_mark_bonus(caster, target, battle.now)
-                if mark_bonus > 0.0:
-                    # _deal_direct applies the ordinary mark amplifier itself.
-                    # Divide only the extra packet by that factor to avoid
-                    # multiplying the 0.12 ATK proc twice.
-                    ratio += mark_bonus / maxf(1.0, marked_damage_factor(caster, target, battle.now))
                 counter_bonus = V63PoisonEvolutionV1.peek_cleanse_counter(caster, battle.now)
-                ratio += counter_bonus
             damage = battle._deal_direct(caster,target,ratio,"v63_skill",true,str(cast.element))
-            if damage > 0.0 and str(definition.get("school", "")) == "poison":
+            if damage > 0.0 and float(target.get("hp", 0.0)) > 0.0 \
+                    and str(definition.get("school", "")) == "poison":
                 if mark_bonus > 0.0:
                     V63PoisonEvolutionV1.commit_mark_bonus(caster, battle.now)
                     _consume_mark(battle, caster, target, id)
+                    # Separate proc: not crit-eligible, not lifesteal-eligible,
+                    # and already consumed the mark to avoid double amplification.
+                    var proc_mark := battle._deal_direct(caster,target,mark_bonus,
+                        "v63_skill",false,str(cast.element),false)
                     battle._event("poison_mark_punish", {"caster":str(caster.id),"target":str(target.id),
-                        "skill_id":id,"bonus_ratio":mark_bonus,"icd":8.0})
-                if counter_bonus > 0.0:
+                        "skill_id":id,"bonus_ratio":mark_bonus,"actual_damage":proc_mark,"icd":8.0})
+                if counter_bonus > 0.0 and float(target.get("hp", 0.0)) > 0.0:
                     V63PoisonEvolutionV1.commit_cleanse_counter(caster, battle.now)
+                    var proc_counter := battle._deal_direct(caster,target,counter_bonus,
+                        "v63_skill",false,str(cast.element),false)
                     battle._event("poison_cleanse_counter", {"caster":str(caster.id),"target":str(target.id),
-                        "skill_id":id,"bonus_ratio":counter_bonus,"icd":12.0})
+                        "skill_id":id,"bonus_ratio":counter_bonus,"actual_damage":proc_counter,"icd":12.0})
         if effect == "poison":
             if damage > 0.0 or str(definition.get("school", "")) != "poison":
                 _apply_poison(battle,caster,target,id,float(cast.power),float(cast.duration),int(cast.poison_stacks),str(cast.element))
