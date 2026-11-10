@@ -150,7 +150,7 @@ func consume_events(rows: Array[Dictionary]) -> void:
         if battle.actors.has(source_actor_id):
             var actor: Dictionary = battle.actors[source_actor_id]
             if str(actor.get("side", "")) == "monster":
-                school_kind = "boss" if str(actor.get("tier", "")) == "boss" else "fist"
+                school_kind = "boss" if str(actor.get("tier", "")) == "boss" else "monster"
         var color: Color = VfxV2.school_color(school_kind)
         var radius := 0.0
         match kind:
