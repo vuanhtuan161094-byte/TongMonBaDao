@@ -91,6 +91,17 @@ func _run() -> void:
     arena._update_v4_shot_camera()
     _check(arena.v4_shot_camera_center.distance_to(Vector2(17.5, 11.0)) < 0.01,
         "6x shot does not snap to caster after projectile cue expires")
+    # A 1280x720 cinematic at 2x no longer assumes it can fit a 21-cell
+    # caster->target gap: show the caster then track the real projectile.
+    arena.size = Vector2(1230, 650)
+    arena.set_zoom(2.0)
+    battle.actors["qa_target"]["position"] = Vector2(29, 10)
+    arena.set_visual_time(0.0)
+    arena.set_v4_showcase_focus("qa_cast", "qa_target")
+    _check(arena.v4_shot_camera_center.distance_to(Vector2(8, 10)) < 0.01,
+        "2x cinematic tracks real caster if two actors cannot both fit viewport")
+    _check(arena._world_to_local(Vector2(8, 10)).distance_to(arena.size * 0.5) < 0.01,
+        "2x cinematic starts with caster inside frame, not offscreen")
     for school in ["fist", "poison", "bow"]:
         var branch: String = {"fist":"ba_quyen", "poison":"doc_cham", "bow":"liep_anh"}[school]
         var expected_role: String = {"fist":"frontline", "poison":"mage", "bow":"ranged"}[school]
