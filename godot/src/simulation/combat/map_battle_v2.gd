@@ -636,7 +636,7 @@ func step(viewed_map: bool = false) -> Dictionary:
         var attack_range := V63HumanSkillCombatSystem.preferred_offensive_range(actor)
         # No advancing into basic-attack range while an equipped ranged spell
         # already covers the target. Cast cooldown never causes a melee rush.
-        if distance <= attack_range and distance > basic_attack_range:
+        if not world_mode and distance <= attack_range and distance > basic_attack_range:
             continue
         if world_mode:
             var path := _world_path(actor["position"],target["position"])
