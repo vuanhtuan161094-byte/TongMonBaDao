@@ -1,5 +1,10 @@
 # SX-V55 R1/R2 earned-work economy — direct PR #72 implementation and funded-source HOLD
 
+## Important correction: W2 floor, not extra wages — current authoritative accounting
+
+The original V5.5-D `08_SoCaiT2W2` defines W2 as `max(0, wage_floor - LT2_gross)` paid by Sect if funded, **not an extra per-job payment**. The earlier pilot's `34 × 2,000 = 68,000` daily wage entry below was an implementation/accounting error, preserved solely as dated development history. It was corrected in source commit `3eb5de3c`. For the now-verified 60/90m bulk jobs, **W2 topup=0**. r1 Sect gross tax 1,008,000/day; after current 34 Stone seed cost and best-case 160 Stone NPC sales, pre-upgrade Sect result is **1,008,126/day** (not 940,126), and r2 is **2,016,126/day** (not 1,880,126). Latest source-backed expense accounting is in [SX_V55_R12_CASH_MATERIAL_BALANCE_20261110.md](SX_V55_R12_CASH_MATERIAL_BALANCE_20261110.md); original 04_NangCap342 applies **×1000** on new upgrade Stone pricing only under internal pilot. Existing gameplay is unchanged. Neither prior simulation nor this update permits public LT2/W2/T2 activation.
+
+
 Date: 2026-11-10. Branch `integration/pve-p0-playable-ui-20261103`; Draft PR #72, no merge. Official runtime Godot 4.7.2. **This pilot is implemented behind a persisted default-OFF internal flag, and not player-live**. All live older Economy-A, legacy Save and existing bulk-production opt-in stay unchanged.
 
 ## Verified r1/r2 focused success / separate Combat cumulative blocker
