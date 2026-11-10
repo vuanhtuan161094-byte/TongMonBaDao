@@ -153,6 +153,9 @@ func _run() -> void:
         return
     # Reject a manipulated money envelope BEFORE depositing any materials.
     var forest_jobs := buildings.resource_timer_jobs(forest)
+    if not _check(not forest_jobs.is_empty(),
+        "real Forest timer missing after V2 work start / cold Save"):
+        return
     var tampered: Dictionary = forest_jobs[0].duplicate(true)
     var wrong: Dictionary = tampered["sx_v55_r12_work"].duplicate(true)
     wrong["gross"] = int(wrong["gross"])+1000
