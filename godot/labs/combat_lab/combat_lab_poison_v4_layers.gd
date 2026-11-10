@@ -179,6 +179,66 @@ static func debris(canvas: CanvasItem, p: Vector2, radius: float, c: Color, opac
         var rr := radius * (0.3 + 0.65 * absf(sin(float(i + 1) * 1.5 + t * 3.0)))
         spark(canvas, p + Vector2(cos(theta + t) * rr, sin(theta) * rr * 0.4 - t * 9.0), c, opacity * 0.68, 1.25)
 
+# VFX-07: Visual-only reinterpretation of three owner mockups.
+# The timelines read V6.3 cue k, but cannot add targets or alter HP.
+static func v7_fan_shower(canvas: CanvasItem, source: Vector2, destination: Vector2,
+        progress: float, z: float, c: Color) -> void:
+    var axis := (destination - source).normalized()
+    if axis.length_squared() < 0.001:
+        axis = Vector2.RIGHT
+    var n := axis.orthogonal()
+    var head := source.lerp(destination, progress)
+    var phase := clampf((progress - 0.18) / 0.70, 0.0, 1.0)
+    var separation := (7.0 + 15.0 * phase) * z
+    # Seven independent visual needles, NOT seven independent hit receipts.
+    for index in range(7):
+        var lane := float(index - 3) / 3.0
+        var lateral := n * lane * separation
+        var tip := head + lateral
+        var tail := tip - axis * (15.0 + 5.0 * float(index % 3)) * z
+        master(canvas, NEEDLE_MASTER, tip - axis * 5.0 * z,
+            Vector2(36.0, 11.0) * z, axis.angle(), 0.35 + 0.35 * phase)
+        needle(canvas, tail, tip, c, 0.70 + 0.20 * phase, z * 0.76)
+        if index % 2 == 0:
+            glint(canvas, tip - axis * 4.0 * z, Color("f3e6ff"),
+                0.48 + 0.26 * phase, 1.9 * z, float(index) * 0.73)
+
+static func v7_gu_fog(canvas: CanvasItem, center: Vector2, bounds: Vector2,
+        progress: float, opacity: float, z: float) -> void:
+    # Fog planes stay INSIDE the authoritative ellipse. No fake AoE extent.
+    var phase := progress * TAU4
+    for strand in range(3):
+        var u := float(strand) - 1.0
+        var drift := Vector2(sin(phase + u * 1.4) * bounds.x * 0.12,
+            u * bounds.y * 0.17)
+        master(canvas, MIST_MASTER, center + drift,
+            Vector2(bounds.x * 0.95, bounds.y * 0.42),
+            u * 0.12 + phase * 0.025, opacity * 0.31, Color("c9f28c"))
+    for index in range(9):
+        var ang := float(index) * TAU4 / 9.0 + phase * 0.13
+        var phase_radius := 0.21 + 0.15 * sin(phase * 0.5 + float(index) * 0.7)
+        var mote := center + Vector2(cos(ang) * bounds.x, sin(ang) * bounds.y) * phase_radius
+        glint(canvas, mote, GOLD, opacity * 0.73, 1.8 * z, ang)
+        if index % 3 == 0:
+            master(canvas, GU_MASTER, mote, Vector2(18.0, 13.0) * z,
+                ang * 0.10, opacity * 0.41, Color("eaff9b"))
+
+static func v7_jade_foot_lotus(canvas: CanvasItem, foot: Vector2,
+        progress: float, z: float, motif: String) -> void:
+    # Beneath actual healed ally. This is a local floor ornament, NOT
+    # a targeting ring / added heal over time.
+    var bloom := sin(clampf(progress, 0.0, 1.0) * PI)
+    var size_boost := 1.12 if motif == "jade_ultimate" else 1.0
+    var flower_size := Vector2(52.0, 25.0) * z * size_boost
+    master(canvas, LOTUS_MASTER, foot + Vector2(0, -5.0 * z),
+        flower_size * (0.70 + bloom * 0.45),
+        progress * 0.18, (0.34 + 0.22 * bloom) * (1.0 - progress), Color("b1ffe9"))
+    # A few warm gold filaments: keep ally feet and real HP bar visible.
+    for index in range(5):
+        var angle := float(index) * TAU4 / 5.0 + progress * 0.22
+        var mote := foot + Vector2(cos(angle) * 23.0, sin(angle) * 9.0) * z * size_boost
+        glint(canvas, mote, Color("ffe6a9"), bloom * 0.58, 1.2 * z, angle)
+
 static func render(canvas: CanvasItem, cue: Dictionary, target: Vector2, source: Vector2, t: float, radius_px: float, zoom: float) -> void:
     var skill_id := str(cue.get("skill_id", cue.get("source_skill_id", "")))
     var branch := school(skill_id)
@@ -198,6 +258,10 @@ static func render(canvas: CanvasItem, cue: Dictionary, target: Vector2, source:
     var caster_hand := source + Vector2(0.0, float(cue.get("v4_source_body_offset", -35.0 * (0.55 + 0.29 * z))))
     var d := (p - caster_hand).normalized()
     if d.length_squared() < 0.01: d = Vector2.RIGHT
+    if bool(cue.get("v4_heal_ground", false)):
+        if kind == "heal" and motif in ["jade_heal", "jade_ultimate"]:
+            v7_jade_foot_lotus(canvas, target, k, z, motif)
+        return
     if kind in ["venom_cloud", "aoe", "area_burst"] or (shape == "circle" and kind == "skill_release"):
         # No invented radius: only radius_px from authoritative V6.3/event.
         var area := clampf(radius_px, 1.0, 1600.0)
@@ -232,6 +296,8 @@ static func render(canvas: CanvasItem, cue: Dictionary, target: Vector2, source:
             var q := target + Vector2(cos(ang) * area,
                 sin(ang) * area_y) * (0.23 + k * 0.27)
             glint(canvas, q, c, life * 0.68, 2.0 * z, ang)
+        if motif == "gu_mist":
+            v7_gu_fog(canvas, target, Vector2(area, area_y), k, life, z)
         # Distinct authored silhouettes for each AoE: the same canonical
         # radius is preserved. These floor details cannot select/hit targets.
         match motif:
@@ -356,13 +422,18 @@ static func render(canvas: CanvasItem, cue: Dictionary, target: Vector2, source:
             master(canvas, MIST_MASTER, wake, Vector2(57, 25) * z, d.angle(),
                 0.34, c)
             if branch == "doc_cham":
-                var fan := motif in ["needle_fan", "thousand_needles", "miasma_pulse"]
-                var breadth := 2.9 if fan else 0.0
-                for i in range(3 if fan else 1):
-                    var offset := d.orthogonal() * (float(i) - (1.0 if fan else 0.0)) * breadth * z
-                    master(canvas, NEEDLE_MASTER, head - d * (6.0 * z) + offset,
-                        Vector2(47, 17) * z, d.angle(),
-                        (0.67 if fan else 0.80))
+                if motif == "needle_fan":
+                    # Real skill cast produces one projectile cue. Its
+                    # silhouette is the owner's seven-strand fan mockup.
+                    v7_fan_shower(canvas, caster_hand, p, k, z, c)
+                else:
+                    var fan := motif in ["thousand_needles", "miasma_pulse"]
+                    var breadth := 2.9 if fan else 0.0
+                    for i in range(3 if fan else 1):
+                        var offset := d.orthogonal() * (float(i) - (1.0 if fan else 0.0)) * breadth * z
+                        master(canvas, NEEDLE_MASTER, head - d * (6.0 * z) + offset,
+                            Vector2(47, 17) * z, d.angle(),
+                            (0.67 if fan else 0.80))
             elif branch == "co_doc":
                 master(canvas, GU_MASTER, head, Vector2(44, 35) * z,
                     d.angle() * 0.20, 0.73, Color("dfff98"))
@@ -370,7 +441,9 @@ static func render(canvas: CanvasItem, cue: Dictionary, target: Vector2, source:
                 master(canvas, LOTUS_MASTER, head, Vector2(38, 31) * z,
                     k * 1.45, 0.71)
             if branch == "doc_cham":
-                if motif == "miasma_pulse":
+                if motif == "needle_fan":
+                    pass # The seven-strand real-cue fan is already painted above.
+                elif motif == "miasma_pulse":
                     spark(canvas, head, c, 0.84, 4.0 * z)
                     canvas.draw_circle(head - d * 8.0 * z, 8.0 * z, a(c, 0.11))
                 else:
