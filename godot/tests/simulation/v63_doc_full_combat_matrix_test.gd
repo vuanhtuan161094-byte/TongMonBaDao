@@ -223,6 +223,15 @@ func _probe_action(skill: Dictionary) -> void:
         return
     var caster: Dictionary = battle.actors[str(actor.id)]
     var enemy: Dictionary = battle.actors[str(monsters[0].id)]
+    if effect == "heal":
+        # The new 10-minute Dược budget accepts only damage actually committed
+        # by MapBattleV2; an arbitrarily low fixture HP value is not evidence.
+        var recipient: Dictionary = battle.actors[support_id]
+        recipient["v63_combat_enabled"] = true
+        var damage_before := float(recipient.hp)
+        battle._deal_direct(enemy, recipient, 0.2, "basic", false)
+        _check(float(recipient.hp) < damage_before,
+            id+" missing real damage event before budgeted healing")
     if effect == "cleanse":
         var cleanse_ally: Dictionary = battle.actors[support_id]
         var statuses: Dictionary = cleanse_ally.get("status_effects", {})
@@ -363,12 +372,22 @@ func _modifier_changed(skill: Dictionary, actor: Dictionary, without_skill: Dict
     ]
     for candidate in candidates:
         var modifier := str(candidate.modifier)
-        if absf(float(mods.get(modifier,0.0))) <= 0.000001:
+        if modifier == "guard_factor" and is_equal_approx(float(mods.get(modifier, 1.0)), 1.0):
+            continue
+        if modifier != "guard_factor" and absf(float(mods.get(modifier,0.0))) <= 0.000001:
             continue
         var field := str(candidate.field)
         var after := float(after_defense.get(field,0.0)) if bool(candidate.defense) else float(after_attack.get(field,0.0))
         var before := float(before_defense.get(field,0.0)) if bool(candidate.defense) else float(before_attack.get(field,0.0))
         if not is_equal_approx(after,before):
+            return true
+    if float(mods.get("poison_factor", 0.0)) > 0.0:
+        if not is_equal_approx(V63HumanSkillCombatSystem.effective_poison_factor(actor),
+                V63HumanSkillCombatSystem.effective_poison_factor(without_skill)):
+            return true
+    if float(mods.get("heal_factor", 0.0)) > 0.0:
+        if not is_equal_approx(V63HumanSkillCombatSystem.effective_heal_factor(actor),
+                V63HumanSkillCombatSystem.effective_heal_factor(without_skill)):
             return true
     return false
 
