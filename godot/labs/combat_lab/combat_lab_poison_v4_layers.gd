@@ -201,27 +201,34 @@ static func render(canvas: CanvasItem, cue: Dictionary, target: Vector2, source:
     if kind in ["venom_cloud", "aoe", "area_burst"] or (shape == "circle" and kind == "skill_release"):
         # No invented radius: only radius_px from authoritative V6.3/event.
         var area := clampf(radius_px, 1.0, 1600.0)
+        var area_y := clampf(float(cue.get("v4_radius_y", area)), 1.0, 1600.0)
         # Film-grade low smoke belongs on the FLOOR: no bloom over monster
         # faces or HP bars, and no visual enlargement of the real hit radius.
         var fog_tint := Color("bd9af1") if branch == "doc_cham" else Color("b3eb77")
         var ground_opacity := (0.14 if branch == "doc_cham" else 0.18) * life
         if branch == "co_doc" and motif in ["gu_mist", "gu_domain"]:
             ground_opacity *= 1.12
-        master(canvas, MIST_MASTER, target, Vector2(area * 1.75, area * 0.85),
+        master(canvas, MIST_MASTER, target, Vector2(area * 1.75, area_y * 0.85),
             k * 0.08, ground_opacity, fog_tint)
-        master(canvas, MIST_MASTER, target + Vector2(0.0, area * 0.09),
-            Vector2(area * 1.35, area * 0.58), -k * 0.14,
+        master(canvas, MIST_MASTER, target + Vector2(0.0, area_y * 0.09),
+            Vector2(area * 1.35, area_y * 0.58), -k * 0.14,
             ground_opacity * 0.57, c)
         # The outside edge is exactly the canonical skill radius. It is a
         # warning/feedback boundary only, never the source of a damage hit.
         for i in range(12):
             var begin := float(i) * TAU4 / 12.0
-            canvas.draw_arc(target, area, begin, begin + TAU4 / 17.0, 5,
-                a(c, life * 0.56), maxf(1.0, z * 0.8), true)
+            var last := target + Vector2(cos(begin) * area, sin(begin) * area_y)
+            for segment in range(1, 6):
+                var theta := begin + float(segment) * TAU4 / (17.0 * 5.0)
+                var next := target + Vector2(cos(theta) * area, sin(theta) * area_y)
+                canvas.draw_line(last, next, a(c, life * 0.56),
+                    maxf(1.0, z * 0.8), true)
+                last = next
         # Low-opacity petals/motes on the floor; leave monsters visible.
         for i in range(7):
             var ang := float(i) * TAU4 / 7.0 + k * 0.33
-            var q := target + Vector2.from_angle(ang) * area * (0.23 + k * 0.27)
+            var q := target + Vector2(cos(ang) * area,
+                sin(ang) * area_y) * (0.23 + k * 0.27)
             glint(canvas, q, c, life * 0.52, 1.1 * z, ang)
         # Distinct authored silhouettes for each AoE: the same canonical
         # radius is preserved. These floor details cannot select/hit targets.
@@ -231,7 +238,8 @@ static func render(canvas: CanvasItem, cue: Dictionary, target: Vector2, source:
                 for i in range(count):
                     var theta := float(i) * TAU4 / float(count) + k * 0.2
                     var ray := Vector2.from_angle(theta)
-                    var end := target + ray * area * (0.34 + 0.17 * k)
+                    var end := target + Vector2(cos(theta) * area,
+                        sin(theta) * area_y) * (0.34 + 0.17 * k)
                     needle(canvas, end - ray * (3.0 + 2.0 * k) * z, end + ray * 4.0 * z,
                         c, life * (0.33 if motif == "needle_fan" else 0.44), z * 0.50)
             "miasma_pulse":
@@ -240,7 +248,8 @@ static func render(canvas: CanvasItem, cue: Dictionary, target: Vector2, source:
             "gu_mist":
                 for i in range(4):
                     var theta := float(i) * TAU4 / 4.0 + k * 0.7
-                    var cloud := target + Vector2.from_angle(theta) * area * 0.24
+                    var cloud := target + Vector2(cos(theta) * area,
+                        sin(theta) * area_y) * 0.24
                     canvas.draw_circle(cloud, area * 0.20, a(GU_DARK, life * 0.16))
                     glint(canvas, cloud, GOLD, life * 0.28, 1.0 * z, theta)
             "gu_scatter", "gu_domain":
@@ -248,7 +257,8 @@ static func render(canvas: CanvasItem, cue: Dictionary, target: Vector2, source:
                 for i in range(count):
                     var theta := float(i) * TAU4 / float(count) - k * 0.65
                     var ray := Vector2.from_angle(theta)
-                    var tip := target + ray * area * (0.33 + 0.13 * k)
+                    var tip := target + Vector2(cos(theta) * area,
+                        sin(theta) * area_y) * (0.33 + 0.13 * k)
                     spark(canvas, tip, c, life * 0.48, 1.45 * z)
                     if motif == "gu_domain":
                         canvas.draw_line(tip - ray * 6.0 * z, tip,
