@@ -91,6 +91,22 @@ func _run() -> void:
         quit(5)
         return
     lab.call("_preview_selected_skill")
+    # Only the V4 movie camera gets a presentation-only focus. At 4x/6x,
+    # world-centered framing clipped the caster, target and impact out of view.
+    var movie_caster := ""
+    var movie_target := ""
+    for raw_id in battle.actors.keys():
+        var actor: Dictionary = battle.actors[raw_id]
+        if str(actor.get("side", "")) == "disciple" and movie_caster.is_empty():
+            movie_caster = str(raw_id)
+        elif str(actor.get("side", "")) == "monster" and movie_target.is_empty():
+            movie_target = str(raw_id)
+    if movie_caster.is_empty() or movie_target.is_empty():
+        _failed("Cannot frame real caster and target for movie")
+        quit(9)
+        return
+    var movie_arena: Control = lab.get("arena")
+    movie_arena.call("set_v4_showcase_focus", movie_caster, movie_target)
     # QA-only isolation. The Lab preview temporarily equips this skill and
     # restores the full loadout. AUTO would then emit unrelated spells, making
     # the movie look like the wrong Độc Châm/Cổ Độc/Dược Độc effect.
