@@ -24,35 +24,31 @@ func _run() -> void:
     var r1 := PveR12BalanceV1.one_hunter_hour(1)
     var r2 := PveR12BalanceV1.one_hunter_hour(2)
     if not _check(is_equal_approx(float(r1["pve_gross_stones"]),29700.0)
-            and is_equal_approx(float(r1["healing_stones"]),3300.0)
-            and is_equal_approx(float(r1["hp_lost"]),216.0)
-            and is_equal_approx(float(r1["hp_restored_by_pills"]),110.0)
-            and int(r1["hp_service_purchases"]) == 11
+            and is_equal_approx(float(r1["injury_treatment_stones"]),225.0)
+            and is_equal_approx(float(r1["injury_downtime_minutes"]),4.5)
+            and is_equal_approx(float(r1["hp_healed_by_pills_reference"]),110.0)
             and is_equal_approx(float(r1["pill_opportunity_stones"]),3000.0)
-            and is_equal_approx(float(r1["pve_net_before_injury_and_time"]),23400.0)
+            and is_equal_approx(float(r1["pve_net_before_injury_downtime"]),26475.0)
             and is_equal_approx(float(r1["passive_tuvi_xp"]),60000.0)
             and is_equal_approx(float(r1["pve_extra_tuvi_xp"]),60000.0)
             and is_equal_approx(float(r1["pve_total_tuvi_xp"]),120000.0)
             and is_equal_approx(float(r1["specialized_tuvi_xp"]),120000.0)
             and is_equal_approx(float(r1["body_xp"]),14400.0)
-            and is_equal_approx(float(r1["production_gross_stones"]),60000.0)
-            and is_equal_approx(float(r1["production_mine_personal"]),18000.0)
-            and is_equal_approx(float(r1["production_field_personal"]),36000.0),
-            "r1 always-on Tu Vi or work/HP/pill financial oracle changed"):
+            and is_equal_approx(float(r1["production_gross_stones"]),60000.0),
+            "R1 passive+combat EXP, pill-only HP and Injury-only budget changed"):
         return
     if not _check(is_equal_approx(float(r2["pve_gross_stones"]),59400.0)
-            and is_equal_approx(float(r2["healing_stones"]),6600.0)
-            and is_equal_approx(float(r2["hp_lost"]),288.0)
-            and is_equal_approx(float(r2["hp_restored_by_pills"]),182.0)
-            and int(r2["hp_service_purchases"]) == 11
+            and is_equal_approx(float(r2["injury_treatment_stones"]),450.0)
+            and is_equal_approx(float(r2["injury_downtime_minutes"]),4.5)
+            and is_equal_approx(float(r2["hp_healed_by_pills_reference"]),182.0)
             and is_equal_approx(float(r2["pill_opportunity_stones"]),6000.0)
-            and is_equal_approx(float(r2["pve_net_before_injury_and_time"]),46800.0)
+            and is_equal_approx(float(r2["pve_net_before_injury_downtime"]),52950.0)
             and is_equal_approx(float(r2["passive_tuvi_xp"]),60000.0)
             and is_equal_approx(float(r2["pve_extra_tuvi_xp"]),76200.0)
             and is_equal_approx(float(r2["pve_total_tuvi_xp"]),136200.0)
             and is_equal_approx(float(r2["body_xp"]),18288.0)
             and is_equal_approx(float(r2["production_gross_stones"]),120000.0),
-            "r2 passive, combat bonus, body and economic oracle changed"):
+            "R2 passive+combat EXP, pill-only HP and Injury-only budget changed"):
         return
     if not _check(PveR12BalanceV1.reward_for_realm(3,"truc_thu").is_empty()
             and PveR12BalanceV1.reward_for_realm(2,"hac_lang_vuong").is_empty(),
