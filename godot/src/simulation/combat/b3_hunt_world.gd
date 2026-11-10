@@ -202,7 +202,7 @@ static func _return_member(state: SimulationState, battle: MapBattleV2, downed: 
     var id := str(world["member"])
     var d: DiscipleState = state.disciples[StringName(id)]
     var actor: Dictionary = battle.actors[id]
-    d.hp = 1.0 if downed else maxf(1.0,d.max_hp*float(actor["hp"])/float(actor["max_hp"]))
+    d.hp = d.max_hp if downed else maxf(1.0,d.max_hp*float(actor["hp"])/float(actor["max_hp"]))
     d.injury_level = 1 if downed else 0
     d.injury_recover_at_tick = state.tick+120 if downed else 0
     d.active_pve_encounter_id = ""
