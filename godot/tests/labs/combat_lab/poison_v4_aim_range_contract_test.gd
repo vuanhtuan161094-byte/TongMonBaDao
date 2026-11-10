@@ -65,9 +65,9 @@ func _run() -> void:
     _check(body1 < 0.0 and body6 < body1 and body6 > -80.0,
         "monster body offset scales with actual rig, not a giant -17*zoom jump")
     for school in ["fist", "poison", "bow"]:
-        var branch := {"fist":"ba_quyen", "poison":"doc_cham", "bow":"liep_anh"}[school]
-        var expected_role := {"fist":"frontline", "poison":"mage", "bow":"ranged"}[school]
-        var expected_range := {"fist":1.8, "poison":6.0, "bow":9.0}[school]
+        var branch: String = {"fist":"ba_quyen", "poison":"doc_cham", "bow":"liep_anh"}[school]
+        var expected_role: String = {"fist":"frontline", "poison":"mage", "bow":"ranged"}[school]
+        var expected_range: float = {"fist":1.8, "poison":6.0, "bow":9.0}[school]
         var loadout := CombatLabRosterAdapter.build_party(1, school, "human", branch, "a")
         _check(bool(loadout.get("ok", false)), "real V6.3 Lab party " + school)
         if bool(loadout.get("ok", false)):
