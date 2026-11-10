@@ -125,7 +125,15 @@ jobs:
               -of default=noprint_wrappers=1 "$RUNNER_TEMP/poison_v4/$key.mp4"
             rm "$RUNNER_TEMP/poison_v4/$key.avi"
           done
-          sha256sum "$RUNNER_TEMP/poison_v4/"*.mp4 > "$RUNNER_TEMP/poison_v4/SHA256SUMS.txt"
+          # Three source-backed mockups: extract real Movie Maker keyframes,
+          # never substitute concept art or painted screenshots for gameplay.
+          for key in swarm_aoe-1x co_swarm-1x duoc_heal-2x; do
+            for stamp in 0.75 1.80 3.60; do
+              ffmpeg -y -hide_banner -loglevel error -ss "$stamp"                 -i "$RUNNER_TEMP/poison_v4/$key.mp4" -frames:v 1                 "$RUNNER_TEMP/poison_v4/$key-frame-$stamp.png"
+              test -s "$RUNNER_TEMP/poison_v4/$key-frame-$stamp.png"
+            done
+          done
+          sha256sum "$RUNNER_TEMP/poison_v4/"*.mp4 "$RUNNER_TEMP/poison_v4/"*.png             > "$RUNNER_TEMP/poison_v4/SHA256SUMS.txt"
 
       - name: Upload genuine video and complete strict engine logs
         if: always()
@@ -134,6 +142,7 @@ jobs:
           name: poison-v4-godot-${{ github.sha }}
           path: |
             ${{ runner.temp }}/poison_v4/*.mp4
+            ${{ runner.temp }}/poison_v4/*.png
             ${{ runner.temp }}/poison_v4/*.log
             ${{ runner.temp }}/poison_v4/*.txt
             ${{ runner.temp }}/tmb_godot_strict/*.log
