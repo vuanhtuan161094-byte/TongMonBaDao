@@ -10,7 +10,7 @@ const MIN_USEFUL_MAX_HP_RATIO := 0.02
 const ACTOR_NEXT_AT := "pve_care03_next_pill_at"
 
 static func _source_pill(state: SimulationState, d: DiscipleState,
-        missing_hp: float) -> Dictionary:
+        missing_hp: float, battle_max_hp: float) -> Dictionary:
     var realm := int(d.v2_realm_progress.get("cultivation",{}).get("realm",0))
     if realm < 1 or realm > MedicineCatalogueV2.MAX_REALM:
         return {}
@@ -28,7 +28,7 @@ static func _source_pill(state: SimulationState, d: DiscipleState,
             continue
         var power := float(definition.get("potency",0.0))
         var useful := minf(missing_hp,power)
-        if power <= 0.0 or useful < maxf(1.0,d.max_hp*MIN_USEFUL_MAX_HP_RATIO):
+        if power <= 0.0 or useful < maxf(1.0,battle_max_hp*MIN_USEFUL_MAX_HP_RATIO):
             continue
         if useful > selected_heal+0.00001 or (
                 is_equal_approx(useful,selected_heal) and power < selected_power):
@@ -64,7 +64,7 @@ static func heal_one(state: SimulationState, battle: MapBattleV2,
         return {"ok":true,"used":false,"reason":"pill_on_combat_cooldown"}
     # Verify one actual gameplay medicine, not the disciple's (stale during P0)
     # out-of-combat HP field. Medical satiety is the existing B3 authority.
-    var candidate := _source_pill(state,disciple,max_hp-hp)
+    var candidate := _source_pill(state,disciple,max_hp-hp,max_hp)
     if candidate.is_empty():
         return {"ok":true,"used":false,"reason":"no_source_backed_healing_medicine"}
     var meter_ready := B3PillSatietyV1.enable(state,disciple)
