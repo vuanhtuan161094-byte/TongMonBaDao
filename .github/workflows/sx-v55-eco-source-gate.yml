@@ -9,6 +9,7 @@ on:
       - 'godot/tests/simulation/sx_v55_bulk_real_chain_save_test.gd'
       - 'godot/tests/presentation/sx_v55_bulk_simulated_offline_replay_test.gd'
       - 'godot/tests/simulation/sx_v55_eco_faucet_sink_30d_test.gd'
+      - 'godot/tests/simulation/sx_v55_r12_real_labor_tax_wage_save_test.gd'
       - 'godot/tests/presentation/economy_a_landscape_ui_test.gd'
       - 'godot/src/simulation/building/building_system.gd'
       - 'godot/src/simulation/equipment/equipment_system.gd'
@@ -23,6 +24,7 @@ on:
       - 'godot/tests/simulation/sx_v55_bulk_real_chain_save_test.gd'
       - 'godot/tests/presentation/sx_v55_bulk_simulated_offline_replay_test.gd'
       - 'godot/tests/simulation/sx_v55_eco_faucet_sink_30d_test.gd'
+      - 'godot/tests/simulation/sx_v55_r12_real_labor_tax_wage_save_test.gd'
       - 'godot/tests/presentation/economy_a_landscape_ui_test.gd'
       - 'godot/src/simulation/building/building_system.gd'
       - 'godot/src/simulation/equipment/equipment_system.gd'
@@ -89,6 +91,13 @@ jobs:
           set -euo pipefail
           bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://tests/presentation/sx_v55_bulk_simulated_offline_replay_test.gd
           bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/presentation/sx_v55_bulk_simulated_offline_replay_test.gd
+
+      - name: QA-only R1 R2 real labor gross LT2 T2 W2 Cold Save and fail-closed
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://tests/simulation/sx_v55_r12_real_labor_tax_wage_save_test.gd
+          bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/simulation/sx_v55_r12_real_labor_tax_wage_save_test.gd
 
       - name: 1/7/30-day exact-source faucet sink and W2 affordability model
         shell: bash
