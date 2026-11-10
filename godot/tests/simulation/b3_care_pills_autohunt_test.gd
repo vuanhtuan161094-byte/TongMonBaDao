@@ -79,7 +79,7 @@ func run() -> void:
     if not loop_with_reload() or not no_pills_and_guards():
         quit(1)
         return
-    print("B3 CARE REAL DEFEAT + PILL/REST + INJURY120 + AUTO SAME WORLD + OFFLINE + SAVE RETRY PASS (%d checks)" % checks)
+    print("B3 CARE REAL DEFEAT + FULL HP REVIVE + NO-WASTE PILL + INJURY120 + AUTO + OFFLINE + SAVE PASS (%d checks)" % checks)
     quit(1 if failed else 0)
 
 func loop_with_reload() -> bool:
@@ -97,16 +97,16 @@ func loop_with_reload() -> bool:
     for second in range(1,601):
         if not drain(owner,START+initial_tick*60+second): return false
         if d.injury_level == 1: break
-    if not check(d.injury_level == 1 and d.hp == 1.0 and d.region_id == &"sect" and d.active_pve_encounter_id.is_empty(),"natural defeat returns HP1/Injury1 at sect"): return false
+    if not check(d.injury_level == 1 and is_equal_approx(d.hp,d.max_hp) and d.region_id == &"sect" and d.active_pve_encounter_id.is_empty(),"natural defeat returns FULL HP and Injury1 at sect"): return false
     var down_tick := state.tick
     var until := d.injury_recover_at_tick
     var kills_before := int(state.sect.b3_hunt["slot"]["paid_generation"])
     check(until == down_tick+120 and kills_before >= 1,"locked 120 minute Injury and actual kills")
     if not drain(owner,START+(down_tick+1)*60): return false
-    check(d.hp == 56.0 and d.injury_level == 1 and d.injury_recover_at_tick == until and int(state.sect.b3_hunt["care"]["heals"]) == 1,"AUTO uses one actual HXD +55HP without changing Injury")
-    check(warehouse.quantity(state,&"hoi_xuan_dan") == 0 and B3PillSatietyV1.spent_today(state,d) == 10,"actual Warehouse pill debit and shared daily meter")
+    check(is_equal_approx(d.hp,d.max_hp) and d.injury_level == 1 and d.injury_recover_at_tick == until and int(state.sect.b3_hunt["care"]["heals"]) == 0,"FULL HP revival must NOT auto-use a healing pill to cure Injury")
+    check(warehouse.quantity(state,&"hoi_xuan_dan") == 1 and B3PillSatietyV1.spent_today(state,d) == 0,"no Warehouse pill debit or satiety cost when HP already full")
     if not drain(owner,START+(down_tick+15)*60): return false
-    check(int(state.sect.b3_hunt["care"]["rest_requests"]) > 0 and d.hp > 56.0,"empty stock automatically falls back to canonical REST")
+    check(int(state.sect.b3_hunt["care"]["rest_requests"]) == 0 and is_equal_approx(d.hp,d.max_hp),"FULL HP Injury waits without unnecessary REST and medicine")
     var saved := canonical(state)
     var online := LiveGameRuntimeV2.new()
     var offline := LiveGameRuntimeV2.new()
@@ -154,7 +154,7 @@ func no_pills_and_guards() -> bool:
     if not check(d.injury_level == 1 and warehouse.quantity(state,&"hoi_xuan_dan") == 0,"natural defeat without fabricated pills"): return false
     var until := d.injury_recover_at_tick
     if not drain(owner,START+(until-1)*60): return false
-    check(d.injury_level == 1 and d.hp >= d.max_hp*0.75 and state.sect.b3_hunt["care"]["heals"] == 0 and state.sect.b3_hunt["care"]["rest_requests"] > 0,"REST alone recovers HP while full Injury120 remains")
+    check(d.injury_level == 1 and is_equal_approx(d.hp,d.max_hp) and state.sect.b3_hunt["care"]["heals"] == 0 and state.sect.b3_hunt["care"]["rest_requests"] == 0,"no pills means injury waits at full HP, no artificial REST")
     if not drain(owner,START+until*60): return false
     check(d.injury_level == 0 and str(state.sect.b3_hunt["member"]) == str(d.id),"empty-pills full automatic loop returns to same world")
     check(B3HuntWorld.return_to_sect(owner)["ok"],"manual return for occupation guard")
