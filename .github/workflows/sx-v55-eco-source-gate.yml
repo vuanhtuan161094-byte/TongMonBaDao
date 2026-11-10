@@ -36,7 +36,7 @@ jobs:
   sx-v55-source-gate:
     name: Official Godot 4.7.2 30-realm design/runtime guard
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 35
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -110,3 +110,7 @@ jobs:
 
       - name: Existing Economy-A money-warehouse wage regression
         run: bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/simulation/sx_w2_wage_arrears_save_test.gd
+
+      - name: Canonical full P3.7 cumulative regression after all bulk gates
+        shell: pwsh
+        run: ./tools/godot/Verify-P3-7C1-Foundation-Dan-Tien-Full.ps1 -GodotBin /usr/local/bin/godot
