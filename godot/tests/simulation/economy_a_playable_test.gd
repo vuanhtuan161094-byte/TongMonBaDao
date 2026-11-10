@@ -1,7 +1,7 @@
 extends SceneTree
 
 # Economy-A: actual V2 recruit -> canonical timer -> one stock settlement +
-# wage, NPC demand with warehouse reserve, service debit, save/offline replay.
+# wage, NPC demand with Warehouse reserve, V2 HP service exclusion, Save/offline replay.
 const SAVE_PATH := "user://economy_a_playable_test.json"
 var warehouse := WarehouseSystem.new()
 var buildings := BuildingSystem.new()
@@ -136,15 +136,21 @@ func _run() -> void:
         and not bool(economy.sell_to_npc_v1(loaded,&"thanh_thiet",2,"different-overdraw").get("ok",false)),
         "Market allowed replay or sold reserved ore"): return
 
+    # CARE03: V2 HP must be treated with sourced pills/skills; money buys
+    # timed Injury treatment, never an unmetered +10HP service. Preserve
+    # the old P2 service only for old progression owners.
     live_actor.hp = live_actor.max_hp-14.0
+    var service_stones := loaded.sect.spirit_stones
+    var wallet_before := live_actor.spirit_stones
     var service := economy.buy_personal_hp_service(loaded,actor.id,"test-service")
-    if not _check(bool(service.get("ok",false)) and live_actor.spirit_stones == 1
-        and is_equal_approx(live_actor.hp,live_actor.max_hp-4.0)
-        and loaded.sect.spirit_stones == before_stones-4+16+3,
-        "Personal healing failed real HP and matched Stone transfer"): return
     var second_service := economy.buy_personal_hp_service(loaded,actor.id,"test-service")
-    if not _check(bool(second_service.get("already_settled",false)) and live_actor.spirit_stones == 1,
-        "Personal service replay debited twice"): return
+    if not _check(not bool(service.get("ok",false))
+        and str(service.get("reason","")) == "hp_service_replaced_by_injury_care_and_pills"
+        and not bool(second_service.get("ok",false))
+        and live_actor.spirit_stones == wallet_before
+        and loaded.sect.spirit_stones == service_stones
+        and is_equal_approx(live_actor.hp,live_actor.max_hp-14.0),
+        "Authentic V2 paid-HP service should reject without money or HP mutation"): return
 
     # Merchant stock, purchase limit, Warehouse credit and exact receipt must
     # survive replay. A rejected buy may not mutate either side.
@@ -217,11 +223,11 @@ func _run() -> void:
     var auto_hp_before := live_actor.hp
     economy.auto_personal_service_tick(loaded,live_actor)
     economy.auto_personal_service_tick(loaded,live_actor)
-    if not _check(live_actor.spirit_stones == 9
-        and loaded.sect.spirit_stones == auto_sect_before+1
-        and is_equal_approx(live_actor.hp,auto_hp_before+10.0)
-        and int(loaded.sect.economy_a_auto_spend_by_disciple.get(str(actor.id),0)) == 1,
-        "Auto personal service ignored daily per-disciple Stone limit"): return
+    if not _check(live_actor.spirit_stones == 10
+        and loaded.sect.spirit_stones == auto_sect_before
+        and is_equal_approx(live_actor.hp,auto_hp_before)
+        and int(loaded.sect.economy_a_auto_spend_by_disciple.get(str(actor.id),0)) == 0,
+        "V2 auto HP-for-Stones bypassed Injury-only care policy"): return
     if not _check(bool(economy.configure_v1(loaded,"auto_hp_service",false).get("ok",false)),
         "Could not disable auto spending"): return
     if not _check(economy.validate_v1(loaded).is_empty(),"V2 economy invariants invalid"): return
