@@ -38,6 +38,21 @@ static func spark(canvas: CanvasItem, p: Vector2, c: Color, opacity: float, size
     canvas.draw_circle(p, size * 0.8, a(c, opacity * 0.85))
     canvas.draw_circle(p, size * 0.32, a(LIGHT, opacity * 0.54))
 
+# Original, bounded 2D spell glints: soft colored aura + sharp star core.
+# Deterministic phase (no RNG) so Movie Maker and 24 Hz gameplay agree.
+static func glint(canvas: CanvasItem, p: Vector2, c: Color, opacity: float, radius: float, phase: float) -> void:
+    if opacity <= 0.005: return
+    var r := maxf(1.0, radius)
+    canvas.draw_circle(p, r * 2.15, a(c, opacity * 0.075))
+    canvas.draw_circle(p, r * 1.25, a(c, opacity * 0.20))
+    canvas.draw_circle(p, r * 0.58, a(LIGHT, opacity * 0.78))
+    var axis := Vector2.from_angle(phase)
+    var wing := axis.orthogonal()
+    canvas.draw_line(p - axis * r * 1.75, p + axis * r * 1.75,
+        a(LIGHT, opacity * 0.45), maxf(0.7, r * 0.12), true)
+    canvas.draw_line(p - wing * r * 1.05, p + wing * r * 1.05,
+        a(c, opacity * 0.63), maxf(0.7, r * 0.14), true)
+
 static func ring(canvas: CanvasItem, p: Vector2, r: float, c: Color, opacity: float, time: float) -> void:
     if r <= 0 or opacity < 0.002: return
     # Broken rune perimeter instead of three bright concentric rings.
@@ -147,10 +162,10 @@ static func render(canvas: CanvasItem, cue: Dictionary, target: Vector2, source:
             canvas.draw_arc(target, area, begin, begin + TAU4 / 17.0, 5,
                 a(c, life * 0.56), maxf(1.0, z * 0.8), true)
         # Low-opacity petals/motes on the floor; leave monsters visible.
-        for i in range(5):
-            var ang := float(i) * TAU4 / 5.0 + k * 0.5
-            var q := target + Vector2.from_angle(ang) * area * (0.18 + k * 0.44)
-            spark(canvas, q, c, life * 0.43, 1.0 * z)
+        for i in range(7):
+            var ang := float(i) * TAU4 / 7.0 + k * 0.33
+            var q := target + Vector2.from_angle(ang) * area * (0.23 + k * 0.27)
+            glint(canvas, q, c, life * 0.52, 1.1 * z, ang)
         return
     if kind == "heal" or effect == "heal":
         lotus(canvas, p - Vector2(0, k * 23.0 * z), 20.0 * z, c, life * 0.9, k)
@@ -173,6 +188,10 @@ static func render(canvas: CanvasItem, cue: Dictionary, target: Vector2, source:
                 serpent(canvas, center - Vector2(20, 5) * z, center + Vector2(18, -7) * z, c, pulse, z, k)
             else:
                 lotus(canvas, center, 19.0 * z, c, maxf(0.15, pulse), k)
+            for i in range(3):
+                var phi := float(i) * TAU4 / 3.0 + k * 0.65
+                glint(canvas, center + Vector2.from_angle(phi) * (13.0 + 7.0 * pulse) * z,
+                    c, pulse * 0.62, 1.8 * z, phi)
             debris(canvas, center, 15.0 * z, c, pulse, k)
         "projectile":
             # The projectile endpoint follows its canonical actor ID through
@@ -187,6 +206,14 @@ static func render(canvas: CanvasItem, cue: Dictionary, target: Vector2, source:
                 serpent(canvas, tail, head, c, 0.94, z, k)
             else:
                 lotus(canvas, head, 11.0 * z, c, 0.90, k)
+            # Jewel-like highlights and tapered wakes, never random overdraw.
+            for i in range(4):
+                var progress := float(i + 1) / 5.0
+                var trailing := head - d * (8.0 + float(i) * 5.0) * z
+                var jitter := d.orthogonal() * sin(float(i) * 2.3 + k * 9.0) * 2.0 * z
+                glint(canvas, trailing + jitter, c, (1.0 - progress) * 0.47,
+                    (2.4 - progress) * z, k * 3.0 + float(i))
+            glint(canvas, head, c, 0.75, 2.2 * z, d.angle())
             debris(canvas, head - d * (8.0 * z), 7.0 * z, c, 0.36, k)
         "impact":
             if branch == "doc_cham":
@@ -201,6 +228,11 @@ static func render(canvas: CanvasItem, cue: Dictionary, target: Vector2, source:
                 spark(canvas, p, GOLD, pulse * 0.54, 1.8 * z)
             else:
                 lotus(canvas, p, (15.0 + 12.0 * k) * z, c, pulse, k)
+            for i in range(5):
+                var theta := float(i) * TAU4 / 5.0 + k * 0.35
+                var q := p + Vector2.from_angle(theta) * (9.0 + k * 8.0) * z
+                glint(canvas, q, c, pulse * 0.60, 1.8 * z, theta)
+            glint(canvas, p, GOLD if branch == "co_doc" else c, pulse * 0.82, 3.0 * z, k * 2.4)
             debris(canvas, p, 9.0 * z, c, pulse * 0.55, k)
         "poison", "poison_apply", "poison_tick":
             # DoT tick is deliberately quieter than the original impact.
