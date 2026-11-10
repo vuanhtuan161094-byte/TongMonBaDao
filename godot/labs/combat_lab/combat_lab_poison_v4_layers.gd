@@ -237,7 +237,7 @@ static func v7_jade_foot_lotus(canvas: CanvasItem, foot: Vector2,
         flower_size * (0.70 + bloom * 0.45),
         progress * 0.18, (0.34 + 0.22 * bloom) * (1.0 - progress), Color("b1ffe9"))
     # A few warm gold filaments: keep ally feet and real HP bar visible.
-    var petal_glints := 4 if lod == 0 else clampi(5 + mastery / 5, 5, 7)
+    var petal_glints := 4 if lod == 0 else clampi(5 + floori(float(mastery) / 5.0), 5, 7)
     for index in range(petal_glints):
         var angle := float(index) * TAU4 / float(petal_glints) + progress * 0.22
         var mote := foot + Vector2(cos(angle) * 23.0, sin(angle) * 9.0) * z * size_boost
