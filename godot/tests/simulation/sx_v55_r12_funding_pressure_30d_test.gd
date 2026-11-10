@@ -54,6 +54,11 @@ func _run() -> void:
         "new bulk production must NOT also activate QA economy"):
         return
     state.sect.economy_a_policy[EconomySystem.SX_V55_R12_POLICY] = true
+    # P37Factory has no Hall; production LiveGameRuntimeV2 creates it
+    # through this existing canonical function. No free materials or money.
+    if not _check(buildings.ensure_main_hall(state) != null,
+        "actual live-runtime Main Hall authority not constructible"):
+        return
     var upgrades := [
         {"kind":BuildingSystem.TYPE_MAIN_HALL,"stone":580000},
         {"kind":BuildingSystem.TYPE_SPIRIT_FIELD,"stone":21000},
