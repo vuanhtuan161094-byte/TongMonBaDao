@@ -134,13 +134,22 @@ func deposit_forge_inventory(state: SimulationState, disciple: DiscipleState) ->
         state.sect.equipment_event_count += 1
     return moved
 
+# One shared scaling rule with BuildingSystem's true production envelope.
+# Rare beast/monster drops are *not* multiplied. Legacy saves retain cost
+# until the user explicitly enables SX-V55 bulk mode.
+func crafting_requirements(state: SimulationState, recipe_id: StringName) -> Dictionary:
+    var materials = recipe(recipe_id).get("materials",{})
+    if not (materials is Dictionary):
+        return {}
+    return BuildingSystem.new().sx_v55_common_requirements(state,materials)
+
 func can_craft(state: SimulationState, recipe_id: StringName) -> bool:
     if not state.sect.equipment_enabled:
         return false
     var data: Dictionary = recipe(recipe_id)
     if data.is_empty():
         return false
-    var materials: Dictionary = data.get("materials", {})
+    var materials: Dictionary = crafting_requirements(state,recipe_id)
     if state.sect.p3_7_resources_enabled:
         return warehouse.can_consume_requirements(state, materials)
     for raw_id in materials.keys():
@@ -152,7 +161,7 @@ func craft(state: SimulationState, recipe_id: StringName, list_for_sale: bool = 
     if not can_craft(state, recipe_id):
         return {}
     var data: Dictionary = recipe(recipe_id)
-    var materials: Dictionary = data.get("materials", {})
+    var materials: Dictionary = crafting_requirements(state,recipe_id)
     if state.sect.p3_7_resources_enabled:
         if not warehouse.consume_requirements(state, materials):
             return {}
