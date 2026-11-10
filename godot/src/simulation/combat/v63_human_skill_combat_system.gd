@@ -366,6 +366,24 @@ static func marked_damage_factor(attacker: Dictionary, target: Dictionary, now: 
         return 1.0
     return clampf(float(mark.get("damage_factor",1.0)),1.0,1.5)
 
+static func effective_poison_factor(actor: Dictionary) -> float:
+    var factor := 1.0
+    for raw_id in _passive_ids(actor):
+        factor *= 1.0 + clampf(float(skill_definition(str(raw_id)).get("passive_modifiers", {}).get("poison_factor", 0.0)), 0.0, 0.5)
+    var innate_id := str(actor.get("v63_innate_skill_id", ""))
+    if not innate_id.is_empty():
+        factor *= 1.0 + clampf(float(skill_definition(innate_id).get("passive_modifiers", {}).get("poison_factor", 0.0)), 0.0, 0.5)
+    return factor
+
+static func effective_heal_factor(actor: Dictionary) -> float:
+    var factor := 1.0
+    for raw_id in _passive_ids(actor):
+        factor *= 1.0 + clampf(float(skill_definition(str(raw_id)).get("passive_modifiers", {}).get("heal_factor", 0.0)), 0.0, 0.25)
+    var innate_id := str(actor.get("v63_innate_skill_id", ""))
+    if not innate_id.is_empty():
+        factor *= 1.0 + clampf(float(skill_definition(innate_id).get("passive_modifiers", {}).get("heal_factor", 0.0)), 0.0, 0.25)
+    return factor
+
 static func _passive_ids(actor: Dictionary) -> Array:
     var value = actor.get("v63_passive_ids",[])
     return value if value is Array else []
@@ -744,9 +762,7 @@ static func _cast_targets(battle: MapBattleV2, caster: Dictionary, cast: Diction
     return result
 
 static func _heal_target(battle: MapBattleV2, caster: Dictionary, target: Dictionary, skill_id: String, power: float) -> void:
-    var factor := 1.0
-    for passive_id in _passive_ids(caster):
-        factor *= 1.0+clampf(float(skill_definition(str(passive_id)).get("passive_modifiers",{}).get("heal_factor",0.0)),0.0,0.25)
+    var factor := effective_heal_factor(caster)
     var before := float(target.hp)
     var amount := minf(maxf(0.0,float(target.max_hp)*clampf(power,0.0,0.5)*factor),maxf(0.0,float(target.max_hp)-before))
     var adjusted_amount := amount
@@ -833,12 +849,7 @@ static func _apply_poison(battle: MapBattleV2, caster: Dictionary, target: Dicti
     var add_count := mini(maxi(0,owner_cap-owner_count),maxi(0,POISON_BOSS_TARGET_CAP-stacks.size()))
     add_count = mini(add_count,maxi(1,requested))
     var snapshot := effective_attack_stats(caster,caster.get("stats",{}))
-    var poison_factor := 1.0
-    for passive_id in _passive_ids(caster):
-        poison_factor *= 1.0+clampf(float(skill_definition(str(passive_id)).get("passive_modifiers",{}).get("poison_factor",0.0)),0.0,0.5)
-    var innate_id := str(caster.get("v63_innate_skill_id",""))
-    if not innate_id.is_empty():
-        poison_factor *= 1.0+clampf(float(skill_definition(innate_id).get("passive_modifiers",{}).get("poison_factor",0.0)),0.0,0.5)
+    var poison_factor := effective_poison_factor(caster)
     var ordinals: Dictionary = target.get("v63_poison_ordinals", {})
     var previous_ordinal := int(ordinals.get(owner, 0))
     ordinals[owner] = previous_ordinal + add_count
