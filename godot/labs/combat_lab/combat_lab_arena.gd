@@ -25,6 +25,18 @@ var v4_shot_source_id := ""
 var v4_shot_target_id := ""
 var v4_shot_camera_center := WORLD.size * 0.5
 var v4_shot_reached_target := false
+# LAB-only 4v8 cinema: an honest framing magnification, not a change to
+# actor positions or canonical world-space ranges. Ordinary Lab remains 1:1.
+var v4_swarm_cinematic := false
+
+func set_v4_swarm_cinematic(value: bool) -> void:
+    v4_swarm_cinematic = value
+    queue_redraw()
+
+func v4_effective_render_zoom() -> float:
+    # Only cinematic 1x group footage needs a larger stage. 2x/4x/6x
+    # retain their requested camera zoom and original actor dimensions.
+    return 1.65 if v4_swarm_cinematic and zoom <= 1.01 else zoom
 
 func _ready() -> void:
     custom_minimum_size = Vector2(620, 390)
@@ -464,7 +476,7 @@ func _world_to_local(point: Vector2) -> Vector2:
     var span := size - margin * 2.0
     var center := v4_shot_camera_center if not v4_shot_source_id.is_empty() else WORLD.size * 0.5
     var centered := Vector2((point.x - center.x) / WORLD.size.x * span.x, (point.y - center.y) / WORLD.size.y * span.y)
-    return margin + span * 0.5 + centered * zoom
+    return margin + span * 0.5 + centered * v4_effective_render_zoom()
 
 func _draw() -> void:
     if not v4_shot_source_id.is_empty():
@@ -506,7 +518,7 @@ func _draw_actor(actor: Dictionary) -> void:
                     and visual_time >= float(cue.get("launch_at", INF)):
                 pose = "attack"
                 break
-    var actor_scale := (1.50 if boss else 1.0) * (0.55 + 0.29 * zoom)
+    var actor_scale := (1.50 if boss else 1.0) * (0.55 + 0.29 * v4_effective_render_zoom())
     var facing := -1.0 if monster else 1.0
     var seconds := visual_time
     var state: Dictionary = actor_states.get(actor_id, {})
@@ -574,7 +586,7 @@ func _actor_body_offset_px(actor_id: String) -> float:
     var actor: Dictionary = battle.actors[actor_id]
     var monster := str(actor.get("side", "")) == "monster"
     var boss := str(actor.get("tier", "")) == "boss"
-    var actor_scale := (1.5 if boss else 1.0) * (0.55 + 0.29 * zoom)
+    var actor_scale := (1.5 if boss else 1.0) * (0.55 + 0.29 * v4_effective_render_zoom())
     # ActorRigV2 head/torso around -20..-40 at scale; PoisonAtlasV1
     # character has a taller 245px source frame scaled by 0.32.
     return (-26.0 if monster else -37.0) * actor_scale
@@ -587,8 +599,9 @@ static func _is_ground_cue(cue: Dictionary) -> bool:
 # Lab viewport make the ground boundary elliptical, never a fake larger AoE.
 func _aoe_radii_px(world_radius: float) -> Vector2:
     var span := size - Vector2(60.0, 56.0)
-    return Vector2(maxf(0.0, world_radius) * maxf(1.0, span.x) / WORLD.size.x * zoom,
-        maxf(0.0, world_radius) * maxf(1.0, span.y) / WORLD.size.y * zoom)
+    var render_zoom := v4_effective_render_zoom()
+    return Vector2(maxf(0.0, world_radius) * maxf(1.0, span.x) / WORLD.size.x * render_zoom,
+        maxf(0.0, world_radius) * maxf(1.0, span.y) / WORLD.size.y * render_zoom)
 
 func _draw_ground_cues() -> void:
     var current_time := roundi(visual_time * 1000.0)
@@ -605,7 +618,7 @@ func _draw_ground_cues() -> void:
         var presentation := cue.duplicate()
         presentation["v4_preview"] = v4_preview_enabled
         presentation["v4_radius_y"] = bounds.y
-        VfxV2.render(self, presentation, p, p, t, bounds.x, zoom)
+        VfxV2.render(self, presentation, p, p, t, bounds.x, v4_effective_render_zoom())
 
 func _draw_cues() -> void:
     # HOLD freezes all existing spell/impact effects, not only projectiles.
@@ -646,7 +659,7 @@ func _draw_cues() -> void:
                 visual_cue["v4_target_body_offset"] = _actor_body_offset_px(str(cue.get("target_actor_id", "")))
                 visual_cue["v4_source_body_offset"] = _actor_body_offset_px(str(cue.get("source_actor_id", "")))
         if not _is_ground_cue(cue):
-            VfxV2.render(self, visual_cue, p, start, t, radius_px, zoom)
+            VfxV2.render(self, visual_cue, p, start, t, radius_px, v4_effective_render_zoom())
         var label := str(cue.get("text", ""))
         if label.is_empty():
             continue
