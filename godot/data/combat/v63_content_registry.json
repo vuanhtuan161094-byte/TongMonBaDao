@@ -3377,14 +3377,14 @@
           "tier": "rare_divine",
           "lineage": "a",
           "parent": "tmb.skill.poison.doc_cham.passive_05.divine.a",
-          "name": "tmb.skill.poison.doc_cham.passive_05.rare_passive.a"
+          "name": "Vạn Độc Quy Tàng"
         },
         {
           "id": "tmb.skill.poison.doc_cham.passive_05.rare_passive.b",
           "tier": "rare_divine",
           "lineage": "b",
           "parent": "tmb.skill.poison.doc_cham.passive_05.divine.b",
-          "name": "tmb.skill.poison.doc_cham.passive_05.rare_passive.b"
+          "name": "Bạo Phệ Dư Ân"
         }
       ]
     },
@@ -3834,14 +3834,14 @@
           "tier": "rare_divine",
           "lineage": "a",
           "parent": "tmb.skill.poison.co_doc.passive_05.divine.a",
-          "name": "tmb.skill.poison.co_doc.passive_05.rare_passive.a"
+          "name": "Liên Tâm Cổ Mệnh"
         },
         {
           "id": "tmb.skill.poison.co_doc.passive_05.rare_passive.b",
           "tier": "rare_divine",
           "lineage": "b",
           "parent": "tmb.skill.poison.co_doc.passive_05.divine.b",
-          "name": "tmb.skill.poison.co_doc.passive_05.rare_passive.b"
+          "name": "Phệ Cổ Hồi Triều"
         }
       ]
     },
@@ -4291,14 +4291,14 @@
           "tier": "rare_divine",
           "lineage": "a",
           "parent": "tmb.skill.poison.duoc_doc.passive_05.divine.a",
-          "name": "tmb.skill.poison.duoc_doc.passive_05.rare_passive.a"
+          "name": "Nghịch Mệnh Từ Tâm"
         },
         {
           "id": "tmb.skill.poison.duoc_doc.passive_05.rare_passive.b",
           "tier": "rare_divine",
           "lineage": "b",
           "parent": "tmb.skill.poison.duoc_doc.passive_05.divine.b",
-          "name": "tmb.skill.poison.duoc_doc.passive_05.rare_passive.b"
+          "name": "Phản Độc Hộ Thể"
         }
       ]
     },
