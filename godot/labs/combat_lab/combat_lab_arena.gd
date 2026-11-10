@@ -427,10 +427,17 @@ func _update_v4_shot_camera() -> void:
     var source: Vector2 = battle.actors[v4_shot_source_id].get("position", WORLD.size * 0.5)
     var target: Vector2 = battle.actors[v4_shot_target_id].get("position", WORLD.size * 0.5)
     var midpoint := source.lerp(target, 0.5)
-    # At 1x/2x, keep both combatants in view where the viewport permits.
-    # At 4x/6x, a static world-center camera clips both actors; follow the
-    # actual V6.3 projectile from caster to target, then hold on the impact.
-    if zoom <= 2.0 or source.distance_to(target) <= WORLD.size.x / zoom * 0.50:
+    # Keep both combatants in view ONLY if they fit the actual viewport
+    # after margins/zoom. Full-screen 1280x720 at 2x may NOT fit actors
+    # 20 world cells apart; old zoom<=2 shortcut clipped caster and target.
+    # Otherwise show the true caster first, follow a committed projectile,
+    # then hold the actual impact actor (no movement of simulation actors).
+    var screen_span := size - Vector2(60.0, 56.0)
+    var available := Vector2(
+        WORLD.size.x * maxf(1.0, screen_span.x - 48.0) / maxf(1.0, screen_span.x) / zoom,
+        WORLD.size.y * maxf(1.0, screen_span.y - 48.0) / maxf(1.0, screen_span.y) / zoom)
+    if absf(source.x - target.x) <= available.x and
+            absf(source.y - target.y) <= available.y:
         v4_shot_camera_center = midpoint
         return
     if v4_shot_reached_target:
