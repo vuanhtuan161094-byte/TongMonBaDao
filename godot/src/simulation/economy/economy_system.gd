@@ -637,7 +637,9 @@ func buy_personal_hp_service(state: SimulationState, disciple_id: StringName, re
             return {"ok":false,"reason":"conflicting_service_replay"}
         return {"ok":true,"already_settled":true,"receipt":previous.duplicate(true)}
     var actor: DiscipleState = state.disciples[disciple_id]
-    var cost := maxi(int(state.sect.economy_a_policy.get("personal_heal_cost",3)),1)
+    # PVE-BAL01: only the internal QA pilot reprices 10 HP.
+    # Existing save defaults and the legacy Economy-A rate stay unchanged.
+    var cost := PveR12BalanceV1.personal_hp_service_price(state,actor)
     # No circular dependency on BuildingSystem: inspect the actual saved
     # worker reservations already owned by each building's production_state.
     var reserved := actor.work_group_id == &"body_training_crew"
@@ -676,7 +678,7 @@ func auto_personal_service_tick(state: SimulationState, actor: DiscipleState) ->
         return
     if actor.hp <= 0.0 or actor.hp >= actor.max_hp*0.5:
         return
-    var cost := int(state.sect.economy_a_policy.get("personal_heal_cost",3))
+    var cost := PveR12BalanceV1.personal_hp_service_price(state,actor)
     if actor.spirit_stones < cost:
         return
     var day := int(state.tick / V2_DAY_TICKS)
