@@ -864,7 +864,8 @@ func _settle_terminal() -> Dictionary:
         if actor_max <= 0.0 or is_nan(actor_hp) or is_inf(actor_hp) or actor_hp < 0.0 or actor_hp > actor_max or disciple.max_hp <= 0.0:
             return {"ok":false,"reason":"invalid_terminal_hp"}
         var downed := actor_hp <= 0.0
-        var new_hp := 1.0 if downed else CombatStatsV2.rescale_current_hp(actor_hp,actor_max,disciple.max_hp)
+        # After revival the character has full HP, but Injury=1 still bars PvE.
+        var new_hp := disciple.max_hp if downed else CombatStatsV2.rescale_current_hp(actor_hp,actor_max,disciple.max_hp)
         members[key] = {"actor_hp":actor_hp,"actor_max_hp":actor_max,"downed":downed}
         prepared[key] = {"hp":minf(disciple.max_hp,new_hp),"injury":1 if downed else 0}
     if members.is_empty():
