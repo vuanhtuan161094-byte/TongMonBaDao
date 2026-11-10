@@ -41,11 +41,11 @@ func _catalogue_coverage() -> bool:
 				return false
 			var rule := str(skill.get("divine_rule", ""))
 			if generation == "divine" and pending_rule_counts.has(rule):
-				if not _check(str(skill.get("divine_rule_status", "")) == "DESIGN_PENDING", "underdetailed Divine rule is not marked DESIGN_PENDING: " + str(skill.id)):
+				if not _check(str(skill.get("divine_rule_status", "")) == "CODE_CANDIDATE_QA_PENDING", "underdetailed Divine rule is not gated as a code candidate pending QA: " + str(skill.id)):
 					return false
 				pending_rule_counts[rule] = int(pending_rule_counts[rule]) + 1
 	return _check(counts == {"human":35,"immortal":68,"divine":80} and pending_rule_counts == {"single_spread_poison":13,"removed_debuff_counter":13},
-		"poison record or DESIGN_PENDING count mismatch: %s / %s" % [str(counts), str(pending_rule_counts)])
+		"poison record or CODE_CANDIDATE_QA_PENDING rule count mismatch: %s / %s" % [str(counts), str(pending_rule_counts)])
 
 func _healer_targeting() -> bool:
 	var party := [_actor("healer", Vector2(18,8)), _actor("wounded", Vector2(19,8))]
@@ -56,7 +56,14 @@ func _healer_targeting() -> bool:
 	var healer: Dictionary = battle.actors.healer
 	var wounded: Dictionary = battle.actors.wounded
 	var skill := V63HumanSkillCombatSystem.skill_definition("tmb.skill.poison.duoc_doc.active_02.human")
+	wounded["v63_combat_enabled"] = true
 	wounded["hp"] = 2500.0
+	if not _check(V63HumanSkillCombatSystem._support_target(battle, healer, skill).is_empty(), "poison healer selected missing HP without a real damage receipt"):
+		return false
+	var enemy_actor: Dictionary = battle.actors.heal_target
+	var actual_damage := battle._deal_direct(enemy_actor, wounded, 1.0, "basic", false)
+	if not _check(actual_damage > 0.0 and V63PoisonEvolutionV1.heal_capacity(wounded, battle.now) > 0.0, "real combat damage did not create bounded poison-heal budget"):
+		return false
 	if not _check(str(skill.get("effect", "")) == "heal" and str(V63HumanSkillCombatSystem._support_target(battle, healer, skill).get("id", "")) == "wounded", "AI did not select an injured ally"):
 		return false
 	wounded["hp"] = float(wounded.max_hp)
@@ -100,7 +107,7 @@ func _owned_poison_snapshot() -> bool:
 	if not _check(bool(battle.setup("poison_snapshot", party, [target_row]).get("ok", false)), "poison battle setup"):
 		return false
 	var target: Dictionary = battle.actors.poison_boss
-	var skill_id := "tmb.skill.poison.doc_cham.active_01.divine.a"
+	var skill_id := "tmb.skill.poison.co_doc.active_02.divine.b"
 	for index in range(6):
 		var owner: Dictionary = battle.actors["owner_" + str(index)]
 		owner["v63_skill_loadout"] = [skill_id]
@@ -145,8 +152,14 @@ func _owned_poison_snapshot() -> bool:
 				return false
 	if not _check(poison_hits == 120 and float(target.hp) < 10000000.0, "poison failed to deal real direct HP damage"):
 		return false
-	var consumer_id := "tmb.skill.poison.co_doc.active_02.divine.b"
+	var consumer_id := "tmb.skill.poison.co_doc.active_04.divine.b"
 	var consumer: Dictionary = V63HumanSkillCombatSystem.skill_definition(consumer_id)
+	if not _check(str(consumer.get("effect", "")) == "consume_poison", "consumer fixture does not name a consume_poison skill"):
+		return false
+	var consuming_owner: Dictionary = battle.actors.owner_0
+	var loadout: Array = consuming_owner.get("v63_skill_loadout", []).duplicate()
+	loadout.append(consumer_id)
+	consuming_owner["v63_skill_loadout"] = loadout
 	var cast := _cast(consumer, battle.actors.owner_0, target)
 	V63HumanSkillCombatSystem.release_cast(battle, cast, battle.actors.owner_0)
 	var retained: Array = target.get("status_effects", {}).get("v63_poison", [])
@@ -185,22 +198,38 @@ func _poison_resistance() -> bool:
 
 func _marked_punish() -> bool:
 	var caster_row := _actor("mark_owner", Vector2(18,8))
+	caster_row["v63_combat_enabled"] = true
+	caster_row["v63_combat_generation"] = "divine"
+	caster_row["v63_combat_branch_id"] = "co_doc"
+	caster_row["v63_combat_lineage"] = "b"
 	var target_row := _monster("mark_target", Vector2(19,8), 100000.0, false)
+	var mark_id := "tmb.skill.poison.co_doc.active_01.divine.b"
+	var punish_id := "tmb.skill.poison.co_doc.active_02.divine.b"
+	caster_row["v63_skill_loadout"] = [mark_id, punish_id]
 	var battle := MapBattleV2.new(65003)
 	if not _check(bool(battle.setup("marked_punish", [caster_row], [target_row]).get("ok", false)), "marked punish setup"):
 		return false
 	var caster: Dictionary = battle.actors.mark_owner
 	var target: Dictionary = battle.actors.mark_target
-	var mark_id := "tmb.skill.poison.co_doc.active_01.divine.b"
-	var punish_id := "tmb.skill.poison.co_doc.active_03.divine.b"
-	V63HumanSkillCombatSystem._apply_mark(battle, caster, target, mark_id, 1.12, 3.0)
-	if not _check(V63HumanSkillCombatSystem.marked_damage_factor(caster, target, battle.now) > 1.0, "Phệ Cổ mark did not arm the owned punish"):
+	if not _check(V63PoisonEvolutionV1.rule_for_actor(caster) == "marked_target_punish", "V63 actor lineage did not resolve the mark rule"):
 		return false
-	var cast := _cast(V63HumanSkillCombatSystem.skill_definition(punish_id), caster, target)
-	cast["ratio"] = 0.5
-	V63HumanSkillCombatSystem.release_cast(battle, cast, caster)
-	return _check(target.get("v63_marks", {}).is_empty() and _event_count(battle, "mark_consumed") == 1,
-		"Phệ Cổ punish did not consume its own mark exactly once")
+	var mark_skill := V63HumanSkillCombatSystem.skill_definition(mark_id)
+	V63HumanSkillCombatSystem.release_cast(battle, _cast(mark_skill, caster, target), caster)
+	if not _check(not target.get("v63_marks", {}).get(str(caster.id), {}).is_empty(), "real mark cast did not apply owner mark"):
+		return false
+	var punish_skill := V63HumanSkillCombatSystem.skill_definition(punish_id)
+	V63HumanSkillCombatSystem.release_cast(battle, _cast(punish_skill, caster, target), caster)
+	var punish_events := 0
+	var actual_bonus_damage := 0.0
+	for event in battle.events:
+		if str(event.get("type", "")) == "poison_mark_punish":
+			punish_events += 1
+			actual_bonus_damage += float(event.get("actual_damage", 0.0))
+	if not _check(target.get("v63_marks", {}).is_empty() and _event_count(battle, "mark_consumed") == 1 and
+		punish_events == 1 and actual_bonus_damage > 0.0, "real Phệ Cổ hit did not consume its own mark and settle one bonus hit"):
+		return false
+	V63HumanSkillCombatSystem.release_cast(battle, _cast(punish_skill, caster, target), caster)
+	return _check(_event_count(battle, "poison_mark_punish") == 1, "mark ICD allowed a duplicate punish proc")
 
 func _poison_kill_and_respawn() -> bool:
 	var caster_row := _actor("dot_owner", Vector2(18,8))

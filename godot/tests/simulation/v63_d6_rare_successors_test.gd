@@ -96,10 +96,17 @@ func _poison_snapshot() -> bool:
     if not _check(bool(battle.setup("owned_poison", party, [monster]).get("ok", false)), "Poison battle setup"):
         return false
     var target: Dictionary = battle.actors.poison_target
-    var skill := "tmb.skill.poison.doc_cham.active_01.divine.a"
+    var skill := "tmb.skill.poison.doc_cham.active_02.divine.a"
+    var poison_definition := V63HumanSkillCombatSystem.skill_definition(skill)
+    if not _check(str(poison_definition.get("effect", "")) == "poison", "snapshot fixture must use a canonical poison action"):
+        return false
     for index in range(6):
         battle.actors["owner_" + str(index)]["v63_skill_loadout"] = [skill]
-        V63HumanSkillCombatSystem._apply_poison(battle, battle.actors["owner_" + str(index)], target, skill, 0.2, 10.0, 9, "nether")
+        battle.actors["owner_" + str(index)]["v63_combat_enabled"] = true
+        for _cast_index in range(3):
+            V63HumanSkillCombatSystem._apply_poison(battle, battle.actors["owner_" + str(index)], target, skill,
+                float(poison_definition.get("power", 0.0)), float(poison_definition.get("duration", 0.0)),
+                int(poison_definition.get("poison_stacks", 0)), str(poison_definition.get("element", "")))
     if not _check(target.status_effects.v63_poison.size() == 30, "Poison owner cap/target cap"):
         return false
     var restored := MapBattleSnapshotV2.load(MapBattleSnapshotV2.save(battle))

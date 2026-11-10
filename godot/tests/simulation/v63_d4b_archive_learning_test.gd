@@ -152,16 +152,28 @@ func _support_effects() -> bool:
     if not _check(float(caster.get("learned_guard_until",-1.0)) > 0.0,"Kim Cang guard did not settle"):
         return false
     var healer := V63HumanSkillCombatSystem.skill_definition("tmb.skill.poison.duoc_doc.active_02.human")
-    ally["hp"] = 1000.0
+    ally["v63_combat_enabled"] = true
+    var actual_damage := battle._deal_direct(enemy,ally,1.0,"basic",false)
+    if not _check(actual_damage > 0.0 and V63PoisonEvolutionV1.heal_capacity(ally,battle.now) > 0.0,
+        "Dược Độc healing fixture did not create budget from committed combat damage"):
+        return false
+    var hp_before_heal := float(ally.hp)
     V63HumanSkillCombatSystem.release_cast(battle,_cast(healer,caster,ally),caster)
-    if not _check(float(ally.hp) > 1000.0,"Dược Độc heal did not restore an ally"):
+    if not _check(float(ally.hp) > hp_before_heal,"Dược Độc heal did not restore a legitimately damaged ally"):
         return false
     var poison_status := [{"owner_id":"other","source_skill_id":"test","attack_snapshot":caster.stats.duplicate(true),
         "ratio":0.06,"element":"nether","next_tick":50.0,"expires_at":100.0}]
     ally["status_effects"] = {"v63_poison":poison_status,"burn":{"until":100.0}}
     var cleanse := V63HumanSkillCombatSystem.skill_definition("tmb.skill.poison.duoc_doc.active_03.human")
+    var cleanse_event_start := battle.events.size()
     V63HumanSkillCombatSystem.release_cast(battle,_cast(cleanse,caster,ally),caster)
-    if not _check(not ally.get("status_effects",{}).has("v63_poison") and not ally.get("status_effects",{}).has("burn"),"Dược Độc cleanse did not remove bounded debuffs"):
+    var removed_debuff_count := -1
+    for event in battle.events.slice(cleanse_event_start):
+        if str(event.get("type","")) == "cleanse" and str(event.get("skill_id","")) == str(cleanse.id):
+            removed_debuff_count = int(event.get("removed_debuff_count",-1))
+    var statuses_after_cleanse: Dictionary = ally.get("status_effects",{})
+    if not _check(not statuses_after_cleanse.has("v63_poison") and statuses_after_cleanse.has("burn") and removed_debuff_count == 1,
+        "human Dược Độc cleanse must remove exactly its one-debuff budget"):
         return false
     var mark := V63HumanSkillCombatSystem.skill_definition("tmb.skill.fist.huyet_quyen.active_02.human")
     V63HumanSkillCombatSystem.release_cast(battle,_cast(mark,caster,enemy),caster)

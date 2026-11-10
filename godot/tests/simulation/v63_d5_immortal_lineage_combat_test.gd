@@ -31,7 +31,7 @@ func _run() -> void:
 		var b_id := "tmb.skill.%s.%s.active_01.immortal.b" % [str(branch.school), str(branch.id)]
 		var a: Dictionary = V63HumanSkillCombatSystem.skill_definition(a_id)
 		var b: Dictionary = V63HumanSkillCombatSystem.skill_definition(b_id)
-		if not _check(not a.is_empty() and not b.is_empty() and a.effect != b.effect,
+		if not _check(not a.is_empty() and not b.is_empty() and _has_distinct_combat_behavior(a,b),
 			"both lineage variants must have distinct combat actions: " + str(branch.id)):
 			return
 		for lineage in ["a", "b"]:
@@ -56,6 +56,16 @@ func _new_state(disciple_id: String) -> Dictionary:
 	var disciple := DiscipleState.new({"id":disciple_id,"name":disciple_id})
 	state.disciples[disciple.id] = disciple
 	return {"state":state,"disciple":disciple}
+
+func _has_distinct_combat_behavior(a: Dictionary, b: Dictionary) -> bool:
+	# A/B variants can share an effect (for example, both deal direct damage)
+	# while using different authored combat values. Compare gameplay fields,
+	# not the broad effect label alone.
+	for field in ["effect", "damage_ratio", "range", "cast_time", "cooldown", "shape",
+		"radius", "target_limit", "power", "duration", "poison_stacks", "passive_modifiers", "combat_trait"]:
+		if a.get(field, null) != b.get(field, null):
+			return true
+	return false
 
 func _archive_manual(state: SimulationState, codex_id: String) -> bool:
 	var codex := V63SectArchiveSystem.codex_definition(codex_id)

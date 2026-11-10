@@ -5,7 +5,7 @@ extends SceneTree
 const SAVE_PATH := "user://v63_d8_preview_resume_gate_test.json"
 const EXPECTED := [
     "sect_codex", "technique_learning", "human_skill_combat",
-    "divine_skill_combat", "skill_successors", "boss_encounters"
+    "divine_skill_combat", "poison_evolution_strict", "skill_successors", "boss_encounters"
 ]
 
 func _init() -> void:

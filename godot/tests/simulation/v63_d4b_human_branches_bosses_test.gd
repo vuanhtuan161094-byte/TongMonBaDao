@@ -134,7 +134,13 @@ func _full_loadout_test() -> bool:
         return false
     var actor: Dictionary = {"id":str(disciple.id)}
     var attached := V63HumanSkillCombatSystem.attach_disciple_loadout(state,actor,PREVIEW)
-    if not _check(bool(attached.get("ok",false)) and actor.v63_skill_loadout.size() == 12 and actor.v63_passive_ids.size() == 5 and is_equal_approx(float(actor.get("basic_range",0.0)),7.0),"full personal loadout did not attach with a derived innate/basic range"):
+    var canonical_basic: Dictionary = V63HumanSkillCombatSystem.skill_definition("tmb.skill.bow.basic.human")
+    var expected_basic_range := float(canonical_basic.get("range",-1.0))
+    var actual_basic_range := float(actor.get("basic_range",0.0))
+    if not _check(bool(attached.get("ok",false)) and actor.v63_skill_loadout.size() == 12 and actor.v63_passive_ids.size() == 5
+            and str(actor.get("v63_basic_skill_id","")) == "tmb.skill.bow.basic.human"
+            and expected_basic_range > 0.0 and is_equal_approx(actual_basic_range,expected_basic_range),
+            "full personal loadout did not attach canonical basic range: expected=%s actual=%s skill=%s" % [expected_basic_range,actual_basic_range,str(actor.get("v63_basic_skill_id",""))]):
         return false
     return _check(V63HumanSkillCombatSystem.validate_state(state).is_empty(),"full Human branch loadout failed state invariants")
 func _branch_coverage(skills: Array, branch_id: String) -> bool:

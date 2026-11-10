@@ -106,24 +106,40 @@ static func validate_catalogue(data: Dictionary) -> Array[String]:
 static func is_enabled(state: SimulationState, preview_overrides: Dictionary = {}) -> bool:
     return state != null and state.sect.v63_skill_combat_opt_in and V63FeatureGates.is_enabled("human_skill_combat",preview_overrides)
 
+static var _all_skill_definition_cache: Dictionary = {}
+
 static func skill_definitions() -> Dictionary:
+    if not _all_skill_definition_cache.is_empty():
+        return _all_skill_definition_cache.duplicate(true)
     var result: Dictionary = {}
+    var all_loaded := true
     var loaded := load_catalogue()
     if bool(loaded.get("ok",false)):
         for row in loaded.data.skills:
             result[str(row.id)] = row.duplicate(true)
+    else:
+        all_loaded = false
     var immortal := V63ImmortalSkillCombatSystem.load_catalogue()
     if bool(immortal.get("ok",false)):
         for row in immortal.data.skills:
             result[str(row.id)] = row.duplicate(true)
+    else:
+        all_loaded = false
     var divine := V63DivineSkillCombatSystem.load_catalogue()
     if bool(divine.get("ok", false)):
         for row in divine.data.skills:
             result[str(row.id)] = row.duplicate(true)
+    else:
+        all_loaded = false
+    if all_loaded:
+        _all_skill_definition_cache = result.duplicate(true)
     return result
 
 static func skill_definition(skill_id: String) -> Dictionary:
-    return skill_definitions().get(skill_id,{})
+    if _all_skill_definition_cache.is_empty():
+        skill_definitions()
+    var definition: Dictionary = _all_skill_definition_cache.get(skill_id,{})
+    return definition.duplicate(true)
 
 static func branch_definitions() -> Dictionary:
     var result: Dictionary = {}

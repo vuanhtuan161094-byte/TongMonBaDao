@@ -29,7 +29,7 @@ func _run() -> void:
         for node in family["nodes"]:
             if str(node["tier"])=="rare_divine":
                 rare += 1
-    if not _check(nodes==531 and rare==18,"wrong successor and rare counts"): return
+    if not _check(nodes==537 and rare==24,"wrong successor and rare counts"): return
     var poison: Dictionary = V63ContentRegistry.lookup_family(data,"tmb.skill.poison.doc_cham.ultimate")
     if not _check(not poison.is_empty(),"missing poison ultimate"): return
     var human: String = poison["nodes"][0]["id"]
@@ -52,5 +52,5 @@ func _run() -> void:
     var unsafe_boss: Dictionary = data.duplicate(true)
     unsafe_boss["bosses"][0]["spawn_ready"] = true
     if not _check(not V63ContentRegistry.validate_catalogue(unsafe_boss).is_empty(),"Boss accidentally spawnable"): return
-    print("V63_D1_PASS: 105 families, 531 nodes, 18 rare variants, 9 bosses, gates OFF and negative cases")
+    print("V63_D1_PASS: 105 families, 537 registry nodes, 24 rare-tier nodes (18 ultimates + 6 passive successors), 9 bosses, gates OFF and negative cases")
     quit(0)

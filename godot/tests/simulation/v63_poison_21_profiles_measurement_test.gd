@@ -161,6 +161,6 @@ func _run() -> void:
     print("PVB1_MEASURE_SUMMARY " + JSON.stringify({
         "profiles":profiles,"trials":trials,"failures":failures,
         "label":"NORMALIZED_AUTHENTIC_ENGINE_MEASUREMENTS_NOT_LIVE_PLAYER_QA",
-        "run_sha":"CURRENT_CHECKOUT_HEAD"
+        "run_sha":OS.get_environment("GITHUB_SHA")
     }))
     quit(0 if failures == 0 else 1)
