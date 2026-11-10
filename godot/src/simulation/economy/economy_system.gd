@@ -644,7 +644,10 @@ func buy_personal_hp_service(state: SimulationState, disciple_id: StringName, re
     # The new pilot has no Stone-for-HP service. Injury is treated at the
     # clinic; normal HP comes from medicines and battle skills.
     # Retain historical HP service for old Saves when the pilot is OFF.
-    if PveR12BalanceV1.active(state):
+    # All authentic V2 disciples follow medicines/skills for HP and the
+    # Injury clinic for wounds, even while PVE reward pilot stays disabled.
+    # Existing non-V2 saves keep the legacy HP-service behavior.
+    if DiscipleRealmProgressV2.owns_v2_progression(actor):
         return {"ok":false,"reason":"hp_service_replaced_by_injury_care_and_pills"}
     var cost := maxi(int(state.sect.economy_a_policy.get("personal_heal_cost",3)),1)
     # No circular dependency on BuildingSystem: inspect the actual saved
@@ -682,6 +685,8 @@ func buy_personal_hp_service(state: SimulationState, disciple_id: StringName, re
 
 func auto_personal_service_tick(state: SimulationState, actor: DiscipleState) -> void:
     if not state.sect.economy_a_enabled or not bool(state.sect.economy_a_policy.get("auto_hp_service",false)) or PveR12BalanceV1.active(state):
+        return
+    if DiscipleRealmProgressV2.owns_v2_progression(actor):
         return
     if actor.hp <= 0.0 or actor.hp >= actor.max_hp*0.5:
         return
