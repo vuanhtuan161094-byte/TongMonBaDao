@@ -17,6 +17,12 @@ var zoom := 1.0
 var visual_time := 0.0
 var poison_atlas_warning_emitted := false
 
+# Opt-in V4 Movie Maker focus; default Combat Lab/production camera is unchanged.
+var v4_shot_source_id := ""
+var v4_shot_target_id := ""
+var v4_shot_camera_center := WORLD.size * 0.5
+var v4_shot_reached_target := false
+
 func _ready() -> void:
     custom_minimum_size = Vector2(620, 390)
     mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -29,6 +35,10 @@ func set_battle(value: MapBattleV2, weapon_school: String) -> void:
     actor_states.clear()
     last_skill_by_actor.clear()
     visual_time = battle.now if battle != null else 0.0
+    v4_shot_source_id = ""
+    v4_shot_target_id = ""
+    v4_shot_camera_center = WORLD.size * 0.5
+    v4_shot_reached_target = false
     queue_redraw()
 
 func set_status(value: String) -> void:
@@ -374,13 +384,61 @@ func _actor_position(actor_id: String) -> Vector2:
         return battle.actors[actor_id].get("position", Vector2(18, 10))
     return Vector2(18, 10)
 
+# The V4 camera exists only for explicitly requested one-skill recordings.
+# It tracks the real caster/target; it never moves actors or changes range.
+func set_v4_showcase_focus(source_id: String, target_id: String) -> void:
+    if battle == null or not battle.actors.has(source_id) or not battle.actors.has(target_id):
+        return
+    v4_shot_source_id = source_id
+    v4_shot_target_id = target_id
+    v4_shot_reached_target = false
+    _update_v4_shot_camera()
+    queue_redraw()
+
+func _update_v4_shot_camera() -> void:
+    v4_shot_camera_center = WORLD.size * 0.5
+    if battle == null or v4_shot_source_id.is_empty() or v4_shot_target_id.is_empty():
+        return
+    if not battle.actors.has(v4_shot_source_id) or not battle.actors.has(v4_shot_target_id):
+        return
+    var source: Vector2 = battle.actors[v4_shot_source_id].get("position", WORLD.size * 0.5)
+    var target: Vector2 = battle.actors[v4_shot_target_id].get("position", WORLD.size * 0.5)
+    var midpoint := source.lerp(target, 0.5)
+    # At 1x/2x, keep both combatants in view where the viewport permits.
+    # At 4x/6x, a static world-center camera clips both actors; follow the
+    # actual V6.3 projectile from caster to target, then hold on the impact.
+    if zoom <= 2.0 or source.distance_to(target) <= WORLD.size.x / zoom * 0.50:
+        v4_shot_camera_center = midpoint
+        return
+    if v4_shot_reached_target:
+        v4_shot_camera_center = target
+        return
+    v4_shot_camera_center = source
+    for cue in cues:
+        if str(cue.get("kind", "")) != "projectile":
+            continue
+        if str(cue.get("source_actor_id", "")) != v4_shot_source_id or str(cue.get("target_actor_id", "")) != v4_shot_target_id:
+            continue
+        var launch_at := float(cue.get("launch_at", visual_time))
+        var impact_at := float(cue.get("impact_at", launch_at))
+        if visual_time >= impact_at:
+            v4_shot_reached_target = true
+            v4_shot_camera_center = target
+        elif visual_time > launch_at:
+            var progress := clampf((visual_time - launch_at) / maxf(0.001, impact_at - launch_at), 0.0, 1.0)
+            v4_shot_camera_center = source.lerp(target, progress)
+        break
+
 func _world_to_local(point: Vector2) -> Vector2:
     var margin := Vector2(30, 28)
     var span := size - margin * 2.0
-    var centered := Vector2((point.x / WORLD.size.x - 0.5) * span.x, (point.y / WORLD.size.y - 0.5) * span.y)
+    var center := v4_shot_camera_center if not v4_shot_source_id.is_empty() else WORLD.size * 0.5
+    var centered := Vector2((point.x - center.x) / WORLD.size.x * span.x, (point.y - center.y) / WORLD.size.y * span.y)
     return margin + span * 0.5 + centered * zoom
 
 func _draw() -> void:
+    if not v4_shot_source_id.is_empty():
+        _update_v4_shot_camera()
     draw_rect(Rect2(Vector2.ZERO, size), Color("10101a"), true)
     draw_rect(Rect2(Vector2.ZERO, size), Color("403653"), false, 1.0)
     var margin := Vector2(30, 28)
