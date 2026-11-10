@@ -9,7 +9,8 @@ const DEFAULT_FLAGS := {
     "sect_codex": false,
     "technique_learning": false,
     "human_skill_combat": false,
-    "divine_skill_combat": false
+    "divine_skill_combat": false,
+    "poison_evolution_strict": false
 }
 
 static func is_enabled(flag_id: String, preview_overrides: Dictionary = {}) -> bool:
@@ -27,6 +28,7 @@ static func persisted_preview_overrides(state: SimulationState) -> Dictionary:
         "technique_learning": true,
         "human_skill_combat": true,
         "divine_skill_combat": true,
+        "poison_evolution_strict": true,
         "skill_successors": true,
         "boss_encounters": true
     }
