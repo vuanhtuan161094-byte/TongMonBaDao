@@ -7,6 +7,7 @@ on:
       - 'godot/data/economy/v55d_30_realm_reference.json'
       - 'godot/tests/simulation/sx_v55_eco_source_gate_30cg_test.gd'
       - 'godot/tests/simulation/sx_v55_bulk_real_chain_save_test.gd'
+      - 'godot/tests/presentation/sx_v55_bulk_simulated_offline_replay_test.gd'
       - 'godot/tests/simulation/sx_v55_eco_faucet_sink_30d_test.gd'
       - 'godot/tests/presentation/economy_a_landscape_ui_test.gd'
       - 'godot/src/simulation/building/building_system.gd'
@@ -20,6 +21,7 @@ on:
       - 'godot/data/economy/v55d_30_realm_reference.json'
       - 'godot/tests/simulation/sx_v55_eco_source_gate_30cg_test.gd'
       - 'godot/tests/simulation/sx_v55_bulk_real_chain_save_test.gd'
+      - 'godot/tests/presentation/sx_v55_bulk_simulated_offline_replay_test.gd'
       - 'godot/tests/simulation/sx_v55_eco_faucet_sink_30d_test.gd'
       - 'godot/tests/presentation/economy_a_landscape_ui_test.gd'
       - 'godot/src/simulation/building/building_system.gd'
@@ -80,6 +82,13 @@ jobs:
           set -euo pipefail
           bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://tests/simulation/sx_v55_bulk_real_chain_save_test.gd
           bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/simulation/sx_v55_bulk_real_chain_save_test.gd
+
+      - name: V55 real LiveGameRuntime simulated offline 60/90/180 and cold replay
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://tests/presentation/sx_v55_bulk_simulated_offline_replay_test.gd
+          bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/presentation/sx_v55_bulk_simulated_offline_replay_test.gd
 
       - name: 1/7/30-day exact-source faucet sink and W2 affordability model
         shell: bash
