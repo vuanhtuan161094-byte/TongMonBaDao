@@ -453,7 +453,11 @@ func market_sell_price(resource_id: StringName) -> int:
 func market_purchase_price(state: SimulationState, resource_id: StringName) -> int:
     if not V2_MARKET_CATALOG.has(str(resource_id)):
         return 0
-    var base_value := int(V57_BODY_GATE_BASE_PRICES.get(str(resource_id),0))
+    # Internal PVE-BAL01 Shop prices use existing NPC stock/quota/receipt
+    # and keep the player/legacy prices untouched while pilot is disabled.
+    var base_value := PveR12BalanceV1.npc_purchase_base_price(state,resource_id)
+    if base_value <= 0:
+        base_value = int(V57_BODY_GATE_BASE_PRICES.get(str(resource_id),0))
     if base_value <= 0:
         base_value = int(ResourceRegistry.new().definition(resource_id).get("market_value",0))
     return base_value * maxi(int(state.sect.economy_a_policy.get("market_buy_markup",2)),1)
