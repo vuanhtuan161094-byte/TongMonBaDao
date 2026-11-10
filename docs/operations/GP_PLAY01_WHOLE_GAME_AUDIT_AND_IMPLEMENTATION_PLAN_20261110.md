@@ -133,3 +133,36 @@ Agent contract độc lập: `/.agents/skills/tmb-gameplay-closure/SKILL.md`. M�
 - **C:** GP8: chuẩn bị và chạy nghiệm thu launcher/one-save Windows 1280×720, Android nếu có môi trường, giữ physical PENDING khi không truy cập.
 
 **Câu lệnh tiếp tục mặc định cho agent:** “Tiếp tục GP-PLAY01 trên PR #72 từ HEAD mới nhất; đọc AGENTS.md, CURRENT_CHECKPOINT.md, GP_PLAY01_WHOLE_GAME_AUDIT_AND_IMPLEMENTATION_PLAN_20261110.md và skill tmb-gameplay-closure; triển khai GP0 điều tra/sửa O9 production Warehouse Thanh Linh Thảo và related GP02/Economy có bằng chứng, không chỉnh combat/skill/VFX/monster, không tạo nhánh/merge/SaveService; chạy official Godot 4.7.2 focused+cumulative và ghi exact SHA/log cùng 2–3 options tiếp.” 
+
+
+## 9. GP0 — Kết luận lỗi O9 từ real Godot trace và sửa hiển thị (10/11/2026)
+
+### 9.1 Evidence xác minh, KHÔNG phỏng đoán mất nguyên liệu
+
+[O9 diagnostic #42860947645](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42860947645) trên SHA `3c300fbd01b21bd7d5618bfef276e790b6ce6d3e` đã **FAIL** với trace `GP_PLAY01_G0_O9_SOURCE_DIAG`:
+- `state.tick=132`, `Warehouse.thanh_linh_thao.quantity=0`, `available=0`, `reserve_min=0`, `locked=false`.
+- Field plot `crop_id=thanh_linh_thao`, `status=growing`, `routine_yield=3`, `finish_tick=139` => **7 phút mô phỏng còn lại**, chưa thu hoạch vào Kho.
+- `alchemy_jobs=[]` ở tick quan sát; `hoi_xuan_dan` có **2** viên thật trong Kho; nguồn gỗ/ore vẫn tồn và giữ dự trữ theo hợp đồng.
+- Hàm UI `_warehouse_operation_text()` bỏ qua mọi dòng có **tồn=0, reserve=0, không locked**. Đó là **root cause trực tiếp của dòng Thanh Linh Thảo bị ẩn** ở O9. Trace không chứng minh mất/nhân bản vật tư. Bài O9 trước đó đã kiểm tra đúng 3 cây tiêu vào mẻ thuốc và thuốc chỉ sinh sau timer.
+
+### 9.2 Source correction (không đụng combat/gameplay ledger)
+
+- Commit `e9f03ab4b7ab1196681d88e96d5e7116c0268167`: chỉ sửa `godot/src/presentation/p3_2_landscape_sect.gd`, thêm read-only `_warehouse_pending_field_harvest()`. Chỉ đọc **actual** `BuildingState.production_state.plots` với `status=growing` và crop có thật trong `SpiritCropRegistry`. Không gọi sản xuất, không ghi `WarehouseSystem`, không đổi giờ gieo/hái hoặc cấp nguyên liệu.
+- Hiển thị tách bạch **tồn / dùng được / đang trồng (~routine_yield cơ bản) / ETA mẻ gần nhất**. Chẳng hạn tick132: `Thanh Linh Thảo ×0 · dùng được 0 · đang trồng ~3 (còn 7 phút mô phỏng)`. Dấu `~` là sản lượng cơ bản dự kiến, lucky bonus chưa biết. Đếm `stocked_types` vẫn chỉ những item thật có số lượng >0. Không sửa SaveService hay loot.
+- Commit `f64fe4c6e1caf0b64f7eef20423324593aed1887`: chỉ tăng độ chặt cho O9, khẳng định zero stock/plot ETA chính xác và **gọi UI không làm thay đổi Kho**. Giữ điều kiện FAIL nếu thiếu hiển thị, không xóa test.
+- Giới hạn UX cần theo dõi khi GP2 mở nhiều luống: `quantity` đang cộng tất cả plot chờ, `finish_tick` là lần gần nhất; người chơi cần hiểu là ETA mẻ gần nhất, không phải toàn bộ lượng chờ cùng về. Chỉ mở rộng hiển thị từng luống nếu QA chứng minh gây hiểu lầm/tắc UI.
+
+### 9.3 CI evidence (không đồng nhất SHA code và SHA test)
+
+- [O4 Field #42863008934](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42863008934) — **SUCCESS** trên runtime SHA `e9f03ab4`.
+- [O7 Forest #42863009197](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42863009197), [O8 Alchemy #42863008887](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42863008887), [O9 full #42863009229](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42863009229) — **SUCCESS** trên runtime SHA `e9f03ab4`. O9 log có `P3 O9 M2 MULTI-PRODUCER REHEARSAL PASS`, O8 `P3 O8 ALCHEMY FIELD-PILL-CONSUMER TEST PASS`, O7 `P3 O7 LINH FOREST GENERIC BUILDING JOB TEST PASS`.
+- [O9 enhanced QA #42863105599](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42863105599) — **O9 test step SUCCESS** ở SHA `f64fe4c6`; chưa gắn WHOLE-SUCCESS trong tài liệu này khi chưa kết luận toàn bộ O7/O8/P3.6A hậu hồi quy.
+- Economy-A [#42863008727](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42863008727), GP02B1 [#42863009222](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42863009222), GP02C1 [#42863009220](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42863009220) chạy trên code SHA `e9f03ab4`: kết luận WHOLE sẽ cập nhật vào CURRENT_CHECKPOINT + NEXT_CHAT_HANDOFF sau khi các run hoàn tất. Các focused GP02C1 T01–T23 và GP02B1 trước đây PASS; lỗi được chứng minh hiện tại là O9 chained, không tự xóa guard để “chữa” lỗi không tồn tại.
+- Windows E:/PC chuột thật và Android vật lý **PENDING USER**. Không merge, không tạo nhánh, không chạm SaveService/combat.
+
+### 9.4 GP0 tiêu chuẩn hoàn thành
+
+1. O9 HEAD code + enhanced test: toàn bộ strict Godot 4.7.2 workflow SUCCESS.
+2. O4/O5/O7/O8/GP02B1/GP02C1/Economy-A affected cumulative SUCCESS trên đúng code SHA, hoặc ghi tường minh một unrelated failure có log, không gọi FULL PASS.
+3. One Active Job, thực vật tư 0/pending và UI read-only, anti-repeat/cold Save giữ nguyên.
+4. Cập nhật checkpoint/handoff theo logs. Sau khi GP0 PASS → bắt đầu GP1 NewGame/Residence/Recruit/player onboarding.
