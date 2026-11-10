@@ -108,6 +108,11 @@ func _apply_v4_cinematic_layout() -> void:
     arena.custom_minimum_size = Vector2.ZERO
     arena.size_flags_vertical = Control.SIZE_EXPAND_FILL
     arena.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+    # Group shots need bigger readable actors on the 1280x720 canvas.
+    # This camera-only fit is explicitly opt-in; normal Lab and Save are
+    # untouched, including the game's actual 1x scale.
+    var four_vs_eight := encounter_option != null and encounter_option.selected == 4
+    arena.call("set_v4_swarm_cinematic", four_vs_eight)
     var root_column := body.get_parent() as VBoxContainer
     if root_column != null:
         for panel in root_column.get_children():
@@ -131,7 +136,7 @@ func _apply_v4_cinematic_layout() -> void:
     arena.add_child(cinematic_mechanics)
     _refresh_v4_cinematic_labels()
     var note := Label.new()
-    note.text = "GODOT 4.7.2 · V6.3 LIVE EVENTS · VFX V4 LAB ONLY · KHÔNG LƯU SAVE"
+    note.text = "GODOT 4.7.2 · V6.3 LIVE EVENTS · VFX V4 LAB ONLY · KHÔNG LƯU SAVE" + (" · 1x FILM LENS = 1.65x" if four_vs_eight else "")
     note.position = Vector2(23, 79)
     note.add_theme_font_size_override("font_size", 11)
     note.add_theme_color_override("font_color", Color("9288b1"))
