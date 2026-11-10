@@ -2,6 +2,13 @@
 
 Date: 2026-11-10. Branch `integration/pve-p0-playable-ui-20261103`; Draft PR #72, no merge. Official runtime Godot 4.7.2. **This pilot is implemented behind a persisted default-OFF internal flag, and not player-live**. All live older Economy-A, legacy Save and existing bulk-production opt-in stay unchanged.
 
+## Verified r1/r2 focused success / separate Combat cumulative blocker
+
+- **[SX #42785575442](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42785575442)** at exact SHA `c9312ce4371c05d1d6ffdc8e31d6f5d05377c623` **completed/FAILURE only at the final P3.7 cumulative**, while **ALL** new R1/R2 work-income / corrupt-snapshot / cold Save and 1/7/30-day economic-overfunding tests **completed/SUCCESS**, as did all other SX-specific focused steps. [#42785618931](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42785618931) at `95c026d26b00f2610c25ff7a860480dde3b240b9` has the same scoped PASS/overall FAIL split.
+- **Actual cumulative failure log**: `SCRIPT ERROR: Parse Error: Could not resolve script "res://labs/combat_lab/combat_lab_arena.gd"` within `combat_lab_focused_test.gd`/CombatLab. This occurred in pre-existing/concurrent Combat/VFX code, not the R1/R2 source money ledger, which had already passed on these exact runs. **Do not label FULL or entire game PASS, do not mask, skip or alter Combat tests to clear the dashboard.** Combat owner must resolve separately.
+- [SX #42786362866](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42786362866) on `ce78e5a4afefbdcf6406857091a0242178194668` adds an anti-forgery guard: exact canonical bulk `plan_id`, producer/site and snapshot `minutes == finish_tick-started_tick` before Warehouse output. **New r1/r2 focused test step SUCCESS**, full P3.7 still requires exact final outcome.
+- [SX #42786438587](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42786438587) on `2e9b0e7e621157c6794ffc215769cb674c092f7d` additionally rejects a coherently tampered gross/tax/net/minute snapshot. Its **new focused r1/r2 and 1/7/30-day financial pressure steps have completed/SUCCESS**; exact whole-workflow conclusion must be checked.
+
 ## Source / governance
 
 Original V5.5-D 30 exact realm source: `godot/data/economy/v55d_30_realm_reference.json`, `status=APPROVED_DESIGN_ONLY_NOT_LIVE`, `runtime_activation=false`. Only stages r1 and r2 are represented in this guarded runtime pilot; r3–r30 have no verified source pack. Historical PR #8 supplied the five real producer plans already merged into **one** existing `BuildingSystem`. No duplicate wallet, tax ledger, scheduler, warehouse or SaveService is created. Original stage values are:
