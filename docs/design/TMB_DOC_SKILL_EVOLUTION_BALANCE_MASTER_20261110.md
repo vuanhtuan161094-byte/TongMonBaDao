@@ -57,7 +57,7 @@
 | Tẩy Mạch Linh Dược | Dược châu đánh mục tiêu đơn | damage, 1.35×, CD 8s, 1 mục tiêu | damage, 1.59×, CD 7.68s, 1 mục tiêu | poison, 1.59×, CD 7.68s, 1 mục tiêu, DoT 0.0212/tick × 6s × 1 tầng | A: damage, 1.81×, CD 7.36s, 1 mục tiêu; B: poison, 1.81×, CD 7.36s, 1 mục tiêu, DoT 0.0241/tick × 7s × 1 tầng |
 | Giải Độc Hộ Tâm | Hồi HP có ngân sách PvE | heal, 0.00×, CD 18s, 1 mục tiêu | heal, 0.00×, CD 17.28s, 1 mục tiêu | heal, 0.00×, CD 17.28s, 1 mục tiêu | A: heal, 0.00×, CD 16.56s, 1 mục tiêu; B: heal, 0.00×, CD 16.56s, 1 mục tiêu |
 | Nghịch Độc Phản Chế | Giải trạng thái bất lợi có giới hạn | cleanse, 0.00×, CD 18s, 1 mục tiêu | cleanse, 0.00×, CD 17.28s, 1 mục tiêu | cleanse, 0.00×, CD 17.28s, 1 mục tiêu | A: cleanse, 0.00×, CD 16.56s, 1 mục tiêu; B: cleanse, 0.00×, CD 16.56s, 1 mục tiêu |
-| Sinh Cơ Tán | Bột dược phản độc đối thủ | poison, 0.86×, CD 13s, 3 mục tiêu, DoT 0.015/tick × 6s × 1 tầng | poison, 1.01×, CD 12.48s, 3 mục tiêu, DoT 0.0142/tick × 7.5s × 1 tầng | poison, 1.01×, CD 12.48s, 3 mục tiêu, DoT 0.0209/tick × 6.5s × 2 tầng | A: poison, 1.15×, CD 11.96s, 3 mục tiêu, DoT 0.0161/tick × 8s × 1 tầng; B: poison, 1.15×, CD 11.96s, 3 mục tiêu, DoT 0.0237/tick × 7s × 2 tầng |
+| Hóa Độc Tán | Bột dược phản độc đối thủ | poison, 0.86×, CD 13s, 3 mục tiêu, DoT 0.015/tick × 6s × 1 tầng | poison, 1.01×, CD 12.48s, 3 mục tiêu, DoT 0.0142/tick × 7.5s × 1 tầng | poison, 1.01×, CD 12.48s, 3 mục tiêu, DoT 0.0209/tick × 6.5s × 2 tầng | A: poison, 1.15×, CD 11.96s, 3 mục tiêu, DoT 0.0161/tick × 8s × 1 tầng; B: poison, 1.15×, CD 11.96s, 3 mục tiêu, DoT 0.0237/tick × 7s × 2 tầng |
 | Vạn Linh Giải Ách | Đại trị liệu đồng đội có ngân sách | heal, 0.00×, CD 46s, 3 mục tiêu | heal, 0.00×, CD 44.16s, 3 mục tiêu | consume_poison, 1.53×, CD 44.16s, 3 mục tiêu | A: heal, 0.00×, CD 42.32s, 3 mục tiêu; B: consume_poison, 1.74×, CD 42.32s, 3 mục tiêu |
 | Dược Mạch Vững Bền | Hiệu suất trị liệu | heal_factor=0.035 | heal_factor=0.0524 | heal_factor=0.049 | A: heal_factor=0.0674; B: heal_factor=0.063 |
 | Thanh Độc Hộ Thân | Giảm sát thương nhận | guard_factor=0.98 | guard_factor=0.972 | guard_factor=0.972 | A: guard_factor=0.964; B: guard_factor=0.964 |
@@ -121,3 +121,11 @@ Nguồn `docs/design/PVE_BAL01_ECONOMY_COMBAT_MASTER_20261110.md`: Tu Vi thụ �
 5. D4: VFX/HUD 4v8 1280×720, tính FPS/RAM Windows Android, clip đủ hình thái A/B, Tiên/Thần không che mục tiêu. Chỉ mở runtime với exact SHA và PASS thật.
 
 **Status cuối packet:** 183 ứng viên đầy đủ ở catalogue design-only, 35 dòng nguồn, không sửa runtime/Save hoặc merge. Các giá trị vẫn CANDIDATE cho đến khi owner khóa và Godot QA.
+
+## 8. Phân biệt số gameplay và bộ trường tương thích kiểm tra dữ liệu
+
+Các kỹ năng hỗ trợ / thân pháp / bị động có `ratio=0` trong **mô hình sát thương** vì không tự gây damage. Tuy nhiên, bộ kiểm tra `V63HumanSkillCombatSystem.validate_catalogue` hiện bắt `damage_ratio>0`, `cooldown>0`, `range>0`, `target_limit≥1` với tất cả loại slot. Vì vậy bảng dữ liệu bổ sung `runtime_compat_damage_ratio`, `runtime_compat_cooldown_sec`, `runtime_compat_range_cells`, `runtime_compat_target_limit`. Với kỹ năng không gây damage, `runtime_compat_damage_ratio=0.05` chỉ là **placeholder schema**, tuyệt đối không tính như một hit. Đây là chỉ dẫn cho lần code về sau; không import trực tiếp candidate JSON vào Godot.
+
+Một đổi tên có chủ đích: `Sinh Cơ Tán` (ID hiện tại `duoc_doc.active_04`) thành `Hóa Độc Tán` trong thiết kế tương lai vì chức năng đề xuất là tấn công bằng bột phản độc, khác hoàn toàn `Nghịch Độc Phản Chế` vốn phụ trách thanh tẩy. ID vẫn giữ nguyên để Save còn dùng được.
+
+**QA máy đọc trên dữ liệu ứng viên:** 183 unique ID, 35 unique families, 183 tên hiển thị riêng, tất cả hậu duệ có `parent`, giới hạn runtime-compatible được thỏa mãn (với các trường tương thích), 36 thay đổi effect so với source hiện hành phải được review riêng. Đây không phải Godot QA.
