@@ -2,6 +2,12 @@ class_name CombatLabPoisonV4Layers
 extends RefCounted
 
 const ArtBrief = preload("res://labs/combat_lab/combat_lab_poison_skill_art_brief.gd")
+# Original, already-proven RGBA V3 masters; V4 adds layered motion and
+# skill-specific silhouettes, not a new source or fake character atlas.
+const NEEDLE_MASTER: Texture2D = preload("res://labs/combat_lab/assets/poison_vfx/doc_cham_needle.png")
+const GU_MASTER: Texture2D = preload("res://labs/combat_lab/assets/poison_vfx/co_doc_gu_serpent.png")
+const LOTUS_MASTER: Texture2D = preload("res://labs/combat_lab/assets/poison_vfx/duoc_doc_jade_lotus.png")
+const MIST_MASTER: Texture2D = preload("res://labs/combat_lab/assets/poison_vfx/venom_smoke_corrosion.png")
 
 # Render-only V4, selected by an explicit Lab opt-in. Never writes battle state.
 const TAU4 := PI * 2.0
@@ -54,6 +60,43 @@ static func glint(canvas: CanvasItem, p: Vector2, c: Color, opacity: float, radi
         a(LIGHT, opacity * 0.45), maxf(0.7, r * 0.12), true)
     canvas.draw_line(p - wing * r * 1.05, p + wing * r * 1.05,
         a(c, opacity * 0.63), maxf(0.7, r * 0.14), true)
+
+# A few richly-painted RGBA sprites are cheaper and softer than stacking
+# dozens of circle primitives. Alpha bound below and sizes capped for GL
+# Compatibility on Windows and Android. Drawing resets local transform.
+static func master(canvas: CanvasItem, art: Texture2D, at: Vector2,
+        dimensions: Vector2, radians: float, opacity: float, tint_color: Color = Color.WHITE) -> void:
+    if art == null or opacity <= 0.006:
+        return
+    var bounds := Vector2(clampf(dimensions.x, 2.0, 520.0),
+        clampf(dimensions.y, 2.0, 400.0))
+    var shade := Color(tint_color.r, tint_color.g, tint_color.b, clampf(opacity, 0.0, 0.83))
+    canvas.draw_set_transform(at, radians, Vector2.ONE)
+    canvas.draw_texture_rect(art, Rect2(bounds * -0.5, bounds), false, shade)
+    canvas.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+
+# A real travelling ribbon: bright thin center with a translucent textured
+# wake. Used only by committed heal, not by a synthetic healing event.
+static func medicine_stream(canvas: CanvasItem, source: Vector2, destination: Vector2,
+        opacity: float, k: float, z: float) -> void:
+    var distance := source.distance_to(destination)
+    if distance < 6.0:
+        return
+    var d := (destination - source).normalized()
+    var n := d.orthogonal()
+    var previous := source
+    for i in range(1, 13):
+        var u := float(i) / 12.0
+        var point := source.lerp(destination, u)
+        point += n * sin(u * PI) * (10.0 + 2.0 * sin(k * TAU4)) * z
+        line(canvas, previous, point, Color("74f0d4"),
+            opacity * (0.22 + 0.45 * sin(u * PI)), maxf(1.0, 1.5 * z))
+        previous = point
+    for i in range(3):
+        var u := clampf((float(i) + 1.0 + k * 2.0) / 5.0, 0.05, 0.96)
+        var point := source.lerp(destination, u)
+        point += n * sin(u * PI) * (10.0 + 2.0 * sin(k * TAU4)) * z
+        glint(canvas, point, Color("bafbe7"), opacity * 0.6, 2.3 * z, k + float(i))
 
 static func ring(canvas: CanvasItem, p: Vector2, r: float, c: Color, opacity: float, time: float) -> void:
     if r <= 0 or opacity < 0.002: return
@@ -158,6 +201,17 @@ static func render(canvas: CanvasItem, cue: Dictionary, target: Vector2, source:
     if kind in ["venom_cloud", "aoe", "area_burst"] or (shape == "circle" and kind == "skill_release"):
         # No invented radius: only radius_px from authoritative V6.3/event.
         var area := clampf(radius_px, 1.0, 1600.0)
+        # Film-grade low smoke belongs on the FLOOR: no bloom over monster
+        # faces or HP bars, and no visual enlargement of the real hit radius.
+        var fog_tint := Color("bd9af1") if branch == "doc_cham" else Color("b3eb77")
+        var ground_opacity := (0.14 if branch == "doc_cham" else 0.18) * life
+        if branch == "co_doc" and motif in ["gu_mist", "gu_domain"]:
+            ground_opacity *= 1.12
+        master(canvas, MIST_MASTER, target, Vector2(area * 1.75, area * 0.85),
+            k * 0.08, ground_opacity, fog_tint)
+        master(canvas, MIST_MASTER, target + Vector2(0.0, area * 0.09),
+            Vector2(area * 1.35, area * 0.58), -k * 0.14,
+            ground_opacity * 0.57, c)
         # The outside edge is exactly the canonical skill radius. It is a
         # warning/feedback boundary only, never the source of a damage hit.
         for i in range(12):
@@ -201,11 +255,26 @@ static func render(canvas: CanvasItem, cue: Dictionary, target: Vector2, source:
                             a(GOLD, life * 0.34), maxf(0.7, z * 0.55), true)
         return
     if kind == "heal" or effect == "heal":
-        lotus(canvas, p - Vector2(0, k * 23.0 * z), 20.0 * z, c, life * 0.9, k)
+        # Display ONLY when the canonical heal event is committed.
+        # A medicinal stream can connect caster and ally without granting
+        # extra HP, and becomes a short lotus pulse for self-healing.
+        medicine_stream(canvas, caster_hand, p, life * 0.78, k, z)
+        var lift := k * 13.0 * z
+        master(canvas, LOTUS_MASTER, p - Vector2(0, lift),
+            Vector2(66, 55) * z, -0.12 + k * 0.34, life * 0.76)
+        master(canvas, LOTUS_MASTER, p - Vector2(0, lift + 7.0 * z),
+            Vector2(43, 36) * z, 0.14 - k * 0.28, life * 0.39, GOLD)
+        lotus(canvas, p - Vector2(0, k * 23.0 * z), 17.0 * z, c, life * 0.67, k)
+        for i in range(6):
+            var theta := float(i) * TAU4 / 6.0 + k * 0.28
+            var seed := p + Vector2.from_angle(theta) * (13.0 + 12.0 * k) * z
+            glint(canvas, seed - Vector2(0, lift), c, life * 0.68, 1.9 * z, theta)
         debris(canvas, p, 16.0 * z, c, life, k)
         return
     if kind == "cleanse" or effect == "cleanse":
-        ring(canvas, p, (10.0 + 31.0 * k) * z, GOLD, life * 0.84, k)
+        master(canvas, LOTUS_MASTER, p - Vector2(0, k * 18.0 * z),
+            Vector2(56, 47) * z, -k * 0.45, life * 0.58)
+        ring(canvas, p, (10.0 + 22.0 * k) * z, GOLD, life * 0.62, k)
         lotus(canvas, p, 14.0 * z, c, life * 0.77, k)
         return
     match kind:
