@@ -9,6 +9,9 @@ on:
       - '.github/workflows/poison-v4-godot-evidence.yml'
       - 'godot/labs/combat_lab/combat_lab_poison_v4_layers.gd'
       - 'godot/labs/combat_lab/combat_lab_poison_skill_art_brief.gd'
+      - 'godot/labs/combat_lab/combat_lab_vfx_progression.gd'
+      - 'godot/labs/combat_lab/combat_lab_v4_spell_spark.gd'
+      - 'godot/tests/labs/combat_lab/poison_v4_growth_reaction_test.gd'
       - 'godot/labs/combat_lab/combat_lab_arena.gd'
       - 'godot/labs/combat_lab/combat_lab_roster_adapter.gd'
       - 'godot/tests/labs/combat_lab/poison_v4_aim_range_contract_test.gd'
@@ -74,9 +77,15 @@ jobs:
           bash tools/qa/run_godot_strict.sh --headless --path godot --check-only \
             --script res://labs/combat_lab/combat_lab_poison_skill_art_brief.gd
           bash tools/qa/run_godot_strict.sh --headless --path godot --check-only \
+            --script res://labs/combat_lab/combat_lab_vfx_progression.gd
+          bash tools/qa/run_godot_strict.sh --headless --path godot --check-only \
+            --script res://labs/combat_lab/combat_lab_v4_spell_spark.gd
+          bash tools/qa/run_godot_strict.sh --headless --path godot --check-only \
             --script res://tests/labs/combat_lab/poison_v4_video_capture.gd
           bash tools/qa/run_godot_strict.sh --headless --path godot \
             -s res://tests/labs/combat_lab/poison_v4_render_contract_test.gd
+          bash tools/qa/run_godot_strict.sh --headless --path godot \
+            -s res://tests/labs/combat_lab/poison_v4_growth_reaction_test.gd
           bash tools/qa/run_godot_strict.sh --headless --path godot \
             -s res://tests/labs/combat_lab/poison_v4_aim_range_contract_test.gd
           bash tools/qa/run_godot_strict.sh --headless --path godot \
@@ -98,17 +107,19 @@ jobs:
           bash tools/qa/run_godot_strict.sh --headless --path godot \
             -s res://tests/labs/combat_lab/combat_lab_v2_visual_test.gd
 
-      - name: Record 11 genuine full-frame Combat Lab videos, including needle/gu 4v8 and ally heal
+      - name: Record 12 genuine full-frame Combat Lab videos, including novice/mastery XII 4v8 and ally heal
         shell: bash
         run: |
           set -euo pipefail
           mkdir -p "$RUNNER_TEMP/poison_v4"
           printf 'code_sha=%s\n' "$GITHUB_SHA" > "$RUNNER_TEMP/poison_v4/metadata.txt"
-          for item in doc_cham:1 doc_cham:2 doc_cham:4 doc_cham:6 co_doc:2 duoc_doc:2 duoc_heal:2 swarm_aoe:1 swarm_aoe:2 co_swarm:1 co_swarm:2; do
-            IFS=: read -r branch zoom <<< "$item"
+          for item in doc_cham:1 doc_cham:2 doc_cham:4 doc_cham:6 co_doc:2 duoc_doc:2 duoc_heal:2 swarm_aoe:1 swarm_aoe:2 co_swarm:1 co_swarm:2 swarm_aoe:1:master; do
+            IFS=: read -r branch zoom mastery <<< "$item"
             export TMB_POISON_V4_BRANCH="$branch"
             export TMB_POISON_V4_ZOOM="$zoom"
+            export TMB_POISON_V4_MASTERY_QA="${mastery:-}"
             key="$branch-$zoom"x
+            if [ -n "${mastery:-}" ]; then key="$key-$mastery"; fi
             xvfb-run -a -s "-screen 0 1280x720x24" \
               bash tools/qa/run_godot_strict.sh --path godot --resolution 1280x720 --fixed-fps 24 \
                 --write-movie "$RUNNER_TEMP/poison_v4/$key.avi" \
@@ -117,6 +128,9 @@ jobs:
             test -s "$RUNNER_TEMP/poison_v4/$key.avi"
             grep -q 'POISON_V4_VIDEO_RESULT=PASS_EVENTS_ONLY' "$RUNNER_TEMP/poison_v4/$key.log"
             grep -q "POISON_V4_VIDEO_ZOOM=$zoom" "$RUNNER_TEMP/poison_v4/$key.log"
+            if [ "${mastery:-}" = "master" ]; then
+              grep -q 'POISON_V4_VIDEO_MASTERY_RESULT=MASTER_LEVEL_12_FIXTURE' "$RUNNER_TEMP/poison_v4/$key.log"
+            fi
             ffmpeg -y -hide_banner -loglevel error \
               -i "$RUNNER_TEMP/poison_v4/$key.avi" -vf "fps=24,scale=1280:720" \
               -c:v libx264 -preset fast -pix_fmt yuv420p \
@@ -127,7 +141,7 @@ jobs:
           done
           # Three source-backed mockups: extract real Movie Maker keyframes,
           # never substitute concept art or painted screenshots for gameplay.
-          for key in swarm_aoe-1x co_swarm-1x duoc_heal-2x; do
+          for key in swarm_aoe-1x swarm_aoe-1x-master co_swarm-1x duoc_heal-2x; do
             for stamp in 0.75 1.80 3.60; do
               ffmpeg -y -hide_banner -loglevel error -ss "$stamp"                 -i "$RUNNER_TEMP/poison_v4/$key.mp4" -frames:v 1                 "$RUNNER_TEMP/poison_v4/$key-frame-$stamp.png"
               test -s "$RUNNER_TEMP/poison_v4/$key-frame-$stamp.png"
