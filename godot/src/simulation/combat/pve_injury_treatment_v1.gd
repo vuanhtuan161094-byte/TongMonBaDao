@@ -10,7 +10,10 @@ const FREE_RECOVERY_TICKS := 120
 const COST_BY_REALM := PveR12BalanceV1.INJURY_TREATMENT_FEES
 
 static func quote(state: SimulationState, disciple: DiscipleState) -> Dictionary:
-    if state == null or disciple == null or not PveR12BalanceV1.active(state) \
+    # Injury treatment is a live Sect medical service, independent of the
+    # unreleased r1/r2 monster reward economy pilot.
+    if state == null or disciple == null or not state.sect.economy_a_enabled \
+            or not state.sect.p3_7_resources_enabled \
             or not DiscipleRealmProgressV2.progression_ready(disciple):
         return {"ok":false,"reason":"injury_treatment_pilot_disabled"}
     var realm := int(disciple.v2_realm_progress.get("cultivation",{}).get("realm",0))
@@ -88,7 +91,7 @@ static func treatment_in_progress(state: SimulationState,
         disciple: DiscipleState) -> bool:
     if state == null or disciple == null or disciple.injury_level != 1:
         return false
-    if not PveR12BalanceV1.active(state):
+    if not state.sect.economy_a_enabled:
         return false
     var index: Dictionary = state.sect.economy_a_receipts.get(
         "injury-active:"+str(disciple.id),{})
