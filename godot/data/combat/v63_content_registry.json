@@ -3371,6 +3371,20 @@
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.poison.doc_cham.passive_05.immortal.b"
+        },
+        {
+          "id": "tmb.skill.poison.doc_cham.passive_05.rare_passive.a",
+          "tier": "rare_divine",
+          "lineage": "a",
+          "parent": "tmb.skill.poison.doc_cham.passive_05.divine.a",
+          "name": "tmb.skill.poison.doc_cham.passive_05.rare_passive.a"
+        },
+        {
+          "id": "tmb.skill.poison.doc_cham.passive_05.rare_passive.b",
+          "tier": "rare_divine",
+          "lineage": "b",
+          "parent": "tmb.skill.poison.doc_cham.passive_05.divine.b",
+          "name": "tmb.skill.poison.doc_cham.passive_05.rare_passive.b"
         }
       ]
     },
@@ -3814,6 +3828,20 @@
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.poison.co_doc.passive_05.immortal.b"
+        },
+        {
+          "id": "tmb.skill.poison.co_doc.passive_05.rare_passive.a",
+          "tier": "rare_divine",
+          "lineage": "a",
+          "parent": "tmb.skill.poison.co_doc.passive_05.divine.a",
+          "name": "tmb.skill.poison.co_doc.passive_05.rare_passive.a"
+        },
+        {
+          "id": "tmb.skill.poison.co_doc.passive_05.rare_passive.b",
+          "tier": "rare_divine",
+          "lineage": "b",
+          "parent": "tmb.skill.poison.co_doc.passive_05.divine.b",
+          "name": "tmb.skill.poison.co_doc.passive_05.rare_passive.b"
         }
       ]
     },
@@ -4257,6 +4285,20 @@
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.poison.duoc_doc.passive_05.immortal.b"
+        },
+        {
+          "id": "tmb.skill.poison.duoc_doc.passive_05.rare_passive.a",
+          "tier": "rare_divine",
+          "lineage": "a",
+          "parent": "tmb.skill.poison.duoc_doc.passive_05.divine.a",
+          "name": "tmb.skill.poison.duoc_doc.passive_05.rare_passive.a"
+        },
+        {
+          "id": "tmb.skill.poison.duoc_doc.passive_05.rare_passive.b",
+          "tier": "rare_divine",
+          "lineage": "b",
+          "parent": "tmb.skill.poison.duoc_doc.passive_05.divine.b",
+          "name": "tmb.skill.poison.duoc_doc.passive_05.rare_passive.b"
         }
       ]
     },
