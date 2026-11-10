@@ -58,6 +58,36 @@ func _run() -> void:
         and crop_registry.has(&"linh_coc") and crop_registry.has(&"thanh_linh_thao")
         and crop_registry.has(&"tu_van_thao"),"real level-gated sources missing"):
         return
+    # Five original V5.5-D IDs are now real, source-routed Mine/Forest
+    # outputs. Their V5.6 reference market values were NOT approved prices.
+    # This guard prevents the 30-stage design table from becoming a free
+    # economy faucet or falsely implying all 630 materials exist in runtime.
+    var preserved_sources := [
+        {"id":"ore_r01_c2","kind":"mines"},
+        {"id":"ore_r02_c2","kind":"mines"},
+        {"id":"forest_r01_wood2","kind":"forests"},
+        {"id":"forest_r02_wood","kind":"forests"},
+        {"id":"forest_r02_wood2","kind":"forests"}
+    ]
+    for entry in preserved_sources:
+        var material_id := StringName(entry.get("id",""))
+        if not _check(registry.has(material_id),"preserved material missing: "+str(material_id)):
+            return
+        var status := str(registry.definition(material_id).get("value_status",""))
+        var routes := MedicineResourceSourceV1.routes_for_ingredient(material_id)
+        var route_name := str(entry.get("kind",""))
+        if not _check(status == "V56_G_PROPOSED_REFERENCE_NOT_TRADEABLE"
+            and economy.market_sell_price(material_id) == 0
+            and bool(routes.get("ok",false))
+            and not Array(routes.get(route_name,[])).is_empty(),
+            "unverified trading/source route: "+str(material_id)):
+            return
+    if not _check(not registry.has(&"ore_r03_c1")
+        and not registry.has(&"forest_r03_wood")
+        and not AlchemyRecipeRegistry.new().has(&"sx02_recipe_heal_r03"),
+        "r3 content unlocked without a verified source + recipe packet"):
+        return
+
     var printed_targets := 0
     for value in targets:
         if not _check(value is Dictionary,"invalid approved batch target"):
