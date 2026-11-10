@@ -16,6 +16,8 @@ on:
       - 'godot/tests/simulation/pve_p0_*'
       - 'godot/tests/simulation/pve_r12_balance_contract_test.gd'
       - 'godot/tests/simulation/pve_r12_live_reward_save_test.gd'
+      - 'tools/qa/validate_pve_bal01_recipes.py'
+      - 'docs/design/PVE_BAL01_119_RECIPES_CANDIDATE_20261110.json'
       - 'godot/src/simulation/state/sect_state.gd'
       - 'godot/src/simulation/economy/economy_system.gd'
       - 'godot/tests/simulation/one_game_r3_continuous_save_test.gd'
@@ -88,6 +90,10 @@ jobs:
             res://tests/simulation/one_game_r3_continuous_save_test.gd; do
             godot --headless --path godot --check-only --script "$script"
           done
+
+      - name: PVE-BAL01 verify all 119 recipe identities keep 111 unsourced HOLD
+        shell: bash
+        run: python3 tools/qa/validate_pve_bal01_recipes.py
 
       - name: PVE-BAL01 R1/R2 exact HP pill lost-work income and XP contract
         shell: bash
