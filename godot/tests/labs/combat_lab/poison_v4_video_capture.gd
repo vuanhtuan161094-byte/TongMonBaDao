@@ -131,6 +131,28 @@ func _run() -> void:
         if str(observed.get("side", "")) == "disciple":
             observed["v63_skill_loadout"] = [requested_skill]
             observed["skill_loadout"] = []
+    # Isolated growth visualization: compare the SAME skill at novice and
+    # genuine Human mastery XII, with 100 learned casts per level. This fixture
+    # never enters SaveService/production and never grants extra hit targets.
+    var mastery_mode := OS.get_environment("TMB_POISON_V4_MASTERY_QA")
+    if mastery_mode == "master":
+        for actor_id in battle.actors.keys():
+            var actor: Dictionary = battle.actors[actor_id]
+            if str(actor.get("side", "")) != "disciple":
+                continue
+            var linked := DiscipleState.new()
+            linked.id = StringName(str(actor_id))
+            linked.v63_learned_skill_nodes[requested_skill] = {
+                "source_codex_id":str(V63HumanSkillCombatSystem.skill_definition(requested_skill).get("source_codex_id", "")),
+                "learned_tick":0, "mastery_xp":1100.0, "level":12,
+                "branch_id":desired_branch
+            }
+            actor["linked_disciple"] = linked
+            var actor_stats: Dictionary = actor.get("stats", {}).duplicate(true)
+            actor_stats["cast_speed"] = 1.0
+            actor_stats["attack_speed"] = 1.0
+            actor["stats"] = actor_stats
+        print("POISON_V4_VIDEO_MASTERY=master level=12 cast_speed=1.0 QA_ONLY")
     lab.call("_set_auto", true)
     # Frames are captured by Godot's Movie Maker, not composed from still assets.
     # Normal _process(delta) advances the real 0.25s battle tick and interpolated VFX.
@@ -173,5 +195,7 @@ func _run() -> void:
     if cast_count <= 0 or release_count <= 0:
         _failed("No real matching skill_cast + skill_release; video cannot be accepted as a combat skill demonstration")
     print("POISON_V4_VIDEO_ZOOM=" + requested_zoom)
+    if mastery_mode == "master":
+        print("POISON_V4_VIDEO_MASTERY_RESULT=MASTER_LEVEL_12_FIXTURE")
     print("POISON_V4_VIDEO_RESULT=" + ("PASS_EVENTS_ONLY" if errors == 0 else "FAIL") + " errors=" + str(errors))
     quit(0 if errors == 0 else 6)
