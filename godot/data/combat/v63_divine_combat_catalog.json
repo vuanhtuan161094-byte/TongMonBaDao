@@ -12602,7 +12602,8 @@
         "guard_factor": 1,
         "heal_factor": 0,
         "lifesteal": 0,
-        "poison_factor": 0
+        "poison_factor": 0,
+        "fatal_save_charges": 1
       },
       "animation_key": "v63_immortal_poison_duoc_doc_passive_a",
       "vfx_key": "v63_immortal_original_poison_duoc_doc_passive_a",
