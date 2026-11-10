@@ -83,6 +83,10 @@ func _catalogue_contract() -> void:
         "tier histogram " + str([total,human,immortal,divine]))
     _ok(family_ids.size() == 35, "family count " + str(family_ids.size()))
     _ok(rare_passives == 6, "rare passive count " + str(rare_passives))
+    var rare_heal := V63DivineSkillCombatSystem.skill_definition(
+        "tmb.skill.poison.duoc_doc.passive_05.rare_passive.a")
+    _ok(int(rare_heal.get("passive_modifiers", {}).get("fatal_save_charges", 0)) == 1,
+        "rare Hồi Thiên must have one emergency fatal-save charge")
     var tiendu: Dictionary = V63HumanSkillCombatSystem.skill_definition(
         "tmb.skill.poison.doc_cham.active_02.immortal.a")
     var parents: Dictionary = {}
