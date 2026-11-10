@@ -91,6 +91,18 @@ static func record_damage_taken(target: Dictionary, actual_damage: float, now: f
     history.append({"time":now, "amount":minf(actual_damage, maxf(1.0, float(target.get("max_hp", 1.0))))})
     target["v63_poison_damage_receipts"] = history
 
+static func heal_capacity(target: Dictionary, now: float) -> float:
+    var damages := _prune_receipts(target.get("v63_poison_damage_receipts", []), now, DAMAGE_HISTORY_CAP)
+    var heals := _prune_receipts(target.get("v63_poison_heal_receipts", []), now, HEAL_HISTORY_CAP)
+    var damage_total := 0.0
+    var healed_total := 0.0
+    for row in damages:
+        damage_total += float(row.amount)
+    for row in heals:
+        healed_total += float(row.amount)
+    var max_hp := maxf(1.0, float(target.get("max_hp", 1.0)))
+    return maxf(0.0, minf(max_hp * HEAL_MAX_HP_FACTOR, damage_total * HEAL_DAMAGE_FACTOR) - healed_total)
+
 static func heal_allowed(target: Dictionary, requested: float, now: float) -> float:
     if requested <= 0.0:
         return 0.0
