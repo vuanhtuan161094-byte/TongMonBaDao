@@ -55,6 +55,34 @@ func _run() -> void:
         and int(state.sect.economy_a_market_stock.get("linh_moc",0)) < market_before):
         _fail("Economy-A Phuong Thi UI buy did not settle real stock and Stones")
         return
+    # QA-only unpaid historical receipt: the Hall must show and settle real
+    # wage debt without injecting currency or overwriting the player Save.
+    var economy := EconomySystem.new()
+    var disciples: Array = state.disciples.keys()
+    disciples.sort()
+    if disciples.is_empty():
+        _fail("No real disciple to receive wages")
+        return
+    var worker: DiscipleState = state.disciples[disciples[0]]
+    var worker_before := worker.spirit_stones
+    var treasury_before := state.sect.spirit_stones
+    if treasury_before <= 0 or treasury_before >= 99999:
+        _fail("QA treasury not suitable for a bounded partial wage")
+        return
+    if not bool(economy.configure_v1(state,"wage_per_batch",treasury_before+1).get("ok",false)):
+        _fail("Cannot configure wage debt test")
+        return
+    var owed := economy.settle_work_wage(state,worker,"ui_qa_unpaid_salary_1")
+    if not bool(owed.get("ok",false)) or int(economy.unpaid_work_wages(state).get("total",-1)) != treasury_before+1:
+        _fail("Wage debt missing before player command")
+        return
+    ui.call("_open_building",SectMapPresentation.DEST_MAIN_HALL)
+    await process_frame
+    if not await _press("EconomyA_PayWageArrears"):
+        return
+    if state.sect.spirit_stones != 0 or worker.spirit_stones != worker_before+treasury_before or int(economy.unpaid_work_wages(state).get("total",-1)) != 1:
+        _fail("Hall debt payment did not transfer actual available Stones")
+        return
     var result := state.validate_invariants()
     if not result.is_empty():
         _fail("Economy-A real landscape state violated invariants: %s" % str(result))
