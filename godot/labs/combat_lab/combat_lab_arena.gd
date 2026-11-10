@@ -18,6 +18,7 @@ var status_line := "Chưa bắt đầu · LAB_ONLY"
 var zoom := 1.0
 var visual_time := 0.0
 var poison_atlas_warning_emitted := false
+var v4_preview_enabled := OS.get_environment("TMB_POISON_V4_PREVIEW") == "1"
 
 # Opt-in V4 Movie Maker focus; default Combat Lab/production camera is unchanged.
 var v4_shot_source_id := ""
@@ -46,6 +47,11 @@ func set_battle(value: MapBattleV2, weapon_school: String) -> void:
 
 func set_status(value: String) -> void:
     status_line = value
+    queue_redraw()
+
+func set_v4_preview_enabled(value: bool) -> void:
+    # Combat Lab only. Production/V3 renderer remains the default elsewhere.
+    v4_preview_enabled = value
     queue_redraw()
 
 func set_visual_time(value: float) -> void:
@@ -593,10 +599,12 @@ func _draw_cues() -> void:
         var start := _world_to_local(cue.get("from_position", cue.get("position", Vector2.ZERO)))
         var radius_px := float(cue.get("radius", 0.0)) * size.x / WORLD.size.x * zoom
         var visual_cue := cue
-        if str(cue.get("school", "")) == "poison" and OS.get_environment("TMB_POISON_V4_PREVIEW") == "1":
+        if str(cue.get("school", "")) == "poison":
             visual_cue = cue.duplicate()
-            visual_cue["v4_target_body_offset"] = _actor_body_offset_px(str(cue.get("target_actor_id", "")))
-            visual_cue["v4_source_body_offset"] = _actor_body_offset_px(str(cue.get("source_actor_id", "")))
+            visual_cue["v4_preview"] = v4_preview_enabled
+            if v4_preview_enabled:
+                visual_cue["v4_target_body_offset"] = _actor_body_offset_px(str(cue.get("target_actor_id", "")))
+                visual_cue["v4_source_body_offset"] = _actor_body_offset_px(str(cue.get("source_actor_id", "")))
         VfxV2.render(self, visual_cue, p, start, t, radius_px, zoom)
         var label := str(cue.get("text", ""))
         if label.is_empty():
