@@ -72,9 +72,9 @@ func _p0() -> bool:
     actor["hp"] = maxf(1.0,max_hp*0.50)
     var before_hp := float(actor["hp"])
     var before_stock := warehouse.quantity(state,pill)
-    if not _check(not bool(PveCombatAutoPillV1.heal_one(
-            state,session.battle,id).get("used",false))
-            == false,"P0-consumer"):
+    var first := PveCombatAutoPillV1.heal_one(state,session.battle,id)
+    if not _check(bool(first.get("ok",false)) and bool(first.get("used",false)),
+            "P0-consumer: "+str(first)):
         return false
     var first_receipt: Dictionary = d.b3_pill_state.get("receipt",{})
     var restored_hp := float(actor["hp"])-before_hp
