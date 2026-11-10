@@ -77,11 +77,66 @@ func _ready() -> void:
     var requested_zoom := float(OS.get_environment("TMB_COMBAT_LAB_ZOOM"))
     if requested_zoom in [1.0, 2.0, 4.0, 6.0]:
         _select_zoom(requested_zoom)
+    if OS.get_environment("TMB_POISON_V4_CINEMATIC") == "1":
+        _apply_v4_cinematic_layout()
     var screenshot := OS.get_environment("TMB_COMBAT_LAB_SCREENSHOT")
     if not screenshot.is_empty():
         var requested_delay := OS.get_environment("TMB_COMBAT_LAB_CAPTURE_DELAY")
         var screenshot_delay := clampf(requested_delay.to_float(), 0.25, 12.0) if not requested_delay.is_empty() else 4.0
         get_tree().create_timer(screenshot_delay).timeout.connect(func(): _save_screenshot(screenshot))
+
+# Only Movie Maker / explicitly requested LAB showcase. Enlarges the true
+# combat viewport instead of recording a 630px battle in a 1280px black UI.
+# No simulation, skill or SaveService mutations; normal Lab retains controls.
+func _apply_v4_cinematic_layout() -> void:
+    if arena == null:
+        return
+    var center_column := arena.get_parent() as VBoxContainer
+    if center_column == null:
+        return
+    var body := center_column.get_parent() as HBoxContainer
+    if body == null:
+        return
+    for panel in body.get_children():
+        if panel != center_column:
+            panel.visible = false
+    for panel in center_column.get_children():
+        if panel != arena:
+            panel.visible = false
+    arena.custom_minimum_size = Vector2.ZERO
+    arena.size_flags_vertical = Control.SIZE_EXPAND_FILL
+    arena.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+    var root_column := body.get_parent() as VBoxContainer
+    if root_column != null:
+        for panel in root_column.get_children():
+            if panel != body:
+                panel.visible = false
+        var margin := root_column.get_parent() as MarginContainer
+        if margin != null:
+            for side in ["margin_left", "margin_right", "margin_top", "margin_bottom"]:
+                margin.add_theme_constant_override(side, 9)
+    var definition: Dictionary = CombatLabRosterAdapter.skill_definitions().get(selected_catalog_skill_id, {})
+    var skill_title := Label.new()
+    skill_title.text = str(definition.get("name", "ĐỘC TU · TRẬN THỬ"))
+    skill_title.position = Vector2(22, 19)
+    skill_title.add_theme_font_size_override("font_size", 24)
+    skill_title.add_theme_color_override("font_color", Color("f5e7bf"))
+    skill_title.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    arena.add_child(skill_title)
+    var mechanics := Label.new()
+    mechanics.text = PoisonArtBrief.mechanic(definition) + " · " + PoisonArtBrief.geometry(definition)
+    mechanics.position = Vector2(23, 54)
+    mechanics.add_theme_font_size_override("font_size", 14)
+    mechanics.add_theme_color_override("font_color", Color("c5f3db"))
+    mechanics.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    arena.add_child(mechanics)
+    var note := Label.new()
+    note.text = "GODOT 4.7.2 · V6.3 LIVE EVENTS · VFX V4 LAB ONLY · KHÔNG LƯU SAVE"
+    note.position = Vector2(23, 79)
+    note.add_theme_font_size_override("font_size", 11)
+    note.add_theme_color_override("font_color", Color("9288b1"))
+    note.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    arena.add_child(note)
 
 func _process(delta: float) -> void:
     if battle != null and auto_run and battle.active:
