@@ -1,0 +1,120 @@
+name: PR72 Windows Native GUI + Offline Evidence
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'godot/tests/presentation/pr72_windows_native_gui_capture_test.gd'
+      - 'godot/tests/presentation/pr72_simulated_offline_resume_test.gd'
+      - '.github/workflows/pr72-windows-native-gui-offline.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  windows-native-production:
+    name: Official Windows Godot 4.7.2 real GUI attempt + offline simulation
+    runs-on: windows-latest
+    timeout-minutes: 35
+    env:
+      GODOT_VERSION: '4.7.2'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install official Godot 4.7.2 Windows with pinned release SHA256
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $zip = Join-Path $env:RUNNER_TEMP 'godot-4.7.2-win64.zip'
+          $uri = 'https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_win64.exe.zip'
+          Invoke-WebRequest -Uri $uri -OutFile $zip
+          $expected = '731980f9608d61333e5baf54a2ef17210acc7a538446c0cb9969f002aca1e953'
+          $actual = (Get-FileHash -LiteralPath $zip -Algorithm SHA256).Hash.ToLowerInvariant()
+          if ($actual -ne $expected) { throw "Official Godot Windows release digest mismatch: $actual" }
+          $dir = Join-Path $env:RUNNER_TEMP 'godot-windows-official'
+          Expand-Archive -LiteralPath $zip -DestinationPath $dir
+          $exe = Get-ChildItem -LiteralPath $dir -Filter '*win64_console.exe' -Recurse | Select-Object -First 1
+          if ($null -eq $exe) { throw "Official Windows Godot console binary missing" }
+          "PR72_GODOT_EXE=$($exe.FullName)" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          & $exe.FullName --version
+          if ($LASTEXITCODE -ne 0) { throw "Official Godot version check failed" }
+
+      - name: Restore pinned Stage A female assets needed by real gameplay
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $files = @(
+          '.github/assets/p3/female_stage_a/part01.b64',
+          '.github/assets/p3/female_stage_a/part02.b64',
+          '.github/assets/p3/female_stage_a/part03.b64',
+          '.github/assets/p3/female_stage_a/part04.b64',
+          '.github/assets/p3/female_stage_a/part05.b64',
+          '.github/assets/p3/female_stage_a/part06.b64',
+          '.github/assets/p3/female_stage_a/part07.b64',
+          '.github/assets/p3/female_stage_a/part08.b64',
+          '.github/assets/p3/female_stage_a/part09.b64',
+          '.github/assets/p3/female_stage_a/part10.b64',
+          '.github/assets/p3/female_stage_a/part11.b64',
+          '.github/assets/p3/female_stage_a/part12.b64',
+          '.github/assets/p3/female_stage_a/part13.b64',
+          '.github/assets/p3/female_stage_a/part14.b64',
+          '.github/assets/p3/female_stage_a/part15a.b64',
+          '.github/assets/p3/female_stage_a/part15b.b64',
+          '.github/assets/p3/female_stage_a/part16.b64',
+          '.github/assets/p3/female_stage_a/part17.b64',
+          '.github/assets/p3/female_stage_a/part18.b64',
+          '.github/assets/p3/female_stage_a/part19.b64',
+          '.github/assets/p3/female_stage_a/part20.b64'
+          )
+          $b64 = ($files | ForEach-Object { Get-Content -LiteralPath $_ -Raw }) -join ''
+          $bytes = [Convert]::FromBase64String(($b64 -replace '\s+', ''))
+          $zip = Join-Path $env:RUNNER_TEMP 'pr72-female-runtime.zip'
+          [IO.File]::WriteAllBytes($zip,$bytes)
+          if ($bytes.Length -ne 44838) { throw "Stage A pack size differs from canonical pinned asset" }
+          $hash = (Get-FileHash -LiteralPath $zip -Algorithm SHA256).Hash.ToLowerInvariant()
+          if ($hash -ne '6a4213b9129ffb3f438c21cbb5326672ddf8915323836bf80cb33b8e5fabfdca') {
+            throw "Stage A pack digest mismatch"
+          }
+          Expand-Archive -LiteralPath $zip -DestinationPath . -Force
+
+      - name: Native Windows import (not Linux, not Wine)
+        shell: pwsh
+        run: |
+          & $env:PR72_GODOT_EXE --headless --path godot --import
+          if ($LASTEXITCODE -ne 0) { throw "Native Windows Godot import failed: $LASTEXITCODE" }
+
+      - name: Parse and run injected 60 90 180 minute offline cold-save test
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          foreach ($script in @(
+            'res://tests/presentation/pr72_simulated_offline_resume_test.gd',
+            'res://tests/presentation/pr72_windows_native_gui_capture_test.gd'
+          )) {
+            & $env:PR72_GODOT_EXE --headless --path godot --check-only --script $script
+            if ($LASTEXITCODE -ne 0) { throw "Godot GDScript parse FAIL: $script" }
+          }
+          & $env:PR72_GODOT_EXE --headless --path godot -s res://tests/presentation/pr72_simulated_offline_resume_test.gd
+          if ($LASTEXITCODE -ne 0) { throw "Official Windows runtime simulated-offline QA FAIL: $LASTEXITCODE" }
+
+      - name: Native Windows rendered 1280x720 production GUI capture and FPS
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $dir = Join-Path $env:GITHUB_WORKSPACE 'qa_windows_native_gui'
+          New-Item -ItemType Directory -Force -Path $dir | Out-Null
+          Write-Host 'Attempting native Windows interactive display, not headless.'
+          & $env:PR72_GODOT_EXE --path godot --windowed --resolution 1280x720 -s res://tests/presentation/pr72_windows_native_gui_capture_test.gd -- $dir
+          if ($LASTEXITCODE -ne 0) { throw "Windows runner interactive GUI was blocked/failed: $LASTEXITCODE" }
+          $images = @(Get-ChildItem -LiteralPath $dir -Filter '*.png')
+          if ($images.Count -ne 5) { throw "Expected 5 real Windows viewport PNGs; got $($images.Count)" }
+          foreach ($file in $images) { Write-Host "WINDOWS_NATIVE_SCREENSHOT_SHA256 $($file.Name) $((Get-FileHash -LiteralPath $file.FullName -Algorithm SHA256).Hash)" }
+
+      - name: Upload screenshots and FPS/RAM evidence even after failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr72-windows-native-gui-evidence
+          path: qa_windows_native_gui/
+          if-no-files-found: warn
+          retention-days: 14
