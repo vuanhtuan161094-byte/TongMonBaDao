@@ -121,7 +121,43 @@ func _run() -> void:
             and loaded.sect.warehouse_resources == state.sect.warehouse_resources,
             "cold-Save-must-preserve-personal-coin-and-warehouse"):
         return
+    # Test-only wounded fixture AFTER real HP0 payment and canonical retreat:
+    # this isolated HP subtraction models the care transaction, not a measured
+    # monster damage distribution or fabricated PvE reward.
+    var retreat := session.retreat_multicamp()
+    if not _check(bool(retreat.get("ok",false)) and disciple.region_id == &"sect"
+            and disciple.active_pve_encounter_id.is_empty(),
+            "canonical-return-to-sect-failed"):
+        return
+    disciple.hp = maxf(1.0,disciple.max_hp-10.0)
+    var before_heal_hp := disciple.hp
+    var before_heal_coin := disciple.spirit_stones
+    var before_heal_sect := state.sect.spirit_stones
+    var healed := econ.buy_personal_hp_service(state,picked,"pvebal01-real-coin-heal")
+    if not _check(bool(healed.get("ok",false))
+            and int(healed.get("receipt",{}).get("cost",-1)) == 300
+            and is_equal_approx(disciple.hp,before_heal_hp+10.0)
+            and disciple.spirit_stones == before_heal_coin-300
+            and state.sect.spirit_stones == before_heal_sect+300,
+            "source-earned-PVE-Stones-did-not-pay-one-canonical-300LT-service"):
+        return
+    var second := econ.buy_personal_hp_service(state,picked,"pvebal01-real-coin-heal")
+    if not _check(bool(second.get("ok",false)) and bool(second.get("already_settled",false))
+            and disciple.spirit_stones == before_heal_coin-300
+            and state.sect.spirit_stones == before_heal_sect+300
+            and is_equal_approx(disciple.hp,before_heal_hp+10.0),
+            "repeat-HP-service-double-debited-or-overhealed"):
+        return
+    if not _check(bool(runtime.save(NOW).get("ok",false)),"post-care-SaveService-failed"):
+        return
+    var cared := SaveService.new().load_from_path(path)
+    if not _check(cared != null and cared.disciples[picked].spirit_stones == disciple.spirit_stones
+            and cared.sect.spirit_stones == state.sect.spirit_stones
+            and is_equal_approx(cared.disciples[picked].hp,disciple.hp),
+            "cold-Save-care-payment-drift"):
+        return
     _cleanup()
     print("PVE_BAL01_REAL_HP0_STONES_XP_REPLAY_SAVE_PASS species="+target_species
-        +" credited="+str(expected["stones"])+" basePassiveUnaffected=true")
+        +" credited="+str(expected["stones"])+" healed_10hp_paid=300"
+        +" care_replay_safe=true basePassiveUnaffected=true")
     quit(0)
