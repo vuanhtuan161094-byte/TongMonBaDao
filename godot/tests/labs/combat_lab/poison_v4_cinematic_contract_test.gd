@@ -76,6 +76,12 @@ func _run() -> void:
             if str(actor.get("side", "")) == "monster": monster_count += 1
         _check(ally_count == 4 and monster_count == 8,
             "cinematic presentation keeps all four live disciples and eight actual monsters")
+        var left_caster: Dictionary = battle.actors.get("lab_disciple_01", {})
+        var right_caster: Dictionary = battle.actors.get("lab_disciple_03", {})
+        _check(not left_caster.is_empty() and not right_caster.is_empty() and
+            is_equal_approx(float(arena.call("_v4_actor_facing", left_caster)), 1.0) and
+            is_equal_approx(float(arena.call("_v4_actor_facing", right_caster)), -1.0),
+            "opposite corner cultivators face live enemies by verified atlas mirroring")
         # Frame check is based only on canonical actor positions. The camera
         # may scale their projection, NEVER the source actors or AoE radius.
         for index in range(1, 5):
