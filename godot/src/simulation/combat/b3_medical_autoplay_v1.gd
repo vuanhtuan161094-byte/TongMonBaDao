@@ -210,5 +210,17 @@ static func validate(state: SimulationState) -> String:
         if not (building.production_state.get("jobs",[]) is Array): return "invalid_alchemy_jobs_shape"
         for job in building.production_state.get("jobs",[]):
             if job is Dictionary and str(job.get("recipe_id","")) == "tu_khi_dan":
-                if str(job.get("output_resource_id","")) != "tu_khi_dan" or int(job.get("output_quantity",0)) != 1 or not (job.get("inputs") is Dictionary) or job["inputs"].size() != 2 or float(job["inputs"].get("thanh_linh_thao",0)) != 2.0 or float(job["inputs"].get("linh_coc",0)) != 1.0: return "invalid_tu_khi_recipe_snapshot"
+                # Both historical 2-herb receipts and explicitly enabled
+                # SX-V55 2,000-herb receipts are committed, immutable jobs.
+                # A late mode activation cannot rewrite a pending legacy job.
+                if str(job.get("output_resource_id","")) != "tu_khi_dan" or int(job.get("output_quantity",0)) != 1 or not (job.get("inputs") is Dictionary):
+                    return "invalid_tu_khi_recipe_snapshot"
+                var saved_inputs: Dictionary = job["inputs"]
+                var herb_quantity := float(saved_inputs.get("thanh_linh_thao",0))
+                var bulk_mode := state.sect.economy_a_enabled and bool(state.sect.economy_a_policy.get(
+                    BuildingSystem.SX_V55_BULK_POLICY,false))
+                var valid_herb := herb_quantity == 2.0 or (
+                    bulk_mode and herb_quantity == float(2 * BuildingSystem.SX_V55_COMMON_SCALE))
+                if saved_inputs.size() != 2 or not valid_herb or float(saved_inputs.get("linh_coc",0)) != 1.0:
+                    return "invalid_tu_khi_recipe_snapshot"
     return ""
