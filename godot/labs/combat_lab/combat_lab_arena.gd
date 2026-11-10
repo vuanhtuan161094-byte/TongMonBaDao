@@ -606,7 +606,12 @@ func _aoe_radii_px(world_radius: float) -> Vector2:
 func _draw_ground_cues() -> void:
     var current_time := roundi(visual_time * 1000.0)
     for cue in cues:
-        if not _is_ground_cue(cue):
+        # Committed V6.3 ally-heal gets one additional under-foot lotus,
+        # while the actual HP text/medicine ribbon still renders on top.
+        var heal_floor := v4_preview_enabled and str(cue.get("kind", "")) == "heal" \
+            and str(cue.get("school", "")) == "poison" \
+            and str(cue.get("effect", "")) == "heal"
+        if not _is_ground_cue(cue) and not heal_floor:
             continue
         var duration := maxf(1.0, float(cue.get("life", 1.0)))
         var age := float(current_time - int(cue.get("created", current_time)))
@@ -618,6 +623,7 @@ func _draw_ground_cues() -> void:
         var presentation := cue.duplicate()
         presentation["v4_preview"] = v4_preview_enabled
         presentation["v4_radius_y"] = bounds.y
+        presentation["v4_heal_ground"] = heal_floor
         VfxV2.render(self, presentation, p, p, t, bounds.x, v4_effective_render_zoom())
 
 func _draw_cues() -> void:
