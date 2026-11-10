@@ -46,7 +46,7 @@ var spirit_stones: int = 0
 
 # ECONOMY-A opt-in; old P2 treasury/wallet and default carry-cycle saves stay unchanged.
 var economy_a_enabled: bool = false
-var economy_a_policy: Dictionary = {"wage_per_batch": 2, "resource_duration_ticks": 10, "market_daily_units": 20, "market_max_per_sale": 5, "market_max_per_buy": 5, "market_stock_target": 20, "market_buy_markup": 2, "auto_hp_service": false, "auto_hp_daily_stone_limit": 6, "personal_heal_cost": 3, "sect_pay_reserve": 0}
+var economy_a_policy: Dictionary = {"wage_per_batch": 2, "resource_duration_ticks": 10, "market_daily_units": 20, "market_max_per_sale": 5, "market_max_per_buy": 5, "market_stock_target": 20, "market_buy_markup": 2, "auto_hp_service": false, "auto_hp_daily_stone_limit": 6, "personal_heal_cost": 3, "sect_pay_reserve": 0, "sx_v55_bulk_production": false}
 var economy_a_receipts: Dictionary = {}
 var economy_a_market_day: int = -1
 var economy_a_market_units_sold: int = 0
