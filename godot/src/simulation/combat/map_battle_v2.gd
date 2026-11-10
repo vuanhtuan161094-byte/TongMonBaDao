@@ -20,6 +20,13 @@ const MAX_CONTINUOUS_BATCH_STEPS := 20000
 const MAX_REMEMBERED_SPAWN_SLOTS := 1024
 const MAX_WORLD_PATH_CACHE_ENTRIES := 128
 const WORLD_MOVE_FORMATION_MIN_GAP_CELLS := 3.5
+# Ordinary attack ranges by battlefield role (world grid cells). Explicit
+# basic_range supplied by canonical roster overrides these fallbacks unchanged.
+# Skill range comes independently from the V6.3 catalogue.
+const ROLE_DEFAULT_BASIC_RANGE := {"frontline":1.8, "mage":6.0, "healer":6.0, "ranged":9.0}
+
+static func default_basic_range_for_role(role: String) -> float:
+    return float(ROLE_DEFAULT_BASIC_RANGE.get(role, 1.8))
 
 var rng: GameRng
 var now: float = 0.0
@@ -119,7 +126,7 @@ func setup(id: String, party: Array, monsters: Array, keep_encounter_open: bool 
             "id":actor_id,"side":"disciple","party_id":party_id,"role":role,"tier":"disciple",
             "race_id":"nhan_toc","position":pos,"stats":stats.duplicate(true),
             "hp":hp,"max_hp":max_hp,"resistances":row.get("resistances",{}).duplicate(true),
-            "range":float(row.get("basic_range",1.5 if role == "frontline" else (4.8 if role == "healer" else 5.5))),
+            "range":float(row.get("basic_range",default_basic_range_for_role(role))),
             "move_speed":float(row.get("move_speed",2.35 if role == "frontline" else 2.05)),
             "basic_ratio":float(row.get("basic_ratio",1.0)),
             "basic_interval":float(row.get("basic_interval",1.6)),
@@ -803,7 +810,7 @@ func add_world_disciple(row: Dictionary) -> Dictionary:
         "position":pos,"home_position":pos,
         "stats":stats.duplicate(true),"hp":hp,"max_hp":max_hp,
         "resistances":row.get("resistances",{}).duplicate(true),
-        "range":float(row.get("basic_range",1.5 if role == "frontline" else (4.8 if role == "healer" else 5.5))),
+        "range":float(row.get("basic_range",default_basic_range_for_role(role))),
         "move_speed":float(row.get("move_speed",2.35 if role == "frontline" else 2.05)),
         "basic_ratio":float(row.get("basic_ratio",1.0)),
         "basic_interval":float(row.get("basic_interval",1.6)),
