@@ -201,6 +201,44 @@ func _run() -> void:
         "authentic Forestry Warehouse settlement wrong"):
         return
 
+    # Real paid Lv1->2 upgrade: Mine/Forest must create the exact bulk
+    # common-material stock before the 1,000x consumer can spend it.
+    mine = buildings.primary_building(state,BuildingSystem.TYPE_MINE)
+    var price: Dictionary = buildings.sx_v55_upgrade_cost(state,mine)
+    var can_upgrade := buildings.can_start_upgrade(state,mine.id)
+    if not _check(bool(can_upgrade.get("ok",false))
+        and can_upgrade.get("cost",{}) == price,
+        "real Mine/Forest delivery did not fund a legitimate upgraded worksite"):
+        return
+    var wood_before_upgrade := warehouse.quantity(state,&"linh_moc")
+    var ore_before_upgrade := warehouse.quantity(state,&"thanh_thiet")
+    var money_before_upgrade := state.sect.spirit_stones
+    var paid_upgrade := buildings.start_upgrade(state,mine.id)
+    if not _check(bool(paid_upgrade.get("ok",false))
+        and warehouse.quantity(state,&"linh_moc") == wood_before_upgrade-int(price.get("linh_moc",0))
+        and warehouse.quantity(state,&"thanh_thiet") == ore_before_upgrade-int(price.get("thanh_thiet",0))
+        and state.sect.spirit_stones == money_before_upgrade-int(price.get("spirit_stones",0))
+        and mine.is_upgrading(),
+        "bulk upgrade failed exact real-Stock and Stone debit"):
+        return
+    if not _check(not bool(buildings.start_upgrade(state,mine.id).get("ok",false))
+        and warehouse.quantity(state,&"linh_moc") == wood_before_upgrade-int(price.get("linh_moc",0)),
+        "upgrade replay incorrectly charged or started a second paid upgrade"):
+        return
+    state = _save_reload(state)
+    if not _check(state != null,"real paid bulk upgrade cold Save failed"):
+        return
+    mine = buildings.primary_building(state,BuildingSystem.TYPE_MINE)
+    forest = buildings.primary_building(state,BuildingSystem.TYPE_LINH_FOREST)
+    field = buildings.primary_building(state,BuildingSystem.TYPE_SPIRIT_FIELD)
+    hall = buildings.primary_building(state,BuildingSystem.TYPE_ALCHEMY_HALL)
+    actor = state.disciples[candidate.id]
+    if not _check(mine.is_upgrading()
+        and state.sect.spirit_stones == money_before_upgrade-int(price.get("spirit_stones",0))
+        and warehouse.quantity(state,&"linh_moc") == wood_before_upgrade-int(price.get("linh_moc",0)),
+        "paid upgrade was not frozen exactly once on cold reload"):
+        return
+
     if not _check(workforce.assign_group(state,actor.id,&"herbalism_crew")
         and workforce.assign_worksite(state,actor.id,field.id),"cannot claim Field plot"):
         return
