@@ -14,6 +14,9 @@ on:
       - 'godot/tests/presentation/pve_aux02_world_input_contract_test.gd'
       - 'godot/tests/presentation/p3_2_live_modular_map_test.gd'
       - 'godot/tests/simulation/pve_p0_*'
+      - 'godot/tests/simulation/pve_r12_balance_contract_test.gd'
+      - 'godot/src/simulation/state/sect_state.gd'
+      - 'godot/src/simulation/economy/economy_system.gd'
       - 'godot/tests/simulation/one_game_r3_continuous_save_test.gd'
       - 'tools/windows/run/Start-TRI03Game.ps1'
       - 'tools/windows/run/tri03_launcher_support.ps1'
@@ -84,6 +87,14 @@ jobs:
             res://tests/simulation/one_game_r3_continuous_save_test.gd; do
             godot --headless --path godot --check-only --script "$script"
           done
+
+      - name: PVE-BAL01 R1/R2 exact HP pill lost-work income and XP contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          godot --headless --path godot --check-only --script res://src/simulation/combat/pve_r12_balance_v1.gd
+          godot --headless --path godot --check-only --script res://tests/simulation/pve_r12_balance_contract_test.gd
+          godot --headless --path godot -s res://tests/simulation/pve_r12_balance_contract_test.gd
 
       - name: P0 real 30 hunters in 20 areas, guard, target travel and team buffs
         run: godot --headless --path godot -s res://tests/simulation/pve_p0_30_independent_hunters_test.gd
