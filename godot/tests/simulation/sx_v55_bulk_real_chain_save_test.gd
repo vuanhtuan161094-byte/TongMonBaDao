@@ -244,6 +244,32 @@ func _run() -> void:
         "paid upgrade was not frozen exactly once on cold reload"):
         return
 
+    # A real Forge consumer uses the same Warehouse debit rule. Pay a
+    # 3,000 ore + 1,000 wood sword out of the verified Mine/Forest remainder;
+    # no equipment is handed out to test the consumer.
+    var pre_forge_ore := warehouse.quantity(state,&"thanh_thiet")
+    var pre_forge_wood := warehouse.quantity(state,&"linh_moc")
+    var initial_equipment := state.sect.equipment_items.size()
+    var sword := equip.craft(state,&"thanh_thiet_kiem",false)
+    if not _check(not sword.is_empty() and str(sword.get("recipe_id","")) == "thanh_thiet_kiem"
+        and warehouse.quantity(state,&"thanh_thiet") == pre_forge_ore-3000
+        and warehouse.quantity(state,&"linh_moc") == pre_forge_wood-1000
+        and state.sect.equipment_items.size() == initial_equipment+1,
+        "Forge did not consume true bulk Warehouse ore/wood for one owned item"):
+        return
+    if not _check(not equip.can_craft(state,&"thanh_thiet_kiem"),
+        "Forge can still repeat without enough genuine bulk ore"):
+        return
+    state = _save_reload(state)
+    if not _check(state != null
+        and state.sect.equipment_items.size() == initial_equipment+1
+        and warehouse.quantity(state,&"thanh_thiet") == pre_forge_ore-3000,
+        "paid Forge material debit or new item lost across cold Save"):
+        return
+    actor = state.disciples[candidate.id]
+    field = buildings.primary_building(state,BuildingSystem.TYPE_SPIRIT_FIELD)
+    hall = buildings.primary_building(state,BuildingSystem.TYPE_ALCHEMY_HALL)
+
     if not _check(workforce.assign_group(state,actor.id,&"herbalism_crew")
         and workforce.assign_worksite(state,actor.id,field.id),"cannot claim Field plot"):
         return
