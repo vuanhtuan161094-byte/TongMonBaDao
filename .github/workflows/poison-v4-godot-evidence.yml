@@ -14,6 +14,8 @@ on:
       - 'godot/tests/labs/combat_lab/v63_human_range_role_test.gd'
       - 'godot/data/combat/v63_human_combat_catalog.json'
       - 'godot/src/simulation/combat/map_battle_v2.gd'
+      - 'godot/labs/combat_lab/combat_lab.gd'
+      - 'godot/tests/labs/combat_lab/poison_v4_lab_status_test.gd'
       - 'godot/labs/combat_lab/combat_lab_vfx_v2.gd'
       - 'godot/tests/labs/combat_lab/poison_v4_render_contract_test.gd'
       - 'godot/tests/labs/combat_lab/poison_v4_video_capture.gd'
@@ -71,6 +73,8 @@ jobs:
             -s res://tests/labs/combat_lab/poison_v4_aim_range_contract_test.gd
           bash tools/qa/run_godot_strict.sh --headless --path godot \
             -s res://tests/labs/combat_lab/v63_human_range_role_test.gd
+          bash tools/qa/run_godot_strict.sh --headless --path godot \
+            -s res://tests/labs/combat_lab/poison_v4_lab_status_test.gd
           bash tools/qa/run_godot_strict.sh --headless --path godot \
             -s res://tests/simulation/dv2_02_group_map_battle_test.gd
           bash tools/qa/run_godot_strict.sh --headless --path godot \
