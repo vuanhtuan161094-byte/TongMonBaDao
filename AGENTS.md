@@ -269,6 +269,16 @@ This rule governs **conversation workflow**, not game AI/UI. Do not change gamep
 
 ---
 
+## CURRENT GP-PLAY01 OWNER SCOPE — 2026-11-10 (read with release override)
+
+The owner commissioned **GP-PLAY01 whole-game audit and stepwise playable gameplay closure** on the existing Draft PR #72. Authoritative plan: [GP-PLAY01 master audit/gates](docs/operations/GP_PLAY01_WHOLE_GAME_AUDIT_AND_IMPLEMENTATION_PLAN_20261110.md). Dedicated coordinator skill: [`.agents/skills/tmb-gameplay-closure/SKILL.md`](.agents/skills/tmb-gameplay-closure/SKILL.md). The current `CURRENT_CHECKPOINT.md` remains authoritative for actual status.
+
+**Exclusive split:** this GP agent owns the non-combat loop (New Game/onboarding, workforce, Mine/Forest/Field, Warehouse, alchemy/medicine sources, Economy-A/LT2/W2/T2, crafting equipment and Sect management UI, regression/release coordination). **A separate chat owns skills, combat, enemy/Boss AI, DoT, VFX and fighting animation.** GP agent may READ combat receipts for economy/UI but cannot write combat files or shared combat state; get SHA/interface handoff from that writer instead. Only one writer per overlapping `p3_2_landscape_sect.gd`/State/Warehouse/Save/RuntimeOwner file; coordinate first. No new branch, merge, SaveService or fake resources.
+
+**Mandatory execution:** fetch PR HEAD before each change; source-backed GP0 O9 Warehouse herb/Alchemy + GP02/Economy regression first; then GP1–GP8 staged real user loop and physical QA. Mark `CODE`, `FOCUSED_PASS`, `CUMULATIVE_PASS`, `GUI_HARNESS_PASS`, `PHYSICAL_PASS`, `HOLD` distinctly. Update checkpoint/handoff with exact SHA/log and 2–3 ready-to-click Vietnamese next tasks; don't claim all gameplay works from a Godot headless test.
+
+---
+
 ## 13. TMB Agent Skills
 
 Use `.agents/skills/tmb-project-director/SKILL.md` for complex TMB work, then one specialist for the active subtask:
