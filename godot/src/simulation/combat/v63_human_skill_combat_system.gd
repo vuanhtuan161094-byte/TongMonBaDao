@@ -794,7 +794,10 @@ static func _cleanse_target(battle: MapBattleV2, caster: Dictionary, target: Dic
     else:
         statuses["v63_poison"] = poison
     var cleared: Array[String] = []
-    var remaining := maxi(0, maxi(1,count) - removed)
+    # Strict global cleanse budget applies to Poison only; bow/fist keep their
+    # existing contract until independently reviewed.
+    var poison_school := str(skill_definition(skill_id).get("school", "")) == "poison"
+    var remaining := maxi(0, maxi(1,count) - removed) if poison_school else maxi(1,count)
     for status_id in ["burn","weaken"]:
         if statuses.has(status_id) and cleared.size() < remaining:
             statuses.erase(status_id)
