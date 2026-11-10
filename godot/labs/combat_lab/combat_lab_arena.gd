@@ -6,6 +6,8 @@ const VfxV2 = preload("res://labs/combat_lab/combat_lab_vfx_v2.gd")
 
 var actor_states: Dictionary = {}
 var last_skill_by_actor: Dictionary = {}
+# Presentation-only cast snapshots: match V6.3 circle targeting's locked center.
+var locked_aoe_center_by_caster: Dictionary = {}
 
 const WORLD := Rect2(Vector2.ZERO, Vector2(36.0, 20.0))
 const MAX_CUES := 64
@@ -34,6 +36,7 @@ func set_battle(value: MapBattleV2, weapon_school: String) -> void:
     cues.clear()
     actor_states.clear()
     last_skill_by_actor.clear()
+    locked_aoe_center_by_caster.clear()
     visual_time = battle.now if battle != null else 0.0
     v4_shot_source_id = ""
     v4_shot_target_id = ""
@@ -122,6 +125,12 @@ func consume_events(rows: Array[Dictionary]) -> void:
         var event_time := float(event.get("time", visual_time))
         if not source_skill.is_empty() and kind in ["skill_cast", "skill_release"]:
             last_skill_by_actor[source_actor_id] = source_skill
+        if kind == "skill_cast" and battle.actors.has(source_actor_id):
+            var owner: Dictionary = battle.actors[source_actor_id]
+            var pending: Dictionary = owner.get("v63_pending_cast", {})
+            if str(pending.get("shape", "")) == "circle" and pending.get("center", null) is Vector2:
+                locked_aoe_center_by_caster[source_actor_id] = {
+                    "center": pending["center"], "skill_id": source_skill}
         if kind == "skill_cast":
             if school == "poison" and battle.actors.has(source_actor_id) \
                     and str(battle.actors[source_actor_id].get("side", "")) != "monster":
@@ -184,6 +193,14 @@ func consume_events(rows: Array[Dictionary]) -> void:
                     # new area/status or damage authority.
                     cue_kind = "venom_cloud"
                     radius = maxf(0.0, float(definition.get("radius", 0.0)))
+                    var snapshot: Dictionary = locked_aoe_center_by_caster.get(source_actor_id, {})
+                    if str(snapshot.get("skill_id", "")) == real_skill_id \
+                            and snapshot.get("center", null) is Vector2:
+                        pos = snapshot["center"]
+                    else:
+                        # A missing source snapshot is not proof of an AoE
+                        # origin. Never invent a hit marker at a moved actor.
+                        cue_kind = ""
                 elif float(definition.get("projectile_speed", 0.0)) > 0.0:
                     # Projectile was scheduled from the real skill_cast event.
                     # Release is the authoritative impact deadline, not launch.
