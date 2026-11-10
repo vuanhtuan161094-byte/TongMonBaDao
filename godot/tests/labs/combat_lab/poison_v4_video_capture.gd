@@ -10,6 +10,7 @@ const SKILLS := {
     "duoc_doc": "tmb.skill.poison.duoc_doc.active_01.human",
     "duoc_heal": "tmb.skill.poison.duoc_doc.active_02.human",
     "swarm_aoe": "tmb.skill.poison.doc_cham.active_03.human",
+    "co_swarm": "tmb.skill.poison.co_doc.active_03.human",
 }
 const FRAMES := 192
 var errors := 0
@@ -45,16 +46,19 @@ func _run() -> void:
         quit(2)
         return
     var requested_skill: String = SKILLS[branch]
-    var swarm_mode := branch == "swarm_aoe"
+    var swarm_mode := branch in ["swarm_aoe", "co_swarm"]
+    var heal_ally_mode := branch == "duoc_heal"
     OS.set_environment("TMB_COMBAT_LAB_SCHOOL", "poison")
     OS.set_environment("TMB_COMBAT_LAB_GENERATION", "human")
-    OS.set_environment("TMB_COMBAT_LAB_BRANCH", "doc_cham" if swarm_mode else ("duoc_doc" if branch == "duoc_heal" else branch))
+    var desired_branch := "co_doc" if branch == "co_swarm" else ("doc_cham" if swarm_mode else ("duoc_doc" if heal_ally_mode else branch))
+    OS.set_environment("TMB_COMBAT_LAB_BRANCH", desired_branch)
     OS.set_environment("TMB_COMBAT_LAB_LINEAGE", "a")
-    OS.set_environment("TMB_COMBAT_LAB_PARTY", "4" if swarm_mode else "1")
+    OS.set_environment("TMB_COMBAT_LAB_PARTY", "4" if swarm_mode else ("2" if heal_ally_mode else "1"))
     OS.set_environment("TMB_COMBAT_LAB_ENEMY", "normal")
     OS.set_environment("TMB_COMBAT_LAB_ENCOUNTER", "poison_swarm" if swarm_mode else "single")
     OS.set_environment("TMB_COMBAT_LAB_ZOOM", requested_zoom)
     OS.set_environment("TMB_COMBAT_LAB_SCREENSHOT", "")
+    OS.set_environment("TMB_POISON_V4_CINEMATIC", "1")
     var lab := LabScene.instantiate()
     root.add_child(lab)
     await process_frame
@@ -74,7 +78,9 @@ func _run() -> void:
     # Isolated in-memory QA fixture only: a wounded ally is required for the
     # canonical heal consumer; the heal amount itself MUST come from V6.3.
     if branch == "duoc_heal":
-        var patient: Dictionary = battle.actors.get("lab_disciple_01", {})
+        # Wound an actual QA ally rather than the caster so the jade
+        # transfer ribbon has two distinct REAL in-world endpoints.
+        var patient: Dictionary = battle.actors.get("lab_disciple_02", {})
         if patient.is_empty() or float(patient.get("max_hp", 0.0)) <= 0.0:
             _failed("No canonical disciple to create a wounded QA-only fixture")
             quit(8)
@@ -103,6 +109,9 @@ func _run() -> void:
             movie_caster = str(raw_id)
         elif str(actor.get("side", "")) == "monster" and movie_target.is_empty():
             movie_target = str(raw_id)
+    if heal_ally_mode:
+        movie_caster = "lab_disciple_01"
+        movie_target = "lab_disciple_02"
     if movie_caster.is_empty() or movie_target.is_empty():
         _failed("Cannot frame real caster and target for movie")
         quit(9)
