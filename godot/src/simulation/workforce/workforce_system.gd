@@ -111,6 +111,8 @@ func assign_group(state: SimulationState, disciple_id: StringName, group_id: Str
     if group_id != &"" and not state.sect.work_groups.has(str(group_id)):
         return false
     var disciple: DiscipleState = state.disciples[disciple_id]
+    if PveInjuryTreatmentV1.treatment_in_progress(state,disciple):
+        return false
     if not disciple.active_pve_encounter_id.is_empty():
         return false
     if state.sect.economy_a_enabled and not building_system.active_resource_timer_for_worker(state,disciple.id).is_empty() and group_id != disciple.work_group_id:
@@ -160,6 +162,8 @@ func assign_worksite(state: SimulationState, disciple_id: StringName, building_i
     if not state.sect.workforce_enabled or not state.disciples.has(disciple_id):
         return false
     var disciple: DiscipleState = state.disciples[disciple_id]
+    if PveInjuryTreatmentV1.treatment_in_progress(state,disciple):
+        return false
     if state.sect.economy_a_enabled and not building_system.active_resource_timer_for_worker(state,disciple.id).is_empty() and building_id != disciple.worksite_building_id:
         return false
     if state.p3_7_buildings_enabled and building_id != disciple.worksite_building_id and building_system.disciple_has_active_spirit_plot(state,disciple.id):
@@ -271,6 +275,8 @@ func issue_command(state: SimulationState, disciple_id: StringName, kind: String
         return false
     var disciple: DiscipleState = state.disciples[disciple_id]
 
+    if PveInjuryTreatmentV1.treatment_in_progress(state,disciple):
+        return false
     if not disciple.active_pve_encounter_id.is_empty():
         return false
     if kind == COMMAND_HUNT_REGION and disciple.injury_level == 1 and DiscipleRealmProgressV2.owns_v2_progression(disciple):
@@ -337,6 +343,8 @@ func command_target(disciple: DiscipleState) -> StringName:
     return StringName(disciple.direct_command.get("target", ""))
 
 func next_action(state: SimulationState, disciple: DiscipleState) -> StringName:
+    if PveInjuryTreatmentV1.treatment_in_progress(state,disciple):
+        return &"HOLD"
     if not disciple.active_pve_encounter_id.is_empty():
         return &"HOLD"
     if not state.sect.workforce_enabled:
@@ -472,6 +480,8 @@ func choose_work_profession(state: SimulationState, disciple: DiscipleState) -> 
     return best
 
 func perform_work(state: SimulationState, disciple: DiscipleState, profession_id: StringName) -> Dictionary:
+    if PveInjuryTreatmentV1.treatment_in_progress(state,disciple):
+        return {"ok":false,"reason":"injury_treatment_time_reserved"}
     if not disciple.active_pve_encounter_id.is_empty():
         return {"ok":false,"reason":"disciple_in_v2_pve"}
     if not state.sect.workforce_enabled or disciple.region_id != &"sect" or not VALID_PROFESSIONS.has(profession_id):
