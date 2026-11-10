@@ -6,7 +6,14 @@ func _init() -> void:
     call_deferred("_run")
 
 func _run() -> void:
-    var state := P37Factory.create_state(915731)
+    var save_path := "user://pve_care02_fallback_%d.json" % OS.get_process_id()
+    var runtime := LiveGameRuntimeV2.new()
+    var opened := runtime.start(save_path,1801000000,915731)
+    if not bool(opened.get("ok",false)) or not bool(opened.get("created",false)):
+        push_error("PVE_CARE02_FALLBACK_FAIL fresh canonical runtime not ready")
+        quit(1)
+        return
+    var state: SimulationState = runtime.state()
     var ids: Array = state.recruitment_candidates.keys()
     ids.sort()
     if ids.is_empty():
@@ -57,5 +64,9 @@ func _run() -> void:
         push_error("PVE_CARE02_FALLBACK_FAIL Injury did not expire on canonical tick")
         quit(1)
         return
+    for ext in ["",".tmp",".bak"]:
+        var file := save_path+ext
+        if FileAccess.file_exists(file):
+            DirAccess.remove_absolute(ProjectSettings.globalize_path(file))
     print("PVE_CARE02_V2_LEGACY_COMBAT_RETURN_INJURY120_FULLHP_PASS")
     quit(0)
