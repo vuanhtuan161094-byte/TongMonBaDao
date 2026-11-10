@@ -13,6 +13,9 @@ on:
       - 'godot/labs/combat_lab/combat_lab_v4_spell_spark.gd'
       - 'godot/tests/labs/combat_lab/poison_v4_growth_reaction_test.gd'
       - 'godot/tests/labs/combat_lab/combat_lab_v2_visual_test.gd'
+      - 'godot/src/presentation/p3/pve_jx_continuous_world_view_v1.gd'
+      - 'godot/src/presentation/p3/sect_isometric_world_v1.gd'
+      - 'godot/tests/presentation/pve_vfx08_hurt_reaction_test.gd'
       - 'godot/labs/combat_lab/combat_lab_arena.gd'
       - 'godot/labs/combat_lab/combat_lab_roster_adapter.gd'
       - 'godot/tests/labs/combat_lab/poison_v4_aim_range_contract_test.gd'
@@ -87,6 +90,8 @@ jobs:
             -s res://tests/labs/combat_lab/poison_v4_render_contract_test.gd
           bash tools/qa/run_godot_strict.sh --headless --path godot \
             -s res://tests/labs/combat_lab/poison_v4_growth_reaction_test.gd
+          bash tools/qa/run_godot_strict.sh --headless --path godot \
+            -s res://tests/presentation/pve_vfx08_hurt_reaction_test.gd
           bash tools/qa/run_godot_strict.sh --headless --path godot \
             -s res://tests/labs/combat_lab/poison_v4_aim_range_contract_test.gd
           bash tools/qa/run_godot_strict.sh --headless --path godot \
