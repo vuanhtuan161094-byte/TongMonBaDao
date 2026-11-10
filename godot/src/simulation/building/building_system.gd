@@ -44,6 +44,89 @@ const FOREST_MATERIAL_OPTIONS := {
     "forest_r02_wood":{"required_level":10,"batch_percent":100},
     "forest_r02_wood2":{"required_level":10,"batch_percent":100}
 }
+
+# SX-V55 opt-in replaces only NEW authentic Economy-A timer/plot envelopes.
+# Historic PR #8 five owner-approved plans; one existing BuildingSystem authority.
+# Existing carry cycles, timed jobs, planted plots and previously purchased
+# resources retain their frozen quantities and finish ticks across cold Save.
+const SX_V55_BULK_POLICY := "sx_v55_bulk_production"
+const SX_V55_COMMON_SCALE := 1000
+const SX_V55_COMMON_IDS := ["linh_moc","thanh_thiet","thanh_linh_thao"]
+const SX_V55_BULK_PLANS := {
+    "thanh_thiet":{"producer":"mine","cycle_ticks":60,"yield":10000,"plan_id":"mine_thanh_thiet_t1"},
+    "linh_moc":{"producer":"linh_forest","cycle_ticks":60,"yield":8000,"plan_id":"forest_linh_moc_t1"},
+    "linh_coc":{"producer":"spirit_field","cycle_ticks":60,"yield":2500,"plan_id":"field_linh_coc_t1"},
+    "thanh_linh_thao":{"producer":"spirit_field","cycle_ticks":90,"yield":2000,"plan_id":"field_thanh_linh_thao_t1"},
+    "tu_van_thao":{"producer":"spirit_field","cycle_ticks":180,"yield":1000,"plan_id":"field_tu_van_thao_t1"}
+}
+
+func sx_v55_bulk_enabled(state: SimulationState) -> bool:
+    return state != null and state.sect.economy_a_enabled and state.sect.p3_7_resources_enabled \
+        and bool(state.sect.economy_a_policy.get(SX_V55_BULK_POLICY,false))
+
+# One opt-in per EXISTING save, not a second scheduler or producer. It neither
+# debits nor grants anything. The 30-realm LT2/W2/T2 policy remains disabled.
+func sx_v55_enable_bulk(state: SimulationState) -> Dictionary:
+    if state == null or not state.p3_7_buildings_enabled or not state.sect.economy_a_enabled \
+        or not state.sect.p3_7_resources_enabled:
+        return {"ok":false,"reason":"canonical_economy_required"}
+    if sx_v55_bulk_enabled(state):
+        return {"ok":true,"already_enabled":true}
+    var registry := ResourceRegistry.new()
+    for resource_id in SX_V55_BULK_PLANS.keys():
+        if not registry.has(StringName(resource_id)):
+            return {"ok":false,"reason":"missing_real_resource","id":resource_id}
+        var plan: Dictionary = SX_V55_BULK_PLANS[resource_id]
+        var producer := StringName(plan.get("producer",""))
+        if producer == TYPE_SPIRIT_FIELD:
+            if not crop_registry.has(StringName(resource_id)):
+                return {"ok":false,"reason":"missing_real_crop","id":resource_id}
+        elif producer == TYPE_MINE and not MINE_ORE_OPTIONS.has(resource_id):
+            return {"ok":false,"reason":"missing_mine_source","id":resource_id}
+        elif producer == TYPE_LINH_FOREST and not FOREST_MATERIAL_OPTIONS.has(resource_id):
+            return {"ok":false,"reason":"missing_forest_source","id":resource_id}
+        if primary_building(state,producer) == null:
+            return {"ok":false,"reason":"missing_real_worksite","id":resource_id}
+    var next_policy := state.sect.economy_a_policy.duplicate(true)
+    next_policy[SX_V55_BULK_POLICY] = true
+    state.sect.economy_a_policy = next_policy
+    state.sect.economy_a_event_count += 1
+    return {"ok":true,"enabled":true,"existing_jobs_unchanged":true}
+
+# Selection and ownership are governed by existing Mine/Forest/Field rules.
+# Nonbasic r1/r2 sources keep their old per-ID yield until independently
+# approved; no r3+ generic mapping, generated resource or fake source is added.
+func sx_v55_plan(state: SimulationState, producer: BuildingState, item_id: StringName) -> Dictionary:
+    if not sx_v55_bulk_enabled(state) or producer == null:
+        return {}
+    var plan: Dictionary = SX_V55_BULK_PLANS.get(str(item_id),{})
+    if plan.is_empty() or StringName(plan.get("producer","")) != producer.building_type:
+        return {}
+    if producer.building_type == TYPE_SPIRIT_FIELD:
+        if not crop_registry.eligible_crop_ids(producer.level).has(item_id):
+            return {}
+    elif producer.building_type == TYPE_MINE:
+        if mine_selected_ore(producer) != item_id:
+            return {}
+    elif producer.building_type == TYPE_LINH_FOREST:
+        if forest_selected_material(producer) != item_id:
+            return {}
+    return plan
+
+# Bulk mode changes the *cost of NEW orders only*. Already-started Alchemy
+# and other jobs keep their frozen input receipt; rare/catalyst/heart unchanged.
+func sx_v55_common_requirements(state: SimulationState, original: Dictionary) -> Dictionary:
+    var result := original.duplicate(true)
+    if not sx_v55_bulk_enabled(state):
+        return result
+    for raw_id in result.keys():
+        if str(raw_id) in SX_V55_COMMON_IDS:
+            result[raw_id] = maxi(int(result[raw_id]),0) * SX_V55_COMMON_SCALE
+    return result
+
+func sx_v55_upgrade_cost(state: SimulationState, building: BuildingState) -> Dictionary:
+    return sx_v55_common_requirements(state,upgrade_cost(building))
+
 const MATERIAL_TAM_MACH_BAN := "tam_mach_ban"
 const MATERIAL_HERB := "thanh_linh_thao"
 const MATERIAL_LINH_TUYEN_HEART := "linh_tuyen_chi_tam"
@@ -927,7 +1010,7 @@ func can_start_upgrade(state: SimulationState, building_id: StringName) -> Dicti
     if MILESTONE_LEVELS.has(target_level) and requires_milestone_component and _milestone_component(building.building_type, target_level) == "":
         return {"ok": false, "reason": "milestone_component_not_defined", "target_level": target_level}
 
-    var cost := upgrade_cost(building)
+    var cost := sx_v55_upgrade_cost(state,building)
     var material_ids: Array = cost.keys()
     material_ids.erase("spirit_stones")
     material_ids.sort()
@@ -1206,7 +1289,7 @@ func _v57_alchemy_plan(state: SimulationState, hall: BuildingState,
             # automatically promoted high-grade outputs from a Q1 ingredient BOM.
             output = MedicineCatalogueV2.item_id(
                 str(parsed_legacy_mode["family"]),int(parsed_legacy_mode["realm"]),1)
-        return {"ok":true,"requirements":requirements,
+        return {"ok":true,"requirements":sx_v55_common_requirements(state,requirements),
             "output_quantity":alchemy_registry.output_quantity(recipe_id),
             "cycle_ticks":alchemy_registry.base_cycle_ticks(recipe_id),
             "output_resource_id":str(output)}
@@ -1228,7 +1311,7 @@ func _v57_alchemy_plan(state: SimulationState, hall: BuildingState,
     if result_id == &"":
         return {"ok":false,"reason":"quality_output_missing"}
     return {
-        "ok":true,"requirements":requirements,
+        "ok":true,"requirements":sx_v55_common_requirements(state,requirements),
         "output_resource_id":str(result_id),
         "output_quantity":(6 if str(parsed["family"]) == MedicineCatalogueV2.FAMILY_BREAK else 36) + (
             int(profession_level/20) if str(parsed["family"]) == MedicineCatalogueV2.FAMILY_BREAK
@@ -1525,14 +1608,21 @@ func perform_spirit_field_step(state: SimulationState, disciple: DiscipleState, 
     var crop_id := StringName(planned.get("crop_id",""))
 
     var plant_cost := crop_registry.cost(crop_id)
+    var bulk_crop_plan := sx_v55_plan(state,field,crop_id)
     if state.sect.spirit_stones < plant_cost:
         return {"ok": false, "completed": false, "reason": "insufficient_spirit_stones"}
 
     state.sect.spirit_stones -= plant_cost
     var affinity := _crop_affinity_factor(disciple, crop_id)
     var total_speed := maxf(work_speed, 0.25) * spirit_field_speed_factor(field) * affinity
-    var duration := maxi(1, int(ceil(float(crop_registry.base_cycle_ticks(crop_id)) * spirit_field_cycle_time_factor(field) / total_speed)))
-    var routine_yield := maxi(1, int(round(float(crop_registry.base_yield(crop_id)) * spirit_field_yield_factor(field))))
+    var base_crop_cycle := int(bulk_crop_plan.get("cycle_ticks",crop_registry.base_cycle_ticks(crop_id)))
+    var base_crop_yield := int(bulk_crop_plan.get("yield",crop_registry.base_yield(crop_id)))
+    var duration := maxi(1, int(ceil(float(base_crop_cycle) * spirit_field_cycle_time_factor(field) / total_speed)))
+    var routine_yield := maxi(1, int(round(float(base_crop_yield) * spirit_field_yield_factor(field))))
+    var base_crop_xp := crop_registry.base_work_xp(crop_id)
+    if not bulk_crop_plan.is_empty():
+        # 49 EXP/active hour baseline; one XP receipt after real harvest.
+        base_crop_xp = 49.0 * float(base_crop_cycle) / 60.0
     var rare_factor := profession_modifiers.rare_event_factor(state, disciple)
     var plot_id := str(plots[plot_index].get("plot_id", "plot_%03d" % [plot_index + 1]))
 
@@ -1546,12 +1636,13 @@ func perform_spirit_field_step(state: SimulationState, disciple: DiscipleState, 
         "assigned_worker_id": str(disciple.id),
         "paid_spirit_stones": plant_cost,
         "routine_yield": routine_yield,
+        "production_plan_id": str(bulk_crop_plan.get("plan_id","")),
         "rare_factor": rare_factor,
         "economy_a_wage_job_id": "%s_plot_%06d" % [str(field.id), plant_sequence] if state.sect.economy_a_enabled and DiscipleRealmProgressV2.owns_v2_progression(disciple) else "",
         # New plots lock exact EXP at sowing, but credit it only after real
         # output reaches Warehouse. Legacy in-flight plots lack this key and
         # have already credited EXP at sowing; do not reward them twice.
-        "profession_xp_gain": crop_registry.base_work_xp(crop_id) * maxf(learning_factor,0.0) * spirit_field_xp_factor(field)
+        "profession_xp_gain": base_crop_xp * maxf(learning_factor,0.0) * spirit_field_xp_factor(field)
     }
     data["plots"] = plots
     data["plant_sequence"] = plant_sequence
@@ -1568,9 +1659,9 @@ func perform_spirit_field_step(state: SimulationState, disciple: DiscipleState, 
         "crop_id": str(crop_id),
         "finish_tick": state.tick + duration,
         "paid_spirit_stones": plant_cost,
-        "base_work_xp": crop_registry.base_work_xp(crop_id),
+        "base_work_xp": base_crop_xp,
         "field_xp_factor": spirit_field_xp_factor(field),
-        "xp_gain_pending": crop_registry.base_work_xp(crop_id) * maxf(learning_factor,0.0) * spirit_field_xp_factor(field),
+        "xp_gain_pending": base_crop_xp * maxf(learning_factor,0.0) * spirit_field_xp_factor(field),
         "stamina_cost": 0.0
     }
 
@@ -1611,6 +1702,10 @@ func _start_resource_timer(state: SimulationState, producer: BuildingState, acto
         return {"ok":false,"reason":"wrong_job_profession"}
     var policy := state.sect.economy_a_policy
     var base_duration := clampi(int(policy.get("resource_duration_ticks",10)),1,1440)
+    var selected_resource := mine_selected_ore(producer) if producer.building_type == TYPE_MINE else forest_selected_material(producer)
+    var bulk_plan := sx_v55_plan(state,producer,selected_resource)
+    if not bulk_plan.is_empty():
+        base_duration = int(bulk_plan.get("cycle_ticks",base_duration))
     var steward_factor := 1.0 - SectHallSystemV1.role_effect(state, SectHallSystemV1.OFFICE_STEWARD)
     # Apply the same level-dependent extraction speed in both old carry-cycle
     # and new V2 timer jobs. Pin the resulting duration at job creation so
@@ -1618,15 +1713,25 @@ func _start_resource_timer(state: SimulationState, producer: BuildingState, acto
     var raw_work_duration := maxf(float(definition.get("base_work_duration", 4.0)), 0.1)
     var building_time_factor := _resource_job_duration(producer) / raw_work_duration
     var duration := maxi(1,int(ceil(float(base_duration) * building_time_factor * steward_factor / maxf(speed,0.25))))
+    var output_units := mine_ore_batch_units(producer,selected_resource) if producer.building_type == TYPE_MINE else forest_material_batch_units(producer,selected_resource)
+    if not bulk_plan.is_empty():
+        # Same normal +0.5% per facility level; old jobs retain their snapshots.
+        output_units = maxi(1,int(round(float(bulk_plan.get("yield",0)) * (
+            1.0 + 0.005 * float(maxi(producer.level-1,0))))))
+    var xp_snapshot := maxf(xp_gain,0.0)
+    if not bulk_plan.is_empty():
+        # V5.5-D early-phase target ~49 profession EXP/active hour at Lv1.
+        xp_snapshot *= 4.9
     var data := producer.production_state.duplicate(true)
     var jobs := resource_timer_jobs(producer)
     var sequence := maxi(int(data.get("economy_a_sequence",0)),0)+1
     var job := {
         "job_id":"%s:v1:%d" % [str(producer.id),sequence],
         "worker_id":str(actor.id),"profession_id":str(profession_id),
-        "resource_id":str(mine_selected_ore(producer)) if producer.building_type == TYPE_MINE else str(forest_selected_material(producer)),
-        "output_quantity":mine_ore_batch_units(producer, mine_selected_ore(producer)) if producer.building_type == TYPE_MINE else forest_material_batch_units(producer,forest_selected_material(producer)),
-        "profession_xp_gain":maxf(xp_gain,0.0),
+        "resource_id":str(selected_resource),
+        "output_quantity":output_units,
+        "production_plan_id":str(bulk_plan.get("plan_id","")),
+        "profession_xp_gain":xp_snapshot,
         "started_tick":state.tick,"finish_tick":state.tick+duration
     }
     jobs.append(job)
@@ -2102,6 +2207,7 @@ func _normalize_plot(value: Variant, index: int) -> Dictionary:
         "assigned_worker_id": str(value.get("assigned_worker_id", "")),
         "paid_spirit_stones": maxi(int(value.get("paid_spirit_stones", 0)), 0),
         "routine_yield": maxi(int(value.get("routine_yield", crop_registry.base_yield(crop_id))), 1),
+        "production_plan_id": str(value.get("production_plan_id","")),
         "rare_factor": maxf(float(value.get("rare_factor", 1.0)), 0.0),
         "economy_a_wage_job_id": str(value.get("economy_a_wage_job_id", ""))
     }
@@ -2207,7 +2313,8 @@ func _select_crop(state: SimulationState, field: BuildingState, data: Dictionary
         and str(state.sect.sx01_pill_policy.get("recipe_mode", "fixed")) == "demand":
         var hall := primary_building(state, TYPE_ALCHEMY_HALL)
         var pill_plan := SX01PillPolicy.stock_plan(state, hall)
-        var herb_needed := int(pill_plan["deficit_hxd"]) * 3 + int(pill_plan["deficit_tqd"]) * 2
+        var herb_needed := (int(pill_plan["deficit_hxd"]) * 3 + int(pill_plan["deficit_tqd"]) * 2) * (
+            SX_V55_COMMON_SCALE if sx_v55_bulk_enabled(state) else 1)
         var grain_needed := int(pill_plan["deficit_tqd"])
         # Already-paid Alchemy jobs consumed their inputs at start, so we only
         # reserve future demand. Growing plots are pending, not stock.
@@ -2237,7 +2344,8 @@ func _select_crop(state: SimulationState, field: BuildingState, data: Dictionary
     var best := &""
     var best_score := 0.0
     for crop_id in eligible:
-        var target := float(crop_registry.stock_target(crop_id))
+        var target := float(crop_registry.stock_target(crop_id)) * (
+            float(SX_V55_COMMON_SCALE) if sx_v55_bulk_enabled(state) else 1.0)
         var quantity := float(warehouse.quantity(state, crop_registry.output_resource_id(crop_id))) if state.sect.p3_7_resources_enabled else 0.0
         for field_item in _buildings_of_type(state,TYPE_SPIRIT_FIELD):
             for pending in _ensure_spirit_field_state(state,field_item).get("plots",[]):
@@ -2254,7 +2362,7 @@ func _select_crop(state: SimulationState, field: BuildingState, data: Dictionary
 # stable ID tie-break preserves deterministic Save/Reload behavior.
 func _select_missing_graded_recipe_crop(state: SimulationState,
         eligible: Array[StringName], recipe_id: StringName) -> StringName:
-    var requirements := AlchemyRecipeRegistry.new().inputs(recipe_id)
+    var requirements := sx_v55_common_requirements(state,AlchemyRecipeRegistry.new().inputs(recipe_id))
     if requirements.is_empty():
         return &""
     var growing: Dictionary = {}
