@@ -78,7 +78,7 @@ func _run() -> void:
             quit(8)
             return
         patient["hp"] = float(patient["max_hp"]) * 0.45
-        var preview: OptionButton = lab.get("skill_preview_option")
+    var preview: OptionButton = lab.get("skill_preview_option")
     var found := false
     if preview != null:
         for index in range(preview.item_count):
@@ -103,7 +103,7 @@ func _run() -> void:
     var heal_count := _event_count(battle, "heal", requested_skill)
     if branch == "duoc_heal" and heal_count <= 0:
         _failed("Canonical V6.3 heal event not observed for wounded QA ally")
-        var tick_count := 0
+    var tick_count := 0
     for raw in battle.events:
         if raw is Dictionary and str(raw.get("type", "")) in ["status_tick", "damage_tick"]:
             tick_count += 1
