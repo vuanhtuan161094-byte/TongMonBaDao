@@ -3963,7 +3963,7 @@ func _build_worksite_upgrade_control(building: BuildingState) -> void:
         button.text = "Đã tối đa"
         button.disabled = true
         return
-    var cost := system.upgrade_cost(building)
+    var cost := system.sx_v55_upgrade_cost(state,building)
     var check := system.can_start_upgrade(state, building.id)
     info.text = "Lv%d→%d · Gỗ %d/%d · Thiết %d/%d · Linh Thạch %d/%d · %.0f phút mô phỏng." % [
         building.level, building.level + 1,
@@ -4212,9 +4212,10 @@ func _build_economy_a_hall_controls() -> void:
         return
     var policy: Dictionary = state.sect.economy_a_policy
     var summary := Label.new()
-    summary.text = "Quỹ: %d · Lương/mẻ: %d · Timer gốc: %d phút" % [
+    summary.text = "Quỹ: %d · Lương/mẻ: %d · %s" % [
         state.sect.spirit_stones,int(policy.get("wage_per_batch",2)),
-        int(policy.get("resource_duration_ticks",10))
+        ("Sản xuất 60/90/180 phút" if BuildingSystem.new().sx_v55_bulk_enabled(state)
+        else "Timer gốc: %d phút" % int(policy.get("resource_duration_ticks",10)))
     ]
     summary.custom_minimum_size = Vector2(384,32)
     summary.add_theme_font_size_override("font_size",12)
@@ -4231,6 +4232,15 @@ func _build_economy_a_hall_controls() -> void:
     sources.add_theme_font_size_override("font_size",11)
     sources.add_theme_color_override("font_color",JADE_DARK)
     building_management_container.add_child(sources)
+    var bulk_ready := BuildingSystem.new().sx_v55_bulk_enabled(state)
+    var bulk_button := Button.new()
+    bulk_button.name = "SXV55_EnableBulk"
+    bulk_button.text = "Sản xuất lớn: ĐÃ BẬT" if bulk_ready else "Bật sản xuất lớn · 60/90/180 phút"
+    bulk_button.custom_minimum_size = Vector2(384,36)
+    bulk_button.disabled = bulk_ready
+    bulk_button.tooltip_text = "Áp dụng CHỈ cho mẻ mới: Mỏ 10.000/60p; Lâm 8.000/60p; Điền 2.500/60p, 2.000/90p, 1.000/180p. Chi phí nguyên liệu phổ thông Mộc/Thiết/Thanh Linh ×1.000; tiền và thuế W2/LT2/T2 chưa mở. Mẻ cũ không thay đổi."
+    bulk_button.pressed.connect(_sx_v55_enable_bulk_from_ui)
+    building_management_container.add_child(bulk_button)
     # Receipt-backed W2 debt. The label never fabricates a Stone balance.
     var arrears := EconomySystem.new().unpaid_work_wages(state)
     var unpaid := maxi(int(arrears.get("total",0)),0)
@@ -4254,6 +4264,16 @@ func _build_economy_a_hall_controls() -> void:
     spending_limit.custom_minimum_size = Vector2(384,36)
     spending_limit.pressed.connect(_economy_a_cycle_spend_limit_from_ui)
     building_management_container.add_child(spending_limit)
+
+func _sx_v55_enable_bulk_from_ui() -> void:
+    var result := BuildingSystem.new().sx_v55_enable_bulk(state)
+    if bool(result.get("ok",false)):
+        building_management_feedback = "Đã bật nguồn thật 60/90/180 phút cho mẻ MỚI; mẻ cũ giữ nguyên. Công thức phổ thông ×1.000."
+        _autosave_runtime()
+        _refresh_all()
+    else:
+        building_management_feedback = "Chưa thể mở SX-V55: " + str(result.get("reason","không đủ nguồn"))
+    _refresh_building_operation_content()
 
 func _economy_a_enable_from_ui() -> void:
     var result := EconomySystem.new().enable_v1(state)
