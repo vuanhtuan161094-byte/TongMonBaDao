@@ -169,8 +169,8 @@ func consume_events(rows: Array[Dictionary]) -> void:
                 # must animate only its actual wind-up, never stand casting
                 # while the needle is already flying toward moving enemies.
                 var skill: Dictionary = CombatLabRosterAdapter.skill_definitions().get(source_skill, {})
-                var owner: Dictionary = battle.actors[source_actor_id]
-                var effective := V63HumanSkillCombatSystem.effective_attack_stats(owner, owner.get("stats", {}))
+                var casting_actor: Dictionary = battle.actors[source_actor_id]
+                var effective := V63HumanSkillCombatSystem.effective_attack_stats(casting_actor, casting_actor.get("stats", {}))
                 var cast_rate := maxf(0.1, 1.0 + float(effective.get("cast_speed", 0.0)))
                 var windup := maxf(MapBattleV2.STEP_SECONDS, float(skill.get("cast_time", 0.0)) / cast_rate)
                 _set_pose(source_actor_id, "cast", roundi(windup * 1000.0), event_time)
