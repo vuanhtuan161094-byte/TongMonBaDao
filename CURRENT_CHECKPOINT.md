@@ -1,5 +1,12 @@
 # CURRENT CHECKPOINT — ONE GAME → MAIN (2026-11-04) 
 
+### SX-W2 follow-up focused CI evidence — 2026-11-10
+
+- **Gameplay/UI SHA `7937f20c170766940b443753036405487f9fba62`**: [O9 #42757205239](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42757205239) **whole SUCCESS** official Godot 4.7.2 after strict O9 + O8 + O7 run; [O8 #42757205138](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42757205138) **whole SUCCESS**; [O7 #42757205166](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42757205166), [O4 #42757205351](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42757205351), [O3 #42757205226](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42757205226), [O1 #42757205142](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42757205142), [O5 #42757205275](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42757205275) **whole SUCCESS**.
+- **New UI-focused QA-only change SHA `3d729c88b0e8b37e80794e04b8650e568be98a4f`**: `economy_a_landscape_ui_test.gd` now presses Hall debt button and asserts real partial zero-sum payment; [Economy-A #42757583660](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42757583660) import/parser/old economy + strict W2 debt + new Hall UI test steps **SUCCESS**. Whole workflow currently **IN_PROGRESS** on long cumulative O5/GP/SAFE suite. Earlier [Economy-A #42757205120](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42757205120) also has these focused steps successful; overall finish separately required. Path to this run above is evidence only; if run URL typo is found, use repository's actual Actions ID and exact SHA.
+- Between gameplay/UI code `7937f20c` and QA-only `3d729c88`, only audit/checkpoint/handoff docs and the Hall UI test changed. Source timing/salary values have not been bulk rebalanced. No physical PC evidence; Windows 10 and Android PENDING USER.
+
+
 ## PR72 SX-W2 debt foundation + V5.5/V5.6 production gap — 2026-11-10 — FOCUSED GODOT PASS, FULL BALANCE HOLD
 
 - **Single active PR #72 branch**, direct-code owner scope Mine/Forest/Field/Warehouse/Economy. Source starting HEAD `dc66cadef026eef0474503e5d8799b1059c07870`; no new branch/merge, no `SaveService` or `SectState` schema update, no fake materials/Stone, no production timer/yield change.
