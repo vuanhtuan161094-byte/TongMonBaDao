@@ -64,6 +64,33 @@ func _run() -> void:
     var body6: float = arena._actor_body_offset_px("qa_target")
     _check(body1 < 0.0 and body6 < body1 and body6 > -80.0,
         "monster body offset scales with actual rig, not a giant -17*zoom jump")
+    # Movie camera is explicitly opt-in; ordinary Lab retains world-centered pan.
+    var untouched_center := arena._world_to_local(Vector2(18, 10))
+    _check(untouched_center.distance_to(arena.size * 0.5) < 0.01,
+        "V4 movie focus disabled by default")
+    arena.set_v4_showcase_focus("qa_cast", "qa_target")
+    arena._update_v4_shot_camera()
+    var caster_screen: Vector2 = arena._world_to_local(battle.actors["qa_cast"]["position"])
+    _check(caster_screen.x > 0.0 and caster_screen.x < arena.size.x,
+        "6x shot opens with visible real caster rather than empty world center")
+    arena.cues.append({
+        "kind":"projectile", "source_actor_id":"qa_cast", "target_actor_id":"qa_target",
+        "launch_at":1.0, "impact_at":3.0
+    })
+    arena.set_visual_time(2.0)
+    arena._update_v4_shot_camera()
+    _check(arena.v4_shot_camera_center.distance_to(Vector2(12.75, 10.5)) < 0.01,
+        "6x lens follows canonical halfway projectile, not stale target")
+    arena.set_visual_time(3.0)
+    arena._update_v4_shot_camera()
+    _check(arena.v4_shot_reached_target and
+        arena.v4_shot_camera_center.distance_to(Vector2(17.5, 11.0)) < 0.01,
+        "6x lens holds real target at impact deadline")
+    arena.cues.clear()
+    arena.set_visual_time(4.0)
+    arena._update_v4_shot_camera()
+    _check(arena.v4_shot_camera_center.distance_to(Vector2(17.5, 11.0)) < 0.01,
+        "6x shot does not snap to caster after projectile cue expires")
     for school in ["fist", "poison", "bow"]:
         var branch: String = {"fist":"ba_quyen", "poison":"doc_cham", "bow":"liep_anh"}[school]
         var expected_role: String = {"fist":"frontline", "poison":"mage", "bow":"ranged"}[school]
