@@ -1117,9 +1117,6 @@ func _refresh_poison_combat_summary() -> void:
     if definition.is_empty():
         poison_current_skill_label.text = "Skill: chưa chọn"
     else:
-        var generation := str(definition.get("generation", definition.get("tier", "human")))
-        var branch := str(definition.get("branch", ""))
-        var shape := str(definition.get("shape", "unspecified")).replace("_", " ")
         var prefix := "Đang đánh" if not last_combat_skill_id.is_empty() else "Đang xem"
         poison_current_skill_label.text = "%s: %s" % [prefix, str(definition.get("name", skill_id))]
     var poison_stacks := 0
