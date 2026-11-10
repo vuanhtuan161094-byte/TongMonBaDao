@@ -193,6 +193,15 @@ static func _restore_payload(data: Dictionary) -> Dictionary:
             is_nan(float(generic_guard_until)) or is_inf(float(generic_guard_until)) or
             float(generic_guard_until) < -1.0 or float(generic_guard_until) > max_time+90.0):
             return {"ok":false,"reason":"invalid_role_guard_timer"}
+        # PVE-CARE03: the cooldown is a persisted battle timer. Refuse
+        # corrupted/NaN/negative/far-future cooldowns before restoring actors.
+        if actor.has(PveCombatAutoPillV1.ACTOR_NEXT_AT):
+            var pill_due = actor[PveCombatAutoPillV1.ACTOR_NEXT_AT]
+            if not (pill_due is int or pill_due is float) \
+                    or not is_finite(float(pill_due)) \
+                    or float(pill_due) < 0.0 \
+                    or float(pill_due) > max_time+PveCombatAutoPillV1.COOLDOWN_COMBAT_SECONDS+0.001:
+                return {"ok":false,"reason":"invalid_combat_pill_cooldown"}
         # Validate S1 authoritative statuses before replaying untrusted bytes.
         var statuses = actor.get("status_effects",{})
         if not (statuses is Dictionary) or statuses.size() > 3:
