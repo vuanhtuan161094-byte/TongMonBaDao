@@ -812,20 +812,20 @@ func _preview_selected_skill() -> void:
     disciple_ids.sort()
     enemy_ids.sort()
     if disciple_ids.is_empty() or enemy_ids.is_empty():
-        _set_error("Không có đệ tử/đối thủ còn sống để thử chiêu")
+        _set_preview_warning("Không có đệ tử/đối thủ còn sống để thử chiêu")
         return
     var caster: Dictionary = battle.actors[disciple_ids[0]]
     var target: Dictionary = battle.actors[enemy_ids[0]]
     var old_loadout: Array = caster.get("v63_skill_loadout", []).duplicate(true)
     if not old_loadout.has(skill_id):
-        _set_error("Kỹ năng chưa được trang bị trong đội hình Lab")
+        _set_preview_warning("Kỹ năng chưa được trang bị trong đội hình Lab")
         return
     if not caster.get("v63_pending_cast", {}).is_empty():
-        _set_error("Đệ tử đang thi triển chiêu trước")
+        _set_preview_warning("Đệ tử đang thi triển chiêu trước")
         return
     var ready: Dictionary = caster.get("v63_skill_ready", {})
     if battle.now < float(ready.get(skill_id, 0.0)):
-        _set_error("Kỹ năng đang hồi chiêu: %.1fs" % (float(ready.get(skill_id, 0.0)) - battle.now))
+        _set_preview_warning("Kỹ năng đang hồi chiêu: %.1fs" % (float(ready.get(skill_id, 0.0)) - battle.now))
         return
     # Isolate only the selected skill. If it cannot be cast, no other
     # equipped skill may silently substitute for the requested preview.
@@ -835,7 +835,7 @@ func _preview_selected_skill() -> void:
     _consume_events()
     _refresh_hud()
     if not cast_started:
-        _set_error("Chiêu không hợp lệ ở khoảng cách/đối tượng hoặc trạng thái hiện tại")
+        _set_preview_warning("Chiêu không hợp lệ ở khoảng cách/đối tượng hoặc trạng thái hiện tại")
         return
     state_label.text = "THỬ CHIÊU · " + str(V63HumanSkillCombatSystem.skill_definition(skill_id).get("name", skill_id)) + " · STEP để phóng"
 
@@ -961,6 +961,13 @@ func _build_lab_monsters(enemy_kind: String, boss_id: String) -> Array:
     var single_actor: Dictionary = single.actor
     if enemy_kind != "boss": single_actor["position"] = Vector2(26, 10)
     return [single_actor]
+
+# A rejected preview command (cooldown, out of range, missing target) does
+# not invalidate an already-running MapBattleV2 scene or its event/VFX QA.
+func _set_preview_warning(message: String) -> void:
+    state_label.text = "THỬ CHIÊU · CHƯA THỰC HIỆN"
+    state_label.tooltip_text = message
+    if events_label != null: events_label.text = message
 
 func _set_error(message: String) -> void:
     state_label.text = "LỖI FIXTURE"
