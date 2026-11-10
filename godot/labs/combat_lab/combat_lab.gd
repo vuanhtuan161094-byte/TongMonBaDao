@@ -925,8 +925,8 @@ func _start_battle() -> void:
     # stats, loadouts and canonical combat authority are left untouched.
     if encounter_option != null and encounter_option.selected == 4 and setup.party.size() == 4:
         var corners: Array[Vector2] = [
-            Vector2(12.4, 6.4), Vector2(12.4, 13.6),
-            Vector2(23.6, 6.4), Vector2(23.6, 13.6)]
+            Vector2(12.4, 7.4), Vector2(12.4, 12.6),
+            Vector2(23.6, 7.4), Vector2(23.6, 12.6)]
         for index in range(4):
             var hero: Dictionary = setup.party[index]
             hero["position"] = corners[index]
