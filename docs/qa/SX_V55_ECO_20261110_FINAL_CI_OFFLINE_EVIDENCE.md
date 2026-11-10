@@ -2,6 +2,13 @@
 
 **Date:** 2026-11-10. **Branch:** `integration/pve-p0-playable-ui-20261103` / PR #72 Draft. **Scope:** stage r1–r2 production and real Warehouse/consumer persistence. This is QA evidence, not authorization to merge or activate r3+, LT2/W2/T2.
 
+## FINAL SX-V55-ECO official Godot 4.7.2 verdict
+
+- **Run [#42771951866](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42771951866): COMPLETED / SUCCESS**, exact tested SHA `0968b91f29e3b0676320f1eec79ef3fbca2ef82e`; GitHub updated 2026-11-10 07:12:42 UTC. Runner job **18/18 steps SUCCESS**, including FULL P3.7 cumulative at 07:12:40 UTC. This final conclusion **supersedes earlier in-progress observations below**.
+- Official log: `P3.7C1 FOUNDATION + DAN TIEN FULL GATE: PASS`; five-source Warehouse→Alchemy→Tu Vi `PASS`; `SX07 SOURCE CONTRACT 409 checks; failures=0`; 1/7/30-day resource-money scenario `PASS`; strict Godot checks `GODOT_STRICT_PASS exit=0`.
+- Three offline injected-clock / cold-replay lines: `linh_coc` 60m / Warehouse +2,500 / profession XP +52.087; `thanh_linh_thao` 90m / +2,000 / +78.5715; `tu_van_thao` 180m / +1,045 / +166.404. All three `retry_steps=0`; +1,045 Tử Vân is the valid tested actual modified yield, not a new target plan. This is NOT physical Windows or Android QA.
+- Production technical packet **FULL GODOT QA PASS at the tested SHA**; full-game CI remains separately subject to active Combat DV2-02 failures and physical Windows/Android checks. No runtime/source/SaveService changes or r3+/LT2/W2/T2 activation from this verification.
+
 ## Integrated source gate, exact SHA
 
 - [SX-V55-ECO #42769037807](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42769037807) — **COMPLETE / SUCCESS**, gameplay and UI SHA `edb5128de7c5f7a00382829312e8424a5f87dece`; **all steps**, including canonical `Verify-P3-7C1-Foundation-Dan-Tien-Full.ps1`, completed successfully on official Godot **4.7.2**. This is the full integrated SX baseline.
