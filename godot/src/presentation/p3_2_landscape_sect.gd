@@ -9638,6 +9638,14 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "T�
         _add_disciple_unavailable_progress_row(content_panel, "LUYỆN THỂ", Vector2(302, 82), content_width - 324.0)
     if is_overview_tab:
         content.text = _disciple_profile_compact_text(profile_snapshot, disciple)
+        if authentic_v2 and disciple.injury_level == 1:
+            var remaining := maxi(0,disciple.injury_recover_at_tick-state.tick)
+            var quote := PveInjuryTreatmentV1.quote(state,disciple)
+            var clinic_note := "Trọng thương: còn %d phút mô phỏng. Hồi sinh đã đầy HP." % remaining
+            if bool(quote.get("ok",false)):
+                clinic_note += " Điều trị: %d LT / %d phút (không hồi HP)." % [
+                    int(quote["cost"]),int(quote["duration_ticks"])]
+            content.text += "\n"+clinic_note
         details_scroll.position = Vector2(302, 118)
         details_scroll.size = Vector2(content_width - 324.0, 220)
     if tab_name in ["Thuộc tính", "Tổng Quan"] and bool(profile_snapshot.get("ok",false)):
@@ -9702,16 +9710,37 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "T�
             _add_profile_action(content_panel, "Chuyên tu", Vector2(18, 344), "v2_cultivate", track_ready)
             _add_profile_action(content_panel, "Rèn thân", Vector2(140, 344), "v2_body_train", track_ready)
     if tab_name == "Tổng Quan" and track_ready:
-        var tuvi_gate := CultivationGateV57.preview(state,selected_id)
-        var tuvi_button := Button.new()
-        tuvi_button.name = "V57TuViGateAction"
-        tuvi_button.text = "Đột phá Tu Vi"
-        tuvi_button.position = Vector2(266,344)
-        tuvi_button.size = Vector2(170,40)
-        tuvi_button.disabled = not bool(tuvi_gate.get("ok",false))
-        tuvi_button.tooltip_text = "Tỷ lệ gốc 25%, thất bại mất 10% EXP tầng 10. Đột Phá Đan có thể tăng xác suất."
-        tuvi_button.pressed.connect(Callable(self,"_disciple_tab_action").bind("v57_tuvi_gate"))
-        content_panel.add_child(tuvi_button)
+        if disciple.injury_level == 1:
+            # The same profile for old/new recruits. Injury clinic is not an
+            # HP shop, and never activates experimental PvE reward economics.
+            var clinic_quote := PveInjuryTreatmentV1.quote(state,disciple)
+            var remaining_ticks := maxi(0,disciple.injury_recover_at_tick-state.tick)
+            var clinic_button := Button.new()
+            clinic_button.name = "SectInjuryTreatmentAction"
+            clinic_button.text = "Điều trị trọng thương"
+            clinic_button.position = Vector2(266,344)
+            clinic_button.size = Vector2(170,40)
+            clinic_button.add_theme_font_size_override("font_size",12)
+            var affordable := bool(clinic_quote.get("ok",false)) and disciple.spirit_stones >= int(clinic_quote.get("cost",0))
+            var busy_clinic := PveInjuryTreatmentV1.treatment_in_progress(state,disciple)
+            clinic_button.disabled = not affordable or remaining_ticks <= PveInjuryTreatmentV1.TREATMENT_TICKS or busy_clinic
+            clinic_button.tooltip_text = "Đang điều trị, còn %d phút." % remaining_ticks if busy_clinic else (
+                "%d LT cá nhân · 30 phút mô phỏng · chỉ xóa trọng thương, không hồi HP." % int(clinic_quote.get("cost",0))
+                if affordable else "Không đủ LT, điều trị chưa mở, hoặc sắp tự khỏi. Có thể chờ miễn phí."
+            )
+            clinic_button.pressed.connect(Callable(self,"_disciple_tab_action").bind("v2_injury_treatment"))
+            content_panel.add_child(clinic_button)
+        else:
+            var tuvi_gate := CultivationGateV57.preview(state,selected_id)
+            var tuvi_button := Button.new()
+            tuvi_button.name = "V57TuViGateAction"
+            tuvi_button.text = "Đột phá Tu Vi"
+            tuvi_button.position = Vector2(266,344)
+            tuvi_button.size = Vector2(170,40)
+            tuvi_button.disabled = not bool(tuvi_gate.get("ok",false))
+            tuvi_button.tooltip_text = "Tỷ lệ gốc 25%, thất bại mất 10% EXP tầng 10. Đột Phá Đan có thể tăng xác suất."
+            tuvi_button.pressed.connect(Callable(self,"_disciple_tab_action").bind("v57_tuvi_gate"))
+            content_panel.add_child(tuvi_button)
     if tab_name == "Thuộc tính":
         var gate_preview := DiscipleBodyGateTransactionV2.new().preview_gate(state,selected_id) if track_ready else {}
         var gate_button := Button.new()
@@ -9998,6 +10027,28 @@ func _disciple_tab_action(action: String) -> void:
         return
     var disciple: DiscipleState = state.disciples[selected_id]
     var snapshot := _disciple_snapshot(disciple)
+    if action == "v2_injury_treatment":
+        if runtime_session == null or not runtime_ready:
+            tab_status_text = "Chưa thể lưu điều trị; vui lòng mở phiên chơi trước."
+            _open_disciple_deep_screen(selected_id,disciple_profile_active_tab_name,true)
+            return
+        var request_id := "ui:injury:%s:%d:%d" % [
+            str(selected_id),disciple.injury_recover_at_tick,
+            state.sect.economy_a_event_count+1
+        ]
+        var treated := PveInjuryTreatmentV1.start(state,selected_id,request_id)
+        if bool(treated.get("ok",false)):
+            var receipt: Dictionary = treated.get("receipt",{})
+            tab_status_text = "Đã điều trị trọng thương: %d Linh Thạch, %d phút mô phỏng. HP không đổi." % [
+                int(receipt.get("cost",0)),PveInjuryTreatmentV1.TREATMENT_TICKS
+            ]
+            var persisted := runtime_session.save()
+            if not bool(persisted.get("ok",false)):
+                tab_status_text += " CẢNH BÁO: chưa lưu được; không bấm lại."
+        else:
+            tab_status_text = "Chưa thể điều trị: "+str(treated.get("reason","không đủ điều kiện"))
+        _open_disciple_deep_screen(selected_id,disciple_profile_active_tab_name,true)
+        return
     if action == "v57_tuvi_gate":
         _v57_show_tuvi_gate_choices()
         return
