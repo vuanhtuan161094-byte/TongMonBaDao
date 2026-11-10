@@ -30,22 +30,22 @@ func _make_caster(branch: String, tier: String, lineage: String) -> Dictionary:
     var actions: Array = []
     var passives: Array = []
     for ordinal in range(1, 5):
-        actions.append("tmb.skill.poison.%s.active_%02d.%s" %
-            [branch, ordinal, "human" if base_tier == "human" else base_tier + "." + lineage])
-    var ultimate_id := "tmb.skill.poison.%s.ultimate.%s" % [branch,
-        "human" if base_tier == "human" else
-        ("rare." + lineage if tier == "rare" else base_tier + "." + lineage)]
+        var active_suffix := "human" if base_tier == "human" else base_tier + "." + lineage
+        actions.append("tmb.skill.poison.%s.active_%02d.%s" % [branch, ordinal, active_suffix])
+    var ultimate_suffix := "human" if base_tier == "human" else base_tier + "." + lineage
+    if tier == "rare":
+        ultimate_suffix = "rare." + lineage
+    var ultimate_id := "tmb.skill.poison.%s.ultimate.%s" % [branch, ultimate_suffix]
     actions.append(ultimate_id)
     for ordinal in range(1, 6):
         var passive_suffix := "human" if base_tier == "human" else base_tier + "." + lineage
         if tier == "rare" and ordinal == 5:
             passive_suffix = "rare_passive." + lineage
-        passives.append("tmb.skill.poison.%s.passive_%02d.%s" %
-            [branch, ordinal, passive_suffix])
-    var innate_id := "tmb.skill.poison.%s.innate.%s" %
-        [branch, "human" if base_tier == "human" else base_tier + "." + lineage]
-    var basic_id := "tmb.skill.poison.basic.%s" %
-        ("human" if base_tier == "human" else base_tier + ".base")
+        passives.append("tmb.skill.poison.%s.passive_%02d.%s" % [branch, ordinal, passive_suffix])
+    var innate_suffix := "human" if base_tier == "human" else base_tier + "." + lineage
+    var innate_id := "tmb.skill.poison.%s.innate.%s" % [branch, innate_suffix]
+    var basic_suffix := "human" if base_tier == "human" else base_tier + ".base"
+    var basic_id := "tmb.skill.poison.basic.%s" % basic_suffix
     var basic := V63HumanSkillCombatSystem.skill_definition(basic_id)
     for id in actions + passives + [innate_id,basic_id]:
         _check(not V63HumanSkillCombatSystem.skill_definition(str(id)).is_empty(),
