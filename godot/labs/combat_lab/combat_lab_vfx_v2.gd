@@ -245,7 +245,7 @@ static func render(canvas: CanvasItem, cue: Dictionary, p: Vector2, source: Vect
                     _tinted("d9ab97", 0.7 * strength), 0.75 * hit_scale)
         return
     if school == "poison":
-        if OS.get_environment("TMB_POISON_V4_PREVIEW") == "1":
+        if bool(cue.get("v4_preview", OS.get_environment("TMB_POISON_V4_PREVIEW") == "1")):
             PoisonV4.render(canvas, cue, p, source, t, radius, zoom_factor)
         else:
             _render_poison(canvas, cue, p, source, t, radius, zoom_factor)
