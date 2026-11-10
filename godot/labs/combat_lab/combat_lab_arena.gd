@@ -503,6 +503,26 @@ func _draw() -> void:
         for id in ids: _draw_actor(battle.actors[id])
     _draw_cues()
 
+# Two verified horizontal atlas views (right + mirrored left), selected by
+# nearest live monster. This is NOT a claim of four true direction sprites.
+func _v4_actor_facing(actor: Dictionary) -> float:
+    var ordinary := -1.0 if str(actor.get("side", "")) == "monster" else 1.0
+    if school != "poison" or str(actor.get("side", "")) != "disciple" or battle == null:
+        return ordinary
+    var here: Vector2 = actor.get("position", Vector2.ZERO)
+    var nearest_distance := INF
+    var facing := ordinary
+    for other_value in battle.actors.values():
+        var other: Dictionary = other_value
+        if str(other.get("side", "")) != "monster" or float(other.get("hp", 0.0)) <= 0.0:
+            continue
+        var there: Vector2 = other.get("position", Vector2.ZERO)
+        var distance := here.distance_squared_to(there)
+        if distance < nearest_distance and absf(there.x - here.x) > 0.3:
+            nearest_distance = distance
+            facing = -1.0 if there.x < here.x else 1.0
+    return facing
+
 func _draw_actor(actor: Dictionary) -> void:
     var actor_id := str(actor.get("id", ""))
     var foot := _world_to_local(actor.get("position", Vector2.ZERO))
@@ -519,7 +539,7 @@ func _draw_actor(actor: Dictionary) -> void:
                 pose = "attack"
                 break
     var actor_scale := (1.50 if boss else 1.0) * (0.55 + 0.29 * v4_effective_render_zoom())
-    var facing := -1.0 if monster else 1.0
+    var facing := _v4_actor_facing(actor)
     var seconds := visual_time
     var state: Dictionary = actor_states.get(actor_id, {})
     var pose_elapsed := maxf(0.0, visual_time - float(state.get("started", visual_time)))
