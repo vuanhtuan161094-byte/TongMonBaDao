@@ -632,7 +632,12 @@ func step(viewed_map: bool = false) -> Dictionary:
         if now >= float(actor["next_skill"]) and _try_learned_skill(actor,target):
             continue
         var distance := (actor["position"] as Vector2).distance_to(target["position"])
-        var attack_range := float(actor["range"])
+        var basic_attack_range := float(actor["range"])
+        var attack_range := V63HumanSkillCombatSystem.preferred_offensive_range(actor)
+        # No advancing into basic-attack range while an equipped ranged spell
+        # already covers the target. Cast cooldown never causes a melee rush.
+        if distance <= attack_range and distance > basic_attack_range:
+            continue
         if world_mode:
             var path := _world_path(actor["position"],target["position"])
             var route_distance := 0.0 if floori((actor["position"] as Vector2).x) == floori((target["position"] as Vector2).x) and floori((actor["position"] as Vector2).y) == floori((target["position"] as Vector2).y) else _world_route_distance(actor["position"],path)
@@ -642,6 +647,8 @@ func step(viewed_map: bool = false) -> Dictionary:
                 _move_world_actor(actor,target["position"],float(actor.get("move_speed",2.0)),attack_range)
                 continue
             distance = route_distance
+            if distance <= attack_range and distance > basic_attack_range:
+                continue
         if distance > attack_range:
             if holding:
                 continue
