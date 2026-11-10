@@ -1,0 +1,4367 @@
+{
+  "schema": "PVE_BAL01_119_RECIPES_PROPOSAL_V1",
+  "authored_at": "2026-11-10",
+  "release_gate": "ALL_NEW_REALMS_R3_PLUS_DISABLED",
+  "note": "EXACT CANDIDATE quantities for role-based future BOMs, NOT registered resources, NOT executable recipes, and not claimed as source-verified. Existing eight BOM copied from current MedicineCatalogueV2; no SaveService, RecipeRegistry or Warehouse mutation.",
+  "units": "ingredient counts per Q1-Q4 plan, 3 sim minutes per explicitly selected quality batch; Q2-Q4 add catalyst roles independently",
+  "count": {
+    "total": 119,
+    "source_backed": 8,
+    "design_only": 111
+  },
+  "source_role_definitions": {
+    "primary_field_herb": "A distinct, registered cultivated herb at the appropriate field-level; requires planting cost, seeds, harvest tests.",
+    "secondary_field_herb": "Second independent real Field herb; cannot alias the primary herb without explicit design approval.",
+    "forest_herb": "Authorable from Linh Lam work receipt only.",
+    "grain": "Harvested Field food crop with actual plot and seed charges.",
+    "mined_spirit_ore": "Actual produced Mine output, not a material ID inferred from realm string.",
+    "forest_wood": "Actual produced Linh Lam timber, Warehouse-credit test required.",
+    "beast_hide": "An actual monster kill drop with species and stated probability.",
+    "rare_mob_core": "An actual Elite/Boss HP0 drop with receipt, not NPC grant.",
+    "rare_field_catalyst": "Rare catalyst from real Field milestone or authored event; must have finite supply."
+  },
+  "entries": [
+    {
+      "recipe_id": "sx02_recipe_heal_r01",
+      "realm": 1,
+      "realm_name": "Phàm Nhân",
+      "family": "heal",
+      "source_status": "CODED_SOURCE_BACKED_BOM",
+      "runtime_inputs": {
+        "thanh_linh_thao": 3
+      },
+      "candidate_source_roles": null,
+      "source_role_not_resource_id": false,
+      "required_field_level": 1,
+      "required_hall_level": 1,
+      "required_profession_level": 0,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "tu_van_thao": 1
+        },
+        "Q3": {
+          "huyen_thiet": 1,
+          "linh_tuy": 1
+        },
+        "Q4": {
+          "tu_van_thao": 2,
+          "huyen_thiet": 2,
+          "tinh_lang_bi": 1
+        }
+      },
+      "runtime_enabled": true
+    },
+    {
+      "recipe_id": "sx02_recipe_tuvi_r01",
+      "realm": 1,
+      "realm_name": "Phàm Nhân",
+      "family": "tuvi",
+      "source_status": "CODED_SOURCE_BACKED_BOM",
+      "runtime_inputs": {
+        "thanh_linh_thao": 2,
+        "linh_coc": 1
+      },
+      "candidate_source_roles": null,
+      "source_role_not_resource_id": false,
+      "required_field_level": 1,
+      "required_hall_level": 1,
+      "required_profession_level": 0,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "tu_van_thao": 1
+        },
+        "Q3": {
+          "huyen_thiet": 1,
+          "linh_tuy": 1
+        },
+        "Q4": {
+          "tu_van_thao": 2,
+          "huyen_thiet": 2,
+          "tinh_lang_bi": 1
+        }
+      },
+      "runtime_enabled": true
+    },
+    {
+      "recipe_id": "sx02_recipe_body_r01",
+      "realm": 1,
+      "realm_name": "Phàm Nhân",
+      "family": "body",
+      "source_status": "CODED_SOURCE_BACKED_BOM",
+      "runtime_inputs": {
+        "linh_coc": 3,
+        "thanh_thiet": 2,
+        "linh_moc": 1
+      },
+      "candidate_source_roles": null,
+      "source_role_not_resource_id": false,
+      "required_field_level": 1,
+      "required_hall_level": 1,
+      "required_profession_level": 0,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "tu_van_thao": 1
+        },
+        "Q3": {
+          "huyen_thiet": 1,
+          "linh_tuy": 1
+        },
+        "Q4": {
+          "tu_van_thao": 2,
+          "huyen_thiet": 2,
+          "tinh_lang_bi": 1
+        }
+      },
+      "runtime_enabled": true
+    },
+    {
+      "recipe_id": "sx02_recipe_break_r01",
+      "realm": 1,
+      "realm_name": "Phàm Nhân",
+      "family": "break",
+      "source_status": "CODED_SOURCE_BACKED_BOM",
+      "runtime_inputs": {
+        "thanh_linh_thao": 3,
+        "tinh_lang_bi": 1,
+        "linh_moc": 1
+      },
+      "candidate_source_roles": null,
+      "source_role_not_resource_id": false,
+      "required_field_level": 1,
+      "required_hall_level": 1,
+      "required_profession_level": 0,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 6
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "tu_van_thao": 1
+        },
+        "Q3": {
+          "huyen_thiet": 1,
+          "linh_tuy": 1
+        },
+        "Q4": {
+          "tu_van_thao": 2,
+          "huyen_thiet": 2,
+          "tinh_lang_bi": 1
+        }
+      },
+      "runtime_enabled": true
+    },
+    {
+      "recipe_id": "sx02_recipe_heal_r02",
+      "realm": 2,
+      "realm_name": "Luyện Khí",
+      "family": "heal",
+      "source_status": "CODED_SOURCE_BACKED_BOM",
+      "runtime_inputs": {
+        "tu_van_thao": 2,
+        "thanh_linh_thao": 2
+      },
+      "candidate_source_roles": null,
+      "source_role_not_resource_id": false,
+      "required_field_level": 10,
+      "required_hall_level": 10,
+      "required_profession_level": 3,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "tu_van_thao": 1
+        },
+        "Q3": {
+          "huyen_thiet": 1,
+          "linh_tuy": 1
+        },
+        "Q4": {
+          "tu_van_thao": 2,
+          "huyen_thiet": 2,
+          "tinh_lang_bi": 1
+        }
+      },
+      "runtime_enabled": true
+    },
+    {
+      "recipe_id": "sx02_recipe_tuvi_r02",
+      "realm": 2,
+      "realm_name": "Luyện Khí",
+      "family": "tuvi",
+      "source_status": "CODED_SOURCE_BACKED_BOM",
+      "runtime_inputs": {
+        "tu_van_thao": 2,
+        "linh_coc": 2
+      },
+      "candidate_source_roles": null,
+      "source_role_not_resource_id": false,
+      "required_field_level": 10,
+      "required_hall_level": 10,
+      "required_profession_level": 3,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "tu_van_thao": 1
+        },
+        "Q3": {
+          "huyen_thiet": 1,
+          "linh_tuy": 1
+        },
+        "Q4": {
+          "tu_van_thao": 2,
+          "huyen_thiet": 2,
+          "tinh_lang_bi": 1
+        }
+      },
+      "runtime_enabled": true
+    },
+    {
+      "recipe_id": "sx02_recipe_body_r02",
+      "realm": 2,
+      "realm_name": "Luyện Khí",
+      "family": "body",
+      "source_status": "CODED_SOURCE_BACKED_BOM",
+      "runtime_inputs": {
+        "tu_van_thao": 2,
+        "huyen_thiet": 2,
+        "linh_moc": 1
+      },
+      "candidate_source_roles": null,
+      "source_role_not_resource_id": false,
+      "required_field_level": 10,
+      "required_hall_level": 10,
+      "required_profession_level": 3,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "tu_van_thao": 1
+        },
+        "Q3": {
+          "huyen_thiet": 1,
+          "linh_tuy": 1
+        },
+        "Q4": {
+          "tu_van_thao": 2,
+          "huyen_thiet": 2,
+          "tinh_lang_bi": 1
+        }
+      },
+      "runtime_enabled": true
+    },
+    {
+      "recipe_id": "sx02_recipe_break_r02",
+      "realm": 2,
+      "realm_name": "Luyện Khí",
+      "family": "break",
+      "source_status": "CODED_SOURCE_BACKED_BOM",
+      "runtime_inputs": {
+        "tu_van_thao": 3,
+        "tinh_lang_bi": 2,
+        "linh_moc": 1
+      },
+      "candidate_source_roles": null,
+      "source_role_not_resource_id": false,
+      "required_field_level": 10,
+      "required_hall_level": 10,
+      "required_profession_level": 3,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 6
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "tu_van_thao": 1
+        },
+        "Q3": {
+          "huyen_thiet": 1,
+          "linh_tuy": 1
+        },
+        "Q4": {
+          "tu_van_thao": 2,
+          "huyen_thiet": 2,
+          "tinh_lang_bi": 1
+        }
+      },
+      "runtime_enabled": true
+    },
+    {
+      "recipe_id": "sx02_recipe_heal_r03",
+      "realm": 3,
+      "realm_name": "Trúc Cơ",
+      "family": "heal",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 4,
+        "secondary_field_herb": 2,
+        "forest_herb": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 13,
+      "required_hall_level": 3,
+      "required_profession_level": 6,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_tuvi_r03",
+      "realm": 3,
+      "realm_name": "Trúc Cơ",
+      "family": "tuvi",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 3,
+        "grain": 2,
+        "mined_spirit_ore": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 13,
+      "required_hall_level": 3,
+      "required_profession_level": 6,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_body_r03",
+      "realm": 3,
+      "realm_name": "Trúc Cơ",
+      "family": "body",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 2,
+        "mined_spirit_ore": 3,
+        "forest_wood": 1,
+        "beast_hide": 2
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 13,
+      "required_hall_level": 3,
+      "required_profession_level": 6,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_break_r03",
+      "realm": 3,
+      "realm_name": "Trúc Cơ",
+      "family": "break",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 4,
+        "rare_mob_core": 2,
+        "forest_wood": 2,
+        "rare_field_catalyst": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 13,
+      "required_hall_level": 3,
+      "required_profession_level": 6,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 6
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_heal_r04",
+      "realm": 4,
+      "realm_name": "Tử Phủ",
+      "family": "heal",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 4,
+        "secondary_field_herb": 2,
+        "forest_herb": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 16,
+      "required_hall_level": 4,
+      "required_profession_level": 9,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_tuvi_r04",
+      "realm": 4,
+      "realm_name": "Tử Phủ",
+      "family": "tuvi",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 3,
+        "grain": 2,
+        "mined_spirit_ore": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 16,
+      "required_hall_level": 4,
+      "required_profession_level": 9,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_body_r04",
+      "realm": 4,
+      "realm_name": "Tử Phủ",
+      "family": "body",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 2,
+        "mined_spirit_ore": 3,
+        "forest_wood": 1,
+        "beast_hide": 2
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 16,
+      "required_hall_level": 4,
+      "required_profession_level": 9,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_break_r04",
+      "realm": 4,
+      "realm_name": "Tử Phủ",
+      "family": "break",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 4,
+        "rare_mob_core": 2,
+        "forest_wood": 2,
+        "rare_field_catalyst": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 16,
+      "required_hall_level": 4,
+      "required_profession_level": 9,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 6
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_heal_r05",
+      "realm": 5,
+      "realm_name": "Kim Đan",
+      "family": "heal",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 4,
+        "secondary_field_herb": 2,
+        "forest_herb": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 19,
+      "required_hall_level": 6,
+      "required_profession_level": 12,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_tuvi_r05",
+      "realm": 5,
+      "realm_name": "Kim Đan",
+      "family": "tuvi",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 3,
+        "grain": 2,
+        "mined_spirit_ore": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 19,
+      "required_hall_level": 6,
+      "required_profession_level": 12,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_body_r05",
+      "realm": 5,
+      "realm_name": "Kim Đan",
+      "family": "body",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 2,
+        "mined_spirit_ore": 3,
+        "forest_wood": 1,
+        "beast_hide": 2
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 19,
+      "required_hall_level": 6,
+      "required_profession_level": 12,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_break_r05",
+      "realm": 5,
+      "realm_name": "Kim Đan",
+      "family": "break",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 4,
+        "rare_mob_core": 2,
+        "forest_wood": 2,
+        "rare_field_catalyst": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 19,
+      "required_hall_level": 6,
+      "required_profession_level": 12,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 6
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_heal_r06",
+      "realm": 6,
+      "realm_name": "Nguyên Anh",
+      "family": "heal",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 4,
+        "secondary_field_herb": 2,
+        "forest_herb": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 22,
+      "required_hall_level": 7,
+      "required_profession_level": 15,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_tuvi_r06",
+      "realm": 6,
+      "realm_name": "Nguyên Anh",
+      "family": "tuvi",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 3,
+        "grain": 2,
+        "mined_spirit_ore": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 22,
+      "required_hall_level": 7,
+      "required_profession_level": 15,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_body_r06",
+      "realm": 6,
+      "realm_name": "Nguyên Anh",
+      "family": "body",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 2,
+        "mined_spirit_ore": 3,
+        "forest_wood": 1,
+        "beast_hide": 2
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 22,
+      "required_hall_level": 7,
+      "required_profession_level": 15,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_break_r06",
+      "realm": 6,
+      "realm_name": "Nguyên Anh",
+      "family": "break",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 4,
+        "rare_mob_core": 2,
+        "forest_wood": 2,
+        "rare_field_catalyst": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 22,
+      "required_hall_level": 7,
+      "required_profession_level": 15,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 6
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_heal_r07",
+      "realm": 7,
+      "realm_name": "Hóa Thần",
+      "family": "heal",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 4,
+        "secondary_field_herb": 2,
+        "forest_herb": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 25,
+      "required_hall_level": 9,
+      "required_profession_level": 18,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_tuvi_r07",
+      "realm": 7,
+      "realm_name": "Hóa Thần",
+      "family": "tuvi",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 3,
+        "grain": 2,
+        "mined_spirit_ore": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 25,
+      "required_hall_level": 9,
+      "required_profession_level": 18,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_body_r07",
+      "realm": 7,
+      "realm_name": "Hóa Thần",
+      "family": "body",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 2,
+        "mined_spirit_ore": 3,
+        "forest_wood": 1,
+        "beast_hide": 2
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 25,
+      "required_hall_level": 9,
+      "required_profession_level": 18,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_break_r07",
+      "realm": 7,
+      "realm_name": "Hóa Thần",
+      "family": "break",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 4,
+        "rare_mob_core": 2,
+        "forest_wood": 2,
+        "rare_field_catalyst": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 25,
+      "required_hall_level": 9,
+      "required_profession_level": 18,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 6
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_heal_r08",
+      "realm": 8,
+      "realm_name": "Luyện Hư",
+      "family": "heal",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 5,
+        "secondary_field_herb": 2,
+        "forest_herb": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 28,
+      "required_hall_level": 10,
+      "required_profession_level": 21,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_tuvi_r08",
+      "realm": 8,
+      "realm_name": "Luyện Hư",
+      "family": "tuvi",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 4,
+        "grain": 3,
+        "mined_spirit_ore": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 28,
+      "required_hall_level": 10,
+      "required_profession_level": 21,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_body_r08",
+      "realm": 8,
+      "realm_name": "Luyện Hư",
+      "family": "body",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 3,
+        "mined_spirit_ore": 4,
+        "forest_wood": 1,
+        "beast_hide": 2
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 28,
+      "required_hall_level": 10,
+      "required_profession_level": 21,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_break_r08",
+      "realm": 8,
+      "realm_name": "Luyện Hư",
+      "family": "break",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 5,
+        "rare_mob_core": 2,
+        "forest_wood": 2,
+        "rare_field_catalyst": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 28,
+      "required_hall_level": 10,
+      "required_profession_level": 21,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 6
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_heal_r09",
+      "realm": 9,
+      "realm_name": "Hợp Thể",
+      "family": "heal",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 5,
+        "secondary_field_herb": 2,
+        "forest_herb": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 31,
+      "required_hall_level": 12,
+      "required_profession_level": 24,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_tuvi_r09",
+      "realm": 9,
+      "realm_name": "Hợp Thể",
+      "family": "tuvi",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 4,
+        "grain": 3,
+        "mined_spirit_ore": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 31,
+      "required_hall_level": 12,
+      "required_profession_level": 24,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_body_r09",
+      "realm": 9,
+      "realm_name": "Hợp Thể",
+      "family": "body",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 3,
+        "mined_spirit_ore": 4,
+        "forest_wood": 1,
+        "beast_hide": 2
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 31,
+      "required_hall_level": 12,
+      "required_profession_level": 24,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_break_r09",
+      "realm": 9,
+      "realm_name": "Hợp Thể",
+      "family": "break",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 5,
+        "rare_mob_core": 2,
+        "forest_wood": 2,
+        "rare_field_catalyst": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 31,
+      "required_hall_level": 12,
+      "required_profession_level": 24,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 6
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_heal_r10",
+      "realm": 10,
+      "realm_name": "Đại Thừa",
+      "family": "heal",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 5,
+        "secondary_field_herb": 2,
+        "forest_herb": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 34,
+      "required_hall_level": 13,
+      "required_profession_level": 27,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_tuvi_r10",
+      "realm": 10,
+      "realm_name": "Đại Thừa",
+      "family": "tuvi",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 4,
+        "grain": 3,
+        "mined_spirit_ore": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 34,
+      "required_hall_level": 13,
+      "required_profession_level": 27,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_body_r10",
+      "realm": 10,
+      "realm_name": "Đại Thừa",
+      "family": "body",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 3,
+        "mined_spirit_ore": 4,
+        "forest_wood": 1,
+        "beast_hide": 2
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 34,
+      "required_hall_level": 13,
+      "required_profession_level": 27,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_break_r10",
+      "realm": 10,
+      "realm_name": "Đại Thừa",
+      "family": "break",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 5,
+        "rare_mob_core": 2,
+        "forest_wood": 2,
+        "rare_field_catalyst": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 34,
+      "required_hall_level": 13,
+      "required_profession_level": 27,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 6
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_heal_r11",
+      "realm": 11,
+      "realm_name": "Nhân Tiên",
+      "family": "heal",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 5,
+        "secondary_field_herb": 2,
+        "forest_herb": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 38,
+      "required_hall_level": 15,
+      "required_profession_level": 32,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_tuvi_r11",
+      "realm": 11,
+      "realm_name": "Nhân Tiên",
+      "family": "tuvi",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 4,
+        "grain": 3,
+        "mined_spirit_ore": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 38,
+      "required_hall_level": 15,
+      "required_profession_level": 32,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_body_r11",
+      "realm": 11,
+      "realm_name": "Nhân Tiên",
+      "family": "body",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 3,
+        "mined_spirit_ore": 4,
+        "forest_wood": 1,
+        "beast_hide": 2
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 38,
+      "required_hall_level": 15,
+      "required_profession_level": 32,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_break_r11",
+      "realm": 11,
+      "realm_name": "Nhân Tiên",
+      "family": "break",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 5,
+        "rare_mob_core": 2,
+        "forest_wood": 2,
+        "rare_field_catalyst": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 38,
+      "required_hall_level": 15,
+      "required_profession_level": 32,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 6
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_heal_r12",
+      "realm": 12,
+      "realm_name": "Địa Tiên",
+      "family": "heal",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 5,
+        "secondary_field_herb": 2,
+        "forest_herb": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 41,
+      "required_hall_level": 17,
+      "required_profession_level": 35,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_tuvi_r12",
+      "realm": 12,
+      "realm_name": "Địa Tiên",
+      "family": "tuvi",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 4,
+        "grain": 3,
+        "mined_spirit_ore": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 41,
+      "required_hall_level": 17,
+      "required_profession_level": 35,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_body_r12",
+      "realm": 12,
+      "realm_name": "Địa Tiên",
+      "family": "body",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 3,
+        "mined_spirit_ore": 4,
+        "forest_wood": 1,
+        "beast_hide": 2
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 41,
+      "required_hall_level": 17,
+      "required_profession_level": 35,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_break_r12",
+      "realm": 12,
+      "realm_name": "Địa Tiên",
+      "family": "break",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 5,
+        "rare_mob_core": 2,
+        "forest_wood": 2,
+        "rare_field_catalyst": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 41,
+      "required_hall_level": 17,
+      "required_profession_level": 35,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 6
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_heal_r13",
+      "realm": 13,
+      "realm_name": "Thiên Tiên",
+      "family": "heal",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 6,
+        "secondary_field_herb": 2,
+        "forest_herb": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 44,
+      "required_hall_level": 18,
+      "required_profession_level": 38,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_tuvi_r13",
+      "realm": 13,
+      "realm_name": "Thiên Tiên",
+      "family": "tuvi",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 5,
+        "grain": 4,
+        "mined_spirit_ore": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 44,
+      "required_hall_level": 18,
+      "required_profession_level": 38,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_body_r13",
+      "realm": 13,
+      "realm_name": "Thiên Tiên",
+      "family": "body",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 4,
+        "mined_spirit_ore": 5,
+        "forest_wood": 1,
+        "beast_hide": 2
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 44,
+      "required_hall_level": 18,
+      "required_profession_level": 38,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_break_r13",
+      "realm": 13,
+      "realm_name": "Thiên Tiên",
+      "family": "break",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 6,
+        "rare_mob_core": 3,
+        "forest_wood": 2,
+        "rare_field_catalyst": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 44,
+      "required_hall_level": 18,
+      "required_profession_level": 38,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 6
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_heal_r14",
+      "realm": 14,
+      "realm_name": "Chân Tiên",
+      "family": "heal",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 6,
+        "secondary_field_herb": 2,
+        "forest_herb": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 47,
+      "required_hall_level": 20,
+      "required_profession_level": 41,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_tuvi_r14",
+      "realm": 14,
+      "realm_name": "Chân Tiên",
+      "family": "tuvi",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 5,
+        "grain": 4,
+        "mined_spirit_ore": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 47,
+      "required_hall_level": 20,
+      "required_profession_level": 41,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_body_r14",
+      "realm": 14,
+      "realm_name": "Chân Tiên",
+      "family": "body",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 4,
+        "mined_spirit_ore": 5,
+        "forest_wood": 1,
+        "beast_hide": 2
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 47,
+      "required_hall_level": 20,
+      "required_profession_level": 41,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_break_r14",
+      "realm": 14,
+      "realm_name": "Chân Tiên",
+      "family": "break",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 6,
+        "rare_mob_core": 3,
+        "forest_wood": 2,
+        "rare_field_catalyst": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 47,
+      "required_hall_level": 20,
+      "required_profession_level": 41,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 6
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_heal_r15",
+      "realm": 15,
+      "realm_name": "Huyền Tiên",
+      "family": "heal",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 6,
+        "secondary_field_herb": 2,
+        "forest_herb": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 50,
+      "required_hall_level": 21,
+      "required_profession_level": 44,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_tuvi_r15",
+      "realm": 15,
+      "realm_name": "Huyền Tiên",
+      "family": "tuvi",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 5,
+        "grain": 4,
+        "mined_spirit_ore": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 50,
+      "required_hall_level": 21,
+      "required_profession_level": 44,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_body_r15",
+      "realm": 15,
+      "realm_name": "Huyền Tiên",
+      "family": "body",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 4,
+        "mined_spirit_ore": 5,
+        "forest_wood": 1,
+        "beast_hide": 2
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 50,
+      "required_hall_level": 21,
+      "required_profession_level": 44,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_break_r15",
+      "realm": 15,
+      "realm_name": "Huyền Tiên",
+      "family": "break",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 6,
+        "rare_mob_core": 3,
+        "forest_wood": 2,
+        "rare_field_catalyst": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 50,
+      "required_hall_level": 21,
+      "required_profession_level": 44,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 6
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_heal_r16",
+      "realm": 16,
+      "realm_name": "Kim Tiên",
+      "family": "heal",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 6,
+        "secondary_field_herb": 2,
+        "forest_herb": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 54,
+      "required_hall_level": 23,
+      "required_profession_level": 47,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_tuvi_r16",
+      "realm": 16,
+      "realm_name": "Kim Tiên",
+      "family": "tuvi",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 5,
+        "grain": 4,
+        "mined_spirit_ore": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 54,
+      "required_hall_level": 23,
+      "required_profession_level": 47,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_body_r16",
+      "realm": 16,
+      "realm_name": "Kim Tiên",
+      "family": "body",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 4,
+        "mined_spirit_ore": 5,
+        "forest_wood": 1,
+        "beast_hide": 2
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 54,
+      "required_hall_level": 23,
+      "required_profession_level": 47,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_break_r16",
+      "realm": 16,
+      "realm_name": "Kim Tiên",
+      "family": "break",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 6,
+        "rare_mob_core": 3,
+        "forest_wood": 2,
+        "rare_field_catalyst": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 54,
+      "required_hall_level": 23,
+      "required_profession_level": 47,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 6
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_heal_r17",
+      "realm": 17,
+      "realm_name": "Thái Ất Kim Tiên",
+      "family": "heal",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 6,
+        "secondary_field_herb": 2,
+        "forest_herb": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 57,
+      "required_hall_level": 25,
+      "required_profession_level": 50,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_tuvi_r17",
+      "realm": 17,
+      "realm_name": "Thái Ất Kim Tiên",
+      "family": "tuvi",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 5,
+        "grain": 4,
+        "mined_spirit_ore": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 57,
+      "required_hall_level": 25,
+      "required_profession_level": 50,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_body_r17",
+      "realm": 17,
+      "realm_name": "Thái Ất Kim Tiên",
+      "family": "body",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 4,
+        "mined_spirit_ore": 5,
+        "forest_wood": 1,
+        "beast_hide": 2
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 57,
+      "required_hall_level": 25,
+      "required_profession_level": 50,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_break_r17",
+      "realm": 17,
+      "realm_name": "Thái Ất Kim Tiên",
+      "family": "break",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 6,
+        "rare_mob_core": 3,
+        "forest_wood": 2,
+        "rare_field_catalyst": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 57,
+      "required_hall_level": 25,
+      "required_profession_level": 50,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 6
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_heal_r18",
+      "realm": 18,
+      "realm_name": "Đại La Kim Tiên",
+      "family": "heal",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 7,
+        "secondary_field_herb": 2,
+        "forest_herb": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 60,
+      "required_hall_level": 26,
+      "required_profession_level": 53,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_tuvi_r18",
+      "realm": 18,
+      "realm_name": "Đại La Kim Tiên",
+      "family": "tuvi",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 6,
+        "grain": 5,
+        "mined_spirit_ore": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 60,
+      "required_hall_level": 26,
+      "required_profession_level": 53,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_body_r18",
+      "realm": 18,
+      "realm_name": "Đại La Kim Tiên",
+      "family": "body",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 5,
+        "mined_spirit_ore": 6,
+        "forest_wood": 1,
+        "beast_hide": 2
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 60,
+      "required_hall_level": 26,
+      "required_profession_level": 53,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_break_r18",
+      "realm": 18,
+      "realm_name": "Đại La Kim Tiên",
+      "family": "break",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 7,
+        "rare_mob_core": 3,
+        "forest_wood": 2,
+        "rare_field_catalyst": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 60,
+      "required_hall_level": 26,
+      "required_profession_level": 53,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 6
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_heal_r19",
+      "realm": 19,
+      "realm_name": "Tiên Vương",
+      "family": "heal",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 7,
+        "secondary_field_herb": 2,
+        "forest_herb": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 63,
+      "required_hall_level": 28,
+      "required_profession_level": 56,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_tuvi_r19",
+      "realm": 19,
+      "realm_name": "Tiên Vương",
+      "family": "tuvi",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 6,
+        "grain": 5,
+        "mined_spirit_ore": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 63,
+      "required_hall_level": 28,
+      "required_profession_level": 56,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_body_r19",
+      "realm": 19,
+      "realm_name": "Tiên Vương",
+      "family": "body",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 5,
+        "mined_spirit_ore": 6,
+        "forest_wood": 1,
+        "beast_hide": 2
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 63,
+      "required_hall_level": 28,
+      "required_profession_level": 56,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_break_r19",
+      "realm": 19,
+      "realm_name": "Tiên Vương",
+      "family": "break",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 7,
+        "rare_mob_core": 3,
+        "forest_wood": 2,
+        "rare_field_catalyst": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 63,
+      "required_hall_level": 28,
+      "required_profession_level": 56,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 6
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_heal_r20",
+      "realm": 20,
+      "realm_name": "Tiên Đế",
+      "family": "heal",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 7,
+        "secondary_field_herb": 2,
+        "forest_herb": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 66,
+      "required_hall_level": 29,
+      "required_profession_level": 59,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_tuvi_r20",
+      "realm": 20,
+      "realm_name": "Tiên Đế",
+      "family": "tuvi",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 6,
+        "grain": 5,
+        "mined_spirit_ore": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 66,
+      "required_hall_level": 29,
+      "required_profession_level": 59,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_body_r20",
+      "realm": 20,
+      "realm_name": "Tiên Đế",
+      "family": "body",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 5,
+        "mined_spirit_ore": 6,
+        "forest_wood": 1,
+        "beast_hide": 2
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 66,
+      "required_hall_level": 29,
+      "required_profession_level": 59,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_break_r20",
+      "realm": 20,
+      "realm_name": "Tiên Đế",
+      "family": "break",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 7,
+        "rare_mob_core": 3,
+        "forest_wood": 2,
+        "rare_field_catalyst": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 66,
+      "required_hall_level": 29,
+      "required_profession_level": 59,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 6
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_heal_r21",
+      "realm": 21,
+      "realm_name": "Thần Nhân",
+      "family": "heal",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 7,
+        "secondary_field_herb": 2,
+        "forest_herb": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 70,
+      "required_hall_level": 31,
+      "required_profession_level": 64,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_tuvi_r21",
+      "realm": 21,
+      "realm_name": "Thần Nhân",
+      "family": "tuvi",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 6,
+        "grain": 5,
+        "mined_spirit_ore": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 70,
+      "required_hall_level": 31,
+      "required_profession_level": 64,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_body_r21",
+      "realm": 21,
+      "realm_name": "Thần Nhân",
+      "family": "body",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 5,
+        "mined_spirit_ore": 6,
+        "forest_wood": 1,
+        "beast_hide": 2
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 70,
+      "required_hall_level": 31,
+      "required_profession_level": 64,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_break_r21",
+      "realm": 21,
+      "realm_name": "Thần Nhân",
+      "family": "break",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 7,
+        "rare_mob_core": 3,
+        "forest_wood": 2,
+        "rare_field_catalyst": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 70,
+      "required_hall_level": 31,
+      "required_profession_level": 64,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 6
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_heal_r22",
+      "realm": 22,
+      "realm_name": "Chân Thần",
+      "family": "heal",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 7,
+        "secondary_field_herb": 2,
+        "forest_herb": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 73,
+      "required_hall_level": 33,
+      "required_profession_level": 68,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_tuvi_r22",
+      "realm": 22,
+      "realm_name": "Chân Thần",
+      "family": "tuvi",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 6,
+        "grain": 5,
+        "mined_spirit_ore": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 73,
+      "required_hall_level": 33,
+      "required_profession_level": 68,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_body_r22",
+      "realm": 22,
+      "realm_name": "Chân Thần",
+      "family": "body",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 5,
+        "mined_spirit_ore": 6,
+        "forest_wood": 1,
+        "beast_hide": 2
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 73,
+      "required_hall_level": 33,
+      "required_profession_level": 68,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_break_r22",
+      "realm": 22,
+      "realm_name": "Chân Thần",
+      "family": "break",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 7,
+        "rare_mob_core": 3,
+        "forest_wood": 2,
+        "rare_field_catalyst": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 73,
+      "required_hall_level": 33,
+      "required_profession_level": 68,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 6
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_heal_r23",
+      "realm": 23,
+      "realm_name": "Thiên Thần",
+      "family": "heal",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 8,
+        "secondary_field_herb": 2,
+        "forest_herb": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 76,
+      "required_hall_level": 34,
+      "required_profession_level": 72,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_tuvi_r23",
+      "realm": 23,
+      "realm_name": "Thiên Thần",
+      "family": "tuvi",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 7,
+        "grain": 6,
+        "mined_spirit_ore": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 76,
+      "required_hall_level": 34,
+      "required_profession_level": 72,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_body_r23",
+      "realm": 23,
+      "realm_name": "Thiên Thần",
+      "family": "body",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 6,
+        "mined_spirit_ore": 7,
+        "forest_wood": 1,
+        "beast_hide": 2
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 76,
+      "required_hall_level": 34,
+      "required_profession_level": 72,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_break_r23",
+      "realm": 23,
+      "realm_name": "Thiên Thần",
+      "family": "break",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 8,
+        "rare_mob_core": 4,
+        "forest_wood": 2,
+        "rare_field_catalyst": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 76,
+      "required_hall_level": 34,
+      "required_profession_level": 72,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 6
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_heal_r24",
+      "realm": 24,
+      "realm_name": "Thần Quân",
+      "family": "heal",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 8,
+        "secondary_field_herb": 2,
+        "forest_herb": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 79,
+      "required_hall_level": 36,
+      "required_profession_level": 76,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_tuvi_r24",
+      "realm": 24,
+      "realm_name": "Thần Quân",
+      "family": "tuvi",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 7,
+        "grain": 6,
+        "mined_spirit_ore": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 79,
+      "required_hall_level": 36,
+      "required_profession_level": 76,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_body_r24",
+      "realm": 24,
+      "realm_name": "Thần Quân",
+      "family": "body",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 6,
+        "mined_spirit_ore": 7,
+        "forest_wood": 1,
+        "beast_hide": 2
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 79,
+      "required_hall_level": 36,
+      "required_profession_level": 76,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_break_r24",
+      "realm": 24,
+      "realm_name": "Thần Quân",
+      "family": "break",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 8,
+        "rare_mob_core": 4,
+        "forest_wood": 2,
+        "rare_field_catalyst": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 79,
+      "required_hall_level": 36,
+      "required_profession_level": 76,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 6
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_heal_r25",
+      "realm": 25,
+      "realm_name": "Thần Vương",
+      "family": "heal",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 8,
+        "secondary_field_herb": 2,
+        "forest_herb": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 82,
+      "required_hall_level": 37,
+      "required_profession_level": 80,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_tuvi_r25",
+      "realm": 25,
+      "realm_name": "Thần Vương",
+      "family": "tuvi",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 7,
+        "grain": 6,
+        "mined_spirit_ore": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 82,
+      "required_hall_level": 37,
+      "required_profession_level": 80,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_body_r25",
+      "realm": 25,
+      "realm_name": "Thần Vương",
+      "family": "body",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 6,
+        "mined_spirit_ore": 7,
+        "forest_wood": 1,
+        "beast_hide": 2
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 82,
+      "required_hall_level": 37,
+      "required_profession_level": 80,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_break_r25",
+      "realm": 25,
+      "realm_name": "Thần Vương",
+      "family": "break",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 8,
+        "rare_mob_core": 4,
+        "forest_wood": 2,
+        "rare_field_catalyst": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 82,
+      "required_hall_level": 37,
+      "required_profession_level": 80,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 6
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_heal_r26",
+      "realm": 26,
+      "realm_name": "Thần Hoàng",
+      "family": "heal",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 8,
+        "secondary_field_herb": 2,
+        "forest_herb": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 86,
+      "required_hall_level": 39,
+      "required_profession_level": 85,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_tuvi_r26",
+      "realm": 26,
+      "realm_name": "Thần Hoàng",
+      "family": "tuvi",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 7,
+        "grain": 6,
+        "mined_spirit_ore": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 86,
+      "required_hall_level": 39,
+      "required_profession_level": 85,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_body_r26",
+      "realm": 26,
+      "realm_name": "Thần Hoàng",
+      "family": "body",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 6,
+        "mined_spirit_ore": 7,
+        "forest_wood": 1,
+        "beast_hide": 2
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 86,
+      "required_hall_level": 39,
+      "required_profession_level": 85,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_break_r26",
+      "realm": 26,
+      "realm_name": "Thần Hoàng",
+      "family": "break",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 8,
+        "rare_mob_core": 4,
+        "forest_wood": 2,
+        "rare_field_catalyst": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 86,
+      "required_hall_level": 39,
+      "required_profession_level": 85,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 6
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_heal_r27",
+      "realm": 27,
+      "realm_name": "Thần Đế",
+      "family": "heal",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 8,
+        "secondary_field_herb": 2,
+        "forest_herb": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 89,
+      "required_hall_level": 41,
+      "required_profession_level": 90,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_tuvi_r27",
+      "realm": 27,
+      "realm_name": "Thần Đế",
+      "family": "tuvi",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 7,
+        "grain": 6,
+        "mined_spirit_ore": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 89,
+      "required_hall_level": 41,
+      "required_profession_level": 90,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_body_r27",
+      "realm": 27,
+      "realm_name": "Thần Đế",
+      "family": "body",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 6,
+        "mined_spirit_ore": 7,
+        "forest_wood": 1,
+        "beast_hide": 2
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 89,
+      "required_hall_level": 41,
+      "required_profession_level": 90,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_break_r27",
+      "realm": 27,
+      "realm_name": "Thần Đế",
+      "family": "break",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 8,
+        "rare_mob_core": 4,
+        "forest_wood": 2,
+        "rare_field_catalyst": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 89,
+      "required_hall_level": 41,
+      "required_profession_level": 90,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 6
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_heal_r28",
+      "realm": 28,
+      "realm_name": "Thần Tôn",
+      "family": "heal",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 9,
+        "secondary_field_herb": 2,
+        "forest_herb": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 92,
+      "required_hall_level": 42,
+      "required_profession_level": 95,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_tuvi_r28",
+      "realm": 28,
+      "realm_name": "Thần Tôn",
+      "family": "tuvi",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 8,
+        "grain": 7,
+        "mined_spirit_ore": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 92,
+      "required_hall_level": 42,
+      "required_profession_level": 95,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_body_r28",
+      "realm": 28,
+      "realm_name": "Thần Tôn",
+      "family": "body",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 7,
+        "mined_spirit_ore": 8,
+        "forest_wood": 1,
+        "beast_hide": 2
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 92,
+      "required_hall_level": 42,
+      "required_profession_level": 95,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_break_r28",
+      "realm": 28,
+      "realm_name": "Thần Tôn",
+      "family": "break",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 9,
+        "rare_mob_core": 4,
+        "forest_wood": 2,
+        "rare_field_catalyst": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 92,
+      "required_hall_level": 42,
+      "required_profession_level": 95,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 6
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_heal_r29",
+      "realm": 29,
+      "realm_name": "Hỗn Độn Thần",
+      "family": "heal",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 9,
+        "secondary_field_herb": 2,
+        "forest_herb": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 95,
+      "required_hall_level": 44,
+      "required_profession_level": 100,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_tuvi_r29",
+      "realm": 29,
+      "realm_name": "Hỗn Độn Thần",
+      "family": "tuvi",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 8,
+        "grain": 7,
+        "mined_spirit_ore": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 95,
+      "required_hall_level": 44,
+      "required_profession_level": 100,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_body_r29",
+      "realm": 29,
+      "realm_name": "Hỗn Độn Thần",
+      "family": "body",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 7,
+        "mined_spirit_ore": 8,
+        "forest_wood": 1,
+        "beast_hide": 2
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 95,
+      "required_hall_level": 44,
+      "required_profession_level": 100,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_break_r29",
+      "realm": 29,
+      "realm_name": "Hỗn Độn Thần",
+      "family": "break",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 9,
+        "rare_mob_core": 4,
+        "forest_wood": 2,
+        "rare_field_catalyst": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 95,
+      "required_hall_level": 44,
+      "required_profession_level": 100,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 6
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_heal_r30",
+      "realm": 30,
+      "realm_name": "Sáng Thế Chủ",
+      "family": "heal",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 9,
+        "secondary_field_herb": 2,
+        "forest_herb": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 100,
+      "required_hall_level": 46,
+      "required_profession_level": 110,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_tuvi_r30",
+      "realm": 30,
+      "realm_name": "Sáng Thế Chủ",
+      "family": "tuvi",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 8,
+        "grain": 7,
+        "mined_spirit_ore": 1
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 100,
+      "required_hall_level": 46,
+      "required_profession_level": 110,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    },
+    {
+      "recipe_id": "sx02_recipe_body_r30",
+      "realm": 30,
+      "realm_name": "Sáng Thế Chủ",
+      "family": "body",
+      "source_status": "DESIGN_ONLY_UNSOURCED",
+      "runtime_inputs": null,
+      "candidate_source_roles": {
+        "primary_field_herb": 7,
+        "mined_spirit_ore": 8,
+        "forest_wood": 1,
+        "beast_hide": 2
+      },
+      "source_role_not_resource_id": true,
+      "required_field_level": 100,
+      "required_hall_level": 46,
+      "required_profession_level": 110,
+      "explicit_quality_batch": {
+        "cycle_minutes": 3,
+        "base_output_quantity": 36
+      },
+      "quality_catalysts": {
+        "Q1": {},
+        "Q2": {
+          "rare_field_catalyst": 1
+        },
+        "Q3": {
+          "rare_field_catalyst": 2,
+          "rare_mob_core": 1
+        },
+        "Q4": {
+          "rare_field_catalyst": 4,
+          "rare_mob_core": 2
+        }
+      },
+      "runtime_enabled": false
+    }
+  ]
+}
