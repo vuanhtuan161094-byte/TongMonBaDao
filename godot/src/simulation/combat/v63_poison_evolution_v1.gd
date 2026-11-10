@@ -13,6 +13,12 @@ const SPREAD_ICD_SECONDS := 6.0
 const MARK_ICD_SECONDS := 8.0
 const COUNTER_ICD_SECONDS := 12.0
 
+static func predecessor_ready(definition: Dictionary, learned_nodes: Dictionary) -> bool:
+    var parent_id := str(definition.get("parent_skill_id", ""))
+    if parent_id.is_empty() or str(definition.get("school", "")) != "poison":
+        return true
+    return learned_nodes.has(parent_id)
+
 static func rule_for_actor(actor: Dictionary) -> String:
     if str(actor.get("v63_combat_generation", "")) != "divine":
         return ""
