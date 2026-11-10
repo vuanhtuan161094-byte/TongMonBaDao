@@ -125,7 +125,7 @@ static func heal_allowed(target: Dictionary, requested: float, now: float) -> fl
         target["v63_poison_heal_receipts"] = heals
     return granted
 
-static func try_mark_bonus(caster: Dictionary, target: Dictionary, now: float) -> float:
+static func peek_mark_bonus(caster: Dictionary, target: Dictionary, now: float) -> float:
     if rule_for_actor(caster) != "marked_target_punish":
         return 0.0
     if now < float(caster.get("v63_poison_mark_ready_at", -1.0)):
@@ -134,8 +134,18 @@ static func try_mark_bonus(caster: Dictionary, target: Dictionary, now: float) -
     var mark: Dictionary = marks.get(str(caster.get("id", "")), {})
     if mark.is_empty() or now >= float(mark.get("until", -1.0)):
         return 0.0
-    caster["v63_poison_mark_ready_at"] = now + MARK_ICD_SECONDS
     return 0.12
+
+static func commit_mark_bonus(caster: Dictionary, now: float) -> void:
+    caster["v63_poison_mark_ready_at"] = now + MARK_ICD_SECONDS
+
+# Isolated pure-math harness compatibility. Battle runtime uses peek+commit
+# only after actual_damage > 0 to prevent spending a mark on dodged hits.
+static func try_mark_bonus(caster: Dictionary, target: Dictionary, now: float) -> float:
+    var bonus := peek_mark_bonus(caster, target, now)
+    if bonus > 0.0:
+        commit_mark_bonus(caster, now)
+    return bonus
 
 static func arm_cleanse_counter(caster: Dictionary, removed_count: int, now: float) -> bool:
     if rule_for_actor(caster) != "removed_debuff_counter" or removed_count <= 0:
@@ -143,15 +153,23 @@ static func arm_cleanse_counter(caster: Dictionary, removed_count: int, now: flo
     caster["v63_poison_counter_until"] = now + 5.0
     return true
 
-static func consume_cleanse_counter(caster: Dictionary, now: float) -> float:
+static func peek_cleanse_counter(caster: Dictionary, now: float) -> float:
     if rule_for_actor(caster) != "removed_debuff_counter":
         return 0.0
     if now > float(caster.get("v63_poison_counter_until", -1.0)) \
             or now < float(caster.get("v63_poison_counter_ready_at", -1.0)):
         return 0.0
+    return 0.08
+
+static func commit_cleanse_counter(caster: Dictionary, now: float) -> void:
     caster.erase("v63_poison_counter_until")
     caster["v63_poison_counter_ready_at"] = now + COUNTER_ICD_SECONDS
-    return 0.08
+
+static func consume_cleanse_counter(caster: Dictionary, now: float) -> float:
+    var bonus := peek_cleanse_counter(caster, now)
+    if bonus > 0.0:
+        commit_cleanse_counter(caster, now)
+    return bonus
 
 static func refresh_oldest_owned_poison(target: Dictionary, owner_id: String, duration: float, now: float) -> bool:
     var statuses: Dictionary = target.get("status_effects", {})
