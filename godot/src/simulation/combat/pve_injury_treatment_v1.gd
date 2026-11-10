@@ -5,9 +5,9 @@ extends RefCounted
 # Uses the existing 0/1 Injury and persisted recovery tick. A paid appointment
 # shortens that tick; the canonical scheduler alone completes recovery.
 # This is an opt-in QA candidate. No second injury timer, save schema, or wallet.
-const TREATMENT_TICKS := 30
+const TREATMENT_TICKS := PveR12BalanceV1.INJURY_TREATMENT_TICKS
 const FREE_RECOVERY_TICKS := 120
-const COST_BY_REALM := {1:1500,2:3000}
+const COST_BY_REALM := PveR12BalanceV1.INJURY_TREATMENT_FEES
 
 static func quote(state: SimulationState, disciple: DiscipleState) -> Dictionary:
     if state == null or disciple == null or not PveR12BalanceV1.active(state) \
