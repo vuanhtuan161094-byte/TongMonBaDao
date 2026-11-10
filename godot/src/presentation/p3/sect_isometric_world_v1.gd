@@ -880,6 +880,19 @@ func _process(delta: float) -> void:
     queue_redraw()
 
 
+# VFX08 presentation-only animation tempo, derived from the same stats
+# authority as MapBattleV2. Never changes the actual attack/cast clocks.
+func _pve_visual_action_seconds(actor: Dictionary, skill_id: String = "") -> float:
+    var stats: Dictionary = V63HumanSkillCombatSystem.effective_attack_stats(
+        actor, actor.get("stats", {}))
+    if not skill_id.is_empty():
+        var definition: Dictionary = V63HumanSkillCombatSystem.skill_definition(skill_id)
+        var cast_seconds := float(definition.get("cast_time", 0.35))
+        return clampf(cast_seconds / maxf(0.1, 1.0 + float(stats.get("cast_speed", 0.0))),
+            0.10, 0.65)
+    return clampf(0.29 / maxf(0.45, 1.0 + float(stats.get("attack_speed", 0.0))),
+        0.10, 0.42)
+
 func _apply_pve_actor_events(events: Array[Dictionary],snapshot: MapBattleV2) -> void:
     for event in events:
         var kind := str(event.get("type",""))
@@ -888,12 +901,18 @@ func _apply_pve_actor_events(events: Array[Dictionary],snapshot: MapBattleV2) ->
         if kind == "move" and snapshot.actors.has(source_id):
             pve_actor_actions[source_id] = {"action":"run","started":pve_clock,"until":pve_clock+0.3}
         elif kind == "skill_cast" and snapshot.actors.has(source_id):
-            pve_actor_actions[source_id] = {"action":"cast","started":pve_clock,"until":pve_clock+0.85}
+            var skill_id := str(event.get("skill_id", ""))
+            var cast_window := _pve_visual_action_seconds(snapshot.actors[source_id], skill_id)
+            pve_actor_actions[source_id] = {"action":"cast","started":pve_clock,"until":pve_clock+cast_window}
         elif kind == "hit":
             if str(event.get("kind","")) in ["basic","basic_followup"] and snapshot.actors.has(source_id):
-                pve_actor_actions[source_id] = {"action":"attack","started":pve_clock,"until":pve_clock+0.85}
-            if snapshot.actors.has(target_id) and float(event.get("damage",0.0)) > 0.0:
-                pve_actor_actions[target_id] = {"action":"hit","started":pve_clock,"until":pve_clock+0.5}
+                var attack_window := _pve_visual_action_seconds(snapshot.actors[source_id])
+                pve_actor_actions[source_id] = {"action":"attack","started":pve_clock,"until":pve_clock+attack_window}
+            # Basic damage and poison DoT leave the target's walk/cast/attack
+            # alive. The already-authoritative VFX/HP-number can show contact.
+        elif kind == "status_applied" and snapshot.actors.has(target_id) and \
+                str(event.get("status","")) in ["stun","freeze","knockback","knock_up","stagger"]:
+            pve_actor_actions[target_id] = {"action":"hit","started":pve_clock,"until":pve_clock+0.30}
         elif kind == "downed" and snapshot.actors.has(str(event.get("actor_id",""))):
             var downed_id := str(event.get("actor_id",""))
             pve_actor_actions[downed_id] = {"action":"die","started":pve_clock,"until":INF}
