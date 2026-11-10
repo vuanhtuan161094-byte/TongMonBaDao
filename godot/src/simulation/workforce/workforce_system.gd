@@ -115,6 +115,10 @@ func assign_group(state: SimulationState, disciple_id: StringName, group_id: Str
         return false
     if state.sect.economy_a_enabled and not building_system.active_resource_timer_for_worker(state,disciple.id).is_empty() and group_id != disciple.work_group_id:
         return false
+    # A growing plot owns its real worker until Warehouse harvest. Direct
+    # workforce calls must enforce the same lock as Field/Quick Assignment UI.
+    if state.p3_7_buildings_enabled and group_id != disciple.work_group_id and building_system.disciple_has_active_spirit_plot(state,disciple.id):
+        return false
     # Explicitly assigning a different crew frees the real Body facility slot;
     # a returned position may be immediately reused by another disciple.
     if group_id != disciple.work_group_id and DiscipleBodyTrainingFacilityV2.has_reserved_slot(state,disciple):
@@ -157,6 +161,8 @@ func assign_worksite(state: SimulationState, disciple_id: StringName, building_i
         return false
     var disciple: DiscipleState = state.disciples[disciple_id]
     if state.sect.economy_a_enabled and not building_system.active_resource_timer_for_worker(state,disciple.id).is_empty() and building_id != disciple.worksite_building_id:
+        return false
+    if state.p3_7_buildings_enabled and building_id != disciple.worksite_building_id and building_system.disciple_has_active_spirit_plot(state,disciple.id):
         return false
     # The primary-building fallback counts group-only members as assigned.
     # Clearing only worksite would therefore leave a hidden Rèn Thân slot.

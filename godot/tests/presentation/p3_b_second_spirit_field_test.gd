@@ -143,6 +143,16 @@ func _run() -> void:
     if blocked_site == null or blocked_group == null or not blocked_site.disabled or not blocked_group.disabled:
         _fail("Active growing plot did not prevent reassignment to a second Field.")
         return
+    # Guard the authoritative API too: invisible direct orders may never move
+    # the same plot worker to another paid building or a different crew.
+    var locked_worksite := person.worksite_building_id
+    if workforce.assign_worksite(state,worker_id,original.id) or (
+        workforce.assign_group(state,worker_id,&"mining_crew")
+        or person.worksite_building_id != locked_worksite
+        or person.work_group_id != &"herbalism_crew"
+    ):
+        _fail("Canonical workforce accepted cross-Field reassignment mid-harvest.")
+        return
 
     var barrier: Dictionary = await ui.call("_save_runtime_async_barrier")
     if not bool(barrier.get("ok",false)):
