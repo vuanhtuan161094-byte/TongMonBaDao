@@ -62,12 +62,18 @@ static func preview(state: SimulationState,battle: MapBattleV2,
                 return {"ok":false,"reason":"p0_unregistered_or_invalid_drop"}
             if rng.chance(chance):
                 items[item] = int(items.get(item,0))+amount
+    # Explicitly QA-gated realm-1/2 combat budget. Unchanged for all
+    # historical saves and all unsourced species/realms.
+    var candidate := PveR12BalanceV1.gated_reward(
+        state,state.disciples[StringName(killer_id)],species)
+    var cultivation_xp := float(candidate.get("cultivation",TU_VI_XP_PER_NORMAL_KILL))
+    var body_xp := float(candidate.get("body",BODY_XP_PER_NORMAL_KILL))
     var actor_xp: Dictionary = {}
     var party_id := str(killer.get("party_id",""))
     var target_position: Vector2 = corpse.get("position",Vector2.ZERO)
     actor_xp[killer_id] = {
-        "cultivation":TU_VI_XP_PER_NORMAL_KILL,
-        "body":BODY_XP_PER_NORMAL_KILL
+        "cultivation":cultivation_xp,
+        "body":body_xp
     }
     # Optional teams share only with living members of THE SAME party ID
     # physically near this kill. Solo actors never create a global team aura.
@@ -86,13 +92,16 @@ static func preview(state: SimulationState,battle: MapBattleV2,
             if at.distance_to(target_position) > TEAM_SHARE_RANGE:
                 continue
             actor_xp[id] = {
-                "cultivation":TU_VI_XP_PER_NORMAL_KILL*TEAM_SHARE_RATIO,
-                "body":BODY_XP_PER_NORMAL_KILL*TEAM_SHARE_RATIO
+                "cultivation":cultivation_xp*TEAM_SHARE_RATIO,
+                "body":body_xp*TEAM_SHARE_RATIO
             }
-    return {"ok":true,"kill_id":kill_id,"slot_id":slot_id,
+    var result := {"ok":true,"kill_id":kill_id,"slot_id":slot_id,
         "generation":int(event.get("slot_generation",0)),"species":species,
         "killer_actor_id":killer_id,"items":items,"actor_xp":actor_xp,
         "has_drop":not items.is_empty()}
+    if not candidate.is_empty():
+        result["stones"] = int(candidate["stones"])
+    return result
 
 static func commit(state: SimulationState,battle: MapBattleV2,
         population: Dictionary,event: Dictionary,world_seed: int) -> Dictionary:
@@ -139,6 +148,13 @@ static func commit(state: SimulationState,battle: MapBattleV2,
     if not state.sect.p3_7_resources_enabled:
         return {"ok":false,"reason":"p0_warehouse_authority_disabled"}
     var items: Dictionary = plan["items"]
+    var earned_stones := int(plan.get("stones",0))
+    var personal_actor: DiscipleState = state.disciples.get(
+        StringName(str(plan.get("killer_actor_id",""))),null)
+    if earned_stones < 0 or (earned_stones > 0 and (
+            personal_actor == null or personal_actor.spirit_stones >
+            EconomySystem.V2_MAX_STONES-earned_stones)):
+        return {"ok":false,"reason":"pve_candidate_stone_overflow","barrier":true}
     for raw_item in items.keys():
         var item := StringName(str(raw_item))
         var amount := int(items[raw_item])
@@ -164,7 +180,8 @@ static func commit(state: SimulationState,battle: MapBattleV2,
                     "detail":check.get("reason","unknown")}
         before_disciples[str(id)] = {
             "progress":disciple.v2_realm_progress.duplicate(true),
-            "hp":disciple.hp,"max_hp":disciple.max_hp
+            "hp":disciple.hp,"max_hp":disciple.max_hp,
+            "spirit_stones":disciple.spirit_stones
         }
     # In-memory transaction: restore canonical stock/progression if any
     # operation surprisingly rejects after the pure preflight above.
@@ -189,6 +206,10 @@ static func commit(state: SimulationState,battle: MapBattleV2,
                     break
             if not failed.is_empty():
                 break
+    # Monetary receipt settles only on the same already-authenticated kill,
+    # after material/EXP commit; old P0 path continues to award zero Stones.
+    if failed.is_empty() and earned_stones > 0:
+        personal_actor.spirit_stones += earned_stones
     if not failed.is_empty():
         state.sect.warehouse_resources = stock_before
         state.sect.warehouse_event_count = stock_events_before
@@ -198,6 +219,7 @@ static func commit(state: SimulationState,battle: MapBattleV2,
             disciple.v2_realm_progress = prior["progress"]
             disciple.hp = float(prior["hp"])
             disciple.max_hp = float(prior["max_hp"])
+            disciple.spirit_stones = int(prior["spirit_stones"])
         return {"ok":false,"reason":failed,"barrier":true}
     var receipt := {
         "version":VERSION,"kill_id":kill_id,"slot_id":slot_id,
@@ -205,7 +227,12 @@ static func commit(state: SimulationState,battle: MapBattleV2,
         "species":str(plan["species"]),"items":items.duplicate(true),
         "actor_xp":xp.duplicate(true),"disposition":"DROPPED" if not items.is_empty() else "NO_DROP"
     }
+    if earned_stones > 0:
+        receipt["stones"] = earned_stones
     ledger[slot_id] = receipt
     population["p0_kill_rewards"] = ledger
-    return {"ok":true,"duplicate":false,"receipt":receipt,
+    var settled := {"ok":true,"duplicate":false,"receipt":receipt,
         "items":items,"actor_xp":xp}
+    if earned_stones > 0:
+        settled["stones"] = earned_stones
+    return settled
