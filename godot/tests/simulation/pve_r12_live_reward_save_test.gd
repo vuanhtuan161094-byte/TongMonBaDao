@@ -59,8 +59,8 @@ func _run() -> void:
         return
     state.sect.economy_a_policy[PveR12BalanceV1.POLICY_KEY] = true
     if not _check(PveR12BalanceV1.active(state)
-            and PveR12BalanceV1.personal_hp_service_price(state,disciple) == 300,
-            "candidate-not-available-to-isolated-qa"):
+            and int(PveR12BalanceV1.INJURY_TREATMENT_FEES[1]) == 1500,
+            "candidate-Injury-service-not-ready-in-qa"):
         return
     for item_id in PveR12BalanceV1.NPC_PURCHASE_BASE_PRICE.keys():
         var expected_price := int(PveR12BalanceV1.NPC_PURCHASE_BASE_PRICE[item_id])*2
@@ -147,43 +147,102 @@ func _run() -> void:
             and loaded.sect.warehouse_resources == state.sect.warehouse_resources,
             "cold-Save-must-preserve-personal-coin-and-warehouse"):
         return
-    # Test-only wounded fixture AFTER real HP0 payment and canonical retreat:
-    # this isolated HP subtraction models the care transaction, not a measured
-    # monster damage distribution or fabricated PvE reward.
+    # A real combat-system lethal hit (not a forged HP state) downs the V2
+    # disciple, and the canonical terminal settlement now revives FULL HP
+    # but leaves Injury=1 for natural 120-tick or paid 30-tick recovery.
+    var monster_attacker := ""
+    for raw_id in session.battle.actors.keys():
+        var a: Dictionary = session.battle.actors[raw_id]
+        if str(a.get("side","")) == "monster" and float(a.get("hp",0.0)) > 0.0:
+            monster_attacker = str(raw_id)
+            break
+    if not _check(not monster_attacker.is_empty(),"no-real-monster-attacker"):
+        return
+    var lethal := session.battle.apply_continuous_damage_tick(
+        monster_attacker,str(picked),"pve_bal02_real_disciple_down",10000.0)
+    if not _check(bool(lethal.get("ok",false))
+            and float(session.battle.actors[str(picked)].get("hp",1.0)) == 0.0,
+            "actual-combat-kernel-failed-to-down-disciple"):
+        return
+    session.battle.active = false
+    session.battle.outcome = "defeat"
     var retreat := session.retreat_multicamp()
-    if not _check(bool(retreat.get("ok",false)) and disciple.region_id == &"sect"
-            and disciple.active_pve_encounter_id.is_empty(),
-            "canonical-return-to-sect-failed"):
+    if not _check(bool(retreat.get("ok",false))
+            and disciple.region_id == &"sect"
+            and disciple.active_pve_encounter_id.is_empty()
+            and disciple.injury_level == 1
+            and is_equal_approx(disciple.hp,disciple.max_hp)
+            and disciple.injury_recover_at_tick == state.tick+120,
+            "defeat-must-revive-FULL-HP-with-120min-Injury: "+str(retreat)):
         return
+    if not _check(not bool(PveP0CommandsV1.build_members(
+            state,[str(picked)]).get("ok",false)),
+            "injured-hunter-must-not-redeploy"):
+        return
+    # Explicitly demonstrate HP service is dead in the new pilot, even if
+    # the player is missing HP; the paid clinic then must leave HP unchanged.
     disciple.hp = maxf(1.0,disciple.max_hp-10.0)
-    var before_heal_hp := disciple.hp
-    var before_heal_coin := disciple.spirit_stones
-    var before_heal_sect := state.sect.spirit_stones
-    var healed := econ.buy_personal_hp_service(state,picked,"pvebal01-real-coin-heal")
-    if not _check(bool(healed.get("ok",false))
-            and int(healed.get("receipt",{}).get("cost",-1)) == 300
-            and is_equal_approx(disciple.hp,before_heal_hp+10.0)
-            and disciple.spirit_stones == before_heal_coin-300
-            and state.sect.spirit_stones == before_heal_sect+300,
-            "source-earned-PVE-Stones-did-not-pay-one-canonical-300LT-service"):
+    var hp_before_care := disciple.hp
+    var old_hp_service := econ.buy_personal_hp_service(
+        state,picked,"pvebal02-legacy-hp-service")
+    if not _check(not bool(old_hp_service.get("ok",false))
+            and str(old_hp_service.get("reason","")) ==
+                "hp_service_replaced_by_injury_care_and_pills"
+            and is_equal_approx(disciple.hp,hp_before_care),
+            "pilot-must-never-sell-HP-for-Stones"):
         return
-    var second := econ.buy_personal_hp_service(state,picked,"pvebal01-real-coin-heal")
-    if not _check(bool(second.get("ok",false)) and bool(second.get("already_settled",false))
-            and disciple.spirit_stones == before_heal_coin-300
-            and state.sect.spirit_stones == before_heal_sect+300
-            and is_equal_approx(disciple.hp,before_heal_hp+10.0),
-            "repeat-HP-service-double-debited-or-overhealed"):
+    var before_care_stones := disciple.spirit_stones
+    var before_care_sect := state.sect.spirit_stones
+    var treated := PveInjuryTreatmentV1.start(
+        state,picked,"pvebal02-injury-clinic")
+    if not _check(bool(treated.get("ok",false))
+            and int(treated.get("receipt",{}).get("cost",-1)) == 1500
+            and int(treated.get("receipt",{}).get("hp_restored",-1)) == 0
+            and disciple.injury_recover_at_tick == state.tick+30
+            and disciple.spirit_stones == before_care_stones-1500
+            and state.sect.spirit_stones == before_care_sect+1500
+            and is_equal_approx(disciple.hp,hp_before_care),
+            "injury-treatment-must-cost-1500-and-30min-not-heal-HP: "+str(treated)):
         return
-    if not _check(bool(runtime.save(NOW).get("ok",false)),"post-care-SaveService-failed"):
+    var duplicate := PveInjuryTreatmentV1.start(
+        state,picked,"pvebal02-injury-clinic")
+    var another := PveInjuryTreatmentV1.start(
+        state,picked,"pvebal02-other-request")
+    if not _check(bool(duplicate.get("ok",false))
+            and bool(duplicate.get("already_settled",false))
+            and not bool(another.get("ok",false))
+            and disciple.spirit_stones == before_care_stones-1500
+            and state.sect.spirit_stones == before_care_sect+1500,
+            "repeat-injury-clinic-charged-twice"):
+        return
+    if not _check(bool(runtime.save(NOW).get("ok",false)),
+            "paid-Injury-SaveService-write-failed"):
         return
     var cared := SaveService.new().load_from_path(path)
-    if not _check(cared != null and cared.disciples[picked].spirit_stones == disciple.spirit_stones
+    if not _check(cared != null and cared.disciples.has(picked)
+            and cared.disciples[picked].spirit_stones == disciple.spirit_stones
             and cared.sect.spirit_stones == state.sect.spirit_stones
-            and is_equal_approx(cared.disciples[picked].hp,disciple.hp),
-            "cold-Save-care-payment-drift"):
+            and cared.disciples[picked].injury_level == 1
+            and cared.disciples[picked].injury_recover_at_tick == state.tick+30
+            and is_equal_approx(cared.disciples[picked].hp,hp_before_care),
+            "cold-Save-paid-Injury-coin-time-HP-drift"):
+        return
+    var scheduler := SimulationScheduler.new(state)
+    scheduler.run_ticks(29)
+    if not _check(disciple.injury_level == 1
+            and is_equal_approx(disciple.hp,hp_before_care)
+            and disciple.current_action == &"HOLD",
+            "paid-Injury-healed-before-30-ticks-or-created-HP"):
+        return
+    scheduler.step()
+    if not _check(disciple.injury_level == 0
+            and disciple.injury_recover_at_tick == 0
+            and is_equal_approx(disciple.hp,hp_before_care),
+            "canonical-scheduler-failed-to-complete-Injury-only-treatment"):
         return
     _cleanup()
-    print("PVE_BAL01_REAL_HP0_STONES_XP_REPLAY_SAVE_PASS species="+target_species
-        +" credited="+str(expected["stones"])+" NPC_wood_paid=100 healed_10hp_paid=300"
-        +" care_replay_safe=true basePassiveUnaffected=true")
+    print("PVE_CARE02_HP0_FULL_REVIVE_INJURY_CLINIC_SAVE_PASS species="+target_species
+        +" credited="+str(expected["stones"])+" NPC_wood_paid=100"
+        +" clinic_paid=1500 injury_ticks=30 hp_restored=0"
+        +" duplicate_safe=true passive_tuvi_unchanged=true")
     quit(0)
