@@ -258,7 +258,7 @@ static func return_one(owner: SimulationRuntimeOwnerV2,
             or disciple.max_hp <= 0.0:
         return {"ok":false,"reason":"p0_invalid_return_hp"}
     var downed := hp <= 0.0
-    var returned_hp := 1.0 if downed else minf(
+    var returned_hp := disciple.max_hp if downed else minf(
         disciple.max_hp,CombatStatsV2.rescale_current_hp(
             hp,max_hp,disciple.max_hp))
     var actor_snapshot := actor.duplicate(true)
