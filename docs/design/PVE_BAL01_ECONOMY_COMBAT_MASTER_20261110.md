@@ -79,6 +79,27 @@ Các giá trị là **kịch bản r1/r2 cố định**, chưa phản ánh tăng
 
 ## 4. Shop và các chi phí cần lập riêng
 
+### Phường Thị — giá MUA VẬT TƯ đề xuất trong pilot, không thay người chơi đang hoạt động
+
+`market_purchase_price` đã được nối với bảng giá **cơ sở** chỉ khi `pve_r12_reward_pilot=true` nội bộ; giá thực bằng giá cơ sở × `market_buy_markup` hiện hữu (mặc định ×2). Quyền bán của NPC, tồn kho/ngày, hàng tồn và sổ giao dịch vẫn thuộc `EconomySystem`. Các giá này **không tác động** tới chế độ hiện hành.
+
+| Item ID | Giá cơ sở pilot | Giá mua với markup ×2 | Người chơi bán cho NPC |
+|---|---:|---:|---|
+| `linh_moc` | 50 | 100 LT | vẫn 2 LT |
+| `thanh_thiet` | 80 | 160 LT | vẫn 8 LT |
+| `linh_coc` | 40 | 80 LT | vẫn 4 LT |
+| `thanh_linh_thao` | 80 | 160 LT | vẫn 6 LT |
+| `tu_van_thao` | 200 | 400 LT | không có trong danh sách bán |
+| `huyen_thiet` | 550 | 1.100 LT | vẫn 34 LT |
+| `tinh_lang_bi` | 375 | 750 LT | không có trong danh sách bán |
+| `linh_tuy` | 1.250 | 2.500 LT | không có trong danh sách bán |
+| `tam_mach_ban` | 20.000 | 40.000 LT | không bán lại |
+| `linh_tuyen_chi_tam_manh` | 600 | 1.200 LT | không bán lại |
+
+Cần đo thật nguồn thu/chi và thay lại giá **bán cho NPC** nếu cần, nhưng không mở vòng mua rẻ bán đắt. Mảnh Linh Tuyền Chi Tâm mua 100 mảnh tốn tối thiểu 120.000 LT ở markup mặc định, nhưng stock nhập NPC 20 mảnh/ngày nên tối thiểu 5 ngày khi không tự trồng/thu hoạch. Đây là **rào nguồn** thay vì giả vờ Linh Điền tự sinh Linh Tuyền Chi Tâm.
+
+**Giá tham chiếu mua Đan r1 Q1 1.500 LT, r2 Q1 3.000 LT/viên chỉ thuộc mô hình dự báo; thuốc chưa được thêm vào danh mục NPC.** Không cho NPC tạo Đan mà thiếu tồn nguồn và công thức.
+
 | Nhóm giao dịch | Cơ chế hiện hành | Rủi ro | Đích triển khai |
 |---|---|---|---|
 | HP cá nhân | 3 LT/+10 HP, tự mua dưới 50% khi cấu hình cho phép | Rẻ hơn nhiều so với LT2 | Candidate 300/600 LT theo cảnh, giới hạn ngân sách ngày; player OFF |
