@@ -17,3 +17,4 @@ godot/tests/labs/combat_lab/poison_v4_render_contract_test.gd,6BA1DDDB43917E0558
 godot/tests/labs/combat_lab/poison_v4_swarm_aoe_contract_test.gd,7664013A9A43F239E06DEA579B1193BFFC3D09D49E06EE69BF401B0836725A8B,7681,canonical radius/AOE assertions
 docs/qa/SKILL_ALL_ID_AUDIT.csv,A5F1502524FF720D23B12E336789D6F725D3D093EBB9535A5DE72800F5AA1D88,1615292,564 unique source records with raw definitions
 docs/qa/SKILL_ALL_NORMALIZED_MEASUREMENTS_20261111.csv,67897CCD7AA5A0511D411C8D09C6AFBDE693A1BC31368C990D328E6F1B573519,55473,168 normalized engine fixture trials
+godot/tests/simulation/v63_d6_rare_successors_test.gd,611367b1b61aaf9119400c565fc30a616d3b7760,14673,official source SHA fetched at code commit and executed from isolated evidence copy

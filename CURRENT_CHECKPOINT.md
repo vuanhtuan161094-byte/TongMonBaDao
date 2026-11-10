@@ -390,3 +390,10 @@ Evidence: [QA matrix](https://github.com/vuanhtuan161094-byte/TongMonBaDao/blob/
 - Static inventory: 549 V6.3 IDs/105 families/9 branches plus 9 legacy cast entries and 6 technique entries; 564 unique rows. Full source-preserving CSV: docs/qa/SKILL_ALL_ID_AUDIT.csv. Normalized fixture data: docs/qa/SKILL_ALL_NORMALIZED_MEASUREMENTS_20261111.csv.
 - V63 default gates remain OFF; PVB1 numbers remain gated candidate, not owner-approved. VFX manifest has no per-skill asset files.
 - GitHub Actions/status for the code SHA returned no entries at capture; CI PENDING. Physical Windows GUI/mouse, Android and owner visual acceptance remain PENDING. Headless PASS is not playable/release PASS.
+
+## SKILL-ALL supplemental exact-SHA checks (2026-11-11)
+
+- On code SHA 9242ded8acc3e0123a07207bae4b188e065126b5, additionally ran the canonical D6 rare-successor test fetched by blob SHA 611367b1b61aaf9119400c565fc30a616d3b7760: mastery receipt anti-replay and MapBattleSnapshot poison ownership/timers pass; SimulationState to_dict/from_dict learning state passes.
+- Legacy P2.3 and P2.5 focused tests pass; SaveService async roundtrip passes 10 checks with an isolated QA path.
+- Production SaveService cold-process persistence of active PVB1 owner/tick/heal-budget receipts remains PENDING; the snapshot contract is not a substitute for that gate. Physical Windows GUI/Android remain PENDING.
+- Full matrix/log archive and updated scope are in docs/qa/SKILL_ALL_QA_EVIDENCE_20261111.md and godot/outputs/qa_evidence/skill_all_9242ded8_20261111/.

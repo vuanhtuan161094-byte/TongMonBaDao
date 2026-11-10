@@ -8,7 +8,7 @@
 - Tests ran sequentially, isolated profile under QA checkout. No player save/default save opened or written. SaveService unchanged.
 - Import and parse of changed lab script: exit 0.
 - Focused Poison V4/VFX regression: 16/16 exit 0 on code SHA above.
-- Catalogue/school/PVB1 runtime group: 8/8 exit 0 on code SHA above.
+- Catalogue/school/PVB1 runtime group: 8/8 exit 0 on code SHA above. Additional exact-SHA checks: V63 D6 mastery/snapshot 1/1, legacy P2.3 and P2.5 2/2, SaveService async roundtrip 10 checks exit 0.
 - A broader 38-test local overlay also returned 38/38 exit 0. That run happened before the code commit and its worktree contained unrelated local test/import metadata changes; it is **supplementary overlay evidence, not an exact-SHA claim**.
 
 ## Exact-code-SHA matrix
@@ -26,7 +26,7 @@ Detailed markers and raw stdout/stderr are in [the evidence directory](../../god
 | PVB1 6v8 MapBattleV2 fixture | PASS, 40 simulated seconds; 87 casts, 1,047 hits, 558 status ticks, 30 consumes, 5 spreads, 4 downs; not live PvE |
 | Poison 21 profiles + all-school 63 profiles | PASS, 42 + 126 normalized trials; not real DPS/balance acceptance |
 
-Combined matrix: combined_matrix.csv. Exact runtime matrices: matrix.csv and runtime_matrix.csv. Raw Godot stdout/stderr: logs/ (16 tests), runtime_logs/ (8 tests), plus import and parse logs. Each matrix row has code SHA and official engine version.
+Combined matrix: combined_matrix.csv (30 exact-code rows). Exact runtime matrices: matrix.csv and runtime_matrix.csv. Raw Godot stdout/stderr: logs/ (16 tests), runtime_logs/ (11 tests), SaveService async and import/parse logs. Each matrix row has code SHA and official engine version.
 
 ## Inventory and measurements
 
@@ -41,6 +41,8 @@ Canonical source defines Bách Độc Tán Châm radius 2.8 and target cap 3, wh
 ## Pending gates and environmental note
 
 - GitHub Actions and combined status for 9242ded8 returned no workflow/status entries at evidence capture: **CI PENDING**, not PASS and not a gameplay failure.
+- Production SaveService cold-process preservation of active PVB1 owner/tick/heal-budget receipts was not separately exercised. The V65 test verifies MapBattleSnapshot save/load and tick/event idempotence; the 1,475-check PVB1 test exercises bounded mechanics and in-memory serialization. **PENDING dedicated SaveService integration evidence.**
+- Full V63 mastery/cast progression across all users has not been demonstrated in live GUI; D6 headless covers the tested rare-successor cast receipt and anti-replay only. **PENDING broader gameplay acceptance.**
 - Physical Windows mouse GUI at 1280×720, real combat/VFX capture, Android device play, and owner visual acceptance: **PENDING**.
 - All V6.3 feature gates remain OFF by default; candidate balance was not approved or enabled.
 - Godot stderr contains the Windows warning “Failed to read the root certificate store”; import and tests still exit 0. It is recorded rather than suppressed.
