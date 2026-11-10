@@ -280,7 +280,21 @@ static func render(canvas: CanvasItem, cue: Dictionary, target: Vector2, source:
     match kind:
         "cast":
             var center := caster_hand - Vector2(0, 2.0 * z)
-            ring(canvas, center, (9.0 + pulse * 10.0) * z, c, maxf(0.15, pulse) * 0.75, k)
+            # Three restrained luminous texture layers around the ACTUAL
+            # casting hand; drawn before needle / serpent / lotus silhouette.
+            if branch == "doc_cham":
+                master(canvas, NEEDLE_MASTER, center + Vector2(0, -5.0 * z),
+                    Vector2(58, 20) * z, -0.18 + k * 0.16,
+                    maxf(0.20, pulse) * 0.63)
+            elif branch == "co_doc":
+                master(canvas, GU_MASTER, center, Vector2(57, 43) * z,
+                    k * 0.18, maxf(0.20, pulse) * 0.48)
+            else:
+                master(canvas, LOTUS_MASTER, center, Vector2(62, 49) * z,
+                    -k * 0.22, maxf(0.22, pulse) * 0.64)
+                glint(canvas, center - Vector2(0, 11) * z, GOLD,
+                    maxf(0.20, pulse) * 0.55, 3.0 * z, k)
+            ring(canvas, center, (9.0 + pulse * 10.0) * z, c, maxf(0.15, pulse) * 0.46, k)
             if branch == "doc_cham":
                 var count := 5 if motif in ["needle_fan", "thousand_needles"] else 3
                 for i in range(count):
@@ -304,10 +318,27 @@ static func render(canvas: CanvasItem, cue: Dictionary, target: Vector2, source:
                     c, pulse * 0.62, 1.8 * z, phi)
             debris(canvas, center, 15.0 * z, c, pulse, k)
         "projectile":
-            # The projectile endpoint follows its canonical actor ID through
-            # the full flight. The impact happens at the V6.3 release deadline.
+            # Event-clocked flight: textured, controlled bright core and one
+            # painted translucent wake, but NO new projectile authority.
             var head := caster_hand.lerp(p, k)
             var tail := head - d * (22.0 * z)
+            var wake := head - d * (15.0 * z)
+            master(canvas, MIST_MASTER, wake, Vector2(57, 25) * z, d.angle(),
+                0.34, c)
+            if branch == "doc_cham":
+                var fan := motif in ["needle_fan", "thousand_needles", "miasma_pulse"]
+                var breadth := 2.9 if fan else 0.0
+                for i in range(3 if fan else 1):
+                    var offset := d.orthogonal() * (float(i) - (1.0 if fan else 0.0)) * breadth * z
+                    master(canvas, NEEDLE_MASTER, head - d * (6.0 * z) + offset,
+                        Vector2(47, 17) * z, d.angle(),
+                        (0.67 if fan else 0.80))
+            elif branch == "co_doc":
+                master(canvas, GU_MASTER, head, Vector2(44, 35) * z,
+                    d.angle() * 0.20, 0.73, Color("dfff98"))
+            else:
+                master(canvas, LOTUS_MASTER, head, Vector2(38, 31) * z,
+                    k * 1.45, 0.71)
             if branch == "doc_cham":
                 if motif == "miasma_pulse":
                     spark(canvas, head, c, 0.84, 4.0 * z)
@@ -339,6 +370,20 @@ static func render(canvas: CanvasItem, cue: Dictionary, target: Vector2, source:
             glint(canvas, head, c, 0.75, 2.2 * z, d.angle())
             debris(canvas, head - d * (8.0 * z), 7.0 * z, c, 0.36, k)
         "impact":
+            # Render soft impact bloom first. The final bright puncture is
+            # reserved for a real committed V6.3 hit event, NOT every monster
+            # merely standing inside a 3-cell AoE indicator.
+            master(canvas, MIST_MASTER, p + Vector2(0, 3) * z,
+                Vector2(60, 31) * z, d.angle() * 0.2, pulse * 0.31, c)
+            if branch == "doc_cham":
+                master(canvas, NEEDLE_MASTER, p - d * 3.0 * z,
+                    Vector2(49, 16) * z, d.angle(), pulse * 0.63)
+            elif branch == "co_doc":
+                master(canvas, GU_MASTER, p, Vector2(44, 35) * z,
+                    -k * 0.33, pulse * 0.51, Color("f2e57c"))
+            else:
+                master(canvas, LOTUS_MASTER, p, Vector2(43, 34) * z,
+                    k * 0.38, pulse * 0.61)
             if branch == "doc_cham":
                 # Precise pierce for single target, converging needles for AoE.
                 var count := 1 if motif in ["needle_basic", "needle_pierce", "needle_venom"] else 5
