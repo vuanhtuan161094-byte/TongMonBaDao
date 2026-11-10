@@ -617,6 +617,44 @@ func _run() -> void:
     var warehouse_text := str(ui.call("_warehouse_operation_text"))
     for token in ["Thanh Thiết", "Linh Mộc", "Thanh Linh Thảo", "Hồi Xuân Đan"]:
         if not warehouse_text.contains(token):
+            # GP-PLAY01/G0: retain the strict O9 failure, but distinguish a
+            # genuinely lost source from zero stock consumed by standing
+            # Alchemy and intentionally suppressed by the Warehouse UI.
+            # Read-only diagnostics: no gameplay grants, timer or Save edits.
+            var stock_diag: Dictionary = {}
+            for item_id in [&"thanh_thiet",&"linh_moc",&"thanh_linh_thao",NeedsSystem.HEALING_PILL_ID]:
+                stock_diag[str(item_id)] = {
+                    "quantity":warehouse.quantity(state,item_id),
+                    "available":warehouse.available_quantity(state,item_id),
+                    "rule":warehouse.rule(state,item_id)
+                }
+            var plots_diag: Array = []
+            var field_diag := buildings.primary_building(state,BuildingSystem.TYPE_SPIRIT_FIELD)
+            if field_diag != null:
+                for raw_plot in buildings.spirit_field_plots(state,field_diag):
+                    if raw_plot is Dictionary:
+                        plots_diag.append({
+                            "crop":str(raw_plot.get("crop_id","")),
+                            "status":str(raw_plot.get("status","")),
+                            "finish_tick":int(raw_plot.get("finish_tick",0)),
+                            "quantity":int(raw_plot.get("routine_yield",0))
+                        })
+            var jobs_diag: Array = []
+            var hall_diag := buildings.primary_building(state,BuildingSystem.TYPE_ALCHEMY_HALL)
+            if hall_diag != null:
+                for raw_job in buildings.alchemy_jobs(state,hall_diag):
+                    if raw_job is Dictionary:
+                        jobs_diag.append({
+                            "recipe":str(raw_job.get("recipe_id","")),
+                            "finish_tick":int(raw_job.get("finish_tick",0)),
+                            "inputs":raw_job.get("inputs",{})
+                        })
+            print("GP_PLAY01_G0_O9_SOURCE_DIAG "+JSON.stringify({
+                "tick":state.tick,"missing_ui_token":token,
+                "actual_warehouse":stock_diag,"field_plots":plots_diag,
+                "alchemy_jobs":jobs_diag,
+                "warehouse_display":warehouse_text.left(2400)
+            }))
             _fail("O9 Warehouse projection is missing %s." % token)
             return
 
