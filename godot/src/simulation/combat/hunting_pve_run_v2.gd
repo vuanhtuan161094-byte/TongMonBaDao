@@ -402,6 +402,7 @@ func _advance_multicamp(viewed_map: bool) -> Dictionary:
     if battle != null and battle.world_mode:
         return _advance_open_world(viewed_map)
     var did_step := false
+    var pills_used := 0
     if battle.active:
         var stepped := battle.step(viewed_map)
         if not bool(stepped.get("ok",false)):
@@ -410,6 +411,7 @@ func _advance_multicamp(viewed_map: bool) -> Dictionary:
         var pill_use := PveCombatAutoPillV1.review(owner_state,battle)
         if not bool(pill_use.get("ok",false)):
             return pill_use
+        pills_used = int(pill_use.get("used",0))
         if battle._count_alive("monster") == 0:
             battle.active = false
             battle.outcome = "win"
@@ -434,7 +436,8 @@ func _advance_multicamp(viewed_map: bool) -> Dictionary:
         completed["stepped"] = did_step
         completed["barrier"] = true
         return completed
-    return {"ok":true,"stepped":did_step,"barrier":false,
+    return {"ok":true,"stepped":did_step,"barrier":pills_used > 0,
+        "combat_pills_used":pills_used,
         "outcome":battle.outcome,"time":battle.now,
         "alive_disciples":battle._count_alive("disciple"),
         "alive_monsters":battle._count_alive("monster")}
