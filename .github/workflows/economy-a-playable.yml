@@ -6,6 +6,7 @@ on:
   push:
     paths:
       - 'godot/tests/simulation/economy_a_playable_test.gd'
+      - 'godot/tests/simulation/sx_w2_wage_arrears_save_test.gd'
       - 'godot/tests/presentation/economy_a_landscape_ui_test.gd'
       - 'godot/src/simulation/economy/economy_system.gd'
       - '.github/workflows/economy-a-playable.yml'
@@ -95,6 +96,13 @@ jobs:
 
       - name: Run Economy-A focused real V2 timer, wages, market and save
         run: godot --headless --path godot -s res://tests/simulation/economy_a_playable_test.gd
+ 
+      - name: W2 unpaid wage liability, real Warehouse sale and cold Save
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://tests/simulation/sx_w2_wage_arrears_save_test.gd
+          bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/simulation/sx_w2_wage_arrears_save_test.gd
 
       - name: Run Economy-A landscape hall and market real UI
         run: godot --headless --path godot -s res://tests/presentation/economy_a_landscape_ui_test.gd
