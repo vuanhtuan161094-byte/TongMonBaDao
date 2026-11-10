@@ -1,5 +1,8 @@
 # PVE-BAL01 — ĐỐI SOÁT TU VI THỤ ĐỘNG, THƯỞNG SĂN, HP/ĐAN, LT2, 119 CÔNG THỨC
 
+> **ĐÍNH CHÍNH BẮT BUỘC — PVE-CARE02 10/11/2026:** Các phép tính trước đây trong tài liệu này có giá chữa **10 HP bằng Linh Thạch** đã bị thay thế cho nhánh thử nghiệm mới. Chữa trị tại Tông Môn là chữa **trọng thương Injury=1**, mất **30 phút mô phỏng** và **1.500 LT r1 / 3.000 LT r2**; không phục hồi HP. Hồi sinh sau PvE về Sect với **100% HP** và Injury=1, tự khỏi Injury sau 120 ticks nếu không trả phí. HP trong combat dùng Đan/kỹ năng, không được tính hóa đơn HP bên cạnh Đan. Kịch bản mới (12 kills/h, 2 viên Q1/h, 0,15 tử trận/h **giả định**): r1 **26.475 LT/giờ**, r2 **52.950 LT/giờ** trước chi phí thời gian. Các số cũ 23.400/46.800, dịch vụ 300/600 LT/10 HP và bảng 11 lượt chữa/giờ chỉ là lịch sử **SUPERSEDED**; KHÔNG DÙNG ĐỂ TRIỂN KHAI. Nguồn thay thế: [PVE_CARE02_MAP02_INJURY_MAP_AUDIT_20261110.md](PVE_CARE02_MAP02_INJURY_MAP_AUDIT_20261110.md).
+
+
 **Ngày:** 10/11/2026 · PR #72 một nhánh Draft, chưa merge. **Trạng thái:** CODE CANDIDATE + SOURCE AUDIT, CHƯA PLAYER RELEASE. Dữ liệu JSON kèm theo: `docs/design/PVE_BAL01_119_RECIPES_CANDIDATE_20261110.json`.
 
 ## 0. Quyết định điều chỉnh do chủ dự án bổ sung
