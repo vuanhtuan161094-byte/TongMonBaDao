@@ -8,6 +8,9 @@ on:
     paths:
       - 'godot/tests/simulation/tmb_quyen_183_combat_handoff_test.gd'
       - 'godot/tests/simulation/v63_doc_full_combat_matrix_test.gd'
+      - 'godot/tests/simulation/v63_poison_evolution_balance_test.gd'
+      - 'godot/data/combat/v63_*combat_catalog.json'
+      - 'godot/data/combat/v63_content_registry.json'
       - 'godot/tests/simulation/v65_poison_combat_contract_test.gd'
       - 'godot/src/simulation/combat/v63_*.gd'
       - '.github/workflows/v63-quyen-doc-matrix.yml'
@@ -70,6 +73,8 @@ jobs:
             res://tests/simulation/v63_cung_full_combat_matrix_test.gd \
             res://tests/simulation/tmb_quyen_183_combat_handoff_test.gd \
             res://tests/simulation/v63_doc_full_combat_matrix_test.gd \
+            res://tests/simulation/v63_poison_evolution_balance_test.gd \
+            res://src/simulation/combat/v63_poison_evolution_v1.gd \
             res://tests/simulation/v65_poison_combat_contract_test.gd; do
             godot --headless --path godot --check-only --script "$script"
           done
@@ -83,6 +88,11 @@ jobs:
         run: |
           set -o pipefail
           godot --headless --path godot -s res://tests/simulation/v63_doc_full_combat_matrix_test.gd 2>&1 | tee /tmp/doc-183.log
+      - name: PVB1 Độc Tu 183-family evolution and deterministic candidate mechanics
+        shell: bash
+        run: |
+          set -o pipefail
+          godot --headless --path godot -s res://tests/simulation/v63_poison_evolution_balance_test.gd 2>&1 | tee /tmp/pvb1-poison-183.log
       - name: Độc dedicated DoT, ownership and boss contracts
         shell: bash
         run: |
@@ -101,6 +111,7 @@ jobs:
           path: |
             /tmp/quyen-183.log
             /tmp/doc-183.log
+            /tmp/pvb1-poison-183.log
             /tmp/doc-contract.log
             /tmp/cung-183.log
           if-no-files-found: ignore
