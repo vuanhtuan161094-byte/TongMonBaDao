@@ -115,21 +115,28 @@ func _update_actor_visual(actor_id: String, actor: Dictionary) -> void:
     var action := "idle"
     var event_time := -1.0
     var event_type := ""
-    for event in battle.events:
+    # MapBattleV2._event appends monotonically increasing battle.now and
+    # keeps at most MAX_EVENTS. Read only the recent suffix, newest first,
+    # instead of N actors x 2,400 historical events every render update.
+    var recent_window := 0.95
+    for index in range(battle.events.size()-1,-1,-1):
+        var event: Dictionary = battle.events[index]
         var when := float(event.get("time",-1.0))
-        if when < event_time:
-            continue
+        if when < battle.now-recent_window:
+            break
         var source_id := str(event.get("actor_id",event.get("attacker",event.get("caster",""))))
         var target_id := str(event.get("target",event.get("target_id","")))
         if source_id == actor_id and ["move","skill_cast","skill_hit","hit","basic_hit"].has(str(event.get("type",""))):
             event_time = when
             event_type = str(event.get("type",""))
+            break
         elif target_id == actor_id and str(event.get("type","")) == "status_applied" \
                 and str(event.get("status","")) in ["stun","freeze","knockback","knock_up","stagger"]:
             # Damage and DoT must NOT force this actor into its whole-body
             # hurt atlas. Only authoritative control may interrupt movement.
             event_time = when
             event_type = "hurt"
+            break
     if float(actor.get("hp",0.0)) <= 0.0:
         action = "die"
     elif event_type == "hurt" and event_time >= 0.0 and battle.now-event_time <= 0.30:
