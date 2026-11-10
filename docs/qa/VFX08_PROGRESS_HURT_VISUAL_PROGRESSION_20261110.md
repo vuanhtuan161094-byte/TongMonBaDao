@@ -43,3 +43,14 @@ If gameplay eventually awards +1 projectile or more targets at higher skill leve
 - Real Windows and Android FPS/RAM/Hurt stress, 4v8, 30v40, 480-disciple simulation remain **PENDING measurable device runs**. Do not confuse fixed animation cadence with proven FPS gains.
 - Only 1 authored 3/4-right plus mirrored-left Poison female atlas is verified; owner-approved **final four-direction character source still missing**; never call this final.
 - Aesthetics at 1× not owner-approved: **PARTIAL** until side-by-side videos match the chosen mockups.
+
+## VFX-08 production PvE extension and event-ring complexity (same PR72)
+
+- `1ca149e0`: `PveJxContinuousWorldViewV1` now ignores normal `hit`/DoT as full-body hurt, maintains moving actors in `run`, bounds verified CC visual 0.30s.
+- `bfb05b21`: `SectIsometricWorldV1` removes normal `hit` target-animation override and derives attacking/casting pose windows from actual `attack_speed`/`cast_speed` and authored `cast_time`. No damage or AI changes.
+- `51ced644`: continuous-world visualization switches from per-actor scan across **all** up to 2,400 event-ring entries to reverse suffix scan of **0.95s of live events**, stopping at first relevant event and preserving chronological precedence. This is directly sourced from monotonic `MapBattleV2._event()` timestamps. Complexity changes from O(actors × full history) to O(actors × recent suffix); no new event authority.
+- `b5be9986`, `a6d653cd`: official pure presentation test includes both production worlds and a 2,300-old-event fixture; source actors/HP remain unchanged.
+- `8235720c`: official VFX workflow calls the production-view test in strict Godot 4.7.2. Runs on subsequent latest exact SHA need CI+film evidence before acceptance.
+- Official Godot [run 42831811479](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42831811479) **SUCCESS**, including all strict Lab tests and **12 real 1280×720 videos** on SHA `288513d4`: novice 4v8 vs Level12 in-memory haste+mastery. That success **predates production PvE patches**. Measured recorder GPU render avg on 4v8 novice ~24.95ms/frame, Level12 ~25.41ms/frame: these are **Movie Maker offline render** estimates on a CI virtual GPU, not target hardware FPS/RAM evidence.
+- Actual visual review of four stitched cinematic frame sheets: 1× 4v8 actors remain visually small, effect silhouettes not yet match three approved aesthetic mockups; color layers alone insufficient. **AESTHETIC PARTIAL.**
+- Strict new [run 42834555867](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42834555867) was IN_PROGRESS when checked; do not use older success to claim new SHA PASS.
