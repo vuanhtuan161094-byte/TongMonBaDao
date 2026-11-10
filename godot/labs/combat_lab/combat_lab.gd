@@ -958,9 +958,8 @@ func _build_lab_monsters(enemy_kind: String, boss_id: String) -> Array:
                 return []
             var monster: Dictionary = mob.actor
             monster["position"] = swarm_points[index]
-            # Stationary fixture preserves the ring-boundary QA oracle. All
-            # HP loss and actual AoE target selection still run in V6.3.
-            monster["move_speed"] = 0.0
+            # Only start positions are authored for the geometry oracle.
+            # MapBattleV2 retains real monster pursuit / attack behaviour.
             monsters.append(monster)
         return monsters
     if encounter_option != null and encounter_option.selected == 3:
