@@ -436,8 +436,8 @@ func _update_v4_shot_camera() -> void:
     var available := Vector2(
         WORLD.size.x * maxf(1.0, screen_span.x - 48.0) / maxf(1.0, screen_span.x) / zoom,
         WORLD.size.y * maxf(1.0, screen_span.y - 48.0) / maxf(1.0, screen_span.y) / zoom)
-    if absf(source.x - target.x) <= available.x and
-            absf(source.y - target.y) <= available.y:
+    if absf(source.x - target.x) <= available.x \
+            and absf(source.y - target.y) <= available.y:
         v4_shot_camera_center = midpoint
         return
     if v4_shot_reached_target:
