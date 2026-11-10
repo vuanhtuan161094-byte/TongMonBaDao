@@ -39,6 +39,21 @@ const RATES := {
     }
 }
 
+# Proposed only: full NPC BUY price = base × existing market_buy_markup (default 2).
+# Existing NPC purchase price remains unchanged while internal pilot is OFF.
+# No new item, shop stock, seller route or currency is created here.
+const NPC_PURCHASE_BASE_PRICE := {
+    "linh_moc":50, "thanh_thiet":80, "linh_coc":40,
+    "thanh_linh_thao":80, "tu_van_thao":200, "huyen_thiet":550,
+    "tinh_lang_bi":375, "linh_tuy":1250,
+    "tam_mach_ban":20000, "linh_tuyen_chi_tam_manh":600
+}
+
+static func npc_purchase_base_price(state: SimulationState, resource_id: StringName) -> int:
+    if not active(state):
+        return 0
+    return int(NPC_PURCHASE_BASE_PRICE.get(str(resource_id),0))
+
 static func reward_for_realm(realm: int, species_id: String) -> Dictionary:
     var row: Dictionary = RATES.get(realm,{})
     if row.is_empty() or not row["kill_stones"].has(species_id):
