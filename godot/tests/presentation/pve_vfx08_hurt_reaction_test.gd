@@ -66,7 +66,13 @@ func _run() -> void:
     jx.battle = battle
     jx._clock = 2.0
     jx._render_positions["real_monster"] = Vector2(6.0,3.0)
-    battle.events = basic.duplicate(true)
+    # Exact MapBattleV2 MAX_EVENTS worst-case history: a visual tick must
+    # use the recently committed suffix without scanning every old receipt.
+    battle.events.clear()
+    for event_index in range(2300):
+        battle.events.append({"type":"hit","time":-100.0+float(event_index)/100.0,
+            "attacker":"real_disciple","target":"real_monster","damage":5.0})
+    battle.events.append(basic[0])
     jx._update_actor_visual("real_monster", battle.actors["real_monster"])
     _check(str(jx._actor_visuals.get("real_monster",{}).get("action","")) != "hit",
         "continuous world damage cannot trigger hurt")
