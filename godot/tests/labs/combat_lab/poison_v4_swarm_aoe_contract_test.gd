@@ -108,7 +108,8 @@ func _run() -> void:
         _check(pending.get("center", null) is Vector2 and pending.get("center", null) == CENTER,
             "V6.3 cast locks center before projectile travel")
         var arena: Control = lab.get("arena")
-        var snapshot: Dictionary = arena.locked_aoe_center_by_caster.get("lab_disciple_01", {})
+        var snapshots: Dictionary = arena.get("locked_aoe_center_by_caster")
+        var snapshot: Dictionary = snapshots.get("lab_disciple_01", {})
         _check(snapshot.get("center", null) == CENTER, "renderer caches original cast center")
         for _step in range(16):
             lab.call("_step_battle")
@@ -132,8 +133,8 @@ func _run() -> void:
         _check(outside_hits == 0, "no AoE skill receipt for either outside monster")
         var painted_center := false
         for cue in arena.cues:
-            if str(cue.get("kind", "")) == "venom_cloud" and
-                    str(cue.get("source_actor_id", "")) == "lab_disciple_01":
+            if str(cue.get("kind", "")) == "venom_cloud" \
+                    and str(cue.get("source_actor_id", "")) == "lab_disciple_01":
                 painted_center = cue.get("position", Vector2.ZERO) == CENTER
         _check(painted_center, "AoE ring draws original 3-tile engine center")
     print("POISON_V4_SWARM_AOE_RESULT=" + ("PASS" if failures == 0 else "FAIL") +
