@@ -273,6 +273,28 @@ func _run() -> void:
         and warehouse.quantity(state,&"linh_coc") == grain_available-1,
         "recipe did not debit real Warehouse inputs exactly once"):
         return
+    # A malformed 1,999-herb pending job is NOT accepted merely because
+    # bulk was enabled. The existing B3 CARE validator still rejects it.
+    var original_hall_state := hall.production_state.duplicate(true)
+    var mutated := original_hall_state.duplicate(true)
+    var forged_jobs: Array = mutated.get("jobs",[])
+    if not _check(forged_jobs.size() == 1,"no authentic job to validate"):
+        return
+    var forged: Dictionary = forged_jobs[0]
+    var altered_inputs: Dictionary = forged.get("inputs",{}).duplicate(true)
+    altered_inputs["thanh_linh_thao"] = 1999
+    forged["inputs"] = altered_inputs
+    forged_jobs[0] = forged
+    mutated["jobs"] = forged_jobs
+    hall.production_state = mutated
+    var malformed_reason := B3MedicalAutoplayV1.validate(state)
+    hall.production_state = original_hall_state
+    if not _check(malformed_reason == "invalid_tu_khi_recipe_snapshot",
+        "CARE validator incorrectly accepted a non-authorized bulk input"):
+        return
+    if not _check(B3MedicalAutoplayV1.validate(state).is_empty(),
+        "CARE validator rejects genuine frozen 2,000-herb input"):
+        return
     state = _save_reload(state)
     if not _check(state != null,"Alchemy cold Save failed"):
         return
@@ -295,11 +317,48 @@ func _run() -> void:
         and warehouse.quantity(state,&"tu_khi_dan") == pill_before+1,
         "canonical Save lost bulk policy or one earned pill"):
         return
+    # True medicine consumer: unassign after paid Alchemy job, use the
+    # earned canonical Tụ Khí Đan, then exercise Save and replay guards.
+    actor = state.disciples[candidate.id]
+    if not _check(workforce.assign_group(state,actor.id,&""),
+        "completed alchemist cannot leave job to consume earned medicine"):
+        return
+    # The focused test advanced process_tick directly, without the scheduler's
+    # action transition. Simulate the real post-job IDLE window, not free items.
+    actor.current_action = &"IDLE"
+    if not _check(bool(B3PillSatietyV1.enable(state,actor).get("ok",false)),
+        "legitimate V2 disciple cannot enable shared medicine satiety"):
+        return
+    var tuvi_before := actor.v2_realm_progress.duplicate(true)
+    var pill_used := B3PillSatietyV1.consume(state,actor,&"tu_khi_dan",1)
+    if not _check(bool(pill_used.get("ok",false))
+        and not bool(pill_used.get("replay",true))
+        and warehouse.quantity(state,&"tu_khi_dan") == pill_before
+        and int(pill_used.get("receipt",{}).get("tuvi",0)) == 10000
+        and B3PillSatietyV1.spent_today(state,actor) == 25
+        and actor.v2_realm_progress != tuvi_before,
+        "earned Tụ Khí was not consumed into legitimate Tu Vi once"):
+        return
+    var replayed_pill := B3PillSatietyV1.consume(state,actor,&"tu_khi_dan",1)
+    if not _check(bool(replayed_pill.get("replay",false))
+        and warehouse.quantity(state,&"tu_khi_dan") == pill_before
+        and B3PillSatietyV1.spent_today(state,actor) == 25,
+        "consumer retry duplicated medicine or saturation"):
+        return
+    state = _save_reload(state)
+    if not _check(state != null,"consumer cold Save failed"):
+        return
+    actor = state.disciples[candidate.id]
+    if not _check(B3PillSatietyV1.spent_today(state,actor) == 25
+        and warehouse.quantity(state,&"tu_khi_dan") == pill_before
+        and bool(B3PillSatietyV1.consume(state,actor,&"tu_khi_dan",1).get("replay",false)),
+        "consumer cold reload lost exactly-once receipt"):
+        return
     if not _check(state.validate_invariants().is_empty(),
         "real V55 producer/consumer Save failed invariants: "+str(state.validate_invariants())):
         return
     _cleanup()
-    print("SX-V55 BULK 5 REAL SOURCES -> WAREHOUSE -> REAL ALCHEMY; LEGACY FREEZE & COLD SAVE: PASS")
+    print("SX-V55 BULK 5 REAL SOURCES -> WAREHOUSE -> ALCHEMY -> TUVI CONSUMER; LEGACY FREEZE & COLD SAVE: PASS")
     quit(0)
 
 func _cleanup() -> void:
