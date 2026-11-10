@@ -7,7 +7,7 @@ extends RefCounted
 const PREFIX := "tmb.skill.poison."
 const HUMAN := {
     "basic.human": {"description": "Độc châm cơ bản vút thẳng tới một mục tiêu.", "vfx": "Kim nhỏ tím-bạc có lõi ngọc sáng, dư ảnh ngắn, trúng tạo một tia xuyên gọn.", "motif": "needle_basic"},
-    "mobility.human": {"description": "Bước ẩn thân né đòn và dịch chuyển khi cần tiếp cận mục tiêu.", "vfx": "Bóng tím tan thành ba vệt khói mỏng, ánh kim chớp ở điểm đến; không giả lập trúng đòn.", "motif": "shadow_step"},
+    "mobility.human": {"description": "Thân pháp dịch chuyển và tạo thời gian né tránh; không có hiệu ứng tàng hình.", "vfx": "Bóng tím tan thành ba vệt khói mỏng, ánh kim chớp ở điểm đến; không giả lập trúng đòn.", "motif": "shadow_step"},
     "doc_cham.active_01.human": {"description": "Kim độc đâm xuyên mục tiêu đơn.", "vfx": "Kim xuyên xương thân sắc, viền tím đậm, lóe bạc khi găm trúng; không nổ tròn.", "motif": "needle_pierce"},
     "doc_cham.active_02.human": {"description": "Kim tẩm độc thâm nhập một mục tiêu.", "vfx": "Kim tím-vàng đâm vào thân, đường độc nhỏ cuộn dọc mục tiêu rồi tan.", "motif": "needle_venom"},
     "doc_cham.active_03.human": {"description": "Tán châm ảnh hưởng một vùng theo giới hạn mục tiêu thực.", "vfx": "Đuôi kim tụ về tâm rồi tỏa thành quạt mưa châm; ranh giới AoE dưới chân quái.", "motif": "needle_fan"},
