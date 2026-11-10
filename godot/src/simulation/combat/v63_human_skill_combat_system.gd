@@ -474,6 +474,9 @@ static func _support_target(battle: MapBattleV2, actor: Dictionary, skill: Dicti
                     effective_heal = V63DivineSkillCombatSystem.healing_amount(actor, ally, potential_heal)
                 if effective_heal <= 0.001:
                     continue
+                if str(skill.get("school", "")) == "poison" and \
+                        V63PoisonEvolutionV1.heal_capacity(ally, battle.now) <= 0.001:
+                    continue
             candidates.append(ally)
     if str(skill.effect) == "cleanse":
         candidates.sort_custom(func(a: Dictionary,b: Dictionary):
