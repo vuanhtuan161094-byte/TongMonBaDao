@@ -23,6 +23,21 @@ func _run() -> void:
     var lab := LabScene.instantiate()
     root.add_child(lab)
     await process_frame
+    # The UI must explain real skill semantics and separate decorative VFX
+    # direction from combat authority. No silent substitution to another skill.
+    _check(bool(lab.call("_select_poison_skill",
+        "tmb.skill.poison.doc_cham.active_03.human")), "AoE art brief selectable")
+    lab.call("_refresh_poison_skill_details")
+    var details: Label = lab.get("poison_skill_detail_label")
+    _check(details.text.contains("Bách Độc Tán Châm") and
+        details.text.contains("bán kính 3.0 ô") and
+        details.text.contains("tối đa 3 mục tiêu") and
+        details.text.contains("MỸ THUẬT:"),
+        "AoE UI displays true name/radius/hit cap and separate VFX description")
+    _check(bool(lab.call("_select_poison_skill",
+        "tmb.skill.poison.duoc_doc.active_02.human")) == false or
+        details.text.contains("Bách Độc Tán Châm"),
+        "different branch is not silently inserted into current-branch catalog")
     var battle: MapBattleV2 = lab.get("battle")
     _check(battle != null and battle.active, "a canonical Lab battle exists")
     if battle == null or not battle.active:
