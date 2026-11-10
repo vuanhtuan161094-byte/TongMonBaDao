@@ -2,6 +2,15 @@ name: V63 Quyền + Độc 183-ID Combat Matrix
 
 on:
   workflow_dispatch:
+  pull_request:
+    types: [synchronize, opened, reopened]
+    paths:
+      - 'godot/src/simulation/combat/v63_*.gd'
+      - 'godot/src/simulation/combat/map_battle_v2.gd'
+      - 'godot/data/combat/v63_*.json'
+      - 'godot/tests/simulation/v63_poison_evolution_balance_test.gd'
+      - 'godot/tests/simulation/v63_doc_full_combat_matrix_test.gd'
+      - '.github/workflows/v63-quyen-doc-matrix.yml'
   push:
     branches:
       - integration/pve-p0-playable-ui-20261103
