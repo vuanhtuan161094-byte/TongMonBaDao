@@ -127,6 +127,15 @@ func sx_v55_common_requirements(state: SimulationState, original: Dictionary) ->
 func sx_v55_upgrade_cost(state: SimulationState, building: BuildingState) -> Dictionary:
     return sx_v55_common_requirements(state,upgrade_cost(building))
 
+# Stock policy follows only real scaled consumers, not the size of the
+# producer batch. Linh Cốc and Tử Vân Thảo use their original unscaled
+# sinks/recipes; multiplying their stock goals would perpetually overplant.
+func sx_v55_crop_stock_target(state: SimulationState, crop_id: StringName) -> int:
+    var target := crop_registry.stock_target(crop_id)
+    if sx_v55_bulk_enabled(state) and crop_id == SpiritCropRegistry.CROP_THANH_LINH_THAO:
+        target *= SX_V55_COMMON_SCALE
+    return target
+
 const MATERIAL_TAM_MACH_BAN := "tam_mach_ban"
 const MATERIAL_HERB := "thanh_linh_thao"
 const MATERIAL_LINH_TUYEN_HEART := "linh_tuyen_chi_tam"
@@ -2344,8 +2353,7 @@ func _select_crop(state: SimulationState, field: BuildingState, data: Dictionary
     var best := &""
     var best_score := 0.0
     for crop_id in eligible:
-        var target := float(crop_registry.stock_target(crop_id)) * (
-            float(SX_V55_COMMON_SCALE) if sx_v55_bulk_enabled(state) else 1.0)
+        var target := float(sx_v55_crop_stock_target(state,crop_id))
         var quantity := float(warehouse.quantity(state, crop_registry.output_resource_id(crop_id))) if state.sect.p3_7_resources_enabled else 0.0
         for field_item in _buildings_of_type(state,TYPE_SPIRIT_FIELD):
             for pending in _ensure_spirit_field_state(state,field_item).get("plots",[]):
