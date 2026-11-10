@@ -155,8 +155,14 @@ jobs:
           set -euo pipefail
           BRANCH_HEAD="$(gh api repos/${{ github.repository }}/git/ref/heads/integration/pve-p0-playable-ui-20261103 --jq '.object.sha')"
           if [[ "$BRANCH_HEAD" != "$RUN_SHA" ]]; then
-            echo "Stale QA SHA $RUN_SHA; active HEAD $BRANCH_HEAD. Do not publish as current."
-            exit 0
+            # A documentation-only checkpoint is not a new gameplay SHA.
+            # Skip stale runs only when actual Godot/test/workflow paths changed.
+            CHANGED="$(gh api "repos/${{ github.repository }}/compare/$RUN_SHA...$BRANCH_HEAD" --jq '.files[].filename')"
+            if grep -Eq '^(godot/|.github/workflows/)' <<< "$CHANGED"; then
+              echo "Stale gameplay QA SHA $RUN_SHA; newer runtime/test/workflow code at $BRANCH_HEAD."
+              exit 0
+            fi
+            echo "Source tested at $RUN_SHA; only documentation/checkpoint changes through $BRANCH_HEAD."
           fi
           BODY="PVB1_GODOT_CI_REPORT | exact SHA \`$RUN_SHA\` | V63 matrix result: \`$MATRIX_RESULT\` | [run #$RUN_ID](https://github.com/${{ github.repository }}/actions/runs/$RUN_ID). Full job logs and 183-ID artifacts must be inspected before calling gameplay PASS. Linux official Godot only; Windows/Android pending."
           gh api --method POST "repos/${{ github.repository }}/issues/72/comments" -f body="$BODY"
