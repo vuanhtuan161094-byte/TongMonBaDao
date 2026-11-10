@@ -164,6 +164,12 @@ func _step_disciple(disciple: DiscipleState) -> void:
     if disciple.injury_level == 1 and disciple.region_id == &"sect" and disciple.injury_recover_at_tick > 0 and state.tick >= disciple.injury_recover_at_tick:
         disciple.injury_level = 0
         disciple.injury_recover_at_tick = 0
+    # Paid Injury care is a time reservation, not HP restoration. The same
+    # scheduler tick resolves its due date; no job or AI action runs meanwhile.
+    # Natural free 120-tick recovery remains the zero-funds fallback.
+    if PveInjuryTreatmentV1.treatment_in_progress(state,disciple):
+        disciple.current_action = &"HOLD"
+        return
     # Study occupies the same disciple job slot as production and hunting.
     # Its time is advanced once by process_tick above; no second action may run.
     if not disciple.v63_study_job.is_empty():
