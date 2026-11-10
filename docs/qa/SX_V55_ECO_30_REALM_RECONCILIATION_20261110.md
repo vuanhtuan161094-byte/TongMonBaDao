@@ -104,3 +104,12 @@ The actionable historical source has therefore been **identified**, but bulk mig
 
 **Still PENDING**: final pass of long-running P3.7/Economy-A/GP/compatibility Actions on later scene changes; actual owner Windows 10/Intel `ig11icd64.dll`, 1280×720 mouse and FPS/RAM, 60/90/180 minutes real elapsed offline, physical Android landscape; source provenance for V5.4 late realms. No branch created, no main merge, no fake resources/Stone, no SaveService code changes.
 
+
+
+### Post-integration balance correction — 2026-11-10
+
+- Verified that the legacy AUTO_DEMAND stock target is a **consumer-demand** target, not a producer-batch size. With new bulk yields, multiplying **all** crop stock targets by ×1,000 would overplant expensive `linh_coc` and `tu_van_thao`, whose actual recipes/needs remain unscaled. Fixed at `ad6724f151f5568b252ed89c372793313c71641a`: target `thanh_linh_thao` is 40→40,000 when the player opts in (matching actual ×1,000 herb requirement), while `linh_coc` remains 60 and `tu_van_thao` remains 20. The normal one active plot/one worker and pending output counting still apply. Added exact source assertion at `e6bef45dfcabc42d7bde4aefcb8defe2d2405e3c`.
+- The user-facing 1280×720 Hall UI automated acceptance now clicks the actual bulk toggle once, verifies no automatic opt-in, checks authentic 10,000 Mine/8,000 Forest and 2,500/2,000 crops preview, Forge scaling and Alchemy scaled ingredient labels on the true scene. This was added at `0500e9a4cd37f3b2e31a95f0c9baf011410315b4`.
+- Historical GP01 and GP02B1 cumulative failures on UI SHA `53fdeb47` were traced in their workflow logs to the original **Godot parser error in the QA-only 1/7/30-day script** (untyped loop day count), not a reported Mine/occupation contract assertion failure. Fixed the typed day count in `191229b0d3089ad25bc88fef33fd605546aa2742` with subsequent [#42767689261](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42767689261) whole SUCCESS. Do not rewrite them as pass on the old SHA.
+- To establish the final integrated result, `.github/workflows/sx-v55-eco-source-gate.yml` now runs the repository's **entire P3.7 full cumulative regression** after all SX bulk, source, income, Hall UI, B3 and wage/Save tests, per commit `32319696b7c9c78b39cc291e1c6ec06f23ab69b5`. Await current exact-SHA CI verdict; owner PC 1280×720 Windows 10 Intel + Android remain PENDING USER.
+
