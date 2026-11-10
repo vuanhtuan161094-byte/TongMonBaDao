@@ -54,10 +54,36 @@ func _run() -> void:
     if not _check(not bool(econ.configure_v1(state,PveR12BalanceV1.POLICY_KEY,true).get("ok",false)),
             "player-must-not-enable-candidate"):
         return
+    if not _check(econ.market_purchase_price(state,&"linh_moc") == 4,
+            "pilot-off-must-preserve-4-Stone-Linh-Moc-price"):
+        return
     state.sect.economy_a_policy[PveR12BalanceV1.POLICY_KEY] = true
     if not _check(PveR12BalanceV1.active(state)
             and PveR12BalanceV1.personal_hp_service_price(state,disciple) == 300,
             "candidate-not-available-to-isolated-qa"):
+        return
+    for item_id in PveR12BalanceV1.NPC_PURCHASE_BASE_PRICE.keys():
+        var expected_price := int(PveR12BalanceV1.NPC_PURCHASE_BASE_PRICE[item_id])*2
+        if not _check(econ.market_purchase_price(state,StringName(item_id)) == expected_price,
+                "wrong-candidate-NPC-price: "+str(item_id)):
+            return
+    # One authenticated NPC purchase uses real opening Sect funds, stock and
+    # Warehouse; repeated request must never duplicate material or Stone debit.
+    var before_buy_stones := state.sect.spirit_stones
+    var warehouse := WarehouseSystem.new()
+    var before_buy_wood := warehouse.quantity(state,&"linh_moc")
+    var purchased := econ.buy_from_npc_v1(state,&"linh_moc",1,"pve-bal01-shop-buy")
+    if not _check(bool(purchased.get("ok",false))
+            and state.sect.spirit_stones == before_buy_stones-100
+            and warehouse.quantity(state,&"linh_moc") == before_buy_wood+1,
+            "real-NPC-100LT-purchase-did-not-debit-credit"):
+        return
+    var duplicate_buy := econ.buy_from_npc_v1(state,&"linh_moc",1,"pve-bal01-shop-buy")
+    if not _check(bool(duplicate_buy.get("ok",false))
+            and bool(duplicate_buy.get("already_settled",false))
+            and state.sect.spirit_stones == before_buy_stones-100
+            and warehouse.quantity(state,&"linh_moc") == before_buy_wood+1,
+            "NPC-purchase-replay-minted-wood-or-charged-twice"):
         return
     var nav := SectIsometricWorldV1.pve_navigation_grid()
     var options := PveOpenWorldTopologyV1.build(
@@ -158,6 +184,6 @@ func _run() -> void:
         return
     _cleanup()
     print("PVE_BAL01_REAL_HP0_STONES_XP_REPLAY_SAVE_PASS species="+target_species
-        +" credited="+str(expected["stones"])+" healed_10hp_paid=300"
+        +" credited="+str(expected["stones"])+" NPC_wood_paid=100 healed_10hp_paid=300"
         +" care_replay_safe=true basePassiveUnaffected=true")
     quit(0)
