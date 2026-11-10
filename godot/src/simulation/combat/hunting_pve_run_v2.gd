@@ -407,6 +407,9 @@ func _advance_multicamp(viewed_map: bool) -> Dictionary:
         if not bool(stepped.get("ok",false)):
             return stepped
         did_step = true
+        var pill_use := PveCombatAutoPillV1.review(owner_state,battle)
+        if not bool(pill_use.get("ok",false)):
+            return pill_use
         if battle._count_alive("monster") == 0:
             battle.active = false
             battle.outcome = "win"
@@ -451,6 +454,12 @@ func _advance_open_world(viewed_map: bool) -> Dictionary:
     var kills := _record_open_world_kills()
     if not bool(kills.get("ok",false)):
         return kills
+    # Consume real healing medicine only after successful combat/HP0 settlement.
+    # One Warehouse debit + B3 daily receipt + battle HP change is persisted by
+    # the same save barrier, including when no monster died in this frame.
+    var pill_use := PveCombatAutoPillV1.review(owner_state,battle)
+    if not bool(pill_use.get("ok",false)):
+        return pill_use
     var population_step := PveMultiCampPopulationV1.advance_respawns(camp_population,battle.now)
     if not bool(population_step.get("ok",false)):
         return population_step
@@ -486,7 +495,7 @@ func _advance_open_world(viewed_map: bool) -> Dictionary:
     # transition, or terminal result. Regular movement/damage frames are
     # included by the next explicit/15-second save without rebuilding a full
     # 192x192 world snapshot every 0.25 seconds.
-    var durable_barrier := recorded_kills > 0 or respawned > 0 or zone_changed or not battle.active
+    var durable_barrier := recorded_kills > 0 or respawned > 0 or zone_changed or not battle.active or int(pill_use.get("used",0)) > 0
     if durable_barrier:
         var stored := _persist_live_state()
         if not bool(stored.get("ok",false)):
@@ -504,6 +513,7 @@ func _advance_open_world(viewed_map: bool) -> Dictionary:
         "zone_changed":zone_changed,"camp_index":camp_index,
         "camp_id":PveMultiCampPopulationV1.camp_id(camp_index),
         "respawned":respawned,"recorded_kills":recorded_kills,
+        "combat_pills_used":int(pill_use.get("used",0)),
         "barrier":durable_barrier,
         "loot_disposition":"P0_KILL_ROLL" if distributed else (
             "CODEX_SETTLED" if bool(kills.get("codex_rewards_granted",false)) else "LOOT_PENDING"),
