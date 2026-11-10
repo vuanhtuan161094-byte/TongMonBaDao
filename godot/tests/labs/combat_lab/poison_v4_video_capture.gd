@@ -8,6 +8,7 @@ const SKILLS := {
     "doc_cham": "tmb.skill.poison.doc_cham.active_01.human",
     "co_doc": "tmb.skill.poison.co_doc.active_01.human",
     "duoc_doc": "tmb.skill.poison.duoc_doc.active_01.human",
+    "duoc_heal": "tmb.skill.poison.duoc_doc.active_02.human",
 }
 const FRAMES := 192
 var errors := 0
@@ -45,7 +46,7 @@ func _run() -> void:
     var requested_skill: String = SKILLS[branch]
     OS.set_environment("TMB_COMBAT_LAB_SCHOOL", "poison")
     OS.set_environment("TMB_COMBAT_LAB_GENERATION", "human")
-    OS.set_environment("TMB_COMBAT_LAB_BRANCH", branch)
+    OS.set_environment("TMB_COMBAT_LAB_BRANCH", "duoc_doc" if branch == "duoc_heal" else branch)
     OS.set_environment("TMB_COMBAT_LAB_LINEAGE", "a")
     OS.set_environment("TMB_COMBAT_LAB_PARTY", "1")
     OS.set_environment("TMB_COMBAT_LAB_ENEMY", "normal")
@@ -68,7 +69,16 @@ func _run() -> void:
         _failed("MapBattleV2 never started real Lab encounter")
         quit(4)
         return
-    var preview: OptionButton = lab.get("skill_preview_option")
+    # Isolated in-memory QA fixture only: a wounded ally is required for the
+    # canonical heal consumer; the heal amount itself MUST come from V6.3.
+    if branch == "duoc_heal":
+        var patient: Dictionary = battle.actors.get("lab_disciple_01", {})
+        if patient.is_empty() or float(patient.get("max_hp", 0.0)) <= 0.0:
+            _failed("No canonical disciple to create a wounded QA-only fixture")
+            quit(8)
+            return
+        patient["hp"] = float(patient["max_hp"]) * 0.45
+        var preview: OptionButton = lab.get("skill_preview_option")
     var found := false
     if preview != null:
         for index in range(preview.item_count):
@@ -90,12 +100,15 @@ func _run() -> void:
     var release_count := _event_count(battle, "skill_release", requested_skill)
     var hit_count := _event_count(battle, "skill_hit", requested_skill)
     var impact_count := _event_count(battle, "v63_skill_hit", requested_skill)
-    var tick_count := 0
+    var heal_count := _event_count(battle, "heal", requested_skill)
+    if branch == "duoc_heal" and heal_count <= 0:
+        _failed("Canonical V6.3 heal event not observed for wounded QA ally")
+        var tick_count := 0
     for raw in battle.events:
         if raw is Dictionary and str(raw.get("type", "")) in ["status_tick", "damage_tick"]:
             tick_count += 1
-    print("POISON_V4_VIDEO_EVIDENCE branch=%s requested=%s frames=%d cast=%d release=%d hit=%d v63_hit=%d status_ticks=%d total_events=%d" % [
-        branch, requested_skill, FRAMES, cast_count, release_count, hit_count, impact_count, tick_count, battle.events.size()])
+    print("POISON_V4_VIDEO_EVIDENCE branch=%s requested=%s frames=%d cast=%d release=%d hit=%d v63_hit=%d status_ticks=%d heals=%d total_events=%d" % [
+        branch, requested_skill, FRAMES, cast_count, release_count, hit_count, impact_count, tick_count, heal_count, battle.events.size()])
     if cast_count <= 0 or release_count <= 0:
         _failed("No real matching skill_cast + skill_release; video cannot be accepted as a combat skill demonstration")
     print("POISON_V4_VIDEO_ZOOM=" + requested_zoom)
