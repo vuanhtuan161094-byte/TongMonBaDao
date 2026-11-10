@@ -624,14 +624,33 @@ static func release_cast_base(battle: MapBattleV2, cast: Dictionary, caster: Dic
         if effect in ["damage","poison","mark","consume_poison"]:
             var ratio := float(cast.ratio)
             if effect == "consume_poison":
-                var owned := 0
-                for stack in target.get("status_effects", {}).get("v63_poison", []):
-                    if str(stack.get("owner_id", "")) == str(caster.id):
-                        owned += 1
-                ratio += minf(0.75, float(owned) * 0.05)
+                var owned_stacks: Array = target.get("status_effects", {}).get("v63_poison", [])
+                if str(definition.get("school", "")) == "poison":
+                    ratio += V63PoisonEvolutionV1.consume_bonus_ratio(owned_stacks, str(caster.id), battle.now)
+                else:
+                    var owned := 0
+                    for stack in owned_stacks:
+                        if str(stack.get("owner_id", "")) == str(caster.id):
+                            owned += 1
+                    ratio += minf(0.75, float(owned) * 0.05)
+            if str(definition.get("school", "")) == "poison":
+                var mark_bonus := V63PoisonEvolutionV1.try_mark_bonus(caster, target, battle.now)
+                if mark_bonus > 0.0:
+                    _consume_mark(battle, caster, target, id)
+                    ratio += mark_bonus
+                    battle._event("poison_mark_punish", {"caster":str(caster.id),"target":str(target.id),
+                        "skill_id":id,"bonus_ratio":mark_bonus,"icd":8.0})
+                var counter_bonus := V63PoisonEvolutionV1.consume_cleanse_counter(caster, battle.now)
+                if counter_bonus > 0.0:
+                    ratio += counter_bonus
+                    battle._event("poison_cleanse_counter", {"caster":str(caster.id),"target":str(target.id),
+                        "skill_id":id,"bonus_ratio":counter_bonus,"icd":12.0})
             damage = battle._deal_direct(caster,target,ratio,"v63_skill",true,str(cast.element))
         if effect == "poison":
             _apply_poison(battle,caster,target,id,float(cast.power),float(cast.duration),int(cast.poison_stacks),str(cast.element))
+            if str(definition.get("school", "")) == "poison":
+                V63PoisonEvolutionV1.spread_one(battle,caster,target,id,float(cast.power),
+                    float(cast.duration),str(cast.element))
         elif effect == "guard":
             target["learned_guard_factor"] = minf(float(target.get("learned_guard_factor",1.0)),1.0-clampf(float(cast.power),0.05,0.8))
             target["learned_guard_until"] = maxf(float(target.get("learned_guard_until",-1.0)),battle.now+clampf(float(cast.duration),0.5,12.0))
@@ -639,7 +658,11 @@ static func release_cast_base(battle: MapBattleV2, cast: Dictionary, caster: Dic
         elif effect == "heal":
             _heal_target(battle,caster,target,id,float(cast.power))
         elif effect == "cleanse":
-            _cleanse_target(battle,caster,target,id,int(round(float(cast.power))))
+            var cleared := _cleanse_target(battle,caster,target,id,int(round(float(cast.power))))
+            if str(definition.get("school", "")) == "poison":
+                V63PoisonEvolutionV1.arm_cleanse_counter(caster, cleared, battle.now)
+                if cleared > 0 and V63PoisonEvolutionV1.rule_for_actor(caster) == "cleanse_heal_fatal_save":
+                    _heal_target(battle,caster,target,id,0.03)
         elif effect == "mark":
             _apply_mark(battle,caster,target,id,float(cast.power),float(cast.duration))
         elif effect == "consume_poison":
@@ -732,11 +755,13 @@ static func _heal_target(battle: MapBattleV2, caster: Dictionary, target: Dictio
     else:
         adjusted_amount = V63DivineSkillCombatSystem.healing_amount(caster, target, amount)
     amount = minf(adjusted_amount, maxf(0.0, float(target.max_hp) - before))
+    if str(skill_definition(skill_id).get("school", "")) == "poison":
+        amount = V63PoisonEvolutionV1.heal_allowed(target, amount, battle.now)
     target["hp"] = before+amount
     battle._sync_linked_hp(target)
     battle._event("heal",{"caster":str(caster.id),"target":str(target.id),"skill_id":skill_id,"amount":amount,"hp_after":float(target.hp)})
 
-static func _cleanse_target(battle: MapBattleV2, caster: Dictionary, target: Dictionary, skill_id: String, count: int) -> void:
+static func _cleanse_target(battle: MapBattleV2, caster: Dictionary, target: Dictionary, skill_id: String, count: int) -> int:
     var statuses: Dictionary = target.get("status_effects",{})
     var poison: Array = statuses.get("v63_poison",[])
     var removed := mini(poison.size(),maxi(1,count))
@@ -747,13 +772,15 @@ static func _cleanse_target(battle: MapBattleV2, caster: Dictionary, target: Dic
     else:
         statuses["v63_poison"] = poison
     var cleared: Array[String] = []
+    var remaining := maxi(0, maxi(1,count) - removed)
     for status_id in ["burn","weaken"]:
-        if statuses.has(status_id) and cleared.size() < maxi(1,count):
+        if statuses.has(status_id) and cleared.size() < remaining:
             statuses.erase(status_id)
             cleared.append(status_id)
     target["status_effects"] = statuses
     var removed_debuff_count := removed + cleared.size()
     battle._event("cleanse",{"caster":str(caster.id),"target":str(target.id),"skill_id":skill_id,"poison_stacks":removed,"statuses":cleared,"removed_debuff_count":removed_debuff_count})
+    return removed_debuff_count
 
 static func _apply_mark(battle: MapBattleV2, caster: Dictionary, target: Dictionary, skill_id: String, power: float, duration: float) -> void:
     var marks: Dictionary = target.get("v63_marks",{})
@@ -822,6 +849,11 @@ static func _apply_poison(battle: MapBattleV2, caster: Dictionary, target: Dicti
             "next_tick":battle.now+1.0,"expires_at":battle.now+clampf(duration,1.0,10.0)})
     statuses["v63_poison"] = stacks
     target["status_effects"] = statuses
+    if add_count == 0 and owner_count >= owner_cap and \
+            V63PoisonEvolutionV1.rule_for_actor(caster) == "owned_poison_maintain":
+        if V63PoisonEvolutionV1.refresh_oldest_owned_poison(target, owner, duration, battle.now):
+            battle._event("poison_owned_refresh", {"caster":owner,"target":str(target.id),
+                "skill_id":skill_id,"stack_count":owner_count})
     battle._event("status_applied",{"caster":owner,"target":str(target.id),"status":"poison","skill_id":skill_id,
         "added":add_count,"owner_stack_count":owner_count+add_count,"target_stack_count":stacks.size(),
         "owner_cap":owner_cap,"target_cap":POISON_BOSS_TARGET_CAP})
