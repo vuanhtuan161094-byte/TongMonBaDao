@@ -48,6 +48,7 @@ on:
       - 'godot/src/presentation/p3/sect_isometric_world_v1.gd'
       - 'godot/tests/presentation/p3_o9_m2_production_rehearsal_test.gd'
       - 'godot/tests/presentation/p3_b_second_worksite_assignment_test.gd'
+      - 'godot/tests/presentation/p3_b_paid_annex_upgrade_ui_test.gd'
       - 'godot/src/simulation/building/building_system.gd'
       - 'godot/src/presentation/p3_2_landscape_sect.gd'
       - 'godot/src/simulation/building/production_source_options_v1.gd'
@@ -156,6 +157,13 @@ jobs:
         run: |
           bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://tests/presentation/p3_b_second_worksite_assignment_test.gd
           bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/presentation/p3_b_second_worksite_assignment_test.gd
+
+      - name: Gate B paid Mine Forest Field 002 upgrade UI cost timer and cold Save
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://tests/presentation/p3_b_paid_annex_upgrade_ui_test.gd
+          bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/presentation/p3_b_paid_annex_upgrade_ui_test.gd
 
       - name: Run O9 M2 multi-producer rehearsal (strict renderer teardown)
         run: bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/presentation/p3_o9_m2_production_rehearsal_test.gd
