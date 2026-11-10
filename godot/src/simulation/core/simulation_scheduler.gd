@@ -316,6 +316,14 @@ func _step_disciple(disciple: DiscipleState) -> void:
         &"RETURN_SECT":
             disciple.region_id = &"sect"
             disciple.target_region_id = &""
+            # V2 fallback P2 combat can report defeat before reaching Sect.
+            # Commit one Injury only on arrival; full revival HP is already
+            # restored by CombatSystem and never changed by the Injury timer.
+            if bool(disciple.last_decision.get("v2_legacy_defeat_injury_pending",false)) \
+                    and DiscipleRealmProgressV2.owns_v2_progression(disciple):
+                disciple.injury_level = 1
+                disciple.injury_recover_at_tick = state.tick+120
+                disciple.last_decision.erase("v2_legacy_defeat_injury_pending")
             if state.sect.techniques_enabled:
                 technique_system.deposit_special_inventory(state, disciple)
             if state.sect.equipment_enabled:
