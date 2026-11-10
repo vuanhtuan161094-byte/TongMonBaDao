@@ -62,6 +62,10 @@ func _probe(school: String, within: bool) -> void:
     _check(emitted == (1 if within else 0), "event count reflects real cast validation")
 
 func _run() -> void:
+    for role_name in ["frontline", "mage", "healer", "ranged"]:
+        var expected: float = {"frontline":1.8, "mage":6.0, "healer":6.0, "ranged":9.0}[role_name]
+        _check(is_equal_approx(MapBattleV2.default_basic_range_for_role(role_name), expected),
+            "canonical battle role default: " + role_name)
     for school in ["fist", "poison", "bow"]:
         _probe(school, true)
         _probe(school, false)
