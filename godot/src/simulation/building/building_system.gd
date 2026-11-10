@@ -124,8 +124,18 @@ func sx_v55_common_requirements(state: SimulationState, original: Dictionary) ->
             result[raw_id] = maxi(int(result[raw_id]),0) * SX_V55_COMMON_SCALE
     return result
 
+# V5.5-D tab 04_NangCap342: the approved monetary DENOMINATION is ×1,000
+# (Hall Lv1→2 = 580,000, Field = 21,000, Mine/Forest = 24,000).
+# Apply only to NEW explicitly QA-gated r1/r2 upgrade requests. Never
+# migrate/charge an in-flight legacy upgrade or change Warehouse material IDs.
 func sx_v55_upgrade_cost(state: SimulationState, building: BuildingState) -> Dictionary:
-    return sx_v55_common_requirements(state,upgrade_cost(building))
+    var cost := sx_v55_common_requirements(state,upgrade_cost(building))
+    if not cost.is_empty() and EconomySystem.new().sx_v55_r12_enabled(state):
+        var base_stones := maxi(0,int(cost.get("spirit_stones",0)))
+        if base_stones > int(EconomySystem.V2_MAX_STONES/SX_V55_COMMON_SCALE):
+            return {}
+        cost["spirit_stones"] = base_stones*SX_V55_COMMON_SCALE
+    return cost
 
 # Stock policy follows only real scaled consumers, not the size of the
 # producer batch. Linh Cốc and Tử Vân Thảo use their original unscaled
