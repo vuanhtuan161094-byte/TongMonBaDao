@@ -3,6 +3,7 @@ extends Control
 const ActorRigV2 = preload("res://labs/combat_lab/combat_lab_actor_rig_v2.gd")
 const PoisonAtlasV1 = preload("res://labs/combat_lab/combat_lab_poison_atlas_v1.gd")
 const VfxV2 = preload("res://labs/combat_lab/combat_lab_vfx_v2.gd")
+const VFXProgression = preload("res://labs/combat_lab/combat_lab_vfx_progression.gd")
 
 var actor_states: Dictionary = {}
 var last_skill_by_actor: Dictionary = {}
@@ -370,6 +371,13 @@ func consume_events(rows: Array[Dictionary]) -> void:
             display_skill_id = str(last_skill_by_actor.get(source_actor_id, ""))
         var display_definition: Dictionary = CombatLabRosterAdapter.skill_definitions().get(display_skill_id, {})
         var display_generation := str(display_definition.get("generation", display_definition.get("tier", "human")))
+        # Snapshot cosmetic visual level and authoritative haste at event time.
+        # A maxed skill is brighter and has denser decorative trails, while
+        # actor damage and the number of actually hit targets are unchanged.
+        var growth := {}
+        if school_kind == "poison" and battle.actors.has(source_actor_id):
+            growth = VFXProgression.from_actor(battle.actors[source_actor_id],
+                display_skill_id, display_definition, cues.size())
         var cue_from := _actor_position(source_actor_id)
         if kind == "v63_mobility" and actor_states.has(source_actor_id):
             var prior: Dictionary = actor_states[source_actor_id]
@@ -383,7 +391,7 @@ func consume_events(rows: Array[Dictionary]) -> void:
                 "effect":str(display_definition.get("effect", event.get("effect", ""))),
                 "shape":str(display_definition.get("shape", event.get("shape", ""))),
                 "target_limit":int(display_definition.get("target_limit", event.get("target_limit", 0))),
-                "event_type":kind, "committed_time":float(event.get("time", battle.now)),
+                "v4_growth":growth, "event_type":kind, "committed_time":float(event.get("time", battle.now)),
                 "committed_stacks":int(event.get("stacks", event.get("added", 0))),
                 "created":now_ms, "life":cue_life,
                 "source_index":int(event.get("lab_source_index", -1)),
@@ -409,7 +417,8 @@ func consume_events(rows: Array[Dictionary]) -> void:
                         "text":"", "color":color, "radius":0.0, "school":school_kind,
                         "skill_id":source_skill, "generation":display_generation,
                         "effect":str(authored.get("effect", "")), "shape":str(authored.get("shape", "")),
-                        "target_limit":int(authored.get("target_limit", 0)), "event_type":"skill_cast",
+                        "target_limit":int(authored.get("target_limit", 0)), "v4_growth":growth,
+                        "event_type":"skill_cast",
                         "committed_time":start_time,
                         "source_actor_id":source_actor_id, "target_actor_id":target_id, "launch_at":launch_at, "impact_at":impact_at,
                         "created":now_ms, "life":0.0, "source_index":int(event.get("lab_source_index", -1)),
@@ -712,6 +721,7 @@ func _draw_cues() -> void:
             visual_cue["v4_preview"] = v4_preview_enabled
             if v4_preview_enabled:
                 visual_cue["v4_radius_y"] = projected_radii.y
+                visual_cue["v4_crowd"] = cues.size()
                 visual_cue["v4_target_body_offset"] = _actor_body_offset_px(str(cue.get("target_actor_id", "")))
                 visual_cue["v4_source_body_offset"] = _actor_body_offset_px(str(cue.get("source_actor_id", "")))
         if not _is_ground_cue(cue):
