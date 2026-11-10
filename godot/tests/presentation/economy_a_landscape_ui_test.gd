@@ -83,6 +83,47 @@ func _run() -> void:
     if state.sect.spirit_stones != 0 or worker.spirit_stones != worker_before+treasury_before or int(economy.unpaid_work_wages(state).get("total",-1)) != 1:
         _fail("Hall debt payment did not transfer actual available Stones")
         return
+    # Real 1280x720 scene exposes a player-activated SX-V55 gate, not a
+    # hidden automatic migration of existing production/Save profiles.
+    if BuildingSystem.new().sx_v55_bulk_enabled(state):
+        _fail("new game unexpectedly activated bulk without the player")
+        return
+    if not await _press("SXV55_EnableBulk"):
+        return
+    var bulk := BuildingSystem.new()
+    if not bulk.sx_v55_bulk_enabled(state):
+        _fail("Hall player button did not activate real Economy-A bulk authority")
+        return
+    var bulk_button := ui.find_child("SXV55_EnableBulk",true,false) as Button
+    if bulk_button == null or not bulk_button.disabled:
+        _fail("Hall did not lock repeated activation after legitimate opt-in")
+        return
+    if not str(ui.call("_mine_operation_text")).contains("×10000"):
+        _fail("Mine text still advertises legacy 2-unit batch in bulk mode")
+        return
+    if not str(ui.call("_linh_forest_operation_text")).contains("×8000"):
+        _fail("Forest text still advertises legacy 2-unit batch in bulk mode")
+        return
+    var field_text := str(ui.call("_spirit_field_operation_text"))
+    if not field_text.contains("chu kỳ nền 60 nhịp · sản lượng nền 2500") \
+        or not field_text.contains("chu kỳ nền 90 nhịp · sản lượng nền 2000"):
+        _fail("Field crop description contradicts real bulk timer and yield")
+        return
+    var forge_text := str(ui.call("_recipe_material_status",&"thanh_thiet_kiem"))
+    if not forge_text.contains("cần 3000") or not forge_text.contains("cần 1000"):
+        _fail("Forge panel did not display exact scaled material debits")
+        return
+    var hall := bulk.primary_building(state,BuildingSystem.TYPE_ALCHEMY_HALL)
+    var selected := StringName(hall.production_state.get("recipe_id","hoi_xuan_dan"))
+    var scaled_recipe := bulk.sx_v55_common_requirements(state,
+        AlchemyRecipeRegistry.new().inputs(selected))
+    var recipe_text := str(ui.call("_alchemy_operation_text"))
+    for raw_id in scaled_recipe.keys():
+        var name := ResourceRegistry.new().display_name(StringName(raw_id))
+        var token := "%s ×%d" % [name,int(scaled_recipe[raw_id])]
+        if not recipe_text.contains(token):
+            _fail("Alchemy panel misreported real scaled input "+token)
+            return
     var result := state.validate_invariants()
     if not result.is_empty():
         _fail("Economy-A real landscape state violated invariants: %s" % str(result))
