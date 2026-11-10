@@ -41,6 +41,13 @@ static func rule_for_actor(actor: Dictionary) -> String:
 
 static func remaining_tick_ratio(stacks: Array, owner_id: String, now: float) -> Dictionary:
     var count := 0
+    var live := 0
+    for raw in stacks:
+        if raw is Dictionary and float(raw.get("expires_at", -1.0)) > now:
+            live += 1
+    var effective_count := float(mini(live, 12)) + float(clampi(live - 12, 0, 12)) * 0.5 \
+        + float(maxi(0, live - 24)) * 0.25
+    var fair_factor := effective_count / maxf(1.0, float(live))
     var remaining_ratio := 0.0
     for raw in stacks:
         if not (raw is Dictionary):
@@ -54,7 +61,7 @@ static func remaining_tick_ratio(stacks: Array, owner_id: String, now: float) ->
         count += 1
         var next_tick := maxf(now, float(stack.get("next_tick", now + 1.0)))
         var tick_count := clampi(ceili(maxf(0.0, expires - next_tick)), 0, 10)
-        remaining_ratio += clampf(float(stack.get("ratio", 0.0)), 0.0, 0.20) * float(tick_count)
+        remaining_ratio += clampf(float(stack.get("ratio", 0.0)), 0.0, 0.20) * float(tick_count) * fair_factor
     return {"stacks":mini(count, 5), "ratio":maxf(0.0, remaining_ratio)}
 
 static func consume_bonus_ratio(stacks: Array, owner_id: String, now: float) -> float:
