@@ -37,25 +37,57 @@ static func ring(canvas: CanvasItem, p: Vector2, r: float, c: Color, opacity: fl
     canvas.draw_arc(p, r, time, TAU4 + time, 40, a(c, opacity * 0.56), 3.0, true)
     canvas.draw_arc(p, r, time, TAU4 + time, 40, a(LIGHT, opacity), 1.2, true)
 
-static func lotus(canvas: CanvasItem, p: Vector2, radius: float, c: Color, opacity: float, t: float) -> void:
-    ring(canvas, p, radius * 0.60, c, opacity * 0.68, t * 0.25)
-    for i in range(6):
-        var vec := Vector2.from_angle(float(i) * TAU4 / 6.0 + t * 0.2)
-        line(canvas, p, p + vec * radius, c, opacity * 0.6, 1.0)
-        spark(canvas, p + vec * (radius * 0.8), GOLD, opacity * 0.8, 1.5)
-    spark(canvas, p, c, opacity, radius * 0.2)
+# Solid silhouette: translucent beams alone vanish at real 1x gameplay size.
+static func needle(canvas: CanvasItem, origin: Vector2, tip: Vector2,
+        color: Color, opacity: float, z: float) -> void:
+    var axis := (tip - origin).normalized()
+    if axis.length_squared() < 0.001: axis = Vector2.RIGHT
+    var n := axis.orthogonal()
+    var length := maxf(5.0, origin.distance_to(tip))
+    var hilt := origin + axis * (length * 0.48)
+    var width := maxf(1.8, 2.3 * z)
+    var border := PackedVector2Array([
+        origin + n * width, hilt + n * width * 1.25, tip,
+        hilt - n * width * 1.25, origin - n * width
+    ])
+    canvas.draw_colored_polygon(border, a(Color("261336"), opacity * 0.90))
+    line(canvas, origin + axis * (length * 0.10), tip, color, opacity * 0.88, maxf(1.1, z * 1.0))
+    spark(canvas, tip, LIGHT, opacity, maxf(1.0, 1.2 * z))
 
-static func serpent(canvas: CanvasItem, p: Vector2, q: Vector2, c: Color, opacity: float, z: float, t: float) -> void:
-    var d := (q - p).normalized()
-    if d.length_squared() < 0.01: d = Vector2.RIGHT
+static func lotus(canvas: CanvasItem, center: Vector2, radius: float, c: Color, opacity: float, t: float) -> void:
+    # Six jade petals with dark roots and gold inner edges, not a hexagon.
+    var core_radius := maxf(2.0, radius * 0.22)
+    for i in range(6):
+        var angle := float(i) * TAU4 / 6.0 + t * 0.16
+        var axis := Vector2.from_angle(angle)
+        var n := axis.orthogonal()
+        var base := center + axis * (radius * 0.13)
+        var tip := center + axis * radius
+        var wide := radius * 0.33
+        var petal := PackedVector2Array([base, center + axis * radius * 0.62 + n * wide,
+            tip, center + axis * radius * 0.62 - n * wide])
+        canvas.draw_colored_polygon(petal, a(c.darkened(0.56), opacity * 0.91))
+        line(canvas, base, tip, GOLD, opacity * 0.68, maxf(0.9, radius * 0.08))
+    spark(canvas, center, c, opacity, core_radius)
+
+static func serpent(canvas: CanvasItem, start: Vector2, head: Vector2, c: Color,
+        opacity: float, z: float, t: float) -> void:
+    # A tapering luminous body and pointed head keep Cổ Độc recognizable.
+    var d := (head - start).normalized()
+    if d.length_squared() < 0.001: d = Vector2.RIGHT
     var n := d.orthogonal()
-    var previous := p
+    var previous := start
     for i in range(1, 10):
         var ratio := float(i) / 9.0
-        var to := p.lerp(q, ratio) + n * sin(ratio * TAU4 * 2.0 - t * 8.0) * z * 4.0 * (1.0 - ratio * 0.35)
-        line(canvas, previous, to, c, opacity * (0.65 + 0.30 * ratio), maxf(0.8, z * 1.2))
+        var to := start.lerp(head, ratio) + n * sin(ratio * TAU4 * 1.4 - t * 8.0) * z * 3.5 * (1.0 - ratio)
+        line(canvas, previous, to, c, opacity * (0.65 + ratio * 0.32),
+            maxf(1.3, (2.5 - ratio * 0.9) * z))
         previous = to
-    spark(canvas, q, GOLD, opacity, z * 2.3)
+    var v := head - d * (4.5 * z)
+    canvas.draw_colored_polygon(PackedVector2Array([
+        head + d * 3.7 * z, v + n * 3.0 * z, v - n * 3.0 * z
+    ]), a(c, opacity * 0.92))
+    spark(canvas, head + n * 1.1 * z, GOLD, opacity, maxf(1.0, 0.95 * z))
 
 static func debris(canvas: CanvasItem, p: Vector2, radius: float, c: Color, opacity: float, t: float) -> void:
     for i in range(7):
@@ -74,8 +106,11 @@ static func render(canvas: CanvasItem, cue: Dictionary, target: Vector2, source:
     var k := clampf(t, 0.0, 1.0)
     var life := 1.0 - k
     var pulse := sin(k * PI)
-    var p := target + Vector2(0.0, -17.0 * z)
-    var d := (target - source).normalized()
+    # Feet are the world-space authority. The arena supplies display-only
+    # body offsets based on the actual target/caster visual rig, not zoom*z.
+    var p := target + Vector2(0.0, float(cue.get("v4_target_body_offset", -25.0 * (0.55 + 0.29 * z))))
+    var caster_hand := source + Vector2(0.0, float(cue.get("v4_source_body_offset", -35.0 * (0.55 + 0.29 * z))))
+    var d := (p - caster_hand).normalized()
     if d.length_squared() < 0.01: d = Vector2.RIGHT
     if kind in ["venom_cloud", "aoe", "area_burst"] or (shape == "circle" and kind == "skill_release"):
         # No invented radius: only radius_px from authoritative V6.3/event.
@@ -94,35 +129,37 @@ static func render(canvas: CanvasItem, cue: Dictionary, target: Vector2, source:
         return
     match kind:
         "cast":
-            var center := p - Vector2(0, 13.0 * z)
+            var center := caster_hand - Vector2(0, 2.0 * z)
             ring(canvas, center, (9.0 + pulse * 10.0) * z, c, maxf(0.15, pulse) * 0.75, k)
             if branch == "doc_cham":
                 for i in range(3):
                     var shift := Vector2(float(i - 1) * 8.0, -float(i % 2) * 4.0) * z
-                    line(canvas, center + shift - Vector2(9, -4) * z,
-                        center + shift + Vector2(9, -4) * z, c, maxf(0.15, pulse), 1.5 * z)
+                    needle(canvas, center + shift - Vector2(9, -4) * z,
+                        center + shift + Vector2(9, -4) * z, c, maxf(0.15, pulse), z)
             elif branch == "co_doc":
                 serpent(canvas, center - Vector2(20, 5) * z, center + Vector2(18, -7) * z, c, pulse, z, k)
             else:
                 lotus(canvas, center, 19.0 * z, c, maxf(0.15, pulse), k)
             debris(canvas, center, 15.0 * z, c, pulse, k)
         "projectile":
-            var head := source.lerp(target, k)
+            # The projectile endpoint follows its canonical actor ID through
+            # the full flight. The impact happens at the V6.3 release deadline.
+            var head := caster_hand.lerp(p, k)
             var tail := head - d * (22.0 * z)
             if branch == "doc_cham":
                 for i in range(3):
-                    var n := d.orthogonal() * float(i - 1) * 4.0 * z
-                    line(canvas, tail + n, head + n, c, 0.9, 1.4 * z)
+                    var side := d.orthogonal() * float(i - 1) * 3.4 * z
+                    needle(canvas, tail + side, head + side, c, 0.94, z)
             elif branch == "co_doc":
-                serpent(canvas, tail, head, c, 0.9, z, k)
+                serpent(canvas, tail, head, c, 0.94, z, k)
             else:
-                lotus(canvas, head, 12.0 * z, c, 0.84, k)
-            debris(canvas, head - d * (8.0 * z), 9.0 * z, c, 0.5, k)
+                lotus(canvas, head, 11.0 * z, c, 0.90, k)
+            debris(canvas, head - d * (8.0 * z), 7.0 * z, c, 0.36, k)
         "impact":
             if branch == "doc_cham":
                 for i in range(8):
                     var ray := Vector2.from_angle(float(i) * TAU4 / 8.0)
-                    line(canvas, p + ray * (3.0 * z), p + ray * (12.0 + 16.0 * k) * z, c, pulse, 1.0 * z)
+                    needle(canvas, p + ray * (3.0 * z), p + ray * (12.0 + 16.0 * k) * z, c, pulse, z * 0.74)
             elif branch == "co_doc":
                 ring(canvas, p, (9.0 + 18.0 * k) * z, c, pulse, k)
                 serpent(canvas, p - Vector2(18, 5) * z, p + Vector2(12, -4) * z, c, pulse, z, k)
