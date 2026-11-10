@@ -5446,9 +5446,15 @@ func _build_spirit_field_management() -> void:
         var disciple: DiscipleState = state.disciples[raw_id]
         var row := _new_management_row(disciple)
         var in_group := disciple.work_group_id == &"herbalism_crew"
-        var has_plot := buildings.disciple_has_active_spirit_plot(state, disciple.id, field)
+        var has_plot_here := buildings.disciple_has_active_spirit_plot(state, disciple.id, field)
+        var has_plot := buildings.disciple_has_active_spirit_plot(state, disciple.id)
         var active_slot := active_ids.has(disciple.id)
-        var status_text := "Đang chăm ô trồng" if has_plot else ("Sẵn sàng gieo" if active_slot else ("Chờ chỗ hoạt động" if in_group else "Chưa phân đội"))
+        var status_text := (
+            "Đang chăm ô trồng" if has_plot_here
+            else "Đang chăm Linh Điền khác" if has_plot
+            else "Sẵn sàng gieo" if active_slot
+            else "Chờ chỗ hoạt động" if in_group else "Chưa phân đội"
+        )
         var field_name_label := row.get_child(0) as Label
         if field_name_label != null:
             field_name_label.text = "%s\n%s" % [disciple.display_name, status_text]
@@ -5470,6 +5476,26 @@ func _build_spirit_field_management() -> void:
                 disciple.id, &"herbalism_crew", "Đã phân %s vào Đội Linh Thực." % disciple.display_name
             ))
         row.add_child(group_button)
+
+        # Each paid Field is a real independent worksite. Group membership
+        # alone defaults to the original Field; second/third Field needs an
+        # explicit persisted BuildingState assignment, like Mine/Forest.
+        var worksite_button := Button.new()
+        worksite_button.name = "FieldWorksite_%s" % str(disciple.id)
+        var assigned_here := disciple.worksite_building_id == field.id
+        worksite_button.text = "Bỏ điểm" if assigned_here else "Chọn Điền"
+        worksite_button.custom_minimum_size = Vector2(74,34)
+        worksite_button.add_theme_font_size_override("font_size",10)
+        worksite_button.disabled = not in_group or has_plot
+        worksite_button.tooltip_text = (
+            "Không chuyển Linh Điền khi đang chăm một ô trồng." if has_plot
+            else "Xóa điểm cụ thể, giữ đội Linh Thực." if assigned_here
+            else "Đặt người làm tại chính Linh Điền đang mở; không tạo thêm slot ảo."
+        )
+        worksite_button.pressed.connect(Callable(self,"_assign_mine_worksite").bind(
+            disciple.id,&"" if assigned_here else field.id
+        ))
+        row.add_child(worksite_button)
 
         var plant_button := Button.new()
         plant_button.name = "FieldPlant_%s" % str(disciple.id)
@@ -5548,8 +5574,8 @@ func _spirit_field_start_reason(disciple: DiscipleState, field: BuildingState, a
         return "Cần phân vào Đội Linh Thực."
     if not active_ids.has(disciple.id):
         return "Không còn chỗ hoạt động tại Linh Điền."
-    if buildings.disciple_has_active_spirit_plot(state, disciple.id, field):
-        return "Đệ tử đã phụ trách một ô đang trồng."
+    if buildings.disciple_has_active_spirit_plot(state, disciple.id):
+        return "Đệ tử đang phụ trách một ô Linh Điền; chờ thu hoạch trước khi gieo nơi khác."
 
     var has_empty := false
     for raw_plot in buildings.spirit_field_plots(state, field):
@@ -6569,7 +6595,9 @@ func _mining_member_status(disciple: DiscipleState, has_active_slot: bool, mine:
 
 func _spirit_field_operation_text() -> String:
     var buildings := BuildingSystem.new()
-    var field := buildings.primary_building(state, BuildingSystem.TYPE_SPIRIT_FIELD)
+    var field := _selected_operation_building()
+    if field == null or field.building_type != BuildingSystem.TYPE_SPIRIT_FIELD:
+        field = buildings.primary_building(state, BuildingSystem.TYPE_SPIRIT_FIELD)
     if field == null:
         return "Linh Điền chưa tồn tại trong trạng thái hiện tại."
 
@@ -6634,7 +6662,7 @@ func _spirit_field_operation_text() -> String:
     var units := maxi(int(field.metrics.get("units_produced",0)),0)
 
     return (
-        "LINH ĐIỀN Lv%d\n"
+        "LINH ĐIỀN %02d · Lv%d\n"
         + "Chính sách: %s\n"
         + "Linh Thạch Tông Môn: %d\n"
         + "Đệ tử canh tác: %d/%d · Ô đang trồng: %d/%d\n\n"
@@ -6646,7 +6674,7 @@ func _spirit_field_operation_text() -> String:
         + "Linh Cốc: %s\nThanh Linh Thảo: %s\nTử Vân Thảo: %s\n\n"
         + "Lv1–9 dùng AUTO_DEMAND; Cố định/Priority mở từ Lv10 theo authority hiện có."
     ) % [
-        field.level,
+        maxi(field.instance_index,1),field.level,
         _spirit_field_policy_label(field),
         state.sect.spirit_stones,
         active_ids.size(), buildings.worker_slots(field),
