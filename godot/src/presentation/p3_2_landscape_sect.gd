@@ -4231,6 +4231,17 @@ func _build_economy_a_hall_controls() -> void:
     sources.add_theme_font_size_override("font_size",11)
     sources.add_theme_color_override("font_color",JADE_DARK)
     building_management_container.add_child(sources)
+    # Receipt-backed W2 debt. The label never fabricates a Stone balance.
+    var arrears := EconomySystem.new().unpaid_work_wages(state)
+    var unpaid := maxi(int(arrears.get("total",0)),0)
+    var arrears_button := Button.new()
+    arrears_button.name = "EconomyA_PayWageArrears"
+    arrears_button.text = "Lương còn nợ: %d LT · Trả từ quỹ" % unpaid
+    arrears_button.custom_minimum_size = Vector2(384,36)
+    arrears_button.tooltip_text = "Chỉ chuyển Linh Thạch thật từ quỹ sang đệ tử theo chứng từ lương chưa trả. Lưu và tải lại không thể trả trùng."
+    arrears_button.disabled = unpaid <= 0 or state.sect.spirit_stones <= maxi(0,int(policy.get("sect_pay_reserve",0)))
+    arrears_button.pressed.connect(_economy_a_pay_arrears_from_ui)
+    building_management_container.add_child(arrears_button)
     var heal_toggle := Button.new()
     heal_toggle.name = "EconomyA_AutoHP"
     heal_toggle.text = "Tự chữa HP: BẬT" if bool(policy.get("auto_hp_service",false)) else "Tự chữa HP: TẮT"
@@ -4247,6 +4258,18 @@ func _build_economy_a_hall_controls() -> void:
 func _economy_a_enable_from_ui() -> void:
     var result := EconomySystem.new().enable_v1(state)
     building_management_feedback = "Đã bật Kinh tế V1; các mẻ mới của đệ tử V2 dùng timer." if bool(result.get("ok",false)) else str(result.get("reason","Không thể bật kinh tế."))
+    _refresh_building_operation_content()
+
+func _economy_a_pay_arrears_from_ui() -> void:
+    var request_id := "ui:w2:arrears:%d:%d" % [state.tick,state.sect.economy_a_event_count+1]
+    var result := EconomySystem.new().pay_work_wage_arrears(state,request_id)
+    if bool(result.get("ok",false)):
+        var receipt: Dictionary = result.get("receipt",{})
+        building_management_feedback = "Đã trả %d LT nợ lương từ quỹ thật." % int(receipt.get("paid",0))
+        _autosave_runtime()
+        _refresh_all()
+    else:
+        building_management_feedback = "Chưa thể trả nợ lương: " + str(result.get("reason","không đủ quỹ"))
     _refresh_building_operation_content()
 
 func _economy_a_toggle_heal_from_ui() -> void:
