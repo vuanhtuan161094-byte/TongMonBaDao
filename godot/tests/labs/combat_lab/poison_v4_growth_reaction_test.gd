@@ -75,33 +75,37 @@ func _run() -> void:
     arena.set_visual_time(current)
     arena._set_pose("lab_disciple_01", "walk", 500, current)
     var walk_before := str(arena.pose_for_actor("lab_disciple_01"))
-    arena.consume_events([{
+    var hit_events: Array[Dictionary] = [{
         "type":"hit", "attacker":monster_id, "target":"lab_disciple_01",
         "kind":"basic", "damage":31.0, "time":current
-    }])
+    }]
+    arena.consume_events(hit_events)
     _check(walk_before == "walk" and
         str(arena.pose_for_actor("lab_disciple_01")) == "walk",
         "normal positive hit does not interrupt a moving recipient")
-    arena.consume_events([{
+    var tick_events: Array[Dictionary] = [{
         "type":"status_tick", "caster":monster_id, "target":"lab_disciple_01",
         "status":"poison", "damage":5.0, "time":current
-    }])
+    }]
+    arena.consume_events(tick_events)
     _check(str(arena.pose_for_actor("lab_disciple_01")) == "walk",
         "DoT must not trigger a full-body hurt clip")
-    arena.consume_events([{
+    var cc_events: Array[Dictionary] = [{
         "type":"status_applied", "caster":monster_id, "target":"lab_disciple_01",
         "status":"stun", "time":current
-    }])
+    }]
+    arena.consume_events(cc_events)
     _check(str(arena.pose_for_actor("lab_disciple_01")) == "hit",
         "authoritative crowd-control event may animate a brief hurt")
     arena.set_visual_time(current + 0.35)
     _check(str(arena.pose_for_actor("lab_disciple_01")) != "hit",
         "CC visual response is never a multi-second animation lock")
-    arena.consume_events([{
+    var cast_events: Array[Dictionary] = [{
         "type":"skill_cast", "actor_id":"lab_disciple_01",
         "target":monster_id, "skill_id":ID, "time":current + 0.35,
         "release_at":current + 2.25
-    }])
+    }]
+    arena.consume_events(cast_events)
     var state: Dictionary = arena.actor_states.get("lab_disciple_01", {})
     var windup := float(state.get("until", 0.0)) - float(state.get("started", 0.0))
     _check(windup < 0.8 and windup > 0.20,
