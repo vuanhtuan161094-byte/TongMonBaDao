@@ -52,6 +52,7 @@ static func validate_catalogue(data: Dictionary) -> Array[String]:
     var shared_count := 0
     var branch_count: Dictionary = {}
     var rare_count := 0
+    var poison_rare_passive_count := 0
     for family in families:
         var id := str(family.get("id",""))
         var school := str(family.get("school",""))
@@ -82,14 +83,20 @@ static func validate_catalogue(data: Dictionary) -> Array[String]:
             elif not family_nodes.has(parent):
                 errors.append("missing_parent_or_cycle:"+node_id)
             if tier=="rare_divine":
-                rare_count += 1
-                if slot!="ultimate" or not parent.contains(".divine."):
+                if slot=="ultimate":
+                    rare_count += 1
+                elif school=="poison" and slot=="passive" and id.ends_with("passive_05"):
+                    poison_rare_passive_count += 1
+                else:
                     errors.append("bad_rare_successor:"+node_id)
+                if not parent.contains(".divine."):
+                    errors.append("bad_rare_parent:"+node_id)
             family_nodes[node_id] = true
             all_node_ids[node_id] = true
-        if family_nodes.size() != (3 if branch.is_empty() else 7 if slot=="ultimate" else 5):
+        var expected_nodes := 3 if branch.is_empty() else (7 if slot=="ultimate" or (school=="poison" and slot=="passive" and id.ends_with("passive_05")) else 5)
+        if family_nodes.size() != expected_nodes:
             errors.append("wrong_family_node_count:"+id)
-    if shared_count != 6 or branch_count.size()!=9 or rare_count != 18:
+    if shared_count != 6 or branch_count.size()!=9 or rare_count != 18 or poison_rare_passive_count != 6:
         errors.append("wrong_family_distribution")
     for count in branch_count.values():
         if int(count)!=11:
