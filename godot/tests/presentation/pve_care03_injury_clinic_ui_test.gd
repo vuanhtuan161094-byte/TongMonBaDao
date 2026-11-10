@@ -92,6 +92,16 @@ func _run() -> void:
             and is_equal_approx(d.hp,hp_before),
             "UI did not debit exactly 1500LT and create 30-tick Injury treatment"):
         return
+    # Paid care is an occupied 30-tick job, not an optional visual label.
+    # Outside callers cannot steal this patient for production or training.
+    var workforce := WorkforceSystem.new()
+    if not _check(not workforce.issue_command(
+            state,id,WorkforceSystem.COMMAND_WORK,"mining",10)
+            and not bool(workforce.perform_work(
+                state,d,WorkforceSystem.PROF_MINING).get("ok",false))
+            and not workforce.assign_group(state,id,&""),
+            "paid-clinic-worker-can-escape-the-30-tick-time-reservation"):
+        return
     var second := root_popup.find_child("SectInjuryTreatmentAction",true,false) as Button
     if not _check(second != null and second.disabled,
             "UI permitted duplicate paid clinic appointment"):
