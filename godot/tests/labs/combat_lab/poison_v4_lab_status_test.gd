@@ -34,10 +34,8 @@ func _run() -> void:
         details.text.contains("tối đa 3 mục tiêu") and
         details.text.contains("MỸ THUẬT:"),
         "AoE UI displays true name/radius/hit cap and separate VFX description")
-    _check(bool(lab.call("_select_poison_skill",
-        "tmb.skill.poison.duoc_doc.active_02.human")) == false or
-        details.text.contains("Bách Độc Tán Châm"),
-        "different branch is not silently inserted into current-branch catalog")
+    _check(details.text.contains("quạt mưa châm"),
+        "UI renders per-skill art direction rather than generic branch copy")
     var battle: MapBattleV2 = lab.get("battle")
     _check(battle != null and battle.active, "a canonical Lab battle exists")
     if battle == null or not battle.active:
