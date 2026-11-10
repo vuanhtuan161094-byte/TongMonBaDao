@@ -3,8 +3,8 @@ setlocal
 for %%I in ("%~dp0..\..\..") do set "TMB_ROOT=%%~fI\"
 if not defined TMB_GODOT set "TMB_GODOT=E:\Godot_v4.7.2-stable_win64.exe"
 set "TMB_PROJECT=%TMB_ROOT%godot"
-set "TMB_PROFILE_ROOT=%TMB_ROOT%godot\outputs\one_game_newgame\owner_playtest_profile"
-set "TMB_SESSION_PARENT=%TMB_ROOT%godot\outputs\one_game_newgame\sessions"
+if not defined TMB_PROFILE_ROOT set "TMB_PROFILE_ROOT=%TMB_ROOT%godot\outputs\one_game_newgame\owner_playtest_profile"
+if not defined TMB_SESSION_PARENT set "TMB_SESSION_PARENT=%TMB_ROOT%godot\outputs\one_game_newgame\sessions"
 if not exist "%TMB_GODOT%" (
   echo Official Godot 4.7.2 GUI was not found at "%TMB_GODOT%".
   echo Set TMB_GODOT to the Godot 4.7.2 executable and run this launcher again.

@@ -1,0 +1,36 @@
+name: PR72 Owner Windows PC QA Harness Static Check
+
+on:
+  push:
+    paths:
+      - 'tools/windows/qa/PR72-WINDOWS-PC-QA.cmd'
+      - 'tools/windows/qa/Run-PR72-Owner-PC-QA.ps1'
+      - 'tools/windows/qa/PR72-WINDOWS-PC-QA-README.md'
+      - 'tools/windows/run/Run-OneGame-NewGame.cmd'
+      - '.github/workflows/pr72-owner-windows-qa-harness.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  parse_windows_owner_harness:
+    runs-on: windows-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Parse Windows PowerShell 5.1 QA and run Win32 selftest, no game launched
+        shell: powershell
+        run: |
+          $source = 'tools/windows/qa/Run-PR72-Owner-PC-QA.ps1'
+          $tokens = $null
+          $problems = $null
+          [System.Management.Automation.Language.Parser]::ParseFile((Resolve-Path $source),[ref]$tokens,[ref]$problems) | Out-Null
+          if (@($problems).Count -gt 0) { $problems | ForEach-Object { Write-Error $_.ToString() }; throw 'PowerShell parse failed' }
+          & $source -HarnessSelfTest
+          if ($LASTEXITCODE -ne 0) { throw 'Win32 API compile/selftest failed' }
+          $launcher = Get-Content 'tools/windows/run/Run-OneGame-NewGame.cmd' -Raw
+          if (-not $launcher.Contains('if not defined TMB_PROFILE_ROOT') -or -not $launcher.Contains('if not defined TMB_SESSION_PARENT')) {
+            throw 'Canonical launcher no longer supports isolated QA profile without changing default behavior'
+          }
+          Write-Host 'PR72_OWNER_PC_QA_HARNESS_STATIC_PASS - NOT A PHYSICAL PC PLAYTEST'
