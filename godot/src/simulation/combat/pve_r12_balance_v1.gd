@@ -12,9 +12,8 @@ const SPECIALIZED_MULTIPLIER := 2.0
 
 # Assumptions for feasibility (NOT actual measured combat).
 const KILLS_PER_HOUR_REFERENCE := 12.0
-const HP_LOSS_PER_KILL_REFERENCE := 18.0
 const HEAL_SERVICE_HP_REFERENCE := 10.0
-const PILLS_PER_HOUR_REFERENCE := 2.0
+const PILLS_PER_HOUR_REFERENCE := 2
 # Actual authored normal-monster weights for Thanh Truc Lam, not invented mix.
 const SPECIES_WEIGHTS := {"truc_thu":0.65,"thanh_lang":0.30,"hac_lang":0.05}
 
@@ -26,12 +25,14 @@ const SPECIES_WEIGHTS := {"truc_thu":0.65,"thanh_lang":0.30,"hac_lang":0.05}
 const RATES := {
     1:{
         "name":"Phàm Nhân","production_stones_per_minute":1000,
+        "hp_loss_per_kill_reference":18.0,
         "tuvi_xp_per_kill":5000.0,"body_xp_per_kill":1200.0,
         "personal_hp_service_per_10":300,"pill_shadow_stones":1500,
         "kill_stones":{"truc_thu":2100,"thanh_lang":3000,"hac_lang":4200}
     },
     2:{
         "name":"Luyện Khí","production_stones_per_minute":2000,
+        "hp_loss_per_kill_reference":24.0,
         "tuvi_xp_per_kill":6350.0,"body_xp_per_kill":1524.0,
         "personal_hp_service_per_10":600,"pill_shadow_stones":3000,
         "kill_stones":{"truc_thu":4200,"thanh_lang":6000,"hac_lang":8400}
@@ -79,9 +80,16 @@ static func one_hunter_hour(realm: int) -> Dictionary:
     for species_id in SPECIES_WEIGHTS.keys():
         average_stones += float(row["kill_stones"][species_id])*float(SPECIES_WEIGHTS[species_id])
     var gross := average_stones*KILLS_PER_HOUR_REFERENCE
-    var hp_cost := KILLS_PER_HOUR_REFERENCE*HP_LOSS_PER_KILL_REFERENCE \
-        /HEAL_SERVICE_HP_REFERENCE*float(row["personal_hp_service_per_10"])
-    var pill_cost := PILLS_PER_HOUR_REFERENCE*float(row["pill_shadow_stones"])
+    # A consumed healing pill replaces HP services; never charge for both
+    # therapies over the SAME HP. All quantities are modeled, not debited.
+    var total_hp_lost := KILLS_PER_HOUR_REFERENCE*float(row["hp_loss_per_kill_reference"])
+    var real_heal_pill := MedicineCatalogueV2.item_id(MedicineCatalogueV2.FAMILY_HEAL,realm,1)
+    var pill_hp_each := float(MedicineCatalogueV2.definition(real_heal_pill).get("potency",0))
+    var restored_by_pills := minf(total_hp_lost,pill_hp_each*float(PILLS_PER_HOUR_REFERENCE))
+    var hp_to_service := maxf(0.0,total_hp_lost-restored_by_pills)
+    var service_uses := ceili(hp_to_service/HEAL_SERVICE_HP_REFERENCE)
+    var hp_cost := float(service_uses)*float(row["personal_hp_service_per_10"])
+    var pill_cost := float(PILLS_PER_HOUR_REFERENCE)*float(row["pill_shadow_stones"])
     var net := gross-hp_cost-pill_cost
     var pve_xp := KILLS_PER_HOUR_REFERENCE*float(row["tuvi_xp_per_kill"])
     var passive_xp := PASSIVE_TUVI_PER_MINUTE*60.0
@@ -89,6 +97,8 @@ static func one_hunter_hour(realm: int) -> Dictionary:
     return {
         "realm":realm,"kills":KILLS_PER_HOUR_REFERENCE,
         "pve_gross_stones":gross,"healing_stones":hp_cost,
+        "hp_lost":total_hp_lost,"hp_restored_by_pills":restored_by_pills,
+        "hp_service_purchases":service_uses,
         "pill_opportunity_stones":pill_cost,"pve_net_before_injury_and_time":net,
         "production_gross_stones":production_gross,
         "production_mine_personal":production_gross*0.30,
@@ -118,6 +128,8 @@ static func validate_candidate() -> Array[String]:
             errors.append("reference_work_income_mismatch")
         if int(row["personal_hp_service_per_10"]) <= 3:
             errors.append("hp_service_legacy_price_not_rebalanced")
+        if int(hourly["hp_service_purchases"]) != 11:
+            errors.append("hp_services_incorrectly_double_count_pill_healing")
         var ratio := float(hourly["pve_money_to_production_ratio"])
         if ratio < 0.25 or ratio > 0.50:
             errors.append("pve_net_outside_risk_adjusted_production_band")
