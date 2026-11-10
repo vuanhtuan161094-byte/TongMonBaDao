@@ -8511,9 +8511,9 @@
       ],
       "required_divine_stage": 1,
       "divine_rule": "single_spread_poison",
-      "divine_rule_status": "DESIGN_PENDING",
+      "divine_rule_status": "CODE_CANDIDATE_QA_PENDING",
       "poison_evolution_balance_rev": "PVB1_CANDIDATE_20261110",
-      "poison_evolution_rule_status": "IMPLEMENTING_QA_GATED"
+      "poison_evolution_rule_status": "CODE_CANDIDATE_QA_PENDING"
     },
     {
       "id": "tmb.skill.poison.co_doc.active_01.divine.b",
@@ -8606,9 +8606,9 @@
       ],
       "required_divine_stage": 1,
       "divine_rule": "single_spread_poison",
-      "divine_rule_status": "DESIGN_PENDING",
+      "divine_rule_status": "CODE_CANDIDATE_QA_PENDING",
       "poison_evolution_balance_rev": "PVB1_CANDIDATE_20261110",
-      "poison_evolution_rule_status": "IMPLEMENTING_QA_GATED"
+      "poison_evolution_rule_status": "CODE_CANDIDATE_QA_PENDING"
     },
     {
       "id": "tmb.skill.poison.co_doc.active_02.divine.b",
@@ -8701,9 +8701,9 @@
       ],
       "required_divine_stage": 1,
       "divine_rule": "single_spread_poison",
-      "divine_rule_status": "DESIGN_PENDING",
+      "divine_rule_status": "CODE_CANDIDATE_QA_PENDING",
       "poison_evolution_balance_rev": "PVB1_CANDIDATE_20261110",
-      "poison_evolution_rule_status": "IMPLEMENTING_QA_GATED"
+      "poison_evolution_rule_status": "CODE_CANDIDATE_QA_PENDING"
     },
     {
       "id": "tmb.skill.poison.co_doc.active_03.divine.b",
@@ -8796,9 +8796,9 @@
       ],
       "required_divine_stage": 1,
       "divine_rule": "single_spread_poison",
-      "divine_rule_status": "DESIGN_PENDING",
+      "divine_rule_status": "CODE_CANDIDATE_QA_PENDING",
       "poison_evolution_balance_rev": "PVB1_CANDIDATE_20261110",
-      "poison_evolution_rule_status": "IMPLEMENTING_QA_GATED"
+      "poison_evolution_rule_status": "CODE_CANDIDATE_QA_PENDING"
     },
     {
       "id": "tmb.skill.poison.co_doc.active_04.divine.b",
@@ -8891,9 +8891,9 @@
       ],
       "required_divine_stage": 1,
       "divine_rule": "single_spread_poison",
-      "divine_rule_status": "DESIGN_PENDING",
+      "divine_rule_status": "CODE_CANDIDATE_QA_PENDING",
       "poison_evolution_balance_rev": "PVB1_CANDIDATE_20261110",
-      "poison_evolution_rule_status": "IMPLEMENTING_QA_GATED"
+      "poison_evolution_rule_status": "CODE_CANDIDATE_QA_PENDING"
     },
     {
       "id": "tmb.skill.poison.co_doc.ultimate.divine.b",
@@ -8996,9 +8996,9 @@
       ],
       "required_divine_stage": 1,
       "divine_rule": "single_spread_poison",
-      "divine_rule_status": "DESIGN_PENDING",
+      "divine_rule_status": "CODE_CANDIDATE_QA_PENDING",
       "poison_evolution_balance_rev": "PVB1_CANDIDATE_20261110",
-      "poison_evolution_rule_status": "IMPLEMENTING_QA_GATED"
+      "poison_evolution_rule_status": "CODE_CANDIDATE_QA_PENDING"
     },
     {
       "id": "tmb.skill.poison.co_doc.passive_01.divine.b",
@@ -9111,9 +9111,9 @@
       ],
       "required_divine_stage": 1,
       "divine_rule": "single_spread_poison",
-      "divine_rule_status": "DESIGN_PENDING",
+      "divine_rule_status": "CODE_CANDIDATE_QA_PENDING",
       "poison_evolution_balance_rev": "PVB1_CANDIDATE_20261110",
-      "poison_evolution_rule_status": "IMPLEMENTING_QA_GATED"
+      "poison_evolution_rule_status": "CODE_CANDIDATE_QA_PENDING"
     },
     {
       "id": "tmb.skill.poison.co_doc.passive_02.divine.b",
@@ -9226,9 +9226,9 @@
       ],
       "required_divine_stage": 1,
       "divine_rule": "single_spread_poison",
-      "divine_rule_status": "DESIGN_PENDING",
+      "divine_rule_status": "CODE_CANDIDATE_QA_PENDING",
       "poison_evolution_balance_rev": "PVB1_CANDIDATE_20261110",
-      "poison_evolution_rule_status": "IMPLEMENTING_QA_GATED"
+      "poison_evolution_rule_status": "CODE_CANDIDATE_QA_PENDING"
     },
     {
       "id": "tmb.skill.poison.co_doc.passive_03.divine.b",
@@ -9341,9 +9341,9 @@
       ],
       "required_divine_stage": 1,
       "divine_rule": "single_spread_poison",
-      "divine_rule_status": "DESIGN_PENDING",
+      "divine_rule_status": "CODE_CANDIDATE_QA_PENDING",
       "poison_evolution_balance_rev": "PVB1_CANDIDATE_20261110",
-      "poison_evolution_rule_status": "IMPLEMENTING_QA_GATED"
+      "poison_evolution_rule_status": "CODE_CANDIDATE_QA_PENDING"
     },
     {
       "id": "tmb.skill.poison.co_doc.passive_04.divine.b",
@@ -9456,9 +9456,9 @@
       ],
       "required_divine_stage": 1,
       "divine_rule": "single_spread_poison",
-      "divine_rule_status": "DESIGN_PENDING",
+      "divine_rule_status": "CODE_CANDIDATE_QA_PENDING",
       "poison_evolution_balance_rev": "PVB1_CANDIDATE_20261110",
-      "poison_evolution_rule_status": "IMPLEMENTING_QA_GATED"
+      "poison_evolution_rule_status": "CODE_CANDIDATE_QA_PENDING"
     },
     {
       "id": "tmb.skill.poison.co_doc.passive_05.divine.b",
@@ -9571,9 +9571,9 @@
       ],
       "required_divine_stage": 0,
       "divine_rule": "single_spread_poison",
-      "divine_rule_status": "DESIGN_PENDING",
+      "divine_rule_status": "CODE_CANDIDATE_QA_PENDING",
       "poison_evolution_balance_rev": "PVB1_CANDIDATE_20261110",
-      "poison_evolution_rule_status": "IMPLEMENTING_QA_GATED"
+      "poison_evolution_rule_status": "CODE_CANDIDATE_QA_PENDING"
     },
     {
       "id": "tmb.skill.poison.co_doc.innate.divine.b",
@@ -9723,9 +9723,9 @@
       ],
       "required_divine_stage": 1,
       "divine_rule": "removed_debuff_counter",
-      "divine_rule_status": "DESIGN_PENDING",
+      "divine_rule_status": "CODE_CANDIDATE_QA_PENDING",
       "poison_evolution_balance_rev": "PVB1_CANDIDATE_20261110",
-      "poison_evolution_rule_status": "IMPLEMENTING_QA_GATED"
+      "poison_evolution_rule_status": "CODE_CANDIDATE_QA_PENDING"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.active_02.divine.a",
@@ -9818,9 +9818,9 @@
       ],
       "required_divine_stage": 1,
       "divine_rule": "removed_debuff_counter",
-      "divine_rule_status": "DESIGN_PENDING",
+      "divine_rule_status": "CODE_CANDIDATE_QA_PENDING",
       "poison_evolution_balance_rev": "PVB1_CANDIDATE_20261110",
-      "poison_evolution_rule_status": "IMPLEMENTING_QA_GATED"
+      "poison_evolution_rule_status": "CODE_CANDIDATE_QA_PENDING"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.active_03.divine.a",
@@ -9913,9 +9913,9 @@
       ],
       "required_divine_stage": 1,
       "divine_rule": "removed_debuff_counter",
-      "divine_rule_status": "DESIGN_PENDING",
+      "divine_rule_status": "CODE_CANDIDATE_QA_PENDING",
       "poison_evolution_balance_rev": "PVB1_CANDIDATE_20261110",
-      "poison_evolution_rule_status": "IMPLEMENTING_QA_GATED"
+      "poison_evolution_rule_status": "CODE_CANDIDATE_QA_PENDING"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.active_04.divine.a",
@@ -10008,9 +10008,9 @@
       ],
       "required_divine_stage": 1,
       "divine_rule": "removed_debuff_counter",
-      "divine_rule_status": "DESIGN_PENDING",
+      "divine_rule_status": "CODE_CANDIDATE_QA_PENDING",
       "poison_evolution_balance_rev": "PVB1_CANDIDATE_20261110",
-      "poison_evolution_rule_status": "IMPLEMENTING_QA_GATED"
+      "poison_evolution_rule_status": "CODE_CANDIDATE_QA_PENDING"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.ultimate.divine.a",
@@ -10103,9 +10103,9 @@
       ],
       "required_divine_stage": 1,
       "divine_rule": "removed_debuff_counter",
-      "divine_rule_status": "DESIGN_PENDING",
+      "divine_rule_status": "CODE_CANDIDATE_QA_PENDING",
       "poison_evolution_balance_rev": "PVB1_CANDIDATE_20261110",
-      "poison_evolution_rule_status": "IMPLEMENTING_QA_GATED"
+      "poison_evolution_rule_status": "CODE_CANDIDATE_QA_PENDING"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.passive_01.divine.a",
@@ -10218,9 +10218,9 @@
       ],
       "required_divine_stage": 1,
       "divine_rule": "removed_debuff_counter",
-      "divine_rule_status": "DESIGN_PENDING",
+      "divine_rule_status": "CODE_CANDIDATE_QA_PENDING",
       "poison_evolution_balance_rev": "PVB1_CANDIDATE_20261110",
-      "poison_evolution_rule_status": "IMPLEMENTING_QA_GATED"
+      "poison_evolution_rule_status": "CODE_CANDIDATE_QA_PENDING"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.passive_02.divine.a",
@@ -10333,9 +10333,9 @@
       ],
       "required_divine_stage": 1,
       "divine_rule": "removed_debuff_counter",
-      "divine_rule_status": "DESIGN_PENDING",
+      "divine_rule_status": "CODE_CANDIDATE_QA_PENDING",
       "poison_evolution_balance_rev": "PVB1_CANDIDATE_20261110",
-      "poison_evolution_rule_status": "IMPLEMENTING_QA_GATED"
+      "poison_evolution_rule_status": "CODE_CANDIDATE_QA_PENDING"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.passive_03.divine.a",
@@ -10448,9 +10448,9 @@
       ],
       "required_divine_stage": 1,
       "divine_rule": "removed_debuff_counter",
-      "divine_rule_status": "DESIGN_PENDING",
+      "divine_rule_status": "CODE_CANDIDATE_QA_PENDING",
       "poison_evolution_balance_rev": "PVB1_CANDIDATE_20261110",
-      "poison_evolution_rule_status": "IMPLEMENTING_QA_GATED"
+      "poison_evolution_rule_status": "CODE_CANDIDATE_QA_PENDING"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.passive_04.divine.a",
@@ -10563,9 +10563,9 @@
       ],
       "required_divine_stage": 1,
       "divine_rule": "removed_debuff_counter",
-      "divine_rule_status": "DESIGN_PENDING",
+      "divine_rule_status": "CODE_CANDIDATE_QA_PENDING",
       "poison_evolution_balance_rev": "PVB1_CANDIDATE_20261110",
-      "poison_evolution_rule_status": "IMPLEMENTING_QA_GATED"
+      "poison_evolution_rule_status": "CODE_CANDIDATE_QA_PENDING"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.passive_05.divine.a",
@@ -10678,9 +10678,9 @@
       ],
       "required_divine_stage": 1,
       "divine_rule": "removed_debuff_counter",
-      "divine_rule_status": "DESIGN_PENDING",
+      "divine_rule_status": "CODE_CANDIDATE_QA_PENDING",
       "poison_evolution_balance_rev": "PVB1_CANDIDATE_20261110",
-      "poison_evolution_rule_status": "IMPLEMENTING_QA_GATED"
+      "poison_evolution_rule_status": "CODE_CANDIDATE_QA_PENDING"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.innate.divine.a",
@@ -10793,9 +10793,9 @@
       ],
       "required_divine_stage": 0,
       "divine_rule": "removed_debuff_counter",
-      "divine_rule_status": "DESIGN_PENDING",
+      "divine_rule_status": "CODE_CANDIDATE_QA_PENDING",
       "poison_evolution_balance_rev": "PVB1_CANDIDATE_20261110",
-      "poison_evolution_rule_status": "IMPLEMENTING_QA_GATED"
+      "poison_evolution_rule_status": "CODE_CANDIDATE_QA_PENDING"
     },
     {
       "id": "tmb.skill.bow.liep_anh.ultimate.rare.a",
@@ -12341,12 +12341,12 @@
       ],
       "required_divine_stage": 3,
       "divine_rule": "single_spread_poison",
-      "divine_rule_status": "DESIGN_PENDING",
+      "divine_rule_status": "CODE_CANDIDATE_QA_PENDING",
       "replaces_skill_id": "tmb.skill.poison.co_doc.ultimate.divine.a",
       "rarity": "rare_divine",
       "variant_type": "rare_ultimate_replacement",
       "poison_evolution_balance_rev": "PVB1_CANDIDATE_20261110",
-      "poison_evolution_rule_status": "IMPLEMENTING_QA_GATED"
+      "poison_evolution_rule_status": "CODE_CANDIDATE_QA_PENDING"
     },
     {
       "id": "tmb.skill.poison.co_doc.passive_05.rare_passive.a",
@@ -12402,12 +12402,12 @@
       ],
       "required_divine_stage": 3,
       "divine_rule": "single_spread_poison",
-      "divine_rule_status": "DESIGN_PENDING",
+      "divine_rule_status": "CODE_CANDIDATE_QA_PENDING",
       "replaces_skill_id": "tmb.skill.poison.co_doc.passive_05.divine.a",
       "rarity": "rare_divine",
       "variant_type": "rare_elective_passive_replacement",
       "poison_evolution_balance_rev": "PVB1_CANDIDATE_20261110",
-      "poison_evolution_rule_status": "IMPLEMENTING_QA_GATED"
+      "poison_evolution_rule_status": "CODE_CANDIDATE_QA_PENDING"
     },
     {
       "id": "tmb.skill.poison.co_doc.ultimate.rare.b",
@@ -12674,12 +12674,12 @@
       ],
       "required_divine_stage": 3,
       "divine_rule": "removed_debuff_counter",
-      "divine_rule_status": "DESIGN_PENDING",
+      "divine_rule_status": "CODE_CANDIDATE_QA_PENDING",
       "replaces_skill_id": "tmb.skill.poison.duoc_doc.ultimate.divine.b",
       "rarity": "rare_divine",
       "variant_type": "rare_ultimate_replacement",
       "poison_evolution_balance_rev": "PVB1_CANDIDATE_20261110",
-      "poison_evolution_rule_status": "IMPLEMENTING_QA_GATED"
+      "poison_evolution_rule_status": "CODE_CANDIDATE_QA_PENDING"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.passive_05.rare_passive.b",
@@ -12735,12 +12735,12 @@
       ],
       "required_divine_stage": 3,
       "divine_rule": "removed_debuff_counter",
-      "divine_rule_status": "DESIGN_PENDING",
+      "divine_rule_status": "CODE_CANDIDATE_QA_PENDING",
       "replaces_skill_id": "tmb.skill.poison.duoc_doc.passive_05.divine.b",
       "rarity": "rare_divine",
       "variant_type": "rare_elective_passive_replacement",
       "poison_evolution_balance_rev": "PVB1_CANDIDATE_20261110",
-      "poison_evolution_rule_status": "IMPLEMENTING_QA_GATED"
+      "poison_evolution_rule_status": "CODE_CANDIDATE_QA_PENDING"
     }
   ],
   "bosses": [
