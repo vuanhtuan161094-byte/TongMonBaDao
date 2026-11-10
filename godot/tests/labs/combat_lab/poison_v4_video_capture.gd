@@ -9,6 +9,7 @@ const SKILLS := {
     "co_doc": "tmb.skill.poison.co_doc.active_01.human",
     "duoc_doc": "tmb.skill.poison.duoc_doc.active_01.human",
     "duoc_heal": "tmb.skill.poison.duoc_doc.active_02.human",
+    "swarm_aoe": "tmb.skill.poison.doc_cham.active_03.human",
 }
 const FRAMES := 192
 var errors := 0
@@ -44,13 +45,14 @@ func _run() -> void:
         quit(2)
         return
     var requested_skill: String = SKILLS[branch]
+    var swarm_mode := branch == "swarm_aoe"
     OS.set_environment("TMB_COMBAT_LAB_SCHOOL", "poison")
     OS.set_environment("TMB_COMBAT_LAB_GENERATION", "human")
-    OS.set_environment("TMB_COMBAT_LAB_BRANCH", "duoc_doc" if branch == "duoc_heal" else branch)
+    OS.set_environment("TMB_COMBAT_LAB_BRANCH", "doc_cham" if swarm_mode else ("duoc_doc" if branch == "duoc_heal" else branch))
     OS.set_environment("TMB_COMBAT_LAB_LINEAGE", "a")
-    OS.set_environment("TMB_COMBAT_LAB_PARTY", "1")
+    OS.set_environment("TMB_COMBAT_LAB_PARTY", "4" if swarm_mode else "1")
     OS.set_environment("TMB_COMBAT_LAB_ENEMY", "normal")
-    OS.set_environment("TMB_COMBAT_LAB_ENCOUNTER", "single")
+    OS.set_environment("TMB_COMBAT_LAB_ENCOUNTER", "poison_swarm" if swarm_mode else "single")
     OS.set_environment("TMB_COMBAT_LAB_ZOOM", requested_zoom)
     OS.set_environment("TMB_COMBAT_LAB_SCREENSHOT", "")
     var lab := LabScene.instantiate()
@@ -106,7 +108,10 @@ func _run() -> void:
         quit(9)
         return
     var movie_arena: Control = lab.get("arena")
-    movie_arena.call("set_v4_showcase_focus", movie_caster, movie_target)
+    # Swarm needs a static wide lens to display all four independent casters.
+    # The one-caster cinematic focus is reserved for single-skill closeups.
+    if not swarm_mode:
+        movie_arena.call("set_v4_showcase_focus", movie_caster, movie_target)
     # QA-only isolation. The Lab preview temporarily equips this skill and
     # restores the full loadout. AUTO would then emit unrelated spells, making
     # the movie look like the wrong Độc Châm/Cổ Độc/Dược Độc effect.
@@ -135,6 +140,19 @@ func _run() -> void:
     if unrelated_casts > 0:
         _failed("QA movie contains %d unrelated skill_cast IDs" % unrelated_casts)
     var heal_count := _event_count(battle, "heal", requested_skill)
+    if swarm_mode:
+        var party_count := 0
+        var monster_count := 0
+        for observed_id in battle.actors.keys():
+            var observed: Dictionary = battle.actors[observed_id]
+            if str(observed.get("side", "")) == "disciple": party_count += 1
+            if str(observed.get("side", "")) == "monster": monster_count += 1
+        if party_count != 4 or monster_count != 8:
+            _failed("Swarm film has wrong canonical actor counts")
+        if impact_count <= 0:
+            _failed("Swarm film has no real AoE V6.3 target hit")
+        print("POISON_V4_SWARM_REAL_ACTORS party=%d monsters=%d skill_hits=%d" % [
+            party_count, monster_count, impact_count])
     if branch == "duoc_heal" and heal_count <= 0:
         _failed("Canonical V6.3 heal event not observed for wounded QA ally")
     var tick_count := 0
