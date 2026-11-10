@@ -1811,7 +1811,13 @@ func _process_resource_timers(state: SimulationState, building: BuildingState) -
         var job_id := str(job.get("job_id",""))
         var cash_snapshot: Dictionary = job.get("sx_v55_r12_work",{})
         if not cash_snapshot.is_empty():
-            if str(cash_snapshot.get("plan_id","")) != str(job.get("production_plan_id","")) \
+            # A coherent forged amount/time must not bypass the real producer.
+            var authentic_plan: Dictionary = SX_V55_BULK_PLANS.get(str(resource_id),{})
+            if authentic_plan.is_empty() \
+                    or str(authentic_plan.get("plan_id","")) != str(job.get("production_plan_id","")) \
+                    or str(authentic_plan.get("producer","")) != str(building.building_type) \
+                    or int(cash_snapshot.get("minutes",-1)) != int(job.get("finish_tick",0))-int(job.get("started_tick",0)) \
+                    or str(cash_snapshot.get("plan_id","")) != str(job.get("production_plan_id","")) \
                     or str(cash_snapshot.get("site","")) != str(building.building_type) \
                     or not bool(EconomySystem.new().sx_v55_r12_can_settle(state,worker,job_id,cash_snapshot).get("ok",false)):
                 remaining.append(job)
@@ -2113,7 +2119,12 @@ func _resolve_spirit_plot(state: SimulationState, field: BuildingState, plot: Di
     var wage_job_id := str(plot.get("economy_a_wage_job_id", ""))
     var worker_id := StringName(plot.get("assigned_worker_id", ""))
     if not cash_snapshot.is_empty():
-        if str(cash_snapshot.get("plan_id","")) != str(plot.get("production_plan_id","")) \
+        var authentic_plan: Dictionary = SX_V55_BULK_PLANS.get(str(crop_id),{})
+        if authentic_plan.is_empty() \
+                or str(authentic_plan.get("plan_id","")) != str(plot.get("production_plan_id","")) \
+                or str(authentic_plan.get("producer","")) != str(field.building_type) \
+                or int(cash_snapshot.get("minutes",-1)) != int(plot.get("finish_tick",0))-int(plot.get("started_tick",0)) \
+                or str(cash_snapshot.get("plan_id","")) != str(plot.get("production_plan_id","")) \
                 or str(cash_snapshot.get("site","")) != str(field.building_type) \
                 or not state.disciples.has(worker_id) \
                 or not bool(EconomySystem.new().sx_v55_r12_can_settle(
