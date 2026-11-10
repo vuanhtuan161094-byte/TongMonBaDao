@@ -9717,10 +9717,12 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "T�
             var remaining_ticks := maxi(0,disciple.injury_recover_at_tick-state.tick)
             var clinic_button := Button.new()
             clinic_button.name = "SectInjuryTreatmentAction"
-            clinic_button.text = "Điều trị trọng thương"
+            # Leave a real gap before the always-visible Locate button even
+            # with the 216px disciple roster expanded at 1280x720.
+            clinic_button.text = "Chữa trọng thương"
             clinic_button.position = Vector2(266,344)
-            clinic_button.size = Vector2(170,40)
-            clinic_button.add_theme_font_size_override("font_size",12)
+            clinic_button.size = Vector2(148,40)
+            clinic_button.add_theme_font_size_override("font_size",11)
             var affordable := bool(clinic_quote.get("ok",false)) and disciple.spirit_stones >= int(clinic_quote.get("cost",0))
             var busy_clinic := PveInjuryTreatmentV1.treatment_in_progress(state,disciple)
             clinic_button.disabled = not affordable or remaining_ticks <= PveInjuryTreatmentV1.TREATMENT_TICKS or busy_clinic
