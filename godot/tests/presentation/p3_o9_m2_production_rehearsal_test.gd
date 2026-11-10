@@ -658,6 +658,24 @@ func _run() -> void:
             _fail("O9 Warehouse projection is missing %s." % token)
             return
 
+    # The Warehouse must show actual on-hand stock separately from
+    # already-planted but not yet harvested crop. Display may never mint stock.
+    var herb_stock := warehouse.quantity(state,&"thanh_linh_thao")
+    var pending_before: Dictionary = ui.call("_warehouse_pending_field_harvest")
+    var herb_pending: Dictionary = pending_before.get("thanh_linh_thao",{})
+    var due_herb := maxi(0,int(herb_pending.get("finish_tick",state.tick))-state.tick)
+    if herb_stock == 0 and int(herb_pending.get("quantity",0)) > 0:
+        var truthful_label := "Thanh Linh Thảo ×0 · dùng được 0 · đang trồng ~%s" % [
+            ui.call("_compact_number",int(herb_pending["quantity"]))
+        ]
+        if not warehouse_text.contains(truthful_label) or not warehouse_text.contains(
+                "còn %d phút mô phỏng" % due_herb if due_herb > 0 else "đến hạn, chờ nhập Kho"):
+            _fail("O9 zero herb inventory is not distinguished from an actual pending plot and ETA.")
+            return
+    if warehouse.quantity(state,&"thanh_linh_thao") != herb_stock:
+        _fail("O9 read-only Warehouse projection mutated genuine herb inventory.")
+        return
+
     var final_tick := state.tick
     var final_iron := warehouse.quantity(state, &"thanh_thiet")
     var final_wood := warehouse.quantity(state, &"linh_moc")
