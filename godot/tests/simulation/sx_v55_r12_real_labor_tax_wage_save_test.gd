@@ -173,6 +173,23 @@ func _run() -> void:
         and not state.sect.economy_a_receipts.has("sxv55-work:"+str(forest_job["job_id"])),
         "altered earnings snapshot minted material or Stone"):
         return
+    # The attacker may modify all monetary fields coherently. A genuinely
+    # frozen start/finish duration and actual resource plan still reject it.
+    var coherent: Dictionary = forest_job.duplicate(true)
+    var longer: Dictionary = forest_snapshot.duplicate(true)
+    longer["minutes"] = int(longer["minutes"])+1
+    longer["gross"] = int(longer["minutes"])*2000
+    longer["tax"] = int(longer["gross"])*30/100
+    longer["net"] = int(longer["gross"])-int(longer["tax"])
+    coherent["sx_v55_r12_work"] = longer
+    forest_state = forest.production_state.duplicate(true)
+    forest_state["economy_a_jobs"] = [coherent]
+    forest.production_state = forest_state
+    buildings.process_tick(state)
+    if not _check(warehouse.quantity(state,&"linh_moc") == before_wood
+        and state.sect.spirit_stones+actor.spirit_stones == forest_cash,
+        "coherently forged LT2 minutes bypassed actual saved job duration"):
+        return
     # Restore only the genuine, previously frozen job and complete it once.
     forest_state = forest.production_state.duplicate(true)
     forest_state["economy_a_jobs"] = [forest_job]
