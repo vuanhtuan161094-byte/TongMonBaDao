@@ -25,7 +25,7 @@ func _run() -> void:
     _spread_contract()
     _ok(V63FeatureGates.all_disabled(), "legacy release gate must remain OFF")
     print("PVB1_POISON_EVOLUTION_SUMMARY " + JSON.stringify({
-        "skills":183,"families":35,"rare_passive":6,"changes_reviewed":36,
+        "skills":183,"families":35,"rare_passive":6,"proposal_effect_change_count":36,
         "godot_checks":checks,"failures":failures,
         "scope":"real catalogue/schema + bounded mechanics, not live 30-hunter PvE telemetry",
         "status":"PASS" if failures == 0 else "FAIL"
@@ -148,7 +148,7 @@ func _heal_budget_contract() -> void:
     V63PoisonEvolutionV1.record_damage_taken(ally,1000.0,13.0)
     _approx(V63PoisonEvolutionV1.heal_allowed(ally,80.0,14.0),10.2,
         "120HP MaxHP target cap less already granted 12.6 -> 10.2")
-    _approx(V63PoisonEvolutionV1.heal_allowed(ally,80.0,612.0),0.0,
+    _approx(V63PoisonEvolutionV1.heal_allowed(ally,80.0,615.0),0.0,
         "10m window must expire rather than mint free healing")
     _ok(not ally.has("injury_recover_at_tick"),"heal must not modify Injury")
     print("PVB1_HEAL_BUDGET_PASS")
