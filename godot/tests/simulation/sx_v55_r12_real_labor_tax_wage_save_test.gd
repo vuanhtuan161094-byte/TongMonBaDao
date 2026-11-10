@@ -102,6 +102,20 @@ func _run() -> void:
         and int(mine_snapshot.get("wage",0)) == 2000,
         "real Mine 1 source, 70% tax or W2 floor not frozen"):
         return
+    # W2 floor is not an extra wage on a long job. A 1-minute thought
+    # experiment still requires a genuine treasury-funded topup.
+    var minute_floor := economy.sx_v55_r12_work_snapshot(
+        state,actor,BuildingSystem.TYPE_MINE,"mine_thanh_thiet_t1",1)
+    var minute_preview := economy.sx_v55_r12_can_settle(
+        state,actor,"qa:minute-floor-preview",minute_floor)
+    if not _check(bool(minute_preview.get("ok",false))
+        and int(minute_preview.get("gross",0)) == 1000
+        and int(minute_preview.get("wage_floor",0)) == 2000
+        and int(minute_preview.get("wage_due",-1)) == 1000
+        and int(minute_preview.get("taxable",0)) == 1000+int(minute_preview.get("wage_paid",-1))
+        and int(minute_preview.get("tax",0)) == int(minute_preview.get("taxable",0))*70/100,
+        "original W2 topup-floor formula/taxable paid portion is wrong"):
+        return
     var mine_id := str(mine_job.get("job_id",""))
     state = _reload(state)
     if not _check(state != null and economy.sx_v55_r12_enabled(state),
@@ -122,8 +136,12 @@ func _run() -> void:
     if not _check(warehouse.quantity(state,&"thanh_thiet") == before_mine+10000
         and state.sect.spirit_stones+actor.spirit_stones == before_stones+mine_gross
         and state.sect.economy_a_receipts.has("sxv55-work:"+mine_id)
-        and state.sect.economy_a_receipts.has("wage:"+mine_id),
-        "actual Mine Warehouse→gross/tax/wage contract failed"):
+        and state.sect.economy_a_receipts.has("wage:"+mine_id)
+        and int(state.sect.economy_a_receipts["wage:"+mine_id].get("due",-1)) == 0
+        and int(state.sect.economy_a_receipts["wage:"+mine_id].get("paid",-1)) == 0
+        and int(state.sect.economy_a_receipts["wage:"+mine_id].get("w2_floor",-1)) == 2000
+        and int(state.sect.economy_a_receipts["sxv55-work:"+mine_id].get("taxable",-1)) == mine_gross,
+        "actual Mine Warehouse→gross/T2/W2 floor (NO double wage) failed"):
         return
     var mine_wallet := state.sect.spirit_stones+actor.spirit_stones
     buildings.process_tick(state)
@@ -196,16 +214,49 @@ func _run() -> void:
     forest.production_state = forest_state
     buildings.process_tick(state)
     var forest_gross := int(forest_snapshot["gross"])
+    var forest_id := str(forest_job["job_id"])
     if not _check(warehouse.quantity(state,&"linh_moc") == before_wood+8000
-        and state.sect.spirit_stones+actor.spirit_stones == forest_cash+forest_gross,
-        "real Forest grade-2 credit did not conserve gross"):
+        and state.sect.spirit_stones+actor.spirit_stones == forest_cash+forest_gross
+        and int(state.sect.economy_a_receipts.get("wage:"+forest_id,{}).get("due",-1)) == 0
+        and int(state.sect.economy_a_receipts.get("wage:"+forest_id,{}).get("paid",-1)) == 0,
+        "real Forest grade-2 gross paid, W2 floor no extra wage failed"):
         return
     state = _reload(state)
     if not _check(state != null and economy.sx_v55_r12_enabled(state),
         "cold Save lost Forest tax/wage/receipt"):
         return
     actor = state.disciples[recruit.id]
+    mine = buildings.primary_building(state,BuildingSystem.TYPE_MINE)
     field = buildings.primary_building(state,BuildingSystem.TYPE_SPIRIT_FIELD)
+    # V5.5-D tab 04_NangCap342: Mine Lv1→2 costs 24,000 Stone.
+    # Only genuine credited Mine+Forest production can pay this upgrade.
+    var mine_cost := buildings.sx_v55_upgrade_cost(state,mine)
+    if not _check(int(mine_cost.get("spirit_stones",-1)) == 24000
+        and int(mine_cost.get("linh_moc",-1)) == 5000
+        and int(mine_cost.get("thanh_thiet",-1)) == 7000,
+        "stage1 real mine upgrade not priced to original workbook"):
+        return
+    var before_upgrade_stones := state.sect.spirit_stones
+    var before_upgrade_wood := warehouse.quantity(state,&"linh_moc")
+    var before_upgrade_ore := warehouse.quantity(state,&"thanh_thiet")
+    var paid_upgrade := buildings.start_upgrade(state,mine.id)
+    if not _check(bool(paid_upgrade.get("ok",false))
+        and state.sect.spirit_stones == before_upgrade_stones-24000
+        and warehouse.quantity(state,&"linh_moc") == before_upgrade_wood-5000
+        and warehouse.quantity(state,&"thanh_thiet") == before_upgrade_ore-7000,
+        "real work taxes did not fund real priced mine upgrade debit"):
+        return
+    state = _reload(state)
+    if not _check(state != null,"cold Save after actual Mine upgrade failed"):
+        return
+    actor = state.disciples[recruit.id]
+    mine = buildings.primary_building(state,BuildingSystem.TYPE_MINE)
+    field = buildings.primary_building(state,BuildingSystem.TYPE_SPIRIT_FIELD)
+    if not _check(mine.is_upgrading() and state.sect.spirit_stones == before_upgrade_stones-24000
+        and warehouse.quantity(state,&"linh_moc") == before_upgrade_wood-5000
+        and warehouse.quantity(state,&"thanh_thiet") == before_upgrade_ore-7000,
+        "cold Save applied paid upgrade costs a second time"):
+        return
     if not _check(workforce.assign_group(state,actor.id,&"herbalism_crew")
         and workforce.assign_worksite(state,actor.id,field.id),
         "cannot claim genuine Field plot"):
@@ -244,8 +295,10 @@ func _run() -> void:
     if not _check(warehouse.quantity(state,&"thanh_linh_thao") >= herb_before+2000
         and state.sect.spirit_stones+actor.spirit_stones == money_before+gross_field
         and state.sect.economy_a_receipts.has("sxv55-work:"+crop_id)
-        and state.sect.economy_a_receipts.has("wage:"+crop_id),
-        "real Field grade-2 goods, earned money, tax/wage receipts failed"):
+        and state.sect.economy_a_receipts.has("wage:"+crop_id)
+        and int(state.sect.economy_a_receipts["wage:"+crop_id].get("due",-1)) == 0
+        and int(state.sect.economy_a_receipts["wage:"+crop_id].get("paid",-1)) == 0,
+        "real Field grade-2 goods, LT2, T2 and no-double-W2 floor failed"):
         return
     var final_goods := warehouse.quantity(state,&"thanh_linh_thao")
     var final_money := state.sect.spirit_stones+actor.spirit_stones
