@@ -8,6 +8,9 @@ on:
     paths:
       - '.github/workflows/poison-v4-godot-evidence.yml'
       - 'godot/labs/combat_lab/combat_lab_poison_v4_layers.gd'
+      - 'godot/labs/combat_lab/combat_lab_arena.gd'
+      - 'godot/labs/combat_lab/combat_lab_roster_adapter.gd'
+      - 'godot/tests/labs/combat_lab/poison_v4_aim_range_contract_test.gd'
       - 'godot/labs/combat_lab/combat_lab_vfx_v2.gd'
       - 'godot/tests/labs/combat_lab/poison_v4_render_contract_test.gd'
       - 'godot/tests/labs/combat_lab/poison_v4_video_capture.gd'
@@ -61,6 +64,10 @@ jobs:
             --script res://tests/labs/combat_lab/poison_v4_video_capture.gd
           bash tools/qa/run_godot_strict.sh --headless --path godot \
             -s res://tests/labs/combat_lab/poison_v4_render_contract_test.gd
+          bash tools/qa/run_godot_strict.sh --headless --path godot \
+            -s res://tests/labs/combat_lab/poison_v4_aim_range_contract_test.gd
+          bash tools/qa/run_godot_strict.sh --headless --path godot \
+            -s res://tests/labs/combat_lab/combat_lab_v2_visual_test.gd
 
       - name: Record 7 genuine Combat Lab Movie Maker videos including canonical Dược Độc healing
         shell: bash
