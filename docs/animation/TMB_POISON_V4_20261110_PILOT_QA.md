@@ -30,7 +30,7 @@ Date: 2026-11-10. PR: #72 Draft. Branch: \`integration/pve-p0-playable-ui-202611
 
 ## New healing gate
 
-A separate **Dược Độc active_02.human HEAL** QA case was added to \`poison_v4_video_capture.gd\`, with one wounded disciple in an *isolated in-memory Lab fixture only*, no generated heal, save write or production state. The test must observe a real committed V6.3 \`heal\` event before PASS. A new 7-video Actions run is queued/running; **no healing PASS claim until it finishes**.
+A separate **Dược Độc active_02.human HEAL** QA case was added to \`poison_v4_video_capture.gd\`, with one wounded disciple in an *isolated in-memory Lab fixture only*, no generated heal, save write or production state. The test must observe a real committed V6.3 \`heal\` event before PASS. The new official 7-video Actions run [42747713182](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42747713182) completed **SUCCESS** on exact SHA `ad35fa660873363b742f28f72a6edd51ea8131f9`. SHA-pinned official Godot 4.7.2 import/compile/V4 renderer contract = **PASS / 0 script errors**. The new `duoc_heal-2x.mp4` is a genuine Godot Movie Maker recording (1280×720, 24 FPS, 194 frames). Its canonical V6.3 `heal` event count is **1** (alongside `cast=1, release=1, v63_hit=1` and 48 observed events); no heal packet is synthesized by the VFX. Artifact [ID 13732572148](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42747713182/artifacts), ZIP SHA-256 `951b5a00952483aadf8901595382cefe38b135cbfb2f9b15011a002b613fc229`. **Event/engine PASS, cinematic frame-level HEAL VFX acceptance remains PARTIAL**, especially at original 1× gameplay scale.
 
 ## Alpha atlas pilot, separate chat download — not a repo runtime asset
 
