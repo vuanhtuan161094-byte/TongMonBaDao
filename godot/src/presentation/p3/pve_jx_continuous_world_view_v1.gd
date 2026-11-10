@@ -124,20 +124,24 @@ func _update_actor_visual(actor_id: String, actor: Dictionary) -> void:
         if source_id == actor_id and ["move","skill_cast","skill_hit","hit","basic_hit"].has(str(event.get("type",""))):
             event_time = when
             event_type = str(event.get("type",""))
-        elif target_id == actor_id and str(event.get("type","")) == "hit":
+        elif target_id == actor_id and str(event.get("type","")) == "status_applied" \
+                and str(event.get("status","")) in ["stun","freeze","knockback","knock_up","stagger"]:
+            # Damage and DoT must NOT force this actor into its whole-body
+            # hurt atlas. Only authoritative control may interrupt movement.
             event_time = when
             event_type = "hurt"
     if float(actor.get("hp",0.0)) <= 0.0:
         action = "die"
-    elif event_time >= 0.0 and battle.now-event_time <= 0.9:
-        if event_type == "hurt":
-            action = "hit"
+    elif event_type == "hurt" and event_time >= 0.0 and battle.now-event_time <= 0.30:
+        action = "hit"
+    elif _render_positions.get(actor_id,actor.get("position",Vector2.ZERO)).distance_to(actor.get("position",Vector2.ZERO)) > 0.03:
+        # Locomotion has visual priority over repeated basic-hit events.
+        action = "run"
+    elif event_time >= 0.0 and battle.now-event_time <= 0.65:
+        if event_type in ["skill_cast","skill_hit","hit","basic_hit"]:
+            action = "attack"
         elif event_type == "move":
             action = "run"
-        elif event_type in ["skill_cast","skill_hit","hit","basic_hit"]:
-            action = "attack"
-    elif _render_positions.get(actor_id,actor.get("position",Vector2.ZERO)).distance_to(actor.get("position",Vector2.ZERO)) > 0.03:
-        action = "run"
     var previous: Dictionary = _actor_visuals.get(actor_id,{})
     if event_time > float(_last_visual_event_time.get(actor_id,-1.0)):
         _last_visual_event_time[actor_id] = event_time
