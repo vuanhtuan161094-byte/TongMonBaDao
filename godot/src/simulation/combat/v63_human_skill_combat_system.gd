@@ -173,8 +173,14 @@ static func learn_skill(state: SimulationState, disciple: DiscipleState, skill_i
             return _failure("divine_skill_combat_disabled")
         if V63LearningSystem.divine_lineage_stage(disciple, str(definition.branch), str(definition.lineage)) < int(definition.get("required_divine_stage", 1)):
             return _failure("divine_lineage_study_incomplete")
+    # Existing saved high-tier skills are grandfathered by the duplicate path.
+    # New study in opted-in V63 requires the exact predecessor of the family,
+    # not an unrelated high-tier spell with a similar name.
     if disciple.v63_learned_skill_nodes.has(skill_id):
         return {"ok":true,"duplicate":true,"skill_id":skill_id}
+    if V63FeatureGates.is_enabled("poison_evolution_strict", preview_overrides) \
+            and not V63PoisonEvolutionV1.predecessor_ready(definition, disciple.v63_learned_skill_nodes):
+        return _failure("poison_predecessor_not_learned")
     disciple.v63_learned_skill_nodes[skill_id] = {"source_codex_id":codex_id,"learned_tick":maxi(state.tick,0),"mastery_xp":0.0,"level":1,"branch_id":str(definition.get("branch",""))}
     return {"ok":true,"skill_id":skill_id,"codex_id":codex_id}
 
