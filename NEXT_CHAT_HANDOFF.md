@@ -348,3 +348,11 @@ One game, one authority, one final `main`, one working launcher. **Không tạo 
 ## Reporting contract
 
 After each gate: `Gate / branch / code SHA / changed paths / Windows E backup manifest / Godot build / tests PASS-FAIL / GUI actual vs injected / screenshots/logs / blocker / next action`; report in [Issue #56](https://github.com/vuanhtuan161094-byte/TongMonBaDao/issues/56) and PR #72. **Do not substitute another checklist or open new status-only PRs.**
+
+## SKILL-ALL-01 → SKILL-ALL-05 progress (2026-11-11)
+
+- Code correction: [9242ded8acc3e0123a07207bae4b188e065126b5](https://github.com/vuanhtuan161094-byte/TongMonBaDao/commit/9242ded8acc3e0123a07207bae4b188e065126b5), parent 917a7668037133235157ef03ccea26f804d1f54b. Fixes Poison V4 lab tooltip and stale radius/heal test assumptions; no Combat V2, SaveService, catalog, RNG, balance or gate change.
+- Godot 4.7.2 official import/parse PASS exit 0; exact-code-SHA focused tests 16/16 and catalogue/school/PVB1 runtime tests 8/8 exit 0. See docs/qa/SKILL_ALL_QA_EVIDENCE_20261111.md and godot/outputs/qa_evidence/skill_all_9242ded8_20261111/.
+- Static inventory: 549 V6.3 IDs/105 families/9 branches plus 9 legacy cast entries and 6 technique entries; 564 unique rows. Full source-preserving CSV: docs/qa/SKILL_ALL_ID_AUDIT.csv. Normalized fixture data: docs/qa/SKILL_ALL_NORMALIZED_MEASUREMENTS_20261111.csv.
+- V63 default gates remain OFF; PVB1 numbers remain gated candidate, not owner-approved. VFX manifest has no per-skill asset files.
+- GitHub Actions/status for the code SHA returned no entries at capture; CI PENDING. Physical Windows GUI/mouse, Android and owner visual acceptance remain PENDING. Headless PASS is not playable/release PASS.
