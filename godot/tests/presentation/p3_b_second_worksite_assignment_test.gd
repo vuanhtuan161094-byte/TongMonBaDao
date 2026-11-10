@@ -242,8 +242,10 @@ func _run() -> void:
         _fail("Persisted second-Mine finish tick is inconsistent.")
         return
     loaded_scheduler.run_ticks(pending_ticks)
+    var mine_expected_xp := float(job.get("profession_xp_gain",0.0))
     if warehouse.quantity(loaded,&"thanh_thiet") != saved_ore+output or (
-        float((loaded.disciples[miner_id] as DiscipleState).profession_xp.get("mining",0.0)) <= saved_xp
+        mine_expected_xp <= 0.0
+        or not is_equal_approx(float((loaded.disciples[miner_id] as DiscipleState).profession_xp.get("mining",0.0)),saved_xp+mine_expected_xp)
         or not buildings.active_resource_timer_for_worker(loaded,miner_id).is_empty()
     ):
         _fail("Resumed Mine timer did not pay exact ore and profession XP once.")
@@ -252,10 +254,66 @@ func _run() -> void:
     if warehouse.quantity(loaded,&"thanh_thiet") != saved_ore+output:
         _fail("Resumed Mine job duplicated ore after completion.")
         return
+
+    # Reassign the SAME earned V2 disciple only after Mine settlement. The
+    # Forest worksite is the second paid building already selected/verified
+    # by the real UI. This checks V2 FORESTRY timer/EXP as well as legacy
+    # founders' UI, without recruiting/granting an extra QA person or cash.
+    var v2_worker: DiscipleState = loaded.disciples[miner_id]
+    if not workforce.assign_group(loaded,miner_id,&"forestry_crew") or (
+        not workforce.assign_worksite(loaded,miner_id,forest_id)
+        or not buildings.active_worker_ids(loaded,loaded_forest).has(miner_id)
+    ):
+        _fail("Settled V2 miner could not take the actual paid Forest worksite.")
+        return
+    var wood_before_job := warehouse.quantity(loaded,&"linh_moc")
+    var forest_xp_before := float(v2_worker.profession_xp.get("forestry",0.0))
+    var started_forest := workforce.perform_work(loaded,v2_worker,WorkforceSystem.PROF_FORESTRY)
+    var forest_job := buildings.active_resource_timer_for_worker(loaded,miner_id)
+    if not bool(started_forest.get("started",false)) or forest_job.is_empty() or (
+        str(forest_job.get("resource_id","")) != "linh_moc"
+        or not buildings.resource_timer_jobs(loaded_forest).has(forest_job)
+        or warehouse.quantity(loaded,&"linh_moc") != wood_before_job
+        or not is_equal_approx(float(v2_worker.profession_xp.get("forestry",0.0)),forest_xp_before)
+    ):
+        _fail("Real paid Forest 002 did not start a correct unpaid V2 timber/EXP timer: " + str(started_forest))
+        return
+    if SaveService.new().save_to_path(loaded,SAVE_PATH) != OK:
+        _fail("Canonical SaveService rejected a second-Forest V2 timer.")
+        return
+    var forest_reload := SaveService.new().load_from_path(SAVE_PATH)
+    if forest_reload == null or not forest_reload.buildings.has(str(forest_id)):
+        _fail("Cold reload lost paid second Forest worksite.")
+        return
+    var forest_pending := buildings.active_resource_timer_for_worker(forest_reload,miner_id)
+    if forest_pending.is_empty() or str(forest_pending.get("job_id","")) != str(forest_job.get("job_id","")):
+        _fail("Cold Save changed second-Forest V2 timer identity.")
+        return
+    var forest_loaded_worker: DiscipleState = forest_reload.disciples[miner_id]
+    var loaded_wood := warehouse.quantity(forest_reload,&"linh_moc")
+    var forest_pending_xp := float(forest_loaded_worker.profession_xp.get("forestry",0.0))
+    var forest_duration := int(forest_pending.get("finish_tick",0))-forest_reload.tick
+    if forest_duration <= 0 or forest_duration > 100:
+        _fail("Paid second-Forest timer has invalid persisted finish time.")
+        return
+    var forest_scheduler := SimulationScheduler.new(forest_reload)
+    forest_scheduler.run_ticks(forest_duration)
+    if warehouse.quantity(forest_reload,&"linh_moc") != loaded_wood+int(forest_job.get("output_quantity",0)) or (
+        not is_equal_approx(float(forest_loaded_worker.profession_xp.get("forestry",0.0)),
+            forest_pending_xp+float(forest_job.get("profession_xp_gain",0.0)))
+        or not buildings.active_resource_timer_for_worker(forest_reload,miner_id).is_empty()
+    ):
+        _fail("Cold-resumed Forest 002 did not settle real timber and exact profession XP once.")
+        return
+    forest_scheduler.step()
+    if warehouse.quantity(forest_reload,&"linh_moc") != loaded_wood+int(forest_job.get("output_quantity",0)):
+        _fail("Forest 002 issued duplicate timber on a later simulation tick.")
+        return
+
     ui.queue_free()
     await process_frame
     _cleanup()
-    print("GATE B PAID MULTI-SITE MINE/FOREST WORKER + V2 TIMER/XP/WAREHOUSE/SAVE: PASS")
+    print("GATE B PAID MINE/FOREST 002, REAL V2 TIMERS, EXP, WAREHOUSE, COLD SAVE EXACT-ONCE: PASS")
     quit(0)
 
 func _recruit_authentic_v2() -> StringName:
