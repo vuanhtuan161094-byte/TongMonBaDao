@@ -340,7 +340,7 @@ func consume_events(rows: Array[Dictionary]) -> void:
                         "effect":str(authored.get("effect", "")), "shape":str(authored.get("shape", "")),
                         "target_limit":int(authored.get("target_limit", 0)), "event_type":"skill_cast",
                         "committed_time":start_time,
-                        "source_actor_id":source_actor_id, "launch_at":launch_at, "impact_at":impact_at,
+                        "source_actor_id":source_actor_id, "target_actor_id":target_id, "launch_at":launch_at, "impact_at":impact_at,
                         "created":now_ms, "life":0.0, "source_index":int(event.get("lab_source_index", -1)),
                         "time":start_time
                     })
@@ -463,6 +463,31 @@ func _draw_actor(actor: Dictionary) -> void:
         HORIZONTAL_ALIGNMENT_CENTER, 36.0 * actor_scale,
         clampi(roundi(10.0 * actor_scale), 9, 17), Color("e6dfef"))
 
+# Presentation-only aim oracle: grounded in canonical actor IDs and positions.
+# The event/simulation remains the sole authority for which actor is hit.
+func _cue_target_world_position(cue: Dictionary) -> Vector2:
+    var original: Vector2 = cue.get("position", Vector2.ZERO)
+    var kind := str(cue.get("kind", ""))
+    if kind in ["cast", "aoe", "area_burst", "venom_cloud", "telegraph", "mobility"]:
+        return original
+    var target_id := str(cue.get("target_actor_id", ""))
+    if battle == null or target_id.is_empty() or not battle.actors.has(target_id):
+        return original
+    return battle.actors[target_id].get("position", original)
+
+# Body center is measured from the actor's FEET, not multiplied directly by
+# camera zoom. Boss and normal monster rigs have different rendered heights.
+func _actor_body_offset_px(actor_id: String) -> float:
+    if battle == null or actor_id.is_empty() or not battle.actors.has(actor_id):
+        return -18.0 * (0.55 + 0.29 * zoom)
+    var actor: Dictionary = battle.actors[actor_id]
+    var monster := str(actor.get("side", "")) == "monster"
+    var boss := str(actor.get("tier", "")) == "boss"
+    var actor_scale := (1.5 if boss else 1.0) * (0.55 + 0.29 * zoom)
+    # ActorRigV2 head/torso around -20..-40 at scale; PoisonAtlasV1
+    # character has a taller 245px source frame scaled by 0.32.
+    return (-26.0 if monster else -37.0) * actor_scale
+
 func _draw_cues() -> void:
     # HOLD freezes all existing spell/impact effects, not only projectiles.
     var current_time := roundi(visual_time * 1000.0)
@@ -485,10 +510,19 @@ func _draw_cues() -> void:
                 continue
             live.append(cue)
             t = clampf(age / duration, 0.0, 1.0)
-        var p := _world_to_local(cue.get("position", Vector2.ZERO))
+        # The canonical event identifies WHO was hit, not a fixed screen pixel.
+        # A projectile may travel while the target moves; use its live foot
+        # position for the visual endpoint. AoE/telegraphs stay at their event
+        # center, never chase one of the targets.
+        var p := _world_to_local(_cue_target_world_position(cue))
         var start := _world_to_local(cue.get("from_position", cue.get("position", Vector2.ZERO)))
         var radius_px := float(cue.get("radius", 0.0)) * size.x / WORLD.size.x * zoom
-        VfxV2.render(self, cue, p, start, t, radius_px, zoom)
+        var visual_cue := cue
+        if str(cue.get("school", "")) == "poison" and OS.get_environment("TMB_POISON_V4_PREVIEW") == "1":
+            visual_cue = cue.duplicate()
+            visual_cue["v4_target_body_offset"] = _actor_body_offset_px(str(cue.get("target_actor_id", "")))
+            visual_cue["v4_source_body_offset"] = _actor_body_offset_px(str(cue.get("source_actor_id", "")))
+        VfxV2.render(self, visual_cue, p, start, t, radius_px, zoom)
         var label := str(cue.get("text", ""))
         if label.is_empty():
             continue
