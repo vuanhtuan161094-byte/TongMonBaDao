@@ -163,6 +163,9 @@ func _run() -> void:
         return
     actor = state.disciples[candidate.id]
     mine = buildings.primary_building(state,BuildingSystem.TYPE_MINE)
+    forest = buildings.primary_building(state,BuildingSystem.TYPE_LINH_FOREST)
+    field = buildings.primary_building(state,BuildingSystem.TYPE_SPIRIT_FIELD)
+    hall = buildings.primary_building(state,BuildingSystem.TYPE_ALCHEMY_HALL)
     if not _check(buildings.sx_v55_bulk_enabled(state)
         and int(buildings.active_resource_timer_for_worker(state,actor.id).get("output_quantity",-1)) == 10000,
         "cold Save rewrote Mine output or opt-in policy"):
@@ -223,7 +226,7 @@ func _run() -> void:
         if not _check(not saved_plot.is_empty()
             and str(saved_plot.get("production_plan_id","")) == str(plan.get("plan_id",""))
             and int(saved_plot.get("routine_yield",-1)) >= int(plan.get("yield",0)),
-            "Field new planted plot did not freeze bulk output: "+str(crop)):
+            "Field new planted plot did not freeze bulk output: "+str(crop)+" "+str(saved_plot)):
             return
         var before := warehouse.quantity(state,crop)
         state = _save_reload(state)
@@ -243,6 +246,7 @@ func _run() -> void:
             "Field cold-replay duplicated crop: "+str(crop)):
             return
 
+    hall = buildings.primary_building(state,BuildingSystem.TYPE_ALCHEMY_HALL)
     if not _check(workforce.assign_group(state,actor.id,&"alchemy_crew")
         and workforce.assign_worksite(state,actor.id,hall.id),"cannot claim Alchemy hall"):
         return
