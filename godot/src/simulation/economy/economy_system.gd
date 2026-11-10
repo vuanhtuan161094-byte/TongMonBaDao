@@ -202,8 +202,10 @@ func configure_v1(state: SimulationState, key: String, value: Variant) -> Dictio
     var policy: Dictionary = state.sect.economy_a_policy
     if not policy.has(key):
         return {"ok":false,"reason":"unknown_policy"}
-    if key == SX_V55_R12_POLICY or key == PveR12BalanceV1.POLICY_KEY:
-        return {"ok":false,"reason":"design_hold_pilot_no_player_activation"}
+    if key == SX_V55_R12_POLICY:
+        return {"ok":false,"reason":"design_hold_r12_no_player_activation"}
+    if key == PveR12BalanceV1.POLICY_KEY:
+        return {"ok":false,"reason":"design_hold_pve_r12_no_player_activation"}
     if key == "auto_hp_service":
         if not (value is bool):
             return {"ok":false,"reason":"policy_type"}
