@@ -12,6 +12,7 @@ on:
       - 'godot/labs/combat_lab/combat_lab_vfx_progression.gd'
       - 'godot/labs/combat_lab/combat_lab_v4_spell_spark.gd'
       - 'godot/tests/labs/combat_lab/poison_v4_growth_reaction_test.gd'
+      - 'godot/tests/labs/combat_lab/combat_lab_v2_visual_test.gd'
       - 'godot/labs/combat_lab/combat_lab_arena.gd'
       - 'godot/labs/combat_lab/combat_lab_roster_adapter.gd'
       - 'godot/tests/labs/combat_lab/poison_v4_aim_range_contract_test.gd'
