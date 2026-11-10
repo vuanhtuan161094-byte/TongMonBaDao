@@ -1653,6 +1653,13 @@ func perform_spirit_field_step(state: SimulationState, disciple: DiscipleState, 
         # have already credited EXP at sowing; do not reward them twice.
         "profession_xp_gain": base_crop_xp * maxf(learning_factor,0.0) * spirit_field_xp_factor(field)
     }
+    if not bulk_crop_plan.is_empty():
+        var cash_snapshot := EconomySystem.new().sx_v55_r12_work_snapshot(
+            state,disciple,field.building_type,str(bulk_crop_plan.get("plan_id","")),duration)
+        if not cash_snapshot.is_empty():
+            var frozen_plot: Dictionary = plots[plot_index]
+            frozen_plot["sx_v55_r12_work"] = cash_snapshot
+            plots[plot_index] = frozen_plot
     data["plots"] = plots
     data["plant_sequence"] = plant_sequence
     field.production_state = data
@@ -1743,6 +1750,11 @@ func _start_resource_timer(state: SimulationState, producer: BuildingState, acto
         "profession_xp_gain":xp_snapshot,
         "started_tick":state.tick,"finish_tick":state.tick+duration
     }
+    if not bulk_plan.is_empty():
+        var cash_snapshot := EconomySystem.new().sx_v55_r12_work_snapshot(
+            state,actor,producer.building_type,str(bulk_plan.get("plan_id","")),duration)
+        if not cash_snapshot.is_empty():
+            job["sx_v55_r12_work"] = cash_snapshot
     jobs.append(job)
     data["economy_a_sequence"] = sequence
     data["economy_a_jobs"] = jobs
@@ -1797,6 +1809,13 @@ func _process_resource_timers(state: SimulationState, building: BuildingState) -
         var resource_id := StringName(job.get("resource_id",""))
         var units := int(job.get("output_quantity",0))
         var job_id := str(job.get("job_id",""))
+        var cash_snapshot: Dictionary = job.get("sx_v55_r12_work",{})
+        if not cash_snapshot.is_empty():
+            if str(cash_snapshot.get("plan_id","")) != str(job.get("production_plan_id","")) \
+                    or str(cash_snapshot.get("site","")) != str(building.building_type) \
+                    or not bool(EconomySystem.new().sx_v55_r12_can_settle(state,worker,job_id,cash_snapshot).get("ok",false)):
+                remaining.append(job)
+                continue
         if job_id.is_empty() or units <= 0 or not warehouse.add(state,resource_id,units):
             remaining.append(job)
             continue
@@ -1807,7 +1826,10 @@ func _process_resource_timers(state: SimulationState, building: BuildingState) -
         worker.metrics["work_completions"] = int(worker.metrics.get("work_completions",0))+1
         worker.metrics["%s_completions" % profession] = int(worker.metrics.get("%s_completions" % profession,0))+1
         state.sect.workforce_event_count += 1
-        EconomySystem.new().settle_work_wage(state,worker,job_id)
+        if cash_snapshot.is_empty():
+            EconomySystem.new().settle_work_wage(state,worker,job_id)
+        else:
+            EconomySystem.new().sx_v55_r12_settle(state,worker,job_id,cash_snapshot)
         changed = true
     if changed:
         var data := building.production_state.duplicate(true)
@@ -2087,6 +2109,16 @@ func _resolve_spirit_plot(state: SimulationState, field: BuildingState, plot: Di
     var roll := _stable_plot_roll(state.seed, str(field.id), str(plot.get("plot_id", "")), int(plot.get("started_tick", 0)))
     var lucky := lucky_harvest_multiplier(float(plot.get("rare_factor", 1.0)), roll)
     var quantity := maxi(int(plot.get("routine_yield", crop_registry.base_yield(crop_id))), 1) * lucky
+    var cash_snapshot: Dictionary = plot.get("sx_v55_r12_work",{})
+    var wage_job_id := str(plot.get("economy_a_wage_job_id", ""))
+    var worker_id := StringName(plot.get("assigned_worker_id", ""))
+    if not cash_snapshot.is_empty():
+        if str(cash_snapshot.get("plan_id","")) != str(plot.get("production_plan_id","")) \
+                or str(cash_snapshot.get("site","")) != str(field.building_type) \
+                or not state.disciples.has(worker_id) \
+                or not bool(EconomySystem.new().sx_v55_r12_can_settle(
+                    state,state.disciples[worker_id],wage_job_id,cash_snapshot).get("ok",false)):
+            return false
     if not _deposit_resource(state, field, str(crop_registry.output_resource_id(crop_id)), quantity):
         return false
     # New engine versions settle actual profession EXP at harvest once.
@@ -2100,10 +2132,12 @@ func _resolve_spirit_plot(state: SimulationState, field: BuildingState, plot: Di
         harvested_worker.metrics["work_completions"] = int(harvested_worker.metrics.get("work_completions",0))+1
         harvested_worker.metrics["herbalism_completions"] = int(harvested_worker.metrics.get("herbalism_completions",0))+1
         state.sect.workforce_event_count += 1
-    var wage_job_id := str(plot.get("economy_a_wage_job_id", ""))
-    var worker_id := StringName(plot.get("assigned_worker_id", ""))
     if state.sect.economy_a_enabled and wage_job_id != "" and state.disciples.has(worker_id):
-        EconomySystem.new().settle_work_wage(state, state.disciples[worker_id], wage_job_id)
+        if cash_snapshot.is_empty():
+            EconomySystem.new().settle_work_wage(state, state.disciples[worker_id], wage_job_id)
+        else:
+            EconomySystem.new().sx_v55_r12_settle(
+                state,state.disciples[worker_id],wage_job_id,cash_snapshot)
 
     var fragment_roll := _stable_plot_roll(state.seed, "%s|linh_tuyen_fragment" % str(field.id), str(plot.get("plot_id", "")), int(plot.get("started_tick", 0)))
     if linh_tuyen_fragment_drop(float(plot.get("rare_factor", 1.0)), fragment_roll) > 0:
@@ -2222,6 +2256,11 @@ func _normalize_plot(value: Variant, index: int) -> Dictionary:
     }
     if value.has("profession_xp_gain"):
         normalized["profession_xp_gain"] = maxf(float(value.get("profession_xp_gain",0.0)),0.0)
+    # Keep new, explicitly gated economic snapshots immutable during plot
+    # normalization; old crops without this key retain their old wages/EXP.
+    if value.get("sx_v55_r12_work",{}) is Dictionary \
+            and not (value.get("sx_v55_r12_work",{}) as Dictionary).is_empty():
+        normalized["sx_v55_r12_work"] = value["sx_v55_r12_work"].duplicate(true)
     return normalized
 
 func _empty_plot(plot_id: String) -> Dictionary:
