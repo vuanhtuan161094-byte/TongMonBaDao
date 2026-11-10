@@ -79,6 +79,7 @@ static func heal_one(state: SimulationState, battle: MapBattleV2,
     if cost < 0 or cost > B3PillSatietyV1.CAPACITY-B3PillSatietyV1.spent_today(state,disciple) \
             or sequence > B3PillSatietyV1.MAX_SEQUENCE:
         return {"ok":true,"used":false,"reason":"pill_daily_cap"}
+    var spent_before := B3PillSatietyV1.spent_today(state,disciple)
     var warehouse := WarehouseSystem.new()
     if not warehouse.consume(state,pill,1):
         return {"ok":true,"used":false,"reason":"pill_no_available_warehouse_stock"}
@@ -88,7 +89,7 @@ static func heal_one(state: SimulationState, battle: MapBattleV2,
     meter["version"] = B3PillSatietyV1.VERSION
     meter["capacity"] = B3PillSatietyV1.CAPACITY
     meter["day"] = int(state.tick/B3PillSatietyV1.DAY_TICKS)
-    meter["spent"] = B3PillSatietyV1.spent_today(state,disciple)+cost
+    meter["spent"] = spent_before+cost
     meter["sequence"] = sequence
     meter["receipt"] = {
         "sequence":sequence,"pill":str(pill),"state":"COMMITTED",
