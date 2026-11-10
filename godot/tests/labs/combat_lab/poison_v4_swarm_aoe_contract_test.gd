@@ -36,8 +36,8 @@ func _run() -> void:
         quit(1)
         return
     var actor_positions: Array[Vector2] = [
-        Vector2(12.4, 6.4), Vector2(12.4, 13.6),
-        Vector2(23.6, 6.4), Vector2(23.6, 13.6)]
+        Vector2(12.4, 7.4), Vector2(12.4, 12.6),
+        Vector2(23.6, 7.4), Vector2(23.6, 12.6)]
     for index in range(4):
         var hero_id := "lab_disciple_%02d" % (index + 1)
         _check(battle.actors.has(hero_id), "real cultivator " + hero_id)
