@@ -109,6 +109,11 @@ func _run() -> void:
         return
     actor = state.disciples[recruit.id]
     mine = buildings.primary_building(state,BuildingSystem.TYPE_MINE)
+    forest = buildings.primary_building(state,BuildingSystem.TYPE_LINH_FOREST)
+    field = buildings.primary_building(state,BuildingSystem.TYPE_SPIRIT_FIELD)
+    if not _check(mine != null and forest != null and field != null,
+        "canonical producer handles must be reacquired after cold Save"):
+        return
     var before_stones := state.sect.spirit_stones+actor.spirit_stones
     var before_mine := warehouse.quantity(state,&"thanh_thiet")
     state.tick = int(mine_job["finish_tick"])
