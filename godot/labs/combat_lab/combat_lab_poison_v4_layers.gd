@@ -205,7 +205,7 @@ static func render(canvas: CanvasItem, cue: Dictionary, target: Vector2, source:
         # Film-grade low smoke belongs on the FLOOR: no bloom over monster
         # faces or HP bars, and no visual enlargement of the real hit radius.
         var fog_tint := Color("bd9af1") if branch == "doc_cham" else Color("b3eb77")
-        var ground_opacity := (0.14 if branch == "doc_cham" else 0.18) * life
+        var ground_opacity := (0.23 if branch == "doc_cham" else 0.27) * life
         if branch == "co_doc" and motif in ["gu_mist", "gu_domain"]:
             ground_opacity *= 1.12
         master(canvas, MIST_MASTER, target, Vector2(area * 1.75, area_y * 0.85),
@@ -221,15 +221,17 @@ static func render(canvas: CanvasItem, cue: Dictionary, target: Vector2, source:
             for segment in range(1, 6):
                 var theta := begin + float(segment) * TAU4 / (17.0 * 5.0)
                 var next := target + Vector2(cos(theta) * area, sin(theta) * area_y)
-                canvas.draw_line(last, next, a(c, life * 0.56),
-                    maxf(1.0, z * 0.8), true)
+                # Gameplay radius remains exact; this border must not steal
+                # attention from characters or imply all six targets are hit.
+                canvas.draw_line(last, next, a(c, life * 0.18),
+                    maxf(0.8, z * 0.52), true)
                 last = next
         # Low-opacity petals/motes on the floor; leave monsters visible.
-        for i in range(7):
-            var ang := float(i) * TAU4 / 7.0 + k * 0.33
+        for i in range(9):
+            var ang := float(i) * TAU4 / 9.0 + k * 0.33
             var q := target + Vector2(cos(ang) * area,
                 sin(ang) * area_y) * (0.23 + k * 0.27)
-            glint(canvas, q, c, life * 0.52, 1.1 * z, ang)
+            glint(canvas, q, c, life * 0.68, 2.0 * z, ang)
         # Distinct authored silhouettes for each AoE: the same canonical
         # radius is preserved. These floor details cannot select/hit targets.
         match motif:
@@ -246,6 +248,17 @@ static func render(canvas: CanvasItem, cue: Dictionary, target: Vector2, source:
                 canvas.draw_circle(target, area * 0.62, a(c.darkened(0.32), life * 0.095))
                 ring(canvas, target, area * (0.32 + 0.28 * k), c, life * 0.32, k)
             "gu_mist":
+                # Living, low fog tendrils cross the painted poison footprint
+                # instead of another concentric circle.
+                for strand in range(3):
+                    var path := PackedVector2Array()
+                    for segment in range(9):
+                        var u := float(segment) / 8.0
+                        var x := (u - 0.5) * area * 0.9
+                        var y := sin(u * TAU4 * 1.3 + k * 1.8 + float(strand)) * area_y * 0.10
+                        path.append(target + Vector2(x, y + (float(strand) - 1.0) * area_y * 0.17))
+                    canvas.draw_polyline(path, a(c, life * 0.12),
+                        maxf(1.0, z * 0.9), true)
                 for i in range(4):
                     var theta := float(i) * TAU4 / 4.0 + k * 0.7
                     var cloud := target + Vector2(cos(theta) * area,
@@ -275,6 +288,13 @@ static func render(canvas: CanvasItem, cue: Dictionary, target: Vector2, source:
         master(canvas, LOTUS_MASTER, p - Vector2(0, lift + 7.0 * z),
             Vector2(43, 36) * z, 0.14 - k * 0.28, life * 0.39, GOLD)
         lotus(canvas, p - Vector2(0, k * 23.0 * z), 17.0 * z, c, life * 0.67, k)
+        for i in range(3):
+            var stride := (float(i) - 1.0) * 9.0 * z
+            var light_from := p + Vector2(stride, -10.0 * z + k * 14.0 * z)
+            var light_to := p + Vector2(stride * 0.74, -(31.0 + 7.0 * sin(k * PI)) * z)
+            line(canvas, light_from, light_to, Color("a9ffe3"), life * 0.27, z * 0.76)
+        glint(canvas, p - Vector2(0, 17.0 * z), GOLD,
+            life * 0.74, 4.0 * z, k * 0.8)
         for i in range(6):
             var theta := float(i) * TAU4 / 6.0 + k * 0.28
             var seed := p + Vector2.from_angle(theta) * (13.0 + 12.0 * k) * z
@@ -395,13 +415,14 @@ static func render(canvas: CanvasItem, cue: Dictionary, target: Vector2, source:
                 master(canvas, LOTUS_MASTER, p, Vector2(43, 34) * z,
                     k * 0.38, pulse * 0.61)
             if branch == "doc_cham":
-                # Precise pierce for single target, converging needles for AoE.
-                var count := 1 if motif in ["needle_basic", "needle_pierce", "needle_venom"] else 5
+                # A puncture cluster is directional, NEVER a five-spoke
+                # purple flower. AOE still flashes only on actual hit actors.
+                var count := 1 if motif in ["needle_basic", "needle_pierce", "needle_venom"] else 3
                 for i in range(count):
-                    var angle := (-0.55 + float(i) * 0.27) + d.angle()
+                    var angle := (float(i) - float(count - 1) * 0.5) * 0.16 + d.angle()
                     var ray := Vector2.from_angle(angle)
-                    needle(canvas, p - ray * 5.0 * z, p + ray * (10.0 + 7.0 * k) * z,
-                        c, pulse * 0.85, z * 0.75)
+                    needle(canvas, p - ray * 4.0 * z, p + ray * (13.0 + 6.0 * k) * z,
+                        c, pulse * 0.88, z * 0.70)
             elif branch == "co_doc":
                 if motif == "gu_bite":
                     spark(canvas, p, GOLD, pulse * 0.82, 3.3 * z)
@@ -414,7 +435,8 @@ static func render(canvas: CanvasItem, cue: Dictionary, target: Vector2, source:
                 var theta := float(i) * TAU4 / 5.0 + k * 0.35
                 var q := p + Vector2.from_angle(theta) * (9.0 + k * 8.0) * z
                 glint(canvas, q, c, pulse * 0.60, 1.8 * z, theta)
-            glint(canvas, p, GOLD if branch == "co_doc" else c, pulse * 0.82, 3.0 * z, k * 2.4)
+            glint(canvas, p, GOLD if branch == "co_doc" else Color("f4edff"),
+                pulse * 0.94, 4.8 * z, k * 2.4)
             debris(canvas, p, 9.0 * z, c, pulse * 0.55, k)
         "poison", "poison_apply", "poison_tick":
             # DoT tick is deliberately quieter than the original impact.
