@@ -8,6 +8,7 @@ on:
     paths:
       - '.github/workflows/poison-v4-godot-evidence.yml'
       - 'godot/labs/combat_lab/combat_lab_poison_v4_layers.gd'
+      - 'godot/labs/combat_lab/combat_lab_poison_skill_art_brief.gd'
       - 'godot/labs/combat_lab/combat_lab_arena.gd'
       - 'godot/labs/combat_lab/combat_lab_roster_adapter.gd'
       - 'godot/tests/labs/combat_lab/poison_v4_aim_range_contract_test.gd'
@@ -68,6 +69,8 @@ jobs:
           bash tools/qa/run_godot_strict.sh --headless --path godot --import
           bash tools/qa/run_godot_strict.sh --headless --path godot --check-only \
             --script res://labs/combat_lab/combat_lab_poison_v4_layers.gd
+          bash tools/qa/run_godot_strict.sh --headless --path godot --check-only \
+            --script res://labs/combat_lab/combat_lab_poison_skill_art_brief.gd
           bash tools/qa/run_godot_strict.sh --headless --path godot --check-only \
             --script res://tests/labs/combat_lab/poison_v4_video_capture.gd
           bash tools/qa/run_godot_strict.sh --headless --path godot \
