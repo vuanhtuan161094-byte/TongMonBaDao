@@ -124,3 +124,30 @@ jobs:
             /tmp/doc-contract.log
             /tmp/cung-183.log
           if-no-files-found: ignore
+
+  publish-exact-sha-result:
+    name: Publish exact-SHA QA link on PR72 (push only)
+    needs: [matrix]
+    if: always() && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - name: Report only if tested SHA is still active PR72 HEAD
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_SHA: ${{ github.sha }}
+          RUN_ID: ${{ github.run_id }}
+          MATRIX_RESULT: ${{ needs.matrix.result }}
+        run: |
+          set -euo pipefail
+          BRANCH_HEAD="$(gh api repos/${{ github.repository }}/git/ref/heads/integration/pve-p0-playable-ui-20261103 --jq '.object.sha')"
+          if [[ "$BRANCH_HEAD" != "$RUN_SHA" ]]; then
+            echo "Stale QA SHA $RUN_SHA; active HEAD $BRANCH_HEAD. Do not publish as current."
+            exit 0
+          fi
+          BODY="PVB1_GODOT_CI_REPORT | exact SHA \`$RUN_SHA\` | V63 matrix result: \`$MATRIX_RESULT\` | [run #$RUN_ID](https://github.com/${{ github.repository }}/actions/runs/$RUN_ID). Full job logs and 183-ID artifacts must be inspected before calling gameplay PASS. Linux official Godot only; Windows/Android pending."
+          gh api --method POST "repos/${{ github.repository }}/issues/72/comments" -f body="$BODY"
