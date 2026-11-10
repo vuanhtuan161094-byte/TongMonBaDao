@@ -65,7 +65,7 @@ func _run() -> void:
         quit(1)
         return
     for ext in ["",".tmp",".bak"]:
-        var file := save_path+ext
+        var file: String = str(save_path)+str(ext)
         if FileAccess.file_exists(file):
             DirAccess.remove_absolute(ProjectSettings.globalize_path(file))
     print("PVE_CARE02_V2_LEGACY_COMBAT_RETURN_INJURY120_FULLHP_PASS")
