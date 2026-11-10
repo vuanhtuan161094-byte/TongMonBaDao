@@ -75,7 +75,12 @@
       false,
       false
     ],
-    "proposed_gate": "OFF"
+    "proposed_gate": "OFF",
+    "family_parent_refs_complete": true,
+    "proposed_fullname_unique": true,
+    "runtime_compat_bounds_ok": true,
+    "effect_changes": 36,
+    "coded_gate": "OFF"
   },
   "skill_nodes": [
     {
@@ -118,7 +123,12 @@
       "special_contract": "",
       "change_gate": "balance_data_review",
       "vfx_profile": "poison.shared.basic.human",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 1,
+      "runtime_compat_cooldown_sec": 1.6,
+      "runtime_compat_range_cells": 6,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
     },
     {
       "id": "tmb.skill.poison.mobility.human",
@@ -160,7 +170,12 @@
       "special_contract": "",
       "change_gate": "balance_data_review",
       "vfx_profile": "poison.shared.mobility.human",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 10,
+      "runtime_compat_range_cells": 11,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.doc_cham.active_01.human",
@@ -202,7 +217,12 @@
       "special_contract": "",
       "change_gate": "balance_data_review",
       "vfx_profile": "poison.doc_cham.active_01.human",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 1.45,
+      "runtime_compat_cooldown_sec": 9,
+      "runtime_compat_range_cells": 7.5,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
     },
     {
       "id": "tmb.skill.poison.doc_cham.active_02.human",
@@ -244,7 +264,12 @@
       "special_contract": "DOT_OWNER_CAP_5",
       "change_gate": "balance_data_review",
       "vfx_profile": "poison.doc_cham.active_02.human",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 1.1,
+      "runtime_compat_cooldown_sec": 9,
+      "runtime_compat_range_cells": 7.5,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
     },
     {
       "id": "tmb.skill.poison.doc_cham.active_03.human",
@@ -286,7 +311,12 @@
       "special_contract": "DOT_OWNER_CAP_5",
       "change_gate": "balance_data_review",
       "vfx_profile": "poison.doc_cham.active_03.human",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.95,
+      "runtime_compat_cooldown_sec": 11,
+      "runtime_compat_range_cells": 7,
+      "runtime_compat_target_limit": 3,
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
     },
     {
       "id": "tmb.skill.poison.doc_cham.active_04.human",
@@ -328,7 +358,12 @@
       "special_contract": "DOT_OWNER_CAP_5",
       "change_gate": "balance_data_review",
       "vfx_profile": "poison.doc_cham.active_04.human",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.9,
+      "runtime_compat_cooldown_sec": 12,
+      "runtime_compat_range_cells": 7,
+      "runtime_compat_target_limit": 3,
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
     },
     {
       "id": "tmb.skill.poison.doc_cham.ultimate.human",
@@ -370,7 +405,12 @@
       "special_contract": "DOT_OWNER_CAP_5",
       "change_gate": "balance_data_review",
       "vfx_profile": "poison.doc_cham.ultimate.human",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 1.8,
+      "runtime_compat_cooldown_sec": 36,
+      "runtime_compat_range_cells": 8,
+      "runtime_compat_target_limit": 3,
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
     },
     {
       "id": "tmb.skill.poison.doc_cham.passive_01.human",
@@ -414,7 +454,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.doc_cham.passive_01.human",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.doc_cham.passive_02.human",
@@ -458,7 +503,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.doc_cham.passive_02.human",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.doc_cham.passive_03.human",
@@ -502,7 +552,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.doc_cham.passive_03.human",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.doc_cham.passive_04.human",
@@ -546,7 +601,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.doc_cham.passive_04.human",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.doc_cham.passive_05.human",
@@ -590,7 +650,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.doc_cham.passive_05.human",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.doc_cham.innate.human",
@@ -635,7 +700,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.doc_cham.innate.human",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.co_doc.active_01.human",
@@ -677,7 +747,12 @@
       "special_contract": "MARK_OWNER_ONLY",
       "change_gate": "effect_change",
       "vfx_profile": "poison.co_doc.active_01.human",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 1,
+      "runtime_compat_cooldown_sec": 10,
+      "runtime_compat_range_cells": 7.5,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
     },
     {
       "id": "tmb.skill.poison.co_doc.active_02.human",
@@ -719,7 +794,12 @@
       "special_contract": "DOT_OWNER_CAP_5",
       "change_gate": "balance_data_review",
       "vfx_profile": "poison.co_doc.active_02.human",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 1.05,
+      "runtime_compat_cooldown_sec": 9,
+      "runtime_compat_range_cells": 7.5,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
     },
     {
       "id": "tmb.skill.poison.co_doc.active_03.human",
@@ -761,7 +841,12 @@
       "special_contract": "DOT_OWNER_CAP_5",
       "change_gate": "balance_data_review",
       "vfx_profile": "poison.co_doc.active_03.human",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.85,
+      "runtime_compat_cooldown_sec": 12,
+      "runtime_compat_range_cells": 7,
+      "runtime_compat_target_limit": 3,
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
     },
     {
       "id": "tmb.skill.poison.co_doc.active_04.human",
@@ -803,7 +888,12 @@
       "special_contract": "DOT_OWNER_CAP_5",
       "change_gate": "balance_data_review",
       "vfx_profile": "poison.co_doc.active_04.human",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.95,
+      "runtime_compat_cooldown_sec": 12,
+      "runtime_compat_range_cells": 7,
+      "runtime_compat_target_limit": 3,
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
     },
     {
       "id": "tmb.skill.poison.co_doc.ultimate.human",
@@ -845,7 +935,12 @@
       "special_contract": "DOT_OWNER_CAP_5",
       "change_gate": "balance_data_review",
       "vfx_profile": "poison.co_doc.ultimate.human",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 1.6,
+      "runtime_compat_cooldown_sec": 38,
+      "runtime_compat_range_cells": 8,
+      "runtime_compat_target_limit": 3,
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
     },
     {
       "id": "tmb.skill.poison.co_doc.passive_01.human",
@@ -889,7 +984,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.co_doc.passive_01.human",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.co_doc.passive_02.human",
@@ -933,7 +1033,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.co_doc.passive_02.human",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.co_doc.passive_03.human",
@@ -977,7 +1082,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.co_doc.passive_03.human",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.co_doc.passive_04.human",
@@ -1021,7 +1131,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.co_doc.passive_04.human",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.co_doc.passive_05.human",
@@ -1065,7 +1180,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.co_doc.passive_05.human",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.co_doc.innate.human",
@@ -1110,7 +1230,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.co_doc.innate.human",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.active_01.human",
@@ -1152,7 +1277,12 @@
       "special_contract": "",
       "change_gate": "balance_data_review",
       "vfx_profile": "poison.duoc_doc.active_01.human",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 1.35,
+      "runtime_compat_cooldown_sec": 8,
+      "runtime_compat_range_cells": 7.5,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.active_02.human",
@@ -1194,7 +1324,12 @@
       "special_contract": "HEAL_PVE_BUDGET",
       "change_gate": "heal_recent_damage_budget",
       "vfx_profile": "poison.duoc_doc.active_02.human",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 18,
+      "runtime_compat_range_cells": 6.5,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.active_03.human",
@@ -1236,7 +1371,12 @@
       "special_contract": "CLEANSE_GLOBAL_COUNT",
       "change_gate": "cleanse_count_contract",
       "vfx_profile": "poison.duoc_doc.active_03.human",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 18,
+      "runtime_compat_range_cells": 6.5,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.active_04.human",
@@ -1260,7 +1400,7 @@
       "source_stacks": 1,
       "source_vfx_key": "v63_original_poison_duoc_doc_active_04",
       "source_divine_rule": "",
-      "proposed_name": "Sinh Cơ Tán",
+      "proposed_name": "Hóa Độc Tán",
       "role": "Bột dược phản độc đối thủ",
       "proposed_effect": "poison",
       "ratio": 0.86,
@@ -1278,7 +1418,12 @@
       "special_contract": "DOT_OWNER_CAP_5",
       "change_gate": "effect_change",
       "vfx_profile": "poison.duoc_doc.active_04.human",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.86,
+      "runtime_compat_cooldown_sec": 13,
+      "runtime_compat_range_cells": 7,
+      "runtime_compat_target_limit": 3,
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.ultimate.human",
@@ -1320,7 +1465,12 @@
       "special_contract": "HEAL_PVE_BUDGET",
       "change_gate": "heal_recent_damage_budget",
       "vfx_profile": "poison.duoc_doc.ultimate.human",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 46,
+      "runtime_compat_range_cells": 6.5,
+      "runtime_compat_target_limit": 3,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.passive_01.human",
@@ -1364,7 +1514,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.duoc_doc.passive_01.human",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.passive_02.human",
@@ -1408,7 +1563,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.duoc_doc.passive_02.human",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.passive_03.human",
@@ -1452,7 +1612,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.duoc_doc.passive_03.human",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.passive_04.human",
@@ -1496,7 +1661,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.duoc_doc.passive_04.human",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.passive_05.human",
@@ -1540,7 +1710,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.duoc_doc.passive_05.human",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.innate.human",
@@ -1585,7 +1760,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.duoc_doc.innate.human",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.basic.immortal.base",
@@ -1627,7 +1807,12 @@
       "special_contract": "",
       "change_gate": "balance_data_review",
       "vfx_profile": "poison.shared.basic.immortal",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 1.18,
+      "runtime_compat_cooldown_sec": 1.54,
+      "runtime_compat_range_cells": 6.24,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
     },
     {
       "id": "tmb.skill.poison.mobility.immortal.base",
@@ -1669,7 +1854,12 @@
       "special_contract": "",
       "change_gate": "balance_data_review",
       "vfx_profile": "poison.shared.mobility.immortal",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 9.6,
+      "runtime_compat_range_cells": 11.44,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.doc_cham.active_01.immortal.a",
@@ -1711,7 +1901,12 @@
       "special_contract": "",
       "change_gate": "effect_change",
       "vfx_profile": "poison.doc_cham.active_01.immortal.a",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 1.711,
+      "runtime_compat_cooldown_sec": 8.64,
+      "runtime_compat_range_cells": 7.8,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
     },
     {
       "id": "tmb.skill.poison.doc_cham.active_01.immortal.b",
@@ -1753,7 +1948,12 @@
       "special_contract": "",
       "change_gate": "balance_data_review",
       "vfx_profile": "poison.doc_cham.active_01.immortal.b",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 1.916,
+      "runtime_compat_cooldown_sec": 8.64,
+      "runtime_compat_range_cells": 7.8,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
     },
     {
       "id": "tmb.skill.poison.doc_cham.active_02.immortal.a",
@@ -1795,7 +1995,12 @@
       "special_contract": "DOT_OWNER_CAP_5",
       "change_gate": "balance_data_review",
       "vfx_profile": "poison.doc_cham.active_02.immortal.a",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 1.298,
+      "runtime_compat_cooldown_sec": 8.64,
+      "runtime_compat_range_cells": 7.8,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
     },
     {
       "id": "tmb.skill.poison.doc_cham.active_02.immortal.b",
@@ -1837,7 +2042,12 @@
       "special_contract": "DOT_OWNER_CAP_5",
       "change_gate": "balance_data_review",
       "vfx_profile": "poison.doc_cham.active_02.immortal.b",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 1.415,
+      "runtime_compat_cooldown_sec": 8.64,
+      "runtime_compat_range_cells": 7.8,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
     },
     {
       "id": "tmb.skill.poison.doc_cham.active_03.immortal.a",
@@ -1879,7 +2089,12 @@
       "special_contract": "DOT_OWNER_CAP_5",
       "change_gate": "effect_change",
       "vfx_profile": "poison.doc_cham.active_03.immortal.a",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 1.121,
+      "runtime_compat_cooldown_sec": 10.56,
+      "runtime_compat_range_cells": 7.28,
+      "runtime_compat_target_limit": 3,
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
     },
     {
       "id": "tmb.skill.poison.doc_cham.active_03.immortal.b",
@@ -1921,7 +2136,12 @@
       "special_contract": "",
       "change_gate": "effect_change",
       "vfx_profile": "poison.doc_cham.active_03.immortal.b",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 1.289,
+      "runtime_compat_cooldown_sec": 10.56,
+      "runtime_compat_range_cells": 7.28,
+      "runtime_compat_target_limit": 3,
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
     },
     {
       "id": "tmb.skill.poison.doc_cham.active_04.immortal.a",
@@ -1963,7 +2183,12 @@
       "special_contract": "DOT_OWNER_CAP_5",
       "change_gate": "effect_change",
       "vfx_profile": "poison.doc_cham.active_04.immortal.a",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 1.062,
+      "runtime_compat_cooldown_sec": 11.52,
+      "runtime_compat_range_cells": 7.28,
+      "runtime_compat_target_limit": 3,
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
     },
     {
       "id": "tmb.skill.poison.doc_cham.active_04.immortal.b",
@@ -2005,7 +2230,12 @@
       "special_contract": "CONSUME_BUDGET_RULE;CONSUME_OWN_STACKS",
       "change_gate": "runtime_consume_rebalance;effect_change",
       "vfx_profile": "poison.doc_cham.active_04.immortal.b",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 1.168,
+      "runtime_compat_cooldown_sec": 11.52,
+      "runtime_compat_range_cells": 7.28,
+      "runtime_compat_target_limit": 3,
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
     },
     {
       "id": "tmb.skill.poison.doc_cham.ultimate.immortal.a",
@@ -2047,7 +2277,12 @@
       "special_contract": "DOT_OWNER_CAP_5",
       "change_gate": "balance_data_review",
       "vfx_profile": "poison.doc_cham.ultimate.immortal.a",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 2.124,
+      "runtime_compat_cooldown_sec": 34.56,
+      "runtime_compat_range_cells": 8.32,
+      "runtime_compat_target_limit": 3,
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
     },
     {
       "id": "tmb.skill.poison.doc_cham.ultimate.immortal.b",
@@ -2089,7 +2324,12 @@
       "special_contract": "CONSUME_BUDGET_RULE;CONSUME_OWN_STACKS",
       "change_gate": "runtime_consume_rebalance",
       "vfx_profile": "poison.doc_cham.ultimate.immortal.b",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 2.336,
+      "runtime_compat_cooldown_sec": 34.56,
+      "runtime_compat_range_cells": 8.32,
+      "runtime_compat_target_limit": 3,
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
     },
     {
       "id": "tmb.skill.poison.doc_cham.passive_01.immortal.a",
@@ -2133,7 +2373,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.doc_cham.passive_01.immortal.a",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.doc_cham.passive_01.immortal.b",
@@ -2177,7 +2422,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.doc_cham.passive_01.immortal.b",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.doc_cham.passive_02.immortal.a",
@@ -2221,7 +2471,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.doc_cham.passive_02.immortal.a",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.doc_cham.passive_02.immortal.b",
@@ -2265,7 +2520,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.doc_cham.passive_02.immortal.b",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.doc_cham.passive_03.immortal.a",
@@ -2309,7 +2569,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.doc_cham.passive_03.immortal.a",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.doc_cham.passive_03.immortal.b",
@@ -2353,7 +2618,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.doc_cham.passive_03.immortal.b",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.doc_cham.passive_04.immortal.a",
@@ -2397,7 +2667,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.doc_cham.passive_04.immortal.a",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.doc_cham.passive_04.immortal.b",
@@ -2441,7 +2716,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.doc_cham.passive_04.immortal.b",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.doc_cham.passive_05.immortal.a",
@@ -2485,7 +2765,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.doc_cham.passive_05.immortal.a",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.doc_cham.passive_05.immortal.b",
@@ -2529,7 +2814,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.doc_cham.passive_05.immortal.b",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.doc_cham.innate.immortal.a",
@@ -2574,7 +2864,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.doc_cham.innate.immortal.a",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.doc_cham.innate.immortal.b",
@@ -2619,7 +2914,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.doc_cham.innate.immortal.b",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.co_doc.active_01.immortal.a",
@@ -2661,7 +2961,12 @@
       "special_contract": "MARK_OWNER_ONLY",
       "change_gate": "effect_change",
       "vfx_profile": "poison.co_doc.active_01.immortal.a",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 1.18,
+      "runtime_compat_cooldown_sec": 9.6,
+      "runtime_compat_range_cells": 7.8,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
     },
     {
       "id": "tmb.skill.poison.co_doc.active_01.immortal.b",
@@ -2703,7 +3008,12 @@
       "special_contract": "MARK_OWNER_ONLY",
       "change_gate": "balance_data_review",
       "vfx_profile": "poison.co_doc.active_01.immortal.b",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 1.18,
+      "runtime_compat_cooldown_sec": 9.6,
+      "runtime_compat_range_cells": 7.8,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
     },
     {
       "id": "tmb.skill.poison.co_doc.active_02.immortal.a",
@@ -2745,7 +3055,12 @@
       "special_contract": "DOT_OWNER_CAP_5",
       "change_gate": "balance_data_review",
       "vfx_profile": "poison.co_doc.active_02.immortal.a",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 1.239,
+      "runtime_compat_cooldown_sec": 8.64,
+      "runtime_compat_range_cells": 7.8,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
     },
     {
       "id": "tmb.skill.poison.co_doc.active_02.immortal.b",
@@ -2787,7 +3102,12 @@
       "special_contract": "DOT_OWNER_CAP_5",
       "change_gate": "effect_change",
       "vfx_profile": "poison.co_doc.active_02.immortal.b",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 1.363,
+      "runtime_compat_cooldown_sec": 8.64,
+      "runtime_compat_range_cells": 7.8,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
     },
     {
       "id": "tmb.skill.poison.co_doc.active_03.immortal.a",
@@ -2829,7 +3149,12 @@
       "special_contract": "DOT_OWNER_CAP_5",
       "change_gate": "effect_change",
       "vfx_profile": "poison.co_doc.active_03.immortal.a",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 1.003,
+      "runtime_compat_cooldown_sec": 11.52,
+      "runtime_compat_range_cells": 7.28,
+      "runtime_compat_target_limit": 3,
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
     },
     {
       "id": "tmb.skill.poison.co_doc.active_03.immortal.b",
@@ -2871,7 +3196,12 @@
       "special_contract": "MARK_OWNER_ONLY",
       "change_gate": "effect_change",
       "vfx_profile": "poison.co_doc.active_03.immortal.b",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 1.003,
+      "runtime_compat_cooldown_sec": 11.52,
+      "runtime_compat_range_cells": 7.28,
+      "runtime_compat_target_limit": 3,
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
     },
     {
       "id": "tmb.skill.poison.co_doc.active_04.immortal.a",
@@ -2913,7 +3243,12 @@
       "special_contract": "DOT_OWNER_CAP_5",
       "change_gate": "effect_change",
       "vfx_profile": "poison.co_doc.active_04.immortal.a",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 1.121,
+      "runtime_compat_cooldown_sec": 11.52,
+      "runtime_compat_range_cells": 7.28,
+      "runtime_compat_target_limit": 3,
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
     },
     {
       "id": "tmb.skill.poison.co_doc.active_04.immortal.b",
@@ -2955,7 +3290,12 @@
       "special_contract": "CONSUME_BUDGET_RULE;CONSUME_OWN_STACKS",
       "change_gate": "runtime_consume_rebalance",
       "vfx_profile": "poison.co_doc.active_04.immortal.b",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 1.233,
+      "runtime_compat_cooldown_sec": 11.52,
+      "runtime_compat_range_cells": 7.28,
+      "runtime_compat_target_limit": 3,
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
     },
     {
       "id": "tmb.skill.poison.co_doc.ultimate.immortal.a",
@@ -2997,7 +3337,12 @@
       "special_contract": "DOT_OWNER_CAP_5",
       "change_gate": "balance_data_review",
       "vfx_profile": "poison.co_doc.ultimate.immortal.a",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 1.888,
+      "runtime_compat_cooldown_sec": 36.48,
+      "runtime_compat_range_cells": 8.32,
+      "runtime_compat_target_limit": 3,
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
     },
     {
       "id": "tmb.skill.poison.co_doc.ultimate.immortal.b",
@@ -3039,7 +3384,12 @@
       "special_contract": "CONSUME_BUDGET_RULE;CONSUME_OWN_STACKS",
       "change_gate": "runtime_consume_rebalance",
       "vfx_profile": "poison.co_doc.ultimate.immortal.b",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 2.077,
+      "runtime_compat_cooldown_sec": 36.48,
+      "runtime_compat_range_cells": 8.32,
+      "runtime_compat_target_limit": 3,
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
     },
     {
       "id": "tmb.skill.poison.co_doc.passive_01.immortal.a",
@@ -3083,7 +3433,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.co_doc.passive_01.immortal.a",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.co_doc.passive_01.immortal.b",
@@ -3127,7 +3482,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.co_doc.passive_01.immortal.b",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.co_doc.passive_02.immortal.a",
@@ -3171,7 +3531,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.co_doc.passive_02.immortal.a",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.co_doc.passive_02.immortal.b",
@@ -3215,7 +3580,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.co_doc.passive_02.immortal.b",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.co_doc.passive_03.immortal.a",
@@ -3259,7 +3629,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.co_doc.passive_03.immortal.a",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.co_doc.passive_03.immortal.b",
@@ -3303,7 +3678,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.co_doc.passive_03.immortal.b",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.co_doc.passive_04.immortal.a",
@@ -3347,7 +3727,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.co_doc.passive_04.immortal.a",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.co_doc.passive_04.immortal.b",
@@ -3391,7 +3776,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.co_doc.passive_04.immortal.b",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.co_doc.passive_05.immortal.a",
@@ -3435,7 +3825,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.co_doc.passive_05.immortal.a",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.co_doc.passive_05.immortal.b",
@@ -3479,7 +3874,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.co_doc.passive_05.immortal.b",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.co_doc.innate.immortal.a",
@@ -3524,7 +3924,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.co_doc.innate.immortal.a",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.co_doc.innate.immortal.b",
@@ -3569,7 +3974,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.co_doc.innate.immortal.b",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.active_01.immortal.a",
@@ -3611,7 +4021,12 @@
       "special_contract": "",
       "change_gate": "effect_change",
       "vfx_profile": "poison.duoc_doc.active_01.immortal.a",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 1.593,
+      "runtime_compat_cooldown_sec": 7.68,
+      "runtime_compat_range_cells": 7.8,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.active_01.immortal.b",
@@ -3653,7 +4068,12 @@
       "special_contract": "DOT_OWNER_CAP_5",
       "change_gate": "balance_data_review",
       "vfx_profile": "poison.duoc_doc.active_01.immortal.b",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 1.593,
+      "runtime_compat_cooldown_sec": 7.68,
+      "runtime_compat_range_cells": 7.8,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.active_02.immortal.a",
@@ -3695,7 +4115,12 @@
       "special_contract": "HEAL_PVE_BUDGET",
       "change_gate": "effect_change;heal_recent_damage_budget",
       "vfx_profile": "poison.duoc_doc.active_02.immortal.a",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 17.28,
+      "runtime_compat_range_cells": 6.76,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.active_02.immortal.b",
@@ -3737,7 +4162,12 @@
       "special_contract": "HEAL_PVE_BUDGET",
       "change_gate": "effect_change;heal_recent_damage_budget",
       "vfx_profile": "poison.duoc_doc.active_02.immortal.b",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 17.28,
+      "runtime_compat_range_cells": 6.76,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.active_03.immortal.a",
@@ -3779,7 +4209,12 @@
       "special_contract": "CLEANSE_GLOBAL_COUNT",
       "change_gate": "effect_change;cleanse_count_contract",
       "vfx_profile": "poison.duoc_doc.active_03.immortal.a",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 17.28,
+      "runtime_compat_range_cells": 6.76,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.active_03.immortal.b",
@@ -3821,7 +4256,12 @@
       "special_contract": "CLEANSE_GLOBAL_COUNT",
       "change_gate": "effect_change;cleanse_count_contract",
       "vfx_profile": "poison.duoc_doc.active_03.immortal.b",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 17.28,
+      "runtime_compat_range_cells": 6.76,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.active_04.immortal.a",
@@ -3845,7 +4285,7 @@
       "source_stacks": 0,
       "source_vfx_key": "v63_immortal_original_poison_duoc_doc_active_a",
       "source_divine_rule": "",
-      "proposed_name": "Sinh Cơ Tán · Tiên A (Hồi Thiên)",
+      "proposed_name": "Hóa Độc Tán · Tiên A (Hồi Thiên)",
       "role": "Bột dược phản độc đối thủ",
       "proposed_effect": "poison",
       "ratio": 1.015,
@@ -3863,7 +4303,12 @@
       "special_contract": "DOT_OWNER_CAP_5",
       "change_gate": "effect_change",
       "vfx_profile": "poison.duoc_doc.active_04.immortal.a",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 1.015,
+      "runtime_compat_cooldown_sec": 12.48,
+      "runtime_compat_range_cells": 7.28,
+      "runtime_compat_target_limit": 3,
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.active_04.immortal.b",
@@ -3887,7 +4332,7 @@
       "source_stacks": 0,
       "source_vfx_key": "v63_immortal_original_poison_duoc_doc_active_b",
       "source_divine_rule": "",
-      "proposed_name": "Sinh Cơ Tán · Tiên B (Dĩ Độc)",
+      "proposed_name": "Hóa Độc Tán · Tiên B (Dĩ Độc)",
       "role": "Bột dược phản độc đối thủ",
       "proposed_effect": "poison",
       "ratio": 1.015,
@@ -3905,7 +4350,12 @@
       "special_contract": "DOT_OWNER_CAP_5",
       "change_gate": "effect_change",
       "vfx_profile": "poison.duoc_doc.active_04.immortal.b",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 1.015,
+      "runtime_compat_cooldown_sec": 12.48,
+      "runtime_compat_range_cells": 7.28,
+      "runtime_compat_target_limit": 3,
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.ultimate.immortal.a",
@@ -3947,7 +4397,12 @@
       "special_contract": "HEAL_PVE_BUDGET",
       "change_gate": "heal_recent_damage_budget",
       "vfx_profile": "poison.duoc_doc.ultimate.immortal.a",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 44.16,
+      "runtime_compat_range_cells": 6.76,
+      "runtime_compat_target_limit": 3,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.ultimate.immortal.b",
@@ -3989,7 +4444,12 @@
       "special_contract": "CONSUME_BUDGET_RULE;CONSUME_OWN_STACKS",
       "change_gate": "runtime_consume_rebalance",
       "vfx_profile": "poison.duoc_doc.ultimate.immortal.b",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 1.534,
+      "runtime_compat_cooldown_sec": 44.16,
+      "runtime_compat_range_cells": 6.76,
+      "runtime_compat_target_limit": 3,
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.passive_01.immortal.a",
@@ -4033,7 +4493,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.duoc_doc.passive_01.immortal.a",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.passive_01.immortal.b",
@@ -4077,7 +4542,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.duoc_doc.passive_01.immortal.b",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.passive_02.immortal.a",
@@ -4121,7 +4591,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.duoc_doc.passive_02.immortal.a",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.passive_02.immortal.b",
@@ -4165,7 +4640,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.duoc_doc.passive_02.immortal.b",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.passive_03.immortal.a",
@@ -4209,7 +4689,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.duoc_doc.passive_03.immortal.a",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.passive_03.immortal.b",
@@ -4253,7 +4738,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.duoc_doc.passive_03.immortal.b",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.passive_04.immortal.a",
@@ -4297,7 +4787,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.duoc_doc.passive_04.immortal.a",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.passive_04.immortal.b",
@@ -4341,7 +4836,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.duoc_doc.passive_04.immortal.b",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.passive_05.immortal.a",
@@ -4385,7 +4885,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.duoc_doc.passive_05.immortal.a",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.passive_05.immortal.b",
@@ -4429,7 +4934,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.duoc_doc.passive_05.immortal.b",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.innate.immortal.a",
@@ -4474,7 +4984,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.duoc_doc.innate.immortal.a",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.innate.immortal.b",
@@ -4519,7 +5034,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.duoc_doc.innate.immortal.b",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.basic.divine.base",
@@ -4561,7 +5081,12 @@
       "special_contract": "",
       "change_gate": "balance_data_review",
       "vfx_profile": "poison.shared.basic.divine",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 1.34,
+      "runtime_compat_cooldown_sec": 1.47,
+      "runtime_compat_range_cells": 6.42,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
     },
     {
       "id": "tmb.skill.poison.mobility.divine.base",
@@ -4603,7 +5128,12 @@
       "special_contract": "",
       "change_gate": "balance_data_review",
       "vfx_profile": "poison.shared.mobility.divine",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 9.2,
+      "runtime_compat_range_cells": 11.77,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.doc_cham.active_01.divine.a",
@@ -4645,7 +5175,12 @@
       "special_contract": "",
       "change_gate": "effect_change",
       "vfx_profile": "poison.doc_cham.active_01.divine.a",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 1.943,
+      "runtime_compat_cooldown_sec": 8.28,
+      "runtime_compat_range_cells": 8.03,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
     },
     {
       "id": "tmb.skill.poison.doc_cham.active_01.divine.b",
@@ -4687,7 +5222,12 @@
       "special_contract": "",
       "change_gate": "balance_data_review",
       "vfx_profile": "poison.doc_cham.active_01.divine.b",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 2.176,
+      "runtime_compat_cooldown_sec": 8.28,
+      "runtime_compat_range_cells": 8.03,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
     },
     {
       "id": "tmb.skill.poison.doc_cham.active_02.divine.a",
@@ -4729,7 +5269,12 @@
       "special_contract": "DOT_OWNER_CAP_5",
       "change_gate": "balance_data_review",
       "vfx_profile": "poison.doc_cham.active_02.divine.a",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 1.474,
+      "runtime_compat_cooldown_sec": 8.28,
+      "runtime_compat_range_cells": 8.03,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
     },
     {
       "id": "tmb.skill.poison.doc_cham.active_02.divine.b",
@@ -4771,7 +5316,12 @@
       "special_contract": "DOT_OWNER_CAP_5",
       "change_gate": "balance_data_review",
       "vfx_profile": "poison.doc_cham.active_02.divine.b",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 1.607,
+      "runtime_compat_cooldown_sec": 8.28,
+      "runtime_compat_range_cells": 8.03,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
     },
     {
       "id": "tmb.skill.poison.doc_cham.active_03.divine.a",
@@ -4813,7 +5363,12 @@
       "special_contract": "DOT_OWNER_CAP_5",
       "change_gate": "effect_change",
       "vfx_profile": "poison.doc_cham.active_03.divine.a",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 1.273,
+      "runtime_compat_cooldown_sec": 10.12,
+      "runtime_compat_range_cells": 7.49,
+      "runtime_compat_target_limit": 3,
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
     },
     {
       "id": "tmb.skill.poison.doc_cham.active_03.divine.b",
@@ -4855,7 +5410,12 @@
       "special_contract": "",
       "change_gate": "effect_change",
       "vfx_profile": "poison.doc_cham.active_03.divine.b",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 1.464,
+      "runtime_compat_cooldown_sec": 10.12,
+      "runtime_compat_range_cells": 7.49,
+      "runtime_compat_target_limit": 3,
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
     },
     {
       "id": "tmb.skill.poison.doc_cham.active_04.divine.a",
@@ -4897,7 +5457,12 @@
       "special_contract": "DOT_OWNER_CAP_5",
       "change_gate": "effect_change",
       "vfx_profile": "poison.doc_cham.active_04.divine.a",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 1.206,
+      "runtime_compat_cooldown_sec": 11.04,
+      "runtime_compat_range_cells": 7.49,
+      "runtime_compat_target_limit": 3,
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
     },
     {
       "id": "tmb.skill.poison.doc_cham.active_04.divine.b",
@@ -4939,7 +5504,12 @@
       "special_contract": "CONSUME_BUDGET_RULE;CONSUME_OWN_STACKS",
       "change_gate": "runtime_consume_rebalance;effect_change",
       "vfx_profile": "poison.doc_cham.active_04.divine.b",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 1.327,
+      "runtime_compat_cooldown_sec": 11.04,
+      "runtime_compat_range_cells": 7.49,
+      "runtime_compat_target_limit": 3,
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
     },
     {
       "id": "tmb.skill.poison.doc_cham.ultimate.divine.a",
@@ -4981,7 +5551,12 @@
       "special_contract": "DOT_OWNER_CAP_5",
       "change_gate": "balance_data_review",
       "vfx_profile": "poison.doc_cham.ultimate.divine.a",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 2.412,
+      "runtime_compat_cooldown_sec": 33.12,
+      "runtime_compat_range_cells": 8.56,
+      "runtime_compat_target_limit": 3,
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
     },
     {
       "id": "tmb.skill.poison.doc_cham.ultimate.divine.b",
@@ -5023,7 +5598,12 @@
       "special_contract": "CONSUME_BUDGET_RULE;CONSUME_OWN_STACKS",
       "change_gate": "runtime_consume_rebalance",
       "vfx_profile": "poison.doc_cham.ultimate.divine.b",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 2.653,
+      "runtime_compat_cooldown_sec": 33.12,
+      "runtime_compat_range_cells": 8.56,
+      "runtime_compat_target_limit": 3,
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
     },
     {
       "id": "tmb.skill.poison.doc_cham.passive_01.divine.a",
@@ -5067,7 +5647,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.doc_cham.passive_01.divine.a",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.doc_cham.passive_01.divine.b",
@@ -5111,7 +5696,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.doc_cham.passive_01.divine.b",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.doc_cham.passive_02.divine.a",
@@ -5155,7 +5745,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.doc_cham.passive_02.divine.a",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.doc_cham.passive_02.divine.b",
@@ -5199,7 +5794,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.doc_cham.passive_02.divine.b",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.doc_cham.passive_03.divine.a",
@@ -5243,7 +5843,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.doc_cham.passive_03.divine.a",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.doc_cham.passive_03.divine.b",
@@ -5287,7 +5892,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.doc_cham.passive_03.divine.b",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.doc_cham.passive_04.divine.a",
@@ -5331,7 +5941,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.doc_cham.passive_04.divine.a",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.doc_cham.passive_04.divine.b",
@@ -5375,7 +5990,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.doc_cham.passive_04.divine.b",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.doc_cham.passive_05.divine.a",
@@ -5419,7 +6039,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.doc_cham.passive_05.divine.a",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.doc_cham.passive_05.divine.b",
@@ -5463,7 +6088,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.doc_cham.passive_05.divine.b",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.doc_cham.innate.divine.a",
@@ -5508,7 +6138,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.doc_cham.innate.divine.a",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.doc_cham.innate.divine.b",
@@ -5553,7 +6188,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.doc_cham.innate.divine.b",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.co_doc.active_01.divine.a",
@@ -5595,7 +6235,12 @@
       "special_contract": "MARK_OWNER_ONLY",
       "change_gate": "effect_change;pending_divine_rule",
       "vfx_profile": "poison.co_doc.active_01.divine.a",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 1.34,
+      "runtime_compat_cooldown_sec": 9.2,
+      "runtime_compat_range_cells": 8.03,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
     },
     {
       "id": "tmb.skill.poison.co_doc.active_01.divine.b",
@@ -5637,7 +6282,12 @@
       "special_contract": "MARK_OWNER_ONLY",
       "change_gate": "balance_data_review",
       "vfx_profile": "poison.co_doc.active_01.divine.b",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 1.34,
+      "runtime_compat_cooldown_sec": 9.2,
+      "runtime_compat_range_cells": 8.03,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
     },
     {
       "id": "tmb.skill.poison.co_doc.active_02.divine.a",
@@ -5679,7 +6329,12 @@
       "special_contract": "DOT_OWNER_CAP_5",
       "change_gate": "pending_divine_rule",
       "vfx_profile": "poison.co_doc.active_02.divine.a",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 1.407,
+      "runtime_compat_cooldown_sec": 8.28,
+      "runtime_compat_range_cells": 8.03,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
     },
     {
       "id": "tmb.skill.poison.co_doc.active_02.divine.b",
@@ -5721,7 +6376,12 @@
       "special_contract": "DOT_OWNER_CAP_5",
       "change_gate": "effect_change",
       "vfx_profile": "poison.co_doc.active_02.divine.b",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 1.548,
+      "runtime_compat_cooldown_sec": 8.28,
+      "runtime_compat_range_cells": 8.03,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
     },
     {
       "id": "tmb.skill.poison.co_doc.active_03.divine.a",
@@ -5763,7 +6423,12 @@
       "special_contract": "DOT_OWNER_CAP_5",
       "change_gate": "effect_change;pending_divine_rule",
       "vfx_profile": "poison.co_doc.active_03.divine.a",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 1.139,
+      "runtime_compat_cooldown_sec": 11.04,
+      "runtime_compat_range_cells": 7.49,
+      "runtime_compat_target_limit": 3,
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
     },
     {
       "id": "tmb.skill.poison.co_doc.active_03.divine.b",
@@ -5805,7 +6470,12 @@
       "special_contract": "MARK_OWNER_ONLY",
       "change_gate": "effect_change",
       "vfx_profile": "poison.co_doc.active_03.divine.b",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 1.139,
+      "runtime_compat_cooldown_sec": 11.04,
+      "runtime_compat_range_cells": 7.49,
+      "runtime_compat_target_limit": 3,
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
     },
     {
       "id": "tmb.skill.poison.co_doc.active_04.divine.a",
@@ -5847,7 +6517,12 @@
       "special_contract": "DOT_OWNER_CAP_5",
       "change_gate": "effect_change;pending_divine_rule",
       "vfx_profile": "poison.co_doc.active_04.divine.a",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 1.273,
+      "runtime_compat_cooldown_sec": 11.04,
+      "runtime_compat_range_cells": 7.49,
+      "runtime_compat_target_limit": 3,
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
     },
     {
       "id": "tmb.skill.poison.co_doc.active_04.divine.b",
@@ -5889,7 +6564,12 @@
       "special_contract": "CONSUME_BUDGET_RULE;CONSUME_OWN_STACKS",
       "change_gate": "runtime_consume_rebalance",
       "vfx_profile": "poison.co_doc.active_04.divine.b",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 1.4,
+      "runtime_compat_cooldown_sec": 11.04,
+      "runtime_compat_range_cells": 7.49,
+      "runtime_compat_target_limit": 3,
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
     },
     {
       "id": "tmb.skill.poison.co_doc.ultimate.divine.a",
@@ -5931,7 +6611,12 @@
       "special_contract": "DOT_OWNER_CAP_5",
       "change_gate": "pending_divine_rule",
       "vfx_profile": "poison.co_doc.ultimate.divine.a",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 2.144,
+      "runtime_compat_cooldown_sec": 34.96,
+      "runtime_compat_range_cells": 8.56,
+      "runtime_compat_target_limit": 3,
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
     },
     {
       "id": "tmb.skill.poison.co_doc.ultimate.divine.b",
@@ -5973,7 +6658,12 @@
       "special_contract": "CONSUME_BUDGET_RULE;CONSUME_OWN_STACKS",
       "change_gate": "runtime_consume_rebalance",
       "vfx_profile": "poison.co_doc.ultimate.divine.b",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 2.358,
+      "runtime_compat_cooldown_sec": 34.96,
+      "runtime_compat_range_cells": 8.56,
+      "runtime_compat_target_limit": 3,
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
     },
     {
       "id": "tmb.skill.poison.co_doc.passive_01.divine.a",
@@ -6017,7 +6707,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance;pending_divine_rule",
       "vfx_profile": "poison.co_doc.passive_01.divine.a",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.co_doc.passive_01.divine.b",
@@ -6061,7 +6756,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.co_doc.passive_01.divine.b",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.co_doc.passive_02.divine.a",
@@ -6105,7 +6805,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance;pending_divine_rule",
       "vfx_profile": "poison.co_doc.passive_02.divine.a",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.co_doc.passive_02.divine.b",
@@ -6149,7 +6854,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.co_doc.passive_02.divine.b",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.co_doc.passive_03.divine.a",
@@ -6193,7 +6903,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance;pending_divine_rule",
       "vfx_profile": "poison.co_doc.passive_03.divine.a",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.co_doc.passive_03.divine.b",
@@ -6237,7 +6952,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.co_doc.passive_03.divine.b",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.co_doc.passive_04.divine.a",
@@ -6281,7 +7001,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance;pending_divine_rule",
       "vfx_profile": "poison.co_doc.passive_04.divine.a",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.co_doc.passive_04.divine.b",
@@ -6325,7 +7050,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.co_doc.passive_04.divine.b",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.co_doc.passive_05.divine.a",
@@ -6369,7 +7099,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance;pending_divine_rule",
       "vfx_profile": "poison.co_doc.passive_05.divine.a",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.co_doc.passive_05.divine.b",
@@ -6413,7 +7148,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.co_doc.passive_05.divine.b",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.co_doc.innate.divine.a",
@@ -6458,7 +7198,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance;pending_divine_rule",
       "vfx_profile": "poison.co_doc.innate.divine.a",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.co_doc.innate.divine.b",
@@ -6503,7 +7248,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.co_doc.innate.divine.b",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.active_01.divine.a",
@@ -6545,7 +7295,12 @@
       "special_contract": "",
       "change_gate": "effect_change",
       "vfx_profile": "poison.duoc_doc.active_01.divine.a",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 1.809,
+      "runtime_compat_cooldown_sec": 7.36,
+      "runtime_compat_range_cells": 8.03,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.active_01.divine.b",
@@ -6587,7 +7342,12 @@
       "special_contract": "DOT_OWNER_CAP_5",
       "change_gate": "pending_divine_rule",
       "vfx_profile": "poison.duoc_doc.active_01.divine.b",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 1.809,
+      "runtime_compat_cooldown_sec": 7.36,
+      "runtime_compat_range_cells": 8.03,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.active_02.divine.a",
@@ -6629,7 +7389,12 @@
       "special_contract": "HEAL_PVE_BUDGET",
       "change_gate": "effect_change;heal_recent_damage_budget",
       "vfx_profile": "poison.duoc_doc.active_02.divine.a",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 16.56,
+      "runtime_compat_range_cells": 6.96,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.active_02.divine.b",
@@ -6671,7 +7436,12 @@
       "special_contract": "HEAL_PVE_BUDGET",
       "change_gate": "effect_change;heal_recent_damage_budget;pending_divine_rule",
       "vfx_profile": "poison.duoc_doc.active_02.divine.b",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 16.56,
+      "runtime_compat_range_cells": 6.96,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.active_03.divine.a",
@@ -6713,7 +7483,12 @@
       "special_contract": "CLEANSE_GLOBAL_COUNT",
       "change_gate": "effect_change;cleanse_count_contract",
       "vfx_profile": "poison.duoc_doc.active_03.divine.a",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 16.56,
+      "runtime_compat_range_cells": 6.96,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.active_03.divine.b",
@@ -6755,7 +7530,12 @@
       "special_contract": "CLEANSE_GLOBAL_COUNT",
       "change_gate": "effect_change;cleanse_count_contract;pending_divine_rule",
       "vfx_profile": "poison.duoc_doc.active_03.divine.b",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 16.56,
+      "runtime_compat_range_cells": 6.96,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.active_04.divine.a",
@@ -6779,7 +7559,7 @@
       "source_stacks": 0,
       "source_vfx_key": "v63_immortal_original_poison_duoc_doc_active_a",
       "source_divine_rule": "cleanse_heal_fatal_save",
-      "proposed_name": "Sinh Cơ Tán · Thần A (Hồi Thiên)",
+      "proposed_name": "Hóa Độc Tán · Thần A (Hồi Thiên)",
       "role": "Bột dược phản độc đối thủ",
       "proposed_effect": "poison",
       "ratio": 1.152,
@@ -6797,7 +7577,12 @@
       "special_contract": "DOT_OWNER_CAP_5",
       "change_gate": "effect_change",
       "vfx_profile": "poison.duoc_doc.active_04.divine.a",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 1.152,
+      "runtime_compat_cooldown_sec": 11.96,
+      "runtime_compat_range_cells": 7.49,
+      "runtime_compat_target_limit": 3,
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.active_04.divine.b",
@@ -6821,7 +7606,7 @@
       "source_stacks": 0,
       "source_vfx_key": "v63_immortal_original_poison_duoc_doc_active_b",
       "source_divine_rule": "removed_debuff_counter",
-      "proposed_name": "Sinh Cơ Tán · Thần B (Dĩ Độc)",
+      "proposed_name": "Hóa Độc Tán · Thần B (Dĩ Độc)",
       "role": "Bột dược phản độc đối thủ",
       "proposed_effect": "poison",
       "ratio": 1.152,
@@ -6839,7 +7624,12 @@
       "special_contract": "DOT_OWNER_CAP_5",
       "change_gate": "effect_change;pending_divine_rule",
       "vfx_profile": "poison.duoc_doc.active_04.divine.b",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 1.152,
+      "runtime_compat_cooldown_sec": 11.96,
+      "runtime_compat_range_cells": 7.49,
+      "runtime_compat_target_limit": 3,
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.ultimate.divine.a",
@@ -6881,7 +7671,12 @@
       "special_contract": "HEAL_PVE_BUDGET",
       "change_gate": "heal_recent_damage_budget",
       "vfx_profile": "poison.duoc_doc.ultimate.divine.a",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 42.32,
+      "runtime_compat_range_cells": 6.96,
+      "runtime_compat_target_limit": 3,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.ultimate.divine.b",
@@ -6923,7 +7718,12 @@
       "special_contract": "CONSUME_BUDGET_RULE;CONSUME_OWN_STACKS",
       "change_gate": "runtime_consume_rebalance;pending_divine_rule",
       "vfx_profile": "poison.duoc_doc.ultimate.divine.b",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 1.742,
+      "runtime_compat_cooldown_sec": 42.32,
+      "runtime_compat_range_cells": 6.96,
+      "runtime_compat_target_limit": 3,
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.passive_01.divine.a",
@@ -6967,7 +7767,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.duoc_doc.passive_01.divine.a",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.passive_01.divine.b",
@@ -7011,7 +7816,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance;pending_divine_rule",
       "vfx_profile": "poison.duoc_doc.passive_01.divine.b",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.passive_02.divine.a",
@@ -7055,7 +7865,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.duoc_doc.passive_02.divine.a",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.passive_02.divine.b",
@@ -7099,7 +7914,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance;pending_divine_rule",
       "vfx_profile": "poison.duoc_doc.passive_02.divine.b",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.passive_03.divine.a",
@@ -7143,7 +7963,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.duoc_doc.passive_03.divine.a",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.passive_03.divine.b",
@@ -7187,7 +8012,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance;pending_divine_rule",
       "vfx_profile": "poison.duoc_doc.passive_03.divine.b",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.passive_04.divine.a",
@@ -7231,7 +8061,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.duoc_doc.passive_04.divine.a",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.passive_04.divine.b",
@@ -7275,7 +8110,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance;pending_divine_rule",
       "vfx_profile": "poison.duoc_doc.passive_04.divine.b",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.passive_05.divine.a",
@@ -7319,7 +8159,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.duoc_doc.passive_05.divine.a",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.passive_05.divine.b",
@@ -7363,7 +8208,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance;pending_divine_rule",
       "vfx_profile": "poison.duoc_doc.passive_05.divine.b",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.innate.divine.a",
@@ -7408,7 +8258,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.duoc_doc.innate.divine.a",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.innate.divine.b",
@@ -7453,7 +8308,12 @@
       "special_contract": "",
       "change_gate": "passive_rebalance;pending_divine_rule",
       "vfx_profile": "poison.duoc_doc.innate.divine.b",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.doc_cham.ultimate.rare.a",
@@ -7495,7 +8355,12 @@
       "special_contract": "RARE_REPLACES_DIVINE_ULT;DOT_OWNER_CAP_5",
       "change_gate": "balance_data_review",
       "vfx_profile": "poison.doc_cham.ultimate.rare.a",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 2.871,
+      "runtime_compat_cooldown_sec": 33.12,
+      "runtime_compat_range_cells": 8.56,
+      "runtime_compat_target_limit": 3,
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
     },
     {
       "id": "tmb.skill.poison.doc_cham.passive_05.rare_passive.a",
@@ -7539,7 +8404,12 @@
       "special_contract": "RARE_REPLACES_DIVINE_PASSIVE",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.doc_cham.passive_05.rare.a",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.doc_cham.ultimate.rare.b",
@@ -7581,7 +8451,12 @@
       "special_contract": "CONSUME_BUDGET_RULE;RARE_REPLACES_DIVINE_ULT;CONSUME_OWN_STACKS",
       "change_gate": "runtime_consume_rebalance",
       "vfx_profile": "poison.doc_cham.ultimate.rare.b",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 3.158,
+      "runtime_compat_cooldown_sec": 33.12,
+      "runtime_compat_range_cells": 8.56,
+      "runtime_compat_target_limit": 3,
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
     },
     {
       "id": "tmb.skill.poison.doc_cham.passive_05.rare_passive.b",
@@ -7625,7 +8500,12 @@
       "special_contract": "RARE_REPLACES_DIVINE_PASSIVE",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.doc_cham.passive_05.rare.b",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.co_doc.ultimate.rare.a",
@@ -7667,7 +8547,12 @@
       "special_contract": "RARE_REPLACES_DIVINE_ULT;DOT_OWNER_CAP_5",
       "change_gate": "balance_data_review",
       "vfx_profile": "poison.co_doc.ultimate.rare.a",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 2.552,
+      "runtime_compat_cooldown_sec": 34.96,
+      "runtime_compat_range_cells": 8.56,
+      "runtime_compat_target_limit": 3,
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
     },
     {
       "id": "tmb.skill.poison.co_doc.passive_05.rare_passive.a",
@@ -7711,7 +8596,12 @@
       "special_contract": "RARE_REPLACES_DIVINE_PASSIVE",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.co_doc.passive_05.rare.a",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.co_doc.ultimate.rare.b",
@@ -7753,7 +8643,12 @@
       "special_contract": "CONSUME_BUDGET_RULE;RARE_REPLACES_DIVINE_ULT;CONSUME_OWN_STACKS",
       "change_gate": "runtime_consume_rebalance",
       "vfx_profile": "poison.co_doc.ultimate.rare.b",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 2.807,
+      "runtime_compat_cooldown_sec": 34.96,
+      "runtime_compat_range_cells": 8.56,
+      "runtime_compat_target_limit": 3,
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
     },
     {
       "id": "tmb.skill.poison.co_doc.passive_05.rare_passive.b",
@@ -7797,7 +8692,12 @@
       "special_contract": "RARE_REPLACES_DIVINE_PASSIVE",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.co_doc.passive_05.rare.b",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.ultimate.rare.a",
@@ -7839,7 +8739,12 @@
       "special_contract": "RARE_REPLACES_DIVINE_ULT;HEAL_PVE_BUDGET",
       "change_gate": "heal_recent_damage_budget",
       "vfx_profile": "poison.duoc_doc.ultimate.rare.a",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 42.32,
+      "runtime_compat_range_cells": 6.96,
+      "runtime_compat_target_limit": 3,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.passive_05.rare_passive.a",
@@ -7883,7 +8788,12 @@
       "special_contract": "RARE_REPLACES_DIVINE_PASSIVE",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.duoc_doc.passive_05.rare.a",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.ultimate.rare.b",
@@ -7925,7 +8835,12 @@
       "special_contract": "CONSUME_BUDGET_RULE;RARE_REPLACES_DIVINE_ULT;CONSUME_OWN_STACKS",
       "change_gate": "runtime_consume_rebalance",
       "vfx_profile": "poison.duoc_doc.ultimate.rare.b",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 2.074,
+      "runtime_compat_cooldown_sec": 42.32,
+      "runtime_compat_range_cells": 6.96,
+      "runtime_compat_target_limit": 3,
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.passive_05.rare_passive.b",
@@ -7969,7 +8884,12 @@
       "special_contract": "RARE_REPLACES_DIVINE_PASSIVE",
       "change_gate": "passive_rebalance",
       "vfx_profile": "poison.duoc_doc.passive_05.rare.b",
-      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME"
+      "approval": "DESIGN_CANDIDATE_NOT_RUNTIME",
+      "runtime_compat_damage_ratio": 0.05,
+      "runtime_compat_cooldown_sec": 30,
+      "runtime_compat_range_cells": 0.1,
+      "runtime_compat_target_limit": 1,
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
     }
   ],
   "paper_proxy": [
