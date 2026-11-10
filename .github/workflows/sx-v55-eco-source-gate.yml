@@ -7,6 +7,7 @@ on:
       - 'godot/data/economy/v55d_30_realm_reference.json'
       - 'godot/tests/simulation/sx_v55_eco_source_gate_30cg_test.gd'
       - 'godot/tests/simulation/sx_v55_bulk_real_chain_save_test.gd'
+      - 'godot/tests/simulation/sx_v55_eco_faucet_sink_30d_test.gd'
       - 'godot/src/simulation/building/building_system.gd'
       - 'godot/src/simulation/equipment/equipment_system.gd'
       - 'godot/src/simulation/state/sect_state.gd'
@@ -18,6 +19,7 @@ on:
       - 'godot/data/economy/v55d_30_realm_reference.json'
       - 'godot/tests/simulation/sx_v55_eco_source_gate_30cg_test.gd'
       - 'godot/tests/simulation/sx_v55_bulk_real_chain_save_test.gd'
+      - 'godot/tests/simulation/sx_v55_eco_faucet_sink_30d_test.gd'
       - 'godot/src/simulation/building/building_system.gd'
       - 'godot/src/simulation/equipment/equipment_system.gd'
       - 'godot/src/simulation/state/sect_state.gd'
@@ -76,6 +78,13 @@ jobs:
           set -euo pipefail
           bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://tests/simulation/sx_v55_bulk_real_chain_save_test.gd
           bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/simulation/sx_v55_bulk_real_chain_save_test.gd
+
+      - name: 1/7/30-day exact-source faucet sink and W2 affordability model
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://tests/simulation/sx_v55_eco_faucet_sink_30d_test.gd
+          bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/simulation/sx_v55_eco_faucet_sink_30d_test.gd
 
       - name: Canonical source provenance regression
         run: bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/simulation/sx07_source_provenance_test.gd
