@@ -17,7 +17,23 @@ public static class PR72Window {
 '@
 Add-Type -AssemblyName System.Drawing
 Add-Type -TypeDefinition $windowApi -ErrorAction Stop
-if ($HarnessSelfTest) { Write-Host 'PR72_OWNER_PC_QA_HARNESS_SELFTEST_PASS: Windows PowerShell + Win32 compiled'; exit 0 }
+if ($HarnessSelfTest) {
+ $folder = Join-Path $env:TEMP ('pr72 cmd quoting test ' + [guid]::NewGuid().ToString('N'))
+ New-Item -ItemType Directory -Force -Path $folder | Out-Null
+ $runner = Join-Path $folder 'with spaces.cmd'
+ $marker = Join-Path $folder 'started.txt'
+ @('@echo off',('echo PR72_CMD_OK > "'+$marker+'"')) | Set-Content -LiteralPath $runner -Encoding ASCII
+ $pinfo = [Diagnostics.ProcessStartInfo]::new()
+ $pinfo.FileName=$env:ComSpec
+ $pinfo.Arguments=('/d /s /c ""{0}""' -f $runner)
+ $pinfo.UseShellExecute=$true
+ $p = [Diagnostics.Process]::Start($pinfo)
+ if($null -eq $p -or -not $p.WaitForExit(10000) -or $p.ExitCode -ne 0 -or
+   -not (Test-Path -LiteralPath $marker)) { throw 'MO_GAME CMD launch argument quoting selftest FAIL' }
+ Remove-Item -LiteralPath $folder -Recurse -Force
+ Write-Host 'PR72_OWNER_PC_QA_HARNESS_SELFTEST_PASS: Windows PowerShell Win32 + quoted CMD launch'
+ exit 0
+}
 function Fail([string]$why) { throw ('PR72_PC_QA_BLOCKED: ' + $why) }
 function Identity([string]$path) {
  if (-not (Test-Path -LiteralPath $path -PathType Leaf)) { return 'MISSING' }
@@ -231,7 +247,7 @@ finally {
  $manifest.original_save_after=$after
  $manifest.crash_events=$events
  $manifest.screenshots=@($script:photos.ToArray())
- $manifest.fps=@(Fps 'first',Fps 'reopen',Fps 'resume')
+ $manifest.fps=@((Fps 'first'); (Fps 'reopen'); (Fps 'resume'))
  $manifest.warnings=@($script:warnings.ToArray())
  $manifest.run_status=if($script:warnings.Count -gt 0) {'PARTIAL_OR_BLOCKED'} else {'EVIDENCE_CAPTURED_VISUAL_ACCEPTANCE_PENDING'}
  $manifest.ended_utc=[DateTime]::UtcNow.ToString('o')
