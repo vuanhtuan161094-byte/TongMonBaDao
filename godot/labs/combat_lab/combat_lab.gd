@@ -36,6 +36,8 @@ var advanced_loadout_button: Button
 var poison_catalog_heading: Label
 var poison_catalog_option: OptionButton
 var poison_skill_detail_label: Label
+var cinematic_skill_title: Label
+var cinematic_mechanics: Label
 var poison_load_button: Button
 var poison_boss_preset_button: Button
 var poison_aoe_preset_button: Button
@@ -115,21 +117,19 @@ func _apply_v4_cinematic_layout() -> void:
         if margin != null:
             for side in ["margin_left", "margin_right", "margin_top", "margin_bottom"]:
                 margin.add_theme_constant_override(side, 9)
-    var definition: Dictionary = CombatLabRosterAdapter.skill_definitions().get(selected_catalog_skill_id, {})
-    var skill_title := Label.new()
-    skill_title.text = str(definition.get("name", "ĐỘC TU · TRẬN THỬ"))
-    skill_title.position = Vector2(22, 19)
-    skill_title.add_theme_font_size_override("font_size", 24)
-    skill_title.add_theme_color_override("font_color", Color("f5e7bf"))
-    skill_title.mouse_filter = Control.MOUSE_FILTER_IGNORE
-    arena.add_child(skill_title)
-    var mechanics := Label.new()
-    mechanics.text = PoisonArtBrief.mechanic(definition) + " · " + PoisonArtBrief.geometry(definition)
-    mechanics.position = Vector2(23, 54)
-    mechanics.add_theme_font_size_override("font_size", 14)
-    mechanics.add_theme_color_override("font_color", Color("c5f3db"))
-    mechanics.mouse_filter = Control.MOUSE_FILTER_IGNORE
-    arena.add_child(mechanics)
+    cinematic_skill_title = Label.new()
+    cinematic_skill_title.position = Vector2(22, 19)
+    cinematic_skill_title.add_theme_font_size_override("font_size", 24)
+    cinematic_skill_title.add_theme_color_override("font_color", Color("f5e7bf"))
+    cinematic_skill_title.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    arena.add_child(cinematic_skill_title)
+    cinematic_mechanics = Label.new()
+    cinematic_mechanics.position = Vector2(23, 54)
+    cinematic_mechanics.add_theme_font_size_override("font_size", 14)
+    cinematic_mechanics.add_theme_color_override("font_color", Color("c5f3db"))
+    cinematic_mechanics.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    arena.add_child(cinematic_mechanics)
+    _refresh_v4_cinematic_labels()
     var note := Label.new()
     note.text = "GODOT 4.7.2 · V6.3 LIVE EVENTS · VFX V4 LAB ONLY · KHÔNG LƯU SAVE"
     note.position = Vector2(23, 79)
@@ -137,6 +137,13 @@ func _apply_v4_cinematic_layout() -> void:
     note.add_theme_color_override("font_color", Color("9288b1"))
     note.mouse_filter = Control.MOUSE_FILTER_IGNORE
     arena.add_child(note)
+
+func _refresh_v4_cinematic_labels() -> void:
+    if cinematic_skill_title == null or cinematic_mechanics == null:
+        return
+    var definition: Dictionary = CombatLabRosterAdapter.skill_definitions().get(selected_catalog_skill_id, {})
+    cinematic_skill_title.text = str(definition.get("name", "ĐỘC TU · TRẬN THỬ"))
+    cinematic_mechanics.text = PoisonArtBrief.mechanic(definition) + " · " + PoisonArtBrief.geometry(definition)
 
 func _process(delta: float) -> void:
     if battle != null and auto_run and battle.active:
@@ -762,6 +769,7 @@ func _load_selected_poison_skill() -> void:
                 skill_preview_option.select(index)
                 break
     _refresh_poison_combat_summary()
+    _refresh_v4_cinematic_labels()
 
 func _select_skill_option(option: OptionButton, skill_id: String) -> bool:
     for index in range(option.item_count):
