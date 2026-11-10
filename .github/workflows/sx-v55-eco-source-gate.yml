@@ -97,7 +97,7 @@ jobs:
         run: |
           set -euo pipefail
           bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://tests/simulation/sx_v55_r12_real_labor_tax_wage_save_test.gd
-          bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/simulation/sx_v55_r12_real_labor_tax_wage_save_test.gd
+          timeout --signal=TERM --kill-after=10s 90s bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/simulation/sx_v55_r12_real_labor_tax_wage_save_test.gd
 
       - name: 1/7/30-day exact-source faucet sink and W2 affordability model
         shell: bash
