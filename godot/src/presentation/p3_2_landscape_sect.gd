@@ -6946,6 +6946,9 @@ func _warehouse_operation_text() -> String:
 
     var stock_lines: Array[String] = []
     var stocked_types := 0
+    # Read-only pending harvests: not Warehouse inventory and never available
+    # for an Alchemy job until canonical crop settlement deposits them.
+    var pending_harvests := _warehouse_pending_field_harvest()
     var warehouse_system := WarehouseSystem.new()
     if warehouse_display_resource_ids.is_empty():
         warehouse_display_resource_ids = _v63_hunt_resource_registry.all_resource_ids()
@@ -6955,14 +6958,23 @@ func _warehouse_operation_text() -> String:
         var rule := warehouse_system.rule(state,resource_id) if state.sect.p3_7_resources_enabled else {"reserve_min":0,"locked":false}
         var reserve := maxi(int(rule.get("reserve_min",0)),0)
         var locked := bool(rule.get("locked",false))
-        if amount <= 0 and reserve == 0 and not locked:
+        var harvest: Dictionary = pending_harvests.get(str(resource_id),{})
+        var growing_quantity := maxi(int(harvest.get("quantity",0)),0)
+        if amount <= 0 and reserve == 0 and not locked and growing_quantity <= 0:
             continue
         if amount > 0:
             stocked_types += 1
         var availability_note := " · ĐANG KHÓA" if locked else (" · giữ %d" % reserve if reserve > 0 else "")
-        stock_lines.append("• %s ×%s · dùng được %s%s" % [
+        var pending_note := ""
+        if growing_quantity > 0:
+            var minutes_left := maxi(0,int(harvest.get("finish_tick",state.tick))-state.tick)
+            pending_note = " · đang trồng ~%s (%s)" % [
+                _compact_number(growing_quantity),
+                "đến hạn, chờ nhập Kho" if minutes_left == 0 else "còn %d phút mô phỏng" % minutes_left
+            ]
+        stock_lines.append("• %s ×%s · dùng được %s%s%s" % [
             _v63_hunt_resource_registry.display_name(resource_id),
-            _compact_number(amount),_compact_number(available),availability_note
+            _compact_number(amount),_compact_number(available),availability_note,pending_note
         ])
     if stock_lines.is_empty():
         stock_lines.append("• Chưa có nguyên liệu trong Kho")
@@ -6987,6 +6999,45 @@ func _warehouse_operation_text() -> String:
         "\n".join(production_lines),
         storage_count, shop_count, equipped_count
     ]
+
+# GP-PLAY01/GP0: production visibility only. Never call an initializer
+# here: the canonical BuildingSystem/Scheduler owns migration, planting and
+# harvest. Read actual in-flight plots; do not count anticipated yield as stock.
+func _warehouse_pending_field_harvest() -> Dictionary:
+    var pending: Dictionary = {}
+    if state == null:
+        return pending
+    var crops := SpiritCropRegistry.new()
+    var ids: Array = state.buildings.keys()
+    ids.sort()
+    for raw_id in ids:
+        var field: BuildingState = state.buildings[raw_id]
+        if field.building_type != BuildingSystem.TYPE_SPIRIT_FIELD:
+            continue
+        var raw_plots = field.production_state.get("plots",[])
+        if not (raw_plots is Array):
+            continue
+        for raw_plot in raw_plots:
+            if not (raw_plot is Dictionary):
+                continue
+            var plot: Dictionary = raw_plot
+            if StringName(plot.get("status","")) != BuildingSystem.PLOT_GROWING:
+                continue
+            var crop_id := StringName(plot.get("crop_id",""))
+            if not crops.has(crop_id):
+                continue
+            var units := maxi(int(plot.get("routine_yield",0)),0)
+            if units <= 0:
+                continue
+            var output_id := str(crops.output_resource_id(crop_id))
+            var due_tick := int(plot.get("finish_tick",state.tick))
+            var entry: Dictionary = pending.get(output_id,{
+                "quantity":0,"finish_tick":due_tick
+            })
+            entry["quantity"] = int(entry.get("quantity",0))+units
+            entry["finish_tick"] = mini(int(entry.get("finish_tick",due_tick)),due_tick)
+            pending[output_id] = entry
+    return pending
 
 func _warehouse_inventory_amount(resource_id: StringName, warehouse_system: WarehouseSystem) -> int:
     if state.sect.p3_7_resources_enabled:
