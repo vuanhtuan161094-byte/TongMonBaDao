@@ -98,7 +98,8 @@ func _run() -> void:
             "skill_id":"tmb.skill.bow.liep_anh.active_01.human", "damage":50.0}
     ]
     arena.consume_events(hit_rows)
-    _check(arena.pose_for_actor("lab_v2_dummy") == "hit", "authoritative hit triggers visual reaction")
+    _check(arena.pose_for_actor("lab_v2_dummy") != "hit",
+        "ordinary damage must show committed impact without interrupting locomotion")
     var impacts := 0
     var heals := 0
     for cue in arena.cues:
