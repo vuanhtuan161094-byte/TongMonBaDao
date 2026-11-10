@@ -113,7 +113,7 @@ func _terminal_contract() -> bool:
     if not _check(wounded.hp == before and wounded.injury_level == 0,"HP_ISOLATION","combat mutated persistent HP before settle"): return false
     var settled := _fixture_terminal(s,"win",[str(wounded.id)])
     var healthy: DiscipleState = actors[1]
-    if not _check(bool(settled.get("ok",false)) and wounded.hp == 1.0 and wounded.injury_level == 1 and wounded.region_id == &"sect","T02","downed character missing HP=1 and Injury=1"): return false
+    if not _check(bool(settled.get("ok",false)) and is_equal_approx(wounded.hp,wounded.max_hp) and wounded.injury_level == 1 and wounded.region_id == &"sect","T02","downed character missing FULL revive HP and Injury=1"): return false
     if not _check(healthy.injury_level == 0 and healthy.hp > 1.0 and state.sect.v2_pve_settlement_receipts.has(s.battle.encounter_id),"T03","win with downed participant injured non-downed actor"): return false
     var first_tick := wounded.injury_recover_at_tick
     var once := s.finish()
@@ -218,7 +218,7 @@ func _legacy_terminal_and_fail_closed() -> bool:
     var loaded := SaveService.new().load_from_path(PATH)
     if not _check(loaded != null,"LEGACY_TERM_LOAD","terminal migration failed"): return false
     var injured: DiscipleState = loaded.disciples[actor.id]
-    if not _check(injured.injury_level == 1 and injured.hp == 1.0 and injured.injury_recover_at_tick == loaded.tick + 120 and
+    if not _check(injured.injury_level == 1 and is_equal_approx(injured.hp,injured.max_hp) and injured.injury_recover_at_tick == loaded.tick + 120 and
         injured.active_pve_encounter_id.is_empty() and loaded.sect.v2_pve_settlement_receipts.has("gp2c-legacy-defeat") and
         not loaded.sect.v2_pve_active_runs.has("gp2c-legacy-defeat"),"LEGACY_TERM_SETTLE","legacy defeat incorrectly settled or retained run"): return false
     var owner := SimulationRuntimeOwnerV2.new()
