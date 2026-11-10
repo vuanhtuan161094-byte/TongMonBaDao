@@ -212,6 +212,14 @@ func _build_ui() -> void:
     poison_load_button.pressed.connect(_load_selected_poison_skill)
     poison_aoe_preset_button = _button(controls, "ĐỘC CHÂM · QUẦN CÔNG 3/4", Color("557047"))
     poison_aoe_preset_button.pressed.connect(_apply_poison_aoe_preset)
+    var vfx_mode_button := _button(controls, "VFX V4 · " + ("BẬT" if arena != null and bool(arena.get("v4_preview_enabled")) else "TẮT"), Color("594878"))
+    vfx_mode_button.tooltip_text = "Bật/tắt V4 chỉ trong Combat Lab; hiệu ứng V3 và Save không bị thay đổi."
+    vfx_mode_button.pressed.connect(func():
+        if arena == null: return
+        var next_mode := not bool(arena.get("v4_preview_enabled"))
+        arena.call("set_v4_preview_enabled", next_mode)
+        vfx_mode_button.text = "VFX V4 · " + ("BẬT" if next_mode else "TẮT")
+    )
     var swarm_button := _button(controls, "4 ĐỘC TU · VÂY 8 QUÁI · AOE THẬT", Color("395e58"))
     swarm_button.tooltip_text = "4 đệ tử ở 4 góc; quái trong/ngoài bán kính 3 ô. Dùng kỹ năng V6.3 thật, không phát sát thương giả."
     swarm_button.pressed.connect(_apply_poison_swarm_preset)
