@@ -53,14 +53,12 @@ static func start(state: SimulationState, disciple_id: StringName,
             or not buildings.active_resource_timer_for_worker(state,disciple_id).is_empty() \
             or DiscipleBodyTrainingFacilityV2.has_reserved_slot(state,actor):
         return {"ok":false,"reason":"injured_disciple_has_reserved_work"}
-    for prior_value in receipts.values():
-        if not (prior_value is Dictionary):
-            continue
-        var prior: Dictionary = prior_value
-        if str(prior.get("kind","")) == "injury_treatment" \
-                and str(prior.get("disciple_id","")) == str(disciple_id) \
-                and int(prior.get("due_tick",0)) > state.tick:
-            return {"ok":false,"reason":"injury_treatment_already_in_progress"}
+    # O(1) persisted active appointment index; never scan an unbounded
+    # economy receipt history once per character/minute in 30-hunter PvE.
+    var index_id := "injury-active:"+str(disciple_id)
+    var active_index: Dictionary = receipts.get(index_id,{})
+    if not active_index.is_empty() and int(active_index.get("due_tick",0)) > state.tick:
+        return {"ok":false,"reason":"injury_treatment_already_in_progress"}
     var cost := int(offered["cost"])
     if actor.spirit_stones < cost:
         return {"ok":false,"reason":"insufficient_personal_spirit_stones"}
@@ -79,6 +77,9 @@ static func start(state: SimulationState, disciple_id: StringName,
         "due_tick":actor.injury_recover_at_tick,"natural_due_tick":old_due,
         "hp_restored":0,"hp_at_start":hp_before}
     receipts[receipt_id] = receipt
+    receipts[index_id] = {"kind":"injury_treatment_index",
+        "disciple_id":str(disciple_id),"due_tick":actor.injury_recover_at_tick,
+        "request_id":request_id}
     state.sect.economy_a_event_count += 1
     return {"ok":true,"already_settled":false,
         "save_required":true,"receipt":receipt.duplicate(true)}
@@ -89,13 +90,9 @@ static func treatment_in_progress(state: SimulationState,
         return false
     if not PveR12BalanceV1.active(state):
         return false
-    for raw in state.sect.economy_a_receipts.values():
-        if not (raw is Dictionary):
-            continue
-        var receipt: Dictionary = raw
-        if str(receipt.get("kind","")) == "injury_treatment" \
-                and str(receipt.get("disciple_id","")) == str(disciple.id) \
-                and int(receipt.get("started_tick",-1)) <= state.tick \
-                and int(receipt.get("due_tick",0)) > state.tick:
-            return true
-    return false
+    var index: Dictionary = state.sect.economy_a_receipts.get(
+        "injury-active:"+str(disciple.id),{})
+    return str(index.get("kind","")) == "injury_treatment_index" \
+        and str(index.get("disciple_id","")) == str(disciple.id) \
+        and int(index.get("due_tick",0)) == disciple.injury_recover_at_tick \
+        and int(index.get("due_tick",0)) > state.tick
