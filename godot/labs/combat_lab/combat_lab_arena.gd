@@ -575,6 +575,14 @@ func _actor_body_offset_px(actor_id: String) -> float:
 static func _is_ground_cue(cue: Dictionary) -> bool:
     return str(cue.get("kind", "")) in ["venom_cloud", "aoe", "area_burst", "telegraph"]
 
+# Project the *canonical world-space radius* through exactly the same
+# world-to-screen transform as actor feet. The 30/28 margins and non-square
+# Lab viewport make the ground boundary elliptical, never a fake larger AoE.
+func _aoe_radii_px(world_radius: float) -> Vector2:
+    var span := size - Vector2(60.0, 56.0)
+    return Vector2(maxf(0.0, world_radius) * maxf(1.0, span.x) / WORLD.size.x * zoom,
+        maxf(0.0, world_radius) * maxf(1.0, span.y) / WORLD.size.y * zoom)
+
 func _draw_ground_cues() -> void:
     var current_time := roundi(visual_time * 1000.0)
     for cue in cues:
@@ -586,10 +594,11 @@ func _draw_ground_cues() -> void:
             continue
         var t := clampf(age / duration, 0.0, 1.0)
         var p := _world_to_local(_cue_target_world_position(cue))
-        var radius_px := float(cue.get("radius", 0.0)) * size.x / WORLD.size.x * zoom
+        var bounds := _aoe_radii_px(float(cue.get("radius", 0.0)))
         var presentation := cue.duplicate()
         presentation["v4_preview"] = v4_preview_enabled
-        VfxV2.render(self, presentation, p, p, t, radius_px, zoom)
+        presentation["v4_radius_y"] = bounds.y
+        VfxV2.render(self, presentation, p, p, t, bounds.x, zoom)
 
 func _draw_cues() -> void:
     # HOLD freezes all existing spell/impact effects, not only projectiles.
@@ -619,12 +628,14 @@ func _draw_cues() -> void:
         # center, never chase one of the targets.
         var p := _world_to_local(_cue_target_world_position(cue))
         var start := _world_to_local(cue.get("from_position", cue.get("position", Vector2.ZERO)))
-        var radius_px := float(cue.get("radius", 0.0)) * size.x / WORLD.size.x * zoom
+        var projected_radii := _aoe_radii_px(float(cue.get("radius", 0.0)))
+        var radius_px := projected_radii.x
         var visual_cue := cue
         if str(cue.get("school", "")) == "poison":
             visual_cue = cue.duplicate()
             visual_cue["v4_preview"] = v4_preview_enabled
             if v4_preview_enabled:
+                visual_cue["v4_radius_y"] = projected_radii.y
                 visual_cue["v4_target_body_offset"] = _actor_body_offset_px(str(cue.get("target_actor_id", "")))
                 visual_cue["v4_source_body_offset"] = _actor_body_offset_px(str(cue.get("source_actor_id", "")))
         if not _is_ground_cue(cue):
