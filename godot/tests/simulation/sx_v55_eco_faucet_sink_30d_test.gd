@@ -84,35 +84,36 @@ func _run() -> void:
         "unfunded W2 accidentally treated as live payable income"):
         return
     for days in [1,7,30]:
+        var day_count: int = int(days)
         # Formula is deterministic workbook scenario (no auto NPC demand
         # guarantee, work-speed effect, seed inflation or upgrade purchase).
-        var gained_ore := days*ore_per_day
-        var sold_ore := days*sale_units
-        var produced_wood := days*wood_per_day
-        var produced_grain := days*grain_per_day
-        var used_grain := days*consumed_grain
-        var produced_herb := days*herb_per_day
-        var used_herb := days*consumed_herbs
-        var market_earned := days*stone_income_ceiling
-        var payroll := days*wages
-        var seeds := days*field_seed_cost
+        var gained_ore := day_count*ore_per_day
+        var sold_ore := day_count*sale_units
+        var produced_wood := day_count*wood_per_day
+        var produced_grain := day_count*grain_per_day
+        var used_grain := day_count*consumed_grain
+        var produced_herb := day_count*herb_per_day
+        var used_herb := day_count*consumed_herbs
+        var market_earned := day_count*stone_income_ceiling
+        var payroll := day_count*wages
+        var seeds := day_count*field_seed_cost
         var final_balance_ceiling := initial_stones+market_earned-payroll-seeds
         if not _check(gained_ore >= sold_ore and produced_grain >= used_grain
             and produced_herb >= used_herb
-            and final_balance_ceiling == initial_stones + days*net_without_upgrades
+            and final_balance_ceiling == initial_stones + day_count*net_without_upgrades
             and final_balance_ceiling >= 0,
             "material or Stone 1/7/30-day budget not conserved"):
             return
-        print("SX_V55_ECO_SCENARIO days=",days,
+        print("SX_V55_ECO_SCENARIO days=",day_count,
             " ore_earned=",gained_ore," ore_sold=",sold_ore,
             " ore_remainder=",gained_ore-sold_ore,
             " wood_earned=",produced_wood," grain_remainder=",produced_grain-used_grain,
             " herb_remainder=",produced_herb-used_herb,
-            " hxd_potential=",days*daily_hxd," tqd_potential=",days*daily_tqd,
+            " hxd_potential=",day_count*daily_hxd," tqd_potential=",day_count*daily_tqd,
             " npc_stone_ceiling=",market_earned,
             " wages_pilot=",payroll," field_seed_cost=",seeds,
             " treasury_upper=",final_balance_ceiling,
-            " w2_r1_funding_gap=",days*first_w2_deficit)
+            " w2_r1_funding_gap=",day_count*first_w2_deficit)
     # An analytical read-only model is forbidden from changing the user's
     # actual Warehouse, wallet, or economy receipt even in a QA fixture.
     if not _check(state.sect.economy_a_receipts.is_empty()
