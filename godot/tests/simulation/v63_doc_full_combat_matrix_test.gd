@@ -228,6 +228,7 @@ func _probe_action(skill: Dictionary) -> void:
         # by MapBattleV2; an arbitrarily low fixture HP value is not evidence.
         var recipient: Dictionary = battle.actors[support_id]
         recipient["v63_combat_enabled"] = true
+        recipient["hp"] = float(recipient.max_hp)
         var damage_before := float(recipient.hp)
         battle._deal_direct(enemy, recipient, 0.2, "basic", false)
         _check(float(recipient.hp) < damage_before,
