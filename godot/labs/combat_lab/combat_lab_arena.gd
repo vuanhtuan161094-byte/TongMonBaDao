@@ -493,7 +493,11 @@ func _draw() -> void:
         var y := margin.y + float(i) * span.y / 10.0
         draw_line(Vector2(margin.x, y), Vector2(margin.x + span.x, y), Color(0.65, 0.55, 0.8, 0.065), 1.0)
     draw_circle(Vector2(size.x * 0.5, size.y * 0.52), minf(size.x, size.y) * 0.30, Color(0.42, 0.24, 0.64, 0.055))
-    draw_string(ThemeDB.fallback_font, Vector2(14, 20), status_line, HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Color("cfc1e1"))
+    # Cinematic overlay has a real skill-title label. The normal Lab
+    # status string must not collide with it in the first 20 screen pixels.
+    if OS.get_environment("TMB_POISON_V4_CINEMATIC") != "1":
+        draw_string(ThemeDB.fallback_font, Vector2(14, 20), status_line,
+            HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Color("cfc1e1"))
     # Authoritative AoE/telegraph footprints belong on the floor BEHIND
     # sprites, not in front of faces/health bars. This is purely draw order.
     _draw_ground_cues()
