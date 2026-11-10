@@ -32,6 +32,14 @@ func _run() -> void:
     lab.call("_set_auto", false)
     var arena: Control = lab.get("arena")
     var size_now := arena.size
+    var world_center := Vector2(18.0, 10.0)
+    var center_screen: Vector2 = arena.call("_world_to_local", world_center)
+    var edge_x: Vector2 = arena.call("_world_to_local", world_center + Vector2(3.0, 0.0))
+    var edge_y: Vector2 = arena.call("_world_to_local", world_center + Vector2(0.0, 3.0))
+    var radii: Vector2 = arena.call("_aoe_radii_px", 3.0)
+    _check(absf(radii.x - (edge_x.x - center_screen.x)) < 0.01 and
+        absf(radii.y - (edge_y.y - center_screen.y)) < 0.01,
+        "radius-3 visual ellipse matches actual world-to-screen projection")
     _check(size_now.x >= 0.80 * float(root.size.x) and
         size_now.y >= 0.80 * float(root.size.y),
         "real battle viewport fills 80%+ of 1280x720 instead of 630px panel")
