@@ -21,7 +21,7 @@ const NEXT_MAP_GATES := {
 static func for_camp(index: int) -> Dictionary:
     if index < 0 or index >= PveMultiCampPopulationV1.CAMP_COUNT:
         return {}
-    var cluster: Dictionary = LIVE_CLUSTERS[index/CAMPS_PER_CLUSTER]
+    var cluster: Dictionary = LIVE_CLUSTERS[int(index/CAMPS_PER_CLUSTER)]
     return {"map_id":LIVE_MAP_ID,"cluster_id":cluster["id"],
         "cluster_name":cluster["name"],"camp_id":PveMultiCampPopulationV1.camp_id(index),
         "camp_index":index,"physical_map_changed":false}
