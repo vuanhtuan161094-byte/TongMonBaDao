@@ -118,6 +118,88 @@ func settle_work_wage(state: SimulationState, worker: DiscipleState, job_id: Str
     state.sect.economy_a_event_count += 1
     return {"ok":true,"already_settled":false,"receipt":receipt.duplicate(true)}
 
+
+# W2 debt foundation: use persisted receipts, not a second SaveService ledger.
+# Original wage receipts remain immutable; late payments belong to today's cashflow.
+func unpaid_work_wages(state: SimulationState) -> Dictionary:
+    if state == null or not state.sect.economy_a_enabled:
+        return {"total":0,"entries":[]}
+    var receipts: Dictionary = state.sect.economy_a_receipts
+    var later_paid: Dictionary = {}
+    for raw in receipts.values():
+        if not (raw is Dictionary) or str(raw.get("kind","")) != "wage_arrears_payment":
+            continue
+        for raw_line in raw.get("lines",[]):
+            if not (raw_line is Dictionary):
+                continue
+            var source := str(raw_line.get("wage_receipt_id",""))
+            if not source.is_empty():
+                later_paid[source] = maxi(0,int(later_paid.get(source,0))) + maxi(0,int(raw_line.get("paid",0)))
+    var keys: Array = receipts.keys()
+    keys.sort()
+    var entries: Array = []
+    var total := 0
+    for raw_id in keys:
+        var wage_id := str(raw_id)
+        var original = receipts[raw_id]
+        if not (original is Dictionary) or str(original.get("kind","")) != "wage":
+            continue
+        var due := maxi(0,int(original.get("due",0)))
+        var credited := maxi(0,int(original.get("paid",0))) + maxi(0,int(later_paid.get(wage_id,0)))
+        var remaining := maxi(0,due-credited)
+        if remaining <= 0:
+            continue
+        var worker_id := StringName(original.get("worker_id",""))
+        if not state.disciples.has(worker_id):
+            continue
+        entries.append({"wage_receipt_id":wage_id,"worker_id":str(worker_id),
+            "remaining":remaining,"tick":int(original.get("tick",0))})
+        total += remaining
+    return {"total":total,"entries":entries}
+
+# A real treasury-to-disciple transfer; no Stone creation or retroactive salary.
+# Stable request_id prevents a second debit across cold Save/Load and retries.
+func pay_work_wage_arrears(state: SimulationState, request_id: String) -> Dictionary:
+    if state == null or not state.sect.economy_a_enabled:
+        return {"ok":false,"reason":"economy_a_disabled"}
+    if request_id.is_empty() or request_id.length() > 120:
+        return {"ok":false,"reason":"invalid_request_id"}
+    var receipt_id := "wage-arrears:%s" % request_id
+    if state.sect.economy_a_receipts.has(receipt_id):
+        var existing = state.sect.economy_a_receipts[receipt_id]
+        if not (existing is Dictionary) or str(existing.get("kind","")) != "wage_arrears_payment":
+            return {"ok":false,"reason":"conflicting_arrears_replay"}
+        return {"ok":true,"already_settled":true,"receipt":existing.duplicate(true)}
+    var reserve := maxi(0,int(state.sect.economy_a_policy.get("sect_pay_reserve",0)))
+    var available := maxi(0,state.sect.spirit_stones-reserve)
+    var entries: Array = unpaid_work_wages(state).get("entries",[])
+    var paid_lines: Array = []
+    var spent := 0
+    for item in entries:
+        if available <= 0:
+            break
+        var worker_id := StringName(item.get("worker_id",""))
+        if not state.disciples.has(worker_id):
+            continue
+        var worker: DiscipleState = state.disciples[worker_id]
+        var room := maxi(0,V2_MAX_STONES-worker.spirit_stones)
+        var payment := mini(int(item.get("remaining",0)),mini(available,room))
+        if payment <= 0:
+            continue
+        available -= payment
+        spent += payment
+        worker.spirit_stones += payment
+        paid_lines.append({"wage_receipt_id":str(item.get("wage_receipt_id","")),
+            "worker_id":str(worker_id),"paid":payment})
+    if spent <= 0:
+        return {"ok":false,"reason":"no_payable_arrears_or_funds"}
+    state.sect.spirit_stones -= spent
+    var receipt := {"kind":"wage_arrears_payment","request_id":request_id,
+        "paid":spent,"lines":paid_lines,"tick":state.tick}
+    state.sect.economy_a_receipts[receipt_id] = receipt
+    state.sect.economy_a_event_count += 1
+    return {"ok":true,"already_settled":false,"receipt":receipt.duplicate(true)}
+
 # Resource-sale income is earned against Warehouse stock. The NPC also
 # stocks one paid Tầm Mạch Bàn per day for the real Mine Lv10+ gates.
 # Selling building components back would enable artificial market recycling.
@@ -212,7 +294,7 @@ func daily_market_cashflow(state: SimulationState) -> Dictionary:
                 income += maxi(int(receipt.get("earned",0)),0)
             "market_buy":
                 purchases += maxi(int(receipt.get("cost",0)),0)
-            "wage":
+            "wage", "wage_arrears_payment":
                 wages += maxi(int(receipt.get("paid",0)),0)
     return {
         "income":income,"purchases":purchases,"wages":wages,
