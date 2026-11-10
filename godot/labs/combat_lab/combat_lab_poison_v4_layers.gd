@@ -1,6 +1,8 @@
 class_name CombatLabPoisonV4Layers
 extends RefCounted
 
+const ArtBrief = preload("res://labs/combat_lab/combat_lab_poison_skill_art_brief.gd")
+
 # Render-only V4, selected by an explicit Lab opt-in. Never writes battle state.
 const TAU4 := PI * 2.0
 # Dark-fantasy palette: saturated silhouettes first, restrained light accents.
@@ -137,6 +139,7 @@ static func debris(canvas: CanvasItem, p: Vector2, radius: float, c: Color, opac
 static func render(canvas: CanvasItem, cue: Dictionary, target: Vector2, source: Vector2, t: float, radius_px: float, zoom: float) -> void:
     var skill_id := str(cue.get("skill_id", cue.get("source_skill_id", "")))
     var branch := school(skill_id)
+    var motif := str(ArtBrief.profile(skill_id).get("motif", ""))
     var c := tint(branch)
     var kind := str(cue.get("kind", ""))
     var effect := str(cue.get("effect", ""))
@@ -166,6 +169,36 @@ static func render(canvas: CanvasItem, cue: Dictionary, target: Vector2, source:
             var ang := float(i) * TAU4 / 7.0 + k * 0.33
             var q := target + Vector2.from_angle(ang) * area * (0.23 + k * 0.27)
             glint(canvas, q, c, life * 0.52, 1.1 * z, ang)
+        # Distinct authored silhouettes for each AoE: the same canonical
+        # radius is preserved. These floor details cannot select/hit targets.
+        match motif:
+            "needle_fan", "thousand_needles":
+                var count := 7 if motif == "needle_fan" else 10
+                for i in range(count):
+                    var theta := float(i) * TAU4 / float(count) + k * 0.2
+                    var ray := Vector2.from_angle(theta)
+                    var end := target + ray * area * (0.34 + 0.17 * k)
+                    needle(canvas, end - ray * (3.0 + 2.0 * k) * z, end + ray * 4.0 * z,
+                        c, life * (0.33 if motif == "needle_fan" else 0.44), z * 0.50)
+            "miasma_pulse":
+                canvas.draw_circle(target, area * 0.62, a(c.darkened(0.32), life * 0.095))
+                ring(canvas, target, area * (0.32 + 0.28 * k), c, life * 0.32, k)
+            "gu_mist":
+                for i in range(4):
+                    var theta := float(i) * TAU4 / 4.0 + k * 0.7
+                    var cloud := target + Vector2.from_angle(theta) * area * 0.24
+                    canvas.draw_circle(cloud, area * 0.20, a(GU_DARK, life * 0.16))
+                    glint(canvas, cloud, GOLD, life * 0.28, 1.0 * z, theta)
+            "gu_scatter", "gu_domain":
+                var count := 5 if motif == "gu_scatter" else 7
+                for i in range(count):
+                    var theta := float(i) * TAU4 / float(count) - k * 0.65
+                    var ray := Vector2.from_angle(theta)
+                    var tip := target + ray * area * (0.33 + 0.13 * k)
+                    spark(canvas, tip, c, life * 0.48, 1.45 * z)
+                    if motif == "gu_domain":
+                        canvas.draw_line(tip - ray * 6.0 * z, tip,
+                            a(GOLD, life * 0.34), maxf(0.7, z * 0.55), true)
         return
     if kind == "heal" or effect == "heal":
         lotus(canvas, p - Vector2(0, k * 23.0 * z), 20.0 * z, c, life * 0.9, k)
@@ -180,14 +213,22 @@ static func render(canvas: CanvasItem, cue: Dictionary, target: Vector2, source:
             var center := caster_hand - Vector2(0, 2.0 * z)
             ring(canvas, center, (9.0 + pulse * 10.0) * z, c, maxf(0.15, pulse) * 0.75, k)
             if branch == "doc_cham":
-                for i in range(3):
-                    var shift := Vector2(float(i - 1) * 8.0, -float(i % 2) * 4.0) * z
+                var count := 5 if motif in ["needle_fan", "thousand_needles"] else 3
+                for i in range(count):
+                    var shift := Vector2((float(i) - float(count - 1) * 0.5) * 6.2,
+                        -float(i % 2) * 4.0) * z
                     needle(canvas, center + shift - Vector2(9, -4) * z,
                         center + shift + Vector2(9, -4) * z, c, maxf(0.15, pulse), z)
+                if motif == "miasma_pulse":
+                    canvas.draw_circle(center, 13.0 * z, a(c, pulse * 0.09))
             elif branch == "co_doc":
                 serpent(canvas, center - Vector2(20, 5) * z, center + Vector2(18, -7) * z, c, pulse, z, k)
+                if motif == "gu_domain":
+                    ring(canvas, center, 21.0 * z, GOLD, pulse * 0.34, -k)
             else:
                 lotus(canvas, center, 19.0 * z, c, maxf(0.15, pulse), k)
+                if motif == "jade_ultimate":
+                    lotus(canvas, center, 10.0 * z, GOLD, pulse * 0.48, -k)
             for i in range(3):
                 var phi := float(i) * TAU4 / 3.0 + k * 0.65
                 glint(canvas, center + Vector2.from_angle(phi) * (13.0 + 7.0 * pulse) * z,
@@ -199,11 +240,24 @@ static func render(canvas: CanvasItem, cue: Dictionary, target: Vector2, source:
             var head := caster_hand.lerp(p, k)
             var tail := head - d * (22.0 * z)
             if branch == "doc_cham":
-                for i in range(3):
-                    var side := d.orthogonal() * float(i - 1) * 3.4 * z
-                    needle(canvas, tail + side, head + side, c, 0.94, z)
+                if motif == "miasma_pulse":
+                    spark(canvas, head, c, 0.84, 4.0 * z)
+                    canvas.draw_circle(head - d * 8.0 * z, 8.0 * z, a(c, 0.11))
+                else:
+                    var count := 1 if motif in ["needle_basic", "needle_pierce", "needle_venom"] else 5
+                    for i in range(count):
+                        var side := d.orthogonal() * (float(i) - float(count - 1) * 0.5) * 2.9 * z
+                        needle(canvas, tail + side, head + side, c, 0.94, z * 0.82)
             elif branch == "co_doc":
-                serpent(canvas, tail, head, c, 0.94, z, k)
+                if motif == "gu_bite":
+                    spark(canvas, head, c, 0.92, 3.4 * z)
+                    for i in range(2):
+                        var wing := d.orthogonal() * (1.0 if i == 0 else -1.0)
+                        canvas.draw_line(head - d * 5.0 * z,
+                            head - d * 3.0 * z + wing * 4.0 * z,
+                            a(GOLD, 0.66), maxf(0.7, z * 0.70), true)
+                else:
+                    serpent(canvas, tail, head, c, 0.94, z, k)
             else:
                 lotus(canvas, head, 11.0 * z, c, 0.90, k)
             # Jewel-like highlights and tapered wakes, never random overdraw.
@@ -217,15 +271,19 @@ static func render(canvas: CanvasItem, cue: Dictionary, target: Vector2, source:
             debris(canvas, head - d * (8.0 * z), 7.0 * z, c, 0.36, k)
         "impact":
             if branch == "doc_cham":
-                # Five angled punctures read as a stabbing strike, not an explosion.
-                for i in range(5):
-                    var ray := Vector2.from_angle((-0.55 + float(i) * 0.27) + d.angle())
-                    needle(canvas, p - ray * (5.0 * z), p + ray * (10.0 + 7.0 * k) * z,
+                # Precise pierce for single target, converging needles for AoE.
+                var count := 1 if motif in ["needle_basic", "needle_pierce", "needle_venom"] else 5
+                for i in range(count):
+                    var angle := (-0.55 + float(i) * 0.27) + d.angle()
+                    var ray := Vector2.from_angle(angle)
+                    needle(canvas, p - ray * 5.0 * z, p + ray * (10.0 + 7.0 * k) * z,
                         c, pulse * 0.85, z * 0.75)
             elif branch == "co_doc":
-                # Bite and coil, not an enlarged generic impact halo.
-                serpent(canvas, p - d * 19.0 * z, p + d * 7.0 * z, c, pulse, z, k)
-                spark(canvas, p, GOLD, pulse * 0.54, 1.8 * z)
+                if motif == "gu_bite":
+                    spark(canvas, p, GOLD, pulse * 0.82, 3.3 * z)
+                else:
+                    serpent(canvas, p - d * 19.0 * z, p + d * 7.0 * z, c, pulse, z, k)
+                    spark(canvas, p, GOLD, pulse * 0.54, 1.8 * z)
             else:
                 lotus(canvas, p, (15.0 + 12.0 * k) * z, c, pulse, k)
             for i in range(5):
