@@ -370,6 +370,24 @@ static func _passive_ids(actor: Dictionary) -> Array:
     var value = actor.get("v63_passive_ids",[])
     return value if value is Array else []
 
+# Positioning must follow an equipped offensive skill, never an invented
+# radius. Ranged cultivators retain their maximum authored reach on cooldown;
+# support/mobility skills cannot artificially extend attack distance.
+static func preferred_offensive_range(actor: Dictionary) -> float:
+    var basic := maxf(0.0, float(actor.get("range", 1.8)))
+    if str(actor.get("side", "")) != "disciple" or str(actor.get("role", "")) not in ["mage", "ranged"]:
+        return basic
+    if not bool(actor.get("v63_combat_enabled", false)):
+        return basic
+    for raw_id in actor.get("v63_skill_loadout", []):
+        var definition := skill_definition(str(raw_id))
+        if str(definition.get("slot", "")) not in ["active", "ultimate"]:
+            continue
+        if str(definition.get("effect", "")) in ["heal", "cleanse", "guard", "mobility"]:
+            continue
+        basic = maxf(basic, float(definition.get("range", 0.0)))
+    return basic
+
 static func try_cast(battle: MapBattleV2, actor: Dictionary, target: Dictionary, guard_only: bool = false) -> bool:
     if battle == null or guard_only or target.is_empty():
         return false
@@ -452,7 +470,7 @@ static func _status_count(actor: Dictionary) -> int:
 static func _try_mobility(battle: MapBattleV2, actor: Dictionary, target: Dictionary, id: String, skill: Dictionary, ready: Dictionary) -> bool:
     if str(actor.get("side", "")) != "disciple":
         return false
-    var attack_range := maxf(1.0,float(actor.get("range",1.5)))
+    var attack_range := maxf(1.0, preferred_offensive_range(actor))
     if battle.world_mode:
         return _try_world_mobility(battle,actor,target,id,skill,ready,attack_range)
     var distance := (actor["position"] as Vector2).distance_to(target["position"])
