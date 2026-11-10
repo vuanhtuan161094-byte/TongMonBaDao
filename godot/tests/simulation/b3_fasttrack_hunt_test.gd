@@ -142,12 +142,12 @@ func main_loop() -> bool:
     if not drain(offline.owner,START+120): return false
     if not same(canonical(state),canonical(offline.state())): differences(canonical(state),canonical(offline.state()))
     if not check(same(canonical(state),canonical(offline.state())),"online/offline same state, ordering, rewards, passive Tu Vi"): return false
-    # Natural defeat eventually returns HP1 + Injury1, without world teardown.
+    # Natural defeat revives FULL HP + Injury1, without world teardown.
     if d.injury_level == 0:
         if not drain(owner,START+600): return false
     state = owner.state
     d = state.disciples[fx["id"]]
-    if not check(d.injury_level == 1 and d.hp == 1.0 and d.region_id == &"sect" and d.active_pve_encounter_id.is_empty(),"natural defeat -> Sect HP1 Injury1"): return false
+    if not check(d.injury_level == 1 and is_equal_approx(d.hp,d.max_hp) and d.region_id == &"sect" and d.active_pve_encounter_id.is_empty(),"natural defeat -> Sect full HP Injury1"): return false
     var until := d.injury_recover_at_tick
     var lifespan := d.max_lifespan
     var returned: Dictionary = state.sect.b3_hunt["last_return"].duplicate(true)
