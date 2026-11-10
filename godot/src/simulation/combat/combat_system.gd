@@ -69,7 +69,14 @@ func resolve_encounter(state: SimulationState, disciple: DiscipleState, rng: Gam
         disciple.hp = maxf(0.0, disciple.hp - taken)
 
         if disciple.hp <= 0.0:
-            disciple.hp = 1.0
+            # V2 fallback combat uses the same full-HP revival contract as
+            # P0/B3; Injury is attached when the scheduler returns to Sect.
+            # P2 legacy disciples retain their historical HP=1 behavior.
+            if DiscipleRealmProgressV2.owns_v2_progression(disciple):
+                disciple.hp = disciple.max_hp
+                disciple.last_decision["v2_legacy_defeat_injury_pending"] = true
+            else:
+                disciple.hp = 1.0
             disciple.metrics["defeats"] = int(disciple.metrics.get("defeats", 0)) + 1
             return {"outcome":"defeat", "loot":{}}
 
@@ -175,7 +182,11 @@ func _resolve_realtime_encounter(state: SimulationState, disciple: DiscipleState
             context["monster_basic_ready"] = now + MONSTER_ATTACK_INTERVAL
             _trace(trace, {"type":"monster_attack", "time":now, "damage":taken, "distance":float(context["distance"])})
             if disciple.hp <= 0.0:
-                disciple.hp = 1.0
+                if DiscipleRealmProgressV2.owns_v2_progression(disciple):
+                    disciple.hp = disciple.max_hp
+                    disciple.last_decision["v2_legacy_defeat_injury_pending"] = true
+                else:
+                    disciple.hp = 1.0
                 disciple.metrics["defeats"] = int(disciple.metrics.get("defeats", 0)) + 1
                 _trace(trace, {"type":"defeat", "time":now})
                 return _realtime_result("defeat", disciple, context, trace, style)
