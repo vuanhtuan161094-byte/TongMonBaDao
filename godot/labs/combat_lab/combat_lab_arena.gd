@@ -4,6 +4,7 @@ const ActorRigV2 = preload("res://labs/combat_lab/combat_lab_actor_rig_v2.gd")
 const PoisonAtlasV1 = preload("res://labs/combat_lab/combat_lab_poison_atlas_v1.gd")
 const VfxV2 = preload("res://labs/combat_lab/combat_lab_vfx_v2.gd")
 const VFXProgression = preload("res://labs/combat_lab/combat_lab_vfx_progression.gd")
+const V4SpellSpark = preload("res://labs/combat_lab/combat_lab_v4_spell_spark.gd")
 
 var actor_states: Dictionary = {}
 var last_skill_by_actor: Dictionary = {}
@@ -336,6 +337,19 @@ func consume_events(rows: Array[Dictionary]) -> void:
                 if mobility_pos is Vector2: pos = mobility_pos
         if cue_kind.is_empty() and kind != "skill_cast":
             continue
+        # One-shot GPU glints only on REAL committed positive hit/heal.
+        # No spark for pending casts, misses, telegraphs or DoT receipts.
+        # Particle count is bounded independently from the authoritative
+        # damage events, so 30-person raids cannot allocate endlessly.
+        if v4_preview_enabled and school_kind == "poison" and (
+                cue_kind == "heal" or (cue_kind == "impact" and
+                    kind == "hit" and float(event.get("damage", 0.0)) > 0.0)):
+            var spark_tint := Color("c0ffe7") if cue_kind == "heal" else Color("c8a0ff")
+            if ".co_doc." in display_skill_id: spark_tint = Color("dbff8c")
+            var spark_screen := _world_to_local(pos) + Vector2(0.0,
+                _actor_body_offset_px(target_id))
+            V4SpellSpark.spawn(self, spark_screen, spark_tint,
+                bool(event.get("critical", false)))
         if cue_kind == "poison_tick":
             # Multiple committed owned stacks can tick in one 0.25s engine step.
             # Aggregate *actual* numeric damage per target/owner/skill/time
