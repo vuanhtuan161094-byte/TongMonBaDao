@@ -290,14 +290,20 @@ func _build_ui() -> void:
     hud.add_child(hud_top)
     mode_label = _label(hud_top, "V6.3 · LAB_ONLY", 11, Color("bd9fff"))
     roster_label = _label(hud, "", 11, Color("e5ddeb"))
-    roster_label.custom_minimum_size.y = 26
-    roster_label.clip_text = false
-    roster_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+    roster_label.custom_minimum_size.y = 20
+    roster_label.clip_text = true
+    roster_label.autowrap_mode = TextServer.AUTOWRAP_OFF
+    roster_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
     stats_label = _label(hud, "", 10, Color("b9aec7"))
     stats_label.clip_text = false
     poison_current_skill_label = _label(hud_top, "Skill: —", 11, Color("d3c2e4"))
     poison_current_skill_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+    poison_current_skill_label.clip_text = true
+    poison_current_skill_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
     poison_stack_label = _label(hud_top, "Độc: 0", 11, Color("a5f28e"))
+    poison_stack_label.custom_minimum_size.x = 140
+    poison_stack_label.clip_text = true
+    poison_stack_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
     events_label = _label(hud, "", 9, Color("c8bed5"))
     events_label.clip_text = true
     events_label.autowrap_mode = TextServer.AUTOWRAP_OFF
@@ -1059,15 +1065,23 @@ func _refresh_hud() -> void:
     if battle == null:
         return
     state_label.text = "%s  ·  %.1fs  ·  %s" % ["AUTO" if auto_run else "HOLD", battle.now, battle.outcome]
-    mode_label.text = "V6.3  ·  %d ĐỆ TỬ  ·  %s" % [int(party_count.value), "ĐANG ĐÁNH" if battle.active else "KẾT THÚC"]
-    var roster := PackedStringArray()
-    for id in battle.actors.keys():
-        var actor: Dictionary = battle.actors[id]
-        var current := float(actor.get("hp", 0.0))
-        var maximum := float(actor.get("max_hp", 1.0))
-        var tag := "ĐT" if str(actor.get("side", "")) == "disciple" else ("BOSS" if str(actor.get("tier", "")) == "boss" else "QUÁI")
-        roster.append("%s  %s  %d / %d HP" % [tag, str(id).replace("lab_disciple_", "#"), roundi(current), roundi(maximum)])
-    roster_label.text = "   ·   ".join(roster)
+    mode_label.text = "V6.3 · %d ĐT" % int(party_count.value)
+    # Aggregate real actor HP by side. 12 individual long rows pushed HUD
+    # text into vertical narrow columns and obscured the combat arena.
+    var alive_disciples := 0
+    var total_disciples := 0
+    var alive_monsters := 0
+    var total_monsters := 0
+    for actor_value in battle.actors.values():
+        var actor: Dictionary = actor_value
+        if str(actor.get("side", "")) == "disciple":
+            total_disciples += 1
+            if float(actor.get("hp", 0.0)) > 0.0: alive_disciples += 1
+        elif str(actor.get("side", "")) == "monster":
+            total_monsters += 1
+            if float(actor.get("hp", 0.0)) > 0.0: alive_monsters += 1
+    roster_label.text = "Đệ tử %d/%d còn chiến đấu    ·    Quái %d/%d còn sống" % [
+        alive_disciples, total_disciples, alive_monsters, total_monsters]
     if not fixture_actors.is_empty():
         var stats := CombatLabRosterAdapter.stat_breakdown(fixture_actors[0])
         var fixture_id := str(fixture_actors[0].get("id", ""))
@@ -1083,10 +1097,10 @@ func _refresh_hud() -> void:
         var ready: Dictionary = live_actor.get("v63_skill_ready", {})
         for skill_id in ready:
             if float(ready[skill_id]) > battle.now: cooldown_count += 1
-        stats_label.text = "HP %s  ·  ATK %s  ·  DEF %s  ·  Crit %.1f%%  ·  Hút sinh lực %.1f%%  ·  Niệm %.2f  ·  CD %.2f" % [
-            _fmt(float(stats.max_hp)), _fmt(float(stats.attack)), _fmt(float(stats.defense)),
-            float(stats.crit_chance) * 100.0, float(stats.lifesteal) * 100.0,
-            float(stats.cast_speed), float(stats.cooldown_recovery)]
+        stats_label.text = "ĐT01: HP %d/%d · Công %d · Thủ %d · Chí mạng %.1f%% · Hút máu %.1f%%" % [
+            roundi(float(live_actor.get("hp", 0.0))), roundi(float(stats.max_hp)),
+            roundi(float(stats.attack)), roundi(float(stats.defense)),
+            float(stats.crit_chance) * 100.0, float(stats.lifesteal) * 100.0]
     events_label.text = event_log.back() if not event_log.is_empty() else ""
     _refresh_poison_combat_summary()
 
@@ -1107,20 +1121,19 @@ func _refresh_poison_combat_summary() -> void:
         var branch := str(definition.get("branch", ""))
         var shape := str(definition.get("shape", "unspecified")).replace("_", " ")
         var prefix := "Đang đánh" if not last_combat_skill_id.is_empty() else "Đang xem"
-        poison_current_skill_label.text = "%s: %s · %s · %s · %s" % [
-            prefix, str(definition.get("name", skill_id)), _generation_label(generation), _branch_label(branch), shape]
-    var stack_rows := PackedStringArray()
+        poison_current_skill_label.text = "%s: %s" % [prefix, str(definition.get("name", skill_id))]
+    var poison_stacks := 0
+    var poisoned_monsters := 0
     if battle != null:
-        for actor_id in battle.actors.keys():
-            var actor: Dictionary = battle.actors[actor_id]
+        for actor_value in battle.actors.values():
+            var actor: Dictionary = actor_value
             if str(actor.get("side", "")) != "monster":
                 continue
             var statuses: Dictionary = actor.get("status_effects", {})
             var stacks: Array = statuses.get("v63_poison", [])
-            var count := stacks.size()
-            var enemy_name := "Boss" if str(actor.get("tier", "")) == "boss" else ("Tinh anh" if str(actor.get("tier", "")) == "elite" else "Quái")
-            stack_rows.append("%s ×%d" % [enemy_name, count])
-    poison_stack_label.text = "Độc trên quái: " + (" · ".join(stack_rows) if not stack_rows.is_empty() else "0 stack")
+            poison_stacks += stacks.size()
+            if not stacks.is_empty(): poisoned_monsters += 1
+    poison_stack_label.text = "Độc %d · %d quái" % [poison_stacks, poisoned_monsters]
 
 func _fmt(value: float) -> String:
     return str(roundi(value))
