@@ -205,8 +205,11 @@ func _run() -> void:
         if crop == &"tu_van_thao":
             # QA-only gate probe. Player MUST pay real Lv10 milestone costs.
             field.level = 10
-        if not _check(buildings.set_spirit_field_policy(state,field.id,
-            BuildingSystem.FIELD_POLICY_FIXED,crop),"cannot fix Field crop"):
+        # Field-wide FIXED policy requires Lv10 by design. At Lv1 the player
+        # can still select a real crop on an empty plot; use that legal path.
+        var plot_choice := buildings.set_spirit_plot_crop(state,field.id,&"plot_001",crop)
+        if not _check(bool(plot_choice.get("ok",false)),
+            "cannot select crop on owned empty plot: "+str(crop)+" "+str(plot_choice)):
             return
         var result := workforce.perform_work(state,actor,WorkforceSystem.PROF_HERBALISM)
         if not _check(bool(result.get("started",false)),"Field crop not started: "+str(crop)+" result="+str(result)):
