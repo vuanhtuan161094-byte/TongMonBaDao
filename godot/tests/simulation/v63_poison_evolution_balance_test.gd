@@ -83,6 +83,14 @@ func _catalogue_contract() -> void:
         "tier histogram " + str([total,human,immortal,divine]))
     _ok(family_ids.size() == 35, "family count " + str(family_ids.size()))
     _ok(rare_passives == 6, "rare passive count " + str(rare_passives))
+    var tiendu: Dictionary = V63HumanSkillCombatSystem.skill_definition(
+        "tmb.skill.poison.doc_cham.active_02.immortal.a")
+    var parents: Dictionary = {}
+    _ok(not V63PoisonEvolutionV1.predecessor_ready(tiendu, parents),
+        "new Tiên skill must not ignore unlearned Nhân predecessor")
+    parents[str(tiendu.get("parent_skill_id", ""))] = {"mastery_xp":1.0}
+    _ok(V63PoisonEvolutionV1.predecessor_ready(tiendu, parents),
+        "matching predecessor unlocks same-family study")
     for id in parent_links.keys():
         if not id.ends_with(".human") and not id.ends_with(".human.base"):
             var parent := str(parent_links[id])
@@ -115,6 +123,11 @@ func _pure_consume_contract() -> void:
         "one high damage caster B capped")
     _approx(V63PoisonEvolutionV1.consume_bonus_ratio(stacks,"C",now),0.0,
         "unowned stacks cannot be consumed")
+    var contested := [_poison("A",now,4,0.03), _poison("A",now,4,0.03)]
+    for i in range(28):
+        contested.append(_poison("other_%d" % i,now,4,0.03))
+    _approx(V63PoisonEvolutionV1.consume_bonus_ratio(contested,"A",now),
+        0.2224, "30-stack diminishing factor 19.5/30 must apply to future DoT")
     var five: Array = []
     for _i in range(5):
         five.append(_poison("A",now,8,0.03))
