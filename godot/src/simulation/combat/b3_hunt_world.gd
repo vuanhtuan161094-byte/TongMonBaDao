@@ -123,6 +123,11 @@ static func advance_frame(state: SimulationState, battle: MapBattleV2) -> Dictio
     var result := battle.step()
     if not result["ok"]:
         return result
+    # B3 and P0 share one authentic in-combat Warehouse pill consumer. The
+    # actor is still in battle; the B3 disciple HP mirror is set immediately.
+    var used_pills := PveCombatAutoPillV1.review(state,battle)
+    if not bool(used_pills.get("ok",false)):
+        return used_pills
     var member := str(world["member"])
     if not member.is_empty():
         var actor: Dictionary = battle.actors[member]
@@ -131,7 +136,11 @@ static func advance_frame(state: SimulationState, battle: MapBattleV2) -> Dictio
             _return_member(state,battle,true)
         else:
             d.hp = d.max_hp*float(actor["hp"])/float(actor["max_hp"])
-    return settle_kills(state,battle,true)
+    var settled := settle_kills(state,battle,true)
+    if bool(settled.get("ok",false)) and int(used_pills.get("used",0)) > 0:
+        settled["barrier"] = true
+        settled["combat_pills_used"] = int(used_pills["used"])
+    return settled
 
 static func settle_kills(state: SimulationState, battle: MapBattleV2, stepped: bool) -> Dictionary:
     var world := state.sect.b3_hunt
