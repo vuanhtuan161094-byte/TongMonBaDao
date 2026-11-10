@@ -6,11 +6,21 @@ on:
     paths:
       - 'godot/data/economy/v55d_30_realm_reference.json'
       - 'godot/tests/simulation/sx_v55_eco_source_gate_30cg_test.gd'
+      - 'godot/tests/simulation/sx_v55_bulk_real_chain_save_test.gd'
+      - 'godot/src/simulation/building/building_system.gd'
+      - 'godot/src/simulation/equipment/equipment_system.gd'
+      - 'godot/src/simulation/state/sect_state.gd'
+      - 'godot/src/presentation/p3_2_landscape_sect.gd'
       - '.github/workflows/sx-v55-eco-source-gate.yml'
   pull_request:
     paths:
       - 'godot/data/economy/v55d_30_realm_reference.json'
       - 'godot/tests/simulation/sx_v55_eco_source_gate_30cg_test.gd'
+      - 'godot/tests/simulation/sx_v55_bulk_real_chain_save_test.gd'
+      - 'godot/src/simulation/building/building_system.gd'
+      - 'godot/src/simulation/equipment/equipment_system.gd'
+      - 'godot/src/simulation/state/sect_state.gd'
+      - 'godot/src/presentation/p3_2_landscape_sect.gd'
       - '.github/workflows/sx-v55-eco-source-gate.yml'
 
 permissions:
@@ -57,6 +67,13 @@ jobs:
 
       - name: Verify exact 30-realm design, 60/90/180 windows, and no fabricated income
         run: bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/simulation/sx_v55_eco_source_gate_30cg_test.gd
+
+      - name: SX V55 real opt-in Five Producer Warehouse Alchemy cold Save
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://tests/simulation/sx_v55_bulk_real_chain_save_test.gd
+          bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/simulation/sx_v55_bulk_real_chain_save_test.gd
 
       - name: Canonical source provenance regression
         run: bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/simulation/sx07_source_provenance_test.gd
