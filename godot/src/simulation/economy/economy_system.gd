@@ -641,9 +641,12 @@ func buy_personal_hp_service(state: SimulationState, disciple_id: StringName, re
             return {"ok":false,"reason":"conflicting_service_replay"}
         return {"ok":true,"already_settled":true,"receipt":previous.duplicate(true)}
     var actor: DiscipleState = state.disciples[disciple_id]
-    # PVE-BAL01: only the internal QA pilot reprices 10 HP.
-    # Existing save defaults and the legacy Economy-A rate stay unchanged.
-    var cost := PveR12BalanceV1.personal_hp_service_price(state,actor)
+    # The new pilot has no Stone-for-HP service. Injury is treated at the
+    # clinic; normal HP comes from medicines and battle skills.
+    # Retain historical HP service for old Saves when the pilot is OFF.
+    if PveR12BalanceV1.active(state):
+        return {"ok":false,"reason":"hp_service_replaced_by_injury_care_and_pills"}
+    var cost := maxi(int(state.sect.economy_a_policy.get("personal_heal_cost",3)),1)
     # No circular dependency on BuildingSystem: inspect the actual saved
     # worker reservations already owned by each building's production_state.
     var reserved := actor.work_group_id == &"body_training_crew"
@@ -678,11 +681,11 @@ func buy_personal_hp_service(state: SimulationState, disciple_id: StringName, re
     return {"ok":true,"already_settled":false,"receipt":receipt.duplicate(true)}
 
 func auto_personal_service_tick(state: SimulationState, actor: DiscipleState) -> void:
-    if not state.sect.economy_a_enabled or not bool(state.sect.economy_a_policy.get("auto_hp_service",false)):
+    if not state.sect.economy_a_enabled or not bool(state.sect.economy_a_policy.get("auto_hp_service",false)) or PveR12BalanceV1.active(state):
         return
     if actor.hp <= 0.0 or actor.hp >= actor.max_hp*0.5:
         return
-    var cost := PveR12BalanceV1.personal_hp_service_price(state,actor)
+    var cost := maxi(int(state.sect.economy_a_policy.get("personal_heal_cost",3)),1)
     if actor.spirit_stones < cost:
         return
     var day := int(state.tick / V2_DAY_TICKS)
