@@ -91,6 +91,16 @@ func _run() -> void:
         quit(5)
         return
     lab.call("_preview_selected_skill")
+    # QA-only isolation. The Lab preview temporarily equips this skill and
+    # restores the full loadout. AUTO would then emit unrelated spells, making
+    # the movie look like the wrong Độc Châm/Cổ Độc/Dược Độc effect.
+    # Keep only the selected canonical V6.3 skill for every Lab disciple.
+    # No combat math, Save or live player loadout is changed.
+    for actor_id in battle.actors.keys():
+        var observed: Dictionary = battle.actors[actor_id]
+        if str(observed.get("side", "")) == "disciple":
+            observed["v63_skill_loadout"] = [requested_skill]
+            observed["skill_loadout"] = []
     lab.call("_set_auto", true)
     # Frames are captured by Godot's Movie Maker, not composed from still assets.
     # Normal _process(delta) advances the real 0.25s battle tick and interpolated VFX.
@@ -100,6 +110,14 @@ func _run() -> void:
     var release_count := _event_count(battle, "skill_release", requested_skill)
     var hit_count := _event_count(battle, "skill_hit", requested_skill)
     var impact_count := _event_count(battle, "v63_skill_hit", requested_skill)
+    var unrelated_casts := 0
+    for raw_event in battle.events:
+        if raw_event is Dictionary and str(raw_event.get("type", "")) == "skill_cast":
+            var observed_skill := str(raw_event.get("skill_id", ""))
+            if observed_skill != requested_skill:
+                unrelated_casts += 1
+    if unrelated_casts > 0:
+        _failed("QA movie contains %d unrelated skill_cast IDs" % unrelated_casts)
     var heal_count := _event_count(battle, "heal", requested_skill)
     if branch == "duoc_heal" and heal_count <= 0:
         _failed("Canonical V6.3 heal event not observed for wounded QA ally")
