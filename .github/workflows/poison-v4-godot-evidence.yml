@@ -23,6 +23,7 @@ on:
       - 'godot/labs/combat_lab/combat_lab_vfx_v2.gd'
       - 'godot/tests/labs/combat_lab/poison_v4_render_contract_test.gd'
       - 'godot/tests/labs/combat_lab/poison_v4_video_capture.gd'
+      - 'godot/labs/combat_lab/assets/poison_vfx/poison_vfx_manifest.json'
 
 permissions:
   contents: read
@@ -94,13 +95,13 @@ jobs:
           bash tools/qa/run_godot_strict.sh --headless --path godot \
             -s res://tests/labs/combat_lab/combat_lab_v2_visual_test.gd
 
-      - name: Record 9 genuine Combat Lab Movie Maker videos, including real 4v8 AoE
+      - name: Record 11 genuine full-frame Combat Lab videos, including needle/gu 4v8 and ally heal
         shell: bash
         run: |
           set -euo pipefail
           mkdir -p "$RUNNER_TEMP/poison_v4"
           printf 'code_sha=%s\n' "$GITHUB_SHA" > "$RUNNER_TEMP/poison_v4/metadata.txt"
-          for item in doc_cham:1 doc_cham:2 doc_cham:4 doc_cham:6 co_doc:2 duoc_doc:2 duoc_heal:2 swarm_aoe:1 swarm_aoe:2; do
+          for item in doc_cham:1 doc_cham:2 doc_cham:4 doc_cham:6 co_doc:2 duoc_doc:2 duoc_heal:2 swarm_aoe:1 swarm_aoe:2 co_swarm:1 co_swarm:2; do
             IFS=: read -r branch zoom <<< "$item"
             export TMB_POISON_V4_BRANCH="$branch"
             export TMB_POISON_V4_ZOOM="$zoom"
