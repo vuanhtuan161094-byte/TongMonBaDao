@@ -5200,7 +5200,7 @@ func _recipe_material_status(recipe_id: StringName) -> String:
     var data := equipment_system.recipe(recipe_id)
     if data.is_empty():
         return "Recipe không tồn tại."
-    var materials: Dictionary = data.get("materials", {})
+    var materials: Dictionary = equipment_system.crafting_requirements(state,recipe_id)
     var ids: Array = materials.keys()
     ids.sort()
     var parts: Array[String] = []
@@ -6391,7 +6391,7 @@ func _alchemy_operation_text() -> String:
     var status := "TỰ ĐỘNG · CHỜ ĐIỀU KIỆN" if plan_waiting else ("TỰ ĐỘNG" if demand_mode else "CỐ ĐỊNH")
 
     var ingredient_lines: Array[String] = []
-    var recipe_inputs := registry.inputs(current_recipe)
+    var recipe_inputs := buildings.sx_v55_common_requirements(state,registry.inputs(current_recipe))
     var ingredient_ids: Array = recipe_inputs.keys()
     ingredient_ids.sort()
     var warehouse_system := WarehouseSystem.new()
@@ -6500,6 +6500,12 @@ func _linh_forest_operation_text() -> String:
 
     var selected_material := building_system.forest_selected_material(forest)
     var selected_name := ResourceRegistry.new().display_name(selected_material)
+    var next_batch := 0 if forest == null else building_system.forest_material_batch_units(forest,selected_material)
+    if forest != null:
+        var bulk_plan := building_system.sx_v55_plan(state,forest,selected_material)
+        if not bulk_plan.is_empty():
+            next_batch = maxi(1,int(round(float(bulk_plan.get("yield",0)) * (
+                1.0 + 0.005 * float(maxi(forest.level-1,0))))))
     return (
         "SẢN XUẤT\n"
         + "Linh Lâm Lv%d\n"
@@ -6514,7 +6520,7 @@ func _linh_forest_operation_text() -> String:
     ) % [
         0 if forest == null else forest.level,
         selected_name,_warehouse_pair(selected_material),
-        0 if forest == null else building_system.forest_material_batch_units(forest,selected_material),selected_name,
+        next_batch,selected_name,
         units,batches,active_ids.size(),slots,_count_action(&"WORK_FORESTRY"),members.size(),
         "\n".join(lines)
     ]
@@ -6527,6 +6533,10 @@ func _resource_job_member_status(disciple: DiscipleState, profession_id: StringN
         var definition := building_system.definition_for(building)
         var resource_id := building_system.mine_selected_ore(building) if building.building_type == BuildingSystem.TYPE_MINE else building_system.forest_selected_material(building) if building.building_type == BuildingSystem.TYPE_LINH_FOREST else StringName(definition.get("resource_id",""))
         output_quantity = building_system.mine_ore_batch_units(building,resource_id) if building.building_type == BuildingSystem.TYPE_MINE else building_system.forest_material_batch_units(building,resource_id) if building.building_type == BuildingSystem.TYPE_LINH_FOREST else building_system.resource_job_batch_units(building)
+        var bulk_preview := building_system.sx_v55_plan(state,building,resource_id)
+        if not bulk_preview.is_empty():
+            output_quantity = maxi(1,int(round(float(bulk_preview.get("yield",0)) * (
+                1.0 + 0.005 * float(maxi(building.level-1,0))))))
         output_name = ResourceRegistry.new().display_name(resource_id)
     var work_label := "lượt khai thác" if profession_id == WorkforceSystem.PROF_MINING else "lượt thu hoạch"
     var batch_text := "%s ×%d %s" % [work_label,output_quantity,output_name] if output_quantity > 0 else "chờ khởi sự"
@@ -6597,6 +6607,11 @@ func _mine_operation_text() -> String:
     var selected_ore := building_system.mine_selected_ore(mine)
     var selected_name := ResourceRegistry.new().display_name(selected_ore)
     var planned_batch := building_system.mine_ore_batch_units(mine, selected_ore) if mine != null else 0
+    if mine != null:
+        var bulk_plan := building_system.sx_v55_plan(state,mine,selected_ore)
+        if not bulk_plan.is_empty():
+            planned_batch = maxi(1,int(round(float(bulk_plan.get("yield",0)) * (
+                1.0 + 0.005 * float(maxi(mine.level-1,0))))))
     var upgrade_text := "Ổn định"
     if mine != null and mine.is_upgrading():
         upgrade_text = "Nâng Lv%d→%d · %.0f/%.0f" % [
@@ -6694,11 +6709,12 @@ func _spirit_field_operation_text() -> String:
 
     var crop_lines: Array[String] = []
     for crop_id in spirit_crop_registry.eligible_crop_ids(field.level):
+        var bulk_crop := buildings.sx_v55_plan(state,field,crop_id)
         crop_lines.append("• %s · phí %d LT · chu kỳ nền %d nhịp · sản lượng nền %d" % [
             spirit_crop_registry.display_name(crop_id),
             spirit_crop_registry.cost(crop_id),
-            spirit_crop_registry.base_cycle_ticks(crop_id),
-            spirit_crop_registry.base_yield(crop_id)
+            int(bulk_crop.get("cycle_ticks",spirit_crop_registry.base_cycle_ticks(crop_id))),
+            int(bulk_crop.get("yield",spirit_crop_registry.base_yield(crop_id)))
         ])
 
     var batches := maxi(int(field.metrics.get("production_batches",0)),0)
