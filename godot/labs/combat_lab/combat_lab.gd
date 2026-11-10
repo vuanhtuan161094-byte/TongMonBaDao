@@ -2,6 +2,7 @@ extends Control
 
 const ArenaScript = preload("res://labs/combat_lab/combat_lab_arena.gd")
 const EventBridgeScript = preload("res://labs/combat_lab/combat_lab_event_bridge.gd")
+const PoisonArtBrief = preload("res://labs/combat_lab/combat_lab_poison_skill_art_brief.gd")
 const SCHOOL_KEYS := ["bow", "fist", "poison"]
 const SCHOOL_LABELS := ["Cung", "Quyền", "Độc"]
 const GENERATION_KEYS := ["human", "immortal", "divine"]
@@ -633,26 +634,33 @@ func _refresh_poison_skill_details() -> void:
     var slot := str(definition.get("slot", "unknown"))
     var tier := str(definition.get("generation", definition.get("tier", "human")))
     var branch := str(definition.get("branch", ""))
-    var shape := str(definition.get("shape", "unspecified"))
-    var target_limit := int(definition.get("target_limit", 0))
-    var target_text := "Loại mục tiêu: %s" % shape.replace("_", " ")
-    if target_limit > 0:
-        target_text += " · tối đa %d" % target_limit
-    var radius := float(definition.get("radius", 0.0))
-    if radius > 0.0:
-        target_text += " · bán kính %.1f" % radius
-    var poison_stacks := int(definition.get("poison_stacks", 0))
     var skill_name := str(definition.get("name", selected_catalog_skill_id))
-    var effect := str(definition.get("effect", "unspecified"))
+    var effect := str(definition.get("effect", ""))
+    var art: Dictionary = PoisonArtBrief.profile(selected_catalog_skill_id)
     var design_pending := str(definition.get("divine_rule_status", "")) == "DESIGN_PENDING"
     var runtime_tag := "V6.3 Lab · có thể nạp" if bool(definition.get("archivable", false)) or slot in ["basic", "mobility"] else "DESIGN-ONLY trong loadout Lab · chỉ duyệt"
     if design_pending:
         runtime_tag = "DESIGN_PENDING · chưa có cơ chế được duyệt · chỉ duyệt metadata"
     if str(definition.get("balance_status", "")) == "candidate":
         runtime_tag += " · CANDIDATE"
-    poison_skill_detail_label.text = "%s\n%s · %s · %s\n%s\n%s · độc %d stack · CD %.1fs\n%s" % [
-        skill_name, _generation_label(tier), _branch_label(branch), _catalog_slot_label(slot), target_text,
-        effect, poison_stacks, float(definition.get("cooldown", 0.0)), runtime_tag]
+    var semantics := PoisonArtBrief.mechanic(definition)
+    var footprint := PoisonArtBrief.geometry(definition)
+    var casting := "Hồi chiêu %.1fs" % float(definition.get("cooldown", 0.0))
+    if slot in ["active", "ultimate", "basic", "mobility"]:
+        casting = "Niệm %.2fs · hồi %.1fs" % [
+            float(definition.get("cast_time", 0.0)), float(definition.get("cooldown", 0.0))]
+    var art_line := "Ý tưởng hình ảnh riêng: chưa có bản duyệt cho kỹ năng này."
+    if not art.is_empty():
+        art_line = str(art.get("vfx", ""))
+    elif slot in ["innate", "passive"]:
+        art_line = "Nội tại: không dựng hiệu ứng thi triển giả; chỉ dùng tín hiệu thật nếu có."
+    var description := str(art.get("description", "")) if not art.is_empty() else ""
+    poison_skill_detail_label.text = "%s\n%s · %s · %s\nTÁC DỤNG THẬT: %s\n%s · %s\n%s\nMỸ THUẬT: %s\n%s" % [
+        skill_name, _generation_label(tier), _branch_label(branch),
+        _catalog_slot_label(slot), semantics, footprint, casting,
+        description if not description.is_empty() else "Mô tả tạo hình chưa được duyệt.",
+        art_line, runtime_tag]
+    poison_skill_detail_label.tooltip_text = "ID thật: " + selected_catalog_skill_id + " | effect=" + effect
     poison_load_button.disabled = design_pending or not (bool(definition.get("archivable", false)) or slot in ["basic", "mobility"])
     poison_load_button.text = "NẠP SKILL & TẠO LẠI TRẬN" if not poison_load_button.disabled else "NỘI TẠI · CHỈ DUYỆT"
 
