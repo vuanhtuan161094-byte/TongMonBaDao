@@ -205,12 +205,22 @@ static func build_party(count: int, school: String, generation: String, branch: 
         if not bool(state_result.get("ok", false)):
             return {"ok": false, "reason": "fixture_state_failed", "actor_id": id, "detail": state_result}
         var state: SimulationState = state_result.state
-        var role: String = str(["ranged", "frontline", "mage", "healer", "ranged", "frontline"][index])
+        # School determines real attack role; roster index must not turn a
+        # Poison cultivator into melee or a Fist cultivator into ranged.
+        var role := "frontline"
+        var basic_range := 1.8
+        match school:
+            "bow":
+                role = "ranged"
+                basic_range = 9.0
+            "poison":
+                role = "mage"
+                basic_range = 6.0
         var actor := {
             "id": id, "party_id": "combat_lab_fixture", "role": role, "tier": "disciple", "race_id": "nhan_toc",
             "position": Vector2(6.0 + float(index % 3) * 2.7, 7.5 + float(index / 3) * 5.0),
             "stats": core.stats.duplicate(true), "hp": float(core.stats.max_hp), "max_hp": float(core.stats.max_hp),
-            "resistances": core.resistances.duplicate(true), "basic_range": 5.5 if school == "bow" else 1.65,
+            "resistances": core.resistances.duplicate(true), "basic_range": basic_range,
             "move_speed": 2.15, "basic_ratio": 1.0, "basic_interval": 1.6,
             "skill_loadout": [], "skill_factors": {}, "context_sources": [], "disciple": disciple,
             "v63_combat_generation": generation, "v63_combat_lineage": lineage,
