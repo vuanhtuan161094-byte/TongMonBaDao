@@ -25,6 +25,7 @@ func _run() -> void:
     OS.set_environment("TMB_COMBAT_LAB_ENEMY", "normal")
     OS.set_environment("TMB_COMBAT_LAB_ENCOUNTER", "poison_swarm")
     OS.set_environment("TMB_COMBAT_LAB_PARTY", "4")
+    OS.set_environment("TMB_COMBAT_LAB_ZOOM", "1")
     var lab: Control = LabScene.instantiate()
     root.add_child(lab)
     await process_frame
@@ -33,6 +34,12 @@ func _run() -> void:
     var arena: Control = lab.get("arena")
     var size_now := arena.size
     var world_center := Vector2(18.0, 10.0)
+    _check(bool(arena.get("v4_swarm_cinematic")),
+        "4v8 uses the opted-in cinematic lens, ordinary Lab stays unchanged")
+    _check(is_equal_approx(float(arena.call("v4_effective_render_zoom")), 1.65),
+        "explicit 1x movie shows honest 1.65x filmed magnification")
+    _check(arena.get("v4_shot_source_id") == "",
+        "wide 4v8 view does not misuse one-target projectile follow camera")
     var center_screen: Vector2 = arena.call("_world_to_local", world_center)
     var edge_x: Vector2 = arena.call("_world_to_local", world_center + Vector2(3.0, 0.0))
     var edge_y: Vector2 = arena.call("_world_to_local", world_center + Vector2(0.0, 3.0))
@@ -69,6 +76,20 @@ func _run() -> void:
             if str(actor.get("side", "")) == "monster": monster_count += 1
         _check(ally_count == 4 and monster_count == 8,
             "cinematic presentation keeps all four live disciples and eight actual monsters")
+        # Frame check is based only on canonical actor positions. The camera
+        # may scale their projection, NEVER the source actors or AoE radius.
+        for index in range(1, 5):
+            var hero_id := "lab_disciple_%02d" % index
+            if battle.actors.has(hero_id):
+                var hero_pos: Vector2 = battle.actors[hero_id].get("position", Vector2.ZERO)
+                var projected: Vector2 = arena.call("_world_to_local", hero_pos)
+                _check(projected.x > 46.0 and projected.x < size_now.x - 46.0 and
+                    projected.y > 46.0 and projected.y < size_now.y - 46.0,
+                    "visible real corner hero " + hero_id)
+        var actual_radius: Vector2 = arena.call("_aoe_radii_px", 3.0)
+        _check(actual_radius.x > 0.0 and actual_radius.y > 0.0 and
+            absf(actual_radius.x - (edge_x.x - center_screen.x)) < 0.01,
+            "cinematic zoom preserves world-to-screen 3-cell AoE projection")
     print("POISON_V4_CINEMATIC_RESULT=" + ("PASS" if failures == 0 else "FAIL") +
         " checks=" + str(checks) + " failures=" + str(failures))
     lab.queue_free()
