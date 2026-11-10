@@ -1103,6 +1103,9 @@ func _deal_direct(attacker: Dictionary, target: Dictionary, ratio: float, kind: 
         return 0.0
     var actual_damage := float(settlement["actual_damage"])
     target["hp"] = float(settlement["target_hp_after"])
+    # Poison Dược healing budget may spend only verified damage committed by this battle.
+    # Receipts are carried by the existing actor snapshot, never inferred from missing HP.
+    V63PoisonEvolutionV1.record_damage_taken(target, actual_damage, now)
     if (float(target.hp) <= 0.0 and bool(target.get("v63_combat_enabled", false)) and
         V63DivineSkillCombatSystem.prevent_lethal(self, target)):
         target["hp"] = 1.0
