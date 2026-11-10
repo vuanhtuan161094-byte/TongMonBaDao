@@ -45,7 +45,7 @@ func _run() -> void:
             var hero: Dictionary = battle.actors[hero_id]
             _check(hero["position"] == actor_positions[index], "corner world-space " + hero_id)
             _check(str(hero.get("side", "")) == "disciple" and
-                is_equal_approx(float(hero.get("basic_range", 0.0)), 6.0),
+                is_equal_approx(float(hero.get("range", 0.0)), 6.0),
                 "canonical poison role and normal range " + hero_id)
     var definition: Dictionary = V63HumanSkillCombatSystem.skill_definition(AOE_ID)
     _check(str(definition.get("shape", "")) == "circle" and
@@ -111,8 +111,18 @@ func _run() -> void:
         var snapshots: Dictionary = arena.get("locked_aoe_center_by_caster")
         var snapshot: Dictionary = snapshots.get("lab_disciple_01", {})
         _check(snapshot.get("center", null) == CENTER, "renderer caches original cast center")
+        var painted_center := false
+        var seen_v4_cues: Array[String] = []
         for _step in range(16):
             lab.call("_step_battle")
+            # Inspect each committed step: the VFX cue can age out before
+            # the final assertion in a crowded 4v8 fight.
+            for cue in arena.cues:
+                var cue_kind := str(cue.get("kind", ""))
+                if not seen_v4_cues.has(cue_kind):
+                    seen_v4_cues.append(cue_kind)
+                if cue_kind == "venom_cloud" and str(cue.get("source_actor_id", "")) == "lab_disciple_01":
+                    painted_center = painted_center or cue.get("position", Vector2.ZERO) == CENTER
         var real_hits := 0
         var outside_hits := 0
         var releases := 0
@@ -131,11 +141,9 @@ func _run() -> void:
         _check(releases >= 1, "real authoritative skill_release observed")
         _check(real_hits >= 1 and real_hits <= 3, "one AoE cast hits at most three real monsters")
         _check(outside_hits == 0, "no AoE skill receipt for either outside monster")
-        var painted_center := false
-        for cue in arena.cues:
-            if str(cue.get("kind", "")) == "venom_cloud" \
-                    and str(cue.get("source_actor_id", "")) == "lab_disciple_01":
-                painted_center = cue.get("position", Vector2.ZERO) == CENTER
+        if not painted_center:
+            print("POISON_V4_SWARM_DEBUG seen_cue_kinds=" + str(seen_v4_cues) +
+                " locked_center=" + str(snapshot))
         _check(painted_center, "AoE ring draws original 3-tile engine center")
     print("POISON_V4_SWARM_AOE_RESULT=" + ("PASS" if failures == 0 else "FAIL") +
         " checks=" + str(checks) + " failures=" + str(failures))
