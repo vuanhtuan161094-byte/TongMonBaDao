@@ -212,6 +212,9 @@ func _build_ui() -> void:
     poison_load_button.pressed.connect(_load_selected_poison_skill)
     poison_aoe_preset_button = _button(controls, "ĐỘC CHÂM · QUẦN CÔNG 3/4", Color("557047"))
     poison_aoe_preset_button.pressed.connect(_apply_poison_aoe_preset)
+    var swarm_button := _button(controls, "4 ĐỘC TU · VÂY 8 QUÁI · AOE THẬT", Color("395e58"))
+    swarm_button.tooltip_text = "4 đệ tử ở 4 góc; quái trong/ngoài bán kính 3 ô. Dùng kỹ năng V6.3 thật, không phát sát thương giả."
+    swarm_button.pressed.connect(_apply_poison_swarm_preset)
     poison_boss_preset_button = _button(controls, "ĐỘC TU · 6 vs BOSS + QUÁI", Color("5d3e75"))
     poison_boss_preset_button.pressed.connect(_apply_poison_boss_preset)
     _label(controls, "ĐỐI THỦ", 14, Color("c9b9dd"))
@@ -220,7 +223,8 @@ func _build_ui() -> void:
     _label(controls, "BỐ CỤC MỤC TIÊU · LAB_ONLY", 12, Color("c4b3e1"))
     encounter_option = _option(controls, "Bố cục", [
         "Đơn mục tiêu", "Độc Châm · 3 trong vùng + 1 ngoài",
-        "AOE · 5 trong vùng + 1 ngoài", "Boss V6.3 + 3 quái phụ"])
+        "AOE · 5 trong vùng + 1 ngoài", "Boss V6.3 + 3 quái phụ",
+        "4 Độc Tu · 6 quái trong + 2 quái ngoài vùng"])
     encounter_option.select(0)
     encounter_option.item_selected.connect(_on_encounter_selected)
     boss_option = OptionButton.new()
@@ -716,6 +720,20 @@ func _apply_poison_aoe_preset() -> void:
     _select_poison_skill("tmb.skill.poison.doc_cham.active_03.human")
     _load_selected_poison_skill()
 
+func _apply_poison_swarm_preset() -> void:
+    # Presentation-only encounter selector; source damage remains MapBattleV2.
+    school_option.select(SCHOOL_KEYS.find("poison"))
+    generation_option.select(GENERATION_KEYS.find("human"))
+    lineage_option.select(0)
+    party_count.value = 4
+    enemy_option.select(0)
+    encounter_option.select(4)
+    _refresh_boss_visibility()
+    _refresh_branches()
+    _refresh_skills()
+    _select_poison_skill("tmb.skill.poison.doc_cham.active_03.human")
+    _load_selected_poison_skill()
+
 func _select_poison_skill(skill_id: String) -> bool:
     for index in range(poison_catalog_option.item_count):
         if str(poison_catalog_option.get_item_metadata(index)) == skill_id:
@@ -870,7 +888,7 @@ func _apply_capture_preset() -> void:
         enemy_option.select(enemy_index)
         _refresh_boss_visibility()
     var encounter_key := OS.get_environment("TMB_COMBAT_LAB_ENCOUNTER").strip_edges().to_lower()
-    var encounter_keys := ["single", "aoe3", "aoe5", "boss_adds"]
+    var encounter_keys := ["single", "aoe3", "aoe5", "boss_adds", "poison_swarm"]
     var encounter_index := encounter_keys.find(encounter_key)
     if encounter_index >= 0:
         encounter_option.select(encounter_index)
@@ -889,6 +907,16 @@ func _start_battle() -> void:
     if not bool(setup.get("ok", false)):
         _set_error("Loadout không hợp lệ: " + str(setup.get("errors", setup.get("detail", setup.get("reason", "")))))
         return
+    # Four genuine party actors are placed at four corners. Their original
+    # stats, loadouts and canonical combat authority are left untouched.
+    if encounter_option != null and encounter_option.selected == 4 and setup.party.size() == 4:
+        var corners: Array[Vector2] = [
+            Vector2(12.4, 6.4), Vector2(12.4, 13.6),
+            Vector2(23.6, 6.4), Vector2(23.6, 13.6)]
+        for index in range(4):
+            var hero: Dictionary = setup.party[index]
+            hero["position"] = corners[index]
+            hero["lab_showcase_corner"] = index
     var enemy_kind: String = str(["normal", "elite", "boss"][enemy_option.selected])
     var boss_id := str(boss_option.get_item_metadata(boss_option.selected)) if boss_option.item_count > 0 else ""
     var monsters := _build_lab_monsters(enemy_kind, boss_id)
@@ -915,6 +943,26 @@ func _start_battle() -> void:
 
 func _build_lab_monsters(enemy_kind: String, boss_id: String) -> Array:
     var monsters: Array = []
+    if encounter_option != null and encounter_option.selected == 4:
+        # Real MonsterCatalogueV2 actors. 6 within a 3-tile ring around
+        # (18,10), 2 clearly outside. Zero scripted HP/damage outcomes.
+        var swarm_points: Array[Vector2] = [
+            Vector2(18.0, 10.0), Vector2(16.8, 9.1),
+            Vector2(19.0, 9.0), Vector2(17.4, 11.2),
+            Vector2(19.2, 11.0), Vector2(18.2, 8.5),
+            Vector2(13.0, 10.0), Vector2(23.0, 10.0)]
+        for index in range(swarm_points.size()):
+            var id := "lab_swarm_%02d" % (index + 1)
+            var mob := CombatLabRosterAdapter.build_enemy("normal", "", id)
+            if not bool(mob.get("ok", false)):
+                return []
+            var monster: Dictionary = mob.actor
+            monster["position"] = swarm_points[index]
+            # Stationary fixture preserves the ring-boundary QA oracle. All
+            # HP loss and actual AoE target selection still run in V6.3.
+            monster["move_speed"] = 0.0
+            monsters.append(monster)
+        return monsters
     if encounter_option != null and encounter_option.selected == 3:
         var boss := CombatLabRosterAdapter.build_enemy("boss", boss_id, "lab_boss")
         if not bool(boss.get("ok", false)):
