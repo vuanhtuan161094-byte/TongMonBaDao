@@ -661,23 +661,31 @@ static func release_cast_base(battle: MapBattleV2, cast: Dictionary, caster: Dic
                             owned += 1
                     ratio += minf(0.75, float(owned) * 0.05)
             if str(definition.get("school", "")) == "poison":
-                var mark_bonus := V63PoisonEvolutionV1.try_mark_bonus(caster, target, battle.now)
+                var mark_bonus := V63PoisonEvolutionV1.peek_mark_bonus(caster, target, battle.now)
                 if mark_bonus > 0.0:
+                    # _deal_direct applies the ordinary mark amplifier itself.
+                    # Divide only the extra packet by that factor to avoid
+                    # multiplying the 0.12 ATK proc twice.
+                    ratio += mark_bonus / maxf(1.0, marked_damage_factor(caster, target, battle.now))
+                var counter_bonus := V63PoisonEvolutionV1.peek_cleanse_counter(caster, battle.now)
+                ratio += counter_bonus
+            damage = battle._deal_direct(caster,target,ratio,"v63_skill",true,str(cast.element))
+            if damage > 0.0 and str(definition.get("school", "")) == "poison":
+                if mark_bonus > 0.0:
+                    V63PoisonEvolutionV1.commit_mark_bonus(caster, battle.now)
                     _consume_mark(battle, caster, target, id)
-                    ratio += mark_bonus
                     battle._event("poison_mark_punish", {"caster":str(caster.id),"target":str(target.id),
                         "skill_id":id,"bonus_ratio":mark_bonus,"icd":8.0})
-                var counter_bonus := V63PoisonEvolutionV1.consume_cleanse_counter(caster, battle.now)
                 if counter_bonus > 0.0:
-                    ratio += counter_bonus
+                    V63PoisonEvolutionV1.commit_cleanse_counter(caster, battle.now)
                     battle._event("poison_cleanse_counter", {"caster":str(caster.id),"target":str(target.id),
                         "skill_id":id,"bonus_ratio":counter_bonus,"icd":12.0})
-            damage = battle._deal_direct(caster,target,ratio,"v63_skill",true,str(cast.element))
         if effect == "poison":
-            _apply_poison(battle,caster,target,id,float(cast.power),float(cast.duration),int(cast.poison_stacks),str(cast.element))
-            if str(definition.get("school", "")) == "poison":
-                V63PoisonEvolutionV1.spread_one(battle,caster,target,id,float(cast.power),
-                    float(cast.duration),str(cast.element))
+            if damage > 0.0 or str(definition.get("school", "")) != "poison":
+                _apply_poison(battle,caster,target,id,float(cast.power),float(cast.duration),int(cast.poison_stacks),str(cast.element))
+                if damage > 0.0 and str(definition.get("school", "")) == "poison":
+                    V63PoisonEvolutionV1.spread_one(battle,caster,target,id,float(cast.power),
+                        float(cast.duration),str(cast.element))
         elif effect == "guard":
             target["learned_guard_factor"] = minf(float(target.get("learned_guard_factor",1.0)),1.0-clampf(float(cast.power),0.05,0.8))
             target["learned_guard_until"] = maxf(float(target.get("learned_guard_until",-1.0)),battle.now+clampf(float(cast.duration),0.5,12.0))
@@ -691,12 +699,16 @@ static func release_cast_base(battle: MapBattleV2, cast: Dictionary, caster: Dic
                 if cleared > 0 and V63PoisonEvolutionV1.rule_for_actor(caster) == "cleanse_heal_fatal_save":
                     _heal_target(battle,caster,target,id,0.03)
         elif effect == "mark":
-            _apply_mark(battle,caster,target,id,float(cast.power),float(cast.duration))
+            if damage > 0.0 or str(definition.get("school", "")) != "poison":
+                _apply_mark(battle,caster,target,id,float(cast.power),float(cast.duration))
         elif effect == "consume_poison":
-            _consume_poison(battle,caster,target,id)
+            if damage > 0.0 or str(definition.get("school", "")) != "poison":
+                _consume_poison(battle,caster,target,id)
         if damage > 0.0 and effect in ["damage", "consume_poison"] and str(definition.get("combat_trait", "")) == "co_doc_b":
             _consume_mark(battle,caster,target,id)
-        meaningful = meaningful or damage > 0.0 or effect in ["guard", "mark", "poison", "cleanse"] or float(target.hp) > before
+        var poison_school := str(definition.get("school", "")) == "poison"
+        meaningful = meaningful or damage > 0.0 or effect in ["guard", "cleanse"] \
+            or (not poison_school and effect in ["mark", "poison"]) or float(target.hp) > before
         battle._event("v63_skill_hit",{"caster":str(caster.id),"target":str(target.id),"skill_id":id,"generation":generation,"lineage":lineage,"effect":effect,"damage":damage,"caster_hp_before":caster_before,"caster_hp_after":float(caster.hp),"target_hp_before":before,"target_hp_after":float(target.hp)})
         if effect == "mark" and str(definition.get("branch", "")) == "huyet_quyen" and float(target.hp) > 0.0:
             record_blood_mark(battle, caster, target, id)
