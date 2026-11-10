@@ -72,6 +72,105 @@ func buy_supplies(state: SimulationState, disciple: DiscipleState) -> bool:
 const V2_MAX_STONES := 9000000000000000
 const V2_DAY_TICKS := 1440
 
+# SX-V55-D stage 1-2 is deliberately QA-locked. These source-backed gross
+# work values are the EXACT first two rows of the approved 30-realm workbook.
+# Existing Economy-A remains live; no player/UI command enables this pilot.
+const SX_V55_R12_POLICY := "sx_v55_r12_economy"
+const SX_V55_R12_RATES := {
+    1: {"gross_per_minute":1000,"wage_per_job":2000},
+    2: {"gross_per_minute":2000,"wage_per_job":4000}
+}
+# T2 design BASE scenarios: 70% Mine, 30% Forest, 40% Field.
+# Kept stage-1/2 only; no imaginary r3+ real-work source.
+const SX_V55_R12_TAX := {"mine":70,"linh_forest":30,"spirit_field":40}
+
+func sx_v55_r12_enabled(state: SimulationState) -> bool:
+    return state != null and state.sect.economy_a_enabled \
+        and state.sect.p3_7_resources_enabled and state.p3_7_buildings_enabled \
+        and bool(state.sect.economy_a_policy.get("sx_v55_bulk_production",false)) \
+        and bool(state.sect.economy_a_policy.get(SX_V55_R12_POLICY,false))
+
+# This is pinned at job START so a realm change, later policy adjustment or
+# cold Save cannot retroactively mint extra pay for unfinished old jobs.
+func sx_v55_r12_work_snapshot(state: SimulationState, worker: DiscipleState,
+        building_type: StringName, plan_id: String, duration: int) -> Dictionary:
+    if not sx_v55_r12_enabled(state) or worker == null or plan_id.is_empty() \
+            or duration <= 0 or duration > 1440 or not DiscipleRealmProgressV2.progression_ready(worker):
+        return {}
+    var track = worker.v2_realm_progress.get("cultivation",{})
+    var realm := int(track.get("realm",0))
+    if not SX_V55_R12_RATES.has(realm) or not SX_V55_R12_TAX.has(str(building_type)):
+        return {}
+    var rate: Dictionary = SX_V55_R12_RATES[realm]
+    var gross := int(rate["gross_per_minute"])*duration
+    var tax_pct := int(SX_V55_R12_TAX[str(building_type)])
+    var tax := gross*tax_pct/100
+    return {"version":1,"realm":realm,"minutes":duration,"plan_id":plan_id,
+        "site":str(building_type),"gross":gross,"tax":tax,
+        "net":gross-tax,"wage":int(rate["wage_per_job"])}
+
+# Preview must be approved BEFORE Warehouse credit, so overflow or malformed
+# saved snapshots cannot create a product while its money receipt is rejected.
+func sx_v55_r12_can_settle(state: SimulationState, worker: DiscipleState,
+        job_id: String, snapshot: Dictionary) -> Dictionary:
+    if not sx_v55_r12_enabled(state) or worker == null or job_id.is_empty() \
+            or snapshot.is_empty() or not state.disciples.has(worker.id):
+        return {"ok":false,"reason":"r12_context_not_authorized"}
+    if state.sect.economy_a_receipts.has("sxv55-work:"+job_id) \
+            or state.sect.economy_a_receipts.has("wage:"+job_id):
+        return {"ok":false,"reason":"already_settled"}
+    var realm := int(snapshot.get("realm",0))
+    var rate: Dictionary = SX_V55_R12_RATES.get(realm,{})
+    var site := str(snapshot.get("site",""))
+    var minutes := int(snapshot.get("minutes",0))
+    if int(snapshot.get("version",0)) != 1 or rate.is_empty() \
+            or not SX_V55_R12_TAX.has(site) or minutes <= 0 or minutes > 1440 \
+            or str(snapshot.get("plan_id","")).is_empty():
+        return {"ok":false,"reason":"invalid_r12_snapshot"}
+    var gross := int(rate.get("gross_per_minute",0))*minutes
+    var tax := gross*int(SX_V55_R12_TAX[site])/100
+    var wage := int(rate.get("wage_per_job",0))
+    if int(snapshot.get("gross",-1)) != gross or int(snapshot.get("tax",-1)) != tax \
+            or int(snapshot.get("net",-1)) != gross-tax \
+            or int(snapshot.get("wage",-1)) != wage:
+        return {"ok":false,"reason":"tampered_r12_work_value"}
+    if gross <= 0 or tax <= 0 or state.sect.spirit_stones > V2_MAX_STONES-tax \
+            or worker.spirit_stones > V2_MAX_STONES-(gross-tax):
+        return {"ok":false,"reason":"r12_money_overflow"}
+    var reserve := maxi(0,int(state.sect.economy_a_policy.get("sect_pay_reserve",0)))
+    var paid := wage if state.sect.spirit_stones+tax >= wage+reserve \
+        and worker.spirit_stones <= V2_MAX_STONES-(gross-tax)-wage else 0
+    return {"ok":true,"gross":gross,"tax":tax,"net":gross-tax,
+        "wage_due":wage,"wage_paid":paid,"realm":realm,"minutes":minutes}
+
+# Called only after actual Warehouse deposit has succeeded. All money remains
+# within canonical Sect/Disciple balances and existing Economy-A receipts.
+# Gross is a new EARNED work-income source; tax/wage are transfers, not faucets.
+func sx_v55_r12_settle(state: SimulationState, worker: DiscipleState,
+        job_id: String, snapshot: Dictionary) -> Dictionary:
+    var verdict := sx_v55_r12_can_settle(state,worker,job_id,snapshot)
+    if not bool(verdict.get("ok",false)):
+        return verdict
+    var tax := int(verdict["tax"])
+    var net := int(verdict["net"])
+    var paid := int(verdict["wage_paid"])
+    var due := int(verdict["wage_due"])
+    state.sect.spirit_stones += tax-paid
+    worker.spirit_stones += net+paid
+    state.sect.economy_a_receipts["sxv55-work:"+job_id] = {
+        "kind":"sx_v55_work_income","job_id":job_id,"worker_id":str(worker.id),
+        "plan_id":str(snapshot["plan_id"]),"site":str(snapshot["site"]),
+        "realm":int(verdict["realm"]),"minutes":int(verdict["minutes"]),
+        "gross":int(verdict["gross"]),"tax":tax,"net":net,"tick":state.tick
+    }
+    # Existing wage-arrears logic continues to read original 'wage' receipts.
+    state.sect.economy_a_receipts["wage:"+job_id] = {
+        "kind":"wage","job_id":job_id,"worker_id":str(worker.id),
+        "paid":paid,"due":due,"tick":state.tick}
+    state.sect.economy_a_event_count += 2
+    return {"ok":true,"already_settled":false,"gross":int(verdict["gross"]),
+        "tax":tax,"net":net,"wage_paid":paid,"wage_due":due}
+
 func enable_v1(state: SimulationState) -> Dictionary:
     if state == null or not state.p3_7_buildings_enabled or not state.sect.p3_7_resources_enabled:
         return {"ok":false,"reason":"v2_economy_requires_canonical_warehouse"}
@@ -84,6 +183,8 @@ func configure_v1(state: SimulationState, key: String, value: Variant) -> Dictio
     var policy: Dictionary = state.sect.economy_a_policy
     if not policy.has(key):
         return {"ok":false,"reason":"unknown_policy"}
+    if key == SX_V55_R12_POLICY:
+        return {"ok":false,"reason":"design_hold_r12_no_player_activation"}
     if key == "auto_hp_service":
         if not (value is bool):
             return {"ok":false,"reason":"policy_type"}
