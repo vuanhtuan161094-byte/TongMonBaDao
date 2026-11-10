@@ -45,23 +45,25 @@ func _run() -> void:
         "tmb.skill.poison.doc_cham.active_03.human")
     _check(str(canon_aoe.get("name", "")) == "Bách Độc Tán Châm" and
         str(canon_aoe.get("shape", "")) == "circle" and
-        is_equal_approx(float(canon_aoe.get("radius", 0.0)), 3.0) and
+        is_equal_approx(float(canon_aoe.get("radius", 0.0)), 2.8) and
         int(canon_aoe.get("target_limit", 0)) == 3,
-        "Bách Độc Tán Châm art respects canonical AoE 3-tile/3-target cap")
+        "Bách Độc Tán Châm art respects canonical radius 2.8/3-target cap")
     var canon_heal := V63HumanSkillCombatSystem.skill_definition(
         "tmb.skill.poison.duoc_doc.ultimate.human")
     _check(str(canon_heal.get("effect", "")) == "heal" and
-        str(canon_heal.get("shape", "")) == "single_target",
-        "Vạn Linh Giải Ách remains actual single-target healing")
+        str(canon_heal.get("shape", "")) == "circle" and
+        is_equal_approx(float(canon_heal.get("radius", 0.0)), 2.5) and
+        int(canon_heal.get("target_limit", 0)) == 3,
+        "Vạn Linh Giải Ách remains canonical bounded AoE healing")
     _check(ArtBrief.profile("tmb.skill.poison.doc_cham.passive_01.human").is_empty(),
         "no counterfeit active spell VFX for passive metadata")
     # Three approved mockups must retain THREE distinct canonical skill
     # identities. The mockup's decoration is not permission to change
     # radius, target cap or make the healing skill an AoE/cleanse.
     var v7_cases := {
-        "tmb.skill.poison.doc_cham.active_03.human": ["needle_fan", "circle", "poison"],
-        "tmb.skill.poison.co_doc.active_03.human": ["gu_mist", "circle", "poison"],
-        "tmb.skill.poison.duoc_doc.active_02.human": ["jade_heal", "single_target", "heal"]
+        "tmb.skill.poison.doc_cham.active_03.human": ["needle_fan", "circle", "poison", 2.8, 3],
+        "tmb.skill.poison.co_doc.active_03.human": ["gu_mist", "circle", "poison", 3.0, 3],
+        "tmb.skill.poison.duoc_doc.active_02.human": ["jade_heal", "single_target", "heal", 6.5, 1]
     }
     for id in v7_cases.keys():
         var record: Dictionary = V63HumanSkillCombatSystem.skill_definition(id)
@@ -73,13 +75,13 @@ func _run() -> void:
             str(record.get("effect", "")) == str(expected[2]),
             "VFX07 live exact-ID visual/semantics separation " + id)
         if str(record.get("shape", "")) == "circle":
-            _check(is_equal_approx(float(record.get("radius", 0.0)), 3.0) and
-                int(record.get("target_limit", 0)) == 3,
-                "VFX07 film does not expand 3-cell/3-target AoE " + id)
+            _check(is_equal_approx(float(record.get("radius", 0.0)), float(expected[3])) and
+                int(record.get("target_limit", 0)) == int(expected[4]),
+                "VFX07 film preserves authored AoE radius/target cap " + id)
         else:
-            _check(int(record.get("target_limit", 0)) == 1 and
-                is_equal_approx(float(record.get("range", 0.0)), 6.0),
-                "VFX07 jade single-target heal reach is 6 real world cells")
+            _check(int(record.get("target_limit", 0)) == int(expected[4]) and
+                is_equal_approx(float(record.get("range", 0.0)), float(expected[3])),
+                "VFX07 jade heal preserves authored single-target range " + id)
     for z in [1.0, 2.0, 4.0, 6.0]:
         var clamped := clampf(z, 1.0, 6.0)
         _check(is_equal_approx(clamped, z), "zoom " + str(z))

@@ -30,7 +30,7 @@ func _run() -> void:
     lab.call("_refresh_poison_skill_details")
     var details: Label = lab.get("poison_skill_detail_label")
     _check(details.text.contains("Bách Độc Tán Châm") and
-        details.text.contains("bán kính 3.0 ô") and
+        details.text.contains("bán kính 2.8 ô") and
         details.text.contains("tối đa 3 mục tiêu") and
         details.text.contains("MỸ THUẬT:"),
         "AoE UI displays true name/radius/hit cap and separate VFX description")

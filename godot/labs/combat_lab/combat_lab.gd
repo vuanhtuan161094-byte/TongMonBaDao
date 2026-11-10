@@ -289,7 +289,8 @@ func _build_ui() -> void:
         vfx_mode_button.text = "VFX V4 · " + ("BẬT" if next_mode else "TẮT")
     )
     var swarm_button := _button(controls, "4 ĐỘC TU · VÂY 8 QUÁI · AOE THẬT", Color("395e58"))
-    swarm_button.tooltip_text = "4 đệ tử ở 4 góc; quái trong/ngoài bán kính 3 ô. Dùng kỹ năng V6.3 thật, không phát sát thương giả."
+    var swarm_skill: Dictionary = V63HumanSkillCombatSystem.skill_definition("tmb.skill.poison.doc_cham.active_03.human")
+    swarm_button.tooltip_text = "4 đệ tử ở 4 góc; Bách Độc Tán Châm: bán kính %.1f ô, tối đa %d mục tiêu. Dùng kỹ năng V6.3 thật, không phát sát thương giả." % [float(swarm_skill.get("radius", 0.0)), int(swarm_skill.get("target_limit", 0))]
     swarm_button.pressed.connect(_apply_poison_swarm_preset)
     poison_boss_preset_button = _button(controls, "ĐỘC TU · 6 vs BOSS + QUÁI", Color("5d3e75"))
     poison_boss_preset_button.pressed.connect(_apply_poison_boss_preset)

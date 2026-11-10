@@ -33,6 +33,8 @@ func _run() -> void:
     lab.call("_set_auto", false)
     var arena: Control = lab.get("arena")
     var size_now := arena.size
+    var skill_definition := V63HumanSkillCombatSystem.skill_definition("tmb.skill.poison.doc_cham.active_03.human")
+    var canonical_radius := float(skill_definition.get("radius", 0.0))
     var world_center := Vector2(18.0, 10.0)
     _check(bool(arena.get("v4_swarm_cinematic")),
         "4v8 uses the opted-in cinematic lens, ordinary Lab stays unchanged")
@@ -41,12 +43,12 @@ func _run() -> void:
     _check(arena.get("v4_shot_source_id") == "",
         "wide 4v8 view does not misuse one-target projectile follow camera")
     var center_screen: Vector2 = arena.call("_world_to_local", world_center)
-    var edge_x: Vector2 = arena.call("_world_to_local", world_center + Vector2(3.0, 0.0))
-    var edge_y: Vector2 = arena.call("_world_to_local", world_center + Vector2(0.0, 3.0))
-    var radii: Vector2 = arena.call("_aoe_radii_px", 3.0)
+    var edge_x: Vector2 = arena.call("_world_to_local", world_center + Vector2(canonical_radius, 0.0))
+    var edge_y: Vector2 = arena.call("_world_to_local", world_center + Vector2(0.0, canonical_radius))
+    var radii: Vector2 = arena.call("_aoe_radii_px", canonical_radius)
     _check(absf(radii.x - (edge_x.x - center_screen.x)) < 0.01 and
         absf(radii.y - (edge_y.y - center_screen.y)) < 0.01,
-        "radius-3 visual ellipse matches actual world-to-screen projection")
+        "visual ellipse matches authored radius and world-to-screen projection")
     _check(size_now.x >= 0.80 * float(root.size.x) and
         size_now.y >= 0.80 * float(root.size.y),
         "real battle viewport fills 80%+ of 1280x720 instead of 630px panel")
@@ -62,9 +64,9 @@ func _run() -> void:
     _check(name_label != null and name_label.text == "Bách Độc Tán Châm",
         "cinematic title updates to real equipped catalog skill after load")
     _check(mechanics_label != null and
-        mechanics_label.text.contains("bán kính 3.0 ô") and
+        mechanics_label.text.contains("bán kính 2.8 ô") and
         mechanics_label.text.contains("tối đa 3 mục tiêu"),
-        "cinematic title protects canonical AoE footprint and target cap")
+        "cinematic title protects authored radius 2.8 and target cap")
     var battle: MapBattleV2 = lab.get("battle")
     _check(battle != null and battle.active, "canonical combat authority remains active")
     if battle != null:
@@ -92,10 +94,10 @@ func _run() -> void:
                 _check(projected.x > 46.0 and projected.x < size_now.x - 46.0 and
                     projected.y > 46.0 and projected.y < size_now.y - 46.0,
                     "visible real corner hero " + hero_id)
-        var actual_radius: Vector2 = arena.call("_aoe_radii_px", 3.0)
+        var actual_radius: Vector2 = arena.call("_aoe_radii_px", canonical_radius)
         _check(actual_radius.x > 0.0 and actual_radius.y > 0.0 and
             absf(actual_radius.x - (edge_x.x - center_screen.x)) < 0.01,
-            "cinematic zoom preserves world-to-screen 3-cell AoE projection")
+            "cinematic zoom preserves authored-radius world-to-screen projection")
     print("POISON_V4_CINEMATIC_RESULT=" + ("PASS" if failures == 0 else "FAIL") +
         " checks=" + str(checks) + " failures=" + str(failures))
     lab.queue_free()

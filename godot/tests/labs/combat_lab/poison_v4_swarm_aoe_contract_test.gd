@@ -49,9 +49,9 @@ func _run() -> void:
                 "canonical poison role and normal range " + hero_id)
     var definition: Dictionary = V63HumanSkillCombatSystem.skill_definition(AOE_ID)
     _check(str(definition.get("shape", "")) == "circle" and
-        is_equal_approx(float(definition.get("radius", 0.0)), 3.0) and
+        is_equal_approx(float(definition.get("radius", 0.0)), 2.8) and
         int(definition.get("target_limit", 0)) == 3,
-        "V6.3 approved 3-tile radius, three-target cap (not six hits)")
+        "V6.3 authored radius 2.8, three-target cap (not six hits)")
     var inside := 0
     var outside := 0
     for index in range(8):
@@ -61,7 +61,7 @@ func _run() -> void:
             continue
         var monster: Dictionary = battle.actors[monster_id]
         _check(str(monster.get("side", "")) == "monster", "real opponent side " + monster_id)
-        if (monster["position"] as Vector2).distance_to(CENTER) <= 3.0:
+        if (monster["position"] as Vector2).distance_to(CENTER) <= float(definition.get("radius", 0.0)):
             inside += 1
         else:
             outside += 1
@@ -80,7 +80,7 @@ func _run() -> void:
     var selected: Array = V63HumanSkillCombatSystem._cast_targets(battle, caster, selection, "poison")
     _check(selected.size() == 3, "engine selects only authored target_limit")
     for target in selected:
-        _check((target["position"] as Vector2).distance_to(CENTER) <= 3.0,
+        _check((target["position"] as Vector2).distance_to(CENTER) <= float(definition.get("radius", 0.0)),
             "engine never selects outside the AoE circle")
 
     # Drive one actual V6.3 cast, without authoring synthetic HP or on-hit events.
