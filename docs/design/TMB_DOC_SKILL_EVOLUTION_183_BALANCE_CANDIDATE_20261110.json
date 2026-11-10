@@ -80,7 +80,19 @@
     "proposed_fullname_unique": true,
     "runtime_compat_bounds_ok": true,
     "effect_changes": 36,
-    "coded_gate": "OFF"
+    "coded_gate": "OFF",
+    "divine_rules_covered": 7,
+    "divine_rule_nodes": 80,
+    "design_pending_rule_nodes": 26,
+    "divine_rule_counts": {
+      "successor_action": 2,
+      "owned_poison_maintain": 13,
+      "owned_poison_consume": 13,
+      "single_spread_poison": 13,
+      "marked_target_punish": 13,
+      "cleanse_heal_fatal_save": 13,
+      "removed_debuff_counter": 13
+    }
   },
   "skill_nodes": [
     {
@@ -128,7 +140,12 @@
       "runtime_compat_cooldown_sec": 1.6,
       "runtime_compat_range_cells": 6,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.mobility.human",
@@ -175,7 +192,12 @@
       "runtime_compat_cooldown_sec": 10,
       "runtime_compat_range_cells": 11,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.doc_cham.active_01.human",
@@ -222,7 +244,12 @@
       "runtime_compat_cooldown_sec": 9,
       "runtime_compat_range_cells": 7.5,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.doc_cham.active_02.human",
@@ -269,7 +296,12 @@
       "runtime_compat_cooldown_sec": 9,
       "runtime_compat_range_cells": 7.5,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.doc_cham.active_03.human",
@@ -316,7 +348,12 @@
       "runtime_compat_cooldown_sec": 11,
       "runtime_compat_range_cells": 7,
       "runtime_compat_target_limit": 3,
-      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.doc_cham.active_04.human",
@@ -363,7 +400,12 @@
       "runtime_compat_cooldown_sec": 12,
       "runtime_compat_range_cells": 7,
       "runtime_compat_target_limit": 3,
-      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.doc_cham.ultimate.human",
@@ -410,7 +452,12 @@
       "runtime_compat_cooldown_sec": 36,
       "runtime_compat_range_cells": 8,
       "runtime_compat_target_limit": 3,
-      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.doc_cham.passive_01.human",
@@ -459,7 +506,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.doc_cham.passive_02.human",
@@ -508,7 +560,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.doc_cham.passive_03.human",
@@ -557,7 +614,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.doc_cham.passive_04.human",
@@ -606,7 +668,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.doc_cham.passive_05.human",
@@ -655,7 +722,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.doc_cham.innate.human",
@@ -705,7 +777,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.co_doc.active_01.human",
@@ -752,7 +829,12 @@
       "runtime_compat_cooldown_sec": 10,
       "runtime_compat_range_cells": 7.5,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.co_doc.active_02.human",
@@ -799,7 +881,12 @@
       "runtime_compat_cooldown_sec": 9,
       "runtime_compat_range_cells": 7.5,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.co_doc.active_03.human",
@@ -846,7 +933,12 @@
       "runtime_compat_cooldown_sec": 12,
       "runtime_compat_range_cells": 7,
       "runtime_compat_target_limit": 3,
-      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.co_doc.active_04.human",
@@ -893,7 +985,12 @@
       "runtime_compat_cooldown_sec": 12,
       "runtime_compat_range_cells": 7,
       "runtime_compat_target_limit": 3,
-      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.co_doc.ultimate.human",
@@ -940,7 +1037,12 @@
       "runtime_compat_cooldown_sec": 38,
       "runtime_compat_range_cells": 8,
       "runtime_compat_target_limit": 3,
-      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.co_doc.passive_01.human",
@@ -989,7 +1091,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.co_doc.passive_02.human",
@@ -1038,7 +1145,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.co_doc.passive_03.human",
@@ -1087,7 +1199,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.co_doc.passive_04.human",
@@ -1136,7 +1253,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.co_doc.passive_05.human",
@@ -1185,7 +1307,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.co_doc.innate.human",
@@ -1235,7 +1362,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.duoc_doc.active_01.human",
@@ -1282,7 +1414,12 @@
       "runtime_compat_cooldown_sec": 8,
       "runtime_compat_range_cells": 7.5,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.duoc_doc.active_02.human",
@@ -1329,7 +1466,12 @@
       "runtime_compat_cooldown_sec": 18,
       "runtime_compat_range_cells": 6.5,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.duoc_doc.active_03.human",
@@ -1376,7 +1518,12 @@
       "runtime_compat_cooldown_sec": 18,
       "runtime_compat_range_cells": 6.5,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.duoc_doc.active_04.human",
@@ -1423,7 +1570,12 @@
       "runtime_compat_cooldown_sec": 13,
       "runtime_compat_range_cells": 7,
       "runtime_compat_target_limit": 3,
-      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.duoc_doc.ultimate.human",
@@ -1470,7 +1622,12 @@
       "runtime_compat_cooldown_sec": 46,
       "runtime_compat_range_cells": 6.5,
       "runtime_compat_target_limit": 3,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.duoc_doc.passive_01.human",
@@ -1519,7 +1676,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.duoc_doc.passive_02.human",
@@ -1568,7 +1730,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.duoc_doc.passive_03.human",
@@ -1617,7 +1784,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.duoc_doc.passive_04.human",
@@ -1666,7 +1838,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.duoc_doc.passive_05.human",
@@ -1715,7 +1892,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.duoc_doc.innate.human",
@@ -1765,7 +1947,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.basic.immortal.base",
@@ -1812,7 +1999,12 @@
       "runtime_compat_cooldown_sec": 1.54,
       "runtime_compat_range_cells": 6.24,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.mobility.immortal.base",
@@ -1859,7 +2051,12 @@
       "runtime_compat_cooldown_sec": 9.6,
       "runtime_compat_range_cells": 11.44,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.doc_cham.active_01.immortal.a",
@@ -1906,7 +2103,12 @@
       "runtime_compat_cooldown_sec": 8.64,
       "runtime_compat_range_cells": 7.8,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.doc_cham.active_01.immortal.b",
@@ -1953,7 +2155,12 @@
       "runtime_compat_cooldown_sec": 8.64,
       "runtime_compat_range_cells": 7.8,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.doc_cham.active_02.immortal.a",
@@ -2000,7 +2207,12 @@
       "runtime_compat_cooldown_sec": 8.64,
       "runtime_compat_range_cells": 7.8,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.doc_cham.active_02.immortal.b",
@@ -2047,7 +2259,12 @@
       "runtime_compat_cooldown_sec": 8.64,
       "runtime_compat_range_cells": 7.8,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.doc_cham.active_03.immortal.a",
@@ -2094,7 +2311,12 @@
       "runtime_compat_cooldown_sec": 10.56,
       "runtime_compat_range_cells": 7.28,
       "runtime_compat_target_limit": 3,
-      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.doc_cham.active_03.immortal.b",
@@ -2141,7 +2363,12 @@
       "runtime_compat_cooldown_sec": 10.56,
       "runtime_compat_range_cells": 7.28,
       "runtime_compat_target_limit": 3,
-      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.doc_cham.active_04.immortal.a",
@@ -2188,7 +2415,12 @@
       "runtime_compat_cooldown_sec": 11.52,
       "runtime_compat_range_cells": 7.28,
       "runtime_compat_target_limit": 3,
-      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.doc_cham.active_04.immortal.b",
@@ -2235,7 +2467,12 @@
       "runtime_compat_cooldown_sec": 11.52,
       "runtime_compat_range_cells": 7.28,
       "runtime_compat_target_limit": 3,
-      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.doc_cham.ultimate.immortal.a",
@@ -2282,7 +2519,12 @@
       "runtime_compat_cooldown_sec": 34.56,
       "runtime_compat_range_cells": 8.32,
       "runtime_compat_target_limit": 3,
-      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.doc_cham.ultimate.immortal.b",
@@ -2329,7 +2571,12 @@
       "runtime_compat_cooldown_sec": 34.56,
       "runtime_compat_range_cells": 8.32,
       "runtime_compat_target_limit": 3,
-      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.doc_cham.passive_01.immortal.a",
@@ -2378,7 +2625,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.doc_cham.passive_01.immortal.b",
@@ -2427,7 +2679,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.doc_cham.passive_02.immortal.a",
@@ -2476,7 +2733,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.doc_cham.passive_02.immortal.b",
@@ -2525,7 +2787,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.doc_cham.passive_03.immortal.a",
@@ -2574,7 +2841,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.doc_cham.passive_03.immortal.b",
@@ -2623,7 +2895,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.doc_cham.passive_04.immortal.a",
@@ -2672,7 +2949,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.doc_cham.passive_04.immortal.b",
@@ -2721,7 +3003,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.doc_cham.passive_05.immortal.a",
@@ -2770,7 +3057,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.doc_cham.passive_05.immortal.b",
@@ -2819,7 +3111,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.doc_cham.innate.immortal.a",
@@ -2869,7 +3166,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.doc_cham.innate.immortal.b",
@@ -2919,7 +3221,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.co_doc.active_01.immortal.a",
@@ -2966,7 +3273,12 @@
       "runtime_compat_cooldown_sec": 9.6,
       "runtime_compat_range_cells": 7.8,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.co_doc.active_01.immortal.b",
@@ -3013,7 +3325,12 @@
       "runtime_compat_cooldown_sec": 9.6,
       "runtime_compat_range_cells": 7.8,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.co_doc.active_02.immortal.a",
@@ -3060,7 +3377,12 @@
       "runtime_compat_cooldown_sec": 8.64,
       "runtime_compat_range_cells": 7.8,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.co_doc.active_02.immortal.b",
@@ -3107,7 +3429,12 @@
       "runtime_compat_cooldown_sec": 8.64,
       "runtime_compat_range_cells": 7.8,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.co_doc.active_03.immortal.a",
@@ -3154,7 +3481,12 @@
       "runtime_compat_cooldown_sec": 11.52,
       "runtime_compat_range_cells": 7.28,
       "runtime_compat_target_limit": 3,
-      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.co_doc.active_03.immortal.b",
@@ -3201,7 +3533,12 @@
       "runtime_compat_cooldown_sec": 11.52,
       "runtime_compat_range_cells": 7.28,
       "runtime_compat_target_limit": 3,
-      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.co_doc.active_04.immortal.a",
@@ -3248,7 +3585,12 @@
       "runtime_compat_cooldown_sec": 11.52,
       "runtime_compat_range_cells": 7.28,
       "runtime_compat_target_limit": 3,
-      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.co_doc.active_04.immortal.b",
@@ -3295,7 +3637,12 @@
       "runtime_compat_cooldown_sec": 11.52,
       "runtime_compat_range_cells": 7.28,
       "runtime_compat_target_limit": 3,
-      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.co_doc.ultimate.immortal.a",
@@ -3342,7 +3689,12 @@
       "runtime_compat_cooldown_sec": 36.48,
       "runtime_compat_range_cells": 8.32,
       "runtime_compat_target_limit": 3,
-      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.co_doc.ultimate.immortal.b",
@@ -3389,7 +3741,12 @@
       "runtime_compat_cooldown_sec": 36.48,
       "runtime_compat_range_cells": 8.32,
       "runtime_compat_target_limit": 3,
-      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.co_doc.passive_01.immortal.a",
@@ -3438,7 +3795,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.co_doc.passive_01.immortal.b",
@@ -3487,7 +3849,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.co_doc.passive_02.immortal.a",
@@ -3536,7 +3903,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.co_doc.passive_02.immortal.b",
@@ -3585,7 +3957,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.co_doc.passive_03.immortal.a",
@@ -3634,7 +4011,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.co_doc.passive_03.immortal.b",
@@ -3683,7 +4065,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.co_doc.passive_04.immortal.a",
@@ -3732,7 +4119,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.co_doc.passive_04.immortal.b",
@@ -3781,7 +4173,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.co_doc.passive_05.immortal.a",
@@ -3830,7 +4227,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.co_doc.passive_05.immortal.b",
@@ -3879,7 +4281,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.co_doc.innate.immortal.a",
@@ -3929,7 +4336,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.co_doc.innate.immortal.b",
@@ -3979,7 +4391,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.duoc_doc.active_01.immortal.a",
@@ -4026,7 +4443,12 @@
       "runtime_compat_cooldown_sec": 7.68,
       "runtime_compat_range_cells": 7.8,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.duoc_doc.active_01.immortal.b",
@@ -4073,7 +4495,12 @@
       "runtime_compat_cooldown_sec": 7.68,
       "runtime_compat_range_cells": 7.8,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.duoc_doc.active_02.immortal.a",
@@ -4120,7 +4547,12 @@
       "runtime_compat_cooldown_sec": 17.28,
       "runtime_compat_range_cells": 6.76,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.duoc_doc.active_02.immortal.b",
@@ -4167,7 +4599,12 @@
       "runtime_compat_cooldown_sec": 17.28,
       "runtime_compat_range_cells": 6.76,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.duoc_doc.active_03.immortal.a",
@@ -4214,7 +4651,12 @@
       "runtime_compat_cooldown_sec": 17.28,
       "runtime_compat_range_cells": 6.76,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.duoc_doc.active_03.immortal.b",
@@ -4261,7 +4703,12 @@
       "runtime_compat_cooldown_sec": 17.28,
       "runtime_compat_range_cells": 6.76,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.duoc_doc.active_04.immortal.a",
@@ -4308,7 +4755,12 @@
       "runtime_compat_cooldown_sec": 12.48,
       "runtime_compat_range_cells": 7.28,
       "runtime_compat_target_limit": 3,
-      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.duoc_doc.active_04.immortal.b",
@@ -4355,7 +4807,12 @@
       "runtime_compat_cooldown_sec": 12.48,
       "runtime_compat_range_cells": 7.28,
       "runtime_compat_target_limit": 3,
-      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.duoc_doc.ultimate.immortal.a",
@@ -4402,7 +4859,12 @@
       "runtime_compat_cooldown_sec": 44.16,
       "runtime_compat_range_cells": 6.76,
       "runtime_compat_target_limit": 3,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.duoc_doc.ultimate.immortal.b",
@@ -4449,7 +4911,12 @@
       "runtime_compat_cooldown_sec": 44.16,
       "runtime_compat_range_cells": 6.76,
       "runtime_compat_target_limit": 3,
-      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.duoc_doc.passive_01.immortal.a",
@@ -4498,7 +4965,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.duoc_doc.passive_01.immortal.b",
@@ -4547,7 +5019,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.duoc_doc.passive_02.immortal.a",
@@ -4596,7 +5073,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.duoc_doc.passive_02.immortal.b",
@@ -4645,7 +5127,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.duoc_doc.passive_03.immortal.a",
@@ -4694,7 +5181,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.duoc_doc.passive_03.immortal.b",
@@ -4743,7 +5235,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.duoc_doc.passive_04.immortal.a",
@@ -4792,7 +5289,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.duoc_doc.passive_04.immortal.b",
@@ -4841,7 +5343,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.duoc_doc.passive_05.immortal.a",
@@ -4890,7 +5397,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.duoc_doc.passive_05.immortal.b",
@@ -4939,7 +5451,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.duoc_doc.innate.immortal.a",
@@ -4989,7 +5506,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.duoc_doc.innate.immortal.b",
@@ -5039,7 +5561,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "",
+      "divine_rule_status": "NOT_APPLICABLE",
+      "divine_rule_trigger": "",
+      "divine_rule_numeric": "",
+      "divine_rule_test": ""
     },
     {
       "id": "tmb.skill.poison.basic.divine.base",
@@ -5086,7 +5613,12 @@
       "runtime_compat_cooldown_sec": 1.47,
       "runtime_compat_range_cells": 6.42,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context",
+      "divine_rule_contract_id": "successor_action",
+      "divine_rule_status": "DEFINED_CANDIDATE",
+      "divine_rule_trigger": "derived basic/mobility generation; no additional cast",
+      "divine_rule_numeric": "previous family successor replaces old; Divine stage I/II/III direct ratio ×1.00/1.12/1.24; no extra hit",
+      "divine_rule_test": "once-only no synthetic event, reload protection: successor_action"
     },
     {
       "id": "tmb.skill.poison.mobility.divine.base",
@@ -5133,7 +5665,12 @@
       "runtime_compat_cooldown_sec": 9.2,
       "runtime_compat_range_cells": 11.77,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "successor_action",
+      "divine_rule_status": "DEFINED_CANDIDATE",
+      "divine_rule_trigger": "derived basic/mobility generation; no additional cast",
+      "divine_rule_numeric": "previous family successor replaces old; Divine stage I/II/III direct ratio ×1.00/1.12/1.24; no extra hit",
+      "divine_rule_test": "once-only no synthetic event, reload protection: successor_action"
     },
     {
       "id": "tmb.skill.poison.doc_cham.active_01.divine.a",
@@ -5180,7 +5717,12 @@
       "runtime_compat_cooldown_sec": 8.28,
       "runtime_compat_range_cells": 8.03,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context",
+      "divine_rule_contract_id": "owned_poison_maintain",
+      "divine_rule_status": "DEFINED_CANDIDATE",
+      "divine_rule_trigger": "real poison cast while own stacks already at five",
+      "divine_rule_numeric": "refresh lifetime of ONE oldest own stack to min(10s, skill.duration), not create sixth; ≤1 refresh/cast; no extra damage event",
+      "divine_rule_test": "once-only no synthetic event, reload protection: owned_poison_maintain"
     },
     {
       "id": "tmb.skill.poison.doc_cham.active_01.divine.b",
@@ -5227,7 +5769,12 @@
       "runtime_compat_cooldown_sec": 8.28,
       "runtime_compat_range_cells": 8.03,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context",
+      "divine_rule_contract_id": "owned_poison_consume",
+      "divine_rule_status": "DEFINED_CANDIDATE",
+      "divine_rule_trigger": "real consume_poison cast on owned stacks only",
+      "divine_rule_numeric": "S≤5; R=sum(remaining own DoT tick ratios); extra ATK ratio min(.60,.08*S+.40*R); erase only same-owner stacks; 1 settlement/cast/target",
+      "divine_rule_test": "once-only no synthetic event, reload protection: owned_poison_consume"
     },
     {
       "id": "tmb.skill.poison.doc_cham.active_02.divine.a",
@@ -5274,7 +5821,12 @@
       "runtime_compat_cooldown_sec": 8.28,
       "runtime_compat_range_cells": 8.03,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context",
+      "divine_rule_contract_id": "owned_poison_maintain",
+      "divine_rule_status": "DEFINED_CANDIDATE",
+      "divine_rule_trigger": "real poison cast while own stacks already at five",
+      "divine_rule_numeric": "refresh lifetime of ONE oldest own stack to min(10s, skill.duration), not create sixth; ≤1 refresh/cast; no extra damage event",
+      "divine_rule_test": "once-only no synthetic event, reload protection: owned_poison_maintain"
     },
     {
       "id": "tmb.skill.poison.doc_cham.active_02.divine.b",
@@ -5321,7 +5873,12 @@
       "runtime_compat_cooldown_sec": 8.28,
       "runtime_compat_range_cells": 8.03,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context",
+      "divine_rule_contract_id": "owned_poison_consume",
+      "divine_rule_status": "DEFINED_CANDIDATE",
+      "divine_rule_trigger": "real consume_poison cast on owned stacks only",
+      "divine_rule_numeric": "S≤5; R=sum(remaining own DoT tick ratios); extra ATK ratio min(.60,.08*S+.40*R); erase only same-owner stacks; 1 settlement/cast/target",
+      "divine_rule_test": "once-only no synthetic event, reload protection: owned_poison_consume"
     },
     {
       "id": "tmb.skill.poison.doc_cham.active_03.divine.a",
@@ -5368,7 +5925,12 @@
       "runtime_compat_cooldown_sec": 10.12,
       "runtime_compat_range_cells": 7.49,
       "runtime_compat_target_limit": 3,
-      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context",
+      "divine_rule_contract_id": "owned_poison_maintain",
+      "divine_rule_status": "DEFINED_CANDIDATE",
+      "divine_rule_trigger": "real poison cast while own stacks already at five",
+      "divine_rule_numeric": "refresh lifetime of ONE oldest own stack to min(10s, skill.duration), not create sixth; ≤1 refresh/cast; no extra damage event",
+      "divine_rule_test": "once-only no synthetic event, reload protection: owned_poison_maintain"
     },
     {
       "id": "tmb.skill.poison.doc_cham.active_03.divine.b",
@@ -5415,7 +5977,12 @@
       "runtime_compat_cooldown_sec": 10.12,
       "runtime_compat_range_cells": 7.49,
       "runtime_compat_target_limit": 3,
-      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context",
+      "divine_rule_contract_id": "owned_poison_consume",
+      "divine_rule_status": "DEFINED_CANDIDATE",
+      "divine_rule_trigger": "real consume_poison cast on owned stacks only",
+      "divine_rule_numeric": "S≤5; R=sum(remaining own DoT tick ratios); extra ATK ratio min(.60,.08*S+.40*R); erase only same-owner stacks; 1 settlement/cast/target",
+      "divine_rule_test": "once-only no synthetic event, reload protection: owned_poison_consume"
     },
     {
       "id": "tmb.skill.poison.doc_cham.active_04.divine.a",
@@ -5462,7 +6029,12 @@
       "runtime_compat_cooldown_sec": 11.04,
       "runtime_compat_range_cells": 7.49,
       "runtime_compat_target_limit": 3,
-      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context",
+      "divine_rule_contract_id": "owned_poison_maintain",
+      "divine_rule_status": "DEFINED_CANDIDATE",
+      "divine_rule_trigger": "real poison cast while own stacks already at five",
+      "divine_rule_numeric": "refresh lifetime of ONE oldest own stack to min(10s, skill.duration), not create sixth; ≤1 refresh/cast; no extra damage event",
+      "divine_rule_test": "once-only no synthetic event, reload protection: owned_poison_maintain"
     },
     {
       "id": "tmb.skill.poison.doc_cham.active_04.divine.b",
@@ -5509,7 +6081,12 @@
       "runtime_compat_cooldown_sec": 11.04,
       "runtime_compat_range_cells": 7.49,
       "runtime_compat_target_limit": 3,
-      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context",
+      "divine_rule_contract_id": "owned_poison_consume",
+      "divine_rule_status": "DEFINED_CANDIDATE",
+      "divine_rule_trigger": "real consume_poison cast on owned stacks only",
+      "divine_rule_numeric": "S≤5; R=sum(remaining own DoT tick ratios); extra ATK ratio min(.60,.08*S+.40*R); erase only same-owner stacks; 1 settlement/cast/target",
+      "divine_rule_test": "once-only no synthetic event, reload protection: owned_poison_consume"
     },
     {
       "id": "tmb.skill.poison.doc_cham.ultimate.divine.a",
@@ -5556,7 +6133,12 @@
       "runtime_compat_cooldown_sec": 33.12,
       "runtime_compat_range_cells": 8.56,
       "runtime_compat_target_limit": 3,
-      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context",
+      "divine_rule_contract_id": "owned_poison_maintain",
+      "divine_rule_status": "DEFINED_CANDIDATE",
+      "divine_rule_trigger": "real poison cast while own stacks already at five",
+      "divine_rule_numeric": "refresh lifetime of ONE oldest own stack to min(10s, skill.duration), not create sixth; ≤1 refresh/cast; no extra damage event",
+      "divine_rule_test": "once-only no synthetic event, reload protection: owned_poison_maintain"
     },
     {
       "id": "tmb.skill.poison.doc_cham.ultimate.divine.b",
@@ -5603,7 +6185,12 @@
       "runtime_compat_cooldown_sec": 33.12,
       "runtime_compat_range_cells": 8.56,
       "runtime_compat_target_limit": 3,
-      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context",
+      "divine_rule_contract_id": "owned_poison_consume",
+      "divine_rule_status": "DEFINED_CANDIDATE",
+      "divine_rule_trigger": "real consume_poison cast on owned stacks only",
+      "divine_rule_numeric": "S≤5; R=sum(remaining own DoT tick ratios); extra ATK ratio min(.60,.08*S+.40*R); erase only same-owner stacks; 1 settlement/cast/target",
+      "divine_rule_test": "once-only no synthetic event, reload protection: owned_poison_consume"
     },
     {
       "id": "tmb.skill.poison.doc_cham.passive_01.divine.a",
@@ -5652,7 +6239,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "owned_poison_maintain",
+      "divine_rule_status": "DEFINED_CANDIDATE",
+      "divine_rule_trigger": "real poison cast while own stacks already at five",
+      "divine_rule_numeric": "refresh lifetime of ONE oldest own stack to min(10s, skill.duration), not create sixth; ≤1 refresh/cast; no extra damage event",
+      "divine_rule_test": "once-only no synthetic event, reload protection: owned_poison_maintain"
     },
     {
       "id": "tmb.skill.poison.doc_cham.passive_01.divine.b",
@@ -5701,7 +6293,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "owned_poison_consume",
+      "divine_rule_status": "DEFINED_CANDIDATE",
+      "divine_rule_trigger": "real consume_poison cast on owned stacks only",
+      "divine_rule_numeric": "S≤5; R=sum(remaining own DoT tick ratios); extra ATK ratio min(.60,.08*S+.40*R); erase only same-owner stacks; 1 settlement/cast/target",
+      "divine_rule_test": "once-only no synthetic event, reload protection: owned_poison_consume"
     },
     {
       "id": "tmb.skill.poison.doc_cham.passive_02.divine.a",
@@ -5750,7 +6347,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "owned_poison_maintain",
+      "divine_rule_status": "DEFINED_CANDIDATE",
+      "divine_rule_trigger": "real poison cast while own stacks already at five",
+      "divine_rule_numeric": "refresh lifetime of ONE oldest own stack to min(10s, skill.duration), not create sixth; ≤1 refresh/cast; no extra damage event",
+      "divine_rule_test": "once-only no synthetic event, reload protection: owned_poison_maintain"
     },
     {
       "id": "tmb.skill.poison.doc_cham.passive_02.divine.b",
@@ -5799,7 +6401,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "owned_poison_consume",
+      "divine_rule_status": "DEFINED_CANDIDATE",
+      "divine_rule_trigger": "real consume_poison cast on owned stacks only",
+      "divine_rule_numeric": "S≤5; R=sum(remaining own DoT tick ratios); extra ATK ratio min(.60,.08*S+.40*R); erase only same-owner stacks; 1 settlement/cast/target",
+      "divine_rule_test": "once-only no synthetic event, reload protection: owned_poison_consume"
     },
     {
       "id": "tmb.skill.poison.doc_cham.passive_03.divine.a",
@@ -5848,7 +6455,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "owned_poison_maintain",
+      "divine_rule_status": "DEFINED_CANDIDATE",
+      "divine_rule_trigger": "real poison cast while own stacks already at five",
+      "divine_rule_numeric": "refresh lifetime of ONE oldest own stack to min(10s, skill.duration), not create sixth; ≤1 refresh/cast; no extra damage event",
+      "divine_rule_test": "once-only no synthetic event, reload protection: owned_poison_maintain"
     },
     {
       "id": "tmb.skill.poison.doc_cham.passive_03.divine.b",
@@ -5897,7 +6509,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "owned_poison_consume",
+      "divine_rule_status": "DEFINED_CANDIDATE",
+      "divine_rule_trigger": "real consume_poison cast on owned stacks only",
+      "divine_rule_numeric": "S≤5; R=sum(remaining own DoT tick ratios); extra ATK ratio min(.60,.08*S+.40*R); erase only same-owner stacks; 1 settlement/cast/target",
+      "divine_rule_test": "once-only no synthetic event, reload protection: owned_poison_consume"
     },
     {
       "id": "tmb.skill.poison.doc_cham.passive_04.divine.a",
@@ -5946,7 +6563,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "owned_poison_maintain",
+      "divine_rule_status": "DEFINED_CANDIDATE",
+      "divine_rule_trigger": "real poison cast while own stacks already at five",
+      "divine_rule_numeric": "refresh lifetime of ONE oldest own stack to min(10s, skill.duration), not create sixth; ≤1 refresh/cast; no extra damage event",
+      "divine_rule_test": "once-only no synthetic event, reload protection: owned_poison_maintain"
     },
     {
       "id": "tmb.skill.poison.doc_cham.passive_04.divine.b",
@@ -5995,7 +6617,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "owned_poison_consume",
+      "divine_rule_status": "DEFINED_CANDIDATE",
+      "divine_rule_trigger": "real consume_poison cast on owned stacks only",
+      "divine_rule_numeric": "S≤5; R=sum(remaining own DoT tick ratios); extra ATK ratio min(.60,.08*S+.40*R); erase only same-owner stacks; 1 settlement/cast/target",
+      "divine_rule_test": "once-only no synthetic event, reload protection: owned_poison_consume"
     },
     {
       "id": "tmb.skill.poison.doc_cham.passive_05.divine.a",
@@ -6044,7 +6671,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "owned_poison_maintain",
+      "divine_rule_status": "DEFINED_CANDIDATE",
+      "divine_rule_trigger": "real poison cast while own stacks already at five",
+      "divine_rule_numeric": "refresh lifetime of ONE oldest own stack to min(10s, skill.duration), not create sixth; ≤1 refresh/cast; no extra damage event",
+      "divine_rule_test": "once-only no synthetic event, reload protection: owned_poison_maintain"
     },
     {
       "id": "tmb.skill.poison.doc_cham.passive_05.divine.b",
@@ -6093,7 +6725,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "owned_poison_consume",
+      "divine_rule_status": "DEFINED_CANDIDATE",
+      "divine_rule_trigger": "real consume_poison cast on owned stacks only",
+      "divine_rule_numeric": "S≤5; R=sum(remaining own DoT tick ratios); extra ATK ratio min(.60,.08*S+.40*R); erase only same-owner stacks; 1 settlement/cast/target",
+      "divine_rule_test": "once-only no synthetic event, reload protection: owned_poison_consume"
     },
     {
       "id": "tmb.skill.poison.doc_cham.innate.divine.a",
@@ -6143,7 +6780,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "owned_poison_maintain",
+      "divine_rule_status": "DEFINED_CANDIDATE",
+      "divine_rule_trigger": "real poison cast while own stacks already at five",
+      "divine_rule_numeric": "refresh lifetime of ONE oldest own stack to min(10s, skill.duration), not create sixth; ≤1 refresh/cast; no extra damage event",
+      "divine_rule_test": "once-only no synthetic event, reload protection: owned_poison_maintain"
     },
     {
       "id": "tmb.skill.poison.doc_cham.innate.divine.b",
@@ -6193,7 +6835,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "owned_poison_consume",
+      "divine_rule_status": "DEFINED_CANDIDATE",
+      "divine_rule_trigger": "real consume_poison cast on owned stacks only",
+      "divine_rule_numeric": "S≤5; R=sum(remaining own DoT tick ratios); extra ATK ratio min(.60,.08*S+.40*R); erase only same-owner stacks; 1 settlement/cast/target",
+      "divine_rule_test": "once-only no synthetic event, reload protection: owned_poison_consume"
     },
     {
       "id": "tmb.skill.poison.co_doc.active_01.divine.a",
@@ -6240,7 +6887,12 @@
       "runtime_compat_cooldown_sec": 9.2,
       "runtime_compat_range_cells": 8.03,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context",
+      "divine_rule_contract_id": "single_spread_poison",
+      "divine_rule_status": "DEFINED_CANDIDATE_PENDING_IMPLEMENTATION",
+      "divine_rule_trigger": "one committed Divine poison application to a primary enemy",
+      "divine_rule_numeric": "≤1 secondary hostile at radius≤2.5; 1 spread stack at 65% source tick ratio, remaining life≤5s, no new direct hit/chain, caster-target cap5/total cap30; source attribution exact",
+      "divine_rule_test": "once-only no synthetic event, reload protection: single_spread_poison"
     },
     {
       "id": "tmb.skill.poison.co_doc.active_01.divine.b",
@@ -6287,7 +6939,12 @@
       "runtime_compat_cooldown_sec": 9.2,
       "runtime_compat_range_cells": 8.03,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context",
+      "divine_rule_contract_id": "marked_target_punish",
+      "divine_rule_status": "DEFINED_CANDIDATE",
+      "divine_rule_trigger": "first real non-DoT damage by owner on own valid mark",
+      "divine_rule_numeric": "consume 1 own mark; +0.12 ATK direct after verified hit, no crit/lifesteal/proc; caster-target ICD8s; no duplicate mark multiplier",
+      "divine_rule_test": "once-only no synthetic event, reload protection: marked_target_punish"
     },
     {
       "id": "tmb.skill.poison.co_doc.active_02.divine.a",
@@ -6334,7 +6991,12 @@
       "runtime_compat_cooldown_sec": 8.28,
       "runtime_compat_range_cells": 8.03,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context",
+      "divine_rule_contract_id": "single_spread_poison",
+      "divine_rule_status": "DEFINED_CANDIDATE_PENDING_IMPLEMENTATION",
+      "divine_rule_trigger": "one committed Divine poison application to a primary enemy",
+      "divine_rule_numeric": "≤1 secondary hostile at radius≤2.5; 1 spread stack at 65% source tick ratio, remaining life≤5s, no new direct hit/chain, caster-target cap5/total cap30; source attribution exact",
+      "divine_rule_test": "once-only no synthetic event, reload protection: single_spread_poison"
     },
     {
       "id": "tmb.skill.poison.co_doc.active_02.divine.b",
@@ -6381,7 +7043,12 @@
       "runtime_compat_cooldown_sec": 8.28,
       "runtime_compat_range_cells": 8.03,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context",
+      "divine_rule_contract_id": "marked_target_punish",
+      "divine_rule_status": "DEFINED_CANDIDATE",
+      "divine_rule_trigger": "first real non-DoT damage by owner on own valid mark",
+      "divine_rule_numeric": "consume 1 own mark; +0.12 ATK direct after verified hit, no crit/lifesteal/proc; caster-target ICD8s; no duplicate mark multiplier",
+      "divine_rule_test": "once-only no synthetic event, reload protection: marked_target_punish"
     },
     {
       "id": "tmb.skill.poison.co_doc.active_03.divine.a",
@@ -6428,7 +7095,12 @@
       "runtime_compat_cooldown_sec": 11.04,
       "runtime_compat_range_cells": 7.49,
       "runtime_compat_target_limit": 3,
-      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context",
+      "divine_rule_contract_id": "single_spread_poison",
+      "divine_rule_status": "DEFINED_CANDIDATE_PENDING_IMPLEMENTATION",
+      "divine_rule_trigger": "one committed Divine poison application to a primary enemy",
+      "divine_rule_numeric": "≤1 secondary hostile at radius≤2.5; 1 spread stack at 65% source tick ratio, remaining life≤5s, no new direct hit/chain, caster-target cap5/total cap30; source attribution exact",
+      "divine_rule_test": "once-only no synthetic event, reload protection: single_spread_poison"
     },
     {
       "id": "tmb.skill.poison.co_doc.active_03.divine.b",
@@ -6475,7 +7147,12 @@
       "runtime_compat_cooldown_sec": 11.04,
       "runtime_compat_range_cells": 7.49,
       "runtime_compat_target_limit": 3,
-      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context",
+      "divine_rule_contract_id": "marked_target_punish",
+      "divine_rule_status": "DEFINED_CANDIDATE",
+      "divine_rule_trigger": "first real non-DoT damage by owner on own valid mark",
+      "divine_rule_numeric": "consume 1 own mark; +0.12 ATK direct after verified hit, no crit/lifesteal/proc; caster-target ICD8s; no duplicate mark multiplier",
+      "divine_rule_test": "once-only no synthetic event, reload protection: marked_target_punish"
     },
     {
       "id": "tmb.skill.poison.co_doc.active_04.divine.a",
@@ -6522,7 +7199,12 @@
       "runtime_compat_cooldown_sec": 11.04,
       "runtime_compat_range_cells": 7.49,
       "runtime_compat_target_limit": 3,
-      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context",
+      "divine_rule_contract_id": "single_spread_poison",
+      "divine_rule_status": "DEFINED_CANDIDATE_PENDING_IMPLEMENTATION",
+      "divine_rule_trigger": "one committed Divine poison application to a primary enemy",
+      "divine_rule_numeric": "≤1 secondary hostile at radius≤2.5; 1 spread stack at 65% source tick ratio, remaining life≤5s, no new direct hit/chain, caster-target cap5/total cap30; source attribution exact",
+      "divine_rule_test": "once-only no synthetic event, reload protection: single_spread_poison"
     },
     {
       "id": "tmb.skill.poison.co_doc.active_04.divine.b",
@@ -6569,7 +7251,12 @@
       "runtime_compat_cooldown_sec": 11.04,
       "runtime_compat_range_cells": 7.49,
       "runtime_compat_target_limit": 3,
-      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context",
+      "divine_rule_contract_id": "marked_target_punish",
+      "divine_rule_status": "DEFINED_CANDIDATE",
+      "divine_rule_trigger": "first real non-DoT damage by owner on own valid mark",
+      "divine_rule_numeric": "consume 1 own mark; +0.12 ATK direct after verified hit, no crit/lifesteal/proc; caster-target ICD8s; no duplicate mark multiplier",
+      "divine_rule_test": "once-only no synthetic event, reload protection: marked_target_punish"
     },
     {
       "id": "tmb.skill.poison.co_doc.ultimate.divine.a",
@@ -6616,7 +7303,12 @@
       "runtime_compat_cooldown_sec": 34.96,
       "runtime_compat_range_cells": 8.56,
       "runtime_compat_target_limit": 3,
-      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context",
+      "divine_rule_contract_id": "single_spread_poison",
+      "divine_rule_status": "DEFINED_CANDIDATE_PENDING_IMPLEMENTATION",
+      "divine_rule_trigger": "one committed Divine poison application to a primary enemy",
+      "divine_rule_numeric": "≤1 secondary hostile at radius≤2.5; 1 spread stack at 65% source tick ratio, remaining life≤5s, no new direct hit/chain, caster-target cap5/total cap30; source attribution exact",
+      "divine_rule_test": "once-only no synthetic event, reload protection: single_spread_poison"
     },
     {
       "id": "tmb.skill.poison.co_doc.ultimate.divine.b",
@@ -6663,7 +7355,12 @@
       "runtime_compat_cooldown_sec": 34.96,
       "runtime_compat_range_cells": 8.56,
       "runtime_compat_target_limit": 3,
-      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context",
+      "divine_rule_contract_id": "marked_target_punish",
+      "divine_rule_status": "DEFINED_CANDIDATE",
+      "divine_rule_trigger": "first real non-DoT damage by owner on own valid mark",
+      "divine_rule_numeric": "consume 1 own mark; +0.12 ATK direct after verified hit, no crit/lifesteal/proc; caster-target ICD8s; no duplicate mark multiplier",
+      "divine_rule_test": "once-only no synthetic event, reload protection: marked_target_punish"
     },
     {
       "id": "tmb.skill.poison.co_doc.passive_01.divine.a",
@@ -6712,7 +7409,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "single_spread_poison",
+      "divine_rule_status": "DEFINED_CANDIDATE_PENDING_IMPLEMENTATION",
+      "divine_rule_trigger": "one committed Divine poison application to a primary enemy",
+      "divine_rule_numeric": "≤1 secondary hostile at radius≤2.5; 1 spread stack at 65% source tick ratio, remaining life≤5s, no new direct hit/chain, caster-target cap5/total cap30; source attribution exact",
+      "divine_rule_test": "once-only no synthetic event, reload protection: single_spread_poison"
     },
     {
       "id": "tmb.skill.poison.co_doc.passive_01.divine.b",
@@ -6761,7 +7463,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "marked_target_punish",
+      "divine_rule_status": "DEFINED_CANDIDATE",
+      "divine_rule_trigger": "first real non-DoT damage by owner on own valid mark",
+      "divine_rule_numeric": "consume 1 own mark; +0.12 ATK direct after verified hit, no crit/lifesteal/proc; caster-target ICD8s; no duplicate mark multiplier",
+      "divine_rule_test": "once-only no synthetic event, reload protection: marked_target_punish"
     },
     {
       "id": "tmb.skill.poison.co_doc.passive_02.divine.a",
@@ -6810,7 +7517,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "single_spread_poison",
+      "divine_rule_status": "DEFINED_CANDIDATE_PENDING_IMPLEMENTATION",
+      "divine_rule_trigger": "one committed Divine poison application to a primary enemy",
+      "divine_rule_numeric": "≤1 secondary hostile at radius≤2.5; 1 spread stack at 65% source tick ratio, remaining life≤5s, no new direct hit/chain, caster-target cap5/total cap30; source attribution exact",
+      "divine_rule_test": "once-only no synthetic event, reload protection: single_spread_poison"
     },
     {
       "id": "tmb.skill.poison.co_doc.passive_02.divine.b",
@@ -6859,7 +7571,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "marked_target_punish",
+      "divine_rule_status": "DEFINED_CANDIDATE",
+      "divine_rule_trigger": "first real non-DoT damage by owner on own valid mark",
+      "divine_rule_numeric": "consume 1 own mark; +0.12 ATK direct after verified hit, no crit/lifesteal/proc; caster-target ICD8s; no duplicate mark multiplier",
+      "divine_rule_test": "once-only no synthetic event, reload protection: marked_target_punish"
     },
     {
       "id": "tmb.skill.poison.co_doc.passive_03.divine.a",
@@ -6908,7 +7625,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "single_spread_poison",
+      "divine_rule_status": "DEFINED_CANDIDATE_PENDING_IMPLEMENTATION",
+      "divine_rule_trigger": "one committed Divine poison application to a primary enemy",
+      "divine_rule_numeric": "≤1 secondary hostile at radius≤2.5; 1 spread stack at 65% source tick ratio, remaining life≤5s, no new direct hit/chain, caster-target cap5/total cap30; source attribution exact",
+      "divine_rule_test": "once-only no synthetic event, reload protection: single_spread_poison"
     },
     {
       "id": "tmb.skill.poison.co_doc.passive_03.divine.b",
@@ -6957,7 +7679,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "marked_target_punish",
+      "divine_rule_status": "DEFINED_CANDIDATE",
+      "divine_rule_trigger": "first real non-DoT damage by owner on own valid mark",
+      "divine_rule_numeric": "consume 1 own mark; +0.12 ATK direct after verified hit, no crit/lifesteal/proc; caster-target ICD8s; no duplicate mark multiplier",
+      "divine_rule_test": "once-only no synthetic event, reload protection: marked_target_punish"
     },
     {
       "id": "tmb.skill.poison.co_doc.passive_04.divine.a",
@@ -7006,7 +7733,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "single_spread_poison",
+      "divine_rule_status": "DEFINED_CANDIDATE_PENDING_IMPLEMENTATION",
+      "divine_rule_trigger": "one committed Divine poison application to a primary enemy",
+      "divine_rule_numeric": "≤1 secondary hostile at radius≤2.5; 1 spread stack at 65% source tick ratio, remaining life≤5s, no new direct hit/chain, caster-target cap5/total cap30; source attribution exact",
+      "divine_rule_test": "once-only no synthetic event, reload protection: single_spread_poison"
     },
     {
       "id": "tmb.skill.poison.co_doc.passive_04.divine.b",
@@ -7055,7 +7787,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "marked_target_punish",
+      "divine_rule_status": "DEFINED_CANDIDATE",
+      "divine_rule_trigger": "first real non-DoT damage by owner on own valid mark",
+      "divine_rule_numeric": "consume 1 own mark; +0.12 ATK direct after verified hit, no crit/lifesteal/proc; caster-target ICD8s; no duplicate mark multiplier",
+      "divine_rule_test": "once-only no synthetic event, reload protection: marked_target_punish"
     },
     {
       "id": "tmb.skill.poison.co_doc.passive_05.divine.a",
@@ -7104,7 +7841,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "single_spread_poison",
+      "divine_rule_status": "DEFINED_CANDIDATE_PENDING_IMPLEMENTATION",
+      "divine_rule_trigger": "one committed Divine poison application to a primary enemy",
+      "divine_rule_numeric": "≤1 secondary hostile at radius≤2.5; 1 spread stack at 65% source tick ratio, remaining life≤5s, no new direct hit/chain, caster-target cap5/total cap30; source attribution exact",
+      "divine_rule_test": "once-only no synthetic event, reload protection: single_spread_poison"
     },
     {
       "id": "tmb.skill.poison.co_doc.passive_05.divine.b",
@@ -7153,7 +7895,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "marked_target_punish",
+      "divine_rule_status": "DEFINED_CANDIDATE",
+      "divine_rule_trigger": "first real non-DoT damage by owner on own valid mark",
+      "divine_rule_numeric": "consume 1 own mark; +0.12 ATK direct after verified hit, no crit/lifesteal/proc; caster-target ICD8s; no duplicate mark multiplier",
+      "divine_rule_test": "once-only no synthetic event, reload protection: marked_target_punish"
     },
     {
       "id": "tmb.skill.poison.co_doc.innate.divine.a",
@@ -7203,7 +7950,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "single_spread_poison",
+      "divine_rule_status": "DEFINED_CANDIDATE_PENDING_IMPLEMENTATION",
+      "divine_rule_trigger": "one committed Divine poison application to a primary enemy",
+      "divine_rule_numeric": "≤1 secondary hostile at radius≤2.5; 1 spread stack at 65% source tick ratio, remaining life≤5s, no new direct hit/chain, caster-target cap5/total cap30; source attribution exact",
+      "divine_rule_test": "once-only no synthetic event, reload protection: single_spread_poison"
     },
     {
       "id": "tmb.skill.poison.co_doc.innate.divine.b",
@@ -7253,7 +8005,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "marked_target_punish",
+      "divine_rule_status": "DEFINED_CANDIDATE",
+      "divine_rule_trigger": "first real non-DoT damage by owner on own valid mark",
+      "divine_rule_numeric": "consume 1 own mark; +0.12 ATK direct after verified hit, no crit/lifesteal/proc; caster-target ICD8s; no duplicate mark multiplier",
+      "divine_rule_test": "once-only no synthetic event, reload protection: marked_target_punish"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.active_01.divine.a",
@@ -7300,7 +8057,12 @@
       "runtime_compat_cooldown_sec": 7.36,
       "runtime_compat_range_cells": 8.03,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context",
+      "divine_rule_contract_id": "cleanse_heal_fatal_save",
+      "divine_rule_status": "DEFINED_CANDIDATE",
+      "divine_rule_trigger": "cleanse event with genuine removed_debuff_count≥1, plus separate rare passive protect",
+      "divine_rule_numeric": "extra heal ≤3% target MaxHP subject shared rolling10m budget, target ICD12s; rare passive self-lethal-save HP=1 once90s when truly equipped, no Injury removal",
+      "divine_rule_test": "once-only no synthetic event, reload protection: cleanse_heal_fatal_save"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.active_01.divine.b",
@@ -7347,7 +8109,12 @@
       "runtime_compat_cooldown_sec": 7.36,
       "runtime_compat_range_cells": 8.03,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context",
+      "divine_rule_contract_id": "removed_debuff_counter",
+      "divine_rule_status": "DEFINED_CANDIDATE_PENDING_IMPLEMENTATION",
+      "divine_rule_trigger": "verified cleanse removed≥1 real debuff then next owner offensive cast within 5s",
+      "divine_rule_numeric": "one primary hostile +0.08 ATK direct, caster ICD12s; zero extra DoT stacks, no crit/lifesteal/proc; never triggers from empty cleanse/reload duplication",
+      "divine_rule_test": "once-only no synthetic event, reload protection: removed_debuff_counter"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.active_02.divine.a",
@@ -7394,7 +8161,12 @@
       "runtime_compat_cooldown_sec": 16.56,
       "runtime_compat_range_cells": 6.96,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "cleanse_heal_fatal_save",
+      "divine_rule_status": "DEFINED_CANDIDATE",
+      "divine_rule_trigger": "cleanse event with genuine removed_debuff_count≥1, plus separate rare passive protect",
+      "divine_rule_numeric": "extra heal ≤3% target MaxHP subject shared rolling10m budget, target ICD12s; rare passive self-lethal-save HP=1 once90s when truly equipped, no Injury removal",
+      "divine_rule_test": "once-only no synthetic event, reload protection: cleanse_heal_fatal_save"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.active_02.divine.b",
@@ -7441,7 +8213,12 @@
       "runtime_compat_cooldown_sec": 16.56,
       "runtime_compat_range_cells": 6.96,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "removed_debuff_counter",
+      "divine_rule_status": "DEFINED_CANDIDATE_PENDING_IMPLEMENTATION",
+      "divine_rule_trigger": "verified cleanse removed≥1 real debuff then next owner offensive cast within 5s",
+      "divine_rule_numeric": "one primary hostile +0.08 ATK direct, caster ICD12s; zero extra DoT stacks, no crit/lifesteal/proc; never triggers from empty cleanse/reload duplication",
+      "divine_rule_test": "once-only no synthetic event, reload protection: removed_debuff_counter"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.active_03.divine.a",
@@ -7488,7 +8265,12 @@
       "runtime_compat_cooldown_sec": 16.56,
       "runtime_compat_range_cells": 6.96,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "cleanse_heal_fatal_save",
+      "divine_rule_status": "DEFINED_CANDIDATE",
+      "divine_rule_trigger": "cleanse event with genuine removed_debuff_count≥1, plus separate rare passive protect",
+      "divine_rule_numeric": "extra heal ≤3% target MaxHP subject shared rolling10m budget, target ICD12s; rare passive self-lethal-save HP=1 once90s when truly equipped, no Injury removal",
+      "divine_rule_test": "once-only no synthetic event, reload protection: cleanse_heal_fatal_save"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.active_03.divine.b",
@@ -7535,7 +8317,12 @@
       "runtime_compat_cooldown_sec": 16.56,
       "runtime_compat_range_cells": 6.96,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "removed_debuff_counter",
+      "divine_rule_status": "DEFINED_CANDIDATE_PENDING_IMPLEMENTATION",
+      "divine_rule_trigger": "verified cleanse removed≥1 real debuff then next owner offensive cast within 5s",
+      "divine_rule_numeric": "one primary hostile +0.08 ATK direct, caster ICD12s; zero extra DoT stacks, no crit/lifesteal/proc; never triggers from empty cleanse/reload duplication",
+      "divine_rule_test": "once-only no synthetic event, reload protection: removed_debuff_counter"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.active_04.divine.a",
@@ -7582,7 +8369,12 @@
       "runtime_compat_cooldown_sec": 11.96,
       "runtime_compat_range_cells": 7.49,
       "runtime_compat_target_limit": 3,
-      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context",
+      "divine_rule_contract_id": "cleanse_heal_fatal_save",
+      "divine_rule_status": "DEFINED_CANDIDATE",
+      "divine_rule_trigger": "cleanse event with genuine removed_debuff_count≥1, plus separate rare passive protect",
+      "divine_rule_numeric": "extra heal ≤3% target MaxHP subject shared rolling10m budget, target ICD12s; rare passive self-lethal-save HP=1 once90s when truly equipped, no Injury removal",
+      "divine_rule_test": "once-only no synthetic event, reload protection: cleanse_heal_fatal_save"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.active_04.divine.b",
@@ -7629,7 +8421,12 @@
       "runtime_compat_cooldown_sec": 11.96,
       "runtime_compat_range_cells": 7.49,
       "runtime_compat_target_limit": 3,
-      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context",
+      "divine_rule_contract_id": "removed_debuff_counter",
+      "divine_rule_status": "DEFINED_CANDIDATE_PENDING_IMPLEMENTATION",
+      "divine_rule_trigger": "verified cleanse removed≥1 real debuff then next owner offensive cast within 5s",
+      "divine_rule_numeric": "one primary hostile +0.08 ATK direct, caster ICD12s; zero extra DoT stacks, no crit/lifesteal/proc; never triggers from empty cleanse/reload duplication",
+      "divine_rule_test": "once-only no synthetic event, reload protection: removed_debuff_counter"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.ultimate.divine.a",
@@ -7676,7 +8473,12 @@
       "runtime_compat_cooldown_sec": 42.32,
       "runtime_compat_range_cells": 6.96,
       "runtime_compat_target_limit": 3,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "cleanse_heal_fatal_save",
+      "divine_rule_status": "DEFINED_CANDIDATE",
+      "divine_rule_trigger": "cleanse event with genuine removed_debuff_count≥1, plus separate rare passive protect",
+      "divine_rule_numeric": "extra heal ≤3% target MaxHP subject shared rolling10m budget, target ICD12s; rare passive self-lethal-save HP=1 once90s when truly equipped, no Injury removal",
+      "divine_rule_test": "once-only no synthetic event, reload protection: cleanse_heal_fatal_save"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.ultimate.divine.b",
@@ -7723,7 +8525,12 @@
       "runtime_compat_cooldown_sec": 42.32,
       "runtime_compat_range_cells": 6.96,
       "runtime_compat_target_limit": 3,
-      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context",
+      "divine_rule_contract_id": "removed_debuff_counter",
+      "divine_rule_status": "DEFINED_CANDIDATE_PENDING_IMPLEMENTATION",
+      "divine_rule_trigger": "verified cleanse removed≥1 real debuff then next owner offensive cast within 5s",
+      "divine_rule_numeric": "one primary hostile +0.08 ATK direct, caster ICD12s; zero extra DoT stacks, no crit/lifesteal/proc; never triggers from empty cleanse/reload duplication",
+      "divine_rule_test": "once-only no synthetic event, reload protection: removed_debuff_counter"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.passive_01.divine.a",
@@ -7772,7 +8579,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "cleanse_heal_fatal_save",
+      "divine_rule_status": "DEFINED_CANDIDATE",
+      "divine_rule_trigger": "cleanse event with genuine removed_debuff_count≥1, plus separate rare passive protect",
+      "divine_rule_numeric": "extra heal ≤3% target MaxHP subject shared rolling10m budget, target ICD12s; rare passive self-lethal-save HP=1 once90s when truly equipped, no Injury removal",
+      "divine_rule_test": "once-only no synthetic event, reload protection: cleanse_heal_fatal_save"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.passive_01.divine.b",
@@ -7821,7 +8633,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "removed_debuff_counter",
+      "divine_rule_status": "DEFINED_CANDIDATE_PENDING_IMPLEMENTATION",
+      "divine_rule_trigger": "verified cleanse removed≥1 real debuff then next owner offensive cast within 5s",
+      "divine_rule_numeric": "one primary hostile +0.08 ATK direct, caster ICD12s; zero extra DoT stacks, no crit/lifesteal/proc; never triggers from empty cleanse/reload duplication",
+      "divine_rule_test": "once-only no synthetic event, reload protection: removed_debuff_counter"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.passive_02.divine.a",
@@ -7870,7 +8687,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "cleanse_heal_fatal_save",
+      "divine_rule_status": "DEFINED_CANDIDATE",
+      "divine_rule_trigger": "cleanse event with genuine removed_debuff_count≥1, plus separate rare passive protect",
+      "divine_rule_numeric": "extra heal ≤3% target MaxHP subject shared rolling10m budget, target ICD12s; rare passive self-lethal-save HP=1 once90s when truly equipped, no Injury removal",
+      "divine_rule_test": "once-only no synthetic event, reload protection: cleanse_heal_fatal_save"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.passive_02.divine.b",
@@ -7919,7 +8741,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "removed_debuff_counter",
+      "divine_rule_status": "DEFINED_CANDIDATE_PENDING_IMPLEMENTATION",
+      "divine_rule_trigger": "verified cleanse removed≥1 real debuff then next owner offensive cast within 5s",
+      "divine_rule_numeric": "one primary hostile +0.08 ATK direct, caster ICD12s; zero extra DoT stacks, no crit/lifesteal/proc; never triggers from empty cleanse/reload duplication",
+      "divine_rule_test": "once-only no synthetic event, reload protection: removed_debuff_counter"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.passive_03.divine.a",
@@ -7968,7 +8795,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "cleanse_heal_fatal_save",
+      "divine_rule_status": "DEFINED_CANDIDATE",
+      "divine_rule_trigger": "cleanse event with genuine removed_debuff_count≥1, plus separate rare passive protect",
+      "divine_rule_numeric": "extra heal ≤3% target MaxHP subject shared rolling10m budget, target ICD12s; rare passive self-lethal-save HP=1 once90s when truly equipped, no Injury removal",
+      "divine_rule_test": "once-only no synthetic event, reload protection: cleanse_heal_fatal_save"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.passive_03.divine.b",
@@ -8017,7 +8849,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "removed_debuff_counter",
+      "divine_rule_status": "DEFINED_CANDIDATE_PENDING_IMPLEMENTATION",
+      "divine_rule_trigger": "verified cleanse removed≥1 real debuff then next owner offensive cast within 5s",
+      "divine_rule_numeric": "one primary hostile +0.08 ATK direct, caster ICD12s; zero extra DoT stacks, no crit/lifesteal/proc; never triggers from empty cleanse/reload duplication",
+      "divine_rule_test": "once-only no synthetic event, reload protection: removed_debuff_counter"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.passive_04.divine.a",
@@ -8066,7 +8903,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "cleanse_heal_fatal_save",
+      "divine_rule_status": "DEFINED_CANDIDATE",
+      "divine_rule_trigger": "cleanse event with genuine removed_debuff_count≥1, plus separate rare passive protect",
+      "divine_rule_numeric": "extra heal ≤3% target MaxHP subject shared rolling10m budget, target ICD12s; rare passive self-lethal-save HP=1 once90s when truly equipped, no Injury removal",
+      "divine_rule_test": "once-only no synthetic event, reload protection: cleanse_heal_fatal_save"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.passive_04.divine.b",
@@ -8115,7 +8957,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "removed_debuff_counter",
+      "divine_rule_status": "DEFINED_CANDIDATE_PENDING_IMPLEMENTATION",
+      "divine_rule_trigger": "verified cleanse removed≥1 real debuff then next owner offensive cast within 5s",
+      "divine_rule_numeric": "one primary hostile +0.08 ATK direct, caster ICD12s; zero extra DoT stacks, no crit/lifesteal/proc; never triggers from empty cleanse/reload duplication",
+      "divine_rule_test": "once-only no synthetic event, reload protection: removed_debuff_counter"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.passive_05.divine.a",
@@ -8164,7 +9011,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "cleanse_heal_fatal_save",
+      "divine_rule_status": "DEFINED_CANDIDATE",
+      "divine_rule_trigger": "cleanse event with genuine removed_debuff_count≥1, plus separate rare passive protect",
+      "divine_rule_numeric": "extra heal ≤3% target MaxHP subject shared rolling10m budget, target ICD12s; rare passive self-lethal-save HP=1 once90s when truly equipped, no Injury removal",
+      "divine_rule_test": "once-only no synthetic event, reload protection: cleanse_heal_fatal_save"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.passive_05.divine.b",
@@ -8213,7 +9065,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "removed_debuff_counter",
+      "divine_rule_status": "DEFINED_CANDIDATE_PENDING_IMPLEMENTATION",
+      "divine_rule_trigger": "verified cleanse removed≥1 real debuff then next owner offensive cast within 5s",
+      "divine_rule_numeric": "one primary hostile +0.08 ATK direct, caster ICD12s; zero extra DoT stacks, no crit/lifesteal/proc; never triggers from empty cleanse/reload duplication",
+      "divine_rule_test": "once-only no synthetic event, reload protection: removed_debuff_counter"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.innate.divine.a",
@@ -8263,7 +9120,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "cleanse_heal_fatal_save",
+      "divine_rule_status": "DEFINED_CANDIDATE",
+      "divine_rule_trigger": "cleanse event with genuine removed_debuff_count≥1, plus separate rare passive protect",
+      "divine_rule_numeric": "extra heal ≤3% target MaxHP subject shared rolling10m budget, target ICD12s; rare passive self-lethal-save HP=1 once90s when truly equipped, no Injury removal",
+      "divine_rule_test": "once-only no synthetic event, reload protection: cleanse_heal_fatal_save"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.innate.divine.b",
@@ -8313,7 +9175,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "removed_debuff_counter",
+      "divine_rule_status": "DEFINED_CANDIDATE_PENDING_IMPLEMENTATION",
+      "divine_rule_trigger": "verified cleanse removed≥1 real debuff then next owner offensive cast within 5s",
+      "divine_rule_numeric": "one primary hostile +0.08 ATK direct, caster ICD12s; zero extra DoT stacks, no crit/lifesteal/proc; never triggers from empty cleanse/reload duplication",
+      "divine_rule_test": "once-only no synthetic event, reload protection: removed_debuff_counter"
     },
     {
       "id": "tmb.skill.poison.doc_cham.ultimate.rare.a",
@@ -8360,7 +9227,12 @@
       "runtime_compat_cooldown_sec": 33.12,
       "runtime_compat_range_cells": 8.56,
       "runtime_compat_target_limit": 3,
-      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context",
+      "divine_rule_contract_id": "owned_poison_maintain",
+      "divine_rule_status": "DEFINED_CANDIDATE",
+      "divine_rule_trigger": "real poison cast while own stacks already at five",
+      "divine_rule_numeric": "refresh lifetime of ONE oldest own stack to min(10s, skill.duration), not create sixth; ≤1 refresh/cast; no extra damage event",
+      "divine_rule_test": "once-only no synthetic event, reload protection: owned_poison_maintain"
     },
     {
       "id": "tmb.skill.poison.doc_cham.passive_05.rare_passive.a",
@@ -8409,7 +9281,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "owned_poison_maintain",
+      "divine_rule_status": "DEFINED_CANDIDATE",
+      "divine_rule_trigger": "real poison cast while own stacks already at five",
+      "divine_rule_numeric": "refresh lifetime of ONE oldest own stack to min(10s, skill.duration), not create sixth; ≤1 refresh/cast; no extra damage event",
+      "divine_rule_test": "once-only no synthetic event, reload protection: owned_poison_maintain"
     },
     {
       "id": "tmb.skill.poison.doc_cham.ultimate.rare.b",
@@ -8456,7 +9333,12 @@
       "runtime_compat_cooldown_sec": 33.12,
       "runtime_compat_range_cells": 8.56,
       "runtime_compat_target_limit": 3,
-      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context",
+      "divine_rule_contract_id": "owned_poison_consume",
+      "divine_rule_status": "DEFINED_CANDIDATE",
+      "divine_rule_trigger": "real consume_poison cast on owned stacks only",
+      "divine_rule_numeric": "S≤5; R=sum(remaining own DoT tick ratios); extra ATK ratio min(.60,.08*S+.40*R); erase only same-owner stacks; 1 settlement/cast/target",
+      "divine_rule_test": "once-only no synthetic event, reload protection: owned_poison_consume"
     },
     {
       "id": "tmb.skill.poison.doc_cham.passive_05.rare_passive.b",
@@ -8505,7 +9387,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "owned_poison_consume",
+      "divine_rule_status": "DEFINED_CANDIDATE",
+      "divine_rule_trigger": "real consume_poison cast on owned stacks only",
+      "divine_rule_numeric": "S≤5; R=sum(remaining own DoT tick ratios); extra ATK ratio min(.60,.08*S+.40*R); erase only same-owner stacks; 1 settlement/cast/target",
+      "divine_rule_test": "once-only no synthetic event, reload protection: owned_poison_consume"
     },
     {
       "id": "tmb.skill.poison.co_doc.ultimate.rare.a",
@@ -8552,7 +9439,12 @@
       "runtime_compat_cooldown_sec": 34.96,
       "runtime_compat_range_cells": 8.56,
       "runtime_compat_target_limit": 3,
-      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context",
+      "divine_rule_contract_id": "single_spread_poison",
+      "divine_rule_status": "DEFINED_CANDIDATE_PENDING_IMPLEMENTATION",
+      "divine_rule_trigger": "one committed Divine poison application to a primary enemy",
+      "divine_rule_numeric": "≤1 secondary hostile at radius≤2.5; 1 spread stack at 65% source tick ratio, remaining life≤5s, no new direct hit/chain, caster-target cap5/total cap30; source attribution exact",
+      "divine_rule_test": "once-only no synthetic event, reload protection: single_spread_poison"
     },
     {
       "id": "tmb.skill.poison.co_doc.passive_05.rare_passive.a",
@@ -8601,7 +9493,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "single_spread_poison",
+      "divine_rule_status": "DEFINED_CANDIDATE_PENDING_IMPLEMENTATION",
+      "divine_rule_trigger": "one committed Divine poison application to a primary enemy",
+      "divine_rule_numeric": "≤1 secondary hostile at radius≤2.5; 1 spread stack at 65% source tick ratio, remaining life≤5s, no new direct hit/chain, caster-target cap5/total cap30; source attribution exact",
+      "divine_rule_test": "once-only no synthetic event, reload protection: single_spread_poison"
     },
     {
       "id": "tmb.skill.poison.co_doc.ultimate.rare.b",
@@ -8648,7 +9545,12 @@
       "runtime_compat_cooldown_sec": 34.96,
       "runtime_compat_range_cells": 8.56,
       "runtime_compat_target_limit": 3,
-      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context",
+      "divine_rule_contract_id": "marked_target_punish",
+      "divine_rule_status": "DEFINED_CANDIDATE",
+      "divine_rule_trigger": "first real non-DoT damage by owner on own valid mark",
+      "divine_rule_numeric": "consume 1 own mark; +0.12 ATK direct after verified hit, no crit/lifesteal/proc; caster-target ICD8s; no duplicate mark multiplier",
+      "divine_rule_test": "once-only no synthetic event, reload protection: marked_target_punish"
     },
     {
       "id": "tmb.skill.poison.co_doc.passive_05.rare_passive.b",
@@ -8697,7 +9599,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "marked_target_punish",
+      "divine_rule_status": "DEFINED_CANDIDATE",
+      "divine_rule_trigger": "first real non-DoT damage by owner on own valid mark",
+      "divine_rule_numeric": "consume 1 own mark; +0.12 ATK direct after verified hit, no crit/lifesteal/proc; caster-target ICD8s; no duplicate mark multiplier",
+      "divine_rule_test": "once-only no synthetic event, reload protection: marked_target_punish"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.ultimate.rare.a",
@@ -8744,7 +9651,12 @@
       "runtime_compat_cooldown_sec": 42.32,
       "runtime_compat_range_cells": 6.96,
       "runtime_compat_target_limit": 3,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "cleanse_heal_fatal_save",
+      "divine_rule_status": "DEFINED_CANDIDATE",
+      "divine_rule_trigger": "cleanse event with genuine removed_debuff_count≥1, plus separate rare passive protect",
+      "divine_rule_numeric": "extra heal ≤3% target MaxHP subject shared rolling10m budget, target ICD12s; rare passive self-lethal-save HP=1 once90s when truly equipped, no Injury removal",
+      "divine_rule_test": "once-only no synthetic event, reload protection: cleanse_heal_fatal_save"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.passive_05.rare_passive.a",
@@ -8793,7 +9705,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "cleanse_heal_fatal_save",
+      "divine_rule_status": "DEFINED_CANDIDATE",
+      "divine_rule_trigger": "cleanse event with genuine removed_debuff_count≥1, plus separate rare passive protect",
+      "divine_rule_numeric": "extra heal ≤3% target MaxHP subject shared rolling10m budget, target ICD12s; rare passive self-lethal-save HP=1 once90s when truly equipped, no Injury removal",
+      "divine_rule_test": "once-only no synthetic event, reload protection: cleanse_heal_fatal_save"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.ultimate.rare.b",
@@ -8840,7 +9757,12 @@
       "runtime_compat_cooldown_sec": 42.32,
       "runtime_compat_range_cells": 6.96,
       "runtime_compat_target_limit": 3,
-      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context"
+      "note_numeric_semantics": "ratio=direct ATK multiplier, prior to mitigation, crit, context",
+      "divine_rule_contract_id": "removed_debuff_counter",
+      "divine_rule_status": "DEFINED_CANDIDATE_PENDING_IMPLEMENTATION",
+      "divine_rule_trigger": "verified cleanse removed≥1 real debuff then next owner offensive cast within 5s",
+      "divine_rule_numeric": "one primary hostile +0.08 ATK direct, caster ICD12s; zero extra DoT stacks, no crit/lifesteal/proc; never triggers from empty cleanse/reload duplication",
+      "divine_rule_test": "once-only no synthetic event, reload protection: removed_debuff_counter"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.passive_05.rare_passive.b",
@@ -8889,7 +9811,12 @@
       "runtime_compat_cooldown_sec": 30,
       "runtime_compat_range_cells": 0.1,
       "runtime_compat_target_limit": 1,
-      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage"
+      "note_numeric_semantics": "ratio=0 means NO DIRECT DAMAGE; future V63 validator requires compatibility field >0; metadata ratio must not cause damage",
+      "divine_rule_contract_id": "removed_debuff_counter",
+      "divine_rule_status": "DEFINED_CANDIDATE_PENDING_IMPLEMENTATION",
+      "divine_rule_trigger": "verified cleanse removed≥1 real debuff then next owner offensive cast within 5s",
+      "divine_rule_numeric": "one primary hostile +0.08 ATK direct, caster ICD12s; zero extra DoT stacks, no crit/lifesteal/proc; never triggers from empty cleanse/reload duplication",
+      "divine_rule_test": "once-only no synthetic event, reload protection: removed_debuff_counter"
     }
   ],
   "paper_proxy": [
@@ -9167,5 +10094,49 @@
       "limitations": "independent-CD upper proxy; no cast/travel/AI/mark crit, cap/uptime 0.65 DoT, 2-stack 4-tick consume hypothesis"
     }
   ],
-  "paper_proxy_limitations": "Analytic opportunity index, NOT damage telemetry or real Godot combat simulation. Rare profile inherits Divine 4 actives, basic, 5 passives, innate, replaces ultimate and passive05; basic CD uses same tier. Does not factor cast/GCD, travel, AI selection, real mob distribution, crit, enemy resist/defense, mark uplifts, exact 5-stack contention. DoT opportunity 0.65 heuristic. Consume bonus assumes S=2, 4 remaining ticks of ratio .03 and clamps to 0.256. Must run exact Godot for PASS."
+  "paper_proxy_limitations": "Analytic opportunity index, NOT damage telemetry or real Godot combat simulation. Rare profile inherits Divine 4 actives, basic, 5 passives, innate, replaces ultimate and passive05; basic CD uses same tier. Does not factor cast/GCD, travel, AI selection, real mob distribution, crit, enemy resist/defense, mark uplifts, exact 5-stack contention. DoT opportunity 0.65 heuristic. Consume bonus assumes S=2, 4 remaining ticks of ratio .03 and clamps to 0.256. Must run exact Godot for PASS.",
+  "divine_rule_contracts": {
+    "successor_action": {
+      "trigger": "derived basic/mobility generation; no additional cast",
+      "precision": "previous family successor replaces old; Divine stage I/II/III direct ratio ×1.00/1.12/1.24; no extra hit",
+      "icd_sec": 0,
+      "status": "DEFINED_CANDIDATE"
+    },
+    "owned_poison_maintain": {
+      "trigger": "real poison cast while own stacks already at five",
+      "precision": "refresh lifetime of ONE oldest own stack to min(10s, skill.duration), not create sixth; ≤1 refresh/cast; no extra damage event",
+      "icd_sec": 0,
+      "status": "DEFINED_CANDIDATE"
+    },
+    "owned_poison_consume": {
+      "trigger": "real consume_poison cast on owned stacks only",
+      "precision": "S≤5; R=sum(remaining own DoT tick ratios); extra ATK ratio min(.60,.08*S+.40*R); erase only same-owner stacks; 1 settlement/cast/target",
+      "icd_sec": 0,
+      "status": "DEFINED_CANDIDATE"
+    },
+    "single_spread_poison": {
+      "trigger": "one committed Divine poison application to a primary enemy",
+      "precision": "≤1 secondary hostile at radius≤2.5; 1 spread stack at 65% source tick ratio, remaining life≤5s, no new direct hit/chain, caster-target cap5/total cap30; source attribution exact",
+      "icd_sec": 6,
+      "status": "DEFINED_CANDIDATE_PENDING_IMPLEMENTATION"
+    },
+    "marked_target_punish": {
+      "trigger": "first real non-DoT damage by owner on own valid mark",
+      "precision": "consume 1 own mark; +0.12 ATK direct after verified hit, no crit/lifesteal/proc; caster-target ICD8s; no duplicate mark multiplier",
+      "icd_sec": 8,
+      "status": "DEFINED_CANDIDATE"
+    },
+    "cleanse_heal_fatal_save": {
+      "trigger": "cleanse event with genuine removed_debuff_count≥1, plus separate rare passive protect",
+      "precision": "extra heal ≤3% target MaxHP subject shared rolling10m budget, target ICD12s; rare passive self-lethal-save HP=1 once90s when truly equipped, no Injury removal",
+      "icd_sec": 12,
+      "status": "DEFINED_CANDIDATE"
+    },
+    "removed_debuff_counter": {
+      "trigger": "verified cleanse removed≥1 real debuff then next owner offensive cast within 5s",
+      "precision": "one primary hostile +0.08 ATK direct, caster ICD12s; zero extra DoT stacks, no crit/lifesteal/proc; never triggers from empty cleanse/reload duplication",
+      "icd_sec": 12,
+      "status": "DEFINED_CANDIDATE_PENDING_IMPLEMENTATION"
+    }
+  }
 }
