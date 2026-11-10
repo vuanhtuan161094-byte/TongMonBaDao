@@ -15,6 +15,7 @@ static func school_color(school: String) -> Color:
     match school:
         "bow": return Color("ffce75")
         "fist": return Color("ff9f69")
+        "monster": return Color("d9ab97")
         "poison": return Color("9af3be")
         "boss": return Color("ff4f76")
     return Color("cdbbea")
@@ -229,6 +230,20 @@ static func render(canvas: CanvasItem, cue: Dictionary, p: Vector2, source: Vect
     var venom := _poison_tint(branch)
     venom.a *= alpha
     var radius := clampf(radius_px, 0.0, 1600.0)
+    if school == "monster":
+        # A mundane claw tap must not look larger than the cultivator's
+        # actual skill. These are modest contact scratches, not exploding
+        # 7-ray Fist/poison magic, and never apply damage.
+        if kind == "impact":
+            var hit_scale := clampf(zoom_factor, 1.0, 2.3)
+            var strength := sin(clampf(t, 0.0, 1.0) * PI)
+            var center := p + Vector2(0.0, -21.0 * (0.55 + 0.29 * zoom_factor))
+            for mark in range(3):
+                var shift := Vector2(float(mark - 1) * 3.4, float(mark - 1) * 2.0) * hit_scale
+                _streak(canvas, center + shift + Vector2(-4.0, -5.0) * hit_scale,
+                    center + shift + Vector2(4.0, 4.0) * hit_scale,
+                    _tinted("d9ab97", 0.7 * strength), 0.75 * hit_scale)
+        return
     if school == "poison":
         if OS.get_environment("TMB_POISON_V4_PREVIEW") == "1":
             PoisonV4.render(canvas, cue, p, source, t, radius, zoom_factor)
