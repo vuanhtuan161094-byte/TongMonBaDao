@@ -42,6 +42,17 @@ func _run() -> void:
         _fail("Starter Mine has no real workforce.")
         return
     var miner_id: StringName = mine_workers[0]
+    # The six New Game founders remain P2 legacy actors. Their real production
+    # uses TRAVEL/EXTRACT/HAUL, never the V2 Economy-A timer contract.
+    if DiscipleRealmProgressV2.owns_v2_progression(state.disciples[miner_id]):
+        _fail("Starter-worker contract changed; verify provenance before timer test.")
+        return
+    # Hold all founders through canonical commands so AI cannot create
+    # unrelated ore/XP during the new V2 recruit's exact-once timer test.
+    for raw_id in state.disciples.keys():
+        if not workforce.issue_command(state, StringName(raw_id), WorkforceSystem.COMMAND_HOLD, "", 2000):
+            _fail("Could not isolate founding worker through real HOLD command.")
+            return
     var funds_before := state.sect.spirit_stones
     var wood_before := warehouse.quantity(state, &"linh_moc")
     var ore_before := warehouse.quantity(state, &"thanh_thiet")
@@ -84,11 +95,41 @@ func _run() -> void:
     ):
         _fail("Mine site selection did not move the actual worker slot.")
         return
+    # A true timed job requires an authentic recruited V2 disciple, not a P2
+    # founder. Use the live Dẫn Tiên player flow and expend a real recruitment
+    # token; no test money, resource or XP is provisioned.
+    var recruit_id: StringName = await _recruit_authentic_v2()
+    if recruit_id == &"":
+        return
+    miner_id = recruit_id
+    ui.call("_open_building", SectMapPresentation.DEST_MINE, mine_id)
+    await process_frame
+    var recruit_group := ui.find_child("Group_mining_crew_%s" % str(miner_id),true,false) as Button
+    if recruit_group == null or recruit_group.disabled:
+        _fail("Second Mine cannot assign genuine V2 recruit to mining crew.")
+        return
+    recruit_group.pressed.emit()
+    await process_frame
+    await process_frame
+    var recruit_site := ui.find_child("MineWorksite_%s" % str(miner_id),true,false) as Button
+    if recruit_site == null or recruit_site.disabled:
+        _fail("Second Mine cannot select worksite for genuine V2 recruit.")
+        return
+    recruit_site.pressed.emit()
+    await process_frame
+    await process_frame
+    var actor: DiscipleState = state.disciples[miner_id]
+    if not DiscipleRealmProgressV2.owns_v2_progression(actor) or (
+        actor.worksite_building_id != mine_id
+        or not buildings.active_worker_ids(state,mine_two).has(miner_id)
+    ):
+        _fail("V2 identity/worksite not authentic at second Mine.")
+        return
     var mining := ui.find_child("Work_mining_%s" % str(miner_id),true,false) as Button
     if mining == null or mining.disabled:
-        _fail("Mine annex selected worker cannot receive real Mine command.")
+        _fail("Mine annex selected V2 worker cannot receive real Mine command.")
         return
-    var xp_before := float((state.disciples[miner_id] as DiscipleState).profession_xp.get("mining",0.0))
+    var xp_before := float(actor.profession_xp.get("mining",0.0))
     var stock_before := warehouse.quantity(state,&"thanh_thiet")
     mining.pressed.emit()
     await process_frame
@@ -100,11 +141,16 @@ func _run() -> void:
         if not job.is_empty():
             break
     if job.is_empty() or not buildings.resource_timer_jobs(mine_two).has(job) or (
-        int(job.get("finish_tick",0)) <= state.tick
+        str(job.get("worker_id","")) != str(miner_id)
+        or str(job.get("resource_id","")) != "thanh_thiet"
+        or int(job.get("output_quantity",0)) <= 0
+        or int(job.get("finish_tick",0)) <= state.tick
         or warehouse.quantity(state,&"thanh_thiet") != stock_before
-        or not is_equal_approx(float((state.disciples[miner_id] as DiscipleState).profession_xp.get("mining",0.0)),xp_before)
+        or not is_equal_approx(float(actor.profession_xp.get("mining",0.0)),xp_before)
     ):
-        _fail("Second Mine did not create a real unpaid timed job without early stock/EXP.")
+        _fail("Real V2 second-Mine timer incorrectly started/credited: job=%s tick=%d stock=%d xp=%.2f" % [
+            str(job),state.tick,warehouse.quantity(state,&"thanh_thiet"),float(actor.profession_xp.get("mining",0.0))
+        ])
         return
 
     var forest_preview := buildings.preview_production_annex(state, BuildingSystem.TYPE_LINH_FOREST)
@@ -180,11 +226,114 @@ func _run() -> void:
         _fail("Cold Save/Load lost canonical worker ownership of paid annexes.")
         return
 
+    # Simulate completion against the loaded state, not the original scene's
+    # transient ledger. No duplicate/premature credit is allowed on a resumed
+    # timer, and profession XP must increase only when the same goods settle.
+    var resumed_job := buildings.active_resource_timer_for_worker(loaded, miner_id)
+    if resumed_job.is_empty() or str(resumed_job.get("job_id","")) != str(job.get("job_id","")):
+        _fail("Save/Load lost the exact V2 second-Mine job ID.")
+        return
+    var saved_xp := float((loaded.disciples[miner_id] as DiscipleState).profession_xp.get("mining",0.0))
+    var saved_ore := warehouse.quantity(loaded, &"thanh_thiet")
+    var output := int(job.get("output_quantity",0))
+    var loaded_scheduler := SimulationScheduler.new(loaded)
+    var pending_ticks := maxi(0,int(job.get("finish_tick",0))-loaded.tick)
+    if pending_ticks <= 0 or pending_ticks > 100:
+        _fail("Persisted second-Mine finish tick is inconsistent.")
+        return
+    loaded_scheduler.run_ticks(pending_ticks)
+    if warehouse.quantity(loaded,&"thanh_thiet") != saved_ore+output or (
+        float((loaded.disciples[miner_id] as DiscipleState).profession_xp.get("mining",0.0)) <= saved_xp
+        or not buildings.active_resource_timer_for_worker(loaded,miner_id).is_empty()
+    ):
+        _fail("Resumed Mine timer did not pay exact ore and profession XP once.")
+        return
+    loaded_scheduler.step()
+    if warehouse.quantity(loaded,&"thanh_thiet") != saved_ore+output:
+        _fail("Resumed Mine job duplicated ore after completion.")
+        return
     ui.queue_free()
     await process_frame
     _cleanup()
-    print("GATE B PAID MULTI-SITE MINE/FOREST WORKER + TIMER + SAVE: PASS")
+    print("GATE B PAID MULTI-SITE MINE/FOREST WORKER + V2 TIMER/XP/WAREHOUSE/SAVE: PASS")
     quit(0)
+
+func _recruit_authentic_v2() -> StringName:
+    var hit := ui.find_child("BuildingHit_guidance",true,false) as Button
+    if hit == null:
+        _fail("Real Dẫn Tiên map entrance missing.")
+        return &""
+    hit.pressed.emit()
+    await process_frame
+    var launch := ui.find_child("OpenDanTienScreenV2",true,false) as Button
+    if launch == null or launch.disabled:
+        _fail("Dẫn Tiên V2 screen cannot open.")
+        return &""
+    launch.pressed.emit()
+    await process_frame
+    var token_before := state.sect.disciple_recruitment_tokens
+    var order := ui.find_child("UseRecruitmentOrder",true,false) as Button
+    if order == null or order.disabled:
+        _fail("No real recruitment order is available.")
+        return &""
+    order.pressed.emit()
+    await process_frame
+    if state.sect.disciple_recruitment_tokens != token_before-1:
+        _fail("Recruitment did not consume one real order.")
+        return &""
+    var candidate_ids: Array = state.recruitment_candidates.keys()
+    candidate_ids.sort()
+    var candidate_id: StringName = &""
+    for raw_id in candidate_ids:
+        var candidate: CandidateState = state.recruitment_candidates[raw_id]
+        if DiscipleBirthProfileV2.valid_complete_birth(candidate.v2_birth_profile):
+            candidate_id = StringName(raw_id)
+            break
+    if candidate_id == &"":
+        _fail("Guidance produced no authentic V2 candidate.")
+        return &""
+    var candidate: CandidateState = state.recruitment_candidates[candidate_id]
+    var birth := candidate.v2_birth_profile.duplicate(true)
+    var b1 := ui.get_node_or_null("DanTienScreenV2/TriFacilityB1LiveAdapterV1") as Control
+    if b1 == null:
+        _fail("Real B1 recruitment screen missing.")
+        return &""
+    var search := b1.find_child("CandidateSearch",true,false) as LineEdit
+    if search == null:
+        _fail("Real B1 recruitment search missing.")
+        return &""
+    search.text = candidate.display_name
+    search.text_submitted.emit(search.text)
+    await process_frame
+    var pick := b1.find_child("CandidatePick_%s" % str(candidate_id),true,false) as Button
+    if pick == null:
+        _fail("Real B1 recruitment candidate button missing.")
+        return &""
+    if not pick.disabled:
+        pick.pressed.emit()
+        await process_frame
+    else:
+        var host := ui.get_node_or_null("DanTienScreenV2")
+        if host == null or StringName(host.get("selected_candidate_id")) != candidate_id:
+            _fail("B1 disabled candidate row was not selected.")
+            return &""
+    var accept := b1.find_child("AcceptCandidate",true,false) as Button
+    if accept == null or accept.disabled:
+        _fail("Real B1 admission control unavailable.")
+        return &""
+    accept.pressed.emit()
+    await process_frame
+    accept = b1.find_child("AcceptCandidate",true,false) as Button
+    if accept == null or not accept.text.contains("XÁC NHẬN"):
+        _fail("Real B1 second-confirmation control missing.")
+        return &""
+    accept.pressed.emit()
+    await process_frame
+    var recruited: DiscipleState = state.disciples.get(candidate_id)
+    if recruited == null or not DiscipleRealmProgressV2.owns_v2_progression(recruited) or recruited.v2_birth_profile != birth:
+        _fail("Admission did not preserve authentic V2 birth identity.")
+        return &""
+    return candidate_id
 
 func _stop_timers(node: Node) -> void:
     if node is Timer:
