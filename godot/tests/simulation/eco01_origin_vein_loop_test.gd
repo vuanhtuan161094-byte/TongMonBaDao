@@ -132,7 +132,10 @@ func _test_save_replay_and_cooldown() -> bool:
     if not _check(total_after-total_before == 1000
         and int(state.sect.economy_a_receipts.get(
             Eco01OriginVein.RECEIPT_PREFIX+str(third.get("job_id","")),{}).get("gross",-1)) == 1000,
-        "second day genuine external 1000 gross not conserved"): return false
+        "second day source delta=%d expected=1000; receipt=%s; worker=%s; Hall=%s" % [
+            total_after-total_before,
+            str(state.sect.economy_a_receipts.get(Eco01OriginVein.RECEIPT_PREFIX+str(third.get("job_id","")),{})),
+            str(second_worker_id),str(vein.snapshot(state))]): return false
     if not _check(saver.save_to_path(state,SAVE_PATH) == OK,
         "post-settlement Save failed"): return false
     var loaded := saver.load_from_path(SAVE_PATH)
