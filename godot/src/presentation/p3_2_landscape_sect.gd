@@ -4601,7 +4601,7 @@ func _build_economy_a_market_controls() -> void:
             stock_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
             stock_label.add_theme_font_size_override("font_size",11)
             building_management_container.add_child(stock_label)
-            var same_pending := str(pending_sale.get("resource_id","")) == raw_id \
+            var same_pending: bool = str(pending_sale.get("resource_id","")) == raw_id \
                 and int(pending_sale.get("quantity",0)) == sellable \
                 and int(pending_sale.get("unit_price",0)) == price and sellable > 0
             var row := Button.new()

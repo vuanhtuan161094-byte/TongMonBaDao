@@ -479,6 +479,10 @@ func buy_from_npc_v1(state: SimulationState, resource_id: StringName, quantity: 
         if not (prior is Dictionary) or str(prior.get("resource_id","")) != str(resource_id) or int(prior.get("quantity",-1)) != quantity:
             return {"ok":false,"reason":"conflicting_market_replay"}
         return {"ok":true,"already_settled":true,"receipt":prior.duplicate(true)}
+    # ECO-02: a closed NPC market must reject before even generating
+    # merchant restock. An attempted purchase is not a valid stock source.
+    if int(state.sect.economy_a_policy.get("market_daily_units",20)) == 0:
+        return {"ok":false,"reason":"npc_no_buyers_or_daily_quota"}
     sync_market_day(state)
     var per_buy := maxi(int(state.sect.economy_a_policy.get("market_max_per_buy",5)),1)
     var unit_price := market_purchase_price(state,resource_id)
