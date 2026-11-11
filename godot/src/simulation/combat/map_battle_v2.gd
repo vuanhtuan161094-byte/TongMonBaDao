@@ -143,7 +143,7 @@ func setup(id: String, party: Array, monsters: Array, keep_encounter_open: bool 
             "hunt_radius":float(row.get("hunt_radius",0.0))
         })
         var v63_disciple_actor: Dictionary = entries[entries.size()-1]
-        for field in ["v63_skill_loadout","v63_skill_ready","v63_combat_enabled","v63_sword_combat_enabled","v63_blade_combat_enabled","v63_spear_combat_enabled","v63_passive_ids","v63_combat_branch_id","v63_combat_lineage","v63_innate_skill_id","v63_basic_skill_id","basic_element","v63_divine_stage","v63_combat_generation","v63_blood_mode","v63_base_max_hp","v63_shield_received_factor","v63_spiritual_root_enabled","v63_root_global_all_damage_bonus"]:
+        for field in ["v63_skill_loadout","v63_skill_ready","v63_combat_enabled","v63_sword_combat_enabled","v63_blade_combat_enabled","v63_spear_combat_enabled","v63_dual_blade_combat_enabled","v63_passive_ids","v63_combat_branch_id","v63_combat_lineage","v63_innate_skill_id","v63_basic_skill_id","basic_element","v63_divine_stage","v63_combat_generation","v63_blood_mode","v63_base_max_hp","v63_shield_received_factor","v63_spiritual_root_enabled","v63_root_global_all_damage_bonus"]:
             if row.has(field):
                 v63_disciple_actor[field] = row[field].duplicate(true) if row[field] is Array or row[field] is Dictionary else row[field]
     for raw in monsters:
