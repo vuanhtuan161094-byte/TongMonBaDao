@@ -186,8 +186,20 @@ func _real_pve_and_disk_replay() -> bool:
                 "cold_receipts":cold_record.get("mastery_cast_receipts",{}),
                 "live_receipts":live_record.get("mastery_cast_receipts",{})
             }))
-        if not _check(cold_record == live_record,
-                "cold SaveService must preserve per-skill mastery and receipt history"):
+        # SaveService's JSON represents integral scalars as 0.0/1.0 on read.
+        # Normalize ONLY the schema-declared integer fields and still compare
+        # every field, every mastery receipt ID and the exact mastery XP.
+        var canonical_disk_record := cold_record.duplicate(true)
+        for key in ["learned_tick","level"]:
+            var raw_value = cold_record.get(key, null)
+            if not _check((raw_value is int or raw_value is float)
+                    and is_finite(float(raw_value))
+                    and absf(float(raw_value)-float(int(raw_value))) < 0.000001,
+                    "cold SaveService changed an integer mastery field: " + key):
+                return false
+            canonical_disk_record[key] = int(raw_value)
+        if not _check(canonical_disk_record == live_record,
+                "cold SaveService must preserve every per-skill field and exact receipt history"):
             return false
     if not _check(V63FeatureGates.all_disabled(), "release gates must remain OFF"):
         return false
