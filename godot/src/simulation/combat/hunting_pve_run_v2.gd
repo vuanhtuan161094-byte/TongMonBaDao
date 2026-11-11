@@ -825,6 +825,13 @@ func _persist_live_state() -> Dictionary:
     var started_usec := Time.get_ticks_usec() if profile else 0
     var saved := save_state()
     if bool(saved.get("ok",false)):
+        # The battle snapshot carries detached, not-yet-awarded cast receipts.
+        # Commit their EXP to the owner together with this existing canonical
+        # active-run checkpoint; both sides persist in the same save barrier.
+        var mastery := V63PveMasteryReceipts.settle(owner_state, battle)
+        if not bool(mastery.get("ok", false)):
+            return {"ok": false, "reason": "pve_mastery_settlement_failed",
+                "detail": str(mastery.get("reason", "unknown"))}
         # save_state() already created a detached immutable-enough snapshot of
         # combat actors, kill journal, and population. A second recursive copy
         # here duplicated the largest PVE payload on every 0.25s step.
@@ -899,6 +906,12 @@ func _settle_terminal() -> Dictionary:
             return {"ok":false,"reason":"missing_terminal_reservation"}
         if disciple.injury_level != 0:
             return {"ok":false,"reason":"participant_already_injured"}
+    # Also cover legacy terminal snapshots/recovery paths which settle
+    # without an intervening live progress checkpoint.
+    var mastery := V63PveMasteryReceipts.settle(owner_state, battle)
+    if not bool(mastery.get("ok", false)):
+        return {"ok": false, "reason": "terminal_mastery_settlement_failed",
+            "detail": str(mastery.get("reason", "unknown"))}
     var when := owner_state.tick
     var ordered: Array = prepared.keys()
     ordered.sort()
