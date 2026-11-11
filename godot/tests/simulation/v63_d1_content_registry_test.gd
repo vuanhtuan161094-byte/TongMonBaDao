@@ -29,18 +29,18 @@ func _run() -> void:
     var sword_rare_passive := 0
     for family in data["families"]:
         nodes += family["nodes"].size()
+        var slot := str(family.get("slot",""))
+        var school := str(family.get("school",""))
         for node in family["nodes"]:
-            if str(node["tier"]) != "rare_divine":
-                continue
-            var slot := str(family.get("slot",""))
-            var school := str(family.get("school",""))
-            if slot == "ultimate":
+            var node_id := str(node.get("id",""))
+            var tier := str(node.get("tier",""))
+            if slot == "ultimate" and tier == "rare_divine":
                 rare_ultimate += 1
-            elif slot == "passive" and str(family.get("id","")).ends_with("passive_05"):
+            elif slot == "passive" and str(family.get("id","")).ends_with("passive_05") and node_id.contains(".rare_passive."):
                 rare_passive += 1
-                if school == "poison":
+                if school == "poison" and tier == "rare_divine":
                     poison_rare_passive += 1
-                elif school == "sword":
+                elif school == "sword" and tier == "divine":
                     sword_rare_passive += 1
     if not _check(nodes==732 and rare_ultimate==24 and rare_passive==12 and poison_rare_passive==6 and sword_rare_passive==6,"wrong successor distribution: 732 total, 24 rare ultimates, 6 poison + 6 sword rare-passive descendants"): return
     if not _check(int(data.get("skills_s1_candidate_count",0)) == 183 and str(data.get("skills_s1_candidate_source_status","")).contains("SOURCE_PENDING"), "Sword candidate registry must remain source pending"): return
