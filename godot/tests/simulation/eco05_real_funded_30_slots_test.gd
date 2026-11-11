@@ -35,6 +35,9 @@ func _earn(state: SimulationState,worker: DiscipleState,kind: StringName,
         "Failed to start real bulk job "+str(kind)+": "+str(start)): return false
     var timer := buildings.active_resource_timer_for_worker(state,worker.id)
     var snapshot: Dictionary = timer.get("sx_v55_r12_work",{})
+    if int(snapshot.get("realm",0)) != 1 or int(snapshot.get("gross",0)) != 60000:
+        print("ECO05_SOURCE_DIAG site=",str(kind)," timer=",timer,
+            " actor_realm=",worker.v2_realm_progress.get("cultivation",{}))
     if not _check(int(snapshot.get("realm",0)) == 1
         and int(snapshot.get("gross",0)) == 60000
         and int(timer.get("finish_tick",0)) > state.tick,
@@ -69,7 +72,7 @@ func _run() -> void:
             "Founding worker slot not cleared"): return
     state.sect.disciple_capacity = state.disciples.size()+1
     var recruit := DiscipleGeneratorOpenPoints.new().generate_candidate(
-        state,DiscipleGeneratorV2.SOURCE_ORDINARY,505030)
+        state,DiscipleGeneratorV2.SOURCE_ORDINARY,455)
     if not _check(recruit != null,"No real V2 recruitment candidate"): return
     state.recruitment_candidates[recruit.id] = recruit
     if not _check(bool(RecruitmentSystem.new().accept_candidate(state,recruit.id).get("ok",false)),
