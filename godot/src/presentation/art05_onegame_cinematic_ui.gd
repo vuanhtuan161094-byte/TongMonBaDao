@@ -9,6 +9,54 @@ const ART05_DEEP := Color(0.025,0.09,0.108)
 const ART05_JADE := Color(0.08,0.205,0.216)
 const ART05_FRAME = preload("res://src/presentation/uiux/sect_premium_panel_v1.gd")
 
+func _ready() -> void:
+    super._ready()
+    _art05_style_global_hud()
+
+func _art05_style_global_hud() -> void:
+    var bottom := get_node_or_null("PlayerBottomBar") as Panel
+    if bottom != null:
+        bottom.add_theme_stylebox_override("panel",_art05_style(
+            Color(0.022,0.094,0.110,0.99),ART05_GOLD,2,0))
+        var buttons: Array[Button] = []
+        for node in bottom.get_children():
+            if node is Button:
+                buttons.append(node as Button)
+        for idx in range(buttons.size()):
+            var button := buttons[idx]
+            var hunting := button.name == "PveHuntQuickEntry"
+            button.position = Vector2(950 if hunting else 126+idx*203,11)
+            button.size = Vector2(275 if hunting else 185,54)
+            button.add_theme_font_size_override("font_size",15)
+            button.add_theme_color_override("font_color",ART05_WHITE)
+            button.add_theme_color_override("font_hover_color",ART05_GOLD)
+            button.add_theme_stylebox_override("normal",_art05_style(
+                Color(0.05,0.19,0.21,0.98),Color(0.59,0.68,0.53,0.9),1,10))
+            button.add_theme_stylebox_override("hover",_art05_style(
+                Color(0.11,0.28,0.29,0.99),ART05_GOLD,2,10))
+            button.add_theme_stylebox_override("pressed",_art05_style(
+                Color(0.23,0.28,0.21,0.98),ART05_GOLD,2,10))
+            var icon := SECT_UI_ICON.new()
+            icon.name = "Art05NavigationGlyph"
+            icon.kind = "gate" if hunting else ["hall","person","resource","map"][mini(idx,3)]
+            icon.tint = ART05_GOLD
+            icon.position = Vector2(10,11)
+            icon.size = Vector2(30,30)
+            icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+            button.add_child(icon)
+    # Replace the incompatible beige onboarding card's palette, never hide its instructions.
+    if gp1_guide_panel != null:
+        gp1_guide_panel.add_theme_stylebox_override("panel",_art05_style(
+            Color(0.035,0.13,0.15,0.98),ART05_GOLD,1,10))
+        _art05_tint_onboarding(gp1_guide_panel)
+
+func _art05_tint_onboarding(root: Node) -> void:
+    for child in root.get_children():
+        if child is Label:
+            child.add_theme_color_override("font_color",ART05_WHITE)
+            child.add_theme_font_size_override("font_size",maxi(12,child.get_theme_font_size("font_size")))
+        _art05_tint_onboarding(child)
+
 func _build_building_operation_panel() -> void:
     super._build_building_operation_panel()
     if building_operation_panel == null:
@@ -138,6 +186,10 @@ func _art05_reflow() -> void:
     if building_operation_live_content != null:
         building_operation_live_content.custom_minimum_size.x = 370
     _art05_repack_galleries()
+    if building_operation_scroll != null:
+        building_operation_scroll.clip_contents = true
+    if building_operation_live_panel != null:
+        building_operation_live_panel.clip_contents = true
 
 func _art05_repack_galleries() -> void:
     if building_operation_live_content == null:
@@ -183,6 +235,8 @@ func _art05_style_content_tree(node: Node) -> void:
         if child is Label:
             var label := child as Label
             label.add_theme_color_override("font_color",ART05_WHITE)
+            label.custom_minimum_size.x = minf(label.custom_minimum_size.x,357.0)
+            label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
             label.add_theme_font_size_override("font_size",maxi(12,label.get_theme_font_size("font_size")))
             if label.text.length() > 90:
                 label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -194,6 +248,10 @@ func _art05_style_content_tree(node: Node) -> void:
         elif child is Button:
             var button := child as Button
             button.custom_minimum_size.x = minf(button.custom_minimum_size.x,338.0)
+            button.clip_text = true
+            if button.text.begins_with("+ Xây thêm ") and button.text.length() > 32:
+                button.tooltip_text = button.text
+                button.text = "＋ Xây thêm công trình"
             button.add_theme_font_size_override("font_size",maxi(12,button.get_theme_font_size("font_size")))
         elif child is ProgressBar:
             var bar := child as ProgressBar

@@ -19,6 +19,17 @@ func _draw() -> void:
     if w < 200 or h < 200:
         return
     var edge := Color(accent.r,accent.g,accent.b,0.78)
+    # A subtle area-color glow extends behind the illustration, never obscures labels.
+    for strip in range(20):
+        var k := float(strip)/19.0
+        draw_rect(Rect2(14,144+float(strip)*7.4,w-28,7.5),
+            Color(accent.r,accent.g,accent.b,(1.0-k)*0.035))
+    for i in range(18):
+        var x := 38.0+float((i*71)%233)
+        var y := 160.0+float((i*47)%125)+3.0*sin(_phase*2.0+float(i))
+        var alpha := 0.18+0.16*(0.5+0.5*sin(_phase*2.0+float(i)*0.7))
+        draw_circle(Vector2(x,y),1.3+float(i%3)*0.65,
+            Color(accent.r,accent.g,accent.b,alpha))
     draw_rect(Rect2(7,7,w-14,h-14),Color(accent.r,accent.g,accent.b,0.23),false,1.0,true)
     draw_rect(Rect2(10,10,w-20,h-20),Color(0.91,0.75,0.43,0.14),false,1.0,true)
     draw_line(Vector2(17,62),Vector2(w-17,62),edge,2.0,true)
