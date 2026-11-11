@@ -104,5 +104,6 @@ static func settle(state: SimulationState, battle: MapBattleV2) -> Dictionary:
         var actor_id := str(raw_actor_id)
         var disciple: DiscipleState = state.disciples[StringName(actor_id)]
         disciple.v63_learned_skill_nodes = prepared[actor_id]
-        battle.actors[actor_id].erase("v63_pending_mastery")
+        var settled_actor: Dictionary = battle.actors[actor_id]
+        settled_actor.erase("v63_pending_mastery")
     return {"ok": true, "awarded": awarded, "acknowledged": acknowledged}
