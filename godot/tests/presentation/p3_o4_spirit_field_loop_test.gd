@@ -102,6 +102,22 @@ func _run() -> void:
         _fail("O4 planting ignored Plot 01 player-selected crop.")
         return
     var output_id := crops.output_resource_id(crop_id)
+    # GP2: the live map cue must name the REAL selected crop, not the generic
+    # "Linh thảo" caption. Read-only: the planted plot is an actual paid
+    # scheduler job and the warehouse receipt is still pending.
+    var map_crop := ui.call("_map_worksite_snapshot", field) as Dictionary
+    var crop_name := crops.display_name(crop_id)
+    if not str(map_crop.get("detail", "")).contains(crop_name + " ×"):
+        _fail("GP2 live map Field ETA mislabeled real crop %s; detail=%s" % [
+            crop_name, str(map_crop.get("detail", ""))
+        ])
+        return
+    if not str(map_crop.get("display_detail", "")).contains(crop_name):
+        _fail("GP2 compact map Field cue lost selected crop %s." % crop_name)
+        return
+    if int(map_crop.get("received", -1)) != int(field.metrics.get("units_produced", 0)):
+        _fail("GP2 field map falsely counted a growing plot as Warehouse receipt.")
+        return
     var paid := int(plot.get("paid_spirit_stones", 0))
     if not [3, 4].has(paid) or paid != crops.cost(crop_id):
         _fail("O4 fresh crop did not use the canonical Lv1 planting cost.")
