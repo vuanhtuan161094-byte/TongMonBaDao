@@ -9,7 +9,7 @@ func _ready() -> void:
     set_process(true)
 
 func _process(delta: float) -> void:
-    if not visible:
+    if not is_visible_in_tree():
         return
     _phase = fmod(_phase+delta*0.43,TAU)
     _redraw_accum += delta

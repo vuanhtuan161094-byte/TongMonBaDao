@@ -242,7 +242,7 @@ func _art05_tint() -> void:
     var aura := get_node_or_null("Art06WorldAtmosphere") as Control
     if aura != null:
         aura.set("accent",accent)
-        aura.set("job_active",_art02_working_now())
+        aura.call("set_activity",_art02_working_now())
     if building_operation_scroll != null:
         _art05_style_content_tree(building_operation_scroll)
     if building_operation_live_content != null:
