@@ -1,7 +1,7 @@
 class_name V63OriginalCombatVfxV1
 extends Control
 
-const CUES := ["telegraph", "v63_skill_hit", "skill_cast", "skill_release", "v63_mobility", "v63_sword_guard_reflect", "v63_blade_swing_hit", "v63_blade_guard_reflect", "v63_spear_line_hit", "v63_spear_shield_absorbed", "v63_boss_phase", "boss_counter_hit", "status_applied"]
+const CUES := ["telegraph", "v63_skill_hit", "skill_cast", "skill_release", "v63_mobility", "v63_sword_guard_reflect", "v63_blade_swing_hit", "v63_blade_guard_reflect", "v63_spear_line_hit", "v63_spear_shield_absorbed", "v63_dual_blade_hit", "v63_dual_blade_hp_trade", "v63_boss_phase", "boss_counter_hit", "status_applied"]
 var _cue_kind := ""
 var _cue_started := 0.0
 var _event_cursor := 0
@@ -21,6 +21,8 @@ func consume_battle_events(battle: MapBattleV2) -> void:
     var newest: Dictionary = {}
     var newest_blade_swing_by_skill: Dictionary = {}
     var newest_spear_line_by_skill: Dictionary = {}
+    var newest_dual_blade_hit_by_skill: Dictionary = {}
+    var newest_dual_blade_trade_by_skill: Dictionary = {}
     for index in range(battle.events.size()):
         var event: Dictionary = battle.events[index]
         var sequence := int(event.get("sequence", index + 1))
@@ -35,12 +37,20 @@ func consume_battle_events(battle: MapBattleV2) -> void:
             newest_blade_swing_by_skill[event_skill_id] = event
         if event_type == "v63_spear_line_hit":
             newest_spear_line_by_skill[event_skill_id] = event
+        if event_type == "v63_dual_blade_hit":
+            newest_dual_blade_hit_by_skill[event_skill_id] = event
+        if event_type == "v63_dual_blade_hp_trade":
+            newest_dual_blade_trade_by_skill[event_skill_id] = event
     if str(newest.get("type", "")) == "v63_skill_hit":
         var newest_skill_id := str(newest.get("skill_id", ""))
         if newest_blade_swing_by_skill.has(newest_skill_id):
             newest = newest_blade_swing_by_skill[newest_skill_id]
         elif newest_spear_line_by_skill.has(newest_skill_id):
             newest = newest_spear_line_by_skill[newest_skill_id]
+        elif newest_dual_blade_trade_by_skill.has(newest_skill_id):
+            newest = newest_dual_blade_trade_by_skill[newest_skill_id]
+        elif newest_dual_blade_hit_by_skill.has(newest_skill_id):
+            newest = newest_dual_blade_hit_by_skill[newest_skill_id]
     if not newest.is_empty():
         _cue_event = newest.duplicate(true)
         _cue_kind = str(newest.get("type", ""))
@@ -48,7 +58,7 @@ func consume_battle_events(battle: MapBattleV2) -> void:
         _cue_animation_key = ""
         _cue_vfx_key = ""
         _cue_effect = ""
-        if _cue_skill_id.begins_with("tmb.skill.sword.") or _cue_skill_id.begins_with("tmb.skill.blade.") or _cue_skill_id.begins_with("tmb.skill.spear."):
+        if _cue_skill_id.begins_with("tmb.skill.sword.") or _cue_skill_id.begins_with("tmb.skill.blade.") or _cue_skill_id.begins_with("tmb.skill.spear.") or _cue_skill_id.begins_with("tmb.skill.dual_blade."):
             var definition := V63HumanSkillCombatSystem.skill_definition(_cue_skill_id)
             _cue_animation_key = str(definition.get("animation_key",""))
             _cue_vfx_key = str(definition.get("vfx_key",""))
@@ -82,6 +92,9 @@ func _draw() -> void:
         return
     if _cue_skill_id.begins_with("tmb.skill.spear."):
         _draw_spear(center, age, alpha)
+        return
+    if _cue_skill_id.begins_with("tmb.skill.dual_blade."):
+        _draw_dual_blade(center, age, alpha)
         return
     var color := _cue_color(_cue_kind)
     color.a = alpha
@@ -219,6 +232,36 @@ func _draw_spear(center: Vector2, age: float, alpha: float) -> void:
         draw_line(center + Vector2(-reach * 0.75, reach * 0.18), center + Vector2(reach * 0.75, -reach * 0.18), color, width, true)
     draw_arc(center,4.0 + 10.0 * age,0.0,TAU,24,Color(color.r,color.g,color.b,alpha * 0.46),1.1,true)
 
+func _draw_dual_blade(center: Vector2, age: float, alpha: float) -> void:
+    var branch := _dual_blade_branch(_cue_skill_id)
+    var reach := 10.0 + 26.0 * age
+    var width := 2.0 + (1.0 if _cue_vfx_key.contains("ultimate") else 0.0)
+    if _cue_kind == "v63_dual_blade_hp_trade":
+        var blood := Color("b52f46", alpha)
+        draw_arc(center, reach * 0.62, -2.9, 0.45, 38, blood, width + 0.8, true)
+        draw_arc(center, reach * 0.44, -2.55, 0.2, 32, Color("ead18b", alpha * 0.78), 1.4, true)
+        draw_circle(center, 3.0 + age * 4.0, Color(blood.r, blood.g, blood.b, alpha * 0.48))
+        return
+    var color := _cue_color(_cue_kind)
+    color.a = alpha
+    if branch == "anh_nhan":
+        # Two arcs follow the original actor; no illusion actor or extra hit.
+        draw_arc(center + Vector2(-4.0, 1.5), reach * 0.8, -2.7, 0.5, 32, color, width, true)
+        draw_arc(center + Vector2(4.0, -1.5), reach * 0.8, 0.4, 3.6, 32, Color("8cd6e0", alpha), width, true)
+    elif branch == "lien_hoan":
+        var index := int(_cue_event.get("hit_index", 1))
+        var sign := -1.0 if index % 2 == 1 else 1.0
+        var start := center + Vector2(-reach * 0.72, sign * reach * 0.34)
+        var finish := center + Vector2(reach * 0.72, -sign * reach * 0.34)
+        draw_line(start, finish, color, width, true)
+        draw_line(start + Vector2(0.0, sign * 5.0), finish + Vector2(0.0, sign * 5.0), Color("e7d5a0", alpha * 0.62), 1.1, true)
+    elif branch == "huyet_nguyet":
+        draw_arc(center, reach * 0.68, -2.7, 0.52, 36, Color("c94857", alpha), width, true)
+        draw_line(center + Vector2(-reach * 0.55, reach * 0.18), center + Vector2(reach * 0.48, -reach * 0.12), Color("f0c6a0", alpha * 0.78), 1.5, true)
+    else:
+        draw_line(center + Vector2(-reach * 0.7, reach * 0.26), center + Vector2(reach * 0.7, -reach * 0.26), color, width, true)
+    draw_arc(center, 3.0 + age * 10.0, 0.0, TAU, 24, Color(color.r, color.g, color.b, alpha * 0.42), 1.1, true)
+
 func _blade_branch(skill_id: String) -> String:
     for branch in ["cuong_dao","tram_phach_dao","tran_dao"]:
         if skill_id.contains("." + branch + "."):
@@ -233,6 +276,12 @@ func _sword_branch(skill_id: String) -> String:
 
 func _spear_branch(skill_id: String) -> String:
     for branch in ["pha_tran_thuong", "long_thuong", "ho_quan_thuong"]:
+        if skill_id.contains("." + branch + "."):
+            return branch
+    return "common"
+
+func _dual_blade_branch(skill_id: String) -> String:
+    for branch in ["anh_nhan", "lien_hoan", "huyet_nguyet"]:
         if skill_id.contains("." + branch + "."):
             return branch
     return "common"
@@ -252,6 +301,12 @@ func _cue_color(kind: String) -> Color:
         return Color("9be8ee")
     if _cue_kind == "v63_blade_guard_reflect":
         return Color("efcf75")
+    if _cue_kind == "v63_dual_blade_hp_trade" or _cue_skill_id.contains(".huyet_nguyet."):
+        return Color("c94857")
+    if _cue_skill_id.contains(".anh_nhan."):
+        return Color("9fc9e7")
+    if _cue_skill_id.contains(".lien_hoan."):
+        return Color("e6d69e")
     if _cue_kind == "v63_spear_shield_absorbed" or _cue_skill_id.contains(".ho_quan_thuong."):
         return Color("8bd8c6")
     if _cue_skill_id.contains(".long_thuong."):
