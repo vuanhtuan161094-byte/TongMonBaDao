@@ -1,0 +1,30 @@
+TMB V63-ALL36 — S4 Song Đao focused local QA
+Date: 2026-11-12 (Asia/Saigon)
+Repository branch: integration/pve-p0-playable-ui-20261103
+Code checkpoint at test time: candidate overlay in local dirty QA checkout based at af8c82c29089bc71c6dfff8857eeb5a3ea2a0ac1; this is NOT an exact remote-SHA run.
+Pushed candidate code checkpoint after files: c74872d4097df6242f272855aebb70ddf5020abb.
+Engine: Godot 4.7.2.stable.official.ed1daf0bf
+Official binary: E:\Godot_v4.7.2-stable_win64.exe
+Official binary SHA-256: AB1824F85BFD8E0E4128182C000C4003A3E042245B2967848D089B2A04B22424
+Console runner used: E:\Godot_v4.7.2-stable_win64_console.exe
+Console runner SHA-256: C8F0A6BC45A19B33541501E57F6F7CD972AB18453743266339D495CBBE846643
+Profile: isolated QA APPDATA/LOCALAPPDATA; no player save accessed.
+Raw logs: .qa-v63/s4-run-20261112/current-rerun/ (local QA checkout).
+
+RESULTS (exit code and marker):
+- editor import/parse: exit 0; no script parse/runtime failure.
+- S0 presentation/2,196-row ledger: exit 0; V63_S0_RESULT PASS checks=23, existing=549, candidate=732, not_authored=915, gates OFF.
+- D1 content registry: exit 0.
+- S1 Kiếm regression: exit 0; PASS checks=1687, 183 nodes, 35 families, 3 branches; runtime gated, source pending.
+- S2 Đao regression: exit 0; PASS checks=1871, 183 nodes, 35 families, 3 branches; candidate balance, gate OFF.
+- S3 Thương regression: exit 0; PASS checks=1126, 183 nodes, 35 families, 3 branches; authored VFX capture pending, gates OFF.
+- S4 Song Đao regression: exit 0; PASS checks=1502, 183 nodes, 35 families, 3 branches; source pending, candidate balance, code-drawn VFX event verified, authored asset NOT_PRESENT, render NOT_CAPTURED, gate OFF.
+- Catalogue integrity: exit 0; status PASS_CATALOGUE_ONLY_NOT_FULL_RUNTIME_OR_GUI_ACCEPTANCE, 105 families, 21 branches, 549 indexed IDs, release gates OFF.
+
+Environment note: Godot emitted "ERROR: Failed to read the root certificate store." in successful runs. Test processes returned 0; this is an environment certificate-store warning, not a parser failure.
+
+Acceptance limits:
+- These results are local dirty-overlay QA and are not exact-SHA GitHub Actions results for c74872d or the docs-only log commit.
+- GitHub Actions combined status and PR-triggered workflow runs for c74872d were empty at inspection.
+- D4A/Warehouse cumulative FAIL remains open as previously reported in Action #42971666349: authentic D2 manual could not be inserted into canonical Warehouse. No Warehouse/SaveService/economy changes were made and no failure was skipped.
+- No authored Song Dao art/animation or actual rendered capture is claimed. Physical GUI/PK/full ALL36 remain pending.
