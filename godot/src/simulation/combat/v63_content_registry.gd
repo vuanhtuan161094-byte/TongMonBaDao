@@ -3,7 +3,7 @@ extends RefCounted
 
 # D1 read-only catalogue. No runtime import or live combat feature installation.
 const CATALOGUE_PATH := "res://data/combat/v63_content_registry.json"
-const SCHOOL_IDS := ["bow","fist","poison"]
+const SCHOOL_IDS := ["bow","fist","poison","sword"]
 const VALID_TIERS := ["human","immortal","divine","rare_divine"]
 const VALID_SLOTS := ["basic","mobility","active","ultimate","passive","innate"]
 
@@ -36,7 +36,7 @@ static func validate_catalogue(data: Dictionary) -> Array[String]:
     var families: Array = data["families"]
     var paths: Array = data["paths"]
     var bosses: Array = data["bosses"]
-    if families.size() != 105 or paths.size() != 9 or bosses.size() != 9:
+    if families.size() != 140 or paths.size() != 12 or bosses.size() != 9:
         errors.append("wrong_content_counts")
     var path_ids: Dictionary = {}
     for path in paths:
@@ -53,6 +53,7 @@ static func validate_catalogue(data: Dictionary) -> Array[String]:
     var branch_count: Dictionary = {}
     var rare_count := 0
     var poison_rare_passive_count := 0
+    var sword_rare_passive_count := 0
     for family in families:
         var id := str(family.get("id",""))
         var school := str(family.get("school",""))
@@ -87,16 +88,18 @@ static func validate_catalogue(data: Dictionary) -> Array[String]:
                     rare_count += 1
                 elif school=="poison" and slot=="passive" and id.ends_with("passive_05"):
                     poison_rare_passive_count += 1
+                elif school=="sword" and slot=="passive" and id.ends_with("passive_05"):
+                    sword_rare_passive_count += 1
                 else:
                     errors.append("bad_rare_successor:"+node_id)
                 if not parent.contains(".divine."):
                     errors.append("bad_rare_parent:"+node_id)
             family_nodes[node_id] = true
             all_node_ids[node_id] = true
-        var expected_nodes := 3 if branch.is_empty() else (7 if slot=="ultimate" or (school=="poison" and slot=="passive" and id.ends_with("passive_05")) else 5)
+        var expected_nodes := 3 if branch.is_empty() else (7 if slot=="ultimate" or ((school=="poison" or school=="sword") and slot=="passive" and id.ends_with("passive_05")) else 5)
         if family_nodes.size() != expected_nodes:
             errors.append("wrong_family_node_count:"+id)
-    if shared_count != 6 or branch_count.size()!=9 or rare_count != 18 or poison_rare_passive_count != 6:
+    if shared_count != 8 or branch_count.size()!=12 or rare_count != 24 or poison_rare_passive_count != 6 or sword_rare_passive_count != 6:
         errors.append("wrong_family_distribution")
     for count in branch_count.values():
         if int(count)!=11:

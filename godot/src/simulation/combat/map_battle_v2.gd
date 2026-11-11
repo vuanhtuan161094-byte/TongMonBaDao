@@ -143,7 +143,7 @@ func setup(id: String, party: Array, monsters: Array, keep_encounter_open: bool 
             "hunt_radius":float(row.get("hunt_radius",0.0))
         })
         var v63_disciple_actor: Dictionary = entries[entries.size()-1]
-        for field in ["v63_skill_loadout","v63_skill_ready","v63_combat_enabled","v63_passive_ids","v63_combat_branch_id","v63_combat_lineage","v63_innate_skill_id","v63_basic_skill_id","basic_element","v63_divine_stage","v63_combat_generation","v63_blood_mode","v63_base_max_hp","v63_shield_received_factor","v63_spiritual_root_enabled","v63_root_global_all_damage_bonus"]:
+        for field in ["v63_skill_loadout","v63_skill_ready","v63_combat_enabled","v63_sword_combat_enabled","v63_passive_ids","v63_combat_branch_id","v63_combat_lineage","v63_innate_skill_id","v63_basic_skill_id","basic_element","v63_divine_stage","v63_combat_generation","v63_blood_mode","v63_base_max_hp","v63_shield_received_factor","v63_spiritual_root_enabled","v63_root_global_all_damage_bonus"]:
             if row.has(field):
                 v63_disciple_actor[field] = row[field].duplicate(true) if row[field] is Array or row[field] is Dictionary else row[field]
     for raw in monsters:
@@ -1068,6 +1068,7 @@ func _deal_direct(attacker: Dictionary, target: Dictionary, ratio: float, kind: 
     var target_hp_before := float(target["hp"])
     var a_stats: Dictionary = V63HumanSkillCombatSystem.effective_attack_stats(attacker,attacker["stats"])
     var t_stats: Dictionary = V63HumanSkillCombatSystem.effective_defense_stats(target,target["stats"])
+    var unguarded_t_stats: Dictionary = t_stats.duplicate(true)
     var original_ratio := ratio
     var context: Dictionary = {"ok":true,"outgoing_damage_factor":1.0,
         "basic_followup_chance":0.0,"basic_followup_ratio":0.0}
@@ -1106,6 +1107,16 @@ func _deal_direct(attacker: Dictionary, target: Dictionary, ratio: float, kind: 
     )
     if not bool(hit.get("ok",false)):
         return 0.0
+    var sword_reflect_ratio := V63SwordSkillCombatSystem.guard_reflection_ratio(target,now) if guard_factor < 1.0 else 0.0
+    var sword_absorbed_damage := 0.0
+    if sword_reflect_ratio > 0.0 and kind not in ["dot","v63_poison","basic_followup","v63_sword_absorbed_reflect"]:
+        var unguarded_hit := CombatStatsV2.resolve_direct_hit(
+            a_stats,unguarded_t_stats,target["resistances"],ratio,crit,damage_element,matchup_factor,can_crit
+        )
+        if bool(unguarded_hit.get("ok",false)):
+            sword_absorbed_damage = maxf(0.0,
+                minf(target_hp_before,float(unguarded_hit.get("damage",0.0))) -
+                minf(target_hp_before,float(hit.get("damage",0.0))))
     var settlement := CombatStatsV2.settle_damage_and_lifesteal(
         hit,a_stats,t_stats,float(attacker["hp"]),float(attacker["max_hp"]),
         float(target["hp"]),eligible_lifesteal
@@ -1129,6 +1140,8 @@ func _deal_direct(attacker: Dictionary, target: Dictionary, ratio: float, kind: 
         "kind":kind,"critical":crit,"lifesteal":settlement["lifesteal_heal"]})
     if bool(target.get("v63_combat_enabled", false)):
         V63DivineSkillCombatSystem.reflect_committed(self, target, attacker, actual_damage, kind)
+    if sword_absorbed_damage > 0.0:
+        V63SwordSkillCombatSystem.reflect_absorbed(self,target,attacker,sword_absorbed_damage,damage_element)
     if float(target["hp"]) <= 0.0:
         if continuous_mode and str(target["side"]) == "monster":
             _record_monster_kill(attacker, target, kind, actual_damage)

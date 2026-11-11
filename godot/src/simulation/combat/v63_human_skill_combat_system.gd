@@ -132,6 +132,12 @@ static func skill_definitions() -> Dictionary:
             result[str(row.id)] = row.duplicate(true)
     else:
         all_loaded = false
+    var sword := V63SwordSkillCombatSystem.load_catalogue()
+    if bool(sword.get("ok", false)):
+        for row in sword.data.skills:
+            result[str(row.id)] = row.duplicate(true)
+    else:
+        all_loaded = false
     if all_loaded:
         _all_skill_definition_cache = result.duplicate(true)
     return result
@@ -153,6 +159,9 @@ static func branch_definitions() -> Dictionary:
         var row: Dictionary = immortal[branch_id].duplicate(true)
         row["innate_node_id"] = str(result.get(branch_id, {}).get("innate_node_id", ""))
         result[str(branch_id)] = row
+    var sword := V63SwordSkillCombatSystem.branch_definitions()
+    for branch_id in sword.keys():
+        result[str(branch_id)] = sword[branch_id].duplicate(true)
     return result
 
 static func boss_definition(boss_id: String) -> Dictionary:
@@ -177,6 +186,8 @@ static func learn_skill(state: SimulationState, disciple: DiscipleState, skill_i
     if disciple == null or not state.disciples.has(disciple.id):
         return _failure("unknown_disciple")
     var definition := skill_definition(skill_id)
+    if str(definition.get("school", "")) == "sword":
+        return V63SwordSkillCombatSystem.can_learn(definition)
     if definition.is_empty() or not bool(definition.get("archivable",false)):
         return _failure("unknown_or_derived_human_skill")
     var codex_id := str(definition.get("source_codex_id",""))
@@ -250,6 +261,7 @@ static func attach_disciple_loadout(state: SimulationState, actor: Dictionary, p
     if not state.disciples.has(id):
         return _failure("unknown_disciple")
     var disciple: DiscipleState = state.disciples[id]
+    actor["v63_sword_combat_enabled"] = V63FeatureGates.is_enabled("sword_skill_combat",preview_overrides)
     var definitions := skill_definitions()
     var skills: Array = []
     var passives: Array = []
@@ -278,6 +290,10 @@ static func attach_disciple_loadout(state: SimulationState, actor: Dictionary, p
         skills.append("tmb.skill.%s.mobility.immortal.base" % school)
     if divine_lineage in ["a", "b"]:
         var divine_branch: Dictionary = V63DivineSkillCombatSystem.branch_definitions().get(str(disciple.v63_combat_branch_id), {})
+        if divine_branch.is_empty():
+            divine_branch = branch_definitions().get(str(disciple.v63_combat_branch_id), {})
+        if divine_branch.is_empty():
+            return _failure("divine_branch_definition_missing")
         for index in range(skills.size() - 1, -1, -1):
             if str(definitions[str(skills[index])].get("slot", "")) in ["basic", "mobility"]:
                 skills.remove_at(index)
@@ -465,6 +481,7 @@ static func _passive_ids(actor: Dictionary) -> Array:
 # support/mobility skills cannot artificially extend attack distance.
 static func preferred_offensive_range(actor: Dictionary) -> float:
     var basic := maxf(0.0, float(actor.get("range", 1.8)))
+    basic = maxf(basic,V63SwordSkillCombatSystem.preferred_offensive_range(actor))
     if str(actor.get("side", "")) != "disciple" or str(actor.get("role", "")) not in ["mage", "ranged"]:
         return basic
     if not bool(actor.get("v63_combat_enabled", false)):
@@ -492,6 +509,8 @@ static func _try_human_cast(battle: MapBattleV2, actor: Dictionary, enemy: Dicti
         var skill := skill_definition(id)
         var slot := str(skill.get("slot",""))
         var effect := str(skill.get("effect",""))
+        if str(skill.get("school","")) == "sword" and not V63SwordSkillCombatSystem.can_cast(actor,id):
+            continue
         if skill.is_empty() or slot not in ["active","ultimate","mobility"] or battle.now < float(ready.get(id,0.0)):
             continue
         if effect == "mobility":
@@ -690,6 +709,9 @@ static func _cast_record(caster: Dictionary, target: Dictionary, id: String, ski
 
 static func release_cast(battle: MapBattleV2, cast: Dictionary, caster: Dictionary) -> void:
     var skill_id := str(cast.get("v63_skill_id", ""))
+    if V63SwordSkillCombatSystem.is_sword_skill(skill_id):
+        V63SwordSkillCombatSystem.release_cast(battle,cast,caster)
+        return
     if V63DivineSkillCombatSystem.is_divine_skill(skill_id) or V63DivineSkillCombatSystem.is_divine_boss(str(cast.get("v63_boss_id", ""))):
         V63DivineSkillCombatSystem.release_cast(battle, cast, caster)
         return

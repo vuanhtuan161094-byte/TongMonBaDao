@@ -2,10 +2,10 @@
   "schema_version": 1,
   "design": "v6.3-v6.4",
   "enabled": false,
-  "release_status": "D1_UNWIRED_NOT_PLAYABLE",
-  "school_count": 3,
-  "branch_count": 9,
-  "skill_family_count": 105,
+  "release_status": "S1_SWORD_CANDIDATE_GATED_S0_RETAINED",
+  "school_count": 4,
+  "branch_count": 12,
+  "skill_family_count": 140,
   "boss_count": 9,
   "schools": [
     {
@@ -19,6 +19,10 @@
     {
       "id": "poison",
       "name": "Độc"
+    },
+    {
+      "id": "sword",
+      "name": "Kiếm"
     }
   ],
   "paths": [
@@ -147,6 +151,66 @@
         "Thái Thượng Nghịch Mệnh Đạo",
         "Thái Thượng Phản Độc"
       ]
+    },
+    {
+      "id": "tmb.path.sword.ngu_kiem",
+      "school": "sword",
+      "slug": "ngu_kiem",
+      "name": "Ngự Kiếm",
+      "lineages": {
+        "a": "Vân Du",
+        "b": "Kiếm Trận"
+      },
+      "rare": [
+        "Vạn Kiếm Quy Tông · Vạn Lý Kiếm Tâm",
+        "Vạn Kiếm Quy Tông · Kiếm Trận Quy Nhất"
+      ],
+      "school_story_vi": "Ở bậc Thiên Môn, một thanh kiếm gãy làm ba. Ba người nhặt ba mảnh sau khi dân chạy nạn lọt qua cổng: người thứ nhất muốn lưỡi kiếm bay tới nơi đôi chân không kịp cứu; người thứ hai muốn chém đứt hiểm họa bằng một nhát có trách nhiệm; người cuối dựng mảnh kiếm thành thế chắn để người khác đi qua. Họ bất đồng về cách giữ lời thề nhưng cùng thề không dùng ảo ảnh để giả thêm đòn đánh. Người mới học phải đặt nền ở Nhân giới: chọn mục tiêu, giữ cự ly hoặc đỡ đúng một đòn đang tới. Sang Tiên giới, truyền nhân chọn một trong hai dòng kế thừa, Vân Du hay Kiếm Trận, Đoạn Ảnh hay Tĩnh Phong, Thiết Bích hay Hồi Kiếm. Mỗi lựa chọn đổi nhịp tác chiến nhưng không viết lại luật sát thương. Tới Thần giới, họ chứng minh kiếm ý bằng đúng dữ kiện trận đấu: đòn chỉ trúng khi runtime xác nhận, thế hộ chỉ giảm phần thật sự bị ngăn, còn hình ảnh muôn kiếm không nhân hit. Đạo ngôn truyền lại: “Kiếm không có tâm; người cầm kiếm phải có.”",
+      "branch_story_vi": "Người nhặt mảnh kiếm thứ nhất từng chạy không kịp qua một cánh đồng cháy. Từ đó, họ để phi kiếm rời tay trước khi bước chân có thể tới. Vân Du tin kiếm nên vượt núi sông để cứu người ở xa; Kiếm Trận tin nhiều lưỡi phải quy về một tâm, không được vì mỹ lệ mà sinh thêm đòn đánh. Nhân giới học cách gọi kiếm về và chọn mục tiêu. Tiên giới phân thành một đường kiếm cứu viện hoặc thế kiếm hội tụ. Thần giới chứng minh vạn kiếm vẫn chỉ phát sinh đúng số lần trúng mà trận pháp thật xác nhận.",
+      "lineage_story_vi": {
+        "a": "Vân Du nối một đường kiếm tới nơi người cầm không kịp đến; đổi lại phải giữ đúng mục tiêu và chấp nhận khoảng trễ của đường bay.",
+        "b": "Kiếm Trận gom phi kiếm quanh một tâm lệnh; hình ảnh nhiều lưỡi không sinh nhiều hit, phạm vi và số đích vẫn do runtime."
+      }
+    },
+    {
+      "id": "tmb.path.sword.sat_kiem",
+      "school": "sword",
+      "slug": "sat_kiem",
+      "name": "Sát Kiếm",
+      "lineages": {
+        "a": "Đoạn Ảnh",
+        "b": "Tĩnh Phong"
+      },
+      "rare": [
+        "Nhất Kiếm Đoạn Thiên · Phá Ảnh Kiếm Tâm",
+        "Nhất Kiếm Đoạn Thiên · Tĩnh Phong Định Mệnh"
+      ],
+      "school_story_vi": "Ở bậc Thiên Môn, một thanh kiếm gãy làm ba. Ba người nhặt ba mảnh sau khi dân chạy nạn lọt qua cổng: người thứ nhất muốn lưỡi kiếm bay tới nơi đôi chân không kịp cứu; người thứ hai muốn chém đứt hiểm họa bằng một nhát có trách nhiệm; người cuối dựng mảnh kiếm thành thế chắn để người khác đi qua. Họ bất đồng về cách giữ lời thề nhưng cùng thề không dùng ảo ảnh để giả thêm đòn đánh. Người mới học phải đặt nền ở Nhân giới: chọn mục tiêu, giữ cự ly hoặc đỡ đúng một đòn đang tới. Sang Tiên giới, truyền nhân chọn một trong hai dòng kế thừa, Vân Du hay Kiếm Trận, Đoạn Ảnh hay Tĩnh Phong, Thiết Bích hay Hồi Kiếm. Mỗi lựa chọn đổi nhịp tác chiến nhưng không viết lại luật sát thương. Tới Thần giới, họ chứng minh kiếm ý bằng đúng dữ kiện trận đấu: đòn chỉ trúng khi runtime xác nhận, thế hộ chỉ giảm phần thật sự bị ngăn, còn hình ảnh muôn kiếm không nhân hit. Đạo ngôn truyền lại: “Kiếm không có tâm; người cầm kiếm phải có.”",
+      "branch_story_vi": "Người nhặt mảnh kiếm thứ hai từng chém chậm một nhịp và để tai họa vượt qua cổng thành. Họ không thờ sát niệm mà học cách kết thúc một hiểm họa bằng một đường kiếm có trách nhiệm. Đoạn Ảnh dồn lực vào khoảnh khắc trúng đích; Tĩnh Phong giữ hơi thở, chờ thế đối phương lộ ra rồi mới xuất kiếm. Nhân giới luyện đường chém thật và khoảng nghỉ trước khi ra đòn. Tiên giới chọn dồn lực hoặc tiết chế thời điểm. Thần giới chỉ được chứng minh khi đòn quyết định vẫn đi qua phòng thủ, không giả định kết liễu hay xuyên giáp.",
+      "lineage_story_vi": {
+        "a": "Đoạn Ảnh chấp nhận hồi chiêu dài hơn để đặt lực vào một nhát chém; không bỏ qua phòng thủ hoặc đảm bảo kết liễu.",
+        "b": "Tĩnh Phong giảm thời gian chuẩn bị của một số chiêu ứng viên, nhưng phải chọn đúng lúc và không tạo thêm lượt đánh."
+      }
+    },
+    {
+      "id": "tmb.path.sword.ho_kiem",
+      "school": "sword",
+      "slug": "ho_kiem",
+      "name": "Hộ Kiếm",
+      "lineages": {
+        "a": "Thiết Bích",
+        "b": "Hồi Kiếm"
+      },
+      "rare": [
+        "Thiên Cương Kiếm Giới · Hồi Thiên Kiếm Tâm",
+        "Thiên Cương Kiếm Giới · Phản Chiếu Thiên Cương"
+      ],
+      "school_story_vi": "Ở bậc Thiên Môn, một thanh kiếm gãy làm ba. Ba người nhặt ba mảnh sau khi dân chạy nạn lọt qua cổng: người thứ nhất muốn lưỡi kiếm bay tới nơi đôi chân không kịp cứu; người thứ hai muốn chém đứt hiểm họa bằng một nhát có trách nhiệm; người cuối dựng mảnh kiếm thành thế chắn để người khác đi qua. Họ bất đồng về cách giữ lời thề nhưng cùng thề không dùng ảo ảnh để giả thêm đòn đánh. Người mới học phải đặt nền ở Nhân giới: chọn mục tiêu, giữ cự ly hoặc đỡ đúng một đòn đang tới. Sang Tiên giới, truyền nhân chọn một trong hai dòng kế thừa, Vân Du hay Kiếm Trận, Đoạn Ảnh hay Tĩnh Phong, Thiết Bích hay Hồi Kiếm. Mỗi lựa chọn đổi nhịp tác chiến nhưng không viết lại luật sát thương. Tới Thần giới, họ chứng minh kiếm ý bằng đúng dữ kiện trận đấu: đòn chỉ trúng khi runtime xác nhận, thế hộ chỉ giảm phần thật sự bị ngăn, còn hình ảnh muôn kiếm không nhân hit. Đạo ngôn truyền lại: “Kiếm không có tâm; người cầm kiếm phải có.”",
+      "branch_story_vi": "Người nhặt mảnh kiếm cuối cùng đứng lại trước cổng thành để đoàn người phía sau có đường lui. Họ hiểu hộ kiếm không phải miễn tử: một thế kiếm chỉ giảm phần sát thương mà luật chiến đấu thật cho phép. Thiết Bích chọn giữ hàng ngũ và kéo dài thế chắn; Hồi Kiếm học cách trả lại một phần lực đã thực sự bị ngăn, không phản đòn từ sát thương tưởng tượng. Nhân giới dựng thủ thế hữu hạn. Tiên giới chọn giữ chắc hoặc phản chuyển có điều kiện. Thần giới chỉ được xác nhận khi phần giảm và phần phản kích đều bị chặn bởi giới hạn runtime, không sinh miễn nhiễm.",
+      "lineage_story_vi": {
+        "a": "Thiết Bích giữ giảm sát thương theo thời hạn và hệ số trong runtime; không biến thế chắn thành bất tử.",
+        "b": "Hồi Kiếm chỉ có thể phản một phần sát thương thực tế bị giảm, sau khi phòng thủ và HP được tính; không phản Độc duy trì hay tự tạo thêm mục tiêu."
+      }
     }
   ],
   "families": [
@@ -4412,6 +4476,1431 @@
           "parent": "tmb.skill.poison.duoc_doc.innate.immortal.b"
         }
       ]
+    },
+    {
+      "id": "tmb.skill.sword.basic",
+      "school": "sword",
+      "branch": "",
+      "slot": "basic",
+      "name": "Tâm Kiếm Nhập Môn",
+      "nodes": [
+        {
+          "id": "tmb.skill.sword.basic.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.sword.basic.immortal.base",
+          "tier": "immortal",
+          "lineage": "base",
+          "parent": "tmb.skill.sword.basic.human"
+        },
+        {
+          "id": "tmb.skill.sword.basic.divine.base",
+          "tier": "divine",
+          "lineage": "base",
+          "parent": "tmb.skill.sword.basic.immortal.base"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.sword.mobility",
+      "school": "sword",
+      "branch": "",
+      "slot": "mobility",
+      "name": "Đạp Kiếm Tầm Phong",
+      "nodes": [
+        {
+          "id": "tmb.skill.sword.mobility.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.sword.mobility.immortal.base",
+          "tier": "immortal",
+          "lineage": "base",
+          "parent": "tmb.skill.sword.mobility.human"
+        },
+        {
+          "id": "tmb.skill.sword.mobility.divine.base",
+          "tier": "divine",
+          "lineage": "base",
+          "parent": "tmb.skill.sword.mobility.immortal.base"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.sword.ngu_kiem.active_01",
+      "school": "sword",
+      "branch": "ngu_kiem",
+      "slot": "active",
+      "name": "Phi Kiếm Truy Ảnh",
+      "nodes": [
+        {
+          "id": "tmb.skill.sword.ngu_kiem.active_01.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.sword.ngu_kiem.active_01.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.sword.ngu_kiem.active_01.human"
+        },
+        {
+          "id": "tmb.skill.sword.ngu_kiem.active_01.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.sword.ngu_kiem.active_01.human"
+        },
+        {
+          "id": "tmb.skill.sword.ngu_kiem.active_01.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.sword.ngu_kiem.active_01.immortal.a"
+        },
+        {
+          "id": "tmb.skill.sword.ngu_kiem.active_01.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.sword.ngu_kiem.active_01.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.sword.ngu_kiem.active_02",
+      "school": "sword",
+      "branch": "ngu_kiem",
+      "slot": "active",
+      "name": "Kiếm Vũ Hồi Phong",
+      "nodes": [
+        {
+          "id": "tmb.skill.sword.ngu_kiem.active_02.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.sword.ngu_kiem.active_02.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.sword.ngu_kiem.active_02.human"
+        },
+        {
+          "id": "tmb.skill.sword.ngu_kiem.active_02.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.sword.ngu_kiem.active_02.human"
+        },
+        {
+          "id": "tmb.skill.sword.ngu_kiem.active_02.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.sword.ngu_kiem.active_02.immortal.a"
+        },
+        {
+          "id": "tmb.skill.sword.ngu_kiem.active_02.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.sword.ngu_kiem.active_02.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.sword.ngu_kiem.active_03",
+      "school": "sword",
+      "branch": "ngu_kiem",
+      "slot": "active",
+      "name": "Tứ Phương Phi Nhận",
+      "nodes": [
+        {
+          "id": "tmb.skill.sword.ngu_kiem.active_03.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.sword.ngu_kiem.active_03.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.sword.ngu_kiem.active_03.human"
+        },
+        {
+          "id": "tmb.skill.sword.ngu_kiem.active_03.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.sword.ngu_kiem.active_03.human"
+        },
+        {
+          "id": "tmb.skill.sword.ngu_kiem.active_03.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.sword.ngu_kiem.active_03.immortal.a"
+        },
+        {
+          "id": "tmb.skill.sword.ngu_kiem.active_03.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.sword.ngu_kiem.active_03.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.sword.ngu_kiem.active_04",
+      "school": "sword",
+      "branch": "ngu_kiem",
+      "slot": "active",
+      "name": "Kiếm Quang Hồi Chủ",
+      "nodes": [
+        {
+          "id": "tmb.skill.sword.ngu_kiem.active_04.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.sword.ngu_kiem.active_04.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.sword.ngu_kiem.active_04.human"
+        },
+        {
+          "id": "tmb.skill.sword.ngu_kiem.active_04.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.sword.ngu_kiem.active_04.human"
+        },
+        {
+          "id": "tmb.skill.sword.ngu_kiem.active_04.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.sword.ngu_kiem.active_04.immortal.a"
+        },
+        {
+          "id": "tmb.skill.sword.ngu_kiem.active_04.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.sword.ngu_kiem.active_04.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.sword.ngu_kiem.ultimate",
+      "school": "sword",
+      "branch": "ngu_kiem",
+      "slot": "ultimate",
+      "name": "Vạn Kiếm Quy Tông",
+      "nodes": [
+        {
+          "id": "tmb.skill.sword.ngu_kiem.ultimate.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.sword.ngu_kiem.ultimate.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.sword.ngu_kiem.ultimate.human"
+        },
+        {
+          "id": "tmb.skill.sword.ngu_kiem.ultimate.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.sword.ngu_kiem.ultimate.human"
+        },
+        {
+          "id": "tmb.skill.sword.ngu_kiem.ultimate.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.sword.ngu_kiem.ultimate.immortal.a"
+        },
+        {
+          "id": "tmb.skill.sword.ngu_kiem.ultimate.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.sword.ngu_kiem.ultimate.immortal.b"
+        },
+        {
+          "id": "tmb.skill.sword.ngu_kiem.ultimate.rare.a",
+          "tier": "rare_divine",
+          "lineage": "a",
+          "parent": "tmb.skill.sword.ngu_kiem.ultimate.divine.a",
+          "name": "Vạn Kiếm Quy Tông · Vạn Lý Kiếm Tâm"
+        },
+        {
+          "id": "tmb.skill.sword.ngu_kiem.ultimate.rare.b",
+          "tier": "rare_divine",
+          "lineage": "b",
+          "parent": "tmb.skill.sword.ngu_kiem.ultimate.divine.b",
+          "name": "Vạn Kiếm Quy Tông · Kiếm Trận Quy Nhất"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.sword.ngu_kiem.passive_01",
+      "school": "sword",
+      "branch": "ngu_kiem",
+      "slot": "passive",
+      "name": "Kiếm Ý Dẫn Đường",
+      "nodes": [
+        {
+          "id": "tmb.skill.sword.ngu_kiem.passive_01.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.sword.ngu_kiem.passive_01.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.sword.ngu_kiem.passive_01.human"
+        },
+        {
+          "id": "tmb.skill.sword.ngu_kiem.passive_01.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.sword.ngu_kiem.passive_01.human"
+        },
+        {
+          "id": "tmb.skill.sword.ngu_kiem.passive_01.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.sword.ngu_kiem.passive_01.immortal.a"
+        },
+        {
+          "id": "tmb.skill.sword.ngu_kiem.passive_01.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.sword.ngu_kiem.passive_01.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.sword.ngu_kiem.passive_02",
+      "school": "sword",
+      "branch": "ngu_kiem",
+      "slot": "passive",
+      "name": "Tâm Kiếm Đồng Minh",
+      "nodes": [
+        {
+          "id": "tmb.skill.sword.ngu_kiem.passive_02.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.sword.ngu_kiem.passive_02.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.sword.ngu_kiem.passive_02.human"
+        },
+        {
+          "id": "tmb.skill.sword.ngu_kiem.passive_02.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.sword.ngu_kiem.passive_02.human"
+        },
+        {
+          "id": "tmb.skill.sword.ngu_kiem.passive_02.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.sword.ngu_kiem.passive_02.immortal.a"
+        },
+        {
+          "id": "tmb.skill.sword.ngu_kiem.passive_02.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.sword.ngu_kiem.passive_02.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.sword.ngu_kiem.passive_03",
+      "school": "sword",
+      "branch": "ngu_kiem",
+      "slot": "passive",
+      "name": "Tụ Phong Ngự Nhận",
+      "nodes": [
+        {
+          "id": "tmb.skill.sword.ngu_kiem.passive_03.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.sword.ngu_kiem.passive_03.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.sword.ngu_kiem.passive_03.human"
+        },
+        {
+          "id": "tmb.skill.sword.ngu_kiem.passive_03.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.sword.ngu_kiem.passive_03.human"
+        },
+        {
+          "id": "tmb.skill.sword.ngu_kiem.passive_03.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.sword.ngu_kiem.passive_03.immortal.a"
+        },
+        {
+          "id": "tmb.skill.sword.ngu_kiem.passive_03.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.sword.ngu_kiem.passive_03.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.sword.ngu_kiem.passive_04",
+      "school": "sword",
+      "branch": "ngu_kiem",
+      "slot": "passive",
+      "name": "Ngự Kiếm Truy Cơ",
+      "nodes": [
+        {
+          "id": "tmb.skill.sword.ngu_kiem.passive_04.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.sword.ngu_kiem.passive_04.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.sword.ngu_kiem.passive_04.human"
+        },
+        {
+          "id": "tmb.skill.sword.ngu_kiem.passive_04.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.sword.ngu_kiem.passive_04.human"
+        },
+        {
+          "id": "tmb.skill.sword.ngu_kiem.passive_04.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.sword.ngu_kiem.passive_04.immortal.a"
+        },
+        {
+          "id": "tmb.skill.sword.ngu_kiem.passive_04.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.sword.ngu_kiem.passive_04.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.sword.ngu_kiem.passive_05",
+      "school": "sword",
+      "branch": "ngu_kiem",
+      "slot": "passive",
+      "name": "Vạn Nhận Quy Nhất",
+      "nodes": [
+        {
+          "id": "tmb.skill.sword.ngu_kiem.passive_05.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.sword.ngu_kiem.passive_05.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.sword.ngu_kiem.passive_05.human"
+        },
+        {
+          "id": "tmb.skill.sword.ngu_kiem.passive_05.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.sword.ngu_kiem.passive_05.human"
+        },
+        {
+          "id": "tmb.skill.sword.ngu_kiem.passive_05.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.sword.ngu_kiem.passive_05.immortal.a"
+        },
+        {
+          "id": "tmb.skill.sword.ngu_kiem.passive_05.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.sword.ngu_kiem.passive_05.immortal.b"
+        },
+        {
+          "id": "tmb.skill.sword.ngu_kiem.passive_05.rare_passive.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.sword.ngu_kiem.passive_05.divine.a",
+          "name": "Vạn Nhận Quy Nhất · Vạn Lý Kiếm Tâm"
+        },
+        {
+          "id": "tmb.skill.sword.ngu_kiem.passive_05.rare_passive.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.sword.ngu_kiem.passive_05.divine.b",
+          "name": "Vạn Nhận Quy Nhất · Kiếm Trận Quy Nhất"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.sword.ngu_kiem.innate",
+      "school": "sword",
+      "branch": "ngu_kiem",
+      "slot": "innate",
+      "name": "Ngự Kiếm Chân Ý",
+      "nodes": [
+        {
+          "id": "tmb.skill.sword.ngu_kiem.innate.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.sword.ngu_kiem.innate.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.sword.ngu_kiem.innate.human"
+        },
+        {
+          "id": "tmb.skill.sword.ngu_kiem.innate.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.sword.ngu_kiem.innate.human"
+        },
+        {
+          "id": "tmb.skill.sword.ngu_kiem.innate.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.sword.ngu_kiem.innate.immortal.a"
+        },
+        {
+          "id": "tmb.skill.sword.ngu_kiem.innate.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.sword.ngu_kiem.innate.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.sword.sat_kiem.active_01",
+      "school": "sword",
+      "branch": "sat_kiem",
+      "slot": "active",
+      "name": "Trảm Ảnh Nhất Tuyến",
+      "nodes": [
+        {
+          "id": "tmb.skill.sword.sat_kiem.active_01.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.sword.sat_kiem.active_01.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.sword.sat_kiem.active_01.human"
+        },
+        {
+          "id": "tmb.skill.sword.sat_kiem.active_01.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.sword.sat_kiem.active_01.human"
+        },
+        {
+          "id": "tmb.skill.sword.sat_kiem.active_01.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.sword.sat_kiem.active_01.immortal.a"
+        },
+        {
+          "id": "tmb.skill.sword.sat_kiem.active_01.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.sword.sat_kiem.active_01.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.sword.sat_kiem.active_02",
+      "school": "sword",
+      "branch": "sat_kiem",
+      "slot": "active",
+      "name": "Phá Vân Trực Trảm",
+      "nodes": [
+        {
+          "id": "tmb.skill.sword.sat_kiem.active_02.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.sword.sat_kiem.active_02.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.sword.sat_kiem.active_02.human"
+        },
+        {
+          "id": "tmb.skill.sword.sat_kiem.active_02.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.sword.sat_kiem.active_02.human"
+        },
+        {
+          "id": "tmb.skill.sword.sat_kiem.active_02.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.sword.sat_kiem.active_02.immortal.a"
+        },
+        {
+          "id": "tmb.skill.sword.sat_kiem.active_02.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.sword.sat_kiem.active_02.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.sword.sat_kiem.active_03",
+      "school": "sword",
+      "branch": "sat_kiem",
+      "slot": "active",
+      "name": "Đoạn Thủy Kiếm Mang",
+      "nodes": [
+        {
+          "id": "tmb.skill.sword.sat_kiem.active_03.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.sword.sat_kiem.active_03.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.sword.sat_kiem.active_03.human"
+        },
+        {
+          "id": "tmb.skill.sword.sat_kiem.active_03.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.sword.sat_kiem.active_03.human"
+        },
+        {
+          "id": "tmb.skill.sword.sat_kiem.active_03.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.sword.sat_kiem.active_03.immortal.a"
+        },
+        {
+          "id": "tmb.skill.sword.sat_kiem.active_03.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.sword.sat_kiem.active_03.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.sword.sat_kiem.active_04",
+      "school": "sword",
+      "branch": "sat_kiem",
+      "slot": "active",
+      "name": "Tàng Phong Đột Thứ",
+      "nodes": [
+        {
+          "id": "tmb.skill.sword.sat_kiem.active_04.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.sword.sat_kiem.active_04.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.sword.sat_kiem.active_04.human"
+        },
+        {
+          "id": "tmb.skill.sword.sat_kiem.active_04.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.sword.sat_kiem.active_04.human"
+        },
+        {
+          "id": "tmb.skill.sword.sat_kiem.active_04.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.sword.sat_kiem.active_04.immortal.a"
+        },
+        {
+          "id": "tmb.skill.sword.sat_kiem.active_04.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.sword.sat_kiem.active_04.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.sword.sat_kiem.ultimate",
+      "school": "sword",
+      "branch": "sat_kiem",
+      "slot": "ultimate",
+      "name": "Nhất Kiếm Đoạn Thiên",
+      "nodes": [
+        {
+          "id": "tmb.skill.sword.sat_kiem.ultimate.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.sword.sat_kiem.ultimate.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.sword.sat_kiem.ultimate.human"
+        },
+        {
+          "id": "tmb.skill.sword.sat_kiem.ultimate.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.sword.sat_kiem.ultimate.human"
+        },
+        {
+          "id": "tmb.skill.sword.sat_kiem.ultimate.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.sword.sat_kiem.ultimate.immortal.a"
+        },
+        {
+          "id": "tmb.skill.sword.sat_kiem.ultimate.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.sword.sat_kiem.ultimate.immortal.b"
+        },
+        {
+          "id": "tmb.skill.sword.sat_kiem.ultimate.rare.a",
+          "tier": "rare_divine",
+          "lineage": "a",
+          "parent": "tmb.skill.sword.sat_kiem.ultimate.divine.a",
+          "name": "Nhất Kiếm Đoạn Thiên · Phá Ảnh Kiếm Tâm"
+        },
+        {
+          "id": "tmb.skill.sword.sat_kiem.ultimate.rare.b",
+          "tier": "rare_divine",
+          "lineage": "b",
+          "parent": "tmb.skill.sword.sat_kiem.ultimate.divine.b",
+          "name": "Nhất Kiếm Đoạn Thiên · Tĩnh Phong Định Mệnh"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.sword.sat_kiem.passive_01",
+      "school": "sword",
+      "branch": "sat_kiem",
+      "slot": "passive",
+      "name": "Tĩnh Tâm Định Nhận",
+      "nodes": [
+        {
+          "id": "tmb.skill.sword.sat_kiem.passive_01.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.sword.sat_kiem.passive_01.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.sword.sat_kiem.passive_01.human"
+        },
+        {
+          "id": "tmb.skill.sword.sat_kiem.passive_01.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.sword.sat_kiem.passive_01.human"
+        },
+        {
+          "id": "tmb.skill.sword.sat_kiem.passive_01.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.sword.sat_kiem.passive_01.immortal.a"
+        },
+        {
+          "id": "tmb.skill.sword.sat_kiem.passive_01.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.sword.sat_kiem.passive_01.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.sword.sat_kiem.passive_02",
+      "school": "sword",
+      "branch": "sat_kiem",
+      "slot": "passive",
+      "name": "Kiếm Ý Phá Ảnh",
+      "nodes": [
+        {
+          "id": "tmb.skill.sword.sat_kiem.passive_02.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.sword.sat_kiem.passive_02.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.sword.sat_kiem.passive_02.human"
+        },
+        {
+          "id": "tmb.skill.sword.sat_kiem.passive_02.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.sword.sat_kiem.passive_02.human"
+        },
+        {
+          "id": "tmb.skill.sword.sat_kiem.passive_02.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.sword.sat_kiem.passive_02.immortal.a"
+        },
+        {
+          "id": "tmb.skill.sword.sat_kiem.passive_02.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.sword.sat_kiem.passive_02.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.sword.sat_kiem.passive_03",
+      "school": "sword",
+      "branch": "sat_kiem",
+      "slot": "passive",
+      "name": "Nhất Niệm Tập Trung",
+      "nodes": [
+        {
+          "id": "tmb.skill.sword.sat_kiem.passive_03.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.sword.sat_kiem.passive_03.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.sword.sat_kiem.passive_03.human"
+        },
+        {
+          "id": "tmb.skill.sword.sat_kiem.passive_03.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.sword.sat_kiem.passive_03.human"
+        },
+        {
+          "id": "tmb.skill.sword.sat_kiem.passive_03.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.sword.sat_kiem.passive_03.immortal.a"
+        },
+        {
+          "id": "tmb.skill.sword.sat_kiem.passive_03.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.sword.sat_kiem.passive_03.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.sword.sat_kiem.passive_04",
+      "school": "sword",
+      "branch": "sat_kiem",
+      "slot": "passive",
+      "name": "Thu Phong Tàng Thế",
+      "nodes": [
+        {
+          "id": "tmb.skill.sword.sat_kiem.passive_04.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.sword.sat_kiem.passive_04.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.sword.sat_kiem.passive_04.human"
+        },
+        {
+          "id": "tmb.skill.sword.sat_kiem.passive_04.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.sword.sat_kiem.passive_04.human"
+        },
+        {
+          "id": "tmb.skill.sword.sat_kiem.passive_04.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.sword.sat_kiem.passive_04.immortal.a"
+        },
+        {
+          "id": "tmb.skill.sword.sat_kiem.passive_04.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.sword.sat_kiem.passive_04.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.sword.sat_kiem.passive_05",
+      "school": "sword",
+      "branch": "sat_kiem",
+      "slot": "passive",
+      "name": "Một Kiếm Quy Tâm",
+      "nodes": [
+        {
+          "id": "tmb.skill.sword.sat_kiem.passive_05.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.sword.sat_kiem.passive_05.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.sword.sat_kiem.passive_05.human"
+        },
+        {
+          "id": "tmb.skill.sword.sat_kiem.passive_05.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.sword.sat_kiem.passive_05.human"
+        },
+        {
+          "id": "tmb.skill.sword.sat_kiem.passive_05.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.sword.sat_kiem.passive_05.immortal.a"
+        },
+        {
+          "id": "tmb.skill.sword.sat_kiem.passive_05.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.sword.sat_kiem.passive_05.immortal.b"
+        },
+        {
+          "id": "tmb.skill.sword.sat_kiem.passive_05.rare_passive.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.sword.sat_kiem.passive_05.divine.a",
+          "name": "Một Kiếm Quy Tâm · Phá Ảnh Kiếm Tâm"
+        },
+        {
+          "id": "tmb.skill.sword.sat_kiem.passive_05.rare_passive.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.sword.sat_kiem.passive_05.divine.b",
+          "name": "Một Kiếm Quy Tâm · Tĩnh Phong Định Mệnh"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.sword.sat_kiem.innate",
+      "school": "sword",
+      "branch": "sat_kiem",
+      "slot": "innate",
+      "name": "Sát Kiếm Chân Ý",
+      "nodes": [
+        {
+          "id": "tmb.skill.sword.sat_kiem.innate.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.sword.sat_kiem.innate.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.sword.sat_kiem.innate.human"
+        },
+        {
+          "id": "tmb.skill.sword.sat_kiem.innate.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.sword.sat_kiem.innate.human"
+        },
+        {
+          "id": "tmb.skill.sword.sat_kiem.innate.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.sword.sat_kiem.innate.immortal.a"
+        },
+        {
+          "id": "tmb.skill.sword.sat_kiem.innate.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.sword.sat_kiem.innate.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.sword.ho_kiem.active_01",
+      "school": "sword",
+      "branch": "ho_kiem",
+      "slot": "active",
+      "name": "Kiếm Bích Hộ Thân",
+      "nodes": [
+        {
+          "id": "tmb.skill.sword.ho_kiem.active_01.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.sword.ho_kiem.active_01.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.sword.ho_kiem.active_01.human"
+        },
+        {
+          "id": "tmb.skill.sword.ho_kiem.active_01.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.sword.ho_kiem.active_01.human"
+        },
+        {
+          "id": "tmb.skill.sword.ho_kiem.active_01.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.sword.ho_kiem.active_01.immortal.a"
+        },
+        {
+          "id": "tmb.skill.sword.ho_kiem.active_01.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.sword.ho_kiem.active_01.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.sword.ho_kiem.active_02",
+      "school": "sword",
+      "branch": "ho_kiem",
+      "slot": "active",
+      "name": "Hồi Kiếm Phản Thế",
+      "nodes": [
+        {
+          "id": "tmb.skill.sword.ho_kiem.active_02.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.sword.ho_kiem.active_02.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.sword.ho_kiem.active_02.human"
+        },
+        {
+          "id": "tmb.skill.sword.ho_kiem.active_02.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.sword.ho_kiem.active_02.human"
+        },
+        {
+          "id": "tmb.skill.sword.ho_kiem.active_02.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.sword.ho_kiem.active_02.immortal.a"
+        },
+        {
+          "id": "tmb.skill.sword.ho_kiem.active_02.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.sword.ho_kiem.active_02.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.sword.ho_kiem.active_03",
+      "school": "sword",
+      "branch": "ho_kiem",
+      "slot": "active",
+      "name": "Liên Tâm Kiếm Thuẫn",
+      "nodes": [
+        {
+          "id": "tmb.skill.sword.ho_kiem.active_03.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.sword.ho_kiem.active_03.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.sword.ho_kiem.active_03.human"
+        },
+        {
+          "id": "tmb.skill.sword.ho_kiem.active_03.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.sword.ho_kiem.active_03.human"
+        },
+        {
+          "id": "tmb.skill.sword.ho_kiem.active_03.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.sword.ho_kiem.active_03.immortal.a"
+        },
+        {
+          "id": "tmb.skill.sword.ho_kiem.active_03.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.sword.ho_kiem.active_03.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.sword.ho_kiem.active_04",
+      "school": "sword",
+      "branch": "ho_kiem",
+      "slot": "active",
+      "name": "Thiên Cương Hộ Mệnh",
+      "nodes": [
+        {
+          "id": "tmb.skill.sword.ho_kiem.active_04.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.sword.ho_kiem.active_04.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.sword.ho_kiem.active_04.human"
+        },
+        {
+          "id": "tmb.skill.sword.ho_kiem.active_04.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.sword.ho_kiem.active_04.human"
+        },
+        {
+          "id": "tmb.skill.sword.ho_kiem.active_04.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.sword.ho_kiem.active_04.immortal.a"
+        },
+        {
+          "id": "tmb.skill.sword.ho_kiem.active_04.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.sword.ho_kiem.active_04.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.sword.ho_kiem.ultimate",
+      "school": "sword",
+      "branch": "ho_kiem",
+      "slot": "ultimate",
+      "name": "Thiên Cương Kiếm Giới",
+      "nodes": [
+        {
+          "id": "tmb.skill.sword.ho_kiem.ultimate.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.sword.ho_kiem.ultimate.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.sword.ho_kiem.ultimate.human"
+        },
+        {
+          "id": "tmb.skill.sword.ho_kiem.ultimate.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.sword.ho_kiem.ultimate.human"
+        },
+        {
+          "id": "tmb.skill.sword.ho_kiem.ultimate.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.sword.ho_kiem.ultimate.immortal.a"
+        },
+        {
+          "id": "tmb.skill.sword.ho_kiem.ultimate.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.sword.ho_kiem.ultimate.immortal.b"
+        },
+        {
+          "id": "tmb.skill.sword.ho_kiem.ultimate.rare.a",
+          "tier": "rare_divine",
+          "lineage": "a",
+          "parent": "tmb.skill.sword.ho_kiem.ultimate.divine.a",
+          "name": "Thiên Cương Kiếm Giới · Hồi Thiên Kiếm Tâm"
+        },
+        {
+          "id": "tmb.skill.sword.ho_kiem.ultimate.rare.b",
+          "tier": "rare_divine",
+          "lineage": "b",
+          "parent": "tmb.skill.sword.ho_kiem.ultimate.divine.b",
+          "name": "Thiên Cương Kiếm Giới · Phản Chiếu Thiên Cương"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.sword.ho_kiem.passive_01",
+      "school": "sword",
+      "branch": "ho_kiem",
+      "slot": "passive",
+      "name": "Kiếm Tâm Hộ Chủ",
+      "nodes": [
+        {
+          "id": "tmb.skill.sword.ho_kiem.passive_01.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.sword.ho_kiem.passive_01.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.sword.ho_kiem.passive_01.human"
+        },
+        {
+          "id": "tmb.skill.sword.ho_kiem.passive_01.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.sword.ho_kiem.passive_01.human"
+        },
+        {
+          "id": "tmb.skill.sword.ho_kiem.passive_01.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.sword.ho_kiem.passive_01.immortal.a"
+        },
+        {
+          "id": "tmb.skill.sword.ho_kiem.passive_01.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.sword.ho_kiem.passive_01.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.sword.ho_kiem.passive_02",
+      "school": "sword",
+      "branch": "ho_kiem",
+      "slot": "passive",
+      "name": "Cương Khí Giữ Thành",
+      "nodes": [
+        {
+          "id": "tmb.skill.sword.ho_kiem.passive_02.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.sword.ho_kiem.passive_02.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.sword.ho_kiem.passive_02.human"
+        },
+        {
+          "id": "tmb.skill.sword.ho_kiem.passive_02.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.sword.ho_kiem.passive_02.human"
+        },
+        {
+          "id": "tmb.skill.sword.ho_kiem.passive_02.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.sword.ho_kiem.passive_02.immortal.a"
+        },
+        {
+          "id": "tmb.skill.sword.ho_kiem.passive_02.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.sword.ho_kiem.passive_02.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.sword.ho_kiem.passive_03",
+      "school": "sword",
+      "branch": "ho_kiem",
+      "slot": "passive",
+      "name": "Thủ Thế Bất Loạn",
+      "nodes": [
+        {
+          "id": "tmb.skill.sword.ho_kiem.passive_03.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.sword.ho_kiem.passive_03.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.sword.ho_kiem.passive_03.human"
+        },
+        {
+          "id": "tmb.skill.sword.ho_kiem.passive_03.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.sword.ho_kiem.passive_03.human"
+        },
+        {
+          "id": "tmb.skill.sword.ho_kiem.passive_03.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.sword.ho_kiem.passive_03.immortal.a"
+        },
+        {
+          "id": "tmb.skill.sword.ho_kiem.passive_03.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.sword.ho_kiem.passive_03.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.sword.ho_kiem.passive_04",
+      "school": "sword",
+      "branch": "ho_kiem",
+      "slot": "passive",
+      "name": "Hồi Phong Phản Chiếu",
+      "nodes": [
+        {
+          "id": "tmb.skill.sword.ho_kiem.passive_04.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.sword.ho_kiem.passive_04.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.sword.ho_kiem.passive_04.human"
+        },
+        {
+          "id": "tmb.skill.sword.ho_kiem.passive_04.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.sword.ho_kiem.passive_04.human"
+        },
+        {
+          "id": "tmb.skill.sword.ho_kiem.passive_04.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.sword.ho_kiem.passive_04.immortal.a"
+        },
+        {
+          "id": "tmb.skill.sword.ho_kiem.passive_04.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.sword.ho_kiem.passive_04.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.sword.ho_kiem.passive_05",
+      "school": "sword",
+      "branch": "ho_kiem",
+      "slot": "passive",
+      "name": "Thiết Bích Lưu Quang",
+      "nodes": [
+        {
+          "id": "tmb.skill.sword.ho_kiem.passive_05.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.sword.ho_kiem.passive_05.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.sword.ho_kiem.passive_05.human"
+        },
+        {
+          "id": "tmb.skill.sword.ho_kiem.passive_05.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.sword.ho_kiem.passive_05.human"
+        },
+        {
+          "id": "tmb.skill.sword.ho_kiem.passive_05.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.sword.ho_kiem.passive_05.immortal.a"
+        },
+        {
+          "id": "tmb.skill.sword.ho_kiem.passive_05.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.sword.ho_kiem.passive_05.immortal.b"
+        },
+        {
+          "id": "tmb.skill.sword.ho_kiem.passive_05.rare_passive.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.sword.ho_kiem.passive_05.divine.a",
+          "name": "Thiết Bích Lưu Quang · Hồi Thiên Kiếm Tâm"
+        },
+        {
+          "id": "tmb.skill.sword.ho_kiem.passive_05.rare_passive.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.sword.ho_kiem.passive_05.divine.b",
+          "name": "Thiết Bích Lưu Quang · Phản Chiếu Thiên Cương"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.sword.ho_kiem.innate",
+      "school": "sword",
+      "branch": "ho_kiem",
+      "slot": "innate",
+      "name": "Hộ Kiếm Chân Ý",
+      "nodes": [
+        {
+          "id": "tmb.skill.sword.ho_kiem.innate.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.sword.ho_kiem.innate.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.sword.ho_kiem.innate.human"
+        },
+        {
+          "id": "tmb.skill.sword.ho_kiem.innate.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.sword.ho_kiem.innate.human"
+        },
+        {
+          "id": "tmb.skill.sword.ho_kiem.innate.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.sword.ho_kiem.innate.immortal.a"
+        },
+        {
+          "id": "tmb.skill.sword.ho_kiem.innate.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.sword.ho_kiem.innate.immortal.b"
+        }
+      ]
     }
   ],
   "bosses": [
@@ -5010,5 +6499,7 @@
       "balance_status": "candidate",
       "description": "Authored D1 data only. No runtime behavior, rewards or stats instantiated."
     }
-  ]
+  ],
+  "skills_s1_candidate_count": 183,
+  "skills_s1_candidate_source_status": "SOURCE_PENDING; all 183 nodes remain unlearnable"
 }

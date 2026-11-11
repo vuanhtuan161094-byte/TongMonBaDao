@@ -7,20 +7,31 @@ on:
     paths:
       - 'godot/src/simulation/combat/v63_pve_mastery_receipts.gd'
       - 'godot/src/simulation/combat/v63_human_skill_combat_system.gd'
-      - 'godot/src/simulation/combat/hunting_pve_run_v2.gd'
+      - 'godot/src/simulation/combat/v63_content_registry.gd'
+      - 'godot/src/simulation/combat/v63_feature_gates.gd'
       - 'godot/src/simulation/combat/map_battle_v2.gd'
+      - 'godot/src/simulation/combat/hunting_pve_run_v2.gd'
       - 'godot/tests/simulation/v63_g1b_pve_mastery_receipt_test.gd'
       - 'godot/tests/simulation/v63_root_v2_runtime_test.gd'
       - 'godot/data/presentation/v63_skill_presentation_manifest_v1.json'
       - 'godot/data/combat/v63_content_registry.json'
       - 'godot/src/presentation/v63_skill_presentation_catalog_v1.gd'
       - 'godot/tests/presentation/v63_skill_presentation_s0_test.gd'
+      - 'godot/data/combat/v63_sword_combat_catalog.json'
+      - 'godot/src/simulation/combat/v63_sword_skill_combat_system.gd'
+      - 'godot/src/presentation/p3/v63_original_combat_vfx_v1.gd'
+      - 'godot/tests/simulation/v63_d1_content_registry_test.gd'
+      - 'godot/tests/simulation/v63_s1_sword_skill_test.gd'
+      - 'docs/qa/V63_ALL36_ID_AND_EFFECT_MATRIX.csv'
       - '.github/workflows/v63-g1b-root-mastery.yml'
   push:
     branches: [integration/pve-p0-playable-ui-20261103]
     paths:
       - 'godot/src/simulation/combat/v63_pve_mastery_receipts.gd'
       - 'godot/src/simulation/combat/v63_human_skill_combat_system.gd'
+      - 'godot/src/simulation/combat/v63_content_registry.gd'
+      - 'godot/src/simulation/combat/v63_feature_gates.gd'
+      - 'godot/src/simulation/combat/map_battle_v2.gd'
       - 'godot/src/simulation/combat/hunting_pve_run_v2.gd'
       - 'godot/tests/simulation/v63_g1b_pve_mastery_receipt_test.gd'
       - 'godot/tests/simulation/v63_root_v2_runtime_test.gd'
@@ -28,6 +39,12 @@ on:
       - 'godot/data/combat/v63_content_registry.json'
       - 'godot/src/presentation/v63_skill_presentation_catalog_v1.gd'
       - 'godot/tests/presentation/v63_skill_presentation_s0_test.gd'
+      - 'godot/data/combat/v63_sword_combat_catalog.json'
+      - 'godot/src/simulation/combat/v63_sword_skill_combat_system.gd'
+      - 'godot/src/presentation/p3/v63_original_combat_vfx_v1.gd'
+      - 'godot/tests/simulation/v63_d1_content_registry_test.gd'
+      - 'godot/tests/simulation/v63_s1_sword_skill_test.gd'
+      - 'docs/qa/V63_ALL36_ID_AND_EFFECT_MATRIX.csv'
       - '.github/workflows/v63-g1b-root-mastery.yml'
 permissions:
   contents: read
@@ -92,6 +109,13 @@ jobs:
             res://tests/simulation/v63_g1b_pve_mastery_receipt_test.gd \
             res://tests/simulation/v63_root_v2_runtime_test.gd \
             res://src/presentation/v63_skill_presentation_catalog_v1.gd \
+            res://src/simulation/combat/v63_content_registry.gd \
+            res://src/simulation/combat/v63_feature_gates.gd \
+            res://src/simulation/combat/map_battle_v2.gd \
+            res://src/simulation/combat/v63_sword_skill_combat_system.gd \
+            res://src/presentation/p3/v63_original_combat_vfx_v1.gd \
+            res://tests/simulation/v63_d1_content_registry_test.gd \
+            res://tests/simulation/v63_s1_sword_skill_test.gd \
             res://tests/presentation/v63_skill_presentation_s0_test.gd; do
             godot --headless --path godot --check-only --script "$script"
           done
@@ -100,6 +124,16 @@ jobs:
         run: |
           set -o pipefail
           godot --headless --path godot -s res://tests/presentation/v63_skill_presentation_s0_test.gd 2>&1 | tee /tmp/g1b-v63-s0.log
+      - name: Focused D1 registry graph and gated-source validation
+        shell: bash
+        run: |
+          set -o pipefail
+          godot --headless --path godot -s res://tests/simulation/v63_d1_content_registry_test.gd 2>&1 | tee /tmp/g1b-d1.log
+      - name: Focused S1 Sword 183-node runtime, combat event and code-VFX contracts
+        shell: bash
+        run: |
+          set -o pipefail
+          godot --headless --path godot -s res://tests/simulation/v63_s1_sword_skill_test.gd 2>&1 | tee /tmp/g1b-s1.log
       - name: Focused G1B real PvE mastery and exactly-once cold SaveService
         shell: bash
         run: |

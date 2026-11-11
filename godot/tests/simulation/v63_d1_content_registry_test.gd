@@ -21,7 +21,7 @@ func _run() -> void:
     var loaded: Dictionary = V63ContentRegistry.load_catalogue()
     if not _check(bool(loaded.get("ok",false)), "registry errors: "+str(loaded.get("errors",[]))): return
     var data: Dictionary = loaded["data"]
-    if not _check(data["families"].size()==105 and data["paths"].size()==9 and data["bosses"].size()==9,"bad registry counts"): return
+    if not _check(data["families"].size()==140 and data["paths"].size()==12 and data["bosses"].size()==9,"bad registry counts"): return
     var nodes := 0
     var rare := 0
     for family in data["families"]:
@@ -29,7 +29,9 @@ func _run() -> void:
         for node in family["nodes"]:
             if str(node["tier"])=="rare_divine":
                 rare += 1
-    if not _check(nodes==537 and rare==24,"wrong successor and rare counts"): return
+    if not _check(nodes==732 and rare==24,"wrong successor and rare counts (720 core + 12 rare passive nodes)"): return
+    if not _check(int(data.get("skills_s1_candidate_count",0)) == 183 and str(data.get("skills_s1_candidate_source_status","")).contains("SOURCE_PENDING"), "Sword candidate registry must remain source pending"): return
+    if not _check(not bool(data.get("enabled",true)), "Sword registry remains inactive"): return
     var poison: Dictionary = V63ContentRegistry.lookup_family(data,"tmb.skill.poison.doc_cham.ultimate")
     if not _check(not poison.is_empty(),"missing poison ultimate"): return
     var human: String = poison["nodes"][0]["id"]
@@ -52,5 +54,5 @@ func _run() -> void:
     var unsafe_boss: Dictionary = data.duplicate(true)
     unsafe_boss["bosses"][0]["spawn_ready"] = true
     if not _check(not V63ContentRegistry.validate_catalogue(unsafe_boss).is_empty(),"Boss accidentally spawnable"): return
-    print("V63_D1_PASS: 105 families, 537 registry nodes, 24 rare-tier nodes (18 ultimates + 6 passive successors), 9 bosses, gates OFF and negative cases")
+    print("V63_D1_PASS: 140 families, 732 registry nodes, 24 rare-tier ultimates (24 ultimates), 6 poison + 6 sword rare-passive successors, 9 bosses, gates OFF and negative cases")
     quit(0)

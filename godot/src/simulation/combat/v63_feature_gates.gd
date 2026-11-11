@@ -11,7 +11,8 @@ const DEFAULT_FLAGS := {
     "human_skill_combat": false,
     "divine_skill_combat": false,
     "poison_evolution_strict": false,
-    "spiritual_root_v2": false
+    "spiritual_root_v2": false,
+    "sword_skill_combat": false
 }
 
 static func is_enabled(flag_id: String, preview_overrides: Dictionary = {}) -> bool:
