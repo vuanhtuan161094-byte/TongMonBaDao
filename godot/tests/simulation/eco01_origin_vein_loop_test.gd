@@ -26,6 +26,8 @@ func _run() -> void:
         return
     if not _test_offline_replay():
         return
+    if not _test_fail_closed_guards():
+        return
     _cleanup()
     print("ECO01 ORIGIN VEIN: 0 LT REAL JOB 60T, WAGE, 1/1440T, 6/30, COLD SAVE, OFFLINE EXACT-ONCE: PASS")
     quit(0)
@@ -187,6 +189,94 @@ func _test_save_replay_and_cooldown() -> bool:
     print("ECO01_6_30_ROSTER_COOLDOWN_SAME_SECT_CASH: PASS")
     return _check(loaded.validate_invariants().is_empty(),
         "canonical 30 roster invariant failure")
+
+
+func _test_fail_closed_guards() -> bool:
+    # Exercise fail-closed settlement without granting a fictitious game source.
+    # The 60-tick completion itself is covered by the full scheduler test.
+    var state := P37Factory.create_state(1081083)
+    if not _check(bool(economy.enable_v1(state).get("ok",false))
+        and BuildingSystem.new().ensure_main_hall(state) != null,
+        "negative cases require a real canonical Hall"): return false
+    state.sect.spirit_stones = 0
+    var candidates := vein.eligible_workers(state)
+    if not _check(candidates.size() >= 2,
+        "negative cases require two real eligible workers"): return false
+    var worker_id := candidates[0]
+    var other_worker_id := candidates[1]
+    var first := vein.start(state,worker_id)
+    var first_id := str(first.get("job_id",""))
+    if not _check(bool(first.get("ok",false))
+        and not bool(vein.start(state,other_worker_id).get("ok",false)),
+        "different workers must not multiply the single Sect job"): return false
+
+    # A corrupted persisted Hall job may never mint currency or a wage.
+    var hall := BuildingSystem.new().primary_building(state,BuildingSystem.TYPE_MAIN_HALL)
+    var production: Dictionary = hall.production_state.duplicate(true)
+    var vein_data: Dictionary = production.get(Eco01OriginVein.KEY,{}).duplicate(true)
+    var forged: Dictionary = vein_data.get("job",{}).duplicate(true)
+    forged["gross"] = 1001
+    vein_data["job"] = forged
+    production[Eco01OriginVein.KEY] = vein_data
+    hall.production_state = production
+    state.tick = int(first.get("finish_tick",-1))
+    vein.process_tick(state)
+    if not _check(state.sect.spirit_stones == 0
+        and not bool(vein.snapshot(state).get("busy",true))
+        and state.disciples[worker_id].active_job_id == &""
+        and not state.sect.economy_a_receipts.has(Eco01OriginVein.RECEIPT_PREFIX+first_id)
+        and not state.sect.economy_a_receipts.has("wage:"+first_id),
+        "forged gross payout must fail closed and free the worker"): return false
+
+    # A legitimate completed job at the currency ceiling stays pending,
+    # without an incomplete money/wage receipt; settle only when affordable.
+    var second := vein.start(state,worker_id)
+    var second_id := str(second.get("job_id",""))
+    if not _check(bool(second.get("ok",false)),
+        "valid worker was not recovered after malformed Hall job"): return false
+    state.tick = int(second.get("finish_tick",-1))
+    var over_ceiling := EconomySystem.V2_MAX_STONES-Eco01OriginVein.GROSS_STONES+1
+    state.sect.spirit_stones = over_ceiling
+    vein.process_tick(state)
+    if not _check(state.sect.spirit_stones == over_ceiling
+        and bool(vein.snapshot(state).get("busy",false))
+        and not state.sect.economy_a_receipts.has(Eco01OriginVein.RECEIPT_PREFIX+second_id)
+        and not state.sect.economy_a_receipts.has("wage:"+second_id),
+        "overflow created partial income or a wage receipt"): return false
+    state.sect.spirit_stones = 0
+    vein.process_tick(state)
+    vein.process_tick(state)
+    if not _check(state.sect.spirit_stones == 998
+        and int(state.sect.economy_a_receipts.get(
+            Eco01OriginVein.RECEIPT_PREFIX+second_id,{}).get("gross",-1)) == 1000
+        and int(state.sect.economy_a_receipts.get("wage:"+second_id,{}).get("paid",-1)) == 2,
+        "recovered settlement must pay exactly once with the real wage"): return false
+
+    # Injury invalidates an in-flight job and cannot generate a ghost payout.
+    var injured_state := P37Factory.create_state(1081084)
+    if not _check(bool(economy.enable_v1(injured_state).get("ok",false))
+        and BuildingSystem.new().ensure_main_hall(injured_state) != null,
+        "injury guard missing canonical Hall"): return false
+    injured_state.sect.spirit_stones = 0
+    var injured_candidates := vein.eligible_workers(injured_state)
+    if not _check(not injured_candidates.is_empty(),
+        "injury guard missing actual idle worker"): return false
+    var injured_id := injured_candidates[0]
+    var injured_job := vein.start(injured_state,injured_id)
+    var injured_job_id := str(injured_job.get("job_id",""))
+    if not _check(bool(injured_job.get("ok",false)),
+        "injury guard could not start authentic job"): return false
+    injured_state.disciples[injured_id].injury_level = 1
+    injured_state.tick = int(injured_job.get("finish_tick",-1))
+    vein.process_tick(injured_state)
+    if not _check(injured_state.sect.spirit_stones == 0
+        and not bool(vein.snapshot(injured_state).get("busy",true))
+        and injured_state.disciples[injured_id].active_job_id == &""
+        and not injured_state.sect.economy_a_receipts.has(Eco01OriginVein.RECEIPT_PREFIX+injured_job_id)
+        and not injured_state.sect.economy_a_receipts.has("wage:"+injured_job_id),
+        "injured worker generated unearned money"): return false
+    print("ECO01_FORGED_JOB_OVERFLOW_INJURY_SECOND_WORKER: PASS")
+    return true
 
 func _test_offline_replay() -> bool:
     var first := LiveGameRuntimeV2.new()
