@@ -1,0 +1,556 @@
+{
+  "schema_version": 1,
+  "purpose": "Read-only inventory of actor packages already in this project; not a character identity or visual approval authority.",
+  "generated_from_head": "2d05b619e82c0010c58254107448be35303b0917",
+  "classification_policy": "Preserve unknown roles as unknown. Monster and Boss labels come only from explicit package IDs.",
+  "source_a_actor_packages": [
+    {
+      "asset_id": "1113028_1",
+      "asset_json": "godot/assets/actors/1113028_1/asset.json",
+      "asset_json_sha256": "daecefdc454883b8613fa2ec8361be1c80b2ddcc162b4aceff84618306e4a637",
+      "source_fingerprint": "b417f324193b8f3f91141ca49bdfab54b1ae9d6ff39fa6e7a3498946a20a04ab",
+      "classification": "SOURCE_RIG_IDENTITY_UNKNOWN",
+      "classification_note": "Do not assign player identity or school from the ID alone.",
+      "canvas": [
+        768,
+        768
+      ],
+      "foot_anchor": [
+        384,
+        540
+      ],
+      "fps": 30,
+      "stored_frames": 72,
+      "atlas_pages": [
+        {
+          "file": "atlas_000.webp",
+          "size": [
+            2044,
+            1940
+          ]
+        },
+        {
+          "file": "atlas_001.webp",
+          "size": [
+            584,
+            194
+          ]
+        }
+      ],
+      "file_sha256": {
+        "actor.tscn": "5442a4442a31c9ae27027ef0bf16941e3a1afe0f85b94a17713be300578b2cf5",
+        "animations.tres": "e2864cfe778fac39b093fa30c76c76bfec40f1b03a8ed1f3af5ea72aa6eb6473",
+        "atlas_000.webp": "ce2bea0da04a8e461016de756546640afd4eda855f64ed3cd44e15bdc06c4197",
+        "atlas_001.webp": "8e1bffa36d2c5ff68ca54be3f56633006a94b42bf9b0abecd03ab50023024da6"
+      },
+      "clips": [
+        {
+          "name": "stand",
+          "frames": 48,
+          "stored_frames": 48,
+          "duration_seconds": 1.60000002384186,
+          "loop": true,
+          "frame_count_status": "MATCH",
+          "visual_acceptance": "NOT_ESTABLISHED_BY_MANIFEST"
+        },
+        {
+          "name": "walk",
+          "frames": 24,
+          "stored_frames": 24,
+          "duration_seconds": 0.800000011920929,
+          "loop": true,
+          "frame_count_status": "MATCH",
+          "visual_acceptance": "NOT_ESTABLISHED_BY_MANIFEST"
+        }
+      ],
+      "runtime_identity": "NOT_ASSERTED",
+      "owner_visual_acceptance": "NOT_ASSERTED"
+    },
+    {
+      "asset_id": "body_1110201",
+      "asset_json": "godot/assets/actors/body_1110201/asset.json",
+      "asset_json_sha256": "8d7917e99a53d9436e5836332f5829c263617d933274c58264e2d5fd30103295",
+      "source_fingerprint": "9ab4093ce696ece8864fb5e7d5c04749fdf0120f2742e8f4bd2d6f4e97a2ab61",
+      "classification": "BODY_RIG_ROLE_UNKNOWN",
+      "classification_note": "Body package; role and identity are unverified.",
+      "canvas": [
+        768,
+        768
+      ],
+      "foot_anchor": [
+        384,
+        540
+      ],
+      "fps": 30,
+      "stored_frames": 72,
+      "atlas_pages": [
+        {
+          "file": "atlas_000.webp",
+          "size": [
+            2016,
+            548
+          ]
+        }
+      ],
+      "file_sha256": {
+        "actor.tscn": "72debc170ae0831b0631edd09d566913daf94d4daf202029b766a70d8a3207ae",
+        "animations.tres": "a78b83c5699c10dac5174bccfd5dcd08997baa33b2ff3ff466656be9e4ae92df",
+        "atlas_000.webp": "b0be4d26c4b21d8bae3fa3a74dd48c44949e449bb47623fbc2ab0ab601680e7e"
+      },
+      "clips": [
+        {
+          "name": "stand",
+          "frames": 48,
+          "stored_frames": 48,
+          "duration_seconds": 1.60000002384186,
+          "loop": true,
+          "frame_count_status": "MATCH",
+          "visual_acceptance": "NOT_ESTABLISHED_BY_MANIFEST"
+        },
+        {
+          "name": "walk",
+          "frames": 24,
+          "stored_frames": 24,
+          "duration_seconds": 0.800000011920929,
+          "loop": true,
+          "frame_count_status": "MATCH",
+          "visual_acceptance": "NOT_ESTABLISHED_BY_MANIFEST"
+        }
+      ],
+      "runtime_identity": "NOT_ASSERTED",
+      "owner_visual_acceptance": "NOT_ASSERTED"
+    },
+    {
+      "asset_id": "body_1120402",
+      "asset_json": "godot/assets/actors/body_1120402/asset.json",
+      "asset_json_sha256": "6624a20181673f4dd94776fbb951f6301d59b3bf8514ea09db50a22baa665ce5",
+      "source_fingerprint": "a1d7354305056bfa6be625d4b9a64b00feff3aaf4cd2f2385ae13dc8474b0237",
+      "classification": "BODY_RIG_ROLE_UNKNOWN",
+      "classification_note": "Body package; role and identity are unverified.",
+      "canvas": [
+        768,
+        768
+      ],
+      "foot_anchor": [
+        384,
+        540
+      ],
+      "fps": 30,
+      "stored_frames": 72,
+      "atlas_pages": [
+        {
+          "file": "atlas_000.webp",
+          "size": [
+            1900,
+            1560
+          ]
+        }
+      ],
+      "file_sha256": {
+        "actor.tscn": "a89795fb8df30f6aa6343ea8b064b9ead8a55cad215e707ae9430eee102117ae",
+        "animations.tres": "2cdeef3b53bbcbf546b3a41450f8390a5f86119d73fff760d2081700a67b25fd",
+        "atlas_000.webp": "bb6731403a09750109d7604ff4ab69ad984cdda5f4b638da3d4cf09e9c7c0248"
+      },
+      "clips": [
+        {
+          "name": "stand",
+          "frames": 48,
+          "stored_frames": 48,
+          "duration_seconds": 1.60000002384186,
+          "loop": true,
+          "frame_count_status": "MATCH",
+          "visual_acceptance": "NOT_ESTABLISHED_BY_MANIFEST"
+        },
+        {
+          "name": "walk",
+          "frames": 24,
+          "stored_frames": 24,
+          "duration_seconds": 0.800000011920929,
+          "loop": true,
+          "frame_count_status": "MATCH",
+          "visual_acceptance": "NOT_ESTABLISHED_BY_MANIFEST"
+        }
+      ],
+      "runtime_identity": "NOT_ASSERTED",
+      "owner_visual_acceptance": "NOT_ASSERTED"
+    },
+    {
+      "asset_id": "v5_sa_boss_410041_1",
+      "asset_json": "godot/assets/actors/v5_sa_boss_410041_1/asset.json",
+      "asset_json_sha256": "5595f3f9cbb19e23c4a28bf0243d5fba809c9c2d031234ac42c3a4e6c5fcc9aa",
+      "source_fingerprint": "e7edbe1e5200e490827c24ffc60200c7f801b5fcab256821688d1356670937b4",
+      "classification": "BOSS_SLOT_CANDIDATE",
+      "classification_note": "Boss-slot candidate; no Boss name or identity is asserted.",
+      "canvas": [
+        768,
+        768
+      ],
+      "foot_anchor": [
+        384,
+        540
+      ],
+      "fps": 30,
+      "stored_frames": 154,
+      "atlas_pages": [
+        {
+          "file": "atlas_000.webp",
+          "size": [
+            1938,
+            1998
+          ]
+        },
+        {
+          "file": "atlas_001.webp",
+          "size": [
+            1938,
+            1998
+          ]
+        },
+        {
+          "file": "atlas_002.webp",
+          "size": [
+            1938,
+            1998
+          ]
+        },
+        {
+          "file": "atlas_003.webp",
+          "size": [
+            1938,
+            1998
+          ]
+        },
+        {
+          "file": "atlas_004.webp",
+          "size": [
+            1938,
+            666
+          ]
+        }
+      ],
+      "file_sha256": {
+        "actor.tscn": "9f10cac6b212b6ec8c11e5bdef1bafc8bb5aa87b735e11c4112b38ec47ab9c37",
+        "animations.tres": "7b4637b0edd4d59de967f2fcb8165987de72969e0bf29df6cb54d886aa9b7782",
+        "atlas_000.webp": "cc746cb99e90bba4f2d7ef31c2b6dfa65955036b5aeac05af311d0cb7a89cccb",
+        "atlas_001.webp": "b0af4566f31966e66aeab42c83730e14dbf08c1caddbda55101e7c25677226b0",
+        "atlas_002.webp": "8f3dafe897f487da164e4681dbd29cb8b6d167f20a6081ea4a82dc598a6a6c1f",
+        "atlas_003.webp": "bf76fe49d1b9333d0360df720c11b450f137a9c4c168321dd1fb7bea6afa679c",
+        "atlas_004.webp": "7540a78f3d63d9b48328f8b3843cc07eabb6d19d668f627dfde6d3bf6287ae6c"
+      },
+      "clips": [
+        {
+          "name": "stand",
+          "frames": 60,
+          "stored_frames": 60,
+          "duration_seconds": 2.0,
+          "loop": true,
+          "frame_count_status": "MATCH",
+          "visual_acceptance": "NOT_ESTABLISHED_BY_MANIFEST"
+        },
+        {
+          "name": "run",
+          "frames": 28,
+          "stored_frames": 28,
+          "duration_seconds": 0.933333337306976,
+          "loop": true,
+          "frame_count_status": "MATCH",
+          "visual_acceptance": "NOT_ESTABLISHED_BY_MANIFEST"
+        },
+        {
+          "name": "attack1",
+          "frames": 30,
+          "stored_frames": 30,
+          "duration_seconds": 1.0,
+          "loop": false,
+          "frame_count_status": "MATCH",
+          "visual_acceptance": "NOT_ESTABLISHED_BY_MANIFEST"
+        },
+        {
+          "name": "hit",
+          "frames": 15,
+          "stored_frames": 15,
+          "duration_seconds": 0.5,
+          "loop": false,
+          "frame_count_status": "MATCH",
+          "visual_acceptance": "NOT_ESTABLISHED_BY_MANIFEST"
+        },
+        {
+          "name": "dead",
+          "frames": 30,
+          "stored_frames": 21,
+          "duration_seconds": 1.0,
+          "loop": false,
+          "frame_count_status": "MISMATCH",
+          "visual_acceptance": "NOT_ESTABLISHED_BY_MANIFEST"
+        }
+      ],
+      "runtime_identity": "NOT_ASSERTED",
+      "owner_visual_acceptance": "NOT_ASSERTED"
+    },
+    {
+      "asset_id": "v5_sa_female_1113028_1",
+      "asset_json": "godot/assets/actors/v5_sa_female_1113028_1/asset.json",
+      "asset_json_sha256": "cf3a4862b55549b4158c364e5af851860f4fb8cad7b84b367c0079822cb93b3c",
+      "source_fingerprint": "6d398e256a7734e121a4487abd0861a6c0fd681ccaa3089b556d3fd9440f1feb",
+      "classification": "FEMALE_VISUAL_CANDIDATE",
+      "classification_note": "Source A visual package; not the locked Nữ Độc Tu identity.",
+      "canvas": [
+        768,
+        768
+      ],
+      "foot_anchor": [
+        384,
+        540
+      ],
+      "fps": 30,
+      "stored_frames": 59,
+      "atlas_pages": [
+        {
+          "file": "atlas_000.webp",
+          "size": [
+            1815,
+            1855
+          ]
+        },
+        {
+          "file": "atlas_001.webp",
+          "size": [
+            1815,
+            1325
+          ]
+        }
+      ],
+      "file_sha256": {
+        "actor.tscn": "ed7318fa1aedf44ef94613efa0decf8a9d3d3bedc07a9d0552fb3e3759e2b2fb",
+        "animations.tres": "a203c73c1cae9ff938eee05403cb15eb8d066280783c0a5b84e92e398440159c",
+        "atlas_000.webp": "4832f3030438a5313665242eed87a8d721b45dc8ce579e1c7c7e4aa4ba0a9d88",
+        "atlas_001.webp": "0f5181c3397365433f09f9ec946db4b131a530b9468215c2ef36eb6beaf605ea"
+      },
+      "clips": [
+        {
+          "name": "attack1",
+          "frames": 29,
+          "stored_frames": 29,
+          "duration_seconds": 0.966666638851166,
+          "loop": false,
+          "frame_count_status": "MATCH",
+          "visual_acceptance": "NOT_ESTABLISHED_BY_MANIFEST"
+        },
+        {
+          "name": "hit",
+          "frames": 15,
+          "stored_frames": 15,
+          "duration_seconds": 0.5,
+          "loop": false,
+          "frame_count_status": "MATCH",
+          "visual_acceptance": "NOT_ESTABLISHED_BY_MANIFEST"
+        },
+        {
+          "name": "dead",
+          "frames": 15,
+          "stored_frames": 15,
+          "duration_seconds": 0.5,
+          "loop": false,
+          "frame_count_status": "MATCH",
+          "visual_acceptance": "NOT_ESTABLISHED_BY_MANIFEST"
+        }
+      ],
+      "runtime_identity": "NOT_ASSERTED",
+      "owner_visual_acceptance": "NOT_ASSERTED"
+    },
+    {
+      "asset_id": "v5_sa_male_body_1110201",
+      "asset_json": "godot/assets/actors/v5_sa_male_body_1110201/asset.json",
+      "asset_json_sha256": "95436f814914f861021fc7664e2bd29107bb480d68ee18ba02c0ebab2fb1fb66",
+      "source_fingerprint": "395a052e70278fe45bbbf02940d21f2214bc9c2b6288ebe927bffae88382c7c8",
+      "classification": "MALE_VISUAL_CANDIDATE",
+      "classification_note": "Source A visual package; exact character identity is unverified.",
+      "canvas": [
+        768,
+        768
+      ],
+      "foot_anchor": [
+        384,
+        540
+      ],
+      "fps": 30,
+      "stored_frames": 131,
+      "atlas_pages": [
+        {
+          "file": "atlas_000.webp",
+          "size": [
+            1855,
+            1820
+          ]
+        },
+        {
+          "file": "atlas_001.webp",
+          "size": [
+            1855,
+            1820
+          ]
+        },
+        {
+          "file": "atlas_002.webp",
+          "size": [
+            1855,
+            1300
+          ]
+        }
+      ],
+      "file_sha256": {
+        "actor.tscn": "14be43bfe0a8d62fadb5fab0deae837eb38acf2b386ca26045dcbee3d0225071",
+        "animations.tres": "51fca9529933233c8fc97784060aa7b59de2ee4b96eb0ee6d7b3bd3e5916114f",
+        "atlas_000.webp": "fa13b3f6803ce3f5738f4dda3d3df262ef6f66328429e14422c3f71c22d6ab83",
+        "atlas_001.webp": "8c72f24d728c7f49a672a09843921e26e198986bc466b96951e8bdb24444fc97",
+        "atlas_002.webp": "5bbf5e1d5bfe9a4cc86333d91f2710bbc0f47bfee5e360e76beb4d357109dd60"
+      },
+      "clips": [
+        {
+          "name": "stand",
+          "frames": 48,
+          "stored_frames": 48,
+          "duration_seconds": 1.60000002384186,
+          "loop": true,
+          "frame_count_status": "MATCH",
+          "visual_acceptance": "NOT_ESTABLISHED_BY_MANIFEST"
+        },
+        {
+          "name": "walk",
+          "frames": 24,
+          "stored_frames": 24,
+          "duration_seconds": 0.800000011920929,
+          "loop": true,
+          "frame_count_status": "MATCH",
+          "visual_acceptance": "NOT_ESTABLISHED_BY_MANIFEST"
+        },
+        {
+          "name": "attack1",
+          "frames": 29,
+          "stored_frames": 29,
+          "duration_seconds": 0.966666638851166,
+          "loop": false,
+          "frame_count_status": "MATCH",
+          "visual_acceptance": "NOT_ESTABLISHED_BY_MANIFEST"
+        },
+        {
+          "name": "hit",
+          "frames": 15,
+          "stored_frames": 15,
+          "duration_seconds": 0.5,
+          "loop": false,
+          "frame_count_status": "MATCH",
+          "visual_acceptance": "NOT_ESTABLISHED_BY_MANIFEST"
+        },
+        {
+          "name": "dead",
+          "frames": 15,
+          "stored_frames": 15,
+          "duration_seconds": 0.5,
+          "loop": false,
+          "frame_count_status": "MATCH",
+          "visual_acceptance": "NOT_ESTABLISHED_BY_MANIFEST"
+        }
+      ],
+      "runtime_identity": "NOT_ASSERTED",
+      "owner_visual_acceptance": "NOT_ASSERTED"
+    },
+    {
+      "asset_id": "v5_sa_monster_1113031_1",
+      "asset_json": "godot/assets/actors/v5_sa_monster_1113031_1/asset.json",
+      "asset_json_sha256": "eacf4531433a22a6d050f513dad60030cb9c42dc25cd47bbc104fdaf9bcae3bc",
+      "source_fingerprint": "d6b82908bf76b4260f5c85426fe1a0bca98c40b49ef591bdd1fd0aaa318f8ee3",
+      "classification": "MONSTER",
+      "classification_note": "Monster package; not a disciple/player character.",
+      "canvas": [
+        768,
+        768
+      ],
+      "foot_anchor": [
+        384,
+        540
+      ],
+      "fps": 30,
+      "stored_frames": 145,
+      "atlas_pages": [
+        {
+          "file": "atlas_000.webp",
+          "size": [
+            2016,
+            1940
+          ]
+        },
+        {
+          "file": "atlas_001.webp",
+          "size": [
+            2016,
+            1940
+          ]
+        },
+        {
+          "file": "atlas_002.webp",
+          "size": [
+            1440,
+            194
+          ]
+        }
+      ],
+      "file_sha256": {
+        "actor.tscn": "14503f8f5ecaac6f1d434e736e51d29b2f125fbeeb24aea8bbec1204e3af1f93",
+        "animations.tres": "3a4a0ba82e5a657859dab8ef8e62907f789d4d200f0caba4701286d2fe7c1f4b",
+        "atlas_000.webp": "570a9528bb8d4c4f083cdd43ed7e56f06e4dea399d82fa2c8e2273339f3cfb0a",
+        "atlas_001.webp": "50539e94b305876b171d4e48938021e22bf4ba6fdb3187d434b32f6f4c59dade",
+        "atlas_002.webp": "3adfafdc10a61f9eea2ffeedd9fe2262d932362ca3d970bb23ee7c7f39da1bf5"
+      },
+      "clips": [
+        {
+          "name": "stand",
+          "frames": 60,
+          "stored_frames": 60,
+          "duration_seconds": 2.0,
+          "loop": true,
+          "frame_count_status": "MATCH",
+          "visual_acceptance": "NOT_ESTABLISHED_BY_MANIFEST"
+        },
+        {
+          "name": "walk",
+          "frames": 24,
+          "stored_frames": 24,
+          "duration_seconds": 0.800000011920929,
+          "loop": true,
+          "frame_count_status": "MATCH",
+          "visual_acceptance": "NOT_ESTABLISHED_BY_MANIFEST"
+        },
+        {
+          "name": "attack1",
+          "frames": 29,
+          "stored_frames": 29,
+          "duration_seconds": 0.966666638851166,
+          "loop": false,
+          "frame_count_status": "MATCH",
+          "visual_acceptance": "NOT_ESTABLISHED_BY_MANIFEST"
+        },
+        {
+          "name": "hit",
+          "frames": 10,
+          "stored_frames": 10,
+          "duration_seconds": 0.333333343267441,
+          "loop": false,
+          "frame_count_status": "MATCH",
+          "visual_acceptance": "NOT_ESTABLISHED_BY_MANIFEST"
+        },
+        {
+          "name": "dead",
+          "frames": 22,
+          "stored_frames": 22,
+          "duration_seconds": 0.733333349227905,
+          "loop": false,
+          "frame_count_status": "MATCH",
+          "visual_acceptance": "NOT_ESTABLISHED_BY_MANIFEST"
+        }
+      ],
+      "runtime_identity": "NOT_ASSERTED",
+      "owner_visual_acceptance": "NOT_ASSERTED"
+    }
+  ]
+}

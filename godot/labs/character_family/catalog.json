@@ -1,0 +1,141 @@
+{
+  "schema_version": 1,
+  "packet": "Issue #77 AS-CHAR-01 through AS-CHAR-05",
+  "created_from_head": "2d05b619e82c0010c58254107448be35303b0917",
+  "production_import": "NONE",
+  "approved_poison_identity": {
+    "asset_id": "nu_doc_tu_locked_master",
+    "status": "BLOCKED_SOURCE_ART",
+    "expected_source_filename": "image(20261109-102800).png",
+    "expected_source_dimensions": [
+      1448,
+      1086
+    ],
+    "expected_source_sha256": "435f8969c3d89468ddbdec837a44365b212b58e01082728c3f21f2b08249c118",
+    "actual_source_path": null,
+    "existing_atlas_manifest": "godot/labs/combat_lab/assets/nu_doc_tu_grok_01/manifest.json",
+    "existing_atlas_manifest_sha256": "b88ad0b37f585c0e45a5e786a85e45ee4783634ee651385cb7b55cf45a62de33",
+    "existing_atlas_status": "VISUAL_ONLY_SOURCE_VIDEO_PACKAGE_MISSING",
+    "directions": [
+      "three_quarter_right"
+    ],
+    "unverified_directions": [
+      "front",
+      "back",
+      "left"
+    ],
+    "notes": [
+      "Do not regenerate this identity from the existing atlas.",
+      "The original video package is not present at the manifest source path.",
+      "All six existing sheet PNGs remain untouched."
+    ]
+  },
+  "existing_grok_clips": {
+    "manifest": "godot/labs/combat_lab/assets/nu_doc_tu_grok_01/manifest.json",
+    "required": [
+      "idle",
+      "walk",
+      "cast",
+      "attack",
+      "hit",
+      "defeated"
+    ],
+    "files_must_match_manifest_sha256": true,
+    "runtime_role": "VISUAL_ONLY"
+  },
+  "candidates": [
+    {
+      "asset_id": "candidate.disciple.male_swordsman.v01",
+      "display_name": "Male sword cultivator",
+      "status": "CANDIDATE_NOT_APPROVED",
+      "source_type": "IMAGEGEN_ORIGINAL_CANDIDATE",
+      "source_path": "godot/labs/character_family/assets/candidate_male_swordsman_4view.png",
+      "sha256": "f65ae3bd98879769557389950863a4f491f002ea7e9edeaf8621f2ba80aeec65",
+      "dimensions": [
+        1263,
+        1246
+      ],
+      "pixel_format": "RGBA",
+      "sheet_layout": "2x2 static turnaround; front/right/back/left",
+      "authored_views": [
+        "front",
+        "right",
+        "back",
+        "left"
+      ],
+      "visual_qa": "PENDING_OWNER_ART_REVIEW",
+      "observed_issue": "Minor colored edge speckles remain visible around some contours.",
+      "layers": "NOT_PROVIDED",
+      "runtime_import": "NONE",
+      "clips": {
+        "idle": "NOT_AUTHORED",
+        "walk": "NOT_AUTHORED",
+        "cast": "NOT_AUTHORED",
+        "attack": "NOT_AUTHORED",
+        "hit": "NOT_AUTHORED",
+        "death": "NOT_AUTHORED"
+      },
+      "edge_alpha_pixels": 15
+    },
+    {
+      "asset_id": "candidate.disciple.female_healer.v01",
+      "display_name": "Female healer",
+      "status": "CANDIDATE_NOT_APPROVED",
+      "source_type": "IMAGEGEN_ORIGINAL_CANDIDATE",
+      "source_path": "godot/labs/character_family/assets/candidate_female_healer_4view.png",
+      "sha256": "064783e4ea48b63afb0b65ac70d048ca57fe66d7f51aab189d7381e2c35540de",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "pixel_format": "RGBA",
+      "sheet_layout": "2x2 static turnaround; front/right/back/left",
+      "authored_views": [
+        "front",
+        "right",
+        "back",
+        "left"
+      ],
+      "visual_qa": "PENDING_OWNER_ART_REVIEW",
+      "observed_issue": "Two non-character edge alpha pixels remain; verify they do not render in target sprite cells.",
+      "layers": "NOT_PROVIDED",
+      "runtime_import": "NONE",
+      "clips": {
+        "idle": "NOT_AUTHORED",
+        "walk": "NOT_AUTHORED",
+        "cast": "NOT_AUTHORED",
+        "attack": "NOT_AUTHORED",
+        "hit": "NOT_AUTHORED",
+        "death": "NOT_AUTHORED"
+      },
+      "edge_alpha_pixels": 2
+    }
+  ],
+  "visual_limits": {
+    "map_canvas": [
+      128,
+      128
+    ],
+    "map_foot_anchor": [
+      64,
+      104
+    ],
+    "combat_canvas": [
+      160,
+      192
+    ],
+    "combat_pivot": [
+      80,
+      179
+    ],
+    "family_proportion_heads": [
+      3,
+      3.5
+    ],
+    "game_readability_px_at_zoom_1": [
+      60,
+      75
+    ],
+    "candidate_contact_sheets_are_runtime_ready": false
+  }
+}
