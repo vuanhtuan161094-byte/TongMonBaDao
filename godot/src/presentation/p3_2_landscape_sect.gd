@@ -4403,10 +4403,12 @@ func _build_economy_a_hall_controls() -> void:
     var cashflow := EconomySystem.new().daily_market_cashflow(state)
     var sources := Label.new()
     sources.name = "EconomyA_RealIncome"
-    sources.text = "Hôm nay: bán nguyên liệu +%d LT · mua vật tư -%d LT · trả lương -%d LT" % [
-        int(cashflow.get("income",0)),int(cashflow.get("purchases",0)),int(cashflow.get("wages",0))
+    sources.text = "Hôm nay: Phường Thị +%d LT · Linh Mạch +%d LT · mua -%d · gieo -%d · lương -%d LT" % [
+        int(cashflow.get("income",0)),int(cashflow.get("origin_income",0)),
+        int(cashflow.get("purchases",0)),int(cashflow.get("seed_costs",0)),
+        int(cashflow.get("wages",0))
     ]
-    sources.tooltip_text = "Số thật từ receipt của Phường Thị và lương. Không bao gồm tiêu Linh Thạch cho gieo trồng, nâng cấp, chiêu mộ/kỹ năng; quỹ thực ở trên là số dư chính xác. Tài nguyên phải sản xuất/kiếm thật rồi bán tại Kho."
+    sources.tooltip_text = "Đối soát từ biên nhận thật: bán, Linh Mạch gộp, mua, gieo cây và lương đã trả. Chưa tính nâng cấp, chiêu mộ hoặc kỹ năng. Số dư Tông Môn trên là quỹ thực; không tự sinh tiền từ báo cáo."
     sources.custom_minimum_size = Vector2(384,42)
     sources.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
     sources.add_theme_font_size_override("font_size",11)

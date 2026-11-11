@@ -1634,10 +1634,18 @@ func perform_spirit_field_step(state: SimulationState, disciple: DiscipleState, 
     var plot_index := int(planned.get("index",-1))
     var crop_id := StringName(planned.get("crop_id",""))
 
-    var plant_cost := crop_registry.cost(crop_id)
+    # ECO-03: use the exact authored crop cost. A failed preflight cannot
+    # debit cash, reserve a plot or leave an orphan seed receipt.
+    var seed_preflight := EconomySystem.new().field_seed_preflight_v1(state,crop_id)
+    if not bool(seed_preflight.get("ok",false)):
+        return {"ok":false,"completed":false,
+            "reason":str(seed_preflight.get("reason","invalid_field_seed"))}
+    var plant_cost := int(seed_preflight.get("cost",0))
+    var plant_sequence := int(data.get("plant_sequence",0))+1
+    var seed_receipt_id := "field-seed:%s:%d" % [str(field.id),plant_sequence]
+    if state.sect.economy_a_enabled and state.sect.economy_a_receipts.has(seed_receipt_id):
+        return {"ok":false,"completed":false,"reason":"duplicate_field_seed_sequence"}
     var bulk_crop_plan := sx_v55_plan(state,field,crop_id)
-    if state.sect.spirit_stones < plant_cost:
-        return {"ok": false, "completed": false, "reason": "insufficient_spirit_stones"}
 
     state.sect.spirit_stones -= plant_cost
     var affinity := _crop_affinity_factor(disciple, crop_id)
@@ -1653,7 +1661,6 @@ func perform_spirit_field_step(state: SimulationState, disciple: DiscipleState, 
     var rare_factor := profession_modifiers.rare_event_factor(state, disciple)
     var plot_id := str(plots[plot_index].get("plot_id", "plot_%03d" % [plot_index + 1]))
 
-    var plant_sequence := int(data.get("plant_sequence", 0)) + 1
     plots[plot_index] = {
         "plot_id": plot_id,
         "crop_id": str(crop_id),
@@ -1682,6 +1689,18 @@ func perform_spirit_field_step(state: SimulationState, disciple: DiscipleState, 
     data["plant_sequence"] = plant_sequence
     field.production_state = data
     state.building_event_count += 1
+    if state.sect.economy_a_enabled:
+        # The plot's paid_spirit_stones is temporary while growing. Keep
+        # permanent, exactly-once seed cost evidence after actual harvest.
+        # Never backfill this into old/in-flight saves or charge twice.
+        state.sect.economy_a_receipts[seed_receipt_id] = {
+            "kind":"field_seed","site_id":str(field.id),
+            "plot_id":plot_id,"crop_id":str(crop_id),
+            "worker_id":str(disciple.id),"cost":plant_cost,
+            "wage_due_estimate":int(seed_preflight.get("wage_due_estimate",0)),
+            "day":int(state.tick/EconomySystem.V2_DAY_TICKS),"tick":state.tick
+        }
+        state.sect.economy_a_event_count += 1
 
     return {
         "ok": true,

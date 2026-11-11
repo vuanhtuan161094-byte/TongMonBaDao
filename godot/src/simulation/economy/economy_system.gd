@@ -394,15 +394,44 @@ func sync_market_day(state: SimulationState) -> void:
         state.sect.economy_a_market_day = day
         state.sect.economy_a_market_units_sold = 0
 
-# Read-only daily accounting from settled canonical receipts. This is a
-# transparent partial ledger: crop expenses and building/technique upgrades
-# have different owners and are intentionally NOT invented here.
+# ECO-03: read-only affordability quote. This does NOT reserve or debit any
+# money, does not create a seed/item, and does not promise future wages:
+# actual wage settlement at harvest is authoritative, including arrears.
+func field_seed_preflight_v1(state: SimulationState, crop_id: StringName) -> Dictionary:
+    var registry := SpiritCropRegistry.new()
+    if state == null or not state.sect.p3_7_resources_enabled or not registry.has(crop_id):
+        return {"ok":false,"reason":"unauthored_or_unavailable_crop"}
+    var cost := registry.cost(crop_id)
+    if cost <= 0:
+        return {"ok":false,"reason":"invalid_crop_cost"}
+    var cash := state.sect.spirit_stones
+    var wage_due := maxi(int(state.sect.economy_a_policy.get("wage_per_batch",2)),0) \
+        if state.sect.economy_a_enabled else 0
+    var reserve := maxi(int(state.sect.economy_a_policy.get("sect_pay_reserve",0)),0)
+    var after_seed := maxi(0,cash-cost)
+    var expected_unfunded_wage := maxi(0,wage_due-maxi(0,after_seed-reserve))
+    return {
+        "ok":cash >= cost,
+        "reason":"" if cash >= cost else "insufficient_spirit_stones",
+        "crop_id":str(crop_id),"cost":cost,
+        "sect_cash":cash,"cash_after_seed":after_seed,
+        "wage_due_estimate":wage_due,
+        "wage_unfunded_if_no_new_income":expected_unfunded_wage
+    }
+
+# Read-only daily accounting from genuine canonical receipts. The result is
+# still PARTIAL: building upgrades, cultivation and recruitment sinks have
+# separate owners and are not fabricated here.
 func daily_market_cashflow(state: SimulationState) -> Dictionary:
     if state == null or not state.sect.economy_a_enabled:
-        return {"income":0,"purchases":0,"wages":0,"net_market_and_wages":0}
+        return {"income":0,"origin_income":0,"purchases":0,
+            "seed_costs":0,"wages":0,"net_market_and_wages":0,
+            "net_recorded":0}
     var day := int(state.tick/V2_DAY_TICKS)
     var income := 0
+    var origin_income := 0
     var purchases := 0
+    var seed_costs := 0
     var wages := 0
     for raw_receipt in state.sect.economy_a_receipts.values():
         if not (raw_receipt is Dictionary):
@@ -414,13 +443,19 @@ func daily_market_cashflow(state: SimulationState) -> Dictionary:
         match str(receipt.get("kind","")):
             "market":
                 income += maxi(int(receipt.get("earned",0)),0)
+            "eco01_origin_vein":
+                origin_income += maxi(int(receipt.get("gross",0)),0)
             "market_buy":
                 purchases += maxi(int(receipt.get("cost",0)),0)
+            "field_seed":
+                seed_costs += maxi(int(receipt.get("cost",0)),0)
             "wage", "wage_arrears_payment":
                 wages += maxi(int(receipt.get("paid",0)),0)
     return {
-        "income":income,"purchases":purchases,"wages":wages,
-        "net_market_and_wages":income-purchases-wages
+        "income":income,"origin_income":origin_income,
+        "purchases":purchases,"seed_costs":seed_costs,"wages":wages,
+        "net_market_and_wages":income-purchases-wages,
+        "net_recorded":income+origin_income-purchases-seed_costs-wages
     }
 
 # SX-05: market throughput scales only after the Sect actually has 30+
