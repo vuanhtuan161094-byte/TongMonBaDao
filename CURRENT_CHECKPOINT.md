@@ -1,5 +1,13 @@
 # CURRENT CHECKPOINT — ONE GAME → MAIN (2026-11-04) 
 
+## ECO-06 QA FOLLOW-UP / ECO-07 PLAYTEST GATE (2026-11-11)
+
+- **ECO-05 FULL official Godot 4.7.2 PASS** [#42996610325](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42996610325), 22/22 steps on exact SHA `81dd8eb0021f07b32b71299284c1502f81a22ac7`; 32 genuine paid worksite slots and separate 480 synthetic roster/Save stress. No claim 30 simultaneously employed valid disciples.
+- **ECO-06 first run** [#43001562896](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/43001562896) on `132c84158c0cf96e67740dcbe8450ba6b3059e01`: official import, strict parse, focused OneGame 1280x720 Hall/Worksite/Market/Warehouse UI and initial core regressions have passed on last inspection; **FULL P3.7 still RUNNING**.
+- **ECO-06 test-only improvement** [`6b132c7a`](https://github.com/vuanhtuan161094-byte/TongMonBaDao/commit/6b132c7abb901afdb4ecf6446b79fd0c2c89ca89): field seed cost checks actual balance and expects either `ĐỦ PHÍ` or `THIẾU LT`; no money/gameplay changes. [exact-SHA workflow #43004049546](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/43004049546) **QUEUED** at last review. Do not mark ECO-06 FULL PASS until that SHA succeeds.
+- **ECO-07 `PREPARED / HOLD`**, not activated. Playtest/launcher/Windows/Android evidence and 6/30/480 distinctions drafted in [`docs/operations/GP_ECO07_PLAYTEST_GATE_20261111.md`](docs/operations/GP_ECO07_PLAYTEST_GATE_20261111.md). Official single `MO_GAME.cmd` uses isolated Save and session logs; Windows E: actual PC / Android device remain PENDING USER.
+- One PR #72, one branch, no merge; no SaveService/shared-state, combat/VFX/skills/monsters, public LT2/W2/T2 or site tax 0-100%, r3+. Owner explicitly disabled background monitoring; check workflow on demand.
+
 ## ECO-06 REAL ECONOMY UI — CODE IMPLEMENTED / OFFICIAL GODOT QA QUEUED (2026-11-11)
 
 - **ECO-05 gate prerequisite CONFIRMED:** [ECO05 workflow #42996610325](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42996610325) completed SUCCESS on code SHA `81dd8eb0021f07b32b71299284c1502f81a22ac7`, all 22 steps including FULL P3.7. The later `579c4b24` was docs-only. Owner then explicitly authorized ECO-06 after ECO-05 passes.
