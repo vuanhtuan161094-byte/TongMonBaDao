@@ -267,3 +267,17 @@ Agent contract độc lập: `/.agents/skills/tmb-gameplay-closure/SKILL.md`. M�
 - GP2-A/B focused/canonical producer/warehouse QA PASS independently from this economic balancing HOLD. On player-exposed Economy-A, optional `SXV55_EnableBulk` control exists in Main Hall but `sx_v55_enable_bulk` only enables plans for new batches; by itself does NOT activate LT2 money. Do not claim pilot incomes from bulk opt-in.
 - GP2-C next executable test should cover same-Save state (fresh 500 LT, manual ON/OFF production, 0% T2 where legal, no NPC buyer, 1/7/30 days, 6/30 workers, wage arrears, seed purchases, Forge+Alchemy, second upgrade) and flag loss of any genuinely reachable capital path; no artificial Stone top-up except separately labeled QA fixture, no r3+ sources.
 
+### 14.6 GP2-C real-source SX-V55 full test — technical PASS / finance HOLD
+
+- [SX-V55 ECO #42946569358](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42946569358) official Godot 4.7.2 **WHOLE SUCCESS 20/20** exact `a1f686a0400b969e2318095bdc1cb648e4785e1c`, job `130280697186`. Markers `SX-V55 BULK 5 REAL SOURCES -> WAREHOUSE -> ALCHEMY -> TUVI CONSUMER; LEGACY FREEZE & COLD SAVE: PASS`, `SX V55 LIVE CLOCK OFFLINE 60/90/180, FROZEN BULK PLOT, COLD SAVE/RELOAD AND REPLAY: PASS`, `SX-V55 R1 1D/7D/30D ACTUAL-SOURCE CONSERVATION: PASS`, and `P3.7C1 FOUNDATION + DAN TIEN FULL GATE: PASS` (2026-11-11T02:49:16Z). No fictitious source / Save edits; r3+ public hold.
+- From source-backed stress test logs, **not actual 30-day player run**:
+
+| Scenario | Real ore produced | NPC Stone sale ceiling | Fundable Sect treasury upper | Unfunded W2 r1 topup gap |
+| --- | ---: | ---: | ---: | ---: |
+| Day 1 | 120,000 | 160 | 558 | 67,874 |
+| Day 7 | 840,000 | 1,120 | 906 | 475,118 |
+| Day 30 | 3,600,000 | 4,800 | 2,240 | 2,036,220 |
+
+- Additional cost trace: Day1 `wages_pilot=68`, `field_seed_cost=34`, grain remainder 14,999, herb remainder 0, only HXD potential 2 and TQD potential 1; Day30 `wages_pilot=2040`, `field_seed_cost=1020`, herb remainder 0. Store these as bounded scenario observations; they **do not** activate LT2 gross, 30-realm money or seed prices in normal play.
+- **Gate decision:** GP2 registered source/timer/warehouse technical integration PASS, but financial no-softlock contract **HOLD**. Reconcile starter 500 LT, 0%-tax/no-NPC and legit market receipts versus W2, repeated building upgrade, ongoing Field seeds and alchemy inputs. Until a legal source-balanced recovery path exists, do not enable LT2/W2/T2 pilot for user saves or inject starter cash. Producer-only opt-in is not an LT2 faucet.
+
