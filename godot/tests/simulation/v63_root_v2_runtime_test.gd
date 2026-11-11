@@ -192,11 +192,15 @@ func _run() -> void:
 		if not matching_passive_id.is_empty():
 			var passive_before: Dictionary = skill_defs[matching_passive_id].get("passive_modifiers",{})
 			var passive_after := V63HumanSkillCombatSystem._root_scaled_passive_modifiers(preview_loadout,matching_passive_id)
-			for field in ["outgoing_factor","crit_bonus","attack_speed_factor","cast_speed_factor",
-					"cooldown_recovery_factor","lifesteal","poison_factor","heal_factor"]:
+			for field in ["outgoing_factor","poison_factor","heal_factor"]:
 				if passive_before.has(field):
 					_check(absf(float(passive_after.get(field,0.0))-float(passive_before[field])*1.24) < 0.00001,
-						"matching root should scale only authored passive magnitude: " + str(field))
+						"matching root should scale only authored effect magnitude: " + str(field))
+			for field in ["crit_bonus","attack_speed_factor","cast_speed_factor",
+					"cooldown_recovery_factor","lifesteal"]:
+				if passive_before.has(field):
+					_check(absf(float(passive_after.get(field,0.0))-float(passive_before[field]) < 0.00001,
+						"root must not automatically scale passive haste, cooldown, crit or lifesteal: " + str(field))
 			if passive_before.has("guard_factor"):
 				var expected_guard := clampf(1.0-(1.0-float(passive_before.guard_factor))*1.24,0.5,1.0)
 				_check(absf(float(passive_after.get("guard_factor",1.0))-expected_guard) < 0.00001,
