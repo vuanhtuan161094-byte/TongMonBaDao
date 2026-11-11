@@ -326,7 +326,7 @@ static func validate_all36_ledger(csv_text: String, catalogues: Dictionary, regi
 		school_counts[school] = int(school_counts.get(school,0))+1
 		var family := str(row.get("family_key",""))
 		family_seen[family] = true
-		if not (family_by_school.get(school,{}) is Dictionary):
+		if not family_by_school.has(school):
 			family_by_school[school] = {}
 		var school_families: Dictionary = family_by_school[school]
 		school_families[family] = true
@@ -346,7 +346,7 @@ static func validate_all36_ledger(csv_text: String, catalogues: Dictionary, regi
 		else:
 			var branch_key := school+"/"+branch
 			branch_seen[branch_key] = true
-			if not (branch_by_school.get(school,{}) is Dictionary):
+			if not branch_by_school.has(school):
 				branch_by_school[school] = {}
 			var school_branches: Dictionary = branch_by_school[school]
 			school_branches[branch] = true
