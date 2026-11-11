@@ -7822,7 +7822,8 @@ func _map_worksite_snapshot(building: BuildingState) -> Dictionary:
     var total := maxi(1,finish_tick-start_tick)
     var elapsed := clampi(state.tick-start_tick,0,total)
     var yield_count := maxi(0,int(nearest.get("routine_yield",0)))
-    result["detail"] = "Linh thảo ×%d · %s" % [yield_count,"Chờ nhập Linh Kho" if finish_tick <= state.tick else "còn %d phút mô phỏng" % (finish_tick-state.tick)]
+    var harvest_name := spirit_crop_registry.display_name(StringName(nearest.get("crop_id", "")))
+    result["detail"] = "%s ×%d · %s" % [harvest_name, yield_count,"Chờ nhập Linh Kho" if finish_tick <= state.tick else "còn %d phút mô phỏng" % (finish_tick-state.tick)]
     result["display_detail"] = "%s ×%s · %s" % [spirit_crop_registry.display_name(StringName(nearest.get("crop_id",""))),SectProductionWorksiteCue._map_quantity(yield_count),"chờ kho" if finish_tick <= state.tick else "%dp" % (finish_tick-state.tick)]
     result["progress"] = 100.0*float(elapsed)/float(total)
     result["active"] = true
