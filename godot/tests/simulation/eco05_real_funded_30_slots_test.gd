@@ -2,11 +2,15 @@ extends SceneTree
 
 # ECO-05 actual paid-capacity proof. No direct cash/ore/wood provision.
 # Stage r1 pilot enabled ONLY inside disposable QA state, never public UI.
-# One genuinely recruited V2 worker completes 205 canonical timed jobs.
-# Sim tick jumps to their real finish ticks, NOT a 30-day scheduler replay.
+# One genuinely recruited V2 worker completes enough canonical timed jobs
+# to afford r2 facilities. Job duration shortens with real profession XP;
+# source-authoritative frozen minutes (not assumed 60) determine gross.
+# Sim tick jumps to each real finish tick, NOT a 30-day scheduler replay.
 const SAVE_PATH := "user://eco05_real_funded_30_slots_test.json"
-const MINE_JOBS := 155
+const MAX_MINE_JOBS := 600
 const FOREST_JOBS := 50
+const CASH_TARGET := 8000000
+var actual_external_gross := 0
 var buildings := BuildingSystem.new()
 var warehouse := WarehouseSystem.new()
 var economy := EconomySystem.new()
@@ -35,23 +39,24 @@ func _earn(state: SimulationState,worker: DiscipleState,kind: StringName,
         "Failed to start real bulk job "+str(kind)+": "+str(start)): return false
     var timer := buildings.active_resource_timer_for_worker(state,worker.id)
     var snapshot: Dictionary = timer.get("sx_v55_r12_work",{})
-    if int(snapshot.get("realm",0)) != 1 or int(snapshot.get("gross",0)) != 60000:
-        print("ECO05_SOURCE_DIAG site=",str(kind)," timer=",timer,
-            " actor_realm=",worker.v2_realm_progress.get("cultivation",{}))
+    var actual_minutes := int(snapshot.get("minutes",0))
+    var actual_gross := int(snapshot.get("gross",0))
     if not _check(int(snapshot.get("realm",0)) == 1
-        and int(snapshot.get("gross",0)) == 60000
-        and int(timer.get("finish_tick",0)) > state.tick,
-        "Wrong actual r1 frozen 60m source snapshot"): return false
+        and actual_minutes > 0 and actual_minutes <= 60
+        and actual_gross == actual_minutes*1000
+        and int(timer.get("finish_tick",0))-state.tick == actual_minutes,
+        "Wrong real r1 frozen source snapshot: "+str(timer)): return false
     var receipt_id := str(timer.get("job_id",""))
     var money_before := state.sect.spirit_stones+worker.spirit_stones
     var qty_before := warehouse.quantity(state,resource)
     state.tick = int(timer["finish_tick"])
     buildings.process_tick(state)
     if not _check(warehouse.quantity(state,resource) == qty_before+units
-        and state.sect.spirit_stones+worker.spirit_stones == money_before+60000
+        and state.sect.spirit_stones+worker.spirit_stones == money_before+actual_gross
         and state.sect.economy_a_receipts.has("sxv55-work:"+receipt_id)
         and state.sect.economy_a_receipts.has("wage:"+receipt_id),
         "Resource and external gross not source-backed"): return false
+    actual_external_gross += actual_gross
     return true
 
 func _run() -> void:
@@ -83,20 +88,23 @@ func _run() -> void:
     state.sect.economy_a_policy[EconomySystem.SX_V55_R12_POLICY] = true
     var start_tick := state.tick
     var original := state.sect.spirit_stones+actor.spirit_stones
-    for i in range(MINE_JOBS):
-        if not _earn(state,actor,BuildingSystem.TYPE_MINE,
-            &"mining_crew",WorkforceSystem.PROF_MINING,
-            &"thanh_thiet",10000): return
     for i in range(FOREST_JOBS):
         if not _earn(state,actor,BuildingSystem.TYPE_LINH_FOREST,
             &"forestry_crew",WorkforceSystem.PROF_FORESTRY,
             &"linh_moc",8000): return
-    var earned := (MINE_JOBS+FOREST_JOBS)*60000
-    if not _check(state.tick-start_tick == (MINE_JOBS+FOREST_JOBS)*60
-        and state.sect.spirit_stones+actor.spirit_stones == original+earned
-        and warehouse.quantity(state,&"thanh_thiet") >= MINE_JOBS*10000
+    var mine_count := 0
+    while state.sect.spirit_stones < CASH_TARGET and mine_count < MAX_MINE_JOBS:
+        if not _earn(state,actor,BuildingSystem.TYPE_MINE,
+            &"mining_crew",WorkforceSystem.PROF_MINING,
+            &"thanh_thiet",10000): return
+        mine_count += 1
+    if not _check(mine_count > 0 and mine_count < MAX_MINE_JOBS
+        and state.sect.spirit_stones >= CASH_TARGET
+        and state.tick-start_tick > 0 and state.tick-start_tick < 30*1440
+        and state.sect.spirit_stones+actor.spirit_stones == original+actual_external_gross
+        and warehouse.quantity(state,&"thanh_thiet") >= mine_count*10000
         and warehouse.quantity(state,&"linh_moc") >= FOREST_JOBS*8000,
-        "Genuine 205-job income and material receipts did not conserve"): return
+        "Source-funded 30-day r1 finance under real XP speed/cash requirements failed"): return
 
     var hall := SectHallSystemV1.hall(state)
     var old_money := state.sect.spirit_stones
@@ -177,8 +185,8 @@ func _run() -> void:
         and warehouse.quantity(cold,&"linh_moc") == final_wood
         and cold.validate_invariants().is_empty(),
         "Cold Save lost paid worksite capacity/money/warehouse receipts"): return
-    print("ECO05 PAID30 PASS 205 genuine 60-tick r1 jobs 7 Hall paid upgrades 10 paid annexes 32 slots 7 owned, cold Save, 480 max remains roster rank ONLY; tick=",cold.tick,
-        " mine_jobs=",MINE_JOBS," forest_jobs=",FOREST_JOBS,
+    print("ECO05 PAID30 PASS actual timed r1 jobs 7 Hall paid upgrades 10 paid annexes 32 slots 7 owned, cold Save, 480 max remains roster rank ONLY; tick=",cold.tick,
+        " mine_jobs=",mine_count," forest_jobs=",FOREST_JOBS,
         " Hall_upgrade_LT=",upgrade_expense["spirit_stones"],
         " annex_LT=",annex_expense["spirit_stones"])
     _clean()
