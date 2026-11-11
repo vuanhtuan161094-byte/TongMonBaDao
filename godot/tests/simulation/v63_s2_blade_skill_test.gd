@@ -173,17 +173,24 @@ func _exercise_mark_ownership() -> void:
     var dao_skill := "tmb.skill.blade.cuong_dao.active_01.human"
     var dao_factor := HSC.marked_damage_factor(caster,target,battle.now,dao_skill)
     _expect(dao_factor>1.0, "only an owner's Dao strike can use the bounded mark")
-    battle._deal_direct(caster,target,0.15,"v63_skill",false,"metal",false,dao_skill)
-    _expect(float(target["hp"])<before and not target.get("v63_marks",{}).has(caster["id"]) and _has_event(battle,"mark_consumed",dao_skill), "real Dao damage consumes the mark exactly once")
+    caster["v63_skill_loadout"]=[dao_skill]
+    _expect(HSC.try_cast(battle,caster,target,false), "owner's Dao active uses the Combat V2 cast path")
+    var owner_cast: Dictionary=caster.get("v63_pending_cast",{})
+    if owner_cast.is_empty():
+        _expect(false,"owner Dao cast record exists")
+        return
+    battle.now=float(owner_cast.get("ready",battle.now))
+    battle._release_casts()
+    _expect(float(target["hp"])<before and not target.get("v63_marks",{}).has(caster["id"]) and _has_event(battle,"mark_consumed",dao_skill), "real Combat V2 Dao damage consumes the owner mark exactly once")
     var renderer := Vfx.new()
     renderer.consume_battle_events(battle)
-    _expect(renderer._cue_skill_id==dao_skill, "Trảm mark/owner strike remains connected to the VFX event stream")
+    _expect(renderer._cue_skill_id==dao_skill and renderer._cue_kind=="v63_skill_hit", "Trảm owner strike cue follows the committed Combat V2 hit")
     renderer.free()
 
 func _exercise_mobility() -> void:
     var battle := MapBattleV2.new(81203)
     var caster := _actor("dao_mobility","disciple",Vector2(2.0,5.0))
-    var target := _actor("dummy_mobility","enemy",Vector2(8.0,5.0))
+    var target := _actor("dummy_mobility","enemy",Vector2(6.5,5.0))
     var skill_id := "tmb.skill.blade.tram_phach_dao.active_04.human"
     caster["v63_combat_branch_id"]="tram_phach_dao"
     caster["v63_skill_loadout"]=[skill_id]
