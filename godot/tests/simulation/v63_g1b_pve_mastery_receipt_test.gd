@@ -175,8 +175,18 @@ func _real_pve_and_disk_replay() -> bool:
     for disciple_id in ids:
         var original: DiscipleState = state.disciples[StringName(disciple_id)]
         var cold: DiscipleState = loaded.disciples[StringName(disciple_id)]
-        if not _check(cold.v63_learned_skill_nodes[SKILL_ID] ==
-                original.v63_learned_skill_nodes[SKILL_ID],
+        var cold_record: Dictionary = cold.v63_learned_skill_nodes[SKILL_ID]
+        var live_record: Dictionary = original.v63_learned_skill_nodes[SKILL_ID]
+        if cold_record != live_record:
+            print("V63_G1B_COLD_DIFF " + JSON.stringify({
+                "disciple_id":disciple_id,
+                "cold":cold_record,"live":live_record,
+                "cold_xp":float(cold_record.get("mastery_xp",-1.0)),
+                "live_xp":float(live_record.get("mastery_xp",-1.0)),
+                "cold_receipts":cold_record.get("mastery_cast_receipts",{}),
+                "live_receipts":live_record.get("mastery_cast_receipts",{})
+            }))
+        if not _check(cold_record == live_record,
                 "cold SaveService must preserve per-skill mastery and receipt history"):
             return false
     if not _check(V63FeatureGates.all_disabled(), "release gates must remain OFF"):
