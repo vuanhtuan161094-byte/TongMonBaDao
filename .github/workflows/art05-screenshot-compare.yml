@@ -8,6 +8,7 @@ on:
       - 'godot/src/presentation/p3/sect_isometric_world_v1.gd'
       - 'godot/art/reimagined_source_a_v1/**'
       - 'godot/tests/presentation/as_build01_alchemy_visual_import_test.gd'
+      - 'godot/tests/presentation/as_build01_alchemy_source_a_visual_capture.gd'
       - 'godot/src/presentation/uiux/sect_premium_panel_v1.gd'
       - 'godot/src/presentation/uiux/sect_world_atmosphere_v1.gd'
       - 'godot/tests/presentation/art05_real_gui_layout_test.gd'
@@ -84,11 +85,24 @@ jobs:
         run: bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/presentation/as_build01_alchemy_visual_import_test.gd
       - name: ART05 strict real OneGame layout and input navigation test
         run: bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/presentation/art05_real_gui_layout_test.gd
+      - name: Capture AS-BUILD01 actual alchemy model on the Godot sect map
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$GITHUB_WORKSPACE/as_build01_visual_evidence"
+          export LIBGL_ALWAYS_SOFTWARE=1
+          xvfb-run -a -s "-screen 0 1280x720x24" bash tools/qa/run_godot_strict.sh \
+            --path godot --rendering-method gl_compatibility --audio-driver Dummy --resolution 1280x720 \
+            -s res://tests/presentation/as_build01_alchemy_source_a_visual_capture.gd \
+            -- "$GITHUB_WORKSPACE/as_build01_visual_evidence"
+          test -s "$GITHUB_WORKSPACE/as_build01_visual_evidence/as_build01_alchemy_real_map_focus_1280x720.png"
       - name: Upload screenshot comparison evidence even on failure
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: art05-seven-screens-${{ github.sha }}
-          path: eco07-virtual-gui-evidence/
+          path: |
+            eco07-virtual-gui-evidence/
+            as_build01_visual_evidence/
           if-no-files-found: warn
           retention-days: 14
