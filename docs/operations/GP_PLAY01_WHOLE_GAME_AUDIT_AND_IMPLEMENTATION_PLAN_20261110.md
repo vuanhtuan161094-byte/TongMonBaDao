@@ -248,6 +248,9 @@ Agent contract độc lập: `/.agents/skills/tmb-gameplay-closure/SKILL.md`. M�
 
 ### 14.4 GP2-A/B focused integrated conclusions (2026-11-11)
 
+- **Independent P3.7 backend full gate now PASS:** [#42946569566](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42946569566) **WHOLE SUCCESS 9/9** on exact `a1f686a0400b969e2318095bdc1cb648e4785e1c`, logs P3.7A1, A2R, B1 and `P3.7C1 FOUNDATION + DAN TIEN FULL GATE: PASS` at 02:46:18Z. Additional O6 [#42946569166](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42946569166), O8 [#42946569339](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42946569339), O1 [#42946569459](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42946569459), O2 [#42946569506](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42946569506), P3.6A [#42946569196](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42946569196) also WHOLE SUCCESS (GP2 exact SHA); Economy-A/GP02 and SX-V55 cumulative remain separate jobs with their own conclusions.
+
+
 - **Exact code SHA** [`a1f686a0400b969e2318095bdc1cb648e4785e1c`](https://github.com/vuanhtuan161094-byte/TongMonBaDao/commit/a1f686a0400b969e2318095bdc1cb648e4785e1c); touched only read-only map cue crop identity after red O4. Test SHA `558532b1f263388ddb4b7dd9d387b422a629b04f` is included in tested code SHA.
 - **O3 Mine** [#42946569235](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42946569235) **WHOLE SUCCESS 12/12**, log `P3 O3 REAL MINE LOOP TEST PASS` and P3.6A PASS.
 - **O4 Field** [#42946569446](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42946569446) **WHOLE SUCCESS 13/13**, log `P3 O4 REAL SPIRIT FIELD LOOP TEST PASS` and P3.6A PASS; live Linh Cốc crop/ETA label corrected; paid crop/real harvest/cold Save unchanged.
