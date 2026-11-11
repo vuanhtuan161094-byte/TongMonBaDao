@@ -7,7 +7,8 @@ extends RefCounted
 static func build(
     state: SimulationState, disciple: DiscipleState,
     realm: int, floor_index: int, body_realm: int, body_floor: int,
-    role: String, position: Vector2, party_id: String
+    role: String, position: Vector2, party_id: String,
+    preview_overrides: Dictionary = {}
 ) -> Dictionary:
     if state == null or disciple == null or party_id.is_empty():
         return {"ok":false,"reason":"missing_state_disciple_or_party"}
@@ -18,6 +19,23 @@ static func build(
     var basic_ratio_bonus := 0.0
     var range_bonus := 0.0
     var item_ids: Array = []
+    var root_values: Dictionary = {}
+    var root_summary: Dictionary = {}
+    var root_all_damage_bonus := 0.0
+    var root_v2_enabled := V63FeatureGates.is_enabled("spiritual_root_v2", preview_overrides)
+    if root_v2_enabled:
+        root_summary = V63SpiritualRootEvaluator.current_values_for_disciple(disciple)
+        if not bool(root_summary.get("ok", false)):
+            return {"ok": false, "reason": "invalid_spiritual_root_profile", "detail": str(root_summary.get("reason", ""))}
+        root_values = Dictionary(root_summary.get("root_values", {})).duplicate(true)
+        var root_sources := V63SpiritualRootEvaluator.combat_stat_sources(root_values, str(disciple.id))
+        if not bool(root_sources.get("ok", false)):
+            return {"ok": false, "reason": "invalid_spiritual_root_sources", "detail": str(root_sources.get("reason", ""))}
+        for source in root_sources.get("sources", []):
+            if not CombatStatsV2.valid_source(source):
+                return {"ok": false, "reason": "unregistered_spiritual_root_source", "source": source}
+            sources.append(source)
+        root_all_damage_bonus = float(root_sources.get("global_all_damage_bonus", 0.0))
     if state.sect.equipment_enabled:
         for slot in EquipmentSystem.VALID_SLOTS:
             var item: Dictionary = gear.equipped_item(state,disciple,slot)
@@ -67,6 +85,11 @@ static func build(
                 factor *= gear.skill_effect_multiplier(
                     state,disciple,StringName(definition["path"]),StringName(definition["element"])
                 )
+            if root_v2_enabled:
+                var root_factor := V63SpiritualRootEvaluator.skill_effect_factor(root_values, definition)
+                if not bool(root_factor.get("ok", false)):
+                    return {"ok": false, "reason": "invalid_spiritual_root_skill_factor", "skill_id": str(skill_id)}
+                factor *= float(root_factor.get("factor", 1.0))
             learned_damage_skills.append(str(skill_id))
             skill_factors[str(skill_id)] = factor
     learned_damage_skills.sort()
@@ -84,6 +107,10 @@ static func build(
         "stats":stats,"resistances":calculated["resistances"],
         "stat_breakdown":calculated["core_breakdown"],
         "applied_sources":calculated["applied_sources"],
+        "v63_spiritual_root_enabled":root_v2_enabled,
+        "v63_root_values":root_values,
+        "v63_root_global_all_damage_bonus":root_all_damage_bonus,
+        "v63_root_summary":root_summary,
         "equipped_item_ids":item_ids,
         "basic_range":basic_range,"basic_ratio":basic_ratio,
         "move_speed":move_speed,"basic_interval":base_interval,

@@ -126,6 +126,7 @@ func setup(id: String, party: Array, monsters: Array, keep_encounter_open: bool 
             "id":actor_id,"side":"disciple","party_id":party_id,"role":role,"tier":"disciple",
             "race_id":"nhan_toc","position":pos,"stats":stats.duplicate(true),
             "hp":hp,"max_hp":max_hp,"resistances":row.get("resistances",{}).duplicate(true),
+            "primary_element":str(row.get("primary_element","neutral")),
             "range":float(row.get("basic_range",default_basic_range_for_role(role))),
             "move_speed":float(row.get("move_speed",2.35 if role == "frontline" else 2.05)),
             "basic_ratio":float(row.get("basic_ratio",1.0)),
@@ -142,7 +143,7 @@ func setup(id: String, party: Array, monsters: Array, keep_encounter_open: bool 
             "hunt_radius":float(row.get("hunt_radius",0.0))
         })
         var v63_disciple_actor: Dictionary = entries[entries.size()-1]
-        for field in ["v63_skill_loadout","v63_skill_ready","v63_combat_enabled","v63_passive_ids","v63_combat_branch_id","v63_combat_lineage","v63_innate_skill_id","v63_basic_skill_id","basic_element","v63_divine_stage","v63_combat_generation","v63_blood_mode","v63_base_max_hp","v63_shield_received_factor"]:
+        for field in ["v63_skill_loadout","v63_skill_ready","v63_combat_enabled","v63_passive_ids","v63_combat_branch_id","v63_combat_lineage","v63_innate_skill_id","v63_basic_skill_id","basic_element","v63_divine_stage","v63_combat_generation","v63_blood_mode","v63_base_max_hp","v63_shield_received_factor","v63_spiritual_root_enabled","v63_root_global_all_damage_bonus"]:
             if row.has(field):
                 v63_disciple_actor[field] = row[field].duplicate(true) if row[field] is Array or row[field] is Dictionary else row[field]
     for raw in monsters:
@@ -173,6 +174,7 @@ func setup(id: String, party: Array, monsters: Array, keep_encounter_open: bool 
             "hp":float(row.get("hp",stats["max_hp"])),
             "max_hp":float(stats["max_hp"]),
             "resistances":row.get("resistances",{}).duplicate(true),
+            "primary_element":str(row.get("primary_element",row.get("element","neutral"))),
             "range":1.65 if tier == "boss" else 1.50,
             "move_speed":1.9 if tier == "boss" else 2.2,
             "next_basic":0.0,"next_skill":3.5 if tier == "boss" else 4.0,"guard_until":-1.0,
@@ -762,6 +764,7 @@ func add_continuous_monster(row: Dictionary) -> Dictionary:
         "species_id":str(row.get("species_id", "")),"race_id":race_id,
         "position":position,"stats":stats.duplicate(true),"hp":float(row.get("hp", stats["max_hp"])),
         "max_hp":float(stats["max_hp"]),"resistances":row.get("resistances", {}).duplicate(true),
+        "primary_element":str(row.get("primary_element",row.get("element","neutral"))),
         "range":1.65 if tier == "boss" else 1.50,"move_speed":1.9 if tier == "boss" else 2.2,
         "next_basic":now,"next_skill":now + (3.5 if tier == "boss" else 4.0),
         "guard_until":-1.0,"spawn_slot_id":str(row.get("spawn_slot_id", "")),
@@ -817,6 +820,7 @@ func add_world_disciple(row: Dictionary) -> Dictionary:
         "position":pos,"home_position":pos,
         "stats":stats.duplicate(true),"hp":hp,"max_hp":max_hp,
         "resistances":row.get("resistances",{}).duplicate(true),
+        "primary_element":str(row.get("primary_element","neutral")),
         "range":float(row.get("basic_range",default_basic_range_for_role(role))),
         "move_speed":float(row.get("move_speed",2.35 if role == "frontline" else 2.05)),
         "basic_ratio":float(row.get("basic_ratio",1.0)),
@@ -838,7 +842,8 @@ func add_world_disciple(row: Dictionary) -> Dictionary:
             "v63_passive_ids","v63_combat_branch_id","v63_combat_lineage",
             "v63_innate_skill_id","v63_basic_skill_id","basic_element",
             "v63_divine_stage","v63_combat_generation","v63_blood_mode",
-            "v63_base_max_hp","v63_shield_received_factor"]:
+            "v63_base_max_hp","v63_shield_received_factor",
+            "v63_spiritual_root_enabled","v63_root_global_all_damage_bonus"]:
         if row.has(field):
             added[field] = row[field].duplicate(true) \
                 if row[field] is Array or row[field] is Dictionary else row[field]
@@ -1087,11 +1092,17 @@ func _deal_direct(attacker: Dictionary, target: Dictionary, ratio: float, kind: 
     var weaken: Dictionary = attacker.get("status_effects",{}).get("weaken",{})
     if not weaken.is_empty() and now < float(weaken.get("until",-1.0)):
         ratio *= float(weaken.get("factor",1.0))
+    if bool(attacker.get("v63_spiritual_root_enabled",false)):
+        ratio *= 1.0 + clampf(float(attacker.get("v63_root_global_all_damage_bonus",0.0)),0.0,0.2)
     var crit := false
     if can_crit and kind != "basic_followup":
         crit = rng.chance(CombatStatsV2.effective_crit_chance(a_stats,t_stats))
+    var matchup_factor := 1.0
+    if bool(attacker.get("v63_spiritual_root_enabled",false)):
+        matchup_factor = V63SpiritualRootEvaluator.elemental_matchup_factor(
+            damage_element,str(target.get("primary_element","neutral")))
     var hit := CombatStatsV2.resolve_direct_hit(
-        a_stats,t_stats,target["resistances"],ratio,crit,damage_element,1.0,can_crit
+        a_stats,t_stats,target["resistances"],ratio,crit,damage_element,matchup_factor,can_crit
     )
     if not bool(hit.get("ok",false)):
         return 0.0

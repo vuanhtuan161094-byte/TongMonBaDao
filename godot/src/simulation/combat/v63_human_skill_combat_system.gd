@@ -294,11 +294,42 @@ static func attach_disciple_loadout(state: SimulationState, actor: Dictionary, p
     actor["v63_combat_lineage"] = divine_lineage if not divine_lineage.is_empty() else immortal_lineage
     actor["v63_skill_ready"] = {}
     actor["v63_combat_enabled"] = true
+    if V63FeatureGates.is_enabled("spiritual_root_v2", preview_overrides):
+        if not bool(actor.get("v63_spiritual_root_enabled", false)):
+            return _failure("spiritual_root_v2_not_applied_to_combat_loadout")
+        var root_values: Dictionary = actor.get("v63_root_values", {}).duplicate(true)
+        var root_factors: Dictionary = {}
+        var root_mastery_factors: Dictionary = {}
+        var factor_ids: Array = skills.duplicate()
+        var innate_for_root := str(actor.get("v63_innate_skill_id", ""))
+        if not innate_for_root.is_empty() and not factor_ids.has(innate_for_root):
+            factor_ids.append(innate_for_root)
+        for factor_id_value in factor_ids:
+            var factor_id := str(factor_id_value)
+            var definition: Dictionary = definitions.get(factor_id, {})
+            if definition.is_empty():
+                continue
+            var root_factor := V63SpiritualRootEvaluator.skill_effect_factor(root_values, definition)
+            if not bool(root_factor.get("ok", false)):
+                return _failure("invalid_spiritual_root_skill_factor:" + factor_id)
+            var factor := float(root_factor.get("factor", 1.0))
+            if factor > 1.0:
+                root_factors[factor_id] = factor
+            var mastery_factor := V63SpiritualRootEvaluator.skill_mastery_factor(root_values, definition)
+            if not bool(mastery_factor.get("ok", false)):
+                return _failure("invalid_spiritual_root_mastery_factor:" + factor_id)
+            var mastery_multiplier := float(mastery_factor.get("factor", 1.0))
+            if mastery_multiplier > 1.0:
+                root_mastery_factors[factor_id] = mastery_multiplier
+        var skill_factor_map: Dictionary = actor.get("skill_factors", {}).duplicate(true)
+        skill_factor_map["__v63_root_skill_effect_factors"] = root_factors
+        skill_factor_map["__v63_root_skill_mastery_factors"] = root_mastery_factors
+        actor["skill_factors"] = skill_factor_map
     for skill_id in skills:
         var skill: Dictionary = definitions[skill_id]
         if str(skill.get("slot","")) == "basic":
             actor["v63_basic_skill_id"] = skill_id
-            actor["basic_ratio"] = float(skill.damage_ratio)
+            actor["basic_ratio"] = float(skill.damage_ratio) * V63SpiritualRootEvaluator.attached_skill_effect_factor(actor, skill_id)
             actor["range"] = float(skill.range)
             actor["basic_range"] = float(skill.range)
             actor["basic_element"] = str(skill.element)
@@ -339,7 +370,7 @@ static func effective_attack_stats(actor: Dictionary, input_stats: Dictionary) -
     var cooldown_recovery := 0.0
     var lifesteal := 0.0
     for skill_id in _passive_ids(actor):
-        var mods: Dictionary = skill_definition(str(skill_id)).get("passive_modifiers",{})
+        var mods := _root_scaled_passive_modifiers(actor, str(skill_id))
         factor *= 1.0+clampf(float(mods.get("outgoing_factor",0.0)),-0.5,0.5)
         crit += clampf(float(mods.get("crit_bonus",0.0)),-0.25,0.25)
         attack_speed += clampf(float(mods.get("attack_speed_factor",0.0)),-0.5,0.5)
@@ -348,7 +379,7 @@ static func effective_attack_stats(actor: Dictionary, input_stats: Dictionary) -
         lifesteal += clampf(float(mods.get("lifesteal",0.0)),0.0,0.1)
     var innate_id := str(actor.get("v63_innate_skill_id",""))
     if not innate_id.is_empty():
-        var innate: Dictionary = skill_definition(innate_id).get("passive_modifiers",{})
+        var innate := _root_scaled_passive_modifiers(actor, innate_id)
         factor *= 1.0+clampf(float(innate.get("outgoing_factor",0.0)),-0.5,0.5)
         crit += clampf(float(innate.get("crit_bonus",0.0)),-0.25,0.25)
         attack_speed += clampf(float(innate.get("attack_speed_factor",0.0)),-0.5,0.5)
@@ -373,10 +404,10 @@ static func effective_defense_stats(actor: Dictionary, input_stats: Dictionary) 
         return stats
     var factor := 1.0
     for skill_id in _passive_ids(actor):
-        factor *= clampf(float(skill_definition(str(skill_id)).get("passive_modifiers",{}).get("guard_factor",1.0)),0.5,1.0)
+        factor *= clampf(float(_root_scaled_passive_modifiers(actor, str(skill_id)).get("guard_factor",1.0)),0.5,1.0)
     var innate_id := str(actor.get("v63_innate_skill_id",""))
     if not innate_id.is_empty():
-        factor *= clampf(float(skill_definition(innate_id).get("passive_modifiers",{}).get("guard_factor",1.0)),0.5,1.0)
+        factor *= clampf(float(_root_scaled_passive_modifiers(actor, innate_id).get("guard_factor",1.0)),0.5,1.0)
     var reduction := clampf(float(stats.get("damage_reduction",0.0)),0.0,0.95)
     stats["damage_reduction"] = 1.0-(1.0-reduction)*factor
     return stats
@@ -391,20 +422,36 @@ static func marked_damage_factor(attacker: Dictionary, target: Dictionary, now: 
 static func effective_poison_factor(actor: Dictionary) -> float:
     var factor := 1.0
     for raw_id in _passive_ids(actor):
-        factor *= 1.0 + clampf(float(skill_definition(str(raw_id)).get("passive_modifiers", {}).get("poison_factor", 0.0)), 0.0, 0.5)
+        factor *= 1.0 + clampf(float(_root_scaled_passive_modifiers(actor, str(raw_id)).get("poison_factor", 0.0)), 0.0, 0.5)
     var innate_id := str(actor.get("v63_innate_skill_id", ""))
     if not innate_id.is_empty():
-        factor *= 1.0 + clampf(float(skill_definition(innate_id).get("passive_modifiers", {}).get("poison_factor", 0.0)), 0.0, 0.5)
+        factor *= 1.0 + clampf(float(_root_scaled_passive_modifiers(actor, innate_id).get("poison_factor", 0.0)), 0.0, 0.5)
     return factor
 
 static func effective_heal_factor(actor: Dictionary) -> float:
     var factor := 1.0
     for raw_id in _passive_ids(actor):
-        factor *= 1.0 + clampf(float(skill_definition(str(raw_id)).get("passive_modifiers", {}).get("heal_factor", 0.0)), 0.0, 0.25)
+        factor *= 1.0 + clampf(float(_root_scaled_passive_modifiers(actor, str(raw_id)).get("heal_factor", 0.0)), 0.0, 0.25)
     var innate_id := str(actor.get("v63_innate_skill_id", ""))
     if not innate_id.is_empty():
-        factor *= 1.0 + clampf(float(skill_definition(innate_id).get("passive_modifiers", {}).get("heal_factor", 0.0)), 0.0, 0.25)
+        factor *= 1.0 + clampf(float(_root_scaled_passive_modifiers(actor, innate_id).get("heal_factor", 0.0)), 0.0, 0.25)
     return factor
+
+static func _root_scaled_passive_modifiers(actor: Dictionary, skill_id: String) -> Dictionary:
+    var modifiers: Dictionary = skill_definition(skill_id).get("passive_modifiers", {}).duplicate(true)
+    var factor := V63SpiritualRootEvaluator.attached_skill_effect_factor(actor, skill_id)
+    if factor <= 1.0:
+        return modifiers
+    # Only the authored numeric passive-effect magnitudes scale. Durations,
+    # cooldowns, target counts and proc/receipt limits are never modified here.
+    for field in ["outgoing_factor", "crit_bonus", "attack_speed_factor", "cast_speed_factor",
+            "cooldown_recovery_factor", "lifesteal", "poison_factor", "heal_factor"]:
+        if modifiers.has(field):
+            modifiers[field] = float(modifiers[field]) * factor
+    if modifiers.has("guard_factor"):
+        var guard_factor := clampf(float(modifiers["guard_factor"]), 0.5, 1.0)
+        modifiers["guard_factor"] = clampf(1.0 - (1.0 - guard_factor) * factor, 0.5, 1.0)
+    return modifiers
 
 static func _passive_ids(actor: Dictionary) -> Array:
     var value = actor.get("v63_passive_ids",[])
@@ -623,9 +670,15 @@ static func _try_boss_cast(battle: MapBattleV2, actor: Dictionary, target: Dicti
     return false
 
 static func _cast_record(caster: Dictionary, target: Dictionary, id: String, skill: Dictionary, deadline: float, boss_id: String = "") -> Dictionary:
+    var root_factor := V63SpiritualRootEvaluator.attached_skill_effect_factor(caster, id)
+    var effect := str(skill.get("effect", "damage"))
+    var ratio := float(skill.get("damage_ratio", 0.0)) * root_factor
+    var power := float(skill.get("power", 0.0))
+    if effect in ["poison", "heal", "guard", "mark"]:
+        power *= root_factor
     var cast := {"caster":str(caster.id),"target_id":str(target.id),"v63_skill_id":id,"ready":deadline,
-        "ratio":float(skill.damage_ratio),"element":str(skill.element),"effect":str(skill.effect),"shape":str(skill.shape),
-        "power":float(skill.get("power",0.0)),"duration":float(skill.get("duration",0.0)),
+        "ratio":ratio,"element":str(skill.element),"effect":effect,"shape":str(skill.shape),
+        "power":power,"duration":float(skill.get("duration",0.0)),
         "poison_stacks":int(skill.get("poison_stacks",1)),"radius":float(skill.get("radius",0.0)),
         "range":float(skill.get("range",0.0)),"maximum":mini(int(skill.get("target_limit",1)),MAX_TARGETS)}
     if not boss_id.is_empty():
@@ -748,7 +801,9 @@ static func record_cast_mastery(caster: Dictionary, skill_id: String, event_id: 
         return false
     receipts[event_id] = true
     record["mastery_cast_receipts"] = receipts
-    record["mastery_xp"] = minf(1000000.0, float(record.get("mastery_xp", 0.0)) + 1.0)
+    var mastery_multiplier := V63SpiritualRootEvaluator.attached_skill_mastery_factor(caster, skill_id)
+    record["mastery_xp"] = minf(1000000.0,
+        float(record.get("mastery_xp", 0.0)) + mastery_multiplier)
     var maximum := 12 if str(skill_definition(skill_id).get("generation", "human")) == "human" else 3
     record["level"] = mini(maximum, 1 + int(float(record.mastery_xp) / 100.0))
     disciple.v63_learned_skill_nodes[skill_id] = record

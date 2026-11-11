@@ -1,7 +1,7 @@
 class_name V63FeatureGates
 extends RefCounted
 
-# D1: every new-content feature is explicitly OFF. No live consumer is wired.
+# D1: every new-content feature is explicitly OFF; consumers require an explicit preview override.
 const DEFAULT_FLAGS := {
     "content_registry": false,
     "skill_successors": false,
@@ -10,7 +10,8 @@ const DEFAULT_FLAGS := {
     "technique_learning": false,
     "human_skill_combat": false,
     "divine_skill_combat": false,
-    "poison_evolution_strict": false
+    "poison_evolution_strict": false,
+    "spiritual_root_v2": false
 }
 
 static func is_enabled(flag_id: String, preview_overrides: Dictionary = {}) -> bool:

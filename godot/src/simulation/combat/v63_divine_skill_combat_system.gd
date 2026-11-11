@@ -299,9 +299,14 @@ static func apply_elemental_reaction(battle: MapBattleV2, attacker: Dictionary, 
 
 static func _cast_record(caster: Dictionary, target: Dictionary, id: String, skill: Dictionary,
         deadline: float, boss_id: String) -> Dictionary:
+    var root_factor := V63SpiritualRootEvaluator.attached_skill_effect_factor(caster, id)
+    var effect := str(skill.get("effect", "damage"))
+    var power := float(skill.get("power", 0.0))
+    if effect in ["poison", "heal", "guard", "mark"]:
+        power *= root_factor
     return {"caster":str(caster.id),"target_id":str(target.id),"v63_skill_id":id,"v63_boss_id":boss_id,
-        "ready":deadline,"ratio":float(skill.damage_ratio),"element":str(skill.element),"effect":str(skill.effect),
-        "shape":str(skill.shape),"power":float(skill.get("power", 0.0)),"duration":float(skill.get("duration", 0.0)),
+        "ready":deadline,"ratio":float(skill.damage_ratio)*root_factor,"element":str(skill.element),"effect":effect,
+        "shape":str(skill.shape),"power":power,"duration":float(skill.get("duration", 0.0)),
         "poison_stacks":int(skill.get("poison_stacks", 0)),"radius":float(skill.get("radius", 0.0)),
         "maximum":mini(3, maxi(1, int(skill.get("target_limit", 1))))}
 

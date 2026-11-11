@@ -90,7 +90,7 @@ func begin(
         var position: Vector2 = record.get("position",Vector2(8.0,9.0))
         var actor := DiscipleCombatLoadoutV2.build(
             state,living,realm,floor_index,body_realm,body_floor,
-            role,position,party_id
+            role,position,party_id,v63_preview_overrides
         )
         if not bool(actor.get("ok",false)):
             return actor
