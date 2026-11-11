@@ -23,7 +23,8 @@ Real engine: official **Godot 4.7.2**, canonical `res://scenes/p3/p3_2_landscape
 - ART05 iteration2, [GUI #43066391432](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/43066391432) 29.13 FPS, 228.50 MB; compact navigation, dark management and better wrapping.
 - ART06 iteration3, [GUI #43067189022](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/43067189022) 22.63 FPS, 228.43 MB; new world motes but software-rendering cost.
 - ART06 iteration4, [GUI #43067699494](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/43067699494) 22.34 FPS, 228.43 MB. Throttled but did not recover performance, so rejected as sufficient.
-- ART06 iteration5 source `bb9791c02e646282dbf29e44dbfe4a3c6ba509df`: world aura now static while canonical jobs inactive. **Exact-sha fresh measured run pending** when this record was prepared.
+- ART06 iteration5, [GUI #43068159755](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/43068159755), source `bb9791c02e646282dbf29e44dbfe4a3c6ba509df`: 22.75 FPS / 228.43 MB — static but still consuming render throughput; rejected as sufficient.
+- ART06 iteration6, [GUI #43068616366](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/43068616366), source `bc3d2ccd3798b40914497f7772bbd5b980c4cfe1`: **28.825 FPS / 228.42 MB**, 7/7 screenshots + layout checks + ART02 regression PASS; earlier idle atmospheric VFX now hidden, only actual active production can display them. Software runner improves substantially versus iteration5, but remains slightly lower than before and needs physical QA.
 
 FPS above is specific to runner software rendering and must not be used to assert physical Android/Windows FPS. Small run-to-run variance and job contention may exist. Genuine user acceptance requires seeing the output on target machine.
 
