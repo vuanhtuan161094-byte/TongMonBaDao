@@ -4573,7 +4573,7 @@ func _build_economy_a_market_controls() -> void:
     var quota := Label.new()
     quota.name = "ECO02MarketQuota"
     quota.text = "Tông Môn %d LT · NPC nhận %d · bán tối đa %d · mua tối đa %d đơn vị hôm nay." % [
-        state.sect.spirit_stones,int(state.sect.economy_a_policy.get("market_daily_units",20)),
+        state.sect.spirit_stones,economy.effective_market_daily_units(state),
         economy.market_remaining(state),economy.market_buy_remaining(state)
     ]
     if int(state.sect.economy_a_policy.get("market_daily_units",20)) == 0:
