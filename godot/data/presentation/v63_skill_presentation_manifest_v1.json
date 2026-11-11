@@ -45,7 +45,7 @@
   },
   "source_registry": {
     "path": "res://data/combat/v63_content_registry.json",
-    "git_blob_sha": "5335261257aeda14fe574c7e8d6f8d302997d5b3"
+    "git_blob_sha": "d42d8005715a49946240984812c7b6aa5299e12f"
   },
   "vfx_runtime_truth": {
     "source_events": "MapBattleV2.events",
