@@ -32,7 +32,7 @@ jobs:
   economy-a-focused:
     name: Godot 4.7.2 Economy-A focused and cumulative
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
     steps:
       - name: Checkout
         uses: actions/checkout@v4
