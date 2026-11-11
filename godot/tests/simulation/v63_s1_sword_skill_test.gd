@@ -140,7 +140,6 @@ func _exercise_ranged_hold() -> void:
     var before: Vector2=archer["position"]
     battle.step()
     _expect(archer["position"]==before, "Ngự Kiếm AI holds maximum skill range instead of rushing during cooldown")
-    battle.free()
 
 func _exercise_damage_branch(branch: String, skill_id: String, from: Vector2, to: Vector2) -> void:
     var battle := MapBattleV2.new(761)
@@ -156,8 +155,7 @@ func _exercise_damage_branch(branch: String, skill_id: String, from: Vector2, to
     _expect(HSC.try_cast(battle,caster,target,false), branch+" AI selected an available active skill")
     var pending: Dictionary = caster.get("v63_pending_cast",{})
     if pending.is_empty():
-        battle.free()
-        return
+            return
     var desired_range := float(Sword.skill_definition(skill_id).get("range",0.0))
     if branch=="ngu_kiem":
         _expect(is_equal_approx(HSC.preferred_offensive_range(caster),desired_range), "Ngự Kiếm AI holds the catalogued ranged reach")
@@ -170,7 +168,6 @@ func _exercise_damage_branch(branch: String, skill_id: String, from: Vector2, to
     var cast_definition: Dictionary=HSC.skill_definition(skill_id)
     _expect(renderer._cue_skill_id==skill_id and renderer._cue_animation_key==str(cast_definition.get("animation_key","")) and renderer._cue_vfx_key==str(cast_definition.get("vfx_key","")), branch+" event selects the matching catalog animation/VFX profile")
     renderer.free()
-    battle.free()
 
 func _exercise_guard_reflect() -> void:
     var battle := MapBattleV2.new(762)
@@ -186,8 +183,7 @@ func _exercise_guard_reflect() -> void:
     _expect(HSC.try_cast(battle,defender,foe,false), "Hộ Kiếm AI casts its bounded guard")
     var pending: Dictionary=defender.get("v63_pending_cast",{})
     if pending.is_empty():
-        battle.free()
-        return
+            return
     battle.now=float(pending.get("ready",0.0))
     battle._release_casts()
     _expect(float(defender.get("learned_guard_until",-1.0))>battle.now, "Hộ Kiếm guard changes real combat state")
@@ -202,7 +198,6 @@ func _exercise_guard_reflect() -> void:
     renderer.consume_battle_events(battle)
     _expect(renderer._cue_kind=="v63_sword_guard_reflect", "reflection cue is driven by the actual combat event")
     renderer.free()
-    battle.free()
 
 func _actor(actor_id: String, side: String, position: Vector2) -> Dictionary:
     var resistances: Dictionary={}
@@ -210,7 +205,7 @@ func _actor(actor_id: String, side: String, position: Vector2) -> Dictionary:
         resistances[element]=0.0
     return {
         "id":actor_id,"side":side,"role":"melee","position":position,
-        "hp":200.0,"max_hp":200.0,"range":1.8,
+        "hp":200.0,"max_hp":200.0,"range":1.8,"move_speed":2.0,
         "stats":{"attack":40.0,"defense":0.0,"damage_reduction":0.0,"crit_chance":0.0,"crit_damage":1.5,"crit_resistance":0.0,"defense_penetration":0.0,"lifesteal":0.0,"lifesteal_reduction":0.0},
         "resistances":resistances,"status_effects":{},"context_sources":[],
         "v63_combat_enabled":true,"v63_sword_combat_enabled":true,
