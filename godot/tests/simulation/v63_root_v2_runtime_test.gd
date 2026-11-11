@@ -199,7 +199,7 @@ func _run() -> void:
 			for field in ["crit_bonus","attack_speed_factor","cast_speed_factor",
 					"cooldown_recovery_factor","lifesteal"]:
 				if passive_before.has(field):
-					_check(absf(float(passive_after.get(field,0.0))-float(passive_before[field]) < 0.00001,
+					_check(absf(float(passive_after.get(field,0.0))-float(passive_before[field])) < 0.00001,
 						"root must not automatically scale passive haste, cooldown, crit or lifesteal: " + str(field))
 			if passive_before.has("guard_factor"):
 				var expected_guard := clampf(1.0-(1.0-float(passive_before.guard_factor))*1.24,0.5,1.0)
