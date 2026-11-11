@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://src/presentation/art02_onegame_visual_layer.gd" id="1_p32"]
+[ext_resource type="Script" path="res://src/presentation/art05_onegame_cinematic_ui.gd" id="1_p32"]
 
 [node name="P32LandscapeSect" type="Control"]
 layout_mode = 3
