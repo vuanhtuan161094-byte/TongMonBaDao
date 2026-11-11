@@ -1,5 +1,14 @@
 # NEXT CHAT / CODEX HANDOFF — RELEASE TRAIN PR #72 → MAIN (2026-11-04)
 
+## GP-ECO-R12 staged design plan — 2026-11-11
+
+- **PLAN ONLY, NO RUNTIME ACTIVATION:** [GP_ECONOMY_R12_CLOSURE_PLAN_20261111.md](docs/operations/GP_ECONOMY_R12_CLOSURE_PLAN_20261111.md), created from exact PR #72 HEAD. Seven executable packets ECO-00→ECO-07: baseline; source-backed starter cash; authentic market; real seed/wages/costs; QA-only r1 tax/wage; r2 and paid-capacity/upgrade; OneGame UI; official QA. Each phase must pass focused+cumulative exact SHA before progression. No code authorization inferred from document alone.
+- **ECO-01 proposal:** permanent in-world starter Hall/vein `Linh Mạch Khởi Nguyên`, one existing eligible worker, free-to-start 60 simulation ticks, +1,000 LT **gross** paid through one authentic job receipt, at most once/Sect per 1,440 ticks and across day boundaries. Existing 2 LT wage paid only after completion, about **+998 LT Sect net**; anti-replay/Save/offline & One Active Job essential. Not a free NPC sale or stocked fake item, and nothing credited in the current game yet.
+- **6/30 baseline scenarios:** no-NPC and hypothetical T2=0, 6 active 34 batches/day need 34 LT seeds+68 LT wages=102; 30 *paid active worksite* conditional 170 batches need 170+340=510. With one 1,000 LT gross source/day, cash pressure is conceptually addressable, but moving one worker to recovery job reduces simultaneous production. Do not claim +898/+490 as measured profits; only scenario upper bounds. The source is a safety rail, not sole finance for QA pilot 649,000 LT upgrade wave.
+- **New status correction:** [SX #42952728803](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42952728803) **WHOLE SUCCESS 20/20** on exact test SHA `efea6ba0c6fb2a6b854abaa3ae597023ddbc0c25` after historical GDScript test-only parse RED #42952556014 and corrective `efea6ba0`. Later PR HEAD includes other writer's V63 combat modifications, so this does **not** prove whole newest HEAD FULL PASS. GP2-A/B technical closure already achieved on `a1f686a`. All player LT2/W2/T2 and r3+ remain HOLD.
+- **Constraints:** no branch/merge, no SaveService/shared state, no combat/monsters/VFX/skills. Windows real 1280×720 and Android physical **PENDING USER**.
+
+
 ## GP-PLAY01 / GP2-C 6/30 ZERO-TAX NO-NPC QA — 2026-11-11
 
 - **GP2-A/B already TECHNICAL CLOSED:** [Economy-A #42946569463](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42946569463) official Godot 4.7.2 exact source SHA `a1f686a0400b969e2318095bdc1cb648e4785e1c`, **WHOLE SUCCESS 34/34**, O6 `P3 O6 M1 END-TO-END RELEASE REHEARSAL PASS` at 2026-11-11 02:58:30Z, full P3.7 PASS 02:53:39Z, Economy-A/O3/O4/O5/O7/O9/SX-V55 and Save unchanged. This supersedes old checkpoint lines describing this run as IN_PROGRESS; physical and economy policy HOLD separate.
