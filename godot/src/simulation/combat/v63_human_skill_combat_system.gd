@@ -6,6 +6,7 @@ const MAX_SKILLS_PER_DISCIPLE := 12
 const MAX_TARGETS := 3
 const POISON_OWNER_CAP := 5
 const POISON_BOSS_TARGET_CAP := 30
+const POISON_TICK_INTERVAL_SECONDS := 1.0
 const EFFECTS := ["damage","poison","guard","heal","cleanse","mark","consume_poison","mobility","passive","innate"]
 const BOW_LINE_RANGE_SKILL_IDS := [
     "tmb.skill.bow.liep_anh.ultimate.divine.b",
@@ -964,7 +965,7 @@ static func _apply_poison(battle: MapBattleV2, caster: Dictionary, target: Dicti
     for _i in range(add_count):
         stacks.append({"owner_id":owner,"source_skill_id":skill_id,"source_skill_generation_id":skill_id,"stack_ordinal":previous_ordinal+_i+1,"attack_snapshot":snapshot.duplicate(true),
             "ratio":clampf(ratio*poison_factor,0.0,0.2),"element":element,"applied_at":battle.now,
-            "next_tick":battle.now+1.0,"expires_at":battle.now+clampf(duration,1.0,10.0)})
+            "next_tick":battle.now+POISON_TICK_INTERVAL_SECONDS,"expires_at":battle.now+clampf(duration,1.0,10.0)})
     statuses["v63_poison"] = stacks
     target["status_effects"] = statuses
     if add_count == 0 and owner_count >= owner_cap and \
@@ -1039,7 +1040,7 @@ static func process_status_effects(battle: MapBattleV2) -> void:
                         "source_skill_id":str(stack.get("source_skill_id","")),"source_skill_generation_id":str(stack.get("source_skill_generation_id", "")),
                         "owner_id":str(owner.id),"stack_ordinal":int(stack.get("stack_ordinal", ordinal+1)),"diminishing_factor":factor,
                         "target_hp_before":hp_before,"target_hp_after":float(target.get("hp", 0.0))})
-                    stack["next_tick"] = float(stack.get("next_tick",battle.now))+1.0
+                    stack["next_tick"] = float(stack.get("next_tick",battle.now))+POISON_TICK_INTERVAL_SECONDS
                 ordinal += 1
             if kept.is_empty():
                 statuses.erase("v63_poison")

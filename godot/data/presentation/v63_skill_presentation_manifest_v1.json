@@ -1,0 +1,652 @@
+{
+  "schema_version": 1,
+  "manifest_id": "tmb.v63.skill_presentation_manifest.s0",
+  "authority": {
+    "mechanics": "Runtime combat catalogues only",
+    "identity": "Runtime catalogue plus v63_content_registry and V63 ALL36 ID matrix",
+    "descriptions": "Additive Vietnamese presentation metadata",
+    "vfx": "Production specification; runtime/render status recorded per phase"
+  },
+  "release_gate": "OFF",
+  "completion_status": "S0_SAMPLE_ONLY",
+  "target_coverage": {
+    "schools": 12,
+    "branches": 36,
+    "families": 420,
+    "nodes": 2196,
+    "existing_runtime_nodes": 549,
+    "not_authored_slots": 1647,
+    "authored_presentation_entries": 4
+  },
+  "source_catalogs": {
+    "human": {
+      "path": "res://data/combat/v63_human_combat_catalog.json",
+      "git_blob_sha": "dd0d74b7ec82ccaad03756eef6d6bdb3359484df"
+    },
+    "immortal": {
+      "path": "res://data/combat/v63_immortal_combat_catalog.json",
+      "git_blob_sha": "96a9339ba4d211d1dfc4abde6206462f854f21c0"
+    },
+    "divine": {
+      "path": "res://data/combat/v63_divine_combat_catalog.json",
+      "git_blob_sha": "ced59e0dc9957259882c939546694a5766b95021"
+    }
+  },
+  "source_registry": {
+    "path": "res://data/combat/v63_content_registry.json",
+    "git_blob_sha": "ec342196c48fecf8f5708d0dac8412a774ac7d4b"
+  },
+  "vfx_runtime_truth": {
+    "source_events": "MapBattleV2.events",
+    "renderer": "res://src/presentation/p3/v63_original_combat_vfx_v1.gd",
+    "generic_consumed_events": [
+      "skill_cast",
+      "v63_skill_hit",
+      "status_applied"
+    ],
+    "not_consumed_events": [
+      "skill_release",
+      "skill_hit",
+      "status_tick"
+    ],
+    "dedicated_skill_assets": [],
+    "render_capture_status": "NOT_CAPTURED",
+    "gui_acceptance_status": "PENDING"
+  },
+  "entries": {
+    "tmb.skill.bow.basic.human": {
+      "catalogue_key": "human",
+      "identity": {
+        "skill_id": "tmb.skill.bow.basic.human",
+        "family_id": "tmb.skill.bow.basic",
+        "school": "bow",
+        "branch": "",
+        "slot": "basic",
+        "tier": "human",
+        "lineage": "base",
+        "parent_skill_id": "",
+        "variant": "BASE",
+        "replaces_skill_id": "",
+        "source_codex_id": "tmb.codex.bow.common.ch0_basic.human.base",
+        "archivable": true
+      },
+      "display_name_vi": "Tiễn Thức Căn Bản",
+      "short_description_vi": "Bắn một mũi tên thường vào một mục tiêu hợp lệ.",
+      "long_description_vi": "Đệ tử giương cung và bắn một mũi tên vào mục tiêu hợp lệ do chiến đấu chọn. Dữ liệu hiện tại chỉ quy định sát thương trực tiếp thuộc tính Kim lên một mục tiêu; đòn cơ bản này không tự đặt Độc hay hiệu ứng phụ.",
+      "mechanics_tooltip_template": {
+        "mode": "GENERATED_FROM_RUNTIME_CATALOG",
+        "fields": [
+          "damage_ratio",
+          "element",
+          "range",
+          "cast_time",
+          "cooldown",
+          "projectile_speed",
+          "shape",
+          "target_limit"
+        ]
+      },
+      "element_rule": {
+        "element_source": "runtime.element",
+        "element_value": "metal",
+        "root_matchup_source": "Root V2 combat authority only; feature-gated and not authored by presentation metadata",
+        "differential_bonus": "NO_PRESENTATION_BONUS"
+      },
+      "role_tags": [
+        "đòn cơ bản",
+        "tầm xa",
+        "đơn mục tiêu"
+      ],
+      "counterplay_vi": "Chỉ đánh một mục tiêu; giáp, kháng hệ và quy tắc sát thương của chiến đấu vẫn áp dụng.",
+      "ai_policy": {
+        "status": "INHERITED_RUNTIME_POLICY_NOT_PER_SKILL_TUNED",
+        "target_policy": "runtime_nearest_eligible_enemy",
+        "range_policy": "runtime.skill_range",
+        "selection_policy": "runtime_equipped_loadout_order",
+        "source": "V63HumanSkillCombatSystem"
+      },
+      "availability": {
+        "status": "PRESENT_IN_HUMAN_RUNTIME_CATALOG",
+        "source_codex_id": "tmb.codex.bow.common.ch0_basic.human.base",
+        "archivable": true,
+        "learn_unlock_claim": "NOT_ASSERTED_BY_S0"
+      },
+      "evolution_delta": {
+        "status": "BASE_HUMAN_NODE_ONLY",
+        "parent_skill_id": "",
+        "replaces_skill_id": "",
+        "successors": "NOT_AUTHORED_IN_THIS_S0_SLICE"
+      },
+      "vfx": {
+        "production_brief": {
+          "motif": "Mũi tên bạc thẳng, đường nét gọn của cung thủ căn bản.",
+          "palette": [
+            "bạc lạnh",
+            "ngọc nhạt"
+          ],
+          "projectile_shape": "mũi tên mảnh",
+          "impact_scope_source": "runtime.shape + runtime.target_limit",
+          "anchors": [
+            "caster.weapon_tip",
+            "target.center",
+            "world_path"
+          ],
+          "runtime_animation_key_source": "runtime.animation_key",
+          "runtime_vfx_key_source": "runtime.vfx_key",
+          "phases": [
+            {
+              "event_type": "skill_cast",
+              "runtime_status": "EMITTED; CURRENT RENDERER CUE IS GENERIC",
+              "anchor": "caster.weapon_tip",
+              "visual_direction": "Nén khí và gom sáng theo họa tiết đã nêu; không đổi sát thương hoặc mục tiêu.",
+              "production_note": "Event MapBattleV2 có skill_id; renderer hiện dùng một cue chung cho mọi V63 skill cast."
+            },
+            {
+              "event_type": "none",
+              "runtime_status": "NO_DEDICATED_SKILL_TELEGRAPH_EVENT",
+              "anchor": "target.center",
+              "visual_direction": "Nếu thời gian thi triển khác không, chỉ dùng đường báo trước mảnh gọn theo hướng mục tiêu; không tạo vòng cảnh báo giả.",
+              "production_note": "Telegraph riêng chưa được runtime skill này phát; chỉ là chỉ dẫn sản xuất, chưa render."
+            },
+            {
+              "event_type": "skill_release",
+              "runtime_status": "EMITTED; NOT CONSUMED BY CURRENT VFX RENDERER",
+              "anchor": "caster.weapon_tip",
+              "visual_direction": "Phóng đúng một đường hiệu ứng về mục tiêu đã khóa; giữ một mục tiêu theo runtime.",
+              "production_note": "MapBattleV2 phát skill_release có skill_id; renderer V63 hiện chưa nghe event này."
+            },
+            {
+              "event_type": "none",
+              "runtime_status": "PROJECTILE_FLIGHT_HAS_GAMEPLAY_DELAY; NO DEDICATED DRAWN PROJECTILE",
+              "anchor": "world_path",
+              "visual_direction": "Vẽ đạn/kim bay từ vị trí phát tới mục tiêu; đường bay chỉ trang trí theo tốc độ đạn runtime, không tự gây hit.",
+              "production_note": "Runtime tính thời điểm release theo cast_time và khoảng cách/projectile_speed; hiện chưa có sprite projectile riêng."
+            },
+            {
+              "event_type": "v63_skill_hit",
+              "runtime_status": "EMITTED; CURRENT RENDERER CUE IS GENERIC",
+              "anchor": "target.center",
+              "visual_direction": "Điểm chạm sáng ngắn, đúng mục tiêu; không vẽ thêm mục tiêu, sát thương hoặc xuyên phá ngoài shape/cap.",
+              "production_note": "V63OriginalCombatVfxV1 nhận v63_skill_hit nhưng chỉ vẽ dấu cộng và vòng ngọc chung."
+            },
+            {
+              "event_type": "none",
+              "runtime_status": "NOT_APPLICABLE; DAMAGE SKILL HAS NO STATUS",
+              "anchor": "target.center",
+              "visual_direction": "Không thêm vòng độc hay dấu trạng thái; chỉ dùng phần impact chung nếu có hit.",
+              "production_note": "Nguồn catalog khai báo effect=damage, không có status payload cho kỹ năng này."
+            },
+            {
+              "event_type": "renderer_lifetime",
+              "runtime_status": "GENERIC_RENDERER_FADE_ONLY",
+              "anchor": "target.center",
+              "visual_direction": "Hạ sáng và tan hạt theo cue hiện hành; hiệu ứng mới chỉ được giữ lại nếu trạng thái gameplay còn hiệu lực.",
+              "production_note": "Tuổi cue lấy từ V63OriginalCombatVfxV1; trạng thái độc không được mô phỏng bằng hạt kéo dài."
+            }
+          ],
+          "asset_status": "NOT_PRESENT",
+          "asset_files": [],
+          "render_capture_status": "NOT_CAPTURED",
+          "visual_acceptance_status": "PENDING",
+          "provenance": "Đặc tả art direction mới; không phải Source A, JX, Spine hay artwork đã được duyệt."
+        }
+      },
+      "qa_status": {
+        "authoring": "AUTHORING_COMPLETE",
+        "runtime": "RUNTIME_CATALOG_PRESENT",
+        "behavior": "NOT_AUDITED_PER_SKILL",
+        "vfx_metadata": "VFX_META_COMPLETE",
+        "asset": "NOT_PRESENT",
+        "render": "NOT_CAPTURED",
+        "gui": "PENDING"
+      }
+    },
+    "tmb.skill.bow.liep_anh.active_01.human": {
+      "catalogue_key": "human",
+      "identity": {
+        "skill_id": "tmb.skill.bow.liep_anh.active_01.human",
+        "family_id": "tmb.skill.bow.liep_anh.active_01",
+        "school": "bow",
+        "branch": "liep_anh",
+        "slot": "active",
+        "tier": "human",
+        "lineage": "base",
+        "parent_skill_id": "",
+        "variant": "BASE",
+        "replaces_skill_id": "",
+        "source_codex_id": "tmb.codex.bow.liep_anh.ch1_active_01.human.base",
+        "archivable": true
+      },
+      "display_name_vi": "Xuyên Tâm Tiễn",
+      "short_description_vi": "Dồn lực bắn một mũi xuyên tâm vào một mục tiêu.",
+      "long_description_vi": "Đệ tử dồn lực rồi phóng một mũi tên thuộc tính Kim vào một mục tiêu hợp lệ. Runtime hiện khai báo sát thương trực tiếp và shape đơn mục tiêu; tên kỹ năng không mở rộng số mục tiêu hay tự xuyên qua nhiều kẻ địch.",
+      "mechanics_tooltip_template": {
+        "mode": "GENERATED_FROM_RUNTIME_CATALOG",
+        "fields": [
+          "damage_ratio",
+          "element",
+          "range",
+          "cast_time",
+          "cooldown",
+          "projectile_speed",
+          "shape",
+          "target_limit"
+        ]
+      },
+      "element_rule": {
+        "element_source": "runtime.element",
+        "element_value": "metal",
+        "root_matchup_source": "Root V2 combat authority only; feature-gated and not authored by presentation metadata",
+        "differential_bonus": "NO_PRESENTATION_BONUS"
+      },
+      "role_tags": [
+        "kỹ năng chủ động",
+        "đơn mục tiêu",
+        "sát thương trực tiếp"
+      ],
+      "counterplay_vi": "Giữ mục tiêu ngoài tầm hoặc dùng phòng thủ/kháng hệ phù hợp; kỹ năng không đánh lan theo dữ liệu hiện tại.",
+      "ai_policy": {
+        "status": "INHERITED_RUNTIME_POLICY_NOT_PER_SKILL_TUNED",
+        "target_policy": "runtime_nearest_eligible_enemy",
+        "range_policy": "runtime.skill_range",
+        "selection_policy": "runtime_equipped_loadout_order",
+        "source": "V63HumanSkillCombatSystem"
+      },
+      "availability": {
+        "status": "PRESENT_IN_HUMAN_RUNTIME_CATALOG",
+        "source_codex_id": "tmb.codex.bow.liep_anh.ch1_active_01.human.base",
+        "archivable": true,
+        "learn_unlock_claim": "NOT_ASSERTED_BY_S0"
+      },
+      "evolution_delta": {
+        "status": "BASE_HUMAN_NODE_ONLY",
+        "parent_skill_id": "",
+        "replaces_skill_id": "",
+        "successors": "NOT_AUTHORED_IN_THIS_S0_SLICE"
+      },
+      "vfx": {
+        "production_brief": {
+          "motif": "Một đường tên hẹp, tập trung, không có tia phụ giả lập xuyên nhiều mục tiêu.",
+          "palette": [
+            "bạc thép",
+            "trắng ngọc",
+            "vệt xanh nhạt"
+          ],
+          "projectile_shape": "tên xuyên tâm",
+          "impact_scope_source": "runtime.shape + runtime.target_limit",
+          "anchors": [
+            "caster.weapon_tip",
+            "target.center",
+            "world_path"
+          ],
+          "runtime_animation_key_source": "runtime.animation_key",
+          "runtime_vfx_key_source": "runtime.vfx_key",
+          "phases": [
+            {
+              "event_type": "skill_cast",
+              "runtime_status": "EMITTED; CURRENT RENDERER CUE IS GENERIC",
+              "anchor": "caster.weapon_tip",
+              "visual_direction": "Nén khí và gom sáng theo họa tiết đã nêu; không đổi sát thương hoặc mục tiêu.",
+              "production_note": "Event MapBattleV2 có skill_id; renderer hiện dùng một cue chung cho mọi V63 skill cast."
+            },
+            {
+              "event_type": "none",
+              "runtime_status": "NO_DEDICATED_SKILL_TELEGRAPH_EVENT",
+              "anchor": "target.center",
+              "visual_direction": "Nếu thời gian thi triển khác không, chỉ dùng đường báo trước mảnh gọn theo hướng mục tiêu; không tạo vòng cảnh báo giả.",
+              "production_note": "Telegraph riêng chưa được runtime skill này phát; chỉ là chỉ dẫn sản xuất, chưa render."
+            },
+            {
+              "event_type": "skill_release",
+              "runtime_status": "EMITTED; NOT CONSUMED BY CURRENT VFX RENDERER",
+              "anchor": "caster.weapon_tip",
+              "visual_direction": "Phóng đúng một đường hiệu ứng về mục tiêu đã khóa; giữ một mục tiêu theo runtime.",
+              "production_note": "MapBattleV2 phát skill_release có skill_id; renderer V63 hiện chưa nghe event này."
+            },
+            {
+              "event_type": "none",
+              "runtime_status": "PROJECTILE_FLIGHT_HAS_GAMEPLAY_DELAY; NO DEDICATED DRAWN PROJECTILE",
+              "anchor": "world_path",
+              "visual_direction": "Vẽ đạn/kim bay từ vị trí phát tới mục tiêu; đường bay chỉ trang trí theo tốc độ đạn runtime, không tự gây hit.",
+              "production_note": "Runtime tính thời điểm release theo cast_time và khoảng cách/projectile_speed; hiện chưa có sprite projectile riêng."
+            },
+            {
+              "event_type": "v63_skill_hit",
+              "runtime_status": "EMITTED; CURRENT RENDERER CUE IS GENERIC",
+              "anchor": "target.center",
+              "visual_direction": "Điểm chạm sáng ngắn, đúng mục tiêu; không vẽ thêm mục tiêu, sát thương hoặc xuyên phá ngoài shape/cap.",
+              "production_note": "V63OriginalCombatVfxV1 nhận v63_skill_hit nhưng chỉ vẽ dấu cộng và vòng ngọc chung."
+            },
+            {
+              "event_type": "none",
+              "runtime_status": "NOT_APPLICABLE; DAMAGE SKILL HAS NO STATUS",
+              "anchor": "target.center",
+              "visual_direction": "Không tạo dấu độc, choáng hay chảy máu; chỉ impact theo sự kiện hit thật.",
+              "production_note": "Nguồn catalog khai báo effect=damage và không có status payload."
+            },
+            {
+              "event_type": "renderer_lifetime",
+              "runtime_status": "GENERIC_RENDERER_FADE_ONLY",
+              "anchor": "target.center",
+              "visual_direction": "Hạ sáng và tan hạt theo cue hiện hành; hiệu ứng mới chỉ được giữ lại nếu trạng thái gameplay còn hiệu lực.",
+              "production_note": "Tuổi cue lấy từ V63OriginalCombatVfxV1; trạng thái độc không được mô phỏng bằng hạt kéo dài."
+            }
+          ],
+          "asset_status": "NOT_PRESENT",
+          "asset_files": [],
+          "render_capture_status": "NOT_CAPTURED",
+          "visual_acceptance_status": "PENDING",
+          "provenance": "Đặc tả art direction mới; không phải Source A, JX, Spine hay artwork đã được duyệt."
+        }
+      },
+      "qa_status": {
+        "authoring": "AUTHORING_COMPLETE",
+        "runtime": "RUNTIME_CATALOG_PRESENT",
+        "behavior": "NOT_AUDITED_PER_SKILL",
+        "vfx_metadata": "VFX_META_COMPLETE",
+        "asset": "NOT_PRESENT",
+        "render": "NOT_CAPTURED",
+        "gui": "PENDING"
+      }
+    },
+    "tmb.skill.poison.co_doc.active_02.human": {
+      "catalogue_key": "human",
+      "identity": {
+        "skill_id": "tmb.skill.poison.co_doc.active_02.human",
+        "family_id": "tmb.skill.poison.co_doc.active_02",
+        "school": "poison",
+        "branch": "co_doc",
+        "slot": "active",
+        "tier": "human",
+        "lineage": "base",
+        "parent_skill_id": "",
+        "variant": "BASE",
+        "replaces_skill_id": "",
+        "source_codex_id": "tmb.codex.poison.co_doc.ch1_active_02.human.base",
+        "archivable": true
+      },
+      "display_name_vi": "Xà Ảnh Quấn Mạch",
+      "short_description_vi": "Gây sát thương trực tiếp và đặt Độc lên một mục tiêu.",
+      "long_description_vi": "Đệ tử phóng kình khí hình xà vào một mục tiêu. Nếu trạng thái Độc được runtime chấp nhận, kỹ năng gây phần sát thương trực tiếp theo tỷ lệ ATK và thêm các nhịp Độc theo power/duration của catalog; giới hạn tầng, kháng hiệu ứng và xử lý Boss vẫn do combat authority quyết định.",
+      "mechanics_tooltip_template": {
+        "mode": "GENERATED_FROM_RUNTIME_CATALOG",
+        "fields": [
+          "damage_ratio",
+          "power",
+          "duration",
+          "poison_stacks",
+          "element",
+          "range",
+          "cast_time",
+          "cooldown",
+          "projectile_speed",
+          "shape",
+          "target_limit"
+        ]
+      },
+      "element_rule": {
+        "element_source": "runtime.element",
+        "element_value": "wood",
+        "root_matchup_source": "Root V2 combat authority only; feature-gated and not authored by presentation metadata",
+        "differential_bonus": "NO_PRESENTATION_BONUS"
+      },
+      "role_tags": [
+        "kỹ năng chủ động",
+        "đơn mục tiêu",
+        "duy trì Độc"
+      ],
+      "counterplay_vi": "Kháng hiệu ứng và giới hạn tầng Độc của combat runtime có thể giảm phần duy trì; phần sát thương trực tiếp vẫn qua phòng thủ mục tiêu.",
+      "ai_policy": {
+        "status": "INHERITED_RUNTIME_POLICY_NOT_PER_SKILL_TUNED",
+        "target_policy": "runtime_nearest_eligible_enemy",
+        "range_policy": "runtime.skill_range",
+        "selection_policy": "runtime_equipped_loadout_order",
+        "source": "V63HumanSkillCombatSystem"
+      },
+      "availability": {
+        "status": "PRESENT_IN_HUMAN_RUNTIME_CATALOG",
+        "source_codex_id": "tmb.codex.poison.co_doc.ch1_active_02.human.base",
+        "archivable": true,
+        "learn_unlock_claim": "NOT_ASSERTED_BY_S0"
+      },
+      "evolution_delta": {
+        "status": "BASE_HUMAN_NODE_ONLY",
+        "parent_skill_id": "",
+        "replaces_skill_id": "",
+        "successors": "NOT_AUTHORED_IN_THIS_S0_SLICE"
+      },
+      "vfx": {
+        "production_brief": {
+          "motif": "Bóng xà mảnh cuộn một vòng quanh đường bay rồi tan tại mục tiêu; nhịp Độc chỉ xuất hiện khi status_tick thật được ghi.",
+          "palette": [
+            "lục xà",
+            "đen mực",
+            "ngọc tối"
+          ],
+          "projectile_shape": "kình ảnh hình xà",
+          "impact_scope_source": "runtime.shape + runtime.target_limit",
+          "anchors": [
+            "caster.weapon_tip",
+            "target.center",
+            "world_path"
+          ],
+          "runtime_animation_key_source": "runtime.animation_key",
+          "runtime_vfx_key_source": "runtime.vfx_key",
+          "phases": [
+            {
+              "event_type": "skill_cast",
+              "runtime_status": "EMITTED; CURRENT RENDERER CUE IS GENERIC",
+              "anchor": "caster.weapon_tip",
+              "visual_direction": "Nén khí và gom sáng theo họa tiết đã nêu; không đổi sát thương hoặc mục tiêu.",
+              "production_note": "Event MapBattleV2 có skill_id; renderer hiện dùng một cue chung cho mọi V63 skill cast."
+            },
+            {
+              "event_type": "none",
+              "runtime_status": "NO_DEDICATED_SKILL_TELEGRAPH_EVENT",
+              "anchor": "target.center",
+              "visual_direction": "Nếu thời gian thi triển khác không, chỉ dùng đường báo trước mảnh gọn theo hướng mục tiêu; không tạo vòng cảnh báo giả.",
+              "production_note": "Telegraph riêng chưa được runtime skill này phát; chỉ là chỉ dẫn sản xuất, chưa render."
+            },
+            {
+              "event_type": "skill_release",
+              "runtime_status": "EMITTED; NOT CONSUMED BY CURRENT VFX RENDERER",
+              "anchor": "caster.weapon_tip",
+              "visual_direction": "Phóng đúng một đường hiệu ứng về mục tiêu đã khóa; giữ một mục tiêu theo runtime.",
+              "production_note": "MapBattleV2 phát skill_release có skill_id; renderer V63 hiện chưa nghe event này."
+            },
+            {
+              "event_type": "none",
+              "runtime_status": "PROJECTILE_FLIGHT_HAS_GAMEPLAY_DELAY; NO DEDICATED DRAWN PROJECTILE",
+              "anchor": "world_path",
+              "visual_direction": "Vẽ đạn/kim bay từ vị trí phát tới mục tiêu; đường bay chỉ trang trí theo tốc độ đạn runtime, không tự gây hit.",
+              "production_note": "Runtime tính thời điểm release theo cast_time và khoảng cách/projectile_speed; hiện chưa có sprite projectile riêng."
+            },
+            {
+              "event_type": "v63_skill_hit",
+              "runtime_status": "EMITTED; CURRENT RENDERER CUE IS GENERIC",
+              "anchor": "target.center",
+              "visual_direction": "Điểm chạm sáng ngắn, đúng mục tiêu; không vẽ thêm mục tiêu, sát thương hoặc xuyên phá ngoài shape/cap.",
+              "production_note": "V63OriginalCombatVfxV1 nhận v63_skill_hit nhưng chỉ vẽ dấu cộng và vòng ngọc chung."
+            },
+            {
+              "event_type": "status_applied/status_tick",
+              "runtime_status": "STATUS EVENT EMITTED; GENERIC status_applied CUE ONLY; status_tick NOT RENDERED",
+              "anchor": "target.center",
+              "visual_direction": "Dấu lục nhỏ tại mục tiêu khi status_applied; nhịp tiếp theo bám event status_tick, không tự phát thêm sát thương.",
+              "production_note": "Chỉ status độc do V63HumanSkillCombatSystem ghi nhận mới được gắn cue; renderer hiện chưa vẽ riêng status_tick."
+            },
+            {
+              "event_type": "renderer_lifetime",
+              "runtime_status": "GENERIC_RENDERER_FADE_ONLY",
+              "anchor": "target.center",
+              "visual_direction": "Hạ sáng và tan hạt theo cue hiện hành; hiệu ứng mới chỉ được giữ lại nếu trạng thái gameplay còn hiệu lực.",
+              "production_note": "Tuổi cue lấy từ V63OriginalCombatVfxV1; trạng thái độc không được mô phỏng bằng hạt kéo dài."
+            }
+          ],
+          "asset_status": "NOT_PRESENT",
+          "asset_files": [],
+          "render_capture_status": "NOT_CAPTURED",
+          "visual_acceptance_status": "PENDING",
+          "provenance": "Đặc tả art direction mới; không phải Source A, JX, Spine hay artwork đã được duyệt."
+        }
+      },
+      "qa_status": {
+        "authoring": "AUTHORING_COMPLETE",
+        "runtime": "RUNTIME_CATALOG_PRESENT",
+        "behavior": "NOT_AUDITED_PER_SKILL",
+        "vfx_metadata": "VFX_META_COMPLETE",
+        "asset": "NOT_PRESENT",
+        "render": "NOT_CAPTURED",
+        "gui": "PENDING"
+      }
+    },
+    "tmb.skill.poison.doc_cham.active_01.human": {
+      "catalogue_key": "human",
+      "identity": {
+        "skill_id": "tmb.skill.poison.doc_cham.active_01.human",
+        "family_id": "tmb.skill.poison.doc_cham.active_01",
+        "school": "poison",
+        "branch": "doc_cham",
+        "slot": "active",
+        "tier": "human",
+        "lineage": "base",
+        "parent_skill_id": "",
+        "variant": "BASE",
+        "replaces_skill_id": "",
+        "source_codex_id": "tmb.codex.poison.doc_cham.ch1_active_01.human.base",
+        "archivable": true
+      },
+      "display_name_vi": "Xuyên Cốt Độc Châm",
+      "short_description_vi": "Phóng một độc châm gây sát thương trực tiếp lên một mục tiêu.",
+      "long_description_vi": "Đệ tử phóng một châm thuộc tính U Minh vào một mục tiêu hợp lệ. Dù tên có chữ “Độc”, catalog hiện khai báo effect=damage, power và duration bằng không, nên kỹ năng này không đặt trạng thái Độc; sát thương trực tiếp vẫn chịu phòng thủ và tương khắc.",
+      "mechanics_tooltip_template": {
+        "mode": "GENERATED_FROM_RUNTIME_CATALOG",
+        "fields": [
+          "damage_ratio",
+          "element",
+          "range",
+          "cast_time",
+          "cooldown",
+          "projectile_speed",
+          "shape",
+          "target_limit"
+        ]
+      },
+      "element_rule": {
+        "element_source": "runtime.element",
+        "element_value": "nether",
+        "root_matchup_source": "Root V2 combat authority only; feature-gated and not authored by presentation metadata",
+        "differential_bonus": "NO_PRESENTATION_BONUS"
+      },
+      "role_tags": [
+        "kỹ năng chủ động",
+        "đơn mục tiêu",
+        "sát thương trực tiếp"
+      ],
+      "counterplay_vi": "Đây không phải kỹ năng duy trì Độc theo catalog hiện tại; phòng thủ và kháng hệ của mục tiêu vẫn áp dụng.",
+      "ai_policy": {
+        "status": "INHERITED_RUNTIME_POLICY_NOT_PER_SKILL_TUNED",
+        "target_policy": "runtime_nearest_eligible_enemy",
+        "range_policy": "runtime.skill_range",
+        "selection_policy": "runtime_equipped_loadout_order",
+        "source": "V63HumanSkillCombatSystem"
+      },
+      "availability": {
+        "status": "PRESENT_IN_HUMAN_RUNTIME_CATALOG",
+        "source_codex_id": "tmb.codex.poison.doc_cham.ch1_active_01.human.base",
+        "archivable": true,
+        "learn_unlock_claim": "NOT_ASSERTED_BY_S0"
+      },
+      "evolution_delta": {
+        "status": "BASE_HUMAN_NODE_ONLY",
+        "parent_skill_id": "",
+        "replaces_skill_id": "",
+        "successors": "NOT_AUTHORED_IN_THIS_S0_SLICE"
+      },
+      "vfx": {
+        "production_brief": {
+          "motif": "Một kim châm tối màu lao thẳng, impact gọn; không có vòng hay hạt Độc kéo dài.",
+          "palette": [
+            "tím mực",
+            "bạc tối",
+            "chớp U Minh"
+          ],
+          "projectile_shape": "độc châm đơn",
+          "impact_scope_source": "runtime.shape + runtime.target_limit",
+          "anchors": [
+            "caster.weapon_tip",
+            "target.center",
+            "world_path"
+          ],
+          "runtime_animation_key_source": "runtime.animation_key",
+          "runtime_vfx_key_source": "runtime.vfx_key",
+          "phases": [
+            {
+              "event_type": "skill_cast",
+              "runtime_status": "EMITTED; CURRENT RENDERER CUE IS GENERIC",
+              "anchor": "caster.weapon_tip",
+              "visual_direction": "Nén khí và gom sáng theo họa tiết đã nêu; không đổi sát thương hoặc mục tiêu.",
+              "production_note": "Event MapBattleV2 có skill_id; renderer hiện dùng một cue chung cho mọi V63 skill cast."
+            },
+            {
+              "event_type": "none",
+              "runtime_status": "NO_DEDICATED_SKILL_TELEGRAPH_EVENT",
+              "anchor": "target.center",
+              "visual_direction": "Nếu thời gian thi triển khác không, chỉ dùng đường báo trước mảnh gọn theo hướng mục tiêu; không tạo vòng cảnh báo giả.",
+              "production_note": "Telegraph riêng chưa được runtime skill này phát; chỉ là chỉ dẫn sản xuất, chưa render."
+            },
+            {
+              "event_type": "skill_release",
+              "runtime_status": "EMITTED; NOT CONSUMED BY CURRENT VFX RENDERER",
+              "anchor": "caster.weapon_tip",
+              "visual_direction": "Phóng đúng một đường hiệu ứng về mục tiêu đã khóa; giữ một mục tiêu theo runtime.",
+              "production_note": "MapBattleV2 phát skill_release có skill_id; renderer V63 hiện chưa nghe event này."
+            },
+            {
+              "event_type": "none",
+              "runtime_status": "PROJECTILE_FLIGHT_HAS_GAMEPLAY_DELAY; NO DEDICATED DRAWN PROJECTILE",
+              "anchor": "world_path",
+              "visual_direction": "Vẽ đạn/kim bay từ vị trí phát tới mục tiêu; đường bay chỉ trang trí theo tốc độ đạn runtime, không tự gây hit.",
+              "production_note": "Runtime tính thời điểm release theo cast_time và khoảng cách/projectile_speed; hiện chưa có sprite projectile riêng."
+            },
+            {
+              "event_type": "v63_skill_hit",
+              "runtime_status": "EMITTED; CURRENT RENDERER CUE IS GENERIC",
+              "anchor": "target.center",
+              "visual_direction": "Điểm chạm sáng ngắn, đúng mục tiêu; không vẽ thêm mục tiêu, sát thương hoặc xuyên phá ngoài shape/cap.",
+              "production_note": "V63OriginalCombatVfxV1 nhận v63_skill_hit nhưng chỉ vẽ dấu cộng và vòng ngọc chung."
+            },
+            {
+              "event_type": "none",
+              "runtime_status": "NOT_APPLICABLE; CATALOG EFFECT IS DAMAGE",
+              "anchor": "target.center",
+              "visual_direction": "Impact đơn; không vẽ status_applied hoặc status_tick.",
+              "production_note": "Tên có chữ Độc nhưng nguồn hiện tại không có effect=poison và poison_stacks=0."
+            },
+            {
+              "event_type": "renderer_lifetime",
+              "runtime_status": "GENERIC_RENDERER_FADE_ONLY",
+              "anchor": "target.center",
+              "visual_direction": "Hạ sáng và tan hạt theo cue hiện hành; hiệu ứng mới chỉ được giữ lại nếu trạng thái gameplay còn hiệu lực.",
+              "production_note": "Tuổi cue lấy từ V63OriginalCombatVfxV1; trạng thái độc không được mô phỏng bằng hạt kéo dài."
+            }
+          ],
+          "asset_status": "NOT_PRESENT",
+          "asset_files": [],
+          "render_capture_status": "NOT_CAPTURED",
+          "visual_acceptance_status": "PENDING",
+          "provenance": "Đặc tả art direction mới; không phải Source A, JX, Spine hay artwork đã được duyệt."
+        }
+      },
+      "qa_status": {
+        "authoring": "AUTHORING_COMPLETE",
+        "runtime": "RUNTIME_CATALOG_PRESENT",
+        "behavior": "NOT_AUDITED_PER_SKILL",
+        "vfx_metadata": "VFX_META_COMPLETE",
+        "asset": "NOT_PRESENT",
+        "render": "NOT_CAPTURED",
+        "gui": "PENDING"
+      }
+    }
+  }
+}

@@ -11,6 +11,9 @@ on:
       - 'godot/src/simulation/combat/map_battle_v2.gd'
       - 'godot/tests/simulation/v63_g1b_pve_mastery_receipt_test.gd'
       - 'godot/tests/simulation/v63_root_v2_runtime_test.gd'
+      - 'godot/data/presentation/v63_skill_presentation_manifest_v1.json'
+      - 'godot/src/presentation/v63_skill_presentation_catalog_v1.gd'
+      - 'godot/tests/presentation/v63_skill_presentation_s0_test.gd'
       - '.github/workflows/v63-g1b-root-mastery.yml'
   push:
     branches: [integration/pve-p0-playable-ui-20261103]
@@ -20,6 +23,9 @@ on:
       - 'godot/src/simulation/combat/hunting_pve_run_v2.gd'
       - 'godot/tests/simulation/v63_g1b_pve_mastery_receipt_test.gd'
       - 'godot/tests/simulation/v63_root_v2_runtime_test.gd'
+      - 'godot/data/presentation/v63_skill_presentation_manifest_v1.json'
+      - 'godot/src/presentation/v63_skill_presentation_catalog_v1.gd'
+      - 'godot/tests/presentation/v63_skill_presentation_s0_test.gd'
       - '.github/workflows/v63-g1b-root-mastery.yml'
 permissions:
   contents: read
@@ -75,16 +81,23 @@ jobs:
         run: |
           set -o pipefail
           godot --headless --path godot --import 2>&1 | tee /tmp/g1b-import.log
-      - name: Parse G1B test and receipt code
+      - name: Parse G1B and S0 presentation code
         shell: bash
         run: |
           set -euo pipefail
           for script in \
             res://src/simulation/combat/v63_pve_mastery_receipts.gd \
             res://tests/simulation/v63_g1b_pve_mastery_receipt_test.gd \
-            res://tests/simulation/v63_root_v2_runtime_test.gd; do
+            res://tests/simulation/v63_root_v2_runtime_test.gd \
+            res://src/presentation/v63_skill_presentation_catalog_v1.gd \
+            res://tests/presentation/v63_skill_presentation_s0_test.gd; do
             godot --headless --path godot --check-only --script "$script"
           done
+      - name: Focused V63 S0 authoring manifest, source join and 2,196-row ledger
+        shell: bash
+        run: |
+          set -o pipefail
+          godot --headless --path godot -s res://tests/presentation/v63_skill_presentation_s0_test.gd 2>&1 | tee /tmp/g1b-v63-s0.log
       - name: Focused G1B real PvE mastery and exactly-once cold SaveService
         shell: bash
         run: |
