@@ -96,7 +96,7 @@ static func validate_catalogue(data: Dictionary) -> Array[String]:
                     errors.append("bad_rare_parent:"+node_id)
             family_nodes[node_id] = true
             all_node_ids[node_id] = true
-        var expected_nodes := 3 if branch.is_empty() else (7 if slot=="ultimate" or ((school=="poison" or school=="sword") and slot=="passive" and id.ends_with("passive_05")) else 5)
+        var expected_nodes := 3 if branch.is_empty() else (7 if slot=="ultimate" or (slot=="passive" and id.ends_with("passive_05")) else 5)
         if family_nodes.size() != expected_nodes:
             errors.append("wrong_family_node_count:"+id)
     if shared_count != 8 or branch_count.size()!=12 or rare_count != 24 or poison_rare_passive_count != 6 or sword_rare_passive_count != 6:
