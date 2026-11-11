@@ -8,6 +8,7 @@ on:
       - 'godot/src/presentation/p3_2_landscape_sect.gd'
       - 'godot/src/simulation/economy/eco05_capacity_audit_v1.gd'
       - 'godot/tests/simulation/eco05_source_funded_capacity_r2_test.gd'
+      - 'godot/tests/simulation/eco05_real_funded_30_slots_test.gd'
       - '.github/workflows/eco-05-r2-capacity.yml'
 
 permissions:
@@ -56,12 +57,16 @@ jobs:
           set -euo pipefail
           for script in \
             res://src/simulation/economy/eco05_capacity_audit_v1.gd \
-            res://tests/simulation/eco05_source_funded_capacity_r2_test.gd; do
+            res://tests/simulation/eco05_source_funded_capacity_r2_test.gd \
+            res://tests/simulation/eco05_real_funded_30_slots_test.gd; do
             bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script "$script"
           done
 
       - name: ECO05 genuine source jobs finance actual paid annex, real capacity, wave quote and cold Save
         run: bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/simulation/eco05_source_funded_capacity_r2_test.gd
+
+      - name: ECO05 real source-funded Hall Lv8 and 30 paid production slots, cold Save
+        run: bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/simulation/eco05_real_funded_30_slots_test.gd
 
       - name: Existing r1-r2 authentic Mine Forest Field, W2 T2, cold Save
         run: bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/simulation/sx_v55_r12_real_labor_tax_wage_save_test.gd
