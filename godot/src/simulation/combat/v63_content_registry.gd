@@ -102,7 +102,7 @@ static func validate_catalogue(data: Dictionary) -> Array[String]:
         var expected_nodes := 3 if branch.is_empty() else (7 if slot=="ultimate" or (slot=="passive" and id.ends_with("passive_05")) else 5)
         if family_nodes.size() != expected_nodes:
             errors.append("wrong_family_node_count:"+id)
-    if shared_count != 8 or branch_count.size()!=15 or rare_count != 30 or poison_rare_passive_count != 6 or sword_rare_passive_count != 6 or blade_rare_passive_count != 6:
+    if shared_count != 10 or branch_count.size()!=15 or rare_count != 30 or poison_rare_passive_count != 6 or sword_rare_passive_count != 6 or blade_rare_passive_count != 6:
         errors.append("wrong_family_distribution")
     for count in branch_count.values():
         if int(count)!=11:

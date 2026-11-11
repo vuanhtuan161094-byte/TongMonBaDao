@@ -6030,7 +6030,7 @@
       ]
     },
     {
-      "id": "tmb.skill.blade.ngu_kiem.active_01",
+      "id": "tmb.skill.blade.cuong_dao.active_01",
       "school": "blade",
       "branch": "cuong_dao",
       "slot": "active",
@@ -6074,7 +6074,7 @@
       ]
     },
     {
-      "id": "tmb.skill.blade.ngu_kiem.active_02",
+      "id": "tmb.skill.blade.cuong_dao.active_02",
       "school": "blade",
       "branch": "cuong_dao",
       "slot": "active",
@@ -6118,7 +6118,7 @@
       ]
     },
     {
-      "id": "tmb.skill.blade.ngu_kiem.active_03",
+      "id": "tmb.skill.blade.cuong_dao.active_03",
       "school": "blade",
       "branch": "cuong_dao",
       "slot": "active",
@@ -6162,7 +6162,7 @@
       ]
     },
     {
-      "id": "tmb.skill.blade.ngu_kiem.active_04",
+      "id": "tmb.skill.blade.cuong_dao.active_04",
       "school": "blade",
       "branch": "cuong_dao",
       "slot": "active",
@@ -6206,7 +6206,7 @@
       ]
     },
     {
-      "id": "tmb.skill.blade.ngu_kiem.ultimate",
+      "id": "tmb.skill.blade.cuong_dao.ultimate",
       "school": "blade",
       "branch": "cuong_dao",
       "slot": "ultimate",
@@ -6266,7 +6266,7 @@
       ]
     },
     {
-      "id": "tmb.skill.blade.ngu_kiem.passive_01",
+      "id": "tmb.skill.blade.cuong_dao.passive_01",
       "school": "blade",
       "branch": "cuong_dao",
       "slot": "passive",
@@ -6310,7 +6310,7 @@
       ]
     },
     {
-      "id": "tmb.skill.blade.ngu_kiem.passive_02",
+      "id": "tmb.skill.blade.cuong_dao.passive_02",
       "school": "blade",
       "branch": "cuong_dao",
       "slot": "passive",
@@ -6354,7 +6354,7 @@
       ]
     },
     {
-      "id": "tmb.skill.blade.ngu_kiem.passive_03",
+      "id": "tmb.skill.blade.cuong_dao.passive_03",
       "school": "blade",
       "branch": "cuong_dao",
       "slot": "passive",
@@ -6398,7 +6398,7 @@
       ]
     },
     {
-      "id": "tmb.skill.blade.ngu_kiem.passive_04",
+      "id": "tmb.skill.blade.cuong_dao.passive_04",
       "school": "blade",
       "branch": "cuong_dao",
       "slot": "passive",
@@ -6442,7 +6442,7 @@
       ]
     },
     {
-      "id": "tmb.skill.blade.ngu_kiem.passive_05",
+      "id": "tmb.skill.blade.cuong_dao.passive_05",
       "school": "blade",
       "branch": "cuong_dao",
       "slot": "passive",
@@ -6502,7 +6502,7 @@
       ]
     },
     {
-      "id": "tmb.skill.blade.ngu_kiem.innate",
+      "id": "tmb.skill.blade.cuong_dao.innate",
       "school": "blade",
       "branch": "cuong_dao",
       "slot": "innate",
@@ -6546,7 +6546,7 @@
       ]
     },
     {
-      "id": "tmb.skill.blade.sat_kiem.active_01",
+      "id": "tmb.skill.blade.tram_phach_dao.active_01",
       "school": "blade",
       "branch": "tram_phach_dao",
       "slot": "active",
@@ -6590,7 +6590,7 @@
       ]
     },
     {
-      "id": "tmb.skill.blade.sat_kiem.active_02",
+      "id": "tmb.skill.blade.tram_phach_dao.active_02",
       "school": "blade",
       "branch": "tram_phach_dao",
       "slot": "active",
@@ -6634,7 +6634,7 @@
       ]
     },
     {
-      "id": "tmb.skill.blade.sat_kiem.active_03",
+      "id": "tmb.skill.blade.tram_phach_dao.active_03",
       "school": "blade",
       "branch": "tram_phach_dao",
       "slot": "active",
@@ -6678,7 +6678,7 @@
       ]
     },
     {
-      "id": "tmb.skill.blade.sat_kiem.active_04",
+      "id": "tmb.skill.blade.tram_phach_dao.active_04",
       "school": "blade",
       "branch": "tram_phach_dao",
       "slot": "active",
@@ -6722,7 +6722,7 @@
       ]
     },
     {
-      "id": "tmb.skill.blade.sat_kiem.ultimate",
+      "id": "tmb.skill.blade.tram_phach_dao.ultimate",
       "school": "blade",
       "branch": "tram_phach_dao",
       "slot": "ultimate",
@@ -6782,7 +6782,7 @@
       ]
     },
     {
-      "id": "tmb.skill.blade.sat_kiem.passive_01",
+      "id": "tmb.skill.blade.tram_phach_dao.passive_01",
       "school": "blade",
       "branch": "tram_phach_dao",
       "slot": "passive",
@@ -6826,7 +6826,7 @@
       ]
     },
     {
-      "id": "tmb.skill.blade.sat_kiem.passive_02",
+      "id": "tmb.skill.blade.tram_phach_dao.passive_02",
       "school": "blade",
       "branch": "tram_phach_dao",
       "slot": "passive",
@@ -6870,7 +6870,7 @@
       ]
     },
     {
-      "id": "tmb.skill.blade.sat_kiem.passive_03",
+      "id": "tmb.skill.blade.tram_phach_dao.passive_03",
       "school": "blade",
       "branch": "tram_phach_dao",
       "slot": "passive",
@@ -6914,7 +6914,7 @@
       ]
     },
     {
-      "id": "tmb.skill.blade.sat_kiem.passive_04",
+      "id": "tmb.skill.blade.tram_phach_dao.passive_04",
       "school": "blade",
       "branch": "tram_phach_dao",
       "slot": "passive",
@@ -6958,7 +6958,7 @@
       ]
     },
     {
-      "id": "tmb.skill.blade.sat_kiem.passive_05",
+      "id": "tmb.skill.blade.tram_phach_dao.passive_05",
       "school": "blade",
       "branch": "tram_phach_dao",
       "slot": "passive",
@@ -7018,7 +7018,7 @@
       ]
     },
     {
-      "id": "tmb.skill.blade.sat_kiem.innate",
+      "id": "tmb.skill.blade.tram_phach_dao.innate",
       "school": "blade",
       "branch": "tram_phach_dao",
       "slot": "innate",
@@ -7062,7 +7062,7 @@
       ]
     },
     {
-      "id": "tmb.skill.blade.ho_kiem.active_01",
+      "id": "tmb.skill.blade.tran_dao.active_01",
       "school": "blade",
       "branch": "tran_dao",
       "slot": "active",
@@ -7106,7 +7106,7 @@
       ]
     },
     {
-      "id": "tmb.skill.blade.ho_kiem.active_02",
+      "id": "tmb.skill.blade.tran_dao.active_02",
       "school": "blade",
       "branch": "tran_dao",
       "slot": "active",
@@ -7150,7 +7150,7 @@
       ]
     },
     {
-      "id": "tmb.skill.blade.ho_kiem.active_03",
+      "id": "tmb.skill.blade.tran_dao.active_03",
       "school": "blade",
       "branch": "tran_dao",
       "slot": "active",
@@ -7194,7 +7194,7 @@
       ]
     },
     {
-      "id": "tmb.skill.blade.ho_kiem.active_04",
+      "id": "tmb.skill.blade.tran_dao.active_04",
       "school": "blade",
       "branch": "tran_dao",
       "slot": "active",
@@ -7238,7 +7238,7 @@
       ]
     },
     {
-      "id": "tmb.skill.blade.ho_kiem.ultimate",
+      "id": "tmb.skill.blade.tran_dao.ultimate",
       "school": "blade",
       "branch": "tran_dao",
       "slot": "ultimate",
@@ -7298,7 +7298,7 @@
       ]
     },
     {
-      "id": "tmb.skill.blade.ho_kiem.passive_01",
+      "id": "tmb.skill.blade.tran_dao.passive_01",
       "school": "blade",
       "branch": "tran_dao",
       "slot": "passive",
@@ -7342,7 +7342,7 @@
       ]
     },
     {
-      "id": "tmb.skill.blade.ho_kiem.passive_02",
+      "id": "tmb.skill.blade.tran_dao.passive_02",
       "school": "blade",
       "branch": "tran_dao",
       "slot": "passive",
@@ -7386,7 +7386,7 @@
       ]
     },
     {
-      "id": "tmb.skill.blade.ho_kiem.passive_03",
+      "id": "tmb.skill.blade.tran_dao.passive_03",
       "school": "blade",
       "branch": "tran_dao",
       "slot": "passive",
@@ -7430,7 +7430,7 @@
       ]
     },
     {
-      "id": "tmb.skill.blade.ho_kiem.passive_04",
+      "id": "tmb.skill.blade.tran_dao.passive_04",
       "school": "blade",
       "branch": "tran_dao",
       "slot": "passive",
@@ -7474,7 +7474,7 @@
       ]
     },
     {
-      "id": "tmb.skill.blade.ho_kiem.passive_05",
+      "id": "tmb.skill.blade.tran_dao.passive_05",
       "school": "blade",
       "branch": "tran_dao",
       "slot": "passive",
@@ -7534,7 +7534,7 @@
       ]
     },
     {
-      "id": "tmb.skill.blade.ho_kiem.innate",
+      "id": "tmb.skill.blade.tran_dao.innate",
       "school": "blade",
       "branch": "tran_dao",
       "slot": "innate",

@@ -37,6 +37,7 @@ func _run() -> void:
         for node in family["nodes"]:
             var node_id := str(node.get("id",""))
             var tier := str(node.get("tier",""))
+            if not _check(node_id.begins_with(str(family.get("id",""))+"."), "node belongs to registry family: "+node_id): return
             if slot == "ultimate" and tier == "rare_divine":
                 rare_ultimate += 1
             elif slot == "passive" and str(family.get("id","")).ends_with("passive_05") and node_id.contains(".rare_passive."):
