@@ -35,6 +35,8 @@ func _run() -> void:
 		_expect(int(metrics.get("not_authored",0)) == 1647,"planning-only rows = 1,647")
 		_expect(int(metrics.get("families",0)) == 420,"families = 420")
 		_expect(int(metrics.get("branches",0)) == 36,"non-common branches = 36")
+		_expect(int(metrics.get("registry_missing_runtime_ids",-1)) == 0,"all existing runtime IDs are represented by the registry")
+		_expect(coverage.get("warnings",[]).is_empty(),"coverage audit has no unresolved registry warnings")
 		for error in coverage.get("errors",[]):
 			push_error("V63_S0_LEDGER "+str(error))
 		for warning in coverage.get("warnings",[]):

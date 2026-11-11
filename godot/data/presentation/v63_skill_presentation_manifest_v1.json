@@ -34,7 +34,7 @@
   },
   "source_registry": {
     "path": "res://data/combat/v63_content_registry.json",
-    "git_blob_sha": "ec342196c48fecf8f5708d0dac8412a774ac7d4b"
+    "git_blob_sha": "718935df809b1cc7bee5f6a02be28e5e58751a51"
   },
   "vfx_runtime_truth": {
     "source_events": "MapBattleV2.events",
@@ -190,15 +190,6 @@
           "visual_acceptance_status": "PENDING",
           "provenance": "Đặc tả art direction mới; không phải Source A, JX, Spine hay artwork đã được duyệt."
         }
-      },
-      "qa_status": {
-        "authoring": "AUTHORING_COMPLETE",
-        "runtime": "RUNTIME_CATALOG_PRESENT",
-        "behavior": "NOT_AUDITED_PER_SKILL",
-        "vfx_metadata": "VFX_META_COMPLETE",
-        "asset": "NOT_PRESENT",
-        "render": "NOT_CAPTURED",
-        "gui": "PENDING"
       }
     },
     "tmb.skill.bow.liep_anh.active_01.human": {
@@ -338,15 +329,6 @@
           "visual_acceptance_status": "PENDING",
           "provenance": "Đặc tả art direction mới; không phải Source A, JX, Spine hay artwork đã được duyệt."
         }
-      },
-      "qa_status": {
-        "authoring": "AUTHORING_COMPLETE",
-        "runtime": "RUNTIME_CATALOG_PRESENT",
-        "behavior": "NOT_AUDITED_PER_SKILL",
-        "vfx_metadata": "VFX_META_COMPLETE",
-        "asset": "NOT_PRESENT",
-        "render": "NOT_CAPTURED",
-        "gui": "PENDING"
       }
     },
     "tmb.skill.poison.co_doc.active_02.human": {
@@ -489,15 +471,6 @@
           "visual_acceptance_status": "PENDING",
           "provenance": "Đặc tả art direction mới; không phải Source A, JX, Spine hay artwork đã được duyệt."
         }
-      },
-      "qa_status": {
-        "authoring": "AUTHORING_COMPLETE",
-        "runtime": "RUNTIME_CATALOG_PRESENT",
-        "behavior": "NOT_AUDITED_PER_SKILL",
-        "vfx_metadata": "VFX_META_COMPLETE",
-        "asset": "NOT_PRESENT",
-        "render": "NOT_CAPTURED",
-        "gui": "PENDING"
       }
     },
     "tmb.skill.poison.doc_cham.active_01.human": {
@@ -637,15 +610,6 @@
           "visual_acceptance_status": "PENDING",
           "provenance": "Đặc tả art direction mới; không phải Source A, JX, Spine hay artwork đã được duyệt."
         }
-      },
-      "qa_status": {
-        "authoring": "AUTHORING_COMPLETE",
-        "runtime": "RUNTIME_CATALOG_PRESENT",
-        "behavior": "NOT_AUDITED_PER_SKILL",
-        "vfx_metadata": "VFX_META_COMPLETE",
-        "asset": "NOT_PRESENT",
-        "render": "NOT_CAPTURED",
-        "gui": "PENDING"
       }
     }
   }

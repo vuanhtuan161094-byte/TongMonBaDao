@@ -713,6 +713,18 @@
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.bow.liep_anh.passive_05.immortal.b"
+        },
+        {
+          "id": "tmb.skill.bow.liep_anh.passive_05.rare_passive.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.bow.liep_anh.passive_05.divine.a"
+        },
+        {
+          "id": "tmb.skill.bow.liep_anh.passive_05.rare_passive.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.bow.liep_anh.passive_05.divine.b"
         }
       ]
     },
@@ -1156,6 +1168,18 @@
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.bow.linh_tien.passive_05.immortal.b"
+        },
+        {
+          "id": "tmb.skill.bow.linh_tien.passive_05.rare_passive.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.bow.linh_tien.passive_05.divine.a"
+        },
+        {
+          "id": "tmb.skill.bow.linh_tien.passive_05.rare_passive.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.bow.linh_tien.passive_05.divine.b"
         }
       ]
     },
@@ -1599,6 +1623,18 @@
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.bow.thien_vu.passive_05.immortal.b"
+        },
+        {
+          "id": "tmb.skill.bow.thien_vu.passive_05.rare_passive.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.bow.thien_vu.passive_05.divine.a"
+        },
+        {
+          "id": "tmb.skill.bow.thien_vu.passive_05.rare_passive.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.bow.thien_vu.passive_05.divine.b"
         }
       ]
     },
@@ -2042,6 +2078,18 @@
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.fist.ba_quyen.passive_05.immortal.b"
+        },
+        {
+          "id": "tmb.skill.fist.ba_quyen.passive_05.rare_passive.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.fist.ba_quyen.passive_05.divine.a"
+        },
+        {
+          "id": "tmb.skill.fist.ba_quyen.passive_05.rare_passive.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.fist.ba_quyen.passive_05.divine.b"
         }
       ]
     },
@@ -2485,6 +2533,18 @@
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.fist.kim_cang.passive_05.immortal.b"
+        },
+        {
+          "id": "tmb.skill.fist.kim_cang.passive_05.rare_passive.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.fist.kim_cang.passive_05.divine.a"
+        },
+        {
+          "id": "tmb.skill.fist.kim_cang.passive_05.rare_passive.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.fist.kim_cang.passive_05.divine.b"
         }
       ]
     },
@@ -2928,6 +2988,18 @@
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.fist.huyet_quyen.passive_05.immortal.b"
+        },
+        {
+          "id": "tmb.skill.fist.huyet_quyen.passive_05.rare_passive.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.fist.huyet_quyen.passive_05.divine.a"
+        },
+        {
+          "id": "tmb.skill.fist.huyet_quyen.passive_05.rare_passive.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.fist.huyet_quyen.passive_05.divine.b"
         }
       ]
     },

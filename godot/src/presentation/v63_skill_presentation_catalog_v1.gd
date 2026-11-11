@@ -406,7 +406,7 @@ static func validate_all36_ledger(csv_text: String, catalogues: Dictionary, regi
 	var lineage_errors := _validate_ledger_lineage(rows,by_alias)
 	errors.append_array(lineage_errors)
 	if not missing_registry_ids.is_empty():
-		warnings.append("registry_omits_runtime_ids:"+str(missing_registry_ids.size()))
+		errors.append("all36_runtime_catalogue_ids_missing_from_registry:"+str(missing_registry_ids.size()))
 	var metrics := {
 		"rows":rows.size(),"existing":status_counts.get("EXISTING",0),
 		"not_authored":status_counts.get("NOT_AUTHORED",0),"schools":school_counts.size(),
