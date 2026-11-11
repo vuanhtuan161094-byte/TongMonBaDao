@@ -1,0 +1,121 @@
+name: V63 G1B Root V2 and detached mastery settlement (official Godot 4.7.2)
+
+on:
+  workflow_dispatch:
+  pull_request:
+    types: [synchronize, opened, reopened]
+    paths:
+      - 'godot/src/simulation/combat/v63_pve_mastery_receipts.gd'
+      - 'godot/src/simulation/combat/v63_human_skill_combat_system.gd'
+      - 'godot/src/simulation/combat/hunting_pve_run_v2.gd'
+      - 'godot/src/simulation/combat/map_battle_v2.gd'
+      - 'godot/tests/simulation/v63_g1b_pve_mastery_receipt_test.gd'
+      - 'godot/tests/simulation/v63_root_v2_runtime_test.gd'
+      - '.github/workflows/v63-g1b-root-mastery.yml'
+  push:
+    branches: [integration/pve-p0-playable-ui-20261103]
+    paths:
+      - 'godot/src/simulation/combat/v63_pve_mastery_receipts.gd'
+      - 'godot/src/simulation/combat/v63_human_skill_combat_system.gd'
+      - 'godot/src/simulation/combat/hunting_pve_run_v2.gd'
+      - 'godot/tests/simulation/v63_g1b_pve_mastery_receipt_test.gd'
+      - 'godot/tests/simulation/v63_root_v2_runtime_test.gd'
+      - '.github/workflows/v63-g1b-root-mastery.yml'
+permissions:
+  contents: read
+jobs:
+  g1b:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - name: Exact commit SHA
+        run: echo "G1B_EXACT_SHA=$GITHUB_SHA"
+      - uses: actions/checkout@v4
+      - name: Official Godot 4.7.2 SHA-pinned
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 --output /tmp/godot.zip "https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip"
+          echo "cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4  /tmp/godot.zip" | sha256sum --check --strict
+          unzip -q /tmp/godot.zip -d /tmp
+          sudo install -m 0755 /tmp/Godot_v4.7.2-stable_linux.x86_64 /usr/local/bin/godot
+          godot --version
+      - name: Restore pinned Source A runtime art needed for project import
+        shell: bash
+        run: |
+          set -euo pipefail
+          PACK="/tmp/female_normal_v1_stageA_runtime_pack_v2_quant.zip"
+          cat \
+            .github/assets/p3/female_stage_a/part01.b64 \
+            .github/assets/p3/female_stage_a/part02.b64 \
+            .github/assets/p3/female_stage_a/part03.b64 \
+            .github/assets/p3/female_stage_a/part04.b64 \
+            .github/assets/p3/female_stage_a/part05.b64 \
+            .github/assets/p3/female_stage_a/part06.b64 \
+            .github/assets/p3/female_stage_a/part07.b64 \
+            .github/assets/p3/female_stage_a/part08.b64 \
+            .github/assets/p3/female_stage_a/part09.b64 \
+            .github/assets/p3/female_stage_a/part10.b64 \
+            .github/assets/p3/female_stage_a/part11.b64 \
+            .github/assets/p3/female_stage_a/part12.b64 \
+            .github/assets/p3/female_stage_a/part13.b64 \
+            .github/assets/p3/female_stage_a/part14.b64 \
+            .github/assets/p3/female_stage_a/part15a.b64 \
+            .github/assets/p3/female_stage_a/part15b.b64 \
+            .github/assets/p3/female_stage_a/part16.b64 \
+            .github/assets/p3/female_stage_a/part17.b64 \
+            .github/assets/p3/female_stage_a/part18.b64 \
+            .github/assets/p3/female_stage_a/part19.b64 \
+            .github/assets/p3/female_stage_a/part20.b64 | tr -d '\r\n\t ' | base64 --decode > "$PACK"
+          test "$(stat -c%s "$PACK")" -eq 44838
+          echo "6a4213b9129ffb3f438c21cbb5326672ddf8915323836bf80cb33b8e5fabfdca  $PACK" | sha256sum --check --strict
+          unzip -q "$PACK" -d .
+      - name: Godot official project import
+        shell: bash
+        run: |
+          set -o pipefail
+          godot --headless --path godot --import 2>&1 | tee /tmp/g1b-import.log
+      - name: Parse G1B test and receipt code
+        shell: bash
+        run: |
+          set -euo pipefail
+          for script in \
+            res://src/simulation/combat/v63_pve_mastery_receipts.gd \
+            res://tests/simulation/v63_g1b_pve_mastery_receipt_test.gd \
+            res://tests/simulation/v63_root_v2_runtime_test.gd; do
+            godot --headless --path godot --check-only --script "$script"
+          done
+      - name: Focused G1B real PvE mastery and exactly-once cold SaveService
+        shell: bash
+        run: |
+          set -o pipefail
+          godot --headless --path godot -s res://tests/simulation/v63_g1b_pve_mastery_receipt_test.gd 2>&1 | tee /tmp/g1b-mastery.log
+      - name: Focused Root V2 per-disciple 221+ assertions
+        shell: bash
+        run: |
+          set -o pipefail
+          godot --headless --path godot -s res://tests/simulation/v63_root_v2_runtime_test.gd 2>&1 | tee /tmp/g1b-root.log
+      - name: Cumulative human PvE cast and boss
+        shell: bash
+        run: |
+          set -o pipefail
+          godot --headless --path godot -s res://tests/simulation/v63_d4a_human_combat_test.gd 2>&1 | tee /tmp/g1b-human.log
+      - name: Cumulative Poison, snapshot, Injury and live PvE contracts
+        shell: bash
+        run: |
+          set -euo pipefail
+          for test in \
+            v63_poison_evolution_balance_test \
+            v65_poison_combat_contract_test \
+            dv2_02_battle_snapshot_test \
+            gp_02c1_injury_settlement_test \
+            dv2_02_five_level_pve_test; do
+            godot --headless --path godot -s "res://tests/simulation/$test.gd" 2>&1 | tee "/tmp/g1b-$test.log"
+          done
+      - name: Preserve actual G1B evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v63-g1b-exact-sha-logs
+          path: /tmp/g1b-*.log
+          if-no-files-found: ignore
