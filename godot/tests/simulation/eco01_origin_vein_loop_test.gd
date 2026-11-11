@@ -158,7 +158,7 @@ func _test_save_replay_and_cooldown() -> bool:
         "post-settlement Save failed"): return false
     var loaded := saver.load_from_path(SAVE_PATH)
     if not _check(loaded != null and loaded.sect.spirit_stones == state.sect.spirit_stones
-        and loaded.sect.economy_a_receipts == state.sect.economy_a_receipts,
+        and JSON.stringify(loaded.sect.economy_a_receipts) == JSON.stringify(state.sect.economy_a_receipts),
         "cold Save mismatch: loaded=%s; cash=%d/%d; receipts_keys=%s expected_keys=%s" % [
             str(loaded != null),
             loaded.sect.spirit_stones if loaded != null else -1,
@@ -221,7 +221,7 @@ func _test_offline_replay() -> bool:
     if not _check(bool(reopened.get("ok",false))
         and int(reopened.get("catch_up_steps",-1)) == 0
         and again.state().sect.spirit_stones == cash
-        and again.state().sect.economy_a_receipts == ledger,
+        and JSON.stringify(again.state().sect.economy_a_receipts) == JSON.stringify(ledger),
         "same-time second cold reload duplicated 1,000 LT"): return false
     print("ECO01_OFFLINE_60M_COLD_SAVE_ONCE: PASS")
     return _check(again.state().validate_invariants().is_empty(),
