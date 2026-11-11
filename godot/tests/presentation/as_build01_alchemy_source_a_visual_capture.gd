@@ -43,7 +43,11 @@ func _run() -> void:
         game.call("_close_building_operation_panel",true)
     game.set_process(false) # prevent the live camera follow from recentring during this isolated capture
     world.camera.position = target["world"]
-    world.camera.zoom = Vector2(1.0,1.0)
+    # Producer VFX/art LOD only switches from small icon to original sprite at zoom >= 1.24.
+    # The previous 1.00 camera showed compact fallback and was NOT valid art evidence.
+    world.camera.zoom = Vector2(1.35,1.35)
+    world.set_selected_visual_site(StringName(target["building_id"]))
+    world.call("_update_chunks")
     world.queue_redraw()
     var sub := game.get("iso_viewport") as SubViewport
     if sub != null:
