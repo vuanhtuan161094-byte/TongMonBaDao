@@ -14,7 +14,7 @@ func _process(delta: float) -> void:
         return
     elapsed = fmod(elapsed+delta,100.0)
     accumulated += delta
-    if accumulated >= 0.06:
+    if accumulated >= 0.13:
         accumulated = 0.0
         queue_redraw()
 
@@ -23,10 +23,10 @@ func _draw() -> void:
         return
     var w := size.x
     var h := size.y
-    for band in range(12):
-        var y := float(band)*h/12.0
-        draw_rect(Rect2(0,y,w,h/12.0+1.0),Color(0.04,0.10,0.13,0.025+float(band)*0.001))
-    for i in range(39):
+    for band in range(6):
+        var y := float(band)*h/6.0
+        draw_rect(Rect2(0,y,w,h/6.0+1.0),Color(0.04,0.10,0.13,0.025+float(band)*0.001))
+    for i in range(23):
         var x := fmod(33.0+float((i*71)%389)+elapsed*(2.0+float(i%4)),w)
         var y := fmod(31.0+float((i*101)%527)-elapsed*(1.7+float(i%3))+h*4.0,h)
         var pulse := 0.5+0.5*sin(elapsed*1.4+float(i)*0.74)

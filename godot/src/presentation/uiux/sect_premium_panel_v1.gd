@@ -2,6 +2,7 @@ extends Control
 ## ART-05 screen-scaled original code-art filigree. Draw-only, mouse ignores events.
 var accent := Color(0.9,0.78,0.42)
 var _phase := 0.0
+var _redraw_accum := 0.0
 
 func _ready() -> void:
     mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -11,7 +12,10 @@ func _process(delta: float) -> void:
     if not visible:
         return
     _phase = fmod(_phase+delta*0.43,TAU)
-    queue_redraw()
+    _redraw_accum += delta
+    if _redraw_accum >= 0.12:
+        _redraw_accum = 0.0
+        queue_redraw()
 
 func _draw() -> void:
     var w := size.x
