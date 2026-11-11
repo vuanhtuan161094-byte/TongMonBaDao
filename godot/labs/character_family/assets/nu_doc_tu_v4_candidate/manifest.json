@@ -2,7 +2,7 @@
   "schema": "tmb.character_family.poison_v4_candidate.1",
   "asset_id": "candidate.disciple.nu_doc_tu.v4",
   "overall_status": "CANDIDATE_NOT_FOR_PRODUCTION",
-  "godot_import_status": "NOT_RUN",
+  "godot_import_status": "PASS",
   "runtime_integration": "NONE",
   "source_archive": {
     "outer_filename": "TMB_Poison_V4_Ket_Qua_Godot7_Sprite_20261110.zip",
@@ -231,6 +231,16 @@
       "Idle and Walk are preserved unchanged from an earlier review package; neither is a production/runtime acceptance.",
       "The raw source PNGs referenced by the candidate builder are absent, so regenerating these exports from the ZIP alone is not reproducible.",
       "The assets are not wired into Combat Lab, P3.2, or production rendering."
-    ]
+    ],
+    "godot_headless": "PASS"
+  },
+  "godot_scene_status": "PASS_HEADLESS_ONLY",
+  "godot_validation": {
+    "engine": "Godot 4.7.2 official",
+    "scope": "headless import + strict script parse + isolated preview scene load",
+    "workflow_run": 43061955996,
+    "commit": "c9f7c6587bfc6fb288892c532c03b3855c0e2c67",
+    "gui_capture": false,
+    "owner_visual_acceptance": "PENDING"
   }
 }

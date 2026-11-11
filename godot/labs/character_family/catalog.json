@@ -140,6 +140,7 @@
     "status": "CANDIDATE_NOT_FOR_PRODUCTION",
     "manifest": "godot/labs/character_family/assets/nu_doc_tu_v4_candidate/manifest.json",
     "runtime_import": "NONE",
-    "godot_validation": "NOT_RUN"
+    "godot_validation": "PASS",
+    "godot_validation_scope": "GODOT_4_7_2_HEADLESS_IMPORT_STRICT_PARSE_AND_PREVIEW_SCENE_SMOKE"
   }
 }
