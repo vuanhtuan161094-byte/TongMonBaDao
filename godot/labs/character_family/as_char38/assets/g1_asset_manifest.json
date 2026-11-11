@@ -1,0 +1,314 @@
+{
+  "schema_version": 1,
+  "packet": "AS-CHAR-38 G1 novice static directional atlas",
+  "created_from_head": "bc3d2ccd3798b40914497f7772bbd5b980c4cfe1",
+  "style_anchor": {
+    "asset_id": "nu_doc_tu_locked_master",
+    "sha256": "435f8969c3d89468ddbdec837a44365b212b58e01082728c3f21f2b08249c118",
+    "use": "visual quality and proportions reference only; V4 identity/art is not copied"
+  },
+  "export_contract": {
+    "canvas": [
+      128,
+      128
+    ],
+    "pivot": [
+      64,
+      104
+    ],
+    "visible_body_height_px": 70,
+    "direction_order": [
+      "front",
+      "right",
+      "back",
+      "left"
+    ],
+    "mirror_used": false,
+    "texture_filter": "nearest"
+  },
+  "provenance": {
+    "generator": "ChatGPT ImageGen V2; transparent turnaround master retained byte-for-byte",
+    "external_art_used": false,
+    "motion_authoring": "NONE"
+  },
+  "families": [
+    {
+      "family_id": "novice_female",
+      "gender_id": "female",
+      "status": "STATIC_IDLE_CANDIDATE",
+      "source_path": "godot/labs/character_family/as_char38/assets/novice_female/master_turnaround.png",
+      "source_sha256": "158977583fd3579202ad293d1c6f3b018258dcff6f90cd0164cf3c8609f1f68f",
+      "atlas_path": "godot/labs/character_family/as_char38/assets/novice_female_idle_4dir.png",
+      "atlas_sha256": "a3b850f5ba6b773875c709226924e27020cfd21a5e77710a570f3195b2b98629",
+      "spriteframes_path": "godot/labs/character_family/as_char38/assets/novice_female.spriteframes.tres",
+      "atlas_dimensions": [
+        512,
+        128
+      ],
+      "cell_size": [
+        128,
+        128
+      ],
+      "visible_body_height_px": 70,
+      "pivot": [
+        64,
+        104
+      ],
+      "direction_order": [
+        "front",
+        "right",
+        "back",
+        "left"
+      ],
+      "frames_per_direction": 1,
+      "idle_pose_status": "STATIC_POSE_CANDIDATE",
+      "directions": {
+        "front": {
+          "source_bbox": [
+            0,
+            17,
+            410,
+            876
+          ],
+          "source_x_range": [
+            75,
+            485
+          ],
+          "registered_rect": [
+            47,
+            34,
+            33,
+            70
+          ],
+          "pivot": [
+            64,
+            104
+          ],
+          "mirror": false
+        },
+        "right": {
+          "source_bbox": [
+            0,
+            17,
+            338,
+            876
+          ],
+          "source_x_range": [
+            1332,
+            1670
+          ],
+          "registered_rect": [
+            49,
+            34,
+            28,
+            70
+          ],
+          "pivot": [
+            64,
+            104
+          ],
+          "mirror": false
+        },
+        "back": {
+          "source_bbox": [
+            0,
+            16,
+            402,
+            876
+          ],
+          "source_x_range": [
+            889,
+            1291
+          ],
+          "registered_rect": [
+            48,
+            34,
+            33,
+            70
+          ],
+          "pivot": [
+            64,
+            104
+          ],
+          "mirror": false
+        },
+        "left": {
+          "source_bbox": [
+            0,
+            18,
+            338,
+            876
+          ],
+          "source_x_range": [
+            513,
+            851
+          ],
+          "registered_rect": [
+            51,
+            34,
+            28,
+            70
+          ],
+          "pivot": [
+            64,
+            104
+          ],
+          "mirror": false
+        }
+      },
+      "edge_cleanup": {
+        "red_dominant_boundary_pixels_replaced": 3,
+        "method": "alpha boundary ring only"
+      },
+      "motion_clips": {
+        "walk": "ART_PENDING",
+        "cast": "ART_PENDING",
+        "attack": "ART_PENDING",
+        "hit": "ART_PENDING",
+        "death": "ART_PENDING"
+      },
+      "layers": "NOT_PROVIDED",
+      "visual_approval": "PENDING_OWNER_REVIEW",
+      "production_import": "NONE"
+    },
+    {
+      "family_id": "novice_male",
+      "gender_id": "male",
+      "status": "STATIC_IDLE_CANDIDATE",
+      "source_path": "godot/labs/character_family/as_char38/assets/novice_male/master_turnaround.png",
+      "source_sha256": "840d0f22e60f3f909eb730b47d22af1d977eaabccb80ae0396db2754fe738240",
+      "atlas_path": "godot/labs/character_family/as_char38/assets/novice_male_idle_4dir.png",
+      "atlas_sha256": "3b17708f1eb3c1fc48c08552cd9a681bbf69aa3a65f34957fd00e1d5eb7b2e85",
+      "spriteframes_path": "godot/labs/character_family/as_char38/assets/novice_male.spriteframes.tres",
+      "atlas_dimensions": [
+        512,
+        128
+      ],
+      "cell_size": [
+        128,
+        128
+      ],
+      "visible_body_height_px": 70,
+      "pivot": [
+        64,
+        104
+      ],
+      "direction_order": [
+        "front",
+        "right",
+        "back",
+        "left"
+      ],
+      "frames_per_direction": 1,
+      "idle_pose_status": "STATIC_POSE_CANDIDATE",
+      "directions": {
+        "front": {
+          "source_bbox": [
+            0,
+            8,
+            351,
+            879
+          ],
+          "source_x_range": [
+            105,
+            456
+          ],
+          "registered_rect": [
+            50,
+            34,
+            28,
+            70
+          ],
+          "pivot": [
+            64,
+            104
+          ],
+          "mirror": false
+        },
+        "right": {
+          "source_bbox": [
+            0,
+            12,
+            312,
+            879
+          ],
+          "source_x_range": [
+            1337,
+            1649
+          ],
+          "registered_rect": [
+            49,
+            34,
+            25,
+            70
+          ],
+          "pivot": [
+            64,
+            104
+          ],
+          "mirror": false
+        },
+        "back": {
+          "source_bbox": [
+            0,
+            8,
+            352,
+            879
+          ],
+          "source_x_range": [
+            911,
+            1263
+          ],
+          "registered_rect": [
+            50,
+            34,
+            28,
+            70
+          ],
+          "pivot": [
+            64,
+            104
+          ],
+          "mirror": false
+        },
+        "left": {
+          "source_bbox": [
+            0,
+            12,
+            311,
+            879
+          ],
+          "source_x_range": [
+            523,
+            834
+          ],
+          "registered_rect": [
+            53,
+            34,
+            25,
+            70
+          ],
+          "pivot": [
+            64,
+            104
+          ],
+          "mirror": false
+        }
+      },
+      "edge_cleanup": {
+        "red_dominant_boundary_pixels_replaced": 18,
+        "method": "alpha boundary ring only"
+      },
+      "motion_clips": {
+        "walk": "ART_PENDING",
+        "cast": "ART_PENDING",
+        "attack": "ART_PENDING",
+        "hit": "ART_PENDING",
+        "death": "ART_PENDING"
+      },
+      "layers": "NOT_PROVIDED",
+      "visual_approval": "PENDING_OWNER_REVIEW",
+      "production_import": "NONE"
+    }
+  ]
+}

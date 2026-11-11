@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TMB AS-CHAR-38 presentation registry",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "packet",
+    "created_from_head",
+    "registry_authority",
+    "gameplay_mutation",
+    "renderer_contract",
+    "direction_order",
+    "clip_names",
+    "group_count",
+    "groups"
+  ],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "packet": { "const": "AS-CHAR-38 / SPRITESHEET-FIRST" },
+    "created_from_head": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "registry_authority": { "const": "presentation-only design/status catalog; not gameplay authority" },
+    "gameplay_mutation": { "const": "NONE" },
+    "renderer_contract": { "const": "PNG atlases + SpriteFrames + AnimatedSprite2D" },
+    "direction_order": {
+      "const": ["front", "right", "back", "left"]
+    },
+    "clip_names": {
+      "const": ["idle", "walk", "cast", "attack", "hit", "death"]
+    },
+    "group_count": { "const": 38 },
+    "groups": {
+      "type": "array",
+      "minItems": 38,
+      "maxItems": 38,
+      "items": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": ["group_id", "group_kind", "sex", "source_path", "atlas_path", "spriteframes_path", "clip_coverage"],
+            "properties": {
+              "group_kind": { "const": "novice" },
+              "sex": { "enum": ["male", "female"] },
+              "group_status": { "enum": ["STATIC_IDLE_CANDIDATE", "ART_PENDING"] }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["group_id", "group_kind", "school_id", "branch_design_slug", "branch_name", "v63_path_candidate_id", "design_status", "art_status", "sex_variants", "visual_contract"],
+            "properties": {
+              "group_kind": { "const": "branch" },
+              "design_status": { "const": "DESIGN_DEFINED" },
+              "art_status": { "const": "ART_PENDING" },
+              "sex_variants": {
+                "type": "object",
+                "required": ["male", "female"],
+                "properties": {
+                  "male": { "type": "object" },
+                  "female": { "type": "object" }
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,2492 @@
+{
+  "schema_version": 1,
+  "packet": "AS-CHAR-38 / SPRITESHEET-FIRST",
+  "created_from_head": "bc3d2ccd3798b40914497f7772bbd5b980c4cfe1",
+  "registry_authority": "presentation-only design/status catalog; not gameplay authority",
+  "gameplay_mutation": "NONE",
+  "renderer_contract": "PNG atlases + SpriteFrames + AnimatedSprite2D",
+  "direction_order": [
+    "front",
+    "right",
+    "back",
+    "left"
+  ],
+  "clip_names": [
+    "idle",
+    "walk",
+    "cast",
+    "attack",
+    "hit",
+    "death"
+  ],
+  "style_anchor": {
+    "asset_id": "nu_doc_tu_locked_master",
+    "source_sha256": "435f8969c3d89468ddbdec837a44365b212b58e01082728c3f21f2b08249c118",
+    "role": "style and quality reference only; not a copied novice art source"
+  },
+  "source_refs": {
+    "v63_registry_path": "godot/data/combat/v63_content_registry.json",
+    "v63_registry_blob_sha": "2b36bd39bf04c20dc74f00e74d335568b4a1a89b",
+    "motif_doc_path": "docs/animation/TMB_DISCIPLE_SCHOOL_VISUAL_MOTIFS_20261111.md",
+    "motif_doc_blob_sha": "689623a64d7e9949ba94a4aa0abf8f93d1d8cc39"
+  },
+  "actual_v63_registry": {
+    "enabled": false,
+    "school_count": 6,
+    "branch_count": 18,
+    "path_candidate_count": 18,
+    "school_ids": [
+      "bow",
+      "fist",
+      "poison",
+      "sword",
+      "blade",
+      "spear"
+    ],
+    "note": "The live V63 content registry is disabled and contains 18 path candidates across 6 schools; 18 additional visual branch motifs are design-only. No gameplay IDs are created."
+  },
+  "export_contracts": {
+    "map": {
+      "canvas": [
+        128,
+        128
+      ],
+      "pivot": [
+        64,
+        104
+      ],
+      "visible_height_px": [
+        60,
+        75
+      ]
+    },
+    "combat": {
+      "canvas": [
+        160,
+        192
+      ],
+      "pivot": [
+        80,
+        179
+      ],
+      "status": "NOT_EXPORTED"
+    },
+    "novice_preview": {
+      "canvas": [
+        128,
+        128
+      ],
+      "pivot": [
+        64,
+        104
+      ],
+      "visible_height_px": 70,
+      "texture_filter": "nearest"
+    }
+  },
+  "group_count": 38,
+  "groups": [
+    {
+      "group_id": "tmb.as_char38.novice.male",
+      "group_kind": "novice",
+      "design_group_id": "as_char38.novice.male",
+      "school_id": null,
+      "branch_design_slug": null,
+      "branch_name": "Tân Thủ Nam",
+      "sex": "male",
+      "source_path": "godot/labs/character_family/as_char38/assets/novice_male/master_turnaround.png",
+      "atlas_path": "godot/labs/character_family/as_char38/assets/novice_male_idle_4dir.png",
+      "spriteframes_path": "godot/labs/character_family/as_char38/assets/novice_male.spriteframes.tres",
+      "group_status": "STATIC_IDLE_CANDIDATE",
+      "art_status": "STATIC_IDLE_CANDIDATE",
+      "design_status": "DESIGN_DEFINED",
+      "direction_coverage": {
+        "front": "STATIC_POSE_CANDIDATE",
+        "right": "STATIC_POSE_CANDIDATE",
+        "back": "STATIC_POSE_CANDIDATE",
+        "left": "STATIC_POSE_CANDIDATE"
+      },
+      "clip_coverage": {
+        "idle": "STATIC_POSE_CANDIDATE",
+        "walk": "ART_PENDING",
+        "cast": "ART_PENDING",
+        "attack": "ART_PENDING",
+        "hit": "ART_PENDING",
+        "death": "ART_PENDING"
+      },
+      "visual_approved": false,
+      "godot_rendered": false,
+      "source_sha256": "840d0f22e60f3f909eb730b47d22af1d977eaabccb80ae0396db2754fe738240",
+      "atlas_sha256": "3b17708f1eb3c1fc48c08552cd9a681bbf69aa3a65f34957fd00e1d5eb7b2e85",
+      "frames_per_direction": 1,
+      "direction_order": [
+        "front",
+        "right",
+        "back",
+        "left"
+      ],
+      "pivot": [
+        64,
+        104
+      ],
+      "visible_body_height_px": 70,
+      "directions": {
+        "front": {
+          "source_bbox": [
+            0,
+            8,
+            351,
+            879
+          ],
+          "source_x_range": [
+            105,
+            456
+          ],
+          "registered_rect": [
+            50,
+            34,
+            28,
+            70
+          ],
+          "pivot": [
+            64,
+            104
+          ],
+          "mirror": false
+        },
+        "right": {
+          "source_bbox": [
+            0,
+            12,
+            312,
+            879
+          ],
+          "source_x_range": [
+            1337,
+            1649
+          ],
+          "registered_rect": [
+            49,
+            34,
+            25,
+            70
+          ],
+          "pivot": [
+            64,
+            104
+          ],
+          "mirror": false
+        },
+        "back": {
+          "source_bbox": [
+            0,
+            8,
+            352,
+            879
+          ],
+          "source_x_range": [
+            911,
+            1263
+          ],
+          "registered_rect": [
+            50,
+            34,
+            28,
+            70
+          ],
+          "pivot": [
+            64,
+            104
+          ],
+          "mirror": false
+        },
+        "left": {
+          "source_bbox": [
+            0,
+            12,
+            311,
+            879
+          ],
+          "source_x_range": [
+            523,
+            834
+          ],
+          "registered_rect": [
+            53,
+            34,
+            25,
+            70
+          ],
+          "pivot": [
+            64,
+            104
+          ],
+          "mirror": false
+        }
+      }
+    },
+    {
+      "group_id": "tmb.as_char38.novice.female",
+      "group_kind": "novice",
+      "design_group_id": "as_char38.novice.female",
+      "school_id": null,
+      "branch_design_slug": null,
+      "branch_name": "Tân Thủ Nữ",
+      "sex": "female",
+      "source_path": "godot/labs/character_family/as_char38/assets/novice_female/master_turnaround.png",
+      "atlas_path": "godot/labs/character_family/as_char38/assets/novice_female_idle_4dir.png",
+      "spriteframes_path": "godot/labs/character_family/as_char38/assets/novice_female.spriteframes.tres",
+      "group_status": "STATIC_IDLE_CANDIDATE",
+      "art_status": "STATIC_IDLE_CANDIDATE",
+      "design_status": "DESIGN_DEFINED",
+      "direction_coverage": {
+        "front": "STATIC_POSE_CANDIDATE",
+        "right": "STATIC_POSE_CANDIDATE",
+        "back": "STATIC_POSE_CANDIDATE",
+        "left": "STATIC_POSE_CANDIDATE"
+      },
+      "clip_coverage": {
+        "idle": "STATIC_POSE_CANDIDATE",
+        "walk": "ART_PENDING",
+        "cast": "ART_PENDING",
+        "attack": "ART_PENDING",
+        "hit": "ART_PENDING",
+        "death": "ART_PENDING"
+      },
+      "visual_approved": false,
+      "godot_rendered": false,
+      "source_sha256": "158977583fd3579202ad293d1c6f3b018258dcff6f90cd0164cf3c8609f1f68f",
+      "atlas_sha256": "a3b850f5ba6b773875c709226924e27020cfd21a5e77710a570f3195b2b98629",
+      "frames_per_direction": 1,
+      "direction_order": [
+        "front",
+        "right",
+        "back",
+        "left"
+      ],
+      "pivot": [
+        64,
+        104
+      ],
+      "visible_body_height_px": 70,
+      "directions": {
+        "front": {
+          "source_bbox": [
+            0,
+            17,
+            410,
+            876
+          ],
+          "source_x_range": [
+            75,
+            485
+          ],
+          "registered_rect": [
+            47,
+            34,
+            33,
+            70
+          ],
+          "pivot": [
+            64,
+            104
+          ],
+          "mirror": false
+        },
+        "right": {
+          "source_bbox": [
+            0,
+            17,
+            338,
+            876
+          ],
+          "source_x_range": [
+            1332,
+            1670
+          ],
+          "registered_rect": [
+            49,
+            34,
+            28,
+            70
+          ],
+          "pivot": [
+            64,
+            104
+          ],
+          "mirror": false
+        },
+        "back": {
+          "source_bbox": [
+            0,
+            16,
+            402,
+            876
+          ],
+          "source_x_range": [
+            889,
+            1291
+          ],
+          "registered_rect": [
+            48,
+            34,
+            33,
+            70
+          ],
+          "pivot": [
+            64,
+            104
+          ],
+          "mirror": false
+        },
+        "left": {
+          "source_bbox": [
+            0,
+            18,
+            338,
+            876
+          ],
+          "source_x_range": [
+            513,
+            851
+          ],
+          "registered_rect": [
+            51,
+            34,
+            28,
+            70
+          ],
+          "pivot": [
+            64,
+            104
+          ],
+          "mirror": false
+        }
+      }
+    },
+    {
+      "group_id": "tmb.as_char38.branch.bow.liep_anh",
+      "group_kind": "branch",
+      "design_group_id": "as_char38.bow.liep_anh",
+      "school_id": "bow",
+      "branch_design_slug": "liep_anh",
+      "branch_name": "Liệp Ảnh",
+      "v63_path_candidate_id": "tmb.path.bow.liep_anh",
+      "v63_catalog_status": "PRESENT_CANDIDATE_DISABLED",
+      "design_status": "DESIGN_DEFINED",
+      "art_status": "ART_PENDING",
+      "source_art_status": "DESIGN_ONLY",
+      "sex_variants": {
+        "male": {
+          "status": "ART_PENDING",
+          "directions": {
+            "front": "ART_PENDING",
+            "right": "ART_PENDING",
+            "back": "ART_PENDING",
+            "left": "ART_PENDING"
+          },
+          "clips": {
+            "idle": "ART_PENDING",
+            "walk": "ART_PENDING",
+            "cast": "ART_PENDING",
+            "attack": "ART_PENDING",
+            "hit": "ART_PENDING",
+            "death": "ART_PENDING"
+          }
+        },
+        "female": {
+          "status": "ART_PENDING",
+          "directions": {
+            "front": "ART_PENDING",
+            "right": "ART_PENDING",
+            "back": "ART_PENDING",
+            "left": "ART_PENDING"
+          },
+          "clips": {
+            "idle": "ART_PENDING",
+            "walk": "ART_PENDING",
+            "cast": "ART_PENDING",
+            "attack": "ART_PENDING",
+            "hit": "ART_PENDING",
+            "death": "ART_PENDING"
+          }
+        }
+      },
+      "visual_contract": {
+        "common_silhouette": "Lean aim line, bow as a separate prop",
+        "branch_motion_signature": "Stable aim, draw, release one straight arrow",
+        "suggested_palette": "moon_silver_ink_blue",
+        "branch_identity_requires_visible_pose_or_prop_difference": true,
+        "weapon_or_effect_must_be_separate_layer": true
+      },
+      "source_ref": "docs/animation/TMB_DISCIPLE_SCHOOL_VISUAL_MOTIFS_20261111.md",
+      "godot_rendered": false,
+      "visual_approved": false
+    },
+    {
+      "group_id": "tmb.as_char38.branch.bow.linh_tien",
+      "group_kind": "branch",
+      "design_group_id": "as_char38.bow.linh_tien",
+      "school_id": "bow",
+      "branch_design_slug": "linh_tien",
+      "branch_name": "Linh Tiễn",
+      "v63_path_candidate_id": "tmb.path.bow.linh_tien",
+      "v63_catalog_status": "PRESENT_CANDIDATE_DISABLED",
+      "design_status": "DESIGN_DEFINED",
+      "art_status": "ART_PENDING",
+      "source_art_status": "DESIGN_ONLY",
+      "sex_variants": {
+        "male": {
+          "status": "ART_PENDING",
+          "directions": {
+            "front": "ART_PENDING",
+            "right": "ART_PENDING",
+            "back": "ART_PENDING",
+            "left": "ART_PENDING"
+          },
+          "clips": {
+            "idle": "ART_PENDING",
+            "walk": "ART_PENDING",
+            "cast": "ART_PENDING",
+            "attack": "ART_PENDING",
+            "hit": "ART_PENDING",
+            "death": "ART_PENDING"
+          }
+        },
+        "female": {
+          "status": "ART_PENDING",
+          "directions": {
+            "front": "ART_PENDING",
+            "right": "ART_PENDING",
+            "back": "ART_PENDING",
+            "left": "ART_PENDING"
+          },
+          "clips": {
+            "idle": "ART_PENDING",
+            "walk": "ART_PENDING",
+            "cast": "ART_PENDING",
+            "attack": "ART_PENDING",
+            "hit": "ART_PENDING",
+            "death": "ART_PENDING"
+          }
+        }
+      },
+      "visual_contract": {
+        "common_silhouette": "Open shoulder and raised bow",
+        "branch_motion_signature": "Longer focus pose, high release; projectile remains external",
+        "suggested_palette": "moon_silver_ink_blue",
+        "branch_identity_requires_visible_pose_or_prop_difference": true,
+        "weapon_or_effect_must_be_separate_layer": true
+      },
+      "source_ref": "docs/animation/TMB_DISCIPLE_SCHOOL_VISUAL_MOTIFS_20261111.md",
+      "godot_rendered": false,
+      "visual_approved": false
+    },
+    {
+      "group_id": "tmb.as_char38.branch.bow.thien_vu",
+      "group_kind": "branch",
+      "design_group_id": "as_char38.bow.thien_vu",
+      "school_id": "bow",
+      "branch_design_slug": "thien_vu",
+      "branch_name": "Thiên Vũ",
+      "v63_path_candidate_id": "tmb.path.bow.thien_vu",
+      "v63_catalog_status": "PRESENT_CANDIDATE_DISABLED",
+      "design_status": "DESIGN_DEFINED",
+      "art_status": "ART_PENDING",
+      "source_art_status": "DESIGN_ONLY",
+      "sex_variants": {
+        "male": {
+          "status": "ART_PENDING",
+          "directions": {
+            "front": "ART_PENDING",
+            "right": "ART_PENDING",
+            "back": "ART_PENDING",
+            "left": "ART_PENDING"
+          },
+          "clips": {
+            "idle": "ART_PENDING",
+            "walk": "ART_PENDING",
+            "cast": "ART_PENDING",
+            "attack": "ART_PENDING",
+            "hit": "ART_PENDING",
+            "death": "ART_PENDING"
+          }
+        },
+        "female": {
+          "status": "ART_PENDING",
+          "directions": {
+            "front": "ART_PENDING",
+            "right": "ART_PENDING",
+            "back": "ART_PENDING",
+            "left": "ART_PENDING"
+          },
+          "clips": {
+            "idle": "ART_PENDING",
+            "walk": "ART_PENDING",
+            "cast": "ART_PENDING",
+            "attack": "ART_PENDING",
+            "hit": "ART_PENDING",
+            "death": "ART_PENDING"
+          }
+        }
+      },
+      "visual_contract": {
+        "common_silhouette": "Broader sweep and lifted elbows",
+        "branch_motion_signature": "Upward sweep and release; never bake arrow volleys into actor",
+        "suggested_palette": "moon_silver_ink_blue",
+        "branch_identity_requires_visible_pose_or_prop_difference": true,
+        "weapon_or_effect_must_be_separate_layer": true
+      },
+      "source_ref": "docs/animation/TMB_DISCIPLE_SCHOOL_VISUAL_MOTIFS_20261111.md",
+      "godot_rendered": false,
+      "visual_approved": false
+    },
+    {
+      "group_id": "tmb.as_char38.branch.fist.ba_quyen",
+      "group_kind": "branch",
+      "design_group_id": "as_char38.fist.ba_quyen",
+      "school_id": "fist",
+      "branch_design_slug": "ba_quyen",
+      "branch_name": "Bá Quyền",
+      "v63_path_candidate_id": "tmb.path.fist.ba_quyen",
+      "v63_catalog_status": "PRESENT_CANDIDATE_DISABLED",
+      "design_status": "DESIGN_DEFINED",
+      "art_status": "ART_PENDING",
+      "source_art_status": "DESIGN_ONLY",
+      "sex_variants": {
+        "male": {
+          "status": "ART_PENDING",
+          "directions": {
+            "front": "ART_PENDING",
+            "right": "ART_PENDING",
+            "back": "ART_PENDING",
+            "left": "ART_PENDING"
+          },
+          "clips": {
+            "idle": "ART_PENDING",
+            "walk": "ART_PENDING",
+            "cast": "ART_PENDING",
+            "attack": "ART_PENDING",
+            "hit": "ART_PENDING",
+            "death": "ART_PENDING"
+          }
+        },
+        "female": {
+          "status": "ART_PENDING",
+          "directions": {
+            "front": "ART_PENDING",
+            "right": "ART_PENDING",
+            "back": "ART_PENDING",
+            "left": "ART_PENDING"
+          },
+          "clips": {
+            "idle": "ART_PENDING",
+            "walk": "ART_PENDING",
+            "cast": "ART_PENDING",
+            "attack": "ART_PENDING",
+            "hit": "ART_PENDING",
+            "death": "ART_PENDING"
+          }
+        }
+      },
+      "visual_contract": {
+        "common_silhouette": "Low center, independent fists, opposite hip/shoulder turn",
+        "branch_motion_signature": "Compact guard then one heavy punch",
+        "suggested_palette": "dark_stone_red_bronze",
+        "branch_identity_requires_visible_pose_or_prop_difference": true,
+        "weapon_or_effect_must_be_separate_layer": true
+      },
+      "source_ref": "docs/animation/TMB_DISCIPLE_SCHOOL_VISUAL_MOTIFS_20261111.md",
+      "godot_rendered": false,
+      "visual_approved": false
+    },
+    {
+      "group_id": "tmb.as_char38.branch.fist.kim_cang",
+      "group_kind": "branch",
+      "design_group_id": "as_char38.fist.kim_cang",
+      "school_id": "fist",
+      "branch_design_slug": "kim_cang",
+      "branch_name": "Kim Cang",
+      "v63_path_candidate_id": "tmb.path.fist.kim_cang",
+      "v63_catalog_status": "PRESENT_CANDIDATE_DISABLED",
+      "design_status": "DESIGN_DEFINED",
+      "art_status": "ART_PENDING",
+      "source_art_status": "DESIGN_ONLY",
+      "sex_variants": {
+        "male": {
+          "status": "ART_PENDING",
+          "directions": {
+            "front": "ART_PENDING",
+            "right": "ART_PENDING",
+            "back": "ART_PENDING",
+            "left": "ART_PENDING"
+          },
+          "clips": {
+            "idle": "ART_PENDING",
+            "walk": "ART_PENDING",
+            "cast": "ART_PENDING",
+            "attack": "ART_PENDING",
+            "hit": "ART_PENDING",
+            "death": "ART_PENDING"
+          }
+        },
+        "female": {
+          "status": "ART_PENDING",
+          "directions": {
+            "front": "ART_PENDING",
+            "right": "ART_PENDING",
+            "back": "ART_PENDING",
+            "left": "ART_PENDING"
+          },
+          "clips": {
+            "idle": "ART_PENDING",
+            "walk": "ART_PENDING",
+            "cast": "ART_PENDING",
+            "attack": "ART_PENDING",
+            "hit": "ART_PENDING",
+            "death": "ART_PENDING"
+          }
+        }
+      },
+      "visual_contract": {
+        "common_silhouette": "Braced stance and paired forearm guard",
+        "branch_motion_signature": "Tighten guard, hold balance; shield VFX remains external",
+        "suggested_palette": "dark_stone_red_bronze",
+        "branch_identity_requires_visible_pose_or_prop_difference": true,
+        "weapon_or_effect_must_be_separate_layer": true
+      },
+      "source_ref": "docs/animation/TMB_DISCIPLE_SCHOOL_VISUAL_MOTIFS_20261111.md",
+      "godot_rendered": false,
+      "visual_approved": false
+    },
+    {
+      "group_id": "tmb.as_char38.branch.fist.huyet_quyen",
+      "group_kind": "branch",
+      "design_group_id": "as_char38.fist.huyet_quyen",
+      "school_id": "fist",
+      "branch_design_slug": "huyet_quyen",
+      "branch_name": "Huyết Quyền",
+      "v63_path_candidate_id": "tmb.path.fist.huyet_quyen",
+      "v63_catalog_status": "PRESENT_CANDIDATE_DISABLED",
+      "design_status": "DESIGN_DEFINED",
+      "art_status": "ART_PENDING",
+      "source_art_status": "DESIGN_ONLY",
+      "sex_variants": {
+        "male": {
+          "status": "ART_PENDING",
+          "directions": {
+            "front": "ART_PENDING",
+            "right": "ART_PENDING",
+            "back": "ART_PENDING",
+            "left": "ART_PENDING"
+          },
+          "clips": {
+            "idle": "ART_PENDING",
+            "walk": "ART_PENDING",
+            "cast": "ART_PENDING",
+            "attack": "ART_PENDING",
+            "hit": "ART_PENDING",
+            "death": "ART_PENDING"
+          }
+        },
+        "female": {
+          "status": "ART_PENDING",
+          "directions": {
+            "front": "ART_PENDING",
+            "right": "ART_PENDING",
+            "back": "ART_PENDING",
+            "left": "ART_PENDING"
+          },
+          "clips": {
+            "idle": "ART_PENDING",
+            "walk": "ART_PENDING",
+            "cast": "ART_PENDING",
+            "attack": "ART_PENDING",
+            "hit": "ART_PENDING",
+            "death": "ART_PENDING"
+          }
+        }
+      },
+      "visual_contract": {
+        "common_silhouette": "Close aggressive posture",
+        "branch_motion_signature": "Short burst then recover; no wound/HP change from art",
+        "suggested_palette": "dark_stone_red_bronze",
+        "branch_identity_requires_visible_pose_or_prop_difference": true,
+        "weapon_or_effect_must_be_separate_layer": true
+      },
+      "source_ref": "docs/animation/TMB_DISCIPLE_SCHOOL_VISUAL_MOTIFS_20261111.md",
+      "godot_rendered": false,
+      "visual_approved": false
+    },
+    {
+      "group_id": "tmb.as_char38.branch.poison.doc_cham",
+      "group_kind": "branch",
+      "design_group_id": "as_char38.poison.doc_cham",
+      "school_id": "poison",
+      "branch_design_slug": "doc_cham",
+      "branch_name": "Độc Châm",
+      "v63_path_candidate_id": "tmb.path.poison.doc_cham",
+      "v63_catalog_status": "PRESENT_CANDIDATE_DISABLED",
+      "design_status": "DESIGN_DEFINED",
+      "art_status": "ART_PENDING",
+      "source_art_status": "CANDIDATE_V4_ONLY",
+      "sex_variants": {
+        "male": {
+          "status": "ART_PENDING",
+          "directions": {
+            "front": "ART_PENDING",
+            "right": "ART_PENDING",
+            "back": "ART_PENDING",
+            "left": "ART_PENDING"
+          },
+          "clips": {
+            "idle": "ART_PENDING",
+            "walk": "ART_PENDING",
+            "cast": "ART_PENDING",
+            "attack": "ART_PENDING",
+            "hit": "ART_PENDING",
+            "death": "ART_PENDING"
+          }
+        },
+        "female": {
+          "status": "ART_PENDING",
+          "directions": {
+            "front": "ART_PENDING",
+            "right": "ART_PENDING",
+            "back": "ART_PENDING",
+            "left": "ART_PENDING"
+          },
+          "clips": {
+            "idle": "ART_PENDING",
+            "walk": "ART_PENDING",
+            "cast": "ART_PENDING",
+            "attack": "ART_PENDING",
+            "hit": "ART_PENDING",
+            "death": "ART_PENDING"
+          }
+        }
+      },
+      "visual_contract": {
+        "common_silhouette": "Flexible wrist; needle/vial props separate",
+        "branch_motion_signature": "Elbow draw then short flick; no projectile baked in",
+        "suggested_palette": "violet_black_jade",
+        "branch_identity_requires_visible_pose_or_prop_difference": true,
+        "weapon_or_effect_must_be_separate_layer": true
+      },
+      "source_ref": "docs/animation/TMB_DISCIPLE_SCHOOL_VISUAL_MOTIFS_20261111.md",
+      "godot_rendered": false,
+      "visual_approved": false
+    },
+    {
+      "group_id": "tmb.as_char38.branch.poison.co_doc",
+      "group_kind": "branch",
+      "design_group_id": "as_char38.poison.co_doc",
+      "school_id": "poison",
+      "branch_design_slug": "co_doc",
+      "branch_name": "Cổ Độc",
+      "v63_path_candidate_id": "tmb.path.poison.co_doc",
+      "v63_catalog_status": "PRESENT_CANDIDATE_DISABLED",
+      "design_status": "DESIGN_DEFINED",
+      "art_status": "ART_PENDING",
+      "source_art_status": "DESIGN_ONLY",
+      "sex_variants": {
+        "male": {
+          "status": "ART_PENDING",
+          "directions": {
+            "front": "ART_PENDING",
+            "right": "ART_PENDING",
+            "back": "ART_PENDING",
+            "left": "ART_PENDING"
+          },
+          "clips": {
+            "idle": "ART_PENDING",
+            "walk": "ART_PENDING",
+            "cast": "ART_PENDING",
+            "attack": "ART_PENDING",
+            "hit": "ART_PENDING",
+            "death": "ART_PENDING"
+          }
+        },
+        "female": {
+          "status": "ART_PENDING",
+          "directions": {
+            "front": "ART_PENDING",
+            "right": "ART_PENDING",
+            "back": "ART_PENDING",
+            "left": "ART_PENDING"
+          },
+          "clips": {
+            "idle": "ART_PENDING",
+            "walk": "ART_PENDING",
+            "cast": "ART_PENDING",
+            "attack": "ART_PENDING",
+            "hit": "ART_PENDING",
+            "death": "ART_PENDING"
+          }
+        }
+      },
+      "visual_contract": {
+        "common_silhouette": "Hands form a seal; keep body silhouette readable",
+        "branch_motion_signature": "Close hands into seal then turn palms outward; serpent is external VFX",
+        "suggested_palette": "violet_black_jade",
+        "branch_identity_requires_visible_pose_or_prop_difference": true,
+        "weapon_or_effect_must_be_separate_layer": true
+      },
+      "source_ref": "docs/animation/TMB_DISCIPLE_SCHOOL_VISUAL_MOTIFS_20261111.md",
+      "godot_rendered": false,
+      "visual_approved": false
+    },
+    {
+      "group_id": "tmb.as_char38.branch.poison.duoc_doc",
+      "group_kind": "branch",
+      "design_group_id": "as_char38.poison.duoc_doc",
+      "school_id": "poison",
+      "branch_design_slug": "duoc_doc",
+      "branch_name": "Dược Độc",
+      "v63_path_candidate_id": "tmb.path.poison.duoc_doc",
+      "v63_catalog_status": "PRESENT_CANDIDATE_DISABLED",
+      "design_status": "DESIGN_DEFINED",
+      "art_status": "ART_PENDING",
+      "source_art_status": "DESIGN_ONLY",
+      "sex_variants": {
+        "male": {
+          "status": "ART_PENDING",
+          "directions": {
+            "front": "ART_PENDING",
+            "right": "ART_PENDING",
+            "back": "ART_PENDING",
+            "left": "ART_PENDING"
+          },
+          "clips": {
+            "idle": "ART_PENDING",
+            "walk": "ART_PENDING",
+            "cast": "ART_PENDING",
+            "attack": "ART_PENDING",
+            "hit": "ART_PENDING",
+            "death": "ART_PENDING"
+          }
+        },
+        "female": {
+          "status": "ART_PENDING",
+          "directions": {
+            "front": "ART_PENDING",
+            "right": "ART_PENDING",
+            "back": "ART_PENDING",
+            "left": "ART_PENDING"
+          },
+          "clips": {
+            "idle": "ART_PENDING",
+            "walk": "ART_PENDING",
+            "cast": "ART_PENDING",
+            "attack": "ART_PENDING",
+            "hit": "ART_PENDING",
+            "death": "ART_PENDING"
+          }
+        }
+      },
+      "visual_contract": {
+        "common_silhouette": "Open palms and grounded medicinal stance",
+        "branch_motion_signature": "Gather hands then extend; lotus/heal effect remains external",
+        "suggested_palette": "violet_black_jade",
+        "branch_identity_requires_visible_pose_or_prop_difference": true,
+        "weapon_or_effect_must_be_separate_layer": true
+      },
+      "source_ref": "docs/animation/TMB_DISCIPLE_SCHOOL_VISUAL_MOTIFS_20261111.md",
+      "godot_rendered": false,
+      "visual_approved": false
+    },
+    {
+      "group_id": "tmb.as_char38.branch.sword.ngu_kiem",
+      "group_kind": "branch",
+      "design_group_id": "as_char38.sword.ngu_kiem",
+      "school_id": "sword",
+      "branch_design_slug": "ngu_kiem",
+      "branch_name": "Ngự Kiếm",
+      "v63_path_candidate_id": "tmb.path.sword.ngu_kiem",
+      "v63_catalog_status": "PRESENT_CANDIDATE_DISABLED",
+      "design_status": "DESIGN_DEFINED",
+      "art_status": "ART_PENDING",
+      "source_art_status": "DESIGN_ONLY",
+      "sex_variants": {
+        "male": {
+          "status": "ART_PENDING",
+          "directions": {
+            "front": "ART_PENDING",
+            "right": "ART_PENDING",
+            "back": "ART_PENDING",
+            "left": "ART_PENDING"
+          },
+          "clips": {
+            "idle": "ART_PENDING",
+            "walk": "ART_PENDING",
+            "cast": "ART_PENDING",
+            "attack": "ART_PENDING",
+            "hit": "ART_PENDING",
+            "death": "ART_PENDING"
+          }
+        },
+        "female": {
+          "status": "ART_PENDING",
+          "directions": {
+            "front": "ART_PENDING",
+            "right": "ART_PENDING",
+            "back": "ART_PENDING",
+            "left": "ART_PENDING"
+          },
+          "clips": {
+            "idle": "ART_PENDING",
+            "walk": "ART_PENDING",
+            "cast": "ART_PENDING",
+            "attack": "ART_PENDING",
+            "hit": "ART_PENDING",
+            "death": "ART_PENDING"
+          }
+        }
+      },
+      "visual_contract": {
+        "common_silhouette": "One clear sword line; weapon separate",
+        "branch_motion_signature": "Leading hand points; flying sword is a separate actor if sourced",
+        "suggested_palette": "silver_steel_ink_violet",
+        "branch_identity_requires_visible_pose_or_prop_difference": true,
+        "weapon_or_effect_must_be_separate_layer": true
+      },
+      "source_ref": "docs/animation/TMB_DISCIPLE_SCHOOL_VISUAL_MOTIFS_20261111.md",
+      "godot_rendered": false,
+      "visual_approved": false
+    },
+    {
+      "group_id": "tmb.as_char38.branch.sword.sat_kiem",
+      "group_kind": "branch",
+      "design_group_id": "as_char38.sword.sat_kiem",
+      "school_id": "sword",
+      "branch_design_slug": "sat_kiem",
+      "branch_name": "Sát Kiếm",
+      "v63_path_candidate_id": "tmb.path.sword.sat_kiem",
+      "v63_catalog_status": "PRESENT_CANDIDATE_DISABLED",
+      "design_status": "DESIGN_DEFINED",
+      "art_status": "ART_PENDING",
+      "source_art_status": "DESIGN_ONLY",
+      "sex_variants": {
+        "male": {
+          "status": "ART_PENDING",
+          "directions": {
+            "front": "ART_PENDING",
+            "right": "ART_PENDING",
+            "back": "ART_PENDING",
+            "left": "ART_PENDING"
+          },
+          "clips": {
+            "idle": "ART_PENDING",
+            "walk": "ART_PENDING",
+            "cast": "ART_PENDING",
+            "attack": "ART_PENDING",
+            "hit": "ART_PENDING",
+            "death": "ART_PENDING"
+          }
+        },
+        "female": {
+          "status": "ART_PENDING",
+          "directions": {
+            "front": "ART_PENDING",
+            "right": "ART_PENDING",
+            "back": "ART_PENDING",
+            "left": "ART_PENDING"
+          },
+          "clips": {
+            "idle": "ART_PENDING",
+            "walk": "ART_PENDING",
+            "cast": "ART_PENDING",
+            "attack": "ART_PENDING",
+            "hit": "ART_PENDING",
+            "death": "ART_PENDING"
+          }
+        }
+      },
+      "visual_contract": {
+        "common_silhouette": "Tight stance with sword close to body",
+        "branch_motion_signature": "Short wind-up, one decisive cut, clear recovery",
+        "suggested_palette": "silver_steel_ink_violet",
+        "branch_identity_requires_visible_pose_or_prop_difference": true,
+        "weapon_or_effect_must_be_separate_layer": true
+      },
+      "source_ref": "docs/animation/TMB_DISCIPLE_SCHOOL_VISUAL_MOTIFS_20261111.md",
+      "godot_rendered": false,
+      "visual_approved": false
+    },
+    {
+      "group_id": "tmb.as_char38.branch.sword.ho_kiem",
+      "group_kind": "branch",
+      "design_group_id": "as_char38.sword.ho_kiem",
+      "school_id": "sword",
+      "branch_design_slug": "ho_kiem",
+      "branch_name": "Hộ Kiếm",
+      "v63_path_candidate_id": "tmb.path.sword.ho_kiem",
+      "v63_catalog_status": "PRESENT_CANDIDATE_DISABLED",
+      "design_status": "DESIGN_DEFINED",
+      "art_status": "ART_PENDING",
+      "source_art_status": "DESIGN_ONLY",
+      "sex_variants": {
+        "male": {
+          "status": "ART_PENDING",
+          "directions": {
+            "front": "ART_PENDING",
+            "right": "ART_PENDING",
+            "back": "ART_PENDING",
+            "left": "ART_PENDING"
+          },
+          "clips": {
+            "idle": "ART_PENDING",
+            "walk": "ART_PENDING",
+            "cast": "ART_PENDING",
+            "attack": "ART_PENDING",
+            "hit": "ART_PENDING",
+            "death": "ART_PENDING"
+          }
+        },
+        "female": {
+          "status": "ART_PENDING",
+          "directions": {
+            "front": "ART_PENDING",
+            "right": "ART_PENDING",
+            "back": "ART_PENDING",
+            "left": "ART_PENDING"
+          },
+          "clips": {
+            "idle": "ART_PENDING",
+            "walk": "ART_PENDING",
+            "cast": "ART_PENDING",
+            "attack": "ART_PENDING",
+            "hit": "ART_PENDING",
+            "death": "ART_PENDING"
+          }
+        }
+      },
+      "visual_contract": {
+        "common_silhouette": "Crossed guard and rear foot bearing weight",
+        "branch_motion_signature": "Guard, receive, then return to stance; no fake parry event",
+        "suggested_palette": "silver_steel_ink_violet",
+        "branch_identity_requires_visible_pose_or_prop_difference": true,
+        "weapon_or_effect_must_be_separate_layer": true
+      },
+      "source_ref": "docs/animation/TMB_DISCIPLE_SCHOOL_VISUAL_MOTIFS_20261111.md",
+      "godot_rendered": false,
+      "visual_approved": false
+    },
+    {
+      "group_id": "tmb.as_char38.branch.blade.cuong_dao",
+      "group_kind": "branch",
+      "design_group_id": "as_char38.blade.cuong_dao",
+      "school_id": "blade",
+      "branch_design_slug": "cuong_dao",
+      "branch_name": "Cuồng Đao",
+      "v63_path_candidate_id": "tmb.path.blade.cuong_dao",
+      "v63_catalog_status": "PRESENT_CANDIDATE_DISABLED",
+      "design_status": "DESIGN_DEFINED",
+      "art_status": "ART_PENDING",
+      "source_art_status": "DESIGN_ONLY",
+      "sex_variants": {
+        "male": {
+          "status": "ART_PENDING",
+          "directions": {
+            "front": "ART_PENDING",
+            "right": "ART_PENDING",
+            "back": "ART_PENDING",
+            "left": "ART_PENDING"
+          },
+          "clips": {
+            "idle": "ART_PENDING",
+            "walk": "ART_PENDING",
+            "cast": "ART_PENDING",
+            "attack": "ART_PENDING",
+            "hit": "ART_PENDING",
+            "death": "ART_PENDING"
+          }
+        },
+        "female": {
+          "status": "ART_PENDING",
+          "directions": {
+            "front": "ART_PENDING",
+            "right": "ART_PENDING",
+            "back": "ART_PENDING",
+            "left": "ART_PENDING"
+          },
+          "clips": {
+            "idle": "ART_PENDING",
+            "walk": "ART_PENDING",
+            "cast": "ART_PENDING",
+            "attack": "ART_PENDING",
+            "hit": "ART_PENDING",
+            "death": "ART_PENDING"
+          }
+        }
+      },
+      "visual_contract": {
+        "common_silhouette": "Wide shoulders and heavy separated blade",
+        "branch_motion_signature": "Hip rotation and capped sweep sequence",
+        "suggested_palette": "dark_steel_brick_red",
+        "branch_identity_requires_visible_pose_or_prop_difference": true,
+        "weapon_or_effect_must_be_separate_layer": true
+      },
+      "source_ref": "docs/animation/TMB_DISCIPLE_SCHOOL_VISUAL_MOTIFS_20261111.md",
+      "godot_rendered": false,
+      "visual_approved": false
+    },
+    {
+      "group_id": "tmb.as_char38.branch.blade.tram_phach_dao",
+      "group_kind": "branch",
+      "design_group_id": "as_char38.blade.tram_phach_dao",
+      "school_id": "blade",
+      "branch_design_slug": "tram_phach_dao",
+      "branch_name": "Trảm Phách Đao",
+      "v63_path_candidate_id": "tmb.path.blade.tram_phach_dao",
+      "v63_catalog_status": "PRESENT_CANDIDATE_DISABLED",
+      "design_status": "DESIGN_DEFINED",
+      "art_status": "ART_PENDING",
+      "source_art_status": "DESIGN_ONLY",
+      "sex_variants": {
+        "male": {
+          "status": "ART_PENDING",
+          "directions": {
+            "front": "ART_PENDING",
+            "right": "ART_PENDING",
+            "back": "ART_PENDING",
+            "left": "ART_PENDING"
+          },
+          "clips": {
+            "idle": "ART_PENDING",
+            "walk": "ART_PENDING",
+            "cast": "ART_PENDING",
+            "attack": "ART_PENDING",
+            "hit": "ART_PENDING",
+            "death": "ART_PENDING"
+          }
+        },
+        "female": {
+          "status": "ART_PENDING",
+          "directions": {
+            "front": "ART_PENDING",
+            "right": "ART_PENDING",
+            "back": "ART_PENDING",
+            "left": "ART_PENDING"
+          },
+          "clips": {
+            "idle": "ART_PENDING",
+            "walk": "ART_PENDING",
+            "cast": "ART_PENDING",
+            "attack": "ART_PENDING",
+            "hit": "ART_PENDING",
+            "death": "ART_PENDING"
+          }
+        }
+      },
+      "visual_contract": {
+        "common_silhouette": "Stable rear leg with descending diagonal",
+        "branch_motion_signature": "Raise, shift weight, make one weighty cleave",
+        "suggested_palette": "dark_steel_brick_red",
+        "branch_identity_requires_visible_pose_or_prop_difference": true,
+        "weapon_or_effect_must_be_separate_layer": true
+      },
+      "source_ref": "docs/animation/TMB_DISCIPLE_SCHOOL_VISUAL_MOTIFS_20261111.md",
+      "godot_rendered": false,
+      "visual_approved": false
+    },
+    {
+      "group_id": "tmb.as_char38.branch.blade.tran_dao",
+      "group_kind": "branch",
+      "design_group_id": "as_char38.blade.tran_dao",
+      "school_id": "blade",
+      "branch_design_slug": "tran_dao",
+      "branch_name": "Trấn Đao",
+      "v63_path_candidate_id": "tmb.path.blade.tran_dao",
+      "v63_catalog_status": "PRESENT_CANDIDATE_DISABLED",
+      "design_status": "DESIGN_DEFINED",
+      "art_status": "ART_PENDING",
+      "source_art_status": "DESIGN_ONLY",
+      "sex_variants": {
+        "male": {
+          "status": "ART_PENDING",
+          "directions": {
+            "front": "ART_PENDING",
+            "right": "ART_PENDING",
+            "back": "ART_PENDING",
+            "left": "ART_PENDING"
+          },
+          "clips": {
+            "idle": "ART_PENDING",
+            "walk": "ART_PENDING",
+            "cast": "ART_PENDING",
+            "attack": "ART_PENDING",
+            "hit": "ART_PENDING",
+            "death": "ART_PENDING"
+          }
+        },
+        "female": {
+          "status": "ART_PENDING",
+          "directions": {
+            "front": "ART_PENDING",
+            "right": "ART_PENDING",
+            "back": "ART_PENDING",
+            "left": "ART_PENDING"
+          },
+          "clips": {
+            "idle": "ART_PENDING",
+            "walk": "ART_PENDING",
+            "cast": "ART_PENDING",
+            "attack": "ART_PENDING",
+            "hit": "ART_PENDING",
+            "death": "ART_PENDING"
+          }
+        }
+      },
+      "visual_contract": {
+        "common_silhouette": "Wide planted feet and horizontal guard",
+        "branch_motion_signature": "Bring blade across, hold line, recover into guard",
+        "suggested_palette": "dark_steel_brick_red",
+        "branch_identity_requires_visible_pose_or_prop_difference": true,
+        "weapon_or_effect_must_be_separate_layer": true
+      },
+      "source_ref": "docs/animation/TMB_DISCIPLE_SCHOOL_VISUAL_MOTIFS_20261111.md",
+      "godot_rendered": false,
+      "visual_approved": false
+    },
+    {
+      "group_id": "tmb.as_char38.branch.dual_blade.anh_nhan",
+      "group_kind": "branch",
+      "design_group_id": "as_char38.dual_blade.anh_nhan",
+      "school_id": "dual_blade",
+      "branch_design_slug": "anh_nhan",
+      "branch_name": "Ảnh Nhẫn",
+      "v63_path_candidate_id": null,
+      "v63_catalog_status": "DESIGN_ONLY_NOT_IN_V63_PATH_CATALOG",
+      "design_status": "DESIGN_DEFINED",
+      "art_status": "ART_PENDING",
+      "source_art_status": "DESIGN_ONLY",
+      "sex_variants": {
+        "male": {
+          "status": "ART_PENDING",
+          "directions": {
+            "front": "ART_PENDING",
+            "right": "ART_PENDING",
+            "back": "ART_PENDING",
+            "left": "ART_PENDING"
+          },
+          "clips": {
+            "idle": "ART_PENDING",
+            "walk": "ART_PENDING",
+            "cast": "ART_PENDING",
+            "attack": "ART_PENDING",
+            "hit": "ART_PENDING",
+            "death": "ART_PENDING"
+          }
+        },
+        "female": {
+          "status": "ART_PENDING",
+          "directions": {
+            "front": "ART_PENDING",
+            "right": "ART_PENDING",
+            "back": "ART_PENDING",
+            "left": "ART_PENDING"
+          },
+          "clips": {
+            "idle": "ART_PENDING",
+            "walk": "ART_PENDING",
+            "cast": "ART_PENDING",
+            "attack": "ART_PENDING",
+            "hit": "ART_PENDING",
+            "death": "ART_PENDING"
+          }
+        }
+      },
+      "visual_contract": {
+        "common_silhouette": "Two separate blades with independent hands",
+        "branch_motion_signature": "Alternate left/right hand timing; no duplicate afterimage body",
+        "suggested_palette": "graphite_deep_crimson",
+        "branch_identity_requires_visible_pose_or_prop_difference": true,
+        "weapon_or_effect_must_be_separate_layer": true
+      },
+      "source_ref": "docs/animation/TMB_DISCIPLE_SCHOOL_VISUAL_MOTIFS_20261111.md",
+      "godot_rendered": false,
+      "visual_approved": false
+    },
+    {
+      "group_id": "tmb.as_char38.branch.dual_blade.lien_hoan",
+      "group_kind": "branch",
+      "design_group_id": "as_char38.dual_blade.lien_hoan",
+      "school_id": "dual_blade",
+      "branch_design_slug": "lien_hoan",
+      "branch_name": "Liên Hoàn",
+      "v63_path_candidate_id": null,
+      "v63_catalog_status": "DESIGN_ONLY_NOT_IN_V63_PATH_CATALOG",
+      "design_status": "DESIGN_DEFINED",
+      "art_status": "ART_PENDING",
+      "source_art_status": "DESIGN_ONLY",
+      "sex_variants": {
+        "male": {
+          "status": "ART_PENDING",
+          "directions": {
+            "front": "ART_PENDING",
+            "right": "ART_PENDING",
+            "back": "ART_PENDING",
+            "left": "ART_PENDING"
+          },
+          "clips": {
+            "idle": "ART_PENDING",
+            "walk": "ART_PENDING",
+            "cast": "ART_PENDING",
+            "attack": "ART_PENDING",
+            "hit": "ART_PENDING",
+            "death": "ART_PENDING"
+          }
+        },
+        "female": {
+          "status": "ART_PENDING",
+          "directions": {
+            "front": "ART_PENDING",
+            "right": "ART_PENDING",
+            "back": "ART_PENDING",
+            "left": "ART_PENDING"
+          },
+          "clips": {
+            "idle": "ART_PENDING",
+            "walk": "ART_PENDING",
+            "cast": "ART_PENDING",
+            "attack": "ART_PENDING",
+            "hit": "ART_PENDING",
+            "death": "ART_PENDING"
+          }
+        }
+      },
+      "visual_contract": {
+        "common_silhouette": "Staggered alternating rhythm",
+        "branch_motion_signature": "Readable combo beats with anticipation and recovery",
+        "suggested_palette": "graphite_deep_crimson",
+        "branch_identity_requires_visible_pose_or_prop_difference": true,
+        "weapon_or_effect_must_be_separate_layer": true
+      },
+      "source_ref": "docs/animation/TMB_DISCIPLE_SCHOOL_VISUAL_MOTIFS_20261111.md",
+      "godot_rendered": false,
+      "visual_approved": false
+    },
+    {
+      "group_id": "tmb.as_char38.branch.dual_blade.huyet_nguyet",
+      "group_kind": "branch",
+      "design_group_id": "as_char38.dual_blade.huyet_nguyet",
+      "school_id": "dual_blade",
+      "branch_design_slug": "huyet_nguyet",
+      "branch_name": "Huyết Nguyệt",
+      "v63_path_candidate_id": null,
+      "v63_catalog_status": "DESIGN_ONLY_NOT_IN_V63_PATH_CATALOG",
+      "design_status": "DESIGN_DEFINED",
+      "art_status": "ART_PENDING",
+      "source_art_status": "DESIGN_ONLY",
+      "sex_variants": {
+        "male": {
+          "status": "ART_PENDING",
+          "directions": {
+            "front": "ART_PENDING",
+            "right": "ART_PENDING",
+            "back": "ART_PENDING",
+            "left": "ART_PENDING"
+          },
+          "clips": {
+            "idle": "ART_PENDING",
+            "walk": "ART_PENDING",
+            "cast": "ART_PENDING",
+            "attack": "ART_PENDING",
+            "hit": "ART_PENDING",
+            "death": "ART_PENDING"
+          }
+        },
+        "female": {
+          "status": "ART_PENDING",
+          "directions": {
+            "front": "ART_PENDING",
+            "right": "ART_PENDING",
+            "back": "ART_PENDING",
+            "left": "ART_PENDING"
+          },
+          "clips": {
+            "idle": "ART_PENDING",
+            "walk": "ART_PENDING",
+            "cast": "ART_PENDING",
+            "attack": "ART_PENDING",
+            "hit": "ART_PENDING",
+            "death": "ART_PENDING"
+          }
+        }
+      },
+      "visual_contract": {
+        "common_silhouette": "Paired blades form a crescent at crossing",
+        "branch_motion_signature": "Cross briefly then separate; color does not imply HP change",
+        "suggested_palette": "graphite_deep_crimson",
+        "branch_identity_requires_visible_pose_or_prop_difference": true,
+        "weapon_or_effect_must_be_separate_layer": true
+      },
+      "source_ref": "docs/animation/TMB_DISCIPLE_SCHOOL_VISUAL_MOTIFS_20261111.md",
+      "godot_rendered": false,
+      "visual_approved": false
+    },
+    {
+      "group_id": "tmb.as_char38.branch.spear.pha_tran_thuong",
+      "group_kind": "branch",
+      "design_group_id": "as_char38.spear.pha_tran_thuong",
+      "school_id": "spear",
+      "branch_design_slug": "pha_tran_thuong",
+      "branch_name": "Phá Trận Thương",
+      "v63_path_candidate_id": "tmb.path.spear.pha_tran_thuong",
+      "v63_catalog_status": "PRESENT_CANDIDATE_DISABLED",
+      "design_status": "DESIGN_DEFINED",
+      "art_status": "ART_PENDING",
+      "source_art_status": "DESIGN_ONLY",
+      "sex_variants": {
+        "male": {
+          "status": "ART_PENDING",
+          "directions": {
+            "front": "ART_PENDING",
+            "right": "ART_PENDING",
+            "back": "ART_PENDING",
+            "left": "ART_PENDING"
+          },
+          "clips": {
+            "idle": "ART_PENDING",
+            "walk": "ART_PENDING",
+            "cast": "ART_PENDING",
+            "attack": "ART_PENDING",
+            "hit": "ART_PENDING",
+            "death": "ART_PENDING"
+          }
+        },
+        "female": {
+          "status": "ART_PENDING",
+          "directions": {
+            "front": "ART_PENDING",
+            "right": "ART_PENDING",
+            "back": "ART_PENDING",
+            "left": "ART_PENDING"
+          },
+          "clips": {
+            "idle": "ART_PENDING",
+            "walk": "ART_PENDING",
+            "cast": "ART_PENDING",
+            "attack": "ART_PENDING",
+            "hit": "ART_PENDING",
+            "death": "ART_PENDING"
+          }
+        }
+      },
+      "visual_contract": {
+        "common_silhouette": "Long straight shaft and fixed two-hand grip",
+        "branch_motion_signature": "Step forward and thrust down a straight line",
+        "suggested_palette": "blue_steel_antique_gold",
+        "branch_identity_requires_visible_pose_or_prop_difference": true,
+        "weapon_or_effect_must_be_separate_layer": true
+      },
+      "source_ref": "docs/animation/TMB_DISCIPLE_SCHOOL_VISUAL_MOTIFS_20261111.md",
+      "godot_rendered": false,
+      "visual_approved": false
+    },
+    {
+      "group_id": "tmb.as_char38.branch.spear.long_thuong",
+      "group_kind": "branch",
+      "design_group_id": "as_char38.spear.long_thuong",
+      "school_id": "spear",
+      "branch_design_slug": "long_thuong",
+      "branch_name": "Long Thương",
+      "v63_path_candidate_id": "tmb.path.spear.long_thuong",
+      "v63_catalog_status": "PRESENT_CANDIDATE_DISABLED",
+      "design_status": "DESIGN_DEFINED",
+      "art_status": "ART_PENDING",
+      "source_art_status": "DESIGN_ONLY",
+      "sex_variants": {
+        "male": {
+          "status": "ART_PENDING",
+          "directions": {
+            "front": "ART_PENDING",
+            "right": "ART_PENDING",
+            "back": "ART_PENDING",
+            "left": "ART_PENDING"
+          },
+          "clips": {
+            "idle": "ART_PENDING",
+            "walk": "ART_PENDING",
+            "cast": "ART_PENDING",
+            "attack": "ART_PENDING",
+            "hit": "ART_PENDING",
+            "death": "ART_PENDING"
+          }
+        },
+        "female": {
+          "status": "ART_PENDING",
+          "directions": {
+            "front": "ART_PENDING",
+            "right": "ART_PENDING",
+            "back": "ART_PENDING",
+            "left": "ART_PENDING"
+          },
+          "clips": {
+            "idle": "ART_PENDING",
+            "walk": "ART_PENDING",
+            "cast": "ART_PENDING",
+            "attack": "ART_PENDING",
+            "hit": "ART_PENDING",
+            "death": "ART_PENDING"
+          }
+        }
+      },
+      "visual_contract": {
+        "common_silhouette": "Spear tip leads while torso follows",
+        "branch_motion_signature": "One line thrust and return; dragon trace is external",
+        "suggested_palette": "blue_steel_antique_gold",
+        "branch_identity_requires_visible_pose_or_prop_difference": true,
+        "weapon_or_effect_must_be_separate_layer": true
+      },
+      "source_ref": "docs/animation/TMB_DISCIPLE_SCHOOL_VISUAL_MOTIFS_20261111.md",
+      "godot_rendered": false,
+      "visual_approved": false
+    },
+    {
+      "group_id": "tmb.as_char38.branch.spear.ho_quan_thuong",
+      "group_kind": "branch",
+      "design_group_id": "as_char38.spear.ho_quan_thuong",
+      "school_id": "spear",
+      "branch_design_slug": "ho_quan_thuong",
+      "branch_name": "Hộ Quân Thương",
+      "v63_path_candidate_id": "tmb.path.spear.ho_quan_thuong",
+      "v63_catalog_status": "PRESENT_CANDIDATE_DISABLED",
+      "design_status": "DESIGN_DEFINED",
+      "art_status": "ART_PENDING",
+      "source_art_status": "DESIGN_ONLY",
+      "sex_variants": {
+        "male": {
+          "status": "ART_PENDING",
+          "directions": {
+            "front": "ART_PENDING",
+            "right": "ART_PENDING",
+            "back": "ART_PENDING",
+            "left": "ART_PENDING"
+          },
+          "clips": {
+            "idle": "ART_PENDING",
+            "walk": "ART_PENDING",
+            "cast": "ART_PENDING",
+            "attack": "ART_PENDING",
+            "hit": "ART_PENDING",
+            "death": "ART_PENDING"
+          }
+        },
+        "female": {
+          "status": "ART_PENDING",
+          "directions": {
+            "front": "ART_PENDING",
+            "right": "ART_PENDING",
+            "back": "ART_PENDING",
+            "left": "ART_PENDING"
+          },
+          "clips": {
+            "idle": "ART_PENDING",
+            "walk": "ART_PENDING",
+            "cast": "ART_PENDING",
+            "attack": "ART_PENDING",
+            "hit": "ART_PENDING",
+            "death": "ART_PENDING"
+          }
+        }
+      },
+      "visual_contract": {
+        "common_silhouette": "Horizontal spear guard across the body",
+        "branch_motion_signature": "Move from guard to protective stance while feet stay planted",
+        "suggested_palette": "blue_steel_antique_gold",
+        "branch_identity_requires_visible_pose_or_prop_difference": true,
+        "weapon_or_effect_must_be_separate_layer": true
+      },
+      "source_ref": "docs/animation/TMB_DISCIPLE_SCHOOL_VISUAL_MOTIFS_20261111.md",
+      "godot_rendered": false,
+      "visual_approved": false
+    },
+    {
+      "group_id": "tmb.as_char38.branch.palm.liet_duong_chuong",
+      "group_kind": "branch",
+      "design_group_id": "as_char38.palm.liet_duong_chuong",
+      "school_id": "palm",
+      "branch_design_slug": "liet_duong_chuong",
+      "branch_name": "Liệt Dương Chưởng",
+      "v63_path_candidate_id": null,
+      "v63_catalog_status": "DESIGN_ONLY_NOT_IN_V63_PATH_CATALOG",
+      "design_status": "DESIGN_DEFINED",
+      "art_status": "ART_PENDING",
+      "source_art_status": "DESIGN_ONLY",
+      "sex_variants": {
+        "male": {
+          "status": "ART_PENDING",
+          "directions": {
+            "front": "ART_PENDING",
+            "right": "ART_PENDING",
+            "back": "ART_PENDING",
+            "left": "ART_PENDING"
+          },
+          "clips": {
+            "idle": "ART_PENDING",
+            "walk": "ART_PENDING",
+            "cast": "ART_PENDING",
+            "attack": "ART_PENDING",
+            "hit": "ART_PENDING",
+            "death": "ART_PENDING"
+          }
+        },
+        "female": {
+          "status": "ART_PENDING",
+          "directions": {
+            "front": "ART_PENDING",
+            "right": "ART_PENDING",
+            "back": "ART_PENDING",
+            "left": "ART_PENDING"
+          },
+          "clips": {
+            "idle": "ART_PENDING",
+            "walk": "ART_PENDING",
+            "cast": "ART_PENDING",
+            "attack": "ART_PENDING",
+            "hit": "ART_PENDING",
+            "death": "ART_PENDING"
+          }
+        }
+      },
+      "visual_contract": {
+        "common_silhouette": "Open palm and readable arm line",
+        "branch_motion_signature": "Gather, then deliver one forceful palm; no baked fire/AoE",
+        "suggested_palette": "warm_earth_or_cool_jade_by_branch",
+        "branch_identity_requires_visible_pose_or_prop_difference": true,
+        "weapon_or_effect_must_be_separate_layer": true
+      },
+      "source_ref": "docs/animation/TMB_DISCIPLE_SCHOOL_VISUAL_MOTIFS_20261111.md",
+      "godot_rendered": false,
+      "visual_approved": false
+    },
+    {
+      "group_id": "tmb.as_char38.branch.palm.han_ngoc_chuong",
+      "group_kind": "branch",
+      "design_group_id": "as_char38.palm.han_ngoc_chuong",
+      "school_id": "palm",
+      "branch_design_slug": "han_ngoc_chuong",
+      "branch_name": "Hàn Ngọc Chưởng",
+      "v63_path_candidate_id": null,
+      "v63_catalog_status": "DESIGN_ONLY_NOT_IN_V63_PATH_CATALOG",
+      "design_status": "DESIGN_DEFINED",
+      "art_status": "ART_PENDING",
+      "source_art_status": "DESIGN_ONLY",
+      "sex_variants": {
+        "male": {
+          "status": "ART_PENDING",
+          "directions": {
+            "front": "ART_PENDING",
+            "right": "ART_PENDING",
+            "back": "ART_PENDING",
+            "left": "ART_PENDING"
+          },
+          "clips": {
+            "idle": "ART_PENDING",
+            "walk": "ART_PENDING",
+            "cast": "ART_PENDING",
+            "attack": "ART_PENDING",
+            "hit": "ART_PENDING",
+            "death": "ART_PENDING"
+          }
+        },
+        "female": {
+          "status": "ART_PENDING",
+          "directions": {
+            "front": "ART_PENDING",
+            "right": "ART_PENDING",
+            "back": "ART_PENDING",
+            "left": "ART_PENDING"
+          },
+          "clips": {
+            "idle": "ART_PENDING",
+            "walk": "ART_PENDING",
+            "cast": "ART_PENDING",
+            "attack": "ART_PENDING",
+            "hit": "ART_PENDING",
+            "death": "ART_PENDING"
+          }
+        }
+      },
+      "visual_contract": {
+        "common_silhouette": "Soft curved arm, slow palm direction",
+        "branch_motion_signature": "Lead with smooth forearm and palm; frost is external",
+        "suggested_palette": "warm_earth_or_cool_jade_by_branch",
+        "branch_identity_requires_visible_pose_or_prop_difference": true,
+        "weapon_or_effect_must_be_separate_layer": true
+      },
+      "source_ref": "docs/animation/TMB_DISCIPLE_SCHOOL_VISUAL_MOTIFS_20261111.md",
+      "godot_rendered": false,
+      "visual_approved": false
+    },
+    {
+      "group_id": "tmb.as_char38.branch.palm.hoi_phong_chuong",
+      "group_kind": "branch",
+      "design_group_id": "as_char38.palm.hoi_phong_chuong",
+      "school_id": "palm",
+      "branch_design_slug": "hoi_phong_chuong",
+      "branch_name": "Hồi Phong Chưởng",
+      "v63_path_candidate_id": null,
+      "v63_catalog_status": "DESIGN_ONLY_NOT_IN_V63_PATH_CATALOG",
+      "design_status": "DESIGN_DEFINED",
+      "art_status": "ART_PENDING",
+      "source_art_status": "DESIGN_ONLY",
+      "sex_variants": {
+        "male": {
+          "status": "ART_PENDING",
+          "directions": {
+            "front": "ART_PENDING",
+            "right": "ART_PENDING",
+            "back": "ART_PENDING",
+            "left": "ART_PENDING"
+          },
+          "clips": {
+            "idle": "ART_PENDING",
+            "walk": "ART_PENDING",
+            "cast": "ART_PENDING",
+            "attack": "ART_PENDING",
+            "hit": "ART_PENDING",
+            "death": "ART_PENDING"
+          }
+        },
+        "female": {
+          "status": "ART_PENDING",
+          "directions": {
+            "front": "ART_PENDING",
+            "right": "ART_PENDING",
+            "back": "ART_PENDING",
+            "left": "ART_PENDING"
+          },
+          "clips": {
+            "idle": "ART_PENDING",
+            "walk": "ART_PENDING",
+            "cast": "ART_PENDING",
+            "attack": "ART_PENDING",
+            "hit": "ART_PENDING",
+            "death": "ART_PENDING"
+          }
+        }
+      },
+      "visual_contract": {
+        "common_silhouette": "Balanced posture and both hands open",
+        "branch_motion_signature": "Draw in, then extend gently; heal only follows a real event",
+        "suggested_palette": "warm_earth_or_cool_jade_by_branch",
+        "branch_identity_requires_visible_pose_or_prop_difference": true,
+        "weapon_or_effect_must_be_separate_layer": true
+      },
+      "source_ref": "docs/animation/TMB_DISCIPLE_SCHOOL_VISUAL_MOTIFS_20261111.md",
+      "godot_rendered": false,
+      "visual_approved": false
+    },
+    {
+      "group_id": "tmb.as_char38.branch.formation.tu_linh_tran",
+      "group_kind": "branch",
+      "design_group_id": "as_char38.formation.tu_linh_tran",
+      "school_id": "formation",
+      "branch_design_slug": "tu_linh_tran",
+      "branch_name": "Tụ Linh Trận",
+      "v63_path_candidate_id": null,
+      "v63_catalog_status": "DESIGN_ONLY_NOT_IN_V63_PATH_CATALOG",
+      "design_status": "DESIGN_DEFINED",
+      "art_status": "ART_PENDING",
+      "source_art_status": "DESIGN_ONLY",
+      "sex_variants": {
+        "male": {
+          "status": "ART_PENDING",
+          "directions": {
+            "front": "ART_PENDING",
+            "right": "ART_PENDING",
+            "back": "ART_PENDING",
+            "left": "ART_PENDING"
+          },
+          "clips": {
+            "idle": "ART_PENDING",
+            "walk": "ART_PENDING",
+            "cast": "ART_PENDING",
+            "attack": "ART_PENDING",
+            "hit": "ART_PENDING",
+            "death": "ART_PENDING"
+          }
+        },
+        "female": {
+          "status": "ART_PENDING",
+          "directions": {
+            "front": "ART_PENDING",
+            "right": "ART_PENDING",
+            "back": "ART_PENDING",
+            "left": "ART_PENDING"
+          },
+          "clips": {
+            "idle": "ART_PENDING",
+            "walk": "ART_PENDING",
+            "cast": "ART_PENDING",
+            "attack": "ART_PENDING",
+            "hit": "ART_PENDING",
+            "death": "ART_PENDING"
+          }
+        }
+      },
+      "visual_contract": {
+        "common_silhouette": "Balanced stance, hands mark ground anchors",
+        "branch_motion_signature": "Place and hold the pose; formation circle is a separate layer",
+        "suggested_palette": "indigo_ink_stone",
+        "branch_identity_requires_visible_pose_or_prop_difference": true,
+        "weapon_or_effect_must_be_separate_layer": true
+      },
+      "source_ref": "docs/animation/TMB_DISCIPLE_SCHOOL_VISUAL_MOTIFS_20261111.md",
+      "godot_rendered": false,
+      "visual_approved": false
+    },
+    {
+      "group_id": "tmb.as_char38.branch.formation.phong_toa_tran",
+      "group_kind": "branch",
+      "design_group_id": "as_char38.formation.phong_toa_tran",
+      "school_id": "formation",
+      "branch_design_slug": "phong_toa_tran",
+      "branch_name": "Phong Tỏa Trận",
+      "v63_path_candidate_id": null,
+      "v63_catalog_status": "DESIGN_ONLY_NOT_IN_V63_PATH_CATALOG",
+      "design_status": "DESIGN_DEFINED",
+      "art_status": "ART_PENDING",
+      "source_art_status": "DESIGN_ONLY",
+      "sex_variants": {
+        "male": {
+          "status": "ART_PENDING",
+          "directions": {
+            "front": "ART_PENDING",
+            "right": "ART_PENDING",
+            "back": "ART_PENDING",
+            "left": "ART_PENDING"
+          },
+          "clips": {
+            "idle": "ART_PENDING",
+            "walk": "ART_PENDING",
+            "cast": "ART_PENDING",
+            "attack": "ART_PENDING",
+            "hit": "ART_PENDING",
+            "death": "ART_PENDING"
+          }
+        },
+        "female": {
+          "status": "ART_PENDING",
+          "directions": {
+            "front": "ART_PENDING",
+            "right": "ART_PENDING",
+            "back": "ART_PENDING",
+            "left": "ART_PENDING"
+          },
+          "clips": {
+            "idle": "ART_PENDING",
+            "walk": "ART_PENDING",
+            "cast": "ART_PENDING",
+            "attack": "ART_PENDING",
+            "hit": "ART_PENDING",
+            "death": "ART_PENDING"
+          }
+        }
+      },
+      "visual_contract": {
+        "common_silhouette": "Hands outline a boundary",
+        "branch_motion_signature": "Close the hands like closing a boundary; no baked rune",
+        "suggested_palette": "indigo_ink_stone",
+        "branch_identity_requires_visible_pose_or_prop_difference": true,
+        "weapon_or_effect_must_be_separate_layer": true
+      },
+      "source_ref": "docs/animation/TMB_DISCIPLE_SCHOOL_VISUAL_MOTIFS_20261111.md",
+      "godot_rendered": false,
+      "visual_approved": false
+    },
+    {
+      "group_id": "tmb.as_char38.branch.formation.sat_phat_tran",
+      "group_kind": "branch",
+      "design_group_id": "as_char38.formation.sat_phat_tran",
+      "school_id": "formation",
+      "branch_design_slug": "sat_phat_tran",
+      "branch_name": "Sát Phạt Trận",
+      "v63_path_candidate_id": null,
+      "v63_catalog_status": "DESIGN_ONLY_NOT_IN_V63_PATH_CATALOG",
+      "design_status": "DESIGN_DEFINED",
+      "art_status": "ART_PENDING",
+      "source_art_status": "DESIGN_ONLY",
+      "sex_variants": {
+        "male": {
+          "status": "ART_PENDING",
+          "directions": {
+            "front": "ART_PENDING",
+            "right": "ART_PENDING",
+            "back": "ART_PENDING",
+            "left": "ART_PENDING"
+          },
+          "clips": {
+            "idle": "ART_PENDING",
+            "walk": "ART_PENDING",
+            "cast": "ART_PENDING",
+            "attack": "ART_PENDING",
+            "hit": "ART_PENDING",
+            "death": "ART_PENDING"
+          }
+        },
+        "female": {
+          "status": "ART_PENDING",
+          "directions": {
+            "front": "ART_PENDING",
+            "right": "ART_PENDING",
+            "back": "ART_PENDING",
+            "left": "ART_PENDING"
+          },
+          "clips": {
+            "idle": "ART_PENDING",
+            "walk": "ART_PENDING",
+            "cast": "ART_PENDING",
+            "attack": "ART_PENDING",
+            "hit": "ART_PENDING",
+            "death": "ART_PENDING"
+          }
+        }
+      },
+      "visual_contract": {
+        "common_silhouette": "Planted stance and low marking gesture",
+        "branch_motion_signature": "Mark a point and withdraw; ground zone stays external",
+        "suggested_palette": "indigo_ink_stone",
+        "branch_identity_requires_visible_pose_or_prop_difference": true,
+        "weapon_or_effect_must_be_separate_layer": true
+      },
+      "source_ref": "docs/animation/TMB_DISCIPLE_SCHOOL_VISUAL_MOTIFS_20261111.md",
+      "godot_rendered": false,
+      "visual_approved": false
+    },
+    {
+      "group_id": "tmb.as_char38.branch.summon.kiem_linh",
+      "group_kind": "branch",
+      "design_group_id": "as_char38.summon.kiem_linh",
+      "school_id": "summon",
+      "branch_design_slug": "kiem_linh",
+      "branch_name": "Kiếm Linh",
+      "v63_path_candidate_id": null,
+      "v63_catalog_status": "DESIGN_ONLY_NOT_IN_V63_PATH_CATALOG",
+      "design_status": "DESIGN_DEFINED",
+      "art_status": "ART_PENDING",
+      "source_art_status": "DESIGN_ONLY",
+      "sex_variants": {
+        "male": {
+          "status": "ART_PENDING",
+          "directions": {
+            "front": "ART_PENDING",
+            "right": "ART_PENDING",
+            "back": "ART_PENDING",
+            "left": "ART_PENDING"
+          },
+          "clips": {
+            "idle": "ART_PENDING",
+            "walk": "ART_PENDING",
+            "cast": "ART_PENDING",
+            "attack": "ART_PENDING",
+            "hit": "ART_PENDING",
+            "death": "ART_PENDING"
+          }
+        },
+        "female": {
+          "status": "ART_PENDING",
+          "directions": {
+            "front": "ART_PENDING",
+            "right": "ART_PENDING",
+            "back": "ART_PENDING",
+            "left": "ART_PENDING"
+          },
+          "clips": {
+            "idle": "ART_PENDING",
+            "walk": "ART_PENDING",
+            "cast": "ART_PENDING",
+            "attack": "ART_PENDING",
+            "hit": "ART_PENDING",
+            "death": "ART_PENDING"
+          }
+        }
+      },
+      "visual_contract": {
+        "common_silhouette": "Inviting gesture with actor space beside the body",
+        "branch_motion_signature": "Guide with one hand; spirit sword stays a separate actor",
+        "suggested_palette": "ash_violet_jade",
+        "branch_identity_requires_visible_pose_or_prop_difference": true,
+        "weapon_or_effect_must_be_separate_layer": true
+      },
+      "source_ref": "docs/animation/TMB_DISCIPLE_SCHOOL_VISUAL_MOTIFS_20261111.md",
+      "godot_rendered": false,
+      "visual_approved": false
+    },
+    {
+      "group_id": "tmb.as_char38.branch.summon.linh_thu",
+      "group_kind": "branch",
+      "design_group_id": "as_char38.summon.linh_thu",
+      "school_id": "summon",
+      "branch_design_slug": "linh_thu",
+      "branch_name": "Linh Thú",
+      "v63_path_candidate_id": null,
+      "v63_catalog_status": "DESIGN_ONLY_NOT_IN_V63_PATH_CATALOG",
+      "design_status": "DESIGN_DEFINED",
+      "art_status": "ART_PENDING",
+      "source_art_status": "DESIGN_ONLY",
+      "sex_variants": {
+        "male": {
+          "status": "ART_PENDING",
+          "directions": {
+            "front": "ART_PENDING",
+            "right": "ART_PENDING",
+            "back": "ART_PENDING",
+            "left": "ART_PENDING"
+          },
+          "clips": {
+            "idle": "ART_PENDING",
+            "walk": "ART_PENDING",
+            "cast": "ART_PENDING",
+            "attack": "ART_PENDING",
+            "hit": "ART_PENDING",
+            "death": "ART_PENDING"
+          }
+        },
+        "female": {
+          "status": "ART_PENDING",
+          "directions": {
+            "front": "ART_PENDING",
+            "right": "ART_PENDING",
+            "back": "ART_PENDING",
+            "left": "ART_PENDING"
+          },
+          "clips": {
+            "idle": "ART_PENDING",
+            "walk": "ART_PENDING",
+            "cast": "ART_PENDING",
+            "attack": "ART_PENDING",
+            "hit": "ART_PENDING",
+            "death": "ART_PENDING"
+          }
+        }
+      },
+      "visual_contract": {
+        "common_silhouette": "Open outward silhouette with room for a beast",
+        "branch_motion_signature": "Call and hold a clear side space for a separate actor",
+        "suggested_palette": "ash_violet_jade",
+        "branch_identity_requires_visible_pose_or_prop_difference": true,
+        "weapon_or_effect_must_be_separate_layer": true
+      },
+      "source_ref": "docs/animation/TMB_DISCIPLE_SCHOOL_VISUAL_MOTIFS_20261111.md",
+      "godot_rendered": false,
+      "visual_approved": false
+    },
+    {
+      "group_id": "tmb.as_char38.branch.summon.khoi_loi_ho_phap",
+      "group_kind": "branch",
+      "design_group_id": "as_char38.summon.khoi_loi_ho_phap",
+      "school_id": "summon",
+      "branch_design_slug": "khoi_loi_ho_phap",
+      "branch_name": "Khôi Lỗi Hộ Pháp",
+      "v63_path_candidate_id": null,
+      "v63_catalog_status": "DESIGN_ONLY_NOT_IN_V63_PATH_CATALOG",
+      "design_status": "DESIGN_DEFINED",
+      "art_status": "ART_PENDING",
+      "source_art_status": "DESIGN_ONLY",
+      "sex_variants": {
+        "male": {
+          "status": "ART_PENDING",
+          "directions": {
+            "front": "ART_PENDING",
+            "right": "ART_PENDING",
+            "back": "ART_PENDING",
+            "left": "ART_PENDING"
+          },
+          "clips": {
+            "idle": "ART_PENDING",
+            "walk": "ART_PENDING",
+            "cast": "ART_PENDING",
+            "attack": "ART_PENDING",
+            "hit": "ART_PENDING",
+            "death": "ART_PENDING"
+          }
+        },
+        "female": {
+          "status": "ART_PENDING",
+          "directions": {
+            "front": "ART_PENDING",
+            "right": "ART_PENDING",
+            "back": "ART_PENDING",
+            "left": "ART_PENDING"
+          },
+          "clips": {
+            "idle": "ART_PENDING",
+            "walk": "ART_PENDING",
+            "cast": "ART_PENDING",
+            "attack": "ART_PENDING",
+            "hit": "ART_PENDING",
+            "death": "ART_PENDING"
+          }
+        }
+      },
+      "visual_contract": {
+        "common_silhouette": "Protective arm and compact stance",
+        "branch_motion_signature": "Commanding gesture; puppet is a separate actor",
+        "suggested_palette": "ash_violet_jade",
+        "branch_identity_requires_visible_pose_or_prop_difference": true,
+        "weapon_or_effect_must_be_separate_layer": true
+      },
+      "source_ref": "docs/animation/TMB_DISCIPLE_SCHOOL_VISUAL_MOTIFS_20261111.md",
+      "godot_rendered": false,
+      "visual_approved": false
+    },
+    {
+      "group_id": "tmb.as_char38.branch.curse.tran_hon_chu",
+      "group_kind": "branch",
+      "design_group_id": "as_char38.curse.tran_hon_chu",
+      "school_id": "curse",
+      "branch_design_slug": "tran_hon_chu",
+      "branch_name": "Trấn Hồn Chú",
+      "v63_path_candidate_id": null,
+      "v63_catalog_status": "DESIGN_ONLY_NOT_IN_V63_PATH_CATALOG",
+      "design_status": "DESIGN_DEFINED",
+      "art_status": "ART_PENDING",
+      "source_art_status": "DESIGN_ONLY",
+      "sex_variants": {
+        "male": {
+          "status": "ART_PENDING",
+          "directions": {
+            "front": "ART_PENDING",
+            "right": "ART_PENDING",
+            "back": "ART_PENDING",
+            "left": "ART_PENDING"
+          },
+          "clips": {
+            "idle": "ART_PENDING",
+            "walk": "ART_PENDING",
+            "cast": "ART_PENDING",
+            "attack": "ART_PENDING",
+            "hit": "ART_PENDING",
+            "death": "ART_PENDING"
+          }
+        },
+        "female": {
+          "status": "ART_PENDING",
+          "directions": {
+            "front": "ART_PENDING",
+            "right": "ART_PENDING",
+            "back": "ART_PENDING",
+            "left": "ART_PENDING"
+          },
+          "clips": {
+            "idle": "ART_PENDING",
+            "walk": "ART_PENDING",
+            "cast": "ART_PENDING",
+            "attack": "ART_PENDING",
+            "hit": "ART_PENDING",
+            "death": "ART_PENDING"
+          }
+        }
+      },
+      "visual_contract": {
+        "common_silhouette": "Finger seal; text stays off the body sprite",
+        "branch_motion_signature": "Form seal and hold; status visuals are external",
+        "suggested_palette": "ink_violet_bronze",
+        "branch_identity_requires_visible_pose_or_prop_difference": true,
+        "weapon_or_effect_must_be_separate_layer": true
+      },
+      "source_ref": "docs/animation/TMB_DISCIPLE_SCHOOL_VISUAL_MOTIFS_20261111.md",
+      "godot_rendered": false,
+      "visual_approved": false
+    },
+    {
+      "group_id": "tmb.as_char38.branch.curse.phe_linh_chu",
+      "group_kind": "branch",
+      "design_group_id": "as_char38.curse.phe_linh_chu",
+      "school_id": "curse",
+      "branch_design_slug": "phe_linh_chu",
+      "branch_name": "Phệ Linh Chú",
+      "v63_path_candidate_id": null,
+      "v63_catalog_status": "DESIGN_ONLY_NOT_IN_V63_PATH_CATALOG",
+      "design_status": "DESIGN_DEFINED",
+      "art_status": "ART_PENDING",
+      "source_art_status": "DESIGN_ONLY",
+      "sex_variants": {
+        "male": {
+          "status": "ART_PENDING",
+          "directions": {
+            "front": "ART_PENDING",
+            "right": "ART_PENDING",
+            "back": "ART_PENDING",
+            "left": "ART_PENDING"
+          },
+          "clips": {
+            "idle": "ART_PENDING",
+            "walk": "ART_PENDING",
+            "cast": "ART_PENDING",
+            "attack": "ART_PENDING",
+            "hit": "ART_PENDING",
+            "death": "ART_PENDING"
+          }
+        },
+        "female": {
+          "status": "ART_PENDING",
+          "directions": {
+            "front": "ART_PENDING",
+            "right": "ART_PENDING",
+            "back": "ART_PENDING",
+            "left": "ART_PENDING"
+          },
+          "clips": {
+            "idle": "ART_PENDING",
+            "walk": "ART_PENDING",
+            "cast": "ART_PENDING",
+            "attack": "ART_PENDING",
+            "hit": "ART_PENDING",
+            "death": "ART_PENDING"
+          }
+        }
+      },
+      "visual_contract": {
+        "common_silhouette": "Pulling hand gesture and slight torso lean",
+        "branch_motion_signature": "Draw back then recover; no baked tether or drain",
+        "suggested_palette": "ink_violet_bronze",
+        "branch_identity_requires_visible_pose_or_prop_difference": true,
+        "weapon_or_effect_must_be_separate_layer": true
+      },
+      "source_ref": "docs/animation/TMB_DISCIPLE_SCHOOL_VISUAL_MOTIFS_20261111.md",
+      "godot_rendered": false,
+      "visual_approved": false
+    },
+    {
+      "group_id": "tmb.as_char38.branch.curse.ho_menh_chu",
+      "group_kind": "branch",
+      "design_group_id": "as_char38.curse.ho_menh_chu",
+      "school_id": "curse",
+      "branch_design_slug": "ho_menh_chu",
+      "branch_name": "Hộ Mệnh Chú",
+      "v63_path_candidate_id": null,
+      "v63_catalog_status": "DESIGN_ONLY_NOT_IN_V63_PATH_CATALOG",
+      "design_status": "DESIGN_DEFINED",
+      "art_status": "ART_PENDING",
+      "source_art_status": "DESIGN_ONLY",
+      "sex_variants": {
+        "male": {
+          "status": "ART_PENDING",
+          "directions": {
+            "front": "ART_PENDING",
+            "right": "ART_PENDING",
+            "back": "ART_PENDING",
+            "left": "ART_PENDING"
+          },
+          "clips": {
+            "idle": "ART_PENDING",
+            "walk": "ART_PENDING",
+            "cast": "ART_PENDING",
+            "attack": "ART_PENDING",
+            "hit": "ART_PENDING",
+            "death": "ART_PENDING"
+          }
+        },
+        "female": {
+          "status": "ART_PENDING",
+          "directions": {
+            "front": "ART_PENDING",
+            "right": "ART_PENDING",
+            "back": "ART_PENDING",
+            "left": "ART_PENDING"
+          },
+          "clips": {
+            "idle": "ART_PENDING",
+            "walk": "ART_PENDING",
+            "cast": "ART_PENDING",
+            "attack": "ART_PENDING",
+            "hit": "ART_PENDING",
+            "death": "ART_PENDING"
+          }
+        }
+      },
+      "visual_contract": {
+        "common_silhouette": "Raised forearm protects the chest",
+        "branch_motion_signature": "Raise guard and hold; do not imply resurrection or injury clear",
+        "suggested_palette": "ink_violet_bronze",
+        "branch_identity_requires_visible_pose_or_prop_difference": true,
+        "weapon_or_effect_must_be_separate_layer": true
+      },
+      "source_ref": "docs/animation/TMB_DISCIPLE_SCHOOL_VISUAL_MOTIFS_20261111.md",
+      "godot_rendered": false,
+      "visual_approved": false
+    },
+    {
+      "group_id": "tmb.as_char38.branch.talisman.loi_phu",
+      "group_kind": "branch",
+      "design_group_id": "as_char38.talisman.loi_phu",
+      "school_id": "talisman",
+      "branch_design_slug": "loi_phu",
+      "branch_name": "Lôi Phù",
+      "v63_path_candidate_id": null,
+      "v63_catalog_status": "DESIGN_ONLY_NOT_IN_V63_PATH_CATALOG",
+      "design_status": "DESIGN_DEFINED",
+      "art_status": "ART_PENDING",
+      "source_art_status": "DESIGN_ONLY",
+      "sex_variants": {
+        "male": {
+          "status": "ART_PENDING",
+          "directions": {
+            "front": "ART_PENDING",
+            "right": "ART_PENDING",
+            "back": "ART_PENDING",
+            "left": "ART_PENDING"
+          },
+          "clips": {
+            "idle": "ART_PENDING",
+            "walk": "ART_PENDING",
+            "cast": "ART_PENDING",
+            "attack": "ART_PENDING",
+            "hit": "ART_PENDING",
+            "death": "ART_PENDING"
+          }
+        },
+        "female": {
+          "status": "ART_PENDING",
+          "directions": {
+            "front": "ART_PENDING",
+            "right": "ART_PENDING",
+            "back": "ART_PENDING",
+            "left": "ART_PENDING"
+          },
+          "clips": {
+            "idle": "ART_PENDING",
+            "walk": "ART_PENDING",
+            "cast": "ART_PENDING",
+            "attack": "ART_PENDING",
+            "hit": "ART_PENDING",
+            "death": "ART_PENDING"
+          }
+        }
+      },
+      "visual_contract": {
+        "common_silhouette": "Paper/talisman prop in a separate hand layer",
+        "branch_motion_signature": "Take and release a talisman; lightning stays external",
+        "suggested_palette": "ivory_paper_cinnabar_ink",
+        "branch_identity_requires_visible_pose_or_prop_difference": true,
+        "weapon_or_effect_must_be_separate_layer": true
+      },
+      "source_ref": "docs/animation/TMB_DISCIPLE_SCHOOL_VISUAL_MOTIFS_20261111.md",
+      "godot_rendered": false,
+      "visual_approved": false
+    },
+    {
+      "group_id": "tmb.as_char38.branch.talisman.hoa_phu",
+      "group_kind": "branch",
+      "design_group_id": "as_char38.talisman.hoa_phu",
+      "school_id": "talisman",
+      "branch_design_slug": "hoa_phu",
+      "branch_name": "Hỏa Phù",
+      "v63_path_candidate_id": null,
+      "v63_catalog_status": "DESIGN_ONLY_NOT_IN_V63_PATH_CATALOG",
+      "design_status": "DESIGN_DEFINED",
+      "art_status": "ART_PENDING",
+      "source_art_status": "DESIGN_ONLY",
+      "sex_variants": {
+        "male": {
+          "status": "ART_PENDING",
+          "directions": {
+            "front": "ART_PENDING",
+            "right": "ART_PENDING",
+            "back": "ART_PENDING",
+            "left": "ART_PENDING"
+          },
+          "clips": {
+            "idle": "ART_PENDING",
+            "walk": "ART_PENDING",
+            "cast": "ART_PENDING",
+            "attack": "ART_PENDING",
+            "hit": "ART_PENDING",
+            "death": "ART_PENDING"
+          }
+        },
+        "female": {
+          "status": "ART_PENDING",
+          "directions": {
+            "front": "ART_PENDING",
+            "right": "ART_PENDING",
+            "back": "ART_PENDING",
+            "left": "ART_PENDING"
+          },
+          "clips": {
+            "idle": "ART_PENDING",
+            "walk": "ART_PENDING",
+            "cast": "ART_PENDING",
+            "attack": "ART_PENDING",
+            "hit": "ART_PENDING",
+            "death": "ART_PENDING"
+          }
+        }
+      },
+      "visual_contract": {
+        "common_silhouette": "Compact paper prop close to the chest",
+        "branch_motion_signature": "Draw and extend; area fire stays external",
+        "suggested_palette": "ivory_paper_cinnabar_ink",
+        "branch_identity_requires_visible_pose_or_prop_difference": true,
+        "weapon_or_effect_must_be_separate_layer": true
+      },
+      "source_ref": "docs/animation/TMB_DISCIPLE_SCHOOL_VISUAL_MOTIFS_20261111.md",
+      "godot_rendered": false,
+      "visual_approved": false
+    },
+    {
+      "group_id": "tmb.as_char38.branch.talisman.phong_an_phu",
+      "group_kind": "branch",
+      "design_group_id": "as_char38.talisman.phong_an_phu",
+      "school_id": "talisman",
+      "branch_design_slug": "phong_an_phu",
+      "branch_name": "Phong Ấn Phù",
+      "v63_path_candidate_id": null,
+      "v63_catalog_status": "DESIGN_ONLY_NOT_IN_V63_PATH_CATALOG",
+      "design_status": "DESIGN_DEFINED",
+      "art_status": "ART_PENDING",
+      "source_art_status": "DESIGN_ONLY",
+      "sex_variants": {
+        "male": {
+          "status": "ART_PENDING",
+          "directions": {
+            "front": "ART_PENDING",
+            "right": "ART_PENDING",
+            "back": "ART_PENDING",
+            "left": "ART_PENDING"
+          },
+          "clips": {
+            "idle": "ART_PENDING",
+            "walk": "ART_PENDING",
+            "cast": "ART_PENDING",
+            "attack": "ART_PENDING",
+            "hit": "ART_PENDING",
+            "death": "ART_PENDING"
+          }
+        },
+        "female": {
+          "status": "ART_PENDING",
+          "directions": {
+            "front": "ART_PENDING",
+            "right": "ART_PENDING",
+            "back": "ART_PENDING",
+            "left": "ART_PENDING"
+          },
+          "clips": {
+            "idle": "ART_PENDING",
+            "walk": "ART_PENDING",
+            "cast": "ART_PENDING",
+            "attack": "ART_PENDING",
+            "hit": "ART_PENDING",
+            "death": "ART_PENDING"
+          }
+        }
+      },
+      "visual_contract": {
+        "common_silhouette": "Short placement gesture toward the target",
+        "branch_motion_signature": "Place/release the seal then hold; glyph stays external",
+        "suggested_palette": "ivory_paper_cinnabar_ink",
+        "branch_identity_requires_visible_pose_or_prop_difference": true,
+        "weapon_or_effect_must_be_separate_layer": true
+      },
+      "source_ref": "docs/animation/TMB_DISCIPLE_SCHOOL_VISUAL_MOTIFS_20261111.md",
+      "godot_rendered": false,
+      "visual_approved": false
+    }
+  ]
+}

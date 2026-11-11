@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AS-CHAR-38 source-backed appearance layer pack",
+  "type": "object",
+  "required": ["schema_version", "art_status", "school_id", "branch_id", "sex_id", "cell_size", "direction_order", "layers"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "art_status": { "const": "SOURCE_AVAILABLE" },
+    "school_id": { "type": "string", "minLength": 1 },
+    "branch_id": { "type": "string", "minLength": 1 },
+    "sex_id": { "enum": ["male", "female", "both"] },
+    "cell_size": { "const": [128, 128] },
+    "direction_order": { "const": ["front", "right", "back", "left"] },
+    "layers": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["layer_id", "layer_role", "path", "sha256", "atlas_size", "order", "required", "sex_id", "source_status"],
+        "properties": {
+          "layer_id": { "type": "string", "minLength": 1 },
+          "layer_role": { "type": "string", "minLength": 1 },
+          "path": { "type": "string", "minLength": 1, "not": { "pattern": "^([A-Za-z]:|/|\\\\)" } },
+          "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+          "atlas_size": { "const": [512, 128] },
+          "order": { "type": "integer" },
+          "required": { "type": "boolean" },
+          "sex_id": { "enum": ["male", "female", "both"] },
+          "source_status": { "const": "SOURCE_AVAILABLE" },
+          "cosmetic_slot": { "type": "string" },
+          "variant_id": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}
