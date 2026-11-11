@@ -4380,6 +4380,42 @@ func _on_dai_dien_state_changed() -> void:
         _refresh_building_management_controls_only()
 
 # ECONOMY-A player actions are actual simulation transactions; no fake income.
+# ECO-06: source-backed presentation only. This is a PARTIAL receipt ledger,
+# not a second balance/accounting authority and not total business profit.
+func _eco06_cashflow_text() -> String:
+    if state == null or not state.sect.economy_a_enabled:
+        return "Sổ Linh Thạch chưa kích hoạt."
+    var ledger := EconomySystem.new().daily_market_cashflow(state)
+    return (
+        "SỔ THU CHI · NGÀY %d MÔ PHỎNG\n"
+        + "Bán nguyên liệu +%d LT · Linh Mạch +%d LT gộp\n"
+        + "Mua nguyên liệu -%d LT · Gieo trồng -%d LT\n"
+        + "Lương đã trả -%d LT\n"
+        + "Chênh lệch từ các biên nhận trên: %d LT\n"
+        + "Quỹ hiện có: %d LT. Chưa tính nâng cấp, tuyển mộ và các khoản ngoài sổ."
+    ) % [
+        int(state.tick/EconomySystem.V2_DAY_TICKS)+1,
+        int(ledger.get("income",0)),int(ledger.get("origin_income",0)),
+        int(ledger.get("purchases",0)),int(ledger.get("seed_costs",0)),
+        int(ledger.get("wages",0)),int(ledger.get("net_recorded",0)),
+        state.sect.spirit_stones
+    ]
+
+func _eco06_market_text() -> String:
+    if state == null or not state.sect.economy_a_enabled:
+        return "Phường Thị chưa kích hoạt; chưa có doanh thu."
+    var econ := EconomySystem.new()
+    var ledger := econ.daily_market_cashflow(state)
+    return (
+        "Bán đã thu: +%d LT · Mua đã trả: -%d LT\n"
+        + "Hạn mức còn: bán %d · mua %d đơn vị. Quỹ: %d LT\n"
+        + "Chỉ hàng thật, chưa khóa và không dự trữ mới được bán; xem giá trước khi xác nhận."
+    ) % [
+        int(ledger.get("income",0)),int(ledger.get("purchases",0)),
+        econ.market_remaining(state),econ.market_buy_remaining(state),
+        state.sect.spirit_stones
+    ]
+
 func _build_economy_a_hall_controls() -> void:
     _add_management_section_label("KINH TẾ V1 · LINH THẠCH")
     if not state.sect.economy_a_enabled:
@@ -4400,18 +4436,13 @@ func _build_economy_a_hall_controls() -> void:
     summary.custom_minimum_size = Vector2(384,32)
     summary.add_theme_font_size_override("font_size",12)
     building_management_container.add_child(summary)
-    var cashflow := EconomySystem.new().daily_market_cashflow(state)
     var sources := Label.new()
     sources.name = "EconomyA_RealIncome"
-    sources.text = "Hôm nay: Phường Thị +%d LT · Linh Mạch +%d LT · mua -%d · gieo -%d · lương -%d LT" % [
-        int(cashflow.get("income",0)),int(cashflow.get("origin_income",0)),
-        int(cashflow.get("purchases",0)),int(cashflow.get("seed_costs",0)),
-        int(cashflow.get("wages",0))
-    ]
-    sources.tooltip_text = "Đối soát từ biên nhận thật: bán, Linh Mạch gộp, mua, gieo cây và lương đã trả. Chưa tính nâng cấp, chiêu mộ hoặc kỹ năng. Số dư Tông Môn trên là quỹ thực; không tự sinh tiền từ báo cáo."
-    sources.custom_minimum_size = Vector2(384,42)
+    sources.text = _eco06_cashflow_text()
+    sources.tooltip_text = "Sổ thu chi MỘT PHẦN: số liệu từ biên nhận thật theo ngày mô phỏng. Không phải lợi nhuận toàn bộ; không tự ghi tiền hay cộng mẻ chưa hoàn thành."
+    sources.custom_minimum_size = Vector2(480,112)
     sources.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-    sources.add_theme_font_size_override("font_size",11)
+    sources.add_theme_font_size_override("font_size",12)
     sources.add_theme_color_override("font_color",JADE_DARK)
     building_management_container.add_child(sources)
     # ECO-01: genuine Hall-owned rescue job, not a daily free-login claim.
@@ -4584,6 +4615,14 @@ func _build_economy_a_market_controls() -> void:
     quota.custom_minimum_size = Vector2(384,38)
     quota.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
     building_management_container.add_child(quota)
+    var market_summary := Label.new()
+    market_summary.name = "ECO06MarketSummary"
+    market_summary.text = _eco06_market_text()
+    market_summary.custom_minimum_size = Vector2(480,72)
+    market_summary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+    market_summary.add_theme_font_size_override("font_size",12)
+    market_summary.add_theme_color_override("font_color",JADE_DARK)
+    building_management_container.add_child(market_summary)
     var pending_sale: Dictionary = get_meta("eco02_pending_sale",{})
     for raw_id in EconomySystem.V2_MARKET_CATALOG:
         var resource_id := StringName(raw_id)
@@ -7313,7 +7352,7 @@ func _warehouse_operation_text() -> String:
         stocked_types,"\n".join(stock_lines),
         "\n".join(production_lines),
         storage_count, shop_count, equipped_count
-    ]
+    ] + ("\n\n" + _eco06_cashflow_text() if state.sect.economy_a_enabled else "")
 
 # GP-PLAY01/GP0: production visibility only. Never call an initializer
 # here: the canonical BuildingSystem/Scheduler owns migration, planting and
