@@ -107,7 +107,41 @@ func sx_v55_r12_work_snapshot(state: SimulationState, worker: DiscipleState,
     var tax := gross*tax_pct/100
     return {"version":1,"realm":realm,"minutes":duration,"plan_id":plan_id,
         "site":str(building_type),"gross":gross,"tax":tax,
-        "net":gross-tax,"wage":int(rate["wage_per_job"])}
+        "net":gross-tax,"wage":int(rate["wage_per_job"]),
+        "tax_pct":tax_pct}
+
+# ECO-04 reusable read-only arithmetic: never credits money or claims a
+# producer job. The optional QA entry point explores tax 0-100 without exposing
+# player tax controls or bypassing frozen real-job tax.
+func _r12_cash_split(gross: int, wage_floor: int, tax_pct: int,
+        sect_cash: int, worker_cash: int, reserve: int) -> Dictionary:
+    if gross <= 0 or gross > V2_MAX_STONES or wage_floor < 0 \
+            or tax_pct < 0 or tax_pct > 100 or sect_cash < 0 \
+            or worker_cash < 0 or reserve < 0:
+        return {"ok":false,"reason":"invalid_r12_cash_input"}
+    var topup_due := maxi(wage_floor-gross,0)
+    var topup_paid := mini(topup_due,maxi(0,sect_cash-reserve))
+    var taxable := gross+topup_paid
+    var tax := int(taxable*tax_pct/100)
+    var worker_net := taxable-tax
+    var sect_delta := tax-topup_paid
+    if taxable > V2_MAX_STONES or worker_cash > V2_MAX_STONES-worker_net \
+            or (sect_delta >= 0 and sect_cash > V2_MAX_STONES-sect_delta) \
+            or (sect_delta < 0 and sect_cash < -sect_delta):
+        return {"ok":false,"reason":"r12_money_overflow"}
+    return {"ok":true,"gross":gross,"tax":tax,"net":worker_net,
+        "taxable":taxable,"wage_floor":wage_floor,
+        "wage_due":topup_due,"wage_paid":topup_paid,"tax_pct":tax_pct,
+        "sect_delta":sect_delta}
+
+func sx_v55_r1_tax_preview_qa(minutes: int, tax_pct: int, sect_cash: int,
+        worker_cash: int = 0, reserve: int = 0) -> Dictionary:
+    # Math-only design laboratory; NOT an authorization, settlement or faucet.
+    if minutes < 1 or minutes > 1440:
+        return {"ok":false,"reason":"invalid_qa_duration"}
+    var rate: Dictionary = SX_V55_R12_RATES[1]
+    return _r12_cash_split(int(rate["gross_per_minute"])*minutes,
+        int(rate["wage_per_job"]),tax_pct,sect_cash,worker_cash,reserve)
 
 # Preview must be approved BEFORE Warehouse credit, so overflow or malformed
 # saved snapshots cannot create a product while its money receipt is rejected.
@@ -134,30 +168,21 @@ func sx_v55_r12_can_settle(state: SimulationState, worker: DiscipleState,
     var tax_pct := int(SX_V55_R12_TAX[site])
     var gross_tax := gross*tax_pct/100
     var wage_floor := int(rate.get("wage_per_job",0))
+    # Legacy in-flight snapshots have no tax_pct, so preserve their ORIGINAL
+    # fixed-base policy, not a new runtime migration or surprise withholding.
     if int(snapshot.get("gross",-1)) != gross or int(snapshot.get("tax",-1)) != gross_tax \
             or int(snapshot.get("net",-1)) != gross-gross_tax \
-            or int(snapshot.get("wage",-1)) != wage_floor:
+            or int(snapshot.get("wage",-1)) != wage_floor \
+            or int(snapshot.get("tax_pct",tax_pct)) != tax_pct:
         return {"ok":false,"reason":"tampered_r12_work_value"}
-    if gross <= 0 or gross > V2_MAX_STONES:
-        return {"ok":false,"reason":"r12_money_overflow"}
-    var topup_due := maxi(wage_floor-gross,0)
     var reserve := maxi(0,int(state.sect.economy_a_policy.get("sect_pay_reserve",0)))
-    var affordable_topup := maxi(0,state.sect.spirit_stones-reserve)
-    var topup_paid := mini(topup_due,affordable_topup)
-    # Design workbook 08_SoCaiT2W2 taxes LT2 + ACTUALLY PAID topup.
-    var taxable := gross+topup_paid
-    var tax := taxable*tax_pct/100
-    var worker_net := taxable-tax
-    var sect_delta := tax-topup_paid
-    if taxable > V2_MAX_STONES \
-            or worker_net < 0 or worker.spirit_stones > V2_MAX_STONES-worker_net \
-            or (sect_delta >= 0 and state.sect.spirit_stones > V2_MAX_STONES-sect_delta) \
-            or (sect_delta < 0 and state.sect.spirit_stones < -sect_delta):
-        return {"ok":false,"reason":"r12_money_overflow"}
-    return {"ok":true,"gross":gross,"tax":tax,"net":worker_net,
-        "taxable":taxable,"wage_floor":wage_floor,
-        "wage_due":topup_due,"wage_paid":topup_paid,
-        "realm":realm,"minutes":minutes}
+    var verdict := _r12_cash_split(gross,wage_floor,tax_pct,
+        state.sect.spirit_stones,worker.spirit_stones,reserve)
+    if not bool(verdict.get("ok",false)):
+        return verdict
+    verdict["realm"] = realm
+    verdict["minutes"] = minutes
+    return verdict
 
 # Called only after actual Warehouse deposit has succeeded. All money remains
 # in existing Sect/Disciple accounts; W2 is a real Sect-funded shortfall only.
@@ -177,7 +202,8 @@ func sx_v55_r12_settle(state: SimulationState, worker: DiscipleState,
         "plan_id":str(snapshot["plan_id"]),"site":str(snapshot["site"]),
         "realm":int(verdict["realm"]),"minutes":int(verdict["minutes"]),
         "gross":int(verdict["gross"]),"taxable":int(verdict["taxable"]),
-        "tax":tax,"net":net,"w2_floor":int(verdict["wage_floor"]),"tick":state.tick
+        "tax":tax,"net":net,"tax_pct":int(verdict["tax_pct"]),
+        "w2_floor":int(verdict["wage_floor"]),"tick":state.tick
     }
     # Old wage arrears tooling reads due/paid from the SAME receipt family.
     # Long jobs with gross >= floor correctly have due=0 and NO phantom debt.
@@ -295,8 +321,37 @@ func pay_work_wage_arrears(state: SimulationState, request_id: String) -> Dictio
     var reserve := maxi(0,int(state.sect.economy_a_policy.get("sect_pay_reserve",0)))
     var available := maxi(0,state.sect.spirit_stones-reserve)
     var entries: Array = unpaid_work_wages(state).get("entries",[])
+    # ECO-04: preflight ALL r1/r2 W2 rows before changing ANY wallet.
+    # Old Economy-A wage arrears have no W2 evidence and retain full payment.
+    var r12_contexts: Dictionary = {}
+    for item in entries:
+        var wage_id := str(item.get("wage_receipt_id",""))
+        var original = state.sect.economy_a_receipts.get(wage_id,{})
+        if not (original is Dictionary):
+            return {"ok":false,"reason":"invalid_wage_receipt"}
+        if not original.has("w2_floor"):
+            continue
+        var job_id := str(original.get("job_id",""))
+        var income = state.sect.economy_a_receipts.get("sxv55-work:"+job_id,{})
+        if not (income is Dictionary) or str(income.get("kind","")) != "sx_v55_work_income" \
+                or str(income.get("job_id","")) != job_id \
+                or str(income.get("worker_id","")) != str(item.get("worker_id","")) \
+                or int(income.get("gross",-1)) != int(original.get("gross",-2)) \
+                or int(original.get("due",-1)) != maxi(
+                    int(original.get("w2_floor",0))-int(original.get("gross",0)),0):
+            return {"ok":false,"reason":"unverified_r12_wage_arrears"}
+        var site := str(income.get("site",""))
+        if not SX_V55_R12_TAX.has(site):
+            return {"ok":false,"reason":"unverified_r12_tax_site"}
+        var pct := int(income.get("tax_pct",SX_V55_R12_TAX[site]))
+        if pct < 0 or pct > 100:
+            return {"ok":false,"reason":"invalid_r12_tax_percent"}
+        r12_contexts[wage_id] = {"gross":int(original.get("gross",0)),
+            "due":int(original.get("due",0)),"tax_pct":pct}
     var paid_lines: Array = []
     var spent := 0
+    var cleared := 0
+    var withheld := 0
     for item in entries:
         if available <= 0:
             break
@@ -308,16 +363,32 @@ func pay_work_wage_arrears(state: SimulationState, request_id: String) -> Dictio
         var payment := mini(int(item.get("remaining",0)),mini(available,room))
         if payment <= 0:
             continue
-        available -= payment
-        spent += payment
-        worker.spirit_stones += payment
-        paid_lines.append({"wage_receipt_id":str(item.get("wage_receipt_id","")),
-            "worker_id":str(worker_id),"paid":payment})
-    if spent <= 0:
+        var wage_id := str(item.get("wage_receipt_id",""))
+        var tax_on_late_w2 := 0
+        if r12_contexts.has(wage_id):
+            var r12: Dictionary = r12_contexts[wage_id]
+            # Tax on actual funded topup, with cumulative rounding:
+            # splitting 1000 LT into 1-LT requests cannot evade T2.
+            var gross := int(r12["gross"])
+            var already_funded := int(r12["due"])-int(item.get("remaining",0))
+            var pct := int(r12["tax_pct"])
+            tax_on_late_w2 = int((gross+already_funded+payment)*pct/100) \
+                -int((gross+already_funded)*pct/100)
+        var net_paid := payment-tax_on_late_w2
+        available -= payment # Funding must exist for gross W2 liability.
+        cleared += payment
+        withheld += tax_on_late_w2
+        spent += net_paid
+        worker.spirit_stones += net_paid
+        paid_lines.append({"wage_receipt_id":wage_id,
+            "worker_id":str(worker_id),"paid":payment,
+            "net_paid":net_paid,"tax_withheld":tax_on_late_w2})
+    if cleared <= 0:
         return {"ok":false,"reason":"no_payable_arrears_or_funds"}
     state.sect.spirit_stones -= spent
     var receipt := {"kind":"wage_arrears_payment","request_id":request_id,
-        "paid":spent,"lines":paid_lines,"tick":state.tick}
+        "paid":spent,"gross_cleared":cleared,"tax_withheld":withheld,
+        "lines":paid_lines,"tick":state.tick}
     state.sect.economy_a_receipts[receipt_id] = receipt
     state.sect.economy_a_event_count += 1
     return {"ok":true,"already_settled":false,"receipt":receipt.duplicate(true)}
