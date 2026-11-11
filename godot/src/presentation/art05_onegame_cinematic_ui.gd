@@ -8,10 +8,18 @@ const ART05_MUTE := Color(0.73,0.82,0.78)
 const ART05_DEEP := Color(0.025,0.09,0.108)
 const ART05_JADE := Color(0.08,0.205,0.216)
 const ART05_FRAME = preload("res://src/presentation/uiux/sect_premium_panel_v1.gd")
+const ART06_WORLD = preload("res://src/presentation/uiux/sect_world_atmosphere_v1.gd")
 
 func _ready() -> void:
     super._ready()
     _art05_style_global_hud()
+    var aura := ART06_WORLD.new()
+    aura.name = "Art06WorldAtmosphere"
+    aura.position = Vector2(0,72)
+    aura.size = Vector2(415,565)
+    aura.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    aura.z_index = 4
+    add_child(aura)
 
 func _art05_style_global_hud() -> void:
     var bottom := get_node_or_null("PlayerBottomBar") as Panel
@@ -143,6 +151,12 @@ func _art05_reflow() -> void:
         for metric in building_operation_metrics.get_children():
             if metric is Control:
                 metric.custom_minimum_size.x = target
+                var value := metric.find_child("MetricValue",true,false) as Label
+                if value != null:
+                    value.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+                    value.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
+                    value.max_lines_visible = 2
+                    value.add_theme_font_size_override("font_size",14)
     var frame := building_operation_panel.get_node_or_null("BuildingOperationArtFrame") as Panel
     if frame != null:
         frame.position = Vector2(16,145)
@@ -225,6 +239,10 @@ func _art05_tint() -> void:
     if frame != null:
         frame.set("accent",accent)
         frame.queue_redraw()
+    var aura := get_node_or_null("Art06WorldAtmosphere") as Control
+    if aura != null:
+        aura.set("accent",accent)
+        aura.set("job_active",_art02_working_now())
     if building_operation_scroll != null:
         _art05_style_content_tree(building_operation_scroll)
     if building_operation_live_content != null:
@@ -249,7 +267,7 @@ func _art05_style_content_tree(node: Node) -> void:
             var button := child as Button
             button.custom_minimum_size.x = minf(button.custom_minimum_size.x,338.0)
             button.clip_text = true
-            if button.text.begins_with("+ Xây thêm ") and button.text.length() > 32:
+            if button.text.contains("Xây thêm") and button.text.length() > 22:
                 button.tooltip_text = button.text
                 button.text = "＋ Xây thêm công trình"
             button.add_theme_font_size_override("font_size",maxi(12,button.get_theme_font_size("font_size")))

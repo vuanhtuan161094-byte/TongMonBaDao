@@ -12,6 +12,7 @@ func _run() -> void:
     for i in range(10):
         await process_frame
     assert(bool(game.get("runtime_ready")),"Canonical state not initialized")
+    assert(game.find_child("Art06WorldAtmosphere",true,false) != null,"World ambient visual is not present")
     var checked := 0
     for destination in [
         SectMapPresentation.DEST_MAIN_HALL,
