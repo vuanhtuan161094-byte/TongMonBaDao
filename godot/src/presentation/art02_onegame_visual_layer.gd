@@ -3,13 +3,30 @@ extends "res://src/presentation/p3_2_landscape_sect.gd"
 ## Deliberately avoids editing SaveService, BuildingSystem, Warehouse and combat.
 const ITEM_ART = preload("res://src/presentation/uiux/sect_item_visual_v1.gd")
 const ROOM_ART = preload("res://src/presentation/uiux/sect_facility_ambient_v1.gd")
+const PANEL_ORNAMENT = preload("res://src/presentation/uiux/sect_operation_ornament_v1.gd")
 const ART_GOLD := Color(0.95,0.75,0.43,1.0)
 const ART_JADE := Color(0.30,0.84,0.68,1.0)
 const ART_PURPLE := Color(0.72,0.51,0.96,1.0)
 const ART_TRACK := Color(0.07,0.13,0.16,0.94)
 
+func _build_building_operation_panel() -> void:
+    super._build_building_operation_panel()
+    if building_operation_panel == null:
+        return
+    var ornament := PANEL_ORNAMENT.new()
+    ornament.name = "Art04CultivationFrame"
+    ornament.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+    ornament.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    building_operation_panel.add_child(ornament)
+    building_operation_panel.move_child(ornament,0)
+
 func _refresh_building_operation_art() -> void:
     super._refresh_building_operation_art()
+    if building_operation_panel != null:
+        var ornament := building_operation_panel.get_node_or_null("Art04CultivationFrame") as Control
+        if ornament != null and str(ornament.get("facility_kind")) != str(selected_building):
+            ornament.set("facility_kind",str(selected_building))
+            ornament.queue_redraw()
     if building_operation_panel == null:
         return
     var host := building_operation_panel.get_node_or_null("BuildingOperationArtFrame/BuildingOperationArt") as Control
