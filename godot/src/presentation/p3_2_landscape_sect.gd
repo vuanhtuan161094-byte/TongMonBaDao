@@ -4412,6 +4412,53 @@ func _build_economy_a_hall_controls() -> void:
     sources.add_theme_font_size_override("font_size",11)
     sources.add_theme_color_override("font_color",JADE_DARK)
     building_management_container.add_child(sources)
+    # ECO-01: genuine Hall-owned rescue job, not a daily free-login claim.
+    var vein := Eco01OriginVein.new()
+    var vein_state := vein.snapshot(state)
+    var vein_title := Label.new()
+    vein_title.name = "ECO01OriginVeinStatus"
+    if bool(vein_state.get("busy",false)):
+        vein_title.text = "LINH MẠCH KHỞI NGUYÊN · +1.000 LT gộp\\nĐang khai thác · còn %d phút" % int(vein_state.get("remaining_ticks",0))
+    elif bool(vein_state.get("ready",false)):
+        vein_title.text = "LINH MẠCH KHỞI NGUYÊN · Miễn phí · 60 phút\\n+1.000 LT gộp / Tông Môn · 1 lần mỗi 1.440 phút"
+    else:
+        vein_title.text = "LINH MẠCH KHỞI NGUYÊN · Đã nhận\\nCòn %d phút tới lượt tiếp theo" % int(vein_state.get("remaining_ticks",0))
+    vein_title.custom_minimum_size = Vector2(384,48)
+    vein_title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+    vein_title.add_theme_font_size_override("font_size",12)
+    building_management_container.add_child(vein_title)
+    if bool(vein_state.get("busy",false)):
+        var cancel_vein := Button.new()
+        cancel_vein.name = "ECO01OriginVeinCancel"
+        cancel_vein.text = "Hủy khai thác · Không nhận LT"
+        cancel_vein.custom_minimum_size = Vector2(384,34)
+        cancel_vein.pressed.connect(Callable(self,"_eco01_cancel_from_ui").bind(
+            StringName(str(vein_state.get("worker_id",""))),
+            str(vein_state.get("job_id",""))))
+        building_management_container.add_child(cancel_vein)
+    elif bool(vein_state.get("ready",false)):
+        var eligible := vein.eligible_workers(state)
+        var choose := OptionButton.new()
+        choose.name = "ECO01OriginVeinWorker"
+        choose.custom_minimum_size = Vector2(384,34)
+        var entry_index := 0
+        for id in eligible:
+            var actor: DiscipleState = state.disciples[id]
+            choose.add_item(actor.display_name)
+            choose.set_item_metadata(entry_index,str(id))
+            entry_index += 1
+        if eligible.is_empty():
+            choose.add_item("Chưa có đệ tử rảnh tại Tông Môn")
+            choose.disabled = true
+        building_management_container.add_child(choose)
+        var begin_vein := Button.new()
+        begin_vein.name = "ECO01OriginVeinStart"
+        begin_vein.text = "Khai thác Linh Mạch · Miễn phí"
+        begin_vein.custom_minimum_size = Vector2(384,36)
+        begin_vein.disabled = eligible.is_empty()
+        begin_vein.tooltip_text = "Một đệ tử rảnh, mẻ 60 phút mô phỏng. Nhận 1.000 Linh Thạch gộp sau hoàn thành; lương được chuyển từ tiền thật. Không cần NPC, không nhân theo số đệ tử."
+        begin_vein.pressed.connect(Callable(self,"_eco01_start_selected_from_ui").bind(choose))
+        building_management_container.add_child(begin_vein)
     var bulk_ready := BuildingSystem.new().sx_v55_bulk_enabled(state)
     var bulk_button := Button.new()
     bulk_button.name = "SXV55_EnableBulk"
@@ -4444,6 +4491,27 @@ func _build_economy_a_hall_controls() -> void:
     spending_limit.custom_minimum_size = Vector2(384,36)
     spending_limit.pressed.connect(_economy_a_cycle_spend_limit_from_ui)
     building_management_container.add_child(spending_limit)
+
+func _eco01_start_selected_from_ui(choose: OptionButton) -> void:
+    if choose == null or choose.selected < 0 or choose.disabled:
+        return
+    var worker := StringName(str(choose.get_item_metadata(choose.selected)))
+    var result := Eco01OriginVein.new().start(state,worker)
+    if bool(result.get("ok",false)):
+        building_management_feedback = "Linh Mạch đã nhận việc thật · hoàn thành sau 60 phút mô phỏng."
+        _autosave_runtime()
+    else:
+        building_management_feedback = "Chưa thể khai thác Linh Mạch: " + str(result.get("reason","không hợp lệ"))
+    _refresh_building_operation_content()
+
+func _eco01_cancel_from_ui(worker_id: StringName, job_id: String) -> void:
+    var result := Eco01OriginVein.new().cancel(state,worker_id,job_id)
+    if bool(result.get("ok",false)):
+        building_management_feedback = "Đã hủy mẻ Linh Mạch chưa hoàn thành · không sinh Linh Thạch."
+        _autosave_runtime()
+    else:
+        building_management_feedback = "Không thể hủy Linh Mạch: " + str(result.get("reason","không hợp lệ"))
+    _refresh_building_operation_content()
 
 func _sx_v55_enable_bulk_from_ui() -> void:
     var result := BuildingSystem.new().sx_v55_enable_bulk(state)
