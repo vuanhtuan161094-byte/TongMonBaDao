@@ -2,10 +2,10 @@
   "schema_version": 1,
   "design": "v6.3-v6.4",
   "enabled": false,
-  "release_status": "S2_BLADE_CANDIDATE_GATED_S1_RETAINED",
-  "school_count": 5,
-  "branch_count": 15,
-  "skill_family_count": 175,
+  "release_status": "S3_SPEAR_CANDIDATE_GATED_S1_S2_RETAINED",
+  "school_count": 6,
+  "branch_count": 18,
+  "skill_family_count": 210,
   "boss_count": 9,
   "schools": [
     {
@@ -27,6 +27,11 @@
     {
       "id": "blade",
       "name": "Đao"
+    },
+    {
+      "id": "spear",
+      "name": "Thương",
+      "candidate_source_status": "SOURCE_PENDING"
     }
   ],
   "paths": [
@@ -278,6 +283,36 @@
         "b": "Hồi Sơn có thể chọn đồng đội yếu máu trong cùng đội hình. Phản lực bị chặn ở tỷ lệ tối đa và chỉ tính phần đã được phòng thủ thật sự ngăn."
       },
       "ai_profile": "INHERITED_RUNTIME_POLICY_CANDIDATE"
+    },
+    {
+      "id": "tmb.path.spear.pha_tran_thuong",
+      "school": "spear",
+      "name": "Phá Trận Thương",
+      "lineages": {
+        "a": "Khai Lộ",
+        "b": "Phá Giáp"
+      },
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.path.spear.long_thuong",
+      "school": "spear",
+      "name": "Long Thương",
+      "lineages": {
+        "a": "Vân Long",
+        "b": "Lưu Thủy"
+      },
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.path.spear.ho_quan_thuong",
+      "school": "spear",
+      "name": "Hộ Quân Thương",
+      "lineages": {
+        "a": "Liên Trận",
+        "b": "Trấn Tuyến"
+      },
+      "candidate_source_status": "SOURCE_PENDING"
     }
   ],
   "families": [
@@ -7576,6 +7611,1637 @@
           "school": "blade"
         }
       ]
+    },
+    {
+      "id": "tmb.skill.spear.basic",
+      "school": "spear",
+      "branch": "",
+      "slot": "basic",
+      "name": "Thương Thức Khai Môn",
+      "nodes": [
+        {
+          "id": "tmb.skill.spear.basic.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.basic.immortal.base",
+          "tier": "immortal",
+          "lineage": "base",
+          "parent": "tmb.skill.spear.basic.human",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.basic.divine.base",
+          "tier": "divine",
+          "lineage": "base",
+          "parent": "tmb.skill.spear.basic.immortal.base",
+          "school": "spear"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.spear.mobility",
+      "school": "spear",
+      "branch": "",
+      "slot": "mobility",
+      "name": "Bộ Pháp Tầm Phong",
+      "nodes": [
+        {
+          "id": "tmb.skill.spear.mobility.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.mobility.immortal.base",
+          "tier": "immortal",
+          "lineage": "base",
+          "parent": "tmb.skill.spear.mobility.human",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.mobility.divine.base",
+          "tier": "divine",
+          "lineage": "base",
+          "parent": "tmb.skill.spear.mobility.immortal.base",
+          "school": "spear"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.spear.pha_tran_thuong.active_01",
+      "school": "spear",
+      "branch": "pha_tran_thuong",
+      "slot": "active",
+      "name": "Khai Lộ Xuyên Trận",
+      "nodes": [
+        {
+          "id": "tmb.skill.spear.pha_tran_thuong.active_01.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.pha_tran_thuong.active_01.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.spear.pha_tran_thuong.active_01.human",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.pha_tran_thuong.active_01.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.spear.pha_tran_thuong.active_01.human",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.pha_tran_thuong.active_01.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.spear.pha_tran_thuong.active_01.immortal.a",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.pha_tran_thuong.active_01.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.spear.pha_tran_thuong.active_01.immortal.b",
+          "school": "spear"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.spear.pha_tran_thuong.active_02",
+      "school": "spear",
+      "branch": "pha_tran_thuong",
+      "slot": "active",
+      "name": "Thiết Mạch Phá Giáp",
+      "nodes": [
+        {
+          "id": "tmb.skill.spear.pha_tran_thuong.active_02.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.pha_tran_thuong.active_02.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.spear.pha_tran_thuong.active_02.human",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.pha_tran_thuong.active_02.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.spear.pha_tran_thuong.active_02.human",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.pha_tran_thuong.active_02.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.spear.pha_tran_thuong.active_02.immortal.a",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.pha_tran_thuong.active_02.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.spear.pha_tran_thuong.active_02.immortal.b",
+          "school": "spear"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.spear.pha_tran_thuong.active_03",
+      "school": "spear",
+      "branch": "pha_tran_thuong",
+      "slot": "active",
+      "name": "Trường Phong Đoạt Tiêu",
+      "nodes": [
+        {
+          "id": "tmb.skill.spear.pha_tran_thuong.active_03.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.pha_tran_thuong.active_03.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.spear.pha_tran_thuong.active_03.human",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.pha_tran_thuong.active_03.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.spear.pha_tran_thuong.active_03.human",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.pha_tran_thuong.active_03.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.spear.pha_tran_thuong.active_03.immortal.a",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.pha_tran_thuong.active_03.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.spear.pha_tran_thuong.active_03.immortal.b",
+          "school": "spear"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.spear.pha_tran_thuong.active_04",
+      "school": "spear",
+      "branch": "pha_tran_thuong",
+      "slot": "active",
+      "name": "Hồi Mã Chấn Quan",
+      "nodes": [
+        {
+          "id": "tmb.skill.spear.pha_tran_thuong.active_04.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.pha_tran_thuong.active_04.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.spear.pha_tran_thuong.active_04.human",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.pha_tran_thuong.active_04.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.spear.pha_tran_thuong.active_04.human",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.pha_tran_thuong.active_04.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.spear.pha_tran_thuong.active_04.immortal.a",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.pha_tran_thuong.active_04.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.spear.pha_tran_thuong.active_04.immortal.b",
+          "school": "spear"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.spear.pha_tran_thuong.ultimate",
+      "school": "spear",
+      "branch": "pha_tran_thuong",
+      "slot": "ultimate",
+      "name": "Nhất Thương Phá Vạn Quân",
+      "nodes": [
+        {
+          "id": "tmb.skill.spear.pha_tran_thuong.ultimate.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.pha_tran_thuong.ultimate.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.spear.pha_tran_thuong.ultimate.human",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.pha_tran_thuong.ultimate.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.spear.pha_tran_thuong.ultimate.human",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.pha_tran_thuong.ultimate.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.spear.pha_tran_thuong.ultimate.immortal.a",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.pha_tran_thuong.ultimate.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.spear.pha_tran_thuong.ultimate.immortal.b",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.pha_tran_thuong.ultimate.rare.a",
+          "tier": "rare_divine",
+          "lineage": "a",
+          "parent": "tmb.skill.spear.pha_tran_thuong.ultimate.divine.a",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.pha_tran_thuong.ultimate.rare.b",
+          "tier": "rare_divine",
+          "lineage": "b",
+          "parent": "tmb.skill.spear.pha_tran_thuong.ultimate.divine.b",
+          "school": "spear"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.spear.pha_tran_thuong.passive_01",
+      "school": "spear",
+      "branch": "pha_tran_thuong",
+      "slot": "passive",
+      "name": "Tĩnh Tâm Giữ Tuyến",
+      "nodes": [
+        {
+          "id": "tmb.skill.spear.pha_tran_thuong.passive_01.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.pha_tran_thuong.passive_01.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.spear.pha_tran_thuong.passive_01.human",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.pha_tran_thuong.passive_01.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.spear.pha_tran_thuong.passive_01.human",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.pha_tran_thuong.passive_01.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.spear.pha_tran_thuong.passive_01.immortal.a",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.pha_tran_thuong.passive_01.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.spear.pha_tran_thuong.passive_01.immortal.b",
+          "school": "spear"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.spear.pha_tran_thuong.passive_02",
+      "school": "spear",
+      "branch": "pha_tran_thuong",
+      "slot": "passive",
+      "name": "Thiết Cốt Định Thế",
+      "nodes": [
+        {
+          "id": "tmb.skill.spear.pha_tran_thuong.passive_02.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.pha_tran_thuong.passive_02.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.spear.pha_tran_thuong.passive_02.human",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.pha_tran_thuong.passive_02.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.spear.pha_tran_thuong.passive_02.human",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.pha_tran_thuong.passive_02.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.spear.pha_tran_thuong.passive_02.immortal.a",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.pha_tran_thuong.passive_02.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.spear.pha_tran_thuong.passive_02.immortal.b",
+          "school": "spear"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.spear.pha_tran_thuong.passive_03",
+      "school": "spear",
+      "branch": "pha_tran_thuong",
+      "slot": "passive",
+      "name": "Trường Kình Dư Lực",
+      "nodes": [
+        {
+          "id": "tmb.skill.spear.pha_tran_thuong.passive_03.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.pha_tran_thuong.passive_03.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.spear.pha_tran_thuong.passive_03.human",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.pha_tran_thuong.passive_03.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.spear.pha_tran_thuong.passive_03.human",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.pha_tran_thuong.passive_03.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.spear.pha_tran_thuong.passive_03.immortal.a",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.pha_tran_thuong.passive_03.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.spear.pha_tran_thuong.passive_03.immortal.b",
+          "school": "spear"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.spear.pha_tran_thuong.passive_04",
+      "school": "spear",
+      "branch": "pha_tran_thuong",
+      "slot": "passive",
+      "name": "Quan Môn Bất Loạn",
+      "nodes": [
+        {
+          "id": "tmb.skill.spear.pha_tran_thuong.passive_04.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.pha_tran_thuong.passive_04.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.spear.pha_tran_thuong.passive_04.human",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.pha_tran_thuong.passive_04.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.spear.pha_tran_thuong.passive_04.human",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.pha_tran_thuong.passive_04.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.spear.pha_tran_thuong.passive_04.immortal.a",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.pha_tran_thuong.passive_04.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.spear.pha_tran_thuong.passive_04.immortal.b",
+          "school": "spear"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.spear.pha_tran_thuong.passive_05",
+      "school": "spear",
+      "branch": "pha_tran_thuong",
+      "slot": "passive",
+      "name": "Phá Trận Chân Ý",
+      "nodes": [
+        {
+          "id": "tmb.skill.spear.pha_tran_thuong.passive_05.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.pha_tran_thuong.passive_05.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.spear.pha_tran_thuong.passive_05.human",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.pha_tran_thuong.passive_05.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.spear.pha_tran_thuong.passive_05.human",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.pha_tran_thuong.passive_05.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.spear.pha_tran_thuong.passive_05.immortal.a",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.pha_tran_thuong.passive_05.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.spear.pha_tran_thuong.passive_05.immortal.b",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.pha_tran_thuong.passive_05.rare_passive.a",
+          "tier": "divine",
+          "lineage": "rare_a",
+          "parent": "tmb.skill.spear.pha_tran_thuong.passive_05.divine.a",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.pha_tran_thuong.passive_05.rare_passive.b",
+          "tier": "divine",
+          "lineage": "rare_b",
+          "parent": "tmb.skill.spear.pha_tran_thuong.passive_05.divine.b",
+          "school": "spear"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.spear.pha_tran_thuong.innate",
+      "school": "spear",
+      "branch": "pha_tran_thuong",
+      "slot": "innate",
+      "name": "Khai Lộ Bản Tâm",
+      "nodes": [
+        {
+          "id": "tmb.skill.spear.pha_tran_thuong.innate.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.pha_tran_thuong.innate.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.spear.pha_tran_thuong.innate.human",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.pha_tran_thuong.innate.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.spear.pha_tran_thuong.innate.human",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.pha_tran_thuong.innate.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.spear.pha_tran_thuong.innate.immortal.a",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.pha_tran_thuong.innate.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.spear.pha_tran_thuong.innate.immortal.b",
+          "school": "spear"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.spear.long_thuong.active_01",
+      "school": "spear",
+      "branch": "long_thuong",
+      "slot": "active",
+      "name": "Vân Long Điểm Thủy",
+      "nodes": [
+        {
+          "id": "tmb.skill.spear.long_thuong.active_01.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.long_thuong.active_01.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.spear.long_thuong.active_01.human",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.long_thuong.active_01.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.spear.long_thuong.active_01.human",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.long_thuong.active_01.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.spear.long_thuong.active_01.immortal.a",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.long_thuong.active_01.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.spear.long_thuong.active_01.immortal.b",
+          "school": "spear"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.spear.long_thuong.active_02",
+      "school": "spear",
+      "branch": "long_thuong",
+      "slot": "active",
+      "name": "Long Ảnh Xuyên Vân",
+      "nodes": [
+        {
+          "id": "tmb.skill.spear.long_thuong.active_02.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.long_thuong.active_02.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.spear.long_thuong.active_02.human",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.long_thuong.active_02.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.spear.long_thuong.active_02.human",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.long_thuong.active_02.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.spear.long_thuong.active_02.immortal.a",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.long_thuong.active_02.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.spear.long_thuong.active_02.immortal.b",
+          "school": "spear"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.spear.long_thuong.active_03",
+      "school": "spear",
+      "branch": "long_thuong",
+      "slot": "active",
+      "name": "Lưu Thủy Hồi Phong",
+      "nodes": [
+        {
+          "id": "tmb.skill.spear.long_thuong.active_03.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.long_thuong.active_03.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.spear.long_thuong.active_03.human",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.long_thuong.active_03.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.spear.long_thuong.active_03.human",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.long_thuong.active_03.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.spear.long_thuong.active_03.immortal.a",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.long_thuong.active_03.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.spear.long_thuong.active_03.immortal.b",
+          "school": "spear"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.spear.long_thuong.active_04",
+      "school": "spear",
+      "branch": "long_thuong",
+      "slot": "active",
+      "name": "Thương Hải Quy Nhất",
+      "nodes": [
+        {
+          "id": "tmb.skill.spear.long_thuong.active_04.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.long_thuong.active_04.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.spear.long_thuong.active_04.human",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.long_thuong.active_04.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.spear.long_thuong.active_04.human",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.long_thuong.active_04.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.spear.long_thuong.active_04.immortal.a",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.long_thuong.active_04.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.spear.long_thuong.active_04.immortal.b",
+          "school": "spear"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.spear.long_thuong.ultimate",
+      "school": "spear",
+      "branch": "long_thuong",
+      "slot": "ultimate",
+      "name": "Cửu Long Liệt Không",
+      "nodes": [
+        {
+          "id": "tmb.skill.spear.long_thuong.ultimate.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.long_thuong.ultimate.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.spear.long_thuong.ultimate.human",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.long_thuong.ultimate.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.spear.long_thuong.ultimate.human",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.long_thuong.ultimate.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.spear.long_thuong.ultimate.immortal.a",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.long_thuong.ultimate.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.spear.long_thuong.ultimate.immortal.b",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.long_thuong.ultimate.rare.a",
+          "tier": "rare_divine",
+          "lineage": "a",
+          "parent": "tmb.skill.spear.long_thuong.ultimate.divine.a",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.long_thuong.ultimate.rare.b",
+          "tier": "rare_divine",
+          "lineage": "b",
+          "parent": "tmb.skill.spear.long_thuong.ultimate.divine.b",
+          "school": "spear"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.spear.long_thuong.passive_01",
+      "school": "spear",
+      "branch": "long_thuong",
+      "slot": "passive",
+      "name": "Vân Tức Điều Tức",
+      "nodes": [
+        {
+          "id": "tmb.skill.spear.long_thuong.passive_01.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.long_thuong.passive_01.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.spear.long_thuong.passive_01.human",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.long_thuong.passive_01.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.spear.long_thuong.passive_01.human",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.long_thuong.passive_01.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.spear.long_thuong.passive_01.immortal.a",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.long_thuong.passive_01.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.spear.long_thuong.passive_01.immortal.b",
+          "school": "spear"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.spear.long_thuong.passive_02",
+      "school": "spear",
+      "branch": "long_thuong",
+      "slot": "passive",
+      "name": "Long Mạch Thuận Hành",
+      "nodes": [
+        {
+          "id": "tmb.skill.spear.long_thuong.passive_02.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.long_thuong.passive_02.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.spear.long_thuong.passive_02.human",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.long_thuong.passive_02.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.spear.long_thuong.passive_02.human",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.long_thuong.passive_02.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.spear.long_thuong.passive_02.immortal.a",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.long_thuong.passive_02.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.spear.long_thuong.passive_02.immortal.b",
+          "school": "spear"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.spear.long_thuong.passive_03",
+      "school": "spear",
+      "branch": "long_thuong",
+      "slot": "passive",
+      "name": "Thủy Kính Phản Chiếu",
+      "nodes": [
+        {
+          "id": "tmb.skill.spear.long_thuong.passive_03.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.long_thuong.passive_03.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.spear.long_thuong.passive_03.human",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.long_thuong.passive_03.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.spear.long_thuong.passive_03.human",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.long_thuong.passive_03.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.spear.long_thuong.passive_03.immortal.a",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.long_thuong.passive_03.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.spear.long_thuong.passive_03.immortal.b",
+          "school": "spear"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.spear.long_thuong.passive_04",
+      "school": "spear",
+      "branch": "long_thuong",
+      "slot": "passive",
+      "name": "Hồi Phong Tụ Khí",
+      "nodes": [
+        {
+          "id": "tmb.skill.spear.long_thuong.passive_04.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.long_thuong.passive_04.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.spear.long_thuong.passive_04.human",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.long_thuong.passive_04.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.spear.long_thuong.passive_04.human",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.long_thuong.passive_04.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.spear.long_thuong.passive_04.immortal.a",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.long_thuong.passive_04.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.spear.long_thuong.passive_04.immortal.b",
+          "school": "spear"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.spear.long_thuong.passive_05",
+      "school": "spear",
+      "branch": "long_thuong",
+      "slot": "passive",
+      "name": "Cửu Long Tâm Pháp",
+      "nodes": [
+        {
+          "id": "tmb.skill.spear.long_thuong.passive_05.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.long_thuong.passive_05.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.spear.long_thuong.passive_05.human",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.long_thuong.passive_05.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.spear.long_thuong.passive_05.human",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.long_thuong.passive_05.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.spear.long_thuong.passive_05.immortal.a",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.long_thuong.passive_05.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.spear.long_thuong.passive_05.immortal.b",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.long_thuong.passive_05.rare_passive.a",
+          "tier": "divine",
+          "lineage": "rare_a",
+          "parent": "tmb.skill.spear.long_thuong.passive_05.divine.a",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.long_thuong.passive_05.rare_passive.b",
+          "tier": "divine",
+          "lineage": "rare_b",
+          "parent": "tmb.skill.spear.long_thuong.passive_05.divine.b",
+          "school": "spear"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.spear.long_thuong.innate",
+      "school": "spear",
+      "branch": "long_thuong",
+      "slot": "innate",
+      "name": "Long Tức Nhập Mạch",
+      "nodes": [
+        {
+          "id": "tmb.skill.spear.long_thuong.innate.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.long_thuong.innate.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.spear.long_thuong.innate.human",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.long_thuong.innate.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.spear.long_thuong.innate.human",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.long_thuong.innate.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.spear.long_thuong.innate.immortal.a",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.long_thuong.innate.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.spear.long_thuong.innate.immortal.b",
+          "school": "spear"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.spear.ho_quan_thuong.active_01",
+      "school": "spear",
+      "branch": "ho_quan_thuong",
+      "slot": "active",
+      "name": "Liên Trận Hộ Tâm",
+      "nodes": [
+        {
+          "id": "tmb.skill.spear.ho_quan_thuong.active_01.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.ho_quan_thuong.active_01.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.spear.ho_quan_thuong.active_01.human",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.ho_quan_thuong.active_01.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.spear.ho_quan_thuong.active_01.human",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.ho_quan_thuong.active_01.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.spear.ho_quan_thuong.active_01.immortal.a",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.ho_quan_thuong.active_01.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.spear.ho_quan_thuong.active_01.immortal.b",
+          "school": "spear"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.spear.ho_quan_thuong.active_02",
+      "school": "spear",
+      "branch": "ho_quan_thuong",
+      "slot": "active",
+      "name": "Hồi Thương Thủ Vị",
+      "nodes": [
+        {
+          "id": "tmb.skill.spear.ho_quan_thuong.active_02.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.ho_quan_thuong.active_02.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.spear.ho_quan_thuong.active_02.human",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.ho_quan_thuong.active_02.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.spear.ho_quan_thuong.active_02.human",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.ho_quan_thuong.active_02.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.spear.ho_quan_thuong.active_02.immortal.a",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.ho_quan_thuong.active_02.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.spear.ho_quan_thuong.active_02.immortal.b",
+          "school": "spear"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.spear.ho_quan_thuong.active_03",
+      "school": "spear",
+      "branch": "ho_quan_thuong",
+      "slot": "active",
+      "name": "Trấn Tuyến Khai Môn",
+      "nodes": [
+        {
+          "id": "tmb.skill.spear.ho_quan_thuong.active_03.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.ho_quan_thuong.active_03.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.spear.ho_quan_thuong.active_03.human",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.ho_quan_thuong.active_03.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.spear.ho_quan_thuong.active_03.human",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.ho_quan_thuong.active_03.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.spear.ho_quan_thuong.active_03.immortal.a",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.ho_quan_thuong.active_03.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.spear.ho_quan_thuong.active_03.immortal.b",
+          "school": "spear"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.spear.ho_quan_thuong.active_04",
+      "school": "spear",
+      "branch": "ho_quan_thuong",
+      "slot": "active",
+      "name": "Tả Hữu Tương Y",
+      "nodes": [
+        {
+          "id": "tmb.skill.spear.ho_quan_thuong.active_04.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.ho_quan_thuong.active_04.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.spear.ho_quan_thuong.active_04.human",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.ho_quan_thuong.active_04.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.spear.ho_quan_thuong.active_04.human",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.ho_quan_thuong.active_04.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.spear.ho_quan_thuong.active_04.immortal.a",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.ho_quan_thuong.active_04.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.spear.ho_quan_thuong.active_04.immortal.b",
+          "school": "spear"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.spear.ho_quan_thuong.ultimate",
+      "school": "spear",
+      "branch": "ho_quan_thuong",
+      "slot": "ultimate",
+      "name": "Vạn Quân Thương Bích",
+      "nodes": [
+        {
+          "id": "tmb.skill.spear.ho_quan_thuong.ultimate.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.ho_quan_thuong.ultimate.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.spear.ho_quan_thuong.ultimate.human",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.ho_quan_thuong.ultimate.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.spear.ho_quan_thuong.ultimate.human",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.ho_quan_thuong.ultimate.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.spear.ho_quan_thuong.ultimate.immortal.a",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.ho_quan_thuong.ultimate.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.spear.ho_quan_thuong.ultimate.immortal.b",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.ho_quan_thuong.ultimate.rare.a",
+          "tier": "rare_divine",
+          "lineage": "a",
+          "parent": "tmb.skill.spear.ho_quan_thuong.ultimate.divine.a",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.ho_quan_thuong.ultimate.rare.b",
+          "tier": "rare_divine",
+          "lineage": "b",
+          "parent": "tmb.skill.spear.ho_quan_thuong.ultimate.divine.b",
+          "school": "spear"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.spear.ho_quan_thuong.passive_01",
+      "school": "spear",
+      "branch": "ho_quan_thuong",
+      "slot": "passive",
+      "name": "Đồng Tâm Thủ Trận",
+      "nodes": [
+        {
+          "id": "tmb.skill.spear.ho_quan_thuong.passive_01.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.ho_quan_thuong.passive_01.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.spear.ho_quan_thuong.passive_01.human",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.ho_quan_thuong.passive_01.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.spear.ho_quan_thuong.passive_01.human",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.ho_quan_thuong.passive_01.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.spear.ho_quan_thuong.passive_01.immortal.a",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.ho_quan_thuong.passive_01.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.spear.ho_quan_thuong.passive_01.immortal.b",
+          "school": "spear"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.spear.ho_quan_thuong.passive_02",
+      "school": "spear",
+      "branch": "ho_quan_thuong",
+      "slot": "passive",
+      "name": "Trấn Giáp Hộ Mạch",
+      "nodes": [
+        {
+          "id": "tmb.skill.spear.ho_quan_thuong.passive_02.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.ho_quan_thuong.passive_02.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.spear.ho_quan_thuong.passive_02.human",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.ho_quan_thuong.passive_02.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.spear.ho_quan_thuong.passive_02.human",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.ho_quan_thuong.passive_02.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.spear.ho_quan_thuong.passive_02.immortal.a",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.ho_quan_thuong.passive_02.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.spear.ho_quan_thuong.passive_02.immortal.b",
+          "school": "spear"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.spear.ho_quan_thuong.passive_03",
+      "school": "spear",
+      "branch": "ho_quan_thuong",
+      "slot": "passive",
+      "name": "Liên Hoàn Tiếp Ứng",
+      "nodes": [
+        {
+          "id": "tmb.skill.spear.ho_quan_thuong.passive_03.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.ho_quan_thuong.passive_03.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.spear.ho_quan_thuong.passive_03.human",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.ho_quan_thuong.passive_03.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.spear.ho_quan_thuong.passive_03.human",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.ho_quan_thuong.passive_03.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.spear.ho_quan_thuong.passive_03.immortal.a",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.ho_quan_thuong.passive_03.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.spear.ho_quan_thuong.passive_03.immortal.b",
+          "school": "spear"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.spear.ho_quan_thuong.passive_04",
+      "school": "spear",
+      "branch": "ho_quan_thuong",
+      "slot": "passive",
+      "name": "Bất Động Như Sơn",
+      "nodes": [
+        {
+          "id": "tmb.skill.spear.ho_quan_thuong.passive_04.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.ho_quan_thuong.passive_04.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.spear.ho_quan_thuong.passive_04.human",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.ho_quan_thuong.passive_04.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.spear.ho_quan_thuong.passive_04.human",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.ho_quan_thuong.passive_04.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.spear.ho_quan_thuong.passive_04.immortal.a",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.ho_quan_thuong.passive_04.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.spear.ho_quan_thuong.passive_04.immortal.b",
+          "school": "spear"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.spear.ho_quan_thuong.passive_05",
+      "school": "spear",
+      "branch": "ho_quan_thuong",
+      "slot": "passive",
+      "name": "Vạn Quân Tín Niệm",
+      "nodes": [
+        {
+          "id": "tmb.skill.spear.ho_quan_thuong.passive_05.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.ho_quan_thuong.passive_05.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.spear.ho_quan_thuong.passive_05.human",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.ho_quan_thuong.passive_05.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.spear.ho_quan_thuong.passive_05.human",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.ho_quan_thuong.passive_05.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.spear.ho_quan_thuong.passive_05.immortal.a",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.ho_quan_thuong.passive_05.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.spear.ho_quan_thuong.passive_05.immortal.b",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.ho_quan_thuong.passive_05.rare_passive.a",
+          "tier": "divine",
+          "lineage": "rare_a",
+          "parent": "tmb.skill.spear.ho_quan_thuong.passive_05.divine.a",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.ho_quan_thuong.passive_05.rare_passive.b",
+          "tier": "divine",
+          "lineage": "rare_b",
+          "parent": "tmb.skill.spear.ho_quan_thuong.passive_05.divine.b",
+          "school": "spear"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.spear.ho_quan_thuong.innate",
+      "school": "spear",
+      "branch": "ho_quan_thuong",
+      "slot": "innate",
+      "name": "Thủ Quân Minh Ước",
+      "nodes": [
+        {
+          "id": "tmb.skill.spear.ho_quan_thuong.innate.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.ho_quan_thuong.innate.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.spear.ho_quan_thuong.innate.human",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.ho_quan_thuong.innate.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.spear.ho_quan_thuong.innate.human",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.ho_quan_thuong.innate.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.spear.ho_quan_thuong.innate.immortal.a",
+          "school": "spear"
+        },
+        {
+          "id": "tmb.skill.spear.ho_quan_thuong.innate.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.spear.ho_quan_thuong.innate.immortal.b",
+          "school": "spear"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
     }
   ],
   "bosses": [
@@ -8178,5 +9844,9 @@
   "skills_s1_candidate_count": 183,
   "skills_s1_candidate_source_status": "SOURCE_PENDING; all 183 nodes remain unlearnable",
   "skills_s2_candidate_count": 183,
-  "skills_s2_candidate_source_status": "SOURCE_PENDING"
+  "skills_s2_candidate_source_status": "SOURCE_PENDING",
+  "skills_s3_candidate_count": 183,
+  "skills_s3_candidate_source_status": "AUTHENTIC_SPEAR_CODEX_SOURCE_PENDING",
+  "total_runtime_candidate_nodes": 1098,
+  "total_authored_runtime_nodes": 1098
 }

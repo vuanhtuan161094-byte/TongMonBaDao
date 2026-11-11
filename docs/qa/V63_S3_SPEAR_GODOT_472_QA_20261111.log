@@ -1,0 +1,69 @@
+V63 S3 Thương — focused QA evidence
+Local QA checkout HEAD before code: af8c82c29089bc71c6dfff8857eeb5a3ea2a0ac1. PR #72 advanced to `8a640ce4e07c9f703691d9f3a07b4d5525a1ac0e` during QA packaging; comparisons `af8c82c..e9be4b1`, `e9be4b1..7587e2be`, and `7587e2be..8a640ce` show no overlap with the V63 source paths tested here. The 8a640ce art/animation changes were not part of this V63 runtime QA.
+Engine: Godot 4.7.2.stable.official.ed1daf0bf
+Execution profile: isolated .qa-v63 APPDATA/LOCALAPPDATA; no player save touched.
+
+[Import/parse] exit=0
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Started Project initialization (5 steps)[39m[0m
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Scanning file structure...[39m[0m
+[  16% ] [90m[1mfirst_scan_filesystem[22m | Loading global class names...[39m[0m
+[  33% ] [90m[1mfirst_scan_filesystem[22m | Verifying GDExtensions...[39m[0m
+[  50% ] [90m[1mfirst_scan_filesystem[22m | Creating autoload scripts...[39m[0m
+[  66% ] [90m[1mfirst_scan_filesystem[22m | Initializing plugins...[39m[0m
+[  83% ] [90m[1mfirst_scan_filesystem[22m | Starting file scan...[39m[0m
+[92m[ DONE ][39m [1mfirst_scan_filesystem[22m
+[0m
+[   0% ] [90m[1mloading_editor_layout[22m | Started Loading editor (5 steps)[39m[0m
+[   0% ] [90m[1mloading_editor_layout[22m | Loading editor layout...[39m[0m
+[  16% ] [90m[1mloading_editor_layout[22m | Loading docks...[39m[0m
+[92m[ DONE ][39m [1mloading_editor_layout[22m
+[0m
+
+[D1 content registry] exit=0
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+V63_D1_PASS: 210 families, 1098 registry nodes, 36 rare-tier ultimates, 6 rare-passive successors per authored school, 9 bosses, gates OFF and negative cases
+
+[S0 presentation + matrix] exit=0
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+V63_S0_LEDGER_METRICS {"branches":36,"candidate_gated":549,"existing":549,"families":420,"not_authored":1098,"registry_missing_runtime_ids":0,"rows":2196,"runtime_catalogue_ids":1098,"schools":12}
+V63_S0_RESULT PASS checks=23 samples=4 sword_candidate=183 blade_candidate=183 spear_candidate=183 existing=549 not_authored=1098 ledger=2196 release_gate=OFF
+
+[S1 Sword focused regression] exit=0
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+V63_S1_RESULT PASS checks=1687 skills=183 branches=3 families=35 runtime=GATED vfx=CODE_DRAWN source=SOURCE_PENDING gate=OFF
+
+[S2 Blade focused regression] exit=0
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+V63_S2_BLADE_RESULT PASS checks=1871 nodes=183 branches=3 families=35 mechanics=preview-only source=SOURCE_PENDING balance=CANDIDATE gate=OFF
+
+[S3 Spear focused runtime] exit=0
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+V63_S3_SPEAR_RESULT PASS checks=1126 nodes=183 families=35 branches=3 runtime=CombatV2 source=SOURCE_PENDING balance=CANDIDATE gates=OFF VFX=CODE_DRAWN_CAPTURE_PENDING
+
+[Legacy catalogue integrity] exit=0
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+SKILL_ALL_CATALOGUE_SUMMARY {"branches":18,"failures":0,"families":105,"legacy_combat_skill_entries":9,"legacy_technique_entries":6,"release_gates":"OFF","status":"PASS_CATALOGUE_ONLY_NOT_FULL_RUNTIME_OR_GUI_ACCEPTANCE","tiers":{"divine":240,"human":105,"immortal":204},"unique_names":549,"v63_ids":549}
+
+Environment note: Godot emits `Failed to read the root certificate store` in this Windows execution environment. All listed commands exited 0; no parse/runtime test failure. Catalogue integrity remains baseline-only and is not full gameplay or GUI acceptance.

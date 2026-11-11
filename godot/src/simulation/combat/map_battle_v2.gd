@@ -143,7 +143,7 @@ func setup(id: String, party: Array, monsters: Array, keep_encounter_open: bool 
             "hunt_radius":float(row.get("hunt_radius",0.0))
         })
         var v63_disciple_actor: Dictionary = entries[entries.size()-1]
-        for field in ["v63_skill_loadout","v63_skill_ready","v63_combat_enabled","v63_sword_combat_enabled","v63_blade_combat_enabled","v63_passive_ids","v63_combat_branch_id","v63_combat_lineage","v63_innate_skill_id","v63_basic_skill_id","basic_element","v63_divine_stage","v63_combat_generation","v63_blood_mode","v63_base_max_hp","v63_shield_received_factor","v63_spiritual_root_enabled","v63_root_global_all_damage_bonus"]:
+        for field in ["v63_skill_loadout","v63_skill_ready","v63_combat_enabled","v63_sword_combat_enabled","v63_blade_combat_enabled","v63_spear_combat_enabled","v63_passive_ids","v63_combat_branch_id","v63_combat_lineage","v63_innate_skill_id","v63_basic_skill_id","basic_element","v63_divine_stage","v63_combat_generation","v63_blood_mode","v63_base_max_hp","v63_shield_received_factor","v63_spiritual_root_enabled","v63_root_global_all_damage_bonus"]:
             if row.has(field):
                 v63_disciple_actor[field] = row[field].duplicate(true) if row[field] is Array or row[field] is Dictionary else row[field]
     for raw in monsters:
@@ -1110,6 +1110,17 @@ func _deal_direct(attacker: Dictionary, target: Dictionary, ratio: float, kind: 
     )
     if not bool(hit.get("ok",false)):
         return 0.0
+    var shield_remaining := maxf(0.0,float(target.get("v63_capacity_shield_remaining",0.0)))
+    var shield_absorbed := 0.0
+    var shield_skill_id := str(target.get("v63_capacity_shield_skill_id",""))
+    if shield_remaining > 0.0 and now >= float(target.get("v63_capacity_shield_until",-1.0)):
+        target["v63_capacity_shield_remaining"] = 0.0
+        shield_remaining = 0.0
+    if shield_remaining > 0.0:
+        shield_absorbed = minf(shield_remaining,maxf(0.0,float(hit.get("damage",0.0))))
+        if shield_absorbed > 0.0:
+            hit["damage"] = maxf(0.0,float(hit.get("damage",0.0))-shield_absorbed)
+            target["v63_capacity_shield_remaining"] = maxf(0.0,shield_remaining-shield_absorbed)
     var sword_reflect_ratio := V63SwordSkillCombatSystem.guard_reflection_ratio(target,now) if guard_factor < 1.0 else 0.0
     var blade_reflect_profile := V63BladeSkillCombatSystem.guard_reflection_profile(target,now) if guard_factor < 1.0 else {"ratio":0.0,"skill_id":""}
     var blade_reflect_ratio := float(blade_reflect_profile.get("ratio",0.0))
@@ -1135,6 +1146,8 @@ func _deal_direct(attacker: Dictionary, target: Dictionary, ratio: float, kind: 
         return 0.0
     var actual_damage := float(settlement["actual_damage"])
     target["hp"] = float(settlement["target_hp_after"])
+    if shield_absorbed > 0.0:
+        _event("v63_spear_shield_absorbed",{"caster":str(attacker.get("id","")),"target":str(target.get("id","")),"skill_id":shield_skill_id,"absorbed_damage":shield_absorbed,"remaining_capacity":float(target.get("v63_capacity_shield_remaining",0.0))})
     # Poison Dược healing budget may spend only verified damage committed by this battle.
     # Receipts are carried by the existing actor snapshot, never inferred from missing HP.
     V63PoisonEvolutionV1.record_damage_taken(target, actual_damage, now)

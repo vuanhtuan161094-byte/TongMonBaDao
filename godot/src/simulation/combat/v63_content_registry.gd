@@ -3,7 +3,7 @@ extends RefCounted
 
 # D1 read-only catalogue. No runtime import or live combat feature installation.
 const CATALOGUE_PATH := "res://data/combat/v63_content_registry.json"
-const SCHOOL_IDS := ["bow","fist","poison","sword","blade"]
+const SCHOOL_IDS := ["bow","fist","poison","sword","blade","spear"]
 const VALID_TIERS := ["human","immortal","divine","rare_divine"]
 const VALID_SLOTS := ["basic","mobility","active","ultimate","passive","innate"]
 
@@ -36,7 +36,7 @@ static func validate_catalogue(data: Dictionary) -> Array[String]:
     var families: Array = data["families"]
     var paths: Array = data["paths"]
     var bosses: Array = data["bosses"]
-    if families.size() != 175 or paths.size() != 15 or bosses.size() != 9:
+    if families.size() != 210 or paths.size() != 18 or bosses.size() != 9:
         errors.append("wrong_content_counts")
     var path_ids: Dictionary = {}
     for path in paths:
@@ -55,6 +55,7 @@ static func validate_catalogue(data: Dictionary) -> Array[String]:
     var poison_rare_passive_count := 0
     var sword_rare_passive_count := 0
     var blade_rare_passive_count := 0
+    var spear_rare_passive_count := 0
     for family in families:
         var id := str(family.get("id",""))
         var school := str(family.get("school",""))
@@ -97,12 +98,14 @@ static func validate_catalogue(data: Dictionary) -> Array[String]:
                 sword_rare_passive_count += 1
             if school=="blade" and slot=="passive" and id.ends_with("passive_05") and node_id.contains(".rare_passive.") and tier=="divine":
                 blade_rare_passive_count += 1
+            if school=="spear" and slot=="passive" and id.ends_with("passive_05") and node_id.contains(".rare_passive.") and tier=="divine":
+                spear_rare_passive_count += 1
             family_nodes[node_id] = true
             all_node_ids[node_id] = true
         var expected_nodes := 3 if branch.is_empty() else (7 if slot=="ultimate" or (slot=="passive" and id.ends_with("passive_05")) else 5)
         if family_nodes.size() != expected_nodes:
             errors.append("wrong_family_node_count:"+id)
-    if shared_count != 10 or branch_count.size()!=15 or rare_count != 30 or poison_rare_passive_count != 6 or sword_rare_passive_count != 6 or blade_rare_passive_count != 6:
+    if shared_count != 12 or branch_count.size()!=18 or rare_count != 36 or poison_rare_passive_count != 6 or sword_rare_passive_count != 6 or blade_rare_passive_count != 6 or spear_rare_passive_count != 6:
         errors.append("wrong_family_distribution")
     for count in branch_count.values():
         if int(count)!=11:

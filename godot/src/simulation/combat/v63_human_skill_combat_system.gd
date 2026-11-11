@@ -144,6 +144,12 @@ static func skill_definitions() -> Dictionary:
             result[str(row.id)] = row.duplicate(true)
     else:
         all_loaded = false
+    var spear := V63SpearSkillCombatSystem.load_catalogue()
+    if bool(spear.get("ok", false)):
+        for row in spear.data.skills:
+            result[str(row.id)] = row.duplicate(true)
+    else:
+        all_loaded = false
     if all_loaded:
         _all_skill_definition_cache = result.duplicate(true)
     return result
@@ -171,6 +177,9 @@ static func branch_definitions() -> Dictionary:
     var blade := V63BladeSkillCombatSystem.branch_definitions()
     for branch_id in blade.keys():
         result[str(branch_id)] = blade[branch_id].duplicate(true)
+    var spear := V63SpearSkillCombatSystem.branch_definitions()
+    for branch_id in spear.keys():
+        result[str(branch_id)] = spear[branch_id].duplicate(true)
     return result
 
 static func boss_definition(boss_id: String) -> Dictionary:
@@ -199,6 +208,8 @@ static func learn_skill(state: SimulationState, disciple: DiscipleState, skill_i
         return V63SwordSkillCombatSystem.can_learn(definition)
     if str(definition.get("school", "")) == "blade":
         return V63BladeSkillCombatSystem.can_learn(definition)
+    if str(definition.get("school", "")) == "spear":
+        return V63SpearSkillCombatSystem.can_learn(definition)
     if definition.is_empty() or not bool(definition.get("archivable",false)):
         return _failure("unknown_or_derived_human_skill")
     var codex_id := str(definition.get("source_codex_id",""))
@@ -274,6 +285,7 @@ static func attach_disciple_loadout(state: SimulationState, actor: Dictionary, p
     var disciple: DiscipleState = state.disciples[id]
     actor["v63_sword_combat_enabled"] = V63FeatureGates.is_enabled("sword_skill_combat",preview_overrides)
     actor["v63_blade_combat_enabled"] = V63FeatureGates.is_enabled("blade_skill_combat",preview_overrides)
+    actor["v63_spear_combat_enabled"] = V63FeatureGates.is_enabled("spear_skill_combat",preview_overrides)
     var definitions := skill_definitions()
     var skills: Array = []
     var passives: Array = []
@@ -497,6 +509,7 @@ static func _passive_ids(actor: Dictionary) -> Array:
 static func preferred_offensive_range(actor: Dictionary) -> float:
     var basic := maxf(0.0, float(actor.get("range", 1.8)))
     basic = maxf(basic,V63SwordSkillCombatSystem.preferred_offensive_range(actor))
+    basic = maxf(basic,V63SpearSkillCombatSystem.preferred_offensive_range(actor))
     if str(actor.get("side", "")) != "disciple" or str(actor.get("role", "")) not in ["mage", "ranged"]:
         return basic
     if not bool(actor.get("v63_combat_enabled", false)):
@@ -528,6 +541,8 @@ static func _try_human_cast(battle: MapBattleV2, actor: Dictionary, enemy: Dicti
             continue
         if str(skill.get("school","")) == "blade" and not V63BladeSkillCombatSystem.can_cast(actor,id):
             continue
+        if str(skill.get("school","")) == "spear" and not V63SpearSkillCombatSystem.can_cast(actor,id):
+            continue
         if skill.is_empty() or slot not in ["active","ultimate","mobility"] or battle.now < float(ready.get(id,0.0)):
             continue
         if effect == "mobility":
@@ -556,7 +571,7 @@ static func _same_p0_support_party(caster: Dictionary, ally: Dictionary) -> bool
 
 static func _support_target(battle: MapBattleV2, actor: Dictionary, skill: Dictionary) -> Dictionary:
     if str(skill.effect) == "guard":
-        if str(skill.get("school","")) == "blade" and str(skill.get("guard_target_policy","self")) == "weakest_ally":
+        if str(skill.get("school","")) in ["blade", "spear"] and str(skill.get("guard_target_policy","self")) == "weakest_ally":
             var guard_candidates: Array = []
             for raw_id in battle.actors.keys():
                 var guard_ally: Dictionary = battle.actors[raw_id]
@@ -736,7 +751,8 @@ static func _cast_record(caster: Dictionary, target: Dictionary, id: String, ski
         "power":power,"duration":float(skill.get("duration",0.0)),
         "poison_stacks":int(skill.get("poison_stacks",1)),"radius":float(skill.get("radius",0.0)),
         "range":float(skill.get("range",0.0)),"maximum":mini(int(skill.get("target_limit",1)),MAX_TARGETS),
-        "hit_count":clampi(int(skill.get("hit_count",1)),1,3),"guard_target_policy":str(skill.get("guard_target_policy","self"))}
+        "hit_count":clampi(int(skill.get("hit_count",1)),1,3),"guard_target_policy":str(skill.get("guard_target_policy","self")),
+        "guard_mode":str(skill.get("guard_mode","mitigation")),"guard_capacity_ratio":clampf(float(skill.get("guard_capacity_ratio",0.0)),0.0,0.8)}
     if not boss_id.is_empty():
         cast["v63_boss_id"] = boss_id
     return cast
@@ -748,6 +764,9 @@ static func release_cast(battle: MapBattleV2, cast: Dictionary, caster: Dictiona
         return
     if V63BladeSkillCombatSystem.is_blade_skill(skill_id):
         V63BladeSkillCombatSystem.release_cast(battle,cast,caster)
+        return
+    if V63SpearSkillCombatSystem.is_spear_skill(skill_id):
+        V63SpearSkillCombatSystem.release_cast(battle,cast,caster)
         return
     if V63DivineSkillCombatSystem.is_divine_skill(skill_id) or V63DivineSkillCombatSystem.is_divine_boss(str(cast.get("v63_boss_id", ""))):
         V63DivineSkillCombatSystem.release_cast(battle, cast, caster)
@@ -830,9 +849,18 @@ static func release_cast_base(battle: MapBattleV2, cast: Dictionary, caster: Dic
                     V63PoisonEvolutionV1.spread_one(battle,caster,target,id,float(cast.power),
                         float(cast.duration),str(cast.element))
         elif effect == "guard":
-            target["learned_guard_factor"] = minf(float(target.get("learned_guard_factor",1.0)),1.0-clampf(float(cast.power),0.05,0.8))
-            target["learned_guard_until"] = maxf(float(target.get("learned_guard_until",-1.0)),battle.now+clampf(float(cast.duration),0.5,12.0))
-            battle._event("status_applied",{"caster":str(caster.id),"target":str(target.id),"status":"guard","skill_id":id,"generation":generation,"lineage":lineage,"until":float(target.learned_guard_until)})
+            var guard_until := battle.now+clampf(float(cast.duration),0.5,12.0)
+            if str(cast.get("guard_mode",definition.get("guard_mode","mitigation"))) == "capacity_shield":
+                var capacity := maxf(0.0,float(target.get("max_hp",0.0))*clampf(float(cast.get("guard_capacity_ratio",definition.get("guard_capacity_ratio",0.0))),0.0,0.8))
+                if capacity > 0.0:
+                    target["v63_capacity_shield_remaining"] = maxf(float(target.get("v63_capacity_shield_remaining",0.0)),capacity)
+                    target["v63_capacity_shield_until"] = maxf(float(target.get("v63_capacity_shield_until",-1.0)),guard_until)
+                    target["v63_capacity_shield_skill_id"] = id
+                    battle._event("status_applied",{"caster":str(caster.id),"target":str(target.id),"status":"capacity_shield","skill_id":id,"generation":generation,"lineage":lineage,"until":float(target.v63_capacity_shield_until),"capacity":float(target.v63_capacity_shield_remaining)})
+            else:
+                target["learned_guard_factor"] = minf(float(target.get("learned_guard_factor",1.0)),1.0-clampf(float(cast.power),0.05,0.8))
+                target["learned_guard_until"] = maxf(float(target.get("learned_guard_until",-1.0)),guard_until)
+                battle._event("status_applied",{"caster":str(caster.id),"target":str(target.id),"status":"guard","skill_id":id,"generation":generation,"lineage":lineage,"until":float(target.learned_guard_until)})
         elif effect == "heal":
             _heal_target(battle,caster,target,id,float(cast.power))
         elif effect == "cleanse":
@@ -852,6 +880,8 @@ static func release_cast_base(battle: MapBattleV2, cast: Dictionary, caster: Dic
                 _consume_poison(battle,caster,target,id)
         if damage > 0.0 and effect in ["damage", "consume_poison"] and str(definition.get("combat_trait", "")) == "co_doc_b":
             _consume_mark(battle,caster,target,id)
+        if damage > 0.0 and str(definition.get("school", "")) == "spear" and str(definition.get("shape", "")) == "line":
+            battle._event("v63_spear_line_hit",{"caster":str(caster.id),"target":str(target.id),"skill_id":id,"damage":damage,"target_limit":int(definition.get("target_limit",1))})
         var poison_school := str(definition.get("school", "")) == "poison"
         meaningful = meaningful or damage > 0.0 or effect in ["guard", "cleanse"] \
             or (not poison_school and str(definition.get("school","")) != "blade" and effect in ["mark", "poison"]) or float(target.hp) > before

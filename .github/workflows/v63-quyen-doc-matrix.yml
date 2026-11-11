@@ -1,4 +1,4 @@
-name: V63 Quyền + Độc 183-ID Combat Matrix
+name: V63 Authored Combat Catalogue Matrix
 
 on:
   workflow_dispatch:
@@ -18,10 +18,12 @@ on:
       - 'godot/tests/simulation/v63_skill_presentation_s0_test.gd'
       - 'godot/tests/simulation/v63_s1_sword_skill_test.gd'
       - 'godot/tests/simulation/v63_s2_blade_skill_test.gd'
+      - 'godot/tests/simulation/v63_s3_spear_skill_test.gd'
       - 'godot/tests/simulation/v63_d1_content_registry_test.gd'
       - 'godot/tests/simulation/v63_skill_presentation_s0_test.gd'
       - 'godot/tests/simulation/v63_s1_sword_skill_test.gd'
       - 'godot/tests/simulation/v63_s2_blade_skill_test.gd'
+      - 'godot/tests/simulation/v63_s3_spear_skill_test.gd'
       - 'godot/tests/simulation/skill_all_catalogue_integrity_test.gd'
       - '.github/workflows/v63-quyen-doc-matrix.yml'
   push:
@@ -110,7 +112,8 @@ jobs:
             res://tests/simulation/v63_d1_content_registry_test.gd \
             res://tests/simulation/v63_skill_presentation_s0_test.gd \
             res://tests/simulation/v63_s1_sword_skill_test.gd \
-            res://tests/simulation/v63_s2_blade_skill_test.gd; do
+            res://tests/simulation/v63_s2_blade_skill_test.gd \
+            res://tests/simulation/v63_s3_spear_skill_test.gd; do
             godot --headless --path godot --check-only --script "$script"
           done
       - name: V63 D1 registry and all-off release gate regression
@@ -133,6 +136,11 @@ jobs:
         run: |
           set -o pipefail
           godot --headless --path godot -s res://tests/simulation/v63_s2_blade_skill_test.gd 2>&1 | tee /tmp/v63-s2-blade.log
+      - name: V63 S3 Thương candidate Combat V2, shield and branch VFX regression
+        shell: bash
+        run: |
+          set -o pipefail
+          godot --headless --path godot -s res://tests/simulation/v63_s3_spear_skill_test.gd 2>&1 | tee /tmp/v63-s3-spear.log
       - name: 183 Quyền per-ID Combat V2 handoff
         shell: bash
         run: |
@@ -197,6 +205,7 @@ jobs:
             /tmp/v63-s0-presentation.log
             /tmp/v63-s1-sword.log
             /tmp/v63-s2-blade.log
+            /tmp/v63-s3-spear.log
           if-no-files-found: ignore
 
   publish-exact-sha-result:

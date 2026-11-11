@@ -32,9 +32,9 @@ func _run() -> void:
 		var metrics: Dictionary = coverage.get("metrics",{})
 		_expect(int(metrics.get("rows",0)) == 2196,"ledger rows = 2,196")
 		_expect(int(metrics.get("existing",0)) == 549,"existing source rows = 549")
-		_expect(int(metrics.get("not_authored",0)) == 1281,"remaining unauthored rows = 1,281")
-		_expect(int(metrics.get("candidate_gated",0)) == 366,"Sword and Dao candidate rows = 366 and remain gated")
-		_expect(int(metrics.get("runtime_catalogue_ids",0)) == 915,"549 existing plus 366 gated catalogue IDs = 915")
+		_expect(int(metrics.get("not_authored",0)) == 1098,"remaining unauthored rows = 1,098")
+		_expect(int(metrics.get("candidate_gated",0)) == 549,"Sword, Dao and Spear candidate rows = 549 and remain gated")
+		_expect(int(metrics.get("runtime_catalogue_ids",0)) == 1098,"549 existing plus 549 gated catalogue IDs = 1,098")
 		_expect(int(metrics.get("families",0)) == 420,"families = 420")
 		_expect(int(metrics.get("branches",0)) == 36,"non-common branches = 36")
 		_expect(int(metrics.get("registry_missing_runtime_ids",-1)) == 0,"all existing runtime IDs are represented by the registry")
@@ -45,7 +45,7 @@ func _run() -> void:
 			print("V63_S0_LEDGER_WARNING "+str(warning))
 		print("V63_S0_LEDGER_METRICS "+JSON.stringify(metrics))
 	var entries: Dictionary = manifest.get("entries",{})
-	_expect(entries.size() == 370,"four retained S0 samples plus Sword and Dao candidate presentations")
+	_expect(entries.size() == 553,"four retained S0 samples plus three gated school candidate presentations")
 	var basic_id := "tmb.skill.bow.basic.human"
 	var arrow_id := "tmb.skill.bow.liep_anh.active_01.human"
 	var poison_id := "tmb.skill.poison.co_doc.active_02.human"
@@ -93,5 +93,5 @@ func _finish() -> void:
 		print("V63_S0_RESULT FAIL checks="+str(_checks)+" failures="+str(_failures))
 		quit(1)
 		return
-	print("V63_S0_RESULT PASS checks="+str(_checks)+" samples=4 sword_candidate=183 blade_candidate=183 existing=549 not_authored=1281 ledger=2196 release_gate=OFF")
+	print("V63_S0_RESULT PASS checks="+str(_checks)+" samples=4 sword_candidate=183 blade_candidate=183 spear_candidate=183 existing=549 not_authored=1098 ledger=2196 release_gate=OFF")
 	quit(0)

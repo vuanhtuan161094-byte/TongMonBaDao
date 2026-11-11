@@ -1,7 +1,7 @@
 class_name V63OriginalCombatVfxV1
 extends Control
 
-const CUES := ["telegraph", "v63_skill_hit", "skill_cast", "skill_release", "v63_mobility", "v63_sword_guard_reflect", "v63_blade_swing_hit", "v63_blade_guard_reflect", "v63_boss_phase", "boss_counter_hit", "status_applied"]
+const CUES := ["telegraph", "v63_skill_hit", "skill_cast", "skill_release", "v63_mobility", "v63_sword_guard_reflect", "v63_blade_swing_hit", "v63_blade_guard_reflect", "v63_spear_line_hit", "v63_spear_shield_absorbed", "v63_boss_phase", "boss_counter_hit", "status_applied"]
 var _cue_kind := ""
 var _cue_started := 0.0
 var _event_cursor := 0
@@ -20,6 +20,7 @@ func consume_battle_events(battle: MapBattleV2) -> void:
         return
     var newest: Dictionary = {}
     var newest_blade_swing_by_skill: Dictionary = {}
+    var newest_spear_line_by_skill: Dictionary = {}
     for index in range(battle.events.size()):
         var event: Dictionary = battle.events[index]
         var sequence := int(event.get("sequence", index + 1))
@@ -32,10 +33,14 @@ func consume_battle_events(battle: MapBattleV2) -> void:
             newest = event
         if event_type == "v63_blade_swing_hit":
             newest_blade_swing_by_skill[event_skill_id] = event
+        if event_type == "v63_spear_line_hit":
+            newest_spear_line_by_skill[event_skill_id] = event
     if str(newest.get("type", "")) == "v63_skill_hit":
         var newest_skill_id := str(newest.get("skill_id", ""))
         if newest_blade_swing_by_skill.has(newest_skill_id):
             newest = newest_blade_swing_by_skill[newest_skill_id]
+        elif newest_spear_line_by_skill.has(newest_skill_id):
+            newest = newest_spear_line_by_skill[newest_skill_id]
     if not newest.is_empty():
         _cue_event = newest.duplicate(true)
         _cue_kind = str(newest.get("type", ""))
@@ -43,7 +48,7 @@ func consume_battle_events(battle: MapBattleV2) -> void:
         _cue_animation_key = ""
         _cue_vfx_key = ""
         _cue_effect = ""
-        if _cue_skill_id.begins_with("tmb.skill.sword.") or _cue_skill_id.begins_with("tmb.skill.blade."):
+        if _cue_skill_id.begins_with("tmb.skill.sword.") or _cue_skill_id.begins_with("tmb.skill.blade.") or _cue_skill_id.begins_with("tmb.skill.spear."):
             var definition := V63HumanSkillCombatSystem.skill_definition(_cue_skill_id)
             _cue_animation_key = str(definition.get("animation_key",""))
             _cue_vfx_key = str(definition.get("vfx_key",""))
@@ -74,6 +79,9 @@ func _draw() -> void:
         return
     if _cue_skill_id.begins_with("tmb.skill.blade."):
         _draw_blade(center, age, alpha)
+        return
+    if _cue_skill_id.begins_with("tmb.skill.spear."):
+        _draw_spear(center, age, alpha)
         return
     var color := _cue_color(_cue_kind)
     color.a = alpha
@@ -178,6 +186,39 @@ func _draw_blade(center: Vector2, age: float, alpha: float) -> void:
         draw_line(center + Vector2(-pulse * 0.6,pulse * 0.25),center + Vector2(pulse * 0.6,-pulse * 0.25),color,2.4,true)
         draw_arc(center,5.0 + pulse * 0.28,0.0,TAU,24,color,1.5,true)
 
+func _draw_spear(center: Vector2, age: float, alpha: float) -> void:
+
+    var branch := _spear_branch(_cue_skill_id)
+    var color := _cue_color(_cue_kind)
+    var reach := 9.0 + 30.0 * age
+    var width := 2.0 + (1.1 if _cue_vfx_key.contains("ultimate") else 0.0)
+    color.a = alpha
+    if branch == "pha_tran_thuong":
+        # Narrow, straight thrust. A separate short parallel trace reads as a spear shaft.
+        draw_line(center + Vector2(-reach, 0), center + Vector2(reach, 0), color, width, true)
+        draw_line(center + Vector2(-reach * 0.38, -3.0), center + Vector2(reach * 0.45, -3.0), Color(color.r,color.g,color.b,alpha * 0.56), 1.1, true)
+        draw_colored_polygon(PackedVector2Array([center+Vector2(reach,0),center+Vector2(reach-7,-4),center+Vector2(reach-7,4)]),color)
+    elif branch == "long_thuong":
+        # Curled vapor follows one real line hit; it never creates a summoned actor.
+        var curl := PackedVector2Array()
+        for i in range(17):
+            var t := float(i) / 16.0
+            curl.append(center + Vector2(-reach + 2.0 * reach * t, sin(t * TAU * 1.35 + age * 2.0) * (2.0 + 4.0 * age)))
+        draw_polyline(curl,color,width,true)
+        draw_line(center + Vector2(reach * 0.45,-5.0),center + Vector2(reach,0),Color(color.r,color.g,color.b,alpha * 0.72),1.4,true)
+    elif branch == "ho_quan_thuong":
+        var radius := 12.0 + reach * 0.45
+        var shield_color := Color("89ddc8",alpha * (0.75 if _cue_kind == "v63_spear_shield_absorbed" else 0.58))
+        draw_arc(center,radius,-2.45,-0.69,32,shield_color,width,true)
+        draw_arc(center,radius * 0.78,-2.30,-0.84,28,Color("ead18b",alpha * 0.58),1.2,true)
+        if _cue_kind == "v63_spear_shield_absorbed":
+            for spoke in range(3):
+                var x := float(spoke - 1) * 9.0
+                draw_line(center+Vector2(x,-radius * 0.25),center+Vector2(x * 1.35,radius * 0.45),shield_color,1.7,true)
+    else:
+        draw_line(center + Vector2(-reach * 0.75, reach * 0.18), center + Vector2(reach * 0.75, -reach * 0.18), color, width, true)
+    draw_arc(center,4.0 + 10.0 * age,0.0,TAU,24,Color(color.r,color.g,color.b,alpha * 0.46),1.1,true)
+
 func _blade_branch(skill_id: String) -> String:
     for branch in ["cuong_dao","tram_phach_dao","tran_dao"]:
         if skill_id.contains("." + branch + "."):
@@ -186,6 +227,12 @@ func _blade_branch(skill_id: String) -> String:
 
 func _sword_branch(skill_id: String) -> String:
     for branch in ["ngu_kiem", "sat_kiem", "ho_kiem"]:
+        if skill_id.contains("." + branch + "."):
+            return branch
+    return "common"
+
+func _spear_branch(skill_id: String) -> String:
+    for branch in ["pha_tran_thuong", "long_thuong", "ho_quan_thuong"]:
         if skill_id.contains("." + branch + "."):
             return branch
     return "common"
@@ -205,6 +252,12 @@ func _cue_color(kind: String) -> Color:
         return Color("9be8ee")
     if _cue_kind == "v63_blade_guard_reflect":
         return Color("efcf75")
+    if _cue_kind == "v63_spear_shield_absorbed" or _cue_skill_id.contains(".ho_quan_thuong."):
+        return Color("8bd8c6")
+    if _cue_skill_id.contains(".long_thuong."):
+        return Color("77c8e2")
+    if _cue_skill_id.contains(".pha_tran_thuong."):
+        return Color("d5dbe3")
     if _cue_skill_id.contains(".cuong_dao."):
         return Color("bf6b48")
     if _cue_skill_id.contains(".tram_phach_dao."):
