@@ -53,6 +53,65 @@ func _run() -> void:
         and not economy.sx_v55_r12_enabled(state),
         "new bulk production must NOT also activate QA economy"):
         return
+    # GP2-C HOLD: a no-NPC, zero-T2 scenario is an adverse finance
+    # sensitivity, NOT a live 0%-tax option. Confirm the actual player API
+    # still rejects the r1/r2 income pilot before modelling it.
+    var starter_stones := state.sect.spirit_stones
+    var existing_wage_per_batch := int(state.sect.economy_a_policy.get("wage_per_batch",-1))
+    var refused_activation := economy.configure_v1(state,EconomySystem.SX_V55_R12_POLICY,true)
+    if not _check(starter_stones == 500 and existing_wage_per_batch == 2
+        and not bool(refused_activation.get("ok",false))
+        and str(refused_activation.get("reason","")) == "design_hold_r12_no_player_activation"
+        and not economy.sx_v55_r12_enabled(state)
+        and int(EconomySystem.SX_V55_R12_TAX["mine"]) == 70
+        and int(EconomySystem.SX_V55_R12_TAX["linh_forest"]) == 30
+        and int(EconomySystem.SX_V55_R12_TAX["spirit_field"]) == 40,
+        "starter cash, live tax policy, or pilot user-activation HOLD changed"):
+        return
+    var legacy_daily_need := seed_cost+jobs*existing_wage_per_batch
+    # A hypothetical T2=0 cannot transfer earned worker gross to the Sect.
+    # V5.5-D W2 is a minimum: the authentic long batches have zero topup.
+    var short_batch_topup := 0
+    for realm_id in [1,2]:
+        var realm_rate: Dictionary = EconomySystem.SX_V55_R12_RATES[realm_id]
+        for source_id in ["thanh_thiet","linh_moc","linh_coc","thanh_linh_thao"]:
+            var duration := int(plan[source_id]["cycle_ticks"])
+            short_batch_topup += maxi(int(realm_rate["wage_per_job"])
+                -int(realm_rate["gross_per_minute"])*duration,0)
+    if not _check(short_batch_topup == 0 and legacy_daily_need == 102
+        and (starter_stones / legacy_daily_need) == 4
+        and (starter_stones / seed_cost) == 14,
+        "no-NPC starter-seed or genuine W2-floor funding boundary changed"):
+        return
+    var receipts_before := state.sect.economy_a_receipts.duplicate(true)
+    var first_legacy_unfunded_day := int(floor(float(starter_stones)/float(legacy_daily_need)))+1
+    var first_r12_unfunded_day := int(floor(float(starter_stones)/float(seed_cost)))+1
+    if not _check(first_legacy_unfunded_day == 5 and first_r12_unfunded_day == 15,
+        "zero-income days-to-unfunded-seeds/wages must use real starter funds"):
+        return
+    for days in [1,7,30]:
+        # These are unfunded requested expenditures, never negative game
+        # balances or a claim that 30d of jobs actually completed.
+        var legacy_funding_gap := maxi(0,days*legacy_daily_need-starter_stones)
+        var r12_funding_gap := maxi(0,days*seed_cost-starter_stones)
+        if not _check((days != 1 or (legacy_funding_gap == 0 and r12_funding_gap == 0))
+            and (days != 7 or (legacy_funding_gap == 214 and r12_funding_gap == 0))
+            and (days != 30 or (legacy_funding_gap == 2560 and r12_funding_gap == 520)),
+            "zero-tax/no-NPC funded-balance sensitivity drifted"):
+            return
+        print("GP2C_ZERO_TAX_NO_NPC_HOLD days=",days,
+            " starter_LT=",starter_stones,
+            " real_seed_LT_per_day=",seed_cost,
+            " economy_A_wage_LT_per_day=",jobs*existing_wage_per_batch,
+            " legacy_unfunded_LT=",legacy_funding_gap,
+            " r12_hypothetical_unfunded_LT=",r12_funding_gap,
+            " no_NPC_sale_LT=0 no_T2_transfer_LT=0",
+            " LT2_W2_T2_public_activation=HOLD")
+    if not _check(state.sect.spirit_stones == starter_stones
+        and state.sect.economy_a_receipts == receipts_before
+        and state.sect.economy_a_market_units_sold == 0,
+        "the read-only no-NPC finance audit minted money or Warehouse sales"):
+        return
     state.sect.economy_a_policy[EconomySystem.SX_V55_R12_POLICY] = true
     # P37Factory has no Hall; production LiveGameRuntimeV2 creates it
     # through this existing canonical function. No free materials or money.
