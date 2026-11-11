@@ -122,20 +122,38 @@ func _test_save_replay_and_cooldown() -> bool:
     if not _check(bool(third.get("ok",false)),
         "after cancellation a genuine worker should be recoverable: "+str(third)): return false
     var total_before := state.sect.spirit_stones
+    var worker_before := (state.disciples[second_worker_id] as DiscipleState).spirit_stones
+    var origin_count_before := 0
+    for key in state.sect.economy_a_receipts.keys():
+        if str(key).begins_with(Eco01OriginVein.RECEIPT_PREFIX):
+            origin_count_before += 1
     for member in state.disciples.values():
         total_before += (member as DiscipleState).spirit_stones
     scheduler = SimulationScheduler.new(state)
     scheduler.run_ticks(60)
     var total_after := state.sect.spirit_stones
+    var origin_count_after := 0
+    for key in state.sect.economy_a_receipts.keys():
+        if str(key).begins_with(Eco01OriginVein.RECEIPT_PREFIX):
+            origin_count_after += 1
     for member in state.disciples.values():
         total_after += (member as DiscipleState).spirit_stones
-    if not _check(total_after-total_before == 1000
-        and int(state.sect.economy_a_receipts.get(
-            Eco01OriginVein.RECEIPT_PREFIX+str(third.get("job_id","")),{}).get("gross",-1)) == 1000,
-        "second day source delta=%d expected=1000; receipt=%s; worker=%s; Hall=%s" % [
-            total_after-total_before,
-            str(state.sect.economy_a_receipts.get(Eco01OriginVein.RECEIPT_PREFIX+str(third.get("job_id","")),{})),
-            str(second_worker_id),str(vein.snapshot(state))]): return false
+    var third_id := str(third.get("job_id",""))
+    var earned: Dictionary = state.sect.economy_a_receipts.get(
+        Eco01OriginVein.RECEIPT_PREFIX+third_id,{})
+    var third_wage: Dictionary = state.sect.economy_a_receipts.get("wage:"+third_id,{})
+    # Other legitimate P2/legacy personal cash events can run in parallel
+    # during 60 actual scheduler ticks (observed +8 LT). Audit ECO-01
+    # exactly-one receipt and money transfer rather than falsely assigning
+    # unrelated P2 income to this job.
+    if not _check(origin_count_after == origin_count_before+1
+        and int(earned.get("gross",-1)) == 1000
+        and int(earned.get("wage_paid",-1)) == 2
+        and int(third_wage.get("paid",-1)) == 2
+        and (state.disciples[second_worker_id] as DiscipleState).spirit_stones == worker_before+2
+        and total_after-total_before >= 1000,
+        "second day source receipt/wage not conserved; delta=%d receipt=%s" % [
+            total_after-total_before,str(earned)]): return false
     if not _check(saver.save_to_path(state,SAVE_PATH) == OK,
         "post-settlement Save failed"): return false
     var loaded := saver.load_from_path(SAVE_PATH)
