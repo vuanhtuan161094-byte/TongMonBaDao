@@ -244,23 +244,25 @@ func _vein_receipts_equal(before: Dictionary, after: Dictionary) -> bool:
         var restored = after[id]
         if not (original is Dictionary) or not (restored is Dictionary):
             return false
-        for field in ["kind","job_id","worker_id","site_id","gross",
-                "wage_paid","sect_net","started_tick","finish_tick","tick"]:
+        for field in ["kind","job_id","worker_id","site_id"]:
             if not restored.has(field) or str(original.get(field,"")) != str(restored.get(field,"")):
-                print("ECO01_COLD_RECEIPT_DIFF id=",id," field=",field,
-                    " before=",str(original.get(field,"<missing>")),
-                    " after=",str(restored.get(field,"<missing>")))
+                return false
+        for field in ["gross","wage_paid","sect_net","started_tick","finish_tick","tick"]:
+            # Existing Save JSON parser normalizes integers to exact floats;
+            # numeric equality, not text formatting (1000 vs 1000.0), is
+            # the persistence contract for these bounded integral amounts.
+            if not restored.has(field) or int(original.get(field,-1)) != int(restored.get(field,-2)):
                 return false
         var wage_id := "wage:"+str(original.get("job_id",""))
         if not before.has(wage_id) or not after.has(wage_id):
             return false
         var wage_before: Dictionary = before[wage_id]
         var wage_after: Dictionary = after[wage_id]
-        for field in ["kind","job_id","worker_id","paid","due","tick"]:
+        for field in ["kind","job_id","worker_id"]:
             if not wage_after.has(field) or str(wage_before.get(field,"")) != str(wage_after.get(field,"")):
-                print("ECO01_COLD_WAGE_DIFF id=",wage_id," field=",field,
-                    " before=",str(wage_before.get(field,"<missing>")),
-                    " after=",str(wage_after.get(field,"<missing>")))
+                return false
+        for field in ["paid","due","tick"]:
+            if not wage_after.has(field) or int(wage_before.get(field,-1)) != int(wage_after.get(field,-2)):
                 return false
     for raw_id in after.keys():
         if str(raw_id).begins_with(Eco01OriginVein.RECEIPT_PREFIX):
