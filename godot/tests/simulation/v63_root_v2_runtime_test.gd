@@ -266,8 +266,11 @@ func _run() -> void:
 		var source_mods: Dictionary = V63HumanSkillCombatSystem.skill_definition(passive_id).get("passive_modifiers",{})
 		var source_magnitude := float(source_mods.get(channel,0.0))
 		_check(source_magnitude > 0.0, "real source passive must exercise nonzero: " + channel)
-		var applied_factors := {passive_id:1.24}
+		var applied_factors: Dictionary = {}
+		applied_factors[passive_id] = 1.24
 		var preview_actor := {"skill_factors":{"__v63_root_skill_effect_factors":applied_factors}}
+		_check(is_equal_approx(V63SpiritualRootEvaluator.attached_skill_effect_factor(preview_actor,passive_id),1.24),
+			"test must apply a real non-neutral root factor to the passive")
 		var after_mods := V63HumanSkillCombatSystem._root_scaled_passive_modifiers(preview_actor,passive_id)
 		_check(absf(float(after_mods.get(channel,0.0))-source_magnitude) < 0.000001,
 			"root cannot multiply a nonzero passive haste/cooldown/crit channel: " + channel)
