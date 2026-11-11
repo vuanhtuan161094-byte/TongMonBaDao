@@ -10,6 +10,9 @@ on:
       - 'godot/src/presentation/uiux/sect_worksite_fx_v1.gd'
       - 'godot/src/presentation/p3/sect_production_worksite_cue.gd'
       - 'godot/scenes/p3/p3_2_landscape_sect.tscn'
+      - 'godot/src/presentation/art05_onegame_cinematic_ui.gd'
+      - 'godot/src/presentation/uiux/sect_premium_panel_v1.gd'
+      - 'godot/tests/presentation/art05_real_gui_layout_test.gd'
       - 'godot/tests/presentation/art02_onegame_visual_contract_test.gd'
       - '.github/workflows/art02-godot-focused.yml'
 permissions:
@@ -53,5 +56,9 @@ jobs:
         run: bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://src/presentation/art02_onegame_visual_layer.gd
       - name: Strict parse animated worksite cue
         run: bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://src/presentation/p3/sect_production_worksite_cue.gd
+      - name: Strict parse ART05 cinematic side panel
+        run: bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://src/presentation/art05_onegame_cinematic_ui.gd
+      - name: ART05 actual OneGame 6 screen compact layout and navigation contract
+        run: bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/presentation/art05_real_gui_layout_test.gd
       - name: Focused ART02 OneGame source-backed visual contract
         run: bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/presentation/art02_onegame_visual_contract_test.gd

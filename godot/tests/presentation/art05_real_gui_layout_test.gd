@@ -42,7 +42,7 @@ func _run() -> void:
             if stock != null:
                 assert(stock.columns == 2,"Warehouse gallery must fit compact dock")
         if destination == SectMapPresentation.DEST_ALCHEMY_HALL:
-            assert(panel.find_child("Art05AlchemyRecipeGrid",true,false) != null,
+            assert(panel.find_child("Art02AlchemyIngredientGallery",true,false) is GridContainer,
                 "Alchemy recipe items should wrap without horizontal clipping")
         checked += 1
     print("ART05 REAL_ONEGAME_VISUAL_LAYOUT PASS screens=",checked)

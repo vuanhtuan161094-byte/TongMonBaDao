@@ -152,7 +152,7 @@ func _art05_repack_galleries() -> void:
     if alchemy != null:
         # Turn an overflowing horizontal recipe strip into a two-column real inventory view.
         var grid := GridContainer.new()
-        grid.name = "Art05AlchemyRecipeGrid"
+        grid.name = "Art02AlchemyIngredientGallery"
         grid.columns = 2
         grid.add_theme_constant_override("h_separation",6)
         grid.add_theme_constant_override("v_separation",6)
