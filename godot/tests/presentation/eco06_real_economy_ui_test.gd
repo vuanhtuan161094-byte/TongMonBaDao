@@ -56,10 +56,20 @@ func _run() -> void:
             return
         if item[1] == BuildingSystem.TYPE_SPIRIT_FIELD:
             var description := str(ui.call("_spirit_field_operation_text"))
-            if not description.contains("ĐỦ PHÍ") \
-                    or not description.contains("chu kỳ nền"):
-                _fail("Spirit Field omitted genuine per-crop seed preflight")
-                return
+            var crops := SpiritCropRegistry.new()
+            for raw_id in crops.eligible_crop_ids(building.level):
+                var crop_id := StringName(raw_id)
+                var cost := crops.cost(crop_id)
+                var prefix := "%s · phí %d LT" % [crops.display_name(crop_id),cost]
+                var expected_mark := "ĐỦ PHÍ" if stones >= cost else "THIẾU LT"
+                var found := false
+                for line in description.split("\n",false):
+                    if prefix in line and expected_mark in line and "chu kỳ nền" in line:
+                        found = true
+                        break
+                if not found:
+                    _fail("Field affordability is not derived from actual Stone balance for "+str(crop_id))
+                    return
     ui.call("_open_building",SectMapPresentation.DEST_WAREHOUSE)
     await process_frame
     var market := ui.find_child("ECO06MarketSummary",true,false) as Label
