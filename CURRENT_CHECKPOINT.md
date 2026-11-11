@@ -1,5 +1,13 @@
 # CURRENT CHECKPOINT — ONE GAME → MAIN (2026-11-04) 
 
+## ECO-02 — TRUTHFUL NPC MARKET, IMPLEMENTED; FOCUSED PASS / CUMULATIVE CHECKING (2026-11-11)
+
+- **CODE SHA `603a21ae9639c89622ae2d5e48981e885b8ce782`**, [PR #72](https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/72) Draft, same branch. [Official Godot 4.7.2 workflow ECO-02 #42980578398](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42980578398): strict import/parse, **ECO02 backend 0-NPC/6-30/warehouse reserve/lock/cold Save/replay FOCUSED SUCCESS**, **1280×720 OneGame UI preview-confirm-purchase SUCCESS**, original Economy-A UI/wages SUCCESS. **CHECK actual O3/O4/O7, O9, O6, P3.6A, FULL P3.7 and whole terminal conclusion before CUMULATIVE PASS.**
+- Market authority: `EconomySystem.sell_quote_v1` read-only checks allowlist, real warehouse stock, reserve/lock, daily NPC quota, max per-sale and fixed sell price; `sell_to_npc_v1` revalidates quote, consumes canonical Warehouse once, credits Sect stones and persistent receipt. `market_daily_units=0` (existing policy, no new Save schema) disables buying/selling even with 30 roster; a rejected NPC buy no longer restocks merchant before validation. Original price **Thanh Thiết 8 LT**, existing 20 daily/6 owned or 240 daily/30 owned and max 5/order retained when enabled.
+- UI: Warehouse/Phường Thị displays real stock/reserve/lock/quantity/price; preview (no debit) → confirm once → exact canonical receipt, cancel without debit. The old Economy-A landscape test now explicitly proves quote has no money/stock effect before confirmation.
+- **Break-even illustration, NOT live financed 30 work slots:** 102 LT/day baseline at 6 active = 13 ore ×8; hypothetical 510 LT/day at 30 paid active = 64 ore ×8, subject to warehouse source and merchant demand. No fake raw material, NPC sale, tax or extra LT was introduced.
+- **Scope locked:** do not change SaveService/shared state/combat/monsters/VFX/skills, no new branch/merge, no r3+ or public LT2/W2/T2. ECO-01 prior exact SHA full PASS unaffected; ECO-02 cumulative is separate. Real Windows 1280×720 and Android landscape **PENDING USER**.
+
 ## ECO-01 GATE A CLOSED — FULL OFFICIAL GODOT QA PASS (2026-11-11 07:20:52 UTC)
 
 - **FULL AUTOMATED QA SUCCESS:** [Official Godot 4.7.2 ECO-01 run #42975723162](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42975723162) on exact game/test SHA `029f4c822f5fa6e9c2a8bb1af0672c9962e11b54`; job `130374228838`, terminal **success**; all steps, including **ECO-01 focused, Economy-A, O3/O4/O7, O9, independent O6, P3.6A, and FULL P3.7**, completed **success**.
