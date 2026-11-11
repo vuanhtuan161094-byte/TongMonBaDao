@@ -88,7 +88,7 @@ func _audit_6_30_rosters_no_npc() -> bool:
         for days in [1,7,30]:
             var legacy_gap := maxi(0,no_npc_day_need*days-first_stones)
             var hypothetical_r12_gap := maxi(0,seeds_per_day*days-first_stones)
-            var no_sale_treasury_delta := -no_npc_day_need*days
+            var no_sale_treasury_delta: int = -no_npc_day_need*int(days)
             var target_legacy := legacy_gap
             var target_r12 := hypothetical_r12_gap
             # Mathematical source conservation: all inflows excluded; T2
