@@ -67,7 +67,7 @@ jobs:
           mkdir -p "$GITHUB_WORKSPACE/eco07-virtual-gui-evidence"
           export LIBGL_ALWAYS_SOFTWARE=1
           xvfb-run -a -s "-screen 0 1280x720x24" bash tools/qa/run_godot_strict.sh \
-            --path godot --rendering-method gl_compatibility --resolution 1280x720 \
+            --path godot --rendering-method gl_compatibility --audio-driver Dummy --resolution 1280x720 \
             -s res://tests/presentation/eco07_virtual_gui_playtest_capture.gd \
             -- "$GITHUB_WORKSPACE/eco07-virtual-gui-evidence"
           test "$(find "$GITHUB_WORKSPACE/eco07-virtual-gui-evidence" -maxdepth 1 -type f -name '*.png' | wc -l)" -eq 7
