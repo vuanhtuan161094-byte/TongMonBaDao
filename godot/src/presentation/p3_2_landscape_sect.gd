@@ -197,6 +197,13 @@ var npc_ambient_delay := 6.0
 var npc_ambient_cursor := 0
 var source_a_portrait_textures: Dictionary = {}
 
+var gp1_guide_panel: Panel
+var gp1_guide_title: Label
+var gp1_guide_description: Label
+var gp1_guide_button: Button
+var gp1_hall_viewed := false
+var gp1_residence_viewed := false
+var gp1_guide_dismissed := false
 var camera_controls_panel: Panel
 var camera_hint: Label
 var disciple_summary_panel: Panel
@@ -357,6 +364,7 @@ func _ready() -> void:
     _build_disciple_summary_panel()
     _build_building_operation_panel()
     _build_construction_ui()
+    _build_gp1_first_minutes_guide()
     _build_living_cue_layer()
     _seed_map_worksite_receipts()
     _refresh_map_worksite_cues()
@@ -490,6 +498,174 @@ func _unhandled_input(event: InputEvent) -> void:
         return
     if event is InputEventMouseMotion:
         _handle_mouse_motion(event as InputEventMouseMotion)
+
+
+# GP1: A contextual map hint, never a second task owner or save authority.
+# No reward, stage flag, or tutorial progression is written to the canonical Save.
+func _build_gp1_first_minutes_guide() -> void:
+    gp1_guide_panel = Panel.new()
+    gp1_guide_panel.name = "Gp1StarterGuide"
+    gp1_guide_panel.position = Vector2(20, 145)
+    gp1_guide_panel.size = Vector2(352, 149)
+    gp1_guide_panel.z_index = 26
+    gp1_guide_panel.mouse_filter = Control.MOUSE_FILTER_STOP
+    gp1_guide_panel.add_theme_stylebox_override("panel",_style(Color(0.95,0.92,0.82,0.97),JADE_DARK,2,12))
+    add_child(gp1_guide_panel)
+
+    gp1_guide_title = _label(gp1_guide_panel,"",Vector2(13,10),Vector2(294,24),15)
+    gp1_guide_title.name = "Gp1GuideTitle"
+    gp1_guide_title.add_theme_color_override("font_color",JADE_DARK)
+    gp1_guide_description = _label(gp1_guide_panel,"",Vector2(13,38),Vector2(325,51),12)
+    gp1_guide_description.name = "Gp1GuideDescription"
+    gp1_guide_description.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+    gp1_guide_description.add_theme_color_override("font_color",INK)
+
+    gp1_guide_button = Button.new()
+    gp1_guide_button.name = "Gp1GuideAction"
+    gp1_guide_button.position = Vector2(13,99)
+    gp1_guide_button.size = Vector2(325,40)
+    gp1_guide_button.add_theme_font_size_override("font_size",14)
+    gp1_guide_button.add_theme_color_override("font_color",PAPER_LIGHT)
+    gp1_guide_button.add_theme_stylebox_override("normal",_style(JADE_DARK,PAPER_LIGHT,1,8))
+    gp1_guide_button.pressed.connect(_gp1_guide_action)
+    gp1_guide_panel.add_child(gp1_guide_button)
+
+    var dismiss := Button.new()
+    dismiss.name = "Gp1GuideDismiss"
+    dismiss.text = "×"
+    dismiss.position = Vector2(310,5)
+    dismiss.size = Vector2(35,33)
+    dismiss.tooltip_text = "Ẩn gợi ý trong phiên chơi hiện tại"
+    dismiss.add_theme_font_size_override("font_size",17)
+    dismiss.pressed.connect(_gp1_dismiss_guide)
+    gp1_guide_panel.add_child(dismiss)
+    _refresh_gp1_first_minutes_guide()
+
+func _gp1_dismiss_guide() -> void:
+    gp1_guide_dismissed = true
+    if gp1_guide_panel != null:
+        gp1_guide_panel.visible = false
+
+func _gp1_first_minutes_model() -> Dictionary:
+    if state == null or not runtime_ready:
+        return {}
+    var roster := state.disciples.size()
+    if roster < 6 or roster > 12:
+        return {}
+    var capacity := state.sect.disciple_capacity
+    if roster <= 6:
+        if not gp1_hall_viewed:
+            return {
+                "stage":"hall","title":"BƯỚC 1/5 · ĐẠI ĐIỆN",
+                "detail":"Khởi lập Tông Môn. Mở Đại Điện xem quản lý trước khi tuyển người.",
+                "button":"MỞ ĐẠI ĐIỆN","action":"hall"
+            }
+        if not gp1_residence_viewed or roster >= capacity:
+            var full := roster >= capacity
+            return {
+                "stage":"housing","title":"BƯỚC 2/5 · ĐỆ TỬ XÁ",
+                "detail":("Đã đủ %d/%d chỗ. Xem điều kiện xây Nhà phụ; vật tư sẽ trừ thật." if full
+                    else "Hiện có %d/%d đệ tử. Nhà khởi đầu còn chỗ, chưa cần xây thêm.") % [roster,capacity],
+                "button":"XEM NHÀ Ở","action":"housing"
+            }
+        return {
+            "stage":"recruit","title":"BƯỚC 3/5 · DẪN TIÊN ĐÀI",
+            "detail":"Đệ tử %d/%d · Chiêu Mộ Lệnh %d. Mở tuyển mộ, chỉ nhận khi còn giường." % [
+                roster,capacity,state.sect.disciple_recruitment_tokens],
+            "button":"MỞ TUYỂN MỘ","action":"recruit"
+        }
+
+    var ids: Array = state.disciples.keys()
+    ids.sort()
+    var eligible_id: StringName = &""
+    var any_unassigned := false
+    var active_building_id: StringName = &""
+    var active_destination: StringName = &""
+    var building_system := BuildingSystem.new()
+    var worksite_types := [
+        BuildingSystem.TYPE_MINE, BuildingSystem.TYPE_LINH_FOREST,
+        BuildingSystem.TYPE_SPIRIT_FIELD
+    ]
+    var sites: Array[BuildingState] = []
+    for building_type in worksite_types:
+        var site: BuildingState = building_system.primary_building(state,building_type)
+        if site != null:
+            sites.append(site)
+    for raw_id in ids:
+        var disciple: DiscipleState = state.disciples[raw_id]
+        if disciple.worksite_building_id != &"" and state.buildings.has(str(disciple.worksite_building_id)):
+            if active_building_id == &"":
+                active_building_id = disciple.worksite_building_id
+                active_destination = _sect_production_destination(
+                    (state.buildings[str(active_building_id)] as BuildingState).building_type)
+            continue
+        if disciple.work_group_id != &"":
+            continue
+        any_unassigned = true
+        for site in sites:
+            if _workforce_candidate_reason(disciple,site,_workforce_occupants(site)).is_empty():
+                eligible_id = disciple.id
+                break
+        if eligible_id != &"":
+            break
+    if eligible_id != &"":
+        return {
+            "stage":"assignment","title":"BƯỚC 4/5 · PHÂN CÔNG",
+            "detail":"Có đệ tử rảnh. Chọn Mỏ, Linh Lâm hoặc Linh Điền đang đủ điều kiện.",
+            "button":"CHỌN NGƯỜI LÀM VIỆC","action":"assignment","disciple_id":eligible_id
+        }
+    if any_unassigned:
+        return {
+            "stage":"blocked","title":"BƯỚC 4/5 · NGƯỜI ĐANG BẬN",
+            "detail":"Chưa có người đủ điều kiện. Xem trạng thái hoặc chờ công việc kết thúc.",
+            "button":"XEM ĐỆ TỬ","action":"disciples"
+        }
+    if active_destination != &"":
+        return {
+            "stage":"production","title":"BƯỚC 5/5 · XEM CÔNG VIỆC",
+            "detail":"Đã có phân công thật. Mở công trình để xem mẻ, số liệu Kho và ETA.",
+            "button":"MỞ CÔNG TRÌNH","action":"production",
+            "building_id":active_building_id,"destination":active_destination
+        }
+    return {}
+
+func _refresh_gp1_first_minutes_guide() -> void:
+    if gp1_guide_panel == null:
+        return
+    var model := _gp1_first_minutes_model()
+    var cover := build_mode_active or _building_operation_is_open() or _popup_is_open() \
+        or _pve_hunt_overlay_is_open()
+    for overlay_name in ["DaiDienScreenV1","DanTienScreenV2","DeTuXaScreenB1V1","DaiDienScreenB1V1"]:
+        if get_node_or_null(overlay_name) != null:
+            cover = true
+    gp1_guide_panel.visible = not gp1_guide_dismissed and not cover and not model.is_empty()
+    if not gp1_guide_panel.visible:
+        return
+    gp1_guide_title.text = str(model.get("title",""))
+    gp1_guide_description.text = str(model.get("detail",""))
+    gp1_guide_button.text = str(model.get("button",""))
+
+func _gp1_guide_action() -> void:
+    var model := _gp1_first_minutes_model()
+    match str(model.get("action","")):
+        "hall":
+            _open_building(SectMapPresentation.DEST_MAIN_HALL)
+        "housing":
+            _open_building(SectMapPresentation.DEST_RESIDENCE)
+        "recruit":
+            _open_building(SectMapPresentation.DEST_GUIDANCE)
+        "assignment":
+            var target_id := StringName(model.get("disciple_id",""))
+            if state.disciples.has(target_id):
+                _open_disciple_quick_assignment(target_id)
+        "disciples":
+            _bottom_action("disciples")
+        "production":
+            var destination := StringName(model.get("destination",""))
+            var building_id := StringName(model.get("building_id",""))
+            if destination != &"" and state.buildings.has(str(building_id)):
+                _open_building(destination,building_id)
+    _refresh_gp1_first_minutes_guide()
 
 func _build_focus_marker() -> void:
     focus_marker = Panel.new()
@@ -986,6 +1162,10 @@ func _open_building(destination: StringName, instance_id: StringName = &"") -> v
     opened_disciple_profile = false
     _close_disciple_summary(true)
     selected_building = destination
+    if destination == SectMapPresentation.DEST_MAIN_HALL:
+        gp1_hall_viewed = true
+    elif destination == SectMapPresentation.DEST_RESIDENCE:
+        gp1_residence_viewed = true
     selected_production_instance_id = &""
     var point := _iso_actor_point(destination)
     if instance_id != &"" and state.buildings.has(str(instance_id)):
@@ -7505,6 +7685,7 @@ func _refresh_all() -> void:
         _refresh_build_mode_panel()
     if _building_operation_is_open():
         _refresh_building_operation_content(building_management_last_sim_tick != state.tick)
+    _refresh_gp1_first_minutes_guide()
 
 func _pve_hunt_overlay_is_open() -> bool:
     if b3_hunt_panel == null or not is_instance_valid(b3_hunt_panel):
