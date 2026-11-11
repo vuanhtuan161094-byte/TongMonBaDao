@@ -150,6 +150,12 @@ static func skill_definitions() -> Dictionary:
             result[str(row.id)] = row.duplicate(true)
     else:
         all_loaded = false
+    var dual_blade := V63DualBladeSkillCombatSystem.load_catalogue()
+    if bool(dual_blade.get("ok", false)):
+        for row in dual_blade.data.skills:
+            result[str(row.id)] = row.duplicate(true)
+    else:
+        all_loaded = false
     if all_loaded:
         _all_skill_definition_cache = result.duplicate(true)
     return result
@@ -180,6 +186,9 @@ static func branch_definitions() -> Dictionary:
     var spear := V63SpearSkillCombatSystem.branch_definitions()
     for branch_id in spear.keys():
         result[str(branch_id)] = spear[branch_id].duplicate(true)
+    var dual_blade := V63DualBladeSkillCombatSystem.branch_definitions()
+    for branch_id in dual_blade.keys():
+        result[str(branch_id)] = dual_blade[branch_id].duplicate(true)
     return result
 
 static func boss_definition(boss_id: String) -> Dictionary:
@@ -210,6 +219,8 @@ static func learn_skill(state: SimulationState, disciple: DiscipleState, skill_i
         return V63BladeSkillCombatSystem.can_learn(definition)
     if str(definition.get("school", "")) == "spear":
         return V63SpearSkillCombatSystem.can_learn(definition)
+    if str(definition.get("school", "")) == "dual_blade":
+        return V63DualBladeSkillCombatSystem.can_learn(definition)
     if definition.is_empty() or not bool(definition.get("archivable",false)):
         return _failure("unknown_or_derived_human_skill")
     var codex_id := str(definition.get("source_codex_id",""))
@@ -286,6 +297,7 @@ static func attach_disciple_loadout(state: SimulationState, actor: Dictionary, p
     actor["v63_sword_combat_enabled"] = V63FeatureGates.is_enabled("sword_skill_combat",preview_overrides)
     actor["v63_blade_combat_enabled"] = V63FeatureGates.is_enabled("blade_skill_combat",preview_overrides)
     actor["v63_spear_combat_enabled"] = V63FeatureGates.is_enabled("spear_skill_combat",preview_overrides)
+    actor["v63_dual_blade_combat_enabled"] = V63FeatureGates.is_enabled("dual_blade_skill_combat",preview_overrides)
     var definitions := skill_definitions()
     var skills: Array = []
     var passives: Array = []
@@ -510,6 +522,7 @@ static func preferred_offensive_range(actor: Dictionary) -> float:
     var basic := maxf(0.0, float(actor.get("range", 1.8)))
     basic = maxf(basic,V63SwordSkillCombatSystem.preferred_offensive_range(actor))
     basic = maxf(basic,V63SpearSkillCombatSystem.preferred_offensive_range(actor))
+    basic = maxf(basic,V63DualBladeSkillCombatSystem.preferred_offensive_range(actor))
     if str(actor.get("side", "")) != "disciple" or str(actor.get("role", "")) not in ["mage", "ranged"]:
         return basic
     if not bool(actor.get("v63_combat_enabled", false)):
@@ -542,6 +555,8 @@ static func _try_human_cast(battle: MapBattleV2, actor: Dictionary, enemy: Dicti
         if str(skill.get("school","")) == "blade" and not V63BladeSkillCombatSystem.can_cast(actor,id):
             continue
         if str(skill.get("school","")) == "spear" and not V63SpearSkillCombatSystem.can_cast(actor,id):
+            continue
+        if str(skill.get("school","")) == "dual_blade" and not V63DualBladeSkillCombatSystem.can_cast(actor,id):
             continue
         if skill.is_empty() or slot not in ["active","ultimate","mobility"] or battle.now < float(ready.get(id,0.0)):
             continue
@@ -752,7 +767,9 @@ static func _cast_record(caster: Dictionary, target: Dictionary, id: String, ski
         "poison_stacks":int(skill.get("poison_stacks",1)),"radius":float(skill.get("radius",0.0)),
         "range":float(skill.get("range",0.0)),"maximum":mini(int(skill.get("target_limit",1)),MAX_TARGETS),
         "hit_count":clampi(int(skill.get("hit_count",1)),1,3),"guard_target_policy":str(skill.get("guard_target_policy","self")),
-        "guard_mode":str(skill.get("guard_mode","mitigation")),"guard_capacity_ratio":clampf(float(skill.get("guard_capacity_ratio",0.0)),0.0,0.8)}
+        "guard_mode":str(skill.get("guard_mode","mitigation")),"guard_capacity_ratio":clampf(float(skill.get("guard_capacity_ratio",0.0)),0.0,0.8),
+        "health_cost_ratio":clampf(float(skill.get("health_cost_ratio",0.0)),0.0,0.08),
+        "health_trade_bonus_ratio":clampf(float(skill.get("health_trade_bonus_ratio",0.0))*root_factor,0.0,1.2)}
     if not boss_id.is_empty():
         cast["v63_boss_id"] = boss_id
     return cast
@@ -767,6 +784,9 @@ static func release_cast(battle: MapBattleV2, cast: Dictionary, caster: Dictiona
         return
     if V63SpearSkillCombatSystem.is_spear_skill(skill_id):
         V63SpearSkillCombatSystem.release_cast(battle,cast,caster)
+        return
+    if V63DualBladeSkillCombatSystem.is_dual_blade_skill(skill_id):
+        V63DualBladeSkillCombatSystem.release_cast(battle,cast,caster)
         return
     if V63DivineSkillCombatSystem.is_divine_skill(skill_id) or V63DivineSkillCombatSystem.is_divine_boss(str(cast.get("v63_boss_id", ""))):
         V63DivineSkillCombatSystem.release_cast(battle, cast, caster)
@@ -800,6 +820,13 @@ static func release_cast_base(battle: MapBattleV2, cast: Dictionary, caster: Dic
         var damage := 0.0
         if effect in ["damage","poison","mark","consume_poison"]:
             var ratio := float(cast.ratio)
+            var dual_blade_trade := str(definition.get("school", "")) == "dual_blade" and float(cast.get("health_cost_ratio", definition.get("health_cost_ratio", 0.0))) > 0.0
+            var health_cost := maxf(0.0,float(caster.get("max_hp",0.0))*clampf(float(cast.get("health_cost_ratio",definition.get("health_cost_ratio",0.0))),0.0,0.08)) if dual_blade_trade else 0.0
+            if dual_blade_trade and float(caster.get("hp",0.0))-health_cost < 1.0:
+                battle._event("skill_miss",{"caster":str(caster.get("id","")),"target":str(target.get("id","")),"skill_id":id,"generation":generation,"lineage":lineage,"reason":"insufficient_hp_for_bounded_trade"})
+                continue
+            if dual_blade_trade:
+                ratio += clampf(float(cast.get("health_trade_bonus_ratio",definition.get("health_trade_bonus_ratio",0.0))),0.0,1.2)
             if effect == "consume_poison":
                 var owned_stacks: Array = target.get("status_effects", {}).get("v63_poison", [])
                 if str(definition.get("school", "")) == "poison":
@@ -815,16 +842,26 @@ static func release_cast_base(battle: MapBattleV2, cast: Dictionary, caster: Dic
             if str(definition.get("school", "")) == "poison":
                 mark_bonus = V63PoisonEvolutionV1.peek_mark_bonus(caster, target, battle.now)
                 counter_bonus = V63PoisonEvolutionV1.peek_cleanse_counter(caster, battle.now)
-            var blade_hit_count := clampi(int(definition.get("hit_count",cast.get("hit_count",1))),1,3) if str(definition.get("school","")) == "blade" and effect == "damage" else 1
-            for blade_hit_index in range(blade_hit_count):
+            var repeated_hit_count := clampi(int(definition.get("hit_count",cast.get("hit_count",1))),1,3) if str(definition.get("school", "")) in ["blade", "dual_blade"] and effect == "damage" else 1
+            for repeated_hit_index in range(repeated_hit_count):
                 if float(target.get("hp",0.0)) <= 0.0:
                     break
-                var strike_ratio := ratio / float(blade_hit_count)
+                var strike_ratio := ratio / float(repeated_hit_count)
                 var strike_damage := battle._deal_direct(caster,target,strike_ratio,"v63_skill",true,str(cast.element),true,id)
                 damage += strike_damage
-                if str(definition.get("school","")) == "blade" and blade_hit_count > 1 and strike_damage > 0.0:
+                if str(definition.get("school","")) == "blade" and repeated_hit_count > 1 and strike_damage > 0.0:
                     battle._event("v63_blade_swing_hit",{"caster":str(caster.id),"target":str(target.id),"skill_id":id,
-                        "hit_index":blade_hit_index+1,"hit_count":blade_hit_count,"damage":strike_damage})
+                        "hit_index":repeated_hit_index+1,"hit_count":repeated_hit_count,"damage":strike_damage})
+                elif str(definition.get("school", "")) == "dual_blade" and strike_damage > 0.0:
+                    battle._event("v63_dual_blade_hit",{"caster":str(caster.id),"target":str(target.id),"skill_id":id,
+                        "hit_index":repeated_hit_index+1,"hit_count":repeated_hit_count,"damage":strike_damage,"branch":str(definition.get("branch", ""))})
+            if dual_blade_trade and damage > 0.0:
+                var hp_before_trade := float(caster.get("hp",0.0))
+                var hp_after_trade := maxf(1.0,hp_before_trade-health_cost)
+                caster["hp"] = hp_after_trade
+                battle._event("v63_dual_blade_hp_trade",{"caster":str(caster.get("id","")),"target":str(target.get("id","")),"skill_id":id,
+                    "hp_before":hp_before_trade,"hp_cost":hp_before_trade-hp_after_trade,"hp_after":hp_after_trade,
+                    "max_hp_ratio":float(cast.get("health_cost_ratio",definition.get("health_cost_ratio",0.0)))})
             if damage > 0.0 and float(target.get("hp", 0.0)) > 0.0 \
                     and str(definition.get("school", "")) == "poison":
                 if mark_bonus > 0.0:
