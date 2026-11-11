@@ -6,3 +6,7 @@
 - Canonical `BuildingSystem.TYPE_ALCHEMY_HALL`, `WarehouseSystem`, `SaveService`, simulation, reward receipts, collision/door anchor and Source A SHA-gated files are left unchanged.
 - Approximate render target: 184x138 pixels at 1280×720; original viewBox 320x240; one **visually authored 3/4 angle only**. Source A originals listed above each have one original sprite, not an authenticated 2-angle pack. Second direction requires a distinct rendered sprite and registration; do NOT fake it with flip_h.
 - Approved Source A 32 SHA-gated assets are untouched. Candidate should only be promoted after original Godot PNG capture side-by-side, atlas correctness, doorway location, device touch and visual owner QA. Repo PNG license/Source A rights remain internal and unverified for redistribution.
+
+## In-world QA: REJECTED
+- SVG Godot import PASS. Dedicated true map screenshot on #43079923522 at zoom 1.35 shows this speculative alchemy building overlapping Source A Forge, with actors visually placed on roof.
+- Removed live candidate mapping. Existing world art/fallback restored. File remains review-only until pivot/footprint/access are correct. Do not label asset production-ready or source-verified.

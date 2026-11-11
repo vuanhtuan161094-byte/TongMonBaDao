@@ -62,16 +62,15 @@ const HOUSE_SIZES := {
 const MAP_D2_CANDIDATE_SITES := {
     "mine":"res://art/map_d2_candidate/mine_worksite_v1.svg",
     "linh_forest":"res://art/map_d2_candidate/linh_forest_worksite_v1.svg",
-    "spirit_field":"res://art/map_d2_candidate/spirit_field_worksite_v1.svg",
-    # AS-BUILD-01 visual-only reconstructed Luyện Đan candidate inspired by Source A 520081 proportions.
-    # Not original Source A and not final/owner approved. Safe fallback stays a diamond when missing.
+    "spirit_field":"res://art/map_d2_candidate/spirit_field_worksite_v1.svg"
+}
+const REIMAGINED_REVIEW_ONLY_SITES := {
     "alchemy_hall":"res://art/reimagined_source_a_v1/alchemy_hall_3q_v1.svg"
 }
 const MAP_D2_SITE_SIZE := {
     "mine":Vector2(166,121),
     "linh_forest":Vector2(166,121),
-    "spirit_field":Vector2(166,121),
-    "alchemy_hall":Vector2(184,138)
+    "spirit_field":Vector2(166,121)
 }
 # PV01 renders sprite artwork at the CENTER of each actual static
 # footprint (not at the map-model origin cell). This is presentation only.
@@ -1444,7 +1443,7 @@ func _draw_building(p: Vector2,kind: String, managed: bool, allow_detail: bool =
             Rect2(p-Vector2(size.x*0.5,size.y*0.79),size),false)
         var candidate_font := ThemeDB.fallback_font
         if candidate_font != null:
-            var label_text := "MỎ" if kind == "mine" else ("LINH LÂM" if kind == "linh_forest" else ("LUYỆN ĐAN" if kind == "alchemy_hall" else "LINH ĐIỀN"))
+            var label_text := "MỎ" if kind == "mine" else ("LINH LÂM" if kind == "linh_forest" else "LINH ĐIỀN")
             var width := candidate_font.get_string_size(label_text,HORIZONTAL_ALIGNMENT_LEFT,-1,12).x
             var anchor := p+Vector2(-width*0.5,23)
             draw_string_outline(candidate_font,anchor,label_text,HORIZONTAL_ALIGNMENT_LEFT,-1,12,2,Color(0.16,0.25,0.20))
