@@ -1107,6 +1107,10 @@ func start_upgrade(state: SimulationState, building_id: StringName, request_id: 
 func process_tick(state: SimulationState) -> void:
     if not state.p3_7_buildings_enabled:
         return
+    # ECO-01 uses the existing Hall BuildingState and scheduler clock. Run
+    # only once per authoritative simulation tick, including offline replay.
+    if state.sect.economy_a_enabled:
+        Eco01OriginVein.new().process_tick(state)
     var ids: Array = state.buildings.keys()
     ids.sort()
     for raw_id in ids:
