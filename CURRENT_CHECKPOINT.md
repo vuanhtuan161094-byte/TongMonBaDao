@@ -1,5 +1,10 @@
 # CURRENT CHECKPOINT — ONE GAME → MAIN (2026-11-04) 
 
+### ART-04 exact source focused Godot PASS (2026-11-11)
+- [ART-04 run #43056837884](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/43056837884) **terminal SUCCESS** on `d48d8d2192b6e68b6a27a42e5a4b243ab666d661`: 11/11 workflow steps SUCCESS including official 4.7.2 import, strict GDScript parsing and 13/13 real OneGame UI illustration tests. The later docs-only commits did not alter that code SHA.
+- [Latest ECO07 virtual GUI+FULL #43056838146](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/43056838146): 7 authentic 1280×720 Linux Mesa screenshots PASS, source-backed ART02 checks PASS, ECO06 UI PASS, 60/90/180 simulated offline cold Save PASS, Field/Alchemy PASS, PvE entry PASS; O6 release rehearsal and FULL P3.7 still running at last check. Art04 cumulative FULL and physical Windows/Android remains PENDING until terminal checks / physical user test.
+
+
 ## ART-01–ART-04 VISUAL POLISH ON REAL GODOT — CODE IMPLEMENTED / ART04 GUI QA PENDING (2026-11-11)
 - Owner requested prettier OneGame panels, real illustrated items/products, thin colored progress bars with real time and production atmospheric animation. Implemented on PR #72 in the **existing canonical Godot 4.7.2 scene** (not HTML), preserving Draft/single branch; scene inherits original gameplay presenter through `godot/src/presentation/art02_onegame_visual_layer.gd`.
 - UI implementation at [`d48d8d21`](https://github.com/vuanhtuan161094-byte/TongMonBaDao/commit/d48d8d2192b6e68b6a27a42e5a4b243ab666d661): original code-drawn `art01_resource_atlas.svg` 19 registered 128px pictorial item cells; canonical resource-ID mapping; Mine/Forest selector icons; resource job cards; Spirit Field plot crop images; stock-only Warehouse gallery; selected actual Alchemy recipe inputs/output; slim 7px colored progress with authoritative ETA; source-active-only 6px animated world badges; real warehouse settled receipt bursts; unique Alchemy/Warehouse/Forge/Cultivation/Medicine/Body Training ambient vector scenes and shared jade/gold management-panel filigree.
