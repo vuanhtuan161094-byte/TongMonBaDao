@@ -1,5 +1,14 @@
 # NEXT CHAT / CODEX HANDOFF — RELEASE TRAIN PR #72 → MAIN (2026-11-04)
 
+## ECO-01 GATE A CLOSED — FULL OFFICIAL GODOT QA PASS (2026-11-11 07:20:52 UTC)
+
+- **FULL AUTOMATED QA SUCCESS:** [Official Godot 4.7.2 ECO-01 run #42975723162](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42975723162) on exact game/test SHA `029f4c822f5fa6e9c2a8bb1af0672c9962e11b54`; job `130374228838`, terminal **success**; all steps, including **ECO-01 focused, Economy-A, O3/O4/O7, O9, independent O6, P3.6A, and FULL P3.7**, completed **success**.
+- **Same tested game source as PR HEAD:** `51de1576b2aaa2f41205c68b6939b01997199bcc` was two commits ahead, changing only these checkpoint/handoff Markdown files. No ECO-01/game source or QA script changes between exact-tested SHA and reviewed HEAD.
+- **Function evidence:** Main Hall real free-to-start 60-tick job from 0 Sect LT, 1,000 LT gross, current 2 LT canonical wage transfer (998 LT Sect net), one payout per Sect / 1,440 ticks with canonical persistent receipts, worker lock, injury/forged job/overflow/duplicate replay guards, cold Save/Reload and offline 60 minutes. Negative-path assertions and Hall UI flow **PASS**.
+- Prior red run `#42960180733` failed at unrelated V63 test syntax `v63_root_v2_runtime_test.gd:204` in P3.7, corrected before #42975723162. **Do not attribute old failure to ECO income.**
+- **Scope:** ECO-01 GATE A technical acceptance **CLOSED**. This is **not physical release/game acceptance**: Windows real PC 1280×720 and Android landscape physical **PENDING USER**. PR #72 remains Draft/open; no merge, no new branch, no ECO-02 activation, player LT2/W2/T2 **HOLD**, no r3+ or SaveService/combat/VFX changes.
+- Evidence registered in [PR #72 acceptance comment](https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/72#issuecomment-6789464592).
+
 ## ECO-00 → ECO-01 LIVE STATUS — reconnect 2026-11-11 (supersedes historical PLAN ONLY below)
 
 - **ECO-01 RUNTIME CODE PRESENT, NOT YET CUMULATIVE ACCEPTED.** PR #72 branch `integration/pve-p0-playable-ui-20261103`. Existing [implementation/test SHA `75c01285`](https://github.com/vuanhtuan161094-byte/TongMonBaDao/commit/75c01285a79b64bcae51a081d6462a6322e49b3e) anchors a real 0-LT Hall/Origin Vein job, one eligible 60-tick worker, 1,000 LT gross/2 LT genuine wage, per-Sect 1,440-tick cooldown, active-job lock, real receipt, Save/Reload and offline settlement; no SaveService/shared state schema mutation and no fabricated Warehouse output.
