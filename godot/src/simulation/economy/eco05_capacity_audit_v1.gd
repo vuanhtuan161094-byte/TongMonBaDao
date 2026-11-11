@@ -28,7 +28,16 @@ func _producer_count(state: SimulationState, kind: StringName) -> Dictionary:
         if site.instance_index > 1:
             var receipt: Dictionary = site.production_state.get("v57_paid_cost",{})
             var request := str(site.production_state.get("v57_build_request_id",""))
-            if request.is_empty() or receipt.is_empty() or receipt != buildings.production_annex_cost(kind,site.instance_index):
+            # JSON cold Save normalizes numeric int prices to float; compare
+            # canonical integer values by key, never raw Dictionary equality.
+            var authored := buildings.production_annex_cost(kind,site.instance_index)
+            var valid_receipt := not request.is_empty() and not receipt.is_empty()
+            for raw_id in authored.keys():
+                if not receipt.has(raw_id) or not (receipt[raw_id] is int or receipt[raw_id] is float) \
+                        or float(receipt[raw_id]) != float(authored[raw_id]):
+                    valid_receipt = false
+                    break
+            if not valid_receipt:
                 continue
             paid += 1
         count += 1
