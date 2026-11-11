@@ -48,6 +48,8 @@ func _run() -> void:
 
     if not _verify_demo_task_rail_removed():
         return
+    if not _verify_gp1_read_only_guide():
+        return
     if not _verify_bottom_bar_has_only_real_entries():
         return
     if not _verify_building_tokens_are_player_readable():
@@ -87,6 +89,41 @@ func _verify_demo_task_rail_removed() -> bool:
     var leaked := _find_text_fragment(ui, "Chương 1")
     if leaked != "":
         return _fail("Demo chapter/checklist text is still visible: %s" % leaked)
+    return true
+
+func _verify_gp1_read_only_guide() -> bool:
+    var guide := ui.find_child("Gp1StarterGuide",true,false) as Panel
+    var first: Dictionary = ui.call("_gp1_first_minutes_model")
+    if guide == null or not guide.visible or str(first.get("stage","")) != "hall":
+        return _fail("GP1 real NewGame did not show contextual Hall guidance.")
+    var stones_before := state.sect.spirit_stones
+    var tokens_before := state.sect.disciple_recruitment_tokens
+    var roster_before := state.disciples.size()
+    var warehouse_before := WarehouseSystem.new().quantity(state,&"thanh_thiet")
+    ui.call("_refresh_gp1_first_minutes_guide")
+    if not guide.visible:
+        return _fail("GP1 guide disappeared on read-only refresh.")
+    var real_button := guide.get_node_or_null("Gp1GuideAction") as Button
+    if real_button == null or real_button.disabled or real_button.pressed.get_connections().is_empty():
+        return _fail("GP1 guidance must use a connected, actionable real map command.")
+    real_button.pressed.emit()
+    if ui.get("selected_building") != SectMapPresentation.DEST_MAIN_HALL:
+        return _fail("GP1 Hall guidance did not open the actual Hall building.")
+    ui.call("_close_building_operation_panel",true)
+    var housing: Dictionary = ui.call("_gp1_first_minutes_model")
+    if str(housing.get("stage","")) != "housing" or not str(housing.get("detail","")).contains("chưa cần xây thêm"):
+        return _fail("GP1 incorrectly made the optional second Residence mandatory.")
+    ui.call("_gp1_guide_action")
+    if ui.get("selected_building") != SectMapPresentation.DEST_RESIDENCE:
+        return _fail("GP1 housing guidance did not open canonical Residence.")
+    ui.call("_close_building_operation_panel",true)
+    var recruit: Dictionary = ui.call("_gp1_first_minutes_model")
+    if str(recruit.get("stage","")) != "recruit":
+        return _fail("GP1 house-to-recruit context is not derived from real capacity.")
+    if state.sect.spirit_stones != stones_before or state.sect.disciple_recruitment_tokens != tokens_before \
+            or state.disciples.size() != roster_before \
+            or WarehouseSystem.new().quantity(state,&"thanh_thiet") != warehouse_before:
+        return _fail("Read-only GP1 guide mutated money, Warehouse, tokens or roster.")
     return true
 
 func _verify_bottom_bar_has_only_real_entries() -> bool:
