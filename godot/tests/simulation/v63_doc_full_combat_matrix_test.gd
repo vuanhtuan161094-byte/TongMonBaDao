@@ -50,6 +50,7 @@ func _run() -> void:
     _probe_mobility("divine")
     _probe_rotation()
     _probe_kill_receipt()
+    _probe_root_v2_contract()
     _check(V63FeatureGates.all_disabled(), "release feature gates changed during isolated tests")
     _check(matrix_ids.size() == 183, "Doc catalogue matrix did not enumerate all 183 IDs")
     _check(action_cases == 81, "active/ultimate probe count mismatch: "+str(action_cases))
@@ -592,3 +593,67 @@ func _probe_kill_receipt() -> void:
     _check(hit_seen and kill_seen and float(battle.actors["doc_kill_target"].hp)<=0.0,
         "Doc active did not produce a real HP0/continuous PvE kill receipt")
 
+
+func _probe_root_v2_contract() -> void:
+    var legacy_empty := V63SpiritualRootEvaluator.evaluate_base_roots({})
+    _check(bool(legacy_empty.get("ok", false)) and bool(legacy_empty.get("legacy_unmigrated", false)),
+        "legacy no-root data should derive neutral without migration")
+    _check(float(legacy_empty.get("resonance_multiplier", 0.0)) == 1.0
+        and float(legacy_empty.get("total_contributions", {}).get("all_damage", -1.0)) == 0.0,
+        "no-root legacy record must have neutral contribution")
+
+    var single_root := V63SpiritualRootEvaluator.evaluate_base_roots({"fire": 80})
+    _check(bool(single_root.get("ok", false)) and int(single_root.get("root_count", 0)) == 1,
+        "one valid base root should evaluate")
+    var fire_root: Dictionary = single_root.get("roots", {}).get("fire", {})
+    _check(absf(float(fire_root.get("matching", {}).get("skill_effect", 0.0)) - 0.24) < 0.000001,
+        "P=80 matching skill candidate should be +24% before resonance")
+    _check(int(single_root.get("perfected_root_count", -1)) == 0,
+        "purity 80 is not a perfected root")
+
+    var two_perfected := V63SpiritualRootEvaluator.evaluate_base_roots({"metal": 100, "fire": 100})
+    _check(absf(float(two_perfected.get("resonance_multiplier", 0.0)) - 1.25) < 0.000001,
+        "two perfected roots use table multiplier, not chained multiplication")
+    var fire_bonus := V63SpiritualRootEvaluator.matching_skill_effect_bonus(
+        {"metal": 100, "fire": 100}, "fire")
+    _check(bool(fire_bonus.get("matched", false))
+        and absf(float(fire_bonus.get("bonus", 0.0)) - 0.375) < 0.000001,
+        "single element bonus should apply purity and resonance once")
+    var unmatched := V63SpiritualRootEvaluator.matching_skill_effect_bonus({"fire": 80}, "metal")
+    _check(bool(unmatched.get("ok", false)) and not bool(unmatched.get("matched", true))
+        and float(unmatched.get("bonus", -1.0)) == 0.0,
+        "unmatched base root must not produce a skill bonus")
+
+    var multi := V63SpiritualRootEvaluator.required_multi_element_skill_effect_bonus(
+        {"metal": 100, "fire": 50}, ["metal", "fire"])
+    _check(bool(multi.get("compatible", false))
+        and absf(float(multi.get("effective_purity", 0.0)) - 60.0) < 0.000001
+        and absf(float(multi.get("bonus", 0.0)) - 0.198) < 0.000001,
+        "multi-element bonus must use weakest/average rule once")
+    var missing_required := V63SpiritualRootEvaluator.required_multi_element_skill_effect_bonus(
+        {"fire": 80}, ["metal", "fire"])
+    _check(bool(missing_required.get("ok", false)) and not bool(missing_required.get("compatible", true)),
+        "multi-element requirement must report missing roots without granting bonus")
+
+    var invalid_root := V63SpiritualRootEvaluator.evaluate_base_roots({"lightning": 100})
+    var zero_purity := V63SpiritualRootEvaluator.evaluate_base_roots({"metal": 0})
+    var overflow_purity := V63SpiritualRootEvaluator.evaluate_base_roots({"wood": 101})
+    var fractional_purity := V63SpiritualRootEvaluator.evaluate_base_roots({"earth": 80.5})
+    _check(not bool(invalid_root.get("ok", true)), "Dị element must not be accepted as base root")
+    _check(not bool(zero_purity.get("ok", true)) and not bool(overflow_purity.get("ok", true))
+        and not bool(fractional_purity.get("ok", true)), "purity must be integer 1..100")
+
+    var counter_pairs := [
+        ["metal", "wood", 1.25], ["wood", "earth", 1.25], ["earth", "water", 1.25],
+        ["water", "fire", 1.25], ["fire", "metal", 1.25],
+        ["wood", "metal", 0.85], ["earth", "wood", 0.85], ["water", "earth", 0.85],
+        ["fire", "water", 0.85], ["metal", "fire", 0.85]
+    ]
+    for pair in counter_pairs:
+        _check(absf(V63SpiritualRootEvaluator.elemental_matchup_factor(
+            str(pair[0]), str(pair[1])) - float(pair[2])) < 0.000001,
+            "elemental counter direction " + str(pair))
+    _check(V63SpiritualRootEvaluator.elemental_matchup_factor("neutral", "metal") == 1.0
+        and V63SpiritualRootEvaluator.elemental_matchup_factor("lightning", "metal") == 1.0,
+        "neutral and advanced elements must not create a base matchup")
+    _check(V63FeatureGates.all_disabled(), "root evaluator must not enable V63 gates")
