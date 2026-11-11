@@ -149,11 +149,16 @@ func _run() -> void:
     var cold := SaveService.new().load_from_path(SAVE_PATH)
     if not _check(cold != null,"Canonical cold reload failed"): return
     var cold_audit := audit.inspect(cold)
+    var cold_replay := buildings.build_paid_production_annex(cold,
+        BuildingSystem.TYPE_MINE,"eco05-paid-mine")
+    var cold_errors := cold.validate_invariants()
+    print("ECO05_COLD_DIAGNOSTIC slots=",cold_audit.get("producer_slots",-1),
+        " audit=",cold_audit,
+        " replay=",cold_replay," invariants=",cold_errors)
     if not _check(int(cold_audit.get("producer_slots",-1)) == 16
         and not bool(cold_audit.get("paid_capacity_30",true))
-        and bool(buildings.build_paid_production_annex(cold,
-            BuildingSystem.TYPE_MINE,"eco05-paid-mine").get("already_settled",false))
-        and cold.validate_invariants().is_empty(),
+        and bool(cold_replay.get("already_settled",false))
+        and cold_errors.is_empty(),
         "Cold Save invented slots, lost receipt or broke invariants"): return
 
     # 1/7/30 source-backed sensitivity uses the true 60m Mine/Forest
