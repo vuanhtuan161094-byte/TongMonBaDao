@@ -221,4 +221,3 @@ static func preferred_offensive_range(actor: Dictionary) -> float:
 
 static func release_cast(battle: MapBattleV2, cast: Dictionary, caster: Dictionary) -> void:
 	V63HumanSkillCombatSystem.release_cast_base(battle, cast, caster)
-
