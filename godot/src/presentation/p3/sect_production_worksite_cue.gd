@@ -4,6 +4,7 @@ extends Control
 # Small, read-only map badge. Never schedules work, mutates BuildingState,
 # pays wages, settles inventory, or infers the outcome of a growing crop.
 const CARD_SIZE := Vector2(202.0,110.0)
+const ART03_FLOW = preload("res://src/presentation/uiux/sect_worksite_fx_v1.gd")
 const INK := Color(0.16,0.14,0.11,1.0)
 const PAPER := Color(0.96,0.92,0.80,0.97)
 const JADE := Color(0.17,0.40,0.31,1.0)
@@ -19,6 +20,7 @@ var receipt: Label
 var receipt_tween: Tween
 var delivery_item_label := "sản phẩm"
 var last_display_signature := ""
+var art03_flow: Control
 
 func _ready() -> void:
     size = CARD_SIZE
@@ -36,6 +38,13 @@ func _ready() -> void:
     style.set_corner_radius_all(7)
     background.add_theme_stylebox_override("panel",style)
     add_child(background)
+
+    art03_flow = ART03_FLOW.new()
+    art03_flow.name = "Art03CanonicalWorkingFX"
+    art03_flow.position = Vector2.ZERO
+    art03_flow.size = CARD_SIZE
+    art03_flow.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    add_child(art03_flow)
 
     heading = Label.new()
     heading.name = "WorksiteHeading"
@@ -79,8 +88,8 @@ func _ready() -> void:
 
     progress = ProgressBar.new()
     progress.name = "WorksiteProgress"
-    progress.position = Vector2(8,92)
-    progress.size = Vector2(150,12)
+    progress.position = Vector2(8,95)
+    progress.size = Vector2(150,6)
     progress.max_value = 100.0
     progress.show_percentage = false
     progress.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -177,7 +186,10 @@ func display(snapshot: Dictionary) -> void:
     progress.value = fraction
     var fill := progress.get_theme_stylebox("fill") as StyleBoxFlat
     if fill != null:
-        fill.bg_color = PENDING_COLOR if waiting else JADE
+        var source_color := Color(0.88,0.61,0.27,1.0) if title_text.begins_with("Mỏ") else (Color(0.25,0.70,0.53,1.0) if title_text.begins_with("Linh Lâm") else Color(0.36,0.68,0.91,1.0))
+        fill.bg_color = PENDING_COLOR if waiting else source_color
+        if art03_flow != null:
+            art03_flow.call("set_activity",active and not waiting,source_color)
     progress.tooltip_text = "Chờ scheduler kết toán, chưa nhập kho" if waiting else detail_text
     percentage.text = "%d%%" % roundi(fraction) if active else "—"
     percentage.tooltip_text = progress.tooltip_text
@@ -187,6 +199,8 @@ func show_delivered(amount: int) -> void:
         return
     if receipt_tween != null and receipt_tween.is_valid():
         receipt_tween.kill()
+    if art03_flow != null:
+        art03_flow.call("show_receipt_burst")
     receipt.text = "+%d %s → Kho" % [amount,delivery_item_label]
     receipt.tooltip_text = "+%d %s đã nhập kho" % [amount,delivery_item_label]
     receipt.visible = true
