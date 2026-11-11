@@ -101,24 +101,38 @@ func _test_save_replay_and_cooldown() -> bool:
     if not _check(not bool(vein.start(state,worker_id).get("ok",false)),
         "24h cap bypassed one tick early"): return false
     state.tick = ready
-    var second := vein.start(state,worker_id)
+    # The original worker can legitimately have started another real Mine or
+    # Forest timer after first settlement. Choose an actually idle disciple,
+    # never override an existing job merely to make this QA pass.
+    var ready_workers := vein.eligible_workers(state)
+    if not _check(not ready_workers.is_empty(),
+        "all real workers occupied at cooldown: "+str(state.disciples.size())): return false
+    var second_worker_id := ready_workers[0]
+    var second := vein.start(state,second_worker_id)
     var second_id := str(second.get("job_id",""))
     if not _check(bool(second.get("ok",false))
-        and second_id != job_id and not bool(vein.start(state,worker_id).get("ok",false)),
-        "cannot start one new valid job after cooldown"): return false
-    if not _check(bool(vein.cancel(state,worker_id,second_id).get("ok",false))
+        and second_id != job_id
+        and not bool(vein.start(state,second_worker_id).get("ok",false)),
+        "cannot start one new eligible worker after cooldown: "+str(second)): return false
+    if not _check(bool(vein.cancel(state,second_worker_id,second_id).get("ok",false))
         and state.sect.spirit_stones == money_after
         and not state.sect.economy_a_receipts.has(Eco01OriginVein.RECEIPT_PREFIX+second_id),
         "aborted job generated cash"): return false
-    var third := vein.start(state,worker_id)
+    var third := vein.start(state,second_worker_id)
     if not _check(bool(third.get("ok",false)),
-        "after cancellation a genuine worker should be recoverable"): return false
+        "after cancellation a genuine worker should be recoverable: "+str(third)): return false
+    var total_before := state.sect.spirit_stones
+    for member in state.disciples.values():
+        total_before += (member as DiscipleState).spirit_stones
     scheduler = SimulationScheduler.new(state)
     scheduler.run_ticks(60)
-    if not _check(state.sect.spirit_stones == money_after+998
+    var total_after := state.sect.spirit_stones
+    for member in state.disciples.values():
+        total_after += (member as DiscipleState).spirit_stones
+    if not _check(total_after-total_before == 1000
         and int(state.sect.economy_a_receipts.get(
             Eco01OriginVein.RECEIPT_PREFIX+str(third.get("job_id","")),{}).get("gross",-1)) == 1000,
-        "second day genuine job not paid exactly once"): return false
+        "second day genuine external 1000 gross not conserved"): return false
     if not _check(saver.save_to_path(state,SAVE_PATH) == OK,
         "post-settlement Save failed"): return false
     var loaded := saver.load_from_path(SAVE_PATH)
