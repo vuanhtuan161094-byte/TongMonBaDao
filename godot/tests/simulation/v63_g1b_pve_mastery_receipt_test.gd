@@ -142,6 +142,20 @@ func _real_pve_and_disk_replay() -> bool:
         if not _check(run.battle.actors[disciple_id].get("linked_disciple",null) == null,
                 "live PvE actor must remain detached from DiscipleState"):
             return false
+    var authentic_monsters := 0
+    for actor_value in run.battle.actors.values():
+        var opponent: Dictionary = actor_value
+        if str(opponent.get("side","")) != "monster":
+            continue
+        authentic_monsters += 1
+        var source: Dictionary = MonsterCatalogueV2.SPECIES.get(str(opponent.get("species_id","")),{})
+        if not _check(not source.is_empty()
+                and str(opponent.get("primary_element","")) == str(source.get("element",""))
+                and CombatStatsV2.ELEMENTS.has(str(source.get("element",""))),
+                "real HuntingPveRunV2 target must inherit actual species element"):
+            return false
+    if not _check(authentic_monsters > 0, "real PvE encounter must spawn catalogue monsters"):
+        return false
     var finished := run.finish(400)
     if not _check(bool(finished.get("ok",false)) or
             str(finished.get("reason","")) == "encounter_still_active",
