@@ -3898,6 +3898,38 @@ func _legacy_carry_cycle_rows(building: BuildingState) -> Array[Dictionary]:
     )
     return result
 
+# ECO-06 uses canonical BuildingSystem and Warehouse for a compact readable
+# source/ETA/worker summary. Assigned workers != funded active positions.
+func _eco06_site_text(site: BuildingState) -> String:
+    if site == null or state == null:
+        return "Chưa có dữ liệu công trình thật."
+    var system := BuildingSystem.new()
+    var assigned := system.assigned_worker_ids(state,site)
+    var active := system.active_worker_ids(state,site)
+    var actual_slots := system.worker_slots(site)
+    var progress := _map_worksite_snapshot(site)
+    var detail := str(progress.get("detail","Chưa có mẻ đang chạy"))
+    var material := "Mẻ đang chạy chưa phải sản lượng đã nhập Kho."
+    if site.building_type == BuildingSystem.TYPE_MINE or site.building_type == BuildingSystem.TYPE_LINH_FOREST:
+        var resource: StringName = system.mine_selected_ore(site) if site.building_type == BuildingSystem.TYPE_MINE else system.forest_selected_material(site)
+        var qty := system.mine_ore_batch_units(site,resource) if site.building_type == BuildingSystem.TYPE_MINE else system.forest_material_batch_units(site,resource)
+        var bulk_plan := system.sx_v55_plan(state,site,resource)
+        if not bulk_plan.is_empty():
+            qty = maxi(1,int(round(float(bulk_plan.get("yield",0)) * (
+                1.0+0.005*float(maxi(site.level-1,0))))))
+        var usable := WarehouseSystem.new().available_quantity(state,resource)
+        material = "Mẻ mới: %s ×%d · trong Kho dùng được %d." % [
+            ResourceRegistry.new().display_name(resource),qty,usable
+        ]
+    elif site.building_type == BuildingSystem.TYPE_SPIRIT_FIELD:
+        material = "Phí gieo từng cây trừ từ quỹ thật; mẻ đang trồng chưa nhập Kho."
+    return (
+        "NHÂN CÔNG: %d/%d chỗ hoạt động · %d đã gán\n"
+        + "%s\n"
+        + "TIẾN ĐỘ: %s\n"
+        + "LT2/W2/T2 nâng cao: CHƯA MỞ cho người chơi."
+    ) % [active.size(),actual_slots,assigned.size(),material,detail]
+
 func _refresh_building_operation_live(operation_text: String) -> void:
     for child in building_operation_live_content.get_children():
         building_operation_live_content.remove_child(child)
@@ -3918,6 +3950,14 @@ func _refresh_building_operation_live(operation_text: String) -> void:
         SectMapPresentation.DEST_LINH_FOREST,
         SectMapPresentation.DEST_SPIRIT_FIELD
     ]:
+        var eco06_summary := Label.new()
+        eco06_summary.name = "ECO06WorksiteSummary"
+        eco06_summary.text = _eco06_site_text(building)
+        eco06_summary.custom_minimum_size = Vector2(548,108)
+        eco06_summary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+        eco06_summary.add_theme_font_size_override("font_size",12)
+        eco06_summary.add_theme_color_override("font_color",JADE_DARK)
+        building_operation_live_content.add_child(eco06_summary)
         var snapshot := _map_worksite_snapshot(building)
         building_operation_progress = ProgressBar.new()
         building_operation_progress.name = "CanonicalWorksiteProgress"
@@ -7064,11 +7104,12 @@ func _spirit_field_operation_text() -> String:
     var crop_lines: Array[String] = []
     for crop_id in spirit_crop_registry.eligible_crop_ids(field.level):
         var bulk_crop := buildings.sx_v55_plan(state,field,crop_id)
-        crop_lines.append("• %s · phí %d LT · chu kỳ nền %d nhịp · sản lượng nền %d" % [
+        crop_lines.append("• %s · phí %d LT · chu kỳ nền %d nhịp · sản lượng nền %d · %s" % [
             spirit_crop_registry.display_name(crop_id),
             spirit_crop_registry.cost(crop_id),
             int(bulk_crop.get("cycle_ticks",spirit_crop_registry.base_cycle_ticks(crop_id))),
-            int(bulk_crop.get("yield",spirit_crop_registry.base_yield(crop_id)))
+            int(bulk_crop.get("yield",spirit_crop_registry.base_yield(crop_id))),
+            "ĐỦ PHÍ" if state.sect.spirit_stones >= spirit_crop_registry.cost(crop_id) else "THIẾU LT"
         ])
 
     var batches := maxi(int(field.metrics.get("production_batches",0)),0)
