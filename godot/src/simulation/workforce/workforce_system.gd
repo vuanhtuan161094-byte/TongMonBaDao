@@ -111,6 +111,8 @@ func assign_group(state: SimulationState, disciple_id: StringName, group_id: Str
     if group_id != &"" and not state.sect.work_groups.has(str(group_id)):
         return false
     var disciple: DiscipleState = state.disciples[disciple_id]
+    if Eco01OriginVein.owns_worker(disciple):
+        return false
     if PveInjuryTreatmentV1.treatment_in_progress(state,disciple):
         return false
     if not disciple.active_pve_encounter_id.is_empty():
@@ -162,6 +164,8 @@ func assign_worksite(state: SimulationState, disciple_id: StringName, building_i
     if not state.sect.workforce_enabled or not state.disciples.has(disciple_id):
         return false
     var disciple: DiscipleState = state.disciples[disciple_id]
+    if Eco01OriginVein.owns_worker(disciple):
+        return false
     if PveInjuryTreatmentV1.treatment_in_progress(state,disciple):
         return false
     if state.sect.economy_a_enabled and not building_system.active_resource_timer_for_worker(state,disciple.id).is_empty() and building_id != disciple.worksite_building_id:
@@ -275,6 +279,8 @@ func issue_command(state: SimulationState, disciple_id: StringName, kind: String
         return false
     var disciple: DiscipleState = state.disciples[disciple_id]
 
+    if Eco01OriginVein.owns_worker(disciple):
+        return false
     if PveInjuryTreatmentV1.treatment_in_progress(state,disciple):
         return false
     if not disciple.active_pve_encounter_id.is_empty():
@@ -343,6 +349,10 @@ func command_target(disciple: DiscipleState) -> StringName:
     return StringName(disciple.direct_command.get("target", ""))
 
 func next_action(state: SimulationState, disciple: DiscipleState) -> StringName:
+    # An ECO-01 Hall job reserves the canonical active_job_id across scheduler
+    # ticks; the actor cannot run another work/cultivation cycle simultaneously.
+    if Eco01OriginVein.owns_worker(disciple):
+        return &"HOLD"
     if PveInjuryTreatmentV1.treatment_in_progress(state,disciple):
         return &"HOLD"
     if not disciple.active_pve_encounter_id.is_empty():
@@ -480,6 +490,8 @@ func choose_work_profession(state: SimulationState, disciple: DiscipleState) -> 
     return best
 
 func perform_work(state: SimulationState, disciple: DiscipleState, profession_id: StringName) -> Dictionary:
+    if Eco01OriginVein.owns_worker(disciple):
+        return {"ok":false,"reason":"eco01_origin_vein_worker_reserved"}
     if PveInjuryTreatmentV1.treatment_in_progress(state,disciple):
         return {"ok":false,"reason":"injury_treatment_time_reserved"}
     if not disciple.active_pve_encounter_id.is_empty():
