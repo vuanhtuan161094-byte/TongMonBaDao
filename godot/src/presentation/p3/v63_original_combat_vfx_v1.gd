@@ -1,7 +1,7 @@
 class_name V63OriginalCombatVfxV1
 extends Control
 
-const CUES := ["telegraph", "v63_skill_hit", "skill_cast", "skill_release", "v63_mobility", "v63_sword_guard_reflect", "v63_boss_phase", "boss_counter_hit", "status_applied"]
+const CUES := ["telegraph", "v63_skill_hit", "skill_cast", "skill_release", "v63_mobility", "v63_sword_guard_reflect", "v63_blade_swing_hit", "v63_blade_guard_reflect", "v63_boss_phase", "boss_counter_hit", "status_applied"]
 var _cue_kind := ""
 var _cue_started := 0.0
 var _event_cursor := 0
@@ -19,14 +19,23 @@ func consume_battle_events(battle: MapBattleV2) -> void:
     if battle == null:
         return
     var newest: Dictionary = {}
+    var newest_blade_swing_by_skill: Dictionary = {}
     for index in range(battle.events.size()):
         var event: Dictionary = battle.events[index]
         var sequence := int(event.get("sequence", index + 1))
         if sequence <= _event_cursor:
             continue
         _event_cursor = maxi(_event_cursor, sequence)
-        if CUES.has(str(event.get("type", ""))):
+        var event_type := str(event.get("type", ""))
+        var event_skill_id := str(event.get("skill_id", ""))
+        if CUES.has(event_type):
             newest = event
+        if event_type == "v63_blade_swing_hit":
+            newest_blade_swing_by_skill[event_skill_id] = event
+    if str(newest.get("type", "")) == "v63_skill_hit":
+        var newest_skill_id := str(newest.get("skill_id", ""))
+        if newest_blade_swing_by_skill.has(newest_skill_id):
+            newest = newest_blade_swing_by_skill[newest_skill_id]
     if not newest.is_empty():
         _cue_event = newest.duplicate(true)
         _cue_kind = str(newest.get("type", ""))
@@ -34,11 +43,11 @@ func consume_battle_events(battle: MapBattleV2) -> void:
         _cue_animation_key = ""
         _cue_vfx_key = ""
         _cue_effect = ""
-        if _cue_skill_id.begins_with("tmb.skill.sword."):
+        if _cue_skill_id.begins_with("tmb.skill.sword.") or _cue_skill_id.begins_with("tmb.skill.blade."):
             var definition := V63HumanSkillCombatSystem.skill_definition(_cue_skill_id)
             _cue_animation_key = str(definition.get("animation_key",""))
             _cue_vfx_key = str(definition.get("vfx_key",""))
-            _cue_effect = str(definition.get("effect",""))
+            _cue_effect = str(newest.get("status",definition.get("effect","")))
         _cue_started = Time.get_ticks_msec() / 1000.0
         queue_redraw()
 
@@ -62,6 +71,9 @@ func _draw() -> void:
     var alpha := (1.0 - age) * 0.92
     if _cue_skill_id.begins_with("tmb.skill.sword."):
         _draw_sword(center, age, alpha)
+        return
+    if _cue_skill_id.begins_with("tmb.skill.blade."):
+        _draw_blade(center, age, alpha)
         return
     var color := _cue_color(_cue_kind)
     color.a = alpha
@@ -121,6 +133,57 @@ func _draw_sword(center: Vector2, age: float, alpha: float) -> void:
         draw_line(center + Vector2(-pulse, pulse * 0.45), center + Vector2(pulse, -pulse * 0.45), color, 2.6, true)
         draw_arc(center, 4.0 + pulse * 0.3, 0.0, TAU, 24, color, 1.5, true)
 
+func _draw_blade(center: Vector2, age: float, alpha: float) -> void:
+    var branch := _blade_branch(_cue_skill_id)
+    var color := _cue_color(_cue_kind)
+    var pulse := 7.0 + 25.0 * age
+    var ultimate := _cue_vfx_key.contains("ultimate")
+    color.a = alpha
+    if branch == "cuong_dao":
+        # Each arc corresponds to a combat-confirmed swing event; no visual-only hit is added.
+        var hit_index := int(_cue_event.get("hit_index",1))
+        var sweep := -2.9 if hit_index % 2 == 1 else -0.2
+        var radius := (12.0 + pulse * 0.7) * (1.0 + float(hit_index - 1) * 0.08)
+        draw_arc(center, radius, sweep, sweep + 1.85, 34, color, 3.4 if ultimate else 2.8, true)
+        draw_line(center + Vector2(-pulse * 0.7, pulse * 0.45), center + Vector2(pulse * 0.7, -pulse * 0.45), Color(color.r,color.g,color.b,alpha * 0.65), 2.0, true)
+        if _cue_kind == "v63_blade_swing_hit":
+            draw_circle(center + Vector2(pulse * 0.55,-pulse * 0.2), 2.0, color)
+    elif branch == "tram_phach_dao":
+        var slant := -1.0 if int(_cue_event.get("sequence",0)) % 2 == 0 else 1.0
+        draw_line(center + Vector2(-pulse * 0.28,-pulse * slant), center + Vector2(pulse * 0.28,pulse * slant), color, 2.2 if not ultimate else 3.2, true)
+        if _cue_effect == "mark" or (_cue_kind == "status_applied" and str(_cue_event.get("status","")) == "mark"):
+            var mark_center := center + Vector2(0.0,-pulse * 0.18)
+            var diamond := PackedVector2Array([mark_center + Vector2(0,-5),mark_center + Vector2(4,0),mark_center + Vector2(0,5),mark_center + Vector2(-4,0)])
+            draw_colored_polygon(diamond, Color(color.r,color.g,color.b,alpha * 0.75))
+            draw_arc(center, 6.0 + age * 8.0, 0.0, TAU, 24, Color(color.r,color.g,color.b,alpha * 0.72), 1.5, true)
+        else:
+            draw_line(center + Vector2(-pulse * 0.6,0),center + Vector2(pulse * 0.6,0),Color(color.r,color.g,color.b,alpha * 0.45),1.0,true)
+    elif branch == "tran_dao":
+        var start_angle := -2.75
+        var end_angle := -0.38
+        if _cue_kind == "v63_blade_guard_reflect":
+            start_angle = 0.38
+            end_angle = 2.75
+        var gate_scale := 1.2 if ultimate else 1.0
+        var radius := (10.0 + pulse * 0.45) * gate_scale
+        draw_arc(center,radius,start_angle,end_angle,40,color,3.2 if ultimate else 2.5,true)
+        draw_arc(center,radius * 0.72,start_angle,end_angle,36,Color(color.r,color.g,color.b,alpha * 0.42),1.2,true)
+        if _cue_kind == "v63_blade_guard_reflect":
+            for spoke in range(3):
+                var x := float(spoke - 1) * 7.0
+                draw_line(center + Vector2(x,0),center + Vector2(x * 1.8,pulse * 0.75),color,1.8,true)
+        elif _cue_effect == "guard" or (_cue_kind == "status_applied" and str(_cue_event.get("status","")) == "guard"):
+            draw_arc(center,radius * 1.15,0.0,TAU,36,Color(color.r,color.g,color.b,alpha * 0.35),1.1,true)
+    else:
+        draw_line(center + Vector2(-pulse * 0.6,pulse * 0.25),center + Vector2(pulse * 0.6,-pulse * 0.25),color,2.4,true)
+        draw_arc(center,5.0 + pulse * 0.28,0.0,TAU,24,color,1.5,true)
+
+func _blade_branch(skill_id: String) -> String:
+    for branch in ["cuong_dao","tram_phach_dao","tran_dao"]:
+        if skill_id.contains("." + branch + "."):
+            return branch
+    return "common"
+
 func _sword_branch(skill_id: String) -> String:
     for branch in ["ngu_kiem", "sat_kiem", "ho_kiem"]:
         if skill_id.contains("." + branch + "."):
@@ -140,6 +203,14 @@ func _cue_color(kind: String) -> Color:
         return Color("f4d57a")
     if kind == "v63_mobility":
         return Color("9be8ee")
+    if _cue_kind == "v63_blade_guard_reflect":
+        return Color("efcf75")
+    if _cue_skill_id.contains(".cuong_dao."):
+        return Color("bf6b48")
+    if _cue_skill_id.contains(".tram_phach_dao."):
+        return Color("e4e9ed")
+    if _cue_skill_id.contains(".tran_dao."):
+        return Color("d5b867")
     if _cue_skill_id.contains(".sat_kiem."):
         return Color("e9dfd0")
     if _cue_skill_id.contains(".ho_kiem."):

@@ -8,7 +8,8 @@ const CATALOGUE_PATHS := {
 	"human":"res://data/combat/v63_human_combat_catalog.json",
 	"immortal":"res://data/combat/v63_immortal_combat_catalog.json",
 	"divine":"res://data/combat/v63_divine_combat_catalog.json",
-	"sword":"res://data/combat/v63_sword_combat_catalog.json"
+	"sword":"res://data/combat/v63_sword_combat_catalog.json",
+	"blade":"res://data/combat/v63_blade_combat_catalog.json"
 }
 const EXPECTED_S0_IDS := [
 	"tmb.skill.bow.basic.human",
@@ -78,12 +79,15 @@ static func validate_sample_entries(manifest: Dictionary, catalogues: Dictionary
 		errors.append("presentation_manifest_schema_not_v1")
 	if str(manifest.get("release_gate","")) != "OFF":
 		errors.append("v63_release_gate_must_remain_off")
-	if str(manifest.get("completion_status","")) not in ["S0_SAMPLE_ONLY","S1_SWORD_CANDIDATE_AUTHORED_S0_SAMPLES_RETAINED"]:
-		errors.append("unknown_s0_s1_manifest_status")
+	if str(manifest.get("completion_status","")) not in ["S0_SAMPLE_ONLY","S1_SWORD_CANDIDATE_AUTHORED_S0_SAMPLES_RETAINED","S2_BLADE_CANDIDATE_AUTHORED_S0_SAMPLES_RETAINED"]:
+		errors.append("unknown_s0_s2_manifest_status")
 	var target_coverage: Variant = manifest.get("target_coverage",{})
 	if str(manifest.get("completion_status","")) == "S1_SWORD_CANDIDATE_AUTHORED_S0_SAMPLES_RETAINED":
 		if not (target_coverage is Dictionary) or int(target_coverage.get("existing_runtime_nodes",0)) != 549 or int(target_coverage.get("candidate_gated_runtime_nodes",0)) != 183 or int(target_coverage.get("not_authored_slots",0)) != 1464 or int(target_coverage.get("authored_presentation_entries",0)) != 187:
 			errors.append("s1_manifest_coverage_counts_mismatch")
+	elif str(manifest.get("completion_status","")) == "S2_BLADE_CANDIDATE_AUTHORED_S0_SAMPLES_RETAINED":
+		if not (target_coverage is Dictionary) or int(target_coverage.get("existing_runtime_nodes",0)) != 549 or int(target_coverage.get("candidate_gated_runtime_nodes",0)) != 366 or int(target_coverage.get("not_authored_slots",0)) != 1281 or int(target_coverage.get("authored_presentation_entries",0)) != 370:
+			errors.append("s2_manifest_coverage_counts_mismatch")
 	var sources: Variant = manifest.get("source_catalogs",{})
 	if not (sources is Dictionary):
 		errors.append("source_catalogs_not_object")
@@ -190,6 +194,14 @@ static func _validate_presentation_entry(skill_id: String, entry: Dictionary, ca
 			errors.append("sword_flavor_missing:"+skill_id)
 		if str(entry.get("availability",{}).get("status","")) != "CANDIDATE_GATED_SOURCE_PENDING" or bool(entry.get("availability",{}).get("archivable",true)):
 			errors.append("sword_source_must_remain_gated:"+skill_id)
+	if str(skill.get("school","")) == "blade":
+		var expected_blade_lore := "tmb.lore.branch.blade.common" if str(skill.get("branch","")).is_empty() else "tmb.lore.branch.blade."+str(skill.get("branch",""))
+		if str(entry.get("school_lore_id","")) != "tmb.lore.school.blade" or str(entry.get("branch_lore_id","")) != expected_blade_lore:
+			errors.append("blade_lore_link_missing_or_mismatched:"+skill_id)
+		if str(entry.get("flavor_vi","")).strip_edges().is_empty():
+			errors.append("blade_flavor_missing:"+skill_id)
+		if str(entry.get("availability",{}).get("status","")) != "CANDIDATE_GATED_SOURCE_PENDING" or bool(entry.get("availability",{}).get("archivable",true)):
+			errors.append("blade_source_must_remain_gated:"+skill_id)
 	for field in ["short_description_vi","long_description_vi","counterplay_vi"]:
 		var prose := str(entry.get(field,""))
 		if prose.strip_edges().is_empty():
@@ -259,15 +271,20 @@ static func _validate_presentation_entry(skill_id: String, entry: Dictionary, ca
 
 static func build_mechanics_tooltip(skill: Dictionary, actor_stats: Dictionary = {}, target_distance: float = -1.0) -> Dictionary:
 	var effect := str(skill.get("effect",""))
-	if effect not in ["damage","poison","guard","mobility","passive","innate"]:
+	if effect not in ["damage","poison","mark","guard","mobility","passive","innate"]:
 		return {"ok":false,"text":"","errors":["s0_tooltip_effect_not_yet_supported:"+effect]}
 	for field in ["damage_ratio","power","duration","passive_modifiers","range","cast_time","cooldown","projectile_speed","shape","target_limit"]:
 		if not skill.has(field):
 			return {"ok":false,"text":"","errors":["runtime_fields_incomplete_for_tooltip:"+field]}
 	var lines: Array[String] = []
-	if effect in ["damage","poison"]:
+	if effect in ["damage","poison","mark"]:
 		lines.append("Sát thương trực tiếp: " + _format_number(float(skill.get("damage_ratio",0.0)),2) + "× ATK trước phòng thủ.")
-	if effect == "poison":
+	if effect == "mark":
+		var mark_cap := 1.15 if str(skill.get("school","")) == "blade" else 1.5
+		lines.append("Dấu ấn: hệ số đòn kế tiếp " + _format_number(clampf(float(skill.get("power",1.0)),1.0,mark_cap),2) + "× của người đặt; tồn tại tối đa " + _format_number(clampf(float(skill.get("duration",0.0)),0.5,12.0),2) + " giây.")
+		if str(skill.get("school","")) == "blade":
+			lines.append("Chỉ đòn Đao kế tiếp của cùng người đặt tiêu thụ dấu; không xuyên giáp.")
+	elif effect == "poison":
 		var tick_seconds := V63HumanSkillCombatSystem.POISON_TICK_INTERVAL_SECONDS
 		var poison_duration := clampf(float(skill.get("duration",0.0)),1.0,10.0)
 		var stacks := maxi(0,int(skill.get("poison_stacks",0)))
@@ -276,6 +293,11 @@ static func build_mechanics_tooltip(skill: Dictionary, actor_stats: Dictionary =
 		var reduction := clampf(float(skill.get("power",0.0)),0.05,0.8)
 		var guard_duration := clampf(float(skill.get("duration",0.0)),0.5,12.0)
 		lines.append("Giảm sát thương nhận: " + _format_number(reduction*100.0,2) + "% trong " + _format_number(guard_duration,2) + " giây; mức áp dụng bị giới hạn bởi HSC.")
+		if str(skill.get("school","")) == "blade" and str(skill.get("guard_target_policy","self")) == "weakest_ally":
+			lines.append("Mục tiêu hộ: đồng đội cùng đội hình có tỷ lệ HP thấp nhất trong tầm; hòa thì dùng thứ tự ID ổn định.")
+	elif effect == "damage" and int(skill.get("hit_count",1)) > 1:
+		var hit_count := clampi(int(skill.get("hit_count",1)),1,3)
+		lines.append("Số nhịp Đao: " + str(hit_count) + "; hệ số tổng chia đều theo nhịp, dừng khi mục tiêu hết HP.")
 	elif effect == "mobility":
 		lines.append("Lướt theo đường đi hợp lệ trong phạm vi " + _format_number(float(skill.get("range",0.0)),2) + " ô; cửa sổ né tránh: " + _format_number(maxf(MapBattleV2.STEP_SECONDS,float(skill.get("duration",1.0))),2) + " giây.")
 	elif effect in ["passive","innate"]:
@@ -285,7 +307,7 @@ static func build_mechanics_tooltip(skill: Dictionary, actor_stats: Dictionary =
 			if str(key) == "guard_factor":
 				lines.append("Giảm sát thương nhận thêm: " + _format_number((1.0-clampf(value,0.5,1.0))*100.0,2) + "%.")
 			elif str(key) == "absorbed_reflect_ratio":
-				lines.append("Phản kích ứng viên: tối đa " + _format_number(clampf(value,0.0,0.3)*100.0,2) + "% phần sát thương thực sự bị guard giảm; feature gate Kiếm hiện OFF.")
+				lines.append("Phản kích ứng viên: tối đa " + _format_number(clampf(value,0.0,0.3)*100.0,2) + "% phần sát thương thực sự bị guard giảm; feature gate tương ứng hiện OFF.")
 			else:
 				var label := str(key)
 				var shown := value
@@ -333,8 +355,8 @@ static func build_mechanics_tooltip(skill: Dictionary, actor_stats: Dictionary =
 		if target_distance >= 0.0:
 			projectile_line += " Thời gian bay tới mục tiêu hiện tại: " + _format_number(target_distance/projectile_speed,2) + " giây."
 		lines.append(projectile_line)
-	if str(skill.get("school","")) == "sword" and str(skill.get("source_codex_id","")).is_empty():
-		lines.append("Nguồn truyền thừa Kiếm Tu chưa có trong Kho; node vẫn bị khóa.")
+	if str(skill.get("school","")) in ["sword","blade"] and str(skill.get("source_codex_id","")).is_empty():
+		lines.append("Nguồn truyền thừa của nhánh này chưa có trong Kho; node vẫn bị khóa.")
 	return {"ok":true,"text":"\n".join(lines),"errors":[]}
 static func validate_all36_ledger(csv_text: String, catalogues: Dictionary, registry: Dictionary) -> Dictionary:
 	var errors: Array[String] = []
@@ -435,9 +457,9 @@ static func validate_all36_ledger(csv_text: String, catalogues: Dictionary, regi
 			errors.append("all36_unknown_ledger_status:"+key+":"+status)
 		if str(row.get("source_ref","")).strip_edges().is_empty():
 			errors.append("all36_source_reference_missing:"+key)
-	if status_counts.get("EXISTING",0) != 549 or status_counts.get("CANDIDATE_GATED",0) != 183 or status_counts.get("NOT_AUTHORED",0) != 1464:
+	if status_counts.get("EXISTING",0) != 549 or status_counts.get("CANDIDATE_GATED",0) != 366 or status_counts.get("NOT_AUTHORED",0) != 1281:
 		errors.append("all36_authorship_counts_mismatch")
-	if runtime_ids.size() != 732:
+	if runtime_ids.size() != 915:
 		errors.append("all36_existing_runtime_count_mismatch:"+str(runtime_ids.size()))
 	var actual_runtime_ids := _all_runtime_ids(catalogues)
 	if actual_runtime_ids.size() != runtime_ids.size():

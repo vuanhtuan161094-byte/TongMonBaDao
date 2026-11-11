@@ -96,9 +96,33 @@ jobs:
             res://tests/simulation/v63_all_school_balance_measurement_test.gd \
             res://src/simulation/combat/v63_poison_evolution_v1.gd \
             res://tests/simulation/v65_poison_combat_contract_test.gd \
-            res://tests/simulation/skill_all_catalogue_integrity_test.gd; do
+            res://tests/simulation/skill_all_catalogue_integrity_test.gd \
+            res://tests/simulation/v63_d1_content_registry_test.gd \
+            res://tests/simulation/v63_skill_presentation_s0_test.gd \
+            res://tests/simulation/v63_s1_sword_skill_test.gd \
+            res://tests/simulation/v63_s2_blade_skill_test.gd; do
             godot --headless --path godot --check-only --script "$script"
           done
+      - name: V63 D1 registry and all-off release gate regression
+        shell: bash
+        run: |
+          set -o pipefail
+          godot --headless --path godot -s res://tests/simulation/v63_d1_content_registry_test.gd 2>&1 | tee /tmp/v63-d1-registry.log
+      - name: V63 S0 presentation manifest and 2,196-node ledger regression
+        shell: bash
+        run: |
+          set -o pipefail
+          godot --headless --path godot -s res://tests/simulation/v63_skill_presentation_s0_test.gd 2>&1 | tee /tmp/v63-s0-presentation.log
+      - name: V63 S1 Kiếm regression
+        shell: bash
+        run: |
+          set -o pipefail
+          godot --headless --path godot -s res://tests/simulation/v63_s1_sword_skill_test.gd 2>&1 | tee /tmp/v63-s1-sword.log
+      - name: V63 S2 Đao candidate Combat V2 and branch VFX regression
+        shell: bash
+        run: |
+          set -o pipefail
+          godot --headless --path godot -s res://tests/simulation/v63_s2_blade_skill_test.gd 2>&1 | tee /tmp/v63-s2-blade.log
       - name: 183 Quyền per-ID Combat V2 handoff
         shell: bash
         run: |
@@ -159,6 +183,10 @@ jobs:
             /tmp/doc-contract.log
             /tmp/cung-183.log
             /tmp/skill-all-catalogue.log
+            /tmp/v63-d1-registry.log
+            /tmp/v63-s0-presentation.log
+            /tmp/v63-s1-sword.log
+            /tmp/v63-s2-blade.log
           if-no-files-found: ignore
 
   publish-exact-sha-result:

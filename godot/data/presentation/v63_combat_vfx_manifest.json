@@ -9,7 +9,9 @@
     "skill_cast": "jade cross and impact ring",
     "v63_boss_phase": "violet phase spokes",
     "boss_counter_hit": "gold counter ring",
-    "status_applied": "green status ring"
+    "status_applied": "Branch-specific mark seal or bounded guard ring based on real status event.",
+    "v63_blade_swing_hit": "A single heavy Dao arc for each Combat V2-confirmed repeated hit; hit index comes from event.",
+    "v63_blade_guard_reflect": "Gate-shaped counter arc only after MapBattleV2 records real absorbed damage."
   },
   "asset_files": []
 }

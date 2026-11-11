@@ -2,10 +2,10 @@
   "schema_version": 1,
   "design": "v6.3-v6.4",
   "enabled": false,
-  "release_status": "S1_SWORD_CANDIDATE_GATED_S0_RETAINED",
-  "school_count": 4,
-  "branch_count": 12,
-  "skill_family_count": 140,
+  "release_status": "S2_BLADE_CANDIDATE_GATED_S1_RETAINED",
+  "school_count": 5,
+  "branch_count": 15,
+  "skill_family_count": 175,
   "boss_count": 9,
   "schools": [
     {
@@ -23,6 +23,10 @@
     {
       "id": "sword",
       "name": "Kiếm"
+    },
+    {
+      "id": "blade",
+      "name": "Đao"
     }
   ],
   "paths": [
@@ -211,6 +215,69 @@
         "a": "Thiết Bích giữ giảm sát thương theo thời hạn và hệ số trong runtime; không biến thế chắn thành bất tử.",
         "b": "Hồi Kiếm chỉ có thể phản một phần sát thương thực tế bị giảm, sau khi phòng thủ và HP được tính; không phản Độc duy trì hay tự tạo thêm mục tiêu."
       }
+    },
+    {
+      "id": "tmb.path.blade.cuong_dao",
+      "school": "blade",
+      "slug": "cuong_dao",
+      "name": "Cuồng Đao",
+      "lineages": {
+        "a": "Liên Trảm",
+        "b": "Cuồng Thế"
+      },
+      "rare": [
+        "Cửu Trùng Cuồng Đao · Liên Sơn",
+        "Cửu Trùng Cuồng Đao · Cuồng Tâm"
+      ],
+      "school_story_vi": "Đạo của quyết đoán. Trên tường trấn quan cũ khắc lời: đao nặng bởi món nợ người cầm. Ba vệ tướng giữ ba cách vung đao: phá vòng vây, đối mặt giáp trụ bằng kỹ nghệ có thật, hoặc giữ cửa cho đoàn người rút. Đạo ngôn: Một đao vung xuống phải biết vì ai.",
+      "branch_story_vi": "Thoát vòng vây bằng nhiều nhịp chém, nhưng người học phải biết lúc nên dừng. Hồ quang nặng chỉ phát theo từng lần trúng do trận chiến xác nhận; nhịp vẽ không tự sinh sát thương.",
+      "lineage_story_vi": {
+        "a": "Liên Trảm giữ nhịp chém thành từng lần đánh riêng; tổng hệ số được chia theo số nhịp và dừng khi mục tiêu gục. Vết đao trên màn hình không nhân hit.",
+        "b": "Cuồng Thế chấp nhận nhịp dồn hơn nhưng vẫn chịu giới hạn cast, tầm và hồi chiêu của catalogue; không tạo đòn ngoài runtime."
+      },
+      "ai_profile": "INHERITED_RUNTIME_POLICY_CANDIDATE"
+    },
+    {
+      "id": "tmb.path.blade.tram_phach_dao",
+      "school": "blade",
+      "slug": "tram_phach_dao",
+      "name": "Trảm Phách Đao",
+      "lineages": {
+        "a": "Mạch Trảm",
+        "b": "Định Phách"
+      },
+      "rare": [
+        "Trảm Phách Đoạn Thiên · Mạch Đao",
+        "Trảm Phách Đoạn Thiên · Định Phách"
+      ],
+      "school_story_vi": "Đạo của quyết đoán. Trên tường trấn quan cũ khắc lời: đao nặng bởi món nợ người cầm. Ba vệ tướng giữ ba cách vung đao: phá vòng vây, đối mặt giáp trụ bằng kỹ nghệ có thật, hoặc giữ cửa cho đoàn người rút. Đạo ngôn: Một đao vung xuống phải biết vì ai.",
+      "branch_story_vi": "Từng bị hộ giáp chặn đòn cứu người, truyền nhân học phá thế phòng vệ mà không được bỏ qua luật phòng thủ. Dấu đao chỉ đặt sau sát thương thật; không tự xuyên giáp.",
+      "lineage_story_vi": {
+        "a": "Mạch Trảm ghi dấu lên đúng mục tiêu đã trúng. Dấu chỉ khuếch đại đòn Đao kế tiếp của chính người đặt dấu, trong giới hạn catalogue rồi bị tiêu thụ.",
+        "b": "Định Phách giữ đường đao ổn định và chọn thời điểm; không bỏ qua phòng thủ, kháng tính hoặc tạo kết liễu chắc chắn."
+      },
+      "ai_profile": "INHERITED_RUNTIME_POLICY_CANDIDATE"
+    },
+    {
+      "id": "tmb.path.blade.tran_dao",
+      "school": "blade",
+      "slug": "tran_dao",
+      "name": "Trấn Đao",
+      "lineages": {
+        "a": "Thiết Quan",
+        "b": "Hồi Sơn"
+      },
+      "rare": [
+        "Thiên Sơn Trấn Đao · Thiết Quan",
+        "Thiên Sơn Trấn Đao · Hồi Sơn"
+      ],
+      "school_story_vi": "Đạo của quyết đoán. Trên tường trấn quan cũ khắc lời: đao nặng bởi món nợ người cầm. Ba vệ tướng giữ ba cách vung đao: phá vòng vây, đối mặt giáp trụ bằng kỹ nghệ có thật, hoặc giữ cửa cho đoàn người rút. Đạo ngôn: Một đao vung xuống phải biết vì ai.",
+      "branch_story_vi": "Một lão đao khách không đuổi theo kẻ bỏ chạy, chỉ cắm chân giữ một cửa quan. Thế trấn có thời hạn; phản lực chỉ tính trên sát thương thực sự bị giảm.",
+      "lineage_story_vi": {
+        "a": "Thiết Quan dựng thế hộ thân hữu hạn, giảm sát thương theo power và thời hạn trong catalogue; không tạo miễn nhiễm.",
+        "b": "Hồi Sơn có thể chọn đồng đội yếu máu trong cùng đội hình. Phản lực bị chặn ở tỷ lệ tối đa và chỉ tính phần đã được phòng thủ thật sự ngăn."
+      },
+      "ai_profile": "INHERITED_RUNTIME_POLICY_CANDIDATE"
     }
   ],
   "families": [
@@ -5901,6 +5968,1614 @@
           "parent": "tmb.skill.sword.ho_kiem.innate.immortal.b"
         }
       ]
+    },
+    {
+      "id": "tmb.skill.blade.basic",
+      "school": "blade",
+      "branch": "",
+      "slot": "basic",
+      "name": "Đao Pháp Nhập Môn",
+      "nodes": [
+        {
+          "id": "tmb.skill.blade.basic.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.basic.immortal.base",
+          "tier": "immortal",
+          "lineage": "base",
+          "parent": "tmb.skill.blade.basic.human",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.basic.divine.base",
+          "tier": "divine",
+          "lineage": "base",
+          "parent": "tmb.skill.blade.basic.immortal.base",
+          "school": "blade"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.blade.mobility",
+      "school": "blade",
+      "branch": "",
+      "slot": "mobility",
+      "name": "Thiết Mã Đạp Quan",
+      "nodes": [
+        {
+          "id": "tmb.skill.blade.mobility.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.mobility.immortal.base",
+          "tier": "immortal",
+          "lineage": "base",
+          "parent": "tmb.skill.blade.mobility.human",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.mobility.divine.base",
+          "tier": "divine",
+          "lineage": "base",
+          "parent": "tmb.skill.blade.mobility.immortal.base",
+          "school": "blade"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.blade.ngu_kiem.active_01",
+      "school": "blade",
+      "branch": "cuong_dao",
+      "slot": "active",
+      "name": "Phá Vây Khai Sơn · Nhân Giai",
+      "nodes": [
+        {
+          "id": "tmb.skill.blade.cuong_dao.active_01.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.cuong_dao.active_01.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.blade.cuong_dao.active_01.human",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.cuong_dao.active_01.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.blade.cuong_dao.active_01.human",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.cuong_dao.active_01.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.blade.cuong_dao.active_01.immortal.a",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.cuong_dao.active_01.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.blade.cuong_dao.active_01.immortal.b",
+          "school": "blade"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.blade.ngu_kiem.active_02",
+      "school": "blade",
+      "branch": "cuong_dao",
+      "slot": "active",
+      "name": "Liên Sơn Trảm · Nhân Giai",
+      "nodes": [
+        {
+          "id": "tmb.skill.blade.cuong_dao.active_02.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.cuong_dao.active_02.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.blade.cuong_dao.active_02.human",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.cuong_dao.active_02.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.blade.cuong_dao.active_02.human",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.cuong_dao.active_02.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.blade.cuong_dao.active_02.immortal.a",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.cuong_dao.active_02.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.blade.cuong_dao.active_02.immortal.b",
+          "school": "blade"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.blade.ngu_kiem.active_03",
+      "school": "blade",
+      "branch": "cuong_dao",
+      "slot": "active",
+      "name": "Cửu Trùng Hồi Đao · Nhân Giai",
+      "nodes": [
+        {
+          "id": "tmb.skill.blade.cuong_dao.active_03.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.cuong_dao.active_03.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.blade.cuong_dao.active_03.human",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.cuong_dao.active_03.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.blade.cuong_dao.active_03.human",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.cuong_dao.active_03.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.blade.cuong_dao.active_03.immortal.a",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.cuong_dao.active_03.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.blade.cuong_dao.active_03.immortal.b",
+          "school": "blade"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.blade.ngu_kiem.active_04",
+      "school": "blade",
+      "branch": "cuong_dao",
+      "slot": "active",
+      "name": "Cuồng Đao Phá Vây · Nhân Giai",
+      "nodes": [
+        {
+          "id": "tmb.skill.blade.cuong_dao.active_04.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.cuong_dao.active_04.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.blade.cuong_dao.active_04.human",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.cuong_dao.active_04.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.blade.cuong_dao.active_04.human",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.cuong_dao.active_04.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.blade.cuong_dao.active_04.immortal.a",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.cuong_dao.active_04.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.blade.cuong_dao.active_04.immortal.b",
+          "school": "blade"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.blade.ngu_kiem.ultimate",
+      "school": "blade",
+      "branch": "cuong_dao",
+      "slot": "ultimate",
+      "name": "Cửu Trùng Cuồng Đao",
+      "nodes": [
+        {
+          "id": "tmb.skill.blade.cuong_dao.ultimate.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.cuong_dao.ultimate.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.blade.cuong_dao.ultimate.human",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.cuong_dao.ultimate.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.blade.cuong_dao.ultimate.human",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.cuong_dao.ultimate.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.blade.cuong_dao.ultimate.immortal.a",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.cuong_dao.ultimate.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.blade.cuong_dao.ultimate.immortal.b",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.cuong_dao.ultimate.rare.a",
+          "tier": "rare_divine",
+          "lineage": "rare_a",
+          "parent": "tmb.skill.blade.cuong_dao.ultimate.divine.a",
+          "name": "Vạn Kiếm Quy Tông · Vạn Lý Kiếm Tâm",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.cuong_dao.ultimate.rare.b",
+          "tier": "rare_divine",
+          "lineage": "rare_b",
+          "parent": "tmb.skill.blade.cuong_dao.ultimate.divine.b",
+          "name": "Vạn Kiếm Quy Tông · Kiếm Trận Quy Nhất",
+          "school": "blade"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.blade.ngu_kiem.passive_01",
+      "school": "blade",
+      "branch": "cuong_dao",
+      "slot": "passive",
+      "name": "Trọng Nhận · Nhân Giai",
+      "nodes": [
+        {
+          "id": "tmb.skill.blade.cuong_dao.passive_01.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.cuong_dao.passive_01.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.blade.cuong_dao.passive_01.human",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.cuong_dao.passive_01.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.blade.cuong_dao.passive_01.human",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.cuong_dao.passive_01.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.blade.cuong_dao.passive_01.immortal.a",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.cuong_dao.passive_01.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.blade.cuong_dao.passive_01.immortal.b",
+          "school": "blade"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.blade.ngu_kiem.passive_02",
+      "school": "blade",
+      "branch": "cuong_dao",
+      "slot": "passive",
+      "name": "Nợ Đao · Nhân Giai",
+      "nodes": [
+        {
+          "id": "tmb.skill.blade.cuong_dao.passive_02.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.cuong_dao.passive_02.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.blade.cuong_dao.passive_02.human",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.cuong_dao.passive_02.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.blade.cuong_dao.passive_02.human",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.cuong_dao.passive_02.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.blade.cuong_dao.passive_02.immortal.a",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.cuong_dao.passive_02.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.blade.cuong_dao.passive_02.immortal.b",
+          "school": "blade"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.blade.ngu_kiem.passive_03",
+      "school": "blade",
+      "branch": "cuong_dao",
+      "slot": "passive",
+      "name": "Hồi Thế · Nhân Giai",
+      "nodes": [
+        {
+          "id": "tmb.skill.blade.cuong_dao.passive_03.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.cuong_dao.passive_03.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.blade.cuong_dao.passive_03.human",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.cuong_dao.passive_03.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.blade.cuong_dao.passive_03.human",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.cuong_dao.passive_03.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.blade.cuong_dao.passive_03.immortal.a",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.cuong_dao.passive_03.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.blade.cuong_dao.passive_03.immortal.b",
+          "school": "blade"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.blade.ngu_kiem.passive_04",
+      "school": "blade",
+      "branch": "cuong_dao",
+      "slot": "passive",
+      "name": "Tĩnh Ý · Nhân Giai",
+      "nodes": [
+        {
+          "id": "tmb.skill.blade.cuong_dao.passive_04.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.cuong_dao.passive_04.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.blade.cuong_dao.passive_04.human",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.cuong_dao.passive_04.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.blade.cuong_dao.passive_04.human",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.cuong_dao.passive_04.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.blade.cuong_dao.passive_04.immortal.a",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.cuong_dao.passive_04.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.blade.cuong_dao.passive_04.immortal.b",
+          "school": "blade"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.blade.ngu_kiem.passive_05",
+      "school": "blade",
+      "branch": "cuong_dao",
+      "slot": "passive",
+      "name": "Cuồng Tâm · Nhân Giai",
+      "nodes": [
+        {
+          "id": "tmb.skill.blade.cuong_dao.passive_05.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.cuong_dao.passive_05.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.blade.cuong_dao.passive_05.human",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.cuong_dao.passive_05.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.blade.cuong_dao.passive_05.human",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.cuong_dao.passive_05.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.blade.cuong_dao.passive_05.immortal.a",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.cuong_dao.passive_05.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.blade.cuong_dao.passive_05.immortal.b",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.cuong_dao.passive_05.rare_passive.a",
+          "tier": "divine",
+          "lineage": "rare_a",
+          "parent": "tmb.skill.blade.cuong_dao.passive_05.divine.a",
+          "name": "Vạn Nhận Quy Nhất · Vạn Lý Kiếm Tâm",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.cuong_dao.passive_05.rare_passive.b",
+          "tier": "divine",
+          "lineage": "rare_b",
+          "parent": "tmb.skill.blade.cuong_dao.passive_05.divine.b",
+          "name": "Vạn Nhận Quy Nhất · Kiếm Trận Quy Nhất",
+          "school": "blade"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.blade.ngu_kiem.innate",
+      "school": "blade",
+      "branch": "cuong_dao",
+      "slot": "innate",
+      "name": "Đao Tâm Quyết Đoán",
+      "nodes": [
+        {
+          "id": "tmb.skill.blade.cuong_dao.innate.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.cuong_dao.innate.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.blade.cuong_dao.innate.human",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.cuong_dao.innate.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.blade.cuong_dao.innate.human",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.cuong_dao.innate.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.blade.cuong_dao.innate.immortal.a",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.cuong_dao.innate.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.blade.cuong_dao.innate.immortal.b",
+          "school": "blade"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.blade.sat_kiem.active_01",
+      "school": "blade",
+      "branch": "tram_phach_dao",
+      "slot": "active",
+      "name": "Trảm Phách Nhất Tuyến · Nhân Giai",
+      "nodes": [
+        {
+          "id": "tmb.skill.blade.tram_phach_dao.active_01.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tram_phach_dao.active_01.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.blade.tram_phach_dao.active_01.human",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tram_phach_dao.active_01.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.blade.tram_phach_dao.active_01.human",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tram_phach_dao.active_01.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.blade.tram_phach_dao.active_01.immortal.a",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tram_phach_dao.active_01.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.blade.tram_phach_dao.active_01.immortal.b",
+          "school": "blade"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.blade.sat_kiem.active_02",
+      "school": "blade",
+      "branch": "tram_phach_dao",
+      "slot": "active",
+      "name": "Vân Giáp Trảm · Nhân Giai",
+      "nodes": [
+        {
+          "id": "tmb.skill.blade.tram_phach_dao.active_02.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tram_phach_dao.active_02.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.blade.tram_phach_dao.active_02.human",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tram_phach_dao.active_02.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.blade.tram_phach_dao.active_02.human",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tram_phach_dao.active_02.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.blade.tram_phach_dao.active_02.immortal.a",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tram_phach_dao.active_02.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.blade.tram_phach_dao.active_02.immortal.b",
+          "school": "blade"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.blade.sat_kiem.active_03",
+      "school": "blade",
+      "branch": "tram_phach_dao",
+      "slot": "active",
+      "name": "Phách Ấn · Nhân Giai",
+      "nodes": [
+        {
+          "id": "tmb.skill.blade.tram_phach_dao.active_03.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tram_phach_dao.active_03.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.blade.tram_phach_dao.active_03.human",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tram_phach_dao.active_03.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.blade.tram_phach_dao.active_03.human",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tram_phach_dao.active_03.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.blade.tram_phach_dao.active_03.immortal.a",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tram_phach_dao.active_03.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.blade.tram_phach_dao.active_03.immortal.b",
+          "school": "blade"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.blade.sat_kiem.active_04",
+      "school": "blade",
+      "branch": "tram_phach_dao",
+      "slot": "active",
+      "name": "Đoạn Thiên Tầm Kích · Nhân Giai",
+      "nodes": [
+        {
+          "id": "tmb.skill.blade.tram_phach_dao.active_04.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tram_phach_dao.active_04.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.blade.tram_phach_dao.active_04.human",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tram_phach_dao.active_04.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.blade.tram_phach_dao.active_04.human",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tram_phach_dao.active_04.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.blade.tram_phach_dao.active_04.immortal.a",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tram_phach_dao.active_04.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.blade.tram_phach_dao.active_04.immortal.b",
+          "school": "blade"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.blade.sat_kiem.ultimate",
+      "school": "blade",
+      "branch": "tram_phach_dao",
+      "slot": "ultimate",
+      "name": "Trảm Phách Đoạn Thiên",
+      "nodes": [
+        {
+          "id": "tmb.skill.blade.tram_phach_dao.ultimate.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tram_phach_dao.ultimate.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.blade.tram_phach_dao.ultimate.human",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tram_phach_dao.ultimate.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.blade.tram_phach_dao.ultimate.human",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tram_phach_dao.ultimate.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.blade.tram_phach_dao.ultimate.immortal.a",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tram_phach_dao.ultimate.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.blade.tram_phach_dao.ultimate.immortal.b",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tram_phach_dao.ultimate.rare.a",
+          "tier": "rare_divine",
+          "lineage": "rare_a",
+          "parent": "tmb.skill.blade.tram_phach_dao.ultimate.divine.a",
+          "name": "Nhất Kiếm Đoạn Thiên · Phá Ảnh Kiếm Tâm",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tram_phach_dao.ultimate.rare.b",
+          "tier": "rare_divine",
+          "lineage": "rare_b",
+          "parent": "tmb.skill.blade.tram_phach_dao.ultimate.divine.b",
+          "name": "Nhất Kiếm Đoạn Thiên · Tĩnh Phong Định Mệnh",
+          "school": "blade"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.blade.sat_kiem.passive_01",
+      "school": "blade",
+      "branch": "tram_phach_dao",
+      "slot": "passive",
+      "name": "Tầm Phách · Nhân Giai",
+      "nodes": [
+        {
+          "id": "tmb.skill.blade.tram_phach_dao.passive_01.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tram_phach_dao.passive_01.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.blade.tram_phach_dao.passive_01.human",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tram_phach_dao.passive_01.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.blade.tram_phach_dao.passive_01.human",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tram_phach_dao.passive_01.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.blade.tram_phach_dao.passive_01.immortal.a",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tram_phach_dao.passive_01.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.blade.tram_phach_dao.passive_01.immortal.b",
+          "school": "blade"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.blade.sat_kiem.passive_02",
+      "school": "blade",
+      "branch": "tram_phach_dao",
+      "slot": "passive",
+      "name": "Đoạn Mạch · Nhân Giai",
+      "nodes": [
+        {
+          "id": "tmb.skill.blade.tram_phach_dao.passive_02.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tram_phach_dao.passive_02.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.blade.tram_phach_dao.passive_02.human",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tram_phach_dao.passive_02.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.blade.tram_phach_dao.passive_02.human",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tram_phach_dao.passive_02.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.blade.tram_phach_dao.passive_02.immortal.a",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tram_phach_dao.passive_02.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.blade.tram_phach_dao.passive_02.immortal.b",
+          "school": "blade"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.blade.sat_kiem.passive_03",
+      "school": "blade",
+      "branch": "tram_phach_dao",
+      "slot": "passive",
+      "name": "Định Tức · Nhân Giai",
+      "nodes": [
+        {
+          "id": "tmb.skill.blade.tram_phach_dao.passive_03.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tram_phach_dao.passive_03.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.blade.tram_phach_dao.passive_03.human",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tram_phach_dao.passive_03.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.blade.tram_phach_dao.passive_03.human",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tram_phach_dao.passive_03.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.blade.tram_phach_dao.passive_03.immortal.a",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tram_phach_dao.passive_03.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.blade.tram_phach_dao.passive_03.immortal.b",
+          "school": "blade"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.blade.sat_kiem.passive_04",
+      "school": "blade",
+      "branch": "tram_phach_dao",
+      "slot": "passive",
+      "name": "Truy Ảnh · Nhân Giai",
+      "nodes": [
+        {
+          "id": "tmb.skill.blade.tram_phach_dao.passive_04.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tram_phach_dao.passive_04.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.blade.tram_phach_dao.passive_04.human",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tram_phach_dao.passive_04.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.blade.tram_phach_dao.passive_04.human",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tram_phach_dao.passive_04.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.blade.tram_phach_dao.passive_04.immortal.a",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tram_phach_dao.passive_04.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.blade.tram_phach_dao.passive_04.immortal.b",
+          "school": "blade"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.blade.sat_kiem.passive_05",
+      "school": "blade",
+      "branch": "tram_phach_dao",
+      "slot": "passive",
+      "name": "Mạch Tâm · Nhân Giai",
+      "nodes": [
+        {
+          "id": "tmb.skill.blade.tram_phach_dao.passive_05.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tram_phach_dao.passive_05.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.blade.tram_phach_dao.passive_05.human",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tram_phach_dao.passive_05.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.blade.tram_phach_dao.passive_05.human",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tram_phach_dao.passive_05.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.blade.tram_phach_dao.passive_05.immortal.a",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tram_phach_dao.passive_05.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.blade.tram_phach_dao.passive_05.immortal.b",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tram_phach_dao.passive_05.rare_passive.a",
+          "tier": "divine",
+          "lineage": "rare_a",
+          "parent": "tmb.skill.blade.tram_phach_dao.passive_05.divine.a",
+          "name": "Một Kiếm Quy Tâm · Phá Ảnh Kiếm Tâm",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tram_phach_dao.passive_05.rare_passive.b",
+          "tier": "divine",
+          "lineage": "rare_b",
+          "parent": "tmb.skill.blade.tram_phach_dao.passive_05.divine.b",
+          "name": "Một Kiếm Quy Tâm · Tĩnh Phong Định Mệnh",
+          "school": "blade"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.blade.sat_kiem.innate",
+      "school": "blade",
+      "branch": "tram_phach_dao",
+      "slot": "innate",
+      "name": "Phách Đao Chân Ý",
+      "nodes": [
+        {
+          "id": "tmb.skill.blade.tram_phach_dao.innate.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tram_phach_dao.innate.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.blade.tram_phach_dao.innate.human",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tram_phach_dao.innate.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.blade.tram_phach_dao.innate.human",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tram_phach_dao.innate.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.blade.tram_phach_dao.innate.immortal.a",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tram_phach_dao.innate.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.blade.tram_phach_dao.innate.immortal.b",
+          "school": "blade"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.blade.ho_kiem.active_01",
+      "school": "blade",
+      "branch": "tran_dao",
+      "slot": "active",
+      "name": "Thiết Quan Hộ Thể · Nhân Giai",
+      "nodes": [
+        {
+          "id": "tmb.skill.blade.tran_dao.active_01.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tran_dao.active_01.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.blade.tran_dao.active_01.human",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tran_dao.active_01.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.blade.tran_dao.active_01.human",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tran_dao.active_01.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.blade.tran_dao.active_01.immortal.a",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tran_dao.active_01.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.blade.tran_dao.active_01.immortal.b",
+          "school": "blade"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.blade.ho_kiem.active_02",
+      "school": "blade",
+      "branch": "tran_dao",
+      "slot": "active",
+      "name": "Sơn Môn Trảm · Nhân Giai",
+      "nodes": [
+        {
+          "id": "tmb.skill.blade.tran_dao.active_02.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tran_dao.active_02.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.blade.tran_dao.active_02.human",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tran_dao.active_02.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.blade.tran_dao.active_02.human",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tran_dao.active_02.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.blade.tran_dao.active_02.immortal.a",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tran_dao.active_02.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.blade.tran_dao.active_02.immortal.b",
+          "school": "blade"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.blade.ho_kiem.active_03",
+      "school": "blade",
+      "branch": "tran_dao",
+      "slot": "active",
+      "name": "Hồi Sơn Chấn Đao · Nhân Giai",
+      "nodes": [
+        {
+          "id": "tmb.skill.blade.tran_dao.active_03.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tran_dao.active_03.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.blade.tran_dao.active_03.human",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tran_dao.active_03.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.blade.tran_dao.active_03.human",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tran_dao.active_03.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.blade.tran_dao.active_03.immortal.a",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tran_dao.active_03.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.blade.tran_dao.active_03.immortal.b",
+          "school": "blade"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.blade.ho_kiem.active_04",
+      "school": "blade",
+      "branch": "tran_dao",
+      "slot": "active",
+      "name": "Định Quan Trảm · Nhân Giai",
+      "nodes": [
+        {
+          "id": "tmb.skill.blade.tran_dao.active_04.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tran_dao.active_04.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.blade.tran_dao.active_04.human",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tran_dao.active_04.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.blade.tran_dao.active_04.human",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tran_dao.active_04.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.blade.tran_dao.active_04.immortal.a",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tran_dao.active_04.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.blade.tran_dao.active_04.immortal.b",
+          "school": "blade"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.blade.ho_kiem.ultimate",
+      "school": "blade",
+      "branch": "tran_dao",
+      "slot": "ultimate",
+      "name": "Thiên Sơn Trấn Đao",
+      "nodes": [
+        {
+          "id": "tmb.skill.blade.tran_dao.ultimate.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tran_dao.ultimate.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.blade.tran_dao.ultimate.human",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tran_dao.ultimate.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.blade.tran_dao.ultimate.human",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tran_dao.ultimate.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.blade.tran_dao.ultimate.immortal.a",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tran_dao.ultimate.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.blade.tran_dao.ultimate.immortal.b",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tran_dao.ultimate.rare.a",
+          "tier": "rare_divine",
+          "lineage": "rare_a",
+          "parent": "tmb.skill.blade.tran_dao.ultimate.divine.a",
+          "name": "Thiên Cương Kiếm Giới · Hồi Thiên Kiếm Tâm",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tran_dao.ultimate.rare.b",
+          "tier": "rare_divine",
+          "lineage": "rare_b",
+          "parent": "tmb.skill.blade.tran_dao.ultimate.divine.b",
+          "name": "Thiên Cương Kiếm Giới · Phản Chiếu Thiên Cương",
+          "school": "blade"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.blade.ho_kiem.passive_01",
+      "school": "blade",
+      "branch": "tran_dao",
+      "slot": "passive",
+      "name": "Trấn Cước · Nhân Giai",
+      "nodes": [
+        {
+          "id": "tmb.skill.blade.tran_dao.passive_01.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tran_dao.passive_01.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.blade.tran_dao.passive_01.human",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tran_dao.passive_01.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.blade.tran_dao.passive_01.human",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tran_dao.passive_01.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.blade.tran_dao.passive_01.immortal.a",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tran_dao.passive_01.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.blade.tran_dao.passive_01.immortal.b",
+          "school": "blade"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.blade.ho_kiem.passive_02",
+      "school": "blade",
+      "branch": "tran_dao",
+      "slot": "passive",
+      "name": "Thiết Ý · Nhân Giai",
+      "nodes": [
+        {
+          "id": "tmb.skill.blade.tran_dao.passive_02.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tran_dao.passive_02.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.blade.tran_dao.passive_02.human",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tran_dao.passive_02.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.blade.tran_dao.passive_02.human",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tran_dao.passive_02.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.blade.tran_dao.passive_02.immortal.a",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tran_dao.passive_02.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.blade.tran_dao.passive_02.immortal.b",
+          "school": "blade"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.blade.ho_kiem.passive_03",
+      "school": "blade",
+      "branch": "tran_dao",
+      "slot": "passive",
+      "name": "Hồi Kình · Nhân Giai",
+      "nodes": [
+        {
+          "id": "tmb.skill.blade.tran_dao.passive_03.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tran_dao.passive_03.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.blade.tran_dao.passive_03.human",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tran_dao.passive_03.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.blade.tran_dao.passive_03.human",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tran_dao.passive_03.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.blade.tran_dao.passive_03.immortal.a",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tran_dao.passive_03.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.blade.tran_dao.passive_03.immortal.b",
+          "school": "blade"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.blade.ho_kiem.passive_04",
+      "school": "blade",
+      "branch": "tran_dao",
+      "slot": "passive",
+      "name": "Thủ Quan · Nhân Giai",
+      "nodes": [
+        {
+          "id": "tmb.skill.blade.tran_dao.passive_04.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tran_dao.passive_04.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.blade.tran_dao.passive_04.human",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tran_dao.passive_04.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.blade.tran_dao.passive_04.human",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tran_dao.passive_04.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.blade.tran_dao.passive_04.immortal.a",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tran_dao.passive_04.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.blade.tran_dao.passive_04.immortal.b",
+          "school": "blade"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.blade.ho_kiem.passive_05",
+      "school": "blade",
+      "branch": "tran_dao",
+      "slot": "passive",
+      "name": "Thiên Quan · Nhân Giai",
+      "nodes": [
+        {
+          "id": "tmb.skill.blade.tran_dao.passive_05.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tran_dao.passive_05.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.blade.tran_dao.passive_05.human",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tran_dao.passive_05.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.blade.tran_dao.passive_05.human",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tran_dao.passive_05.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.blade.tran_dao.passive_05.immortal.a",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tran_dao.passive_05.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.blade.tran_dao.passive_05.immortal.b",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tran_dao.passive_05.rare_passive.a",
+          "tier": "divine",
+          "lineage": "rare_a",
+          "parent": "tmb.skill.blade.tran_dao.passive_05.divine.a",
+          "name": "Thiết Bích Lưu Quang · Hồi Thiên Kiếm Tâm",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tran_dao.passive_05.rare_passive.b",
+          "tier": "divine",
+          "lineage": "rare_b",
+          "parent": "tmb.skill.blade.tran_dao.passive_05.divine.b",
+          "name": "Thiết Bích Lưu Quang · Phản Chiếu Thiên Cương",
+          "school": "blade"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.blade.ho_kiem.innate",
+      "school": "blade",
+      "branch": "tran_dao",
+      "slot": "innate",
+      "name": "Quan Sơn Đao Tâm",
+      "nodes": [
+        {
+          "id": "tmb.skill.blade.tran_dao.innate.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tran_dao.innate.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.blade.tran_dao.innate.human",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tran_dao.innate.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.blade.tran_dao.innate.human",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tran_dao.innate.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.blade.tran_dao.innate.immortal.a",
+          "school": "blade"
+        },
+        {
+          "id": "tmb.skill.blade.tran_dao.innate.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.blade.tran_dao.innate.immortal.b",
+          "school": "blade"
+        }
+      ]
     }
   ],
   "bosses": [
@@ -6501,5 +8176,7 @@
     }
   ],
   "skills_s1_candidate_count": 183,
-  "skills_s1_candidate_source_status": "SOURCE_PENDING; all 183 nodes remain unlearnable"
+  "skills_s1_candidate_source_status": "SOURCE_PENDING; all 183 nodes remain unlearnable",
+  "skills_s2_candidate_count": 183,
+  "skills_s2_candidate_source_status": "SOURCE_PENDING"
 }
