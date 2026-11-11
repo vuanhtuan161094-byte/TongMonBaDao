@@ -1,0 +1,114 @@
+name: ECO-05 R2 Source-Funded Capacity and 480 Roster QA
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'godot/src/simulation/economy/economy_system.gd'
+      - 'godot/src/presentation/p3_2_landscape_sect.gd'
+      - 'godot/src/simulation/economy/eco05_capacity_audit_v1.gd'
+      - 'godot/tests/simulation/eco05_source_funded_capacity_r2_test.gd'
+      - '.github/workflows/eco-05-r2-capacity.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  eco05:
+    name: Official Godot 4.7.2 ECO-05 focused + cumulative
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install official Godot 4.7.2 binary
+        shell: bash
+        run: |
+          set -euo pipefail
+          GODOT_URL="https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip"
+          GODOT_SHA256="cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4"
+          curl --fail --location --retry 3 --output /tmp/godot.zip "$GODOT_URL"
+          echo "$GODOT_SHA256  /tmp/godot.zip" | sha256sum --check --strict
+          unzip -q /tmp/godot.zip -d /tmp
+          sudo install -m 0755 /tmp/Godot_v4.7.2-stable_linux.x86_64 /usr/local/bin/godot
+
+      - name: Confirm official version
+        run: godot --version
+
+      - name: Restore canonical female Stage A runtime pack
+        shell: bash
+        run: |
+          set -euo pipefail
+          PACK="/tmp/female_normal_v1_stageA_runtime_pack_v2_quant.zip"
+          cat             .github/assets/p3/female_stage_a/part01.b64             .github/assets/p3/female_stage_a/part02.b64             .github/assets/p3/female_stage_a/part03.b64             .github/assets/p3/female_stage_a/part04.b64             .github/assets/p3/female_stage_a/part05.b64             .github/assets/p3/female_stage_a/part06.b64             .github/assets/p3/female_stage_a/part07.b64             .github/assets/p3/female_stage_a/part08.b64             .github/assets/p3/female_stage_a/part09.b64             .github/assets/p3/female_stage_a/part10.b64             .github/assets/p3/female_stage_a/part11.b64             .github/assets/p3/female_stage_a/part12.b64             .github/assets/p3/female_stage_a/part13.b64             .github/assets/p3/female_stage_a/part14.b64             .github/assets/p3/female_stage_a/part15a.b64             .github/assets/p3/female_stage_a/part15b.b64             .github/assets/p3/female_stage_a/part16.b64             .github/assets/p3/female_stage_a/part17.b64             .github/assets/p3/female_stage_a/part18.b64             .github/assets/p3/female_stage_a/part19.b64             .github/assets/p3/female_stage_a/part20.b64             | tr -d '\r\n\t ' | base64 --decode > "$PACK"
+          test "$(stat -c%s "$PACK")" -eq 44838
+          echo "6a4213b9129ffb3f438c21cbb5326672ddf8915323836bf80cb33b8e5fabfdca  $PACK" | sha256sum --check --strict
+          unzip -q "$PACK" -d .
+
+      - name: Import project scripts and resources
+        run: godot --headless --path godot --import
+
+
+      - name: Strict parse ECO-05 read-only source-backed capacity and test
+        shell: bash
+        run: |
+          set -euo pipefail
+          for script in \
+            res://src/simulation/economy/eco05_capacity_audit_v1.gd \
+            res://tests/simulation/eco05_source_funded_capacity_r2_test.gd; do
+            bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script "$script"
+          done
+
+      - name: ECO05 genuine source jobs finance actual paid annex, real capacity, wave quote and cold Save
+        run: bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/simulation/eco05_source_funded_capacity_r2_test.gd
+
+      - name: Existing r1-r2 authentic Mine Forest Field, W2 T2, cold Save
+        run: bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/simulation/sx_v55_r12_real_labor_tax_wage_save_test.gd
+
+      - name: Existing 480 roster assignment and cold Save stress
+        run: bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/simulation/v57_worksite_scale_480_test.gd
+
+      - name: Existing ECO04 tax and wage conservation
+        run: bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/simulation/eco04_r1_tax_wage_hold_test.gd
+
+      - name: Existing 1-7-30 cash pressure and 30-realm source/r3 HOLD
+        shell: bash
+        run: |
+          set -euo pipefail
+          for script in \
+            res://tests/simulation/sx_v55_r12_funding_pressure_30d_test.gd \
+            res://tests/simulation/sx_v55_eco_faucet_sink_30d_test.gd \
+            res://tests/simulation/sx_v55_eco_source_gate_30cg_test.gd; do
+            bash tools/qa/run_godot_strict.sh --headless --path godot -s "$script"
+          done
+
+      - name: O4 existing Field seed, plot reservation, real harvest and cold Save
+        run: bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/presentation/p3_o4_spirit_field_loop_test.gd
+
+      - name: Economy-A genuine market, Hall UI and wage arrears
+        run: bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/presentation/economy_a_landscape_ui_test.gd
+
+      - name: Existing O3 Mine / O4 Field / O7 Forest jobs and Save
+        shell: bash
+        run: |
+          set -euo pipefail
+          for test_file in \
+            res://tests/presentation/p3_o3_real_mine_loop_test.gd \
+            res://tests/presentation/p3_o4_spirit_field_loop_test.gd \
+            res://tests/presentation/p3_o7_linh_forest_test.gd; do
+            bash tools/qa/run_godot_strict.sh --headless --path godot -s "$test_file"
+          done
+
+      - name: Existing O9 canonical multi-producer warehouse alchemy and Save
+        run: bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/presentation/p3_o9_m2_production_rehearsal_test.gd
+
+      - name: O6 independent real gameplay release rehearsal
+        run: bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/presentation/p3_o6_m1_release_rehearsal_test.gd
+
+      - name: P3.6A OneGame playable slice
+        run: bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/presentation/p3_6a_playable_slice_test.gd
+
+      - name: Canonical FULL P3.7 cumulative regression on same SHA
+        shell: pwsh
+        run: ./tools/godot/Verify-P3-7C1-Foundation-Dan-Tien-Full.ps1 -GodotBin /usr/local/bin/godot
