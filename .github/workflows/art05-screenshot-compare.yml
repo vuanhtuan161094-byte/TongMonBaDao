@@ -5,6 +5,9 @@ on:
     paths:
       - 'godot/scenes/p3/p3_2_landscape_sect.tscn'
       - 'godot/src/presentation/art05_onegame_cinematic_ui.gd'
+      - 'godot/src/presentation/p3/sect_isometric_world_v1.gd'
+      - 'godot/art/reimagined_source_a_v1/**'
+      - 'godot/tests/presentation/as_build01_alchemy_visual_import_test.gd'
       - 'godot/src/presentation/uiux/sect_premium_panel_v1.gd'
       - 'godot/src/presentation/uiux/sect_world_atmosphere_v1.gd'
       - 'godot/tests/presentation/art05_real_gui_layout_test.gd'
@@ -77,6 +80,8 @@ jobs:
         run: bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/presentation/art02_onegame_visual_contract_test.gd
 
 
+      - name: AS-BUILD-01 genuine Godot alchemy asset import and Source A provenance contract
+        run: bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/presentation/as_build01_alchemy_visual_import_test.gd
       - name: ART05 strict real OneGame layout and input navigation test
         run: bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/presentation/art05_real_gui_layout_test.gd
       - name: Upload screenshot comparison evidence even on failure
