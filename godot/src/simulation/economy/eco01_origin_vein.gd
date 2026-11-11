@@ -159,7 +159,7 @@ func process_tick(state: SimulationState) -> void:
     var finished := int(job.get("finish_tick",-1))
     var worker_id := StringName(str(job.get("worker_id","")))
     var worker = state.disciples.get(worker_id)
-    var valid := id == ("%s%s:%d:%d" % [
+    var valid: bool = id == ("%s%s:%d:%d" % [
             JOB_PREFIX,str(hall.id),started,int(data.get("sequence",0))]) \
         and str(job.get("site_id","")) == str(hall.id) \
         and started >= 0 and finished-started == JOB_TICKS \
