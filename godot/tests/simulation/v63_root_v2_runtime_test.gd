@@ -253,6 +253,25 @@ func _run() -> void:
 			_check(bool(expected_hit.get("ok",false)) and absf(actual_damage-float(expected_hit.get("damage",0.0))) < 0.001,
 				"MapBattle must apply the gated fire global bonus and metal-over-wood matchup once")
 
+	# Guard against silently turning elemental affinity into a second
+	# cooldown, cast speed, attack speed or crit talent multiplier.
+	for case in [
+		["tmb.skill.bow.liep_anh.passive_02.human","crit_bonus"],
+		["tmb.skill.bow.liep_anh.passive_03.human","attack_speed_factor"],
+		["tmb.skill.bow.liep_anh.passive_04.human","cooldown_recovery_factor"],
+		["tmb.skill.bow.linh_tien.passive_04.human","cast_speed_factor"]
+	]:
+		var passive_id := str(case[0])
+		var channel := str(case[1])
+		var source_mods: Dictionary = V63HumanSkillCombatSystem.skill_definition(passive_id).get("passive_modifiers",{})
+		var source_magnitude := float(source_mods.get(channel,0.0))
+		_check(source_magnitude > 0.0, "real source passive must exercise nonzero: " + channel)
+		var applied_factors := {passive_id:1.24}
+		var preview_actor := {"skill_factors":{"__v63_root_skill_effect_factors":applied_factors}}
+		var after_mods := V63HumanSkillCombatSystem._root_scaled_passive_modifiers(preview_actor,passive_id)
+		_check(absf(float(after_mods.get(channel,0.0))-source_magnitude) < 0.000001,
+			"root cannot multiply a nonzero passive haste/cooldown/crit channel: " + channel)
+
 	_check(V63FeatureGates.all_disabled(), "tests must not switch the release defaults")
 	_print_summary()
 
