@@ -40,6 +40,15 @@ func _run() -> void:
     var qty := warehouse.quantity(state,&"linh_moc")
     ui.call("_open_building",SectMapPresentation.DEST_WAREHOUSE)
     await process_frame
+    var quote_label := ui.find_child("ECO02Stock_linh_moc",true,false) as Label
+    if quote_label == null or not quote_label.text.contains("Dự trữ"):
+        _fail("ECO-02 failed to show true stock and reserve on market screen")
+        return
+    if not await _press("EconomyA_PreviewSell_linh_moc"):
+        return
+    if state.sect.spirit_stones != before or warehouse.quantity(state,&"linh_moc") != qty:
+        _fail("ECO-02 quote button mutated cash or stock before confirmation")
+        return
     if not await _press("EconomyA_Sell_linh_moc"):
         return
     if not (state.sect.spirit_stones > before and warehouse.quantity(state,&"linh_moc") < qty):

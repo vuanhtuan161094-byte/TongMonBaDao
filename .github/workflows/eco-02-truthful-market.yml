@@ -1,0 +1,96 @@
+name: ECO-02 Truthful NPC Market Reserve Receipts
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'godot/src/simulation/economy/economy_system.gd'
+      - 'godot/src/presentation/p3_2_landscape_sect.gd'
+      - 'godot/tests/simulation/eco02_truthful_market_test.gd'
+      - 'godot/tests/presentation/economy_a_landscape_ui_test.gd'
+      - '.github/workflows/eco-02-truthful-market.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  eco01:
+    name: Official Godot 4.7.2 ECO-01 focused + cumulative
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install official Godot 4.7.2 binary
+        shell: bash
+        run: |
+          set -euo pipefail
+          GODOT_URL="https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip"
+          GODOT_SHA256="cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4"
+          curl --fail --location --retry 3 --output /tmp/godot.zip "$GODOT_URL"
+          echo "$GODOT_SHA256  /tmp/godot.zip" | sha256sum --check --strict
+          unzip -q /tmp/godot.zip -d /tmp
+          sudo install -m 0755 /tmp/Godot_v4.7.2-stable_linux.x86_64 /usr/local/bin/godot
+
+      - name: Confirm official version
+        run: godot --version
+
+      - name: Restore canonical female Stage A runtime pack
+        shell: bash
+        run: |
+          set -euo pipefail
+          PACK="/tmp/female_normal_v1_stageA_runtime_pack_v2_quant.zip"
+          cat             .github/assets/p3/female_stage_a/part01.b64             .github/assets/p3/female_stage_a/part02.b64             .github/assets/p3/female_stage_a/part03.b64             .github/assets/p3/female_stage_a/part04.b64             .github/assets/p3/female_stage_a/part05.b64             .github/assets/p3/female_stage_a/part06.b64             .github/assets/p3/female_stage_a/part07.b64             .github/assets/p3/female_stage_a/part08.b64             .github/assets/p3/female_stage_a/part09.b64             .github/assets/p3/female_stage_a/part10.b64             .github/assets/p3/female_stage_a/part11.b64             .github/assets/p3/female_stage_a/part12.b64             .github/assets/p3/female_stage_a/part13.b64             .github/assets/p3/female_stage_a/part14.b64             .github/assets/p3/female_stage_a/part15a.b64             .github/assets/p3/female_stage_a/part15b.b64             .github/assets/p3/female_stage_a/part16.b64             .github/assets/p3/female_stage_a/part17.b64             .github/assets/p3/female_stage_a/part18.b64             .github/assets/p3/female_stage_a/part19.b64             .github/assets/p3/female_stage_a/part20.b64             | tr -d '\r\n\t ' | base64 --decode > "$PACK"
+          test "$(stat -c%s "$PACK")" -eq 44838
+          echo "6a4213b9129ffb3f438c21cbb5326672ddf8915323836bf80cb33b8e5fabfdca  $PACK" | sha256sum --check --strict
+          unzip -q "$PACK" -d .
+
+      - name: Import project scripts and resources
+        run: godot --headless --path godot --import
+
+
+      - name: Parse ECO-02 source, UI, and strict market tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          for script in \
+            res://src/simulation/economy/economy_system.gd \
+            res://src/presentation/p3_2_landscape_sect.gd \
+            res://tests/simulation/eco02_truthful_market_test.gd \
+            res://tests/presentation/economy_a_landscape_ui_test.gd; do
+            bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script "$script"
+          done
+
+      - name: ECO02 zero buyers, real reserved stock, 6-30 quota, cold Save and receipts
+        run: bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/simulation/eco02_truthful_market_test.gd
+
+      - name: ECO02 actual OneGame confirmation, sale, purchase and existing UI
+        run: bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/presentation/economy_a_landscape_ui_test.gd
+
+      - name: Economy-A genuine market, Hall UI and wage arrears
+        run: bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/presentation/economy_a_landscape_ui_test.gd
+
+      - name: Existing O3 Mine / O4 Field / O7 Forest jobs and Save
+        shell: bash
+        run: |
+          set -euo pipefail
+          for test_file in \
+            res://tests/presentation/p3_o3_real_mine_loop_test.gd \
+            res://tests/presentation/p3_o4_spirit_field_loop_test.gd \
+            res://tests/presentation/p3_o7_linh_forest_test.gd; do
+            bash tools/qa/run_godot_strict.sh --headless --path godot -s "$test_file"
+          done
+
+      - name: Existing O9 canonical multi-producer warehouse alchemy and Save
+        run: bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/presentation/p3_o9_m2_production_rehearsal_test.gd
+
+      - name: O6 independent real gameplay release rehearsal
+        run: bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/presentation/p3_o6_m1_release_rehearsal_test.gd
+
+      - name: P3.6A OneGame playable slice
+        run: bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/presentation/p3_6a_playable_slice_test.gd
+
+      - name: Canonical FULL P3.7 cumulative regression on same SHA
+        shell: pwsh
+        run: ./tools/godot/Verify-P3-7C1-Foundation-Dan-Tien-Full.ps1 -GodotBin /usr/local/bin/godot

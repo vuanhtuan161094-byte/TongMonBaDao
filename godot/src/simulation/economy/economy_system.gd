@@ -213,7 +213,7 @@ func configure_v1(state: SimulationState, key: String, value: Variant) -> Dictio
     else:
         if not (value is int or value is float) or int(value) != value:
             return {"ok":false,"reason":"policy_type"}
-        var minimum := 0 if key in ["sect_pay_reserve","wage_per_batch","auto_hp_daily_stone_limit"] else 1
+        var minimum := 0 if key in ["sect_pay_reserve","wage_per_batch","auto_hp_daily_stone_limit","market_daily_units"] else 1
         var maximum := 100000 if key != "resource_duration_ticks" else 1440
         if int(value) < minimum or int(value) > maximum:
             return {"ok":false,"reason":"policy_out_of_bounds"}
@@ -441,6 +441,10 @@ func effective_market_daily_units(state: SimulationState) -> int:
 func market_buy_remaining(state: SimulationState) -> int:
     if state == null or not state.sect.economy_a_enabled:
         return 0
+    # ECO-02: zero capacity is an explicit no-buyer/no-seller scenario.
+    # A 30+ roster must not silently re-enable the market.
+    if int(state.sect.economy_a_policy.get("market_daily_units",20)) == 0:
+        return 0
     var day := int(state.tick / V2_DAY_TICKS)
     var bought := state.sect.economy_a_market_units_bought if state.sect.economy_a_market_stock_day == day else 0
     return maxi(effective_market_daily_units(state)-bought,0)
@@ -586,9 +590,44 @@ func buy_missing_body_gate_materials(state: SimulationState,
 func market_remaining(state: SimulationState) -> int:
     if state == null or not state.sect.economy_a_enabled:
         return 0
+    if int(state.sect.economy_a_policy.get("market_daily_units",20)) == 0:
+        return 0
     var current_day := int(state.tick / V2_DAY_TICKS)
     var spent := state.sect.economy_a_market_units_sold if state.sect.economy_a_market_day == current_day else 0
     return maxi(effective_market_daily_units(state)-spent,0)
+
+# ECO-02: read-only, canonical sell quote. One truth for the Hall UI
+# and the transaction: warehouse reserve/lock, NPC quota and exact sale price.
+# A quote never debits stock, pays money, or replenishes NPC stock.
+func sell_quote_v1(state: SimulationState, resource_id: StringName, quantity: int) -> Dictionary:
+    if state == null or not state.sect.economy_a_enabled:
+        return {"ok":false,"reason":"economy_a_disabled","max_quantity":0}
+    var warehouse := WarehouseSystem.new()
+    var stock := warehouse.quantity(state,resource_id)
+    var rule := warehouse.rule(state,resource_id)
+    var locked := bool(rule.get("locked",false))
+    var reserve_min := int(rule.get("reserve_min",0))
+    var available := warehouse.available_quantity(state,resource_id)
+    var unit_price := market_sell_price(resource_id)
+    var quota := market_remaining(state)
+    var per_sale := maxi(int(state.sect.economy_a_policy.get("market_max_per_sale",5)),1)
+    var maximum := mini(available,mini(per_sale,quota)) if unit_price > 0 else 0
+    var reason := ""
+    if unit_price <= 0:
+        reason = "resource_not_sellable"
+    elif quota <= 0:
+        reason = "npc_no_buyers_or_daily_quota"
+    elif locked or available <= 0:
+        reason = "stock_missing_or_reserved"
+    elif quantity <= 0 or quantity > maximum:
+        reason = "invalid_or_over_demand_sale"
+    return {
+        "ok":reason.is_empty(),"reason":reason,"resource_id":str(resource_id),
+        "stock":stock,"reserve_min":reserve_min,"locked":locked,
+        "available":available,"quota":quota,"max_per_sale":per_sale,
+        "max_quantity":maximum,"quantity":quantity,"unit_price":unit_price,
+        "earned":unit_price*quantity if reason.is_empty() else 0
+    }
 
 # NPC purchases create external Stones only against an actual, unreserved Sect
 # Warehouse debit. request_id is user-action idempotency key across reloads.
@@ -603,12 +642,14 @@ func sell_to_npc_v1(state: SimulationState, resource_id: StringName, quantity: i
         if not (prior is Dictionary) or str(prior.get("resource_id","")) != str(resource_id) or int(prior.get("quantity",-1)) != quantity:
             return {"ok":false,"reason":"conflicting_market_replay"}
         return {"ok":true,"already_settled":true,"receipt":prior.duplicate(true)}
+    var quote := sell_quote_v1(state,resource_id,quantity)
+    if not bool(quote.get("ok",false)):
+        return {"ok":false,"reason":str(quote.get("reason","invalid_or_over_demand_sale"))}
+    # No callback can mint Stones without the canonical quote plus actual
+    # Warehouse.consume below. Do not mutate even NPC restock on rejection.
     sync_market_day(state)
-    var unit_price := market_sell_price(resource_id)
-    var per_sale := maxi(int(state.sect.economy_a_policy.get("market_max_per_sale",5)),1)
-    if quantity <= 0 or quantity > per_sale or quantity > market_remaining(state) or unit_price <= 0:
-        return {"ok":false,"reason":"invalid_or_over_demand_sale"}
-    var earned := unit_price*quantity
+    var unit_price := int(quote["unit_price"])
+    var earned := int(quote["earned"])
     if earned > V2_MAX_STONES-state.sect.spirit_stones:
         return {"ok":false,"reason":"stone_overflow"}
     var merchant_stock := int(state.sect.economy_a_market_stock.get(str(resource_id),0))

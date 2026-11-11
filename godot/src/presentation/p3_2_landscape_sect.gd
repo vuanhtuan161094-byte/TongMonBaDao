@@ -4571,27 +4571,59 @@ func _build_economy_a_market_controls() -> void:
     economy.sync_market_day(state)
     _add_management_section_label("PHƯỜNG THỊ · GIAO DỊCH NGUYÊN LIỆU")
     var quota := Label.new()
-    quota.text = "Tông Môn có %d LT · Có thể bán %d và mua %d đơn vị hôm nay." % [
-        state.sect.spirit_stones,economy.market_remaining(state),economy.market_buy_remaining(state)
+    quota.name = "ECO02MarketQuota"
+    quota.text = "Tông Môn %d LT · NPC nhận %d · bán tối đa %d · mua tối đa %d đơn vị hôm nay." % [
+        state.sect.spirit_stones,int(state.sect.economy_a_policy.get("market_daily_units",20)),
+        economy.market_remaining(state),economy.market_buy_remaining(state)
     ]
-    quota.tooltip_text = "Kiếm LT: Mỏ/Linh Lâm/Linh Điền sản xuất → nhập Linh Kho → bán nguyên liệu ở đây. Bán chỉ trừ kho đủ, không bán hàng đang bị khóa dự trữ. Lượt giới hạn theo ngày mô phỏng (1.440 phút)."
-    quota.custom_minimum_size = Vector2(384,28)
+    if int(state.sect.economy_a_policy.get("market_daily_units",20)) == 0:
+        quota.text = "NPC không giao dịch hôm nay · không có doanh thu bán hàng."
+    quota.tooltip_text = "Chỉ giao dịch nguyên liệu thực trong Kho; nhu cầu NPC và giới hạn bán/mua tính theo ngày mô phỏng (1.440 phút). Hạn mức NPC = 0 thì không thể mua hoặc bán."
+    quota.custom_minimum_size = Vector2(384,38)
+    quota.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
     building_management_container.add_child(quota)
+    var pending_sale: Dictionary = get_meta("eco02_pending_sale",{})
     for raw_id in EconomySystem.V2_MARKET_CATALOG:
         var resource_id := StringName(raw_id)
-        var available := WarehouseSystem.new().available_quantity(state,resource_id)
         var price := economy.market_sell_price(resource_id)
         if price > 0:
-            var max_sale := int(state.sect.economy_a_policy.get("market_max_per_sale",5))
-            var sellable := mini(available,mini(max_sale,economy.market_remaining(state)))
+            var quote := economy.sell_quote_v1(state,resource_id,1)
+            var sellable := int(quote.get("max_quantity",0))
+            var reserve_min := int(quote.get("reserve_min",0))
+            var locked := bool(quote.get("locked",false))
+            var stock_label := Label.new()
+            stock_label.name = "ECO02Stock_%s" % raw_id
+            stock_label.text = "%s · Kho %d · Dự trữ %d%s · Bán được %d · %d LT/đv" % [
+                ResourceRegistry.new().display_name(resource_id),int(quote.get("stock",0)),
+                reserve_min," · KHÓA" if locked else "",sellable,price
+            ]
+            stock_label.custom_minimum_size = Vector2(384,26)
+            stock_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+            stock_label.add_theme_font_size_override("font_size",11)
+            building_management_container.add_child(stock_label)
+            var same_pending := str(pending_sale.get("resource_id","")) == raw_id \
+                and int(pending_sale.get("quantity",0)) == sellable \
+                and int(pending_sale.get("unit_price",0)) == price and sellable > 0
             var row := Button.new()
-            row.name = "EconomyA_Sell_%s" % raw_id
-            row.text = "Bán %s ×%d · +%d LT" % [ResourceRegistry.new().display_name(resource_id),sellable,price*sellable]
+            row.name = ("EconomyA_Sell_%s" if same_pending else "EconomyA_PreviewSell_%s") % raw_id
+            row.text = ("Xác nhận bán" if same_pending else "Kiểm tra bán") + " %s ×%d · +%d LT" % [
+                ResourceRegistry.new().display_name(resource_id),sellable,price*sellable
+            ]
             row.custom_minimum_size = Vector2(384,36)
             row.disabled = sellable <= 0
-            row.tooltip_text = "Bán khoáng/dược liệu có thật. Người chơi nhận đúng %d LT/đơn vị, tồn kho giảm khi giao dịch thành công." % price
-            row.pressed.connect(Callable(self,"_economy_a_sell_from_ui").bind(resource_id,sellable))
+            row.tooltip_text = "Bước 1 kiểm tra giá/tồn kho; bước 2 mới xác nhận trừ Kho thật và ghi biên nhận. Không bán hàng đã khóa hoặc dự trữ."
+            if same_pending:
+                row.pressed.connect(Callable(self,"_economy_a_sell_from_ui").bind(resource_id,sellable))
+            else:
+                row.pressed.connect(Callable(self,"_eco02_prepare_sell_from_ui").bind(resource_id,sellable))
             building_management_container.add_child(row)
+            if same_pending:
+                var cancel_sale := Button.new()
+                cancel_sale.name = "ECO02CancelSell"
+                cancel_sale.text = "Hủy bán · Kho và Linh Thạch không đổi"
+                cancel_sale.custom_minimum_size = Vector2(384,28)
+                cancel_sale.pressed.connect(_eco02_cancel_sell_from_ui)
+                building_management_container.add_child(cancel_sale)
         var merchant_stock := int(state.sect.economy_a_market_stock.get(raw_id,0))
         var buy_price := economy.market_purchase_price(state,resource_id)
         var buyable := mini(merchant_stock,mini(int(state.sect.economy_a_policy.get("market_max_per_buy",5)),economy.market_buy_remaining(state)))
@@ -4746,7 +4778,40 @@ func _economy_a_buy_from_ui(resource_id: StringName, qty: int) -> void:
     )
     _refresh_building_operation_content()
 
+func _eco02_prepare_sell_from_ui(resource_id: StringName, qty: int) -> void:
+    var quote := EconomySystem.new().sell_quote_v1(state,resource_id,qty)
+    if not bool(quote.get("ok",false)):
+        building_management_feedback = "Chưa thể bán: %s" % str(quote.get("reason","invalid_sale"))
+        if has_meta("eco02_pending_sale"):
+            remove_meta("eco02_pending_sale")
+    else:
+        set_meta("eco02_pending_sale",{
+            "resource_id":str(resource_id),"quantity":qty,"unit_price":int(quote.get("unit_price",0))
+        })
+        building_management_feedback = "Kiểm tra: Kho %d · giữ lại %d · dự bán %d × %d = %d LT. Bấm Xác nhận để hoàn tất." % [
+            int(quote.get("stock",0)),int(quote.get("reserve_min",0)),
+            qty,int(quote.get("unit_price",0)),int(quote.get("earned",0))
+        ]
+    _refresh_building_operation_content()
+
+func _eco02_cancel_sell_from_ui() -> void:
+    if has_meta("eco02_pending_sale"):
+        remove_meta("eco02_pending_sale")
+    building_management_feedback = "Đã hủy bán, Kho và Linh Thạch không đổi."
+    _refresh_building_operation_content()
+
 func _economy_a_sell_from_ui(resource_id: StringName, qty: int) -> void:
+    var pending: Dictionary = get_meta("eco02_pending_sale",{})
+    if has_meta("eco02_pending_sale"):
+        remove_meta("eco02_pending_sale")
+    var quote := EconomySystem.new().sell_quote_v1(state,resource_id,qty)
+    if str(pending.get("resource_id","")) != str(resource_id) \
+            or int(pending.get("quantity",0)) != qty \
+            or int(pending.get("unit_price",-1)) != int(quote.get("unit_price",0)) \
+            or not bool(quote.get("ok",false)):
+        building_management_feedback = "Báo giá hết hiệu lực hoặc Kho/NPC đã thay đổi, cần kiểm tra lại."
+        _refresh_building_operation_content()
+        return
     var request_id := "panel:%s:%d" % [str(resource_id),state.sect.economy_a_event_count+1]
     var result := EconomySystem.new().sell_to_npc_v1(state,resource_id,qty,request_id)
     var receipt: Dictionary = result.get("receipt",{})
