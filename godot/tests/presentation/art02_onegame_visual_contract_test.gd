@@ -17,6 +17,7 @@ func _run() -> void:
     for item_id in [&"thanh_thiet",&"ore_r01_c2",&"linh_moc",&"thanh_linh_thao",&"tu_van_thao",&"linh_coc",&"hoi_xuan_dan",&"tu_khi_dan"]:
         var tile := ITEMS.icon(item_id,38)
         assert(tile.texture != null,"Missing imported item texture "+str(item_id))
+        tile.free()
         checked += 1
     for destination in [
         SectMapPresentation.DEST_MINE,SectMapPresentation.DEST_LINH_FOREST,
@@ -47,6 +48,7 @@ func _run() -> void:
     print("ART02 ONEGAME_SOURCE_BACKED_VISUAL PASS checks=",checked)
     screen.set("runtime_ready",false)
     screen.queue_free()
-    await process_frame
+    for _i in range(5):
+        await process_frame
     ProjectSettings.set_setting("runtime/live_save_path",LiveGameRuntimeV2.DEFAULT_SAVE_PATH)
     quit(0)
