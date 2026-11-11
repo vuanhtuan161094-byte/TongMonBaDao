@@ -1,0 +1,1689 @@
+{
+  "schema_version": 1,
+  "extension_id": "tmb.v63.registry_extension.s4_dual_blade",
+  "release_gate": "OFF",
+  "base_registry": {
+    "path": "res://data/combat/v63_content_registry.json",
+    "git_blob_sha": "2b36bd39bf04c20dc74f00e74d335568b4a1a89b"
+  },
+  "source_catalog": {
+    "path": "res://data/combat/v63_dual_blade_combat_catalog.json",
+    "git_blob_sha": "ee69757422c86e45de513cb0f742c7cdb982516f"
+  },
+  "school": {
+    "id": "dual_blade",
+    "name": "Song Đao",
+    "candidate_source_status": "SOURCE_PENDING"
+  },
+  "paths": [
+    {
+      "id": "tmb.path.dual_blade.anh_nhan",
+      "school": "dual_blade",
+      "name": "Ảnh Nhẫn",
+      "lineages": {
+        "a": "Vô Tung",
+        "b": "Hư Ảnh"
+      },
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.path.dual_blade.lien_hoan",
+      "school": "dual_blade",
+      "name": "Liên Hoàn",
+      "lineages": {
+        "a": "Nối Thức",
+        "b": "Đoạn Thức"
+      },
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.path.dual_blade.huyet_nguyet",
+      "school": "dual_blade",
+      "name": "Huyết Nguyệt",
+      "lineages": {
+        "a": "Tàn Nguyệt",
+        "b": "Viên Nguyệt"
+      },
+      "candidate_source_status": "SOURCE_PENDING"
+    }
+  ],
+  "families": [
+    {
+      "id": "tmb.skill.dual_blade.basic",
+      "school": "dual_blade",
+      "branch": "",
+      "slot": "basic",
+      "name": "Tâm Nhận Song Hành",
+      "nodes": [
+        {
+          "id": "tmb.skill.dual_blade.basic.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.basic.immortal.base",
+          "tier": "immortal",
+          "lineage": "base",
+          "parent": "tmb.skill.dual_blade.basic.human",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.basic.divine.base",
+          "tier": "divine",
+          "lineage": "base",
+          "parent": "tmb.skill.dual_blade.basic.immortal.base",
+          "school": "dual_blade"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.dual_blade.mobility",
+      "school": "dual_blade",
+      "branch": "",
+      "slot": "mobility",
+      "name": "Bộ Pháp Lưỡng Bộ",
+      "nodes": [
+        {
+          "id": "tmb.skill.dual_blade.mobility.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.mobility.immortal.base",
+          "tier": "immortal",
+          "lineage": "base",
+          "parent": "tmb.skill.dual_blade.mobility.human",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.mobility.divine.base",
+          "tier": "divine",
+          "lineage": "base",
+          "parent": "tmb.skill.dual_blade.mobility.immortal.base",
+          "school": "dual_blade"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.dual_blade.anh_nhan.active_01",
+      "school": "dual_blade",
+      "branch": "anh_nhan",
+      "slot": "active",
+      "name": "Vô Tung Bộ",
+      "nodes": [
+        {
+          "id": "tmb.skill.dual_blade.anh_nhan.active_01.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.anh_nhan.active_01.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.dual_blade.anh_nhan.active_01.human",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.anh_nhan.active_01.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.dual_blade.anh_nhan.active_01.human",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.anh_nhan.active_01.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.dual_blade.anh_nhan.active_01.immortal.a",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.anh_nhan.active_01.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.dual_blade.anh_nhan.active_01.immortal.b",
+          "school": "dual_blade"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.dual_blade.anh_nhan.active_02",
+      "school": "dual_blade",
+      "branch": "anh_nhan",
+      "slot": "active",
+      "name": "Song Nhận Đoạt Ảnh",
+      "nodes": [
+        {
+          "id": "tmb.skill.dual_blade.anh_nhan.active_02.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.anh_nhan.active_02.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.dual_blade.anh_nhan.active_02.human",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.anh_nhan.active_02.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.dual_blade.anh_nhan.active_02.human",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.anh_nhan.active_02.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.dual_blade.anh_nhan.active_02.immortal.a",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.anh_nhan.active_02.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.dual_blade.anh_nhan.active_02.immortal.b",
+          "school": "dual_blade"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.dual_blade.anh_nhan.active_03",
+      "school": "dual_blade",
+      "branch": "anh_nhan",
+      "slot": "active",
+      "name": "Hư Ảnh Giao Phong",
+      "nodes": [
+        {
+          "id": "tmb.skill.dual_blade.anh_nhan.active_03.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.anh_nhan.active_03.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.dual_blade.anh_nhan.active_03.human",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.anh_nhan.active_03.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.dual_blade.anh_nhan.active_03.human",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.anh_nhan.active_03.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.dual_blade.anh_nhan.active_03.immortal.a",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.anh_nhan.active_03.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.dual_blade.anh_nhan.active_03.immortal.b",
+          "school": "dual_blade"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.dual_blade.anh_nhan.active_04",
+      "school": "dual_blade",
+      "branch": "anh_nhan",
+      "slot": "active",
+      "name": "Phản Chiếu Trảm",
+      "nodes": [
+        {
+          "id": "tmb.skill.dual_blade.anh_nhan.active_04.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.anh_nhan.active_04.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.dual_blade.anh_nhan.active_04.human",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.anh_nhan.active_04.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.dual_blade.anh_nhan.active_04.human",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.anh_nhan.active_04.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.dual_blade.anh_nhan.active_04.immortal.a",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.anh_nhan.active_04.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.dual_blade.anh_nhan.active_04.immortal.b",
+          "school": "dual_blade"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.dual_blade.anh_nhan.ultimate",
+      "school": "dual_blade",
+      "branch": "anh_nhan",
+      "slot": "ultimate",
+      "name": "Thiên Ảnh Phân Sát",
+      "nodes": [
+        {
+          "id": "tmb.skill.dual_blade.anh_nhan.ultimate.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.anh_nhan.ultimate.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.dual_blade.anh_nhan.ultimate.human",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.anh_nhan.ultimate.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.dual_blade.anh_nhan.ultimate.human",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.anh_nhan.ultimate.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.dual_blade.anh_nhan.ultimate.immortal.a",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.anh_nhan.ultimate.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.dual_blade.anh_nhan.ultimate.immortal.b",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.anh_nhan.ultimate.rare.a",
+          "tier": "rare_divine",
+          "lineage": "a",
+          "parent": "tmb.skill.dual_blade.anh_nhan.ultimate.divine.a",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.anh_nhan.ultimate.rare.b",
+          "tier": "rare_divine",
+          "lineage": "b",
+          "parent": "tmb.skill.dual_blade.anh_nhan.ultimate.divine.b",
+          "school": "dual_blade"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.dual_blade.anh_nhan.passive_01",
+      "school": "dual_blade",
+      "branch": "anh_nhan",
+      "slot": "passive",
+      "name": "Tĩnh Bộ Vô Tung",
+      "nodes": [
+        {
+          "id": "tmb.skill.dual_blade.anh_nhan.passive_01.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.anh_nhan.passive_01.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.dual_blade.anh_nhan.passive_01.human",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.anh_nhan.passive_01.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.dual_blade.anh_nhan.passive_01.human",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.anh_nhan.passive_01.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.dual_blade.anh_nhan.passive_01.immortal.a",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.anh_nhan.passive_01.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.dual_blade.anh_nhan.passive_01.immortal.b",
+          "school": "dual_blade"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.dual_blade.anh_nhan.passive_02",
+      "school": "dual_blade",
+      "branch": "anh_nhan",
+      "slot": "passive",
+      "name": "Song Tâm Định Ý",
+      "nodes": [
+        {
+          "id": "tmb.skill.dual_blade.anh_nhan.passive_02.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.anh_nhan.passive_02.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.dual_blade.anh_nhan.passive_02.human",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.anh_nhan.passive_02.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.dual_blade.anh_nhan.passive_02.human",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.anh_nhan.passive_02.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.dual_blade.anh_nhan.passive_02.immortal.a",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.anh_nhan.passive_02.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.dual_blade.anh_nhan.passive_02.immortal.b",
+          "school": "dual_blade"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.dual_blade.anh_nhan.passive_03",
+      "school": "dual_blade",
+      "branch": "anh_nhan",
+      "slot": "passive",
+      "name": "Ảnh Tức Điều Tức",
+      "nodes": [
+        {
+          "id": "tmb.skill.dual_blade.anh_nhan.passive_03.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.anh_nhan.passive_03.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.dual_blade.anh_nhan.passive_03.human",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.anh_nhan.passive_03.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.dual_blade.anh_nhan.passive_03.human",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.anh_nhan.passive_03.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.dual_blade.anh_nhan.passive_03.immortal.a",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.anh_nhan.passive_03.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.dual_blade.anh_nhan.passive_03.immortal.b",
+          "school": "dual_blade"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.dual_blade.anh_nhan.passive_04",
+      "school": "dual_blade",
+      "branch": "anh_nhan",
+      "slot": "passive",
+      "name": "Hoán Vị Như Phong",
+      "nodes": [
+        {
+          "id": "tmb.skill.dual_blade.anh_nhan.passive_04.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.anh_nhan.passive_04.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.dual_blade.anh_nhan.passive_04.human",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.anh_nhan.passive_04.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.dual_blade.anh_nhan.passive_04.human",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.anh_nhan.passive_04.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.dual_blade.anh_nhan.passive_04.immortal.a",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.anh_nhan.passive_04.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.dual_blade.anh_nhan.passive_04.immortal.b",
+          "school": "dual_blade"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.dual_blade.anh_nhan.passive_05",
+      "school": "dual_blade",
+      "branch": "anh_nhan",
+      "slot": "passive",
+      "name": "Thiên Ảnh Tâm Pháp",
+      "nodes": [
+        {
+          "id": "tmb.skill.dual_blade.anh_nhan.passive_05.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.anh_nhan.passive_05.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.dual_blade.anh_nhan.passive_05.human",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.anh_nhan.passive_05.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.dual_blade.anh_nhan.passive_05.human",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.anh_nhan.passive_05.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.dual_blade.anh_nhan.passive_05.immortal.a",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.anh_nhan.passive_05.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.dual_blade.anh_nhan.passive_05.immortal.b",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.anh_nhan.passive_05.rare_passive.a",
+          "tier": "divine",
+          "lineage": "rare_a",
+          "parent": "tmb.skill.dual_blade.anh_nhan.passive_05.divine.a",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.anh_nhan.passive_05.rare_passive.b",
+          "tier": "divine",
+          "lineage": "rare_b",
+          "parent": "tmb.skill.dual_blade.anh_nhan.passive_05.divine.b",
+          "school": "dual_blade"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.dual_blade.anh_nhan.innate",
+      "school": "dual_blade",
+      "branch": "anh_nhan",
+      "slot": "innate",
+      "name": "Ảnh Nhẫn Bản Tâm",
+      "nodes": [
+        {
+          "id": "tmb.skill.dual_blade.anh_nhan.innate.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.anh_nhan.innate.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.dual_blade.anh_nhan.innate.human",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.anh_nhan.innate.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.dual_blade.anh_nhan.innate.human",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.anh_nhan.innate.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.dual_blade.anh_nhan.innate.immortal.a",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.anh_nhan.innate.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.dual_blade.anh_nhan.innate.immortal.b",
+          "school": "dual_blade"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.dual_blade.lien_hoan.active_01",
+      "school": "dual_blade",
+      "branch": "lien_hoan",
+      "slot": "active",
+      "name": "Nối Thức Khai Đao",
+      "nodes": [
+        {
+          "id": "tmb.skill.dual_blade.lien_hoan.active_01.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.lien_hoan.active_01.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.dual_blade.lien_hoan.active_01.human",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.lien_hoan.active_01.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.dual_blade.lien_hoan.active_01.human",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.lien_hoan.active_01.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.dual_blade.lien_hoan.active_01.immortal.a",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.lien_hoan.active_01.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.dual_blade.lien_hoan.active_01.immortal.b",
+          "school": "dual_blade"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.dual_blade.lien_hoan.active_02",
+      "school": "dual_blade",
+      "branch": "lien_hoan",
+      "slot": "active",
+      "name": "Tam Liên Hợp Trảm",
+      "nodes": [
+        {
+          "id": "tmb.skill.dual_blade.lien_hoan.active_02.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.lien_hoan.active_02.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.dual_blade.lien_hoan.active_02.human",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.lien_hoan.active_02.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.dual_blade.lien_hoan.active_02.human",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.lien_hoan.active_02.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.dual_blade.lien_hoan.active_02.immortal.a",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.lien_hoan.active_02.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.dual_blade.lien_hoan.active_02.immortal.b",
+          "school": "dual_blade"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.dual_blade.lien_hoan.active_03",
+      "school": "dual_blade",
+      "branch": "lien_hoan",
+      "slot": "active",
+      "name": "Thất Bộ Liên Hoàn",
+      "nodes": [
+        {
+          "id": "tmb.skill.dual_blade.lien_hoan.active_03.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.lien_hoan.active_03.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.dual_blade.lien_hoan.active_03.human",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.lien_hoan.active_03.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.dual_blade.lien_hoan.active_03.human",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.lien_hoan.active_03.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.dual_blade.lien_hoan.active_03.immortal.a",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.lien_hoan.active_03.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.dual_blade.lien_hoan.active_03.immortal.b",
+          "school": "dual_blade"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.dual_blade.lien_hoan.active_04",
+      "school": "dual_blade",
+      "branch": "lien_hoan",
+      "slot": "active",
+      "name": "Đoạn Thức Thu Đao",
+      "nodes": [
+        {
+          "id": "tmb.skill.dual_blade.lien_hoan.active_04.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.lien_hoan.active_04.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.dual_blade.lien_hoan.active_04.human",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.lien_hoan.active_04.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.dual_blade.lien_hoan.active_04.human",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.lien_hoan.active_04.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.dual_blade.lien_hoan.active_04.immortal.a",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.lien_hoan.active_04.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.dual_blade.lien_hoan.active_04.immortal.b",
+          "school": "dual_blade"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.dual_blade.lien_hoan.ultimate",
+      "school": "dual_blade",
+      "branch": "lien_hoan",
+      "slot": "ultimate",
+      "name": "Thập Nhị Liên Hoàn Trảm",
+      "nodes": [
+        {
+          "id": "tmb.skill.dual_blade.lien_hoan.ultimate.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.lien_hoan.ultimate.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.dual_blade.lien_hoan.ultimate.human",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.lien_hoan.ultimate.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.dual_blade.lien_hoan.ultimate.human",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.lien_hoan.ultimate.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.dual_blade.lien_hoan.ultimate.immortal.a",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.lien_hoan.ultimate.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.dual_blade.lien_hoan.ultimate.immortal.b",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.lien_hoan.ultimate.rare.a",
+          "tier": "rare_divine",
+          "lineage": "a",
+          "parent": "tmb.skill.dual_blade.lien_hoan.ultimate.divine.a",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.lien_hoan.ultimate.rare.b",
+          "tier": "rare_divine",
+          "lineage": "b",
+          "parent": "tmb.skill.dual_blade.lien_hoan.ultimate.divine.b",
+          "school": "dual_blade"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.dual_blade.lien_hoan.passive_01",
+      "school": "dual_blade",
+      "branch": "lien_hoan",
+      "slot": "passive",
+      "name": "Nhất Nhị Nối Thức",
+      "nodes": [
+        {
+          "id": "tmb.skill.dual_blade.lien_hoan.passive_01.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.lien_hoan.passive_01.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.dual_blade.lien_hoan.passive_01.human",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.lien_hoan.passive_01.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.dual_blade.lien_hoan.passive_01.human",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.lien_hoan.passive_01.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.dual_blade.lien_hoan.passive_01.immortal.a",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.lien_hoan.passive_01.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.dual_blade.lien_hoan.passive_01.immortal.b",
+          "school": "dual_blade"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.dual_blade.lien_hoan.passive_02",
+      "school": "dual_blade",
+      "branch": "lien_hoan",
+      "slot": "passive",
+      "name": "Tam Trảm Liên Tâm",
+      "nodes": [
+        {
+          "id": "tmb.skill.dual_blade.lien_hoan.passive_02.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.lien_hoan.passive_02.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.dual_blade.lien_hoan.passive_02.human",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.lien_hoan.passive_02.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.dual_blade.lien_hoan.passive_02.human",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.lien_hoan.passive_02.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.dual_blade.lien_hoan.passive_02.immortal.a",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.lien_hoan.passive_02.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.dual_blade.lien_hoan.passive_02.immortal.b",
+          "school": "dual_blade"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.dual_blade.lien_hoan.passive_03",
+      "school": "dual_blade",
+      "branch": "lien_hoan",
+      "slot": "passive",
+      "name": "Thu Đao Giữ Thế",
+      "nodes": [
+        {
+          "id": "tmb.skill.dual_blade.lien_hoan.passive_03.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.lien_hoan.passive_03.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.dual_blade.lien_hoan.passive_03.human",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.lien_hoan.passive_03.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.dual_blade.lien_hoan.passive_03.human",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.lien_hoan.passive_03.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.dual_blade.lien_hoan.passive_03.immortal.a",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.lien_hoan.passive_03.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.dual_blade.lien_hoan.passive_03.immortal.b",
+          "school": "dual_blade"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.dual_blade.lien_hoan.passive_04",
+      "school": "dual_blade",
+      "branch": "lien_hoan",
+      "slot": "passive",
+      "name": "Mạch Đao Liên Tục",
+      "nodes": [
+        {
+          "id": "tmb.skill.dual_blade.lien_hoan.passive_04.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.lien_hoan.passive_04.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.dual_blade.lien_hoan.passive_04.human",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.lien_hoan.passive_04.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.dual_blade.lien_hoan.passive_04.human",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.lien_hoan.passive_04.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.dual_blade.lien_hoan.passive_04.immortal.a",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.lien_hoan.passive_04.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.dual_blade.lien_hoan.passive_04.immortal.b",
+          "school": "dual_blade"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.dual_blade.lien_hoan.passive_05",
+      "school": "dual_blade",
+      "branch": "lien_hoan",
+      "slot": "passive",
+      "name": "Thập Nhị Chân Ý",
+      "nodes": [
+        {
+          "id": "tmb.skill.dual_blade.lien_hoan.passive_05.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.lien_hoan.passive_05.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.dual_blade.lien_hoan.passive_05.human",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.lien_hoan.passive_05.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.dual_blade.lien_hoan.passive_05.human",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.lien_hoan.passive_05.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.dual_blade.lien_hoan.passive_05.immortal.a",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.lien_hoan.passive_05.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.dual_blade.lien_hoan.passive_05.immortal.b",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.lien_hoan.passive_05.rare_passive.a",
+          "tier": "divine",
+          "lineage": "rare_a",
+          "parent": "tmb.skill.dual_blade.lien_hoan.passive_05.divine.a",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.lien_hoan.passive_05.rare_passive.b",
+          "tier": "divine",
+          "lineage": "rare_b",
+          "parent": "tmb.skill.dual_blade.lien_hoan.passive_05.divine.b",
+          "school": "dual_blade"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.dual_blade.lien_hoan.innate",
+      "school": "dual_blade",
+      "branch": "lien_hoan",
+      "slot": "innate",
+      "name": "Liên Hoàn Chân Truyền",
+      "nodes": [
+        {
+          "id": "tmb.skill.dual_blade.lien_hoan.innate.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.lien_hoan.innate.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.dual_blade.lien_hoan.innate.human",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.lien_hoan.innate.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.dual_blade.lien_hoan.innate.human",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.lien_hoan.innate.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.dual_blade.lien_hoan.innate.immortal.a",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.lien_hoan.innate.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.dual_blade.lien_hoan.innate.immortal.b",
+          "school": "dual_blade"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.dual_blade.huyet_nguyet.active_01",
+      "school": "dual_blade",
+      "branch": "huyet_nguyet",
+      "slot": "active",
+      "name": "Tàn Nguyệt Khai Nhận",
+      "nodes": [
+        {
+          "id": "tmb.skill.dual_blade.huyet_nguyet.active_01.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.huyet_nguyet.active_01.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.dual_blade.huyet_nguyet.active_01.human",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.huyet_nguyet.active_01.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.dual_blade.huyet_nguyet.active_01.human",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.huyet_nguyet.active_01.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.dual_blade.huyet_nguyet.active_01.immortal.a",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.huyet_nguyet.active_01.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.dual_blade.huyet_nguyet.active_01.immortal.b",
+          "school": "dual_blade"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.dual_blade.huyet_nguyet.active_02",
+      "school": "dual_blade",
+      "branch": "huyet_nguyet",
+      "slot": "active",
+      "name": "Huyết Khế Đoạt Phong",
+      "nodes": [
+        {
+          "id": "tmb.skill.dual_blade.huyet_nguyet.active_02.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.huyet_nguyet.active_02.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.dual_blade.huyet_nguyet.active_02.human",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.huyet_nguyet.active_02.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.dual_blade.huyet_nguyet.active_02.human",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.huyet_nguyet.active_02.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.dual_blade.huyet_nguyet.active_02.immortal.a",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.huyet_nguyet.active_02.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.dual_blade.huyet_nguyet.active_02.immortal.b",
+          "school": "dual_blade"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.dual_blade.huyet_nguyet.active_03",
+      "school": "dual_blade",
+      "branch": "huyet_nguyet",
+      "slot": "active",
+      "name": "Nguyệt Khuyết Hồi Thủ",
+      "nodes": [
+        {
+          "id": "tmb.skill.dual_blade.huyet_nguyet.active_03.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.huyet_nguyet.active_03.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.dual_blade.huyet_nguyet.active_03.human",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.huyet_nguyet.active_03.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.dual_blade.huyet_nguyet.active_03.human",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.huyet_nguyet.active_03.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.dual_blade.huyet_nguyet.active_03.immortal.a",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.huyet_nguyet.active_03.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.dual_blade.huyet_nguyet.active_03.immortal.b",
+          "school": "dual_blade"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.dual_blade.huyet_nguyet.active_04",
+      "school": "dual_blade",
+      "branch": "huyet_nguyet",
+      "slot": "active",
+      "name": "Viên Nguyệt Phá Tâm",
+      "nodes": [
+        {
+          "id": "tmb.skill.dual_blade.huyet_nguyet.active_04.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.huyet_nguyet.active_04.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.dual_blade.huyet_nguyet.active_04.human",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.huyet_nguyet.active_04.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.dual_blade.huyet_nguyet.active_04.human",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.huyet_nguyet.active_04.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.dual_blade.huyet_nguyet.active_04.immortal.a",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.huyet_nguyet.active_04.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.dual_blade.huyet_nguyet.active_04.immortal.b",
+          "school": "dual_blade"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.dual_blade.huyet_nguyet.ultimate",
+      "school": "dual_blade",
+      "branch": "huyet_nguyet",
+      "slot": "ultimate",
+      "name": "Huyết Nguyệt Táng Thiên",
+      "nodes": [
+        {
+          "id": "tmb.skill.dual_blade.huyet_nguyet.ultimate.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.huyet_nguyet.ultimate.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.dual_blade.huyet_nguyet.ultimate.human",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.huyet_nguyet.ultimate.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.dual_blade.huyet_nguyet.ultimate.human",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.huyet_nguyet.ultimate.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.dual_blade.huyet_nguyet.ultimate.immortal.a",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.huyet_nguyet.ultimate.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.dual_blade.huyet_nguyet.ultimate.immortal.b",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.huyet_nguyet.ultimate.rare.a",
+          "tier": "rare_divine",
+          "lineage": "a",
+          "parent": "tmb.skill.dual_blade.huyet_nguyet.ultimate.divine.a",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.huyet_nguyet.ultimate.rare.b",
+          "tier": "rare_divine",
+          "lineage": "b",
+          "parent": "tmb.skill.dual_blade.huyet_nguyet.ultimate.divine.b",
+          "school": "dual_blade"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.dual_blade.huyet_nguyet.passive_01",
+      "school": "dual_blade",
+      "branch": "huyet_nguyet",
+      "slot": "passive",
+      "name": "Huyết Mạch Tỉnh Thức",
+      "nodes": [
+        {
+          "id": "tmb.skill.dual_blade.huyet_nguyet.passive_01.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.huyet_nguyet.passive_01.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.dual_blade.huyet_nguyet.passive_01.human",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.huyet_nguyet.passive_01.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.dual_blade.huyet_nguyet.passive_01.human",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.huyet_nguyet.passive_01.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.dual_blade.huyet_nguyet.passive_01.immortal.a",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.huyet_nguyet.passive_01.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.dual_blade.huyet_nguyet.passive_01.immortal.b",
+          "school": "dual_blade"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.dual_blade.huyet_nguyet.passive_02",
+      "school": "dual_blade",
+      "branch": "huyet_nguyet",
+      "slot": "passive",
+      "name": "Tàn Nguyệt Hộ Tâm",
+      "nodes": [
+        {
+          "id": "tmb.skill.dual_blade.huyet_nguyet.passive_02.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.huyet_nguyet.passive_02.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.dual_blade.huyet_nguyet.passive_02.human",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.huyet_nguyet.passive_02.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.dual_blade.huyet_nguyet.passive_02.human",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.huyet_nguyet.passive_02.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.dual_blade.huyet_nguyet.passive_02.immortal.a",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.huyet_nguyet.passive_02.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.dual_blade.huyet_nguyet.passive_02.immortal.b",
+          "school": "dual_blade"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.dual_blade.huyet_nguyet.passive_03",
+      "school": "dual_blade",
+      "branch": "huyet_nguyet",
+      "slot": "passive",
+      "name": "Giữ HP Dưỡng Đao",
+      "nodes": [
+        {
+          "id": "tmb.skill.dual_blade.huyet_nguyet.passive_03.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.huyet_nguyet.passive_03.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.dual_blade.huyet_nguyet.passive_03.human",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.huyet_nguyet.passive_03.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.dual_blade.huyet_nguyet.passive_03.human",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.huyet_nguyet.passive_03.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.dual_blade.huyet_nguyet.passive_03.immortal.a",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.huyet_nguyet.passive_03.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.dual_blade.huyet_nguyet.passive_03.immortal.b",
+          "school": "dual_blade"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.dual_blade.huyet_nguyet.passive_04",
+      "school": "dual_blade",
+      "branch": "huyet_nguyet",
+      "slot": "passive",
+      "name": "Hạn Ước Sát Niệm",
+      "nodes": [
+        {
+          "id": "tmb.skill.dual_blade.huyet_nguyet.passive_04.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.huyet_nguyet.passive_04.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.dual_blade.huyet_nguyet.passive_04.human",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.huyet_nguyet.passive_04.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.dual_blade.huyet_nguyet.passive_04.human",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.huyet_nguyet.passive_04.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.dual_blade.huyet_nguyet.passive_04.immortal.a",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.huyet_nguyet.passive_04.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.dual_blade.huyet_nguyet.passive_04.immortal.b",
+          "school": "dual_blade"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.dual_blade.huyet_nguyet.passive_05",
+      "school": "dual_blade",
+      "branch": "huyet_nguyet",
+      "slot": "passive",
+      "name": "Huyết Nguyệt Tâm Pháp",
+      "nodes": [
+        {
+          "id": "tmb.skill.dual_blade.huyet_nguyet.passive_05.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.huyet_nguyet.passive_05.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.dual_blade.huyet_nguyet.passive_05.human",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.huyet_nguyet.passive_05.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.dual_blade.huyet_nguyet.passive_05.human",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.huyet_nguyet.passive_05.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.dual_blade.huyet_nguyet.passive_05.immortal.a",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.huyet_nguyet.passive_05.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.dual_blade.huyet_nguyet.passive_05.immortal.b",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.huyet_nguyet.passive_05.rare_passive.a",
+          "tier": "divine",
+          "lineage": "rare_a",
+          "parent": "tmb.skill.dual_blade.huyet_nguyet.passive_05.divine.a",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.huyet_nguyet.passive_05.rare_passive.b",
+          "tier": "divine",
+          "lineage": "rare_b",
+          "parent": "tmb.skill.dual_blade.huyet_nguyet.passive_05.divine.b",
+          "school": "dual_blade"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.dual_blade.huyet_nguyet.innate",
+      "school": "dual_blade",
+      "branch": "huyet_nguyet",
+      "slot": "innate",
+      "name": "Huyết Nguyệt Ước Thệ",
+      "nodes": [
+        {
+          "id": "tmb.skill.dual_blade.huyet_nguyet.innate.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.huyet_nguyet.innate.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.dual_blade.huyet_nguyet.innate.human",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.huyet_nguyet.innate.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.dual_blade.huyet_nguyet.innate.human",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.huyet_nguyet.innate.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.dual_blade.huyet_nguyet.innate.immortal.a",
+          "school": "dual_blade"
+        },
+        {
+          "id": "tmb.skill.dual_blade.huyet_nguyet.innate.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.dual_blade.huyet_nguyet.innate.immortal.b",
+          "school": "dual_blade"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    }
+  ],
+  "candidate_source_status": "AUTHENTIC_DUAL_BLADE_CODEX_SOURCE_PENDING",
+  "target_counts": {
+    "families": 35,
+    "paths": 3,
+    "nodes": 183
+  }
+}
