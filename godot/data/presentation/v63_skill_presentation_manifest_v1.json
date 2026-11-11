@@ -190,6 +190,15 @@
           "visual_acceptance_status": "PENDING",
           "provenance": "Đặc tả art direction mới; không phải Source A, JX, Spine hay artwork đã được duyệt."
         }
+      },
+      "qa_status": {
+        "authoring": "AUTHORING_COMPLETE",
+        "runtime": "RUNTIME_CATALOG_PRESENT",
+        "behavior": "NOT_AUDITED_PER_SKILL",
+        "vfx_metadata": "VFX_META_COMPLETE",
+        "asset": "NOT_PRESENT",
+        "render": "NOT_CAPTURED",
+        "gui": "PENDING"
       }
     },
     "tmb.skill.bow.liep_anh.active_01.human": {
@@ -329,6 +338,15 @@
           "visual_acceptance_status": "PENDING",
           "provenance": "Đặc tả art direction mới; không phải Source A, JX, Spine hay artwork đã được duyệt."
         }
+      },
+      "qa_status": {
+        "authoring": "AUTHORING_COMPLETE",
+        "runtime": "RUNTIME_CATALOG_PRESENT",
+        "behavior": "NOT_AUDITED_PER_SKILL",
+        "vfx_metadata": "VFX_META_COMPLETE",
+        "asset": "NOT_PRESENT",
+        "render": "NOT_CAPTURED",
+        "gui": "PENDING"
       }
     },
     "tmb.skill.poison.co_doc.active_02.human": {
@@ -471,6 +489,15 @@
           "visual_acceptance_status": "PENDING",
           "provenance": "Đặc tả art direction mới; không phải Source A, JX, Spine hay artwork đã được duyệt."
         }
+      },
+      "qa_status": {
+        "authoring": "AUTHORING_COMPLETE",
+        "runtime": "RUNTIME_CATALOG_PRESENT",
+        "behavior": "NOT_AUDITED_PER_SKILL",
+        "vfx_metadata": "VFX_META_COMPLETE",
+        "asset": "NOT_PRESENT",
+        "render": "NOT_CAPTURED",
+        "gui": "PENDING"
       }
     },
     "tmb.skill.poison.doc_cham.active_01.human": {
@@ -610,6 +637,15 @@
           "visual_acceptance_status": "PENDING",
           "provenance": "Đặc tả art direction mới; không phải Source A, JX, Spine hay artwork đã được duyệt."
         }
+      },
+      "qa_status": {
+        "authoring": "AUTHORING_COMPLETE",
+        "runtime": "RUNTIME_CATALOG_PRESENT",
+        "behavior": "NOT_AUDITED_PER_SKILL",
+        "vfx_metadata": "VFX_META_COMPLETE",
+        "asset": "NOT_PRESENT",
+        "render": "NOT_CAPTURED",
+        "gui": "PENDING"
       }
     }
   }
