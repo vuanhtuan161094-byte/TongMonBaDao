@@ -60,7 +60,7 @@ func _draw_room(ground: Color, glow: Color) -> void:
         draw_circle(Vector2(x,y),1.4,Color(0.9,0.86,0.70,0.38+0.20*sin(phase+float(index))))
 
 func _draw_furnace() -> void:
-    draw_ellipse(Rect2(48,118,154,21),Color(0.0,0.0,0.0,0.45))
+    draw_rect(Rect2(48,120,154,12),Color(0.0,0.0,0.0,0.34))
     draw_colored_polygon(PackedVector2Array([Vector2(85,72),Vector2(171,72),Vector2(185,120),Vector2(69,120)]),Color(0.25,0.34,0.39))
     draw_colored_polygon(PackedVector2Array([Vector2(85,75),Vector2(171,75),Vector2(156,115),Vector2(99,115)]),Color(0.38,0.51,0.52))
     draw_arc(Vector2(128,73),45,PI,TAU,45,Color(0.96,0.77,0.43),4.0)

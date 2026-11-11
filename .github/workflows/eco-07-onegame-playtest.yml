@@ -6,6 +6,12 @@ on:
     paths:
       - 'godot/tests/presentation/eco07_virtual_gui_playtest_capture.gd'
       - 'godot/src/presentation/p3_2_landscape_sect.gd'
+      - 'godot/src/presentation/art02_onegame_visual_layer.gd'
+      - 'godot/src/presentation/uiux/sect_item_visual_v1.gd'
+      - 'godot/src/presentation/uiux/sect_facility_ambient_v1.gd'
+      - 'godot/art/uiux/items/**'
+      - 'godot/scenes/p3/p3_2_landscape_sect.tscn'
+      - 'godot/tests/presentation/art02_onegame_visual_contract_test.gd'
       - 'godot/tests/presentation/eco06_real_economy_ui_test.gd'
       - '.github/workflows/eco-07-onegame-playtest.yml'
 
@@ -72,6 +78,9 @@ jobs:
             -- "$GITHUB_WORKSPACE/eco07-virtual-gui-evidence"
           test "$(find "$GITHUB_WORKSPACE/eco07-virtual-gui-evidence" -maxdepth 1 -type f -name '*.png' | wc -l)" -eq 7
           test -s "$GITHUB_WORKSPACE/eco07-virtual-gui-evidence/eco07_virtual_gui_metrics.json"
+
+      - name: ART-02 real OneGame illustrated item and progress contract
+        run: bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/presentation/art02_onegame_visual_contract_test.gd
 
       - name: ECO-07 actual OneGame Main Hall Market Warehouse UI after Save
         run: bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/presentation/eco06_real_economy_ui_test.gd
