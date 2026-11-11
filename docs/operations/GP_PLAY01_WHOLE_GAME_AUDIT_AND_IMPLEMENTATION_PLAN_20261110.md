@@ -246,3 +246,13 @@ Agent contract độc lập: `/.agents/skills/tmb-gameplay-closure/SKILL.md`. M�
 - **GP2-C:** Economy-A/W2, real upgrade cost/time, stock reserve and field policy; if `sx_v55_bulk` mode changes consumption, test paid new orders and Save separately rather than automatically enabling it. No fake recipe/r3 sources.
 - **GP2-D:** official Godot 4.7.2 focused+cumulative on exact source SHA, log job conclusions, preserve older Save; physical Windows 1280×720 and Android are PENDING USER. Scope exclude combat and release.
 
+### 14.4 GP2-A/B focused integrated conclusions (2026-11-11)
+
+- **Exact code SHA** [`a1f686a0400b969e2318095bdc1cb648e4785e1c`](https://github.com/vuanhtuan161094-byte/TongMonBaDao/commit/a1f686a0400b969e2318095bdc1cb648e4785e1c); touched only read-only map cue crop identity after red O4. Test SHA `558532b1f263388ddb4b7dd9d387b422a629b04f` is included in tested code SHA.
+- **O3 Mine** [#42946569235](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42946569235) **WHOLE SUCCESS 12/12**, log `P3 O3 REAL MINE LOOP TEST PASS` and P3.6A PASS.
+- **O4 Field** [#42946569446](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42946569446) **WHOLE SUCCESS 13/13**, log `P3 O4 REAL SPIRIT FIELD LOOP TEST PASS` and P3.6A PASS; live Linh Cốc crop/ETA label corrected; paid crop/real harvest/cold Save unchanged.
+- **O7 Forest** [#42946569448](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42946569448) **WHOLE SUCCESS 12/12**, O7+O3+P3.6A PASS.
+- **O5 produce/spend** [#42946569525](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42946569525) **WHOLE SUCCESS 12/12**, `P3 O5 REAL PRODUCE-SPEND LOOP TEST PASS` and P3.6A PASS.
+- **O9 Mine+Forest+Field → Warehouse → consumers / Cold Save** [#42946569128](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42946569128) **WHOLE SUCCESS 23/23**, logs `SX07B PRESERVED SOURCE JOB/SAVE 117 checks, 0 failures`, `SX07 SOURCE CONTRACT 409 checks; failures=0`, `V57 WORKSITE INDEX 480 + REASSIGN + MULTI-SITE + SAVE/LOAD PASS`, `V57 PAID PRODUCERS + BODY MARKET + COLD RELOAD PASS`, `P3 O9 M2 MULTI-PRODUCER REHEARSAL PASS`, O8/O7/P3.6A PASS. All tests official Godot 4.7.2 at exact GP2 source SHA.
+- **Boundary:** these focused/full O9 workflows establish GP2-A/B for registered source routes and actual paid/settled loops, not every 30-realm crop/material or fresh-game activation of SX-V55 bulk. Economy-A #42946569463, GP02B1 #42946569513, GP02C1 #42946569277, SX V55 #42946569358 and P3.7 Backend #42946569566 are still **IN_PROGRESS** at this log snapshot. GP2 cumulative closure OPEN; inspect final run+steps before claiming CUMULATIVE_PASS. Windows/Android physical PENDING USER.
+
