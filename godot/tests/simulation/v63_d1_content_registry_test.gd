@@ -23,13 +23,26 @@ func _run() -> void:
     var data: Dictionary = loaded["data"]
     if not _check(data["families"].size()==140 and data["paths"].size()==12 and data["bosses"].size()==9,"bad registry counts"): return
     var nodes := 0
-    var rare := 0
+    var rare_ultimate := 0
+    var rare_passive := 0
+    var poison_rare_passive := 0
+    var sword_rare_passive := 0
     for family in data["families"]:
         nodes += family["nodes"].size()
         for node in family["nodes"]:
-            if str(node["tier"])=="rare_divine":
-                rare += 1
-    if not _check(nodes==732 and rare==24,"wrong successor and rare counts (720 core + 12 rare passive nodes)"): return
+            if str(node["tier"]) != "rare_divine":
+                continue
+            var slot := str(family.get("slot",""))
+            var school := str(family.get("school",""))
+            if slot == "ultimate":
+                rare_ultimate += 1
+            elif slot == "passive" and str(family.get("id","")).ends_with("passive_05"):
+                rare_passive += 1
+                if school == "poison":
+                    poison_rare_passive += 1
+                elif school == "sword":
+                    sword_rare_passive += 1
+    if not _check(nodes==732 and rare_ultimate==24 and rare_passive==12 and poison_rare_passive==6 and sword_rare_passive==6,"wrong successor distribution: 732 total, 24 rare ultimates, 6 poison + 6 sword rare-passive descendants"): return
     if not _check(int(data.get("skills_s1_candidate_count",0)) == 183 and str(data.get("skills_s1_candidate_source_status","")).contains("SOURCE_PENDING"), "Sword candidate registry must remain source pending"): return
     if not _check(not bool(data.get("enabled",true)), "Sword registry remains inactive"): return
     var poison: Dictionary = V63ContentRegistry.lookup_family(data,"tmb.skill.poison.doc_cham.ultimate")
