@@ -213,4 +213,36 @@ Agent contract độc lập: `/.agents/skills/tmb-gameplay-closure/SKILL.md`. M�
 - **Exact-SHA scope:** latest PR HEAD at pre-acceptance recheck `cc9b03fba6f810203825f4fe724e5420297650ad` also includes **other chat's V63-only combat addition** `godot/src/simulation/combat/v63_spiritual_root_evaluator.gd` and V63 design/QA records **after** tested GP1 SHA. **Do not call current HEAD whole-game FULL PASS** from GP1 test logs. Non-combat GP1 scene and its test match the tested SHA; combat writer must QA any new V63 code separately. No merge or branch creation.
 - **Open external gates:** Windows 10 owner E: workstation launcher/real 1280×720 mouse (historical Intel OpenGL `ig11icd64.dll` crash) and Android real landscape touchscreen/FPS/RAM, Save/Load **PENDING USER**. GP2 tri-facility sourcing/economy is the next separate packet; GP3+ and R5 release are not implied by GP0/GP1 technical acceptance.
 
+## 14. GP2 — tri-facility real source, paid labor, ETA, Warehouse pilot (2026-11-11)
+
+**Authorization:** PR #72 only; stagewise real Mine–Forest–Field→Warehouse; noncombat. No r3+, fabricated sources, SaveService/shared state, V63 combat/skill/VFX/monster, branch or merge. One writer on p3_2 scene.
+
+### 14.1 Source register (actual authored routes, not a promise of 30-realm content)
+
+| Producer | Real registered output | Gate | True production/paid contract |
+| --- | --- | --- | --- |
+| Mỏ | `thanh_thiet`, `ore_r01_c2` | Lv1 | BuildingSystem selection, actual worker, timer/carry, Warehouse deposit; baseline ×2 for common ore; preserved r1 ID is source-backed in SX07B test |
+| Mỏ | `huyen_thiet`, `ore_r02_c2` | Lv10 | Level-gated selection; existing jobs preserve chosen material; test-only level elevation is NOT evidence of player-paid Lv10 |
+| Linh Lâm | `linh_moc`, `forest_r01_wood2` | Lv1 | Real forestry worker and timed/carry deposit; baseline ×2 on common wood; preserved ID provenance verified in SX07B |
+| Linh Lâm | `forest_r02_wood`, `forest_r02_wood2` | Lv10 | Level-gated selection; no new source grant and no arbitrary NPC trade |
+| Linh Điền | `linh_coc` | Lv1 | Actual paid 3 Linh Thạch, base 5 units / 10 sim ticks, harvested only after scheduler settlement |
+| Linh Điền | `thanh_linh_thao` | Lv1 | Actual paid 4 Linh Thạch, base 3 units / 12 sim ticks |
+| Linh Điền | `tu_van_thao` | Lv10 | Paid 14 Linh Thạch, base 3 units / 24 sim ticks; access requires Lv10 milestone |
+
+**Opt-in is not default:** `BuildingSystem.SX_V55_BULK_PLANS` defines additional source-backed plans Thanh Thiết 10,000/60, Linh Mộc 8,000/60, Linh Cốc 2,500/60, Thanh Linh Thảo 2,000/90, Tử Vân Thảo 1,000/180. `sx_v55_bulk_enabled` requires existing active Economy-A and an explicit saved policy. Do NOT report these as default NewGame yield, or scale the preserved r1/r2 variant IDs. Paid input/benefit/consumer values must be checked in the same Save/policy, not lifted from a spreadsheet.
+
+**Transaction:** player UI → WorkforceSystem canonical assignment/active worker → paid planting or job/wage claim → existing BuildingSystem plot/timer/carry snapshot (`resource_id`, `routine_yield`, `start/finish_tick`) → scheduler settlement → `_deposit_resource` calls exactly one `WarehouseSystem.add` before increasing building counters → Save/Reload preserves receipts. Available quantity excludes reserves and locks; expected growing yield is **not** spendable stock. Some legacy carry and authored upgrade tests use direct backend/QA fixtures, not physical player interaction.
+
+### 14.2 GP2-A RED→FIX→GREEN: real Linh Cốc map cue
+
+- RED: [`558532b1`](https://github.com/vuanhtuan161094-byte/TongMonBaDao/commit/558532b1f263388ddb4b7dd9d387b422a629b04f) introduces a test after actual UI crop selection, paying and planting real `linh_coc`; [O4 #42946360123](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42946360123) FAILS the new, valid assertion with log `GP2 live map Field ETA mislabeled real crop Linh Cốc; detail=Linh thảo ×5 · còn 10 phút mô phỏng`. Godot parse already PASS. The underlying Warehouse was not alleged to lose stock.
+- FIX: [`a1f686a`](https://github.com/vuanhtuan161094-byte/TongMonBaDao/commit/a1f686a0400b969e2318095bdc1cb648e4785e1c) changes only read-only `_map_worksite_snapshot` title to `spirit_crop_registry.display_name(nearest.crop_id)`. No crop/quantity/ETA/worker/cost/SaveService/combat changes; no test relaxation.
+- GREEN: [O4 #42946569446](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42946569446) **WHOLE SUCCESS 13/13** exact `a1f686a`, original O4 real plot/payment/harvest/cold Save + second paid Field + P3.7A2 + P3.6A. New assertion also guards that growing yield is not counted as `received` before Warehouse settlement.
+- [O3 Mine #42946569235](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42946569235) **WHOLE SUCCESS 12/12** and [O7 Forest #42946569448](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42946569448) **WHOLE SUCCESS 12/12**, both exact `a1f686a`.
+
+### 14.3 Remaining GP2 gates
+
+- **GP2-B:** full O9 real simultaneous Mine+Forest+Field→canonical Warehouse→Forge/Alchemy, actual resource reserve/ETA and cold Save; verify original SX07B preserved producer job/source QA and no fictitious r3+ cash. Do not call O9 PASS until whole job concludes.
+- **GP2-C:** Economy-A/W2, real upgrade cost/time, stock reserve and field policy; if `sx_v55_bulk` mode changes consumption, test paid new orders and Save separately rather than automatically enabling it. No fake recipe/r3 sources.
+- **GP2-D:** official Godot 4.7.2 focused+cumulative on exact source SHA, log job conclusions, preserve older Save; physical Windows 1280×720 and Android are PENDING USER. Scope exclude combat and release.
 
