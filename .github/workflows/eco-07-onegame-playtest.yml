@@ -1,0 +1,102 @@
+name: ECO-07 OneGame Virtual GUI and Playtest Regression
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'godot/tests/presentation/eco07_virtual_gui_playtest_capture.gd'
+      - 'godot/src/presentation/p3_2_landscape_sect.gd'
+      - 'godot/tests/presentation/eco06_real_economy_ui_test.gd'
+      - '.github/workflows/eco-07-onegame-playtest.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  eco07:
+    name: Godot 4.7.2 OneGame 1280x720 virtual GUI + offline/pve/save
+    runs-on: ubuntu-latest
+    timeout-minutes: 65
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install official Godot 4.7.2 binary
+        shell: bash
+        run: |
+          set -euo pipefail
+          GODOT_URL="https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip"
+          GODOT_SHA256="cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4"
+          curl --fail --location --retry 3 --output /tmp/godot.zip "$GODOT_URL"
+          echo "$GODOT_SHA256  /tmp/godot.zip" | sha256sum --check --strict
+          unzip -q /tmp/godot.zip -d /tmp
+          sudo install -m 0755 /tmp/Godot_v4.7.2-stable_linux.x86_64 /usr/local/bin/godot
+
+      - name: Confirm official version
+        run: godot --version
+
+      - name: Restore canonical female Stage A runtime pack
+        shell: bash
+        run: |
+          set -euo pipefail
+          PACK="/tmp/female_normal_v1_stageA_runtime_pack_v2_quant.zip"
+          cat             .github/assets/p3/female_stage_a/part01.b64             .github/assets/p3/female_stage_a/part02.b64             .github/assets/p3/female_stage_a/part03.b64             .github/assets/p3/female_stage_a/part04.b64             .github/assets/p3/female_stage_a/part05.b64             .github/assets/p3/female_stage_a/part06.b64             .github/assets/p3/female_stage_a/part07.b64             .github/assets/p3/female_stage_a/part08.b64             .github/assets/p3/female_stage_a/part09.b64             .github/assets/p3/female_stage_a/part10.b64             .github/assets/p3/female_stage_a/part11.b64             .github/assets/p3/female_stage_a/part12.b64             .github/assets/p3/female_stage_a/part13.b64             .github/assets/p3/female_stage_a/part14.b64             .github/assets/p3/female_stage_a/part15a.b64             .github/assets/p3/female_stage_a/part15b.b64             .github/assets/p3/female_stage_a/part16.b64             .github/assets/p3/female_stage_a/part17.b64             .github/assets/p3/female_stage_a/part18.b64             .github/assets/p3/female_stage_a/part19.b64             .github/assets/p3/female_stage_a/part20.b64             | tr -d '\r\n\t ' | base64 --decode > "$PACK"
+          test "$(stat -c%s "$PACK")" -eq 44838
+          echo "6a4213b9129ffb3f438c21cbb5326672ddf8915323836bf80cb33b8e5fabfdca  $PACK" | sha256sum --check --strict
+          unzip -q "$PACK" -d .
+
+      - name: Install virtual display and Mesa software GL
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y xvfb xauth libgl1-mesa-dri libgl1
+          command -v xvfb-run
+          command -v glxinfo >/dev/null || true
+
+      - name: Import canonical Godot project
+        run: godot --headless --path godot --import
+
+      - name: Strict parse ECO-07 virtual GUI test
+        run: bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://tests/presentation/eco07_virtual_gui_playtest_capture.gd
+
+      - name: Render real OneGame GUI 1280x720 under Linux Xvfb and capture 7 PNGs
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$GITHUB_WORKSPACE/eco07-virtual-gui-evidence"
+          export LIBGL_ALWAYS_SOFTWARE=1
+          xvfb-run -a -s "-screen 0 1280x720x24" bash tools/qa/run_godot_strict.sh \
+            --path godot --rendering-method gl_compatibility --resolution 1280x720 \
+            -s res://tests/presentation/eco07_virtual_gui_playtest_capture.gd \
+            -- "$GITHUB_WORKSPACE/eco07-virtual-gui-evidence"
+          test "$(find "$GITHUB_WORKSPACE/eco07-virtual-gui-evidence" -maxdepth 1 -type f -name '*.png' | wc -l)" -eq 7
+          test -s "$GITHUB_WORKSPACE/eco07-virtual-gui-evidence/eco07_virtual_gui_metrics.json"
+
+      - name: ECO-07 actual OneGame Main Hall Market Warehouse UI after Save
+        run: bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/presentation/eco06_real_economy_ui_test.gd
+
+      - name: ECO-07 60 90 180-minute simulated offline cold Save and no duplicate receipts
+        run: bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/presentation/pr72_simulated_offline_resume_test.gd
+
+      - name: ECO-07 authentic field alchemy consumer and Save replay
+        run: bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/presentation/p3_o8_alchemy_loop_test.gd
+
+      - name: ECO-07 player PVE entry withdrawal and owner Save UI
+        run: bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/presentation/pve_p0_ui_player_entry_test.gd
+
+      - name: ECO-07 O6 real player journey and Save
+        run: bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/presentation/p3_o6_m1_release_rehearsal_test.gd
+
+      - name: ECO-07 canonical full P3.7 cumulative
+        shell: pwsh
+        run: ./tools/godot/Verify-P3-7C1-Foundation-Dan-Tien-Full.ps1 -GodotBin /usr/local/bin/godot
+
+      - name: Upload genuine virtual-display screenshots and metrics for owner review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eco07-virtual-gui-${{ github.sha }}
+          path: eco07-virtual-gui-evidence/
+          if-no-files-found: warn
+          retention-days: 14
