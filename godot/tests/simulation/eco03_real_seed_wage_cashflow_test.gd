@@ -47,12 +47,14 @@ func _run() -> void:
         and str(insufficient.get("reason","")) == "insufficient_spirit_stones"
         and state.sect.economy_a_receipts.is_empty(),
         "0 LT must not plant or mint a seed receipt"): return
+    if not _check(buildings.ensure_main_hall(state) != null,
+        "Fixture must create the canonical Hall, just as ECO-01 does"): return
     var eligible := vein.eligible_workers(state)
     if not _check(not eligible.is_empty(),"No real free Hall worker at 0 LT"): return
     var hall_job := vein.start(state,eligible[0])
     if not _check(bool(hall_job.get("ok",false))
         and state.sect.spirit_stones == 0,
-        "0 LT must start only canonical earning work, not instant money"): return
+        "0 LT must start only canonical earning work, not instant money: "+str(hall_job)): return
     var scheduler := SimulationScheduler.new(state)
     scheduler.run_ticks(60)
     var hall_receipt: Dictionary = state.sect.economy_a_receipts.get(
