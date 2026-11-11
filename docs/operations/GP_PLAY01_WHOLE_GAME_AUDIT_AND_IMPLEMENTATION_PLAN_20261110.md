@@ -166,3 +166,20 @@ Agent contract độc lập: `/.agents/skills/tmb-gameplay-closure/SKILL.md`. M�
 2. O4/O5/O7/O8/GP02B1/GP02C1/Economy-A affected cumulative SUCCESS trên đúng code SHA, hoặc ghi tường minh một unrelated failure có log, không gọi FULL PASS.
 3. One Active Job, thực vật tư 0/pending và UI read-only, anti-repeat/cold Save giữ nguyên.
 4. Cập nhật checkpoint/handoff theo logs. Sau khi GP0 PASS → bắt đầu GP1 NewGame/Residence/Recruit/player onboarding.
+
+## 10. GP0 follow-up / GP1 first-five-minutes gate (2026-11-11)
+
+**Cumulative evidence on exact Economy/GP02 code SHA `e9f03ab4b7ab1196681d88e96d5e7116c0268167`:** GP02C1 [#42863009220](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42863009220) and GP02B1 [#42863009222](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42863009222) each completed SUCCESS with full P3.7/O9/SAFE regressions. Economy-A [#42863008727](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42863008727) attempt 1 was CANCELLED during the last standalone O6 Mine/Forge test (Godot started 17:43:05Z, workflow cancelled 17:45:25Z); all previous focused and cumulative steps succeeded. Exact O6 PASS/FAIL **not yet observed**. GitHub accepted rerun of job 129993843260; attempt 2 job 130253700592 IN_PROGRESS at last query. This is not license to call GP0 fully closed, and the rerun SHA is older than the concurrently advancing PR #72 HEAD. Windows/Android physical pending.
+
+**GP1 READ-ONLY audit anchor:** PR #72 SHA `1625ecb38e731a8b49ea5f75dc4f04e89224166f`. The old proof `_build_task_rail` is intentionally disabled in `p3_1_landscape_sect.gd`; `p3_6a_playable_slice_test.gd` asserts it stays absent. `tri_facility_recruited_hs09_flow_test.gd` source exercises real NewGame 6/8 + starter house; paid Residence construction cost check (wood 40, ore 30, spirit stones 500); Dẫn Tiên recruitment-token debit; one genuine recruit to roster 7; profile → workforce assignment → cold Save/Reload. These are **code/test inspection**, not a current-SHA Godot run or physical QA.
+
+### GP1 proposed user journey (not implemented in this audit)
+
+1. **NewGame / Đại Điện:** show only a concise active next action derived from canonical starter state; no free rewards or duplicate tutorial-save state.
+2. **Nhà ở:** explain existing starter house and 6/8 capacity; show actual construction cost/available balance, with an optional paid expansion. Do **not** mislead user that a second House is mandatory before first recruit.
+3. **Dẫn Tiên Đài:** open the real platform and show recruitment-token balance and actual blocking reason; no fake recruit candidates or bypass.
+4. **Tuyển:** spend exactly one real Chiêu Mộ Lệnh for the actual candidate queue, accept only when housing capacity permits, roster +1 and real deep profile.
+5. **Phân công:** open canonical quick assignment and explain `ready / busy / blocked` via actual `WorkforceSystem`/GP02B1 guard, active plots, timed recipes, Injury and treatment locks. A denied assignment must leave state unchanged and show an actionable reason.
+6. **Bắt đầu công việc:** choose an eligible Mine/Forest/Field instance with real worker authority; indicate progress/status; preserve assignment and material flow through cold Save/Reload. Never close the panel merely for assigning a worker.
+
+**GP1 CODE gate after GP0:** single integration owner for `p3_2_landscape_sect.gd` and scene changes, avoid the other chat's combat scripts. Implement a small, contextual **action guide**, not an obsolete static task checklist; derive steps from real state. Keep one-save G1 → GP01 → P3 O2 → GP02B1 → P3.6A and O9, official Godot 4.7.2 focused + cumulative on exact new source SHA; inspect 1280×720 overlap/readability and physical Windows/Android as PENDING USER until actual interaction evidence. Do not change `SaveService`, combat/skills/VFX/monsters or release branch.
