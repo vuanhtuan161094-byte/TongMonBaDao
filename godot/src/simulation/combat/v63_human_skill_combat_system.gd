@@ -444,8 +444,10 @@ static func _root_scaled_passive_modifiers(actor: Dictionary, skill_id: String) 
         return modifiers
     # Only the authored numeric passive-effect magnitudes scale. Durations,
     # cooldowns, target counts and proc/receipt limits are never modified here.
-    for field in ["outgoing_factor", "crit_bonus", "attack_speed_factor", "cast_speed_factor",
-            "cooldown_recovery_factor", "lifesteal", "poison_factor", "heal_factor"]:
+    # Root affinity amplifies the magnitude of an authored skill effect,
+    # not generic crit, attack/cast speed, cooldown recovery or lifesteal.
+    # Those channels already have their own source-specific Root V2 passives.
+    for field in ["outgoing_factor", "poison_factor", "heal_factor"]:
         if modifiers.has(field):
             modifiers[field] = float(modifiers[field]) * factor
     if modifiers.has("guard_factor"):
@@ -793,7 +795,14 @@ static func release_cast_base(battle: MapBattleV2, cast: Dictionary, caster: Dic
 
 static func record_cast_mastery(caster: Dictionary, skill_id: String, event_id: String) -> bool:
     var disciple = caster.get("linked_disciple", null)
-    if not (disciple is DiscipleState) or event_id.is_empty() or event_id.length() > 512 or not disciple.v63_learned_skill_nodes.has(skill_id):
+    if event_id.is_empty() or event_id.length() > 512:
+        return false
+    # Real PvE deliberately detaches character pointers from combat actors.
+    # Queue the authored cast receipt in the durable battle snapshot rather
+    # than silently dropping mastery or mutating the character during combat.
+    if not (disciple is DiscipleState):
+        return V63PveMasteryReceipts.queue_cast(caster, skill_id, event_id)
+    if not disciple.v63_learned_skill_nodes.has(skill_id):
         return false
     var record: Dictionary = disciple.v63_learned_skill_nodes[skill_id].duplicate(true)
     var receipts: Dictionary = record.get("mastery_cast_receipts", {})
