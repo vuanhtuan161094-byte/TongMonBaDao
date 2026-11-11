@@ -159,7 +159,12 @@ func _test_save_replay_and_cooldown() -> bool:
     var loaded := saver.load_from_path(SAVE_PATH)
     if not _check(loaded != null and loaded.sect.spirit_stones == state.sect.spirit_stones
         and loaded.sect.economy_a_receipts == state.sect.economy_a_receipts,
-        "cold Save lost cash / changed receipts"): return false
+        "cold Save mismatch: loaded=%s; cash=%d/%d; receipts_keys=%s expected_keys=%s" % [
+            str(loaded != null),
+            loaded.sect.spirit_stones if loaded != null else -1,
+            state.sect.spirit_stones,
+            str(loaded.sect.economy_a_receipts.keys()) if loaded != null else "null",
+            str(state.sect.economy_a_receipts.keys())]): return false
     vein.process_tick(loaded)
     if not _check(loaded.sect.spirit_stones == state.sect.spirit_stones
         and not bool(vein.start(loaded,worker_id).get("ok",false)),
