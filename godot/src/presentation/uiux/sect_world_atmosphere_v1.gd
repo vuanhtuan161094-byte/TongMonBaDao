@@ -7,15 +7,17 @@ var accumulated := 0.0
 
 func _ready() -> void:
     mouse_filter = Control.MOUSE_FILTER_IGNORE
+    visible = false
     set_process(false)
-    queue_redraw()
 
 func set_activity(is_active: bool) -> void:
     if job_active == is_active:
         return
     job_active = is_active
+    visible = is_active
     set_process(job_active)
-    queue_redraw()
+    if job_active:
+        queue_redraw()
 
 func _process(delta: float) -> void:
     if not visible:
