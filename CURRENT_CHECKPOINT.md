@@ -1,3 +1,11 @@
+## AS-BUILD-01 Source A style correction (2026-11-11): ORIGINAL ART PRESERVED; REIMAGINED CANDIDATE VISUAL REJECTED
+- Owner rejected the hyper-gold building mockup; verified actual Source A models 510052 Hall, 510102 Warehouse, 520081 Forge, 510076 Residence and 510111 Guidance. Source A provides ONE verified PNG pose per model in repo; no confirmed two-building-directions (the 2-direction delta in game code is for disciples).
+- Screenshot-led attempt at Source A inspired Alchemy SVG: asset created as new original procedural code-art, not extracted Source A; import successful but in-map close-up at zoom1.35 showed roof/Forge/NPC overlap; NOT visually accepted.
+- Safety patch 96ee301e73b96771dd9e77cba41d70ac94cb9c3f removed live renderer mapping and kept art in `REIMAGINED_REVIEW_ONLY_SITES`, no changes to original SHA-gated Source A, map coordinates, SaveService or gameplay.
+- Official Godot 4.7.2 virtual 1280x720 7-screens + import/contract terminal SUCCESS #43080849433 at code SHA 96ee301e (15/15 steps). This is **RESTORED BASELINE PASS**, not candidate style approval. Physical Windows/Android and owner art acceptance PENDING.
+- Full evidence & next art direction: docs/operations/AS_BUILD01_SOURCE_A_STYLE_DIRECTION_AUDIT_20261111.md. Offline generated residence west/east 3/4 visual *candidate* PNGs were exported in chat sandbox with QA metadata, NOT integrated and not independently verified camera rotations.
+- PR #72 remains Draft, one branch. Next: true silhouette-preserving image masters for verified buildings + two authored angles, then exact same-camera in-game art review before enabling one runtime asset; no mass migration.
+
 # CURRENT CHECKPOINT — ONE GAME → MAIN (2026-11-04) 
 
 ### ART-04 exact source focused Godot PASS (2026-11-11)
