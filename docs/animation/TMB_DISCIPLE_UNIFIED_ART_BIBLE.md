@@ -1,7 +1,7 @@
 # TMB DISCIPLE UNIFIED ART BIBLE
 
 Date: 2026-11-11  
-Authority: Issue #77, PR #72 HEAD 2d05b619e82c0010c58254107448be35303b0917  
+Authority: Issue #77, PR #72 HEAD 7587e2be5bb0800d6c84d4fb28e35c8951bebcc0
 Status: WORKING CONTRACT — NOT OWNER VISUAL ACCEPTANCE
 
 ## 1. Purpose and authority
@@ -14,7 +14,9 @@ Issue #77 overrides the older P3.2 art direction only for the isolated disciple-
 
 The owner-locked source is image(20261109-102800).png, 1448×1086, SHA-256 435f8969c3d89468ddbdec837a44365b212b58e01082728c3f21f2b08249c118. Its design is long violet-black hair, jade/gold ornament and tassels, emerald eyes and forehead poison rune, black/jade robe with antique-gold trim, adult Shadow Chibi proportions. Preserve the known neck/shoulder alignment debt and the approved face, outfit, and palette.
 
-The exact source image and hash were not found in the checked owner attachment/Downloads and project locations. Therefore the locked character status is BLOCKED_SOURCE_ART. The six existing Grok-derived PNG atlases remain byte-for-byte unchanged. Their sheet hashes match their local manifest, but the original MP4 package is unavailable, their authored view is three-quarter right, and their relationship to the locked 4-view master is unverified. They are visual-only and are not a replacement master.
+The exact master was found in the owner-provided TMB_Poison_V4_Ket_Qua_Godot7_Sprite_20261110.zip. Its SHA-256 435f8969c3d89468ddbdec837a44365b212b58e01082728c3f21f2b08249c118 matches the immutable locked identity exactly. It is committed at godot/labs/character_family/assets/nu_doc_tu_v4_candidate/owner_approved_master.png. The earlier BLOCKED_SOURCE_ART lookup is superseded. No male/female healer master is approved yet.
+
+The six older Grok-derived sheets remain unchanged and visual-only. Their manifest is three-quarter-right and the original video package is absent; they are not replaced by this four-direction candidate.
 
 ## 3. Shared visual rules
 
@@ -94,3 +96,9 @@ Never infer APPROVED from a manifest, a passing parser, or a Godot import.
 ## 10. Current guardrail
 
 The character-family lab added with Issue #77 is an isolated reviewer only. It uses the existing Nữ atlas as a real frame sequence and displays two new independent static candidates. It does not replace source art, create a production resource path, modify a shared scene, or claim an animation pass.
+
+## 11. Current source archive and candidate boundary
+
+The supplied V4 ZIP is preserved with its seven PNG source/atlas files and four animated GIF previews in the isolated character-family review area. The approved master hash matches the immutable identity; action atlases remain CANDIDATE_NOT_FOR_PRODUCTION. Their static alpha-grid report has unresolved visual review and they have not been imported or played by Godot 4.7.2. Green projectile/light pixels are baked into Cast/Attack. The builder references raw action images absent from the ZIP, so export regeneration is not reproducible from this package alone.
+
+The separate ECO-07 virtual-GUI ZIP contains gameplay/UI screenshots and metrics, not character art. It is useful as a 1280×720 UI reference, not as sprite or animation source.

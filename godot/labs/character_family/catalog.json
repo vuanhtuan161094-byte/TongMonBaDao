@@ -1,33 +1,31 @@
 {
   "schema_version": 1,
   "packet": "Issue #77 AS-CHAR-01 through AS-CHAR-05",
-  "created_from_head": "2d05b619e82c0010c58254107448be35303b0917",
+  "created_from_head": "7587e2be5bb0800d6c84d4fb28e35c8951bebcc0",
   "production_import": "NONE",
   "approved_poison_identity": {
     "asset_id": "nu_doc_tu_locked_master",
-    "status": "BLOCKED_SOURCE_ART",
+    "status": "APPROVED_SOURCE",
     "expected_source_filename": "image(20261109-102800).png",
     "expected_source_dimensions": [
       1448,
       1086
     ],
     "expected_source_sha256": "435f8969c3d89468ddbdec837a44365b212b58e01082728c3f21f2b08249c118",
-    "actual_source_path": null,
+    "actual_source_path": "godot/labs/character_family/assets/nu_doc_tu_v4_candidate/owner_approved_master.png",
     "existing_atlas_manifest": "godot/labs/combat_lab/assets/nu_doc_tu_grok_01/manifest.json",
     "existing_atlas_manifest_sha256": "b88ad0b37f585c0e45a5e786a85e45ee4783634ee651385cb7b55cf45a62de33",
     "existing_atlas_status": "VISUAL_ONLY_SOURCE_VIDEO_PACKAGE_MISSING",
     "directions": [
-      "three_quarter_right"
-    ],
-    "unverified_directions": [
       "front",
-      "back",
-      "left"
+      "left",
+      "right",
+      "back"
     ],
+    "unverified_directions": [],
     "notes": [
-      "Do not regenerate this identity from the existing atlas.",
-      "The original video package is not present at the manifest source path.",
-      "All six existing sheet PNGs remain untouched."
+      "The immutable approved master was found in the owner-provided V4 archive and its SHA-256 matches the locked source.",
+      "The older three-quarter-right Grok atlas remains separate and is not a replacement for this master."
     ]
   },
   "existing_grok_clips": {
@@ -137,5 +135,11 @@
       75
     ],
     "candidate_contact_sheets_are_runtime_ready": false
+  },
+  "poison_v4_candidate": {
+    "status": "CANDIDATE_NOT_FOR_PRODUCTION",
+    "manifest": "godot/labs/character_family/assets/nu_doc_tu_v4_candidate/manifest.json",
+    "runtime_import": "NONE",
+    "godot_validation": "NOT_RUN"
   }
 }

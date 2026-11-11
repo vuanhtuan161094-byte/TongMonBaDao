@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "purpose": "Read-only inventory of actor packages already in this project; not a character identity or visual approval authority.",
-  "generated_from_head": "2d05b619e82c0010c58254107448be35303b0917",
+  "generated_from_head": "7587e2be5bb0800d6c84d4fb28e35c8951bebcc0",
   "classification_policy": "Preserve unknown roles as unknown. Monster and Boss labels come only from explicit package IDs.",
   "source_a_actor_packages": [
     {
@@ -242,7 +242,7 @@
           "name": "stand",
           "frames": 60,
           "stored_frames": 60,
-          "duration_seconds": 2.0,
+          "duration_seconds": 2,
           "loop": true,
           "frame_count_status": "MATCH",
           "visual_acceptance": "NOT_ESTABLISHED_BY_MANIFEST"
@@ -260,7 +260,7 @@
           "name": "attack1",
           "frames": 30,
           "stored_frames": 30,
-          "duration_seconds": 1.0,
+          "duration_seconds": 1,
           "loop": false,
           "frame_count_status": "MATCH",
           "visual_acceptance": "NOT_ESTABLISHED_BY_MANIFEST"
@@ -278,7 +278,7 @@
           "name": "dead",
           "frames": 30,
           "stored_frames": 21,
-          "duration_seconds": 1.0,
+          "duration_seconds": 1,
           "loop": false,
           "frame_count_status": "MISMATCH",
           "visual_acceptance": "NOT_ESTABLISHED_BY_MANIFEST"
@@ -507,7 +507,7 @@
           "name": "stand",
           "frames": 60,
           "stored_frames": 60,
-          "duration_seconds": 2.0,
+          "duration_seconds": 2,
           "loop": true,
           "frame_count_status": "MATCH",
           "visual_acceptance": "NOT_ESTABLISHED_BY_MANIFEST"
@@ -552,5 +552,7 @@
       "runtime_identity": "NOT_ASSERTED",
       "owner_visual_acceptance": "NOT_ASSERTED"
     }
-  ]
+  ],
+  "poison_v4_candidate_manifest": "godot/labs/character_family/assets/nu_doc_tu_v4_candidate/manifest.json",
+  "poison_v4_candidate_status": "CANDIDATE_NOT_FOR_PRODUCTION"
 }

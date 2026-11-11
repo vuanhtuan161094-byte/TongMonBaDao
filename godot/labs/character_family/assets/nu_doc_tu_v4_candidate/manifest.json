@@ -1,0 +1,236 @@
+{
+  "schema": "tmb.character_family.poison_v4_candidate.1",
+  "asset_id": "candidate.disciple.nu_doc_tu.v4",
+  "overall_status": "CANDIDATE_NOT_FOR_PRODUCTION",
+  "godot_import_status": "NOT_RUN",
+  "runtime_integration": "NONE",
+  "source_archive": {
+    "outer_filename": "TMB_Poison_V4_Ket_Qua_Godot7_Sprite_20261110.zip",
+    "outer_sha256": "5e7f4b96c3416568722e59fc3a0fc4f02de0b1d486d136989d5f83f2f2e315915",
+    "inner_filename": "TMB_Poison_V4_Nu_Doc_Tu_Alpha_Review_20261110.zip",
+    "inner_sha256": "708bdfcab74d2842355061a4553be22fc207c6703cab13063efcb7b7ac047979",
+    "provenance": "Owner-provided local archive; no external download"
+  },
+  "identity_source": {
+    "status": "APPROVED_SOURCE_HASH_MATCH",
+    "path": "godot/labs/character_family/assets/nu_doc_tu_v4_candidate/owner_approved_master.png",
+    "sha256": "435f8969c3d89468ddbdec837a44365b212b58e01082728c3f21f2b08249c118",
+    "dimensions": [
+      1448,
+      1086
+    ]
+  },
+  "directions": [
+    "front",
+    "left",
+    "right",
+    "back"
+  ],
+  "cell": [
+    320,
+    384
+  ],
+  "foot_pivot": [
+    160,
+    351
+  ],
+  "files": [
+    {
+      "id": "owner_master",
+      "path": "godot/labs/character_family/assets/nu_doc_tu_v4_candidate/owner_approved_master.png",
+      "kind": "png",
+      "role": "approved_identity_source",
+      "bytes": 2262605,
+      "sha256": "435f8969c3d89468ddbdec837a44365b212b58e01082728c3f21f2b08249c118",
+      "dimensions": [
+        1448,
+        1086
+      ]
+    },
+    {
+      "id": "idle_atlas",
+      "path": "godot/labs/character_family/assets/nu_doc_tu_v4_candidate/idle_4dir_APPROVED_UNCHANGED.png",
+      "kind": "png",
+      "role": "clip_atlas",
+      "bytes": 395213,
+      "sha256": "ef4fcb48948ca0c3ed78c0dc253b3cd4a0628c07f0dd1640e2df6d40669d2f52",
+      "dimensions": [
+        320,
+        1536
+      ]
+    },
+    {
+      "id": "walk_atlas",
+      "path": "godot/labs/character_family/assets/nu_doc_tu_v4_candidate/walk_4dir_APPROVED_UNCHANGED.png",
+      "kind": "png",
+      "role": "clip_atlas",
+      "bytes": 2857740,
+      "sha256": "1b6f21001b0631d9d49d98cd690d96dcb9bed1ae674f0f5f501bc3bcfed6e2ff",
+      "dimensions": [
+        2560,
+        1536
+      ]
+    },
+    {
+      "id": "cast_atlas",
+      "path": "godot/labs/character_family/assets/nu_doc_tu_v4_candidate/cast_4dir_ALPHA_CANDIDATE.png",
+      "kind": "png",
+      "role": "clip_atlas",
+      "bytes": 3035138,
+      "sha256": "c49a3a3c1b7cfbbc6378711a80961947020886a52938353e0c069226e749f00d",
+      "dimensions": [
+        2560,
+        1536
+      ]
+    },
+    {
+      "id": "attack_atlas",
+      "path": "godot/labs/character_family/assets/nu_doc_tu_v4_candidate/attack_4dir_ALPHA_CANDIDATE.png",
+      "kind": "png",
+      "role": "clip_atlas",
+      "bytes": 2933772,
+      "sha256": "77b5865ef37a1237438fb5edad6cc3405aed18629c6ab6a6aaa44efba151a6a7",
+      "dimensions": [
+        2560,
+        1536
+      ]
+    },
+    {
+      "id": "hit_atlas",
+      "path": "godot/labs/character_family/assets/nu_doc_tu_v4_candidate/hit_4dir_ALPHA_CANDIDATE.png",
+      "kind": "png",
+      "role": "clip_atlas",
+      "bytes": 2809962,
+      "sha256": "d2d60e63e7985fb4422041df0e94b64c76b2a67ef008e667395b81045fe60fba",
+      "dimensions": [
+        2560,
+        1536
+      ]
+    },
+    {
+      "id": "death_atlas",
+      "path": "godot/labs/character_family/assets/nu_doc_tu_v4_candidate/death_4dir_ALPHA_CANDIDATE.png",
+      "kind": "png",
+      "role": "clip_atlas",
+      "bytes": 2405276,
+      "sha256": "1ff0388ff072f4f6a5021dd7f03305084ee9221e62ca2e463db28aaf3a89df92",
+      "dimensions": [
+        2560,
+        1536
+      ]
+    },
+    {
+      "id": "preview_attack",
+      "path": "godot/labs/character_family/assets/nu_doc_tu_v4_candidate/preview/Nu_Doc_Tu_V4_attack_4_Huong_ALPHA_REVIEW.gif",
+      "kind": "gif",
+      "role": "motion_review",
+      "bytes": 394479,
+      "sha256": "dfc7bd892aa32fa7617268c1a092e275604d4fff55b8c9d749f240990344d2ae",
+      "dimensions": [
+        960,
+        390
+      ],
+      "frames": 8
+    },
+    {
+      "id": "preview_cast",
+      "path": "godot/labs/character_family/assets/nu_doc_tu_v4_candidate/preview/Nu_Doc_Tu_V4_cast_4_Huong_ALPHA_REVIEW.gif",
+      "kind": "gif",
+      "role": "motion_review",
+      "bytes": 409341,
+      "sha256": "8ac376997911f22fbf2a35f4446bbf580c255544c9b458c965dbbd74ad392cad",
+      "dimensions": [
+        960,
+        390
+      ],
+      "frames": 8
+    },
+    {
+      "id": "preview_death",
+      "path": "godot/labs/character_family/assets/nu_doc_tu_v4_candidate/preview/Nu_Doc_Tu_V4_death_4_Huong_ALPHA_REVIEW.gif",
+      "kind": "gif",
+      "role": "motion_review",
+      "bytes": 322944,
+      "sha256": "047151b161e3c5958168aca6760f56992a69d7e881a475754d9f548cfb19ff75",
+      "dimensions": [
+        960,
+        390
+      ],
+      "frames": 8
+    },
+    {
+      "id": "preview_hit",
+      "path": "godot/labs/character_family/assets/nu_doc_tu_v4_candidate/preview/Nu_Doc_Tu_V4_hit_4_Huong_ALPHA_REVIEW.gif",
+      "kind": "gif",
+      "role": "motion_review",
+      "bytes": 374351,
+      "sha256": "91819b457a8deab525bc17d3bb4b6ecfd53d551aa799d15dcb305e0664025fc0",
+      "dimensions": [
+        960,
+        390
+      ],
+      "frames": 8
+    }
+  ],
+  "clips": {
+    "idle": {
+      "file_id": "idle_atlas",
+      "frames_per_direction": 1,
+      "fps": null,
+      "loop": true,
+      "status": "STATIC_IDLE_SOURCE_PRESENT_NOT_GODOT_VALIDATED"
+    },
+    "walk": {
+      "file_id": "walk_atlas",
+      "frames_per_direction": 8,
+      "fps": null,
+      "loop": true,
+      "status": "OWNER_ACCEPTED_MOTION_DIRECTION_NOT_GODOT_VALIDATED"
+    },
+    "cast": {
+      "file_id": "cast_atlas",
+      "frames_per_direction": 8,
+      "fps": 12,
+      "loop": false,
+      "status": "ALPHA_CANDIDATE_NOT_GODOT_VALIDATED"
+    },
+    "attack": {
+      "file_id": "attack_atlas",
+      "frames_per_direction": 8,
+      "fps": 14,
+      "loop": false,
+      "status": "ALPHA_CANDIDATE_NOT_GODOT_VALIDATED"
+    },
+    "hit": {
+      "file_id": "hit_atlas",
+      "frames_per_direction": 8,
+      "fps": 14,
+      "loop": false,
+      "status": "ALPHA_CANDIDATE_NOT_GODOT_VALIDATED"
+    },
+    "death": {
+      "file_id": "death_atlas",
+      "frames_per_direction": 8,
+      "fps": 12,
+      "loop": false,
+      "status": "ALPHA_CANDIDATE_NOT_GODOT_VALIDATED"
+    }
+  },
+  "source_reproducibility": {
+    "raw_action_source_images_in_archive": false,
+    "generator_self_contained": false,
+    "status": "INCOMPLETE_SOURCE_INPUTS; exported atlases and previews preserved for review"
+  },
+  "static_qa": {
+    "result": "PASS_STATIC_ALPHA_GRID_WITH_UNRESOLVED_VISUAL_REVIEW",
+    "owner_final_art_acceptance": "PENDING",
+    "target_scale_60_75px": "PENDING",
+    "known_debts": [
+      "Cast and Attack contain green projectile/light pixels baked into the frames.",
+      "No official Godot 4.7.2 import or scene playback has been run for this package.",
+      "Idle and Walk are preserved unchanged from an earlier review package; neither is a production/runtime acceptance.",
+      "The raw source PNGs referenced by the candidate builder are absent, so regenerating these exports from the ZIP alone is not reproducible.",
+      "The assets are not wired into Combat Lab, P3.2, or production rendering."
+    ]
+  }
+}

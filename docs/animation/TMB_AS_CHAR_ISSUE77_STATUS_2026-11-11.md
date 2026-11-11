@@ -45,3 +45,15 @@ Status: PARTIAL IMPLEMENTATION — OWNER VISUAL ACCEPTANCE PENDING
 
 These results do not grant owner visual acceptance and do not prove Windows/Android device quality. Re-run the official Godot smoke on the exact latest commit after the current GUI process has been closed, then capture the real 1280×720 GUI before claiming the visual gate.
 
+
+## Addendum — owner V4 archive found (2026-11-11)
+
+The V4 package was found under D:\Downloads. Outer ZIP SHA-256: 5e7f4b96c3416568722e59fc3a0fc4f02de0b1d486d136989d5f83f2f2e315915. Inner alpha-review ZIP SHA-256: 708bdfcab74d2842355061a4553be22fc207c6703cab13063efcb7b7ac047979. The owner-approved master matches the locked SHA exactly. The earlier BLOCKED_SOURCE_ART status is superseded for the female master.
+
+The ECO-07 virtual-GUI archive has seven 1280×720 UI screenshots and one metrics JSON; it contains no character master or animation. The UI has a coherent dark-green/cream/gold layout, but it is not a character style or animation sample.
+
+This packet stores the female master, six four-direction atlases, four real GIF motion previews, per-file SHA-256 manifest, and visible GitHub preview README in godot/labs/character_family/assets/nu_doc_tu_v4_candidate/. Atlas/GIF status remains candidate only. Cast/Attack contain baked green light, Godot is not yet run, and raw source action images are missing from the supplied ZIP.
+
+The all-school visual guide records all 12 schools and 36 branches but is art guidance only. Nine schools are planning-only in the current authority; the other three runtime catalogues do not prove school-specific sprite support. Source A converted packages remain classified by actual metadata only.
+
+The focused GitHub workflow will run after commit. The official Windows Godot executable exists at E:\TongMonBaDaoWorkspace\04_Tools\Godot\Godot_v4.7.2-stable_win64.exe, but Windows process inventory returned Access denied, so no local Godot instance was started. Exact workflow result and any Windows GUI/physical acceptance remain pending.

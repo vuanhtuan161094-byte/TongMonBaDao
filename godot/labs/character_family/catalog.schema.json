@@ -2,32 +2,95 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "TMB Character Family Catalog",
   "type": "object",
-  "required": ["schema_version", "packet", "production_import", "approved_poison_identity", "existing_grok_clips", "candidates", "visual_limits"],
+  "required": [
+    "schema_version",
+    "packet",
+    "production_import",
+    "approved_poison_identity",
+    "existing_grok_clips",
+    "candidates",
+    "visual_limits",
+    "poison_v4_candidate"
+  ],
   "properties": {
-    "schema_version": {"const": 1},
-    "packet": {"type": "string"},
-    "created_from_head": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
-    "production_import": {"const": "NONE"},
+    "schema_version": {
+      "const": 1
+    },
+    "packet": {
+      "type": "string"
+    },
+    "created_from_head": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "production_import": {
+      "const": "NONE"
+    },
     "approved_poison_identity": {
       "type": "object",
-      "required": ["status", "expected_source_sha256", "actual_source_path", "existing_atlas_manifest", "directions", "unverified_directions"],
+      "required": [
+        "status",
+        "expected_source_sha256",
+        "actual_source_path",
+        "existing_atlas_manifest",
+        "directions",
+        "unverified_directions"
+      ],
       "properties": {
-        "status": {"enum": ["BLOCKED_SOURCE_ART", "APPROVED_SOURCE"]},
-        "expected_source_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
-        "actual_source_path": {"type": ["string", "null"]},
-        "directions": {"type": "array", "items": {"type": "string"}},
-        "unverified_directions": {"type": "array", "items": {"type": "string"}}
+        "status": {
+          "enum": [
+            "BLOCKED_SOURCE_ART",
+            "APPROVED_SOURCE"
+          ]
+        },
+        "expected_source_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "actual_source_path": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "directions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "unverified_directions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
       },
       "additionalProperties": true
     },
     "existing_grok_clips": {
       "type": "object",
-      "required": ["manifest", "required", "files_must_match_manifest_sha256"],
+      "required": [
+        "manifest",
+        "required",
+        "files_must_match_manifest_sha256"
+      ],
       "properties": {
-        "manifest": {"type": "string"},
-        "required": {"type": "array", "items": {"type": "string"}},
-        "files_must_match_manifest_sha256": {"type": "boolean"},
-        "runtime_role": {"const": "VISUAL_ONLY"}
+        "manifest": {
+          "type": "string"
+        },
+        "required": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "files_must_match_manifest_sha256": {
+          "type": "boolean"
+        },
+        "runtime_role": {
+          "const": "VISUAL_ONLY"
+        }
       }
     },
     "candidates": {
@@ -35,21 +98,99 @@
       "minItems": 2,
       "items": {
         "type": "object",
-        "required": ["asset_id", "status", "source_path", "sha256", "dimensions", "authored_views", "runtime_import", "clips"],
+        "required": [
+          "asset_id",
+          "status",
+          "source_path",
+          "sha256",
+          "dimensions",
+          "authored_views",
+          "runtime_import",
+          "clips"
+        ],
         "properties": {
-          "asset_id": {"type": "string"},
-          "status": {"const": "CANDIDATE_NOT_APPROVED"},
-          "source_path": {"type": "string"},
-          "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
-          "dimensions": {"type": "array", "prefixItems": [{"type": "integer"}, {"type": "integer"}], "minItems": 2, "maxItems": 2},
-          "authored_views": {"type": "array", "items": {"enum": ["front", "right", "back", "left"]}},
-          "runtime_import": {"const": "NONE"},
-          "clips": {"type": "object", "additionalProperties": {"const": "NOT_AUTHORED"}}
+          "asset_id": {
+            "type": "string"
+          },
+          "status": {
+            "const": "CANDIDATE_NOT_APPROVED"
+          },
+          "source_path": {
+            "type": "string"
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "dimensions": {
+            "type": "array",
+            "prefixItems": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "minItems": 2,
+            "maxItems": 2
+          },
+          "authored_views": {
+            "type": "array",
+            "items": {
+              "enum": [
+                "front",
+                "right",
+                "back",
+                "left"
+              ]
+            }
+          },
+          "runtime_import": {
+            "const": "NONE"
+          },
+          "clips": {
+            "type": "object",
+            "additionalProperties": {
+              "const": "NOT_AUTHORED"
+            }
+          }
         },
         "additionalProperties": true
       }
     },
-    "visual_limits": {"type": "object"}
+    "visual_limits": {
+      "type": "object"
+    },
+    "poison_v4_candidate": {
+      "type": "object",
+      "required": [
+        "status",
+        "manifest",
+        "runtime_import",
+        "godot_validation"
+      ],
+      "properties": {
+        "status": {
+          "const": "CANDIDATE_NOT_FOR_PRODUCTION"
+        },
+        "manifest": {
+          "type": "string"
+        },
+        "runtime_import": {
+          "const": "NONE"
+        },
+        "godot_validation": {
+          "enum": [
+            "NOT_RUN",
+            "PENDING",
+            "FAILED",
+            "PASS"
+          ]
+        }
+      },
+      "additionalProperties": true
+    }
   },
   "additionalProperties": true
 }

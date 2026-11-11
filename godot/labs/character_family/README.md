@@ -31,3 +31,14 @@ The validator checks catalog identity/status, candidate PNG path/hash/dimensions
 
 Both new sheets are independent static ImageGen candidates. No GIF/video is included because no real motion has been authored for them.
 
+
+## Nữ Độc Tu V4 candidate
+
+The owner-provided master, six four-direction atlas sheets, and four animated GIF previews are stored in assets/nu_doc_tu_v4_candidate/. Open that folder's README to inspect the actual motion GIFs.
+
+Open the separate Godot review scene:
+res://labs/character_family/poison_v4_candidate_preview.tscn
+
+The scene advances only frames stored in the candidate sheets. It does not emit VFX, combat events, damage, or status changes. Cast/Attack sheets contain baked green light. Assets remain review-only, not wired into production.
+
+See docs/animation/TMB_DISCIPLE_ANIMATION_COVERAGE_20261111.md and docs/animation/TMB_DISCIPLE_SCHOOL_VISUAL_MOTIFS_20261111.md for current coverage and school traits.

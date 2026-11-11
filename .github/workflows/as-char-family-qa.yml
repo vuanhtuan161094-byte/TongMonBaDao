@@ -1,0 +1,38 @@
+name: AS-CHAR-01 family asset validation
+on:
+  push:
+    paths:
+      - 'godot/labs/character_family/**'
+      - 'docs/animation/TMB_DISCIPLE_*20261111.md'
+      - '.github/workflows/as-char-family-qa.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  family-assets:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Focused catalog and asset tests
+        run: |
+          python -m unittest discover -s godot/labs/character_family/tests -v
+          python godot/labs/character_family/tools/validate_catalog.py
+      - name: Install official Godot 4.7.2
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 --output /tmp/godot.zip https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip
+          echo 'cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4  /tmp/godot.zip' | sha256sum --check --strict
+          unzip -q /tmp/godot.zip -d /tmp
+          sudo install -m 0755 /tmp/Godot_v4.7.2-stable_linux.x86_64 /usr/local/bin/godot
+          godot --version
+      - name: Import project
+        run: godot --headless --path godot --import
+      - name: Strict parse candidate preview script
+        run: bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://labs/character_family/poison_v4_candidate_preview.gd
+      - name: Load the isolated candidate scene
+        run: godot --headless --path godot --scene res://labs/character_family/poison_v4_candidate_preview.tscn --quit-after 8
