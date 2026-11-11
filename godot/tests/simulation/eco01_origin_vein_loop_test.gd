@@ -246,7 +246,10 @@ func _vein_receipts_equal(before: Dictionary, after: Dictionary) -> bool:
             return false
         for field in ["kind","job_id","worker_id","site_id","gross",
                 "wage_paid","sect_net","started_tick","finish_tick","tick"]:
-            if str(original.get(field,"")) != str(restored.get(field,"")):
+            if not restored.has(field) or str(original.get(field,"")) != str(restored.get(field,"")):
+                print("ECO01_COLD_RECEIPT_DIFF id=",id," field=",field,
+                    " before=",str(original.get(field,"<missing>")),
+                    " after=",str(restored.get(field,"<missing>")))
                 return false
         var wage_id := "wage:"+str(original.get("job_id",""))
         if not before.has(wage_id) or not after.has(wage_id):
@@ -254,7 +257,10 @@ func _vein_receipts_equal(before: Dictionary, after: Dictionary) -> bool:
         var wage_before: Dictionary = before[wage_id]
         var wage_after: Dictionary = after[wage_id]
         for field in ["kind","job_id","worker_id","paid","due","tick"]:
-            if str(wage_before.get(field,"")) != str(wage_after.get(field,"")):
+            if not wage_after.has(field) or str(wage_before.get(field,"")) != str(wage_after.get(field,"")):
+                print("ECO01_COLD_WAGE_DIFF id=",wage_id," field=",field,
+                    " before=",str(wage_before.get(field,"<missing>")),
+                    " after=",str(wage_after.get(field,"<missing>")))
                 return false
     for raw_id in after.keys():
         if str(raw_id).begins_with(Eco01OriginVein.RECEIPT_PREFIX):
