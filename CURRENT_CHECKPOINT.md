@@ -1,5 +1,11 @@
 # CURRENT CHECKPOINT — ONE GAME → MAIN (2026-11-04) 
 
+## ECO-02 GATE B CLOSED — OFFICIAL GODOT 4.7.2 FULL QA PASS (2026-11-11 07:58:11 UTC)
+
+- **OFFICIAL WHOLE WORKFLOW SUCCESS:** [ECO-02 #42980966325](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42980966325), tested source SHA `f67890395160f8852c947dce637e476515e359a1`, job `130391033979` — all 17 steps successful: Godot 4.7.2 import/strict parse, ECO-02 focused 0-NPC/locked+reserved Warehouse/allowlist/6-30 cap/Sell receipt/cold Save, 1280×720 OneGame preview-confirm/cancel UI, old Economy-A, O3/O4/O7, O9, independent O6, P3.6A and FULL P3.7 cumulative. No skipped or failed steps. 
+- **Scope closure is ECO-02 TECHNICAL only.** Its tested code and the immediately following doc-only checkpoint SHA `7f3f815d` match. Subsequent ECO-03 seed-receipt/source-cost changes have distinct new code/test SHA and do **not** inherit this ECO-02 exact-SHA PASS automatically. No new branch, no merge, PR #72 Draft.
+- Real Windows PC 1280×720 and Android physical QA **PENDING USER**; LT2/W2/T2/r3+ public **HOLD**, SaveService/shared state/combat/VFX untouched. ECO-03 underway on its own source SHA and queued/focused QA; don't confuse these gates.
+
 ## ECO-03 IMPLEMENTED / EXACT-SHA QA IN PROGRESS — 2026-11-11
 
 - **Owner authorized progression to ECO-03 while ECO-02's old full P3.7 still runs; this does not retroactively CLOSE ECO-02.** ECO-02 old [workflow #42980966325](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/42980966325) on exact `f67890395160f8852c947dce637e476515e359a1`: 14 focused+cumulative substeps successful, FULL P3.7 still in-progress when inspected; do not label overall success until terminal conclusion.
