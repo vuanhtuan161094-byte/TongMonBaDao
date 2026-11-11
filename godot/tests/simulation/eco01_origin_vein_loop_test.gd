@@ -158,7 +158,7 @@ func _test_save_replay_and_cooldown() -> bool:
         "post-settlement Save failed"): return false
     var loaded := saver.load_from_path(SAVE_PATH)
     if not _check(loaded != null and loaded.sect.spirit_stones == state.sect.spirit_stones
-        and JSON.stringify(loaded.sect.economy_a_receipts) == JSON.stringify(state.sect.economy_a_receipts),
+        and _vein_receipts_equal(state.sect.economy_a_receipts,loaded.sect.economy_a_receipts),
         "cold Save mismatch: loaded=%s; cash=%d/%d; receipts_keys=%s expected_keys=%s" % [
             str(loaded != null),
             loaded.sect.spirit_stones if loaded != null else -1,
@@ -221,11 +221,45 @@ func _test_offline_replay() -> bool:
     if not _check(bool(reopened.get("ok",false))
         and int(reopened.get("catch_up_steps",-1)) == 0
         and again.state().sect.spirit_stones == cash
-        and JSON.stringify(again.state().sect.economy_a_receipts) == JSON.stringify(ledger),
+        and _vein_receipts_equal(ledger,again.state().sect.economy_a_receipts),
         "same-time second cold reload duplicated 1,000 LT"): return false
     print("ECO01_OFFLINE_60M_COLD_SAVE_ONCE: PASS")
     return _check(again.state().validate_invariants().is_empty(),
         "post-offline canonical state invariants failed")
+
+# SaveService canonicalizes dictionary ordering and other unrelated
+# receipts. Verify the full ECO-01 economic effect instead of requiring raw
+# byte-equivalence for the whole game's heterogeneous receipt dictionary.
+func _vein_receipts_equal(before: Dictionary, after: Dictionary) -> bool:
+    var origin_before := 0
+    var origin_after := 0
+    for raw_id in before.keys():
+        var id := str(raw_id)
+        if not id.begins_with(Eco01OriginVein.RECEIPT_PREFIX):
+            continue
+        origin_before += 1
+        if not after.has(id):
+            return false
+        var original = before[id]
+        var restored = after[id]
+        if not (original is Dictionary) or not (restored is Dictionary):
+            return false
+        for field in ["kind","job_id","worker_id","site_id","gross",
+                "wage_paid","sect_net","started_tick","finish_tick","tick"]:
+            if str(original.get(field,"")) != str(restored.get(field,"")):
+                return false
+        var wage_id := "wage:"+str(original.get("job_id",""))
+        if not before.has(wage_id) or not after.has(wage_id):
+            return false
+        var wage_before: Dictionary = before[wage_id]
+        var wage_after: Dictionary = after[wage_id]
+        for field in ["kind","job_id","worker_id","paid","due","tick"]:
+            if str(wage_before.get(field,"")) != str(wage_after.get(field,"")):
+                return false
+    for raw_id in after.keys():
+        if str(raw_id).begins_with(Eco01OriginVein.RECEIPT_PREFIX):
+            origin_after += 1
+    return origin_before == origin_after
 
 func _cleanup() -> void:
     for base in [SAVE_PATH,OFFLINE_PATH]:
