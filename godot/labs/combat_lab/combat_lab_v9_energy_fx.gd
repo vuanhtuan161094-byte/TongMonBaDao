@@ -240,16 +240,21 @@ static func _energy_blade(canvas: CanvasItem, center: Vector2,
     var rune_bottom: Vector2 = seal - f * 6.0 * z
     var rune_left: Vector2 = seal - side * 2.8 * z
     var rune_right: Vector2 = seal + side * 2.8 * z
-    var engraving: Color = _tint(Color("f0df9b"), energy * 0.80)
+    var engraving: Color = _tint(Color("ffb954"), energy * 0.94)
     canvas.draw_polyline(PackedVector2Array([
         rune_bottom, rune_left, rune_top, rune_right, rune_bottom
-    ]), engraving, maxf(0.65, 0.85 * z), true)
+    ]), engraving, maxf(0.9, 1.20 * z), true)
     canvas.draw_line(root + f * 13.0 * z - side * 1.7 * z,
         root + f * 27.0 * z - side * 1.7 * z,
-        engraving, maxf(0.65, 0.72 * z), true)
+        engraving, maxf(0.75, 0.98 * z), true)
     canvas.draw_line(root + f * 13.0 * z + side * 1.7 * z,
         root + f * 27.0 * z + side * 1.7 * z,
-        engraving, maxf(0.65, 0.72 * z), true)
+        engraving, maxf(0.75, 0.98 * z), true)
+    # Mirror-engraved vein lines inside the faceted blade, glowing amber.
+    canvas.draw_line(root + f * 5.0 * z - side * 3.4 * z,
+        mid - side * 4.2 * z, engraving, maxf(0.72, 0.80 * z), true)
+    canvas.draw_line(root + f * 5.0 * z + side * 3.4 * z,
+        mid + side * 4.2 * z, engraving, maxf(0.72, 0.80 * z), true)
     # Ornate quillon: broad horizontal guard with mirrored curled endpoints.
     var guard_left: Vector2 = guard - side * 9.0 * z
     var guard_right: Vector2 = guard + side * 9.0 * z
