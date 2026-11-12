@@ -10,6 +10,7 @@ on:
       - 'godot/labs/combat_lab/combat_lab_v9_energy_fx.gd'
       - 'godot/labs/combat_lab/combat_lab_v10_sword_fx.gd'
       - 'godot/labs/combat_lab/combat_lab_v11_sword_fx.gd'
+      - 'godot/labs/combat_lab/combat_lab_v11_arcane_circle.gdshader'
       - 'godot/labs/combat_lab/combat_lab_v9_energy_light.gdshader'
       - 'godot/labs/combat_lab/combat_lab_v9_light_showcase.gd'
       - 'godot/labs/combat_lab/combat_lab_v9_light_showcase.tscn'
