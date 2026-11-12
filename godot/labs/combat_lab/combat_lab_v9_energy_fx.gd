@@ -122,26 +122,26 @@ static func _flow_shell(canvas: CanvasItem, spine: PackedVector2Array,
         z: float, width_factor: float, hue: Color, alpha: float) -> void:
     if spine.size() < 3 or alpha < 0.01:
         return
-    var upper := PackedVector2Array()
-    var lower := PackedVector2Array()
-    var last_index := spine.size() - 1
-    for i in range(spine.size()):
-        var u := float(i) / float(last_index)
-        var prev_point: Vector2 = spine[maxi(i - 1, 0)]
-        var next_point: Vector2 = spine[mini(i + 1, last_index)]
-        var tangent: Vector2 = (next_point - prev_point).normalized()
-        var n: Vector2 = tangent.orthogonal()
-        # Tail fades in, full chest, and tapered but connected head.
-        var envelope := (0.17 + 0.83 * sin(PI * u * 0.88)) * _ease(u * 5.5)
-        var width := (6.0 + 9.0 * envelope) * z * width_factor
-        upper.append(spine[i] + n * width)
-        lower.append(spine[i] - n * width)
-    var polygon := PackedVector2Array()
-    for p in upper:
-        polygon.append(p)
-    for j in range(lower.size() - 1, -1, -1):
-        polygon.append(lower[j])
-    canvas.draw_colored_polygon(polygon, _tint(hue, alpha))
+    # Individual segment quads cannot self-intersect at an S turn.
+    # A global polygon of all upper/lower vertices is invalid under bends.
+    var limit := spine.size() - 1
+    for i in range(limit):
+        var p0: Vector2 = spine[i]
+        var p1: Vector2 = spine[i + 1]
+        var step: Vector2 = p1 - p0
+        if step.length_squared() < 0.25:
+            continue
+        var normal: Vector2 = step.normalized().orthogonal()
+        var u0 := float(i) / float(limit)
+        var u1 := float(i + 1) / float(limit)
+        var envelope0 := (0.17 + 0.83 * sin(PI * u0 * 0.88)) * _ease(u0 * 5.5)
+        var envelope1 := (0.17 + 0.83 * sin(PI * u1 * 0.88)) * _ease(u1 * 5.5)
+        var width0 := maxf(0.3, (6.0 + 9.0 * envelope0) * z * width_factor)
+        var width1 := maxf(0.3, (6.0 + 9.0 * envelope1) * z * width_factor)
+        canvas.draw_colored_polygon(PackedVector2Array([
+            p0 - normal * width0, p1 - normal * width1,
+            p1 + normal * width1, p0 + normal * width0
+        ]), _tint(hue, alpha))
 
 static func serpent_light(canvas: CanvasItem, from: Vector2, to: Vector2,
         progress: float, zoom: float, lod: int = 2) -> void:
