@@ -4,8 +4,11 @@ extends Control
 const Fx = preload("res://labs/combat_lab/combat_lab_v9_energy_fx.gd")
 const PoisonAtlas = preload("res://labs/combat_lab/combat_lab_poison_atlas_v1.gd")
 const Rig = preload("res://labs/combat_lab/combat_lab_actor_rig_v2.gd")
+const SWORD_GLOW = preload("res://labs/combat_lab/combat_lab_v11_arcane_circle.gdshader")
 var effect: Control
 var title: Label
+var charge_glow: ColorRect
+var target_glow: ColorRect
 
 func _ready() -> void:
     custom_minimum_size = Vector2(1280, 720)
@@ -17,6 +20,10 @@ func _ready() -> void:
     effect.target = Vector2(910, 371)
     effect.set_mode("sword" if school == "sword" else "serpent")
     add_child(effect)
+    # Bounded shader layers stay BEHIND V11 normal-alpha sword geometry.
+    # Their emission changes only from the deterministic demo timeline.
+    charge_glow = _make_glow(0, effect.caster + Vector2(0, -62))
+    target_glow = _make_glow(1, effect.target)
     var buttons := HBoxContainer.new()
     buttons.position = Vector2(24, 18)
     buttons.add_theme_constant_override("separation", 12)
@@ -47,8 +54,38 @@ func _ready() -> void:
     add_child(title)
     _refresh_title()
 
+func _make_glow(mode: int, center: Vector2) -> ColorRect:
+    var rect := ColorRect.new()
+    rect.name = "SwordArcaneCharge" if mode == 0 else "SwordArcaneAOE"
+    rect.size = Vector2(350, 350)
+    rect.position = center - rect.size * 0.5
+    rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    var mat := ShaderMaterial.new()
+    mat.shader = SWORD_GLOW
+    mat.set_shader_parameter("ritual_mode", mode)
+    rect.material = mat
+    add_child(rect)
+    move_child(rect, 0)
+    return rect
+
+func _process(_delta: float) -> void:
+    if effect == null:
+        return
+    var progress := fposmod(float(effect.get("elapsed")),
+        float(effect.get("loop_seconds"))) / float(effect.get("loop_seconds"))
+    for glow in [charge_glow, target_glow]:
+        if glow == null:
+            continue
+        glow.visible = str(effect.get("demo_school")) == "sword"
+        var mat := glow.material as ShaderMaterial
+        if mat != null:
+            mat.set_shader_parameter("progress", progress)
+
 func _refresh_title() -> void:
-    title.text = ("VFX11 · KIẾM TRẬN HUYỀN QUANG" if str(effect.get("demo_school")) == "sword" else "VFX09 · ĐỘC QUANG HÓA XÀ") + "  |  Original Godot code art · Steel body + rim light · Lab only"
+    var sword := str(effect.get("demo_school")) == "sword"
+    title.text = ("VFX11 · KIẾM TRẬN HUYỀN QUANG" if sword else "VFX09 · ĐỘC QUANG HÓA XÀ") + "  |  Procedural shader · Forged steel · Lab only"
+    charge_glow.visible = sword
+    target_glow.visible = sword
     queue_redraw()
 
 func _input(event: InputEvent) -> void:
