@@ -28,9 +28,14 @@ func _ready() -> void:
     queue_redraw()
 
 func _process(delta: float) -> void:
-    if not paused and demo_mode:
-        elapsed += clampf(delta, 0.0, 0.08)
-    queue_redraw()
+    if demo_mode:
+        if not paused:
+            elapsed += clampf(delta, 0.0, 0.08)
+            queue_redraw()
+        return
+    var host := get_parent()
+    if host != null and host.get("v9_preview_enabled") == true:
+        queue_redraw()
 
 func set_mode(value: String) -> void:
     demo_school = "sword" if value == "sword" else "serpent"
