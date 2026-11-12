@@ -44,7 +44,7 @@ func _run() -> void:
     _label(sheet,"Năm ảnh 1 góc đã xác minh SHA256 · Góc B: CHƯA CÓ · Không dùng ảnh cung điện vàng",Vector2(30,51),Color(0.71,0.83,0.78),14)
     var roles: Dictionary = cfg["roles"]
     for i in range(ORDER.size()):
-        var id := ORDER[i]
+        var id: String = ORDER[i]
         var row: Dictionary = roles[id]
         assert(row.has("direction_b") and row["direction_b"] == null,"Unexpected unverified direction B")
         var image := source.texture_for(str(row["original"]))
@@ -52,8 +52,8 @@ func _run() -> void:
         var real_size := Vector2(row["size"][0],row["size"][1])
         assert(real_size.distance_to(SectIsometricWorldV1.HOUSE_SIZES[id]) < 0.1,
             "Source A current in-world target footprint drift: "+id)
-        var col := i%3
-        var line := i/3
+        var col: int = i%3
+        var line: int = floori(float(i)/3.0)
         var origin := Vector2(20+col*420,95+line*296)
         var backing := ColorRect.new()
         backing.position = origin
