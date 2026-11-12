@@ -284,7 +284,7 @@ func _build_ui() -> void:
     vfx_mode_button.tooltip_text = "Bật/tắt V4 chỉ trong Combat Lab; hiệu ứng V3 và Save không bị thay đổi."
     vfx_mode_button.pressed.connect(func():
         if arena == null: return
-        var next_mode := not bool(arena.get("v4_preview_enabled"))
+        var next_mode := arena.get("v4_preview_enabled") != true
         arena.call("set_v4_preview_enabled", next_mode)
         vfx_mode_button.text = "VFX V4 · " + ("BẬT" if next_mode else "TẮT")
     )
@@ -294,10 +294,10 @@ func _build_ui() -> void:
     v8_mode_button.tooltip_text = "Chỉ thay hình rắn Cổ Độc của skill thật; không sửa sát thương, tầm, mục tiêu, cooldown hay Save."
     v8_mode_button.pressed.connect(func():
         if arena == null: return
-        var next_v8 := not bool(arena.get("v8_preview_enabled"))
+        var next_v8 := arena.get("v8_preview_enabled") != true
         arena.call("set_v8_preview_enabled", next_v8)
         v8_mode_button.text = "VFX V8 · RẮN RÕ HÌNH · " + ("BẬT" if next_v8 else "TẮT")
-        vfx_mode_button.text = "VFX V4 · " + ("BẬT" if bool(arena.get("v4_preview_enabled")) else "TẮT")
+        vfx_mode_button.text = "VFX V4 · " + ("BẬT" if arena.get("v4_preview_enabled") == true else "TẮT")
     )
     var v9_mode_button := _button(controls,
         "VFX V9 · ÁNH SÁNG THẬT · " + ("BẬT" if OS.get_environment("TMB_POISON_V9_LIGHT") == "1" else "TẮT"),
@@ -308,7 +308,7 @@ func _build_ui() -> void:
         var next_light := arena.get("v9_preview_enabled") != true
         arena.call("set_v9_preview_enabled", next_light)
         v9_mode_button.text = "VFX V9 · ÁNH SÁNG THẬT · " + ("BẬT" if next_light else "TẮT")
-        v8_mode_button.text = "VFX V8 · RẮN RÕ HÌNH · " + ("BẬT" if bool(arena.get("v8_preview_enabled")) else "TẮT")
+        v8_mode_button.text = "VFX V8 · RẮN RÕ HÌNH · " + ("BẬT" if arena.get("v8_preview_enabled") == true else "TẮT")
     )
     var swarm_button := _button(controls, "4 ĐỘC TU · VÂY 8 QUÁI · AOE THẬT", Color("395e58"))
     var swarm_skill: Dictionary = V63HumanSkillCombatSystem.skill_definition("tmb.skill.poison.doc_cham.active_03.human")
