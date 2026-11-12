@@ -3,7 +3,7 @@ extends Control
 # Presentation-only. The live mode reads existing MapBattleV2 cues, NEVER
 # creates a hit, changes HP, target selection, timing, Save, or skill stats.
 const LIGHT_SHADER = preload("res://labs/combat_lab/combat_lab_v9_energy_light.gdshader")
-const V11SwordFx = preload("res://labs/combat_lab/combat_lab_v11_sword_fx.gd")
+const V12SwordFx = preload("res://labs/combat_lab/combat_lab_v12_sword_fx.gd")
 const CYAN := Color("56ddff")
 const WHITE := Color("f5fdff")
 const INDIGO := Color("7961ec")
@@ -355,9 +355,9 @@ func _draw() -> void:
     if demo_mode:
         var phase := fposmod(elapsed, loop_seconds) / loop_seconds
         if demo_school == "sword":
-            # V11 steel body under ordinary alpha, bounded edge glow. V9.2
-            # sword_light() remains for A/B, poison keeps its additive shader.
-            V11SwordFx.render(self, caster + Vector2(0, -62),
+            # V12 3-wave/9-sword JX-inspired original VFX. Existing v9 and v11
+            # remain separate A/B fallbacks; poison light is untouched.
+            V12SwordFx.render(self, caster + Vector2(0, -62),
                 target, phase, 1.55, 2)
         elif phase < 0.17:
             var k := phase / 0.17
