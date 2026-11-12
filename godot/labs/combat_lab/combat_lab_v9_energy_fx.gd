@@ -304,15 +304,21 @@ static func sword_light(canvas: CanvasItem, from: Vector2, to: Vector2,
     var t := clampf(progress, 0.0, 1.0)
     var z := clampf(zoom, 0.6, 2.1)
     var count := 12 if lod >= 2 else (8 if lod == 1 else 5)
-    if t < 0.52:
-        var charge := _ease(t / 0.52)
-        _ellipse(canvas, from + Vector2(0, 18.0 * z),
-            (18 + charge * 66) * z, (8 + charge * 24) * z,
-            CYAN, 0.25 + charge * 0.63, charge * 0.45)
+    if t < 0.42:
+        var charge := _ease(t / 0.42)
+        _ellipse(canvas, from + Vector2(0, 25.0 * z),
+            (16 + charge * 52) * z, (9 + charge * 18) * z,
+            CYAN, 0.15 + charge * 0.49, charge * 0.45)
+        _flare(canvas, from, (6.0 + charge * 10.0) * z,
+            CYAN, 0.2 + charge * 0.46)
     for i in range(count):
-        var a := TAU9 * float(i) / float(count)
-        var orbit := Vector2(cos(a), sin(a) * 0.48)
-        var source := from + orbit * (64.0 + 15.0 * sin(t * 5.0 + a)) * z
+        var column_index := i % 4
+        var row_index := floori(float(i) / 4.0)
+        # Form a precise 4x3 flying-sword constellation; no overlap near
+        # caster while charging. Materials become visible one by one.
+        var source := from + Vector2(
+            97.0 + float(column_index) * 66.0,
+            (float(row_index) - 1.0) * 87.0 - 12.0) * minf(z, 1.25)
         # Four visible attack lanes (3 swords per target in full preview).
         # Every blade maintains its straight axis toward its own destination,
         # preventing twelve swords from becoming a single neon smear.
@@ -324,18 +330,18 @@ static func sword_light(canvas: CanvasItem, from: Vector2, to: Vector2,
             (column - 0.5) * 112.0, (row_index - 0.5) * 102.0)
         var arrival := mob_center + Vector2(
             within_group * 10.0, within_group * 11.0) * z
-        var flight := clampf((t - 0.40 - float(i % 3) * 0.012) / 0.39, 0.0, 1.0)
+        # Four small waves, rather than twelve projectiles striking at once.
+        var flight := clampf((t - 0.40 - float(i % 3) * 0.025) / 0.37, 0.0, 1.0)
         var pos := source.lerp(arrival, _ease(flight))
         var direction := (arrival - source).normalized()
         if direction.length_squared() < 0.01:
             direction = Vector2.RIGHT
-        var opacity := clampf(t * 6.0 - float(i % 3) * 0.13, 0.0, 1.0)
+        var opacity := clampf((t - 0.01 - float(i) * 0.008) * 9.0, 0.0, 1.0)
         if t > 0.82:
             opacity *= clampf((1.0 - t) / 0.18, 0.0, 1.0)
         if flight > 0.01 and flight < 1.0:
-            var wake := pos - direction * 28.0 * z
-            _light_line(canvas, wake, pos, CYAN, 3.2 * z, opacity * 0.72)
-            _flare(canvas, pos, 2.3 * z, WHITE, opacity * 0.58)
+            var wake := pos - direction * 27.0 * z
+            _light_line(canvas, wake, pos, CYAN, 2.1 * z, opacity * 0.46)
         _energy_blade(canvas, pos, direction, z * 0.71, opacity)
     if t > 0.69:
         var impact := clampf((t - 0.69) / 0.31, 0.0, 1.0)
@@ -346,8 +352,11 @@ static func sword_light(canvas: CanvasItem, from: Vector2, to: Vector2,
             var center := to + Vector2(
                 (column - 0.5) * 112.0,
                 (row_index - 0.5) * 102.0)
-            _flare(canvas, center, (4.0 + impact * 8.0) * z,
-                CYAN, alpha * 0.61)
+            _flare(canvas, center, (6.0 + impact * 9.0) * z,
+                CYAN, alpha * 0.75)
+            _ellipse(canvas, center + Vector2(0, 12.0 * z),
+                (8.0 + impact * 31.0) * z,
+                (4.0 + impact * 15.0) * z, CYAN, alpha * 0.55)
         _flare(canvas, to, (13.0 + impact * 23.0) * z,
             CYAN, alpha * 0.50)
         _ellipse(canvas, to + Vector2(0, 18 * z),
