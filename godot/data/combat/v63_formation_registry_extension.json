@@ -8,7 +8,7 @@
   },
   "source_catalog": {
     "path": "res://data/combat/v63_formation_combat_catalog.json",
-    "git_blob_sha": "d9eb521a6eb726e5bb5419f9474ad31fb068e3f9"
+    "git_blob_sha": "db2a568b1c89970eb00363cd68a84b1fc54f5435"
   },
   "school": {
     "id": "formation",
