@@ -101,7 +101,7 @@ Chỉ dùng `-Mode Full` khi không có Godot đang chạy, hệ thống còn đ
 
 ## VFX V8 — U Minh Độc Xà và Vạn Kiếm Quy Tông (12/11/2026)
 
-V8 là đồ họa **nguyên bản, vẽ bằng GDScript**, không phải GIF concept được nhập làm atlas. Nó bổ sung một con rắn có đầu, mang, hàm, mắt, nanh và thân uốn; kiếm có lưỡi, chuôi, chắn tay và đội hình phân tán. Giữ V4 để có thể đối chiếu.
+V8 dùng **texture RGBA Cổ Độc gốc đã có trong repository** (`co_doc_gu_serpent.png`) để có hình linh xà chi tiết, kết hợp GDScript điều khiển đường bay theo cue thật và một fallback hình học. Kiếm trận hiện là **art vẽ bằng GDScript** gồm lưỡi, chuôi, chắn tay và đội hình; GIF concept đã duyệt vẫn CHƯA được nhập làm atlas. Giữ V4 để đối chiếu.
 
 - **Rắn trong trận Combat Lab thật:** mở `res://labs/combat_lab/combat_lab.tscn` (F6), chọn trường phái **Độc → Cổ Độc**, nạp kỹ năng `tmb.skill.poison.co_doc.active_02.human`, bật nút **VFX V8 · RẮN RÕ HÌNH**, sau đó thử chiêu. V8 chỉ được vẽ theo cue `projectile/impact` từ `MapBattleV2`; không bịa số lần trúng hay sát thương. Có thể bật khi khởi động qua `TMB_POISON_V8_PREVIEW=1` và `TMB_POISON_V4_PREVIEW=1`.
 - **Kiếm trận và rắn xem độc lập:** F6 `res://labs/combat_lab/combat_lab_v8_showcase.tscn`. Nhấn **1** / **2** hoặc các nút trên giao diện để chọn skill, Space phát lại, P tạm dừng. Dựng ở 1280×720, chỉ hiển thị chuyển động, KHÔNG phải một trận chiến có hit/HP/target.
