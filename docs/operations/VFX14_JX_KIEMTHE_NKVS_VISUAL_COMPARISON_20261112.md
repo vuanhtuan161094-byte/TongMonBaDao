@@ -28,3 +28,9 @@
 - Lab: click chọn quái làm tâm, 4 mock monsters, tối đa 3 người được preview kiếm nhắm; primary AOe không chạy theo monster sau khi cast. AOE radius 130×120 là SCREEN PREVIEW, không thay thế V63 world radius.
 - Chỉ ảnh chụp đối chiếu mô tả nguyên lý: curved trail, sword flare, cột sáng = thiết kế VFX14 original, không khẳng định đó là rendering nội bộ game tham khảo.
 - Full 60-FPS encoded offline movie != native measured GPU FPS. 30 actors/Windows/Android PENDING; no game skill enabled. ART_CANDIDATE, OWNER_PENDING.
+
+## Nghiệm thu có video thật — V14.2 (12/11/2026)
+- **Bản thực thi:** `godot/labs/combat_lab/combat_lab_v14_sword_fx.gd`; V14 base commit `fb963809`, V14.1 art-brightness `b9254a2f`, V14.2 curved target-convergence commit `4d929c1f`.
+- **CI:** [official strict Godot 4.7.2 run #43270381285](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/43270381285) = SUCCESS on exact SHA `4d929c1ff15533daaed4d7764357e3e508741695`. 165 frames at encoded 60 FPS/1280x720, media SHA log, no Godot critical script errors. Artifact `vfx-v14-godot-4d929c1ff15533daaed4d7764357e3e508741695`.
+- **Visual QA riêng:** đã xem gốc 1× và so V13.1/V14.1/V14.2 ở 7 mốc: charge 0.56s, flight 1.16/1.46s, entry 1.68/1.92s, impact 2.04s, fade 2.17s. Kết quả: đường kiếm bay tỏa-hội tụ rõ hơn, ribbon cong có lớp sáng, pháp trận vẫn khóa theo tâm; trúng chỉ 3 preview targets và có chớp ngắn tại mỗi đích, kiếm tan sau trúng. **Chưa đạt chất lượng ngang JX/KT/NKVS** và chưa được owner phê duyệt.
+- **Hạn chế:** chỉ scene lab, không có cùng một skill đang đánh trong OneGame thực; nút click target là thử visual selection; QA 60 FPS là tính chất file video, chưa đo GPU/CPU frame time thực trên Android/Windows. Kỹ năng Kiếm Tu vẫn OFF, lỗi ID-sorted primary omission của shared numeric target selector chưa xử lý ở luồng combat.
