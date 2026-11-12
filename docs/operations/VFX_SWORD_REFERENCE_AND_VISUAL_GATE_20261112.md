@@ -51,7 +51,10 @@ Owner nhiều lần không chấp nhận V9.3 và V10. PASS parse/strict render/
 3. Mẫu Hoa Sơn *Độc Cô Cửu Kiếm* tạo **9 kiếm lần lượt**: không phải 9–12 kiếm tất cả lao đồng thời. Việc phân thời gian giúp nhận ra từng đợt gây sức mạnh.
 4. **Missile / effect / status** tách riêng trong JX cổ điển là gợi ý kiến trúc: caster charge, projectile flight, ground marker và hit impact có nhịp riêng, còn vị trí/đòn đánh thuộc authority của game.
 
-### Thiết kế VFX12 đề xuất — CHƯA TRIỂN KHAI / CHƯA DUYỆT
+### Implementation update (2026-11-12)
+The previous `CHƯA TRIỂN KHAI` wording below refers to the original DESIGN SPEC state before VFX12 was coded. **VFX12 is now coded**, on the existing PR #72 branch. Actual source: `godot/labs/combat_lab/combat_lab_v12_sword_fx.gd` at `f2716153acbe893bad9d7e0ba320b650bd1adb9b`. Official exact-SHA Godot QA: https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/43259904726 (SUCCESS). Initial candidate implements 9 sword qi / 3 launch waves, AOE, wave crescents, fade; remains **OWNER_VISUAL_PENDING**, not shipped to OneGame and not a measured live FPS claim. Full QA details in CURRENT_CHECKPOINT.md.
+
+### Thiết kế VFX12 đề xuất — ĐÃ CODE / CHỜ DUYỆT MỸ THUẬT
 | Pha | Nhịp đề xuất | Trọng điểm thị giác | Kỹ thuật Godot |
 | --- | --- | --- | --- |
 | Tụ kiếm | 0.00–0.25s | 1 ấn chú dưới chân, **3–4 bóng kiếm** xuất hiện theo cung, không 12 vật thể chói | authored shape/sprite-frame của kiếm có pháp tuyến và điểm neo riêng; animation opacity/scale |
