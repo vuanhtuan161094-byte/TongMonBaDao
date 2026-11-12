@@ -3,7 +3,7 @@ extends Control
 # Presentation-only. The live mode reads existing MapBattleV2 cues, NEVER
 # creates a hit, changes HP, target selection, timing, Save, or skill stats.
 const LIGHT_SHADER = preload("res://labs/combat_lab/combat_lab_v9_energy_light.gdshader")
-const V10SwordFx = preload("res://labs/combat_lab/combat_lab_v10_sword_fx.gd")
+const V11SwordFx = preload("res://labs/combat_lab/combat_lab_v11_sword_fx.gd")
 const CYAN := Color("56ddff")
 const WHITE := Color("f5fdff")
 const INDIGO := Color("7961ec")
@@ -25,7 +25,10 @@ func _ready() -> void:
     mouse_filter = Control.MOUSE_FILTER_IGNORE
     var fx_material := ShaderMaterial.new()
     fx_material.shader = LIGHT_SHADER
-    material = fx_material
+    # The sword's dark steel must use normal alpha blending. The existing
+    # serpent remains additive. Never additively blend the sword's body:
+    # it washes bevels, gold runes and guard into one featureless neon streak.
+    material = null if demo_mode and demo_school == "sword" else fx_material
     set_process(true)
     queue_redraw()
 
@@ -65,10 +68,20 @@ func _process(delta: float) -> void:
 func set_mode(value: String) -> void:
     demo_school = "sword" if value == "sword" else "serpent"
     elapsed = 0.0
+    if is_node_ready():
+        if demo_school == "sword" and demo_mode:
+            material = null
+        else:
+            var fx_material := ShaderMaterial.new()
+            fx_material.shader = LIGHT_SHADER
+            material = fx_material
     queue_redraw()
 
 func set_live_mode() -> void:
     demo_mode = false
+    var fx_material := ShaderMaterial.new()
+    fx_material.shader = LIGHT_SHADER
+    material = fx_material
     set_process(true)
     queue_redraw()
 
@@ -342,9 +355,9 @@ func _draw() -> void:
     if demo_mode:
         var phase := fposmod(elapsed, loop_seconds) / loop_seconds
         if demo_school == "sword":
-            # V10 approved-for-review renderer. Existing V9.2 sword_light()
-            # stays intact as the A/B baseline; poison never changes.
-            V10SwordFx.render(self, caster + Vector2(0, -62),
+            # V11 steel body under ordinary alpha, bounded edge glow. V9.2
+            # sword_light() remains for A/B, poison keeps its additive shader.
+            V11SwordFx.render(self, caster + Vector2(0, -62),
                 target, phase, 1.55, 2)
         elif phase < 0.17:
             var k := phase / 0.17
