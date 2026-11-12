@@ -7,6 +7,7 @@ const SWORD_V10 = preload("res://labs/combat_lab/combat_lab_v10_sword_fx.gd")
 const SWORD_V11 = preload("res://labs/combat_lab/combat_lab_v11_sword_fx.gd")
 const SWORD_V12 = preload("res://labs/combat_lab/combat_lab_v12_sword_fx.gd")
 const SWORD_V13 = preload("res://labs/combat_lab/combat_lab_v13_sword_fx.gd")
+const SWORD_V14 = preload("res://labs/combat_lab/combat_lab_v14_sword_fx.gd")
 var failures := 0
 
 func _initialize() -> void:
@@ -86,6 +87,25 @@ func _check() -> void:
     ensure(SWORD_V13.visibility_after_contact(0.66,0.60) > 0.0 and
         SWORD_V13.visibility_after_contact(0.85,0.60) <= 0.001,
         "V13 sword remains after impact then dissolves to zero")
+    # V14 must inherit exact canonical display targets, never synthesize
+    # hits, while introducing new qi silhouette, curved wake and shock.
+    var sword14: Script = load("res://labs/combat_lab/combat_lab_v14_sword_fx.gd") as Script
+    ensure(sword14 != null, "V14 original layered sword qi source parses")
+    if sword14 != null:
+        var methods14: Array[String] = []
+        for method in sword14.get_script_method_list():
+            methods14.append(str(method.get("name", "")))
+        ensure(methods14.has("render") and methods14.has("_qi_blade") and
+            methods14.has("_trail") and methods14.has("_impact") and
+            methods14.has("_aoe") and methods14.has("_wave_arc"),
+            "V14 has blade silhouette, flowing qi cloth, AOEs and targeted hit")
+    ensure(SWORD_V14.preview_circle_targets(
+        [Vector2(854, 320), Vector2(966, 320), Vector2(854, 422), Vector2(966, 422)],
+        Vector2(854, 320), Vector2(130, 120), 3).size() == 3,
+        "V14 leaves fourth diagonal monster outside actual preview")
+    ensure(SWORD_V14.visibility_after_contact(0.80, 0.70) > 0.0 and
+        SWORD_V14.visibility_after_contact(0.96, 0.70) <= 0.001,
+        "V14 sword retains form after contact then dissolves")
     var fx := FXS.new()
     fx.custom_minimum_size = Vector2(1280, 720)
     root.add_child(fx)
