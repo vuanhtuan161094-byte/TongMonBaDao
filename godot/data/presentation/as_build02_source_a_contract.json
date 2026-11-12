@@ -1,0 +1,95 @@
+{
+  "schema_version": 2,
+  "purpose": "Source A approved style and camera-direction gate for art replacement",
+  "status": "CATALOG_VERIFIED_ONLY_NO_REPLACEMENTS_APPROVED",
+  "source_a_art_direction": {
+    "line": "hand-painted desaturated soft ink outlines",
+    "roof": "slate-grey small tiled and occasional muted straw",
+    "wood": "warm peach-brown framing and rough plaster",
+    "terrain": "stone paths/low grass/small garden props",
+    "fx": "subtle local accents, not exaggerated gold/dragon halos",
+    "projection": "two-axis oblique isometric, 3/4"
+  },
+  "direction_policy": "Only one verified source image per model; second direction requires independently authored sprite with matched projected footprint, entrance, pivot, and non-mirrored asymmetric props",
+  "roles": {
+    "main_hall": {
+      "model_id": "510052",
+      "original": "pv01_assets/main_hall/510052.png",
+      "size": [
+        300,
+        201
+      ],
+      "direction_a": "verified",
+      "direction_b": null,
+      "notes": "slate layered roof; warm-peach wood, stone square, courtyard tree, pale turquoise crystals"
+    },
+    "residence": {
+      "model_id": "510076",
+      "original": "pv01_assets/residence/510076.png",
+      "size": [
+        174,
+        135.03
+      ],
+      "direction_a": "verified",
+      "direction_b": null,
+      "notes": "small asymmetric slate roof, wicker lamp, rose planter, woodshed; avoid oversized tiered palace"
+    },
+    "warehouse": {
+      "model_id": "510102",
+      "original": "pv01_assets/warehouse/510102.png",
+      "size": [
+        162,
+        138
+      ],
+      "direction_a": "verified",
+      "direction_b": null,
+      "notes": "straw roof over low slate-wood annex, jars/crates/cart/timber"
+    },
+    "forge": {
+      "model_id": "520081",
+      "original": "pv01_assets/forge/520081.png",
+      "size": [
+        205,
+        164
+      ],
+      "direction_a": "verified",
+      "direction_b": null,
+      "notes": "teal-grey tile with dark soot roof, open high furnace flame, warm wood base"
+    },
+    "guidance": {
+      "model_id": "510111",
+      "original": "pv01_assets/guidance/510111.png",
+      "size": [
+        182,
+        202.54
+      ],
+      "direction_a": "verified",
+      "direction_b": null,
+      "notes": "slate-jade portal, restrained mint energy, lotus plants, square stone walkway"
+    }
+  },
+  "excluded_from_verified_source_a": [
+    "mine",
+    "linh_forest",
+    "spirit_field",
+    "alchemy_hall"
+  ],
+  "forbidden_shortcuts": [
+    "flip_h as independently authored second direction",
+    "new oversized gold-palace art",
+    "source A bitmap overwrite",
+    "fake production VFX or material balances",
+    "replace assets without in-game visual QA"
+  ],
+  "render_gate": {
+    "native_resolution": [
+      1280,
+      720
+    ],
+    "source_anchor_preservation": true,
+    "source_atlas_hash_check": true,
+    "actual_scene_before_after": true,
+    "owner_visual_review": true,
+    "windows_android_physical_pending": true
+  }
+}
