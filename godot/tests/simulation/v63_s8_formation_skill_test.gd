@@ -278,7 +278,7 @@ func _enable_preview(actor: Dictionary, skill_id: String) -> void:
 func _actor(actor_id: String, side: String, position: Vector2) -> Dictionary:
     var resistances := {"metal":0.0, "wood":0.0, "water":0.0, "fire":0.0, "earth":0.0,
         "lightning":0.0, "wind":0.0, "ice":0.0, "yang":0.0, "nether":0.0}
-    return {"id":actor_id,"side":side,"party_id":"","role":"ranged","position":position,
+    var actor := {"id":actor_id,"side":side,"party_id":"","role":"ranged","position":position,
         "hp":200.0,"max_hp":200.0,"range":1.8,"move_speed":2.0,"tier":"normal",
         "stats":{"max_hp":200.0,"attack":40.0,"defense":0.0,"damage_reduction":0.0,"crit_chance":0.0,
             "crit_damage":1.5,"crit_resistance":0.0,"defense_penetration":0.0,"lifesteal":0.0,
@@ -288,6 +288,9 @@ func _actor(actor_id: String, side: String, position: Vector2) -> Dictionary:
         "v63_skill_ready":{},"v63_skill_loadout":[],"v63_passive_ids":[],
         "v63_combat_clock":-1.0,"next_skill":0.0,"learned_guard_factor":1.0,
         "learned_guard_until":-1.0}
+    if side == "monster":
+        actor["race_id"] = "yeu_thu"
+    return actor
 
 func _events(battle: MapBattleV2, event_type: String, skill_id: String = "") -> Array:
     var result: Array = []
