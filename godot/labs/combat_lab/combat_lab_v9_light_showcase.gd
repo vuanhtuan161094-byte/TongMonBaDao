@@ -34,7 +34,7 @@ func _ready() -> void:
     serpent.pressed.connect(func(): effect.call("set_mode", "serpent"); _refresh_title())
     buttons.add_child(serpent)
     var sword := Button.new()
-    sword.text = "2 · KIẾM KHÍ QUY TÔNG"
+    sword.text = "2 · CỬU KIẾM LIÊN HOÀN"
     sword.custom_minimum_size = Vector2(245, 40)
     sword.pressed.connect(func(): effect.call("set_mode", "sword"); _refresh_title())
     buttons.add_child(sword)
@@ -83,7 +83,7 @@ func _process(_delta: float) -> void:
 
 func _refresh_title() -> void:
     var sword := str(effect.get("demo_school")) == "sword"
-    title.text = ("VFX11 · KIẾM TRẬN HUYỀN QUANG" if sword else "VFX09 · ĐỘC QUANG HÓA XÀ") + "  |  Procedural shader · Forged steel · Lab only"
+    title.text = ("VFX12 · CỬU KIẾM LIÊN HOÀN" if sword else "VFX09 · ĐỘC QUANG HÓA XÀ") + "  |  3 volleys × 3 sword-qi · Godot original code art · Lab only"
     charge_glow.visible = sword
     target_glow.visible = sword
     queue_redraw()
