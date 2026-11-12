@@ -37,7 +37,7 @@ func _ready() -> void:
     buttons.add_child(repeat)
     var pause := Button.new()
     pause.text = "TẠM DỪNG / TIẾP"
-    pause.pressed.connect(func(): effect.set("paused", not bool(effect.get("paused"))))
+    pause.pressed.connect(func(): effect.set("paused", effect.get("paused") != true))
     buttons.add_child(pause)
     title = Label.new()
     title.position = Vector2(28, 645)
