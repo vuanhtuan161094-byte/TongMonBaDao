@@ -272,7 +272,8 @@ func _draw() -> void:
                 rendered += 1
         else:
             var created := int(cue.get("created", 0))
-            var age := clampf(float(Time.get_ticks_msec() - created) /
+            # Match Combat Lab's presentation clock so HOLD freezes bloom.
+            var age := clampf((now * 1000.0 - float(created)) /
                 maxf(1.0, float(cue.get("life", 1.0))), 0.0, 1.0)
             serpent_impact(self, dest + Vector2(0, -24 * z), age, z, 1)
             rendered += 1
