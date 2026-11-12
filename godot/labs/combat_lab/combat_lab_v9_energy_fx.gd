@@ -18,6 +18,7 @@ var loop_seconds := 2.5
 var paused := false
 var caster := Vector2(325, 455)
 var target := Vector2(910, 371)
+var _live_had_effect := false
 
 func _ready() -> void:
     mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -33,9 +34,32 @@ func _process(delta: float) -> void:
             elapsed += clampf(delta, 0.0, 0.08)
             queue_redraw()
         return
+    # Event-driven visibility gate: no 60 FPS full overlay redraw when the
+    # laboratory is idle or V9 is OFF. An empty frame clears the last glow.
     var host := get_parent()
+    var active := false
     if host != null and host.get("v9_preview_enabled") == true:
+        var now := float(host.get("visual_time"))
+        var active_cues: Array = host.get("cues")
+        for cue_value in active_cues:
+            var cue: Dictionary = cue_value
+            if not str(cue.get("skill_id", "")).contains(".co_doc.active_02."):
+                continue
+            var kind := str(cue.get("kind", ""))
+            if kind == "projectile":
+                var began := float(cue.get("launch_at", now))
+                var ended := float(cue.get("impact_at", began))
+                if now >= began and now <= ended:
+                    active = true
+                    break
+            elif kind == "impact":
+                var age_ms := now * 1000.0 - float(cue.get("created", 0))
+                if age_ms >= 0.0 and age_ms <= float(cue.get("life", 0.0)):
+                    active = true
+                    break
+    if active or active != _live_had_effect:
         queue_redraw()
+    _live_had_effect = active
 
 func set_mode(value: String) -> void:
     demo_school = "sword" if value == "sword" else "serpent"
