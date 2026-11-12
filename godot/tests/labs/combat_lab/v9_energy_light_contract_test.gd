@@ -3,6 +3,7 @@ extends SceneTree
 const FXS = preload("res://labs/combat_lab/combat_lab_v9_energy_fx.gd")
 const STAGE = preload("res://labs/combat_lab/combat_lab_v9_light_showcase.tscn")
 const ARENA = preload("res://labs/combat_lab/combat_lab_arena.gd")
+const SWORD_V10 = preload("res://labs/combat_lab/combat_lab_v10_sword_fx.gd")
 var failures := 0
 
 func _initialize() -> void:
@@ -18,6 +19,15 @@ func _check() -> void:
     ensure(shader != null, "compiled additive shader exists")
     if shader != null:
         ensure(shader.code.contains("blend_add"), "light compositing is additive")
+    # The sword is a presentation module, deliberately not a V6.3 hit.
+    var sword_script: Script = load("res://labs/combat_lab/combat_lab_v10_sword_fx.gd") as Script
+    ensure(sword_script != null, "V10 sword is loadable as Godot script")
+    if sword_script != null:
+        var methods: Array[String] = []
+        for method in sword_script.get_script_method_list():
+            methods.append(str(method.get("name", "")))
+        ensure(methods.has("render") and methods.has("_sword") and methods.has("_aoe_seal"),
+            "V10 includes pointed blade, AOE telegraph, gradual fade renderer")
     var fx := FXS.new()
     fx.custom_minimum_size = Vector2(1280, 720)
     root.add_child(fx)
