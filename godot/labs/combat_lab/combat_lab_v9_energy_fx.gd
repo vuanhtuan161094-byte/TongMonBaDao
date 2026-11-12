@@ -345,7 +345,7 @@ func _draw() -> void:
             # V10 approved-for-review renderer. Existing V9.2 sword_light()
             # stays intact as the A/B baseline; poison never changes.
             V10SwordFx.render(self, caster + Vector2(0, -62),
-                target + Vector2(0, -34), phase, 1.55, 2)
+                target, phase, 1.55, 2)
         elif phase < 0.17:
             var k := phase / 0.17
             _flare(self, caster + Vector2(14, -63), 5.0 + 11.0 * k,
