@@ -288,6 +288,17 @@ func _build_ui() -> void:
         arena.call("set_v4_preview_enabled", next_mode)
         vfx_mode_button.text = "VFX V4 · " + ("BẬT" if next_mode else "TẮT")
     )
+    var v8_mode_button := _button(controls,
+        "VFX V8 · RẮN RÕ HÌNH · " + ("BẬT" if OS.get_environment("TMB_POISON_V8_PREVIEW") == "1" else "TẮT"),
+        Color("365e62"))
+    v8_mode_button.tooltip_text = "Chỉ thay hình rắn Cổ Độc của skill thật; không sửa sát thương, tầm, mục tiêu, cooldown hay Save."
+    v8_mode_button.pressed.connect(func():
+        if arena == null: return
+        var next_v8 := not bool(arena.get("v8_preview_enabled"))
+        arena.call("set_v8_preview_enabled", next_v8)
+        v8_mode_button.text = "VFX V8 · RẮN RÕ HÌNH · " + ("BẬT" if next_v8 else "TẮT")
+        vfx_mode_button.text = "VFX V4 · " + ("BẬT" if bool(arena.get("v4_preview_enabled")) else "TẮT")
+    )
     var swarm_button := _button(controls, "4 ĐỘC TU · VÂY 8 QUÁI · AOE THẬT", Color("395e58"))
     var swarm_skill: Dictionary = V63HumanSkillCombatSystem.skill_definition("tmb.skill.poison.doc_cham.active_03.human")
     swarm_button.tooltip_text = "4 đệ tử ở 4 góc; Bách Độc Tán Châm: bán kính %.1f ô, tối đa %d mục tiêu. Dùng kỹ năng V6.3 thật, không phát sát thương giả." % [float(swarm_skill.get("radius", 0.0)), int(swarm_skill.get("target_limit", 0))]
