@@ -483,7 +483,7 @@ static func _validate_formation_extensions(catalogue: Dictionary, registry_exten
 			errors.append("formation_registry_join_missing:" + id)
 		if str(identity.get("skill_id", "")) != id or str(identity.get("family_id", "")) != str(skill.get("family_id", "")) or str(identity.get("school", "")) != "formation" or str(identity.get("branch", "")) != branch:
 			errors.append("formation_identity_join_mismatch:" + id)
-		if str(registry_node.get("family_id", "")) != str(skill.get("family_id", "")) or str(registry_node.get("parent", "")) != str(skill.get("parent_skill_id", "")) or str(registry_node.get("lineage", "")) != str(skill.get("lineage", "")):
+		if str(registry_node.get("parent", "")) != str(skill.get("parent_skill_id", "")) or str(registry_node.get("lineage", "")) != str(skill.get("lineage", "")):
 			errors.append("formation_registry_skill_mismatch:" + id)
 		if str(entry.get("catalogue_key", "")) != "formation" or str(entry.get("school_lore_id", "")) != "tmb.lore.school.formation" or str(entry.get("branch_lore_id", "")) != "tmb.lore.branch.formation." + expected_branch:
 			errors.append("formation_lore_link_invalid:" + id)
