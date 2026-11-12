@@ -41,10 +41,7 @@ func _run() -> void:
             "Invalid sprite import: "+p)
         imported += 1
     print("AS_BUILD_V3_CODE_AND_CANONICAL_JOB_LOGIC PASS total_variants=12 imported=%d missing=%d" % [imported,absent.size()])
-    if not absent.is_empty():
-        print("AS_BUILD_V3_VISUAL_REPLACEMENT PENDING_BINARY_ASSET_UPLOAD (not FULL PASS)")
-        for p in absent:
-            print("  MISSING: "+p)
-    else:
-        print("AS_BUILD_V3_BINARY_IMPORT PASS; actual GUI visual signoff still PENDING")
+    assert(absent.is_empty(),"AS-BUILD-V3 missing %d canonical sprite PNG(s): %s" % [absent.size(),str(absent)])
+    assert(imported == 12,"AS-BUILD-V3 must import all 12 PNGs")
+    print("AS_BUILD_V3_BINARY_IMPORT PASS 12/12; native GUI/physical visual signoff pending")
     quit(0)

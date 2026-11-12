@@ -1449,7 +1449,12 @@ func _draw_building(p: Vector2,kind: String, managed: bool, allow_detail: bool =
     # not reducing valid BuildingState instances or workers.
     if managed and (MAP_D2_CANDIDATE_SITES.has(kind) or V3_ART.supported(StringName(kind))):
         var level := SectEndgameVisualBudgetV1.site_level(camera.zoom.x)
-        if level < 2 or not allow_detail:
+        # Show authentic new architecture for each primary site and selected
+        # instance even at normal zoom; distant extra sites keep cheap LOD.
+        var v3_showcase := V3_ART.supported(StringName(kind)) and (
+            (building_id.ends_with("_001") and camera.zoom.x >= 0.96)
+            or (not building_id.is_empty() and building_id == selected_visual_site_id))
+        if (level < 2 or not allow_detail) and not v3_showcase:
             _draw_compact_producer(p,kind,level == 0)
             return
     # Approved new architecture never overwrites the SHA-checked Source A originals.

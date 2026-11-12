@@ -7,6 +7,9 @@ on:
       - 'godot/src/presentation/art05_onegame_cinematic_ui.gd'
       - 'godot/src/presentation/p3/sect_isometric_world_v1.gd'
       - 'godot/art/reimagined_source_a_v1/**'
+      - 'godot/art/reimagined_source_a_v3/**'
+      - 'godot/src/presentation/uiux/sect_building_art_variant_v3.gd'
+      - 'godot/tests/presentation/as_build_v3_canonical_art_test.gd'
       - 'godot/tests/presentation/as_build01_alchemy_visual_import_test.gd'
       - 'godot/src/presentation/uiux/sect_premium_panel_v1.gd'
       - 'godot/src/presentation/uiux/sect_world_atmosphere_v1.gd'
@@ -84,6 +87,8 @@ jobs:
         run: bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/presentation/as_build01_alchemy_visual_import_test.gd
       - name: ART05 strict real OneGame layout and input navigation test
         run: bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/presentation/art05_real_gui_layout_test.gd
+      - name: AS-BUILD-V3 all twelve real source-backed site sprite imports and job rules
+        run: bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/presentation/as_build_v3_canonical_art_test.gd
       - name: Upload screenshot comparison evidence even on failure
         if: always()
         uses: actions/upload-artifact@v4
