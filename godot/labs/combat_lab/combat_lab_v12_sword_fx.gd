@@ -143,6 +143,30 @@ static func _hit(c: CanvasItem, at: Vector2, z: float,
             _alpha(SNOW if j % 2 == 0 else GOLD, strong * 0.68),
             maxf(0.65, 1.65 * z), true)
 
+# A brief diagonal crescent hits the AOE area with each incoming wave;
+# it makes the moment of impact distinct from swords still travelling.
+static func _slash_wave(c: CanvasItem, center: Vector2, z: float,
+        wave: int, relative: float) -> void:
+    var k := clampf(relative, 0.0, 1.0)
+    if k >= 0.997:
+        return
+    var a := 1.0 - _ease(k)
+    var points := PackedVector2Array()
+    var offset := (-0.75 + float(wave) * 0.58)
+    var radius := (66.0 + k * 37.0) * z
+    for j in range(22):
+        var angle := (-1.5 + float(j) / 21.0 * 2.2) + offset
+        points.append(center + Vector2(
+            cos(angle) * radius,
+            sin(angle) * radius * 0.66 - 7.0 * z))
+    c.draw_polyline(points, _alpha(BLUE, a * 0.13),
+        maxf(1.0, 10.0 * z), true)
+    c.draw_polyline(points, _alpha(SNOW, a * 0.45),
+        maxf(0.8, 2.0 * z), true)
+    # Two narrow gold cutting motes at the crescent's tip.
+    var last: Vector2 = points[points.size() - 1]
+    _spark(c, last, z * 1.6, a * 0.85)
+
 static func render(c: CanvasItem, from: Vector2, to: Vector2,
         progress: float, zoom: float, lod: int = 2) -> void:
     var t := clampf(progress, 0.0, 1.0)
@@ -184,15 +208,25 @@ static func render(c: CanvasItem, from: Vector2, to: Vector2,
         var size := (0.80 if wave == 0 else 0.63) * z
         # The qi should follow the sword, not obscure the metal silhouette.
         if flight > 0.03 and flight < 0.99:
-            var tail := position - direction * 39.0 * size
-            c.draw_line(tail - direction * 19.0 * z,
-                tail - direction * 4.0 * z,
-                _alpha(BLUE, alpha * 0.22), maxf(0.75, 1.4 * z), true)
-            _spark(c, tail, 0.7 * z, alpha * 0.32)
+            var tail := position - direction * 87.0 * size
+            var tail_end := position - direction * 39.0 * size
+            c.draw_line(tail, tail_end, _alpha(BLUE, alpha * 0.12),
+                maxf(0.8, 5.0 * z), true)
+            c.draw_line(tail + direction * 9.0 * z, tail_end,
+                _alpha(MINT, alpha * 0.39), maxf(0.7, 1.25 * z), true)
+            _spark(c, tail_end, 0.7 * z, alpha * 0.33)
         _blade(c, position, direction, size, alpha)
         if t > schedule.y and lane == 1:
             _hit(c, impact_pos, z * 0.70,
                 (t - schedule.y) / 0.18, group)
+    # Three staggered sword-cut crescents: AOE reads as a strong hit,
+    # without adding a single combat hit or changing target positions.
+    if lod >= 1:
+        for wave in range(3 if lod >= 2 else 2):
+            var impact_at := flight_timing(wave * 3 + 1).y
+            if t >= impact_at:
+                _slash_wave(c, to, z, wave,
+                    (t - impact_at) / 0.19)
     # Last wave unfolds then fades; short afterglow, no persistent disk.
     if t > 0.69:
         var age := clampf((t - 0.69) / 0.31, 0.0, 1.0)
