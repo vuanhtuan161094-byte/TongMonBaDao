@@ -3,7 +3,7 @@ extends Control
 # Presentation-only. The live mode reads existing MapBattleV2 cues, NEVER
 # creates a hit, changes HP, target selection, timing, Save, or skill stats.
 const LIGHT_SHADER = preload("res://labs/combat_lab/combat_lab_v9_energy_light.gdshader")
-const V12SwordFx = preload("res://labs/combat_lab/combat_lab_v12_sword_fx.gd")
+const V13SwordFx = preload("res://labs/combat_lab/combat_lab_v13_sword_fx.gd")
 const CYAN := Color("56ddff")
 const WHITE := Color("f5fdff")
 const INDIGO := Color("7961ec")
@@ -20,6 +20,13 @@ var paused := false
 var caster := Vector2(325, 455)
 var target := Vector2(910, 371)
 var _live_had_effect := false
+# These are DEMO-ONLY locked target positions, never skill targeting
+# or combat damage authority. One Game live poison remains unchanged.
+var sword_preview_center := Vector2(854.0, 320.0)
+var sword_preview_radius := Vector2(130.0, 120.0)
+var sword_preview_hits: Array = [
+    Vector2(854, 320), Vector2(966, 320), Vector2(854, 422)
+]
 
 func _ready() -> void:
     mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -75,6 +82,13 @@ func set_mode(value: String) -> void:
             var fx_material := ShaderMaterial.new()
             fx_material.shader = LIGHT_SHADER
             material = fx_material
+    queue_redraw()
+
+func set_sword_preview(center: Vector2, hits: Array,
+        radii_px: Vector2) -> void:
+    sword_preview_center = center
+    sword_preview_hits = hits.duplicate()
+    sword_preview_radius = radii_px
     queue_redraw()
 
 func set_live_mode() -> void:
@@ -355,10 +369,11 @@ func _draw() -> void:
     if demo_mode:
         var phase := fposmod(elapsed, loop_seconds) / loop_seconds
         if demo_school == "sword":
-            # V12 3-wave/9-sword JX-inspired original VFX. Existing v9 and v11
-            # remain separate A/B fallbacks; poison light is untouched.
-            V12SwordFx.render(self, caster + Vector2(0, -62),
-                target, phase, 1.55, 2)
+            # V13 sword visuals accept locked center and explicit hit
+            # positions from the caller; NEVER auto-infer 4 demo monsters.
+            V13SwordFx.render(self, caster + Vector2(0, -62),
+                sword_preview_center, sword_preview_hits,
+                sword_preview_radius, phase, 1.55, 2)
         elif phase < 0.17:
             var k := phase / 0.17
             _flare(self, caster + Vector2(14, -63), 5.0 + 11.0 * k,
