@@ -82,8 +82,10 @@ func _draw() -> void:
             Rig.render(self, {"id":"v9caster","side":"disciple","hp":100.0},
                 caster, "poison", "cast", float(effect.get("elapsed")), 2.0, 1.0, 0.18)
     else:
+        # Sword-cultivator preview must not wield a bow: this is a VFX
+        # showcase, not a claim that the full sword actor asset exists.
         Rig.render(self, {"id":"v9sword","side":"disciple","hp":100.0},
-            caster, "bow", "cast", float(effect.get("elapsed")), 2.0, 1.0, 0.18)
+            caster, "fist", "cast", float(effect.get("elapsed")), 2.0, 1.0, 0.18)
     for i in range(4):
         var offset := Vector2(float(i % 2) * 112.0 - 56.0,
             float(floori(float(i) / 2.0)) * 102.0 - 51.0)
