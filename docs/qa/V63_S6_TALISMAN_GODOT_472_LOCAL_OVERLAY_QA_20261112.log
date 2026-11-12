@@ -1,0 +1,28 @@
+V63-ALL36 S6 Phu — Godot 4.7.2 QA evidence
+Date: 2026-11-12
+Target PR branch: integration/pve-p0-playable-ui-20261103
+Live integration base at QA start: a10c9d824cb30bcd360842b6b39914e3932e9cb5
+Local QA checkout identity: detached af8c82c29089bc71c6dfff8857eeb5a3ea2a0ac1 with working-tree overlay. These local results are NOT exact-SHA results for the live integration branch; exact-SHA CI is required after commit.
+Engine: 4.7.2.stable.official.ed1daf0bf
+Engine SHA-256: C8F0A6BC45A19B33541501E57F6F7CD972AB18453743266339D495CBBE846643
+Profile: isolated QA APPDATA and LocalAppData; no player save opened.
+
+Local overlay results (all Godot processes sequential; process exit codes from followup_matrix.txt):
+- Import/parse: PASS, exit 0 (import3.log); no parse/runtime import failure. Godot emitted "Failed to read the root certificate store." on stderr, unrelated to parsing.
+- S0 ledger/presentation: PASS, exit 0, 23 checks.
+- S1 Kiem: PASS, exit 0, 1,687 checks.
+- S2 Dao: PASS, exit 0, 1,871 checks; check-only exit 0.
+- S3 Thuong: PASS, exit 0, 1,126 checks.
+- S4 Song Dao: PASS, exit 0, 1,502 checks.
+- S5 Chuong: PASS, exit 0, 1,876 checks.
+- S6 Phu check-only: PASS, exit 0.
+- S6 Phu gameplay/runtime: PASS, exit 0, 1,973 checks; 183 nodes, 35 families, 3 branches; CombatV2 preview only; feature gate OFF.
+- Catalogue integrity: PASS_CATALOGUE_ONLY, exit 0; 27 indexed branches and zero catalogue failures. This is not full runtime/GUI acceptance.
+- Cumulative authored-combat matrix: 183 Poison IDs, 0 failures, PASS_BASELINE_ONLY; this is baseline semantics, not full 2,196-skill, PvE or GUI acceptance.
+
+Scope and unresolved gates:
+- All V6.3 release gates remain OFF. Candidate balance remains unapproved and source manuals remain SOURCE_PENDING; no fake manuals, drops or progression unlocks were added.
+- S6 VFX output is text/data specification only. VFX production remains HOLD_OWNER_PER_SKILL_APPROVAL. No S6 renderer, particle, shader, sprite or skill animation was added; existing S1-S5 presentation code was left out of this change.
+- D4A/Warehouse failure remains an existing unresolved failure (run 42971666349); it was not modified or waived here.
+- Windows GUI/physical play, Android and exact-SHA verification are pending. The newly added workflow reruns focused checks on the published commit and uploads the S6 log.
+- Raw local logs are under .qa-v63/s6-talisman-20261112/logs/ in the QA checkout; key names: import3.log, s0_presentation_runtime.log, s1_sword_runtime.log, s2_blade_runtime2.log, s3_spear_runtime.log, s4_dual_blade_runtime.log, s5_palm_runtime.log, s6_talisman_check2.log, s6_talisman_runtime2.log, and catalogue_integrity_runtime2.log.

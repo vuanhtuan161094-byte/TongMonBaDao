@@ -64,7 +64,7 @@ func _run() -> void:
     _expect(bool(source_rows.get("ok",false)), "S0/S1/S2 data and manifests load: "+str(source_rows.get("errors",[])))
     var manifest: Dictionary = source_rows.get("manifest",{})
     var entries: Dictionary = manifest.get("entries",{})
-    _expect(entries.size()==919, "four S0 source samples and five 183-node candidate presentations coexist")
+    _expect(entries.size()==1102, "four S0 source samples and six 183-node candidate presentations coexist")
     var unique_flavor: Dictionary = {}
     var unique_short: Dictionary = {}
     var unique_motion: Dictionary = {}
@@ -99,7 +99,7 @@ func _run() -> void:
             registry_nodes += family.get("nodes",[]).size()
         _expect(registry.get("families",[]).size()==210 and registry.get("paths",[]).size()==18 and registry_nodes==1098, "registry contains four existing schools plus three gated candidate schools")
         _expect(int(registry.get("skills_s1_candidate_count",0))==183 and int(registry.get("skills_s2_candidate_count",0))==183 and int(registry.get("skills_s3_candidate_count",0))==183, "Sword, Dao and Spear source-pending coverage recorded separately")
-    _expect(HSC.skill_definitions().size()==1464, "shared combat definition index contains 549 existing plus 915 gated candidates")
+    _expect(HSC.skill_definitions().size()==1647, "shared combat definition index contains 549 existing plus 1,098 gated candidates")
     _expect(not FeatureGates.is_enabled("blade_skill_combat") and not bool(FeatureGates.DEFAULT_FLAGS.get("blade_skill_combat",true)), "V6.3 and Dao combat remain OFF by default")
     _expect(str(Blade.can_learn(Blade.skill_definition("tmb.skill.blade.cuong_dao.active_01.human")).get("reason",""))=="skill_source_pending", "player learning is blocked until canonical Dao manual exists")
     _expect(not Blade.can_cast(_actor("off","disciple",Vector2(2,2)), "tmb.skill.blade.cuong_dao.active_01.human"), "actor cannot cast candidate Dao skill without explicit preview override")
@@ -111,7 +111,7 @@ func _run() -> void:
         var audit := Presentation.validate_all36_ledger(csv.get_as_text(),source_rows.get("catalogues",{}),source_rows.get("registry",{}))
         _expect(bool(audit.get("ok",false)), "ledger statuses and candidate graph join: "+str(audit.get("errors",[])))
         var metrics: Dictionary = audit.get("metrics",{})
-        _expect(int(metrics.get("existing",0))==549 and int(metrics.get("candidate_gated",0))==915 and int(metrics.get("not_authored",0))==732 and int(metrics.get("runtime_catalogue_ids",0))==1464, "ledger counts separate source IDs, gated candidates and un-authored slots")
+        _expect(int(metrics.get("existing",0))==549 and int(metrics.get("candidate_gated",0))==1098 and int(metrics.get("not_authored",0))==549 and int(metrics.get("runtime_catalogue_ids",0))==1647, "ledger counts separate source IDs, gated candidates and un-authored slots")
 
     _exercise_multihit()
     _exercise_mark_ownership()

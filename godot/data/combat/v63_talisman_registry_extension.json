@@ -1,0 +1,1692 @@
+{
+  "schema_version": 1,
+  "extension_id": "tmb.v63.registry_extension.s6_talisman",
+  "release_gate": "OFF",
+  "base_registry": {
+    "path": "res://data/combat/v63_content_registry.json",
+    "git_blob_sha": "2b36bd39bf04c20dc74f00e74d335568b4a1a89b"
+  },
+  "source_catalog": {
+    "path": "res://data/combat/v63_talisman_combat_catalog.json",
+    "git_blob_sha": "e86568d66d9112c606eef569927ee78a66020ef0"
+  },
+  "school": {
+    "id": "talisman",
+    "name": "Phù Tu",
+    "candidate_source_status": "SOURCE_PENDING"
+  },
+  "paths": [
+    {
+      "id": "tmb.path.talisman.loi_phu",
+      "school": "talisman",
+      "name": "Lôi Phù",
+      "lineages": {
+        "a": "Dẫn Lôi",
+        "b": "Tàng Lôi"
+      },
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.path.talisman.hoa_phu",
+      "school": "talisman",
+      "name": "Hỏa Phù",
+      "lineages": {
+        "a": "Liên Diệm",
+        "b": "Tụ Diệm"
+      },
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.path.talisman.phong_an_phu",
+      "school": "talisman",
+      "name": "Phong Ấn Phù",
+      "lineages": {
+        "a": "Khép Giới",
+        "b": "Lưu Phù"
+      },
+      "candidate_source_status": "SOURCE_PENDING"
+    }
+  ],
+  "families": [
+    {
+      "id": "tmb.skill.talisman.basic",
+      "school": "talisman",
+      "branch": "",
+      "slot": "basic",
+      "name": "Phù Tâm Dẫn Khí",
+      "nodes": [
+        {
+          "id": "tmb.skill.talisman.basic.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.basic.immortal.base",
+          "tier": "immortal",
+          "lineage": "base",
+          "parent": "tmb.skill.talisman.basic.human",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.basic.divine.base",
+          "tier": "divine",
+          "lineage": "base",
+          "parent": "tmb.skill.talisman.basic.immortal.base",
+          "school": "talisman"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.talisman.mobility",
+      "school": "talisman",
+      "branch": "",
+      "slot": "mobility",
+      "name": "Phi Phù Hoán Vị",
+      "nodes": [
+        {
+          "id": "tmb.skill.talisman.mobility.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.mobility.immortal.base",
+          "tier": "immortal",
+          "lineage": "base",
+          "parent": "tmb.skill.talisman.mobility.human",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.mobility.divine.base",
+          "tier": "divine",
+          "lineage": "base",
+          "parent": "tmb.skill.talisman.mobility.immortal.base",
+          "school": "talisman"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.talisman.loi_phu.active_01",
+      "school": "talisman",
+      "branch": "loi_phu",
+      "slot": "active_01",
+      "name": "Điện Quang Khai Phù",
+      "nodes": [
+        {
+          "id": "tmb.skill.talisman.loi_phu.active_01.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.loi_phu.active_01.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.talisman.loi_phu.active_01.human",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.loi_phu.active_01.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.talisman.loi_phu.active_01.human",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.loi_phu.active_01.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.talisman.loi_phu.active_01.immortal.a",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.loi_phu.active_01.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.talisman.loi_phu.active_01.immortal.b",
+          "school": "talisman"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.talisman.loi_phu.active_02",
+      "school": "talisman",
+      "branch": "loi_phu",
+      "slot": "active_02",
+      "name": "Thiên Lôi Dẫn Nét",
+      "nodes": [
+        {
+          "id": "tmb.skill.talisman.loi_phu.active_02.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.loi_phu.active_02.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.talisman.loi_phu.active_02.human",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.loi_phu.active_02.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.talisman.loi_phu.active_02.human",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.loi_phu.active_02.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.talisman.loi_phu.active_02.immortal.a",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.loi_phu.active_02.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.talisman.loi_phu.active_02.immortal.b",
+          "school": "talisman"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.talisman.loi_phu.active_03",
+      "school": "talisman",
+      "branch": "loi_phu",
+      "slot": "active_03",
+      "name": "Lôi Văn Truy Ấn",
+      "nodes": [
+        {
+          "id": "tmb.skill.talisman.loi_phu.active_03.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.loi_phu.active_03.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.talisman.loi_phu.active_03.human",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.loi_phu.active_03.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.talisman.loi_phu.active_03.human",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.loi_phu.active_03.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.talisman.loi_phu.active_03.immortal.a",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.loi_phu.active_03.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.talisman.loi_phu.active_03.immortal.b",
+          "school": "talisman"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.talisman.loi_phu.active_04",
+      "school": "talisman",
+      "branch": "loi_phu",
+      "slot": "active_04",
+      "name": "Cửu Tiêu Phá Vân",
+      "nodes": [
+        {
+          "id": "tmb.skill.talisman.loi_phu.active_04.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.loi_phu.active_04.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.talisman.loi_phu.active_04.human",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.loi_phu.active_04.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.talisman.loi_phu.active_04.human",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.loi_phu.active_04.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.talisman.loi_phu.active_04.immortal.a",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.loi_phu.active_04.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.talisman.loi_phu.active_04.immortal.b",
+          "school": "talisman"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.talisman.loi_phu.ultimate",
+      "school": "talisman",
+      "branch": "loi_phu",
+      "slot": "ultimate",
+      "name": "Cửu Thiên Vạn Lôi Phù",
+      "nodes": [
+        {
+          "id": "tmb.skill.talisman.loi_phu.ultimate.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.loi_phu.ultimate.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.talisman.loi_phu.ultimate.human",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.loi_phu.ultimate.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.talisman.loi_phu.ultimate.human",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.loi_phu.ultimate.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.talisman.loi_phu.ultimate.immortal.a",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.loi_phu.ultimate.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.talisman.loi_phu.ultimate.immortal.b",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.loi_phu.ultimate.rare.a",
+          "tier": "divine",
+          "lineage": "rare_a",
+          "parent": "tmb.skill.talisman.loi_phu.ultimate.divine.a",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.loi_phu.ultimate.rare.b",
+          "tier": "divine",
+          "lineage": "rare_b",
+          "parent": "tmb.skill.talisman.loi_phu.ultimate.divine.b",
+          "school": "talisman"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.talisman.loi_phu.passive_01",
+      "school": "talisman",
+      "branch": "loi_phu",
+      "slot": "passive_01",
+      "name": "Lôi Tức Tĩnh Tâm",
+      "nodes": [
+        {
+          "id": "tmb.skill.talisman.loi_phu.passive_01.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.loi_phu.passive_01.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.talisman.loi_phu.passive_01.human",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.loi_phu.passive_01.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.talisman.loi_phu.passive_01.human",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.loi_phu.passive_01.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.talisman.loi_phu.passive_01.immortal.a",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.loi_phu.passive_01.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.talisman.loi_phu.passive_01.immortal.b",
+          "school": "talisman"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.talisman.loi_phu.passive_02",
+      "school": "talisman",
+      "branch": "loi_phu",
+      "slot": "passive_02",
+      "name": "Dưỡng Văn Dẫn Điện",
+      "nodes": [
+        {
+          "id": "tmb.skill.talisman.loi_phu.passive_02.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.loi_phu.passive_02.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.talisman.loi_phu.passive_02.human",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.loi_phu.passive_02.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.talisman.loi_phu.passive_02.human",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.loi_phu.passive_02.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.talisman.loi_phu.passive_02.immortal.a",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.loi_phu.passive_02.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.talisman.loi_phu.passive_02.immortal.b",
+          "school": "talisman"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.talisman.loi_phu.passive_03",
+      "school": "talisman",
+      "branch": "loi_phu",
+      "slot": "passive_03",
+      "name": "Thiên Lôi Tàng Kình",
+      "nodes": [
+        {
+          "id": "tmb.skill.talisman.loi_phu.passive_03.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.loi_phu.passive_03.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.talisman.loi_phu.passive_03.human",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.loi_phu.passive_03.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.talisman.loi_phu.passive_03.human",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.loi_phu.passive_03.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.talisman.loi_phu.passive_03.immortal.a",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.loi_phu.passive_03.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.talisman.loi_phu.passive_03.immortal.b",
+          "school": "talisman"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.talisman.loi_phu.passive_04",
+      "school": "talisman",
+      "branch": "loi_phu",
+      "slot": "passive_04",
+      "name": "Lôi Quang Hộ Mạch",
+      "nodes": [
+        {
+          "id": "tmb.skill.talisman.loi_phu.passive_04.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.loi_phu.passive_04.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.talisman.loi_phu.passive_04.human",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.loi_phu.passive_04.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.talisman.loi_phu.passive_04.human",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.loi_phu.passive_04.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.talisman.loi_phu.passive_04.immortal.a",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.loi_phu.passive_04.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.talisman.loi_phu.passive_04.immortal.b",
+          "school": "talisman"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.talisman.loi_phu.passive_05",
+      "school": "talisman",
+      "branch": "loi_phu",
+      "slot": "passive_05",
+      "name": "Cửu Tiêu Chân Ý",
+      "nodes": [
+        {
+          "id": "tmb.skill.talisman.loi_phu.passive_05.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.loi_phu.passive_05.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.talisman.loi_phu.passive_05.human",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.loi_phu.passive_05.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.talisman.loi_phu.passive_05.human",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.loi_phu.passive_05.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.talisman.loi_phu.passive_05.immortal.a",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.loi_phu.passive_05.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.talisman.loi_phu.passive_05.immortal.b",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.loi_phu.passive_05.rare_passive.a",
+          "tier": "divine",
+          "lineage": "rare_a",
+          "parent": "tmb.skill.talisman.loi_phu.passive_05.divine.a",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.loi_phu.passive_05.rare_passive.b",
+          "tier": "divine",
+          "lineage": "rare_b",
+          "parent": "tmb.skill.talisman.loi_phu.passive_05.divine.b",
+          "school": "talisman"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.talisman.loi_phu.innate",
+      "school": "talisman",
+      "branch": "loi_phu",
+      "slot": "innate",
+      "name": "Lôi Phù Bản Mệnh",
+      "nodes": [
+        {
+          "id": "tmb.skill.talisman.loi_phu.innate.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.loi_phu.innate.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.talisman.loi_phu.innate.human",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.loi_phu.innate.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.talisman.loi_phu.innate.human",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.loi_phu.innate.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.talisman.loi_phu.innate.immortal.a",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.loi_phu.innate.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.talisman.loi_phu.innate.immortal.b",
+          "school": "talisman"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.talisman.hoa_phu.active_01",
+      "school": "talisman",
+      "branch": "hoa_phu",
+      "slot": "active_01",
+      "name": "Xích Diệm Khai Văn",
+      "nodes": [
+        {
+          "id": "tmb.skill.talisman.hoa_phu.active_01.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.hoa_phu.active_01.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.talisman.hoa_phu.active_01.human",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.hoa_phu.active_01.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.talisman.hoa_phu.active_01.human",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.hoa_phu.active_01.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.talisman.hoa_phu.active_01.immortal.a",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.hoa_phu.active_01.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.talisman.hoa_phu.active_01.immortal.b",
+          "school": "talisman"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.talisman.hoa_phu.active_02",
+      "school": "talisman",
+      "branch": "hoa_phu",
+      "slot": "active_02",
+      "name": "Liên Diệm Phần Giới",
+      "nodes": [
+        {
+          "id": "tmb.skill.talisman.hoa_phu.active_02.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.hoa_phu.active_02.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.talisman.hoa_phu.active_02.human",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.hoa_phu.active_02.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.talisman.hoa_phu.active_02.human",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.hoa_phu.active_02.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.talisman.hoa_phu.active_02.immortal.a",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.hoa_phu.active_02.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.talisman.hoa_phu.active_02.immortal.b",
+          "school": "talisman"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.talisman.hoa_phu.active_03",
+      "school": "talisman",
+      "branch": "hoa_phu",
+      "slot": "active_03",
+      "name": "Hỏa Tâm Ngưng Phù",
+      "nodes": [
+        {
+          "id": "tmb.skill.talisman.hoa_phu.active_03.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.hoa_phu.active_03.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.talisman.hoa_phu.active_03.human",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.hoa_phu.active_03.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.talisman.hoa_phu.active_03.human",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.hoa_phu.active_03.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.talisman.hoa_phu.active_03.immortal.a",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.hoa_phu.active_03.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.talisman.hoa_phu.active_03.immortal.b",
+          "school": "talisman"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.talisman.hoa_phu.active_04",
+      "school": "talisman",
+      "branch": "hoa_phu",
+      "slot": "active_04",
+      "name": "Chu Tước Hồi Hoàn",
+      "nodes": [
+        {
+          "id": "tmb.skill.talisman.hoa_phu.active_04.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.hoa_phu.active_04.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.talisman.hoa_phu.active_04.human",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.hoa_phu.active_04.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.talisman.hoa_phu.active_04.human",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.hoa_phu.active_04.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.talisman.hoa_phu.active_04.immortal.a",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.hoa_phu.active_04.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.talisman.hoa_phu.active_04.immortal.b",
+          "school": "talisman"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.talisman.hoa_phu.ultimate",
+      "school": "talisman",
+      "branch": "hoa_phu",
+      "slot": "ultimate",
+      "name": "Vạn Phù Phần Thiên",
+      "nodes": [
+        {
+          "id": "tmb.skill.talisman.hoa_phu.ultimate.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.hoa_phu.ultimate.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.talisman.hoa_phu.ultimate.human",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.hoa_phu.ultimate.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.talisman.hoa_phu.ultimate.human",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.hoa_phu.ultimate.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.talisman.hoa_phu.ultimate.immortal.a",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.hoa_phu.ultimate.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.talisman.hoa_phu.ultimate.immortal.b",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.hoa_phu.ultimate.rare.a",
+          "tier": "divine",
+          "lineage": "rare_a",
+          "parent": "tmb.skill.talisman.hoa_phu.ultimate.divine.a",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.hoa_phu.ultimate.rare.b",
+          "tier": "divine",
+          "lineage": "rare_b",
+          "parent": "tmb.skill.talisman.hoa_phu.ultimate.divine.b",
+          "school": "talisman"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.talisman.hoa_phu.passive_01",
+      "school": "talisman",
+      "branch": "hoa_phu",
+      "slot": "passive_01",
+      "name": "Hỏa Văn Tĩnh Tâm",
+      "nodes": [
+        {
+          "id": "tmb.skill.talisman.hoa_phu.passive_01.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.hoa_phu.passive_01.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.talisman.hoa_phu.passive_01.human",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.hoa_phu.passive_01.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.talisman.hoa_phu.passive_01.human",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.hoa_phu.passive_01.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.talisman.hoa_phu.passive_01.immortal.a",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.hoa_phu.passive_01.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.talisman.hoa_phu.passive_01.immortal.b",
+          "school": "talisman"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.talisman.hoa_phu.passive_02",
+      "school": "talisman",
+      "branch": "hoa_phu",
+      "slot": "passive_02",
+      "name": "Dưỡng Diệm Quy Nguyên",
+      "nodes": [
+        {
+          "id": "tmb.skill.talisman.hoa_phu.passive_02.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.hoa_phu.passive_02.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.talisman.hoa_phu.passive_02.human",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.hoa_phu.passive_02.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.talisman.hoa_phu.passive_02.human",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.hoa_phu.passive_02.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.talisman.hoa_phu.passive_02.immortal.a",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.hoa_phu.passive_02.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.talisman.hoa_phu.passive_02.immortal.b",
+          "school": "talisman"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.talisman.hoa_phu.passive_03",
+      "school": "talisman",
+      "branch": "hoa_phu",
+      "slot": "passive_03",
+      "name": "Xích Viêm Liễm Khí",
+      "nodes": [
+        {
+          "id": "tmb.skill.talisman.hoa_phu.passive_03.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.hoa_phu.passive_03.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.talisman.hoa_phu.passive_03.human",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.hoa_phu.passive_03.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.talisman.hoa_phu.passive_03.human",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.hoa_phu.passive_03.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.talisman.hoa_phu.passive_03.immortal.a",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.hoa_phu.passive_03.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.talisman.hoa_phu.passive_03.immortal.b",
+          "school": "talisman"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.talisman.hoa_phu.passive_04",
+      "school": "talisman",
+      "branch": "hoa_phu",
+      "slot": "passive_04",
+      "name": "Hỏa Phù Hộ Mạch",
+      "nodes": [
+        {
+          "id": "tmb.skill.talisman.hoa_phu.passive_04.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.hoa_phu.passive_04.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.talisman.hoa_phu.passive_04.human",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.hoa_phu.passive_04.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.talisman.hoa_phu.passive_04.human",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.hoa_phu.passive_04.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.talisman.hoa_phu.passive_04.immortal.a",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.hoa_phu.passive_04.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.talisman.hoa_phu.passive_04.immortal.b",
+          "school": "talisman"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.talisman.hoa_phu.passive_05",
+      "school": "talisman",
+      "branch": "hoa_phu",
+      "slot": "passive_05",
+      "name": "Chu Tước Chân Ý",
+      "nodes": [
+        {
+          "id": "tmb.skill.talisman.hoa_phu.passive_05.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.hoa_phu.passive_05.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.talisman.hoa_phu.passive_05.human",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.hoa_phu.passive_05.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.talisman.hoa_phu.passive_05.human",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.hoa_phu.passive_05.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.talisman.hoa_phu.passive_05.immortal.a",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.hoa_phu.passive_05.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.talisman.hoa_phu.passive_05.immortal.b",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.hoa_phu.passive_05.rare_passive.a",
+          "tier": "divine",
+          "lineage": "rare_a",
+          "parent": "tmb.skill.talisman.hoa_phu.passive_05.divine.a",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.hoa_phu.passive_05.rare_passive.b",
+          "tier": "divine",
+          "lineage": "rare_b",
+          "parent": "tmb.skill.talisman.hoa_phu.passive_05.divine.b",
+          "school": "talisman"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.talisman.hoa_phu.innate",
+      "school": "talisman",
+      "branch": "hoa_phu",
+      "slot": "innate",
+      "name": "Hỏa Phù Bản Mệnh",
+      "nodes": [
+        {
+          "id": "tmb.skill.talisman.hoa_phu.innate.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.hoa_phu.innate.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.talisman.hoa_phu.innate.human",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.hoa_phu.innate.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.talisman.hoa_phu.innate.human",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.hoa_phu.innate.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.talisman.hoa_phu.innate.immortal.a",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.hoa_phu.innate.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.talisman.hoa_phu.innate.immortal.b",
+          "school": "talisman"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.talisman.phong_an_phu.active_01",
+      "school": "talisman",
+      "branch": "phong_an_phu",
+      "slot": "active_01",
+      "name": "Phong Giới Truy Dấu",
+      "nodes": [
+        {
+          "id": "tmb.skill.talisman.phong_an_phu.active_01.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.phong_an_phu.active_01.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.talisman.phong_an_phu.active_01.human",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.phong_an_phu.active_01.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.talisman.phong_an_phu.active_01.human",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.phong_an_phu.active_01.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.talisman.phong_an_phu.active_01.immortal.a",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.phong_an_phu.active_01.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.talisman.phong_an_phu.active_01.immortal.b",
+          "school": "talisman"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.talisman.phong_an_phu.active_02",
+      "school": "talisman",
+      "branch": "phong_an_phu",
+      "slot": "active_02",
+      "name": "Thái Huyền Khép Ấn",
+      "nodes": [
+        {
+          "id": "tmb.skill.talisman.phong_an_phu.active_02.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.phong_an_phu.active_02.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.talisman.phong_an_phu.active_02.human",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.phong_an_phu.active_02.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.talisman.phong_an_phu.active_02.human",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.phong_an_phu.active_02.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.talisman.phong_an_phu.active_02.immortal.a",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.phong_an_phu.active_02.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.talisman.phong_an_phu.active_02.immortal.b",
+          "school": "talisman"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.talisman.phong_an_phu.active_03",
+      "school": "talisman",
+      "branch": "phong_an_phu",
+      "slot": "active_03",
+      "name": "Tẩy Trần Giải Phù",
+      "nodes": [
+        {
+          "id": "tmb.skill.talisman.phong_an_phu.active_03.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.phong_an_phu.active_03.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.talisman.phong_an_phu.active_03.human",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.phong_an_phu.active_03.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.talisman.phong_an_phu.active_03.human",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.phong_an_phu.active_03.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.talisman.phong_an_phu.active_03.immortal.a",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.phong_an_phu.active_03.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.talisman.phong_an_phu.active_03.immortal.b",
+          "school": "talisman"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.talisman.phong_an_phu.active_04",
+      "school": "talisman",
+      "branch": "phong_an_phu",
+      "slot": "active_04",
+      "name": "Hộ Mệnh Lưu Văn",
+      "nodes": [
+        {
+          "id": "tmb.skill.talisman.phong_an_phu.active_04.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.phong_an_phu.active_04.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.talisman.phong_an_phu.active_04.human",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.phong_an_phu.active_04.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.talisman.phong_an_phu.active_04.human",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.phong_an_phu.active_04.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.talisman.phong_an_phu.active_04.immortal.a",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.phong_an_phu.active_04.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.talisman.phong_an_phu.active_04.immortal.b",
+          "school": "talisman"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.talisman.phong_an_phu.ultimate",
+      "school": "talisman",
+      "branch": "phong_an_phu",
+      "slot": "ultimate",
+      "name": "Thái Huyền Phong Giới Phù",
+      "nodes": [
+        {
+          "id": "tmb.skill.talisman.phong_an_phu.ultimate.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.phong_an_phu.ultimate.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.talisman.phong_an_phu.ultimate.human",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.phong_an_phu.ultimate.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.talisman.phong_an_phu.ultimate.human",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.phong_an_phu.ultimate.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.talisman.phong_an_phu.ultimate.immortal.a",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.phong_an_phu.ultimate.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.talisman.phong_an_phu.ultimate.immortal.b",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.phong_an_phu.ultimate.rare.a",
+          "tier": "divine",
+          "lineage": "rare_a",
+          "parent": "tmb.skill.talisman.phong_an_phu.ultimate.divine.a",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.phong_an_phu.ultimate.rare.b",
+          "tier": "divine",
+          "lineage": "rare_b",
+          "parent": "tmb.skill.talisman.phong_an_phu.ultimate.divine.b",
+          "school": "talisman"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.talisman.phong_an_phu.passive_01",
+      "school": "talisman",
+      "branch": "phong_an_phu",
+      "slot": "passive_01",
+      "name": "Tĩnh Giới Tĩnh Tâm",
+      "nodes": [
+        {
+          "id": "tmb.skill.talisman.phong_an_phu.passive_01.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.phong_an_phu.passive_01.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.talisman.phong_an_phu.passive_01.human",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.phong_an_phu.passive_01.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.talisman.phong_an_phu.passive_01.human",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.phong_an_phu.passive_01.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.talisman.phong_an_phu.passive_01.immortal.a",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.phong_an_phu.passive_01.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.talisman.phong_an_phu.passive_01.immortal.b",
+          "school": "talisman"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.talisman.phong_an_phu.passive_02",
+      "school": "talisman",
+      "branch": "phong_an_phu",
+      "slot": "passive_02",
+      "name": "Dưỡng Phù Quy Nguyên",
+      "nodes": [
+        {
+          "id": "tmb.skill.talisman.phong_an_phu.passive_02.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.phong_an_phu.passive_02.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.talisman.phong_an_phu.passive_02.human",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.phong_an_phu.passive_02.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.talisman.phong_an_phu.passive_02.human",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.phong_an_phu.passive_02.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.talisman.phong_an_phu.passive_02.immortal.a",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.phong_an_phu.passive_02.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.talisman.phong_an_phu.passive_02.immortal.b",
+          "school": "talisman"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.talisman.phong_an_phu.passive_03",
+      "school": "talisman",
+      "branch": "phong_an_phu",
+      "slot": "passive_03",
+      "name": "Lưu Văn Liễm Tức",
+      "nodes": [
+        {
+          "id": "tmb.skill.talisman.phong_an_phu.passive_03.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.phong_an_phu.passive_03.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.talisman.phong_an_phu.passive_03.human",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.phong_an_phu.passive_03.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.talisman.phong_an_phu.passive_03.human",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.phong_an_phu.passive_03.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.talisman.phong_an_phu.passive_03.immortal.a",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.phong_an_phu.passive_03.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.talisman.phong_an_phu.passive_03.immortal.b",
+          "school": "talisman"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.talisman.phong_an_phu.passive_04",
+      "school": "talisman",
+      "branch": "phong_an_phu",
+      "slot": "passive_04",
+      "name": "Phong Giới Hộ Mạch",
+      "nodes": [
+        {
+          "id": "tmb.skill.talisman.phong_an_phu.passive_04.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.phong_an_phu.passive_04.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.talisman.phong_an_phu.passive_04.human",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.phong_an_phu.passive_04.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.talisman.phong_an_phu.passive_04.human",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.phong_an_phu.passive_04.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.talisman.phong_an_phu.passive_04.immortal.a",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.phong_an_phu.passive_04.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.talisman.phong_an_phu.passive_04.immortal.b",
+          "school": "talisman"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.talisman.phong_an_phu.passive_05",
+      "school": "talisman",
+      "branch": "phong_an_phu",
+      "slot": "passive_05",
+      "name": "Thái Huyền Chân Ý",
+      "nodes": [
+        {
+          "id": "tmb.skill.talisman.phong_an_phu.passive_05.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.phong_an_phu.passive_05.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.talisman.phong_an_phu.passive_05.human",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.phong_an_phu.passive_05.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.talisman.phong_an_phu.passive_05.human",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.phong_an_phu.passive_05.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.talisman.phong_an_phu.passive_05.immortal.a",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.phong_an_phu.passive_05.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.talisman.phong_an_phu.passive_05.immortal.b",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.phong_an_phu.passive_05.rare_passive.a",
+          "tier": "divine",
+          "lineage": "rare_a",
+          "parent": "tmb.skill.talisman.phong_an_phu.passive_05.divine.a",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.phong_an_phu.passive_05.rare_passive.b",
+          "tier": "divine",
+          "lineage": "rare_b",
+          "parent": "tmb.skill.talisman.phong_an_phu.passive_05.divine.b",
+          "school": "talisman"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.talisman.phong_an_phu.innate",
+      "school": "talisman",
+      "branch": "phong_an_phu",
+      "slot": "innate",
+      "name": "Phong Ấn Bản Mệnh",
+      "nodes": [
+        {
+          "id": "tmb.skill.talisman.phong_an_phu.innate.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.phong_an_phu.innate.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.talisman.phong_an_phu.innate.human",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.phong_an_phu.innate.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.talisman.phong_an_phu.innate.human",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.phong_an_phu.innate.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.talisman.phong_an_phu.innate.immortal.a",
+          "school": "talisman"
+        },
+        {
+          "id": "tmb.skill.talisman.phong_an_phu.innate.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.talisman.phong_an_phu.innate.immortal.b",
+          "school": "talisman"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    }
+  ],
+  "candidate_source_status": "AUTHENTIC_TALISMAN_CODEX_SOURCE_PENDING",
+  "target_counts": {
+    "skill_nodes": 183,
+    "families": 35,
+    "branches": 3,
+    "human": 35,
+    "immortal": 68,
+    "divine": 80
+  }
+}

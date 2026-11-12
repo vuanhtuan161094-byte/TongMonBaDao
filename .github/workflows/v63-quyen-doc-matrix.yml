@@ -23,6 +23,10 @@ on:
       - 'godot/tests/simulation/v63_s5_palm_skill_test.gd'
       - 'godot/data/presentation/v63_palm_presentation_manifest_v1.json'
       - 'godot/data/combat/v63_palm_registry_extension.json'
+      - 'godot/tests/simulation/v63_s6_talisman_skill_test.gd'
+      - 'godot/data/presentation/v63_talisman_presentation_manifest_v1.json'
+      - 'godot/data/combat/v63_talisman_registry_extension.json'
+      - 'godot/data/combat/v63_talisman_combat_catalog.json'
       - 'godot/data/presentation/v63_dual_blade_presentation_manifest_v1.json'
       - 'godot/data/combat/v63_dual_blade_registry_extension.json'
       - 'godot/tests/simulation/v63_d1_content_registry_test.gd'
@@ -51,6 +55,9 @@ on:
       - 'godot/data/presentation/v63_palm_presentation_manifest_v1.json'
       - 'godot/data/combat/v63_palm_registry_extension.json'
       - 'godot/tests/simulation/v63_s5_palm_skill_test.gd'
+      - 'godot/tests/simulation/v63_s6_talisman_skill_test.gd'
+      - 'godot/data/presentation/v63_talisman_presentation_manifest_v1.json'
+      - 'godot/data/combat/v63_talisman_registry_extension.json'
       - 'godot/data/combat/v63_content_registry.json'
       - 'godot/tests/simulation/v65_poison_combat_contract_test.gd'
       - 'godot/tests/simulation/skill_all_catalogue_integrity_test.gd'
@@ -128,7 +135,8 @@ jobs:
             res://tests/simulation/v63_s2_blade_skill_test.gd \
              res://tests/simulation/v63_s3_spear_skill_test.gd \
              res://tests/simulation/v63_s4_dual_blade_skill_test.gd \
-             res://tests/simulation/v63_s5_palm_skill_test.gd; do
+             res://tests/simulation/v63_s5_palm_skill_test.gd \
+             res://tests/simulation/v63_s6_talisman_skill_test.gd; do
             godot --headless --path godot --check-only --script "$script"
           done
       - name: V63 D1 registry and all-off release gate regression
@@ -166,6 +174,11 @@ jobs:
         run: |
           set -o pipefail
           godot --headless --path godot -s res://tests/simulation/v63_s5_palm_skill_test.gd 2>&1 | tee /tmp/v63-s5-palm.log
+      - name: V63 S6 Phù candidate Combat V2 gameplay; VFX production held
+        shell: bash
+        run: |
+          set -o pipefail
+          godot --headless --path godot -s res://tests/simulation/v63_s6_talisman_skill_test.gd 2>&1 | tee /tmp/v63-s6-talisman.log
       - name: 183 Quyền per-ID Combat V2 handoff
         shell: bash
         run: |
@@ -233,6 +246,7 @@ jobs:
             /tmp/v63-s3-spear.log
             /tmp/v63-s4-dual-blade.log
             /tmp/v63-s5-palm.log
+            /tmp/v63-s6-talisman.log
           if-no-files-found: ignore
 
   publish-exact-sha-result:

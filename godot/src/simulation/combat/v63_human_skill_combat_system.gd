@@ -162,6 +162,12 @@ static func skill_definitions() -> Dictionary:
             result[str(row.id)] = row.duplicate(true)
     else:
         all_loaded = false
+    var talisman := V63TalismanSkillCombatSystem.load_catalogue()
+    if bool(talisman.get("ok",false)):
+        for row in talisman.data.skills:
+            result[str(row.id)] = row.duplicate(true)
+    else:
+        all_loaded = false
     if all_loaded:
         _all_skill_definition_cache = result.duplicate(true)
     return result
@@ -198,6 +204,9 @@ static func branch_definitions() -> Dictionary:
     var palm := V63PalmSkillCombatSystem.branch_definitions()
     for branch_id in palm.keys():
         result[str(branch_id)] = palm[branch_id].duplicate(true)
+    var talisman := V63TalismanSkillCombatSystem.branch_definitions()
+    for branch_id in talisman.keys():
+        result[str(branch_id)] = talisman[branch_id].duplicate(true)
     return result
 
 static func boss_definition(boss_id: String) -> Dictionary:
@@ -232,6 +241,8 @@ static func learn_skill(state: SimulationState, disciple: DiscipleState, skill_i
         return V63DualBladeSkillCombatSystem.can_learn(definition)
     if str(definition.get("school", "")) == "palm":
         return V63PalmSkillCombatSystem.can_learn(definition)
+    if str(definition.get("school", "")) == "talisman":
+        return V63TalismanSkillCombatSystem.can_learn(definition)
     if definition.is_empty() or not bool(definition.get("archivable",false)):
         return _failure("unknown_or_derived_human_skill")
     var codex_id := str(definition.get("source_codex_id",""))
@@ -310,6 +321,7 @@ static func attach_disciple_loadout(state: SimulationState, actor: Dictionary, p
     actor["v63_spear_combat_enabled"] = V63FeatureGates.is_enabled("spear_skill_combat",preview_overrides)
     actor["v63_dual_blade_combat_enabled"] = V63FeatureGates.is_enabled("dual_blade_skill_combat",preview_overrides)
     actor["v63_palm_combat_enabled"] = V63FeatureGates.is_enabled("palm_skill_combat",preview_overrides)
+    actor["v63_talisman_combat_enabled"] = V63FeatureGates.is_enabled("talisman_skill_combat",preview_overrides)
     var definitions := skill_definitions()
     var skills: Array = []
     var passives: Array = []
@@ -506,7 +518,10 @@ static func effective_heal_factor(actor: Dictionary) -> float:
     return factor
 
 static func _root_scaled_passive_modifiers(actor: Dictionary, skill_id: String) -> Dictionary:
-    var modifiers: Dictionary = skill_definition(skill_id).get("passive_modifiers", {}).duplicate(true)
+    var definition := skill_definition(skill_id)
+    if str(definition.get("school", "")) == "talisman" and not bool(actor.get("v63_talisman_combat_enabled", false)):
+        return {}
+    var modifiers: Dictionary = definition.get("passive_modifiers", {}).duplicate(true)
     var factor := V63SpiritualRootEvaluator.attached_skill_effect_factor(actor, skill_id)
     if factor <= 1.0:
         return modifiers
@@ -536,12 +551,17 @@ static func preferred_offensive_range(actor: Dictionary) -> float:
     basic = maxf(basic,V63SpearSkillCombatSystem.preferred_offensive_range(actor))
     basic = maxf(basic,V63DualBladeSkillCombatSystem.preferred_offensive_range(actor))
     basic = maxf(basic,V63PalmSkillCombatSystem.preferred_offensive_range(actor))
+    basic = maxf(basic,V63TalismanSkillCombatSystem.preferred_offensive_range(actor))
     if str(actor.get("side", "")) != "disciple" or str(actor.get("role", "")) not in ["mage", "ranged"]:
         return basic
     if not bool(actor.get("v63_combat_enabled", false)):
         return basic
     for raw_id in actor.get("v63_skill_loadout", []):
         var definition := skill_definition(str(raw_id))
+        # A saved or preview actor must not retain ranged positioning from a
+        # candidate school while that school's runtime gate is OFF.
+        if str(definition.get("school", "")) == "talisman" and not V63TalismanSkillCombatSystem.can_cast(actor, str(raw_id)):
+            continue
         if str(definition.get("slot", "")) not in ["active", "ultimate"]:
             continue
         if str(definition.get("effect", "")) in ["heal", "cleanse", "guard", "mobility"]:
@@ -572,6 +592,8 @@ static func _try_human_cast(battle: MapBattleV2, actor: Dictionary, enemy: Dicti
         if str(skill.get("school","")) == "dual_blade" and not V63DualBladeSkillCombatSystem.can_cast(actor,id):
             continue
         if str(skill.get("school","")) == "palm" and not V63PalmSkillCombatSystem.can_cast(actor,id):
+            continue
+        if str(skill.get("school","")) == "talisman" and not V63TalismanSkillCombatSystem.can_cast(actor,id):
             continue
         if skill.is_empty() or slot not in ["active","ultimate","mobility"] or battle.now < float(ready.get(id,0.0)):
             continue
@@ -809,6 +831,9 @@ static func release_cast(battle: MapBattleV2, cast: Dictionary, caster: Dictiona
     if V63PalmSkillCombatSystem.is_palm_skill(skill_id):
         V63PalmSkillCombatSystem.release_cast(battle,cast,caster)
         return
+    if V63TalismanSkillCombatSystem.is_talisman_skill(skill_id):
+        V63TalismanSkillCombatSystem.release_cast(battle,cast,caster)
+        return
     if V63DivineSkillCombatSystem.is_divine_skill(skill_id) or V63DivineSkillCombatSystem.is_divine_boss(str(cast.get("v63_boss_id", ""))):
         V63DivineSkillCombatSystem.release_cast(battle, cast, caster)
         return
@@ -946,6 +971,12 @@ static func release_cast_base(battle: MapBattleV2, cast: Dictionary, caster: Dic
         meaningful = meaningful or damage > 0.0 or effect in ["guard", "cleanse"] \
             or (not poison_school and str(definition.get("school","")) != "blade" and effect in ["mark", "poison"]) or float(target.hp) > before
         battle._event("v63_skill_hit",{"caster":str(caster.id),"target":str(target.id),"skill_id":id,"generation":generation,"lineage":lineage,"effect":effect,"damage":damage,"caster_hp_before":caster_before,"caster_hp_after":float(caster.hp),"target_hp_before":before,"target_hp_after":float(target.hp)})
+        if str(definition.get("school", "")) == "talisman":
+            var owner_mark: Dictionary = target.get("v63_marks", {}).get(str(caster.get("id", "")), {})
+            if effect == "mark" and str(owner_mark.get("skill_id", "")) == id:
+                battle._event("v63_talisman_mark_applied",{"caster":str(caster.id),"target":str(target.id),"owner_id":str(caster.id),"skill_id":id,"damage_factor":float(owner_mark.get("damage_factor",1.0)),"until":float(owner_mark.get("until",battle.now)),"shape":str(definition.get("shape","")),"target_limit":int(definition.get("target_limit",1))})
+            elif damage > 0.0:
+                battle._event("v63_talisman_hit",{"caster":str(caster.id),"target":str(target.id),"skill_id":id,"damage":damage,"element":str(cast.get("element","")),"shape":str(definition.get("shape","")),"target_limit":int(definition.get("target_limit",1))})
         if effect == "mark" and str(definition.get("branch", "")) == "huyet_quyen" and float(target.hp) > 0.0:
             record_blood_mark(battle, caster, target, id)
         if damage > 0.0:

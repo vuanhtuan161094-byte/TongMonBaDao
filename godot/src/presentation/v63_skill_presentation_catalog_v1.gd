@@ -10,6 +10,9 @@ const DUAL_BLADE_PRESENTATION_EXTENSION_PATH := "res://data/presentation/v63_dua
 const PALM_CATALOG_PATH := "res://data/combat/v63_palm_combat_catalog.json"
 const PALM_REGISTRY_EXTENSION_PATH := "res://data/combat/v63_palm_registry_extension.json"
 const PALM_PRESENTATION_EXTENSION_PATH := "res://data/presentation/v63_palm_presentation_manifest_v1.json"
+const TALISMAN_CATALOG_PATH := "res://data/combat/v63_talisman_combat_catalog.json"
+const TALISMAN_REGISTRY_EXTENSION_PATH := "res://data/combat/v63_talisman_registry_extension.json"
+const TALISMAN_PRESENTATION_EXTENSION_PATH := "res://data/presentation/v63_talisman_presentation_manifest_v1.json"
 const CATALOGUE_PATHS := {
 	"human":"res://data/combat/v63_human_combat_catalog.json",
 	"immortal":"res://data/combat/v63_immortal_combat_catalog.json",
@@ -127,6 +130,44 @@ static func load_authoring_sources() -> Dictionary:
 				else:
 					entries[id] = palm_entries[id].duplicate(true)
 			manifest["entries"] = entries
+	var talisman_catalogue_result := _read_json(TALISMAN_CATALOG_PATH)
+	var talisman_registry_result := _read_json(TALISMAN_REGISTRY_EXTENSION_PATH)
+	var talisman_manifest_result := _read_json(TALISMAN_PRESENTATION_EXTENSION_PATH)
+	for result in [talisman_catalogue_result, talisman_registry_result, talisman_manifest_result]:
+		if not bool(result.get("ok", false)):
+			errors.append_array(result.get("errors", []))
+	if bool(talisman_catalogue_result.get("ok", false)) and bool(talisman_registry_result.get("ok", false)) and bool(talisman_manifest_result.get("ok", false)):
+		var talisman_catalogue: Dictionary = talisman_catalogue_result.get("data", {})
+		var talisman_registry_extension: Dictionary = talisman_registry_result.get("data", {})
+		var talisman_manifest_extension: Dictionary = talisman_manifest_result.get("data", {})
+		var talisman_errors := _validate_talisman_extensions(talisman_catalogue, talisman_registry_extension, talisman_manifest_extension)
+		errors.append_array(talisman_errors)
+		if talisman_errors.is_empty():
+			catalogues["talisman"] = talisman_catalogue
+			var school_rows: Array = registry.get("schools", [])
+			var path_rows: Array = registry.get("paths", [])
+			var family_rows: Array = registry.get("families", [])
+			school_rows.append(talisman_registry_extension.get("school", {}).duplicate(true))
+			path_rows.append_array(talisman_registry_extension.get("paths", []).duplicate(true))
+			family_rows.append_array(talisman_registry_extension.get("families", []).duplicate(true))
+			registry["schools"] = school_rows
+			registry["paths"] = path_rows
+			registry["families"] = family_rows
+			registry["school_count"] = school_rows.size()
+			registry["branch_count"] = path_rows.size()
+			registry["skill_family_count"] = family_rows.size()
+			registry["skills_s6_candidate_count"] = 183
+			registry["skills_s6_candidate_source_status"] = "AUTHENTIC_TALISMAN_CODEX_SOURCE_PENDING"
+			registry["total_runtime_candidate_nodes"] = int(registry.get("total_runtime_candidate_nodes", 0)) + 183
+			registry["total_authored_runtime_nodes"] = int(registry.get("total_authored_runtime_nodes", 0)) + 183
+			var entries: Dictionary = manifest.get("entries", {}).duplicate(true)
+			var talisman_entries: Dictionary = talisman_manifest_extension.get("entries", {})
+			for id in talisman_entries.keys():
+				if entries.has(id):
+					errors.append("talisman_presentation_id_collision:" + str(id))
+				else:
+					entries[id] = talisman_entries[id].duplicate(true)
+			manifest["entries"] = entries
 	return {
 		"ok":errors.is_empty(),
 		"errors":errors,
@@ -207,6 +248,80 @@ static func _validate_palm_extensions(catalogue: Dictionary, registry_extension:
 			errors.append("palm_vfx_provenance_invalid:" + id)
 	if skill_ids.size() != 183 or registry_nodes.size() != 183:
 		errors.append("palm_join_total_invalid")
+	return errors
+
+static func _validate_talisman_extensions(catalogue: Dictionary, registry_extension: Dictionary, presentation_extension: Dictionary) -> Array[String]:
+	var errors: Array[String] = []
+	errors.append_array(V63TalismanSkillCombatSystem.validate_catalogue(catalogue))
+	if int(registry_extension.get("schema_version", -1)) != 1 or str(registry_extension.get("release_gate", "")) != "OFF":
+		errors.append("talisman_registry_extension_must_remain_off")
+	if int(presentation_extension.get("schema_version", -1)) != 1 or str(presentation_extension.get("release_gate", "")) != "OFF":
+		errors.append("talisman_presentation_extension_must_remain_off")
+	var base: Dictionary = registry_extension.get("base_registry", {})
+	var presentation_base: Dictionary = presentation_extension.get("base_registry", {})
+	if str(base.get("path", "")) != REGISTRY_PATH or str(presentation_base.get("path", "")) != REGISTRY_PATH:
+		errors.append("talisman_base_registry_path_mismatch")
+	var actual_base_hash := git_blob_sha1(REGISTRY_PATH)
+	if actual_base_hash.is_empty() or str(base.get("git_blob_sha", "")) != actual_base_hash or str(presentation_base.get("git_blob_sha", "")) != actual_base_hash:
+		errors.append("talisman_base_registry_pin_mismatch")
+	var source: Dictionary = registry_extension.get("source_catalog", {})
+	var presentation_source: Dictionary = presentation_extension.get("source_catalog", {})
+	if str(source.get("path", "")) != TALISMAN_CATALOG_PATH or str(presentation_source.get("path", "")) != TALISMAN_CATALOG_PATH:
+		errors.append("talisman_catalogue_pin_path_mismatch")
+	var actual_catalogue_hash := git_blob_sha1(TALISMAN_CATALOG_PATH)
+	if actual_catalogue_hash.is_empty() or str(source.get("git_blob_sha", "")) != actual_catalogue_hash or str(presentation_source.get("git_blob_sha", "")) != actual_catalogue_hash:
+		errors.append("talisman_catalogue_pin_mismatch")
+	var extension_source: Dictionary = presentation_extension.get("registry_extension", {})
+	var actual_extension_hash := git_blob_sha1(TALISMAN_REGISTRY_EXTENSION_PATH)
+	if str(extension_source.get("path", "")) != TALISMAN_REGISTRY_EXTENSION_PATH or str(extension_source.get("git_blob_sha", "")) != actual_extension_hash:
+		errors.append("talisman_registry_extension_pin_mismatch")
+	if str(registry_extension.get("extension_id", "")) != "tmb.v63.registry_extension.s6_talisman" or str(presentation_extension.get("extension_id", "")) != "tmb.v63.presentation_extension.s6_talisman":
+		errors.append("talisman_extension_identity_invalid")
+	var paths: Variant = registry_extension.get("paths", null)
+	var families: Variant = registry_extension.get("families", null)
+	var skills: Array = catalogue.get("skills", [])
+	var entries: Variant = presentation_extension.get("entries", null)
+	if not (paths is Array) or paths.size() != 3 or not (families is Array) or families.size() != 35 or not (entries is Dictionary) or entries.size() != 183:
+		errors.append("talisman_extension_counts_invalid")
+		return errors
+	var registry_nodes: Dictionary = {}
+	var family_ids: Dictionary = {}
+	for family in families:
+		var family_id := str(family.get("id", ""))
+		family_ids[family_id] = true
+		for node in family.get("nodes", []):
+			var node_id := str(node.get("id", ""))
+			if registry_nodes.has(node_id):
+				errors.append("talisman_registry_node_duplicate:" + node_id)
+			registry_nodes[node_id] = node
+	var skill_ids: Dictionary = {}
+	for skill in skills:
+		var id := str(skill.get("id", ""))
+		var entry: Variant = entries.get(id, null)
+		if skill_ids.has(id) or not (entry is Dictionary):
+			errors.append("talisman_presentation_join_missing:" + id)
+			continue
+		skill_ids[id] = true
+		var identity: Dictionary = entry.get("identity", {})
+		var branch := str(skill.get("branch", ""))
+		var branch_lore := "tmb.lore.branch.talisman." + (branch if not branch.is_empty() else "common")
+		if not registry_nodes.has(id) or not family_ids.has(str(skill.get("family_id", ""))):
+			errors.append("talisman_registry_join_missing:" + id)
+		if str(identity.get("skill_id", "")) != id or str(identity.get("family_id", "")) != str(skill.get("family_id", "")) or str(identity.get("school", "")) != "talisman" or str(identity.get("branch", "")) != branch:
+			errors.append("talisman_identity_join_mismatch:" + id)
+		if str(entry.get("school_lore_id", "")) != "tmb.lore.school.talisman" or str(entry.get("branch_lore_id", "")) != branch_lore:
+			errors.append("talisman_lore_link_invalid:" + id)
+		var flavor := str(entry.get("flavor_vi", ""))
+		if flavor.length() < 50 or flavor.length() > 110 or str(entry.get("display_name_vi", "")) != str(skill.get("name", "")):
+			errors.append("talisman_flavor_or_name_invalid:" + id)
+		var availability: Dictionary = entry.get("availability", {})
+		if str(availability.get("status", "")) != "CANDIDATE_GATED_SOURCE_PENDING" or bool(availability.get("archivable", true)) or not str(availability.get("source_codex_id", "")).is_empty():
+			errors.append("talisman_learning_must_remain_blocked:" + id)
+		var vfx: Dictionary = entry.get("vfx", {}).get("production_brief", {})
+		if vfx.get("phases", []).size() != 7 or str(vfx.get("asset_status", "")) != "NOT_PRESENT" or str(vfx.get("render_capture_status", "")) != "NOT_CAPTURED":
+			errors.append("talisman_vfx_provenance_invalid:" + id)
+	if skill_ids.size() != 183 or registry_nodes.size() != 183:
+		errors.append("talisman_join_total_invalid")
 	return errors
 
 static func _validate_dual_blade_extensions(catalogue: Dictionary, registry_extension: Dictionary, presentation_extension: Dictionary) -> Array[String]:
@@ -729,9 +844,9 @@ static func validate_all36_ledger(csv_text: String, catalogues: Dictionary, regi
 			errors.append("all36_unknown_ledger_status:"+key+":"+status)
 		if str(row.get("source_ref","")).strip_edges().is_empty():
 			errors.append("all36_source_reference_missing:"+key)
-	if status_counts.get("EXISTING",0) != 549 or status_counts.get("CANDIDATE_GATED",0) != 915 or status_counts.get("NOT_AUTHORED",0) != 732:
+	if status_counts.get("EXISTING",0) != 549 or status_counts.get("CANDIDATE_GATED",0) != 1098 or status_counts.get("NOT_AUTHORED",0) != 549:
 		errors.append("all36_authorship_counts_mismatch")
-	if runtime_ids.size() != 1464:
+	if runtime_ids.size() != 1647:
 		errors.append("all36_existing_runtime_count_mismatch:"+str(runtime_ids.size()))
 	var actual_runtime_ids := _all_runtime_ids(catalogues)
 	if actual_runtime_ids.size() != runtime_ids.size():
