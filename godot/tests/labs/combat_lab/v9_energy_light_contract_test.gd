@@ -5,6 +5,7 @@ const STAGE = preload("res://labs/combat_lab/combat_lab_v9_light_showcase.tscn")
 const ARENA = preload("res://labs/combat_lab/combat_lab_arena.gd")
 const SWORD_V10 = preload("res://labs/combat_lab/combat_lab_v10_sword_fx.gd")
 const SWORD_V11 = preload("res://labs/combat_lab/combat_lab_v11_sword_fx.gd")
+const SWORD_V12 = preload("res://labs/combat_lab/combat_lab_v12_sword_fx.gd")
 var failures := 0
 
 func _initialize() -> void:
@@ -43,6 +44,24 @@ func _check() -> void:
         ensure(v11_glow.code.contains("blend_add"), "bounded ritual overlay is additive")
         ensure(v11_glow.code.contains("uniform float progress"),
             "ritual glow time is externally controlled and HOLD deterministic")
+    # Deterministic 3x3 sword choreography, not nine fake hit events.
+    var sword12: Script = load("res://labs/combat_lab/combat_lab_v12_sword_fx.gd") as Script
+    ensure(sword12 != null, "V12 3-wave sword GDScript loads")
+    if sword12 != null:
+        var methods12: Array[String] = []
+        for method in sword12.get_script_method_list():
+            methods12.append(str(method.get("name", "")))
+        ensure(methods12.has("render") and methods12.has("_blade") and
+            methods12.has("_aoe") and methods12.has("flight_timing"),
+            "V12 sword, AOE and phased missile renderer exist")
+    ensure(SWORD_V12.flight_timing(3).x > SWORD_V12.flight_timing(0).x and
+        SWORD_V12.flight_timing(6).x > SWORD_V12.flight_timing(3).x,
+        "V12 nine swords launch in 3 separated waves")
+    ensure(SWORD_V12.blade_opacity(0, 0.61) > 0.0 and
+        SWORD_V12.blade_opacity(0, 0.78) <= 0.01,
+        "V12 swords remain visible after impact then gradually disappear")
+    ensure(SWORD_V12.blade_opacity(7, 0.20) <= 0.01,
+        "V12 sword wave three cannot appear during initial charge")
     var fx := FXS.new()
     fx.custom_minimum_size = Vector2(1280, 720)
     root.add_child(fx)
