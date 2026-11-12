@@ -104,9 +104,18 @@ static func serpent_light(canvas: CanvasItem, from: Vector2, to: Vector2,
     var dir := vector / distance
     var normal := dir.orthogonal()
     var front := _ease(k)
-    var trail_span := minf(0.48, 235.0 / distance)
+    var trail_span := minf(0.64, 345.0 / distance)
     var rear := maxf(0.0, front - trail_span)
     var segments := 18 if lod >= 1 else 10
+    # Broad low-alpha plasma body beneath the bright moving strands.
+    var spine := PackedVector2Array()
+    for i in range(segments + 1):
+        var u := float(i) / float(segments)
+        var x := lerpf(rear, front, u)
+        var envelope := sin(u * PI)
+        spine.append(from + vector * x + normal *
+            sin(x * 13.0 - k * 17.0) * envelope * 14.0 * z)
+    _ribbon(canvas, spine, JADE, 11.0 * z, 0.70)
     for lane in range(3 if lod >= 1 else 2):
         var points := PackedVector2Array()
         var strand := float(lane)
@@ -120,20 +129,22 @@ static func serpent_light(canvas: CanvasItem, from: Vector2, to: Vector2,
             points.append(from + vector * x + normal * (wave + side))
         _ribbon(canvas, points,
             JADE if lane == 0 else (VIOLET if lane == 1 else CYAN),
-            (4.2 if lane == 0 else 2.8) * z,
-            0.85 if lane == 0 else 0.70)
+            (6.4 if lane == 0 else 4.4) * z,
+            0.88 if lane == 0 else 0.76)
     var head := from.lerp(to, front)
     # A bright leading energy crest and twin lower arcs imply the jaw
     # without painting a snake head object.
-    _flare(canvas, head, 5.2 * z, JADE, 0.98)
+    _flare(canvas, head, 10.5 * z, JADE, 0.96)
     for sign in [-1.0, 1.0]:
         var jaw := PackedVector2Array()
         for i in range(9):
             var u := float(i) / 8.0
-            var distance_back := (1.0 - u) * 35.0 * z
-            var bend: float = sin(u * PI) * float(sign) * 10.0 * z
+            var distance_back := (1.0 - u) * 47.0 * z
+            var bend: float = sin(u * PI) * float(sign) * 17.0 * z
             jaw.append(head - dir * distance_back + normal * bend)
-        _ribbon(canvas, jaw, JADE if sign > 0 else VIOLET, 1.8 * z, 0.72)
+        _ribbon(canvas, jaw, JADE if sign > 0 else VIOLET, 4.0 * z, 0.87)
+        _flare(canvas, head - dir * 6.0 * z + normal * float(sign) * 9.0 * z,
+            2.5 * z, WHITE, 0.74)
     # Scales are travelling specular sparks, not texture details.
     var motes := 9 if lod >= 2 else 4
     for i in range(motes):
@@ -149,10 +160,10 @@ static func serpent_impact(canvas: CanvasItem, at: Vector2,
     var t := clampf(age, 0.0, 1.0)
     var z := clampf(zoom, 0.8, 2.25)
     var strength := 1.0 - t
-    _flare(canvas, at, (13.0 + 10.0 * (1.0 - t)) * z,
+    _flare(canvas, at, (18.0 + 17.0 * (1.0 - t)) * z,
         JADE, strength * 0.98)
     _ellipse(canvas, at + Vector2(0, 18 * z),
-        (20 + 58 * t) * z, (8 + 24 * t) * z,
+        (26 + 96 * t) * z, (9 + 45 * t) * z,
         VIOLET, strength * 0.83, t * 0.7)
     _ellipse(canvas, at, (12 + 39 * t) * z, (15 + 26 * t) * z,
         JADE, strength * 0.51, -t * 1.2)
@@ -168,15 +179,23 @@ static func _energy_blade(canvas: CanvasItem, center: Vector2,
         forward: Vector2, z: float, energy: float) -> void:
     # A flying sword is built from converging high-energy beams (white core,
     # ice bevel, dark-violet side glow) instead of a metal PNG polygon.
-    var tip := center + forward * (35.0 * z)
-    var base := center - forward * (19.0 * z)
+    var tip := center + forward * (49.0 * z)
+    var base := center - forward * (15.0 * z)
     var cross := forward.orthogonal()
-    _light_line(canvas, base, tip, CYAN, 3.1 * z, energy)
-    _light_line(canvas, base - cross * 3.1 * z, tip, INDIGO,
-        1.6 * z, energy * 0.60)
-    _light_line(canvas, base + cross * 3.1 * z, tip, CYAN,
-        1.6 * z, energy * 0.60)
-    var guard := center - forward * (20.0 * z)
+    # A tapered energy blade: glowing segment widths shrink to a sharp tip.
+    for segment in range(9):
+        var u0 := float(segment) / 9.0
+        var u1 := float(segment + 1) / 9.0
+        var a := base.lerp(tip, u0)
+        var b := base.lerp(tip, u1)
+        var taper := pow(1.0 - u0, 0.72)
+        var width := maxf(0.45, 7.0 * z * taper)
+        _light_line(canvas, a, b, CYAN, width, energy * 0.92)
+        _light_line(canvas, a - cross * width * 0.28,
+            b - cross * width * 0.20, INDIGO,
+            maxf(0.65, width * 0.30), energy * 0.42)
+    _light_line(canvas, base, tip, WHITE, 0.85 * z, energy * 0.92)
+    var guard := center - forward * (18.0 * z)
     _light_line(canvas, guard - cross * 8 * z,
         guard + cross * 8 * z, CYAN, 1.3 * z, energy * 0.65)
     _light_line(canvas, guard, guard - forward * 13.0 * z,
@@ -209,14 +228,15 @@ static func sword_light(canvas: CanvasItem, from: Vector2, to: Vector2,
         if flight > 0.01 and flight < 1.0:
             var wake := pos - direction * 28.0 * z
             _light_line(canvas, wake, pos, CYAN, 3.2 * z, opacity * 0.72)
+            _flare(canvas, pos, 2.3 * z, WHITE, opacity * 0.58)
         _energy_blade(canvas, pos, direction, z * 0.71, opacity)
     if t > 0.69:
         var impact := clampf((t - 0.69) / 0.31, 0.0, 1.0)
         var alpha := (1.0 - impact)
-        _flare(canvas, to, (8.0 + impact * 13.0) * z,
+        _flare(canvas, to, (13.0 + impact * 23.0) * z,
             CYAN, alpha * 0.84)
         _ellipse(canvas, to + Vector2(0, 18 * z),
-            (11 + impact * 83) * z, (7 + impact * 36) * z,
+            (18 + impact * 115) * z, (9 + impact * 49) * z,
             CYAN, alpha * 0.65, impact * 0.35)
         for i in range(9 if lod >= 2 else 4):
             var phi := TAU9 * float(i) / 9.0
