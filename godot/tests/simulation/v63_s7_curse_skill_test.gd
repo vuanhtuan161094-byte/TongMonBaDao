@@ -340,6 +340,7 @@ func _exercise_cleanse_receipt() -> void:
 func _exercise_mapbattle_gate_copy() -> void:
     var battle := MapBattleV2.new(99706)
     var caster := _actor("curse_copy", "disciple", Vector2(2, 2))
+    caster["party_id"] = "party_0"
     caster["v63_curse_combat_enabled"] = true
     caster["v63_skill_loadout"] = ["tmb.skill.curse.tran_hon_chu.active_04.human"]
     var enemy := _actor("curse_copy_enemy", "enemy", Vector2(5, 2))
