@@ -1,4 +1,4 @@
-name: VFX V9 Additive Energy Official Godot QA
+name: VFX V9 Poison + V11 Forged Sword Visual QA
 
 on:
   workflow_dispatch:
@@ -9,6 +9,7 @@ on:
       - '.github/workflows/vfx-v9-godot-focused.yml'
       - 'godot/labs/combat_lab/combat_lab_v9_energy_fx.gd'
       - 'godot/labs/combat_lab/combat_lab_v10_sword_fx.gd'
+      - 'godot/labs/combat_lab/combat_lab_v11_sword_fx.gd'
       - 'godot/labs/combat_lab/combat_lab_v9_energy_light.gdshader'
       - 'godot/labs/combat_lab/combat_lab_v9_light_showcase.gd'
       - 'godot/labs/combat_lab/combat_lab_v9_light_showcase.tscn'
@@ -62,6 +63,7 @@ jobs:
           for file in \
             res://labs/combat_lab/combat_lab_v9_energy_fx.gd \
             res://labs/combat_lab/combat_lab_v10_sword_fx.gd \
+            res://labs/combat_lab/combat_lab_v11_sword_fx.gd \
             res://labs/combat_lab/combat_lab_v9_light_showcase.gd \
             res://labs/combat_lab/combat_lab_poison_v4_layers.gd \
             res://labs/combat_lab/combat_lab_arena.gd \
@@ -117,7 +119,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: vfx-v9-godot-${{ github.sha }}
+          name: vfx-v11-godot-${{ github.sha }}
           path: |
             ${{ runner.temp }}/vfx_v9/*.png
             ${{ runner.temp }}/vfx_v9/*.mp4
