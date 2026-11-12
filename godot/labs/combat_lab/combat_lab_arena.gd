@@ -5,6 +5,7 @@ const PoisonAtlasV1 = preload("res://labs/combat_lab/combat_lab_poison_atlas_v1.
 const VfxV2 = preload("res://labs/combat_lab/combat_lab_vfx_v2.gd")
 const VFXProgression = preload("res://labs/combat_lab/combat_lab_vfx_progression.gd")
 const V4SpellSpark = preload("res://labs/combat_lab/combat_lab_v4_spell_spark.gd")
+const V9EnergyFx = preload("res://labs/combat_lab/combat_lab_v9_energy_fx.gd")
 
 var actor_states: Dictionary = {}
 var last_skill_by_actor: Dictionary = {}
@@ -22,6 +23,8 @@ var visual_time := 0.0
 var poison_atlas_warning_emitted := false
 var v4_preview_enabled := OS.get_environment("TMB_POISON_V4_PREVIEW") == "1"
 var v8_preview_enabled := OS.get_environment("TMB_POISON_V8_PREVIEW") == "1"
+var v9_preview_enabled := OS.get_environment("TMB_POISON_V9_LIGHT") == "1"
+var v9_light_overlay: Control
 
 # Opt-in V4 Movie Maker focus; default Combat Lab/production camera is unchanged.
 var v4_shot_source_id := ""
@@ -45,6 +48,11 @@ func _ready() -> void:
     custom_minimum_size = Vector2(620, 390)
     mouse_filter = Control.MOUSE_FILTER_IGNORE
     clip_contents = true
+    v9_light_overlay = V9EnergyFx.new()
+    v9_light_overlay.name = "V9AdditiveLightingOnly"
+    v9_light_overlay.set_live_mode()
+    v9_light_overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+    add_child(v9_light_overlay)
 
 func set_battle(value: MapBattleV2, weapon_school: String) -> void:
     battle = value
@@ -76,6 +84,14 @@ func set_v8_preview_enabled(value: bool) -> void:
     if value:
         v4_preview_enabled = true
     queue_redraw()
+
+func set_v9_preview_enabled(value: bool) -> void:
+    v9_preview_enabled = value
+    if value:
+        v8_preview_enabled = false
+    queue_redraw()
+    if v9_light_overlay != null:
+        v9_light_overlay.queue_redraw()
 
 func set_visual_time(value: float) -> void:
     # Presentation clock follows battle time; HOLD freezes projectile motion.
@@ -749,7 +765,8 @@ func _draw_cues() -> void:
                 visual_cue["v4_crowd"] = cues.size()
                 visual_cue["v4_target_body_offset"] = _actor_body_offset_px(str(cue.get("target_actor_id", "")))
                 visual_cue["v4_source_body_offset"] = _actor_body_offset_px(str(cue.get("source_actor_id", "")))
-        if not _is_ground_cue(cue):
+        var light_only := v9_preview_enabled and str(cue.get("skill_id", "")).contains(".co_doc.active_02.") and str(cue.get("kind", "")) in ["projectile", "impact"]
+        if not _is_ground_cue(cue) and not light_only:
             VfxV2.render(self, visual_cue, p, start, t, radius_px, v4_effective_render_zoom())
         var label := str(cue.get("text", ""))
         if label.is_empty():
