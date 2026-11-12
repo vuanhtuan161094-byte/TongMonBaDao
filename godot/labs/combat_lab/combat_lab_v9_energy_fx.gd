@@ -169,10 +169,14 @@ static func serpent_light(canvas: CanvasItem, from: Vector2, to: Vector2,
         _flare(canvas, from, 8.0 * z, JADE, 0.75)
         return
     # One organic soft plasma volume; bright interior stays distinct.
-    _flow_shell(canvas, spine, z, 2.6, VIOLET, 0.052)
+    # Full four-shell cinematic only in solo preview. Actual crowded
+    # Combat Lab at lod=1 draws two shells to halve dynamic polygon work.
+    if lod >= 2:
+        _flow_shell(canvas, spine, z, 2.6, VIOLET, 0.052)
     _flow_shell(canvas, spine, z, 1.85, JADE, 0.14)
     _flow_shell(canvas, spine, z, 1.02, CYAN, 0.14)
-    _flow_shell(canvas, spine, z, 0.54, JADE, 0.23)
+    if lod >= 2:
+        _flow_shell(canvas, spine, z, 0.54, JADE, 0.23)
     _ribbon(canvas, spine, JADE, 2.1 * z, 0.44)
     var head: Vector2 = spine[spine.size() - 1]
     var neck: Vector2 = spine[maxi(0, spine.size() - 3)]
