@@ -53,25 +53,25 @@ static func _trail(c: CanvasItem, at: Vector2, direction: Vector2,
         return
     var f := direction.normalized()
     var n := f.orthogonal()
-    var start := at - f * 36.0 * z
-    var mid := start - f * 21.0 * z
-    var end := start - f * 80.0 * z
-    # Tapered translucency is distinct from the blade body; no neon rod
-    # running through the steel and the sword's ornamental guard.
+    var start := at - f * 44.0 * z
+    var end := start - f * 78.0 * z
+    # Broad at the back of the HILT, narrowing to a point at the rear:
+    # 2 convex triangles avoid invalid-polygon triangulation and keep
+    # the sword's steel faces/filigree uncovered.
     c.draw_colored_polygon(PackedVector2Array([
-        start, end + n * 12.0 * z, end, end - n * 12.0 * z
-    ]), _col(BLUE, strength * 0.043))
+        start + n * 9.0 * z, start - n * 9.0 * z, end
+    ]), _col(BLUE, strength * 0.089))
     c.draw_colored_polygon(PackedVector2Array([
-        start, end + n * 3.7 * z, end, end - n * 3.7 * z
-    ]), _col(CYAN, strength * 0.087))
-    c.draw_line(mid, start, _col(ICE, strength * 0.30),
-        maxf(0.8, 1.4 * z), true)
-    # Three sparse travelling embers produce apparent flow, bounded cost.
+        start + n * 3.5 * z, start - n * 3.5 * z, end
+    ]), _col(CYAN, strength * 0.168))
+    c.draw_line(start - f * 9.0 * z, start,
+        _col(ICE, strength * 0.35), maxf(0.8, 1.45 * z), true)
+    # Sparse travelling embers flow along both sides, fixed cost.
     for j in range(3):
-        var u := 0.19 + float(j) * 0.29
+        var u := 0.17 + float(j) * 0.30
         var p := start.lerp(end, u)
-        var orbit := sin(u * 19.0 + motion * 13.0) * 4.0 * z
-        PREV._spark(c, p + n * orbit, 0.7 * z, strength * (0.42 - u * 0.2))
+        var orbit := sin(u * 19.0 + motion * 12.0) * (4.0 - 2.5 * u) * z
+        PREV._spark(c, p + n * orbit, 0.7 * z, strength * (0.43 - u * 0.17))
 
 static func _aoe(c: CanvasItem, at: Vector2, radii: Vector2,
         hit_targets: Array, t: float) -> void:
@@ -112,6 +112,15 @@ static func _impact(c: CanvasItem, at: Vector2,
     PREV._ring(c, at + Vector2(0, 17.0 * z),
         (13.0 + 44.0 * k) * z,
         (7.0 + 22.0 * k) * z, GOLD, a * 0.75)
+    # A very brief directional cut passes through the ACTUAL struck
+    # monster's body; the broad blue aura remains below the hit.
+    var cut_axis := Vector2(0.91, -0.42)
+    var cut_start := at - cut_axis * (25.0 + 10.0 * k) * z
+    var cut_end := at + cut_axis * (24.0 + 12.0 * k) * z
+    c.draw_line(cut_start, cut_end, _col(CYAN, flash * 0.23),
+        maxf(1.0, 5.3 * z), true)
+    c.draw_line(cut_start, cut_end, _col(ICE, flash * 0.78),
+        maxf(0.8, 1.45 * z), true)
     for j in range(4):
         var dir := Vector2.from_angle(TAU13 * float(j) / 4.0 + float(index) * 0.28)
         var begin := at + dir * (7.0 + k * 10.0) * z
