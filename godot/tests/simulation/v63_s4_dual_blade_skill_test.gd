@@ -45,7 +45,7 @@ func _run() -> void:
 	var manifest: Dictionary = sources.get("manifest", {})
 	var registry: Dictionary = sources.get("registry", {})
 	var entries: Dictionary = manifest.get("entries", {})
-	_expect(catalogues.has("dual_blade") and catalogues.has("palm") and entries.size() == 919, "Song Đao and Chưởng additive entries join the earlier presentations")
+	_expect(catalogues.has("dual_blade") and catalogues.has("palm") and catalogues.has("talisman") and entries.size() == 1102, "Song Đao, Chưởng and Phù additive entries join the earlier presentations")
 	for raw in skills:
 		var skill: Dictionary = raw
 		var id := str(skill.get("id", ""))
@@ -77,7 +77,7 @@ func _run() -> void:
 	_expect(branch_counts == {"anh_nhan":59, "lien_hoan":59, "huyet_nguyet":59}, "each Song Đao branch owns 59 nodes")
 	_expect(flavors.size() == 183 and shorts.size() == 183 and motions.size() == 183, "every node has distinct flavor, functional summary and motion profile")
 	var base_registry: Dictionary = Registry.load_catalogue().get("data", {})
-	_expect(base_registry.get("families", []).size() == 210 and registry.get("families", []).size() == 280 and registry.get("paths", []).size() == 24, "additive extensions compose candidate families/paths without rewriting canonical base registry")
+	_expect(base_registry.get("families", []).size() == 210 and registry.get("families", []).size() == 315 and registry.get("paths", []).size() == 27, "additive extensions compose candidate families/paths without rewriting canonical base registry")
 	_expect(HSC.skill_definitions().size() == 1647 and HSC.branch_definitions().size() == 27, "Human skill and branch indexes include the gated candidate catalogue")
 	_expect(not Gates.is_enabled("dual_blade_skill_combat") and not bool(Gates.DEFAULT_FLAGS.get("dual_blade_skill_combat", true)), "Song Đao production feature gate remains OFF")
 	_expect(str(Dual.can_learn(Dual.skill_definition("tmb.skill.dual_blade.lien_hoan.active_01.human")).get("reason", "")) == "skill_source_pending", "learning stays blocked until an authentic manual is registered")

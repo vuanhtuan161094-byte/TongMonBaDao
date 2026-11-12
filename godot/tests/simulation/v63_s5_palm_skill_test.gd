@@ -88,7 +88,7 @@ func _run() -> void:
 	_expect(branch_counts == {"liet_duong_chuong":59, "han_ngoc_chuong":59, "hoi_phong_chuong":59}, "each of three branches owns 59 nodes")
 	_expect(tier_counts == {"human":35, "immortal":68, "divine":80}, "Human/Immortal/Divine distribution is 35/68/80")
 	_expect(flavors.size() == 183 and shorts.size() == 183 and long_descriptions.size() == 183 and vfx_profiles.size() == 183, "every node has distinct flavor, function summary, detailed description and VFX key")
-	_expect(int(registry.get("school_count", 0)) == 8 and int(registry.get("branch_count", 0)) == 24 and int(registry.get("skill_family_count", 0)) == 280, "additive registry reports eight candidate schools, 24 branches and 280 families")
+	_expect(int(registry.get("school_count", 0)) == 9 and int(registry.get("branch_count", 0)) == 27 and int(registry.get("skill_family_count", 0)) == 315, "additive registry reports nine total schools, 27 branches and 315 families")
 	_expect(HSC.skill_definitions().size() == 1647 and HSC.branch_definitions().size() == 27, "shared Combat V2 indexes compose existing plus six candidate schools")
 	_expect(not bool(catalogue.get("enabled", true)) and str(catalogue.get("release_gate", "")) == "OFF" and not Gates.is_enabled("palm_skill_combat"), "Palm release and global feature gates remain OFF")
 	_expect(str(Palm.can_learn(Palm.skill_definition("tmb.skill.palm.han_ngoc_chuong.active_02.human")).get("reason", "")) == "skill_source_pending", "player learning remains blocked until canonical manual approval")
@@ -99,7 +99,7 @@ func _run() -> void:
 	_expect(csv != null, "all36 source/effect ledger remains readable")
 	if csv != null:
 		var ledger: Dictionary = Presentation.validate_all36_ledger(csv.get_as_text(), catalogues, registry)
-		_expect(bool(ledger.get("ok", false)), "2,196-slot ledger joins five candidate schools: " + str(ledger.get("errors", [])))
+		_expect(bool(ledger.get("ok", false)), "2,196-slot ledger joins six candidate schools: " + str(ledger.get("errors", [])))
 		var metrics: Dictionary = ledger.get("metrics", {})
 		_expect(int(metrics.get("candidate_gated", 0)) == 1098 and int(metrics.get("not_authored", 0)) == 549 and int(metrics.get("runtime_catalogue_ids", 0)) == 1647, "ledger preserves existing, candidate and unauthored distinctions")
 	await _exercise_slow_and_boss_resistance()
