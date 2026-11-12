@@ -108,3 +108,15 @@ V8 dùng **texture RGBA Cổ Độc gốc đã có trong repository** (`co_doc_g
 - **Kiểm thử chính thức:** `res://tests/labs/combat_lab/v8_jian_serpent_contract_test.gd` và `.github/workflows/vfx-v8-godot-focused.yml`. CI cung cấp artifact ảnh PNG/video MP4 từ engine khi chạy thành công. Không coi ảnh GIF concept như ảnh Godot.
 - **Chưa làm:** nối Kiếm Tu vào V6.3 Combat Lab và trận PvE chính, render texture/spritesheet cao cấp đã duyệt, tối ưu FPS/VRAM thực ở 30 đệ tử, nghiệm thu Windows/Android. Không sửa `project.godot`, main scene, Save hoặc combat authority.
 
+
+## VFX V9 — ÁNH SÁNG ĐỘNG (12/11/2026) · GODOT FOCUSED PASS / ART REVIEW PENDING
+
+Thiết kế theo chuyển động khí, kiếm khí và ánh sáng của các game kiếm hiệp mobile, nhưng **không trích xuất/sao chép asset thương mại**. Khác V8, kỹ năng V9 **không tải ảnh rắn, ảnh kiếm hoặc GIF concept**. Hình thái phát sinh trực tiếp từ quỹ đạo + nhiều dải sáng uốn cong và phân lớp sáng trong Godot:
+
+- `res://labs/combat_lab/combat_lab_v9_energy_light.gdshader`: shader CanvasItem `blend_add, unshaded`, shimmer theo thời gian; tác động đến lớp phép riêng, không tô sáng toàn scene.
+- `res://labs/combat_lab/combat_lab_v9_energy_fx.gd`: 3 lane energy ribbons tạo silhouette xà quang; mặt sáng, quầng quang, điểm tụ năng lượng, sóng xung kích. Trận kiếm demo gồm 12 kiếm khí có lõi/trục sáng và dư ảnh; các số lượng VFX là hình ảnh, không phải target/hit/damage.
+- `res://labs/combat_lab/combat_lab_v9_light_showcase.tscn`: F6, nhấn **1** xem Độc Quang Hóa Xà, **2** xem Kiếm Khí Quy Tông, **Space** phát lại. Scene trình diễn thuần hình ảnh, không tự tính HP hoặc mô phỏng kỹ năng Kiếm Tu thật.
+- `res://labs/combat_lab/combat_lab.tscn`: chọn **Độc → Cổ Độc → Xà Ảnh Quấn Mạch** (`tmb.skill.poison.co_doc.active_02.human`), bật **VFX V9 · ÁNH SÁNG THẬT**, thử chiêu. Lớp V9 chỉ render `projectile/impact` khi đã có cue từ chiến đấu V6.3 thực, giữ nguyên cast/range/damage/DoT. Bật qua `TMB_POISON_V9_LIGHT=1` nếu cần quay tự động. V8 sẽ tắt khi bật V9; không vẽ trùng texture Cổ Độc cũ trên projectile/impact.
+- Render-only giới hạn tối đa 12 cue phát sáng đang hoạt động cùng lúc, LOD Combat Lab thấp hơn video demo; khi V9 tắt, overlay không tự yêu cầu redraw liên tục. HIT và FLOATING NUMBER tiếp tục đọc combat event thật.
+- [Official Godot 4.7.2 run #43193602387](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/43193602387) **terminal SUCCESS** trên exact SHA `b75c745c17e1cbf51a73ccdf728fda6b80ba328a`, gồm strict import, GDScript parse, V9 contract, V4 render contract, 2 video MP4/PNG render bằng Godot 1280×720 qua Xvfb. Test script: `res://tests/labs/combat_lab/v9_energy_light_contract_test.gd`; workflow: `.github/workflows/vfx-v9-godot-focused.yml`.
+- **Chưa nghiệm thu mỹ thuật cuối**: rắn mới hiện là luồng ánh sáng uốn khúc, kiếm còn đơn giản so với võ công trong game tham chiếu. Thiếu chứng cứ performance 30+ actors trên Windows/Android, OneGame production wiring, shader dưới renderer Compatibility trên thiết bị thật. Không tuyên bố sprites/illustration/VFX concept của turn chat đã được biến thành kỹ năng hoàn chỉnh.
