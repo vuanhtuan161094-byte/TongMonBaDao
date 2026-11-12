@@ -1,0 +1,78 @@
+name: AS-BUILD-02 Source A Original Art Fidelity
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'godot/data/presentation/as_build02_source_a_contract.json'
+      - 'godot/tests/presentation/as_build02_source_a_originals_capture.gd'
+      - 'godot/art/source_a_env02a/pv01_assets/**'
+      - '.github/workflows/as-build02-source-a-fidelity.yml'
+permissions:
+  contents: read
+jobs:
+  source_a_gallery:
+    name: True Godot 4.7.2 five-building art reference 1280x720
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install official Godot 4.7.2 binary
+        shell: bash
+        run: |
+          set -euo pipefail
+          GODOT_URL="https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip"
+          GODOT_SHA256="cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4"
+          curl --fail --location --retry 3 --output /tmp/godot.zip "$GODOT_URL"
+          echo "$GODOT_SHA256  /tmp/godot.zip" | sha256sum --check --strict
+          unzip -q /tmp/godot.zip -d /tmp
+          sudo install -m 0755 /tmp/Godot_v4.7.2-stable_linux.x86_64 /usr/local/bin/godot
+
+      - name: Confirm official version
+        run: godot --version
+
+      - name: Restore canonical female Stage A runtime pack
+        shell: bash
+        run: |
+          set -euo pipefail
+          PACK="/tmp/female_normal_v1_stageA_runtime_pack_v2_quant.zip"
+          cat             .github/assets/p3/female_stage_a/part01.b64             .github/assets/p3/female_stage_a/part02.b64             .github/assets/p3/female_stage_a/part03.b64             .github/assets/p3/female_stage_a/part04.b64             .github/assets/p3/female_stage_a/part05.b64             .github/assets/p3/female_stage_a/part06.b64             .github/assets/p3/female_stage_a/part07.b64             .github/assets/p3/female_stage_a/part08.b64             .github/assets/p3/female_stage_a/part09.b64             .github/assets/p3/female_stage_a/part10.b64             .github/assets/p3/female_stage_a/part11.b64             .github/assets/p3/female_stage_a/part12.b64             .github/assets/p3/female_stage_a/part13.b64             .github/assets/p3/female_stage_a/part14.b64             .github/assets/p3/female_stage_a/part15a.b64             .github/assets/p3/female_stage_a/part15b.b64             .github/assets/p3/female_stage_a/part16.b64             .github/assets/p3/female_stage_a/part17.b64             .github/assets/p3/female_stage_a/part18.b64             .github/assets/p3/female_stage_a/part19.b64             .github/assets/p3/female_stage_a/part20.b64             | tr -d '\r\n\t ' | base64 --decode > "$PACK"
+          test "$(stat -c%s "$PACK")" -eq 44838
+          echo "6a4213b9129ffb3f438c21cbb5326672ddf8915323836bf80cb33b8e5fabfdca  $PACK" | sha256sum --check --strict
+          unzip -q "$PACK" -d .
+
+      - name: Install virtual display and Mesa software GL
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y xvfb xauth libgl1-mesa-dri libgl1
+          command -v xvfb-run
+          command -v glxinfo >/dev/null || true
+
+      - name: Import canonical Godot project
+        run: godot --headless --path godot --import
+
+
+      - name: Verify Source A art-only capture script parses
+        run: bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://tests/presentation/as_build02_source_a_originals_capture.gd
+      - name: Genuine 1280x720 original art capture, matching runtime sizes
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$GITHUB_WORKSPACE/source-a-original-evidence"
+          export LIBGL_ALWAYS_SOFTWARE=1
+          xvfb-run -a -s "-screen 0 1280x720x24" bash tools/qa/run_godot_strict.sh \
+            --path godot --rendering-method gl_compatibility --audio-driver Dummy --resolution 1280x720 \
+            -s res://tests/presentation/as_build02_source_a_originals_capture.gd \
+            -- "$GITHUB_WORKSPACE/source-a-original-evidence"
+          test -s "$GITHUB_WORKSPACE/source-a-original-evidence/source_a_five_verified_originals_1280x720.png"
+      - name: Publish verified original comparison sheet
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: source-a-five-originals-${{ github.sha }}
+          path: source-a-original-evidence/
+          if-no-files-found: warn
+          retention-days: 14
