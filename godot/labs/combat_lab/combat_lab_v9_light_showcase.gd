@@ -48,7 +48,7 @@ func _ready() -> void:
     _refresh_title()
 
 func _refresh_title() -> void:
-    title.text = ("VFX09 · VẠN KIẾM QUY TÔNG" if str(effect.get("demo_school")) == "sword" else "VFX09 · ĐỘC QUANG HÓA XÀ") + "  |  Additive · Light ribbons · No skill PNG · Lab only"
+    title.text = ("VFX11 · KIẾM TRẬN HUYỀN QUANG" if str(effect.get("demo_school")) == "sword" else "VFX09 · ĐỘC QUANG HÓA XÀ") + "  |  Original Godot code art · Steel body + rim light · Lab only"
     queue_redraw()
 
 func _input(event: InputEvent) -> void:
