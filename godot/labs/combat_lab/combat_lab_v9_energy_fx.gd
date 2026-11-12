@@ -242,7 +242,7 @@ func _draw() -> void:
     # LIVE LAB: render ONLY canonical Co Doc serpents actually represented
     # by existing Combat Lab MapBattleV2 event cues. Never invent targets.
     var host := get_parent()
-    if host == null or not bool(host.get("v9_preview_enabled")):
+    if host == null or host.get("v9_preview_enabled") != true:
         return
     var now := float(host.get("visual_time"))
     var active_cues: Array = host.get("cues")
