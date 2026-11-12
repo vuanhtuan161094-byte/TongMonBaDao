@@ -2,6 +2,7 @@ class_name CombatLabPoisonV4Layers
 extends RefCounted
 
 const ArtBrief = preload("res://labs/combat_lab/combat_lab_poison_skill_art_brief.gd")
+const V8Fx = preload("res://labs/combat_lab/combat_lab_vfx_v8_jian_serpent.gd")
 # Original, already-proven RGBA V3 masters; V4 adds layered motion and
 # skill-specific silhouettes, not a new source or fake character atlas.
 const NEEDLE_MASTER: Texture2D = preload("res://labs/combat_lab/assets/poison_vfx/doc_cham_needle.png")
@@ -272,6 +273,15 @@ static func render(canvas: CanvasItem, cue: Dictionary, target: Vector2, source:
     var caster_hand := source + Vector2(0.0, float(cue.get("v4_source_body_offset", -35.0 * (0.55 + 0.29 * z))))
     var d := (p - caster_hand).normalized()
     if d.length_squared() < 0.01: d = Vector2.RIGHT
+    # V8 snake is opt-in and strictly real-cue driven. Other schools, V4
+    # effects, non-poison skills, AoE footprint and production stay untouched.
+    if OS.get_environment("TMB_POISON_V8_PREVIEW") == "1" and motif == "serpent_bind":
+        if kind == "projectile":
+            V8Fx.cobra(canvas, caster_hand, p, k, z)
+            return
+        if kind == "impact":
+            V8Fx.cobra_impact(canvas, p, k, z)
+            return
     if bool(cue.get("v4_heal_ground", false)):
         if kind == "heal" and motif in ["jade_heal", "jade_ultimate"]:
             v7_jade_foot_lotus(canvas, target, k, z, motif, mastery, lod)
