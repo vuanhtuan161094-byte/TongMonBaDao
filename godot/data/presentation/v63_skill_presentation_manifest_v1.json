@@ -870,7 +870,7 @@
         "tier": "immortal",
         "lineage": "base",
         "parent_skill_id": "tmb.skill.sword.basic.human",
-        "variant": "BASE",
+        "variant": "SUCCESSOR",
         "replaces_skill_id": "",
         "source_codex_id": "",
         "archivable": false
@@ -1039,7 +1039,7 @@
         "tier": "divine",
         "lineage": "base",
         "parent_skill_id": "tmb.skill.sword.basic.immortal.base",
-        "variant": "BASE",
+        "variant": "SUCCESSOR",
         "replaces_skill_id": "",
         "source_codex_id": "",
         "archivable": false
@@ -1377,7 +1377,7 @@
         "tier": "immortal",
         "lineage": "base",
         "parent_skill_id": "tmb.skill.sword.mobility.human",
-        "variant": "BASE",
+        "variant": "SUCCESSOR",
         "replaces_skill_id": "",
         "source_codex_id": "",
         "archivable": false
@@ -1546,7 +1546,7 @@
         "tier": "divine",
         "lineage": "base",
         "parent_skill_id": "tmb.skill.sword.mobility.immortal.base",
-        "variant": "BASE",
+        "variant": "SUCCESSOR",
         "replaces_skill_id": "",
         "source_codex_id": "",
         "archivable": false
@@ -31791,7 +31791,7 @@
         "tier": "immortal",
         "lineage": "base",
         "parent_skill_id": "tmb.skill.blade.basic.human",
-        "variant": "BASE",
+        "variant": "SUCCESSOR",
         "replaces_skill_id": "",
         "source_codex_id": "",
         "archivable": false
@@ -31954,7 +31954,7 @@
         "tier": "divine",
         "lineage": "base",
         "parent_skill_id": "tmb.skill.blade.basic.immortal.base",
-        "variant": "BASE",
+        "variant": "SUCCESSOR",
         "replaces_skill_id": "",
         "source_codex_id": "",
         "archivable": false
@@ -32280,7 +32280,7 @@
         "tier": "immortal",
         "lineage": "base",
         "parent_skill_id": "tmb.skill.blade.mobility.human",
-        "variant": "BASE",
+        "variant": "SUCCESSOR",
         "replaces_skill_id": "",
         "source_codex_id": "",
         "archivable": false
@@ -32443,7 +32443,7 @@
         "tier": "divine",
         "lineage": "base",
         "parent_skill_id": "tmb.skill.blade.mobility.immortal.base",
-        "variant": "BASE",
+        "variant": "SUCCESSOR",
         "replaces_skill_id": "",
         "source_codex_id": "",
         "archivable": false
