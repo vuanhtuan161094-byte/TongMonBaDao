@@ -284,7 +284,7 @@ func _build_ui() -> void:
     vfx_mode_button.tooltip_text = "Bật/tắt V4 chỉ trong Combat Lab; hiệu ứng V3 và Save không bị thay đổi."
     vfx_mode_button.pressed.connect(func():
         if arena == null: return
-        var next_mode := arena.get("v4_preview_enabled") != true
+        var next_mode: bool = arena.get("v4_preview_enabled") != true
         arena.call("set_v4_preview_enabled", next_mode)
         vfx_mode_button.text = "VFX V4 · " + ("BẬT" if next_mode else "TẮT")
     )
@@ -294,7 +294,7 @@ func _build_ui() -> void:
     v8_mode_button.tooltip_text = "Chỉ thay hình rắn Cổ Độc của skill thật; không sửa sát thương, tầm, mục tiêu, cooldown hay Save."
     v8_mode_button.pressed.connect(func():
         if arena == null: return
-        var next_v8 := arena.get("v8_preview_enabled") != true
+        var next_v8: bool = arena.get("v8_preview_enabled") != true
         arena.call("set_v8_preview_enabled", next_v8)
         v8_mode_button.text = "VFX V8 · RẮN RÕ HÌNH · " + ("BẬT" if next_v8 else "TẮT")
         vfx_mode_button.text = "VFX V4 · " + ("BẬT" if arena.get("v4_preview_enabled") == true else "TẮT")
@@ -305,7 +305,7 @@ func _build_ui() -> void:
     v9_mode_button.tooltip_text = "Godot additive shader + dải linh khí động; không dùng ảnh rắn/kiếm, không thay logic hit/Save."
     v9_mode_button.pressed.connect(func():
         if arena == null: return
-        var next_light := arena.get("v9_preview_enabled") != true
+        var next_light: bool = arena.get("v9_preview_enabled") != true
         arena.call("set_v9_preview_enabled", next_light)
         v9_mode_button.text = "VFX V9 · ÁNH SÁNG THẬT · " + ("BẬT" if next_light else "TẮT")
         v8_mode_button.text = "VFX V8 · RẮN RÕ HÌNH · " + ("BẬT" if arena.get("v8_preview_enabled") == true else "TẮT")
