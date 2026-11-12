@@ -45,6 +45,11 @@ func _run() -> void:
         if destination == SectMapPresentation.DEST_ALCHEMY_HALL:
             assert(panel.find_child("Art02AlchemyIngredientGallery",true,false) is GridContainer,
                 "Alchemy recipe items should wrap without horizontal clipping")
+        if destination in [SectMapPresentation.DEST_LINH_FOREST,
+                SectMapPresentation.DEST_SPIRIT_FIELD,SectMapPresentation.DEST_ALCHEMY_HALL]:
+            var v3 := panel.find_child("ASBuildV3FacilitySprite",true,false) as TextureRect
+            assert(v3 != null and v3.texture != null,
+                "True V3 imported building PNG must replace placeholder in actual panel")
         checked += 1
     print("ART05 REAL_ONEGAME_VISUAL_LAYOUT PASS screens=",checked)
     game.set("runtime_ready",false)

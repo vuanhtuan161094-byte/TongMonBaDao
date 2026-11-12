@@ -9,6 +9,7 @@ const ART05_DEEP := Color(0.025,0.09,0.108)
 const ART05_JADE := Color(0.08,0.205,0.216)
 const ART05_FRAME = preload("res://src/presentation/uiux/sect_premium_panel_v1.gd")
 const ART06_WORLD = preload("res://src/presentation/uiux/sect_world_atmosphere_v1.gd")
+const ART05_BUILDING_VARIANT = preload("res://src/presentation/uiux/sect_building_art_variant_v3.gd")
 
 func _ready() -> void:
     super._ready()
@@ -20,6 +21,38 @@ func _ready() -> void:
     aura.mouse_filter = Control.MOUSE_FILTER_IGNORE
     aura.z_index = 4
     add_child(aura)
+
+func _refresh_building_operation_art() -> void:
+    super._refresh_building_operation_art()
+    if building_operation_panel == null or not ART05_BUILDING_VARIANT.supported(selected_building):
+        return
+    var host := building_operation_panel.get_node_or_null("BuildingOperationArtFrame/BuildingOperationArt") as Control
+    if host == null:
+        return
+    var site := _selected_operation_building()
+    var direction := &"B" if site != null and site.instance_index % 2 == 0 else &"A"
+    var active := site != null and state != null and ART05_BUILDING_VARIANT.is_canonical_working(site,state.tick)
+    var tex := ART05_BUILDING_VARIANT.texture_for(selected_building,direction,active)
+    if tex == null and active:
+        tex = ART05_BUILDING_VARIANT.texture_for(selected_building,direction,false)
+    if tex == null:
+        return
+    # The base sketch remains only when a real asset import fails.
+    for child in host.get_children():
+        if child is CanvasItem:
+            child.visible = false
+    var picture := TextureRect.new()
+    picture.name = "ASBuildV3FacilitySprite"
+    picture.texture = tex
+    picture.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+    picture.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+    picture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+    picture.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    host.add_child(picture)
+    var room := host.get_node_or_null("Art02FacilityAmbient") as Control
+    if room != null and active and selected_building != SectMapPresentation.DEST_ALCHEMY_HALL:
+        room.visible = true
+        host.move_child(room,host.get_child_count()-1)
 
 func _art05_style_global_hud() -> void:
     var bottom := get_node_or_null("PlayerBottomBar") as Panel

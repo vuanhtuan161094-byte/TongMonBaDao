@@ -31,6 +31,12 @@ static func all_paths() -> Array[String]:
                 result.append(sprite_path(StringName(type_key),StringName(side),working))
     result.sort()
     return result
+static func texture_for(building_type: StringName,direction: StringName,working: bool) -> Texture2D:
+    var path := sprite_path(building_type,direction,working)
+    if path.is_empty() or not ResourceLoader.exists(path,"Texture2D"):
+        return null
+    return ResourceLoader.load(path) as Texture2D
+
 static func display_size(building_type: StringName) -> Vector2:
     return TARGET_SIZE.get(str(building_type),Vector2(166,136))
 static func is_canonical_working(building: BuildingState,tick: int) -> bool:
