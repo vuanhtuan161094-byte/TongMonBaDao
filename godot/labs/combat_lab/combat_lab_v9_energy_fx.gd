@@ -285,8 +285,11 @@ static func sword_light(canvas: CanvasItem, from: Vector2, to: Vector2,
             CYAN, 0.25 + charge * 0.63, charge * 0.45)
     for i in range(count):
         var a := TAU9 * float(i) / float(count)
-        var orbit := Vector2(cos(a), sin(a) * 0.48)
-        var source := from + orbit * (64.0 + 15.0 * sin(t * 5.0 + a)) * z
+        # Widen the original swirling constellation just enough to expose
+        # each engraved blade. Keep the radial, organic V9.2 formation —
+        # V9.3's rigid grid was explicitly rejected after visual review.
+        var orbit := Vector2(cos(a), sin(a) * 0.70)
+        var source := from + orbit * (90.0 + 10.0 * sin(t * 4.0 + a)) * z
         # Four visible attack lanes (3 swords per target in full preview).
         # Every blade maintains its straight axis toward its own destination,
         # preventing twelve swords from becoming a single neon smear.
