@@ -21,6 +21,7 @@ var zoom := 1.0
 var visual_time := 0.0
 var poison_atlas_warning_emitted := false
 var v4_preview_enabled := OS.get_environment("TMB_POISON_V4_PREVIEW") == "1"
+var v8_preview_enabled := OS.get_environment("TMB_POISON_V8_PREVIEW") == "1"
 
 # Opt-in V4 Movie Maker focus; default Combat Lab/production camera is unchanged.
 var v4_shot_source_id := ""
@@ -66,6 +67,14 @@ func set_status(value: String) -> void:
 func set_v4_preview_enabled(value: bool) -> void:
     # Combat Lab only. Production/V3 renderer remains the default elsewhere.
     v4_preview_enabled = value
+    queue_redraw()
+
+func set_v8_preview_enabled(value: bool) -> void:
+    # This is a render-only Lab switch. Turn on the V4 carrier, never
+    # change V6.3 event semantics, actor statistics, cooldown or Save.
+    v8_preview_enabled = value
+    if value:
+        v4_preview_enabled = true
     queue_redraw()
 
 func set_visual_time(value: float) -> void:
@@ -734,6 +743,7 @@ func _draw_cues() -> void:
         if str(cue.get("school", "")) == "poison":
             visual_cue = cue.duplicate()
             visual_cue["v4_preview"] = v4_preview_enabled
+            visual_cue["v8_preview"] = v8_preview_enabled
             if v4_preview_enabled:
                 visual_cue["v4_radius_y"] = projected_radii.y
                 visual_cue["v4_crowd"] = cues.size()
