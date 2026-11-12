@@ -2,6 +2,8 @@ extends Control
 # Godot scene for V8 readability review. RENDER_ONLY / LAB_ONLY.
 # Keys 1,2 or touch buttons choose spell. Space restarts; no combat state exists.
 const Fx = preload("res://labs/combat_lab/combat_lab_vfx_v8_jian_serpent.gd")
+const PoisonAtlas = preload("res://labs/combat_lab/combat_lab_poison_atlas_v1.gd")
+const ActorRig = preload("res://labs/combat_lab/combat_lab_actor_rig_v2.gd")
 const POISON := Color("a7eeb7")
 const ICE := Color("b0eafb")
 var selected := 0
@@ -70,21 +72,25 @@ func _process(delta: float) -> void:
         clock += minf(delta, 0.1)
         queue_redraw()
 
-func _actor(p: Vector2, enemy: bool) -> void:
-    var coat := Color("383743") if enemy else Color("3d285d")
-    draw_ellipse_placeholder(p, enemy)
-    draw_circle(p + Vector2(0, -50), 17.0, Color("e5c6a9"))
-    draw_colored_polygon(PackedVector2Array([
-        p + Vector2(-21, -37), p + Vector2(20, -37),
-        p + Vector2(31, -5), p + Vector2(-30, -5)
-    ]), coat)
-    draw_line(p + Vector2(0, -42), p + Vector2(4, -8),
-        Color("d8c6ec"), 2.0, true)
-
-func draw_ellipse_placeholder(p: Vector2, enemy: bool) -> void:
-    draw_circle(p, 25.0, Color("11131d" if enemy else "170e26"))
-    draw_line(p + Vector2(-18, -6), p + Vector2(19, -6),
-        Color("56576b" if enemy else "8155b5"), 3.0, true)
+# Use the actual Combat Lab disciple sprite and existing chibi rig, not
+# stick-figure stand-ins. Sword caster remains LAB_ONLY pending canon rig.
+func _actor(p: Vector2, enemy: bool, phase: float, index: int = 0) -> void:
+    if enemy:
+        var pose := "hit" if phase > 0.70 and phase < 0.89 else "idle"
+        ActorRig.render(self, {
+            "id":"v8_training_monster_" + str(index), "side":"monster",
+            "hp":100.0, "tier":"normal"
+        }, p, "fist", pose, clock, 1.65, -1.0, phase)
+        return
+    if selected == 0:
+        var pose := "cast" if phase < 0.74 else "idle"
+        if not PoisonAtlas.draw(self, p, pose, clock, phase, 2.15, 1.0, 0.57):
+            ActorRig.render(self, {"id":"v8_poison","side":"disciple","hp":100.0},
+                p, "poison", pose, clock, 2.15, 1.0, phase)
+    else:
+        ActorRig.render(self, {"id":"v8_sword","side":"disciple","hp":100.0},
+            p, "bow", "idle", clock, 2.1, 1.0, phase)
+        Fx.jian(self, p + Vector2(34, -76), -0.28, 0.9, 0.97)
 
 func _draw() -> void:
     var w := size.x
@@ -103,11 +109,14 @@ func _draw() -> void:
             Color("364053"), 1.0)
     var caster := Vector2(330, 454)
     var target := Vector2(897, 383)
-    _actor(caster, false)
-    for i in range(4):
-        _actor(target + Vector2(float(i % 2) * 95.0 - 44.0,
-            float(i / 2) * 98.0 - 49.0), true)
     var phase := fposmod(clock, 2.5) / 2.5
+    # Actual character silhouettes reveal whether the spell obscures HP/actors.
+    _actor(caster, false, phase)
+    for i in range(4):
+        var column := float(i % 2)
+        var row_index := float(floori(float(i) / 2.0))
+        _actor(target + Vector2(column * 112.0 - 56.0,
+            row_index * 102.0 - 51.0), true, phase, i)
     if selected == 0:
         if phase < 0.12:
             draw_arc(caster + Vector2(0, -12), 48,
