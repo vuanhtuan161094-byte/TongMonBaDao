@@ -119,16 +119,17 @@ func _refresh_title() -> void:
     queue_redraw()
 
 func _input(event: InputEvent) -> void:
-    if event is InputEventMouseButton and event.pressed and
-            event.button_index == MOUSE_BUTTON_LEFT and
-            str(effect.get("demo_school")) == "sword":
-        for i in range(preview_positions.size()):
-            var monster: Vector2 = preview_positions[i]
-            if event.position.distance_to(monster + Vector2(0, -20)) <= 44.0:
-                _set_preview_primary(i)
-                effect.set("elapsed", 0.0)
-                _refresh_title()
-                return
+    if event is InputEventMouseButton:
+        var click: InputEventMouseButton = event
+        if click.pressed and click.button_index == MOUSE_BUTTON_LEFT and
+                str(effect.get("demo_school")) == "sword":
+            for i in range(preview_positions.size()):
+                var monster: Vector2 = preview_positions[i]
+                if click.position.distance_to(monster + Vector2(0, -20)) <= 44.0:
+                    _set_preview_primary(i)
+                    effect.set("elapsed", 0.0)
+                    _refresh_title()
+                    return
     if event is InputEventKey and event.pressed and not event.echo:
         if event.keycode == KEY_1:
             effect.call("set_mode", "serpent")
