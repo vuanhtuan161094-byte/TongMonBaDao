@@ -37,6 +37,12 @@ func _check() -> void:
             methods11.append(str(method.get("name", "")))
         ensure(methods11.has("render") and methods11.has("_sword"),
             "V11 normal-alpha forged steel renderer and 12-blade choreography")
+    var v11_glow: Shader = load("res://labs/combat_lab/combat_lab_v11_arcane_circle.gdshader") as Shader
+    ensure(v11_glow != null, "V11 procedural bounded glow shader compiles")
+    if v11_glow != null:
+        ensure(v11_glow.code.contains("blend_add"), "bounded ritual overlay is additive")
+        ensure(v11_glow.code.contains("uniform float progress"),
+            "ritual glow time is externally controlled and HOLD deterministic")
     var fx := FXS.new()
     fx.custom_minimum_size = Vector2(1280, 720)
     root.add_child(fx)
@@ -57,6 +63,9 @@ func _check() -> void:
         root.add_child(stage)
         ensure(stage.get_node_or_null("AdditiveEnergyVFX") != null,
             "scene has additive VFX CanvasItem")
+        ensure(stage.get_node_or_null("SwordArcaneCharge") != null and
+            stage.get_node_or_null("SwordArcaneAOE") != null,
+            "V11 glow layers instantiate behind normal-blend forged swords")
         stage.queue_free()
     var lab := ARENA.new()
     root.add_child(lab)
