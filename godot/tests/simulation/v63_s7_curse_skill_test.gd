@@ -341,11 +341,17 @@ func _exercise_mapbattle_gate_copy() -> void:
     var battle := MapBattleV2.new(99706)
     var caster := _actor("curse_copy", "disciple", Vector2(2, 2))
     caster["party_id"] = "party_0"
+    var caster_stats: Dictionary = caster.get("stats", {}).duplicate(true)
+    caster_stats["max_hp"] = float(caster.get("max_hp", 0.0))
+    caster["stats"] = caster_stats
     caster["v63_curse_combat_enabled"] = true
     caster["v63_skill_loadout"] = ["tmb.skill.curse.tran_hon_chu.active_04.human"]
     var enemy := _actor("curse_copy_enemy", "enemy", Vector2(5, 2))
+    var enemy_stats: Dictionary = enemy.get("stats", {}).duplicate(true)
+    enemy_stats["max_hp"] = float(enemy.get("max_hp", 0.0))
+    enemy["stats"] = enemy_stats
     var result := battle.setup("curse_mapbattle_copy", [caster], [enemy])
-    _expect(bool(result.get("ok", false)), "MapBattle fixture starts")
+    _expect(bool(result.get("ok", false)), "MapBattle fixture starts: " + str(result.get("reason", "")))
     if bool(result.get("ok", false)):
         var copied: Dictionary = battle.actors.get("curse_copy", {})
         _expect(bool(copied.get("v63_curse_combat_enabled", false))
