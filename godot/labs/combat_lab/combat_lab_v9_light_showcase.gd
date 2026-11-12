@@ -49,6 +49,7 @@ func _ready() -> void:
 
 func _refresh_title() -> void:
     title.text = ("VFX09 · VẠN KIẾM QUY TÔNG" if str(effect.get("demo_school")) == "sword" else "VFX09 · ĐỘC QUANG HÓA XÀ") + "  |  Additive · Light ribbons · No skill PNG · Lab only"
+    queue_redraw()
 
 func _input(event: InputEvent) -> void:
     if event is InputEventKey and event.pressed and not event.echo:
