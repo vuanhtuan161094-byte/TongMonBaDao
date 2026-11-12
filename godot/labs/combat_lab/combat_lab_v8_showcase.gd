@@ -12,6 +12,8 @@ var play_button: Button
 
 func _ready() -> void:
     custom_minimum_size = Vector2(1280, 720)
+    if OS.get_environment("TMB_VFX_V8_SHOWCASE") == "sword":
+        selected = 1
     var bar := HBoxContainer.new()
     bar.position = Vector2(18, 14)
     bar.add_theme_constant_override("separation", 12)
