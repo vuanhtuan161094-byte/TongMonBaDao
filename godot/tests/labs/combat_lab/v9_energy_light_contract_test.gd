@@ -74,7 +74,7 @@ func _check() -> void:
             demo_mobs, primary, Vector2(130, 120), 3)
         ensure(selected.size() == 3 and selected.has(primary),
             "V13 locked primary AoE binds to exactly three approved targets")
-        var diagonal := demo_mobs[3] if primary == demo_mobs[0] else demo_mobs[0]
+        var diagonal: Vector2 = demo_mobs[3] if primary == demo_mobs[0] else demo_mobs[0]
         ensure(not selected.has(diagonal),
             "V13 fourth diagonal mob receives no synthetic visual hit")
     ensure(SWORD_V13.preview_circle_targets(
