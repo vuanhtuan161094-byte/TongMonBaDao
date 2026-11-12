@@ -67,15 +67,15 @@ func _run() -> void:
 		for family in registry.get("families", []):
 			node_count += family.get("nodes", []).size()
 		_expect(registry.get("families", []).size() == 210 and registry.get("paths", []).size() == 18 and node_count == 1098, "base registry remains unchanged; additive candidate schools compose in extensions")
-	_expect(HSC.skill_definitions().size() == 1830 and HSC.branch_definitions().size() == 30, "shared runtime indexes seven candidates and thirty branch identities")
+	_expect(HSC.skill_definitions().size() == 2013 and HSC.branch_definitions().size() == 33, "shared runtime indexes seven candidates and thirty-three branch identities")
 	var matrix_path := ProjectSettings.globalize_path("res://../docs/qa/V63_ALL36_ID_AND_EFFECT_MATRIX.csv")
 	var matrix := FileAccess.open(matrix_path, FileAccess.READ)
 	_expect(matrix != null, "all36 identity and effect matrix is available")
 	if matrix != null and bool(registry_result.get("ok", false)):
 		var audit := Presentation.validate_all36_ledger(matrix.get_as_text(), source_rows.get("catalogues", {}), source_rows.get("registry", {}))
-		_expect(bool(audit.get("ok", false)), "all36 ledger joins seven candidate schools without fake source rows: " + str(audit.get("errors", [])))
+		_expect(bool(audit.get("ok", false)), "all36 ledger joins eight candidate schools without fake source rows: " + str(audit.get("errors", [])))
 		var metrics: Dictionary = audit.get("metrics", {})
-		_expect(int(metrics.get("candidate_gated", 0)) == 1281 and int(metrics.get("not_authored", 0)) == 366 and int(metrics.get("runtime_catalogue_ids", 0)) == 1830, "ledger retains distinct source, gated and unauthored counts")
+		_expect(int(metrics.get("candidate_gated", 0)) == 1464 and int(metrics.get("not_authored", 0)) == 183 and int(metrics.get("runtime_catalogue_ids", 0)) == 2013, "ledger retains distinct source, gated and unauthored counts")
 	_exercise_line_attack()
 	_exercise_capacity_shield()
 	_finish()

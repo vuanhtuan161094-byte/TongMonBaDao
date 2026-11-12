@@ -1,0 +1,1888 @@
+{
+  "schema_version": 1,
+  "extension_id": "tmb.v63.registry_extension.s8_formation",
+  "release_gate": "OFF",
+  "base_registry": {
+    "path": "res://data/combat/v63_content_registry.json",
+    "git_blob_sha": "2b36bd39bf04c20dc74f00e74d335568b4a1a89b"
+  },
+  "source_catalog": {
+    "path": "res://data/combat/v63_formation_combat_catalog.json",
+    "git_blob_sha": "d9eb521a6eb726e5bb5419f9474ad31fb068e3f9"
+  },
+  "school": {
+    "id": "formation",
+    "name": "Trận Tu",
+    "candidate_source_status": "SOURCE_PENDING"
+  },
+  "paths": [
+    {
+      "id": "tmb.path.formation.tu_linh_tran",
+      "school": "formation",
+      "name": "Tụ Linh Trận",
+      "element": "earth",
+      "lineages": {
+        "a": "An Mạch",
+        "b": "Hồi Nguyên"
+      },
+      "candidate_source_status": "SOURCE_PENDING",
+      "story_vi": "Tụ Linh Trận bắt đầu từ chiếc vòng đá để những người kiệt sức có thể đứng cùng nhau. Người giữ trận không tạo linh thạch, dược liệu hay vật phẩm; họ chỉ chia sẻ một thế hộ hữu hạn giữa đồng đội đang có mặt trong phạm vi. An Mạch chọn vòng nhỏ và vững, còn Hồi Nguyên kéo dài thế hộ nhưng vẫn phải chờ thời hạn kết thúc. Đệ tử học nhánh này phải biết vị trí đồng đội trước khi dựng trận.",
+      "lineage_stories_vi": {
+        "a": "An Mạch đặt từng điểm neo gần nhau, gom một thế hộ ngắn cho tối đa ba đồng đội trong bán kính ghi ở kỹ năng. Tiên mạch ưu tiên độ chắc; Thần ý giữ đúng cùng giới hạn số người. Không có hồi HP hay tạo tài nguyên.",
+        "b": "Hồi Nguyên giữ vòng hộ lâu hơn một nhịp ứng viên, đổi lại cường độ không vượt trường phái. Hiệu lực vẫn lấy từ guard runtime và tự hết hạn; không hồi sinh, không xóa Injury, không tạo vật phẩm."
+      },
+      "signature_ultimate": "Thái Sơ Vạn Linh Trận",
+      "innate_node_id": "tmb.skill.formation.tu_linh_tran.innate.human",
+      "innate_node_ids": {
+        "a": "tmb.skill.formation.tu_linh_tran.innate.immortal.a",
+        "b": "tmb.skill.formation.tu_linh_tran.innate.immortal.b"
+      },
+      "divine_innate_node_ids": {
+        "a": "tmb.skill.formation.tu_linh_tran.innate.divine.a",
+        "b": "tmb.skill.formation.tu_linh_tran.innate.divine.b"
+      }
+    },
+    {
+      "id": "tmb.path.formation.phong_toa_tran",
+      "school": "formation",
+      "name": "Phong Tỏa Trận",
+      "element": "earth",
+      "lineages": {
+        "a": "Cửu Cung",
+        "b": "Thập Phương"
+      },
+      "candidate_source_status": "SOURCE_PENDING",
+      "story_vi": "Phong Tỏa Trận truyền lại câu chuyện về một đường ranh đã cứu đoàn người khỏi cuộc truy sát. Trận sư không khóa ý chí hay làm mục tiêu đứng yên; họ chỉ làm chậm bước trong vùng hữu hạn, theo duration, kháng Boss và giới hạn mục tiêu của Combat V2. Cửu Cung đặt lưới rõ tâm, Thập Phương kéo ranh rộng hơn nhưng không thể giữ mãi. Kẻ địch có thể rời vùng hoặc chờ hiệu lực tan.",
+      "lineage_stories_vi": {
+        "a": "Cửu Cung dựng các điểm neo gần tâm, ưu tiên vòng hẹp và nhịp làm chậm rõ. Boss kháng theo hệ số trong runtime; không choáng, câm lặng hoặc ngăn hành động.",
+        "b": "Thập Phương trải ranh thêm một khoảng có giới hạn, đổi lại nhịp làm chậm nhẹ hơn. Mọi trường tồn tại theo duration hữu hạn và có thể bị vượt ra khỏi vùng."
+      },
+      "signature_ultimate": "Cửu Cung Phong Tuyệt Trận",
+      "innate_node_id": "tmb.skill.formation.phong_toa_tran.innate.human",
+      "innate_node_ids": {
+        "a": "tmb.skill.formation.phong_toa_tran.innate.immortal.a",
+        "b": "tmb.skill.formation.phong_toa_tran.innate.immortal.b"
+      },
+      "divine_innate_node_ids": {
+        "a": "tmb.skill.formation.phong_toa_tran.innate.divine.a",
+        "b": "tmb.skill.formation.phong_toa_tran.innate.divine.b"
+      }
+    },
+    {
+      "id": "tmb.path.formation.sat_phat_tran",
+      "school": "formation",
+      "name": "Sát Phạt Trận",
+      "element": "earth",
+      "lineages": {
+        "a": "Liệt Địa",
+        "b": "Thiên Cơ"
+      },
+      "candidate_source_status": "SOURCE_PENDING",
+      "story_vi": "Sát Phạt Trận ghi lời thề của người đặt trận: phải nhận trách nhiệm cho mọi sinh linh bước vào vùng nguy hiểm. Liệt Địa khắc một vòng sát văn gây sát thương theo nhịp thực, còn Thiên Cơ chọn thời điểm và tâm điểm để tránh lãng phí thế trận. Mỗi tick thuộc encounter hiện tại, dùng chính caster làm chủ thể gây damage và chịu giới hạn số mục tiêu. Vùng hết thời hạn thì tự biến mất, không sinh chiến lợi phẩm riêng.",
+      "lineage_stories_vi": {
+        "a": "Liệt Địa dồn lực vào các nhịp sát thương giới hạn. Mỗi tick là một lần Combat V2 trực tiếp xác nhận; chủ thể, mục tiêu, HP0 và receipt theo trận hiện tại, không có damage ẩn.",
+        "b": "Thiên Cơ nhấn mạnh chọn vị trí và thời điểm. Vùng chỉ đánh mục tiêu còn sống đúng trong bán kính; rời vùng thì không bị trúng tick, hết hạn thì không tiếp tục gây sát thương."
+      },
+      "signature_ultimate": "Vạn Tượng Tru Tiên Trận",
+      "innate_node_id": "tmb.skill.formation.sat_phat_tran.innate.human",
+      "innate_node_ids": {
+        "a": "tmb.skill.formation.sat_phat_tran.innate.immortal.a",
+        "b": "tmb.skill.formation.sat_phat_tran.innate.immortal.b"
+      },
+      "divine_innate_node_ids": {
+        "a": "tmb.skill.formation.sat_phat_tran.innate.divine.a",
+        "b": "tmb.skill.formation.sat_phat_tran.innate.divine.b"
+      }
+    }
+  ],
+  "families": [
+    {
+      "id": "tmb.skill.formation.basic",
+      "school": "formation",
+      "branch": "",
+      "slot": "basic",
+      "name": "Định Tinh Hạ Trận",
+      "nodes": [
+        {
+          "id": "tmb.skill.formation.basic.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.basic.immortal.base",
+          "tier": "immortal",
+          "lineage": "base",
+          "parent": "tmb.skill.formation.basic.human",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.basic.divine.base",
+          "tier": "divine",
+          "lineage": "base",
+          "parent": "tmb.skill.formation.basic.immortal.base",
+          "replaces": "",
+          "school": "formation"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.formation.mobility",
+      "school": "formation",
+      "branch": "",
+      "slot": "mobility",
+      "name": "Cửu Cung Du Bộ",
+      "nodes": [
+        {
+          "id": "tmb.skill.formation.mobility.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.mobility.immortal.base",
+          "tier": "immortal",
+          "lineage": "base",
+          "parent": "tmb.skill.formation.mobility.human",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.mobility.divine.base",
+          "tier": "divine",
+          "lineage": "base",
+          "parent": "tmb.skill.formation.mobility.immortal.base",
+          "replaces": "",
+          "school": "formation"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.formation.tu_linh_tran.active_01",
+      "school": "formation",
+      "branch": "tu_linh_tran",
+      "slot": "active",
+      "name": "Thổ Mạch Dẫn Khí",
+      "nodes": [
+        {
+          "id": "tmb.skill.formation.tu_linh_tran.active_01.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.tu_linh_tran.active_01.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.formation.tu_linh_tran.active_01.human",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.tu_linh_tran.active_01.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.formation.tu_linh_tran.active_01.human",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.tu_linh_tran.active_01.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.formation.tu_linh_tran.active_01.immortal.a",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.tu_linh_tran.active_01.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.formation.tu_linh_tran.active_01.immortal.b",
+          "replaces": "",
+          "school": "formation"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.formation.tu_linh_tran.active_02",
+      "school": "formation",
+      "branch": "tu_linh_tran",
+      "slot": "active",
+      "name": "Tinh Bàn Hộ Tâm",
+      "nodes": [
+        {
+          "id": "tmb.skill.formation.tu_linh_tran.active_02.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.tu_linh_tran.active_02.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.formation.tu_linh_tran.active_02.human",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.tu_linh_tran.active_02.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.formation.tu_linh_tran.active_02.human",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.tu_linh_tran.active_02.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.formation.tu_linh_tran.active_02.immortal.a",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.tu_linh_tran.active_02.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.formation.tu_linh_tran.active_02.immortal.b",
+          "replaces": "",
+          "school": "formation"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.formation.tu_linh_tran.active_03",
+      "school": "formation",
+      "branch": "tu_linh_tran",
+      "slot": "active",
+      "name": "Địa Tàng Liên Trận",
+      "nodes": [
+        {
+          "id": "tmb.skill.formation.tu_linh_tran.active_03.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.tu_linh_tran.active_03.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.formation.tu_linh_tran.active_03.human",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.tu_linh_tran.active_03.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.formation.tu_linh_tran.active_03.human",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.tu_linh_tran.active_03.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.formation.tu_linh_tran.active_03.immortal.a",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.tu_linh_tran.active_03.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.formation.tu_linh_tran.active_03.immortal.b",
+          "replaces": "",
+          "school": "formation"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.formation.tu_linh_tran.active_04",
+      "school": "formation",
+      "branch": "tu_linh_tran",
+      "slot": "active",
+      "name": "Thái Sơ Tĩnh Vực",
+      "nodes": [
+        {
+          "id": "tmb.skill.formation.tu_linh_tran.active_04.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.tu_linh_tran.active_04.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.formation.tu_linh_tran.active_04.human",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.tu_linh_tran.active_04.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.formation.tu_linh_tran.active_04.human",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.tu_linh_tran.active_04.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.formation.tu_linh_tran.active_04.immortal.a",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.tu_linh_tran.active_04.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.formation.tu_linh_tran.active_04.immortal.b",
+          "replaces": "",
+          "school": "formation"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.formation.tu_linh_tran.ultimate",
+      "school": "formation",
+      "branch": "tu_linh_tran",
+      "slot": "ultimate",
+      "name": "Thái Sơ Vạn Linh Trận",
+      "nodes": [
+        {
+          "id": "tmb.skill.formation.tu_linh_tran.ultimate.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.tu_linh_tran.ultimate.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.formation.tu_linh_tran.ultimate.human",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.tu_linh_tran.ultimate.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.formation.tu_linh_tran.ultimate.human",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.tu_linh_tran.ultimate.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.formation.tu_linh_tran.ultimate.immortal.a",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.tu_linh_tran.ultimate.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.formation.tu_linh_tran.ultimate.immortal.b",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.tu_linh_tran.ultimate.rare.a",
+          "tier": "divine",
+          "lineage": "rare_a",
+          "parent": "tmb.skill.formation.tu_linh_tran.ultimate.divine.a",
+          "replaces": "tmb.skill.formation.tu_linh_tran.ultimate.divine.a",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.tu_linh_tran.ultimate.rare.b",
+          "tier": "divine",
+          "lineage": "rare_b",
+          "parent": "tmb.skill.formation.tu_linh_tran.ultimate.divine.b",
+          "replaces": "tmb.skill.formation.tu_linh_tran.ultimate.divine.b",
+          "school": "formation"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.formation.tu_linh_tran.passive_01",
+      "school": "formation",
+      "branch": "tu_linh_tran",
+      "slot": "passive",
+      "name": "An Mạch Tụ Linh",
+      "nodes": [
+        {
+          "id": "tmb.skill.formation.tu_linh_tran.passive_01.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.tu_linh_tran.passive_01.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.formation.tu_linh_tran.passive_01.human",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.tu_linh_tran.passive_01.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.formation.tu_linh_tran.passive_01.human",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.tu_linh_tran.passive_01.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.formation.tu_linh_tran.passive_01.immortal.a",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.tu_linh_tran.passive_01.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.formation.tu_linh_tran.passive_01.immortal.b",
+          "replaces": "",
+          "school": "formation"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.formation.tu_linh_tran.passive_02",
+      "school": "formation",
+      "branch": "tu_linh_tran",
+      "slot": "passive",
+      "name": "Ngũ Hành Đồng Trận",
+      "nodes": [
+        {
+          "id": "tmb.skill.formation.tu_linh_tran.passive_02.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.tu_linh_tran.passive_02.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.formation.tu_linh_tran.passive_02.human",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.tu_linh_tran.passive_02.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.formation.tu_linh_tran.passive_02.human",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.tu_linh_tran.passive_02.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.formation.tu_linh_tran.passive_02.immortal.a",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.tu_linh_tran.passive_02.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.formation.tu_linh_tran.passive_02.immortal.b",
+          "replaces": "",
+          "school": "formation"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.formation.tu_linh_tran.passive_03",
+      "school": "formation",
+      "branch": "tu_linh_tran",
+      "slot": "passive",
+      "name": "Tinh Tú Quy Nguyên",
+      "nodes": [
+        {
+          "id": "tmb.skill.formation.tu_linh_tran.passive_03.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.tu_linh_tran.passive_03.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.formation.tu_linh_tran.passive_03.human",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.tu_linh_tran.passive_03.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.formation.tu_linh_tran.passive_03.human",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.tu_linh_tran.passive_03.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.formation.tu_linh_tran.passive_03.immortal.a",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.tu_linh_tran.passive_03.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.formation.tu_linh_tran.passive_03.immortal.b",
+          "replaces": "",
+          "school": "formation"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.formation.tu_linh_tran.passive_04",
+      "school": "formation",
+      "branch": "tu_linh_tran",
+      "slot": "passive",
+      "name": "Sơn Hà Hộ Thể",
+      "nodes": [
+        {
+          "id": "tmb.skill.formation.tu_linh_tran.passive_04.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.tu_linh_tran.passive_04.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.formation.tu_linh_tran.passive_04.human",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.tu_linh_tran.passive_04.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.formation.tu_linh_tran.passive_04.human",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.tu_linh_tran.passive_04.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.formation.tu_linh_tran.passive_04.immortal.a",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.tu_linh_tran.passive_04.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.formation.tu_linh_tran.passive_04.immortal.b",
+          "replaces": "",
+          "school": "formation"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.formation.tu_linh_tran.passive_05",
+      "school": "formation",
+      "branch": "tu_linh_tran",
+      "slot": "passive",
+      "name": "Vạn Linh Cộng Tức",
+      "nodes": [
+        {
+          "id": "tmb.skill.formation.tu_linh_tran.passive_05.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.tu_linh_tran.passive_05.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.formation.tu_linh_tran.passive_05.human",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.tu_linh_tran.passive_05.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.formation.tu_linh_tran.passive_05.human",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.tu_linh_tran.passive_05.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.formation.tu_linh_tran.passive_05.immortal.a",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.tu_linh_tran.passive_05.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.formation.tu_linh_tran.passive_05.immortal.b",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.tu_linh_tran.passive_05.rare.a",
+          "tier": "divine",
+          "lineage": "rare_a",
+          "parent": "tmb.skill.formation.tu_linh_tran.passive_05.divine.a",
+          "replaces": "tmb.skill.formation.tu_linh_tran.passive_05.divine.a",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.tu_linh_tran.passive_05.rare.b",
+          "tier": "divine",
+          "lineage": "rare_b",
+          "parent": "tmb.skill.formation.tu_linh_tran.passive_05.divine.b",
+          "replaces": "tmb.skill.formation.tu_linh_tran.passive_05.divine.b",
+          "school": "formation"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.formation.tu_linh_tran.innate",
+      "school": "formation",
+      "branch": "tu_linh_tran",
+      "slot": "innate",
+      "name": "Khai Trận Tâm Pháp",
+      "nodes": [
+        {
+          "id": "tmb.skill.formation.tu_linh_tran.innate.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.tu_linh_tran.innate.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.formation.tu_linh_tran.innate.human",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.tu_linh_tran.innate.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.formation.tu_linh_tran.innate.human",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.tu_linh_tran.innate.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.formation.tu_linh_tran.innate.immortal.a",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.tu_linh_tran.innate.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.formation.tu_linh_tran.innate.immortal.b",
+          "replaces": "",
+          "school": "formation"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.formation.phong_toa_tran.active_01",
+      "school": "formation",
+      "branch": "phong_toa_tran",
+      "slot": "active",
+      "name": "Cửu Cung Tỏa Lộ",
+      "nodes": [
+        {
+          "id": "tmb.skill.formation.phong_toa_tran.active_01.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.phong_toa_tran.active_01.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.formation.phong_toa_tran.active_01.human",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.phong_toa_tran.active_01.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.formation.phong_toa_tran.active_01.human",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.phong_toa_tran.active_01.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.formation.phong_toa_tran.active_01.immortal.a",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.phong_toa_tran.active_01.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.formation.phong_toa_tran.active_01.immortal.b",
+          "replaces": "",
+          "school": "formation"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.formation.phong_toa_tran.active_02",
+      "school": "formation",
+      "branch": "phong_toa_tran",
+      "slot": "active",
+      "name": "Bát Môn Phong Hành",
+      "nodes": [
+        {
+          "id": "tmb.skill.formation.phong_toa_tran.active_02.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.phong_toa_tran.active_02.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.formation.phong_toa_tran.active_02.human",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.phong_toa_tran.active_02.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.formation.phong_toa_tran.active_02.human",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.phong_toa_tran.active_02.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.formation.phong_toa_tran.active_02.immortal.a",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.phong_toa_tran.active_02.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.formation.phong_toa_tran.active_02.immortal.b",
+          "replaces": "",
+          "school": "formation"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.formation.phong_toa_tran.active_03",
+      "school": "formation",
+      "branch": "phong_toa_tran",
+      "slot": "active",
+      "name": "Huyền Thạch Trấn Vị",
+      "nodes": [
+        {
+          "id": "tmb.skill.formation.phong_toa_tran.active_03.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.phong_toa_tran.active_03.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.formation.phong_toa_tran.active_03.human",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.phong_toa_tran.active_03.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.formation.phong_toa_tran.active_03.human",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.phong_toa_tran.active_03.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.formation.phong_toa_tran.active_03.immortal.a",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.phong_toa_tran.active_03.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.formation.phong_toa_tran.active_03.immortal.b",
+          "replaces": "",
+          "school": "formation"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.formation.phong_toa_tran.active_04",
+      "school": "formation",
+      "branch": "phong_toa_tran",
+      "slot": "active",
+      "name": "Tứ Tượng Hãm Trận",
+      "nodes": [
+        {
+          "id": "tmb.skill.formation.phong_toa_tran.active_04.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.phong_toa_tran.active_04.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.formation.phong_toa_tran.active_04.human",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.phong_toa_tran.active_04.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.formation.phong_toa_tran.active_04.human",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.phong_toa_tran.active_04.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.formation.phong_toa_tran.active_04.immortal.a",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.phong_toa_tran.active_04.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.formation.phong_toa_tran.active_04.immortal.b",
+          "replaces": "",
+          "school": "formation"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.formation.phong_toa_tran.ultimate",
+      "school": "formation",
+      "branch": "phong_toa_tran",
+      "slot": "ultimate",
+      "name": "Cửu Cung Phong Tuyệt Trận",
+      "nodes": [
+        {
+          "id": "tmb.skill.formation.phong_toa_tran.ultimate.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.phong_toa_tran.ultimate.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.formation.phong_toa_tran.ultimate.human",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.phong_toa_tran.ultimate.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.formation.phong_toa_tran.ultimate.human",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.phong_toa_tran.ultimate.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.formation.phong_toa_tran.ultimate.immortal.a",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.phong_toa_tran.ultimate.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.formation.phong_toa_tran.ultimate.immortal.b",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.phong_toa_tran.ultimate.rare.a",
+          "tier": "divine",
+          "lineage": "rare_a",
+          "parent": "tmb.skill.formation.phong_toa_tran.ultimate.divine.a",
+          "replaces": "tmb.skill.formation.phong_toa_tran.ultimate.divine.a",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.phong_toa_tran.ultimate.rare.b",
+          "tier": "divine",
+          "lineage": "rare_b",
+          "parent": "tmb.skill.formation.phong_toa_tran.ultimate.divine.b",
+          "replaces": "tmb.skill.formation.phong_toa_tran.ultimate.divine.b",
+          "school": "formation"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.formation.phong_toa_tran.passive_01",
+      "school": "formation",
+      "branch": "phong_toa_tran",
+      "slot": "passive",
+      "name": "Bát Môn Định Vực",
+      "nodes": [
+        {
+          "id": "tmb.skill.formation.phong_toa_tran.passive_01.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.phong_toa_tran.passive_01.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.formation.phong_toa_tran.passive_01.human",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.phong_toa_tran.passive_01.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.formation.phong_toa_tran.passive_01.human",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.phong_toa_tran.passive_01.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.formation.phong_toa_tran.passive_01.immortal.a",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.phong_toa_tran.passive_01.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.formation.phong_toa_tran.passive_01.immortal.b",
+          "replaces": "",
+          "school": "formation"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.formation.phong_toa_tran.passive_02",
+      "school": "formation",
+      "branch": "phong_toa_tran",
+      "slot": "passive",
+      "name": "Tinh Quỹ Khóa Chân",
+      "nodes": [
+        {
+          "id": "tmb.skill.formation.phong_toa_tran.passive_02.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.phong_toa_tran.passive_02.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.formation.phong_toa_tran.passive_02.human",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.phong_toa_tran.passive_02.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.formation.phong_toa_tran.passive_02.human",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.phong_toa_tran.passive_02.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.formation.phong_toa_tran.passive_02.immortal.a",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.phong_toa_tran.passive_02.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.formation.phong_toa_tran.passive_02.immortal.b",
+          "replaces": "",
+          "school": "formation"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.formation.phong_toa_tran.passive_03",
+      "school": "formation",
+      "branch": "phong_toa_tran",
+      "slot": "passive",
+      "name": "Sơn Hà Cản Bước",
+      "nodes": [
+        {
+          "id": "tmb.skill.formation.phong_toa_tran.passive_03.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.phong_toa_tran.passive_03.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.formation.phong_toa_tran.passive_03.human",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.phong_toa_tran.passive_03.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.formation.phong_toa_tran.passive_03.human",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.phong_toa_tran.passive_03.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.formation.phong_toa_tran.passive_03.immortal.a",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.phong_toa_tran.passive_03.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.formation.phong_toa_tran.passive_03.immortal.b",
+          "replaces": "",
+          "school": "formation"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.formation.phong_toa_tran.passive_04",
+      "school": "formation",
+      "branch": "phong_toa_tran",
+      "slot": "passive",
+      "name": "Phong Vực Liên Tâm",
+      "nodes": [
+        {
+          "id": "tmb.skill.formation.phong_toa_tran.passive_04.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.phong_toa_tran.passive_04.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.formation.phong_toa_tran.passive_04.human",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.phong_toa_tran.passive_04.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.formation.phong_toa_tran.passive_04.human",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.phong_toa_tran.passive_04.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.formation.phong_toa_tran.passive_04.immortal.a",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.phong_toa_tran.passive_04.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.formation.phong_toa_tran.passive_04.immortal.b",
+          "replaces": "",
+          "school": "formation"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.formation.phong_toa_tran.passive_05",
+      "school": "formation",
+      "branch": "phong_toa_tran",
+      "slot": "passive",
+      "name": "Trận Nhãn Bất Loạn",
+      "nodes": [
+        {
+          "id": "tmb.skill.formation.phong_toa_tran.passive_05.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.phong_toa_tran.passive_05.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.formation.phong_toa_tran.passive_05.human",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.phong_toa_tran.passive_05.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.formation.phong_toa_tran.passive_05.human",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.phong_toa_tran.passive_05.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.formation.phong_toa_tran.passive_05.immortal.a",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.phong_toa_tran.passive_05.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.formation.phong_toa_tran.passive_05.immortal.b",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.phong_toa_tran.passive_05.rare.a",
+          "tier": "divine",
+          "lineage": "rare_a",
+          "parent": "tmb.skill.formation.phong_toa_tran.passive_05.divine.a",
+          "replaces": "tmb.skill.formation.phong_toa_tran.passive_05.divine.a",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.phong_toa_tran.passive_05.rare.b",
+          "tier": "divine",
+          "lineage": "rare_b",
+          "parent": "tmb.skill.formation.phong_toa_tran.passive_05.divine.b",
+          "replaces": "tmb.skill.formation.phong_toa_tran.passive_05.divine.b",
+          "school": "formation"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.formation.phong_toa_tran.innate",
+      "school": "formation",
+      "branch": "phong_toa_tran",
+      "slot": "innate",
+      "name": "Phong Tỏa Chân Ý",
+      "nodes": [
+        {
+          "id": "tmb.skill.formation.phong_toa_tran.innate.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.phong_toa_tran.innate.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.formation.phong_toa_tran.innate.human",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.phong_toa_tran.innate.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.formation.phong_toa_tran.innate.human",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.phong_toa_tran.innate.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.formation.phong_toa_tran.innate.immortal.a",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.phong_toa_tran.innate.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.formation.phong_toa_tran.innate.immortal.b",
+          "replaces": "",
+          "school": "formation"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.formation.sat_phat_tran.active_01",
+      "school": "formation",
+      "branch": "sat_phat_tran",
+      "slot": "active",
+      "name": "Liệt Địa Sát Văn",
+      "nodes": [
+        {
+          "id": "tmb.skill.formation.sat_phat_tran.active_01.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.sat_phat_tran.active_01.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.formation.sat_phat_tran.active_01.human",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.sat_phat_tran.active_01.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.formation.sat_phat_tran.active_01.human",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.sat_phat_tran.active_01.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.formation.sat_phat_tran.active_01.immortal.a",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.sat_phat_tran.active_01.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.formation.sat_phat_tran.active_01.immortal.b",
+          "replaces": "",
+          "school": "formation"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.formation.sat_phat_tran.active_02",
+      "school": "formation",
+      "branch": "sat_phat_tran",
+      "slot": "active",
+      "name": "Thiên La Địa Võng",
+      "nodes": [
+        {
+          "id": "tmb.skill.formation.sat_phat_tran.active_02.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.sat_phat_tran.active_02.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.formation.sat_phat_tran.active_02.human",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.sat_phat_tran.active_02.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.formation.sat_phat_tran.active_02.human",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.sat_phat_tran.active_02.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.formation.sat_phat_tran.active_02.immortal.a",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.sat_phat_tran.active_02.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.formation.sat_phat_tran.active_02.immortal.b",
+          "replaces": "",
+          "school": "formation"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.formation.sat_phat_tran.active_03",
+      "school": "formation",
+      "branch": "sat_phat_tran",
+      "slot": "active",
+      "name": "Thất Tinh Đoạt Mạch",
+      "nodes": [
+        {
+          "id": "tmb.skill.formation.sat_phat_tran.active_03.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.sat_phat_tran.active_03.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.formation.sat_phat_tran.active_03.human",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.sat_phat_tran.active_03.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.formation.sat_phat_tran.active_03.human",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.sat_phat_tran.active_03.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.formation.sat_phat_tran.active_03.immortal.a",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.sat_phat_tran.active_03.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.formation.sat_phat_tran.active_03.immortal.b",
+          "replaces": "",
+          "school": "formation"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.formation.sat_phat_tran.active_04",
+      "school": "formation",
+      "branch": "sat_phat_tran",
+      "slot": "active",
+      "name": "Địa Hỏa Phục Sát",
+      "nodes": [
+        {
+          "id": "tmb.skill.formation.sat_phat_tran.active_04.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.sat_phat_tran.active_04.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.formation.sat_phat_tran.active_04.human",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.sat_phat_tran.active_04.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.formation.sat_phat_tran.active_04.human",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.sat_phat_tran.active_04.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.formation.sat_phat_tran.active_04.immortal.a",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.sat_phat_tran.active_04.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.formation.sat_phat_tran.active_04.immortal.b",
+          "replaces": "",
+          "school": "formation"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.formation.sat_phat_tran.ultimate",
+      "school": "formation",
+      "branch": "sat_phat_tran",
+      "slot": "ultimate",
+      "name": "Vạn Tượng Tru Tiên Trận",
+      "nodes": [
+        {
+          "id": "tmb.skill.formation.sat_phat_tran.ultimate.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.sat_phat_tran.ultimate.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.formation.sat_phat_tran.ultimate.human",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.sat_phat_tran.ultimate.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.formation.sat_phat_tran.ultimate.human",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.sat_phat_tran.ultimate.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.formation.sat_phat_tran.ultimate.immortal.a",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.sat_phat_tran.ultimate.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.formation.sat_phat_tran.ultimate.immortal.b",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.sat_phat_tran.ultimate.rare.a",
+          "tier": "divine",
+          "lineage": "rare_a",
+          "parent": "tmb.skill.formation.sat_phat_tran.ultimate.divine.a",
+          "replaces": "tmb.skill.formation.sat_phat_tran.ultimate.divine.a",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.sat_phat_tran.ultimate.rare.b",
+          "tier": "divine",
+          "lineage": "rare_b",
+          "parent": "tmb.skill.formation.sat_phat_tran.ultimate.divine.b",
+          "replaces": "tmb.skill.formation.sat_phat_tran.ultimate.divine.b",
+          "school": "formation"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.formation.sat_phat_tran.passive_01",
+      "school": "formation",
+      "branch": "sat_phat_tran",
+      "slot": "passive",
+      "name": "Sát Cục Dẫn Đường",
+      "nodes": [
+        {
+          "id": "tmb.skill.formation.sat_phat_tran.passive_01.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.sat_phat_tran.passive_01.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.formation.sat_phat_tran.passive_01.human",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.sat_phat_tran.passive_01.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.formation.sat_phat_tran.passive_01.human",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.sat_phat_tran.passive_01.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.formation.sat_phat_tran.passive_01.immortal.a",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.sat_phat_tran.passive_01.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.formation.sat_phat_tran.passive_01.immortal.b",
+          "replaces": "",
+          "school": "formation"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.formation.sat_phat_tran.passive_02",
+      "school": "formation",
+      "branch": "sat_phat_tran",
+      "slot": "passive",
+      "name": "Tinh Bàn Phục Kích",
+      "nodes": [
+        {
+          "id": "tmb.skill.formation.sat_phat_tran.passive_02.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.sat_phat_tran.passive_02.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.formation.sat_phat_tran.passive_02.human",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.sat_phat_tran.passive_02.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.formation.sat_phat_tran.passive_02.human",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.sat_phat_tran.passive_02.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.formation.sat_phat_tran.passive_02.immortal.a",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.sat_phat_tran.passive_02.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.formation.sat_phat_tran.passive_02.immortal.b",
+          "replaces": "",
+          "school": "formation"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.formation.sat_phat_tran.passive_03",
+      "school": "formation",
+      "branch": "sat_phat_tran",
+      "slot": "passive",
+      "name": "Địa Mạch Kết Sát",
+      "nodes": [
+        {
+          "id": "tmb.skill.formation.sat_phat_tran.passive_03.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.sat_phat_tran.passive_03.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.formation.sat_phat_tran.passive_03.human",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.sat_phat_tran.passive_03.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.formation.sat_phat_tran.passive_03.human",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.sat_phat_tran.passive_03.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.formation.sat_phat_tran.passive_03.immortal.a",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.sat_phat_tran.passive_03.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.formation.sat_phat_tran.passive_03.immortal.b",
+          "replaces": "",
+          "school": "formation"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.formation.sat_phat_tran.passive_04",
+      "school": "formation",
+      "branch": "sat_phat_tran",
+      "slot": "passive",
+      "name": "Thiên Cơ Tịnh Toán",
+      "nodes": [
+        {
+          "id": "tmb.skill.formation.sat_phat_tran.passive_04.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.sat_phat_tran.passive_04.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.formation.sat_phat_tran.passive_04.human",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.sat_phat_tran.passive_04.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.formation.sat_phat_tran.passive_04.human",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.sat_phat_tran.passive_04.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.formation.sat_phat_tran.passive_04.immortal.a",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.sat_phat_tran.passive_04.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.formation.sat_phat_tran.passive_04.immortal.b",
+          "replaces": "",
+          "school": "formation"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.formation.sat_phat_tran.passive_05",
+      "school": "formation",
+      "branch": "sat_phat_tran",
+      "slot": "passive",
+      "name": "Tru Tiên Trận Tâm",
+      "nodes": [
+        {
+          "id": "tmb.skill.formation.sat_phat_tran.passive_05.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.sat_phat_tran.passive_05.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.formation.sat_phat_tran.passive_05.human",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.sat_phat_tran.passive_05.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.formation.sat_phat_tran.passive_05.human",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.sat_phat_tran.passive_05.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.formation.sat_phat_tran.passive_05.immortal.a",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.sat_phat_tran.passive_05.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.formation.sat_phat_tran.passive_05.immortal.b",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.sat_phat_tran.passive_05.rare.a",
+          "tier": "divine",
+          "lineage": "rare_a",
+          "parent": "tmb.skill.formation.sat_phat_tran.passive_05.divine.a",
+          "replaces": "tmb.skill.formation.sat_phat_tran.passive_05.divine.a",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.sat_phat_tran.passive_05.rare.b",
+          "tier": "divine",
+          "lineage": "rare_b",
+          "parent": "tmb.skill.formation.sat_phat_tran.passive_05.divine.b",
+          "replaces": "tmb.skill.formation.sat_phat_tran.passive_05.divine.b",
+          "school": "formation"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.formation.sat_phat_tran.innate",
+      "school": "formation",
+      "branch": "sat_phat_tran",
+      "slot": "innate",
+      "name": "Chấp Trận Hành Phạt",
+      "nodes": [
+        {
+          "id": "tmb.skill.formation.sat_phat_tran.innate.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.sat_phat_tran.innate.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.formation.sat_phat_tran.innate.human",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.sat_phat_tran.innate.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.formation.sat_phat_tran.innate.human",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.sat_phat_tran.innate.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.formation.sat_phat_tran.innate.immortal.a",
+          "replaces": "",
+          "school": "formation"
+        },
+        {
+          "id": "tmb.skill.formation.sat_phat_tran.innate.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.formation.sat_phat_tran.innate.immortal.b",
+          "replaces": "",
+          "school": "formation"
+        }
+      ]
+    }
+  ],
+  "candidate_source_status": "AUTHENTIC_FORMATION_SOURCE_PENDING",
+  "target_counts": {
+    "skill_nodes": 183,
+    "families": 35,
+    "branches": 3,
+    "human": 35,
+    "immortal": 68,
+    "divine": 80
+  }
+}

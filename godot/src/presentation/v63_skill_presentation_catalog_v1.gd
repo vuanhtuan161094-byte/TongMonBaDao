@@ -16,6 +16,9 @@ const TALISMAN_PRESENTATION_EXTENSION_PATH := "res://data/presentation/v63_talis
 const CURSE_CATALOG_PATH := "res://data/combat/v63_curse_combat_catalog.json"
 const CURSE_REGISTRY_EXTENSION_PATH := "res://data/combat/v63_curse_registry_extension.json"
 const CURSE_PRESENTATION_EXTENSION_PATH := "res://data/presentation/v63_curse_presentation_manifest_v1.json"
+const FORMATION_CATALOG_PATH := "res://data/combat/v63_formation_combat_catalog.json"
+const FORMATION_REGISTRY_EXTENSION_PATH := "res://data/combat/v63_formation_registry_extension.json"
+const FORMATION_PRESENTATION_EXTENSION_PATH := "res://data/presentation/v63_formation_presentation_manifest_v1.json"
 const CATALOGUE_PATHS := {
 	"human":"res://data/combat/v63_human_combat_catalog.json",
 	"immortal":"res://data/combat/v63_immortal_combat_catalog.json",
@@ -209,6 +212,44 @@ static func load_authoring_sources() -> Dictionary:
 				else:
 					entries[id] = curse_entries[id].duplicate(true)
 			manifest["entries"] = entries
+	var formation_catalogue_result := _read_json(FORMATION_CATALOG_PATH)
+	var formation_registry_result := _read_json(FORMATION_REGISTRY_EXTENSION_PATH)
+	var formation_manifest_result := _read_json(FORMATION_PRESENTATION_EXTENSION_PATH)
+	for result in [formation_catalogue_result, formation_registry_result, formation_manifest_result]:
+		if not bool(result.get("ok", false)):
+			errors.append_array(result.get("errors", []))
+	if bool(formation_catalogue_result.get("ok", false)) and bool(formation_registry_result.get("ok", false)) and bool(formation_manifest_result.get("ok", false)):
+		var formation_catalogue: Dictionary = formation_catalogue_result.get("data", {})
+		var formation_registry_extension: Dictionary = formation_registry_result.get("data", {})
+		var formation_manifest_extension: Dictionary = formation_manifest_result.get("data", {})
+		var formation_errors := _validate_formation_extensions(formation_catalogue, formation_registry_extension, formation_manifest_extension)
+		errors.append_array(formation_errors)
+		if formation_errors.is_empty():
+			catalogues["formation"] = formation_catalogue
+			var school_rows: Array = registry.get("schools", [])
+			var path_rows: Array = registry.get("paths", [])
+			var family_rows: Array = registry.get("families", [])
+			school_rows.append(formation_registry_extension.get("school", {}).duplicate(true))
+			path_rows.append_array(formation_registry_extension.get("paths", []).duplicate(true))
+			family_rows.append_array(formation_registry_extension.get("families", []).duplicate(true))
+			registry["schools"] = school_rows
+			registry["paths"] = path_rows
+			registry["families"] = family_rows
+			registry["school_count"] = school_rows.size()
+			registry["branch_count"] = path_rows.size()
+			registry["skill_family_count"] = family_rows.size()
+			registry["skills_s8_candidate_count"] = 183
+			registry["skills_s8_candidate_source_status"] = "AUTHENTIC_FORMATION_CODEX_SOURCE_PENDING"
+			registry["total_runtime_candidate_nodes"] = int(registry.get("total_runtime_candidate_nodes", 0)) + 183
+			registry["total_authored_runtime_nodes"] = int(registry.get("total_authored_runtime_nodes", 0)) + 183
+			var entries: Dictionary = manifest.get("entries", {}).duplicate(true)
+			var formation_entries: Dictionary = formation_manifest_extension.get("entries", {})
+			for id in formation_entries.keys():
+				if entries.has(id):
+					errors.append("formation_presentation_id_collision:" + str(id))
+				else:
+					entries[id] = formation_entries[id].duplicate(true)
+			manifest["entries"] = entries
 	return {
 		"ok":errors.is_empty(),
 		"errors":errors,
@@ -363,6 +404,122 @@ static func _validate_talisman_extensions(catalogue: Dictionary, registry_extens
 			errors.append("talisman_vfx_provenance_invalid:" + id)
 	if skill_ids.size() != 183 or registry_nodes.size() != 183:
 		errors.append("talisman_join_total_invalid")
+	return errors
+
+static func _validate_formation_extensions(catalogue: Dictionary, registry_extension: Dictionary, presentation_extension: Dictionary) -> Array[String]:
+	var errors: Array[String] = []
+	errors.append_array(V63FormationSkillCombatSystem.validate_catalogue(catalogue))
+	if int(registry_extension.get("schema_version", -1)) != 1 or str(registry_extension.get("release_gate", "")) != "OFF":
+		errors.append("formation_registry_extension_must_remain_off")
+	if int(presentation_extension.get("schema_version", -1)) != 1 or str(presentation_extension.get("release_gate", "")) != "OFF":
+		errors.append("formation_presentation_extension_must_remain_off")
+	var base: Dictionary = registry_extension.get("base_registry", {})
+	var presentation_base: Dictionary = presentation_extension.get("base_registry", {})
+	if str(base.get("path", "")) != REGISTRY_PATH or str(presentation_base.get("path", "")) != REGISTRY_PATH:
+		errors.append("formation_base_registry_path_mismatch")
+	var actual_base_hash := git_blob_sha1(REGISTRY_PATH)
+	if actual_base_hash.is_empty() or str(base.get("git_blob_sha", "")) != actual_base_hash or str(presentation_base.get("git_blob_sha", "")) != actual_base_hash:
+		errors.append("formation_base_registry_pin_mismatch")
+	var source: Dictionary = registry_extension.get("source_catalog", {})
+	var presentation_source: Dictionary = presentation_extension.get("source_catalog", {})
+	if str(source.get("path", "")) != FORMATION_CATALOG_PATH or str(presentation_source.get("path", "")) != FORMATION_CATALOG_PATH:
+		errors.append("formation_catalogue_pin_path_mismatch")
+	var actual_catalogue_hash := git_blob_sha1(FORMATION_CATALOG_PATH)
+	if actual_catalogue_hash.is_empty() or str(source.get("git_blob_sha", "")) != actual_catalogue_hash or str(presentation_source.get("git_blob_sha", "")) != actual_catalogue_hash:
+		errors.append("formation_catalogue_pin_mismatch")
+	var extension_source: Dictionary = presentation_extension.get("registry_extension", {})
+	var actual_extension_hash := git_blob_sha1(FORMATION_REGISTRY_EXTENSION_PATH)
+	if str(extension_source.get("path", "")) != FORMATION_REGISTRY_EXTENSION_PATH or str(extension_source.get("git_blob_sha", "")) != actual_extension_hash:
+		errors.append("formation_registry_extension_pin_mismatch")
+	if str(registry_extension.get("extension_id", "")) != "tmb.v63.registry_extension.s8_formation" or str(presentation_extension.get("extension_id", "")) != "tmb.v63.presentation_extension.s8_formation":
+		errors.append("formation_extension_identity_invalid")
+	var paths: Variant = registry_extension.get("paths", null)
+	var families: Variant = registry_extension.get("families", null)
+	var skills: Array = catalogue.get("skills", [])
+	var entries: Variant = presentation_extension.get("entries", null)
+	if not (paths is Array) or paths.size() != 3 or not (families is Array) or families.size() != 35 or not (entries is Dictionary) or entries.size() != 183:
+		errors.append("formation_extension_counts_invalid")
+		return errors
+	var path_ids: Dictionary = {}
+	for path in paths:
+		var path_id := str(path.get("id", ""))
+		if not path_id.begins_with("tmb.path.formation.") or path_ids.has(path_id) or str(path.get("school", "")) != "formation":
+			errors.append("formation_path_identity_invalid:" + path_id)
+		path_ids[path_id] = true
+		if str(path.get("story_vi", "")).split(" ", false).size() < 60:
+			errors.append("formation_branch_story_too_short:" + path_id)
+		var lineage_stories: Dictionary = path.get("lineage_stories_vi", {})
+		for lineage in ["a", "b"]:
+			if str(lineage_stories.get(lineage, "")).split(" ").size() < 25:
+				errors.append("formation_lineage_story_missing:" + path_id + ":" + lineage)
+	var registry_nodes: Dictionary = {}
+	var family_ids: Dictionary = {}
+	for family in families:
+		var family_id := str(family.get("id", ""))
+		if not family_id.begins_with("tmb.skill.formation.") or family_ids.has(family_id):
+			errors.append("formation_family_identity_invalid:" + family_id)
+		family_ids[family_id] = true
+		for node in family.get("nodes", []):
+			var node_id := str(node.get("id", ""))
+			if registry_nodes.has(node_id):
+				errors.append("formation_registry_node_duplicate:" + node_id)
+			registry_nodes[node_id] = node
+	var skill_ids: Dictionary = {}
+	var flavors: Dictionary = {}
+	var short_texts: Dictionary = {}
+	var long_texts: Dictionary = {}
+	for skill in skills:
+		var id := str(skill.get("id", ""))
+		var entry: Variant = entries.get(id, null)
+		if skill_ids.has(id) or not (entry is Dictionary):
+			errors.append("formation_presentation_join_missing:" + id)
+			continue
+		skill_ids[id] = true
+		var branch := str(skill.get("branch", ""))
+		var expected_branch := "common" if branch.is_empty() else branch
+		var identity: Dictionary = entry.get("identity", {})
+		var registry_node: Dictionary = registry_nodes.get(id, {})
+		if registry_node.is_empty() or not family_ids.has(str(skill.get("family_id", ""))):
+			errors.append("formation_registry_join_missing:" + id)
+		if str(identity.get("skill_id", "")) != id or str(identity.get("family_id", "")) != str(skill.get("family_id", "")) or str(identity.get("school", "")) != "formation" or str(identity.get("branch", "")) != branch:
+			errors.append("formation_identity_join_mismatch:" + id)
+		if str(registry_node.get("family_id", "")) != str(skill.get("family_id", "")) or str(registry_node.get("parent", "")) != str(skill.get("parent_skill_id", "")) or str(registry_node.get("lineage", "")) != str(skill.get("lineage", "")):
+			errors.append("formation_registry_skill_mismatch:" + id)
+		if str(entry.get("catalogue_key", "")) != "formation" or str(entry.get("school_lore_id", "")) != "tmb.lore.school.formation" or str(entry.get("branch_lore_id", "")) != "tmb.lore.branch.formation." + expected_branch:
+			errors.append("formation_lore_link_invalid:" + id)
+		var flavor := str(entry.get("flavor_vi", ""))
+		var short_text := str(entry.get("short_description_vi", ""))
+		var long_text := str(entry.get("long_description_vi", ""))
+		if flavor.length() < 50 or flavor.length() > 110 or str(entry.get("display_name_vi", "")) != str(skill.get("name", "")):
+			errors.append("formation_flavor_or_name_invalid:" + id)
+		if str(entry.get("short_description_vi", "")) != str(skill.get("short_description_vi", "")) or str(entry.get("long_description_vi", "")) != str(skill.get("long_description_vi", "")) or flavor != str(skill.get("flavor_vi", "")):
+			errors.append("formation_catalogue_presentation_text_mismatch:" + id)
+		if flavors.has(flavor) or short_text.strip_edges().is_empty() or short_text.length() > 110 or short_texts.has(short_text) or long_text.strip_edges().is_empty() or long_texts.has(long_text):
+			errors.append("formation_prose_missing_or_duplicate:" + id)
+		flavors[flavor] = true
+		short_texts[short_text] = true
+		long_texts[long_text] = true
+		var availability: Dictionary = entry.get("availability", {})
+		if str(availability.get("status", "")) != "CANDIDATE_GATED_SOURCE_PENDING" or bool(availability.get("archivable", true)) or not str(availability.get("source_codex_id", "")).is_empty():
+			errors.append("formation_learning_must_remain_blocked:" + id)
+		var qa: Dictionary = entry.get("qa_status", {})
+		if str(qa.get("behavior", "")) != "PARTIAL_BRANCH_EXERCISE_PENDING_PER_ID" or str(qa.get("vfx_metadata", "")) != "TEXT_ONLY_SPEC_READY" or str(qa.get("asset", "")) != "NOT_PRESENT" or str(qa.get("render", "")) != "NOT_CAPTURED":
+			errors.append("formation_qa_status_overclaim:" + id)
+		var brief: Dictionary = entry.get("vfx", {}).get("production_brief", {})
+		var phase_rows: Array = brief.get("phases", [])
+		var phase_names: Array[String] = []
+		for phase in phase_rows:
+			phase_names.append(str(phase.get("phase", "")))
+			if not str(phase.get("production_note", "")).contains("VFX_HOLD_OWNER_PER_SKILL_APPROVAL"):
+				errors.append("formation_vfx_hold_missing:" + id)
+		if phase_names != ["windup", "telegraph", "release", "travel", "impact", "status", "fade"] or str(brief.get("asset_status", "")) != "NOT_PRESENT" or str(brief.get("render_capture_status", "")) != "NOT_CAPTURED" or str(brief.get("visual_acceptance_status", "")) != "PENDING" or str(brief.get("production_hold", "")) != "VFX_HOLD_OWNER_PER_SKILL_APPROVAL" or not str(brief.get("provenance", "")).begins_with("TEXT_ONLY_VFX_SPEC"):
+			errors.append("formation_vfx_provenance_invalid:" + id)
+	if skill_ids.size() != 183 or registry_nodes.size() != 183 or path_ids.size() != 3:
+		errors.append("formation_join_totals_invalid")
+	if int(catalogue.get("skill_count", 0)) != 183 or str(catalogue.get("candidate_status", "")) != "CANDIDATE_GATED_SOURCE_PENDING":
+		errors.append("formation_candidate_status_invalid")
+	if str(catalogue.get("school_story_vi", "")).split(" ", false).size() < 120:
+		errors.append("formation_school_story_too_short")
 	return errors
 
 static func _validate_curse_extensions(catalogue: Dictionary, registry_extension: Dictionary, presentation_extension: Dictionary) -> Array[String]:
@@ -714,10 +871,10 @@ static func _validate_presentation_entry(skill_id: String, entry: Dictionary, ca
 	if str(entry.get("short_description_vi","")).length() > 110:
 		errors.append("presentation_short_text_exceeds_compact_line:"+skill_id)
 	var qa_status: Variant = entry.get("qa_status",{})
-	var is_curse_candidate := str(skill.get("school", "")) == "curse"
-	var expected_vfx_metadata := "TEXT_ONLY_SPEC_READY" if is_curse_candidate else "VFX_META_COMPLETE"
-	var expected_runtime_status := "CANDIDATE_GATED_RUNTIME" if is_curse_candidate else "RUNTIME_CATALOG_PRESENT"
-	var expected_behavior_status := "PARTIAL_BRANCH_EXERCISE_PENDING_PER_ID" if is_curse_candidate else "NOT_AUDITED_PER_SKILL"
+	var is_candidate_extension := str(skill.get("school", "")) in ["curse", "formation"]
+	var expected_vfx_metadata := "TEXT_ONLY_SPEC_READY" if is_candidate_extension else "VFX_META_COMPLETE"
+	var expected_runtime_status := "CANDIDATE_GATED_RUNTIME" if is_candidate_extension else "RUNTIME_CATALOG_PRESENT"
+	var expected_behavior_status := "PARTIAL_BRANCH_EXERCISE_PENDING_PER_ID" if is_candidate_extension else "NOT_AUDITED_PER_SKILL"
 	if not (qa_status is Dictionary) or str(qa_status.get("authoring","")) != "AUTHORING_COMPLETE" or str(qa_status.get("vfx_metadata","")) != expected_vfx_metadata:
 		errors.append("presentation_authoring_status_incomplete:"+skill_id)
 	if not (qa_status is Dictionary) or str(qa_status.get("runtime","")) != expected_runtime_status or str(qa_status.get("behavior","")) != expected_behavior_status:
@@ -736,7 +893,7 @@ static func _validate_presentation_entry(skill_id: String, entry: Dictionary, ca
 		if str(element_rule.get("differential_bonus","")) != "NO_PRESENTATION_BONUS":
 			errors.append("presentation_must_not_add_root_bonus:"+skill_id)
 	var ai: Variant = entry.get("ai_policy",{})
-	var expected_ai_status := "CANDIDATE_RUNTIME_POLICY; SOURCE/BALANCE PENDING" if is_curse_candidate else "INHERITED_RUNTIME_POLICY_NOT_PER_SKILL_TUNED"
+	var expected_ai_status := "CANDIDATE_RUNTIME_POLICY; SOURCE/BALANCE PENDING" if is_candidate_extension else "INHERITED_RUNTIME_POLICY_NOT_PER_SKILL_TUNED"
 	if not (ai is Dictionary) or str(ai.get("status","")) != expected_ai_status:
 		errors.append("presentation_ai_policy_not_truthful:"+skill_id)
 	var availability: Variant = entry.get("availability",{})
@@ -976,9 +1133,9 @@ static func validate_all36_ledger(csv_text: String, catalogues: Dictionary, regi
 			errors.append("all36_unknown_ledger_status:"+key+":"+status)
 		if str(row.get("source_ref","")).strip_edges().is_empty():
 			errors.append("all36_source_reference_missing:"+key)
-	if status_counts.get("EXISTING",0) != 549 or status_counts.get("CANDIDATE_GATED",0) != 1281 or status_counts.get("NOT_AUTHORED",0) != 366:
+	if status_counts.get("EXISTING",0) != 549 or status_counts.get("CANDIDATE_GATED",0) != 1464 or status_counts.get("NOT_AUTHORED",0) != 183:
 		errors.append("all36_authorship_counts_mismatch")
-	if runtime_ids.size() != 1830:
+	if runtime_ids.size() != 2013:
 		errors.append("all36_existing_runtime_count_mismatch:"+str(runtime_ids.size()))
 	var actual_runtime_ids := _all_runtime_ids(catalogues)
 	if actual_runtime_ids.size() != runtime_ids.size():

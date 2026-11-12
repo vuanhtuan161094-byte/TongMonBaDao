@@ -7,7 +7,7 @@ const MAX_TARGETS := 3
 const POISON_OWNER_CAP := 5
 const POISON_BOSS_TARGET_CAP := 30
 const POISON_TICK_INTERVAL_SECONDS := 1.0
-const EFFECTS := ["damage","poison","guard","heal","cleanse","mark","consume_poison","mobility","slow","passive","innate"]
+const EFFECTS := ["damage","poison","guard","heal","cleanse","mark","consume_poison","mobility","slow","formation_zone","passive","innate"]
 const BOW_LINE_RANGE_SKILL_IDS := [
     "tmb.skill.bow.liep_anh.ultimate.divine.b",
     "tmb.skill.bow.liep_anh.ultimate.rare.b"
@@ -174,6 +174,12 @@ static func skill_definitions() -> Dictionary:
             result[str(row.id)] = row.duplicate(true)
     else:
         all_loaded = false
+    var formation := V63FormationSkillCombatSystem.load_catalogue()
+    if bool(formation.get("ok",false)):
+        for row in formation.data.skills:
+            result[str(row.id)] = row.duplicate(true)
+    else:
+        all_loaded = false
     if all_loaded:
         _all_skill_definition_cache = result.duplicate(true)
     return result
@@ -216,6 +222,9 @@ static func branch_definitions() -> Dictionary:
     var curse := V63CurseSkillCombatSystem.branch_definitions()
     for branch_id in curse.keys():
         result[str(branch_id)] = curse[branch_id].duplicate(true)
+    var formation := V63FormationSkillCombatSystem.branch_definitions()
+    for branch_id in formation.keys():
+        result[str(branch_id)] = formation[branch_id].duplicate(true)
     return result
 
 static func boss_definition(boss_id: String) -> Dictionary:
@@ -254,6 +263,8 @@ static func learn_skill(state: SimulationState, disciple: DiscipleState, skill_i
         return V63TalismanSkillCombatSystem.can_learn(definition)
     if str(definition.get("school", "")) == "curse":
         return V63CurseSkillCombatSystem.can_learn(definition)
+    if str(definition.get("school", "")) == "formation":
+        return V63FormationSkillCombatSystem.can_learn(definition)
     if definition.is_empty() or not bool(definition.get("archivable",false)):
         return _failure("unknown_or_derived_human_skill")
     var codex_id := str(definition.get("source_codex_id",""))
@@ -334,6 +345,7 @@ static func attach_disciple_loadout(state: SimulationState, actor: Dictionary, p
     actor["v63_palm_combat_enabled"] = V63FeatureGates.is_enabled("palm_skill_combat",preview_overrides)
     actor["v63_talisman_combat_enabled"] = V63FeatureGates.is_enabled("talisman_skill_combat",preview_overrides)
     actor["v63_curse_combat_enabled"] = V63FeatureGates.is_enabled("curse_skill_combat",preview_overrides)
+    actor["v63_formation_combat_enabled"] = V63FeatureGates.is_enabled("formation_skill_combat",preview_overrides)
     var definitions := skill_definitions()
     var skills: Array = []
     var passives: Array = []
@@ -535,6 +547,8 @@ static func _root_scaled_passive_modifiers(actor: Dictionary, skill_id: String) 
         return {}
     if str(definition.get("school", "")) == "curse" and not bool(actor.get("v63_curse_combat_enabled", false)):
         return {}
+    if str(definition.get("school", "")) == "formation" and not bool(actor.get("v63_formation_combat_enabled", false)):
+        return {}
     var modifiers: Dictionary = definition.get("passive_modifiers", {}).duplicate(true)
     var factor := V63SpiritualRootEvaluator.attached_skill_effect_factor(actor, skill_id)
     if factor <= 1.0:
@@ -567,6 +581,7 @@ static func preferred_offensive_range(actor: Dictionary) -> float:
     basic = maxf(basic,V63PalmSkillCombatSystem.preferred_offensive_range(actor))
     basic = maxf(basic,V63TalismanSkillCombatSystem.preferred_offensive_range(actor))
     basic = maxf(basic,V63CurseSkillCombatSystem.preferred_offensive_range(actor))
+    basic = maxf(basic,V63FormationSkillCombatSystem.preferred_offensive_range(actor))
     if str(actor.get("side", "")) != "disciple" or str(actor.get("role", "")) not in ["mage", "ranged"]:
         return basic
     if not bool(actor.get("v63_combat_enabled", false)):
@@ -614,6 +629,8 @@ static func _try_human_cast(battle: MapBattleV2, actor: Dictionary, enemy: Dicti
             continue
         if str(skill.get("school","")) == "curse" and not V63CurseSkillCombatSystem.can_cast(actor,id):
             continue
+        if str(skill.get("school","")) == "formation" and not V63FormationSkillCombatSystem.can_cast(actor,id):
+            continue
         if skill.is_empty() or slot not in ["active","ultimate","mobility"] or battle.now < float(ready.get(id,0.0)):
             continue
         if effect == "mobility":
@@ -626,6 +643,8 @@ static func _try_human_cast(battle: MapBattleV2, actor: Dictionary, enemy: Dicti
         if (actor["position"] as Vector2).distance_to(target["position"]) > float(skill.range):
             continue
         if str(skill.get("school", "")) == "curse" and not V63CurseSkillCombatSystem.should_cast(battle, actor, target, skill):
+            continue
+        if str(skill.get("school", "")) == "formation" and not V63FormationSkillCombatSystem.should_cast(battle, actor, target, skill):
             continue
         _begin_cast(battle,actor,target,id,skill,ready)
         return true
@@ -857,6 +876,9 @@ static func release_cast(battle: MapBattleV2, cast: Dictionary, caster: Dictiona
         return
     if V63CurseSkillCombatSystem.is_curse_skill(skill_id):
         V63CurseSkillCombatSystem.release_cast(battle,cast,caster)
+        return
+    if V63FormationSkillCombatSystem.is_formation_skill(skill_id):
+        V63FormationSkillCombatSystem.release_cast(battle,cast,caster)
         return
     if V63DivineSkillCombatSystem.is_divine_skill(skill_id) or V63DivineSkillCombatSystem.is_divine_boss(str(cast.get("v63_boss_id", ""))):
         V63DivineSkillCombatSystem.release_cast(battle, cast, caster)
@@ -1147,7 +1169,9 @@ static func _apply_palm_slow(battle: MapBattleV2, caster: Dictionary, target: Di
     battle._event("status_applied",{"caster":str(caster.get("id","")),"target":str(target.get("id","")),"status":"slow","skill_id":skill_id,"until":float(row["until"]),"movement_factor":factor,"boss_resisted":boss_resisted})
     if str(definition.get("school", "")) == "curse":
         battle._event("v63_curse_slow_applied",{"caster":str(caster.get("id","")),"target":str(target.get("id","")),"skill_id":skill_id,"until":float(row["until"]),"movement_factor":factor,"boss_resisted":boss_resisted})
-    else:
+    elif str(definition.get("school", "")) == "formation":
+        battle._event("v63_formation_slow_applied",{"caster":str(caster.get("id","")),"target":str(target.get("id","")),"skill_id":skill_id,"until":float(row["until"]),"movement_factor":factor,"boss_resisted":boss_resisted})
+    elif str(definition.get("school", "")) == "palm":
         battle._event("v63_palm_slow_applied",{"caster":str(caster.get("id","")),"target":str(target.get("id","")),"skill_id":skill_id,"until":float(row["until"]),"movement_factor":factor,"boss_resisted":boss_resisted})
     return true
 
@@ -1325,6 +1349,7 @@ static func process_status_effects(battle: MapBattleV2) -> void:
             if battle.now >= float(marks[owner_id].get("until",-1.0)):
                 marks.erase(owner_id)
         target["v63_marks"] = marks
+    V63FormationSkillCombatSystem.process_zones(battle)
 
 static func _attribute_poison_tick(battle: MapBattleV2, target: Dictionary, owner: Dictionary, stack: Dictionary, event_start: int, kill_start: int) -> void:
     var owner_id := str(owner.get("id", ""))

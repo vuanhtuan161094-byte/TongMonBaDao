@@ -46,7 +46,7 @@ func _run() -> void:
 	var manifest: Dictionary = sources.manifest
 	var registry: Dictionary = sources.registry
 	var entries: Dictionary = manifest.get("entries", {})
-	_expect(catalogues.has("palm") and catalogues.has("talisman") and catalogues.has("curse") and entries.size() == 1285, "the seven candidate-school extensions compose without collision")
+	_expect(catalogues.has("palm") and catalogues.has("talisman") and catalogues.has("curse") and entries.size() == 1468, "the seven candidate-school extensions compose without collision")
 	for raw in skills:
 		var skill: Dictionary = raw
 		var id := str(skill.get("id", ""))
@@ -88,8 +88,8 @@ func _run() -> void:
 	_expect(branch_counts == {"liet_duong_chuong":59, "han_ngoc_chuong":59, "hoi_phong_chuong":59}, "each of three branches owns 59 nodes")
 	_expect(tier_counts == {"human":35, "immortal":68, "divine":80}, "Human/Immortal/Divine distribution is 35/68/80")
 	_expect(flavors.size() == 183 and shorts.size() == 183 and long_descriptions.size() == 183 and vfx_profiles.size() == 183, "every node has distinct flavor, function summary, detailed description and VFX key")
-	_expect(int(registry.get("school_count", 0)) == 10 and int(registry.get("branch_count", 0)) == 30 and int(registry.get("skill_family_count", 0)) == 350, "additive registry reports ten total schools, 30 branches and 350 families")
-	_expect(HSC.skill_definitions().size() == 1830 and HSC.branch_definitions().size() == 30, "shared Combat V2 indexes compose existing plus seven candidate schools")
+	_expect(int(registry.get("school_count", 0)) == 11 and int(registry.get("branch_count", 0)) == 33 and int(registry.get("skill_family_count", 0)) == 385, "additive registry reports eleven total schools, 33 branches and 350 families")
+	_expect(HSC.skill_definitions().size() == 2013 and HSC.branch_definitions().size() == 33, "shared Combat V2 indexes compose existing plus eight candidate schools")
 	_expect(not bool(catalogue.get("enabled", true)) and str(catalogue.get("release_gate", "")) == "OFF" and not Gates.is_enabled("palm_skill_combat"), "Palm release and global feature gates remain OFF")
 	_expect(str(Palm.can_learn(Palm.skill_definition("tmb.skill.palm.han_ngoc_chuong.active_02.human")).get("reason", "")) == "skill_source_pending", "player learning remains blocked until canonical manual approval")
 	var gate_actor := _actor("palm_gate_off", "disciple", Vector2(2, 2))
@@ -99,9 +99,9 @@ func _run() -> void:
 	_expect(csv != null, "all36 source/effect ledger remains readable")
 	if csv != null:
 		var ledger: Dictionary = Presentation.validate_all36_ledger(csv.get_as_text(), catalogues, registry)
-		_expect(bool(ledger.get("ok", false)), "2,196-slot ledger joins seven candidate schools: " + str(ledger.get("errors", [])))
+		_expect(bool(ledger.get("ok", false)), "2,196-slot ledger joins eight candidate schools: " + str(ledger.get("errors", [])))
 		var metrics: Dictionary = ledger.get("metrics", {})
-		_expect(int(metrics.get("candidate_gated", 0)) == 1281 and int(metrics.get("not_authored", 0)) == 366 and int(metrics.get("runtime_catalogue_ids", 0)) == 1830, "ledger preserves existing, candidate and unauthored distinctions")
+		_expect(int(metrics.get("candidate_gated", 0)) == 1464 and int(metrics.get("not_authored", 0)) == 183 and int(metrics.get("runtime_catalogue_ids", 0)) == 2013, "ledger preserves existing, candidate and unauthored distinctions")
 	await _exercise_slow_and_boss_resistance()
 	await _exercise_heal_cleanse_and_vfx()
 	await _exercise_capacity_guard()

@@ -98,13 +98,13 @@ func _run() -> void:
         _expect(a_b_children.size()==2 and not SuccessorGraph.valid_active_selection(registry,a_b_children), "Ngự Kiếm A/B evolutions are mutually exclusive")
         if a_b_children.size()==2:
             _expect(SuccessorGraph.valid_active_selection(registry,[a_b_children[0]]), "single Sword lineage is selectable in the graph")
-    _expect(HSC.skill_definitions().size()==1830, "shared runtime definitions include 549 existing plus 1,281 gated candidate IDs")
+    _expect(HSC.skill_definitions().size()==2013, "shared runtime definitions include 549 existing plus 1,464 gated candidate IDs")
 
     var manifest_result: Dictionary = presentation_loaded
     if bool(manifest_result.get("ok",false)):
         var joined_manifest: Dictionary = manifest_result["manifest"]
         var catalogs: Dictionary = manifest_result["catalogues"]
-        _expect(joined_manifest.get("entries",{}).size()==1285, "four original S0 samples retained beside six gated 183-node candidate schools")
+        _expect(joined_manifest.get("entries",{}).size()==1468, "four original S0 samples retained beside six gated 183-node candidate schools")
         var integrated_registry: Dictionary = presentation_loaded.get("registry",{})
         _expect(Presentation.validate_sample_entries(joined_manifest,catalogs,integrated_registry).is_empty(), "all four S0 samples and all current presentation joins validate")
         var matrix_path := ProjectSettings.globalize_path("res://../docs/qa/V63_ALL36_ID_AND_EFFECT_MATRIX.csv")
@@ -114,7 +114,7 @@ func _run() -> void:
             var ledger := Presentation.validate_all36_ledger(file.get_as_text(),catalogs,integrated_registry)
             _expect(bool(ledger.get("ok",false)), "S1 candidate rows join exact runtime identity and full lineage: "+str(ledger.get("errors",[])))
             var metrics: Dictionary=ledger.get("metrics",{})
-            _expect(int(metrics.get("existing",0))==549 and int(metrics.get("candidate_gated",0))==1281 and int(metrics.get("not_authored",0))==366 and int(metrics.get("runtime_catalogue_ids",0))==1830, "ledger reports source, candidate and remaining rows separately")
+            _expect(int(metrics.get("existing",0))==549 and int(metrics.get("candidate_gated",0))==1464 and int(metrics.get("not_authored",0))==183 and int(metrics.get("runtime_catalogue_ids",0))==2013, "ledger reports source, candidate and remaining rows separately")
     _expect(not FeatureGates.is_enabled("sword_skill_combat") and not bool(FeatureGates.DEFAULT_FLAGS.get("sword_skill_combat",true)), "Sword combat feature gate defaults OFF")
     _expect(str(Sword.can_learn(Sword.skill_definition("tmb.skill.sword.ngu_kiem.active_01.human")).get("reason",""))=="skill_source_pending", "no Sword skill can be learned without an authentic manual")
     _expect(not Sword.can_cast({}, "tmb.skill.sword.ngu_kiem.active_01.human"), "actor must opt in explicitly before candidate combat")

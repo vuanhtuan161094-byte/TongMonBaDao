@@ -45,7 +45,7 @@ func _run() -> void:
 	var manifest: Dictionary = sources.get("manifest", {})
 	var registry: Dictionary = sources.get("registry", {})
 	var entries: Dictionary = manifest.get("entries", {})
-	_expect(catalogues.has("dual_blade") and catalogues.has("palm") and catalogues.has("talisman") and entries.size() == 1285, "Song Đao, Chưởng, Phù and Chú additive entries join the earlier presentations")
+	_expect(catalogues.has("dual_blade") and catalogues.has("palm") and catalogues.has("talisman") and entries.size() == 1468, "Song Đao, Chưởng, Phù and Chú additive entries join the earlier presentations")
 	for raw in skills:
 		var skill: Dictionary = raw
 		var id := str(skill.get("id", ""))
@@ -77,8 +77,8 @@ func _run() -> void:
 	_expect(branch_counts == {"anh_nhan":59, "lien_hoan":59, "huyet_nguyet":59}, "each Song Đao branch owns 59 nodes")
 	_expect(flavors.size() == 183 and shorts.size() == 183 and motions.size() == 183, "every node has distinct flavor, functional summary and motion profile")
 	var base_registry: Dictionary = Registry.load_catalogue().get("data", {})
-	_expect(base_registry.get("families", []).size() == 210 and registry.get("families", []).size() == 350 and registry.get("paths", []).size() == 30, "additive extensions compose candidate families/paths without rewriting canonical base registry")
-	_expect(HSC.skill_definitions().size() == 1830 and HSC.branch_definitions().size() == 30, "Human skill and branch indexes include the gated candidate catalogue")
+	_expect(base_registry.get("families", []).size() == 210 and registry.get("families", []).size() == 385 and registry.get("paths", []).size() == 33, "additive extensions compose candidate families/paths without rewriting canonical base registry")
+	_expect(HSC.skill_definitions().size() == 2013 and HSC.branch_definitions().size() == 33, "Human skill and branch indexes include the gated candidate catalogue")
 	_expect(not Gates.is_enabled("dual_blade_skill_combat") and not bool(Gates.DEFAULT_FLAGS.get("dual_blade_skill_combat", true)), "Song Đao production feature gate remains OFF")
 	_expect(str(Dual.can_learn(Dual.skill_definition("tmb.skill.dual_blade.lien_hoan.active_01.human")).get("reason", "")) == "skill_source_pending", "learning stays blocked until an authentic manual is registered")
 	_expect(not Dual.can_cast(_actor("gate_off", "disciple", Vector2(2, 2)), "tmb.skill.dual_blade.lien_hoan.active_01.human"), "candidate cannot cast without explicit preview fixture")
@@ -90,7 +90,7 @@ func _run() -> void:
 		var ledger: Dictionary = Presentation.validate_all36_ledger(csv.get_as_text(), catalogues, registry)
 		_expect(bool(ledger.get("ok", false)), "S4 ledger/runtime/registry joins: " + str(ledger.get("errors", [])))
 		var metrics: Dictionary = ledger.get("metrics", {})
-		_expect(int(metrics.get("existing", 0)) == 549 and int(metrics.get("candidate_gated", 0)) == 1281 and int(metrics.get("not_authored", 0)) == 366 and int(metrics.get("runtime_catalogue_ids", 0)) == 1830, "ledger separates 549 existing sources, 1,281 gated candidates and 366 unauthored slots")
+		_expect(int(metrics.get("existing", 0)) == 549 and int(metrics.get("candidate_gated", 0)) == 1464 and int(metrics.get("not_authored", 0)) == 183 and int(metrics.get("runtime_catalogue_ids", 0)) == 2013, "ledger separates 549 existing sources, 1,464 gated candidates and 183 unauthored slots")
 	await _exercise_combo_and_cued_renderer()
 	await _exercise_mobility_and_ai_range()
 	await _exercise_bounded_hp_trade()
