@@ -168,6 +168,12 @@ static func skill_definitions() -> Dictionary:
             result[str(row.id)] = row.duplicate(true)
     else:
         all_loaded = false
+    var curse := V63CurseSkillCombatSystem.load_catalogue()
+    if bool(curse.get("ok",false)):
+        for row in curse.data.skills:
+            result[str(row.id)] = row.duplicate(true)
+    else:
+        all_loaded = false
     if all_loaded:
         _all_skill_definition_cache = result.duplicate(true)
     return result
@@ -207,6 +213,9 @@ static func branch_definitions() -> Dictionary:
     var talisman := V63TalismanSkillCombatSystem.branch_definitions()
     for branch_id in talisman.keys():
         result[str(branch_id)] = talisman[branch_id].duplicate(true)
+    var curse := V63CurseSkillCombatSystem.branch_definitions()
+    for branch_id in curse.keys():
+        result[str(branch_id)] = curse[branch_id].duplicate(true)
     return result
 
 static func boss_definition(boss_id: String) -> Dictionary:
@@ -243,6 +252,8 @@ static func learn_skill(state: SimulationState, disciple: DiscipleState, skill_i
         return V63PalmSkillCombatSystem.can_learn(definition)
     if str(definition.get("school", "")) == "talisman":
         return V63TalismanSkillCombatSystem.can_learn(definition)
+    if str(definition.get("school", "")) == "curse":
+        return V63CurseSkillCombatSystem.can_learn(definition)
     if definition.is_empty() or not bool(definition.get("archivable",false)):
         return _failure("unknown_or_derived_human_skill")
     var codex_id := str(definition.get("source_codex_id",""))
@@ -322,6 +333,7 @@ static func attach_disciple_loadout(state: SimulationState, actor: Dictionary, p
     actor["v63_dual_blade_combat_enabled"] = V63FeatureGates.is_enabled("dual_blade_skill_combat",preview_overrides)
     actor["v63_palm_combat_enabled"] = V63FeatureGates.is_enabled("palm_skill_combat",preview_overrides)
     actor["v63_talisman_combat_enabled"] = V63FeatureGates.is_enabled("talisman_skill_combat",preview_overrides)
+    actor["v63_curse_combat_enabled"] = V63FeatureGates.is_enabled("curse_skill_combat",preview_overrides)
     var definitions := skill_definitions()
     var skills: Array = []
     var passives: Array = []
@@ -521,6 +533,8 @@ static func _root_scaled_passive_modifiers(actor: Dictionary, skill_id: String) 
     var definition := skill_definition(skill_id)
     if str(definition.get("school", "")) == "talisman" and not bool(actor.get("v63_talisman_combat_enabled", false)):
         return {}
+    if str(definition.get("school", "")) == "curse" and not bool(actor.get("v63_curse_combat_enabled", false)):
+        return {}
     var modifiers: Dictionary = definition.get("passive_modifiers", {}).duplicate(true)
     var factor := V63SpiritualRootEvaluator.attached_skill_effect_factor(actor, skill_id)
     if factor <= 1.0:
@@ -552,6 +566,7 @@ static func preferred_offensive_range(actor: Dictionary) -> float:
     basic = maxf(basic,V63DualBladeSkillCombatSystem.preferred_offensive_range(actor))
     basic = maxf(basic,V63PalmSkillCombatSystem.preferred_offensive_range(actor))
     basic = maxf(basic,V63TalismanSkillCombatSystem.preferred_offensive_range(actor))
+    basic = maxf(basic,V63CurseSkillCombatSystem.preferred_offensive_range(actor))
     if str(actor.get("side", "")) != "disciple" or str(actor.get("role", "")) not in ["mage", "ranged"]:
         return basic
     if not bool(actor.get("v63_combat_enabled", false)):
@@ -561,6 +576,8 @@ static func preferred_offensive_range(actor: Dictionary) -> float:
         # A saved or preview actor must not retain ranged positioning from a
         # candidate school while that school's runtime gate is OFF.
         if str(definition.get("school", "")) == "talisman" and not V63TalismanSkillCombatSystem.can_cast(actor, str(raw_id)):
+            continue
+        if str(definition.get("school", "")) == "curse" and not V63CurseSkillCombatSystem.can_cast(actor, str(raw_id)):
             continue
         if str(definition.get("slot", "")) not in ["active", "ultimate"]:
             continue
@@ -595,6 +612,8 @@ static func _try_human_cast(battle: MapBattleV2, actor: Dictionary, enemy: Dicti
             continue
         if str(skill.get("school","")) == "talisman" and not V63TalismanSkillCombatSystem.can_cast(actor,id):
             continue
+        if str(skill.get("school","")) == "curse" and not V63CurseSkillCombatSystem.can_cast(actor,id):
+            continue
         if skill.is_empty() or slot not in ["active","ultimate","mobility"] or battle.now < float(ready.get(id,0.0)):
             continue
         if effect == "mobility":
@@ -605,6 +624,8 @@ static func _try_human_cast(battle: MapBattleV2, actor: Dictionary, enemy: Dicti
         if target.is_empty() or (effect not in ["guard","heal","cleanse"] and str(target.side) == str(actor.side)):
             continue
         if (actor["position"] as Vector2).distance_to(target["position"]) > float(skill.range):
+            continue
+        if str(skill.get("school", "")) == "curse" and not V63CurseSkillCombatSystem.should_cast(battle, actor, target, skill):
             continue
         _begin_cast(battle,actor,target,id,skill,ready)
         return true
@@ -623,7 +644,7 @@ static func _same_p0_support_party(caster: Dictionary, ally: Dictionary) -> bool
 
 static func _support_target(battle: MapBattleV2, actor: Dictionary, skill: Dictionary) -> Dictionary:
     if str(skill.effect) == "guard":
-        if str(skill.get("school","")) in ["blade", "spear", "palm"] and str(skill.get("guard_target_policy","self")) == "weakest_ally":
+        if str(skill.get("school","")) in ["blade", "spear", "palm", "curse"] and str(skill.get("guard_target_policy","self")) == "weakest_ally":
             var guard_candidates: Array = []
             for raw_id in battle.actors.keys():
                 var guard_ally: Dictionary = battle.actors[raw_id]
@@ -834,6 +855,9 @@ static func release_cast(battle: MapBattleV2, cast: Dictionary, caster: Dictiona
     if V63TalismanSkillCombatSystem.is_talisman_skill(skill_id):
         V63TalismanSkillCombatSystem.release_cast(battle,cast,caster)
         return
+    if V63CurseSkillCombatSystem.is_curse_skill(skill_id):
+        V63CurseSkillCombatSystem.release_cast(battle,cast,caster)
+        return
     if V63DivineSkillCombatSystem.is_divine_skill(skill_id) or V63DivineSkillCombatSystem.is_divine_boss(str(cast.get("v63_boss_id", ""))):
         V63DivineSkillCombatSystem.release_cast(battle, cast, caster)
         return
@@ -863,6 +887,11 @@ static func release_cast_base(battle: MapBattleV2, cast: Dictionary, caster: Dic
             continue
         var before := float(target.hp)
         var caster_before := float(caster.hp)
+        var curse_marks_before: Dictionary = target.get("v63_marks", {}).duplicate(true)
+        var curse_guard_factor_before := float(target.get("learned_guard_factor", 1.0))
+        var curse_guard_until_before := float(target.get("learned_guard_until", -1.0))
+        var curse_shield_before := float(target.get("v63_capacity_shield_remaining", 0.0))
+        var curse_shield_until_before := float(target.get("v63_capacity_shield_until", -1.0))
         var damage := 0.0
         if effect in ["damage","poison","mark","consume_poison","slow"]:
             var ratio := float(cast.ratio)
@@ -948,6 +977,8 @@ static func release_cast_base(battle: MapBattleV2, cast: Dictionary, caster: Dic
             _heal_target(battle,caster,target,id,float(cast.power))
         elif effect == "cleanse":
             var cleared := _cleanse_target(battle,caster,target,id,int(round(float(cast.power))))
+            if str(definition.get("school", "")) == "curse" and cleared > 0:
+                battle._event("v63_curse_cleanse_applied",{"caster":str(caster.id),"target":str(target.id),"skill_id":id,"removed_debuff_count":cleared})
             if str(definition.get("school", "")) == "poison":
                 V63PoisonEvolutionV1.arm_cleanse_counter(caster, cleared, battle.now)
                 if cleared > 0 and V63PoisonEvolutionV1.rule_for_actor(caster) == "cleanse_heal_fatal_save":
@@ -971,6 +1002,23 @@ static func release_cast_base(battle: MapBattleV2, cast: Dictionary, caster: Dic
         meaningful = meaningful or damage > 0.0 or effect in ["guard", "cleanse"] \
             or (not poison_school and str(definition.get("school","")) != "blade" and effect in ["mark", "poison"]) or float(target.hp) > before
         battle._event("v63_skill_hit",{"caster":str(caster.id),"target":str(target.id),"skill_id":id,"generation":generation,"lineage":lineage,"effect":effect,"damage":damage,"caster_hp_before":caster_before,"caster_hp_after":float(caster.hp),"target_hp_before":before,"target_hp_after":float(target.hp)})
+        if str(definition.get("school", "")) == "curse":
+            if damage > 0.0:
+                battle._event("v63_curse_hit",{"caster":str(caster.id),"target":str(target.id),"skill_id":id,"damage":damage,"element":str(cast.get("element", "")),"shape":str(definition.get("shape", "")),"target_limit":int(definition.get("target_limit", 1))})
+            if effect == "mark":
+                var curse_mark: Dictionary = target.get("v63_marks", {}).get(str(caster.get("id", "")), {})
+                var previous_curse_mark: Dictionary = curse_marks_before.get(str(caster.get("id", "")), {})
+                if str(curse_mark.get("skill_id", "")) == id and curse_mark != previous_curse_mark:
+                    battle._event("v63_curse_mark_applied",{"caster":str(caster.id),"target":str(target.id),"owner_id":str(caster.id),"skill_id":id,"damage_factor":float(curse_mark.get("damage_factor",1.0)),"until":float(curse_mark.get("until",battle.now))})
+            elif effect == "heal":
+                var healed := maxf(0.0, float(target.get("hp", 0.0)) - before)
+                if healed > 0.0:
+                    battle._event("v63_curse_heal_applied",{"caster":str(caster.id),"target":str(target.id),"skill_id":id,"amount":healed,"hp_after":float(target.hp)})
+            elif effect == "guard":
+                var guard_changed := float(target.get("learned_guard_factor", 1.0)) < curse_guard_factor_before - 0.000001 or float(target.get("learned_guard_until", -1.0)) > curse_guard_until_before + 0.000001
+                guard_changed = guard_changed or float(target.get("v63_capacity_shield_remaining", 0.0)) > curse_shield_before + 0.000001 or float(target.get("v63_capacity_shield_until", -1.0)) > curse_shield_until_before + 0.000001
+                if guard_changed:
+                    battle._event("v63_curse_guard_applied",{"caster":str(caster.id),"target":str(target.id),"skill_id":id,"guard_factor":float(target.get("learned_guard_factor", 1.0)),"until":float(target.get("learned_guard_until", -1.0)),"capacity":float(target.get("v63_capacity_shield_remaining", 0.0))})
         if str(definition.get("school", "")) == "talisman":
             var owner_mark: Dictionary = target.get("v63_marks", {}).get(str(caster.get("id", "")), {})
             if effect == "mark" and str(owner_mark.get("skill_id", "")) == id:
@@ -1075,7 +1123,7 @@ static func _heal_target(battle: MapBattleV2, caster: Dictionary, target: Dictio
     battle._event("heal",{"caster":str(caster.id),"target":str(target.id),"skill_id":skill_id,"amount":amount,"hp_after":float(target.hp)})
 
 static func _apply_palm_slow(battle: MapBattleV2, caster: Dictionary, target: Dictionary, skill_id: String, cast: Dictionary, definition: Dictionary) -> bool:
-    if str(definition.get("school","")) != "palm":
+    if str(definition.get("school","")) not in ["palm", "curse"]:
         return false
     var requested_movement_factor := clampf(float(cast.get("slow_movement_factor",definition.get("slow_movement_factor",1.0))),0.5,1.0)
     var strength := 1.0-requested_movement_factor
@@ -1097,7 +1145,10 @@ static func _apply_palm_slow(battle: MapBattleV2, caster: Dictionary, target: Di
     statuses["slow"] = row
     target["status_effects"] = statuses
     battle._event("status_applied",{"caster":str(caster.get("id","")),"target":str(target.get("id","")),"status":"slow","skill_id":skill_id,"until":float(row["until"]),"movement_factor":factor,"boss_resisted":boss_resisted})
-    battle._event("v63_palm_slow_applied",{"caster":str(caster.get("id","")),"target":str(target.get("id","")),"skill_id":skill_id,"until":float(row["until"]),"movement_factor":factor,"boss_resisted":boss_resisted})
+    if str(definition.get("school", "")) == "curse":
+        battle._event("v63_curse_slow_applied",{"caster":str(caster.get("id","")),"target":str(target.get("id","")),"skill_id":skill_id,"until":float(row["until"]),"movement_factor":factor,"boss_resisted":boss_resisted})
+    else:
+        battle._event("v63_palm_slow_applied",{"caster":str(caster.get("id","")),"target":str(target.get("id","")),"skill_id":skill_id,"until":float(row["until"]),"movement_factor":factor,"boss_resisted":boss_resisted})
     return true
 
 static func _cleanse_target(battle: MapBattleV2, caster: Dictionary, target: Dictionary, skill_id: String, count: int) -> int:

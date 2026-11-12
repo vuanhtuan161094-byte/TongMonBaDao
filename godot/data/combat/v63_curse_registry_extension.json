@@ -1,0 +1,1657 @@
+{
+  "schema_version": 1,
+  "extension_id": "tmb.v63.registry_extension.s7_curse",
+  "release_gate": "OFF",
+  "base_registry": {
+    "path": "res://data/combat/v63_content_registry.json",
+    "git_blob_sha": "2b36bd39bf04c20dc74f00e74d335568b4a1a89b"
+  },
+  "source_catalog": {
+    "path": "res://data/combat/v63_curse_combat_catalog.json",
+    "git_blob_sha": "fd08e7d9f3dc2731ef134d1d444b1ca3a7619a41"
+  },
+  "school": {
+    "id": "curse",
+    "name": "Chú Tu",
+    "candidate_source_status": "SOURCE_PENDING"
+  },
+  "paths": [
+    {
+      "id": "tmb.path.curse.tran_hon_chu",
+      "school": "curse",
+      "name": "Trấn Hồn Chú",
+      "lineages": {
+        "a": "Khắc Ấn",
+        "b": "Trì Tụng"
+      },
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.path.curse.phe_linh_chu",
+      "school": "curse",
+      "name": "Phệ Linh Chú",
+      "lineages": {
+        "a": "Thu Phóng",
+        "b": "Dẫn Quy"
+      },
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.path.curse.ho_menh_chu",
+      "school": "curse",
+      "name": "Hộ Mệnh Chú",
+      "lineages": {
+        "a": "Đồng Tâm",
+        "b": "Tĩnh Mệnh"
+      },
+      "candidate_source_status": "SOURCE_PENDING"
+    }
+  ],
+  "families": [
+    {
+      "id": "tmb.skill.curse.basic",
+      "school": "curse",
+      "branch": "",
+      "slot": "basic",
+      "name": "Chú Âm Phá Vọng",
+      "nodes": [
+        {
+          "id": "tmb.skill.curse.basic.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.basic.immortal.base",
+          "tier": "immortal",
+          "lineage": "base",
+          "parent": "tmb.skill.curse.basic.human",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.basic.divine.base",
+          "tier": "divine",
+          "lineage": "base",
+          "parent": "tmb.skill.curse.basic.immortal.base",
+          "school": "curse"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.curse.mobility",
+      "school": "curse",
+      "branch": "",
+      "slot": "mobility",
+      "name": "Tĩnh Bộ Hoán Khí",
+      "nodes": [
+        {
+          "id": "tmb.skill.curse.mobility.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.mobility.immortal.base",
+          "tier": "immortal",
+          "lineage": "base",
+          "parent": "tmb.skill.curse.mobility.human",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.mobility.divine.base",
+          "tier": "divine",
+          "lineage": "base",
+          "parent": "tmb.skill.curse.mobility.immortal.base",
+          "school": "curse"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.curse.tran_hon_chu.active_01",
+      "school": "curse",
+      "branch": "tran_hon_chu",
+      "slot": "active_01",
+      "name": "Trấn Tâm Nhất Tự",
+      "nodes": [
+        {
+          "id": "tmb.skill.curse.tran_hon_chu.active_01.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.tran_hon_chu.active_01.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.curse.tran_hon_chu.active_01.human",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.tran_hon_chu.active_01.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.curse.tran_hon_chu.active_01.human",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.tran_hon_chu.active_01.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.curse.tran_hon_chu.active_01.immortal.a",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.tran_hon_chu.active_01.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.curse.tran_hon_chu.active_01.immortal.b",
+          "school": "curse"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.curse.tran_hon_chu.active_02",
+      "school": "curse",
+      "branch": "tran_hon_chu",
+      "slot": "active_02",
+      "name": "Huyền Văn Áp Hồn",
+      "nodes": [
+        {
+          "id": "tmb.skill.curse.tran_hon_chu.active_02.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.tran_hon_chu.active_02.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.curse.tran_hon_chu.active_02.human",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.tran_hon_chu.active_02.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.curse.tran_hon_chu.active_02.human",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.tran_hon_chu.active_02.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.curse.tran_hon_chu.active_02.immortal.a",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.tran_hon_chu.active_02.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.curse.tran_hon_chu.active_02.immortal.b",
+          "school": "curse"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.curse.tran_hon_chu.active_03",
+      "school": "curse",
+      "branch": "tran_hon_chu",
+      "slot": "active_03",
+      "name": "Cửu Âm Khóa Mạch",
+      "nodes": [
+        {
+          "id": "tmb.skill.curse.tran_hon_chu.active_03.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.tran_hon_chu.active_03.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.curse.tran_hon_chu.active_03.human",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.tran_hon_chu.active_03.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.curse.tran_hon_chu.active_03.human",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.tran_hon_chu.active_03.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.curse.tran_hon_chu.active_03.immortal.a",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.tran_hon_chu.active_03.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.curse.tran_hon_chu.active_03.immortal.b",
+          "school": "curse"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.curse.tran_hon_chu.active_04",
+      "school": "curse",
+      "branch": "tran_hon_chu",
+      "slot": "active_04",
+      "name": "Vọng Niệm Tĩnh Tâm",
+      "nodes": [
+        {
+          "id": "tmb.skill.curse.tran_hon_chu.active_04.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.tran_hon_chu.active_04.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.curse.tran_hon_chu.active_04.human",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.tran_hon_chu.active_04.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.curse.tran_hon_chu.active_04.human",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.tran_hon_chu.active_04.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.curse.tran_hon_chu.active_04.immortal.a",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.tran_hon_chu.active_04.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.curse.tran_hon_chu.active_04.immortal.b",
+          "school": "curse"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.curse.tran_hon_chu.ultimate",
+      "school": "curse",
+      "branch": "tran_hon_chu",
+      "slot": "ultimate",
+      "name": "Cửu U Trấn Hồn Đại Chú",
+      "nodes": [
+        {
+          "id": "tmb.skill.curse.tran_hon_chu.ultimate.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.tran_hon_chu.ultimate.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.curse.tran_hon_chu.ultimate.human",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.tran_hon_chu.ultimate.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.curse.tran_hon_chu.ultimate.human",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.tran_hon_chu.ultimate.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.curse.tran_hon_chu.ultimate.immortal.a",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.tran_hon_chu.ultimate.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.curse.tran_hon_chu.ultimate.immortal.b",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.tran_hon_chu.ultimate.rare.a",
+          "tier": "divine",
+          "lineage": "rare_a",
+          "parent": "tmb.skill.curse.tran_hon_chu.ultimate.divine.a",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.tran_hon_chu.ultimate.rare.b",
+          "tier": "divine",
+          "lineage": "rare_b",
+          "parent": "tmb.skill.curse.tran_hon_chu.ultimate.divine.b",
+          "school": "curse"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.curse.tran_hon_chu.passive_01",
+      "school": "curse",
+      "branch": "tran_hon_chu",
+      "slot": "passive_01",
+      "name": "Chú Ý Ngưng Thần",
+      "nodes": [
+        {
+          "id": "tmb.skill.curse.tran_hon_chu.passive_01.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.tran_hon_chu.passive_01.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.curse.tran_hon_chu.passive_01.human",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.tran_hon_chu.passive_01.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.curse.tran_hon_chu.passive_01.human",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.tran_hon_chu.passive_01.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.curse.tran_hon_chu.passive_01.immortal.a",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.tran_hon_chu.passive_01.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.curse.tran_hon_chu.passive_01.immortal.b",
+          "school": "curse"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.curse.tran_hon_chu.passive_02",
+      "school": "curse",
+      "branch": "tran_hon_chu",
+      "slot": "passive_02",
+      "name": "Trấn Văn Phục Mạch",
+      "nodes": [
+        {
+          "id": "tmb.skill.curse.tran_hon_chu.passive_02.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.tran_hon_chu.passive_02.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.curse.tran_hon_chu.passive_02.human",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.tran_hon_chu.passive_02.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.curse.tran_hon_chu.passive_02.human",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.tran_hon_chu.passive_02.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.curse.tran_hon_chu.passive_02.immortal.a",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.tran_hon_chu.passive_02.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.curse.tran_hon_chu.passive_02.immortal.b",
+          "school": "curse"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.curse.tran_hon_chu.passive_03",
+      "school": "curse",
+      "branch": "tran_hon_chu",
+      "slot": "passive_03",
+      "name": "Tĩnh Niệm Chính Tâm",
+      "nodes": [
+        {
+          "id": "tmb.skill.curse.tran_hon_chu.passive_03.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.tran_hon_chu.passive_03.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.curse.tran_hon_chu.passive_03.human",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.tran_hon_chu.passive_03.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.curse.tran_hon_chu.passive_03.human",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.tran_hon_chu.passive_03.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.curse.tran_hon_chu.passive_03.immortal.a",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.tran_hon_chu.passive_03.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.curse.tran_hon_chu.passive_03.immortal.b",
+          "school": "curse"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.curse.tran_hon_chu.passive_04",
+      "school": "curse",
+      "branch": "tran_hon_chu",
+      "slot": "passive_04",
+      "name": "Hồn Quan Hộ Thức",
+      "nodes": [
+        {
+          "id": "tmb.skill.curse.tran_hon_chu.passive_04.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.tran_hon_chu.passive_04.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.curse.tran_hon_chu.passive_04.human",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.tran_hon_chu.passive_04.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.curse.tran_hon_chu.passive_04.human",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.tran_hon_chu.passive_04.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.curse.tran_hon_chu.passive_04.immortal.a",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.tran_hon_chu.passive_04.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.curse.tran_hon_chu.passive_04.immortal.b",
+          "school": "curse"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.curse.tran_hon_chu.passive_05",
+      "school": "curse",
+      "branch": "tran_hon_chu",
+      "slot": "passive_05",
+      "name": "Cửu U Chân Ý",
+      "nodes": [
+        {
+          "id": "tmb.skill.curse.tran_hon_chu.passive_05.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.tran_hon_chu.passive_05.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.curse.tran_hon_chu.passive_05.human",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.tran_hon_chu.passive_05.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.curse.tran_hon_chu.passive_05.human",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.tran_hon_chu.passive_05.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.curse.tran_hon_chu.passive_05.immortal.a",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.tran_hon_chu.passive_05.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.curse.tran_hon_chu.passive_05.immortal.b",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.tran_hon_chu.passive_05.rare_passive.a",
+          "tier": "divine",
+          "lineage": "rare_a",
+          "parent": "tmb.skill.curse.tran_hon_chu.passive_05.divine.a",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.tran_hon_chu.passive_05.rare_passive.b",
+          "tier": "divine",
+          "lineage": "rare_b",
+          "parent": "tmb.skill.curse.tran_hon_chu.passive_05.divine.b",
+          "school": "curse"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.curse.tran_hon_chu.innate",
+      "school": "curse",
+      "branch": "tran_hon_chu",
+      "slot": "innate",
+      "name": "Trấn Hồn Bản Mệnh",
+      "nodes": [
+        {
+          "id": "tmb.skill.curse.tran_hon_chu.innate.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.tran_hon_chu.innate.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.curse.tran_hon_chu.innate.human",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.tran_hon_chu.innate.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.curse.tran_hon_chu.innate.human",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.tran_hon_chu.innate.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.curse.tran_hon_chu.innate.immortal.a",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.tran_hon_chu.innate.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.curse.tran_hon_chu.innate.immortal.b",
+          "school": "curse"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.curse.phe_linh_chu.active_01",
+      "school": "curse",
+      "branch": "phe_linh_chu",
+      "slot": "active_01",
+      "name": "Tán Linh Chỉ Nguyền",
+      "nodes": [
+        {
+          "id": "tmb.skill.curse.phe_linh_chu.active_01.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.phe_linh_chu.active_01.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.curse.phe_linh_chu.active_01.human",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.phe_linh_chu.active_01.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.curse.phe_linh_chu.active_01.human",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.phe_linh_chu.active_01.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.curse.phe_linh_chu.active_01.immortal.a",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.phe_linh_chu.active_01.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.curse.phe_linh_chu.active_01.immortal.b",
+          "school": "curse"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.curse.phe_linh_chu.active_02",
+      "school": "curse",
+      "branch": "phe_linh_chu",
+      "slot": "active_02",
+      "name": "Phệ Vân Truy Ấn",
+      "nodes": [
+        {
+          "id": "tmb.skill.curse.phe_linh_chu.active_02.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.phe_linh_chu.active_02.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.curse.phe_linh_chu.active_02.human",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.phe_linh_chu.active_02.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.curse.phe_linh_chu.active_02.human",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.phe_linh_chu.active_02.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.curse.phe_linh_chu.active_02.immortal.a",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.phe_linh_chu.active_02.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.curse.phe_linh_chu.active_02.immortal.b",
+          "school": "curse"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.curse.phe_linh_chu.active_03",
+      "school": "curse",
+      "branch": "phe_linh_chu",
+      "slot": "active_03",
+      "name": "Lạc Khí Hồi Âm",
+      "nodes": [
+        {
+          "id": "tmb.skill.curse.phe_linh_chu.active_03.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.phe_linh_chu.active_03.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.curse.phe_linh_chu.active_03.human",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.phe_linh_chu.active_03.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.curse.phe_linh_chu.active_03.human",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.phe_linh_chu.active_03.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.curse.phe_linh_chu.active_03.immortal.a",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.phe_linh_chu.active_03.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.curse.phe_linh_chu.active_03.immortal.b",
+          "school": "curse"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.curse.phe_linh_chu.active_04",
+      "school": "curse",
+      "branch": "phe_linh_chu",
+      "slot": "active_04",
+      "name": "Vạn Hồn Dẫn Chú",
+      "nodes": [
+        {
+          "id": "tmb.skill.curse.phe_linh_chu.active_04.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.phe_linh_chu.active_04.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.curse.phe_linh_chu.active_04.human",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.phe_linh_chu.active_04.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.curse.phe_linh_chu.active_04.human",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.phe_linh_chu.active_04.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.curse.phe_linh_chu.active_04.immortal.a",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.phe_linh_chu.active_04.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.curse.phe_linh_chu.active_04.immortal.b",
+          "school": "curse"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.curse.phe_linh_chu.ultimate",
+      "school": "curse",
+      "branch": "phe_linh_chu",
+      "slot": "ultimate",
+      "name": "Vạn Hồn Phệ Linh",
+      "nodes": [
+        {
+          "id": "tmb.skill.curse.phe_linh_chu.ultimate.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.phe_linh_chu.ultimate.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.curse.phe_linh_chu.ultimate.human",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.phe_linh_chu.ultimate.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.curse.phe_linh_chu.ultimate.human",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.phe_linh_chu.ultimate.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.curse.phe_linh_chu.ultimate.immortal.a",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.phe_linh_chu.ultimate.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.curse.phe_linh_chu.ultimate.immortal.b",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.phe_linh_chu.ultimate.rare.a",
+          "tier": "divine",
+          "lineage": "rare_a",
+          "parent": "tmb.skill.curse.phe_linh_chu.ultimate.divine.a",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.phe_linh_chu.ultimate.rare.b",
+          "tier": "divine",
+          "lineage": "rare_b",
+          "parent": "tmb.skill.curse.phe_linh_chu.ultimate.divine.b",
+          "school": "curse"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.curse.phe_linh_chu.passive_01",
+      "school": "curse",
+      "branch": "phe_linh_chu",
+      "slot": "passive_01",
+      "name": "Thu Linh Tĩnh Ý",
+      "nodes": [
+        {
+          "id": "tmb.skill.curse.phe_linh_chu.passive_01.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.phe_linh_chu.passive_01.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.curse.phe_linh_chu.passive_01.human",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.phe_linh_chu.passive_01.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.curse.phe_linh_chu.passive_01.human",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.phe_linh_chu.passive_01.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.curse.phe_linh_chu.passive_01.immortal.a",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.phe_linh_chu.passive_01.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.curse.phe_linh_chu.passive_01.immortal.b",
+          "school": "curse"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.curse.phe_linh_chu.passive_02",
+      "school": "curse",
+      "branch": "phe_linh_chu",
+      "slot": "passive_02",
+      "name": "Dẫn Mạch Hồi Văn",
+      "nodes": [
+        {
+          "id": "tmb.skill.curse.phe_linh_chu.passive_02.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.phe_linh_chu.passive_02.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.curse.phe_linh_chu.passive_02.human",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.phe_linh_chu.passive_02.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.curse.phe_linh_chu.passive_02.human",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.phe_linh_chu.passive_02.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.curse.phe_linh_chu.passive_02.immortal.a",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.phe_linh_chu.passive_02.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.curse.phe_linh_chu.passive_02.immortal.b",
+          "school": "curse"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.curse.phe_linh_chu.passive_03",
+      "school": "curse",
+      "branch": "phe_linh_chu",
+      "slot": "passive_03",
+      "name": "Phệ Ảnh Ngưng Tức",
+      "nodes": [
+        {
+          "id": "tmb.skill.curse.phe_linh_chu.passive_03.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.phe_linh_chu.passive_03.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.curse.phe_linh_chu.passive_03.human",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.phe_linh_chu.passive_03.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.curse.phe_linh_chu.passive_03.human",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.phe_linh_chu.passive_03.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.curse.phe_linh_chu.passive_03.immortal.a",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.phe_linh_chu.passive_03.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.curse.phe_linh_chu.passive_03.immortal.b",
+          "school": "curse"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.curse.phe_linh_chu.passive_04",
+      "school": "curse",
+      "branch": "phe_linh_chu",
+      "slot": "passive_04",
+      "name": "Tâm Chú Liễm Phong",
+      "nodes": [
+        {
+          "id": "tmb.skill.curse.phe_linh_chu.passive_04.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.phe_linh_chu.passive_04.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.curse.phe_linh_chu.passive_04.human",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.phe_linh_chu.passive_04.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.curse.phe_linh_chu.passive_04.human",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.phe_linh_chu.passive_04.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.curse.phe_linh_chu.passive_04.immortal.a",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.phe_linh_chu.passive_04.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.curse.phe_linh_chu.passive_04.immortal.b",
+          "school": "curse"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.curse.phe_linh_chu.passive_05",
+      "school": "curse",
+      "branch": "phe_linh_chu",
+      "slot": "passive_05",
+      "name": "Vạn Hồn Chân Ý",
+      "nodes": [
+        {
+          "id": "tmb.skill.curse.phe_linh_chu.passive_05.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.phe_linh_chu.passive_05.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.curse.phe_linh_chu.passive_05.human",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.phe_linh_chu.passive_05.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.curse.phe_linh_chu.passive_05.human",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.phe_linh_chu.passive_05.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.curse.phe_linh_chu.passive_05.immortal.a",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.phe_linh_chu.passive_05.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.curse.phe_linh_chu.passive_05.immortal.b",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.phe_linh_chu.passive_05.rare_passive.a",
+          "tier": "divine",
+          "lineage": "rare_a",
+          "parent": "tmb.skill.curse.phe_linh_chu.passive_05.divine.a",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.phe_linh_chu.passive_05.rare_passive.b",
+          "tier": "divine",
+          "lineage": "rare_b",
+          "parent": "tmb.skill.curse.phe_linh_chu.passive_05.divine.b",
+          "school": "curse"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.curse.phe_linh_chu.innate",
+      "school": "curse",
+      "branch": "phe_linh_chu",
+      "slot": "innate",
+      "name": "Phệ Linh Bản Mệnh",
+      "nodes": [
+        {
+          "id": "tmb.skill.curse.phe_linh_chu.innate.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.phe_linh_chu.innate.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.curse.phe_linh_chu.innate.human",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.phe_linh_chu.innate.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.curse.phe_linh_chu.innate.human",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.phe_linh_chu.innate.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.curse.phe_linh_chu.innate.immortal.a",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.phe_linh_chu.innate.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.curse.phe_linh_chu.innate.immortal.b",
+          "school": "curse"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.curse.ho_menh_chu.active_01",
+      "school": "curse",
+      "branch": "ho_menh_chu",
+      "slot": "active_01",
+      "name": "Hộ Mạch Nhất Ngôn",
+      "nodes": [
+        {
+          "id": "tmb.skill.curse.ho_menh_chu.active_01.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.ho_menh_chu.active_01.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.curse.ho_menh_chu.active_01.human",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.ho_menh_chu.active_01.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.curse.ho_menh_chu.active_01.human",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.ho_menh_chu.active_01.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.curse.ho_menh_chu.active_01.immortal.a",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.ho_menh_chu.active_01.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.curse.ho_menh_chu.active_01.immortal.b",
+          "school": "curse"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.curse.ho_menh_chu.active_02",
+      "school": "curse",
+      "branch": "ho_menh_chu",
+      "slot": "active_02",
+      "name": "Thanh Tâm Phục Khí",
+      "nodes": [
+        {
+          "id": "tmb.skill.curse.ho_menh_chu.active_02.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.ho_menh_chu.active_02.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.curse.ho_menh_chu.active_02.human",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.ho_menh_chu.active_02.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.curse.ho_menh_chu.active_02.human",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.ho_menh_chu.active_02.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.curse.ho_menh_chu.active_02.immortal.a",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.ho_menh_chu.active_02.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.curse.ho_menh_chu.active_02.immortal.b",
+          "school": "curse"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.curse.ho_menh_chu.active_03",
+      "school": "curse",
+      "branch": "ho_menh_chu",
+      "slot": "active_03",
+      "name": "Giải Nguy Cứu Mệnh",
+      "nodes": [
+        {
+          "id": "tmb.skill.curse.ho_menh_chu.active_03.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.ho_menh_chu.active_03.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.curse.ho_menh_chu.active_03.human",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.ho_menh_chu.active_03.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.curse.ho_menh_chu.active_03.human",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.ho_menh_chu.active_03.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.curse.ho_menh_chu.active_03.immortal.a",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.ho_menh_chu.active_03.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.curse.ho_menh_chu.active_03.immortal.b",
+          "school": "curse"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.curse.ho_menh_chu.active_04",
+      "school": "curse",
+      "branch": "ho_menh_chu",
+      "slot": "active_04",
+      "name": "Chính Ngôn Phản Kích",
+      "nodes": [
+        {
+          "id": "tmb.skill.curse.ho_menh_chu.active_04.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.ho_menh_chu.active_04.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.curse.ho_menh_chu.active_04.human",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.ho_menh_chu.active_04.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.curse.ho_menh_chu.active_04.human",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.ho_menh_chu.active_04.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.curse.ho_menh_chu.active_04.immortal.a",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.ho_menh_chu.active_04.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.curse.ho_menh_chu.active_04.immortal.b",
+          "school": "curse"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.curse.ho_menh_chu.ultimate",
+      "school": "curse",
+      "branch": "ho_menh_chu",
+      "slot": "ultimate",
+      "name": "Thái Thượng Hộ Mệnh Chú",
+      "nodes": [
+        {
+          "id": "tmb.skill.curse.ho_menh_chu.ultimate.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.ho_menh_chu.ultimate.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.curse.ho_menh_chu.ultimate.human",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.ho_menh_chu.ultimate.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.curse.ho_menh_chu.ultimate.human",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.ho_menh_chu.ultimate.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.curse.ho_menh_chu.ultimate.immortal.a",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.ho_menh_chu.ultimate.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.curse.ho_menh_chu.ultimate.immortal.b",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.ho_menh_chu.ultimate.rare.a",
+          "tier": "divine",
+          "lineage": "rare_a",
+          "parent": "tmb.skill.curse.ho_menh_chu.ultimate.divine.a",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.ho_menh_chu.ultimate.rare.b",
+          "tier": "divine",
+          "lineage": "rare_b",
+          "parent": "tmb.skill.curse.ho_menh_chu.ultimate.divine.b",
+          "school": "curse"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.curse.ho_menh_chu.passive_01",
+      "school": "curse",
+      "branch": "ho_menh_chu",
+      "slot": "passive_01",
+      "name": "Hộ Mệnh Dưỡng Tức",
+      "nodes": [
+        {
+          "id": "tmb.skill.curse.ho_menh_chu.passive_01.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.ho_menh_chu.passive_01.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.curse.ho_menh_chu.passive_01.human",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.ho_menh_chu.passive_01.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.curse.ho_menh_chu.passive_01.human",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.ho_menh_chu.passive_01.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.curse.ho_menh_chu.passive_01.immortal.a",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.ho_menh_chu.passive_01.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.curse.ho_menh_chu.passive_01.immortal.b",
+          "school": "curse"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.curse.ho_menh_chu.passive_02",
+      "school": "curse",
+      "branch": "ho_menh_chu",
+      "slot": "passive_02",
+      "name": "Đồng Tâm Tĩnh Niệm",
+      "nodes": [
+        {
+          "id": "tmb.skill.curse.ho_menh_chu.passive_02.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.ho_menh_chu.passive_02.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.curse.ho_menh_chu.passive_02.human",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.ho_menh_chu.passive_02.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.curse.ho_menh_chu.passive_02.human",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.ho_menh_chu.passive_02.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.curse.ho_menh_chu.passive_02.immortal.a",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.ho_menh_chu.passive_02.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.curse.ho_menh_chu.passive_02.immortal.b",
+          "school": "curse"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.curse.ho_menh_chu.passive_03",
+      "school": "curse",
+      "branch": "ho_menh_chu",
+      "slot": "passive_03",
+      "name": "Huyền Hộ Hồi Văn",
+      "nodes": [
+        {
+          "id": "tmb.skill.curse.ho_menh_chu.passive_03.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.ho_menh_chu.passive_03.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.curse.ho_menh_chu.passive_03.human",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.ho_menh_chu.passive_03.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.curse.ho_menh_chu.passive_03.human",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.ho_menh_chu.passive_03.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.curse.ho_menh_chu.passive_03.immortal.a",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.ho_menh_chu.passive_03.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.curse.ho_menh_chu.passive_03.immortal.b",
+          "school": "curse"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.curse.ho_menh_chu.passive_04",
+      "school": "curse",
+      "branch": "ho_menh_chu",
+      "slot": "passive_04",
+      "name": "Tĩnh Mệnh Chính Khí",
+      "nodes": [
+        {
+          "id": "tmb.skill.curse.ho_menh_chu.passive_04.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.ho_menh_chu.passive_04.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.curse.ho_menh_chu.passive_04.human",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.ho_menh_chu.passive_04.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.curse.ho_menh_chu.passive_04.human",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.ho_menh_chu.passive_04.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.curse.ho_menh_chu.passive_04.immortal.a",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.ho_menh_chu.passive_04.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.curse.ho_menh_chu.passive_04.immortal.b",
+          "school": "curse"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.curse.ho_menh_chu.passive_05",
+      "school": "curse",
+      "branch": "ho_menh_chu",
+      "slot": "passive_05",
+      "name": "Thái Thượng Chân Ý",
+      "nodes": [
+        {
+          "id": "tmb.skill.curse.ho_menh_chu.passive_05.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.ho_menh_chu.passive_05.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.curse.ho_menh_chu.passive_05.human",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.ho_menh_chu.passive_05.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.curse.ho_menh_chu.passive_05.human",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.ho_menh_chu.passive_05.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.curse.ho_menh_chu.passive_05.immortal.a",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.ho_menh_chu.passive_05.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.curse.ho_menh_chu.passive_05.immortal.b",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.ho_menh_chu.passive_05.rare_passive.a",
+          "tier": "divine",
+          "lineage": "rare_a",
+          "parent": "tmb.skill.curse.ho_menh_chu.passive_05.divine.a",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.ho_menh_chu.passive_05.rare_passive.b",
+          "tier": "divine",
+          "lineage": "rare_b",
+          "parent": "tmb.skill.curse.ho_menh_chu.passive_05.divine.b",
+          "school": "curse"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.curse.ho_menh_chu.innate",
+      "school": "curse",
+      "branch": "ho_menh_chu",
+      "slot": "innate",
+      "name": "Hộ Mệnh Bản Mệnh",
+      "nodes": [
+        {
+          "id": "tmb.skill.curse.ho_menh_chu.innate.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.ho_menh_chu.innate.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.curse.ho_menh_chu.innate.human",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.ho_menh_chu.innate.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.curse.ho_menh_chu.innate.human",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.ho_menh_chu.innate.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.curse.ho_menh_chu.innate.immortal.a",
+          "school": "curse"
+        },
+        {
+          "id": "tmb.skill.curse.ho_menh_chu.innate.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.curse.ho_menh_chu.innate.immortal.b",
+          "school": "curse"
+        }
+      ]
+    }
+  ],
+  "candidate_source_status": "AUTHENTIC_CURSE_CODEX_SOURCE_PENDING",
+  "target_counts": {
+    "skill_nodes": 183,
+    "families": 35,
+    "branches": 3,
+    "human": 35,
+    "immortal": 68,
+    "divine": 80
+  }
+}
