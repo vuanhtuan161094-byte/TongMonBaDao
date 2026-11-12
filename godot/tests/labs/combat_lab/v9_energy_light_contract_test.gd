@@ -6,6 +6,7 @@ const ARENA = preload("res://labs/combat_lab/combat_lab_arena.gd")
 const SWORD_V10 = preload("res://labs/combat_lab/combat_lab_v10_sword_fx.gd")
 const SWORD_V11 = preload("res://labs/combat_lab/combat_lab_v11_sword_fx.gd")
 const SWORD_V12 = preload("res://labs/combat_lab/combat_lab_v12_sword_fx.gd")
+const SWORD_V13 = preload("res://labs/combat_lab/combat_lab_v13_sword_fx.gd")
 var failures := 0
 
 func _initialize() -> void:
@@ -62,6 +63,26 @@ func _check() -> void:
         "V12 swords remain visible after impact then gradually disappear")
     ensure(SWORD_V12.blade_opacity(7, 0.20) <= 0.01,
         "V12 sword wave three cannot appear during initial charge")
+    # Explicit target binding in the circle-shaped Sword ultimate's
+    # LAB preview: all visible enemies need not be hit by an AoE.
+    var demo_mobs := [
+        Vector2(854, 320), Vector2(966, 320),
+        Vector2(854, 422), Vector2(966, 422)
+    ]
+    for primary in demo_mobs:
+        var selected: Array = SWORD_V13.preview_circle_targets(
+            demo_mobs, primary, Vector2(130, 120), 3)
+        ensure(selected.size() == 3 and selected.has(primary),
+            "V13 locked primary AoE binds to exactly three approved targets")
+        var diagonal := demo_mobs[3] if primary == demo_mobs[0] else demo_mobs[0]
+        ensure(not selected.has(diagonal),
+            "V13 fourth diagonal mob receives no synthetic visual hit")
+    ensure(SWORD_V13.preview_circle_targets(
+        demo_mobs, Vector2(5000,5000), Vector2(130,120), 3).is_empty(),
+        "V13 cannot invent targets for an empty AoE")
+    ensure(SWORD_V13.visibility_after_contact(0.66,0.60) > 0.0 and
+        SWORD_V13.visibility_after_contact(0.85,0.60) <= 0.001,
+        "V13 sword remains after impact then dissolves to zero")
     var fx := FXS.new()
     fx.custom_minimum_size = Vector2(1280, 720)
     root.add_child(fx)
@@ -85,6 +106,17 @@ func _check() -> void:
         ensure(stage.get_node_or_null("SwordArcaneCharge") != null and
             stage.get_node_or_null("SwordArcaneAOE") != null,
             "V11 glow layers instantiate behind normal-blend forged swords")
+        ensure(int(stage.get("preview_hit_count")) == 3,
+            "V13 scene preview initially binds three of four monsters")
+        stage.call("_set_preview_primary", 3)
+        ensure(int(stage.get("preview_primary_index")) == 3 and
+            int(stage.get("preview_hit_count")) == 3,
+            "V13 clicking a different monster relocks primary and hit targets")
+        var effect13: Control = stage.get_node_or_null("AdditiveEnergyVFX")
+        ensure(effect13 != null and
+            effect13.get("sword_preview_hits") is Array and
+            (effect13.get("sword_preview_hits") as Array).has(Vector2(966, 422)),
+            "V13 renderer targets selected mob, not fixed visual grid")
         stage.queue_free()
     var lab := ARENA.new()
     root.add_child(lab)
