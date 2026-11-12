@@ -67,6 +67,7 @@ const MAP_D2_CANDIDATE_SITES := {
 const REIMAGINED_REVIEW_ONLY_SITES := {
     "alchemy_hall":"res://art/reimagined_source_a_v1/alchemy_hall_3q_v1.svg"
 }
+const V3_ART = preload("res://src/presentation/uiux/sect_building_art_variant_v3.gd")
 const MAP_D2_SITE_SIZE := {
     "mine":Vector2(166,121),
     "linh_forest":Vector2(166,121),
@@ -172,6 +173,9 @@ var source_art: SectMap25SourceArt
 var render_art: Dictionary = {}
 # Experimental visual-only artwork is separate from source_art.status().
 var candidate_site_art: Dictionary = {}
+# Presentation-only; never persisted or used as production authority.
+var variant_v3_textures: Dictionary = {}
+var variant_v3_running_ids: Dictionary = {}
 var decoration_items_by_chunk: Dictionary = {}
 # Visual-only suppression of decorative plants under real House footprints.
 var house_reserved_tiles: Dictionary = {}
@@ -458,7 +462,15 @@ func _load_verified_source_art() -> void:
     source_art = SectMap25SourceArt.new()
     render_art.clear()
     candidate_site_art.clear()
+    variant_v3_textures.clear()
     decoration_items_by_chunk.clear()
+    # V3 is additive; if any PNG is absent the canonical worksite fallback stays visible.
+    for path_v3 in V3_ART.all_paths():
+        if not ResourceLoader.exists(path_v3, "Texture2D"):
+            continue
+        var tex_v3 := ResourceLoader.load(path_v3) as Texture2D
+        if tex_v3 != null and tex_v3.get_width() > 0 and tex_v3.get_height() > 0:
+            variant_v3_textures[path_v3] = tex_v3
     # Godot-imported candidate SVGs may be unavailable; fall back to the
     # original honest marker. Never add them to verified MAP25 art status.
     for kind in MAP_D2_CANDIDATE_SITES:
@@ -627,6 +639,16 @@ func refresh_from_state(state: SimulationState) -> void:
     if state == null:
         return
     map_layout_version = state.sect.world_layout_version
+    variant_v3_running_ids.clear()
+    # Read-only view of committed jobs; no writes, no mocked resource production.
+    for raw_site_v3 in state.buildings.values():
+        if not (raw_site_v3 is BuildingState):
+            continue
+        var site_v3: BuildingState = raw_site_v3
+        if not V3_ART.supported(site_v3.building_type):
+            continue
+        if V3_ART.is_canonical_working(site_v3,state.tick):
+            variant_v3_running_ids[str(site_v3.id)] = true
     house_reserved_tiles.clear()
     # Draw a paid construction site/House cleanly: decorative trees cannot
     # stand on the roof, footprint, or its exterior door interaction cell.
@@ -736,7 +758,9 @@ func _row(dest: StringName, instance_id: StringName, text_label: String, index: 
         "world":project(visual_anchor(dest,cell)),
         "cell":cell,
         "managed":managed,
-        "label":text_label
+        "label":text_label,
+        # Stable, display-only isometric camera view. No persisted rotation exists.
+        "view_direction":"B" if managed and index % 2 == 0 else "A"
     }
 
 func set_selected_visual_site(id: StringName) -> void:
@@ -1160,7 +1184,8 @@ func _draw() -> void:
                 scaled.y-4.0),scaled),false)
         else:
             _draw_building(place,str(item["destination"]),bool(item["managed"]),
-                detailed.has(str(item["building_id"])))
+                detailed.has(str(item["building_id"])),
+                str(item["building_id"]),str(item.get("view_direction","A")))
     _draw_placement_preview()
 
 func _ensure_pve_static_draw_queue() -> void:
@@ -1240,7 +1265,8 @@ func _draw_pve_static_item(entry: Dictionary) -> void:
     else:
         var place: Vector2 = item["world"]
         _draw_building(place,str(item["destination"]),bool(item["managed"]),
-            pve_detailed_site_ids.has(str(item["building_id"])))
+            pve_detailed_site_ids.has(str(item["building_id"])),
+            str(item["building_id"]),str(item.get("view_direction","A")))
 
 
 func _draw_pve_stream() -> void:
@@ -1416,14 +1442,29 @@ func _draw_compact_producer(p: Vector2,kind: String,overview: bool) -> void:
             draw_line(p+Vector2(dx,3),p+Vector2(dx+2,-4),detail,1.5,true)
 
 
-func _draw_building(p: Vector2,kind: String, managed: bool, allow_detail: bool = true) -> void:
+func _draw_building(p: Vector2,kind: String, managed: bool, allow_detail: bool = true,
+        building_id: String = "", view_direction: String = "A") -> void:
     # Always keep all 100 actual producers in display_instances, but do NOT
     # paint 100 huge candidate buildings in a far overview. This is view LOD,
     # not reducing valid BuildingState instances or workers.
-    if managed and MAP_D2_CANDIDATE_SITES.has(kind):
+    if managed and (MAP_D2_CANDIDATE_SITES.has(kind) or V3_ART.supported(StringName(kind))):
         var level := SectEndgameVisualBudgetV1.site_level(camera.zoom.x)
         if level < 2 or not allow_detail:
             _draw_compact_producer(p,kind,level == 0)
+            return
+    # Approved new architecture never overwrites the SHA-checked Source A originals.
+    # Each sprite is a separate image: two real views, two real working states.
+    if managed and V3_ART.supported(StringName(kind)):
+        var is_working_v3 := bool(variant_v3_running_ids.get(building_id,false))
+        var selected_v3 := V3_ART.sprite_path(StringName(kind),StringName(view_direction),is_working_v3)
+        var image_v3 := variant_v3_textures.get(selected_v3) as Texture2D
+        if image_v3 == null and is_working_v3:
+            selected_v3 = V3_ART.sprite_path(StringName(kind),StringName(view_direction),false)
+            image_v3 = variant_v3_textures.get(selected_v3) as Texture2D
+        if image_v3 != null:
+            var target_v3 := V3_ART.display_size(StringName(kind))
+            draw_texture_rect(image_v3,
+                Rect2(p + Vector2(0,-target_v3.y*0.28)-target_v3*0.5,target_v3),false)
             return
     if HOUSE_TEXTURES.has(kind):
         var key := str(HOUSE_TEXTURES[kind])
