@@ -175,32 +175,74 @@ static func serpent_impact(canvas: CanvasItem, at: Vector2,
         _light_line(canvas, start, finish,
             JADE if i % 2 == 0 else VIOLET, 1.5 * z, strength * 0.73)
 
+# V9.2: readable STRAIGHT jian made only of luminous geometry, not an image.
+# ~4 blade polygons + ~13 detail primitives per sword; old renderer used
+# nine segments x many glow-lines and was expensive with 12 active swords.
+# The blade, tang, guard and engraved motifs always share one forward axis.
 static func _energy_blade(canvas: CanvasItem, center: Vector2,
         forward: Vector2, z: float, energy: float) -> void:
-    # A flying sword is built from converging high-energy beams (white core,
-    # ice bevel, dark-violet side glow) instead of a metal PNG polygon.
-    var tip := center + forward * (49.0 * z)
-    var base := center - forward * (15.0 * z)
-    var cross := forward.orthogonal()
-    # A tapered energy blade: glowing segment widths shrink to a sharp tip.
-    for segment in range(9):
-        var u0 := float(segment) / 9.0
-        var u1 := float(segment + 1) / 9.0
-        var a := base.lerp(tip, u0)
-        var b := base.lerp(tip, u1)
-        var taper := pow(1.0 - u0, 0.72)
-        var width := maxf(0.45, 7.0 * z * taper)
-        _light_line(canvas, a, b, CYAN, width, energy * 0.92)
-        _light_line(canvas, a - cross * width * 0.28,
-            b - cross * width * 0.20, INDIGO,
-            maxf(0.65, width * 0.30), energy * 0.42)
-    _light_line(canvas, base, tip, WHITE, 0.85 * z, energy * 0.92)
-    var guard := center - forward * (18.0 * z)
-    _light_line(canvas, guard - cross * 8 * z,
-        guard + cross * 8 * z, CYAN, 1.3 * z, energy * 0.65)
-    _light_line(canvas, guard, guard - forward * 13.0 * z,
-        INDIGO, 1.5 * z, energy * 0.55)
-    _flare(canvas, tip, 1.8 * z, WHITE, energy)
+    if energy < 0.025:
+        return
+    var f: Vector2 = forward.normalized()
+    if f.length_squared() < 0.5:
+        f = Vector2.RIGHT
+    var side: Vector2 = f.orthogonal()
+    var root: Vector2 = center - f * 15.0 * z
+    var mid: Vector2 = center + f * 19.0 * z
+    var tip: Vector2 = center + f * 51.0 * z
+    var guard: Vector2 = center - f * 18.0 * z
+    var pommel: Vector2 = center - f * 38.0 * z
+    # Outer aura, the darker bevel, then two faceted white/azure surfaces.
+    # No curved spine and no separate segment orientation: a rigid straight blade.
+    canvas.draw_colored_polygon(PackedVector2Array([
+        root - side * 13.0 * z, mid - side * 17.5 * z, tip,
+        mid + side * 17.5 * z, root + side * 13.0 * z
+    ]), _tint(CYAN, energy * 0.060))
+    canvas.draw_colored_polygon(PackedVector2Array([
+        root - side * 6.6 * z, mid - side * 7.1 * z, tip,
+        mid + side * 7.1 * z, root + side * 6.6 * z
+    ]), _tint(INDIGO, energy * 0.29))
+    canvas.draw_colored_polygon(PackedVector2Array([
+        root, root - side * 4.8 * z, mid - side * 5.0 * z, tip
+    ]), _tint(WHITE, energy * 0.70))
+    canvas.draw_colored_polygon(PackedVector2Array([
+        root, tip, mid + side * 5.0 * z, root + side * 4.8 * z
+    ]), _tint(CYAN, energy * 0.62))
+    canvas.draw_line(root, tip, _tint(WHITE, energy * 0.84), 1.0 * z, true)
+    # Carved luminous motifs: diamond talisman, paired lines and a central seal.
+    # Their location is attached to the blade's axis; they cannot bend the sword.
+    var seal: Vector2 = center + f * 4.0 * z
+    var rune_top: Vector2 = seal + f * 6.0 * z
+    var rune_bottom: Vector2 = seal - f * 6.0 * z
+    var rune_left: Vector2 = seal - side * 2.8 * z
+    var rune_right: Vector2 = seal + side * 2.8 * z
+    var engraving: Color = _tint(Color("f0df9b"), energy * 0.80)
+    canvas.draw_polyline(PackedVector2Array([
+        rune_bottom, rune_left, rune_top, rune_right, rune_bottom
+    ]), engraving, maxf(0.65, 0.85 * z), true)
+    canvas.draw_line(root + f * 13.0 * z - side * 1.7 * z,
+        root + f * 27.0 * z - side * 1.7 * z,
+        engraving, maxf(0.65, 0.72 * z), true)
+    canvas.draw_line(root + f * 13.0 * z + side * 1.7 * z,
+        root + f * 27.0 * z + side * 1.7 * z,
+        engraving, maxf(0.65, 0.72 * z), true)
+    # Ornate quillon: broad horizontal guard with mirrored curled endpoints.
+    var guard_left: Vector2 = guard - side * 9.0 * z
+    var guard_right: Vector2 = guard + side * 9.0 * z
+    _light_line(canvas, guard_left, guard_right, CYAN, 1.85 * z, energy * 0.76)
+    canvas.draw_line(guard_left, guard_left + f * 4.5 * z - side * 4.0 * z,
+        engraving, 1.1 * z, true)
+    canvas.draw_line(guard_right, guard_right + f * 4.5 * z + side * 4.0 * z,
+        engraving, 1.1 * z, true)
+    # Wrapped hilt and jewel finial, not a glow stick.
+    _light_line(canvas, guard, pommel, INDIGO, 2.2 * z, energy * 0.81)
+    for band in range(3):
+        var p: Vector2 = guard.lerp(pommel, (float(band) + 1.0) * 0.24)
+        canvas.draw_line(p - side * 2.0 * z, p + side * 2.0 * z,
+            engraving, maxf(0.7, z), true)
+    canvas.draw_circle(pommel, 3.2 * z, _tint(CYAN, energy * 0.32))
+    canvas.draw_circle(pommel, 1.4 * z, _tint(WHITE, energy * 0.78))
+    canvas.draw_circle(tip, 2.0 * z, _tint(WHITE, energy * 0.89))
 
 static func sword_light(canvas: CanvasItem, from: Vector2, to: Vector2,
         progress: float, zoom: float, lod: int = 2) -> void:
