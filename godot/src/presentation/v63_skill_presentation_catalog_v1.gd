@@ -936,11 +936,13 @@ static func _validate_presentation_entry(skill_id: String, entry: Dictionary, ca
 
 static func build_mechanics_tooltip(skill: Dictionary, actor_stats: Dictionary = {}, target_distance: float = -1.0) -> Dictionary:
 	var effect := str(skill.get("effect",""))
-	if effect not in ["damage","poison","mark","guard","mobility","slow","heal","cleanse","passive","innate"]:
+	if effect not in ["damage","poison","mark","guard","mobility","slow","formation_zone","heal","cleanse","passive","innate"]:
 		return {"ok":false,"text":"","errors":["s0_tooltip_effect_not_yet_supported:"+effect]}
 	for field in ["damage_ratio","power","duration","passive_modifiers","range","cast_time","cooldown","projectile_speed","shape","target_limit"]:
 		if not skill.has(field):
 			return {"ok":false,"text":"","errors":["runtime_fields_incomplete_for_tooltip:"+field]}
+	if effect == "formation_zone" and not skill.has("formation_zone_tick_interval"):
+		return {"ok":false,"text":"","errors":["runtime_fields_incomplete_for_tooltip:formation_zone_tick_interval"]}
 	var lines: Array[String] = []
 	if effect in ["damage","poison","mark"]:
 		lines.append("Sát thương trực tiếp: " + _format_number(float(skill.get("damage_ratio",0.0)),2) + "× ATK trước phòng thủ.")
@@ -967,6 +969,9 @@ static func build_mechanics_tooltip(skill: Dictionary, actor_stats: Dictionary =
 		lines.append("Sát thương: " + _format_number(float(skill.get("damage_ratio",0.0)),2) + "× ATK; tốc độ di chuyển mục tiêu còn " + _format_number(clampf(float(skill.get("slow_movement_factor",1.0)),0.5,1.0)*100.0,2) + "% trong tối đa " + _format_number(clampf(float(skill.get("duration",0.0)),0.0,8.0),2) + " giây.")
 		if str(skill.get("school", "")) == "palm":
 			lines.append("Boss chỉ nhận " + _format_number(clampf(float(skill.get("boss_effect_strength_factor",0.35)),0.0,1.0)*100.0,2) + "% độ mạnh và " + _format_number(clampf(float(skill.get("boss_duration_factor",0.4)),0.0,1.0)*100.0,2) + "% thời lượng candidate.")
+	elif effect == "formation_zone":
+		lines.append("Vùng trận không gây sát thương khi dựng; mỗi " + _format_number(float(skill.get("formation_zone_tick_interval",0.0)),2) + " giây gây " + _format_number(float(skill.get("damage_ratio",0.0)),2) + "× ATK mỗi mục tiêu trúng.")
+		lines.append("Bán kính " + _format_number(float(skill.get("radius",0.0)),2) + " ô; tối đa " + str(int(skill.get("target_limit",0))) + " mục tiêu; tồn tại " + _format_number(float(skill.get("duration",0.0)),2) + " giây.")
 	elif effect == "heal":
 		lines.append("Hồi tối đa " + _format_number(clampf(float(skill.get("power",0.0)),0.0,0.5)*100.0,2) + "% HP tối đa; chỉ ghi lượng HP thực còn thiếu, không hồi sinh.")
 	elif effect == "cleanse":

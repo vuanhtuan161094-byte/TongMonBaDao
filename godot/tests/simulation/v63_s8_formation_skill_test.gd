@@ -174,6 +174,7 @@ func _exercise_zone_combat_and_snapshot() -> void:
     battle.actors[outside.id] = outside
     battle.encounter_id = "formation_zone_snapshot"
     battle.active = true
+    battle.outcome = "fighting"
     var zone_id := "tmb.skill.formation.sat_phat_tran.active_01.human"
     _enable_preview(caster, zone_id)
     var hp_before: Dictionary = {}
@@ -194,9 +195,14 @@ func _exercise_zone_combat_and_snapshot() -> void:
     Formation.process_zones(battle)
     var hp_after_first_tick := float(targets[0].hp) + float(targets[1].hp) + float(targets[2].hp) + float(targets[3].hp)
     var tick_events := _events(battle, "v63_formation_zone_tick", zone_id)
+    var direct_hit_ids: Array[String] = []
+    for event in battle.events:
+        if str(event.get("type", "")) == "hit" and str(event.get("attacker", "")) == str(caster.id) and str(event.get("kind", "")) == "v63_skill":
+            direct_hit_ids.append(str(event.get("target", "")))
     _expect(tick_events.size() == 1 and tick_events[0].get("target_ids", []).size() <= 3
-        and not is_equal_approx(hp_after_first_tick, 800.0),
-        "zone tick calls real Combat V2 direct-hit receipts and respects the three-target cap")
+        and direct_hit_ids == tick_events[0].get("target_ids", [])
+        and not direct_hit_ids.is_empty() and not is_equal_approx(hp_after_first_tick, 800.0),
+        "zone tick uses matching real Combat V2 hit receipts; events=%d targets=%s hits=%s zone=%s now=%s hp=%s" % [tick_events.size(), str(tick_events[0].get("target_ids", []) if not tick_events.is_empty() else []), str(direct_hit_ids), str(zones[0]), str(battle.now), str(hp_after_first_tick)])
     _expect(is_equal_approx(float(outside.hp), outside_hp),
         "enemy outside radius takes no zone damage")
     var total_after_tick := hp_after_first_tick
@@ -208,7 +214,7 @@ func _exercise_zone_combat_and_snapshot() -> void:
 
     var saved := Snapshot.save(battle)
     var restored := Snapshot.load(saved)
-    _expect(bool(restored.get("ok", false)), "cold battle snapshot round-trip succeeds")
+    _expect(bool(restored.get("ok", false)), "cold battle snapshot round-trip succeeds: " + str(restored.get("reason", "")))
     if bool(restored.get("ok", false)):
         var restored_battle: MapBattleV2 = restored.get("battle")
         var restored_owner: Dictionary = restored_battle.actors.get("formation_zone_caster", {})

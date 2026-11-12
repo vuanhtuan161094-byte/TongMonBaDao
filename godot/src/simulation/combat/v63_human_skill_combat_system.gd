@@ -1015,7 +1015,7 @@ static func release_cast_base(battle: MapBattleV2, cast: Dictionary, caster: Dic
             if damage > 0.0 or str(definition.get("school", "")) != "poison":
                 _consume_poison(battle,caster,target,id)
         elif effect == "slow" and damage > 0.0 and float(target.get("hp",0.0)) > 0.0:
-            _apply_palm_slow(battle,caster,target,id,cast,definition)
+            _apply_finite_slow(battle,caster,target,id,cast,definition)
         if damage > 0.0 and effect in ["damage", "consume_poison"] and str(definition.get("combat_trait", "")) == "co_doc_b":
             _consume_mark(battle,caster,target,id)
         if damage > 0.0 and str(definition.get("school", "")) == "spear" and str(definition.get("shape", "")) == "line":
@@ -1144,8 +1144,8 @@ static func _heal_target(battle: MapBattleV2, caster: Dictionary, target: Dictio
     battle._sync_linked_hp(target)
     battle._event("heal",{"caster":str(caster.id),"target":str(target.id),"skill_id":skill_id,"amount":amount,"hp_after":float(target.hp)})
 
-static func _apply_palm_slow(battle: MapBattleV2, caster: Dictionary, target: Dictionary, skill_id: String, cast: Dictionary, definition: Dictionary) -> bool:
-    if str(definition.get("school","")) not in ["palm", "curse"]:
+static func _apply_finite_slow(battle: MapBattleV2, caster: Dictionary, target: Dictionary, skill_id: String, cast: Dictionary, definition: Dictionary) -> bool:
+    if str(definition.get("school","")) not in ["palm", "curse", "formation"]:
         return false
     var requested_movement_factor := clampf(float(cast.get("slow_movement_factor",definition.get("slow_movement_factor",1.0))),0.5,1.0)
     var strength := 1.0-requested_movement_factor
