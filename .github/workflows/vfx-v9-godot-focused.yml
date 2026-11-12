@@ -100,6 +100,13 @@ jobs:
             fps="$(ffprobe -v error -select_streams v:0 -show_entries stream=avg_frame_rate -of default=noprint_wrappers=1:nokey=1 "$RUNNER_TEMP/vfx_v9/$school.mp4")"
             echo "$school fps=$fps" | tee -a "$RUNNER_TEMP/vfx_v9/metadata.txt"
             test "$fps" = "60/1"
+            # Five-second owner-facing visual audit surface: six independent
+            # frames over the full animation, not a single flattering screenshot.
+            ffmpeg -y -hide_banner -loglevel error \
+              -i "$RUNNER_TEMP/vfx_v9/$school.mp4" \
+              -vf "fps=2,scale=640:360,tile=6x1:nb_frames=6" -frames:v 1 \
+              "$RUNNER_TEMP/vfx_v9/${school}_filmstrip.png"
+            test -s "$RUNNER_TEMP/vfx_v9/${school}_filmstrip.png"
             rm "$RUNNER_TEMP/vfx_v9/$school.avi"
           done
           sha256sum "$RUNNER_TEMP/vfx_v9/"*.png "$RUNNER_TEMP/vfx_v9/"*.mp4 \
