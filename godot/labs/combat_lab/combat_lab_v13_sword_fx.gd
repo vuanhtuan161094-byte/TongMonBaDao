@@ -22,6 +22,8 @@ static func _ease(x: float) -> float:
 static func preview_circle_targets(actors: Array, locked_center: Vector2,
         radii_px: Vector2, max_targets: int = 3) -> Array:
     var eligible: Array = []
+    if max_targets <= 0:
+        return eligible
     var rx := maxf(1.0, radii_px.x)
     var ry := maxf(1.0, radii_px.y)
     for value in actors:
