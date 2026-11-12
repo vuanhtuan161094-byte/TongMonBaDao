@@ -26,3 +26,9 @@
 - CI Godot 4.7.2 strict import/parse + VFX/V4 contract; test 4 khả năng đổi tâm đều trả 3 mục tiêu, loại quái góc đối, không có target thì không bắn, alpha kiếm mờ dần.
 - Visual: đối chiếu 9 frame từ video 1280x720/60 FPS export, kiểm tra khi đổi mục tiêu (GUI click thực trên thiết bị cần user QA), shader không che quái, thử cảnh nhiều người trước đưa vào One Game.
 - **ART_CANDIDATE, OWNER_VISUAL_PENDING.** MP4 có mã hóa 60fps KHÔNG bằng FPS thực đo trên Android/Windows. Không tuyên bố đã sửa lỗi `_cast_targets` hoặc kích hoạt Sword Gate.
+
+## Nghiệm thu V13.1 — kết quả cuối 2026-11-12
+- V13.1 sword renderer code SHA `f8f73d798a62e2f9fd801b269c269f1f9fdb1b57`: tapered convex light wake behind hilt, bounded motes, white/blue directional impact cut only on explicitly supplied hit targets.
+- Final focused Godot 4.7.2 exact-SHA run [#43266009278](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/43266009278) **SUCCESS** on `ec48f5738fc6098f7a7cb7c4bb3f8354f7d07901`. Strict import+GDScript, V9/V4 contracts, synthetic click on monster #4, 4 primary positions each binding exactly 3 targets, 4th diagonal excluded, zero target cap, sword dissipation. Generates actual 1280×720 165-frame video with ffprobe 60/1 FPS; QA archive `vfx-v13-godot-ec48f5738fc6098f7a7cb7c4bb3f8354f7d07901`.
+- All nine phases reviewed from Godot output; owner has **not** approved art. `ART_CANDIDATE / OWNER_VISUAL_PENDING`; no Android/Windows native runtime FPS proof. The video records initial primary #1; changing the selection for all four corners is covered by Godot code-level synthetic mouse tests, not external mouse GUI video capture.
+- The shared `_cast_targets` ID-sorted selection issue mentioned above is still **OPEN**; no claim the LIVE game has target-priority correctness. Sword gate remains OFF and V13 is demonstration only.
