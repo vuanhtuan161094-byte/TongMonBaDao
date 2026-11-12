@@ -12,6 +12,9 @@ const SILVER := Color("eff9ff")
 const STEEL := Color("577b96")
 const CYAN := Color("5fdaf7")
 const TAU8 := PI * 2.0
+# Reuse the already-authored RGBA Cổ Độc master in this repository.
+# No new third-party art or source atlas modification.
+const GU_MASTER: Texture2D = preload("res://labs/combat_lab/assets/poison_vfx/co_doc_gu_serpent.png")
 
 static func fade(color: Color, opacity: float) -> Color:
     return Color(color.r, color.g, color.b, clampf(opacity, 0.0, 1.0))
@@ -46,6 +49,17 @@ static func cobra(c: CanvasItem, origin: Vector2, destination: Vector2,
     if body_length < 3.0:
         _spark(c, origin, (4.0 + 4.0 * k) * z, JADE, a)
         return
+    # Painted transparent master supplies actual fantasy-organic texture;
+    # the deterministic geometry below preserves the event-true body and
+    # legible hood if the master is subtle against a complex world map.
+    if GU_MASTER != null and body_length > 28.0:
+        var painted_size := Vector2(
+            minf(440.0, body_length * 1.42 + 52.0),
+            minf(290.0, (body_length * 0.65 + 85.0) * z))
+        var painted_at := tail.lerp(head, 0.55) - painted_size * 0.5
+        c.draw_texture_rect(GU_MASTER,
+            Rect2(painted_at, painted_size), false,
+            fade(Color.WHITE, a * 0.79))
     var segments := 16
     var points := PackedVector2Array()
     for i in range(segments + 1):
