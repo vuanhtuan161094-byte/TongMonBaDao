@@ -98,3 +98,13 @@ powershell -NoProfile -ExecutionPolicy Bypass -File tools/windows/qa/Run-TMBComb
 ```
 
 Chỉ dùng `-Mode Full` khi không có Godot đang chạy, hệ thống còn đủ RAM và Smoke PASS. Không tự tắt tiến trình Godot đang làm việc của chủ dự án; `BLOCKED_OTHER_GODOT` không phải lỗi game. Vẫn giữ trạng thái **QA_PENDING** cho đến khi test chạy và có log exit code thật trên đúng HEAD.
+
+## VFX V8 — U Minh Độc Xà và Vạn Kiếm Quy Tông (12/11/2026)
+
+V8 là đồ họa **nguyên bản, vẽ bằng GDScript**, không phải GIF concept được nhập làm atlas. Nó bổ sung một con rắn có đầu, mang, hàm, mắt, nanh và thân uốn; kiếm có lưỡi, chuôi, chắn tay và đội hình phân tán. Giữ V4 để có thể đối chiếu.
+
+- **Rắn trong trận Combat Lab thật:** mở `res://labs/combat_lab/combat_lab.tscn` (F6), chọn trường phái **Độc → Cổ Độc**, nạp kỹ năng `tmb.skill.poison.co_doc.active_02.human`, bật nút **VFX V8 · RẮN RÕ HÌNH**, sau đó thử chiêu. V8 chỉ được vẽ theo cue `projectile/impact` từ `MapBattleV2`; không bịa số lần trúng hay sát thương. Có thể bật khi khởi động qua `TMB_POISON_V8_PREVIEW=1` và `TMB_POISON_V4_PREVIEW=1`.
+- **Kiếm trận và rắn xem độc lập:** F6 `res://labs/combat_lab/combat_lab_v8_showcase.tscn`. Nhấn **1** / **2** hoặc các nút trên giao diện để chọn skill, Space phát lại, P tạm dừng. Dựng ở 1280×720, chỉ hiển thị chuyển động, KHÔNG phải một trận chiến có hit/HP/target.
+- **Kiểm thử chính thức:** `res://tests/labs/combat_lab/v8_jian_serpent_contract_test.gd` và `.github/workflows/vfx-v8-godot-focused.yml`. CI cung cấp artifact ảnh PNG/video MP4 từ engine khi chạy thành công. Không coi ảnh GIF concept như ảnh Godot.
+- **Chưa làm:** nối Kiếm Tu vào V6.3 Combat Lab và trận PvE chính, render texture/spritesheet cao cấp đã duyệt, tối ưu FPS/VRAM thực ở 30 đệ tử, nghiệm thu Windows/Android. Không sửa `project.godot`, main scene, Save hoặc combat authority.
+
