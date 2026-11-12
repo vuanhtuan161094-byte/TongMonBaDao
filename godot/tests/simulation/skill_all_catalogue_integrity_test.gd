@@ -71,8 +71,8 @@ func _run() -> void:
     _check(rows.size() == 549 and ids.size() == 549, "expected 549 unique V63 nodes; got " + str(rows.size()) + "/" + str(ids.size()))
     _check(counts == EXPECTED_COUNTS, "tier counts changed: " + str(counts))
     _check(families.size() == 105, "expected 105 unique families, got " + str(families.size()))
-    # Nine original branches plus Sword, Dao, Spear and Dual Blade candidates.
-    _check(branches.size() == 21, "expected 21 indexed branches, got " + str(branches.size()))
+    # Nine original branches plus the five gated candidate weapon/support schools.
+    _check(branches.size() == 24, "expected 24 indexed branches, got " + str(branches.size()))
     _check(names.size() == 549, "all 549 player-facing names must be unique")
     _check(V63FeatureGates.all_disabled(), "V63 release gates must remain disabled by default")
     _check(CombatSkillSystem.SKILLS.size() == 9, "legacy CombatSkillSystem baseline changed; audit separately")

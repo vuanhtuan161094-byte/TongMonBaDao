@@ -7,7 +7,7 @@ const MAX_TARGETS := 3
 const POISON_OWNER_CAP := 5
 const POISON_BOSS_TARGET_CAP := 30
 const POISON_TICK_INTERVAL_SECONDS := 1.0
-const EFFECTS := ["damage","poison","guard","heal","cleanse","mark","consume_poison","mobility","passive","innate"]
+const EFFECTS := ["damage","poison","guard","heal","cleanse","mark","consume_poison","mobility","slow","passive","innate"]
 const BOW_LINE_RANGE_SKILL_IDS := [
     "tmb.skill.bow.liep_anh.ultimate.divine.b",
     "tmb.skill.bow.liep_anh.ultimate.rare.b"
@@ -156,6 +156,12 @@ static func skill_definitions() -> Dictionary:
             result[str(row.id)] = row.duplicate(true)
     else:
         all_loaded = false
+    var palm := V63PalmSkillCombatSystem.load_catalogue()
+    if bool(palm.get("ok", false)):
+        for row in palm.data.skills:
+            result[str(row.id)] = row.duplicate(true)
+    else:
+        all_loaded = false
     if all_loaded:
         _all_skill_definition_cache = result.duplicate(true)
     return result
@@ -189,6 +195,9 @@ static func branch_definitions() -> Dictionary:
     var dual_blade := V63DualBladeSkillCombatSystem.branch_definitions()
     for branch_id in dual_blade.keys():
         result[str(branch_id)] = dual_blade[branch_id].duplicate(true)
+    var palm := V63PalmSkillCombatSystem.branch_definitions()
+    for branch_id in palm.keys():
+        result[str(branch_id)] = palm[branch_id].duplicate(true)
     return result
 
 static func boss_definition(boss_id: String) -> Dictionary:
@@ -221,6 +230,8 @@ static func learn_skill(state: SimulationState, disciple: DiscipleState, skill_i
         return V63SpearSkillCombatSystem.can_learn(definition)
     if str(definition.get("school", "")) == "dual_blade":
         return V63DualBladeSkillCombatSystem.can_learn(definition)
+    if str(definition.get("school", "")) == "palm":
+        return V63PalmSkillCombatSystem.can_learn(definition)
     if definition.is_empty() or not bool(definition.get("archivable",false)):
         return _failure("unknown_or_derived_human_skill")
     var codex_id := str(definition.get("source_codex_id",""))
@@ -298,6 +309,7 @@ static func attach_disciple_loadout(state: SimulationState, actor: Dictionary, p
     actor["v63_blade_combat_enabled"] = V63FeatureGates.is_enabled("blade_skill_combat",preview_overrides)
     actor["v63_spear_combat_enabled"] = V63FeatureGates.is_enabled("spear_skill_combat",preview_overrides)
     actor["v63_dual_blade_combat_enabled"] = V63FeatureGates.is_enabled("dual_blade_skill_combat",preview_overrides)
+    actor["v63_palm_combat_enabled"] = V63FeatureGates.is_enabled("palm_skill_combat",preview_overrides)
     var definitions := skill_definitions()
     var skills: Array = []
     var passives: Array = []
@@ -523,6 +535,7 @@ static func preferred_offensive_range(actor: Dictionary) -> float:
     basic = maxf(basic,V63SwordSkillCombatSystem.preferred_offensive_range(actor))
     basic = maxf(basic,V63SpearSkillCombatSystem.preferred_offensive_range(actor))
     basic = maxf(basic,V63DualBladeSkillCombatSystem.preferred_offensive_range(actor))
+    basic = maxf(basic,V63PalmSkillCombatSystem.preferred_offensive_range(actor))
     if str(actor.get("side", "")) != "disciple" or str(actor.get("role", "")) not in ["mage", "ranged"]:
         return basic
     if not bool(actor.get("v63_combat_enabled", false)):
@@ -558,6 +571,8 @@ static func _try_human_cast(battle: MapBattleV2, actor: Dictionary, enemy: Dicti
             continue
         if str(skill.get("school","")) == "dual_blade" and not V63DualBladeSkillCombatSystem.can_cast(actor,id):
             continue
+        if str(skill.get("school","")) == "palm" and not V63PalmSkillCombatSystem.can_cast(actor,id):
+            continue
         if skill.is_empty() or slot not in ["active","ultimate","mobility"] or battle.now < float(ready.get(id,0.0)):
             continue
         if effect == "mobility":
@@ -586,7 +601,7 @@ static func _same_p0_support_party(caster: Dictionary, ally: Dictionary) -> bool
 
 static func _support_target(battle: MapBattleV2, actor: Dictionary, skill: Dictionary) -> Dictionary:
     if str(skill.effect) == "guard":
-        if str(skill.get("school","")) in ["blade", "spear"] and str(skill.get("guard_target_policy","self")) == "weakest_ally":
+        if str(skill.get("school","")) in ["blade", "spear", "palm"] and str(skill.get("guard_target_policy","self")) == "weakest_ally":
             var guard_candidates: Array = []
             for raw_id in battle.actors.keys():
                 var guard_ally: Dictionary = battle.actors[raw_id]
@@ -640,7 +655,7 @@ static func _support_target(battle: MapBattleV2, actor: Dictionary, skill: Dicti
 
 static func _status_count(actor: Dictionary) -> int:
     var statuses: Dictionary = actor.get("status_effects",{})
-    return int(statuses.get("v63_poison",[]).size())+int(statuses.has("burn"))+int(statuses.has("weaken"))
+    return int(statuses.get("v63_poison",[]).size())+int(statuses.has("burn"))+int(statuses.has("weaken"))+int(statuses.has("slow"))
 
 static func _try_mobility(battle: MapBattleV2, actor: Dictionary, target: Dictionary, id: String, skill: Dictionary, ready: Dictionary) -> bool:
     if str(actor.get("side", "")) != "disciple":
@@ -769,7 +784,10 @@ static func _cast_record(caster: Dictionary, target: Dictionary, id: String, ski
         "hit_count":clampi(int(skill.get("hit_count",1)),1,3),"guard_target_policy":str(skill.get("guard_target_policy","self")),
         "guard_mode":str(skill.get("guard_mode","mitigation")),"guard_capacity_ratio":clampf(float(skill.get("guard_capacity_ratio",0.0)),0.0,0.8),
         "health_cost_ratio":clampf(float(skill.get("health_cost_ratio",0.0)),0.0,0.08),
-        "health_trade_bonus_ratio":clampf(float(skill.get("health_trade_bonus_ratio",0.0))*root_factor,0.0,1.2)}
+        "health_trade_bonus_ratio":clampf(float(skill.get("health_trade_bonus_ratio",0.0))*root_factor,0.0,1.2),
+        "slow_movement_factor":clampf(float(skill.get("slow_movement_factor",1.0)),0.5,1.0),
+        "boss_effect_strength_factor":clampf(float(skill.get("boss_effect_strength_factor",0.35)),0.0,1.0),
+        "boss_duration_factor":clampf(float(skill.get("boss_duration_factor",0.4)),0.0,1.0)}
     if not boss_id.is_empty():
         cast["v63_boss_id"] = boss_id
     return cast
@@ -787,6 +805,9 @@ static func release_cast(battle: MapBattleV2, cast: Dictionary, caster: Dictiona
         return
     if V63DualBladeSkillCombatSystem.is_dual_blade_skill(skill_id):
         V63DualBladeSkillCombatSystem.release_cast(battle,cast,caster)
+        return
+    if V63PalmSkillCombatSystem.is_palm_skill(skill_id):
+        V63PalmSkillCombatSystem.release_cast(battle,cast,caster)
         return
     if V63DivineSkillCombatSystem.is_divine_skill(skill_id) or V63DivineSkillCombatSystem.is_divine_boss(str(cast.get("v63_boss_id", ""))):
         V63DivineSkillCombatSystem.release_cast(battle, cast, caster)
@@ -818,7 +839,7 @@ static func release_cast_base(battle: MapBattleV2, cast: Dictionary, caster: Dic
         var before := float(target.hp)
         var caster_before := float(caster.hp)
         var damage := 0.0
-        if effect in ["damage","poison","mark","consume_poison"]:
+        if effect in ["damage","poison","mark","consume_poison","slow"]:
             var ratio := float(cast.ratio)
             var dual_blade_trade := str(definition.get("school", "")) == "dual_blade" and float(cast.get("health_cost_ratio", definition.get("health_cost_ratio", 0.0))) > 0.0
             var health_cost := maxf(0.0,float(caster.get("max_hp",0.0))*clampf(float(cast.get("health_cost_ratio",definition.get("health_cost_ratio",0.0))),0.0,0.08)) if dual_blade_trade else 0.0
@@ -915,6 +936,8 @@ static func release_cast_base(battle: MapBattleV2, cast: Dictionary, caster: Dic
         elif effect == "consume_poison":
             if damage > 0.0 or str(definition.get("school", "")) != "poison":
                 _consume_poison(battle,caster,target,id)
+        elif effect == "slow" and damage > 0.0 and float(target.get("hp",0.0)) > 0.0:
+            _apply_palm_slow(battle,caster,target,id,cast,definition)
         if damage > 0.0 and effect in ["damage", "consume_poison"] and str(definition.get("combat_trait", "")) == "co_doc_b":
             _consume_mark(battle,caster,target,id)
         if damage > 0.0 and str(definition.get("school", "")) == "spear" and str(definition.get("shape", "")) == "line":
@@ -1020,6 +1043,32 @@ static func _heal_target(battle: MapBattleV2, caster: Dictionary, target: Dictio
     battle._sync_linked_hp(target)
     battle._event("heal",{"caster":str(caster.id),"target":str(target.id),"skill_id":skill_id,"amount":amount,"hp_after":float(target.hp)})
 
+static func _apply_palm_slow(battle: MapBattleV2, caster: Dictionary, target: Dictionary, skill_id: String, cast: Dictionary, definition: Dictionary) -> bool:
+    if str(definition.get("school","")) != "palm":
+        return false
+    var requested_movement_factor := clampf(float(cast.get("slow_movement_factor",definition.get("slow_movement_factor",1.0))),0.5,1.0)
+    var strength := 1.0-requested_movement_factor
+    var duration := clampf(float(cast.get("duration",definition.get("duration",0.0))),MapBattleV2.STEP_SECONDS,8.0)
+    var boss_resisted := str(target.get("tier","")) == "boss" or not str(target.get("v63_boss_id","")).is_empty()
+    if boss_resisted:
+        strength *= clampf(float(cast.get("boss_effect_strength_factor",definition.get("boss_effect_strength_factor",0.35))),0.0,1.0)
+        duration *= clampf(float(cast.get("boss_duration_factor",definition.get("boss_duration_factor",0.4))),0.0,1.0)
+    var factor := clampf(1.0-strength,0.5,1.0)
+    var row := {"caster":str(caster.get("id","")),"skill_id":skill_id,"until":battle.now+duration,"movement_factor":factor,"boss_resisted":boss_resisted}
+    var statuses: Dictionary = target.get("status_effects",{})
+    var existing: Dictionary = statuses.get("slow",{})
+    var existing_factor := float(existing.get("movement_factor",1.0))
+    var existing_expired := not existing.is_empty() and battle.now >= float(existing.get("until",-1.0))
+    var replace := existing.is_empty() or existing_expired or factor < existing_factor-0.000001 \
+        or (is_equal_approx(factor,existing_factor) and float(row["until"]) > float(existing.get("until",-1.0)))
+    if not replace:
+        return false
+    statuses["slow"] = row
+    target["status_effects"] = statuses
+    battle._event("status_applied",{"caster":str(caster.get("id","")),"target":str(target.get("id","")),"status":"slow","skill_id":skill_id,"until":float(row["until"]),"movement_factor":factor,"boss_resisted":boss_resisted})
+    battle._event("v63_palm_slow_applied",{"caster":str(caster.get("id","")),"target":str(target.get("id","")),"skill_id":skill_id,"until":float(row["until"]),"movement_factor":factor,"boss_resisted":boss_resisted})
+    return true
+
 static func _cleanse_target(battle: MapBattleV2, caster: Dictionary, target: Dictionary, skill_id: String, count: int) -> int:
     var statuses: Dictionary = target.get("status_effects",{})
     var poison: Array = statuses.get("v63_poison",[])
@@ -1035,7 +1084,7 @@ static func _cleanse_target(battle: MapBattleV2, caster: Dictionary, target: Dic
     # existing contract until independently reviewed.
     var poison_school := str(skill_definition(skill_id).get("school", "")) == "poison"
     var remaining := maxi(0, maxi(1,count) - removed) if poison_school else maxi(1,count)
-    for status_id in ["burn","weaken"]:
+    for status_id in ["burn","weaken","slow"]:
         if statuses.has(status_id) and cleared.size() < remaining:
             statuses.erase(status_id)
             cleared.append(status_id)

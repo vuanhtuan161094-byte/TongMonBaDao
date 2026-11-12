@@ -143,7 +143,7 @@ func setup(id: String, party: Array, monsters: Array, keep_encounter_open: bool 
             "hunt_radius":float(row.get("hunt_radius",0.0))
         })
         var v63_disciple_actor: Dictionary = entries[entries.size()-1]
-        for field in ["v63_skill_loadout","v63_skill_ready","v63_combat_enabled","v63_sword_combat_enabled","v63_blade_combat_enabled","v63_spear_combat_enabled","v63_dual_blade_combat_enabled","v63_passive_ids","v63_combat_branch_id","v63_combat_lineage","v63_innate_skill_id","v63_basic_skill_id","basic_element","v63_divine_stage","v63_combat_generation","v63_blood_mode","v63_base_max_hp","v63_shield_received_factor","v63_spiritual_root_enabled","v63_root_global_all_damage_bonus"]:
+        for field in ["v63_skill_loadout","v63_skill_ready","v63_combat_enabled","v63_sword_combat_enabled","v63_blade_combat_enabled","v63_spear_combat_enabled","v63_dual_blade_combat_enabled","v63_palm_combat_enabled","v63_passive_ids","v63_combat_branch_id","v63_combat_lineage","v63_innate_skill_id","v63_basic_skill_id","basic_element","v63_divine_stage","v63_combat_generation","v63_blood_mode","v63_base_max_hp","v63_shield_received_factor","v63_spiritual_root_enabled","v63_root_global_all_damage_bonus"]:
             if row.has(field):
                 v63_disciple_actor[field] = row[field].duplicate(true) if row[field] is Array or row[field] is Dictionary else row[field]
     for raw in monsters:
@@ -575,6 +575,13 @@ func _move_world_actor(actor: Dictionary, destination: Vector2, speed: float, st
         return true
     return false
 
+func _effective_move_speed(actor: Dictionary) -> float:
+    var speed := maxf(0.0,float(actor.get("move_speed",2.0)))
+    var slow: Dictionary = actor.get("status_effects",{}).get("slow",{})
+    if not slow.is_empty() and now < float(slow.get("until",-1.0)):
+        speed *= clampf(float(slow.get("movement_factor",1.0)),0.5,1.0)
+    return speed
+
 func step(viewed_map: bool = false) -> Dictionary:
     # viewed_map deliberately not consulted; same deterministic simulation.
     if not active:
@@ -607,7 +614,7 @@ func step(viewed_map: bool = false) -> Dictionary:
                 actor["home_position"] = actor["position"]
                 actor["hunt_policy"] = str(actor.get("hunt_after_move","auto"))
             else:
-                _move_world_actor(actor,ordered_position,float(actor.get("move_speed",2.0)))
+                _move_world_actor(actor,ordered_position,_effective_move_speed(actor))
                 continue
         var holding := world_mode and str(actor["side"]) == "disciple" \
                 and str(actor.get("hunt_policy","auto")) == "hold"
@@ -646,7 +653,7 @@ func step(viewed_map: bool = false) -> Dictionary:
             if route_distance > attack_range+0.08:
                 if holding:
                     continue
-                _move_world_actor(actor,target["position"],float(actor.get("move_speed",2.0)),attack_range)
+                _move_world_actor(actor,target["position"],_effective_move_speed(actor),attack_range)
                 continue
             distance = route_distance
             if distance <= attack_range and distance > basic_attack_range:
@@ -654,10 +661,10 @@ func step(viewed_map: bool = false) -> Dictionary:
         if distance > attack_range:
             if holding:
                 continue
-            var delta := minf(float(actor["move_speed"])*STEP_SECONDS,maxf(0.0,distance-attack_range+0.02))
+            var delta := minf(_effective_move_speed(actor)*STEP_SECONDS,maxf(0.0,distance-attack_range+0.02))
             if delta > 0.0:
                 if world_mode:
-                    _move_world_actor(actor,target["position"],float(actor.get("move_speed",2.0)),attack_range)
+                    _move_world_actor(actor,target["position"],_effective_move_speed(actor),attack_range)
                 else:
                     var direction := ((target["position"] as Vector2)-(actor["position"] as Vector2)).normalized()
                     actor["position"] = _keep_inside((actor["position"] as Vector2)+direction*delta)
@@ -1147,7 +1154,8 @@ func _deal_direct(attacker: Dictionary, target: Dictionary, ratio: float, kind: 
     var actual_damage := float(settlement["actual_damage"])
     target["hp"] = float(settlement["target_hp_after"])
     if shield_absorbed > 0.0:
-        _event("v63_spear_shield_absorbed",{"caster":str(attacker.get("id","")),"target":str(target.get("id","")),"skill_id":shield_skill_id,"absorbed_damage":shield_absorbed,"remaining_capacity":float(target.get("v63_capacity_shield_remaining",0.0))})
+        var shield_event := "v63_palm_guard_absorbed" if shield_skill_id.begins_with("tmb.skill.palm.") else "v63_spear_shield_absorbed"
+        _event(shield_event,{"caster":str(attacker.get("id","")),"target":str(target.get("id","")),"skill_id":shield_skill_id,"absorbed_damage":shield_absorbed,"remaining_capacity":float(target.get("v63_capacity_shield_remaining",0.0))})
     # Poison Dược healing budget may spend only verified damage committed by this battle.
     # Receipts are carried by the existing actor snapshot, never inferred from missing HP.
     V63PoisonEvolutionV1.record_damage_taken(target, actual_damage, now)
@@ -1286,6 +1294,8 @@ func _process_status_effects() -> void:
                     statuses.erase("burn")
         if statuses.has("weaken") and now >= float(statuses["weaken"].get("until",-1.0)):
             statuses.erase("weaken")
+        if statuses.has("slow") and now >= float(statuses["slow"].get("until",-1.0)):
+            statuses.erase("slow")
         target["status_effects"] = statuses
 
 func _cast_mage_aoe(actor: Dictionary, target: Dictionary) -> void:

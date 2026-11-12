@@ -1,0 +1,1692 @@
+{
+  "schema_version": 1,
+  "extension_id": "tmb.v63.registry_extension.s5_palm",
+  "release_gate": "OFF",
+  "base_registry": {
+    "path": "res://data/combat/v63_content_registry.json",
+    "git_blob_sha": "2b36bd39bf04c20dc74f00e74d335568b4a1a89b"
+  },
+  "source_catalog": {
+    "path": "res://data/combat/v63_palm_combat_catalog.json",
+    "git_blob_sha": "c2b2230e7f1391934625e2a6b482770cb133f2cf"
+  },
+  "school": {
+    "id": "palm",
+    "name": "Chưởng Tu",
+    "candidate_source_status": "SOURCE_PENDING"
+  },
+  "paths": [
+    {
+      "id": "tmb.path.palm.liet_duong_chuong",
+      "school": "palm",
+      "name": "Liệt Dương",
+      "lineages": {
+        "a": "Dương Ấn",
+        "b": "Kim Ô"
+      },
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.path.palm.han_ngoc_chuong",
+      "school": "palm",
+      "name": "Hàn Ngọc",
+      "lineages": {
+        "a": "Băng Tâm",
+        "b": "Hàn Nguyệt"
+      },
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.path.palm.hoi_phong_chuong",
+      "school": "palm",
+      "name": "Hồi Phong",
+      "lineages": {
+        "a": "Thanh Phong",
+        "b": "Từ Huyền"
+      },
+      "candidate_source_status": "SOURCE_PENDING"
+    }
+  ],
+  "families": [
+    {
+      "id": "tmb.skill.palm.basic",
+      "school": "palm",
+      "branch": "",
+      "slot": "basic",
+      "name": "Hành Vân Chưởng",
+      "nodes": [
+        {
+          "id": "tmb.skill.palm.basic.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.basic.immortal.base",
+          "tier": "immortal",
+          "lineage": "base",
+          "parent": "tmb.skill.palm.basic.human",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.basic.divine.base",
+          "tier": "divine",
+          "lineage": "base",
+          "parent": "tmb.skill.palm.basic.immortal.base",
+          "school": "palm"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.palm.mobility",
+      "school": "palm",
+      "branch": "",
+      "slot": "mobility",
+      "name": "Tầm Khí Bộ",
+      "nodes": [
+        {
+          "id": "tmb.skill.palm.mobility.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.mobility.immortal.base",
+          "tier": "immortal",
+          "lineage": "base",
+          "parent": "tmb.skill.palm.mobility.human",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.mobility.divine.base",
+          "tier": "divine",
+          "lineage": "base",
+          "parent": "tmb.skill.palm.mobility.immortal.base",
+          "school": "palm"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.palm.liet_duong_chuong.active_01",
+      "school": "palm",
+      "branch": "liet_duong_chuong",
+      "slot": "active_01",
+      "name": "Diệm Dương Khai Chưởng",
+      "nodes": [
+        {
+          "id": "tmb.skill.palm.liet_duong_chuong.active_01.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.liet_duong_chuong.active_01.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.palm.liet_duong_chuong.active_01.human",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.liet_duong_chuong.active_01.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.palm.liet_duong_chuong.active_01.human",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.liet_duong_chuong.active_01.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.palm.liet_duong_chuong.active_01.immortal.a",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.liet_duong_chuong.active_01.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.palm.liet_duong_chuong.active_01.immortal.b",
+          "school": "palm"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.palm.liet_duong_chuong.active_02",
+      "school": "palm",
+      "branch": "liet_duong_chuong",
+      "slot": "active_02",
+      "name": "Xích Nhật Phá Vân",
+      "nodes": [
+        {
+          "id": "tmb.skill.palm.liet_duong_chuong.active_02.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.liet_duong_chuong.active_02.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.palm.liet_duong_chuong.active_02.human",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.liet_duong_chuong.active_02.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.palm.liet_duong_chuong.active_02.human",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.liet_duong_chuong.active_02.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.palm.liet_duong_chuong.active_02.immortal.a",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.liet_duong_chuong.active_02.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.palm.liet_duong_chuong.active_02.immortal.b",
+          "school": "palm"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.palm.liet_duong_chuong.active_03",
+      "school": "palm",
+      "branch": "liet_duong_chuong",
+      "slot": "active_03",
+      "name": "Kim Ô Truy Ảnh",
+      "nodes": [
+        {
+          "id": "tmb.skill.palm.liet_duong_chuong.active_03.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.liet_duong_chuong.active_03.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.palm.liet_duong_chuong.active_03.human",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.liet_duong_chuong.active_03.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.palm.liet_duong_chuong.active_03.human",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.liet_duong_chuong.active_03.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.palm.liet_duong_chuong.active_03.immortal.a",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.liet_duong_chuong.active_03.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.palm.liet_duong_chuong.active_03.immortal.b",
+          "school": "palm"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.palm.liet_duong_chuong.active_04",
+      "school": "palm",
+      "branch": "liet_duong_chuong",
+      "slot": "active_04",
+      "name": "Dương Ấn Khai Sơn",
+      "nodes": [
+        {
+          "id": "tmb.skill.palm.liet_duong_chuong.active_04.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.liet_duong_chuong.active_04.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.palm.liet_duong_chuong.active_04.human",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.liet_duong_chuong.active_04.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.palm.liet_duong_chuong.active_04.human",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.liet_duong_chuong.active_04.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.palm.liet_duong_chuong.active_04.immortal.a",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.liet_duong_chuong.active_04.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.palm.liet_duong_chuong.active_04.immortal.b",
+          "school": "palm"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.palm.liet_duong_chuong.ultimate",
+      "school": "palm",
+      "branch": "liet_duong_chuong",
+      "slot": "ultimate",
+      "name": "Thái Dương Phần Thiên",
+      "nodes": [
+        {
+          "id": "tmb.skill.palm.liet_duong_chuong.ultimate.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.liet_duong_chuong.ultimate.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.palm.liet_duong_chuong.ultimate.human",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.liet_duong_chuong.ultimate.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.palm.liet_duong_chuong.ultimate.human",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.liet_duong_chuong.ultimate.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.palm.liet_duong_chuong.ultimate.immortal.a",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.liet_duong_chuong.ultimate.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.palm.liet_duong_chuong.ultimate.immortal.b",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.liet_duong_chuong.ultimate.rare.a",
+          "tier": "divine",
+          "lineage": "rare_a",
+          "parent": "tmb.skill.palm.liet_duong_chuong.ultimate.divine.a",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.liet_duong_chuong.ultimate.rare.b",
+          "tier": "divine",
+          "lineage": "rare_b",
+          "parent": "tmb.skill.palm.liet_duong_chuong.ultimate.divine.b",
+          "school": "palm"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.palm.liet_duong_chuong.passive_01",
+      "school": "palm",
+      "branch": "liet_duong_chuong",
+      "slot": "passive_01",
+      "name": "Dưỡng Hỏa Tâm Quyết",
+      "nodes": [
+        {
+          "id": "tmb.skill.palm.liet_duong_chuong.passive_01.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.liet_duong_chuong.passive_01.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.palm.liet_duong_chuong.passive_01.human",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.liet_duong_chuong.passive_01.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.palm.liet_duong_chuong.passive_01.human",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.liet_duong_chuong.passive_01.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.palm.liet_duong_chuong.passive_01.immortal.a",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.liet_duong_chuong.passive_01.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.palm.liet_duong_chuong.passive_01.immortal.b",
+          "school": "palm"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.palm.liet_duong_chuong.passive_02",
+      "school": "palm",
+      "branch": "liet_duong_chuong",
+      "slot": "passive_02",
+      "name": "Hỏa Tức Quy Nguyên",
+      "nodes": [
+        {
+          "id": "tmb.skill.palm.liet_duong_chuong.passive_02.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.liet_duong_chuong.passive_02.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.palm.liet_duong_chuong.passive_02.human",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.liet_duong_chuong.passive_02.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.palm.liet_duong_chuong.passive_02.human",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.liet_duong_chuong.passive_02.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.palm.liet_duong_chuong.passive_02.immortal.a",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.liet_duong_chuong.passive_02.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.palm.liet_duong_chuong.passive_02.immortal.b",
+          "school": "palm"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.palm.liet_duong_chuong.passive_03",
+      "school": "palm",
+      "branch": "liet_duong_chuong",
+      "slot": "passive_03",
+      "name": "Xích Diễm Tàng Kình",
+      "nodes": [
+        {
+          "id": "tmb.skill.palm.liet_duong_chuong.passive_03.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.liet_duong_chuong.passive_03.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.palm.liet_duong_chuong.passive_03.human",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.liet_duong_chuong.passive_03.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.palm.liet_duong_chuong.passive_03.human",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.liet_duong_chuong.passive_03.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.palm.liet_duong_chuong.passive_03.immortal.a",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.liet_duong_chuong.passive_03.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.palm.liet_duong_chuong.passive_03.immortal.b",
+          "school": "palm"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.palm.liet_duong_chuong.passive_04",
+      "school": "palm",
+      "branch": "liet_duong_chuong",
+      "slot": "passive_04",
+      "name": "Nhật Luân Hộ Mạch",
+      "nodes": [
+        {
+          "id": "tmb.skill.palm.liet_duong_chuong.passive_04.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.liet_duong_chuong.passive_04.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.palm.liet_duong_chuong.passive_04.human",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.liet_duong_chuong.passive_04.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.palm.liet_duong_chuong.passive_04.human",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.liet_duong_chuong.passive_04.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.palm.liet_duong_chuong.passive_04.immortal.a",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.liet_duong_chuong.passive_04.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.palm.liet_duong_chuong.passive_04.immortal.b",
+          "school": "palm"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.palm.liet_duong_chuong.passive_05",
+      "school": "palm",
+      "branch": "liet_duong_chuong",
+      "slot": "passive_05",
+      "name": "Liệt Dương Chân Thể",
+      "nodes": [
+        {
+          "id": "tmb.skill.palm.liet_duong_chuong.passive_05.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.liet_duong_chuong.passive_05.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.palm.liet_duong_chuong.passive_05.human",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.liet_duong_chuong.passive_05.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.palm.liet_duong_chuong.passive_05.human",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.liet_duong_chuong.passive_05.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.palm.liet_duong_chuong.passive_05.immortal.a",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.liet_duong_chuong.passive_05.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.palm.liet_duong_chuong.passive_05.immortal.b",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.liet_duong_chuong.passive_05.rare_passive.a",
+          "tier": "divine",
+          "lineage": "rare_a",
+          "parent": "tmb.skill.palm.liet_duong_chuong.passive_05.divine.a",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.liet_duong_chuong.passive_05.rare_passive.b",
+          "tier": "divine",
+          "lineage": "rare_b",
+          "parent": "tmb.skill.palm.liet_duong_chuong.passive_05.divine.b",
+          "school": "palm"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.palm.liet_duong_chuong.innate",
+      "school": "palm",
+      "branch": "liet_duong_chuong",
+      "slot": "innate",
+      "name": "Chưởng Hỏa Tâm Ấn",
+      "nodes": [
+        {
+          "id": "tmb.skill.palm.liet_duong_chuong.innate.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.liet_duong_chuong.innate.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.palm.liet_duong_chuong.innate.human",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.liet_duong_chuong.innate.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.palm.liet_duong_chuong.innate.human",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.liet_duong_chuong.innate.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.palm.liet_duong_chuong.innate.immortal.a",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.liet_duong_chuong.innate.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.palm.liet_duong_chuong.innate.immortal.b",
+          "school": "palm"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.palm.han_ngoc_chuong.active_01",
+      "school": "palm",
+      "branch": "han_ngoc_chuong",
+      "slot": "active_01",
+      "name": "Hàn Ngọc Chấn Mạch",
+      "nodes": [
+        {
+          "id": "tmb.skill.palm.han_ngoc_chuong.active_01.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.han_ngoc_chuong.active_01.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.palm.han_ngoc_chuong.active_01.human",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.han_ngoc_chuong.active_01.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.palm.han_ngoc_chuong.active_01.human",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.han_ngoc_chuong.active_01.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.palm.han_ngoc_chuong.active_01.immortal.a",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.han_ngoc_chuong.active_01.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.palm.han_ngoc_chuong.active_01.immortal.b",
+          "school": "palm"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.palm.han_ngoc_chuong.active_02",
+      "school": "palm",
+      "branch": "han_ngoc_chuong",
+      "slot": "active_02",
+      "name": "Băng Tâm Chưởng Ấn",
+      "nodes": [
+        {
+          "id": "tmb.skill.palm.han_ngoc_chuong.active_02.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.han_ngoc_chuong.active_02.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.palm.han_ngoc_chuong.active_02.human",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.han_ngoc_chuong.active_02.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.palm.han_ngoc_chuong.active_02.human",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.han_ngoc_chuong.active_02.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.palm.han_ngoc_chuong.active_02.immortal.a",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.han_ngoc_chuong.active_02.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.palm.han_ngoc_chuong.active_02.immortal.b",
+          "school": "palm"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.palm.han_ngoc_chuong.active_03",
+      "school": "palm",
+      "branch": "han_ngoc_chuong",
+      "slot": "active_03",
+      "name": "Hàn Tuyền Hồi Lưu",
+      "nodes": [
+        {
+          "id": "tmb.skill.palm.han_ngoc_chuong.active_03.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.han_ngoc_chuong.active_03.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.palm.han_ngoc_chuong.active_03.human",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.han_ngoc_chuong.active_03.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.palm.han_ngoc_chuong.active_03.human",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.han_ngoc_chuong.active_03.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.palm.han_ngoc_chuong.active_03.immortal.a",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.han_ngoc_chuong.active_03.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.palm.han_ngoc_chuong.active_03.immortal.b",
+          "school": "palm"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.palm.han_ngoc_chuong.active_04",
+      "school": "palm",
+      "branch": "han_ngoc_chuong",
+      "slot": "active_04",
+      "name": "Nguyệt Ảnh Phong Lộ",
+      "nodes": [
+        {
+          "id": "tmb.skill.palm.han_ngoc_chuong.active_04.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.han_ngoc_chuong.active_04.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.palm.han_ngoc_chuong.active_04.human",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.han_ngoc_chuong.active_04.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.palm.han_ngoc_chuong.active_04.human",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.han_ngoc_chuong.active_04.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.palm.han_ngoc_chuong.active_04.immortal.a",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.han_ngoc_chuong.active_04.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.palm.han_ngoc_chuong.active_04.immortal.b",
+          "school": "palm"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.palm.han_ngoc_chuong.ultimate",
+      "school": "palm",
+      "branch": "han_ngoc_chuong",
+      "slot": "ultimate",
+      "name": "Cửu Hàn Phong Nguyệt",
+      "nodes": [
+        {
+          "id": "tmb.skill.palm.han_ngoc_chuong.ultimate.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.han_ngoc_chuong.ultimate.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.palm.han_ngoc_chuong.ultimate.human",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.han_ngoc_chuong.ultimate.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.palm.han_ngoc_chuong.ultimate.human",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.han_ngoc_chuong.ultimate.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.palm.han_ngoc_chuong.ultimate.immortal.a",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.han_ngoc_chuong.ultimate.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.palm.han_ngoc_chuong.ultimate.immortal.b",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.han_ngoc_chuong.ultimate.rare.a",
+          "tier": "divine",
+          "lineage": "rare_a",
+          "parent": "tmb.skill.palm.han_ngoc_chuong.ultimate.divine.a",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.han_ngoc_chuong.ultimate.rare.b",
+          "tier": "divine",
+          "lineage": "rare_b",
+          "parent": "tmb.skill.palm.han_ngoc_chuong.ultimate.divine.b",
+          "school": "palm"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.palm.han_ngoc_chuong.passive_01",
+      "school": "palm",
+      "branch": "han_ngoc_chuong",
+      "slot": "passive_01",
+      "name": "Ngưng Sương Tâm Pháp",
+      "nodes": [
+        {
+          "id": "tmb.skill.palm.han_ngoc_chuong.passive_01.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.han_ngoc_chuong.passive_01.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.palm.han_ngoc_chuong.passive_01.human",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.han_ngoc_chuong.passive_01.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.palm.han_ngoc_chuong.passive_01.human",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.han_ngoc_chuong.passive_01.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.palm.han_ngoc_chuong.passive_01.immortal.a",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.han_ngoc_chuong.passive_01.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.palm.han_ngoc_chuong.passive_01.immortal.b",
+          "school": "palm"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.palm.han_ngoc_chuong.passive_02",
+      "school": "palm",
+      "branch": "han_ngoc_chuong",
+      "slot": "passive_02",
+      "name": "Băng Tủy Hộ Thể",
+      "nodes": [
+        {
+          "id": "tmb.skill.palm.han_ngoc_chuong.passive_02.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.han_ngoc_chuong.passive_02.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.palm.han_ngoc_chuong.passive_02.human",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.han_ngoc_chuong.passive_02.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.palm.han_ngoc_chuong.passive_02.human",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.han_ngoc_chuong.passive_02.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.palm.han_ngoc_chuong.passive_02.immortal.a",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.han_ngoc_chuong.passive_02.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.palm.han_ngoc_chuong.passive_02.immortal.b",
+          "school": "palm"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.palm.han_ngoc_chuong.passive_03",
+      "school": "palm",
+      "branch": "han_ngoc_chuong",
+      "slot": "passive_03",
+      "name": "Hàn Khí Liễm Tức",
+      "nodes": [
+        {
+          "id": "tmb.skill.palm.han_ngoc_chuong.passive_03.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.han_ngoc_chuong.passive_03.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.palm.han_ngoc_chuong.passive_03.human",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.han_ngoc_chuong.passive_03.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.palm.han_ngoc_chuong.passive_03.human",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.han_ngoc_chuong.passive_03.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.palm.han_ngoc_chuong.passive_03.immortal.a",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.han_ngoc_chuong.passive_03.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.palm.han_ngoc_chuong.passive_03.immortal.b",
+          "school": "palm"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.palm.han_ngoc_chuong.passive_04",
+      "school": "palm",
+      "branch": "han_ngoc_chuong",
+      "slot": "passive_04",
+      "name": "Nguyệt Hàn Dẫn Kình",
+      "nodes": [
+        {
+          "id": "tmb.skill.palm.han_ngoc_chuong.passive_04.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.han_ngoc_chuong.passive_04.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.palm.han_ngoc_chuong.passive_04.human",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.han_ngoc_chuong.passive_04.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.palm.han_ngoc_chuong.passive_04.human",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.han_ngoc_chuong.passive_04.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.palm.han_ngoc_chuong.passive_04.immortal.a",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.han_ngoc_chuong.passive_04.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.palm.han_ngoc_chuong.passive_04.immortal.b",
+          "school": "palm"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.palm.han_ngoc_chuong.passive_05",
+      "school": "palm",
+      "branch": "han_ngoc_chuong",
+      "slot": "passive_05",
+      "name": "Cửu Hàn Chân Ý",
+      "nodes": [
+        {
+          "id": "tmb.skill.palm.han_ngoc_chuong.passive_05.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.han_ngoc_chuong.passive_05.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.palm.han_ngoc_chuong.passive_05.human",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.han_ngoc_chuong.passive_05.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.palm.han_ngoc_chuong.passive_05.human",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.han_ngoc_chuong.passive_05.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.palm.han_ngoc_chuong.passive_05.immortal.a",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.han_ngoc_chuong.passive_05.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.palm.han_ngoc_chuong.passive_05.immortal.b",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.han_ngoc_chuong.passive_05.rare_passive.a",
+          "tier": "divine",
+          "lineage": "rare_a",
+          "parent": "tmb.skill.palm.han_ngoc_chuong.passive_05.divine.a",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.han_ngoc_chuong.passive_05.rare_passive.b",
+          "tier": "divine",
+          "lineage": "rare_b",
+          "parent": "tmb.skill.palm.han_ngoc_chuong.passive_05.divine.b",
+          "school": "palm"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.palm.han_ngoc_chuong.innate",
+      "school": "palm",
+      "branch": "han_ngoc_chuong",
+      "slot": "innate",
+      "name": "Hàn Ngọc Linh Mạch",
+      "nodes": [
+        {
+          "id": "tmb.skill.palm.han_ngoc_chuong.innate.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.han_ngoc_chuong.innate.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.palm.han_ngoc_chuong.innate.human",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.han_ngoc_chuong.innate.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.palm.han_ngoc_chuong.innate.human",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.han_ngoc_chuong.innate.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.palm.han_ngoc_chuong.innate.immortal.a",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.han_ngoc_chuong.innate.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.palm.han_ngoc_chuong.innate.immortal.b",
+          "school": "palm"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.palm.hoi_phong_chuong.active_01",
+      "school": "palm",
+      "branch": "hoi_phong_chuong",
+      "slot": "active_01",
+      "name": "Thanh Phong Hồi Khí",
+      "nodes": [
+        {
+          "id": "tmb.skill.palm.hoi_phong_chuong.active_01.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.hoi_phong_chuong.active_01.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.palm.hoi_phong_chuong.active_01.human",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.hoi_phong_chuong.active_01.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.palm.hoi_phong_chuong.active_01.human",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.hoi_phong_chuong.active_01.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.palm.hoi_phong_chuong.active_01.immortal.a",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.hoi_phong_chuong.active_01.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.palm.hoi_phong_chuong.active_01.immortal.b",
+          "school": "palm"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.palm.hoi_phong_chuong.active_02",
+      "school": "palm",
+      "branch": "hoi_phong_chuong",
+      "slot": "active_02",
+      "name": "Thái Thanh Dưỡng Mạch",
+      "nodes": [
+        {
+          "id": "tmb.skill.palm.hoi_phong_chuong.active_02.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.hoi_phong_chuong.active_02.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.palm.hoi_phong_chuong.active_02.human",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.hoi_phong_chuong.active_02.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.palm.hoi_phong_chuong.active_02.human",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.hoi_phong_chuong.active_02.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.palm.hoi_phong_chuong.active_02.immortal.a",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.hoi_phong_chuong.active_02.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.palm.hoi_phong_chuong.active_02.immortal.b",
+          "school": "palm"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.palm.hoi_phong_chuong.active_03",
+      "school": "palm",
+      "branch": "hoi_phong_chuong",
+      "slot": "active_03",
+      "name": "Thanh Phong Giải Uế",
+      "nodes": [
+        {
+          "id": "tmb.skill.palm.hoi_phong_chuong.active_03.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.hoi_phong_chuong.active_03.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.palm.hoi_phong_chuong.active_03.human",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.hoi_phong_chuong.active_03.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.palm.hoi_phong_chuong.active_03.human",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.hoi_phong_chuong.active_03.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.palm.hoi_phong_chuong.active_03.immortal.a",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.hoi_phong_chuong.active_03.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.palm.hoi_phong_chuong.active_03.immortal.b",
+          "school": "palm"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.palm.hoi_phong_chuong.active_04",
+      "school": "palm",
+      "branch": "hoi_phong_chuong",
+      "slot": "active_04",
+      "name": "Hộ Tâm Hồi Phong",
+      "nodes": [
+        {
+          "id": "tmb.skill.palm.hoi_phong_chuong.active_04.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.hoi_phong_chuong.active_04.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.palm.hoi_phong_chuong.active_04.human",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.hoi_phong_chuong.active_04.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.palm.hoi_phong_chuong.active_04.human",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.hoi_phong_chuong.active_04.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.palm.hoi_phong_chuong.active_04.immortal.a",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.hoi_phong_chuong.active_04.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.palm.hoi_phong_chuong.active_04.immortal.b",
+          "school": "palm"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.palm.hoi_phong_chuong.ultimate",
+      "school": "palm",
+      "branch": "hoi_phong_chuong",
+      "slot": "ultimate",
+      "name": "Thái Thanh Hồi Thiên Chưởng",
+      "nodes": [
+        {
+          "id": "tmb.skill.palm.hoi_phong_chuong.ultimate.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.hoi_phong_chuong.ultimate.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.palm.hoi_phong_chuong.ultimate.human",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.hoi_phong_chuong.ultimate.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.palm.hoi_phong_chuong.ultimate.human",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.hoi_phong_chuong.ultimate.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.palm.hoi_phong_chuong.ultimate.immortal.a",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.hoi_phong_chuong.ultimate.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.palm.hoi_phong_chuong.ultimate.immortal.b",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.hoi_phong_chuong.ultimate.rare.a",
+          "tier": "divine",
+          "lineage": "rare_a",
+          "parent": "tmb.skill.palm.hoi_phong_chuong.ultimate.divine.a",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.hoi_phong_chuong.ultimate.rare.b",
+          "tier": "divine",
+          "lineage": "rare_b",
+          "parent": "tmb.skill.palm.hoi_phong_chuong.ultimate.divine.b",
+          "school": "palm"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.palm.hoi_phong_chuong.passive_01",
+      "school": "palm",
+      "branch": "hoi_phong_chuong",
+      "slot": "passive_01",
+      "name": "Từ Phong Điều Tức",
+      "nodes": [
+        {
+          "id": "tmb.skill.palm.hoi_phong_chuong.passive_01.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.hoi_phong_chuong.passive_01.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.palm.hoi_phong_chuong.passive_01.human",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.hoi_phong_chuong.passive_01.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.palm.hoi_phong_chuong.passive_01.human",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.hoi_phong_chuong.passive_01.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.palm.hoi_phong_chuong.passive_01.immortal.a",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.hoi_phong_chuong.passive_01.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.palm.hoi_phong_chuong.passive_01.immortal.b",
+          "school": "palm"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.palm.hoi_phong_chuong.passive_02",
+      "school": "palm",
+      "branch": "hoi_phong_chuong",
+      "slot": "passive_02",
+      "name": "Hồi Nguyên Dưỡng Khí",
+      "nodes": [
+        {
+          "id": "tmb.skill.palm.hoi_phong_chuong.passive_02.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.hoi_phong_chuong.passive_02.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.palm.hoi_phong_chuong.passive_02.human",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.hoi_phong_chuong.passive_02.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.palm.hoi_phong_chuong.passive_02.human",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.hoi_phong_chuong.passive_02.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.palm.hoi_phong_chuong.passive_02.immortal.a",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.hoi_phong_chuong.passive_02.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.palm.hoi_phong_chuong.passive_02.immortal.b",
+          "school": "palm"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.palm.hoi_phong_chuong.passive_03",
+      "school": "palm",
+      "branch": "hoi_phong_chuong",
+      "slot": "passive_03",
+      "name": "Thanh Mộc Tĩnh Tâm",
+      "nodes": [
+        {
+          "id": "tmb.skill.palm.hoi_phong_chuong.passive_03.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.hoi_phong_chuong.passive_03.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.palm.hoi_phong_chuong.passive_03.human",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.hoi_phong_chuong.passive_03.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.palm.hoi_phong_chuong.passive_03.human",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.hoi_phong_chuong.passive_03.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.palm.hoi_phong_chuong.passive_03.immortal.a",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.hoi_phong_chuong.passive_03.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.palm.hoi_phong_chuong.passive_03.immortal.b",
+          "school": "palm"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.palm.hoi_phong_chuong.passive_04",
+      "school": "palm",
+      "branch": "hoi_phong_chuong",
+      "slot": "passive_04",
+      "name": "Hộ Mạch Từ Quang",
+      "nodes": [
+        {
+          "id": "tmb.skill.palm.hoi_phong_chuong.passive_04.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.hoi_phong_chuong.passive_04.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.palm.hoi_phong_chuong.passive_04.human",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.hoi_phong_chuong.passive_04.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.palm.hoi_phong_chuong.passive_04.human",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.hoi_phong_chuong.passive_04.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.palm.hoi_phong_chuong.passive_04.immortal.a",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.hoi_phong_chuong.passive_04.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.palm.hoi_phong_chuong.passive_04.immortal.b",
+          "school": "palm"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.palm.hoi_phong_chuong.passive_05",
+      "school": "palm",
+      "branch": "hoi_phong_chuong",
+      "slot": "passive_05",
+      "name": "Thái Thanh Trường Tức",
+      "nodes": [
+        {
+          "id": "tmb.skill.palm.hoi_phong_chuong.passive_05.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.hoi_phong_chuong.passive_05.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.palm.hoi_phong_chuong.passive_05.human",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.hoi_phong_chuong.passive_05.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.palm.hoi_phong_chuong.passive_05.human",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.hoi_phong_chuong.passive_05.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.palm.hoi_phong_chuong.passive_05.immortal.a",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.hoi_phong_chuong.passive_05.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.palm.hoi_phong_chuong.passive_05.immortal.b",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.hoi_phong_chuong.passive_05.rare_passive.a",
+          "tier": "divine",
+          "lineage": "rare_a",
+          "parent": "tmb.skill.palm.hoi_phong_chuong.passive_05.divine.a",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.hoi_phong_chuong.passive_05.rare_passive.b",
+          "tier": "divine",
+          "lineage": "rare_b",
+          "parent": "tmb.skill.palm.hoi_phong_chuong.passive_05.divine.b",
+          "school": "palm"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    },
+    {
+      "id": "tmb.skill.palm.hoi_phong_chuong.innate",
+      "school": "palm",
+      "branch": "hoi_phong_chuong",
+      "slot": "innate",
+      "name": "Hồi Phong Từ Mạch",
+      "nodes": [
+        {
+          "id": "tmb.skill.palm.hoi_phong_chuong.innate.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.hoi_phong_chuong.innate.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.palm.hoi_phong_chuong.innate.human",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.hoi_phong_chuong.innate.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.palm.hoi_phong_chuong.innate.human",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.hoi_phong_chuong.innate.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.palm.hoi_phong_chuong.innate.immortal.a",
+          "school": "palm"
+        },
+        {
+          "id": "tmb.skill.palm.hoi_phong_chuong.innate.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.palm.hoi_phong_chuong.innate.immortal.b",
+          "school": "palm"
+        }
+      ],
+      "candidate_source_status": "SOURCE_PENDING"
+    }
+  ],
+  "candidate_source_status": "AUTHENTIC_PALM_CODEX_SOURCE_PENDING",
+  "target_counts": {
+    "skill_nodes": 183,
+    "families": 35,
+    "branches": 3,
+    "human": 35,
+    "immortal": 68,
+    "divine": 80
+  }
+}

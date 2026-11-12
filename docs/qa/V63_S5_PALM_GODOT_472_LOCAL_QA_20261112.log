@@ -1,0 +1,77 @@
+V63 S5 CHUONG LOCAL OVERLAY QA
+Remote PR source snapshot reviewed: dc568b6aba86e134de93e14edcab063a4f7c9ebd (branch integration/pve-p0-playable-ui-20261103).
+Local worktree HEAD: af8c82c29089bc71c6dfff8857eeb5a3ea2a0ac1; this is NOT exact-SHA QA for remote PR HEAD.
+Engine: 4.7.2.stable.official.ed1daf0bf
+Engine SHA-256: C8F0A6BC45A19B33541501E57F6F7CD972AB18453743266339D495CBBE846643
+APPDATA/LOCALAPPDATA isolated under TEMP TMB_V63_S5_QA_*; player saves not used.
+Import/parse: exit 0. Sequential fresh Godot process per test; no assertion weakened.
+Focused results: S0 23/23 PASS; S1 1687 PASS; S2 1871 PASS; S3 1126 PASS; S4 1502 PASS; S5 Chưởng 1876 PASS; D1 registry PASS; catalogue integrity PASS (catalogue-only).
+Godot printed Windows environment warning: Failed to read the root certificate store. All listed command exit codes were 0.
+V6.3 feature gates remain OFF. Source/manual: SOURCE_PENDING; balance: CANDIDATE pending approval; authored VFX assets: NOT_PRESENT; render capture: NOT_CAPTURED.
+Known cumulative blocker unchanged: D4A/Warehouse run #42971666349; not rerun or bypassed in this focused gate.
+
+===== final-v63_skill_presentation_s0_test.gd.log =====
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+V63_S0_LEDGER_METRICS {"branches":36,"candidate_gated":915,"existing":549,"families":420,"not_authored":732,"registry_missing_runtime_ids":0,"rows":2196,"runtime_catalogue_ids":1464,"schools":12}
+V63_S0_RESULT PASS checks=23 samples=4 sword_candidate=183 blade_candidate=183 spear_candidate=183 dual_blade_candidate=183 palm_candidate=183 existing=549 not_authored=732 ledger=2196 release_gate=OFF
+
+
+===== final-v63_s1_sword_skill_test.gd.log =====
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+V63_S1_RESULT PASS checks=1687 skills=183 branches=3 families=35 runtime=GATED vfx=CODE_DRAWN source=SOURCE_PENDING gate=OFF
+
+
+===== final-v63_s2_blade_skill_test.gd.log =====
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+V63_S2_BLADE_RESULT PASS checks=1871 nodes=183 branches=3 families=35 mechanics=preview-only source=SOURCE_PENDING balance=CANDIDATE gate=OFF
+
+
+===== final-v63_s3_spear_skill_test.gd.log =====
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+V63_S3_SPEAR_RESULT PASS checks=1126 nodes=183 families=35 branches=3 runtime=CombatV2 source=SOURCE_PENDING balance=CANDIDATE gates=OFF VFX=CODE_DRAWN_CAPTURE_PENDING
+
+
+===== final-v63_s4_dual_blade_skill_test.gd.log =====
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+V63_S4_DUAL_BLADE_RESULT PASS checks=1502 nodes=183 families=35 branches=3 source=SOURCE_PENDING balance=CANDIDATE code_drawn_vfx=event_verified authored_asset=NOT_PRESENT render=NOT_CAPTURED gate=OFF
+
+
+===== final-v63_s5_palm_skill_test.gd.log =====
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+V63_S5_PALM_RESULT PASS checks=1876 nodes=183 families=35 branches=3 source=SOURCE_PENDING balance=CANDIDATE code_drawn_vfx=event_verified authored_asset=NOT_PRESENT render=NOT_CAPTURED gate=OFF
+
+
+===== final-v63_d1_content_registry_test.gd.log =====
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+V63_D1_PASS: 210 families, 1098 registry nodes, 36 rare-tier ultimates, 6 rare-passive successors per authored school, 9 bosses, gates OFF and negative cases
+
+
+===== final-skill_all_catalogue_integrity_test.gd.log =====
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+SKILL_ALL_CATALOGUE_SUMMARY {"branches":24,"failures":0,"families":105,"legacy_combat_skill_entries":9,"legacy_technique_entries":6,"release_gates":"OFF","status":"PASS_CATALOGUE_ONLY_NOT_FULL_RUNTIME_OR_GUI_ACCEPTANCE","tiers":{"divine":240,"human":105,"immortal":204},"unique_names":549,"v63_ids":549}
+
+
