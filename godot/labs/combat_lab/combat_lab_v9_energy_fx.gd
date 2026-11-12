@@ -122,26 +122,11 @@ static func _flow_shell(canvas: CanvasItem, spine: PackedVector2Array,
         z: float, width_factor: float, hue: Color, alpha: float) -> void:
     if spine.size() < 3 or alpha < 0.01:
         return
-    # Individual segment quads cannot self-intersect at an S turn.
-    # A global polygon of all upper/lower vertices is invalid under bends.
-    var limit := spine.size() - 1
-    for i in range(limit):
-        var p0: Vector2 = spine[i]
-        var p1: Vector2 = spine[i + 1]
-        var step: Vector2 = p1 - p0
-        if step.length_squared() < 0.25:
-            continue
-        var normal: Vector2 = step.normalized().orthogonal()
-        var u0 := float(i) / float(limit)
-        var u1 := float(i + 1) / float(limit)
-        var envelope0 := (0.17 + 0.83 * sin(PI * u0 * 0.88)) * _ease(u0 * 5.5)
-        var envelope1 := (0.17 + 0.83 * sin(PI * u1 * 0.88)) * _ease(u1 * 5.5)
-        var width0 := maxf(0.3, (6.0 + 9.0 * envelope0) * z * width_factor)
-        var width1 := maxf(0.3, (6.0 + 9.0 * envelope1) * z * width_factor)
-        canvas.draw_colored_polygon(PackedVector2Array([
-            p0 - normal * width0, p1 - normal * width1,
-            p1 + normal * width1, p0 + normal * width0
-        ]), _tint(hue, alpha))
+    # One anti-aliased centerline per plasma shell. This avoids both the
+    # self-crossing global polygon and ugly jagged facet seams from
+    # per-segment quads at tight S-curves. 1 draw per shell.
+    var width := maxf(0.8, 16.0 * z * width_factor)
+    canvas.draw_polyline(spine, _tint(hue, alpha), width, true)
 
 static func serpent_light(canvas: CanvasItem, from: Vector2, to: Vector2,
         progress: float, zoom: float, lod: int = 2) -> void:
