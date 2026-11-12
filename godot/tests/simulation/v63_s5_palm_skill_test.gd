@@ -46,7 +46,7 @@ func _run() -> void:
 	var manifest: Dictionary = sources.manifest
 	var registry: Dictionary = sources.registry
 	var entries: Dictionary = manifest.get("entries", {})
-	_expect(catalogues.has("palm") and entries.size() == 919, "five school extensions and Chưởng presentation entries compose without collision")
+	_expect(catalogues.has("palm") and catalogues.has("talisman") and entries.size() == 1102, "the six candidate-school extensions compose without collision")
 	for raw in skills:
 		var skill: Dictionary = raw
 		var id := str(skill.get("id", ""))
