@@ -111,7 +111,7 @@ func _process(_delta: float) -> void:
 func _refresh_title() -> void:
     var sword := str(effect.get("demo_school")) == "sword"
     title.text = (
-        "VFX13 · CỬU KIẾM LIÊN HOÀN · TÂM QUÁI %d · TRÚNG %d/4 · BẤM QUÁI ĐỂ CHỌN" %
+        "VFX13 · CỬU KIẾM LIÊN HOÀN · TÂM QUÁI %d · NGẮM %d/4 · BẤM QUÁI ĐỂ CHỌN · LAB" %
         [preview_primary_index + 1, preview_hit_count]
         if sword else "VFX09 · ĐỘC QUANG HÓA XÀ · LAB ONLY")
     charge_glow.visible = sword
