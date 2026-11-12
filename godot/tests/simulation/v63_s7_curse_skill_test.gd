@@ -103,6 +103,14 @@ func _run() -> void:
             and str(availability.get("source_codex_id", "")).is_empty()
             and not bool(availability.get("archivable", true)),
             "presentation cannot claim an absent canonical Chú manual: " + id)
+        var qa_status: Dictionary = entry.get("qa_status", {})
+        var ai_policy: Dictionary = entry.get("ai_policy", {})
+        _expect(str(qa_status.get("authoring", "")) == "AUTHORING_COMPLETE"
+            and str(qa_status.get("runtime", "")) == "CANDIDATE_GATED_RUNTIME"
+            and str(qa_status.get("behavior", "")) == "PARTIAL_BRANCH_EXERCISE_PENDING_PER_ID"
+            and str(qa_status.get("vfx_metadata", "")) == "TEXT_ONLY_SPEC_READY"
+            and str(ai_policy.get("status", "")) == "CANDIDATE_RUNTIME_POLICY; SOURCE/BALANCE PENDING",
+            "candidate status is precise; per-ID behavior remains unaudited: " + id)
         _expect(actual_phases == phases_required
             and str(brief.get("asset_status", "")) == "NOT_PRESENT"
             and str(brief.get("render_capture_status", "")) == "NOT_CAPTURED"

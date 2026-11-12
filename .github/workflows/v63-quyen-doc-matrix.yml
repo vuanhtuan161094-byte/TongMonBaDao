@@ -6,6 +6,7 @@ on:
     types: [synchronize, opened, reopened]
     paths:
       - 'godot/src/simulation/combat/v63_*.gd'
+      - 'godot/src/presentation/v63_skill_presentation_catalog_v1.gd'
       - 'godot/src/simulation/combat/map_battle_v2.gd'
       - 'godot/data/combat/v63_*.json'
       - 'godot/data/presentation/v63_skill_presentation_manifest_v1.json'
@@ -70,6 +71,7 @@ on:
       - 'godot/tests/simulation/v65_poison_combat_contract_test.gd'
       - 'godot/tests/simulation/skill_all_catalogue_integrity_test.gd'
       - 'godot/src/simulation/combat/v63_*.gd'
+      - 'godot/src/presentation/v63_skill_presentation_catalog_v1.gd'
       - '.github/workflows/v63-quyen-doc-matrix.yml'
 
 permissions:
