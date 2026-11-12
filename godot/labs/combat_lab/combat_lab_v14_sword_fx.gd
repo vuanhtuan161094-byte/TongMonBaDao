@@ -86,7 +86,7 @@ static func _qi_blade(c: CanvasItem, at: Vector2,
     c.draw_colored_polygon(PackedVector2Array([
         root, tip, shoulder + n * 4.1 * z, root + n * 4.4 * z
     ]), _col(CYAN, a * 0.72))
-    c.draw_line(root, tip, _col(ICE, a * 0.82),
+    c.draw_line(root, tip, _col(ICE, a * 0.92),
         maxf(0.9, 0.95 * z), true)
     var seal: Vector2 = root + f * 22.0 * z
     c.draw_polyline(PackedVector2Array([
@@ -138,17 +138,17 @@ static func _trail(c: CanvasItem, at: Vector2, direction: Vector2,
         var right1: Vector2 = curve[i + 1] - n * widths[i + 1]
         c.draw_colored_polygon(PackedVector2Array([
             left0, right0, right1, left1
-        ]), _col(BLUE, fade * 0.12))
+        ]), _col(BLUE, fade * 0.28))
         c.draw_colored_polygon(PackedVector2Array([
             curve[i] + n * widths[i] * 0.26,
             curve[i] - n * widths[i] * 0.26,
             curve[i + 1] - n * widths[i + 1] * 0.26,
             curve[i + 1] + n * widths[i + 1] * 0.26
-        ]), _col(CYAN, fade * 0.15))
-    c.draw_polyline(curve, _col(CYAN, strength * 0.24),
-        maxf(0.8, 2.2 * z), true)
-    c.draw_line(curve[0], curve[1], _col(ICE, strength * 0.37),
-        maxf(0.75, 1.15 * z), true)
+        ]), _col(CYAN, fade * 0.39))
+    c.draw_polyline(curve, _col(CYAN, strength * 0.49),
+        maxf(0.8, 2.7 * z), true)
+    c.draw_line(curve[0], curve[1], _col(ICE, strength * 0.82),
+        maxf(0.75, 1.7 * z), true)
     for i in range(2):
         var p: Vector2 = curve[2 + i] + n * (4.0 if i == 0 else -5.0) * z
         PREV._spark(c, p, 1.05 * z, strength * (0.54 - 0.11 * float(i)))
@@ -165,8 +165,8 @@ static func _aoe(c: CanvasItem, at: Vector2, radii: Vector2,
     var a := emerge * vanish
     var rx := maxf(1.0, radii.x)
     var ry := maxf(1.0, radii.y)
-    PREV._ring(c, at, rx, ry, CYAN, a * 0.96)
-    PREV._ring(c, at, rx * 0.81, ry * 0.81, GOLD, a * 0.66)
+    PREV._ring(c, at, rx, ry, CYAN, a * 1.0)
+    PREV._ring(c, at, rx * 0.81, ry * 0.81, GOLD, a * 0.84)
     PREV._ring(c, at, rx * 0.42, ry * 0.42, BLUE, a * 0.29)
     for i in range(12):
         var angle := TAU13 * float(i) / 12.0
@@ -200,11 +200,11 @@ static func _impact(c: CanvasItem, at: Vector2,
     if k >= 0.999:
         return
     var a := 1.0 - _ease(k)
-    var flash := pow(1.0 - k, 3.3)
+    var flash := pow(1.0 - k, 1.55)
     c.draw_circle(at, (12.0 + 26.0 * k) * z,
-        _col(BLUE, flash * 0.14))
+        _col(BLUE, flash * 0.25))
     c.draw_circle(at, (4.0 + 8.0 * k) * z,
-        _col(ICE, flash * 0.79))
+        _col(ICE, flash * 0.96))
     # Golden sword aura rising only over hit target; extra vivid vertical
     # shape like 2.5D JX attack, not a rectangular laser column.
     var base := at + Vector2(0.0, 14.0 * z)
@@ -213,29 +213,29 @@ static func _impact(c: CanvasItem, at: Vector2,
         at + Vector2(-4.0, -77.0) * z,
         at + Vector2(5.0, -88.0) * z,
         base + Vector2(15.0, 0.0) * z
-    ]), _col(CYAN, flash * 0.12))
+    ]), _col(CYAN, flash * 0.29))
     c.draw_line(at + Vector2(0.0, 6.0 * z),
         at - Vector2(0.0, 61.0 * z),
-        _col(ICE, flash * 0.40), maxf(1.0, (3.2 - 2.1 * k) * z), true)
+        _col(ICE, flash * 0.75), maxf(1.0, (4.1 - 2.1 * k) * z), true)
     PREV._ring(c, base, (14.0 + 50.0 * k) * z,
-        (7.0 + 27.0 * k) * z, CYAN, a * 0.91)
+        (7.0 + 27.0 * k) * z, CYAN, a * 0.97)
     PREV._ring(c, base, (9.0 + 28.0 * k) * z,
-        (4.0 + 12.0 * k) * z, GOLD, a * 0.62)
+        (4.0 + 12.0 * k) * z, GOLD, a * 0.91)
     # A single oblique serrated cut, then 6 small shards rotating out.
     var cut_axis := Vector2(0.88, -0.47)
     var cut_start := at - cut_axis * (26.0 + 19.0 * k) * z
     var cut_end := at + cut_axis * (29.0 + 15.0 * k) * z
     c.draw_line(cut_start, cut_end,
-        _col(BLUE, flash * 0.20), 7.0 * z, true)
+        _col(BLUE, flash * 0.40), 10.0 * z, true)
     c.draw_line(cut_start, cut_end,
-        _col(ICE, flash * 0.89), maxf(0.8, 1.85 * z), true)
+        _col(ICE, flash * 0.99), maxf(0.8, 2.15 * z), true)
     for j in range(6):
         var ang := TAU13 * float(j) / 6.0 + 0.19 * float(index)
         var direction := Vector2.from_angle(ang)
         var start := at + direction * (8.0 + 12.0 * k) * z
         var finish := at + direction * (22.0 + 41.0 * k) * z
         c.draw_line(start, finish, _col(GOLD if j % 2 == 0 else CYAN,
-            a * 0.54), maxf(0.8, (1.9 - 1.0 * k) * z), true)
+            a * 0.74), maxf(0.8, (2.1 - 1.0 * k) * z), true)
 
 # Three faint crescent sweeps are decorative rhythm; only valid
 # hit targets ever receive the strong per-target impact layer.
