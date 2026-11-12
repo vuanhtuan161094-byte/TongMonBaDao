@@ -111,6 +111,9 @@ func _check() -> void:
             "V11 glow layers instantiate behind normal-blend forged swords")
         ensure(int(stage.get("preview_hit_count")) == 3,
             "V13 scene preview initially binds three of four monsters")
+        var effect13: Control = stage.get_node_or_null("AdditiveEnergyVFX")
+        if effect13 != null:
+            effect13.call("set_mode", "sword")
         stage.call("_set_preview_primary", 0)
         var mouse13 := InputEventMouseButton.new()
         mouse13.button_index = MOUSE_BUTTON_LEFT
@@ -122,7 +125,6 @@ func _check() -> void:
         ensure(int(stage.get("preview_primary_index")) == 3 and
             int(stage.get("preview_hit_count")) == 3,
             "V13 clicking a different monster relocks primary and hit targets")
-        var effect13: Control = stage.get_node_or_null("AdditiveEnergyVFX")
         ensure(effect13 != null and
             effect13.get("sword_preview_hits") is Array and
             (effect13.get("sword_preview_hits") as Array).has(Vector2(966, 422)),
