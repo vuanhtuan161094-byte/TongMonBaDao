@@ -177,19 +177,22 @@ static func render(canvas: CanvasItem, from: Vector2, to: Vector2,
         var aim := to + Vector2((col - 0.5) * 106.0,
             (row_index - 0.5) * 94.0) + Vector2(slot * 7.0, slot * 8.0) * z
         var forward: Vector2 = (aim - start).normalized()
-        var launch := 0.38 + float(i % 3) * 0.018
-        var reach := 0.75 + float(i % 3) * 0.018
+        var launch := 0.37 + float(i % 3) * 0.045
+        var reach := 0.73 + float(i % 3) * 0.045
         var phase := clampf((t - launch) / maxf(0.001, reach - launch), 0.0, 1.0)
         # Single clean forward path, never wobble the rigid jian body.
         var position := start.lerp(aim, _smooth(phase))
+        # The blade settles into its impact point while its light dissolves.
+        var after_hit := clampf((t - reach) / 0.14, 0.0, 1.0)
+        position += forward * (after_hit * 9.0 * z)
         var ready := _smooth((t - float(i) * 0.007) / 0.20)
         # Sword remains intact at impact, fades progressively over ~0.16
         # normalized seconds; no abrupt disappearance at reach.
-        var dissolve := 1.0 - _smooth((t - reach - 0.015) / 0.16)
+        var dissolve := 1.0 - _smooth((t - reach - 0.008) / 0.13)
         var visible := ready * dissolve
         if visible < 0.012:
             continue
-        var size_multiplier := (0.83 if t < launch else 0.91) * z
+        var size_multiplier := (0.83 if t < launch else 0.91) * z * (1.0 - after_hit * 0.14)
         _sword(canvas, position, forward, size_multiplier, visible)
         if phase > 0.04 and phase < 1.0:
             # One restrained afterimage, not a neon rod obscuring the blade.
@@ -199,11 +202,11 @@ static func render(canvas: CanvasItem, from: Vector2, to: Vector2,
         if t > reach and i < 4:
             # One impact burst per preview target, not 12 overlapping
             # particle bursts; the other eight swords still dissolve.
-            var fade_age := clampf((t - reach) / 0.20, 0.0, 1.0)
+            var fade_age := clampf((t - reach) / 0.17, 0.0, 1.0)
             _impact(canvas, aim, z * 0.56, fade_age, group)
     # Final AOE wave and brief lingering halo, never an invented damage event.
-    if t >= 0.75:
-        var age := clampf((t - 0.75) / 0.25, 0.0, 1.0)
+    if t >= 0.73:
+        var age := clampf((t - 0.73) / 0.27, 0.0, 1.0)
         _arc(canvas, to + Vector2(0.0, 28.0 * z),
             (65.0 + 46.0 * age) * z,
             (30.0 + 22.0 * age) * z,
