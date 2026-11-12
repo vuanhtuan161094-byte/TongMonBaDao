@@ -20,7 +20,8 @@ func _test() -> void:
     _check(str(Brief.profile(cobra_id).get("motif", "")) == "serpent_bind",
         "V8 snake is bound to existing real event motif")
     var fx_method_names: Array[String] = []
-    for method in Fx.get_script_method_list():
+    var script_resource: Script = load("res://labs/combat_lab/combat_lab_vfx_v8_jian_serpent.gd") as Script
+    for method in script_resource.get_script_method_list():
         fx_method_names.append(str(method.get("name", "")))
     _check(fx_method_names.has("cobra") and fx_method_names.has("cobra_impact"),
         "separate snake flight and impact renderers exist")
