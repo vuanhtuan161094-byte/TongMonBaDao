@@ -313,12 +313,12 @@ static func sword_light(canvas: CanvasItem, from: Vector2, to: Vector2,
             CYAN, 0.2 + charge * 0.46)
     for i in range(count):
         var column_index := i % 4
-        var row_index := floori(float(i) / 4.0)
+        var formation_row := floori(float(i) / 4.0)
         # Form a precise 4x3 flying-sword constellation; no overlap near
         # caster while charging. Materials become visible one by one.
         var source := from + Vector2(
             97.0 + float(column_index) * 66.0,
-            (float(row_index) - 1.0) * 87.0 - 12.0) * minf(z, 1.25)
+            (float(formation_row) - 1.0) * 87.0 - 12.0) * minf(z, 1.25)
         # Four visible attack lanes (3 swords per target in full preview).
         # Every blade maintains its straight axis toward its own destination,
         # preventing twelve swords from becoming a single neon smear.
