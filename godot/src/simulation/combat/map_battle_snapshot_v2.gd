@@ -94,7 +94,7 @@ static func _restore_payload(data: Dictionary) -> Dictionary:
     if id.is_empty() or not (data.get("actors") is Array):
         return {"ok":false,"reason":"missing_encounter_or_actors"}
     var rows: Array = data["actors"]
-    if rows.size() > MapBattleV2.MAX_DISCIPLES+MapBattleV2.MAX_MONSTERS:
+    if rows.size() > MapBattleV2.MAX_DISCIPLES+MapBattleV2.MAX_MONSTERS+MapBattleV2.MAX_SUMMON_ACTORS:
         return {"ok":false,"reason":"invalid_actor_count"}
     var battle := MapBattleV2.new(515151)
     battle.encounter_id = id
@@ -137,14 +137,19 @@ static func _restore_payload(data: Dictionary) -> Dictionary:
     var observed_generations: Dictionary = {}
     var disciples := 0
     var monsters := 0
+    var summons := 0
+    var summons_by_owner: Dictionary = {}
     for raw in rows:
         if not (raw is Dictionary):
             return {"ok":false,"reason":"invalid_actor_record"}
         var actor: Dictionary = raw.duplicate(true)
         var actor_id := str(actor.get("id",""))
         var side := str(actor.get("side",""))
+        var is_summon := bool(actor.get("is_v63_summon",false))
         if actor_id.is_empty() or battle.actors.has(actor_id) or not ["disciple","monster"].has(side):
             return {"ok":false,"reason":"invalid_actor_id_or_side"}
+        if is_summon and side != "disciple":
+            return {"ok":false,"reason":"invalid_summon_side"}
         var pos = _decode_vec2(actor.get("position",null))
         if not (pos is Vector2) or not battle.is_world_position_allowed(pos):
             return {"ok":false,"reason":"invalid_actor_position"}
@@ -264,7 +269,31 @@ static func _restore_payload(data: Dictionary) -> Dictionary:
         if (is_nan(learned_until) or is_inf(learned_until) or learned_until < -1.0 or learned_until > max_time+90.0 or
             is_nan(learned_factor) or is_inf(learned_factor) or learned_factor < 0.01 or learned_factor > 1.0):
             return {"ok":false,"reason":"invalid_learned_guard"}
-        if side == "disciple":
+        if is_summon:
+            summons += 1
+            var owner_id := str(actor.get("summon_owner_id",""))
+            summons_by_owner[owner_id] = int(summons_by_owner.get(owner_id,0))+1
+            if int(summons_by_owner[owner_id]) > V63SummonSkillCombatSystem.MAX_PER_OWNER:
+                return {"ok":false,"reason":"summon_owner_actor_cap_exceeded"}
+            var skill_id := str(actor.get("summon_skill_id",""))
+            var form := str(actor.get("summon_form",""))
+            var behavior := str(actor.get("summon_behavior",""))
+            var expires_at := float(actor.get("summon_expires_at",-1.0))
+            var next_attack := float(actor.get("summon_next_attack_at",-1.0))
+            var attack_interval := float(actor.get("summon_attack_interval_seconds",0.0))
+            var attack_range := float(actor.get("summon_attack_range",0.0))
+            var attack_ratio := float(actor.get("summon_attack_damage_ratio",0.0))
+            var target_limit := int(actor.get("summon_target_limit",0))
+            if owner_id.is_empty() or skill_id.is_empty() or not ["blade_spirit","covenant_beast","guardian_construct"].has(form) \
+                or not ["ranged","flanker","guardian"].has(behavior) \
+                or is_nan(expires_at) or is_inf(expires_at) or expires_at <= battle.now or expires_at > max_time+90.0 \
+                or is_nan(next_attack) or is_inf(next_attack) or next_attack < 0.0 or next_attack > expires_at+V63SummonSkillCombatSystem.MAX_SUMMON_DURATION \
+                or is_nan(attack_interval) or is_inf(attack_interval) or attack_interval < MapBattleV2.STEP_SECONDS or attack_interval > 8.0 \
+                or is_nan(attack_range) or is_inf(attack_range) or attack_range <= 0.0 or attack_range > 24.0 \
+                or is_nan(attack_ratio) or is_inf(attack_ratio) or attack_ratio <= 0.0 or attack_ratio > 3.0 \
+                or target_limit < 1 or target_limit > MapBattleV2.MAX_TARGETS_AOE:
+                return {"ok":false,"reason":"invalid_summon_runtime_fields"}
+        elif side == "disciple":
             # P0 player-issued solo AUTO / HOLD orders must be deterministic,
             # bounded, and impossible to mutate into arbitrary save payload.
             # Older V1–V4 snapshots default safely to AUTO.
@@ -291,7 +320,7 @@ static func _restore_payload(data: Dictionary) -> Dictionary:
             party_sizes[party_id] = int(party_sizes.get(party_id,0))+1
             if party_id.is_empty() or int(party_sizes[party_id]) > 6:
                 return {"ok":false,"reason":"invalid_party_ownership"}
-        else:
+        elif side == "monster":
             monsters += 1
             if battle.continuous_mode:
                 var slot := str(actor.get("spawn_slot_id", ""))
@@ -304,6 +333,26 @@ static func _restore_payload(data: Dictionary) -> Dictionary:
         # Never deserialize an object pointer from untrusted save data.
         actor["linked_disciple"] = null
         battle.actors[actor_id] = actor
+    if summons > MapBattleV2.MAX_SUMMON_ACTORS:
+        return {"ok":false,"reason":"summon_actor_cap_exceeded"}
+    # Validate summons after all owner actors are restored, independent of row order.
+    for actor_value in battle.actors.values():
+        var summon: Dictionary = actor_value
+        if not bool(summon.get("is_v63_summon",false)):
+            continue
+        var owner_id := str(summon.get("summon_owner_id",""))
+        var skill_id := str(summon.get("summon_skill_id",""))
+        var owner: Dictionary = battle.actors.get(owner_id,{})
+        var definition := V63HumanSkillCombatSystem.skill_definition(skill_id)
+        var owner_loadout = owner.get("v63_skill_loadout",[])
+        if owner.is_empty() or bool(owner.get("is_v63_summon",false)) or str(owner.get("side","")) != "disciple" \
+            or str(owner.get("party_id","")) != str(summon.get("party_id","")) \
+            or definition.is_empty() or str(definition.get("school","")) != "summon" or str(definition.get("effect","")) != "summon" \
+            or not (owner_loadout is Array) or not owner_loadout.has(skill_id) \
+            or not str(summon.get("id","")).begins_with(id+"/v63_summon/"+owner_id+"/"):
+            return {"ok":false,"reason":"invalid_summon_owner_or_source"}
+        if str(summon.get("summon_source_generation_id","")) != str(definition.get("generation","")):
+            return {"ok":false,"reason":"invalid_summon_generation_provenance"}
     # Status provenance is checked after all actors are loaded so save order
     # cannot affect whether a valid caster resolves.
     for actor_value in battle.actors.values():
@@ -336,7 +385,7 @@ static func _restore_payload(data: Dictionary) -> Dictionary:
                 str(definition.get("effect","")) != str(status_key) or
                 not (caster_skills is Array) or not caster_skills.has(skill_id)):
                 return {"ok":false,"reason":"invalid_combat_status_provenance"}
-    if (disciples > MapBattleV2.MAX_DISCIPLES or monsters > MapBattleV2.MAX_MONSTERS or
+    if (disciples > MapBattleV2.MAX_DISCIPLES or monsters > MapBattleV2.MAX_MONSTERS or summons > MapBattleV2.MAX_SUMMON_ACTORS or
         (not battle.continuous_mode and (disciples < 1 or monsters < 1))):
         return {"ok":false,"reason":"invalid_combat_side_size"}
     if data["casts"].size() > MapBattleV2.MAX_DISCIPLES+MapBattleV2.MAX_MONSTERS:

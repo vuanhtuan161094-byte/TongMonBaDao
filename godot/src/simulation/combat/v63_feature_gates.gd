@@ -19,7 +19,8 @@ const DEFAULT_FLAGS := {
     "palm_skill_combat": false,
     "talisman_skill_combat": false,
     "curse_skill_combat": false,
-    "formation_skill_combat": false
+    "formation_skill_combat": false,
+    "summon_skill_combat": false
 }
 
 static func is_enabled(flag_id: String, preview_overrides: Dictionary = {}) -> bool:

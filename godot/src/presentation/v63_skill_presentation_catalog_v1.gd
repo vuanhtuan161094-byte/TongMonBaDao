@@ -19,6 +19,9 @@ const CURSE_PRESENTATION_EXTENSION_PATH := "res://data/presentation/v63_curse_pr
 const FORMATION_CATALOG_PATH := "res://data/combat/v63_formation_combat_catalog.json"
 const FORMATION_REGISTRY_EXTENSION_PATH := "res://data/combat/v63_formation_registry_extension.json"
 const FORMATION_PRESENTATION_EXTENSION_PATH := "res://data/presentation/v63_formation_presentation_manifest_v1.json"
+const SUMMON_CATALOG_PATH := "res://data/combat/v63_summon_combat_catalog.json"
+const SUMMON_REGISTRY_EXTENSION_PATH := "res://data/combat/v63_summon_registry_extension.json"
+const SUMMON_PRESENTATION_EXTENSION_PATH := "res://data/presentation/v63_summon_presentation_manifest_v1.json"
 const CATALOGUE_PATHS := {
 	"human":"res://data/combat/v63_human_combat_catalog.json",
 	"immortal":"res://data/combat/v63_immortal_combat_catalog.json",
@@ -249,6 +252,44 @@ static func load_authoring_sources() -> Dictionary:
 					errors.append("formation_presentation_id_collision:" + str(id))
 				else:
 					entries[id] = formation_entries[id].duplicate(true)
+			manifest["entries"] = entries
+	var summon_catalogue_result := _read_json(SUMMON_CATALOG_PATH)
+	var summon_registry_result := _read_json(SUMMON_REGISTRY_EXTENSION_PATH)
+	var summon_manifest_result := _read_json(SUMMON_PRESENTATION_EXTENSION_PATH)
+	for result in [summon_catalogue_result,summon_registry_result,summon_manifest_result]:
+		if not bool(result.get("ok",false)):
+			errors.append_array(result.get("errors",[]))
+	if bool(summon_catalogue_result.get("ok",false)) and bool(summon_registry_result.get("ok",false)) and bool(summon_manifest_result.get("ok",false)):
+		var summon_catalogue: Dictionary = summon_catalogue_result.get("data",{})
+		var summon_registry_extension: Dictionary = summon_registry_result.get("data",{})
+		var summon_manifest_extension: Dictionary = summon_manifest_result.get("data",{})
+		var summon_errors := _validate_summon_extensions(summon_catalogue,summon_registry_extension,summon_manifest_extension)
+		errors.append_array(summon_errors)
+		if summon_errors.is_empty():
+			catalogues["summon"] = summon_catalogue
+			var school_rows: Array = registry.get("schools",[])
+			var path_rows: Array = registry.get("paths",[])
+			var family_rows: Array = registry.get("families",[])
+			school_rows.append(summon_registry_extension.get("school",{}).duplicate(true))
+			path_rows.append_array(summon_registry_extension.get("paths",[]).duplicate(true))
+			family_rows.append_array(summon_registry_extension.get("families",[]).duplicate(true))
+			registry["schools"] = school_rows
+			registry["paths"] = path_rows
+			registry["families"] = family_rows
+			registry["school_count"] = school_rows.size()
+			registry["branch_count"] = path_rows.size()
+			registry["skill_family_count"] = family_rows.size()
+			registry["skills_s9_candidate_count"] = 183
+			registry["skills_s9_candidate_source_status"] = "AUTHENTIC_SUMMON_CODEX_SOURCE_PENDING"
+			registry["total_runtime_candidate_nodes"] = int(registry.get("total_runtime_candidate_nodes",0))+183
+			registry["total_authored_runtime_nodes"] = int(registry.get("total_authored_runtime_nodes",0))+183
+			var entries: Dictionary = manifest.get("entries",{}).duplicate(true)
+			var summon_entries: Dictionary = summon_manifest_extension.get("entries",{})
+			for id in summon_entries.keys():
+				if entries.has(id):
+					errors.append("summon_presentation_id_collision:"+str(id))
+				else:
+					entries[id] = summon_entries[id].duplicate(true)
 			manifest["entries"] = entries
 	return {
 		"ok":errors.is_empty(),
@@ -520,6 +561,122 @@ static func _validate_formation_extensions(catalogue: Dictionary, registry_exten
 		errors.append("formation_candidate_status_invalid")
 	if str(catalogue.get("school_story_vi", "")).split(" ", false).size() < 120:
 		errors.append("formation_school_story_too_short")
+	return errors
+
+static func _validate_summon_extensions(catalogue: Dictionary, registry_extension: Dictionary, presentation_extension: Dictionary) -> Array[String]:
+	var errors: Array[String] = []
+	errors.append_array(V63SummonSkillCombatSystem.validate_catalogue(catalogue))
+	if int(registry_extension.get("schema_version", -1)) != 1 or str(registry_extension.get("release_gate", "")) != "OFF":
+		errors.append("summon_registry_extension_must_remain_off")
+	if int(presentation_extension.get("schema_version", -1)) != 1 or str(presentation_extension.get("release_gate", "")) != "OFF":
+		errors.append("summon_presentation_extension_must_remain_off")
+	var base: Dictionary = registry_extension.get("base_registry", {})
+	var presentation_base: Dictionary = presentation_extension.get("base_registry", {})
+	if str(base.get("path", "")) != REGISTRY_PATH or str(presentation_base.get("path", "")) != REGISTRY_PATH:
+		errors.append("summon_base_registry_path_mismatch")
+	var actual_base_hash := git_blob_sha1(REGISTRY_PATH)
+	if actual_base_hash.is_empty() or str(base.get("git_blob_sha", "")) != actual_base_hash or str(presentation_base.get("git_blob_sha", "")) != actual_base_hash:
+		errors.append("summon_base_registry_pin_mismatch")
+	var source: Dictionary = registry_extension.get("source_catalog", {})
+	var presentation_source: Dictionary = presentation_extension.get("source_catalog", {})
+	if str(source.get("path", "")) != SUMMON_CATALOG_PATH or str(presentation_source.get("path", "")) != SUMMON_CATALOG_PATH:
+		errors.append("summon_catalogue_pin_path_mismatch")
+	var actual_catalogue_hash := git_blob_sha1(SUMMON_CATALOG_PATH)
+	if actual_catalogue_hash.is_empty() or str(source.get("git_blob_sha", "")) != actual_catalogue_hash or str(presentation_source.get("git_blob_sha", "")) != actual_catalogue_hash:
+		errors.append("summon_catalogue_pin_mismatch")
+	var extension_source: Dictionary = presentation_extension.get("registry_extension", {})
+	var actual_extension_hash := git_blob_sha1(SUMMON_REGISTRY_EXTENSION_PATH)
+	if str(extension_source.get("path", "")) != SUMMON_REGISTRY_EXTENSION_PATH or str(extension_source.get("git_blob_sha", "")) != actual_extension_hash:
+		errors.append("summon_registry_extension_pin_mismatch")
+	if str(registry_extension.get("extension_id", "")) != "tmb.v63.registry_extension.s9_summon" or str(presentation_extension.get("extension_id", "")) != "tmb.v63.presentation_extension.s9_summon":
+		errors.append("summon_extension_identity_invalid")
+	var paths: Variant = registry_extension.get("paths", null)
+	var families: Variant = registry_extension.get("families", null)
+	var skills: Array = catalogue.get("skills", [])
+	var entries: Variant = presentation_extension.get("entries", null)
+	if not (paths is Array) or paths.size() != 3 or not (families is Array) or families.size() != 35 or not (entries is Dictionary) or entries.size() != 183:
+		errors.append("summon_extension_counts_invalid")
+		return errors
+	var path_ids: Dictionary = {}
+	for path in paths:
+		var path_id := str(path.get("id", ""))
+		if not path_id.begins_with("tmb.path.summon.") or path_ids.has(path_id) or str(path.get("school", "")) != "summon":
+			errors.append("summon_path_identity_invalid:" + path_id)
+		path_ids[path_id] = true
+		if str(path.get("story_vi", "")).split(" ", false).size() < 60:
+			errors.append("summon_branch_story_too_short:" + path_id)
+		var lineage_stories: Dictionary = path.get("lineage_stories_vi", {})
+		for lineage in ["a", "b"]:
+			if str(lineage_stories.get(lineage, "")).split(" ").size() < 25:
+				errors.append("summon_lineage_story_missing:" + path_id + ":" + lineage)
+	var registry_nodes: Dictionary = {}
+	var family_ids: Dictionary = {}
+	for family in families:
+		var family_id := str(family.get("id", ""))
+		if not family_id.begins_with("tmb.skill.summon.") or family_ids.has(family_id):
+			errors.append("summon_family_identity_invalid:" + family_id)
+		family_ids[family_id] = true
+		for node in family.get("nodes", []):
+			var node_id := str(node.get("id", ""))
+			if registry_nodes.has(node_id):
+				errors.append("summon_registry_node_duplicate:" + node_id)
+			registry_nodes[node_id] = node
+	var skill_ids: Dictionary = {}
+	var flavors: Dictionary = {}
+	var short_texts: Dictionary = {}
+	var long_texts: Dictionary = {}
+	for skill in skills:
+		var id := str(skill.get("id", ""))
+		var entry: Variant = entries.get(id, null)
+		if skill_ids.has(id) or not (entry is Dictionary):
+			errors.append("summon_presentation_join_missing:" + id)
+			continue
+		skill_ids[id] = true
+		var branch := str(skill.get("branch", ""))
+		var expected_branch := "common" if branch.is_empty() else branch
+		var identity: Dictionary = entry.get("identity", {})
+		var registry_node: Dictionary = registry_nodes.get(id, {})
+		if registry_node.is_empty() or not family_ids.has(str(skill.get("family_id", ""))):
+			errors.append("summon_registry_join_missing:" + id)
+		if str(identity.get("skill_id", "")) != id or str(identity.get("family_id", "")) != str(skill.get("family_id", "")) or str(identity.get("school", "")) != "summon" or str(identity.get("branch", "")) != branch:
+			errors.append("summon_identity_join_mismatch:" + id)
+		if str(registry_node.get("parent", "")) != str(skill.get("parent_skill_id", "")) or str(registry_node.get("lineage", "")) != str(skill.get("lineage", "")):
+			errors.append("summon_registry_skill_mismatch:" + id)
+		if str(entry.get("catalogue_key", "")) != "summon" or str(entry.get("school_lore_id", "")) != "tmb.lore.school.summon" or str(entry.get("branch_lore_id", "")) != "tmb.lore.branch.summon." + expected_branch:
+			errors.append("summon_lore_link_invalid:" + id)
+		var flavor := str(entry.get("flavor_vi", ""))
+		var short_text := str(entry.get("short_description_vi", ""))
+		var long_text := str(entry.get("long_description_vi", ""))
+		if flavor.length() < 50 or flavor.length() > 110 or str(entry.get("display_name_vi", "")) != str(skill.get("name", "")):
+			errors.append("summon_flavor_or_name_invalid:" + id)
+		if str(entry.get("short_description_vi", "")) != str(skill.get("short_description_vi", "")) or str(entry.get("long_description_vi", "")) != str(skill.get("long_description_vi", "")) or flavor != str(skill.get("flavor_vi", "")):
+			errors.append("summon_catalogue_presentation_text_mismatch:" + id)
+		if flavors.has(flavor) or short_text.strip_edges().is_empty() or short_text.length() > 110 or short_texts.has(short_text) or long_text.strip_edges().is_empty() or long_texts.has(long_text):
+			errors.append("summon_prose_missing_or_duplicate:" + id)
+		flavors[flavor] = true
+		short_texts[short_text] = true
+		long_texts[long_text] = true
+		var availability: Dictionary = entry.get("availability", {})
+		if str(availability.get("status", "")) != "CANDIDATE_GATED_SOURCE_PENDING" or bool(availability.get("archivable", true)) or not str(availability.get("source_codex_id", "")).is_empty():
+			errors.append("summon_learning_must_remain_blocked:" + id)
+		var qa: Dictionary = entry.get("qa_status", {})
+		if str(qa.get("behavior", "")) != "PARTIAL_BRANCH_EXERCISE_PENDING_PER_ID" or str(qa.get("vfx_metadata", "")) != "TEXT_ONLY_SPEC_READY" or str(qa.get("asset", "")) != "NOT_PRESENT" or str(qa.get("render", "")) != "NOT_CAPTURED":
+			errors.append("summon_qa_status_overclaim:" + id)
+		var brief: Dictionary = entry.get("vfx", {}).get("production_brief", {})
+		var phase_rows: Array = brief.get("phases", [])
+		var phase_names: Array[String] = []
+		for phase in phase_rows:
+			phase_names.append(str(phase.get("phase", "")))
+			if not str(phase.get("production_note", "")).contains("VFX_HOLD_OWNER_PER_SKILL_APPROVAL"):
+				errors.append("summon_vfx_hold_missing:" + id)
+		if phase_names != ["windup", "telegraph", "release", "travel", "impact", "status", "fade"] or str(brief.get("asset_status", "")) != "NOT_PRESENT" or str(brief.get("render_capture_status", "")) != "NOT_CAPTURED" or str(brief.get("visual_acceptance_status", "")) != "PENDING" or str(brief.get("production_hold", "")) != "VFX_HOLD_OWNER_PER_SKILL_APPROVAL" or not str(brief.get("provenance", "")).begins_with("TEXT_ONLY_VFX_SPEC"):
+			errors.append("summon_vfx_provenance_invalid:" + id)
+	if skill_ids.size() != 183 or registry_nodes.size() != 183 or path_ids.size() != 3:
+		errors.append("summon_join_totals_invalid")
+	if int(catalogue.get("skill_count", 0)) != 183 or str(catalogue.get("candidate_status", "")) != "CANDIDATE_GATED_SOURCE_PENDING":
+		errors.append("summon_candidate_status_invalid")
+	if str(catalogue.get("school_story_vi", "")).split(" ", false).size() < 120:
+		errors.append("summon_school_story_too_short")
 	return errors
 
 static func _validate_curse_extensions(catalogue: Dictionary, registry_extension: Dictionary, presentation_extension: Dictionary) -> Array[String]:
@@ -936,7 +1093,7 @@ static func _validate_presentation_entry(skill_id: String, entry: Dictionary, ca
 
 static func build_mechanics_tooltip(skill: Dictionary, actor_stats: Dictionary = {}, target_distance: float = -1.0) -> Dictionary:
 	var effect := str(skill.get("effect",""))
-	if effect not in ["damage","poison","mark","guard","mobility","slow","formation_zone","heal","cleanse","passive","innate"]:
+	if effect not in ["damage","poison","mark","guard","mobility","slow","formation_zone","summon","heal","cleanse","passive","innate"]:
 		return {"ok":false,"text":"","errors":["s0_tooltip_effect_not_yet_supported:"+effect]}
 	for field in ["damage_ratio","power","duration","passive_modifiers","range","cast_time","cooldown","projectile_speed","shape","target_limit"]:
 		if not skill.has(field):
@@ -972,6 +1129,15 @@ static func build_mechanics_tooltip(skill: Dictionary, actor_stats: Dictionary =
 	elif effect == "formation_zone":
 		lines.append("Vùng trận không gây sát thương khi dựng; mỗi " + _format_number(float(skill.get("formation_zone_tick_interval",0.0)),2) + " giây gây " + _format_number(float(skill.get("damage_ratio",0.0)),2) + "× ATK mỗi mục tiêu trúng.")
 		lines.append("Bán kính " + _format_number(float(skill.get("radius",0.0)),2) + " ô; tối đa " + str(int(skill.get("target_limit",0))) + " mục tiêu; tồn tại " + _format_number(float(skill.get("duration",0.0)),2) + " giây.")
+	elif effect == "summon":
+		var profile: Dictionary = skill.get("summon_profile",{})
+		if profile.is_empty():
+			return {"ok":false,"text":"","errors":["runtime_fields_incomplete_for_tooltip:summon_profile"]}
+		var form_names := {"blade_spirit":"kiếm linh","covenant_beast":"linh thú","guardian_construct":"khôi lỗi hộ pháp"}
+		var form_name := str(form_names.get(str(profile.get("form","")),"linh thể"))
+		lines.append("Actor khế ước: " + form_name + "; sinh lực " + _format_number(float(profile.get("hp_ratio",0.0)),2) + "× HP chủ khế; thời hạn hữu hạn " + _format_number(float(profile.get("duration_seconds",0.0)),2) + " giây.")
+		lines.append("Tấn công: " + _format_number(float(profile.get("attack_damage_ratio",0.0)),2) + "× ATK mỗi " + _format_number(float(profile.get("attack_interval_seconds",0.0)),2) + " giây; tầm " + _format_number(float(profile.get("attack_range",0.0)),2) + " ô; tối đa " + str(int(profile.get("target_limit",0))) + " mục tiêu.")
+		lines.append("Một actor mỗi chủ khế, tối đa sáu actor trong encounter; không có chiến lợi phẩm riêng.")
 	elif effect == "heal":
 		lines.append("Hồi tối đa " + _format_number(clampf(float(skill.get("power",0.0)),0.0,0.5)*100.0,2) + "% HP tối đa; chỉ ghi lượng HP thực còn thiếu, không hồi sinh.")
 	elif effect == "cleanse":
@@ -1036,7 +1202,7 @@ static func build_mechanics_tooltip(skill: Dictionary, actor_stats: Dictionary =
 		if target_distance >= 0.0:
 			projectile_line += " Thời gian bay tới mục tiêu hiện tại: " + _format_number(target_distance/projectile_speed,2) + " giây."
 		lines.append(projectile_line)
-	if str(skill.get("school","")) in ["sword","blade","spear","dual_blade","palm"] and str(skill.get("source_codex_id","")).is_empty():
+	if str(skill.get("school","")) in ["sword","blade","spear","dual_blade","palm","summon"] and str(skill.get("source_codex_id","")).is_empty():
 		lines.append("Nguồn truyền thừa của nhánh này chưa có trong Kho; node vẫn bị khóa.")
 	return {"ok":true,"text":"\n".join(lines),"errors":[]}
 static func validate_all36_ledger(csv_text: String, catalogues: Dictionary, registry: Dictionary) -> Dictionary:
@@ -1138,9 +1304,9 @@ static func validate_all36_ledger(csv_text: String, catalogues: Dictionary, regi
 			errors.append("all36_unknown_ledger_status:"+key+":"+status)
 		if str(row.get("source_ref","")).strip_edges().is_empty():
 			errors.append("all36_source_reference_missing:"+key)
-	if status_counts.get("EXISTING",0) != 549 or status_counts.get("CANDIDATE_GATED",0) != 1464 or status_counts.get("NOT_AUTHORED",0) != 183:
+	if status_counts.get("EXISTING",0) != 549 or status_counts.get("CANDIDATE_GATED",0) != 1647 or status_counts.get("NOT_AUTHORED",0) != 0:
 		errors.append("all36_authorship_counts_mismatch")
-	if runtime_ids.size() != 2013:
+	if runtime_ids.size() != 2196:
 		errors.append("all36_existing_runtime_count_mismatch:"+str(runtime_ids.size()))
 	var actual_runtime_ids := _all_runtime_ids(catalogues)
 	if actual_runtime_ids.size() != runtime_ids.size():

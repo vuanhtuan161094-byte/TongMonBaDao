@@ -1,7 +1,7 @@
 class_name V63OriginalCombatVfxV1
 extends Control
 
-const CUES := ["telegraph", "v63_skill_hit", "skill_cast", "skill_release", "v63_mobility", "v63_sword_guard_reflect", "v63_blade_swing_hit", "v63_blade_guard_reflect", "v63_spear_line_hit", "v63_spear_shield_absorbed", "v63_dual_blade_hit", "v63_dual_blade_hp_trade", "v63_palm_slow_applied", "v63_palm_guard_absorbed", "heal", "cleanse", "v63_boss_phase", "boss_counter_hit", "status_applied"]
+const CUES := ["telegraph", "v63_skill_hit", "skill_cast", "skill_release", "v63_mobility", "v63_sword_guard_reflect", "v63_blade_swing_hit", "v63_blade_guard_reflect", "v63_spear_line_hit", "v63_spear_shield_absorbed", "v63_dual_blade_hit", "v63_dual_blade_hp_trade", "v63_palm_slow_applied", "v63_palm_guard_absorbed", "v63_summon_created", "v63_summon_attack", "v63_summon_expired", "heal", "cleanse", "v63_boss_phase", "boss_counter_hit", "status_applied"]
 var _cue_kind := ""
 var _cue_started := 0.0
 var _event_cursor := 0
@@ -63,7 +63,7 @@ func consume_battle_events(battle: MapBattleV2) -> void:
         _cue_animation_key = ""
         _cue_vfx_key = ""
         _cue_effect = ""
-        if _cue_skill_id.begins_with("tmb.skill.sword.") or _cue_skill_id.begins_with("tmb.skill.blade.") or _cue_skill_id.begins_with("tmb.skill.spear.") or _cue_skill_id.begins_with("tmb.skill.dual_blade.") or _cue_skill_id.begins_with("tmb.skill.palm."):
+        if _cue_skill_id.begins_with("tmb.skill.sword.") or _cue_skill_id.begins_with("tmb.skill.blade.") or _cue_skill_id.begins_with("tmb.skill.spear.") or _cue_skill_id.begins_with("tmb.skill.dual_blade.") or _cue_skill_id.begins_with("tmb.skill.palm.") or _cue_skill_id.begins_with("tmb.skill.summon."):
             var definition := V63HumanSkillCombatSystem.skill_definition(_cue_skill_id)
             _cue_animation_key = str(definition.get("animation_key",""))
             _cue_vfx_key = str(definition.get("vfx_key",""))
@@ -103,6 +103,9 @@ func _draw() -> void:
         return
     if _cue_skill_id.begins_with("tmb.skill.palm."):
         _draw_palm(center, age, alpha)
+        return
+    if _cue_skill_id.begins_with("tmb.skill.summon."):
+        _draw_summon(center, age, alpha)
         return
     var color := _cue_color(_cue_kind)
     color.a = alpha
@@ -295,6 +298,89 @@ func _draw_palm(center: Vector2, age: float, alpha: float) -> void:
         draw_arc(center, radius * 0.45, 0.2 + age * 0.4, 4.4 + age * 0.4, 32, Color("d8e7a7", alpha * 0.72), 1.5, true)
         if _cue_kind in ["heal", "cleanse", "status_applied"]:
             draw_circle(center, 3.0 + age * 2.0, Color("e3f3d5", alpha * 0.7))
+
+static func summon_branch_for_skill(skill_id: String) -> String:
+    for branch in ["kiem_linh","linh_thu","khoi_loi_ho_phap"]:
+        if skill_id.contains("." + branch + "."):
+            return branch
+    return "common"
+
+func _summon_branch() -> String:
+    return summon_branch_for_skill(_cue_skill_id)
+
+func _draw_summon(center: Vector2, age: float, alpha: float) -> void:
+    var branch := _summon_branch()
+    var tier_scale := 1.0
+    if _cue_animation_key.contains("immortal"):
+        tier_scale = 1.13
+    elif _cue_animation_key.contains("divine"):
+        tier_scale = 1.27
+    var radius := (8.0 + age * 25.0) * tier_scale
+    var color := Color("d9e5f0")
+    if branch == "linh_thu":
+        color = Color("9bd8aa")
+    elif branch == "khoi_loi_ho_phap":
+        color = Color("dfc477")
+    color.a = alpha
+    var ultimate := _cue_vfx_key.contains("ultimate")
+    var scale := 1.0 + (0.22 if ultimate else 0.0)
+    if _cue_kind in ["v63_summon_created","skill_cast","skill_release"]:
+        # A bounded covenant ring and branch silhouette accompany the real cast/release event.
+        var ring_radius := radius * scale
+        draw_arc(center,ring_radius,0.0,TAU,40,color,2.1,true)
+        draw_arc(center,ring_radius*0.68,0.0,TAU,32,Color(color.r,color.g,color.b,alpha*0.54),1.0,true)
+        for mark in range(3 if not ultimate else 6):
+            var angle := TAU * float(mark) / float(3 if not ultimate else 6) + age * 0.24
+            var start := center + Vector2.from_angle(angle) * ring_radius * 0.70
+            var finish := center + Vector2.from_angle(angle) * ring_radius * 0.94
+            draw_line(start,finish,color,1.4,true)
+        _draw_summon_silhouette(center,branch,10.0*tier_scale,alpha)
+    elif _cue_kind in ["v63_summon_attack","v63_skill_hit","status_applied"]:
+        # One restrained strike flash follows the Combat V2 event; it never adds a hit.
+        if branch == "kiem_linh":
+            draw_line(center+Vector2(-radius*0.74,radius*0.45),center+Vector2(radius*0.74,-radius*0.45),color,3.0,true)
+            draw_line(center+Vector2(-radius*0.42,radius*0.58),center+Vector2(radius*0.42,-radius*0.58),Color("ffffff",alpha*0.68),1.0,true)
+        elif branch == "linh_thu":
+            draw_arc(center,radius*0.72,-2.75,0.52,30,color,3.0,true)
+            draw_arc(center,radius*0.48,0.45,3.10,24,Color(color.r,color.g,color.b,alpha*0.62),1.4,true)
+        else:
+            var points := PackedVector2Array()
+            for vertex in range(6):
+                points.append(center+Vector2.from_angle(TAU*float(vertex)/6.0-PI/2.0)*radius*0.74)
+            draw_polyline(points,color,2.4,true)
+            draw_line(center+Vector2(-radius*0.4,0),center+Vector2(radius*0.4,0),Color("fff1bf",alpha*0.72),1.3,true)
+        draw_arc(center,3.0+age*8.0,0.0,TAU,24,Color(color.r,color.g,color.b,alpha*0.72),1.7,true)
+    elif _cue_kind == "v63_summon_expired":
+        draw_arc(center,maxf(2.0,radius*(1.0-age)),0.0,TAU,32,Color(color.r,color.g,color.b,alpha*0.65),1.5,true)
+        draw_line(center+Vector2(-radius*0.25,-radius*0.3),center+Vector2(radius*0.25,radius*0.3),color,1.4,true)
+
+func _draw_summon_silhouette(center: Vector2, branch: String, radius: float, alpha: float) -> void:
+    if branch == "kiem_linh":
+        var blade := PackedVector2Array([
+            center+Vector2(0.0,-radius),center+Vector2(radius*0.26,0.0),
+            center+Vector2(0.0,radius),center+Vector2(-radius*0.26,0.0)
+        ])
+        draw_colored_polygon(blade,Color("edf4fa",alpha*0.78))
+        draw_line(center+Vector2(0.0,-radius*1.25),center+Vector2(0.0,radius*1.25),Color("bccbda",alpha),1.4,true)
+        draw_line(center+Vector2(-radius*0.42,radius*0.25),center+Vector2(radius*0.42,radius*0.25),Color("c7ae70",alpha),1.0,true)
+    elif branch == "linh_thu":
+        draw_circle(center+Vector2(0.0,radius*0.10),radius*0.57,Color("75bc8d",alpha*0.88))
+        draw_circle(center+Vector2(radius*0.38,-radius*0.22),radius*0.32,Color("a6e0b5",alpha))
+        draw_colored_polygon(PackedVector2Array([
+            center+Vector2(radius*0.20,-radius*0.42),center+Vector2(radius*0.12,-radius*0.88),
+            center+Vector2(radius*0.46,-radius*0.50)
+        ]),Color("75bc8d",alpha))
+        draw_colored_polygon(PackedVector2Array([
+            center+Vector2(radius*0.54,-radius*0.39),center+Vector2(radius*0.77,-radius*0.76),
+            center+Vector2(radius*0.74,-radius*0.28)
+        ]),Color("75bc8d",alpha))
+    else:
+        var shell := PackedVector2Array()
+        for vertex in range(6):
+            shell.append(center+Vector2.from_angle(TAU*float(vertex)/6.0-PI/2.0)*radius*0.78)
+        draw_colored_polygon(shell,Color("a58a50",alpha*0.78))
+        draw_polyline(shell,Color("f0d98d",alpha),1.5,true)
+        draw_rect(Rect2(center-Vector2(radius*0.24,radius*0.28),Vector2(radius*0.48,radius*0.56)),Color("e6d197",alpha*0.82))
 
 func _palm_branch(skill_id: String) -> String:
     for branch in ["liet_duong_chuong", "han_ngoc_chuong", "hoi_phong_chuong"]:

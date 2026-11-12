@@ -7,7 +7,10 @@ on:
     paths:
       - 'godot/src/simulation/combat/v63_*.gd'
       - 'godot/src/presentation/v63_skill_presentation_catalog_v1.gd'
+      - 'godot/src/presentation/p3/v63_original_combat_vfx_v1.gd'
+      - 'godot/src/presentation/p3/map_battle_world_layer_v2.gd'
       - 'godot/src/simulation/combat/map_battle_v2.gd'
+      - 'godot/src/simulation/combat/map_battle_snapshot_v2.gd'
       - 'godot/data/combat/v63_*.json'
       - 'godot/data/presentation/v63_skill_presentation_manifest_v1.json'
       - 'godot/tests/simulation/v63_poison_evolution_balance_test.gd'
@@ -46,10 +49,14 @@ on:
       - 'godot/data/combat/v63_dual_blade_registry_extension.json'
       - 'godot/tests/simulation/skill_all_catalogue_integrity_test.gd'
       - 'godot/src/simulation/combat/v63_formation_skill_combat_system.gd'
+      - 'godot/src/simulation/combat/map_battle_snapshot_v2.gd'
       - 'godot/data/combat/v63_formation_combat_catalog.json'
       - 'godot/data/combat/v63_formation_registry_extension.json'
+      - 'godot/data/combat/v63_summon_registry_extension.json'
       - 'godot/data/presentation/v63_formation_presentation_manifest_v1.json'
+      - 'godot/data/presentation/v63_summon_presentation_manifest_v1.json'
       - 'godot/tests/simulation/v63_s8_formation_skill_test.gd'
+      - 'godot/tests/simulation/v63_s9_summon_skill_test.gd'
       - '.github/workflows/v63-quyen-doc-matrix.yml'
   push:
     branches:
@@ -79,11 +86,16 @@ on:
       - 'godot/tests/simulation/skill_all_catalogue_integrity_test.gd'
       - 'godot/src/simulation/combat/v63_*.gd'
       - 'godot/src/presentation/v63_skill_presentation_catalog_v1.gd'
+      - 'godot/src/presentation/p3/v63_original_combat_vfx_v1.gd'
+      - 'godot/src/presentation/p3/map_battle_world_layer_v2.gd'
       - 'godot/src/simulation/combat/v63_formation_skill_combat_system.gd'
       - 'godot/data/combat/v63_formation_combat_catalog.json'
       - 'godot/data/combat/v63_formation_registry_extension.json'
+      - 'godot/data/combat/v63_summon_registry_extension.json'
       - 'godot/data/presentation/v63_formation_presentation_manifest_v1.json'
+      - 'godot/data/presentation/v63_summon_presentation_manifest_v1.json'
       - 'godot/tests/simulation/v63_s8_formation_skill_test.gd'
+      - 'godot/tests/simulation/v63_s9_summon_skill_test.gd'
       - '.github/workflows/v63-quyen-doc-matrix.yml'
 
 permissions:
@@ -159,7 +171,9 @@ jobs:
              res://tests/simulation/v63_s4_dual_blade_skill_test.gd \
              res://tests/simulation/v63_s5_palm_skill_test.gd \
              res://tests/simulation/v63_s6_talisman_skill_test.gd \
-             res://tests/simulation/v63_s7_curse_skill_test.gd; do
+             res://tests/simulation/v63_s7_curse_skill_test.gd \
+             res://tests/simulation/v63_s8_formation_skill_test.gd \
+             res://tests/simulation/v63_s9_summon_skill_test.gd; do
             godot --headless --path godot --check-only --script "$script"
           done
       - name: V63 D1 registry and all-off release gate regression
@@ -212,6 +226,15 @@ jobs:
         run: |
           set -o pipefail
           godot --headless --path godot -s res://tests/simulation/v63_s8_formation_skill_test.gd 2>&1 | tee /tmp/v63-s8-formation.log
+      - name: Install virtual X11 and software GL for viewport capture
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes --no-install-recommends xvfb libgl1-mesa-dri
+      - name: V63 S9 Triệu Hồi: bounded Combat V2 actor, AI, event-linked Godot VFX render and snapshot regression
+        shell: bash
+        run: |
+          set -o pipefail
+          xvfb-run -a env LIBGL_ALWAYS_SOFTWARE=1 godot --path godot --rendering-method gl_compatibility --resolution 1280x720 -s res://tests/simulation/v63_s9_summon_skill_test.gd 2>&1 | tee /tmp/v63-s9-summon.log
       - name: 183 Quyền per-ID Combat V2 handoff
         shell: bash
         run: |
@@ -282,6 +305,8 @@ jobs:
             /tmp/v63-s6-talisman.log
             /tmp/v63-s7-curse.log
             /tmp/v63-s8-formation.log
+            /tmp/v63-s9-summon.log
+            godot/outputs/v63_s9_summon_*_vfx.png
           if-no-files-found: ignore
 
   publish-exact-sha-result:

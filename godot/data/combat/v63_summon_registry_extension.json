@@ -1,0 +1,1885 @@
+{
+  "schema_version": 1,
+  "extension_id": "tmb.v63.registry_extension.s9_summon",
+  "release_gate": "OFF",
+  "base_registry": {
+    "path": "res://data/combat/v63_content_registry.json",
+    "git_blob_sha": "2b36bd39bf04c20dc74f00e74d335568b4a1a89b"
+  },
+  "source_catalog": {
+    "path": "res://data/combat/v63_summon_combat_catalog.json",
+    "git_blob_sha": "53fed8044c222cb8b810a49eac0efbcbedab4323"
+  },
+  "school": {
+    "id": "summon",
+    "name": "Triệu Hồi",
+    "candidate_source_status": "SOURCE_PENDING"
+  },
+  "paths": [
+    {
+      "id": "tmb.path.summon.kiem_linh",
+      "school": "summon",
+      "name": "Kiếm Linh",
+      "element": "metal",
+      "lineages": {
+        "a": "Kiếm Tâm",
+        "b": "Cổ Khế"
+      },
+      "candidate_source_status": "SOURCE_PENDING",
+      "lineage_stories_vi": {
+        "a": "Kiếm Tâm giữ mối cộng minh thẳng thắn: kiếm linh hiện hữu trong thời hạn được ghi ở kỹ năng, chọn kẻ địch hợp lệ và chỉ đánh qua trận chiến hiện hành. Người chủ khế không ép linh thể ở lại khi lời mời kết thúc.",
+        "b": "Cổ Khế lắng tiếng ký ức trong binh khí và chọn khoảnh khắc xuất hiện cẩn trọng. Linh thể vẫn có sinh lực, nhịp hành động và thời hạn hữu hạn; không tự sinh vật phẩm hay chiến lợi phẩm."
+      },
+      "signature_ultimate": "Thần Kiếm Linh Hợp Nhất",
+      "innate_node_id": "tmb.skill.summon.kiem_linh.innate.human",
+      "innate_node_ids": {
+        "a": "tmb.skill.summon.kiem_linh.innate.immortal.a",
+        "b": "tmb.skill.summon.kiem_linh.innate.immortal.b"
+      },
+      "divine_innate_node_ids": {
+        "a": "tmb.skill.summon.kiem_linh.innate.divine.a",
+        "b": "tmb.skill.summon.kiem_linh.innate.divine.b"
+      }
+    },
+    {
+      "id": "tmb.path.summon.linh_thu",
+      "school": "summon",
+      "name": "Linh Thú",
+      "element": "wood",
+      "lineages": {
+        "a": "Hữu Tín",
+        "b": "Sơn Linh"
+      },
+      "candidate_source_status": "SOURCE_PENDING",
+      "lineage_stories_vi": {
+        "a": "Hữu Tín xem khế ước là lời hứa hai chiều. Linh thú chỉ xuất hiện khi kỹ năng được thi triển, có thời hạn rõ trong runtime và biến mất khi duyên kết thúc; chủ nhân vẫn chịu trách nhiệm về mọi hành động.",
+        "b": "Sơn Linh quen địa hình và chọn lối áp sát có thể đi được. Bạn thú không xuyên chướng ngại, không tự tìm chiến lợi phẩm, không tham gia ngoài giới hạn sinh lực và thời hạn của khế ước."
+      },
+      "signature_ultimate": "Vạn Thú Linh Khế",
+      "innate_node_id": "tmb.skill.summon.linh_thu.innate.human",
+      "innate_node_ids": {
+        "a": "tmb.skill.summon.linh_thu.innate.immortal.a",
+        "b": "tmb.skill.summon.linh_thu.innate.immortal.b"
+      },
+      "divine_innate_node_ids": {
+        "a": "tmb.skill.summon.linh_thu.innate.divine.a",
+        "b": "tmb.skill.summon.linh_thu.innate.divine.b"
+      }
+    },
+    {
+      "id": "tmb.path.summon.khoi_loi_ho_phap",
+      "school": "summon",
+      "name": "Khôi Lỗi Hộ Pháp",
+      "element": "earth",
+      "lineages": {
+        "a": "Hộ Mạch",
+        "b": "Thiên Cơ"
+      },
+      "candidate_source_status": "SOURCE_PENDING",
+      "lineage_stories_vi": {
+        "a": "Hộ Mạch gia cố thân khung cho vai trò đứng tuyến trước. Khôi lỗi vẫn có thể bị đánh bại, thời hạn chỉ lấy từ catalogue ứng viên và khi rời trận không tạo vật phẩm hoặc biên nhận riêng.",
+        "b": "Thiên Cơ giữ vị trí quanh chủ khế và tìm mục tiêu trong tầm hợp lệ, không xuyên địa hình hay điều khiển ý chí quái vật. Cỗ máy chỉ tồn tại trong số actor được phép và hết hạn sẽ rời trận."
+      },
+      "signature_ultimate": "Đại Thiên Cơ Hộ Pháp",
+      "innate_node_id": "tmb.skill.summon.khoi_loi_ho_phap.innate.human",
+      "innate_node_ids": {
+        "a": "tmb.skill.summon.khoi_loi_ho_phap.innate.immortal.a",
+        "b": "tmb.skill.summon.khoi_loi_ho_phap.innate.immortal.b"
+      },
+      "divine_innate_node_ids": {
+        "a": "tmb.skill.summon.khoi_loi_ho_phap.innate.divine.a",
+        "b": "tmb.skill.summon.khoi_loi_ho_phap.innate.divine.b"
+      }
+    }
+  ],
+  "families": [
+    {
+      "id": "tmb.skill.summon.basic",
+      "school": "summon",
+      "branch": "",
+      "slot": "basic",
+      "name": "Hợp Khế Linh Tức",
+      "nodes": [
+        {
+          "id": "tmb.skill.summon.basic.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.basic.immortal.base",
+          "tier": "immortal",
+          "lineage": "base",
+          "parent": "tmb.skill.summon.basic.human",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.basic.divine.base",
+          "tier": "divine",
+          "lineage": "base",
+          "parent": "tmb.skill.summon.basic.immortal.base",
+          "replaces": "",
+          "school": "summon"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.summon.mobility",
+      "school": "summon",
+      "branch": "",
+      "slot": "mobility",
+      "name": "Ngự Linh Du Bộ",
+      "nodes": [
+        {
+          "id": "tmb.skill.summon.mobility.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.mobility.immortal.base",
+          "tier": "immortal",
+          "lineage": "base",
+          "parent": "tmb.skill.summon.mobility.human",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.mobility.divine.base",
+          "tier": "divine",
+          "lineage": "base",
+          "parent": "tmb.skill.summon.mobility.immortal.base",
+          "replaces": "",
+          "school": "summon"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.summon.kiem_linh.active_01",
+      "school": "summon",
+      "branch": "kiem_linh",
+      "slot": "active",
+      "name": "Kiếm Linh Thỉnh Kiếm",
+      "nodes": [
+        {
+          "id": "tmb.skill.summon.kiem_linh.active_01.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.kiem_linh.active_01.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.summon.kiem_linh.active_01.human",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.kiem_linh.active_01.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.summon.kiem_linh.active_01.human",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.kiem_linh.active_01.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.summon.kiem_linh.active_01.immortal.a",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.kiem_linh.active_01.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.summon.kiem_linh.active_01.immortal.b",
+          "replaces": "",
+          "school": "summon"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.summon.kiem_linh.active_02",
+      "school": "summon",
+      "branch": "kiem_linh",
+      "slot": "active",
+      "name": "Ngự Kiếm Hồi Ảnh",
+      "nodes": [
+        {
+          "id": "tmb.skill.summon.kiem_linh.active_02.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.kiem_linh.active_02.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.summon.kiem_linh.active_02.human",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.kiem_linh.active_02.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.summon.kiem_linh.active_02.human",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.kiem_linh.active_02.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.summon.kiem_linh.active_02.immortal.a",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.kiem_linh.active_02.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.summon.kiem_linh.active_02.immortal.b",
+          "replaces": "",
+          "school": "summon"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.summon.kiem_linh.active_03",
+      "school": "summon",
+      "branch": "kiem_linh",
+      "slot": "active",
+      "name": "Thần Kiếm Đồng Tâm",
+      "nodes": [
+        {
+          "id": "tmb.skill.summon.kiem_linh.active_03.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.kiem_linh.active_03.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.summon.kiem_linh.active_03.human",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.kiem_linh.active_03.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.summon.kiem_linh.active_03.human",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.kiem_linh.active_03.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.summon.kiem_linh.active_03.immortal.a",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.kiem_linh.active_03.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.summon.kiem_linh.active_03.immortal.b",
+          "replaces": "",
+          "school": "summon"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.summon.kiem_linh.active_04",
+      "school": "summon",
+      "branch": "kiem_linh",
+      "slot": "active",
+      "name": "Linh Kiếm Phá Không",
+      "nodes": [
+        {
+          "id": "tmb.skill.summon.kiem_linh.active_04.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.kiem_linh.active_04.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.summon.kiem_linh.active_04.human",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.kiem_linh.active_04.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.summon.kiem_linh.active_04.human",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.kiem_linh.active_04.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.summon.kiem_linh.active_04.immortal.a",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.kiem_linh.active_04.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.summon.kiem_linh.active_04.immortal.b",
+          "replaces": "",
+          "school": "summon"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.summon.kiem_linh.ultimate",
+      "school": "summon",
+      "branch": "kiem_linh",
+      "slot": "ultimate",
+      "name": "Thần Kiếm Linh Hợp Nhất",
+      "nodes": [
+        {
+          "id": "tmb.skill.summon.kiem_linh.ultimate.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.kiem_linh.ultimate.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.summon.kiem_linh.ultimate.human",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.kiem_linh.ultimate.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.summon.kiem_linh.ultimate.human",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.kiem_linh.ultimate.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.summon.kiem_linh.ultimate.immortal.a",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.kiem_linh.ultimate.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.summon.kiem_linh.ultimate.immortal.b",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.kiem_linh.ultimate.rare.a",
+          "tier": "divine",
+          "lineage": "rare_a",
+          "parent": "tmb.skill.summon.kiem_linh.ultimate.divine.a",
+          "replaces": "tmb.skill.summon.kiem_linh.ultimate.divine.a",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.kiem_linh.ultimate.rare.b",
+          "tier": "divine",
+          "lineage": "rare_b",
+          "parent": "tmb.skill.summon.kiem_linh.ultimate.divine.b",
+          "replaces": "tmb.skill.summon.kiem_linh.ultimate.divine.b",
+          "school": "summon"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.summon.kiem_linh.passive_01",
+      "school": "summon",
+      "branch": "kiem_linh",
+      "slot": "passive",
+      "name": "Kiếm Khế Dẫn Linh",
+      "nodes": [
+        {
+          "id": "tmb.skill.summon.kiem_linh.passive_01.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.kiem_linh.passive_01.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.summon.kiem_linh.passive_01.human",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.kiem_linh.passive_01.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.summon.kiem_linh.passive_01.human",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.kiem_linh.passive_01.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.summon.kiem_linh.passive_01.immortal.a",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.kiem_linh.passive_01.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.summon.kiem_linh.passive_01.immortal.b",
+          "replaces": "",
+          "school": "summon"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.summon.kiem_linh.passive_02",
+      "school": "summon",
+      "branch": "kiem_linh",
+      "slot": "passive",
+      "name": "Tâm Kiếm Cộng Minh",
+      "nodes": [
+        {
+          "id": "tmb.skill.summon.kiem_linh.passive_02.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.kiem_linh.passive_02.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.summon.kiem_linh.passive_02.human",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.kiem_linh.passive_02.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.summon.kiem_linh.passive_02.human",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.kiem_linh.passive_02.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.summon.kiem_linh.passive_02.immortal.a",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.kiem_linh.passive_02.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.summon.kiem_linh.passive_02.immortal.b",
+          "replaces": "",
+          "school": "summon"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.summon.kiem_linh.passive_03",
+      "school": "summon",
+      "branch": "kiem_linh",
+      "slot": "passive",
+      "name": "Ngự Linh Tĩnh Ý",
+      "nodes": [
+        {
+          "id": "tmb.skill.summon.kiem_linh.passive_03.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.kiem_linh.passive_03.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.summon.kiem_linh.passive_03.human",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.kiem_linh.passive_03.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.summon.kiem_linh.passive_03.human",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.kiem_linh.passive_03.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.summon.kiem_linh.passive_03.immortal.a",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.kiem_linh.passive_03.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.summon.kiem_linh.passive_03.immortal.b",
+          "replaces": "",
+          "school": "summon"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.summon.kiem_linh.passive_04",
+      "school": "summon",
+      "branch": "kiem_linh",
+      "slot": "passive",
+      "name": "Kiếm Ảnh Bồi Nguyên",
+      "nodes": [
+        {
+          "id": "tmb.skill.summon.kiem_linh.passive_04.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.kiem_linh.passive_04.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.summon.kiem_linh.passive_04.human",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.kiem_linh.passive_04.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.summon.kiem_linh.passive_04.human",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.kiem_linh.passive_04.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.summon.kiem_linh.passive_04.immortal.a",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.kiem_linh.passive_04.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.summon.kiem_linh.passive_04.immortal.b",
+          "replaces": "",
+          "school": "summon"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.summon.kiem_linh.passive_05",
+      "school": "summon",
+      "branch": "kiem_linh",
+      "slot": "passive",
+      "name": "Cổ Kiếm Linh Tủy",
+      "nodes": [
+        {
+          "id": "tmb.skill.summon.kiem_linh.passive_05.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.kiem_linh.passive_05.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.summon.kiem_linh.passive_05.human",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.kiem_linh.passive_05.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.summon.kiem_linh.passive_05.human",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.kiem_linh.passive_05.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.summon.kiem_linh.passive_05.immortal.a",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.kiem_linh.passive_05.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.summon.kiem_linh.passive_05.immortal.b",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.kiem_linh.passive_05.rare.a",
+          "tier": "divine",
+          "lineage": "rare_a",
+          "parent": "tmb.skill.summon.kiem_linh.passive_05.divine.a",
+          "replaces": "tmb.skill.summon.kiem_linh.passive_05.divine.a",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.kiem_linh.passive_05.rare.b",
+          "tier": "divine",
+          "lineage": "rare_b",
+          "parent": "tmb.skill.summon.kiem_linh.passive_05.divine.b",
+          "replaces": "tmb.skill.summon.kiem_linh.passive_05.divine.b",
+          "school": "summon"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.summon.kiem_linh.innate",
+      "school": "summon",
+      "branch": "kiem_linh",
+      "slot": "innate",
+      "name": "Kiếm Linh Sơ Khế",
+      "nodes": [
+        {
+          "id": "tmb.skill.summon.kiem_linh.innate.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.kiem_linh.innate.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.summon.kiem_linh.innate.human",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.kiem_linh.innate.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.summon.kiem_linh.innate.human",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.kiem_linh.innate.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.summon.kiem_linh.innate.immortal.a",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.kiem_linh.innate.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.summon.kiem_linh.innate.immortal.b",
+          "replaces": "",
+          "school": "summon"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.summon.linh_thu.active_01",
+      "school": "summon",
+      "branch": "linh_thu",
+      "slot": "active",
+      "name": "Hữu Tín Thỉnh Thú",
+      "nodes": [
+        {
+          "id": "tmb.skill.summon.linh_thu.active_01.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.linh_thu.active_01.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.summon.linh_thu.active_01.human",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.linh_thu.active_01.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.summon.linh_thu.active_01.human",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.linh_thu.active_01.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.summon.linh_thu.active_01.immortal.a",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.linh_thu.active_01.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.summon.linh_thu.active_01.immortal.b",
+          "replaces": "",
+          "school": "summon"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.summon.linh_thu.active_02",
+      "school": "summon",
+      "branch": "linh_thu",
+      "slot": "active",
+      "name": "Sơn Linh Truy Ảnh",
+      "nodes": [
+        {
+          "id": "tmb.skill.summon.linh_thu.active_02.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.linh_thu.active_02.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.summon.linh_thu.active_02.human",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.linh_thu.active_02.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.summon.linh_thu.active_02.human",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.linh_thu.active_02.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.summon.linh_thu.active_02.immortal.a",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.linh_thu.active_02.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.summon.linh_thu.active_02.immortal.b",
+          "replaces": "",
+          "school": "summon"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.summon.linh_thu.active_03",
+      "school": "summon",
+      "branch": "linh_thu",
+      "slot": "active",
+      "name": "Thú Tâm Hộ Chủ",
+      "nodes": [
+        {
+          "id": "tmb.skill.summon.linh_thu.active_03.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.linh_thu.active_03.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.summon.linh_thu.active_03.human",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.linh_thu.active_03.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.summon.linh_thu.active_03.human",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.linh_thu.active_03.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.summon.linh_thu.active_03.immortal.a",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.linh_thu.active_03.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.summon.linh_thu.active_03.immortal.b",
+          "replaces": "",
+          "school": "summon"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.summon.linh_thu.active_04",
+      "school": "summon",
+      "branch": "linh_thu",
+      "slot": "active",
+      "name": "Bách Mạch Nha Kích",
+      "nodes": [
+        {
+          "id": "tmb.skill.summon.linh_thu.active_04.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.linh_thu.active_04.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.summon.linh_thu.active_04.human",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.linh_thu.active_04.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.summon.linh_thu.active_04.human",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.linh_thu.active_04.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.summon.linh_thu.active_04.immortal.a",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.linh_thu.active_04.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.summon.linh_thu.active_04.immortal.b",
+          "replaces": "",
+          "school": "summon"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.summon.linh_thu.ultimate",
+      "school": "summon",
+      "branch": "linh_thu",
+      "slot": "ultimate",
+      "name": "Vạn Thú Linh Khế",
+      "nodes": [
+        {
+          "id": "tmb.skill.summon.linh_thu.ultimate.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.linh_thu.ultimate.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.summon.linh_thu.ultimate.human",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.linh_thu.ultimate.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.summon.linh_thu.ultimate.human",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.linh_thu.ultimate.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.summon.linh_thu.ultimate.immortal.a",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.linh_thu.ultimate.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.summon.linh_thu.ultimate.immortal.b",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.linh_thu.ultimate.rare.a",
+          "tier": "divine",
+          "lineage": "rare_a",
+          "parent": "tmb.skill.summon.linh_thu.ultimate.divine.a",
+          "replaces": "tmb.skill.summon.linh_thu.ultimate.divine.a",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.linh_thu.ultimate.rare.b",
+          "tier": "divine",
+          "lineage": "rare_b",
+          "parent": "tmb.skill.summon.linh_thu.ultimate.divine.b",
+          "replaces": "tmb.skill.summon.linh_thu.ultimate.divine.b",
+          "school": "summon"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.summon.linh_thu.passive_01",
+      "school": "summon",
+      "branch": "linh_thu",
+      "slot": "passive",
+      "name": "Dưỡng Tức Linh Thú",
+      "nodes": [
+        {
+          "id": "tmb.skill.summon.linh_thu.passive_01.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.linh_thu.passive_01.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.summon.linh_thu.passive_01.human",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.linh_thu.passive_01.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.summon.linh_thu.passive_01.human",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.linh_thu.passive_01.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.summon.linh_thu.passive_01.immortal.a",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.linh_thu.passive_01.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.summon.linh_thu.passive_01.immortal.b",
+          "replaces": "",
+          "school": "summon"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.summon.linh_thu.passive_02",
+      "school": "summon",
+      "branch": "linh_thu",
+      "slot": "passive",
+      "name": "Đồng Hành Tín Niệm",
+      "nodes": [
+        {
+          "id": "tmb.skill.summon.linh_thu.passive_02.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.linh_thu.passive_02.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.summon.linh_thu.passive_02.human",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.linh_thu.passive_02.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.summon.linh_thu.passive_02.human",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.linh_thu.passive_02.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.summon.linh_thu.passive_02.immortal.a",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.linh_thu.passive_02.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.summon.linh_thu.passive_02.immortal.b",
+          "replaces": "",
+          "school": "summon"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.summon.linh_thu.passive_03",
+      "school": "summon",
+      "branch": "linh_thu",
+      "slot": "passive",
+      "name": "Sơn Lâm Thính Phong",
+      "nodes": [
+        {
+          "id": "tmb.skill.summon.linh_thu.passive_03.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.linh_thu.passive_03.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.summon.linh_thu.passive_03.human",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.linh_thu.passive_03.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.summon.linh_thu.passive_03.human",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.linh_thu.passive_03.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.summon.linh_thu.passive_03.immortal.a",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.linh_thu.passive_03.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.summon.linh_thu.passive_03.immortal.b",
+          "replaces": "",
+          "school": "summon"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.summon.linh_thu.passive_04",
+      "school": "summon",
+      "branch": "linh_thu",
+      "slot": "passive",
+      "name": "Hộ Chủ Bản Năng",
+      "nodes": [
+        {
+          "id": "tmb.skill.summon.linh_thu.passive_04.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.linh_thu.passive_04.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.summon.linh_thu.passive_04.human",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.linh_thu.passive_04.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.summon.linh_thu.passive_04.human",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.linh_thu.passive_04.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.summon.linh_thu.passive_04.immortal.a",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.linh_thu.passive_04.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.summon.linh_thu.passive_04.immortal.b",
+          "replaces": "",
+          "school": "summon"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.summon.linh_thu.passive_05",
+      "school": "summon",
+      "branch": "linh_thu",
+      "slot": "passive",
+      "name": "Vạn Thú Tâm Ấn",
+      "nodes": [
+        {
+          "id": "tmb.skill.summon.linh_thu.passive_05.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.linh_thu.passive_05.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.summon.linh_thu.passive_05.human",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.linh_thu.passive_05.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.summon.linh_thu.passive_05.human",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.linh_thu.passive_05.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.summon.linh_thu.passive_05.immortal.a",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.linh_thu.passive_05.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.summon.linh_thu.passive_05.immortal.b",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.linh_thu.passive_05.rare.a",
+          "tier": "divine",
+          "lineage": "rare_a",
+          "parent": "tmb.skill.summon.linh_thu.passive_05.divine.a",
+          "replaces": "tmb.skill.summon.linh_thu.passive_05.divine.a",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.linh_thu.passive_05.rare.b",
+          "tier": "divine",
+          "lineage": "rare_b",
+          "parent": "tmb.skill.summon.linh_thu.passive_05.divine.b",
+          "replaces": "tmb.skill.summon.linh_thu.passive_05.divine.b",
+          "school": "summon"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.summon.linh_thu.innate",
+      "school": "summon",
+      "branch": "linh_thu",
+      "slot": "innate",
+      "name": "Linh Thú Hữu Khế",
+      "nodes": [
+        {
+          "id": "tmb.skill.summon.linh_thu.innate.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.linh_thu.innate.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.summon.linh_thu.innate.human",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.linh_thu.innate.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.summon.linh_thu.innate.human",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.linh_thu.innate.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.summon.linh_thu.innate.immortal.a",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.linh_thu.innate.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.summon.linh_thu.innate.immortal.b",
+          "replaces": "",
+          "school": "summon"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.summon.khoi_loi_ho_phap.active_01",
+      "school": "summon",
+      "branch": "khoi_loi_ho_phap",
+      "slot": "active",
+      "name": "Khôi Lỗi Nhận Khế",
+      "nodes": [
+        {
+          "id": "tmb.skill.summon.khoi_loi_ho_phap.active_01.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.khoi_loi_ho_phap.active_01.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.summon.khoi_loi_ho_phap.active_01.human",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.khoi_loi_ho_phap.active_01.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.summon.khoi_loi_ho_phap.active_01.human",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.khoi_loi_ho_phap.active_01.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.summon.khoi_loi_ho_phap.active_01.immortal.a",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.khoi_loi_ho_phap.active_01.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.summon.khoi_loi_ho_phap.active_01.immortal.b",
+          "replaces": "",
+          "school": "summon"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.summon.khoi_loi_ho_phap.active_02",
+      "school": "summon",
+      "branch": "khoi_loi_ho_phap",
+      "slot": "active",
+      "name": "Thiên Cơ Châm Kích",
+      "nodes": [
+        {
+          "id": "tmb.skill.summon.khoi_loi_ho_phap.active_02.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.khoi_loi_ho_phap.active_02.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.summon.khoi_loi_ho_phap.active_02.human",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.khoi_loi_ho_phap.active_02.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.summon.khoi_loi_ho_phap.active_02.human",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.khoi_loi_ho_phap.active_02.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.summon.khoi_loi_ho_phap.active_02.immortal.a",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.khoi_loi_ho_phap.active_02.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.summon.khoi_loi_ho_phap.active_02.immortal.b",
+          "replaces": "",
+          "school": "summon"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.summon.khoi_loi_ho_phap.active_03",
+      "school": "summon",
+      "branch": "khoi_loi_ho_phap",
+      "slot": "active",
+      "name": "Cơ Giáp Hộ Thân",
+      "nodes": [
+        {
+          "id": "tmb.skill.summon.khoi_loi_ho_phap.active_03.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.khoi_loi_ho_phap.active_03.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.summon.khoi_loi_ho_phap.active_03.human",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.khoi_loi_ho_phap.active_03.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.summon.khoi_loi_ho_phap.active_03.human",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.khoi_loi_ho_phap.active_03.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.summon.khoi_loi_ho_phap.active_03.immortal.a",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.khoi_loi_ho_phap.active_03.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.summon.khoi_loi_ho_phap.active_03.immortal.b",
+          "replaces": "",
+          "school": "summon"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.summon.khoi_loi_ho_phap.active_04",
+      "school": "summon",
+      "branch": "khoi_loi_ho_phap",
+      "slot": "active",
+      "name": "Hộ Pháp Chấn Kình",
+      "nodes": [
+        {
+          "id": "tmb.skill.summon.khoi_loi_ho_phap.active_04.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.khoi_loi_ho_phap.active_04.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.summon.khoi_loi_ho_phap.active_04.human",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.khoi_loi_ho_phap.active_04.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.summon.khoi_loi_ho_phap.active_04.human",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.khoi_loi_ho_phap.active_04.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.summon.khoi_loi_ho_phap.active_04.immortal.a",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.khoi_loi_ho_phap.active_04.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.summon.khoi_loi_ho_phap.active_04.immortal.b",
+          "replaces": "",
+          "school": "summon"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.summon.khoi_loi_ho_phap.ultimate",
+      "school": "summon",
+      "branch": "khoi_loi_ho_phap",
+      "slot": "ultimate",
+      "name": "Đại Thiên Cơ Hộ Pháp",
+      "nodes": [
+        {
+          "id": "tmb.skill.summon.khoi_loi_ho_phap.ultimate.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.khoi_loi_ho_phap.ultimate.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.summon.khoi_loi_ho_phap.ultimate.human",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.khoi_loi_ho_phap.ultimate.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.summon.khoi_loi_ho_phap.ultimate.human",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.khoi_loi_ho_phap.ultimate.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.summon.khoi_loi_ho_phap.ultimate.immortal.a",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.khoi_loi_ho_phap.ultimate.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.summon.khoi_loi_ho_phap.ultimate.immortal.b",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.khoi_loi_ho_phap.ultimate.rare.a",
+          "tier": "divine",
+          "lineage": "rare_a",
+          "parent": "tmb.skill.summon.khoi_loi_ho_phap.ultimate.divine.a",
+          "replaces": "tmb.skill.summon.khoi_loi_ho_phap.ultimate.divine.a",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.khoi_loi_ho_phap.ultimate.rare.b",
+          "tier": "divine",
+          "lineage": "rare_b",
+          "parent": "tmb.skill.summon.khoi_loi_ho_phap.ultimate.divine.b",
+          "replaces": "tmb.skill.summon.khoi_loi_ho_phap.ultimate.divine.b",
+          "school": "summon"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.summon.khoi_loi_ho_phap.passive_01",
+      "school": "summon",
+      "branch": "khoi_loi_ho_phap",
+      "slot": "passive",
+      "name": "Huyền Thổ Cơ Khung",
+      "nodes": [
+        {
+          "id": "tmb.skill.summon.khoi_loi_ho_phap.passive_01.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.khoi_loi_ho_phap.passive_01.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.summon.khoi_loi_ho_phap.passive_01.human",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.khoi_loi_ho_phap.passive_01.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.summon.khoi_loi_ho_phap.passive_01.human",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.khoi_loi_ho_phap.passive_01.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.summon.khoi_loi_ho_phap.passive_01.immortal.a",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.khoi_loi_ho_phap.passive_01.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.summon.khoi_loi_ho_phap.passive_01.immortal.b",
+          "replaces": "",
+          "school": "summon"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.summon.khoi_loi_ho_phap.passive_02",
+      "school": "summon",
+      "branch": "khoi_loi_ho_phap",
+      "slot": "passive",
+      "name": "Hộ Chủ Thiên Tính",
+      "nodes": [
+        {
+          "id": "tmb.skill.summon.khoi_loi_ho_phap.passive_02.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.khoi_loi_ho_phap.passive_02.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.summon.khoi_loi_ho_phap.passive_02.human",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.khoi_loi_ho_phap.passive_02.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.summon.khoi_loi_ho_phap.passive_02.human",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.khoi_loi_ho_phap.passive_02.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.summon.khoi_loi_ho_phap.passive_02.immortal.a",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.khoi_loi_ho_phap.passive_02.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.summon.khoi_loi_ho_phap.passive_02.immortal.b",
+          "replaces": "",
+          "school": "summon"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.summon.khoi_loi_ho_phap.passive_03",
+      "school": "summon",
+      "branch": "khoi_loi_ho_phap",
+      "slot": "passive",
+      "name": "Cơ Quan Đồng Bộ",
+      "nodes": [
+        {
+          "id": "tmb.skill.summon.khoi_loi_ho_phap.passive_03.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.khoi_loi_ho_phap.passive_03.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.summon.khoi_loi_ho_phap.passive_03.human",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.khoi_loi_ho_phap.passive_03.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.summon.khoi_loi_ho_phap.passive_03.human",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.khoi_loi_ho_phap.passive_03.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.summon.khoi_loi_ho_phap.passive_03.immortal.a",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.khoi_loi_ho_phap.passive_03.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.summon.khoi_loi_ho_phap.passive_03.immortal.b",
+          "replaces": "",
+          "school": "summon"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.summon.khoi_loi_ho_phap.passive_04",
+      "school": "summon",
+      "branch": "khoi_loi_ho_phap",
+      "slot": "passive",
+      "name": "Trấn Tuyến Bền Tâm",
+      "nodes": [
+        {
+          "id": "tmb.skill.summon.khoi_loi_ho_phap.passive_04.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.khoi_loi_ho_phap.passive_04.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.summon.khoi_loi_ho_phap.passive_04.human",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.khoi_loi_ho_phap.passive_04.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.summon.khoi_loi_ho_phap.passive_04.human",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.khoi_loi_ho_phap.passive_04.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.summon.khoi_loi_ho_phap.passive_04.immortal.a",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.khoi_loi_ho_phap.passive_04.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.summon.khoi_loi_ho_phap.passive_04.immortal.b",
+          "replaces": "",
+          "school": "summon"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.summon.khoi_loi_ho_phap.passive_05",
+      "school": "summon",
+      "branch": "khoi_loi_ho_phap",
+      "slot": "passive",
+      "name": "Thiên Cơ Hộ Mệnh",
+      "nodes": [
+        {
+          "id": "tmb.skill.summon.khoi_loi_ho_phap.passive_05.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.khoi_loi_ho_phap.passive_05.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.summon.khoi_loi_ho_phap.passive_05.human",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.khoi_loi_ho_phap.passive_05.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.summon.khoi_loi_ho_phap.passive_05.human",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.khoi_loi_ho_phap.passive_05.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.summon.khoi_loi_ho_phap.passive_05.immortal.a",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.khoi_loi_ho_phap.passive_05.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.summon.khoi_loi_ho_phap.passive_05.immortal.b",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.khoi_loi_ho_phap.passive_05.rare.a",
+          "tier": "divine",
+          "lineage": "rare_a",
+          "parent": "tmb.skill.summon.khoi_loi_ho_phap.passive_05.divine.a",
+          "replaces": "tmb.skill.summon.khoi_loi_ho_phap.passive_05.divine.a",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.khoi_loi_ho_phap.passive_05.rare.b",
+          "tier": "divine",
+          "lineage": "rare_b",
+          "parent": "tmb.skill.summon.khoi_loi_ho_phap.passive_05.divine.b",
+          "replaces": "tmb.skill.summon.khoi_loi_ho_phap.passive_05.divine.b",
+          "school": "summon"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.summon.khoi_loi_ho_phap.innate",
+      "school": "summon",
+      "branch": "khoi_loi_ho_phap",
+      "slot": "innate",
+      "name": "Hộ Pháp Cơ Tâm",
+      "nodes": [
+        {
+          "id": "tmb.skill.summon.khoi_loi_ho_phap.innate.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": "",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.khoi_loi_ho_phap.innate.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.summon.khoi_loi_ho_phap.innate.human",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.khoi_loi_ho_phap.innate.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.summon.khoi_loi_ho_phap.innate.human",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.khoi_loi_ho_phap.innate.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.summon.khoi_loi_ho_phap.innate.immortal.a",
+          "replaces": "",
+          "school": "summon"
+        },
+        {
+          "id": "tmb.skill.summon.khoi_loi_ho_phap.innate.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.summon.khoi_loi_ho_phap.innate.immortal.b",
+          "replaces": "",
+          "school": "summon"
+        }
+      ]
+    }
+  ],
+  "candidate_source_status": "AUTHENTIC_SUMMON_SOURCE_PENDING",
+  "target_counts": {
+    "skill_nodes": 183,
+    "families": 35,
+    "branches": 3,
+    "human": 35,
+    "immortal": 68,
+    "divine": 80
+  }
+}

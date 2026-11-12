@@ -37,9 +37,9 @@ func _run() -> void:
 	var manifest: Dictionary = sources.manifest
 	var registry: Dictionary = sources.registry
 	var entries: Dictionary = manifest.get("entries", {})
-	_expect(catalogues.has("talisman") and catalogues.has("palm") and catalogues.has("curse") and entries.size() == 1468, "all eight candidate schools join the retained source samples")
-	_expect(registry.get("school_count", 0) == 11 and registry.get("branch_count", 0) == 33 and registry.get("skill_family_count", 0) == 385, "merged registry has eleven schools, thirty-three branches and 385 families")
-	_expect(HSC.skill_definitions().size() == 2013 and HSC.branch_definitions().size() == 33, "Combat V2 indexes existing source plus seven gated candidates")
+	_expect(catalogues.has("talisman") and catalogues.has("palm") and catalogues.has("curse") and entries.size() == 1651, "all nine candidate schools join the retained source samples")
+	_expect(registry.get("school_count", 0) == 12 and registry.get("branch_count", 0) == 36 and registry.get("skill_family_count", 0) == 420, "merged registry has twelve schools, thirty-six branches and 420 families")
+	_expect(HSC.skill_definitions().size() == 2196 and HSC.branch_definitions().size() == 36, "Combat V2 indexes existing source plus nine gated candidate schools")
 	_expect(not bool(catalogue.get("enabled", true)) and str(catalogue.get("release_gate", "")) == "OFF", "Phù release gate remains OFF")
 	_expect(not Gates.is_enabled("talisman_skill_combat") and str(Talisman.can_learn(Talisman.skill_definition("tmb.skill.talisman.loi_phu.active_01.human")).get("reason", "")) == "skill_source_pending", "default runtime is closed and learning waits for a canonical manual")
 
@@ -115,7 +115,7 @@ func _run() -> void:
 		var ledger: Dictionary = Presentation.validate_all36_ledger(csv.get_as_text(), catalogues, registry)
 		_expect(bool(ledger.get("ok", false)), "2,196-slot ledger joins source/candidate/unwritten records: " + str(ledger.get("errors", [])))
 		var metrics: Dictionary = ledger.get("metrics", {})
-		_expect(int(metrics.get("existing", 0)) == 549 and int(metrics.get("candidate_gated", 0)) == 1464 and int(metrics.get("not_authored", 0)) == 183 and int(metrics.get("runtime_catalogue_ids", 0)) == 2013, "ledger keeps 549 existing, 1,464 gated and 183 un-authored slots distinct")
+		_expect(int(metrics.get("existing", 0)) == 549 and int(metrics.get("candidate_gated", 0)) == 1647 and int(metrics.get("not_authored", 0)) == 0 and int(metrics.get("runtime_catalogue_ids", 0)) == 2196, "ledger keeps 549 existing, 1,647 gated and zero un-authored slots distinct")
 
 	var locked_ranged := _actor("talisman_locked_ranged", "disciple", Vector2(2, 2))
 	locked_ranged["role"] = "ranged"

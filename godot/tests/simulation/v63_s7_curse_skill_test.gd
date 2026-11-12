@@ -37,12 +37,12 @@ func _run() -> void:
     var registry: Dictionary = sources.registry
     var manifest: Dictionary = sources.manifest
     var entries: Dictionary = manifest.get("entries", {})
-    _expect(catalogues.has("curse") and catalogues.has("talisman") and entries.size() == 1468,
+    _expect(catalogues.has("curse") and catalogues.has("talisman") and entries.size() == 1651,
         "Curse joins seven gated schools and the retained source samples")
-    _expect(registry.get("school_count", 0) == 11 and registry.get("branch_count", 0) == 33
-        and registry.get("skill_family_count", 0) == 385,
-        "merged registry has eleven schools, thirty-three paths and 350 families")
-    _expect(HSC.skill_definitions().size() == 2013 and HSC.branch_definitions().size() == 33,
+    _expect(registry.get("school_count", 0) == 12 and registry.get("branch_count", 0) == 36
+        and registry.get("skill_family_count", 0) == 420,
+        "merged registry has twelve schools, thirty-six paths and 420 families")
+    _expect(HSC.skill_definitions().size() == 2196 and HSC.branch_definitions().size() == 36,
         "shared Combat V2 indexes existing and gated nodes with all branches")
     _expect(not bool(catalogue.get("enabled", true)) and str(catalogue.get("release_gate", "")) == "OFF",
         "Chú and V6.3 production stay disabled")
@@ -177,8 +177,8 @@ func _run() -> void:
         var ledger := Presentation.validate_all36_ledger(matrix.get_as_text(), catalogues, registry)
         _expect(bool(ledger.get("ok", false)), "2,196 ledger rows join runtime candidates and remaining slots: " + str(ledger.get("errors", [])))
         var metrics: Dictionary = ledger.get("metrics", {})
-        _expect(int(metrics.get("existing", 0)) == 549 and int(metrics.get("candidate_gated", 0)) == 1464
-            and int(metrics.get("not_authored", 0)) == 183 and int(metrics.get("runtime_catalogue_ids", 0)) == 2013,
+        _expect(int(metrics.get("existing", 0)) == 549 and int(metrics.get("candidate_gated", 0)) == 1647
+            and int(metrics.get("not_authored", 0)) == 0 and int(metrics.get("runtime_catalogue_ids", 0)) == 2196,
             "source / 7 candidate schools / not-authored totals remain distinct")
     var ranged := _actor("curse_range", "disciple", Vector2(2, 2))
     ranged["role"] = "ranged"

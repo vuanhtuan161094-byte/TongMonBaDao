@@ -29,20 +29,20 @@ func _run() -> void:
     var catalogue: Dictionary = loaded.data
     var skills: Array = catalogue.get("skills", [])
     var joined := Presentation.load_authoring_sources()
-    _expect(bool(joined.get("ok", false)), "S0–S8 source pins and presentation/registry joins: " + str(joined.get("errors", [])))
+    _expect(bool(joined.get("ok", false)), "S0–S9 source pins and presentation/registry joins: " + str(joined.get("errors", [])))
     if not bool(joined.get("ok", false)):
         _finish()
         return
     var catalogues: Dictionary = joined.catalogues
     var registry: Dictionary = joined.registry
     var manifest: Dictionary = joined.manifest
-    _expect(catalogues.has("formation") and manifest.get("entries", {}).size() == 1468,
-        "Trận adds 183 presentations to the eight-school candidate ledger")
-    _expect(int(registry.get("school_count", 0)) == 11 and int(registry.get("branch_count", 0)) == 33
-        and int(registry.get("skill_family_count", 0)) == 385,
-        "additive registry reaches eleven indexed schools, thirty-three paths and 385 families")
-    _expect(HSC.skill_definitions().size() == 2013 and HSC.branch_definitions().size() == 33,
-        "shared Combat V2 definitions include Trận while its gate remains closed")
+    _expect(catalogues.has("formation") and manifest.get("entries", {}).size() == 1651,
+        "Trận source joins after the nine-school 1,647-node candidate ledger")
+    _expect(int(registry.get("school_count", 0)) == 12 and int(registry.get("branch_count", 0)) == 36
+        and int(registry.get("skill_family_count", 0)) == 420,
+        "additive registry reaches twelve indexed schools, thirty-six paths and 420 families")
+    _expect(HSC.skill_definitions().size() == 2196 and HSC.branch_definitions().size() == 36,
+        "shared Combat V2 definitions include all twelve schools while every candidate gate remains closed")
     _expect(not Gates.is_enabled("formation_skill_combat") and not bool(catalogue.get("enabled", true))
         and str(catalogue.get("release_gate", "")) == "OFF",
         "Trận and V6.3 remain OFF by default")

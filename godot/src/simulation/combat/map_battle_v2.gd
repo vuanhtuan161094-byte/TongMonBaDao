@@ -12,6 +12,7 @@ const ARENA := Rect2(Vector2.ZERO,Vector2(36.0,20.0))
 const MAX_DISCIPLES := 30
 const P0_LOCAL_HUNT_RADIUS := 18.0
 const MAX_MONSTERS := 40
+const MAX_SUMMON_ACTORS := 6
 const MAX_TARGETS_AOE := 3
 # Backpressure rather than dropping durable HP0 records when PH1 has not ACKed.
 const MAX_PENDING_KILLS := 256
@@ -600,7 +601,7 @@ func step(viewed_map: bool = false) -> Dictionary:
     for id_value in actor_ids:
         var id := str(id_value)
         var actor: Dictionary = actors[id]
-        if float(actor["hp"]) <= 0.0:
+        if float(actor["hp"]) <= 0.0 or bool(actor.get("is_v63_summon",false)):
             continue
         if _count_alive("disciple") == 0 or (_count_alive("monster") == 0 and not continuous_mode):
             break
@@ -1187,7 +1188,7 @@ func _deal_direct(attacker: Dictionary, target: Dictionary, ratio: float, kind: 
         if continuous_mode:
             downed_row["death_id"] = "%s:%s" % [encounter_id,str(target["id"])]
         _event("downed",downed_row)
-        if str(target["side"]) == "disciple":
+        if str(target["side"]) == "disciple" and not bool(target.get("is_v63_summon",false)):
             downed_disciples += 1
     # Only one nonrecursive bonus hit from a true ordinary basic attack.
     # It cannot lifesteal, crit by default, or proc any further followup.
@@ -1445,6 +1446,8 @@ func _count_alive(side: String) -> int:
     var count := 0
     for actor in actors.values():
         if str(actor["side"]) == side and float(actor["hp"]) > 0.0:
+            if side == "disciple" and bool(actor.get("is_v63_summon",false)):
+                continue
             count += 1
     return count
 
