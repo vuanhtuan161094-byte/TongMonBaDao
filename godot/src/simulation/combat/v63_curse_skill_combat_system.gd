@@ -142,7 +142,7 @@ static func validate_catalogue(data: Dictionary) -> Array[String]:
 			branch_counts[branch] = int(branch_counts[branch]) + 1
 	if ids.size() != EXPECTED_SKILLS or families.size() != EXPECTED_FAMILIES:
 		errors.append("curse_unique_counts_invalid")
-	if tier_counts != {"human":35, "immortal":68, "divine":80} or branch_counts != {"loi_phu":59, "hoa_phu":59, "phong_an_phu":59}:
+	if tier_counts != {"human":35, "immortal":68, "divine":80} or branch_counts != {"tran_hon_chu":59, "phe_linh_chu":59, "ho_menh_chu":59}:
 		errors.append("curse_node_distribution_invalid:" + str(tier_counts) + ":" + str(branch_counts))
 	for family_id in family_counts.keys():
 		if int(family_counts[family_id]) not in [3, 5, 7]:
