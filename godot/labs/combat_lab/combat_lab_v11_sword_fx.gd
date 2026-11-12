@@ -127,9 +127,16 @@ static func _aoe_seal(canvas: CanvasItem, center: Vector2,
     var ground := center
     var outer_rx := 81.0 * z
     var outer_ry := 49.0 * z
-    _arc(canvas, ground, outer_rx, outer_ry, SKY, strength * 0.58)
-    _arc(canvas, ground, outer_rx * 0.70, outer_ry * 0.70,
-        GOLD, strength * 0.43, -0.13)
+    _arc(canvas, ground, outer_rx, outer_ry, SKY, strength * 0.87)
+    _arc(canvas, ground, outer_rx * 0.71, outer_ry * 0.71,
+        GOLD, strength * 0.65, -0.13)
+    # Eight inward arcane spokes distinguish the AOE warning circle
+    # from an ordinary selection ring.
+    for spoke in range(8):
+        var ang := TAU_S * float(spoke) / 8.0
+        var ray := Vector2(cos(ang) * outer_rx, sin(ang) * outer_ry)
+        canvas.draw_line(ground + ray * 0.74, ground + ray * 0.90,
+            _ink(GOLD, strength * 0.40), maxf(0.7, z), true)
     # Twelve subtle talismans on the ground circle.
     for j in range(12):
         var ang := TAU_S * float(j) / 12.0
@@ -144,26 +151,38 @@ static func _aoe_seal(canvas: CanvasItem, center: Vector2,
             sin(ang) * outer_ry * 0.49)
         _glint(canvas, tip, z * 0.8, SKY, strength * 0.58)
 
+# Four short-lived impact bursts, one per actual demo target: hard
+# central white hit, golden cutting-star, expanding cyan shock ring,
+# then transparent ember slivers. No random spawning or fake gameplay hit.
 static func _impact(canvas: CanvasItem, at: Vector2, z: float,
         time_after: float, group_id: int) -> void:
     var age := clampf(time_after, 0.0, 1.0)
-    if age >= 1.0:
+    if age >= 0.997:
         return
-    var alpha := 1.0 - age
-    var flash := pow(alpha, 2.4)
-    canvas.draw_circle(at, (7.0 + age * 12.0) * z,
-        _ink(SKY, flash * 0.12))
-    canvas.draw_circle(at, (2.0 + age * 3.0) * z,
-        _ink(ICE, flash * 0.73))
-    var ground := at + Vector2(0.0, 23.0 * z)
-    _arc(canvas, ground, (6.0 + 22.0 * age) * z,
-        (3.0 + 10.0 * age) * z, SKY, alpha * 0.72)
-    # Four fading motes, fixed number and deterministic directions.
+    var alpha := 1.0 - _smooth(age)
+    var flash := pow(1.0 - age, 4.0)
+    var ground := at + Vector2(0.0, 19.0 * z)
+    canvas.draw_circle(at, (7.0 + age * 11.0) * z,
+        _ink(SKY, flash * 0.23))
+    canvas.draw_circle(at, (3.2 + age * 2.4) * z,
+        _ink(ICE, flash * 0.96))
+    _arc(canvas, ground, (8.0 + 40.0 * age) * z,
+        (3.0 + 19.0 * age) * z, SKY, alpha * 0.84)
+    # A flash-cross with unequal arms resembles a slice-through, not fireworks.
     for j in range(4):
-        var theta := float(group_id * 2 + j) * TAU_S / 9.0
-        var drift := Vector2(cos(theta), sin(theta)) * (9.0 + 22.0 * age) * z
-        _glint(canvas, at + drift, z * (0.55 + 0.35 * alpha),
-            GOLD if j % 2 == 0 else SKY, alpha * 0.63)
+        var angle := TAU_S * float(j) / 4.0 + 0.17 * float(group_id)
+        var f: Vector2 = Vector2.from_angle(angle)
+        var p: Vector2 = at + f * (4.0 + 9.0 * age) * z
+        var q: Vector2 = at + f * (17.0 + 30.0 * age) * z
+        canvas.draw_line(p, q,
+            _ink(GOLD if j % 2 == 0 else ICE, alpha * 0.80),
+            maxf(0.8, (2.4 - 1.5 * age) * z), true)
+    # Elliptical steel fragments and restrained afterglow at the hit.
+    for j in range(5):
+        var theta := TAU_S * (float(group_id) * 0.13 + float(j) / 5.0)
+        var drift: Vector2 = Vector2.from_angle(theta) * (5.0 + 28.0 * age) * z
+        _glint(canvas, at + drift, z * (0.70 - 0.37 * age),
+            GOLD if j % 2 == 0 else SKY, alpha * 0.52)
 
 # V11 visual dramaturgy: charge 0.00..0.40, lock circle 0.22..0.42,
 # launch 0.42..0.86, impacts, sword-form dissolve 0.80..1.00.
@@ -183,6 +202,18 @@ static func render(canvas: CanvasItem, from: Vector2, to: Vector2,
             GOLD, 0.09 + charge * 0.30)
         _glint(canvas, from + Vector2(0.0, -9.0 * z), z * 1.8,
             SKY, charge * 0.55)
+    # Target runes ignite just before the first sword hits.
+    # All four target centers are derived from the DEMO composition only;
+    # this does not replace the actual arena's canonical targeting.
+    if t >= 0.59 and t < 0.94:
+        var prelight := _smooth((t - 0.59) / 0.12) * (1.0 - _smooth((t - 0.81) / 0.13))
+        for g in range(4):
+            var aim_center := to + Vector2(
+                (float(g % 2) - 0.5) * 106.0,
+                (float(floori(float(g) / 2.0)) - 0.5) * 94.0)
+            _arc(canvas, aim_center + Vector2(0.0, 16.0 * z),
+                23.0 * z, 10.0 * z, GOLD, prelight * 0.48)
+            _glint(canvas, aim_center, z * 1.8, SKY, prelight * 0.60)
     # More varied but legible 4-sided formation: four ceremonial blades
     # lead, smaller blades form the secondary energy ranks behind each.
     for i in range(sword_count):
