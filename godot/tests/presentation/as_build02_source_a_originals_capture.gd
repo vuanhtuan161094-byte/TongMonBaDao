@@ -64,13 +64,15 @@ func _run() -> void:
         trim.position = origin+Vector2(3,3)
         trim.size = Vector2(390,265)
         sheet.add_child(trim)
-        var pic := TextureRect.new()
+        # Sprite2D scaling uses raw imported texture pixels and cannot expand
+        # to texture intrinsic minimum size as a TextureRect can under Control.
+        var pic := Sprite2D.new()
         pic.name = "Verified_" + id
         pic.texture = image
-        pic.position = origin+Vector2(65,43)
-        pic.size = real_size*1.03
-        pic.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-        pic.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+        pic.centered = true
+        pic.position = origin + Vector2(195,140)
+        var natural := image.get_size()
+        pic.scale = Vector2(real_size.x/natural.x,real_size.y/natural.y)
         sheet.add_child(pic)
         _label(sheet,id.to_upper()+" · "+str(row["model_id"]),origin+Vector2(13,9),
             Color(0.98,0.82,0.5),15)
