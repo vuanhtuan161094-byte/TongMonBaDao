@@ -646,8 +646,20 @@ static func _validate_presentation_entry(skill_id: String, entry: Dictionary, ca
 			errors.append("presentation_lineage_source_mismatch:"+skill_id)
 		if str(identity.get("parent_skill_id","")) != str(registry_node.get("parent","")):
 			errors.append("presentation_parent_source_mismatch:"+skill_id)
-	if str(identity.get("lineage","")) == "base" and str(identity.get("variant","")) != "BASE":
-		errors.append("presentation_base_variant_mismatch:"+skill_id)
+	var source_variant := str(skill.get("variant_type", ""))
+	var expected_variant := ""
+	if source_variant == "base":
+		expected_variant = "BASE"
+	elif source_variant == "successor":
+		expected_variant = "SUCCESSOR"
+	elif source_variant in ["rare_replacement", "rare_ultimate_replacement", "rare_elective_passive_replacement"]:
+		expected_variant = "RARE"
+	elif source_variant.is_empty() and str(identity.get("lineage", "")) == "base" and str(identity.get("variant", "")) != "BASE":
+		errors.append("presentation_base_variant_mismatch:" + skill_id)
+	elif not source_variant.is_empty():
+		errors.append("presentation_variant_type_unsupported:" + skill_id + ":" + source_variant)
+	if not expected_variant.is_empty() and str(identity.get("variant", "")) != expected_variant:
+		errors.append("presentation_variant_source_mismatch:" + skill_id)
 	var evolution_delta: Variant = entry.get("evolution_delta",{})
 	if not (evolution_delta is Dictionary) or str(identity.get("replaces_skill_id","")) != str(evolution_delta.get("replaces_skill_id","")):
 		errors.append("presentation_replaces_source_mismatch:"+skill_id)
@@ -702,9 +714,13 @@ static func _validate_presentation_entry(skill_id: String, entry: Dictionary, ca
 	if str(entry.get("short_description_vi","")).length() > 110:
 		errors.append("presentation_short_text_exceeds_compact_line:"+skill_id)
 	var qa_status: Variant = entry.get("qa_status",{})
-	if not (qa_status is Dictionary) or str(qa_status.get("authoring","")) != "AUTHORING_COMPLETE" or str(qa_status.get("vfx_metadata","")) != "VFX_META_COMPLETE":
+	var is_curse_candidate := str(skill.get("school", "")) == "curse"
+	var expected_vfx_metadata := "TEXT_ONLY_SPEC_READY" if is_curse_candidate else "VFX_META_COMPLETE"
+	var expected_runtime_status := "CANDIDATE_GATED_RUNTIME" if is_curse_candidate else "RUNTIME_CATALOG_PRESENT"
+	var expected_behavior_status := "PARTIAL_BRANCH_EXERCISE_PENDING_PER_ID" if is_curse_candidate else "NOT_AUDITED_PER_SKILL"
+	if not (qa_status is Dictionary) or str(qa_status.get("authoring","")) != "AUTHORING_COMPLETE" or str(qa_status.get("vfx_metadata","")) != expected_vfx_metadata:
 		errors.append("presentation_authoring_status_incomplete:"+skill_id)
-	if str(qa_status.get("runtime","")) != "RUNTIME_CATALOG_PRESENT" or str(qa_status.get("behavior","")) != "NOT_AUDITED_PER_SKILL":
+	if not (qa_status is Dictionary) or str(qa_status.get("runtime","")) != expected_runtime_status or str(qa_status.get("behavior","")) != expected_behavior_status:
 		errors.append("presentation_runtime_or_behavior_status_misleading:"+skill_id)
 	if str(qa_status.get("asset","")) != "NOT_PRESENT" or str(qa_status.get("render","")) != "NOT_CAPTURED" or str(qa_status.get("gui","")) != "PENDING":
 		errors.append("presentation_visual_status_misleading:"+skill_id)
@@ -720,7 +736,8 @@ static func _validate_presentation_entry(skill_id: String, entry: Dictionary, ca
 		if str(element_rule.get("differential_bonus","")) != "NO_PRESENTATION_BONUS":
 			errors.append("presentation_must_not_add_root_bonus:"+skill_id)
 	var ai: Variant = entry.get("ai_policy",{})
-	if not (ai is Dictionary) or str(ai.get("status","")) != "INHERITED_RUNTIME_POLICY_NOT_PER_SKILL_TUNED":
+	var expected_ai_status := "CANDIDATE_RUNTIME_POLICY; SOURCE/BALANCE PENDING" if is_curse_candidate else "INHERITED_RUNTIME_POLICY_NOT_PER_SKILL_TUNED"
+	if not (ai is Dictionary) or str(ai.get("status","")) != expected_ai_status:
 		errors.append("presentation_ai_policy_not_truthful:"+skill_id)
 	var availability: Variant = entry.get("availability",{})
 	if not (availability is Dictionary) or str(availability.get("source_codex_id","")) != str(skill.get("source_codex_id","")):
