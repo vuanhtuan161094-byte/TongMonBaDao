@@ -4,6 +4,7 @@ const FXS = preload("res://labs/combat_lab/combat_lab_v9_energy_fx.gd")
 const STAGE = preload("res://labs/combat_lab/combat_lab_v9_light_showcase.tscn")
 const ARENA = preload("res://labs/combat_lab/combat_lab_arena.gd")
 const SWORD_V10 = preload("res://labs/combat_lab/combat_lab_v10_sword_fx.gd")
+const SWORD_V11 = preload("res://labs/combat_lab/combat_lab_v11_sword_fx.gd")
 var failures := 0
 
 func _initialize() -> void:
@@ -28,6 +29,14 @@ func _check() -> void:
             methods.append(str(method.get("name", "")))
         ensure(methods.has("render") and methods.has("_sword") and methods.has("_aoe_seal"),
             "V10 includes pointed blade, AOE telegraph, gradual fade renderer")
+    var sword11: Script = load("res://labs/combat_lab/combat_lab_v11_sword_fx.gd") as Script
+    ensure(sword11 != null, "V11 sword code art loads")
+    if sword11 != null:
+        var methods11: Array[String] = []
+        for method in sword11.get_script_method_list():
+            methods11.append(str(method.get("name", "")))
+        ensure(methods11.has("render") and methods11.has("_sword"),
+            "V11 normal-alpha forged steel renderer and 12-blade choreography")
     var fx := FXS.new()
     fx.custom_minimum_size = Vector2(1280, 720)
     root.add_child(fx)
@@ -35,8 +44,10 @@ func _check() -> void:
     ensure(fx.demo_school == "serpent", "default organic light serpent")
     fx.set_mode("sword")
     ensure(fx.demo_school == "sword", "sword energy light mode")
+    ensure(fx.material == null, "V11 metal body uses normal alpha, not additive shader")
     fx.set_mode("serpent")
     ensure(fx.demo_school == "serpent", "serpent light mode")
+    ensure(fx.material is ShaderMaterial, "switching back to serpent restores additive shader")
     fx.set_live_mode()
     ensure(not fx.demo_mode, "live mode reads committed cues and does not animate fake damage")
     fx.queue_free()
