@@ -80,6 +80,9 @@ func _check() -> void:
     ensure(SWORD_V13.preview_circle_targets(
         demo_mobs, Vector2(5000,5000), Vector2(130,120), 3).is_empty(),
         "V13 cannot invent targets for an empty AoE")
+    ensure(SWORD_V13.preview_circle_targets(
+        demo_mobs, demo_mobs[0], Vector2(130,120), 0).is_empty(),
+        "V13 zero target limit never returns even a preview victim")
     ensure(SWORD_V13.visibility_after_contact(0.66,0.60) > 0.0 and
         SWORD_V13.visibility_after_contact(0.85,0.60) <= 0.001,
         "V13 sword remains after impact then dissolves to zero")
@@ -108,7 +111,14 @@ func _check() -> void:
             "V11 glow layers instantiate behind normal-blend forged swords")
         ensure(int(stage.get("preview_hit_count")) == 3,
             "V13 scene preview initially binds three of four monsters")
-        stage.call("_set_preview_primary", 3)
+        stage.call("_set_preview_primary", 0)
+        var mouse13 := InputEventMouseButton.new()
+        mouse13.button_index = MOUSE_BUTTON_LEFT
+        mouse13.pressed = true
+        mouse13.position = Vector2(966, 402)
+        stage.call("_input", mouse13)
+        ensure(int(stage.get("preview_primary_index")) == 3,
+            "V13 synthetic mouse click on monster 4 changes locked AoE center")
         ensure(int(stage.get("preview_primary_index")) == 3 and
             int(stage.get("preview_hit_count")) == 3,
             "V13 clicking a different monster relocks primary and hit targets")
