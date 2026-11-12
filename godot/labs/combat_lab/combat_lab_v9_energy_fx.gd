@@ -282,7 +282,17 @@ static func sword_light(canvas: CanvasItem, from: Vector2, to: Vector2,
         var a := TAU9 * float(i) / float(count)
         var orbit := Vector2(cos(a), sin(a) * 0.48)
         var source := from + orbit * (64.0 + 15.0 * sin(t * 5.0 + a)) * z
-        var arrival := to + Vector2(cos(a), sin(a) * 0.58) * 45.0 * z
+        # Four visible attack lanes (3 swords per target in full preview).
+        # Every blade maintains its straight axis toward its own destination,
+        # preventing twelve swords from becoming a single neon smear.
+        var slot := i % 4
+        var column := float(slot % 2)
+        var row_index := float(floori(float(slot) / 2.0))
+        var within_group := float(floori(float(i) / 4.0)) - 1.0
+        var mob_center := to + Vector2(
+            (column - 0.5) * 112.0, (row_index - 0.5) * 102.0)
+        var arrival := mob_center + Vector2(
+            within_group * 10.0, within_group * 11.0) * z
         var flight := clampf((t - 0.40 - float(i % 3) * 0.012) / 0.39, 0.0, 1.0)
         var pos := source.lerp(arrival, _ease(flight))
         var direction := (arrival - source).normalized()
@@ -299,8 +309,16 @@ static func sword_light(canvas: CanvasItem, from: Vector2, to: Vector2,
     if t > 0.69:
         var impact := clampf((t - 0.69) / 0.31, 0.0, 1.0)
         var alpha := (1.0 - impact)
+        for target_slot in range(4 if lod >= 2 else 2):
+            var column := float(target_slot % 2)
+            var row_index := float(floori(float(target_slot) / 2.0))
+            var center := to + Vector2(
+                (column - 0.5) * 112.0,
+                (row_index - 0.5) * 102.0)
+            _flare(canvas, center, (4.0 + impact * 8.0) * z,
+                CYAN, alpha * 0.61)
         _flare(canvas, to, (13.0 + impact * 23.0) * z,
-            CYAN, alpha * 0.84)
+            CYAN, alpha * 0.50)
         _ellipse(canvas, to + Vector2(0, 18 * z),
             (18 + impact * 115) * z, (9 + impact * 49) * z,
             CYAN, alpha * 0.65, impact * 0.35)
