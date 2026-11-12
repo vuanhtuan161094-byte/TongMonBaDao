@@ -126,7 +126,7 @@ static func serpent_light(canvas: CanvasItem, from: Vector2, to: Vector2,
         for i in range(9):
             var u := float(i) / 8.0
             var distance_back := (1.0 - u) * 35.0 * z
-            var bend := sin(u * PI) * sign * 10.0 * z
+            var bend: float = sin(u * PI) * float(sign) * 10.0 * z
             jaw.append(head - dir * distance_back + normal * bend)
         _ribbon(canvas, jaw, JADE if sign > 0 else VIOLET, 1.8 * z, 0.72)
     # Scales are travelling specular sparks, not texture details.
