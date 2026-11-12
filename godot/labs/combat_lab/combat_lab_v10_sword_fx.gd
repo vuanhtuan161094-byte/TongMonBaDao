@@ -112,9 +112,9 @@ static func _aoe_seal(canvas: CanvasItem, center: Vector2,
     var strength := grow * decay
     if strength < 0.005:
         return
-    var ground := center + Vector2(0.0, 28.0 * z)
+    var ground := center
     var outer_rx := 81.0 * z
-    var outer_ry := 37.0 * z
+    var outer_ry := 49.0 * z
     _arc(canvas, ground, outer_rx, outer_ry, SKY, strength * 0.58)
     _arc(canvas, ground, outer_rx * 0.70, outer_ry * 0.70,
         GOLD, strength * 0.43, -0.13)
@@ -174,8 +174,11 @@ static func render(canvas: CanvasItem, from: Vector2, to: Vector2,
         var col := float(group % 2)
         var row_index := float(floori(float(group) / 2.0))
         var slot := float(floori(float(i) / 4.0)) - 1.0
+        # Three different landing positions surround each monster;
+        # no three swords stack exactly on one bright white pixel.
+        var spread := Vector2(slot * 17.0, (slot * slot - 0.5) * 14.0) * z
         var aim := to + Vector2((col - 0.5) * 106.0,
-            (row_index - 0.5) * 94.0) + Vector2(slot * 7.0, slot * 8.0) * z
+            (row_index - 0.5) * 94.0) + spread
         var forward: Vector2 = (aim - start).normalized()
         var launch := 0.37 + float(i % 3) * 0.045
         var reach := 0.73 + float(i % 3) * 0.045
