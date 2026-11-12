@@ -275,7 +275,7 @@ static func render(canvas: CanvasItem, cue: Dictionary, target: Vector2, source:
     if d.length_squared() < 0.01: d = Vector2.RIGHT
     # V8 snake is opt-in and strictly real-cue driven. Other schools, V4
     # effects, non-poison skills, AoE footprint and production stay untouched.
-    if OS.get_environment("TMB_POISON_V8_PREVIEW") == "1" and motif == "serpent_bind":
+    if (bool(cue.get("v8_preview", false)) or OS.get_environment("TMB_POISON_V8_PREVIEW") == "1") and motif == "serpent_bind":
         if kind == "projectile":
             V8Fx.cobra(canvas, caster_hand, p, k, z)
             return
