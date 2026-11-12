@@ -83,6 +83,7 @@ func set_v8_preview_enabled(value: bool) -> void:
     v8_preview_enabled = value
     if value:
         v4_preview_enabled = true
+        v9_preview_enabled = false
     queue_redraw()
 
 func set_v9_preview_enabled(value: bool) -> void:
