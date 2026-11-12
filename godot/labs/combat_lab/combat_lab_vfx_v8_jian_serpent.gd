@@ -40,7 +40,7 @@ static func cobra(c: CanvasItem, origin: Vector2, destination: Vector2,
     var side := axis.orthogonal()
     # Reveal from the hand, then stretch along actual skill trajectory.
     var head := origin.lerp(destination, k)
-    var tail_t := maxf(0.0, k - minf(0.34, 90.0 / length))
+    var tail_t := maxf(0.0, k - minf(0.74, 310.0 / length))
     var tail := origin.lerp(destination, tail_t)
     var body_length := head.distance_to(tail)
     if body_length < 3.0:
@@ -56,7 +56,7 @@ static func cobra(c: CanvasItem, origin: Vector2, destination: Vector2,
         points.append(base + side * wave)
     for i in range(segments):
         var u := (float(i) + 0.5) / float(segments)
-        var width := (2.3 + 7.2 * pow(sin(u * PI), 1.15)) * z
+        var width := (4.2 + 11.2 * pow(sin(u * PI), 1.15)) * z
         var p0: Vector2 = points[i]
         var p1: Vector2 = points[i + 1]
         c.draw_line(p0, p1, fade(VENOM_EDGE, a * 0.55), width * 2.7, true)
@@ -71,27 +71,27 @@ static func cobra(c: CanvasItem, origin: Vector2, destination: Vector2,
     # Cobra hood at front remains visibly wider than the neck.
     var h := points[segments]
     var neck := points[segments - 2]
-    var jaw := h + axis * 12.0 * z
+    var jaw := h + axis * 18.0 * z
     _poly(c, [
-        neck - side * 5.0 * z, h - side * 11.0 * z,
-        jaw - side * 6.5 * z, jaw + axis * 6.5 * z,
-        jaw + side * 6.5 * z, h + side * 11.0 * z,
-        neck + side * 5.0 * z
+        neck - side * 9.0 * z, h - side * 16.0 * z,
+        jaw - side * 9.0 * z, jaw + axis * 10.0 * z,
+        jaw + side * 9.0 * z, h + side * 16.0 * z,
+        neck + side * 9.0 * z
     ], VOID, a * 0.98)
     _poly(c, [
-        neck - side * 4.2 * z, h - side * 8.0 * z,
-        jaw - side * 4.1 * z, jaw + axis * 3.0 * z,
-        jaw + side * 4.1 * z, h + side * 8.0 * z,
-        neck + side * 4.2 * z
+        neck - side * 7.0 * z, h - side * 12.5 * z,
+        jaw - side * 7.2 * z, jaw + axis * 7.0 * z,
+        jaw + side * 7.2 * z, h + side * 12.5 * z,
+        neck + side * 7.0 * z
     ], VENOM_BODY, a * 0.96)
     c.draw_line(neck, jaw + axis * 2.0 * z, fade(JADE, a * 0.78), 2.2 * z, true)
     for sign in [-1.0, 1.0]:
-        var eye: Vector2 = h + axis * 5.1 * z + side * sign * 4.7 * z
+        var eye: Vector2 = h + axis * 7.1 * z + side * sign * 7.0 * z
         _spark(c, eye, 1.8 * z, JADE, a)
-        var fang: Vector2 = jaw + side * sign * 3.4 * z
-        c.draw_line(fang, fang + axis * 4.6 * z + side * sign * 0.6 * z,
+        var fang: Vector2 = jaw + side * sign * 6.4 * z
+        c.draw_line(fang, fang + axis * 7.0 * z + side * sign * 0.9 * z,
             fade(SILVER, a * 0.95), maxf(1.0, 1.2 * z), true)
-    c.draw_line(jaw - side * 4.5 * z, jaw + side * 4.5 * z,
+    c.draw_line(jaw - side * 7.0 * z, jaw + side * 7.0 * z,
         fade(VOID, a), 2.0 * z, true)
     # A few deterministic glints, bounded even during 6x playback.
     for n in range(3):
@@ -123,18 +123,18 @@ static func jian(c: CanvasItem, center: Vector2,
     var a := clampf(opacity, 0.0, 1.0)
     var f := Vector2.from_angle(angle)
     var s := f.orthogonal()
-    var tip := center + f * 33.0 * z
-    var base := center - f * 11.0 * z
-    var guard := center - f * 12.0 * z
-    var pommel := center - f * 27.0 * z
-    _poly(c, [base - s * 5.0 * z, tip, base + s * 5.0 * z],
+    var tip := center + f * 49.0 * z
+    var base := center - f * 13.0 * z
+    var guard := center - f * 15.0 * z
+    var pommel := center - f * 35.0 * z
+    _poly(c, [base - s * 6.8 * z, tip, base + s * 6.8 * z],
         Color("1f455a"), a)
-    _poly(c, [base, tip, base - s * 3.2 * z], SILVER, a * 0.96)
-    _poly(c, [base, tip, base + s * 3.2 * z], CYAN, a * 0.82)
+    _poly(c, [base, tip, base - s * 4.0 * z], SILVER, a * 0.96)
+    _poly(c, [base, tip, base + s * 4.0 * z], CYAN, a * 0.82)
     c.draw_line(base, tip, fade(SILVER, a * 0.88), maxf(0.75, z), true)
-    c.draw_line(guard - s * 9.0 * z, guard + s * 9.0 * z,
+    c.draw_line(guard - s * 12.0 * z, guard + s * 12.0 * z,
         fade(VOID, a), 4.0 * z, true)
-    c.draw_line(guard - s * 8.0 * z, guard + s * 8.0 * z,
+    c.draw_line(guard - s * 10.0 * z, guard + s * 10.0 * z,
         fade(SILVER, a), 2.1 * z, true)
     c.draw_line(guard - f * 1.3 * z, pommel,
         fade(VOID, a), 4.8 * z, true)
@@ -154,8 +154,8 @@ static func sword_array(c: CanvasItem, caster: Vector2, target: Vector2,
             0.0, TAU8, 48, fade(CYAN, 0.25 + 0.40 * charge), 2.0 * z, true)
     for i in range(count):
         var a := TAU8 * float(i) / float(count)
-        var ring := caster + Vector2(cos(a), sin(a) * 0.48) * 58.0 * z
-        var dest := target + Vector2(cos(a), sin(a) * 0.50) * 47.0 * z
+        var ring := caster + Vector2(cos(a), sin(a) * 0.48) * 108.0 * z
+        var dest := target + Vector2(cos(a), sin(a) * 0.50) * 92.0 * z
         var position := ring
         var facing := a + PI * 0.5
         var opacity := 1.0
@@ -175,7 +175,7 @@ static func sword_array(c: CanvasItem, caster: Vector2, target: Vector2,
             position = dest
             facing = (dest - ring).angle()
             opacity = clampf((1.0 - t) / 0.21, 0.0, 1.0)
-        jian(c, position, facing, z * 0.78, opacity)
+        jian(c, position, facing, z * 0.88, opacity)
     if t >= 0.72:
         var p := clampf((t - 0.72) / 0.28, 0.0, 1.0)
         c.draw_arc(target, (18.0 + p * 57.0) * z, 0.0, TAU8,
