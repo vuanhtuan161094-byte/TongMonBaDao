@@ -196,7 +196,9 @@ static func render(canvas: CanvasItem, from: Vector2, to: Vector2,
             var tail := position - forward * 21.0 * z
             canvas.draw_line(tail, position - forward * 9.0 * z,
                 _ink(SKY, visible * 0.23), 2.4 * z, true)
-        if t > reach:
+        if t > reach and i < 4:
+            # One impact burst per preview target, not 12 overlapping
+            # particle bursts; the other eight swords still dissolve.
             var fade_age := clampf((t - reach) / 0.20, 0.0, 1.0)
             _impact(canvas, aim, z * 0.56, fade_age, group)
     # Final AOE wave and brief lingering halo, never an invented damage event.
