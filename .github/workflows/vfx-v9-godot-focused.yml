@@ -8,6 +8,7 @@ on:
     paths:
       - '.github/workflows/vfx-v9-godot-focused.yml'
       - 'godot/labs/combat_lab/combat_lab_v9_energy_fx.gd'
+      - 'godot/labs/combat_lab/combat_lab_v10_sword_fx.gd'
       - 'godot/labs/combat_lab/combat_lab_v9_energy_light.gdshader'
       - 'godot/labs/combat_lab/combat_lab_v9_light_showcase.gd'
       - 'godot/labs/combat_lab/combat_lab_v9_light_showcase.tscn'
@@ -60,6 +61,7 @@ jobs:
           bash tools/qa/run_godot_strict.sh --headless --path godot --import
           for file in \
             res://labs/combat_lab/combat_lab_v9_energy_fx.gd \
+            res://labs/combat_lab/combat_lab_v10_sword_fx.gd \
             res://labs/combat_lab/combat_lab_v9_light_showcase.gd \
             res://labs/combat_lab/combat_lab_poison_v4_layers.gd \
             res://labs/combat_lab/combat_lab_arena.gd \
