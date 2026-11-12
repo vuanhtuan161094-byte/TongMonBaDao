@@ -289,10 +289,22 @@ static func render(c: CanvasItem, caster: Vector2, locked_center: Vector2,
         var origin := caster + Vector2(
             38.0 + float(wave) * 41.0,
             (float(slot) - 1.0) * 73.0 - float(wave) * 7.0) * z
-        var axis := (hit - origin).normalized()
+        # Quadratic qi trajectory: three swords fan out then converge on
+        # the SAME authoritative preview hit points. Visual control points
+        # never modify hitbox, AoE, target count or time of settlement.
+        var straight := (hit - origin).normalized()
+        var sideways := straight.orthogonal()
+        var bend := (float(slot) - 1.0) * (35.0 + 10.0 * float(wave)) * z
+        var control: Vector2 = origin.lerp(hit, 0.48) + sideways * bend
         var elapsed := clampf((t - schedule.x) /
             (schedule.y - schedule.x), 0.0, 1.0)
-        var center := origin.lerp(hit, _ease(elapsed))
+        var progress_smooth := _ease(elapsed)
+        var remaining := 1.0 - progress_smooth
+        var center := origin * remaining * remaining + control * (2.0 * remaining * progress_smooth) + hit * (progress_smooth * progress_smooth)
+        var tangent := (control - origin) * (2.0 * remaining) + (hit - control) * (2.0 * progress_smooth)
+        var axis := tangent.normalized()
+        if axis.length_squared() < 0.01:
+            axis = straight
         var fading := clampf((t - schedule.y) / 0.155, 0.0, 1.0)
         center += axis * fading * 9.0 * z
         var size := (0.77 if wave == 0 else 0.61) * z
