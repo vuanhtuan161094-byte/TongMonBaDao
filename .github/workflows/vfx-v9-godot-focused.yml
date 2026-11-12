@@ -76,7 +76,7 @@ jobs:
             -s res://tests/labs/combat_lab/v9_energy_light_contract_test.gd
           bash tools/qa/run_godot_strict.sh --headless --path godot \
             -s res://tests/labs/combat_lab/poison_v4_render_contract_test.gd
-      - name: Render genuine 1280x720 Godot V9 previews
+      - name: Render genuine 1280x720 Godot V9.2 previews at 60 FPS
         shell: bash
         run: |
           set -euo pipefail
@@ -86,8 +86,8 @@ jobs:
             export TMB_VFX_V9_SHOWCASE="$school"
             xvfb-run -a -s "-screen 0 1280x720x24" \
               bash tools/qa/run_godot_strict.sh --path godot --resolution 1280x720 \
-                --fixed-fps 24 --write-movie "$RUNNER_TEMP/vfx_v9/$school.avi" \
-                --quit-after 65 res://labs/combat_lab/combat_lab_v9_light_showcase.tscn \
+                --fixed-fps 60 --write-movie "$RUNNER_TEMP/vfx_v9/$school.avi" \
+                --quit-after 165 res://labs/combat_lab/combat_lab_v9_light_showcase.tscn \
               2>&1 | tee "$RUNNER_TEMP/vfx_v9/$school.log"
             test -s "$RUNNER_TEMP/vfx_v9/$school.avi"
             ffmpeg -y -hide_banner -loglevel error -ss 1.20 \
@@ -97,6 +97,9 @@ jobs:
             ffmpeg -y -hide_banner -loglevel error \
               -i "$RUNNER_TEMP/vfx_v9/$school.avi" -c:v libx264 -preset fast \
               -pix_fmt yuv420p "$RUNNER_TEMP/vfx_v9/$school.mp4"
+            fps="$(ffprobe -v error -select_streams v:0 -show_entries stream=avg_frame_rate -of default=noprint_wrappers=1:nokey=1 "$RUNNER_TEMP/vfx_v9/$school.mp4")"
+            echo "$school fps=$fps" | tee -a "$RUNNER_TEMP/vfx_v9/metadata.txt"
+            test "$fps" = "60/1"
             rm "$RUNNER_TEMP/vfx_v9/$school.avi"
           done
           sha256sum "$RUNNER_TEMP/vfx_v9/"*.png "$RUNNER_TEMP/vfx_v9/"*.mp4 \
