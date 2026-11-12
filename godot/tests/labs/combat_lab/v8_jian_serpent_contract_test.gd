@@ -19,9 +19,12 @@ func _test() -> void:
     _check(not cobra_skill.is_empty(), "Co Doc actual V6.3 skill exists")
     _check(str(Brief.profile(cobra_id).get("motif", "")) == "serpent_bind",
         "V8 snake is bound to existing real event motif")
-    _check(Fx.has_method("cobra") and Fx.has_method("cobra_impact"),
+    var fx_method_names: Array[String] = []
+    for method in Fx.get_script_method_list():
+        fx_method_names.append(str(method.get("name", "")))
+    _check(fx_method_names.has("cobra") and fx_method_names.has("cobra_impact"),
         "separate snake flight and impact renderers exist")
-    _check(Fx.has_method("jian") and Fx.has_method("sword_array"),
+    _check(fx_method_names.has("jian") and fx_method_names.has("sword_array"),
         "distinct full sword and array renderer exist")
     var scene := Stage.instantiate()
     _check(scene is Control, "Godot V8 scene is an actual Control")
