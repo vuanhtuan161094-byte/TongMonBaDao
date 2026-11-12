@@ -86,9 +86,9 @@ static func cobra(c: CanvasItem, origin: Vector2, destination: Vector2,
     ], VENOM_BODY, a * 0.96)
     c.draw_line(neck, jaw + axis * 2.0 * z, fade(JADE, a * 0.78), 2.2 * z, true)
     for sign in [-1.0, 1.0]:
-        var eye := h + axis * 5.1 * z + side * sign * 4.7 * z
+        var eye: Vector2 = h + axis * 5.1 * z + side * sign * 4.7 * z
         _spark(c, eye, 1.8 * z, JADE, a)
-        var fang := jaw + side * sign * 3.4 * z
+        var fang: Vector2 = jaw + side * sign * 3.4 * z
         c.draw_line(fang, fang + axis * 4.6 * z + side * sign * 0.6 * z,
             fade(SILVER, a * 0.95), maxf(1.0, 1.2 * z), true)
     c.draw_line(jaw - side * 4.5 * z, jaw + side * 4.5 * z,
