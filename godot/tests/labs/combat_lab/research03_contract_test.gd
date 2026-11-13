@@ -4,6 +4,7 @@ const STUDY = preload("res://labs/combat_lab/research03/research03_arena.gd")
 const SCENE = preload("res://labs/combat_lab/research03/research03_arena.tscn")
 const LIGHT = preload("res://labs/combat_lab/research03/light_core_2d.gdshader")
 const HIT = preload("res://labs/combat_lab/research03/light_contact_2d.gdshader")
+const AURORA = preload("res://labs/combat_lab/research03/light_orbit_aurora.gdshader")
 var failures := 0
 
 func chk(b: bool, label: String) -> void:
@@ -15,7 +16,8 @@ func _initialize() -> void:
     call_deferred("_run")
 
 func _run() -> void:
-    chk(LIGHT is Shader and HIT is Shader, "two original light shaders load")
+    chk(LIGHT is Shader and HIT is Shader and AURORA is Shader,
+        "three original light shaders load")
     chk(STUDY.ORBIT_COUNT == 16, "bounded array of sixteen display streaks")
     chk(STUDY.start_point().distance_to(STUDY.stop_point()) > 350.0,
         "single qi crosses meaningful distance")
@@ -70,8 +72,8 @@ func _run() -> void:
         scene.elapsed = 1.1
         scene._update_visuals()
         chk(scene.contacts[0].visible == false and
-            not scene.orbit_actor.visible,
-            "single mode must never display orbit actor or early impact")
+            not scene.orbit_actor.visible and not scene.atmosphere.visible,
+            "single mode must never display orbit actor/haze or early impact")
         var prog: float = ((float(scene.elapsed) / STUDY.CYCLE_SECONDS) -
             STUDY.PROJECTILE_START) / (STUDY.CONTACT - STUDY.PROJECTILE_START)
         var head: Vector2 = STUDY.flight_head(prog)
@@ -90,8 +92,9 @@ func _run() -> void:
         scene._update_visuals()
         chk(scene.contacts[0].visible == false,
             "orbit mode does NOT generate hits or impact effects")
-        chk(scene.orbit_actor != null and scene.orbit_actor.visible,
-            "orbit caster must be drawn between back and front light layers")
+        chk(scene.orbit_actor != null and scene.orbit_actor.visible and
+            scene.atmosphere != null and scene.atmosphere.visible,
+            "orbit caster and atmospheric light sheet must be layered")
         var front_count := 0
         var back_count := 0
         for i in range(STUDY.ORBIT_COUNT):
@@ -107,6 +110,10 @@ func _run() -> void:
                     "back light should layer BEHIND actor " + str(i))
         chk(front_count >= 3 and back_count >= 3,
             "two distinct orbit depth groups must both exist")
+        chk(scene.atmosphere.z_index < scene.orbit_actor.z_index,
+            "aurora sheet stays behind real visible actor")
+        chk(scene.blades.size() == STUDY.ORBIT_COUNT,
+            "new wakelets never spawn extra decorated sword shaders")
         scene.queue_free()
     print("VFX18_LIGHTCORE_FOCUSED_RESULT=" +
         ("PASS" if failures == 0 else "FAIL") +

@@ -8,6 +8,7 @@ uniform float energy : hint_range(0.0, 1.0) = 1.0;
 uniform float phase : hint_range(0.0, 1.0) = 0.0;
 uniform float seed : hint_range(0.0, 6.2832) = 0.0;
 uniform float width_bias : hint_range(0.5, 1.5) = 1.0;
+uniform float curl : hint_range(0.0, 1.0) = 0.0;
 uniform vec4 sheath_tint : source_color = vec4(0.10, 0.57, 1.0, 1.0);
 uniform vec4 edge_tint : source_color = vec4(0.28, 0.96, 1.0, 1.0);
 
@@ -20,8 +21,9 @@ void fragment() {
     float swell = pow(max(0.0, sin(3.14159265 * taper_u)), 0.83);
     float blade_width = (0.011 + 0.057 * swell) *
         (1.0 - 0.83 * smoothstep(0.66, 0.96, x)) * width_bias;
-    float wag = 0.0065 * sin(11.2 * x - 5.8 * phase + seed) *
-        (1.0 - smoothstep(0.56, 0.92, x));
+    float wag = (0.0065 + curl * 0.034) *
+        sin(9.6 * x - 6.4 * phase + seed) *
+        (1.0 - smoothstep(0.55, 0.92, x));
     float axis = 0.5 + wag;
     float d = abs(p.y - axis);
 

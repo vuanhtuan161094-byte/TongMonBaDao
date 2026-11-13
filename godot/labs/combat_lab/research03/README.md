@@ -48,3 +48,12 @@ Source: owner-supplied 2.5D blue-white swirling qi image, current TMB V9 dynamic
 
 ### VFX18.1 R1 manual frame fix
 At 0.36s in the first real video (focused success 72537344), most charge filaments were still hidden within the rig; single-qi flight at t=1.55 and hit at 2.43 were inspected and retained. R1 moves three light filaments outward to the right of the hand and two left, strengthens narrow hot white convergence, and labels the LAB image as VFX18.1. Added charge-source geometry contract; exact Godot rerender required.
+
+## VFX18.2 R0 original light art iteration
+Art script was committed first: `docs/operations/VFX18_2_ART_STORYBOARD_20261113.md`. **Studio LAB only**, never enable or copy JX/Source A proprietary pixels.
+- Rewrote `light_contact_2d.gdshader` as a rapidly advancing white-hot diagonal incision with continuous Gaussian blue falloff, followed by a time-separated weaker counter-shear. Replaces tiny short mark; still centered on exact single approved mock contact (not monster center). Small six directional splinters, no circular screen bloom, no new gameplay event.
+- Reworked charging streams as five moving pulses along genuinely cubic energy paths, layered white core / cyan sheath / faint cobalt corona; energy converges at caster rather than drawing permanently bright straight strokes.
+- Added `light_orbit_aurora.gdshader`: a restrained original *angle-gated* irregular elliptical underglow with two animated phase lobes, no source sprite. Rendered on an in-memory 4×4 white carrier behind the actor; only in orbit study mode, never single.
+- Added `curl` to shader to give existing orbit qi blades delicate active tip deformation while preserving the original single-qi static-rigid attack axis; plus 8 low-contrast moving historical wakelets. Still precisely 16 original decorative streaks, both back and front modes.
+- Focused QA checks three original shaders, one mock contact, 16 capped main strands, aurora only in orbit and behind actor, existing exact shader tip/path subpixel contract.
+- **Art gate:** do not call this owner accepted before looking at real native Godot 1280×720 movie across all charge/flight/contact/fade/array phases and comparing to VFX18.1.

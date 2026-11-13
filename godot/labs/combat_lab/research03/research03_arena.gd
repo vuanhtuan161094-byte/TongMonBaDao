@@ -4,6 +4,7 @@ extends "res://labs/combat_lab/research01/research01_arena.gd"
 # This is strictly a MOCK/ART LAB, not a V6.3 skill or a combat event.
 const LIGHT_SHADER = preload("res://labs/combat_lab/research03/light_core_2d.gdshader")
 const HIT_SHADER = preload("res://labs/combat_lab/research03/light_contact_2d.gdshader")
+const ATMOSPHERE_SHADER = preload("res://labs/combat_lab/research03/light_orbit_aurora.gdshader")
 const ORBIT_RIG = preload("res://labs/combat_lab/research03/orbit_actor_overlay.gd")
 const NEW_COLOR := Color("59d8fa")
 const SKY := Color("d9faff")
@@ -21,6 +22,7 @@ var contacts: Array[Sprite2D] = []
 var intensity_cache: Array[float] = []
 var elapsed_local := 0.0
 var orbit_actor: Node2D
+var atmosphere: Sprite2D
 
 static func _clamp(v: float) -> float:
     return clampf(v, 0.0, 1.0)
@@ -92,7 +94,7 @@ static func orbit_streak(i: int, t: float) -> Dictionary:
 
 func _ready() -> void:
     super._ready()
-    title_label.text = "VFX18.1 | LIGHTCORE2D — KIEM KHI ANH SANG"
+    title_label.text = "VFX18.2 | LIGHTCORE2D — LUONG QUANG KIEM KHI"
     detail_label.text = "1: mot kiem khi  2: kiem tran xoay  SPACE: phat lai  P: tam dung  |  MOCK LAB / PVE HOLD"
     study_mode = 1 if OS.get_environment("TMB_VFX18_MODE") == "orbit" else 0
     # Render the mathematical UV shader on a tiny PROCEDURALLY GENERATED
@@ -127,6 +129,18 @@ func _ready() -> void:
     hit.z_index = 2
     add_child(hit)
     contacts.append(hit)
+    # Controlled non-opaque energy underglow in the *orbit* only.
+    atmosphere = Sprite2D.new()
+    atmosphere.texture = blank_texture
+    atmosphere.centered = true
+    atmosphere.position = FIELD_CENTER + Vector2(0.0, 17.0)
+    atmosphere.scale = Vector2(580.0 / 4.0, 390.0 / 4.0)
+    atmosphere.z_index = 1
+    var light_fog := ShaderMaterial.new()
+    light_fog.shader = ATMOSPHERE_SHADER
+    atmosphere.material = light_fog
+    atmosphere.visible = false
+    add_child(atmosphere)
     orbit_actor = ORBIT_RIG.new()
     orbit_actor.z_index = 2
     add_child(orbit_actor)
@@ -182,6 +196,8 @@ func _update_visuals() -> void:
         obj.visible = false
     if orbit_actor != null:
         orbit_actor.visible = study_mode == 1
+    if atmosphere != null:
+        atmosphere.visible = study_mode == 1
     if study_mode == 0:
         # One bullet/one approved mock target/one visual contact only.
         var charge := _smooth(t / 0.18)
@@ -194,13 +210,16 @@ func _update_visuals() -> void:
             var fade_out := 1.0 - _smooth((k - 0.91) / 0.09)
             _place_light(blades[0], head, axis, 245.0, 84.0,
                 charge * fade_in * fade_out, k)
+            (blades[0].material as ShaderMaterial).set_shader_parameter(
+                "curl", 0.0)
         if t >= CONTACT and t < CONTACT_END:
             var hit_age := _clamp((t - CONTACT) / (CONTACT_END - CONTACT))
             var hit := contacts[0]
             hit.visible = true
-            hit.scale = Vector2((132.0 + 20.0 * hit_age) / 4.0,
-                (108.0 + 8.0 * hit_age) / 4.0)
-            hit.position = stop_point()
+            hit.scale = Vector2((172.0 + 18.0 * hit_age) / 4.0,
+                (134.0 + 7.0 * hit_age) / 4.0)
+            # Separate, contained visual contact on the near-side silhouette.
+            hit.position = stop_point() + Vector2(12.0, 6.0)
             var m := hit.material as ShaderMaterial
             m.set_shader_parameter("age", hit_age)
             m.set_shader_parameter("power", 0.92)
@@ -208,6 +227,10 @@ func _update_visuals() -> void:
         # The owner reference is a real orbit: 2 projected depths, opposite
         # velocities, tangents and brightness are not uniform spokes.
         var wake := _smooth(t / 0.10) * (1.0 - _smooth((t - 0.83) / 0.15))
+        if atmosphere != null:
+            var haze: ShaderMaterial = atmosphere.material as ShaderMaterial
+            haze.set_shader_parameter("phase", t)
+            haze.set_shader_parameter("energy", wake)
         for i in range(ORBIT_COUNT):
             var info := orbit_streak(i, t)
             var panel := blades[i]
@@ -218,6 +241,7 @@ func _update_visuals() -> void:
             panel.z_index = 3 if bool(info["front"]) else 1
             var m := panel.material as ShaderMaterial
             m.set_shader_parameter("seed", float(i) * 0.47 + t * 1.4)
+            m.set_shader_parameter("curl", 0.67 if i % 2 == 0 else 0.88)
 
 func _draw() -> void:
     var t := fposmod(elapsed, CYCLE_SECONDS) / CYCLE_SECONDS
@@ -327,52 +351,83 @@ func _single_charge(t: float) -> void:
     if k < 0.003:
         return
     var focus := start_point()
+    # Five moving "light rivers" converge. SEGMENT energy changes as
+    # a pulse travels towards the source tip, so they don't look like
+    # static white electricity lines stamped on the caster.
     for j in range(5):
-        var strand := float(j)
-        var source := charge_source(j, t)
-        var bend := Vector2(
-            3.0 * cos(t * 18.0 + strand),
-            13.0 * sin(t * 13.0 + strand * 1.2))
-        var points := PackedVector2Array()
-        for n in range(9):
-            var u := float(n) / 8.0
-            var pos := source.lerp(focus, u)
-            pos += bend * sin(PI * u) * (1.0 - u)
-            points.append(pos)
-        var strength := k * (0.72 + 0.12 *
-            sin(strand * 2.0 + t * 22.0))
-        draw_polyline(points, Color(0.09, 0.34, 0.95,
-            strength * 0.13), 14.0, true)
-        draw_polyline(points, Color(0.21, 0.81, 1.0,
-            strength * 0.36), 4.0, true)
-        draw_polyline(points, Color(0.96, 0.99, 1.0,
-            strength * 0.66), 1.3, true)
-    # Bounded glow at the hand: it never becomes a big targeting ring.
-    draw_circle(focus, 17.0, Color(0.07, 0.37, 1.0, 0.087 * k))
-    draw_circle(focus, 8.0, Color(0.25, 0.80, 1.0, 0.22 * k))
-    draw_circle(focus, 3.4, Color(0.95, 0.99, 1.0, 0.83 * k))
+        var src: Vector2 = charge_source(j, t)
+        var distance: Vector2 = focus - src
+        var normal: Vector2 = distance.normalized().orthogonal()
+        var bend_mag := (18.0 if j < 2 else 10.0) * (
+            -1.0 if j % 2 == 0 else 1.0)
+        var c1 := src + distance * 0.30 + normal * bend_mag
+        var c2 := src + distance * 0.75 + normal * (
+            5.0 * sin(t * 17.0 + float(j)))
+        var prev := src
+        var speed := fposmod(t * 6.8 + float(j) * 0.23, 1.0)
+        for n in range(1, 16):
+            var u := float(n) / 15.0
+            var at := cubic(src, c1, c2, focus, u)
+            var reach := _smooth((u - 0.08) / 0.89)
+            var glint := exp(-pow((u - speed) / 0.17, 2.0))
+            var amp := k * (0.28 + 0.72 * reach) * (
+                0.55 + 0.45 * glint) * (0.79 if j >= 2 else 1.0)
+            var width := 7.5 + 3.5 * sin(PI * u)
+            draw_line(prev, at,
+                Color(0.055, 0.27, 0.95, amp * 0.115),
+                width * 2.15, true)
+            draw_line(prev, at,
+                Color(0.21, 0.78, 1.0, amp * 0.39),
+                width * 0.73, true)
+            draw_line(prev, at,
+                Color(0.95, 0.99, 1.0, amp * 0.62),
+                maxf(0.75, width * 0.17), true)
+            prev = at
+    # Three concentric *soft luminous dots*, not a filled UI circle.
+    draw_circle(focus, 17.0, Color(0.06, 0.32, 1.0, k * 0.060))
+    draw_circle(focus, 7.0, Color(0.25, 0.82, 1.0, k * 0.16))
+    draw_circle(focus, 2.2, Color(0.99, 1.0, 1.0, k * 0.89))
+
 
 func _impact_splinters(t: float) -> void:
     if t < CONTACT or t >= CONTACT_END:
         return
     var age := _clamp((t - CONTACT) / (CONTACT_END - CONTACT))
-    var power := 1.0 - _smooth(age)
-    var at := stop_point()
-    # Five directional tiny fragments; no false target contact and no
-    # health, status, DoT or gameplay owner.
-    for i in range(5):
-        var angle := -1.18 + float(i) * 0.57
-        var dir := Vector2(cos(angle), sin(angle))
-        var beginning := at + dir * (8.0 + 10.0 * age)
-        var finish := at + dir * (17.0 + 34.0 * age)
-        draw_line(beginning, finish, Color(0.18, 0.58, 1.0,
-            power * 0.18), 5.0, true)
-        draw_line(beginning, finish, Color(0.90, 0.99, 1.0,
-            power * 0.73), 1.35, true)
-    draw_circle(at, 15.0 + 8.0 * age,
-        Color(0.10, 0.48, 1.0, power * 0.085))
-    draw_circle(at, 3.0 + 2.0 * age,
-        Color(0.95, 0.99, 1.0, power * 0.52))
+    var power := 1.0 - _smooth((age - 0.08) / 0.90)
+    var origin := stop_point() + Vector2(9.0, 6.0)
+    # A directional wound in the energy field, *not* a bomb or false hit.
+    # Each fragment follows a tiny staggered cubic and fades individually.
+    for i in range(6):
+        var index := float(i)
+        var angle := -2.46 + index * 0.49 + 0.13 * sin(index * 2.31)
+        var direction := Vector2.from_angle(angle)
+        var normal := direction.orthogonal()
+        var stagger := float(i % 3) * 0.11
+        var local_age := _clamp((age - stagger) / maxf(0.15, 1.0 - stagger))
+        var spark_fade := power * (1.0 - _smooth(local_age))
+        if spark_fade < 0.016:
+            continue
+        var start := origin + direction * (6.0 + 8.0 * local_age)
+        var mid := origin + direction * (
+            25.0 + 25.0 * local_age) + normal * (
+            3.0 * sin(index + local_age * 2.4))
+        var end := origin + direction * (
+            36.0 + 43.0 * local_age) + normal * (
+            8.0 * sin(index * 1.9 + local_age * 1.4))
+        draw_line(start, mid,
+            Color(0.10, 0.46, 0.99, spark_fade * 0.16),
+            6.5, true)
+        draw_line(mid, end,
+            Color(0.15, 0.76, 1.0, spark_fade * 0.31),
+            2.1, true)
+        draw_line(start + direction * 3.0, mid,
+            Color(0.94, 0.99, 1.0, spark_fade * 0.66),
+            1.15, true)
+    # Hot point ends BEFORE character centre, no large white blob.
+    draw_circle(origin, 7.5,
+        Color(0.11, 0.45, 1.0, power * 0.105))
+    draw_circle(origin, 2.1,
+        Color(0.97, 1.0, 1.0, power * 0.68))
 
 
 func V9_LIGHT_LINE(canvas: CanvasItem, a: Vector2, b: Vector2,
@@ -409,6 +464,24 @@ func _orbit_ground(t: float) -> void:
             var mote: Vector2 = echo["position"]
             draw_circle(mote + Vector2(0.0, 20.0), 1.35,
                 Color(0.72, 0.93, 1.0, strength * 0.47))
+    # Eight dim moving wakelets soften the sterile 16-stroke outline.
+    # They are just trail history, NEVER additional attacks or projectiles.
+    for j in range(8):
+        var i := j * 2 + (j % 2)
+        var wave := PackedVector2Array()
+        for n in range(6):
+            var u := float(n) / 5.0
+            var hist_t := maxf(0.0, t - 0.145 + 0.094 * u)
+            var o: Dictionary = orbit_streak(i, hist_t)
+            wave.append((o["position"] as Vector2) + Vector2(0.0, 20.0))
+        var alpha := k * (0.18 + 0.12 *
+            sin(float(j) * 2.1 + t * 11.0))
+        draw_polyline(wave,
+            Color(0.05, 0.39, 1.0, alpha * 0.25),
+            11.0, true)
+        draw_polyline(wave,
+            Color(0.27, 0.85, 1.0, alpha * 0.39),
+            1.8, true)
     # Only a few soft broken ground arcs; no constant thick white donuts.
     for ring in range(2):
         var rx := 190.0 if ring == 0 else 239.0
