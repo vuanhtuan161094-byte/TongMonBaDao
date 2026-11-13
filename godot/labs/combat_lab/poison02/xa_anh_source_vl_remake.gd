@@ -114,7 +114,7 @@ func _update_fx() -> void:
         var travel := u * u * (3.0 - 2.0 * u)
         var head := (CASTER + Vector2(36.0, -84.0)).lerp(TARGET + Vector2(-20.0, -92.0), travel)
         head += Vector2(0.0, -45.0 * sin(u * PI))
-        var s := 0.37 + 0.59 * smoothstep(0.0, 0.69, u)
+        var s := 0.43 + 0.76 * smoothstep(0.0, 0.69, u)
         var frame := posmod(int(floor((elapsed - CAST_AT) * 10.5)), FRAME_COUNT)
         var center := head - Vector2(204.0, -19.0) * s
         _flight.texture = flight_frames[frame]
@@ -130,7 +130,7 @@ func _update_fx() -> void:
     if _bind.visible:
         var u := clampf((elapsed - CONTACT_AT) / maxf(0.01, COIL_END - CONTACT_AT), 0.0, 1.0)
         _bind.position = TARGET + Vector2(0.0, -113.0 + 6.0 * sin(u * 2.4))
-        _bind.scale = Vector2(0.74 + 0.05 * sin(u * PI), 0.78 - 0.035 * u)
+        _bind.scale = Vector2(0.88 + 0.07 * sin(u * PI), 0.88 - 0.040 * u)
         _bind.rotation = -0.065 + 0.038 * sin(elapsed * 5.4)
         _bind.modulate = Color(1.0, 1.0, 1.0, binding * 0.80)
 
@@ -179,6 +179,10 @@ func _draw() -> void:
     _actor(CASTER, Color.WHITE)
     _actor(TARGET, Color("9ea6b2"))
 
+    if elapsed >= CONTACT_AT and elapsed < CONTACT_AT + 0.14:
+        var shock := (elapsed - CONTACT_AT) / 0.14
+        _mote(TARGET + Vector2(-8.0, -90.0), 55.0 + 18.0 * shock,
+            Color("efffda", 0.40 * (1.0 - shock)))
     var hit_index := impact_frame(elapsed)
     if hit_index >= 0 and _impact_rects.size() >= IMPACT_FRAME_COUNT * 6:
         var q := hit_index * 6
