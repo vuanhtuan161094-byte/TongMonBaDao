@@ -98,10 +98,10 @@ func _bake_snake(coil: bool, frame: int, count: int) -> Texture2D:
         var u := float(i) / float(steps - 1)
         if coil:
             if u > reveal and i > 1: break
-            var theta := -2.25 + u * TAU * 1.93 + k * 0.22
-            var radius := 51.0 - 21.0 * u + 4.5 * sin(theta * 3.2 + u * 2.1)
+            var theta := -2.23 + u * TAU * 1.46 + k * 0.25
+            var radius := 57.0 - 28.0 * u + 5.0 * sin(theta * 2.7 + u * 2.6)
             path.append(Vector2(125.0 + cos(theta) * radius,
-                126.0 + sin(theta) * radius * 0.72 - 16.0 * u))
+                126.0 + sin(theta) * radius * 0.76 - 21.0 * u))
         else:
             var wave := 20.0 * sin(u * TAU * 1.32 - k * 1.4) * sin(u * PI)
             wave += 5.0 * sin(u * TAU * 2.4 + k * 2.3) * sin(u * PI)
@@ -134,7 +134,7 @@ func _bake_snake(coil: bool, frame: int, count: int) -> Texture2D:
                 if sample_d2 < nearest2:
                     nearest2 = sample_d2
                     body_u = (float(j) + f) / float(maxi(1, path.size() - 1))
-            var width := 1.6 + (5.2 if coil else 4.6) * smoothstep(0.0, 0.22, body_u)
+            var width := 1.45 + (4.8 if coil else 4.6) * smoothstep(0.0, 0.28, body_u)
             var head_glow := exp(-p.distance_squared_to(hood_center) / (2.0 * 10.0 * 10.0))
             var along := (p - hood_center).dot(forward)
             var cross := (p - hood_center).dot(side)
@@ -161,8 +161,9 @@ func _bake_snake(coil: bool, frame: int, count: int) -> Texture2D:
                 var t2 := minf(p.distance_squared_to(tongue_base + f1 * d1), p.distance_squared_to(tongue_base + f2 * d2))
                 tongue = 0.78 * exp(-t2 / (2.0 * 0.86 * 0.86))
                 tint = tint.lerp(Color("f6d49a"), tongue)
+            var fade_tail := 0.17 + 0.83 * smoothstep(0.0, 0.32, body_u) if coil else 1.0
             im.set_pixel(x, y, Color(tint.r, tint.g, tint.b,
-                clampf(weight + hood_fill * 0.91 + hood_rim * 0.32 + glint + tongue, 0.0, 1.0)))
+                clampf((weight + hood_fill * 0.91 + hood_rim * 0.32 + glint + tongue) * fade_tail, 0.0, 1.0)))
     return ImageTexture.create_from_image(im)
 
 func _update_layers() -> void:
@@ -224,7 +225,7 @@ func _draw() -> void:
             draw_texture_rect(_radial, Rect2(mote - Vector2(10, 10), Vector2(20, 20)),
                 false, Color("d2ffd6", 0.31 * charge))
     _actor(CASTER, Color.WHITE, 0.40)
-    _actor(VICTIM, Color("789c88"), 0.40)
+    _actor(VICTIM, Color("b2bea9"), 0.40)
     var bind := coil_gain(elapsed)
     if bind > 0.001:
         var p := anchor()
