@@ -23,3 +23,9 @@ Godot GL Compatibility 4.7.2, native 1280×720 and 1x. All rendered stages must 
 R1 exact source db93d6cff55ef128c791c12251d92271d8938259 / official run #43484906760 TECH PASS (Godot 4.7.2 import/parse/focused). Actual frames inspected at 1.30, 1.55, 1.70 and 1.92 seconds. Original painted serpent clearly reads with scales, cobra head and fangs at native 1x; its end pose was small. **ART REJECTED R1** because the 1.70–1.92 bind overlay retained a visually obvious duplicate source figure / contamination. That is not a valid contact VFX.
 
 R2 replaces the binding asset with a masked energy-only cutout, hand-tracing the spiral strokes and removing the source actor. Removes hard seam with feathered alpha. Also boosts serpent hero scale late flight (0.96 -> 1.19), bind sprite footprint, adds short 140-ms single contact flash. The new art remains image-backed, alpha front / additive bind, target still has no gameplay side-effects. Verify by fresh exact-SHA Godot video before any subjective claim.
+
+## R2 review / R3 head-and-bind polish
+
+R2 code SHA 3dbdc81688209a85da182ded486aed44740db764 tested via official run #43485904270, Godot Compatibility source movie 1280x720, focused PASS. Real frames 1.30, 1.55, 1.70 and 1.92 reviewed: cobra flight now clearly has animal head/fangs/scales at native size; source-actor ghost was successfully removed from the bind art. Remaining defect: bind looks like disconnected translucent horizontal streaks and loses animal identity.
+
+R3 reauthors bind WebP color contrast brighter jade, adds cropped alpha-head sprite asset (from the new original serpent, NOT a JX serpent), and keeps the cobra head visible at target shoulder while surrounding coils bind. This remains an original image-backed VFX lab, not physics rigging, not combat. Render/inspect native motion before art acceptance.
