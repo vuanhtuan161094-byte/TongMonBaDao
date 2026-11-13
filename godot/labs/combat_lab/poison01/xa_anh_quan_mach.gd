@@ -56,18 +56,18 @@ func _ready() -> void:
         _flight_frames.append(_bake_snake(false, i, FLIGHT_FRAMES))
     for i in range(COIL_FRAMES):
         _coil_frames.append(_bake_snake(true, i, COIL_FRAMES))
-    _flight = _layer()
-    _coil = _layer()
+    _flight = _layer(true)
+    _coil = _layer(false)
     _update_layers()
     set_process(true)
     print("VFX_POI01_READY | ", SKILL_ID, " | VISUAL_ONLY")
 
-func _layer() -> Sprite2D:
+func _layer(additive: bool) -> Sprite2D:
     var s := Sprite2D.new()
     s.centered = false
     s.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
     var material := CanvasItemMaterial.new()
-    material.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
+    material.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD if additive else CanvasItemMaterial.BLEND_MODE_MIX
     s.material = material
     s.visible = false
     add_child(s)
@@ -86,7 +86,7 @@ func _bake_radial() -> Texture2D:
 func _bake_snake(coil: bool, frame: int, count: int) -> Texture2D:
     # 21 original pre-baked poses at startup, not each render frame.
     # Whole-path Gaussian prevents triangular joins rejected in thunder R2.
-    var w := 250 if coil else 260
+    var w := 250 if coil else 350
     var h := 226 if coil else 134
     var im := Image.create(w, h, false, Image.FORMAT_RGBA8)
     im.fill(Color.TRANSPARENT)
@@ -105,7 +105,7 @@ func _bake_snake(coil: bool, frame: int, count: int) -> Texture2D:
         else:
             var wave := 20.0 * sin(u * TAU * 1.32 - k * 1.4) * sin(u * PI)
             wave += 5.0 * sin(u * TAU * 2.4 + k * 2.3) * sin(u * PI)
-            path.append(Vector2(18.0 + u * 221.0, 69.0 + wave))
+            path.append(Vector2(62.0 + u * 225.0, 69.0 + wave))
     var a: Array[Vector2] = []
     var d: Array[Vector2] = []
     var inv: Array[float] = []
@@ -120,6 +120,9 @@ func _bake_snake(coil: bool, frame: int, count: int) -> Texture2D:
     var eye1 := head - forward * 6.0 + side * 7.0
     var eye2 := head - forward * 6.0 - side * 7.0
     var hood_center := head - forward * 5.0
+    var tongue_base := head + forward * 9.0
+    var fork1 := head + forward * 22.0 + side * 5.0
+    var fork2 := head + forward * 22.0 - side * 5.0
     for y in range(h):
         for x in range(w):
             var p := Vector2(float(x) + 0.5, float(y) + 0.5)
@@ -149,8 +152,17 @@ func _bake_snake(coil: bool, frame: int, count: int) -> Texture2D:
             var eye_d2 := minf(p.distance_squared_to(eye1), p.distance_squared_to(eye2))
             var glint := 1.00 * exp(-eye_d2 / (2.0 * 1.48 * 1.48))
             tint = tint.lerp(EYE, clampf(glint, 0.0, 1.0))
+            var tongue := 0.0
+            if p.distance_squared_to(head) < 880.0:
+                var d1 := fork1 - tongue_base
+                var d2 := fork2 - tongue_base
+                var f1 := clampf((p - tongue_base).dot(d1) / maxf(d1.length_squared(), 0.001), 0.0, 1.0)
+                var f2 := clampf((p - tongue_base).dot(d2) / maxf(d2.length_squared(), 0.001), 0.0, 1.0)
+                var t2 := minf(p.distance_squared_to(tongue_base + f1 * d1), p.distance_squared_to(tongue_base + f2 * d2))
+                tongue = 0.78 * exp(-t2 / (2.0 * 0.86 * 0.86))
+                tint = tint.lerp(Color("f6d49a"), tongue)
             im.set_pixel(x, y, Color(tint.r, tint.g, tint.b,
-                clampf(weight + hood_fill * 0.91 + hood_rim * 0.32 + glint, 0.0, 1.0)))
+                clampf(weight + hood_fill * 0.91 + hood_rim * 0.32 + glint + tongue, 0.0, 1.0)))
     return ImageTexture.create_from_image(im)
 
 func _update_layers() -> void:
@@ -164,7 +176,7 @@ func _update_layers() -> void:
         head.y -= sin(u * PI) * 49.0
         var index := clampi(int(floor(u * float(FLIGHT_FRAMES))), 0, FLIGHT_FRAMES - 1)
         _flight.texture = _flight_frames[index]
-        _flight.position = head - Vector2(239.0, 69.0)
+        _flight.position = head - Vector2(287.0, 69.0)
         _flight.modulate.a = alpha * (0.92 + 0.08 * sin(elapsed * 21.0))
     var binding := coil_gain(elapsed)
     _coil.visible = binding > 0.002
@@ -175,7 +187,7 @@ func _update_layers() -> void:
         _coil.position = anchor() - Vector2(125.0, 126.0)
         var squeeze := smoothstep(COIL_PEAK, RELEASE, elapsed)
         _coil.scale = Vector2(1.0 - 0.055 * squeeze, 1.0 - 0.075 * squeeze)
-        _coil.modulate.a = binding * (0.96 + 0.04 * sin(elapsed * 27.0))
+        _coil.modulate.a = binding * (0.91 + 0.03 * sin(elapsed * 27.0))
 
 func _process(delta: float) -> void:
     if paused: return
@@ -217,9 +229,9 @@ func _draw() -> void:
     if bind > 0.001:
         var p := anchor()
         draw_texture_rect(_radial, Rect2(p - Vector2(116, 113), Vector2(232, 226)),
-            false, Color("7c6fba", 0.37 * bind))
+            false, Color("7c6fba", 0.16 * bind))
         draw_texture_rect(_radial, Rect2(p - Vector2(75, 77), Vector2(150, 154)),
-            false, Color("79f0aa", 0.30 * bind))
+            false, Color("79f0aa", 0.14 * bind))
         for j in range(3):
             var f := float(j) * 2.12 + elapsed * 0.23
             var a := p + Vector2(cos(f) * 38.0, sin(f) * 37.0)
