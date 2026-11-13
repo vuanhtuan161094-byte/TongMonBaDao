@@ -255,6 +255,54 @@ static func projectile_tip(index: int, caster: Vector2, victim: Vector2,
     var remain := 1.0 - u
     return origin * remain * remain + control * (2.0 * remain * u) + end * (u * u)
 
+# VFX16: Lab-only shader handoff state, shared by renderer preview and
+# bounded additive light layer.  It NEVER determines recipients or HP.
+static func visual_indices_for_lod(lod: int) -> Array[int]:
+    var result: Array[int] = []
+    for wave in range(3):
+        if lod >= 2:
+            for lane in range(3):
+                result.append(wave * 3 + lane)
+        elif lod == 1:
+            result.append(wave * 3)
+            result.append(wave * 3 + 2)
+        else:
+            result.append(wave * 3 + 1)
+    return result
+
+static func projectile_visual_state(index: int, caster: Vector2,
+        hit_targets: Array, progress: float, zoom: float) -> Dictionary:
+    if index < 0 or index >= 9 or hit_targets.is_empty():
+        return {}
+    var wave := floori(float(index) / 3.0)
+    var lane := index % 3
+    var schedule := flight_timing(index)
+    var contact := contact_time(index)
+    var t := clampf(progress, 0.0, 1.0)
+    if t < schedule.x or t >= contact:
+        return {}
+    var victim: Vector2 = hit_targets[lane % hit_targets.size()]
+    var z := clampf(zoom, 0.6, 1.95)
+    var u := clampf((t - schedule.x) / maxf(0.001, contact - schedule.x),
+        0.0, 1.0)
+    var alpha := _ease((t - float(wave) * 0.04) / 0.21) * pre_contact_opacity(u)
+    if alpha < 0.012:
+        return {}
+    var tip := projectile_tip(index, caster, victim, t, z)
+    var next_tip := projectile_tip(index, caster, victim, minf(contact, t + 0.012), z)
+    var heading := (next_tip - tip).normalized()
+    if heading.length_squared() < 0.001:
+        var origin := caster + Vector2(
+            37.0 + float(wave) * 41.0,
+            (float(lane) - 1.0) * 68.0 - float(wave) * 8.0) * z
+        heading = (victim - origin).normalized()
+    var shrink := 1.0 - 0.58 * _ease((u - 0.73) / 0.27)
+    var size := (0.82 if wave == 0 else 0.71) * z * shrink
+    return {
+        "tip": tip, "heading": heading, "alpha": alpha,
+        "size": size, "u": u, "wave": wave, "lane": lane
+    }
+
 static func render(c: CanvasItem, caster: Vector2, locked_center: Vector2,
         hit_targets: Array, radii_px: Vector2, progress: float,
         zoom: float, lod: int = 2) -> void:
@@ -269,13 +317,11 @@ static func render(c: CanvasItem, caster: Vector2, locked_center: Vector2,
             35.0 * z, 13.0 * z, GOLD, charge * 0.49)
         _spark(c, caster + Vector2(0.0, -9.0 * z),
             z * 1.65, ICE, charge * 0.81)
-    var max_swords := 9 if lod >= 2 else (6 if lod == 1 else 3)
-    # Keep all 3 visual volleys even if the AOE legally hits only one
-    # or two enemies. Fewer targets change which destination each qi uses,
-    # never shorten the three-beat choreography.
-    var count := max_swords
+    # LOD thins individual lanes, NEVER drops a whole volley.
+    # Target count never changes the choreography or creates game hits.
+    var selected_swords: Array[int] = visual_indices_for_lod(lod)
     # Travel/charge only; no sword is drawn after reaching the contact bound.
-    for i in range(count):
+    for i in selected_swords:
         var schedule := flight_timing(i)
         var contact := contact_time(i)
         var wave := floori(float(i) / 3.0)
@@ -321,7 +367,7 @@ static func render(c: CanvasItem, caster: Vector2, locked_center: Vector2,
                 ICE, gather * 0.71)
     # Contact flashes take over immediately at the stop boundary.
     # All visible effects are derived from caller-provided victims ONLY.
-    for i in range(count):
+    for i in selected_swords:
         var contact := contact_time(i)
         if t < contact or t >= contact + 0.12:
             continue

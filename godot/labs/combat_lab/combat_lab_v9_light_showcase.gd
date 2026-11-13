@@ -6,10 +6,12 @@ const PoisonAtlas = preload("res://labs/combat_lab/combat_lab_poison_atlas_v1.gd
 const Rig = preload("res://labs/combat_lab/combat_lab_actor_rig_v2.gd")
 const SWORD_GLOW = preload("res://labs/combat_lab/combat_lab_v11_arcane_circle.gdshader")
 const SWORD_TARGETS = preload("res://labs/combat_lab/combat_lab_v15_sword_fx.gd")
+const SWORD_QI_SHADER = preload("res://labs/combat_lab/combat_lab_v16_sword_qi_glow.gdshader")
 var effect: Control
 var title: Label
 var charge_glow: ColorRect
 var target_glow: ColorRect
+var sword_qi_layers: Array[ColorRect] = []
 var preview_positions: Array = []
 var preview_primary_index := 0
 var preview_hit_count := 0
@@ -37,6 +39,23 @@ func _ready() -> void:
     # Their emission changes only from the deterministic demo timeline.
     charge_glow = _make_glow(0, effect.caster + Vector2(0, -62))
     target_glow = _make_glow(1, preview_positions[preview_primary_index])
+    # Nine compact, independently positioned additive shader quads.
+    # They reuse VFX15's exact tip, heading and contact timing.
+    # These LAB-only quads never enter the production PvE scene.
+    for i in range(9):
+        var qi := ColorRect.new()
+        qi.name = "SwordQiGlow%02d" % i
+        qi.size = Vector2(240.0, 120.0)
+        qi.pivot_offset = qi.size * 0.5
+        qi.mouse_filter = Control.MOUSE_FILTER_IGNORE
+        qi.color = Color.WHITE
+        qi.visible = false
+        var qi_mat := ShaderMaterial.new()
+        qi_mat.shader = SWORD_QI_SHADER
+        qi_mat.set_shader_parameter("seed", float(i) * 0.63)
+        qi.material = qi_mat
+        add_child(qi)
+        sword_qi_layers.append(qi)
     var buttons := HBoxContainer.new()
     buttons.position = Vector2(24, 18)
     buttons.add_theme_constant_override("separation", 12)
@@ -107,11 +126,35 @@ func _process(_delta: float) -> void:
         var mat := glow.material as ShaderMaterial
         if mat != null:
             mat.set_shader_parameter("progress", progress)
+    # Shader brightness and motion are driven by demo elapsed, not TIME:
+    # HOLD freezes them exactly and impact clears the flying glow.
+    var sword_active := str(effect.get("demo_school")) == "sword"
+    for i in range(sword_qi_layers.size()):
+        var qi := sword_qi_layers[i]
+        if not sword_active:
+            qi.visible = false
+            continue
+        var visual: Dictionary = SWORD_TARGETS.projectile_visual_state(
+            i, effect.caster + Vector2(0.0, -62.0),
+            effect.sword_preview_hits, progress, 1.0)
+        qi.visible = not visual.is_empty()
+        if not qi.visible:
+            continue
+        var tip: Vector2 = visual.get("tip", Vector2.ZERO)
+        var heading: Vector2 = visual.get("heading", Vector2.RIGHT)
+        var offset := 52.0
+        qi.rotation = heading.angle()
+        qi.position = tip - heading * offset - qi.size * 0.5
+        var qi_mat := qi.material as ShaderMaterial
+        if qi_mat != null:
+            qi_mat.set_shader_parameter("strength", float(visual.get("alpha", 0.0)))
+            qi_mat.set_shader_parameter("phase", float(visual.get("u", 0.0)))
+            qi_mat.set_shader_parameter("size_factor", float(visual.get("size", 1.0)))
 
 func _refresh_title() -> void:
     var sword := str(effect.get("demo_school")) == "sword"
     title.text = (
-        "VFX15 · CỬU KIẾM QUANG · TÂM QUÁI %d · NGẮM %d/4 · BẤM QUÁI ĐỂ CHỌN · LAB" %
+        "VFX16 · KIẾM KHÍ SHADER · TÂM QUÁI %d · NGẮM %d/4 · BẤM QUÁI ĐỂ CHỌN · LAB" %
         [preview_primary_index + 1, preview_hit_count]
         if sword else "VFX09 · ĐỘC QUANG HÓA XÀ · LAB ONLY")
     charge_glow.visible = sword

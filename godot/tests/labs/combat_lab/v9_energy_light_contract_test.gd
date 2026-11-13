@@ -149,6 +149,31 @@ func _check() -> void:
             demo_mobs, primary15, Vector2(130,120),3)
         ensure(selected15.size() == 3 and selected15.has(primary15),
             "VFX15 preserves target-locked 3 of 4 AoE behavior")
+    # VFX16 real additive, bounded shader; deterministic contact/LOD contract.
+    var qi_shader: Shader = load(
+        "res://labs/combat_lab/combat_lab_v16_sword_qi_glow.gdshader") as Shader
+    ensure(qi_shader != null, "VFX16 additive sword qi shader compiles")
+    if qi_shader != null:
+        ensure(qi_shader.code.contains("blend_add") and
+            qi_shader.code.contains("uniform float strength") and
+            not qi_shader.code.contains("TIME"),
+            "VFX16 glow is bounded, externally timed, and additive")
+    ensure(SWORD_V15.visual_indices_for_lod(2).size() == 9 and
+        SWORD_V15.visual_indices_for_lod(1).size() == 6 and
+        SWORD_V15.visual_indices_for_lod(0) == [1, 4, 7],
+        "VFX16 LOD always retains all three sword volleys")
+    var starting15 := SWORD_V15.flight_timing(0).x
+    var state15: Dictionary = SWORD_V15.projectile_visual_state(
+        0, caster15, [monster15], starting15 + 0.06, 1.0)
+    ensure(not state15.is_empty() and
+        state15.has("heading") and state15.has("alpha"),
+        "VFX16 shader is driven by the same pre-contact trajectory")
+    var after15: Dictionary = SWORD_V15.projectile_visual_state(
+        0, caster15, [monster15], SWORD_V15.contact_time(0), 1.0)
+    ensure(after15.is_empty() and
+        SWORD_V15.projectile_visual_state(
+            0, caster15, [], starting15 + 0.06, 1.0).is_empty(),
+        "VFX16 projectile cannot illuminate after contact or invent targets")
     var fx := FXS.new()
     fx.custom_minimum_size = Vector2(1280, 720)
     root.add_child(fx)
@@ -169,6 +194,10 @@ func _check() -> void:
         root.add_child(stage)
         ensure(stage.get_node_or_null("AdditiveEnergyVFX") != null,
             "scene has additive VFX CanvasItem")
+        ensure(stage.get_node_or_null("SwordQiGlow00") != null and
+            stage.get_node_or_null("SwordQiGlow08") != null and
+            (stage.get("sword_qi_layers") as Array).size() == 9,
+            "VFX16 nine additive shader quads exist in Godot LAB")
         ensure(stage.get_node_or_null("SwordArcaneCharge") != null and
             stage.get_node_or_null("SwordArcaneAOE") != null,
             "V11 glow layers instantiate behind normal-blend forged swords")

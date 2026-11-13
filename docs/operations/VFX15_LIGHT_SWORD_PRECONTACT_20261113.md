@@ -41,3 +41,13 @@
 - V15.0 impact hơi thiếu lực nên đã sửa V15.1: tăng flash trắng-xanh ngắn, thêm 1 cung chém nóng trắng, shock ring xanh/vàng dưới chân, có wisp thu lại trước va chạm. Ảnh từ Godot (không ImageGen) và GIF từ MP4 là bằng chứng thị giác.
 - **Isolated QA != full-branch clean QA**: dòng `godot/src/simulation/combat/v63_summon_skill_combat_system.gd:303` bên combat đang parse FAIL (candidate không infer kiểu). Trong QA riêng, dùng annotation thử nghiệm chỉ trong runner, không commit; trạng thái tổng repo **BLOCKED**, không tự sửa code triệu hồi ngoài lane.
 - **OWNER VISUAL APPROVAL PENDING**. Chưa nghiệm thu 30 diễn viên/Android/Windows và chưa đưa vào One Game; 60 FPS xuất phim không tương đương tốc độ máy thật.
+
+## 6. VFX16 — Bổ sung shader kiếm khí theo tài liệu Godot (13/11/2026)
+
+- Phân tích V15.1: sword body còn dùng `draw_colored_polygon` với alpha, không tạo quầng sáng chuyển tiếp mượt. Bổ sung **shader CanvasItem blend_add** tại `godot/labs/combat_lab/combat_lab_v16_sword_qi_glow.gdshader`, phối lõi sáng Gaussian, lớp cyan, vùng xanh lam mờ, hai dải lụa và ba đốm sáng có pha xác định. Không tải hoặc sao chép sprite thương mại.
+- `combat_lab_v15_sword_fx.gd::projectile_visual_state` xuất **visual state** chỉ từ progress + hit_targets đã khóa (tip/heading/alpha/size/u). Shader quads là overlay **LAB ONLY**; không có collision, damage, targeting hay logic kỹ năng mới. Khi tới `contact_time` quad biến mất trước khi xuyên actor; impact cũ tiếp nhận.
+- Sửa lỗi LOD: mức 2 = 9 quang kiếm (3x3), mức 1 = 6 (3x2), mức 0 = 3 (3x1). Ba đợt luôn giữ nguyên; tối ưu lane chứ không xóa đợt 3.
+- `combat_lab_v9_light_showcase.gd` dựng chín quads bounded 240x120, bật/tắt đúng thời điểm, đồng bộ HOLD/tạm dừng và đổi mục tiêu. Shader điều khiển bằng tham số; không dùng `TIME` để tránh mất đồng bộ khi pause hoặc export movie.
+- `v9_energy_light_contract_test.gd` bổ sung kiểm tra shader, ba nhịp LOD, contact exclusivity, zero targets, và overlay nodes.
+- **Giới hạn:** Shader V16 hiện chỉ nối vào scene showcase, VFX15 CanvasItem renderer tiếp tục là fallback. Chưa chứng minh GPU FPS thực trên Android, chưa đo 30 actors, chưa áp dụng One Game. CI isolated QA yêu cầu giữ nguyên nhãn lỗi summon upstream; owner art approval còn PENDING. Không gọi đây là FULL PASS trước khi đọc exact-SHA run.
+
