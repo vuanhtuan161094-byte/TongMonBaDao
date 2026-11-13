@@ -37,3 +37,11 @@ Source: owner-supplied 2.5D blue-white swirling qi image, current TMB V9 dynamic
 - Original R1 screenshot at 1.55s exposed a **detached curved tail**: the 2D `ColorRect` local positioning/rotation did not visually align its luminous shader tip with the cubic flight path drawn by CanvasItem.
 - Replaced the shader UV carrier with an original in-memory all-white **4×4 texture** on centered `Sprite2D` (pure shader light, no painted image). Sprite tip is now calculated explicitly in centered Node2D coordinates, leaving all game mechanics unchanged.
 - Added focused contract assertion `carrier.to_global(local_tip).distance_to(STUDY.flight_head(progress)) < 0.65 px`; must pass on real Godot exact-SHA QA before art presentation.
+
+## VFX18.1 art-directed pass (2026-11-13; see separate art brief)
+- Five curved and time-moving gathering filaments replace flat parallel charge lines; single energy only, one approved mock victim.
+- Flight trail no longer has constant-width/constant-opacity strokes. Its sampled segments have a tapered, soft falloff; hot tip remains anchored by prior R2 pixel contract.
+- Small five-ray incisional hit splinters plus tightened original local contact shader replace weak contact; no new combat/hit/target owner.
+- Orbit changes from entirely front-layer sprites to actual two-depth-stage presentation: a standalone node `orbit_actor_overlay.gd` is between back and front orbit streaks. No fake AOE; 16 decorative light streaks remain.
+- Focused test now verifies front and back visual strata, caster overlay, no impact from orbit mode, previous tip-to-route 0.65-pixel contract.
+- Review only after Godot 4.7.2 exact SHA fresh full-motion movie; `OWNER_VISUAL_PENDING / PVE_HOLD`.

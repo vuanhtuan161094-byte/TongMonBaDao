@@ -4,6 +4,7 @@ extends "res://labs/combat_lab/research01/research01_arena.gd"
 # This is strictly a MOCK/ART LAB, not a V6.3 skill or a combat event.
 const LIGHT_SHADER = preload("res://labs/combat_lab/research03/light_core_2d.gdshader")
 const HIT_SHADER = preload("res://labs/combat_lab/research03/light_contact_2d.gdshader")
+const ORBIT_RIG = preload("res://labs/combat_lab/research03/orbit_actor_overlay.gd")
 const NEW_COLOR := Color("59d8fa")
 const SKY := Color("d9faff")
 const FIELD_CENTER := Vector2(620.0, 354.0)
@@ -19,6 +20,7 @@ var blades: Array[Sprite2D] = []
 var contacts: Array[Sprite2D] = []
 var intensity_cache: Array[float] = []
 var elapsed_local := 0.0
+var orbit_actor: Node2D
 
 static func _clamp(v: float) -> float:
     return clampf(v, 0.0, 1.0)
@@ -57,27 +59,35 @@ static func flight_direction(u: float) -> Vector2:
     return diff.normalized() if diff.length_squared() > 0.0001 else Vector2.RIGHT
 
 static func orbit_streak(i: int, t: float) -> Dictionary:
+    # One stable deterministic orbit sample. Front/behind classification
+    # comes from the projected Y coordinate; no combat target changes.
     var ring := i % 2
     var j := int(i / 2)
-    var theta := (float(j) / 8.0) * TAU + t * TAU * (0.91 if ring == 0 else -0.62)
-    var rx := 190.0 if ring == 0 else 239.0
-    var ry := 120.0 if ring == 0 else 150.0
-    var angle_offset := 0.08 if ring == 0 else 0.48
-    theta += angle_offset
-    var pt := FIELD_CENTER + Vector2(cos(theta) * rx, sin(theta) * ry)
-    var tangent := Vector2(-sin(theta) * rx, cos(theta) * ry)
-    if ring != 0:
+    var phase_offset := 0.08 if ring == 0 else 0.48
+    var rate := 0.82 if ring == 0 else -0.56
+    var angle := (float(j) / 8.0) * TAU + t * TAU * rate + phase_offset
+    var formation := lerpf(0.66, 1.0, _smooth(t / 0.148))
+    var breathe := 1.0 + 0.025 * sin(t * TAU * 2.1 + float(j) * 1.8)
+    var rx := (185.0 if ring == 0 else 242.0) * formation * breathe
+    var ry := (117.0 if ring == 0 else 153.0) * formation * breathe
+    var pt := FIELD_CENTER + Vector2(cos(angle) * rx, sin(angle) * ry)
+    var tangent := Vector2(-sin(angle) * rx, cos(angle) * ry)
+    if ring == 1:
         tangent = -tangent
-    var axis := tangent.normalized()
-    # Deliberately uneven lengths / intensity, deterministic frame to frame.
     var variation := sin(float(j) * 2.71 + float(ring) * 1.9)
-    var length := (110.0 if ring == 0 else 93.0) + variation * 19.0
-    var brightness := 0.52 + 0.16 * variation + (0.13 if ring == 0 else 0.0)
+    var front := sin(angle) > 0.09
+    var length := (96.0 if ring == 0 else 105.0) + variation * 24.0
+    var luminance := (0.43 if ring == 0 else 0.35) + 0.15 * variation
+    if front:
+        luminance += 0.23
     return {
-        "position": pt, "axis": axis, "length": length,
-        "energy": clampf(brightness, 0.22, 0.94),
+        "position": pt,
+        "axis": tangent.normalized(),
+        "length": clampf(length, 66.0, 137.0),
+        "energy": clampf(luminance, 0.18, 0.86),
         "ring": ring,
-        "theta": theta,
+        "theta": angle,
+        "front": front,
     }
 
 func _ready() -> void:
@@ -117,6 +127,9 @@ func _ready() -> void:
     hit.z_index = 2
     add_child(hit)
     contacts.append(hit)
+    orbit_actor = ORBIT_RIG.new()
+    orbit_actor.z_index = 2
+    add_child(orbit_actor)
     _update_visuals()
     queue_redraw()
 
@@ -140,6 +153,8 @@ func _unhandled_input(event: InputEvent) -> void:
 func _process(delta: float) -> void:
     super._process(delta)
     _update_visuals()
+    if orbit_actor != null and study_mode == 1:
+        orbit_actor.queue_redraw()
 
 func _place_light(panel: Sprite2D, at: Vector2,
         axis: Vector2, length: float, height: float, energy: float,
@@ -165,6 +180,8 @@ func _update_visuals() -> void:
         panel.visible = false
     for obj in contacts:
         obj.visible = false
+    if orbit_actor != null:
+        orbit_actor.visible = study_mode == 1
     if study_mode == 0:
         # One bullet/one approved mock target/one visual contact only.
         var charge := _smooth(t / 0.18)
@@ -197,6 +214,8 @@ func _update_visuals() -> void:
             var strength := float(info["energy"]) * wake
             _place_light(panel, info["position"], info["axis"],
                 float(info["length"]), 56.0, strength, t)
+            # Correct depth: far streak behind actor, near streak in front.
+            panel.z_index = 3 if bool(info["front"]) else 1
             var m := panel.material as ShaderMaterial
             m.set_shader_parameter("seed", float(i) * 0.47 + t * 1.4)
 
@@ -217,15 +236,12 @@ func _draw() -> void:
             {"id":"vfx18_caster", "side":"disciple", "hp":100.0},
             LIGHT_CASTER, "fist", "cast", elapsed, 2.0, 1.0, 0.18)
         _single_charge(t)
+        _impact_splinters(t)
         # A circle on the ignored 4th preview mob is NOT drawn.
     else:
         _orbit_ground(t)
         draw_circle(FIELD_CENTER + Vector2(0.0, 25.0), 44.0,
             Color(0.02, 0.04, 0.07, 0.13))
-        RIG.render(self,
-            {"id":"vfx18_orbit_caster", "side":"disciple", "hp":100.0},
-            FIELD_CENTER + Vector2(0.0, 24.0),
-            "fist", "cast", elapsed, 2.1, 1.0, 0.18)
         for i in range(2):
             var at := Vector2(968.0 + float(i)*82.0, 353.0 + float(i)*110.0)
             RIG.render(self,
@@ -264,34 +280,95 @@ func _single_trail(t: float) -> void:
     var p := (t - PROJECTILE_START) / (CONTACT - PROJECTILE_START)
     if p < 0.0 or p >= 1.0:
         return
-    var fade := (_smooth(p / 0.15) *
-        (1.0 - _smooth((p - 0.85) / 0.15)))
+    var fade := (_smooth(p / 0.12) *
+        (1.0 - _smooth((p - 0.87) / 0.13)))
     if fade < 0.008:
         return
-    # The moving tail is an actual sampled HISTORY of this curved route.
-    # Do NOT draw three straight arrows or a fake second projectile.
-    var path := PackedVector2Array()
-    for j in range(15):
-        var u := float(j) / 14.0
-        var hist := maxf(0.0, p - 0.23 + 0.23 * u)
-        path.append(flight_head(hist))
-    draw_polyline(path, Color(0.08, 0.31, 0.82, fade * 0.043), 25.0, true)
-    draw_polyline(path, Color(0.11, 0.66, 1.0, fade * 0.095), 11.0, true)
-    draw_polyline(path, Color(0.24, 0.89, 1.0, fade * 0.21), 3.1, true)
+    # Physical camera-scale energy HISTORY, not cloned parallel arrows.
+    # Each segment softens to transparent toward the rear instead of a
+    # full-width, hard-edged blue-polyline that looks like UI geometry.
+    var axis := flight_direction(p)
+    var n := axis.orthogonal()
+    var prev := flight_head(maxf(0.0, p - 0.25))
+    var prev_alt := prev
+    for j in range(1, 17):
+        var u := float(j) / 16.0
+        var k := maxf(0.0, p - 0.25 + u * 0.25)
+        var at := flight_head(k)
+        var envelope := sin(PI * u) * (1.0 - u)
+        var drift := sin(u * 8.2 - t * 18.0) * 6.0 * envelope
+        var alt := at + n * drift
+        var strength := fade * pow(u, 1.52)
+        var width := 5.0 + 15.0 * sin(PI * u) + 4.0 * u
+        draw_line(prev, at, Color(0.06, 0.25, 0.79,
+            strength * 0.075), width * 1.5, true)
+        draw_line(prev, at, Color(0.13, 0.59, 1.0,
+            strength * 0.23), width * 0.46, true)
+        draw_line(prev, at, Color(0.66, 0.96, 1.0,
+            strength * 0.39), maxf(0.7, width * 0.095), true)
+        draw_line(prev_alt, alt, Color(0.32, 0.75, 1.0,
+            strength * 0.16), maxf(0.7, 2.3 * sin(PI * u)), true)
+        prev = at
+        prev_alt = alt
+
 
 func _single_charge(t: float) -> void:
-    var k := _smooth(t / 0.18) * (1.0 - _smooth((t - 0.223) / 0.035))
+    var k := _smooth(t / 0.145) *
+        (1.0 - _smooth((t - 0.232) / 0.024))
     if k < 0.003:
         return
-    var origin := LIGHT_CASTER + Vector2(2.0, -58.0)
-    var head := start_point()
-    # Short gathering strands; V9 light-line, NOT a long lasting UI ring.
-    for j in range(3):
-        var d := float(j - 1) * 15.0
-        var source := origin + Vector2(-29.0 + 4.0 * sin(t * 9.0 + j), d)
-        var end := head + Vector2(0.0, d * 0.20)
-        V9_LIGHT_LINE(self, source, end, k * (0.46 - float(j) * 0.08))
-    draw_circle(head, 2.1 + 1.4 * k, Color(0.95, 1.0, 1.0, 0.65 * k))
+    var focus := start_point()
+    # Five original moving filaments converge on the hot core. This is
+    # ENERGY motion from V9 methodology, not a five-point geometry icon.
+    for j in range(5):
+        var strand := float(j)
+        var source := LIGHT_CASTER + Vector2(
+            -29.0 + 13.0 * sin(t * 17.0 + strand * 1.71),
+            -64.0 + (strand - 2.0) * 24.0 +
+            7.0 * cos(t * 14.0 + strand * 1.33))
+        var bend := Vector2(
+            4.0 * cos(t * 18.0 + strand),
+            14.0 * sin(t * 14.0 + strand * 1.2))
+        var points := PackedVector2Array()
+        for n in range(9):
+            var u := float(n) / 8.0
+            var p := source.lerp(focus, u)
+            p += bend * sin(PI * u) * (1.0 - u)
+            points.append(p)
+        var strength := k * (0.58 + 0.09 * sin(strand * 2.0 + t * 22.0))
+        draw_polyline(points, Color(0.09, 0.34, 0.95,
+            strength * 0.085), 13.0, true)
+        draw_polyline(points, Color(0.21, 0.81, 1.0,
+            strength * 0.30), 4.2, true)
+        draw_polyline(points, Color(0.96, 0.99, 1.0,
+            strength * 0.52), 1.1, true)
+    # White hot point with a limited soft falloff; no big AoE ring.
+    draw_circle(focus, 13.0, Color(0.09, 0.38, 1.0, 0.072 * k))
+    draw_circle(focus, 6.0, Color(0.25, 0.80, 1.0, 0.18 * k))
+    draw_circle(focus, 2.8, Color(0.95, 0.99, 1.0, 0.80 * k))
+
+func _impact_splinters(t: float) -> void:
+    if t < CONTACT or t >= CONTACT_END:
+        return
+    var age := _clamp((t - CONTACT) / (CONTACT_END - CONTACT))
+    var power := 1.0 - _smooth(age)
+    var at := stop_point()
+    # Five directional tiny fragments; no false target contact and no
+    # health, status, DoT or gameplay owner.
+    for i in range(5):
+        var angle := -1.18 + float(i) * 0.57
+        var dir := Vector2(cos(angle), sin(angle))
+        var beginning := at + dir * (8.0 + 10.0 * age)
+        var finish := at + dir * (17.0 + 34.0 * age)
+        draw_line(beginning, finish, Color(0.18, 0.58, 1.0,
+            power * 0.18), 5.0, true)
+        draw_line(beginning, finish, Color(0.90, 0.99, 1.0,
+            power * 0.73), 1.35, true)
+    draw_circle(at, 15.0 + 8.0 * age,
+        Color(0.10, 0.48, 1.0, power * 0.085))
+    draw_circle(at, 3.0 + 2.0 * age,
+        Color(0.95, 0.99, 1.0, power * 0.52))
+
 
 func V9_LIGHT_LINE(canvas: CanvasItem, a: Vector2, b: Vector2,
         power: float) -> void:

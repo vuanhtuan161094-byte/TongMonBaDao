@@ -56,8 +56,9 @@ func _run() -> void:
         scene.study_mode = 0
         scene.elapsed = 1.1
         scene._update_visuals()
-        chk(scene.contacts[0].visible == false,
-            "no impact during early flight")
+        chk(scene.contacts[0].visible == false and
+            not scene.orbit_actor.visible,
+            "single mode must never display orbit actor or early impact")
         var prog: float = ((float(scene.elapsed) / STUDY.CYCLE_SECONDS) -
             STUDY.PROJECTILE_START) / (STUDY.CONTACT - STUDY.PROJECTILE_START)
         var head: Vector2 = STUDY.flight_head(prog)
@@ -72,9 +73,27 @@ func _run() -> void:
         chk(scene.contacts[0].visible == true,
             "exactly one contact cue in allowed demo window")
         scene.study_mode = 1
+        scene.elapsed = 0.41 * STUDY.CYCLE_SECONDS
         scene._update_visuals()
         chk(scene.contacts[0].visible == false,
             "orbit mode does NOT generate hits or impact effects")
+        chk(scene.orbit_actor != null and scene.orbit_actor.visible,
+            "orbit caster must be drawn between back and front light layers")
+        var front_count := 0
+        var back_count := 0
+        for i in range(STUDY.ORBIT_COUNT):
+            var shard: Dictionary = STUDY.orbit_streak(i, 0.41)
+            var sprite: Sprite2D = scene.blades[i]
+            if bool(shard["front"]):
+                front_count += 1
+                chk(sprite.z_index > scene.orbit_actor.z_index,
+                    "front light should layer ABOVE actor " + str(i))
+            else:
+                back_count += 1
+                chk(sprite.z_index < scene.orbit_actor.z_index,
+                    "back light should layer BEHIND actor " + str(i))
+        chk(front_count >= 3 and back_count >= 3,
+            "two distinct orbit depth groups must both exist")
         scene.queue_free()
     print("VFX18_LIGHTCORE_FOCUSED_RESULT=" +
         ("PASS" if failures == 0 else "FAIL") +
