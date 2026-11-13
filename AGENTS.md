@@ -17,6 +17,13 @@ Owner direction: **ONE GAME → final `main`; only [PR #72](https://github.com/v
 
 This file is the repository operating contract.
 
+## VFX ART DIRECTOR OWNER LOCK — 2026-11-13 (skill; read for ALL combat FX work)
+
+For ANY Tông Môn Bá Đạo VFX/skill visual/animation/shader task, especially Kiếm/kiếm khí/sét/rắn/Độc/Hỏa/Băng/Source JX/Source A, **read the repo-scoped skill [tmb-vfx-art-director](.agents/skills/tmb-vfx-art-director/SKILL.md) and its reference files before researching, coding or handing off to Codex**. This is the same skill also bundled into the private TMB Project Copilot ChatGPT plugin v0.2.0. Check live HEAD and the owner's newest visual comments; do not follow old VFX variants as if owner accepted them.
+
+Owner visual standard: kiếm khí = *moving tapered luminous energy* (not a solid sword with steel body/hilt), phi kiếm thực thể is a different object class. Owner's liked sét and V9 light serpent are movement/lighting quality references. **A valid GDScript test or 60fps encoded Godot movie is NOT owner visual approval**. Do an art brief and verify actual 1280×720 Godot motion across >=8 phase frames; preserve `OWNER_VISUAL_PENDING` until owner explicitly accepts. Research-only requests do NOT authorize VFX code; no external JX/Source A commercial artwork shipped without verified rights. Live PvE still requires separate permission; combat targeting, damage/HP, SaveService and V6.3 authority remain outside art scope. Research authority: [VFX18 JX/Source A audit](docs/operations/VFX18_JX_SOURCEA_LIGHT_LANGUAGE_RESEARCH_20261113.md).
+
+
 ## 1. Authority order
 
 Before changing code or gameplay design, read in this order:
