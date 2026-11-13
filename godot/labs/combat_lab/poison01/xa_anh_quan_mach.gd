@@ -117,12 +117,12 @@ func _bake_snake(coil: bool, frame: int, count: int) -> Texture2D:
     var head: Vector2 = path[path.size() - 1]
     var forward: Vector2 = (head - path[path.size() - 2]).normalized()
     var side := forward.orthogonal()
-    var eye1 := head - forward * 6.0 + side * 7.0
-    var eye2 := head - forward * 6.0 - side * 7.0
-    var hood_center := head - forward * 5.0
-    var tongue_base := head + forward * 9.0
-    var fork1 := head + forward * 22.0 + side * 5.0
-    var fork2 := head + forward * 22.0 - side * 5.0
+    var eye1 := head - forward * 10.0 + side * 4.2
+    var eye2 := head - forward * 10.0 - side * 4.2
+    var hood_center := head - forward * 10.0
+    var tongue_base := head + forward * 5.0
+    var fork1 := head + forward * 19.0 + side * 4.3
+    var fork2 := head + forward * 19.0 - side * 4.3
     for y in range(h):
         for x in range(w):
             var p := Vector2(float(x) + 0.5, float(y) + 0.5)
@@ -135,10 +135,11 @@ func _bake_snake(coil: bool, frame: int, count: int) -> Texture2D:
                     nearest2 = sample_d2
                     body_u = (float(j) + f) / float(maxi(1, path.size() - 1))
             var width := 1.45 + (4.8 if coil else 4.6) * smoothstep(0.0, 0.28, body_u)
-            var head_glow := exp(-p.distance_squared_to(hood_center) / (2.0 * 10.0 * 10.0))
+            var head_glow := exp(-p.distance_squared_to(hood_center) / (2.0 * 7.0 * 7.0))
             var along := (p - hood_center).dot(forward)
             var cross := (p - hood_center).dot(side)
-            var head_shape := sqrt(pow(along / 13.0, 2.0) + pow(cross / 10.5, 2.0))
+            var muzzle_taper := 1.0 - 0.65 * smoothstep(-0.2, 1.0, along / 21.0)
+            var head_shape := sqrt(pow(along / 21.0, 2.0) + pow(cross / (8.2 * muzzle_taper), 2.0))
             var hood_fill := 1.0 - smoothstep(0.80, 1.06, head_shape)
             var hood_rim := exp(-pow((head_shape - 0.98) * 7.0, 2.0))
             var outer := 0.23 * exp(-nearest2 / (2.0 * pow(width + 15.0, 2.0)))
@@ -147,10 +148,10 @@ func _bake_snake(coil: bool, frame: int, count: int) -> Texture2D:
             var weight := outer + mid + core
             if weight < 0.007 and hood_fill < 0.003 and hood_rim < 0.003: continue
             var tint := (OUTER * outer + JADE * mid + HOT * core) / maxf(weight, 0.001)
-            tint = tint.lerp(Color("1e6049"), hood_fill * 0.82)
-            tint = tint.lerp(Color("93e8b0"), hood_rim * 0.62)
+            tint = tint.lerp(Color("164a36"), hood_fill * 0.90)
+            tint = tint.lerp(Color("7bcf9a"), hood_rim * 0.42)
             var eye_d2 := minf(p.distance_squared_to(eye1), p.distance_squared_to(eye2))
-            var glint := 1.00 * exp(-eye_d2 / (2.0 * 1.48 * 1.48))
+            var glint := 0.98 * exp(-eye_d2 / (2.0 * 1.15 * 1.15))
             tint = tint.lerp(EYE, clampf(glint, 0.0, 1.0))
             var tongue := 0.0
             if p.distance_squared_to(head) < 880.0:
