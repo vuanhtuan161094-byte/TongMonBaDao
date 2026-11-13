@@ -313,8 +313,8 @@ func _single_trail(t: float) -> void:
 
 
 func _single_charge(t: float) -> void:
-    var k := _smooth(t / 0.145) *
-        (1.0 - _smooth((t - 0.232) / 0.024))
+    var k: float = (_smooth(t / 0.145) *
+        (1.0 - _smooth((t - 0.232) / 0.024)))
     if k < 0.003:
         return
     var focus := start_point()
