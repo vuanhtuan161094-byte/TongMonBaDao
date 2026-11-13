@@ -38,3 +38,18 @@ Actual native Godot frames and same-clock R2/R3 and R4/R5 videos were inspected 
 
 Strict scope boundary: exactly 5 new isolated VFX laboratory/document/test/workflow paths versus original head 025a52a1, and iterative modifications confined to VFX lab script/test. No damage, hit, HP, real target selection, DoT/status, Combat V2, V6.3 gate, SaveService, PvE, economy, or AI modifications. No rig. No unlicensed external art.
 Windows and Android physical QA, crowded combat performance and live event-driven PvE presentation remain PENDING/HOLD. Unrelated v63-quyen-doc-matrix CI failure is not proof that this focused VFX test failed; no FULL game QA was claimed.
+
+## OWNER VISUAL REJECTION — 2026-11-13 (supersedes R5 self-scoring)
+
+Owner explicitly rejects the visual appearance of VFX-POI-01 R1-R5 as extremely poor. **R5 is ART_REWORK_REQUIRED / OWNER_VISUAL_REJECTED**, regardless of focused Godot PASS. This is not a release candidate, not a style source, and MUST NOT be reused as a template, color-only recolor, auto-enabled PvE effect, or mass-propagated to other skills. The earlier self-rating and 'candidate for owner review' are superseded.
+
+Root-cause correction from owner: stop guessing geometric snakes and piling Gaussian glow. Study *actual reference frame sequences and motion* before implementation. Prefer original frame/flipbook/sprite-backed 2D silhouette, separated from softer light and contact particles; a luminous head alone does not make an animal silhouette.
+
+Verified reference assets already in PR #72, with provenance caveat:
+- `docs/operations/vfx_reference/TMB_VFX_Lab_4Skills_ORIGINAL.html`: owner-provided **U Minh Độc Xà** has dedicated `drawSnake` and `vfxSnake` routines (28 sample points, traveling head/tail, separate impact timing); this is a historical visual reference, not proof of commercial-quality artwork.
+- `godot/labs/combat_lab/combat_lab_vfx_v8_jian_serpent.gd` and `godot/labs/combat_lab/assets/poison_vfx/co_doc_gu_serpent.png`: earlier distinct cobra sprite, body/head/eyes/fangs; inspect actual mask and texture quality at 1x before choosing.
+- `godot/assets/combat_v4/jx1_skill_fx/fx_manifest.json`: verified Wudu #63 *impact* 13 frames × 56 ms, but Wudu #63 is poison palm, **NOT** the exact 'Xà Ảnh Quấn Mạch' skill. Wudang #158 has 10 precast,17 cast,8 impact frames; those are distinct rhythm references, not snake art.
+- `godot/assets/combat_v4/source_vl/vfx_manifest.json`: sword cast 36 frames × 30ms and hit 21 frames × 30ms, reference for event sequencing not a poison serpent.
+- `docs/operations/VFX18_JX_SOURCEA_LIGHT_LANGUAGE_RESEARCH_20261113.md`: Unity Source A animation data is metadata/partial extraction, **NOT** confirmed finished runnable VFX. External JX/Kiếm Thế/VL raw sprites have rights **UNVERIFIED**; inspection/analysis only, do not redistribute them as original game content.
+
+**New quality gate before ANY remake:** identify a specific reference video/frame sequence for *a serpent* (not just generic green combat), compile keyed timestamps at consistent scale, then create a NEW independent sprite-based/Godot prototype with side-by-side source/prototype video, one fixed target, and sample at native 1280×720. Do not alter R5 to hide this rejection with another glow parameter. No Godot R6, no art approval, no PvE integration is claimed by this rejection record. All combat/save/economy rules remain locked.
