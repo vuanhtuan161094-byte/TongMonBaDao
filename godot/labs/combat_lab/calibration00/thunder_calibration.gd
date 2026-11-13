@@ -4,7 +4,6 @@ extends Control
 ## Original first-demo rhythm: six 0.31s-spaced strikes, 0.34s each.
 ## Three locked lab contacts (each revisited twice); no fourth target can receive a flash.
 const RIG = preload("res://labs/combat_lab/combat_lab_actor_rig_v2.gd")
-const FEATHER = preload("res://labs/combat_lab/calibration00/thunder_feather.gdshader")
 const CASTER := Vector2(380.0, 428.0)
 const CONTACTS := [
     Vector2(740.0, 309.0),
@@ -26,7 +25,6 @@ const PURPLE := Color("795fff")
 var elapsed := 0.0
 var paused := false
 var _layers: Array = []
-var _texture: Texture2D
 var _radial: Texture2D
 var _title: Label
 var _footer: Label
@@ -54,10 +52,13 @@ static func visual_pulse(age: float) -> float:
 func _ready() -> void:
     custom_minimum_size = RENDER_SIZE
     mouse_filter = Control.MOUSE_FILTER_IGNORE
-    _texture = _make_white_texture()
     _radial = _make_radial_texture()
-    for i in range(STRIKE_COUNT + 1):
-        _layers.append(_new_three_layer_beam())
+    # Prebaked original distance-to-polyline masks: one sprite per discharge.
+    # No ShaderMaterial-wide Line2D joints (R2 produced triangle seams).
+    for beat in range(STRIKE_COUNT):
+        var sample_time := STRIKE_START + float(beat) * STRIKE_SPACING + 0.12
+        _layers.append(_new_distance_baked_beam(_beam_path(beat, sample_time)))
+    _layers.append(_new_distance_baked_beam(_relay_path(3.12)))
     _title = Label.new()
     _title.position = Vector2(29.0, 19.0)
     _title.add_theme_font_size_override("font_size", 27)
@@ -73,11 +74,6 @@ func _ready() -> void:
     _update_beams()
     set_process(true)
 
-func _make_white_texture() -> Texture2D:
-    var im := Image.create(2, 2, false, Image.FORMAT_RGBA8)
-    im.fill(Color.WHITE)
-    return ImageTexture.create_from_image(im)
-
 func _make_radial_texture() -> Texture2D:
     var im := Image.create(128, 128, false, Image.FORMAT_RGBA8)
     for y in range(128):
@@ -89,33 +85,63 @@ func _make_radial_texture() -> Texture2D:
             im.set_pixel(x, y, Color(1.0, 1.0, 1.0, maxf(alpha, 0.0)))
     return ImageTexture.create_from_image(im)
 
-func _new_three_layer_beam() -> Array:
-    var result: Array = []
-    var widths := [110.0, 44.0, 6.2]
-    var colors := [PURPLE, LAVENDER, WHITE]
-    var alphas := [0.30, 0.68, 0.98]
-    var feathers := [2.8, 3.8, 1.7]
-    for i in range(3):
-        var line := Line2D.new()
-        line.width = widths[i]
-        line.default_color = colors[i]
-        line.texture = _texture
-        line.texture_mode = Line2D.LINE_TEXTURE_STRETCH
-        line.joint_mode = Line2D.LINE_JOINT_ROUND
-        line.begin_cap_mode = Line2D.LINE_CAP_ROUND
-        line.end_cap_mode = Line2D.LINE_CAP_ROUND
-        line.round_precision = 16
-        line.antialiased = true
-        line.z_index = 4 + i
-        var mat := ShaderMaterial.new()
-        mat.shader = FEATHER
-        mat.set_shader_parameter("feather", feathers[i])
-        line.material = mat
-        line.set_meta("base_alpha", alphas[i])
-        line.visible = false
-        add_child(line)
-        result.append(line)
-    return result
+func _new_distance_baked_beam(path: PackedVector2Array) -> Sprite2D:
+    # Generate a LOCAL 1x mask for the whole bent stroke, not independent
+    # wide segment quads. The analytic distance-to-polyline Gaussian is
+    # continuous at every kink, unlike the rejected Line2D R2 geometry.
+    var low := Vector2(100000.0, 100000.0)
+    var high := Vector2(-100000.0, -100000.0)
+    for p in path:
+        low.x = minf(low.x, p.x)
+        low.y = minf(low.y, p.y)
+        high.x = maxf(high.x, p.x)
+        high.y = maxf(high.y, p.y)
+    var origin := Vector2(floorf(low.x - 67.0), floorf(low.y - 67.0))
+    var w := ceili(high.x - origin.x + 67.0)
+    var h := ceili(high.y - origin.y + 67.0)
+    var image := Image.create(w, h, false, Image.FORMAT_RGBA8)
+    image.fill(Color.TRANSPARENT)
+    var a: Array[Vector2] = []
+    var d: Array[Vector2] = []
+    var invlen: Array[float] = []
+    for j in range(path.size() - 1):
+        var p0: Vector2 = path[j]
+        var delta: Vector2 = path[j + 1] - p0
+        a.append(p0)
+        d.append(delta)
+        invlen.append(1.0 / maxf(0.0001, delta.length_squared()))
+    for y in range(h):
+        for x in range(w):
+            var pixel := origin + Vector2(float(x) + 0.5, float(y) + 0.5)
+            var distance2 := 1.0e20
+            for j in range(a.size()):
+                var proj := clampf((pixel - a[j]).dot(d[j]) * invlen[j], 0.0, 1.0)
+                var nearest := a[j] + d[j] * proj
+                distance2 = minf(distance2, pixel.distance_squared_to(nearest))
+            # Original Canvas shadowBlur recreated with true spatial falloff.
+            var outer := 0.23 * exp(-distance2 / (2.0 * 24.0 * 24.0))
+            var middle := 0.61 * exp(-distance2 / (2.0 * 8.5 * 8.5))
+            var center := 1.01 * exp(-distance2 / (2.0 * 1.85 * 1.85))
+            var sum := outer + middle + center
+            if sum < 0.002:
+                continue
+            var tint := (PURPLE * outer + LAVENDER * middle + WHITE * center) / sum
+            image.set_pixel(x, y, Color(tint.r, tint.g, tint.b,
+                clampf(sum, 0.0, 1.0)))
+    var sprite := Sprite2D.new()
+    sprite.texture = ImageTexture.create_from_image(image)
+    sprite.centered = false
+    sprite.position = origin
+    sprite.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+    sprite.region_enabled = true
+    sprite.region_rect = Rect2(0.0, 0.0, float(w), float(h))
+    var material := CanvasItemMaterial.new()
+    material.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
+    sprite.material = material
+    sprite.z_index = 9
+    sprite.visible = false
+    add_child(sprite)
+    return sprite
 
 func _beam_path(beat: int, t: float) -> PackedVector2Array:
     var contact := selected_contact(beat) + Vector2(0.0, -42.0)
@@ -147,13 +173,19 @@ func _reveal_path(points: PackedVector2Array, reveal: float) -> PackedVector2Arr
     return result
 
 func _put_beam(slot: int, path: PackedVector2Array, strength: float) -> void:
-    var lines: Array = _layers[slot]
+    var sprite: Sprite2D = _layers[slot]
     var available := strength > 0.003 and path.size() >= 2
-    for line in lines:
-        line.visible = available
-        if available:
-            line.points = path
-            line.modulate.a = float(line.get_meta("base_alpha")) * strength
+    sprite.visible = available
+    if not available:
+        return
+    sprite.modulate.a = strength
+    var reveal := 1.0
+    if slot < STRIKE_COUNT:
+        var age := strike_age(slot, elapsed)
+        reveal = clampf((age + 0.008) / 0.048, 0.0, 1.0)
+    sprite.region_rect = Rect2(0.0, 0.0,
+        float(sprite.texture.get_width()),
+        maxf(1.0, float(sprite.texture.get_height()) * reveal))
 
 func _relay_path(t: float) -> PackedVector2Array:
     var a: Vector2 = CONTACTS[0] + Vector2(0.0, -43.0)
@@ -173,9 +205,8 @@ func _update_beams() -> void:
             _put_beam(beat, PackedVector2Array(), 0.0)
             continue
         # A short downward 48ms reveal; after arrival the bolt holds and flickers.
-        var reveal := clampf((age + 0.008) / 0.048, 0.0, 1.0)
         var power := visual_pulse(age) * (0.90 + 0.10 * sin(age * 96.0))
-        _put_beam(beat, _reveal_path(_beam_path(beat, elapsed), reveal), power)
+        _put_beam(beat, _beam_path(beat, elapsed), power)
     # One faint relay AFTER the primary strikes; never a web of six lines.
     var relay_age := elapsed - 3.065
     if relay_age >= 0.0 and relay_age < 0.16:
