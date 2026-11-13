@@ -178,6 +178,24 @@ func _crescent_mode(t: float) -> void:
                 _arc_tip(at, age, strength, float(slot))
                 if wave == 2:
                     _hit_sparks(at, age, strength * 0.45, slot, true)
+    # AOE readability: one LARGE, controlled saber crescent per volley.
+    # This is not a new hit; only the three approved victims get contact cuts.
+    for wave in range(3):
+        var contact := impact_window(wave, 1).x
+        var age := (t - contact) / 0.285
+        if age < 0.0 or age >= 1.0:
+            continue
+        var body := (0.30 if wave == 0 else
+            (0.47 if wave == 1 else 0.62)) * ink_alpha(age)
+        var center := Vector2(916.0, 388.0)
+        var radius := 132.0 + 23.0 * ease_out(age)
+        _crescent(center + Vector2(-6.0, 4.0), radius, 88.0 + 13.0 * age,
+            -2.83, 0.38, body, 23.0, BLUE)
+        _crescent(center, radius, 86.0 + 12.0 * age,
+            -2.77, 0.43, body * 0.88, 9.0, CYAN)
+        _crescent(center - Vector2(15.0, 7.0), radius * 0.83,
+            70.0 + 9.0 * age, -2.75, 0.40,
+            body * 0.22, 2.3, GOLD)
 
 func _crescent(at: Vector2, rx: float, ry: float, angle_a: float,
         angle_b: float, alpha: float, body_width: float, hue: Color) -> void:
@@ -232,6 +250,22 @@ func _afterimage_mode(t: float) -> void:
                 _oblique_cut(at, age, a, slot)
                 if wave == 2:
                     _hit_sparks(at, age, a * 0.7, slot, false)
+    # Strong diagonal master stroke across the 3-target footprint:
+    # one visible directional axis, not 9 independent glowing circles.
+    for wave in range(3):
+        var contact := impact_window(wave, 1).x
+        var age := (t - contact) / 0.31
+        if age < 0.0 or age >= 1.0:
+            continue
+        var alpha := (0.32 if wave == 0 else
+            (0.48 if wave == 1 else 0.74)) * ink_alpha(age)
+        _oblique_cut(Vector2(914.0, 388.0), age, alpha, 1, 3.0)
+        var direction := Vector2(0.88, -0.48)
+        draw_line(Vector2(914.0, 388.0) - direction * 130.0 +
+            direction.orthogonal() * 17.0,
+            Vector2(914.0, 388.0) + direction * 128.0 +
+            direction.orthogonal() * 17.0,
+            _tint(BLUE, alpha * 0.16), 3.0, true)
 
 func _approach(victim: Vector2, u: float, wave: int,
         slot: int, afterimage: bool) -> void:
@@ -245,7 +279,7 @@ func _approach(victim: Vector2, u: float, wave: int,
     if fade < 0.01:
         return
     var body := (0.7 if afterimage else 0.4) * fade
-    var size := 38.0 if afterimage else 27.0
+    var size := 61.0 if afterimage else 49.0
     if afterimage:
         for j in range(3, 0, -1):
             var ghost := p - direction * float(j) * 15.0
@@ -271,27 +305,28 @@ func _tapered_ray(tip: Vector2, dir: Vector2, normal: Vector2,
     ]), _tint(color, a))
 
 func _oblique_cut(at: Vector2, age: float, alpha: float,
-        slot: int) -> void:
+        slot: int, scale_factor: float = 1.0) -> void:
     # A single strong diagonal sword stroke; no opaque, full-body white flash.
     var axis := Vector2(0.88, -0.48).rotated(float(slot - 1) * 0.10)
     var n := axis.orthogonal()
-    var spread := 35.0 + 15.0 * ease_out(age)
+    var spread := (35.0 + 15.0 * ease_out(age)) * scale_factor
     var start := at - axis * spread
     var end := at + axis * spread
-    var taper := 6.5 * (1.0 - 0.72 * age)
+    var taper := 6.5 * scale_factor * (1.0 - 0.72 * age)
     draw_colored_polygon(PackedVector2Array([
         start, at - n * taper * 1.5, end,
         at + n * taper * 1.5
     ]), _tint(BLUE, alpha * 0.35))
-    draw_line(start, end, _tint(CYAN, alpha * 0.76), 3.6, true)
+    draw_line(start, end, _tint(CYAN, alpha * 0.76),
+        minf(6.8, 3.6 * scale_factor), true)
     draw_line(start + axis * 8.0, end - axis * 8.0,
-        _tint(ICE, alpha * 0.84), 1.4, true)
+        _tint(ICE, alpha * 0.84), minf(2.8, 1.4 * scale_factor), true)
     # A modest ink-blue echo carries motion while preserving monster art.
     if age > 0.08:
         var shift := n * (6.0 + age * 9.0)
         draw_line(start + shift, end + shift,
             _tint(BLUE, alpha * 0.26), 2.3, true)
-    var rr := 19.0 + age * 28.0
+    var rr := (19.0 + age * 28.0) * scale_factor
     draw_arc(at + Vector2(0.0, 25.0), rr,
         -2.4, -0.14, 24, _tint(CYAN, alpha * 0.19), 1.3, true)
 

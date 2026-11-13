@@ -63,6 +63,7 @@ jobs:
           bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://labs/combat_lab/research01/research01_arena.gd 2>&1 | tee "$RUNNER_TEMP/vfx_research01/parse.log"
           bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/labs/combat_lab/research01_contract_test.gd 2>&1 | tee "$RUNNER_TEMP/vfx_research01/contract.log"
           grep -q 'VFX_RESEARCH01_FOCUSED_RESULT=PASS' "$RUNNER_TEMP/vfx_research01/contract.log"
+          git diff --name-only | LC_ALL=C sort -u > "$RUNNER_TEMP/vfx_research01/post_import_diff_paths.txt"
       - name: "Godot actual 1280x720 scenes: baseline, crescent, afterimage"
         shell: bash
         run: |
@@ -98,9 +99,9 @@ jobs:
           REEBOO|REEBO0/godot-stylized-2d-vfx-lite|0fb078c21e463fe16e93ee25dbb8ca970196e2d3|.|res://demo/demo.tscn|MIT
           GDQuest|gdquest-demos/godot-visual-effects|647a8f1bcecd0b8634f2abe045abb8433b3b3149|godot|res://main/demo_selector.tscn|code MIT / art CC-BY-NC-SA
           PSC|PSCactux/godot-effects-lab|6af3c856ad8745a655121d11d55a60a03201a145|.|res://effects/juice/juice.tscn|MIT
-          Burst|uzkbwza/BurstParticles2D|f0fa6e06fa01d975bac0cc5f3f23375d0ae4360b|.|res://BurstParticles2D-demo/MultiParticleExample.tscn|MIT
+          Burst|uzkbwza/BurstParticles2D|f0fa6e06fa01d975bac0cc5f3f23375d0ae4360b|.|res://addons/BurstParticles2D/BurstParticles2D-demo/MultiParticleExample1.tscn|MIT
           EOF
-          while IFS='|' read -r name remote sha subdir scene license; do
+          while IFS='|' read -r name remote sha subdir scene license <&3; do
             localdir="/tmp/vfx_sources/$name"
             echo "REFERENCE=$name PIN=$sha LICENSE=$license" >> "$d/metadata.txt"
             if ! timeout 75 git clone --quiet --depth 1 "https://github.com/$remote.git" "$localdir" 2>>"$d/external_demo.log"; then
@@ -128,15 +129,19 @@ jobs:
             else
               echo "$name COMPAT_IMPORT_FAIL" >> "$d/external_demo.log"
             fi
-          done < "$d/external_repos.tsv"
+          done 3< "$d/external_repos.tsv"
           cd "$GITHUB_WORKSPACE"
       - name: Verify that VFX Lab did not alter external runtime
         shell: bash
         run: |
           set -euo pipefail
-          # The *only* checkout modification is the declared disposable shim.
-          git diff --name-only | tee "$RUNNER_TEMP/vfx_research01/checkout_diff.txt"
-          test "$(git diff --name-only)" = "godot/src/simulation/combat/v63_summon_skill_combat_system.gd"
+          # Godot import itself can normalize tracked legacy evidence files.
+          # Compare AFTER import with AFTER demos, not against a false clean checkout.
+          d="$RUNNER_TEMP/vfx_research01"
+          git diff --name-only | LC_ALL=C sort -u | tee "$d/checkout_diff.txt"
+          comm -13 "$d/post_import_diff_paths.txt" "$d/checkout_diff.txt" > "$d/unexpected_checkout_changes.txt"
+          test ! -s "$d/unexpected_checkout_changes.txt"
+          grep -Fxq 'godot/src/simulation/combat/v63_summon_skill_combat_system.gd' "$d/checkout_diff.txt"
           echo "VISUAL_ART_APPROVAL=OWNER_PENDING" >> "$RUNNER_TEMP/vfx_research01/metadata.txt"
           echo "WINDOWS_ANDROID_PHYSICAL=PENDING_USER" >> "$RUNNER_TEMP/vfx_research01/metadata.txt"
       - name: Upload raw Godot movie, still, external demo and QA logs

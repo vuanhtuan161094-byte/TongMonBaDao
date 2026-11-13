@@ -25,3 +25,8 @@ Do **not** merge, replace live VFX, adjust HP/skill/target selector/SaveService,
 
 ### Goal for acceptance
 Owner inspects raw videos at game size, compares **silhouette**, stroke direction, warm/cold hierarchy, occlusion of monster art, recognizability at 1×, and contact afterglow. Only a visually approved variant can move to a separately authorized PvE integration packet.
+
+### Owner-size visual review correction — RESEARCH01.1
+- First imported real 1280×720 Godot videos at SHA `c9a7dfed` compiled and rendered, but **A/B silhouette was too small** compared to V14 baseline. Visual assessment: NOT APPROVED, not "better" simply because less busy. Correction: A has one large AoE crescent per wave; B has one readable diagonal master-stroke and larger travelling trail. Both remain visually constrained with 3 legal mock targets; no new hits.
+- External repo probe used stdin consuming characters in the fourth loop and Burst example path was wrong. Use FD3 for pinned source list; corrected Burst example to `res://addons/BurstParticles2D/BurstParticles2D-demo/MultiParticleExample1.tscn`.
+- First workflow failed late because Godot import normalized preexisting tracked output files; focused contract, videos and REEBOO/GDQuest/PSC preview were generated. Final verifier now compares tracked changes **after** import to tracked changes **after** reference probes, while asserting the disposable summon shim. None of these generated checkout changes are committed.
