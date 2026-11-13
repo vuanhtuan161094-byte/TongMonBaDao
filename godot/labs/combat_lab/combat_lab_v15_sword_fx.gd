@@ -234,8 +234,7 @@ static func projectile_tip(index: int, caster: Vector2, victim: Vector2,
     var forward := (victim - origin).normalized()
     var end := contact_point(victim, forward, z)
     var n := forward.orthogonal()
-    var control := origin.lerp(end, 0.45) +
-        n * (float(lane) - 1.0) * (31.0 + float(wave) * 8.0) * z
+    var control := origin.lerp(end, 0.45) + n * (float(lane) - 1.0) * (31.0 + float(wave) * 8.0) * z
     var travel := flight_timing(index)
     var collision_t := contact_time(index)
     var u := _ease((t - travel.x) / maxf(0.001, collision_t - travel.x))
