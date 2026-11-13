@@ -2,7 +2,7 @@
 
 ## Execution update — 2026-11-14
 
-- PR #72 code commit: `f83328a57dea0eb1f8765479327292773ba2dbd0`; exact tested source tree: `796646ba94453762bb0d6dede093289a4fbbde2e`; latest fetched base: `8cdbff4bb520f6742b4cc6603a9d7ef66ff32f90`. The two commits since the prior fetch are separate Codex B VFX POI-02 R4 work and were preserved without file overlap.
+- PR #72 code commit: `f83328a57dea0eb1f8765479327292773ba2dbd0`; exact tested commit: `796646ba94453762bb0d6dede093289a4fbbde2e` (Git tree `9309ae42a4e2ae495289baa0bf0e1fe8d090eac3`); latest fetched base: `8cdbff4bb520f6742b4cc6603a9d7ef66ff32f90`. The two commits since the prior fetch are separate Codex B VFX POI-02 R4 work and were preserved without file overlap.
 - **P1:** 41 approved non-numeric lineage A/B policies / 82 IDs pass 1,447 deterministic checks using actual Combat V2 cast/release/effect receipts. Shape, cap, canonical resolver and numeric values unchanged. Lôi Phù radius-zero line matching uses the existing declared range.
 - **P2:** 196 runtime-equal pairs, no differences/missing in 796 checks. Classification stays `OWNER_APPROVAL_PENDING`; no new shared-design or balance decision was inferred.
 - **Godot:** official `4.7.2.stable.official.ed1daf0bf`, binary SHA-256 `AB1824F85BFD8E0E4128182C000C4003A3E042245B2967848D089B2A04B22424`; strict import and 23 focused/cumulative runs exit 0. Exact logs are in `logs/exact_796646ba/`; summary is `V63_EXACT_SHA_QA_MATRIX_20261114_FINAL.csv`.
