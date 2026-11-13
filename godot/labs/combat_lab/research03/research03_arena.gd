@@ -4,7 +4,6 @@ extends "res://labs/combat_lab/research01/research01_arena.gd"
 # This is strictly a MOCK/ART LAB, not a V6.3 skill or a combat event.
 const LIGHT_SHADER = preload("res://labs/combat_lab/research03/light_core_2d.gdshader")
 const HIT_SHADER = preload("res://labs/combat_lab/research03/light_contact_2d.gdshader")
-const SOIL: Texture2D = preload("res://art/source_a_env02a/env01_assets/terrain/stone_courtyard.png")
 const NEW_COLOR := Color("59d8fa")
 const SKY := Color("d9faff")
 const FIELD_CENTER := Vector2(620.0, 354.0)
@@ -196,6 +195,7 @@ func _draw() -> void:
     var t := fposmod(elapsed, CYCLE_SECONDS) / CYCLE_SECONDS
     _landscape()
     if study_mode == 0:
+        _single_trail(t)
         for i in range(MOBS.size()):
             var mob: Vector2 = MOBS[i]
             draw_circle(mob + Vector2(0.0, 10.0), 23.0,
@@ -228,15 +228,47 @@ func _draw() -> void:
 
 func _landscape() -> void:
     draw_rect(Rect2(0, 0, 1280, 720), Color("0b1220"))
-    # Actual Source A ground texture already tracked in this PR; LAB only.
-    # No game sprite or commercial source VFX texture is transplanted.
-    draw_texture_rect(SOIL, Rect2(17, 91, 1246, 526), false,
-        Color(0.48, 0.51, 0.56, 0.93))
-    draw_rect(Rect2(17, 91, 1246, 526), Color(0.035, 0.065, 0.115, 0.26))
+    # R1 ART FIX: a huge isometric courtyard PNG looked like a grey diamond,
+    # not an actual wide game map. Replace it with fine native gravel.
+    # FX itself uses only analytic light shaders, with NO source-game art.
+    draw_rect(Rect2(17, 91, 1246, 526), Color("3a3d3c"))
+    for layer in range(7):
+        var yy := 92.0 + float(layer) * 76.0
+        draw_rect(Rect2(17.0, yy, 1246.0, 76.0),
+            Color(0.03, 0.05, 0.06, 0.040 + float(layer % 2) * 0.013))
+    # Deterministic non-repeating stone/sand specs; static in all frames.
+    # Fine values keep beam halos clear and do not create a geometric grid.
+    for i in range(460):
+        var v := float(i)
+        var x := 25.0 + fposmod(v * 73.719 + sin(v * 3.73) * 123.6, 1228.0)
+        var y := 98.0 + fposmod(v * 47.217 + cos(v * 2.49) * 57.1, 510.0)
+        var r := 0.5 + fposmod(v * 0.337, 1.0) * 1.4
+        var shade := 0.10 + fposmod(v * 0.093, 1.0) * 0.12
+        draw_circle(Vector2(x, y), r,
+            Color(0.70, 0.74, 0.72, shade if i % 3 else shade * 0.55))
     draw_line(Vector2(18, 92), Vector2(1261, 92),
-        Color(0.25, 0.63, 0.87, 0.25), 1.2, true)
+        Color(0.25, 0.63, 0.87, 0.11), 1.2, true)
     draw_line(Vector2(18, 617), Vector2(1261, 617),
-        Color(0.25, 0.63, 0.87, 0.25), 1.2, true)
+        Color(0.25, 0.63, 0.87, 0.11), 1.2, true)
+
+func _single_trail(t: float) -> void:
+    var p := (t - PROJECTILE_START) / (CONTACT - PROJECTILE_START)
+    if p < 0.0 or p >= 1.0:
+        return
+    var fade := _smooth(p / 0.15) *
+        (1.0 - _smooth((p - 0.85) / 0.15))
+    if fade < 0.008:
+        return
+    # The moving tail is an actual sampled HISTORY of this curved route.
+    # Do NOT draw three straight arrows or a fake second projectile.
+    var path := PackedVector2Array()
+    for j in range(15):
+        var u := float(j) / 14.0
+        var hist := maxf(0.0, p - 0.23 + 0.23 * u)
+        path.append(flight_head(hist))
+    draw_polyline(path, Color(0.08, 0.31, 0.82, fade * 0.043), 25.0, true)
+    draw_polyline(path, Color(0.11, 0.66, 1.0, fade * 0.095), 11.0, true)
+    draw_polyline(path, Color(0.24, 0.89, 1.0, fade * 0.21), 3.1, true)
 
 func _single_charge(t: float) -> void:
     var k := _smooth(t / 0.18) * (1.0 - _smooth((t - 0.223) / 0.035))
@@ -263,20 +295,43 @@ func _orbit_ground(t: float) -> void:
     var k := _smooth(t / 0.11) * (1.0 - _smooth((t - 0.82) / 0.18))
     if k < 0.003:
         return
-    # Sparse elliptical floating line segments + very weak ground atmosphere.
-    # Distinct from a false AOE telegraph: no hit or radius in simulation.
+    # Art R1: real recent-position light trails, not a static UI ring.
+    # Transparent sanctuary at actor center; no fake target or AOE effect.
+    for i in range(ORBIT_COUNT):
+        var path := PackedVector2Array()
+        for j in range(9):
+            var q := float(j) / 8.0
+            var earlier := maxf(0.0, t - 0.073 + q * 0.073)
+            var track: Dictionary = orbit_streak(i, earlier)
+            var pos: Vector2 = track["position"]
+            path.append(pos + Vector2(0.0, 20.0))
+        var strength := k * (0.75 if i % 2 == 0 else 0.49)
+        draw_polyline(path, Color(0.09, 0.33, 0.97,
+            strength * 0.072), 24.0, true)
+        draw_polyline(path, Color(0.16, 0.68, 1.0,
+            strength * 0.15), 9.0, true)
+        draw_polyline(path, Color(0.66, 0.91, 1.0,
+            strength * 0.21), 1.9, true)
+        # Occasional trailing hot motes break up uniform orbital repetition.
+        if i % 3 == 0:
+            var echo: Dictionary = orbit_streak(i, maxf(0.0, t - 0.039))
+            var mote: Vector2 = echo["position"]
+            draw_circle(mote + Vector2(0.0, 20.0), 1.35,
+                Color(0.72, 0.93, 1.0, strength * 0.47))
+    # Only a few soft broken ground arcs; no constant thick white donuts.
     for ring in range(2):
-        var segment_len := 0.46 if ring == 0 else 0.32
-        var rad_x := 190.0 if ring == 0 else 239.0
-        var rad_y := 120.0 if ring == 0 else 150.0
-        for i in range(12):
-            var theta := float(i) * TAU / 12.0 + t * (1.0 if ring == 0 else -0.66)
+        var rx := 190.0 if ring == 0 else 239.0
+        var ry := 120.0 if ring == 0 else 150.0
+        for i in range(8):
+            var phase := float(i) / 8.0 * TAU + t * (
+                0.82 if ring == 0 else -0.53)
+            var sweep := 0.28 + 0.12 * sin(t * 9.0 + float(i) * 2.11)
             var poly := PackedVector2Array()
-            for n in range(5):
-                var a := theta + float(n) * segment_len / 4.0
-                poly.append(FIELD_CENTER + Vector2(cos(a) * rad_x,
-                    sin(a) * rad_y + 20.0))
-            draw_polyline(poly, Color(0.14, 0.37, 0.79,
-                k * (0.038 if ring == 0 else 0.023)), 7.5, true)
-            draw_polyline(poly, Color(0.24, 0.74, 1.0,
-                k * (0.16 if ring == 0 else 0.085)), 1.0, true)
+            for j in range(9):
+                var angle := phase + float(j) * sweep / 8.0
+                poly.append(FIELD_CENTER + Vector2(
+                    cos(angle) * rx, sin(angle) * ry + 20.0))
+            draw_polyline(poly, Color(0.11, 0.34, 0.76,
+                k * (0.035 if ring == 0 else 0.022)), 18.0, true)
+            draw_polyline(poly, Color(0.20, 0.70, 1.0,
+                k * (0.12 if ring == 0 else 0.07)), 2.0, true)

@@ -18,7 +18,7 @@ Source: owner-supplied 2.5D blue-white swirling qi image, current TMB V9 dynamic
 ## Original implementation files
 \`light_core_2d.gdshader\`: non-texture light blade, Gaussian hot core, soft blue/cyan sheath, flowing rear ribbons.
 \`light_contact_2d.gdshader\`: short oblique incisional spark, not giant disk.
-\`research03_arena.gd\`, \`research03_arena.tscn\`: separate 1280×720 LAB; modes key 1 one beam / key 2 orbit; SPACE replay and P pause. Uses existing Source A courtyard texture ONLY as test background, and existing actor rig. No source game sword/FX texture imported.
+\`research03_arena.gd\`, \`research03_arena.tscn\`: separate 1280×720 LAB; modes key 1 one beam / key 2 orbit; SPACE replay and P pause. R1 replaces the distracting diamond-shaped Source A courtyard test image with original fine low-contrast gravel; uses existing actor rig. No source-game sword/FX texture imported.
 \`godot/tests/labs/combat_lab/research03_contract_test.gd\`: local mock animation, 16-shard cap, no contact except one approved mock target, precontact stop, 2 shader resource checks.
 
 ## Mandatory QA gates
@@ -27,3 +27,8 @@ Source: owner-supplied 2.5D blue-white swirling qi image, current TMB V9 dynamic
 3. Inspect screenshots/filmstrip; contrast with owner's reference at 1×; where hard edges/blank orb/occlusion/weak contact appear, modify original art before owner review. Keep self-score and timestamp findings.
 4. Distinguish focused PASS vs clean full-repo PASS: isolated workflow historically applies uncommitted upstream summon parse shim; other workflows may remain red.
 5. Freeze explicit status OWNER_VISUAL_PENDING and PVE_INTEGRATION_HOLD. Windows/Android physical PENDING USER. A source rights issue is never resolved by generating an apparently similar sprite.
+
+## R1 artist iteration after first genuine Godot movie review
+- First video at code SHA `19408d4d58` / workflow `e2539cb4b2` returned Godot strict+focused **SUCCESS** (run #43393224687). **Not owner art approval**.
+- Examined actual full 1280×720 frames and both timeline sheets. The single sword-qi shader is light (no steel) and the orbit is truly animated, but the giant grey diamond courtyard background dominates, the single qi lacks fluid path-wake, and 16 orbit needles still read too separately as line segments. An ART_REWORK_REQUIRED note, even with technical PASS.
+- R1 modifies only original LAB scene `research03_arena.gd`: remove the giant courtyard texture; add static textured gravel; draw a softly feathered, history-sampled curved flight tail and moving orbit-history ribbons beneath the actor and analytic core/halo shader. Same approved mock target only; no new contact/damage. Re-test exact SHA, inspect real artifacts again.
