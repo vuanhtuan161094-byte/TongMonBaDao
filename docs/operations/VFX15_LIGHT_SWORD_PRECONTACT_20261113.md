@@ -59,3 +59,11 @@
 - Đã trực tiếp xem video Godot 7ab5 và 9 mốc thời gian (0.5–2.25 s); kiếm bay đã nét hơn, nhưng pha chém/va chạm cũ quá nhỏ tại 1280×720. Vì vậy thêm `godot/labs/combat_lab/combat_lab_v16_impact_glow.gdshader`: slash chéo lõi trắng, cung năng lượng nở, shock ellipse và 6 shard quang, điều khiển `event_age` từ chính `contact_time` V15.
 - Tăng hiệu lực thị giác cho đợt cuối, vẫn giữ ba nhịp; 9 additive contact quads LAB ONLY gắn vào đúng hit_targets. Không có authority HP/target/Save.
 - Thêm test compile, deterministic shader (không TIME), và 9 contact nodes. Full gameplay/Windows/Android remain pending.
+
+## 7. QA VFX16.2 / exact SHA / kiểm tra video (13/11/2026)
+
+- **Code SHA** `5eb4704e41080d13e284981b6921448376ba7839` (VFX16.2 impact + GDScript parser fix). `1683bf90` ban đầu FAIL cú pháp GDScript line 179 (expression sau `and`); đã sửa bằng ngoặc nhóm ở `5eb4704e`. Không được coi `1683bf90` là PASS.
+- **Official Godot 4.7.2 ISOLATED QA: SUCCESS** [run #43360734445](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/43360734445), artifact `vfx-v15-isolated-5eb4704e41080d13e284981b6921448376ba7839` ID `14008680718`. Engine import + GDScript parse, focus contracts, render Godot thật 1280×720 ở 60 FPS *video-encoding* đều hoàn thành. Môi trường QA áp dụng **một chú thích kiểu không commit** vào module summon trong checkout CI; kết quả không chứng minh clean full project.
+- **Full clean VFX workflow** [run #43360734586](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/43360734586) FAIL do upstream `v63_summon_skill_combat_system.gd` suy luận `candidate` (nguồn lỗi cũ); không thay/ẩn lỗi shared combat để làm xanh.
+- Đã tải artifact từ GitHub và xem **9 mốc thời gian** trong video, so V15.1 vs VFX16.2 ở frame 1.95s. Kiếm bay có quang xanh mượt hơn, va chạm sáng và nhìn rõ hơn; tuy nhiên **chồng nhiều đợt gây vùng trắng dày trên người quái**, cần owner visual review trước khi khóa art.
+- `LIVE_GAME_PVE=HOLD`; `ART_SOURCE=GODOT_SHADER_AND_CODE`; `OWNER_VISUAL_APPROVAL=PENDING`; `ANDROID_FPS=PENDING_USER`; `WINDOWS_GUI=PENDING_USER`. Giữ V14.2 và V15.1 làm đối chứng. Công việc tiếp: tùy chọn tinh chỉnh overlap/occlusion sau phản hồi trực quan, không tự tích hợp vào PvE hoặc làm mới VFX toàn bộ skills.
