@@ -1,4 +1,4 @@
-name: VFX V9 Poison + V14 JX-Inspired Sword-Qi QA
+name: VFX V9 Poison + V15 Ghost-Light Sword Contact QA
 
 on:
   workflow_dispatch:
@@ -13,6 +13,7 @@ on:
       - 'godot/labs/combat_lab/combat_lab_v12_sword_fx.gd'
       - 'godot/labs/combat_lab/combat_lab_v13_sword_fx.gd'
       - 'godot/labs/combat_lab/combat_lab_v14_sword_fx.gd'
+      - 'godot/labs/combat_lab/combat_lab_v15_sword_fx.gd'
       - 'godot/labs/combat_lab/combat_lab_v11_arcane_circle.gdshader'
       - 'godot/labs/combat_lab/combat_lab_v9_energy_light.gdshader'
       - 'godot/labs/combat_lab/combat_lab_v9_light_showcase.gd'
@@ -71,6 +72,7 @@ jobs:
             res://labs/combat_lab/combat_lab_v12_sword_fx.gd \
             res://labs/combat_lab/combat_lab_v13_sword_fx.gd \
             res://labs/combat_lab/combat_lab_v14_sword_fx.gd \
+            res://labs/combat_lab/combat_lab_v15_sword_fx.gd \
             res://labs/combat_lab/combat_lab_v9_light_showcase.gd \
             res://labs/combat_lab/combat_lab_poison_v4_layers.gd \
             res://labs/combat_lab/combat_lab_arena.gd \
@@ -87,7 +89,7 @@ jobs:
             -s res://tests/labs/combat_lab/v9_energy_light_contract_test.gd
           bash tools/qa/run_godot_strict.sh --headless --path godot \
             -s res://tests/labs/combat_lab/poison_v4_render_contract_test.gd
-      - name: Render genuine 1280x720 Godot V14 sword-qi and V9 serpent at 60 FPS
+      - name: Render genuine 1280x720 Godot V15 light sword contact and V9 serpent at 60 FPS
         shell: bash
         run: |
           set -euo pipefail
@@ -126,7 +128,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: vfx-v14-godot-${{ github.sha }}
+          name: vfx-v15-godot-${{ github.sha }}
           path: |
             ${{ runner.temp }}/vfx_v9/*.png
             ${{ runner.temp }}/vfx_v9/*.mp4
