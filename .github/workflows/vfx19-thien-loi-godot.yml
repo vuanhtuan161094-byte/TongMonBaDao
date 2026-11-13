@@ -64,8 +64,8 @@ jobs:
           d="$RUNNER_TEMP/vfx19"
           bash tools/qa/run_godot_strict.sh --headless --path godot --import 2>&1 | tee "$d/import.log"
           bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://labs/combat_lab/research04/thien_loi_arena.gd 2>&1 | tee "$d/parse_renderer.log"
-          bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://labs/combat_lab/research04/thien_loi_arena.gd 2>&1 | tee "$d/parse_scene.log"
-          bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/labs/combat_lab/research03_contract_test.gd 2>&1 | tee "$d/contract.log"
+          bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://labs/combat_lab/research04/thien_loi_vfx.gd 2>&1 | tee "$d/parse_scene.log"
+          bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/labs/combat_lab/research04_thien_loi_contract_test.gd 2>&1 | tee "$d/contract.log"
           grep -q 'VFX19_THIEN_LOI_FOCUSED_RESULT=PASS failures=0' "$d/contract.log"
           git diff --name-only | LC_ALL=C sort -u > "$d/post_import_diff_paths.txt"
       - name: Render genuine Godot 1280x720 rejected sword and two lightnings
