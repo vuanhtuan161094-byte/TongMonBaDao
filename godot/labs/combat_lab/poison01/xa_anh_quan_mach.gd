@@ -16,8 +16,8 @@ const FLIGHT_FRAMES := 9
 const COIL_FRAMES := 12
 const MASTER: Texture2D = preload("res://labs/character_family/assets/nu_doc_tu_v4_candidate/idle_4dir_APPROVED_UNCHANGED.png")
 const OUTER := Color("755ab0")
-const JADE := Color("64dca4")
-const HOT := Color("effff0")
+const JADE := Color("55d69a")
+const HOT := Color("d9ffde")
 const EYE := Color("f7ffaf")
 var elapsed := 0.0
 var paused := false
@@ -35,7 +35,7 @@ static func phase_at(t: float) -> String:
     return "idle"
 
 static func anchor() -> Vector2:
-    return VICTIM + Vector2(0.0, -57.0)
+    return VICTIM + Vector2(0.0, -44.0)
 
 static func visual_contact(t: float) -> bool:
     return t >= COIL_START and t < FADE_END
@@ -93,14 +93,15 @@ func _bake_snake(coil: bool, frame: int, count: int) -> Texture2D:
     var path: Array[Vector2] = []
     var k := float(frame) / float(maxi(1, count - 1))
     var reveal := (0.32 + 0.68 * k) if coil else 1.0
-    for i in range(29):
-        var u := float(i) / 28.0
+    var steps := 57 if coil else 35
+    for i in range(steps):
+        var u := float(i) / float(steps - 1)
         if coil:
             if u > reveal and i > 1: break
-            var theta := -2.8 + u * TAU * 1.72 + k * 0.17
-            var radius := 77.0 - 45.0 * u
+            var theta := -2.25 + u * TAU * 1.93 + k * 0.22
+            var radius := 51.0 - 21.0 * u + 4.5 * sin(theta * 3.2 + u * 2.1)
             path.append(Vector2(125.0 + cos(theta) * radius,
-                126.0 + sin(theta) * radius * 0.69 - 33.0 * u))
+                126.0 + sin(theta) * radius * 0.72 - 16.0 * u))
         else:
             var wave := 20.0 * sin(u * TAU * 1.32 - k * 1.4) * sin(u * PI)
             wave += 5.0 * sin(u * TAU * 2.4 + k * 2.3) * sin(u * PI)
@@ -116,8 +117,9 @@ func _bake_snake(coil: bool, frame: int, count: int) -> Texture2D:
     var head: Vector2 = path[path.size() - 1]
     var forward: Vector2 = (head - path[path.size() - 2]).normalized()
     var side := forward.orthogonal()
-    var eye1 := head - forward * 4.0 + side * 4.0
-    var eye2 := head - forward * 4.0 - side * 4.0
+    var eye1 := head - forward * 6.0 + side * 7.0
+    var eye2 := head - forward * 6.0 - side * 7.0
+    var hood_center := head - forward * 5.0
     for y in range(h):
         for x in range(w):
             var p := Vector2(float(x) + 0.5, float(y) + 0.5)
@@ -130,17 +132,25 @@ func _bake_snake(coil: bool, frame: int, count: int) -> Texture2D:
                     nearest2 = sample_d2
                     body_u = (float(j) + f) / float(maxi(1, path.size() - 1))
             var width := 1.6 + (5.2 if coil else 4.6) * smoothstep(0.0, 0.22, body_u)
-            var head_glow := exp(-p.distance_squared_to(head) / (2.0 * 8.0 * 8.0))
+            var head_glow := exp(-p.distance_squared_to(hood_center) / (2.0 * 10.0 * 10.0))
+            var along := (p - hood_center).dot(forward)
+            var cross := (p - hood_center).dot(side)
+            var head_shape := sqrt(pow(along / 13.0, 2.0) + pow(cross / 10.5, 2.0))
+            var hood_fill := 1.0 - smoothstep(0.80, 1.06, head_shape)
+            var hood_rim := exp(-pow((head_shape - 0.98) * 7.0, 2.0))
             var outer := 0.23 * exp(-nearest2 / (2.0 * pow(width + 15.0, 2.0)))
-            var mid := 0.72 * exp(-nearest2 / (2.0 * pow(width + 3.7, 2.0))) + 0.53 * head_glow
-            var core := 0.85 * exp(-nearest2 / (2.0 * pow(width * 0.30 + 0.65, 2.0))) + 0.32 * head_glow
+            var mid := 0.70 * exp(-nearest2 / (2.0 * pow(width + 3.7, 2.0))) + 0.14 * head_glow
+            var core := 0.49 * exp(-nearest2 / (2.0 * pow(width * 0.30 + 0.65, 2.0))) + 0.05 * head_glow
             var weight := outer + mid + core
-            if weight < 0.007: continue
-            var tint := (OUTER * outer + JADE * mid + HOT * core) / weight
+            if weight < 0.007 and hood_fill < 0.003 and hood_rim < 0.003: continue
+            var tint := (OUTER * outer + JADE * mid + HOT * core) / maxf(weight, 0.001)
+            tint = tint.lerp(Color("1e6049"), hood_fill * 0.82)
+            tint = tint.lerp(Color("93e8b0"), hood_rim * 0.62)
             var eye_d2 := minf(p.distance_squared_to(eye1), p.distance_squared_to(eye2))
-            var glint := 0.96 * exp(-eye_d2 / (2.0 * 1.2 * 1.2))
+            var glint := 1.00 * exp(-eye_d2 / (2.0 * 1.48 * 1.48))
             tint = tint.lerp(EYE, clampf(glint, 0.0, 1.0))
-            im.set_pixel(x, y, Color(tint.r, tint.g, tint.b, clampf(weight + glint, 0.0, 1.0)))
+            im.set_pixel(x, y, Color(tint.r, tint.g, tint.b,
+                clampf(weight + hood_fill * 0.91 + hood_rim * 0.32 + glint, 0.0, 1.0)))
     return ImageTexture.create_from_image(im)
 
 func _update_layers() -> void:
