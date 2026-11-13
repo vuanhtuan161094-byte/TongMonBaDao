@@ -8,7 +8,7 @@
   },
   "source_catalog": {
     "path": "res://data/combat/v63_palm_combat_catalog.json",
-    "git_blob_sha": "c2b2230e7f1391934625e2a6b482770cb133f2cf"
+    "git_blob_sha": "e016f4e312a796bc8a6ba644b71885aeafbe2fbe"
   },
   "school": {
     "id": "palm",

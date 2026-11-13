@@ -2,16 +2,19 @@
 
 **Audit date:** 2026-11-13. **Source HEAD:** `77d855c0c3660b42b5488decb16bdfc94d8c0279`; PR #72 Draft.
 
+## 2026-11-13 pairing erratum — DESIGN-AUDIT-P1
+The earlier matrix paired some `rare.a` nodes with `divine.b` because it matched only family, slot, tier and lineage. The corrected comparator additionally matches **`variant_type` and `rarity`**, and treats `rare_a` / `rare_b` as a distinct pair. This changes the full count from **236 to 237**, P2 from **195 to 196**, and corrects the previously erroneous rare IDs. The 41 P1 pairs are unchanged in count, but rare-a/rare-b exact IDs are corrected. Do not reuse or cite the original matrix without this correction.
+
 ## Result
 - 12 real `godot/data/combat/v63_*_combat_catalog.json` files inspected, **2,196/2,196 unique skill IDs**, **420 family IDs**. All 12 schools have 183 nodes and 35 families; Human/Immortal/Divine distribution 35/68/80.
 - Independent full graph check: 0 dangling parent IDs, 0 out-of-family parents, 0 parent cycles, 0 dangling replaces IDs. Candidate branch elements match all 27 candidate branches. 549 existing / 1,647 gated candidate nodes remain unchanged.
-- All **864 A/B lineage pairs matched**, including rare variants. Comparing **32 selected declared gameplay fields** gives **236 pairs with exact attribute equality**: **41 active/ultimate (P1)** and **195 passive/innate (P2)**.
+- All **864 A/B lineage pairs matched**, including rare variants. Comparing **32 selected declared gameplay fields** gives **237 pairs with exact attribute equality**: **41 active/ultimate (P1)** and **196 passive/innate (P2)**.
 - These are **potential design duplications, not proven identical behavior in every runtime context**. The comparison excludes names/lore, visuals, IDs, and cosmetic keys. It is not a balance simulation or proof of a bug; code may use additional lineage-specific routing.
 - No numeric balance changes, source approvals, VFX production edits, release flag changes or gameplay source changes were made. **V6.3 remains OFF**; source/manual/balance and owner acceptance are pending.
 
 | School | A/B pairs | Exact gameplay-field pairs | P1 active/ultimate | P2 passive/innate |
 | --- | ---: | ---: | ---: | ---: |
-| blade | 72 | 0 | 0 | 0 |
+| blade | 72 | 1 | 0 | 1 |
 | bow | 72 | 0 | 0 | 0 |
 | curse | 72 | 0 | 0 | 0 |
 | dual_blade | 72 | 39 | 0 | 39 |
@@ -23,7 +26,7 @@
 | summon | 72 | 45 | 6 | 39 |
 | sword | 72 | 0 | 0 | 0 |
 | talisman | 72 | 50 | 11 | 39 |
-| **Total** | **864** | **236** | **41** | **195** |
+| **Total** | **864** | **237** | **41** | **196** |
 
 ### Priority decisions
 **P1: active/ultimate exact equals (41 pairs).** Chưởng: 24 (18 active, 6 ultimate); Phù: 11 active; Triệu Hồi: 6 active. Examples:
@@ -31,7 +34,7 @@
 - `tmb.skill.talisman.loi_phu.active_01.immortal.a` vs `...b`
 - `tmb.skill.summon.kiem_linh.active_03.immortal.a` vs `...b`
 
-**P2: passive/innate exact equals (195 pairs).** Thương, Song Đao, Chưởng, Phù và Triệu Hồi: 39 each. Shared passives may be intentional and must not be silently treated as errors.
+**P2: passive/innate exact equals (196 pairs).** Thương, Song Đao, Chưởng, Phù và Triệu Hồi: 39 each, plus 1 rare passive Đao. Shared passives may be intentional and must not be silently treated as errors.
 
 **Owner approval required:** clarify whether A/B active/ultimate are required to differ mechanically or may be aesthetic options; decide whether shared passives are intentional. If changing gameplay, approve specific non-numeric behavior contracts and affected paths, then test Combat V2/AI/snapshots and re-audit. Do not invent or change numerical ratios/cooldowns/caps, provenance or source manuals before approval.
 

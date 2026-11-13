@@ -8,7 +8,7 @@
   },
   "source_catalog": {
     "path": "res://data/combat/v63_talisman_combat_catalog.json",
-    "git_blob_sha": "e86568d66d9112c606eef569927ee78a66020ef0"
+    "git_blob_sha": "0c73a6eed4b5f749752c051a0a924870e213d58e"
   },
   "school": {
     "id": "talisman",

@@ -48,7 +48,7 @@
         "b": "Tụ Diệm"
       },
       "lineage_stories_vi": {
-        "a": "Liên Diệm được truyền từ người cứu kho lương bằng những nét lửa khép kín, không để cháy lan. Nhánh ưu tiên vùng đánh hữu hạn có target cap của runtime. A nối các điểm trong vùng; B mở rộng một bước theo candidate. Không tự gây Burn hay thêm mục tiêu.",
+        "a": "Liên Diệm được truyền từ người cứu kho lương bằng những nét lửa khép kín, không để cháy lan. Nhánh ưu tiên vùng đánh hữu hạn có target cap của runtime. A dùng hình vùng khi kỹ năng quy định; B gom phù hỏa vào một mục tiêu được chọn. Không tự mở rộng bán kính hoặc tăng số đích. Không tự gây Burn hay thêm mục tiêu.",
         "b": "Tụ Diệm bắt nguồn từ người thợ rèn gom lửa vào một lò nhỏ để tránh thiêu xóm nhà. Nhánh nén phù hỏa vào một mục tiêu được chọn. A giữ đòn chính xác; B tăng sức nén theo candidate chưa duyệt. Màu lửa không tạo hiệu ứng cháy theo thời gian."
       },
       "story_vi": "Hỏa Phù có gốc từ một người dẫn lửa dập cháy kho lương mà không thiêu rụi mái nhà bên cạnh. Người ấy không tôn thờ ngọn lửa lớn; họ học vạch ranh giới để sức nóng dừng đúng nơi nguy hiểm. Nhân giới dùng từng phù đơn để đánh trúng hoặc mở vùng nhỏ. Tiên mạch phân thành Liên Diệm, viền phù nối các điểm trong phạm vi, và Tụ Diệm, gom sức nóng vào một đích. Thần ý phát triển đường viền hoặc sức nén nhưng vẫn tuân theo target cap và damage event. Vạn Phù Phần Thiên là motif của một vùng đánh hữu hạn; không tự sinh Burn, vật tư giấy hay mục tiêu mới.",
@@ -67,7 +67,7 @@
       },
       "lineage_stories_vi": {
         "a": "Khép Giới kể về người tu giữ kẻ lạc bước ở ngoài cổng để họ còn cơ hội quay đầu. Nhánh đặt dấu có chủ sở hữu và thời hạn; A phủ vùng nhỏ theo target cap, B giữ từng dấu gọn. Không khóa kỹ năng, không xóa dấu do người khác đặt.",
-        "b": "Lưu Phù bắt đầu từ người gác đường ghi lại dấu chân để đoàn lữ hành tránh nơi nguy hiểm. Nhánh theo dõi một mục tiêu bằng dấu thuộc người đặt. A giữ một dấu bền; B dồn hệ số hỗ trợ theo candidate. Dấu hết hạn tự mất và không làm giảm quyền hành động."
+        "b": "Lưu Phù bắt đầu từ người gác đường ghi lại dấu chân để đoàn lữ hành tránh nơi nguy hiểm. Nhánh theo dõi một mục tiêu bằng dấu thuộc người đặt. A dùng vùng dấu nhỏ ở những kỹ năng có hình vùng; B ưu tiên dấu đơn đích theo catalogue. Không tự kéo dài trạng thái hoặc tăng hệ số hỗ trợ. Dấu hết hạn tự mất và không làm giảm quyền hành động."
       },
       "story_vi": "Phong Ấn Phù do một tiền bối từng ngăn được kẻ lạc lối trước khi họ làm hại người khác. Ông nhận ra chưa cần giết nếu còn con đường hạn chế và cứu vãn; dấu phù phải có người chịu trách nhiệm, thời hạn và đường rút. Nhánh dùng dấu thuộc về người đặt để theo dõi một đích, có thể hỗ trợ đòn kế tiếp, hoặc thanh tẩy một trạng thái xấu thật trên đồng đội. Khép Giới ưu tiên vùng dấu nhỏ; Lưu Phù giữ dấu đơn đích lâu hơn theo candidate. Không khóa hành động, không biến dấu thành trói buộc, và không xóa trạng thái của chủ thể khác. Thái Huyền Phong Giới Phù là khung phù nhận diện bằng nét giấy đối xứng, không phải hiệu ứng cấm kỹ năng.",
       "signature_ultimate": "Thái Huyền Phong Giới Phù",
