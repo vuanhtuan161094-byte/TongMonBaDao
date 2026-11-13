@@ -1,0 +1,9 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 - Build 31.0.101.2125 - Compatibility - Using Device: Intel - Intel(R) Iris(R) Plus Graphics
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+V63_S9_VFX_RENDER_CAPTURE path=C:/Users/Admin/Documents/Codex/2026-10-26/t-ng-m-n-b-o/tmb-v63-ee67-qa/godot/outputs/v63_s9_summon_kiem_linh_vfx.png size=1280x720 branch=kiem_linh event=v63_summon_attack target=enemy_kiem_linh renderer=GodotViewport
+V63_S9_VFX_RENDER_CAPTURE path=C:/Users/Admin/Documents/Codex/2026-10-26/t-ng-m-n-b-o/tmb-v63-ee67-qa/godot/outputs/v63_s9_summon_linh_thu_vfx.png size=1280x720 branch=linh_thu event=v63_summon_attack target=enemy_linh_thu renderer=GodotViewport
+V63_S9_VFX_RENDER_CAPTURE path=C:/Users/Admin/Documents/Codex/2026-10-26/t-ng-m-n-b-o/tmb-v63-ee67-qa/godot/outputs/v63_s9_summon_khoi_loi_ho_phap_vfx.png size=1280x720 branch=khoi_loi_ho_phap event=v63_summon_attack target=enemy_khoi_loi_ho_phap renderer=GodotViewport
+V63_S9_SUMMON_RESULT PASS checks=2675 nodes=183 branches=3 runtime_actor_cap=6 release_gate=OFF vfx=CODE_DRAWN_RENDER_TESTED_OWNER_VISUAL_PENDING gui=PENDING

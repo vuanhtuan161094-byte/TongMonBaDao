@@ -1,3 +1,12 @@
+
+## LATEST V63 P1/P2 EXECUTION — 2026-11-14
+- PR #72 branch `integration/pve-p0-playable-ui-20261103`; fetched base `8cdbff4bb520f6742b4cc6603a9d7ef66ff32f90`. Preserved the two Codex B VFX POI-02 R4 commits (`ea41c88c`, `8cdbff4b`) without overlapping files. Code commit `f83328a57dea0eb1f8765479327292773ba2dbd0`; tested source tree `796646ba94453762bb0d6dede093289a4fbbde2e`.
+- P1: 41/41 approved non-numeric A/B policies / 82 IDs implemented through canonical Combat V2 cast/target flow. Deterministic regression 1,447 checks PASS; actual releases/effect receipts and lifecycle IDs; effect, shape, cap and damage resolver unchanged. No balance values changed.
+- P2: 196/196 runtime pairs equal, 0 differences, 0 missing in 796 checks. All remain `OWNER_APPROVAL_PENDING`; runtime equality does not establish design intent.
+- Official Godot `4.7.2.stable.official.ed1daf0bf`, binary SHA-256 `AB1824F85BFD8E0E4128182C000C4003A3E042245B2967848D089B2A04B22424`. Strict import and all 23 focused/cumulative runs exit 0, including D1, S0–S9, D4A–D7, Root V2 preview, P0 deterministic and isolated Save/Reload/async SaveService. Matrix/logs: `docs/qa/V63_P1_LINEAGE_CONTRACT_20261113/V63_EXACT_SHA_QA_MATRIX_20261114_FINAL.csv` and `logs/exact_796646ba/`.
+- S9 render: 2,675 checks and three 1280×720 GodotViewport captures on GL Compatibility. Captures are sparse code-drawn test scenes, not production art or owner visual/physical GUI acceptance.
+- V6.3/release gate OFF. No VFX assets/renderer/animation, SaveService, economy, source manual or numeric combat balance edited by this work. User save untouched; persistence QA used isolated APPDATA/LOCALAPPDATA.
+- Remaining: P2 design intent, owner visual review, physical GUI, Android and CI exact-SHA pending. Root-certificate-store warning appears in Windows logs; no parse/compile/load/shader errors.
 ## V63 DESIGN AUDIT P1 — 41 LINEAGE A/B CONTRACTS + LORE CORRECTIONS (2026-11-13)
 - **Audit starting HEAD:** `d2b3542b86872273cbc05f645396fff8995fe29a`; publication parent `b4767b7fe80fc6b236a98a05a222b0dbc52cba52` incorporates only unrelated VFX planning documents. PR #72 Draft.
 - **Corrected previous 864-pair audit:** match `variant_type` and `rarity` to avoid pairing rare A with normal Divine B. Correct total = **237 exact declared-field pairs**, 41 active/ultimate P1 + 196 passive/innate P2; original total 236 was a pairing bug. Full corrected CSV/README at `docs/qa/V63_DESIGN_AUDIT_20261113/`.

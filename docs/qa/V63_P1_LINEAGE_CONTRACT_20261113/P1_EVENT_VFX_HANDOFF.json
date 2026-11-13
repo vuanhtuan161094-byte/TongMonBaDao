@@ -1,0 +1,1429 @@
+{
+  "schema_version": 1,
+  "title": "V63 P1 authoritative Combat V2 event to VFX handoff",
+  "source_head_before_patch": "3fa62a545ea8087ee6745eb7b97a73f4549f6c3a",
+  "runtime_verified_code_sha": "f83328a57dea0eb1f8765479327292773ba2dbd0",
+  "runtime_qa_status": "LOCAL_QA_PASS",
+  "runtime_qa_version": "4.7.2.stable.official.ed1daf0bf",
+  "runtime_qa_godot_sha256": "AB1824F85BFD8E0E4128182C000C4003A3E042245B2967848D089B2A04B22424",
+  "p1_runtime_result": "PASS checks=1447 pairs=41 skills=82",
+  "p2_runtime_result": "PASS checks=796 rows=196 equal=196 existing_differences=0 missing=0 design_intent=OWNER_APPROVAL_PENDING",
+  "s9_render_result": "PASS checks=2675 branches=3 gate=OFF",
+  "contracts_total": 41,
+  "skills_total": 82,
+  "feature_gate": "OFF",
+  "vfx_production_status": "HOLD_OWNER_APPROVAL_PER_SKILL",
+  "renderer_or_assets_changed": false,
+  "event_id_contract": {
+    "cast_id": "encounter_id/actor_id/cast_sequence",
+    "cast_start": "cast_id/skill_cast",
+    "release": "cast_id/skill_release",
+    "direct_hit": "cast_id/hit/target_id/hit_index",
+    "effect_receipt": "cast_id/event_type/target_id[/detail]",
+    "dedupe_rule": "Consume each event_id once; never synthesize damage/status/summon from presentation."
+  },
+  "lifecycle_events": [
+    "skill_cast",
+    "skill_release",
+    "skill_miss",
+    "hit",
+    "v63_skill_hit",
+    "v63_palm_slow_applied",
+    "status_applied",
+    "heal",
+    "cleanse",
+    "v63_talisman_hit",
+    "v63_talisman_mark_applied",
+    "v63_summon_created",
+    "v63_summon_attack",
+    "v63_summon_expired"
+  ],
+  "related_summon_event_scope": {
+    "existing_events": [
+      "v63_summon_created",
+      "v63_summon_attack",
+      "v63_summon_expired",
+      "v63_palm_guard_absorbed"
+    ],
+    "event_id_status": "These existing generic summon actor events and the downstream v63_palm_guard_absorbed event currently have no cast_id/event_id. The six P1 summon-school skills in this contract are guard skills; their tested receipt is status_applied and they do not create a summon.",
+    "vfx_note": "Do not dedupe summon actor attack visuals as if an event_id existed; extend the actual source event contract before connecting event-driven summon attack VFX."
+  },
+  "evidence_paths": {
+    "p1_runtime_matrix": "P1_RUNTIME_QA_MATRIX.csv",
+    "p2_runtime_audit": "P2_RUNTIME_AUDIT.csv",
+    "exact_sha_matrix": "V63_EXACT_SHA_QA_MATRIX_20261114_FINAL.csv",
+    "s9_captures": "screenshots/",
+    "latest_exact_logs": "logs/exact_796646ba/"
+  },
+  "geometry_fields": [
+    "caster",
+    "target_id",
+    "skill_id",
+    "shape",
+    "target_limit",
+    "radius",
+    "caster_position_at_cast",
+    "target_position_at_cast",
+    "caster_position",
+    "target_position",
+    "center",
+    "line_origin",
+    "line_direction"
+  ],
+  "policies": [
+    {
+      "contract_id": "V63-P1-01",
+      "school": "palm",
+      "branch": "liet_duong_chuong",
+      "tier": "immortal",
+      "policy_a": "Dương Ấn: ưu tiên cụm kẻ địch hợp lệ ở gần trọng tâm giao chiến khi kỹ năng hỗ trợ hình vùng; với đòn single-target vẫn chỉ chọn một đối thủ hợp lệ.",
+      "policy_b": "Kim Ô: ưu tiên kẻ địch cứng cáp/đầu đàn hợp lệ để tập trung đúng một điểm chạm; kỹ năng circle sẵn có vẫn giữ nguyên hình và target cap, chỉ đổi điểm ưu tiên.",
+      "skills": [
+        {
+          "skill_id": "tmb.skill.palm.liet_duong_chuong.active_01.immortal.a",
+          "lineage": "a",
+          "name_vi": "Diệm Dương Khai Chưởng · Tiên Dương Ấn",
+          "effect": "damage",
+          "shape": "single_target",
+          "target_cap": 1,
+          "authoritative_effect_events": [
+            "hit",
+            "v63_skill_hit"
+          ]
+        },
+        {
+          "skill_id": "tmb.skill.palm.liet_duong_chuong.active_01.immortal.b",
+          "lineage": "b",
+          "name_vi": "Diệm Dương Khai Chưởng · Tiên Kim Ô",
+          "effect": "damage",
+          "shape": "single_target",
+          "target_cap": 1,
+          "authoritative_effect_events": [
+            "hit",
+            "v63_skill_hit"
+          ]
+        }
+      ]
+    },
+    {
+      "contract_id": "V63-P1-02",
+      "school": "palm",
+      "branch": "liet_duong_chuong",
+      "tier": "divine",
+      "policy_a": "Dương Ấn: ưu tiên cụm kẻ địch hợp lệ ở gần trọng tâm giao chiến khi kỹ năng hỗ trợ hình vùng; với đòn single-target vẫn chỉ chọn một đối thủ hợp lệ.",
+      "policy_b": "Kim Ô: ưu tiên kẻ địch cứng cáp/đầu đàn hợp lệ để tập trung đúng một điểm chạm; kỹ năng circle sẵn có vẫn giữ nguyên hình và target cap, chỉ đổi điểm ưu tiên.",
+      "skills": [
+        {
+          "skill_id": "tmb.skill.palm.liet_duong_chuong.active_01.divine.a",
+          "lineage": "a",
+          "name_vi": "Diệm Dương Khai Chưởng · Thần Dương Ấn",
+          "effect": "damage",
+          "shape": "single_target",
+          "target_cap": 1,
+          "authoritative_effect_events": [
+            "hit",
+            "v63_skill_hit"
+          ]
+        },
+        {
+          "skill_id": "tmb.skill.palm.liet_duong_chuong.active_01.divine.b",
+          "lineage": "b",
+          "name_vi": "Diệm Dương Khai Chưởng · Thần Kim Ô",
+          "effect": "damage",
+          "shape": "single_target",
+          "target_cap": 1,
+          "authoritative_effect_events": [
+            "hit",
+            "v63_skill_hit"
+          ]
+        }
+      ]
+    },
+    {
+      "contract_id": "V63-P1-03",
+      "school": "palm",
+      "branch": "liet_duong_chuong",
+      "tier": "immortal",
+      "policy_a": "Dương Ấn: ưu tiên cụm kẻ địch hợp lệ ở gần trọng tâm giao chiến khi kỹ năng hỗ trợ hình vùng; với đòn single-target vẫn chỉ chọn một đối thủ hợp lệ.",
+      "policy_b": "Kim Ô: ưu tiên kẻ địch cứng cáp/đầu đàn hợp lệ để tập trung đúng một điểm chạm; kỹ năng circle sẵn có vẫn giữ nguyên hình và target cap, chỉ đổi điểm ưu tiên.",
+      "skills": [
+        {
+          "skill_id": "tmb.skill.palm.liet_duong_chuong.active_03.immortal.a",
+          "lineage": "a",
+          "name_vi": "Kim Ô Truy Ảnh · Tiên Dương Ấn",
+          "effect": "damage",
+          "shape": "single_target",
+          "target_cap": 1,
+          "authoritative_effect_events": [
+            "hit",
+            "v63_skill_hit"
+          ]
+        },
+        {
+          "skill_id": "tmb.skill.palm.liet_duong_chuong.active_03.immortal.b",
+          "lineage": "b",
+          "name_vi": "Kim Ô Truy Ảnh · Tiên Kim Ô",
+          "effect": "damage",
+          "shape": "single_target",
+          "target_cap": 1,
+          "authoritative_effect_events": [
+            "hit",
+            "v63_skill_hit"
+          ]
+        }
+      ]
+    },
+    {
+      "contract_id": "V63-P1-04",
+      "school": "palm",
+      "branch": "liet_duong_chuong",
+      "tier": "divine",
+      "policy_a": "Dương Ấn: ưu tiên cụm kẻ địch hợp lệ ở gần trọng tâm giao chiến khi kỹ năng hỗ trợ hình vùng; với đòn single-target vẫn chỉ chọn một đối thủ hợp lệ.",
+      "policy_b": "Kim Ô: ưu tiên kẻ địch cứng cáp/đầu đàn hợp lệ để tập trung đúng một điểm chạm; kỹ năng circle sẵn có vẫn giữ nguyên hình và target cap, chỉ đổi điểm ưu tiên.",
+      "skills": [
+        {
+          "skill_id": "tmb.skill.palm.liet_duong_chuong.active_03.divine.a",
+          "lineage": "a",
+          "name_vi": "Kim Ô Truy Ảnh · Thần Dương Ấn",
+          "effect": "damage",
+          "shape": "single_target",
+          "target_cap": 1,
+          "authoritative_effect_events": [
+            "hit",
+            "v63_skill_hit"
+          ]
+        },
+        {
+          "skill_id": "tmb.skill.palm.liet_duong_chuong.active_03.divine.b",
+          "lineage": "b",
+          "name_vi": "Kim Ô Truy Ảnh · Thần Kim Ô",
+          "effect": "damage",
+          "shape": "single_target",
+          "target_cap": 1,
+          "authoritative_effect_events": [
+            "hit",
+            "v63_skill_hit"
+          ]
+        }
+      ]
+    },
+    {
+      "contract_id": "V63-P1-05",
+      "school": "palm",
+      "branch": "liet_duong_chuong",
+      "tier": "immortal",
+      "policy_a": "Dương Ấn: ưu tiên cụm kẻ địch hợp lệ ở gần trọng tâm giao chiến khi kỹ năng hỗ trợ hình vùng; với đòn single-target vẫn chỉ chọn một đối thủ hợp lệ.",
+      "policy_b": "Kim Ô: ưu tiên kẻ địch cứng cáp/đầu đàn hợp lệ để tập trung đúng một điểm chạm; kỹ năng circle sẵn có vẫn giữ nguyên hình và target cap, chỉ đổi điểm ưu tiên.",
+      "skills": [
+        {
+          "skill_id": "tmb.skill.palm.liet_duong_chuong.active_04.immortal.a",
+          "lineage": "a",
+          "name_vi": "Dương Ấn Khai Sơn · Tiên Dương Ấn",
+          "effect": "damage",
+          "shape": "single_target",
+          "target_cap": 1,
+          "authoritative_effect_events": [
+            "hit",
+            "v63_skill_hit"
+          ]
+        },
+        {
+          "skill_id": "tmb.skill.palm.liet_duong_chuong.active_04.immortal.b",
+          "lineage": "b",
+          "name_vi": "Dương Ấn Khai Sơn · Tiên Kim Ô",
+          "effect": "damage",
+          "shape": "single_target",
+          "target_cap": 1,
+          "authoritative_effect_events": [
+            "hit",
+            "v63_skill_hit"
+          ]
+        }
+      ]
+    },
+    {
+      "contract_id": "V63-P1-06",
+      "school": "palm",
+      "branch": "liet_duong_chuong",
+      "tier": "divine",
+      "policy_a": "Dương Ấn: ưu tiên cụm kẻ địch hợp lệ ở gần trọng tâm giao chiến khi kỹ năng hỗ trợ hình vùng; với đòn single-target vẫn chỉ chọn một đối thủ hợp lệ.",
+      "policy_b": "Kim Ô: ưu tiên kẻ địch cứng cáp/đầu đàn hợp lệ để tập trung đúng một điểm chạm; kỹ năng circle sẵn có vẫn giữ nguyên hình và target cap, chỉ đổi điểm ưu tiên.",
+      "skills": [
+        {
+          "skill_id": "tmb.skill.palm.liet_duong_chuong.active_04.divine.a",
+          "lineage": "a",
+          "name_vi": "Dương Ấn Khai Sơn · Thần Dương Ấn",
+          "effect": "damage",
+          "shape": "single_target",
+          "target_cap": 1,
+          "authoritative_effect_events": [
+            "hit",
+            "v63_skill_hit"
+          ]
+        },
+        {
+          "skill_id": "tmb.skill.palm.liet_duong_chuong.active_04.divine.b",
+          "lineage": "b",
+          "name_vi": "Dương Ấn Khai Sơn · Thần Kim Ô",
+          "effect": "damage",
+          "shape": "single_target",
+          "target_cap": 1,
+          "authoritative_effect_events": [
+            "hit",
+            "v63_skill_hit"
+          ]
+        }
+      ]
+    },
+    {
+      "contract_id": "V63-P1-07",
+      "school": "palm",
+      "branch": "liet_duong_chuong",
+      "tier": "immortal",
+      "policy_a": "Dương Ấn: ưu tiên cụm kẻ địch hợp lệ ở gần trọng tâm giao chiến khi kỹ năng hỗ trợ hình vùng; với đòn single-target vẫn chỉ chọn một đối thủ hợp lệ.",
+      "policy_b": "Kim Ô: ưu tiên kẻ địch cứng cáp/đầu đàn hợp lệ để tập trung đúng một điểm chạm; kỹ năng circle sẵn có vẫn giữ nguyên hình và target cap, chỉ đổi điểm ưu tiên.",
+      "skills": [
+        {
+          "skill_id": "tmb.skill.palm.liet_duong_chuong.ultimate.immortal.a",
+          "lineage": "a",
+          "name_vi": "Thái Dương Phần Thiên · Tiên Dương Ấn",
+          "effect": "damage",
+          "shape": "circle",
+          "target_cap": 3,
+          "authoritative_effect_events": [
+            "hit",
+            "v63_skill_hit"
+          ]
+        },
+        {
+          "skill_id": "tmb.skill.palm.liet_duong_chuong.ultimate.immortal.b",
+          "lineage": "b",
+          "name_vi": "Thái Dương Phần Thiên · Tiên Kim Ô",
+          "effect": "damage",
+          "shape": "circle",
+          "target_cap": 3,
+          "authoritative_effect_events": [
+            "hit",
+            "v63_skill_hit"
+          ]
+        }
+      ]
+    },
+    {
+      "contract_id": "V63-P1-08",
+      "school": "palm",
+      "branch": "liet_duong_chuong",
+      "tier": "divine",
+      "policy_a": "Dương Ấn: ưu tiên cụm kẻ địch hợp lệ ở gần trọng tâm giao chiến khi kỹ năng hỗ trợ hình vùng; với đòn single-target vẫn chỉ chọn một đối thủ hợp lệ.",
+      "policy_b": "Kim Ô: ưu tiên kẻ địch cứng cáp/đầu đàn hợp lệ để tập trung đúng một điểm chạm; kỹ năng circle sẵn có vẫn giữ nguyên hình và target cap, chỉ đổi điểm ưu tiên.",
+      "skills": [
+        {
+          "skill_id": "tmb.skill.palm.liet_duong_chuong.ultimate.divine.a",
+          "lineage": "a",
+          "name_vi": "Thái Dương Phần Thiên · Thần Dương Ấn",
+          "effect": "damage",
+          "shape": "circle",
+          "target_cap": 3,
+          "authoritative_effect_events": [
+            "hit",
+            "v63_skill_hit"
+          ]
+        },
+        {
+          "skill_id": "tmb.skill.palm.liet_duong_chuong.ultimate.divine.b",
+          "lineage": "b",
+          "name_vi": "Thái Dương Phần Thiên · Thần Kim Ô",
+          "effect": "damage",
+          "shape": "circle",
+          "target_cap": 3,
+          "authoritative_effect_events": [
+            "hit",
+            "v63_skill_hit"
+          ]
+        }
+      ]
+    },
+    {
+      "contract_id": "V63-P1-09",
+      "school": "palm",
+      "branch": "liet_duong_chuong",
+      "tier": "divine",
+      "policy_a": "Dương Ấn: ưu tiên cụm kẻ địch hợp lệ ở gần trọng tâm giao chiến khi kỹ năng hỗ trợ hình vùng; với đòn single-target vẫn chỉ chọn một đối thủ hợp lệ.",
+      "policy_b": "Kim Ô: ưu tiên kẻ địch cứng cáp/đầu đàn hợp lệ để tập trung đúng một điểm chạm; kỹ năng circle sẵn có vẫn giữ nguyên hình và target cap, chỉ đổi điểm ưu tiên.",
+      "skills": [
+        {
+          "skill_id": "tmb.skill.palm.liet_duong_chuong.ultimate.rare.a",
+          "lineage": "a",
+          "name_vi": "Thái Dương Phần Thiên · Dị phẩm Dương Ấn",
+          "effect": "damage",
+          "shape": "circle",
+          "target_cap": 3,
+          "authoritative_effect_events": [
+            "hit",
+            "v63_skill_hit"
+          ]
+        },
+        {
+          "skill_id": "tmb.skill.palm.liet_duong_chuong.ultimate.rare.b",
+          "lineage": "b",
+          "name_vi": "Thái Dương Phần Thiên · Dị phẩm Kim Ô",
+          "effect": "damage",
+          "shape": "circle",
+          "target_cap": 3,
+          "authoritative_effect_events": [
+            "hit",
+            "v63_skill_hit"
+          ]
+        }
+      ]
+    },
+    {
+      "contract_id": "V63-P1-10",
+      "school": "palm",
+      "branch": "han_ngoc_chuong",
+      "tier": "immortal",
+      "policy_a": "Băng Tâm: ưu tiên kẻ địch đang truy đuổi nhiều đồng đội trong tầm để cắt đường áp sát; hình circle chỉ dùng khi skill đang khai báo circle.",
+      "policy_b": "Hàn Nguyệt: ưu tiên mục tiêu nguy hiểm gần chủ lực để duy trì nhịp slow hữu hạn; giữ nguyên chống cộng dồn và hệ số Boss hiện tại.",
+      "skills": [
+        {
+          "skill_id": "tmb.skill.palm.han_ngoc_chuong.active_01.immortal.a",
+          "lineage": "a",
+          "name_vi": "Hàn Ngọc Chấn Mạch · Tiên Băng Tâm",
+          "effect": "damage",
+          "shape": "single_target",
+          "target_cap": 1,
+          "authoritative_effect_events": [
+            "hit",
+            "v63_skill_hit"
+          ]
+        },
+        {
+          "skill_id": "tmb.skill.palm.han_ngoc_chuong.active_01.immortal.b",
+          "lineage": "b",
+          "name_vi": "Hàn Ngọc Chấn Mạch · Tiên Hàn Nguyệt",
+          "effect": "damage",
+          "shape": "single_target",
+          "target_cap": 1,
+          "authoritative_effect_events": [
+            "hit",
+            "v63_skill_hit"
+          ]
+        }
+      ]
+    },
+    {
+      "contract_id": "V63-P1-11",
+      "school": "palm",
+      "branch": "han_ngoc_chuong",
+      "tier": "divine",
+      "policy_a": "Băng Tâm: ưu tiên kẻ địch đang truy đuổi nhiều đồng đội trong tầm để cắt đường áp sát; hình circle chỉ dùng khi skill đang khai báo circle.",
+      "policy_b": "Hàn Nguyệt: ưu tiên mục tiêu nguy hiểm gần chủ lực để duy trì nhịp slow hữu hạn; giữ nguyên chống cộng dồn và hệ số Boss hiện tại.",
+      "skills": [
+        {
+          "skill_id": "tmb.skill.palm.han_ngoc_chuong.active_01.divine.a",
+          "lineage": "a",
+          "name_vi": "Hàn Ngọc Chấn Mạch · Thần Băng Tâm",
+          "effect": "damage",
+          "shape": "single_target",
+          "target_cap": 1,
+          "authoritative_effect_events": [
+            "hit",
+            "v63_skill_hit"
+          ]
+        },
+        {
+          "skill_id": "tmb.skill.palm.han_ngoc_chuong.active_01.divine.b",
+          "lineage": "b",
+          "name_vi": "Hàn Ngọc Chấn Mạch · Thần Hàn Nguyệt",
+          "effect": "damage",
+          "shape": "single_target",
+          "target_cap": 1,
+          "authoritative_effect_events": [
+            "hit",
+            "v63_skill_hit"
+          ]
+        }
+      ]
+    },
+    {
+      "contract_id": "V63-P1-12",
+      "school": "palm",
+      "branch": "han_ngoc_chuong",
+      "tier": "immortal",
+      "policy_a": "Băng Tâm: ưu tiên kẻ địch đang truy đuổi nhiều đồng đội trong tầm để cắt đường áp sát; hình circle chỉ dùng khi skill đang khai báo circle.",
+      "policy_b": "Hàn Nguyệt: ưu tiên mục tiêu nguy hiểm gần chủ lực để duy trì nhịp slow hữu hạn; giữ nguyên chống cộng dồn và hệ số Boss hiện tại.",
+      "skills": [
+        {
+          "skill_id": "tmb.skill.palm.han_ngoc_chuong.active_03.immortal.a",
+          "lineage": "a",
+          "name_vi": "Hàn Tuyền Hồi Lưu · Tiên Băng Tâm",
+          "effect": "slow",
+          "shape": "single_target",
+          "target_cap": 1,
+          "authoritative_effect_events": [
+            "status_applied"
+          ]
+        },
+        {
+          "skill_id": "tmb.skill.palm.han_ngoc_chuong.active_03.immortal.b",
+          "lineage": "b",
+          "name_vi": "Hàn Tuyền Hồi Lưu · Tiên Hàn Nguyệt",
+          "effect": "slow",
+          "shape": "single_target",
+          "target_cap": 1,
+          "authoritative_effect_events": [
+            "status_applied"
+          ]
+        }
+      ]
+    },
+    {
+      "contract_id": "V63-P1-13",
+      "school": "palm",
+      "branch": "han_ngoc_chuong",
+      "tier": "divine",
+      "policy_a": "Băng Tâm: ưu tiên kẻ địch đang truy đuổi nhiều đồng đội trong tầm để cắt đường áp sát; hình circle chỉ dùng khi skill đang khai báo circle.",
+      "policy_b": "Hàn Nguyệt: ưu tiên mục tiêu nguy hiểm gần chủ lực để duy trì nhịp slow hữu hạn; giữ nguyên chống cộng dồn và hệ số Boss hiện tại.",
+      "skills": [
+        {
+          "skill_id": "tmb.skill.palm.han_ngoc_chuong.active_03.divine.a",
+          "lineage": "a",
+          "name_vi": "Hàn Tuyền Hồi Lưu · Thần Băng Tâm",
+          "effect": "slow",
+          "shape": "single_target",
+          "target_cap": 1,
+          "authoritative_effect_events": [
+            "status_applied"
+          ]
+        },
+        {
+          "skill_id": "tmb.skill.palm.han_ngoc_chuong.active_03.divine.b",
+          "lineage": "b",
+          "name_vi": "Hàn Tuyền Hồi Lưu · Thần Hàn Nguyệt",
+          "effect": "slow",
+          "shape": "single_target",
+          "target_cap": 1,
+          "authoritative_effect_events": [
+            "status_applied"
+          ]
+        }
+      ]
+    },
+    {
+      "contract_id": "V63-P1-14",
+      "school": "palm",
+      "branch": "han_ngoc_chuong",
+      "tier": "immortal",
+      "policy_a": "Băng Tâm: ưu tiên kẻ địch đang truy đuổi nhiều đồng đội trong tầm để cắt đường áp sát; hình circle chỉ dùng khi skill đang khai báo circle.",
+      "policy_b": "Hàn Nguyệt: ưu tiên mục tiêu nguy hiểm gần chủ lực để duy trì nhịp slow hữu hạn; giữ nguyên chống cộng dồn và hệ số Boss hiện tại.",
+      "skills": [
+        {
+          "skill_id": "tmb.skill.palm.han_ngoc_chuong.active_04.immortal.a",
+          "lineage": "a",
+          "name_vi": "Nguyệt Ảnh Phong Lộ · Tiên Băng Tâm",
+          "effect": "slow",
+          "shape": "single_target",
+          "target_cap": 1,
+          "authoritative_effect_events": [
+            "status_applied"
+          ]
+        },
+        {
+          "skill_id": "tmb.skill.palm.han_ngoc_chuong.active_04.immortal.b",
+          "lineage": "b",
+          "name_vi": "Nguyệt Ảnh Phong Lộ · Tiên Hàn Nguyệt",
+          "effect": "slow",
+          "shape": "single_target",
+          "target_cap": 1,
+          "authoritative_effect_events": [
+            "status_applied"
+          ]
+        }
+      ]
+    },
+    {
+      "contract_id": "V63-P1-15",
+      "school": "palm",
+      "branch": "han_ngoc_chuong",
+      "tier": "divine",
+      "policy_a": "Băng Tâm: ưu tiên kẻ địch đang truy đuổi nhiều đồng đội trong tầm để cắt đường áp sát; hình circle chỉ dùng khi skill đang khai báo circle.",
+      "policy_b": "Hàn Nguyệt: ưu tiên mục tiêu nguy hiểm gần chủ lực để duy trì nhịp slow hữu hạn; giữ nguyên chống cộng dồn và hệ số Boss hiện tại.",
+      "skills": [
+        {
+          "skill_id": "tmb.skill.palm.han_ngoc_chuong.active_04.divine.a",
+          "lineage": "a",
+          "name_vi": "Nguyệt Ảnh Phong Lộ · Thần Băng Tâm",
+          "effect": "slow",
+          "shape": "single_target",
+          "target_cap": 1,
+          "authoritative_effect_events": [
+            "status_applied"
+          ]
+        },
+        {
+          "skill_id": "tmb.skill.palm.han_ngoc_chuong.active_04.divine.b",
+          "lineage": "b",
+          "name_vi": "Nguyệt Ảnh Phong Lộ · Thần Hàn Nguyệt",
+          "effect": "slow",
+          "shape": "single_target",
+          "target_cap": 1,
+          "authoritative_effect_events": [
+            "status_applied"
+          ]
+        }
+      ]
+    },
+    {
+      "contract_id": "V63-P1-16",
+      "school": "palm",
+      "branch": "han_ngoc_chuong",
+      "tier": "immortal",
+      "policy_a": "Băng Tâm: ưu tiên kẻ địch đang truy đuổi nhiều đồng đội trong tầm để cắt đường áp sát; hình circle chỉ dùng khi skill đang khai báo circle.",
+      "policy_b": "Hàn Nguyệt: ưu tiên mục tiêu nguy hiểm gần chủ lực để duy trì nhịp slow hữu hạn; giữ nguyên chống cộng dồn và hệ số Boss hiện tại.",
+      "skills": [
+        {
+          "skill_id": "tmb.skill.palm.han_ngoc_chuong.ultimate.immortal.a",
+          "lineage": "a",
+          "name_vi": "Cửu Hàn Phong Nguyệt · Tiên Băng Tâm",
+          "effect": "slow",
+          "shape": "circle",
+          "target_cap": 3,
+          "authoritative_effect_events": [
+            "status_applied"
+          ]
+        },
+        {
+          "skill_id": "tmb.skill.palm.han_ngoc_chuong.ultimate.immortal.b",
+          "lineage": "b",
+          "name_vi": "Cửu Hàn Phong Nguyệt · Tiên Hàn Nguyệt",
+          "effect": "slow",
+          "shape": "circle",
+          "target_cap": 3,
+          "authoritative_effect_events": [
+            "status_applied"
+          ]
+        }
+      ]
+    },
+    {
+      "contract_id": "V63-P1-17",
+      "school": "palm",
+      "branch": "han_ngoc_chuong",
+      "tier": "divine",
+      "policy_a": "Băng Tâm: ưu tiên kẻ địch đang truy đuổi nhiều đồng đội trong tầm để cắt đường áp sát; hình circle chỉ dùng khi skill đang khai báo circle.",
+      "policy_b": "Hàn Nguyệt: ưu tiên mục tiêu nguy hiểm gần chủ lực để duy trì nhịp slow hữu hạn; giữ nguyên chống cộng dồn và hệ số Boss hiện tại.",
+      "skills": [
+        {
+          "skill_id": "tmb.skill.palm.han_ngoc_chuong.ultimate.divine.a",
+          "lineage": "a",
+          "name_vi": "Cửu Hàn Phong Nguyệt · Thần Băng Tâm",
+          "effect": "slow",
+          "shape": "circle",
+          "target_cap": 3,
+          "authoritative_effect_events": [
+            "status_applied"
+          ]
+        },
+        {
+          "skill_id": "tmb.skill.palm.han_ngoc_chuong.ultimate.divine.b",
+          "lineage": "b",
+          "name_vi": "Cửu Hàn Phong Nguyệt · Thần Hàn Nguyệt",
+          "effect": "slow",
+          "shape": "circle",
+          "target_cap": 3,
+          "authoritative_effect_events": [
+            "status_applied"
+          ]
+        }
+      ]
+    },
+    {
+      "contract_id": "V63-P1-18",
+      "school": "palm",
+      "branch": "han_ngoc_chuong",
+      "tier": "divine",
+      "policy_a": "Băng Tâm: ưu tiên kẻ địch đang truy đuổi nhiều đồng đội trong tầm để cắt đường áp sát; hình circle chỉ dùng khi skill đang khai báo circle.",
+      "policy_b": "Hàn Nguyệt: ưu tiên mục tiêu nguy hiểm gần chủ lực để duy trì nhịp slow hữu hạn; giữ nguyên chống cộng dồn và hệ số Boss hiện tại.",
+      "skills": [
+        {
+          "skill_id": "tmb.skill.palm.han_ngoc_chuong.ultimate.rare.a",
+          "lineage": "a",
+          "name_vi": "Cửu Hàn Phong Nguyệt · Dị phẩm Băng Tâm",
+          "effect": "slow",
+          "shape": "circle",
+          "target_cap": 3,
+          "authoritative_effect_events": [
+            "status_applied"
+          ]
+        },
+        {
+          "skill_id": "tmb.skill.palm.han_ngoc_chuong.ultimate.rare.b",
+          "lineage": "b",
+          "name_vi": "Cửu Hàn Phong Nguyệt · Dị phẩm Hàn Nguyệt",
+          "effect": "slow",
+          "shape": "circle",
+          "target_cap": 3,
+          "authoritative_effect_events": [
+            "status_applied"
+          ]
+        }
+      ]
+    },
+    {
+      "contract_id": "V63-P1-19",
+      "school": "palm",
+      "branch": "hoi_phong_chuong",
+      "tier": "immortal",
+      "policy_a": "Thanh Phong: trong tập đồng đội đủ điều kiện, ưu tiên người thiếu HP theo tỷ lệ hoặc cần giải trừ trạng thái thật; guard phải qua canonical shield.",
+      "policy_b": "Từ Huyền: ưu tiên điểm hỗ trợ bảo vệ nhiều đồng đội đang bị uy hiếp khi shape cho phép circle; single-target vẫn chữa/giải trừ/guard đúng một người.",
+      "skills": [
+        {
+          "skill_id": "tmb.skill.palm.hoi_phong_chuong.active_01.immortal.a",
+          "lineage": "a",
+          "name_vi": "Thanh Phong Hồi Khí · Tiên Thanh Phong",
+          "effect": "heal",
+          "shape": "single_target",
+          "target_cap": 1,
+          "authoritative_effect_events": [
+            "heal"
+          ]
+        },
+        {
+          "skill_id": "tmb.skill.palm.hoi_phong_chuong.active_01.immortal.b",
+          "lineage": "b",
+          "name_vi": "Thanh Phong Hồi Khí · Tiên Từ Huyền",
+          "effect": "heal",
+          "shape": "single_target",
+          "target_cap": 1,
+          "authoritative_effect_events": [
+            "heal"
+          ]
+        }
+      ]
+    },
+    {
+      "contract_id": "V63-P1-20",
+      "school": "palm",
+      "branch": "hoi_phong_chuong",
+      "tier": "divine",
+      "policy_a": "Thanh Phong: trong tập đồng đội đủ điều kiện, ưu tiên người thiếu HP theo tỷ lệ hoặc cần giải trừ trạng thái thật; guard phải qua canonical shield.",
+      "policy_b": "Từ Huyền: ưu tiên điểm hỗ trợ bảo vệ nhiều đồng đội đang bị uy hiếp khi shape cho phép circle; single-target vẫn chữa/giải trừ/guard đúng một người.",
+      "skills": [
+        {
+          "skill_id": "tmb.skill.palm.hoi_phong_chuong.active_01.divine.a",
+          "lineage": "a",
+          "name_vi": "Thanh Phong Hồi Khí · Thần Thanh Phong",
+          "effect": "heal",
+          "shape": "single_target",
+          "target_cap": 1,
+          "authoritative_effect_events": [
+            "heal"
+          ]
+        },
+        {
+          "skill_id": "tmb.skill.palm.hoi_phong_chuong.active_01.divine.b",
+          "lineage": "b",
+          "name_vi": "Thanh Phong Hồi Khí · Thần Từ Huyền",
+          "effect": "heal",
+          "shape": "single_target",
+          "target_cap": 1,
+          "authoritative_effect_events": [
+            "heal"
+          ]
+        }
+      ]
+    },
+    {
+      "contract_id": "V63-P1-21",
+      "school": "palm",
+      "branch": "hoi_phong_chuong",
+      "tier": "immortal",
+      "policy_a": "Thanh Phong: trong tập đồng đội đủ điều kiện, ưu tiên người thiếu HP theo tỷ lệ hoặc cần giải trừ trạng thái thật; guard phải qua canonical shield.",
+      "policy_b": "Từ Huyền: ưu tiên điểm hỗ trợ bảo vệ nhiều đồng đội đang bị uy hiếp khi shape cho phép circle; single-target vẫn chữa/giải trừ/guard đúng một người.",
+      "skills": [
+        {
+          "skill_id": "tmb.skill.palm.hoi_phong_chuong.active_03.immortal.a",
+          "lineage": "a",
+          "name_vi": "Thanh Phong Giải Uế · Tiên Thanh Phong",
+          "effect": "cleanse",
+          "shape": "single_target",
+          "target_cap": 1,
+          "authoritative_effect_events": [
+            "cleanse"
+          ]
+        },
+        {
+          "skill_id": "tmb.skill.palm.hoi_phong_chuong.active_03.immortal.b",
+          "lineage": "b",
+          "name_vi": "Thanh Phong Giải Uế · Tiên Từ Huyền",
+          "effect": "cleanse",
+          "shape": "single_target",
+          "target_cap": 1,
+          "authoritative_effect_events": [
+            "cleanse"
+          ]
+        }
+      ]
+    },
+    {
+      "contract_id": "V63-P1-22",
+      "school": "palm",
+      "branch": "hoi_phong_chuong",
+      "tier": "divine",
+      "policy_a": "Thanh Phong: trong tập đồng đội đủ điều kiện, ưu tiên người thiếu HP theo tỷ lệ hoặc cần giải trừ trạng thái thật; guard phải qua canonical shield.",
+      "policy_b": "Từ Huyền: ưu tiên điểm hỗ trợ bảo vệ nhiều đồng đội đang bị uy hiếp khi shape cho phép circle; single-target vẫn chữa/giải trừ/guard đúng một người.",
+      "skills": [
+        {
+          "skill_id": "tmb.skill.palm.hoi_phong_chuong.active_03.divine.a",
+          "lineage": "a",
+          "name_vi": "Thanh Phong Giải Uế · Thần Thanh Phong",
+          "effect": "cleanse",
+          "shape": "single_target",
+          "target_cap": 1,
+          "authoritative_effect_events": [
+            "cleanse"
+          ]
+        },
+        {
+          "skill_id": "tmb.skill.palm.hoi_phong_chuong.active_03.divine.b",
+          "lineage": "b",
+          "name_vi": "Thanh Phong Giải Uế · Thần Từ Huyền",
+          "effect": "cleanse",
+          "shape": "single_target",
+          "target_cap": 1,
+          "authoritative_effect_events": [
+            "cleanse"
+          ]
+        }
+      ]
+    },
+    {
+      "contract_id": "V63-P1-23",
+      "school": "palm",
+      "branch": "hoi_phong_chuong",
+      "tier": "immortal",
+      "policy_a": "Thanh Phong: trong tập đồng đội đủ điều kiện, ưu tiên người thiếu HP theo tỷ lệ hoặc cần giải trừ trạng thái thật; guard phải qua canonical shield.",
+      "policy_b": "Từ Huyền: ưu tiên điểm hỗ trợ bảo vệ nhiều đồng đội đang bị uy hiếp khi shape cho phép circle; single-target vẫn chữa/giải trừ/guard đúng một người.",
+      "skills": [
+        {
+          "skill_id": "tmb.skill.palm.hoi_phong_chuong.active_04.immortal.a",
+          "lineage": "a",
+          "name_vi": "Hộ Tâm Hồi Phong · Tiên Thanh Phong",
+          "effect": "guard",
+          "shape": "single_target",
+          "target_cap": 1,
+          "authoritative_effect_events": [
+            "status_applied"
+          ]
+        },
+        {
+          "skill_id": "tmb.skill.palm.hoi_phong_chuong.active_04.immortal.b",
+          "lineage": "b",
+          "name_vi": "Hộ Tâm Hồi Phong · Tiên Từ Huyền",
+          "effect": "guard",
+          "shape": "single_target",
+          "target_cap": 1,
+          "authoritative_effect_events": [
+            "status_applied"
+          ]
+        }
+      ]
+    },
+    {
+      "contract_id": "V63-P1-24",
+      "school": "palm",
+      "branch": "hoi_phong_chuong",
+      "tier": "divine",
+      "policy_a": "Thanh Phong: trong tập đồng đội đủ điều kiện, ưu tiên người thiếu HP theo tỷ lệ hoặc cần giải trừ trạng thái thật; guard phải qua canonical shield.",
+      "policy_b": "Từ Huyền: ưu tiên điểm hỗ trợ bảo vệ nhiều đồng đội đang bị uy hiếp khi shape cho phép circle; single-target vẫn chữa/giải trừ/guard đúng một người.",
+      "skills": [
+        {
+          "skill_id": "tmb.skill.palm.hoi_phong_chuong.active_04.divine.a",
+          "lineage": "a",
+          "name_vi": "Hộ Tâm Hồi Phong · Thần Thanh Phong",
+          "effect": "guard",
+          "shape": "single_target",
+          "target_cap": 1,
+          "authoritative_effect_events": [
+            "status_applied"
+          ]
+        },
+        {
+          "skill_id": "tmb.skill.palm.hoi_phong_chuong.active_04.divine.b",
+          "lineage": "b",
+          "name_vi": "Hộ Tâm Hồi Phong · Thần Từ Huyền",
+          "effect": "guard",
+          "shape": "single_target",
+          "target_cap": 1,
+          "authoritative_effect_events": [
+            "status_applied"
+          ]
+        }
+      ]
+    },
+    {
+      "contract_id": "V63-P1-25",
+      "school": "talisman",
+      "branch": "loi_phu",
+      "tier": "immortal",
+      "policy_a": "Dẫn Lôi: ưu tiên đường tuyến hợp lệ xuyên nhiều địch khi skill shape=line; nếu single_target thì vẫn một đích, không thêm tia lan hay stun.",
+      "policy_b": "Tàng Lôi: ưu tiên đích đã có dấu thuộc người thi triển nếu còn hợp lệ, sau đó mới chọn nearest; giữ nguyên mark/damage từ effect catalogue, không thêm khống chế.",
+      "skills": [
+        {
+          "skill_id": "tmb.skill.talisman.loi_phu.active_01.immortal.a",
+          "lineage": "a",
+          "name_vi": "Điện Quang Khai Phù · Tiên Dẫn Lôi",
+          "effect": "damage",
+          "shape": "single_target",
+          "target_cap": 1,
+          "authoritative_effect_events": [
+            "hit",
+            "v63_skill_hit"
+          ]
+        },
+        {
+          "skill_id": "tmb.skill.talisman.loi_phu.active_01.immortal.b",
+          "lineage": "b",
+          "name_vi": "Điện Quang Khai Phù · Tiên Tàng Lôi",
+          "effect": "damage",
+          "shape": "single_target",
+          "target_cap": 1,
+          "authoritative_effect_events": [
+            "hit",
+            "v63_skill_hit"
+          ]
+        }
+      ]
+    },
+    {
+      "contract_id": "V63-P1-26",
+      "school": "talisman",
+      "branch": "loi_phu",
+      "tier": "divine",
+      "policy_a": "Dẫn Lôi: ưu tiên đường tuyến hợp lệ xuyên nhiều địch khi skill shape=line; nếu single_target thì vẫn một đích, không thêm tia lan hay stun.",
+      "policy_b": "Tàng Lôi: ưu tiên đích đã có dấu thuộc người thi triển nếu còn hợp lệ, sau đó mới chọn nearest; giữ nguyên mark/damage từ effect catalogue, không thêm khống chế.",
+      "skills": [
+        {
+          "skill_id": "tmb.skill.talisman.loi_phu.active_01.divine.a",
+          "lineage": "a",
+          "name_vi": "Điện Quang Khai Phù · Thần Dẫn Lôi",
+          "effect": "damage",
+          "shape": "single_target",
+          "target_cap": 1,
+          "authoritative_effect_events": [
+            "hit",
+            "v63_skill_hit"
+          ]
+        },
+        {
+          "skill_id": "tmb.skill.talisman.loi_phu.active_01.divine.b",
+          "lineage": "b",
+          "name_vi": "Điện Quang Khai Phù · Thần Tàng Lôi",
+          "effect": "damage",
+          "shape": "single_target",
+          "target_cap": 1,
+          "authoritative_effect_events": [
+            "hit",
+            "v63_skill_hit"
+          ]
+        }
+      ]
+    },
+    {
+      "contract_id": "V63-P1-27",
+      "school": "talisman",
+      "branch": "loi_phu",
+      "tier": "immortal",
+      "policy_a": "Dẫn Lôi: ưu tiên đường tuyến hợp lệ xuyên nhiều địch khi skill shape=line; nếu single_target thì vẫn một đích, không thêm tia lan hay stun.",
+      "policy_b": "Tàng Lôi: ưu tiên đích đã có dấu thuộc người thi triển nếu còn hợp lệ, sau đó mới chọn nearest; giữ nguyên mark/damage từ effect catalogue, không thêm khống chế.",
+      "skills": [
+        {
+          "skill_id": "tmb.skill.talisman.loi_phu.active_03.immortal.a",
+          "lineage": "a",
+          "name_vi": "Lôi Văn Truy Ấn · Tiên Dẫn Lôi",
+          "effect": "mark",
+          "shape": "single_target",
+          "target_cap": 1,
+          "authoritative_effect_events": [
+            "status_applied",
+            "v63_talisman_mark_applied"
+          ]
+        },
+        {
+          "skill_id": "tmb.skill.talisman.loi_phu.active_03.immortal.b",
+          "lineage": "b",
+          "name_vi": "Lôi Văn Truy Ấn · Tiên Tàng Lôi",
+          "effect": "mark",
+          "shape": "single_target",
+          "target_cap": 1,
+          "authoritative_effect_events": [
+            "status_applied",
+            "v63_talisman_mark_applied"
+          ]
+        }
+      ]
+    },
+    {
+      "contract_id": "V63-P1-28",
+      "school": "talisman",
+      "branch": "loi_phu",
+      "tier": "divine",
+      "policy_a": "Dẫn Lôi: ưu tiên đường tuyến hợp lệ xuyên nhiều địch khi skill shape=line; nếu single_target thì vẫn một đích, không thêm tia lan hay stun.",
+      "policy_b": "Tàng Lôi: ưu tiên đích đã có dấu thuộc người thi triển nếu còn hợp lệ, sau đó mới chọn nearest; giữ nguyên mark/damage từ effect catalogue, không thêm khống chế.",
+      "skills": [
+        {
+          "skill_id": "tmb.skill.talisman.loi_phu.active_03.divine.a",
+          "lineage": "a",
+          "name_vi": "Lôi Văn Truy Ấn · Thần Dẫn Lôi",
+          "effect": "mark",
+          "shape": "single_target",
+          "target_cap": 1,
+          "authoritative_effect_events": [
+            "status_applied",
+            "v63_talisman_mark_applied"
+          ]
+        },
+        {
+          "skill_id": "tmb.skill.talisman.loi_phu.active_03.divine.b",
+          "lineage": "b",
+          "name_vi": "Lôi Văn Truy Ấn · Thần Tàng Lôi",
+          "effect": "mark",
+          "shape": "single_target",
+          "target_cap": 1,
+          "authoritative_effect_events": [
+            "status_applied",
+            "v63_talisman_mark_applied"
+          ]
+        }
+      ]
+    },
+    {
+      "contract_id": "V63-P1-29",
+      "school": "talisman",
+      "branch": "loi_phu",
+      "tier": "immortal",
+      "policy_a": "Dẫn Lôi: ưu tiên đường tuyến hợp lệ xuyên nhiều địch khi skill shape=line; nếu single_target thì vẫn một đích, không thêm tia lan hay stun.",
+      "policy_b": "Tàng Lôi: ưu tiên đích đã có dấu thuộc người thi triển nếu còn hợp lệ, sau đó mới chọn nearest; giữ nguyên mark/damage từ effect catalogue, không thêm khống chế.",
+      "skills": [
+        {
+          "skill_id": "tmb.skill.talisman.loi_phu.active_04.immortal.a",
+          "lineage": "a",
+          "name_vi": "Cửu Tiêu Phá Vân · Tiên Dẫn Lôi",
+          "effect": "damage",
+          "shape": "line",
+          "target_cap": 2,
+          "authoritative_effect_events": [
+            "hit",
+            "v63_skill_hit"
+          ]
+        },
+        {
+          "skill_id": "tmb.skill.talisman.loi_phu.active_04.immortal.b",
+          "lineage": "b",
+          "name_vi": "Cửu Tiêu Phá Vân · Tiên Tàng Lôi",
+          "effect": "damage",
+          "shape": "line",
+          "target_cap": 2,
+          "authoritative_effect_events": [
+            "hit",
+            "v63_skill_hit"
+          ]
+        }
+      ]
+    },
+    {
+      "contract_id": "V63-P1-30",
+      "school": "talisman",
+      "branch": "loi_phu",
+      "tier": "divine",
+      "policy_a": "Dẫn Lôi: ưu tiên đường tuyến hợp lệ xuyên nhiều địch khi skill shape=line; nếu single_target thì vẫn một đích, không thêm tia lan hay stun.",
+      "policy_b": "Tàng Lôi: ưu tiên đích đã có dấu thuộc người thi triển nếu còn hợp lệ, sau đó mới chọn nearest; giữ nguyên mark/damage từ effect catalogue, không thêm khống chế.",
+      "skills": [
+        {
+          "skill_id": "tmb.skill.talisman.loi_phu.active_04.divine.a",
+          "lineage": "a",
+          "name_vi": "Cửu Tiêu Phá Vân · Thần Dẫn Lôi",
+          "effect": "damage",
+          "shape": "line",
+          "target_cap": 2,
+          "authoritative_effect_events": [
+            "hit",
+            "v63_skill_hit"
+          ]
+        },
+        {
+          "skill_id": "tmb.skill.talisman.loi_phu.active_04.divine.b",
+          "lineage": "b",
+          "name_vi": "Cửu Tiêu Phá Vân · Thần Tàng Lôi",
+          "effect": "damage",
+          "shape": "line",
+          "target_cap": 2,
+          "authoritative_effect_events": [
+            "hit",
+            "v63_skill_hit"
+          ]
+        }
+      ]
+    },
+    {
+      "contract_id": "V63-P1-31",
+      "school": "talisman",
+      "branch": "hoa_phu",
+      "tier": "immortal",
+      "policy_a": "Liên Diệm: ưu tiên vùng đông địch khi skill shape=circle, dùng cap/radius hiện hành; single_target không tự biến thành AOE.",
+      "policy_b": "Tụ Diệm: ưu tiên mục tiêu đầu đàn/high-HP trong tầm để tập trung đòn; không tự gây Burn, không tăng damage/cooldown/hit_count.",
+      "skills": [
+        {
+          "skill_id": "tmb.skill.talisman.hoa_phu.active_01.immortal.a",
+          "lineage": "a",
+          "name_vi": "Xích Diệm Khai Văn · Tiên Liên Diệm",
+          "effect": "damage",
+          "shape": "single_target",
+          "target_cap": 1,
+          "authoritative_effect_events": [
+            "hit",
+            "v63_skill_hit"
+          ]
+        },
+        {
+          "skill_id": "tmb.skill.talisman.hoa_phu.active_01.immortal.b",
+          "lineage": "b",
+          "name_vi": "Xích Diệm Khai Văn · Tiên Tụ Diệm",
+          "effect": "damage",
+          "shape": "single_target",
+          "target_cap": 1,
+          "authoritative_effect_events": [
+            "hit",
+            "v63_skill_hit"
+          ]
+        }
+      ]
+    },
+    {
+      "contract_id": "V63-P1-32",
+      "school": "talisman",
+      "branch": "hoa_phu",
+      "tier": "divine",
+      "policy_a": "Liên Diệm: ưu tiên vùng đông địch khi skill shape=circle, dùng cap/radius hiện hành; single_target không tự biến thành AOE.",
+      "policy_b": "Tụ Diệm: ưu tiên mục tiêu đầu đàn/high-HP trong tầm để tập trung đòn; không tự gây Burn, không tăng damage/cooldown/hit_count.",
+      "skills": [
+        {
+          "skill_id": "tmb.skill.talisman.hoa_phu.active_01.divine.a",
+          "lineage": "a",
+          "name_vi": "Xích Diệm Khai Văn · Thần Liên Diệm",
+          "effect": "damage",
+          "shape": "single_target",
+          "target_cap": 1,
+          "authoritative_effect_events": [
+            "hit",
+            "v63_skill_hit"
+          ]
+        },
+        {
+          "skill_id": "tmb.skill.talisman.hoa_phu.active_01.divine.b",
+          "lineage": "b",
+          "name_vi": "Xích Diệm Khai Văn · Thần Tụ Diệm",
+          "effect": "damage",
+          "shape": "single_target",
+          "target_cap": 1,
+          "authoritative_effect_events": [
+            "hit",
+            "v63_skill_hit"
+          ]
+        }
+      ]
+    },
+    {
+      "contract_id": "V63-P1-33",
+      "school": "talisman",
+      "branch": "hoa_phu",
+      "tier": "immortal",
+      "policy_a": "Liên Diệm: ưu tiên vùng đông địch khi skill shape=circle, dùng cap/radius hiện hành; single_target không tự biến thành AOE.",
+      "policy_b": "Tụ Diệm: ưu tiên mục tiêu đầu đàn/high-HP trong tầm để tập trung đòn; không tự gây Burn, không tăng damage/cooldown/hit_count.",
+      "skills": [
+        {
+          "skill_id": "tmb.skill.talisman.hoa_phu.active_03.immortal.a",
+          "lineage": "a",
+          "name_vi": "Hỏa Tâm Ngưng Phù · Tiên Liên Diệm",
+          "effect": "damage",
+          "shape": "single_target",
+          "target_cap": 1,
+          "authoritative_effect_events": [
+            "hit",
+            "v63_skill_hit"
+          ]
+        },
+        {
+          "skill_id": "tmb.skill.talisman.hoa_phu.active_03.immortal.b",
+          "lineage": "b",
+          "name_vi": "Hỏa Tâm Ngưng Phù · Tiên Tụ Diệm",
+          "effect": "damage",
+          "shape": "single_target",
+          "target_cap": 1,
+          "authoritative_effect_events": [
+            "hit",
+            "v63_skill_hit"
+          ]
+        }
+      ]
+    },
+    {
+      "contract_id": "V63-P1-34",
+      "school": "talisman",
+      "branch": "hoa_phu",
+      "tier": "divine",
+      "policy_a": "Liên Diệm: ưu tiên vùng đông địch khi skill shape=circle, dùng cap/radius hiện hành; single_target không tự biến thành AOE.",
+      "policy_b": "Tụ Diệm: ưu tiên mục tiêu đầu đàn/high-HP trong tầm để tập trung đòn; không tự gây Burn, không tăng damage/cooldown/hit_count.",
+      "skills": [
+        {
+          "skill_id": "tmb.skill.talisman.hoa_phu.active_03.divine.a",
+          "lineage": "a",
+          "name_vi": "Hỏa Tâm Ngưng Phù · Thần Liên Diệm",
+          "effect": "damage",
+          "shape": "single_target",
+          "target_cap": 1,
+          "authoritative_effect_events": [
+            "hit",
+            "v63_skill_hit"
+          ]
+        },
+        {
+          "skill_id": "tmb.skill.talisman.hoa_phu.active_03.divine.b",
+          "lineage": "b",
+          "name_vi": "Hỏa Tâm Ngưng Phù · Thần Tụ Diệm",
+          "effect": "damage",
+          "shape": "single_target",
+          "target_cap": 1,
+          "authoritative_effect_events": [
+            "hit",
+            "v63_skill_hit"
+          ]
+        }
+      ]
+    },
+    {
+      "contract_id": "V63-P1-35",
+      "school": "talisman",
+      "branch": "phong_an_phu",
+      "tier": "divine",
+      "policy_a": "Khép Giới: với mark theo vùng ưu tiên cụm địch hợp lệ chưa có dấu của người thi triển; cleanse phải chọn đồng đội đang có debuff thật.",
+      "policy_b": "Lưu Phù: giữ dấu trên một đối thủ trọng điểm hoặc ưu tiên đồng đội chịu debuff nguy hiểm khi dùng cleanse; không xóa mark người khác, không lock skill.",
+      "skills": [
+        {
+          "skill_id": "tmb.skill.talisman.phong_an_phu.active_03.divine.a",
+          "lineage": "a",
+          "name_vi": "Tẩy Trần Giải Phù · Thần Khép Giới",
+          "effect": "cleanse",
+          "shape": "single_target",
+          "target_cap": 1,
+          "authoritative_effect_events": [
+            "cleanse"
+          ]
+        },
+        {
+          "skill_id": "tmb.skill.talisman.phong_an_phu.active_03.divine.b",
+          "lineage": "b",
+          "name_vi": "Tẩy Trần Giải Phù · Thần Lưu Phù",
+          "effect": "cleanse",
+          "shape": "single_target",
+          "target_cap": 1,
+          "authoritative_effect_events": [
+            "cleanse"
+          ]
+        }
+      ]
+    },
+    {
+      "contract_id": "V63-P1-36",
+      "school": "summon",
+      "branch": "kiem_linh",
+      "tier": "immortal",
+      "policy_a": "Kiếm Tâm: chỉ thi triển guard khi chủ khế thực sự bị địch nhắm hoặc đang chịu đòn; guard vẫn áp dụng lên chủ khế thông qua canonical resolver.",
+      "policy_b": "Cổ Khế: ưu tiên thi triển guard khi Kiếm Linh hợp lệ đang hiện diện và chủ khế bị uy hiếp; không đổi target của guard, không tạo thêm summon.",
+      "skills": [
+        {
+          "skill_id": "tmb.skill.summon.kiem_linh.active_03.immortal.a",
+          "lineage": "a",
+          "name_vi": "Thần Kiếm Đồng Tâm · Tiên Mạch",
+          "effect": "guard",
+          "shape": "single_target",
+          "target_cap": 1,
+          "authoritative_effect_events": [
+            "status_applied"
+          ]
+        },
+        {
+          "skill_id": "tmb.skill.summon.kiem_linh.active_03.immortal.b",
+          "lineage": "b",
+          "name_vi": "Thần Kiếm Đồng Tâm · Tiên Tâm",
+          "effect": "guard",
+          "shape": "single_target",
+          "target_cap": 1,
+          "authoritative_effect_events": [
+            "status_applied"
+          ]
+        }
+      ]
+    },
+    {
+      "contract_id": "V63-P1-37",
+      "school": "summon",
+      "branch": "kiem_linh",
+      "tier": "divine",
+      "policy_a": "Kiếm Tâm: chỉ thi triển guard khi chủ khế thực sự bị địch nhắm hoặc đang chịu đòn; guard vẫn áp dụng lên chủ khế thông qua canonical resolver.",
+      "policy_b": "Cổ Khế: ưu tiên thi triển guard khi Kiếm Linh hợp lệ đang hiện diện và chủ khế bị uy hiếp; không đổi target của guard, không tạo thêm summon.",
+      "skills": [
+        {
+          "skill_id": "tmb.skill.summon.kiem_linh.active_03.divine.a",
+          "lineage": "a",
+          "name_vi": "Thần Kiếm Đồng Tâm · Thần Mạch",
+          "effect": "guard",
+          "shape": "single_target",
+          "target_cap": 1,
+          "authoritative_effect_events": [
+            "status_applied"
+          ]
+        },
+        {
+          "skill_id": "tmb.skill.summon.kiem_linh.active_03.divine.b",
+          "lineage": "b",
+          "name_vi": "Thần Kiếm Đồng Tâm · Thần Tâm",
+          "effect": "guard",
+          "shape": "single_target",
+          "target_cap": 1,
+          "authoritative_effect_events": [
+            "status_applied"
+          ]
+        }
+      ]
+    },
+    {
+      "contract_id": "V63-P1-38",
+      "school": "summon",
+      "branch": "linh_thu",
+      "tier": "immortal",
+      "policy_a": "Hữu Tín: guard khi chủ khế bị chọn làm mục tiêu, dù linh thú chưa có mặt; bảo vệ chủ theo khế ước đã học, không thêm HP.",
+      "policy_b": "Sơn Linh: ưu tiên guard khi thú hợp lệ đã tới gần điểm giao chiến và chủ đang có nguy cơ bị đánh; không thay địa hình hoặc vượt cap summon.",
+      "skills": [
+        {
+          "skill_id": "tmb.skill.summon.linh_thu.active_03.immortal.a",
+          "lineage": "a",
+          "name_vi": "Thú Tâm Hộ Chủ · Tiên Mạch",
+          "effect": "guard",
+          "shape": "single_target",
+          "target_cap": 1,
+          "authoritative_effect_events": [
+            "status_applied"
+          ]
+        },
+        {
+          "skill_id": "tmb.skill.summon.linh_thu.active_03.immortal.b",
+          "lineage": "b",
+          "name_vi": "Thú Tâm Hộ Chủ · Tiên Tâm",
+          "effect": "guard",
+          "shape": "single_target",
+          "target_cap": 1,
+          "authoritative_effect_events": [
+            "status_applied"
+          ]
+        }
+      ]
+    },
+    {
+      "contract_id": "V63-P1-39",
+      "school": "summon",
+      "branch": "linh_thu",
+      "tier": "divine",
+      "policy_a": "Hữu Tín: guard khi chủ khế bị chọn làm mục tiêu, dù linh thú chưa có mặt; bảo vệ chủ theo khế ước đã học, không thêm HP.",
+      "policy_b": "Sơn Linh: ưu tiên guard khi thú hợp lệ đã tới gần điểm giao chiến và chủ đang có nguy cơ bị đánh; không thay địa hình hoặc vượt cap summon.",
+      "skills": [
+        {
+          "skill_id": "tmb.skill.summon.linh_thu.active_03.divine.a",
+          "lineage": "a",
+          "name_vi": "Thú Tâm Hộ Chủ · Thần Mạch",
+          "effect": "guard",
+          "shape": "single_target",
+          "target_cap": 1,
+          "authoritative_effect_events": [
+            "status_applied"
+          ]
+        },
+        {
+          "skill_id": "tmb.skill.summon.linh_thu.active_03.divine.b",
+          "lineage": "b",
+          "name_vi": "Thú Tâm Hộ Chủ · Thần Tâm",
+          "effect": "guard",
+          "shape": "single_target",
+          "target_cap": 1,
+          "authoritative_effect_events": [
+            "status_applied"
+          ]
+        }
+      ]
+    },
+    {
+      "contract_id": "V63-P1-40",
+      "school": "summon",
+      "branch": "khoi_loi_ho_phap",
+      "tier": "immortal",
+      "policy_a": "Hộ Mạch: chủ động dựng guard khi chủ khế có nguy cơ nhận đòn từ tuyến trước; không thay self-guard target hiện hành.",
+      "policy_b": "Thiên Cơ: ưu tiên guard khi khôi lỗi đã có mặt ở tuyến che chắn và một địch áp sát chủ; nếu thiếu điều kiện thì không tạo guard giả.",
+      "skills": [
+        {
+          "skill_id": "tmb.skill.summon.khoi_loi_ho_phap.active_03.immortal.a",
+          "lineage": "a",
+          "name_vi": "Cơ Giáp Hộ Thân · Tiên Mạch",
+          "effect": "guard",
+          "shape": "single_target",
+          "target_cap": 1,
+          "authoritative_effect_events": [
+            "status_applied"
+          ]
+        },
+        {
+          "skill_id": "tmb.skill.summon.khoi_loi_ho_phap.active_03.immortal.b",
+          "lineage": "b",
+          "name_vi": "Cơ Giáp Hộ Thân · Tiên Tâm",
+          "effect": "guard",
+          "shape": "single_target",
+          "target_cap": 1,
+          "authoritative_effect_events": [
+            "status_applied"
+          ]
+        }
+      ]
+    },
+    {
+      "contract_id": "V63-P1-41",
+      "school": "summon",
+      "branch": "khoi_loi_ho_phap",
+      "tier": "divine",
+      "policy_a": "Hộ Mạch: chủ động dựng guard khi chủ khế có nguy cơ nhận đòn từ tuyến trước; không thay self-guard target hiện hành.",
+      "policy_b": "Thiên Cơ: ưu tiên guard khi khôi lỗi đã có mặt ở tuyến che chắn và một địch áp sát chủ; nếu thiếu điều kiện thì không tạo guard giả.",
+      "skills": [
+        {
+          "skill_id": "tmb.skill.summon.khoi_loi_ho_phap.active_03.divine.a",
+          "lineage": "a",
+          "name_vi": "Cơ Giáp Hộ Thân · Thần Mạch",
+          "effect": "guard",
+          "shape": "single_target",
+          "target_cap": 1,
+          "authoritative_effect_events": [
+            "status_applied"
+          ]
+        },
+        {
+          "skill_id": "tmb.skill.summon.khoi_loi_ho_phap.active_03.divine.b",
+          "lineage": "b",
+          "name_vi": "Cơ Giáp Hộ Thân · Thần Tâm",
+          "effect": "guard",
+          "shape": "single_target",
+          "target_cap": 1,
+          "authoritative_effect_events": [
+            "status_applied"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,6 +1,15 @@
 # V63-P1 — 41 cặp chủ động/tuyệt kỹ: contract phân biệt truyền thừa A/B
 
-**Ngày kiểm toán:** 2026-11-13. **Nguồn gốc:** `d2b3542b86872273cbc05f645396fff8995fe29a` (PR #72). **Trạng thái:** `DESIGN_PROPOSED / OWNER_APPROVAL_PENDING / NOT_IMPLEMENTED`.
+## Execution update — 2026-11-14
+
+- PR #72 code commit: `f83328a57dea0eb1f8765479327292773ba2dbd0`; exact tested source tree: `796646ba94453762bb0d6dede093289a4fbbde2e`; latest fetched base: `8cdbff4bb520f6742b4cc6603a9d7ef66ff32f90`. The two commits since the prior fetch are separate Codex B VFX POI-02 R4 work and were preserved without file overlap.
+- **P1:** 41 approved non-numeric lineage A/B policies / 82 IDs pass 1,447 deterministic checks using actual Combat V2 cast/release/effect receipts. Shape, cap, canonical resolver and numeric values unchanged. Lôi Phù radius-zero line matching uses the existing declared range.
+- **P2:** 196 runtime-equal pairs, no differences/missing in 796 checks. Classification stays `OWNER_APPROVAL_PENDING`; no new shared-design or balance decision was inferred.
+- **Godot:** official `4.7.2.stable.official.ed1daf0bf`, binary SHA-256 `AB1824F85BFD8E0E4128182C000C4003A3E042245B2967848D089B2A04B22424`; strict import and 23 focused/cumulative runs exit 0. Exact logs are in `logs/exact_796646ba/`; summary is `V63_EXACT_SHA_QA_MATRIX_20261114_FINAL.csv`.
+- **S9:** 2,675 checks; all three branches summon real actors and use Combat V2 attacks; three GodotViewport 1280×720 captures. They are sparse technical silhouettes, not art approval or physical GUI acceptance (`OWNER_VISUAL_PENDING`).
+- V6.3 stays OFF. No VFX production asset/renderer, SaveService, economy, manual or numeric combat balance edited by the V63 implementation. User save untouched; Save/Reload used isolated QA APPDATA/LOCALAPPDATA. Windows certificate-store warning persists but no parse/compile/load/shader error was found.
+- **Pending:** P2 design intent, owner visual review, physical Windows GUI, Android and CI exact-SHA. Not release-ready.
+**Ngày lập contract:** 2026-11-13. **Trạng thái lịch sử lúc lập:** `DESIGN_PROPOSED / OWNER_APPROVAL_PENDING / NOT_IMPLEMENTED`; bản triển khai/QA mới nhất nằm ngay dưới đây.
 
 ## Phạm vi và những gì đã làm
 - Rà lại các cặp P1 theo **cùng family + slot + tier + variant_type + rarity** để không ghép rare với Divine thường.

@@ -1,0 +1,5 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+V63_ROOT_RUNTIME_SUMMARY {"checks":233,"failures":0,"scope":"V2 profile adapter, legacy read-only bridge, derived CombatStatsV2 sources, default-off gate, deterministic cold DiscipleState reconstruction; no SaveService or player save access","status":"PASS_PREVIEW_ONLY"}

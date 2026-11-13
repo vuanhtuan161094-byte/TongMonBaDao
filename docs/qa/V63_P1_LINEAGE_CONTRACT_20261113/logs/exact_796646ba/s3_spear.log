@@ -1,0 +1,5 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+V63_S3_SPEAR_RESULT PASS checks=1126 nodes=183 families=35 branches=3 runtime=CombatV2 source=SOURCE_PENDING balance=CANDIDATE gates=OFF VFX=CODE_DRAWN_CAPTURE_PENDING

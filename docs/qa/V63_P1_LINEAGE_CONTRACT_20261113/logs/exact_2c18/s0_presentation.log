@@ -1,0 +1,6 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+V63_S0_LEDGER_METRICS {"branches":36,"candidate_gated":1647,"existing":549,"families":420,"not_authored":0,"registry_missing_runtime_ids":0,"rows":2196,"runtime_catalogue_ids":2196,"schools":12}
+V63_S0_RESULT PASS checks=23 samples=4 summon_candidate=183 existing=549 candidate_gated=1647 not_authored=0 ledger=2196 release_gate=OFF

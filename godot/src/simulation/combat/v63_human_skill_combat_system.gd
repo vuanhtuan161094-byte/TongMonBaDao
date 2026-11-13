@@ -654,7 +654,7 @@ static func _try_human_cast(battle: MapBattleV2, actor: Dictionary, enemy: Dicti
             if _try_mobility(battle,actor,enemy,id,skill,ready):
                 return true
             continue
-        var target := _support_target(battle,actor,skill) if effect in ["guard","heal","cleanse"] else enemy
+        var target := _support_target(battle,actor,skill) if effect in ["guard","heal","cleanse"] else _lineage_enemy_target(battle,actor,skill,enemy)
         if target.is_empty() or (effect not in ["guard","heal","cleanse"] and str(target.side) == str(actor.side)):
             continue
         if (actor["position"] as Vector2).distance_to(target["position"]) > float(skill.range):
@@ -665,8 +665,318 @@ static func _try_human_cast(battle: MapBattleV2, actor: Dictionary, enemy: Dicti
             continue
         if str(skill.get("school", "")) == "summon" and not V63SummonSkillCombatSystem.should_cast(battle, actor, skill):
             continue
+        if str(skill.get("school", "")) == "summon" and not _p1_summon_guard_policy_allows(battle,actor,skill):
+            continue
         _begin_cast(battle,actor,target,id,skill,ready)
         return true
+    return false
+
+static func _is_p1_lineage_skill(skill: Dictionary) -> bool:
+    var branch := str(skill.get("branch",""))
+    var family_slot := str(skill.get("family_slot",""))
+    var generation := str(skill.get("generation",skill.get("tier","")))
+    var allowed_slots: Array = []
+    var allowed_generations: Array = ["immortal","divine"]
+    match branch:
+        "liet_duong_chuong", "han_ngoc_chuong":
+            allowed_slots = ["active_01","active_03","active_04","ultimate"]
+        "hoi_phong_chuong", "loi_phu":
+            allowed_slots = ["active_01","active_03","active_04"]
+        "hoa_phu":
+            allowed_slots = ["active_01","active_03"]
+        "phong_an_phu":
+            allowed_slots = ["active_03"]
+            allowed_generations = ["divine"]
+        "kiem_linh", "linh_thu", "khoi_loi_ho_phap":
+            allowed_slots = ["active_03"]
+        _:
+            return false
+    if str(skill.get("school","")) not in ["palm","talisman","summon"]:
+        return false
+    if family_slot not in allowed_slots or generation not in allowed_generations:
+        return false
+    return str(skill.get("lineage","")) in ["a","b"]
+
+static func _lineage_enemy_target(battle: MapBattleV2, actor: Dictionary, skill: Dictionary, fallback: Dictionary) -> Dictionary:
+    if not _is_p1_lineage_skill(skill):
+        return fallback
+    var branch := str(skill.get("branch",""))
+    var lineage := str(skill.get("lineage",""))
+    var candidates := _valid_enemy_targets(battle,actor,skill)
+    if candidates.is_empty():
+        return fallback
+    match branch:
+        "liet_duong_chuong":
+            if lineage == "a" and str(skill.get("shape","")) == "circle":
+                return _best_circle_target(battle,actor,skill,candidates,false)
+            if lineage == "b":
+                return _best_durable_enemy(actor,candidates)
+        "han_ngoc_chuong":
+            if lineage == "a":
+                return _best_engaged_enemy(battle,actor,candidates,skill)
+            return _best_near_carry_enemy(battle,actor,candidates)
+        "loi_phu":
+            if lineage == "a" and str(skill.get("shape","")) == "line":
+                return _best_line_target(actor,skill,candidates)
+            if lineage == "b":
+                return _best_owner_marked_enemy(actor,candidates,battle.now)
+        "hoa_phu":
+            if lineage == "a" and str(skill.get("shape","")) == "circle":
+                return _best_circle_target(battle,actor,skill,candidates,false)
+            if lineage == "b":
+                return _best_durable_enemy(actor,candidates)
+        "phong_an_phu":
+            if str(skill.get("effect","")) == "mark":
+                if lineage == "a" and str(skill.get("shape","")) == "circle":
+                    return _best_circle_target(battle,actor,skill,candidates,true)
+                if lineage == "a":
+                    return _best_unmarked_enemy(actor,candidates,battle.now)
+                return _best_owner_marked_enemy(actor,candidates,battle.now)
+    return fallback if not fallback.is_empty() else candidates[0]
+
+static func _valid_enemy_targets(battle: MapBattleV2, actor: Dictionary, skill: Dictionary) -> Array[Dictionary]:
+    var result: Array[Dictionary] = []
+    var origin: Vector2 = actor.get("position",Vector2.ZERO)
+    var range_limit := maxf(0.0,float(skill.get("range",0.0)))
+    var ids: Array = battle.actors.keys()
+    ids.sort()
+    for raw_id in ids:
+        var candidate: Dictionary = battle.actors[raw_id]
+        if str(candidate.get("side","")) == str(actor.get("side","")) or float(candidate.get("hp",0.0)) <= 0.0:
+            continue
+        var position: Vector2 = candidate.get("position",Vector2.ZERO)
+        if not battle.is_world_position_allowed(position) or origin.distance_to(position) > range_limit:
+            continue
+        result.append(candidate)
+    return result
+
+static func _best_circle_target(battle: MapBattleV2, actor: Dictionary, skill: Dictionary, candidates: Array[Dictionary], unmarked_only: bool) -> Dictionary:
+    var best: Dictionary = {}
+    var best_count := -1
+    var owner_id := str(actor.get("id",""))
+    var radius := maxf(0.0,float(skill.get("radius",0.0)))
+    var limit := mini(int(skill.get("target_limit",1)),MAX_TARGETS)
+    for center in candidates:
+        var center_position: Vector2 = center.get("position",Vector2.ZERO)
+        var count := 0
+        for target in candidates:
+            if (target.get("position",Vector2.ZERO) as Vector2).distance_to(center_position) > radius:
+                continue
+            if unmarked_only and _has_live_owner_mark(target,owner_id,battle.now):
+                continue
+            count += 1
+        count = mini(count,limit)
+        var distance := (actor.get("position",Vector2.ZERO) as Vector2).distance_squared_to(center_position)
+        var best_distance := INF if best.is_empty() else (actor.get("position",Vector2.ZERO) as Vector2).distance_squared_to(best.get("position",Vector2.ZERO))
+        if count > best_count or (count == best_count and (distance < best_distance or (is_equal_approx(distance,best_distance) and str(center.get("id","")) < str(best.get("id",""))))):
+            best = center
+            best_count = count
+    return best
+
+static func _best_line_target(actor: Dictionary, skill: Dictionary, candidates: Array[Dictionary]) -> Dictionary:
+    var best: Dictionary = {}
+    var best_count := -1
+    var origin: Vector2 = actor.get("position",Vector2.ZERO)
+    var length := maxf(0.0,float(skill.get("radius",0.0)))
+    if str(skill.get("id","")) in BOW_LINE_RANGE_SKILL_IDS or (str(skill.get("branch","")) == "loi_phu" and _is_p1_lineage_skill(skill)):
+        length = maxf(length,float(skill.get("range",length)))
+    var limit := mini(int(skill.get("target_limit",1)),MAX_TARGETS)
+    for endpoint in candidates:
+        var direction := ((endpoint.get("position",Vector2.ZERO) as Vector2)-origin).normalized()
+        var count := 0
+        for candidate in candidates:
+            var offset: Vector2 = candidate.get("position",Vector2.ZERO)-origin
+            var along := offset.dot(direction)
+            if along >= 0.0 and along <= length and absf(offset.cross(direction)) <= 0.85:
+                count += 1
+        count = mini(count,limit)
+        var distance := origin.distance_squared_to(endpoint.get("position",Vector2.ZERO))
+        var best_distance := INF if best.is_empty() else origin.distance_squared_to(best.get("position",Vector2.ZERO))
+        if count > best_count or (count == best_count and (distance < best_distance or (is_equal_approx(distance,best_distance) and str(endpoint.get("id","")) < str(best.get("id",""))))):
+            best = endpoint
+            best_count = count
+    return best
+
+static func _best_durable_enemy(actor: Dictionary, candidates: Array[Dictionary]) -> Dictionary:
+    var sorted := candidates.duplicate()
+    sorted.sort_custom(func(a: Dictionary,b: Dictionary):
+            var a_leader := _enemy_leader_priority(a)
+            var b_leader := _enemy_leader_priority(b)
+            if a_leader != b_leader:
+                return a_leader > b_leader
+            var a_hp := float(a.get("max_hp",a.get("hp",0.0)))
+            var b_hp := float(b.get("max_hp",b.get("hp",0.0)))
+            if not is_equal_approx(a_hp,b_hp):
+                return a_hp > b_hp
+            var origin: Vector2 = actor.get("position",Vector2.ZERO)
+            var a_distance := origin.distance_squared_to(a.get("position",Vector2.ZERO))
+            var b_distance := origin.distance_squared_to(b.get("position",Vector2.ZERO))
+            return a_distance < b_distance if not is_equal_approx(a_distance,b_distance) else str(a.get("id","")) < str(b.get("id","")))
+    return sorted[0] if not sorted.is_empty() else {}
+
+static func _enemy_leader_priority(enemy: Dictionary) -> int:
+    if bool(enemy.get("is_boss",false)) or str(enemy.get("tier","")) == "boss":
+        return 3
+    if bool(enemy.get("is_leader",false)) or bool(enemy.get("is_pack_leader",false)) or str(enemy.get("behavior_id","")) == "pack_leader":
+        return 2
+    if bool(enemy.get("elite",false)) or str(enemy.get("tier","")) == "elite":
+        return 1
+    return 0
+
+static func _best_engaged_enemy(battle: MapBattleV2, actor: Dictionary, candidates: Array[Dictionary], skill: Dictionary) -> Dictionary:
+    var best: Dictionary = {}
+    var best_count := -1
+    var party_allies: Array[Dictionary] = []
+    for raw_ally in battle.actors.values():
+        var ally: Dictionary = raw_ally
+        if str(ally.get("side","")) == str(actor.get("side","")) and float(ally.get("hp",0.0)) > 0.0 \
+                and _same_p0_support_party(actor,ally) \
+                and (actor.get("position",Vector2.ZERO) as Vector2).distance_to(ally.get("position",Vector2.ZERO)) <= float(skill.get("range",0.0)):
+            party_allies.append(ally)
+    for enemy in candidates:
+        var engaged := 0
+        var aggro := float(enemy.get("aggro_range",0.0))
+        for ally in party_allies:
+            var within_aggro := aggro > 0.0 and (enemy.get("position",Vector2.ZERO) as Vector2).distance_to(ally.get("position",Vector2.ZERO)) <= aggro
+            var pending_target := _enemy_pending_cast_targets(battle,enemy,str(ally.get("id","")))
+            if within_aggro or pending_target:
+                engaged += 1
+        var distance := (actor.get("position",Vector2.ZERO) as Vector2).distance_squared_to(enemy.get("position",Vector2.ZERO))
+        var best_distance := INF if best.is_empty() else (actor.get("position",Vector2.ZERO) as Vector2).distance_squared_to(best.get("position",Vector2.ZERO))
+        if engaged > best_count or (engaged == best_count and (distance < best_distance or (is_equal_approx(distance,best_distance) and str(enemy.get("id","")) < str(best.get("id",""))))):
+            best = enemy
+            best_count = engaged
+    return best
+
+static func _best_near_carry_enemy(battle: MapBattleV2, actor: Dictionary, candidates: Array[Dictionary]) -> Dictionary:
+    var carry := _carry_ally(battle,actor)
+    if carry.is_empty():
+        return candidates[0] if not candidates.is_empty() else {}
+    var sorted := candidates.duplicate()
+    sorted.sort_custom(func(a: Dictionary,b: Dictionary):
+            var carry_position: Vector2 = carry.get("position",Vector2.ZERO)
+            var a_distance := carry_position.distance_squared_to(a.get("position",Vector2.ZERO))
+            var b_distance := carry_position.distance_squared_to(b.get("position",Vector2.ZERO))
+            if not is_equal_approx(a_distance,b_distance):
+                return a_distance < b_distance
+            var a_attack := float(a.get("stats",{}).get("attack",0.0))
+            var b_attack := float(b.get("stats",{}).get("attack",0.0))
+            return a_attack > b_attack if not is_equal_approx(a_attack,b_attack) else str(a.get("id","")) < str(b.get("id","")))
+    return sorted[0] if not sorted.is_empty() else {}
+
+static func _carry_ally(battle: MapBattleV2, actor: Dictionary) -> Dictionary:
+    var allies: Array[Dictionary] = []
+    for raw in battle.actors.values():
+        var ally: Dictionary = raw
+        if str(ally.get("side","")) == str(actor.get("side","")) and float(ally.get("hp",0.0)) > 0.0 and not bool(ally.get("is_v63_summon",false)) and _same_p0_support_party(actor,ally):
+            allies.append(ally)
+    if allies.is_empty():
+        return actor
+    allies.sort_custom(func(a: Dictionary,b: Dictionary):
+            var a_explicit := bool(a.get("is_core",false)) or bool(a.get("is_carry",false)) or str(a.get("combat_role","")) in ["core","carry"]
+            var b_explicit := bool(b.get("is_core",false)) or bool(b.get("is_carry",false)) or str(b.get("combat_role","")) in ["core","carry"]
+            if a_explicit != b_explicit:
+                return a_explicit
+            var a_attack := float(a.get("stats",{}).get("attack",0.0))
+            var b_attack := float(b.get("stats",{}).get("attack",0.0))
+            return a_attack > b_attack if not is_equal_approx(a_attack,b_attack) else str(a.get("id","")) < str(b.get("id","")))
+    return allies[0]
+
+static func _best_owner_marked_enemy(actor: Dictionary, candidates: Array[Dictionary], now_value: float) -> Dictionary:
+    var owner_id := str(actor.get("id",""))
+    var marked: Array[Dictionary] = []
+    for candidate in candidates:
+        if _has_live_owner_mark(candidate,owner_id,now_value):
+            marked.append(candidate)
+    if marked.is_empty():
+        return candidates[0] if not candidates.is_empty() else {}
+    return _nearest_candidate(actor,marked)
+
+static func _best_unmarked_enemy(actor: Dictionary, candidates: Array[Dictionary], now_value: float) -> Dictionary:
+    var owner_id := str(actor.get("id",""))
+    var unmarked: Array[Dictionary] = []
+    for candidate in candidates:
+        if not _has_live_owner_mark(candidate,owner_id,now_value):
+            unmarked.append(candidate)
+    return _nearest_candidate(actor,unmarked) if not unmarked.is_empty() else (candidates[0] if not candidates.is_empty() else {})
+
+static func _has_live_owner_mark(target: Dictionary, owner_id: String, now_value: float) -> bool:
+    var mark: Dictionary = target.get("v63_marks",{}).get(owner_id,{})
+    return not mark.is_empty() and str(mark.get("owner_id",owner_id)) == owner_id and float(mark.get("until",-1.0)) > now_value
+
+static func _nearest_candidate(actor: Dictionary, candidates: Array[Dictionary]) -> Dictionary:
+    var sorted := candidates.duplicate()
+    var origin: Vector2 = actor.get("position",Vector2.ZERO)
+    sorted.sort_custom(func(a: Dictionary,b: Dictionary):
+            var a_distance := origin.distance_squared_to(a.get("position",Vector2.ZERO))
+            var b_distance := origin.distance_squared_to(b.get("position",Vector2.ZERO))
+            return a_distance < b_distance if not is_equal_approx(a_distance,b_distance) else str(a.get("id","")) < str(b.get("id","")))
+    return sorted[0] if not sorted.is_empty() else {}
+
+static func _enemy_pending_cast_targets(battle: MapBattleV2, enemy: Dictionary, target_id: String) -> bool:
+    var cast: Dictionary = enemy.get("v63_pending_cast",{})
+    if not cast.is_empty() and str(cast.get("target_id","")) == target_id:
+        return true
+    for row in battle.pending_casts:
+        if str(row.get("caster","")) == str(enemy.get("id","")) and str(row.get("target_id","")) == target_id:
+            return true
+    return false
+
+static func _ally_is_threatened(battle: MapBattleV2, ally: Dictionary) -> bool:
+    var ally_id := str(ally.get("id",""))
+    for enemy in battle.actors.values():
+        if str(enemy.get("side","")) == str(ally.get("side","")) or float(enemy.get("hp",0.0)) <= 0.0:
+            continue
+        if _enemy_pending_cast_targets(battle,enemy,ally_id):
+            return true
+        var pursued: Dictionary = battle._nearest_enemy(enemy)
+        if not pursued.is_empty() and str(pursued.get("id","")) == ally_id:
+            return true
+    for event in battle.events:
+        if str(event.get("type","")) == "hit" and str(event.get("target","")) == ally_id and float(event.get("time",-INF)) >= battle.now-MapBattleV2.STEP_SECONDS-0.000001:
+            return true
+    return false
+
+static func _p1_summon_guard_policy_allows(battle: MapBattleV2, actor: Dictionary, skill: Dictionary) -> bool:
+    if not _is_p1_lineage_skill(skill) or str(skill.get("effect","")) != "guard":
+        return true
+    if not _ally_is_threatened(battle,actor):
+        return false
+    if str(skill.get("lineage","")) == "a":
+        return true
+    var owner_id := str(actor.get("id",""))
+    var branch := str(skill.get("branch",""))
+    var guard_range := float(skill.get("range",0.0))
+    for summon in battle.actors.values():
+        if not bool(summon.get("is_v63_summon",false)) or str(summon.get("summon_owner_id","")) != owner_id \
+                or float(summon.get("hp",0.0)) <= 0.0 or battle.now >= float(summon.get("summon_expires_at",-1.0)):
+            continue
+        var summon_skill_id := str(summon.get("summon_skill_id",""))
+        if branch == "kiem_linh" and summon_skill_id.begins_with("tmb.skill.summon.kiem_linh."):
+            return true
+        if branch == "linh_thu" and summon_skill_id.begins_with("tmb.skill.summon.linh_thu."):
+            for enemy in battle.actors.values():
+                if str(enemy.get("side","")) == str(actor.get("side","")) or float(enemy.get("hp",0.0)) <= 0.0:
+                    continue
+                if _enemy_pending_cast_targets(battle,enemy,owner_id) or str(battle._nearest_enemy(enemy).get("id","")) == owner_id:
+                    if (summon.get("position",Vector2.ZERO) as Vector2).distance_to(enemy.get("position",Vector2.ZERO)) <= guard_range:
+                        return true
+        if branch == "khoi_loi_ho_phap" and summon_skill_id.begins_with("tmb.skill.summon.khoi_loi_ho_phap.") \
+                and str(summon.get("summon_form","")) == "guardian_construct" \
+                and (str(summon.get("summon_behavior","")) == "guardian" or str(summon.get("role","")) == "frontline"):
+            for enemy in battle.actors.values():
+                if str(enemy.get("side","")) == str(actor.get("side","")) or float(enemy.get("hp",0.0)) <= 0.0:
+                    continue
+                if not (_enemy_pending_cast_targets(battle,enemy,owner_id) or str(battle._nearest_enemy(enemy).get("id","")) == owner_id):
+                    continue
+                var owner_to_enemy: Vector2 = enemy.get("position",Vector2.ZERO)-actor.get("position",Vector2.ZERO)
+                var summon_from_owner: Vector2 = summon.get("position",Vector2.ZERO)-actor.get("position",Vector2.ZERO)
+                if owner_to_enemy.length_squared() <= 0.000001:
+                    continue
+                var progress := summon_from_owner.dot(owner_to_enemy)/owner_to_enemy.length_squared()
+                var summon_to_enemy := (summon.get("position",Vector2.ZERO) as Vector2).distance_to(enemy.get("position",Vector2.ZERO))
+                if progress > 0.0 and progress < 1.0 and summon_to_enemy < (actor.get("position",Vector2.ZERO) as Vector2).distance_to(enemy.get("position",Vector2.ZERO)):
+                    return true
     return false
 
 static func _same_p0_support_party(caster: Dictionary, ally: Dictionary) -> bool:
@@ -681,58 +991,109 @@ static func _same_p0_support_party(caster: Dictionary, ally: Dictionary) -> bool
     return not group.is_empty() and group == str(ally.get("party_id",""))
 
 static func _support_target(battle: MapBattleV2, actor: Dictionary, skill: Dictionary) -> Dictionary:
-    if str(skill.effect) == "guard":
+    var effect := str(skill.get("effect",""))
+    var p1 := _is_p1_lineage_skill(skill)
+    var branch := str(skill.get("branch",""))
+    var lineage := str(skill.get("lineage",""))
+    if effect == "guard":
+        if p1 and branch == "hoi_phong_chuong" and lineage == "b":
+            var allies := _support_candidates(battle,actor,skill,true)
+            var threatened := _most_threatened_ally(battle,actor,allies)
+            return threatened if not threatened.is_empty() else actor
         if str(skill.get("school","")) in ["blade", "spear", "palm", "curse"] and str(skill.get("guard_target_policy","self")) == "weakest_ally":
-            var guard_candidates: Array = []
-            for raw_id in battle.actors.keys():
-                var guard_ally: Dictionary = battle.actors[raw_id]
-                if str(guard_ally.get("side","")) != str(actor.get("side","")) or float(guard_ally.get("hp",0.0)) <= 0.0:
-                    continue
-                if not _same_p0_support_party(actor,guard_ally):
-                    continue
-                if (actor.get("position",Vector2.ZERO) as Vector2).distance_to(guard_ally.get("position",Vector2.ZERO)) > float(skill.get("range",0.0)):
-                    continue
-                guard_candidates.append(guard_ally)
+            var guard_candidates := _support_candidates(battle,actor,skill,true)
             guard_candidates.sort_custom(func(a: Dictionary,b: Dictionary):
                 var a_ratio := float(a.get("hp",0.0)) / maxf(1.0,float(a.get("max_hp",1.0)))
                 var b_ratio := float(b.get("hp",0.0)) / maxf(1.0,float(b.get("max_hp",1.0)))
                 return a_ratio < b_ratio if not is_equal_approx(a_ratio,b_ratio) else str(a.get("id","")) < str(b.get("id","")))
             return guard_candidates[0] if not guard_candidates.is_empty() else {}
         return actor
-    var candidates: Array = []
-    for raw_id in battle.actors.keys():
+    var candidates := _support_candidates(battle,actor,skill,false)
+    if effect == "cleanse":
+        if p1 and lineage == "b" and branch in ["hoi_phong_chuong","phong_an_phu"]:
+            candidates.sort_custom(func(a: Dictionary,b: Dictionary):
+                var a_priority := _dangerous_debuff_priority(a)
+                var b_priority := _dangerous_debuff_priority(b)
+                return a_priority > b_priority if a_priority != b_priority else str(a.get("id","")) < str(b.get("id","")))
+        else:
+            candidates.sort_custom(func(a: Dictionary,b: Dictionary):
+                var a_count := _status_count(a)
+                var b_count := _status_count(b)
+                return a_count > b_count if a_count != b_count else str(a.get("id","")) < str(b.get("id","")))
+        return candidates[0] if not candidates.is_empty() else {}
+    if p1 and branch == "hoi_phong_chuong" and lineage == "b":
+        var threatened_heal := _most_threatened_ally(battle,actor,candidates)
+        if not threatened_heal.is_empty():
+            return threatened_heal
+    candidates.sort_custom(func(a: Dictionary,b: Dictionary):
+        var a_ratio := float(a.get("hp",0.0)) / maxf(1.0,float(a.get("max_hp",1.0)))
+        var b_ratio := float(b.get("hp",0.0)) / maxf(1.0,float(b.get("max_hp",1.0)))
+        return a_ratio < b_ratio if not is_equal_approx(a_ratio,b_ratio) else str(a.get("id","")) < str(b.get("id","")))
+    return candidates[0] if not candidates.is_empty() else {}
+
+static func _support_candidates(battle: MapBattleV2, actor: Dictionary, skill: Dictionary, include_all: bool) -> Array[Dictionary]:
+    var result: Array[Dictionary] = []
+    var ids: Array = battle.actors.keys()
+    ids.sort()
+    for raw_id in ids:
         var ally: Dictionary = battle.actors[raw_id]
-        if str(ally.side) != str(actor.side) or float(ally.hp) <= 0.0 \
+        if str(ally.get("side","")) != str(actor.get("side","")) or float(ally.get("hp",0.0)) <= 0.0 \
                 or not _same_p0_support_party(actor,ally):
             continue
-        if (actor["position"] as Vector2).distance_to(ally["position"]) <= float(skill.range):
-            if str(skill.get("effect", "")) == "heal":
-                var missing_hp := maxf(0.0, float(ally.get("max_hp", 0.0)) - float(ally.get("hp", 0.0)))
-                if missing_hp <= 0.001:
-                    continue
-                var potential_heal := minf(float(ally.get("max_hp", 0.0)) * clampf(float(skill.get("power", 0.0)), 0.0, 0.5), missing_hp)
-                var effective_heal := potential_heal
-                if str(ally.get("v63_combat_generation", "")) == "immortal":
-                    effective_heal = V63ImmortalSkillCombatSystem.healing_amount(actor, ally, potential_heal)
-                else:
-                    effective_heal = V63DivineSkillCombatSystem.healing_amount(actor, ally, potential_heal)
-                if effective_heal <= 0.001:
-                    continue
-                if str(skill.get("school", "")) == "poison" and \
-                        V63PoisonEvolutionV1.heal_capacity(ally, battle.now) <= 0.001:
-                    continue
-            candidates.append(ally)
-    if str(skill.effect) == "cleanse":
-        candidates.sort_custom(func(a: Dictionary,b: Dictionary):
-            var a_count := _status_count(a)
-            var b_count := _status_count(b)
-            return a_count > b_count if a_count != b_count else str(a.id) < str(b.id))
-        return candidates[0] if not candidates.is_empty() and _status_count(candidates[0]) > 0 else {}
-    candidates.sort_custom(func(a: Dictionary,b: Dictionary):
-        var a_ratio := float(a.hp) / maxf(1.0, float(a.max_hp))
-        var b_ratio := float(b.hp) / maxf(1.0, float(b.max_hp))
-        return a_ratio < b_ratio if not is_equal_approx(a_ratio, b_ratio) else str(a.id) < str(b.id))
-    return candidates[0] if not candidates.is_empty() else {}
+        if (actor.get("position",Vector2.ZERO) as Vector2).distance_to(ally.get("position",Vector2.ZERO)) > float(skill.get("range",0.0)):
+            continue
+        if not include_all and str(skill.get("effect","")) == "heal":
+            var missing_hp := maxf(0.0,float(ally.get("max_hp",0.0))-float(ally.get("hp",0.0)))
+            if missing_hp <= 0.001:
+                continue
+            var potential_heal := minf(float(ally.get("max_hp",0.0))*clampf(float(skill.get("power",0.0)),0.0,0.5),missing_hp)
+            var effective_heal := V63ImmortalSkillCombatSystem.healing_amount(actor,ally,potential_heal) \
+                if str(ally.get("v63_combat_generation","")) == "immortal" else V63DivineSkillCombatSystem.healing_amount(actor,ally,potential_heal)
+            if effective_heal <= 0.001:
+                continue
+            if str(skill.get("school","")) == "poison" and V63PoisonEvolutionV1.heal_capacity(ally,battle.now) <= 0.001:
+                continue
+        if not include_all and str(skill.get("effect","")) == "cleanse" and _status_count(ally) <= 0:
+            continue
+        result.append(ally)
+    return result
+
+static func _ally_threat_count(battle: MapBattleV2, ally: Dictionary) -> int:
+    var count := 0
+    for enemy in battle.actors.values():
+        if str(enemy.get("side","")) == str(ally.get("side","")) or float(enemy.get("hp",0.0)) <= 0.0:
+            continue
+        if _enemy_pending_cast_targets(battle,enemy,str(ally.get("id",""))) \
+                or str(battle._nearest_enemy(enemy).get("id","")) == str(ally.get("id","")):
+            count += 1
+    return count
+
+static func _most_threatened_ally(battle: MapBattleV2, actor: Dictionary, candidates: Array[Dictionary]) -> Dictionary:
+    var threatened: Array[Dictionary] = []
+    for ally in candidates:
+        if _ally_is_threatened(battle,ally):
+            threatened.append(ally)
+    if threatened.is_empty():
+        return {}
+    threatened.sort_custom(func(a: Dictionary,b: Dictionary):
+            var a_threats := _ally_threat_count(battle,a)
+            var b_threats := _ally_threat_count(battle,b)
+            if a_threats != b_threats:
+                return a_threats > b_threats
+            var a_ratio := float(a.get("hp",0.0))/maxf(1.0,float(a.get("max_hp",1.0)))
+            var b_ratio := float(b.get("hp",0.0))/maxf(1.0,float(b.get("max_hp",1.0)))
+            return a_ratio < b_ratio if not is_equal_approx(a_ratio,b_ratio) else str(a.get("id","")) < str(b.get("id","")))
+    return threatened[0]
+
+static func _dangerous_debuff_priority(ally: Dictionary) -> int:
+    var statuses: Dictionary = ally.get("status_effects",{})
+    if statuses.has("v63_poison") or statuses.has("poison") or statuses.has("burn"):
+        return 3
+    if statuses.has("weaken"):
+        return 2
+    if statuses.has("slow"):
+        return 1
+    return 0
 
 static func _status_count(actor: Dictionary) -> int:
     var statuses: Dictionary = actor.get("status_effects",{})
@@ -816,7 +1177,24 @@ static func _begin_cast(battle: MapBattleV2, actor: Dictionary, target: Dictiona
     ready[id] = battle.now+maxf(MapBattleV2.STEP_SECONDS,float(skill.cooldown)/cooldown_rate)
     actor["v63_skill_ready"] = ready
     actor["next_skill"] = battle.now+MapBattleV2.STEP_SECONDS
-    battle._event("skill_cast",{"actor_id":str(actor.id),"target":str(target.id),"skill_id":id,"generation":str(skill.get("generation",skill.get("tier","human"))),"lineage":str(skill.get("lineage","")),"release_at":deadline,"cooldown_ready_at":float(ready[id]),"combat_family":"v63_human","effect":str(skill.effect)})
+    var cast_id := str(cast.get("mastery_event_id",""))
+    var cast_event := {"actor_id":str(actor.id),"caster":str(actor.id),"target":str(target.id),"target_id":str(target.id),
+        "skill_id":id,"generation":str(skill.get("generation",skill.get("tier","human"))),
+        "lineage":str(skill.get("lineage","")),"release_at":deadline,
+        "cooldown_ready_at":float(ready[id]),"combat_family":"v63_human","effect":str(skill.effect),
+        "shape":str(skill.get("shape","single_target")),"target_limit":int(skill.get("target_limit",1)),
+        "radius":float(skill.get("radius",0.0)),"caster_position":actor.get("position",Vector2.ZERO),
+        "target_position":target.get("position",Vector2.ZERO),"caster_position_at_cast":cast.get("caster_position_at_cast",Vector2.ZERO),
+        "target_position_at_cast":cast.get("target_position_at_cast",Vector2.ZERO)}
+    if not cast_id.is_empty():
+        cast_event["cast_id"] = cast_id
+        cast_event["event_id"] = cast_id+"/skill_cast"
+    if cast.has("center"):
+        cast_event["center"] = cast["center"]
+    if cast.has("line_origin"):
+        cast_event["line_origin"] = cast["line_origin"]
+        cast_event["line_direction"] = cast.get("line_direction",Vector2.ZERO)
+    battle._event("skill_cast",cast_event)
     battle.actions += 1
 
 static func _try_boss_cast(battle: MapBattleV2, actor: Dictionary, target: Dictionary) -> bool:
@@ -859,6 +1237,7 @@ static func _cast_record(caster: Dictionary, target: Dictionary, id: String, ski
         power *= root_factor
     var cast := {"caster":str(caster.id),"target_id":str(target.id),"v63_skill_id":id,"ready":deadline,
         "ratio":ratio,"element":str(skill.element),"effect":effect,"shape":str(skill.shape),
+        "caster_position_at_cast":caster.get("position",Vector2.ZERO),"target_position_at_cast":target.get("position",Vector2.ZERO),
         "power":power,"duration":float(skill.get("duration",0.0)),
         "poison_stacks":int(skill.get("poison_stacks",1)),"radius":float(skill.get("radius",0.0)),
         "range":float(skill.get("range",0.0)),"maximum":mini(int(skill.get("target_limit",1)),MAX_TARGETS),
@@ -872,6 +1251,42 @@ static func _cast_record(caster: Dictionary, target: Dictionary, id: String, ski
     if not boss_id.is_empty():
         cast["v63_boss_id"] = boss_id
     return cast
+
+static func _emit_cast_event(battle: MapBattleV2, cast: Dictionary, kind: String, payload: Dictionary, detail: String = "") -> void:
+    var cast_id := str(cast.get("mastery_event_id",""))
+    if cast_id.is_empty():
+        battle._event(kind,payload)
+        return
+    var target_id := str(payload.get("target",payload.get("target_id",payload.get("actor_id",""))))
+    var event_detail := detail
+    if event_detail.is_empty():
+        event_detail = str(payload.get("hit_index",payload.get("status",payload.get("reason",""))))
+    var event_id := cast_id+"/"+kind
+    if not target_id.is_empty():
+        event_id += "/"+target_id
+    if not event_detail.is_empty():
+        event_id += "/"+event_detail
+    payload["cast_id"] = cast_id
+    payload["event_id"] = event_id
+    payload["caster_position_at_cast"] = cast.get("caster_position_at_cast",Vector2.ZERO)
+    payload["target_position_at_cast"] = cast.get("target_position_at_cast",Vector2.ZERO)
+    payload["shape"] = str(cast.get("shape","single_target"))
+    payload["target_limit"] = int(cast.get("maximum",1))
+    payload["radius"] = float(cast.get("radius",0.0))
+    var caster_id := str(payload.get("caster",payload.get("actor_id",cast.get("caster",""))))
+    var caster_actor: Dictionary = battle.actors.get(caster_id,{})
+    if not caster_actor.is_empty():
+        payload["caster_position"] = caster_actor.get("position",Vector2.ZERO)
+    if not target_id.is_empty():
+        var target_actor: Dictionary = battle.actors.get(target_id,{})
+        if not target_actor.is_empty():
+            payload["target_position"] = target_actor.get("position",Vector2.ZERO)
+    if cast.has("center"):
+        payload["center"] = cast["center"]
+    if cast.has("line_origin"):
+        payload["line_origin"] = cast["line_origin"]
+        payload["line_direction"] = cast.get("line_direction",Vector2.ZERO)
+    battle._event(kind,payload)
 
 static func release_cast(battle: MapBattleV2, cast: Dictionary, caster: Dictionary) -> void:
     var skill_id := str(cast.get("v63_skill_id", ""))
@@ -912,6 +1327,7 @@ static func release_cast(battle: MapBattleV2, cast: Dictionary, caster: Dictiona
 
 static func release_cast_base(battle: MapBattleV2, cast: Dictionary, caster: Dictionary) -> void:
     var id := str(cast.get("v63_skill_id",""))
+    var cast_id := str(cast.get("mastery_event_id",""))
     var boss_id := str(cast.get("v63_boss_id",""))
     var definition: Dictionary = boss_skill_definitions(boss_id).get(id,{}) if not boss_id.is_empty() else skill_definition(id)
     if definition.is_empty():
@@ -924,10 +1340,10 @@ static func release_cast_base(battle: MapBattleV2, cast: Dictionary, caster: Dic
         var caster_position: Vector2 = caster.get("position",Vector2.ZERO)
         var target_position: Vector2 = target.get("position",Vector2.ZERO)
         if not battle.is_world_position_allowed(caster_position) or not battle.is_world_position_allowed(target_position):
-            battle._event("skill_miss",{"caster":str(caster.get("id","")),"target":str(target.get("id","")),"skill_id":id,"generation":generation,"lineage":lineage,"reason":"invalid_position"})
+            _emit_cast_event(battle,cast,"skill_miss",{"caster":str(caster.get("id","")),"target":str(target.get("id","")),"skill_id":id,"generation":generation,"lineage":lineage,"reason":"invalid_position"})
             continue
         if str(cast.get("shape",definition.get("shape",""))) == "single_target" and caster_position.distance_to(target_position) > float(definition.get("range",0.0)):
-            battle._event("skill_miss",{"caster":str(caster.get("id","")),"target":str(target.get("id","")),"skill_id":id,"generation":generation,"lineage":lineage,"reason":"target_out_of_range_at_release"})
+            _emit_cast_event(battle,cast,"skill_miss",{"caster":str(caster.get("id","")),"target":str(target.get("id","")),"skill_id":id,"generation":generation,"lineage":lineage,"reason":"target_out_of_range_at_release"})
             continue
         var before := float(target.hp)
         var caster_before := float(caster.hp)
@@ -942,7 +1358,7 @@ static func release_cast_base(battle: MapBattleV2, cast: Dictionary, caster: Dic
             var dual_blade_trade := str(definition.get("school", "")) == "dual_blade" and float(cast.get("health_cost_ratio", definition.get("health_cost_ratio", 0.0))) > 0.0
             var health_cost := maxf(0.0,float(caster.get("max_hp",0.0))*clampf(float(cast.get("health_cost_ratio",definition.get("health_cost_ratio",0.0))),0.0,0.08)) if dual_blade_trade else 0.0
             if dual_blade_trade and float(caster.get("hp",0.0))-health_cost < 1.0:
-                battle._event("skill_miss",{"caster":str(caster.get("id","")),"target":str(target.get("id","")),"skill_id":id,"generation":generation,"lineage":lineage,"reason":"insufficient_hp_for_bounded_trade"})
+                _emit_cast_event(battle,cast,"skill_miss",{"caster":str(caster.get("id","")),"target":str(target.get("id","")),"skill_id":id,"generation":generation,"lineage":lineage,"reason":"insufficient_hp_for_bounded_trade"})
                 continue
             if dual_blade_trade:
                 ratio += clampf(float(cast.get("health_trade_bonus_ratio",definition.get("health_trade_bonus_ratio",0.0))),0.0,1.2)
@@ -966,13 +1382,19 @@ static func release_cast_base(battle: MapBattleV2, cast: Dictionary, caster: Dic
                 if float(target.get("hp",0.0)) <= 0.0:
                     break
                 var strike_ratio := ratio / float(repeated_hit_count)
-                var strike_damage := battle._deal_direct(caster,target,strike_ratio,"v63_skill",true,str(cast.element),true,id)
+                var hit_context: Dictionary = {}
+                if not cast_id.is_empty():
+                    hit_context = {"cast_id":cast_id,"event_id":cast_id+"/hit/"+str(target.get("id",""))+"/"+str(repeated_hit_index+1),
+                        "skill_id":id,"shape":str(cast.get("shape",definition.get("shape","single_target"))),
+                        "caster_position_at_cast":cast.get("caster_position_at_cast",Vector2.ZERO),
+                        "target_position_at_cast":cast.get("target_position_at_cast",Vector2.ZERO)}
+                var strike_damage := battle._deal_direct(caster,target,strike_ratio,"v63_skill",true,str(cast.element),true,id,hit_context)
                 damage += strike_damage
                 if str(definition.get("school","")) == "blade" and repeated_hit_count > 1 and strike_damage > 0.0:
-                    battle._event("v63_blade_swing_hit",{"caster":str(caster.id),"target":str(target.id),"skill_id":id,
+                    _emit_cast_event(battle,cast,"v63_blade_swing_hit",{"caster":str(caster.id),"target":str(target.id),"skill_id":id,
                         "hit_index":repeated_hit_index+1,"hit_count":repeated_hit_count,"damage":strike_damage})
                 elif str(definition.get("school", "")) == "dual_blade" and strike_damage > 0.0:
-                    battle._event("v63_dual_blade_hit",{"caster":str(caster.id),"target":str(target.id),"skill_id":id,
+                    _emit_cast_event(battle,cast,"v63_dual_blade_hit",{"caster":str(caster.id),"target":str(target.id),"skill_id":id,
                         "hit_index":repeated_hit_index+1,"hit_count":repeated_hit_count,"damage":strike_damage,"branch":str(definition.get("branch", ""))})
             if dual_blade_trade and damage > 0.0:
                 var hp_before_trade := float(caster.get("hp",0.0))
@@ -1012,15 +1434,15 @@ static func release_cast_base(battle: MapBattleV2, cast: Dictionary, caster: Dic
                     target["v63_capacity_shield_remaining"] = maxf(float(target.get("v63_capacity_shield_remaining",0.0)),capacity)
                     target["v63_capacity_shield_until"] = maxf(float(target.get("v63_capacity_shield_until",-1.0)),guard_until)
                     target["v63_capacity_shield_skill_id"] = id
-                    battle._event("status_applied",{"caster":str(caster.id),"target":str(target.id),"status":"capacity_shield","skill_id":id,"generation":generation,"lineage":lineage,"until":float(target.v63_capacity_shield_until),"capacity":float(target.v63_capacity_shield_remaining)})
+                    _emit_cast_event(battle,cast,"status_applied",{"caster":str(caster.id),"target":str(target.id),"status":"capacity_shield","skill_id":id,"generation":generation,"lineage":lineage,"until":float(target.v63_capacity_shield_until),"capacity":float(target.v63_capacity_shield_remaining)})
             else:
                 target["learned_guard_factor"] = minf(float(target.get("learned_guard_factor",1.0)),1.0-clampf(float(cast.power),0.05,0.8))
                 target["learned_guard_until"] = maxf(float(target.get("learned_guard_until",-1.0)),guard_until)
-                battle._event("status_applied",{"caster":str(caster.id),"target":str(target.id),"status":"guard","skill_id":id,"generation":generation,"lineage":lineage,"until":float(target.learned_guard_until)})
+                _emit_cast_event(battle,cast,"status_applied",{"caster":str(caster.id),"target":str(target.id),"status":"guard","skill_id":id,"generation":generation,"lineage":lineage,"until":float(target.learned_guard_until)})
         elif effect == "heal":
-            _heal_target(battle,caster,target,id,float(cast.power))
+            _heal_target(battle,caster,target,id,float(cast.power),cast)
         elif effect == "cleanse":
-            var cleared := _cleanse_target(battle,caster,target,id,int(round(float(cast.power))))
+            var cleared := _cleanse_target(battle,caster,target,id,int(round(float(cast.power))),cast)
             if str(definition.get("school", "")) == "curse" and cleared > 0:
                 battle._event("v63_curse_cleanse_applied",{"caster":str(caster.id),"target":str(target.id),"skill_id":id,"removed_debuff_count":cleared})
             if str(definition.get("school", "")) == "poison":
@@ -1030,9 +1452,9 @@ static func release_cast_base(battle: MapBattleV2, cast: Dictionary, caster: Dic
         elif effect == "mark":
             var mark_school := str(definition.get("school",""))
             if damage > 0.0 and mark_school in ["blade","poison"]:
-                _apply_mark(battle,caster,target,id,float(cast.power),float(cast.duration))
+                _apply_mark(battle,caster,target,id,float(cast.power),float(cast.duration),cast)
             elif mark_school != "blade" and mark_school != "poison":
-                _apply_mark(battle,caster,target,id,float(cast.power),float(cast.duration))
+                _apply_mark(battle,caster,target,id,float(cast.power),float(cast.duration),cast)
         elif effect == "consume_poison":
             if damage > 0.0 or str(definition.get("school", "")) != "poison":
                 _consume_poison(battle,caster,target,id)
@@ -1045,7 +1467,7 @@ static func release_cast_base(battle: MapBattleV2, cast: Dictionary, caster: Dic
         var poison_school := str(definition.get("school", "")) == "poison"
         meaningful = meaningful or damage > 0.0 or effect in ["guard", "cleanse"] \
             or (not poison_school and str(definition.get("school","")) != "blade" and effect in ["mark", "poison"]) or float(target.hp) > before
-        battle._event("v63_skill_hit",{"caster":str(caster.id),"target":str(target.id),"skill_id":id,"generation":generation,"lineage":lineage,"effect":effect,"damage":damage,"caster_hp_before":caster_before,"caster_hp_after":float(caster.hp),"target_hp_before":before,"target_hp_after":float(target.hp)})
+        _emit_cast_event(battle,cast,"v63_skill_hit",{"caster":str(caster.id),"target":str(target.id),"skill_id":id,"generation":generation,"lineage":lineage,"effect":effect,"damage":damage,"caster_hp_before":caster_before,"caster_hp_after":float(caster.hp),"target_hp_before":before,"target_hp_after":float(target.hp)})
         if str(definition.get("school", "")) == "curse":
             if damage > 0.0:
                 battle._event("v63_curse_hit",{"caster":str(caster.id),"target":str(target.id),"skill_id":id,"damage":damage,"element":str(cast.get("element", "")),"shape":str(definition.get("shape", "")),"target_limit":int(definition.get("target_limit", 1))})
@@ -1066,9 +1488,9 @@ static func release_cast_base(battle: MapBattleV2, cast: Dictionary, caster: Dic
         if str(definition.get("school", "")) == "talisman":
             var owner_mark: Dictionary = target.get("v63_marks", {}).get(str(caster.get("id", "")), {})
             if effect == "mark" and str(owner_mark.get("skill_id", "")) == id:
-                battle._event("v63_talisman_mark_applied",{"caster":str(caster.id),"target":str(target.id),"owner_id":str(caster.id),"skill_id":id,"damage_factor":float(owner_mark.get("damage_factor",1.0)),"until":float(owner_mark.get("until",battle.now)),"shape":str(definition.get("shape","")),"target_limit":int(definition.get("target_limit",1))})
+                _emit_cast_event(battle,cast,"v63_talisman_mark_applied",{"caster":str(caster.id),"target":str(target.id),"owner_id":str(caster.id),"skill_id":id,"damage_factor":float(owner_mark.get("damage_factor",1.0)),"until":float(owner_mark.get("until",battle.now)),"shape":str(definition.get("shape","")),"target_limit":int(definition.get("target_limit",1))})
             elif damage > 0.0:
-                battle._event("v63_talisman_hit",{"caster":str(caster.id),"target":str(target.id),"skill_id":id,"damage":damage,"element":str(cast.get("element","")),"shape":str(definition.get("shape","")),"target_limit":int(definition.get("target_limit",1))})
+                _emit_cast_event(battle,cast,"v63_talisman_hit",{"caster":str(caster.id),"target":str(target.id),"skill_id":id,"damage":damage,"element":str(cast.get("element","")),"shape":str(definition.get("shape","")),"target_limit":int(definition.get("target_limit",1))})
         if effect == "mark" and str(definition.get("branch", "")) == "huyet_quyen" and float(target.hp) > 0.0:
             record_blood_mark(battle, caster, target, id)
         if damage > 0.0:
@@ -1109,7 +1531,25 @@ static func _cast_targets(battle: MapBattleV2, caster: Dictionary, cast: Diction
     if str(cast.get("shape","")) == "circle":
         var center: Vector2 = cast.get("center",caster.get("position",Vector2.ZERO))
         var ids: Array = battle.actors.keys()
-        ids.sort()
+        var definition := skill_definition(str(cast.get("v63_skill_id","")))
+        var prioritize_unmarked := _is_p1_lineage_skill(definition) \
+            and str(definition.get("branch","")) == "phong_an_phu" \
+            and str(definition.get("lineage","")) == "a" \
+            and str(effect) == "mark"
+        if prioritize_unmarked:
+            var owner_id := str(caster.get("id",""))
+            ids.sort_custom(func(a_id: Variant,b_id: Variant):
+                    var a: Dictionary = battle.actors[a_id]
+                    var b: Dictionary = battle.actors[b_id]
+                    var a_marked := _has_live_owner_mark(a,owner_id,battle.now)
+                    var b_marked := _has_live_owner_mark(b,owner_id,battle.now)
+                    if a_marked != b_marked:
+                        return not a_marked
+                    var a_distance := center.distance_squared_to(a.get("position",Vector2.ZERO))
+                    var b_distance := center.distance_squared_to(b.get("position",Vector2.ZERO))
+                    return a_distance < b_distance if not is_equal_approx(a_distance,b_distance) else str(a.get("id","")) < str(b.get("id","")))
+        else:
+            ids.sort()
         for raw_id in ids:
             var target: Dictionary = battle.actors[raw_id]
             var same_side := str(target.get("side","")) == str(caster.get("side",""))
@@ -1125,7 +1565,8 @@ static func _cast_targets(battle: MapBattleV2, caster: Dictionary, cast: Diction
         var origin: Vector2 = cast.get("line_origin", caster.get("position", Vector2.ZERO))
         var direction: Vector2 = cast.get("line_direction", Vector2.ZERO).normalized()
         var length := maxf(0.0, float(cast.get("radius", 0.0)))
-        if BOW_LINE_RANGE_SKILL_IDS.has(str(cast.get("v63_skill_id", ""))):
+        var definition := skill_definition(str(cast.get("v63_skill_id", "")))
+        if BOW_LINE_RANGE_SKILL_IDS.has(str(cast.get("v63_skill_id", ""))) or (str(definition.get("branch", "")) == "loi_phu" and _is_p1_lineage_skill(definition)):
             length = maxf(length, float(cast.get("range", length)))
         var ids: Array = battle.actors.keys()
         ids.sort()
@@ -1150,7 +1591,7 @@ static func _cast_targets(battle: MapBattleV2, caster: Dictionary, cast: Diction
             result.append(target)
     return result
 
-static func _heal_target(battle: MapBattleV2, caster: Dictionary, target: Dictionary, skill_id: String, power: float) -> void:
+static func _heal_target(battle: MapBattleV2, caster: Dictionary, target: Dictionary, skill_id: String, power: float, cast: Dictionary = {}) -> void:
     var factor := effective_heal_factor(caster)
     var before := float(target.hp)
     var amount := minf(maxf(0.0,float(target.max_hp)*clampf(power,0.0,0.5)*factor),maxf(0.0,float(target.max_hp)-before))
@@ -1164,7 +1605,7 @@ static func _heal_target(battle: MapBattleV2, caster: Dictionary, target: Dictio
         amount = V63PoisonEvolutionV1.heal_allowed(target, amount, battle.now)
     target["hp"] = before+amount
     battle._sync_linked_hp(target)
-    battle._event("heal",{"caster":str(caster.id),"target":str(target.id),"skill_id":skill_id,"amount":amount,"hp_after":float(target.hp)})
+    _emit_cast_event(battle,cast,"heal",{"caster":str(caster.id),"target":str(target.id),"skill_id":skill_id,"amount":amount,"hp_after":float(target.hp)})
 
 static func _apply_finite_slow(battle: MapBattleV2, caster: Dictionary, target: Dictionary, skill_id: String, cast: Dictionary, definition: Dictionary) -> bool:
     if str(definition.get("school","")) not in ["palm", "curse", "formation"]:
@@ -1188,16 +1629,16 @@ static func _apply_finite_slow(battle: MapBattleV2, caster: Dictionary, target: 
         return false
     statuses["slow"] = row
     target["status_effects"] = statuses
-    battle._event("status_applied",{"caster":str(caster.get("id","")),"target":str(target.get("id","")),"status":"slow","skill_id":skill_id,"until":float(row["until"]),"movement_factor":factor,"boss_resisted":boss_resisted})
+    _emit_cast_event(battle,cast,"status_applied",{"caster":str(caster.get("id","")),"target":str(target.get("id","")),"status":"slow","skill_id":skill_id,"until":float(row["until"]),"movement_factor":factor,"boss_resisted":boss_resisted})
     if str(definition.get("school", "")) == "curse":
-        battle._event("v63_curse_slow_applied",{"caster":str(caster.get("id","")),"target":str(target.get("id","")),"skill_id":skill_id,"until":float(row["until"]),"movement_factor":factor,"boss_resisted":boss_resisted})
+        _emit_cast_event(battle,cast,"v63_curse_slow_applied",{"caster":str(caster.get("id","")),"target":str(target.get("id","")),"skill_id":skill_id,"until":float(row["until"]),"movement_factor":factor,"boss_resisted":boss_resisted})
     elif str(definition.get("school", "")) == "formation":
-        battle._event("v63_formation_slow_applied",{"caster":str(caster.get("id","")),"target":str(target.get("id","")),"skill_id":skill_id,"until":float(row["until"]),"movement_factor":factor,"boss_resisted":boss_resisted})
+        _emit_cast_event(battle,cast,"v63_formation_slow_applied",{"caster":str(caster.get("id","")),"target":str(target.get("id","")),"skill_id":skill_id,"until":float(row["until"]),"movement_factor":factor,"boss_resisted":boss_resisted})
     elif str(definition.get("school", "")) == "palm":
-        battle._event("v63_palm_slow_applied",{"caster":str(caster.get("id","")),"target":str(target.get("id","")),"skill_id":skill_id,"until":float(row["until"]),"movement_factor":factor,"boss_resisted":boss_resisted})
+        _emit_cast_event(battle,cast,"v63_palm_slow_applied",{"caster":str(caster.get("id","")),"target":str(target.get("id","")),"skill_id":skill_id,"until":float(row["until"]),"movement_factor":factor,"boss_resisted":boss_resisted})
     return true
 
-static func _cleanse_target(battle: MapBattleV2, caster: Dictionary, target: Dictionary, skill_id: String, count: int) -> int:
+static func _cleanse_target(battle: MapBattleV2, caster: Dictionary, target: Dictionary, skill_id: String, count: int, cast: Dictionary = {}) -> int:
     var statuses: Dictionary = target.get("status_effects",{})
     var poison: Array = statuses.get("v63_poison",[])
     var removed := mini(poison.size(),maxi(1,count))
@@ -1218,10 +1659,10 @@ static func _cleanse_target(battle: MapBattleV2, caster: Dictionary, target: Dic
             cleared.append(status_id)
     target["status_effects"] = statuses
     var removed_debuff_count := removed + cleared.size()
-    battle._event("cleanse",{"caster":str(caster.id),"target":str(target.id),"skill_id":skill_id,"poison_stacks":removed,"statuses":cleared,"removed_debuff_count":removed_debuff_count})
+    _emit_cast_event(battle,cast,"cleanse",{"caster":str(caster.id),"target":str(target.id),"skill_id":skill_id,"poison_stacks":removed,"statuses":cleared,"removed_debuff_count":removed_debuff_count})
     return removed_debuff_count
 
-static func _apply_mark(battle: MapBattleV2, caster: Dictionary, target: Dictionary, skill_id: String, power: float, duration: float) -> void:
+static func _apply_mark(battle: MapBattleV2, caster: Dictionary, target: Dictionary, skill_id: String, power: float, duration: float, cast: Dictionary = {}) -> void:
     var marks: Dictionary = target.get("v63_marks",{})
     var definition := skill_definition(skill_id)
     var mark_school := str(definition.get("school",""))
@@ -1229,7 +1670,7 @@ static func _apply_mark(battle: MapBattleV2, caster: Dictionary, target: Diction
     marks[str(caster.id)] = {"owner_id":str(caster.id),"skill_id":skill_id,"school":mark_school,
         "damage_factor":clampf(power,1.0,maximum_factor),"until":battle.now+clampf(duration,0.5,12.0)}
     target["v63_marks"] = marks
-    battle._event("status_applied",{"caster":str(caster.id),"target":str(target.id),"status":"mark","skill_id":skill_id,"until":float(marks[str(caster.id)].until)})
+    _emit_cast_event(battle,cast,"status_applied",{"caster":str(caster.id),"target":str(target.id),"status":"mark","skill_id":skill_id,"until":float(marks[str(caster.id)].until)})
 
 static func record_blood_mark(battle: MapBattleV2, caster: Dictionary, target: Dictionary, skill_id: String) -> void:
     var definition := skill_definition(skill_id)

@@ -1,0 +1,5 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+V63_S6_TALISMAN_RESULT PASS checks=1973 nodes=183 families=35 branches=3 runtime=CombatV2_preview source=SOURCE_PENDING balance=CANDIDATE vfx_spec=TEXT_ONLY vfx_prod=HOLD_OWNER_APPROVAL gate=OFF

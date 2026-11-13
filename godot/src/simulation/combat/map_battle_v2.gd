@@ -1066,7 +1066,7 @@ func _guard_frontline(actor: Dictionary) -> bool:
     actions += 1
     return true
 
-func _deal_direct(attacker: Dictionary, target: Dictionary, ratio: float, kind: String, eligible_lifesteal: bool, damage_element: String = "", can_crit: bool = true, source_skill_id: String = "") -> float:
+func _deal_direct(attacker: Dictionary, target: Dictionary, ratio: float, kind: String, eligible_lifesteal: bool, damage_element: String = "", can_crit: bool = true, source_skill_id: String = "", cast_event_context: Dictionary = {}) -> float:
     if float(attacker["hp"]) <= 0.0 or float(target["hp"]) <= 0.0:
         return 0.0
     if kind not in ["dot","v63_poison"] and now < float(target.get("v63_evasion_until",-1.0)) and str(attacker.get("side","")) != str(target.get("side","")):
@@ -1168,8 +1168,15 @@ func _deal_direct(attacker: Dictionary, target: Dictionary, ratio: float, kind: 
     _sync_linked_hp(attacker)
     _sync_linked_hp(target)
     actions += 1
-    _event("hit",{"attacker":attacker["id"],"target":target["id"],"damage":actual_damage,
-        "kind":kind,"critical":crit,"lifesteal":settlement["lifesteal_heal"]})
+    var hit_event := {"attacker":attacker["id"],"target":target["id"],"damage":actual_damage,
+        "kind":kind,"critical":crit,"lifesteal":settlement["lifesteal_heal"],
+        "attacker_position":attacker.get("position",Vector2.ZERO),"target_position":target.get("position",Vector2.ZERO)}
+    hit_event.merge(cast_event_context,true)
+    if cast_event_context.has("cast_id"):
+        hit_event["caster"] = str(attacker.get("id",""))
+        hit_event["target_id"] = str(target.get("id",""))
+        hit_event["caster_position"] = attacker.get("position",Vector2.ZERO)
+    _event("hit",hit_event)
     if actual_damage > 0.0 and resolved_skill_id.begins_with("tmb.skill.blade."):
         var target_marks: Dictionary = target.get("v63_marks",{})
         var owned_mark: Dictionary = target_marks.get(str(attacker.get("id","")),{})
@@ -1331,9 +1338,19 @@ func _release_casts() -> void:
             var v63_skill_id := str(v63_cast.get("v63_skill_id", ""))
             var v63_definition := V63HumanSkillCombatSystem.skill_definition(v63_skill_id)
             var v63_generation := str(v63_definition.get("generation", v63_definition.get("tier", actor.get("v63_combat_generation", "human"))))
-            _event("skill_release", {"caster":str(actor.get("id", "")),"target":str(v63_cast.get("target_id", "")),"skill_id":v63_skill_id,
+            var cast_id := str(v63_cast.get("mastery_event_id",""))
+            var release_target: Dictionary = actors.get(str(v63_cast.get("target_id","")),{})
+            var release_event := {"caster":str(actor.get("id", "")),"target":str(v63_cast.get("target_id", "")),"target_id":str(v63_cast.get("target_id", "")),"skill_id":v63_skill_id,
                 "generation":v63_generation,"lineage":str(v63_definition.get("lineage", actor.get("v63_combat_lineage", ""))),
-                "release_at":now,"caster_hp_before":float(actor.get("hp", 0.0))})
+                "release_at":now,"caster_hp_before":float(actor.get("hp", 0.0)),
+                "shape":str(v63_cast.get("shape",v63_definition.get("shape","single_target"))),
+                "caster_position":actor.get("position",Vector2.ZERO),"target_position":release_target.get("position",v63_cast.get("target_position_at_cast",Vector2.ZERO)),
+                "caster_position_at_cast":v63_cast.get("caster_position_at_cast",Vector2.ZERO),
+                "target_position_at_cast":v63_cast.get("target_position_at_cast",Vector2.ZERO)}
+            if not cast_id.is_empty():
+                release_event["cast_id"] = cast_id
+                release_event["event_id"] = cast_id+"/skill_release"
+            _event("skill_release",release_event)
             V63HumanSkillCombatSystem.release_cast(self,v63_cast,actor)
     var remaining: Array = []
     for cast_value in pending_casts:
