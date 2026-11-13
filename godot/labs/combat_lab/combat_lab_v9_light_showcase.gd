@@ -45,7 +45,7 @@ func _ready() -> void:
     for i in range(9):
         var qi := ColorRect.new()
         qi.name = "SwordQiGlow%02d" % i
-        qi.size = Vector2(240.0, 120.0)
+        qi.size = Vector2(320.0, 160.0)
         qi.pivot_offset = qi.size * 0.5
         qi.mouse_filter = Control.MOUSE_FILTER_IGNORE
         qi.color = Color.WHITE
@@ -136,13 +136,16 @@ func _process(_delta: float) -> void:
             continue
         var visual: Dictionary = SWORD_TARGETS.projectile_visual_state(
             i, effect.caster + Vector2(0.0, -62.0),
-            effect.sword_preview_hits, progress, 1.0)
+            effect.sword_preview_hits, progress, 1.55)
         qi.visible = not visual.is_empty()
         if not qi.visible:
             continue
         var tip: Vector2 = visual.get("tip", Vector2.ZERO)
         var heading: Vector2 = visual.get("heading", Vector2.RIGHT)
-        var offset := 52.0
+        # Local shader tip is x=+52 * current VFX15 sword size.
+        # Keep its bright point at the exact gameplay-safe projectile tip.
+        var sword_size := float(visual.get("size", 1.0))
+        var offset := 52.0 * sword_size
         qi.rotation = heading.angle()
         qi.position = tip - heading * offset - qi.size * 0.5
         var qi_mat := qi.material as ShaderMaterial

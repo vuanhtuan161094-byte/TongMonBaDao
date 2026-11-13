@@ -51,3 +51,5 @@
 - `v9_energy_light_contract_test.gd` bổ sung kiểm tra shader, ba nhịp LOD, contact exclusivity, zero targets, và overlay nodes.
 - **Giới hạn:** Shader V16 hiện chỉ nối vào scene showcase, VFX15 CanvasItem renderer tiếp tục là fallback. Chưa chứng minh GPU FPS thực trên Android, chưa đo 30 actors, chưa áp dụng One Game. CI isolated QA yêu cầu giữ nguyên nhãn lỗi summon upstream; owner art approval còn PENDING. Không gọi đây là FULL PASS trước khi đọc exact-SHA run.
 
+
+**VFX16 shader alignment hotfix:** Shader preview dùng cùng `zoom=1.55` với V15 canvas renderer thực tế của showcase (không dùng 1.0); quad 320×160 phòng cắt wake ở cỡ lớn; tâm quad lệch `52 * visual.size` theo hướng kiếm để mũi glow trùng chính xác `projectile_tip`. Đây là sửa trực quan, không thay gameplay.

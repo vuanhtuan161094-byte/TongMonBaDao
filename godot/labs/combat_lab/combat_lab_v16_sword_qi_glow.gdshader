@@ -11,7 +11,7 @@ uniform float size_factor : hint_range(0.1, 2.0) = 0.8;
 uniform float seed = 0.0;
 
 void fragment() {
-    vec2 q = (UV - vec2(0.5)) * vec2(240.0, 120.0);
+    vec2 q = (UV - vec2(0.5)) * vec2(320.0, 160.0);
     vec2 p = q / clamp(size_factor, 0.23, 1.8);
     float x = p.x;
     float y = p.y;
