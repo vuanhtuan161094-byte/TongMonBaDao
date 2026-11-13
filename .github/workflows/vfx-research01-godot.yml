@@ -63,7 +63,7 @@ jobs:
           bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://labs/combat_lab/research01/research01_arena.gd 2>&1 | tee "$RUNNER_TEMP/vfx_research01/parse.log"
           bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/labs/combat_lab/research01_contract_test.gd 2>&1 | tee "$RUNNER_TEMP/vfx_research01/contract.log"
           grep -q 'VFX_RESEARCH01_FOCUSED_RESULT=PASS' "$RUNNER_TEMP/vfx_research01/contract.log"
-      - name: Godot actual 1280x720 scenes: baseline, crescent, afterimage
+      - name: "Godot actual 1280x720 scenes: baseline, crescent, afterimage"
         shell: bash
         run: |
           set -euo pipefail
