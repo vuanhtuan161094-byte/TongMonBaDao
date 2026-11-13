@@ -32,7 +32,7 @@ static func _rand(seed: float) -> float:
     return fposmod(sin(seed * 12.9898 + 78.233) * 43758.5453, 1.0)
 
 static func sky_root() -> Vector2:
-    return Vector2(771.0, 76.0)
+    return Vector2(752.0, 56.0)
 
 static func caster_root(caster: Vector2) -> Vector2:
     return caster + Vector2(34.0, -91.0)
@@ -71,27 +71,27 @@ static func _light_line(canvas: CanvasItem, a: Vector2, b: Vector2,
         return
     # Same physics-inspired white-hot signature as the liked V9 serpent.
     # Wide atmospheric passes have VERY low alpha so edges remain soft.
-    canvas.draw_line(a, b, _rgba(VIOLET, strength * 0.034),
-        width * 8.8, true)
-    canvas.draw_line(a, b, _rgba(DARK_BLUE, strength * 0.089),
-        width * 5.4, true)
-    canvas.draw_line(a, b, _rgba(hue, strength * 0.30),
-        width * 2.5, true)
-    canvas.draw_line(a, b, _rgba(WHITE, strength * 0.88),
-        maxf(0.85, width * 0.63), true)
+    canvas.draw_line(a, b, _rgba(VIOLET, strength * 0.058),
+        width * 10.4, true)
+    canvas.draw_line(a, b, _rgba(DARK_BLUE, strength * 0.152),
+        width * 6.1, true)
+    canvas.draw_line(a, b, _rgba(hue, strength * 0.53),
+        width * 2.65, true)
+    canvas.draw_line(a, b, _rgba(WHITE, strength * 0.98),
+        maxf(1.1, width * 0.81), true)
 
 static func _flash(canvas: CanvasItem, p: Vector2,
         strength: float, radius: float) -> void:
     if strength < 0.01:
         return
     canvas.draw_circle(p, radius * 3.1,
-        _rgba(VIOLET, strength * 0.024))
+        _rgba(VIOLET, strength * 0.039))
     canvas.draw_circle(p, radius * 1.75,
-        _rgba(AZURE, strength * 0.095))
+        _rgba(AZURE, strength * 0.15))
     canvas.draw_circle(p, radius * 0.75,
-        _rgba(CYAN, strength * 0.27))
-    canvas.draw_circle(p, maxf(0.85, radius * 0.19),
-        _rgba(WHITE, strength * 0.76))
+        _rgba(CYAN, strength * 0.38))
+    canvas.draw_circle(p, maxf(1.1, radius * 0.23),
+        _rgba(WHITE, strength * 0.94))
 
 static func bolt_path(a: Vector2, b: Vector2, seed: int,
         beat: int, depth: int = 4,
@@ -172,9 +172,9 @@ static func _subforks(canvas: CanvasItem,
             + axis * (36.0 + 13.0 * lean)
         var branch_path := bolt_path(anchor, finish,
             seed + j * 17 + 120, beat, 3, 15.0)
-        var fade := energy * (0.55 - float(j) * 0.038)
+        var fade := energy * (0.72 - float(j) * 0.051)
         _stroke(canvas, branch_path,
-            _clamp((reveal - u) * 5.2), fade, 1.55,
+            _clamp((reveal - u) * 5.2), fade, 2.1,
             VIOLET if j % 3 == 0 else AZURE)
         if lod >= 2 and j % 2 == 0:
             var elbow := branch_path[branch_path.size() - 3]
@@ -223,8 +223,8 @@ static func _contact(canvas: CanvasItem, at: Vector2,
         return
     var age := _clamp((t - win.x) / (win.y - win.x))
     var power := 1.0 - _smooth((age - 0.13) / 0.87)
-    _flash(canvas, at, power * (0.95 if slot == 0 else 0.62),
-        14.0 if slot == 0 else 9.5)
+    _flash(canvas, at, power * (1.0 if slot == 0 else 0.74),
+        19.0 if slot == 0 else 13.0)
     # Chaotic ground-hugging electrical discharge -- no full circular
     # shockwave / no fake AoE: irregular, incomplete crawling filaments.
     var spokes := MAX_SPLINTERS if lod >= 2 else (4 if lod == 1 else 2)
@@ -245,6 +245,51 @@ static func _contact(canvas: CanvasItem, at: Vector2,
             var offset := Vector2(float(j - 1) * 13.0, -16.0 * (1.0 - age))
             _flash(canvas, at + offset, power * 0.20, 3.0)
 
+static func _storm_crown(canvas: CanvasItem, t: float,
+        mode: int, lod: int) -> void:
+    if mode != 0 or t < 0.18 or t >= 0.57:
+        return
+    # A small animated electric sky, NOT a painted circular icon:
+    # diagonally unequal blue-violet cloud veins lead into the discharge.
+    var grow := _smooth((t - 0.18) / 0.16)
+    var fade := 1.0 - _smooth((t - 0.49) / 0.08)
+    var root := sky_root()
+    var intensity := grow * fade
+    var beat := int(floor(t * 59.0))
+    for j in range(5 if lod >= 1 else 3):
+        var turn := float(j)
+        var start := root + Vector2(-91.0 + turn * 37.0,
+            -4.0 - 8.0 * sin(turn * 1.8))
+        var finish := root + Vector2(-58.0 + turn * 42.0,
+            13.0 + 4.0 * sin(turn * 2.3))
+        var vein := bolt_path(start, finish, 611 + j * 17,
+            beat, 3, 12.0)
+        _stroke(canvas, vein, 1.0,
+            intensity * (0.27 + 0.065 * float(j % 2)),
+            1.6, VIOLET if j % 2 == 0 else CYAN)
+    _flash(canvas, root, intensity * 0.68, 9.0)
+
+static func _sister_channels(canvas: CanvasItem, origin: Vector2,
+        finish: Vector2, t: float, mode: int, beat: int,
+        reveal: float, energy: float, lod: int) -> void:
+    if lod < 1 or energy < 0.03:
+        return
+    # Nearby branches have independent fractal topology and fewer forks,
+    # NOT three bright copies of the same long static zigzag.
+    var d := (finish - origin).normalized()
+    var side := d.orthogonal()
+    for lane in range(2):
+        var sign := -1.0 if lane == 0 else 1.0
+        var spread := 8.5 + float(lane) * 4.0
+        var head := origin + side * sign * spread
+        var tail := finish + side * sign * 2.0
+        var web := bolt_path(head, tail,
+            940 + mode * 43 + lane * 37, beat + lane,
+            3, 22.0)
+        _stroke(canvas, web, reveal, energy *
+            (0.26 if lane == 0 else 0.19),
+            2.2, AZURE if lane == 0 else VIOLET)
+
 static func _leader(canvas: CanvasItem, caster: Vector2, targets: Array,
         t: float, mode: int, lod: int) -> void:
     if targets.size() < HIT_COUNT or t < MAIN_BEGIN or t >= MAIN_END:
@@ -264,10 +309,12 @@ static func _leader(canvas: CanvasItem, caster: Vector2, targets: Array,
     var reveal := _clamp((t - MAIN_BEGIN) /
         (MAIN_CONTACT - MAIN_BEGIN))
     # The leader PROGRESSES through the sky before full ignition.
-    _stroke(canvas, path, reveal, intensity, 3.55,
+    _sister_channels(canvas, begin, finish, t, mode, beat,
+        reveal, intensity, lod)
+    _stroke(canvas, path, reveal, intensity * 1.05, 5.2,
         CYAN if mode == 0 else AZURE)
     _subforks(canvas, path, 298 if mode == 0 else 347,
-        beat, reveal, intensity * 0.94, lod)
+        beat, reveal, intensity * 1.04, lod)
     var tip := bolt_endpoint(path, reveal)
     _flash(canvas, tip, intensity * 0.72, 7.0)
     if mode == 0:
@@ -287,13 +334,13 @@ static func _chain(canvas: CanvasItem, targets: Array,
         var dest := mock_contact_target(targets, slot)
         var reveal := _smooth((t - start) / (ignite - start))
         var fade := 1.0 - _smooth((t - ignite) / (expire - ignite))
-        var strength := (0.86 if slot == 1 else 0.77) * fade
+        var strength := (1.05 if slot == 1 else 0.93) * fade
         var beat := int(floor(t * 79.0)) + slot * 8
         var points := bolt_path(previous, dest,
             517 + slot * 43 + mode * 31, beat,
             4, 20.0 if slot == 1 else 24.0)
         _stroke(canvas, points, reveal,
-            strength * maxf(0.2, reveal), 2.25, AZURE)
+            strength * maxf(0.2, reveal), 3.2, AZURE)
         _subforks(canvas, points, 504 + slot * 9,
             beat, reveal, strength * 0.35, maxi(0, lod - 1))
         previous = dest if mode == 1 else mock_contact_target(targets, 0)
@@ -306,6 +353,7 @@ static func render(canvas: CanvasItem, caster: Vector2,
         return
     var t := _clamp(progress)
     _charge(canvas, caster, t, mode, lod)
+    _storm_crown(canvas, t, mode, lod)
     _leader(canvas, caster, targets, t, mode, lod)
     _chain(canvas, targets, t, mode, lod)
     for slot in active_mock_contacts(mode, t):
