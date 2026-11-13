@@ -10,3 +10,12 @@ Owner goal: reuse the good-looking energy-motion *principle* of Combat Lab V9 li
 
 ## Evidence
 To be updated after exact SHA Godot 4.7.2 Compatibility focused tests, video capture at 1280×720, movie frame review, and callback checks. Windows/Android physical QA stays PENDING USER. Never claim 60fps offline movie encoding is real mobile FPS.
+
+## Exact-SHA QA closure (2026-11-13)
+- **CODE**: renderer, separate scene, focused tests commit [cead27f7](https://github.com/vuanhtuan161094-byte/TongMonBaDao/commit/cead27f70af45d76535f65033ed66c88003d3902).
+- **CI workflow**: [c8359879](https://github.com/vuanhtuan161094-byte/TongMonBaDao/commit/c8359879ae257e0adf7280632f7913af098d6ffc).
+- **ISOLATED GODOT 4.7.2 FOCUSED PASS**: [run #43382287589](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/43382287589) SUCCESS at SHA `c8359879ae257e0adf7280632f7913af098d6ffc`. Logged `VFX_RESEARCH02_FOCUSED_RESULT=PASS failures=0`. Official Godot `4.7.2.stable.official.ed1daf0bf` with GL Compatibility in virtual Xvfb.
+- **Visual evidence**: CI artifact `research02-flowing-sword-c8359879ae257e0adf7280632f7913af098d6ffc`, ID `14017271962`, contains 4 original full-resolution 1280×720 videos (V14.2, RESEARCH01 A/B, RESEARCH02 C), 3 time samples per mode, filmstrips, four-way images and import/parse/focused log. All 168 frames encoded at fixed 60 fps; **not physical measured FPS**.
+- **Human visual review** at 1280×720 real captured frames t=1.30, 1.67 and 1.98: Flowing Sword Qi has a noticeably more readable proper rigid sword than A/B and the tail appears genuinely curved/attached to the same flight path. Caveat: some overlapping simultaneous swords still crowd the target sprites; improvement over V14.2 is **not proven** without OWNER review. No automatic art acceptance.
+- **No integration**: V14.2 renderer intact; RESEARCH01 intact. Original content, no copied external third-party files. No combat/HP/target selection/SaveService touched.
+- **Known limitation:** isolated CI applies a one-line, **uncommitted** prior summon parse shim in the disposable checkout. This is NOT a clean full-repo Godot PASS; V63 matrix failed on separate workflow. Physical Windows/Android PENDING USER; PvE integration HOLD; OWNER_VISUAL_PENDING.
