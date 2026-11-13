@@ -5,7 +5,7 @@ const Fx = preload("res://labs/combat_lab/combat_lab_v9_energy_fx.gd")
 const PoisonAtlas = preload("res://labs/combat_lab/combat_lab_poison_atlas_v1.gd")
 const Rig = preload("res://labs/combat_lab/combat_lab_actor_rig_v2.gd")
 const SWORD_GLOW = preload("res://labs/combat_lab/combat_lab_v11_arcane_circle.gdshader")
-const SWORD_TARGETS = preload("res://labs/combat_lab/combat_lab_v14_sword_fx.gd")
+const SWORD_TARGETS = preload("res://labs/combat_lab/combat_lab_v15_sword_fx.gd")
 var effect: Control
 var title: Label
 var charge_glow: ColorRect
@@ -111,7 +111,7 @@ func _process(_delta: float) -> void:
 func _refresh_title() -> void:
     var sword := str(effect.get("demo_school")) == "sword"
     title.text = (
-        "VFX14 · CỬU KIẾM KHÍ · TÂM QUÁI %d · NGẮM %d/4 · BẤM QUÁI ĐỂ CHỌN · LAB" %
+        "VFX15 · CỬU KIẾM QUANG · TÂM QUÁI %d · NGẮM %d/4 · BẤM QUÁI ĐỂ CHỌN · LAB" %
         [preview_primary_index + 1, preview_hit_count]
         if sword else "VFX09 · ĐỘC QUANG HÓA XÀ · LAB ONLY")
     charge_glow.visible = sword
