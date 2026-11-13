@@ -1,3 +1,9 @@
+## V63 DESIGN AUDIT 01 — OWNER REVIEW / STATIC-ONLY (2026-11-13)
+- **Baseline:** `77d855c0c3660b42b5488decb16bdfc94d8c0279` PR #72 Draft; full audit of 12 live source catalogues: **2,196 unique IDs, 420 families, 36 branches, 864 matched A/B pairs**. Found **236 exact declared-gameplay overlaps**: **41 P1 active/ultimate**, **195 P2 passive/innate**. Independent identity, parent/replacement graph and candidate branch-element checks PASSED.
+- **Evidence:** `docs/qa/V63_DESIGN_AUDIT_20261113/README.md` and `LINEAGE_AB_COMPARISON.csv` (all 864 exact source ID pairs). This is a **design-review candidate list**, not proof all 236 behave identically in runtime.
+- **No gameplay, numeric balance, VFX, feature-gate, SaveService or economy edit.** V6.3 remains OFF, 1,647 candidate nodes remain locked; source/manual and balance PENDING. New Godot 4.7.2 focused test NOT RUN in this execution host (Godot absent). Prior S9 focused PASS is for `6124758` only; D4A/Warehouse old FAIL and physical Windows/Android/visual PENDING unchanged.
+- **Next:** owner decision on 41 P1 distinctiveness and 195 P2 shared-passive intent, then scoped implementation and official Godot focused+cumulative exact-SHA evidence; do not declare design completed or release-ready.
+
 ## LATEST HANDOFF — V63-S9 CLOSURE, 2026-11-13
 - Fresh rerun after integrating VFX19 R2 lab-only base 45fda38: exact tested SHA 6124758ad70fef66a51c0fd94d034b4f65122e89, import+D1+S0–S9 exit 0 using awaited sequential official Godot processes; logs and refreshed captures archived.
 - Continue on the existing PR #72 branch integration/pve-p0-playable-ui-20261103. Integrated remote base 45fda38f67d478bb5a6e6c49a11908c2d667f251; tested code/tree SHA: 6124758ad70fef66a51c0fd94d034b4f65122e89.
