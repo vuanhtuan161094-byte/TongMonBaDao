@@ -1,0 +1,156 @@
+name: VFX15 ISOLATED Godot Lab QA (external summon parse shim)
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - integration/pve-p0-playable-ui-20261103
+    paths:
+      - '.github/workflows/vfx-v15-isolated-godot-lab.yml'
+      - 'godot/labs/combat_lab/combat_lab_v9_energy_fx.gd'
+      - 'godot/labs/combat_lab/combat_lab_v10_sword_fx.gd'
+      - 'godot/labs/combat_lab/combat_lab_v11_sword_fx.gd'
+      - 'godot/labs/combat_lab/combat_lab_v12_sword_fx.gd'
+      - 'godot/labs/combat_lab/combat_lab_v13_sword_fx.gd'
+      - 'godot/labs/combat_lab/combat_lab_v14_sword_fx.gd'
+      - 'godot/labs/combat_lab/combat_lab_v15_sword_fx.gd'
+      - 'godot/labs/combat_lab/combat_lab_v11_arcane_circle.gdshader'
+      - 'godot/labs/combat_lab/combat_lab_v9_energy_light.gdshader'
+      - 'godot/labs/combat_lab/combat_lab_v9_light_showcase.gd'
+      - 'godot/labs/combat_lab/combat_lab_v9_light_showcase.tscn'
+      - 'godot/labs/combat_lab/combat_lab_arena.gd'
+      - 'godot/labs/combat_lab/combat_lab.gd'
+      - 'godot/labs/combat_lab/combat_lab_poison_v4_layers.gd'
+      - 'godot/tests/labs/combat_lab/v9_energy_light_contract_test.gd'
+
+permissions:
+  contents: read
+
+jobs:
+  v9-import-parse-render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      GODOT_AUDIO_DRIVER: Dummy
+      TMB_POISON_V4_PREVIEW: "1"
+      TMB_POISON_V9_LIGHT: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - name: Temporary external dependency type shim in disposable CI checkout ONLY
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          path = Path("godot/src/simulation/combat/v63_summon_skill_combat_system.gd")
+          source = path.read_text()
+          before = "var candidate := origin+offset"
+          after = "var candidate: Vector2 = origin+(offset as Vector2)"
+          assert source.count(before) == 1, "Upstream was fixed/changed: remove the isolated shim"
+          path.write_text(source.replace(before, after))
+          print("ISOLATED QA ONLY: applied non-committed candidate type annotation to unrelated summon file")
+          PY
+          echo "ISOLATED_TEST_EPHEMERAL_SHIM=godot/src/simulation/combat/v63_summon_skill_combat_system.gd:303" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Install official SHA256-verified Godot 4.7.2 and virtual renderer
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq xvfb ffmpeg
+          curl --fail --location --retry 3 --output /tmp/tmb_godot.zip \
+            "https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip"
+          echo "cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4  /tmp/tmb_godot.zip" | sha256sum --check --strict
+          unzip -q /tmp/tmb_godot.zip -d /tmp
+          sudo install -m 0755 /tmp/Godot_v4.7.2-stable_linux.x86_64 /usr/local/bin/godot
+          godot --version
+      - name: Restore canonical Stage A assets without changing runtime authority
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat .github/assets/p3/female_stage_a/part{01..14}.b64 \
+            .github/assets/p3/female_stage_a/part15a.b64 \
+            .github/assets/p3/female_stage_a/part15b.b64 \
+            .github/assets/p3/female_stage_a/part{16..20}.b64 \
+            | tr -d '\r\n\t ' | base64 --decode > /tmp/tmb_stage_a_pack.zip
+          test "$(stat -c%s /tmp/tmb_stage_a_pack.zip)" -eq 44838
+          echo "6a4213b9129ffb3f438c21cbb5326672ddf8915323836bf80cb33b8e5fabfdca  /tmp/tmb_stage_a_pack.zip" | sha256sum --check --strict
+          unzip -q /tmp/tmb_stage_a_pack.zip -d .
+      - name: Strict import and GDScript parse
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash tools/qa/run_godot_strict.sh --headless --path godot --import
+          for file in \
+            res://labs/combat_lab/combat_lab_v9_energy_fx.gd \
+            res://labs/combat_lab/combat_lab_v10_sword_fx.gd \
+            res://labs/combat_lab/combat_lab_v11_sword_fx.gd \
+            res://labs/combat_lab/combat_lab_v12_sword_fx.gd \
+            res://labs/combat_lab/combat_lab_v13_sword_fx.gd \
+            res://labs/combat_lab/combat_lab_v14_sword_fx.gd \
+            res://labs/combat_lab/combat_lab_v15_sword_fx.gd \
+            res://labs/combat_lab/combat_lab_v9_light_showcase.gd \
+            res://labs/combat_lab/combat_lab_poison_v4_layers.gd \
+            res://labs/combat_lab/combat_lab_arena.gd \
+            res://labs/combat_lab/combat_lab.gd \
+            res://tests/labs/combat_lab/v9_energy_light_contract_test.gd
+          do
+            bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script "$file"
+          done
+      - name: Focused V9 shader and real cue scene and unchanged V4 canonical contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash tools/qa/run_godot_strict.sh --headless --path godot \
+            -s res://tests/labs/combat_lab/v9_energy_light_contract_test.gd
+          bash tools/qa/run_godot_strict.sh --headless --path godot \
+            -s res://tests/labs/combat_lab/poison_v4_render_contract_test.gd
+      - name: Render genuine 1280x720 Godot V15 light sword contact and V9 serpent at 60 FPS
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/vfx_v9"
+          echo "code_sha=$GITHUB_SHA" > "$RUNNER_TEMP/vfx_v9/metadata.txt"
+          echo "qa_mode=ISOLATED_UNCOMMITTED_SUMMON_TYPE_SHIM_NOT_FULL_REPO_PASS" >> "$RUNNER_TEMP/vfx_v9/metadata.txt"
+          for school in snake sword; do
+            export TMB_VFX_V9_SHOWCASE="$school"
+            xvfb-run -a -s "-screen 0 1280x720x24" \
+              bash tools/qa/run_godot_strict.sh --path godot --resolution 1280x720 \
+                --fixed-fps 60 --write-movie "$RUNNER_TEMP/vfx_v9/$school.avi" \
+                --quit-after 165 res://labs/combat_lab/combat_lab_v9_light_showcase.tscn \
+              2>&1 | tee "$RUNNER_TEMP/vfx_v9/$school.log"
+            test -s "$RUNNER_TEMP/vfx_v9/$school.avi"
+            ffmpeg -y -hide_banner -loglevel error -ss 1.20 \
+              -i "$RUNNER_TEMP/vfx_v9/$school.avi" -frames:v 1 \
+              "$RUNNER_TEMP/vfx_v9/$school.png"
+            test -s "$RUNNER_TEMP/vfx_v9/$school.png"
+            ffmpeg -y -hide_banner -loglevel error \
+              -i "$RUNNER_TEMP/vfx_v9/$school.avi" -c:v libx264 -preset fast \
+              -pix_fmt yuv420p "$RUNNER_TEMP/vfx_v9/$school.mp4"
+            fps="$(ffprobe -v error -select_streams v:0 -show_entries stream=avg_frame_rate -of default=noprint_wrappers=1:nokey=1 "$RUNNER_TEMP/vfx_v9/$school.mp4")"
+            echo "$school fps=$fps" | tee -a "$RUNNER_TEMP/vfx_v9/metadata.txt"
+            test "$fps" = "60/1"
+            # Five-second owner-facing visual audit surface: six independent
+            # frames over the full animation, not a single flattering screenshot.
+            ffmpeg -y -hide_banner -loglevel error \
+              -i "$RUNNER_TEMP/vfx_v9/$school.mp4" \
+              -vf "fps=2,scale=640:360,tile=6x1:nb_frames=6" -frames:v 1 \
+              "$RUNNER_TEMP/vfx_v9/${school}_filmstrip.png"
+            test -s "$RUNNER_TEMP/vfx_v9/${school}_filmstrip.png"
+            rm "$RUNNER_TEMP/vfx_v9/$school.avi"
+          done
+          sha256sum "$RUNNER_TEMP/vfx_v9/"*.png "$RUNNER_TEMP/vfx_v9/"*.mp4 \
+            > "$RUNNER_TEMP/vfx_v9/SHA256SUMS.txt"
+      - name: Upload actual engine screenshots, videos and QA logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vfx-v15-isolated-${{ github.sha }}
+          path: |
+            ${{ runner.temp }}/vfx_v9/*.png
+            ${{ runner.temp }}/vfx_v9/*.mp4
+            ${{ runner.temp }}/vfx_v9/*.log
+            ${{ runner.temp }}/vfx_v9/*.txt
+            ${{ runner.temp }}/tmb_godot_strict/*.log
+          retention-days: 14
+          if-no-files-found: warn
