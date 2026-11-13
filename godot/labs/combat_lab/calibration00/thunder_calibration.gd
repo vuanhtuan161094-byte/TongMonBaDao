@@ -219,8 +219,20 @@ func _process(delta: float) -> void:
     if paused:
         return
     elapsed = fposmod(elapsed + maxf(delta, 0.0), LOOP_SECONDS)
+    _update_impact_kick()
     _update_beams()
     queue_redraw()
+
+func _update_impact_kick() -> void:
+    # Two-pixel kick on the view-only LAB stage after each optical strike.
+    # Never shifts actual targets or the Combat V2 camera.
+    var power := 0.0
+    for beat in range(STRIKE_COUNT):
+        var age := strike_age(beat, elapsed)
+        if age >= 0.045 and age < 0.16:
+            power = maxf(power, (1.0 - smoothstep(0.045, 0.16, age)))
+    position = Vector2(sin(elapsed * 137.0) * 2.4,
+        cos(elapsed * 181.0) * 1.8) * power
 
 func _unhandled_input(event: InputEvent) -> void:
     if not event is InputEventKey or not event.pressed or event.echo:
@@ -255,7 +267,7 @@ func _draw() -> void:
             var gain := (1.0 - smoothstep(0.052, 0.40, age))
             var p := selected_contact(beat) + Vector2(0.0, -36.0)
             _contact(p, age, gain)
-            global_flash = maxf(global_flash, 0.064 * gain)
+            global_flash = maxf(global_flash, 0.12 * gain)
     if global_flash > 0.001:
         draw_rect(Rect2(Vector2.ZERO, RENDER_SIZE),
             Color(0.86, 0.80, 1.0, global_flash))
@@ -265,7 +277,7 @@ func _ground() -> void:
     # Atmospheric gravel field without a distracting rectangular stage edge.
     draw_texture_rect(_radial,
         Rect2(Vector2(20.0, 101.0), Vector2(1240.0, 578.0)),
-        false, Color(0.23, 0.32, 0.44, 0.62))
+        false, Color(0.30, 0.38, 0.54, 0.71))
     for k in range(7):
         var y := 194.0 + float(k) * 62.0
         draw_line(Vector2(65.0, y), Vector2(1235.0, y),
@@ -300,7 +312,7 @@ func _ritual() -> void:
             var theta := TAU * float(k) / 64.0
             pts.append(center + Vector2(cos(theta) * radius,
                 sin(theta) * radius * 0.38))
-        draw_polyline(pts, Color("b5a2ff", (0.16 - float(j) * 0.06) * charge),
+        draw_polyline(pts, Color("b5a2ff", (0.28 - float(j) * 0.10) * charge),
             1.3, true)
 
 func _contact(p: Vector2, age: float, power: float) -> void:
@@ -308,7 +320,7 @@ func _contact(p: Vector2, age: float, power: float) -> void:
     var spike := pow(maxf(0.0, 1.0 - smoothstep(0.052, 0.27, age)), 1.4)
     draw_texture_rect(_radial,
         Rect2(p - Vector2(129.0, 119.0), Vector2(258.0, 238.0)),
-        false, Color("b5a0ff", power * 0.76))
+        false, Color("b5a0ff", power * 0.86))
     draw_texture_rect(_radial,
         Rect2(p - Vector2(55.0, 60.0), Vector2(110.0, 120.0)),
         false, Color("f5eaff", spike * 1.0))
