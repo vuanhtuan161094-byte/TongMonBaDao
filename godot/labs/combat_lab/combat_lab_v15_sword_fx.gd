@@ -204,7 +204,7 @@ static func _impact_burst(c: CanvasItem, victim: Vector2, z: float,
         sweep.append(at + Vector2(
             cos(phi) * radius,
             sin(phi) * radius * (0.78 + k * 0.1)))
-    c.draw_polyline(sweep, _col(BLUE, a * gain * 0.19),
+    c.draw_polyline(sweep, _col(AZURE, a * gain * 0.19),
         maxf(1.5, (8.0 if main else 5.5) * z), true)
     c.draw_polyline(sweep, _col(ICE, a * gain * 0.78),
         maxf(0.8, (2.2 if main else 1.3) * z), true)
