@@ -13,7 +13,7 @@ const CYCLE_SECONDS := 3.2
 const PROJECTILE_START := 0.255
 const CONTACT := 0.744
 const CONTACT_END := 0.824
-const PROJECTILE_REACH := 0.875 # its local x tip on ColorRect
+const PROJECTILE_REACH := 0.875 # analytic light-tip UV on centered Sprite2D
 const ORBIT_COUNT := 16 # decorative streaks; NONE represent hit events
 var study_mode := 0 # 0 = one luminous sword-qi, 1 = rotating sword-qi array.
 var blades: Array[Sprite2D] = []
@@ -92,7 +92,7 @@ static func orbit_streak(i: int, t: float) -> Dictionary:
 
 func _ready() -> void:
     super._ready()
-    title_label.text = "VFX18 | LIGHTCORE2D — KIEM KHI ANH SANG"
+    title_label.text = "VFX18.1 | LIGHTCORE2D — KIEM KHI ANH SANG"
     detail_label.text = "1: mot kiem khi  2: kiem tran xoay  SPACE: phat lai  P: tam dung  |  MOCK LAB / PVE HOLD"
     study_mode = 1 if OS.get_environment("TMB_VFX18_MODE") == "orbit" else 0
     # Render the mathematical UV shader on a tiny PROCEDURALLY GENERATED
@@ -312,40 +312,45 @@ func _single_trail(t: float) -> void:
         prev_alt = alt
 
 
+static func charge_source(j: int, t: float) -> Vector2:
+    # Three sources to the caster's right + two left: visual energy actually
+    # GATHERS at the hand rather than being hidden behind the actor sprite.
+    var side := 1.0 if j != 2 and j != 4 else -1.0
+    var dist := 45.0 + float(j) * 12.0
+    return start_point() + Vector2(
+        side * dist + 8.0 * sin(t * 15.0 + float(j) * 1.31),
+        float(j - 2) * 21.0 + 7.0 * cos(t * 17.0 + float(j) * 1.67))
+
 func _single_charge(t: float) -> void:
     var k: float = (_smooth(t / 0.145) *
         (1.0 - _smooth((t - 0.232) / 0.024)))
     if k < 0.003:
         return
     var focus := start_point()
-    # Five original moving filaments converge on the hot core. This is
-    # ENERGY motion from V9 methodology, not a five-point geometry icon.
     for j in range(5):
         var strand := float(j)
-        var source := LIGHT_CASTER + Vector2(
-            -29.0 + 13.0 * sin(t * 17.0 + strand * 1.71),
-            -64.0 + (strand - 2.0) * 24.0 +
-            7.0 * cos(t * 14.0 + strand * 1.33))
+        var source := charge_source(j, t)
         var bend := Vector2(
-            4.0 * cos(t * 18.0 + strand),
-            14.0 * sin(t * 14.0 + strand * 1.2))
+            3.0 * cos(t * 18.0 + strand),
+            13.0 * sin(t * 13.0 + strand * 1.2))
         var points := PackedVector2Array()
         for n in range(9):
             var u := float(n) / 8.0
-            var p := source.lerp(focus, u)
-            p += bend * sin(PI * u) * (1.0 - u)
-            points.append(p)
-        var strength := k * (0.58 + 0.09 * sin(strand * 2.0 + t * 22.0))
+            var pos := source.lerp(focus, u)
+            pos += bend * sin(PI * u) * (1.0 - u)
+            points.append(pos)
+        var strength := k * (0.72 + 0.12 *
+            sin(strand * 2.0 + t * 22.0))
         draw_polyline(points, Color(0.09, 0.34, 0.95,
-            strength * 0.085), 13.0, true)
+            strength * 0.13), 14.0, true)
         draw_polyline(points, Color(0.21, 0.81, 1.0,
-            strength * 0.30), 4.2, true)
+            strength * 0.36), 4.0, true)
         draw_polyline(points, Color(0.96, 0.99, 1.0,
-            strength * 0.52), 1.1, true)
-    # White hot point with a limited soft falloff; no big AoE ring.
-    draw_circle(focus, 13.0, Color(0.09, 0.38, 1.0, 0.072 * k))
-    draw_circle(focus, 6.0, Color(0.25, 0.80, 1.0, 0.18 * k))
-    draw_circle(focus, 2.8, Color(0.95, 0.99, 1.0, 0.80 * k))
+            strength * 0.66), 1.3, true)
+    # Bounded glow at the hand: it never becomes a big targeting ring.
+    draw_circle(focus, 17.0, Color(0.07, 0.37, 1.0, 0.087 * k))
+    draw_circle(focus, 8.0, Color(0.25, 0.80, 1.0, 0.22 * k))
+    draw_circle(focus, 3.4, Color(0.95, 0.99, 1.0, 0.83 * k))
 
 func _impact_splinters(t: float) -> void:
     if t < CONTACT or t >= CONTACT_END:

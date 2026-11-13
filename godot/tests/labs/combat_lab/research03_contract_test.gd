@@ -33,6 +33,19 @@ func _run() -> void:
             "cubic path finite and tangent unit @" + str(k))
     chk(STUDY.flight_head(1.0).is_equal_approx(STUDY.stop_point()),
         "projectile reaches precontact boundary, never victim origin")
+    var visible_right := 0
+    var visible_left := 0
+    for i in range(5):
+        var source: Vector2 = STUDY.charge_source(i, 0.12)
+        chk(is_finite(source.x) and is_finite(source.y) and
+            source.distance_to(STUDY.start_point()) < 150.0,
+            "charge filaments must originate near caster " + str(i))
+        if source.x > STUDY.start_point().x + 30.0:
+            visible_right += 1
+        if source.x < STUDY.start_point().x - 30.0:
+            visible_left += 1
+    chk(visible_right >= 3 and visible_left >= 2,
+        "charge light strands must visibly reach both sides of caster")
     for i in range(16):
         var candidate: Dictionary = STUDY.orbit_streak(i, 0.4)
         chk(candidate.has("position") and candidate.has("axis") and

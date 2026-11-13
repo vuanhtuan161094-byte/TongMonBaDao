@@ -45,3 +45,6 @@ Source: owner-supplied 2.5D blue-white swirling qi image, current TMB V9 dynamic
 - Orbit changes from entirely front-layer sprites to actual two-depth-stage presentation: a standalone node `orbit_actor_overlay.gd` is between back and front orbit streaks. No fake AOE; 16 decorative light streaks remain.
 - Focused test now verifies front and back visual strata, caster overlay, no impact from orbit mode, previous tip-to-route 0.65-pixel contract.
 - Review only after Godot 4.7.2 exact SHA fresh full-motion movie; `OWNER_VISUAL_PENDING / PVE_HOLD`.
+
+### VFX18.1 R1 manual frame fix
+At 0.36s in the first real video (focused success 72537344), most charge filaments were still hidden within the rig; single-qi flight at t=1.55 and hit at 2.43 were inspected and retained. R1 moves three light filaments outward to the right of the hand and two left, strengthens narrow hot white convergence, and labels the LAB image as VFX18.1. Added charge-source geometry contract; exact Godot rerender required.
