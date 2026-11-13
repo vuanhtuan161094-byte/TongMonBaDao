@@ -176,8 +176,8 @@ func _process(_delta: float) -> void:
         var hit := sword_impact_layers[i]
         var contact := SWORD_TARGETS.contact_time(i)
         var age := (progress - contact) / 0.12
-        hit.visible = sword_active and not effect.sword_preview_hits.is_empty() and
-            progress >= contact and progress < contact + 0.12
+        hit.visible = (sword_active and not effect.sword_preview_hits.is_empty()
+            and progress >= contact and progress < contact + 0.12)
         if not hit.visible:
             continue
         var lane := i % 3
