@@ -68,6 +68,9 @@ static func orbit_streak(i: int, t: float) -> Dictionary:
     var phase_offset := 0.08 if ring == 0 else 0.48
     var rate := 0.82 if ring == 0 else -0.56
     var angle := (float(j) / 8.0) * TAU + t * TAU * rate + phase_offset
+    # Imperfect natural spacings, never eight metronomic equal clock hands.
+    angle += 0.067 * sin(float(j) * 2.17 + float(ring) * 1.63)
+    angle += 0.019 * sin(t * TAU * 2.7 + float(j) * 1.83)
     var formation := lerpf(0.66, 1.0, _smooth(t / 0.148))
     var breathe := 1.0 + 0.025 * sin(t * TAU * 2.1 + float(j) * 1.8)
     var rx := (185.0 if ring == 0 else 242.0) * formation * breathe

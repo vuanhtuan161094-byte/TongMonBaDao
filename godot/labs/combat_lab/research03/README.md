@@ -57,3 +57,7 @@ Art script was committed first: `docs/operations/VFX18_2_ART_STORYBOARD_20261113
 - Added `curl` to shader to give existing orbit qi blades delicate active tip deformation while preserving the original single-qi static-rigid attack axis; plus 8 low-contrast moving historical wakelets. Still precisely 16 original decorative streaks, both back and front modes.
 - Focused QA checks three original shaders, one mock contact, 16 capped main strands, aurora only in orbit and behind actor, existing exact shader tip/path subpixel contract.
 - **Art gate:** do not call this owner accepted before looking at real native Godot 1280×720 movie across all charge/flight/contact/fade/array phases and comparing to VFX18.1.
+
+## VFX18.2 R1 — hard-edged aurora sector defect corrected by real render QA
+- Actual Godot 4.7.2 R0 run [#43403570719](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/43403570719) **technical PASS**, but original `light_orbit_aurora.gdshader` at 1.55s produced visible polygon/fan-like dark gaps due to hard polar angle gating and an overly strong ~0.30 alpha haze field. This violates owner light-first aesthetics even though shader compiled.
+- Replaced the polar gate with **continuous Gaussian radial/angle falloff**, gentler <0.17 max alpha, and continuously breathing angular modulation. Also introduced independent slight phase offsets for 8 sectors to break rigid clockwork spacing without changing shard count or target semantics. After this commit, re-run exact-SHA Godot and visually inspect art before final.
