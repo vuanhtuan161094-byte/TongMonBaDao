@@ -58,7 +58,7 @@ func _run() -> void:
         scene._update_visuals()
         chk(scene.contacts[0].visible == false,
             "no impact during early flight")
-        var prog := ((scene.elapsed / STUDY.CYCLE_SECONDS) -
+        var prog: float = ((float(scene.elapsed) / STUDY.CYCLE_SECONDS) -
             STUDY.PROJECTILE_START) / (STUDY.CONTACT - STUDY.PROJECTILE_START)
         var head: Vector2 = STUDY.flight_head(prog)
         var carrier: Sprite2D = scene.blades[0]
