@@ -72,7 +72,8 @@ jobs:
             ffmpeg -y -hide_banner -loglevel error -ss "$at" -i "$d/classic-thunder.mp4"               -frames:v 1 "$d/frame-$at.png"
           done
           ffmpeg -y -hide_banner -loglevel error -i "$d/classic-thunder.mp4"             -vf "fps=6,scale=320:180,tile=5x4:nb_frames=20" -frames:v 1 "$d/timeline.png"
-          sha256sum "$d/"*.mp4 "$d/"*.png > "$d/SHA256SUMS.txt"
+          cp docs/operations/vfx_reference/TMB_VFX_Lab_4Skills_ORIGINAL.html "$d/original-4skills-reference.html"
+          sha256sum "$d/"*.mp4 "$d/"*.png "$d/"*.html > "$d/SHA256SUMS.txt"
           rm "$d/classic-thunder.avi"
       - name: Upload evidence even on earlier QA failure
         if: always()
@@ -86,3 +87,4 @@ jobs:
             ${{ runner.temp }}/vfx-cal00/*.txt
             ${{ runner.temp }}/vfx-cal00/*.png
             ${{ runner.temp }}/vfx-cal00/*.mp4
+            ${{ runner.temp }}/vfx-cal00/*.html
