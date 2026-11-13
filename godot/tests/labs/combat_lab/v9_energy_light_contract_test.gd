@@ -120,9 +120,9 @@ func _check() -> void:
             methods15.has("contact_point") and methods15.has("contact_time") and
             methods15.has("projectile_tip"),
             "VFX15 implements light-blade and pre-contact transform")
-        ensure(not sword15.source_code.contains("metal facets") and
-            not sword15.source_code.contains("guard -"),
-            "VFX15 is qi light art, not V14 solid sword geometry")
+        ensure(not methods15.has("_qi_blade") and
+            not methods15.has("_energy_blade"),
+            "VFX15 replaces solid sword renderers with own light-qi shape")
     ensure(SWORD_V15.contact_time(0) < SWORD_V15.flight_timing(0).y and
         SWORD_V15.contact_time(8) < SWORD_V15.flight_timing(8).y,
         "VFX15 first and third volley finish BEFORE old hit plane")
