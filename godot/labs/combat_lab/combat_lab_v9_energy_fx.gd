@@ -3,7 +3,7 @@ extends Control
 # Presentation-only. The live mode reads existing MapBattleV2 cues, NEVER
 # creates a hit, changes HP, target selection, timing, Save, or skill stats.
 const LIGHT_SHADER = preload("res://labs/combat_lab/combat_lab_v9_energy_light.gdshader")
-const V14SwordFx = preload("res://labs/combat_lab/combat_lab_v14_sword_fx.gd")
+const V15SwordFx = preload("res://labs/combat_lab/combat_lab_v15_sword_fx.gd")
 const CYAN := Color("56ddff")
 const WHITE := Color("f5fdff")
 const INDIGO := Color("7961ec")
@@ -369,9 +369,10 @@ func _draw() -> void:
     if demo_mode:
         var phase := fposmod(elapsed, loop_seconds) / loop_seconds
         if demo_school == "sword":
-            # V14 JX-inspired energy cloth and cinematic hit, only
-            # caller-approved targets. V13 and poison remain as A/B source.
-            V14SwordFx.render(self, caster + Vector2(0, -62),
+            # VFX15 light sword qi: projects to the stop boundary, then
+            # dissolves into VFX contact before the monster body.
+            # Only caller-approved mock targets; V9 live poison untouched.
+            V15SwordFx.render(self, caster + Vector2(0, -62),
                 sword_preview_center, sword_preview_hits,
                 sword_preview_radius, phase, 1.55, 2)
         elif phase < 0.17:
