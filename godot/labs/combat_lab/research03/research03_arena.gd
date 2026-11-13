@@ -255,8 +255,8 @@ func _single_trail(t: float) -> void:
     var p := (t - PROJECTILE_START) / (CONTACT - PROJECTILE_START)
     if p < 0.0 or p >= 1.0:
         return
-    var fade := _smooth(p / 0.15) *
-        (1.0 - _smooth((p - 0.85) / 0.15))
+    var fade := (_smooth(p / 0.15) *
+        (1.0 - _smooth((p - 0.85) / 0.15)))
     if fade < 0.008:
         return
     # The moving tail is an actual sampled HISTORY of this curved route.
