@@ -240,8 +240,8 @@ func _approach(victim: Vector2, u: float, wave: int,
     var p := origin.lerp(stop, ease_out(u))
     var direction := (stop - origin).normalized()
     var normal := direction.orthogonal()
-    var fade := smoothstep(0.0, 0.18, u) *
-        (1.0 - smoothstep(0.73, 0.98, u))
+    var fade := (smoothstep(0.0, 0.18, u) *
+        (1.0 - smoothstep(0.73, 0.98, u)))
     if fade < 0.01:
         return
     var body := (0.7 if afterimage else 0.4) * fade
