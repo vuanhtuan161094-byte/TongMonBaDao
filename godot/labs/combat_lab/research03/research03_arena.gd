@@ -15,8 +15,8 @@ const CONTACT_END := 0.824
 const PROJECTILE_REACH := 0.875 # its local x tip on ColorRect
 const ORBIT_COUNT := 16 # decorative streaks; NONE represent hit events
 var study_mode := 0 # 0 = one luminous sword-qi, 1 = rotating sword-qi array.
-var blades: Array[ColorRect] = []
-var contacts: Array[ColorRect] = []
+var blades: Array[Sprite2D] = []
+var contacts: Array[Sprite2D] = []
 var intensity_cache: Array[float] = []
 var elapsed_local := 0.0
 
@@ -85,12 +85,18 @@ func _ready() -> void:
     title_label.text = "VFX18 | LIGHTCORE2D — KIEM KHI ANH SANG"
     detail_label.text = "1: mot kiem khi  2: kiem tran xoay  SPACE: phat lai  P: tam dung  |  MOCK LAB / PVE HOLD"
     study_mode = 1 if OS.get_environment("TMB_VFX18_MODE") == "orbit" else 0
-    # The entire sword-qi is mathematical light: ColorRect quad + shader.
-    # NO image material, metal sword, or JX/Source-A VFX textures.
+    # Render the mathematical UV shader on a tiny PROCEDURALLY GENERATED
+    # all-white carrier (4×4): absolutely no painted sword/JX texture.
+    # Sprite2D uses a centered Node2D transform, so the hot tip remains
+    # exactly anchored to flight_head despite rotation/scaling.
+    var blank := Image.create(4, 4, false, Image.FORMAT_RGBA8)
+    blank.fill(Color.WHITE)
+    var blank_texture := ImageTexture.create_from_image(blank)
     for i in range(ORBIT_COUNT):
-        var panel := ColorRect.new()
-        panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
-        panel.color = Color.WHITE
+        var panel := Sprite2D.new()
+        panel.texture = blank_texture
+        panel.centered = true
+        panel.modulate = Color.WHITE
         panel.visible = false
         var mat := ShaderMaterial.new()
         mat.shader = LIGHT_SHADER
@@ -100,12 +106,13 @@ func _ready() -> void:
         panel.z_index = 1
         add_child(panel)
         blades.append(panel)
-    var hit := ColorRect.new()
-    hit.mouse_filter = Control.MOUSE_FILTER_IGNORE
-    hit.color = Color.WHITE
+    var hit := Sprite2D.new()
+    hit.texture = blank_texture
+    hit.centered = true
+    hit.modulate = Color.WHITE
     hit.material = ShaderMaterial.new()
     (hit.material as ShaderMaterial).shader = HIT_SHADER
-    hit.size = Vector2(132.0, 108.0)
+    hit.scale = Vector2(132.0 / 4.0, 108.0 / 4.0)
     hit.visible = false
     hit.z_index = 2
     add_child(hit)
@@ -134,17 +141,18 @@ func _process(delta: float) -> void:
     super._process(delta)
     _update_visuals()
 
-func _place_light(panel: ColorRect, at: Vector2,
+func _place_light(panel: Sprite2D, at: Vector2,
         axis: Vector2, length: float, height: float, energy: float,
         t: float) -> void:
     panel.visible = energy > 0.025
     if not panel.visible:
         return
     var f := axis.normalized()
-    var side := f.orthogonal()
-    panel.size = Vector2(length, height)
+    # 4×4 plain-white shader carrier only. Sprite2D's origin is CENTERED.
+    # The .875 local-point convention maps to the exact scripted tip.
+    panel.scale = Vector2(length / 4.0, height / 4.0)
     panel.rotation = f.angle()
-    panel.position = at - f * length * PROJECTILE_REACH - side * height * 0.5
+    panel.position = at - f * length * (PROJECTILE_REACH - 0.5)
     var shader_mat := panel.material as ShaderMaterial
     shader_mat.set_shader_parameter("energy", _clamp(energy))
     shader_mat.set_shader_parameter("phase", _clamp(t))
@@ -173,8 +181,9 @@ func _update_visuals() -> void:
             var hit_age := _clamp((t - CONTACT) / (CONTACT_END - CONTACT))
             var hit := contacts[0]
             hit.visible = true
-            hit.size = Vector2(132.0 + 20.0 * hit_age, 108.0 + 8.0 * hit_age)
-            hit.position = stop_point() - hit.size * 0.5
+            hit.scale = Vector2((132.0 + 20.0 * hit_age) / 4.0,
+                (108.0 + 8.0 * hit_age) / 4.0)
+            hit.position = stop_point()
             var m := hit.material as ShaderMaterial
             m.set_shader_parameter("age", hit_age)
             m.set_shader_parameter("power", 0.92)

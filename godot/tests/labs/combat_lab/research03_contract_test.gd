@@ -58,6 +58,15 @@ func _run() -> void:
         scene._update_visuals()
         chk(scene.contacts[0].visible == false,
             "no impact during early flight")
+        var prog := ((scene.elapsed / STUDY.CYCLE_SECONDS) -
+            STUDY.PROJECTILE_START) / (STUDY.CONTACT - STUDY.PROJECTILE_START)
+        var head: Vector2 = STUDY.flight_head(prog)
+        var carrier: Sprite2D = scene.blades[0]
+        var local_tip := Vector2(4.0 * (STUDY.PROJECTILE_REACH - 0.5), 0.0)
+        var visual_tip: Vector2 = carrier.to_global(local_tip)
+        chk(visual_tip.distance_to(head) < 0.65,
+            "shader local tip MUST be aligned to actual curved flight path")
+
         scene.elapsed = STUDY.CONTACT * STUDY.CYCLE_SECONDS + 0.025
         scene._update_visuals()
         chk(scene.contacts[0].visible == true,

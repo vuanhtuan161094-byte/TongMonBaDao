@@ -32,3 +32,8 @@ Source: owner-supplied 2.5D blue-white swirling qi image, current TMB V9 dynamic
 - First video at code SHA `19408d4d58` / workflow `e2539cb4b2` returned Godot strict+focused **SUCCESS** (run #43393224687). **Not owner art approval**.
 - Examined actual full 1280×720 frames and both timeline sheets. The single sword-qi shader is light (no steel) and the orbit is truly animated, but the giant grey diamond courtyard background dominates, the single qi lacks fluid path-wake, and 16 orbit needles still read too separately as line segments. An ART_REWORK_REQUIRED note, even with technical PASS.
 - R1 modifies only original LAB scene `research03_arena.gd`: remove the giant courtyard texture; add static textured gravel; draw a softly feathered, history-sampled curved flight tail and moving orbit-history ribbons beneath the actor and analytic core/halo shader. Same approved mock target only; no new contact/damage. Re-test exact SHA, inspect real artifacts again.
+
+### R2 alignment correction (observed in actual 1280×720 Godot frame)
+- Original R1 screenshot at 1.55s exposed a **detached curved tail**: the 2D `ColorRect` local positioning/rotation did not visually align its luminous shader tip with the cubic flight path drawn by CanvasItem.
+- Replaced the shader UV carrier with an original in-memory all-white **4×4 texture** on centered `Sprite2D` (pure shader light, no painted image). Sprite tip is now calculated explicitly in centered Node2D coordinates, leaving all game mechanics unchanged.
+- Added focused contract assertion `carrier.to_global(local_tip).distance_to(STUDY.flight_head(progress)) < 0.65 px`; must pass on real Godot exact-SHA QA before art presentation.
