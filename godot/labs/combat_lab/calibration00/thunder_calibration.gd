@@ -91,10 +91,10 @@ func _make_radial_texture() -> Texture2D:
 
 func _new_three_layer_beam() -> Array:
     var result: Array = []
-    var widths := [84.0, 30.0, 4.9]
+    var widths := [110.0, 44.0, 6.2]
     var colors := [PURPLE, LAVENDER, WHITE]
-    var alphas := [0.17, 0.49, 0.94]
-    var feathers := [9.1, 6.8, 2.2]
+    var alphas := [0.30, 0.68, 0.98]
+    var feathers := [2.8, 3.8, 1.7]
     for i in range(3):
         var line := Line2D.new()
         line.width = widths[i]
@@ -231,7 +231,10 @@ func _draw() -> void:
 
 func _ground() -> void:
     draw_rect(Rect2(Vector2.ZERO, RENDER_SIZE), Color("0b111c"))
-    draw_rect(Rect2(35.0, 172.0, 1210.0, 440.0), Color("18222f"))
+    # Atmospheric gravel field without a distracting rectangular stage edge.
+    draw_texture_rect(_radial,
+        Rect2(Vector2(20.0, 101.0), Vector2(1240.0, 578.0)),
+        false, Color(0.23, 0.32, 0.44, 0.62))
     for k in range(7):
         var y := 194.0 + float(k) * 62.0
         draw_line(Vector2(65.0, y), Vector2(1235.0, y),
@@ -273,17 +276,20 @@ func _contact(p: Vector2, age: float, power: float) -> void:
     # The impact glow is spatially feathered, never a hard white circle.
     var spike := pow(maxf(0.0, 1.0 - smoothstep(0.052, 0.27, age)), 1.4)
     draw_texture_rect(_radial,
-        Rect2(p - Vector2(101.0, 93.0), Vector2(202.0, 186.0)),
-        false, Color("b5a0ff", power * 0.49))
+        Rect2(p - Vector2(129.0, 119.0), Vector2(258.0, 238.0)),
+        false, Color("b5a0ff", power * 0.76))
     draw_texture_rect(_radial,
-        Rect2(p - Vector2(40.0, 44.0), Vector2(80.0, 88.0)),
-        false, Color("f5eaff", spike * 0.72))
+        Rect2(p - Vector2(55.0, 60.0), Vector2(110.0, 120.0)),
+        false, Color("f5eaff", spike * 1.0))
+    draw_texture_rect(_radial,
+        Rect2(p + Vector2(-117.0, 18.0), Vector2(234.0, 76.0)),
+        false, Color("a78bff", power * 0.28))
     var life := clampf((age - 0.052) / 0.36, 0.0, 1.0)
     # Six directional, short-lived contact sparks, not a particle blizzard.
     for i in range(6):
         var theta := float(i) * TAU / 6.0 + float(i % 2) * 0.23
         var dir := Vector2(cos(theta), sin(theta) * 0.60)
-        var head := p + dir * (7.0 + 65.0 * life)
-        var tail := head - dir * (13.0 + 10.0 * (1.0 - life))
-        draw_line(tail, head, Color("d6c4ff", power * (1.0 - life) * 0.74),
-            1.1 + (1.0 - life) * 1.9, true)
+        var head := p + dir * (13.0 + 78.0 * life)
+        var tail := head - dir * (18.0 + 12.0 * (1.0 - life))
+        draw_line(tail, head, Color("e4d4ff", power * (1.0 - life) * 0.96),
+            1.6 + (1.0 - life) * 2.1, true)
