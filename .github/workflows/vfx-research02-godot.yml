@@ -1,0 +1,128 @@
+name: VFX RESEARCH 02 | Flowing Sword Qi exact SHA Godot 4.7.2
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - integration/pve-p0-playable-ui-20261103
+    paths:
+      - '.github/workflows/vfx-research02-godot.yml'
+      - 'godot/labs/combat_lab/research02/*.gd'
+      - 'godot/labs/combat_lab/research02/*.tscn'
+      - 'godot/tests/labs/combat_lab/research02_contract_test.gd'
+permissions:
+  contents: read
+jobs:
+  research02:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      GODOT_AUDIO_DRIVER: Dummy
+      GODOT_RENDERING_DRIVER: opengl3
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install official SHA256-pinned Godot 4.7.2 and Xvfb
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq xvfb ffmpeg
+          curl --fail --location --retry 3 -o /tmp/Godot_4.7.2.zip "https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip"
+          echo "cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4  /tmp/Godot_4.7.2.zip" | sha256sum --check --strict
+          unzip -q /tmp/Godot_4.7.2.zip -d /tmp
+          sudo install -m0755 /tmp/Godot_v4.7.2-stable_linux.x86_64 /usr/local/bin/godot
+          godot --version
+          mkdir -p "$RUNNER_TEMP/vfx_research02"
+          printf 'SHA=%s\nGODOT=%s\nRENDERER=gl_compatibility\nQA=FOCUSED_EPHEMERAL_SUMMON_SHIM\n' "$GITHUB_SHA" "$(godot --version)" > "$RUNNER_TEMP/vfx_research02/metadata.txt"
+      - name: Restore existing Stage A lab preview dependency
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat .github/assets/p3/female_stage_a/part{01..14}.b64 .github/assets/p3/female_stage_a/part15a.b64 .github/assets/p3/female_stage_a/part15b.b64 .github/assets/p3/female_stage_a/part{16..20}.b64 | tr -d '\r\n\t ' | base64 --decode > /tmp/tmb_stage_a_pack.zip
+          test "$(stat -c%s /tmp/tmb_stage_a_pack.zip)" -eq 44838
+          echo "6a4213b9129ffb3f438c21cbb5326672ddf8915323836bf80cb33b8e5fabfdca  /tmp/tmb_stage_a_pack.zip" | sha256sum --check --strict
+          unzip -q /tmp/tmb_stage_a_pack.zip -d .
+      - name: Disposable checkout-only existing summon parse shim
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path("godot/src/simulation/combat/v63_summon_skill_combat_system.gd")
+          s=p.read_text()
+          old="var candidate := origin+offset"
+          new="var candidate: Vector2 = origin+(offset as Vector2)"
+          if s.count(old)!=1:
+              raise SystemExit("Summon parse code changed: cannot silently apply old QA shim")
+          p.write_text(s.replace(old,new))
+          print("EPHEMERAL_SUMMON_SHIM_APPLIED_IN_CI_ONLY")
+          PY
+      - name: Godot 4.7.2 strict import parse and Research02 focused contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/vfx_research02"
+          bash tools/qa/run_godot_strict.sh --headless --path godot --import 2>&1 | tee "$d/import.log"
+          bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://labs/combat_lab/research02/flowing_sword_fx.gd 2>&1 | tee "$d/parse_renderer.log"
+          bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://labs/combat_lab/research02/research02_arena.gd 2>&1 | tee "$d/parse_scene.log"
+          bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/labs/combat_lab/research02_contract_test.gd 2>&1 | tee "$d/contract.log"
+          grep -q 'VFX_RESEARCH02_FOCUSED_RESULT=PASS failures=0' "$d/contract.log"
+          git diff --name-only | LC_ALL=C sort -u > "$d/post_import_diff_paths.txt"
+      - name: Render four Godot movies, compare old V14, A, B against C
+        shell: bash
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/vfx_research02"
+          for mode in baseline crescent afterimage flowing; do
+            scene="res://labs/combat_lab/research01/research01_arena.tscn"
+            if [ "$mode" = flowing ]; then
+              scene="res://labs/combat_lab/research02/research02_arena.tscn"
+            fi
+            export TMB_VFX_RESEARCH_MODE="$mode"
+            xvfb-run -a -s "-screen 0 1280x720x24" \
+              bash tools/qa/run_godot_strict.sh --path godot --resolution 1280x720 \
+              --fixed-fps 60 --write-movie "$d/$mode.avi" --quit-after 168 "$scene" \
+              2>&1 | tee "$d/$mode.log"
+            test -s "$d/$mode.avi"
+            ffmpeg -y -hide_banner -loglevel error -i "$d/$mode.avi" -pix_fmt yuv420p -c:v libx264 -crf 16 "$d/$mode.mp4"
+            for at in 1.30 1.67 1.98; do
+              ffmpeg -y -hide_banner -loglevel error -ss "$at" -i "$d/$mode.mp4" -frames:v 1 "$d/${mode}_${at}.png"
+            done
+            ffmpeg -y -hide_banner -loglevel error -i "$d/$mode.mp4" -vf "fps=5,scale=320:180,tile=5x3:nb_frames=15" -frames:v 1 "$d/${mode}_timeline.png"
+            test -s "$d/${mode}_1.67.png"
+            fps="$(ffprobe -v error -select_streams v:0 -show_entries stream=avg_frame_rate -of default=nw=1:nk=1 "$d/$mode.mp4")"
+            test "$fps" = "60/1"
+            printf 'MODE=%s ENCODE_FPS=%s\n' "$mode" "$fps" >> "$d/metadata.txt"
+            rm "$d/$mode.avi"
+          done
+          for at in 1.30 1.67 1.98; do
+            ffmpeg -y -hide_banner -loglevel error \
+              -i "$d/baseline_${at}.png" -i "$d/crescent_${at}.png" \
+              -i "$d/afterimage_${at}.png" -i "$d/flowing_${at}.png" \
+              -filter_complex '[0:v][1:v][2:v][3:v]hstack=inputs=4,scale=2560:360' \
+              -frames:v 1 "$d/ABCD_${at}.png"
+          done
+          sha256sum "$d/"*.png "$d/"*.mp4 > "$d/SHA256SUMS.txt"
+      - name: Verify restricted VFX files and isolated physical QA status
+        shell: bash
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/vfx_research02"
+          git diff --name-only | LC_ALL=C sort -u | tee "$d/post_render_checkout_diff.txt"
+          comm -13 "$d/post_import_diff_paths.txt" "$d/post_render_checkout_diff.txt" > "$d/new_tracked_changes.txt"
+          test ! -s "$d/new_tracked_changes.txt"
+          grep -Fxq 'godot/src/simulation/combat/v63_summon_skill_combat_system.gd' "$d/post_render_checkout_diff.txt"
+          echo "ART_ACCEPTANCE=OWNER_VISUAL_PENDING" >> "$d/metadata.txt"
+          echo "PVE_INTEGRATION=HOLD" >> "$d/metadata.txt"
+          echo "WINDOWS_ANDROID_PHYSICAL=PENDING_USER" >> "$d/metadata.txt"
+      - name: Archive actual Godot 1280x720 visual evidence and logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: research02-flowing-sword-${{ github.sha }}
+          path: |
+            ${{ runner.temp }}/vfx_research02/*.png
+            ${{ runner.temp }}/vfx_research02/*.mp4
+            ${{ runner.temp }}/vfx_research02/*.log
+            ${{ runner.temp }}/vfx_research02/*.txt
+          retention-days: 14
+          if-no-files-found: warn
