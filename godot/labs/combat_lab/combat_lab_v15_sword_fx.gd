@@ -183,43 +183,57 @@ static func _impact_burst(c: CanvasItem, victim: Vector2, z: float,
         return
     var a := 1.0 - _ease(k)
     var main := wave == 2
-    var gain := 1.0 if main else (0.33 if wave == 0 else 0.48)
+    # Early strikes must be legible, but the last wave is the hero hit.
+    var gain := 1.0 if main else (0.64 if wave == 0 else 0.79)
     var at := victim + Vector2(0.0, -19.0 * z)
     var seed := float(lane) * 0.38
-    # Contact flash with a soft halo; the projectile has already stopped.
-    c.draw_circle(at, (11.0 + k * 14.0) * z,
-        _col(AZURE, a * gain * 0.12))
-    c.draw_circle(at, (2.8 + k * 2.8) * z,
-        _col(ICE, a * gain * 0.86))
-    var axis := Vector2(cos(-0.45+seed), sin(-0.45+seed))
-    var start := at - axis * (16.0 + 5.0 * k) * z
-    var finish := at + axis * (24.0 + 9.0 * k) * z
-    c.draw_line(start, finish, _col(CYAN, a * gain * 0.19),
-        (6.0 if main else 3.5) * z, true)
-    c.draw_line(start, finish, _col(ICE, a * gain * 0.78),
-        maxf(0.8, (1.9 if main else 1.15) * z), true)
+    var flash := pow(1.0 - k, 1.75)
+    # Two translucent sheets: actual light, no solid 3D-shaped object.
+    c.draw_circle(at, (12.0 + k * 17.0) * z,
+        _col(AZURE, a * gain * 0.17))
+    c.draw_circle(at, (5.0 + k * 5.0) * z,
+        _col(CYAN, flash * gain * 0.24))
+    c.draw_circle(at, (2.9 + k * 2.8) * z,
+        _col(ICE, flash * gain * 0.99))
+    # Curved sword-light CUT: thick cyan air + thin irregular white edge,
+    # lasting only a few frames. It is the HIT, not a projectile mesh.
+    var sweep := PackedVector2Array()
+    for j in range(18):
+        var phi := -2.46 + float(j) * 2.15 / 17.0 + seed * 0.24
+        var radius := (26.0 + k * 18.0) * z
+        sweep.append(at + Vector2(
+            cos(phi) * radius,
+            sin(phi) * radius * (0.78 + k * 0.1)))
+    c.draw_polyline(sweep, _col(BLUE, a * gain * 0.19),
+        maxf(1.5, (8.0 if main else 5.5) * z), true)
+    c.draw_polyline(sweep, _col(ICE, a * gain * 0.78),
+        maxf(0.8, (2.2 if main else 1.3) * z), true)
+    # Hot diagonal impact at the chest. It replaces the sword tip.
+    var axis := Vector2(cos(-0.48 + seed), sin(-0.48 + seed))
+    var start := at - axis * (19.0 + 11.0 * k) * z
+    var finish := at + axis * (26.0 + 11.0 * k) * z
+    c.draw_line(start, finish, _col(CYAN, flash * gain * 0.36),
+        (9.5 if main else 5.0) * z, true)
+    c.draw_line(start, finish, _col(ICE, flash * gain * 0.88),
+        maxf(0.9, (2.4 if main else 1.5) * z), true)
+    var foot := victim + Vector2(0.0, 9.0 * z)
+    _ring(c, foot, (13.0 + (37.0 if main else 25.0) * k) * z,
+        (6.0 + (18.0 if main else 12.0) * k) * z,
+        CYAN, a * gain * 0.86)
     if main:
-        # 2.5D light shower, not a 3D sword or a tall solid laser beam.
-        var foot := victim + Vector2(0.0, 9.0 * z)
-        _ring(c, foot, (15.0 + 36.0 * k) * z,
-            (7.0 + 18.0 * k) * z, CYAN, a * 0.81)
-        _ring(c, foot, (10.0 + 21.0 * k) * z,
-            (4.0 + 11.0 * k) * z, GOLD, a * 0.55)
+        _ring(c, foot, (9.0 + 22.0 * k) * z,
+            (4.0 + 11.0 * k) * z, GOLD, a * 0.61)
+        # Five restrained afterglow shards, never a full-screen flash.
         for j in range(5):
             var angle := TAU15 * float(j) / 5.0 + seed
             var ray := Vector2.from_angle(angle)
-            var begin := at + ray * (7.0 + 13.0 * k) * z
-            var end := at + ray * (18.0 + 32.0 * k) * z
+            var begin := at + ray * (8.0 + 10.0 * k) * z
+            var end := at + ray * (19.0 + 31.0 * k) * z
             c.draw_line(begin, end,
-                _col(AQUA if j % 2 == 0 else GOLD, a * 0.48),
+                _col(AQUA if j % 2 == 0 else GOLD, a * 0.63),
                 maxf(0.7, (1.7 - 0.8 * k) * z), true)
-        var up := Vector2(0.0, -1.0)
-        c.draw_line(at, at + up * (24.0 + 34.0 * k) * z,
-            _col(CYAN, a * 0.26), maxf(0.8, (2.5 - k) * z), true)
-    else:
-        _ring(c, victim + Vector2(0.0, 9.0 * z),
-            (10.0 + 20.0 * k) * z, (4.5 + 9.0 * k) * z,
-            CYAN, a * gain * 0.50)
+        c.draw_line(at, at + Vector2(0.0, -(28.0 + 31.0 * k) * z),
+            _col(AQUA, a * 0.33), maxf(0.7, (2.8 - k) * z), true)
 
 # Sword-qi pre-contact tip follows a curved trajectory to the OUTSIDE
 # boundary of the monster. The final 18% of V14 flight is used for
@@ -295,6 +309,16 @@ static func render(c: CanvasItem, caster: Vector2, locked_center: Vector2,
             _flow_trail(c, tip, heading, size,
                 alpha * (1.0 - _ease((u - 0.72) / 0.28)), u, i)
         _light_blade(c, tip, heading, size, alpha, i)
+        # A short transfer flare starts OUTSIDE the monster, just before
+        # the projectile expires. The following frame is an impact, not
+        # a light sword travelling through the actor.
+        if u > 0.74:
+            var gather := _ease((u - 0.74) / 0.26) * onset
+            var stop := contact_point(victim, travel_f, z)
+            c.draw_circle(stop, (3.0 + 6.0 * gather) * size,
+                _col(CYAN, gather * 0.13))
+            _spark(c, stop, (0.75 + gather * 0.7) * size,
+                ICE, gather * 0.71)
     # Contact flashes take over immediately at the stop boundary.
     # All visible effects are derived from caller-provided victims ONLY.
     for i in range(count):
