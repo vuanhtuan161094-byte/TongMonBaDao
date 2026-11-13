@@ -32,3 +32,12 @@
 - Nghiệm thu phải xem 9 frame thật ở t≈0.40,0.50,0.65,0.85,1.05,1.30,1.55,1.85,2.15 giây; so V14.2 cùng timestamp. Không phê duyệt mỹ thuật thay owner.
 
 **Status lúc lập tài liệu:** V15 renderer committed và đã nối vào Lab; đang kiểm chứng Godot+video. `ART_SOURCE=CODE`; `ART_APPROVAL=OWNER_PENDING`; `LIVE_GAME_PVE=HOLD`.
+
+## 5. Bản thực hiện và bằng chứng QA — 13/11/2026
+
+- Source mới `combat_lab_v15_sword_fx.gd`, sprite/art source **procedural Godot code**; file V14.2 cũ nguyên vẹn. Hoạt ảnh: tụ khí, 3×3 đợt kiếm ánh sáng, co biến hình cuối 34% quỹ đạo, mũi dừng trước ngực quái, chớp tiếp xúc, slash vòng cung, 2D ring và dư quang. Không sinh hạt node.
+- Godot 4.7.2 isolated script/check pass tại [run #43354663864](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/43354663864) trên code SHA `143b5b9276f868891f8d8b205187a3f91c434e66`, artifact `vfx-v15-isolated-143b5b9276f868891f8d8b205187a3f91c434e66`. Video thật 1280×720, 165 frame, mã hóa 60 FPS; snake overlay vẫn không thay đổi.
+- Tự nghiệm thu qua 12 khung đối chiếu V14.2/V15.0/V15.1 ở 0,50–2,18 giây: V14.2 còn lưỡi kiếm vật thể nằm xuyên người quái; V15.1 chỉ có quang kiếm bay ngoài thân, rồi thay bằng contact slash/halo (ở frame 1,65–2,05). Màn demo giữ 3/4 mock targets, không tạo damage gameplay.
+- V15.0 impact hơi thiếu lực nên đã sửa V15.1: tăng flash trắng-xanh ngắn, thêm 1 cung chém nóng trắng, shock ring xanh/vàng dưới chân, có wisp thu lại trước va chạm. Ảnh từ Godot (không ImageGen) và GIF từ MP4 là bằng chứng thị giác.
+- **Isolated QA != full-branch clean QA**: dòng `godot/src/simulation/combat/v63_summon_skill_combat_system.gd:303` bên combat đang parse FAIL (candidate không infer kiểu). Trong QA riêng, dùng annotation thử nghiệm chỉ trong runner, không commit; trạng thái tổng repo **BLOCKED**, không tự sửa code triệu hồi ngoài lane.
+- **OWNER VISUAL APPROVAL PENDING**. Chưa nghiệm thu 30 diễn viên/Android/Windows và chưa đưa vào One Game; 60 FPS xuất phim không tương đương tốc độ máy thật.
