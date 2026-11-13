@@ -1,0 +1,11 @@
+# AS-CHAR-38 V2 / SOURCE-LOCKED MODULAR PILOT — 2026-11-13
+Status: **LOCAL ART PILOT ONLY / NOT PRODUCTION OR ART APPROVED**.
+Canonical production spec: docs/animation/TMB_SPRITE_STANDARD_V1.md (commit c19ccfd0).
+
+The current conversation produced a portable, local pilot package named TMB_AS_CHAR38_V2_MODULAR_PREVIEW_20261113.zip, 89 entries, ZIP CRC PASS, SHA256 ea0fb75dc117b751ae9deedd60bacecf39ea76abfb42d08b1163d6451658450c. **This binary is NOT in the GitHub repository and cannot be accessed by Codex just from this note.**
+
+Pilot contents: two candidates (male jade-sword, female lavender fan), 4 static directions each (128x128 RGBA, foot (64,104)); 8 OpenRaster sources containing three disjoint layers each (source base still unseparated, tintable clothing pigments, visible-color equipment candidate), exact per-pixel source reassembly. Two front-only closed-eyes micro-expression previews and 8 direction-specific fabric pigment hue previews. **These are NOT true full outfit, hair, eye or weapon cutouts.** Underpaint and missing concealed anatomy must be hand-authored before replacing equipment or changing outfit topology.
+
+Motion: retains two prior first-source 8-frame front-view combo GIFs. They have embedded FX and differ from the static four-way candidate identity; do not call them production Attack/Cast, a six-state library or four-way motion. Portable offline HTML reviewer has 34 embedded PNGs and toggle controls; local Chromium Playwright 1440x900: buttons/animation work, no JS errors. 148/148 dedicated STATIC artifact assertions PASS (source hash, exact 8 ORAs, alpha, unchanged pixels outside pigment masks, local eye edits, status honesty). Godot 4.7.2 official import/GUI: **NOT RUN**; physical Windows and Android: **PENDING**; owner final art gate: **PENDING**.
+
+Next steps: verify exact owner identity source and SHA; manually redraw full body under outfit and separate real face/hair/robe/weapon layers for four directions; test switch on/off of worn outfit/held weapon without holes, real eyes/brows/mouth. Author key poses and true Idle, Walk, Cast, Attack, Hit, Death four-way motion with weapon grip and VFX separately. Run isolated Godot 4.7.2 1280x720, 1x/6x, 6/30 actor FPS+RAM. Do not expand 36 branches, integrate renderer, modify SaveService/combat/V6.3/AI/economy, merge or create branches before actual art QA.
