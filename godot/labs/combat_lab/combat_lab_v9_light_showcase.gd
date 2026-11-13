@@ -7,11 +7,13 @@ const Rig = preload("res://labs/combat_lab/combat_lab_actor_rig_v2.gd")
 const SWORD_GLOW = preload("res://labs/combat_lab/combat_lab_v11_arcane_circle.gdshader")
 const SWORD_TARGETS = preload("res://labs/combat_lab/combat_lab_v15_sword_fx.gd")
 const SWORD_QI_SHADER = preload("res://labs/combat_lab/combat_lab_v16_sword_qi_glow.gdshader")
+const SWORD_IMPACT_SHADER = preload("res://labs/combat_lab/combat_lab_v16_impact_glow.gdshader")
 var effect: Control
 var title: Label
 var charge_glow: ColorRect
 var target_glow: ColorRect
 var sword_qi_layers: Array[ColorRect] = []
+var sword_impact_layers: Array[ColorRect] = []
 var preview_positions: Array = []
 var preview_primary_index := 0
 var preview_hit_count := 0
@@ -56,6 +58,23 @@ func _ready() -> void:
         qi.material = qi_mat
         add_child(qi)
         sword_qi_layers.append(qi)
+    # The contact is a separate event. Nine short-lived impact quads
+    # remain bounded to the same approved target positions, LAB ONLY.
+    for i in range(9):
+        var hit := ColorRect.new()
+        hit.name = "SwordImpactGlow%02d" % i
+        hit.size = Vector2(220.0, 220.0)
+        hit.pivot_offset = hit.size * 0.5
+        hit.mouse_filter = Control.MOUSE_FILTER_IGNORE
+        hit.color = Color.WHITE
+        hit.visible = false
+        var hit_mat := ShaderMaterial.new()
+        hit_mat.shader = SWORD_IMPACT_SHADER
+        hit_mat.set_shader_parameter("seed", float(i % 3) * 0.42)
+        hit_mat.set_shader_parameter("wave", floori(float(i) / 3.0))
+        hit.material = hit_mat
+        add_child(hit)
+        sword_impact_layers.append(hit)
     var buttons := HBoxContainer.new()
     buttons.position = Vector2(24, 18)
     buttons.add_theme_constant_override("separation", 12)
@@ -153,6 +172,25 @@ func _process(_delta: float) -> void:
             qi_mat.set_shader_parameter("strength", float(visual.get("alpha", 0.0)))
             qi_mat.set_shader_parameter("phase", float(visual.get("u", 0.0)))
             qi_mat.set_shader_parameter("size_factor", float(visual.get("size", 1.0)))
+    for i in range(sword_impact_layers.size()):
+        var hit := sword_impact_layers[i]
+        var contact := SWORD_TARGETS.contact_time(i)
+        var age := (progress - contact) / 0.12
+        hit.visible = sword_active and not effect.sword_preview_hits.is_empty() and
+            progress >= contact and progress < contact + 0.12
+        if not hit.visible:
+            continue
+        var lane := i % 3
+        var victim: Vector2 = effect.sword_preview_hits[
+            lane % effect.sword_preview_hits.size()]
+        # Original VFX15 impact anchors to chest above the rig feet.
+        var chest := victim + Vector2(0.0, -19.0 * 1.55)
+        hit.position = chest - hit.size * 0.5
+        var mat_hit := hit.material as ShaderMaterial
+        if mat_hit != null:
+            mat_hit.set_shader_parameter("event_age", clampf(age, 0.0, 1.0))
+            mat_hit.set_shader_parameter("power",
+                1.0 if i >= 6 else (0.65 if i < 3 else 0.82))
 
 func _refresh_title() -> void:
     var sword := str(effect.get("demo_school")) == "sword"

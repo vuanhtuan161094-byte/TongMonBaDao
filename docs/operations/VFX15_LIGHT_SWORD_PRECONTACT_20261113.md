@@ -53,3 +53,9 @@
 
 
 **VFX16 shader alignment hotfix:** Shader preview dùng cùng `zoom=1.55` với V15 canvas renderer thực tế của showcase (không dùng 1.0); quad 320×160 phòng cắt wake ở cỡ lớn; tâm quad lệch `52 * visual.size` theo hướng kiếm để mũi glow trùng chính xác `projectile_tip`. Đây là sửa trực quan, không thay gameplay.
+
+### VFX16.2 — Contact impact shader cải thiện rõ ở kích thước chơi
+
+- Đã trực tiếp xem video Godot 7ab5 và 9 mốc thời gian (0.5–2.25 s); kiếm bay đã nét hơn, nhưng pha chém/va chạm cũ quá nhỏ tại 1280×720. Vì vậy thêm `godot/labs/combat_lab/combat_lab_v16_impact_glow.gdshader`: slash chéo lõi trắng, cung năng lượng nở, shock ellipse và 6 shard quang, điều khiển `event_age` từ chính `contact_time` V15.
+- Tăng hiệu lực thị giác cho đợt cuối, vẫn giữ ba nhịp; 9 additive contact quads LAB ONLY gắn vào đúng hit_targets. Không có authority HP/target/Save.
+- Thêm test compile, deterministic shader (không TIME), và 9 contact nodes. Full gameplay/Windows/Android remain pending.

@@ -158,6 +158,14 @@ func _check() -> void:
             qi_shader.code.contains("uniform float strength") and
             not qi_shader.code.contains("TIME"),
             "VFX16 glow is bounded, externally timed, and additive")
+    var impact_shader: Shader = load(
+        "res://labs/combat_lab/combat_lab_v16_impact_glow.gdshader") as Shader
+    ensure(impact_shader != null, "VFX16.2 energy slash impact shader compiles")
+    if impact_shader != null:
+        ensure(impact_shader.code.contains("blend_add") and
+            impact_shader.code.contains("uniform float event_age") and
+            not impact_shader.code.contains("TIME"),
+            "VFX16.2 impact is contact-time controlled, additive, and HOLD-safe")
     ensure(SWORD_V15.visual_indices_for_lod(2).size() == 9 and
         SWORD_V15.visual_indices_for_lod(1).size() == 6 and
         SWORD_V15.visual_indices_for_lod(0) == [1, 4, 7],
@@ -194,6 +202,10 @@ func _check() -> void:
         root.add_child(stage)
         ensure(stage.get_node_or_null("AdditiveEnergyVFX") != null,
             "scene has additive VFX CanvasItem")
+        ensure(stage.get_node_or_null("SwordImpactGlow00") != null and
+            stage.get_node_or_null("SwordImpactGlow08") != null and
+            (stage.get("sword_impact_layers") as Array).size() == 9,
+            "VFX16.2 bounded target-contact glow layers exist")
         ensure(stage.get_node_or_null("SwordQiGlow00") != null and
             stage.get_node_or_null("SwordQiGlow08") != null and
             (stage.get("sword_qi_layers") as Array).size() == 9,
