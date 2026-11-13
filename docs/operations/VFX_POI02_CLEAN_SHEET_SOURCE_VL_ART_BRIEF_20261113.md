@@ -29,3 +29,9 @@ R2 replaces the binding asset with a masked energy-only cutout, hand-tracing the
 R2 code SHA 3dbdc81688209a85da182ded486aed44740db764 tested via official run #43485904270, Godot Compatibility source movie 1280x720, focused PASS. Real frames 1.30, 1.55, 1.70 and 1.92 reviewed: cobra flight now clearly has animal head/fangs/scales at native size; source-actor ghost was successfully removed from the bind art. Remaining defect: bind looks like disconnected translucent horizontal streaks and loses animal identity.
 
 R3 reauthors bind WebP color contrast brighter jade, adds cropped alpha-head sprite asset (from the new original serpent, NOT a JX serpent), and keeps the cobra head visible at target shoulder while surrounding coils bind. This remains an original image-backed VFX lab, not physics rigging, not combat. Render/inspect native motion before art acceptance.
+
+## R3 video review / R4 image-backed bind motion
+
+R3 tested SHA 8cd107fe75a7f5907f8eee8938b38aa5d456995a / [official workflow #43486804186](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/43486804186) TECH PASS. Native 1280x720 movie inspected as full timeline plus phase frames (1.30,1.55,1.70,1.92,2.15,2.38). Cobra head/fangs remain visible in contact; no embedded duplicate original target. Remaining objective visual defects: head floats above the dummy, binding strokes move too little across time.
+
+R4 repositions authored painted head near target shoulders for a clear bite and animates the *already painted* binding sprite via a small non-rigging Godot CanvasItem UV swim shader with externally supplied paused clock. No new geometric snake, no combat cues. Retain owner visual gate pending video art inspection.

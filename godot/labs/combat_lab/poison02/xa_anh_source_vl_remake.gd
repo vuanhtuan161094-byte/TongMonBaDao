@@ -13,6 +13,7 @@ const LOOP_SECONDS := 4.10
 const SOURCE_ATLAS: Texture2D = preload("res://labs/combat_lab/poison02/assets/serpent-flight-atlas.webp")
 const COIL_ART: Texture2D = preload("res://labs/combat_lab/poison02/assets/serpent-bind-energy.webp")
 const HEAD_ART: Texture2D = preload("res://labs/combat_lab/poison02/assets/serpent-head.webp")
+const BIND_SHADER: Shader = preload("res://labs/combat_lab/poison02/serpent_bind_swim.gdshader")
 const JX_IMPACT: Texture2D = preload("res://assets/combat_v4/jx1_skill_fx/1fffed7e.webp")
 const ACTOR: Texture2D = preload("res://labs/character_family/assets/nu_doc_tu_v4_candidate/idle_4dir_APPROVED_UNCHANGED.png")
 const FLIGHT_FRAME_SIZE := Vector2(512.0, 179.0)
@@ -27,6 +28,7 @@ var _flight: Sprite2D
 var _specular: Sprite2D
 var _bind: Sprite2D
 var _head: Sprite2D
+var _bind_shader: ShaderMaterial
 var _radial: Texture2D
 var _impact_rects: Array = []
 
@@ -65,6 +67,9 @@ func _ready() -> void:
     _specular = _add_fx(true, 2)
     _bind = _add_fx(true, 3)
     _bind.texture = COIL_ART
+    _bind_shader = ShaderMaterial.new()
+    _bind_shader.shader = BIND_SHADER
+    _bind.material = _bind_shader
     _head = _add_fx(false, 4)
     _head.texture = HEAD_ART
     _bind.position = TARGET + Vector2(0.0, -112.0)
@@ -136,11 +141,13 @@ func _update_fx() -> void:
         _bind.position = TARGET + Vector2(0.0, -113.0 + 6.0 * sin(u * 2.4))
         _bind.scale = Vector2(0.88 + 0.07 * sin(u * PI), 0.88 - 0.040 * u)
         _bind.rotation = -0.065 + 0.038 * sin(elapsed * 5.4)
-        _bind.modulate = Color(1.0, 1.0, 1.0, binding * 0.83)
+        _bind.modulate = Color.WHITE
+        _bind_shader.set_shader_parameter("phase", elapsed)
+        _bind_shader.set_shader_parameter("opacity", binding * 0.83)
     _head.visible = binding > 0.04 and elapsed < COIL_END + 0.19
     if _head.visible:
         var u_head := clampf((elapsed - CONTACT_AT) / maxf(0.01, COIL_END - CONTACT_AT), 0.0, 1.0)
-        _head.position = TARGET + Vector2(7.0 + 10.0 * sin(u_head * PI), -158.0 - 5.0 * sin(u_head * 3.2))
+        _head.position = TARGET + Vector2(7.0 + 10.0 * sin(u_head * PI), -108.0 - 11.0 * sin(u_head * 3.2))
         _head.scale = Vector2.ONE * (0.71 + 0.065 * sin(u_head * PI))
         _head.rotation = -0.065 + 0.065 * sin(elapsed * 4.0)
         _head.modulate = Color(1.0, 1.0, 1.0, binding * 0.87)

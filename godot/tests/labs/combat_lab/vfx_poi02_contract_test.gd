@@ -30,6 +30,8 @@ func _test() -> void:
     await process_frame
     _assert(preview.flight_frames.size() == 6, "actual six imported AtlasTexture regions")
     _assert(preview._impact_rects.size() == 78, "13 original JX rects")
+    _assert(preview._bind_shader != null, "sprite-backed animated bind shader ready")
+    _assert(preview._head != null and preview._head.texture != null, "separate painted serpent head at bind")
     var source := FileAccess.get_file_as_string("res://labs/combat_lab/poison02/xa_anh_source_vl_remake.gd")
     for forbidden in ["SaveService.save","CombatV2.","MapBattleV2.","V63FeatureGates.","apply_damage","apply_status"]:
         _assert(not source.contains(forbidden), "visual-only without authority: " + forbidden)
