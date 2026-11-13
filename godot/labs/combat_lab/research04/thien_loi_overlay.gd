@@ -17,7 +17,8 @@ func _draw() -> void:
         return
     var clock := fposmod(float(arena.get("elapsed")),
         THUNDER.LOOP_SECONDS) / THUNDER.LOOP_SECONDS
-    var caster: Vector2 = arena.get("CASTER")
+    # Class constant is not reflected as a property via Object.get().
+    var caster := Vector2(298.0, 464.0)
     var victims: Array = arena.get("approved_hits")
     var mode: int = int(arena.get("thunder_mode"))
     THUNDER.render(self, caster, victims, clock, mode, 2)
