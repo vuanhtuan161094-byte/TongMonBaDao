@@ -135,20 +135,35 @@ static func _stroke(canvas: CanvasItem, path: PackedVector2Array,
         hue: Color = CYAN) -> void:
     if path.size() < 2 or reveal <= 0.0 or power <= 0.005:
         return
-    var end_segment := float(path.size() - 1) * _clamp(reveal)
+    # R2: draw the ENTIRE connected luminous spine with one polyline per
+    # light layer. Segment-by-segment fat draw_line made visible rectangular
+    # overdraw patches at every kink, especially under additive blending.
+    var complete := float(path.size() - 1) * _clamp(reveal)
+    var travel := PackedVector2Array()
+    travel.append(path[0])
     for i in range(path.size() - 1):
-        if float(i) > end_segment:
-            break
-        var span := _clamp(end_segment - float(i))
+        var span := _clamp(complete - float(i))
         if span <= 0.0:
             break
-        var u := float(i) / float(path.size() - 1)
-        # Bolt naturally narrows towards the ground end, while keeping a
-        # thin bright core continuous, so it does not turn into an arrow.
-        var silhouette := 1.09 - 0.29 * u
-        var flicker := 0.76 + 0.22 * sin(float(i) * 3.6 + float(path.size()))
-        _light_line(canvas, path[i], path[i].lerp(path[i + 1], span),
-            power * flicker, width * silhouette, hue)
+        travel.append(path[i].lerp(path[i + 1], span))
+        if span < 1.0:
+            break
+    if travel.size() < 2:
+        return
+    # The fat diffuse layer is only a faint AIR glow. White remains a
+    # sharp core. Never fill a solid-color zig-zag polygon.
+    canvas.draw_polyline(travel, _rgba(VIOLET, power * 0.042),
+        width * 10.3, true)
+    canvas.draw_polyline(travel, _rgba(DARK_BLUE, power * 0.108),
+        width * 5.7, true)
+    canvas.draw_polyline(travel, _rgba(hue, power * 0.43),
+        width * 2.40, true)
+    canvas.draw_polyline(travel, _rgba(WHITE, power * 0.94),
+        maxf(0.95, width * 0.69), true)
+    # A small soft leader highlight follows the *actual* head (not the
+    # monster center); no white disk left behind after contact.
+    var head := travel[travel.size() - 1]
+    _flash(canvas, head, power * 0.095, maxf(1.5, width * 0.72))
 
 static func _subforks(canvas: CanvasItem,
         main_path: PackedVector2Array, seed: int,
