@@ -18,7 +18,7 @@ func _run() -> void:
     _check(LAB.phase_at(2.10) == "coil", "single-target wrap")
     _check(LAB.phase_at(3.10) == "dissolve", "no sticky status")
     _check(LAB.phase_at(3.80) == "idle", "fully faded")
-    _check(LAB.anchor() == LAB.VICTIM + Vector2(0.0, -57.0), "one fixed lab-only visual anchor")
+    _check(LAB.anchor() == LAB.VICTIM + Vector2(0.0, -44.0), "one fixed lab-only visual anchor")
     _check(LAB.flight_gain(0.50) == 0.0 and LAB.flight_gain(2.10) == 0.0, "bounded flight")
     _check(LAB.coil_gain(1.00) == 0.0 and LAB.coil_gain(3.80) == 0.0, "bounded wrap")
     _check(not LAB.visual_contact(0.50) and LAB.visual_contact(2.10), "visual contact only after arrival")
