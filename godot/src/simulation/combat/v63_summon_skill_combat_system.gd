@@ -297,10 +297,10 @@ static func _create_summon(battle: MapBattleV2, cast: Dictionary, caster: Dictio
 
 static func _spawn_position(battle: MapBattleV2, caster: Dictionary) -> Dictionary:
     var origin: Vector2 = caster.get("position",Vector2.ZERO)
-    var offsets := [Vector2(0.8,0.0),Vector2(0.0,0.8),Vector2(-0.8,0.0),Vector2(0.0,-0.8),
+    var offsets: Array[Vector2] = [Vector2(0.8,0.0),Vector2(0.0,0.8),Vector2(-0.8,0.0),Vector2(0.0,-0.8),
         Vector2(0.6,0.6),Vector2(-0.6,0.6),Vector2(-0.6,-0.6),Vector2(0.6,-0.6)]
-    for offset in offsets:
-        var candidate := origin+offset
+    for offset: Vector2 in offsets:
+        var candidate: Vector2 = origin + offset
         if battle.world_mode:
             var cell := battle._nearest_walkable_cell(Vector2i(floori(candidate.x),floori(candidate.y)))
             if cell.x < 0:

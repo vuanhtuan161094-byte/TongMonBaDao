@@ -1,0 +1,3 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+V63_S8_FORMATION_RESULT PASS checks=3145 nodes=183 families=35 branches=3 guard/slow/owned-zone=sampled snapshot=JSON-safe release_gate=OFF source=SOURCE_PENDING vfx=TEXT_ONLY_HOLD

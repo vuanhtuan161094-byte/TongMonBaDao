@@ -1,3 +1,12 @@
+## V63-S9 CLOSURE UPDATE — 2026-11-13
+- Fresh Windows Godot run on latest integrated base 45fda38 completed on exact tested SHA 6124758ad70fef66a51c0fd94d034b4f65122e89: import, D1, S0–S9 all exit 0 with awaited sequential processes; logs/current captures are archived in the evidence folder.
+- Latest integrated remote branch head before S9 commits: 45fda38f67d478bb5a6e6c49a11908c2d667f251; tested exact code/tree SHA: 6124758ad70fef66a51c0fd94d034b4f65122e89. Existing branch integration/pve-p0-playable-ui-20261103; no new branch/merge.
+- Official Godot 4.7.2 import passed (exit 0). D1 and S0–S9 passed with markers (exit 0); S9 used Windows Compatibility rendering at 1280×720. V6.3 and its release gate remain OFF.
+- S9 rendered captures are sparse technical evidence only; OWNER_VISUAL_PENDING. Physical GUI and Android remain pending.
+- SaveService/economy/Combat V2 formulas and balance were untouched. Existing D4A/Warehouse baseline failure remains recorded, not rerun.
+- Remote advanced to 9521cc86d99c39bd613f9339a7f8399532643fee after testing with a documentation-only VFX19 R2 QA report; no V63 runtime/test path changed. Evidence: docs/qa/V63_S9_CLOSURE_20261113/README.md. Historical checkpoint follows unchanged.
+
+---
 ## VFX15.1 KIẾM QUANG 2.5D — OWNER VISUAL PENDING (2026-11-13)
 - **User brief:** No solid sword mesh/metal/hilt/3D; original Godot code-drawn ghost light with blue-white tapered luminous sword silhouette, misty tail, and **never show any physical sword penetrating monster rig**. Render energy must convert BEFORE contact to a separate hit flash, slash crescent and ring; preserve 2D/2.5D reading and 3 attack waves.
 - **Implemented** `godot/labs/combat_lab/combat_lab_v15_sword_fx.gd` and routed only DEMO sword in `combat_lab_v9_energy_fx.gd`; sword showcases 1–3 hit_targets and 9 visual sword-qi across 3 staggered volleys. Introduced `contact_time` at 82% of V14 flight, `contact_point` with 29 demo-pixel separation from chest, `projectile_tip` quadratic curved path, blade shrinks/fades before touching, `_impact_burst` replaces projectile at contact. Bounded 5-segment flow tail, glyph AOE, target-bound hit/splash. No numeric damage/hit logic or V9 poison live changes.

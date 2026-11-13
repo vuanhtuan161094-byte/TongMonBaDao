@@ -100,6 +100,8 @@ func _run() -> void:
         var phase_names: Array[String] = []
         for phase in phases:
             phase_names.append(str(phase.get("phase","")))
+            _expect(str(phase.get("production_note","")).contains("VFX_HOLD_OWNER_PER_SKILL_APPROVAL"),
+                "each authored VFX phase retains the owner approval hold: "+id)
             if str(phase.get("phase","")) in ["telegraph","travel"] and str(phase.get("event_type",""))=="none":
                 _expect(str(phase.get("production_note","")).contains("No independent event"),
                     "unavailable telegraph/travel cue is honestly suppressed: "+id)
@@ -108,6 +110,8 @@ func _run() -> void:
             and str(brief.get("asset_status",""))=="NO_EXTERNAL_ASSET_CODE_DRAWN"
             and str(brief.get("render_capture_status",""))=="REQUIRED_BY_EXACT_SHA_TEST"
             and str(brief.get("visual_acceptance_status",""))=="PENDING_OWNER"
+            and str(brief.get("production_hold",""))=="VFX_HOLD_OWNER_PER_SKILL_APPROVAL"
+            and str(brief.get("provenance","")).begins_with("CODE_DRAWN_EVENT_SPEC")
             and brief.get("renderer_paths",[]).size()==2,
             "seven-phase VFX maps to an actual code renderer without claiming owner art approval: "+id)
     _expect(ids.size()==183 and names.size()==183 and flavors.size()==183 and shorts.size()==183 and longs.size()==183,
@@ -153,8 +157,9 @@ func _exercise_branch(branch_id: String, expected_form: String) -> void:
         return
     var cast_vfx := Vfx.new()
     cast_vfx.consume_battle_events(battle)
-    _expect(str(cast_vfx.get("_cue_kind"))=="skill_cast" and str(cast_vfx.get("_cue_skill_id",""))==skill_id,
+    _expect(str(cast_vfx.get("_cue_kind"))=="skill_cast" and str(cast_vfx.get("_cue_skill_id"))==skill_id,
         "windup animation is driven by the actual Combat V2 skill_cast event for "+branch_id)
+    cast_vfx.free()
     _expect(float(pending.get("ready",-1.0))>=battle.now,"simulation AI cast has a real Combat V2 deadline for "+branch_id)
     battle.now = float(pending.get("ready",battle.now))
     battle._release_casts()
@@ -176,9 +181,11 @@ func _exercise_branch(branch_id: String, expected_form: String) -> void:
         "form, HP, finite lifetime and source skill are real actor state for "+branch_id)
     var created_vfx := Vfx.new()
     created_vfx.consume_battle_events(battle)
+    var created_event: Dictionary = created_vfx.get("_cue_event")
     _expect(str(created_vfx.get("_cue_kind"))=="v63_summon_created"
-        and str(created_vfx.get("_cue_event",{}).get("summon_id",""))==str(summon.get("id","")),
+        and str(created_event.get("summon_id",""))==str(summon.get("id","")),
         "spawn animation follows the created actor event, not a cast request or predicted target: "+branch_id)
+    created_vfx.free()
     _expect(battle._count_alive("disciple")==1,
         "summoned actor does not inflate the canonical disciple/player count for "+branch_id)
     _expect(not Summon.should_cast(battle,owner,skill),
@@ -206,6 +213,8 @@ func _exercise_branch(branch_id: String, expected_form: String) -> void:
     var world := WorldLayer.new()
     _expect(world.summon_visual_family(expected_form)==branch_id,
         "world renderer draws the matching summoned actor silhouette for "+branch_id)
+    vfx.free()
+    world.free()
     await _capture_godot_vfx_frame(battle,branch_id,skill_id,expected_form)
     if branch_id=="kiem_linh":
         var saved := Snapshot.save(battle)
@@ -222,14 +231,17 @@ func _exercise_branch(branch_id: String, expected_form: String) -> void:
                         "cold snapshot preserves actor owner and finite expiry")
             _expect(restored_count==1,"cold snapshot preserves exactly one summoned actor")
         var duplicate_snapshot: Dictionary = saved.duplicate(true)
+        var snapshot_payload: Variant = bytes_to_var(Marshalls.base64_to_raw(str(saved.get("payload",""))))
         var duplicate_row: Dictionary = {}
-        for row in duplicate_snapshot.get("actors",[]):
-            if bool(row.get("is_v63_summon",false)):
-                duplicate_row = row.duplicate(true)
-                break
+        if snapshot_payload is Dictionary:
+            for row in snapshot_payload.get("actors",[]):
+                if bool(row.get("is_v63_summon",false)):
+                    duplicate_row = row.duplicate(true)
+                    break
         if not duplicate_row.is_empty():
             duplicate_row["id"] = str(duplicate_row.get("id",""))+"_duplicate"
-            duplicate_snapshot["actors"].append(duplicate_row)
+            snapshot_payload["actors"].append(duplicate_row)
+            duplicate_snapshot["payload"] = Marshalls.raw_to_base64(var_to_bytes(snapshot_payload))
             var duplicate_restore := Snapshot.load(duplicate_snapshot)
             _expect(not bool(duplicate_restore.get("ok",true)) and str(duplicate_restore.get("reason",""))=="summon_owner_actor_cap_exceeded",
                 "cold snapshot rejects duplicate live summon for a single owner")
@@ -246,9 +258,11 @@ func _exercise_branch(branch_id: String, expected_form: String) -> void:
             "downed summon is removed at the next deterministic summon tick")
         var expiry_vfx := Vfx.new()
         expiry_vfx.consume_battle_events(battle)
+        var expiry_event: Dictionary = expiry_vfx.get("_cue_event")
         _expect(str(expiry_vfx.get("_cue_kind"))=="v63_summon_expired"
-            and str(expiry_vfx.get("_cue_event",{}).get("summon_id",""))==str(summon.get("id","")),
+            and str(expiry_event.get("summon_id",""))==str(summon.get("id","")),
             "dismissal animation follows the actual expiry/removal event: "+branch_id)
+        expiry_vfx.free()
 
 func _capture_godot_vfx_frame(battle: MapBattleV2, branch_id: String, skill_id: String, expected_form: String) -> void:
     var root := get_root()
@@ -272,7 +286,8 @@ func _capture_godot_vfx_frame(battle: MapBattleV2, branch_id: String, skill_id: 
     _expect(not attack_event.is_empty() and str(attack_event.get("skill_id",""))==skill_id,
         "render capture is driven by an additional real simulation attack event: "+branch_id)
     if attack_event.is_empty():
-        world.queue_free()
+        world.free()
+        await process_frame
         return
     world.refresh_from_authority()
     var event_only_battle := MapBattleV2.new(91098)
@@ -282,8 +297,9 @@ func _capture_godot_vfx_frame(battle: MapBattleV2, branch_id: String, skill_id: 
     vfx.size = Vector2(300,220)
     root.add_child(vfx)
     vfx.consume_battle_events(event_only_battle)
+    var rendered_event: Dictionary = vfx.get("_cue_event")
     _expect(str(vfx.get("_cue_kind"))=="v63_summon_attack"
-        and str(vfx.get("_cue_event",{}).get("target_id",""))==str(attack_event.get("target_id","")),
+        and str(rendered_event.get("target_id",""))==str(attack_event.get("target_id","")),
         "render overlay consumes the same target-bound attack event: "+branch_id)
     await process_frame
     await process_frame
@@ -292,8 +308,9 @@ func _capture_godot_vfx_frame(battle: MapBattleV2, branch_id: String, skill_id: 
     _expect(not image.is_empty() and image.get_width()==1280 and image.get_height()==720,
         "Godot viewport returned a rendered 1280x720 VFX frame")
     if image.is_empty():
-        world.queue_free()
-        vfx.queue_free()
+        world.free()
+        vfx.free()
+        await process_frame
         return
     var output_dir := ProjectSettings.globalize_path("res://outputs")
     var dir_error := DirAccess.make_dir_recursive_absolute(output_dir)
@@ -304,8 +321,9 @@ func _capture_godot_vfx_frame(battle: MapBattleV2, branch_id: String, skill_id: 
         "Godot writes real rendered branch VFX to the CI artifact path: "+branch_id)
     if save_error==OK:
         print("V63_S9_VFX_RENDER_CAPTURE path="+output_path+" size=1280x720 branch="+branch_id+" event=v63_summon_attack target="+str(attack_event.get("target_id",""))+" renderer=GodotViewport")
-    world.queue_free()
-    vfx.queue_free()
+    world.free()
+    vfx.free()
+    await process_frame
 
 func _actor(actor_id: String, side: String, position: Vector2) -> Dictionary:
     var resistances := {"metal":0.0,"wood":0.0,"water":0.0,"fire":0.0,"earth":0.0,
@@ -318,7 +336,8 @@ func _actor(actor_id: String, side: String, position: Vector2) -> Dictionary:
         "resistances":resistances,"status_effects":{},"context_sources":[],
         "v63_combat_enabled":true,"v63_summon_combat_enabled":false,
         "v63_skill_ready":{},"v63_skill_loadout":[],"v63_passive_ids":[],
-        "v63_combat_clock":-1.0,"next_skill":0.0,"learned_guard_factor":1.0,
+        "v63_combat_clock":-1.0,"next_basic":0.0,"next_skill":0.0,"basic_ratio":1.0,
+        "basic_interval":1.6,"guard_until":-1.0,"learned_guard_factor":1.0,
         "learned_guard_until":-1.0,"hunt_policy":"auto","hunt_after_move":"auto","hunt_radius":8.0,
         "home_position":position,"move_order_position":position,"move_order_active":false}
     if side=="monster":

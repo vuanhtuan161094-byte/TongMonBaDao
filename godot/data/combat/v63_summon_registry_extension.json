@@ -8,7 +8,7 @@
   },
   "source_catalog": {
     "path": "res://data/combat/v63_summon_combat_catalog.json",
-    "git_blob_sha": "53fed8044c222cb8b810a49eac0efbcbedab4323"
+    "git_blob_sha": "f24942701b82b6f64be018f91119532b30490a48"
   },
   "school": {
     "id": "summon",
@@ -26,6 +26,7 @@
         "b": "Cổ Khế"
       },
       "candidate_source_status": "SOURCE_PENDING",
+      "story_vi": "Trong những chuyến đi dài qua núi vắng, có người tu sĩ nhận ra thanh kiếm cũ vẫn lưu dấu tay chủ từng nắm giữ lời hứa chưa nói hết. Người cầm kiếm không thể có mặt trên mọi nẻo đường, nên học cách lắng nghe ký ức còn đọng trong binh khí. Từ sự tôn trọng ấy, một khế ước được viết bằng lời mời, không bằng mệnh lệnh. Kiếm Linh đồng hành khi duyên còn, rồi trở về nơi mình thuộc về. Người chủ khế phải nhớ rằng lòng tin quý hơn quyền sai khiến, còn mỗi lần gặp lại đều bắt đầu bằng sự đồng thuận.",
       "lineage_stories_vi": {
         "a": "Kiếm Tâm giữ mối cộng minh thẳng thắn: kiếm linh hiện hữu trong thời hạn được ghi ở kỹ năng, chọn kẻ địch hợp lệ và chỉ đánh qua trận chiến hiện hành. Người chủ khế không ép linh thể ở lại khi lời mời kết thúc.",
         "b": "Cổ Khế lắng tiếng ký ức trong binh khí và chọn khoảnh khắc xuất hiện cẩn trọng. Linh thể vẫn có sinh lực, nhịp hành động và thời hạn hữu hạn; không tự sinh vật phẩm hay chiến lợi phẩm."
@@ -51,6 +52,7 @@
         "b": "Sơn Linh"
       },
       "candidate_source_status": "SOURCE_PENDING",
+      "story_vi": "Truyền tích Linh Thú bắt đầu từ một cuộc gặp không ai dự định: người lữ hành dừng chân, còn sinh linh nơi núi rừng được quyền tránh đi. Chỉ khi khoảng cách được giữ và sự tin cậy nảy nở, hai bên mới chọn đồng hành. Người học đạo vì thế luyện tính kiên nhẫn, quan sát dấu vết và tôn trọng đường về của bạn thú. Mỗi khế ước nhắc rằng sức mạnh không sinh ra quyền chiếm hữu. Duyên gặp có thể ngắn, nhưng lời hứa phải rõ ràng, có giới hạn, và được giữ trọn từ lúc mời đến khi chia tay.",
       "lineage_stories_vi": {
         "a": "Hữu Tín xem khế ước là lời hứa hai chiều. Linh thú chỉ xuất hiện khi kỹ năng được thi triển, có thời hạn rõ trong runtime và biến mất khi duyên kết thúc; chủ nhân vẫn chịu trách nhiệm về mọi hành động.",
         "b": "Sơn Linh quen địa hình và chọn lối áp sát có thể đi được. Bạn thú không xuyên chướng ngại, không tự tìm chiến lợi phẩm, không tham gia ngoài giới hạn sinh lực và thời hạn của khế ước."
@@ -76,6 +78,7 @@
         "b": "Thiên Cơ"
       },
       "candidate_source_status": "SOURCE_PENDING",
+      "story_vi": "Trong xưởng nhỏ nép bên sườn núi, một nghệ nhân nhặt lại cơ quan đã hỏng và hiểu rằng bàn tay khéo léo không thể thay cho lòng trắc ẩn. Ông khắc lên thân khôi lỗi lời hứa bảo vệ người thân, rồi dạy môn đồ rằng người tạo ra nó phải chịu trách nhiệm về từng mệnh lệnh. Khôi Lỗi Hộ Pháp tượng trưng cho sự bền lòng, không phải sự bất khả chiến bại. Khi khế ước kết thúc, cơ quan trở về trạng thái nghỉ. Người thợ giữ lại bài học giản dị: sức mạnh chỉ có ý nghĩa khi được dùng để chở che và biết dừng đúng lúc.",
       "lineage_stories_vi": {
         "a": "Hộ Mạch gia cố thân khung cho vai trò đứng tuyến trước. Khôi lỗi vẫn có thể bị đánh bại, thời hạn chỉ lấy từ catalogue ứng viên và khi rời trận không tạo vật phẩm hoặc biên nhận riêng.",
         "b": "Thiên Cơ giữ vị trí quanh chủ khế và tìm mục tiêu trong tầm hợp lệ, không xuyên địa hình hay điều khiển ý chí quái vật. Cỗ máy chỉ tồn tại trong số actor được phép và hết hạn sẽ rời trận."

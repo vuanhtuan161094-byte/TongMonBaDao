@@ -660,7 +660,7 @@ static func _validate_summon_extensions(catalogue: Dictionary, registry_extensio
 		if str(availability.get("status", "")) != "CANDIDATE_GATED_SOURCE_PENDING" or bool(availability.get("archivable", true)) or not str(availability.get("source_codex_id", "")).is_empty():
 			errors.append("summon_learning_must_remain_blocked:" + id)
 		var qa: Dictionary = entry.get("qa_status", {})
-		if str(qa.get("behavior", "")) != "PARTIAL_BRANCH_EXERCISE_PENDING_PER_ID" or str(qa.get("vfx_metadata", "")) != "TEXT_ONLY_SPEC_READY" or str(qa.get("asset", "")) != "NOT_PRESENT" or str(qa.get("render", "")) != "NOT_CAPTURED":
+		if str(qa.get("behavior", "")) != "PARTIAL_BRANCH_EXERCISE_PENDING_PER_ID" or str(qa.get("vfx_metadata", "")) != "CODE_DRAWN_EVENT_SPEC" or str(qa.get("asset", "")) != "NO_EXTERNAL_ASSET" or str(qa.get("render", "")) != "EXACT_SHA_RENDER_TEST_REQUIRED":
 			errors.append("summon_qa_status_overclaim:" + id)
 		var brief: Dictionary = entry.get("vfx", {}).get("production_brief", {})
 		var phase_rows: Array = brief.get("phases", [])
@@ -669,7 +669,7 @@ static func _validate_summon_extensions(catalogue: Dictionary, registry_extensio
 			phase_names.append(str(phase.get("phase", "")))
 			if not str(phase.get("production_note", "")).contains("VFX_HOLD_OWNER_PER_SKILL_APPROVAL"):
 				errors.append("summon_vfx_hold_missing:" + id)
-		if phase_names != ["windup", "telegraph", "release", "travel", "impact", "status", "fade"] or str(brief.get("asset_status", "")) != "NOT_PRESENT" or str(brief.get("render_capture_status", "")) != "NOT_CAPTURED" or str(brief.get("visual_acceptance_status", "")) != "PENDING" or str(brief.get("production_hold", "")) != "VFX_HOLD_OWNER_PER_SKILL_APPROVAL" or not str(brief.get("provenance", "")).begins_with("TEXT_ONLY_VFX_SPEC"):
+		if phase_names != ["windup", "telegraph", "release", "travel", "impact", "status", "fade"] or str(brief.get("asset_status", "")) != "NO_EXTERNAL_ASSET_CODE_DRAWN" or str(brief.get("render_capture_status", "")) != "REQUIRED_BY_EXACT_SHA_TEST" or str(brief.get("visual_acceptance_status", "")) != "PENDING_OWNER" or str(brief.get("production_hold", "")) != "VFX_HOLD_OWNER_PER_SKILL_APPROVAL" or not str(brief.get("provenance", "")).begins_with("CODE_DRAWN_EVENT_SPEC"):
 			errors.append("summon_vfx_provenance_invalid:" + id)
 	if skill_ids.size() != 183 or registry_nodes.size() != 183 or path_ids.size() != 3:
 		errors.append("summon_join_totals_invalid")
@@ -1028,15 +1028,18 @@ static func _validate_presentation_entry(skill_id: String, entry: Dictionary, ca
 	if str(entry.get("short_description_vi","")).length() > 110:
 		errors.append("presentation_short_text_exceeds_compact_line:"+skill_id)
 	var qa_status: Variant = entry.get("qa_status",{})
-	var is_candidate_extension := str(skill.get("school", "")) in ["curse", "formation"]
-	var expected_vfx_metadata := "TEXT_ONLY_SPEC_READY" if is_candidate_extension else "VFX_META_COMPLETE"
+	var is_summon_extension := str(skill.get("school", "")) == "summon"
+	var is_candidate_extension := is_summon_extension or str(skill.get("school", "")) in ["curse", "formation"]
+	var expected_vfx_metadata := "CODE_DRAWN_EVENT_SPEC" if is_summon_extension else ("TEXT_ONLY_SPEC_READY" if is_candidate_extension else "VFX_META_COMPLETE")
 	var expected_runtime_status := "CANDIDATE_GATED_RUNTIME" if is_candidate_extension else "RUNTIME_CATALOG_PRESENT"
 	var expected_behavior_status := "PARTIAL_BRANCH_EXERCISE_PENDING_PER_ID" if is_candidate_extension else "NOT_AUDITED_PER_SKILL"
 	if not (qa_status is Dictionary) or str(qa_status.get("authoring","")) != "AUTHORING_COMPLETE" or str(qa_status.get("vfx_metadata","")) != expected_vfx_metadata:
 		errors.append("presentation_authoring_status_incomplete:"+skill_id)
 	if not (qa_status is Dictionary) or str(qa_status.get("runtime","")) != expected_runtime_status or str(qa_status.get("behavior","")) != expected_behavior_status:
 		errors.append("presentation_runtime_or_behavior_status_misleading:"+skill_id)
-	if str(qa_status.get("asset","")) != "NOT_PRESENT" or str(qa_status.get("render","")) != "NOT_CAPTURED" or str(qa_status.get("gui","")) != "PENDING":
+	var expected_qa_asset := "NO_EXTERNAL_ASSET" if is_summon_extension else "NOT_PRESENT"
+	var expected_qa_render := "EXACT_SHA_RENDER_TEST_REQUIRED" if is_summon_extension else "NOT_CAPTURED"
+	if str(qa_status.get("asset","")) != expected_qa_asset or str(qa_status.get("render","")) != expected_qa_render or str(qa_status.get("gui","")) != "PENDING":
 		errors.append("presentation_visual_status_misleading:"+skill_id)
 	var roles: Variant = entry.get("role_tags",[])
 	if not (roles is Array) or roles.is_empty():
@@ -1050,7 +1053,7 @@ static func _validate_presentation_entry(skill_id: String, entry: Dictionary, ca
 		if str(element_rule.get("differential_bonus","")) != "NO_PRESENTATION_BONUS":
 			errors.append("presentation_must_not_add_root_bonus:"+skill_id)
 	var ai: Variant = entry.get("ai_policy",{})
-	var expected_ai_status := "CANDIDATE_RUNTIME_POLICY; SOURCE/BALANCE PENDING" if is_candidate_extension else "INHERITED_RUNTIME_POLICY_NOT_PER_SKILL_TUNED"
+	var expected_ai_status := "CANDIDATE_BOUNDED_RUNTIME; SOURCE/BALANCE PENDING" if is_summon_extension else ("CANDIDATE_RUNTIME_POLICY; SOURCE/BALANCE PENDING" if is_candidate_extension else "INHERITED_RUNTIME_POLICY_NOT_PER_SKILL_TUNED")
 	if not (ai is Dictionary) or str(ai.get("status","")) != expected_ai_status:
 		errors.append("presentation_ai_policy_not_truthful:"+skill_id)
 	var availability: Variant = entry.get("availability",{})
@@ -1086,9 +1089,12 @@ static func _validate_presentation_entry(skill_id: String, entry: Dictionary, ca
 					for required_field in ["event_type","runtime_status","anchor","visual_direction","production_note"]:
 						if str(phase_value.get(required_field,"")).strip_edges().is_empty():
 							errors.append("vfx_phase_field_missing:"+skill_id+":"+expected_phases[phase_index]+":"+required_field)
-			if str(brief.get("asset_status","")) != "NOT_PRESENT" or not (brief.get("asset_files",[]) is Array) or not brief.get("asset_files",[]).is_empty():
+			var expected_brief_asset := "NO_EXTERNAL_ASSET_CODE_DRAWN" if is_summon_extension else "NOT_PRESENT"
+			if str(brief.get("asset_status","")) != expected_brief_asset or not (brief.get("asset_files",[]) is Array) or not brief.get("asset_files",[]).is_empty():
 				errors.append("vfx_asset_status_not_honest:"+skill_id)
-			if str(brief.get("render_capture_status","")) != "NOT_CAPTURED" or str(brief.get("visual_acceptance_status","")) != "PENDING":
+			var expected_brief_render := "REQUIRED_BY_EXACT_SHA_TEST" if is_summon_extension else "NOT_CAPTURED"
+			var expected_visual_acceptance := "PENDING_OWNER" if is_summon_extension else "PENDING"
+			if str(brief.get("render_capture_status","")) != expected_brief_render or str(brief.get("visual_acceptance_status","")) != expected_visual_acceptance:
 				errors.append("vfx_render_status_must_remain_pending:"+skill_id)
 
 static func build_mechanics_tooltip(skill: Dictionary, actor_stats: Dictionary = {}, target_distance: float = -1.0) -> Dictionary:

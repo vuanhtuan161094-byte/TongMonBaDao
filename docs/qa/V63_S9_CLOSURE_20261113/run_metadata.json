@@ -1,0 +1,23 @@
+{
+  "tested_code_sha": "6124758ad70fef66a51c0fd94d034b4f65122e89",
+  "integrated_remote_head": "45fda38f67d478bb5a6e6c49a11908c2d667f251",
+  "target_branch": "integration/pve-p0-playable-ui-20261103",
+  "qa_checkout": "detached and isolated; no new branch",
+  "godot_version": "4.7.2.stable.official.ed1daf0bf",
+  "godot_binary_sha256": "AB1824F85BFD8E0E4128182C000C4003A3E042245B2967848D089B2A04B22424",
+  "render_resolution": "1280x720",
+  "renderer": "Windows OpenGL Compatibility; Intel Iris Plus",
+  "release_gate": "OFF",
+  "v63_enabled": false,
+  "physical_gui": "PENDING",
+  "android": "PENDING",
+  "owner_visual_approval": "PENDING",
+  "save_service_changed": false,
+  "economy_changed": false,
+  "combat_v2_formula_or_balance_changed": false,
+  "known_d4a_warehouse_failure": "Pre-existing baseline failure preserved; not rerun",
+  "execution_method": "Start-Process -Wait; sequential Windows Godot processes; stdout/stderr captured",
+  "remote_tip_note": "45fda38 contains only VFX19 R2 combat lab renderer changes; preserved unchanged and separate from V63.",
+  "latest_remote_head_before_publish": "9521cc86d99c39bd613f9339a7f8399532643fee",
+  "post_test_remote_change": "Documentation-only VFX19 R2 QA report; no V63 runtime/test paths changed after tested SHA."
+}
