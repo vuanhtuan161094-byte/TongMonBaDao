@@ -256,7 +256,10 @@ static func render(c: CanvasItem, caster: Vector2, locked_center: Vector2,
         _spark(c, caster + Vector2(0.0, -9.0 * z),
             z * 1.65, ICE, charge * 0.81)
     var max_swords := 9 if lod >= 2 else (6 if lod == 1 else 3)
-    var count := mini(max_swords, hit_targets.size() * 3)
+    # Keep all 3 visual volleys even if the AOE legally hits only one
+    # or two enemies. Fewer targets change which destination each qi uses,
+    # never shorten the three-beat choreography.
+    var count := max_swords
     # Travel/charge only; no sword is drawn after reaching the contact bound.
     for i in range(count):
         var schedule := flight_timing(i)
