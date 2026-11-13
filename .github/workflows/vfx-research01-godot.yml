@@ -6,7 +6,8 @@ on:
       - integration/pve-p0-playable-ui-20261103
     paths:
       - '.github/workflows/vfx-research01-godot.yml'
-      - 'godot/labs/combat_lab/research01/**'
+      - 'godot/labs/combat_lab/research01/*.gd'
+      - 'godot/labs/combat_lab/research01/*.tscn'
       - 'godot/tests/labs/combat_lab/research01_contract_test.gd'
 permissions:
   contents: read
@@ -118,9 +119,17 @@ jobs:
             project="$localdir/$subdir"
             if timeout 95 godot --headless --rendering-method gl_compatibility --path "$project" --import > "$d/$name-import.log" 2>&1; then
               echo "$name Godot4.7.2_COMPAT_IMPORT_EXIT_0" >> "$d/external_demo.log"
+              demo_args=()
+              screenshot_at="0.85"
+              if [ "$name" = "REEBOO" ]; then
+                # The real demo supports command-line scene selection.
+                # Capture its relevant slash_arc rather than default coin_pickup.
+                demo_args=(-- --fx=slash_arc --at=0.08)
+                screenshot_at="0.24"
+              fi
               if timeout 55 xvfb-run -a -s "-screen 0 1280x720x24" godot --rendering-method gl_compatibility --path "$project" \
-                --resolution 1280x720 --fixed-fps 60 --write-movie "$d/$name-demo.avi" --quit-after 80 "$scene" > "$d/$name-demo.log" 2>&1; then
-                ffmpeg -y -hide_banner -loglevel error -ss 0.85 -i "$d/$name-demo.avi" -frames:v 1 "$d/$name-demo.png" || true
+                --resolution 1280x720 --fixed-fps 60 --write-movie "$d/$name-demo.avi" --quit-after 80 "$scene" "${demo_args[@]}" > "$d/$name-demo.log" 2>&1; then
+                ffmpeg -y -hide_banner -loglevel error -ss "$screenshot_at" -i "$d/$name-demo.avi" -frames:v 1 "$d/$name-demo.png" || true
                 echo "$name EXTERNAL_DEMO_RENDER_EXIT_0" >> "$d/external_demo.log"
               else
                 echo "$name EXTERNAL_DEMO_RENDER_FAIL" >> "$d/external_demo.log"
