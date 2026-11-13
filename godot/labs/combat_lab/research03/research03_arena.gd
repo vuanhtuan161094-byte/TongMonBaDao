@@ -69,7 +69,7 @@ static func orbit_streak(i: int, t: float) -> Dictionary:
     var formation := lerpf(0.66, 1.0, _smooth(t / 0.148))
     var breathe := 1.0 + 0.025 * sin(t * TAU * 2.1 + float(j) * 1.8)
     var rx := (185.0 if ring == 0 else 242.0) * formation * breathe
-    var ry := (117.0 if ring == 0 else 153.0) * formation * breathe
+    var ry := (126.0 if ring == 0 else 153.0) * formation * breathe
     var pt := FIELD_CENTER + Vector2(cos(angle) * rx, sin(angle) * ry)
     var tangent := Vector2(-sin(angle) * rx, cos(angle) * ry)
     if ring == 1:
