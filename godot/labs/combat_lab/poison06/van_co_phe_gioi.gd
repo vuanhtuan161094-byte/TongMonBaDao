@@ -101,7 +101,7 @@ func _ready() -> void:
     _glow=_radial_texture()
     set_process(true)
     queue_redraw()
-    print("VFX_POI06_R6_READY id=",SKILL_ID," gu_frames=",GU.size()," brand_frames=",BRANDS.size(),
+    print("VFX_POI06_R8_READY id=",SKILL_ID," gu_frames=",GU.size()," brand_frames=",BRANDS.size(),
         " targets=",DECLARED_TARGET_LIMIT," gameplay=false no_rig=true")
 func _radial_texture() -> Texture2D:
     var img := Image.create(96,96,false,Image.FORMAT_RGBA8)
@@ -129,25 +129,26 @@ func _draw() -> void:
     # The realm rests ABOVE target heads; dark nebula goes behind all actors.
     var open := realm_gain(t)
     if open>0.008:
-        _halo(REALM,253.0,Color("8473c7",open*0.23))
-        _halo(REALM,177.0,Color("b9efb8",open*0.23))
+        _halo(REALM,265.0,Color("8473c7",open*0.31))
+        _halo(REALM,195.0,Color("b9efb8",open*0.26))
         _halo(REALM,92.0,Color("1b2a42",open*0.38))
         _halo(REALM,47.0,Color("efffdf",open*0.30))
-        draw_texture_rect(_glow,Rect2(616.0,475.0,580.0,155.0),false,Color("a4dbb5",open*0.37))
+        draw_texture_rect(_glow,Rect2(616.0,475.0,580.0,155.0),false,Color("a4dbb5",open*0.28))
         draw_texture_rect(_glow,Rect2(706.0,493.0,412.0,93.0),false,Color("c2a1f9",open*0.23))
         # Primary painted raster sprite: 8 independent 480x320 transparent realm frames.
         # Light strokes below are a minor glancing highlight; NEVER a HUD circle.
         var realm_frame := posmod(int(floor((t-RIFT_OPEN)*12.5)),PAINTED_REALM.size())
         _paint(PAINTED_REALM[(realm_frame+4)%PAINTED_REALM.size()],
-            REALM+Vector2(-5.0,1.0),1.45,-0.019*sin(t*1.6),
+            REALM+Vector2(-4.0,-9.0),1.53,-0.023*sin(t*1.6),
             Color(1.0,1.0,1.0,open*0.96))
-        _paint(PAINTED_REALM[realm_frame],REALM,1.24,0.026*sin(t*2.1),
-            Color(1.0,1.0,1.0,open*0.93))
+        _paint(PAINTED_REALM[realm_frame],REALM+Vector2(0.0,3.0),1.30,0.029*sin(t*2.1),
+            Color(1.0,1.0,1.0,open*0.98))
         # A third narrow luminous crest, retaining a visible dark center.
         _paint(PAINTED_REALM[(realm_frame+2)%PAINTED_REALM.size()],
-            REALM+Vector2(8.0,-3.0),0.77,0.035*sin(t*2.8),
-            Color("f1ffe5",open*0.55))
-        _petal_sparks(REALM,193.0,open,t,24)
+            REALM+Vector2(8.0,-15.0),0.85,0.035*sin(t*2.8),
+            Color("f1ffe5",open*0.39))
+        _petal_sparks(REALM,193.0,open,t,20)
+        _realm_ink_bloom(t,open)
         _crown_burst(t,open)
     # Soft white-hot streams converge INTO A JAGGED RING at the caster's palm.
     var charge := smoothstep(0.03,0.53,t)*(1.0-smoothstep(1.06,1.35,t))
@@ -230,7 +231,9 @@ func _draw() -> void:
         if gain<0.006:continue
         var at: Vector2 = TARGETS[idx]+Vector2(2.0,-72.0)
         var frame := posmod(int(floor((t-3.05)*11.0))+idx,BRANDS.size())
-        _halo(at,76.0,Color("c9ffb8",gain*0.28))
+        _halo(at,76.0,Color("c9ffb8",gain*0.24))
+        _paint(PAINTED_REALM[posmod(frame+idx,PAINTED_REALM.size())],at+Vector2(0.0,16.0),
+            0.27,0.035*sin(t*5.0+float(idx)),Color("e1ffdc",gain*0.29))
         _paint(BRANDS[frame],at,0.39,0.075*sin(t*4.0+float(idx)),
             Color(1.0,1.0,1.0,gain*0.74))
         var born := 3.05+float(idx)*0.095
@@ -248,7 +251,7 @@ func _draw() -> void:
     draw_string(ThemeDB.fallback_font,Vector2(31,35),
         "VAN CO PHE GIOI  /  CO DOC TUYET KY",HORIZONTAL_ALIGNMENT_LEFT,-1,26,Color("eaffee"))
     draw_string(ThemeDB.fallback_font,Vector2(32,61),
-        "POI06 R6  |  LAYERED ALPHA SPRITE REALM / CHARGE  |  ART QA",
+        "POI06 R8  |  PAINTED SPRITE REALM / LIVING LIGHT CHARGE  |  ART QA",
         HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("b4c6cf"))
     draw_string(ThemeDB.fallback_font,Vector2(32,691),
         "GODOT 4.7.2 COMPATIBILITY  |  ART-ONLY  |  NO GAMEPLAY POISON/HP CHANGE",
@@ -271,6 +274,24 @@ func _crown_burst(t: float,open: float) -> void:
         draw_line(mid,tip,Color("bca6f7",pulse*0.40),5.0,true)
         draw_line(p,mid,Color("feffde",pulse*0.55),1.6,true)
         _halo(tip,11.0,Color("c9ffd0",pulse*0.36))
+
+func _realm_ink_bloom(t: float,open: float) -> void:
+    # The visual center breathes via the PAINTED SOURCE, not a CSS-like ring.
+    # Two brief jade-violet blossoms create a genuine, localized ultimate peak.
+    var swell := smoothstep(2.20,2.48,t)*(1.0-smoothstep(2.75,3.27,t))*open
+    if swell<0.008: return
+    var frame := posmod(int(floor((t-RIFT_OPEN)*9.4))+3,PAINTED_REALM.size())
+    _halo(REALM+Vector2(0.0,-19.0),95.0,Color("f6ffdb",swell*0.28))
+    _paint(PAINTED_REALM[frame],REALM+Vector2(0.0,-26.0),
+        0.49+0.09*sin(t*4.9)*sin(t*4.9),-0.04*sin(t*3.2),
+        Color("faffed",swell*0.63))
+    # Soft directional impact fans, deliberately behind the target actors.
+    for idx in range(3):
+        var k := float(idx)
+        var near: Vector2 = TARGETS[idx]+Vector2(0.0,-78.0)
+        var appear := swell*(0.67+0.08*k)
+        _halo(near,82.0,Color("ad8de1",appear*0.18))
+        _halo(near+Vector2(-3.0,7.0),44.0,Color("efffd7",appear*0.31))
 
 func _light_thread(origin: Vector2,target: Vector2,alpha: float,t: float,tint: Color,curve: float) -> void:
     var pts := PackedVector2Array()
