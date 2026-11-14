@@ -150,11 +150,16 @@ func _draw() -> void:
     _actor(CASTER,0.47,Color.WHITE)
     var contact_alpha := 0.0
     if t >= CONTACT_AT and t < FADE_END:
-        contact_alpha = smoothstep(CONTACT_AT,CONTACT_AT+0.06,t)*(1.0-smoothstep(CONTACT_END,FADE_END,t))
+        contact_alpha = smoothstep(CONTACT_AT-0.015,CONTACT_AT+0.025,t)*(1.0-smoothstep(CONTACT_END,FADE_END,t))
         _sprite(contact_r4_frames[impact_r4_frame_at(t)],CHEST,0.63,contact_alpha*0.30)
     _actor(TARGET,0.47,Color("d9d3e2"))
     if t >= CONTACT_AT and t < FADE_END:
         var opacity := smoothstep(CONTACT_AT,CONTACT_AT+0.045,t) * (1.0-smoothstep(CONTACT_END,FADE_END,t))
         _sprite(impact_frames[impact_frame_at(t)],CHEST,0.35,opacity*0.30)
-        _sprite(contact_r4_frames[impact_r4_frame_at(t)],CHEST,0.71,contact_alpha*0.93)
-        _sprite(needle_frames[needle_frame_at(t)],CHEST+Vector2(-35,0),0.18,opacity*0.12)
+        _sprite(contact_r4_frames[impact_r4_frame_at(t)],CHEST,0.57,contact_alpha*1.0)
+        # Real sprite tip remains embedded briefly during the single visual contact.
+        # At t>=1.68 it dissolves; no additional hit or status cue.
+        var puncture_hold := 1.0-smoothstep(CONTACT_AT+0.16,CONTACT_AT+0.34,t)
+        var stab_scale := 0.22
+        var axis := (CHEST-PALM).normalized()
+        _sprite(needle_frames[needle_frame_at(t)],CHEST-axis*(TIP_X_FROM_CENTRE*stab_scale),stab_scale,contact_alpha*puncture_hold*0.54,(CHEST-PALM).angle())
