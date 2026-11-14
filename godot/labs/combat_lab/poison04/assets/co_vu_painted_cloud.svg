@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="360" viewBox="0 0 640 360">
+<defs>
+ <radialGradient id="deep"><stop offset="0" stop-color="#6549a0" stop-opacity=".58"/><stop offset=".42" stop-color="#273e59" stop-opacity=".58"/><stop offset="1" stop-color="#11172c" stop-opacity="0"/></radialGradient>
+ <radialGradient id="jade"><stop offset="0" stop-color="#d0ffb7" stop-opacity=".79"/><stop offset=".16" stop-color="#9ef6a0" stop-opacity=".63"/><stop offset=".42" stop-color="#479d8a" stop-opacity=".43"/><stop offset=".74" stop-color="#2a5071" stop-opacity=".19"/><stop offset="1" stop-color="#281745" stop-opacity="0"/></radialGradient>
+ <radialGradient id="violet"><stop offset="0" stop-color="#b39bfa" stop-opacity=".49"/><stop offset=".40" stop-color="#7352b0" stop-opacity=".32"/><stop offset="1" stop-color="#2a205c" stop-opacity="0"/></radialGradient>
+ <radialGradient id="lime"><stop offset="0" stop-color="#f0ffd6" stop-opacity=".70"/><stop offset=".28" stop-color="#c4ff9c" stop-opacity=".33"/><stop offset="1" stop-color="#a2ffa3" stop-opacity="0"/></radialGradient>
+ <linearGradient id="fibers" x1="0" y1="0" x2=".72" y2="1"><stop offset="0" stop-color="#e5ffc8" stop-opacity="0"/><stop offset=".35" stop-color="#ddfbd0" stop-opacity=".33"/><stop offset=".7" stop-color="#7eecb5" stop-opacity=".14"/><stop offset="1" stop-color="#7992d3" stop-opacity="0"/></linearGradient>
+</defs>
+<!-- transparent irregular pooled poison gas silhouettes -->
+<ellipse cx="315" cy="264" rx="287" ry="70" fill="url(#deep)"/>
+<ellipse cx="248" cy="251" rx="194" ry="78" fill="url(#jade)" opacity=".88"/>
+<ellipse cx="428" cy="250" rx="187" ry="75" fill="url(#violet)"/>
+<ellipse cx="323" cy="275" rx="264" ry="49" fill="url(#jade)" opacity=".58"/>
+<path d="M26 287C55 234 97 249 119 204C130 172 166 167 183 193C195 208 179 226 199 230C224 238 207 180 235 159C257 139 301 155 304 181C300 212 276 214 283 226C301 240 316 204 333 181C356 151 406 163 409 189C411 218 383 230 402 238C423 253 434 198 466 182C495 174 523 190 519 212C521 240 507 234 530 241C547 236 568 224 590 247C600 261 614 275 614 296C513 330 147 334 26 287Z" fill="url(#jade)" opacity=".69"/>
+<path d="M53 285C71 258 97 254 122 270C146 282 149 246 170 226C196 199 226 213 238 230C255 254 236 273 261 267C287 257 296 225 326 221C357 209 376 236 364 256C356 278 388 279 398 258C418 223 440 213 468 225C503 237 500 260 523 258C551 247 573 255 594 289Q449 318 316 327Q161 318 53 285Z" fill="url(#violet)" opacity=".52"/>
+<!-- distinct scalloped curling vapor, feathered radial lobes -->
+<ellipse cx="133" cy="211" rx="88" ry="101" fill="url(#jade)" opacity=".66"/>
+<ellipse cx="204" cy="181" rx="73" ry="107" fill="url(#violet)" opacity=".69"/>
+<ellipse cx="248" cy="201" rx="93" ry="102" fill="url(#jade)" opacity=".78"/>
+<ellipse cx="324" cy="163" rx="84" ry="122" fill="url(#jade)" opacity=".74"/>
+<ellipse cx="400" cy="206" rx="95" ry="99" fill="url(#violet)" opacity=".54"/>
+<ellipse cx="478" cy="199" rx="85" ry="97" fill="url(#jade)" opacity=".77"/>
+<ellipse cx="555" cy="242" rx="76" ry="76" fill="url(#jade)" opacity=".57"/>
+<ellipse cx="176" cy="261" rx="105" ry="66" fill="url(#jade)" opacity=".75"/>
+<ellipse cx="385" cy="273" rx="174" ry="58" fill="url(#jade)" opacity=".60"/>
+<ellipse cx="294" cy="230" rx="79" ry="75" fill="url(#lime)" opacity=".46"/>
+<ellipse cx="464" cy="258" rx="75" ry="54" fill="url(#lime)" opacity=".50"/>
+<!-- visually natural rising translucent smoke curls, no full hard rings -->
+<g fill="none" stroke-linecap="round">
+<path d="M76 269C95 239 140 251 156 222C177 188 137 175 146 148C152 125 187 119 203 141" stroke="url(#fibers)" stroke-width="10" opacity=".83"/>
+<path d="M151 287C178 269 221 272 237 243C250 219 226 204 238 179C248 158 267 152 283 159" stroke="url(#fibers)" stroke-width="12" opacity=".73"/>
+<path d="M263 297C278 269 315 279 328 250C342 219 301 205 320 173C331 156 360 158 376 169" stroke="url(#fibers)" stroke-width="9" opacity=".67"/>
+<path d="M372 288C404 257 428 276 444 248C467 218 436 209 448 182C454 169 481 168 494 186" stroke="url(#fibers)" stroke-width="12" opacity=".77"/>
+<path d="M510 287C529 266 552 274 561 253C571 231 544 227 553 201" stroke="url(#fibers)" stroke-width="8" opacity=".67"/>
+</g>
+<!-- small asymmetric light nuclei -->
+<ellipse cx="128" cy="266" rx="62" ry="40" fill="url(#lime)" opacity=".43"/>
+<ellipse cx="305" cy="280" rx="93" ry="43" fill="url(#lime)" opacity=".42"/>
+<ellipse cx="490" cy="272" rx="79" ry="39" fill="url(#lime)" opacity=".41"/>
+<g fill="#c2ffc5" opacity=".60"><circle cx="141" cy="240" r="2.5"/><circle cx="213" cy="266" r="2.2"/><circle cx="316" cy="232" r="3.2"/><circle cx="383" cy="257" r="2.1"/><circle cx="482" cy="230" r="2.5"/><circle cx="553" cy="266" r="2.2"/></g>
+</svg>
