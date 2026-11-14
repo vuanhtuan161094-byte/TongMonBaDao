@@ -41,3 +41,5 @@ Run the workflow `.github/workflows/vfx-tal-01-dien-quang-khai-phu.yml` for actu
 R4 ART RESET (2026-11-14): R1–R3 notebook-like talisman rejected by owner. Replace with 12 painted transparent poses derived from self-generated original art, a dense violet-white luminous conductor and image-mask impact. View-only, no combat integration. Master visual owner approval pending.
 
 R4 original finished artwork: `assets/thunder_talisman_atlas.webp` (12 pose original generative illustration, alpha extracted and re-animated independently) + `assets/thunder_impact_burst.png` (independent procedural luminous shatter). Reference board is not a Godot screenshot. Visual check mandated at actual 1280x720.
+
+R5 native-scale improvement: grounded seal, 29% larger sprite, brighter layered conductor and 220–365px asymmetric contact texture. R4 remained below artistic acceptance at 1x. Owner gate remains pending.

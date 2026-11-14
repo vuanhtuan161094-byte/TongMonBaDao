@@ -96,7 +96,7 @@ func _update_seal() -> void:
     var f := clampi(int(floor(q*11.9)),0,11)
     _cell.region = Rect2(float(f%3)*300.0,float(f/3)*360.0,300.0,360.0)
     var lift := smoothstep(0.0,0.50,t)
-    var center := HAND+Vector2(24.0,-58.0-28.0*lift)
+    var center := HAND+Vector2(38.0,-19.0-13.0*lift)
     if t > RELEASE_END:
         var v := travel_q(t)
         # The physical talisman holds the *head* of the projectile, instead of
@@ -104,7 +104,7 @@ func _update_seal() -> void:
         center = bolt_position(t)+Vector2(0.0,-38.0*(1.0-v))
     _talisman.position = center
     _talisman.rotation = -0.08+0.07*sin(t*9.0)+(0.19 if t>RELEASE_END else 0.0)
-    _talisman.scale = Vector2.ONE * (0.45 if t<RELEASE_END else lerpf(0.45,0.18,travel_q(t)))
+    _talisman.scale = Vector2.ONE * (0.58 if t<RELEASE_END else lerpf(0.58,0.24,travel_q(t)))
     _talisman.modulate = Color(1.0,1.0,1.0,gain)
 func _halo(at:Vector2, radius:float, tint:Color) -> void:
     if tint.a<0.002: return
@@ -114,12 +114,12 @@ func _draw_actor(at:Vector2,tint:Color) -> void:
 func _thread(a:Vector2,b:Vector2,t:float,k:float,bright:float, width:float=1.0) -> void:
     if bright <= 0.005: return
     var mid := a.lerp(b,0.5)+Vector2(0.0,6.0*sin(k*7.2+t*27.0))
-    draw_line(a,mid,Color("7764cc",bright*.28),13.0*width,true)
-    draw_line(mid,b,Color("7764cc",bright*.26),13.0*width,true)
-    draw_line(a,mid,Color("b9a3ff",bright*.72),4.9*width,true)
-    draw_line(mid,b,Color("b9a3ff",bright*.70),4.9*width,true)
-    draw_line(a,mid,Color("fff5ff",bright*.98),1.55*width,true)
-    draw_line(mid,b,Color("fff5ff",bright*.95),1.55*width,true)
+    draw_line(a,mid,Color("7764cc",bright*.39),18.0*width,true)
+    draw_line(mid,b,Color("7764cc",bright*.36),18.0*width,true)
+    draw_line(a,mid,Color("b9a3ff",bright*.85),7.2*width,true)
+    draw_line(mid,b,Color("b9a3ff",bright*.83),7.2*width,true)
+    draw_line(a,mid,Color("fff5ff",bright*.99),2.25*width,true)
+    draw_line(mid,b,Color("fff5ff",bright*.99),2.25*width,true)
 func _path_point(q:float, t:float, lane:int) -> Vector2:
     var center := HAND.lerp(IMPACT,q)+Vector2(0.0,-72.0*sin(PI*q))
     var envelope := sin(PI*q)
@@ -135,11 +135,11 @@ func _draw() -> void:
     draw_texture_rect(_glow,Rect2(838.0,519.0,229.0,70.0),false,Color("c8b2ff",contact_gain(t)*.25))
     # Converging filaments gather into the real talisman; no naked SVG paper.
     var charge := smoothstep(0.04,0.23,t)*(1.0-smoothstep(0.73,1.02,t))
-    var seal_pos := HAND+Vector2(24.0,-75.0)
+    var seal_pos := HAND+Vector2(38.0,-32.0)
     if charge>0.005:
-        _halo(seal_pos,124.0,Color("573bc2",charge*.40))
-        _halo(seal_pos,82.0,Color("a07bf3",charge*.40))
-        _halo(seal_pos,37.0,Color("ffe6ae",charge*.45))
+        _halo(seal_pos,124.0,Color("643fe4",charge*.58))
+        _halo(seal_pos,82.0,Color("a07bf3",charge*.64))
+        _halo(seal_pos,37.0,Color("ffe6ae",charge*.54))
         for j in range(9):
             var i := float(j)
             var a := i*2.399+t*2.3
@@ -180,9 +180,9 @@ func _draw_bolt(t:float) -> void:
     if gain <= 0.002: return
     _halo(HAND,83.0,Color("a27be9",gain*.29))
     var tip := bolt_position(t) if t<CONTACT_AT else IMPACT
-    _halo(tip,88.0,Color("8055f4",gain*.45))
-    _halo(tip,46.0,Color("c69afa",gain*.75))
-    _halo(tip,16.0,Color("fffffa",gain*.96))
+    _halo(tip,112.0,Color("8055f4",gain*.53))
+    _halo(tip,63.0,Color("c69afa",gain*.86))
+    _halo(tip,24.0,Color("fffffa",gain*.99))
     # Every path segment is backed by soft radial texture to avoid hard-edge
     # polyline noodles in Godot GL Compatibility.
     for lane in range(3):
@@ -190,8 +190,8 @@ func _draw_bolt(t:float) -> void:
         for s in range(36):
             var x := float(s+1)/36.0*q
             var point := _path_point(x,t,lane)
-            var intensity := gain*(1.0 if lane==1 else .55)*(0.50+0.50*sin(PI*x))
-            _halo(point,28.0 if lane==1 else 18.0,Color("9669e9",intensity*.27))
+            var intensity := gain*(1.65 if lane==1 else .85)*(0.50+0.50*sin(PI*x))
+            _halo(point,39.0 if lane==1 else 24.0,Color("9669e9",intensity*.39))
             _thread(prev,point,t,float(s+lane*43),intensity,(1.16 if lane==1 else .52))
             prev=point
     for b in range(4):
@@ -204,13 +204,13 @@ func _draw_bolt(t:float) -> void:
 func _draw_contact(t:float) -> void:
     var hit := contact_gain(t)
     if hit > 0.003:
-        _halo(IMPACT,198.0,Color("754ae7",hit*.30))
-        _halo(IMPACT,98.0,Color("a87bfa",hit*.57))
-        _halo(IMPACT,49.0,Color("ffeafd",hit*.89))
+        _halo(IMPACT,198.0,Color("754ae7",hit*.44))
+        _halo(IMPACT,98.0,Color("a87bfa",hit*.78))
+        _halo(IMPACT,49.0,Color("ffeafd",hit*.98))
         # Alpha-authored shock fracture, not six identical vector spokes.
         var q := smoothstep(CONTACT_AT,CONTACT_END,t)
-        var scale := lerpf(.36,1.12,smoothstep(0.0,.42,q))
-        var side := Vector2.ONE*(210.0*scale)
+        var scale := lerpf(1.04,1.68,smoothstep(0.0,.58,q))
+        var side := Vector2.ONE*(218.0*scale)
         draw_texture_rect(IMPACT_TEX,Rect2(IMPACT-side*.5,side),false,Color(1.0,1.0,1.0,hit*.99))
         for j in range(17):
             var i := float(j)
