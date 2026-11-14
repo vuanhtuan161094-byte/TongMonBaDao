@@ -12,6 +12,7 @@ const ART06_WORLD = preload("res://src/presentation/uiux/sect_world_atmosphere_v
 const ART05_BUILDING_VARIANT = preload("res://src/presentation/uiux/sect_building_art_variant_v3.gd")
 const VIS07_APPROVED = preload("res://src/presentation/p3/tmb_approved_building_art_v4.gd")
 const VIS08_ORIGINAL_BUILDINGS = preload("res://src/presentation/p3/tmb_original_building_art_v5.gd")
+const VIS09_HANDPAINT = preload("res://src/presentation/p3/tmb_handpaint_building_art_v6.gd")
 
 func _ready() -> void:
     super._ready()
@@ -29,8 +30,14 @@ func _refresh_building_operation_art() -> void:
     if building_operation_panel == null:
         return
     var override_texture: Texture2D = VIS08_ORIGINAL_BUILDINGS.texture_for(selected_building)
+    if selected_building == SectMapPresentation.DEST_MAIN_HALL:
+        var hall_candidate := VIS09_HANDPAINT.texture_for(&"main_hall")
+        if hall_candidate != null:
+            override_texture = hall_candidate
     if selected_building == SectMapPresentation.DEST_MINE:
-        override_texture = VIS07_APPROVED.texture_for(&"mine")
+        override_texture = VIS09_HANDPAINT.texture_for(&"mine")
+        if override_texture == null:
+            override_texture = VIS07_APPROVED.texture_for(&"mine")
     if override_texture != null:
         var override_host := building_operation_panel.get_node_or_null("BuildingOperationArtFrame/BuildingOperationArt") as Control
         if override_host != null:

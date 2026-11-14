@@ -3,6 +3,7 @@ extends Control
 ## Read-only presentation: never assigns a portrait, state value, identity or gameplay reward.
 
 const VIS08_ORIGINAL_BUILDINGS = preload("res://src/presentation/p3/tmb_original_building_art_v5.gd")
+const VIS09_HANDPAINT = preload("res://src/presentation/p3/tmb_handpaint_building_art_v6.gd")
 const LEGACY_ART = preload("res://src/presentation/uiux/sect_facility_illustration_v1.gd")
 # Literal preloads guarantee fallback inclusion in Android/export resource packs.
 const HALL_STUDY = preload("res://art/uiux/hall_paint_v2.svg")
@@ -29,6 +30,10 @@ func _ready() -> void:
     # VIS-08 presents only independently authored art for the three real
     # TRI facility views; no fallback to historical Source A sprite bytes.
     _art = VIS08_ORIGINAL_BUILDINGS.texture_for(StringName(facility_kind))
+    if facility_kind == "hall":
+        var handpaint_hall := VIS09_HANDPAINT.texture_for(&"main_hall")
+        if handpaint_hall != null:
+            _art = handpaint_hall
     _owner_approved = false
     if _art == null:
         match facility_kind:
@@ -46,7 +51,7 @@ func _ready() -> void:
         legacy.set("facility_kind", facility_kind)
         legacy.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
         add_child(legacy)
-    tooltip_text = "TMB VIS-08 · artwork độc lập · chờ duyệt mỹ thuật trên bản đồ"
+    tooltip_text = "TMB VIS-09 · 2D handpainted · chưa nghiệm thu mỹ thuật Android" if facility_kind == "hall" else "TMB VIS-08 · artwork độc lập · chờ duyệt mỹ thuật trên bản đồ"
     queue_redraw()
 
 func _notification(what: int) -> void:

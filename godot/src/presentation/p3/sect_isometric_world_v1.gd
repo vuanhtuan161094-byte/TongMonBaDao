@@ -70,6 +70,7 @@ const REIMAGINED_REVIEW_ONLY_SITES := {
 const V3_ART = preload("res://src/presentation/uiux/sect_building_art_variant_v3.gd")
 const VIS07_APPROVED = preload("res://src/presentation/p3/tmb_approved_building_art_v4.gd")
 const VIS08_ORIGINAL_BUILDINGS = preload("res://src/presentation/p3/tmb_original_building_art_v5.gd")
+const VIS09_HANDPAINT = preload("res://src/presentation/p3/tmb_handpaint_building_art_v6.gd")
 const MAP_D2_SITE_SIZE := {
     "mine":Vector2(166,121),
     "linh_forest":Vector2(166,121),
@@ -490,15 +491,24 @@ func _load_verified_source_art() -> void:
             candidate_site_art[kind] = candidate
     # New Owner-approved art is independent of the Source A verification registry.
     # A missing binary file leaves the previous verified sprite visible.
-    var approved_mine := VIS07_APPROVED.texture_for(&"mine")
-    if approved_mine != null:
-        candidate_site_art["mine"] = approved_mine
+    var handpaint_mine := VIS09_HANDPAINT.texture_for(&"mine")
+    if handpaint_mine != null:
+        candidate_site_art["mine"] = handpaint_mine
         vis07_mine_owner_art_loaded = true
+    else:
+        var approved_mine := VIS07_APPROVED.texture_for(&"mine")
+        if approved_mine != null:
+            candidate_site_art["mine"] = approved_mine
+            vis07_mine_owner_art_loaded = true
     # The historical HOUSE_TEXTURES keys are placement/rollback identifiers only.
     # None of the five visible house sprites now uses Source A texture bytes.
     for house in HOUSE_TEXTURES:
         var key := str(HOUSE_TEXTURES[house])
         var asset: Texture2D = VIS08_ORIGINAL_BUILDINGS.texture_for(StringName(house))
+        if house == "main_hall":
+            var handpaint_hall := VIS09_HANDPAINT.texture_for(&"main_hall")
+            if handpaint_hall != null:
+                asset = handpaint_hall
         if asset != null:
             render_art[key] = asset
     for key in ["stone_courtyard","stone_variant","stone_border","stone_runes"]:
