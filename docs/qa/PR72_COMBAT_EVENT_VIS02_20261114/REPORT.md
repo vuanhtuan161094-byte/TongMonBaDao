@@ -3,12 +3,11 @@
 ## Source identity and limits
 
 - PR #72 branch: `integration/pve-p0-playable-ui-20261103`.
-- Live PR HEAD at finalization check: fcba3dc73940fe73bb78c2938c247d959d36fa2b, tree 49264e96d843fafdc8170307e24e00a38014106f.
+- PR #72 HEAD immediately before packet publication: fcba3dc73940fe73bb78c2938c247d959d36fa2b, tree 49264e96d843fafdc8170307e24e00a38014106f.
 - QA source was a **reconstructed snapshot**, rooted at commit `03302b1e2c96bb76b726d0b06728bf67429bfcfd` / tree `bd923663b90945f716bee0f4ca862702b6cdc943`, with selected verified presentation/art blobs through `0277e9e636b2075fac358a6cc14dfc281a48b033` and this task's combat/harness patch. This is **not a native Git checkout** and is **not a full-tree exact-SHA run**.
 - Earlier recorded comparison from reconstructed base 03302... to prior live check 4062758... showed 19 commits / 53 changed paths with no overlap in combat/VIS02. Fresh GitHub compare from 4062758d716db0cae3bfd9802ab1b1a6896681d2 to fcba3dc73940fe73bb78c2938c247d959d36fa2b shows 9 commits ahead, 0 behind; changed paths are VFX documentation/lab/art/workflow and do not touch those target paths. Snapshot is not a native checkout or full current tree; VIS08/POI05 visuals were not reconstructed/re-captured.
 - Official engine: Godot `4.7.2.stable.official.ed1daf0bf`; main executable SHA-256 `AB1824F85BFD8E0E4128182C000C4003A3E042245B2967848D089B2A04B22424`.
 
-- Finalization rechecked PR HEAD 90bf8429a2ace4ab5bc38e70c80def996fc0c9fb (tree ce5fbeca2b2ec2857148c6b8b2242cdea9ee5606). This packet is prepared to apply on that live tree; tested snapshot provenance remains as described above.
 
 ## Combat event identity
 
