@@ -72,7 +72,7 @@ static func scarab_depart(t: float, idx: int) -> float:
 static func scarab_position(t: float, idx: int) -> Vector2:
     var q := scarab_depart(t,idx)
     var from := CORE + Vector2(-11.0,5.0)
-    var to := TARGETS[idx]+Vector2(3.0,-62.0)
+    var to: Vector2 = TARGETS[idx]+Vector2(3.0,-62.0)
     var wave := (1.0-q)*sin(q*PI*3.0+float(idx)*1.8)*19.0
     return from.lerp(to,q)+Vector2(0,-38.0*sin(PI*q)+wave)
 
@@ -159,7 +159,7 @@ func _draw() -> void:
         for target_idx in range(3):
             var path := PackedVector2Array()
             var p0 := CORE + Vector2((float(target_idx)-1.0)*12,14)
-            var to := TARGETS[target_idx]+Vector2(0,-61)
+            var to: Vector2 = TARGETS[target_idx]+Vector2(0,-61)
             for step in range(20):
                 var q := float(step)/19.0
                 var wave := sin(q*PI*3.0+float(target_idx)*2.3+t*2.1)*15.0*sin(PI*q)
@@ -187,7 +187,7 @@ func _draw() -> void:
             var born := ARRIVAL+0.14+float(i)*0.075
             if t>=born and t<born+1.25:
                 var q := scarab_depart(t,i)
-                var at := scarab_position(t,i)
+                var at: Vector2 = scarab_position(t,i)
                 var fade := 1.0-smoothstep(born+0.87,born+1.25,t)
                 var frame := int(floor((t-born)*18.0))%SCARAB.size()
                 _halow(at,42,Color("a2ffd1",alpha*fade*0.18))
@@ -202,7 +202,7 @@ func _draw() -> void:
     for idx in range(3):
         var mark_alpha := mark_gain(t,idx)
         if mark_alpha<0.006:continue
-        var at := TARGETS[idx]+Vector2(5,-68)
+        var at: Vector2 = TARGETS[idx]+Vector2(5,-68)
         var time_local := t-(ARRIVAL+0.66+float(idx)*0.075)
         var s := 0.145+0.015*sin(time_local*8)
         _halow(at,57,Color("b9ffb8",mark_alpha*0.14))
@@ -210,7 +210,7 @@ func _draw() -> void:
         for j in range(6):
             var a := float(j)*2.399+float(idx)*0.3
             var r := 36+19*sin(t*2.5+float(j))
-            var p := at+Vector2(cos(a)*r,sin(a)*r*.75)
+            var p: Vector2 = at+Vector2(cos(a)*r,sin(a)*r*.75)
             _halow(p,5,Color("ddffb4",mark_alpha*0.31))
     # Fade all visual effects by 3.64s; no real poison source/status modifications.
     draw_string(ThemeDB.fallback_font,Vector2(31,39),
