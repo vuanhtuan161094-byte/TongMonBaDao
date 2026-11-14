@@ -1,34 +1,28 @@
-# TMB SPRITE + FLIPBOOK + VFX LAYER PIPELINE — 2026-11-14
+# TMB VFX — SPRITE / ATLAS / LAYER PRODUCTION PIPELINE
+Date 2026-11-14 | PR #72 Draft | Godot 4.7.2 Compatibility | Owner artwork first
 
-## Owner decision / applicability
-New cross-school **art production method**, approved as a direction after Talisman TAL01 R5. Applicable to all school LABs; **not** universal artwork. Read `AGENTS.md`, `docs/operations/TMB_VFX_ART_FIRST_SINGLE_SKILL_SOP_V3_20261114.md`, `docs/operations/TMB_VFX_SPRITE_FIRST_QUALITY_RULES_20261114.md`, the canonical skill record and the matching school's owner-approved reference. SOP V3's **one genuine master at a time** remains in force. No rig, Codex, commercial JX/Source VL asset copying, new branch, merge or enabling V6.3/PvE.
+## Lesson from Loi Phu (technical method, NOT source art reuse)
+Actual files studied:
+- godot/labs/combat_lab/talisman01/ART_PROVENANCE_R4.md
+- godot/labs/combat_lab/talisman01/dien_quang_khai_phu.gd
+- tools/vfx/generate_talisman01_atlas.py
+- .github/workflows/vfx-tal-01-dien-quang-khai-phu.yml
 
-## Why R1–R3 failed and R5 improved
-A thin parchment rectangle with a few glowing code lines lacks material hierarchy and reads as notebook paper. R5 used a distinct original 12-pose **painted talisman** sprite (frayed silhouette, luminous ink, gilt edge), a separate white-violet lightning conductor with head/body/tail contrast, and an independently authored impact burst texture. Real Godot 1280×720 reviews exposed the difference. R5 is the **owner-preferred sprite-based direction**, **not** a blanket artistic PASS for all effects and certainly not a reusable sprite to recolor.
+The effective workflow starts with original illustrated hero asset -> cleaned RGBA alpha -> multiple original atlas poses -> independently controlled emission/contact/ground layers -> genuine native Godot 1280x720 video -> timed frame-by-frame review. Copy its METHOD, never its talisman glyphs or violet sparks into Fist or other schools. A source concept illustration or generated poster is NOT a gameplay asset or a Godot capture. The owner, not CI, approves art.
 
-## Actual workflow, gate by gate
-1. **Read reality**: one exact skill ID, tier and branch; effect, shape, target cap, cast/cooldown/range/projectile speed/duration and real Combat V2 event/receipt boundaries. Never create extra hit/mark/DoT/guard/heal/summon by decorative VFX.
-2. **Draw hero asset**: an original painted prop, creature, spell form, qi blade or stamp that can stand alone; choose a coherent silhouette, subtle material noise, foreground edge, internal texture, bright focal core and secondary color. Record origin and rights. If no physical prop fits a skill, use a fully painted luminous form.
-3. **Create true motion frames**: 8–16 expressive 2D poses/flipbook keyframes for development; different contour, brush strokes, deformation, light reveal or silhouette. Preserve transparent alpha/pivot and document atlas dimensions/coordinates/frame order. Single SVG rotated/recolored is not a flipbook. Frame-count is a production guide, not a gameplay parameter.
-4. **Separate effect layers**: a) hero, b) magic seal/ground atmosphere when justified, c) concentrated emission/beam, d) sparse secondary filaments, e) contact burst gated by real hit, f) fading mist/motes. Treat each layer's timing, blend and occlusion independently; avoid permanent additive whiteout. Godot Control/Sprite2D/CPUParticles2D/shader are tools, not replacements for weak art.
-5. **Orchestrate spatial anchors**: ground seals belong **below feet and behind the actor** (elliptical perspective); hand seals float at the correct palm; impact beneath feet or on the body as appropriate; glowing source must connect to the traveling head. No accidental overlay over face. Avoid multiple equally bright concentric rings.
-6. **Respect 2D batching**: independently authored raster atlases PNG/WebP with clean transparent pixels; mipmap/filter as useful; fewer texture changes and short-lived particles, local bounds, no global flash, LOD for 6v8 and 30 vs 40. GL Compatibility required. Performance numbers remain PENDING unless physically measured.
-7. **Native render loop**: genuine Godot 4.7.2 GL Compatibility scene, 1280×720 MP4+GIF, 8–14 phase stills on actual scene, strict import/parse/contract exact-SHA. Check full-motion and pixel-scale silhouette on dark and bright map; iterate on obvious defects. Fixed encoded FPS does NOT certify physical framerate.
-8. **Separate gates**: CODE_LAB_READY, GODOT_TECH_PASS, ART_SELF_REVIEW, OWNER_VISUAL_PENDING/APPROVED, PVE_INTEGRATION_HOLD. Do not publish a QA PASS as art approval; only the owner can approve visual art.
+## Required stages
+1. G0 read canonical skill ID, exact Combat V2 effect/element/shape/range/target cap/cast time. Never invent AoE, fire DoT, status, HP, hit/summon or other gameplay events.
+2. G1 describe reference material/motion and permissions. Unlicensed commercial JX/Source VL asset pixels are reference-only.
+3. G2 design an individual hero silhouette plus 8-12 pose storyboard across charge / release / active / contact / fade. Keep readability at real 1x game scale.
+4. G3 make first-party transparent art. Painted master can be authored or ImageGen-generated and independently cleaned/animated; deterministic raster painting via Pillow also counts as original source art but does NOT automatically pass aesthetic review. NEVER replace poor art with only SVG recolors/shader rings. Distinct actual pose imagery is necessary.
+5. G4 atlas specification: record width, height, frame count, rows/columns, rect per cell, pivot, alignment, RGB/alpha edge cleanup, no edge bleeding. Example: 12 hero poses in 4 columns x 3 rows of 320x320 RGBA pixels (1280x960); 8 impact poses in 4x2. Store provenance and the complete reproducible source.
+6. G5 composite BACK TO FRONT: ground/ambient dust (MIX) -> aura and shot (MIX/ADD at restrained alpha) -> actual actors -> small foreground weapon/fist/contact (MIX, minimal hot ADD) -> grit and fade. No giant opaque polygon hiding target. Linear filtering for painted/glow alpha, nearest for truly pixel-art actors.
+7. G6 genuine Godot scene at 1280x720, capture MP4, GIF, at least 8 checkpoint PNGs, test with bright/dark terrain and actors at 1x. Animation clock 60fps in movie is NOT measured physical Android/Windows performance.
+8. G7 strict exact-SHA import+parse+focused contract; inspect motion/art not just checks. Score silhouette, material/light, choreography, layering/readability, contact, fade, uniqueness >=4/5 each; otherwise rework SAME skill and repeat render.
+9. G8 owner explicit approval and separately authorized live PvE receipts. Until then OWNER_VISUAL_PENDING, PVE_INTEGRATION_HOLD, V63_OFF.
 
-## VFX layering decision table
-| Mechanic | Hero | Underfoot array | Contact | Forbidden |
-|---|---|---|---|---|
-| Single-target lightning | illuminated talisman + one main white-violet current | restrained short **caster-only** charge | confirmed one-target impact | fake chain/AoE/status |
-| Line damage | long brushed current/ribbon | caster seal at cast if useful | hits only along declared line/target cap | expanding circular AoE |
-| Mark/stamp | rune/seal icon | optional caster scribe shadow | visible stamp on real target when mark receipt exists | damage-looking explosions/ticks |
-| Ultimate line lightning | monumental forged seal + one primary bolt, rare branches | larger short-lived ritual base | only declared maximum targets | generic multi-hit storm |
-| Passive/innate | event-local proc glint | none by default | only when real receipt arrives | fake cast animation |
+## Concurrent school ownership and safe writes
+Read AGENTS.md, Art-First SOP V3, this file, and the specific school's playbook. Each chat only changes its own school-owned LAB, test, generator, workflow and art packet: Poison poison*/ , Talisman talisman*/ , Fist fist*/ . Never edit TAL01 or POIxx from the Fist chat. One PR #72 branch; check current HEAD on every write; nonforce fast-forward with expected SHA. No Codex, skeletal rig, branch or merge, Combat V2/SaveService/economy/AI change.
 
-## Portable source/evidence packet
-Place the skill's `*.gd`, `*.tscn`, original transparent master/atlas, provenance, focused test, Action workflow, and QA images under distinct school names. Suggested structure:
-`godot/labs/combat_lab/<school><NN>/assets/` + `README.md`; `godot/tests/labs/combat_lab/vfx_<school><NN>_contract_test.gd`; `.github/workflows/vfx-<school>-<NN>.yml`.
-Use `docs/templates/VFX_SKILL_ART_FIRST_TEMPLATE.md`. Never alter another school's paths from one production chat.
-
-## Audit/known limitations
-The owner specifically prefers the **technique** of R5: original sprite master plus atlas/flipbook and separately timed effects. R5 displayed a small stand-in caster, plain terrain and an insufficient caster ground seal; TAL01 R6 adds original ritual ground art according to this guide. The new support seal is **supplementary**, not permission to mass-produce geometry-only skill VFX. All original copyrighted concept references are used only for *visual study* and must not be shipped as extracted pixels.
+## Actual Fist adoption R9 (not owner art-approved)
+tools/vfx/generate_fist01_painted_atlas.py -> three raster alpha sprite sheets: 12 hero + 8 charge + 8 impact = 28 frames, not a sprite made from Tal01. They are first-party procedural Pillow paintings (not ImageGen artwork), with separate glow and local dust/crack layers. Lab scene: godot/labs/combat_lab/fist01/khai_son_trong_quyen.tscn. True native run #43580310765 on commit 7f74ab41..., strict import/test/movie PASS; the hero remains visually too flat like an orange mitt, so ART_REWORK_REQUIRED. CI success is NOT a beauty pass.

@@ -1,38 +1,37 @@
-# VFX SKILL — ART-FIRST COPY TEMPLATE
+# VFX SKILL — ART-FIRST PACKET TEMPLATE
 
-**Owner / scope:** [school-specific folder, one writer]
-**Exact skill ID:** [from live catalog, tier, lineage]
-**Verified contract:** [element/effect/shape/range/target cap/cast/cooldown/projectile speed/duration/receipt trigger]
-**Status:** CODE_NOT_STARTED / OWNER_VISUAL_PENDING / PVE_INTEGRATION_HOLD
-**Permissions:** PR #72 Draft, one branch, no rig, no Codex, no gameplay or feature-gate edits.
+## Contract and scope
+- Source SHA / PR / branch:
+- Skill ID, name, school, branch, tier, slot:
+- Effect / element / shape / cap / range / cast / cooldown:
+- Event receipts and status/hit authority; keep view-only until authorized:
+- School-owned source paths and concurrent-writer protection:
 
-## Art intent
-**Reference (rights/source):** [original TMB image or public-domain/inspiration; never unlicensed asset reuse]
-**Unique hero silhouette:** [material, shape, luminous focal area]
-**Palette/intensity:** [hot core, secondary scattering, dim atmosphere]
-**Native-scale composition:** [caster foot, caster palm, target foot/chest, behind/above ordering]
-**Supporting effects chosen and WHY:** [optional short ground circle, wind swirl, sparks, contact, smoke]
-**Forbidden false mechanical cues:** [AoE, fake additional target, mark, DoT, heals, summons]
+## Hero master and narrative
+- Hero image silhouette, material, first-party provenance and rights:
+- Is source an ImageGen illustration, original hand painting, generated raster, or other?
+- What independent frame-by-frame edits are performed? Avoid just rotating/recoloring one frame.
+- Separate layers: back aura / charge / hero / impact / grit / fade:
+- Cast, travel, impact and fade timecode storyboard (8-12):
 
-## Storyboard at 1×
-| Time / event | Frame | Actor/ground/hero/main energy/contact/fade |
-|---|---:|---|
-| charge | 1–3 | |
-| release | 4–5 | |
-| travel / sustain | 6–8 | |
-| real receipt contact | 9–10 | |
-| dissolve | 11–12 | |
+## Atlas manifest
+| Texture | Rows x cols | px per frame | Frames | Pivot | Alpha | Blend/layer |
+| Hero | | | | | | |
+| Charge | | | | | | |
+| Impact | | | | | | |
+Original master + generator + output PNG/WebP and color/alpha QA.
+Generated concept posters cannot substitute for production assets or Godot evidence.
 
-## Original assets
-- Hero master: source, rights, width×height/alpha
-- Flipbook: frames×cell size, crop & pivot
-- Support: ground spell circle, qi ribbon, primary lightning, impact, smoke and particles ONLY if useful
-- Game integration: resources, intended node order, sprite blend mode, drawing budget
+## Godot visual contract
+- Dedicated scene/script and source texture paths:
+- Exact 1280x720 native movie, GIF and >=8 checkpoint frames:
+- Actor/target silhouette visibility and correct hit semantics:
+- No skeletal rig, Codex, new branch, merge or unauthorized live gameplay edits.
 
-## QA / evidence
-- Exact PR head SHA; Godot 4.7.2 GL Compatibility 1280×720 workflow URL/run ID
-- Strict import, parse, focused mechanic assertions, MP4 dimensions, GIF, 8–14 phase frames, hashes
-- Frame-review defects / corrected revisions
-- Art self-score for silhouette, material, motion, composition, contact, fade, identity, readability
-- Owner approval quote + date: [PENDING until explicit]
-- PvE event hookup: [HOLD until separately authorized]; physical Win/Android: [PENDING]
+## QA outcome
+- Exact SHA, GitHub Actions run and artifact ID:
+- Strict import, parse, contract outcomes:
+- 1x visual scores (/5): silhouette, material, motion, composition, contact, fade, uniqueness:
+- Visual issues by timecode and corrective action:
+- Owner visual gate: PENDING / EXPLICITLY APPROVED:
+- PvE gate: HOLD until separately instructed:
