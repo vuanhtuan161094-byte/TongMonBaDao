@@ -2,6 +2,7 @@ extends Control
 ## FIST02 - Phi Than Lien Cuoc, Guard / Fire / one recipient only.
 ## View-only no rig. Two heel sweeps are animation, NOT damage or a status hit.
 const SKILL_ID := "tmb.skill.fist.ba_quyen.active_02.human"
+const REVISION := "R3_CROSSED_HEEL_GUARD"
 const EFFECT := "guard"
 const ELEMENT := "fire"
 const SHAPE := "single_target"
@@ -117,6 +118,13 @@ func _draw() -> void:
         var at := Vector2(594+shift*0.55,459-16*sin(PI*t/CAST_TIME))
         _halo(at,94.0,heel*0.23,Color("f6a85c"))
         _atlas(HEELS,frame,at,1.17,heel*0.99,Vector2(260,160))
+    # Repeated whole-sprite AFTERIMAGES are not skeletal rig or fake actors.
+    # They display a two-beat dash only; never receive independent gameplay hits.
+    if heel > 0.01:
+        for j in range(3):
+            var age := float(j+1)
+            var shade := Color(1.0, 0.77, 0.53, heel * (0.18-0.035*float(j)))
+            _actor(CASTER+Vector2(shift-23.0*age,3.0*age),shade)
     # Existing actor is composition stand-in, not an approved fist-kick frame.
     _actor(caster_now,Color("eee1cd"))
     _actor(OTHER,Color("bac2cc"))
@@ -125,7 +133,7 @@ func _draw() -> void:
     draw_string(ThemeDB.fallback_font,Vector2(28,33),
         "PHI THAN LIEN CUOC  /  BA QUYEN",HORIZONTAL_ALIGNMENT_LEFT,-1,23,Color("fff0d1"))
     draw_string(ThemeDB.fallback_font,Vector2(28,59),
-        "FIST02 R2 | TWIN HELIX FOOTWORK + 4 S SINGLE TARGET GUARD",
+        "FIST02 R3 | CROSSED HEEL GUARD + 4 S SINGLE TARGET",
         HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("e8c6a4"))
     draw_string(ThemeDB.fallback_font,Vector2(28,680),
         "GODOT 4.7.2 COMPATIBILITY | VIEW ONLY | GUARD IS NOT A DAMAGE HIT",
