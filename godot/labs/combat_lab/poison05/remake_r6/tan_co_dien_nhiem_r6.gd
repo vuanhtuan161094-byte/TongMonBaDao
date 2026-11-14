@@ -143,15 +143,24 @@ func _draw() -> void:
     var charge := smoothstep(0.04,0.36,t)*(1.0-smoothstep(CAST_END-0.06,CAST_END+0.13,t))
     # Dark xianxia ritual energy, centered at the caster's casting hand (NOT face).
     if charge>0.004:
-        _halo(from,79.0,Color("b4a2ff",charge*0.29))
-        _halo(from+Vector2(-5.0,0.0),48.0,Color("b0ffb1",charge*0.31))
+        _halo(from,103.0,Color("b4a2ff",charge*0.47))
+        _halo(from+Vector2(-5.0,0.0),61.0,Color("b0ffb1",charge*0.43))
         var seed_pos := from+Vector2(4.0*sin(t*6.0),6.0*sin(t*4.2))
-        _paint(SEED[seed_frame(t)],seed_pos,0.20+0.075*charge,0.12*sin(t*6.0),
+        _paint(SEED[seed_frame(t)],seed_pos,0.24+0.085*charge,0.12*sin(t*6.0),
             Color(1.0,1.0,1.0,charge*0.92))
         for j in range(9):
             var angle := float(j)*2.399+t*2.7
             var at := from+Vector2(cos(angle)*33.0,sin(angle)*21.0)
             _halo(at,5.0,Color("c8a3ff" if j%2==0 else "dcffd5",charge*0.43))
+        # Broken converging spiritual qi: light follows the jade seed, never a neon ring.
+        for i in range(3):
+            var phi := float(i)*2.399+t*1.4
+            var p0 := from+Vector2(cos(phi)*75.0,sin(phi)*45.0)
+            var bend := from+Vector2(cos(phi+0.7)*47.0,sin(phi+0.7)*36.0)
+            var path := PackedVector2Array([p0,bend,from])
+            draw_polyline(path,Color("643b92",charge*0.65),9.0,true)
+            draw_polyline(path,Color("bca3f3",charge*0.54),3.8,true)
+            draw_polyline(path,Color("d9ffe0",charge*0.40),1.3,true)
     # Traveling spirit: chitin-plated CENTIPEDE, not a symmetrical flower or snake ribbon.
     if t >= CAST_END and t<ARRIVAL+0.12:
         var q := main_travel(t)
@@ -163,15 +172,23 @@ func _draw() -> void:
                 var pt := main_point(old)
                 _paint(GU[gu_frame(old,j)],pt,0.265-float(j)*0.024,0.06*sin(old*7.0),
                     Color("a7aedb",a*(0.18-float(j)*0.034)))
-        _halo(current,88.0,Color("967af1",a*0.21))
-        _halo(current,62.0,Color("b7ffd0",a*0.16))
+        _halo(current,118.0,Color("967af1",a*0.37))
+        _halo(current,86.0,Color("b7ffd0",a*0.31))
+        # Short irregular luminous tail, attached to exact flight curve.
+        for tail in range(3):
+            var lag := 0.035+float(tail)*0.04
+            if t>CAST_END+lag:
+                var tail_a := main_point(t-lag)
+                var tail_b := main_point(t-lag-0.032)
+                draw_line(tail_b,tail_a,Color("8254cb",a*(0.48-float(tail)*0.10)),12.0-float(tail)*2.5,true)
+                draw_line(tail_b,tail_a,Color("d6ffdc",a*(0.65-float(tail)*0.12)),2.2,true)
         _paint(GU[gu_frame(t)],current,0.39+0.040*q,
             0.075*sin(t*7.0),Color(1.0,1.0,1.0,a))
     # At arrival only a fleeting fractured spirit burst, no neon AOE disc.
     if t>=ARRIVAL and t<1.83:
         var burst := smoothstep(ARRIVAL,ARRIVAL+0.15,t)*(1.0-smoothstep(1.62,1.83,t))
-        _halo(BIRTH,143.0,Color("aa79f3",burst*0.24))
-        _halo(BIRTH,88.0,Color("e8ffdc",burst*0.31))
+        _halo(BIRTH,148.0,Color("aa79f3",burst*0.42))
+        _halo(BIRTH,91.0,Color("e8ffdc",burst*0.39))
         for j in range(12):
             var angle := float(j)*2.399+0.14*sin(t*7.0+float(j))
             var r := 25.0+145.0*smoothstep(ARRIVAL,1.83,t)+float(j%3)*11.0
@@ -206,13 +223,13 @@ func _draw() -> void:
         for idx in range(3):
             var start := escort_start(idx)
             var q := escort_progress(t,idx)
-            var alpha := smoothstep(start,start+0.18,t)*(1.0-smoothstep(2.75+float(idx)*0.10,3.28,t))
+            var alpha := smoothstep(start,start+0.18,t)*(1.0-smoothstep(2.06+float(idx)*0.07,2.49+float(idx)*0.07,t))
             if alpha<0.008:continue
             var pt := escort_point(t,idx)
-            var size := 0.32+0.065*q+0.017*sin(t*8.0+float(idx)*2.0)
+            var size := 0.32+0.050*q+0.016*sin(t*8.0+float(idx)*2.0)
             var tilt := -0.14+0.22*sin(t*6.0+float(idx)*1.4)
-            _halo(pt,72.0,Color("bca0fc",alpha*0.19))
-            _halo(pt,49.0,Color("d0ffcb",alpha*0.16))
+            _halo(pt,103.0,Color("bca0fc",alpha*0.34))
+            _halo(pt,74.0,Color("d0ffcb",alpha*0.29))
             for j in range(3):
                 var old := t-0.06*float(j+1)
                 if old>start:
@@ -228,10 +245,28 @@ func _draw() -> void:
         var born := escort_start(idx)+0.62
         var local := maxf(0.0,t-born)
         var turn := int(floor(local*14.0))%MARK.size()
-        var size := 0.34+0.03*sin(t*5.2+float(idx)*2.0)
+        var size := 0.39+0.03*sin(t*5.2+float(idx)*2.0)
         var a := -0.08+0.15*sin(t*4.2+float(idx)*1.5)
-        _halo(center,70.0,Color("b38bea",gain*0.14))
-        _paint(MARK[turn],center,size,a,Color(1,1,1,gain*0.79))
+        _halo(center,98.0,Color("b38bea",gain*0.27))
+        _paint(MARK[turn],center,size,a,Color(1,1,1,gain*0.86))
+        # Open, climbing poison-binding light curls: NOT opaque closed circles.
+        var spiral_gain := gain*(1.0-smoothstep(2.90,3.55,t))
+        if spiral_gain>0.02:
+            for strand in range(2):
+                var seq := PackedVector2Array()
+                for p_idx in range(21):
+                    var q := float(p_idx)/20.0
+                    var theta := -1.15+q*PI*1.56+local*1.25+float(strand)*2.25+float(idx)*0.5
+                    var rx := 40.0+8.0*sin(theta*2.3+local*2.2)
+                    var ry := 24.0+7.0*sin(theta*1.7)
+                    var px := center.x+cos(theta)*rx
+                    var py := center.y+sin(theta)*ry-13.0*sin(PI*q)+float(strand)*7.0
+                    seq.append(Vector2(px,py))
+                draw_polyline(seq,Color("3f215d",spiral_gain*0.53),10.0,true)
+                draw_polyline(seq,Color("b58af8" if strand==0 else "83e7b1",spiral_gain*0.57),4.0,true)
+                draw_polyline(seq,Color("f0ffe9",spiral_gain*0.46),1.3,true)
+                var last: Vector2 = seq[seq.size()-1]
+                _halo(last,17.0,Color("c5ffba",spiral_gain*0.38))
         if local<0.19:
             var spark := 1.0-local/0.19
             _halo(center,41.0+35.0*(1.0-spark),Color("e8ffda",spark*0.43))
