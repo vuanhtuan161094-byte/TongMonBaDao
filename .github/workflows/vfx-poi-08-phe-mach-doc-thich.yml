@@ -1,0 +1,149 @@
+name: VFX POI08 | Phe Mach Doc Thich Human original braided thorn Godot
+on:
+  workflow_dispatch:
+  push:
+    branches: [integration/pve-p0-playable-ui-20261103]
+    paths:
+      - 'godot/labs/combat_lab/poison08/**'
+      - 'godot/tests/labs/combat_lab/vfx_poi08_contract_test.gd'
+      - 'tools/vfx/generate_poi08_phe_mach_thorn.py'
+      - '.github/workflows/vfx-poi-08-phe-mach-doc-thich.yml'
+permissions:
+  contents: write
+  actions: write
+jobs:
+  poi08-native:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      GODOT_AUDIO_DRIVER: Dummy
+      GODOT_RENDERING_DRIVER: opengl3
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+      - name: Install SHA256-pinned official Godot 4.7.2 and native movie tools
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq xvfb ffmpeg unzip python3-pil
+          curl --fail --location --retry 3 -o /tmp/godot472.zip 'https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip'
+          echo 'cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4  /tmp/godot472.zip' | sha256sum --check --strict
+          unzip -q /tmp/godot472.zip -d /tmp
+          sudo install -m0755 /tmp/Godot_v4.7.2-stable_linux.x86_64 /usr/local/bin/godot
+          mkdir -p "$RUNNER_TEMP/vfx-poi08"
+          godot --version | tee "$RUNNER_TEMP/vfx-poi08/engine.txt"
+          printf 'SOURCE_SHA=%s\nSKILL_ID=tmb.skill.poison.doc_cham.active_02.human\nOWNER_VISUAL_PENDING\nPVE_HOLD\nV63_OFF\nNO_RIG\n' "$GITHUB_SHA" > "$RUNNER_TEMP/vfx-poi08/metadata.txt"
+      - name: Bake original first-party RGBA thorn, charge and vein atlas poses
+        shell: bash
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/vfx-poi08"
+          python3 tools/vfx/generate_poi08_phe_mach_thorn.py | tee "$d/bake.log"
+          python3 - <<'PY'
+          from PIL import Image
+          p='godot/labs/combat_lab/poison08/assets/'
+          names=[
+              ('phe_mach_thorn_12.png',(1536,576),(384,192),12),
+              ('phe_mach_charge_08.png',(1024,512),(256,256),8),
+              ('phe_mach_vein_12.png',(1280,960),(320,320),12)
+          ]
+          for name,dims,cell,n in names:
+              im=Image.open(p+name).convert('RGBA')
+              assert im.size==dims, (name,'dimensions',im.size)
+              for i in range(n):
+                  x=(i%4)*cell[0];y=(i//4)*cell[1]
+                  a=im.crop((x,y,x+cell[0],y+cell[1])).getchannel('A')
+                  assert a.getbbox(), (name,i,'empty')
+                  borders=[(0,0,cell[0],1),(0,cell[1]-1,cell[0],cell[1]),(0,0,1,cell[1]),(cell[0]-1,0,cell[0],cell[1])]
+                  assert all(a.crop(box).getextrema()[1]==0 for box in borders),(name,i,'alpha seam')
+              print('POI08_ALPHA_PASS',name,n)
+          PY
+          sha256sum godot/labs/combat_lab/poison08/assets/phe_mach_*.png > "$d/asset_hashes.txt"
+      - name: Restore immutable pre-existing Stage A character reference
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat .github/assets/p3/female_stage_a/part{01..14}.b64 .github/assets/p3/female_stage_a/part15a.b64 .github/assets/p3/female_stage_a/part15b.b64 .github/assets/p3/female_stage_a/part{16..20}.b64 | tr -d '\r\n\t ' | base64 --decode > /tmp/tmb_stage_a_pack.zip
+          test "$(stat -c%s /tmp/tmb_stage_a_pack.zip)" -eq 44838
+          echo '6a4213b9129ffb3f438c21cbb5326672ddf8915323836bf80cb33b8e5fabfdca  /tmp/tmb_stage_a_pack.zip' | sha256sum --check --strict
+          unzip -q /tmp/tmb_stage_a_pack.zip -d .
+      - name: Strict exact-SHA Godot import parser and focused Human poison skill contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/vfx-poi08"
+          bash tools/qa/run_godot_strict.sh --headless --path godot --import 2>&1 | tee "$d/import.log"
+          bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://labs/combat_lab/poison08/phe_mach_doc_thich.gd 2>&1 | tee "$d/parse.log"
+          bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/labs/combat_lab/vfx_poi08_contract_test.gd 2>&1 | tee "$d/focused.log"
+          grep -Fxq 'VFX_POI08_RESULT=PASS failures=0' "$d/focused.log"
+      - name: Record actual native Godot 1280x720 609 frame movie plus 14 phase stills
+        shell: bash
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/vfx-poi08"
+          xvfb-run -a -s '-screen 0 1280x720x24' bash tools/qa/run_godot_strict.sh --path godot --resolution 1280x720 --fixed-fps 60 --write-movie "$d/POI08-native.avi" --quit-after 609 res://labs/combat_lab/poison08/phe_mach_doc_thich.tscn 2>&1 | tee "$d/movie.log"
+          grep -Fq 'VFX_POI08_READY' "$d/movie.log"
+          test -s "$d/POI08-native.avi"
+          ffmpeg -y -hide_banner -loglevel error -i "$d/POI08-native.avi" -pix_fmt yuv420p -c:v libx264 -crf 16 -movflags +faststart "$d/POI08-native.mp4"
+          ffprobe -v error -select_streams v:0 -show_entries stream=width,height,nb_frames,avg_frame_rate -of default=noprint_wrappers=1 "$d/POI08-native.mp4" | tee "$d/dimensions.txt"
+          grep -Fxq width=1280 "$d/dimensions.txt"
+          grep -Fxq height=720 "$d/dimensions.txt"
+          for at in 0.14 0.31 0.46 0.74 1.12 1.40 1.58 1.90 2.40 4.00 6.00 8.60 9.42 9.76; do
+            ffmpeg -y -hide_banner -loglevel error -ss "$at" -i "$d/POI08-native.mp4" -frames:v 1 "$d/frame-$at.png"
+          done
+          ffmpeg -y -hide_banner -loglevel error -i "$d/POI08-native.mp4" -vf 'fps=6,scale=640:-1:flags=lanczos' -loop 0 "$d/POI08-native.gif"
+          sha256sum "$d/"*.mp4 "$d/"*.png "$d/"*.gif > "$d/SHA256SUMS.txt"
+          rm -f "$d/POI08-native.avi"
+      - name: Commit exact generated PNG files to same latest PR branch, never force
+        if: success() && github.event_name == 'push'
+        shell: bash
+        run: |
+          set -euo pipefail
+          branch='integration/pve-p0-playable-ui-20261103'
+          folder='godot/labs/combat_lab/poison08/assets'
+          for n in phe_mach_thorn_12 phe_mach_charge_08 phe_mach_vein_12; do cp "$folder/$n.png" "$RUNNER_TEMP/$n.png"; done
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          for attempt in 1 2 3; do
+            git fetch origin "$branch"
+            current="$(git rev-parse FETCH_HEAD)"
+            if ! git merge-base --is-ancestor "$GITHUB_SHA" "$current"; then echo BRANCH_REWRITTEN_ABORT; exit 0; fi
+            if test -n "$(git diff --name-only "$GITHUB_SHA" "$current" -- godot/labs/combat_lab/poison08 tools/vfx/generate_poi08_phe_mach_thorn.py .github/workflows/vfx-poi-08-phe-mach-doc-thich.yml)"; then
+              echo POI08_CONCURRENT_SOURCE_CHANGED_NO_PUSH
+              exit 0
+            fi
+            git reset --hard "$current"
+            mkdir -p "$folder"
+            for n in phe_mach_thorn_12 phe_mach_charge_08 phe_mach_vein_12; do cp "$RUNNER_TEMP/$n.png" "$folder/$n.png"; done
+            git add "$folder/phe_mach_thorn_12.png" "$folder/phe_mach_charge_08.png" "$folder/phe_mach_vein_12.png"
+            if git diff --cached --quiet; then echo POI08_ASSETS_ALREADY_TRACKED; exit 0; fi
+            git commit -m 'art(poi08): track original venom thorn charge and living vein RGBA flipbooks'
+            if git push origin "HEAD:refs/heads/$branch"; then
+              echo "POI08_BINARY_SHA=$(git rev-parse HEAD)" | tee "$RUNNER_TEMP/vfx-poi08/commit.txt"
+              gh workflow run vfx-poi-08-phe-mach-doc-thich.yml --repo "$GITHUB_REPOSITORY" --ref "$branch" || echo EXACT_SHA_DISPATCH_FAILED
+              exit 0
+            fi
+            echo "Fast-forward concurrency retry $attempt"
+          done
+          echo POI08_BINARY_COMMIT_BLOCKED
+          exit 1
+      - name: Upload genuine Godot native movie QA and original alpha atlases
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vfx-poi08-${{ github.sha }}
+          retention-days: 14
+          if-no-files-found: warn
+          path: |
+            ${{ runner.temp }}/vfx-poi08/*.log
+            ${{ runner.temp }}/vfx-poi08/*.txt
+            ${{ runner.temp }}/vfx-poi08/*.png
+            ${{ runner.temp }}/vfx-poi08/*.mp4
+            ${{ runner.temp }}/vfx-poi08/*.gif
+            godot/labs/combat_lab/poison08/assets/phe_mach_thorn_12.png
+            godot/labs/combat_lab/poison08/assets/phe_mach_charge_08.png
+            godot/labs/combat_lab/poison08/assets/phe_mach_vein_12.png
