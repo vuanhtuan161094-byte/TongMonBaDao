@@ -1,0 +1,82 @@
+name: VFX-POI-06 | Van Co Phe Gioi original jade-light ultimate native Godot
+on:
+  workflow_dispatch:
+  push:
+    branches: [integration/pve-p0-playable-ui-20261103]
+    paths:
+      - '.github/workflows/vfx-poi-06-van-co-phe-gioi.yml'
+      - 'godot/labs/combat_lab/poison06/**'
+      - 'godot/tests/labs/combat_lab/vfx_poi06_contract_test.gd'
+permissions:
+  contents: read
+jobs:
+  gu-realm-light-ultimate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      GODOT_AUDIO_DRIVER: Dummy
+      GODOT_RENDERING_DRIVER: opengl3
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install SHA256-pinned Godot 4.7.2, Xvfb, FFmpeg
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq xvfb ffmpeg unzip
+          curl --fail --location --retry 3 -o /tmp/godot472.zip 'https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip'
+          echo 'cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4  /tmp/godot472.zip' | sha256sum --check --strict
+          unzip -q /tmp/godot472.zip -d /tmp
+          sudo install -m0755 /tmp/Godot_v4.7.2-stable_linux.x86_64 /usr/local/bin/godot
+          mkdir -p "$RUNNER_TEMP/vfx-poi06"
+          godot --version | tee "$RUNNER_TEMP/vfx-poi06/engine.txt"
+          printf 'SOURCE_SHA=%s\nSCENE=res://labs/combat_lab/poison06/van_co_phe_gioi.tscn\nRENDERER=gl_compatibility\nOWNER_VISUAL_PENDING\nPVE_INTEGRATION_HOLD\n' "$GITHUB_SHA" > "$RUNNER_TEMP/vfx-poi06/metadata.txt"
+      - name: Restore required preexisting Stage A assets without tracked changes
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat .github/assets/p3/female_stage_a/part{01..14}.b64 .github/assets/p3/female_stage_a/part15a.b64 .github/assets/p3/female_stage_a/part15b.b64 .github/assets/p3/female_stage_a/part{16..20}.b64 | tr -d '\r\n\t ' | base64 --decode > /tmp/tmb_stage_a_pack.zip
+          test "$(stat -c%s /tmp/tmb_stage_a_pack.zip)" -eq 44838
+          echo '6a4213b9129ffb3f438c21cbb5326672ddf8915323836bf80cb33b8e5fabfdca  /tmp/tmb_stage_a_pack.zip' | sha256sum --check --strict
+          unzip -q /tmp/tmb_stage_a_pack.zip -d .
+      - name: Strict Godot import parse & focused contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/vfx-poi06"
+          bash tools/qa/run_godot_strict.sh --headless --path godot --import 2>&1 | tee "$d/import.log"
+          bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://labs/combat_lab/poison06/van_co_phe_gioi.gd 2>&1 | tee "$d/parse.log"
+          bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/labs/combat_lab/vfx_poi06_contract_test.gd 2>&1 | tee "$d/test.log"
+          grep -Fq 'VFX_POI06_FOCUSED_RESULT=PASS failures=0' "$d/test.log"
+      - name: Native Godot 1280x720 60-frame-clock video & artistic checkpoints
+        shell: bash
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/vfx-poi06"
+          xvfb-run -a -s '-screen 0 1280x720x24' bash tools/qa/run_godot_strict.sh --path godot --resolution 1280x720 --fixed-fps 60 --write-movie "$d/van-co-phe-gioi-ultimate.avi" --quit-after 333 res://labs/combat_lab/poison06/van_co_phe_gioi.tscn 2>&1 | tee "$d/movie.log"
+          test -s "$d/van-co-phe-gioi-ultimate.avi"
+          ffmpeg -y -hide_banner -loglevel error -i "$d/van-co-phe-gioi-ultimate.avi" -pix_fmt yuv420p -c:v libx264 -crf 16 -movflags +faststart "$d/van-co-phe-gioi-ultimate.mp4"
+          ffprobe -v error -select_streams v:0 -show_entries stream=width,height,avg_frame_rate -of default=noprint_wrappers=1 "$d/van-co-phe-gioi-ultimate.mp4" | tee "$d/dimensions.txt"
+          grep -Fxq 'width=1280' "$d/dimensions.txt"
+          grep -Fxq 'height=720' "$d/dimensions.txt"
+          for at in 0.38 0.75 1.06 1.31 1.71 2.11 2.38 2.66 2.98 3.30 3.73 4.21 4.72 5.20; do
+            ffmpeg -y -hide_banner -loglevel error -ss "$at" -i "$d/van-co-phe-gioi-ultimate.mp4" -frames:v 1 "$d/frame-$at.png"
+          done
+          ffmpeg -y -hide_banner -loglevel error -i "$d/van-co-phe-gioi-ultimate.mp4" -vf 'fps=5,scale=320:180,tile=5x4:nb_frames=20' -frames:v 1 "$d/timeline.png"
+          ffmpeg -y -hide_banner -loglevel error -i "$d/van-co-phe-gioi-ultimate.mp4" -vf "fps=8,scale=640:-1:flags=lanczos" -loop 0 "$d/van-co-phe-gioi-ultimate.gif"
+          sha256sum "$d/"*.mp4 "$d/"*.png "$d/"*.gif > "$d/SHA256SUMS.txt"
+          grep -Fq 'VFX_POI06_READY' "$d/movie.log"
+          rm "$d/van-co-phe-gioi-ultimate.avi"
+      - name: Upload exact-SHA movie, frames and QA evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vfx-poi06-r6-${{ github.sha }}
+          retention-days: 14
+          if-no-files-found: warn
+          path: |
+            ${{ runner.temp }}/vfx-poi06/*.log
+            ${{ runner.temp }}/vfx-poi06/*.txt
+            ${{ runner.temp }}/vfx-poi06/*.png
+            ${{ runner.temp }}/vfx-poi06/*.mp4
+            ${{ runner.temp }}/vfx-poi06/*.gif
