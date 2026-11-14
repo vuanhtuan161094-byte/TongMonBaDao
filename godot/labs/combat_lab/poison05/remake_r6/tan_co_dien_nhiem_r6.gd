@@ -96,7 +96,8 @@ static func main_point(t: float) -> Vector2:
 static func escort_point(t: float, idx: int) -> Vector2:
     var q := escort_progress(t,idx)
     var from := BIRTH+Vector2((float(idx)-1.0)*14.0,12.0)
-    var dest: Vector2 = TARGETS[idx]+Vector2(0.0,-73.0)
+    var side: float = [-76.0,70.0,63.0][idx]
+    var dest: Vector2 = TARGETS[idx]+Vector2(side,-82.0)
     var curl := Vector2((1.0-q)*27.0*sin(6.5*q+float(idx)*2.3),
         -64.0*sin(PI*q)+(1.0-q)*12.0*sin(PI*4.0*q+float(idx)))
     var orbit := maxf(0.0,t-(escort_start(idx)+0.60))
@@ -118,7 +119,7 @@ func _ready() -> void:
     _glow=_make_glow()
     set_process(true)
     queue_redraw()
-    print("VFX_POI05_R9_READY id=",SKILL_ID,
+    print("VFX_POI05_R10_READY id=",SKILL_ID,
         " gu_frames=",GU.size()," seed_frames=",SEED.size(),
         " mark_frames=",MARK.size()," declared_targets=",DECLARED_TARGET_LIMIT,
         " view_only=true no_rig=true")
@@ -239,10 +240,10 @@ func _draw() -> void:
             if alpha < 0.006: continue
             var lead := escort_point(t,idx)
             var frame := posmod(int(floor((t-start)*21.0))+idx*2,SWARM.size())
-            var size := (0.235+0.046*q)*(1.0+0.06*sin(t*9.0+float(idx)*1.4))
+            var size := (0.165+0.033*q)*(1.0+0.06*sin(t*9.0+float(idx)*1.4))
             var tilt := -0.18+0.15*sin(t*7.5+float(idx)*2.3)
-            _halo(lead,76.0,Color("b8a2f3",alpha*0.23))
-            _halo(lead,47.0,Color("c4ffd7",alpha*0.25))
+            _halo(lead,66.0,Color("b8a2f3",alpha*0.33))
+            _halo(lead,40.0,Color("c4ffd7",alpha*0.31))
             for j in range(2):
                 var old := t-0.060*float(j+1)
                 if old>start:
@@ -250,6 +251,20 @@ func _draw() -> void:
                         escort_point(old,idx),size*(0.76-0.18*float(j)),tilt,
                         Color("b8d1d2",alpha*(0.16-0.045*float(j))))
             _paint(SWARM[frame],lead,size,tilt,Color(1,1,1,alpha*0.95))
+            # Short, moving, tapering jade infection threads between each gu
+            # and the victim's CHEST, not a line or giant insect over the head.
+            var contact_strength := alpha*smoothstep(0.70,0.95,q)*(1.0-smoothstep(2.42,2.76,t))
+            if contact_strength>0.005:
+                var strand := PackedVector2Array()
+                var chest: Vector2 = TARGETS[idx]+Vector2(0.0,-56.0)
+                for segment in range(13):
+                    var n := float(segment)/12.0
+                    var base := lead.lerp(chest,n)
+                    var bend := sin(PI*n)*12.0*sin(t*6.8+float(idx)*2.1+3.0*n)
+                    strand.append(base+Vector2(0.0,bend))
+                draw_polyline(strand,Color("201835",contact_strength*0.50),5.0,true)
+                draw_polyline(strand,Color("a0edb8",contact_strength*0.52),2.0,true)
+                _halo(chest,48.0,Color("ddffc8",contact_strength*0.19))
             # Six subordinate illustrated GU spores per visible path; small,
             # staggered, wandering and fading, never static radius markers.
             for j in range(6):
@@ -264,7 +279,7 @@ func _draw() -> void:
                     -29.0*sin(PI*q2))
                 var at := origin.lerp(to,q2)+flutter
                 var faint := alpha*(0.43+0.16*sin(t*12.0+rank*2.0)*sin(t*12.0+rank*2.0))
-                var little := 0.070+0.013*float(j%3)
+                var little := 0.064+0.011*float(j%3)
                 _paint(SWARM[posmod(frame+j+idx,SWARM.size())],at,little,
                     0.23*sin(t*12.0+angle),Color("c0ffd5",faint))
     # Infection visual at chest/arms, staggered in ART only. 7s canonical gameplay duration NOT simulated.
@@ -328,10 +343,10 @@ func _draw() -> void:
     draw_string(ThemeDB.fallback_font,Vector2(30,35),
         "TAN CO DIEN NHIEM  /  CO DOC",HORIZONTAL_ALIGNMENT_LEFT,-1,27,Color("ebf9ec"))
     draw_string(ThemeDB.fallback_font,Vector2(30,65),
-        "R9  |  GHOST-GU SPLITS INTO JADE-MOTH SWARM  |  8 ORIGINAL WING POSES",
+        "R10  |  LIVING JADE-GU SWARM  |  CLEAR TARGETS  |  8 ORIGINAL WING POSES",
         HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("b6bdcf"))
     draw_string(ThemeDB.fallback_font,Vector2(31,688),
-        "VFX-POI05 R9  |  ORIGINAL XIANXIA SPIRIT ART  |  LAB ONLY / NO ACTUAL POISON",
+        "VFX-POI05 R10  |  ORIGINAL XIANXIA SPIRIT ART  |  LAB ONLY / NO ACTUAL POISON",
         HORIZONTAL_ALIGNMENT_LEFT,-1,14,Color("c4bcd4"))
     draw_string(ThemeDB.fallback_font,Vector2(1162,688),
         "%0.2fs" % t,HORIZONTAL_ALIGNMENT_LEFT,-1,14,Color("c9bdd8"))

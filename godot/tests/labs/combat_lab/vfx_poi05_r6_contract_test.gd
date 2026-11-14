@@ -23,6 +23,11 @@ func _run()->void:
     _check(LAB.mark_gain(0.7,0)==0.0 and LAB.mark_gain(4.0,2)==0.0,"no fake continuing mark")
     _check(LAB.mark_gain(2.31,0)>0.80 and LAB.mark_gain(2.50,2)>0.80,"three visual marks")
     _check(LAB.visual_total(4.0)==0.0,"full VFX cleared")
+    for i in range(3):
+        var destination: Vector2 = LAB.escort_point(2.17,i)
+        var face: Vector2 = LAB.TARGETS[i]+Vector2(0.0,-97.0)
+        _check(destination.distance_to(face)>40.0,"R10 gu must not hide target face "+str(i))
+    
     for i in range(LAB.GU.size()):
         _check(LAB.GU[i].get_size()==Vector2(512,512),"lively spirit frame "+str(i))
     for i in range(LAB.SEED.size()):
