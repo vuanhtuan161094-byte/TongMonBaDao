@@ -13,6 +13,10 @@ func _run()->void:
     _check(LAB.DECLARED_CAST_TIME==1.05 and LAB.DECLARED_COOLDOWN==23.0,"canonical ultimate timing")
     _check(LAB.DECLARED_RANGE==11.0 and LAB.DECLARED_PROJECTILE_SPEED==0.0,"instant line range")
     _check(LAB.SKY_FRAMES.size()==10,"original ten heavenly rune poses")
+    _check(LAB.PAINTED_SKY.get_size()==Vector2(2048,1536),"painted sky 10-pose RGBA atlas")
+    _check(LAB.PAINTED_BOLT.get_size()==Vector2(1536,1536),"painted principal bolt 10-pose RGBA atlas")
+    _check(LAB.PAINTED_IMPACT.get_size()==Vector2(320,320),"ultimate-specific local fractured contact")
+    _check(LAB.BOLT_RECT.position.y<=LAB.TOP.y and LAB.BOLT_RECT.end.y>=LAB.CENTER_HIT.y,"painted principal bolt native 1x line anchor")
     for i in range(10):
         _check(LAB.SKY_FRAMES[i].get_size()==Vector2(512,512),"heaven pose "+str(i))
     _check(LAB.phase_at(.70)=="ritual_charge" and LAB.phase_at(1.20)=="heaven_gate","windup and gate")

@@ -24,7 +24,7 @@ jobs:
         run: |
           set -euo pipefail
           sudo apt-get update -qq
-          sudo apt-get install -y -qq xvfb ffmpeg unzip python3-pil
+          sudo apt-get install -y -qq xvfb ffmpeg unzip python3-pil python3-numpy
           curl --fail --location --retry 3 -o /tmp/godot472.zip 'https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip'
           echo 'cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4  /tmp/godot472.zip' | sha256sum --check --strict
           unzip -q /tmp/godot472.zip -d /tmp
@@ -39,6 +39,24 @@ jobs:
           for n in 00 01 02 03 04 05 06 07 08 09; do test -s "godot/labs/combat_lab/talisman05/assets/heaven_rune_${n}.svg"; done
           test -s godot/labs/combat_lab/talisman01/assets/thunder_talisman_atlas.webp
           sha256sum godot/labs/combat_lab/talisman05/assets/heaven_rune_*.svg > "$RUNNER_TEMP/vfx-tal05/atlas_hash.txt"
+      - name: Bake original painted sky portal and vertical storm flipbooks
+        shell: bash
+        run: |
+          set -euo pipefail
+          TMB_ART_LOG_EXPORT=1 /usr/bin/python3 tools/vfx/paint_tal05_heaven.py . > "$RUNNER_TEMP/vfx-tal05/art.log"
+          grep -E '^TAL05_PAINTED_OUTPUT|^TMB_ASSET_BEGIN|^TMB_ASSET_END' "$RUNNER_TEMP/vfx-tal05/art.log"
+          cat "$RUNNER_TEMP/vfx-tal05/art.log" | grep '^TMB_ASSET_LINE:' || true
+          /usr/bin/python3 - <<'PY'
+          from PIL import Image
+          from pathlib import Path
+          p=Path('godot/labs/combat_lab/talisman05/assets')
+          sizes={'tal05_r3_sky_master.webp':(512,512),'tal05_r3_sky_flipbook.webp':(2048,1536),'tal05_r3_bolt_master.webp':(384,512),'tal05_r3_bolt_flipbook.webp':(1536,1536),'tal05_r3_impact.webp':(320,320)}
+          for name,size in sizes.items():
+              im=Image.open(p/name).convert('RGBA')
+              assert im.size==size and im.getchannel('A').getextrema()[0]==0
+              assert im.getchannel('A').getextrema()[1]>90
+          print('TAL05_R3_PAINTED_ALPHA_ATLAS=PASS')
+          PY
       - name: Restore existing Stage A prerequisites without changing tracked files
         shell: bash
         run: |
@@ -88,3 +106,4 @@ jobs:
             ${{ runner.temp }}/vfx-tal05/*.png
             ${{ runner.temp }}/vfx-tal05/*.mp4
             ${{ runner.temp }}/vfx-tal05/*.gif
+            godot/labs/combat_lab/talisman05/assets/tal05_r3_*.webp

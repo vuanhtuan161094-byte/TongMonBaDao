@@ -34,9 +34,14 @@ const SKY_FRAMES := [
     preload("res://labs/combat_lab/talisman05/assets/heaven_rune_08.svg"),
     preload("res://labs/combat_lab/talisman05/assets/heaven_rune_09.svg"),
 ]
+const PAINTED_SKY:Texture2D=preload("res://labs/combat_lab/talisman05/assets/tal05_r3_sky_flipbook.webp")
+const PAINTED_BOLT:Texture2D=preload("res://labs/combat_lab/talisman05/assets/tal05_r3_bolt_flipbook.webp")
+const PAINTED_IMPACT:Texture2D=preload("res://labs/combat_lab/talisman05/assets/tal05_r3_impact.webp")
+const SKY_RECT:=Rect2(710.0,38.0,424.0,424.0)
+const BOLT_RECT:=Rect2(805.0,64.0,266.0,412.0)
 const TALISMAN:Texture2D=preload("res://labs/combat_lab/talisman01/assets/thunder_talisman_atlas.webp")
-const FLOOR:Texture2D=preload("res://labs/combat_lab/talisman01/assets/thunder_cast_sigil.svg")
-const IMPACT:Texture2D=preload("res://labs/combat_lab/talisman01/assets/thunder_impact_burst.png")
+const FLOOR:Texture2D=preload("res://labs/combat_lab/talisman02/assets/talisman_foot_array.webp")
+const IMPACT:Texture2D=PAINTED_IMPACT
 const CONTACT_FLOOR:Texture2D=preload("res://labs/combat_lab/talisman01/assets/thunder_contact_sigil.svg")
 const BG:Texture2D=preload("res://labs/combat_lab/poison05/remake_r6/assets/immortal_valley.svg")
 const ACTOR:Texture2D=preload("res://labs/character_family/assets/nu_doc_tu_v4_candidate/idle_4dir_APPROVED_UNCHANGED.png")
@@ -133,8 +138,14 @@ static func lateral_point(q:float,t:float,direction:int)->Vector2:
     var curve:=17.0*sin(PI*f)+jitter*sin(PI*f)
     return CENTER_HIT+Vector2(sign*202.0*f,curve)
 func _draw_storm(t:float)->void:
-    var gain:=bolt_gain(t)
-    if gain<.01:return
+    var painted_gain:=bolt_gain(t)
+    if painted_gain>.005:
+        var n:=clampi(int(floor(smoothstep(STORM_BEGIN,CONTACT_AT,t)*9.99)),0,9)
+        var rr:=Rect2(float(n%4)*384.0,float(int(n/4))*512.0,384.0,512.0)
+        draw_texture_rect_region(PAINTED_BOLT,BOLT_RECT,rr,Color(1,1,1,painted_gain*.98))
+    # The legacy GDScript line is only a small flicker; raster bolt owns the silhouette.
+    var gain:=painted_gain*.06
+    if painted_gain<.01:return
     var reach:=smoothstep(STORM_BEGIN,1.78,t)
     var tip:=point_on_bolt(reach,t)
     _halo(tip,127.0,Color("8c59e8",gain*.44))
@@ -165,7 +176,7 @@ func _draw_storm(t:float)->void:
         draw_line(mid,end,Color("e5d1ff",gain*.62),1.2,true)
     # Only after the demo contact does the central hit bleed down the legally capped line.
     # Two asymmetric real-light filaments with different head/tail timings; no straight laser.
-    var sweep:=line_sweep_gain(t)
+    var sweep:=line_sweep_gain(t)*.17
     if sweep>.006:
         for direction in range(2):
             var travel:=smoothstep(CONTACT_AT,CONTACT_AT+.20+float(direction)*.035,t)
@@ -205,7 +216,8 @@ func _draw()->void:
     if gate>.005:
         var frame:=clampi(int(floor(smoothstep(.52,1.35,t)*9.99)),0,9)
         _halo(SKY,226.0,Color("6b42ad",gate*.20))
-        draw_texture_rect(SKY_FRAMES[frame],Rect2(SKY-Vector2.ONE*205.0,Vector2.ONE*410.0),false,Color(1,1,1,gate*.93))
+        var region:=Rect2(float(frame%4)*512.0,float(int(frame/4))*512.0,512.0,512.0)
+        draw_texture_rect_region(PAINTED_SKY,SKY_RECT,region,Color(1,1,1,gate*.95))
         for j in range(14):
             var a:=float(j)*2.399+t*.45
             var p:=SKY+Vector2(cos(a)*158.0,sin(a)*145.0)
