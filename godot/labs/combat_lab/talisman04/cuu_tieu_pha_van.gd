@@ -18,6 +18,19 @@ const RELEASE_AT := .55
 const CONTACT_AT := 1.44
 const FADE_END := 2.73
 const LOOP_SECONDS := 3.16
+# Visual-only moving-enemy harness. Does not grant homing damage or change the
+# two targets legally selected by Combat V2. Their IDs remain indices 0 and 1.
+const DEMO_MOVING_ENEMIES := true
+static func demo_target_foot(idx:int,t:float)->Vector2:
+    if idx<0 or idx>=TARGET_LIMIT:return Vector2.INF
+    var k:=float(idx)
+    return TARGETS[idx]+Vector2(39.0*sin(t*(1.71+.29*k)+k*1.8),
+        6.0*sin(t*(1.27+.23*k)+k*2.1))
+static func demo_contact(idx:int,t:float)->Vector2:
+    if idx<0 or idx>=TARGET_LIMIT:return Vector2.INF
+    # Preserve actual intended contact joint on the moving actor.
+    return CONTACTS[idx]+demo_target_foot(idx,t)-TARGETS[idx]
+
 const CLOUD_POSES := [
     preload("res://labs/combat_lab/talisman04/assets/cloud_rift_00.svg"),
     preload("res://labs/combat_lab/talisman04/assets/cloud_rift_01.svg"),
@@ -159,18 +172,28 @@ func _draw()->void:
         var gain:=smoothstep(RELEASE_AT,RELEASE_AT+.12,t)*(1.0-smoothstep(1.57,1.83,t))
         # Ragged cloud-wound art has its own ten animated shapes, independent of TAL02 ink calligraphy.
         var region:=Rect2(float(f%4)*1024.0,float(int(f/4))*256.0,1024.0,256.0)
-        draw_texture_rect_region(PAINTED_CLOUD,PAINTED_RECT,region,Color(1,1,1,gain*.86))
-        # A small conductor accent follows the painted tear, never replaces it.
+        # Rotate/stretch the ORIGINAL 10-frame painted cloud from caster to
+        # current selected enemy position, instead of rendering toward stale X/Y.
+        var origin_target:=CONTACTS[TARGET_LIMIT-1]-HAND
+        var actual_target:=demo_contact(TARGET_LIMIT-1,t)-HAND
+        var angle:=actual_target.angle()-origin_target.angle()
+        var stretch:=clampf(actual_target.length()/origin_target.length(),.87,1.13)
+        draw_set_transform(HAND,angle,Vector2(stretch,1.0))
+        draw_texture_rect_region(PAINTED_CLOUD,
+            Rect2(PAINTED_RECT.position-HAND,PAINTED_RECT.size),
+            region,Color(1,1,1,gain*.86))
+        # Supporting code-light remains just 8% and is transformed equally.
         _draw_rupture(t,gain*.08)
+        draw_set_transform(Vector2.ZERO)
         _halo(HAND+Vector2(17,-6),40,Color("aa77e2",gain*.19))
     # Render painted cloud BEFORE actors; targets remain readable at gameplay 1x.
     _actor(CASTER)
     for i in range(TARGET_LIMIT):
-        _actor(TARGETS[i])
+        _actor(demo_target_foot(i,t))
     for i in range(TARGET_LIMIT):
         var g:=contact_gain(t,i)
         if g<.005:continue
-        var spot:Vector2=CONTACTS[i]
+        var spot:Vector2=demo_contact(i,t)
         _halo(spot,108.0,Color("7652db",g*.33))
         _halo(spot,44.0,Color("faf1ff",g*.72))
         var size:=Vector2.ONE*(202.0+51.0*(1.0-g))
