@@ -56,7 +56,7 @@ static func scorch_gain(t:float)->float:
     return smoothstep(DEMO_HIT_AT,DEMO_HIT_AT+.09,t)*(1.0-smoothstep(2.03,FADE_END,t))
 static func seal_gain(t:float)->float:
     if t<.05 or t>DEMO_HIT_AT+.1:return 0.0
-    return smoothstep(.05,.22,t)*(1.0-smoothstep(DEMO_HIT_AT-.16,DEMO_HIT_AT+.10,t))
+    return smoothstep(.05,.22,t)*(1.0-smoothstep(.70,1.04,t))
 static func comet_index(t:float)->int:
     if t<FLIGHT_START or t>DEMO_HIT_AT+.04:return -1
     return clampi(int(floor(smoothstep(FLIGHT_START,DEMO_HIT_AT,t)*11.99)),0,11)
@@ -133,9 +133,16 @@ func _draw()->void:
         _halo(tip,39,Color("ffb252",alpha*.28))
     var h:=hit_gain(t)
     if h>.004:
-        var contact:=target_contact(t)+Vector2(0,19)
-        _halo(contact,68,Color("fe9d34",h*.34))
-        _halo(contact,25,Color("fff1c3",h*.63))
+        var contact:=target_contact(t)+Vector2(0,21)
+        var hitframe:=impact_index(t)
+        var hitregion:=Rect2(float(hitframe%4)*288,float(int(hitframe/4))*224,288,224)
+        # Brief authored molten hit splash at lower torso, separate from
+        # persistent ground scar beneath the walking monster.
+        draw_texture_rect_region(IMPACT,
+            Rect2(contact-Vector2(61,65),Vector2(122,114)),
+            hitregion,Color(1.0,1.0,1.0,h*.71))
+        _halo(contact,48,Color("fe9d34",h*.37))
+        _halo(contact,21,Color("fff2cf",h*.76))
     var ember:=smoothstep(DEMO_HIT_AT,DEMO_HIT_AT+.17,t)*(1.0-smoothstep(1.92,FADE_END,t))
     if ember>.004:
         for k in range(13):

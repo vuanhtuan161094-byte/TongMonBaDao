@@ -36,8 +36,8 @@ def comet(i):
     core=np.exp(-((x-tip)/21)**2-((y-center)/17)**2)
     smoke=np.exp(-(d/(width*2+4))**1.6)*tail*n
     power=(body*.84+core*.9)*(.58+.48*n)
-    alpha=np.clip(190*power+52*smoke,0,255)
-    im=rgba(alpha,161+89*power+38*n,43+168*power+52*n,11+41*n)
+    alpha=np.clip(233*power+54*smoke,0,255)
+    im=rgba(alpha,164+103*power+33*n,50+213*power+43*n,12+47*n+31*power)
     strokes=Image.new('RGBA',(w,h));b=ImageDraw.Draw(strokes,'RGBA')
     rng=np.random.default_rng(2100+i)
     for j in range(24):
@@ -50,6 +50,23 @@ def comet(i):
                width=int(rng.uniform(2,6)),joint='curve')
     im.alpha_composite(strokes.filter(ImageFilter.GaussianBlur(5)))
     im.alpha_composite(strokes)
+    # R2: bake a true high-temperature luminous core, curling hot flame tongues
+    # and a compact white-gold tip into every individually different pose.
+    hot=Image.new('RGBA',(w,h));hb=ImageDraw.Draw(hot,'RGBA')
+    for lane in range(5):
+        sign=-1 if lane%2 else 1
+        startx=tip-7+2*lane
+        starty=float(112+14*math.sin(startx/25+i*.55)*.05+8*math.sin(startx/53-i*.28))
+        endx=tip-(112+25*lane)
+        tail_y=sign*(12+9*lane)+9*math.sin(i*.44+lane*1.3)
+        pts=[(startx,starty+sign*2),(tip-40-lane*8,starty+sign*(7+lane*3)),
+             (tip-74-lane*9,starty+sign*(15+lane*4)),(endx,112+tail_y)]
+        hb.line(pts,fill=(255,176+12*lane,72+9*lane,115+18*(4-lane)),width=8-lane,joint='curve')
+        hb.line(pts[:3],fill=(255,247,195,205-14*lane),width=3 if lane<3 else 2,joint='curve')
+    hb.ellipse((tip-16,93,tip+9,130),fill=(255,236,153,216))
+    hb.ellipse((tip-7,100,tip+6,123),fill=(255,253,221,242))
+    im.alpha_composite(hot.filter(ImageFilter.GaussianBlur(9)))
+    im.alpha_composite(hot)
     emb=Image.new('RGBA',(w,h));bb=ImageDraw.Draw(emb,'RGBA')
     for j in range(38):
         xx=rng.uniform(10,tip);yy=112+rng.normal(0,40);radius=rng.choice([1,1,2,3])
@@ -102,7 +119,7 @@ def impact(i):
     prog=i/7.
     ground=np.exp(-((xx/(34+86*prog))**2+(yy/17)**2))*(.4+.8*n)
     plume=np.exp(-((xx/(26+44*prog))**2+((yy+46)/(60+32*prog))**2))*(.5+.6*n)
-    im=rgba(np.clip(ground*156+plume*(158-52*prog),0,255),170+75*n,68+119*n,20+24*n)
+    im=rgba(np.clip(ground*200+plume*(192-45*prog),0,255),188+68*n,86+142*n,19+29*n)
     ink=Image.new('RGBA',(w,h));b=ImageDraw.Draw(ink,'RGBA');rng=np.random.default_rng(933+i)
     for j in range(10):
         a=j*2*math.pi/10+rng.uniform(-.2,.2);rad=(18+83*prog)*rng.uniform(.65,1.0)
@@ -113,6 +130,19 @@ def impact(i):
         x=rng.uniform(74,210);y=146+rng.normal(0,14)
         b.line([(x,y),(x+rng.normal(0,20),y-rng.uniform(15,79)*(1-prog*.4))],
                fill=(244,168,64,int(rng.uniform(38,115))),width=rng.choice([2,3,4]))
+    # One luminous molten bite into the target, baked here instead of
+    # oversized circular runtime geometry.
+    glowing=Image.new('RGBA',(w,h));g=ImageDraw.Draw(glowing,'RGBA')
+    for j in range(6):
+        xx=144+(-1 if j%2 else 1)*(10+j*6)
+        yy=161-(34+9*j)*(1-.45*prog)
+        m=116+(-1 if j%2 else 1)*(14+5*j)
+        g.line([(144,157),(xx,139-j*3),(m,yy)],
+               fill=(255,199+int(35*(1-prog)),102,int(150*(1-prog*.55))),
+               width=5 if j<3 else 3,joint='curve')
+    g.ellipse((132,143,156,167),fill=(255,245,174,int(185*(1-prog*.55))))
+    im.alpha_composite(glowing.filter(ImageFilter.GaussianBlur(5)))
+    im.alpha_composite(glowing)
     im.alpha_composite(ink.filter(ImageFilter.GaussianBlur(4)))
     im.alpha_composite(ink)
     return im
