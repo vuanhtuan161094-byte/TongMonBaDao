@@ -26,6 +26,13 @@ func _run_test() -> void:
     _check(LAB.CHARGE.size() == 8 and LAB.FLIGHT.size() == 8 and LAB.IMPACT.size() == 8,
         "24 original authored poses")
     _check(LAB.GROUND.size() == 8, "8 grounded pressure-fracture poses")
+    _check(LAB.FIST_REVISION == "R9_PAINTED_ATLAS", "raster atlas revision")
+    _check(LAB.PAINTED_HERO.get_size() == Vector2(1280.0, 960.0),
+        "12 independent painted hero frames")
+    _check(LAB.PAINTED_CHARGE.get_size() == Vector2(1280.0, 640.0),
+        "8 painted charge frames")
+    _check(LAB.PAINTED_IMPACT.get_size() == Vector2(1280.0, 640.0),
+        "8 painted contact frames")
     for sprite in LAB.CHARGE + LAB.FLIGHT + LAB.IMPACT:
         _check(sprite.get_size() == Vector2(320.0, 320.0), "valid imported sprite")
     var content := FileAccess.get_file_as_string(

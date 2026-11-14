@@ -6,6 +6,7 @@ on:
     paths:
       - '.github/workflows/vfx-fist-01-khai-son-trong-quyen.yml'
       - 'godot/labs/combat_lab/fist01/**'
+      - 'tools/vfx/generate_fist01_painted_atlas.py'
       - 'godot/tests/labs/combat_lab/vfx_fist01_contract_test.gd'
 permissions:
   contents: read
@@ -23,7 +24,7 @@ jobs:
         run: |
           set -euo pipefail
           sudo apt-get update -qq
-          sudo apt-get install -y -qq xvfb ffmpeg unzip
+          sudo apt-get install -y -qq xvfb ffmpeg unzip python3-pil
           curl --fail --location --retry 3 -o /tmp/godot472.zip 'https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip'
           echo 'cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4  /tmp/godot472.zip' | sha256sum --check --strict
           unzip -q /tmp/godot472.zip -d /tmp
@@ -39,6 +40,17 @@ jobs:
           test "$(stat -c%s /tmp/tmb_stage_a_pack.zip)" -eq 44838
           echo '6a4213b9129ffb3f438c21cbb5326672ddf8915323836bf80cb33b8e5fabfdca  /tmp/tmb_stage_a_pack.zip' | sha256sum --check --strict
           unzip -q /tmp/tmb_stage_a_pack.zip -d .
+      - name: Generate and validate first-party painted R9 PNG atlas
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 tools/vfx/generate_fist01_painted_atlas.py | tee /tmp/vfx-fist01/atlas.log
+          grep -Fq 'FIST_R9_PAINTED_GENERATOR=PASS alpha=true no_rig=true' /tmp/vfx-fist01/atlas.log
+          for name in fist_charge_r9 fist_hero_r9 fist_impact_r9; do
+            test -s "godot/labs/combat_lab/fist01/assets/painted_r9/$name.png"
+            cp "godot/labs/combat_lab/fist01/assets/painted_r9/$name.png" /tmp/vfx-fist01/
+          done
+          sha256sum /tmp/vfx-fist01/fist_*.png > /tmp/vfx-fist01/ATLAS_SHA256SUMS.txt
       - name: Strict import parse and focused test
         shell: bash
         run: |
