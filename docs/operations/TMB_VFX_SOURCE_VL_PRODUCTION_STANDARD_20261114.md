@@ -1,5 +1,15 @@
 # TMB VFX PRODUCTION STANDARD — Source VL-quality, school by school
 Version VFX-SOP-02 | 2026-11-14 | PR #72 Draft | Godot 4.7.2 GL Compatibility | 1280×720
+## OWNER BATCH-PRODUCTION OVERRIDE — 2026-11-14 (supersedes old per-skill cadence ONLY)
+
+After approving Cổ Vụ Mê Tung R3 and the first three Độc Tu Human LAB effects, the owner explicitly requested **produce all VFX in larger batches, not wait for individual review per skill**. Hence the earlier rule 'one school, one skill at a time' is replaced by **batch production + batch film QA**, while preservation of approved art, Source VL-quality and exact-skill gameplay contracts remain mandatory.
+
+Batch implementation authority: `docs/operations/TMB_VFX_BULK_BATCH_01_20261114.md` and `res://labs/vfx_batch/manifest.json`. Source-mapped **2,196 IDs → 420 families** (204 cast visual masters + 216 passive/event-only families). **Three Human Poison LAB skills have owner visual approval**; their individual source scenes remain locked. The bulk preview catalogue covers 201 other cast-family **unreviewed WIP materials/motions**, not 201 approved artistic finals. Passive/innate skills NEVER fabricate a cast. Complete actual Godot movie and inspect visual samples on full 1280×720 before marketing or release status.
+
+Batch cadence: map every source ID once; author distinct motif packs per school/branch; render same-clock 4-up reel for navigation AND at least one full-size exact-skill movie per branch/art archetype; group visual fixes and run exact-SHA Godot tests; record OWNER_VISUAL_PENDING per unapproved skill family, with no automatic PvE release. Strengthen unique silhouettes for standout effects before declaring them Source-VL-quality. User need not be asked to approve every intermediate before work on the next batch.
+
+Unchanged locks: no skeletal rigs, no Codex delegation, only existing PR #72 branch, no merged or new branch, and do not change Combat V2 damage/status/target, SaveService, economy, feature gate V6.3 or enable live PvE without independent integration authorization.
+
 
 ## Owner-approved baseline, and its limits
 
