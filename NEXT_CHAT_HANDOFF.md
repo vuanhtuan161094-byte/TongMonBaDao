@@ -1,3 +1,9 @@
+## VFX ART-FIRST RESTART — 2026-11-14 (READ FIRST FOR EVERY NEW VFX CHAT)
+
+Latest owner instruction: reject generic bulk skill art (VFX-BATCH-01 R4 was visually ugly). Return to ONE skill at a time, until beautiful. Authoritative SOP [TMB_VFX_ART_FIRST_SINGLE_SKILL_SOP_V3_20261114.md](docs/operations/TMB_VFX_ART_FIRST_SINGLE_SKILL_SOP_V3_20261114.md); [VFX CURRENT HANDOFF](docs/handoffs/VFX_CURRENT_ART_FIRST_NEXT_CHAT_20261114.md). Read AGENTS.md and VFX art-director skill automatically; owner does NOT have to remember workflow.
+Current single skill: Tán Cổ Diễn Nhiễm ID tmb.skill.poison.co_doc.active_04.human. Catalogue truth: poison/circle, radius 2.5, target cap 3, cast_time 0.55. Distinct from Cổ Vụ smoke. Wait for actual owner visual approval of real Godot video before next skill. Preserve 3 approved Human Poison labs, V6.3/PvE OFF. No rig, Codex, merge or branch.
+
+---
 
 ## LATEST V63 P1/P2 EXECUTION — 2026-11-14
 - PR #72 branch `integration/pve-p0-playable-ui-20261103`; fetched base `8cdbff4bb520f6742b4cc6603a9d7ef66ff32f90`. Preserved the two Codex B VFX POI-02 R4 commits (`ea41c88c`, `8cdbff4b`) without overlapping files. Code commit `f83328a57dea0eb1f8765479327292773ba2dbd0`; tested commit `796646ba94453762bb0d6dede093289a4fbbde2e` (Git tree `9309ae42a4e2ae495289baa0bf0e1fe8d090eac3`).
