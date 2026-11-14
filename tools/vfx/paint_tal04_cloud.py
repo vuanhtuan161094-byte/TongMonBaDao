@@ -38,7 +38,7 @@ def stroke(progress,idx):
     shoulder=np.exp(-((np.abs(d)-66)/56)**2)*(.38+.8*n2)
     cloud=(.7*limb+.3*shoulder)*(n1**1.07)*np.exp(-((xx-516)/710)**2)
     reveal=np.clip((progress*W-xx)/54+.5,0,1)*np.clip((xx-4)/45,0,1)
-    a=np.clip((cloud*193+shoulder*26)*reveal*(1+.075*np.sin(idx*1.33)),0,255)
+    a=np.clip((cloud*158+shoulder*20)*reveal*(1+.075*np.sin(idx*1.33))*np.clip((n1-.22)*1.45,0,1),0,255)
     shape=np.zeros((H,W,4),dtype=np.uint8)
     shape[:,:,0]=np.uint8(np.clip(103+86*n1+36*n2,0,255))
     shape[:,:,1]=np.uint8(np.clip(64+61*n1+37*n2,0,255))
@@ -88,6 +88,12 @@ def stroke(progress,idx):
     im.alpha_composite(halo.filter(ImageFilter.GaussianBlur(9)))
     im.alpha_composite(halo.filter(ImageFilter.GaussianBlur(3)))
     im.alpha_composite(core)
+    # Protect actor silhouettes and remove the R3 rectangular atlas/cloud edge.
+    feather_x=np.clip((xx-4)/35,0,1)*np.clip((W-xx-4)/62,0,1)
+    feather_y=np.clip((yy-8)/48,0,1)*np.clip((H-yy-9)/48,0,1)
+    feather=np.clip(feather_x*feather_y,0,1)
+    alpha=np.asarray(im.getchannel('A'),dtype=np.float32)
+    im.putalpha(Image.fromarray(np.uint8(np.clip(alpha*feather,0,255)),'L'))
     return im
 
 def impact():

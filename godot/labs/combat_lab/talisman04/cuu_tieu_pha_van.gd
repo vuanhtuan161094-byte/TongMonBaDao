@@ -154,18 +154,19 @@ func _draw()->void:
             var a:=float(j)*TAU/6.0+t*.95
             var pos:=CASTER+Vector2(cos(a)*81.0,8.0+sin(a)*34.0)
             _halo(pos,8.0,Color("e4c4ff",ground*.25))
-    _actor(CASTER)
-    for i in range(TARGET_LIMIT):
-        _actor(TARGETS[i])
     var f:=cloud_index(t)
     if f>=0:
         var gain:=smoothstep(RELEASE_AT,RELEASE_AT+.12,t)*(1.0-smoothstep(1.57,1.83,t))
         # Ragged cloud-wound art has its own ten animated shapes, independent of TAL02 ink calligraphy.
         var region:=Rect2(float(f%4)*1024.0,float(int(f/4))*256.0,1024.0,256.0)
-        draw_texture_rect_region(PAINTED_CLOUD,PAINTED_RECT,region,Color(1,1,1,gain*.98))
+        draw_texture_rect_region(PAINTED_CLOUD,PAINTED_RECT,region,Color(1,1,1,gain*.86))
         # A small conductor accent follows the painted tear, never replaces it.
         _draw_rupture(t,gain*.08)
         _halo(HAND+Vector2(17,-6),40,Color("aa77e2",gain*.19))
+    # Render painted cloud BEFORE actors; targets remain readable at gameplay 1x.
+    _actor(CASTER)
+    for i in range(TARGET_LIMIT):
+        _actor(TARGETS[i])
     for i in range(TARGET_LIMIT):
         var g:=contact_gain(t,i)
         if g<.005:continue

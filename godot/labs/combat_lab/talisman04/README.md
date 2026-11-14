@@ -11,3 +11,6 @@ R1 native 1.25s frame was self-rejected as a broad uniform lavender ribbon. R2 r
 
 ## R3 native-scale painted raster cloud (owner review PENDING)
 Replaces line-only hero with deterministic original Pillow/NumPy watercolor-turbulent cloud fracture: `tools/vfx/paint_tal04_cloud.py`. Source master 1024×256 RGBA, 10 independent alpha-reveal poses at 4×3 4096×768, unique 320×320 local impact; original R2 SVGs retained as archival. Source is **first-party code-painted**, NOT a copied JX/Source A graphic or AI concept screenshot. Run generator before local import; exact-SHA workflow bakes the assets, tests alpha and exports authentic Godot MP4/GIF and 14 stills. Codified cap2 LINE 0.50s/13.6s unchanged. **GODOT TECH PENDING / OWNER_VISUAL_PENDING / PVE HOLD until actual review**.
+
+## R4 real 1x visual correction from R3 (QA REQUIRED)
+R3 verified Godot video at 1.25s exposed rectangular fog-edge / actor occlusion and still too-flat neon streak; R3 technical PASS is explicitly NOT an art pass. R4 fixes the original raster alpha at all four atlas edges and breaks fog uniformity via source-pixel noise, then renders cloud **behind** targets (with only local damage contact in front). No gameplay changes. Rebuild exact Godot 4.7.2 video and compare same timeline. `OWNER_VISUAL_PENDING`.
