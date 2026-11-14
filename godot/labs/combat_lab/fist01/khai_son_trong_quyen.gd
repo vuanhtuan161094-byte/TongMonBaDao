@@ -51,6 +51,16 @@ const IMPACT = [
     preload("res://labs/combat_lab/fist01/assets/qi_impact_06.svg"),
     preload("res://labs/combat_lab/fist01/assets/qi_impact_07.svg"),
 ]
+const GROUND = [
+    preload("res://labs/combat_lab/fist01/assets/qi_ground_00.svg"),
+    preload("res://labs/combat_lab/fist01/assets/qi_ground_01.svg"),
+    preload("res://labs/combat_lab/fist01/assets/qi_ground_02.svg"),
+    preload("res://labs/combat_lab/fist01/assets/qi_ground_03.svg"),
+    preload("res://labs/combat_lab/fist01/assets/qi_ground_04.svg"),
+    preload("res://labs/combat_lab/fist01/assets/qi_ground_05.svg"),
+    preload("res://labs/combat_lab/fist01/assets/qi_ground_06.svg"),
+    preload("res://labs/combat_lab/fist01/assets/qi_ground_07.svg"),
+]
 var elapsed := 0.0
 var paused := false
 var _glow: Texture2D
@@ -152,6 +162,16 @@ func _draw() -> void:
     if hit > 0.008:
         _halo(CONTACT, 111.0, Color("fc9554", hit * 0.30))
         _halo(CONTACT, 58.0, Color("fff2b5", hit * 0.46))
+
+    # A localized floor-pressure fracture is ornamental; NOT an AoE or gameplay radius.
+    if hit > 0.008:
+        var ground_frame := clampi(int(floor((t - CONTACT_AT) /
+            (FADE_END - CONTACT_AT) * float(GROUND.size()))), 0, GROUND.size() - 1)
+        draw_set_transform(VICTIM + Vector2(0.0, 13.0), 0.0, Vector2(0.74, 0.74))
+        draw_texture_rect(GROUND[ground_frame],
+            Rect2(-160.0, -80.0, 320.0, 160.0), false,
+            Color(1.0, 1.0, 1.0, hit * 0.70))
+        draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
     # Existing game atlas is just a 1x-scale dummy silhouette, not fist actor approval.
     _actor(CASTER, Color("ede2d1"))
     _actor(VICTIM, Color("c4ccd1"))

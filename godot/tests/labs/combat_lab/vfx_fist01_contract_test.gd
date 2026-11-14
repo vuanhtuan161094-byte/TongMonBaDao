@@ -25,6 +25,7 @@ func _run_test() -> void:
     _check(LAB.impact_gain(1.8) == 0.0, "impact bounded")
     _check(LAB.CHARGE.size() == 8 and LAB.FLIGHT.size() == 8 and LAB.IMPACT.size() == 8,
         "24 original authored poses")
+    _check(LAB.GROUND.size() == 8, "8 grounded pressure-fracture poses")
     for sprite in LAB.CHARGE + LAB.FLIGHT + LAB.IMPACT:
         _check(sprite.get_size() == Vector2(320.0, 320.0), "valid imported sprite")
     var content := FileAccess.get_file_as_string(
