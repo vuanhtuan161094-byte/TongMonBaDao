@@ -75,11 +75,11 @@ def bolt(i):
     fog=Image.new('RGBA',(W,H));hot=Image.new('RGBA',(W,H))
     h,c=ImageDraw.Draw(fog,'RGBA'),ImageDraw.Draw(hot,'RGBA')
     if len(pts)>1:
-        h.line(pts,fill=(122,71,226,150),width=46,joint='curve')
-        h.line(pts,fill=(181,118,254,165),width=22,joint='curve')
-        c.line(pts,fill=(215,180,255,205),width=8,joint='curve')
-        c.line(pts,fill=(254,244,255,242),width=3,joint='curve')
-        c.line(pts,fill=(255,255,255,248),width=1,joint='curve')
+        h.line(pts,fill=(122,71,226,150),width=62,joint='curve')
+        h.line(pts,fill=(181,118,254,165),width=29,joint='curve')
+        c.line(pts,fill=(215,180,255,205),width=12,joint='curve')
+        c.line(pts,fill=(254,244,255,242),width=5,joint='curve')
+        c.line(pts,fill=(255,255,255,248),width=2,joint='curve')
     for j,(frac,direction) in enumerate([(.36,-1),(.70,1)]):
         k=int(len(pts)*frac)
         if k<2 or k>=len(pts):continue
@@ -114,7 +114,7 @@ def impact():
             phi=a+rng.uniform(-.13,.13)
             pts.append((160+radius*np.cos(phi),186+radius*.46*np.sin(phi)))
         c.line(pts,fill=(165,112,241,122),width=7,joint='curve')
-        c.line(pts,fill=(255,227,247,210),width=2,joint='curve')
+        c.line(pts,fill=(255,207,151,226),width=3,joint='curve')
     im.alpha_composite(burst.filter(ImageFilter.GaussianBlur(4)))
     im.alpha_composite(burst)
     return im

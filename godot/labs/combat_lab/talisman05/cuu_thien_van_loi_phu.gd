@@ -176,7 +176,7 @@ func _draw()->void:
         if local_hit>.006:
             var foot:Vector2=TARGETS[idx]
             _halo(foot+Vector2(0,-2),62.0,Color("8d64cb",local_hit*.17))
-            draw_texture_rect(PAINTED_IMPACT,Rect2(foot-Vector2(92.0,51.0),Vector2(184.0,95.0)),false,Color(1,1,1,local_hit*.64))
+            draw_texture_rect(PAINTED_IMPACT,Rect2(foot-Vector2(103.0,56.0),Vector2(206.0,108.0)),false,Color(1,1,1,local_hit*.78))
     _actor(CASTER)
     for idx in range(TARGET_LIMIT):
         _actor(TARGETS[idx])

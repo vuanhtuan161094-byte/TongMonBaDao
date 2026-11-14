@@ -16,3 +16,6 @@ Original NumPy/Pillow raster source `tools/vfx/paint_tal05_heaven.py` generates 
 
 ## R4 after true native R3 Godot self-review
 R3 Godot at 1.95 and 2.08 seconds showed R2 legacy lateral neon and oversized stickman-like flash rays obscuring the targets even though source-painted sky/vertical thunder imported correctly. **Self-rejected R3 art**, preserved independently painted 10-cell sky and bolt atlas, removed the procedural lateral line hero, moved the dedicated 320px painted cracked contact into an ellipse **behind each target foot**, and reduced foreground contact to short, local glows. The portal, central bolt and already-authored talisman remain primary; source limit three LINE targets and all Combat V2 figures are unchanged. Re-run exact-SHA Godot/14 frame audit before owner art acceptance. `OWNER_VISUAL_PENDING`.
+
+## R5 native lightning-force polish / exact-SHA gate pending
+R4 true Godot 1.79/2.08s displayed a clean face-safe sky ritual and legal three localized ground scars but the main bolt was too hairline and the scars too faint. R5 rebakes the **same first-party painted source** with wider core/feather strokes, warmer gold-violet target cracks and a moderately larger ground-only scar, never giant foreground stars, vector UI rings or extra damage. Requires new exact-SHA video/owner visual check; `OWNER_VISUAL_PENDING`.
