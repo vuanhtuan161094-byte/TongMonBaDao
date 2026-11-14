@@ -154,5 +154,4 @@ func _draw() -> void:
             for j in range(2):
                 var a := t*3.8+float(j)*2.8+float(idx)
                 _paint(GU[posmod(int(floor(t*14.0))+idx+j,GU.size())],chest+Vector2(cos(a)*32.0,sin(a)*21.0),0.09,gain*0.43)
-    draw_string(ThemeDB.fallback_font,Vector2(26,33),"VAN CO PHE GIOI | POI06 R11 | OWNER PREVIEW ACCEPTED",HORIZONTAL_ALIGNMENT_LEFT,-1,20,Color("ecf0e7"))
-    draw_string(ThemeDB.fallback_font,Vector2(27,692),"VIEW ONLY | NATIVE QA REQUIRED | NO GAMEPLAY EVENTS | V6.3 OFF",HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("c0cdd1"))
+    # QA identifiers belong in exact-SHA artifact metadata, not across the battle view.
