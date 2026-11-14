@@ -159,17 +159,20 @@ func _draw() -> void:
     var impact:=smoothstep(ARRIVE_AT-0.04,ARRIVE_AT+0.17,t)*(1.0-smoothstep(2.58,FADE_END,t))
     if impact>0.004:
         var after:=clampf((t-ARRIVE_AT)/maxf(0.01,FADE_END-ARRIVE_AT),0,1)
-        var size:= (0.40 if is_circle else 0.27)*(1.19 if ultimate else 1.0)
-        if BATCH.asset_key(entry)=="cloud":size*=1.55
-        if supporting:size=0.32*(1.1 if ultimate else 1.0)
-        if zone:size=0.54
-        _halo(target,130.0 if is_circle else 85.0,Color(_tone,impact*0.20))
-        _paint(_tex,target,size*(0.96+0.05*sin(after*8.0+float(seed%5))),
-            0.08*sin(after*6.0),Color(1,1,1,impact*0.72))
+        var size:= (0.78 if is_circle else 0.46)*(1.13 if ultimate else 1.0)
+        if BATCH.asset_key(entry)=="cloud":size*=1.20
+        if supporting:size=0.67*(1.08 if ultimate else 1.0)
+        if zone:size=0.74
+        var focal := target
+        if not is_circle and not supporting and not zone:
+            focal += Vector2(76,-15)
+        _halo(focal,167.0 if is_circle else 121.0,Color(_tone,impact*0.25))
+        _paint(_tex,focal,size*(0.96+0.05*sin(after*8.0+float(seed%5))),
+            0.08*sin(after*6.0),Color(1,1,1,impact*0.82))
         # These are presentation-only light motes. They never imply damage/status receipts.
         for i in range(11 if ultimate else 7):
             var a:=float(i)*2.399+float(seed%13)*0.21
-            var pos:=target+Vector2(cos(a)*(30+94*after),sin(a)*(24+71*after)-25*after)
+            var pos:=focal+Vector2(cos(a)*(34+117*after),sin(a)*(29+96*after)-25*after)
             _halo(pos,7.0,Color(_tone,impact*0.26))
     # Put target sprite over the painted zone / impact base to retain full actor readability.
     _halo(CASTER+Vector2(0,8),59.0,Color("081118",0.48))

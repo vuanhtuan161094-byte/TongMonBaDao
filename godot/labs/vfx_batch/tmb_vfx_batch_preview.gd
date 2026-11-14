@@ -290,22 +290,22 @@ func _card(f: Dictionary, box: Rect2, t: float, n: int) -> void:
         var v := clampf((t-PREVIEW_CONTACT)/maxf(0.01,PREVIEW_FADE-PREVIEW_CONTACT),0.0,1.0)
         var peak := smoothstep(0.0,0.18,v)
         var corona := (0.85+0.08*sin(v*13.0))*(1.0-smoothstep(0.68,1.0,v))
-        var fx_pos := dest
-        var sz := (0.145+0.018*float(seed%4))*(1.13 if ult else 1.0)*peak
+        var fx_pos := dest+Vector2(26,-4)
+        var sz := (0.223+0.015*float(seed%4))*(1.13 if ult else 1.0)*peak
         if is_circle:
             fx_pos = enemy+Vector2(0,-31)
-            sz = (0.33 if key=="cloud" else 0.23)*(1.14 if ult else 1.0)*peak
+            sz = (0.42 if key=="cloud" else 0.30)*(1.14 if ult else 1.0)*peak
         if zone:
             fx_pos = enemy+Vector2(0,5)
-            sz = 0.25*(1.12 if ult else 1.0)*peak
+            sz = 0.35*(1.12 if ult else 1.0)*peak
         if support:
-            sz = 0.20*(1.12 if ult else 1.0)*peak
-        _halo(fx_pos,49.0+19.0*v,Color(school_color,impact*0.16))
+            sz = 0.31*(1.12 if ult else 1.0)*peak
+        _halo(fx_pos,69.0+26.0*v,Color(school_color,impact*0.23))
         var angle2 := 0.025*sin(v*7.0+float(seed%5))
         if is_blade: angle2 = -0.44+0.21*v
         if is_arrow: angle2 = -0.67
         if is_seal: angle2 = 0.11*sin(v*4.0)
-        _paint(tex,fx_pos,sz,angle2,Color(1,1,1,impact*(0.53+0.19*corona)))
+        _paint(tex,fx_pos,sz,angle2,Color(1,1,1,impact*(0.66+0.16*corona)))
         # Repaint dummies over the low-lying area layer. No VFX is allowed to erase the target.
         if is_circle or support or zone:
             if kind=="guard":
