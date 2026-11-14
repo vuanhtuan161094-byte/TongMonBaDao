@@ -32,17 +32,20 @@ func _refresh_building_operation_art() -> void:
         if mine_texture != null:
             var mine_host := building_operation_panel.get_node_or_null("BuildingOperationArtFrame/BuildingOperationArt") as Control
             if mine_host != null:
-                for old_picture in mine_host.get_children():
-                    if old_picture is CanvasItem:
-                        old_picture.visible = false
-                var mine_picture := TextureRect.new()
-                mine_picture.name = "VIS07OwnerApprovedMine"
+                var mine_picture := mine_host.get_node_or_null("VIS07OwnerApprovedMine") as TextureRect
+                if mine_picture == null:
+                    for old_picture in mine_host.get_children():
+                        if old_picture is CanvasItem:
+                            old_picture.visible = false
+                    mine_picture = TextureRect.new()
+                    mine_picture.name = "VIS07OwnerApprovedMine"
+                    mine_picture.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+                    mine_picture.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+                    mine_picture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+                    mine_picture.mouse_filter = Control.MOUSE_FILTER_IGNORE
+                    mine_host.add_child(mine_picture)
                 mine_picture.texture = mine_texture
-                mine_picture.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-                mine_picture.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-                mine_picture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-                mine_picture.mouse_filter = Control.MOUSE_FILTER_IGNORE
-                mine_host.add_child(mine_picture)
+                mine_picture.visible = true
         return
     if not ART05_BUILDING_VARIANT.supported(selected_building):
         return
