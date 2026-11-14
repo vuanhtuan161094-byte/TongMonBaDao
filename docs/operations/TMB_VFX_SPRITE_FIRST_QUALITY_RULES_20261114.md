@@ -4,6 +4,9 @@
 
 Authority: read AGENTS.md, TMB_VFX_ART_FIRST_SINGLE_SKILL_SOP_V3_20261114.md, then this file, and the individual skill packet. Owner permits and encourages real original **sprites** whenever they improve appearance.
 
+## POI06 R10 alpha-edge lesson
+When using rendered paintings to build sprites, NEVER import a poster or square crop as a single UI panel. Extract the actual magical material into transparent raster alpha; verify **top/bottom/left/right feather masks** at 1× battle scale. Divide into genuine pose-specific atlas cells, construct AtlasTexture/Sprite2D with valid UV and pivot. Test the resulting **real Godot movie** against earlier geometry-only frames for edge seams, character overlap, motion and material depth. ImageGen concept/poster art is not itself an in-game sprite unless actually isolated and imported.
+
 ## Production requirements
 1. The deliverable is professional animated skill VFX in **Godot 4.7.2 GL Compatibility at 1280×720**, not a still, a giant primitive SVG or a shader technical exercise. Prefer pose-specific original transparent PNG sprite atlases/flipbooks for complex fire, qi, creatures, debris, impacts and organic forms. Individually authored SVG frames are allowed where their native rendered quality is high; never mass-recolor a single static vector shape. Shader, glow, particles, trails and lights are supplemental.
 2. Source truth first: read exact skill ID, branch, element, cast, range, effect, shape, target cap and confirmed Combat V2 event semantics. Art must never invent hit, AoE, damage, mark, DoT, guard, summon, heal, or another target.
