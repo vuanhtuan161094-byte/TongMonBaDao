@@ -43,9 +43,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          TMB_ART_LOG_EXPORT=1 /usr/bin/python3 tools/vfx/paint_tal05_heaven.py . > "$RUNNER_TEMP/vfx-tal05/art.log"
+          TMB_ART_LOG_EXPORT=0 /usr/bin/python3 tools/vfx/paint_tal05_heaven.py . > "$RUNNER_TEMP/vfx-tal05/art.log"
           grep -E '^TAL05_PAINTED_OUTPUT|^TMB_ASSET_BEGIN|^TMB_ASSET_END' "$RUNNER_TEMP/vfx-tal05/art.log"
-          cat "$RUNNER_TEMP/vfx-tal05/art.log" | grep '^TMB_ASSET_LINE:' || true
+          git diff --exit-code -- godot/labs/combat_lab/talisman05/assets/tal05_r3_*.webp
           /usr/bin/python3 - <<'PY'
           from PIL import Image
           from pathlib import Path
