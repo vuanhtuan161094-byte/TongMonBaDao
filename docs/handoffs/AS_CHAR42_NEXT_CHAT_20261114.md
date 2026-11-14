@@ -20,3 +20,9 @@ C) Do not claim completion, run 48-clip batch or move production, merge or creat
 
 ## Report truthfully
 Current stage **RESOLUTION & STATIC MODULAR TECH PILOT COMPLETE; ENGINE AND CLEAN MODULAR MOTION PENDING**.
+
+## Persistent asset retrieval — IMPORTANT
+
+An exact copy of the output ZIP was saved to the user's **personal File Library** as:
+`/TMB-Character-Art/AS_CHAR42_KIEM_TU_HIRES_ZOOM_V1_20261114.zip`.
+A new chat should **use Files search scoped to Library first**, then access the actual ZIP via that file reference and verify SHA-256 `2816047cc0fc374d1b677622bff7090f365bdd6e761ee62501a72394814a64bc`. Do not ask owner to recreate the art from screenshots; do not confuse this personal Library file with a checked-in GitHub asset.

@@ -31,3 +31,7 @@ G3: 8–24 individually authored **unarmed** Walk frames at true >=320px body so
 G4: four directions, Attack/Cast/Hit/Death, Godot/Android visual acceptance, only then production import (PENDING).
 
 **Nothing in this document authorizes skeletal rigging or mass-creation of 48 unverified clips.**
+
+## Persistent cross-chat package (user personal Library)
+
+For a new ChatGPT conversation with access to the user's Library: **search Library** under `/TMB-Character-Art/AS_CHAR42_KIEM_TU_HIRES_ZOOM_V1_20261114.zip`; verify SHA-256 `2816047cc0fc374d1b677622bff7090f365bdd6e761ee62501a72394814a64bc` before work. The exact source ZIP has been uploaded successfully to the personal Library as well as exported in the original chat. **It is NOT in GitHub**, and a new chat still must retrieve its bytes via Library/Files before claiming access.
