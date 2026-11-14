@@ -161,8 +161,8 @@ func _update_fx() -> void:
         spr.visible = mist>0.004
         if not spr.visible: continue
         var k := float(i)
-        var offset_x := [-130.0,-46.0,72.0,149.0][i]
-        var offset_y := [-12.0,-51.0,-34.0,-14.0][i]
+        var offset_x: float = [-130.0,-46.0,72.0,149.0][i]
+        var offset_y: float = [-12.0,-51.0,-34.0,-14.0][i]
         var wander := Vector2(14.0*sin(t*(0.88+0.19*k)+k*1.7),7.0*sin(t*(1.2+0.13*k)+k))
         spr.position = ZONE+Vector2(offset_x,offset_y)+wander
         var f := (0.54+0.05*k)*opening
@@ -184,7 +184,7 @@ func _update_fx() -> void:
         spr.visible = mist>0.025
         if not spr.visible: continue
         var k := float(i)
-        var dx := [-148.0,-70.0,5.0,85.0,153.0][i]
+        var dx: float = [-148.0,-70.0,5.0,85.0,153.0][i]
         var rise := minf(maxf((t-ARRIVE_AT)*15.0,0.0),28.0)
         spr.position = ZONE+Vector2(dx+14.0*sin(t*0.93+k*1.5),-66.0-rise+7.0*sin(t*1.35+k))
         spr.scale = Vector2(0.35+0.05*sin(k*1.5),0.31+0.045*sin(t*1.15+k))
