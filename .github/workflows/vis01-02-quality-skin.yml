@@ -17,6 +17,9 @@ on:
       - 'godot/art/tmb_original_v1/**'
       - 'godot/art/tmb_approved_v4/**'
       - 'godot/art/tmb_original_buildings_v5/**'
+      - 'godot/art/tmb_buildings_ab_v7/**'
+      - 'godot/src/presentation/p3/tmb_building_art_ab_v7.gd'
+      - 'godot/tests/presentation/vis11_ab_sprite_contract_test.gd'
       - 'godot/art/tmb_rotation_b_candidates_v1/**'
       - 'godot/src/presentation/p3/tmb_rotation_b_candidate_v1.gd'
       - 'godot/tests/presentation/vis10_rotation_b_candidates_test.gd'
@@ -67,3 +70,4 @@ jobs:
           bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/presentation/vis08_original_buildings_test.gd
           bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/presentation/vis09_handpaint_native_test.gd
           bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/presentation/vis10_rotation_b_candidates_test.gd
+          bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/presentation/vis11_ab_sprite_contract_test.gd

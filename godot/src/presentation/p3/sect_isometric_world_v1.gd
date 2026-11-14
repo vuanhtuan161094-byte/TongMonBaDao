@@ -72,6 +72,7 @@ const VIS07_APPROVED = preload("res://src/presentation/p3/tmb_approved_building_
 const VIS08_ORIGINAL_BUILDINGS = preload("res://src/presentation/p3/tmb_original_building_art_v5.gd")
 const VIS09_HANDPAINT = preload("res://src/presentation/p3/tmb_handpaint_building_art_v6.gd")
 const VIS10_B_DRAFT = preload("res://src/presentation/p3/tmb_rotation_b_candidate_v1.gd")
+const VIS11_AB = preload("res://src/presentation/p3/tmb_building_art_ab_v7.gd")
 const MAP_D2_SITE_SIZE := {
     "mine":Vector2(166,121),
     "linh_forest":Vector2(166,121),
@@ -494,26 +495,22 @@ func _load_verified_source_art() -> void:
         var candidate := ResourceLoader.load(candidate_path) as Texture2D
         if candidate != null:
             candidate_site_art[kind] = candidate
-    # New Owner-approved art is independent of the Source A verification registry.
-    # A missing binary file leaves the previous verified sprite visible.
-    var handpaint_mine := VIS09_HANDPAINT.texture_for(&"mine")
-    if handpaint_mine != null:
-        candidate_site_art["mine"] = handpaint_mine
+    # VIS-11: six independent native A/B pairs, exactly extracted from
+    # the owner's selected art sheet. Legacy assets are rollback only.
+    var new_mine := VIS11_AB.texture_for(&"mine",&"A")
+    if new_mine != null:
+        candidate_site_art["mine"] = new_mine
         vis07_mine_owner_art_loaded = true
     else:
-        var approved_mine := VIS07_APPROVED.texture_for(&"mine")
-        if approved_mine != null:
-            candidate_site_art["mine"] = approved_mine
+        var handpaint_mine := VIS09_HANDPAINT.texture_for(&"mine")
+        if handpaint_mine != null:
+            candidate_site_art["mine"] = handpaint_mine
             vis07_mine_owner_art_loaded = true
-    # The historical HOUSE_TEXTURES keys are placement/rollback identifiers only.
-    # None of the five visible house sprites now uses Source A texture bytes.
     for house in HOUSE_TEXTURES:
         var key := str(HOUSE_TEXTURES[house])
-        var asset: Texture2D = VIS08_ORIGINAL_BUILDINGS.texture_for(StringName(house))
-        if house == "main_hall":
-            var handpaint_hall := VIS09_HANDPAINT.texture_for(&"main_hall")
-            if handpaint_hall != null:
-                asset = handpaint_hall
+        var asset: Texture2D = VIS11_AB.texture_for(StringName(house),&"A")
+        if asset == null:
+            asset = VIS08_ORIGINAL_BUILDINGS.texture_for(StringName(house))
         if asset != null:
             render_art[key] = asset
     for key in ["stone_courtyard","stone_variant","stone_border","stone_runes"]:
@@ -1538,12 +1535,11 @@ func _draw_building(p: Vector2,kind: String, managed: bool, allow_detail: bool =
         var key := str(HOUSE_TEXTURES[kind])
         if render_art.has(key):
             var image: Texture2D = render_art[key]
-            # Explicit B preview only; no unapproved 2D sprite is selected
-            # automatically by orientation parity or game state.
-            if vis10_b_preview_enabled and vis10_preview_directions.has(building_id) and chosen_view == "B":
-                var preview_b := VIS10_B_DRAFT.texture_for(StringName(kind))
-                if preview_b != null:
-                    image = preview_b
+            # Real A/B art (not horizontal flip), selected only for this
+            # visual instance. Gameplay/footprints remain unchanged.
+            var new_house := VIS11_AB.texture_for(StringName(kind),StringName(chosen_view))
+            if new_house != null:
+                image = new_house
             var target: Vector2 = HOUSE_SIZES[kind]
             var offset := Vector2(0.0,-target.y*0.28)
             draw_texture_rect(image,Rect2(p+offset-target*0.5,target),false)
@@ -1553,10 +1549,10 @@ func _draw_building(p: Vector2,kind: String, managed: bool, allow_detail: bool =
     # If the optional svg import fails, the existing explicit fallback shows.
     if managed and candidate_site_art.has(kind):
         var vignette: Texture2D = candidate_site_art[kind]
-        if kind == "mine" and vis10_b_preview_enabled and vis10_preview_directions.has(building_id) and chosen_view == "B":
-            var mine_b := VIS10_B_DRAFT.texture_for(&"mine")
-            if mine_b != null:
-                vignette = mine_b
+        if kind == "mine":
+            var new_mine_view := VIS11_AB.texture_for(&"mine",StringName(chosen_view))
+            if new_mine_view != null:
+                vignette = new_mine_view
         var size: Vector2 = MAP_D2_SITE_SIZE[kind]
         draw_texture_rect(vignette,
             Rect2(p-Vector2(size.x*0.5,size.y*0.79),size),false)

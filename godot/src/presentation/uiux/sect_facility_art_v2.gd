@@ -4,6 +4,7 @@ extends Control
 
 const VIS08_ORIGINAL_BUILDINGS = preload("res://src/presentation/p3/tmb_original_building_art_v5.gd")
 const VIS09_HANDPAINT = preload("res://src/presentation/p3/tmb_handpaint_building_art_v6.gd")
+const VIS11_AB = preload("res://src/presentation/p3/tmb_building_art_ab_v7.gd")
 const LEGACY_ART = preload("res://src/presentation/uiux/sect_facility_illustration_v1.gd")
 # Literal preloads guarantee fallback inclusion in Android/export resource packs.
 const HALL_STUDY = preload("res://art/uiux/hall_paint_v2.svg")
@@ -29,11 +30,9 @@ func _ready() -> void:
         custom_minimum_size = Vector2(300, 155)
     # VIS-08 presents only independently authored art for the three real
     # TRI facility views; no fallback to historical Source A sprite bytes.
-    _art = VIS08_ORIGINAL_BUILDINGS.texture_for(StringName(facility_kind))
-    if facility_kind == "hall":
-        var handpaint_hall := VIS09_HANDPAINT.texture_for(&"main_hall")
-        if handpaint_hall != null:
-            _art = handpaint_hall
+    _art = VIS11_AB.texture_for(StringName(facility_kind),&"A")
+    if _art == null:
+        _art = VIS08_ORIGINAL_BUILDINGS.texture_for(StringName(facility_kind))
     _owner_approved = false
     if _art == null:
         match facility_kind:
@@ -51,7 +50,7 @@ func _ready() -> void:
         legacy.set("facility_kind", facility_kind)
         legacy.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
         add_child(legacy)
-    tooltip_text = "TMB VIS-09 · 2D handpainted · chưa nghiệm thu mỹ thuật Android" if facility_kind == "hall" else "TMB VIS-08 · artwork độc lập · chờ duyệt mỹ thuật trên bản đồ"
+    tooltip_text = "TMB VIS-11 · hai góc A/B · artwork 2D độc lập"
     queue_redraw()
 
 func _notification(what: int) -> void:
@@ -61,7 +60,7 @@ func _notification(what: int) -> void:
 func _draw() -> void:
     if _art == null or size.x < 2.0 or size.y < 2.0:
         return
-    if _art != null and VIS08_ORIGINAL_BUILDINGS.texture_for(StringName(facility_kind)) != null:
+    if _art != null and (VIS11_AB.texture_for(StringName(facility_kind),&"A") != null or VIS08_ORIGINAL_BUILDINGS.texture_for(StringName(facility_kind)) != null):
         # Native PNGs keep full alpha and aspect; no cropped architecture.
         draw_rect(Rect2(Vector2.ZERO, size), Color(0.115, 0.205, 0.205, 1.0))
         var source_size := Vector2(_art.get_width(), _art.get_height())
