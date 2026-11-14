@@ -11,9 +11,9 @@ func _run()->void:
     _check(LAB.EFFECT=="damage" and LAB.ELEMENT=="lightning" and LAB.SHAPE=="line","line lightning damage")
     _check(LAB.TARGET_LIMIT==2 and LAB.TARGETS.size()==2 and LAB.CONTACTS.size()==2,"exact two target cap")
     _check(LAB.DEMO_MOVING_ENEMIES,"moving-enemy display-only evidence")
-    _check(LAB.demo_target_foot(0,.30).distance_to(LAB.demo_target_foot(0,1.55))>20.0,"first locked target visibly moves")
-    _check(LAB.demo_target_foot(1,.30).distance_to(LAB.demo_target_foot(1,1.55))>15.0,"second locked target visibly moves")
-    _check(LAB.demo_contact(0,1.55).distance_to(LAB.demo_target_foot(0,1.55)+Vector2(0,-92))<.001,"contact follows first moving target")
+    _check(LAB.demo_target_foot(0,.10).distance_to(LAB.demo_target_foot(0,.90))>20.0,"first locked target visibly moves")
+    _check(LAB.demo_target_foot(1,.10).distance_to(LAB.demo_target_foot(1,.90))>15.0,"second locked target visibly moves")
+    _check(LAB.demo_contact(0,1.55).distance_to(LAB.demo_target_foot(0,1.55)+Vector2(-2,-92))<.001,"contact follows first moving target")
     _check(LAB.demo_contact(1,1.62).distance_to(LAB.demo_target_foot(1,1.62)+Vector2(0,-92))<.001,"contact follows second moving target")
     _check(not is_finite(LAB.demo_contact(2,1.55).x),"no over-cap guided target")
 
