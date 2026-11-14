@@ -60,7 +60,7 @@ const HOUSE_SIZES := {
 # NOT approved replacements for the historical missing building art.
 # Runtime references are kept separate from the MAP25 SHA-gated inventory.
 const MAP_D2_CANDIDATE_SITES := {
-    "mine":"res://art/map_d2_candidate/mine_worksite_v1.svg",
+    "mine":"res://art/tmb_original_v1/mine_isometric.svg",
     "linh_forest":"res://art/map_d2_candidate/linh_forest_worksite_v1.svg",
     "spirit_field":"res://art/map_d2_candidate/spirit_field_worksite_v1.svg"
 }
@@ -68,6 +68,7 @@ const REIMAGINED_REVIEW_ONLY_SITES := {
     "alchemy_hall":"res://art/reimagined_source_a_v1/alchemy_hall_3q_v1.svg"
 }
 const V3_ART = preload("res://src/presentation/uiux/sect_building_art_variant_v3.gd")
+const TMB_ORIGINAL_ART = preload("res://src/presentation/p3/tmb_original_world_art_v1.gd")
 const MAP_D2_SITE_SIZE := {
     "mine":Vector2(166,121),
     "linh_forest":Vector2(166,121),
@@ -486,18 +487,23 @@ func _load_verified_source_art() -> void:
     for house in HOUSE_TEXTURES:
         var key := str(HOUSE_TEXTURES[house])
         var asset := source_art.texture_for(key)
-        if asset != null:
+        # Preserve independent SHA verification, but render original TMB hall.
+        # The raw Source A atlas remains only as historical provenance/rollback.
+        if house == "main_hall":
+            render_art[key] = TMB_ORIGINAL_ART.hall()
+        elif asset != null:
             render_art[key] = asset
     for key in ["stone_courtyard","stone_variant","stone_border","stone_runes"]:
         var rel := "env01_assets/terrain/%s.png" % key
-        var terrain := source_art.texture_for(rel)
-        if terrain != null:
-            render_art[rel] = terrain
+        var original_terrain := source_art.texture_for(rel)
+        # VIS-07 replaces every map tile regardless of historical SHA status.
+        if original_terrain != null:
+            render_art[rel] = TMB_ORIGINAL_ART.stone_for(key)
     for key in ROAD_TEXTURES:
         var rel := "env01_assets/roads/%s" % str(ROAD_TEXTURES[key])
-        var paving := source_art.texture_for(rel)
-        if paving != null:
-            render_art[rel] = paving
+        var original_paving := source_art.texture_for(rel)
+        if original_paving != null:
+            render_art[rel] = TMB_ORIGINAL_ART.stone_for(str(ROAD_TEXTURES[key]))
     var occupied: Dictionary = {}
     for landmark in ["main_hall","warehouse","forge"]:
         if lab_geometry != null:
@@ -522,8 +528,10 @@ func _load_verified_source_art() -> void:
             if not marker_clear or COURTYARD_RECT.has_point(tile):
                 continue
         var rel := "env01_assets/vegetation/%s.png" % str(item["id"])
-        var vegetation := source_art.texture_for(rel)
-        if vegetation != null:
+        var historical_vegetation := source_art.texture_for(rel)
+        # Cache original material once per source ID; never draw Source A foliage.
+        var vegetation: Texture2D = TMB_ORIGINAL_ART.foliage_for(str(item["id"]))
+        if historical_vegetation != null and vegetation != null:
             render_art[rel] = vegetation
             var chunk := Vector2i(tile.x/CHUNK,tile.y/CHUNK)
             if not decoration_items_by_chunk.has(chunk):

@@ -57,8 +57,9 @@ func _run() -> void:
         return
     for site in SITE_TYPES:
         var path := str(iso.MAP_D2_CANDIDATE_SITES[site])
-        if not path.begins_with("res://art/map_d2_candidate/"):
-            _fail("unapproved site art silently merged with Source A path: "+path)
+        var required_prefix := "res://art/tmb_original_v1/" if site == "mine" else "res://art/map_d2_candidate/"
+        if not path.begins_with(required_prefix):
+            _fail("runtime site art provenance mismatch: "+path)
             return
         var texture := load(path) as Texture2D
         if texture == null or texture.get_width() < 128 or texture.get_height() < 90:

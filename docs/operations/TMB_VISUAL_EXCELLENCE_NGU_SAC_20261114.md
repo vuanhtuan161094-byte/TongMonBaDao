@@ -103,3 +103,9 @@ Legend GPU/CPU estimates: T = low, V = moderate, C = expensive. All are **pre-pr
 - **VIS-06:** warehouse, alchemy, site-operation cards share one responsive dark jade/bronze material with actual building accent; neutral stock is *not* assigned a fake equipment grade. Existing ART-05 world atmosphere is retained.
 - **QA budget:** the short official 4.7.2 VIS contract runs on push. The costly movie workflow is manual-only, with no change to source, history or screenshots. Existing independent red CI and physical Android remain separate. Technical approval is not aesthetic approval.
 - **Status:** CODE CANDIDATE; VIS02–06 artistic owner approval and Android/GUI evidence remain PENDING until inspected at exact SHA.
+
+## VIS-07 — Source A map-environment retirement, pilot (2026-11-14)
+- Owner requested that the **visible** original Source A Hall, mine illustration and map greenery/roads/tiles be replaced. This overrides the previous general Source A visual primacy specifically for these assets.
+- **Implemented candidate** in `godot/art/tmb_original_v1/`: independently authored TMB vector Hall/Mine, four stone tile variants and four scenic props; see detailed provenance. Historical originals remain unchanged and SHA verified as rollback/source audit, never used for these selected runtime textures.
+- Integrated into actual `SectIsometricWorldV1`, the Hall real operation illustration, and the Mine operation panel; no new gameplay scene. SourceA untouched for residence, guidance, forge, warehouse, portraits.
+- Focused Godot contract: `godot/tests/presentation/vis07_original_environment_test.gd`; 1280x720 screenshot remains ART-05 gate. **Owner aesthetic acceptance and Android PENDING**.
