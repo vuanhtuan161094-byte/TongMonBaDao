@@ -1,3 +1,8 @@
+## VFX OWNER ART INTERPRETATION RULE — 2026-11-14 (MANDATORY)
+A skill name/description is creative inspiration, NOT an instruction to make the character perform literal actions it cannot animate. Never fake a kick/strike by translating IDLE sprites, rigging characters, duplicating pseudo-actors, or making bright vector circles as a substitute for authored VFX. The actual catalogue effect/shape/target limit/duration remain authoritative: e.g. FIST02 Phi Than Lien Cuoc is a single-target 4-second FIRE GUARD despite the word 'kicks'. Produce a beautiful original isolated sprite hero first, alpha flipbook, thoughtful layers, REAL Godot 1280x720 video and visual repair. Keep actor unchanged if no approved frame-by-frame action exists. OWNER_REJECTED R1-R3 FIST02 visual art; technical CI success does not make it approved. Never mislabel generated promotional images as screenshots or gameplay assets. Read FIST02 V4 art brief before reusing any version.
+
+---
+
 ## VFX SPRITE-LAYER ART PIPELINE — owner order 2026-11-14 (MANDATORY)
 All VFX school chats MUST read docs/operations/TMB_VFX_SPRITE_LAYER_PIPELINE_20261114.md plus docs/templates/VFX_SKILL_ART_FIRST_TEMPLATE.md. Fist chat also reads docs/operations/TMB_VFX_FIST_SCHOOL_PLAYBOOK_20261114.md. We learned the production method from the existing Loi Phu (talisman01): original master sprite -> pose-specific RGBA atlas -> independent light/impact layers -> real Godot movie -> visual corrections. **Copy the pipeline, not the talisman art**. Continue Fist work here; Talisman chat owns talisman01. Sprite material quality at native 1x and owner explicit approval are obligatory; code PASS alone is not art approval. No rig, Codex, new branches/merges, Combat V2 or SaveService changes.
 
