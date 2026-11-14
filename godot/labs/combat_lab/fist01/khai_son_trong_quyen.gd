@@ -19,7 +19,7 @@ const CONTACT_AT := 0.79
 const IMPACT_END := 1.17
 const FADE_END := 1.63
 const LOOP_SECONDS := 2.30
-const FIST_REVISION := "R9_PAINTED_ATLAS"
+const FIST_REVISION := "R10_TURBULENT_PLASMA"
 const PAINTED_CHARGE: Texture2D = preload("res://labs/combat_lab/fist01/assets/painted_r9/fist_charge_r9.png")
 const PAINTED_HERO: Texture2D = preload("res://labs/combat_lab/fist01/assets/painted_r9/fist_hero_r9.png")
 const PAINTED_IMPACT: Texture2D = preload("res://labs/combat_lab/fist01/assets/painted_r9/fist_impact_r9.png")
@@ -116,7 +116,7 @@ func _ready() -> void:
     _glow = _radial()
     set_process(true)
     queue_redraw()
-    print("VFX_FIST01_READY | ", SKILL_ID, " | sprite_frames=24 | no_rig=true | gameplay=false")
+    print("VFX_FIST01_READY | ", SKILL_ID, " | painted_sprite_frames=28 | no_rig=true | gameplay=false")
 
 func _radial() -> Texture2D:
     var img := Image.create(80, 80, false, Image.FORMAT_RGBA8)
@@ -242,7 +242,7 @@ func _draw() -> void:
     draw_string(ThemeDB.fallback_font, Vector2(29, 36), "KHAI SON TRONG QUYEN / BA QUYEN",
         HORIZONTAL_ALIGNMENT_LEFT, -1, 25, Color("fff0d5"))
     draw_string(ThemeDB.fallback_font, Vector2(29, 62),
-        "FIST01 R9 | ORIGINAL RASTER HERO + 28 ALPHA FRAMES | ONE TARGET",
+        "FIST01 R10 | TURBULENT RASTER HERO / 28 ALPHA FRAMES | ONE TARGET",
         HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Color("e8c1a2"))
     draw_string(ThemeDB.fallback_font, Vector2(29, 683),
         "GODOT 4.7.2 COMPATIBILITY | LAB VISUAL ONLY | NO DAMAGE / V63 OFF",
