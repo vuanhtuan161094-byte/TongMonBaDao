@@ -12,7 +12,7 @@ const DECLARED_DURATION := 7.0
 const DECLARED_POISON_STACKS := 1
 const CASTER := Vector2(276.0,535.0)
 const TARGETS := [Vector2(771.0,530.0),Vector2(911.0,520.0),Vector2(1054.0,537.0)]
-const CORE := Vector2(903.0,437.0)
+const CORE := Vector2(913.0,340.0)
 const CAST_END := 0.55
 const ARRIVAL := 1.28
 const BLOOM_END := 1.82
@@ -71,7 +71,7 @@ static func scarab_depart(t: float, idx: int) -> float:
 
 static func scarab_position(t: float, idx: int) -> Vector2:
     var q := scarab_depart(t,idx)
-    var from := CORE + Vector2(-11.0,5.0)
+    var from := CORE + Vector2(-6.0,16.0)
     var to: Vector2 = TARGETS[idx]+Vector2(3.0,-62.0)
     var wave := (1.0-q)*sin(q*PI*3.0+float(idx)*1.8)*19.0
     return from.lerp(to,q)+Vector2(0,-38.0*sin(PI*q)+wave)
@@ -176,9 +176,9 @@ func _draw() -> void:
     if t>=ARRIVAL and t<FADE_END:
         var bloom := clampf((t-ARRIVAL)/(BLOOM_END-ARRIVAL),0,1)
         var stage := cocoon_frame_at(t)
-        var alpha := minf(1.0,smoothstep(ARRIVAL,ARRIVAL+0.13,t))*(1.0-smoothstep(HOLD_END,FADE_END,t))
-        var size := (0.34+0.18*bloom)*(1.0+0.018*sin(t*13))
-        _halow(CORE,100+64*bloom,Color("c2ffb8",alpha*0.24))
+        var alpha := minf(1.0,smoothstep(ARRIVAL,ARRIVAL+0.13,t))*(1.0-smoothstep(1.92,2.25,t))
+        var size := (0.24+0.12*bloom)*(1.0+0.021*sin(t*13))
+        _halow(CORE,88+58*bloom,Color("c2ffb8",alpha*0.31))
         _paint(COCOON[stage],CORE,Vector2.ONE*size,0.13*sin(t*4.8),Color(1,1,1,alpha*0.92))
         if t>=ARRIVAL and t<ARRIVAL+0.26:
             var pulse := (t-ARRIVAL)/0.26
@@ -191,7 +191,7 @@ func _draw() -> void:
                 var fade := 1.0-smoothstep(born+0.87,born+1.25,t)
                 var frame := int(floor((t-born)*18.0))%SCARAB.size()
                 _halow(at,42,Color("a2ffd1",alpha*fade*0.18))
-                _paint(SCARAB[frame],at,Vector2.ONE*(0.23+0.035*q),0.15*sin(t*18+float(i)),
+                _paint(SCARAB[frame],at,Vector2.ONE*(0.26+0.045*q),0.15*sin(t*18+float(i)),
                     Color(1,1,1,alpha*fade*0.92))
                 for j in range(2):
                     var past := t-0.07*float(j+1)
@@ -199,6 +199,24 @@ func _draw() -> void:
                         var prev := scarab_position(past,i)
                         _paint(SCARAB[clampi(frame,0,3)],prev,Vector2.ONE*.16,0,
                             Color("87baba",alpha*fade*(0.14-0.046*float(j))))
+    # Secondary image-backed gu seeds spread in three staggered schools of motion.
+    # They are particles only, NOT extra target/poison procs.
+    if t>=ARRIVAL+0.16 and t<HOLD_END:
+        var fleet := smoothstep(ARRIVAL+0.16,ARRIVAL+0.48,t)*(1.0-smoothstep(2.44,HOLD_END,t))
+        for wing in range(12):
+            var trail_idx := wing%3
+            var rank := int(wing/3)
+            var start := ARRIVAL+0.17+float(rank)*0.09+float(trail_idx)*0.045
+            var progress := smoothstep(start,start+0.68,t)
+            var a := float(wing)*2.399
+            var origin := CORE+Vector2(cos(a)*26.0,sin(a)*19.0)
+            var finish: Vector2 = TARGETS[trail_idx]+Vector2(cos(a)*33.0,-76.0+sin(a)*26.0)
+            var flutter := Vector2(23.0*sin(progress*PI*2.0+a),-30.0*sin(PI*progress))
+            var position := origin.lerp(finish,progress)+flutter
+            var glyph := int(floor((t-start)*21.0+float(wing)))%4
+            var spore_size := 0.064+0.019*float(rank%3)
+            _paint(SCARAB[glyph],position,Vector2.ONE*spore_size,0.22*sin(t*13.0+a),
+                Color("baffd2",fleet*(0.27+0.07*sin(a)*sin(a))))
     for idx in range(3):
         var mark_alpha := mark_gain(t,idx)
         if mark_alpha<0.006:continue
