@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="256" viewBox="0 0 1024 256"><defs>
+ <linearGradient id="paint" x1="0" y1="0" x2="1" y2=".15"><stop stop-color="#603f96" stop-opacity=".19"/><stop offset=".4" stop-color="#9b6aee" stop-opacity=".51"/><stop offset=".8" stop-color="#a06bf6" stop-opacity=".76"/><stop offset="1" stop-color="#f9e9ff" stop-opacity=".12"/></linearGradient>
+ <radialGradient id="soft"><stop stop-color="#fffaff" stop-opacity=".67"/><stop offset=".22" stop-color="#c4a0fd" stop-opacity=".35"/><stop offset=".7" stop-color="#7445ca" stop-opacity=".12"/><stop offset="1" stop-color="#492776" stop-opacity="0"/></radialGradient>
+ </defs>
+ <polygon points="24.00,125.10 39.83,123.44 55.67,125.35 71.50,122.85 87.33,114.94 103.17,111.85 119.00,117.63 134.83,122.65 150.67,120.17 166.50,114.81 182.33,111.42 198.17,110.45 214.00,113.36 214.00,130.17 198.17,129.73 182.33,138.05 166.50,151.93 150.67,159.16 134.83,157.16 119.00,155.05 103.17,156.29 87.33,155.94 71.50,153.44 55.67,151.91 39.83,149.49 24.00,144.65" fill="url(#paint)" opacity=".66"/>
+ <path d="M 24.00 134.88 L39.83 136.47 L55.67 138.63 L71.50 138.14 L87.33 135.44 L103.17 134.07 L119.00 136.34 L134.83 139.90 L150.67 139.66 L166.50 133.37 L182.33 124.74 L198.17 120.09 L214.00 121.76" stroke="#7347c4" stroke-width="43" stroke-opacity=".19" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+ <path d="M 24.00 134.88 L39.83 136.47 L55.67 138.63 L71.50 138.14 L87.33 135.44 L103.17 134.07 L119.00 136.34 L134.83 139.90 L150.67 139.66 L166.50 133.37 L182.33 124.74 L198.17 120.09 L214.00 121.76" stroke="#a476f9" stroke-width="23" stroke-opacity=".36" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+ <path d="M 24.00 134.88 L39.83 136.47 L55.67 138.63 L71.50 138.14 L87.33 135.44 L103.17 134.07 L119.00 136.34 L134.83 139.90 L150.67 139.66 L166.50 133.37 L182.33 124.74 L198.17 120.09 L214.00 121.76" stroke="#dcbaff" stroke-width="9" stroke-opacity=".75" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+ <path d="M 24.00 134.88 L39.83 136.47 L55.67 138.63 L71.50 138.14 L87.33 135.44 L103.17 134.07 L119.00 136.34 L134.83 139.90 L150.67 139.66 L166.50 133.37 L182.33 124.74 L198.17 120.09 L214.00 121.76" stroke="#fff6ff" stroke-width="3.2" stroke-opacity=".95" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+ <path d="M 100.00 117.72 L108.14 116.59 L116.29 116.56 L124.43 117.34 L132.57 118.30 L140.71 118.71 L148.86 118.01 L157.00 115.95 L165.14 112.76 L173.29 109.08 L181.43 105.80 L189.57 103.76 L197.71 103.52 L205.86 105.13 L214.00 108.08" stroke="#b784f2" stroke-width="2.5" opacity="0.52" fill="none"/>
+<circle cx="68.83" cy="151.83" r="2.8" fill="#ffecb9" opacity=".85"/>
+<circle cx="99.09" cy="97.44" r="1.15" fill="#dbc8ff" opacity=".56"/>
+<circle cx="127.61" cy="151.24" r="1.15" fill="#dbc8ff" opacity=".56"/>
+<circle cx="155.84" cy="99.92" r="2.8" fill="#dbc8ff" opacity=".56"/>
+<circle cx="185.30" cy="134.23" r="1.15" fill="#ffecb9" opacity=".85"/>
+<circle cx="74.69" cy="182.44" r="1.15" fill="#ffecb9" opacity=".85"/>
+<circle cx="103.42" cy="113.45" r="1.15" fill="#dbc8ff" opacity=".56"/>
+<circle cx="134.05" cy="185.51" r="1.15" fill="#dbc8ff" opacity=".56"/>
+<ellipse cx="214.00" cy="121.76" rx="59" ry="48" fill="url(#soft)" opacity=".95"/><path d="M198.00 121.76L230.00 121.76M214.00 105.76L214.00 137.76" stroke="#fff3fb" stroke-width="2" opacity=".68"/></svg>

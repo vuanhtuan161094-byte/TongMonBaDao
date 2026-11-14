@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="256" viewBox="0 0 1024 256"><defs>
+ <linearGradient id="paint" x1="0" y1="0" x2="1" y2=".15"><stop stop-color="#603f96" stop-opacity=".19"/><stop offset=".4" stop-color="#9b6aee" stop-opacity=".51"/><stop offset=".8" stop-color="#a06bf6" stop-opacity=".76"/><stop offset="1" stop-color="#f9e9ff" stop-opacity=".12"/></linearGradient>
+ <radialGradient id="soft"><stop stop-color="#fffaff" stop-opacity=".67"/><stop offset=".22" stop-color="#c4a0fd" stop-opacity=".35"/><stop offset=".7" stop-color="#7445ca" stop-opacity=".12"/><stop offset="1" stop-color="#492776" stop-opacity="0"/></radialGradient>
+ </defs>
+ <polygon points="24.00,124.48 39.83,125.26 55.67,127.73 71.50,124.59 87.33,118.03 103.17,115.75 119.00,117.76 134.83,118.02 150.67,115.61 166.50,112.87 182.33,107.93 198.17,100.69 214.00,98.81 229.83,106.26 245.67,113.61 261.50,111.16 277.33,104.14 293.17,104.65 309.00,115.13 309.00,129.20 293.17,125.98 277.33,130.02 261.50,135.94 245.67,140.37 229.83,141.86 214.00,139.08 198.17,136.30 182.33,141.79 166.50,154.09 150.67,160.50 134.83,155.73 119.00,149.85 103.17,151.30 87.33,155.02 71.50,153.96 55.67,149.80 39.83,146.58 24.00,144.54" fill="url(#paint)" opacity=".66"/>
+ <path d="M 24.00 134.51 L39.83 135.92 L55.67 138.77 L71.50 139.28 L87.33 136.52 L103.17 133.52 L119.00 133.80 L134.83 136.87 L150.67 138.06 L166.50 133.48 L182.33 124.86 L198.17 118.49 L214.00 118.95 L229.83 124.06 L245.67 126.99 L261.50 123.55 L277.33 117.08 L293.17 115.31 L309.00 122.16" stroke="#7347c4" stroke-width="43" stroke-opacity=".19" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+ <path d="M 24.00 134.51 L39.83 135.92 L55.67 138.77 L71.50 139.28 L87.33 136.52 L103.17 133.52 L119.00 133.80 L134.83 136.87 L150.67 138.06 L166.50 133.48 L182.33 124.86 L198.17 118.49 L214.00 118.95 L229.83 124.06 L245.67 126.99 L261.50 123.55 L277.33 117.08 L293.17 115.31 L309.00 122.16" stroke="#a476f9" stroke-width="23" stroke-opacity=".36" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+ <path d="M 24.00 134.51 L39.83 135.92 L55.67 138.77 L71.50 139.28 L87.33 136.52 L103.17 133.52 L119.00 133.80 L134.83 136.87 L150.67 138.06 L166.50 133.48 L182.33 124.86 L198.17 118.49 L214.00 118.95 L229.83 124.06 L245.67 126.99 L261.50 123.55 L277.33 117.08 L293.17 115.31 L309.00 122.16" stroke="#dcbaff" stroke-width="9" stroke-opacity=".75" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+ <path d="M 24.00 134.51 L39.83 135.92 L55.67 138.77 L71.50 139.28 L87.33 136.52 L103.17 133.52 L119.00 133.80 L134.83 136.87 L150.67 138.06 L166.50 133.48 L182.33 124.86 L198.17 118.49 L214.00 118.95 L229.83 124.06 L245.67 126.99 L261.50 123.55 L277.33 117.08 L293.17 115.31 L309.00 122.16" stroke="#fff6ff" stroke-width="3.2" stroke-opacity=".95" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+ <path d="M 100.00 113.10 L114.93 111.45 L129.86 114.08 L144.79 117.72 L159.71 117.96 L174.64 113.65 L189.57 108.31 L204.50 106.82 L219.43 110.44 L234.36 115.10 L249.29 115.02 L264.21 108.41 L279.14 99.76 L294.07 96.19 L309.00 101.00" stroke="#b784f2" stroke-width="2.5" opacity="0.52" fill="none"/>
+<circle cx="68.33" cy="152.40" r="2.8" fill="#ffecb9" opacity=".85"/>
+<circle cx="97.84" cy="97.96" r="1.15" fill="#dbc8ff" opacity=".56"/>
+<circle cx="126.08" cy="148.20" r="1.15" fill="#dbc8ff" opacity=".56"/>
+<circle cx="154.58" cy="99.35" r="2.8" fill="#dbc8ff" opacity=".56"/>
+<circle cx="184.78" cy="133.45" r="1.15" fill="#ffecb9" opacity=".85"/>
+<circle cx="217.49" cy="85.04" r="1.15" fill="#dbc8ff" opacity=".56"/>
+<circle cx="252.59" cy="138.31" r="2.8" fill="#dbc8ff" opacity=".56"/>
+<circle cx="289.10" cy="77.96" r="1.15" fill="#dbc8ff" opacity=".56"/>
+<circle cx="73.24" cy="183.72" r="1.15" fill="#ffecb9" opacity=".85"/>
+<circle cx="102.51" cy="112.16" r="1.15" fill="#dbc8ff" opacity=".56"/>
+<circle cx="134.03" cy="182.86" r="1.15" fill="#dbc8ff" opacity=".56"/>
+<ellipse cx="309.00" cy="122.16" rx="59" ry="48" fill="url(#soft)" opacity=".95"/><path d="M293.00 122.16L325.00 122.16M309.00 106.16L309.00 138.16" stroke="#fff3fb" stroke-width="2" opacity=".68"/></svg>
