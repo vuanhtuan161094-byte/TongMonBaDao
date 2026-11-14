@@ -95,8 +95,12 @@ func _run() -> void:
 
     # Persist the exact wall timestamp/remainder with the simulation state.
     var saves := SaveService.new()
-    if not _assert(saves.save_to_path(state,SAVE_PATH)==OK,
-        "Runtime-clock save failed."):
+    var save_error: Error = saves.save_to_path(state,SAVE_PATH)
+    var save_error_detail := "Runtime-clock save failed (error=%d %s; user_data=%s; path=%s)." % [
+        save_error,error_string(save_error),OS.get_user_data_dir(),
+        ProjectSettings.globalize_path(SAVE_PATH)
+    ]
+    if not _assert(save_error==OK,save_error_detail):
         return
     var offline: SimulationState = saves.load_from_path(SAVE_PATH)
     var online: SimulationState = saves.load_from_path(SAVE_PATH)

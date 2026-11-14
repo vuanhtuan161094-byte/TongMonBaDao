@@ -1,0 +1,10 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+DV2 GROUP BALANCE 3v3_normal sample=16 win=16 downed_avg=0.0 time_avg=14.109375
+DV2 GROUP BALANCE 4v5_normal sample=16 win=16 downed_avg=1.0 time_avg=19.390625
+DV2 GROUP BALANCE 6v6_elite sample=16 win=16 downed_avg=2.0 time_avg=20.28125
+DV2 GROUP BALANCE 6v5_boss sample=16 win=16 downed_avg=1.875 time_avg=19.921875
+DV2 GROUP DIFFICULTY weak_3v5_boss=0/16 high_realm_6v5_boss=16/16 no_healer_6v5_boss=16/16
+DV2-02D GROUP MAP COMBAT: MOVEMENT/HEAL/AOE/BOSS/30-ACTOR/REPLAY TEST PASS

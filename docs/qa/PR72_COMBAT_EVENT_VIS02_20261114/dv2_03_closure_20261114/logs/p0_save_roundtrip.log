@@ -1,0 +1,20 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+ERROR: SaveService: malformed save payload for version 4.
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _load_exact (res://src/simulation/save/save_service.gd:243)
+       [1] load_from_path (res://src/simulation/save/save_service.gd:192)
+       [2] _test_invalid_payload_rejection (res://tests/simulation/p0_save_roundtrip_test.gd:72)
+       [3] _run (res://tests/simulation/p0_save_roundtrip_test.gd:41)
+ERROR: SaveService: invalid negative save version -1.
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _load_exact (res://src/simulation/save/save_service.gd:215)
+       [1] load_from_path (res://src/simulation/save/save_service.gd:192)
+       [2] _test_invalid_payload_rejection (res://tests/simulation/p0_save_roundtrip_test.gd:79)
+       [3] _run (res://tests/simulation/p0_save_roundtrip_test.gd:41)
+P0 SAVE ROUNDTRIP TEST PASS
+tick=3000 money=1630 disciples=6

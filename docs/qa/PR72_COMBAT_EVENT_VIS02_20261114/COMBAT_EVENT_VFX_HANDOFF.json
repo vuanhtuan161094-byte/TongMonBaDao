@@ -171,11 +171,16 @@
     }
   ],
   "qa_source": {
-    "final_live_head": "fcba3dc73940fe73bb78c2938c247d959d36fa2b",
-    "final_live_tree": "49264e96d843fafdc8170307e24e00a38014106f",
-    "local_test_source": "reconstructed snapshot with selected overlays and task patch",
+    "final_live_head": "fcc166d5c909c4a14c998500c632d80a27ba4b86",
+    "final_live_tree": "6d08d8b037feb2aea7eff62dc7b2a56ac4e80ace",
+    "local_test_source": "content-verified reconstructed snapshot; relevant SaveService/runtime/Combat Event/DV2-02 blobs matched live HEAD; DV2-03 test has diagnostic-only failure details",
+    "dv2_03_test_blob": "15c834ed077b1d1b77cd64738691533a8e820c90",
+    "save_service_blob": "7a9131fa7d78eef4c3c3ebcf72a8e15d9c54c5e1",
     "native_exact_live_tree_tested": false,
-    "physical_gui": "PENDING",
-    "android": "PENDING"
+    "dv2_03": "PASS_3_INDEPENDENT_RUNS; original failure cause undetermined/non-reproducible",
+    "physical_gui": "PENDING_SYNTHETIC_VIEWPORT_ONLY",
+    "android": "PENDING",
+    "v63_gate": "OFF",
+    "pve_production": "HOLD"
   }
 }

@@ -1,3 +1,12 @@
+## FINAL DV2-03 + COMBAT EVENT / VIS02 CLOSURE — 2026-11-14
+
+- Live PR #72 parent immediately before this evidence commit: `fcc166d5c909c4a14c998500c632d80a27ba4b86`, tree `6d08d8b037feb2aea7eff62dc7b2a56ac4e80ace`. Git CLI fetch was unavailable; GitHub API tree/blob identities were used. QA is **CONTENT_VERIFIED_RECONSTRUCTED_SNAPSHOT_QA_PASS**, not native exact-current full-tree QA.
+- DV2-03: three independent Godot 4.7.2 runs of the diagnostic-only test harness passed, each exit 0 with PASS marker. The first generic failure remains historical; its root cause is undetermined and was not reproduced. Added error/path detail only to the existing assertion message. SaveService blob `7a9131fa7d78eef4c3c3ebcf72a8e15d9c54c5e1` is unchanged; no player save was accessed.
+- Strict import/parse, Combat Event ID 20 checks, DV2-02 snapshot/group map, P0 Save roundtrip and async SaveService roundtrip passed with exit 0 on the content-verified snapshot. Unchanged P1/P2/S5/S9/D6 results are carried forward, not rerun. P2 design remains OWNER_APPROVAL_PENDING.
+- Existing VIS02 candidate_830031 selection/recruit/profile/save/cold reload used synthetic viewport input only. Physical Windows GUI and latest P3 presentation recapture remain pending.
+- Scoped status: `COMBAT_EVENT_VIS02_TECHNICAL_QA_COMPLETE`. This does not mean native full-tree QA, physical GUI acceptance, VFX approval, or PvE release readiness. V6.3 remains OFF; PvE production HOLD.
+- Evidence: [closure report](docs/qa/PR72_COMBAT_EVENT_VIS02_20261114/dv2_03_closure_20261114/DV2_03_CLOSURE.md), [source identity](docs/qa/PR72_COMBAT_EVENT_VIS02_20261114/dv2_03_closure_20261114/SOURCE_IDENTITY.json), [matrix](docs/qa/PR72_COMBAT_EVENT_VIS02_20261114/QA_MATRIX.csv).
+
 ## COMBAT EVENT INFRASTRUCTURE + VIS02 QA — 2026-11-14
 
 - PR #72 finalization input HEAD: fcba3dc73940fe73bb78c2938c247d959d36fa2b, tree 49264e96d843fafdc8170307e24e00a38014106f. This evidence packet is added as a fast-forward on that existing branch.

@@ -1,3 +1,12 @@
+## Final closure addendum — 2026-11-14
+
+This addendum supersedes the earlier current-status line for DV2-03; the first failure remains historical evidence. Live PR #72 HEAD before closure publication: `fcc166d5c909c4a14c998500c632d80a27ba4b86`, tree `6d08d8b037feb2aea7eff62dc7b2a56ac4e80ace`. See [closure report](dv2_03_closure_20261114/DV2_03_CLOSURE.md), [source identity manifest](dv2_03_closure_20261114/SOURCE_IDENTITY.json) and [updated matrix](QA_MATRIX.csv).
+
+- DV2-03 now passes on three independent official Godot 4.7.2 runs (exit 0 each); its historical one-off failure root cause remains undetermined and non-reproducible. The harness change only enriches the existing failure message; SaveService and assertions are unchanged.
+- Combat Event identity: 20 checks PASS; DV2-02 snapshot/group map, P0 Save and async SaveService focused regressions PASS.
+- VIS02 remains synthetic viewport input; physical GUI is PENDING. Latest P3 actor presentation scripts were not recaptured.
+- QA used a content-verified reconstructed snapshot, **not** a native exact-current full-tree checkout. V6.3 remains OFF and PvE production HOLD.
+
 # Combat Event Infrastructure + VIS02 QA — 2026-11-14
 
 ## Source identity and limits
@@ -28,7 +37,7 @@ See `QA_MATRIX.csv` and sanitized logs under `logs/`.
 - P1 lineage: **PASS**, 1,447 checks, 41 pairs / 82 skill IDs.
 - P2 runtime: **PASS**, 796 checks, 196 pairs equal, 0 missing/different. **Design intent remains `OWNER_APPROVAL_PENDING`; runtime equality is not approval.**
 - Snapshot/group-battle, S5 Palm, S9 summon lifecycle/rendered contract and D6 boss no-reward focused regressions: PASS (matrix has exits/check counts).
-- `dv2_03_runtime_clock_test.gd`: **FAIL**, exit 1 at `SaveService.save_to_path` with only generic `Runtime-clock save failed.`. Root cause is undetermined. SaveService was not edited. Test was isolated; its pre-existing QA fixture file was not modified and the default player save was not accessed.
+- `dv2_03_runtime_clock_test.gd`: **historical initial FAIL**, exit 1 at `SaveService.save_to_path` with only generic `Runtime-clock save failed.`. Root cause was undetermined at that run; see the final closure addendum below for non-reproducing reruns. SaveService was not edited.
 - One initial `v63_s9_summon_skill_test.gd --headless` invocation waited for `RenderingServer.frame_post_draw` and was interrupted (exit 130); the supported rasterized run passed 2,675 checks, exit 0. This is recorded as an invocation limitation, not hidden as a gameplay failure.
 - Godot logs also contain Windows root-certificate-store, `user://logs` directory and Intel GL shader-cache diagnostics. Strict import and passing test processes exited 0; these environment messages are retained in the logs.
 

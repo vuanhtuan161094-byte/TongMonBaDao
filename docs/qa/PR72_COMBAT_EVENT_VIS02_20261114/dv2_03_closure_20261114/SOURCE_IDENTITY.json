@@ -1,0 +1,161 @@
+{
+  "schema": "TMB_CONTENT_VERIFIED_QA_SOURCE_IDENTITY_V1",
+  "verified_against": {
+    "pr": 72,
+    "branch": "integration/pve-p0-playable-ui-20261103",
+    "head": "fcc166d5c909c4a14c998500c632d80a27ba4b86",
+    "tree": "6d08d8b037feb2aea7eff62dc7b2a56ac4e80ace"
+  },
+  "qa_source": "reconstructed snapshot; not native Git checkout; not full-tree exact-SHA QA",
+  "snapshot_baseline_relevant_blobs_match_live": true,
+  "files": [
+    {
+      "path": "godot/src/simulation/save/save_service.gd",
+      "live_base_blob_sha": "7a9131fa7d78eef4c3c3ebcf72a8e15d9c54c5e1",
+      "snapshot_base_blob_sha": "7a9131fa7d78eef4c3c3ebcf72a8e15d9c54c5e1",
+      "match": true,
+      "closure_change": "none"
+    },
+    {
+      "path": "godot/src/simulation/core/simulation_runtime_clock_v2.gd",
+      "live_base_blob_sha": "342b4553b19a720d802492e654b6fba613268e84",
+      "snapshot_base_blob_sha": "342b4553b19a720d802492e654b6fba613268e84",
+      "match": true,
+      "closure_change": "none"
+    },
+    {
+      "path": "godot/src/simulation/state/simulation_state.gd",
+      "live_base_blob_sha": "028e93988dd7d7470ac1289557b6a72aa42d4106",
+      "snapshot_base_blob_sha": "028e93988dd7d7470ac1289557b6a72aa42d4106",
+      "match": true,
+      "closure_change": "none"
+    },
+    {
+      "path": "godot/src/simulation/core/p3_7_factory.gd",
+      "live_base_blob_sha": "f2543f11c6378f128cfc98544763da647ebf6805",
+      "snapshot_base_blob_sha": "f2543f11c6378f128cfc98544763da647ebf6805",
+      "match": true,
+      "closure_change": "none"
+    },
+    {
+      "path": "godot/src/simulation/foundation/foundation_system.gd",
+      "live_base_blob_sha": "fb7f3f76d907ddd3382cea292e9894372015fcd3",
+      "snapshot_base_blob_sha": "fb7f3f76d907ddd3382cea292e9894372015fcd3",
+      "match": true,
+      "closure_change": "none"
+    },
+    {
+      "path": "godot/tests/simulation/dv2_03_runtime_clock_test.gd",
+      "live_base_blob_sha": "c3b35885783ab82876534c974f162446e06ec5e6",
+      "snapshot_base_blob_sha": "c3b35885783ab82876534c974f162446e06ec5e6",
+      "match": true,
+      "closure_change": "diagnostic-only failure context; closure patch blob 15c834ed077b1d1b77cd64738691533a8e820c90"
+    },
+    {
+      "path": "godot/tests/simulation/p0_save_roundtrip_test.gd",
+      "live_base_blob_sha": "a8cb9fec07021315de2761a7a0af3fa058252500",
+      "snapshot_base_blob_sha": "a8cb9fec07021315de2761a7a0af3fa058252500",
+      "match": true,
+      "closure_change": "none"
+    },
+    {
+      "path": "godot/tests/simulation/save_service_async_roundtrip_test.gd",
+      "live_base_blob_sha": "4808748efad111b80ed400cf957d18a7671c71e6",
+      "snapshot_base_blob_sha": "4808748efad111b80ed400cf957d18a7671c71e6",
+      "match": true,
+      "closure_change": "none"
+    },
+    {
+      "path": "godot/tests/simulation/combat_event_identity_v2_test.gd",
+      "live_base_blob_sha": "93eb5eb71af840489968bf86dcc09884ce61ad92",
+      "snapshot_base_blob_sha": "93eb5eb71af840489968bf86dcc09884ce61ad92",
+      "match": true,
+      "closure_change": "none"
+    },
+    {
+      "path": "godot/tests/simulation/dv2_02_battle_snapshot_test.gd",
+      "live_base_blob_sha": "c0aec23a4350d2ded2ce66059bcee93a1c573fab",
+      "snapshot_base_blob_sha": "c0aec23a4350d2ded2ce66059bcee93a1c573fab",
+      "match": true,
+      "closure_change": "none"
+    },
+    {
+      "path": "godot/tests/simulation/dv2_02_group_map_battle_test.gd",
+      "live_base_blob_sha": "2c54c9904908f13eea8f5972689281b6bda70e72",
+      "snapshot_base_blob_sha": "2c54c9904908f13eea8f5972689281b6bda70e72",
+      "match": true,
+      "closure_change": "none"
+    },
+    {
+      "path": "godot/tests/simulation/v63_p1_lineage_policy_test.gd",
+      "live_base_blob_sha": "99837a6674f79c49e074fc6f45e8bd41dc15ca0c",
+      "snapshot_base_blob_sha": "99837a6674f79c49e074fc6f45e8bd41dc15ca0c",
+      "match": true,
+      "closure_change": "none"
+    },
+    {
+      "path": "godot/tests/simulation/v63_p2_runtime_audit_test.gd",
+      "live_base_blob_sha": "3b2b55c6c26bdea12397c7dc0dde7af00b9bb159",
+      "snapshot_base_blob_sha": "3b2b55c6c26bdea12397c7dc0dde7af00b9bb159",
+      "match": true,
+      "closure_change": "none"
+    },
+    {
+      "path": "godot/tests/simulation/v63_s5_palm_skill_test.gd",
+      "live_base_blob_sha": "532e73b54b2f80e0e02aa032bc255aacbde06bd4",
+      "snapshot_base_blob_sha": "532e73b54b2f80e0e02aa032bc255aacbde06bd4",
+      "match": true,
+      "closure_change": "none"
+    },
+    {
+      "path": "godot/tests/simulation/v63_s9_summon_skill_test.gd",
+      "live_base_blob_sha": "7425e72aea8d3d469adc60fa03d15e6e5eaed6f2",
+      "snapshot_base_blob_sha": "7425e72aea8d3d469adc60fa03d15e6e5eaed6f2",
+      "match": true,
+      "closure_change": "none"
+    },
+    {
+      "path": "godot/tests/simulation/one_game_d6_boss_summon_no_reward_test.gd",
+      "live_base_blob_sha": "4628743d56b0cad5496411a19412e4a349d983f9",
+      "snapshot_base_blob_sha": "4628743d56b0cad5496411a19412e4a349d983f9",
+      "match": true,
+      "closure_change": "none"
+    },
+    {
+      "path": "godot/src/simulation/combat/map_battle_v2.gd",
+      "live_base_blob_sha": "ff5a0f9f033b618b54ccb8f2e12883ea3c2f7c8d",
+      "snapshot_base_blob_sha": "ff5a0f9f033b618b54ccb8f2e12883ea3c2f7c8d",
+      "match": true,
+      "closure_change": "none"
+    },
+    {
+      "path": "godot/src/simulation/combat/map_battle_snapshot_v2.gd",
+      "live_base_blob_sha": "be3746f912f1a34ddc6ae854907aebb9ed9fe2f5",
+      "snapshot_base_blob_sha": "be3746f912f1a34ddc6ae854907aebb9ed9fe2f5",
+      "match": true,
+      "closure_change": "none"
+    },
+    {
+      "path": "godot/src/simulation/combat/v63_human_skill_combat_system.gd",
+      "live_base_blob_sha": "ad184e627c0cb320df3756f8ad3f96b2875e4455",
+      "snapshot_base_blob_sha": "ad184e627c0cb320df3756f8ad3f96b2875e4455",
+      "match": true,
+      "closure_change": "none"
+    },
+    {
+      "path": "godot/src/simulation/combat/v63_summon_skill_combat_system.gd",
+      "live_base_blob_sha": "e7eaace54f4280844af0ed9082ff67e73db3fcb9",
+      "snapshot_base_blob_sha": "e7eaace54f4280844af0ed9082ff67e73db3fcb9",
+      "match": true,
+      "closure_change": "none"
+    }
+  ],
+  "changed_since_reference": {
+    "base": "a6fa6112846b1507ae8593a1c29e05ff51b41b6f",
+    "ahead_by": 11,
+    "behind_by": 0,
+    "notes": "No SaveService/runtime-clock/Combat Event/DV2-02 or VIS02 recruitment/save callback source changes. Four P3 presentation scripts changed (including world/actor rendering); screenshots/video were not re-captured against these latest visuals."
+  },
+  "save_service_modified": false,
+  "player_save_accessed": false
+}
