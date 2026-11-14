@@ -7,6 +7,7 @@ on:
       - 'godot/labs/combat_lab/poison07/**'
       - 'godot/tests/labs/combat_lab/vfx_poi07_contract_test.gd'
       - 'tools/vfx/generate_poi07_poison_needle.py'
+      - 'tools/vfx/generate_poi07_polish_r4.py'
       - '.github/workflows/vfx-poi-07-xuyen-cot-doc-cham.yml'
 permissions:
   contents: write
@@ -42,10 +43,11 @@ jobs:
         run: |
           set -euo pipefail
           python3 tools/vfx/generate_poi07_poison_needle.py | tee "$RUNNER_TEMP/vfx-poi07/bake.log"
+          python3 tools/vfx/generate_poi07_polish_r4.py | tee "$RUNNER_TEMP/vfx-poi07/bake-r4.log"
           python3 - <<'PY'
           from PIL import Image
           p="godot/labs/combat_lab/poison07/assets/"
-          for name,dims,cell,count in [("doc_cham_needle_12.png",(1536,576),(384,192),12),("doc_cham_contact_08.png",(1024,512),(256,256),8)]:
+          for name,dims,cell,count in [("doc_cham_needle_12.png",(1536,576),(384,192),12),("doc_cham_contact_08.png",(1024,512),(256,256),8),("doc_cham_charge_r4_12.png",(1280,960),(320,320),12),("doc_cham_contact_r4_12.png",(1280,960),(320,320),12)]:
               im=Image.open(p+name).convert("RGBA")
               assert im.size==dims, (name,"size")
               for i in range(count):
@@ -55,7 +57,7 @@ jobs:
                   assert all(a.crop(box).getextrema()[1]==0 for box in [(0,0,cell[0],1),(0,cell[1]-1,cell[0],cell[1]),(0,0,1,cell[1]),(cell[0]-1,0,cell[0],cell[1])]),(name,i,"alpha bleed")
               print(name,"RGBA_PASS",count)
           PY
-          sha256sum godot/labs/combat_lab/poison07/assets/doc_cham_{needle_12,contact_08}.png > "$RUNNER_TEMP/vfx-poi07/atlas-sha256.txt"
+          sha256sum godot/labs/combat_lab/poison07/assets/doc_cham_{needle_12,contact_08,charge_r4_12,contact_r4_12}.png > "$RUNNER_TEMP/vfx-poi07/atlas-sha256.txt"
       - name: Restore known Stage A actor reference without modifying tracked files
         shell: bash
         run: |
@@ -91,7 +93,7 @@ jobs:
           ffmpeg -y -hide_banner -loglevel error -i "$d/POI07-native.mp4" -vf 'fps=8,scale=640:-1:flags=lanczos' -loop 0 "$d/POI07-native.gif"
           sha256sum "$d/"*.mp4 "$d/"*.png "$d/"*.gif > "$d/SHA256SUMS.txt"
           rm -f "$d/POI07-native.avi"
-      - name: Safely commit two original PNG atlases on latest shared PR HEAD and dispatch exact SHA
+      - name: Safely commit four original PNG atlases on latest shared PR HEAD and dispatch exact SHA
         if: success() && github.event_name == 'push'
         shell: bash
         run: |
@@ -100,6 +102,8 @@ jobs:
           asset_dir='godot/labs/combat_lab/poison07/assets'
           cp "$asset_dir/doc_cham_needle_12.png" "$RUNNER_TEMP/doc_cham_needle_12.png"
           cp "$asset_dir/doc_cham_contact_08.png" "$RUNNER_TEMP/doc_cham_contact_08.png"
+          cp "$asset_dir/doc_cham_charge_r4_12.png" "$RUNNER_TEMP/doc_cham_charge_r4_12.png"
+          cp "$asset_dir/doc_cham_contact_r4_12.png" "$RUNNER_TEMP/doc_cham_contact_r4_12.png"
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           for attempt in 1 2 3; do
@@ -109,7 +113,7 @@ jobs:
               echo 'BRANCH_REWRITTEN_NO_PUSH' | tee "$RUNNER_TEMP/vfx-poi07/commit.txt"
               exit 0
             fi
-            if test -n "$(git diff --name-only "$GITHUB_SHA" "$current" -- godot/labs/combat_lab/poison07 tools/vfx/generate_poi07_poison_needle.py .github/workflows/vfx-poi-07-xuyen-cot-doc-cham.yml)"; then
+            if test -n "$(git diff --name-only "$GITHUB_SHA" "$current" -- godot/labs/combat_lab/poison07 tools/vfx/generate_poi07_poison_needle.py tools/vfx/generate_poi07_polish_r4.py .github/workflows/vfx-poi-07-xuyen-cot-doc-cham.yml)"; then
               echo 'POI07_SOURCE_CHANGED_NO_PUSH' | tee "$RUNNER_TEMP/vfx-poi07/commit.txt"
               exit 0
             fi
@@ -117,12 +121,14 @@ jobs:
             mkdir -p "$asset_dir"
             cp "$RUNNER_TEMP/doc_cham_needle_12.png" "$asset_dir/doc_cham_needle_12.png"
             cp "$RUNNER_TEMP/doc_cham_contact_08.png" "$asset_dir/doc_cham_contact_08.png"
-            git add "$asset_dir/doc_cham_needle_12.png" "$asset_dir/doc_cham_contact_08.png"
+            cp "$RUNNER_TEMP/doc_cham_charge_r4_12.png" "$asset_dir/doc_cham_charge_r4_12.png"
+            cp "$RUNNER_TEMP/doc_cham_contact_r4_12.png" "$asset_dir/doc_cham_contact_r4_12.png"
+            git add "$asset_dir/doc_cham_needle_12.png" "$asset_dir/doc_cham_contact_08.png" "$asset_dir/doc_cham_charge_r4_12.png" "$asset_dir/doc_cham_contact_r4_12.png"
             if git diff --cached --quiet; then
               echo 'ASSETS_ALREADY_TRACKED' | tee "$RUNNER_TEMP/vfx-poi07/commit.txt"
               exit 0
             fi
-            git commit -m 'art(poi07): commit original 12+8 RGBA flipbook atlases'
+            git commit -m 'art(poi07-r4): track original needle charge and localized contact RGBA flipbooks'
             if git push origin "HEAD:refs/heads/$branch"; then
               echo "POI07_BINARY_SHA=$(git rev-parse HEAD)" | tee "$RUNNER_TEMP/vfx-poi07/commit.txt"
               gh workflow run vfx-poi-07-xuyen-cot-doc-cham.yml --repo "$GITHUB_REPOSITORY" --ref "$branch" || echo 'FINAL_EXACT_SHA_DISPATCH_FAILED'
@@ -147,3 +153,5 @@ jobs:
             ${{ runner.temp }}/vfx-poi07/*.gif
             godot/labs/combat_lab/poison07/assets/doc_cham_needle_12.png
             godot/labs/combat_lab/poison07/assets/doc_cham_contact_08.png
+            godot/labs/combat_lab/poison07/assets/doc_cham_charge_r4_12.png
+            godot/labs/combat_lab/poison07/assets/doc_cham_contact_r4_12.png
