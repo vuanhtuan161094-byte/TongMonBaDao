@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""FIST02 V2 / Phi Than Lien Cuoc: original guard/footwork atlas. VIEW-ONLY.
+"""FIST02 V3 / Phi Than Lien Cuoc: original guard/footwork atlas. VIEW-ONLY.
 Original first-party 12 twin-heel flame-stream poses, 8 asymmetric crossing-guard
 poses, and 8 footprint-dust poses. Not damage, no rig, no proprietary sprite.
 Requires Python Pillow and NumPy; all three 320px RGBA cell atlases are deterministic.
@@ -112,15 +112,24 @@ def guard_pose(k):
     rng=random.Random(RANDOM_SEED+500+k)
     phase=2*pi*k/8.
     im=rgba_layer()
-    for j in range(3):
-        lane=float(j)-1.0
+    # Two opposed protective sweep fragments: neither is a full UI circle.
+    for j in range(2):
         path=[]
-        # crescent segments not full concentric neon rings
-        for t in range(58):
-            a=-0.77+2.47*t/57+j*2.10+phase*.09
-            r=98+lane*10+9*sin(2.9*a+phase*.9+j)
-            path.append((160+r*cos(a),160+(.86*r)*sin(a)))
-        _path_light(im,path,RANDOM_SEED+620+k*17+j,.83 if j!=1 else 1.0)
+        for t in range(56):
+            a=-0.91+2.02*t/55+j*pi+phase*.14
+            r=93+11*sin(3.1*a+phase*.8+j)+5*cos(5.1*a-phase)
+            path.append((160+r*cos(a),160+(.94*r)*sin(a)))
+        _path_light(im,path,RANDOM_SEED+620+k*17+j,1.0)
+    # Crossed heel paths sit BEHIND the actor and give this particular guard its
+    # footwork silhouette rather than a generic endless orange orb.
+    cross1=curve((62+7*sin(phase),243),
+                 (100,169+13*cos(phase)),(201,116-9*sin(phase)),
+                 (259,75+9*cos(phase)),51)
+    cross2=curve((68,86+7*cos(phase)),
+                 (133,122-12*sin(phase)),(197,220+8*cos(phase)),
+                 (262+7*sin(phase),241),51)
+    _path_light(im,cross1,RANDOM_SEED+850+k*13,.80)
+    _path_light(im,cross2,RANDOM_SEED+990+k*19,.66)
     d=ImageDraw.Draw(im,"RGBA")
     for m in range(9):
         a=m*2.399+phase*.31
