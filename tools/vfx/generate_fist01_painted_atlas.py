@@ -10,6 +10,7 @@ from pathlib import Path
 from PIL import Image, ImageDraw, ImageFilter
 from math import sin, cos, pi, exp
 import random
+import numpy as np
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "godot/labs/combat_lab/fist01/assets/painted_r9"
@@ -95,72 +96,85 @@ def charge_pose(k):
     sprinkle(img,rng,(cx,cy),70,(114,93),True)
     return img.resize((CELL,CELL),Image.Resampling.LANCZOS)
 
+def _fractal_noise(seed, dimensions=(SIZE,SIZE)):
+    """Original coarse-to-fine chromatic noise, no external pixel sources."""
+    rng=np.random.default_rng(seed)
+    h,w=dimensions
+    field=np.zeros((h,w),dtype=np.float32)
+    for cells,weight in ((5,.33),(11,.24),(24,.19),(55,.13),(115,.11)):
+        tile=rng.integers(0,256,(cells,cells),dtype=np.uint8)
+        layer=Image.fromarray(tile,mode="L").resize((w,h),Image.Resampling.BICUBIC)
+        field+=np.asarray(layer,dtype=np.float32)/255.*weight
+    return np.clip(field,0,1)
+
 def hero_pose(k):
+    """Original painted plasma fist: irregular turbulent knuckle core and smoky wake.
+    Fist identity comes from four living hot knuckle pressure pockets, not
+    an opaque cartoon mitt. Each of the 12 poses warps actual raster material.
+    """
     rng=random.Random(RANDOM_SEED+220+k)
-    t=k/11
-    img=rgba_layer()
-    yy=159+4*sin(k*.81)
-    lead=267+4*cos(k*.57)
-    blob(img,174,yy,120,61,(234,112,54,105),26)
-    blob(img,lead-16,yy,51,51,(255,178,82,122),13)
-    d=ImageDraw.Draw(img,"RGBA")
-    # Seven broken, individually moving flames shaped like thick brush-ink
-    # on compressed air; no opaque rectangle and no simple flat triangle.
-    for j in range(9):
-        lane=j-4
-        phase=k*.67+j*2.43
-        x0=rng.uniform(17,72)+j*2
-        y0=yy+lane*13+rng.uniform(-8,8)
-        x1=lead-27-abs(lane)*8
-        y1=yy+lane*6+rng.uniform(-7,7)
-        path=curve((x0,y0),(102+rng.uniform(-10,12),y0-16),
-                   (179+rng.uniform(-14,14),y1+7*sin(phase)),
-                   (x1,y1),19)
-        w=2.1+j%4*1.6
-        stroke(d,path,(135,58,58,int(65+30*sin(phase)**2)),w+6)
-        stroke(d,path,(246,127,59,int(100+35*sin(phase)**2)),w+2)
-        stroke(d,path,(255,198,108,int(120+40*sin(phase)**2)),w*.65)
-        if j%3==1:
-            stroke(d,path[8:],(255,243,194,180),max(.65,w*.18))
-    # Hand-painted fist-shaped concentrated energy head, not a spear tip:
-    # wrist -> palm -> upper/lower knuckles, blunt front wall.
-    shift=4*sin(k*.66)
-    contour=[(171,yy-22),(200,yy-37),(227,yy-34),
-             (240,yy-45+shift),(254,yy-44+shift),(259,yy-35),
-             (271,yy-39),(278,yy-29),(279,yy-20),
-             (285,yy-14),(285,yy-4),
-             (282,yy+3),(287,yy+10),(282,yy+23),
-             (270,yy+29),(260,yy+30),(253,yy+36),
-             (240,yy+39),(223,yy+37),(201,yy+30),(173,yy+19)]
-    contour=[(x+(lead-267)*.38,y) for x,y in contour]
-    body=rgba_layer()
-    bd=ImageDraw.Draw(body,"RGBA")
-    bd.polygon([pt(p) for p in contour],fill=(132,56,46,195))
-    img.alpha_composite(body.filter(ImageFilter.GaussianBlur(6*S)))
-    d=ImageDraw.Draw(img,"RGBA")
-    d.polygon([pt(p) for p in contour],fill=(228,110,51,140))
-    # Body has multiple warm value bands and textured brush scuffs.
-    for j in range(5):
-        cy=yy-21+j*11+rng.uniform(-2,2)
-        c=curve((198,cy),(222,cy-10),(249,cy-6),(272,cy+2),12)
-        stroke(d,c,(255,176+j*10,87+j*12,98+j*14),rng.uniform(2,4))
-    # Individual gilded knuckle caps give a recognizable, CLOSED fist head.
+    t=k/11.
+    phase=k*.76
+    noise=_fractal_noise(RANDOM_SEED+220+k)
+    noise_detail=_fractal_noise(RANDOM_SEED+900+k)
+    yy,xx=np.mgrid[0:SIZE,0:SIZE].astype(np.float32)
+    xx/=S
+    yy/=S
+    front=253+13*sin(phase*.9)
+    # Flow warps across the entire sheet: broad curling smoke plus fine shredding.
+    swirl=20*np.sin((xx-23)*.034+phase)*np.clip((front-xx)/190.,0,1)
+    swirl+=7*np.sin(xx*.071-phase*1.4)
+    wavy=yy-159.-swirl
+    # Blast widens into four blunt hot lobes like an actual fist impact.
+    body=np.exp(-((xx-(204+9*sin(phase)))/70)**2-(wavy/34)**2)
+    crown=np.exp(-((xx-(front-18))/45)**2-(wavy/45)**2)
+    tail=np.exp(-((xx-125)/97)**2-(wavy/(21+6*sin(phase)**2))**2)
+    knuckles=np.zeros_like(body)
     for j in range(4):
-        by=yy-29+j*17
-        x=271+2*sin(k*.72+j)
-        draw=ImageDraw.Draw(img,"RGBA")
-        draw.arc((int((x-13)*S),int((by-9)*S),
-                  int((x+9)*S),int((by+10)*S)),
-                 210,345, fill=(255,241,177,170), width=3*S)
-        draw.arc((int((x-11)*S),int((by-6)*S),
-                  int((x+6)*S),int((by+7)*S)),
-                 206,338, fill=(255,252,224,134), width=S)
-    for j in range(24):
-        x=rng.uniform(125,288); y=yy+rng.uniform(-49,48)
-        if rng.random()<.52:
-            stroke(d,[(x,y),(x+rng.uniform(3,12),y+rng.uniform(-5,5))],
-                   (255,229,176,rng.randint(15,75)),rng.uniform(.35,1.2))
-    sprinkle(img,rng,(160,yy),130,(165,94),True)
+        knuckle_y=(-28+j*18)+3*sin(phase+j*1.4)
+        knot=np.exp(-((xx-(front+6+4*sin(j+phase)))/15)**2 -
+                    ((wavy-knuckle_y)/12)**2)
+        knuckles=np.maximum(knuckles,knot)
+    # Torn edges: real alpha lost in coarse dark strokes, never a flat disk.
+    erosion=np.clip((noise-.32)*2.6 + (noise_detail-.5)*.45,0,1)
+    gas=(tail*.48+body*.67+crown*.62)*erosion
+    density=np.clip(gas+knuckles*.42,0,1)
+    leftfade=np.clip((xx-20)/33.,0,1)
+    rightfade=np.clip((318-xx)/32.,0,1)
+    fade=leftfade*rightfade
+    alpha=np.clip((density-.095)*285,0,212)*fade
+    # Rich luminous pigment: black plum -> umber -> ember -> gold -> milk white.
+    photon=np.clip(knuckles*.84+crown*.32 + noise_detail*.14*body,0,1)
+    warmth=np.clip((body+crown*.45)*(.47+noise*.62),0,1)
+    r=np.clip(119+116*warmth+34*photon+33*noise_detail,0,255)
+    g=np.clip(48+105*warmth+101*photon+22*noise_detail,0,255)
+    b=np.clip(47+33*warmth+115*photon,0,255)
+    rgba=np.stack([r,g,b,alpha],axis=-1).astype(np.uint8)
+    img=Image.fromarray(rgba,"RGBA")
+    # Controlled, very thin hot highlights and painterly scraps on top:
+    # no nine identical parallel stripes.
+    energy=Image.new("RGBA",(SIZE,SIZE),(0,0,0,0))
+    d=ImageDraw.Draw(energy,"RGBA")
+    for j in range(14):
+        lane=j-6.5
+        seed=j*2.399+k*.71
+        x0=23+rng.uniform(7,78)
+        y0=159+lane*8.3+rng.uniform(-9,9)
+        x1=front-rng.uniform(10,57)
+        y1=159+lane*rng.uniform(3.2,6.5)
+        pts=curve((x0,y0),
+                  (101+rng.uniform(-18,19),y0-28*sin(seed)),
+                  (178+rng.uniform(-15,25),y1+19*sin(seed*1.7)),
+                  (x1,y1),18)
+        width=rng.uniform(.7,3.1)
+        if j%3:
+            stroke(d,pts,(248,136+rng.randint(0,40),73, rng.randint(47,96)),width)
+        else:
+            stroke(d,pts[8:],(255,218,146, rng.randint(75,142)),width*.65)
+    energy=energy.filter(ImageFilter.GaussianBlur(.75*S))
+    img.alpha_composite(energy)
+    # Isolated ash and bright grain over the softer plasma shape.
+    sprinkle(img,rng,(174,158),76,(176,97),True)
     return img.resize((CELL,CELL),Image.Resampling.LANCZOS)
 
 def impact_pose(k):
