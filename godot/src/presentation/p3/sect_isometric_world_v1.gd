@@ -1540,7 +1540,7 @@ func _draw_building(p: Vector2,kind: String, managed: bool, allow_detail: bool =
             var image: Texture2D = render_art[key]
             # Explicit B preview only; no unapproved 2D sprite is selected
             # automatically by orientation parity or game state.
-            if vis10_b_preview_enabled and chosen_view == "B":
+            if vis10_b_preview_enabled and vis10_preview_directions.has(building_id) and chosen_view == "B":
                 var preview_b := VIS10_B_DRAFT.texture_for(StringName(kind))
                 if preview_b != null:
                     image = preview_b
@@ -1553,7 +1553,7 @@ func _draw_building(p: Vector2,kind: String, managed: bool, allow_detail: bool =
     # If the optional svg import fails, the existing explicit fallback shows.
     if managed and candidate_site_art.has(kind):
         var vignette: Texture2D = candidate_site_art[kind]
-        if kind == "mine" and vis10_b_preview_enabled and chosen_view == "B":
+        if kind == "mine" and vis10_b_preview_enabled and vis10_preview_directions.has(building_id) and chosen_view == "B":
             var mine_b := VIS10_B_DRAFT.texture_for(&"mine")
             if mine_b != null:
                 vignette = mine_b
