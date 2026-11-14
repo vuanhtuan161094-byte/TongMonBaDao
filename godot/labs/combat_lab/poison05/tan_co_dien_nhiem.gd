@@ -154,20 +154,23 @@ func _draw() -> void:
         _paint(COCOON[cocoon_frame_at(t)],traveling,Vector2.ONE*(0.30+0.035*u),0.11*sin(t*9),Color(1,1,1,flight))
     var spread := spread_gain(t)
     if spread > 0.006:
-        _halow(CORE,168,Color("6676ac",spread*0.16))
-        # Seven broken jade chitin filaments, NOT a flat neon AoE ring.
-        for target_idx in range(3):
-            var path := PackedVector2Array()
-            var p0 := CORE + Vector2((float(target_idx)-1.0)*12,14)
-            var to: Vector2 = TARGETS[target_idx]+Vector2(0,-61)
-            for step in range(20):
-                var q := float(step)/19.0
-                var wave := sin(q*PI*3.0+float(target_idx)*2.3+t*2.1)*15.0*sin(PI*q)
-                var pos := p0.lerp(to,q)+Vector2(0,-31.0*sin(PI*q)+wave)
-                path.append(pos)
-            draw_polyline(path,Color("2b3c58",spread*0.48),9.0,true)
-            draw_polyline(path,Color("94c6aa",spread*0.38),4.0,true)
-            draw_polyline(path,Color("ebffd9",spread*0.28),1.3,true)
+        _halow(CORE,145,Color("6676ac",spread*0.15))
+        # ART R4: short moving tails attached to actual animated scarabs;
+        # no long-lived white tentacle geometry, no circular fake-hit pulse.
+        var thread_window := smoothstep(ARRIVAL+0.08,ARRIVAL+0.23,t)*(1.0-smoothstep(1.89,2.17,t))
+        if thread_window>0.005:
+            for target_idx in range(3):
+                var path := PackedVector2Array()
+                var q_end := scarab_depart(t,target_idx)
+                var start_point := CORE+Vector2(-6.0,16.0)
+                var end_point: Vector2 = TARGETS[target_idx]+Vector2(3.0,-62.0)
+                for step in range(11):
+                    var q := clampf(q_end-0.34+0.034*float(step),0.0,1.0)
+                    var wiggle := 19.0*(1.0-q)*sin(q*PI*3.0+float(target_idx)*1.8)
+                    path.append(start_point.lerp(end_point,q)+Vector2(0,-38.0*sin(PI*q)+wiggle))
+                draw_polyline(path,Color("2b344d",spread*thread_window*0.38),5.0,true)
+                draw_polyline(path,Color("9cdbb6",spread*thread_window*0.45),2.2,true)
+                draw_polyline(path,Color("f4ffe4",spread*thread_window*0.33),0.9,true)
     # The actual caster/three preview target sprites remain visually readable.
     _actor(CASTER,0.47,Color.WHITE)
     for idx in range(3):
@@ -214,16 +217,16 @@ func _draw() -> void:
             var flutter := Vector2(23.0*sin(progress*PI*2.0+a),-30.0*sin(PI*progress))
             var position := origin.lerp(finish,progress)+flutter
             var glyph := int(floor((t-start)*21.0+float(wing)))%4
-            var spore_size := 0.064+0.019*float(rank%3)
+            var spore_size := 0.107+0.024*float(rank%3)
             _paint(SCARAB[glyph],position,Vector2.ONE*spore_size,0.22*sin(t*13.0+a),
-                Color("baffd2",fleet*(0.27+0.07*sin(a)*sin(a))))
+                Color("c3ffce",fleet*(0.36+0.08*sin(a)*sin(a))))
     for idx in range(3):
         var mark_alpha := mark_gain(t,idx)
         if mark_alpha<0.006:continue
         var at: Vector2 = TARGETS[idx]+Vector2(5,-68)
         var time_local := t-(ARRIVAL+0.66+float(idx)*0.075)
-        var s := 0.145+0.015*sin(time_local*8)
-        _halow(at,57,Color("b9ffb8",mark_alpha*0.14))
+        var s := 0.150+0.013*sin(time_local*8)
+        _halow(at,58,Color("b9ffb8",mark_alpha*0.21))
         _paint(MARK,at,Vector2.ONE*s,0.14*sin(time_local*4+float(idx)),Color(1,1,1,mark_alpha*0.71))
         for j in range(6):
             var a := float(j)*2.399+float(idx)*0.3
