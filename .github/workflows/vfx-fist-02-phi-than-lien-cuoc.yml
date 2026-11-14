@@ -1,0 +1,92 @@
+name: VFX-FIST-02 Phi Than Lien Cuoc guard-only native Godot
+on:
+  workflow_dispatch:
+  push:
+    branches: [integration/pve-p0-playable-ui-20261103]
+    paths:
+      - '.github/workflows/vfx-fist-02-phi-than-lien-cuoc.yml'
+      - 'godot/labs/combat_lab/fist02/**'
+      - 'tools/vfx/generate_fist02_guard_atlas.py'
+      - 'godot/tests/labs/combat_lab/vfx_fist02_contract_test.gd'
+permissions:
+  contents: read
+jobs:
+  native-godot-film:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      GODOT_AUDIO_DRIVER: Dummy
+      GODOT_RENDERING_DRIVER: opengl3
+    steps:
+      - uses: actions/checkout@v4
+      - name: Official SHA256-pinned Godot 4.7.2 and movie tools
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq xvfb ffmpeg unzip python3-pil python3-numpy
+          curl --fail --location --retry 3 -o /tmp/godot472.zip 'https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip'
+          echo 'cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4  /tmp/godot472.zip' | sha256sum --check --strict
+          unzip -q /tmp/godot472.zip -d /tmp
+          sudo install -m0755 /tmp/Godot_v4.7.2-stable_linux.x86_64 /usr/local/bin/godot
+          mkdir -p /tmp/vfx-fist02
+          godot --version | tee /tmp/vfx-fist02/engine.txt
+          echo "SOURCE_SHA=$GITHUB_SHA; EFFECT=guard; CAST=0.45; DURATION=4.0; OWNER_VISUAL_PENDING; PVE_INTEGRATION_HOLD" > /tmp/vfx-fist02/metadata.txt
+      - name: Restore existing Stage A assets without tracked modifications
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat .github/assets/p3/female_stage_a/part{01..14}.b64 .github/assets/p3/female_stage_a/part15a.b64 .github/assets/p3/female_stage_a/part15b.b64 .github/assets/p3/female_stage_a/part{16..20}.b64 | tr -d '\r\n\t ' | base64 --decode > /tmp/tmb_stage_a_pack.zip
+          test "$(stat -c%s /tmp/tmb_stage_a_pack.zip)" -eq 44838
+          echo '6a4213b9129ffb3f438c21cbb5326672ddf8915323836bf80cb33b8e5fabfdca  /tmp/tmb_stage_a_pack.zip' | sha256sum --check --strict
+          unzip -q /tmp/tmb_stage_a_pack.zip -d .
+      - name: Generate and validate original 28-pose FIST02 alpha atlas
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 tools/vfx/generate_fist02_guard_atlas.py | tee /tmp/vfx-fist02/atlas.log
+          grep -Fq 'VFX_FIST02_RASTER_GEN_PASS=1 frames=28 alpha=RGBA no_rig=1' /tmp/vfx-fist02/atlas.log
+          for name in heel_motion guard_crossflow footfall_dust; do
+            test -s "godot/labs/combat_lab/fist02/assets/painted_v1/$name.png"
+            cp "godot/labs/combat_lab/fist02/assets/painted_v1/$name.png" /tmp/vfx-fist02/
+          done
+          sha256sum /tmp/vfx-fist02/heel_motion.png /tmp/vfx-fist02/guard_crossflow.png /tmp/vfx-fist02/footfall_dust.png > /tmp/vfx-fist02/ATLAS_SHA256SUMS.txt
+      - name: Strict import parse and focused test
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash tools/qa/run_godot_strict.sh --headless --path godot --import 2>&1 | tee /tmp/vfx-fist02/import.log
+          bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://labs/combat_lab/fist02/phi_than_lien_cuoc.gd 2>&1 | tee /tmp/vfx-fist02/parse.log
+          bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/labs/combat_lab/vfx_fist02_contract_test.gd 2>&1 | tee /tmp/vfx-fist02/test.log
+          grep -Fq 'VFX_FIST02_FOCUSED_RESULT=PASS failures=0' /tmp/vfx-fist02/test.log
+      - name: Genuine Godot guard duration 4 seconds, 1280x720 MP4 GIF and frames
+        shell: bash
+        run: |
+          set -euo pipefail
+          d=/tmp/vfx-fist02
+          xvfb-run -a -s '-screen 0 1280x720x24' bash tools/qa/run_godot_strict.sh --path godot --resolution 1280x720 --fixed-fps 60 --write-movie "$d/fist-02.avi" --quit-after 318 res://labs/combat_lab/fist02/phi_than_lien_cuoc.tscn 2>&1 | tee "$d/movie.log"
+          test -s "$d/fist-02.avi"
+          ffmpeg -y -hide_banner -loglevel error -i "$d/fist-02.avi" -pix_fmt yuv420p -c:v libx264 -crf 16 -movflags +faststart "$d/fist-02.mp4"
+          ffprobe -v error -select_streams v:0 -show_entries stream=width,height,avg_frame_rate -of default=noprint_wrappers=1 "$d/fist-02.mp4" | tee "$d/dimensions.txt"
+          grep -Fxq 'width=1280' "$d/dimensions.txt"
+          grep -Fxq 'height=720' "$d/dimensions.txt"
+          for at in 0.09 0.17 0.29 0.41 0.51 0.81 1.25 2.15 3.33 4.30 4.61 5.07; do
+            ffmpeg -y -hide_banner -loglevel error -ss "$at" -i "$d/fist-02.mp4" -frames:v 1 "$d/frame-$at.png"
+          done
+          ffmpeg -y -hide_banner -loglevel error -i "$d/fist-02.mp4" -vf 'fps=2.5,scale=320:180,tile=4x3:nb_frames=12' -frames:v 1 "$d/timeline.png"
+          ffmpeg -y -hide_banner -loglevel error -i "$d/fist-02.mp4" -vf 'fps=12,scale=640:360:flags=lanczos' -loop 0 "$d/fist-02.gif"
+          sha256sum "$d/"*.mp4 "$d/"*.gif "$d/"*.png > "$d/SHA256SUMS.txt"
+          rm "$d/fist-02.avi"
+      - name: Upload exact SHA evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vfx-fist02-native
+          retention-days: 14
+          if-no-files-found: warn
+          path: |
+            /tmp/vfx-fist02/*.txt
+            /tmp/vfx-fist02/*.log
+            /tmp/vfx-fist02/*.png
+            /tmp/vfx-fist02/*.gif
+            /tmp/vfx-fist02/*.mp4
