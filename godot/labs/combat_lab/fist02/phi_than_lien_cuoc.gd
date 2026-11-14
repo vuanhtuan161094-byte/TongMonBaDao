@@ -105,18 +105,18 @@ func _draw() -> void:
     var dust_alpha := 1.0-smoothstep(0.28,0.82,t)
     if t < 0.82 and dust_alpha > 0.003:
         var idx := clampi(int(floor(t/0.82*8.0)),0,7)
-        _atlas(DUST,idx,caster_now+Vector2(0,20),0.58,dust_alpha*0.78,Vector2(160,218))
+        _atlas(DUST,idx,caster_now+Vector2(0,20),0.76,dust_alpha*0.86,Vector2(160,218))
     var guard := guard_strength(t)
     if guard > 0.003:
         var f := posmod(int(floor((t-GUARD_START)*6.0)),8)
-        _halo(CASTER+Vector2(0,-99),132.0,guard*0.11,Color("ffd29a"))
-        _atlas(SHIELD,f,CASTER+Vector2(0,-103),0.91,guard*(0.82+0.06*sin(t*7.0)))
+        _halo(CASTER+Vector2(0,-99),157.0,guard*0.21,Color("ffd29a"))
+        _atlas(SHIELD,f,CASTER+Vector2(0,-103),1.17,guard*(0.94+0.05*sin(t*7.0)))
     var heel := heel_strength(t)
     if heel > 0.003:
         var frame := clampi(int(floor(t/CAST_TIME*12.0)),0,11)
-        var at := Vector2(526+shift*0.55,456-10*sin(PI*t/CAST_TIME))
-        _halo(at,78.0,heel*0.14,Color("f6a85c"))
-        _atlas(HEELS,frame,at,0.85,heel*0.90,Vector2(260,160))
+        var at := Vector2(594+shift*0.55,459-16*sin(PI*t/CAST_TIME))
+        _halo(at,94.0,heel*0.23,Color("f6a85c"))
+        _atlas(HEELS,frame,at,1.17,heel*0.99,Vector2(260,160))
     # Existing actor is composition stand-in, not an approved fist-kick frame.
     _actor(caster_now,Color("eee1cd"))
     _actor(OTHER,Color("bac2cc"))
@@ -125,7 +125,7 @@ func _draw() -> void:
     draw_string(ThemeDB.fallback_font,Vector2(28,33),
         "PHI THAN LIEN CUOC  /  BA QUYEN",HORIZONTAL_ALIGNMENT_LEFT,-1,23,Color("fff0d1"))
     draw_string(ThemeDB.fallback_font,Vector2(28,59),
-        "FIST02 | TWO FOOTWORK SWEEPS + 4 S SINGLE TARGET GUARD",
+        "FIST02 R2 | TWIN HELIX FOOTWORK + 4 S SINGLE TARGET GUARD",
         HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("e8c6a4"))
     draw_string(ThemeDB.fallback_font,Vector2(28,680),
         "GODOT 4.7.2 COMPATIBILITY | VIEW ONLY | GUARD IS NOT A DAMAGE HIT",
