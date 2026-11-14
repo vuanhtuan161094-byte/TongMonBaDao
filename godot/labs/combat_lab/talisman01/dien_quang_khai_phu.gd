@@ -159,55 +159,72 @@ func _jitter_pos(q: float,seed: float) -> Vector2:
 
 func _draw_bolt(t: float) -> void:
     var q := travel_q(t)
-    var tail := maxf(0.0,q-0.19)
-    var gain := smoothstep(RELEASE_END,RELEASE_END+0.12,t)*(1.0-smoothstep(CONTACT_AT-0.10,CONTACT_AT,t)*0.19)
+    var gain := smoothstep(RELEASE_END,RELEASE_END+0.10,t)
     var head := bolt_position(t)
-    _halo(head,54.0,Color("8b7add",gain*.34))
-    _halo(head,25.0,Color("dbc7ff",gain*.49))
-    _halo(head,9.0,Color("fffaf9",gain*.79))
-    for i in range(17):
-        var a := tail+(q-tail)*float(i)/17.0
-        var b := tail+(q-tail)*float(i+1)/17.0
+    # Light is born at the caster: a fading whole-path ion wake follows ONE moving head.
+    # Prior R1 had a 0.19 short segment floating detached in the middle of the field.
+    _halo(HAND,46.0,Color("a58ce2",gain*.26*(1.0-q*.35)))
+    _halo(head,62.0,Color("8d73df",gain*.35))
+    _halo(head,28.0,Color("dac3ff",gain*.55))
+    _halo(head,11.0,Color("fff6ec",gain*.89))
+    for i in range(31):
+        var a := q*float(i)/31.0
+        var b := q*float(i+1)/31.0
         var pa := _jitter_pos(a,2.4)
         var pb := _jitter_pos(b,2.4)
-        var r := (float(i)+1.0)/18.0
-        var alpha := gain*(0.20+0.8*r)
-        draw_line(pa,pb,Color("725bdf",alpha*.19),22.0,true)
-        draw_line(pa,pb,Color("ab91f1",alpha*.34),9.0,true)
-        draw_line(pa,pb,Color("d9d2ff",alpha*.83),3.4,true)
-        draw_line(pa,pb,Color("fff9f1",alpha),1.45,true)
-    # Only 2 restrained forks around the moving head, avoiding repetitive spoked lightning.
-    if q>0.32:
+        var r := (float(i)+1.0)/31.0
+        var grad := 0.12+0.88*pow(r,1.55)
+        var alpha := gain*grad
+        draw_line(pa,pb,Color("7860d6",alpha*.18),25.0,true)
+        draw_line(pa,pb,Color("ad97ef",alpha*.40),11.0,true)
+        draw_line(pa,pb,Color("e7d6fe",alpha*.91),3.6,true)
+        draw_line(pa,pb,Color("fffaf4",alpha*.98),1.55,true)
+    # Two brief, clearly secondary forks; the caster-to-head conductor stays dominant.
+    if q>0.28:
         for j in range(2):
-            var fork_q := q-0.07-float(j)*0.053
-            if fork_q < tail: continue
+            var fork_q := q-0.048-float(j)*0.090
+            if fork_q<=0.04: continue
             var root := _jitter_pos(fork_q,2.4)
-            var fork_tip := root+Vector2(-31.0+6.0*float(j),(-29.0 if j==0 else 31.0))
-            var middle := root.lerp(fork_tip,0.47)+Vector2(4,-7.0 if j==0 else 7.0)
-            draw_line(root,middle,Color("9f8bdc",gain*.24),8.0,true)
-            draw_line(middle,fork_tip,Color("a99bef",gain*.17),5.0,true)
-            draw_line(root,middle,Color("f5eeff",gain*.65),1.4,true)
-            draw_line(middle,fork_tip,Color("eae2ff",gain*.4),1.1,true)
+            var tip := root+Vector2(-38.0+13.0*float(j),(-27.0 if j==0 else 31.0))
+            var mid := root.lerp(tip,0.51)+Vector2(-4.0,(-8.0 if j==0 else 8.0))
+            var branch_alpha := gain*(0.43-float(j)*0.11)
+            draw_line(root,mid,Color("927ddd",branch_alpha*.25),9.0,true)
+            draw_line(mid,tip,Color("8e78d7",branch_alpha*.17),7.0,true)
+            draw_line(root,mid,Color("f3edff",branch_alpha),1.5,true)
+            draw_line(mid,tip,Color("e2d3ff",branch_alpha*.69),1.0,true)
 
 func _draw_contact(t: float) -> void:
     var hit := contact_gain(t)
-    var residual := smoothstep(CONTACT_AT,CONTACT_AT+0.18,t)*(1.0-smoothstep(1.86,FADE_END,t))
+    var remnant := smoothstep(CONTACT_AT,CONTACT_AT+0.20,t)*(1.0-smoothstep(1.82,FADE_END,t))
     if hit>0.004:
-        _halo(IMPACT,129.0,Color("8673d8",hit*.22))
-        _halo(IMPACT,67.0,Color("ab9bfa",hit*.39))
-        _halo(IMPACT,27.0,Color("fffcff",hit*.79))
-        # Single localized electrical cut, never another fake hit.
-        for i in range(6):
-            var a := float(i)*PI/3.0+0.10
-            var p1 := IMPACT + Vector2(cos(a)*17.0,sin(a)*18.0)
-            var p2 := IMPACT + Vector2(cos(a)* (51.0+float(i%3)*9.0),sin(a)*(47.0+float(i%2)*8.0))
-            draw_line(p1,p2,Color("bba4f7",hit*.36),6.5,true)
-            draw_line(p1,p2,Color("ffecff",hit*.77),1.7,true)
-    if residual>0.001:
-        var fall := residual*.65
-        for k in range(3):
-            var f := float(k)
-            var p1 := IMPACT+Vector2(-22.0+f*21.0,-32.0-f*7.0)
-            var p2 := IMPACT+Vector2(-29.0+f*26.0,22.0+f*3.0)
-            draw_line(p1,p2,Color("a08add",fall*.35),5.0,true)
-            draw_line(p1,p2,Color("e9dff9",fall*.68),1.1,true)
+        _halo(IMPACT,121.0,Color("8874d6",hit*.24))
+        _halo(IMPACT,67.0,Color("b6a1f8",hit*.44))
+        _halo(IMPACT,24.0,Color("fff6fc",hit*.78))
+        # Unbalanced fractured current: main diagonal snap, not R1's six uniform spokes.
+        var seam := [IMPACT+Vector2(-71,-40),IMPACT+Vector2(-47,-33),IMPACT+Vector2(-24,-43),
+            IMPACT+Vector2(-12,-15),IMPACT+Vector2(7,7),IMPACT+Vector2(24,17),IMPACT+Vector2(38,36)]
+        for i in range(seam.size()-1):
+            var a: Vector2=seam[i]
+            var b: Vector2=seam[i+1]
+            draw_line(a,b,Color("9b7cdd",hit*.33),10.0,true)
+            draw_line(a,b,Color("e2ccff",hit*.74),3.2,true)
+            draw_line(a,b,Color("fff9f5",hit*.94),1.45,true)
+        var splinter := [IMPACT+Vector2(-14,-54),IMPACT+Vector2(-4,-27),IMPACT+Vector2(8,-9),IMPACT+Vector2(31,-23)]
+        for i in range(splinter.size()-1):
+            draw_line(splinter[i],splinter[i+1],Color("a38ae4",hit*.24),7.0,true)
+            draw_line(splinter[i],splinter[i+1],Color("faf0ff",hit*.57),1.3,true)
+        for j in range(5):
+            var k := float(j)
+            var angle := k*2.399 + 0.37
+            var origin := IMPACT+Vector2(cos(angle)*22.0,sin(angle)*15.0)
+            var stop := origin+Vector2(cos(angle)*(14.0+7.0*float(j%3)),sin(angle)*(12.0+6.0*float(j%2)))
+            draw_line(origin,stop,Color("b8a3f0",hit*.36),3.5,true)
+            draw_line(origin,stop,Color("f8ecff",hit*.58),1.0,true)
+    if remnant>0.002:
+        # Irregular tiny fading filaments stay around the real target, no static beam.
+        var strand_a := [IMPACT+Vector2(-10,10),IMPACT+Vector2(4,23),IMPACT+Vector2(-7,42)]
+        var strand_b := [IMPACT+Vector2(13,-13),IMPACT+Vector2(30,-3),IMPACT+Vector2(25,18)]
+        for line_points in [strand_a,strand_b]:
+            for i in range(line_points.size()-1):
+                draw_line(line_points[i],line_points[i+1],Color("aa95e7",remnant*.22),5.5,true)
+                draw_line(line_points[i],line_points[i+1],Color("e9deff",remnant*.46),1.25,true)
