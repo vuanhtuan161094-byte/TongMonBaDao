@@ -20,7 +20,8 @@ static func apply_profile(panel: Control, disciple: DiscipleState, state: Simula
         var label := panel.find_child("EquipmentCurrent_" + key, true, false) as Label
         if label != null and not equipped.is_empty():
             var grade := str(equipped.get("quality", "pham"))
-            label.add_theme_color_override("font_color", color_for(grade))
+            # Light parchment needs deeper ink than a luminous dark-panel border.
+            label.add_theme_color_override("font_color", color_for(grade).darkened(0.33))
             label.add_theme_color_override("font_outline_color", Color(0.015, 0.05, 0.06, 0.90))
             label.add_theme_constant_override("outline_size", 1)
             label.tooltip_text = "%s · %s" % [
@@ -34,11 +35,22 @@ static func apply_profile(panel: Control, disciple: DiscipleState, state: Simula
         var item: Dictionary = state.sect.equipment_items.get(id, {})
         if item.is_empty():
             continue
-        var accent := color_for(str(item.get("quality", "pham")))
-        var style := StyleBoxFlat.new()
-        style.bg_color = Color(0.045, 0.14, 0.165, 0.98)
-        style.border_color = accent
-        style.set_border_width_all(2)
-        style.set_corner_radius_all(7)
-        picker.add_theme_stylebox_override("normal", style)
-        picker.add_theme_color_override("font_color", accent)
+        _style_picker(picker, item)
+        # Repaint the real selected grade immediately; do not leave the
+        # previous item's jewel colour when switching inventory options.
+        picker.item_selected.connect(func(index: int) -> void:
+            var selected_id := str(picker.get_item_metadata(index))
+            var selected_item: Dictionary = state.sect.equipment_items.get(selected_id, {})
+            if not selected_item.is_empty():
+                _style_picker(picker, selected_item)
+        )
+
+static func _style_picker(picker: OptionButton, item: Dictionary) -> void:
+    var accent := color_for(str(item.get("quality", "pham")))
+    var style := StyleBoxFlat.new()
+    style.bg_color = Color(0.045, 0.14, 0.165, 0.98)
+    style.border_color = accent
+    style.set_border_width_all(2)
+    style.set_corner_radius_all(7)
+    picker.add_theme_stylebox_override("normal", style)
+    picker.add_theme_color_override("font_color", accent)
