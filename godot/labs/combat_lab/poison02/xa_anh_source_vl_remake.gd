@@ -11,9 +11,11 @@ const COIL_END := 2.57
 const DISSOLVE_END := 3.45
 const LOOP_SECONDS := 4.10
 const SOURCE_ATLAS: Texture2D = preload("res://labs/combat_lab/poison02/assets/serpent-flight-atlas.webp")
-const COIL_ART: Texture2D = preload("res://labs/combat_lab/poison02/assets/serpent-bind-energy.webp")
-const HEAD_ART: Texture2D = preload("res://labs/combat_lab/poison02/assets/serpent-head.webp")
-const BIND_SHADER: Shader = preload("res://labs/combat_lab/poison02/serpent_bind_swim.gdshader")
+## Approved serpent-only source split into independently composited 4-pose layers.
+const COIL_BACK_ATLAS: Texture2D = preload("res://labs/combat_lab/poison02/assets/serpent-bind-back-4pose.webp")
+const COIL_FRONT_ATLAS: Texture2D = preload("res://labs/combat_lab/poison02/assets/serpent-bind-front-4pose.webp")
+const COIL_POSES := 4
+const COIL_CELL := Vector2(128.0, 128.0)
 const JX_IMPACT: Texture2D = preload("res://assets/combat_v4/jx1_skill_fx/1fffed7e.webp")
 const ACTOR: Texture2D = preload("res://labs/character_family/assets/nu_doc_tu_v4_candidate/idle_4dir_APPROVED_UNCHANGED.png")
 const FLIGHT_FRAME_SIZE := Vector2(512.0, 179.0)
@@ -26,9 +28,13 @@ var paused := false
 var flight_frames: Array[AtlasTexture] = []
 var _flight: Sprite2D
 var _specular: Sprite2D
-var _bind: Sprite2D
-var _head: Sprite2D
-var _bind_shader: ShaderMaterial
+var _back_a: Sprite2D
+var _back_b: Sprite2D
+var _front_a: Sprite2D
+var _front_b: Sprite2D
+var _target_actor: Sprite2D
+var _coil_back_frames: Array[AtlasTexture] = []
+var _coil_front_frames: Array[AtlasTexture] = []
 var _radial: Texture2D
 var _impact_rects: Array = []
 
@@ -65,14 +71,23 @@ func _ready() -> void:
         flight_frames.append(tex)
     _flight = _add_fx(false, 1)
     _specular = _add_fx(true, 2)
-    _bind = _add_fx(true, 3)
-    _bind.texture = COIL_ART
-    _bind_shader = ShaderMaterial.new()
-    _bind_shader.shader = BIND_SHADER
-    _bind.material = _bind_shader
-    _head = _add_fx(false, 4)
-    _head.texture = HEAD_ART
-    _bind.position = TARGET + Vector2(9.0, -100.0)
+    # Independent back/front sprite animation; do not duplicate an actor from concept art.
+    for i in range(COIL_POSES):
+        var region := Rect2(Vector2(float(i % 2) * COIL_CELL.x,
+            float(floori(float(i) / 2.0)) * COIL_CELL.y), COIL_CELL)
+        var back_frame := AtlasTexture.new()
+        back_frame.atlas = COIL_BACK_ATLAS
+        back_frame.region = region
+        _coil_back_frames.append(back_frame)
+        var front_frame := AtlasTexture.new()
+        front_frame.atlas = COIL_FRONT_ATLAS
+        front_frame.region = region
+        _coil_front_frames.append(front_frame)
+    _back_a = _add_fx(false, 1)
+    _back_b = _add_fx(false, 1)
+    _target_actor = _make_target_actor()
+    _front_a = _add_fx(false, 3)
+    _front_b = _add_fx(false, 3)
     _update_fx()
     print("VFX_POI02_READY skill=", SKILL_ID, " flight=", FRAME_COUNT,
         " impact=", IMPACT_FRAME_COUNT, " visual_only=true")
@@ -104,6 +119,28 @@ func _add_fx(additive: bool, z: int) -> Sprite2D:
     sprite.visible = false
     return sprite
 
+## Draw the target between the actual serpent's rear and front coils.
+func _make_target_actor() -> Sprite2D:
+    var frame := AtlasTexture.new()
+    frame.atlas = ACTOR
+    frame.region = Rect2(Vector2.ZERO, Vector2(320.0, 384.0))
+    var actor := Sprite2D.new()
+    actor.texture = frame
+    actor.centered = false
+    actor.z_index = 2
+    actor.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+    actor.position = TARGET - Vector2(160.0, 351.0) * 0.44
+    actor.scale = Vector2.ONE * 0.44
+    actor.modulate = Color("9ea6b2")
+    add_child(actor)
+    return actor
+
+static func coil_pose_at(t: float) -> int:
+    if t < CONTACT_AT - 0.07 or t >= DISSOLVE_END:
+        return -1
+    var u := clampf((t - CONTACT_AT) / maxf(0.001, COIL_END - CONTACT_AT), 0.0, 1.0)
+    return mini(COIL_POSES - 1, floori(u * float(COIL_POSES)))
+
 func _radial_texture() -> Texture2D:
     var img := Image.create(64, 64, false, Image.FORMAT_RGBA8)
     for y in range(64):
@@ -134,25 +171,35 @@ func _update_fx() -> void:
         _specular.scale = Vector2.ONE * s * 1.016
         _flight.modulate = Color(1.0, 1.0, 1.0, attack * 0.96)
         _specular.modulate = Color("9bffbf", attack * 0.13)
+    # Authored FOUR bind poses, separately composited behind/in front of victim.
+    # The successfully reviewed flight atlas and projectile timing remain unchanged.
     var binding := bind_gain(elapsed)
-    _bind.visible = binding > 0.008
-    if _bind.visible:
-        var u := clampf((elapsed - CONTACT_AT) / maxf(0.01, COIL_END - CONTACT_AT), 0.0, 1.0)
-        # Keep the painted coils close to the target torso, rather than left-floating ribbons.
-        _bind.position = TARGET + Vector2(9.0 + 4.0 * sin(u * 2.8), -100.0 + 5.0 * sin(u * 2.4))
-        _bind.scale = Vector2(0.735 + 0.025 * sin(u * PI), 0.785 - 0.028 * u)
-        _bind.rotation = -0.042 + 0.031 * sin(elapsed * 5.4)
-        _bind.modulate = Color.WHITE
-        _bind_shader.set_shader_parameter("phase", elapsed)
-        _bind_shader.set_shader_parameter("opacity", binding * 0.83)
-    _head.visible = binding > 0.04 and elapsed < COIL_END + 0.19
-    if _head.visible:
-        var u_head := clampf((elapsed - CONTACT_AT) / maxf(0.01, COIL_END - CONTACT_AT), 0.0, 1.0)
-        # The bite advances to the shoulder and follows the bind instead of hovering above it.
-        _head.position = TARGET + Vector2(15.0 + 9.0 * sin(u_head * PI), -91.0 - 6.0 * sin(u_head * 3.2))
-        _head.scale = Vector2.ONE * (0.71 + 0.065 * sin(u_head * PI))
-        _head.rotation = -0.065 + 0.065 * sin(elapsed * 4.0)
-        _head.modulate = Color(1.0, 1.0, 1.0, binding * 0.87)
+    var pose_f := clampf((elapsed - CONTACT_AT) / maxf(0.01, COIL_END - CONTACT_AT), 0.0, 1.0) * float(COIL_POSES - 1)
+    var pose_a := mini(COIL_POSES - 1, floori(pose_f))
+    var pose_b := mini(COIL_POSES - 1, pose_a + 1)
+    var cross := smoothstep(0.68, 1.0, pose_f - float(pose_a)) if pose_b > pose_a else 0.0
+    var origin := TARGET + Vector2(3.0 + 2.0 * sin(elapsed * 3.0), -98.0 + 3.0 * sin(elapsed * 4.2))
+    var ease_release := smoothstep(COIL_END, DISSOLVE_END, elapsed)
+    var zoom := 1.60 * (1.0 - 0.035 * ease_release)
+    var back: Array[Sprite2D] = [_back_a, _back_b]
+    var front: Array[Sprite2D] = [_front_a, _front_b]
+    for i in range(2):
+        back[i].visible = binding > 0.009
+        front[i].visible = binding > 0.009
+        if binding <= 0.009:
+            continue
+        var pose_id := pose_a if i == 0 else pose_b
+        var alpha := binding * (1.0 - cross if i == 0 else cross)
+        back[i].texture = _coil_back_frames[pose_id]
+        front[i].texture = _coil_front_frames[pose_id]
+        back[i].position = origin
+        front[i].position = origin
+        back[i].rotation = 0.010 * sin(elapsed * 4.2)
+        front[i].rotation = back[i].rotation
+        back[i].scale = Vector2.ONE * zoom
+        front[i].scale = Vector2.ONE * zoom
+        back[i].modulate = Color(1.0, 1.0, 1.0, alpha * 0.93)
+        front[i].modulate = Color(1.0, 1.0, 1.0, alpha * 0.99)
 
 func _process(delta: float) -> void:
     if paused: return
@@ -197,7 +244,7 @@ func _draw() -> void:
             _mote(p, 7.0, Color("d9ffb0", 0.36 * charge))
 
     _actor(CASTER, Color.WHITE)
-    _actor(TARGET, Color("9ea6b2"))
+    _mote(TARGET + Vector2(0.0, 6.0), 52.0, Color("10141b", 0.56))
 
     if elapsed >= CONTACT_AT and elapsed < CONTACT_AT + 0.14:
         var shock := (elapsed - CONTACT_AT) / 0.14

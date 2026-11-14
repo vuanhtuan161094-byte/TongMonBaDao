@@ -56,3 +56,16 @@ Official exact-source tested SHA `64d431c9426432c4ea3908a1197f139d5cac5cf0`; God
 Side-by-side same-clock R4 vs R5 at 1.92s inspected. Bind is more closely anchored to torso and snake head is closer to shoulder. Still visually separate spiritual coil ribbons at some times, so do not claim finished anatomical wrap or full Source VL parity. Status `OWNER_VISUAL_PENDING / PVE_INTEGRATION_HOLD`; no live integration, no rig, no Codex, no merge/new branch. VFX-focused PASS does not erase unrelated v63-quyen-doc-matrix failure.
 
 Reusable pipeline: source-quality storyboard -> recognizably painted sprite/flipbook -> light materials/impact on separate layers -> native Godot film -> 8+ clocked frames -> same-camera R4/R5 comparison -> only modify rejected motion segment while freezing approved flight. Technical PASS != visual approval.
+## APPROVED CONCEPT ART → FOUR-POSE REAL GODOT SKILL BIND (2026-11-14)
+
+Owner explicitly approved the new painted serpent wrapping image and requested incorporation into the **actual Xà Ảnh Quấn Mạch skill**, not an image-only report. Important: the initially generated reference sheet includes a female character figure, which CANNOT be composited verbatim onto real enemies. Therefore a separate original cobra-only 2×2 transparent four-pose sheet is used as the reusable Godot sprite; the owner-approved concept is retained as artistic target, not falsely described as directly reusable isolated snake pixels.
+
+**Real skill scene:** res://labs/combat_lab/poison02/xa_anh_source_vl_remake.tscn; exact skill ID tmb.skill.poison.co_doc.active_02.human; view-only single target. The earlier approved six-frame flight atlas and time constants (CAST_AT=0.54, CONTACT_AT=1.63, COIL_END=2.57, DISSOLVE_END=3.45) remain unchanged.
+
+**Original new Godot WebP art embedded on PR #72:**
+- assets/serpent-bind-4pose-approved.webp: 2×2 = four 128×128 frames, original independent serpent-only sheet, sha256 a01f4b7aa1655684954abc07d737d7788c07e1e8d1fb0d9f1018d2d95ac07c9c; source record and future asset upgrade basis.
+- assets/serpent-bind-back-4pose.webp: original rear coil 2×2, sha256 af6fa319123ae86a82ef9f033884a9a5084220a842b8c0cbbf6e8ab687eea0ef.
+- assets/serpent-bind-front-4pose.webp: original foreground coil 2×2, sha256 e5bd9c35594215fc04450890d9039ed1f4999b4d492842802ea4fb35248f44bf.
+- The back/foreground atlases are pixel-mask partitions of the same four serpent-only originals; the target sprite now renders at z=2 between back (z=1) and foreground (z=3). No hidden duplicate character from the original concept art is painted into either atlas. Four distinct bind poses with bounded crossfades replace the old floating energy band / cropped head and UV-swim shader. The JX #63 impact remains a view-only contact accent.
+
+**Quality gates:** native Godot 4.7.2 strict import/compile, focused contract, genuine 1280×720 MP4, review 1.70/1.92/2.15/2.38, compare to R4/R5 before owner review. Owner approved concept art, but final Godot in-motion coil needs its own visual QA; **do not claim automatic live PvE/V6.3 deployment**. Gameplay/HP/real targeting/DoT/SaveService/economy/AI untouched. No rig. Source VL-quality means polish reference, not a claim that commercial Source VL pixels were used.
