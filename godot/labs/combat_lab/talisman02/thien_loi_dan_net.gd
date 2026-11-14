@@ -12,9 +12,10 @@ const DECLARED_COOLDOWN := 10.8
 const DECLARED_RANGE := 9.5
 const DECLARED_PROJECTILE_SPEED := 0.0
 const CASTER := Vector2(287.0,544.0)
-const HAND := Vector2(358.0,424.0)
+const HAND := Vector2(338.0,445.0) # Painted caster-palm anchor at native 1x
 const TARGETS := [Vector2(772.0,540.0),Vector2(950.0,540.0),Vector2(1130.0,540.0)]
 const CONTACTS := [Vector2(772.0,455.0),Vector2(950.0,455.0),Vector2(1130.0,455.0)]
+const PAINTED_LINE_RECT := Rect2(253.0,329.0,943.0,211.0) # R6 alpha-left at the palm; far end remains at x=1196
 const RELEASE_AT := 0.62
 const CONTACT_AT := 1.39
 const FADE_END := 2.72
@@ -105,8 +106,8 @@ func _update_hero()->void:
     if not _seal.visible:return
     var f:=clampi(int(floor(clampf(t/1.28,0.0,1.0)*11.9)),0,11)
     _cell.region=Rect2(float(f%3)*300.0,float(f/3)*360.0,300.0,360.0)
-    _seal.position=HAND+Vector2(29.0,-27.0+5.0*sin(t*5.0))
-    _seal.scale=Vector2.ONE*(0.42+0.05*sin(t*8.0))
+    _seal.position=HAND+Vector2(24.0,-15.0+4.0*sin(t*5.0))
+    _seal.scale=Vector2.ONE*(0.35+0.03*sin(t*8.0))
     _seal.rotation=-0.16+0.06*sin(t*6.0)
     _seal.modulate=Color(1.0,1.0,1.0,gain)
 func _halo(at:Vector2,radius:float,tint:Color)->void:
@@ -117,7 +118,7 @@ static func line_point(q:float,t:float,lane:int=0)->Vector2:
     var e:=sin(PI*p)
     var zig:=8.0*sin(p*67.0+t*21.0)*e+5.0*sin(p*119.0-t*37.0)*e
     var curve:=22.0*sin(PI*p)+11.0*sin(p*12.7+t*1.8)*e
-    return Vector2(398.0+735.0*p,430.0+curve+zig+float(lane)*11.0*e)
+    return Vector2(HAND.x+(1133.0-HAND.x)*p,HAND.y+curve+zig+float(lane)*11.0*e)
 func _draw_living_line(t:float,gain:float)->void:
     var reach:=smoothstep(RELEASE_AT,CONTACT_AT,t)
     if gain<0.01 or reach<0.01:return
@@ -126,7 +127,7 @@ func _draw_living_line(t:float,gain:float)->void:
     _halo(end,43.0,Color("e9baff",gain*.65))
     _halo(end,15.0,Color("fff8ff",gain*.91))
     for lane in range(2):
-        var prev:=Vector2(398.0,430.0)
+        var prev:=HAND
         if lane==1:prev+=Vector2(0.0,10.0)
         for step in range(43):
             var q:=reach*float(step+1)/43.0
@@ -168,12 +169,12 @@ func _draw()->void:
     var index:=stroke_index(t)
     if index>=0:
         var gain:=smoothstep(RELEASE_AT,RELEASE_AT+.13,t)*(1.0-smoothstep(1.54,1.76,t))
-        _halo(HAND+Vector2(31,-26),69.0,Color("a878fa",gain*.36))
+        _halo(HAND+Vector2(14,-8),45.0,Color("a878fa",gain*.25))
         # All ten poses are independently shaped, progressive alpha glyph-brush artwork.
         # PAINTED ART R3 is the PRIMARY visible stroke, not a line-only SVG approximation.
         # 4 columns x 3 rows of actual animated transparent 1024x256 raster art.
         var source_rect := Rect2(float(index % 4) * 1024.0, float(int(index / 4)) * 256.0, 1024.0, 256.0)
-        draw_texture_rect_region(PAINTED_STROKES,Rect2(385.0,329.0,811.0,211.0),source_rect,Color(1.0,1.0,1.0,gain*.99))
+        draw_texture_rect_region(PAINTED_STROKES,PAINTED_LINE_RECT,source_rect,Color(1.0,1.0,1.0,gain*.99))
         # The runtime conductor is now a quiet subordinate flicker, not the hero art.
         _draw_living_line(t,gain*.10)
         # One continuous lightning calligraphy path along the declared line, no fake 360-degree AoE.
