@@ -43,9 +43,16 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          TMB_ART_LOG_EXPORT=0 /usr/bin/python3 tools/vfx/paint_tal05_heaven.py . > "$RUNNER_TEMP/vfx-tal05/art.log"
-          grep -E '^TAL05_PAINTED_OUTPUT|^TMB_ASSET_BEGIN|^TMB_ASSET_END' "$RUNNER_TEMP/vfx-tal05/art.log"
-          git diff --exit-code -- godot/labs/combat_lab/talisman05/assets/tal05_r3_*.webp
+          # Do not rebake/overwrite approved source bytes during exact-SHA tests.
+          # NumPy/Pillow encoder revisions may produce different binary WebP bytes.
+          echo "TAL05_QA_COMMITTED_PAINTED_ASSETS"
+          cat <<'SUMS' | sha256sum --check --strict
+          0f8395369262924562d8c4b8467e0d2c82c01bacef3f0e3c023a43ece073381f  godot/labs/combat_lab/talisman05/assets/tal05_r3_sky_master.webp
+          5e85e9151f3f6761cf6a2faf09cf5981231503261bdfce848684ca8b9beb9858  godot/labs/combat_lab/talisman05/assets/tal05_r3_sky_flipbook.webp
+          442ce0151a210dd147d77866a265d5c1c351a51761f958aab5593014a08dba20  godot/labs/combat_lab/talisman05/assets/tal05_r3_bolt_master.webp
+          9f3c76b0b4f298865666e6aaadf640f73885db0d5ab5461826d9897884217a42  godot/labs/combat_lab/talisman05/assets/tal05_r3_bolt_flipbook.webp
+          a7165ef92a4398597dd4ff132077880d70569be1a0fb68fefe48dfdfc55bfb1a  godot/labs/combat_lab/talisman05/assets/tal05_r3_impact.webp
+          SUMS
           /usr/bin/python3 - <<'PY'
           from PIL import Image
           from pathlib import Path

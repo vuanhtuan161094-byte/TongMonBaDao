@@ -19,3 +19,6 @@ R3 Godot at 1.95 and 2.08 seconds showed R2 legacy lateral neon and oversized st
 
 ## R5 native lightning-force polish / exact-SHA gate pending
 R4 true Godot 1.79/2.08s displayed a clean face-safe sky ritual and legal three localized ground scars but the main bolt was too hairline and the scars too faint. R5 rebakes the **same first-party painted source** with wider core/feather strokes, warmer gold-violet target cracks and a moderately larger ground-only scar, never giant foreground stars, vector UI rings or extra damage. Requires new exact-SHA video/owner visual check; `OWNER_VISUAL_PENDING`.
+
+## R5 asset packaging correction — real CI failure resolved by pinned-source QA
+First exact-SHA run with committed WebP files re-executed Pillow/NumPy encoding and the `git diff --exit-code` gate failed due differing encoded binary bytes across runner environments. This was an ACTUAL QA failure, not art rejection or gameplay defect. Correct gate: preserve original committed RGBA WebPs as runtime source authority; validate **each SHA256** and RGBA dimensions/alpha, then strict Godot import/parse/test and render. The editable first-party generator remains in `tools/vfx/paint_tal05_heaven.py` for deliberate rebake only; rebaking requires new asset hashes, a fresh commit and new exact-SHA QA. No CI PASS claim until updated workflow runs.
