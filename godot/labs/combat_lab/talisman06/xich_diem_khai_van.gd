@@ -104,8 +104,8 @@ func _draw()->void:
     if scorch>.004:
         var f:=impact_index(t)
         var source:=Rect2(float(f%4)*288.0,float(int(f/4))*224.0,288,224)
-        draw_texture_rect_region(IMPACT,Rect2(target-Vector2(109,103),Vector2(218,119)),
-            source,Color(1,1,1,scorch*.93))
+        draw_texture_rect_region(IMPACT,Rect2(target-Vector2(117,131),Vector2(234,152)),
+            source,Color(1,1,1,scorch*.89))
         _halo(target+Vector2(0,-3),70,Color("e4742f",scorch*.18))
     # QA draws a preexisting frame-by-frame monster WALK atlas, never rigs.
     _actor(CASTER)
@@ -133,16 +133,16 @@ func _draw()->void:
         _halo(tip,39,Color("ffb252",alpha*.28))
     var h:=hit_gain(t)
     if h>.004:
-        var contact:=target_contact(t)+Vector2(0,21)
+        var contact:=target_contact(t)+Vector2(0,49)
         var hitframe:=impact_index(t)
         var hitregion:=Rect2(float(hitframe%4)*288,float(int(hitframe/4))*224,288,224)
-        # Brief authored molten hit splash at lower torso, separate from
-        # persistent ground scar beneath the walking monster.
+        # Original sprite on lower torso while monster face remains visible;
+        # separate compact scorched contact stays beneath moving feet.
         draw_texture_rect_region(IMPACT,
-            Rect2(contact-Vector2(61,65),Vector2(122,114)),
-            hitregion,Color(1.0,1.0,1.0,h*.71))
-        _halo(contact,48,Color("fe9d34",h*.37))
-        _halo(contact,21,Color("fff2cf",h*.76))
+            Rect2(contact-Vector2(75,70),Vector2(150,132)),
+            hitregion,Color(1.0,1.0,1.0,h*.91))
+        _halo(contact,53,Color("fe9d34",h*.42))
+        _halo(contact,22,Color("fff2cf",h*.77))
     var ember:=smoothstep(DEMO_HIT_AT,DEMO_HIT_AT+.17,t)*(1.0-smoothstep(1.92,FADE_END,t))
     if ember>.004:
         for k in range(13):
