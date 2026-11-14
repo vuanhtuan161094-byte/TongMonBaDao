@@ -109,3 +109,9 @@ Legend GPU/CPU estimates: T = low, V = moderate, C = expensive. All are **pre-pr
 - **Implemented candidate** in `godot/art/tmb_original_v1/`: independently authored TMB vector Hall/Mine, four stone tile variants and four scenic props; see detailed provenance. Historical originals remain unchanged and SHA verified as rollback/source audit, never used for these selected runtime textures.
 - Integrated into actual `SectIsometricWorldV1`, the Hall real operation illustration, and the Mine operation panel; no new gameplay scene. SourceA untouched for residence, guidance, forge, warehouse, portraits.
 - Focused Godot contract: `godot/tests/presentation/vis07_original_environment_test.gd`; 1280x720 screenshot remains ART-05 gate. **Owner aesthetic acceptance and Android PENDING**.
+
+## VIS-07 R3 — Source A family restored after owner rejection (2026-11-14)
+- Exact original reference snapshot from official run [43549938103](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/43549938103), ten original RGBA PNGs, verified source hash.
+- Rejected source-different vector silhouettes/terrain/foliage are removed from **live renderer**, candidates remain archived; Hall/terrain/foliage SHA-verified Source A temporarily restored for coherent style. Mine remains earlier MAP-D2 candidate; Source A mine source not verified.
+- New exact-source style lock + legacy production method: `docs/operations/TMB_VIS07_SOURCE_A_STYLE_LOCK_R3_20261114.md`.
+- Replacement art SourceA-family and Owner visual acceptance **PENDING**, not a claim of completed migration.

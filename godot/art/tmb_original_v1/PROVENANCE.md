@@ -1,12 +1,8 @@
-# VIS-07 original environment asset register
-Owner instruction 2026-11-14: replace displayed Source A main hall and gradually retire Source A map environment. All SVGs in this folder are **new TMB-original deterministic code-drawn art**, not extracted or traced Source A, not repainted Source A pixels and not an ImageGen-painted production sprite. Authoring source: this commit's SVG paths/gradients. Artistic acceptance: **PENDING owner**.
+# VIS-07 code-drawn environment candidates — ARCHIVED / REJECTED BY OWNER
+Owner visual rejection 2026-11-14: the SVG map Hall/Mine, trees and pavement do **not** match the real Source A 2D hand-painted production family.
 
-## Live replacement map
-- `hall_isometric.svg`: main-map landmark and real hall operation illustration (Source A main_hall/510052.png is no longer used as a hall display).
-- `mine_isometric.svg`: mine main-map worksite + real mine operation panel; supersedes old MAP-D2 candidate drawing.
-- `stone_{lane,court,rune,edge}.svg`: runtime replacements for historical Source A route and stone textures without changing terrain cells or navigation.
-- `tree_{pine,blossom,bamboo}.svg` and `rock_garden.svg`: replace historical Source A ENV01 vegetation render textures, preserving existing placement/depth layout.
+These SVGs are original authored code art, not repaints of Source A. Their artistic status is **REJECTED_AS_RUNTIME**. They remain in Git for historical provenance and internal comparison ONLY; no live view should preload them. Do not mark PASS because the engine can import them.
 
-The SHA-pinned original Source A bytes and their verification registry remain untouched for historical verification/rollback. Assets **not yet replaced**: residence, guidance, warehouse, forge map sprites; existing approved/independent forest/field/alchemy building variants; Source A character sprites (different pipeline). No gameplay/save/loot/building authority, collision/footprints, actor stats or routes changed. Existing Source A manifest QA validates original historical bytes, not current rendered source; `vis07_original_environment_test.gd` verifies new display provenance.
+As of VIS-07 R3, real map Hall, road tiles and greenery are restored to the exact, SHA-gated Source A render originals. Mine is restored to its earlier MAP-D2 candidate placeholder; there is **no SHA-gated Source A mine PNG in this PR**. Neither the candidate Mine nor any previous AI generated palace concept is approved.
 
-Mobile performance hypothesis: small fixed vector textures imported as Texture2D, no per-frame shader or particles. Android frame-time evidence pending. If the owner wants painterly isometric architecture rather than authored vector v1, this code-art iteration is a replaceable prototype, not a claim of hand-painted asset quality.
+R3 source-informed replacement policy and gates: `docs/operations/TMB_VIS07_SOURCE_A_STYLE_LOCK_R3_20261114.md`. Historical eight approved building visual records (S3) are **not** automatically recovered by finding later Source A PNGs (S0).

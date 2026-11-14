@@ -9,7 +9,6 @@ const HALL_STUDY = preload("res://art/uiux/hall_paint_v2.svg")
 const RESIDENCE_STUDY = preload("res://art/uiux/residence_paint_v2.svg")
 const GUIDANCE_STUDY = preload("res://art/uiux/guidance_paint_v2.svg")
 const CANDIDATE_STUDY = preload("res://art/uiux/candidate_neutral_v2.svg")
-const TMB_HALL = preload("res://art/tmb_original_v1/hall_isometric.svg")
 const SOURCE_A_BUILDINGS := {
     "hall": {"relative": "pv01_assets/main_hall/510052.png", "model": "510052"},
     "residence": {"relative": "pv01_assets/residence/510076.png", "model": "510076"},
@@ -26,11 +25,9 @@ func _ready() -> void:
     clip_contents = true
     if custom_minimum_size == Vector2.ZERO:
         custom_minimum_size = Vector2(300, 155)
-    # VIS-07 hall has original TMB art; legacy SHA-pinned bytes stay for
-    # provenance only. Residence/Guidance keep their own migration lane.
-    if facility_kind == "hall":
-        _art = TMB_HALL
-    var source_spec: Dictionary = SOURCE_A_BUILDINGS.get(facility_kind, {}) if _art == null else {}
+    # R3 restored the exact verified, hand-painted Source A master for Hall,
+    # pending a source-derived replacement that actually matches the family.
+    var source_spec: Dictionary = SOURCE_A_BUILDINGS.get(facility_kind, {})
     if not source_spec.is_empty():
         var gate = SOURCE_A_GATE.new()
         _art = gate.texture_for(str(source_spec["relative"]))
@@ -56,7 +53,7 @@ func _ready() -> void:
     tooltip_text = (
         "Source A · Model %s · SHA-256 đã kiểm chứng" % _source_model_id
         if _original_source
-        else "TMB original vector artwork · not Source A"
+        else "Tranh minh họa V2 · không phải asset Source A"
     )
     queue_redraw()
 

@@ -26,21 +26,6 @@ func _refresh_building_operation_art() -> void:
     super._refresh_building_operation_art()
     if building_operation_panel == null:
         return
-    if selected_building == SectMapPresentation.DEST_MINE:
-        var mine_host := building_operation_panel.get_node_or_null("BuildingOperationArtFrame/BuildingOperationArt") as Control
-        if mine_host != null and mine_host.get_node_or_null("VIS07MineOriginal") == null:
-            for old in mine_host.get_children():
-                if old is CanvasItem:
-                    old.visible = false
-            var mine_image := TextureRect.new()
-            mine_image.name = "VIS07MineOriginal"
-            mine_image.texture = preload("res://art/tmb_original_v1/mine_isometric.svg")
-            mine_image.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-            mine_image.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-            mine_image.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-            mine_image.mouse_filter = Control.MOUSE_FILTER_IGNORE
-            mine_host.add_child(mine_image)
-        return
     if not ART05_BUILDING_VARIANT.supported(selected_building):
         return
     var host := building_operation_panel.get_node_or_null("BuildingOperationArtFrame/BuildingOperationArt") as Control
