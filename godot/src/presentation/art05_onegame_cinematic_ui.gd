@@ -336,7 +336,7 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "Tá»
     if portrait != null:
         var showcase := portrait.get_parent() as Control
         VIS_QUALITY.apply_edge(showcase, quality)
-        VIS_QUALITY.apply_frame_material(showcase as PanelContainer, quality)
+        VIS_QUALITY.apply_frame_material(showcase, quality)
         VIS_QUALITY.apply_backlight(showcase, Rect2(Vector2(12, 6), Vector2(276, 224)), quality)
         var actor_name := (state.disciples[disciple_id] as DiscipleState).display_name
         for child in showcase.get_children():

@@ -81,7 +81,7 @@ static func frame_style(quality_id: String, background: Color, selected: bool = 
     style.content_margin_bottom = 7
     return style
 
-static func apply_frame_material(panel: PanelContainer, quality_id: String) -> void:
+static func apply_frame_material(panel: Control, quality_id: String) -> void:
     if panel == null:
         return
     var original := panel.get_theme_stylebox("panel") as StyleBoxFlat
