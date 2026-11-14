@@ -1,0 +1,111 @@
+name: VFX-TAL-06 | Xich Diem Khai Van fire sprite-first Godot movie
+on:
+  workflow_dispatch:
+  push:
+    branches: [integration/pve-p0-playable-ui-20261103]
+    paths:
+      - '.github/workflows/vfx-tal-06-xich-diem-khai-van.yml'
+      - 'tools/vfx/paint_tal06_xich_diem.py'
+      - 'godot/labs/combat_lab/talisman06/**'
+      - 'godot/tests/labs/combat_lab/vfx_tal06_contract_test.gd'
+permissions:
+  contents: read
+jobs:
+  original-fire-movie:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      GODOT_AUDIO_DRIVER: Dummy
+      GODOT_RENDERING_DRIVER: opengl3
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pinned Godot and original sprite painting dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq xvfb ffmpeg unzip python3-pil python3-numpy
+          curl --fail --location --retry 3 -o /tmp/godot472.zip 'https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip'
+          echo 'cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4  /tmp/godot472.zip' | sha256sum --check --strict
+          unzip -q /tmp/godot472.zip -d /tmp
+          sudo install -m0755 /tmp/Godot_v4.7.2-stable_linux.x86_64 /usr/local/bin/godot
+          mkdir -p "$RUNNER_TEMP/vfx-tal06"
+          godot --version | tee "$RUNNER_TEMP/vfx-tal06/engine.txt"
+          printf 'SOURCE_SHA=%s\nSKILL_ID=tmb.skill.talisman.hoa_phu.active_01.human\nOWNER_VISUAL_PENDING\nPVE_INTEGRATION_HOLD\nV63_OFF\nNO_RIG\n' "$GITHUB_SHA" > "$RUNNER_TEMP/vfx-tal06/metadata.txt"
+      - name: Generate independently painted real alpha flipbooks
+        shell: bash
+        run: |
+          set -euo pipefail
+          TMB_ART_LOG_EXPORT=1 /usr/bin/python3 tools/vfx/paint_tal06_xich_diem.py . > "$RUNNER_TEMP/vfx-tal06/art.log"
+          grep '^TAL06_ASSET' "$RUNNER_TEMP/vfx-tal06/art.log"
+          grep -E '^TMB_ASSET_BEGIN:|^TMB_ASSET_LINE:|^TMB_ASSET_END:' "$RUNNER_TEMP/vfx-tal06/art.log" || true
+          /usr/bin/python3 - <<'PY'
+          from PIL import Image
+          from pathlib import Path
+          import hashlib
+          p=Path('godot/labs/combat_lab/talisman06/assets')
+          specs={'tal06_flame_seal_atlas.webp':(1024,768,256,256,12),
+                 'tal06_fire_comet_atlas.webp':(1536,672,384,224,12),
+                 'tal06_impact_atlas.webp':(1152,448,288,224,8)}
+          for name,(w,h,cw,ch,count) in specs.items():
+              im=Image.open(p/name).convert('RGBA')
+              assert im.size==(w,h)
+              assert im.getchannel('A').getextrema()[0]==0 and im.getchannel('A').getextrema()[1]>140
+              hashes=set()
+              for i in range(count):
+                  x=i%4*cw;y=i//4*ch
+                  hashes.add(hashlib.sha256(im.crop((x,y,x+cw,y+ch)).tobytes()).hexdigest())
+              assert len(hashes)>=count-1,(name,len(hashes))
+              print('TAL06_TRUE_POSES',name,len(hashes))
+          print('TAL06_ALPHA_POSE_GATE=PASS')
+          PY
+      - name: Restore existing Stage A asset pack without changing tracked files
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat .github/assets/p3/female_stage_a/part{01..14}.b64 .github/assets/p3/female_stage_a/part15a.b64 .github/assets/p3/female_stage_a/part15b.b64 .github/assets/p3/female_stage_a/part{16..20}.b64 | tr -d '\r\n\t ' | base64 --decode > /tmp/tmb_stage_a_pack.zip
+          test "$(stat -c%s /tmp/tmb_stage_a_pack.zip)" -eq 44838
+          echo '6a4213b9129ffb3f438c21cbb5326672ddf8915323836bf80cb33b8e5fabfdca  /tmp/tmb_stage_a_pack.zip' | sha256sum --check --strict
+          unzip -q /tmp/tmb_stage_a_pack.zip -d .
+      - name: Godot 4.7.2 exact-SHA import parse focused test
+        shell: bash
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/vfx-tal06"
+          bash tools/qa/run_godot_strict.sh --headless --path godot --import 2>&1 | tee "$d/import.log"
+          bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://labs/combat_lab/talisman06/xich_diem_khai_van.gd 2>&1 | tee "$d/parse.log"
+          bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/labs/combat_lab/vfx_tal06_contract_test.gd 2>&1 | tee "$d/test.log"
+          grep -Fq 'VFX_TAL06_FOCUSED_RESULT=PASS failures=0' "$d/test.log"
+      - name: Genuine native Godot 1280x720 MP4 GIF and fourteen phase frames
+        shell: bash
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/vfx-tal06"
+          xvfb-run -a -s '-screen 0 1280x720x24' bash tools/qa/run_godot_strict.sh --path godot --resolution 1280x720 --fixed-fps 60 --write-movie "$d/xich-diem-khai-van.avi" --quit-after 198 res://labs/combat_lab/talisman06/xich_diem_khai_van.tscn 2>&1 | tee "$d/movie.log"
+          test -s "$d/xich-diem-khai-van.avi"
+          ffmpeg -y -hide_banner -loglevel error -i "$d/xich-diem-khai-van.avi" -pix_fmt yuv420p -c:v libx264 -crf 16 -movflags +faststart "$d/xich-diem-khai-van.mp4"
+          ffprobe -v error -select_streams v:0 -show_entries stream=width,height,avg_frame_rate -of default=noprint_wrappers=1 "$d/xich-diem-khai-van.mp4" | tee "$d/dimensions.txt"
+          grep -Fxq 'width=1280' "$d/dimensions.txt"
+          grep -Fxq 'height=720' "$d/dimensions.txt"
+          for at in 0.12 0.28 0.43 0.55 0.70 0.88 1.07 1.22 1.38 1.49 1.62 1.86 2.20 2.75; do
+            ffmpeg -y -hide_banner -loglevel error -ss "$at" -i "$d/xich-diem-khai-van.mp4" -frames:v 1 "$d/frame-$at.png"
+          done
+          ffmpeg -y -hide_banner -loglevel error -i "$d/xich-diem-khai-van.mp4" -vf 'fps=5,scale=320:180,tile=5x3:nb_frames=15' -frames:v 1 "$d/contact-sheet.png"
+          ffmpeg -y -hide_banner -loglevel error -i "$d/xich-diem-khai-van.mp4" -vf 'fps=10,scale=640:-1:flags=lanczos' -loop 0 "$d/xich-diem-khai-van.gif"
+          sha256sum "$d/"*.mp4 "$d/"*.gif "$d/"*.png > "$d/SHA256SUMS.txt"
+          grep -Fq 'VFX_TAL06_READY' "$d/movie.log"
+          rm "$d/xich-diem-khai-van.avi"
+      - name: Upload original source painted atlas and native Godot evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vfx-tal06-${{ github.sha }}
+          retention-days: 14
+          if-no-files-found: warn
+          path: |
+            ${{ runner.temp }}/vfx-tal06/*.log
+            ${{ runner.temp }}/vfx-tal06/*.txt
+            ${{ runner.temp }}/vfx-tal06/*.png
+            ${{ runner.temp }}/vfx-tal06/*.mp4
+            ${{ runner.temp }}/vfx-tal06/*.gif
+            godot/labs/combat_lab/talisman06/assets/tal06_*.webp
