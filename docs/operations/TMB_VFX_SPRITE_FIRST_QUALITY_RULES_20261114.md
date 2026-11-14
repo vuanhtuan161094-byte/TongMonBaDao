@@ -2,6 +2,8 @@
 
 **Owner-endorsed sprite+flipbook+layer method:** [shared art production playbook](TMB_VFX_SPRITE_LAYER_PIPELINE_20261114.md); [Lôi Phù art identity and five real Human cast contracts](TMB_VFX_TALISMAN_PLAYBOOK_20261114.md); [copyable one-skill packet](../templates/VFX_SKILL_ART_FIRST_TEMPLATE.md). Supporting hand/foot seals and particles are optional **skill-specific** art layers, not universal identical VFX.
 
+**Required baked-art method when preserving the beauty of a painted render:** [Painted Source → Gameplay Sprite QA Gate](TMB_VFX_PAINTED_SOURCE_TO_GODOT_ASSET_GATE_20261114.md) (source/rights, crop, original RGBA alpha, animated source pixels, compositing, exact-SHA Godot video and owner review). This is required for ALL schools using concept-to-sprite production; stop replacing beautiful painting with a few code-drawn neon curves.
+
 Authority: read AGENTS.md, TMB_VFX_ART_FIRST_SINGLE_SKILL_SOP_V3_20261114.md, then this file, and the individual skill packet. Owner permits and encourages real original **sprites** whenever they improve appearance.
 
 ## POI06 R10 alpha-edge lesson

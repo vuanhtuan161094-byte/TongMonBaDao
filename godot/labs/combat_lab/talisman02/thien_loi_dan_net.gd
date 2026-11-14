@@ -19,6 +19,10 @@ const RELEASE_AT := 0.62
 const CONTACT_AT := 1.39
 const FADE_END := 2.72
 const LOOP_SECONDS := 3.13
+const PAINTED_STROKES: Texture2D = preload("res://labs/combat_lab/talisman02/assets/tal02_thunder_flipbook.webp")
+const PAINTED_MASTER: Texture2D = preload("res://labs/combat_lab/talisman02/assets/tal02_thunder_master.webp")
+const PAINTED_FOOT: Texture2D = preload("res://labs/combat_lab/talisman02/assets/talisman_foot_array.webp")
+const PAINTED_IMPACT: Texture2D = preload("res://labs/combat_lab/talisman02/assets/tal02_fracture_impact.webp")
 const STROKES := [
     preload("res://labs/combat_lab/talisman02/assets/ink_stroke_00.svg"),
     preload("res://labs/combat_lab/talisman02/assets/ink_stroke_01.svg"),
@@ -32,8 +36,8 @@ const STROKES := [
     preload("res://labs/combat_lab/talisman02/assets/ink_stroke_09.svg"),
 ]
 const TALISMAN: Texture2D = preload("res://labs/combat_lab/talisman01/assets/thunder_talisman_atlas.webp")
-const FLOOR: Texture2D = preload("res://labs/combat_lab/talisman01/assets/thunder_cast_sigil.svg")
-const IMPACT: Texture2D = preload("res://labs/combat_lab/talisman01/assets/thunder_impact_burst.png")
+const FLOOR: Texture2D = PAINTED_FOOT
+const IMPACT: Texture2D = PAINTED_IMPACT
 const BG: Texture2D = preload("res://labs/combat_lab/poison05/remake_r6/assets/immortal_valley.svg")
 const ACTOR: Texture2D = preload("res://labs/character_family/assets/nu_doc_tu_v4_candidate/idle_4dir_APPROVED_UNCHANGED.png")
 var elapsed:=0.0
@@ -166,8 +170,12 @@ func _draw()->void:
         var gain:=smoothstep(RELEASE_AT,RELEASE_AT+.13,t)*(1.0-smoothstep(1.54,1.76,t))
         _halo(HAND+Vector2(31,-26),69.0,Color("a878fa",gain*.36))
         # All ten poses are independently shaped, progressive alpha glyph-brush artwork.
-        draw_texture_rect(STROKES[index],Rect2(385.0,329.0,811.0,211.0),false,Color(1.0,1.0,1.0,gain*.28))
-        _draw_living_line(t,gain)
+        # PAINTED ART R3 is the PRIMARY visible stroke, not a line-only SVG approximation.
+        # 4 columns x 3 rows of actual animated transparent 1024x256 raster art.
+        var source_rect := Rect2(float(index % 4) * 1024.0, float(int(index / 4)) * 256.0, 1024.0, 256.0)
+        draw_texture_rect_region(PAINTED_STROKES,Rect2(385.0,329.0,811.0,211.0),source_rect,Color(1.0,1.0,1.0,gain*.99))
+        # The runtime conductor is now a quiet subordinate flicker, not the hero art.
+        _draw_living_line(t,gain*.10)
         # One continuous lightning calligraphy path along the declared line, no fake 360-degree AoE.
     for i in range(TARGET_LIMIT):
         var g:=contact_gain(t,i)

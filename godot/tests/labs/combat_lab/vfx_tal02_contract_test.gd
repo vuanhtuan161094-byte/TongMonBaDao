@@ -12,7 +12,11 @@ func _run()->void:
     _check(LAB.TARGET_LIMIT==3 and LAB.TARGETS.size()==3 and LAB.CONTACTS.size()==3,"cap three")
     _check(LAB.DECLARED_CAST_TIME==0.62 and LAB.DECLARED_COOLDOWN==10.8,"source timing")
     _check(LAB.DECLARED_RANGE==9.5 and LAB.DECLARED_PROJECTILE_SPEED==0.0,"line no projectile")
-    _check(LAB.STROKES.size()==10,"ten independently drawn ink poses")
+    _check(LAB.STROKES.size()==10,"ten legacy individually drawn ink poses")
+    _check(LAB.PAINTED_STROKES.get_size()==Vector2(4096,768),"real alpha painted thunder atlas 4x3 x 1024x256")
+    _check(LAB.PAINTED_MASTER.get_size()==Vector2(1024,256),"baked original thunder master")
+    _check(LAB.PAINTED_FOOT.get_size()==Vector2(512,224),"baked painterly foot seal")
+    _check(LAB.PAINTED_IMPACT.get_size()==Vector2(384,384),"baked cracked lightning impact")
     for i in range(10):
         _check(LAB.STROKES[i].get_size()==Vector2(1024.0,256.0),"stroke art size "+str(i))
     _check(LAB.phase_at(.3)=="inscribe" and LAB.phase_at(.9)=="draw_line","staging")

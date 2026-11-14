@@ -48,3 +48,6 @@ The owner requested production across the Loî Phù cast family and a caster-und
 
 **Next separately scoped work:** request real visual approval for these five Human cast masters; then, only when separately authorized, passive_01..05 / innate receipt-only cues, lineage/tier A/B and divine variants mapped to their exact effect/shape/target cap, and real PvE receipt integration/physical Windows/Android QA. Hardware frame timing remains PENDING. Current release gate is OFF.
 
+
+## TAL02 R3 / TAL03 R2 painted-source remediation (2026-11-14)
+Both skills adopt the mandatory [baked-art quality gate](TMB_VFX_PAINTED_SOURCE_TO_GODOT_ASSET_GATE_20261114.md). TAL02: 4096×768 transparent animated stroke atlas (10 poses), 512×224 painted caster circle, 384² painted impact crack; code-only curve is reduced to a subordinate 10% thread, not main art. TAL03: 1280×640 transparent animated seal atlas (8 poses), 320² original painted glyph master, same underfoot art; the brand sits at chest height and causes no damage/DoT. **Status is still owner visual pending until genuine R3/R2 videos are reviewed.** Older TAL02 SVG and TAL03 SVG assets remain archival baseline, NOT runtime hero VFX.

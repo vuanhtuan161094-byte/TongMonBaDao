@@ -11,7 +11,10 @@ func _run()->void:
     _check(LAB.EFFECT=="mark" and LAB.SHAPE=="single_target" and LAB.TARGET_LIMIT==1,"one target mark")
     _check(LAB.DECLARED_CAST_TIME==.50 and LAB.DECLARED_COOLDOWN==12.2,"source timing")
     _check(LAB.DECLARED_RANGE==8.5 and LAB.DECLARED_DURATION==6.0,"source 6s mark")
-    _check(LAB.MARKS.size()==8,"8 original ink poses")
+    _check(LAB.MARKS.size()==8,"8 legacy ink poses")
+    _check(LAB.PAINTED_MARKS.get_size()==Vector2(1280,640),"real alpha painted talisman mark atlas")
+    _check(LAB.PAINTED_MASTER.get_size()==Vector2(320,320),"baked master painted mark")
+    _check(LAB.PAINTED_FOOT.get_size()==Vector2(512,224),"shared real painterly foot array")
     for i in range(8):
         _check(LAB.MARKS[i].get_size()==Vector2(256,256),"pose size "+str(i))
     _check(LAB.phase_at(.31)=="inscribe" and LAB.phase_at(.7)=="seal_flight","windup and launch")

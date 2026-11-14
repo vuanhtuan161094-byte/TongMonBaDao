@@ -18,6 +18,9 @@ const DEMO_MARK_AT := .88
 const FADE_BEGIN := 6.88
 const FADE_END := 7.14
 const LOOP_SECONDS := 7.80
+const PAINTED_MARKS: Texture2D = preload("res://labs/combat_lab/talisman03/assets/tal03_mark_flipbook.webp")
+const PAINTED_MASTER: Texture2D = preload("res://labs/combat_lab/talisman03/assets/tal03_mark_master.webp")
+const PAINTED_FOOT: Texture2D = preload("res://labs/combat_lab/talisman02/assets/talisman_foot_array.webp")
 const MARKS := [
     preload("res://labs/combat_lab/talisman03/assets/rune_mark_00.svg"),
     preload("res://labs/combat_lab/talisman03/assets/rune_mark_01.svg"),
@@ -29,7 +32,7 @@ const MARKS := [
     preload("res://labs/combat_lab/talisman03/assets/rune_mark_07.svg"),
 ]
 const TALISMAN:Texture2D=preload("res://labs/combat_lab/talisman01/assets/thunder_talisman_atlas.webp")
-const GROUND:Texture2D=preload("res://labs/combat_lab/talisman01/assets/thunder_cast_sigil.svg")
+const GROUND:Texture2D=PAINTED_FOOT
 const BG:Texture2D=preload("res://labs/combat_lab/poison05/remake_r6/assets/immortal_valley.svg")
 const ACTOR:Texture2D=preload("res://labs/character_family/assets/nu_doc_tu_v4_candidate/idle_4dir_APPROVED_UNCHANGED.png")
 var elapsed:=0.0
@@ -128,7 +131,10 @@ func _draw()->void:
     if m>.004:
         var frame:=stamp_frame(t)
         var q:=smoothstep(DEMO_MARK_AT,1.29,t)
-        var radius:=lerpf(79.0,46.0,q)*(1.0+.027*sin(t*3.3))
+        # Keep the quiet six-second glyph at chest scale, not across the enemy face.
+        var radius:=lerpf(68.0,55.0,q)*(1.0+.027*sin(t*3.3))
         _halo(STAMP,radius*1.5,Color("ae75fa",m*.21))
-        draw_texture_rect(MARKS[frame],Rect2(STAMP-Vector2.ONE*radius,Vector2.ONE*radius*2.0),false,Color(1,1,1,m*(.79+.08*sin(t*2.8))))
+        # The original painted gilded glyph is the visible mark; procedural arcs are not substituted for it.
+        var source_rect := Rect2(float(frame % 4) * 320.0, float(int(frame / 4)) * 320.0, 320.0, 320.0)
+        draw_texture_rect_region(PAINTED_MARKS,Rect2(STAMP-Vector2.ONE*radius,Vector2.ONE*radius*2.0),source_rect,Color(1,1,1,m*(.79+.08*sin(t*2.8))))
         # One visible seal, no scripted real damage, mark application or periodic ticks.

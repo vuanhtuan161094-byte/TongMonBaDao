@@ -41,7 +41,23 @@ jobs:
           done
           test -s godot/labs/combat_lab/talisman01/assets/thunder_talisman_atlas.webp
           test -s godot/labs/combat_lab/talisman01/assets/thunder_impact_burst.png
-          sha256sum godot/labs/combat_lab/talisman02/assets/ink_stroke_*.svg > "$RUNNER_TEMP/vfx-tal02/atlas_hash.txt"
+          sha256sum godot/labs/combat_lab/talisman02/assets/ink_stroke_*.svg godot/labs/combat_lab/talisman02/assets/tal02_*.webp godot/labs/combat_lab/talisman02/assets/talisman_foot_array.webp > "$RUNNER_TEMP/vfx-tal02/atlas_hash.txt"
+          # A technical image import must prove transparent painted raster assets, not only text SVGs.
+          python3 - <<'PY'
+          from PIL import Image
+          refs={
+            'godot/labs/combat_lab/talisman02/assets/tal02_thunder_flipbook.webp':(4096,768),
+            'godot/labs/combat_lab/talisman02/assets/tal02_thunder_master.webp':(1024,256),
+            'godot/labs/combat_lab/talisman02/assets/tal02_fracture_impact.webp':(384,384),
+            'godot/labs/combat_lab/talisman02/assets/talisman_foot_array.webp':(512,224),
+          }
+          for path,size in refs.items():
+              im=Image.open(path)
+              assert im.size==size,(path,im.size,size)
+              assert 'A' in im.getbands() or 'transparency' in im.info,(path,'missing alpha')
+          print('VFX_TAL02_PAINTED_RGBA_ASSETS=PASS')
+          PY
+
       - name: Restore existing Stage A prerequisites without changing tracked files
         shell: bash
         run: |

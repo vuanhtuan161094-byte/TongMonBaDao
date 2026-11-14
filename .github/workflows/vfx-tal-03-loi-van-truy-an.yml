@@ -7,6 +7,7 @@ on:
       - '.github/workflows/vfx-tal-03-loi-van-truy-an.yml'
       - 'tools/vfx/generate_talisman01_atlas.py'
       - 'godot/labs/combat_lab/talisman03/**'
+      - 'godot/labs/combat_lab/talisman02/assets/talisman_foot_array.webp'
       - 'godot/tests/labs/combat_lab/vfx_tal03_contract_test.gd'
 permissions:
   contents: read
@@ -38,7 +39,21 @@ jobs:
           set -euo pipefail
           for n in 00 01 02 03 04 05 06 07; do test -s "godot/labs/combat_lab/talisman03/assets/rune_mark_${n}.svg"; done
           test -s godot/labs/combat_lab/talisman01/assets/thunder_talisman_atlas.webp
-          sha256sum godot/labs/combat_lab/talisman03/assets/rune_mark_*.svg > "$RUNNER_TEMP/vfx-tal03/atlas_hash.txt"
+          sha256sum godot/labs/combat_lab/talisman03/assets/rune_mark_*.svg godot/labs/combat_lab/talisman03/assets/tal03_*.webp godot/labs/combat_lab/talisman02/assets/talisman_foot_array.webp > "$RUNNER_TEMP/vfx-tal03/atlas_hash.txt"
+          python3 - <<'PY'
+          from PIL import Image
+          refs={
+            'godot/labs/combat_lab/talisman03/assets/tal03_mark_flipbook.webp':(1280,640),
+            'godot/labs/combat_lab/talisman03/assets/tal03_mark_master.webp':(320,320),
+            'godot/labs/combat_lab/talisman02/assets/talisman_foot_array.webp':(512,224),
+          }
+          for path,size in refs.items():
+              im=Image.open(path)
+              assert im.size==size,(path,im.size,size)
+              assert 'A' in im.getbands() or 'transparency' in im.info,(path,'missing alpha')
+          print('VFX_TAL03_PAINTED_RGBA_ASSETS=PASS')
+          PY
+
       - name: Restore existing Stage A prerequisites without changing tracked files
         shell: bash
         run: |
