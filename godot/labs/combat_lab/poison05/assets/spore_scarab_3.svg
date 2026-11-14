@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256"><defs>
+ <radialGradient id="mist"><stop stop-color="#ceffc5" stop-opacity=".60"/><stop offset=".40" stop-color="#83ecae" stop-opacity=".28"/><stop offset="1" stop-color="#5d48a8" stop-opacity="0"/></radialGradient>
+ <linearGradient id="wing"><stop stop-color="#f2fff0" stop-opacity=".78"/><stop offset=".30" stop-color="#81edc3" stop-opacity=".57"/><stop offset=".62" stop-color="#655c9d" stop-opacity=".34"/><stop offset="1" stop-color="#241d43" stop-opacity=".05"/></linearGradient>
+ <linearGradient id="shell" x1=".2" y1="0" x2=".87" y2="1"><stop stop-color="#e8ffd7"/><stop offset=".25" stop-color="#78b7a2"/><stop offset=".55" stop-color="#222843"/><stop offset="1" stop-color="#12132b"/></linearGradient>
+ </defs>
+ <ellipse cx="128" cy="132" rx="115" ry="110" fill="url(#mist)" opacity=".51"/>
+ <path d="M124 105Q80 35.6 18 59Q53 152 106 154Z" fill="url(#wing)" stroke="#8cdbc0" stroke-opacity=".73" stroke-width="4"/>
+ <path d="M132 105Q176 35.6 238 59Q203 152 150 154Z" fill="url(#wing)" stroke="#9e8ac9" stroke-opacity=".74" stroke-width="4"/>
+ <path d="M116 122Q77 140 72 186M140 122Q179 140 183 186" stroke="#0c1529" stroke-width="15" fill="none" stroke-linecap="round"/>
+ <path d="M116 122Q76 136 72 176M141 121Q178 136 183 176" stroke="#a5edbe" stroke-width="5" opacity=".64" fill="none" stroke-linecap="round"/>
+ <path d="M107 120Q98 165 117 211L128 230L141 211Q157 158 147 120Z" fill="url(#shell)" stroke="#14172d" stroke-width="9"/>
+ <path d="M111 153Q129 165 145 154M110 178Q128 190 146 178M117 206Q128 215 140 205" stroke="#dcffbd" stroke-opacity=".67" stroke-width="3" fill="none"/>
+ <path d="M106 112Q117 98 130 96Q145 98 153 114L145 150Q128 158 111 148Z" fill="url(#shell)" stroke="#1b1c34" stroke-width="9"/>
+ <path d="M116 107Q93 82 89 65M141 107Q162 83 165 64" stroke="#bca8ea" stroke-width="5" stroke-linecap="round" fill="none"/>
+ <circle cx="117" cy="129" r="4" fill="#f4ffe4"/><circle cx="140" cy="129" r="4" fill="#f5ffe4"/>
+ <path d="M119 149L128 163L137 150" stroke="#efffd5" stroke-width="4" fill="none"/>
+ </svg>
