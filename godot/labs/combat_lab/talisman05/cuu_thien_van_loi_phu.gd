@@ -138,69 +138,17 @@ static func lateral_point(q:float,t:float,direction:int)->Vector2:
     var curve:=17.0*sin(PI*f)+jitter*sin(PI*f)
     return CENTER_HIT+Vector2(sign*202.0*f,curve)
 func _draw_storm(t:float)->void:
-    var painted_gain:=bolt_gain(t)
-    if painted_gain>.005:
-        var n:=clampi(int(floor(smoothstep(STORM_BEGIN,CONTACT_AT,t)*9.99)),0,9)
-        var rr:=Rect2(float(n%4)*384.0,float(int(n/4))*512.0,384.0,512.0)
-        draw_texture_rect_region(PAINTED_BOLT,BOLT_RECT,rr,Color(1,1,1,painted_gain*.98))
-    # The legacy GDScript line is only a small flicker; raster bolt owns the silhouette.
-    var gain:=painted_gain*.06
-    if painted_gain<.01:return
-    var reach:=smoothstep(STORM_BEGIN,1.78,t)
-    var tip:=point_on_bolt(reach,t)
-    _halo(tip,127.0,Color("8c59e8",gain*.44))
-    _halo(tip,69.0,Color("b89bf6",gain*.67))
-    _halo(tip,26.0,Color("fff8ff",gain*.94))
-    var prev:Vector2=TOP
-    for k in range(45):
-        var q:=reach*float(k+1)/45.0
-        var point:=point_on_bolt(q,t)
-        var weight:=gain*(.69+.31*sin(PI*q))
-        draw_line(prev,point,Color("663bbb",weight*.27),42.0,true)
-        draw_line(prev,point,Color("9165e3",weight*.46),20.0,true)
-        draw_line(prev,point,Color("c6a7ff",weight*.77),8.0,true)
-        draw_line(prev,point,Color("fff0ff",weight*.98),3.45,true)
-        draw_line(prev,point,Color("ffffff",weight*.99),1.65,true)
-        if k%5==0:_halo(point,23.0,Color("e4c0ff",weight*.25))
-        prev=point
-    for b in range(2):
-        var q:=.43+float(b)*.28
-        if reach<q+.02:continue
-        var root:=point_on_bolt(q,t)
-        var sign:float=-1.0 if b%2==0 else 1.0
-        var end:=root+Vector2(sign*(47.0+float(b)*18.0),50.0)
-        var mid:=root.lerp(end,.56)+Vector2(-sign*8.0,4.0)
-        draw_line(root,mid,Color("ad7de8",gain*.50),7.0,true)
-        draw_line(mid,end,Color("ad7de8",gain*.39),5.0,true)
-        draw_line(root,mid,Color("fff2ff",gain*.82),1.6,true)
-        draw_line(mid,end,Color("e5d1ff",gain*.62),1.2,true)
-    # Only after the demo contact does the central hit bleed down the legally capped line.
-    # Two asymmetric real-light filaments with different head/tail timings; no straight laser.
-    var sweep:=line_sweep_gain(t)*.17
-    if sweep>.006:
-        for direction in range(2):
-            var travel:=smoothstep(CONTACT_AT,CONTACT_AT+.20+float(direction)*.035,t)
-            var prev_lateral:Vector2=CENTER_HIT
-            for step in range(26):
-                var q:=travel*float(step+1)/26.0
-                var point_lateral:=lateral_point(q,t,direction)
-                var energy:=sweep*(.31+.69*sin(PI*(.12+.88*q)))
-                draw_line(prev_lateral,point_lateral,Color("6941bd",energy*.18),20.0,true)
-                draw_line(prev_lateral,point_lateral,Color("ab80ed",energy*.44),9.0,true)
-                draw_line(prev_lateral,point_lateral,Color("ffe9ff",energy*.78),2.45,true)
-                draw_line(prev_lateral,point_lateral,Color("ffffff",energy*.90),1.05,true)
-                if step%6==0:
-                    _halo(point_lateral,21.0,Color("a26ff1",energy*.16))
-                prev_lateral=point_lateral
-            if travel>.22:
-                var root:=lateral_point(.39,t,direction)
-                var sign:float=-1.0 if direction==0 else 1.0
-                var branch:=root+Vector2(sign*22.0,-32.0+float(direction)*8.0)
-                var end:=branch+Vector2(sign*12.0,-20.0)
-                draw_line(root,branch,Color("9561db",sweep*.24),8.0,true)
-                draw_line(branch,end,Color("9561db",sweep*.20),6.0,true)
-                draw_line(root,branch,Color("e8d0ff",sweep*.66),1.5,true)
-                draw_line(branch,end,Color("e8d0ff",sweep*.48),1.05,true)
+    # R4: a single genuine painted 10-pose vertical strike.
+    # No R2/R3 oversized procedural neon laterals or stickman-like hit rays.
+    var gain:=bolt_gain(t)
+    if gain<=.005:return
+    var idx:=clampi(int(floor(smoothstep(STORM_BEGIN,CONTACT_AT,t)*9.99)),0,9)
+    var region:=Rect2(float(idx%4)*384.0,float(int(idx/4))*512.0,384.0,512.0)
+    draw_texture_rect_region(PAINTED_BOLT,BOLT_RECT,region,Color(1.0,1.0,1.0,gain*.98))
+    var q:=smoothstep(STORM_BEGIN,1.78,t)
+    var point:=point_on_bolt(q,t)
+    _halo(point,30.0,Color("b89bf6",gain*.18))
+
 func _draw()->void:
     var t:=elapsed
     draw_texture_rect(BG,Rect2(0,0,1280,720),false)
@@ -228,7 +176,7 @@ func _draw()->void:
         if local_hit>.006:
             var foot:Vector2=TARGETS[idx]
             _halo(foot+Vector2(0,-2),62.0,Color("8d64cb",local_hit*.17))
-            draw_texture_rect(CONTACT_FLOOR,Rect2(foot-Vector2(92.0,43.0),Vector2(184.0,85.0)),false,Color(1,1,1,local_hit*.66))
+            draw_texture_rect(PAINTED_IMPACT,Rect2(foot-Vector2(92.0,51.0),Vector2(184.0,95.0)),false,Color(1,1,1,local_hit*.64))
     _actor(CASTER)
     for idx in range(TARGET_LIMIT):
         _actor(TARGETS[idx])
@@ -237,10 +185,9 @@ func _draw()->void:
         var h:=hit_gain(t,i)
         if h<.006:continue
         var pos:Vector2=CONTACTS[i]
-        _halo(pos,118.0,Color("7950de",h*.35))
-        _halo(pos,53.0,Color("fff5ff",h*.65))
-        var size:=Vector2.ONE*(238.0+44.0*(1.0-h))
-        draw_texture_rect(IMPACT,Rect2(pos-size*.5,size),false,Color(1,1,1,h*.91))
+        # Contact flashes are local, not giant radial lines over the enemy's face.
+        _halo(pos+Vector2(0.0,16.0),49.0,Color("7950de",h*.23))
+        _halo(pos+Vector2(0.0,18.0),19.0,Color("fff5ff",h*.37))
     var dusk:=smoothstep(2.28,2.53,t)*(1.0-smoothstep(3.03,FADE_END,t))
     if dusk>.01:
         for j in range(26):
