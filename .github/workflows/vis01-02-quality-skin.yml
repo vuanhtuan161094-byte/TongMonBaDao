@@ -7,6 +7,7 @@ on:
       - 'godot/src/presentation/art05_onegame_cinematic_ui.gd'
       - 'godot/src/presentation/uiux/dan_tien_screen_b1_v1.gd'
       - 'godot/src/presentation/uiux/sect_quality_visual_v1.gd'
+      - 'godot/src/presentation/uiux/sect_prismatic_motes_v1.gd'
       - 'godot/src/presentation/uiux/shaders/vis0*.gdshader'
       - 'godot/tests/presentation/vis01_02_quality_visual_test.gd'
       - '.github/workflows/vis01-02-quality-skin.yml'

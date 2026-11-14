@@ -336,6 +336,7 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "T�
     if portrait != null:
         var showcase := portrait.get_parent() as Control
         VIS_QUALITY.apply_edge(showcase, quality)
+        VIS_QUALITY.apply_backlight(showcase, Rect2(Vector2(12, 6), Vector2(276, 224)), quality)
         var actor_name := (state.disciples[disciple_id] as DiscipleState).display_name
         for child in showcase.get_children():
             if child is Label:
@@ -368,7 +369,7 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "T�
                 VIS_QUALITY.apply_button(entry, entry_quality)
     var toggle := Button.new()
     toggle.name = "VISReducedMotionToggle"
-    toggle.text = "Giảm ánh sáng: BẬT" if VIS_QUALITY.reduced_motion else "Giảm ánh sáng: TẮT"
+    toggle.text = "HIỆU ỨNG: %s" % VIS_QUALITY.mode_label()
     toggle.tooltip_text = "Chỉ giảm hiệu ứng phẩm chất; không thay đổi kỹ năng, thông số hoặc Save."
     toggle.position = Vector2(515, 15)
     toggle.size = Vector2(205, 38)
@@ -379,5 +380,5 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "T�
     panel.add_child(toggle)
 
 func _vis_toggle_profile_reduced(disciple_id: StringName, tab_name: String) -> void:
-    VIS_QUALITY.reduced_motion = not VIS_QUALITY.reduced_motion
+    VIS_QUALITY.cycle_mode()
     _open_disciple_deep_screen(disciple_id, tab_name, true)

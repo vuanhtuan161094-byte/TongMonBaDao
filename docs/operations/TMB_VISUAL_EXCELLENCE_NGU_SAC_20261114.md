@@ -66,6 +66,21 @@ Legend GPU/CPU estimates: T = low, V = moderate, C = expensive. All are **pre-pr
 - Inspect name glyph outlines, ColorRect alpha transparency, UI clipping, click targets, roster switching, old/legacy profile, low VFX toggle, small-screen Android frame time.
 - Physical GUI/Android and OWNER_VISUAL_APPROVED: PENDING until evidence; static code review and successful CI are insufficient.
 
+## VIS-02 finishing pass
+- `vis02_soft_aura.gdshader` is a restrained additive backlight **behind** real portrait textures, never a tint on character pixels.
+- `sect_prismatic_motes_v1.gd` draws only 7 original sparse edge motes on Nghịch Thiên, at most 8 redraws/sec, and is disabled in reduced motion.
+- UI toggle cycles full/reduced/off without modifying `SaveService`; changing view modes never replays recruitment.
+- Dẫn Tiên Đài has one **0.60-second** non-looping first-reveal per recruited character ID; reduced/off bypasses the animation.
+- Full VIS-05 event cinematics, platform screenshots of rare recruitment, and physical Android FPS remain PENDING.
+
+## Open-source project comparison (analysis, NOT copied code/assets)
+| Reference | Relevant techniques | Use rights | Decision |
+|---|---|---|---|
+| [GDQuest Godot Shaders](https://github.com/gdquest-demos/godot-shaders) | 2D glow, dissolve, outline, cloud, water, shockwave | Check the individual repository license and assets before any redistribution; sample code can have different rights from art | Study architecture only; no code/assets imported |
+| [Godot 4 sprite outline CC0 sample](https://godotlearning.com/shaders/sprite-outline) | 2D alpha outline | Page declares CC0 | Technical comparison, no copied sprites |
+| [Free Game Feel shaders](https://kodanvil.itch.io/godot-game-feel-shaders-free) | Hit flash, outline, dissolve | Publisher advertises MIT for free subset | Future VIS-05 comparison only; no imported code |
+| [Godot 4 free shader set](https://stumasondev.itch.io/godot-4-2d-shaders) | Light sweep, dissolve, wave, shockwave | Publisher advertises CC0 | Study possible VIS-04/05 effects only; no imported files |
+
 ## Public technical references / rights
 - Godot 4 CanvasItem shader (TIME, COLOR, UV), reference: https://docs.godotengine.org/en/stable/tutorials/shaders/shader_reference/canvas_item_shader.html
 - 2D particles (GPU/CPU differences): https://docs.godotengine.org/en/stable/tutorials/2d/particle_systems_2d.html

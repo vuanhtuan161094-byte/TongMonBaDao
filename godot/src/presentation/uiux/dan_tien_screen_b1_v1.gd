@@ -24,6 +24,7 @@ var _reject_armed := false
 var _accept_armed := false
 var _search_text := ""
 var _candidate_index := 0
+var _vis_reveal_seen: Dictionary = {}
 
 func bind_view_model(view_model: Dictionary) -> void:
 	_vm = view_model.duplicate(true)
@@ -58,6 +59,7 @@ func _rebuild() -> void:
 	shell.get_child(0).add_child(body)
 	body.add_child(_build_candidate_panel())
 	body.add_child(_build_radar_panel())
+	_vis_run_first_reveal()
 
 func _make_shell() -> MarginContainer:
 	var margin := MarginContainer.new()
@@ -82,10 +84,10 @@ func _make_shell() -> MarginContainer:
 	stack.add_child(UI.label("DẪN TIÊN ĐÀI", 25, UI.PAPER, true))
 	stack.add_child(UI.label("Ứng viên • Tam Căn / Tứ Tính • tiếp dẫn", 12, UI.MUTED, false))
 	header.add_child(stack)
-	var reduce := UI.button("GIẢM VFX: BẬT" if VIS_QUALITY.reduced_motion else "GIẢM VFX: TẮT", false, UI.JADE)
+	var reduce := UI.button("VFX: %s" % VIS_QUALITY.mode_label(), false, UI.JADE)
 	reduce.name = "VISReducedMotionGuidance"
 	reduce.pressed.connect(func():
-		VIS_QUALITY.reduced_motion = not VIS_QUALITY.reduced_motion
+		VIS_QUALITY.cycle_mode()
 		_rebuild()
 	)
 	header.add_child(reduce)
@@ -568,3 +570,26 @@ func _on_reject_pressed() -> void:
 		return
 	_reject_armed = false
 	reject_candidate_requested.emit(_candidate_id())
+
+func _vis_run_first_reveal() -> void:
+    var recruited: Dictionary = _vm.get("recruited_disciple", {})
+    if recruited.is_empty():
+        return
+    var id := str(recruited.get("id", ""))
+    if id.is_empty() or _vis_reveal_seen.has(id):
+        return
+    _vis_reveal_seen[id] = true
+    if VIS_QUALITY.id_from_name(str(recruited.get("quality", ""))) != "heaven_defying":
+        return
+    if not VIS_QUALITY.effects_enabled or VIS_QUALITY.reduced_motion:
+        return
+    var panel := find_child("RecruitmentReveal", true, false) as PanelContainer
+    if panel == null:
+        return
+    # One-time, subsecond charge -> reveal -> quiet fade; never loops on rerenders.
+    panel.modulate.a = 0.0
+    var tween := panel.create_tween()
+    tween.tween_property(panel, "modulate:a", 0.18, 0.09)
+    tween.tween_interval(0.08)
+    tween.tween_property(panel, "modulate:a", 0.72, 0.17)
+    tween.tween_property(panel, "modulate:a", 1.0, 0.26)

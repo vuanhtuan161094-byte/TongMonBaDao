@@ -3,6 +3,8 @@ extends RefCounted
 ## No candidate generation, rarity rolls, saves, stats or combat dependencies.
 const TEXT_SHADER = preload("res://src/presentation/uiux/shaders/vis01_prismatic_text.gdshader")
 const EDGE_SHADER = preload("res://src/presentation/uiux/shaders/vis02_crystal_edge.gdshader")
+const AURA_SHADER = preload("res://src/presentation/uiux/shaders/vis02_soft_aura.gdshader")
+const MOTES_SCRIPT = preload("res://src/presentation/uiux/sect_prismatic_motes_v1.gd")
 const QUALITY_COLORS := {
     "common": Color(0.92, 0.89, 0.82),
     "outstanding": Color(0.48, 0.82, 0.90),
@@ -19,6 +21,21 @@ const QUALITY_NAMES := {
 }
 static var reduced_motion: bool = false
 static var effects_enabled: bool = true
+
+static func mode_label() -> String:
+    if not effects_enabled:
+        return "TẮT"
+    return "GIẢM" if reduced_motion else "ĐẦY ĐỦ"
+
+static func cycle_mode() -> void:
+    if not effects_enabled:
+        effects_enabled = true
+        reduced_motion = false
+    elif reduced_motion:
+        effects_enabled = false
+        reduced_motion = true
+    else:
+        reduced_motion = true
 
 static func id_from_name(value: String) -> String:
     for id in QUALITY_NAMES:
@@ -84,6 +101,38 @@ static func apply_edge(owner: Control, quality_id: String, permit_motion: bool =
     shader_material.set_shader_parameter("divine", 1.0 if quality_id == "heaven_defying" else 0.0)
     shader_material.set_shader_parameter("motion", 1.0 if permit_motion and effects_enabled and not reduced_motion else 0.0)
     overlay.visible = effects_enabled or quality_id != "heaven_defying"
+    var motes := owner.get_node_or_null("VIS02AstralMotes") as Control
+    if quality_id == "heaven_defying" and effects_enabled:
+        if motes == null:
+            motes = MOTES_SCRIPT.new()
+            motes.name = "VIS02AstralMotes"
+            motes.mouse_filter = Control.MOUSE_FILTER_IGNORE
+            owner.add_child(motes)
+            motes.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+        motes.set("motion_enabled", not reduced_motion)
+        motes.visible = not reduced_motion
+    elif motes != null:
+        motes.visible = false
+
+static func apply_backlight(owner: Control, area: Rect2, quality_id: String) -> void:
+    if owner == null:
+        return
+    var halo := owner.get_node_or_null("VIS02SoftBacklight") as ColorRect
+    if halo == null and quality_id == "heaven_defying":
+        halo = ColorRect.new()
+        halo.name = "VIS02SoftBacklight"
+        halo.color = Color.WHITE
+        halo.mouse_filter = Control.MOUSE_FILTER_IGNORE
+        var material := ShaderMaterial.new()
+        material.shader = AURA_SHADER
+        halo.material = material
+        owner.add_child(halo)
+        owner.move_child(halo, 0)
+    if halo != null:
+        halo.position = area.position
+        halo.size = area.size
+        halo.visible = quality_id == "heaven_defying" and effects_enabled
+        (halo.material as ShaderMaterial).set_shader_parameter("motion", 0.0 if reduced_motion else 1.0)
 
 static func wrap_portrait(slot: Control, dimensions: Vector2, quality_id: String) -> Control:
     # Artwork remains in the original TextureRect; shader lives on a sibling edge.
@@ -95,4 +144,5 @@ static func wrap_portrait(slot: Control, dimensions: Vector2, quality_id: String
     host.add_child(slot)
     slot.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
     apply_edge(host, quality_id)
+    apply_backlight(slot, Rect2(Vector2.ZERO, dimensions), quality_id)
     return host
