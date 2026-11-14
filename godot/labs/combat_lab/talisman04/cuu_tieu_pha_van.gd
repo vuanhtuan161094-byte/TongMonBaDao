@@ -186,18 +186,27 @@ func _draw()->void:
         _draw_rupture(t,gain*.08)
         draw_set_transform(Vector2.ZERO)
         _halo(HAND+Vector2(17,-6),40,Color("aa77e2",gain*.19))
-    # Render painted cloud BEFORE actors; targets remain readable at gameplay 1x.
+    # A crack belongs to the ground; do not draw a star-shaped scar over
+    # an enemy's face. Ground decals travel with each locked moving monster.
+    for i in range(TARGET_LIMIT):
+        var ground_gain:=contact_gain(t,i)
+        if ground_gain<.005:continue
+        var foot:=demo_target_foot(i,t)
+        _halo(foot+Vector2(0,-4),61.0,Color("7652db",ground_gain*.20))
+        var ground_size:=Vector2(193.0,99.0)*(1.0+.15*(1.0-ground_gain))
+        draw_texture_rect(IMPACT,Rect2(foot-ground_size*.5,ground_size),
+            false,Color(1,1,1,ground_gain*.86))
+    # Both real actors stay in front of cloud and ground fractures.
     _actor(CASTER)
     for i in range(TARGET_LIMIT):
         _actor(demo_target_foot(i,t))
     for i in range(TARGET_LIMIT):
         var g:=contact_gain(t,i)
         if g<.005:continue
-        var spot:Vector2=demo_contact(i,t)
-        _halo(spot,108.0,Color("7652db",g*.33))
-        _halo(spot,44.0,Color("faf1ff",g*.72))
-        var size:=Vector2.ONE*(202.0+51.0*(1.0-g))
-        draw_texture_rect(IMPACT,Rect2(spot-size*.5,size),false,Color(1,1,1,g*.94))
+        # A restrained contact flash at the actor's lower torso, no false hit.
+        var contact:=demo_contact(i,t)+Vector2(0,16)
+        _halo(contact,56.0,Color("9464e5",g*.29))
+        _halo(contact,25.0,Color("fff6ff",g*.44))
     var haze:=smoothstep(1.6,1.9,t)*(1.0-smoothstep(2.2,FADE_END,t))
     if haze>.005:
         for k in range(17):
