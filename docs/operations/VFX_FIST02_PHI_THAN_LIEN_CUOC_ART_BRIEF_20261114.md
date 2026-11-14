@@ -52,3 +52,13 @@ V4 uses a real first-party ImageGen-derived painted fire-spirit hero, carefully 
 The source master is built to 12 cast + 8 guard + 8 ember original-alpha frames by tools/vfx/generate_fist02_spirit_v4.py, behind a STATIC caster proxy. Ghostly fire is an illustrative effect, not actual kicking, new summons, combat hit events or player animation. Guard visual remains for exactly four seconds after cast and clears. No rig, no Codex, no gameplay changes, no PvE integration, no other school's file edits.
 
 Gates: CODE_REWORKED, exact-SHA GODOT_QA_PENDING until actual Actions result, OWNER_VISUAL_PENDING, PVE_INTEGRATION_HOLD, V63_OFF. Judge native 1280x720 film at 1x and reject any leftover fake sprites/low-quality geometric artifacts.
+
+
+## V4 exact-SHA native QA and visual check — 2026-11-14
+Final art-producing GitHub commit **51ce7e6b220535504642f14b6c9fd7fe46b91f69**, Actions **https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/43587918901**, **SUCCESS**. Artifact vfx-fist02-native ID **14111760406**. Godot 4.7.2 Compatibility, strict import/parse, focused contract `VFX_FIST02_FOCUSED_RESULT=PASS failures=0`, authentic 1280x720 318-frame MP4, GIF, 12 timecode frames and PNG atlas SHA256 manifests. 60fps is fixed movie cadence, NOT measured Android hardware FPS.
+
+Original source master file is 320x256 transparent first-party illustrated Fire Spirit, generated from ImageGen concept output, visibly hand-painted/painterly strokes, cropped/segmented and then edge-feathered in reproducible source before atlas. CI produces 12 cast, 8 breathing guard, 8 ember sprites. No actual actor leg or skeletal movement: CASTER and OTHER images are static. Spirit imagery represents the skill concept metaphorically; neither gold silhouettes nor flames produce actual Combat V2 damage, hit, projectile or summons.
+
+Native frame review: 0.29s illustrated golden energy imprints manifest behind unmoving caster; at 0.81/1.25/2.15s illustrated gold Hỏa guard remains and face is visible; 4.61s fades and 5.07s clears. Removed most dark rectangular crop backing with a hot-chroma alpha mask plus edge feather. Remaining limits: preview uses existing Poison Tu actor image solely for scale; guard silhouette still inherits two illustrated spirit figures from original concept, not custom final Fist character art, with some painterly ground texture along bottom. No claim of owner art pass.
+
+Gates: **GODOT_FOCUSED_PASS, GODOT_NATIVE_CAPTURED, FRAMES_REVIEWED, OWNER_VISUAL_PENDING, PVE_INTEGRATION_HOLD, V63_OFF**. R1–R3 were OWNER_ART_REJECTED and must not be reused. This new version is a distinct illustrated-asset implementation pending owner's visual decision. Never modify actual Combat V2, target/HP, SaveService/economy, or rig a character.
