@@ -1,0 +1,9 @@
+"BuildingType","Status","FirstUpgradeCost","TheoreticalTotal","WorkPoints","MilestoneComponents","Caveat"
+"main_hall","FORMULA_PRESENT_WITH_HALL_GATE","{""linh_moc"":29,""spirit_stones"":580,""thanh_thiet"":24}","{""linh_moc"":109092,""spirit_stones"":2181241,""thanh_thiet"":87289}","11353.5","{}","proof all required resources or Hall gates are achievable"
+"residence","FORMULA_PRESENT_WITH_HALL_GATE","{""linh_moc"":41,""spirit_stones"":580,""thanh_thiet"":29}","{""linh_moc"":152732,""spirit_stones"":2181241,""thanh_thiet"":109092}","11353.5","{}","proof all required resources or Hall gates are achievable"
+"mine","FORMULA_PRESENT_WITH_HALL_GATE","{""linh_moc"":5,""spirit_stones"":24,""thanh_thiet"":7}","{""linh_moc"":17490,""spirit_stones"":87289,""tam_mach_ban"":6,""thanh_thiet"":26216}","11353.5","{""tam_mach_ban"":6}","proof all required resources or Hall gates are achievable"
+"linh_forest","FORMULA_PRESENT_WITH_HALL_GATE","{""linh_moc"":5,""spirit_stones"":24,""thanh_thiet"":7}","{""linh_moc"":17490,""spirit_stones"":87289,""thanh_thiet"":26216}","11353.5","{}","proof all required resources or Hall gates are achievable"
+"alchemy_hall","FORMULA_PRESENT_WITH_HALL_GATE","{""linh_moc"":7,""spirit_stones"":14,""thanh_thiet"":5}","{""linh_moc"":26216,""spirit_stones"":52390,""thanh_thiet"":17490}","11353.5","{}","proof all required resources or Hall gates are achievable"
+"spirit_field","FORMULA_PRESENT_WITH_HALL_GATE","{""linh_moc"":7,""spirit_stones"":21,""thanh_thiet"":4}","{""linh_moc"":26216,""linh_tuyen_chi_tam"":29,""spirit_stones"":78564,""thanh_thiet"":13132}","11353.5","{""linh_tuyen_chi_tam"":29}","proof all required resources or Hall gates are achievable"
+"dan_tien_dai","HARD_GATE_AFTER_LV20_MISSING_SECT_PROGRESSION_AUTHORITY","{""linh_moc"":6,""spirit_stones"":28,""thanh_thiet"":5}","{""linh_moc"":21857,""spirit_stones"":104741,""thanh_thiet"":17490}","11353.5","{}","proof all required resources or Hall gates are achievable"
+

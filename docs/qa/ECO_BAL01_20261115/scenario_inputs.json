@@ -1,0 +1,55 @@
+{
+  "task": "ECO-BAL-01",
+  "source": {
+    "remote_head": "a641ee5df691fbc45d062afcfe721ccc63f2145d",
+    "qa_snapshot_commit": "16e57fefd1d7122ee335ab2c2cbdabb90c758316",
+    "native_exact_checkout": false,
+    "relevant_economy_save_pve_blob_matches": "32/32"
+  },
+  "engine": {
+    "name": "Godot",
+    "version": "4.7.2.stable.official.ed1daf0bf",
+    "console_sha256": "C8F0A6BC45A19B33541501E57F6F7CD972AB18453743266339D495CBBE846643"
+  },
+  "read_only_matrix": {
+    "opening_sect_lt": [0, 500],
+    "requested_roster_counts": [6, 15, 30],
+    "npc_market_policy": ["off", "open"],
+    "tax_percent_preview_only": [0, 30, 70, 100],
+    "job_minutes_preview_only": [1, 60, 90, 180],
+    "modes": ["Economy-A", "Bulk opt-in", "R12 player activation attempt"],
+    "building_costs": "current base Economy-A formula, one building at a time from level1 to theoretical level100; no resource payment; guidance authority hard gate at20",
+    "assertions": 47,
+    "output_rows": 54,
+    "mutates_transaction_warehouse_or_save": false
+  },
+  "separate_source_scenario": {
+    "roster": 6,
+    "active_sim_minutes_per_worker_per_day": 360,
+    "site_mix": {"mine_workers": 2, "forest_workers": 2, "grain_field_workers": 1, "herb_field_workers": 1},
+    "jobs_per_day": 34,
+    "horizons_days": [1, 7, 30],
+    "model_type": "source-based upper analytical model; not elapsed live runtime",
+    "npc_demand": "not guaranteed; only transaction cap ceiling is modeled",
+    "formula_provenance": "sx_v55_eco_faucet_sink_30d_test.gd and its raw Godot log"
+  },
+  "cashflow_model": {
+    "new_game_treasury_lt": 500,
+    "origin_vein_gross_per_daily_job_lt": 1000,
+    "seed_cost_per_day_lt": 34,
+    "producer_wages_per_day_lt": 68,
+    "origin_wage_per_day_lt": 2,
+    "formula": "end_treasury = start_treasury + external_origin_vein_gross + actual_sales - seed_cost - paid_wages - construction_and_other_spend; tax_and_wage transfers cancel when treasury and personal wallets are combined",
+    "actual_sales_assumed_in_eco03_projection": 0,
+    "roster30_projection_funded_slots_proven": false
+  },
+  "not_run_as_economic_scenarios": [
+    "1/7/30-day live accelerated gameplay session",
+    "natural PvE kill rate and net consumable cost per hour",
+    "15 or 30 simultaneously funded workers at one production site",
+    "owner physical GUI or player save",
+    "r3+ medicine source availability"
+  ],
+  "policy": "No production balance/policy modified or enabled. R12 and PvE R12 remain HOLD."
+}
+
