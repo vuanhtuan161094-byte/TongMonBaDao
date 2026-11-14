@@ -30,9 +30,13 @@ const CLOUD_POSES := [
     preload("res://labs/combat_lab/talisman04/assets/cloud_rift_08.svg"),
     preload("res://labs/combat_lab/talisman04/assets/cloud_rift_09.svg"),
 ]
+const PAINTED_CLOUD:Texture2D=preload("res://labs/combat_lab/talisman04/assets/tal04_r3_cloud_flipbook.webp")
+const PAINTED_MASTER:Texture2D=preload("res://labs/combat_lab/talisman04/assets/tal04_r3_cloud_master.webp")
+const PAINTED_IMPACT:Texture2D=preload("res://labs/combat_lab/talisman04/assets/tal04_r3_local_fracture.webp")
+const PAINTED_RECT:=Rect2(360.0,298.0,828.0,268.0)
 const TALISMAN:Texture2D=preload("res://labs/combat_lab/talisman01/assets/thunder_talisman_atlas.webp")
-const FLOOR:Texture2D=preload("res://labs/combat_lab/talisman01/assets/thunder_cast_sigil.svg")
-const IMPACT:Texture2D=preload("res://labs/combat_lab/talisman01/assets/thunder_impact_burst.png")
+const FLOOR:Texture2D=preload("res://labs/combat_lab/talisman02/assets/talisman_foot_array.webp")
+const IMPACT:Texture2D=PAINTED_IMPACT
 const BG:Texture2D=preload("res://labs/combat_lab/poison05/remake_r6/assets/immortal_valley.svg")
 const ACTOR:Texture2D=preload("res://labs/character_family/assets/nu_doc_tu_v4_candidate/idle_4dir_APPROVED_UNCHANGED.png")
 var elapsed:=0.0
@@ -157,9 +161,11 @@ func _draw()->void:
     if f>=0:
         var gain:=smoothstep(RELEASE_AT,RELEASE_AT+.12,t)*(1.0-smoothstep(1.57,1.83,t))
         # Ragged cloud-wound art has its own ten animated shapes, independent of TAL02 ink calligraphy.
-        draw_texture_rect(CLOUD_POSES[f],Rect2(395,298,812,262),false,Color(1,1,1,gain*.90))
-        _draw_rupture(t,gain)
-        _halo(HAND+Vector2(32,-10),74,Color("aa77e2",gain*.30))
+        var region:=Rect2(float(f%4)*1024.0,float(int(f/4))*256.0,1024.0,256.0)
+        draw_texture_rect_region(PAINTED_CLOUD,PAINTED_RECT,region,Color(1,1,1,gain*.98))
+        # A small conductor accent follows the painted tear, never replaces it.
+        _draw_rupture(t,gain*.08)
+        _halo(HAND+Vector2(17,-6),40,Color("aa77e2",gain*.19))
     for i in range(TARGET_LIMIT):
         var g:=contact_gain(t,i)
         if g<.005:continue

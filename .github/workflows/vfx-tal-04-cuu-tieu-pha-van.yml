@@ -24,7 +24,7 @@ jobs:
         run: |
           set -euo pipefail
           sudo apt-get update -qq
-          sudo apt-get install -y -qq xvfb ffmpeg unzip python3-pil
+          sudo apt-get install -y -qq xvfb ffmpeg unzip python3-pil python3-numpy
           curl --fail --location --retry 3 -o /tmp/godot472.zip 'https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip'
           echo 'cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4  /tmp/godot472.zip' | sha256sum --check --strict
           unzip -q /tmp/godot472.zip -d /tmp
@@ -39,6 +39,28 @@ jobs:
           for n in 00 01 02 03 04 05 06 07 08 09; do test -s "godot/labs/combat_lab/talisman04/assets/cloud_rift_${n}.svg"; done
           test -s godot/labs/combat_lab/talisman01/assets/thunder_talisman_atlas.webp
           sha256sum godot/labs/combat_lab/talisman04/assets/cloud_rift_*.svg > "$RUNNER_TEMP/vfx-tal04/atlas_hash.txt"
+      - name: Bake 10 source-painted cloud poses, original alpha master and impact
+        shell: bash
+        run: |
+          set -euo pipefail
+          TMB_ART_LOG_EXPORT=1 /usr/bin/python3 tools/vfx/paint_tal04_cloud.py . > "$RUNNER_TEMP/vfx-tal04/art.log"
+          # Keep the artifact export in logs only for first-party binary handoff into the repository.
+          grep -E '^TAL04_PAINTED_OUTPUT|^TMB_ASSET_BEGIN|^TMB_ASSET_END' "$RUNNER_TEMP/vfx-tal04/art.log"
+          cat "$RUNNER_TEMP/vfx-tal04/art.log" | grep '^TMB_ASSET_LINE:' || true
+          /usr/bin/python3 - <<'PY'
+          from PIL import Image
+          from pathlib import Path
+          p=Path('godot/labs/combat_lab/talisman04/assets')
+          sizes={'tal04_r3_cloud_master.webp':(1024,256),'tal04_r3_cloud_flipbook.webp':(4096,768),'tal04_r3_local_fracture.webp':(320,320)}
+          for name,size in sizes.items():
+              i=Image.open(p/name).convert('RGBA')
+              assert i.size==size
+              assert i.getchannel('A').getextrema()[0]==0
+              assert i.getchannel('A').getextrema()[1]>100
+          atlas=Image.open(p/'tal04_r3_cloud_flipbook.webp').convert('RGBA')
+          assert len({atlas.crop(((n%4)*1024,(n//4)*256,(n%4+1)*1024,(n//4+1)*256)).tobytes()[:4096] for n in range(10)})>1
+          print('TAL04_R3_RGBA_ATLAS=PASS')
+          PY
       - name: Restore existing Stage A prerequisites without changing tracked files
         shell: bash
         run: |
@@ -88,3 +110,4 @@ jobs:
             ${{ runner.temp }}/vfx-tal04/*.png
             ${{ runner.temp }}/vfx-tal04/*.mp4
             ${{ runner.temp }}/vfx-tal04/*.gif
+            godot/labs/combat_lab/talisman04/assets/tal04_r3_*.webp

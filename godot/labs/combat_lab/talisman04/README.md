@@ -8,3 +8,6 @@ Verified exact `tmb.skill.talisman.loi_phu.active_04.human`; lightning damage LI
 
 ## R2 art correction
 R1 native 1.25s frame was self-rejected as a broad uniform lavender ribbon. R2 reduces opaque sprite-body from 81% to 23%, retains actual turbulent cloud alpha/motes, and adds one narrow crooked hot white-purple rift that fractures into four short vertical splinters. Event-only two contacts unchanged. Re-render actual Godot before owner art gate; not a generic recolor.
+
+## R3 native-scale painted raster cloud (owner review PENDING)
+Replaces line-only hero with deterministic original Pillow/NumPy watercolor-turbulent cloud fracture: `tools/vfx/paint_tal04_cloud.py`. Source master 1024×256 RGBA, 10 independent alpha-reveal poses at 4×3 4096×768, unique 320×320 local impact; original R2 SVGs retained as archival. Source is **first-party code-painted**, NOT a copied JX/Source A graphic or AI concept screenshot. Run generator before local import; exact-SHA workflow bakes the assets, tests alpha and exports authentic Godot MP4/GIF and 14 stills. Codified cap2 LINE 0.50s/13.6s unchanged. **GODOT TECH PENDING / OWNER_VISUAL_PENDING / PVE HOLD until actual review**.

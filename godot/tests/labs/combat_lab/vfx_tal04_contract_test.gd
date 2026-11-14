@@ -13,6 +13,10 @@ func _run()->void:
     _check(LAB.DECLARED_CAST_TIME==.50 and LAB.DECLARED_COOLDOWN==13.6,"source cooldown and cast")
     _check(LAB.DECLARED_RANGE==9.0 and LAB.DECLARED_PROJECTILE_SPEED==0.0,"line instant")
     _check(LAB.CLOUD_POSES.size()==10,"original ten animated cloud poses")
+    _check(LAB.PAINTED_CLOUD.get_size()==Vector2(4096,768),"painted source 10-cell RGBA atlas")
+    _check(LAB.PAINTED_MASTER.get_size()==Vector2(1024,256),"painted cloud source master")
+    _check(LAB.PAINTED_IMPACT.get_size()==Vector2(320,320),"original dedicated local fracture")
+    _check(LAB.PAINTED_RECT.position.x<=LAB.HAND.x and LAB.PAINTED_RECT.end.x>=LAB.CONTACTS[1].x,"native alpha path reaches hand and legal targets")
     for i in range(10):
         _check(LAB.CLOUD_POSES[i].get_size()==Vector2(1024,300),"cloud sprite size "+str(i))
     _check(LAB.phase_at(.40)=="gather" and LAB.phase_at(.75)=="cloud_tear","staging")
