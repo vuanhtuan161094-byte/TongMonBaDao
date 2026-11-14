@@ -1,5 +1,8 @@
 ## VFX ART-FIRST OWNER OVERRIDE — 2026-11-14 (MANDATORY FOR EVERY NEW CHAT)
 
+**LATEST VFX FEEDBACK 14 NOV:** Xà Ảnh painted/4-pose layered serpent is the actual quality baseline. POI05 Tán Cổ R10 'tạm tạm' permits next skill but its electrical charge and rigid centipede are NOT approved as ideal art; backlog is light strands **gathering into a ring** + painted living creature (NO giant vector segmented re-skin). POI06 Vạn Cổ Phệ Giới light-ring experiment is at `docs/handoffs/VFX_CURRENT_ART_FIRST_NEXT_CHAT_20261114.md`. Test PASS is never owner art PASS. Do not copy Source VL copyrighted pixels.
+
+
 For ANY Tông Môn Bá Đạo combat skill VFX, before generating art/code or handing off, automatically read [VFX ART-FIRST SOP V3](docs/operations/TMB_VFX_ART_FIRST_SINGLE_SKILL_SOP_V3_20261114.md), [VFX current handoff](docs/handoffs/VFX_CURRENT_ART_FIRST_NEXT_CHAT_20261114.md), [tmb-vfx-art-director skill](.agents/skills/tmb-vfx-art-director/SKILL.md), current PR #72 HEAD and actual skill catalogue. Owner REJECTED generic VFX-BATCH-01 R1–R4 as visually ugly. One ORIGINAL high-quality skill at a time; no static vector recolor mass production, no moving on until real Godot video inspected, corrected, and owner approves. Do NOT depend on chat memory or ask user to repeat SOP. Approved Human Poison labs locked; V6.3/PvE OFF; NO rig, Codex (unless explicitly authorized for VFX), new branch or merge. This supersedes older batch-artwork instructions in this file, but not other game-system authority.
 
 ---
