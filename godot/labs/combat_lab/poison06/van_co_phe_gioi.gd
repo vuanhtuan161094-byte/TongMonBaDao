@@ -109,12 +109,13 @@ func _draw() -> void:
     # The realm rests ABOVE target heads; dark nebula goes behind all actors.
     var open := realm_gain(t)
     if open>0.008:
-        _halo(REALM,229.0,Color("6d5db4",open*0.16))
-        _halo(REALM,141.0,Color("b1d9ae",open*0.12))
-        _halo(REALM,75.0,Color("0c1326",open*0.64))
-        _braided_halo(REALM,156.0,105.0,open,t*0.64+0.3,9)
-        _braided_halo(REALM,119.0,82.0,open*0.42,-t*0.39,6)
-        _petal_sparks(REALM,173.0,open,t,16)
+        _halo(REALM,253.0,Color("8473c7",open*0.23))
+        _halo(REALM,157.0,Color("c3efb5",open*0.19))
+        _halo(REALM,83.0,Color("18213d",open*0.42))
+        _braided_halo(REALM,169.0,105.0,open,t*0.64+0.3,9)
+        _braided_halo(REALM,112.0,84.0,open*0.40,-t*0.39,5)
+        _whisper_curls(REALM,open,t)
+        _petal_sparks(REALM,193.0,open,t,24)
     # Soft white-hot streams converge INTO A JAGGED RING at the caster's palm.
     var charge := smoothstep(0.03,0.53,t)*(1.0-smoothstep(1.06,1.35,t))
     if charge>0.006:
@@ -169,10 +170,10 @@ func _draw() -> void:
                 var frame := posmod(int(floor(t*17.0))+idx*3+j,GU.size())
                 var size := 0.155 if j==0 else 0.066+0.014*float(j%3)
                 var tilt := 0.23*sin(t*8.0+float(j)*1.4)
-                if j==0:
-                    _halo(pos,38.0,Color("adffd1",fade*0.21))
+                if j%3==0:
+                    _halo(pos,46.0 if j==0 else 28.0,Color("b6ffd2",fade*(0.32 if j==0 else 0.20)))
                 _paint(GU[frame],pos,size,tilt,
-                    Color(1.0,1.0,1.0,fade*(0.87 if j==0 else 0.52)))
+                    Color("efffe6",fade*(0.92 if j==0 else 0.66)))
     # Three compact original brands, no actual poison_stacks or DoT simulation.
     for idx in range(3):
         var gain := impact_gain(t,idx)
@@ -197,7 +198,7 @@ func _draw() -> void:
     draw_string(ThemeDB.fallback_font,Vector2(31,35),
         "VAN CO PHE GIOI  /  CO DOC TUYET KY",HORIZONTAL_ALIGNMENT_LEFT,-1,26,Color("eaffee"))
     draw_string(ThemeDB.fallback_font,Vector2(32,61),
-        "POI06  |  JADE CONVERGENCE / OPEN ABYSS REALM / 3 VISUAL TARGETS",
+        "POI06 R2  |  BRAIDED JADE LIGHT / LIVING RIFT / 3 VISUAL TARGETS",
         HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("b4c6cf"))
     draw_string(ThemeDB.fallback_font,Vector2(32,691),
         "GODOT 4.7.2 COMPATIBILITY  |  ART-ONLY  |  NO GAMEPLAY POISON/HP CHANGE",
@@ -205,24 +206,52 @@ func _draw() -> void:
     draw_string(ThemeDB.fallback_font,Vector2(1182,691),
         "%0.2fs" % t,HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("c6cbbf"))
 func _braided_halo(center: Vector2,rx: float,ry: float,alpha: float,t: float,segments: int) -> void:
+    # Every limb is a living spiral fragment: unequal length, radial motion,
+    # tapered ends, soft lilac halo + jade-white hot core. NOT a flat HUD ring.
     for lane in range(segments):
         var k := float(lane)
-        var begin := k*2.399+t*(0.39+0.06*float(lane%3))
-        var span := 0.29+0.23*float(lane%4)
+        var phase := k*2.399+t*(0.26+0.10*float(lane%4))
+        var span := 0.42+0.24*float(lane%5)
         var pts := PackedVector2Array()
-        for n in range(19):
-            var q := float(n)/18.0
-            var angle := begin+q*span
-            var wobble := 1.0+0.045*sin(angle*4.0+t*3.2+k*2.0)
-            pts.append(center+Vector2(cos(angle)*rx*wobble,
-                sin(angle)*ry*(0.92+0.08*sin(t*2.2+k))))
-        var l := alpha*(0.65+0.08*float(lane%3))
-        draw_polyline(pts,Color("51417e",l*0.30),12.0,true)
-        draw_polyline(pts,Color("86cfb4" if lane%3 else "a899f2",l*0.48),6.0,true)
-        draw_polyline(pts,Color("dbffda",l*0.69),2.15,true)
+        for n in range(22):
+            var q := float(n)/21.0
+            var a := phase+q*span
+            var orbit := 1.0 + 0.17*sin(q*PI*1.45 + t*3.1 + k*1.81)
+            orbit += 0.085*cos(q*6.7-t*2.4+k)
+            orbit *= 1.03-0.27*q
+            var x := cos(a)*rx*orbit
+            var y := sin(a)*ry*orbit*0.78 + 13.0*sin(q*PI*2.0 + t*2.3+k)
+            pts.append(center+Vector2(x,y))
+        for n in range(1,pts.size()):
+            var q := float(n)/float(pts.size()-1)
+            var taper := pow(sin(PI*q),0.68)
+            var g := alpha*taper*(0.67+0.09*float(lane%3))
+            if g<0.001: continue
+            var from: Vector2 = pts[n-1]
+            var to: Vector2 = pts[n]
+            draw_line(from,to,Color("8765bd",g*0.21),11.0,true)
+            draw_line(from,to,Color("8ce0bb" if lane%3 else "c0a7fa",g*0.47),5.4,true)
+            draw_line(from,to,Color("f5ffde",g*0.79),1.75,true)
         if lane%2==0:
-            var tip: Vector2 = pts[pts.size()-1]
-            _halo(tip,12.0,Color("f8ffe5",l*0.40))
+            var head: Vector2=pts[pts.size()-2]
+            _halo(head,15.0,Color("f8ffdf",alpha*0.36))
+
+func _whisper_curls(center: Vector2,alpha: float,t: float) -> void:
+    # Ghost-jade strands fall and turn back into the aperture; soft material,
+    # open silhouettes with directional bright tips instead of full circles.
+    for lane in range(8):
+        var k := float(lane)
+        var start := center+Vector2((-3.5+k)*33.0,-70.0+11.0*sin(k*2.3+t))
+        var pts := PackedVector2Array()
+        for n in range(20):
+            var q := float(n)/19.0
+            var drift := 27.0*sin(q*PI*1.3+t*1.7+k*1.4)
+            var p := start+Vector2((-0.5+k/7.0)*drift + 25.0*sin(PI*q)*sin(t*2.1+k),q*(94.0+9.0*float(lane%3)))
+            pts.append(p)
+        var activity := alpha*(0.32+0.06*float(lane%4))
+        draw_polyline(pts,Color("5d4b86",activity*0.38),10.0,true)
+        draw_polyline(pts,Color("bcefc3",activity*0.58),3.5,true)
+        draw_polyline(pts,Color("fdffde",activity*0.56),1.05,true)
 func _light_thread(origin: Vector2,target: Vector2,alpha: float,t: float,tint: Color,curve: float) -> void:
     var pts := PackedVector2Array()
     for i in range(17):
