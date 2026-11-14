@@ -50,6 +50,16 @@ const MARK := [
     preload("res://labs/combat_lab/poison05/remake_r6/assets/mark_4.svg"),
     preload("res://labs/combat_lab/poison05/remake_r6/assets/mark_5.svg"),
 ]
+const SWARM := [
+    preload("res://labs/combat_lab/poison05/remake_r6/assets/gu_swarm_0.svg"),
+    preload("res://labs/combat_lab/poison05/remake_r6/assets/gu_swarm_1.svg"),
+    preload("res://labs/combat_lab/poison05/remake_r6/assets/gu_swarm_2.svg"),
+    preload("res://labs/combat_lab/poison05/remake_r6/assets/gu_swarm_3.svg"),
+    preload("res://labs/combat_lab/poison05/remake_r6/assets/gu_swarm_4.svg"),
+    preload("res://labs/combat_lab/poison05/remake_r6/assets/gu_swarm_5.svg"),
+    preload("res://labs/combat_lab/poison05/remake_r6/assets/gu_swarm_6.svg"),
+    preload("res://labs/combat_lab/poison05/remake_r6/assets/gu_swarm_7.svg"),
+]
 var elapsed := 0.0
 var paused := false
 var _glow: Texture2D
@@ -108,7 +118,7 @@ func _ready() -> void:
     _glow=_make_glow()
     set_process(true)
     queue_redraw()
-    print("VFX_POI05_R6_READY id=",SKILL_ID,
+    print("VFX_POI05_R9_READY id=",SKILL_ID,
         " gu_frames=",GU.size()," seed_frames=",SEED.size(),
         " mark_frames=",MARK.size()," declared_targets=",DECLARED_TARGET_LIMIT,
         " view_only=true no_rig=true")
@@ -218,25 +228,45 @@ func _draw() -> void:
         var center: Vector2 = TARGETS[idx]
         _shadow(center)
         _actor(center,0.445,[Color("c9d3df"),Color("c6d0cf"),Color("d6c6db")][idx])
-    # Live illustrated gu sprite flipbooks, three branches, NOT forced real triple hits.
+    # R9 — the SINGLE dark-jade spirit opens, then visibly fragments into
+    # three distinct SWARMS of 8-frame jade moth-gu. No three giant centipedes.
+    # Stage design is view-only, with no additional game target/proc events.
     if t>=1.41 and t<3.28:
         for idx in range(3):
             var start := escort_start(idx)
             var q := escort_progress(t,idx)
-            var alpha := smoothstep(start,start+0.18,t)*(1.0-smoothstep(2.06+float(idx)*0.07,2.49+float(idx)*0.07,t))
-            if alpha<0.008:continue
-            var pt := escort_point(t,idx)
-            var size := 0.32+0.050*q+0.016*sin(t*8.0+float(idx)*2.0)
-            var tilt := -0.14+0.22*sin(t*6.0+float(idx)*1.4)
-            _halo(pt,103.0,Color("bca0fc",alpha*0.34))
-            _halo(pt,74.0,Color("d0ffcb",alpha*0.29))
-            for j in range(3):
-                var old := t-0.06*float(j+1)
+            var alpha := smoothstep(start,start+0.14,t)*(1.0-smoothstep(2.44+float(idx)*0.06,2.97+float(idx)*0.07,t))
+            if alpha < 0.006: continue
+            var lead := escort_point(t,idx)
+            var frame := posmod(int(floor((t-start)*21.0))+idx*2,SWARM.size())
+            var size := (0.235+0.046*q)*(1.0+0.06*sin(t*9.0+float(idx)*1.4))
+            var tilt := -0.18+0.15*sin(t*7.5+float(idx)*2.3)
+            _halo(lead,76.0,Color("b8a2f3",alpha*0.23))
+            _halo(lead,47.0,Color("c4ffd7",alpha*0.25))
+            for j in range(2):
+                var old := t-0.060*float(j+1)
                 if old>start:
-                    _paint(GU[gu_frame(old,idx+j)],escort_point(old,idx),
-                        maxf(0.14,size-0.033*float(j+1)),tilt,
-                        Color("a0c5cd",alpha*(0.17-0.040*float(j))))
-            _paint(GU[gu_frame(t,idx*3)],pt,size,tilt,Color(1,1,1,alpha*0.89))
+                    _paint(SWARM[posmod(int(floor((old-start)*21.0))+idx*2,SWARM.size())],
+                        escort_point(old,idx),size*(0.76-0.18*float(j)),tilt,
+                        Color("b8d1d2",alpha*(0.16-0.045*float(j))))
+            _paint(SWARM[frame],lead,size,tilt,Color(1,1,1,alpha*0.95))
+            # Six subordinate illustrated GU spores per visible path; small,
+            # staggered, wandering and fading, never static radius markers.
+            for j in range(6):
+                var rank := float(j)
+                var delay := 0.10+0.062*rank+float(idx)*0.026
+                var q2 := smoothstep(start+delay,start+0.68+delay,t)
+                if q2 <= 0.002: continue
+                var angle := float(idx)*2.09+rank*2.399
+                var origin := BIRTH+Vector2(cos(angle)*34.0,sin(angle)*24.0)
+                var to: Vector2 = TARGETS[idx]+Vector2(cos(angle)*(31.0+rank*2.0),-86.0+sin(angle)*26.0)
+                var flutter := Vector2(14.0*sin(t*8.0+rank*2.1)*sin(PI*q2),
+                    -29.0*sin(PI*q2))
+                var at := origin.lerp(to,q2)+flutter
+                var faint := alpha*(0.43+0.16*sin(t*12.0+rank*2.0)*sin(t*12.0+rank*2.0))
+                var little := 0.070+0.013*float(j%3)
+                _paint(SWARM[posmod(frame+j+idx,SWARM.size())],at,little,
+                    0.23*sin(t*12.0+angle),Color("c0ffd5",faint))
     # Infection visual at chest/arms, staggered in ART only. 7s canonical gameplay duration NOT simulated.
     for idx in range(3):
         var gain := mark_gain(t,idx)
@@ -274,7 +304,7 @@ func _draw() -> void:
                 var pt := center+Vector2((-1.0+k)*22.0+6.0*sin(local*8.0+k*2.2),
                     21.0-52.0*q)
                 var mote_gain := parasite_gain*sin(PI*q)*0.42
-                _paint(GU[gu_frame(t,mote+idx)],pt,0.060+0.014*sin(k*1.9),
+                _paint(SWARM[posmod(int(floor(t*21.0))+mote+idx,SWARM.size())],pt,0.089+0.018*sin(k*1.9),
                     -0.37+0.16*sin(t*10.0+k),Color("c5ffd3",mote_gain))
         if local<0.19:
             var spark := 1.0-local/0.19
@@ -298,10 +328,10 @@ func _draw() -> void:
     draw_string(ThemeDB.fallback_font,Vector2(30,35),
         "TAN CO DIEN NHIEM  /  CO DOC",HORIZONTAL_ALIGNMENT_LEFT,-1,27,Color("ebf9ec"))
     draw_string(ThemeDB.fallback_font,Vector2(30,65),
-        "R8  |  LIVING GHOST GU / JADE VENOM  |  3 VISUAL TARGETS  |  FRAME BY FRAME",
+        "R9  |  GHOST-GU SPLITS INTO JADE-MOTH SWARM  |  8 ORIGINAL WING POSES",
         HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("b6bdcf"))
     draw_string(ThemeDB.fallback_font,Vector2(31,688),
-        "VFX-POI05 R8  |  ORIGINAL XIANXIA SPIRIT ART  |  LAB ONLY / NO ACTUAL POISON",
+        "VFX-POI05 R9  |  ORIGINAL XIANXIA SPIRIT ART  |  LAB ONLY / NO ACTUAL POISON",
         HORIZONTAL_ALIGNMENT_LEFT,-1,14,Color("c4bcd4"))
     draw_string(ThemeDB.fallback_font,Vector2(1162,688),
         "%0.2fs" % t,HORIZONTAL_ALIGNMENT_LEFT,-1,14,Color("c9bdd8"))
