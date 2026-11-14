@@ -9,6 +9,7 @@ func _initialize() -> void:
     call_deferred("_run")
 func _run() -> void:
     _check(LAB.DISPLAY_NAME=="Thần Quyền","concept name not canonical ID")
+    _check(LAB.ART_REVISION=="V2_ALPHA_CONTACT","new alpha repair and contact reaction")
     _check(LAB.CANONICAL_SKILL_ID=="tmb.skill.fist.ba_quyen.ultimate.human","canonical source selected")
     _check(LAB.EFFECT=="damage" and LAB.ELEMENT=="fire","damage fire")
     _check(LAB.SHAPE=="circle" and LAB.TARGET_LIMIT==3 and LAB.DECLARED_RADIUS==3.0,"AoE radius and cap")

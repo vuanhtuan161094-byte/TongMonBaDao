@@ -18,6 +18,20 @@ OUT.mkdir(parents=True,exist_ok=True)
 FIST=Image.open(ASSETS/'godfist_master.webp').convert('RGBA')
 BURST=Image.open(ASSETS/'impact_master.webp').convert('RGBA')
 assert FIST.size==BURST.size==(CELL,CELL)
+# V2 native-frame repair: first-party impact source was cropped from a full
+# illustration, so its left/top alpha needs a SOFT EDGE, not a rectangular decal.
+def feather_original_impact(src):
+    a=np.asarray(src,dtype=np.uint8).copy()
+    yy,xx=np.mgrid[0:CELL,0:CELL]
+    left=np.clip(xx/75.,0,1)
+    right=np.clip((CELL-1-xx)/47.,0,1)
+    top=np.clip(yy/43.,0,1)
+    bottom=np.clip((CELL-1-yy)/49.,0,1)
+    edge=(left*left*(3-2*left))*(right*right*(3-2*right))
+    edge*=(top*top*(3-2*top))*(bottom*bottom*(3-2*bottom))
+    a[:,:,3]=np.clip(a[:,:,3].astype(np.float32)*edge,0,255).astype(np.uint8)
+    return Image.fromarray(a,'RGBA')
+BURST=feather_original_impact(BURST)
 
 def center_scene(src,scale=1.0,rot=0.0,alpha=1.0,shift=(0,0)):
     tmp=src.rotate(rot,resample=Image.Resampling.BICUBIC,expand=False)

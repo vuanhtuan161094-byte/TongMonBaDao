@@ -4,6 +4,7 @@ extends Control
 ## No simulation mutations. Contact times and target reactions are illustrative
 ## only; production must bind exclusively to genuine Combat V2 hit receipts.
 const DISPLAY_NAME := "Thần Quyền"
+const ART_REVISION := "V2_ALPHA_CONTACT"
 const CANONICAL_SKILL_ID := "tmb.skill.fist.ba_quyen.ultimate.human"
 const CANONICAL_SKILL_NAME := "Sơn Hà Chấn Thiên"
 const EFFECT := "damage"
@@ -115,7 +116,7 @@ func _victim_recoil(t: float,index: int) -> float:
     var offset: float = t-HIT_TIME-float(CONTACT_OFFSETS[index])
     if offset < 0.0 or offset > 0.42:
         return 0.0
-    return 12.0 * smoothstep(0.015,0.12,offset) * (1.0-smoothstep(0.20,0.42,offset))
+    return 19.0 * smoothstep(0.015,0.12,offset) * (1.0-smoothstep(0.20,0.42,offset))
 
 func _draw() -> void:
     var t := elapsed
@@ -161,11 +162,11 @@ func _draw() -> void:
     for i in range(VICTIMS.size()):
         var impact := hit_flash(t,i)
         var other: Vector2 = (VICTIMS[i] as Vector2)+Vector2(_victim_recoil(t,i),0.0)
-        _actor(other,Color(1.0,1.0,1.0,1.0).lerp(Color("fff1d8"),impact*0.37))
+        _actor(other,Color(1.0,1.0,1.0,1.0).lerp(Color("fff1d8"),impact*0.62))
         if impact > 0.005:
             var flash: Vector2 = other+Vector2(-17.0,-78.0)
-            _glow(flash,53.0,Color("ffe4a0",impact*0.49))
-            _glow(flash,19.0,Color("fffdf2",impact*0.52))
+            _glow(flash,53.0,Color("ffe4a0",impact*0.68))
+            _glow(flash,19.0,Color("fffdf2",impact*0.73))
             for n in range(7):
                 var ang := float(n)*2.399+float(i)*0.31
                 var r := 20.0+39.0*(1.0-impact)
@@ -175,7 +176,7 @@ func _draw() -> void:
     draw_string(ThemeDB.fallback_font,Vector2(27,36),
         "THAN QUYEN  |  SON HA CHAN THIEN ART STUDY",HORIZONTAL_ALIGNMENT_LEFT,-1,24,Color("fff0ce"))
     draw_string(ThemeDB.fallback_font,Vector2(28,61),
-        "FIST03 | SPIRIT FIST - 3 TARGET CONTACTS - VIEW-ONLY",
+        "FIST03 V2 | PAINTED FIST - 3 TARGET REACTIONS - VIEW-ONLY",
         HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("d9bda2"))
     draw_string(ThemeDB.fallback_font,Vector2(27,683),
         "GODOT 4.7.2 COMPATIBILITY | 40 PAINTED ATLAS FRAMES | NO RIG / NO HP WRITES",
