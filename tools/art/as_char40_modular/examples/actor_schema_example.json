@@ -1,0 +1,43 @@
+{
+  "schema": "tmb.modular.no_rig.1",
+  "actor_id": "male_base_v1",
+  "canvas": [128, 128],
+  "foot_pivot": [64, 104],
+  "weapon_family": "jian",
+  "status": "ART_PENDING",
+  "frames": [
+    {
+      "state": "walk", "direction": "front", "index": 0,
+      "layers": {
+        "body_base": "frames/walk/front/f00/body_base.png",
+        "underwear": "frames/walk/front/f00/underwear.png",
+        "eyes": "frames/walk/front/f00/eyes.png",
+        "hair_back": "frames/walk/front/f00/hair_back.png"
+      },
+      "variants": {
+        "outfits": {
+          "cobalt": {"outfit_outer": "frames/walk/front/f00/outfit_cobalt.png"},
+          "golden": {"outfit_outer": "frames/walk/front/f00/outfit_golden.png"}
+        },
+        "faces": {"calm": {"eyes": "frames/walk/front/f00/eyes.png"}},
+        "hairs": {"silver": {"hair_back": "frames/walk/front/f00/hair_back.png"}}
+      },
+      "anchors": {
+        "foot_root": [64, 104],
+        "head_center": [64, 35],
+        "hand_r_grip": [78, 62],
+        "hand_l_grip": [54, 59]
+      },
+      "weapons": {
+        "jian_blue": {
+          "family": "jian", "grip": [78, 62],
+          "front": "frames/walk/front/f00/jian_blue_front.png"
+        },
+        "jian_gold": {
+          "family": "jian", "grip": [78, 62],
+          "front": "frames/walk/front/f00/jian_gold_front.png"
+        }
+      }
+    }
+  ]
+}

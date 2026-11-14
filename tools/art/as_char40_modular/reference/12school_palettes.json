@@ -1,0 +1,19 @@
+{
+  "source_document":"docs/animation/TMB_DISCIPLE_SCHOOL_VISUAL_MOTIFS_20261111.md",
+  "status":"DESIGN_ONLY_NOT_PIXEL_SOURCE",
+  "schools":{
+    "cung_tu":["moon silver","ink blue"],
+    "quyen_tu":["dark stone","red bronze"],
+    "doc_tu":["violet-black","jade"],
+    "kiem_tu":["silver steel","ink violet"],
+    "dao_tu":["dark steel","brick red"],
+    "song_dao":["graphite","deep crimson"],
+    "thuong_tu":["blue steel","antique gold"],
+    "chuong_tu":["warm earth","cool jade"],
+    "tran_tu":["indigo ink","stone"],
+    "trieu_hoi":["ash violet","jade"],
+    "chu_tu":["ink violet","bronze"],
+    "phu_tu":["ivory paper","cinnabar ink"]
+  },
+  "note":"Vocal color descriptors only; no new exact RGB palette invented. Actual 12-school liked original source art must be visually matched from authentic archived bytes."
+}
