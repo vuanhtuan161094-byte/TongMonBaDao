@@ -81,6 +81,21 @@ static func frame_style(quality_id: String, background: Color, selected: bool = 
     style.content_margin_bottom = 7
     return style
 
+static func apply_frame_material(panel: PanelContainer, quality_id: String) -> void:
+    if panel == null:
+        return
+    var original := panel.get_theme_stylebox("panel") as StyleBoxFlat
+    if original == null:
+        return
+    var style := original.duplicate() as StyleBoxFlat
+    var divine := quality_id == "heaven_defying"
+    style.border_color = Color(0.65,0.87,0.90) if divine else color_for(quality_id)
+    style.set_border_width_all(3 if divine else 2)
+    if divine and effects_enabled:
+        style.shadow_color = Color(0.45,0.75,0.76,0.33)
+        style.shadow_size = 7
+    panel.add_theme_stylebox_override("panel",style)
+
 static func apply_edge(owner: Control, quality_id: String, permit_motion: bool = true) -> void:
     if owner == null:
         return
@@ -143,6 +158,8 @@ static func wrap_portrait(slot: Control, dimensions: Vector2, quality_id: String
     host.size_flags_vertical = Control.SIZE_SHRINK_CENTER
     host.add_child(slot)
     slot.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+    if slot is PanelContainer:
+        apply_frame_material(slot as PanelContainer, quality_id)
     apply_edge(host, quality_id)
     apply_backlight(slot, Rect2(Vector2.ZERO, dimensions), quality_id)
     return host

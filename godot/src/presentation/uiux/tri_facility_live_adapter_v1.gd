@@ -37,6 +37,7 @@ var _feedback := ""
 var _active_view: Control
 var _office_picker_role := ""
 var _last_recruited_disciple_id := ""
+var _vis_revealed_once: Dictionary = {}
 
 func configure(host: Control, state: SimulationState, recruitment: RecruitmentSystem, mode: String) -> void:
     _host = host
@@ -428,6 +429,10 @@ func _guidance_model() -> Dictionary:
         guide_options.append({"id":str(disciple_id),"name":disciple.display_name,"eligible":eligible})
     var guide_slots: int = buildings.guidance_elder_slots(platform) if platform != null else 0
     var recruited := _recruited_disciple_model()
+    var reveal_id := str(recruited.get("id", ""))
+    var reveal_once := not reveal_id.is_empty() and not _vis_revealed_once.has(reveal_id)
+    if reveal_once:
+        _vis_revealed_once[reveal_id] = true
     return {
         "candidates":rows,
         "selected_candidate_id":str(_host.get("selected_candidate_id")),
@@ -450,6 +455,7 @@ func _guidance_model() -> Dictionary:
         "can_assign_guidance":available,
         "capacity_upgrade_reason":str(upgrade_check.get("reason","")),
         "recruited_disciple":recruited,
+        "vis_reveal_once":reveal_once,
         "feedback":_feedback
     }
 

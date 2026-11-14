@@ -403,6 +403,7 @@ func _build_recruit_reveal() -> Control:
 		return null
 	var quality_id := VIS_QUALITY.id_from_name(str(disciple.get("quality", "")))
 	var panel := UI.panel("RecruitmentReveal",VIS_QUALITY.color_for(quality_id),UI.SURFACE_LIGHT)
+	VIS_QUALITY.apply_frame_material(panel as PanelContainer, quality_id)
 	var content := VBoxContainer.new()
 	content.add_theme_constant_override("separation",6)
 	panel.add_child(content)
@@ -576,7 +577,7 @@ func _vis_run_first_reveal() -> void:
 	if recruited.is_empty():
 		return
 	var id := str(recruited.get("id", ""))
-	if id.is_empty() or _vis_reveal_seen.has(id):
+	if id.is_empty() or _vis_reveal_seen.has(id) or not bool(_vm.get("vis_reveal_once",false)):
 		return
 	_vis_reveal_seen[id] = true
 	if VIS_QUALITY.id_from_name(str(recruited.get("quality", ""))) != "heaven_defying":
