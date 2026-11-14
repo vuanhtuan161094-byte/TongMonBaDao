@@ -65,13 +65,13 @@ jobs:
           ffmpeg -y -hide_banner -loglevel error -i "$d/van-co-phe-gioi-ultimate.mp4" -vf 'fps=5,scale=320:180,tile=5x4:nb_frames=20' -frames:v 1 "$d/timeline.png"
           ffmpeg -y -hide_banner -loglevel error -i "$d/van-co-phe-gioi-ultimate.mp4" -vf "fps=8,scale=640:-1:flags=lanczos" -loop 0 "$d/van-co-phe-gioi-ultimate.gif"
           sha256sum "$d/"*.mp4 "$d/"*.png "$d/"*.gif > "$d/SHA256SUMS.txt"
-          grep -Fq 'VFX_POI06_R9_READY' "$d/movie.log"
+          grep -Fq 'VFX_POI06_R10_READY' "$d/movie.log"
           rm "$d/van-co-phe-gioi-ultimate.avi"
       - name: Upload exact-SHA movie, frames and QA evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: vfx-poi06-r9-${{ github.sha }}
+          name: vfx-poi06-r10-${{ github.sha }}
           retention-days: 14
           if-no-files-found: warn
           path: |

@@ -113,7 +113,7 @@ func _ready() -> void:
         _r9_realm_frames.append(tex)
     set_process(true)
     queue_redraw()
-    print("VFX_POI06_R9_READY id=",SKILL_ID," gu_frames=",GU.size()," brand_frames=",BRANDS.size(),
+    print("VFX_POI06_R10_READY id=",SKILL_ID," gu_frames=",GU.size()," brand_frames=",BRANDS.size(),
         " targets=",DECLARED_TARGET_LIMIT," gameplay=false no_rig=true")
 func _radial_texture() -> Texture2D:
     var img := Image.create(96,96,false,Image.FORMAT_RGBA8)
@@ -263,7 +263,7 @@ func _draw() -> void:
     draw_string(ThemeDB.fallback_font,Vector2(31,35),
         "VAN CO PHE GIOI  /  CO DOC TUYET KY",HORIZONTAL_ALIGNMENT_LEFT,-1,26,Color("eaffee"))
     draw_string(ThemeDB.fallback_font,Vector2(32,61),
-        "POI06 R9  |  8-FRAME IMAGE-PAINTED REALM / LIVING LIGHT CHARGE",
+        "POI06 R10  |  8-FRAME IMAGE-PAINTED REALM / LIVING LIGHT CHARGE",
         HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("b4c6cf"))
     draw_string(ThemeDB.fallback_font,Vector2(32,691),
         "GODOT 4.7.2 COMPATIBILITY  |  ART-ONLY  |  NO GAMEPLAY POISON/HP CHANGE",
