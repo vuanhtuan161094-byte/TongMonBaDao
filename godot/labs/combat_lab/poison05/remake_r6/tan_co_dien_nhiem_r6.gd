@@ -1,5 +1,5 @@
 extends Control
-## POI-05 R6 — Tán Cổ Diễn Nhiễm. Independent original Tu Tien xianxia remake.
+## POI-05 R8 — Tán Cổ Diễn Nhiễm. Independent original Tu Tien xianxia remake.
 ## One spectral chitin gu carries a living seed and divides into three VISUAL escorts.
 ## No fake gameplay hits/procs/status; real Combat V2/PvE remains HOLD.
 ## All motion is frame-by-frame (not skeletal/rigged).
@@ -241,32 +241,41 @@ func _draw() -> void:
     for idx in range(3):
         var gain := mark_gain(t,idx)
         if gain<0.006:continue
-        var center: Vector2 = TARGETS[idx]+Vector2(3.0,-73.0)
+        var center: Vector2 = TARGETS[idx]+Vector2(3.0,-57.0)
         var born := escort_start(idx)+0.62
         var local := maxf(0.0,t-born)
         var turn := int(floor(local*14.0))%MARK.size()
-        var size := 0.39+0.03*sin(t*5.2+float(idx)*2.0)
+        var size := 0.285+0.022*sin(t*5.2+float(idx)*2.0)
         var a := -0.08+0.15*sin(t*4.2+float(idx)*1.5)
-        _halo(center,98.0,Color("b38bea",gain*0.27))
-        _paint(MARK[turn],center,size,a,Color(1,1,1,gain*0.86))
-        # Open, climbing poison-binding light curls: NOT opaque closed circles.
-        var spiral_gain := gain*(1.0-smoothstep(2.90,3.55,t))
-        if spiral_gain>0.02:
-            for strand in range(2):
-                var seq := PackedVector2Array()
-                for p_idx in range(21):
-                    var q := float(p_idx)/20.0
-                    var theta := -1.15+q*PI*1.56+local*1.25+float(strand)*2.25+float(idx)*0.5
-                    var rx := 40.0+8.0*sin(theta*2.3+local*2.2)
-                    var ry := 24.0+7.0*sin(theta*1.7)
-                    var px := center.x+cos(theta)*rx
-                    var py := center.y+sin(theta)*ry-13.0*sin(PI*q)+float(strand)*7.0
-                    seq.append(Vector2(px,py))
-                draw_polyline(seq,Color("3f215d",spiral_gain*0.53),10.0,true)
-                draw_polyline(seq,Color("b58af8" if strand==0 else "83e7b1",spiral_gain*0.57),4.0,true)
-                draw_polyline(seq,Color("f0ffe9",spiral_gain*0.46),1.3,true)
-                var last: Vector2 = seq[seq.size()-1]
-                _halo(last,17.0,Color("c5ffba",spiral_gain*0.38))
+        _halo(center,82.0,Color("b38bea",gain*0.21))
+        _paint(MARK[turn],center,size,a,Color(1,1,1,gain*0.82))
+        # Xianxia parasitic veins crawl upwards as *open* filaments, never protective rings.
+        var parasite_gain := gain*(1.0-smoothstep(2.90,3.57,t))
+        if parasite_gain>0.012:
+            for strand in range(3):
+                var vein := PackedVector2Array()
+                var k := float(strand)
+                var root := center+Vector2((k-1.0)*18.0,24.0+k*4.0)
+                for p_idx in range(15):
+                    var q := float(p_idx)/14.0
+                    var sideways := (k-1.0)*(14.0+11.0*q)
+                    var wiggle := 9.0*sin(q*7.0+local*5.0+k*2.3+float(idx)*1.7)
+                    var p := root+Vector2(sideways*q+wiggle,-58.0*q+6.0*sin(q*4.4))
+                    vein.append(p)
+                draw_polyline(vein,Color("271d42",parasite_gain*0.50),6.8,true)
+                draw_polyline(vein,Color("ac83eb" if strand==0 else "87dfb6",parasite_gain*0.49),2.7,true)
+                draw_polyline(vein,Color("e9ffe5",parasite_gain*0.30),0.9,true)
+                var tip: Vector2 = vein[vein.size()-1]
+                _halo(tip,10.0,Color("cbf9bd",parasite_gain*0.27))
+            # A few tiny insects move *into* each character, not a second actual hit.
+            for mote in range(3):
+                var k := float(mote)
+                var q := fposmod(local*0.75+k*0.29,1.0)
+                var pt := center+Vector2((-1.0+k)*22.0+6.0*sin(local*8.0+k*2.2),
+                    21.0-52.0*q)
+                var mote_gain := parasite_gain*sin(PI*q)*0.42
+                _paint(GU[gu_frame(t,mote+idx)],pt,0.060+0.014*sin(k*1.9),
+                    -0.37+0.16*sin(t*10.0+k),Color("c5ffd3",mote_gain))
         if local<0.19:
             var spark := 1.0-local/0.19
             _halo(center,41.0+35.0*(1.0-spark),Color("e8ffda",spark*0.43))
@@ -289,10 +298,10 @@ func _draw() -> void:
     draw_string(ThemeDB.fallback_font,Vector2(30,35),
         "TAN CO DIEN NHIEM  /  CO DOC",HORIZONTAL_ALIGNMENT_LEFT,-1,27,Color("ebf9ec"))
     draw_string(ThemeDB.fallback_font,Vector2(30,65),
-        "R6  |  LIVING GHOST GU / JADE VENOM  |  3 VISUAL TARGETS  |  FRAME BY FRAME",
+        "R8  |  LIVING GHOST GU / JADE VENOM  |  3 VISUAL TARGETS  |  FRAME BY FRAME",
         HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("b6bdcf"))
     draw_string(ThemeDB.fallback_font,Vector2(31,688),
-        "VFX-POI05 R6  |  ORIGINAL XIANXIA SPIRIT ART  |  LAB ONLY / NO ACTUAL POISON",
+        "VFX-POI05 R8  |  ORIGINAL XIANXIA SPIRIT ART  |  LAB ONLY / NO ACTUAL POISON",
         HORIZONTAL_ALIGNMENT_LEFT,-1,14,Color("c4bcd4"))
     draw_string(ThemeDB.fallback_font,Vector2(1162,688),
         "%0.2fs" % t,HORIZONTAL_ALIGNMENT_LEFT,-1,14,Color("c9bdd8"))
