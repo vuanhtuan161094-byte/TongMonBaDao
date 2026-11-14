@@ -9,7 +9,7 @@ func _initialize() -> void:
     call_deferred("_run")
 func _run() -> void:
     _check(LAB.SKILL_ID=="tmb.skill.fist.ba_quyen.active_03.human","canonical skill")
-    _check(LAB.ART_REVISION=="V2_HIGH_VISIBILITY_PAINTED_THUNDER","V2 art")
+    _check(LAB.ART_REVISION=="V3_CONTENT_ALPHA_FEATHER","V3 content-aware alpha")
     _check(LAB.EFFECT=="damage" and LAB.ELEMENT=="fire","fire damage not fake lightning gameplay")
     _check(LAB.SHAPE=="circle" and LAB.TARGET_LIMIT==3 and is_equal_approx(LAB.DECLARED_RADIUS,3.0),"AoE cap radius")
     _check(is_equal_approx(LAB.CAST_TIME,.45),"cast time")

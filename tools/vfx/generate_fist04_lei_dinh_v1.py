@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""FIST04 Lei Dinh Chan Quyen R2: first-party painted energy source -> 40 RGBA poses.
+"""FIST04 Lei Dinh Chan Quyen R3: first-party painted energy source -> 40 RGBA poses.
 Source is original ImageGen concept painted on 2026-11-14, isolated from an
 illustration with chroma-alpha; only sprite material is shipped, NO poster art.
 The skill deals Fire damage in a circle of up to THREE confirmed targets; this
@@ -17,7 +17,7 @@ H=Image.open(A/'thunder_ghost_master.webp').convert('RGBA')
 B=Image.open(A/'threefold_impact_master.webp').convert('RGBA')
 assert H.size==B.size==(384,384)
 
-def clean(src):
+def clean(src,kind):
     a=np.array(src,dtype=np.float32)
     yy,xx=np.mgrid[0:CELL,0:CELL]
     edge=np.minimum.reduce([np.clip(xx/22,0,1),np.clip((383-xx)/22,0,1),
@@ -26,8 +26,23 @@ def clean(src):
     # Original crop includes faint sky tint; keep only luminous intentional material.
     a[:,:,3]*=np.clip((a[:,:,1]-85)/100,0,1)**.26
     a[:,:,3]=np.clip((a[:,:,3]-4)*1.62,0,255)
+    # Content-based alpha taper around the ACTUAL painted image boundary,
+    # not just around the outer atlas cell. This eliminates broad rectangular
+    # poster-crop edges visible at 1x in R2 native frames 0.68s / 1.15s.
+    if kind=='hero':
+        left=np.clip((xx-23)/96.,0,1)
+        right=np.clip((371-xx)/65.,0,1)
+        top=np.clip((yy-93)/43.,0,1)
+        bottom=np.clip((291-yy)/58.,0,1)
+    else:
+        left=np.clip((xx-23)/109.,0,1)
+        right=np.clip((368-xx)/68.,0,1)
+        top=np.clip((yy-113)/47.,0,1)
+        bottom=np.clip((274-yy)/63.,0,1)
+    for gate in (left,right,top,bottom):
+        a[:,:,3]*=gate*gate*(3-2*gate)
     return Image.fromarray(np.clip(a,0,255).astype('uint8'),'RGBA')
-H=clean(H);B=clean(B)
+H=clean(H,"hero");B=clean(B,"impact")
 
 def modulate(src,k,scale=1,alpha=1,angle=0,offset=(0,0)):
     im=src.rotate(angle,resample=Image.Resampling.BICUBIC,expand=False)

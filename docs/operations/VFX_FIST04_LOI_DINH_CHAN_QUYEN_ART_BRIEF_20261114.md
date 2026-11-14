@@ -13,3 +13,7 @@ Atlases generated deterministically by `tools/vfx/generate_fist04_lei_dinh_v1.py
 
 ## G4–G7 Acceptance/evidence
 Official Godot 4.7.2 strict import, parse, focused contract on exact SHA; true 1280×720 movie 180 fixed-frame capture plus GIF and 12 native timecodes. CI PASS is not owner art PASS or measured device FPS. DO NOT merge, branch, rig, use Codex, edit live PvE/Combat V2/SaveService/economy, or other schools' paths. State gates separately: CODE_READY, GODOT_FOCUSED_PENDING, OWNER_VISUAL_PENDING, PVE_INTEGRATION_HOLD, V63_OFF. Explicit owner decision is required for art approval. This new skill doesn't replace accepted FIST03 Thần Quyền V3.
+## Exact-SHA Godot review and source repair log - 2026-11-14
+- V1 SHA 9df60b19c728e417b75d144244bc26ed016a8efc, Godot Actions #43620925492 SUCCESS. Strict import/parse/focused and authentic 1280x720 movie PASS; but charge was faint and impact was too small at 1x. Not art approved.
+- V2 SHA 08a064311a0fb2630bd90b7315a48277977a26d1, Godot Actions #43621374619 SUCCESS. Better art scale and brightness, three contact glints. Actual frames 0.68s/1.15s had straight poster-crop border; ART REWORK REQUIRED.
+- V3 repairs that boundary with content-aware left/right/top/bottom feather at the true original artwork, not only atlas cell edges. Rerun Godot exact SHA before claim. Game contract remains damage/fire/circle/radius3/cap3/cast0.45; hits view-only demo and no HP. GATES OWNER_VISUAL_PENDING / PVE_INTEGRATION_HOLD / V63_OFF / NO_RIG. Physical FPS unknown.

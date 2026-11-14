@@ -4,7 +4,7 @@ extends Control
 ## Actors are static scale proxies, no rig, no fake leg/fist animation and no HP writes.
 const SKILL_ID := "tmb.skill.fist.ba_quyen.active_03.human"
 const SKILL_NAME := "Lôi Đình Chấn Quyền"
-const ART_REVISION := "V2_HIGH_VISIBILITY_PAINTED_THUNDER"
+const ART_REVISION := "V3_CONTENT_ALPHA_FEATHER"
 const EFFECT := "damage"
 const ELEMENT := "fire"
 const SHAPE := "circle"
@@ -146,7 +146,7 @@ func _draw() -> void:
     draw_string(ThemeDB.fallback_font,Vector2(28,34),
         "LOI DINH CHAN QUYEN / BA QUYEN",HORIZONTAL_ALIGNMENT_LEFT,-1,24,Color("ffefce"))
     draw_string(ThemeDB.fallback_font,Vector2(28,58),
-        "FIST04 V2 | FIRE SHOCKWAVE / CIRCLE / 3 TARGET VISUAL CONTACTS",
+        "FIST04 V3 | FIRE SHOCKWAVE / CIRCLE / 3 TARGET VISUAL CONTACTS",
         HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("e3c4a7"))
     draw_string(ThemeDB.fallback_font,Vector2(28,683),
         "GODOT 4.7.2 | IMAGEGEN-DERIVED PAINTED SOURCE | VIEW-ONLY / NO RIG / NO HP WRITES",
