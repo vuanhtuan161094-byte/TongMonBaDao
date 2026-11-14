@@ -9,3 +9,6 @@
 **Reference:** 2026-11-14 owner screenshot provided seven art-layer types; original independently authored SVG poses, not cropped or redistributed commercial pixels. Individual frame geometry and internal lines differ (not a recolored generic icon). Art QA at native Godot 1280×720 is mandatory; Godot success is not owner approval. In this LAB display, target visual cues are predetermined for preview only; eventual real PvE shall require explicit confirmed event receipts.
 
 **Scope:** `talisman02/**`, `vfx_tal02_contract_test.gd`, `vfx-tal-02-thien-loi-dan-net.yml`; no rig, no Codex, no PvE integration/feature gates. `OWNER_VISUAL_PENDING / PVE_INTEGRATION_HOLD / WINDOWS_ANDROID_PHYSICAL_PENDING`.
+
+## R2 self-review fix
+R1 actual Godot still at 1.08s revealed a stiff three-line neon tube, rejected internally despite tech PASS. R2 lowers the opaque ribbon atlas to atmospheric ink (~28%) and creates one slender living white-violet primary arc with tapered luminance, precisely two optional short branches, tip bloom and few subordinated glints. Does **not** increase declared hits/targets. Must render and visually inspect R2 actual frames before proceeding.

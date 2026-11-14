@@ -18,6 +18,8 @@ func _run()->void:
     _check(LAB.phase_at(.3)=="inscribe" and LAB.phase_at(.9)=="draw_line","staging")
     _check(LAB.phase_at(1.47)=="demo_contact" and LAB.phase_at(2.10)=="dissolve","contact & decay")
     _check(LAB.stroke_index(.2)==-1 and LAB.stroke_index(1.43)==9 and LAB.stroke_index(2.3)==-1,"ink-reveal bounded")
+    _check(LAB.line_point(0.0,1.0).x==398.0 and LAB.line_point(1.0,1.0).x==1133.0,"real connected line endpoints")
+    _check(LAB.line_point(.60,1.0).x>LAB.line_point(.40,1.0).x,"line does not loop backward")
     _check(LAB.foot_gain(.07)==0.0 and LAB.foot_gain(.48)>0.6 and LAB.foot_gain(1.14)==0.0,"cast-only underfoot array")
     _check(LAB.contact_gain(1.1,0)==0.0 and LAB.contact_gain(1.50,0)>0.0,"never fake early impact")
     _check(LAB.contact_gain(1.45,2)==0.0 and LAB.contact_gain(1.59,2)>0.0,"staggered three only")

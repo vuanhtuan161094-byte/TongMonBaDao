@@ -108,6 +108,44 @@ func _update_hero()->void:
 func _halo(at:Vector2,radius:float,tint:Color)->void:
     if tint.a<.005:return
     draw_texture_rect(_halo_texture,Rect2(at-Vector2.ONE*radius,Vector2.ONE*(radius*2.0)),false,tint)
+static func line_point(q:float,t:float,lane:int=0)->Vector2:
+    var p:=clampf(q,0.0,1.0)
+    var e:=sin(PI*p)
+    var zig:=8.0*sin(p*67.0+t*21.0)*e+5.0*sin(p*119.0-t*37.0)*e
+    var curve:=22.0*sin(PI*p)+11.0*sin(p*12.7+t*1.8)*e
+    return Vector2(398.0+735.0*p,430.0+curve+zig+float(lane)*11.0*e)
+func _draw_living_line(t:float,gain:float)->void:
+    var reach:=smoothstep(RELEASE_AT,CONTACT_AT,t)
+    if gain<0.01 or reach<0.01:return
+    var end:=line_point(reach,t)
+    _halo(end,83.0,Color("8b62ef",gain*.44))
+    _halo(end,43.0,Color("e9baff",gain*.65))
+    _halo(end,15.0,Color("fff8ff",gain*.91))
+    for lane in range(2):
+        var prev:=Vector2(398.0,430.0)
+        if lane==1:prev+=Vector2(0.0,10.0)
+        for step in range(43):
+            var q:=reach*float(step+1)/43.0
+            var nxt:=line_point(q,t,lane)
+            var intensity:=gain*(1.0 if lane==0 else .29)*(0.45+0.55*pow(q,0.35))
+            draw_line(prev,nxt,Color("6c48d2",intensity*.23),12.0 if lane==0 else 5.0,true)
+            draw_line(prev,nxt,Color("b79aff",intensity*.72),4.2 if lane==0 else 2.3,true)
+            draw_line(prev,nxt,Color("fff4ff",intensity*.96),1.70 if lane==0 else .90,true)
+            if step%6==0:
+                _halo(nxt,22.0 if lane==0 else 12.0,Color("946fe3",intensity*.14))
+            prev=nxt
+    # Only two brief tangential forks, no equal-weight parallel neon cables.
+    for b in range(2):
+        var q:=.37+float(b)*.29
+        if reach<q+.01:continue
+        var source:=line_point(q,t)
+        var side:float=-1.0 if b%2==0 else 1.0
+        var dest:=source+Vector2(32.0,side*(41.0+12.0*float(b)))
+        var mid:=source.lerp(dest,.52)+Vector2(8.0,-side*7.0)
+        draw_line(source,mid,Color("9864e9",gain*.26),6.0,true)
+        draw_line(mid,dest,Color("9864e9",gain*.24),4.0,true)
+        draw_line(source,mid,Color("f1dfff",gain*.62),1.3,true)
+        draw_line(mid,dest,Color("ead5ff",gain*.44),1.0,true)
 func _actor(at:Vector2,alpha:float=1.0)->void:
     draw_texture_rect_region(ACTOR,Rect2(at.x-72.0,at.y-163.0,144.0,163.0),Rect2(0,0,320,384),Color(0.82,0.78,0.90,alpha))
 func _draw()->void:
@@ -128,7 +166,8 @@ func _draw()->void:
         var gain:=smoothstep(RELEASE_AT,RELEASE_AT+.13,t)*(1.0-smoothstep(1.54,1.76,t))
         _halo(HAND+Vector2(31,-26),69.0,Color("a878fa",gain*.36))
         # All ten poses are independently shaped, progressive alpha glyph-brush artwork.
-        draw_texture_rect(STROKES[index],Rect2(385.0,329.0,811.0,211.0),false,Color(1.0,1.0,1.0,gain))
+        draw_texture_rect(STROKES[index],Rect2(385.0,329.0,811.0,211.0),false,Color(1.0,1.0,1.0,gain*.28))
+        _draw_living_line(t,gain)
         # One continuous lightning calligraphy path along the declared line, no fake 360-degree AoE.
     for i in range(TARGET_LIMIT):
         var g:=contact_gain(t,i)
