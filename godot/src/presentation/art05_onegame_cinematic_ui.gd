@@ -294,8 +294,14 @@ func _art05_style_content_tree(node: Node) -> void:
         elif child is PanelContainer:
             var card := child as PanelContainer
             if card.name.begins_with("Art02Item_") or card.name.begins_with("ResourceBatchCard") or card.name.begins_with("SpiritPlotCard") or card.name.begins_with("LegacyResourceCycleCard"):
-                card.add_theme_stylebox_override("panel",_art05_style(
-                    Color(0.07,0.18,0.21,0.96),Color(0.42,0.61,0.55,0.6),1,8))
+                # VIS-06: consistent material for genuine warehouse/alchemy
+                # cards; do not invent a grade for an ungraded stack.
+                var accent := _art05_accent()
+                var finish := _art05_style(Color(0.054,0.142,0.166,0.98),
+                    Color(accent.r,accent.g,accent.b,0.74),1,8)
+                finish.shadow_color = Color(accent.r,accent.g,accent.b,0.13)
+                finish.shadow_size = 3
+                card.add_theme_stylebox_override("panel",finish)
         elif child is Button:
             var button := child as Button
             button.custom_minimum_size.x = minf(button.custom_minimum_size.x,338.0)
@@ -312,6 +318,7 @@ func _art05_style_content_tree(node: Node) -> void:
 
 # VIS-01/02: additive quality presentation on the one real playable scene.
 const VIS_QUALITY = preload("res://src/presentation/uiux/sect_quality_visual_v1.gd")
+const VIS_EQUIPMENT = preload("res://src/presentation/uiux/sect_equipment_material_v1.gd")
 
 func _refresh_disciple_summary_content() -> void:
     super._refresh_disciple_summary_content()
@@ -379,6 +386,8 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "Tá»
     toggle.add_theme_stylebox_override("normal", _art05_style(ART05_JADE, ART05_GOLD, 1, 9))
     toggle.pressed.connect(Callable(self, "_vis_toggle_profile_reduced").bind(disciple_id, tab_name))
     panel.add_child(toggle)
+    if tab_name == "Trang bá»‹":
+        VIS_EQUIPMENT.apply_profile(panel, state.disciples[disciple_id] as DiscipleState, state)
 
 func _vis_toggle_profile_reduced(disciple_id: StringName, tab_name: String) -> void:
     VIS_QUALITY.cycle_mode()

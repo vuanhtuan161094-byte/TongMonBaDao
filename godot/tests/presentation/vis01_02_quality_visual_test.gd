@@ -25,6 +25,10 @@ func _run() -> void:
         VIS.reduced_motion = true
         VIS.apply_edge(wrapped, quality_id)
         assert((edge.material as ShaderMaterial).get_shader_parameter("motion") == 0.0)
+        if quality_id == "heaven_defying":
+            var crystal := wrapped.get_node_or_null("VIS02CrystalArtwork") as NinePatchRect
+            assert(crystal != null and crystal.texture != null and not crystal.draw_center)
+            assert(crystal.mouse_filter == Control.MOUSE_FILTER_IGNORE)
         VIS.reduced_motion = false
         wrapped.queue_free()
         label.queue_free()

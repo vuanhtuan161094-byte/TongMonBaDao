@@ -408,6 +408,11 @@ func _build_recruit_reveal() -> Control:
 	content.add_theme_constant_override("separation",6)
 	panel.add_child(content)
 	content.add_child(UI.section_heading("Đệ tử đã gia nhập Tông Môn", "check", UI.GOLD))
+	if quality_id == "heaven_defying":
+		var seal := UI.label("✦  NGŨ SẮC TIÊN QUANG  ✦", 12, VIS_QUALITY.color_for(quality_id), true)
+		seal.name = "VIS05DivineSeal"
+		seal.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		content.add_child(seal)
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation",10)
 	var portrait: Variant = disciple.get("portrait")
@@ -587,10 +592,20 @@ func _vis_run_first_reveal() -> void:
 	var panel := find_child("RecruitmentReveal", true, false) as PanelContainer
 	if panel == null:
 		return
-	# One-time, subsecond charge -> reveal -> quiet fade; never loops on rerenders.
+	# VIS-05: five quiet narrative beats on an actual accepted recruit,
+	# keyed by real ID. Never repeats on redraw, never blocks player input.
+	# 1 seal charging, 2 jade flash, 3 identity, 4 aurora, 5 settle.
 	panel.modulate.a = 0.0
+	var seal := panel.find_child("VIS05DivineSeal", true, false) as Label
+	if seal != null:
+		seal.modulate.a = 0.0
 	var tween := panel.create_tween()
-	tween.tween_property(panel, "modulate:a", 0.18, 0.09)
-	tween.tween_interval(0.08)
-	tween.tween_property(panel, "modulate:a", 0.72, 0.17)
-	tween.tween_property(panel, "modulate:a", 1.0, 0.26)
+	tween.tween_property(panel, "modulate:a", 0.18, 0.12)
+	tween.tween_property(panel, "modulate:a", 0.68, 0.21)
+	tween.tween_property(panel, "modulate:a", 0.91, 0.23)
+	tween.tween_property(panel, "modulate:a", 1.0, 0.29)
+	tween.tween_interval(0.25)
+	if seal != null:
+		var seal_tween := seal.create_tween()
+		seal_tween.tween_interval(0.32)
+		seal_tween.tween_property(seal, "modulate:a", 1.0, 0.54)

@@ -5,6 +5,7 @@ const TEXT_SHADER = preload("res://src/presentation/uiux/shaders/vis01_prismatic
 const EDGE_SHADER = preload("res://src/presentation/uiux/shaders/vis02_crystal_edge.gdshader")
 const AURA_SHADER = preload("res://src/presentation/uiux/shaders/vis02_soft_aura.gdshader")
 const MOTES_SCRIPT = preload("res://src/presentation/uiux/sect_prismatic_motes_v1.gd")
+const CRYSTAL_ART: Texture2D = preload("res://art/uiux/quality/vis02_heaven_crystal_frame.svg")
 const QUALITY_COLORS := {
     "common": Color(0.92, 0.89, 0.82),
     "outstanding": Color(0.48, 0.82, 0.90),
@@ -116,6 +117,24 @@ static func apply_edge(owner: Control, quality_id: String, permit_motion: bool =
     shader_material.set_shader_parameter("divine", 1.0 if quality_id == "heaven_defying" else 0.0)
     shader_material.set_shader_parameter("motion", 1.0 if permit_motion and effects_enabled and not reduced_motion else 0.0)
     overlay.visible = effects_enabled or quality_id != "heaven_defying"
+    # VIS-02 R2: original transparent-cut nine-slice crystal art; never tint
+    # or replace source portraits, keep the midsection entirely transparent.
+    var crystal := owner.get_node_or_null("VIS02CrystalArtwork") as NinePatchRect
+    if quality_id == "heaven_defying" and crystal == null:
+        crystal = NinePatchRect.new()
+        crystal.name = "VIS02CrystalArtwork"
+        crystal.texture = CRYSTAL_ART
+        crystal.draw_center = false
+        crystal.patch_margin_left = 32
+        crystal.patch_margin_right = 32
+        crystal.patch_margin_top = 32
+        crystal.patch_margin_bottom = 32
+        crystal.mouse_filter = Control.MOUSE_FILTER_IGNORE
+        owner.add_child(crystal)
+        crystal.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+    if crystal != null:
+        crystal.visible = quality_id == "heaven_defying" and effects_enabled
+        crystal.modulate.a = 0.76 if reduced_motion else 1.0
     var motes := owner.get_node_or_null("VIS02AstralMotes") as Control
     if quality_id == "heaven_defying" and effects_enabled:
         if motes == null:

@@ -1,15 +1,7 @@
 name: VIS02 Real OneGame Divine Recruitment Movie
 on:
-  push:
-    branches: [integration/pve-p0-playable-ui-20261103]
-    paths:
-      - 'godot/src/presentation/uiux/sect_quality_visual_v1.gd'
-      - 'godot/src/presentation/uiux/sect_prismatic_motes_v1.gd'
-      - 'godot/src/presentation/uiux/shaders/vis0*.gdshader'
-      - 'godot/src/presentation/art05_onegame_cinematic_ui.gd'
-      - 'godot/src/presentation/uiux/dan_tien_screen_b1_v1.gd'
-      - 'godot/tests/presentation/vis02_real_recruit_visual_capture.gd'
-      - '.github/workflows/vis02-real-recruit-video.yml'
+  # VIS-02/05 full film remains available on demand, not on every code tweak.
+  # Fast official Godot import/contract still runs automatically.
   workflow_dispatch:
 permissions:
   contents: read

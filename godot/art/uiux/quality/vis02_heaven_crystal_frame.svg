@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
+<defs>
+ <linearGradient id="ice" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#a7e2d6"/><stop offset=".28" stop-color="#f2f6e5"/><stop offset=".53" stop-color="#c8b1f5"/><stop offset=".76" stop-color="#82d9e9"/><stop offset="1" stop-color="#ffe5a9"/></linearGradient>
+ <linearGradient id="facet" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f6ffff" stop-opacity=".95"/><stop offset=".48" stop-color="#b4eeec" stop-opacity=".56"/><stop offset="1" stop-color="#a18cd9" stop-opacity=".22"/></linearGradient>
+</defs>
+<!-- Authored VIS02 crystal material, center intentionally vacant. -->
+<rect x="4" y="4" width="248" height="248" rx="17" fill="none" stroke="#80c7d4" stroke-opacity=".32" stroke-width="4"/>
+<rect x="8" y="8" width="240" height="240" rx="14" fill="none" stroke="url(#ice)" stroke-opacity=".82" stroke-width="3"/>
+<rect x="14" y="14" width="228" height="228" rx="11" fill="none" stroke="#eaf9f3" stroke-opacity=".52" stroke-width="1.6"/>
+<rect x="19" y="19" width="218" height="218" rx="8" fill="none" stroke="#9fbed7" stroke-opacity=".27" stroke-width="1.2"/>
+<g fill="url(#facet)" stroke="#effff9" stroke-width="1.4" stroke-opacity=".78">
+ <path d="M6 42 6 21 21 6 45 6 30 17 22 30Z"/>
+ <path d="M250 42 250 21 235 6 211 6 226 17 234 30Z"/>
+ <path d="M6 214 6 235 21 250 45 250 30 239 22 226Z"/>
+ <path d="M250 214 250 235 235 250 211 250 226 239 234 226Z"/>
+</g>
+<g stroke="url(#ice)" stroke-width="2.3" stroke-linecap="round" fill="none" opacity=".84">
+ <path d="M28 8H89M167 8H228M28 248H89M167 248H228"/>
+ <path d="M8 28V90M248 28V90M8 166V228M248 166V228"/>
+</g>
+<g fill="url(#ice)" opacity=".91">
+ <path d="m128 3 8 10-8 12-8-12Z"/><path d="m128 253 8-10-8-12-8 12Z"/>
+ <path d="m3 128 10-8 12 8-12 8Z"/><path d="m253 128-10-8-12 8 12 8Z"/>
+ <path d="m16 16 7-4 7 7-5 9-10-2Z"/><path d="m240 16-7-4-7 7 5 9 10-2Z"/>
+ <path d="m16 240 7 4 7-7-5-9-10 2Z"/><path d="m240 240-7 4-7-7 5-9 10 2Z"/>
+</g>
+<g stroke="#ffffff" stroke-opacity=".51" stroke-width="1" fill="none">
+ <path d="M24 15 43 11 32 21M232 15 213 11 224 21M24 241 43 245 32 235M232 241 213 245 224 235"/>
+</g>
+</svg>

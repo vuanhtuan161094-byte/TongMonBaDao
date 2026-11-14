@@ -5,6 +5,7 @@ signal archive_requested
 signal preview_gate_toggled(enabled: bool)
 
 const VFX_SCRIPT = preload("res://src/presentation/p3/v63_original_combat_vfx_v1.gd")
+const VIS_QUALITY = preload("res://src/presentation/uiux/sect_quality_visual_v1.gd")
 
 var state: SimulationState
 var battle: MapBattleV2
@@ -166,6 +167,12 @@ func _render() -> void:
         var max_hp := maxf(1.0, float(actor.get("max_hp", 1.0)))
         var injury_text := " · Injury %d" % actor_state.injury_level if actor_state != null and actor_state.injury_level > 0 else ""
         row.text = "%s   HP %.0f/%.0f%s" % [display_name, hp, max_hp, injury_text]
+        # VIS-03: canonical source-only quality in the existing combat HUD.
+        if actor_state != null:
+            VIS_QUALITY.apply_button(row, str(actor_state.disciple_quality))
+        else:
+            row.remove_theme_color_override("font_color")
+            row.remove_theme_color_override("font_hover_color")
         _party_row_actor_ids[row_index] = actor_id
         row.button_pressed = actor_id == selected_actor_id
         row.show()
