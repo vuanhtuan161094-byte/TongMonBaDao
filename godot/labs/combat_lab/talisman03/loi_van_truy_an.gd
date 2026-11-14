@@ -12,7 +12,7 @@ const DECLARED_DURATION := 6.0
 const CASTER := Vector2(307.0,541.0)
 const HAND := Vector2(366.0,427.0)
 const VICTIM := Vector2(948.0,541.0)
-const STAMP := Vector2(946.0,471.0)
+const STAMP := Vector2(946.0,480.0) # painted chest mark below the target face at gameplay 1x
 const RELEASE_AT := .50
 const DEMO_MARK_AT := .88
 const STAMP_INITIAL_RADIUS := 52.0
@@ -134,9 +134,9 @@ func _draw()->void:
         var frame:=stamp_frame(t)
         var q:=smoothstep(DEMO_MARK_AT,1.29,t)
         # Keep the quiet six-second glyph at chest scale, not across the enemy face.
-        var radius:=lerpf(STAMP_INITIAL_RADIUS,STAMP_STEADY_RADIUS,q)*(1.0+.027*sin(t*3.3))
-        _halo(STAMP,radius*1.5,Color("ae75fa",m*.21))
+        var radius:=lerpf(STAMP_INITIAL_RADIUS,STAMP_STEADY_RADIUS,q)*(1.0+.015*sin(t*3.3))
+        _halo(STAMP,radius*1.4,Color("ae75fa",m*.115))
         # The original painted gilded glyph is the visible mark; procedural arcs are not substituted for it.
         var source_rect := Rect2(float(frame % 4) * 320.0, float(int(frame / 4)) * 320.0, 320.0, 320.0)
-        draw_texture_rect_region(PAINTED_MARKS,Rect2(STAMP-Vector2.ONE*radius,Vector2.ONE*radius*2.0),source_rect,Color(1,1,1,m*(.79+.08*sin(t*2.8))))
+        draw_texture_rect_region(PAINTED_MARKS,Rect2(STAMP-Vector2.ONE*radius,Vector2.ONE*radius*2.0),source_rect,Color(1.0,.94,.83,m*(.89+.035*sin(t*2.8))))
         # One visible seal, no scripted real damage, mark application or periodic ticks.
