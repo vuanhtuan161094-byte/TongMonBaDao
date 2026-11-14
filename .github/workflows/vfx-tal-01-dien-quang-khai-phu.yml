@@ -1,0 +1,90 @@
+name: VFX-TAL-01 | Dien Quang Khai Phu original 12-pose Godot movie
+on:
+  workflow_dispatch:
+  push:
+    branches: [integration/pve-p0-playable-ui-20261103]
+    paths:
+      - '.github/workflows/vfx-tal-01-dien-quang-khai-phu.yml'
+      - 'tools/vfx/generate_talisman01_atlas.py'
+      - 'godot/labs/combat_lab/talisman01/**'
+      - 'godot/tests/labs/combat_lab/vfx_tal01_contract_test.gd'
+permissions:
+  contents: read
+jobs:
+  talisman-original-movie:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      GODOT_AUDIO_DRIVER: Dummy
+      GODOT_RENDERING_DRIVER: opengl3
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pinned Godot, native tooling and Pillow
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq xvfb ffmpeg unzip python3-pil
+          curl --fail --location --retry 3 -o /tmp/godot472.zip 'https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip'
+          echo 'cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4  /tmp/godot472.zip' | sha256sum --check --strict
+          unzip -q /tmp/godot472.zip -d /tmp
+          sudo install -m0755 /tmp/Godot_v4.7.2-stable_linux.x86_64 /usr/local/bin/godot
+          mkdir -p "$RUNNER_TEMP/vfx-tal01"
+          godot --version | tee "$RUNNER_TEMP/vfx-tal01/engine.txt"
+          printf 'SOURCE_SHA=%s\nSKILL_ID=tmb.skill.talisman.loi_phu.active_01.human\nOWNER_VISUAL_PENDING\nPVE_INTEGRATION_HOLD\nNO_RIG\n' "$GITHUB_SHA" > "$RUNNER_TEMP/vfx-tal01/metadata.txt"
+      - name: Generate original hand-authored sprite atlas at exact source SHA
+        run: |
+          set -euo pipefail
+          python3 tools/vfx/generate_talisman01_atlas.py
+          test -s godot/labs/combat_lab/talisman01/assets/thunder_talisman_atlas.png
+          cp godot/labs/combat_lab/talisman01/assets/thunder_talisman_atlas.png "$RUNNER_TEMP/vfx-tal01/"
+          sha256sum godot/labs/combat_lab/talisman01/assets/thunder_talisman_atlas.png > "$RUNNER_TEMP/vfx-tal01/atlas_hash.txt"
+      - name: Restore existing Stage A prerequisites without changing tracked files
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat .github/assets/p3/female_stage_a/part{01..14}.b64 .github/assets/p3/female_stage_a/part15a.b64 .github/assets/p3/female_stage_a/part15b.b64 .github/assets/p3/female_stage_a/part{16..20}.b64 | tr -d '\r\n\t ' | base64 --decode > /tmp/tmb_stage_a_pack.zip
+          test "$(stat -c%s /tmp/tmb_stage_a_pack.zip)" -eq 44838
+          echo '6a4213b9129ffb3f438c21cbb5326672ddf8915323836bf80cb33b8e5fabfdca  /tmp/tmb_stage_a_pack.zip' | sha256sum --check --strict
+          unzip -q /tmp/tmb_stage_a_pack.zip -d .
+      - name: Godot 4.7.2 exact-SHA strict import parse focused test
+        shell: bash
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/vfx-tal01"
+          bash tools/qa/run_godot_strict.sh --headless --path godot --import 2>&1 | tee "$d/import.log"
+          bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://labs/combat_lab/talisman01/dien_quang_khai_phu.gd 2>&1 | tee "$d/parse.log"
+          bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/labs/combat_lab/vfx_tal01_contract_test.gd 2>&1 | tee "$d/test.log"
+          grep -Fq 'VFX_TAL01_FOCUSED_RESULT=PASS failures=0' "$d/test.log"
+      - name: Genuine 1280x720 Godot motion, checkpoint frames, GIF and MP4
+        shell: bash
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/vfx-tal01"
+          xvfb-run -a -s '-screen 0 1280x720x24' bash tools/qa/run_godot_strict.sh --path godot --resolution 1280x720 --fixed-fps 60 --write-movie "$d/dien-quang-khai-phu.avi" --quit-after 188 res://labs/combat_lab/talisman01/dien_quang_khai_phu.tscn 2>&1 | tee "$d/movie.log"
+          test -s "$d/dien-quang-khai-phu.avi"
+          ffmpeg -y -hide_banner -loglevel error -i "$d/dien-quang-khai-phu.avi" -pix_fmt yuv420p -c:v libx264 -crf 16 -movflags +faststart "$d/dien-quang-khai-phu.mp4"
+          ffprobe -v error -select_streams v:0 -show_entries stream=width,height,avg_frame_rate -of default=noprint_wrappers=1 "$d/dien-quang-khai-phu.mp4" | tee "$d/dimensions.txt"
+          grep -Fxq 'width=1280' "$d/dimensions.txt"
+          grep -Fxq 'height=720' "$d/dimensions.txt"
+          for at in 0.12 0.26 0.43 0.56 0.73 0.90 1.08 1.25 1.43 1.51 1.66 1.92 2.23 2.57; do
+            ffmpeg -y -hide_banner -loglevel error -ss "$at" -i "$d/dien-quang-khai-phu.mp4" -frames:v 1 "$d/frame-$at.png"
+          done
+          ffmpeg -y -hide_banner -loglevel error -i "$d/dien-quang-khai-phu.mp4" -vf 'fps=5,scale=320:180,tile=5x3:nb_frames=15' -frames:v 1 "$d/contact-sheet.png"
+          ffmpeg -y -hide_banner -loglevel error -i "$d/dien-quang-khai-phu.mp4" -vf 'fps=10,scale=640:-1:flags=lanczos' -loop 0 "$d/dien-quang-khai-phu.gif"
+          sha256sum "$d/"*.mp4 "$d/"*.png "$d/"*.gif > "$d/SHA256SUMS.txt"
+          grep -Fq 'VFX_TAL01_READY' "$d/movie.log"
+          rm "$d/dien-quang-khai-phu.avi"
+      - name: Upload exact-SHA VFX proof and original atlas
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vfx-tal01-${{ github.sha }}
+          retention-days: 14
+          if-no-files-found: warn
+          path: |
+            ${{ runner.temp }}/vfx-tal01/*.log
+            ${{ runner.temp }}/vfx-tal01/*.txt
+            ${{ runner.temp }}/vfx-tal01/*.png
+            ${{ runner.temp }}/vfx-tal01/*.mp4
+            ${{ runner.temp }}/vfx-tal01/*.gif
