@@ -145,7 +145,14 @@ func set_baked_visual(packed: PackedScene) -> bool:
     # height near 67 px at zoom 1 without moving the ground contact.
     var stand_frame := baked_sprite.sprite_frames.get_frame_texture(&"stand",0)
     var frame_height := float(stand_frame.get_height()) if stand_frame != null else 192.0
-    baked_sprite.scale = Vector2.ONE * (67.0 / maxf(frame_height,1.0))
+    # A high-resolution atlas can have transparent margins. Read a PILOT-ONLY
+    # visual-height metadata value when supplied, without altering older Source A.
+    var native_height := frame_height
+    var screen_height := 67.0
+    if baked_sprite.has_meta("visible_height_px") and baked_sprite.has_meta("pilot_only"):
+        native_height = maxf(1.0, float(baked_sprite.get_meta("visible_height_px")))
+        screen_height = 75.0
+    baked_sprite.scale = Vector2.ONE * (screen_height / maxf(native_height, 1.0))
     baked_sprite.z_index = 1
     # Keep the interactive area over the body, not the surrounding building.
     click_button.position = Vector2(20.0,5.0)
@@ -337,13 +344,25 @@ func _play_shared_animation() -> void:
         return
     _apply_mirror()
     if baked_visual_active():
-        baked_sprite.flip_h = facing == DiscipleActorVisualCatalog.DIR_LEFT and mirror_left
-        # Use a real authored action only if the imported verified SpriteFrames
-        # contains it. Current Source A male/female pilots have stand/walk;
-        # mining/forest/field action clips are separate pending art work.
-        var baked_clip := current_clip if baked_sprite.sprite_frames.has_animation(current_clip) else (
+        # The new authored sprite can provide stand_front/right/back/left and
+        # Walk-right. Never mirror an independently authored left-side static
+        # view or pretend other directions have a moving clip.
+        var art_dir := str(facing)
+        if art_dir == "down":
+            art_dir = "front"
+        elif art_dir == "up":
+            art_dir = "back"
+        var has_independent_left := baked_sprite.sprite_frames.has_animation(&"stand_left")
+        baked_sprite.flip_h = facing == DiscipleActorVisualCatalog.DIR_LEFT and mirror_left and not has_independent_left
+        var requested_direction := StringName("%s_%s" % [str(current_clip), art_dir])
+        var standing_direction := StringName("stand_%s" % art_dir)
+        var baked_clip: StringName = current_clip if baked_sprite.sprite_frames.has_animation(current_clip) else (
             &"walk" if current_clip == DiscipleActorVisualCatalog.CLIP_WALK else &"stand"
         )
+        if baked_sprite.sprite_frames.has_animation(requested_direction):
+            baked_clip = requested_direction
+        elif baked_sprite.sprite_frames.has_animation(standing_direction):
+            baked_clip = standing_direction
         if baked_sprite.animation != baked_clip or not baked_sprite.is_playing():
             baked_sprite.play(baked_clip)
         return
