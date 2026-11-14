@@ -1,3 +1,8 @@
+## VFX SPRITE-LAYER ART PIPELINE — owner order 2026-11-14 (MANDATORY)
+All VFX school chats MUST read docs/operations/TMB_VFX_SPRITE_LAYER_PIPELINE_20261114.md plus docs/templates/VFX_SKILL_ART_FIRST_TEMPLATE.md. Fist chat also reads docs/operations/TMB_VFX_FIST_SCHOOL_PLAYBOOK_20261114.md. We learned the production method from the existing Loi Phu (talisman01): original master sprite -> pose-specific RGBA atlas -> independent light/impact layers -> real Godot movie -> visual corrections. **Copy the pipeline, not the talisman art**. Continue Fist work here; Talisman chat owns talisman01. Sprite material quality at native 1x and owner explicit approval are obligatory; code PASS alone is not art approval. No rig, Codex, new branches/merges, Combat V2 or SaveService changes.
+
+---
+
 ## SPRITE-FIRST VFX OWNER DIRECTIVE — 2026-11-14
 
 For ALL VFX/skill visual work, read [mandatory sprite-first VFX rules](docs/operations/TMB_VFX_SPRITE_FIRST_QUALITY_RULES_20261114.md) and the Art-First SOP V3. **Original multi-frame sprites/PNG flipbooks are expressly permitted and preferred when needed for beautiful motion.** Shader-only/code-only restrictions are rejected; a recolored static vector is not a completed skill. Separate school/chat paths, one original skill at a time, real Godot 1280×720 movie/art review before approval. No rig, Codex, new branch, merge or unauthorized PvE/Combat V2 edits.
