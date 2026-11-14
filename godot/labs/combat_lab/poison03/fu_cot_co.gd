@@ -57,8 +57,8 @@ static func jx_frame(t: float) -> int:
     return frame if frame >= 0 and frame < IMPACT_FRAMES else -1
 
 static func gu_position(t: float) -> Vector2:
-    var start := CASTER + Vector2(43.0, -89.0)
-    var finish := VICTIM + Vector2(-7.0, -89.0)
+    var start := CASTER + Vector2(69.0, -91.0)
+    var finish := VICTIM + Vector2(-9.0, -61.0)
     var q := travel_at(t)
     var arch := -88.0 * sin(PI * q)
     var flutter := 10.0 * sin(q * PI * 5.0) * sin(q * PI)
@@ -168,10 +168,10 @@ func _update_sprites() -> void:
     _seal_highlight.visible = _seal.visible
     if _seal.visible:
         var q := clampf((t - CONTACT_AT) / maxf(0.01, MARK_HOLD_END - CONTACT_AT),0.0,1.0)
-        var anchor := VICTIM + Vector2(4.0, -91.0)
+        var anchor := VICTIM + Vector2(1.0, -58.0) + Vector2(0.0, -8.0 * (1.0 - smoothstep(0.0,0.22,q)))
         _seal.position = anchor
-        _seal.rotation = (-0.40 + 0.40 * smoothstep(0.0,0.54,q)) + 0.012 * sin(t * 5.0)
-        _seal.scale = Vector2.ONE * (0.12 + 0.075 * smoothstep(0.0,0.31,q) + 0.012 * sin(t*7.0))
+        _seal.rotation = (-0.39 + 0.39 * smoothstep(0.0,0.38,q)) + 0.010 * sin(t * 5.0)
+        _seal.scale = Vector2.ONE * (0.226 + 0.090 * exp(-8.0 * q) + 0.004 * sin(t*7.0))
         _seal.modulate = Color(1.0,1.0,1.0,seal_strength * 0.90)
         _seal_highlight.position = anchor
         _seal_highlight.rotation = _seal.rotation
@@ -211,7 +211,7 @@ func _draw() -> void:
     draw_texture_rect_region(ACTOR,Rect2(position,Vector2(320,384)*0.44),actor_cut,Color.WHITE)
     var charge := smoothstep(0.05,0.31,elapsed) * (1.0-smoothstep(CAST_END,0.73,elapsed))
     if charge > 0.009:
-        var hand := CASTER+Vector2(34,-85)
+        var hand := CASTER+Vector2(69,-91)
         _halo(hand,58.0,Color("70f6a8",charge*0.39))
         _halo(hand,18.0,Color("f4ffd1",charge*0.70))
         for i in range(9):
@@ -230,8 +230,8 @@ func _draw() -> void:
                 Color("d6ffbf" if i%2==0 else "9b85ff",gu_gain(t)*0.30))
     if t >= CONTACT_AT and t < CONTACT_AT + 0.18:
         var hit := (t-CONTACT_AT)/0.18
-        _halo(VICTIM+Vector2(-5.0,-89.0),61.0+31.0*hit,
-            Color("f6ffe0",(1.0-hit)*0.42))
+        _halo(VICTIM+Vector2(1.0,-62.0),61.0+31.0*hit,
+            Color("f6ffe0",(1.0-hit)*0.56))
     if t >= CONTACT_AT and t < CONTACT_AT+0.72 and _impact_rects.size()>=78:
         var idx := jx_frame(t)
         if idx >= 0:
@@ -240,8 +240,8 @@ func _draw() -> void:
                 float(_impact_rects[offset+2]),float(_impact_rects[offset+3]))
             if region.size.x > 1.0 and region.size.y > 1.0:
                 var pivot := Vector2(float(_impact_rects[offset+4]),float(_impact_rects[offset+5]))
-                var sc := 1.65
-                draw_texture_rect_region(JX_IMPACT, Rect2(VICTIM+Vector2(0,-92)-pivot*sc,region.size*sc),
+                var sc := 1.83
+                draw_texture_rect_region(JX_IMPACT, Rect2(VICTIM+Vector2(0,-63)-pivot*sc,region.size*sc),
                     region,Color(1,1,1,0.59))
     var mark := mark_gain(t)
     if mark > 0.008:
@@ -249,14 +249,14 @@ func _draw() -> void:
             var phi := float(i)*2.399 + t*0.61
             var u := float(i)/11.0
             var r := 40.0+20.0*u
-            var p := VICTIM+Vector2(cos(phi)*r, -92.0+sin(phi)*r*0.72)
+            var p := VICTIM+Vector2(cos(phi)*r, -60.0+sin(phi)*r*0.72)
             _halo(p,8.0,Color("d1ffc7" if i%2==0 else "b5a0ff",mark*0.22))
-        _halo(VICTIM+Vector2(0,-90),63.0,Color("83f1bb",mark*0.16))
+        _halo(VICTIM+Vector2(0,-58),63.0,Color("83f1bb",mark*0.16))
     if t >= MARK_HOLD_END and t < FADE_END:
         var fade := clampf((t-MARK_HOLD_END)/(FADE_END-MARK_HOLD_END),0,1)
         for i in range(13):
             var phi := float(i)*2.399
-            var p := VICTIM+Vector2(cos(phi)*(26.0+88.0*fade),-93.0+sin(phi)*(19.0+56.0*fade)-40.0*fade)
+            var p := VICTIM+Vector2(cos(phi)*(26.0+88.0*fade),-59.0+sin(phi)*(19.0+56.0*fade)-40.0*fade)
             _halo(p,6.0+4.0*(1-fade),Color("cdffb3",(1.0-fade)*0.25))
     draw_string(ThemeDB.fallback_font,Vector2(38,46),
         "PHU COT CO / CO DOC",HORIZONTAL_ALIGNMENT_LEFT,-1,26,Color("e4ffe8"))
