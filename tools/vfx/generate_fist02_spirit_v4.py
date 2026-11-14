@@ -28,6 +28,12 @@ def master_img():
     chroma=np.clip((r-g+9)/32,0,1)*np.clip((g-blue+5)/65,0,1)
     white=np.clip((r-196)/54,0,1)*np.clip((g-170)/59,0,1)
     a[:,:,3]*=bright*np.maximum(chroma,white*.8)
+    # Feather original concept crop edges; avoid visible rectangular scene matte.
+    yy,xx=np.mgrid[0:256,0:320]
+    window=np.clip(xx/27,0,1)*np.clip((319-xx)/27,0,1)
+    window*=np.clip((246-yy)/76,0,1)
+    window*=np.clip(yy/10,0,1)
+    a[:,:,3]*=window
     return Image.fromarray(np.clip(a,0,255).astype('uint8'),'RGBA')
 
 def seeded_glints(im,seed,t,intensity=1.0):
