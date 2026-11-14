@@ -1,5 +1,7 @@
 # VFX SPRITE-FIRST — mandatory art direction, 2026-11-14
 
+**Owner-endorsed sprite+flipbook+layer method:** [shared art production playbook](TMB_VFX_SPRITE_LAYER_PIPELINE_20261114.md); [Lôi Phù art identity and five real Human cast contracts](TMB_VFX_TALISMAN_PLAYBOOK_20261114.md); [copyable one-skill packet](../templates/VFX_SKILL_ART_FIRST_TEMPLATE.md). Supporting hand/foot seals and particles are optional **skill-specific** art layers, not universal identical VFX.
+
 Authority: read AGENTS.md, TMB_VFX_ART_FIRST_SINGLE_SKILL_SOP_V3_20261114.md, then this file, and the individual skill packet. Owner permits and encourages real original **sprites** whenever they improve appearance.
 
 ## Production requirements
