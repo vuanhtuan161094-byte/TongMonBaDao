@@ -174,6 +174,8 @@ var source_art: SectMap25SourceArt
 var render_art: Dictionary = {}
 # Experimental visual-only artwork is separate from source_art.status().
 var candidate_site_art: Dictionary = {}
+# VIS-07 original Mine asset state, used by bounded 1x LOD (no per-frame loads).
+var vis07_mine_owner_art_loaded := false
 # Presentation-only; never persisted or used as production authority.
 var variant_v3_textures: Dictionary = {}
 var variant_v3_running_ids: Dictionary = {}
@@ -463,6 +465,7 @@ func _load_verified_source_art() -> void:
     source_art = SectMap25SourceArt.new()
     render_art.clear()
     candidate_site_art.clear()
+    vis07_mine_owner_art_loaded = false
     variant_v3_textures.clear()
     decoration_items_by_chunk.clear()
     # V3 is additive; if any PNG is absent the canonical worksite fallback stays visible.
@@ -489,6 +492,7 @@ func _load_verified_source_art() -> void:
     var approved_mine := VIS07_APPROVED.texture_for(&"mine")
     if approved_mine != null:
         candidate_site_art["mine"] = approved_mine
+        vis07_mine_owner_art_loaded = true
     for house in HOUSE_TEXTURES:
         var key := str(HOUSE_TEXTURES[house])
         var asset := source_art.texture_for(key)
@@ -1464,7 +1468,12 @@ func _draw_building(p: Vector2,kind: String, managed: bool, allow_detail: bool =
         var v3_showcase := V3_ART.supported(StringName(kind)) and (
             (building_id.ends_with("_001") and camera.zoom.x >= 0.96)
             or (not building_id.is_empty() and building_id == selected_visual_site_id))
-        if (level < 2 or not allow_detail) and not v3_showcase:
+        # One genuine Owner-approved Mine landmark remains visible at default
+        # map zoom; other 99 possible sites retain cheap LOD unless selected.
+        var owner_mine_showcase := kind == "mine" and vis07_mine_owner_art_loaded and (
+            (building_id.ends_with("_001") and camera.zoom.x >= 0.75)
+            or (not building_id.is_empty() and building_id == selected_visual_site_id))
+        if (level < 2 or not allow_detail) and not v3_showcase and not owner_mine_showcase:
             _draw_compact_producer(p,kind,level == 0)
             return
     # Approved new architecture never overwrites the SHA-checked Source A originals.
