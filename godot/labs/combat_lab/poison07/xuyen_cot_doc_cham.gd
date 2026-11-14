@@ -17,6 +17,9 @@ const FADE_END := 2.35
 const LOOP_SECONDS := 2.90
 const ATLAS_PATH := "res://labs/combat_lab/poison07/assets/doc_cham_needle_12.png"
 const CONTACT_PATH := "res://labs/combat_lab/poison07/assets/doc_cham_contact_08.png"
+const CHARGE_R4_PATH := "res://labs/combat_lab/poison07/assets/doc_cham_charge_r4_12.png"
+const CONTACT_R4_PATH := "res://labs/combat_lab/poison07/assets/doc_cham_contact_r4_12.png"
+const R4_CELL := Vector2(320.0,320.0)
 const ACTOR: Texture2D = preload("res://labs/character_family/assets/nu_doc_tu_v4_candidate/idle_4dir_APPROVED_UNCHANGED.png")
 const BACKGROUND: Texture2D = preload("res://labs/combat_lab/poison05/remake_r6/assets/immortal_valley.svg")
 const CASTER := Vector2(272.0, 537.0)
@@ -30,6 +33,8 @@ var elapsed := 0.0
 var paused := false
 var needle_frames: Array[AtlasTexture] = []
 var impact_frames: Array[AtlasTexture] = []
+var charge_r4_frames: Array[AtlasTexture] = []
+var contact_r4_frames: Array[AtlasTexture] = []
 
 static func phase_at(t: float) -> String:
     if t < CAST_END: return "charge"
@@ -50,23 +55,31 @@ static func needle_frame_at(t: float) -> int:
     if t < CONTACT_AT: return clampi(4 + int(floor((t - CAST_END) / (CONTACT_AT - CAST_END) * 5.0)), 4, 8)
     return clampi(9 + int(floor((t - CONTACT_AT) / (FADE_END - CONTACT_AT) * 3.0)),9,11)
 
+static func charge_r4_frame_at(t: float) -> int:
+    return clampi(int(floor(clampf(t / CAST_END,0.0,1.0)*12.0)),0,11)
+
+static func impact_r4_frame_at(t: float) -> int:
+    return clampi(int(floor(clampf((t-CONTACT_AT)/(FADE_END-CONTACT_AT),0.0,1.0)*12.0)),0,11)
+
 static func impact_frame_at(t: float) -> int:
     return clampi(int(floor((t-CONTACT_AT) / (FADE_END-CONTACT_AT) * 8.0)),0,7)
 
 func _ready() -> void:
     custom_minimum_size=Vector2(1280,720)
     mouse_filter=Control.MOUSE_FILTER_IGNORE
-    if not ResourceLoader.exists(ATLAS_PATH) or not ResourceLoader.exists(CONTACT_PATH):
+    if not ResourceLoader.exists(ATLAS_PATH) or not ResourceLoader.exists(CONTACT_PATH) or not ResourceLoader.exists(CHARGE_R4_PATH) or not ResourceLoader.exists(CONTACT_R4_PATH):
         push_error("POI07_TEXTURE_MISSING: run tools/vfx/generate_poi07_poison_needle.py")
         set_process(false)
         return
     var needle_atlas := load(ATLAS_PATH) as Texture2D
     var impact_atlas := load(CONTACT_PATH) as Texture2D
-    if needle_atlas == null or impact_atlas == null:
+    var charge_r4_atlas := load(CHARGE_R4_PATH) as Texture2D
+    var contact_r4_atlas := load(CONTACT_R4_PATH) as Texture2D
+    if needle_atlas == null or impact_atlas == null or charge_r4_atlas == null or contact_r4_atlas == null:
         push_error("POI07_TEXTURE_INVALID")
         set_process(false)
         return
-    if needle_atlas.get_size() != Vector2(1536,576) or impact_atlas.get_size()!=Vector2(1024,512):
+    if needle_atlas.get_size() != Vector2(1536,576) or impact_atlas.get_size()!=Vector2(1024,512) or charge_r4_atlas.get_size()!=Vector2(1280,960) or contact_r4_atlas.get_size()!=Vector2(1280,960):
         push_error("POI07_ATLAS_DIMENSION_MISMATCH")
         set_process(false)
         return
@@ -80,8 +93,17 @@ func _ready() -> void:
         frame.atlas=impact_atlas
         frame.region=Rect2(Vector2(float(i%4)*256.0,float(i/4)*256.0), IMPACT_SIZE)
         impact_frames.append(frame)
+    for i in range(12):
+        var ch := AtlasTexture.new()
+        ch.atlas = charge_r4_atlas
+        ch.region = Rect2(Vector2(float(i%4)*320.0,float(i/4)*320.0),R4_CELL)
+        charge_r4_frames.append(ch)
+        var hit := AtlasTexture.new()
+        hit.atlas = contact_r4_atlas
+        hit.region = Rect2(Vector2(float(i%4)*320.0,float(i/4)*320.0),R4_CELL)
+        contact_r4_frames.append(hit)
     set_process(true)
-    print("VFX_POI07_READY frames=12 contact=8 single_target=true gameplay=false")
+    print("VFX_POI07_READY frames=12 contact=8 charge_r4=12 body_contact_r4=12 single_target=true gameplay=false")
     queue_redraw()
 
 func _process(delta: float) -> void:
@@ -109,12 +131,13 @@ func _actor(center: Vector2, scale: float, tint: Color) -> void:
 
 func _draw() -> void:
     draw_texture_rect(BACKGROUND,Rect2(0,0,1280,720),false,Color.WHITE)
-    if needle_frames.size()!=12 or impact_frames.size()!=8: return
+    if needle_frames.size()!=12 or impact_frames.size()!=8 or charge_r4_frames.size()!=12 or contact_r4_frames.size()!=12: return
     var t := elapsed
     if t < CAST_END:
         var q := smoothstep(0.03,CAST_END,t)
         var charge_scale := 0.25+0.17*q
-        _sprite(needle_frames[needle_frame_at(t)],PALM-Vector2(TIP_X_FROM_CENTRE*charge_scale,0),charge_scale,0.72*q)
+        _sprite(charge_r4_frames[charge_r4_frame_at(t)],PALM-Vector2(8,0),0.61,q*0.93)
+        _sprite(needle_frames[needle_frame_at(t)],PALM-Vector2(TIP_X_FROM_CENTRE*charge_scale,0),charge_scale,0.62*q)
     elif t < CONTACT_AT:
         var q := flight_progress_at(t)
         var at := flight_tip_at(t)
@@ -125,8 +148,13 @@ func _draw() -> void:
         _sprite(needle_frames[needle_frame_at(t)],previous-along*(TIP_X_FROM_CENTRE*0.55),0.55,0.17,direction)
         _sprite(needle_frames[needle_frame_at(t)],at-along*(TIP_X_FROM_CENTRE*0.63),0.63,0.96,direction)
     _actor(CASTER,0.47,Color.WHITE)
+    var contact_alpha := 0.0
+    if t >= CONTACT_AT and t < FADE_END:
+        contact_alpha = smoothstep(CONTACT_AT,CONTACT_AT+0.06,t)*(1.0-smoothstep(CONTACT_END,FADE_END,t))
+        _sprite(contact_r4_frames[impact_r4_frame_at(t)],CHEST,0.63,contact_alpha*0.30)
     _actor(TARGET,0.47,Color("d9d3e2"))
     if t >= CONTACT_AT and t < FADE_END:
         var opacity := smoothstep(CONTACT_AT,CONTACT_AT+0.045,t) * (1.0-smoothstep(CONTACT_END,FADE_END,t))
-        _sprite(impact_frames[impact_frame_at(t)],CHEST,0.78,opacity*0.98)
-        _sprite(needle_frames[needle_frame_at(t)],CHEST+Vector2(-36,0),0.26,opacity*0.22)
+        _sprite(impact_frames[impact_frame_at(t)],CHEST,0.35,opacity*0.30)
+        _sprite(contact_r4_frames[impact_r4_frame_at(t)],CHEST,0.71,contact_alpha*0.93)
+        _sprite(needle_frames[needle_frame_at(t)],CHEST+Vector2(-35,0),0.18,opacity*0.12)
