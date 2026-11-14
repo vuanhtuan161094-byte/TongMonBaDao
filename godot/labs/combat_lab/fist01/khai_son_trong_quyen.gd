@@ -11,8 +11,8 @@ const DECLARED_CAST := 0.45
 const DECLARED_RANGE := 2.8
 const CASTER := Vector2(448.0, 541.0)
 const VICTIM := Vector2(752.0, 541.0)
-const HAND := Vector2(510.0, 452.0)
-const CONTACT := Vector2(735.0, 451.0)
+const HAND := Vector2(510.0, 490.0)
+const CONTACT := Vector2(713.0, 484.0)
 const CAST_END := 0.45
 const RELEASE_END := 0.52
 const CONTACT_AT := 0.79
@@ -146,12 +146,12 @@ func _draw() -> void:
     var q := flight_at(t)
     if flight:
         var tip := HAND.lerp(CONTACT, q)
-        _halo(tip + Vector2(-27.0, 1.0), 78.0, Color("ef915a", 0.19))
+        _halo(tip + Vector2(-34.0, 1.0), 83.0, Color("f49a58", 0.22))
         _halo(tip, 28.0, Color("fff2cc", 0.34))
     var hit := impact_gain(t)
     if hit > 0.008:
-        _halo(CONTACT, 103.0, Color("fc9554", hit * 0.28))
-        _halo(CONTACT, 45.0, Color("fff2b5", hit * 0.47))
+        _halo(CONTACT, 111.0, Color("fc9554", hit * 0.30))
+        _halo(CONTACT, 58.0, Color("fff2b5", hit * 0.46))
     # Existing game atlas is just a 1x-scale dummy silhouette, not fist actor approval.
     _actor(CASTER, Color("ede2d1"))
     _actor(VICTIM, Color("c4ccd1"))
@@ -162,7 +162,7 @@ func _draw() -> void:
         var tip := HAND.lerp(CONTACT, q)
         var frame := clampi(int(floor(q * float(FLIGHT.size()))), 0, FLIGHT.size() - 1)
         # The authored flight frame's tip is at image x ~= 250.
-        _paint(FLIGHT[frame], tip, 0.89, 0.97, Vector2(250.0, 160.0))
+        _paint(FLIGHT[frame], tip, 1.00, 0.97, Vector2(280.0, 154.0))
         for j in range(4):
             var old := t - 0.034 * float(j + 1)
             if old <= RELEASE_END:
@@ -173,8 +173,8 @@ func _draw() -> void:
     if hit > 0.008:
         var frame := clampi(int(floor((t - CONTACT_AT) / (FADE_END - CONTACT_AT) *
             float(IMPACT.size()))), 0, IMPACT.size() - 1)
-        var spread := 0.43 + 0.40 * smoothstep(CONTACT_AT, IMPACT_END, t)
-        _paint(IMPACT[frame], CONTACT, spread, hit * 0.91)
+        var spread := 0.77 + 0.43 * smoothstep(CONTACT_AT, IMPACT_END, t)
+        _paint(IMPACT[frame], CONTACT, spread, hit * 0.84)
         var fade_q := clampf((t - CONTACT_AT) / (FADE_END - CONTACT_AT), 0.0, 1.0)
         for j in range(9):
             var a := float(j) * 2.399
