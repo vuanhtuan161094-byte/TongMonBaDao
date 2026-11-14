@@ -1,0 +1,18 @@
+qa_id,case,engine,source_identity,exit_code,checks,status,notes,log
+IMPORT,Strict import/parse,Godot 4.7.2 official,Reconstructed tree 03302 + selected verified overlays through 0277,0,,PASS,Latest full PR tree was not reconstructed; no parse errors in run,logs/strict_import_relevant_overlay.log
+EVENT_ID,Combat event identity deterministic regression,Godot 4.7.2 official,Same reconstructed snapshot + task patch,0,20,PASS,Two casts; two summons; three real attacks; two Palm absorbs; restore without duplicate damage,logs/combat_event_identity_v2_test.log
+P1,Approved P1 lineage regression,Godot 4.7.2 official,Same reconstructed snapshot + combat patch,0,1447,PASS,41 pairs / 82 IDs; V6.3 OFF,logs/v63_p1_lineage_policy_test.log
+P2,P2 runtime audit,Godot 4.7.2 official,Same reconstructed snapshot + combat patch,0,796,PASS,196 equal; design remains OWNER_APPROVAL_PENDING,logs/v63_p2_runtime_audit_test.log
+DV2-02-SNAPSHOT,Mid-battle snapshot regression,Godot 4.7.2 official,Same reconstructed snapshot + combat patch,0,,PASS,Snapshot JSON/RNG/HP/cast/event regression,logs/dv2_02_battle_snapshot_test.log
+DV2-02-MAP,Group map battle regression,Godot 4.7.2 official,Same reconstructed snapshot + combat patch,0,,PASS,Replay/movement/heal/AOE/boss/multi-actor,logs/dv2_02_group_map_battle_test.log
+S5-PALM,V63 S5 Palm skill regression,Godot 4.7.2 official,Same reconstructed snapshot + combat patch,0,1876,PASS,V6.3 gate OFF,logs/v63_s5_palm_skill_test.log
+S9-SUMMON-RUNTIME,V63 summon runtime lifecycle,Godot 4.7.2 official,Same reconstructed snapshot + combat patch,0,32,PASS,Three branches; gate OFF,logs/v63_s9_summon_lifecycle_runtime_smoke_test.log
+S9-SUMMON-VIS,V63 summon rendered contract,Godot 4.7.2 official,Same reconstructed snapshot + combat patch,0,2675,PASS,Rasterized runner; first headless invocation interrupted at frame_post_draw,logs/v63_s9_summon_skill_rasterized.log
+D6-NO-REWARD,Boss summon no-reward regression,Godot 4.7.2 official,Same reconstructed snapshot + combat patch,0,,PASS,No durable summon reward,logs/one_game_d6_boss_summon_no_reward_test.log
+VIS02-CREATE,Natural candidate selection/recruit/profile/save,Godot 4.7.2 rasterized,Snapshot and UI overlay as of 0277,0,11 screenshots,PASS_HARNESS_SYNTHETIC,Viewport.push_input; candidate_830031 recruited through B1 callback,logs/vis02_create.log
+VIS02-RELOAD,Independent cold reload/profile,Godot 4.7.2 rasterized,Snapshot and UI overlay as of 0277,0,1 screenshot,PASS_HARNESS_SYNTHETIC,7 disciples before/after; candidate consumed; same quality,logs/vis02_cold_reload.log
+DV2-03,Runtime-clock SaveService regression,Godot 4.7.2 headless,Same reconstructed snapshot; isolated user profile,1,,FAIL,Generic save_to_path failure; cause undetermined; SaveService unchanged,logs/dv2_03_runtime_clock_fail.log
+PHYSICAL-GUI,Physical Windows mouse acceptance,Windows desktop,Not tested,, ,PENDING,Only synthetic viewport input was available,
+ANDROID,Android device acceptance,Android device,Not tested,, ,PENDING,No physical device run,
+CI,GitHub Actions on resulting commit,GitHub Actions,Not run,, ,PENDING,No workflow result claimed
+LIVE-HEAD-DIFF,PR #72 paths since prior check,GitHub compare,4062758d716db0cae3bfd9802ab1b1a6896681d2..fcba3dc73940fe73bb78c2938c247d959d36fa2b,,9,PASS,"No changed path overlaps four combat files or VIS02 harness; native full tree not reconstructed",

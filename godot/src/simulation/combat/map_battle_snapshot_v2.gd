@@ -52,6 +52,10 @@ static func save(battle: MapBattleV2) -> Dictionary:
     }
     if battle.continuous_mode:
         payload["continuous_mode"] = true
+        # Optional in-flight event identity watermark. Existing v2/v3/v4
+        # snapshots remain readable without it; it prevents fallback IDs from
+        # repeating after a cold restore when the bounded event ring wrapped.
+        payload["event_sequence"] = battle._event_sequence
         payload["external_hit_ids"] = battle._external_hit_ids.duplicate(true)
         payload["pending_kill_events"] = battle._pending_kill_events.duplicate(true)
         payload["last_spawn_generation"] = battle._last_spawn_generation.duplicate(true)
@@ -444,6 +448,18 @@ static func _restore_payload(data: Dictionary) -> Dictionary:
                     return {"ok":false,"reason":"invalid_event_position"}
                 event[field] = coord
         battle.events.append(event)
+    var saved_event_sequence: Variant = data.get("event_sequence",null)
+    if saved_event_sequence != null and (not (saved_event_sequence is int) or int(saved_event_sequence) < 0):
+        return {"ok":false,"reason":"invalid_event_sequence"}
+    var minimum_event_sequence := battle.events.size()
+    var fallback_prefix := battle.encounter_id+"/event/"
+    for event in battle.events:
+        var event_id := str(event.get("event_id",""))
+        if event_id.begins_with(fallback_prefix):
+            var suffix := event_id.substr(fallback_prefix.length())
+            if suffix.is_valid_int():
+                minimum_event_sequence = maxi(minimum_event_sequence,int(suffix))
+    battle._event_sequence = maxi(minimum_event_sequence,int(saved_event_sequence)) if saved_event_sequence is int else minimum_event_sequence
     var saved_rng = data.get("rng_state",null)
     if not (saved_rng is int):
         return {"ok":false,"reason":"invalid_rng_state"}

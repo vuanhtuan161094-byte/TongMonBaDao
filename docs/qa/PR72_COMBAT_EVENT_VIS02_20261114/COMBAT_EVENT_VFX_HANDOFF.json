@@ -1,0 +1,181 @@
+{
+  "contract_id": "TMB_COMBAT_EVENT_V2_PRESENTATION_HANDOFF",
+  "contract_version": 2,
+  "status": "TECHNICAL_EVENT_IDENTITY_READY_FOR_CONSUMER_REVIEW",
+  "authority": "MapBattleV2 and existing Combat V2 resolvers remain authoritative. Presentation/VFX consumers are read-only and cannot create hits, damage, status, healing, cleanse, or summons.",
+  "identity_formats": {
+    "encounter_id": "battle encounter identity; stable for one encounter",
+    "ordinary_skill_cast": "<encounter_id>/<actor_id>/cast/<skill_cast_sequence>",
+    "v63_human_cast": "<encounter_id>/<actor_id>/<v63_cast_sequence>",
+    "fallback_event": "<encounter_id>/event/<event_sequence>",
+    "summon_actor": "<encounter_id>/v63_summon/<owner_id>/<summon_sequence>",
+    "summon_created_event": "<summon_id>/created",
+    "summon_attack_event": "<summon_id>/attack/<attack_sequence>",
+    "summon_attack_hit_event": "<attack_event_id>/hit/<target_id>",
+    "summon_expired_event": "<summon_id>/expired",
+    "capacity_absorb_event_with_cast": "<shield_cast_id>/capacity_shield_absorbed/<protected_actor_id>/<absorption_sequence>",
+    "capacity_absorb_event_without_cast": "<encounter_id>/capacity_shield_absorbed/<protected_actor_id>/<absorption_sequence>"
+  },
+  "common_event_fields": {
+    "event_id": "non-empty deterministic ID",
+    "type": "existing authoritative event name",
+    "encounter_id": "added by MapBattleV2 journal wrapper",
+    "time": "authoritative simulation time",
+    "positions": "Vector2 values are simulation-space anchors, not screen coordinates"
+  },
+  "events": [
+    {
+      "type": "skill_cast",
+      "identity": "cast_id + event_id",
+      "anchors": [
+        "caster_position",
+        "target_position",
+        "caster_position_at_cast",
+        "target_position_at_cast"
+      ],
+      "lifecycle": "one event per actual accepted cast"
+    },
+    {
+      "type": "skill_release",
+      "identity": "cast_id + event_id when cast exists; otherwise event-sequence fallback",
+      "anchors": [
+        "caster_position",
+        "target_position",
+        "caster_position_at_cast",
+        "target_position_at_cast"
+      ],
+      "lifecycle": "one event when actual pending cast releases"
+    },
+    {
+      "type": "skill_miss",
+      "identity": "actual cast ID when carried; otherwise event-sequence fallback",
+      "anchors": [
+        "source_position",
+        "target_position"
+      ],
+      "lifecycle": "only a real rejected/missed cast or placement event"
+    },
+    {
+      "type": "hit",
+      "identity": "cast-scoped event ID when called from a cast; otherwise event-sequence fallback",
+      "anchors": [
+        "source_position",
+        "target_position",
+        "caster_position_at_cast",
+        "target_position_at_cast"
+      ],
+      "lifecycle": "only after authoritative damage settlement; emitted damage is actual committed damage"
+    },
+    {
+      "type": "status_applied",
+      "identity": "cast-scoped event ID where the originating cast exists; otherwise event-sequence fallback",
+      "anchors": [
+        "caster_position",
+        "target_position"
+      ],
+      "lifecycle": "after canonical status state is applied"
+    },
+    {
+      "type": "heal",
+      "identity": "cast-scoped ID for V63 skill heal; event-sequence fallback for generic battle heal",
+      "anchors": [
+        "caster_position_at_cast",
+        "target_position_at_cast"
+      ],
+      "lifecycle": "after canonical HP change"
+    },
+    {
+      "type": "cleanse",
+      "identity": "cast-scoped ID when a real cast exists; otherwise event-sequence fallback",
+      "anchors": [
+        "caster_position_at_cast",
+        "target_position_at_cast"
+      ],
+      "lifecycle": "after canonical status removal"
+    },
+    {
+      "type": "v63_summon_created",
+      "identity": "summon_id + /created; carries actual origin cast_id/origin_cast_id",
+      "anchors": [
+        "source_position",
+        "summon_position",
+        "target_position"
+      ],
+      "lifecycle": "after a real bounded summon actor is inserted"
+    },
+    {
+      "type": "v63_summon_attack",
+      "identity": "unique attack event ID and hit_event_id; retains actual origin_cast_id",
+      "anchors": [
+        "source_position",
+        "target_position"
+      ],
+      "lifecycle": "only if the matching real Combat V2 hit committed positive damage; source_actor_id is summon, attacker credit remains owner"
+    },
+    {
+      "type": "v63_summon_expired",
+      "identity": "summon_id + /expired; carries original cast identity if known",
+      "anchors": [
+        "source_position",
+        "target_position"
+      ],
+      "lifecycle": "once when actor is removed for its actual expiry/removal reason"
+    },
+    {
+      "type": "v63_palm_guard_absorbed",
+      "identity": "actual shield cast + protected actor + incrementing absorption sequence; encounter fallback only if cast absent",
+      "anchors": [
+        "source_position",
+        "target_position",
+        "attacker_position",
+        "caster_position_at_cast"
+      ],
+      "lifecycle": "only for capacity consumed by actual incoming damage; incoming_cast_id is optional and is empty for basic attacks"
+    }
+  ],
+  "deduplication": {
+    "consumer_key": "event_id",
+    "scope": "one encounter",
+    "requirements": [
+      "ignore an event_id already consumed",
+      "do not derive damage or hit count from an animation",
+      "do not re-run a completed event on presentation replay",
+      "use hit_event_id only as a reference to the matching authoritative hit"
+    ],
+    "snapshot": "continuous snapshots persist event_sequence; actor cast/summon/attack/absorption sequences and event journal are persisted in the existing battle snapshot. Older snapshots without the optional event_sequence remain accepted."
+  },
+  "backward_compatibility": {
+    "event_names_and_existing_payload_fields": "preserved; identity and anchor fields are additive",
+    "finite_legacy_snapshot_v1_payload_shape": "unchanged",
+    "legacy_snapshots": "optional event_sequence is reconstructed from retained event IDs/event count"
+  },
+  "release_gates": {
+    "v63_feature_gate": "OFF",
+    "pve_production": "HOLD",
+    "p2_design": "OWNER_APPROVAL_PENDING",
+    "visual_art_approval": "PENDING",
+    "physical_windows_gui": "PENDING"
+  },
+  "technical_next_candidates": [
+    {
+      "skill_id": "tmb.skill.summon.kiem_linh.active_01.human",
+      "evidence": "real create/three attack hit links/expire",
+      "visual_approval": "PENDING",
+      "integration": "NOT_PERFORMED"
+    },
+    {
+      "skill_id": "tmb.skill.palm.hoi_phong_chuong.active_04.human",
+      "evidence": "real cast/status/two capacity absorptions",
+      "visual_approval": "PENDING",
+      "integration": "NOT_PERFORMED"
+    }
+  ],
+  "qa_source": {
+    "final_live_head": "fcba3dc73940fe73bb78c2938c247d959d36fa2b",
+    "final_live_tree": "49264e96d843fafdc8170307e24e00a38014106f",
+    "local_test_source": "reconstructed snapshot with selected overlays and task patch",
+    "native_exact_live_tree_tested": false,
+    "physical_gui": "PENDING",
+    "android": "PENDING"
+  }
+}

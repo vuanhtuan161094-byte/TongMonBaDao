@@ -35,6 +35,7 @@ var encounter_id: String = ""
 var actors: Dictionary = {}
 var pending_casts: Array = []
 var events: Array = []
+var _event_sequence := 0
 var active: bool = false
 var outcome: String = "uninitialized"
 var actions: int = 0
@@ -73,6 +74,7 @@ func setup(id: String, party: Array, monsters: Array, keep_encounter_open: bool 
         return {"ok":false,"reason":"invalid_monster_group"}
     actors.clear()
     events.clear()
+    _event_sequence = 0
     pending_casts.clear()
     now = 0.0
     encounter_id = id
@@ -135,6 +137,7 @@ func setup(id: String, party: Array, monsters: Array, keep_encounter_open: bool 
             "skill_loadout":row.get("skill_loadout",[]).duplicate(true),
             "skill_factors":row.get("skill_factors",{}).duplicate(true),
             "skill_ready":{},
+            "skill_cast_sequence":0,
             "context_sources":row.get("context_sources",[]).duplicate(true),
             "next_basic":0.0,"next_skill":0.0,"guard_until":-1.0,
             "learned_guard_until":-1.0,"learned_guard_factor":1.0,"status_effects":{},
@@ -1156,7 +1159,23 @@ func _deal_direct(attacker: Dictionary, target: Dictionary, ratio: float, kind: 
     target["hp"] = float(settlement["target_hp_after"])
     if shield_absorbed > 0.0:
         var shield_event := "v63_palm_guard_absorbed" if shield_skill_id.begins_with("tmb.skill.palm.") else "v63_spear_shield_absorbed"
-        _event(shield_event,{"caster":str(attacker.get("id","")),"target":str(target.get("id","")),"skill_id":shield_skill_id,"absorbed_damage":shield_absorbed,"remaining_capacity":float(target.get("v63_capacity_shield_remaining",0.0))})
+        var shield_absorption_sequence := int(target.get("v63_capacity_shield_absorption_sequence",0))+1
+        target["v63_capacity_shield_absorption_sequence"] = shield_absorption_sequence
+        var shield_origin_cast_id := str(target.get("v63_capacity_shield_origin_cast_id",""))
+        var protected_id := str(target.get("id",""))
+        var shield_event_id := "%s/capacity_shield_absorbed/%s/%d" % [shield_origin_cast_id,protected_id,shield_absorption_sequence] if not shield_origin_cast_id.is_empty() else "%s/capacity_shield_absorbed/%s/%d" % [encounter_id,protected_id,shield_absorption_sequence]
+        var absorbed_event := {"caster":str(target.get("v63_capacity_shield_origin_caster_id",protected_id)),
+            "shield_caster_id":str(target.get("v63_capacity_shield_origin_caster_id",protected_id)),
+            "attacker":str(attacker.get("id","")),"target":protected_id,"target_id":protected_id,
+            "skill_id":shield_skill_id,"cast_id":shield_origin_cast_id,"event_id":shield_event_id,
+            "incoming_cast_id":str(cast_event_context.get("cast_id","")),"origin_cast_id":shield_origin_cast_id,
+            "source_position":target.get("position",Vector2.ZERO),"target_position":target.get("position",Vector2.ZERO),
+            "caster_position":target.get("position",Vector2.ZERO),
+            "caster_position_at_cast":target.get("v63_capacity_shield_caster_position_at_cast",Vector2.ZERO),
+            "attacker_position":attacker.get("position",Vector2.ZERO),
+            "absorbed_damage":shield_absorbed,"remaining_capacity":float(target.get("v63_capacity_shield_remaining",0.0)),
+            "absorption_sequence":shield_absorption_sequence}
+        _event(shield_event,absorbed_event)
     # Poison Dược healing budget may spend only verified damage committed by this battle.
     # Receipts are carried by the existing actor snapshot, never inferred from missing HP.
     V63PoisonEvolutionV1.record_damage_taken(target, actual_damage, now)
@@ -1244,22 +1263,31 @@ func _try_learned_skill(actor: Dictionary, target: Dictionary, guard_only: bool 
         var travel := distance/projectile_speed if projectile_speed > 0.0 else 0.0
         var ready_at := now+cast_seconds+travel
         var multiplier := float(actor.get("skill_factors",{}).get(skill_id,1.0))
+        var cast_sequence := int(actor.get("skill_cast_sequence",0))+1
+        actor["skill_cast_sequence"] = cast_sequence
+        var cast_id := "%s/%s/cast/%d" % [encounter_id,caster_id,cast_sequence]
+        var caster_position: Vector2 = actor.get("position",Vector2.ZERO)
+        var target_position: Vector2 = caster_position if self_cast else target.get("position",Vector2.ZERO)
         pending_casts.append({
             "caster":caster_id,"target_id":caster_id if self_cast else str(target["id"]),
             "skill_id":skill_id,"ready":ready_at,
             "ratio":float(data.get("damage_ratio",0.0))*multiplier,
-            "element":str(data.get("element",""))
+            "element":str(data.get("element","")),"cast_id":cast_id,
+            "caster_position_at_cast":caster_position,"target_position_at_cast":target_position
         })
         ready[skill_id] = now+maxf(STEP_SECONDS,float(data.get("cooldown",0.0))/cooldown_rate)
         actor["skill_ready"] = ready
-        _event("skill_cast",{"actor_id":caster_id,"target":caster_id if self_cast else target["id"],
-            "skill_id":skill_id,"release_at":ready_at})
+        _event("skill_cast",{"actor_id":caster_id,"caster":caster_id,"target":caster_id if self_cast else target["id"],
+            "target_id":caster_id if self_cast else target["id"],"skill_id":skill_id,"release_at":ready_at,
+            "cast_id":cast_id,"event_id":cast_id+"/skill_cast","caster_position":caster_position,
+            "target_position":target_position,"caster_position_at_cast":caster_position,
+            "target_position_at_cast":target_position})
         actions += 1
         return true
     return false
 
 # S1 statuses live on the authoritative actor, not the presentation event ring.
-func _apply_skill_status(caster: Dictionary, target: Dictionary, skill_id: String, definition: Dictionary) -> void:
+func _apply_skill_status(caster: Dictionary, target: Dictionary, skill_id: String, definition: Dictionary, cast_id: String = "") -> void:
     var effect := str(definition.get("effect",""))
     if not ["burn","weaken"].has(effect):
         return
@@ -1276,7 +1304,13 @@ func _apply_skill_status(caster: Dictionary, target: Dictionary, skill_id: Strin
     if existing.is_empty() or (effect == "burn" and float(row.get("ratio",0.0)) >= float(existing.get("ratio",0.0))) or (effect == "weaken" and float(row.get("factor",1.0)) <= float(existing.get("factor",1.0))):
         statuses[effect] = row
         target["status_effects"] = statuses
-        _event("status_applied",{"caster":caster["id"],"target":target["id"],"status":effect,"skill_id":skill_id,"until":row["until"]})
+        var status_event := {"caster":caster["id"],"target":target["id"],"target_id":target["id"],
+            "status":effect,"skill_id":skill_id,"until":row["until"],
+            "caster_position":caster.get("position",Vector2.ZERO),"target_position":target.get("position",Vector2.ZERO)}
+        if not cast_id.is_empty():
+            status_event["cast_id"] = cast_id
+            status_event["event_id"] = cast_id+"/status_applied/"+str(target.get("id",""))+"/"+effect
+        _event("status_applied",status_event)
 
 func _process_status_effects() -> void:
     var actor_ids: Array = actors.keys()
@@ -1367,20 +1401,48 @@ func _release_casts() -> void:
         if cast.has("skill_id"):
             var targeted: Dictionary = actors.get(str(cast["target_id"]),{})
             var skill_id := str(cast["skill_id"])
+            var cast_id := str(cast.get("cast_id",""))
             var definition: Dictionary = CombatSkillSystem.SKILLS.get(skill_id,{})
             var effect := str(definition.get("effect",""))
+            var release_event := {"caster":str(caster.get("id","")),"target":str(cast.get("target_id","")),
+                "target_id":str(cast.get("target_id","")),"skill_id":skill_id,"release_at":now,
+                "caster_position":caster.get("position",Vector2.ZERO),
+                "target_position":targeted.get("position",cast.get("target_position_at_cast",Vector2.ZERO)),
+                "caster_position_at_cast":cast.get("caster_position_at_cast",Vector2.ZERO),
+                "target_position_at_cast":cast.get("target_position_at_cast",Vector2.ZERO)}
+            if not cast_id.is_empty():
+                release_event["cast_id"] = cast_id
+                release_event["event_id"] = cast_id+"/skill_release"
+            _event("skill_release",release_event)
             if not targeted.is_empty() and float(targeted["hp"]) > 0.0:
-                _event("skill_hit",{"caster":caster["id"],"target":targeted["id"],"skill_id":skill_id})
                 if effect == "guard" and caster["id"] == targeted["id"]:
                     targeted["learned_guard_factor"] = clampf(float(definition.get("guard_multiplier",1.0)),0.01,1.0)
                     targeted["learned_guard_until"] = now+maxf(0.0,float(definition.get("guard_duration",0.0)))
-                    _event("status_applied",{"caster":caster["id"],"target":targeted["id"],
-                        "status":"guard","skill_id":skill_id,"until":targeted["learned_guard_until"]})
+                    var guard_event := {"caster":caster["id"],"target":targeted["id"],"target_id":targeted["id"],
+                        "status":"guard","skill_id":skill_id,"until":targeted["learned_guard_until"],
+                        "caster_position":caster.get("position",Vector2.ZERO),"target_position":targeted.get("position",Vector2.ZERO)}
+                    if not cast_id.is_empty():
+                        guard_event["cast_id"] = cast_id
+                        guard_event["event_id"] = cast_id+"/status_applied/"+str(targeted.get("id",""))+"/guard"
+                    _event("status_applied",guard_event)
                 elif effect in ["damage","burn","weaken"]:
-                    _deal_direct(caster,targeted,float(cast["ratio"]),"learned_skill",true,
-                        str(cast.get("element","")))
-                    if float(targeted["hp"]) > 0.0 and effect in ["burn","weaken"]:
-                        _apply_skill_status(caster,targeted,skill_id,definition)
+                    var hit_context := {}
+                    if not cast_id.is_empty():
+                        hit_context = {"cast_id":cast_id,"event_id":cast_id+"/hit/"+str(targeted.get("id","")),
+                            "source_position":caster.get("position",Vector2.ZERO),"target_position":targeted.get("position",Vector2.ZERO),
+                            "caster_position_at_cast":cast.get("caster_position_at_cast",Vector2.ZERO),
+                            "target_position_at_cast":cast.get("target_position_at_cast",Vector2.ZERO)}
+                    var damage := _deal_direct(caster,targeted,float(cast["ratio"]),"learned_skill",true,
+                        str(cast.get("element","")),true,skill_id,hit_context)
+                    if damage > 0.0:
+                        _event("skill_hit",{"caster":caster["id"],"attacker":caster["id"],"target":targeted["id"],
+                            "target_id":targeted["id"],"skill_id":skill_id,"cast_id":cast_id,
+                            "event_id":cast_id+"/skill_hit/"+str(targeted.get("id","")),"damage":damage,
+                            "caster_position":caster.get("position",Vector2.ZERO),"target_position":targeted.get("position",Vector2.ZERO),
+                            "caster_position_at_cast":cast.get("caster_position_at_cast",Vector2.ZERO),
+                            "target_position_at_cast":cast.get("target_position_at_cast",Vector2.ZERO)})
+                        if float(targeted["hp"]) > 0.0 and effect in ["burn","weaken"]:
+                            _apply_skill_status(caster,targeted,skill_id,definition,cast_id)
             continue
         var selected := _area_targets(str(caster["side"]),cast["center"],float(cast["radius"]),int(cast["maximum"]))
         _event("area_release",{"caster":caster["id"],"target_count":selected.size(),"center":cast["center"]})
@@ -1484,8 +1546,11 @@ func _event(kind: String, payload: Dictionary) -> void:
         events.pop_front()
     if events.size() >= MAX_EVENTS:
         return
+    _event_sequence += 1
     var row := {"type":kind,"time":now,"encounter_id":encounter_id}
     row.merge(payload)
+    if str(row.get("event_id","" )).is_empty():
+        row["event_id"] = "%s/event/%d" % [encounter_id,_event_sequence]
     events.append(row)
 
 func add_v63_boss_summons(boss: Dictionary, requested: int) -> int:

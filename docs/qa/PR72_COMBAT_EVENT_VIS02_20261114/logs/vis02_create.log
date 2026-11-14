@@ -1,0 +1,43 @@
+ERROR: Failed to open 'user://logs/godot2026-11-14T11.48.24.log'.
+   at: copy (core/io/dir_access.cpp:429)
+ERROR: Failed to open log file for writing: user://logs/godot.log
+   at: rotate_file (core/io/logger.cpp:169)
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 - Build 31.0.101.2125 - Compatibility - Using Device: Intel - Intel(R) Iris(R) Plus Graphics
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+Movie Maker mode enabled, recording movie in 1280×720 @ 30 FPS...
+WARNING: Current available space on disk is low (7.04 GiB). MovieWriter will fail during movie recording if the disk runs out of available space.
+   at: begin (servers/movie_writer/movie_writer.cpp:117)
+ERROR: Condition "f.is_null()" is true.
+   at: _save_to_cache (drivers/gles3/shader_gles3.cpp:648)
+VIS02_CANDIDATE_QUEUE ids=["candidate_0003","candidate_0002","candidate_0001","candidate_830031","candidate_830030"] view_selected=candidate_0003 host_selected=candidate_0003 target_id=candidate_830031 decoy_id=candidate_830030
+VIS02_REAL_VIEWPORT_SCREENSHOT_OK 00_dan_tien_before_selection.png
+VIS02_REAL_VIEWPORT_SCREENSHOT_OK 01_other_candidate_selected_by_ui.png
+VIS02_PAGER_TRACE step=1 previous=candidate_0002 next=candidate_0001 view=candidate_0001
+ERROR: Condition "f.is_null()" is true.
+   at: _save_to_cache (drivers/gles3/shader_gles3.cpp:648)
+ERROR: Condition "f.is_null()" is true.
+   at: _save_to_cache (drivers/gles3/shader_gles3.cpp:648)
+ERROR: Condition "f.is_null()" is true.
+   at: _save_to_cache (drivers/gles3/shader_gles3.cpp:648)
+VIS02_PAGER_TRACE step=2 previous=candidate_0001 next=candidate_830031 view=candidate_830031
+VIS02_SELECT_RESULT host_selected=candidate_830031 view_selected=candidate_830031 target=true
+VIS02_REAL_VIEWPORT_SCREENSHOT_OK 02_candidate_830031_selected.png
+VIS02_REAL_VIEWPORT_SCREENSHOT_OK 02_recruit_reveal_early.png
+VIS02_REAL_VIEWPORT_SCREENSHOT_OK 03_recruit_reveal_middle.png
+VIS02_REAL_VIEWPORT_SCREENSHOT_OK 04_recruit_reveal_complete.png
+VIS02_REAL_VIEWPORT_SCREENSHOT_OK 05_divine_profile_full_early.png
+VIS02_REAL_VIEWPORT_SCREENSHOT_OK 06_divine_profile_full_late.png
+VIS02_REAL_VIEWPORT_SCREENSHOT_OK 07_divine_profile_reduced.png
+VIS02_REAL_VIEWPORT_SCREENSHOT_OK 08_divine_profile_off.png
+VIS02_REAL_VIEWPORT_SCREENSHOT_OK 09_real_common_profile_baseline.png
+VIS02_CREATE_SAVE PASS {"candidate_generation":830031,"candidate_id":"candidate_830031","evidence_kind":"Godot_4_7_2_real_P32_scene_and_actual_B1_controls","input_method":"Viewport.push_input_mouse_left_not_physical_mouse","phase":"create","physical_mouse":false,"recruited_disciple_id":"candidate_830031","renderer":"Intel(R) Iris(R) Plus Graphics","save_path":"$QA_PROFILE/vis02_qa_save.json","save_sha256":"038e39926f1130f81f0c5fbe20b94eb3b3db2be7eaa52315992fc70505c4664e","screenshot_count":11,"viewport":[1280,720]}
+--------------------------------------------------------------------------------
+Done recording movie at path: $QA_OUTPUT\visuals\vis02_recruitment_head0277.avi
+195 frames at 30 FPS (movie length: 00:00:06:15), recorded in 00:00:25 (24% of real-time speed).
+CPU render time: 0.68 seconds (average: 3.47 ms/frame)
+GPU render time: 0.37 seconds (average: 1.89 ms/frame)
+Encoding time: 3.62 seconds (average: 18.56 ms/frame)
+--------------------------------------------------------------------------------

@@ -1,3 +1,12 @@
+## COMBAT EVENT INFRASTRUCTURE + VIS02 QA — 2026-11-14
+
+- PR #72 finalization input HEAD: fcba3dc73940fe73bb78c2938c247d959d36fa2b, tree 49264e96d843fafdc8170307e24e00a38014106f. This evidence packet is added as a fast-forward on that existing branch.
+- QA ran on a reconstructed snapshot plus selected presentation overlays, not a native exact-current-tree checkout. GitHub compare from 4062758d716db0cae3bfd9802ab1b1a6896681d2 to finalization found 9 commits ahead, 0 behind, with no changed paths in the four Combat V2 files or VIS02 harness. Later VFX visuals were not re-captured.
+- Combat event identity: 20 focused checks PASS on official Godot 4.7.2. Cast/summon/Palm IDs, committed-hit references, snapshot restore without repeated damage; V6.3 remains OFF.
+- P1: 1,447 checks PASS. P2 runtime: 796 checks / 196 pairs equal; design remains OWNER_APPROVAL_PENDING.
+- VIS02: candidate_830031 selected via actual B1 pager and recruit callback, profile opened, QA-only Save and independent cold Reload: 7 disciples preserved and candidate consumed once. Synthetic viewport input; PHYSICAL_GUI_PENDING. Four 1280×720 viewport captures and a 6.5-second AVI are archived; AVI remains local.
+- dv2_03_runtime_clock_test.gd: FAIL exit 1 at generic SaveService.save_to_path; cause undetermined. SaveService was untouched; default player save was not accessed.
+- No VFX integration or art changes. PvE production HOLD; physical Windows/Android and native exact-current-tree QA pending.
 
 ## LATEST V63 P1/P2 EXECUTION — 2026-11-14
 - PR #72 branch `integration/pve-p0-playable-ui-20261103`; fetched base `8cdbff4bb520f6742b4cc6603a9d7ef66ff32f90`. Preserved the two Codex B VFX POI-02 R4 commits (`ea41c88c`, `8cdbff4b`) without overlapping files. Code commit `f83328a57dea0eb1f8765479327292773ba2dbd0`; tested commit `796646ba94453762bb0d6dede093289a4fbbde2e` (Git tree `9309ae42a4e2ae495289baa0bf0e1fe8d090eac3`).

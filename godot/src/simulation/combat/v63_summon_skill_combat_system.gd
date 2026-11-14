@@ -243,15 +243,16 @@ static func release_cast(battle: MapBattleV2, cast: Dictionary, caster: Dictiona
 
 static func _create_summon(battle: MapBattleV2, cast: Dictionary, caster: Dictionary, skill: Dictionary) -> void:
     var owner_id := str(caster.get("id",""))
+    var origin_cast_id := str(cast.get("mastery_event_id",""))
     if battle == null or not battle.active or owner_id.is_empty() or float(caster.get("hp",0.0)) <= 0.0         or not bool(caster.get("v63_summon_combat_enabled",false)):
         return
     if not battle.actors.has(owner_id) or _living_summons_for_owner(battle,owner_id) >= MAX_PER_OWNER         or _living_summons(battle) >= mini(MAX_ACTIVE_SUMMONS,MapBattleV2.MAX_SUMMON_ACTORS):
-        battle._event("skill_miss",{"caster":owner_id,"skill_id":str(skill.get("id","")),"reason":"summon_actor_cap"})
+        _emit_summon_miss(battle,owner_id,str(skill.get("id","")),origin_cast_id,"summon_actor_cap",caster.get("position",Vector2.ZERO))
         return
     var profile: Dictionary = skill.get("summon_profile",{})
     var spawn := _spawn_position(battle,caster)
     if not bool(spawn.get("ok",false)):
-        battle._event("skill_miss",{"caster":owner_id,"skill_id":str(skill.get("id","")),"reason":"summon_spawn_blocked"})
+        _emit_summon_miss(battle,owner_id,str(skill.get("id","")),origin_cast_id,"summon_spawn_blocked",caster.get("position",Vector2.ZERO))
         return
     var sequence := int(caster.get("v63_summon_sequence",0))+1
     caster["v63_summon_sequence"] = sequence
@@ -263,7 +264,7 @@ static func _create_summon(battle: MapBattleV2, cast: Dictionary, caster: Dictio
     var damage_reduction := clampf(_owner_modifier(caster,"summon_damage_reduction"),0.0,0.25)
     var max_hp := float(caster.get("max_hp",0.0))*float(profile.get("hp_ratio",0.0))*(1.0+hp_factor)
     if max_hp <= 0.0:
-        battle._event("skill_miss",{"caster":owner_id,"skill_id":str(skill.get("id","")),"reason":"summon_owner_hp_invalid"})
+        _emit_summon_miss(battle,owner_id,str(skill.get("id","")),origin_cast_id,"summon_owner_hp_invalid",caster.get("position",Vector2.ZERO))
         return
     var summon_stats: Dictionary = caster.get("stats",{}).duplicate(true)
     summon_stats["max_hp"] = max_hp
@@ -282,6 +283,7 @@ static func _create_summon(battle: MapBattleV2, cast: Dictionary, caster: Dictio
         "v63_skill_ready":{},"v63_skill_loadout":[],"v63_passive_ids":[],
         "v63_combat_clock":-1.0,"next_skill":0.0,"learned_guard_factor":1.0,"learned_guard_until":-1.0,
         "linked_disciple":null,"is_v63_summon":true,"summon_owner_id":owner_id,
+        "summon_origin_cast_id":origin_cast_id,"summon_attack_sequence":0,
         "summon_skill_id":str(skill.get("id","")),"summon_source_generation_id":str(skill.get("generation","human")),
         "summon_form":str(profile.get("form","")),"summon_behavior":str(profile.get("behavior","")),
         "summon_expires_at":battle.now+duration,"summon_next_attack_at":battle.now,
@@ -293,7 +295,19 @@ static func _create_summon(battle: MapBattleV2, cast: Dictionary, caster: Dictio
     }
     battle.actors[summon_id] = summon
     battle._event("v63_summon_created",{"owner_id":owner_id,"summon_id":summon_id,"skill_id":str(skill.get("id","")),
-        "form":str(profile.get("form","")),"expires_at":float(summon["summon_expires_at"])})
+        "form":str(profile.get("form","")),"expires_at":float(summon["summon_expires_at"]),
+        "cast_id":origin_cast_id,"origin_cast_id":origin_cast_id,"event_id":summon_id+"/created",
+        "source_actor_id":owner_id,"source_position":caster.get("position",Vector2.ZERO),
+        "summon_position":position,"target_position":position})
+
+static func _emit_summon_miss(battle: MapBattleV2, owner_id: String, skill_id: String,
+        cast_id: String, reason: String, position: Vector2) -> void:
+    var event := {"caster":owner_id,"skill_id":skill_id,"reason":reason,"source_position":position,
+        "target_position":position}
+    if not cast_id.is_empty():
+        event["cast_id"] = cast_id
+        event["event_id"] = cast_id+"/skill_miss/"+reason
+    battle._event("skill_miss",event)
 
 static func _spawn_position(battle: MapBattleV2, caster: Dictionary) -> Dictionary:
     var origin: Vector2 = caster.get("position",Vector2.ZERO)
@@ -339,14 +353,24 @@ static func process_summons(battle: MapBattleV2) -> void:
         elif battle.now >= float(summon.get("summon_expires_at",-1.0)):
             reason = "contract_expired"
         if not reason.is_empty():
-            battle._event("v63_summon_expired",{"owner_id":owner_id,"summon_id":str(summon.get("id","")),
-                "skill_id":str(summon.get("summon_skill_id","")),"form":str(summon.get("summon_form","")),"reason":reason})
+            var expired_id := str(summon.get("id",""))
+            var expired_position: Vector2 = summon.get("position",Vector2.ZERO)
+            var origin_cast_id := str(summon.get("summon_origin_cast_id",""))
+            battle._event("v63_summon_expired",{"owner_id":owner_id,"summon_id":expired_id,
+                "skill_id":str(summon.get("summon_skill_id","")),"form":str(summon.get("summon_form","")),"reason":reason,
+                "cast_id":origin_cast_id,"origin_cast_id":origin_cast_id,"event_id":expired_id+"/expired",
+                "source_actor_id":expired_id,"source_position":expired_position,"target_position":expired_position})
             remove_ids.append(str(summon.get("id","")))
             continue
         var skill_id := str(summon.get("summon_skill_id",""))
         if skill_id.is_empty() or skill_definition(skill_id).is_empty():
-            battle._event("v63_summon_expired",{"owner_id":owner_id,"summon_id":str(summon.get("id","")),
-                "skill_id":skill_id,"reason":"source_skill_missing"})
+            var expired_id := str(summon.get("id",""))
+            var expired_position: Vector2 = summon.get("position",Vector2.ZERO)
+            var origin_cast_id := str(summon.get("summon_origin_cast_id",""))
+            battle._event("v63_summon_expired",{"owner_id":owner_id,"summon_id":expired_id,
+                "skill_id":skill_id,"reason":"source_skill_missing","cast_id":origin_cast_id,
+                "origin_cast_id":origin_cast_id,"event_id":expired_id+"/expired",
+                "source_actor_id":expired_id,"source_position":expired_position,"target_position":expired_position})
             remove_ids.append(str(summon.get("id","")))
             continue
         var target := _nearest_eligible_enemy(battle,summon)
@@ -375,12 +399,24 @@ static func process_summons(battle: MapBattleV2) -> void:
             var live_target: Dictionary = battle.actors.get(str(target_value.get("id","")),{})
             if live_target.is_empty() or float(live_target.get("hp",0.0)) <= 0.0:
                 continue
+            var summon_id := str(summon.get("id",""))
+            var attack_sequence := int(summon.get("summon_attack_sequence",0))+1
+            summon["summon_attack_sequence"] = attack_sequence
+            var target_id := str(live_target.get("id",""))
+            var attack_event_id := "%s/attack/%d" % [summon_id,attack_sequence]
+            var hit_event_id := attack_event_id+"/hit/"+target_id
             var actual := battle._deal_direct(owner,live_target,ratio,"v63_summon",false,
-                str(summon.get("summon_element","")),false,skill_id)
+                str(summon.get("summon_element","")),false,skill_id,
+                {"event_id":hit_event_id,"source_actor_id":summon_id,"summon_id":summon_id,
+                    "origin_cast_id":str(summon.get("summon_origin_cast_id","")),
+                    "source_position":summon.get("position",Vector2.ZERO),"target_position":live_target.get("position",Vector2.ZERO)})
             if actual > 0.0:
-                battle._event("v63_summon_attack",{"owner_id":owner_id,"summon_id":str(summon.get("id","")),
-                    "skill_id":skill_id,"target_id":str(live_target.get("id","")),"form":str(summon.get("summon_form","")),
-                    "damage":actual})
+                battle._event("v63_summon_attack",{"owner_id":owner_id,"summon_id":summon_id,
+                    "skill_id":skill_id,"target_id":target_id,"form":str(summon.get("summon_form","")),
+                    "damage":actual,"event_id":attack_event_id,"hit_event_id":hit_event_id,
+                    "origin_cast_id":str(summon.get("summon_origin_cast_id","")),
+                    "source_actor_id":summon_id,"source_position":summon.get("position",Vector2.ZERO),
+                    "target_position":live_target.get("position",Vector2.ZERO)})
         var speed_factor := clampf(_owner_modifier(owner,"summon_attack_speed_factor"),0.0,0.5)
         var base_interval := maxf(MapBattleV2.STEP_SECONDS,float(summon.get("summon_attack_interval_seconds",1.0)))
         summon["summon_next_attack_at"] = battle.now+maxf(MapBattleV2.STEP_SECONDS,base_interval/(1.0+speed_factor))

@@ -1434,6 +1434,12 @@ static func release_cast_base(battle: MapBattleV2, cast: Dictionary, caster: Dic
                     target["v63_capacity_shield_remaining"] = maxf(float(target.get("v63_capacity_shield_remaining",0.0)),capacity)
                     target["v63_capacity_shield_until"] = maxf(float(target.get("v63_capacity_shield_until",-1.0)),guard_until)
                     target["v63_capacity_shield_skill_id"] = id
+                    var shield_cast_id := str(cast.get("mastery_event_id",""))
+                    if str(target.get("v63_capacity_shield_origin_cast_id","")) != shield_cast_id:
+                        target["v63_capacity_shield_absorption_sequence"] = 0
+                    target["v63_capacity_shield_origin_cast_id"] = shield_cast_id
+                    target["v63_capacity_shield_origin_caster_id"] = str(caster.id)
+                    target["v63_capacity_shield_caster_position_at_cast"] = cast.get("caster_position_at_cast",caster.get("position",Vector2.ZERO))
                     _emit_cast_event(battle,cast,"status_applied",{"caster":str(caster.id),"target":str(target.id),"status":"capacity_shield","skill_id":id,"generation":generation,"lineage":lineage,"until":float(target.v63_capacity_shield_until),"capacity":float(target.v63_capacity_shield_remaining)})
             else:
                 target["learned_guard_factor"] = minf(float(target.get("learned_guard_factor",1.0)),1.0-clampf(float(cast.power),0.05,0.8))

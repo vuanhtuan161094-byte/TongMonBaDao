@@ -1,0 +1,7 @@
+RUN res://tests/simulation/v63_p2_runtime_audit_test.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+V63_P2_RUNTIME_RESULT PASS checks=796 rows=196 equal=196 existing_differences=0 missing=0 design_intent=OWNER_APPROVAL_PENDING
+EXIT 0
