@@ -20,7 +20,15 @@ def master_img():
     assert MASTER.exists(),f'Missing original illustrated hero: {MASTER}'
     img=Image.open(MASTER).convert('RGBA')
     assert img.size == (320,256), img.size
-    return img
+    # The illustrated concept contained a dark rectangular scene fragment.
+    # Keep only genuinely gold/orange hot energy in the production alpha master.
+    a=np.asarray(img,dtype=np.float32).copy()
+    r,g,blue=a[:,:,0],a[:,:,1],a[:,:,2]
+    bright=np.clip((r-93)/88,0,1)*np.clip((g-58)/90,0,1)
+    chroma=np.clip((r-g+9)/32,0,1)*np.clip((g-blue+5)/65,0,1)
+    white=np.clip((r-196)/54,0,1)*np.clip((g-170)/59,0,1)
+    a[:,:,3]*=bright*np.maximum(chroma,white*.8)
+    return Image.fromarray(np.clip(a,0,255).astype('uint8'),'RGBA')
 
 def seeded_glints(im,seed,t,intensity=1.0):
     rng=random.Random(seed)
