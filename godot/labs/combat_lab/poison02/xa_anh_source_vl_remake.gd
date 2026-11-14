@@ -72,7 +72,7 @@ func _ready() -> void:
     _bind.material = _bind_shader
     _head = _add_fx(false, 4)
     _head.texture = HEAD_ART
-    _bind.position = TARGET + Vector2(0.0, -112.0)
+    _bind.position = TARGET + Vector2(9.0, -100.0)
     _update_fx()
     print("VFX_POI02_READY skill=", SKILL_ID, " flight=", FRAME_COUNT,
         " impact=", IMPACT_FRAME_COUNT, " visual_only=true")
@@ -138,16 +138,18 @@ func _update_fx() -> void:
     _bind.visible = binding > 0.008
     if _bind.visible:
         var u := clampf((elapsed - CONTACT_AT) / maxf(0.01, COIL_END - CONTACT_AT), 0.0, 1.0)
-        _bind.position = TARGET + Vector2(0.0, -113.0 + 6.0 * sin(u * 2.4))
-        _bind.scale = Vector2(0.88 + 0.07 * sin(u * PI), 0.88 - 0.040 * u)
-        _bind.rotation = -0.065 + 0.038 * sin(elapsed * 5.4)
+        # Keep the painted coils close to the target torso, rather than left-floating ribbons.
+        _bind.position = TARGET + Vector2(9.0 + 4.0 * sin(u * 2.8), -100.0 + 5.0 * sin(u * 2.4))
+        _bind.scale = Vector2(0.735 + 0.025 * sin(u * PI), 0.785 - 0.028 * u)
+        _bind.rotation = -0.042 + 0.031 * sin(elapsed * 5.4)
         _bind.modulate = Color.WHITE
         _bind_shader.set_shader_parameter("phase", elapsed)
         _bind_shader.set_shader_parameter("opacity", binding * 0.83)
     _head.visible = binding > 0.04 and elapsed < COIL_END + 0.19
     if _head.visible:
         var u_head := clampf((elapsed - CONTACT_AT) / maxf(0.01, COIL_END - CONTACT_AT), 0.0, 1.0)
-        _head.position = TARGET + Vector2(7.0 + 10.0 * sin(u_head * PI), -108.0 - 11.0 * sin(u_head * 3.2))
+        # The bite advances to the shoulder and follows the bind instead of hovering above it.
+        _head.position = TARGET + Vector2(15.0 + 9.0 * sin(u_head * PI), -91.0 - 6.0 * sin(u_head * 3.2))
         _head.scale = Vector2.ONE * (0.71 + 0.065 * sin(u_head * PI))
         _head.rotation = -0.065 + 0.065 * sin(elapsed * 4.0)
         _head.modulate = Color(1.0, 1.0, 1.0, binding * 0.87)
