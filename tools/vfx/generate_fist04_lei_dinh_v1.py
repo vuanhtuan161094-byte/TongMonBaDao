@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""FIST04 Lei Dinh Chan Quyen: first-party painted energy source -> 40 RGBA poses.
+"""FIST04 Lei Dinh Chan Quyen R2: first-party painted energy source -> 40 RGBA poses.
 Source is original ImageGen concept painted on 2026-11-14, isolated from an
 illustration with chroma-alpha; only sprite material is shipped, NO poster art.
 The skill deals Fire damage in a circle of up to THREE confirmed targets; this
@@ -24,7 +24,8 @@ def clean(src):
                              np.clip(yy/23,0,1),np.clip((383-yy)/22,0,1)])
     a[:,:,3]*=edge
     # Original crop includes faint sky tint; keep only luminous intentional material.
-    a[:,:,3]*=np.clip((a[:,:,1]-90)/100,0,1)**.38
+    a[:,:,3]*=np.clip((a[:,:,1]-85)/100,0,1)**.26
+    a[:,:,3]=np.clip((a[:,:,3]-4)*1.62,0,255)
     return Image.fromarray(np.clip(a,0,255).astype('uint8'),'RGBA')
 H=clean(H);B=clean(B)
 
@@ -61,14 +62,14 @@ def streak(img,seed,k):
 
 def charge(k):
     t=(k+1)/8
-    im=modulate(H,k,.52+.14*t,.14+.46*t,angle=-7+4*sin(k*.59),offset=(-17,22))
+    im=modulate(H,k,.63+.17*t,.26+.63*t,angle=-7+4*sin(k*.59),offset=(-17,22))
     painter_glints(im,1500+k,amount=t,base=(186,210),count=52)
     return im
 
 def travel(k):
     t=k/11
-    im=modulate(H,k,.74+.10*sin(.2+k*.22),.83+.14*sin(t*pi),angle=-3+2.1*sin(k*.83))
-    halo=im.filter(ImageFilter.GaussianBlur(10))
+    im=modulate(H,k,.79+.12*sin(.2+k*.22),.98,angle=-3+2.1*sin(k*.83))
+    halo=im.filter(ImageFilter.GaussianBlur(16))
     im=Image.alpha_composite(halo,im)
     streak(im,3110+k*7,k)
     painter_glints(im,2400+k,amount=.9)
@@ -76,7 +77,7 @@ def travel(k):
 
 def impact(k):
     t=k/11
-    im=modulate(B,k,.73+.24*t,max(.0,(1-t)**.82),angle=(k-4)*.5,offset=(0,15))
+    im=modulate(B,k,.81+.18*t,max(.0,(1-t)**.57),angle=(k-4)*.5,offset=(0,15))
     painter_glints(im,4500+k,amount=(1-t),base=(194,227),count=66)
     return im
 

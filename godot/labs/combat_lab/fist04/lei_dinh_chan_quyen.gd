@@ -4,7 +4,7 @@ extends Control
 ## Actors are static scale proxies, no rig, no fake leg/fist animation and no HP writes.
 const SKILL_ID := "tmb.skill.fist.ba_quyen.active_03.human"
 const SKILL_NAME := "Lôi Đình Chấn Quyền"
-const ART_REVISION := "V1_PAINTED_SPIRIT_THUNDER"
+const ART_REVISION := "V2_HIGH_VISIBILITY_PAINTED_THUNDER"
 const EFFECT := "damage"
 const ELEMENT := "fire"
 const SHAPE := "circle"
@@ -106,8 +106,8 @@ func _draw() -> void:
         var q:=clampf(t/CAST_TIME,0.0,1.0)
         var idx:=clampi(int(floor(q*8.0)),0,7)
         var pos:=CASTER+Vector2(79,-119-9*sin(q*PI))
-        _halo(pos,123,Color("ffc37c",.08+.18*q))
-        _sprite(CHARGE,idx,pos,0.85+0.08*q,0.51+0.44*q)
+        _halo(pos,140,Color("ffc37c",.12+.24*q))
+        _sprite(CHARGE,idx,pos,1.12+0.14*q,0.77+0.22*q)
     if t>=CAST_TIME and t<HIT_TIME+0.13:
         var q:=clampf((t-CAST_TIME)/(HIT_TIME-CAST_TIME),0.0,1.0)
         var ease:=1.0-pow(1.0-q,2.2)
@@ -116,15 +116,15 @@ func _draw() -> void:
         for j in range(2,0,-1):
             var lag:=clampf(q-float(j)*0.115,0.0,1.0)
             var past:=Vector2(415,411).lerp(HIT_CENTER+Vector2(0,-38),1.0-pow(1.0-lag,2.2))
-            _sprite(HERO,clampi(int(lag*11),0,11),past,.93,.10*fade)
-        _halo(at,137,Color("ffbf81",.16*fade))
-        _sprite(HERO,clampi(int(q*12.0),0,11),at,1.07,fade)
+            _sprite(HERO,clampi(int(lag*11),0,11),past,1.26,.16*fade)
+        _halo(at,167,Color("ffbf81",.29*fade))
+        _sprite(HERO,clampi(int(q*12.0),0,11),at,1.38,fade)
     var blast:=impact_alpha(t)
     if blast>0.004:
         var p:=clampf((t-HIT_TIME)/(FADE_END-HIT_TIME),0.0,1.0)
         var k:=clampi(int(floor(p*12)),0,11)
-        _halo(HIT_CENTER+Vector2(0,38),171,Color("ffaf64",blast*.17))
-        _sprite(IMPACT,k,HIT_CENTER+Vector2(0,86),1.31+.18*p,blast*.90,Vector2(192,258))
+        _halo(HIT_CENTER+Vector2(0,38),202,Color("ffaf64",blast*.24))
+        _sprite(IMPACT,k,HIT_CENTER+Vector2(0,86),1.69+.17*p,blast*.99,Vector2(192,258))
         _sprite(GRIT,clampi(int(floor(p*8)),0,7),HIT_CENTER+Vector2(0,100),1.55,blast*.75,Vector2(192,240))
     # ACTORS: the three receipt locations shown in this LAB are only demonstrative.
     _actor(CASTER,Color("f2e8df"))
@@ -137,7 +137,7 @@ func _draw() -> void:
             _halo(at,54,Color("ffe6a5",f*.56))
             _halo(at,17,Color("fffdef",f*.68))
             var local: float=clampf((t-HIT_TIME-float(CONTACT_OFFSETS[i]))/.29,0,1)
-            _sprite(IMPACT,clampi(int(local*11),0,11),at,0.35,f*.36,Vector2(191,221))
+            _sprite(IMPACT,clampi(int(local*11),0,11),at,0.45,f*.46,Vector2(191,221))
             for j in range(5):
                 var a: float=float(j)*2.399+float(i)*.71
                 var first:=at+Vector2(cos(a),sin(a))*(11+22*local)
@@ -146,7 +146,7 @@ func _draw() -> void:
     draw_string(ThemeDB.fallback_font,Vector2(28,34),
         "LOI DINH CHAN QUYEN / BA QUYEN",HORIZONTAL_ALIGNMENT_LEFT,-1,24,Color("ffefce"))
     draw_string(ThemeDB.fallback_font,Vector2(28,58),
-        "FIST04 V1 | FIRE SHOCKWAVE / CIRCLE / 3 TARGET VISUAL CONTACTS",
+        "FIST04 V2 | FIRE SHOCKWAVE / CIRCLE / 3 TARGET VISUAL CONTACTS",
         HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("e3c4a7"))
     draw_string(ThemeDB.fallback_font,Vector2(28,683),
         "GODOT 4.7.2 | IMAGEGEN-DERIVED PAINTED SOURCE | VIEW-ONLY / NO RIG / NO HP WRITES",
