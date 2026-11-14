@@ -36,9 +36,16 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          TMB_ART_LOG_EXPORT=1 /usr/bin/python3 tools/vfx/paint_tal06_xich_diem.py . > "$RUNNER_TEMP/vfx-tal06/art.log"
-          grep '^TAL06_ASSET' "$RUNNER_TEMP/vfx-tal06/art.log"
-          grep -E '^TMB_ASSET_BEGIN:|^TMB_ASSET_LINE:|^TMB_ASSET_END:' "$RUNNER_TEMP/vfx-tal06/art.log" || true
+          # Use frozen original first-party WEBP bytes from THIS source commit.
+          # Do not re-encode on runner: different Pillow/libwebp builds alter bytes.
+          cat <<'SUMS' | sha256sum --check --strict
+          36036a242e78e012df519016525a03760d1dd1dfc3960e2d1aadffce59ab9f69  godot/labs/combat_lab/talisman06/assets/tal06_flame_seal_atlas.webp
+          28353f6b0cb40c673f6b017ee9123a667a13f6182fcf52777eafd7e76cc93195  godot/labs/combat_lab/talisman06/assets/tal06_fire_comet_atlas.webp
+          935837d4e30e5d2103d02b0e88b0bb80858f17e97fc996905c7ff74008493e46  godot/labs/combat_lab/talisman06/assets/tal06_impact_atlas.webp
+          7f868818bc4ebe8b2c6b7cb62fa914031681491b034bb1c4345cef3ff4e107f8  godot/labs/combat_lab/talisman06/assets/tal06_seal_master.webp
+          1ea423338ade14e0bd86d2ea981babcdc299670e37d8f72ea6858a9f296cbb78  godot/labs/combat_lab/talisman06/assets/tal06_comet_master.webp
+          78adeef827ce40a5a889d1ce7196706046110d0cbe2f1e6c3abf7349151934e5  godot/labs/combat_lab/talisman06/assets/tal06_foot_ember.webp
+          SUMS
           /usr/bin/python3 - <<'PY'
           from PIL import Image
           from pathlib import Path
