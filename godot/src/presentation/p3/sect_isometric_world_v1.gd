@@ -69,6 +69,7 @@ const REIMAGINED_REVIEW_ONLY_SITES := {
 }
 const V3_ART = preload("res://src/presentation/uiux/sect_building_art_variant_v3.gd")
 const VIS07_APPROVED = preload("res://src/presentation/p3/tmb_approved_building_art_v4.gd")
+const VIS08_ORIGINAL_BUILDINGS = preload("res://src/presentation/p3/tmb_original_building_art_v5.gd")
 const MAP_D2_SITE_SIZE := {
     "mine":Vector2(166,121),
     "linh_forest":Vector2(166,121),
@@ -493,13 +494,11 @@ func _load_verified_source_art() -> void:
     if approved_mine != null:
         candidate_site_art["mine"] = approved_mine
         vis07_mine_owner_art_loaded = true
+    # The historical HOUSE_TEXTURES keys are placement/rollback identifiers only.
+    # None of the five visible house sprites now uses Source A texture bytes.
     for house in HOUSE_TEXTURES:
         var key := str(HOUSE_TEXTURES[house])
-        var asset := source_art.texture_for(key)
-        if house == "main_hall":
-            var approved_hall := VIS07_APPROVED.texture_for(&"main_hall")
-            if approved_hall != null:
-                asset = approved_hall
+        var asset: Texture2D = VIS08_ORIGINAL_BUILDINGS.texture_for(StringName(house))
         if asset != null:
             render_art[key] = asset
     for key in ["stone_courtyard","stone_variant","stone_border","stone_runes"]:

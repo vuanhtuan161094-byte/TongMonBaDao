@@ -11,6 +11,7 @@ const ART05_FRAME = preload("res://src/presentation/uiux/sect_premium_panel_v1.g
 const ART06_WORLD = preload("res://src/presentation/uiux/sect_world_atmosphere_v1.gd")
 const ART05_BUILDING_VARIANT = preload("res://src/presentation/uiux/sect_building_art_variant_v3.gd")
 const VIS07_APPROVED = preload("res://src/presentation/p3/tmb_approved_building_art_v4.gd")
+const VIS08_ORIGINAL_BUILDINGS = preload("res://src/presentation/p3/tmb_original_building_art_v5.gd")
 
 func _ready() -> void:
     super._ready()
@@ -27,25 +28,26 @@ func _refresh_building_operation_art() -> void:
     super._refresh_building_operation_art()
     if building_operation_panel == null:
         return
+    var override_texture: Texture2D = VIS08_ORIGINAL_BUILDINGS.texture_for(selected_building)
     if selected_building == SectMapPresentation.DEST_MINE:
-        var mine_texture := VIS07_APPROVED.texture_for(&"mine")
-        if mine_texture != null:
-            var mine_host := building_operation_panel.get_node_or_null("BuildingOperationArtFrame/BuildingOperationArt") as Control
-            if mine_host != null:
-                var mine_picture := mine_host.get_node_or_null("VIS07OwnerApprovedMine") as TextureRect
-                if mine_picture == null:
-                    for old_picture in mine_host.get_children():
-                        if old_picture is CanvasItem:
-                            old_picture.visible = false
-                    mine_picture = TextureRect.new()
-                    mine_picture.name = "VIS07OwnerApprovedMine"
-                    mine_picture.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-                    mine_picture.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-                    mine_picture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-                    mine_picture.mouse_filter = Control.MOUSE_FILTER_IGNORE
-                    mine_host.add_child(mine_picture)
-                mine_picture.texture = mine_texture
-                mine_picture.visible = true
+        override_texture = VIS07_APPROVED.texture_for(&"mine")
+    if override_texture != null:
+        var override_host := building_operation_panel.get_node_or_null("BuildingOperationArtFrame/BuildingOperationArt") as Control
+        if override_host != null:
+            var picture := override_host.get_node_or_null("VIS08OriginalBuildingSprite") as TextureRect
+            if picture == null:
+                for old_picture in override_host.get_children():
+                    if old_picture is CanvasItem:
+                        old_picture.visible = false
+                picture = TextureRect.new()
+                picture.name = "VIS08OriginalBuildingSprite"
+                picture.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+                picture.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+                picture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+                picture.mouse_filter = Control.MOUSE_FILTER_IGNORE
+                override_host.add_child(picture)
+            picture.texture = override_texture
+            picture.visible = true
         return
     if not ART05_BUILDING_VARIANT.supported(selected_building):
         return
