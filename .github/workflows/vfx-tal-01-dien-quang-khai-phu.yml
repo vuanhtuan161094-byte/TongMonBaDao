@@ -32,13 +32,14 @@ jobs:
           mkdir -p "$RUNNER_TEMP/vfx-tal01"
           godot --version | tee "$RUNNER_TEMP/vfx-tal01/engine.txt"
           printf 'SOURCE_SHA=%s\nSKILL_ID=tmb.skill.talisman.loi_phu.active_01.human\nOWNER_VISUAL_PENDING\nPVE_INTEGRATION_HOLD\nNO_RIG\n' "$GITHUB_SHA" > "$RUNNER_TEMP/vfx-tal01/metadata.txt"
-      - name: Generate original hand-authored sprite atlas at exact source SHA
+      - name: Verify independently painted talisman atlas and luminous contact art
         run: |
           set -euo pipefail
-          python3 tools/vfx/generate_talisman01_atlas.py
-          test -s godot/labs/combat_lab/talisman01/assets/thunder_talisman_atlas.png
-          cp godot/labs/combat_lab/talisman01/assets/thunder_talisman_atlas.png "$RUNNER_TEMP/vfx-tal01/"
-          sha256sum godot/labs/combat_lab/talisman01/assets/thunder_talisman_atlas.png > "$RUNNER_TEMP/vfx-tal01/atlas_hash.txt"
+          test -s godot/labs/combat_lab/talisman01/assets/thunder_talisman_atlas.webp
+          test -s godot/labs/combat_lab/talisman01/assets/thunder_impact_burst.png
+          cp godot/labs/combat_lab/talisman01/assets/thunder_talisman_atlas.webp "$RUNNER_TEMP/vfx-tal01/"
+          cp godot/labs/combat_lab/talisman01/assets/thunder_impact_burst.png "$RUNNER_TEMP/vfx-tal01/"
+          sha256sum godot/labs/combat_lab/talisman01/assets/thunder_talisman_atlas.webp godot/labs/combat_lab/talisman01/assets/thunder_impact_burst.png > "$RUNNER_TEMP/vfx-tal01/atlas_hash.txt"
       - name: Restore existing Stage A prerequisites without changing tracked files
         shell: bash
         run: |

@@ -37,3 +37,7 @@ Run the workflow `.github/workflows/vfx-tal-01-dien-quang-khai-phu.yml` for actu
 - R2 changes only the LAB presentation: continuous tapered ion wake from the caster, brighter active head, 2 minor forks, off-axis fractured contact instead of symmetric spokes. Preserve original 12-pose parchment and read-only skill data. New exact-SHA video and actual frame review REQUIRED.
 
 - R2 actual Godot 1280x720 movie #43574629565 (`fb5b32ef3f4337ca2fd2b5b3696e1143a84ed599`): strict import+parse+focused PASS. Visually examined 0.43, 1.08, 1.51 and full contact sheet. Reconnected bolt at 1.08 is readable; contact at 1.51 remained too straight and hard-edged. **R3** changes impact only: 3 unequal locally crackling currents, soft hotspot, 6 small motes, no six-spoke/diagonal hard icon. R3 Godot movie is separately required.
+
+R4 ART RESET (2026-11-14): R1–R3 notebook-like talisman rejected by owner. Replace with 12 painted transparent poses derived from self-generated original art, a dense violet-white luminous conductor and image-mask impact. View-only, no combat integration. Master visual owner approval pending.
+
+R4 original finished artwork: `assets/thunder_talisman_atlas.webp` (12 pose original generative illustration, alpha extracted and re-animated independently) + `assets/thunder_impact_burst.png` (independent procedural luminous shatter). Reference board is not a Godot screenshot. Visual check mandated at actual 1280x720.
