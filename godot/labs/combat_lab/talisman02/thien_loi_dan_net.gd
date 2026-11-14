@@ -141,7 +141,8 @@ func _draw()->void:
     var mist:=smoothstep(1.55,1.86,t)*(1.0-smoothstep(2.05,FADE_END,t))
     if mist>0.01:
         for k in range(22):
-            var q:=float(k),a:=q*2.399
+            var q:=float(k)
+            var a:=q*2.399
             var x:=660.0+float(k%3)*183.0+14.0*cos(a)
             var y:=454.0+27.0*sin(a)-(t-1.55)*23.0
             _halo(Vector2(x,y),17.0,Color("b8a0f0",mist*.12))
