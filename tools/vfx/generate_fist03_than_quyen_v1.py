@@ -29,6 +29,14 @@ def feather_original_impact(src):
     bottom=np.clip((CELL-1-yy)/49.,0,1)
     edge=(left*left*(3-2*left))*(right*right*(3-2*right))
     edge*=(top*top*(3-2*top))*(bottom*bottom*(3-2*bottom))
+    # Native QA V2 revealed the original painting ends around y=331,
+    # well BEFORE the 384px atlas cell border: fade actual content edges.
+    xl=np.clip((xx-10.0)/99.0,0.0,1.0)
+    xr=np.clip((375.0-xx)/80.0,0.0,1.0)
+    yt=np.clip((yy-103.0)/47.0,0.0,1.0)
+    yb=np.clip((333.0-yy)/84.0,0.0,1.0)
+    edge*=(xl*xl*(3-2*xl))*(xr*xr*(3-2*xr))
+    edge*=(yt*yt*(3-2*yt))*(yb*yb*(3-2*yb))
     a[:,:,3]=np.clip(a[:,:,3].astype(np.float32)*edge,0,255).astype(np.uint8)
     return Image.fromarray(a,'RGBA')
 BURST=feather_original_impact(BURST)

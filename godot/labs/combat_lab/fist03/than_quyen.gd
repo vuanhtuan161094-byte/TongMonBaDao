@@ -4,7 +4,7 @@ extends Control
 ## No simulation mutations. Contact times and target reactions are illustrative
 ## only; production must bind exclusively to genuine Combat V2 hit receipts.
 const DISPLAY_NAME := "Thần Quyền"
-const ART_REVISION := "V2_ALPHA_CONTACT"
+const ART_REVISION := "V3_CONTENT_EDGE_FEATHER"
 const CANONICAL_SKILL_ID := "tmb.skill.fist.ba_quyen.ultimate.human"
 const CANONICAL_SKILL_NAME := "Sơn Hà Chấn Thiên"
 const EFFECT := "damage"
@@ -176,7 +176,7 @@ func _draw() -> void:
     draw_string(ThemeDB.fallback_font,Vector2(27,36),
         "THAN QUYEN  |  SON HA CHAN THIEN ART STUDY",HORIZONTAL_ALIGNMENT_LEFT,-1,24,Color("fff0ce"))
     draw_string(ThemeDB.fallback_font,Vector2(28,61),
-        "FIST03 V2 | PAINTED FIST - 3 TARGET REACTIONS - VIEW-ONLY",
+        "FIST03 V3 | PAINTED FIST - 3 TARGET REACTIONS - VIEW-ONLY",
         HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("d9bda2"))
     draw_string(ThemeDB.fallback_font,Vector2(27,683),
         "GODOT 4.7.2 COMPATIBILITY | 40 PAINTED ATLAS FRAMES | NO RIG / NO HP WRITES",
