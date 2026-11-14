@@ -133,16 +133,16 @@ func _update_fx() -> void:
     if _charge_cloud.visible:
         var hand := CASTER+Vector2(68,-87)
         _charge_cloud.position = hand+Vector2(6*sin(t*6.0),0)
-        _charge_cloud.scale = Vector2(0.13+0.06*charge,0.13+0.05*charge)
+        _charge_cloud.scale = Vector2(0.20+0.10*charge,0.18+0.09*charge)
         _charge_cloud.rotation = -0.25+0.09*sin(t*4.0)
-        _charge_cloud.modulate = Color(1,1,1,0.60*charge)
+        _charge_cloud.modulate = Color(1,1,1,0.77*charge)
     _seed.visible = seed_a > 0.007
     if _seed.visible:
         _seed.position = seed_at(t)
         var q := flight_at(t)
-        _seed.scale = Vector2.ONE*(0.22+0.095*q)
+        _seed.scale = Vector2.ONE*(0.29+0.075*q)
         _seed.rotation = -0.2+0.14*sin(t*24.0)
-        _seed.modulate = Color(1,1,1,seed_a*0.94)
+        _seed.modulate = Color(1,1,1,seed_a*1.00)
     for i in range(_trails.size()):
         var lag := (float(i)+1.0)*0.045
         var prev_t := t-lag
@@ -150,10 +150,10 @@ func _update_fx() -> void:
         trail.visible = t>=RELEASE_END and t<ARRIVE_AT and prev_t>=RELEASE_END
         if trail.visible:
             trail.position = seed_at(prev_t)
-            var sz := 0.18+float(i)*0.011
+            var sz := 0.21+float(i)*0.012
             trail.scale = Vector2(sz,sz*0.80)
             trail.rotation = float(i)*0.43-0.3
-            trail.modulate = Color(1,1,1,seed_a*(0.24-float(i)*0.028))
+            trail.modulate = Color(1,1,1,seed_a*(0.33-float(i)*0.041))
     var mist := mist_gain(t)
     var opening := smoothstep(ARRIVE_AT-0.08,OPEN_END,t)
     for i in range(_cloud_rear.size()):
@@ -162,13 +162,13 @@ func _update_fx() -> void:
         if not spr.visible: continue
         var k := float(i)
         var offset_x: float = [-130.0,-46.0,72.0,149.0][i]
-        var offset_y: float = [-12.0,-51.0,-34.0,-14.0][i]
+        var offset_y: float = [-28.0,-76.0,-58.0,-28.0][i]
         var wander := Vector2(14.0*sin(t*(0.88+0.19*k)+k*1.7),7.0*sin(t*(1.2+0.13*k)+k))
         spr.position = ZONE+Vector2(offset_x,offset_y)+wander
-        var f := (0.54+0.05*k)*opening
-        spr.scale = Vector2(f, (0.39+0.035*k)*opening)
+        var f := (0.63+0.07*k)*opening
+        spr.scale = Vector2(f, (0.52+0.047*k)*opening)
         spr.rotation = (k-1.3)*0.075+0.055*sin(t*0.90+k)
-        spr.modulate = Color(1,1,1,mist*(0.50+0.035*k))
+        spr.modulate = Color(1,1,1,mist*(0.78+0.035*k))
     for i in range(_cloud_front.size()):
         var spr := _cloud_front[i]
         spr.visible = mist>0.005
@@ -176,9 +176,9 @@ func _update_fx() -> void:
         var k := float(i)
         var offs := Vector2([-116.0,4.0,133.0][i], [31.0,40.0,24.0][i])
         spr.position = ZONE+offs+Vector2(11.0*sin(t*0.78+k*2.1), 4.0*sin(t*1.3+k))
-        spr.scale = Vector2((0.53+0.035*k)*opening,0.19*opening)
+        spr.scale = Vector2((0.57+0.035*k)*opening,0.21*opening)
         spr.rotation = (k-1.0)*0.07+0.04*sin(t*0.8+k)
-        spr.modulate = Color(1,1,1,mist*(0.25+0.025*k))
+        spr.modulate = Color(1,1,1,mist*(0.34+0.028*k))
     for i in range(_wisps.size()):
         var spr := _wisps[i]
         spr.visible = mist>0.025
@@ -186,10 +186,10 @@ func _update_fx() -> void:
         var k := float(i)
         var dx: float = [-148.0,-70.0,5.0,85.0,153.0][i]
         var rise := minf(maxf((t-ARRIVE_AT)*15.0,0.0),28.0)
-        spr.position = ZONE+Vector2(dx+14.0*sin(t*0.93+k*1.5),-66.0-rise+7.0*sin(t*1.35+k))
-        spr.scale = Vector2(0.35+0.05*sin(k*1.5),0.31+0.045*sin(t*1.15+k))
+        spr.position = ZONE+Vector2(dx+14.0*sin(t*0.93+k*1.5),-91.0-rise+7.0*sin(t*1.35+k))
+        spr.scale = Vector2(0.43+0.06*sin(k*1.5),0.47+0.045*sin(t*1.15+k))
         spr.rotation = -0.11+0.08*sin(t*0.74+k*1.9)
-        spr.modulate = Color(1,1,1,mist*(0.32 if i<3 else 0.11))
+        spr.modulate = Color(1,1,1,mist*(0.63 if i<3 else 0.24))
     for i in range(_moths.size()):
         var spr := _moths[i]
         var k := float(i)
@@ -201,9 +201,9 @@ func _update_fx() -> void:
         var px := (k-2.5)*65.0+20.0*sin(t*(2.0+0.13*k)+k)
         var py := -65.0-27.0*sin(PI*phase)-16.0*sin(t*1.7+k)
         spr.position = ZONE+Vector2(px,py)
-        spr.scale = Vector2.ONE*(0.115+0.035*sin(k*2.1))
+        spr.scale = Vector2.ONE*(0.14+0.035*sin(k*2.1))
         spr.rotation = 0.24*sin(t*7.0+k*1.5)
-        spr.modulate = Color(1,1,1,mist*0.34*sin(PI*phase))
+        spr.modulate = Color(1,1,1,mist*0.46*sin(PI*phase))
 
 func _process(delta: float) -> void:
     if paused: return
@@ -254,8 +254,8 @@ func _draw() -> void:
     var mist := mist_gain(t)
     if mist>0.004:
         var ground := ZONE+Vector2(0,27)
-        draw_texture_rect(_radial,Rect2(ground-Vector2(275,83),Vector2(550,166)),false,Color("397b71",mist*0.30))
-        draw_texture_rect(_radial,Rect2(ground-Vector2(228,55),Vector2(456,110)),false,Color("c1feae",mist*0.18))
+        draw_texture_rect(_radial,Rect2(ground-Vector2(275,83),Vector2(550,166)),false,Color("397b71",mist*0.49))
+        draw_texture_rect(_radial,Rect2(ground-Vector2(228,55),Vector2(456,110)),false,Color("c1feae",mist*0.26))
         for i in range(16):
             var k := float(i)
             var a := k*2.399
@@ -264,7 +264,7 @@ func _draw() -> void:
             _halo(p,6.5,Color("baffbf" if i%3!=0 else "bfa7ff",pulse*0.27))
         if t>=ARRIVE_AT and t<ARRIVE_AT+0.19:
             var u := (t-ARRIVE_AT)/0.19
-            _halo(ZONE+Vector2(0,-8),82.0+79.0*u,Color("ddffc8",(1.0-u)*0.36))
+            _halo(ZONE+Vector2(0,-8),82.0+79.0*u,Color("ddffc8",(1.0-u)*0.51))
     if t>=HOLD_END and t<FADE_END:
         var q := (t-HOLD_END)/(FADE_END-HOLD_END)
         for i in range(17):
