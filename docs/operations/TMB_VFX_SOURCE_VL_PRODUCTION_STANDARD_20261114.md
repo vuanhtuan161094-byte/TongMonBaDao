@@ -1,3 +1,5 @@
+> **QUYẾT ĐỊNH MỚI NHẤT 14/11/2026 — ART-FIRST, ONE SKILL AT A TIME:** Chủ dự án đã bác bỏ hình ảnh batch R4 và chốt quay lại **làm từng kỹ năng cho đẹp**, không nhân hàng loạt template/đổi màu. Mọi batch-production override bên dưới đã bị **superseded**, chỉ giữ hạ tầng mapping/QA. Quy trình đang có hiệu lực: [TMB_VFX_ART_FIRST_SINGLE_SKILL_SOP_V3_20261114.md](TMB_VFX_ART_FIRST_SINGLE_SKILL_SOP_V3_20261114.md). Ba Human Độc Tu đã chốt giữ nguyên; 201 cast master chưa duyệt cần art và video Godot thật từng skill; 216 passive/event chỉ có VFX theo event thật. Không auto-release, V6.3/PvE OFF. Dự báo có điều kiện và các cổng G0–G8 nằm trong SOP V3.
+
 # TMB VFX PRODUCTION STANDARD — Source VL-quality, school by school
 Version VFX-SOP-02 | 2026-11-14 | PR #72 Draft | Godot 4.7.2 GL Compatibility | 1280×720
 ## OWNER BATCH-PRODUCTION OVERRIDE — 2026-11-14 (supersedes old per-skill cadence ONLY)

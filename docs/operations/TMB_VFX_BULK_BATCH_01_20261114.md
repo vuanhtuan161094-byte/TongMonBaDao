@@ -1,3 +1,5 @@
+> **OBSOLETE AS ART PRODUCTION APPROACH — OWNER REJECTED BATCH R4 (2026-11-14).** This is a preserved technical ledger/registry and exact-SHA QA record ONLY. It is **NOT** an instruction to continue generic mass-generated VFX, and 201 preview templates are not approved art. Owner requested **one high-quality original Godot VFX per skill**, full-motion inspection and rework before next skill. The current mandatory art SOP is [TMB_VFX_ART_FIRST_SINGLE_SKILL_SOP_V3_20261114.md](TMB_VFX_ART_FIRST_SINGLE_SKILL_SOP_V3_20261114.md). Keep the 2,196 ID inventory, isolated batch tooling and existing three approved Poison LAB scenes. Do not enable live V6.3/PvE.
+
 # VFX-BATCH-01 — 12-school bulk production foundation, exact 2,196 skill IDs
 Date 2026-11-14. Source branch PR #72 Draft: integration/pve-p0-playable-ui-20261103. Godot 4.7.2 Compatibility GL.
 
