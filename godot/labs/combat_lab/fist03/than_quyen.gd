@@ -48,8 +48,8 @@ static func source_can_hit(t: float) -> bool:
 static func hit_flash(t: float, index: int) -> float:
     if index < 0 or index >= TARGET_LIMIT:
         return 0.0
-    var start := HIT_TIME + CONTACT_OFFSETS[index]
-    var local := t-start
+    var start: float = HIT_TIME + float(CONTACT_OFFSETS[index])
+    var local: float = t-start
     if local < 0.0 or local >= 0.32:
         return 0.0
     return smoothstep(0.0,0.035,local) * (1.0-smoothstep(0.095,0.32,local))
@@ -112,7 +112,7 @@ func _actor(feet: Vector2,tint: Color) -> void:
         Rect2(0.0,0.0,320.0,384.0),tint)
 
 func _victim_recoil(t: float,index: int) -> float:
-    var offset := t-HIT_TIME-CONTACT_OFFSETS[index]
+    var offset: float = t-HIT_TIME-float(CONTACT_OFFSETS[index])
     if offset < 0.0 or offset > 0.42:
         return 0.0
     return 12.0 * smoothstep(0.015,0.12,offset) * (1.0-smoothstep(0.20,0.42,offset))
@@ -160,17 +160,17 @@ func _draw() -> void:
     _actor(CASTER,Color("f0e6d9"))
     for i in range(VICTIMS.size()):
         var impact := hit_flash(t,i)
-        var other := VICTIMS[i]+Vector2(_victim_recoil(t,i),0.0)
+        var other: Vector2 = (VICTIMS[i] as Vector2)+Vector2(_victim_recoil(t,i),0.0)
         _actor(other,Color(1.0,1.0,1.0,1.0).lerp(Color("fff1d8"),impact*0.37))
         if impact > 0.005:
-            var flash := other+Vector2(-17.0,-78.0)
+            var flash: Vector2 = other+Vector2(-17.0,-78.0)
             _glow(flash,53.0,Color("ffe4a0",impact*0.49))
             _glow(flash,19.0,Color("fffdf2",impact*0.52))
             for n in range(7):
                 var ang := float(n)*2.399+float(i)*0.31
                 var r := 20.0+39.0*(1.0-impact)
-                var a := flash+Vector2(cos(ang),sin(ang))*r
-                var b := a+Vector2(cos(ang),sin(ang))*(9.0+8.0*impact)
+                var a: Vector2 = flash+Vector2(cos(ang),sin(ang))*r
+                var b: Vector2 = a+Vector2(cos(ang),sin(ang))*(9.0+8.0*impact)
                 draw_line(a,b,Color("ffcf79",impact*0.63),1.4,true)
     draw_string(ThemeDB.fallback_font,Vector2(27,36),
         "THAN QUYEN  |  SON HA CHAN THIEN ART STUDY",HORIZONTAL_ALIGNMENT_LEFT,-1,24,Color("fff0ce"))
