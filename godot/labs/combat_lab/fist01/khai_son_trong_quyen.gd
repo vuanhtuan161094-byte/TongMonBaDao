@@ -11,14 +11,15 @@ const DECLARED_CAST := 0.45
 const DECLARED_RANGE := 2.8
 const CASTER := Vector2(448.0, 541.0)
 const VICTIM := Vector2(752.0, 541.0)
-const HAND := Vector2(510.0, 490.0)
-const CONTACT := Vector2(713.0, 484.0)
+const HAND := Vector2(471.0, 488.0)
+const CONTACT := Vector2(710.0, 480.0)
 const CAST_END := 0.45
 const RELEASE_END := 0.52
 const CONTACT_AT := 0.79
 const IMPACT_END := 1.17
 const FADE_END := 1.63
 const LOOP_SECONDS := 2.30
+const FIST_REVISION := "R6_PUNCH_PRESSURE"
 const BG: Texture2D = preload("res://labs/combat_lab/poison05/remake_r6/assets/immortal_valley.svg")
 const ACTOR: Texture2D = preload("res://labs/character_family/assets/nu_doc_tu_v4_candidate/idle_4dir_APPROVED_UNCHANGED.png")
 const CHARGE = [
@@ -93,6 +94,19 @@ static func impact_gain(t: float) -> float:
         return 0.0
     return smoothstep(CONTACT_AT, CONTACT_AT + 0.065, t) * (1.0 - smoothstep(IMPACT_END, FADE_END, t))
 
+# Whole-sprite displacement ONLY. No skeletal rig, body-part transformations,
+# or independent replacement of the character art. Pure laboratory preview.
+static func caster_shift(t: float) -> float:
+    var sink := -5.0 * smoothstep(0.02, 0.41, t)
+    var lunge := 27.0 * smoothstep(0.44, 0.61, t)
+    var recover := 22.0 * smoothstep(0.79, 1.43, t)
+    return sink + lunge - recover
+
+static func victim_shift(t: float) -> float:
+    if t < CONTACT_AT:
+        return 0.0
+    return 15.0 * smoothstep(CONTACT_AT, 0.89, t) * (1.0 - smoothstep(1.06, 1.48, t))
+
 func _ready() -> void:
     custom_minimum_size = Vector2(1280.0, 720.0)
     mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -150,12 +164,12 @@ func _draw() -> void:
     _halo(VICTIM + Vector2(0, 15), 56.0, Color("271d24", 0.32))
     var ch := charge_gain(t)
     if ch > 0.005:
-        _halo(HAND, 55.0, Color("f5a25d", ch * 0.25))
-        _halo(HAND, 21.0, Color("fff2be", ch * 0.42))
+        _halo(HAND + Vector2(caster_shift(t), 0.0), 63.0, Color("f5a25d", ch * 0.25))
+        _halo(HAND + Vector2(caster_shift(t), 0.0), 25.0, Color("fff2be", ch * 0.42))
     var flight := t >= RELEASE_END and t < CONTACT_AT
     var q := flight_at(t)
     if flight:
-        var tip := HAND.lerp(CONTACT, q)
+        var tip := (HAND + Vector2(caster_shift(RELEASE_END), 0.0)).lerp(CONTACT, q)
         _halo(tip + Vector2(-34.0, 1.0), 83.0, Color("f49a58", 0.22))
         _halo(tip, 28.0, Color("fff2cc", 0.34))
     var hit := impact_gain(t)
@@ -167,35 +181,35 @@ func _draw() -> void:
     if hit > 0.008:
         var ground_frame := clampi(int(floor((t - CONTACT_AT) /
             (FADE_END - CONTACT_AT) * float(GROUND.size()))), 0, GROUND.size() - 1)
-        draw_set_transform(VICTIM + Vector2(0.0, 13.0), 0.0, Vector2(0.74, 0.74))
+        draw_set_transform(VICTIM + Vector2(victim_shift(t), 13.0), 0.0, Vector2(1.02, 0.92))
         draw_texture_rect(GROUND[ground_frame],
             Rect2(-160.0, -80.0, 320.0, 160.0), false,
             Color(1.0, 1.0, 1.0, hit * 0.90))
         draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
         _halo(VICTIM + Vector2(2.0, 13.0), 87.0, Color("dfb389", hit * 0.13))
     # Existing game atlas is just a 1x-scale dummy silhouette, not fist actor approval.
-    _actor(CASTER, Color("ede2d1"))
-    _actor(VICTIM, Color("c4ccd1"))
+    _actor(CASTER + Vector2(caster_shift(t), 0.0), Color("ede2d1"))
+    _actor(VICTIM + Vector2(victim_shift(t), 0.0), Color("c4ccd1"))
     if ch > 0.005:
         var frame := clampi(int(floor(t / CAST_END * float(CHARGE.size()))), 0, CHARGE.size() - 1)
-        _paint(CHARGE[frame], HAND, 0.51, ch * 0.92)
+        _paint(CHARGE[frame], HAND + Vector2(caster_shift(t), 0.0), 0.58, ch * 0.92)
     if flight:
         var tip := HAND.lerp(CONTACT, q)
         var frame := clampi(int(floor(q * float(FLIGHT.size()))), 0, FLIGHT.size() - 1)
         # The authored flight frame's tip is at image x ~= 250.
-        _paint(FLIGHT[frame], tip, 1.00, 0.97, Vector2(280.0, 154.0))
+        _paint(FLIGHT[frame], tip, 1.12, 0.95, Vector2(266.0, 155.0))
         for j in range(4):
             var old := t - 0.034 * float(j + 1)
             if old <= RELEASE_END:
                 continue
-            var echo := HAND.lerp(CONTACT, flight_at(old))
+            var echo := (HAND + Vector2(caster_shift(RELEASE_END), 0.0)).lerp(CONTACT, flight_at(old))
             _halo(echo + Vector2(-23, 0), 40.0 - 3.0 * float(j),
                 Color("ffa467", 0.16 - 0.026 * float(j)))
     if hit > 0.008:
         var frame := clampi(int(floor((t - CONTACT_AT) / (FADE_END - CONTACT_AT) *
             float(IMPACT.size()))), 0, IMPACT.size() - 1)
-        var spread := 0.77 + 0.43 * smoothstep(CONTACT_AT, IMPACT_END, t)
-        _paint(IMPACT[frame], CONTACT, spread, hit * 0.84)
+        var spread := 0.80 + 0.53 * smoothstep(CONTACT_AT, IMPACT_END, t)
+        _paint(IMPACT[frame], CONTACT, spread, hit * 0.89)
         var fade_q := clampf((t - CONTACT_AT) / (FADE_END - CONTACT_AT), 0.0, 1.0)
         for j in range(9):
             var a := float(j) * 2.399
@@ -205,7 +219,7 @@ func _draw() -> void:
     draw_string(ThemeDB.fallback_font, Vector2(29, 36), "KHAI SON TRONG QUYEN / BA QUYEN",
         HORIZONTAL_ALIGNMENT_LEFT, -1, 25, Color("fff0d5"))
     draw_string(ThemeDB.fallback_font, Vector2(29, 62),
-        "FIST01 | ORIGINAL 24 SPRITE FRAMES | FIRE / SINGLE TARGET",
+        "FIST01 R6 | 24 REPAINTED KINETIC SPRITE POSES | FIRE / SINGLE TARGET",
         HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Color("e8c1a2"))
     draw_string(ThemeDB.fallback_font, Vector2(29, 683),
         "GODOT 4.7.2 COMPATIBILITY | LAB VISUAL ONLY | NO DAMAGE / V63 OFF",
