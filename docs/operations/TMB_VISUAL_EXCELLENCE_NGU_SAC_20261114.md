@@ -89,3 +89,8 @@ Legend GPU/CPU estimates: T = low, V = moderate, C = expensive. All are **pre-pr
 - Screen-reading shaders (expensive copy, consciously avoided): https://docs.godotengine.org/en/stable/tutorials/shaders/screen-reading_shaders.html
 - Documentation content CC BY 3.0, credit Juan Linietsky, Ariel Manzur and Godot Engine community: https://docs.godotengine.org/en/stable/about/faq.html ; Godot engine MIT: https://godotengine.org/license/
 - All newly committed shader/script code original for TMB. No third-party commercial JX/Source A artwork has been copied by this VIS packet.
+
+## Real-Godot visual evidence gate added
+- `godot/tests/presentation/vis02_real_recruit_visual_capture.gd` uses the real P3.2 scene, authentic D7 gacha generation until a **naturally rolled** Nghịch Thiên (no forced quality), and the real B1 two-click accept action in an isolated user:// QA save. It exports 9 1280x720 PNGs and a movie via the Godot 4.7.2 native movie writer.
+- `.github/workflows/vis02-real-recruit-video.yml` runs under Xvfb GL Compatibility, transcodes native MJPEG AVI into MP4, uploads screenshots/movie and a provenance report. **Not physical Android/Owner acceptance.**
+- Never claim PASS until this workflow actually runs SUCCESS; the test must inspect arrival, full/reduced/off, comparative nonrare profile and Source A textures.

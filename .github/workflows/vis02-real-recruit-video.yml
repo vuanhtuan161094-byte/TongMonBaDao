@@ -1,0 +1,65 @@
+name: VIS02 Real OneGame Divine Recruitment Movie
+on:
+  push:
+    branches: [integration/pve-p0-playable-ui-20261103]
+    paths:
+      - 'godot/src/presentation/uiux/sect_quality_visual_v1.gd'
+      - 'godot/src/presentation/uiux/sect_prismatic_motes_v1.gd'
+      - 'godot/src/presentation/uiux/shaders/vis0*.gdshader'
+      - 'godot/src/presentation/art05_onegame_cinematic_ui.gd'
+      - 'godot/src/presentation/uiux/dan_tien_screen_b1_v1.gd'
+      - 'godot/tests/presentation/vis02_real_recruit_visual_capture.gd'
+      - '.github/workflows/vis02-real-recruit-video.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  real-onegame-capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Godot 4.7.2 official
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 --output /tmp/godot.zip "https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip"
+          echo "cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4  /tmp/godot.zip" | sha256sum --check --strict
+          unzip -q /tmp/godot.zip -d /tmp
+          sudo install -m 0755 /tmp/Godot_v4.7.2-stable_linux.x86_64 /usr/local/bin/godot
+      - name: Install virtual GL display and ffmpeg
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y xvfb xauth libgl1-mesa-dri libgl1 ffmpeg
+      - name: Confirm SHA engine import and focused script parser
+        run: |
+          git rev-parse HEAD
+          godot --version
+          godot --headless --path godot --import
+          bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://tests/presentation/vis02_real_recruit_visual_capture.gd
+      - name: Record actual P3.2 GUI 1280x720 and rare live recruitment as AVI
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$GITHUB_WORKSPACE/vis02-actual-game-evidence"
+          export LIBGL_ALWAYS_SOFTWARE=1
+          xvfb-run -a -s "-screen 0 1280x720x24" bash tools/qa/run_godot_strict.sh \
+            --path godot --rendering-method gl_compatibility --resolution 1280x720 \
+            --write-movie "$GITHUB_WORKSPACE/vis02-actual-game-evidence/vis02_real_godot_movie.avi" --fixed-fps 30 \
+            -s res://tests/presentation/vis02_real_recruit_visual_capture.gd \
+            -- "$GITHUB_WORKSPACE/vis02-actual-game-evidence"
+          test "$(find "$GITHUB_WORKSPACE/vis02-actual-game-evidence" -maxdepth 1 -name '*.png' | wc -l)" -eq 9
+          test -s "$GITHUB_WORKSPACE/vis02-actual-game-evidence/vis02_capture_report.json"
+          test -s "$GITHUB_WORKSPACE/vis02-actual-game-evidence/vis02_real_godot_movie.avi"
+          ffmpeg -y -loglevel error -i "$GITHUB_WORKSPACE/vis02-actual-game-evidence/vis02_real_godot_movie.avi" \
+            -c:v libx264 -crf 22 -pix_fmt yuv420p -movflags +faststart -an \
+            "$GITHUB_WORKSPACE/vis02-actual-game-evidence/vis02_real_godot_movie.mp4"
+          ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=p=0 \
+            "$GITHUB_WORKSPACE/vis02-actual-game-evidence/vis02_real_godot_movie.mp4" | grep -Fx '1280,720'
+      - name: Upload actual PNG and MP4 evidence regardless of outcome
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vis02-real-onegame-frames-movie-${{ github.sha }}
+          path: vis02-actual-game-evidence/
+          if-no-files-found: warn
+          retention-days: 14
