@@ -12,14 +12,14 @@ const DECLARED_RANGE := 2.8
 const CASTER := Vector2(448.0, 541.0)
 const VICTIM := Vector2(752.0, 541.0)
 const HAND := Vector2(471.0, 488.0)
-const CONTACT := Vector2(710.0, 480.0)
+const CONTACT := Vector2(740.0, 476.0)
 const CAST_END := 0.45
 const RELEASE_END := 0.52
 const CONTACT_AT := 0.79
 const IMPACT_END := 1.17
 const FADE_END := 1.63
 const LOOP_SECONDS := 2.30
-const FIST_REVISION := "R6_PUNCH_PRESSURE"
+const FIST_REVISION := "R7_FEATHERED_RIBBONS"
 const BG: Texture2D = preload("res://labs/combat_lab/poison05/remake_r6/assets/immortal_valley.svg")
 const ACTOR: Texture2D = preload("res://labs/character_family/assets/nu_doc_tu_v4_candidate/idle_4dir_APPROVED_UNCHANGED.png")
 const CHARGE = [
@@ -187,17 +187,12 @@ func _draw() -> void:
             Color(1.0, 1.0, 1.0, hit * 0.90))
         draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
         _halo(VICTIM + Vector2(2.0, 13.0), 87.0, Color("dfb389", hit * 0.13))
-    # Existing game atlas is just a 1x-scale dummy silhouette, not fist actor approval.
-    _actor(CASTER + Vector2(caster_shift(t), 0.0), Color("ede2d1"))
-    _actor(VICTIM + Vector2(victim_shift(t), 0.0), Color("c4ccd1"))
-    if ch > 0.005:
-        var frame := clampi(int(floor(t / CAST_END * float(CHARGE.size()))), 0, CHARGE.size() - 1)
-        _paint(CHARGE[frame], HAND + Vector2(caster_shift(t), 0.0), 0.58, ch * 0.92)
+    # Flight is layered BEHIND actor silhouettes: never mask caster face.
     if flight:
         var tip := HAND.lerp(CONTACT, q)
         var frame := clampi(int(floor(q * float(FLIGHT.size()))), 0, FLIGHT.size() - 1)
         # The authored flight frame's tip is at image x ~= 250.
-        _paint(FLIGHT[frame], tip, 1.12, 0.95, Vector2(266.0, 155.0))
+        _paint(FLIGHT[frame], tip, 1.10, 0.95, Vector2(263.0, 156.0))
         for j in range(4):
             var old := t - 0.034 * float(j + 1)
             if old <= RELEASE_END:
@@ -205,10 +200,17 @@ func _draw() -> void:
             var echo := (HAND + Vector2(caster_shift(RELEASE_END), 0.0)).lerp(CONTACT, flight_at(old))
             _halo(echo + Vector2(-23, 0), 40.0 - 3.0 * float(j),
                 Color("ffa467", 0.16 - 0.026 * float(j)))
+
+    # Existing game atlas is just a 1x-scale dummy silhouette, not fist actor approval.
+    _actor(CASTER + Vector2(caster_shift(t), 0.0), Color("ede2d1"))
+    _actor(VICTIM + Vector2(victim_shift(t), 0.0), Color("c4ccd1"))
+    if ch > 0.005:
+        var frame := clampi(int(floor(t / CAST_END * float(CHARGE.size()))), 0, CHARGE.size() - 1)
+        _paint(CHARGE[frame], HAND + Vector2(caster_shift(t), 0.0), 0.58, ch * 0.92)
     if hit > 0.008:
         var frame := clampi(int(floor((t - CONTACT_AT) / (FADE_END - CONTACT_AT) *
             float(IMPACT.size()))), 0, IMPACT.size() - 1)
-        var spread := 0.80 + 0.53 * smoothstep(CONTACT_AT, IMPACT_END, t)
+        var spread := 1.03 + 0.61 * smoothstep(CONTACT_AT, IMPACT_END, t)
         _paint(IMPACT[frame], CONTACT, spread, hit * 0.89)
         var fade_q := clampf((t - CONTACT_AT) / (FADE_END - CONTACT_AT), 0.0, 1.0)
         for j in range(9):
@@ -219,7 +221,7 @@ func _draw() -> void:
     draw_string(ThemeDB.fallback_font, Vector2(29, 36), "KHAI SON TRONG QUYEN / BA QUYEN",
         HORIZONTAL_ALIGNMENT_LEFT, -1, 25, Color("fff0d5"))
     draw_string(ThemeDB.fallback_font, Vector2(29, 62),
-        "FIST01 R6 | 24 REPAINTED KINETIC SPRITE POSES | FIRE / SINGLE TARGET",
+        "FIST01 R7 | SOFT FEATHERED PRESSURE RIBBONS | FIRE / ONE TARGET",
         HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Color("e8c1a2"))
     draw_string(ThemeDB.fallback_font, Vector2(29, 683),
         "GODOT 4.7.2 COMPATIBILITY | LAB VISUAL ONLY | NO DAMAGE / V63 OFF",
