@@ -31,3 +31,15 @@ The 0.45 s mockup is no authority to add gameplay guard; no real Combat V2 hit/s
 - Required manual review: cast 0.09/0.17/0.29/0.41, guard 0.51/0.81/1.25/2.15/3.33/4.30, fade 4.61/5.07. At 1× verify the guarding actor stays visible and the VFX remains distinct from FIST01.
 - **Owner R10 decision:** Khai Sơn Trọng Quyền R10 'tạm tạm': provisional acceptance to move to the next skill, not ideal art approval or live PvE permission. FIST02 must pass technical and real-image QA separately.
 - `OWNER_VISUAL_PENDING / PVE_INTEGRATION_HOLD / V63_OFF / PHYSICAL_WINDOWS_ANDROID_PENDING`.
+
+## R1–R3 official Godot evidence / art review — 2026-11-14
+
+R1 at source SHA c9fc879d904115a975bef0223bc5978f98f055d6, Actions #43583360823: Godot 4.7.2 focused PASS + movie captured, but native 0.29s and 1.25s are too faint; art failed self-review.
+
+R2 generator commit 0a4ca34f9161bdf40ef8a6f8aaddac276b5ad117, scene SHA 690c035d8ca35c31b78e630d79ebf5b6a09eec1d, Actions #43583699091: alpha/contrast and real-scale positioning improved. However the 4s guard remains a generic ring.
+
+R3 generator commit e236f4980ed5a6414e69dc474542a0cde554f004, exact tested scene SHA **5714e80e94745e3234140adcffc59e12f3b3ecc4**, Actions **https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/43584024114** SUCCESS. Artifact **vfx-fist02-native**, ID **14109840513**. Strict import+parse+focused **VFX_FIST02_FOCUSED_RESULT=PASS failures=0**, actual original Godot 4.7.2 Compatibility MP4 1280x720 / 318 fixed-clock frames, GIF, 12 PNG checkpoints, generator PNG atlases, checksums. The 60fps movie encoding is NOT measured Windows/Android performance.
+
+Actual R3 inspection: 0.29s two brighter heel sweeps and whole-sprite afterimage, not a rig; 1.25s a crossed golden guard (rather than filled circular shield) is visible behind the recipient, but still too much like an X-shaped UI effect and actor still idle. At 4.30s guard holds, 4.61 fades and 5.07 is clear. The other actor is not hit. Art rubric /5: silhouette 3.0, lighting/material 3.1, motion 2.5, composition 3.6, semantic guard/one recipient 4.2, fade 3.8, uniqueness 3.2. Below art gate, so this is a usable **technical LAB prototype, NOT an art-approved skill**.
+
+Gates: CODE_LAB_READY, GODOT_FOCUSED_PASS, GODOT_CAPTURED, FRAMES_REVIEWED; ART_REWORK_REQUIRED, OWNER_VISUAL_PENDING, PVE_INTEGRATION_HOLD, V63_OFF, PHYSICAL_WINDOWS_ANDROID_PENDING. Owner provisional permission to move past FIST01 R10 is NOT FIST02 approval. Further artistic work must use premium illustrated guard art and original Fist body animation frame-by-frame without rig. No Combat V2, HP, target, SaveService, economy, AI or live PvE edits.
