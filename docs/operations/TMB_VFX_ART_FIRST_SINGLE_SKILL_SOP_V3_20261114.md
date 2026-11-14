@@ -1,4 +1,13 @@
 # TÔNG MÔN BÁ ĐẠO — VFX ART-FIRST / ONE SKILL AT A TIME — SOP V3
+## Hiệu chỉnh dự báo sau phản hồi ngày 14/11: không mặc định 14–21 tháng
+
+Người dùng ghi nhận **3 kỹ năng được duyệt trong một buổi sáng** (cùng hệ Độc Tu). Đây là tốc độ quan sát được trên một buổi, nhưng **chưa phải năng suất bền vững toàn 12 hệ**. Dự toán chính phải tính theo **buổi sản xuất có sản phẩm owner-approved**, không quy đổi cứng sang lịch nếu không có lịch làm việc.
+
+- Còn 201 Human cast-family masters chưa được duyệt. Nếu giữ 3 master/buổi thì khoảng **67 buổi làm việc**. Nếu đạt 2/buổi: **101 buổi**. Nếu 1/buổi: **201 buổi**. Chưa tính tier, passive/event VFX thật, tích hợp PvE và QA thiết bị.
+- Ví dụ giả định làm đều **5 buổi/tuần**, cơ sở phần master sẽ là khoảng **13–40 tuần (3–9 tháng)** khi hiệu suất nằm trong 1–3 kỹ năng được duyệt/buổi. Thực tế nhiều môn phái đặc thù khó hơn Cổ Độc; cần đo lại sau 10 master tiếp theo.
+- Vì thế bảng 12–29 tháng phía dưới là **kịch bản nhân lực chậm theo tuần của bản dự báo cũ, không phải mục tiêu chính**. Kế hoạch thực thi ưu tiên kết quả/phiên, điểm QA và chất lượng; tuyệt đối không tăng nhịp bằng cách đổi màu hàng loạt.
+
+
 Áp dụng 14/11/2026 | PR #72 Draft | Godot 4.7.2 GL Compatibility | video 1280×720
 
 ## Quyết định chủ dự án, thứ tự hiệu lực cao nhất
