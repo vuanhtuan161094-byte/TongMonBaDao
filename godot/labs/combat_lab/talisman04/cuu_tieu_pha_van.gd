@@ -107,6 +107,36 @@ func _update_hero()->void:
 func _halo(at:Vector2,r:float,col:Color)->void:
     if col.a<.005:return
     draw_texture_rect(_glow,Rect2(at-Vector2.ONE*r,Vector2.ONE*(r*2)),false,col)
+static func rupture_point(q:float,t:float)->Vector2:
+    var p:=clampf(q,0,1)
+    var envelope:=sin(PI*p)
+    var crooked:=7.0*sin(p*62.0+t*22.0)*envelope+9.0*sin(p*119.0-t*33.0)*envelope
+    return Vector2(428.0+741.0*p,422.0-24.0*sin(PI*p)+crooked)
+func _draw_rupture(t:float,gain:float)->void:
+    var reach:=smoothstep(RELEASE_AT,CONTACT_AT,t)
+    if gain<.01 or reach<.02:return
+    var prev:=rupture_point(0.0,t)
+    for s in range(43):
+        var q:=reach*float(s+1)/43.0
+        var point:=rupture_point(q,t)
+        var weight:=gain*(.50+.5*sin(PI*q))
+        draw_line(prev,point,Color("8055da",weight*.29),14.0,true)
+        draw_line(prev,point,Color("bb9dff",weight*.51),4.4,true)
+        draw_line(prev,point,Color("fff4ff",weight*.86),1.55,true)
+        if s%7==0:_halo(point,24.0,Color("ae80f1",weight*.12))
+        prev=point
+    # The cloud rends UP and DOWN at four irregular locations, not a flat ribbon.
+    for j in range(4):
+        var q:=.21+float(j)*.20
+        if reach<q+.01:continue
+        var root:=rupture_point(q,t)
+        var sign:float=-1.0 if j%2==0 else 1.0
+        var p1:=root+Vector2(19.0,sign*(38.0+10.0*float(j%3)))
+        var p2:=p1+Vector2(-13.0,sign*(29.0+float(j)*6.0))
+        draw_line(root,p1,Color("7750c9",gain*.30),8.0,true)
+        draw_line(p1,p2,Color("7750c9",gain*.24),5.0,true)
+        draw_line(root,p1,Color("f5ddff",gain*.72),1.5,true)
+        draw_line(p1,p2,Color("e7c6ff",gain*.49),1.05,true)
 func _actor(pos:Vector2)->void:
     draw_texture_rect_region(ACTOR,Rect2(pos.x-72,pos.y-163,144,163),Rect2(0,0,320,384),Color("d1c6dd"))
 func _draw()->void:
@@ -127,7 +157,8 @@ func _draw()->void:
     if f>=0:
         var gain:=smoothstep(RELEASE_AT,RELEASE_AT+.12,t)*(1.0-smoothstep(1.57,1.83,t))
         # Ragged cloud-wound art has its own ten animated shapes, independent of TAL02 ink calligraphy.
-        draw_texture_rect(CLOUD_POSES[f],Rect2(395,298,812,262),false,Color(1,1,1,gain*.98))
+        draw_texture_rect(CLOUD_POSES[f],Rect2(395,298,812,262),false,Color(1,1,1,gain*.90))
+        _draw_rupture(t,gain)
         _halo(HAND+Vector2(32,-10),74,Color("aa77e2",gain*.30))
     for i in range(TARGET_LIMIT):
         var g:=contact_gain(t,i)
