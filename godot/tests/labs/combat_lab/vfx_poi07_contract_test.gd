@@ -15,6 +15,13 @@ func _run() -> void:
     _check(LAB.DECLARED_COOLDOWN==9.0 and LAB.DECLARED_PROJECTILE_SPEED==8.0,"speed/cooldown")
     _check(LAB.phase_at(0.18)=="charge" and LAB.phase_at(0.67)=="travel","phases")
     _check(LAB.phase_at(1.65)=="single_contact" and LAB.phase_at(2.11)=="fade" and LAB.phase_at(2.5)=="idle","contact/fade/idle")
+    _check(LAB.flight_tip_at(LAB.CAST_END).distance_to(LAB.PALM)<0.01,"flight begins at palm")
+    _check(LAB.flight_tip_at(LAB.CONTACT_AT).distance_to(LAB.CHEST)<0.01,"flight ends at chest")
+    for fraction in [0.1,0.25,0.5,0.75,0.9]:
+        var timepoint: float = lerpf(LAB.CAST_END,LAB.CONTACT_AT,fraction)
+        var actual: Vector2 = LAB.flight_tip_at(timepoint)
+        var ideal: Vector2 = LAB.PALM.lerp(LAB.CHEST,fraction)
+        _check(actual.distance_to(ideal)<0.05,"strict straight constant-speed flight fraction "+str(fraction))
     var source := FileAccess.get_file_as_string("res://labs/combat_lab/poison07/xuyen_cot_doc_cham.gd")
     for forbidden in ["SaveService.","MapBattleV2.","CombatV2.","apply_damage","apply_status","V63FeatureGates."]:
         _check(not source.contains(forbidden),"view-only: "+forbidden)
