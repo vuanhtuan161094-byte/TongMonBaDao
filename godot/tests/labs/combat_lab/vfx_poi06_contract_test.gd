@@ -13,6 +13,13 @@ func _run()->void:
     _check(LAB.DECLARED_RADIUS==3.0 and LAB.DECLARED_TARGET_LIMIT==3,"radius3 cap3")
     _check(LAB.DECLARED_CAST_TIME==1.10 and LAB.DECLARED_DURATION==8.0 and LAB.DECLARED_STACKS==2,"source timing/stack")
     _check(LAB.GU.size()==8 and LAB.BRANDS.size()==6,"14 independent original gu/rune poses")
+    _check(LAB.PAINTED_REALM.size()==8 and LAB.PAINTED_CHARGE.size()==8,
+        "16 TRUE 8-bit indexed RGBA raster alpha sprites for central VFX")
+    for i in range(8):
+        _check(LAB.PAINTED_REALM[i].get_size()==Vector2(480,320),
+            "hand-pained realm sprite 480x320 "+str(i))
+        _check(LAB.PAINTED_CHARGE[i].get_size()==Vector2(256,256),
+            "gathering ring sprite 256x256 "+str(i))
     for i in range(8):
         _check(LAB.GU[i].get_size()==Vector2(256,256),"gu frame "+str(i))
     for i in range(6):
@@ -36,6 +43,6 @@ func _run()->void:
     var source:=FileAccess.get_file_as_string("res://labs/combat_lab/poison06/van_co_phe_gioi.gd")
     for forbidden in ["SaveService.save","CombatV2.","MapBattleV2.","apply_damage","apply_status","V63FeatureGates.","summon_actor"]:
         _check(not source.contains(forbidden),"isolated view only "+forbidden)
-    print("VFX_POI06_FOCUSED_RESULT="+("PASS" if failures==0 else "FAIL")+" failures="+str(failures)+" gu=8 brand=6")
+    print("VFX_POI06_FOCUSED_RESULT="+("PASS" if failures==0 else "FAIL")+" failures="+str(failures)+" gu=8 brand=6 painted_realm=8 painted_charge=8")
     sample.queue_free()
     quit(0 if failures==0 else 1)

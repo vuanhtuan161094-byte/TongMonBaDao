@@ -40,6 +40,26 @@ const BRANDS := [
     preload("res://labs/combat_lab/poison06/assets/abyss_brand_4.svg"),
     preload("res://labs/combat_lab/poison06/assets/abyss_brand_5.svg"),
 ]
+const PAINTED_REALM := [
+    preload("res://labs/combat_lab/poison06/assets/realm_painted_00.png"),
+    preload("res://labs/combat_lab/poison06/assets/realm_painted_01.png"),
+    preload("res://labs/combat_lab/poison06/assets/realm_painted_02.png"),
+    preload("res://labs/combat_lab/poison06/assets/realm_painted_03.png"),
+    preload("res://labs/combat_lab/poison06/assets/realm_painted_04.png"),
+    preload("res://labs/combat_lab/poison06/assets/realm_painted_05.png"),
+    preload("res://labs/combat_lab/poison06/assets/realm_painted_06.png"),
+    preload("res://labs/combat_lab/poison06/assets/realm_painted_07.png"),
+]
+const PAINTED_CHARGE := [
+    preload("res://labs/combat_lab/poison06/assets/charge_painted_00.png"),
+    preload("res://labs/combat_lab/poison06/assets/charge_painted_01.png"),
+    preload("res://labs/combat_lab/poison06/assets/charge_painted_02.png"),
+    preload("res://labs/combat_lab/poison06/assets/charge_painted_03.png"),
+    preload("res://labs/combat_lab/poison06/assets/charge_painted_04.png"),
+    preload("res://labs/combat_lab/poison06/assets/charge_painted_05.png"),
+    preload("res://labs/combat_lab/poison06/assets/charge_painted_06.png"),
+    preload("res://labs/combat_lab/poison06/assets/charge_painted_07.png"),
+]
 var elapsed := 0.0
 var paused := false
 var _glow: Texture2D
@@ -81,7 +101,7 @@ func _ready() -> void:
     _glow=_radial_texture()
     set_process(true)
     queue_redraw()
-    print("VFX_POI06_READY id=",SKILL_ID," gu_frames=",GU.size()," brand_frames=",BRANDS.size(),
+    print("VFX_POI06_R5_READY id=",SKILL_ID," gu_frames=",GU.size()," brand_frames=",BRANDS.size(),
         " targets=",DECLARED_TARGET_LIMIT," gameplay=false no_rig=true")
 func _radial_texture() -> Texture2D:
     var img := Image.create(96,96,false,Image.FORMAT_RGBA8)
@@ -114,9 +134,11 @@ func _draw() -> void:
         _halo(REALM,92.0,Color("1b2a42",open*0.38))
         _halo(REALM,47.0,Color("efffdf",open*0.30))
         draw_texture_rect(_glow,Rect2(616.0,478.0,580.0,155.0),false,Color("a4dbb5",open*0.21))
-        _braided_halo(REALM,162.0,100.0,open,t*0.52+0.3,6)
-        _braided_halo(REALM,106.0,74.0,open*0.30,-t*0.27,3)
-        _whisper_curls(REALM,open,t)
+        # Primary painted raster sprite: 8 independent 480x320 transparent realm frames.
+        # Light strokes below are a minor glancing highlight; NEVER a HUD circle.
+        var realm_frame := posmod(int(floor((t-RIFT_OPEN)*12.5)),PAINTED_REALM.size())
+        _paint(PAINTED_REALM[realm_frame],REALM,1.06,0.021*sin(t*2.1),
+            Color(1.0,1.0,1.0,open*0.91))
         _petal_sparks(REALM,193.0,open,t,24)
         _crown_burst(t,open)
     # Soft white-hot streams converge INTO A JAGGED RING at the caster's palm.
@@ -138,7 +160,10 @@ func _draw() -> void:
             draw_line(pos-tang*13.0,pos,Color("baffd4",intensity*0.65),2.9,true)
             draw_line(pos-tang*9.0,pos,Color("fcffe1",intensity*0.88),1.2,true)
             _halo(pos,10.0,Color("f5ffe0",intensity*0.51))
-        _braided_halo(HAND,43.0+4.0*q,30.0+3.0*q,charge,t*0.55+0.5,5)
+        # The hand seal is baked as 8 raster frames, not a static SVG ring.
+        var charge_frame := posmod(int(floor(t*9.0)),PAINTED_CHARGE.size())
+        _paint(PAINTED_CHARGE[charge_frame],HAND,0.69+0.12*q,
+            0.04*sin(t*2.9),Color(1.0,1.0,1.0,charge*0.85))
         _halo(HAND,18.0,Color("faffdc",charge*0.64))
     # One light-form projectile, no exaggerated centipede or fake target hit.
     var flight := smoothstep(CAST_END,CAST_END+0.14,t)*(1.0-smoothstep(RIFT_OPEN-0.07,RIFT_OPEN+0.12,t))
@@ -165,6 +190,11 @@ func _draw() -> void:
                 t+float(idx)*0.37,Color("93ebb5"),5.0)
     # Repaint all dummy actors over background VFX, protecting the readability.
     _actor(CASTER,0.47,Color.WHITE)
+    # Front hand glints must survive character compositing, not mask the face.
+    if charge>0.008:
+        var visible_frame := posmod(int(floor(t*9.0)),PAINTED_CHARGE.size())
+        _paint(PAINTED_CHARGE[visible_frame],HAND+Vector2(1.0,2.0),0.52,
+            0.03*sin(t*2.3),Color(1.0,1.0,1.0,charge*0.42))
     for idx in range(3):
         var target: Vector2 = TARGETS[idx]
         _actor(target,0.45,[Color("d4d0db"),Color("bccfc8"),Color("c6c5d9")][idx])
@@ -207,57 +237,13 @@ func _draw() -> void:
     draw_string(ThemeDB.fallback_font,Vector2(31,35),
         "VAN CO PHE GIOI  /  CO DOC TUYET KY",HORIZONTAL_ALIGNMENT_LEFT,-1,26,Color("eaffee"))
     draw_string(ThemeDB.fallback_font,Vector2(32,61),
-        "POI06 R4  |  STARLIGHT CONVERGENCE / JADE REALM BURST / 3 TARGETS",
+        "POI06 R5  |  ORIGINAL PAINTED ALPHA SPRITES  |  8 FRAME REALM / CHARGE",
         HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("b4c6cf"))
     draw_string(ThemeDB.fallback_font,Vector2(32,691),
         "GODOT 4.7.2 COMPATIBILITY  |  ART-ONLY  |  NO GAMEPLAY POISON/HP CHANGE",
         HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("bbc5c7"))
     draw_string(ThemeDB.fallback_font,Vector2(1182,691),
         "%0.2fs" % t,HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("c6cbbf"))
-func _braided_halo(center: Vector2,rx: float,ry: float,alpha: float,t: float,segments: int) -> void:
-    # Organic crescent fragments, visually composing an open circular seal.
-    # Five non-identical brush strokes, mild radial flow, no scribble/no HUD donut.
-    for lane in range(segments):
-        var k := float(lane)
-        var phase := k*2.399 + t*(0.15+0.04*float(lane%3))
-        var span := 0.54+0.14*float(lane%4)
-        var pts := PackedVector2Array()
-        for n in range(23):
-            var q := float(n)/22.0
-            var a := phase+q*span
-            var orbit := (1.03-0.14*q)+0.035*sin(q*PI*2.0+t*2.0+k*2.2)
-            var x := cos(a)*rx*orbit
-            var y := sin(a)*ry*orbit
-            pts.append(center+Vector2(x,y))
-        for n in range(1,pts.size()):
-            var q := float(n)/float(pts.size()-1)
-            var taper := pow(maxf(0.0,sin(PI*q)),0.55)
-            var gain := alpha*taper*(0.64+0.09*float(lane%3))
-            if gain<0.002: continue
-            var prev: Vector2=pts[n-1]
-            var point: Vector2=pts[n]
-            draw_line(prev,point,Color("6c6099",gain*0.23),10.0,true)
-            draw_line(prev,point,Color("94d6ba" if lane%3 else "bda6ef",gain*0.47),4.4,true)
-            draw_line(prev,point,Color("f9ffe0",gain*0.79),1.85,true)
-        if lane%2==0:
-            var tip: Vector2=pts[pts.size()-2]
-            _halo(tip,14.0,Color("f8ffe2",alpha*0.38))
-
-func _whisper_curls(center: Vector2,alpha: float,t: float) -> void:
-    # FOUR widely spaced silk-like Gu qi falls, not tangled lettering.
-    for lane in range(4):
-        var k := float(lane)
-        var begin := center+Vector2((-1.5+k)*74.0,-42.0+7.0*sin(t+k))
-        var pts := PackedVector2Array()
-        for n in range(18):
-            var q := float(n)/17.0
-            var x := begin.x+17.0*sin(q*PI)*sin(t*1.8+k*2.1)
-            var y := begin.y+111.0*q-13.0*sin(PI*q)
-            pts.append(Vector2(x,y))
-        var activity := alpha*(0.24+0.055*float(lane%3))
-        draw_polyline(pts,Color("71609e",activity*0.32),10.0,true)
-        draw_polyline(pts,Color("a3dfc0",activity*0.46),4.0,true)
-        draw_polyline(pts,Color("f8ffe0",activity*0.59),1.3,true)
 func _crown_burst(t: float,open: float) -> void:
     # A brief central flash at full realm opening, not a persistent UI ring.
     var pulse := smoothstep(2.14,2.38,t)*(1.0-smoothstep(2.61,3.07,t))*open
