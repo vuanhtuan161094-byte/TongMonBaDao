@@ -1,4 +1,4 @@
-name: VFX-FIST-02 Phi Than Lien Cuoc guard-only native Godot
+name: VFX-FIST-02 V4 real illustrated guard (no actor kick) Godot
 on:
   workflow_dispatch:
   push:
@@ -6,7 +6,7 @@ on:
     paths:
       - '.github/workflows/vfx-fist-02-phi-than-lien-cuoc.yml'
       - 'godot/labs/combat_lab/fist02/**'
-      - 'tools/vfx/generate_fist02_guard_atlas.py'
+      - 'tools/vfx/generate_fist02_spirit_v4.py'
       - 'godot/tests/labs/combat_lab/vfx_fist02_contract_test.gd'
 permissions:
   contents: read
@@ -31,7 +31,7 @@ jobs:
           sudo install -m0755 /tmp/Godot_v4.7.2-stable_linux.x86_64 /usr/local/bin/godot
           mkdir -p /tmp/vfx-fist02
           godot --version | tee /tmp/vfx-fist02/engine.txt
-          echo "SOURCE_SHA=$GITHUB_SHA; EFFECT=guard; CAST=0.45; DURATION=4.0; OWNER_VISUAL_PENDING; PVE_INTEGRATION_HOLD" > /tmp/vfx-fist02/metadata.txt
+          echo "SOURCE_SHA=$GITHUB_SHA; EFFECT=guard; CAST=0.45; DURATION=4.0; ART_SOURCE=original_ImageGen_clean_alpha; NO_ACTOR_KICK=true; OWNER_VISUAL_PENDING; PVE_INTEGRATION_HOLD" > /tmp/vfx-fist02/metadata.txt
       - name: Restore existing Stage A assets without tracked modifications
         shell: bash
         run: |
@@ -40,17 +40,18 @@ jobs:
           test "$(stat -c%s /tmp/tmb_stage_a_pack.zip)" -eq 44838
           echo '6a4213b9129ffb3f438c21cbb5326672ddf8915323836bf80cb33b8e5fabfdca  /tmp/tmb_stage_a_pack.zip' | sha256sum --check --strict
           unzip -q /tmp/tmb_stage_a_pack.zip -d .
-      - name: Generate and validate original 28-pose FIST02 alpha atlas
+      - name: ImageGen master 28-pose spirit V4 transparent atlas generator
         shell: bash
         run: |
           set -euo pipefail
-          python3 tools/vfx/generate_fist02_guard_atlas.py | tee /tmp/vfx-fist02/atlas.log
-          grep -Fq 'VFX_FIST02_RASTER_GEN_PASS=1 frames=28 alpha=RGBA no_rig=1' /tmp/vfx-fist02/atlas.log
-          for name in heel_motion guard_crossflow footfall_dust; do
-            test -s "godot/labs/combat_lab/fist02/assets/painted_v1/$name.png"
-            cp "godot/labs/combat_lab/fist02/assets/painted_v1/$name.png" /tmp/vfx-fist02/
+          python3 tools/vfx/generate_fist02_spirit_v4.py | tee /tmp/vfx-fist02/atlas.log
+          grep -Fq 'FIST02_IMAGEGEN_ART_FIRST_V4_PASS alpha=true frames=28 no_rig=true no_fake_hit=true' /tmp/vfx-fist02/atlas.log
+          test -s godot/labs/combat_lab/fist02/assets/v4/guardian_spirit_master.webp
+          for name in spirit_cast spirit_guard spirit_embers; do
+            test -s "godot/labs/combat_lab/fist02/assets/v4/generated/$name.png"
+            cp "godot/labs/combat_lab/fist02/assets/v4/generated/$name.png" /tmp/vfx-fist02/
           done
-          sha256sum /tmp/vfx-fist02/heel_motion.png /tmp/vfx-fist02/guard_crossflow.png /tmp/vfx-fist02/footfall_dust.png > /tmp/vfx-fist02/ATLAS_SHA256SUMS.txt
+          sha256sum /tmp/vfx-fist02/spirit_cast.png /tmp/vfx-fist02/spirit_guard.png /tmp/vfx-fist02/spirit_embers.png > /tmp/vfx-fist02/ATLAS_SHA256SUMS.txt
       - name: Strict import parse and focused test
         shell: bash
         run: |
