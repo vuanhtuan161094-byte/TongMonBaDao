@@ -19,3 +19,10 @@ Date: 2026-11-14 | PR #72 Draft | branch integration/pve-p0-playable-ui-20261103
 - R1 native stills at 1.58 and 4.00 revealed local poison-imprint opacity too weak at 1×. R2 polish code commit `ddc06215fa2f0d1f5085933070f21011bdbbac6a` makes transient puncture clearer, enlarges persistent local vein to 0.72 scale and lowers it 6 pixels from face. This does not add another target, damage event or status application.
 - R2 exact-SHA QA and native visual review: **PENDING until workflow completion**; never inherit R1 PASS for R2.
 - Owner visual gate: **PENDING**; separate physical Windows/Android QA **PENDING**, PvE integration **HOLD**, V6.3 OFF. User may review video and request art iteration. No rig, Codex, new branch or merge.
+
+
+## POI08 R2 native proof — 2026-11-14
+- Exact R2 tested code SHA `ddc06215fa2f0d1f5085933070f21011bdbbac6a`: [official Actions #43623064599](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/43623064599) **SUCCESS**, [native artifact #14125246358](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/43623064599/artifacts/14125246358).
+- SHA256-pinned official Godot 4.7.2 GL Compatibility; strict project import, GDScript parse, focused `VFX_POI08_RESULT=PASS failures=0`; real native 1280×720 609 frames, 10.15s, fixed 60fps encode, H264 MP4, GIF, 14 native stills with checkpoints including t=4.00, 8.60 and 9.76, logs and media hashes. Downloaded artifact independently and confirmed **16/16 SHA256 media checksums**. Encoding FPS is not measured Android/Windows performance.
+- R1 inspection revealed faint sustained chest vein; R2 enlarged/brightened original baked imprint while moving center +6 pixels down and preserving actor-face legibility. Actual R2 1×/zoom stills inspected; distinct braided flight, single localized vein target and no other target affected. Do not call the illustrative 8s visual a real status receipt.
+- POI08 artwork remains `OWNER_VISUAL_PENDING`, live `PVE_HOLD`, V63 OFF and device QA PENDING. The original POI06 R11, POI07 and gameplay authority files are protected.
