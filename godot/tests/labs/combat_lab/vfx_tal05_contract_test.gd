@@ -11,6 +11,8 @@ func _run()->void:
     _check(LAB.EFFECT=="damage" and LAB.ELEMENT=="lightning" and LAB.SHAPE=="line","line thunder")
     _check(LAB.TARGET_LIMIT==3 and LAB.TARGETS.size()==3 and LAB.CONTACTS.size()==3,"three only")
     _check(LAB.DEMO_MOVING_ENEMIES,"moving-monster visual harness")
+    _check(LAB.demo_branch_origin(2.08).y<LAB.demo_contact(0,2.08).y-90.0,"left side stroke descends from central sky shaft")
+    _check(LAB.demo_branch_origin(2.08).y<LAB.demo_contact(2,2.08).y-90.0,"right side stroke descends toward moving target")
     for i in range(LAB.TARGET_LIMIT):
         _check(LAB.demo_target_foot(i,.45).distance_to(LAB.demo_target_foot(i,2.11))>12.0,"locked monster "+str(i)+" moves across attack window")
         _check(LAB.demo_contact(i,2.11).distance_to(LAB.demo_target_foot(i,2.11)+Vector2(0,-93))<.001,"contact follows moving monster "+str(i))
