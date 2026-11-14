@@ -160,8 +160,8 @@ func _draw() -> void:
         _halo(tip, 28.0, Color("fff2cc", 0.34))
     var hit := impact_gain(t)
     if hit > 0.008:
-        _halo(CONTACT, 111.0, Color("fc9554", hit * 0.30))
-        _halo(CONTACT, 58.0, Color("fff2b5", hit * 0.46))
+        _halo(CONTACT, 91.0, Color("fc9554", hit * 0.23))
+        _halo(CONTACT, 38.0, Color("fff2b5", hit * 0.37))
 
     # A localized floor-pressure fracture is ornamental; NOT an AoE or gameplay radius.
     if hit > 0.008:
@@ -170,8 +170,9 @@ func _draw() -> void:
         draw_set_transform(VICTIM + Vector2(0.0, 13.0), 0.0, Vector2(0.74, 0.74))
         draw_texture_rect(GROUND[ground_frame],
             Rect2(-160.0, -80.0, 320.0, 160.0), false,
-            Color(1.0, 1.0, 1.0, hit * 0.70))
+            Color(1.0, 1.0, 1.0, hit * 0.90))
         draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+        _halo(VICTIM + Vector2(2.0, 13.0), 87.0, Color("dfb389", hit * 0.13))
     # Existing game atlas is just a 1x-scale dummy silhouette, not fist actor approval.
     _actor(CASTER, Color("ede2d1"))
     _actor(VICTIM, Color("c4ccd1"))
