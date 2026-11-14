@@ -43,3 +43,8 @@ R4 ART RESET (2026-11-14): R1–R3 notebook-like talisman rejected by owner. Rep
 R4 original finished artwork: `assets/thunder_talisman_atlas.webp` (12 pose original generative illustration, alpha extracted and re-animated independently) + `assets/thunder_impact_burst.png` (independent procedural luminous shatter). Reference board is not a Godot screenshot. Visual check mandated at actual 1280x720.
 
 R5 native-scale improvement: grounded seal, 29% larger sprite, brighter layered conductor and 220–365px asymmetric contact texture. R4 remained below artistic acceptance at 1x. Owner gate remains pending.
+
+## R6 underfoot ritual-circle original support layer (owner 2026-11-14)
+- Adds TMB-owned multi-stroke elliptical 2.5D original purple-gold underfoot ritual glyph `assets/thunder_cast_sigil.svg` and fractured contact-floor decal `assets/thunder_contact_sigil.svg` as **supporting decals**, not a generic replacement for painted hero sprite.
+- 10 moving caster glyph-glints on underfoot ellipse, phase-gated 0.04–1.29s; target residue only AFTER demo contact clock 1.43s and fades by 2.66s. Both draw behind the stand-in actors, do not overwrite hero atlas or fake extra damage.
+- The owner's reference graphic is inspiration only; these SVG shapes are original geometry/textures, not extracted image pixels. Requires genuine Godot 1280×720 phase inspection and still remains `OWNER_VISUAL_PENDING / PVE_INTEGRATION_HOLD` until explicit owner approval.

@@ -23,6 +23,8 @@ const FADE_END := 2.66
 const LOOP_SECONDS := 3.13
 const ATLAS: Texture2D = preload("res://labs/combat_lab/talisman01/assets/thunder_talisman_atlas.webp")
 const IMPACT_TEX: Texture2D = preload("res://labs/combat_lab/talisman01/assets/thunder_impact_burst.png")
+const FOOT_SIGIL: Texture2D = preload("res://labs/combat_lab/talisman01/assets/thunder_cast_sigil.svg")
+const CONTACT_SIGIL: Texture2D = preload("res://labs/combat_lab/talisman01/assets/thunder_contact_sigil.svg")
 const BACKDROP: Texture2D = preload("res://labs/combat_lab/poison05/remake_r6/assets/immortal_valley.svg")
 const STANDIN_ACTOR: Texture2D = preload("res://labs/character_family/assets/nu_doc_tu_v4_candidate/idle_4dir_APPROVED_UNCHANGED.png")
 var elapsed := 0.0
@@ -47,6 +49,12 @@ static func bolt_position(t: float) -> Vector2:
 static func contact_gain(t: float) -> float:
     if t < CONTACT_AT or t >= CONTACT_END: return 0.0
     return smoothstep(CONTACT_AT,CONTACT_AT+0.042,t)*(1.0-smoothstep(CONTACT_AT+0.13,CONTACT_END,t))
+static func ground_gain(t: float) -> float:
+    if t < 0.04 or t >= 1.29: return 0.0
+    return smoothstep(0.04,0.27,t)*(1.0-smoothstep(0.82,1.29,t))
+static func ground_contact_gain(t: float) -> float:
+    if t < CONTACT_AT or t >= FADE_END: return 0.0
+    return smoothstep(CONTACT_AT,CONTACT_AT+0.09,t)*(1.0-smoothstep(1.90,FADE_END,t))
 static func seal_gain(t: float) -> float:
     if t < 0.03 or t > CONTACT_AT + 0.11: return 0.0
     return smoothstep(0.03,0.19,t)*(1.0-smoothstep(CONTACT_AT-0.05,CONTACT_AT+0.11,t))
@@ -126,6 +134,20 @@ func _path_point(q:float, t:float, lane:int) -> Vector2:
     var jitter := 9.0*sin(q*43.0+t*19.0+float(lane)*2.33)+5.0*sin(q*87.0-t*31.0+float(lane))
     var offset := (float(lane)-1.0)*13.0*envelope
     return center+Vector2(0.0,(jitter+offset)*envelope)
+func _draw_ground_seals(t:float) -> void:
+    var g := ground_gain(t)
+    if g > 0.004:
+        var flicker := 0.90+0.08*sin(t*18.0)
+        draw_texture_rect(_glow,Rect2(CASTER.x-128.0,CASTER.y-50.0,256.0,102.0),false,Color("7547b8",g*.22))
+        draw_texture_rect(FOOT_SIGIL,Rect2(CASTER.x-130.0,CASTER.y-57.0,260.0,122.0),false,Color(1.0,1.0,1.0,g*flicker))
+        for j in range(10):
+            var a := float(j)*TAU/10.0+t*1.1
+            var point := CASTER+Vector2(cos(a)*95.0,7.0+sin(a)*37.0)
+            _halo(point,8.5,Color("d9aaff",g*(0.23+0.16*float(j%3)/2.0)))
+    var h := ground_contact_gain(t)
+    if h > 0.004:
+        draw_texture_rect(_glow,Rect2(VICTIM.x-115.0,VICTIM.y-42.0,230.0,87.0),false,Color("9167d8",h*.22))
+        draw_texture_rect(CONTACT_SIGIL,Rect2(VICTIM.x-95.0,VICTIM.y-47.0,190.0,96.0),false,Color(1.0,1.0,1.0,h*.85))
 func _draw() -> void:
     var t := elapsed
     draw_texture_rect(BACKDROP,Rect2(0.0,0.0,1280.0,720.0),false,Color.WHITE)
@@ -159,6 +181,8 @@ func _draw() -> void:
                 var p1 := seal_pos+Vector2(cos(a)*w,sin(a)*w*.76)
                 var p2 := seal_pos+Vector2(cos(b)*w,sin(b)*w*.76)
                 draw_line(p1,p2,Color("ddbeff",charge*.40*(1.0-float(k)*.034)),1.9,true)
+    # Ground decals are intentionally painted BEFORE actors to preserve feet and silhouette.
+    _draw_ground_seals(t)
     _draw_actor(CASTER,Color("d8cee1"))
     _draw_actor(VICTIM,Color("b6c3d7"))
     if t>=RELEASE_END and t<=CONTACT_AT+.09:
