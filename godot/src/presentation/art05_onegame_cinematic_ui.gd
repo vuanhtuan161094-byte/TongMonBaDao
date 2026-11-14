@@ -305,7 +305,9 @@ func _art05_style_content_tree(node: Node) -> void:
             label.add_theme_color_override("font_color",ART05_WHITE)
             label.custom_minimum_size.x = minf(label.custom_minimum_size.x,357.0)
             label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-            label.add_theme_font_size_override("font_size",maxi(12,label.get_theme_font_size("font_size")))
+            # VIS-07 screenshot review: operation details were too fine at
+            # 1280x720. Enforce a restrained 13px floor inside scrolling panels.
+            label.add_theme_font_size_override("font_size",maxi(13,label.get_theme_font_size("font_size")))
             if label.text.length() > 90:
                 label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
         elif child is PanelContainer:
