@@ -24,6 +24,7 @@ const TARGET := Vector2(960.0, 538.0)
 const PALM := Vector2(342.0, 427.0)
 const CHEST := Vector2(960.0, 471.0)
 const NEEDLE_SIZE := Vector2(384.0,192.0)
+const TIP_X_FROM_CENTRE := 138.0 # painted alpha tip at local x≈330; cell half-width=192
 const IMPACT_SIZE := Vector2(256.0,256.0)
 var elapsed := 0.0
 var paused := false
@@ -105,18 +106,21 @@ func _draw() -> void:
     var t := elapsed
     if t < CAST_END:
         var q := smoothstep(0.03,CAST_END,t)
-        _sprite(needle_frames[needle_frame_at(t)],PALM,0.25+0.17*q,0.72*q)
+        var charge_scale := 0.25+0.17*q
+        _sprite(needle_frames[needle_frame_at(t)],PALM-Vector2(TIP_X_FROM_CENTRE*charge_scale,0),charge_scale,0.72*q)
     elif t < CONTACT_AT:
         var q := smoothstep(CAST_END,CONTACT_AT,t)
         var at := PALM.lerp(CHEST,q)+Vector2(0.0,-36.0*sin(PI*q))
         var previous_q := clampf(q-0.058,0,1)
         var previous := PALM.lerp(CHEST,previous_q)+Vector2(0,-36*sin(PI*previous_q))
         var direction := (CHEST-PALM).angle()
-        _sprite(needle_frames[needle_frame_at(t)],previous,0.55,0.17,direction)
-        _sprite(needle_frames[needle_frame_at(t)],at,0.63,0.96,direction)
+        var along := Vector2(cos(direction),sin(direction))
+        # Tip, not cell centre, follows the hand→chest route; avoids overshooting.
+        _sprite(needle_frames[needle_frame_at(t)],previous-along*(TIP_X_FROM_CENTRE*0.55),0.55,0.17,direction)
+        _sprite(needle_frames[needle_frame_at(t)],at-along*(TIP_X_FROM_CENTRE*0.63),0.63,0.96,direction)
     _actor(CASTER,0.47,Color.WHITE)
     _actor(TARGET,0.47,Color("d9d3e2"))
     if t >= CONTACT_AT and t < FADE_END:
-        var opacity := smoothstep(CONTACT_AT,CONTACT_AT+0.08,t) * (1.0-smoothstep(CONTACT_END,FADE_END,t))
-        _sprite(impact_frames[impact_frame_at(t)],CHEST,0.62,opacity*0.94)
+        var opacity := smoothstep(CONTACT_AT,CONTACT_AT+0.045,t) * (1.0-smoothstep(CONTACT_END,FADE_END,t))
+        _sprite(impact_frames[impact_frame_at(t)],CHEST,0.78,opacity*0.98)
         _sprite(needle_frames[needle_frame_at(t)],CHEST+Vector2(-36,0),0.26,opacity*0.22)
