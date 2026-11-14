@@ -121,7 +121,7 @@ func _draw() -> void:
     var t := elapsed
     if t<CAST_END:
         var q := smoothstep(0.04,CAST_END,t)
-        _sprite(charge_frames[charge_pose_at(t)],PALM-Vector2(6,0),0.67,q*0.84)
+        _sprite(charge_frames[charge_pose_at(t)],PALM-Vector2(6,0),0.78,q*0.98)
         _sprite(thorn_frames[0],PALM-Vector2(56,0),0.23,q*0.36)
     elif t<CONTACT_AT:
         var q := flight_q_at(t)
@@ -136,14 +136,14 @@ func _draw() -> void:
     if t>=CONTACT_AT and t<FADE_END:
         mark_alpha = smoothstep(CONTACT_AT-0.01,CONTACT_AT+0.05,t)*(1.0-smoothstep(MARK_END,FADE_END,t))
         var intro := smoothstep(CONTACT_AT,CONTACT_AT+0.12,t)
-        var local_alpha := (0.72 if t < CONTACT_AT+0.32 else 0.48)
-        _sprite(vein_frames[vein_pose_at(t)],CHEST,0.51,mark_alpha*local_alpha*0.30)
+        var local_alpha := (0.88 if t < CONTACT_AT+0.32 else 0.69)
+        _sprite(vein_frames[vein_pose_at(t)],CHEST+Vector2(0,6),0.62,mark_alpha*local_alpha*0.38)
     _actor(TARGET,0.47,Color("d9d3e2"))
     if mark_alpha>0.0:
         var burst := 1.0-smoothstep(CONTACT_AT+0.15,CONTACT_AT+0.44,t)
-        var gain := mark_alpha*(0.46+0.45*burst)
-        _sprite(vein_frames[vein_pose_at(t)],CHEST,0.59,gain)
+        var gain := mark_alpha*(0.70+0.28*burst)
+        _sprite(vein_frames[vein_pose_at(t)],CHEST+Vector2(0,6),0.72,gain)
         if burst>0.0:
             var dir := (CHEST-PALM).angle()
             var axis := Vector2(cos(dir),sin(dir))
-            _sprite(thorn_frames[11],CHEST-axis*(TIP_X_FROM_CENTRE*0.23),0.23,burst*mark_alpha*0.37,dir)
+            _sprite(thorn_frames[11],CHEST-axis*(TIP_X_FROM_CENTRE*0.26),0.26,burst*mark_alpha*0.61,dir)
