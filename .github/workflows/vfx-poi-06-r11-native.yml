@@ -35,7 +35,7 @@ jobs:
           set -euo pipefail
           cat .github/assets/p3/female_stage_a/part{01..14}.b64 .github/assets/p3/female_stage_a/part15a.b64 .github/assets/p3/female_stage_a/part15b.b64 .github/assets/p3/female_stage_a/part{16..20}.b64 | tr -d '\r\n\t ' | base64 --decode > /tmp/tmb_stage_a_pack.zip
           test "$(stat -c%s /tmp/tmb_stage_a_pack.zip)" -eq 44838
-          echo '6a4213b9129ff9f438c21cbb5326672ddf8915323836bf80cb33b8e5fabfdca  /tmp/tmb_stage_a_pack.zip' | sha256sum --check --strict
+          echo '6a4213b9129ffb3f438c21cbb5326672ddf8915323836bf80cb33b8e5fabfdca  /tmp/tmb_stage_a_pack.zip' | sha256sum --check --strict
           unzip -q /tmp/tmb_stage_a_pack.zip -d .
       - name: Require EXACT R11 owner-preview alpha atlas (never substitute R10)
         shell: bash
