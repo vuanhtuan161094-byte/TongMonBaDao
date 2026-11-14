@@ -33,3 +33,14 @@
 - `R11_LAB_CODE_COMPLETE`, `EXACT_ASSET_IN_GITHUB`, `GODOT472_NATIVE_FOCUSED_PASS`, `R10_REGRESSION_PASS`, `NATIVE_MP4_GIF_FRAMES_VERIFIED`, `OWNER_R11_PREVIEW_ACCEPTED`.
 - `OWNER_NATIVE_VISUAL_REVIEW_AVAILABLE` (not another explicit owner approval), `LIVE_PVE_INTEGRATION_HOLD`, `V63_OFF`, `PHYSICAL_WINDOWS_ANDROID_QA_PENDING`.
 - **No Codex, rig, new branch, merge or live Combat V2 / SaveService / economy / AI edits**. Moving this LAB VFX to live Combat V2 needs a separate owner instruction, real event mapping, deterministic and stress QA.
+
+
+## FINAL CLEAN-NATIVE DELIVERY — 2026-11-14 (supersedes prior movie as current preview)
+
+- **Final exact tested R11 source SHA:** `dcc28af536778ec8a7274aa21b9c3474dbe15e6a` (no asset changes compared with `46357d67`; no R10/gameplay writes).
+- **Final official Godot run:** [#43605803380](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/43605803380) **SUCCESS**: Godot 4.7.2 GL Compatibility; strict import, GDScript parse, focused R11 contract `VFX_POI06_R11_RESULT=PASS failures=0`; exact original PNG SHA gate; native 1280×720 333 frames / 5.55s, fixed 60 frame clock. No error in focused Godot log.
+- **Final native artifact:** [#14118243054](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/43605803380/artifacts/14118243054): 14 native stills, timeline, full MP4, GIF, metadata, hashes and logs. Artifact downloaded independently; **17/17 emitted media SHA256 hashes matched**. FFprobe verified native 1280×720, 333 frames, 5.55s.
+- **R10 final-SHA regression:** [#43605803440](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/43605803440) **SUCCESS** on exact `dcc28af5`.
+- Final minor art-polish: removed all on-screen lab QA captions and disclaimers. This preserves clean native battle imagery; authoritative status/renderer provenance remain in job logs, the art packet and Actions metadata.
+- Frame-by-frame self-review after polish: charge at 0.75s, flight at 1.71s, realm 2.66/2.98s, target contact at 3.73s, fade 4.72s, no visible FX by 5.20s. Soft alpha border, character readability and chest-localized status cues preserved; no rectangular crop.
+- **Terminal scope status:** `R11_COMBAT_LAB_COMPLETE / EXACT_ORIGINAL_ART_TRACKED / GODOT472_EXACT_SHA_QA_PASS / R10_REGRESSION_PASS / OWNER_PREVIEW_ACCEPTED / NATIVE_ART_SELF_QA_PASS`. This is a completed **isolated LAB skill**, not production-enabled. `OWNER_NATIVE_REVIEW_AVAILABLE / PVE_INTEGRATION_HOLD / V63_OFF / PHYSICAL_WINDOWS_ANDROID_PENDING`. A pre-existing unrelated V63 matrix workflow remains red; do not treat its result as green.
