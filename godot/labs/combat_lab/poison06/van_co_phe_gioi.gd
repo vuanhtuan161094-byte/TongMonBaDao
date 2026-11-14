@@ -110,12 +110,15 @@ func _draw() -> void:
     var open := realm_gain(t)
     if open>0.008:
         _halo(REALM,253.0,Color("8473c7",open*0.23))
-        _halo(REALM,157.0,Color("c3efb5",open*0.19))
-        _halo(REALM,83.0,Color("18213d",open*0.42))
+        _halo(REALM,177.0,Color("b9efb8",open*0.23))
+        _halo(REALM,92.0,Color("1b2a42",open*0.38))
+        _halo(REALM,47.0,Color("efffdf",open*0.30))
+        draw_texture_rect(_glow,Rect2(616.0,478.0,580.0,155.0),false,Color("a4dbb5",open*0.21))
         _braided_halo(REALM,162.0,100.0,open,t*0.52+0.3,6)
         _braided_halo(REALM,106.0,74.0,open*0.30,-t*0.27,3)
         _whisper_curls(REALM,open,t)
         _petal_sparks(REALM,193.0,open,t,24)
+        _crown_burst(t,open)
     # Soft white-hot streams converge INTO A JAGGED RING at the caster's palm.
     var charge := smoothstep(0.03,0.53,t)*(1.0-smoothstep(1.06,1.35,t))
     if charge>0.006:
@@ -158,7 +161,7 @@ func _draw() -> void:
         for idx in range(3):
             var source := REALM+Vector2((-1.0+float(idx))*61.0,41.0)
             var chest: Vector2 = TARGETS[idx]+Vector2(0.0,-69.0)
-            _light_thread(source,chest,coupling*(0.49+0.075*float(idx)),
+            _light_thread(source,chest,coupling*(0.59+0.075*float(idx)),
                 t+float(idx)*0.37,Color("93ebb5"),5.0)
     # Repaint all dummy actors over background VFX, protecting the readability.
     _actor(CASTER,0.47,Color.WHITE)
@@ -186,8 +189,8 @@ func _draw() -> void:
         if gain<0.006:continue
         var at: Vector2 = TARGETS[idx]+Vector2(2.0,-72.0)
         var frame := posmod(int(floor((t-3.05)*11.0))+idx,BRANDS.size())
-        _halo(at,61.0,Color("c9ffb8",gain*0.14))
-        _paint(BRANDS[frame],at,0.32,0.075*sin(t*4.0+float(idx)),
+        _halo(at,76.0,Color("c9ffb8",gain*0.28))
+        _paint(BRANDS[frame],at,0.39,0.075*sin(t*4.0+float(idx)),
             Color(1.0,1.0,1.0,gain*0.74))
         var born := 3.05+float(idx)*0.095
         if t>=born and t<born+0.18:
@@ -204,7 +207,7 @@ func _draw() -> void:
     draw_string(ThemeDB.fallback_font,Vector2(31,35),
         "VAN CO PHE GIOI  /  CO DOC TUYET KY",HORIZONTAL_ALIGNMENT_LEFT,-1,26,Color("eaffee"))
     draw_string(ThemeDB.fallback_font,Vector2(32,61),
-        "POI06 R3  |  STARLIGHT CONVERGENCE / SILK-JADE REALM / 3 TARGETS",
+        "POI06 R4  |  STARLIGHT CONVERGENCE / JADE REALM BURST / 3 TARGETS",
         HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("b4c6cf"))
     draw_string(ThemeDB.fallback_font,Vector2(32,691),
         "GODOT 4.7.2 COMPATIBILITY  |  ART-ONLY  |  NO GAMEPLAY POISON/HP CHANGE",
@@ -255,6 +258,23 @@ func _whisper_curls(center: Vector2,alpha: float,t: float) -> void:
         draw_polyline(pts,Color("71609e",activity*0.32),10.0,true)
         draw_polyline(pts,Color("a3dfc0",activity*0.46),4.0,true)
         draw_polyline(pts,Color("f8ffe0",activity*0.59),1.3,true)
+func _crown_burst(t: float,open: float) -> void:
+    # A brief central flash at full realm opening, not a persistent UI ring.
+    var pulse := smoothstep(2.14,2.38,t)*(1.0-smoothstep(2.61,3.07,t))*open
+    if pulse<0.005: return
+    _halo(REALM,97.0,Color("e7ffda",pulse*0.31))
+    _halo(REALM,35.0,Color("fffce4",pulse*0.51))
+    for j in range(9):
+        var k := float(j)
+        var a := k*2.399+t*1.9
+        var p := REALM+Vector2(cos(a)*54.0,sin(a)*38.0)
+        var tip := p+Vector2(cos(a+0.35)*67.0,sin(a+0.35)*38.0)
+        var mid := p.lerp(tip,0.53)+Vector2(6.0*sin(t*9.0+k),-8.0*sin(t*7.0+k))
+        draw_line(p,mid,Color("9ac7aa",pulse*0.45),7.0,true)
+        draw_line(mid,tip,Color("bca6f7",pulse*0.40),5.0,true)
+        draw_line(p,mid,Color("feffde",pulse*0.55),1.6,true)
+        _halo(tip,11.0,Color("c9ffd0",pulse*0.36))
+
 func _light_thread(origin: Vector2,target: Vector2,alpha: float,t: float,tint: Color,curve: float) -> void:
     var pts := PackedVector2Array()
     for i in range(17):
