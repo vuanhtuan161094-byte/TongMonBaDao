@@ -15,6 +15,8 @@ const VICTIM := Vector2(948.0,541.0)
 const STAMP := Vector2(946.0,471.0)
 const RELEASE_AT := .50
 const DEMO_MARK_AT := .88
+const STAMP_INITIAL_RADIUS := 52.0
+const STAMP_STEADY_RADIUS := 40.0
 const FADE_BEGIN := 6.88
 const FADE_END := 7.14
 const LOOP_SECONDS := 7.80
@@ -132,7 +134,7 @@ func _draw()->void:
         var frame:=stamp_frame(t)
         var q:=smoothstep(DEMO_MARK_AT,1.29,t)
         # Keep the quiet six-second glyph at chest scale, not across the enemy face.
-        var radius:=lerpf(68.0,55.0,q)*(1.0+.027*sin(t*3.3))
+        var radius:=lerpf(STAMP_INITIAL_RADIUS,STAMP_STEADY_RADIUS,q)*(1.0+.027*sin(t*3.3))
         _halo(STAMP,radius*1.5,Color("ae75fa",m*.21))
         # The original painted gilded glyph is the visible mark; procedural arcs are not substituted for it.
         var source_rect := Rect2(float(frame % 4) * 320.0, float(int(frame / 4)) * 320.0, 320.0, 320.0)

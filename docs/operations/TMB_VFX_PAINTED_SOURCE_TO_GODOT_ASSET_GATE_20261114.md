@@ -36,3 +36,6 @@ The TAL02/TAL03 painted samples below were extracted from **original image-gener
 - [ ] Native Godot footage with full 8+ checkpoints inspected; exact SHA, run ID and artifact present
 - [ ] No gameplay contract fabrication; all cosmetic events correctly gated
 - [ ] Owner explicitly approved THIS skill, not just the METHOD; PvE remains separate
+
+## Evidence-driven correction case — TAL02 R3→R4 / TAL03 R2→R3
+Review the **actual Godot 1280×720 screenshot**, not just the standalone asset on charcoal. The first baked TAL02 alpha atlas was rich, but 1.08s revealed its nontransparent pixels only spanned x≈350..702 of a 1024px cell; it produced a disconnected floating energy fragment. TAL02 R4 normalizes the true alpha bounding box, stretches the original painted pixels into the usable 952px width, then regenerates all 10 warped/wiped poses; tiny procedural support remains subordinate. The TAL03 R2 proof at 1.08 and 5.03s showed high-quality painting but a too-large target mark, so R3 reduces the mark's displayed size from 68→52 initial radius and 55→40 steady. Both fixes follow the art-first rule: keep painterly material while correcting native-scale position, lighting and silhouette. Record the corrective run's SHA and 8+ frames separately; do not call art approved merely because alpha tests and CI are green.

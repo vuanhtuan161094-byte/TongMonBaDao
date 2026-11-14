@@ -15,6 +15,7 @@ func _run()->void:
     _check(LAB.PAINTED_MARKS.get_size()==Vector2(1280,640),"real alpha painted talisman mark atlas")
     _check(LAB.PAINTED_MASTER.get_size()==Vector2(320,320),"baked master painted mark")
     _check(LAB.PAINTED_FOOT.get_size()==Vector2(512,224),"shared real painterly foot array")
+    _check(LAB.STAMP_INITIAL_RADIUS==52.0 and LAB.STAMP_STEADY_RADIUS==40.0,"talisman brand not obscuring face")
     for i in range(8):
         _check(LAB.MARKS[i].get_size()==Vector2(256,256),"pose size "+str(i))
     _check(LAB.phase_at(.31)=="inscribe" and LAB.phase_at(.7)=="seal_flight","windup and launch")
