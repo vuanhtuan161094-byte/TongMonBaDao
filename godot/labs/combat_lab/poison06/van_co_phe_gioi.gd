@@ -101,7 +101,7 @@ func _ready() -> void:
     _glow=_radial_texture()
     set_process(true)
     queue_redraw()
-    print("VFX_POI06_R5_READY id=",SKILL_ID," gu_frames=",GU.size()," brand_frames=",BRANDS.size(),
+    print("VFX_POI06_R6_READY id=",SKILL_ID," gu_frames=",GU.size()," brand_frames=",BRANDS.size(),
         " targets=",DECLARED_TARGET_LIMIT," gameplay=false no_rig=true")
 func _radial_texture() -> Texture2D:
     var img := Image.create(96,96,false,Image.FORMAT_RGBA8)
@@ -133,12 +133,20 @@ func _draw() -> void:
         _halo(REALM,177.0,Color("b9efb8",open*0.23))
         _halo(REALM,92.0,Color("1b2a42",open*0.38))
         _halo(REALM,47.0,Color("efffdf",open*0.30))
-        draw_texture_rect(_glow,Rect2(616.0,478.0,580.0,155.0),false,Color("a4dbb5",open*0.21))
+        draw_texture_rect(_glow,Rect2(616.0,475.0,580.0,155.0),false,Color("a4dbb5",open*0.37))
+        draw_texture_rect(_glow,Rect2(706.0,493.0,412.0,93.0),false,Color("c2a1f9",open*0.23))
         # Primary painted raster sprite: 8 independent 480x320 transparent realm frames.
         # Light strokes below are a minor glancing highlight; NEVER a HUD circle.
         var realm_frame := posmod(int(floor((t-RIFT_OPEN)*12.5)),PAINTED_REALM.size())
-        _paint(PAINTED_REALM[realm_frame],REALM,1.06,0.021*sin(t*2.1),
-            Color(1.0,1.0,1.0,open*0.91))
+        _paint(PAINTED_REALM[(realm_frame+4)%PAINTED_REALM.size()],
+            REALM+Vector2(-5.0,1.0),1.45,-0.019*sin(t*1.6),
+            Color(1.0,1.0,1.0,open*0.96))
+        _paint(PAINTED_REALM[realm_frame],REALM,1.24,0.026*sin(t*2.1),
+            Color(1.0,1.0,1.0,open*0.93))
+        # A third narrow luminous crest, retaining a visible dark center.
+        _paint(PAINTED_REALM[(realm_frame+2)%PAINTED_REALM.size()],
+            REALM+Vector2(8.0,-3.0),0.77,0.035*sin(t*2.8),
+            Color("f1ffe5",open*0.55))
         _petal_sparks(REALM,193.0,open,t,24)
         _crown_burst(t,open)
     # Soft white-hot streams converge INTO A JAGGED RING at the caster's palm.
@@ -162,8 +170,11 @@ func _draw() -> void:
             _halo(pos,10.0,Color("f5ffe0",intensity*0.51))
         # The hand seal is baked as 8 raster frames, not a static SVG ring.
         var charge_frame := posmod(int(floor(t*9.0)),PAINTED_CHARGE.size())
-        _paint(PAINTED_CHARGE[charge_frame],HAND,0.69+0.12*q,
-            0.04*sin(t*2.9),Color(1.0,1.0,1.0,charge*0.85))
+        _paint(PAINTED_CHARGE[charge_frame],HAND,0.78+0.10*q,
+            0.04*sin(t*2.9),Color(1.0,1.0,1.0,charge*0.99))
+        _paint(PAINTED_CHARGE[(charge_frame+3)%PAINTED_CHARGE.size()],
+            HAND,0.67+0.07*q,-0.045*sin(t*2.7),
+            Color("edffe5",charge*0.75))
         _halo(HAND,18.0,Color("faffdc",charge*0.64))
     # One light-form projectile, no exaggerated centipede or fake target hit.
     var flight := smoothstep(CAST_END,CAST_END+0.14,t)*(1.0-smoothstep(RIFT_OPEN-0.07,RIFT_OPEN+0.12,t))
@@ -193,8 +204,8 @@ func _draw() -> void:
     # Front hand glints must survive character compositing, not mask the face.
     if charge>0.008:
         var visible_frame := posmod(int(floor(t*9.0)),PAINTED_CHARGE.size())
-        _paint(PAINTED_CHARGE[visible_frame],HAND+Vector2(1.0,2.0),0.52,
-            0.03*sin(t*2.3),Color(1.0,1.0,1.0,charge*0.42))
+        _paint(PAINTED_CHARGE[visible_frame],HAND+Vector2(1.0,2.0),0.63,
+            0.03*sin(t*2.3),Color(1.0,1.0,1.0,charge*0.65))
     for idx in range(3):
         var target: Vector2 = TARGETS[idx]
         _actor(target,0.45,[Color("d4d0db"),Color("bccfc8"),Color("c6c5d9")][idx])
@@ -237,7 +248,7 @@ func _draw() -> void:
     draw_string(ThemeDB.fallback_font,Vector2(31,35),
         "VAN CO PHE GIOI  /  CO DOC TUYET KY",HORIZONTAL_ALIGNMENT_LEFT,-1,26,Color("eaffee"))
     draw_string(ThemeDB.fallback_font,Vector2(32,61),
-        "POI06 R5  |  ORIGINAL PAINTED ALPHA SPRITES  |  8 FRAME REALM / CHARGE",
+        "POI06 R6  |  LAYERED ALPHA SPRITE REALM / CHARGE  |  ART QA",
         HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("b4c6cf"))
     draw_string(ThemeDB.fallback_font,Vector2(32,691),
         "GODOT 4.7.2 COMPATIBILITY  |  ART-ONLY  |  NO GAMEPLAY POISON/HP CHANGE",
