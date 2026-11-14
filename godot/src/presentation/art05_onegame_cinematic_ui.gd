@@ -308,3 +308,76 @@ func _art05_style_content_tree(node: Node) -> void:
             var bar := child as ProgressBar
             bar.custom_minimum_size.y = 7
         _art05_style_content_tree(child)
+
+
+# VIS-01/02: additive quality presentation on the one real playable scene.
+const VIS_QUALITY = preload("res://src/presentation/uiux/sect_quality_visual_v1.gd")
+
+func _refresh_disciple_summary_content() -> void:
+    super._refresh_disciple_summary_content()
+    if disciple_summary_panel == null or state == null or not state.disciples.has(selected_id):
+        return
+    var actor: DiscipleState = state.disciples[selected_id]
+    var quality := str(actor.disciple_quality)
+    VIS_QUALITY.apply_name(disciple_summary_name, quality)
+    VIS_QUALITY.apply_edge(disciple_summary_panel, quality)
+
+func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "Tổng Quan", preserve_feedback: bool = false) -> void:
+    super._open_disciple_deep_screen(disciple_id, tab_name, preserve_feedback)
+    if state == null or not state.disciples.has(disciple_id) or popup_layer == null:
+        return
+    var panel := popup_layer.find_child("DiscipleDeepScreen", true, false) as Panel
+    if panel == null:
+        return
+    var quality := str((state.disciples[disciple_id] as DiscipleState).disciple_quality)
+    var portrait := panel.find_child("SourceAProfilePortrait", true, false) as Control
+    if portrait == null:
+        portrait = panel.find_child("VisualCatalogPortraitFallback", true, false) as Control
+    if portrait != null:
+        var showcase := portrait.get_parent() as Control
+        VIS_QUALITY.apply_edge(showcase, quality)
+        var actor_name := (state.disciples[disciple_id] as DiscipleState).display_name
+        for child in showcase.get_children():
+            if child is Label:
+                var label := child as Label
+                if label.text == actor_name or label.text.begins_with(str(DiscipleGeneratorV2.QUALITY_NAMES.get(quality, "---")) + " · "):
+                    VIS_QUALITY.apply_name(label, quality)
+    var roster := panel.find_child("DeepDiscipleRoster", true, false) as VBoxContainer
+    if roster != null:
+        for raw_entry in roster.get_children():
+            if not (raw_entry is Button):
+                continue
+            var entry := raw_entry as Button
+            var pieces := entry.tooltip_text.split(" · ")
+            if pieces.size() < 2:
+                continue
+            var entry_quality := VIS_QUALITY.id_from_name(pieces[1])
+            if entry_quality.is_empty():
+                continue
+            var old_style := entry.get_theme_stylebox("normal") as StyleBoxFlat
+            if old_style != null:
+                var new_style := old_style.duplicate() as StyleBoxFlat
+                new_style.border_color = VIS_QUALITY.color_for(entry_quality)
+                entry.add_theme_stylebox_override("normal", new_style)
+            var portrait_row := entry.get_node_or_null("VerifiedSourceARosterCard")
+            if portrait_row != null:
+                for inner in portrait_row.find_children("*", "Label", true, false):
+                    if inner is Label and (inner as Label).text == pieces[0]:
+                        VIS_QUALITY.apply_name(inner as Label, entry_quality)
+            else:
+                VIS_QUALITY.apply_button(entry, entry_quality)
+    var toggle := Button.new()
+    toggle.name = "VISReducedMotionToggle"
+    toggle.text = "Giảm ánh sáng: BẬT" if VIS_QUALITY.reduced_motion else "Giảm ánh sáng: TẮT"
+    toggle.tooltip_text = "Chỉ giảm hiệu ứng phẩm chất; không thay đổi kỹ năng, thông số hoặc Save."
+    toggle.position = Vector2(515, 15)
+    toggle.size = Vector2(205, 38)
+    toggle.add_theme_font_size_override("font_size", 12)
+    toggle.add_theme_color_override("font_color", ART05_WHITE)
+    toggle.add_theme_stylebox_override("normal", _art05_style(ART05_JADE, ART05_GOLD, 1, 9))
+    toggle.pressed.connect(Callable(self, "_vis_toggle_profile_reduced").bind(disciple_id, tab_name))
+    panel.add_child(toggle)
+
+func _vis_toggle_profile_reduced(disciple_id: StringName, tab_name: String) -> void:
+    VIS_QUALITY.reduced_motion = not VIS_QUALITY.reduced_motion
+    _open_disciple_deep_screen(disciple_id, tab_name, true)

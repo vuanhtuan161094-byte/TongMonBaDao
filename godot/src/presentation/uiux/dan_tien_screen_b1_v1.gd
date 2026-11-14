@@ -18,6 +18,7 @@ signal closed
 const UI = preload("res://src/presentation/uiux/sect_ui_theme_v1.gd")
 const RADAR_SCRIPT = preload("res://src/presentation/uiux/sect_d7_radar_v1.gd")
 const FACILITY_ART = preload("res://src/presentation/uiux/sect_facility_art_v2.gd")
+const VIS_QUALITY = preload("res://src/presentation/uiux/sect_quality_visual_v1.gd")
 var _vm: Dictionary = {}
 var _reject_armed := false
 var _accept_armed := false
@@ -81,6 +82,13 @@ func _make_shell() -> MarginContainer:
 	stack.add_child(UI.label("DẪN TIÊN ĐÀI", 25, UI.PAPER, true))
 	stack.add_child(UI.label("Ứng viên • Tam Căn / Tứ Tính • tiếp dẫn", 12, UI.MUTED, false))
 	header.add_child(stack)
+	var reduce := UI.button("GIẢM VFX: BẬT" if VIS_QUALITY.reduced_motion else "GIẢM VFX: TẮT", false, UI.JADE)
+	reduce.name = "VISReducedMotionGuidance"
+	reduce.pressed.connect(func():
+		VIS_QUALITY.reduced_motion = not VIS_QUALITY.reduced_motion
+		_rebuild()
+	)
+	header.add_child(reduce)
 	var close_button := UI.button("ĐÓNG", false, UI.GOLD)
 	close_button.pressed.connect(func(): closed.emit())
 	header.add_child(close_button)
@@ -157,7 +165,8 @@ func _on_accept_pressed() -> void:
 
 func _build_candidate_panel() -> Control:
 	var candidate := _candidate()
-	var card := UI.panel("CandidateProfile", UI.GOLD, UI.SURFACE)
+	var quality_id := VIS_QUALITY.id_from_name(str(candidate.get("quality", "")))
+	var card := UI.panel("CandidateProfile", VIS_QUALITY.color_for(quality_id), UI.SURFACE)
 	card.custom_minimum_size.x = 500
 	card.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	var panel_content := VBoxContainer.new()
@@ -234,6 +243,7 @@ func _build_candidate_panel() -> Control:
 			choice.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			choice.disabled = selected
 			choice.pressed.connect(_select_candidate_by_id.bind(row_id))
+			VIS_QUALITY.apply_button(choice, VIS_QUALITY.id_from_name(str(row.get("quality", ""))))
 			candidate_choices.add_child(choice)
 		candidate_scroll.add_child(candidate_choices)
 		content.add_child(candidate_scroll)
@@ -244,10 +254,11 @@ func _build_candidate_panel() -> Control:
 	detail.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	var candidate_name := UI.label(str(candidate.get("name", "Không có ứng viên phù hợp")), 22, UI.PAPER, true)
 	candidate_name.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	VIS_QUALITY.apply_name(candidate_name, quality_id)
 	detail.add_child(candidate_name)
 	var identity_badges := HBoxContainer.new()
 	identity_badges.add_theme_constant_override("separation", 6)
-	identity_badges.add_child(_candidate_badge("PHẨM", str(candidate.get("quality", "—")), "rank", UI.GOLD))
+	identity_badges.add_child(_candidate_badge("PHẨM", str(candidate.get("quality", "—")), "rank", VIS_QUALITY.color_for(quality_id)))
 	identity_badges.add_child(_candidate_badge("CẢNH GIỚI", str(candidate.get("realm", "—")), "root", UI.JADE))
 	detail.add_child(identity_badges)
 	detail.add_child(_candidate_info_row("search", str(candidate.get("origin", "—")), UI.MUTED))
@@ -366,7 +377,7 @@ func _candidate_portrait(candidate: Dictionary) -> Control:
 	stack.name = "CandidatePortraitBlock"
 	stack.custom_minimum_size = Vector2(156, 210)
 	stack.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	stack.add_child(portrait)
+	stack.add_child(VIS_QUALITY.wrap_portrait(portrait, Vector2(156, 188), VIS_QUALITY.id_from_name(str(candidate.get("quality", "")))))
 	var caption := UI.label("ẢNH SOURCE A" if verified else "CHƯA CÓ ẢNH ĐÃ DUYỆT", 9, UI.GOLD if verified else UI.MUTED, true)
 	caption.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	caption.tooltip_text = "Chân dung lấy từ actor Source A đã qua cổng xác thực." if verified else "Không có chân dung Source A đã xác thực cho ứng viên này; dùng biểu tượng trung tính."
@@ -388,7 +399,8 @@ func _build_recruit_reveal() -> Control:
 	var disciple: Dictionary = _vm.get("recruited_disciple",{})
 	if disciple.is_empty():
 		return null
-	var panel := UI.panel("RecruitmentReveal",UI.GOLD,UI.SURFACE_LIGHT)
+	var quality_id := VIS_QUALITY.id_from_name(str(disciple.get("quality", "")))
+	var panel := UI.panel("RecruitmentReveal",VIS_QUALITY.color_for(quality_id),UI.SURFACE_LIGHT)
 	var content := VBoxContainer.new()
 	content.add_theme_constant_override("separation",6)
 	panel.add_child(content)
@@ -396,11 +408,13 @@ func _build_recruit_reveal() -> Control:
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation",10)
 	var portrait: Variant = disciple.get("portrait")
-	row.add_child(UI.portrait_slot(str(disciple.get("name","")),portrait,Vector2(82,96)))
+	row.add_child(VIS_QUALITY.wrap_portrait(UI.portrait_slot(str(disciple.get("name","")),portrait,Vector2(82,96)), Vector2(82,96), quality_id))
 	var detail := VBoxContainer.new()
 	detail.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	detail.add_child(UI.label(str(disciple.get("name","Đệ tử mới")),18,UI.PAPER,true))
-	detail.add_child(UI.label("%s · %s · %s tuổi" % [str(disciple.get("quality","—")),str(disciple.get("sex","—")),str(disciple.get("age","—"))],12,UI.GOLD,false))
+	var recruited_name := UI.label(str(disciple.get("name","Đệ tử mới")),18,UI.PAPER,true)
+	VIS_QUALITY.apply_name(recruited_name, quality_id)
+	detail.add_child(recruited_name)
+	detail.add_child(UI.label("%s · %s · %s tuổi" % [str(disciple.get("quality","—")),str(disciple.get("sex","—")),str(disciple.get("age","—"))],12,VIS_QUALITY.color_for(quality_id),false))
 	detail.add_child(UI.label("%s · %s" % [str(disciple.get("root","Linh Căn chưa rõ")),str(disciple.get("profession","Chưa có thiên phú nghề"))],11,UI.TEXT,false))
 	detail.add_child(UI.label(str(disciple.get("stats","")),10,UI.MUTED,false))
 	row.add_child(detail)

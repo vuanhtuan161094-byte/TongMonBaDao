@@ -1,0 +1,38 @@
+name: VIS-01/02 Quality Skin Godot 4.7.2
+on:
+  push:
+    branches:
+      - integration/pve-p0-playable-ui-20261103
+    paths:
+      - 'godot/src/presentation/art05_onegame_cinematic_ui.gd'
+      - 'godot/src/presentation/uiux/dan_tien_screen_b1_v1.gd'
+      - 'godot/src/presentation/uiux/sect_quality_visual_v1.gd'
+      - 'godot/src/presentation/uiux/shaders/vis0*.gdshader'
+      - 'godot/tests/presentation/vis01_02_quality_visual_test.gd'
+      - '.github/workflows/vis01-02-quality-skin.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  focused:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install official Godot 4.7.2
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 --output /tmp/godot.zip "https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip"
+          echo "cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4  /tmp/godot.zip" | sha256sum --check --strict
+          unzip -q /tmp/godot.zip -d /tmp
+          sudo install -m 0755 /tmp/Godot_v4.7.2-stable_linux.x86_64 /usr/local/bin/godot
+      - name: Verify engine and exact SHA
+        run: |
+          godot --version
+          git rev-parse HEAD
+      - name: Import project on Compatibility
+        run: godot --headless --path godot --import
+      - name: Strict parse VIS test
+        run: bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://tests/presentation/vis01_02_quality_visual_test.gd
+      - name: Run VIS focused contract
+        run: bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/presentation/vis01_02_quality_visual_test.gd
