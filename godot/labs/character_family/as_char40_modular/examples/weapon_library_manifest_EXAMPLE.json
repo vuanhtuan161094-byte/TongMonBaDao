@@ -1,0 +1,42 @@
+{
+  "schema": "tmb.modular.no_rig.1",
+  "actor_id": "male_base_v1",
+  "canvas": [128, 128],
+  "foot_pivot": [64, 104],
+  "status": "ART_PENDING",
+  "weapon_family": "jian",
+  "weapon_library": {
+    "jian_blue": {
+      "family": "jian",
+      "poses": {
+        "guard": {"front": "weapons/jian_blue_guard.png", "grip": [64, 64]},
+        "slash": {"front": "weapons/jian_blue_slash.png", "grip": [64, 64]}
+      }
+    },
+    "jian_gold": {
+      "family": "jian",
+      "poses": {
+        "guard": {"front": "weapons/jian_gold_guard.png", "grip": [64, 64]},
+        "slash": {"front": "weapons/jian_gold_slash.png", "grip": [64, 64]}
+      }
+    }
+  },
+  "frames": [
+    {
+      "state": "walk", "direction": "front", "index": 0,
+      "weapon_pose": "guard",
+      "layers": {
+        "body_base": "frames/walk/front/f00/body_base.png",
+        "underwear": "frames/walk/front/f00/underwear.png"
+      },
+      "anchors": {
+        "foot_root": [64, 104],
+        "head_center": [64, 35],
+        "hand_r_grip": [78, 62],
+        "hand_l_grip": [54, 59]
+      },
+      "weapons": {}
+    }
+  ],
+  "_note": "SCHEMA EXAMPLE ONLY. Missing real PNGs, not production artwork."
+}

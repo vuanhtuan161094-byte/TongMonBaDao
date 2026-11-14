@@ -1,0 +1,46 @@
+{
+  "cobalt": {
+    "seconds": 0.715,
+    "clip_count": 24,
+    "source_frame_count": 96,
+    "spriteframe_resources": 5,
+    "weapon_items": [
+      "jian_blue",
+      "jian_gold"
+    ],
+    "pose_bank_cels": 4,
+    "weapon_atlases": 96,
+    "preview_gifs": 48,
+    "exports_megabytes": 0.498,
+    "art_approved": false,
+    "godot_runtime_pass": false
+  },
+  "golden": {
+    "seconds": 0.596,
+    "clip_count": 24,
+    "source_frame_count": 96,
+    "spriteframe_resources": 5,
+    "weapon_items": [
+      "jian_blue",
+      "jian_gold"
+    ],
+    "pose_bank_cels": 4,
+    "weapon_atlases": 96,
+    "preview_gifs": 48,
+    "exports_megabytes": 0.498,
+    "art_approved": false,
+    "godot_runtime_pass": false
+  },
+  "invariants": {
+    "outfit_changes_body_pixels": true,
+    "outfit_does_not_change_weapon_pixels": true,
+    "no_runtime_rig": true,
+    "drawn_24_real_human_motion_clips": false,
+    "native_pixel_master_approved": false,
+    "godot_engine_tested": false,
+    "input_is_technical_fixture_not_character": true
+  },
+  "original_source_frames_required": 96,
+  "outfit_layer_pose_files_minimum": 96,
+  "applicability": "TECHNICAL AUTOMATION FEASIBLE; ART MOTION QUALITY UNPROVEN"
+}
