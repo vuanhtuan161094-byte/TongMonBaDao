@@ -1,0 +1,45 @@
+name: VIS-07 Source A Art Reference Snapshot
+on:
+  push:
+    paths:
+      - '.github/workflows/vis07-source-a-reference-snapshot.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  source-art:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Preserve exact reference bytes (no art edits)
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p source-a-reference
+          for p in \
+            godot/art/source_a_env02a/pv01_assets/main_hall/510052.png \
+            godot/art/source_a_env02a/pv01_assets/forge/520081.png \
+            godot/art/source_a_env02a/pv01_assets/guidance/510111.png \
+            godot/art/source_a_env02a/pv01_assets/residence/510076.png \
+            godot/art/source_a_env02a/pv01_assets/warehouse/510102.png \
+            godot/art/source_a_env02a/env01_assets/vegetation/570036.png \
+            godot/art/source_a_env02a/env01_assets/vegetation/570037.png \
+            godot/art/source_a_env02a/env01_assets/vegetation/570041.png \
+            godot/art/source_a_env02a/env01_assets/terrain/stone_courtyard.png \
+            godot/art/source_a_env02a/env01_assets/roads/stone_cross.png
+          do
+            test -s "$p"
+            cp --parents "$p" source-a-reference/
+          done
+          echo "Repository source SHA: $(git rev-parse HEAD)" > source-a-reference/PROVENANCE.txt
+          echo "Original assets are style evidence only; rights to redistribution not asserted." >> source-a-reference/PROVENANCE.txt
+          (cd source-a-reference && find godot -type f -print0 | sort -z | xargs -0 sha256sum) > source-a-reference/SHA256SUMS.txt
+          grep -F 'b6bf88c35e3edc33aba822124296af15a5c8491a05c28f6b5d7b342d20d5325c' source-a-reference/SHA256SUMS.txt
+      - name: Upload Source A internal visual audit evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: vis07-source-a-reference-${{ github.sha }}
+          path: source-a-reference/
+          retention-days: 7
+          if-no-files-found: error
