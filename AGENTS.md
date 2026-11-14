@@ -1,3 +1,9 @@
+## SPRITE-FIRST VFX OWNER DIRECTIVE — 2026-11-14
+
+For ALL VFX/skill visual work, read [mandatory sprite-first VFX rules](docs/operations/TMB_VFX_SPRITE_FIRST_QUALITY_RULES_20261114.md) and the Art-First SOP V3. **Original multi-frame sprites/PNG flipbooks are expressly permitted and preferred when needed for beautiful motion.** Shader-only/code-only restrictions are rejected; a recolored static vector is not a completed skill. Separate school/chat paths, one original skill at a time, real Godot 1280×720 movie/art review before approval. No rig, Codex, new branch, merge or unauthorized PvE/Combat V2 edits.
+
+---
+
 ## VFX ART-FIRST OWNER OVERRIDE — 2026-11-14 (MANDATORY FOR EVERY NEW CHAT)
 
 **LATEST VFX FEEDBACK 14 NOV:** Xà Ảnh painted/4-pose layered serpent is the actual quality baseline. POI05 Tán Cổ R10 'tạm tạm' permits next skill but its electrical charge and rigid centipede are NOT approved as ideal art; backlog is light strands **gathering into a ring** + painted living creature (NO giant vector segmented re-skin). POI06 Vạn Cổ Phệ Giới light-ring experiment is at `docs/handoffs/VFX_CURRENT_ART_FIRST_NEXT_CHAT_20261114.md`. Test PASS is never owner art PASS. Do not copy Source VL copyrighted pixels.
