@@ -68,3 +68,7 @@ Each school has two shared cast families (Basic/Mobility) and three branches wit
 - A LAB skill can be approved visually while its connection to runtime Combat V2 is still not implemented; keep these fields separate.
 
 Read-only CI inventory gate: python3 tools/qa/audit_vfx_school_catalogs.py. It checks 12 canonical JSONs versus 12 per-school VFX ledgers for identity, duplicates, tiers, 35 families, 17/18 visual split, 36 paths and unapproved source keys. Do not report this static audit as a full engine test.
+
+## Executed inventory audit evidence
+
+Official automated [GitHub Actions #43548362737](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/43548362737) completed **SUCCESS** on exact source SHA `ef25b3de4e018aea04b0a9440ea17dda1a9055bc`. Read-only Python audit validated source JSON versus per-school CSV inventory and full ID/family/tier/branch assertions. Artifact `vfx-school-source-audit-ef25b3de4e018aea04b0a9440ea17dda1a9055bc` ID 14095690543. This is **STATIC CATALOGUE QA ONLY**, not a fresh Godot movie, live PvE, gameplay integration or art-performance acceptance.
