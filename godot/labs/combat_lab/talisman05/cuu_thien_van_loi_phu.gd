@@ -171,6 +171,9 @@ func _draw_storm(t:float)->void:
     var point:=TOP.lerp(demo_contact(1,t),q)
     _halo(point,30.0,Color("b89bf6",gain*.18))
 
+static func demo_branch_origin(t:float)->Vector2:
+    return TOP.lerp(demo_contact(1,t),.64)
+
 func _draw_guided_lateral(t:float,idx:int)->void:
     # Only two side targets already selected under the original LINE cap=3.
     # Reuse the original TAL05 painted atlas as a SMALL secondary flash,
@@ -178,8 +181,10 @@ func _draw_guided_lateral(t:float,idx:int)->void:
     if idx==1 or idx<0 or idx>=TARGET_LIMIT:return
     var g:=hit_gain(t,idx)*line_sweep_gain(t)
     if g<.025:return
-    var from:=demo_contact(1,t)
-    var to:=demo_contact(idx,t)
+    # Subordinate painted bolts descend from the central shaft, rather than
+    # forming a rigid face-level cable linking enemies across the screen.
+    var from:=demo_branch_origin(t)
+    var to:=demo_contact(idx,t)+Vector2(0,9)
     var v:=to-from
     if v.length()<2.0:return
     var rotation:=v.angle()-PI*.5
@@ -188,7 +193,7 @@ func _draw_guided_lateral(t:float,idx:int)->void:
     draw_set_transform(from,rotation,Vector2(.24,stretch))
     draw_texture_rect_region(PAINTED_BOLT,
         Rect2(-192.0,-12.0,384.0,512.0),region,
-        Color(1.0,1.0,1.0,g*.62))
+        Color(1.0,.97,.92,g*.58))
     draw_set_transform(Vector2.ZERO)
 
 func _draw()->void:
@@ -218,7 +223,7 @@ func _draw()->void:
         if local_hit>.006:
             var foot:Vector2=demo_target_foot(idx,t)
             _halo(foot+Vector2(0,-2),62.0,Color("8d64cb",local_hit*.17))
-            draw_texture_rect(PAINTED_IMPACT,Rect2(foot-Vector2(103.0,56.0),Vector2(206.0,108.0)),false,Color(1,1,1,local_hit*.78))
+            draw_texture_rect(PAINTED_IMPACT,Rect2(foot-Vector2(103.0,56.0),Vector2(206.0,108.0)),false,Color(1.0,.91,.83,local_hit*.82))
     _actor(CASTER)
     for idx in range(TARGET_LIMIT):
         _actor(demo_target_foot(idx,t))
