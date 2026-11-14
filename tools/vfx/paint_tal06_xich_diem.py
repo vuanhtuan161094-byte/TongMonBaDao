@@ -143,6 +143,21 @@ def impact(i):
     g.ellipse((132,143,156,167),fill=(255,245,174,int(185*(1-prog*.55))))
     im.alpha_composite(glowing.filter(ImageFilter.GaussianBlur(5)))
     im.alpha_composite(glowing)
+    # Authored eight-stage tongues: local molten contact, no HUD spokes.
+    tongues=Image.new('RGBA',(w,h));tb=ImageDraw.Draw(tongues,'RGBA')
+    for j in range(7):
+        x0=144+(j-3)*15
+        lean=math.sin(i*.6+j*1.4)*(6+3*j)
+        apex=(x0+lean,70+int(27*prog)+int(8*math.sin(i*.4+j)))
+        path=[(x0-12,174),(x0-17,151),(x0-5,131),
+              (x0-11,111),apex,(x0+7,119),
+              (x0+17,149),(x0+13,175)]
+        tb.polygon(path,fill=(250,int(79+13*j),31,int(114+42*(1-prog))))
+        tb.line([(x0,163),(x0+lean*.5,123),apex],
+                fill=(255,196+int(24*(1-prog)),104,int(100+77*(1-prog))),
+                width=3 if j%2 else 4,joint='curve')
+    im.alpha_composite(tongues.filter(ImageFilter.GaussianBlur(7)))
+    im.alpha_composite(tongues)
     im.alpha_composite(ink.filter(ImageFilter.GaussianBlur(4)))
     im.alpha_composite(ink)
     return im
