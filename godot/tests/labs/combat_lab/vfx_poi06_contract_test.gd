@@ -40,9 +40,13 @@ func _run()->void:
     root.add_child(sample)
     await process_frame
     _check(sample._glow!=null,"soft alpha texture present")
+    _check(sample._r9_realm_frames.size()==8,"8 independently painted R9 sprite atlas frames")
+    _check(LAB.R9_REALM_ATLAS_A.get_size()==Vector2(768,310) and LAB.R9_REALM_ATLAS_B.get_size()==Vector2(768,310),"two native raster atlas textures 768x310")
+    for frame in range(8):
+        _check(sample._r9_realm_frames[frame].get_size()==Vector2(384,155),"sprite alpha cell 384x155 "+str(frame))
     var source:=FileAccess.get_file_as_string("res://labs/combat_lab/poison06/van_co_phe_gioi.gd")
     for forbidden in ["SaveService.save","CombatV2.","MapBattleV2.","apply_damage","apply_status","V63FeatureGates.","summon_actor"]:
         _check(not source.contains(forbidden),"isolated view only "+forbidden)
-    print("VFX_POI06_FOCUSED_RESULT="+("PASS" if failures==0 else "FAIL")+" failures="+str(failures)+" gu=8 brand=6 painted_realm=8 painted_charge=8")
+    print("VFX_POI06_FOCUSED_RESULT="+("PASS" if failures==0 else "FAIL")+" failures="+str(failures)+" gu=8 brand=6 painted_realm=8 painted_charge=8 r9_original_art=8")
     sample.queue_free()
     quit(0 if failures==0 else 1)

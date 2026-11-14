@@ -60,6 +60,11 @@ const PAINTED_CHARGE := [
     preload("res://labs/combat_lab/poison06/assets/charge_painted_06.png"),
     preload("res://labs/combat_lab/poison06/assets/charge_painted_07.png"),
 ]
+## R9: generated original painterly alpha flipbook, true image atlas (NOT code SVG).
+const R9_REALM_ATLAS_A: Texture2D = preload("res://labs/combat_lab/poison06/assets/realm_inkpaint_atlas_a.webp")
+const R9_REALM_ATLAS_B: Texture2D = preload("res://labs/combat_lab/poison06/assets/realm_inkpaint_atlas_b.webp")
+const R9_CELL := Vector2(384.0,155.0)
+var _r9_realm_frames: Array[AtlasTexture] = []
 var elapsed := 0.0
 var paused := false
 var _glow: Texture2D
@@ -99,9 +104,16 @@ func _ready() -> void:
     custom_minimum_size=Vector2(1280,720)
     mouse_filter=Control.MOUSE_FILTER_IGNORE
     _glow=_radial_texture()
+    for frame in range(8):
+        var tex := AtlasTexture.new()
+        tex.atlas = R9_REALM_ATLAS_A if frame < 4 else R9_REALM_ATLAS_B
+        var cell := frame % 4
+        tex.region = Rect2(Vector2(float(cell%2)*R9_CELL.x,
+            float(floori(float(cell)/2.0))*R9_CELL.y),R9_CELL)
+        _r9_realm_frames.append(tex)
     set_process(true)
     queue_redraw()
-    print("VFX_POI06_R8_READY id=",SKILL_ID," gu_frames=",GU.size()," brand_frames=",BRANDS.size(),
+    print("VFX_POI06_R9_READY id=",SKILL_ID," gu_frames=",GU.size()," brand_frames=",BRANDS.size(),
         " targets=",DECLARED_TARGET_LIMIT," gameplay=false no_rig=true")
 func _radial_texture() -> Texture2D:
     var img := Image.create(96,96,false,Image.FORMAT_RGBA8)
@@ -135,18 +147,18 @@ func _draw() -> void:
         _halo(REALM,47.0,Color("efffdf",open*0.30))
         draw_texture_rect(_glow,Rect2(616.0,475.0,580.0,155.0),false,Color("a4dbb5",open*0.28))
         draw_texture_rect(_glow,Rect2(706.0,493.0,412.0,93.0),false,Color("c2a1f9",open*0.23))
-        # Primary painted raster sprite: 8 independent 480x320 transparent realm frames.
-        # Light strokes below are a minor glancing highlight; NEVER a HUD circle.
-        var realm_frame := posmod(int(floor((t-RIFT_OPEN)*12.5)),PAINTED_REALM.size())
-        _paint(PAINTED_REALM[(realm_frame+4)%PAINTED_REALM.size()],
-            REALM+Vector2(-4.0,-9.0),1.53,-0.023*sin(t*1.6),
-            Color(1.0,1.0,1.0,open*0.96))
-        _paint(PAINTED_REALM[realm_frame],REALM+Vector2(0.0,3.0),1.30,0.029*sin(t*2.1),
-            Color(1.0,1.0,1.0,open*0.98))
-        # A third narrow luminous crest, retaining a visible dark center.
-        _paint(PAINTED_REALM[(realm_frame+2)%PAINTED_REALM.size()],
-            REALM+Vector2(8.0,-15.0),0.85,0.035*sin(t*2.8),
-            Color("f1ffe5",open*0.39))
+        # R9 ART CORE: 8 actual hand-painted alpha sprites (two 4-frame atlases).
+        # Dominant silhouette: cascading shadow-gu streams, jade-violet
+        # thunder petals and narrow tips, OPEN negative space over the actors.
+        # The legacy R6 raster wave is only a faint shadow layer.
+        var frame := posmod(int(floor((t-RIFT_OPEN)*11.5)),_r9_realm_frames.size())
+        _paint(PAINTED_REALM[frame],REALM+Vector2(-2.0,12.0),
+            1.13,0.022*sin(t*2.0),Color("c1b6ec",open*0.23))
+        _paint(_r9_realm_frames[(frame+3)%8],REALM+Vector2(-5.0,-28.0),
+            1.56,-0.025*sin(t*2.1),Color("c2ffe1",open*0.29))
+        _paint(_r9_realm_frames[frame],REALM+Vector2(0.0,-31.0),
+            1.68,0.017*sin(t*2.7),Color(1.0,1.0,1.0,open*0.97))
+        _halo(REALM+Vector2(0.0,6.0),75.0,Color("f8ffe4",open*0.26))
         _petal_sparks(REALM,193.0,open,t,20)
         _realm_ink_bloom(t,open)
         _crown_burst(t,open)
@@ -251,7 +263,7 @@ func _draw() -> void:
     draw_string(ThemeDB.fallback_font,Vector2(31,35),
         "VAN CO PHE GIOI  /  CO DOC TUYET KY",HORIZONTAL_ALIGNMENT_LEFT,-1,26,Color("eaffee"))
     draw_string(ThemeDB.fallback_font,Vector2(32,61),
-        "POI06 R8  |  PAINTED SPRITE REALM / LIVING LIGHT CHARGE  |  ART QA",
+        "POI06 R9  |  8-FRAME IMAGE-PAINTED REALM / LIVING LIGHT CHARGE",
         HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("b4c6cf"))
     draw_string(ThemeDB.fallback_font,Vector2(32,691),
         "GODOT 4.7.2 COMPATIBILITY  |  ART-ONLY  |  NO GAMEPLAY POISON/HP CHANGE",
