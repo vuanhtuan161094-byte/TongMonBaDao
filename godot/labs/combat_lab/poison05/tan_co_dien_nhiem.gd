@@ -216,6 +216,10 @@ func _draw() -> void:
             var finish: Vector2 = TARGETS[trail_idx]+Vector2(cos(a)*33.0,-76.0+sin(a)*26.0)
             var flutter := Vector2(23.0*sin(progress*PI*2.0+a),-30.0*sin(PI*progress))
             var position := origin.lerp(finish,progress)+flutter
+            var linger := maxf(0.0,t-start-0.54)
+            var orbit_gain := smoothstep(0.0,0.17,linger)
+            position += Vector2(cos(linger*8.2+a)*(20.0+4.0*float(rank)),
+                sin(linger*6.9+a)*(11.0+2.0*float(rank)))*orbit_gain
             var glyph := int(floor((t-start)*21.0+float(wing)))%4
             var spore_size := 0.107+0.024*float(rank%3)
             _paint(SCARAB[glyph],position,Vector2.ONE*spore_size,0.22*sin(t*13.0+a),
@@ -227,6 +231,9 @@ func _draw() -> void:
         var time_local := t-(ARRIVAL+0.66+float(idx)*0.075)
         var s := 0.150+0.013*sin(time_local*8)
         _halow(at,58,Color("b9ffb8",mark_alpha*0.21))
+        if time_local>=0.0 and time_local<0.18:
+            var mark_flash := 1.0-time_local/0.18
+            _halow(at,34+34*(1.0-mark_flash),Color("eaffdb",mark_flash*0.36))
         _paint(MARK,at,Vector2.ONE*s,0.14*sin(time_local*4+float(idx)),Color(1,1,1,mark_alpha*0.71))
         for j in range(6):
             var a := float(j)*2.399+float(idx)*0.3
