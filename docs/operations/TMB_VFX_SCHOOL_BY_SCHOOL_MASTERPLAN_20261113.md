@@ -1,3 +1,7 @@
+## UPDATE — OWNER-ACCEPTED 4-POSE XÀ ẢNH, NEW VFX PRODUCTION SOP (2026-11-14)
+
+**Current production standard:** [TMB_VFX_SOURCE_VL_PRODUCTION_STANDARD_20261114.md](TMB_VFX_SOURCE_VL_PRODUCTION_STANDARD_20261114.md). A verified 12-source/12-ledger audit confirms 12 schools / 36 specialized branches / 2,196 unique skill IDs / 420 families; 204 cast master families and 216 passive/innate event families. All 12 catalogues still disabled; **defined does not mean live/approved art**. The Godot POI-02 four-pose Xà Ảnh Quấn Mạch LAB is owner-accepted as visual baseline with **charge/tụ lực polishing still due**. The original flight and bind phases remain frozen. Its *one Human skill row only* is updated to LAB_APPROVED_CHARGE_POLISH_PENDING / OWNER_VISUAL_APPROVED / HOLD_V63_OFF; all descendants and other schools are not automatically approved. No rigging, no PvE integration, no Combat V2 or V6.3 feature-gate edits. Automated inventory checker: tools/qa/audit_vfx_school_catalogs.py.
+
 # TÔNG MÔN BÁ ĐẠO — MASTERPLAN VFX CHUYÊN NGHIỆP THEO 12 MÔN PHÁI
 Version: VFX-SCHOOL-PLAN-01 · Date: 2026-11-13 · Project: PR #72 Draft · Branch: `integration/pve-p0-playable-ui-20261103`.
 **This commit changes planning files/ledgers only. No VFX renderer code, Combat V2, V63 gate, SaveService, PvE integration or gameplay changed.**

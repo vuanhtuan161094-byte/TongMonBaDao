@@ -1,0 +1,32 @@
+name: VFX School Catalog | 12 Schools 2196 Skill Identity Audit
+on:
+  workflow_dispatch:
+  push:
+    branches: [integration/pve-p0-playable-ui-20261103]
+    paths:
+      - '.github/workflows/vfx-school-catalog-audit.yml'
+      - 'tools/qa/audit_vfx_school_catalogs.py'
+      - 'docs/operations/vfx_school_ledgers/**'
+      - 'godot/data/combat/v63_*_combat_catalog.json'
+permissions:
+  contents: read
+jobs:
+  source-ledger-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Pin exact tested source and Python
+        run: |
+          echo "VFX_SCHOOL_AUDIT_EXACT_SHA=$GITHUB_SHA"
+          python3 --version
+      - name: Strict 12 school / 2196 ID source-to-ledger audit
+        run: python3 tools/qa/audit_vfx_school_catalogs.py | tee vfx-school-audit-result.json
+      - name: Upload machine-readable audit result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vfx-school-source-audit-${{ github.sha }}
+          retention-days: 30
+          if-no-files-found: warn
+          path: vfx-school-audit-result.json
