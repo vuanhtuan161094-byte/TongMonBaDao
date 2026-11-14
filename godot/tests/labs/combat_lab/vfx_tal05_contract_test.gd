@@ -10,6 +10,12 @@ func _run()->void:
     _check(LAB.SKILL_ID=="tmb.skill.talisman.loi_phu.ultimate.human","canonical ultimate")
     _check(LAB.EFFECT=="damage" and LAB.ELEMENT=="lightning" and LAB.SHAPE=="line","line thunder")
     _check(LAB.TARGET_LIMIT==3 and LAB.TARGETS.size()==3 and LAB.CONTACTS.size()==3,"three only")
+    _check(LAB.DEMO_MOVING_ENEMIES,"moving-monster visual harness")
+    for i in range(LAB.TARGET_LIMIT):
+        _check(LAB.demo_target_foot(i,.45).distance_to(LAB.demo_target_foot(i,2.11))>12.0,"locked monster "+str(i)+" moves across attack window")
+        _check(LAB.demo_contact(i,2.11).distance_to(LAB.demo_target_foot(i,2.11)+Vector2(0,-93))<.001,"contact follows moving monster "+str(i))
+    _check(not is_finite(LAB.demo_contact(3,2.0).x),"over-cap target cannot be tracked")
+
     _check(LAB.DECLARED_CAST_TIME==1.05 and LAB.DECLARED_COOLDOWN==23.0,"canonical ultimate timing")
     _check(LAB.DECLARED_RANGE==11.0 and LAB.DECLARED_PROJECTILE_SPEED==0.0,"instant line range")
     _check(LAB.SKY_FRAMES.size()==10,"original ten heavenly rune poses")

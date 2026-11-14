@@ -22,6 +22,18 @@ const STORM_BEGIN := 1.45
 const CONTACT_AT := 1.87
 const FADE_END := 3.78
 const LOOP_SECONDS := 4.78
+# Moving-target display-only fixture. IDs 0,1,2 were chosen before release by
+# the authoritative combat system; these functions NEVER select extra enemies.
+const DEMO_MOVING_ENEMIES := true
+static func demo_target_foot(idx:int,t:float)->Vector2:
+    if idx<0 or idx>=TARGET_LIMIT:return Vector2.INF
+    var k:=float(idx)
+    return TARGETS[idx]+Vector2(43.0*sin(t*(1.39+.22*k)+k*1.73),
+        7.5*sin(t*(.85+.26*k)+k*1.6))
+static func demo_contact(idx:int,t:float)->Vector2:
+    if idx<0 or idx>=TARGET_LIMIT:return Vector2.INF
+    return CONTACTS[idx]+demo_target_foot(idx,t)-TARGETS[idx]
+
 const SKY_FRAMES := [
     preload("res://labs/combat_lab/talisman05/assets/heaven_rune_00.svg"),
     preload("res://labs/combat_lab/talisman05/assets/heaven_rune_01.svg"),
@@ -144,10 +156,40 @@ func _draw_storm(t:float)->void:
     if gain<=.005:return
     var idx:=clampi(int(floor(smoothstep(STORM_BEGIN,CONTACT_AT,t)*9.99)),0,9)
     var region:=Rect2(float(idx%4)*384.0,float(int(idx/4))*512.0,384.0,512.0)
-    draw_texture_rect_region(PAINTED_BOLT,BOLT_RECT,region,Color(1.0,1.0,1.0,gain*.98))
+    # Preserve the sky-gate start while tilting the complete painted thunder
+    # stroke toward the SAME primary locked moving monster ID (index 1).
+    var base_vec:=CENTER_HIT-TOP
+    var next_vec:=demo_contact(1,t)-TOP
+    var turn:=next_vec.angle()-base_vec.angle()
+    var stretch:=clampf(next_vec.length()/base_vec.length(),.88,1.12)
+    draw_set_transform(TOP,turn,Vector2.ONE*stretch)
+    draw_texture_rect_region(PAINTED_BOLT,
+        Rect2(BOLT_RECT.position-TOP,BOLT_RECT.size),region,
+        Color(1.0,1.0,1.0,gain*.98))
+    draw_set_transform(Vector2.ZERO)
     var q:=smoothstep(STORM_BEGIN,1.78,t)
-    var point:=point_on_bolt(q,t)
+    var point:=TOP.lerp(demo_contact(1,t),q)
     _halo(point,30.0,Color("b89bf6",gain*.18))
+
+func _draw_guided_lateral(t:float,idx:int)->void:
+    # Only two side targets already selected under the original LINE cap=3.
+    # Reuse the original TAL05 painted atlas as a SMALL secondary flash,
+    # oriented dynamically to the screen coordinates of the moving monster.
+    if idx==1 or idx<0 or idx>=TARGET_LIMIT:return
+    var g:=hit_gain(t,idx)*line_sweep_gain(t)
+    if g<.025:return
+    var from:=demo_contact(1,t)
+    var to:=demo_contact(idx,t)
+    var v:=to-from
+    if v.length()<2.0:return
+    var rotation:=v.angle()-PI*.5
+    var stretch:=clampf(v.length()/493.0,.30,.65)
+    var region:=Rect2(384.0,1024.0,384.0,512.0) # full painted bolt pose #9
+    draw_set_transform(from,rotation,Vector2(.24,stretch))
+    draw_texture_rect_region(PAINTED_BOLT,
+        Rect2(-192.0,-12.0,384.0,512.0),region,
+        Color(1.0,1.0,1.0,g*.62))
+    draw_set_transform(Vector2.ZERO)
 
 func _draw()->void:
     var t:=elapsed
@@ -174,17 +216,19 @@ func _draw()->void:
     for idx in range(TARGET_LIMIT):
         var local_hit:=hit_gain(t,idx)
         if local_hit>.006:
-            var foot:Vector2=TARGETS[idx]
+            var foot:Vector2=demo_target_foot(idx,t)
             _halo(foot+Vector2(0,-2),62.0,Color("8d64cb",local_hit*.17))
             draw_texture_rect(PAINTED_IMPACT,Rect2(foot-Vector2(103.0,56.0),Vector2(206.0,108.0)),false,Color(1,1,1,local_hit*.78))
     _actor(CASTER)
     for idx in range(TARGET_LIMIT):
-        _actor(TARGETS[idx])
+        _actor(demo_target_foot(idx,t))
     _draw_storm(t)
+    for locked_target in [0,2]:
+        _draw_guided_lateral(t,locked_target)
     for i in range(TARGET_LIMIT):
         var h:=hit_gain(t,i)
         if h<.006:continue
-        var pos:Vector2=CONTACTS[i]
+        var pos:Vector2=demo_contact(i,t)
         # Contact flashes are local, not giant radial lines over the enemy's face.
         _halo(pos+Vector2(0.0,16.0),49.0,Color("7950de",h*.23))
         _halo(pos+Vector2(0.0,18.0),19.0,Color("fff5ff",h*.37))
