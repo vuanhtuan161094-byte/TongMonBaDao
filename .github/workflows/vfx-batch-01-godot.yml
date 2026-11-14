@@ -73,6 +73,36 @@ jobs:
             ffmpeg -y -hide_banner -loglevel error -ss "$at" -i "$d/schools.mp4" -frames:v 1 "$d/schools-frame-$at.png"
           done
           sha256sum "$d/"*.mp4 "$d/"*.png "$d/"*.gif > "$d/SHA256SUMS.txt"
+      - name: Exact-skill full-frame scene contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/vfx-batch01"
+          bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://labs/vfx_batch/tmb_vfx_single_skill.gd 2>&1 | tee "$d/single-parse.log"
+          bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/labs/combat_lab/vfx_batch_single_contract_test.gd 2>&1 | tee "$d/single-test.log"
+          grep -Fq 'VFX_BATCH_SINGLE_RESULT=PASS failures=0' "$d/single-test.log"
+      - name: Native Godot 1280x720 individual skill movie samples
+        shell: bash
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/vfx-batch01"
+          for spec in \
+            'needle|tmb.skill.poison.doc_cham.active_01.human' \
+            'lotus|tmb.skill.poison.duoc_doc.active_02.human' \
+            'sword|tmb.skill.sword.ngu_kiem.active_01.human'; do
+            tag="${spec%%|*}"
+            export TMB_VFX_BATCH_SKILL_ID="${spec#*|}"
+            xvfb-run -a -s '-screen 0 1280x720x24' bash tools/qa/run_godot_strict.sh --path godot --resolution 1280x720 --fixed-fps 60 --write-movie "$d/single-$tag.avi" --quit-after 252 res://labs/vfx_batch/tmb_vfx_single_skill.tscn 2>&1 | tee "$d/single-$tag.log"
+            test -s "$d/single-$tag.avi"
+            ffmpeg -y -hide_banner -loglevel error -i "$d/single-$tag.avi" -pix_fmt yuv420p -c:v libx264 -crf 17 -movflags +faststart "$d/single-$tag.mp4"
+            ffmpeg -y -hide_banner -loglevel error -i "$d/single-$tag.mp4" -vf 'fps=6,scale=640:-1:flags=lanczos' -loop 0 "$d/single-$tag.gif"
+            for at in 0.35 1.25 2.15 3.05; do
+              ffmpeg -y -hide_banner -loglevel error -ss "$at" -i "$d/single-$tag.mp4" -frames:v 1 "$d/single-$tag-$at.png"
+            done
+            ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of default=noprint_wrappers=1 "$d/single-$tag.mp4" | grep -Fxq 'width=1280'
+            rm "$d/single-$tag.avi"
+          done
+          sha256sum "$d/"*.mp4 "$d/"*.gif "$d/"*.png > "$d/SHA256SUMS.txt"
       - name: Upload actual video and per-family source QA
         if: always()
         uses: actions/upload-artifact@v4
