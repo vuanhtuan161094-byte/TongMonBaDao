@@ -8,6 +8,7 @@ on:
       - 'godot/src/presentation/p3/sect_isometric_world_v1.gd'
       - 'godot/art/reimagined_source_a_v1/**'
       - 'godot/art/reimagined_source_a_v3/**'
+      - 'godot/art/tmb_approved_v4/**'
       - 'godot/src/presentation/uiux/sect_building_art_variant_v3.gd'
       - 'godot/tests/presentation/as_build_v3_canonical_art_test.gd'
       - 'godot/tests/presentation/as_build01_alchemy_visual_import_test.gd'

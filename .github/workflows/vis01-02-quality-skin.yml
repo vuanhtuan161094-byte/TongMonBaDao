@@ -15,6 +15,9 @@ on:
       - 'godot/src/presentation/p3/v63_combat_hud_v1.gd'
       - 'godot/art/uiux/quality/vis02_heaven_crystal_frame.svg'
       - 'godot/art/tmb_original_v1/**'
+      - 'godot/art/tmb_approved_v4/**'
+      - 'godot/src/presentation/p3/tmb_approved_building_art_v4.gd'
+      - 'godot/tests/presentation/vis07_r4_owner_approved_paths_test.gd'
       - 'godot/src/presentation/p3/tmb_original_world_art_v1.gd'
       - 'godot/src/presentation/p3/sect_isometric_world_v1.gd'
       - 'godot/src/presentation/uiux/sect_facility_art_v2.gd'
@@ -51,3 +54,4 @@ jobs:
           bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/presentation/vis01_02_quality_visual_test.gd
           bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/presentation/vis02_06_compact_material_test.gd
           bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/presentation/vis07_original_environment_test.gd
+          bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/presentation/vis07_r4_owner_approved_paths_test.gd

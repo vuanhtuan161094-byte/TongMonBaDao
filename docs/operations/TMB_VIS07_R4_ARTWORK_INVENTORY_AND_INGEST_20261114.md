@@ -1,6 +1,6 @@
 # VIS-07 R4 — Whole building-art inventory and owner-approved sprite ingest
 
-Date: 2026-11-14 · PR #72 Draft · **Source inventory verified; binary ingest pending**
+Date: 2026-11-14 · PR #72 Draft · **Source inventory and binary SHA verified; Godot QA pending**
 Owner approved **exactly the two original generated images** `tông_môn_đại_điện_xianxia.png` and `xianxia_mining_outpost_diorama.png`. Later generated images `jade_cloud_main_hall.png` / `jade_mountain_mining_outpost.png` are separate UNAPPROVED outputs and MUST NOT replace them.
 
 ## Production asset matrix
@@ -30,6 +30,6 @@ Owner approved **exactly the two original generated images** `tông_môn_đại_
 - The source bundle provides 1× RGBA, 2× RGBA, original masters and SHA-256 manifest. Embed only the two named 1× PNGs in Godot.
 - Native clip: Hall existing house drawing `p + Vector2(0,-target.y*0.28)-target*.5`; Mine existing site drawing `p-Vector2(size.x*.5,size.y*.79)`. No footprint, camera, hitboxes, door cells or depth changed.
 
-**Binary transport status**: PNG bytes are available in the conversation ZIP but have not yet been committed to GitHub through the UTF-8-only connector. The renderer's path resolver is deliberately fail-closed and never claims to display a nonexistent image. The existing Source A / MAP-D2 fallback remains until the two exact files are committed. **Real Godot screenshot showing the new artwork and final art QA are PENDING and cannot be substituted with a composited screenshot**.
+**Binary transport completed**: both native RGBA PNGs transferred as Git blobs after verifying byte-for-byte Git SHAs. Hall blob `8353035eb8a8017fa2fb5c079afd5fccf75183b2` (78,030 bytes, PNG 300×201, SHA256 `00b013a12261f16152f51e3264d2ddfaafa60f830084006aaed567137773ca96`); Mine blob `5f9e86309f20bbc090a29a56e48f851b6e959184` (31,028 bytes, PNG 166×121, SHA256 `b04177001a63f472978ab1e4768c0b8ca9d46d7ee25a5305922c33b4c2978f25`). Art is switched live only from these exact paths; missing binaries preserve prior verified fallbacks. **Real Godot screenshot and final art QA pending exact-SHA run**; no composited screenshot can substitute engine evidence.
 
 Keep Source A original SHA-gated files for historical audit and rollback; do not treat art-replacement intent as authorization to delete source copies. Existing other writer commits in this branch are unrelated, and no new branch / merge / rig / gameplay changes are needed.

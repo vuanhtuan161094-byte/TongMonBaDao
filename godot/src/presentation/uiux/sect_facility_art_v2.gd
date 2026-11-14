@@ -19,6 +19,7 @@ const SOURCE_A_BUILDINGS := {
 var facility_kind := "hall"
 var _art: Texture2D
 var _original_source := false
+var _owner_approved := false
 var _source_model_id := ""
 
 func _ready() -> void:
@@ -30,6 +31,7 @@ func _ready() -> void:
     # the separately published RGBA PNG cannot be imported from this commit.
     if facility_kind == "hall":
         _art = VIS07_APPROVED.texture_for(&"main_hall")
+        _owner_approved = _art != null
     var source_spec: Dictionary = SOURCE_A_BUILDINGS.get(facility_kind, {}) if _art == null else {}
     if not source_spec.is_empty():
         var gate = SOURCE_A_GATE.new()
@@ -56,7 +58,7 @@ func _ready() -> void:
     tooltip_text = (
         "Source A · Model %s · SHA-256 đã kiểm chứng" % _source_model_id
         if _original_source
-        else ("TMB VIS-07 R4 · Owner-approved original art" if facility_kind == "hall" and _art == VIS07_APPROVED.texture_for(&"main_hall") else "Tranh minh họa V2 · không phải asset Source A")
+        else ("TMB VIS-07 R4 · Owner-approved original art" if _owner_approved else "Tranh minh họa V2 · không phải asset Source A")
     )
     queue_redraw()
 
@@ -67,7 +69,7 @@ func _notification(what: int) -> void:
 func _draw() -> void:
     if _art == null or size.x < 2.0 or size.y < 2.0:
         return
-    if _original_source or (facility_kind == "hall" and _art == VIS07_APPROVED.texture_for(&"main_hall")):
+    if _original_source or _owner_approved:
         # Full independently authored Hall silhouette is displayed without crop.
         draw_rect(Rect2(Vector2.ZERO, size), Color(0.115, 0.205, 0.205, 1.0))
         var source_size := Vector2(_art.get_width(), _art.get_height())
