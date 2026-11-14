@@ -38,6 +38,13 @@ static func phase_at(t: float) -> String:
     if t < FADE_END: return "fade"
     return "idle"
 
+static func flight_progress_at(t: float) -> float:
+    # Deliberately constant-speed straight projectile: no bezier/arc/sine rise.
+    return clampf((t - CAST_END) / (CONTACT_AT - CAST_END), 0.0, 1.0)
+
+static func flight_tip_at(t: float) -> Vector2:
+    return PALM.lerp(CHEST, flight_progress_at(t))
+
 static func needle_frame_at(t: float) -> int:
     if t < CAST_END: return clampi(int(floor(t / CAST_END * 4.0)), 0, 3)
     if t < CONTACT_AT: return clampi(4 + int(floor((t - CAST_END) / (CONTACT_AT - CAST_END) * 5.0)), 4, 8)
@@ -109,10 +116,9 @@ func _draw() -> void:
         var charge_scale := 0.25+0.17*q
         _sprite(needle_frames[needle_frame_at(t)],PALM-Vector2(TIP_X_FROM_CENTRE*charge_scale,0),charge_scale,0.72*q)
     elif t < CONTACT_AT:
-        var q := smoothstep(CAST_END,CONTACT_AT,t)
-        var at := PALM.lerp(CHEST,q)+Vector2(0.0,-36.0*sin(PI*q))
-        var previous_q := clampf(q-0.058,0,1)
-        var previous := PALM.lerp(CHEST,previous_q)+Vector2(0,-36*sin(PI*previous_q))
+        var q := flight_progress_at(t)
+        var at := flight_tip_at(t)
+        var previous := PALM.lerp(CHEST,maxf(0.0,q-0.058))
         var direction := (CHEST-PALM).angle()
         var along := Vector2(cos(direction),sin(direction))
         # Tip, not cell centre, follows the hand→chest route; avoids overshooting.
