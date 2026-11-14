@@ -68,6 +68,7 @@ const REIMAGINED_REVIEW_ONLY_SITES := {
     "alchemy_hall":"res://art/reimagined_source_a_v1/alchemy_hall_3q_v1.svg"
 }
 const V3_ART = preload("res://src/presentation/uiux/sect_building_art_variant_v3.gd")
+const VIS07_APPROVED = preload("res://src/presentation/p3/tmb_approved_building_art_v4.gd")
 const MAP_D2_SITE_SIZE := {
     "mine":Vector2(166,121),
     "linh_forest":Vector2(166,121),
@@ -483,12 +484,18 @@ func _load_verified_source_art() -> void:
         var candidate := ResourceLoader.load(candidate_path) as Texture2D
         if candidate != null:
             candidate_site_art[kind] = candidate
+    # New Owner-approved art is independent of the Source A verification registry.
+    # A missing binary file leaves the previous verified sprite visible.
+    var approved_mine := VIS07_APPROVED.texture_for(&"mine")
+    if approved_mine != null:
+        candidate_site_art["mine"] = approved_mine
     for house in HOUSE_TEXTURES:
         var key := str(HOUSE_TEXTURES[house])
-        # VIS-07 R3 source-style reset: restore the exact SHA-verified
-        # hand-painted Source A sprite until an artistically approved,
-        # Source-A-derived replacement passes the same native-scale review.
         var asset := source_art.texture_for(key)
+        if house == "main_hall":
+            var approved_hall := VIS07_APPROVED.texture_for(&"main_hall")
+            if approved_hall != null:
+                asset = approved_hall
         if asset != null:
             render_art[key] = asset
     for key in ["stone_courtyard","stone_variant","stone_border","stone_runes"]:
