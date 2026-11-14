@@ -171,8 +171,8 @@ func _update_sprites() -> void:
         var anchor := VICTIM + Vector2(1.0, -58.0) + Vector2(0.0, -8.0 * (1.0 - smoothstep(0.0,0.22,q)))
         _seal.position = anchor
         _seal.rotation = (-0.39 + 0.39 * smoothstep(0.0,0.38,q)) + 0.010 * sin(t * 5.0)
-        _seal.scale = Vector2.ONE * (0.226 + 0.090 * exp(-8.0 * q) + 0.004 * sin(t*7.0))
-        _seal.modulate = Color(1.0,1.0,1.0,seal_strength * 0.90)
+        _seal.scale = Vector2.ONE * (0.157 + 0.063 * exp(-8.0 * q) + 0.003 * sin(t*7.0))
+        _seal.modulate = Color(1.0,1.0,1.0,seal_strength * 0.83)
         _seal_highlight.position = anchor
         _seal_highlight.rotation = _seal.rotation
         _seal_highlight.scale = _seal.scale * 1.09

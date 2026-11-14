@@ -5,8 +5,8 @@
 <linearGradient id="bone"><stop stop-color="#ffffea"/><stop offset=".28" stop-color="#baf3ca"/><stop offset=".64" stop-color="#719a87"/><stop offset="1" stop-color="#222b48"/></linearGradient>
 </defs>
 <circle cx="256" cy="256" r="237" fill="url(#m)"/>
-<circle cx="256" cy="256" r="151" fill="#15182b" fill-opacity=".67" stroke="#141228" stroke-width="19"/>
-<circle cx="256" cy="256" r="145" fill="none" stroke="url(#ring)" stroke-width="19" stroke-dasharray="219 12 30 7 66 8 196 17 240"/>
+<circle cx="256" cy="256" r="151" fill="none" stroke="#443658" stroke-opacity=".44" stroke-width="8"/>
+<circle cx="256" cy="256" r="145" fill="none" stroke="url(#ring)" stroke-width="12" stroke-dasharray="219 12 30 7 66 8 196 17 240"/>
 <circle cx="256" cy="256" r="122" fill="none" stroke="#baffaf" stroke-width="4" opacity=".64" stroke-dasharray="18 8 34 9"/>
 <circle cx="256" cy="256" r="112" fill="none" stroke="#b3a5fa" stroke-width="3" opacity=".58"/>
 <path d="M256 92L271 132 257 147 241 132Z M420 257L381 273 365 258 381 240Z M256 419L241 380 256 365 271 380Z M91 256L131 240 145 256 130 272Z" fill="url(#bone)" stroke="#141329" stroke-width="6"/>
