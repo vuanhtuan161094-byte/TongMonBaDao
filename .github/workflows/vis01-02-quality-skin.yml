@@ -14,6 +14,11 @@ on:
       - 'godot/src/presentation/uiux/sect_equipment_material_v1.gd'
       - 'godot/src/presentation/p3/v63_combat_hud_v1.gd'
       - 'godot/art/uiux/quality/vis02_heaven_crystal_frame.svg'
+      - 'godot/art/tmb_original_v1/**'
+      - 'godot/src/presentation/p3/tmb_original_world_art_v1.gd'
+      - 'godot/src/presentation/p3/sect_isometric_world_v1.gd'
+      - 'godot/src/presentation/uiux/sect_facility_art_v2.gd'
+      - 'godot/tests/presentation/vis07_original_environment_test.gd'
       - '.github/workflows/vis01-02-quality-skin.yml'
   workflow_dispatch:
 permissions:
@@ -45,3 +50,4 @@ jobs:
         run: |
           bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/presentation/vis01_02_quality_visual_test.gd
           bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/presentation/vis02_06_compact_material_test.gd
+          bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/presentation/vis07_original_environment_test.gd
