@@ -37,6 +37,7 @@ const SKY_FRAMES := [
 const TALISMAN:Texture2D=preload("res://labs/combat_lab/talisman01/assets/thunder_talisman_atlas.webp")
 const FLOOR:Texture2D=preload("res://labs/combat_lab/talisman01/assets/thunder_cast_sigil.svg")
 const IMPACT:Texture2D=preload("res://labs/combat_lab/talisman01/assets/thunder_impact_burst.png")
+const CONTACT_FLOOR:Texture2D=preload("res://labs/combat_lab/talisman01/assets/thunder_contact_sigil.svg")
 const BG:Texture2D=preload("res://labs/combat_lab/poison05/remake_r6/assets/immortal_valley.svg")
 const ACTOR:Texture2D=preload("res://labs/character_family/assets/nu_doc_tu_v4_candidate/idle_4dir_APPROVED_UNCHANGED.png")
 var elapsed:=0.0
@@ -60,6 +61,9 @@ static func sky_gain(t:float)->float:
 static func bolt_gain(t:float)->float:
     if t<STORM_BEGIN or t>2.32:return 0.0
     return smoothstep(STORM_BEGIN,1.68,t)*(1.0-smoothstep(2.03,2.32,t))
+static func line_sweep_gain(t:float)->float:
+    if t<CONTACT_AT or t>2.42:return 0.0
+    return smoothstep(CONTACT_AT,CONTACT_AT+.12,t)*(1.0-smoothstep(2.13,2.42,t))
 static func hit_gain(t:float,idx:int)->float:
     if idx<0 or idx>=TARGET_LIMIT:return 0.0
     var start:=CONTACT_AT+float(idx)*.055
@@ -122,6 +126,12 @@ func _halo(at:Vector2,r:float,tint:Color)->void:
     draw_texture_rect(_glow,Rect2(at-Vector2.ONE*r,Vector2.ONE*(r*2)),false,tint)
 func _actor(at:Vector2,alpha:float=1.0)->void:
     draw_texture_rect_region(ACTOR,Rect2(at.x-72,at.y-163,144,163),Rect2(0,0,320,384),Color(.83,.78,.90,alpha))
+static func lateral_point(q:float,t:float,direction:int)->Vector2:
+    var f:=clampf(q,0.0,1.0)
+    var sign:float=-1.0 if direction==0 else 1.0
+    var jitter:=14.0*sin(f*29.0+t*22.0)+8.0*sin(f*77.0-t*37.0)
+    var curve:=17.0*sin(PI*f)+jitter*sin(PI*f)
+    return CENTER_HIT+Vector2(sign*202.0*f,curve)
 func _draw_storm(t:float)->void:
     var gain:=bolt_gain(t)
     if gain<.01:return
@@ -135,10 +145,11 @@ func _draw_storm(t:float)->void:
         var q:=reach*float(k+1)/45.0
         var point:=point_on_bolt(q,t)
         var weight:=gain*(.69+.31*sin(PI*q))
-        draw_line(prev,point,Color("6f42c3",weight*.28),29.0,true)
-        draw_line(prev,point,Color("a37bf1",weight*.57),12.2,true)
-        draw_line(prev,point,Color("f5e7ff",weight*.91),4.2,true)
-        draw_line(prev,point,Color("fffeff",weight*.98),1.7,true)
+        draw_line(prev,point,Color("663bbb",weight*.27),42.0,true)
+        draw_line(prev,point,Color("9165e3",weight*.46),20.0,true)
+        draw_line(prev,point,Color("c6a7ff",weight*.77),8.0,true)
+        draw_line(prev,point,Color("fff0ff",weight*.98),3.45,true)
+        draw_line(prev,point,Color("ffffff",weight*.99),1.65,true)
         if k%5==0:_halo(point,23.0,Color("e4c0ff",weight*.25))
         prev=point
     for b in range(2):
@@ -152,16 +163,33 @@ func _draw_storm(t:float)->void:
         draw_line(mid,end,Color("ad7de8",gain*.39),5.0,true)
         draw_line(root,mid,Color("fff2ff",gain*.82),1.6,true)
         draw_line(mid,end,Color("e5d1ff",gain*.62),1.2,true)
-    # The auxiliary horizontal line remains subordinate to the ONE primary sky bolt.
-    var sweep:=smoothstep(1.72,1.93,t)*(1.0-smoothstep(2.16,2.47,t))
+    # Only after the demo contact does the central hit bleed down the legally capped line.
+    # Two asymmetric real-light filaments with different head/tail timings; no straight laser.
+    var sweep:=line_sweep_gain(t)
     if sweep>.006:
-        for idx in [0,2]:
-            var dst:Vector2=CONTACTS[idx]
-            var middle:=CENTER_HIT.lerp(dst,.51)+Vector2(0,8.0*sin(t*17.0+float(idx)))
-            draw_line(CENTER_HIT,middle,Color("8861d7",sweep*.41),12.0,true)
-            draw_line(middle,dst,Color("8861d7",sweep*.36),9.0,true)
-            draw_line(CENTER_HIT,middle,Color("e4c5ff",sweep*.83),2.3,true)
-            draw_line(middle,dst,Color("f7e2ff",sweep*.76),2.0,true)
+        for direction in range(2):
+            var travel:=smoothstep(CONTACT_AT,CONTACT_AT+.20+float(direction)*.035,t)
+            var prev_lateral:Vector2=CENTER_HIT
+            for step in range(26):
+                var q:=travel*float(step+1)/26.0
+                var point_lateral:=lateral_point(q,t,direction)
+                var energy:=sweep*(.31+.69*sin(PI*(.12+.88*q)))
+                draw_line(prev_lateral,point_lateral,Color("6941bd",energy*.18),20.0,true)
+                draw_line(prev_lateral,point_lateral,Color("ab80ed",energy*.44),9.0,true)
+                draw_line(prev_lateral,point_lateral,Color("ffe9ff",energy*.78),2.45,true)
+                draw_line(prev_lateral,point_lateral,Color("ffffff",energy*.90),1.05,true)
+                if step%6==0:
+                    _halo(point_lateral,21.0,Color("a26ff1",energy*.16))
+                prev_lateral=point_lateral
+            if travel>.22:
+                var root:=lateral_point(.39,t,direction)
+                var sign:float=-1.0 if direction==0 else 1.0
+                var branch:=root+Vector2(sign*22.0,-32.0+float(direction)*8.0)
+                var end:=branch+Vector2(sign*12.0,-20.0)
+                draw_line(root,branch,Color("9561db",sweep*.24),8.0,true)
+                draw_line(branch,end,Color("9561db",sweep*.20),6.0,true)
+                draw_line(root,branch,Color("e8d0ff",sweep*.66),1.5,true)
+                draw_line(branch,end,Color("e8d0ff",sweep*.48),1.05,true)
 func _draw()->void:
     var t:=elapsed
     draw_texture_rect(BG,Rect2(0,0,1280,720),false)
@@ -182,6 +210,13 @@ func _draw()->void:
             var a:=float(j)*2.399+t*.45
             var p:=SKY+Vector2(cos(a)*158.0,sin(a)*145.0)
             _halo(p,10.0,Color("eacaff",gate*(.17+.04*float(j%3))))
+    # Ground scars are below and BEHIND all actors; they cannot masquerade as hits.
+    for idx in range(TARGET_LIMIT):
+        var local_hit:=hit_gain(t,idx)
+        if local_hit>.006:
+            var foot:Vector2=TARGETS[idx]
+            _halo(foot+Vector2(0,-2),62.0,Color("8d64cb",local_hit*.17))
+            draw_texture_rect(CONTACT_FLOOR,Rect2(foot-Vector2(92.0,43.0),Vector2(184.0,85.0)),false,Color(1,1,1,local_hit*.66))
     _actor(CASTER)
     for idx in range(TARGET_LIMIT):
         _actor(TARGETS[idx])
@@ -192,7 +227,7 @@ func _draw()->void:
         var pos:Vector2=CONTACTS[i]
         _halo(pos,118.0,Color("7950de",h*.35))
         _halo(pos,53.0,Color("fff5ff",h*.65))
-        var size:=Vector2.ONE*(204.0+40.0*(1.0-h))
+        var size:=Vector2.ONE*(238.0+44.0*(1.0-h))
         draw_texture_rect(IMPACT,Rect2(pos-size*.5,size),false,Color(1,1,1,h*.91))
     var dusk:=smoothstep(2.28,2.53,t)*(1.0-smoothstep(3.03,FADE_END,t))
     if dusk>.01:
