@@ -1,0 +1,123 @@
+name: VFX POI07 | Xuyen Cot Doc Cham original native Godot
+on:
+  workflow_dispatch:
+  push:
+    branches: [integration/pve-p0-playable-ui-20261103]
+    paths:
+      - 'godot/labs/combat_lab/poison07/**'
+      - 'godot/tests/labs/combat_lab/vfx_poi07_contract_test.gd'
+      - 'tools/vfx/generate_poi07_poison_needle.py'
+      - '.github/workflows/vfx-poi-07-xuyen-cot-doc-cham.yml'
+permissions:
+  contents: write
+  actions: write
+jobs:
+  poi07-native:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      GODOT_AUDIO_DRIVER: Dummy
+      GODOT_RENDERING_DRIVER: opengl3
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+      - name: Install official SHA-pinned Godot and dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq xvfb ffmpeg unzip python3-pil
+          curl --fail --location --retry 3 -o /tmp/godot472.zip 'https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip'
+          echo 'cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4  /tmp/godot472.zip' | sha256sum --check --strict
+          unzip -q /tmp/godot472.zip -d /tmp
+          sudo install -m0755 /tmp/Godot_v4.7.2-stable_linux.x86_64 /usr/local/bin/godot
+          mkdir -p "$RUNNER_TEMP/vfx-poi07"
+          godot --version | tee "$RUNNER_TEMP/vfx-poi07/engine.txt"
+          printf 'SOURCE_SHA=%s\nOWNER_VISUAL_PENDING\nPVE_HOLD\nV63_OFF\nNO_RIG\n' "$GITHUB_SHA" > "$RUNNER_TEMP/vfx-poi07/metadata.txt"
+      - name: Bake original RGBA poses and verify outer alpha borders
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 tools/vfx/generate_poi07_poison_needle.py | tee "$RUNNER_TEMP/vfx-poi07/bake.log"
+          python3 - <<'PY'
+          from PIL import Image
+          p="godot/labs/combat_lab/poison07/assets/"
+          for name,dims,cell,count in [("doc_cham_needle_12.png",(1536,576),(384,192),12),("doc_cham_contact_08.png",(1024,512),(256,256),8)]:
+              im=Image.open(p+name).convert("RGBA")
+              assert im.size==dims, (name,"size")
+              for i in range(count):
+                  x=i%4*cell[0];y=i//4*cell[1]
+                  a=im.crop((x,y,x+cell[0],y+cell[1])).getchannel("A")
+                  assert a.getbbox(),(name,i,"empty")
+                  assert all(a.crop(box).getextrema()[1]==0 for box in [(0,0,cell[0],1),(0,cell[1]-1,cell[0],cell[1]),(0,0,1,cell[1]),(cell[0]-1,0,cell[0],cell[1])]),(name,i,"alpha bleed")
+              print(name,"RGBA_PASS",count)
+          PY
+          sha256sum godot/labs/combat_lab/poison07/assets/doc_cham_{needle_12,contact_08}.png > "$RUNNER_TEMP/vfx-poi07/atlas-sha256.txt"
+      - name: Restore known Stage A actor reference without modifying tracked files
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat .github/assets/p3/female_stage_a/part{01..14}.b64 .github/assets/p3/female_stage_a/part15a.b64 .github/assets/p3/female_stage_a/part15b.b64 .github/assets/p3/female_stage_a/part{16..20}.b64 | tr -d '\r\n\t ' | base64 --decode > /tmp/tmb_stage_a_pack.zip
+          test "$(stat -c%s /tmp/tmb_stage_a_pack.zip)" -eq 44838
+          echo '6a4213b9129ffb3f438c21cbb5326672ddf8915323836bf80cb33b8e5fabfdca  /tmp/tmb_stage_a_pack.zip' | sha256sum --check --strict
+          unzip -q /tmp/tmb_stage_a_pack.zip -d .
+      - name: Strict Godot 4.7.2 import parse focused contract on exact source
+        shell: bash
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/vfx-poi07"
+          bash tools/qa/run_godot_strict.sh --headless --path godot --import 2>&1 | tee "$d/import.log"
+          bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://labs/combat_lab/poison07/xuyen_cot_doc_cham.gd 2>&1 | tee "$d/parse.log"
+          bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/labs/combat_lab/vfx_poi07_contract_test.gd 2>&1 | tee "$d/focused.log"
+          grep -Fxq 'VFX_POI07_RESULT=PASS failures=0' "$d/focused.log"
+      - name: Native Godot 1280x720 MP4 GIF and fourteen frame captures
+        shell: bash
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/vfx-poi07"
+          xvfb-run -a -s '-screen 0 1280x720x24' bash tools/qa/run_godot_strict.sh --path godot --resolution 1280x720 --fixed-fps 60 --write-movie "$d/POI07-native.avi" --quit-after 174 res://labs/combat_lab/poison07/xuyen_cot_doc_cham.tscn 2>&1 | tee "$d/movie.log"
+          grep -Fq 'VFX_POI07_READY' "$d/movie.log"
+          test -s "$d/POI07-native.avi"
+          ffmpeg -y -hide_banner -loglevel error -i "$d/POI07-native.avi" -pix_fmt yuv420p -c:v libx264 -crf 16 "$d/POI07-native.mp4"
+          ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of default=noprint_wrappers=1 "$d/POI07-native.mp4" | tee "$d/dimensions.txt"
+          grep -Fxq width=1280 "$d/dimensions.txt"
+          grep -Fxq height=720 "$d/dimensions.txt"
+          for at in 0.09 0.21 0.33 0.44 0.56 0.73 0.92 1.12 1.30 1.44 1.56 1.81 2.09 2.32; do
+            ffmpeg -y -hide_banner -loglevel error -ss "$at" -i "$d/POI07-native.mp4" -frames:v 1 "$d/frame-$at.png"
+          done
+          ffmpeg -y -hide_banner -loglevel error -i "$d/POI07-native.mp4" -vf 'fps=8,scale=640:-1:flags=lanczos' -loop 0 "$d/POI07-native.gif"
+          sha256sum "$d/"*.mp4 "$d/"*.png "$d/"*.gif > "$d/SHA256SUMS.txt"
+          rm -f "$d/POI07-native.avi"
+      - name: Commit original atlases to SAME branch, fast-forward only, and trigger exact SHA
+        if: success() && github.event_name == 'push'
+        shell: bash
+        run: |
+          set -euo pipefail
+          branch='integration/pve-p0-playable-ui-20261103'
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add godot/labs/combat_lab/poison07/assets/doc_cham_needle_12.png godot/labs/combat_lab/poison07/assets/doc_cham_contact_08.png
+          if git diff --cached --quiet; then echo 'ASSETS_ALREADY_TRACKED'; exit 0; fi
+          git fetch origin "$branch"
+          if test "$(git rev-parse FETCH_HEAD)" != "$GITHUB_SHA"; then echo 'BRANCH_MOVED_NO_PUSH'; exit 0; fi
+          git commit -m 'art(poi07): track generated original needle and contact RGBA atlases'
+          git push origin "HEAD:refs/heads/$branch"
+          gh workflow run vfx-poi-07-xuyen-cot-doc-cham.yml --repo "$GITHUB_REPOSITORY" --ref "$branch" || echo 'FINAL_DISPATCH_FAILED'
+      - name: Upload original atlases and genuine Godot evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vfx-poi07-${{ github.sha }}
+          retention-days: 14
+          if-no-files-found: warn
+          path: |
+            ${{ runner.temp }}/vfx-poi07/*.log
+            ${{ runner.temp }}/vfx-poi07/*.txt
+            ${{ runner.temp }}/vfx-poi07/*.png
+            ${{ runner.temp }}/vfx-poi07/*.mp4
+            ${{ runner.temp }}/vfx-poi07/*.gif
+            godot/labs/combat_lab/poison07/assets/doc_cham_needle_12.png
+            godot/labs/combat_lab/poison07/assets/doc_cham_contact_08.png
