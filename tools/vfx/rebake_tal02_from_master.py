@@ -20,6 +20,14 @@ active=source.crop(box)
 active=active.resize((952,196),Image.Resampling.LANCZOS)
 beam=Image.new('RGBA',(1024,256),(0,0,0,0))
 beam.alpha_composite(active,(36,28))
+# Native 1280x720 anchor correction: original painted bolt climbed diagonally.
+# x-dependent shear maintains the painted light without introducing a code-drawn
+# white tube: the real hot current now links the palm to targets horizontally.
+base=np.asarray(beam).copy()
+XX,YY=np.meshgrid(np.arange(1024,dtype=np.float32),np.arange(256,dtype=np.float32))
+vertical_shift=np.interp(XX,[80.,760.],[-90.,78.]).astype(np.float32)
+base=cv2.remap(base,XX,YY-vertical_shift,cv2.INTER_LINEAR,borderMode=cv2.BORDER_CONSTANT,borderValue=(0,0,0,0))
+beam=Image.fromarray(base,'RGBA')
 atlas=Image.new('RGBA',(4096,768),(0,0,0,0))
 H,W=256,1024
 for idx in range(10):

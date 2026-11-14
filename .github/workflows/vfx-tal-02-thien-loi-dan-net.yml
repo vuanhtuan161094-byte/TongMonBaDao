@@ -55,7 +55,13 @@ jobs:
               im=Image.open(path)
               assert im.size==size,(path,im.size,size)
               assert 'A' in im.getbands() or 'transparency' in im.info,(path,'missing alpha')
-          print('VFX_TAL02_PAINTED_RGBA_ASSETS=PASS')
+          # Real illuminated pixels must reach both ends of the painted LINE, not float centrally.
+          atlas=Image.open('godot/labs/combat_lab/talisman02/assets/tal02_thunder_flipbook.webp').convert('RGBA')
+          frame=atlas.crop((1024,512,2048,768)) # final sprite, index 9
+          a=frame.getchannel('A')
+          assert sum(v>20 for v in a.crop((50,0,230,256)).getdata())>800,'start anchor alpha absent'
+          assert sum(v>20 for v in a.crop((750,0,960,256)).getdata())>800,'end/contact alpha absent'
+          print('VFX_TAL02_PAINTED_RGBA_ASSETS=PASS + FULL_LINE_COVERAGE')
           PY
 
       - name: Restore existing Stage A prerequisites without changing tracked files
