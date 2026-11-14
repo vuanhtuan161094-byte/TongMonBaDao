@@ -1,0 +1,15 @@
+# VFX SPRITE-FIRST — mandatory art direction, 2026-11-14
+
+Authority: read AGENTS.md, TMB_VFX_ART_FIRST_SINGLE_SKILL_SOP_V3_20261114.md, then this file, and the individual skill packet. Owner permits and encourages real original **sprites** whenever they improve appearance.
+
+## Production requirements
+1. The deliverable is professional animated skill VFX in **Godot 4.7.2 GL Compatibility at 1280×720**, not a still, a giant primitive SVG or a shader technical exercise. Prefer pose-specific original transparent PNG sprite atlases/flipbooks for complex fire, qi, creatures, debris, impacts and organic forms. Individually authored SVG frames are allowed where their native rendered quality is high; never mass-recolor a single static vector shape. Shader, glow, particles, trails and lights are supplemental.
+2. Source truth first: read exact skill ID, branch, element, cast, range, effect, shape, target cap and confirmed Combat V2 event semantics. Art must never invent hit, AoE, damage, mark, DoT, guard, summon, heal, or another target.
+3. Before coding, design an 8–12-keyframe storyboard with charge, release, motion/sustain, real-event contact and natural fade. Sprite frame changes must depict actual motion, not only rotate/enlarge a still. Alpha/pivots/layering behind and in front of real actors must be checked.
+4. Implement **one original master skill at a time** in an isolated Godot Combat Lab; check native 1x appearance on both dark and bright terrain. Produce real Godot 1280×720 MP4, GIF and 8+ timed stills. Inspect motion, light material, silhouette, contact, fade and actor occlusion; fix unsatisfactory phases *before* owner review. Tech test/CI success cannot be labeled artistic approval; fixed video 60fps is not device FPS.
+5. Keep `OWNER_VISUAL_PENDING` and `PVE_INTEGRATION_HOLD` until actual owner decision and separate PvE authorization. V6.3 OFF. No rig, Codex, branches, merges, gameplay balance/HP, SaveService, economy or AI edits. Do not redistribute commercial JX / Kiếm Thế / Source VL / Source A sprites with unverified rights.
+6. **Parallel chats:** separate file paths and tests/workflows by school. Fist chat owns `godot/labs/combat_lab/fist*/**`, Poison owns `poison*/**`, Talisman owns `talisman*/**`. Never edit another chat's accepted effects. Recheck newest PR #72 HEAD for each commit, avoid force-push, document source SHA and QA run.
+7. Each future VFX chat must read this document automatically; user need not restate technical art requirements.
+
+## Fist / Quyền Tu
+Three independent identities: Bá Quyền (heavy directional short-range pressure and amber/fire contact), Kim Cang (earth-weighted guard and gold-white restrained protection), Huyết Quyền (nether/blood flow and event-bound marks). These are visual identities, not new gameplay effects. 183 exact skill IDs, 17 CAST masters, 18 passive/innate families. First master: `tmb.skill.fist.ba_quyen.active_01.human`, Khai Sơn Trọng Quyền; effect damage, fire, single_target 1, cast 0.45, range 2.8. Do not inflate into AoE or a fire DoT. Require an original multi-frame power buildup, short strike, weighted impact, and decay before moving on.
