@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""FIST02 / Phi Than Lien Cuoc: original guard/footwork atlas. VIEW-ONLY.
+"""FIST02 V2 / Phi Than Lien Cuoc: original guard/footwork atlas. VIEW-ONLY.
 Original first-party 12 twin-heel flame-stream poses, 8 asymmetric crossing-guard
 poses, and 8 footprint-dust poses. Not damage, no rig, no proprietary sprite.
 Requires Python Pillow and NumPy; all three 320px RGBA cell atlases are deterministic.
@@ -70,17 +70,17 @@ def _path_light(img, path, seed, base_alpha=1.0):
     rng=random.Random(seed)
     dark=rgba_layer()
     d=ImageDraw.Draw(dark,"RGBA")
-    stroke(dark_draw:=d, path, (99,39,35,int(47*base_alpha)), 17)
-    img.alpha_composite(dark.filter(ImageFilter.GaussianBlur(13*S)))
+    stroke(dark_draw:=d, path, (149,67,44,int(96*base_alpha)), 26)
+    img.alpha_composite(dark.filter(ImageFilter.GaussianBlur(10*S)))
     d=ImageDraw.Draw(img,"RGBA")
-    stroke(d,path,(165,71,42,int(49*base_alpha)),8.1)
-    stroke(d,path[3:-2],(246,133,57,int(96*base_alpha)),4.3)
-    stroke(d,path[len(path)//3:],(255,212,126,int(128*base_alpha)),1.75)
+    stroke(d,path,(205,91,46,int(145*base_alpha)),11.0)
+    stroke(d,path[3:-2],(255,158,72,int(221*base_alpha)),5.8)
+    stroke(d,path[len(path)//3:],(255,235,168,int(233*base_alpha)),3.2)
     # broken uneven internal highlights: different placement on each frame
     for j in range(7):
         start=rng.randint(3,max(3,len(path)-9))
         segment=path[start:start+rng.randint(3,7)]
-        stroke(d,segment,(255,238,183,rng.randint(44,136)),rng.uniform(.48,1.3))
+        stroke(d,segment,(255,248,207,rng.randint(127,211)),rng.uniform(.48,1.3))
 
 def heel_pose(k):
     """Two separate swift heel-energy streaks; hero form is not a combat hit."""
@@ -120,7 +120,7 @@ def guard_pose(k):
             a=-0.77+2.47*t/57+j*2.10+phase*.09
             r=98+lane*10+9*sin(2.9*a+phase*.9+j)
             path.append((160+r*cos(a),160+(.86*r)*sin(a)))
-        _path_light(im,path,RANDOM_SEED+620+k*17+j,.61 if j!=1 else .83)
+        _path_light(im,path,RANDOM_SEED+620+k*17+j,.83 if j!=1 else 1.0)
     d=ImageDraw.Draw(im,"RGBA")
     for m in range(9):
         a=m*2.399+phase*.31
