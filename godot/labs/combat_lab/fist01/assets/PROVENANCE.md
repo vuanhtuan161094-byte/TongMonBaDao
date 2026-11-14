@@ -1,0 +1,2 @@
+# FIST-01 original VFX sprite provenance
+Original first-party TMB source: 8 charge, 8 flight, 8 impact pose-specific SVG images, each 320x320, transparent alpha, uneven hand-drawn-style brush curves and amber-white luminous falloffs. Different geometry/art per pose, not a sprite tinted for different schools. Godot import results are textures; source SVG retained for editability. Final image quality must be judged from REAL Godot movie at 1x. No external proprietary sprite pixels used. Godot source script makes limited feathered glow and short afterglow separately; no rig.
