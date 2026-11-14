@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+<defs>
+<linearGradient id="sky" x1="0" y1="0" x2=".65" y2="1"><stop stop-color="#0b0e28"/><stop offset=".32" stop-color="#211536"/><stop offset=".64" stop-color="#261d36"/><stop offset="1" stop-color="#091422"/></linearGradient>
+<radialGradient id="moon"><stop stop-color="#d6f4dc" stop-opacity=".63"/><stop offset=".14" stop-color="#b2ced1" stop-opacity=".26"/><stop offset=".49" stop-color="#a38ac5" stop-opacity=".12"/><stop offset="1" stop-color="#513672" stop-opacity="0"/></radialGradient>
+<radialGradient id="torch"><stop stop-color="#f6d6a0" stop-opacity=".77"/><stop offset=".23" stop-color="#c793ad" stop-opacity=".3"/><stop offset="1" stop-color="#554277" stop-opacity="0"/></radialGradient>
+<linearGradient id="ground" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#201d35"/><stop offset=".54" stop-color="#141c2f"/><stop offset="1" stop-color="#090f1f"/></linearGradient>
+<radialGradient id="haze"><stop stop-color="#786f9e" stop-opacity=".24"/><stop offset="1" stop-color="#43355c" stop-opacity="0"/></radialGradient>
+</defs>
+<rect width="1280" height="720" fill="url(#sky)"/>
+<ellipse cx="1105" cy="120" rx="245" ry="217" fill="url(#moon)"/><circle cx="1105" cy="112" r="48" fill="#a4c1bd" opacity=".34"/>
+<path d="M0 370Q88 259 196 339Q258 226 381 322Q483 217 582 338Q679 225 795 340Q903 255 970 310Q1045 249 1131 332Q1201 269 1280 326L1280 490L0 491Z" fill="#292343" opacity=".58"/>
+<path d="M0 434Q130 350 266 394Q383 309 492 410Q622 334 740 408Q850 342 991 416Q1105 343 1280 404L1280 520L0 520Z" fill="#121d32" opacity=".86"/>
+<!-- distant pagoda: three tiered xianxia temple silhouettes -->
+<g fill="#101827" opacity=".83">
+<path d="M143 415L143 321L137 321L137 299Q181 290 219 299L218 321L212 321L212 416Z"/>
+<path d="M122 310Q148 308 179 273Q207 310 243 310L227 321L130 321Z"/>
+<path d="M135 283Q155 282 177 252Q198 283 222 285L211 297L145 297Z"/>
+<path d="M165 265L170 228L183 228L187 265Z"/>
+<path d="M1006 411L1006 318L1000 318L1000 296Q1046 288 1083 296L1083 318L1075 318L1075 414Z"/>
+<path d="M982 310Q1020 306 1044 276Q1077 311 1104 309L1091 323L994 323Z"/>
+<path d="M995 289Q1020 282 1043 251Q1065 283 1089 286L1074 299L1010 299Z"/>
+</g>
+<path d="M0 428Q248 408 464 439Q693 407 914 435Q1123 419 1280 432L1280 720L0 720Z" fill="url(#ground)"/>
+<!-- dark stone slab perspective, discreet so VFX stays the hero -->
+<g fill="none" stroke="#95899e" opacity=".088" stroke-width="2.5">
+<path d="M0 482Q632 500 1280 483M0 539Q640 561 1280 541M0 616Q640 631 1280 616M0 701Q638 705 1280 697"/>
+<path d="M562 443L132 720M613 443L445 720M666 443L720 720M716 443L1094 720"/>
+</g>
+<ellipse cx="650" cy="486" rx="490" ry="122" fill="url(#haze)"/>
+<ellipse cx="933" cy="548" rx="410" ry="157" fill="url(#haze)"/>
+<ellipse cx="174" cy="477" rx="220" ry="139" fill="url(#haze)" opacity=".53"/>
+<g><ellipse cx="117" cy="285" rx="83" ry="85" fill="url(#torch)"/><ellipse cx="117" cy="285" rx="7" ry="14" fill="#f9ddbd" opacity=".65"/>
+<ellipse cx="1136" cy="304" rx="73" ry="68" fill="url(#torch)"/><ellipse cx="1136" cy="304" rx="6" ry="13" fill="#f8ddad" opacity=".60"/></g>
+<!-- distant plum-bloom branches at frame edges -->
+<g stroke="#3c2947" stroke-width="8" fill="none" opacity=".76">
+<path d="M0 125L148 201L224 249M78 167L68 241M131 196L196 158M1280 150L1161 222L1079 237M1200 193L1225 262M1163 222L1120 180"/>
+</g>
+<g fill="#a987bd" opacity=".34">
+<circle cx="68" cy="242" r="7"/><circle cx="195" cy="158" r="6"/><circle cx="220" cy="248" r="7"/><circle cx="1103" cy="182" r="5"/><circle cx="1077" cy="238" r="6"/><circle cx="1226" cy="261" r="7"/>
+</g></svg>
