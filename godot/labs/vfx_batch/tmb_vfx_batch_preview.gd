@@ -231,7 +231,8 @@ func _card(f: Dictionary, box: Rect2, t: float, n: int) -> void:
     var u := travel_at(t)
     var is_circle := str(f.get("shape","")) == "circle"
     var kind := visual_kind(f)
-    var is_support := kind == "support" or kind == "guard" or kind == "summon_visual_only" or kind == "zone_visual_only"
+    var support := kind == "support" or kind == "guard"
+    var zone := kind == "zone_visual_only"
     var ult := str(f.get("slot","")) == "ultimate"
     draw_rect(box,Color("18232d"))
     draw_rect(box,school_color.darkened(0.58),false,1.25)
@@ -246,58 +247,79 @@ func _card(f: Dictionary, box: Rect2, t: float, n: int) -> void:
         draw_line(Vector2(field.position.x,y),Vector2(field.end.x,y+8.0),Color("647f8c",0.11),1.0)
     var base := field.position
     var caster := base+Vector2(106,166)
-    var enemy := base+Vector2(445,164)
-    var enemy2 := enemy+Vector2(69,-6)
-    var enemy3 := enemy+Vector2(-67,12)
-    _halo(caster+Vector2(0,6),45.0,Color("0b131d",0.65))
+    var enemy := base+Vector2(442,163)
+    var enemy2 := enemy+Vector2(71,-4)
+    var enemy3 := enemy+Vector2(-69,11)
+    _halo(caster+Vector2(0,6),44.0,Color("0b131d",0.65))
     _halo(enemy+Vector2(0,6),42.0,Color("0b131d",0.65))
     _actor(caster,0.34,Color.WHITE)
     _actor(enemy,0.28,Color("bac8cf"))
     if is_circle:
         _actor(enemy2,0.24,Color("a9a6bf",0.83))
         _actor(enemy3,0.24,Color("a6c0a7",0.86))
-    var from := caster+Vector2(23,-46)
-    var dest := enemy+Vector2(-3,-56)
-    if is_support: dest = caster+Vector2(5,-52) if kind=="guard" else enemy+Vector2(-3,-49)
-    if kind=="zone_visual_only": dest = enemy+Vector2(-10,-9)
-    var travel := from.lerp(dest,u)+Vector2(0,-26.0*sin(PI*u))
-    var active := 1.0-smoothstep(PREVIEW_CONTACT-0.13,PREVIEW_CONTACT+0.16,t)
-    var impact := smoothstep(PREVIEW_CONTACT-0.17,PREVIEW_CONTACT+0.29,t)*(1.0-smoothstep(2.75,PREVIEW_FADE,t))
-    var start_alpha := smoothstep(0.0,0.40,t)
-    if t < PREVIEW_CONTACT+0.19:
-        var early := start_alpha*active
-        var p := travel if t>=PREVIEW_RELEASE else from
-        var size := (0.22 if t < PREVIEW_RELEASE else 0.29+0.06*u) * (1.13 if ult else 1.0)
-        var angle := -0.19+0.11*sin(10.0*t+float(seed%7))
-        if kind=="guard" or kind=="support": angle = 0.07*sin(t*3.0)
+    var from := caster+Vector2(27,-48)
+    var dest := enemy+Vector2(-1,-36)
+    if support:
+        dest = caster+Vector2(1,-42) if kind=="guard" else enemy+Vector2(0,-37)
+    if zone:
+        dest = enemy+Vector2(-5,-2)
+    var path := from.lerp(dest,u)+Vector2(0,-24.0*sin(PI*u))
+    var early := smoothstep(0.0,0.30,t)*(1.0-smoothstep(PREVIEW_CONTACT-0.16,PREVIEW_CONTACT+0.12,t))
+    var impact := smoothstep(PREVIEW_CONTACT-0.12,PREVIEW_CONTACT+0.19,t)*(1.0-smoothstep(2.52,PREVIEW_FADE,t))
+    var is_blade := school == "sword" or school == "blade" or school == "dual_blade"
+    var is_arrow := school == "bow" or school == "spear" or key == "poison"
+    var is_seal := school == "talisman" or school == "curse" or school == "formation"
+    if t < PREVIEW_CONTACT+0.12 and early>0.003:
+        var pos := path if t>=PREVIEW_RELEASE else from
+        var scale := (0.083 if t < PREVIEW_RELEASE else 0.112+0.045*u)*(1.13 if ult else 1.0)
+        if key == "cloud": scale*=1.42
+        var angle := -0.18+0.10*sin(t*7.5+float(seed%7))
+        if is_blade: angle = -0.66+0.15*sin(t*3.0)
+        if is_arrow: angle = -0.76+0.05*sin(t*6.0)
+        if is_seal: angle = 0.08*sin(t*4.0)
+        if support: angle = 0.04*sin(t*3.0)
         for j in range(3):
-            var lag := float(j+1)*0.09
-            if t > PREVIEW_RELEASE+lag and t < PREVIEW_CONTACT:
+            var lag := float(j+1)*0.074
+            if t>PREVIEW_RELEASE+lag and t<PREVIEW_CONTACT and not support and not zone:
                 var pu := travel_at(t-lag)
-                var at := from.lerp(dest,pu)+Vector2(0,-26*sin(PI*pu))
-                _paint(tex,at,size*(0.77-float(j)*0.1),angle,Color(school_color,early*(0.18-float(j)*0.04)))
-        _halo(p,52.0+34.0*u,Color(school_color,early*0.20))
-        _paint(tex,p,size,angle,Color(1.0,1.0,1.0,early))
+                var at := from.lerp(dest,pu)+Vector2(0,-24.0*sin(PI*pu))
+                _paint(tex,at,scale*(0.77-float(j)*0.12),angle,Color(school_color,early*(0.16-float(j)*0.04)))
+        _halo(pos,34.0+17.0*u,Color(school_color,early*0.19))
+        _paint(tex,pos,scale,angle,Color(1,1,1,early*0.91))
     if impact>0.002:
         var v := clampf((t-PREVIEW_CONTACT)/maxf(0.01,PREVIEW_FADE-PREVIEW_CONTACT),0.0,1.0)
-        var peak := smoothstep(0.0,0.26,v)
-        var corona := (0.82+0.08*sin(v*12.0))*(1.0-smoothstep(0.72,1.0,v))
-        var count := 3 if is_circle else 1
-        for j in range(count):
-            var at := dest
-            if is_circle:
-                at = [enemy,enemy2,enemy3][j]+Vector2(0,-57)
-            var sz := ((0.37+0.03*float(seed%4)) if is_circle else (0.43+0.025*float(seed%3)))*(1.25 if ult else 1.0)*peak
-            if kind=="zone_visual_only":
-                at = at+Vector2(0,32)
-                sz*=1.15
-            _halo(at,65.0+29.0*v,Color(school_color,impact*0.22))
-            _paint(tex,at,sz,0.07*sin(v*8.0+float(j)),Color(1.0,1.0,1.0,impact*(0.66+0.23*corona)))
-        for j in range(8 if ult else 5):
+        var peak := smoothstep(0.0,0.18,v)
+        var corona := (0.85+0.08*sin(v*13.0))*(1.0-smoothstep(0.68,1.0,v))
+        var fx_pos := dest
+        var sz := (0.145+0.018*float(seed%4))*(1.13 if ult else 1.0)*peak
+        if is_circle:
+            fx_pos = enemy+Vector2(0,-31)
+            sz = (0.33 if key=="cloud" else 0.23)*(1.14 if ult else 1.0)*peak
+        if zone:
+            fx_pos = enemy+Vector2(0,5)
+            sz = 0.25*(1.12 if ult else 1.0)*peak
+        if support:
+            sz = 0.20*(1.12 if ult else 1.0)*peak
+        _halo(fx_pos,49.0+19.0*v,Color(school_color,impact*0.16))
+        var angle2 := 0.025*sin(v*7.0+float(seed%5))
+        if is_blade: angle2 = -0.44+0.21*v
+        if is_arrow: angle2 = -0.67
+        if is_seal: angle2 = 0.11*sin(v*4.0)
+        _paint(tex,fx_pos,sz,angle2,Color(1,1,1,impact*(0.53+0.19*corona)))
+        # Repaint dummies over the low-lying area layer. No VFX is allowed to erase the target.
+        if is_circle or support or zone:
+            if kind=="guard":
+                _actor(caster,0.34,Color.WHITE)
+            else:
+                _actor(enemy,0.28,Color("bac8cf"))
+                if is_circle:
+                    _actor(enemy2,0.24,Color("a9a6bf",0.83))
+                    _actor(enemy3,0.24,Color("a6c0a7",0.86))
+        for j in range(7 if ult else 4):
             var k := float(j)
-            var phi := k*2.399+float(seed%11)*0.2
-            var p := dest+Vector2(cos(phi)*(20.0+68.0*v),sin(phi)*(15.0+55.0*v))
-            _halo(p,5.0+3.0*(1.0-v),Color(school_color,impact*0.30))
+            var phi := k*2.399+float(seed%11)*0.22
+            var p := fx_pos+Vector2(cos(phi)*(17.0+46.0*v),sin(phi)*(13.0+35.0*v))
+            _halo(p,4.5+2.0*(1.0-v),Color(school_color,impact*0.28))
     _text(box.position+Vector2(17,263),str(n+1).pad_zeros(3)+"  |  "+phase_at(t).to_upper()+"  |  "+str(f.get("status","BATCH_PREVIEW")).replace("BATCH_PREVIEW_UNREVIEWED","ART PENDING"),11,Color("a7bdb9"))
 
 func _actor(at: Vector2, scale: float, tint: Color) -> void:
