@@ -86,6 +86,7 @@ The sandbox lacks a native checkout. Strict import used reconstructed snapshot `
 - [Source → sink map](source_sink_map.csv)
 - [1/7/30-day source scenario log lines](source_scenario_outputs.csv)
 - [Findings and unapproved options](findings.csv)
+- [Numerical decision sensitivities (unapproved)](decision_sensitivities.csv)
 - [Sanitized raw Godot logs](raw_logs_sanitized.zip)
 - [Read-only helper source](qa_helper/eco_bal01_readonly_matrix_test.gd)
 
