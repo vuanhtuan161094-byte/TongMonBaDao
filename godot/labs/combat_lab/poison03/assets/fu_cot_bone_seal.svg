@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+<defs>
+<radialGradient id="m"><stop stop-color="#baffc4" stop-opacity=".36"/><stop offset=".46" stop-color="#87f8ac" stop-opacity=".12"/><stop offset="1" stop-color="#7b48cf" stop-opacity="0"/></radialGradient>
+<linearGradient id="ring"><stop stop-color="#e3ffd3"/><stop offset=".25" stop-color="#63c9a5"/><stop offset=".6" stop-color="#252c49"/><stop offset=".86" stop-color="#a399df"/><stop offset="1" stop-color="#091320"/></linearGradient>
+<linearGradient id="bone"><stop stop-color="#ffffea"/><stop offset=".28" stop-color="#baf3ca"/><stop offset=".64" stop-color="#719a87"/><stop offset="1" stop-color="#222b48"/></linearGradient>
+</defs>
+<circle cx="256" cy="256" r="237" fill="url(#m)"/>
+<circle cx="256" cy="256" r="151" fill="#15182b" fill-opacity=".67" stroke="#141228" stroke-width="19"/>
+<circle cx="256" cy="256" r="145" fill="none" stroke="url(#ring)" stroke-width="19" stroke-dasharray="219 12 30 7 66 8 196 17 240"/>
+<circle cx="256" cy="256" r="122" fill="none" stroke="#baffaf" stroke-width="4" opacity=".64" stroke-dasharray="18 8 34 9"/>
+<circle cx="256" cy="256" r="112" fill="none" stroke="#b3a5fa" stroke-width="3" opacity=".58"/>
+<path d="M256 92L271 132 257 147 241 132Z M420 257L381 273 365 258 381 240Z M256 419L241 380 256 365 271 380Z M91 256L131 240 145 256 130 272Z" fill="url(#bone)" stroke="#141329" stroke-width="6"/>
+<!-- four curved occult vertebra, paired like a skeleton sigil -->
+<g fill="url(#bone)" stroke="#131329" stroke-width="8" stroke-linejoin="round">
+<path d="M206 185Q186 187 182 210L207 226 232 208 249 225 255 258Q218 258 198 235Q162 220 157 184Q180 158 207 185Z"/>
+<path d="M306 185Q326 187 330 210L305 226 280 208 263 225 257 258Q294 258 314 235Q350 220 355 184Q332 158 305 185Z"/>
+<path d="M201 327Q179 307 193 279L223 277 237 293 255 261Q261 306 239 324Q231 357 207 365Q180 361 201 327Z"/>
+<path d="M311 327Q333 307 319 279L289 277 275 293 257 261Q251 306 273 324Q281 357 305 365Q332 361 311 327Z"/>
+</g>
+<!-- central jade larvae / gu-rune -->
+<path d="M256 169Q294 201 290 256Q290 321 255 353Q220 322 222 258Q221 204 256 169Z" fill="#0e1325" stroke="#bdffc6" stroke-width="8"/>
+<path d="M256 188Q282 220 279 255Q274 298 256 331Q233 294 231 255Q229 221 256 188Z" fill="url(#bone)" stroke="#263d48" stroke-width="4"/>
+<path d="M238 232Q255 243 274 233 M233 259Q255 272 279 259 M239 288Q256 302 274 287" fill="none" stroke="#1a2b41" stroke-width="9"/>
+<path d="M239 229Q255 236 272 228 M237 258Q255 264 274 255 M241 287Q256 293 270 287" fill="none" stroke="#c8ffbc" stroke-width="3"/>
+<path d="M256 190L257 326" fill="none" stroke="#eaffd3" stroke-opacity=".53" stroke-width="4"/>
+<circle cx="255" cy="252" r="17" fill="#eaffb6" fill-opacity=".6"/>
+<path d="M256 136L270 167 256 182 242 167Z M376 257L344 273 331 257 344 241Z M256 376L242 344 256 332 270 344Z M136 256L169 241 180 256 168 271Z" fill="#d4ffd0" opacity=".72"/>
+<g fill="#b7ffcd"><circle cx="174" cy="172" r="6"/><circle cx="338" cy="172" r="6"/><circle cx="172" cy="338" r="6"/><circle cx="338" cy="338" r="6"/></g>
+<g stroke="#b0a0ef" stroke-width="3" fill="none" opacity=".6">
+<path d="M179 180L202 209M334 178L306 210M180 335L205 301M335 334L308 304"/>
+<path d="M252 113L255 136M399 254L378 257M256 402L256 381M109 257L132 258"/>
+</g>
+</svg>

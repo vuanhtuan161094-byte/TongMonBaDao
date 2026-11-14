@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+<defs>
+<radialGradient id="mist"><stop offset="0" stop-color="#baffbf" stop-opacity=".50"/><stop offset=".35" stop-color="#70ffb2" stop-opacity=".22"/><stop offset="1" stop-color="#6c5eff" stop-opacity="0"/></radialGradient>
+<radialGradient id="shell" cx=".31" cy=".20" r=".95"><stop stop-color="#b6e8a9"/><stop offset=".21" stop-color="#427f75"/><stop offset=".48" stop-color="#252f46"/><stop offset=".78" stop-color="#1a112c"/><stop offset="1" stop-color="#080917"/></radialGradient>
+<linearGradient id="shell2" x2=".93" y2=".85"><stop stop-color="#eaffd8"/><stop offset=".17" stop-color="#a0ebac"/><stop offset=".4" stop-color="#235c58"/><stop offset=".72" stop-color="#2c213e"/><stop offset="1" stop-color="#0b1124"/></linearGradient>
+<linearGradient id="jade" x2=".8" y2="1"><stop stop-color="#ffffd5"/><stop offset=".26" stop-color="#c9ffb9"/><stop offset=".58" stop-color="#5ccf94"/><stop offset="1" stop-color="#1b5660"/></linearGradient>
+<linearGradient id="violet"><stop stop-color="#b6a1ff"/><stop offset=".35" stop-color="#5c3c8c"/><stop offset="1" stop-color="#19172b"/></linearGradient>
+<linearGradient id="wing"><stop stop-color="#eaffef" stop-opacity=".74"/><stop offset=".16" stop-color="#7ee7be" stop-opacity=".47"/><stop offset=".54" stop-color="#534f89" stop-opacity=".34"/><stop offset="1" stop-color="#2a2442" stop-opacity=".05"/></linearGradient>
+</defs>
+<!-- original illustrated insect spirit; transparent stage -->
+<ellipse cx="256" cy="272" rx="215" ry="182" fill="url(#mist)" opacity=".55"/>
+<!-- separate far wings, dark edges prevent neon flatness -->
+<path d="M238 187C185 119 117 103 66 122C79 180 124 224 206 255L244 236Z" fill="url(#wing)" stroke="#7bc7c6" stroke-width="5" opacity=".83"/>
+<path d="M274 187C331 116 394 103 449 123C429 182 382 229 306 257L270 232Z" fill="url(#wing)" stroke="#886dcc" stroke-width="5" opacity=".87"/>
+<path d="M229 206C173 174 126 168 95 175M224 225C166 210 139 203 105 194M285 209C343 172 389 171 421 176M287 229C347 209 377 200 406 196" fill="none" stroke="#caffbd" stroke-width="3" stroke-opacity=".33"/>
+<path d="M211 205C168 144 127 133 95 137M301 203C352 147 395 136 417 142" fill="none" stroke="#d8b0ff" stroke-width="4" stroke-opacity=".32"/>
+<!-- six black segmented legs, behind body -->
+<g fill="none" stroke="#0b1025" stroke-width="22" stroke-linecap="round" stroke-linejoin="round">
+<path d="M214 260L147 259 107 310M214 300L136 321 108 390M231 341L176 373 171 443"/>
+<path d="M298 260L365 259 406 310M298 300L374 321 410 390M281 341L337 373 343 443"/>
+</g>
+<g fill="none" stroke="url(#shell2)" stroke-width="13" stroke-linecap="round" stroke-linejoin="round">
+<path d="M216 259L150 260 109 309M213 298L140 320 109 387M229 340L176 375 171 440"/>
+<path d="M296 259L362 260 402 309M299 298L373 320 409 387M282 340L336 375 344 440"/>
+</g>
+<g fill="none" stroke="#c8ffb7" stroke-opacity=".57" stroke-width="3" stroke-linecap="round">
+<path d="M210 264L148 262 122 293M210 300L147 325 123 370M235 344L181 380 172 426"/>
+<path d="M302 264L365 262 391 293M301 300L367 325 396 370M280 344L331 380 343 426"/>
+</g>
+<!-- abdomen taper and chitin shadow -->
+<path d="M228 245C204 290 205 363 237 412Q251 441 262 442Q284 425 291 398C309 352 313 285 285 244Z" fill="url(#shell)" stroke="#091023" stroke-width="13"/>
+<path d="M233 258C214 304 219 363 244 413Q255 430 266 414C291 361 301 300 283 256Z" fill="url(#shell2)" stroke="#8b9d9c" stroke-width="4"/>
+<path d="M232 280Q256 296 282 281M223 310Q258 332 290 312M220 340Q256 360 294 337M226 374Q256 395 286 370" fill="none" stroke="#161b31" stroke-width="14" opacity=".85"/>
+<path d="M232 276Q256 290 281 278M225 309Q256 324 289 307M224 338Q256 354 291 338M232 370Q255 384 281 366" fill="none" stroke="#a1fcac" stroke-width="4" stroke-opacity=".77"/>
+<path d="M258 285Q256 357 260 421" fill="none" stroke="#c9ffb5" stroke-opacity=".54" stroke-width="6"/>
+<!-- armoured symmetrical elytra at upper abdomen -->
+<path d="M244 232C195 205 180 244 198 296Q207 329 241 346Q256 311 255 248Z" fill="url(#shell2)" stroke="#121324" stroke-width="10"/>
+<path d="M267 232C316 205 334 246 314 298Q306 331 268 346Q257 313 257 246Z" fill="url(#shell)" stroke="#121324" stroke-width="10"/>
+<path d="M233 241Q211 272 223 319M280 242Q303 275 289 322" fill="none" stroke="#c9ffab" stroke-width="4" stroke-opacity=".81"/>
+<path d="M215 280L239 299M208 301L239 321M296 295L313 278M278 322L310 303" stroke="#a1a2ed" stroke-width="4" stroke-opacity=".64"/>
+<!-- thorax dark amethyst raised ridge and emerald engraved inset -->
+<path d="M210 193Q256 166 301 193L314 249Q287 272 256 282Q222 275 200 249Z" fill="url(#violet)" stroke="#0b0d22" stroke-width="11"/>
+<path d="M230 213Q257 189 282 213L285 239Q258 259 229 239Z" fill="url(#jade)" stroke="#dcffd1" stroke-width="4"/>
+<path d="M252 210L250 242M264 210L266 243" stroke="#18545c" stroke-width="4" opacity=".6"/>
+<!-- aggressive angular stag beetle head with two fang mandibles -->
+<path d="M200 163Q203 123 250 112Q303 111 315 159L299 198Q278 218 251 214Q218 212 201 190Z" fill="url(#shell2)" stroke="#0a0c1f" stroke-width="13"/>
+<path d="M210 163L222 141Q250 129 286 143L304 163L283 192L224 190Z" fill="url(#shell)" stroke="#baf9bf" stroke-opacity=".9" stroke-width="4"/>
+<path d="M215 157L229 149 252 166 279 148 300 159" fill="none" stroke="#d1ffbd" stroke-width="5" stroke-opacity=".81"/>
+<!-- two jade eyes and bright pupils -->
+<path d="M208 170L230 169 220 184 206 177Z" fill="#efffdc"/><path d="M284 169L304 171 306 178 291 184Z" fill="#ecffda"/>
+<circle cx="218" cy="175" r="4" fill="#24244d"/><circle cx="295" cy="175" r="4" fill="#24244d"/>
+<!-- two large hooked dark mandibles -->
+<path d="M211 193Q190 228 221 252Q205 229 236 209M300 192Q321 227 286 250Q309 224 275 208" fill="#13253b" stroke="#99e6bd" stroke-width="6" stroke-linejoin="round"/>
+<path d="M226 205L240 228 256 207 272 227 286 205" fill="none" stroke="#e5ffdd" stroke-width="4"/>
+<!-- ritual antennae: sharp curved blades -->
+<path d="M218 138Q176 88 140 81Q156 115 199 156M294 139Q335 84 372 80Q349 116 313 157" fill="none" stroke="#1b1330" stroke-width="15" stroke-linecap="round"/>
+<path d="M216 133Q174 88 148 83M296 132Q336 90 363 82" fill="none" stroke="#bdb3ff" stroke-width="5" stroke-linecap="round"/>
+<path d="M211 130L197 103M302 130L317 102" stroke="#adffc4" stroke-width="4" stroke-linecap="round"/>
+<!-- hand painted specular highlights and scale sparks -->
+<path d="M228 132Q260 115 290 137M216 204Q220 212 226 214M287 205Q296 210 299 217" fill="none" stroke="#f6ffe4" stroke-width="4" stroke-opacity=".68"/>
+<g fill="#d8ffc1"><circle cx="172" cy="234" r="3" opacity=".72"/><circle cx="356" cy="230" r="3" opacity=".66"/><circle cx="241" cy="388" r="3" opacity=".54"/><circle cx="279" cy="382" r="3" opacity=".54"/></g>
+</svg>
