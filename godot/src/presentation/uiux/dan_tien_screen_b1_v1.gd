@@ -572,24 +572,24 @@ func _on_reject_pressed() -> void:
 	reject_candidate_requested.emit(_candidate_id())
 
 func _vis_run_first_reveal() -> void:
-    var recruited: Dictionary = _vm.get("recruited_disciple", {})
-    if recruited.is_empty():
-        return
-    var id := str(recruited.get("id", ""))
-    if id.is_empty() or _vis_reveal_seen.has(id):
-        return
-    _vis_reveal_seen[id] = true
-    if VIS_QUALITY.id_from_name(str(recruited.get("quality", ""))) != "heaven_defying":
-        return
-    if not VIS_QUALITY.effects_enabled or VIS_QUALITY.reduced_motion:
-        return
-    var panel := find_child("RecruitmentReveal", true, false) as PanelContainer
-    if panel == null:
-        return
-    # One-time, subsecond charge -> reveal -> quiet fade; never loops on rerenders.
-    panel.modulate.a = 0.0
-    var tween := panel.create_tween()
-    tween.tween_property(panel, "modulate:a", 0.18, 0.09)
-    tween.tween_interval(0.08)
-    tween.tween_property(panel, "modulate:a", 0.72, 0.17)
-    tween.tween_property(panel, "modulate:a", 1.0, 0.26)
+	var recruited: Dictionary = _vm.get("recruited_disciple", {})
+	if recruited.is_empty():
+		return
+	var id := str(recruited.get("id", ""))
+	if id.is_empty() or _vis_reveal_seen.has(id):
+		return
+	_vis_reveal_seen[id] = true
+	if VIS_QUALITY.id_from_name(str(recruited.get("quality", ""))) != "heaven_defying":
+		return
+	if not VIS_QUALITY.effects_enabled or VIS_QUALITY.reduced_motion:
+		return
+	var panel := find_child("RecruitmentReveal", true, false) as PanelContainer
+	if panel == null:
+		return
+	# One-time, subsecond charge -> reveal -> quiet fade; never loops on rerenders.
+	panel.modulate.a = 0.0
+	var tween := panel.create_tween()
+	tween.tween_property(panel, "modulate:a", 0.18, 0.09)
+	tween.tween_interval(0.08)
+	tween.tween_property(panel, "modulate:a", 0.72, 0.17)
+	tween.tween_property(panel, "modulate:a", 1.0, 0.26)

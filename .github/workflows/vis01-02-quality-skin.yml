@@ -35,5 +35,7 @@ jobs:
         run: godot --headless --path godot --import
       - name: Strict parse VIS test
         run: bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://tests/presentation/vis01_02_quality_visual_test.gd
+      - name: Strict parse real B1 Dẫn Tiên UI dependency
+        run: bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://src/presentation/uiux/dan_tien_screen_b1_v1.gd
       - name: Run VIS focused contract
         run: bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/presentation/vis01_02_quality_visual_test.gd
