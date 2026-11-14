@@ -71,6 +71,7 @@ const V3_ART = preload("res://src/presentation/uiux/sect_building_art_variant_v3
 const VIS07_APPROVED = preload("res://src/presentation/p3/tmb_approved_building_art_v4.gd")
 const VIS08_ORIGINAL_BUILDINGS = preload("res://src/presentation/p3/tmb_original_building_art_v5.gd")
 const VIS09_HANDPAINT = preload("res://src/presentation/p3/tmb_handpaint_building_art_v6.gd")
+const VIS10_B_DRAFT = preload("res://src/presentation/p3/tmb_rotation_b_candidate_v1.gd")
 const MAP_D2_SITE_SIZE := {
     "mine":Vector2(166,121),
     "linh_forest":Vector2(166,121),
@@ -176,6 +177,10 @@ var source_art: SectMap25SourceArt
 var render_art: Dictionary = {}
 # Experimental visual-only artwork is separate from source_art.status().
 var candidate_site_art: Dictionary = {}
+# VIS-10: transient rotation preview only. No persisted building direction
+# exists in BuildingState; default remains approved A for all 5 houses + mine.
+var vis10_b_preview_enabled := false
+var vis10_preview_directions: Dictionary = {}
 # VIS-07 original Mine asset state, used by bounded 1x LOD (no per-frame loads).
 var vis07_mine_owner_art_loaded := false
 # Presentation-only; never persisted or used as production authority.
@@ -785,6 +790,33 @@ func _row(dest: StringName, instance_id: StringName, text_label: String, index: 
         # Stable, display-only isometric camera view. No persisted rotation exists.
         "view_direction":"B" if managed and index % 2 == 0 else "A"
     }
+
+## VIS-10 editor/preview API. Never modifies BuildingState or SaveService.
+## Candidates B intentionally require explicit preview; they are not owner
+## visually approved and are not assumed to be camera-exact to A.
+func set_visual_rotation_preview(building_id: StringName, direction: StringName) -> bool:
+    var id := str(building_id)
+    var view := str(direction).to_upper()
+    if id.is_empty() or view not in ["A","B"]:
+        return false
+    var found := false
+    for item in display_instances:
+        if str(item.get("building_id","")) == id:
+            found = true
+            break
+    if not found:
+        return false
+    vis10_preview_directions[id] = view
+    vis10_b_preview_enabled = true
+    pve_static_queue_dirty = true
+    queue_redraw()
+    return true
+
+func clear_visual_rotation_preview() -> void:
+    vis10_preview_directions.clear()
+    vis10_b_preview_enabled = false
+    pve_static_queue_dirty = true
+    queue_redraw()
 
 func set_selected_visual_site(id: StringName) -> void:
     var next_id := str(id)
@@ -1467,6 +1499,9 @@ func _draw_compact_producer(p: Vector2,kind: String,overview: bool) -> void:
 
 func _draw_building(p: Vector2,kind: String, managed: bool, allow_detail: bool = true,
         building_id: String = "", view_direction: String = "A") -> void:
+    var chosen_view := view_direction
+    if vis10_b_preview_enabled and vis10_preview_directions.has(building_id):
+        chosen_view = str(vis10_preview_directions[building_id])
     # Always keep all 100 actual producers in display_instances, but do NOT
     # paint 100 huge candidate buildings in a far overview. This is view LOD,
     # not reducing valid BuildingState instances or workers.
@@ -1489,10 +1524,10 @@ func _draw_building(p: Vector2,kind: String, managed: bool, allow_detail: bool =
     # Each sprite is a separate image: two real views, two real working states.
     if managed and V3_ART.supported(StringName(kind)):
         var is_working_v3 := bool(variant_v3_running_ids.get(building_id,false))
-        var selected_v3 := V3_ART.sprite_path(StringName(kind),StringName(view_direction),is_working_v3)
+        var selected_v3 := V3_ART.sprite_path(StringName(kind),StringName(chosen_view),is_working_v3)
         var image_v3 := variant_v3_textures.get(selected_v3) as Texture2D
         if image_v3 == null and is_working_v3:
-            selected_v3 = V3_ART.sprite_path(StringName(kind),StringName(view_direction),false)
+            selected_v3 = V3_ART.sprite_path(StringName(kind),StringName(chosen_view),false)
             image_v3 = variant_v3_textures.get(selected_v3) as Texture2D
         if image_v3 != null:
             var target_v3 := V3_ART.display_size(StringName(kind))
@@ -1503,6 +1538,12 @@ func _draw_building(p: Vector2,kind: String, managed: bool, allow_detail: bool =
         var key := str(HOUSE_TEXTURES[kind])
         if render_art.has(key):
             var image: Texture2D = render_art[key]
+            # Explicit B preview only; no unapproved 2D sprite is selected
+            # automatically by orientation parity or game state.
+            if vis10_b_preview_enabled and chosen_view == "B":
+                var preview_b := VIS10_B_DRAFT.texture_for(StringName(kind))
+                if preview_b != null:
+                    image = preview_b
             var target: Vector2 = HOUSE_SIZES[kind]
             var offset := Vector2(0.0,-target.y*0.28)
             draw_texture_rect(image,Rect2(p+offset-target*0.5,target),false)
@@ -1512,6 +1553,10 @@ func _draw_building(p: Vector2,kind: String, managed: bool, allow_detail: bool =
     # If the optional svg import fails, the existing explicit fallback shows.
     if managed and candidate_site_art.has(kind):
         var vignette: Texture2D = candidate_site_art[kind]
+        if kind == "mine" and vis10_b_preview_enabled and chosen_view == "B":
+            var mine_b := VIS10_B_DRAFT.texture_for(&"mine")
+            if mine_b != null:
+                vignette = mine_b
         var size: Vector2 = MAP_D2_SITE_SIZE[kind]
         draw_texture_rect(vignette,
             Rect2(p-Vector2(size.x*0.5,size.y*0.79),size),false)
