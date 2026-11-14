@@ -91,21 +91,47 @@ jobs:
           ffmpeg -y -hide_banner -loglevel error -i "$d/POI07-native.mp4" -vf 'fps=8,scale=640:-1:flags=lanczos' -loop 0 "$d/POI07-native.gif"
           sha256sum "$d/"*.mp4 "$d/"*.png "$d/"*.gif > "$d/SHA256SUMS.txt"
           rm -f "$d/POI07-native.avi"
-      - name: Commit original atlases to SAME branch, fast-forward only, and trigger exact SHA
+      - name: Safely commit two original PNG atlases on latest shared PR HEAD and dispatch exact SHA
         if: success() && github.event_name == 'push'
         shell: bash
         run: |
           set -euo pipefail
           branch='integration/pve-p0-playable-ui-20261103'
+          asset_dir='godot/labs/combat_lab/poison07/assets'
+          cp "$asset_dir/doc_cham_needle_12.png" "$RUNNER_TEMP/doc_cham_needle_12.png"
+          cp "$asset_dir/doc_cham_contact_08.png" "$RUNNER_TEMP/doc_cham_contact_08.png"
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add godot/labs/combat_lab/poison07/assets/doc_cham_needle_12.png godot/labs/combat_lab/poison07/assets/doc_cham_contact_08.png
-          if git diff --cached --quiet; then echo 'ASSETS_ALREADY_TRACKED'; exit 0; fi
-          git fetch origin "$branch"
-          if test "$(git rev-parse FETCH_HEAD)" != "$GITHUB_SHA"; then echo 'BRANCH_MOVED_NO_PUSH'; exit 0; fi
-          git commit -m 'art(poi07): track generated original needle and contact RGBA atlases'
-          git push origin "HEAD:refs/heads/$branch"
-          gh workflow run vfx-poi-07-xuyen-cot-doc-cham.yml --repo "$GITHUB_REPOSITORY" --ref "$branch" || echo 'FINAL_DISPATCH_FAILED'
+          for attempt in 1 2 3; do
+            git fetch origin "$branch"
+            current="$(git rev-parse FETCH_HEAD)"
+            if ! git merge-base --is-ancestor "$GITHUB_SHA" "$current"; then
+              echo 'BRANCH_REWRITTEN_NO_PUSH' | tee "$RUNNER_TEMP/vfx-poi07/commit.txt"
+              exit 0
+            fi
+            if test -n "$(git diff --name-only "$GITHUB_SHA" "$current" -- godot/labs/combat_lab/poison07 tools/vfx/generate_poi07_poison_needle.py .github/workflows/vfx-poi-07-xuyen-cot-doc-cham.yml)"; then
+              echo 'POI07_SOURCE_CHANGED_NO_PUSH' | tee "$RUNNER_TEMP/vfx-poi07/commit.txt"
+              exit 0
+            fi
+            git reset --hard "$current"
+            mkdir -p "$asset_dir"
+            cp "$RUNNER_TEMP/doc_cham_needle_12.png" "$asset_dir/doc_cham_needle_12.png"
+            cp "$RUNNER_TEMP/doc_cham_contact_08.png" "$asset_dir/doc_cham_contact_08.png"
+            git add "$asset_dir/doc_cham_needle_12.png" "$asset_dir/doc_cham_contact_08.png"
+            if git diff --cached --quiet; then
+              echo 'ASSETS_ALREADY_TRACKED' | tee "$RUNNER_TEMP/vfx-poi07/commit.txt"
+              exit 0
+            fi
+            git commit -m 'art(poi07): commit original 12+8 RGBA flipbook atlases'
+            if git push origin "HEAD:refs/heads/$branch"; then
+              echo "POI07_BINARY_SHA=$(git rev-parse HEAD)" | tee "$RUNNER_TEMP/vfx-poi07/commit.txt"
+              gh workflow run vfx-poi-07-xuyen-cot-doc-cham.yml --repo "$GITHUB_REPOSITORY" --ref "$branch" || echo 'FINAL_EXACT_SHA_DISPATCH_FAILED'
+              exit 0
+            fi
+            echo "Concurrent writer advanced HEAD; retrying fast-forward attempt $attempt"
+          done
+          echo 'POI07_BINARY_COMMIT_BLOCKED_AFTER_THREE_RACES'
+          exit 1
       - name: Upload original atlases and genuine Godot evidence
         if: always()
         uses: actions/upload-artifact@v4
