@@ -22,10 +22,12 @@ func _run() -> void:
         var actual: Vector2 = LAB.flight_tip_at(timepoint)
         var ideal: Vector2 = LAB.PALM.lerp(LAB.CHEST,fraction)
         _check(actual.distance_to(ideal)<0.05,"strict straight constant-speed flight fraction "+str(fraction))
+    _check(LAB.charge_r4_frame_at(0.0)==0 and LAB.charge_r4_frame_at(LAB.CAST_END)==11,"charge atlas bounded")
+    _check(LAB.impact_r4_frame_at(LAB.CONTACT_AT)==0 and LAB.impact_r4_frame_at(LAB.FADE_END)==11,"contact atlas bounded")
     var source := FileAccess.get_file_as_string("res://labs/combat_lab/poison07/xuyen_cot_doc_cham.gd")
     for forbidden in ["SaveService.","MapBattleV2.","CombatV2.","apply_damage","apply_status","V63FeatureGates."]:
         _check(not source.contains(forbidden),"view-only: "+forbidden)
-    for path in [LAB.ATLAS_PATH,LAB.CONTACT_PATH]:
+    for path in [LAB.ATLAS_PATH,LAB.CONTACT_PATH,LAB.CHARGE_R4_PATH,LAB.CONTACT_R4_PATH]:
         _check(ResourceLoader.exists(path),"alpha atlas exists "+path)
     if ResourceLoader.exists(LAB.ATLAS_PATH) and ResourceLoader.exists(LAB.CONTACT_PATH):
         var a := load(LAB.ATLAS_PATH) as Texture2D
@@ -43,11 +45,21 @@ func _run() -> void:
                     var x: int=(i%4)*w
                     var y: int=int(floor(float(i)/4.0))*h
                     _check(img.get_pixel(x,y).a==0.0 and img.get_pixel(x+w-1,y+h-1).a==0.0,"alpha edge "+str(i))
+    if ResourceLoader.exists(LAB.CHARGE_R4_PATH) and ResourceLoader.exists(LAB.CONTACT_R4_PATH):
+        for res in [LAB.CHARGE_R4_PATH,LAB.CONTACT_R4_PATH]:
+            var texture := load(res) as Texture2D
+            _check(texture!=null and texture.get_size()==Vector2(1280,960),"R4 imported atlas 12x320")
+            if texture!=null:
+                var img: Image=texture.get_image()
+                for i in range(12):
+                    var x: int=(i%4)*320
+                    var y: int=int(floor(float(i)/4.0))*320
+                    _check(img.get_pixel(x,y).a==0.0 and img.get_pixel(x+319,y+319).a==0.0,"R4 alpha cell "+str(i))
     if failures==0:
         var sample:=LAB.new()
         root.add_child(sample)
         await process_frame
-        _check(sample.needle_frames.size()==12 and sample.impact_frames.size()==8,"created atlas frames")
+        _check(sample.needle_frames.size()==12 and sample.impact_frames.size()==8 and sample.charge_r4_frames.size()==12 and sample.contact_r4_frames.size()==12,"created atlas frames")
         sample.queue_free()
     print("VFX_POI07_RESULT="+("PASS" if failures==0 else "FAIL")+" failures="+str(failures))
     quit(0 if failures==0 else 1)
