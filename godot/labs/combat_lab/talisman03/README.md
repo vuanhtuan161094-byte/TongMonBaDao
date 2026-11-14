@@ -14,3 +14,6 @@ Genuine R2 Godot 1280×720 run [43584347379](https://github.com/vuanhtuan161094-
 
 ## R4 native 1× material/readability adjustment (new art evidence required)
 The actual R3 Godot movie, Actions `43584912286`, was inspected at 1.08s, 5.03s and 6.85s. The original 8-cell gilded painted atlas is kept unchanged, with the single branded seal moved 9px down to protect the face, its diffuse purple halo halved and the original gold-toned pixels given a restrained warm material tint with reduced breathing. The visual hold is still six seconds from .88 to 6.88 followed by .26s cosmetic fade. No gameplay status/ticks, extra hit, or engine data edits. **R4 technical video/visual QA is PENDING until exact-SHA proof is reviewed; OWNER_VISUAL_PENDING / PVE_INTEGRATION_HOLD.**
+
+### R4 exact-SHA Godot evidence verified
+[Godot Actions run 43604383986](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/43604383986), 468 native frames, MP4/GIF/14 stills artifact ID `14117845899`. Actual frame inspection at 1.08, 5.03 and 6.85 shows the 8-cell painted mark below the face while retaining six-second demonstration display (.88→6.88) and .26s fade. Import/parse/focused technical PASS; **owner art approval PENDING**, no true Combat V2 status. No new art was invented or imported from commercial sources.
