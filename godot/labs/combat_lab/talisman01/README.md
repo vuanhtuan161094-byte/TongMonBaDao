@@ -35,3 +35,5 @@ Run the workflow `.github/workflows/vfx-tal-01-dien-quang-khai-phu.yml` for actu
 
 - R1 workflow #43574121082 on `4231bc9316d46019d624e4274305c293c2538011` completed exact-SHA Godot 4.7.2 strict import/parse/test and 188-frame 1280x720 MP4 PASS. Downloaded and actually inspected frames 0.43, 1.08 and 1.51. Art R1 rejected internally: bolt visibly disconnected at 1.08, six symmetric impact spokes at 1.51 were too graphical.
 - R2 changes only the LAB presentation: continuous tapered ion wake from the caster, brighter active head, 2 minor forks, off-axis fractured contact instead of symmetric spokes. Preserve original 12-pose parchment and read-only skill data. New exact-SHA video and actual frame review REQUIRED.
+
+- R2 actual Godot 1280x720 movie #43574629565 (`fb5b32ef3f4337ca2fd2b5b3696e1143a84ed599`): strict import+parse+focused PASS. Visually examined 0.43, 1.08, 1.51 and full contact sheet. Reconnected bolt at 1.08 is readable; contact at 1.51 remained too straight and hard-edged. **R3** changes impact only: 3 unequal locally crackling currents, soft hotspot, 6 small motes, no six-spoke/diagonal hard icon. R3 Godot movie is separately required.

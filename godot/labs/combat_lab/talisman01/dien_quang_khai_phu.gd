@@ -195,36 +195,46 @@ func _draw_bolt(t: float) -> void:
 
 func _draw_contact(t: float) -> void:
     var hit := contact_gain(t)
-    var remnant := smoothstep(CONTACT_AT,CONTACT_AT+0.20,t)*(1.0-smoothstep(1.82,FADE_END,t))
-    if hit>0.004:
-        _halo(IMPACT,121.0,Color("8874d6",hit*.24))
-        _halo(IMPACT,67.0,Color("b6a1f8",hit*.44))
-        _halo(IMPACT,24.0,Color("fff6fc",hit*.78))
-        # Unbalanced fractured current: main diagonal snap, not R1's six uniform spokes.
-        var seam := [IMPACT+Vector2(-71,-40),IMPACT+Vector2(-47,-33),IMPACT+Vector2(-24,-43),
-            IMPACT+Vector2(-12,-15),IMPACT+Vector2(7,7),IMPACT+Vector2(24,17),IMPACT+Vector2(38,36)]
-        for i in range(seam.size()-1):
-            var a: Vector2=seam[i]
-            var b: Vector2=seam[i+1]
-            draw_line(a,b,Color("9b7cdd",hit*.33),10.0,true)
-            draw_line(a,b,Color("e2ccff",hit*.74),3.2,true)
-            draw_line(a,b,Color("fff9f5",hit*.94),1.45,true)
-        var splinter := [IMPACT+Vector2(-14,-54),IMPACT+Vector2(-4,-27),IMPACT+Vector2(8,-9),IMPACT+Vector2(31,-23)]
-        for i in range(splinter.size()-1):
-            draw_line(splinter[i],splinter[i+1],Color("a38ae4",hit*.24),7.0,true)
-            draw_line(splinter[i],splinter[i+1],Color("faf0ff",hit*.57),1.3,true)
-        for j in range(5):
+    var remnant := smoothstep(CONTACT_AT,CONTACT_AT+0.19,t)*(1.0-smoothstep(1.83,FADE_END,t))
+    if hit>0.003:
+        _halo(IMPACT,109.0,Color("8572d8",hit*.22))
+        _halo(IMPACT,57.0,Color("c3aeff",hit*.40))
+        _halo(IMPACT,19.0,Color("fff7fa",hit*.82))
+        # Three different local CURRENT PATHS, all moving and decaying.
+        # No symmetrical starburst or static UI rings; preserve the victim's face.
+        var currents: Array = [
+            [Vector2(-52,-22),Vector2(-37,-29),Vector2(-19,-19),Vector2(-5,-26),Vector2(11,-12),Vector2(34,-8)],
+            [Vector2(-9,-9),Vector2(9,-21),Vector2(21,-35),Vector2(30,-40)],
+            [Vector2(-12,7),Vector2(3,19),Vector2(-2,30),Vector2(13,43)]
+        ]
+        for j in range(currents.size()):
+            var pts: Array = currents[j]
+            for k in range(pts.size()-1):
+                var la: Vector2 = pts[k]
+                var lb: Vector2 = pts[k+1]
+                var p1 := IMPACT+la+Vector2(0.0,2.1*sin(t*43.0+float(k)*1.7+float(j)))
+                var p2 := IMPACT+lb+Vector2(0.0,2.7*sin(t*48.0+float(k)*1.5+float(j)*2.2))
+                var gain := hit*(1.0-0.17*float(j))
+                draw_line(p1,p2,Color("977dd6",gain*.26),8.2,true)
+                draw_line(p1,p2,Color("c7aeef",gain*.50),3.8,true)
+                draw_line(p1,p2,Color("fff5ef",gain*.84),1.25,true)
+        for j in range(6):
             var k := float(j)
-            var angle := k*2.399 + 0.37
-            var origin := IMPACT+Vector2(cos(angle)*22.0,sin(angle)*15.0)
-            var stop := origin+Vector2(cos(angle)*(14.0+7.0*float(j%3)),sin(angle)*(12.0+6.0*float(j%2)))
-            draw_line(origin,stop,Color("b8a3f0",hit*.36),3.5,true)
-            draw_line(origin,stop,Color("f8ecff",hit*.58),1.0,true)
-    if remnant>0.002:
-        # Irregular tiny fading filaments stay around the real target, no static beam.
-        var strand_a := [IMPACT+Vector2(-10,10),IMPACT+Vector2(4,23),IMPACT+Vector2(-7,42)]
-        var strand_b := [IMPACT+Vector2(13,-13),IMPACT+Vector2(30,-3),IMPACT+Vector2(25,18)]
-        for line_points in [strand_a,strand_b]:
-            for i in range(line_points.size()-1):
-                draw_line(line_points[i],line_points[i+1],Color("aa95e7",remnant*.22),5.5,true)
-                draw_line(line_points[i],line_points[i+1],Color("e9deff",remnant*.46),1.25,true)
+            var angle := k*2.399+0.38
+            var rr := 14.0+float(j%3)*5.0
+            var p := IMPACT+Vector2(cos(angle)*rr,sin(angle)*rr*.79)
+            var step := Vector2(cos(angle)* (8.0+float(j%4)*4.0),sin(angle)*(8.0+float(j%2)*5.0))
+            _halo(p+step,7.0,Color("decaff",hit*.36))
+            draw_line(p,p+step,Color("c7b0f3",hit*.24),4.0,true)
+            draw_line(p,p+step,Color("fff1f6",hit*.54),1.0,true)
+    if remnant>0.003:
+        var tails: Array = [
+            [Vector2(-11,8),Vector2(-1,21),Vector2(-12,33)],
+            [Vector2(7,-9),Vector2(18,-1),Vector2(13,14)]
+        ]
+        for path in tails:
+            for k in range(path.size()-1):
+                var p1: Vector2=IMPACT+path[k]
+                var p2: Vector2=IMPACT+path[k+1]
+                draw_line(p1,p2,Color("a496e2",remnant*.16),4.6,true)
+                draw_line(p1,p2,Color("edddff",remnant*.30),1.0,true)
