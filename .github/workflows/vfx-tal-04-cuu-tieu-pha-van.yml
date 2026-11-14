@@ -43,10 +43,10 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          TMB_ART_LOG_EXPORT=1 /usr/bin/python3 tools/vfx/paint_tal04_cloud.py . > "$RUNNER_TEMP/vfx-tal04/art.log"
+          TMB_ART_LOG_EXPORT=0 /usr/bin/python3 tools/vfx/paint_tal04_cloud.py . > "$RUNNER_TEMP/vfx-tal04/art.log"
           # Keep the artifact export in logs only for first-party binary handoff into the repository.
           grep -E '^TAL04_PAINTED_OUTPUT|^TMB_ASSET_BEGIN|^TMB_ASSET_END' "$RUNNER_TEMP/vfx-tal04/art.log"
-          cat "$RUNNER_TEMP/vfx-tal04/art.log" | grep '^TMB_ASSET_LINE:' || true
+          git diff --exit-code -- godot/labs/combat_lab/talisman04/assets/tal04_r3_*.webp
           /usr/bin/python3 - <<'PY'
           from PIL import Image
           from pathlib import Path
