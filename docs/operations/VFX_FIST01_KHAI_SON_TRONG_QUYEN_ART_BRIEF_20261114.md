@@ -24,3 +24,6 @@ R5 genuine movie inspected at 1x and 2x: at 0.64s flight was smooth oval orange 
 
 ## R7 self-rework after native R6 inspection
 The real R6 video at 0.64s showed an opaque brown polygon masking the caster; R6 is ART_REWORK_REQUIRED though focused Godot PASS on SHA 04dd17fc. R7 replaces the eight flight PNG-equivalent authored SVG textures with sparse thin feathery translucent flame-qi ribbons and a compact broken shock front. Render flight behind dummy actors, relocate contact to target torso, magnify pressure shard impact. DO NOT mistake generated reference-board concept for native Godot footage. Owner and PvE still PENDING/HOLD. R7 must be judged from its actual Godot film before approval.
+
+## R8 focused art repair after genuine R7 frames
+R7 technical Godot focused PASS, but actual 1x frames 1.02/1.24s showed hard projectile-like orange spikes drawn in front of the victim's face and torso. R8 re-authors 8 impact sprite frames with softer asymmetrical short pressure curls, compact flash, smoke-and-grit separation. All impact art renders BEHIND the victim, with a strictly localized, brief white point over chest (visual-only Lab mockup, not true hit authority). Target remains readable; no forced extra targets/status/health writes. Real R8 movie and self-score required before owner art review. No rig/CodeX/V63/live PvE changes.

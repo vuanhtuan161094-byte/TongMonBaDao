@@ -19,7 +19,7 @@ const CONTACT_AT := 0.79
 const IMPACT_END := 1.17
 const FADE_END := 1.63
 const LOOP_SECONDS := 2.30
-const FIST_REVISION := "R7_FEATHERED_RIBBONS"
+const FIST_REVISION := "R8_LAYERED_CONTACT"
 const BG: Texture2D = preload("res://labs/combat_lab/poison05/remake_r6/assets/immortal_valley.svg")
 const ACTOR: Texture2D = preload("res://labs/character_family/assets/nu_doc_tu_v4_candidate/idle_4dir_APPROVED_UNCHANGED.png")
 const CHARGE = [
@@ -201,16 +201,11 @@ func _draw() -> void:
             _halo(echo + Vector2(-23, 0), 40.0 - 3.0 * float(j),
                 Color("ffa467", 0.16 - 0.026 * float(j)))
 
-    # Existing game atlas is just a 1x-scale dummy silhouette, not fist actor approval.
-    _actor(CASTER + Vector2(caster_shift(t), 0.0), Color("ede2d1"))
-    _actor(VICTIM + Vector2(victim_shift(t), 0.0), Color("c4ccd1"))
-    if ch > 0.005:
-        var frame := clampi(int(floor(t / CAST_END * float(CHARGE.size()))), 0, CHARGE.size() - 1)
-        _paint(CHARGE[frame], HAND + Vector2(caster_shift(t), 0.0), 0.58, ch * 0.92)
+    # R8 layered impact behind the target: only a small white touch stays in front.
     if hit > 0.008:
         var frame := clampi(int(floor((t - CONTACT_AT) / (FADE_END - CONTACT_AT) *
             float(IMPACT.size()))), 0, IMPACT.size() - 1)
-        var spread := 1.03 + 0.61 * smoothstep(CONTACT_AT, IMPACT_END, t)
+        var spread := 1.00 + 0.30 * smoothstep(CONTACT_AT, IMPACT_END, t)
         _paint(IMPACT[frame], CONTACT, spread, hit * 0.89)
         var fade_q := clampf((t - CONTACT_AT) / (FADE_END - CONTACT_AT), 0.0, 1.0)
         for j in range(9):
@@ -218,10 +213,21 @@ func _draw() -> void:
             var r := 29.0 + (46.0 + float(j % 3) * 12.0) * fade_q
             var p := CONTACT + Vector2(cos(a) * r, sin(a) * r * 0.63)
             _halo(p, 4.0 + 3.0 * (1.0 - fade_q), Color("ffd085", 0.17 * hit))
+
+    # Existing game atlas is just a 1x-scale dummy silhouette, not fist actor approval.
+    _actor(CASTER + Vector2(caster_shift(t), 0.0), Color("ede2d1"))
+    _actor(VICTIM + Vector2(victim_shift(t), 0.0), Color("c4ccd1"))
+    if t >= CONTACT_AT and t < CONTACT_AT + 0.19:
+        var local_burst := 1.0 - smoothstep(CONTACT_AT, CONTACT_AT + 0.19, t)
+        _halo(CONTACT + Vector2(5.0, 1.0), 29.0, Color("fff5d0", local_burst * 0.44))
+        _halo(CONTACT + Vector2(7.0, 0.0), 12.0, Color("ffffff", local_burst * 0.36))
+    if ch > 0.005:
+        var frame := clampi(int(floor(t / CAST_END * float(CHARGE.size()))), 0, CHARGE.size() - 1)
+        _paint(CHARGE[frame], HAND + Vector2(caster_shift(t), 0.0), 0.58, ch * 0.92)
     draw_string(ThemeDB.fallback_font, Vector2(29, 36), "KHAI SON TRONG QUYEN / BA QUYEN",
         HORIZONTAL_ALIGNMENT_LEFT, -1, 25, Color("fff0d5"))
     draw_string(ThemeDB.fallback_font, Vector2(29, 62),
-        "FIST01 R7 | SOFT FEATHERED PRESSURE RIBBONS | FIRE / ONE TARGET",
+        "FIST01 R8 | PAINTED PRESSURE / DUST CONTACT | ONE TARGET",
         HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Color("e8c1a2"))
     draw_string(ThemeDB.fallback_font, Vector2(29, 683),
         "GODOT 4.7.2 COMPATIBILITY | LAB VISUAL ONLY | NO DAMAGE / V63 OFF",
