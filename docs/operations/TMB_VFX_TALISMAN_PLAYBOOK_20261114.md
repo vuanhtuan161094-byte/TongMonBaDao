@@ -30,3 +30,21 @@ The owner's 14 November screenshot contains seven visual *categories*, not manda
 5. TAL05 Cửu Thiên Vạn Lôi Phù: cinematic three-target capped ultimate.
 
 A plan or a catalogue row is **not** an implemented or approved skill. Keep subsequent skills NOT_ART_APPROVED until each has its own art and real Godot visual review. Separate live integration not authorized.
+
+
+## Technical completion register — five Human cast-master LABs, 14 Nov 2026
+
+The owner requested production across the Loî Phù cast family and a caster-underfoot ritual layer. These five LABs now have independent Godot 4.7.2 Compatibility focused test suites plus true 1280×720 fixed-60-frame-clock movies, 14 phase stills and GIF artifacts. **This does NOT constitute five owner-approved art effects, measured device FPS, real Combat V2 hit routing or release readiness.** All five retain `OWNER_VISUAL_PENDING / PVE_INTEGRATION_HOLD`.
+
+| Skill ID | Current focused art commit | Godot exact-SHA Actions run | QA scope | LAB identity |
+|---|---|---|---|---|
+| `tmb.skill.talisman.loi_phu.active_01.human` | `58a066a44603d11cccb4fae0f45e7418695aa698` (R6) | [#43579986235](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/43579986235) PASS | import, parse, single-target, 12-cell original hero, 2.5D caster ritual, native movie | Charged physical talisman with traveling white-violet filament, single local contact |
+| `tmb.skill.talisman.loi_phu.active_02.human` | `26a0e80fa1bdb8c8aec00bf3ed90ad48dd18ca99` (R2) | [#43581036564](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/43581036564) PASS | original ten-ink-pose stroke, line cap3, native movie | One jagged thunder calligraphy stroke, limited forks; no physical flying talisman |
+| `tmb.skill.talisman.loi_phu.active_03.human` | `095541f957b80add4fd4abee355d7ad8fda03081` (R1) | [#43581636451](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/43581636451) PASS | original eight rune-mark poses, 6s single-target marker display, native movie | One persistent seal; **no fake damage or DoT** |
+| `tmb.skill.talisman.loi_phu.active_04.human` | `8c7de5d160a2c2de21049e63bbde545df6364cc4` (R2) | [#43582304081](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/43582304081) PASS | ten unique cloud-tear poses, line cap2, original fissure, native movie | Single hot tear in soft purple cloud, not TAL02's narrow brush |
+| `tmb.skill.talisman.loi_phu.ultimate.human` | `8020aabaac5ea25931217311112e65a445acf650` (R2) | [#43583016438](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/43583016438) PASS | ten heavenly rune poses, one dominant sky bolt, line cap3, native movie | Short ritual caster circle, suspended sky talisman and subordinate lateral arcs after demonstration contact |
+
+**Manual visible QA:** TAL01 R6 uses original painted hero plus underfoot array. TAL02 R1 was self-rejected as a rigid neon tube before R2, TAL04 R1 as a flat glowing cloud ribbon before R2, and TAL05 R1 as horizontal almost-straight electric laser before R2. Actual frame stills were inspected at native 1× for each; remaining artistic judgment remains for owner. Do **not** revise the canonical `02_talisman_183.csv` statuses to ART_APPROVED without owner visual approval.
+
+**Next separately scoped work:** request real visual approval for these five Human cast masters; then, only when separately authorized, passive_01..05 / innate receipt-only cues, lineage/tier A/B and divine variants mapped to their exact effect/shape/target cap, and real PvE receipt integration/physical Windows/Android QA. Hardware frame timing remains PENDING. Current release gate is OFF.
+
