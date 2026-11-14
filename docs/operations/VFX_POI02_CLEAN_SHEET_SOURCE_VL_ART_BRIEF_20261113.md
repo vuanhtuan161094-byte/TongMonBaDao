@@ -69,3 +69,19 @@ Owner explicitly approved the new painted serpent wrapping image and requested i
 - The back/foreground atlases are pixel-mask partitions of the same four serpent-only originals; the target sprite now renders at z=2 between back (z=1) and foreground (z=3). No hidden duplicate character from the original concept art is painted into either atlas. Four distinct bind poses with bounded crossfades replace the old floating energy band / cropped head and UV-swim shader. The JX #63 impact remains a view-only contact accent.
 
 **Quality gates:** native Godot 4.7.2 strict import/compile, focused contract, genuine 1280×720 MP4, review 1.70/1.92/2.15/2.38, compare to R4/R5 before owner review. Owner approved concept art, but final Godot in-motion coil needs its own visual QA; **do not claim automatic live PvE/V6.3 deployment**. Gameplay/HP/real targeting/DoT/SaveService/economy/AI untouched. No rig. Source VL-quality means polish reference, not a claim that commercial Source VL pixels were used.
+
+## EXECUTED FOUR-POSE BIND SPRITE GODOT QA — 2026-11-14
+
+- **Exact tested code SHA**: `0084800e7366847219f1ee3a45ddb27c22ba1b9d` ([source commit](https://github.com/vuanhtuan161094-byte/TongMonBaDao/commit/0084800e7366847219f1ee3a45ddb27c22ba1b9d)). The GitHub commit contains all three real WebP sprite atlases and uses them directly from the named Godot skill scene. None is a screenshot-only stand-in.
+- **Official Godot 4.7.2 Compatibility**: [workflow #43544377773](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/43544377773) SUCCESS. Strict import/parse/focused `VFX_POI02_FOCUSED_RESULT=PASS failures=0`; native `--write-movie` at 1280×720; 246 frames, 4.10s, fixed 60/1 encoded fps. Artifact ID `14092654706`, name `vfx-poi02-0084800e7366847219f1ee3a45ddb27c22ba1b9d`. Fixed movie frame rate is NOT physical performance.
+- **Actual inspected native frames**: 1.70 (handoff from flight), 1.92 (first/second coil), 2.15 (tightening), 2.38 (release) and 3.03 (fade), plus full movie, and same-time R5-vs-new crop. Earlier R5 showed detached green/purple spirit ribbons with separately floating head; four-pose version wraps the existing actor in distinct rear/front authored coils, with a separate painted cobra head and without duplicate concept character. Actual movie demonstrates change in pose. Some strands remain translucent and head detail is small at 1×; artistic evaluation remains independent from technical PASS.
+- **Flight preservation check**: Godot screenshots at 1.30s differ only slightly outside the target due compositing/antialiasing; the approved six-frame flight texture, projectile path and all cast/contact/fade timing constants in GDScript are UNCHANGED. No new gameplay events, status, damage or fake hit.
+- **Live game gate**: this is a genuine Godot *skill-specific visual scene* and asset binding for `tmb.skill.poison.co_doc.active_02.human`, **NOT a live PvE/V6.3 event presentation integration**. V6.3 remains OFF and `PVE_INTEGRATION_HOLD`; physical Windows/Android and 6v8/30×40 performance not tested. Owner approved the **image concept**; runtime review is `OWNER_VISUAL_PENDING`. Original Source VL/JX assets and rights remain separate.
+
+### Production process updated for all skills
+1. Confirm semantic skill/target/timeline from catalog; select exact 1× external/source quality reference.
+2. Produce a **real reusable painted sprite/flipbook**; remove sample-actor contamination before any game binding.
+3. Separate silhouette alpha/mix from light additive and back/target/front occlusion.
+4. Implement in isolated exact-skill Godot scene, preserve accepted phases and do not rewrite combat math.
+5. Export real 1280×720 Godot MP4, inspect stage frames and compare same-camera/same-time before claiming art progress.
+6. Get owner visual signoff of the **rendered skill**, then integrate event-driven into actual PvE and run crowd + physical QA before enabling it.
