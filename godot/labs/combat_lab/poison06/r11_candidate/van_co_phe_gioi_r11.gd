@@ -55,12 +55,17 @@ static func phase_at(t: float) -> String:
     if t < FADE_END: return "fade"
     return "idle"
 
+static func frame_float_at(t: float) -> float:
+    # Continuous atlas time. Crossfade prevents 48 pose changes from looking
+    # like 8 FPS slides. Endpoints blend forward into the next phase frame.
+    if t < CAST_END: return clampf(t / CAST_END * 8.0, 0.0, 8.0)
+    if t < RIFT_OPEN: return 8.0 + clampf((t - CAST_END) / (RIFT_OPEN - CAST_END) * 8.0, 0.0, 8.0)
+    if t < CONTACT_END: return 16.0 + clampf((t - RIFT_OPEN) / (CONTACT_END - RIFT_OPEN) * 20.0, 0.0, 20.0)
+    if t < FADE_END: return 36.0 + clampf((t - CONTACT_END) / (FADE_END - CONTACT_END) * 12.0, 0.0, 12.0)
+    return 47.0
+
 static func frame_index_at(t: float) -> int:
-    if t < CAST_END: return clampi(int(floor(t / CAST_END * 8.0)), 0, 7)
-    if t < RIFT_OPEN: return 8 + clampi(int(floor((t - CAST_END) / (RIFT_OPEN - CAST_END) * 8.0)), 0, 7)
-    if t < CONTACT_END: return 16 + clampi(int(floor((t - RIFT_OPEN) / (CONTACT_END - RIFT_OPEN) * 20.0)), 0, 19)
-    if t < FADE_END: return 36 + clampi(int(floor((t - CONTACT_END) / (FADE_END - CONTACT_END) * 12.0)), 0, 11)
-    return 47
+    return clampi(int(floor(frame_float_at(t))), 0, FRAME_COUNT - 1)
 
 func _ready() -> void:
     custom_minimum_size = Vector2(1280,720)
@@ -103,6 +108,14 @@ func _paint(tex: Texture2D, center: Vector2, scale: float, alpha: float, angle: 
     draw_texture_rect(tex, Rect2(-dim / 2.0, dim), false, Color(1,1,1,alpha))
     draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 
+func _paint_flipbook(frame_clock: float, center: Vector2, scale: float, alpha: float, angle: float = 0.0) -> void:
+    var first := clampi(int(floor(frame_clock)), 0, FRAME_COUNT - 1)
+    var second := mini(first + 1, FRAME_COUNT - 1)
+    var between := smoothstep(0.0, 1.0, clampf(frame_clock - float(first), 0.0, 1.0))
+    _paint(_frames[first], center, scale, alpha * (1.0 - between), angle)
+    if second != first:
+        _paint(_frames[second], center, scale, alpha * between, angle)
+
 func _actor(center: Vector2, scale: float, tint: Color) -> void:
     draw_texture_rect_region(ACTOR, Rect2(center - Vector2(160,351) * scale, Vector2(320,384) * scale), Rect2(0,0,320,384), tint)
 
@@ -114,20 +127,20 @@ func _draw() -> void:
         return
     if t < CAST_END:
         var q := smoothstep(0.05, CAST_END, t)
-        _paint(_frames[frame_index_at(t)], HAND, 0.30 + 0.33 * q, q * 0.84)
+        _paint_flipbook(frame_float_at(t), HAND, 0.30 + 0.33 * q, q * 0.84)
     elif t < RIFT_OPEN:
         var q := smoothstep(CAST_END, RIFT_OPEN, t)
         var point := HAND.lerp(REALM, q) + Vector2(0.0,-73.0 * sin(PI*q))
-        _paint(_frames[frame_index_at(t)], point, 0.40 + 0.38*q, 0.92)
+        _paint_flipbook(frame_float_at(t), point, 0.40 + 0.38*q, 0.92)
         for j in range(1,4):
             var old_q := clampf(q - 0.08*float(j), 0.0, 1.0)
             var old := HAND.lerp(REALM, old_q) + Vector2(0.0,-73.0*sin(PI*old_q))
-            _paint(_frames[7+j], old, 0.28+0.28*old_q, 0.20-0.043*float(j))
+            _paint_flipbook(8.0 + old_q*7.0, old, 0.28+0.28*old_q, 0.20-0.043*float(j))
     elif t < FADE_END:
         var opacity := smoothstep(RIFT_OPEN,RIFT_OPEN+0.27,t) * (1.0-smoothstep(4.18,FADE_END,t))
         var growth := smoothstep(RIFT_OPEN,2.66,t)
-        _paint(_frames[frame_index_at(t)], REALM, 0.78+1.00*growth, opacity)
-        _paint(_frames[clampi(frame_index_at(t)-3,0,47)], REALM + Vector2(-17,-9), 0.56+0.61*growth, opacity*0.23,-0.035)
+        _paint_flipbook(frame_float_at(t), REALM, 0.78+1.00*growth, opacity)
+        _paint_flipbook(maxf(0.0,frame_float_at(t)-3.0), REALM + Vector2(-17,-9), 0.56+0.61*growth, opacity*0.23,-0.035)
     _actor(CASTER, 0.47, Color.WHITE)
     for idx in range(3):
         var target: Vector2 = TARGETS[idx]

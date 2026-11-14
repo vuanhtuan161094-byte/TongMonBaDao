@@ -4,7 +4,9 @@ on:
   push:
     branches: [integration/pve-p0-playable-ui-20261103]
     paths:
-      - 'godot/labs/combat_lab/poison06/r11_candidate/assets/realm_vortex_r11_48.png'
+      - 'godot/labs/combat_lab/poison06/r11_candidate/**'
+      - 'godot/tests/labs/combat_lab/vfx_poi06_r11_contract_test.gd'
+      - '.github/workflows/vfx-poi-06-r11-native.yml'
 permissions:
   contents: read
 jobs:

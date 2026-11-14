@@ -18,13 +18,17 @@ func _run() -> void:
     _check(LAB.phase_at(0.5) == "charge" and LAB.phase_at(1.5) == "flight", "cast phases")
     _check(LAB.phase_at(2.9) == "realm_and_visual_contact" and LAB.phase_at(4.6) == "fade" and LAB.phase_at(5.3) == "idle", "contact and fade phases")
     _check(LAB.frame_index_at(0.0) == 0 and LAB.frame_index_at(2.7) >= 16 and LAB.frame_index_at(5.3) == 47, "bounded frame selection")
+    _check(LAB.frame_float_at(1.09) > 7.0 and LAB.frame_float_at(1.10) == 8.0, "continuous charge/flight atlas interpolation")
+    _check(LAB.frame_float_at(2.04) == 16.0 and LAB.frame_float_at(3.80) == 36.0, "continuous realm/contact/fade atlas interpolation")
     var source := FileAccess.get_file_as_string("res://labs/combat_lab/poison06/r11_candidate/van_co_phe_gioi_r11.gd")
     for forbidden in ["SaveService.save", "CombatV2.", "MapBattleV2.", "apply_damage", "apply_status", "summon_actor", "V63FeatureGates."]:
         _check(not source.contains(forbidden), "view-only contract " + forbidden)
     var path := LAB.ATLAS_PATH
-    _check(FileAccess.file_exists(path), "owner-approved R11 PNG must be committed")
-    if FileAccess.file_exists(path):
-        var img := Image.load_from_file(path)
+    _check(ResourceLoader.exists(path), "owner-approved R11 PNG must be imported")
+    if ResourceLoader.exists(path):
+        var native_texture := ResourceLoader.load(path) as Texture2D
+        _check(native_texture != null, "Godot native Texture2D must load")
+        var img := native_texture.get_image()
         _check(img.get_size() == Vector2i(2048,1536), "native atlas dimensions")
         _check(img.detect_alpha() != Image.ALPHA_NONE, "RGBA alpha present")
         for i in range(48):
