@@ -26,6 +26,16 @@ def finish(im,w,h):
     # Preserve feathery RGB/alpha, with antialiasing at native scale.
     result=im.resize((w,h), Image.Resampling.LANCZOS)
     assert result.mode=="RGBA"
+    # Guard 2-pixel transparent gutters against painterly lobes crossing the atlas cell.
+    alpha=result.getchannel("A")
+    mask=Image.new("L",(w,h),255)
+    md=ImageDraw.Draw(mask)
+    md.rectangle((0,0,w-1,1),fill=0)
+    md.rectangle((0,h-2,w-1,h-1),fill=0)
+    md.rectangle((0,0,1,h-1),fill=0)
+    md.rectangle((w-2,0,w-1,h-1),fill=0)
+    from PIL import ImageChops
+    result.putalpha(ImageChops.multiply(alpha,mask))
     return result
 
 def drifting_smoke(w,h,seed,origin,strength,extent,direction,number):
