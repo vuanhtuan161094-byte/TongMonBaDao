@@ -29,6 +29,8 @@ func _run() -> void:
             var t:float=lerpf(start,hit,q)
             check(LAB.needle_tip_at(i,t).distance_to(LAB.PALM.lerp(LAB.chest_at(i,hit),q))<.02,"strict no arc "+str(i)+" "+str(q))
         check(LAB.mark_alpha_at(i,hit-.01)==0 and LAB.mark_alpha_at(i,hit+3.0)>.9 and LAB.mark_alpha_at(i,hit+6.33)==0,"independent 6s mark "+str(i))
+    for i in range(2):
+        check(LAB.needle_tip_at(i,1.35).distance_to(LAB.needle_tip_at(i+1,1.35))>35.0,"distinct triple fan lanes "+str(i))
     var cases=[[LAB.CHARGE_PATH,Vector2(896,480),Vector2i(224,160),12],
         [LAB.NEEDLE_PATH,Vector2(1024,288),Vector2i(256,96),12],
         [LAB.CONTACT_PATH,Vector2(768,480),Vector2i(192,160),10],
