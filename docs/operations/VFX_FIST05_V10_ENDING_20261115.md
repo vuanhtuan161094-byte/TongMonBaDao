@@ -1,0 +1,5 @@
+# FIST05 V10 — grounded rubble tail art review (2026-11-15)
+
+Owner rejected the final earth/stone visuals in V6. V7 six polygon source-cut fragments produced giant dark seams (art FAIL). V8 independent chips fixed alpha holes but floated too high. V9 lowered arcs and cooled rocks; native 2.40s frame remained almost empty. V10 fixes **only the ending**: bake original earth-color softly blurred dust cloud and 18 small irregular settled pebbles into the already existing late eruption sprite frames; follow moving painted rock chips and clear at 2.56 seconds.
+
+No new Godot texture, no new live draw layers and no runtime VFX particle nodes: 24 authored 256px frames, 3 source textures, raw RGBA budget 7,340,032 bytes (7.0 MiB), unchanged. Early cast, continuous fissure, three target bounded contact previews and mechanics are read-only. Source generated offline with deterministic seeds. Native film check frames 1.55, 1.93, 2.18, 2.40, 2.83. Keep OWNER_VISUAL_PENDING, PVE_INTEGRATION_HOLD, V6.3 OFF; physical Android FPS unverified. No rig, Codex, branch, merge or gameplay changes.

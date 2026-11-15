@@ -144,6 +144,41 @@ def _earthfall_dust(im, age, alpha, seed):
                   fill=(tone,round(tone*.72),round(tone*.57),
                         int(alpha*rng.randint(25,104))))
 
+def _grounded_rubble_tail(im,age,alpha):
+    """Warm dust and detached pebbles resting near the ground, baked offline
+    into the already existing 12 eruption poses. No extra runtime textures.
+    """
+    settle=max(0.0,min(1.0,(age-.27)/.50))
+    if settle<.02:return
+    rng=random.Random(SEED+29011)
+    mist=layer();md=ImageDraw.Draw(mist,'RGBA')
+    for i in range(15):
+        x=rng.uniform(55,202);y=219+rng.uniform(-4,13)
+        rx=rng.uniform(10,23)*(0.74+.60*settle)
+        ry=rng.uniform(3,7)*(0.8+.5*settle)
+        if not 8<x<243:continue
+        md.ellipse((x-rx,y-ry,x+rx,y+ry),
+                   fill=(178+rng.randrange(20),138+rng.randrange(18),
+                         104+rng.randrange(18),
+                         int(alpha*settle*rng.randint(129,185))))
+    im.alpha_composite(mist.filter(ImageFilter.GaussianBlur(5)))
+    rock=ImageDraw.Draw(im,'RGBA')
+    for i in range(18):
+        r=random.Random(SEED+44000+i*47)
+        x=r.uniform(50,214); ground=218+r.uniform(-4,18)
+        sz=r.uniform(3,9)
+        progress=min(1.0,settle*(1.23+(i%3)*.09))
+        y=ground-10*(1-progress)
+        aa=int(alpha*progress*r.randint(125,203))
+        points=[(x-sz,y+.35*sz),(x-.7*sz,y-.6*sz),
+                (x+r.uniform(-.2,.2)*sz,y-sz),
+                (x+.82*sz,y-.15*sz),(x+.70*sz,y+.48*sz)]
+        rock.polygon(points,fill=(137,104,79,aa))
+        rock.line(points[:3],fill=(222,166,113,int(aa*.78)),width=1)
+        if i%4==0:
+            rock.line([(x,y-sz*.55),(x+sz*.3,y+sz*.15)],
+                      fill=(248,178,99,int(aa*.57)),width=1)
+
 def eruption(k):
     t=k/11.0
     growth=min(1.0,t/.31) if t>0 else 0.0
@@ -162,6 +197,7 @@ def eruption(k):
             age=(k-6.0)/5.0
             # Add low dust FIRST so the source-painted stones appear in front.
             _earthfall_dust(im,age,fall*.77,k)
+            _grounded_rubble_tail(im,age,fall)
             _loose_rockfall(im,age,fall)
         # Side fragments tumble and settle, they do not remain as static decals.
         decay=max(0.0,(k-6.0)/5.0)
@@ -293,4 +329,4 @@ if __name__=='__main__':
         assert im.mode=='RGBA' and im.getpixel((0,0))[3]==0
     memory=sum(Image.open(O/fn).width*Image.open(O/fn).height*4 for fn in ['seismic_main.png','seismic_hit.png','seismic_path.png'])
     assert memory==7340032, memory
-    print('FIST05_OPTIMIZED_V9_PASS atlas_frames=24 textures=3 raw_rgba_bytes=%d no_rig=true'%memory)
+    print('FIST05_OPTIMIZED_V10_PASS atlas_frames=24 textures=3 raw_rgba_bytes=%d no_rig=true'%memory)
