@@ -8,7 +8,7 @@ func _check(ok: bool, why: String) -> void:
 func _initialize() -> void:
     call_deferred("_run")
 func _run() -> void:
-    _check(LAB.ART_REVISION=="V8_SMALL_CHIP_GRAVITY_FALL","rockfall revision")
+    _check(LAB.ART_REVISION=="V9_LOW_ARC_EARTHFALL_SETTLE","rockfall revision")
     _check(LAB.SKILL_ID=="tmb.skill.fist.ba_quyen.active_04.human","ID")
     _check(LAB.EFFECT=="damage" and LAB.ELEMENT=="fire","fire damage")
     _check(LAB.SHAPE=="circle" and LAB.TARGET_LIMIT==3,"circle 3")
@@ -32,6 +32,8 @@ func _run() -> void:
     _check(LAB.ATLAS_RAW_RGBA_BYTES==7340032,"7.0 MiB raw RGBA cap")
     _check(LAB.fault_alpha(.20)==0.0 and LAB.fault_alpha(.80)>.99,"fault time bounded")
     _check(LAB.fault_alpha(2.60)==0.0,"fault clear")
+    _check(LAB.eruption_alpha(2.25)>0.5,"late stone dust is still perceptible")
+    _check(LAB.eruption_alpha(2.56)==0.0,"settlement clears at end")
     var src:=FileAccess.get_file_as_string("res://labs/combat_lab/fist05/dia_mach_lien_chan.gd")
     for banned in ["SaveService.","CombatV2.","apply_damage","apply_status","_deal_direct","hp -=","summon_actor","MapBattleV2."]:
         _check(not src.contains(banned),"view only "+banned)

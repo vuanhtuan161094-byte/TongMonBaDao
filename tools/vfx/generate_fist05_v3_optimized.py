@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""FIST05 V8: scattered painted chips without polygon gaps and directional contact bursts on an optimized atlas.
+"""FIST05 V9: cooled low-arc rock chips and visible earthfall settling and directional contact bursts on an optimized atlas.
 Sprite-first 24 RGBA poses (4 charge + 12 eruption + 8 contact) on two
 shared sheets + one original contiguous crack-path strip, no tiled decals.
 No gameplay state, actor animation, rig or copied third-party artwork.
 """
 from pathlib import Path
-from PIL import Image, ImageDraw, ImageFilter
+from PIL import Image, ImageDraw, ImageFilter, ImageEnhance
 import math, random, hashlib, numpy as np
 
 R=Path(__file__).resolve().parents[2]/'godot/labs/combat_lab/fist05'
@@ -92,14 +92,14 @@ def _loose_rockfall(im, age, alpha):
     # Initial (x,y), horizontal velocity, upward velocity, gravity, rotation,
     # size and original painted source for each chunk.
     chips=[
-      (102,95,-46,-42,92,-37,41,49,SPIRE),
-      (143,91,33,-57,91,29,46,57,SHARD),
-      (169,134,57,-38,82,37,39,43,SPIRE),
-      (80,152,-54,-29,80,-26,47,48,SHARD),
-      (125,146,-5,-58,100,19,50,57,SPIRE),
-      (184,174,53,-28,72,41,37,39,SHARD),
-      (110,196,-22,-22,48,-32,39,34,SHARD),
-      (158,200,28,-20,55,24,35,32,SPIRE),
+      (102,149,-40,-24,72,-26,42,48,SPIRE),
+      (143,134,26,-31,76,22,49,53,SHARD),
+      (171,163,47,-21,63,29,43,41,SPIRE),
+      (81,182,-47,-15,57,-22,43,43,SHARD),
+      (125,166,-4,-27,76,15,52,55,SPIRE),
+      (182,189,45,-13,55,30,38,39,SHARD),
+      (109,205,-17,-9,42,-24,37,32,SHARD),
+      (157,211,23,-8,43,22,34,32,SPIRE),
     ]
     for i,(x,y,vx,vy,g,spin,w,h,tex) in enumerate(chips):
         # A small and independently accelerating rock, not a torn section
@@ -109,7 +109,11 @@ def _loose_rockfall(im, age, alpha):
         py=y+vy*progress+g*progress*progress
         contraction=1.0-.18*progress
         a=alpha*(1.0-.29*progress)*(0.84 if i%3==0 else 1.0)
-        stamp(im,tex,px,py,w*contraction,h*contraction,
+        # Cooling rock loses some saturation after impact; warm fissure
+        # highlights stay, but fragments become visible stone instead of fire.
+        rock=ImageEnhance.Color(tex).enhance(1.0-.52*progress)
+        rock=ImageEnhance.Brightness(rock).enhance(1.0-.18*progress)
+        stamp(im,rock,px,py,w*contraction,h*contraction,
               rot=spin*progress+((i%3)-1)*9,alpha=a)
 
 def _earthfall_dust(im, age, alpha, seed):
@@ -125,8 +129,8 @@ def _earthfall_dust(im, age, alpha, seed):
         ry=rng.uniform(2,7)*(0.6+age*.75)
         if not 3<x<252:continue
         d.ellipse((x-rx,y-ry,x+rx,y+ry),
-                  fill=(105+rng.randrange(22),80+rng.randrange(24),
-                        70+rng.randrange(23),int(alpha*rng.randint(28,78))))
+                  fill=(137+rng.randrange(20),103+rng.randrange(24),
+                        88+rng.randrange(17),int(alpha*rng.randint(57,116))))
     im.alpha_composite(soft.filter(ImageFilter.GaussianBlur(6.0)))
     d=ImageDraw.Draw(im,'RGBA')
     for i in range(42):
@@ -289,4 +293,4 @@ if __name__=='__main__':
         assert im.mode=='RGBA' and im.getpixel((0,0))[3]==0
     memory=sum(Image.open(O/fn).width*Image.open(O/fn).height*4 for fn in ['seismic_main.png','seismic_hit.png','seismic_path.png'])
     assert memory==7340032, memory
-    print('FIST05_OPTIMIZED_V8_PASS atlas_frames=24 textures=3 raw_rgba_bytes=%d no_rig=true'%memory)
+    print('FIST05_OPTIMIZED_V9_PASS atlas_frames=24 textures=3 raw_rgba_bytes=%d no_rig=true'%memory)

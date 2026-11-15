@@ -3,7 +3,7 @@ extends Control
 ## No rig / no HP writes / no V6.3 or PvE integration.
 const SKILL_ID := "tmb.skill.fist.ba_quyen.active_04.human"
 const DISPLAY_NAME := "Địa Mạch Liên Chấn"
-const ART_REVISION := "V8_SMALL_CHIP_GRAVITY_FALL"
+const ART_REVISION := "V9_LOW_ARC_EARTHFALL_SETTLE"
 const EFFECT := "damage"
 const ELEMENT := "fire"
 const SHAPE := "circle"
@@ -56,7 +56,7 @@ static func contact_alpha(t: float, target_index: int) -> float:
 static func eruption_alpha(t: float) -> float:
     if t < CONTACT_TIME or t >= FADE_END:
         return 0.0
-    return smoothstep(CONTACT_TIME, CONTACT_TIME + 0.065, t) * (1.0 - smoothstep(ERUPTION_END, FADE_END, t))
+    return smoothstep(CONTACT_TIME, CONTACT_TIME + 0.065, t) * (1.0 - smoothstep(2.20, FADE_END, t))
 
 static func fault_alpha(t: float) -> float:
     if t < RIFT_START or t >= FADE_END:
@@ -81,7 +81,7 @@ func _ready() -> void:
     set_process(true)
     queue_redraw()
     if not vfx_only_benchmark:
-        print("VFX_FIST05_V8_READY source=", SKILL_ID,
+        print("VFX_FIST05_V9_READY source=", SKILL_ID,
             " atlas_frames=24 raw_rgba_bytes=", ATLAS_RAW_RGBA_BYTES,
             " shape=circle target_cap=3 no_rig=true view_only=true")
 
@@ -159,7 +159,7 @@ func _draw() -> void:
         draw_string(ThemeDB.fallback_font,Vector2(27.0,34.0),
             "DIA MACH LIEN CHAN  /  BA QUYEN",HORIZONTAL_ALIGNMENT_LEFT,-1,24,Color("ffe9bd"))
         draw_string(ThemeDB.fallback_font,Vector2(28.0,60.0),
-            "FIST05 V8 | SCATTERED ROCK CHIPS / GROUNDED DUST | 7 MiB",
+            "FIST05 V9 | LOWER ROCKFALL / EARTH DUST SETTLE | 7 MiB",
             HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("e4c39e"))
         draw_string(ThemeDB.fallback_font,Vector2(28.0,684.0),
             "GODOT 4.7.2 COMPATIBILITY | VIEW ONLY | 24 RGBA FRAMES | NO RIG",
