@@ -1,4 +1,4 @@
-name: VFX-FIST-05 V3 original continuous crack optimized native Godot + 1,6,12,30 VFX load
+name: VFX-FIST-05 V4 taller painted eruption optimized native Godot + 1,6,12,30 VFX load
 on:
   workflow_dispatch:
   push:
@@ -45,7 +45,7 @@ jobs:
         run: |
           set -euo pipefail
           python3 tools/vfx/generate_fist05_v3_optimized.py | tee /tmp/vfx-fist05/atlas.log
-          grep -Fq 'FIST05_OPTIMIZED_V3_PASS atlas_frames=24 textures=3 raw_rgba_bytes=7340032 no_rig=true' /tmp/vfx-fist05/atlas.log
+          grep -Fq 'FIST05_OPTIMIZED_V4_PASS atlas_frames=24 textures=3 raw_rgba_bytes=7340032 no_rig=true' /tmp/vfx-fist05/atlas.log
           for master in seismic_ground_master molten_shard_master spires_master; do
             test -s "godot/labs/combat_lab/fist05/assets/$master.webp"
           done
@@ -98,8 +98,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          xvfb-run -a -s '-screen 0 1280x720x24' bash tools/qa/run_godot_strict.sh --path godot --resolution 1280x720 -s res://tests/labs/combat_lab/vfx_shared_load_benchmark.gd 2>&1 | tee /tmp/vfx-fist05/stress.log
+          xvfb-run -a -s '-screen 0 1280x720x24' bash tools/qa/run_godot_strict.sh --audio-driver Dummy --path godot --resolution 1280x720 -s res://tests/labs/combat_lab/vfx_shared_load_benchmark.gd 2>&1 | tee /tmp/vfx-fist05/stress.log
           grep -Fq 'VFX_LOAD_BENCH_RESULT=PASS cases=1,6,12,30' /tmp/vfx-fist05/stress.log
+          grep -Fq 'GODOT_STRICT_PASS exit=0' /tmp/vfx-fist05/stress.log
       - name: Upload exact-SHA art and QA evidence
         if: always()
         uses: actions/upload-artifact@v4

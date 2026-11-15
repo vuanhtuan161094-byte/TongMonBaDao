@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""FIST05 V3: original-paint seismic VFX from first-party raster masters.
+"""FIST05 V4: full-pixel painterly rock silhouettes on an optimized atlas.
 Sprite-first 24 RGBA poses (4 charge + 12 eruption + 8 contact) on two
 shared sheets + one original contiguous crack-path strip, no tiled decals.
 No gameplay state, actor animation, rig or copied third-party artwork.
@@ -35,6 +35,11 @@ SHARD=clean_painted_source(SHARD,[
     (37,294),(46,252),(81,209),(115,171),(151,133),(194,96),
     (248,76),(292,87),(326,117),(340,155),(336,198),(303,247),
     (275,276),(222,300),(171,317),(111,323),(64,323)])
+# V4 repair: crop to the actual painted silhouette before sizing; V3 was only
+# scaling a 384px mostly transparent presentation canvas, making geology tiny.
+GROUND=GROUND.crop(GROUND.getchannel('A').getbbox())
+SPIRE=SPIRE.crop(SPIRE.getchannel('A').getbbox())
+SHARD=SHARD.crop(SHARD.getchannel('A').getbbox())
 
 
 def layer():return Image.new('RGBA',(CELL,CELL),(0,0,0,0))
@@ -59,7 +64,7 @@ def small_sparks(img,seed,count,ctr=(128,193),span=(72,36),alpha=1.0):
 
 def pressure(t):
     img=layer();rng=random.Random(7071+int(100*t))
-    stamp(img,GROUND,128,194,100+118*t,46+32*t,alpha=.40+.50*t)
+    stamp(img,GROUND,128,194,100+118*t,24+20*t,alpha=.40+.50*t)
     # Subtle dark soil grit in contact with feet, not a glowing UI ring.
     d=ImageDraw.Draw(img,'RGBA')
     for i in range(int(12+24*t)):
@@ -77,15 +82,15 @@ def eruption(k):
     fall=1.0 if t<.59 else max(0.0,(1.0-t)/.41)
     im=layer()
     # Painted ground is only a small basal patch, not a reused 500px orange carpet.
-    stamp(im,GROUND,128,206,200+13*growth,77+9*growth,alpha=.49*fall)
+    stamp(im,GROUND,128,206,201+24*growth,48+15*growth,alpha=.49*fall)
     if growth>.05:
         # Primary geological silhouette reads at 1x: single tall erupting cliff.
-        stamp(im,SPIRE,137+3*math.sin(k*.63),183-40*growth,
-              107+43*growth,116+56*growth,rot=2.5*math.sin(k*.52),alpha=fall*.97)
+        stamp(im,SPIRE,137+3*math.sin(k*.63),177-36*growth,
+              145+35*growth,175+64*growth,rot=2.5*math.sin(k*.52),alpha=fall*.97)
         # Two subordinate painted fragments, deliberately asymmetric.
-        stamp(im,SHARD,70-9*growth,201-14*growth,75+18*growth,66+16*growth,
+        stamp(im,SHARD,72-10*growth,203-21*growth,93+23*growth,74+24*growth,
               rot=-18+2*math.sin(k),alpha=fall*.77)
-        stamp(im,SHARD,198+8*growth,204-7*growth,56+15*growth,56+10*growth,
+        stamp(im,SHARD,198+8*growth,198-14*growth,80+26*growth,69+21*growth,
               rot=22+3*math.cos(k*.66),alpha=fall*.67)
     rng=random.Random(7023+k); d=ImageDraw.Draw(im,'RGBA')
     # Debris fragments share the same atlas frame; no extra texture/draw call.
@@ -95,7 +100,7 @@ def eruption(k):
         if x<8 or x>248 or y<6 or y>252:continue
         p=rng.uniform(1,3.1)*(.8-.37*t)
         d.polygon([(x-p,y+.6*p),(x+.5*p,y-p),(x+p,y+.3*p)],fill=(163,101,63,int(fall*rng.randint(27,131))))
-    small_sparks(im,650+k,26,ctr=(127,194-growth*28),span=(125,105),alpha=fall*.65)
+    small_sparks(im,650+k,47,ctr=(127,194-growth*28),span=(125,105),alpha=fall*.83)
     return im
 
 def contact(k):
@@ -104,7 +109,7 @@ def contact(k):
     im=layer();d=ImageDraw.Draw(im,'RGBA');rng=random.Random(9050+k)
     # Distinct directional impact: stone and hot sparks burst from target's torso.
     if t<.73:
-        stamp(im,SHARD,138+20*t,151-22*t,94+36*t,64+22*t,rot=-17+31*t,alpha=fall*.65)
+        stamp(im,SHARD,138+20*t,151-22*t,104+36*t,82+17*t,rot=-17+31*t,alpha=fall*.65)
     for j in range(42):
         ang=rng.uniform(-math.pi,math.pi)
         r=rng.uniform(13,53+50*t)
@@ -166,4 +171,4 @@ if __name__=='__main__':
         assert im.mode=='RGBA' and im.getpixel((0,0))[3]==0
     memory=sum(Image.open(O/fn).width*Image.open(O/fn).height*4 for fn in ['seismic_main.png','seismic_hit.png','seismic_path.png'])
     assert memory==7340032, memory
-    print('FIST05_OPTIMIZED_V3_PASS atlas_frames=24 textures=3 raw_rgba_bytes=%d no_rig=true'%memory)
+    print('FIST05_OPTIMIZED_V4_PASS atlas_frames=24 textures=3 raw_rgba_bytes=%d no_rig=true'%memory)

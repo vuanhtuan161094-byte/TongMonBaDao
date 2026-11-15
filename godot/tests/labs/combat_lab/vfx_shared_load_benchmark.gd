@@ -32,17 +32,12 @@ func _run() -> void:
         for i in range(15):
             await process_frame
         var start := Time.get_ticks_usec()
-        var process_total := 0.0
         for i in range(90):
             await process_frame
-            process_total += Performance.get_monitor(Performance.TIME_PROCESS)
         var delta_us := Time.get_ticks_usec()-start
         var mean_wall_ms := float(delta_us) / 90000.0
-        var mean_script_ms := process_total/90.0*1000.0
         print("VFX_LOAD_SCENARIO count=",amount," wall_ms=",snappedf(mean_wall_ms,.001),
-            " process_ms=",snappedf(mean_script_ms,.001),
-            " approx_fps=",snappedf(1000.0/maxf(.0001,mean_wall_ms),.1),
-            " environment=ubuntu_xvfb_not_android")
+            " samples=90 environment=ubuntu_xvfb_llvmpipe_NOT_ANDROID_OR_GAME_FPS")
         for item in nodes:
             item.queue_free()
         await process_frame

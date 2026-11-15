@@ -8,7 +8,7 @@ func _check(ok: bool, why: String) -> void:
 func _initialize() -> void:
     call_deferred("_run")
 func _run() -> void:
-    _check(LAB.ART_REVISION=="V3_CONTIGUOUS_FISSURE_LITE_ATLAS","new revision")
+    _check(LAB.ART_REVISION=="V4_TALL_PAINTED_SPIRAL_SPARES","new revision")
     _check(LAB.SKILL_ID=="tmb.skill.fist.ba_quyen.active_04.human","ID")
     _check(LAB.EFFECT=="damage" and LAB.ELEMENT=="fire","fire damage")
     _check(LAB.SHAPE=="circle" and LAB.TARGET_LIMIT==3,"circle 3")
