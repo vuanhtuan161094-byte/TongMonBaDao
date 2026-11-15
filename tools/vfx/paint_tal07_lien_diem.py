@@ -39,28 +39,28 @@ def plume_layer(w,h,i,seed,scale=1.,cy=281):
     # Seven asymmetric lotus petals with actually changing, curved silhouettes.
     # Shape is built in a raster field, not a recolored still or HUD line.
     for k in range(7):
-        foot=256+(k-3)*32+float(rng.uniform(-9,9))
-        top=cy-(137+int(rng.uniform(10,100)))*scale
+        foot=256+(k-3)*27+float(rng.uniform(-11,11))
+        top=cy-(166+int(rng.uniform(12,95)))*scale
         tip_wiggle=math.sin(t+k*.9)*14
         stretch=(cy-top)
         u=np.clip((cy-yy)/stretch,0,1)
-        line=foot+(k-3)*(35*u**1.2)+tip_wiggle*u+14*np.sin(u*4.6+t*.83+k*.8)*u
-        width=(18+int(rng.uniform(10,27)))*(1-u)**.72*(.82+.22*np.sin(u*13+t+k))
+        line=foot+(k-3)*(36*u**1.2)+tip_wiggle*u+19*np.sin(u*5.7+t*.83+k*.8)*u
+        width=(37+int(rng.uniform(17,30)))*(1-u)**.56*(.82+.30*np.sin(u*13+t+k))
         dx=np.abs(xx-line)
-        body=np.clip(1-dx/(width+1.5),0,1)**1.45
+        body=np.clip(1-dx/(width+1.5),0,1)**1.05
         gate=np.clip((yy-top)/11,0,1)*np.clip((cy+7-yy)/19,0,1)
-        body*=gate*(.65+.35*n)*(1-.06*k)
+        body*=gate*(.80+.26*n)*(1-.035*k)
         gold=np.maximum(gold,body)
-        inner=np.clip(1-dx/(width*.37+1.5),0,1)**1.3*gate
+        inner=np.clip(1-dx/(width*.26+1.5),0,1)**1.2*gate
         hot=np.maximum(hot,inner*(.83-.32*u))
         smoke+=np.clip(1-dx/(width*2.1+7),0,1)*gate*.065
     # Low localized glow at roots, never a flat opaque circular HUD disc.
     root=np.exp(-(((xx-256)/139)**2+((yy-cy)/45)**2))* (0.4+.6*n)
     power=np.clip(gold*.94+root*.20,0,1)
-    alpha= np.clip((219*power+60*hot+53*smoke)*(0.60+0.40*np.sin(min(1.,(i+1)/12)*math.pi/2)),0,247)
-    rr=130+117*gold+24*n
-    gg=30+143*gold+69*hot
-    bb=13+46*gold+100*hot
+    alpha= np.clip((249*power+77*hot+42*smoke)*(0.82+0.18*np.sin(min(1.,(i+1)/12)*math.pi/2)),0,252)
+    rr=159+98*gold+16*n
+    gg=39+155*gold+72*hot
+    bb=9+50*gold+90*hot
     base=rgba(alpha,rr,gg,bb)
     # Original painterly inner filament and gilt ash: deliberate hot/cool contrast.
     strokes=Image.new('RGBA',(w,h));d=ImageDraw.Draw(strokes,'RGBA')
@@ -69,7 +69,7 @@ def plume_layer(w,h,i,seed,scale=1.,cy=281):
         top=int(cy-(132+11*k+18*math.sin(t+k*.67))*scale)
         mid=(x+int((k-3)*9+11*math.sin(t+k)),int(cy*.60+top*.40))
         d.line([(x,int(cy-17)),mid,(x+int((k-3)*25+9*math.cos(t+k)),top)],
-               fill=(255,197+6*(k%4),86,90+20*(k%3)),width=3 if k%2 else 4,joint='curve')
+               fill=(255,211+5*(k%4),113,61+18*(k%3)),width=2 if k%2 else 3,joint='curve')
     base.alpha_composite(strokes.filter(ImageFilter.GaussianBlur(5)))
     base.alpha_composite(strokes)
     return base
@@ -146,23 +146,36 @@ def ground(i):
     return im
 
 def contact(i):
-    w=h=256;rng=np.random.default_rng(900+i*59)
+    """One local flame bite behind each moving target: no HUD starburst."""
+    w=h=256
     yy,xx=np.indices((h,w),dtype=np.float32)
+    rng=np.random.default_rng(900+i*59)
     n=noise(w,h,43000+i)
-    q=i/7.; dx=xx-128;dy=yy-138
-    phi=np.arctan2(dy,dx)
-    rad=np.sqrt((dx/(33+42*q))**2+(dy/(48+24*q))**2)
-    envelope=(1+.23*np.sin(phi*7+i*.63)+.13*np.sin(phi*11-i*.32))
-    fire=np.exp(-(rad/envelope)**1.95)*(0.54+.57*n)*(1-.74*q)
-    hot=np.exp(-((dx/23)**2+((dy+10)/26)**2))*(1-q)
-    im=rgba(np.clip(194*fire+90*hot,0,252),155+98*fire,64+151*fire+38*hot,15+94*hot)
-    emb=Image.new('RGBA',(w,h));d=ImageDraw.Draw(emb,'RGBA')
-    for j in range(18):
-        x=int(rng.normal(128,55));y=int(rng.normal(138,43))
-        if not (3<x<252 and 3<y<252):continue
+    q=i/7.
+    body=np.zeros((h,w),np.float32)
+    core=np.zeros((h,w),np.float32)
+    for k in range(5):
+        bottom=192+int(rng.uniform(-8,8))
+        top=28+int(rng.uniform(0,80))+int(q*25)
+        u=np.clip((bottom-yy)/(bottom-top),0,1)
+        axis=128+(k-2)*18+(k-2)*13*u+15*np.sin(u*6.2+i*.39+k*.8)*u
+        width=(21+int(rng.uniform(9,19)))*(1-u)**.6
+        dx=np.abs(xx-axis)
+        gate=np.clip((yy-top)/9,0,1)*np.clip((bottom+8-yy)/18,0,1)
+        p=np.clip(1-dx/(width+1.5),0,1)**1.25*gate*(.68+.34*n)
+        body=np.maximum(body,p)
+        core=np.maximum(core,np.clip(1-dx/(width*.32+1.5),0,1)*gate*(.63-.18*u))
+    force=(1-.83*q)
+    a=np.clip((238*body+79*core)*force,0,251)
+    im=rgba(a,153+99*body,37+161*body+55*core,11+62*core)
+    ember=Image.new('RGBA',(w,h));d=ImageDraw.Draw(ember,'RGBA')
+    for j in range(26):
+        x=int(rng.normal(128,54));y=int(rng.normal(144,47))
+        if not(3<x<252 and 3<y<252):continue
         r=int(rng.choice([1,1,2]))
-        d.ellipse((x-r,y-r,x+r,y+r),fill=(255,183,69,int(rng.uniform(35,105)*(1-.68*q))))
-    im.alpha_composite(emb)
+        d.ellipse((x-r,y-r,x+r,y+r),
+                  fill=(255,183,69,int(rng.uniform(45,130)*force)))
+    im.alpha_composite(ember)
     return im
 
 def atlas(frames,cw,ch):
