@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""FIST05 V5: restored painted rocks and directional contact bursts on an optimized atlas.
+"""FIST05 V7: physical painted rockfall and directional contact bursts on an optimized atlas.
 Sprite-first 24 RGBA poses (4 charge + 12 eruption + 8 contact) on two
 shared sheets + one original contiguous crack-path strip, no tiled decals.
 No gameplay state, actor animation, rig or copied third-party artwork.
@@ -75,32 +75,118 @@ def pressure(t):
     small_sparks(img,302+int(t*7),18+int(t*20),alpha=.42+.3*t)
     return img
 
+# FIST05 V7: painted master fractures into SIX independently moving rock
+# fragments during the final beats. The broken fragments are baked into the
+# existing 12-pose 256px atlas; they add zero runtime textures or draw calls.
+def _shattered_pillar(im, age, alpha):
+    source=SPIRE.resize((180,220),Image.Resampling.LANCZOS)
+    # These six irregular masks tessellate the original rock texture; detached
+    # chunks therefore retain the SAME charcoal/ochre geology and luminance.
+    areas=[
+        [(0,0),(75,0),(91,36),(66,91),(14,103),(0,74)],
+        [(75,0),(180,0),(180,82),(118,91),(91,36)],
+        [(0,74),(14,103),(66,91),(103,143),(48,162),(0,140)],
+        [(66,91),(118,91),(180,82),(180,151),(131,162),(103,143)],
+        [(0,140),(48,162),(103,143),(117,220),(0,220)],
+        [(103,143),(131,162),(180,151),(180,220),(117,220)]]
+    drift=[(-40,-29, -25),(41,-48,22),(-62,-8,-31),(61,-10,35),
+           (-28,10,-18),(37,8,19)]
+    # Natural arc: fragment first moves outward and up, then gravity pulls it
+    # toward the ground. Different direction/rotation for each fragment.
+    for i,poly in enumerate(areas):
+        mask=Image.new('L',source.size,0)
+        ImageDraw.Draw(mask).polygon(poly,fill=255)
+        mask=mask.filter(ImageFilter.GaussianBlur(.8))
+        piece=source.copy()
+        piece.putalpha(Image.fromarray(np.minimum(
+            np.asarray(piece.getchannel('A'),dtype=np.uint8),
+            np.asarray(mask,dtype=np.uint8)).astype(np.uint8),'L'))
+        bbox=mask.getbbox()
+        if bbox is None:continue
+        piece=piece.crop(bbox)
+        cx=(bbox[0]+bbox[2])*.5
+        cy=(bbox[1]+bbox[3])*.5
+        vx,vy,spin=drift[i]
+        dx=vx*age+6*math.sin(age*5.8+i)
+        dy=vy*age+61*age*age
+        shrink=1.0-.11*age
+        # Full pillar center at (137,141), footprint at y ~251.
+        px=47+cx+dx
+        py=31+cy+dy
+        stamp(im,piece,px,py,piece.width*shrink,piece.height*shrink,
+              rot=spin*age,alpha=alpha*(1.0-.16*age))
+
+def _earthfall_dust(im, age, alpha, seed):
+    # Dust is physically grounded, feathered and EARTH-COLORED. No circular
+    # orange HUD ring or giant flat rectangular cloud covers the target.
+    rng=random.Random(SEED+25000+seed)
+    soft=layer()
+    d=ImageDraw.Draw(soft,'RGBA')
+    for i in range(18):
+        x=rng.gauss(127,45+19*age)
+        y=224+rng.gauss(0,5+5*age)
+        rx=rng.uniform(5,14)*(0.65+age*.75)
+        ry=rng.uniform(2,7)*(0.6+age*.75)
+        if not 3<x<252:continue
+        d.ellipse((x-rx,y-ry,x+rx,y+ry),
+                  fill=(105+rng.randrange(22),80+rng.randrange(24),
+                        70+rng.randrange(23),int(alpha*rng.randint(28,78))))
+    im.alpha_composite(soft.filter(ImageFilter.GaussianBlur(6.0)))
+    d=ImageDraw.Draw(im,'RGBA')
+    for i in range(42):
+        theta=rng.uniform(-math.pi,math.pi)
+        x=128+rng.uniform(17,83)*math.cos(theta)*(0.65+age*.75)
+        y=218-27*age+rng.uniform(0,28)*math.sin(theta)+23*age*age
+        if not 4<x<251 or not 5<y<253:continue
+        r=rng.uniform(.7,3.5)
+        tone=rng.randint(80,155)
+        d.polygon([(x-r,y),(x+r*.4,y-r),(x+r,y+r*.5)],
+                  fill=(tone,round(tone*.72),round(tone*.57),
+                        int(alpha*rng.randint(25,104))))
+
 def eruption(k):
-    t=k/11
+    t=k/11.0
     growth=min(1.0,t/.31) if t>0 else 0.0
-    # Fast upward impulse, brief hold, then irregular earthfall: no endless rising pillars.
-    fall=1.0 if t<.59 else max(0.0,(1.0-t)/.41)
+    # Unlike V6: don't hold an unchanged pillar until it vanishes. After pose 6
+    # it breaks into visible rotating pieces, arcs down, and becomes low dust.
+    fall=1.0 if t<.55 else max(0.0,(1.0-t)/.45)**.32
     im=layer()
-    # Painted ground is only a small basal patch, not a reused 500px orange carpet.
-    stamp(im,GROUND,128,206,201+24*growth,48+15*growth,alpha=.49*fall)
+    stamp(im,GROUND,128,211,177+29*growth,34+17*growth,
+          alpha=.44*fall)
     if growth>.05:
-        # Primary geological silhouette reads at 1x: single tall erupting cliff.
-        stamp(im,SPIRE,137+3*math.sin(k*.63),177-36*growth,
-              145+35*growth,175+64*growth,rot=2.5*math.sin(k*.52),alpha=fall*.97)
-        # Two subordinate painted fragments, deliberately asymmetric.
-        stamp(im,SHARD,72-10*growth,203-21*growth,93+23*growth,74+24*growth,
-              rot=-18+2*math.sin(k),alpha=fall*.77)
-        stamp(im,SHARD,198+8*growth,198-14*growth,80+26*growth,69+21*growth,
-              rot=22+3*math.cos(k*.66),alpha=fall*.67)
+        if k<=6:
+            stamp(im,SPIRE,137+3*math.sin(k*.63),177-36*growth,
+                  145+35*growth,175+64*growth,
+                  rot=2.5*math.sin(k*.52),alpha=fall*.97)
+        else:
+            age=(k-6.0)/5.0
+            # Add low dust FIRST so the source-painted stones appear in front.
+            _earthfall_dust(im,age,fall*.77,k)
+            _shattered_pillar(im,age,fall)
+        # Side fragments tumble and settle, they do not remain as static decals.
+        decay=max(0.0,(k-6.0)/5.0)
+        left_y=202-22*growth-21*decay+56*decay*decay
+        right_y=201-16*growth-33*decay+59*decay*decay
+        stamp(im,SHARD,72-10*growth-22*decay,left_y,
+              90+22*growth,72+24*growth,rot=-18-22*decay,
+              alpha=fall*.63*(1-.37*decay))
+        stamp(im,SHARD,198+8*growth+23*decay,right_y,
+              78+24*growth,66+19*growth,rot=22+29*decay,
+              alpha=fall*.56*(1-.36*decay))
+    # Ground pebbles and ember grit share this single pre-baked atlas frame.
     rng=random.Random(7023+k); d=ImageDraw.Draw(im,'RGBA')
-    # Debris fragments share the same atlas frame; no extra texture/draw call.
-    for j in range(42):
-        ang=rng.uniform(-math.pi,math.pi);radius=rng.uniform(10,78)*(.4+growth*.9)
-        x=133+math.cos(ang)*radius;y=199+math.sin(ang)*radius*.54-25*growth*rng.random()
+    for j in range(35):
+        ang=rng.uniform(-math.pi,math.pi)
+        radius=rng.uniform(10,78)*(.4+growth*.88)
+        x=133+math.cos(ang)*radius
+        y=202+math.sin(ang)*radius*.43-15*growth*rng.random()
         if x<8 or x>248 or y<6 or y>252:continue
         p=rng.uniform(1,3.1)*(.8-.37*t)
-        d.polygon([(x-p,y+.6*p),(x+.5*p,y-p),(x+p,y+.3*p)],fill=(163,101,63,int(fall*rng.randint(27,131))))
-    small_sparks(im,650+k,47,ctr=(127,194-growth*28),span=(125,105),alpha=fall*.83)
+        d.polygon([(x-p,y+.6*p),(x+.5*p,y-p),(x+p,y+.3*p)],
+                  fill=(139,96,66,int(fall*rng.randint(27,116))))
+    if k<8:
+        small_sparks(im,650+k,35,ctr=(127,194-growth*28),
+                     span=(123,90),alpha=fall*.69)
     return im
 
 def contact(k):
@@ -207,4 +293,4 @@ if __name__=='__main__':
         assert im.mode=='RGBA' and im.getpixel((0,0))[3]==0
     memory=sum(Image.open(O/fn).width*Image.open(O/fn).height*4 for fn in ['seismic_main.png','seismic_hit.png','seismic_path.png'])
     assert memory==7340032, memory
-    print('FIST05_OPTIMIZED_V5_PASS atlas_frames=24 textures=3 raw_rgba_bytes=%d no_rig=true'%memory)
+    print('FIST05_OPTIMIZED_V7_PASS atlas_frames=24 textures=3 raw_rgba_bytes=%d no_rig=true'%memory)
