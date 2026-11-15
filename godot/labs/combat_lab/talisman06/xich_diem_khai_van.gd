@@ -137,11 +137,17 @@ func _draw()->void:
         _halo(HAND+Vector2(5,-3),43.0,Color("ff8f35",charge*.42))
     var sg:=seal_gain(t)
     if sg>.004:
-        var f:=clampi(int(floor(clampf(t/1.42,0,1)*11.99)),0,11)
+        var f:=clampi(int(floor(clampf(t/.50,0,1)*11.99)),0,11)
         var sr:=Rect2(float(f%4)*256.0+80.0,float(int(f/4))*256.0+24.0,96.0,200.0)
         var at:=HAND+Vector2(25,-18-10.0*smoothstep(.08,.50,t))
         if t>FLIGHT_START:at=projectile_pos(t)-Vector2(17,23)*(1.0-travel_q(t))
-        var siz:=lerpf(116.0,62.0,travel_q(t))
+        var siz:=lerpf(74.0,44.0,travel_q(t))
+        # Painted charge coil supports the talisman but does not simulate hit.
+        if t<FLIGHT_START:
+            var curl_idx:=clampi(int(t*22.0)%12,0,11)
+            var curl_region:=Rect2(float(curl_idx%4)*384.0,float(int(curl_idx/4))*224.0,384.0,224.0)
+            draw_texture_rect_region(COMET,Rect2(HAND+Vector2(-93,-63),Vector2(171,126)),
+                curl_region,Color(1.0,.78,.60,sg*.30))
         draw_set_transform(at,-.18+.12*sin(t*6.0),Vector2.ONE)
         draw_texture_rect_region(SEAL,Rect2(-siz*.5,-siz*.65,siz,siz*1.30),sr,Color(1,1,1,sg*.97))
         draw_set_transform(Vector2.ZERO)
