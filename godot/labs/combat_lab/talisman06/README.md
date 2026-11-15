@@ -20,3 +20,13 @@ The six ORIGINAL generated WEBP sprites are now committed as runtime authority a
 - `godot/labs/combat_lab/talisman06/assets/tal06_seal_master.webp` — SHA256 `7f868818bc4ebe8b2c6b7cb62fa914031681491b034bb1c4345cef3ff4e107f8`, 17208 bytes
 - `godot/labs/combat_lab/talisman06/assets/tal06_comet_master.webp` — SHA256 `1ea423338ade14e0bd86d2ea981babcdc299670e37d8f72ea6858a9f296cbb78`, 45768 bytes
 - `godot/labs/combat_lab/talisman06/assets/tal06_foot_ember.webp` — SHA256 `78adeef827ce40a5a889d1ce7196706046110d0cbe2f1e6c3abf7349151934e5`, 5190 bytes
+
+## HF01 R4 — full sprite-first remake, new art (2026-11-15)
+
+**Source recipe:** `tools/vfx/hf01_r4_remake.py` derives fresh, artistically repainted alpha poses from the ORIGINAL TMB-owned SHA-pinned R3 underpaint; only a faint pigment layer is retained. The new seal/parchment, seven independently articulated flame tongues, ivory-white directional head, ragged smoke, concentrated impact and scattered ash are authored in new pixels. No commercial asset pixels, image-poster crop, rigging or fake extra hit.
+
+**New generated LAB textures:** `tal06_r4_seal_atlas.webp` 12 x 256²; `tal06_r4_comet_atlas.webp` 12 x 384x224; `tal06_r4_impact_atlas.webp` 8 x 288x224. Unique RGB/alpha pose hashes checked independently. These three WEBPs are **build products** baked deterministically from the committed first-party input and recipe before Godot import; they are not mistakenly claimed to exist in Git until deliberately committed. To open locally, run `/usr/bin/python3 tools/vfx/hf01_r4_remake.py` with Pillow and NumPy available.
+
+**One-target choreography:** converging motes `.06–.70`, flaming parchment and release `.05–1.04`, accelerating target-following comet `.64–1.46` with three low-alpha visual afterimages (NOT additional attacks), one lower-torso locked-target visual contact `1.46–1.80`, compressed moving-foot scorch until `2.66`. Existing real monster WALK atlas, true moving target position, face-safe impact. `tmb.skill.talisman.hoa_phu.active_01.human` remains `damage/fire/single_target/cap1`. No burn, DoT, splash, AoE, target acquisition, HP update or Combat V2 changes.
+
+**Evidence gate:** `.github/workflows/vfx-tal-06-xich-diem-khai-van.yml` validates the six original pinned sources, bakes and hashes three new RGBA flipbooks, imports in **Godot 4.7.2 GL Compatibility**, runs parse/focused QA, and records 198 native 1280x720 frames to MP4/GIF/14 PNGs and a contact sheet. This is an isolated view-only LAB. **OWNER_VISUAL_PENDING / PVE_INTEGRATION_HOLD / PHYSICAL_WINDOWS_ANDROID_PENDING** until real video inspected and accepted.
