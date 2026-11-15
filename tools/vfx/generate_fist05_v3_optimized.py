@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""FIST05 V4: full-pixel painterly rock silhouettes on an optimized atlas.
+"""FIST05 V5: restored painted rocks and directional contact bursts on an optimized atlas.
 Sprite-first 24 RGBA poses (4 charge + 12 eruption + 8 contact) on two
 shared sheets + one original contiguous crack-path strip, no tiled decals.
 No gameplay state, actor animation, rig or copied third-party artwork.
@@ -104,20 +104,56 @@ def eruption(k):
     return im
 
 def contact(k):
+    """Painterly directional magma absorption / impact, 8 independent frames.
+    Visible at native target scale, never a generic perfect neon star.
+    """
     t=k/7
-    fall=max(0.0,(1-t)**.62)
-    im=layer();d=ImageDraw.Draw(im,'RGBA');rng=random.Random(9050+k)
-    # Distinct directional impact: stone and hot sparks burst from target's torso.
-    if t<.73:
-        stamp(im,SHARD,138+20*t,151-22*t,104+36*t,82+17*t,rot=-17+31*t,alpha=fall*.65)
-    for j in range(42):
-        ang=rng.uniform(-math.pi,math.pi)
-        r=rng.uniform(13,53+50*t)
-        x=130+math.cos(ang)*r;y=154+math.sin(ang)*r*.72
-        if not(5<x<251 and 5<y<251):continue
-        s=rng.uniform(1,3.5)*(1-.44*t)
-        color=(rng.randint(191,255),rng.randint(130,215),rng.randint(63,110),int(fall*rng.randint(75,198)))
-        d.polygon([(x-2*s,y),(x+s,y-s*.7),(x+2*s,y+s*.1)],fill=color)
+    fall=max(0.0,(1-t)**.55)
+    im=layer()
+    rng=random.Random(SEED+9050+k)
+    origin=(122.0,158.0)
+    bloom=layer();db=ImageDraw.Draw(bloom,'RGBA')
+    db.ellipse((origin[0]-30,origin[1]-22,origin[0]+30,origin[1]+22),fill=(255,162,66,int(137*fall)))
+    halo=bloom.filter(ImageFilter.GaussianBlur(17))
+    im.alpha_composite(halo)
+    # Splintered blazing stone is the PRIMARY contact texture, composited with
+    # directional flame wisps; not a full opaque explosion that hides the target.
+    if t<.85:
+        stamp(im,SHARD,135+21*t,152-20*t,118+39*t,89+26*t,
+              rot=-19+31*t,alpha=fall*.83)
+    # Organic torn flame wisps: curved painterly trails in the strike direction,
+    # NO centered radial star or UI-style line spokes.
+    glow=layer();sg=ImageDraw.Draw(glow,'RGBA')
+    sharp=layer();d=ImageDraw.Draw(sharp,'RGBA')
+    for j in range(7):
+        x0=92+rng.uniform(-22,25)
+        y0=139+rng.uniform(-27,31)
+        dx=rng.uniform(39,83+32*t)
+        dy=rng.uniform(-47,35)
+        phase=rng.uniform(-2.4,2.4)
+        pts=[]
+        for h in range(15):
+            q=h/14
+            x=x0+dx*q + math.sin(q*7+phase)*5*q
+            y=y0+dy*q + math.sin(math.pi*q)*rng.uniform(-15,15) + 3*math.sin(q*9+phase)
+            pts.append((x,y))
+        sg.line(pts,fill=(242,126,53,int(131*fall)),width=rng.randint(8,13),joint='curve')
+        d.line(pts[2:],fill=(255,rng.randint(169,224),rng.randint(100,157),int(171*fall)),
+               width=rng.randint(2,4),joint='curve')
+    # Detached cinders and stone slivers make it a material impact, not a neon icon.
+    for j in range(28):
+        x=rng.uniform(62,203);y=rng.uniform(109,212)
+        if (x-122)**2/10000+(y-153)**2/3500>1.4:continue
+        radius=rng.uniform(.8,3.1)*(1-.42*t)
+        d.polygon([(x-radius,y),(x+radius*.7,y-radius),(x+radius,y+radius*.2)],
+            fill=(255,rng.randint(133,219),rng.randint(75,136),int(165*fall)))
+    im.alpha_composite(glow.filter(ImageFilter.GaussianBlur(7)))
+    im.alpha_composite(sharp)
+    # Brief incandescent contact core, not a constant solid white orb.
+    if k<4:
+        dot=layer(); ImageDraw.Draw(dot,'RGBA').ellipse((110,144,138,164),
+            fill=(255,239,177,int(117*fall)))
+        im.alpha_composite(dot.filter(ImageFilter.GaussianBlur(6)))
     return im
 
 def crack_strip():
@@ -171,4 +207,4 @@ if __name__=='__main__':
         assert im.mode=='RGBA' and im.getpixel((0,0))[3]==0
     memory=sum(Image.open(O/fn).width*Image.open(O/fn).height*4 for fn in ['seismic_main.png','seismic_hit.png','seismic_path.png'])
     assert memory==7340032, memory
-    print('FIST05_OPTIMIZED_V4_PASS atlas_frames=24 textures=3 raw_rgba_bytes=%d no_rig=true'%memory)
+    print('FIST05_OPTIMIZED_V5_PASS atlas_frames=24 textures=3 raw_rgba_bytes=%d no_rig=true'%memory)
