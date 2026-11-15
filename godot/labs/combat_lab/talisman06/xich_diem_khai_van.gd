@@ -111,6 +111,16 @@ func _draw()->void:
         draw_texture_rect_region(SCORCH,Rect2(target-Vector2(117,57),Vector2(234,82)),
             source,Color(1,1,1,scorch*.89))
         _halo(target+Vector2(0,-3),70,Color("e4742f",scorch*.18))
+    var h:=hit_gain(t)
+    if h>.004:
+        var contact:=target_contact(t)+Vector2(0,10)
+        var hitframe:=impact_index(t)
+        var hitregion:=Rect2(float(hitframe%4)*288,float(int(hitframe/4))*224,288,224)
+        # Original painted sprite is BEHIND the monster to preserve its face;
+        # separate compact scorched contact stays beneath moving feet.
+        draw_texture_rect_region(IMPACT,
+            Rect2(contact-Vector2(103,103),Vector2(206,193)),
+            hitregion,Color(1.0,1.0,1.0,h*.91))
     # QA draws a preexisting frame-by-frame monster WALK atlas, never rigs.
     _actor(CASTER)
     _monster(target,t)
@@ -155,22 +165,14 @@ func _draw()->void:
         draw_set_transform(Vector2.ZERO)
         _halo(tip,39,Color("fa6225",alpha*.19))
         _halo(tip,12,Color("fff3c9",alpha*.16))
-    var h:=hit_gain(t)
     if h>.004:
-        var contact:=target_contact(t)+Vector2(0,10)
-        var hitframe:=impact_index(t)
-        var hitregion:=Rect2(float(hitframe%4)*288,float(int(hitframe/4))*224,288,224)
-        # Original sprite on lower torso while monster face remains visible;
-        # separate compact scorched contact stays beneath moving feet.
-        draw_texture_rect_region(IMPACT,
-            Rect2(contact-Vector2(103,103),Vector2(206,193)),
-            hitregion,Color(1.0,1.0,1.0,h*.91))
+        var contact_front:=target_contact(t)+Vector2(0,10)
         # Two-stage local contact flash; no AoE or simulated damage.
-        _halo(contact,63.0,Color("f3572c",h*.30))
-        _halo(contact,24.0,Color("ffd174",h*.37))
-        _halo(contact,8.0,Color("fff9e6",h*.60))
+        _halo(contact_front,63.0,Color("f3572c",h*.30))
+        _halo(contact_front,24.0,Color("ffd174",h*.37))
+        _halo(contact_front,8.0,Color("fff9e6",h*.60))
         var recoil_flash:=smoothstep(DEMO_HIT_AT,DEMO_HIT_AT+.025,t)*(1.0-smoothstep(DEMO_HIT_AT+.06,DEMO_HIT_AT+.17,t))
-        _halo(contact+Vector2(0,-11),69.0,Color("ffa45d",recoil_flash*.16))
+        _halo(contact_front+Vector2(0,-11),69.0,Color("ffa45d",recoil_flash*.16))
     var ember:=smoothstep(DEMO_HIT_AT,DEMO_HIT_AT+.17,t)*(1.0-smoothstep(1.92,FADE_END,t))
     if ember>.004:
         for k in range(13):
