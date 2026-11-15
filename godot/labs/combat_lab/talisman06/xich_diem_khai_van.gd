@@ -128,12 +128,12 @@ func _draw()->void:
     var sg:=seal_gain(t)
     if sg>.004:
         var f:=clampi(int(floor(clampf(t/1.42,0,1)*11.99)),0,11)
-        var sr:=Rect2(float(f%4)*256,float(int(f/4))*256,256,256)
+        var sr:=Rect2(float(f%4)*256.0+80.0,float(int(f/4))*256.0+24.0,96.0,200.0)
         var at:=HAND+Vector2(25,-18-10.0*smoothstep(.08,.50,t))
         if t>FLIGHT_START:at=projectile_pos(t)-Vector2(17,23)*(1.0-travel_q(t))
-        var siz:=lerpf(116,67,travel_q(t))
+        var siz:=lerpf(116.0,62.0,travel_q(t))
         draw_set_transform(at,-.18+.12*sin(t*6.0),Vector2.ONE)
-        draw_texture_rect_region(SEAL,Rect2(-siz*.5,-siz*.5,siz,siz),sr,Color(1,1,1,sg*.97))
+        draw_texture_rect_region(SEAL,Rect2(-siz*.5,-siz*.65,siz,siz*1.30),sr,Color(1,1,1,sg*.97))
         draw_set_transform(Vector2.ZERO)
     var index:=comet_index(t)
     if index>=0:
