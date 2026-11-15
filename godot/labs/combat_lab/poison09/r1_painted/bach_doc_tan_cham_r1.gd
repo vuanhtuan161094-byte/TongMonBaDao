@@ -15,7 +15,7 @@ const DECLARED_DURATION := 6.0
 const DECLARED_POISON_STACKS := 1
 const CAST_END := 0.60
 const FIRST_HIT := 1.53
-const HIT_SPACING := 0.08
+const HIT_SPACING := 0.12
 const CONTACT_DURATION := 0.40
 const FADE_DURATION := 0.32
 const LOOP_SECONDS := 8.62
@@ -40,9 +40,9 @@ var mark_frames: Array[AtlasTexture] = []
 
 static func target_at(i: int,t: float) -> Vector2:
     # Three illustrative moving stand-ins in the local circle (not a gameplay target resolver).
-    var base := Vector2(900.0,540.0)
-    if i==1: base=Vector2(1040.0,550.0)
-    if i==2: base=Vector2(1165.0,541.0)
+    var base := Vector2(900.0,460.0)
+    if i==1: base=Vector2(1040.0,549.0)
+    if i==2: base=Vector2(1165.0,637.0)
     var phase := float(i)*1.75
     return base+Vector2(12.0*sin(t*1.13+phase),8.0*cos(t*0.94+phase))
 
@@ -53,7 +53,7 @@ static func hit_time(i: int) -> float:
     return FIRST_HIT+HIT_SPACING*float(i)
 
 static func start_time(i: int) -> float:
-    return CAST_END+0.075*float(i)
+    return CAST_END+0.105*float(i)
 
 static func flight_fraction(i: int,t: float) -> float:
     return clampf((t-start_time(i))/(hit_time(i)-start_time(i)),0.0,1.0)
