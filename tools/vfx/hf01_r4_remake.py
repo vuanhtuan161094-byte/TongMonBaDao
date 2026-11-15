@@ -44,54 +44,64 @@ def layered_stroke(dst,points,wide,rgba):
     dst.alpha_composite(mask)
 
 def comet_frame(i):
+    """A single cohesive, volumetric plume with an ivory-hot impact head."""
     w,h=384,224
     yy,xx=np.indices((h,w),dtype=np.float32)
     rng=np.random.default_rng(64018+i*177)
-    head=307+4*math.sin(i*.58)
-    tail=np.clip((head-xx)/300.0,0,1)
-    axis=112+13*np.sin(xx/34+i*.63)*tail+5*np.sin(xx/13-i*.31)*tail
-    fine=rng.random((h,w),dtype=np.float32)
-    warp=(np.sin(xx*.12+yy*.06+i*.68)+np.sin(xx*.057-yy*.13-i*.49))*.22
-    rwidth=(8+53*tail)*(1+warp)
-    body=np.exp(-(np.abs(yy-axis)/(rwidth+1))**1.55)*tail
-    rag=np.clip(.35+.75*fine+.17*np.sin(xx*.33+i),0,1.2)
-    body*=rag*np.clip((head-xx+25)/28,0,1)
-    alpha=np.clip(132*body,0,180).astype(np.uint8)
-    red=np.clip(103+145*body+19*fine,0,255).astype(np.uint8)
-    green=np.clip(29+126*body+18*fine,0,255).astype(np.uint8)
-    blue=np.clip(18+26*body,0,255).astype(np.uint8)
-    base=Image.fromarray(np.dstack([red,green,blue,alpha]),"RGBA")
-    base.alpha_composite(underpaint("tal06_fire_comet_atlas.webp",i,(w,h),.12))
-    # Independently articulated tongues: golden fire coils around a compact white head.
-    for lane in range(7):
-        phase=i*.39+lane*.88
+    phase=i*.43
+    head=307+4*math.sin(phase)
+    tail=np.clip((head-xx)/296.0,0,1)
+    axis=112+17*np.sin(xx*.026+phase)*tail+7*np.sin(xx*.063-phase*.7)*tail
+    tex=rng.random((h,w),dtype=np.float32)
+    flutter=.22*np.sin(xx*.13+yy*.055+phase*2)+.14*np.sin(xx*.069-yy*.11-phase)
+    width=(9+55*tail**.82)*np.clip(1+flutter,.55,1.40)
+    dist=np.abs(yy-axis)
+    density=np.exp(-((dist/(width+1))**1.58))*tail**.26
+    density*=np.clip(.71+.25*tex+.17*np.sin(xx*.087+yy*.12+phase),.35,1.25)
+    envelope=np.clip((head-xx+24)/31,0,1)*np.clip((xx-6)/26,0,1)
+    density*=envelope
+    # Thick feathered asymmetric flame lobes break the silhouette like paint.
+    for lane in range(5):
         sign=-1 if lane%2 else 1
-        sy=112+sign*(3+lane*2)
-        length=115+lane*22+18*math.sin(phase)
-        ey=sy+sign*(23+8*lane)+12*math.sin(phase*1.4)
-        start=(298-int(lane*2),int(sy))
-        end=(int(head-length),int(ey))
-        pts=bezier(start,(235,int(sy+sign*(18+lane*5))),
-                   (188-int(lane*11),int(ey-sign*25*math.sin(phase))),end)
-        layered_stroke(base,pts,max(2,12-lane),
-                       (255,88+min(100,lane*12),26+min(65,lane*7),145-lane*9))
-        if lane<4:
-            inside=pts[:int(len(pts)*(.68 if lane<2 else .42))]
-            layered_stroke(base,inside,3 if lane<2 else 2,(255,228,140,154-lane*17))
-    # A strong directional, ivory-white spear tip gives the projectile force.
-    gl=Image.new("RGBA",(w,h));p=ImageDraw.Draw(gl,"RGBA")
-    p.ellipse((head-38,93,head+6,132),fill=(255,164,48,198))
-    p.ellipse((head-22,101,head+13,123),fill=(255,239,155,227))
-    p.polygon([(head-14,101),(head+25,112),(head-14,123)],fill=(255,249,221,239))
-    base.alpha_composite(gl.filter(ImageFilter.GaussianBlur(8)))
-    base.alpha_composite(gl)
-    ash=Image.new("RGBA",(w,h));p=ImageDraw.Draw(ash,"RGBA")
-    for j in range(52):
-        x=int(rng.uniform(16,270));y=int(112+rng.normal(0,32))
-        r=int(rng.choice([1,1,2,2,3]));p.ellipse((x-r,y-r,x+r,y+r),
-           fill=(255,int(rng.uniform(137,226)),int(rng.uniform(32,105)),int(rng.uniform(30,142))))
-    base.alpha_composite(ash)
-    return base
+        cx=251-lane*40+16*math.sin(phase+lane*1.2)
+        cy=112+sign*(15+lane*12)+12*math.sin(phase*1.5+lane)
+        plume=np.exp(-((xx-cx)/(39+lane*8))**2-((yy-cy)/(17+lane*3))**2)
+        density=np.maximum(density,plume*(.53+.21*math.sin(phase+lane)**2))
+    core=np.exp(-((yy-axis)/(6+16*tail))**2)*np.clip((xx-124)/155,0,1)*envelope
+    orb=np.exp(-((xx-head+9)/22)**2-((yy-112)/18)**2)
+    fire=np.clip(density*.9+core*.48+orb*.65,0,1.2)
+    hot=np.clip(core*.76+orb*.95,0,1)
+    alpha=np.clip((180*fire+57*hot)*(1-.18*tail),0,253).astype(np.uint8)
+    red=np.clip(126+116*fire+19*tex,0,255).astype(np.uint8)
+    green=np.clip(29+132*fire+86*hot,0,255).astype(np.uint8)
+    blue=np.clip(11+41*fire+140*hot,0,255).astype(np.uint8)
+    im=Image.fromarray(np.dstack([red,green,blue,alpha]),"RGBA")
+    im.alpha_composite(underpaint("tal06_fire_comet_atlas.webp",i,(w,h),.08))
+    # Four broad curling flame flakes only, subordinate to the painted body.
+    glow=Image.new("RGBA",(w,h));d=ImageDraw.Draw(glow,"RGBA")
+    for lane in range(4):
+        side=1 if lane%2 else -1
+        x0=282-lane*20
+        x1=119-lane*23+12*math.sin(phase+lane)
+        y0=112+side*(9+lane*8)
+        y1=112+side*(29+lane*11)+14*math.sin(phase*1.5+lane)
+        pts=bezier((x0,y0),(x0-35,y0+side*12),(x1+28,y1-side*15),(x1,y1),28)
+        d.line(pts,fill=(255,111+25*lane,38,125-lane*17),width=17-lane*2,joint="curve")
+    im.alpha_composite(glow.filter(ImageFilter.GaussianBlur(8)))
+    a=glow.getchannel("A").point(lambda v:int(v*.28));glow.putalpha(a)
+    im.alpha_composite(glow)
+    headlayer=Image.new("RGBA",(w,h));d=ImageDraw.Draw(headlayer,"RGBA")
+    d.ellipse((head-30,92,head+14,132),fill=(255,177,68,185))
+    d.ellipse((head-19,101,head+12,124),fill=(255,247,190,231))
+    d.ellipse((head-7,105,head+11,119),fill=(255,254,240,248))
+    im.alpha_composite(headlayer.filter(ImageFilter.GaussianBlur(9)))
+    im.alpha_composite(headlayer)
+    emb=Image.new("RGBA",(w,h));d=ImageDraw.Draw(emb,"RGBA")
+    for j in range(32):
+        x=int(rng.uniform(8,270));y=int(rng.normal(112,42));r=int(rng.choice([1,1,2,3]))
+        d.ellipse((x-r,y-r,x+r,y+r),fill=(255,int(rng.uniform(144,232)),45,int(rng.uniform(32,126))))
+    im.alpha_composite(emb)
+    return im
 
 def seal_frame(i):
     w=h=256;rng=np.random.default_rng(3103+i*67)
@@ -130,47 +140,52 @@ def seal_frame(i):
     return base
 
 def impact_frame(i):
+    """One forceful body-local flame bloom with a broken, melting edge."""
     w,h=288,224
-    rng=np.random.default_rng(8191+i*193)
-    base=underpaint("tal06_impact_atlas.webp",i,(w,h),.18)
-    q=i/7.0;power=(1-q)**.75
-    # One local molten collision against lower torso; smoke/ash sink to the feet.
     yy,xx=np.indices((h,w),dtype=np.float32)
-    n=rng.random((h,w),dtype=np.float32)
-    flame=np.exp(-(((xx-144)/(21+35*q))**2+((yy-123)/(28+37*q))**2))
-    smoke=np.exp(-(((xx-144)/(61+35*q))**2+((yy-155)/(41+35*q))**2))*n
-    layer=Image.fromarray(np.dstack([
-        np.clip(163+84*flame,0,255).astype("uint8"),
-        np.clip(62+174*flame,0,255).astype("uint8"),
-        np.clip(22+93*flame,0,255).astype("uint8"),
-        np.clip(flame*196*power+smoke*82*(.4+.6*power),0,235).astype("uint8")]),"RGBA")
-    base.alpha_composite(layer)
-    for lane in range(7):
-        sign=1 if lane%2 else -1
-        x=144+(lane-3)*12
-        high=43+18*q+lane*2
-        p0=(x,165)
-        p1=(int(x+sign*(17+lane*2)),int(139-12*q))
-        p2=(int(x-sign*18),int(112-15*power))
-        p3=(int(x+sign*(9+lane*2)),int(high))
-        pts=bezier(p0,p1,p2,p3)
-        layered_stroke(base,pts,7 if lane<4 else 4,
-                       (255,int(132+60*power),40,int((140-lane*7)*power)))
-        if lane<3:layered_stroke(base,pts[:17],2,(255,244,178,int(145*power)))
-    hot=Image.new("RGBA",(w,h));p=ImageDraw.Draw(hot,"RGBA")
+    rng=np.random.default_rng(8191+i*193)
+    q=i/7.0;live=(1-q)**.76
+    dx=xx-144;dy=yy-127
+    a=np.arctan2(dy,dx)
+    turbulence=.15*np.sin(7*a+i*.49)+.11*np.cos(11*a-i*.59)
+    feather=.09*np.sin(xx*.17+yy*.07+i*.65)+.07*np.cos(xx*.09-yy*.15)
+    dist=np.sqrt((dx/(71-19*q))**2+(dy/(64-13*q))**2)
+    edge=np.clip(.87+turbulence+feather,.45,1.30)
+    bloom=np.exp(-(dist/(edge+.02))**2.4)
+    core=np.exp(-((dx/(23+7*q))**2+(dy/(28+9*q))**2))
+    upper=np.exp(-((dx/(38+22*q))**2+((dy+46+15*q)/(41+8*q))**2))
+    grain=rng.random((h,w),dtype=np.float32)
+    fire=np.clip(bloom*.87+upper*.45+core*.31,0,1.25)
+    alpha=np.clip((201*fire+51*grain*fire)*live,0,253).astype(np.uint8)
+    red=np.clip(120+130*fire+24*grain,0,255).astype(np.uint8)
+    green=np.clip(36+152*fire+71*core,0,255).astype(np.uint8)
+    blue=np.clip(12+47*fire+148*core,0,255).astype(np.uint8)
+    im=Image.fromarray(np.dstack([red,green,blue,alpha]),"RGBA")
+    im.alpha_composite(underpaint("tal06_impact_atlas.webp",i,(w,h),.08))
+    # Paint hot internal irregular fissures; never star spokes or global AoE.
+    glaze=Image.new("RGBA",(w,h));d=ImageDraw.Draw(glaze,"RGBA")
+    for k in range(5):
+        sign=-1 if k%2 else 1
+        start=(145+sign*(7+k*5),135+7*k)
+        end=(int(140+sign*(27+k*9)),int(41+15*q+5*k))
+        pts=bezier(start,(start[0]+sign*29,105),(end[0]-sign*24,76),end,25)
+        d.line(pts,fill=(255,int(159+50*live),54,int(162*live)),width=10-k,joint="curve")
+    im.alpha_composite(glaze.filter(ImageFilter.GaussianBlur(7)))
+    a0=glaze.getchannel("A").point(lambda v:int(v*.38));glaze.putalpha(a0)
+    im.alpha_composite(glaze)
+    spec=Image.new("RGBA",(w,h));d=ImageDraw.Draw(spec,"RGBA")
     if i<5:
-        size=int(19*(1-q)+4)
-        p.ellipse((144-size,133-size,144+size,133+size),
-                  fill=(255,250,216,int(217*power)))
-    # Ground ash is horizontal and restrained; no fake AoE indicator or extra target.
-    for j in range(47):
-        x=int(rng.normal(144,45+14*q));y=int(rng.normal(181,10))
-        if not 2<=x<w-2 or not 1<=y<h-2:continue
+        rad=int(17*live+7)
+        d.ellipse((144-rad,127-rad,144+rad,127+rad),fill=(255,250,220,int(214*live)))
+    # Tumbling burnt embers near the base fade after impact.
+    for k in range(42):
+        px=int(rng.normal(144,50));py=int(rng.normal(174,19))
+        if not 2<px<w-3 or not 2<py<h-3:continue
         r=int(rng.choice([1,1,2,3]))
-        p.ellipse((x-r,y-r,x+r,y+r),fill=(255,170,77,int(rng.uniform(19,98)*(.6+.4*power))))
-    base.alpha_composite(hot.filter(ImageFilter.GaussianBlur(6)))
-    base.alpha_composite(hot)
-    return base
+        d.ellipse((px-r,py-r,px+r,py+r),fill=(255,147+int(rng.uniform(0,80)),50,int(rng.uniform(33,115)*live)))
+    im.alpha_composite(spec.filter(ImageFilter.GaussianBlur(5)))
+    im.alpha_composite(spec)
+    return im
 
 def atlas(frames,w,h):
     out=Image.new("RGBA",(w*4,h*((len(frames)+3)//4)))
