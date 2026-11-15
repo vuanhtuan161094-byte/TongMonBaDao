@@ -1,0 +1,94 @@
+name: VFX-FIST-05 Dia Mach Lien Chan original earth-rift Godot 4.7.2
+on:
+  workflow_dispatch:
+  push:
+    branches: [integration/pve-p0-playable-ui-20261103]
+    paths:
+      - '.github/workflows/vfx-fist-05-dia-mach-lien-chan.yml'
+      - 'godot/labs/combat_lab/fist05/**'
+      - 'tools/vfx/generate_fist05_dia_mach.py'
+      - 'godot/tests/labs/combat_lab/vfx_fist05_contract_test.gd'
+permissions:
+  contents: read
+jobs:
+  native-godot-film:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      GODOT_AUDIO_DRIVER: Dummy
+      GODOT_RENDERING_DRIVER: opengl3
+    steps:
+      - uses: actions/checkout@v4
+      - name: Official SHA256 pinned Godot 4.7.2 and movie prerequisites
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq xvfb ffmpeg unzip python3-pil python3-numpy
+          curl --fail --location --retry 3 -o /tmp/godot472.zip 'https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip'
+          echo 'cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4  /tmp/godot472.zip' | sha256sum --check --strict
+          unzip -q /tmp/godot472.zip -d /tmp
+          sudo install -m0755 /tmp/Godot_v4.7.2-stable_linux.x86_64 /usr/local/bin/godot
+          mkdir -p /tmp/vfx-fist05
+          godot --version | tee /tmp/vfx-fist05/engine.txt
+          echo "SOURCE_SHA=$GITHUB_SHA; SOURCE_ID=tmb.skill.fist.ba_quyen.active_04.human; EFFECT=damage; ELEMENT=fire; SHAPE=circle; CAP=3; CAST=0.45; RANGE=4; RADIUS=3; ART=original first-party isolated ImageGen painted geology; NO_RIG=true; VIEW_ONLY=true; OWNER_VISUAL_PENDING; PVE_INTEGRATION_HOLD" > /tmp/vfx-fist05/metadata.txt
+      - name: Restore existing Stage A character texture (without tracked changes)
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat .github/assets/p3/female_stage_a/part{01..14}.b64 .github/assets/p3/female_stage_a/part15a.b64 .github/assets/p3/female_stage_a/part15b.b64 .github/assets/p3/female_stage_a/part{16..20}.b64 | tr -d '\r\n\t ' | base64 --decode > /tmp/tmb_stage_a_pack.zip
+          echo '6a4213b9129ffb3f438c21cbb5326672ddf8915323836bf80cb33b8e5fabfdca  /tmp/tmb_stage_a_pack.zip' | sha256sum --check --strict
+          unzip -q /tmp/tmb_stage_a_pack.zip -d .
+      - name: Produce 40 original alpha raster frames and hashes
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 tools/vfx/generate_fist05_dia_mach.py | tee /tmp/vfx-fist05/atlas.log
+          grep -Fq 'FIST05_ART_PASS frames=40 alpha=RGBA source=original_first_party_painted_masters no_rig=true' /tmp/vfx-fist05/atlas.log
+          for master in seismic_ground_master molten_shard_master spires_master; do
+            test -s "godot/labs/combat_lab/fist05/assets/$master.webp"
+          done
+          for n in charge fault eruption contact; do
+            test -s "godot/labs/combat_lab/fist05/assets/generated/$n.png"
+            cp "godot/labs/combat_lab/fist05/assets/generated/$n.png" "/tmp/vfx-fist05/$n.png"
+          done
+          sha256sum /tmp/vfx-fist05/{charge,fault,eruption,contact}.png > /tmp/vfx-fist05/ATLAS_SHA256SUMS.txt
+      - name: Strict import parse and focused contract test
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash tools/qa/run_godot_strict.sh --headless --path godot --import 2>&1 | tee /tmp/vfx-fist05/import.log
+          bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://labs/combat_lab/fist05/dia_mach_lien_chan.gd 2>&1 | tee /tmp/vfx-fist05/parse.log
+          bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/labs/combat_lab/vfx_fist05_contract_test.gd 2>&1 | tee /tmp/vfx-fist05/test.log
+          grep -Fq 'VFX_FIST05_FOCUSED_RESULT=PASS failures=0' /tmp/vfx-fist05/test.log
+      - name: Render genuine 1280x720 Godot movie and extract timecoded frames
+        shell: bash
+        run: |
+          set -euo pipefail
+          d=/tmp/vfx-fist05
+          xvfb-run -a -s '-screen 0 1280x720x24' bash tools/qa/run_godot_strict.sh --path godot --resolution 1280x720 --fixed-fps 60 --write-movie "$d/fist-05.avi" --quit-after 185 res://labs/combat_lab/fist05/dia_mach_lien_chan.tscn 2>&1 | tee "$d/movie.log"
+          test -s "$d/fist-05.avi"
+          ffmpeg -y -hide_banner -loglevel error -i "$d/fist-05.avi" -pix_fmt yuv420p -c:v libx264 -crf 16 -movflags +faststart "$d/fist-05.mp4"
+          ffprobe -v error -select_streams v:0 -show_entries stream=width,height,avg_frame_rate -of default=noprint_wrappers=1 "$d/fist-05.mp4" | tee "$d/dimensions.txt"
+          grep -Fxq 'width=1280' "$d/dimensions.txt"
+          grep -Fxq 'height=720' "$d/dimensions.txt"
+          for at in 0.11 0.28 0.42 0.57 0.75 0.92 1.04 1.13 1.28 1.55 1.93 2.40 2.83; do
+            ffmpeg -y -hide_banner -loglevel error -ss "$at" -i "$d/fist-05.mp4" -frames:v 1 "$d/frame-$at.png"
+          done
+          ffmpeg -y -hide_banner -loglevel error -i "$d/fist-05.mp4" -vf 'fps=4,scale=320:180,tile=4x3:nb_frames=12' -frames:v 1 "$d/timeline.png"
+          ffmpeg -y -hide_banner -loglevel error -i "$d/fist-05.mp4" -vf 'fps=12,scale=640:360:flags=lanczos' -loop 0 "$d/fist-05.gif"
+          sha256sum "$d/"*.mp4 "$d/"*.gif "$d/"*.png > "$d/SHA256SUMS.txt"
+          rm "$d/fist-05.avi"
+      - name: Upload exact-SHA art and QA evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vfx-fist05-native
+          retention-days: 14
+          if-no-files-found: warn
+          path: |
+            /tmp/vfx-fist05/*.txt
+            /tmp/vfx-fist05/*.log
+            /tmp/vfx-fist05/*.png
+            /tmp/vfx-fist05/*.gif
+            /tmp/vfx-fist05/*.mp4
