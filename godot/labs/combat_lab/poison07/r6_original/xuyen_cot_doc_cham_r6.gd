@@ -127,30 +127,30 @@ func _draw() -> void:
     var t := elapsed
     # Caster's original hand-painted needle splinters: only charge layer behind caster.
     if t < CAST_END:
-        var rise := smoothstep(0.04,0.37,t)
-        _flipbook(charge_frames,PALM-Vector2(5,0),0.79,rise,charge_frame_float(t))
+        var rise := smoothstep(0.025,0.29,t)
+        _flipbook(charge_frames,PALM-Vector2(7,0),1.12,rise,charge_frame_float(t))
     # Needle art is an independent original 12-pose transparent sprite with no arc motion.
     if t >= CAST_END and t < CONTACT_AT:
         var q := flight_progress_at(t)
         var angle := (CHEST-PALM).angle()
         var axis := Vector2(cos(angle),sin(angle))
-        var scale := 0.83
+        var scale := 1.32
         var tip_offset := (VISIBLE_TIP_X-HERO_SIZE.x*0.5)*scale
         var tip := flight_tip_at(t)
         var trail_tip := PALM.lerp(CHEST,maxf(0,q-0.043))
-        _flipbook(hero_frames,trail_tip-axis*tip_offset,scale*0.93,0.16,hero_frame_float(t-0.03),angle)
+        _flipbook(hero_frames,trail_tip-axis*tip_offset,scale*0.91,0.19,hero_frame_float(t-0.03),angle)
         _flipbook(hero_frames,tip-axis*tip_offset,scale,0.99,hero_frame_float(t),angle)
     _actor(CASTER,0.47,Color.WHITE)
     # Puncture under the target silhouette is a subtle physical-depth cue.
     if t>=CONTACT_AT and t<FADE_END:
         var intro := smoothstep(CONTACT_AT,CONTACT_AT+0.04,t)
         var out := 1.0-smoothstep(CONTACT_END,FADE_END,t)
-        _flipbook(puncture_frames,CHEST,0.59,0.16*intro*out,impact_frame_float(t))
+        _flipbook(puncture_frames,CHEST,0.78,0.20*intro*out,impact_frame_float(t))
     _actor(TARGET,0.47,Color("d9d3e2"))
     # Face stays readable; micro-puncture sits at chest and never creates fake HP/DoT.
     if t>=CONTACT_AT and t<FADE_END:
         var gain := smoothstep(CONTACT_AT,CONTACT_AT+0.04,t)*(1.0-smoothstep(CONTACT_END,FADE_END,t))
-        _flipbook(puncture_frames,CHEST,0.68,gain,impact_frame_float(t))
+        _flipbook(puncture_frames,CHEST,0.98,gain,impact_frame_float(t))
         if t<CONTACT_AT+0.17:
             var stab := 1.0-smoothstep(CONTACT_AT+0.04,CONTACT_AT+0.17,t)
             var theta := (CHEST-PALM).angle()
