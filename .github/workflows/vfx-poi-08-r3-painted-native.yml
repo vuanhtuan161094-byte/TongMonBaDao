@@ -36,7 +36,7 @@ jobs:
           sudo install -m0755 /tmp/Godot_v4.7.2-stable_linux.x86_64 /usr/local/bin/godot
           mkdir -p "$RUNNER_TEMP/poi08-r3"
           godot --version | tee "$RUNNER_TEMP/poi08-r3/engine.txt"
-          printf 'SOURCE_SHA=%s\nOWNER_ART_REWORK_REQUIRED\nPVE_HOLD\nV63_OFF\nNO_RIG\n' "$GITHUB_SHA" > "$RUNNER_TEMP/poi08-r3/metadata.txt"
+          printf 'SOURCE_SHA=%s\nOWNER_VISUAL_PENDING\nPVE_HOLD\nV63_OFF\nNO_RIG\n' "$GITHUB_SHA" > "$RUNNER_TEMP/poi08-r3/metadata.txt"
       - name: Bake 42 distinct POI08 painted RGBA poses (barb, seed, bite, eight-second vein)
         shell: bash
         run: |
