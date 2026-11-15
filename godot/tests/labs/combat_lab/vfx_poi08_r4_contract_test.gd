@@ -1,5 +1,5 @@
 extends SceneTree
-const LAB=preload("res://labs/combat_lab/poison08/r4_painted/phe_mach_doc_thich_r3.gd")
+const LAB=preload("res://labs/combat_lab/poison08/r4_painted/phe_mach_doc_thich_r4.gd")
 var failures:=0
 func _initialize() -> void: call_deferred("_run")
 func _check(ok: bool,msg: String) -> void:
@@ -21,7 +21,7 @@ func _run() -> void:
     for q in [0.1,0.25,0.5,0.75,0.9]:
         var at:float=lerpf(LAB.CAST_END,LAB.CONTACT_AT,q)
         _check(LAB.flight_tip_at(at).distance_to(LAB.PALM.lerp(LAB.CHEST,q))<0.02,"no arc fraction "+str(q))
-    var source:=FileAccess.get_file_as_string("res://labs/combat_lab/poison08/r4_painted/phe_mach_doc_thich_r3.gd")
+    var source:=FileAccess.get_file_as_string("res://labs/combat_lab/poison08/r4_painted/phe_mach_doc_thich_r4.gd")
     for forbidden in ["SaveService.","MapBattleV2.","CombatV2.","apply_damage","apply_status","V63FeatureGates.","summon_actor"]:
         _check(not source.contains(forbidden),"view only "+forbidden)
     var spec=[
