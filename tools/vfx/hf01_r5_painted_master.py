@@ -14,6 +14,7 @@ import math, io, base64, hashlib
 ROOT=Path(__file__).resolve().parents[2]
 ASSETS=ROOT/'godot/labs/combat_lab/talisman06/assets'
 SOURCE=ROOT/'godot/labs/combat_lab/talisman06/art_sources/hf01_r5_dragon_master_png.b64'
+SEAL_SOURCE=ROOT/'godot/labs/combat_lab/talisman06/art_sources/hf01_r5_talisman_master_png.b64'
 
 def master():
     raw=base64.b64decode(SOURCE.read_text().strip(),validate=True)
@@ -44,6 +45,27 @@ def composite_glow(dst,paint,center,opacity=.28):
     glow.putalpha(ar)
     dst.alpha_composite(glow,center)
     dst.alpha_composite(paint,center)
+
+def seal(i):
+    """A distinct image-painted illuminated fire talisman, not the R4 slab."""
+    raw=base64.b64decode(SEAL_SOURCE.read_text().strip(),validate=True)
+    art=Image.open(io.BytesIO(raw)).convert('RGBA')
+    assert art.size==(96,132),art.size
+    q=(i+1)/12.
+    w=120+int(5*math.sin(i*.56))
+    h=int(w*132/96)
+    pic=deform(art,i*.73,(w,h),amp=1.1+1.0*math.sin(i*.4)**2)
+    pix=np.asarray(pic).astype('float32').copy()
+    y,x=np.mgrid[0:h,0:w]
+    illuminated=np.clip(q*1.7-y/(h*2.6)+.27,0,1)
+    pix[:,:,3]=np.clip(pix[:,:,3]*(.36+.64*illuminated),0,254)
+    pix[:,:,0]=np.clip(pix[:,:,0]*(.82+.23*q),0,255)
+    pix[:,:,1]=np.clip(pix[:,:,1]*(.78+.26*q),0,255)
+    paint=Image.fromarray(np.uint8(pix),'RGBA')
+    frame=Image.new('RGBA',(256,256))
+    x=(256-w)//2;y=(256-h)//2-4
+    composite_glow(frame,paint,(x,y),opacity=.15+.15*q)
+    return frame
 
 def comet(master_img,i):
     frame=Image.new('RGBA',(384,224))
@@ -104,6 +126,7 @@ def main():
     ASSETS.mkdir(parents=True,exist_ok=True)
     img=master()
     items={
+        'tal06_r5_seal_atlas.webp':(atlas([seal(i) for i in range(12)],256,256),256,256,12),
         'tal06_r5_comet_atlas.webp':(atlas([comet(img,i) for i in range(12)],384,224),384,224,12),
         'tal06_r5_impact_atlas.webp':(atlas([impact(img,i) for i in range(8)],288,224),288,224,8)
     }
