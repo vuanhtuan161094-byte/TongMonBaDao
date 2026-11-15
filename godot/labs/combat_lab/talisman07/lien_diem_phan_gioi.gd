@@ -147,10 +147,10 @@ func _draw()->void:
     if lg>.003:
         var lf:=lotus_index(t)
         draw_texture_rect_region(LOTUS,
-            Rect2(CIRCLE_CENTER-Vector2(240,265),Vector2(480,360)),
+            Rect2(CIRCLE_CENTER-Vector2(295,340),Vector2(590,460)),
             Rect2(float(lf%4)*512.0,float(int(lf/4))*384.0,512,384),
             Color(1,1,1,lg*.96))
-        _halo(CIRCLE_CENTER+Vector2(0,-43),93,Color("ff9635",lg*.13))
+        _halo(CIRCLE_CENTER+Vector2(0,-67),119,Color("ff9635",lg*.18))
     for i in range(TARGET_LIMIT):
         var hg:=hit_gain(i,t)
         if hg>.003:
@@ -176,10 +176,10 @@ func _draw()->void:
         var f:=seal_index(t)
         var at:=HAND+Vector2(27,-18-13*smoothstep(.14,.60,t))
         draw_set_transform(at,-.16+.09*sin(t*7.0),Vector2.ONE)
-        draw_texture_rect_region(SEALS,Rect2(-69,-69,138,138),
+        draw_texture_rect_region(SEALS,Rect2(-82,-82,164,164),
             Rect2(float(f%4)*256.0,float(int(f/4))*256.0,256,256),Color(1,1,1,charge))
         draw_set_transform(Vector2.ZERO)
-        _halo(HAND+Vector2(8,-6),54,Color("ffb23c",charge*.25))
+        _halo(HAND+Vector2(8,-6),54,Color("ffb23c",charge*.30))
         for k in range(7):
             var a:=float(k)*2.399
             var q:=clampf(t/.62,0.0,1.0)
