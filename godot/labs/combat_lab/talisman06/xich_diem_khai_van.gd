@@ -19,8 +19,9 @@ const CONTACT_END := 1.80
 const FADE_END := 2.66
 const LOOP_SECONDS := 3.32
 const SEAL:Texture2D=preload("res://labs/combat_lab/talisman06/assets/tal06_r4_seal_atlas.webp")
-const COMET:Texture2D=preload("res://labs/combat_lab/talisman06/assets/tal06_r4_comet_atlas.webp")
-const IMPACT:Texture2D=preload("res://labs/combat_lab/talisman06/assets/tal06_r4_impact_atlas.webp")
+const COMET:Texture2D=preload("res://labs/combat_lab/talisman06/assets/tal06_r5_comet_atlas.webp")
+const IMPACT:Texture2D=preload("res://labs/combat_lab/talisman06/assets/tal06_r5_impact_atlas.webp")
+const SCORCH:Texture2D=preload("res://labs/combat_lab/talisman06/assets/tal06_r4_impact_atlas.webp")
 const FOOT:Texture2D=preload("res://labs/combat_lab/talisman06/assets/tal06_foot_ember.webp")
 const BACKDROP:Texture2D=preload("res://labs/combat_lab/poison05/remake_r6/assets/immortal_valley.svg")
 const CASTER_ART:Texture2D=preload("res://labs/character_family/assets/nu_doc_tu_v4_candidate/idle_4dir_APPROVED_UNCHANGED.png")
@@ -107,7 +108,7 @@ func _draw()->void:
     if scorch>.004:
         var f:=impact_index(t)
         var source:=Rect2(float(f%4)*288.0,float(int(f/4))*224.0,288,224)
-        draw_texture_rect_region(IMPACT,Rect2(target-Vector2(117,57),Vector2(234,82)),
+        draw_texture_rect_region(SCORCH,Rect2(target-Vector2(117,57),Vector2(234,82)),
             source,Color(1,1,1,scorch*.89))
         _halo(target+Vector2(0,-3),70,Color("e4742f",scorch*.18))
     # QA draws a preexisting frame-by-frame monster WALK atlas, never rigs.
@@ -142,7 +143,7 @@ func _draw()->void:
         var alpha:=smoothstep(FLIGHT_START,FLIGHT_START+.10,t)*(1.0-smoothstep(DEMO_HIT_AT,DEMO_HIT_AT+.045,t))
         var rect:=Rect2(float(index%4)*384.0,float(int(index/4))*224.0,384,224)
         # Delayed silhouettes are visual afterimages, NOT additional hits.
-        for trail in range(2,0,-1):
+        for trail in range(1,0,-1):
             var delay:=float(trail)*.035
             var pt:=projectile_pos(maxf(FLIGHT_START,t-delay))
             var heading:=(target_contact(maxf(FLIGHT_START,t-delay))-HAND).angle()
@@ -150,10 +151,10 @@ func _draw()->void:
             draw_texture_rect_region(COMET,Rect2(-218,-75,260,150),rect,
                 Color(1.0,.65,.44,alpha*(.11-.035*float(trail))))
         draw_set_transform(tip,angle,Vector2.ONE)
-        draw_texture_rect_region(COMET,Rect2(-259,-98,324,196),rect,Color(1,1,1,alpha))
+        draw_texture_rect_region(COMET,Rect2(-290,-114,366,228),rect,Color(1,1,1,alpha))
         draw_set_transform(Vector2.ZERO)
-        _halo(tip,47,Color("fa6225",alpha*.38))
-        _halo(tip,19,Color("fff3c9",alpha*.48))
+        _halo(tip,39,Color("fa6225",alpha*.19))
+        _halo(tip,12,Color("fff3c9",alpha*.16))
     var h:=hit_gain(t)
     if h>.004:
         var contact:=target_contact(t)+Vector2(0,10)
