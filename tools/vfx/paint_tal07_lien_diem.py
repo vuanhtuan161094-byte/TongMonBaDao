@@ -10,10 +10,11 @@ Run BEFORE Godot import; view-only demo, no gameplay damage/status.
 from pathlib import Path
 from PIL import Image, ImageDraw, ImageFilter
 import numpy as np
-import math, hashlib
+import math, hashlib, base64, io
 
 ROOT=Path(__file__).resolve().parents[2]
 OUT=ROOT/"godot/labs/combat_lab/talisman07/assets"
+ARC_SOURCE=ROOT/"godot/labs/combat_lab/talisman07/art_sources/tal07_painted_fire_arc_png.b64"
 
 def noise(w,h,seed):
     r=np.random.default_rng(seed)
@@ -86,6 +87,29 @@ def lotus(i):
         d.ellipse((x-r,y-r,x+r,y+r),
             fill=(255,int(rng.uniform(125,225)),int(rng.uniform(35,96)),int(rng.uniform(45,175))))
     base.alpha_composite(sparks)
+    # First-party original painting extracted from our own generated concept:
+    # only the transparent incandescent FIRE pixels were isolated, feathered
+    # to zero alpha at every edge and palette-compressed. No concept poster or
+    # character/terrain pixel enters the LAB. Per-pose deformation/rotation
+    # creates actual shifting living embers; the atlas is not a recolored still.
+    raw=base64.b64decode(ARC_SOURCE.read_text().strip(),validate=True)
+    source=Image.open(io.BytesIO(raw)).convert('RGBA')
+    assert source.size==(80,65),source.size
+    for k,angle in enumerate([-48,-18,12,44]):
+        drift=math.sin(i*.41+k*.83)
+        width=141+int(11*drift)
+        height=153+int(10*math.cos(i*.56+k))
+        coil=source.resize((width,height),Image.Resampling.LANCZOS)
+        coil=coil.rotate(angle+6*drift,Image.Resampling.BICUBIC,expand=True)
+        gain=.50+.16*math.sin(i*.36+k*1.18)**2
+        alpha=coil.getchannel('A').point(lambda a:int(a*gain))
+        coil.putalpha(alpha)
+        x=int(125+k*55+9*math.sin(i*.43+k))
+        y=int(118+abs(k-1.5)*13+5*math.cos(i*.32+k))
+        # Borderless paintings sit inside root flames; do not draw UI rings.
+        if x+coil.width>512:x=512-coil.width
+        if y+coil.height>384:y=384-coil.height
+        base.alpha_composite(coil,(x,y))
     return base
 
 def seal(i):
