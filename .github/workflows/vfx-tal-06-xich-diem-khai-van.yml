@@ -7,6 +7,7 @@ on:
       - '.github/workflows/vfx-tal-06-xich-diem-khai-van.yml'
       - 'tools/vfx/paint_tal06_xich_diem.py'
       - 'tools/vfx/hf01_r4_remake.py'
+      - 'tools/vfx/hf01_r5_painted_master.py'
       - 'godot/labs/combat_lab/talisman06/**'
       - 'godot/tests/labs/combat_lab/vfx_tal06_contract_test.gd'
 permissions:
@@ -97,6 +98,35 @@ jobs:
           print("HF01_R4_ALPHA_POSE_GATE=PASS")
           PY
           sha256sum godot/labs/combat_lab/talisman06/assets/tal06_r4_*.webp > "$d/R4_ASSET_SHA256SUMS.txt"
+      - name: Bake R5 image-master Hỏa Long original alpha flipbooks
+        shell: bash
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/vfx-tal06"
+          /usr/bin/python3 tools/vfx/hf01_r5_painted_master.py | tee "$d/r5-bake.log"
+          grep -Fxq 'HF01_R5_ORIGINAL_PAINTED_SPRITES_PASS' "$d/r5-bake.log"
+          /usr/bin/python3 - <<'PY'
+          from PIL import Image
+          from pathlib import Path
+          import hashlib, base64
+          root=Path('godot/labs/combat_lab/talisman06')
+          raw=base64.b64decode((root/'art_sources/hf01_r5_dragon_master_png.b64').read_text().strip(),validate=True)
+          print('HF01_R5_SOURCE_MASTER_SHA256='+hashlib.sha256(raw).hexdigest())
+          for name,w,h,cw,ch,frames in [
+              ('tal06_r5_comet_atlas.webp',1536,672,384,224,12),
+              ('tal06_r5_impact_atlas.webp',1152,448,288,224,8)]:
+              im=Image.open(root/'assets'/name).convert('RGBA')
+              assert im.size==(w,h),name
+              assert im.getchannel('A').getextrema()[0]==0,name
+              poses=set()
+              for i in range(frames):
+                  x=i%4*cw;y=i//4*ch
+                  poses.add(hashlib.sha256(im.crop((x,y,x+cw,y+ch)).tobytes()).hexdigest())
+              assert len(poses)==frames,(name,len(poses))
+              print('HF01_R5_POSE_ALPHA_PASS',name,len(poses))
+          print('HF01_R5_QA=PASS')
+          PY
+          sha256sum godot/labs/combat_lab/talisman06/assets/tal06_r5_*.webp > "$d/R5_ASSET_SHA256SUMS.txt"
       - name: Restore existing Stage A asset pack without changing tracked files
         shell: bash
         run: |
