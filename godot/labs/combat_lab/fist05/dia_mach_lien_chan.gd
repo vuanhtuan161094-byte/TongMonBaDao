@@ -4,7 +4,7 @@ extends Control
 ## never a Combat V2 hit, gameplay damage, HP write or generated status.
 const SKILL_ID := "tmb.skill.fist.ba_quyen.active_04.human"
 const DISPLAY_NAME := "Địa Mạch Liên Chấn"
-const ART_REVISION := "V1_PAINTED_SEISMIC_RIFT"
+const ART_REVISION := "V2_ORGANIC_GROUND_ALPHA"
 const EFFECT := "damage"
 const ELEMENT := "fire"
 const SHAPE := "circle"
