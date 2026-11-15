@@ -1,4 +1,4 @@
-name: VFX-FIST-05 Dia Mach Lien Chan original earth-rift Godot 4.7.2
+name: VFX-FIST-05 V3 original continuous crack optimized native Godot + 1,6,12,30 VFX load
 on:
   workflow_dispatch:
   push:
@@ -6,7 +6,8 @@ on:
     paths:
       - '.github/workflows/vfx-fist-05-dia-mach-lien-chan.yml'
       - 'godot/labs/combat_lab/fist05/**'
-      - 'tools/vfx/generate_fist05_dia_mach.py'
+      - 'tools/vfx/generate_fist05_v3_optimized.py'
+      - 'godot/tests/labs/combat_lab/vfx_shared_load_benchmark.gd'
       - 'godot/tests/labs/combat_lab/vfx_fist05_contract_test.gd'
 permissions:
   contents: read
@@ -31,7 +32,7 @@ jobs:
           sudo install -m0755 /tmp/Godot_v4.7.2-stable_linux.x86_64 /usr/local/bin/godot
           mkdir -p /tmp/vfx-fist05
           godot --version | tee /tmp/vfx-fist05/engine.txt
-          echo "SOURCE_SHA=$GITHUB_SHA; SOURCE_ID=tmb.skill.fist.ba_quyen.active_04.human; EFFECT=damage; ELEMENT=fire; SHAPE=circle; CAP=3; CAST=0.45; RANGE=4; RADIUS=3; ART=original first-party isolated ImageGen painted geology; NO_RIG=true; VIEW_ONLY=true; OWNER_VISUAL_PENDING; PVE_INTEGRATION_HOLD" > /tmp/vfx-fist05/metadata.txt
+          echo "SOURCE_SHA=$GITHUB_SHA; SOURCE_ID=tmb.skill.fist.ba_quyen.active_04.human; EFFECT=damage; ELEMENT=fire; SHAPE=circle; CAP=3; CAST=0.45; RANGE=4; RADIUS=3; ART=retouched original first-party geology + one contiguous fissure; atlas_raw_MiB=7.0; previous_raw_MiB=22.5; NO_RIG=true; VIEW_ONLY=true; OWNER_VISUAL_PENDING; PVE_INTEGRATION_HOLD" > /tmp/vfx-fist05/metadata.txt
       - name: Restore existing Stage A character texture (without tracked changes)
         shell: bash
         run: |
@@ -39,20 +40,33 @@ jobs:
           cat .github/assets/p3/female_stage_a/part{01..14}.b64 .github/assets/p3/female_stage_a/part15a.b64 .github/assets/p3/female_stage_a/part15b.b64 .github/assets/p3/female_stage_a/part{16..20}.b64 | tr -d '\r\n\t ' | base64 --decode > /tmp/tmb_stage_a_pack.zip
           echo '6a4213b9129ffb3f438c21cbb5326672ddf8915323836bf80cb33b8e5fabfdca  /tmp/tmb_stage_a_pack.zip' | sha256sum --check --strict
           unzip -q /tmp/tmb_stage_a_pack.zip -d .
-      - name: Produce 40 original alpha raster frames and hashes
+      - name: Produce optimized 24-pose 7.0 MiB original painted atlas set
         shell: bash
         run: |
           set -euo pipefail
-          python3 tools/vfx/generate_fist05_dia_mach.py | tee /tmp/vfx-fist05/atlas.log
-          grep -Fq 'FIST05_ART_PASS frames=40 alpha=RGBA source=original_first_party_painted_masters no_rig=true' /tmp/vfx-fist05/atlas.log
+          python3 tools/vfx/generate_fist05_v3_optimized.py | tee /tmp/vfx-fist05/atlas.log
+          grep -Fq 'FIST05_OPTIMIZED_V3_PASS atlas_frames=24 textures=3 raw_rgba_bytes=7340032 no_rig=true' /tmp/vfx-fist05/atlas.log
           for master in seismic_ground_master molten_shard_master spires_master; do
             test -s "godot/labs/combat_lab/fist05/assets/$master.webp"
           done
-          for n in charge fault eruption contact; do
-            test -s "godot/labs/combat_lab/fist05/assets/generated/$n.png"
-            cp "godot/labs/combat_lab/fist05/assets/generated/$n.png" "/tmp/vfx-fist05/$n.png"
+          for n in seismic_main seismic_hit seismic_path; do
+            test -s "godot/labs/combat_lab/fist05/assets/optimized_v3/$n.png"
+            cp "godot/labs/combat_lab/fist05/assets/optimized_v3/$n.png" "/tmp/vfx-fist05/$n.png"
           done
-          sha256sum /tmp/vfx-fist05/{charge,fault,eruption,contact}.png > /tmp/vfx-fist05/ATLAS_SHA256SUMS.txt
+          sha256sum /tmp/vfx-fist05/{seismic_main,seismic_hit,seismic_path}.png > /tmp/vfx-fist05/ATLAS_SHA256SUMS.txt
+          python3 - <<'REPORT' | tee /tmp/vfx-fist05/texture_budget.txt
+          from PIL import Image
+          from pathlib import Path
+          p=Path('/tmp/vfx-fist05')
+          files=['seismic_main.png','seismic_hit.png','seismic_path.png']
+          raw=sum(Image.open(p/f).width*Image.open(p/f).height*4 for f in files)
+          prior=40*384*384*4
+          print('RAW_RGBA_BYTES=',raw)
+          print('PREVIOUS_RAW_RGBA_BYTES=',prior)
+          print('RAW_RGBA_REDUCTION_PCT=',round(100*(1-raw/prior),2))
+          print('VIDEO_FPS_FIXED_CLOCK_NOT_ANDROID_BENCHMARK=TRUE')
+          assert raw==7340032
+          REPORT
       - name: Strict import parse and focused contract test
         shell: bash
         run: |
@@ -79,6 +93,13 @@ jobs:
           ffmpeg -y -hide_banner -loglevel error -i "$d/fist-05.mp4" -vf 'fps=12,scale=640:360:flags=lanczos' -loop 0 "$d/fist-05.gif"
           sha256sum "$d/"*.mp4 "$d/"*.gif "$d/"*.png > "$d/SHA256SUMS.txt"
           rm "$d/fist-05.avi"
+      - name: Shared real-time VFX-only load scenarios 1 6 12 30 (Ubuntu Xvfb, NOT Android)
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -euo pipefail
+          xvfb-run -a -s '-screen 0 1280x720x24' bash tools/qa/run_godot_strict.sh --path godot --resolution 1280x720 -s res://tests/labs/combat_lab/vfx_shared_load_benchmark.gd 2>&1 | tee /tmp/vfx-fist05/stress.log
+          grep -Fq 'VFX_LOAD_BENCH_RESULT=PASS cases=1,6,12,30' /tmp/vfx-fist05/stress.log
       - name: Upload exact-SHA art and QA evidence
         if: always()
         uses: actions/upload-artifact@v4
