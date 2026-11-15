@@ -1,0 +1,107 @@
+name: VFX-FIST-06 Tran Dia Quyen original earth single target Godot native
+on:
+  workflow_dispatch:
+  push:
+    branches: [integration/pve-p0-playable-ui-20261103]
+    paths:
+      - '.github/workflows/vfx-fist-06-tran-dia-quyen.yml'
+      - 'godot/labs/combat_lab/fist06/**'
+      - 'tools/vfx/generate_fist06_tran_dia_quyen.py'
+      - 'godot/tests/labs/combat_lab/vfx_fist06_contract_test.gd'
+permissions:
+  contents: read
+jobs:
+  native-godot-film:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      GODOT_AUDIO_DRIVER: Dummy
+      GODOT_RENDERING_DRIVER: opengl3
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install exact Godot 4.7.2 and VFX image tools
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq xvfb ffmpeg unzip python3-pil python3-numpy
+          curl --fail --location --retry 3 -o /tmp/godot472.zip 'https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip'
+          echo 'cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4  /tmp/godot472.zip' | sha256sum --check --strict
+          unzip -q /tmp/godot472.zip -d /tmp
+          sudo install -m0755 /tmp/Godot_v4.7.2-stable_linux.x86_64 /usr/local/bin/godot
+          mkdir -p /tmp/vfx-fist06
+          godot --version | tee /tmp/vfx-fist06/engine.txt
+          echo "SOURCE_SHA=$GITHUB_SHA; SKILL=tmb.skill.fist.kim_cang.active_01.human; EARTH=TRUE; SINGLE_TARGET=TRUE; NO_RIG=true; VIEW_ONLY=true; OWNER_VISUAL_PENDING; PVE_INTEGRATION_HOLD" > /tmp/vfx-fist06/metadata.txt
+      - name: Restore existing test actor source without modifying repo
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat .github/assets/p3/female_stage_a/part{01..14}.b64 .github/assets/p3/female_stage_a/part15a.b64 .github/assets/p3/female_stage_a/part15b.b64 .github/assets/p3/female_stage_a/part{16..20}.b64 | tr -d '\r\n\t ' | base64 --decode > /tmp/tmb_stage_a_pack.zip
+          echo '6a4213b9129ffb3f438c21cbb5326672ddf8915323836bf80cb33b8e5fabfdca  /tmp/tmb_stage_a_pack.zip' | sha256sum --check --strict
+          unzip -q /tmp/tmb_stage_a_pack.zip -d .
+      - name: Generate original 24-frame earth fist and contact atlases
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 tools/vfx/generate_fist06_tran_dia_quyen.py | tee /tmp/vfx-fist06/atlas.log
+          grep -Fq 'FIST06_ATLAS_PASS frames=24 textures=2 raw_rgba_bytes=6291456 no_rig=true' /tmp/vfx-fist06/atlas.log
+          for n in earth_fist_main earth_fist_hit; do
+            test -s "godot/labs/combat_lab/fist06/assets/generated/$n.png"
+            cp "godot/labs/combat_lab/fist06/assets/generated/$n.png" /tmp/vfx-fist06/
+          done
+          python3 - <<'ASSETS' | tee /tmp/vfx-fist06/alpha_qa.txt
+          from PIL import Image, ImageChops
+          from pathlib import Path
+          p=Path('/tmp/vfx-fist06')
+          m=Image.open(p/'earth_fist_main.png').convert('RGBA')
+          h=Image.open(p/'earth_fist_hit.png').convert('RGBA')
+          assert m.size==(1024,1024) and h.size==(1024,512)
+          assert m.getpixel((0,0))[3]==0 and h.getpixel((0,0))[3]==0
+          frame=lambda im,k:im.crop(((k%4)*256,(k//4)*256,(k%4+1)*256,(k//4+1)*256))
+          # The first and last hero poses must have art geometry differences.
+          assert ImageChops.difference(frame(m,4),frame(m,15)).getbbox()
+          assert ImageChops.difference(frame(h,0),frame(h,7)).getbbox()
+          raw=m.width*m.height*4+h.width*h.height*4
+          assert raw==6291456
+          print('FIST06_ALPHA_ATLAS_QA=PASS hero_poses=16 contact_poses=8 raw_rgba_bytes=',raw)
+          ASSETS
+          sha256sum /tmp/vfx-fist06/*.png > /tmp/vfx-fist06/ATLAS_SHA256SUMS.txt
+      - name: Godot strict import, parse and focused skill contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash tools/qa/run_godot_strict.sh --headless --path godot --import 2>&1 | tee /tmp/vfx-fist06/import.log
+          bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://labs/combat_lab/fist06/tran_dia_quyen.gd 2>&1 | tee /tmp/vfx-fist06/parse.log
+          bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/labs/combat_lab/vfx_fist06_contract_test.gd 2>&1 | tee /tmp/vfx-fist06/test.log
+          grep -Fq 'VFX_FIST06_FOCUSED_RESULT=PASS failures=0' /tmp/vfx-fist06/test.log
+      - name: Native Godot 1280x720 MP4 GIF and >=8 timecoded frames
+        shell: bash
+        run: |
+          set -euo pipefail
+          d=/tmp/vfx-fist06
+          xvfb-run -a -s '-screen 0 1280x720x24' bash tools/qa/run_godot_strict.sh --path godot --resolution 1280x720 --fixed-fps 60 --write-movie "$d/fist-06.avi" --quit-after 112 res://labs/combat_lab/fist06/tran_dia_quyen.tscn 2>&1 | tee "$d/movie.log"
+          test -s "$d/fist-06.avi"
+          ffmpeg -y -hide_banner -loglevel error -i "$d/fist-06.avi" -pix_fmt yuv420p -c:v libx264 -crf 16 -movflags +faststart "$d/fist-06.mp4"
+          ffprobe -v error -select_streams v:0 -show_entries stream=width,height,avg_frame_rate -of default=noprint_wrappers=1 "$d/fist-06.mp4" | tee "$d/dimensions.txt"
+          grep -Fxq 'width=1280' "$d/dimensions.txt"
+          grep -Fxq 'height=720' "$d/dimensions.txt"
+          for at in 0.12 0.34 0.44 0.51 0.62 0.70 0.74 0.80 0.93 1.04 1.18 1.38; do
+            ffmpeg -y -hide_banner -loglevel error -ss "$at" -i "$d/fist-06.mp4" -frames:v 1 "$d/frame-$at.png"
+          done
+          ffmpeg -y -hide_banner -loglevel error -i "$d/fist-06.mp4" -vf 'fps=6,scale=320:180,tile=4x3:nb_frames=12' -frames:v 1 "$d/timeline.png"
+          ffmpeg -y -hide_banner -loglevel error -i "$d/fist-06.mp4" -vf 'fps=12,scale=640:360:flags=lanczos' -loop 0 "$d/fist-06.gif"
+          sha256sum "$d/"*.mp4 "$d/"*.gif "$d/"*.png > "$d/SHA256SUMS.txt"
+          rm "$d/fist-06.avi"
+      - name: Upload exact SHA native film and RGBA source atlases
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vfx-fist06-native
+          retention-days: 14
+          if-no-files-found: warn
+          path: |
+            /tmp/vfx-fist06/*.txt
+            /tmp/vfx-fist06/*.log
+            /tmp/vfx-fist06/*.png
+            /tmp/vfx-fist06/*.gif
+            /tmp/vfx-fist06/*.mp4
