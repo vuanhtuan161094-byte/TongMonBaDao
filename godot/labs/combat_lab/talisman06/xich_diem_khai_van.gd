@@ -107,7 +107,7 @@ func _draw()->void:
     if scorch>.004:
         var f:=impact_index(t)
         var source:=Rect2(float(f%4)*288.0,float(int(f/4))*224.0,288,224)
-        draw_texture_rect_region(IMPACT,Rect2(target-Vector2(117,131),Vector2(234,152)),
+        draw_texture_rect_region(IMPACT,Rect2(target-Vector2(117,57),Vector2(234,82)),
             source,Color(1,1,1,scorch*.89))
         _halo(target+Vector2(0,-3),70,Color("e4742f",scorch*.18))
     # QA draws a preexisting frame-by-frame monster WALK atlas, never rigs.
