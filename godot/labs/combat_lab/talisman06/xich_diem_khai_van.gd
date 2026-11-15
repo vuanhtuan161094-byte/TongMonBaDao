@@ -18,7 +18,7 @@ const DEMO_HIT_AT := 1.46
 const CONTACT_END := 1.80
 const FADE_END := 2.66
 const LOOP_SECONDS := 3.32
-const SEAL:Texture2D=preload("res://labs/combat_lab/talisman06/assets/tal06_r4_seal_atlas.webp")
+const SEAL:Texture2D=preload("res://labs/combat_lab/talisman06/assets/tal06_r5_seal_atlas.webp")
 const COMET:Texture2D=preload("res://labs/combat_lab/talisman06/assets/tal06_r5_comet_atlas.webp")
 const IMPACT:Texture2D=preload("res://labs/combat_lab/talisman06/assets/tal06_r5_impact_atlas.webp")
 const SCORCH:Texture2D=preload("res://labs/combat_lab/talisman06/assets/tal06_r4_impact_atlas.webp")
@@ -73,7 +73,7 @@ func _ready()->void:
             var p:Vector2=(Vector2(x,y)-Vector2(47.5,47.5))/47.5
             im.set_pixel(x,y,Color(1,1,1,clampf(exp(-6*p.length_squared())*(1.0-smoothstep(.77,1.0,p.length())),0,1)))
     _glow=ImageTexture.create_from_image(im)
-    print("VFX_TAL06_READY id=",SKILL_ID," remake=R4 original_flipbook=12/12/8 moving_monster=true one_target=true view_only=true")
+    print("VFX_TAL06_READY id=",SKILL_ID," remake=R5 original_flipbook=12/12/8 moving_monster=true one_target=true view_only=true")
     set_process(true)
 func _process(delta:float)->void:
     if paused:return
@@ -138,10 +138,10 @@ func _draw()->void:
     var sg:=seal_gain(t)
     if sg>.004:
         var f:=clampi(int(floor(clampf(t/.50,0,1)*11.99)),0,11)
-        var sr:=Rect2(float(f%4)*256.0+80.0,float(int(f/4))*256.0+24.0,96.0,200.0)
+        var sr:=Rect2(float(f%4)*256.0,float(int(f/4))*256.0,256.0,256.0)
         var at:=HAND+Vector2(25,-18-10.0*smoothstep(.08,.50,t))
         if t>FLIGHT_START:at=projectile_pos(t)-Vector2(17,23)*(1.0-travel_q(t))
-        var siz:=lerpf(74.0,44.0,travel_q(t))
+        var siz:=lerpf(150.0,86.0,travel_q(t))
         # Painted charge coil supports the talisman but does not simulate hit.
         if t<FLIGHT_START:
             var curl_idx:=clampi(int(t*22.0)%12,0,11)
@@ -149,7 +149,7 @@ func _draw()->void:
             draw_texture_rect_region(COMET,Rect2(HAND+Vector2(-93,-63),Vector2(171,126)),
                 curl_region,Color(1.0,.78,.60,sg*.30))
         draw_set_transform(at,-.18+.12*sin(t*6.0),Vector2.ONE)
-        draw_texture_rect_region(SEAL,Rect2(-siz*.5,-siz*.65,siz,siz*1.30),sr,Color(1,1,1,sg*.97))
+        draw_texture_rect_region(SEAL,Rect2(-siz*.5,-siz*.5,siz,siz),sr,Color(1,1,1,sg*.97))
         draw_set_transform(Vector2.ZERO)
     var index:=comet_index(t)
     if index>=0:
