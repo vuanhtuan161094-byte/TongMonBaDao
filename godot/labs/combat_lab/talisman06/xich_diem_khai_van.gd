@@ -44,7 +44,7 @@ static func target_contact(t:float)->Vector2:
     return target_foot(t)+Vector2(-6.0,-82.0)
 static func travel_q(t:float)->float:
     if t<=FLIGHT_START:return 0.0
-    return powf(clampf((t-FLIGHT_START)/(DEMO_HIT_AT-FLIGHT_START),0.0,1.0),1.42)
+    return pow(clampf((t-FLIGHT_START)/(DEMO_HIT_AT-FLIGHT_START),0.0,1.0),1.42)
 static func projectile_pos(t:float)->Vector2:
     var q:=travel_q(t)
     return HAND.lerp(target_contact(t),q)+Vector2(0,-61.0*sin(PI*q))
@@ -119,7 +119,7 @@ func _draw()->void:
         for k in range(7):
             var a:=float(k)*2.399+sin(t*2.2+float(k))*.19
             var f:=clampf((t-.08)/(.35+float(k%3)*.035),0.0,1.0)
-            var radius:float=(122.0+float(k%4)*12.0)*powf(1.0-f,1.7)
+            var radius:float=(122.0+float(k%4)*12.0)*pow(1.0-f,1.7)
             var mote:=HAND+Vector2(cos(a)*radius,sin(a)*radius*.62)
             _halo(mote,7.0+float(k%3)*2.0,Color("ff6b29",charge*.36))
             _halo(mote,2.5,Color("fff2cf",charge*.66))
