@@ -142,27 +142,27 @@ func _draw()->void:
         var alpha:=smoothstep(FLIGHT_START,FLIGHT_START+.10,t)*(1.0-smoothstep(DEMO_HIT_AT,DEMO_HIT_AT+.045,t))
         var rect:=Rect2(float(index%4)*384.0,float(int(index/4))*224.0,384,224)
         # Delayed silhouettes are visual afterimages, NOT additional hits.
-        for trail in range(3,0,-1):
+        for trail in range(2,0,-1):
             var delay:=float(trail)*.035
             var pt:=projectile_pos(maxf(FLIGHT_START,t-delay))
             var heading:=(target_contact(maxf(FLIGHT_START,t-delay))-HAND).angle()
             draw_set_transform(pt,heading,Vector2.ONE)
             draw_texture_rect_region(COMET,Rect2(-218,-75,260,150),rect,
-                Color(1.0,.65,.44,alpha*(.15-.03*float(trail))))
+                Color(1.0,.65,.44,alpha*(.11-.035*float(trail))))
         draw_set_transform(tip,angle,Vector2.ONE)
-        draw_texture_rect_region(COMET,Rect2(-228,-82,292,164),rect,Color(1,1,1,alpha))
+        draw_texture_rect_region(COMET,Rect2(-259,-98,324,196),rect,Color(1,1,1,alpha))
         draw_set_transform(Vector2.ZERO)
         _halo(tip,47,Color("fa6225",alpha*.38))
         _halo(tip,19,Color("fff3c9",alpha*.48))
     var h:=hit_gain(t)
     if h>.004:
-        var contact:=target_contact(t)+Vector2(0,49)
+        var contact:=target_contact(t)+Vector2(0,10)
         var hitframe:=impact_index(t)
         var hitregion:=Rect2(float(hitframe%4)*288,float(int(hitframe/4))*224,288,224)
         # Original sprite on lower torso while monster face remains visible;
         # separate compact scorched contact stays beneath moving feet.
         draw_texture_rect_region(IMPACT,
-            Rect2(contact-Vector2(75,70),Vector2(150,132)),
+            Rect2(contact-Vector2(103,103),Vector2(206,193)),
             hitregion,Color(1.0,1.0,1.0,h*.91))
         # Two-stage local contact flash; no AoE or simulated damage.
         _halo(contact,63.0,Color("f3572c",h*.30))
