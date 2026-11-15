@@ -1,5 +1,5 @@
 extends Control
-## HF01 Hỏa Phù Xích Diệm Khai Văn: original painted flame; view-only
+## HF01 R4 remade 12/12/8 painted sprite-first fire; Combat Lab only.
 ## All damage, cooldown, targets and hit receipts are Combat V2 authority.
 const SKILL_ID := "tmb.skill.talisman.hoa_phu.active_01.human"
 const EFFECT := "damage"
@@ -18,9 +18,9 @@ const DEMO_HIT_AT := 1.46
 const CONTACT_END := 1.80
 const FADE_END := 2.66
 const LOOP_SECONDS := 3.32
-const SEAL:Texture2D=preload("res://labs/combat_lab/talisman06/assets/tal06_flame_seal_atlas.webp")
-const COMET:Texture2D=preload("res://labs/combat_lab/talisman06/assets/tal06_fire_comet_atlas.webp")
-const IMPACT:Texture2D=preload("res://labs/combat_lab/talisman06/assets/tal06_impact_atlas.webp")
+const SEAL:Texture2D=preload("res://labs/combat_lab/talisman06/assets/tal06_r4_seal_atlas.webp")
+const COMET:Texture2D=preload("res://labs/combat_lab/talisman06/assets/tal06_r4_comet_atlas.webp")
+const IMPACT:Texture2D=preload("res://labs/combat_lab/talisman06/assets/tal06_r4_impact_atlas.webp")
 const FOOT:Texture2D=preload("res://labs/combat_lab/talisman06/assets/tal06_foot_ember.webp")
 const BACKDROP:Texture2D=preload("res://labs/combat_lab/poison05/remake_r6/assets/immortal_valley.svg")
 const CASTER_ART:Texture2D=preload("res://labs/character_family/assets/nu_doc_tu_v4_candidate/idle_4dir_APPROVED_UNCHANGED.png")
@@ -44,7 +44,7 @@ static func target_contact(t:float)->Vector2:
     return target_foot(t)+Vector2(-6.0,-82.0)
 static func travel_q(t:float)->float:
     if t<=FLIGHT_START:return 0.0
-    return smoothstep(FLIGHT_START,DEMO_HIT_AT,t)
+    return powf(clampf((t-FLIGHT_START)/(DEMO_HIT_AT-FLIGHT_START),0.0,1.0),1.42)
 static func projectile_pos(t:float)->Vector2:
     var q:=travel_q(t)
     return HAND.lerp(target_contact(t),q)+Vector2(0,-61.0*sin(PI*q))
@@ -72,7 +72,7 @@ func _ready()->void:
             var p:Vector2=(Vector2(x,y)-Vector2(47.5,47.5))/47.5
             im.set_pixel(x,y,Color(1,1,1,clampf(exp(-6*p.length_squared())*(1.0-smoothstep(.77,1.0,p.length())),0,1)))
     _glow=ImageTexture.create_from_image(im)
-    print("VFX_TAL06_READY id=",SKILL_ID," paint_sprite=true moving_monster=true one_target=true view_only=true")
+    print("VFX_TAL06_READY id=",SKILL_ID," remake=R4 original_flipbook=12/12/8 moving_monster=true one_target=true view_only=true")
     set_process(true)
 func _process(delta:float)->void:
     if paused:return
@@ -91,7 +91,10 @@ func _actor(pos:Vector2)->void:
 func _monster(pos:Vector2,t:float)->void:
     var frames:=MONSTER_FRAMES.get_frame_count("walk")
     var tex:Texture2D=MONSTER_FRAMES.get_frame_texture("walk",int(t*16.0)%maxi(1,frames))
-    draw_texture_rect(tex,Rect2(pos-Vector2(78,137),Vector2(157,137)),false)
+    # Momentary COLOR_ONLY hit response on the already moving enemy, no rig.
+    var flash:=hit_gain(t)
+    draw_texture_rect(tex,Rect2(pos-Vector2(78,137),Vector2(157,137)),false,
+        Color(1.0,1.0,1.0,1.0).lerp(Color(1.0,.75,.56,1.0),flash*.56))
 func _draw()->void:
     var t:=elapsed
     draw_texture_rect(BACKDROP,Rect2(0,0,1280,720),false)
@@ -110,6 +113,17 @@ func _draw()->void:
     # QA draws a preexisting frame-by-frame monster WALK atlas, never rigs.
     _actor(CASTER)
     _monster(target,t)
+    # Cast force: seven asymmetric particles converge at the palm.
+    var charge:=smoothstep(.06,.25,t)*(1.0-smoothstep(.47,.70,t))
+    if charge>.004:
+        for k in range(7):
+            var a:=float(k)*2.399+sin(t*2.2+float(k))*.19
+            var f:=clampf((t-.08)/(.35+float(k%3)*.035),0.0,1.0)
+            var radius:float=(122.0+float(k%4)*12.0)*powf(1.0-f,1.7)
+            var mote:=HAND+Vector2(cos(a)*radius,sin(a)*radius*.62)
+            _halo(mote,7.0+float(k%3)*2.0,Color("ff6b29",charge*.36))
+            _halo(mote,2.5,Color("fff2cf",charge*.66))
+        _halo(HAND+Vector2(5,-3),32.0,Color("ff8f35",charge*.24))
     var sg:=seal_gain(t)
     if sg>.004:
         var f:=clampi(int(floor(clampf(t/1.42,0,1)*11.99)),0,11)
@@ -127,10 +141,19 @@ func _draw()->void:
         var angle:=(target_contact(t)-HAND).angle()-.025*sin(q*PI)
         var alpha:=smoothstep(FLIGHT_START,FLIGHT_START+.10,t)*(1.0-smoothstep(DEMO_HIT_AT,DEMO_HIT_AT+.045,t))
         var rect:=Rect2(float(index%4)*384.0,float(int(index/4))*224.0,384,224)
+        # Delayed silhouettes are visual afterimages, NOT additional hits.
+        for trail in range(3,0,-1):
+            var delay:=float(trail)*.035
+            var pt:=projectile_pos(maxf(FLIGHT_START,t-delay))
+            var heading:=(target_contact(maxf(FLIGHT_START,t-delay))-HAND).angle()
+            draw_set_transform(pt,heading,Vector2.ONE)
+            draw_texture_rect_region(COMET,Rect2(-218,-75,260,150),rect,
+                Color(1.0,.65,.44,alpha*(.15-.03*float(trail))))
         draw_set_transform(tip,angle,Vector2.ONE)
         draw_texture_rect_region(COMET,Rect2(-228,-82,292,164),rect,Color(1,1,1,alpha))
         draw_set_transform(Vector2.ZERO)
-        _halo(tip,39,Color("ffb252",alpha*.28))
+        _halo(tip,47,Color("fa6225",alpha*.38))
+        _halo(tip,19,Color("fff3c9",alpha*.48))
     var h:=hit_gain(t)
     if h>.004:
         var contact:=target_contact(t)+Vector2(0,49)
@@ -141,8 +164,12 @@ func _draw()->void:
         draw_texture_rect_region(IMPACT,
             Rect2(contact-Vector2(75,70),Vector2(150,132)),
             hitregion,Color(1.0,1.0,1.0,h*.91))
-        _halo(contact,53,Color("fe9d34",h*.42))
-        _halo(contact,22,Color("fff2cf",h*.77))
+        # Two-stage local contact flash; no AoE or simulated damage.
+        _halo(contact,63.0,Color("f3572c",h*.30))
+        _halo(contact,30.0,Color("ffd174",h*.65))
+        _halo(contact,13.0,Color("fff9e6",h*.95))
+        var recoil_flash:=smoothstep(DEMO_HIT_AT,DEMO_HIT_AT+.025,t)*(1.0-smoothstep(DEMO_HIT_AT+.06,DEMO_HIT_AT+.17,t))
+        _halo(contact+Vector2(0,-11),76.0,Color("ffa45d",recoil_flash*.18))
     var ember:=smoothstep(DEMO_HIT_AT,DEMO_HIT_AT+.17,t)*(1.0-smoothstep(1.92,FADE_END,t))
     if ember>.004:
         for k in range(13):
