@@ -8,7 +8,7 @@ Not HF01's Hỏa Long shot and not an ultimate. Charge: three small burnt-ink ta
 
 ## First-party art sources / atlas contract
 
-Recipe `tools/vfx/paint_tal07_lien_diem.py` paints original transparent RGBA with Pillow/NumPy (art source explicitly **code-painted**, not an ImageGen screenshot / commercial JX / Source A). No rig. Output generated before Godot import; does not need or reuse any HF01 painted master:
+Recipe `tools/vfx/paint_tal07_lien_diem.py` paints original transparent RGBA with Pillow/NumPy **and** composites an independently alpha-extracted, edge-feathered 80×65 fire-arc fragment from an original ImageGen concept authored for this project (`art_sources/tal07_painted_fire_arc_png.b64`). This is a genuine transparent magic-material source fragment, not the poster/scene/character pasted into gameplay. Four differently rotated and per-pose animated fire arcs support the independently painted seven-tongue lotus. No commercial JX / Source A pixels, no rig. Output generated before Godot import; does not need or reuse any HF01 painted master:
 
 | Asset | Frames | Cell | Atlas |
 |---|---:|---|---|
@@ -28,6 +28,10 @@ All alpha and unique pose SHA256 checks are strict; authored source held in Pyth
 - 1.72–2.62: flame/ash falloff, no DoT/status
 - 2.62+: empty/fade, no persistent gameplay effects
 
-Real Godot 4.7.2 Compatibility 1280×720 movie fixed 60fps, 198 frames; >=14 timed PNGs incl .30/.43/.70/.90/1.13/1.38/1.49/1.62/2.22, GIF and checksum from exact source SHA. Review at 1× for rounded primitive appearance, flame silhouette, foot layering, local impact, alpha seams, color readability and monster movement. **Technical PASS is NOT artistic approval**. Status `OWNER_VISUAL_PENDING / PVE_INTEGRATION_HOLD / V63_OFF / PHYSICAL_WINDOWS_ANDROID_PENDING`. Don't copy the unrelated AI concept poster (which called the skill by an incorrect name); **Liên Diệm Phần Giới** is the only canonical HF02 name.
+Real Godot 4.7.2 Compatibility 1280×720 movie fixed 60fps, 198 frames; >=14 timed PNGs incl .30/.43/.70/.90/1.13/1.38/1.49/1.62/2.22, GIF and checksum from exact source SHA. Review at 1× for rounded primitive appearance, flame silhouette, foot layering, local impact, alpha seams, color readability and monster movement. **Technical PASS is NOT artistic approval**. Status `OWNER_VISUAL_PENDING / PVE_INTEGRATION_HOLD / V63_OFF / PHYSICAL_WINDOWS_ANDROID_PENDING`. Never pass the AI concept poster off as a Godot frame or publish its incorrect invented name; the only source pixels retained are an isolated fire-arc fragment, with independently baked alpha and pose animation. **Liên Diệm Phần Giới** is the only canonical HF02 name.
 
 Files scoped to `talisman07/**`, its generator, focused test and isolated workflow. No Codex, rig, branch/merge, Combat V2/SaveService/PvE changes.
+
+## R1 → R4 visual repair (15 November 2026)
+
+R1 native 1280×720 QA run [43711337301](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/43711337301) passed TECH but was **self-rejected** visually because its seven tips looked like thin upright yellow wires. R2 [43711758547](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/43711758547) widened organic petal masks and replaced the starburst contact with body-local fire, tech PASS, but full-screen motion still resembled seven candles. R3 [43712472741](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/43712472741) layered a feathered original image-painted fire source into the independent poses, tech PASS. R4 native-scale adjustment enlarges ONLY the presented fire-lotus silhouette and hand seal to make it readable at 1×; never scales the gameplay world radius. **R4 must get a fresh exact-SHA native Godot movie; no art approval is inferred**. Owner visual pending.
