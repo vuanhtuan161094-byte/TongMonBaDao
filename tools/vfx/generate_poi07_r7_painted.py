@@ -61,22 +61,26 @@ def charge_frame(i):
     dims=(int(151*scale),int(190*scale))
     return fit(fade(art,.42+.58*q),(224,224),dims,(112-dims[0]//2,112-dims[1]//2))
 
-blade=hero.crop((170,14,min(hero.width,486),min(hero.height,105)))
+impact_source=source('puncture_painted_source.webp')
+flare_half=impact_source.crop((2,9,119,129))
 
 def puncture_frame(i):
-    a=[.20,.70,1.0,.94,.83,.71,.57,.43,.32,.22,.11,.035][i]
-    composite=Image.new('RGBA',(220,220),(0,0,0,0))
-    for k,(angle,length,delta) in enumerate([(-34,105,(-13,-5)),(13,141,(0,0)),(47,83,(9,5)),(-64,58,(-5,-11))]):
-        cut=ripple(blade,i*2+k,1.9)
-        cut=cut.resize((length,26+round(4*a)),Image.Resampling.LANCZOS)
-        cut=cut.rotate(angle+sin(i*.47+k)*2.2,resample=Image.Resampling.BICUBIC,expand=True)
-        cut=fade(cut,a*(.92 if k==1 else .48))
-        p=(110+delta[0]-cut.width//2,110+delta[1]-cut.height//2)
-        composite.alpha_composite(cut,p)
-    core=blade.crop((max(0,blade.width-75),18,blade.width-4,min(blade.height,65)))
-    core=ripple(core,i,1.1).resize((63,27),Image.Resampling.LANCZOS)
-    composite.alpha_composite(fade(core,a*.95),(79,97))
-    return fit(composite,(224,224),(220,220),(2,2))
+    # Local asymmetric painted explosion shards, strictly from original first-party
+    # art pixels. No source poster's fighter, damage numbers or fake character layer.
+    strength=[.18,.70,1.0,.95,.83,.69,.55,.43,.31,.22,.11,.03][i]
+    q=i/11.0
+    canvas=Image.new('RGBA',(220,220),(0,0,0,0))
+    left=ripple(flare_half,i,2.1)
+    left=left.resize((106+round(7*q),79+round(10*q)),Image.Resampling.LANCZOS)
+    canvas.alpha_composite(fade(left,strength*.89),(12,67))
+    right=ripple(flare_half.transpose(Image.Transpose.FLIP_LEFT_RIGHT),i+5,1.7)
+    right=right.resize((78+round(5*q),60+round(7*q)),Image.Resampling.LANCZOS)
+    canvas.alpha_composite(fade(right,strength*.54),(127,76))
+    # Painted needle focal pinprick on chest, not a broad game-logic AOE hit.
+    core=hero.crop((max(0,hero.width-110),30,hero.width-2,75))
+    core=ripple(core,i,1.1).resize((71,26),Image.Resampling.LANCZOS)
+    canvas.alpha_composite(fade(core,strength*.99),(85,94))
+    return fit(canvas,(224,224),(220,220),(2,2))
 
 def pack(name,frames,cell):
     w,h=cell
