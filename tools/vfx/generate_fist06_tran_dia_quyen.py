@@ -18,6 +18,10 @@ import numpy as np
 
 OUT = Path(__file__).resolve().parents[2] / 'godot/labs/combat_lab/fist06/assets/generated'
 OUT.mkdir(parents=True, exist_ok=True)
+# Reuse only the project-owned FIST03 incandescent BRUSH luminance as subtle
+# reflective mineral glints. FIST06 fist shape, stone facets, pose and hit
+# choreography are authored separately and must pass independent art review.
+SHARED_LIGHT_BRUSH = Path(__file__).resolve().parents[2] / 'godot/labs/combat_lab/fist03/assets/godfist_master.webp'
 CELL = 256
 SEED = 6011615
 
@@ -130,6 +134,21 @@ def make_rock_fist(k, charge=False):
     alpha=Image.fromarray(np.minimum(np.asarray(mask),np.asarray(ink.getchannel('A'))).astype(np.uint8))
     ink.putalpha(alpha)
     img.alpha_composite(ink)
+    # Project-owned original incandescent FIST03 painting is sampled as a
+    # SPARSE LIGHT BRUSH, never as the visible sprite shape or a static recolor.
+    # Transparent clipping uses this skill's independent faceted fist mask.
+    if SHARED_LIGHT_BRUSH.exists():
+        light_src=Image.open(SHARED_LIGHT_BRUSH).convert('RGBA')
+        light_src=light_src.resize((CELL,CELL),Image.Resampling.LANCZOS)
+        px=np.asarray(light_src,dtype=np.float32)
+        luminance=(.30*px[:,:,0]+.59*px[:,:,1]+.11*px[:,:,2])/255.0
+        hot=np.clip((luminance-.44)*2.9,0.0,1.0)
+        # Art-directed lower opacity; preserves rock texture and silhouette.
+        shine=np.zeros_like(px,dtype=np.uint8)
+        shine[:,:,0]=255;shine[:,:,1]=np.clip(174+53*hot,0,255).astype(np.uint8)
+        shine[:,:,2]=np.clip(88+65*hot,0,255).astype(np.uint8)
+        shine[:,:,3]=np.clip(hot*(px[:,:,3]/255.0)*(a*.90)*141,0,141).astype(np.uint8)
+        img.alpha_composite(Image.fromarray(shine,'RGBA'))
     # Soft independent orange/earth motes and layered debris as charge/flight movement.
     extra=blank();ds=ImageDraw.Draw(extra,'RGBA')
     count=17 if charge else 46

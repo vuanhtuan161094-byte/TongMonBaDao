@@ -4,7 +4,7 @@ extends Control
 ## READ-ONLY Godot 4.7.2 Combat LAB. No rig, no HP damage or combat receipt.
 const SKILL_ID := "tmb.skill.fist.kim_cang.active_01.human"
 const DISPLAY_NAME := "Trấn Địa Quyền"
-const ART_REVISION := "R2_MINERAL_FACETS_IMPACT"
+const ART_REVISION := "R3_PAINTERLY_MINERAL_LIGHT"
 const EFFECT := "damage"
 const ELEMENT := "earth"
 const SHAPE := "single_target"
@@ -64,7 +64,7 @@ func _ready() -> void:
     set_process(true)
     queue_redraw()
     if not vfx_only_benchmark:
-        print("VFX_FIST06_R2_READY id=",SKILL_ID," effect=damage element=earth cap=1 frames=24 textures=2 no_rig=true view_only=true")
+        print("VFX_FIST06_R3_READY id=",SKILL_ID," effect=damage element=earth cap=1 frames=24 textures=2 no_rig=true view_only=true")
 
 func _feather_texture() -> Texture2D:
     var image := Image.create(96,96,false,Image.FORMAT_RGBA8)
@@ -150,7 +150,7 @@ func _draw() -> void:
         draw_string(ThemeDB.fallback_font,Vector2(27,33),
             "TRAN DIA QUYEN / KIM CANG",HORIZONTAL_ALIGNMENT_LEFT,-1,23,Color("f9e6cb"))
         draw_string(ThemeDB.fallback_font,Vector2(28,58),
-            "FIST06 R2 | EARTH / SINGLE TARGET | MINERAL FIST + STONE IMPACT",
+            "FIST06 R3 | ROCK FIST / PIGMENT LIGHT | ONE CONTACT",
             HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("d4c5b4"))
         draw_string(ThemeDB.fallback_font,Vector2(28,683),
             "GODOT 4.7.2 COMPATIBILITY | VIEW ONLY | 24 FRAMES / 2 ATLASES | NO RIG",

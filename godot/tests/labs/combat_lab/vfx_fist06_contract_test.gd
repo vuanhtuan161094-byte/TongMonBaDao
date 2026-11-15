@@ -8,7 +8,7 @@ func _check(ok: bool,why: String) -> void:
 func _initialize() -> void:
     call_deferred("_check_lab")
 func _check_lab() -> void:
-    _check(LAB.ART_REVISION=="R2_MINERAL_FACETS_IMPACT","R2 art revision")
+    _check(LAB.ART_REVISION=="R3_PAINTERLY_MINERAL_LIGHT","R3 art revision")
     _check(LAB.SKILL_ID=="tmb.skill.fist.kim_cang.active_01.human","canonical ID")
     _check(LAB.EFFECT=="damage" and LAB.ELEMENT=="earth","damage earth")
     _check(LAB.SHAPE=="single_target" and LAB.TARGET_LIMIT==1,"no fake AoE")
