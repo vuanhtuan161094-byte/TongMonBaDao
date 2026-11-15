@@ -71,10 +71,10 @@ def comet_frame(i):
     orb=np.exp(-((xx-head+9)/22)**2-((yy-112)/18)**2)
     fire=np.clip(density*.9+core*.48+orb*.65,0,1.2)
     hot=np.clip(core*.76+orb*.95,0,1)
-    alpha=np.clip((180*fire+57*hot)*(1-.18*tail),0,253).astype(np.uint8)
-    red=np.clip(126+116*fire+19*tex,0,255).astype(np.uint8)
-    green=np.clip(29+132*fire+86*hot,0,255).astype(np.uint8)
-    blue=np.clip(11+41*fire+140*hot,0,255).astype(np.uint8)
+    alpha=np.clip((230*fire+60*hot)*(1-.12*tail),0,254).astype(np.uint8)
+    red=np.clip(151+102*fire+10*tex,0,255).astype(np.uint8)
+    green=np.clip(32+167*fire+58*hot,0,255).astype(np.uint8)
+    blue=np.clip(9+36*fire+104*hot,0,255).astype(np.uint8)
     im=Image.fromarray(np.dstack([red,green,blue,alpha]),"RGBA")
     im.alpha_composite(underpaint("tal06_fire_comet_atlas.webp",i,(w,h),.08))
     # Four broad curling flame flakes only, subordinate to the painted body.
@@ -86,14 +86,14 @@ def comet_frame(i):
         y0=112+side*(9+lane*8)
         y1=112+side*(29+lane*11)+14*math.sin(phase*1.5+lane)
         pts=bezier((x0,y0),(x0-35,y0+side*12),(x1+28,y1-side*15),(x1,y1),28)
-        d.line(pts,fill=(255,111+25*lane,38,125-lane*17),width=17-lane*2,joint="curve")
+        d.line(pts,fill=(255,128+27*lane,38,179-lane*18),width=21-lane*2,joint="curve")
     im.alpha_composite(glow.filter(ImageFilter.GaussianBlur(8)))
     a=glow.getchannel("A").point(lambda v:int(v*.28));glow.putalpha(a)
     im.alpha_composite(glow)
     headlayer=Image.new("RGBA",(w,h));d=ImageDraw.Draw(headlayer,"RGBA")
     d.ellipse((head-30,92,head+14,132),fill=(255,177,68,185))
-    d.ellipse((head-19,101,head+12,124),fill=(255,247,190,231))
-    d.ellipse((head-7,105,head+11,119),fill=(255,254,240,248))
+    d.ellipse((head-19,101,head+12,124),fill=(255,247,190,194))
+    d.ellipse((head-7,105,head+11,119),fill=(255,254,240,218))
     im.alpha_composite(headlayer.filter(ImageFilter.GaussianBlur(9)))
     im.alpha_composite(headlayer)
     emb=Image.new("RGBA",(w,h));d=ImageDraw.Draw(emb,"RGBA")
@@ -114,17 +114,20 @@ def seal_frame(i):
     outline=[(int(x+skew*abs(y-120)/140),y) for x,y in outline]
     p.polygon(outline,fill=(117,38,17,int(215*(1-.42*s))))
     p.line(outline+[outline[0]],fill=(255,171,74,204),width=5)
-    p.polygon([(94,48),(150,41),(155,190),(106,203)],fill=(215,125,51,int(204*(1-.37*s))))
+    p.polygon([(94,48),(150,41),(155,190),(106,203)],fill=(170,75,26,int(222*(1-.30*s))))
     for j in range(95):
         x=int(rng.uniform(104,151));y=int(rng.uniform(52,195))
         p.ellipse((x,y,x+2,y+2),fill=(49,22,15,int(rng.uniform(23,120))))
     # Ink ignites progressively; exact flame poses are independently baked.
-    strokes=[[(111,67),(148,69),(122,91),(149,99)],
-             [(119,104),(145,119),(115,135)],
-             [(143,140),(113,158),(150,171)],
-             [(113,186),(145,186)]]
+    # Authored 火-inspired calligraphy, stroke-by-stroke rather than a Z glyph.
+    strokes=[[(132,66),(130,101),(128,154)],
+             [(113,112),(103,93)],
+             [(144,113),(159,91)],
+             [(128,130),(112,156),(99,180)],
+             [(129,131),(145,153),(159,178)],
+             [(113,194),(148,195)]]
     for j,line in enumerate(strokes):
-        progress=np.clip((s*5-j)/1.35,0,1)
+        progress=np.clip((s*7-j)/1.20,0,1)
         if progress<=0:continue
         count=max(2,int(len(line)*progress))
         p.line(line[:count],fill=(255,245,169,int(245*progress)),width=6,joint="curve")
@@ -176,7 +179,7 @@ def impact_frame(i):
     spec=Image.new("RGBA",(w,h));d=ImageDraw.Draw(spec,"RGBA")
     if i<5:
         rad=int(17*live+7)
-        d.ellipse((144-rad,127-rad,144+rad,127+rad),fill=(255,250,220,int(214*live)))
+        d.polygon([(144-rad,127),(146,127-rad),(144+rad,125),(150,134),(139,130+rad)],fill=(255,242,184,int(157*live)))
     # Tumbling burnt embers near the base fade after impact.
     for k in range(42):
         px=int(rng.normal(144,50));py=int(rng.normal(174,19))
