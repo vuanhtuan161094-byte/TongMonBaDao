@@ -113,6 +113,7 @@ jobs:
           raw=base64.b64decode((root/'art_sources/hf01_r5_dragon_master_png.b64').read_text().strip(),validate=True)
           print('HF01_R5_SOURCE_MASTER_SHA256='+hashlib.sha256(raw).hexdigest())
           for name,w,h,cw,ch,frames in [
+              ('tal06_r5_seal_atlas.webp',1024,768,256,256,12),
               ('tal06_r5_comet_atlas.webp',1536,672,384,224,12),
               ('tal06_r5_impact_atlas.webp',1152,448,288,224,8)]:
               im=Image.open(root/'assets'/name).convert('RGBA')
