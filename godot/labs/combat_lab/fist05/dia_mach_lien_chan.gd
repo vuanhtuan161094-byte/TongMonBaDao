@@ -3,7 +3,7 @@ extends Control
 ## No rig / no HP writes / no V6.3 or PvE integration.
 const SKILL_ID := "tmb.skill.fist.ba_quyen.active_04.human"
 const DISPLAY_NAME := "Địa Mạch Liên Chấn"
-const ART_REVISION := "V5_DIRECTIONAL_CONTACT_SPARKS"
+const ART_REVISION := "V6_FULL_SCALE_PAINTED_ERUPTION"
 const EFFECT := "damage"
 const ELEMENT := "fire"
 const SHAPE := "circle"
@@ -81,7 +81,7 @@ func _ready() -> void:
     set_process(true)
     queue_redraw()
     if not vfx_only_benchmark:
-        print("VFX_FIST05_V5_READY source=", SKILL_ID,
+        print("VFX_FIST05_V6_READY source=", SKILL_ID,
             " atlas_frames=24 raw_rgba_bytes=", ATLAS_RAW_RGBA_BYTES,
             " shape=circle target_cap=3 no_rig=true view_only=true")
 
@@ -138,12 +138,12 @@ func _draw() -> void:
     if t < CAST_TIME:
         var q := clampf(t/CAST_TIME,0.0,1.0)
         _atlas(CORE,clampi(int(floor(q*4.0)),0,3),CASTER + Vector2(0,10),
-            .98,0.52 + .48*q)
+            1.21,0.63 + .37*q)
     _fissure(t)
     var erupt := eruption_alpha(t)
     if erupt > .004:
         var idx := clampi(int(floor((t-CONTACT_TIME)/(FADE_END-CONTACT_TIME)*12.0)),0,11)
-        _atlas(CORE,4+idx,IMPACT_GROUND+Vector2(0,5),1.16,erupt*.98)
+        _atlas(CORE,4+idx,IMPACT_GROUND+Vector2(0,5),1.64,erupt*.98)
     if not vfx_only_benchmark:
         _actor(CASTER,Color("f2e7d7"))
     for i in range(TARGET_LIMIT):
@@ -159,7 +159,7 @@ func _draw() -> void:
         draw_string(ThemeDB.fallback_font,Vector2(27.0,34.0),
             "DIA MACH LIEN CHAN  /  BA QUYEN",HORIZONTAL_ALIGNMENT_LEFT,-1,24,Color("ffe9bd"))
         draw_string(ThemeDB.fallback_font,Vector2(28.0,60.0),
-            "FIST05 V5 | 1 FISSURE + 1 ERUPTION | 3 HIT CUES | 7 MiB RAW ATLAS",
+            "FIST05 V6 | 1 FISSURE + 1 ERUPTION | 3 HIT CUES | 7 MiB RAW ATLAS",
             HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("e4c39e"))
         draw_string(ThemeDB.fallback_font,Vector2(28.0,684.0),
             "GODOT 4.7.2 COMPATIBILITY | VIEW ONLY | 24 RGBA FRAMES | NO RIG",
