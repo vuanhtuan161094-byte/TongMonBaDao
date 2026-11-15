@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""FIST05 V7: physical painted rockfall and directional contact bursts on an optimized atlas.
+"""FIST05 V8: scattered painted chips without polygon gaps and directional contact bursts on an optimized atlas.
 Sprite-first 24 RGBA poses (4 charge + 12 eruption + 8 contact) on two
 shared sheets + one original contiguous crack-path strip, no tiled decals.
 No gameplay state, actor animation, rig or copied third-party artwork.
@@ -78,43 +78,39 @@ def pressure(t):
 # FIST05 V7: painted master fractures into SIX independently moving rock
 # fragments during the final beats. The broken fragments are baked into the
 # existing 12-pose 256px atlas; they add zero runtime textures or draw calls.
-def _shattered_pillar(im, age, alpha):
-    source=SPIRE.resize((180,220),Image.Resampling.LANCZOS)
-    # These six irregular masks tessellate the original rock texture; detached
-    # chunks therefore retain the SAME charcoal/ochre geology and luminance.
-    areas=[
-        [(0,0),(75,0),(91,36),(66,91),(14,103),(0,74)],
-        [(75,0),(180,0),(180,82),(118,91),(91,36)],
-        [(0,74),(14,103),(66,91),(103,143),(48,162),(0,140)],
-        [(66,91),(118,91),(180,82),(180,151),(131,162),(103,143)],
-        [(0,140),(48,162),(103,143),(117,220),(0,220)],
-        [(103,143),(131,162),(180,151),(180,220),(117,220)]]
-    drift=[(-40,-29, -25),(41,-48,22),(-62,-8,-31),(61,-10,35),
-           (-28,10,-18),(37,8,19)]
-    # Natural arc: fragment first moves outward and up, then gravity pulls it
-    # toward the ground. Different direction/rotation for each fragment.
-    for i,poly in enumerate(areas):
-        mask=Image.new('L',source.size,0)
-        ImageDraw.Draw(mask).polygon(poly,fill=255)
-        mask=mask.filter(ImageFilter.GaussianBlur(.8))
-        piece=source.copy()
-        piece.putalpha(Image.fromarray(np.minimum(
-            np.asarray(piece.getchannel('A'),dtype=np.uint8),
-            np.asarray(mask,dtype=np.uint8)).astype(np.uint8),'L'))
-        bbox=mask.getbbox()
-        if bbox is None:continue
-        piece=piece.crop(bbox)
-        cx=(bbox[0]+bbox[2])*.5
-        cy=(bbox[1]+bbox[3])*.5
-        vx,vy,spin=drift[i]
-        dx=vx*age+6*math.sin(age*5.8+i)
-        dy=vy*age+61*age*age
-        shrink=1.0-.11*age
-        # Full pillar center at (137,141), footprint at y ~251.
-        px=47+cx+dx
-        py=31+cy+dy
-        stamp(im,piece,px,py,piece.width*shrink,piece.height*shrink,
-              rot=spin*age,alpha=alpha*(1.0-.16*age))
+def _loose_rockfall(im, age, alpha):
+    """Collapse into independent original-painted stone chips: no huge torn
+    source polygon masks and NO triangular gaps through a slab.
+    Only true cropped rock silhouettes move, spin and settle under gravity.
+    """
+    # Frame 7 retains a brief translucent parent silhouette at the BREAK point,
+    # then the original column disappears before the rockfall is well underway.
+    ghost=max(0.0,1.0-age*2.7)
+    if ghost>.01:
+        stamp(im,SPIRE,137,141,177,229,rot=0,alpha=alpha*ghost*.53)
+    # Positional seeds are intentionally asymmetric, not a radial star.
+    # Initial (x,y), horizontal velocity, upward velocity, gravity, rotation,
+    # size and original painted source for each chunk.
+    chips=[
+      (102,95,-46,-42,92,-37,41,49,SPIRE),
+      (143,91,33,-57,91,29,46,57,SHARD),
+      (169,134,57,-38,82,37,39,43,SPIRE),
+      (80,152,-54,-29,80,-26,47,48,SHARD),
+      (125,146,-5,-58,100,19,50,57,SPIRE),
+      (184,174,53,-28,72,41,37,39,SHARD),
+      (110,196,-22,-22,48,-32,39,34,SHARD),
+      (158,200,28,-20,55,24,35,32,SPIRE),
+    ]
+    for i,(x,y,vx,vy,g,spin,w,h,tex) in enumerate(chips):
+        # A small and independently accelerating rock, not a torn section
+        # of a giant rectangular painting. Use alpha-safe source cutouts.
+        progress=min(1.0,age*(.86+(.08*i%3)))
+        px=x+vx*progress+2.5*math.sin(progress*5+i*.9)
+        py=y+vy*progress+g*progress*progress
+        contraction=1.0-.18*progress
+        a=alpha*(1.0-.29*progress)*(0.84 if i%3==0 else 1.0)
+        stamp(im,tex,px,py,w*contraction,h*contraction,
+              rot=spin*progress+((i%3)-1)*9,alpha=a)
 
 def _earthfall_dust(im, age, alpha, seed):
     # Dust is physically grounded, feathered and EARTH-COLORED. No circular
@@ -162,7 +158,7 @@ def eruption(k):
             age=(k-6.0)/5.0
             # Add low dust FIRST so the source-painted stones appear in front.
             _earthfall_dust(im,age,fall*.77,k)
-            _shattered_pillar(im,age,fall)
+            _loose_rockfall(im,age,fall)
         # Side fragments tumble and settle, they do not remain as static decals.
         decay=max(0.0,(k-6.0)/5.0)
         left_y=202-22*growth-21*decay+56*decay*decay
@@ -293,4 +289,4 @@ if __name__=='__main__':
         assert im.mode=='RGBA' and im.getpixel((0,0))[3]==0
     memory=sum(Image.open(O/fn).width*Image.open(O/fn).height*4 for fn in ['seismic_main.png','seismic_hit.png','seismic_path.png'])
     assert memory==7340032, memory
-    print('FIST05_OPTIMIZED_V7_PASS atlas_frames=24 textures=3 raw_rgba_bytes=%d no_rig=true'%memory)
+    print('FIST05_OPTIMIZED_V8_PASS atlas_frames=24 textures=3 raw_rgba_bytes=%d no_rig=true'%memory)
