@@ -1,4 +1,4 @@
-name: VFX-FIST-05 V8 isolated rock chips and grounded dust native Godot 4.7.2
+name: VFX-FIST-05 V9 cooled earthfall and grounded dust native Godot 4.7.2
 on:
   workflow_dispatch:
   push:
@@ -32,7 +32,7 @@ jobs:
           sudo install -m0755 /tmp/Godot_v4.7.2-stable_linux.x86_64 /usr/local/bin/godot
           mkdir -p /tmp/vfx-fist05
           godot --version | tee /tmp/vfx-fist05/engine.txt
-          echo "V8_END_ROCKFALL=EIGHT_ORIGINAL_PAINTED_CHIPS_NO_POLYGON_HOLES; SOURCE_SHA=$GITHUB_SHA; SOURCE_ID=tmb.skill.fist.ba_quyen.active_04.human; EFFECT=damage; ELEMENT=fire; SHAPE=circle; CAP=3; CAST=0.45; RANGE=4; RADIUS=3; ART=retouched original first-party geology + one contiguous fissure; atlas_raw_MiB=7.0; previous_raw_MiB=22.5; NO_RIG=true; VIEW_ONLY=true; OWNER_VISUAL_PENDING; PVE_INTEGRATION_HOLD" > /tmp/vfx-fist05/metadata.txt
+          echo "V9_END_ROCKFALL=EIGHT_LOW_ARC_COOLING_CHIPS_SETTLING_DUST; SOURCE_SHA=$GITHUB_SHA; SOURCE_ID=tmb.skill.fist.ba_quyen.active_04.human; EFFECT=damage; ELEMENT=fire; SHAPE=circle; CAP=3; CAST=0.45; RANGE=4; RADIUS=3; ART=retouched original first-party geology + one contiguous fissure; atlas_raw_MiB=7.0; previous_raw_MiB=22.5; NO_RIG=true; VIEW_ONLY=true; OWNER_VISUAL_PENDING; PVE_INTEGRATION_HOLD" > /tmp/vfx-fist05/metadata.txt
       - name: Restore existing Stage A character texture (without tracked changes)
         shell: bash
         run: |
@@ -45,7 +45,7 @@ jobs:
         run: |
           set -euo pipefail
           python3 tools/vfx/generate_fist05_v3_optimized.py | tee /tmp/vfx-fist05/atlas.log
-          grep -Fq 'FIST05_OPTIMIZED_V8_PASS atlas_frames=24 textures=3 raw_rgba_bytes=7340032 no_rig=true' /tmp/vfx-fist05/atlas.log
+          grep -Fq 'FIST05_OPTIMIZED_V9_PASS atlas_frames=24 textures=3 raw_rgba_bytes=7340032 no_rig=true' /tmp/vfx-fist05/atlas.log
           for master in seismic_ground_master molten_shard_master spires_master; do
             test -s "godot/labs/combat_lab/fist05/assets/$master.webp"
           done
@@ -69,7 +69,7 @@ jobs:
           different=ImageChops.difference(shape(apex),shape(tumble))
           changed=ImageChops.difference(shape(tumble),shape(settle))
           assert different.getbbox() and changed.getbbox()
-          print('FIST05_V8_ROCKFALL_FRAMES=PASS apex=10 tumble=12 settle=14 geometry_changes=true')
+          print('FIST05_V9_ROCKFALL_FRAMES=PASS apex=10 tumble=12 settle=14 geometry_changes=true')
           ROCKFALL
           python3 - <<'REPORT' | tee /tmp/vfx-fist05/texture_budget.txt
           from PIL import Image
