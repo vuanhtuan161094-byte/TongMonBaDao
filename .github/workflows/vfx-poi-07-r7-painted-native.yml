@@ -6,7 +6,7 @@ on:
     paths:
       - 'godot/labs/combat_lab/poison07/r7_painted/**'
       - 'godot/tests/labs/combat_lab/vfx_poi07_r7_contract_test.gd'
-      - 'tools/vfx/generate_poi07_r7_painted_sprites.py'
+      - 'tools/vfx/generate_poi07_r7_painted.py'
       - '.github/workflows/vfx-poi-07-r7-painted-native.yml'
 permissions:
   contents: write
@@ -42,7 +42,7 @@ jobs:
         run: |
           set -euo pipefail
           d="$RUNNER_TEMP/poi07-r7"
-          python3 tools/vfx/generate_poi07_r7_painted_sprites.py | tee "$d/bake.log"
+          python3 tools/vfx/generate_poi07_r7_painted.py | tee "$d/bake.log"
           python3 - <<'PY'
           from PIL import Image
           import hashlib
@@ -118,7 +118,7 @@ jobs:
             git fetch origin "$branch"
             current="$(git rev-parse FETCH_HEAD)"
             if ! git merge-base --is-ancestor "$GITHUB_SHA" "$current"; then echo BRANCH_REWRITTEN_ABORT; exit 0; fi
-            if test -n "$(git diff --name-only "$GITHUB_SHA" "$current" -- godot/labs/combat_lab/poison07/r7_painted tools/vfx/generate_poi07_r7_painted_sprites.py godot/tests/labs/combat_lab/vfx_poi07_r7_contract_test.gd .github/workflows/vfx-poi-07-r7-painted-native.yml)"; then echo SOURCE_CHANGED_NO_PUSH; exit 0; fi
+            if test -n "$(git diff --name-only "$GITHUB_SHA" "$current" -- godot/labs/combat_lab/poison07/r7_painted tools/vfx/generate_poi07_r7_painted.py godot/tests/labs/combat_lab/vfx_poi07_r7_contract_test.gd .github/workflows/vfx-poi-07-r7-painted-native.yml)"; then echo SOURCE_CHANGED_NO_PUSH; exit 0; fi
             git reset --hard "$current"
             mkdir -p "$folder"
             cp "$RUNNER_TEMP/poi07-r7/staged/"*.png "$folder/"
