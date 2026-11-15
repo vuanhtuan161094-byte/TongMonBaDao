@@ -1,4 +1,4 @@
-name: VFX-FIST-05 V5 painted eruption and directional hit optimized native Godot + 1,6,12,30 VFX load
+name: VFX-FIST-05 V7 fractured falling rocks native Godot + 1,6,12,30 VFX load
 on:
   workflow_dispatch:
   push:
@@ -32,7 +32,7 @@ jobs:
           sudo install -m0755 /tmp/Godot_v4.7.2-stable_linux.x86_64 /usr/local/bin/godot
           mkdir -p /tmp/vfx-fist05
           godot --version | tee /tmp/vfx-fist05/engine.txt
-          echo "SOURCE_SHA=$GITHUB_SHA; SOURCE_ID=tmb.skill.fist.ba_quyen.active_04.human; EFFECT=damage; ELEMENT=fire; SHAPE=circle; CAP=3; CAST=0.45; RANGE=4; RADIUS=3; ART=retouched original first-party geology + one contiguous fissure; atlas_raw_MiB=7.0; previous_raw_MiB=22.5; NO_RIG=true; VIEW_ONLY=true; OWNER_VISUAL_PENDING; PVE_INTEGRATION_HOLD" > /tmp/vfx-fist05/metadata.txt
+          echo "V7_END_ROCKFALL=SIX_FRAGMENT_GRAVITY_BAKED; SOURCE_SHA=$GITHUB_SHA; SOURCE_ID=tmb.skill.fist.ba_quyen.active_04.human; EFFECT=damage; ELEMENT=fire; SHAPE=circle; CAP=3; CAST=0.45; RANGE=4; RADIUS=3; ART=retouched original first-party geology + one contiguous fissure; atlas_raw_MiB=7.0; previous_raw_MiB=22.5; NO_RIG=true; VIEW_ONLY=true; OWNER_VISUAL_PENDING; PVE_INTEGRATION_HOLD" > /tmp/vfx-fist05/metadata.txt
       - name: Restore existing Stage A character texture (without tracked changes)
         shell: bash
         run: |
@@ -45,7 +45,7 @@ jobs:
         run: |
           set -euo pipefail
           python3 tools/vfx/generate_fist05_v3_optimized.py | tee /tmp/vfx-fist05/atlas.log
-          grep -Fq 'FIST05_OPTIMIZED_V5_PASS atlas_frames=24 textures=3 raw_rgba_bytes=7340032 no_rig=true' /tmp/vfx-fist05/atlas.log
+          grep -Fq 'FIST05_OPTIMIZED_V7_PASS atlas_frames=24 textures=3 raw_rgba_bytes=7340032 no_rig=true' /tmp/vfx-fist05/atlas.log
           for master in seismic_ground_master molten_shard_master spires_master; do
             test -s "godot/labs/combat_lab/fist05/assets/$master.webp"
           done
@@ -54,6 +54,23 @@ jobs:
             cp "godot/labs/combat_lab/fist05/assets/optimized_v3/$n.png" "/tmp/vfx-fist05/$n.png"
           done
           sha256sum /tmp/vfx-fist05/{seismic_main,seismic_hit,seismic_path}.png > /tmp/vfx-fist05/ATLAS_SHA256SUMS.txt
+          # V7 art-regression guard: late frames must change material position
+          # (a painted rock fractures and falls; never one frozen sprite fade).
+          python3 - <<'ROCKFALL' | tee /tmp/vfx-fist05/rockfall_frames_check.txt
+          from PIL import Image, ImageChops
+          im=Image.open('/tmp/vfx-fist05/seismic_main.png').convert('RGBA')
+          frame=lambda i: im.crop(((i%4)*256, (i//4)*256, (i%4+1)*256, (i//4+1)*256))
+          apex=frame(4+6)
+          tumble=frame(4+8)
+          settle=frame(4+10)
+          assert apex.getbbox() and tumble.getbbox() and settle.getbbox()
+          # Verify per-pose geometry differs, rather than alpha-only freeze.
+          def shape(img): return img.getchannel('A').point(lambda x:255 if x>35 else 0)
+          different=ImageChops.difference(shape(apex),shape(tumble))
+          changed=ImageChops.difference(shape(tumble),shape(settle))
+          assert different.getbbox() and changed.getbbox()
+          print('FIST05_V7_ROCKFALL_FRAMES=PASS apex=10 tumble=12 settle=14 geometry_changes=true')
+          ROCKFALL
           python3 - <<'REPORT' | tee /tmp/vfx-fist05/texture_budget.txt
           from PIL import Image
           from pathlib import Path
