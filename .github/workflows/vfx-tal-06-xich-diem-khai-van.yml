@@ -6,6 +6,7 @@ on:
     paths:
       - '.github/workflows/vfx-tal-06-xich-diem-khai-van.yml'
       - 'tools/vfx/paint_tal06_xich_diem.py'
+      - 'tools/vfx/hf01_r4_remake.py'
       - 'godot/labs/combat_lab/talisman06/**'
       - 'godot/tests/labs/combat_lab/vfx_tal06_contract_test.gd'
 permissions:
@@ -66,6 +67,36 @@ jobs:
               print('TAL06_TRUE_POSES',name,len(hashes))
           print('TAL06_ALPHA_POSE_GATE=PASS')
           PY
+      - name: Bake completely remade HF01 R4 original transparent flipbooks
+        shell: bash
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/vfx-tal06"
+          # Paint independent 12 seal, 12 fire and 8 contact poses from the
+          # repository's already SHA-pinned original art. Never touch Combat V2.
+          /usr/bin/python3 tools/vfx/hf01_r4_remake.py | tee "$d/r4-bake.log"
+          grep -Fxq 'HF01_R4_SPRITES_PASS' "$d/r4-bake.log"
+          /usr/bin/python3 - <<'PY'
+          from PIL import Image
+          from pathlib import Path
+          import hashlib
+          p=Path("godot/labs/combat_lab/talisman06/assets")
+          for filename,w,h,cw,ch,frames in [
+              ("tal06_r4_seal_atlas.webp",1024,768,256,256,12),
+              ("tal06_r4_comet_atlas.webp",1536,672,384,224,12),
+              ("tal06_r4_impact_atlas.webp",1152,448,288,224,8)]:
+              image=Image.open(p/filename).convert("RGBA")
+              assert image.size == (w,h),filename
+              assert image.getchannel("A").getextrema()[0]==0,filename
+              hashes=set()
+              for i in range(frames):
+                  x=(i%4)*cw;y=(i//4)*ch
+                  hashes.add(hashlib.sha256(image.crop((x,y,x+cw,y+ch)).tobytes()).hexdigest())
+              assert len(hashes)==frames,(filename,len(hashes))
+              print("HF01_R4_TRUE_POSES",filename,frames)
+          print("HF01_R4_ALPHA_POSE_GATE=PASS")
+          PY
+          sha256sum godot/labs/combat_lab/talisman06/assets/tal06_r4_*.webp > "$d/R4_ASSET_SHA256SUMS.txt"
       - name: Restore existing Stage A asset pack without changing tracked files
         shell: bash
         run: |
