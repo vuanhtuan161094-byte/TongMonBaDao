@@ -15,6 +15,7 @@ func _run()->void:
     check(LAB.COMET.get_size()==Vector2(1536,672),"twelve painted fire comet frames")
     check(LAB.IMPACT.get_size()==Vector2(1152,448),"eight original contact frames")
     check(LAB.FOOT.get_size()==Vector2(256,128),"independent smaller foot sign")
+    check(LAB.SCORCH.get_size()==Vector2(1152,448),"separate R4 ground-only scorch atlas; R5 hero cannot become fake ground AoE")
     check(LAB.MONSTER_FRAMES.has_animation("walk") and LAB.MONSTER_FRAMES.get_frame_count("walk")>=8,"true monster animation frames")
     check(LAB.phase_at(.30)=="charge" and LAB.phase_at(.90)=="projectile" and LAB.phase_at(1.49)=="demo_hit","phase choreography")
     check(LAB.phase_at(2.1)=="embers_fade" and LAB.phase_at(3.0)=="idle","no fake persistent burn")
