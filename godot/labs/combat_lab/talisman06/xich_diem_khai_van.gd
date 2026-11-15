@@ -123,7 +123,7 @@ func _draw()->void:
             var mote:=HAND+Vector2(cos(a)*radius,sin(a)*radius*.62)
             _halo(mote,7.0+float(k%3)*2.0,Color("ff6b29",charge*.36))
             _halo(mote,2.5,Color("fff2cf",charge*.66))
-        _halo(HAND+Vector2(5,-3),32.0,Color("ff8f35",charge*.24))
+        _halo(HAND+Vector2(5,-3),43.0,Color("ff8f35",charge*.42))
     var sg:=seal_gain(t)
     if sg>.004:
         var f:=clampi(int(floor(clampf(t/1.42,0,1)*11.99)),0,11)
@@ -166,10 +166,10 @@ func _draw()->void:
             hitregion,Color(1.0,1.0,1.0,h*.91))
         # Two-stage local contact flash; no AoE or simulated damage.
         _halo(contact,63.0,Color("f3572c",h*.30))
-        _halo(contact,30.0,Color("ffd174",h*.65))
-        _halo(contact,13.0,Color("fff9e6",h*.95))
+        _halo(contact,24.0,Color("ffd174",h*.37))
+        _halo(contact,8.0,Color("fff9e6",h*.60))
         var recoil_flash:=smoothstep(DEMO_HIT_AT,DEMO_HIT_AT+.025,t)*(1.0-smoothstep(DEMO_HIT_AT+.06,DEMO_HIT_AT+.17,t))
-        _halo(contact+Vector2(0,-11),76.0,Color("ffa45d",recoil_flash*.18))
+        _halo(contact+Vector2(0,-11),69.0,Color("ffa45d",recoil_flash*.16))
     var ember:=smoothstep(DEMO_HIT_AT,DEMO_HIT_AT+.17,t)*(1.0-smoothstep(1.92,FADE_END,t))
     if ember>.004:
         for k in range(13):
