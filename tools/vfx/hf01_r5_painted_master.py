@@ -65,29 +65,34 @@ def comet(master_img,i):
 
 def impact(master_img,i):
     q=i/7.0
+    # One painted flame-bite, never geometric HUD spokes or a second hit.
     frame=Image.new('RGBA',(288,224))
-    w=int(165+102*q);h=int(90+98*q)
+    strength=max(0.,1.-q)
+    w=int(268-10*q);h=int(165+8*q)
     hero=deform(master_img,7+i,(w,h),amp=3.2+4.0*q)
-    a=hero.getchannel('A').point(lambda v:int(v*(1-q)**.62))
-    hero.putalpha(a)
-    px=(288-w)//2;py=(224-h)//2-int(4*q)
-    composite_glow(frame,hero,(px,py),opacity=.22)
-    hot=Image.new('RGBA',frame.size)
-    d=ImageDraw.Draw(hot,'RGBA')
-    strength=max(0,1-q)
-    if i<6:
-        poly=[(140,126),(149,103),(153,120),(163,129),
-              (151,136),(145,145),(134,137),(124,131)]
-        d.polygon(poly,fill=(255,246,194,int(160*strength)))
+    src=np.asarray(hero.convert('RGBA')).astype('float32').copy()
+    yy,xx=np.indices((h,w),dtype='float32')
+    # White-hot contact stays WITHIN the existing original painted silhouette.
+    # Retain brush texture, no filled code polygons or fake impact circles.
+    mask=src[:,:,3]/255.
+    hotspot=np.exp(-(((xx-w*.73)/(w*.17))**2+((yy-h*.54)/(h*.28))**2))
+    hot=np.clip(hotspot*mask*.86,0,1)
+    src[:,:,0]=np.clip(src[:,:,0]+(255-src[:,:,0])*(.15+.38*hot),0,255)
+    src[:,:,1]=np.clip(src[:,:,1]+(250-src[:,:,1])*(.08+.44*hot),0,255)
+    src[:,:,2]=np.clip(src[:,:,2]+(200-src[:,:,2])*(.08+.29*hot),0,255)
+    src[:,:,3]=np.clip(src[:,:,3]*(1.35-.33*q)*strength,0,254)
+    hero=Image.fromarray(np.uint8(src),'RGBA')
+    px=(288-w)//2;py=(224-h)//2-int(7*q)
+    composite_glow(frame,hero,(px,py),opacity=.66*strength)
     rng=np.random.default_rng(1400+23*i)
-    for j in range(25):
-        x=int(rng.normal(144,62+23*q));y=int(rng.normal(150,37+11*q))
+    emb=Image.new('RGBA',(288,224));d=ImageDraw.Draw(emb,'RGBA')
+    for j in range(35):
+        x=int(rng.normal(144,54+20*q));y=int(rng.normal(146,31+16*q))
         if not (4<x<284 and 4<y<220):continue
-        r=int(rng.choice([1,1,2,3]))
+        r=int(rng.choice([1,1,2,2]))
         d.ellipse((x-r,y-r,x+r,y+r),
-            fill=(255,int(rng.uniform(114,208)),49,int(rng.uniform(35,105)*strength)))
-    frame.alpha_composite(hot.filter(ImageFilter.GaussianBlur(3)))
-    frame.alpha_composite(hot)
+            fill=(255,int(rng.uniform(145,230)),54,int(rng.uniform(35,115)*strength)))
+    frame.alpha_composite(emb)
     return frame
 
 def atlas(frames,w,h):
