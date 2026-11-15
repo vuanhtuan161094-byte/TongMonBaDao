@@ -4,7 +4,7 @@ extends Control
 ## READ-ONLY Godot 4.7.2 Combat LAB. No rig, no HP damage or combat receipt.
 const SKILL_ID := "tmb.skill.fist.kim_cang.active_01.human"
 const DISPLAY_NAME := "Trấn Địa Quyền"
-const ART_REVISION := "R1_EARTH_SINGLE_TARGET"
+const ART_REVISION := "R2_MINERAL_FACETS_IMPACT"
 const EFFECT := "damage"
 const ELEMENT := "earth"
 const SHAPE := "single_target"
@@ -52,7 +52,7 @@ static func recoil(t: float) -> float:
     var age:=t-HIT_AT
     if age<0.0 or age>.37:
         return 0.0
-    return 14.0*smoothstep(.014,.07,age)*(1.0-smoothstep(.19,.37,age))
+    return 22.0*smoothstep(.014,.07,age)*(1.0-smoothstep(.19,.37,age))
 
 static func target_position(t: float) -> Vector2:
     return DEMO_TARGET+Vector2(14.0*sin(t*2.70),3.0*sin(t*1.4))
@@ -64,7 +64,7 @@ func _ready() -> void:
     set_process(true)
     queue_redraw()
     if not vfx_only_benchmark:
-        print("VFX_FIST06_R1_READY id=",SKILL_ID," effect=damage element=earth cap=1 frames=24 textures=2 no_rig=true view_only=true")
+        print("VFX_FIST06_R2_READY id=",SKILL_ID," effect=damage element=earth cap=1 frames=24 textures=2 no_rig=true view_only=true")
 
 func _feather_texture() -> Texture2D:
     var image := Image.create(96,96,false,Image.FORMAT_RGBA8)
@@ -123,7 +123,7 @@ func _draw() -> void:
         var charge:=clampf(t/CAST_TIME,0.0,1.0)
         _glow(HAND,53.0,.15+.14*charge)
         _atlas(HERO,clampi(int(floor(charge*4.0)),0,3),HAND,
-            .38+.17*charge,.45+.43*charge)
+            .47+.21*charge,.53+.43*charge)
     elif t < HIT_AT:
         var flight:=clampf((t-CAST_TIME)/(HIT_AT-CAST_TIME),0.0,1.0)
         var eased:=1.0-pow(1.0-flight,2.8)
@@ -131,10 +131,10 @@ func _draw() -> void:
         var idx:=4+clampi(int(floor(flight*12.0)),0,11)
         # A tiny motion smear using the SAME atlas, no extra textures.
         var previous:=HAND.lerp(chest,maxf(0.0,eased-.11))
-        _atlas(HERO,idx,previous,.72,.16)
-        _atlas(HERO,idx,head,.84,.99)
+        _atlas(HERO,idx,previous,.78,.19)
+        _atlas(HERO,idx,head,1.02,.99)
     if alpha>.001:
-        _glow(chest,50.0,alpha*.33)
+        _glow(chest,65.0,alpha*.55)
     if not vfx_only_benchmark:
         _actor(CASTER,Color("e9e5dc"))
         _actor(target_foot,Color.WHITE.lerp(Color("f7eccd"),alpha*.56))
@@ -143,14 +143,14 @@ func _draw() -> void:
         var age:=t-HIT_AT
         var frame:=clampi(int(floor(age/(FADE_END-HIT_AT)*8.0)),0,7)
         var fade:=1.0-smoothstep(HIT_END,FADE_END,t)
-        _atlas(HIT,frame,chest+Vector2(0,12),.71,.9*fade,Vector2(128,136))
+        _atlas(HIT,frame,chest+Vector2(0,8),1.02,.96*fade,Vector2(128,136))
         if age<.12:
-            _glow(chest,36.0,(1.0-smoothstep(.022,.12,age))*.26)
+            _glow(chest,54.0,(1.0-smoothstep(.025,.12,age))*.44)
     if not vfx_only_benchmark:
         draw_string(ThemeDB.fallback_font,Vector2(27,33),
             "TRAN DIA QUYEN / KIM CANG",HORIZONTAL_ALIGNMENT_LEFT,-1,23,Color("f9e6cb"))
         draw_string(ThemeDB.fallback_font,Vector2(28,58),
-            "FIST06 | EARTH / SINGLE TARGET | COMPRESSED ROCK FIST + CONTACT",
+            "FIST06 R2 | EARTH / SINGLE TARGET | MINERAL FIST + STONE IMPACT",
             HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("d4c5b4"))
         draw_string(ThemeDB.fallback_font,Vector2(28,683),
             "GODOT 4.7.2 COMPATIBILITY | VIEW ONLY | 24 FRAMES / 2 ATLASES | NO RIG",

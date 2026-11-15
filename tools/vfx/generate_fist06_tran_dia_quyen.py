@@ -94,6 +94,30 @@ def make_rock_fist(k, charge=False):
         dd.line([(fx,fy-9),(fx+rng.uniform(0,7),fy-1),(fx+rng.uniform(-4,3),fy+9)],
                 fill=(59,35,27,165),width=3)
         dd.line([(fx+1,fy-8),(fx+3,fy-2)],fill=(255,189,83,172),width=2)
+    # Chipped hand-painted facets: layered dark granite chips and warm beveled
+    # edges break up the uniform polygon fill; separate geometry per pose.
+    for facet in range(23):
+        px=rng.uniform(70,217)+xdelta
+        py=rng.uniform(80,175)
+        rr=rng.uniform(5,21)
+        polygon=[(px-rr,py+rr*.13),(px-rr*.28,py-rr*.73),
+                 (px+rr*.72,py-rr*.6),(px+rr,py+rr*.26),
+                 (px+rng.uniform(-.6,.3)*rr,py+rr*.82)]
+        if facet%3==0:
+            color=(240,202,135,rng.randint(25,88))
+        else:
+            color=(16+rng.randint(0,33),18+rng.randint(0,23),
+                   24+rng.randint(0,18),rng.randint(34,127))
+        dd.polygon(polygon,fill=color)
+        if facet%4==0:
+            dd.line(polygon[:2],fill=(249,202,137,rng.randint(80,160)),width=1)
+    # Ten uneven heat veins remain narrower than the armored knuckle silhouette.
+    for seam in range(10):
+        x=rng.uniform(79,203)+xdelta
+        y=rng.uniform(93,161)
+        dd.line([(x,y),(x+rng.uniform(2,11),y-rng.uniform(2,9)),
+                 (x+rng.uniform(10,18),y-rng.uniform(7,20))],
+                fill=(237,139,59,rng.randint(80,163)),width=rng.randint(1,2))
     # Jagged mineral vein from wrist to knuckle, faint illumination.
     vein=[(69+xdelta,132),(92+xdelta,126+3*math.sin(k*.6)),
           (119+xdelta,138),(137+xdelta,119),(170+xdelta,122),
@@ -108,7 +132,7 @@ def make_rock_fist(k, charge=False):
     img.alpha_composite(ink)
     # Soft independent orange/earth motes and layered debris as charge/flight movement.
     extra=blank();ds=ImageDraw.Draw(extra,'RGBA')
-    count=10 if charge else 25
+    count=17 if charge else 46
     for j in range(count):
         x=rng.uniform(45,218)-12*t*(not charge)
         y=rng.gauss(131,54)
@@ -119,7 +143,7 @@ def make_rock_fist(k, charge=False):
     img.alpha_composite(extra)
     # Broad soft earth light only near the stone (not a screen-filling circle).
     gl=blank();dl=ImageDraw.Draw(gl,'RGBA')
-    dl.ellipse((118+xdelta,102,226+xdelta,160),fill=(247,173,75,70 if charge else 46))
+    dl.ellipse((118+xdelta,102,226+xdelta,160),fill=(252,151,58,120 if charge else 92))
     out=gl.filter(ImageFilter.GaussianBlur(20))
     out.alpha_composite(img)
     return out
@@ -134,12 +158,12 @@ def impact_frame(k):
     im=blank()
     # The first two frames have an abrupt tactile contact: no permanent neon ring.
     glow=blank();d=ImageDraw.Draw(glow,'RGBA')
-    bright=max(0.,1-t*1.8)
+    bright=max(0.,1-t*1.17)
     d.ellipse((86-13*t,79-17*t,174+38*t,163+27*t),
-              fill=(255,202,111,int(160*bright)))
+              fill=(255,194,92,int(196*bright)))
     im.alpha_composite(glow.filter(ImageFilter.GaussianBlur(13)))
     dust=blank();d=ImageDraw.Draw(dust,'RGBA')
-    for i in range(16):
+    for i in range(20):
         x=127+rng.gauss(0,32+26*t)
         y=161+rng.gauss(0,14+15*t)
         rx=rng.uniform(7,18)*(0.7+.9*t)
@@ -149,20 +173,33 @@ def impact_frame(k):
         d.ellipse((x-rx,y-ry,x+rx,y+ry),fill=c)
     im.alpha_composite(dust.filter(ImageFilter.GaussianBlur(5)))
     chips=blank();d=ImageDraw.Draw(chips,'RGBA')
-    for i in range(27):
+    for i in range(48):
         theta=rng.uniform(-math.pi,math.pi)
         speed=rng.uniform(30,115)
         x=127+math.cos(theta)*speed*t + 14*t
         y=133+math.sin(theta)*speed*.63*t+72*t*t
         if not(3<x<253 and 3<y<251):continue
-        rad=rng.uniform(1,6)*(1-.55*t)
+        rad=rng.uniform(1.5,8)*(1-.48*t)
         v=int(rng.randint(100,175)*(1-.27*t))
         d.polygon([(x-rad,y+.45*rad),(x-.25*rad,y-rad),
                    (x+rad,y-rad*.15),(x+.6*rad,y+.7*rad)],
-                  fill=(v,int(v*.82),int(v*.64),int(179*(1-.72*t))))
+                  fill=(v,int(v*.82),int(v*.64),int(211*(1-.70*t))))
         if i%4==0:
             d.line([(x-rad,y),(x,y-rad)],fill=(252,194,118,int(145*(1-t))),width=2)
     im.alpha_composite(chips)
+    # Brief directed mineral fracture at knuckle contact: no UI-star radial spokes.
+    if k < 5:
+        fracture=blank();fd=ImageDraw.Draw(fracture,'RGBA')
+        strength=(1-t)**.68
+        for i in range(7):
+            angle=rng.uniform(-1.25,1.28)
+            x=120+rng.uniform(-9,8); y=122+rng.uniform(-14,14)
+            length=rng.uniform(29,85)*(0.60+0.83*t)
+            end=(x+length*math.cos(angle),y+length*math.sin(angle))
+            mid=(x+length*.60,y+length*.50*math.sin(angle)-rng.uniform(-9,9))
+            fd.line([(x,y),mid,end],fill=(255,187,84,int(185*strength)),width=3,joint='curve')
+            fd.line([mid,end],fill=(248,223,156,int(203*strength)),width=1,joint='curve')
+        im.alpha_composite(fracture.filter(ImageFilter.GaussianBlur(.65)))
     return im
 
 

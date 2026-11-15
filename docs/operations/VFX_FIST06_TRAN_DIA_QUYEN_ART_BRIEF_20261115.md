@@ -24,3 +24,8 @@
 
 ## QA / acceptance
 Godot 4.7.2 GL Compatibility strict import, parse, focused contract, native film MP4 1280x720, GIF, 12 timecoded frames, original atlases and checksums on exact GitHub SHA. Visually reject if hero looks like a flat beige vector, if the actual attack loses its leading knuckles, if enemy is covered by an opaque cloud, if body reaction looks like fake hits, or if release lacks speed/weight. Keep tech PASS and visual quality separate; **OWNER_VISUAL_PENDING / PVE_INTEGRATION_HOLD / ANDROID_PHYSICAL_PENDING**. User-approved Ba Quyền labs remain untouched.
+
+## R1 → R2 visual self-QA (native Godot, 2026-11-15)
+- R1 [Actions #43711682696](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/43711682696) source SHA `857951d419cbf22f32200ed64d559b6628e8411b`: strict Godot import, parse and focused PASS, native 1280x720 112-frame MP4/GIF/12 shots. **Art FAIL:** native 0.51 and 0.62 shows a flat beige hand-like logo, 0.74–0.93 impact almost invisible, cast underweighted.
+- R2 source patch: more independently generated granular rock facets/shadows, 10 irregular ember-mineral seams per frame, brighter controlled contact flash, 22px view-only victim recoil, 1.02× full hero scale and visible localized stone fragments. Retains 24 frames, two shared textures, 6.00MiB raw RGBA. Full-body actor remains unapproved static stand-in, no rig. R2 needs new exact-SHA Godot movie and 1× review.
+- Never call tech PASS owner art approved; if still flat, must polish/painterly replace hero artwork before integration. PVE_INTEGRATION_HOLD.
