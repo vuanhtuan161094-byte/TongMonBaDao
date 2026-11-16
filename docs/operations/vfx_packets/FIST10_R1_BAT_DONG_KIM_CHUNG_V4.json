@@ -1,9 +1,9 @@
 {
   "schema": "tmb-vfx-production-system-v4.1",
-  "packet_id": "FIST10_R2_BAT_DONG_KIM_CHUNG_ILLUSTRATED_V4",
+  "packet_id": "FIST10_R3_BAT_DONG_KIM_CHUNG_UNIFIED_BELL_V4",
   "skill_id": "tmb.skill.fist.kim_cang.ultimate.human",
   "school": "fist",
-  "revision": "R2_ILLUSTRATED_GOLDEN_BELL",
+  "revision": "R3_UNIFIED_BELL_DEFENSIVE_RESONANCE",
   "catalogue_path": "godot/data/combat/v63_human_combat_catalog.json",
   "scene_path": "godot/labs/combat_lab/fist10/bat_dong_kim_chung.tscn",
   "lab_script": "godot/labs/combat_lab/fist10/bat_dong_kim_chung.gd",
@@ -25,7 +25,7 @@
     "source_class": "FIRST_PARTY_IMAGEGEN_R2_ILLUSTRATED_BELL_ORIGINAL",
     "rights_note": "Original independently generated ImageGen 1254px gold-and-jade bell for this FIST10 art, created 2026-11-16 in the TMB ChatGPT conversation; original full-size PNG kept in ChatGPT Library TMB_FIST10_BAT_DONG_KIM_CHUNG_R2_ORIGINAL_SPRITES.zip. Project-local source is quality-preserving resized 640px 4-channel WebP base64 for reproducible CI. Neither JX/VL commercial sprites nor prior FIST07 guardian pixels are used for R2 cast.",
     "master_quality_status": "MANUAL_ART_REVIEW_REQUIRED",
-    "known_source_limitation": "R2 renders actual independently illustrated original bell pixels from 640px compressed WebP, not 1254px production master; full original 1254px retained in Library. Alpha/cardinality tests are technical only; 1x look and motion must be human-reviewed. Sprite phase cuts extracted from source and warped; not individually hand-painted frames.",
+    "known_source_limitation": "R2 renders actual independently illustrated original bell pixels from 640px compressed WebP, not 1254px production master; full original 1254px retained in Library. Alpha/cardinality tests are technical only; 1x look and motion must be human-reviewed. Sprite phase cuts extracted from source and warped; not individually hand-painted frames. R2 visual self-rejection at 1x: contact double rectangular painting crop, sustained detached source strips. R3 composes full small illustrated bell and full reactive bell from same source with minimal locally baked white-hot glow. Manual owner review pending.",
     "master_files": [
       {
         "path": "godot/labs/combat_lab/fist10/assets/source/r2_illustrated_bell_640.webp.b64",
@@ -56,7 +56,7 @@
       "cell_height": 192,
       "frames": 8,
       "columns": 4,
-      "layer": "compact moving 4-second golden bell crest, footseal, protective shoulder glints"
+      "layer": "coherent complete original-painted mini golden bell; tracks one moving guarded actor for exactly 4 seconds; no detached cropped flags"
     },
     {
       "path": "godot/labs/combat_lab/fist10/assets/generated/f10_guard_resonance.png",
@@ -66,7 +66,7 @@
       "cell_height": 256,
       "frames": 8,
       "columns": 4,
-      "layer": "local bell-flank resonance triggered only on simulated protected recipient hit"
+      "layer": "short full painted bell resonance on actual recipient with one local right-flank luminous collision hotspot; no rectangles or damage"
     }
   ],
   "time_contract": {
@@ -79,7 +79,7 @@
     "visual_fade_end_seconds": 5.54,
     "demo_loop_seconds": 6.2,
     "demo_clock_warning": "LAB synthetic defensive reactions at 2.10 and 4.08, not combat hits or counterdamage. Bell cast 0–1.50; real guard contract 1.15–5.15, fading to 5.54; all runtime receipts unknown.",
-    "key_pose_budget_note": "12 independently masked source-illustration reveal frames, 8 moving guardian seal frames and 8 right-flank protective impact frames. 1.15 cast + 4-second status. No rig.",
+    "key_pose_budget_note": "12 illustrated cast poses, 8 complete-bell sustain poses, 8 complete-bell blocked-hit poses; no rectangular crop impact. 4-second guard remains separate from 1.15s cast.",
     "phases": [
       {
         "id": "charge",
@@ -107,7 +107,7 @@
     "movement_from_seconds": 0.42,
     "movement_to_seconds": 2.16,
     "minimum_displacement_px": 12,
-    "contact_anchor": "LAB.contact_at(0,t), incoming right-side guard region",
+    "contact_anchor": "LAB.contact_at(0,t): centered on moving protected target at neck/chest height, with contact hotspot in incoming right flank",
     "tracking_rule": "Only protected character 0 receives bell guardian and right-side defensive block. Both protected WALK actor and enemy WALK actor move independently. No fake enemy damage.",
     "receipt_claim": "SIMULATED_VISUAL_ONLY"
   },
@@ -121,7 +121,7 @@
   },
   "proof_contract": {
     "focused_marker": "VFX_FIST10_FOCUSED_RESULT=PASS failures=0",
-    "native_marker": "VFX_FIST10_R2_READY",
+    "native_marker": "VFX_FIST10_R3_READY",
     "video_filename": "v4-fist10-native.mp4",
     "source": "ImageGen independently illustrated first-party Golden Bell source crop, G3.5 moving protected actor; no fake damage/target."
   }

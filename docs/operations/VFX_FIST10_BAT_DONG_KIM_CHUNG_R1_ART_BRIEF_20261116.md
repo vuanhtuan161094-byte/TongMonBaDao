@@ -29,3 +29,9 @@
 - R2 uses original independently generated 1254px transparent Golden Bell ImageGen painting (gold metal relief, jade center, warm light): full original 1254px in ChatGPT Library `/TMB-VFX-Art/TMB_FIST10_BAT_DONG_KIM_CHUNG_R2_ORIGINAL_SPRITES.zip`; actual GitHub source a downsampled 640px RGBA WebP in `godot/labs/combat_lab/fist10/assets/source/r2_illustrated_bell_640.webp.b64`.
 - Deterministic 28 frame generator derives original painted cast/status/contact sheets, replacing the old procedural bell hero (not changing guard timings / Combat V2).
 - Required: Godot 4.7.2 1280x720 G3.5 charge 0.42/peak1.23/contact2.16 on moving recipient + full 6.2s MP4/GIF + 19 1x screenshots. Native visual gate is MANUAL; no owner pass from CI alone. Art NEVER claimed finished without actually watching native R2.
+
+
+## R2 real native review → R3 removal of rectangular cutouts
+- R2 exact SHA `a60b0e61c42676eee92441ac7f10bcb83af43e4c` and GitHub Actions #43843935360: **SUCCESS technical**; MP4/GIF 1280×720 at 60fps, native charge .42/peak1.23/defended contact2.16 while actor WALK. Art review: **R2 ART_SELF_FAIL** on contact (two hard rectangular pasted image crops) and sustained buffs (two detached flags and duplicate ground seal).
+- R3 retains the accepted direction of large gold painterly bell from R2. Replaces persistent guard with complete small illustrated gold bell following actor, without detached source flags; replaces impact with complete short-lived bell resonance centered on same defended mover and one small ivory-gold collision glow on incoming right flank, with no rectangular cropped art.
+- Generator manually inspected 12/8/8 unique full-alpha poses in current source art. Re-render Godot G3.5 and full film on exact SHA; inspect real 1x native quality. FIST09 stays owner-locked. Still OWNER_VISUAL_PENDING, PVE_HOLD, no rig or gameplay changes.

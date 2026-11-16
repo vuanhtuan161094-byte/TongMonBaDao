@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""FIST10 R2 illustrated Bất Động Kim Chung: bake independently authored
+"""FIST10 R3 illustrated Bất Động Kim Chung: bake independently authored
 ImageGen original bell pixels into frame-by-frame RGBA atlases. No rig.
 Master retained in GitHub as base64 WebP derivative, full PNG in ChatGPT Library.
 Gold source NOT copied from JX/VL commercial art. LAB only; no PvE writes."""
@@ -57,22 +57,44 @@ for k in range(12):
  if k in (6,7,8,9):
   halo=z.filter(ImageFilter.GaussianBlur(11));place(im,halo,(192,183+(1-scale)*30),.17)
  cast.append(im)
+# R3: cohesive small bell surrounds moving recipient, no split cropped rectangles.
+mini_bell=clean.resize((134,134),Image.Resampling.LANCZOS)
+base_seal=clean.crop((45,880,1210,1210)).resize((125,28),Image.Resampling.LANCZOS)
 state=[]
 for k in range(8):
  im=Image.new('RGBA',(192,192));ph=k*math.tau/8
- light=.70+.10*math.sin(ph)
- place(im,seal,(96+1.2*math.cos(ph),169+math.sin(ph)),light)
- place(im,crest,(96+1.5*math.cos(ph),49+1.2*math.sin(ph)),light*.65)
- place(im,left,(28,108),light*.20)
- place(im,right,(164,108),light*.20)
+ light=.66+.10*math.sin(ph)
+ # single complete source-painted bell, small enough for four-second guard
+ place(im,mini_bell,(96+1.5*math.cos(ph),101+1.5*math.sin(ph)),light*.72)
+ 
  state.append(im)
+# Real illustrated bell resonates around ONE protected actor on a confirmed
+# guard block: hot spot on incoming right flank, no fabricated damage.
+contact_bell=clean.resize((210,210),Image.Resampling.LANCZOS)
+# Jewel spark: alpha-filter source-painted center; no hard rectangular crop.
+bright=clean.crop((450,295,800,620)).resize((74,69),Image.Resampling.LANCZOS)
+arr=np.asarray(bright,dtype=np.uint8).copy();h,w=arr.shape[:2]
+yy,xx=np.mgrid[0:h,0:w].astype(float)
+rad=((xx-(w-1)/2)/(w*.48))**2+((yy-(h-1)/2)/(h*.47))**2
+arr[:,:,3]=np.clip(arr[:,:,3]*np.clip((1-rad)/.46,0,1),0,255).astype('uint8')
+bright=Image.fromarray(arr,'RGBA')
 contact=[]
 for k in range(8):
- im=Image.new('RGBA',(256,256));v=[.28,.69,1,.89,.65,.42,.19,.06][k];shift=[0,3,8,10,6,2,0,0][k]
- place(im,impact,(148+shift,134),v*.95)
- place(im,impact_flash,(193+shift,110),v*.88)
- if k in (1,2,3):
-  place(im,impact_flash.filter(ImageFilter.GaussianBlur(10)),(193+shift,110),v*.25)
+ im=Image.new('RGBA',(256,256))
+ pulse=[.19,.55,1,.88,.64,.39,.16,.035][k]
+ shake=[0,2,7,10,6,2,0,0][k]
+ place(im,contact_bell,(121+shake,130),pulse*.94)
+ # White-hot local collision flash is only an ACCENT. The complete
+ # source-painted bell remains the hero; no cropped square overlay.
+ glow=Image.new('RGBA',(256,256));pen=ImageDraw.Draw(glow,'RGBA')
+ cx=197+shake;cy=117
+ pen.ellipse((cx-19,cy-17,cx+19,cy+17),fill=(255,224,107,round(193*pulse)))
+ pen.ellipse((cx-10,cy-9,cx+10,cy+9),fill=(255,255,226,round(218*pulse)))
+ aura=glow.filter(ImageFilter.GaussianBlur(15))
+ im.alpha_composite(aura)
+ centerpoint=Image.new('RGBA',(256,256));p2=ImageDraw.Draw(centerpoint,'RGBA')
+ p2.ellipse((cx-7,cy-6,cx+7,cy+6),fill=(255,255,234,round(215*pulse)))
+ im.alpha_composite(centerpoint)
  contact.append(im)
 frame_atlas(cast,384,'f10_cast_bell.png')
 frame_atlas(state,192,'f10_status_seal.png')

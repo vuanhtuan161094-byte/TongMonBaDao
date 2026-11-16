@@ -3,7 +3,7 @@ extends Control
 ## Earth GUARD 4 seconds. ImageGen original high-detail golden bell, first-party 640px WebP master baked into full-alpha frames.
 ## Preview receipts ONLY, no gameplay writes, no rig, no fake damage.
 const SKILL_ID := "tmb.skill.fist.kim_cang.ultimate.human"
-const ART_REVISION := "R2_ILLUSTRATED_GOLDEN_BELL"
+const ART_REVISION := "R3_UNIFIED_BELL_DEFENSIVE_RESONANCE"
 const EFFECT := "guard"
 const ELEMENT := "earth"
 const SHAPE := "single_target"
@@ -67,7 +67,7 @@ static func target_position(index: int,t: float) -> Vector2:
     return protected_at(t)
 
 static func contact_at(index: int,t: float) -> Vector2:
-    return target_position(index,t)+Vector2(72.0,-114.0)
+    return target_position(index,t)+Vector2(0.0,-114.0)
 
 func _ready() -> void:
     custom_minimum_size=Vector2(1280.0,720.0)
@@ -75,7 +75,7 @@ func _ready() -> void:
     set_process(true)
     queue_redraw()
     if not vfx_only_benchmark:
-        print("VFX_FIST10_R2_READY skill=",SKILL_ID," effect=guard cap=1 moving_target=true no_rig=true view_only=true")
+        print("VFX_FIST10_R3_READY skill=",SKILL_ID," effect=guard cap=1 moving_target=true no_rig=true view_only=true")
 
 func _process(delta: float) -> void:
     if paused:return
@@ -164,7 +164,7 @@ func _draw() -> void:
         draw_string(ThemeDB.fallback_font,Vector2(28,33),
             "BAT DONG KIM CHUNG / ULTIMATE",HORIZONTAL_ALIGNMENT_LEFT,-1,22,Color("fff0d4"))
         draw_string(ThemeDB.fallback_font,Vector2(28,59),
-            "FIST10 R2 | PAINTED GOLDEN BELL / 4S WARD / BLOCK",
+            "FIST10 R3 | PAINTED BELL / COHESIVE GUARD / CONTACT",
             HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("eccba3"))
         draw_string(ThemeDB.fallback_font,Vector2(28,683),
             "GODOT 4.7.2 | EARTH GUARD 4S | MOVING WALK | LAB ONLY / NO RIG",
