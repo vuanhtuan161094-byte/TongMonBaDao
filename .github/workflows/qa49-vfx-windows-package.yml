@@ -56,7 +56,8 @@ jobs:
           Import-Module Microsoft.PowerShell.Utility -ErrorAction Stop
           $repoRoot = $env:GITHUB_WORKSPACE
           $godot = Join-Path $env:RUNNER_TEMP "Godot_4.7.2_portable\Godot_v4.7.2-stable_win64.exe"
-          $output = Join-Path $env:RUNNER_TEMP "QA49 package (thử 中文)"
+          $qaFolderName = 'QA49 package (th' + [char]0x1EED + ' ' + [char]0x4E2D + [char]0x6587 + ')'
+          $output = Join-Path $env:RUNNER_TEMP $qaFolderName
           $build = Join-Path $repoRoot "godot\labs\combat_lab\as_char49_vfx_playtest\windows\Build-QA49-WindowsPackage.ps1"
           & $build -RepoRoot $repoRoot -GodotExe $godot -OutputDirectory $output -SourceCommit $env:GITHUB_SHA -GodotArchiveSha256 "731980f9608d61333e5baf54a2ef17210acc7a538446c0cb9969f002aca1e953"
           if ($LASTEXITCODE -ne 0) { throw "Package builder failed." }
