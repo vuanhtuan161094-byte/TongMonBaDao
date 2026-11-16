@@ -5,6 +5,8 @@ from PIL import Image,ImageDraw,ImageFilter
 from paf03_r2_illustrated_paper import charge as r2_charge
 import math,random,hashlib
 R=Path(__file__).resolve().parents[2];B=R/'godot/labs/combat_lab/talisman13';OUT=B/'assets';SRC=B/'art_sources';S=2
+WIND_PAINT=R/'godot/labs/combat_lab/talisman12/art_sources/paf02_r2_line_paint.webp'
+IMPACT_PAINT=R/'godot/labs/combat_lab/talisman12/art_sources/paf02_r2_impact_paint.webp'
 def P(pts):return [(round(x*S),round(y*S)) for x,y in pts]
 def bez(a,b,c,d,n=48):
     pts=[]
@@ -74,6 +76,10 @@ def transfer(i):
         L(d,pts,(60,241,210,175 if k==0 else 96),15 if k==0 else 5 if k<3 else 2.5)
         if k<3:L(d,pts,(247,255,213,128),2.0)
     lay(out,body,12,.24)
+    # First-party PAF02 painterly pigment-light reused as an attributed school material.
+    painted=Image.open(WIND_PAINT).convert('RGBA').resize((468*S,146*S),Image.Resampling.LANCZOS)
+    painted.putalpha(painted.getchannel('A').point(lambda v:round(v*.82)))
+    out.alpha_composite(painted,(22*S,55*S))
     streak=new(512,256);d=ImageDraw.Draw(streak,'RGBA')
     for k in range(15):
         x=28+k*32+7*math.sin(q*7+k);y=129+19*math.sin(k*.84+q*5)
@@ -103,6 +109,10 @@ def cleanse(i,n=14,size=320):
         L(d,p,(253,235,157,164),1.5)
         L(d,bez(a,(mid[0],mid[1]+4),(tip[0]-7,tip[1]+2),tip),(225,255,211,117),1.6)
     lay(out,petals,14,.32)
+    # Local short white-hot purification light: distinct PAF03 one-ally lotus motion.
+    painted=Image.open(IMPACT_PAINT).convert('RGBA').resize((134*S,165*S),Image.Resampling.LANCZOS)
+    painted.putalpha(painted.getchannel('A').point(lambda v:round(v*(.72-.18*q))))
+    out.alpha_composite(painted,(93*S,83*S))
     shadow=new(320,320);d=ImageDraw.Draw(shadow,'RGBA')
     for k in range(6):
         height=28+95*q
@@ -151,4 +161,5 @@ def main():
         print('PAF03_ATLAS',name,frames,art.size,hashlib.sha256(p.read_bytes()).hexdigest())
     print('PAF03_ORIGINAL_RGBA_BAKE_PASS')
     print('PAF03_R2_ILLUSTRATED_PAPER_BAKE_PASS')
+    print('PAF03_R3_PAINTERLY_CORE_MATERIAL_BAKE_PASS')
 if __name__=='__main__':main()
