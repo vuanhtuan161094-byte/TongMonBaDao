@@ -96,7 +96,7 @@ func _ready()->void:
             var alpha:=clampf(exp(-7.7*pos.length_squared())*(1.0-smoothstep(.74,1.0,pos.length())),0.0,1.0)
             im.set_pixel(x,y,Color(1,1,1,alpha))
     _light=ImageTexture.create_from_image(im)
-    print("VFX_TAL08_READY id=",SKILL_ID," art=HF03_R1_FIRE_HEART view_only=true locked_monsters=1 real_projectile_speed=9 no_damage_receipts=true")
+    print("VFX_TAL08_READY id=",SKILL_ID," art=HF03_R2_FIRE_HEART view_only=true locked_monsters=1 real_projectile_speed=9 no_damage_receipts=true")
     set_process(true)
 
 func _process(delta:float)->void:
@@ -153,13 +153,13 @@ func _draw()->void:
     var cg:=charge_gain(t)
     if cg>.003:
         var frame:=charge_frame(t)
-        var size:=lerpf(230.0,268.0,smoothstep(.1,.46,t))
-        var center:=HAND+Vector2(9,-23)
+        var size:=lerpf(271.0,308.0,smoothstep(.1,.46,t))
+        var center:=HAND+Vector2(19,-20)
         draw_texture_rect_region(CHARGE,
             Rect2(center-Vector2.ONE*size*.5,Vector2.ONE*size),
             Rect2(float(frame%4)*320.0,float(int(frame/4))*320.0,320,320),
             Color(1,1,1,cg))
-        _glow(HAND+Vector2(13,-8),37,Color("ffdb6b",cg*.24))
+        _glow(HAND+Vector2(13,-8),52,Color("ffdb6b",cg*.34))
     # Bounded fire-ash flecks: visual residue, never a persistent burn debuff.
     var ash:=smoothstep(1.60,1.82,t)*(1.0-smoothstep(2.08,DEMO_FADE_END,t))
     if ash>.003:
