@@ -91,7 +91,7 @@ def impact(i,img):
     q=i/7.;dst=Image.new("RGBA",(256,256))
     src=feather_crop(img.crop((83,7,249,90)),9)
     effect=deform(src,i+23,sx=1.30+q*.10,sy=2.26+q*.22)
-    a=(1-q)**.7
+    a=.07+.93*(1-q)**.7  # retain sparse final glowing ash; never an empty flipbook cell
     layered(dst,effect,((256-effect.width)//2,(256-effect.height)//2),
             glow=.43*a,gain=.95*a)
     return dst
