@@ -68,17 +68,17 @@ def charge(i,seal,fire):
     # Real swirling fire artwork moves inward during cast, not a drawn HUD circle.
     for k in range(3):
         a=k*math.pi*2/3+turn
-        w=184-int(44*q)+int(7*math.sin(i*.37+k))
-        pic=living_fire(fire,i+k*4,(w,68),fade=.24+.26*q)
+        w=202-int(37*q)+int(7*math.sin(i*.37+k))
+        pic=living_fire(fire,i+k*4,(w,68),fade=.36+.34*q)
         pic=pic.rotate(21+57*k+15*math.sin(i*.39+k),Image.Resampling.BICUBIC,expand=True)
         x=int(160+math.cos(a)*(37-17*q))-pic.width//2
         y=int(156+math.sin(a)*(28-11*q))-pic.height//2
         radiant(frame,pic,(x,y),.30)
-    w=62+int(17*q)
+    w=69+int(18*q)
     paper=scorched_scroll(seal,i,(w,round(w*132/96)),angle=-9+11*math.sin(i*.33))
     radiant(frame,paper,(160-paper.width//2,152-paper.height//2),.34,.72+.28*q)
     # At the very end charge becomes a fiercely hot painted fire-heart focus.
-    focus=living_fire(fire,i+23,(92+int(q*33),51+int(q*16)),fade=.15+.69*q)
+    focus=living_fire(fire,i+23,(124+int(q*29),61+int(q*18)),fade=.27+.68*q)
     focus=focus.rotate(78+8*math.sin(i*.43),Image.Resampling.BICUBIC,expand=True)
     radiant(frame,focus,(160-focus.width//2,147-focus.height//2),.52)
     return frame
