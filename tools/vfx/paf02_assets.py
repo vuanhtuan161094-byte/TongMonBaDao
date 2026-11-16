@@ -6,7 +6,7 @@ One original source master plus 14/18/12/8 painted optical poses.
 from pathlib import Path
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
 import math, random, hashlib, argparse
-from paf02_r3_initial_paper import build_hero as painted_initial_paper
+from paf02_r4_vietnamese_paper import render as painted_initial_paper
 
 ROOT=Path(__file__).resolve().parents[2]
 OUT=ROOT/'godot/labs/combat_lab/talisman12/assets'
