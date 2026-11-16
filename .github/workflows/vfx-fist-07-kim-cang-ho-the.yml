@@ -1,4 +1,4 @@
-name: VFX-FIST-07 Kim Cang Ho The pure-gold guard, real Godot 4.7.2
+name: VFX-FIST-07 R3 owner illustrated guardian+dome sprites Godot native
 on:
   workflow_dispatch:
   push:
@@ -6,7 +6,7 @@ on:
     paths:
       - '.github/workflows/vfx-fist-07-kim-cang-ho-the.yml'
       - 'godot/labs/combat_lab/fist07/**'
-      - 'tools/vfx/generate_fist07_kim_cang_guard.py'
+      - 'tools/vfx/generate_fist07_owner_ref_atlas.py'
       - 'godot/tests/labs/combat_lab/vfx_fist07_contract_test.gd'
 permissions:
   contents: read
@@ -24,14 +24,14 @@ jobs:
         run: |
           set -euo pipefail
           sudo apt-get update -qq
-          sudo apt-get install -y -qq xvfb ffmpeg unzip python3-pil
+          sudo apt-get install -y -qq xvfb ffmpeg unzip python3-pil python3-numpy
           curl --fail --location --retry 3 -o /tmp/godot472.zip 'https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip'
           echo 'cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4  /tmp/godot472.zip' | sha256sum --check --strict
           unzip -q /tmp/godot472.zip -d /tmp
           sudo install -m0755 /tmp/Godot_v4.7.2-stable_linux.x86_64 /usr/local/bin/godot
           mkdir -p /tmp/vfx-fist07
           godot --version | tee /tmp/vfx-fist07/engine.txt
-          echo "EXACT_SHA=$GITHUB_SHA; SKILL=tmb.skill.fist.kim_cang.active_02.human; EFFECT=guard; ELEMENT=earth; CAST=0.45; DURATION=4; CAP=1; RENDER_HUE=pure-gold-light; SOURCE=first-party PIL luminous armor art; VIEW_ONLY=TRUE; NO_RIG=TRUE; OWNER_VISUAL_PENDING; PVE_INTEGRATION_HOLD" > /tmp/vfx-fist07/metadata.txt
+          echo "EXACT_SHA=$GITHUB_SHA; SKILL=tmb.skill.fist.kim_cang.active_02.human; EFFECT=guard; ELEMENT=earth; CAST=0.45; DURATION=4; CAP=1; RENDER_HUE=pure-gold-light; SOURCE=user-provided reference art crop; VIEW_ONLY=TRUE; NO_RIG=TRUE; OWNER_VISUAL_PENDING; PVE_INTEGRATION_HOLD" > /tmp/vfx-fist07/metadata.txt
       - name: Restore existing test actor without modifying tracked sources
         shell: bash
         run: |
@@ -39,12 +39,12 @@ jobs:
           cat .github/assets/p3/female_stage_a/part{01..14}.b64 .github/assets/p3/female_stage_a/part15a.b64 .github/assets/p3/female_stage_a/part15b.b64 .github/assets/p3/female_stage_a/part{16..20}.b64 | tr -d '\r\n\t ' | base64 --decode > /tmp/tmb_stage_a_pack.zip
           echo '6a4213b9129ffb3f438c21cbb5326672ddf8915323836bf80cb33b8e5fabfdca  /tmp/tmb_stage_a_pack.zip' | sha256sum --check --strict
           unzip -q /tmp/tmb_stage_a_pack.zip -d .
-      - name: Generate original 24-frame luminous armor and guarded-hit atlases
+      - name: Bake user-illustrated guardian and dome into 24 RGBA sprite poses
         shell: bash
         run: |
           set -euo pipefail
-          python3 tools/vfx/generate_fist07_kim_cang_guard.py | tee /tmp/vfx-fist07/generator.log
-          grep -Fq 'FIST07_ATLAS_PASS frames=24 textures=2 raw_rgba_bytes=6291456 no_rig=true' /tmp/vfx-fist07/generator.log
+          python3 tools/vfx/generate_fist07_owner_ref_atlas.py | tee /tmp/vfx-fist07/generator.log
+          grep -Fq 'FIST07_OWNER_REFERENCE_ATLAS_PASS=1 poses=24 pages=2 raw_rgba_bytes=8650752 source=owner_concept_no_rig' /tmp/vfx-fist07/generator.log
           for f in gold_ward guarded_hit; do
             test -s "godot/labs/combat_lab/fist07/assets/generated/$f.png"
             cp "godot/labs/combat_lab/fist07/assets/generated/$f.png" "/tmp/vfx-fist07/$f.png"
@@ -55,16 +55,17 @@ jobs:
           root=Path('/tmp/vfx-fist07')
           ward=Image.open(root/'gold_ward.png').convert('RGBA')
           hit=Image.open(root/'guarded_hit.png').convert('RGBA')
-          assert ward.size==(1024,1024) and hit.size==(1024,512)
+          assert ward.size==(1280,1280) and hit.size==(1024,512)
           assert ward.getpixel((0,0))[3]==0 and hit.getpixel((0,0))[3]==0
-          frame=lambda im,k:im.crop((k%4*256,k//4*256,k%4*256+256,k//4*256+256))
-          assert ImageChops.difference(frame(ward,4),frame(ward,9)).getbbox(), 'ward pose must vary'
-          assert ImageChops.difference(frame(hit,0),frame(hit,6)).getbbox(), 'contact must vary'
-          assert frame(ward,7).getchannel('A').getbbox()
-          assert (ward.width*ward.height+hit.width*hit.height)*4==6291456
-          print('FIST07_ART_ALPHA_QA=PASS frame_count=24 raw_rgba_bytes=6291456 transparent_background=TRUE')
+          frame=lambda im,k,cell:im.crop((k%4*cell,k//4*cell,k%4*cell+cell,k//4*cell+cell))
+          assert ImageChops.difference(frame(ward,4,320),frame(ward,9,320)).getbbox(), 'ward pose must vary'
+          assert ImageChops.difference(frame(hit,0,256),frame(hit,6,256)).getbbox(), 'contact must vary'
+          assert frame(ward,7,320).getchannel('A').getbbox()
+          assert (ward.width*ward.height+hit.width*hit.height)*4==8650752
+          print('FIST07_ART_ALPHA_QA=PASS frame_count=24 raw_rgba_bytes=8650752 transparent_background=TRUE')
           ART_CHECK
           sha256sum /tmp/vfx-fist07/{gold_ward,guarded_hit}.png > /tmp/vfx-fist07/ATLAS_SHA256SUMS.txt
+          sha256sum godot/labs/combat_lab/fist07/assets/source/*.b64 > /tmp/vfx-fist07/REFERENCE_SOURCE_SHA256SUMS.txt
       - name: Strict Godot import/parse and focused GUARD contract
         shell: bash
         run: |
@@ -73,7 +74,7 @@ jobs:
           bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://labs/combat_lab/fist07/kim_cang_ho_the.gd 2>&1 | tee /tmp/vfx-fist07/parse.log
           bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/labs/combat_lab/vfx_fist07_contract_test.gd 2>&1 | tee /tmp/vfx-fist07/test.log
           grep -Fq 'VFX_FIST07_FOCUSED_RESULT=PASS failures=0' /tmp/vfx-fist07/test.log
-      - name: Real 1280x720 Godot movie with guarded hit reactions and 15 checkpoints
+      - name: Real 1280x720 Godot film using illustrated reference atlas, 15 checkpoints
         shell: bash
         run: |
           set -euo pipefail

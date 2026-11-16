@@ -29,16 +29,20 @@ func _test() -> void:
     _check(LAB.block_alpha(1.32,1.29)>0.1,"guarded-hit event has response")
     _check(is_zero_approx(LAB.block_alpha(1.90,1.29)),"no permanent block")
     _check(LAB.DEMO_BLOCK_TIMES.size()==2,"2 explicitly demo-only block events")
-    _check(LAB.ATLAS_RAW_RGBA_BYTES==6291456,"6 MiB 2 atlas budget")
-    _check(LAB.WARD.get_size()==Vector2(1024,1024),"ward 16 independent poses")
+    _check(LAB.ATLAS_RAW_RGBA_BYTES==8650752,"8.25 MiB two source atlases (uncompressed)")
+    _check(LAB.WARD.get_size()==Vector2(1280,1280),"owner illustrated 16 ward poses")
     _check(LAB.BLOCK.get_size()==Vector2(1024,512),"guard reaction 8 independent poses")
     var source:=FileAccess.get_file_as_string("res://labs/combat_lab/fist07/kim_cang_ho_the.gd")
+    for forbidden in ["draw_arc(","draw_line(","draw_circle(","_glow(","Image.create("]:
+        _check(not source.contains(forbidden),"no procedural line art: "+forbidden)
+    _check(source.contains("_ward_front_foot"),"actual painted lotus/ground art in front")
+    _check(source.contains("owner_illustrated_reference"),"provenance for painted hero")
     for forbidden in ["SaveService.","CombatV2.","apply_damage", "apply_status", "MapBattleV2.","summon_actor", "caster_shift", "_actor(CASTER +"]:
         _check(not source.contains(forbidden),"view only "+forbidden)
     var scene:=LAB.new()
     root.add_child(scene)
     await process_frame
-    _check(scene.bloom!=null,"bloom runtime texture")
+    _check(scene.ART_REVISION=="R3_OWNER_REFERENCE_PAINTED_SPRITES","art-first reference revision")
     scene.queue_free()
     print("VFX_FIST07_FOCUSED_RESULT="+("PASS" if failures==0 else "FAIL")+" failures="+str(failures))
     quit(0 if failures==0 else 1)
