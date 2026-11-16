@@ -132,6 +132,7 @@
   "proof_contract": {
     "focused_marker": "VFX_TAL08_FOCUSED_RESULT=PASS failures=0",
     "native_marker": "VFX_TAL08_READY",
-    "source": "HF03 focused 1 locked moving monster, real WALK frames, cast, one projectile reaching live target body, one hit and nonpersistent status"
+    "source": "HF03 focused 1 locked moving monster, real WALK frames, cast, one projectile reaching live target body, one hit and nonpersistent status",
+    "video_filename": "v4-hf03-native.mp4"
   }
 }
