@@ -71,7 +71,7 @@ def pose(kind,t,wh):
             paint((163,255,207),np.exp(-((x-xp)/2.0)**2-((y-yp)/1.4)**2)*.40)
     elif kind=="contact":
         growth=.24+.82*np.sin(min(t,1)*math.pi)**.67
-        fade=np.clip((1-t)/.54,0,1)**.7
+        fade=np.maximum(.09,np.clip((1-t)/.54,0,1)**.7) # last keypose remains visible; Godot composites its final fade
         rad=np.sqrt(x*x+y*y)
         angle=np.arctan2(y,x)
         distorted=rad/(1+.12*np.sin(5*angle+8*t)+.07*np.cos(9*angle-9*t))
