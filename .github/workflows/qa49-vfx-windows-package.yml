@@ -91,7 +91,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: TMB_VFX_PLAYTEST_WINDOWS
-          path: ${{ runner.temp }}/QA49 package (thử 中文)/TMB_VFX_PLAYTEST_WINDOWS.zip
+          path: ${{ runner.temp }}/QA49 package (thử 中文)/TMB_VFX_PLAYTEST_WINDOWS/
           if-no-files-found: error
           retention-days: 90
 
