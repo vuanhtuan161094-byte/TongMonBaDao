@@ -60,7 +60,7 @@ APPROVED={
 PREVIEW_ONLY={"tmb.skill.poison.co_doc.ultimate":"POI06_R11_OWNER_PREVIEW_ACCEPTED_NATIVE_QA_PASS"}
 IN_PROGRESS={"tmb.skill.talisman.hoa_phu.active_04":"HF04_R3_OWNER_PROVISIONAL_USE_ART_REWORK_DEFERRED",
  "tmb.skill.talisman.hoa_phu.ultimate":"HF05_R7_OWNER_PROVISIONAL_USE_NOT_FINAL_ART_APPROVAL",
- "tmb.skill.talisman.phong_an_phu.active_01":"PAF01_R2_GODOT_V4_PREVIEW_OWNER_VISUAL_PENDING"}
+ "tmb.skill.talisman.phong_an_phu.active_01":"PAF01_R3_NATIVE_480FRAMES_TECH_PASS_OWNER_PENDING"}
 
 def main():
     p=argparse.ArgumentParser()
@@ -91,7 +91,7 @@ def main():
             elif fam in IN_PROGRESS:
                 r["vfx_actual"]=("OWNER_PROVISIONAL_USE_ART_REWORK_DEFERRED"
                     if fam in ("tmb.skill.talisman.hoa_phu.active_04","tmb.skill.talisman.hoa_phu.ultimate")
-                    else "PAF01_R2_GODOT_NATIVE_QA_IN_PROGRESS_OWNER_PENDING")
+                    else "PAF01_R3_NATIVE_480FRAMES_TECH_PASS_OWNER_PENDING")
             elif fam in LABS:r["vfx_actual"]="DEDICATED_LAB_OWNER_PENDING_OR_REWORK"
             else:r["vfx_actual"]="NO_DEDICATED_HUMAN_LAB"
         elif r["visual_work_class"]!="CAST_MASTER":
@@ -117,7 +117,7 @@ def main():
       "(12 × 17), with other tiers/lineages and passive/event categories requiring separate art/event work.",
       "**26/204** distinct Human cast masters have dedicated isolated Godot LAB scenes, **7/204** have explicit owner-art approval as understood at this checkpoint. **178/204** do not have a dedicated Human cast LAB yet.",
       "Technical CI/illustrative previews do **not** count as owner approval or live PvE integration.",
-      "HF02 R6 approved 10/10, exact art SHA b5a29f1504078a0e66acc9c79306dc86f5f28463. POI06 R11 accepted *preview* only. HF03 R2 owner visual approved on 16 Nov 2026; exact native art SHA ac3b02b1aa6c0d7e0c5dd7e418c59c4dc52a0bb4. HF04 R3 owner authorized TEMPORARY use only and criticized phoenix art/smoothness; not owner-final approved. HF05 R7 owner permitted provisional use only; not final art PASS. PAF01 Phong Giới Truy Dấu is staged in talisman11 as the 26th Human LAB, mark duration6s view-only, owner visual pending.",
+      "HF02 R6 approved 10/10, exact art SHA b5a29f1504078a0e66acc9c79306dc86f5f28463. POI06 R11 accepted *preview* only. HF03 R2 owner visual approved on 16 Nov 2026; exact native art SHA ac3b02b1aa6c0d7e0c5dd7e418c59c4dc52a0bb4. HF04 R3 owner authorized TEMPORARY use only and criticized phoenix art/smoothness; not owner-final approved. HF05 R7 owner permitted provisional use only; not final art PASS. PAF01 Phong Giới Truy Dấu R3 fully rendered as original source-painted, six-second wind mark on one real moving WALK monster: V4 G3.5 + 480-frame native Godot QA technical PASS, exact source SHA 02ab55a3e5bffb368e402e91a5206f385ac27dc8; owner art remains pending.",
       "", "| School | Human cast | Dedicated LAB | Explicit owner approved | Not yet dedicated |",
       "|---|---:|---:|---:|---:|"]
     for name,allnum,labs,approved in school_rows:
