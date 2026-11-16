@@ -19,6 +19,9 @@ Read latest owner message → live `AGENTS.md` → architecture, `CURRENT_CHECKP
 - Do not blindly copy proprietary JX / Kiếm Thế / Source A commercial assets into game. Source availability != commercial redistribution permission. Distinguish source VERIFIED, frame OBSERVED, technical INFERRED, and design PROPOSED.
 - Always consult `references/SOURCE_COMPARISON.md` before source-based claims. Owner's screenshot alone cannot reveal whether source used shader, sprites, particles or code.
 
+## OWNER 2026-11-16 — RADIANT POISON BURST / PURE LIGHT STANDARD (MANDATORY)
+Owner reviewed three legacy Võ Lâm VFX flipbook sheets and explicitly prefers the older Độc Tu skill's **organic expanding circular radiant glow** ("tỏa tỏa tròn tròn"), with high color purity and luminous detail. For new Tông Môn Bá Đạo skills, preserve **converging charge → asymmetric soft circular outburst → white-hot local contact → short multi-layered luminous residue** while each skill retains a DIFFERENT original silhouette, material and combat contract. Colors: limited intentional pure primary hue plus tight bright white/jade highlight; clean falloff rather than murky overdraw. The burst should look like living energy, NOT a flat mathematical ring, neon-vector UI overlay or generic recolored circle. Use actual first-party painted alpha sprites and own layered frame-by-frame motion, not an unlicensed VL/JX crop; visually inspect true Godot 1× with moving enemies. One target versus radius and target cap must follow the catalogue; never create fake status/HP events. Native MP4 technical PASS does not equal owner art PASS. This is a *style and craft rule*, not approval of every future skill.
+
 ## REQUIRED EIGHT-GATE PIPELINE
 **R0 — Inspect.** Identify precise skill id, action type and real target/AOE geometry; review latest GitHub source, best V9 serpent/sét and rejected V14/Research01/Research02, ground/actor rendering at real scale. Confirm sword qi versus real flying weapon.
 
