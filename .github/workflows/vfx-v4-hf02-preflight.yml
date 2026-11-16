@@ -1,0 +1,123 @@
+name: VFX V4 | HF02 genuine Godot preflight (ART review manual)
+on:
+  workflow_dispatch:
+  push:
+    branches: [integration/pve-p0-playable-ui-20261103]
+    paths:
+      - '.github/workflows/vfx-v4-hf02-preflight.yml'
+      - 'tools/qa/validate_vfx_v4_packet.py'
+      - 'docs/operations/vfx_packets/HF02_V4_PREFLIGHT.json'
+      - 'tools/vfx/hf02_r5_source_painted.py'
+      - 'tools/vfx/paint_tal07_lien_diem.py'
+      - 'godot/labs/combat_lab/talisman07/**'
+      - 'godot/tests/labs/combat_lab/vfx_tal07_contract_test.gd'
+permissions:
+  contents: read
+jobs:
+  hf02-native-v4:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      GODOT_AUDIO_DRIVER: Dummy
+      GODOT_RENDERING_DRIVER: opengl3
+      PACKET: docs/operations/vfx_packets/HF02_V4_PREFLIGHT.json
+    steps:
+      - name: Checkout exact HEAD
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Pin Godot 4.7.2 and install raster/video dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq xvfb ffmpeg unzip python3-pil python3-numpy
+          curl --fail --location --retry 3 -o /tmp/godot472.zip 'https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip'
+          echo 'cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4  /tmp/godot472.zip' | sha256sum --check --strict
+          unzip -q /tmp/godot472.zip -d /tmp
+          sudo install -m0755 /tmp/Godot_v4.7.2-stable_linux.x86_64 /usr/local/bin/godot
+          mkdir -p "$RUNNER_TEMP/vfx-v4-hf02"
+          godot --version | tee "$RUNNER_TEMP/vfx-v4-hf02/engine.txt"
+          printf 'EXACT_SHA=%s\nVFX_ART_STATUS=MANUAL_REVIEW_REQUIRED\nPVE=HOLD\n' "$GITHUB_SHA" > "$RUNNER_TEMP/vfx-v4-hf02/source.txt"
+      - name: G0 validate canonical packet and original-source provenance
+        shell: bash
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/vfx-v4-hf02"
+          python3 tools/qa/validate_vfx_v4_packet.py --stage packet --packet "$PACKET" 2>&1 | tee "$d/packet.log"
+          grep -Fq 'VFX_V4_PACKET_TECHNICAL_PASS' "$d/packet.log"
+      - name: Bake HF02 source-painted original atlas and technical checks
+        shell: bash
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/vfx-v4-hf02"
+          /usr/bin/python3 tools/vfx/paint_tal07_lien_diem.py 2>&1 | tee "$d/legacy-atlas.log"
+          grep -Fq 'HF02_SPRITE_ALPHA_GATE=PASS' "$d/legacy-atlas.log"
+          /usr/bin/python3 tools/vfx/hf02_r5_source_painted.py 2>&1 | tee "$d/r5-bake.log"
+          grep -Fq 'HF02_R5_PAINTED_REBUILD_PASS' "$d/r5-bake.log"
+          python3 tools/qa/validate_vfx_v4_packet.py --stage assets --packet "$PACKET" 2>&1 | tee "$d/atlas.log"
+          grep -Fq 'VFX_V4_ASSETS_TECHNICAL_PASS' "$d/atlas.log"
+      - name: Restore unchanged Stage A character overlay
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat .github/assets/p3/female_stage_a/part{01..14}.b64 .github/assets/p3/female_stage_a/part15a.b64 .github/assets/p3/female_stage_a/part15b.b64 .github/assets/p3/female_stage_a/part{16..20}.b64 | tr -d '\r\n\t ' | base64 --decode > /tmp/tmb_stage_a_pack.zip
+          test "$(stat -c%s /tmp/tmb_stage_a_pack.zip)" -eq 44838
+          echo '6a4213b9129ffb3f438c21cbb5326672ddf8915323836bf80cb33b8e5fabfdca  /tmp/tmb_stage_a_pack.zip' | sha256sum --check --strict
+          unzip -q /tmp/tmb_stage_a_pack.zip -d .
+      - name: Native Godot import/parse and moving-target contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/vfx-v4-hf02"
+          bash tools/qa/run_godot_strict.sh --headless --path godot --import 2>&1 | tee "$d/godot-import.log"
+          bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://labs/combat_lab/talisman07/lien_diem_phan_gioi.gd 2>&1 | tee "$d/godot-parse.log"
+          bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/labs/combat_lab/vfx_tal07_contract_test.gd 2>&1 | tee "$d/godot-focused.log"
+          grep -Fq 'VFX_TAL07_FOCUSED_RESULT=PASS failures=0' "$d/godot-focused.log"
+      - name: G3.5 STOP - genuine native Godot 96-frame mini movie
+        shell: bash
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/vfx-v4-hf02"
+          xvfb-run -a -s '-screen 0 1280x720x24' bash tools/qa/run_godot_strict.sh --path godot --resolution 1280x720 --fixed-fps 60 --write-movie "$d/v4-hf02-native.avi" --quit-after 96 res://labs/combat_lab/talisman07/lien_diem_phan_gioi.tscn 2>&1 | tee "$d/godot-preflight.log"
+          grep -Fq 'VFX_TAL07_READY' "$d/godot-preflight.log"
+          test -s "$d/v4-hf02-native.avi"
+          ffmpeg -y -hide_banner -loglevel error -i "$d/v4-hf02-native.avi" -c:v libx264 -crf 16 -pix_fmt yuv420p -movflags +faststart "$d/v4-hf02-native.mp4"
+          ffmpeg -y -hide_banner -loglevel error -ss 0.30 -i "$d/v4-hf02-native.mp4" -frames:v 1 "$d/v4-charge.png"
+          ffmpeg -y -hide_banner -loglevel error -ss 1.28 -i "$d/v4-hf02-native.mp4" -frames:v 1 "$d/v4-peak.png"
+          ffmpeg -y -hide_banner -loglevel error -ss 1.49 -i "$d/v4-hf02-native.mp4" -frames:v 1 "$d/v4-contact.png"
+          rm "$d/v4-hf02-native.avi"
+          echo 'VFX_V4_G3_5_NATIVE_CAPTURED=TRUE ART_REVIEW=MANUAL'
+      - name: Enforce exact SHA, 3 proof PNGs, provenance and fail-closed negative test
+        shell: bash
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/vfx-v4-hf02"
+          python3 tools/qa/validate_vfx_v4_packet.py --stage evidence --packet "$PACKET" --out "$d" --sha "$GITHUB_SHA" 2>&1 | tee "$d/evidence.log"
+          grep -Fq 'VFX_V4_EVIDENCE_TECHNICAL_PASS' "$d/evidence.log"
+          test -s "$d/V4_MANIFEST.json"
+          mkdir -p "$d/missing-contact-test"
+          cp "$d/v4-hf02-native.mp4" "$d/godot-preflight.log" "$d/godot-focused.log" "$d/v4-charge.png" "$d/v4-peak.png" "$d/missing-contact-test/"
+          if python3 tools/qa/validate_vfx_v4_packet.py --stage evidence --packet "$PACKET" --out "$d/missing-contact-test" --sha "$GITHUB_SHA"; then
+            echo 'ERROR missing contact falsely PASS' >&2
+            exit 1
+          fi
+          echo 'VFX_V4_FAIL_CLOSED_MISSING_CONTACT=PASS' > "$d/fail-closed.txt"
+          sha256sum "$d"/v4-*.png "$d/v4-hf02-native.mp4" "$d/V4_MANIFEST.json" > "$d/EVIDENCE_SHA256SUMS.txt"
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          echo "VFX_V4_EXACT_SHA_TECHNICAL_PASS=$GITHUB_SHA"
+      - name: Upload proof, no automatic owner art approval
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vfx-v4-hf02-${{ github.sha }}
+          retention-days: 30
+          if-no-files-found: warn
+          path: |
+            ${{ runner.temp }}/vfx-v4-hf02/*.log
+            ${{ runner.temp }}/vfx-v4-hf02/*.txt
+            ${{ runner.temp }}/vfx-v4-hf02/*.png
+            ${{ runner.temp }}/vfx-v4-hf02/*.mp4
+            ${{ runner.temp }}/vfx-v4-hf02/*.json
+            docs/operations/vfx_packets/HF02_V4_PREFLIGHT.json
