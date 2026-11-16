@@ -93,7 +93,7 @@ def breath_warp(img,phase,amplitude):
     x=np.arange(img.width,dtype='float32')[None,:]
     sh=np.rint(amplitude*np.sin(y*.035+phase)+.37*amplitude*np.sin(y*.083-phase)).astype('int32')
     coords=np.clip(x+sh,0,img.width-1)
-    warped=arr[np.broadcast_to(y.astype('int32'),arr.shape[:2]),np.broadcast_to(coords,arr.shape[:2])]
+    warped=arr[np.broadcast_to(y.astype('int32'),arr.shape[:2]),np.broadcast_to(coords.astype('int32'),arr.shape[:2])]
     return Image.fromarray(warped.copy(),'RGBA')
 
 def cast_pose(k):
