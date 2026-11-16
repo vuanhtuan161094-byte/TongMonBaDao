@@ -26,6 +26,7 @@ SOURCE_B64=ROOT/'godot/labs/combat_lab/fist10/assets/source/r2_illustrated_bell_
 if SOURCE_B64.exists():
     gold_bytes=base64.b64decode(''.join(SOURCE_B64.read_text(encoding='ascii').split()),validate=True)
     with Image.open(io.BytesIO(gold_bytes)) as first_party:
+        GOLD_SOURCE=first_party.convert('RGBA')
         gold_luma=np.array(first_party.convert('L').resize((768,768)),dtype=np.float32)/255.
 else:
     raise FileNotFoundError('First-party R2 illustration required; no fallback to reference GIF')
@@ -106,6 +107,39 @@ def background_lighting(canvas, cx, cy, opacity, rx,ry):
     layer[:,:,3]=al
     canvas.alpha_composite(Image.fromarray(layer,'RGBA'))
 
+def make_original_art_light():
+    """Extract only hand-painted high-luminance brushwork from original
+    FIST10 artwork, not a GIF. Suppress opaque gold surfaces and poster matte.
+    """
+    im=GOLD_SOURCE.resize((344,344),Image.Resampling.LANCZOS)
+    p=np.asarray(im,dtype=np.uint8).copy()
+    rgb=p[:,:,:3].astype('float32');r,g,b=rgb.transpose(2,0,1)
+    luminance=.31*r+.53*g+.16*b
+    shine=np.clip((luminance-138.)/89.,0,1.)**1.25
+    warm=np.clip((g-102.)/123.,0,1.)
+    old_a=p[:,:,3].astype('float32')
+    yy,xx=np.mgrid[:344,:344].astype('float32')
+    # Keep edges and bright spiraling streaks; reduce metal plates across
+    # central actor cavity. The user requested luminous qi, not a solid item.
+    center=np.exp(-(((xx-172)/90.)**2+((yy-175)/113.)**2))
+    carve=1.-.45*center
+    p[:,:,0]=255
+    p[:,:,1]=np.clip(183+71*shine,0,255).astype('uint8')
+    p[:,:,2]=np.clip(73+149*shine,0,255).astype('uint8')
+    p[:,:,3]=np.clip(old_a*shine*(.35+.65*warm)*carve,0,255).astype('uint8')
+    return Image.fromarray(p,'RGBA')
+ART_LIGHT=make_original_art_light()
+
+def add_art_light(dst, opacity, scale=1.):
+    if opacity<.002:return
+    size=max(8,int(335*scale*K))
+    img=ART_LIGHT.resize((size,size),Image.Resampling.LANCZOS)
+    a=img.getchannel('A').point(lambda v:int(max(0,min(255,v*opacity))))
+    img.putalpha(a)
+    x=round(192*K-size/2);y=round(186*K-size/2)
+    if x>=0 and y>=0 and x+size<=dst.width and y+size<=dst.height:
+        dst.alpha_composite(img,(x,y))
+
 def painterly_membrane(canvas, time, opacity, energy=1.):
     """Translucent irregular inner spiritual-shield layer. This is NOT a
     rectangle/poster fill. The mathematically curved boundary is baked into
@@ -176,7 +210,8 @@ def style_bell(canvas,phase=0.,op=1.,energy=1.,time=0.,detail=True, floor=True, 
     if floor:
         background_lighting(canvas,192,329,op,132*energy,44)
         mound(canvas,192,332,energy,phase=phase,alpha=op)
-    painterly_membrane(canvas,time,op*.87,energy)
+    painterly_membrane(canvas,time,op*.60,energy)
+    if limit>.39: add_art_light(canvas,op*.78*(.35+.65*limit),energy)
     # Side arcs reveal in phases, not a single resized still.
     amount=max(0.01,min(1.,limit))
     step=max(3,round(len(left)*amount))
@@ -192,6 +227,12 @@ def style_bell(canvas,phase=0.,op=1.,energy=1.,time=0.,detail=True, floor=True, 
     top=52+(1-energy)*35
     lotus=[(192,top-18),(180,top-3),(169,top-3),(181,top+8),(192,top+15),(203,top+8),(215,top-3),(202,top-4),(192,top-18)]
     polyline(canvas,lotus,warm=GOLD,peak=PALE,width=1.8,alpha=op*.92)
+    # Small flared lotus petals give the bell a xianxia crown rather than
+    # a diamond-shaped UI glyph. Independently baked brush paths.
+    for j in (-2,-1,0,1,2):
+        petal=bezier((192,top+11),(192+13*j,top+3),
+                     (192+9*j,top-15-4*(2-abs(j))),(192+5*j,top-21+3*abs(j)),40)
+        polyline(canvas,petal,warm=(255,198,97),peak=(255,255,213),width=1.2,alpha=op*.46)
     # Upper bell shoulder bridge and two stippled inscription bands.
     if amount>.27:
         top_arch=bezier((115,140),(143,102+5*math.sin(time)),(235,103),(268,142))

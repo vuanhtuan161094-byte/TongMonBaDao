@@ -42,3 +42,8 @@
 - New generator creates an independent translucent spiritual golden bell from source-authored brush contours, a low-opacity gold-qi membrane, soft winding gold streamers, discreet runes, original small 4s guard seal and locally oriented right-side contact. Rasterized into three 4-column full alpha PNG atlases, 12+8+8 unique poses, total 10,354,688 raw RGBA bytes. First-party existing FIST10 painted WebP contributes only gold luminance micrograin, NOT shapes or character pixels.
 - Current source material is code-painted original VFX, **not** individually hand-illustrated nor the actual GIF/screenshot. Do not claim exact artwork match just because Godot CI succeeds.
 - Workflow outputs **only native Godot MP4 and timestamp screenshots**, deliberately NO generated GIF. G3.5 at .42/1.23/2.16 moving actor, full 6.2s 1280×720; exact SHA, no rig, PvE hold, manual art and owner gate.
+
+## R4 painted-gold light 1x correction (16 Nov)
+- Initial R4 `883e582d97c6d06d1c44f660a9b0c03a043d56d2` Actions #43851115789 exact SHA **Godot technical PASS** but self ART_FAIL at 1x: thin gold curves too geometric/weak. Video archived unchanged.
+- Corrected source takes only luminous high-luminance detail from first-party FIST10 R2 owned illustration and integrates into independently authored transparent spiritual qi bell brushwork. Actor/map/monster/GIF NEVER read or extracted; original reference GIF is prohibited as source.
+- Workflow still native Godot MP4 plus 19 screenshots (NO GIF), manual art/owner gates, PVE hold.
