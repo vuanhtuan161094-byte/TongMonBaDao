@@ -117,7 +117,7 @@ def copy_at(dst,src,x,y,scale=1,rot=0,alpha=1):
         src.putalpha(src.getchannel("A").point(lambda v:round(v*alpha)))
     dst.alpha_composite(src,(round(x-src.width*.5),round(y-src.height*.5)))
 
-def streamer(i):
+def streamer(i,scroll):
     w,h=512,256;c=Image.new("RGBA",(w,h))
     src=Image.new("RGBA",(w,h))
     d=ImageDraw.Draw(src,"RGBA")
@@ -135,10 +135,16 @@ def streamer(i):
             coords.append((x,y))
         for j in range(1,len(coords)):
             p=j/90
-            ww=max(1,int((7+4*(k==0))*(1-p)**.66))
-            a=int((.35+.62*smooth(.0,.26,p))*(1-smooth(.79,1,p))*190)
+            ww=max(1,int((14+7*(k==0))*(1-p)**.78))
+            a=int((.52+.46*smooth(.0,.20,p))*(1-smooth(.82,1,p))*234)
             d.line([coords[j-1],coords[j]],fill=(174+16*(k==0),251,235,a),width=ww)
-    shine(c,src,blur=10,gain=.60)
+    shine(c,src,blur=16,gain=.72)
+    # One real paper SIGIL is carried inside the view-only optical wind trace.
+    # The master itself is the original Phong Giới scroll with independent
+    # change of x, y, angle, scale in 16 rendered alpha flipbook poses.
+    sx=105+310*q
+    sy=125+15*math.sin(i*.42)
+    copy_at(c,scroll,sx,sy,.165+.03*math.sin(i*.23),rot=-13+22*math.sin(i*.28),alpha=.72+.21*math.sin(math.pi*q))
     return c
 
 def charge(i,scroll):
@@ -185,7 +191,7 @@ def main():
     glyph.save(OUT/"paf01_mark_original_420.png")
     frames={
       "tal11_r1_charge.webp":(atlas([charge(i,sigil) for i in range(12)],320,320),320,320,12),
-      "tal11_r1_stream.webp":(atlas([streamer(i) for i in range(16)],512,256),512,256,16),
+      "tal11_r1_stream.webp":(atlas([streamer(i,sigil) for i in range(16)],512,256),512,256,16),
       "tal11_r1_contact.webp":(atlas([contact(i,glyph) for i in range(12)],256,256),256,256,12),
       "tal11_r1_mark.webp":(atlas([mark(i,glyph) for i in range(20)],256,256),256,256,20)
     }
