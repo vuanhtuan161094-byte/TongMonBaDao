@@ -1,0 +1,153 @@
+{
+  "schema": "tmb-vfx-production-system-v4.1",
+  "packet_id": "PAF03_R1_TAY_TRAN_GIAI_PHU_NATIVE_CLEANSE_V4",
+  "skill_id": "tmb.skill.talisman.phong_an_phu.active_03.human",
+  "school": "talisman",
+  "revision": "PAF03_R1_ORIGINAL_JADE_GOLD_SILK_LOTUS_CLEANSE_SHORT_NATIVE_NO_GIF",
+  "catalogue_path": "godot/data/combat/v63_talisman_combat_catalog.json",
+  "scene_path": "godot/labs/combat_lab/talisman13/tay_tran_giai_phu.tscn",
+  "lab_script": "godot/labs/combat_lab/talisman13/tay_tran_giai_phu.gd",
+  "focused_test": "godot/tests/labs/combat_lab/vfx_paf03_contract_test.gd",
+  "declared_contract": {
+    "effect": "cleanse",
+    "element": "wind",
+    "shape": "single_target",
+    "target_limit": 1,
+    "hit_count": 1,
+    "range": 8.5,
+    "radius": 0,
+    "cast_time": 0.5,
+    "cooldown": 12.2,
+    "projectile_speed": 0,
+    "duration": 0
+  },
+  "provenance": {
+    "source_class": "FIRST_PARTY_ORIGINAL_RGBA_PAF03_PURIFYING_JADE_SILK_AND_LOTUS",
+    "rights_note": "Self-authored first-party high-resolution code-painted transparent PNG masters and distinct flipbook frames for PAF03 wind cleanse. Gold-edged folded silk, independently swirling jade wind optical transfer and local jade lotus dissolving an illustrative curse; code in tools/vfx/paf03_cleansing_assets.py. No unlicensed Source A/JX/VL pixels, no rig; existing approved caster and authorized WALK ally textures are separate actor overlays only.",
+    "master_quality_status": "MANUAL_ART_REVIEW_REQUIRED",
+    "known_source_limitation": "Original procedural painted art, not independently commissioned fine illustration; art quality must be reviewed at actual Godot native 1x. Simulated pre-existing dark curse is decorative, not a real gameplay debuff or Combat V2 status write. Technical PASS cannot be used as art PASS. Owner review pending.",
+    "master_files": [
+      {
+        "path": "godot/labs/combat_lab/talisman13/art_sources/paf03_cleansing_silk_master.png",
+        "encoding": "png",
+        "role": "Independent first-party RGBA 640px charged silk master generated from durable painter source"
+      },
+      {
+        "path": "godot/labs/combat_lab/talisman13/art_sources/paf03_cleansing_lotus_master.png",
+        "encoding": "png",
+        "role": "Independent first-party RGBA 640px purifying lotus master generated from durable painter source"
+      }
+    ],
+    "generators": [
+      "tools/vfx/paf03_cleansing_assets.py"
+    ]
+  },
+  "atlases": [
+    {
+      "path": "godot/labs/combat_lab/talisman13/assets/paf03_charge.webp",
+      "width": 1280,
+      "height": 960,
+      "cell_width": 320,
+      "cell_height": 320,
+      "frames": 12,
+      "columns": 4,
+      "layer": "12 independently bending gilded jade silk and floating paper poses. MIX body with local gentle light."
+    },
+    {
+      "path": "godot/labs/combat_lab/talisman13/assets/paf03_transfer.webp",
+      "width": 2048,
+      "height": 1024,
+      "cell_width": 512,
+      "cell_height": 256,
+      "frames": 16,
+      "columns": 4,
+      "layer": "16 distinct cyan/gold organic directed visual-only wind purification transfer poses to 1 ally; not a projectile."
+    },
+    {
+      "path": "godot/labs/combat_lab/talisman13/assets/paf03_curse.webp",
+      "width": 512,
+      "height": 256,
+      "cell_width": 128,
+      "cell_height": 128,
+      "frames": 8,
+      "columns": 4,
+      "layer": "Eight visual-only simulated pre-existing dark ink curse ribbons, entirely cosmetic."
+    },
+    {
+      "path": "godot/labs/combat_lab/talisman13/assets/paf03_cleanse.webp",
+      "width": 1280,
+      "height": 1280,
+      "cell_width": 320,
+      "cell_height": 320,
+      "frames": 14,
+      "columns": 4,
+      "layer": "14 jade lotus purification and removing dark ink contact poses attached to one moving WALK ally."
+    },
+    {
+      "path": "godot/labs/combat_lab/talisman13/assets/paf03_residue.webp",
+      "width": 1024,
+      "height": 512,
+      "cell_width": 256,
+      "cell_height": 256,
+      "frames": 8,
+      "columns": 4,
+      "layer": "Eight light jade-gold leaf fade poses; no sustained buff/status."
+    }
+  ],
+  "time_contract": {
+    "combat_clock": "CATALOGUE_GATED_NOT_LIVE",
+    "declared_cast_end_seconds": 0.5,
+    "declared_status_duration_seconds": 0,
+    "runtime_receipt_timestamp": "RUNTIME_MAPPING_PENDING",
+    "vfx_clock": "LAB_ONLY",
+    "simulated_hit_seconds": 0.85,
+    "visual_fade_end_seconds": 1.53,
+    "demo_loop_seconds": 2,
+    "demo_clock_warning": "Canonical PAF03 cleanse single ally (duration0) after cast0.5s, cooldown12.2s, no gameplay projectile. The alleged dark curse is an illustration of a prior bad effect and NOT an actual status. LAB visual-only simulated cleanse receipt0.85 DOES NOT claim actual Combat V2 event. 2s MP4 QA loop is not cooldown.",
+    "key_pose_budget_note": "12 charge optical poses / .53s; 16 transfer poses / .45s; 8 fictional dark ink; 14 unique local cleanse poses / .43s; 8 distinct residue poses / .45s. 120 60FPS encoded frames in native video are not 120 artist-authored source poses. No GIF production under latest owner instructions.",
+    "phases": [
+      {
+        "id": "charge",
+        "at_seconds": 0.3,
+        "expected_phase": "charge",
+        "file": "v4-charge.png"
+      },
+      {
+        "id": "peak",
+        "at_seconds": 0.67,
+        "expected_phase": "wind_purifying_transfer",
+        "file": "v4-peak.png"
+      },
+      {
+        "id": "contact",
+        "at_seconds": 0.98,
+        "expected_phase": "instant_cleanse_on_moving_ally",
+        "file": "v4-contact.png"
+      }
+    ]
+  },
+  "moving_target": {
+    "actor_animation": "walk",
+    "locked_demo_target_index": 0,
+    "movement_from_seconds": 0.3,
+    "movement_to_seconds": 0.98,
+    "minimum_displacement_px": 20,
+    "contact_anchor": "LAB.target_contact(0,t)",
+    "tracking_rule": "ONE allied female actor from existing verified first-party WALK sprites moves horizontally; optical directed wind and instant jade lotus snap to current ally position. Fictional dark ink vanishes at simulated cleanse visual receipt; no second target, real damage or actual status removal.",
+    "receipt_claim": "SIMULATED_VISUAL_ONLY"
+  },
+  "gate_status": {
+    "g3_5_capture": "NOT_EXECUTED_UNTIL_RUN",
+    "technical": "NOT_EXECUTED_UNTIL_RUN",
+    "art": "MANUAL_ART_REVIEW_REQUIRED",
+    "owner": "OWNER_VISUAL_PENDING",
+    "live": "PVE_INTEGRATION_HOLD",
+    "device": "PHYSICAL_QA_PENDING"
+  },
+  "proof_contract": {
+    "focused_marker": "VFX_PAF03_FOCUSED_RESULT=PASS failures=0",
+    "native_marker": "VFX_PAF03_READY",
+    "source": "PAF03 one WALK ally, 0.5s cast, visual-only instant cleanse, no projectile/damage/status writes, 3 native Godot 1280x720 proof frames",
+    "video_filename": "paf03-native.mp4"
+  }
+}
