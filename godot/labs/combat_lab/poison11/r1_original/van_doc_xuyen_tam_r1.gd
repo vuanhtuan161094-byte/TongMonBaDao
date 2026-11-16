@@ -145,7 +145,7 @@ func _draw()->void:
     if charge_frames.size()!=10 or crown_frames.size()!=12 or contact_frames.size()!=8:return
     if t<CAST_END:
         var rise:=smoothstep(.03,.79,t)
-        _flip(charge_frames,PALM,Vector2(205,185),charge_index(t),rise*.92)
+        _flip(charge_frames,PALM,Vector2(186,170),charge_index(t),rise*.96)
     if t>=CAST_END and t<AREA_ARRIVE:
         var q:=clampf((t-CAST_END)/(AREA_ARRIVE-CAST_END),0.0,1.0)
         _flip(crown_frames,flight_position(t),Vector2(220+65*q,154+45*q),clampf(q*10.0,0.0,11.0),.92)
@@ -155,12 +155,16 @@ func _draw()->void:
         var out:=1.0-smoothstep(2.68,CROWN_END,t)
         var span:=lerpf(390.0,545.0,smoothstep(AREA_ARRIVE,2.40,t))
         _flip(crown_frames,AREA_CENTER+Vector2(0,-77),Vector2(span,span*.74),crown_index(t),up*out*.95)
+        # Secondary center flash from the *same* original painted contact source, NOT a new hit.
+        if t<2.58:
+            var core_gain:=smoothstep(1.94,2.13,t)*(1.0-smoothstep(2.30,2.58,t))
+            _flip(contact_frames,AREA_CENTER+Vector2(0,-58),Vector2(142,106),3.0,core_gain*.59)
     draw_texture_rect_region(CASTER_ART,Rect2(CASTER-Vector2(160,351)*.47,Vector2(320,384)*.47),Rect2(0,0,320,384))
     for i in range(TARGET_LIMIT):
         _monster(i,t)
         var hit:=mock_contact_time(i)
         if t>=hit and t<hit+CONTACT_VISUAL_SECONDS:
             var alpha:=smoothstep(hit,hit+.035,t)*(1.0-smoothstep(hit+.15,hit+CONTACT_VISUAL_SECONDS,t))
-            _flip(contact_frames,monster_chest(i,t),Vector2(146,118),contact_index(i,t),alpha*.97)
+            _flip(contact_frames,monster_chest(i,t),Vector2(177,143),contact_index(i,t),alpha*.99)
         # Shared icon from POI10: display one status per target, not an eight-second attack effect.
         PoisonBadge.draw_for(self,poison_badge_anchor(i,t),DECLARED_POISON_STACKS,demo_status_remaining(i,t),t)

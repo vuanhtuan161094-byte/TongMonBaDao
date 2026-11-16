@@ -30,14 +30,15 @@ def source(name):
     rgb=pix[:,:,:3].astype(np.float32)
     original=pix[:,:,3].astype(np.float32)
     signal=np.maximum.reduce([rgb[:,:,0]*.98,rgb[:,:,1]*1.48,rgb[:,:,2]*.77])
-    pigment=np.clip((signal-76.0)*3.25,0,255)
+    pigment=np.clip((signal-(105.0 if name=='charge' else 76.0))*(3.9 if name=='charge' else 3.25),0,255)
     hh,ww=original.shape
     ys,xs=np.mgrid[:hh,:ww]
     edge=np.minimum.reduce([xs,ww-1-xs,ys,hh-1-ys]); edgegain=np.clip(edge/16.0,0,1)
     # Clean art *envelope* around unique charge master; no massive rectangular alpha.
     if name=='charge':
-        dx=(xs-ww*.52)/(ww*.54);dy=(ys-hh*.49)/(hh*.54)
-        envelope=np.clip((1.35-(dx*dx+dy*dy))/.45,0,1)
+        dx=(xs-ww*.50)/(ww*.42);dy=(ys-hh*.51)/(hh*.48)
+        d=np.sqrt(dx*dx+dy*dy)
+        envelope=np.clip((1.06-d)/.22,0,1)
         edgegain*=envelope
     alpha=np.clip(original*(pigment/255.0)*edgegain*1.14,0,255)
     # Colored pixels brighten a little, but alpha always carries shape/material.
