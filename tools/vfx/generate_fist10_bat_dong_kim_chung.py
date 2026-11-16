@@ -127,10 +127,10 @@ def status_pose(k):
     phase=math.tau*k/8
     breathe=.82+.09*math.sin(phase)
     ground=BASE.resize((156,30),Image.Resampling.LANCZOS)
-    center(im,ground,(96,169+math.sin(phase)),breathe*.76)
+    center(im,ground,(96+1.8*math.cos(phase),169+math.sin(phase)),breathe*.76)
     # A condensed bell seal above and two resonating shoulder gold leaves.
     crest=CREST.resize((51,42),Image.Resampling.LANCZOS)
-    center(im,crest,(96,56+1.2*math.sin(phase)),breathe*.84)
+    center(im,crest,(96+2.4*math.cos(phase),56+1.2*math.sin(phase)),breathe*.84)
     side=FLANK.resize((38,85),Image.Resampling.LANCZOS)
     center(im,side,(36,101),breathe*.31)
     center(im,side.transpose(Image.Transpose.FLIP_LEFT_RIGHT),(156,101),breathe*.31)
