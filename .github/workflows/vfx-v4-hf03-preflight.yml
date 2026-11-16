@@ -71,14 +71,14 @@ jobs:
           bash tools/qa/run_godot_strict.sh --headless --path godot --import 2>&1 | tee "$d/godot-import.log"
           bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://labs/combat_lab/talisman08/hoa_tam_ngung_phu.gd 2>&1 | tee "$d/godot-parse.log"
           bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/labs/combat_lab/vfx_tal08_contract_test.gd 2>&1 | tee "$d/godot-focused.log"
-          grep -Fq 'VFX_TAL07_FOCUSED_RESULT=PASS failures=0' "$d/godot-focused.log"
+          grep -Fq 'VFX_TAL08_FOCUSED_RESULT=PASS failures=0' "$d/godot-focused.log"
       - name: G3.5 STOP - genuine native Godot 96-frame mini movie
         shell: bash
         run: |
           set -euo pipefail
           d="$RUNNER_TEMP/vfx-v4-hf03"
           xvfb-run -a -s '-screen 0 1280x720x24' bash tools/qa/run_godot_strict.sh --path godot --resolution 1280x720 --fixed-fps 60 --write-movie "$d/v4-hf03-native.avi" --quit-after 96 res://labs/combat_lab/talisman08/hoa_tam_ngung_phu.tscn 2>&1 | tee "$d/godot-preflight.log"
-          grep -Fq 'VFX_TAL07_READY' "$d/godot-preflight.log"
+          grep -Fq 'VFX_TAL08_READY' "$d/godot-preflight.log"
           test -s "$d/v4-hf03-native.avi"
           ffmpeg -y -hide_banner -loglevel error -i "$d/v4-hf03-native.avi" -c:v libx264 -crf 16 -pix_fmt yuv420p -movflags +faststart "$d/v4-hf03-native.mp4"
           ffmpeg -y -hide_banner -loglevel error -ss 0.30 -i "$d/v4-hf03-native.mp4" -frames:v 1 "$d/v4-charge.png"
