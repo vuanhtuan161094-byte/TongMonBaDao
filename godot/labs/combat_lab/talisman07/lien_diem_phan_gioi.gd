@@ -22,10 +22,10 @@ const CONTACT_END := 1.72
 const FADE_END := 2.62
 const LOOP_SECONDS := 3.30
 
-const LOTUS:Texture2D = preload("res://labs/combat_lab/talisman07/assets/tal07_lotus_flipbook.webp")
-const SEALS:Texture2D = preload("res://labs/combat_lab/talisman07/assets/tal07_seal_flipbook.webp")
+const LOTUS:Texture2D = preload("res://labs/combat_lab/talisman07/assets/tal07_r5_lotus_atlas.webp")
+const SEALS:Texture2D = preload("res://labs/combat_lab/talisman07/assets/tal07_r5_seal_atlas.webp")
 const GROUND:Texture2D = preload("res://labs/combat_lab/talisman07/assets/tal07_ground_flipbook.webp")
-const CONTACT:Texture2D = preload("res://labs/combat_lab/talisman07/assets/tal07_contact_flipbook.webp")
+const CONTACT:Texture2D = preload("res://labs/combat_lab/talisman07/assets/tal07_r5_contact_atlas.webp")
 const BACKDROP:Texture2D = preload("res://labs/combat_lab/poison05/remake_r6/assets/immortal_valley.svg")
 const CASTER_ART:Texture2D = preload("res://labs/character_family/assets/nu_doc_tu_v4_candidate/idle_4dir_APPROVED_UNCHANGED.png")
 const MONSTER_FRAMES:SpriteFrames = preload("res://assets/actors/v5_sa_monster_1113031_1/animations.tres")
@@ -103,7 +103,7 @@ func _ready()->void:
             im.set_pixel(x,y,Color(1.0,1.0,1.0,
                 clampf(exp(-7.5*p.length_squared())*(1.0-smoothstep(.76,1.0,p.length())),0.0,1.0)))
     _glow=ImageTexture.create_from_image(im)
-    print("VFX_TAL07_READY id=",SKILL_ID," source_sprite=12/12/8/8 moving_monsters=3 circle=true view_only=true")
+    print("VFX_TAL07_READY id=",SKILL_ID," rework=R5 source_painted_owner_fire=true frames=12/12/8/8 moving_monsters=3 circle=true view_only=true")
     set_process(true)
 
 func _process(delta:float)->void:
@@ -142,15 +142,15 @@ func _draw()->void:
         draw_texture_rect_region(GROUND,
             Rect2(CIRCLE_CENTER-Vector2(248,77),Vector2(496,154)),
             Rect2(float(gf%4)*512.0,float(int(gf/4))*256.0,512,256),
-            Color(1,1,1,gg*.89))
+            Color(1,1,1,gg*.44))
     var lg:=bloom_gain(t)
     if lg>.003:
         var lf:=lotus_index(t)
         draw_texture_rect_region(LOTUS,
-            Rect2(CIRCLE_CENTER-Vector2(295,340),Vector2(590,460)),
+            Rect2(CIRCLE_CENTER-Vector2(270,390),Vector2(540,460)),
             Rect2(float(lf%4)*512.0,float(int(lf/4))*384.0,512,384),
             Color(1,1,1,lg*.96))
-        _halo(CIRCLE_CENTER+Vector2(0,-67),119,Color("ff9635",lg*.18))
+        _halo(CIRCLE_CENTER+Vector2(0,-72),89,Color("ff9635",lg*.11))
     for i in range(TARGET_LIMIT):
         var hg:=hit_gain(i,t)
         if hg>.003:
@@ -159,7 +159,7 @@ func _draw()->void:
             draw_texture_rect_region(CONTACT,
                 Rect2(pos-Vector2(74,73),Vector2(148,146)),
                 Rect2(float(f%4)*256.0,float(int(f/4))*256.0,256,256),
-                Color(1,1,1,hg*.80))
+                Color(1,1,1,hg*.96))
     _draw_caster()
     for i in range(TARGET_LIMIT):
         _draw_monster(i,t)
@@ -169,8 +169,8 @@ func _draw()->void:
         if hg>.003:
             var pos:=demo_target_contact(i,t)+Vector2(0,8)
             _halo(pos,35,Color("f9592a",hg*.31))
-            _halo(pos,14,Color("ffcc72",hg*.50))
-            _halo(pos,6,Color("fff6d9",hg*.57))
+            _halo(pos,17,Color("ffcc72",hg*.65))
+            _halo(pos,7,Color("fff6d9",hg*.70))
     var charge:=charge_gain(t)
     if charge>.003:
         var f:=seal_index(t)
