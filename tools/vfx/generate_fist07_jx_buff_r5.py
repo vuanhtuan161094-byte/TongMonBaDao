@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""FIST07 R5 illustrated JX-style LONG GUARD: burst-once, quiet sustained buff,
+"""FIST07 R6 illustrated JX-style LONG GUARD: burst-once, quiet sustained buff,
 reactive block, fade. Bakes first-party ImageGen guardian master; never copies JX.
 No hand-coded shield geometry, no unlicensed sprites, no skeletal rig.
 """
@@ -35,7 +35,14 @@ def with_soft_edge(src):
     rgba=np.array(src,dtype=np.uint8)
     rgb=rgba[:,:,:3].astype(np.int16)
     vivid=(rgb[:,:,0]>55) & (rgb[:,:,0]>rgb[:,:,2]+7)
-    rgba[:,:,3]=np.where(vivid,a, np.round(a*.15)).astype('uint8')
+    # Softly eliminate flattened-image rectangle edges; retain luminous art.
+    h,w=a.shape
+    x=np.arange(w)[None,:]
+    y=np.arange(h)[:,None]
+    edges=np.clip(x/78.,0,1)*np.clip((w-1-x)/78.,0,1)
+    edges=edges*np.clip(y/31.,0,1)*np.clip((h-1-y)/37.,0,1)
+    a=np.where(vivid,a,np.round(a*.15))*edges
+    rgba[:,:,3]=np.clip(a,0,255).astype('uint8')
     return Image.fromarray(rgba,'RGBA')
 
 def warp(im, phase, amplitude=1.5):
@@ -92,7 +99,7 @@ def make_cast(src,k):
     if k<=4:
         reveal=np.clip((yy-(165-33*k))/60.,0,1)
         strength=np.maximum(strength*reveal, strength*.22)
-    arr[:,:,3]=(arr[:,:,3].astype(float)*strength).astype('uint8')
+    arr[:,:,3]=np.clip(arr[:,:,3].astype(float)*strength*1.35,0,255).astype('uint8')
     out=Image.fromarray(arr,'RGBA')
     if k in (3,4,5):
         soft=out.filter(ImageFilter.GaussianBlur(5));soft=alpha_scale(soft,.20)
@@ -144,8 +151,22 @@ def make_block(src,k):
         # clip without painting a rectangular border or colored fill
         temp=Image.new('RGBA',(S,S),(0,0,0,0));temp.paste(part,(cx-part.width//2,cy-part.height//2),part)
         im.alpha_composite(alpha_scale(temp,max(.024,(1-q)**.88*.98)))
-    halo=im.filter(ImageFilter.GaussianBlur(6))
-    halo=alpha_scale(halo,(1-q)*.42)
+    # White-hot focal flash sits on ORIGINAL gold-painted contact layers.
+    # This is offline baked texture art, never a continuous code shield.
+    light=Image.new('RGBA',(S,S),(0,0,0,0))
+    dd=ImageDraw.Draw(light,'RGBA')
+    strength=max(.05,(1.-q)**1.1)
+    rr=16.+19.*q
+    dd.ellipse((157-rr,117-rr*.73,157+rr,117+rr*.73),
+               fill=(255,250,195,round(215*strength)))
+    feather=alpha_scale(light.filter(ImageFilter.GaussianBlur(10)),.69)
+    im.alpha_composite(feather)
+    dd=ImageDraw.Draw(im,'RGBA')
+    r2=5.+7.*q
+    dd.ellipse((157-r2,117-r2,157+r2,117+r2),
+               fill=(255,255,235,round(239*strength)))
+    halo=im.filter(ImageFilter.GaussianBlur(5))
+    halo=alpha_scale(halo,(1-q)*.26)
     halo.alpha_composite(im)
     return halo
 
@@ -170,6 +191,6 @@ def main():
     icon.save(OUT/'r5_demo_buff_icon.png',optimize=True)
     raw=sum(im.width*im.height*4 for im in [cast,sustain,contact])
     assert raw==6553600,raw
-    print('FIST07_R5_BAKE_PASS atlases=3 poses=24 rgba_bytes=6553600 source=original_illustrated_no_rig')
+    print('FIST07_R6_BAKE_PASS atlases=3 poses=24 rgba_bytes=6553600 source=original_illustrated_no_rig')
 
 if __name__=='__main__':main()

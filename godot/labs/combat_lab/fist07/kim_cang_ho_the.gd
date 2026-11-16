@@ -3,7 +3,7 @@ extends Control
 ## Godot layers ORIGINAL raster sprites; no code-sculpted shields / no rig.
 ## LAB-only moving WALK stand-ins, not a live gameplay binding.
 const SKILL_ID := "tmb.skill.fist.kim_cang.active_02.human"
-const ART_REVISION := "R5_JX_CAST_ONCE_QUIET_STATUS"
+const ART_REVISION := "R6_JX_CAST_ONCE_QUIET_STATUS"
 const EFFECT := "guard"
 const ELEMENT := "earth"
 const SHAPE := "single_target"
@@ -50,7 +50,7 @@ static func guard_alpha(t: float) -> float:
 static func cast_alpha(t: float) -> float:
     if t < 0.0 or t >= CAST_BURST_END: return 0.0
     if t < .18: return smoothstep(0.0,.18,t)
-    return 1.0 - smoothstep(.45,CAST_BURST_END,t)
+    return 1.0 - smoothstep(.63,CAST_BURST_END,t)
 
 static func block_alpha(t: float, event_at: float) -> float:
     if event_at < GUARD_START or event_at >= GUARD_END: return 0.0
@@ -78,7 +78,7 @@ func _ready() -> void:
     set_process(true)
     queue_redraw()
     if not vfx_only_benchmark:
-        print("VFX_FIST07_R5_READY illustrated_source=true effect=guard three_clocks=true moving_walk=true no_rig=true view_only=true")
+        print("VFX_FIST07_R6_READY illustrated_source=true effect=guard three_clocks=true moving_walk=true no_rig=true view_only=true")
 
 func _process(delta: float) -> void:
     if paused:return
@@ -172,7 +172,7 @@ func _draw() -> void:
             "KIM CANG HO THE  /  JX-STYLE 4S GUARD",
             HORIZONTAL_ALIGNMENT_LEFT,-1,23,Color("fff1d9"))
         draw_string(ThemeDB.fallback_font,Vector2(27,59),
-            "FIST07 R5 | CAST GUARDIAN → SMALL BUFF → REACTIVE BLOCK",
+            "FIST07 R6 | CAST GUARDIAN → SMALL BUFF → REACTIVE BLOCK",
             HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("edd7b2"))
         draw_string(ThemeDB.fallback_font,Vector2(27,683),
             "GODOT 4.7.2 COMPAT | MOVING WALK TARGET | LAB RECEIPTS ONLY | NO RIG",

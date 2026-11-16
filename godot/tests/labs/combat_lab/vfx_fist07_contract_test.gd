@@ -9,7 +9,7 @@ func _initialize() -> void:
     call_deferred("_run")
 func _run() -> void:
     ck(LAB.SKILL_ID=="tmb.skill.fist.kim_cang.active_02.human","skill ID")
-    ck(LAB.ART_REVISION=="R5_JX_CAST_ONCE_QUIET_STATUS","revision")
+    ck(LAB.ART_REVISION=="R6_JX_CAST_ONCE_QUIET_STATUS","revision")
     ck(LAB.EFFECT=="guard" and LAB.ELEMENT=="earth","guard earth")
     ck(LAB.SHAPE=="single_target" and LAB.TARGET_LIMIT==1,"one protected")
     ck(is_equal_approx(LAB.CAST_TIME,0.45) and is_equal_approx(LAB.COOLDOWN,8),"authority cast/cooldown")
@@ -40,5 +40,5 @@ func _run() -> void:
     await process_frame
     ck(scene.elapsed>=0.0,"lab clock")
     scene.queue_free()
-    print("VFX_FIST07_R5_FOCUSED_RESULT="+("PASS" if failures==0 else "FAIL")+" failures="+str(failures))
+    print("VFX_FIST07_R6_FOCUSED_RESULT="+("PASS" if failures==0 else "FAIL")+" failures="+str(failures))
     quit(0 if failures==0 else 1)

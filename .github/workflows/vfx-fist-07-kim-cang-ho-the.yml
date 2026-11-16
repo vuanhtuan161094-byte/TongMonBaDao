@@ -1,4 +1,4 @@
-name: VFX-FIST-07 R5 Production V4 guardian burst / persistent small status / moving guarded hit
+name: VFX-FIST-07 R6 Production V4 guardian burst / persistent small status / moving guarded hit
 on:
   workflow_dispatch:
   push:
@@ -51,7 +51,7 @@ jobs:
         run: |
           set -euo pipefail
           python3 tools/vfx/generate_fist07_jx_buff_r5.py | tee /tmp/vfx-fist07-r5/bake.log
-          grep -Fq 'FIST07_R5_BAKE_PASS atlases=3 poses=24 rgba_bytes=6553600 source=original_illustrated_no_rig' /tmp/vfx-fist07-r5/bake.log
+          grep -Fq 'FIST07_R6_BAKE_PASS atlases=3 poses=24 rgba_bytes=6553600 source=original_illustrated_no_rig' /tmp/vfx-fist07-r5/bake.log
           python3 tools/qa/validate_vfx_v4_packet.py --stage assets --packet docs/operations/vfx_packets/FIST07_R5_PERSISTENT_GUARD_V4.json | tee /tmp/vfx-fist07-r5/v4-assets.log
           cp godot/labs/combat_lab/fist07/assets/generated/r5_*.png /tmp/vfx-fist07-r5/
           sha256sum /tmp/vfx-fist07-r5/r5_*.png > /tmp/vfx-fist07-r5/ASSET_SHA256SUMS.txt
@@ -62,7 +62,7 @@ jobs:
           bash tools/qa/run_godot_strict.sh --headless --path godot --import 2>&1 | tee /tmp/vfx-fist07-r5/import.log
           bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://labs/combat_lab/fist07/kim_cang_ho_the.gd 2>&1 | tee /tmp/vfx-fist07-r5/parse.log
           bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/labs/combat_lab/vfx_fist07_contract_test.gd 2>&1 | tee /tmp/vfx-fist07-r5/godot-focused.log
-          grep -Fq 'VFX_FIST07_R5_FOCUSED_RESULT=PASS failures=0' /tmp/vfx-fist07-r5/godot-focused.log
+          grep -Fq 'VFX_FIST07_R6_FOCUSED_RESULT=PASS failures=0' /tmp/vfx-fist07-r5/godot-focused.log
       - name: Mandatory G3.5 preflight 3 actual Godot 1280x720 frames
         shell: bash
         run: |
