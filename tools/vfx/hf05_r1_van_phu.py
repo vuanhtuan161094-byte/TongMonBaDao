@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""HF05 Vạn Phù Phần Thiên — isolated ultimate painterly flipbook baker.
+"""HF05 Vạn Phù Phần Thiên — R2 saturated original material painterly baker.
 
 Original first-party master `hf05_original_van_phu_hero_master_rgba.webp.b64`
 is an alpha-isolated illustrated mega-talisman made for this project, NOT an
@@ -53,9 +53,9 @@ def fire_spray(src,i,w=186,h=66,opacity=.65):
     sy=np.clip(y+2.4*np.sin(x*.055+i*.53),0,h-1).astype(int)
     z=z[sy,sx].copy()
     # alpha source is already unmatted from first-party original RGB.
-    z[:,:,3]=np.clip(z[:,:,3]*opacity,0,255)
-    z[:,:,0]=np.clip(z[:,:,0]*1.07,0,255)
-    z[:,:,1]=np.clip(z[:,:,1]*1.09,0,255)
+    z[:,:,3]=np.clip(z[:,:,3]*opacity*1.24,0,255)
+    z[:,:,0]=np.clip(z[:,:,0]*1.48+38*(z[:,:,3]/255),0,255)
+    z[:,:,1]=np.clip(z[:,:,1]*1.72+61*(z[:,:,3]/255),0,255)
     return Image.fromarray(np.uint8(z),"RGBA")
 
 def charge(i,hero,small,fire):
@@ -71,7 +71,7 @@ def charge(i,hero,small,fire):
         place(c,f,(164+math.cos(a)*(36-15*q),151+math.sin(a)*(29-12*q)),
               1,-39+j*59,.98)
     place(c,hero,(158,147),.70+.23*q,math.sin(q*math.pi*1.7)*7,.42+.55*q)
-    return lumina(c,.24)
+    return lumina(c,.33)
 
 def storm(i,hero,small,fire):
     c=Image.new("RGBA",(640,384));q=i/23
@@ -87,14 +87,14 @@ def storm(i,hero,small,fire):
         place(c,small,(x,y),size,math.degrees(a)*.23+math.sin(i*.3+j)*9,opacity)
     # One readable original illustrated MEGA-talisman is the hero focus.
     s=.96+.25*math.sin(math.pi*q)**2
-    place(c,hero,(322,162-24*math.sin(q*math.pi)),s,6*math.sin(q*3.4),.48+.46*math.sin(q*math.pi))
+    place(c,hero,(322,162-24*math.sin(q*math.pi)),s*1.12,6*math.sin(q*3.4),.67+.32*math.sin(q*math.pi))
     # Vivid irregular plasma wakes, not mathematical HUD circles.
     for j in range(5):
         a=i*.12+j*math.tau/5
         x=326+173*math.cos(a);y=205+67*math.sin(a)
-        f=fire_spray(fire,i+j*7,163,50,.23+.13*math.sin(i*.3+j)**2)
+        f=fire_spray(fire,i+j*7,211,66,.43+.15*math.sin(i*.3+j)**2)
         place(c,f,(x,y),1,-math.degrees(a)*.41-35,.81)
-    return lumina(c,.18)
+    return lumina(c,.36)
 
 def rain(i,small,fire):
     c=Image.new("RGBA",(640,440));q=i/19
@@ -105,10 +105,10 @@ def rain(i,small,fire):
         x=78+(j%5)*119 + 13*math.sin(i*.27+j*1.65)
         y=-90+phase*510
         long=130+int(67*math.sin((i+j)*.24)**2)
-        f=fire_spray(fire,i+j*3,66,long,.42+.18*math.sin(phase*math.pi)**2)
+        f=fire_spray(fire,i+j*3,83,long+40,.69+.23*math.sin(phase*math.pi)**2)
         place(c,f,(x,y-57),.94,92+9*math.sin(i*.36+j),.74)
-        place(c,small,(x,y+18),.41+.13*phase,7*math.sin(i*.31+j),.50+.31*phase)
-    return lumina(c,.21)
+        place(c,small,(x,y+18),.48+.13*phase,7*math.sin(i*.31+j),.77+.18*phase)
+    return lumina(c,.40)
 
 def impact(i,hero,fire):
     c=Image.new("RGBA",(640,320));q=i/11
@@ -118,11 +118,11 @@ def impact(i,hero,fire):
         a=j*math.tau/7+i*.07
         r=34+123*q*(.68+.20*math.sin(j*1.47))
         x=320+math.cos(a)*r;y=183+math.sin(a)*r*.48
-        f=fire_spray(fire,i+j*11,170+int(57*q),61+int(15*q),decay*.68)
-        place(c,f,(x,y),1,-math.degrees(a)*.24-28,.84)
+        f=fire_spray(fire,i+j*11,198+int(47*q),79+int(26*q),decay*.94)
+        place(c,f,(x,y),1,-math.degrees(a)*.24-28,1.0)
     if q<.64:
         place(c,hero,(320,159),.78+q*.64,5*math.sin(i*.5),decay*.66)
-    return lumina(c,decay*.28)
+    return lumina(c,decay*.55)
 
 def atlas(seq,w,h):
     result=Image.new("RGBA",(w*4,h*math.ceil(len(seq)/4)))
