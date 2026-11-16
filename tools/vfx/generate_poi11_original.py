@@ -15,7 +15,8 @@ OUT=ROOT/'godot/labs/combat_lab/poison11/r1_original/assets'
 MASTER=OUT/'master'
 FILES={
     'charge':'needle_crown_source.webp',
-    'crown':'heart_piercer_source.webp',
+    'flight':'heart_piercer_source.webp',
+    'crown':'heart_vortex_source.webp',
     'contact':'heart_rupture_source.webp',
 }
 @lru_cache(maxsize=3)
@@ -73,17 +74,22 @@ def feather_frame(im,w,h):
 def pose(name,i,total,cell):
     w,h=cell;t=i/max(1,total-1)
     im=source(name)
-    im=row_warp(im,t,6 if name=='crown' else 3.8,4 if name=='crown' else 3)
+    im=row_warp(im,t,5.2 if name in ('crown','flight') else 3.8,4 if name=='flight' else 3)
     if name=='charge':
         # Crown point erects from a compact charge, then gathers closer to release.
         scale=.48+.44*math.sin((t*.92+.05)*math.pi/2)
         gain=.67+.33*math.sin((t*.83+.10)*math.pi/2)
         angle=-4+7*math.sin(t*math.pi*.75)
+    elif name=='flight':
+        # Distinct poison spear-cluster travel, no reuse of the radial vortex art.
+        scale=.73+.24*math.sin((t*.95+.02)*math.pi/2)
+        gain=.84+.16*math.sin((t*.78+.2)*math.pi/2)
+        angle=-6+11*t+math.sin(t*math.tau)*2
     elif name=='crown':
-        # Projectile canopy stretches its hand-painted spears as it travels.
-        scale=.69+.29*math.sin((t*.95+.02)*math.pi/2)
-        gain=.92+.08*math.sin((t*.78+.2)*math.pi/2)
-        angle=-7+12*t+math.sin(t*math.tau)*2
+        # First-party hand-painted high-chroma vortex is the expanding circular ultimate.
+        scale=.52+.46*math.sin((t*.89+.11)*math.pi/2)
+        gain=.78+.22*math.sin((t*.8+.1)*math.pi/2)
+        angle=-5+8*t
     else:
         # Penetration lights reach peak in the first third then disintegrate.
         scale=.37+.62*math.sin((.10+.75*t)*math.pi/2)
@@ -119,7 +125,7 @@ def atlas(name,kind,count,cell):
     return sheet
 
 def main():
-    names=[('poison11_charge_10.png','charge',10,(192,192)),('poison11_crown_12.png','crown',12,(320,224)),('poison11_contact_08.png','contact',8,(192,160))]
+    names=[('poison11_charge_10.png','charge',10,(192,192)),('poison11_flight_10.png','flight',10,(224,160)),('poison11_crown_10.png','crown',10,(320,192)),('poison11_contact_08.png','contact',8,(192,160))]
     atlas_list=[atlas(*r) for r in names]
     raw=sum(im.width*im.height*4 for im in atlas_list)
     print('POI11_RAW_RGBA8_BYTES',raw,'MiB',round(raw/1048576,3))

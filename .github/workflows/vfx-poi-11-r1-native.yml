@@ -39,7 +39,7 @@ jobs:
           mkdir -p "$RUNNER_TEMP/poi11-r1"
           godot --version | tee "$RUNNER_TEMP/poi11-r1/engine.txt"
           printf 'EXACT_SHA=%s\nOWNER_VISUAL_PENDING\nPVE_HOLD\nV63_OFF\nNO_RIG\nSTATUS_VIEW_ONLY\n' "$GITHUB_SHA" > "$RUNNER_TEMP/poi11-r1/metadata.txt"
-      - name: Bake original full-size RGBA masters into 30 attack poses; V4 packet and asset gates
+      - name: Bake original full-size RGBA masters into 38 original attack poses; V4 packet and asset gates
         shell: bash
         run: |
           set -euo pipefail
@@ -52,7 +52,7 @@ jobs:
           from pathlib import Path
           from PIL import Image
           d=Path('godot/labs/combat_lab/poison11/r1_original/assets')
-          expected=['poison11_charge_10.png','poison11_crown_12.png','poison11_contact_08.png']
+          expected=['poison11_charge_10.png','poison11_flight_10.png','poison11_crown_10.png','poison11_contact_08.png']
           total=0
           for n in expected:
               with Image.open(d/n) as im:total+=im.width*im.height*4

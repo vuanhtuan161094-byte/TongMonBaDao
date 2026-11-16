@@ -26,10 +26,12 @@ const PALM := Vector2(341.0,426.0)
 const AREA_CENTER := Vector2(1002.0,518.0)
 const CASTER := Vector2(273.0,540.0)
 const CHARGE_PATH := "res://labs/combat_lab/poison11/r1_original/assets/poison11_charge_10.png"
-const CROWN_PATH := "res://labs/combat_lab/poison11/r1_original/assets/poison11_crown_12.png"
+const FLIGHT_PATH := "res://labs/combat_lab/poison11/r1_original/assets/poison11_flight_10.png"
+const CROWN_PATH := "res://labs/combat_lab/poison11/r1_original/assets/poison11_crown_10.png"
 const CONTACT_PATH := "res://labs/combat_lab/poison11/r1_original/assets/poison11_contact_08.png"
 const CHARGE_CELL := Vector2(192,192)
-const CROWN_CELL := Vector2(320,224)
+const FLIGHT_CELL := Vector2(224,160)
+const CROWN_CELL := Vector2(320,192)
 const CONTACT_CELL := Vector2(192,160)
 const BACKDROP:Texture2D = preload("res://labs/combat_lab/poison05/remake_r6/assets/immortal_valley.svg")
 const CASTER_ART:Texture2D = preload("res://labs/character_family/assets/nu_doc_tu_v4_candidate/idle_4dir_APPROVED_UNCHANGED.png")
@@ -38,6 +40,7 @@ const PoisonBadge = preload("res://labs/combat_lab/shared_poison_status/poison_s
 var elapsed:=0.0
 var paused:=false
 var charge_frames:Array[AtlasTexture]=[]
+var flight_frames:Array[AtlasTexture]=[]
 var crown_frames:Array[AtlasTexture]=[]
 var contact_frames:Array[AtlasTexture]=[]
 
@@ -68,7 +71,7 @@ static func charge_index(t:float)->float:
     return clampf((t/CAST_END)*9.0,0.0,9.0)
 
 static func crown_index(t:float)->float:
-    return clampf(pow(clampf((t-AREA_ARRIVE)/(CROWN_END-AREA_ARRIVE),0.0,1.0),0.65)*11.0,0.0,11.0)
+    return clampf(pow(clampf((t-AREA_ARRIVE)/(CROWN_END-AREA_ARRIVE),0.0,1.0),0.65)*9.0,0.0,9.0)
 
 static func contact_index(i:int,t:float)->float:
     return clampf((t-mock_contact_time(i))/CONTACT_VISUAL_SECONDS*7.0,0.0,7.0)
@@ -91,23 +94,25 @@ func _frame(tex:Texture2D,i:int,cell:Vector2)->AtlasTexture:
 func _ready()->void:
     custom_minimum_size=Vector2(1280,720)
     mouse_filter=Control.MOUSE_FILTER_IGNORE
-    for path in [CHARGE_PATH,CROWN_PATH,CONTACT_PATH,PoisonBadge.ICON_PATH]:
+    for path in [CHARGE_PATH,FLIGHT_PATH,CROWN_PATH,CONTACT_PATH,PoisonBadge.ICON_PATH]:
         if not ResourceLoader.exists(path):
             push_error("POI11_MISSING_ALPHA_ASSET: "+path)
             set_process(false)
             return
     var c:=load(CHARGE_PATH) as Texture2D
+    var f:=load(FLIGHT_PATH) as Texture2D
     var s:=load(CROWN_PATH) as Texture2D
     var h:=load(CONTACT_PATH) as Texture2D
-    if c==null or s==null or h==null or c.get_size()!=Vector2(768,576) or s.get_size()!=Vector2(1280,672) or h.get_size()!=Vector2(768,320):
+    if c==null or f==null or s==null or h==null or c.get_size()!=Vector2(768,576) or f.get_size()!=Vector2(896,480) or s.get_size()!=Vector2(1280,576) or h.get_size()!=Vector2(768,320):
         push_error("POI11_BAD_ATLAS_IMPORT")
         set_process(false)
         return
     for i in range(10):charge_frames.append(_frame(c,i,CHARGE_CELL))
-    for i in range(12):crown_frames.append(_frame(s,i,CROWN_CELL))
+    for i in range(10):flight_frames.append(_frame(f,i,FLIGHT_CELL))
+    for i in range(10):crown_frames.append(_frame(s,i,CROWN_CELL))
     for i in range(8):contact_frames.append(_frame(h,i,CONTACT_CELL))
     set_process(true)
-    print("VFX_POI11_R1_READY original_spears=true frames=30 moving_monsters=3 shared_poison_badge=true view_only=true")
+    print("VFX_POI11_R1_READY painted_vortex=true original_spears=true frames=38 moving_monsters=3 shared_poison_badge=true view_only=true")
     queue_redraw()
 
 func _process(delta:float)->void:
@@ -142,19 +147,19 @@ func _monster(i:int,t:float)->void:
 func _draw()->void:
     var t:=elapsed
     draw_texture_rect(BACKDROP,Rect2(0,0,1280,720),false,Color.WHITE)
-    if charge_frames.size()!=10 or crown_frames.size()!=12 or contact_frames.size()!=8:return
+    if charge_frames.size()!=10 or flight_frames.size()!=10 or crown_frames.size()!=10 or contact_frames.size()!=8:return
     if t<CAST_END:
         var rise:=smoothstep(.03,.79,t)
         _flip(charge_frames,PALM,Vector2(186,170),charge_index(t),rise*.96)
     if t>=CAST_END and t<AREA_ARRIVE:
         var q:=clampf((t-CAST_END)/(AREA_ARRIVE-CAST_END),0.0,1.0)
-        _flip(crown_frames,flight_position(t),Vector2(220+65*q,154+45*q),clampf(q*10.0,0.0,11.0),.92)
+        _flip(flight_frames,flight_position(t),Vector2(220+65*q,154+45*q),clampf(q*9.0,0.0,9.0),.92)
     # The unique needle-crown paints the *area* behind three actually moving monsters.
     if t>=AREA_ARRIVE and t<CROWN_END:
         var up:=smoothstep(AREA_ARRIVE,2.08,t)
         var out:=1.0-smoothstep(2.68,CROWN_END,t)
-        var span:=lerpf(390.0,545.0,smoothstep(AREA_ARRIVE,2.40,t))
-        _flip(crown_frames,AREA_CENTER+Vector2(0,-77),Vector2(span,span*.74),crown_index(t),up*out*.95)
+        var span:=lerpf(400.0,535.0,smoothstep(AREA_ARRIVE,2.40,t))
+        _flip(crown_frames,AREA_CENTER+Vector2(0,-72),Vector2(span,span*.62),crown_index(t),up*out*.97)
         # Secondary center flash from the *same* original painted contact source, NOT a new hit.
         if t<2.58:
             var core_gain:=smoothstep(1.94,2.13,t)*(1.0-smoothstep(2.30,2.58,t))

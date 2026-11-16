@@ -36,7 +36,8 @@ func _run()->void:
         check(not source.contains(bad),"view only "+bad)
     var specs=[
         [LAB.CHARGE_PATH,Vector2(768,576),Vector2i(192,192),10],
-        [LAB.CROWN_PATH,Vector2(1280,672),Vector2i(320,224),12],
+        [LAB.FLIGHT_PATH,Vector2(896,480),Vector2i(224,160),10],
+        [LAB.CROWN_PATH,Vector2(1280,576),Vector2i(320,192),10],
         [LAB.CONTACT_PATH,Vector2(768,320),Vector2i(192,160),8]
     ]
     var total_bytes:=0
@@ -61,7 +62,7 @@ func _run()->void:
         var inst:=LAB.new()
         root.add_child(inst)
         await process_frame
-        check(inst.charge_frames.size()==10 and inst.crown_frames.size()==12 and inst.contact_frames.size()==8,"30 unique atlas poses")
+        check(inst.charge_frames.size()==10 and inst.flight_frames.size()==10 and inst.crown_frames.size()==10 and inst.contact_frames.size()==8,"38 unique atlas poses")
         inst.queue_free()
     print("VFX_POI11_R1_RAW_RGBA_BYTES=",total_bytes)
     print("VFX_POI11_R1_RESULT=",("PASS" if failures==0 else "FAIL")," failures=",failures)
