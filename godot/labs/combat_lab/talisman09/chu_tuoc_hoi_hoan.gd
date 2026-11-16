@@ -68,7 +68,7 @@ static func bird_center(t:float)->Vector2:
     # An energy-bird orbits the zone: it does NOT constitute a real projectile.
     var q:=clampf((t-DEMO_PHOENIX_START)/1.46,.0,1.0)
     var a:=(-.85+q*1.65)*TAU
-    return CIRCLE_CENTER+Vector2(158*cos(a),-81+62*sin(a))
+    return CIRCLE_CENTER+Vector2(108*cos(a),-121+45*sin(a))
 
 static func bird_angle(t:float)->float:
     var t0:=clampf(t-.004,DEMO_PHOENIX_START,2.04)
@@ -105,7 +105,7 @@ func _ready()->void:
             var a:=clampf(exp(-8.5*p.length_squared())*(1.0-smoothstep(.78,1,p.length())),0,1)
             im.set_pixel(x,y,Color(1,1,1,a))
     _light=ImageTexture.create_from_image(im)
-    print("VFX_TAL09_READY id=",SKILL_ID," stage=HF04_R1_CHU_TUOC_REAL_SPRITES actor_walk=3 contract=circle_cap3_one_hit projectile_speed=0 view_only=true")
+    print("VFX_TAL09_READY id=",SKILL_ID," stage=HF04_R2_ILLUSTRATED_PHOENIX_SPRITE actor_walk=3 contract=circle_cap3_one_hit projectile_speed=0 view_only=true")
     set_process(true)
 
 func _process(delta:float)->void:
@@ -132,7 +132,7 @@ func _draw()->void:
     var o:=orbit_gain(t)
     if o>.003:
         var q:=orbit_frame(t)
-        _atlas(ORBIT,q,640,340,Rect2(CIRCLE_CENTER-Vector2(322,149),Vector2(644,298)),Color(1,1,1,o*.94))
+        _atlas(ORBIT,q,640,340,Rect2(CIRCLE_CENTER-Vector2(294,124),Vector2(588,254)),Color(1,1,1,o*.64))
     var bird:=bird_gain(t)
     if bird>.003:
         var p:=bird_center(t)
@@ -154,8 +154,8 @@ func _draw()->void:
         var idx:=hit_frame(t)
         for k in range(TARGET_LIMIT):
             var at:=target_contact(k,t)
-            _atlas(CONTACT,idx,256,256,Rect2(at-Vector2(91,99),Vector2(182,182)),Color(1,1,1,hit*.82))
-            _halo(at,23,Color("ff6a2e",hit*.35))
+            _atlas(CONTACT,idx,256,256,Rect2(at-Vector2(70,76),Vector2(140,140)),Color(1,1,1,hit*.72))
+            _halo(at,23,Color("ff6a2e",hit*.24))
             _halo(at,7,Color("fffbdd",hit*.68))
     draw_texture_rect_region(CASTER_ART,
         Rect2(CASTER-Vector2(72,163),Vector2(144,163)),
