@@ -71,8 +71,8 @@ def image(tier,kind,t,cell):
         # Graded volumetric needle sheath is transparent but keeps saturated RGB.
         width=(3.0+order*.65)+ (11+order*4)*(1-progress)**1.3
         body=np.exp(-(y/width)**2)*gx
-        put(accent,body*(.18+.035*order))
-        put(jade,body*(.36+.055*order))
+        put(accent,body*(.20+.07*order))
+        put(jade,body*(.42+.085*order))
         # A sharp tapered spear point, stable orientation toward +X.
         core=np.exp(-(y/(1.0+.85*(1-progress)))**2)*gate(x,-83,head,10)
         put(jade,core*(.67+.06*order))
@@ -85,17 +85,17 @@ def image(tier,kind,t,cell):
         if order>=1:
             # Immortal evolves to double afterimage LINES (not extra gameplay hits).
             for sign in (-1,1):
-                echo=sign*(8+(9+order*2)*(1-progress))
+                echo=sign*(13+(12+order*4)*(1-progress))
                 taper=np.exp(-((y-echo)/(1.0+order*.25))**2)*gate(x,-84,38,23)
-                put((151,244,251) if tier=="immortal" else accent,taper*(.32 if order==1 else .43))
+                put((151,244,251) if tier=="immortal" else accent,taper*(.47 if order==1 else .59))
             tip_veil=np.exp(-((x-(head-15))/16)**2-(y/(5+2*order))**2)
             put(jade,tip_veil*.22)
         if order==2:
             # Divine golden articulated apex plus two separated ornament trails.
             for sign in (-1,1):
-                wing=sign*(3+12*np.clip((head-x)/43,0,1))
+                wing=sign*(6+19*np.clip((head-x)/53,0,1))
                 cut=np.exp(-((y-wing)/1.0)**2)*gate(x,10,head,12)
-                put(accent,cut*.50)
+                put(accent,cut*.75)
                 crown=np.exp(-((x-20)/4.3)**2-((y-sign*15)/3.0)**2)
                 put(accent,crown*.33)
         # Hairline white-jade point anchored to actual tip.
@@ -105,7 +105,7 @@ def image(tier,kind,t,cell):
         fade=max(.10,float(np.clip((1-t)/.63,0,1)**.75))
         growth=.35+.75*float(np.sin(min(1,t)*math.pi)**.7)
         spokes=(5,7,9)[order]
-        size=(29,40,51)[order]*growth
+        size=(29,44,62)[order]*growth
         body=np.exp(-(rad/(15+6*order))**2)
         put(jade,body*.25*fade)
         for k in range(spokes):
@@ -113,21 +113,21 @@ def image(tier,kind,t,cell):
             axial=x*math.cos(a)+y*math.sin(a)
             cross=-x*math.sin(a)+y*math.cos(a)
             plume=np.exp(-(cross/(1.8+order*.25))**2)*gate(axial,0,size,6)
-            put(jade,plume*(.46+.04*order)*fade)
+            put(jade,plume*(.52+.08*order)*fade)
             if order>=1:
                 secondary=np.exp(-((cross-2.4)/(2.3+order*.3))**2)*gate(axial,5,size*.78,7)
-                put(accent,secondary*(.26+.05*order)*fade)
+                put(accent,secondary*(.32+.09*order)*fade)
         if order>=1:
             # Immortal elliptical shock ripple. Not an opaque circular disk.
             rip=np.exp(-((rad-(16+22*t+order*4))/(3.3+order))**2)
             broken=.35+.65*np.sin(angle*(spokes//2)+.45)**2
-            put(accent,rip*broken*(.11+.025*order)*fade)
+            put(accent,rip*broken*(.15+.055*order)*fade)
         if order==2:
             for k in range(5):
                 a=k*math.tau/5
                 v=np.exp(-((x-31*math.cos(a)*growth)/2.1)**2-((y-31*math.sin(a)*growth)/3.1)**2)
-                put((255,235,146),v*.46*fade)
-        put(hot,np.exp(-(rad/(5+1.3*order))**2)*(.86)*fade)
+                put((255,235,146),v*.72*fade)
+        put(hot,np.exp(-(rad/(5+1.3*order))**2)*(.91)*fade)
     else:raise ValueError(kind)
     out=np.zeros_like(p,dtype=np.uint8)
     out[:,:,:3]=np.clip(p[:,:,:3],0,255).astype(np.uint8)
