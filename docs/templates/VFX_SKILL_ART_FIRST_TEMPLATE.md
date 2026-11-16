@@ -98,3 +98,15 @@ State cast_time, cooldown, projectile_speed, effect, duration and hit_count sepa
 | Actual Actions run / output bytes / device FPS separately (NO invented throughput) | |
 
 Do not export an 8–11s status-loop movie at **every** art iteration if the actual attack is only ~3s; do not shortcut genuine motion inspection or required long-duration phase behavior. Fixed 60 FPS movie frames are not sprite textures or measured physical GPU FPS. Every new skill must still be owner-reviewed and remain PvE HOLD until a separate authorization.
+
+## G2.5 optional-but-default motion GIF trial (V4.2)
+
+- GIF-first suitable for this skill? YES/NO and reason; phase duration/shape should match canonical G0:
+- Source original GIF/spritesheet, provenance, width×height, frames, frame duration, SHA-256, durable repo/library source:
+- Caster in source GIF? Is it **noncanonical illustration**, and how is it removed before integration?
+- Frame-by-frame breakdown of **charge / flight / contact / fade**; meaningful geometry and timing:
+- Extraction command, source-to-alpha atlas mapping; check body/face leakage, matte square, banding, alpha RGB halos:
+- Source GIF contact sheet and **native Godot** three phase screenshots at 1×; defects and action:
+- Sprite poses vs GIF frames vs encoded MP4 frames (report three separate counts):
+- Four-way visual projectile aiming where relevant (one atlas, no 4 artwork sets):
+- Source/atlas/technical/art/owner/PvE/physical gates all **separate**:
