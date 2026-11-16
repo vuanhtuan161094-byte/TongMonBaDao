@@ -1,4 +1,4 @@
-name: VFX-FIST-08 R2 pure bright counterforce Production V4 moving GUARD
+name: VFX-FIST-08 R1 Phan Chan Quyen Production V4 three-stage moving GUARD
 on:
   workflow_dispatch:
   push:
