@@ -6,6 +6,7 @@ on:
     paths:
       - '.github/workflows/vfx-tal-11-phong-gioi-truy-dau.yml'
       - 'tools/vfx/paf01_r1_wind_mark.py'
+      - 'tools/vfx/paf01_r6_illustrated_paper.py'
       - 'godot/labs/combat_lab/talisman11/**'
       - 'godot/tests/labs/combat_lab/vfx_tal11_contract_test.gd'
       - 'docs/operations/vfx_packets/PAF01_V4_PREFLIGHT.json'
