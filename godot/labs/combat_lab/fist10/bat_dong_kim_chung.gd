@@ -1,9 +1,9 @@
 extends Control
 ## FIST10 / Bat Dong Kim Chung: first-party illustrated GOLDEN BELL guard ultimate, ONE target.
-## Earth GUARD 4 seconds. ImageGen original high-detail golden bell, first-party 640px WebP master baked into full-alpha frames.
+## Earth GUARD 4 seconds. Original painterly golden-qi stroke layers, baked independently into true alpha atlas; no GIF or character pixels.
 ## Preview receipts ONLY, no gameplay writes, no rig, no fake damage.
 const SKILL_ID := "tmb.skill.fist.kim_cang.ultimate.human"
-const ART_REVISION := "R3_UNIFIED_BELL_DEFENSIVE_RESONANCE"
+const ART_REVISION := "R4_ORIGINAL_TRANSLUCENT_GOLD_QI"
 const EFFECT := "guard"
 const ELEMENT := "earth"
 const SHAPE := "single_target"
@@ -75,7 +75,7 @@ func _ready() -> void:
     set_process(true)
     queue_redraw()
     if not vfx_only_benchmark:
-        print("VFX_FIST10_R3_READY skill=",SKILL_ID," effect=guard cap=1 moving_target=true no_rig=true view_only=true")
+        print("VFX_FIST10_R4_READY skill=",SKILL_ID," effect=guard cap=1 moving_target=true no_rig=true view_only=true")
 
 func _process(delta: float) -> void:
     if paused:return
@@ -132,12 +132,12 @@ func _draw() -> void:
     if not vfx_only_benchmark:
         draw_texture_rect(BG,Rect2(0,0,1280,720),false,Color.WHITE)
         draw_rect(Rect2(0,0,1280,76),Color("141620",.76))
-    # The large original mountain composition is CAST-ONLY; never a
+    # Large translucent bell of spiritual qi is CAST-ONLY; never a
     # 4-second bright permanent fortress obscuring the battlefield.
     if burst>.002:
         var k:=clampi(int(floor(t/CAST_BURST_END*12.0)),0,11)
         _frame(CAST,k,384.0,protected+Vector2(0,-154),1.17,burst,Vector2(192,192))
-    # A small readable two-plate sign breathes with the moving recipient.
+    # A small transparent golden qi guard follows with the moving recipient.
     if state>.002:
         var k:=posmod(int(floor((t-GUARD_START)*6.0)),8)
         _frame(STATUS,k,192.0,protected+Vector2(0,-93),1.34,
@@ -164,7 +164,7 @@ func _draw() -> void:
         draw_string(ThemeDB.fallback_font,Vector2(28,33),
             "BAT DONG KIM CHUNG / ULTIMATE",HORIZONTAL_ALIGNMENT_LEFT,-1,22,Color("fff0d4"))
         draw_string(ThemeDB.fallback_font,Vector2(28,59),
-            "FIST10 R3 | PAINTED BELL / COHESIVE GUARD / CONTACT",
+            "FIST10 R4 | ORIGINAL GOLD QI / CHARGE / GUARD / CONTACT",
             HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("eccba3"))
         draw_string(ThemeDB.fallback_font,Vector2(28,683),
             "GODOT 4.7.2 | EARTH GUARD 4S | MOVING WALK | LAB ONLY / NO RIG",

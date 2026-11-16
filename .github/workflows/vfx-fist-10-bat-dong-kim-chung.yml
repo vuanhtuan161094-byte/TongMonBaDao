@@ -34,7 +34,7 @@ jobs:
           sudo install -m0755 /tmp/Godot_v4.7.2-stable_linux.x86_64 /usr/local/bin/godot
           mkdir -p /tmp/vfx-fist10
           godot --version | tee /tmp/vfx-fist10/engine.txt
-          echo "EXACT_SHA=$GITHUB_SHA; FIST10=R2_ILLUSTRATED_golden_bell_guard_4s; ART_PENDING; NO_RIG; PVE_HOLD; V63_OFF" > /tmp/vfx-fist10/metadata.txt
+          echo "EXACT_SHA=$GITHUB_SHA; FIST10=R4_INDEPENDENT_ALPHA_GOLD_QI_guard_4s; ART_PENDING; NO_RIG; PVE_HOLD; V63_OFF" > /tmp/vfx-fist10/metadata.txt
       - name: Restore approved unchanged idle and walk actors for demo
         shell: bash
         run: |
@@ -47,7 +47,7 @@ jobs:
         run: |
           set -euo pipefail
           python3 tools/qa/validate_vfx_v4_packet.py --stage packet --packet docs/operations/vfx_packets/FIST10_R1_BAT_DONG_KIM_CHUNG_V4.json | tee /tmp/vfx-fist10/v4-packet.log
-      - name: Bake 28 ImageGen original illustrated golden-bell RGBA poses and validate
+      - name: Bake 28 independent golden-qi transparent RGBA poses (NO GIF reference frame extraction)
         shell: bash
         run: |
           set -euo pipefail
@@ -55,7 +55,7 @@ jobs:
           grep -Fq 'FIST10_BAKE_PASS poses=28 pages=3 raw_rgba_bytes=10354688 no_rig=true first_party_derived_material=true' /tmp/vfx-fist10/bake.log
           python3 tools/qa/validate_vfx_v4_packet.py --stage assets --packet docs/operations/vfx_packets/FIST10_R1_BAT_DONG_KIM_CHUNG_V4.json | tee /tmp/vfx-fist10/v4-assets.log
           cp godot/labs/combat_lab/fist10/assets/generated/f10_*.png /tmp/vfx-fist10/
-          cp godot/labs/combat_lab/fist10/assets/generated/fist10_illustrated_bell_r2_source.png /tmp/vfx-fist10/first_party_illustrated_bell_master.png
+          cp godot/labs/combat_lab/fist10/assets/generated/f10_r4_original_transparent_qi_master.png /tmp/vfx-fist10/f10_r4_independent_alpha_master.png
           cp godot/labs/combat_lab/fist10/assets/source/r2_illustrated_bell_640.webp.b64 /tmp/vfx-fist10/fist10_r2_imagegen_original_640.webp.b64
           sha256sum /tmp/vfx-fist10/f10_*.png /tmp/vfx-fist10/*.webp.b64 > /tmp/vfx-fist10/ART_SOURCE_SHA256SUMS.txt
       - name: Godot strict import parse and moving single protected target contract
@@ -85,28 +85,28 @@ jobs:
           done
           python3 tools/qa/validate_vfx_v4_packet.py --stage evidence --packet docs/operations/vfx_packets/FIST10_R1_BAT_DONG_KIM_CHUNG_V4.json --out "$d" --sha "$GITHUB_SHA" | tee "$d/v4-evidence.log"
           rm "$d/v4-fist10-native.avi"
-      - name: Full Godot 1280x720 video GIF and 17 frame review
+      - name: Full native Godot 1280x720 MP4 and 19 frame visual review (NO GIF)
         shell: bash
         run: |
           set -euo pipefail
           d=/tmp/vfx-fist10
-          xvfb-run -a -s '-screen 0 1280x720x24' bash tools/qa/run_godot_strict.sh --path godot --resolution 1280x720 --fixed-fps 60 --write-movie "$d/fist10-r3.avi" --quit-after 372 res://labs/combat_lab/fist10/bat_dong_kim_chung.tscn 2>&1 | tee "$d/godot-full.log"
-          ffmpeg -y -hide_banner -loglevel error -i "$d/fist10-r3.avi" -pix_fmt yuv420p -c:v libx264 -crf 16 -movflags +faststart "$d/fist10-r3.mp4"
-          ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of default=noprint_wrappers=1 "$d/fist10-r3.mp4" | tee "$d/dimensions.txt"
+          xvfb-run -a -s '-screen 0 1280x720x24' bash tools/qa/run_godot_strict.sh --path godot --resolution 1280x720 --fixed-fps 60 --write-movie "$d/fist10-r4.avi" --quit-after 372 res://labs/combat_lab/fist10/bat_dong_kim_chung.tscn 2>&1 | tee "$d/godot-full.log"
+          ffmpeg -y -hide_banner -loglevel error -i "$d/fist10-r4.avi" -pix_fmt yuv420p -c:v libx264 -crf 16 -movflags +faststart "$d/fist10-r4.mp4"
+          ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of default=noprint_wrappers=1 "$d/fist10-r4.mp4" | tee "$d/dimensions.txt"
           grep -Fxq width=1280 "$d/dimensions.txt"
           grep -Fxq height=720 "$d/dimensions.txt"
           for at in 0.22 0.42 0.68 0.88 1.05 1.23 1.33 1.48 1.75 2.10 2.16 2.33 3.12 4.08 4.16 5.10 5.44 5.83 6.05; do
-            ffmpeg -y -hide_banner -loglevel error -ss "$at" -i "$d/fist10-r3.mp4" -frames:v 1 "$d/frame-$at.png"
+            ffmpeg -y -hide_banner -loglevel error -ss "$at" -i "$d/fist10-r4.mp4" -frames:v 1 "$d/frame-$at.png"
           done
-          ffmpeg -y -hide_banner -loglevel error -i "$d/fist10-r3.mp4" -vf 'fps=3,scale=320:180,tile=5x4:nb_frames=20' -frames:v 1 "$d/timeline.png"
-          ffmpeg -y -hide_banner -loglevel error -i "$d/fist10-r3.mp4" -vf 'fps=12,scale=640:360:flags=lanczos' -loop 0 "$d/fist10-r3.gif"
-          sha256sum "$d/"*.mp4 "$d/"*.gif "$d/"*.png > "$d/SHA256SUMS.txt"
-          rm "$d/fist10-r3.avi"
+          ffmpeg -y -hide_banner -loglevel error -i "$d/fist10-r4.mp4" -vf 'fps=3,scale=320:180,tile=5x4:nb_frames=20' -frames:v 1 "$d/timeline.png"
+          # R4: no GIF pipeline; native MP4 is the only animation proof
+          sha256sum "$d/"*.mp4 "$d/"*.png > "$d/SHA256SUMS.txt"
+          rm "$d/fist10-r4.avi"
       - name: Upload exact-SHA art technical evidence; owner gate manual
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: vfx-fist10-r3-illustrated-v4-native
+          name: vfx-fist10-r4-illustrated-v4-native
           retention-days: 14
           if-no-files-found: warn
           path: |
@@ -115,5 +115,4 @@ jobs:
             /tmp/vfx-fist10/*.log
             /tmp/vfx-fist10/*.png
             /tmp/vfx-fist10/*.mp4
-            /tmp/vfx-fist10/*.gif
             /tmp/vfx-fist10/*.webp.b64
