@@ -4,7 +4,7 @@ on:
   push:
     branches: [integration/pve-p0-playable-ui-20261103]
     paths:
-      - '.github/workflows/vfx-tal-08-hoa-tam-ngung-phu.yml'
+      - '.github/workflows/vfx-tal-09-chu-tuoc-hoi-hoan.yml'
       - 'tools/vfx/hf04_r1_que_tuoc.py'
       - 'godot/labs/combat_lab/talisman09/**'
       - 'godot/tests/labs/combat_lab/vfx_tal09_contract_test.gd'
