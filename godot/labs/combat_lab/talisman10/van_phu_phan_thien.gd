@@ -97,7 +97,7 @@ func _ready()->void:
             var a:=clampf(exp(-8.6*p.length_squared())*(1.0-smoothstep(.78,1,p.length())),0,1)
             im.set_pixel(x,y,Color(1,1,1,a))
     _light=ImageTexture.create_from_image(im)
-    print("VFX_TAL10_READY id=",SKILL_ID," art=HF05_R3_RADIANT_ULTIMATE frames=16/24/20/12 moving_monsters=3 real_projectile_speed=0 circle_hit_count=1 view_only=true")
+    print("VFX_TAL10_READY id=",SKILL_ID," art=HF05_R4_GIANT_SIGIL_ULTIMATE frames=16/24/20/12 moving_monsters=3 real_projectile_speed=0 circle_hit_count=1 view_only=true")
     set_process(true)
 
 func _process(delta:float)->void:
@@ -131,6 +131,17 @@ func _draw()->void:
         var area:=CIRCLE_CENTER+Vector2(0,-77)
         _atlas(RAIN,rain_frame(t),640,440,
             Rect2(area-Vector2(267,192),Vector2(534,348)),Color(1,1,1,rain*.98))
+    # R4: a single giant original illustrated master sigil stays recognizable
+    # during the ONE circle pulse. Purely visual, behind WALK actors, not a hit.
+    var royal_scroll:=smoothstep(1.63,1.84,t)*(1.0-smoothstep(2.04,2.20,t))
+    if royal_scroll>.003:
+        var q:=smoothstep(1.63,2.07,t)
+        var hero_center:=CIRCLE_CENTER+Vector2(0,lerpf(-213.0,-150.0,q))
+        var hero_size:=lerpf(335.0,440.0,q)
+        _atlas(CHARGE,15,320,320,
+            Rect2(hero_center-Vector2.ONE*hero_size*.5,Vector2.ONE*hero_size),
+            Color(1,1,1,royal_scroll*.89))
+        _halo(hero_center+Vector2(0,-26),72,Color("ffb74d",royal_scroll*.16))
     var hit:=impact_gain(t)
     if hit>.003:
         _atlas(IMPACT,impact_frame(t),640,320,
