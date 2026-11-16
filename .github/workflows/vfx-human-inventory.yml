@@ -26,7 +26,7 @@ jobs:
           mkdir -p "$d"
           echo "REPO_SHA=$GITHUB_SHA" > "$d/SOURCE_SHA.txt"
           python3 tools/qa/build_vfx_progress_inventory.py --out "$d" | tee "$d/INVENTORY_CHECKS.log"
-          grep -Fq 'VFX_INVENTORY_VERIFIED_ALL_IDS=2196 HUMAN_CAST_MASTERS=204 DEDICATED_LABS=25 OWNER_APPROVED=7 NO_DEDICATED_LABS=179' "$d/INVENTORY_CHECKS.log"
+          grep -Fq 'VFX_INVENTORY_VERIFIED_ALL_IDS=2196 HUMAN_CAST_MASTERS=204 DEDICATED_LABS=26 OWNER_APPROVED=7 NO_DEDICATED_LABS=178' "$d/INVENTORY_CHECKS.log"
           test "$(($(wc -l < "$d/ALL_2196_VFX_STATUS.csv")-1))" -eq 2196
           test "$(($(wc -l < "$d/HUMAN_204_VFX_STATUS.csv")-1))" -eq 204
           sha256sum "$d/"*.csv "$d/"*.md > "$d/STATUS_SHA256SUMS.txt"
