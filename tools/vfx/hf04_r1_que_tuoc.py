@@ -96,7 +96,7 @@ def orbit(i,fire,paper):
     for j in range(2):
         a=i*.19+j*math.pi
         seal=reshape(paper,i+j*15,(57,78),-25+math.degrees(a)*.3,.53+.40*q)
-        splash(c,320+184*math.cos(a),166+68*math.sin(a),.25)
+        splash(c,seal,320+184*math.cos(a),166+68*math.sin(a),.25)
     return c
 
 def charge(i,fire,paper):
