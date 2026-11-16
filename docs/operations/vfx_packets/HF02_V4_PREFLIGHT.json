@@ -134,5 +134,10 @@
     "owner": "OWNER_VISUAL_PENDING",
     "live": "PVE_INTEGRATION_HOLD",
     "device": "PHYSICAL_QA_PENDING"
+  },
+  "proof_contract": {
+    "focused_marker": "VFX_TAL07_FOCUSED_RESULT=PASS failures=0",
+    "native_marker": "VFX_TAL07_READY",
+    "source": "Existing HF02 focused Godot contract checks walk frame count, demo target displacement, contact anchor follows moving target, circle cap3."
   }
 }
