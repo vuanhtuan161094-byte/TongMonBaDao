@@ -53,6 +53,10 @@ static func monster_foot(i:int,t:float)->Vector2:
 static func monster_chest(i:int,t:float)->Vector2:
     return monster_foot(i,t)+Vector2(-5.0,-79.0)
 
+## Cosmetic focal glint is intentionally below the head, tracking the same live WALK dummy.
+static func contact_anchor(i:int,t:float)->Vector2:
+    return monster_chest(i,t)+Vector2(0.0,12.0)
+
 static func poison_badge_anchor(i:int,t:float)->Vector2:
     return monster_foot(i,t)+Vector2(-5.0,-127.0)
 
@@ -148,16 +152,26 @@ func _draw()->void:
     var t:=elapsed
     draw_texture_rect(BACKDROP,Rect2(0,0,1280,720),false,Color.WHITE)
     if charge_frames.size()!=10 or flight_frames.size()!=10 or crown_frames.size()!=10 or contact_frames.size()!=8:return
-    if t<CAST_END:
+    # R6: crossfade the caster-painted charge into ONE cosmetic spear.
+    # The two faint delayed sprites are ghost trails, NOT extra projectiles or hits.
+    if t<CAST_END+.16:
         var rise:=smoothstep(.02,.36,t)
-        _flip(charge_frames,PALM,Vector2(221,202),charge_index(t),rise*.98)
+        var leave:=1.0-smoothstep(CAST_END-.025,CAST_END+.16,t)
+        _flip(charge_frames,PALM,Vector2(221,202),charge_index(minf(t,CAST_END)),rise*leave*.98)
     if t>=CAST_END and t<AREA_ARRIVE:
         var q:=clampf((t-CAST_END)/(AREA_ARRIVE-CAST_END),0.0,1.0)
-        _flip(flight_frames,flight_position(t),Vector2(220+65*q,154+45*q),clampf(q*9.0,0.0,9.0),.92)
+        var entrance:=smoothstep(CAST_END,CAST_END+.10,t)
+        var spear_size:=Vector2(220+65*q,154+45*q)
+        var trail_a:=maxf(CAST_END,t-.075)
+        var trail_b:=maxf(CAST_END,t-.035)
+        _flip(flight_frames,flight_position(trail_a),spear_size*.78,clampf((trail_a-CAST_END)/(AREA_ARRIVE-CAST_END)*9.0,0.0,9.0),entrance*.12)
+        _flip(flight_frames,flight_position(trail_b),spear_size*.90,clampf((trail_b-CAST_END)/(AREA_ARRIVE-CAST_END)*9.0,0.0,9.0),entrance*.20)
+        _flip(flight_frames,flight_position(t),spear_size,clampf(q*9.0,0.0,9.0),entrance*.90)
     # The unique needle-crown paints the *area* behind three actually moving monsters.
     if t>=AREA_ARRIVE and t<CROWN_END:
         var up:=smoothstep(AREA_ARRIVE,2.08,t)
-        var out:=1.0-smoothstep(2.68,CROWN_END,t)
+        # Contact takes optical priority after 2.24s; the painted vortex stays behind actors.
+        var out:=1.0-.28*smoothstep(2.16,2.38,t)-.72*smoothstep(2.62,CROWN_END,t)
         var span:=lerpf(400.0,535.0,smoothstep(AREA_ARRIVE,2.40,t))
         _flip(crown_frames,AREA_CENTER+Vector2(0,-72),Vector2(span,span*.62),crown_index(t),up*out*.97)
         # Secondary center flash from the *same* original painted contact source, NOT a new hit.
@@ -170,6 +184,10 @@ func _draw()->void:
         var hit:=mock_contact_time(i)
         if t>=hit and t<hit+CONTACT_VISUAL_SECONDS:
             var alpha:=smoothstep(hit,hit+.035,t)*(1.0-smoothstep(hit+.15,hit+CONTACT_VISUAL_SECONDS,t))
-            _flip(contact_frames,monster_chest(i,t),Vector2(177,143),contact_index(i,t),alpha*.99)
+            var local_focus:=smoothstep(hit,hit+.04,t)*(1.0-smoothstep(hit+.09,hit+.22,t))
+            # R6: torso-anchored painted puncture remains readable over a quieter rear vortex.
+            # One short ivory/jade core glint is purely visual and follows the SAME target.
+            _flip(contact_frames,contact_anchor(i,t),Vector2(148,114),contact_index(i,t),alpha*.99)
+            _flip(contact_frames,contact_anchor(i,t),Vector2(74,62),minf(contact_index(i,t)+.75,7.0),local_focus*.43)
         # Shared icon from POI10: display one status per target, not an eight-second attack effect.
         PoisonBadge.draw_for(self,poison_badge_anchor(i,t),DECLARED_POISON_STACKS,demo_status_remaining(i,t),t)
