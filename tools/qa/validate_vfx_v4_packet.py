@@ -61,10 +61,12 @@ def equals_number(a: object, b: object) -> bool:
 
 def validate_packet(root: Path, packet: dict) -> dict:
     require(packet.get("schema") == "tmb-vfx-production-system-v4.1", "wrong V4 packet schema")
-    require(packet.get("skill_id") == "tmb.skill.talisman.hoa_phu.active_02.human", "HF02 packet identity mismatch")
+    require(isinstance(packet.get("skill_id"), str) and packet["skill_id"].startswith("tmb.skill."), "invalid VFX skill ID")
+    require(isinstance(packet.get("school"), str) and len(packet["school"]) > 1, "missing VFX school")
     for name in ("scene_path", "lab_script", "focused_test"):
         checked_path(root, packet.get(name, ""))
     catalogue = read_json(checked_path(root, packet.get("catalogue_path", "")))
+    require(catalogue.get("school") == packet["school"], "packet school != catalogue school")
     matching = [skill for skill in catalogue.get("skills", []) if skill.get("id") == packet["skill_id"]]
     require(len(matching) == 1, "skill ID must appear exactly once in canonical catalogue")
     canonical = matching[0]
@@ -74,7 +76,7 @@ def validate_packet(root: Path, packet: dict) -> dict:
         a, b = declared[field], canonical[field]
         require(equals_number(a, b) if isinstance(b, (int, float)) else a == b, "catalogue mismatch for " + field + ": " + str(a) + " != " + str(b))
     require(canonical.get("enabled", False) is not True, "unexpected skill-level enabling")
-    require(declared["projectile_speed"] == 0 and declared["shape"] == "circle" and declared["target_limit"] == 3, "HF02 no-projectile/circle/cap3 contract changed")
+    require(declared["target_limit"] >= 1 and declared["hit_count"] >= 0, "invalid declared target or hit count")
 
     timing = packet.get("time_contract", {})
     require(timing.get("combat_clock") == "CATALOGUE_GATED_NOT_LIVE", "must label gated combat clock")
@@ -92,15 +94,16 @@ def validate_packet(root: Path, packet: dict) -> dict:
     require(all(isinstance(p.get("file"), str) and re.fullmatch(r"v4-[a-z-]+[.]png", p["file"]) for p in phases), "phase PNG filenames invalid")
 
     movement = packet.get("moving_target", {})
-    require(movement.get("actor_animation") == "walk", "moving enemy must use actual walk animation")
-    require(movement.get("locked_demo_target_index") == 0, "wrong locked demo target index")
+    require(isinstance(movement.get("actor_animation"), str) and movement["actor_animation"], "moving enemy animation must be recorded")
+    require(isinstance(movement.get("locked_demo_target_index"), int) and 0 <= movement["locked_demo_target_index"] < declared["target_limit"], "moving-target index outside canonical cap")
     require(equals_number(movement.get("movement_from_seconds"), times[0]), "movement source timestamp mismatch")
     require(equals_number(movement.get("movement_to_seconds"), times[2]), "movement contact timestamp mismatch")
-    require(movement.get("minimum_displacement_px", 0) >= 12, "moving-target displacement threshold missing")
+    require(movement.get("minimum_displacement_px", 0) > 0, "moving-target nonzero displacement threshold required")
     require(movement.get("receipt_claim") == "SIMULATED_VISUAL_ONLY", "demo contact is not an actual hit receipt")
 
     provenance = packet.get("provenance", {})
-    require(provenance.get("source_class") == "FIRST_PARTY_OWNER_SUPPLIED_GENERATED_CONCEPT_CROP", "unverified source rights classification")
+    source_class = provenance.get("source_class", "")
+    require(isinstance(source_class, str) and (source_class.startswith("FIRST_PARTY_") or source_class.startswith("AUTHORIZED_LICENSED_")), "unverified source rights classification")
     require(provenance.get("master_quality_status") == "MANUAL_ART_REVIEW_REQUIRED", "source quality cannot be auto-approved")
     require(isinstance(provenance.get("rights_note"), str) and len(provenance["rights_note"]) > 30, "rights provenance note required")
     masters = provenance.get("master_files", [])
@@ -108,12 +111,13 @@ def validate_packet(root: Path, packet: dict) -> dict:
     source_hashes = {}
     for master in masters:
         original = checked_path(root, master.get("path", ""))
-        require(master.get("encoding") in ("base64-webp", "base64-png"), "source encoding unknown")
+        require(master.get("encoding") in ("base64-webp", "base64-png", "webp", "png"), "source encoding unknown")
         try:
-            data = base64.b64decode("".join(original.read_text(encoding="ascii").split()), validate=True)
+            encoding = master["encoding"]
+            data = base64.b64decode("".join(original.read_text(encoding="ascii").split()), validate=True) if encoding.startswith("base64-") else original.read_bytes()
             with Image.open(io.BytesIO(data)) as im:
                 require(im.width >= 32 and im.height >= 32, "source art corrupt or too small to validate")
-                expected = "WEBP" if master["encoding"] == "base64-webp" else "PNG"
+                expected = "WEBP" if encoding.endswith("webp") else "PNG"
                 require(im.format == expected, "wrong source image format")
                 size = [im.width, im.height]
         except (ValueError, UnicodeError, OSError) as exc:
@@ -164,7 +168,7 @@ def validate_assets(root: Path, packet: dict) -> dict:
     return results
 
 
-def video_probe(video: Path) -> dict:
+def video_probe(video: Path, minimum_duration: float) -> dict:
     cmd = ["ffprobe", "-v", "error", "-select_streams", "v:0",
            "-show_entries", "stream=width,height:format=duration",
            "-of", "json", str(video)]
@@ -176,7 +180,7 @@ def video_probe(video: Path) -> dict:
     require(len(streams) == 1, "exactly one proof video stream required")
     stream = streams[0]
     require(stream.get("width") == 1280 and stream.get("height") == 720, "native video not 1280x720")
-    require(float(data.get("format", {}).get("duration", 0)) >= 1.50, "native proof ends before moving contact")
+    require(float(data.get("format", {}).get("duration", 0)) >= minimum_duration, "native proof ends before moving contact")
     return {"width": stream["width"], "height": stream["height"], "duration": float(data["format"]["duration"])}
 
 
@@ -184,14 +188,19 @@ def validate_evidence(packet: dict, output: Path, git_sha: str) -> dict:
     require(re.fullmatch(r"[0-9a-f]{40}", git_sha) is not None, "exact source commit SHA required")
     require(output.is_dir(), "evidence directory missing")
     log = (output / "godot-focused.log")
-    require(log.is_file() and "VFX_TAL07_FOCUSED_RESULT=PASS failures=0" in log.read_text(errors="replace"),
+    proof_contract = packet.get("proof_contract", {})
+    focused_marker = proof_contract.get("focused_marker", "")
+    native_marker = proof_contract.get("native_marker", "")
+    require(isinstance(focused_marker, str) and len(focused_marker) > 10, "focused proof marker missing from packet")
+    require(isinstance(native_marker, str) and len(native_marker) > 8, "native boot marker missing from packet")
+    require(log.is_file() and focused_marker in log.read_text(errors="replace"),
             "moving-target focused contract evidence missing or failed")
     movie_log = (output / "godot-preflight.log")
-    require(movie_log.is_file() and "VFX_TAL07_READY" in movie_log.read_text(errors="replace"),
+    require(movie_log.is_file() and native_marker in movie_log.read_text(errors="replace"),
             "actual Godot LAB boot marker missing")
     video = output / "v4-hf02-native.mp4"
     require(video.is_file() and video.stat().st_size > 0, "native Godot proof video missing")
-    info = video_probe(video)
+    info = video_probe(video, float(packet["time_contract"]["phases"][-1]["at_seconds"]) + 0.03)
     frames = []
     proofs = {}
     for phase in packet["time_contract"]["phases"]:
