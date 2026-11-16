@@ -101,7 +101,16 @@ def impact(i,img):
     q=i/7.;dst=Image.new("RGBA",(256,256))
     src=feather_crop(img.crop((83,7,249,90)),9)
     effect=deform(src,i+23,sx=1.30+q*.10,sy=2.26+q*.22)
-    a=.07+.93*(1-q)**.7  # retain sparse final glowing ash; never an empty flipbook cell
+    # R5 native 1.49/1.62s review: source-backed contact has tiny dark
+    # rectangular plates near actor feet. Isolate only the incandescent bite.
+    pix=np.asarray(effect.convert("RGBA")).copy()
+    hh,ww=pix.shape[:2]
+    yy,xx=np.indices((hh,ww),dtype=np.float32)
+    elliptical=((xx-ww*.51)/(ww*.52))**2+((yy-hh*.52)/(hh*.53))**2
+    soft=np.clip((1.02-elliptical)/.46,0,1)**1.30
+    pix[:,:,3]=np.uint8(np.clip((pix[:,:,3].astype(np.float32)-62)*1.26*soft,0,255))
+    effect=Image.fromarray(pix,"RGBA")
+    a=.07+.93*(1-q)**.7  # sparse glowing ash in final pose
     layered(dst,effect,((256-effect.width)//2,(256-effect.height)//2),
             glow=.43*a,gain=.95*a)
     return dst
