@@ -27,3 +27,8 @@ Owner asked to test a short GIF first and standardize the improvement if success
 | Combat V2 mapping, PvE/V6.3 and physical device QA | **HOLD / OFF / PENDING** |
 
 The user can review the standalone GIF and alpha atlas pack and ask for repair without compromising already accepted Poison Human skills or altering the map/combat runtime. This is a **new** normal-attack master; do not confuse it with the 12 previous Poison dedicated spell LABs.
+
+
+## Owner correction 16/11/2026 — GIF crop NOT acceptable final VFX
+
+Owner assessed extracted GIF-to-alpha trial as **not sufficiently translucent, with colors losing their original vividness**, and clarified GIF must be **movement reference ONLY**. Therefore the historical 8-frame cropped alpha contact sheet / ZIP is **ART_REWORK_REQUIRED / NOT OWNER APPROVED / NOT GAME-READY**. Keep it as prototype/evidence of why direct GIF background removal is unsuitable. Recreate completely original translucent color-rich RGBA sprite sources for charge, needle, contact and fade; reserve white-hot center and soft colored bloom in separate layers, using approved character art independently. Native Godot import, moving-target three-shot, short full-motion video and exact-SHA remain NOT_EXECUTED for corrected basic attack. Human/Immortal/Divine basic visual approvals all still pending; no Combat V2, PvE or V6.3 changes.
