@@ -80,6 +80,18 @@ static func crown_index(t:float)->float:
 static func contact_index(i:int,t:float)->float:
     return clampf((t-mock_contact_time(i))/CONTACT_VISUAL_SECONDS*7.0,0.0,7.0)
 
+## R7 two-layer handoff: preserve one painted spear as the area starts unfolding.
+## These are visual weights, never Combat V2 cast/hit/status receipt timings.
+static func spear_alpha(t:float)->float:
+    if t<CAST_END or t>=AREA_ARRIVE+.17:return 0.0
+    return .90*smoothstep(CAST_END,CAST_END+.10,t)*(1.0-smoothstep(AREA_ARRIVE-.03,AREA_ARRIVE+.17,t))
+
+static func crown_alpha(t:float)->float:
+    if t<AREA_ARRIVE-.08 or t>=CROWN_END:return 0.0
+    var up:=smoothstep(AREA_ARRIVE-.08,2.05,t)
+    var out:=1.0-.28*smoothstep(2.16,2.38,t)-.72*smoothstep(2.62,CROWN_END,t)
+    return up*out*.97
+
 static func phase_at(t:float)->String:
     if t<CAST_END:return "charge"
     if t<AREA_ARRIVE:return "one_cosmetic_spear_approach"
@@ -158,22 +170,22 @@ func _draw()->void:
         var rise:=smoothstep(.02,.36,t)
         var leave:=1.0-smoothstep(CAST_END-.025,CAST_END+.16,t)
         _flip(charge_frames,PALM,Vector2(221,202),charge_index(minf(t,CAST_END)),rise*leave*.98)
-    if t>=CAST_END and t<AREA_ARRIVE:
+    if t>=CAST_END and t<AREA_ARRIVE+.17:
         var q:=clampf((t-CAST_END)/(AREA_ARRIVE-CAST_END),0.0,1.0)
         var entrance:=smoothstep(CAST_END,CAST_END+.10,t)
         var spear_size:=Vector2(220+65*q,154+45*q)
         var trail_a:=maxf(CAST_END,t-.075)
         var trail_b:=maxf(CAST_END,t-.035)
-        _flip(flight_frames,flight_position(trail_a),spear_size*.78,clampf((trail_a-CAST_END)/(AREA_ARRIVE-CAST_END)*9.0,0.0,9.0),entrance*.12)
-        _flip(flight_frames,flight_position(trail_b),spear_size*.90,clampf((trail_b-CAST_END)/(AREA_ARRIVE-CAST_END)*9.0,0.0,9.0),entrance*.20)
-        _flip(flight_frames,flight_position(t),spear_size,clampf(q*9.0,0.0,9.0),entrance*.90)
+        var hero_alpha:=spear_alpha(t)
+        _flip(flight_frames,flight_position(trail_a),spear_size*.78,clampf((trail_a-CAST_END)/(AREA_ARRIVE-CAST_END)*9.0,0.0,9.0),hero_alpha*.13)
+        _flip(flight_frames,flight_position(trail_b),spear_size*.90,clampf((trail_b-CAST_END)/(AREA_ARRIVE-CAST_END)*9.0,0.0,9.0),hero_alpha*.22)
+        _flip(flight_frames,flight_position(t),spear_size,clampf(q*9.0,0.0,9.0),hero_alpha)
     # The unique needle-crown paints the *area* behind three actually moving monsters.
-    if t>=AREA_ARRIVE and t<CROWN_END:
-        var up:=smoothstep(AREA_ARRIVE,2.08,t)
-        # Contact takes optical priority after 2.24s; the painted vortex stays behind actors.
-        var out:=1.0-.28*smoothstep(2.16,2.38,t)-.72*smoothstep(2.62,CROWN_END,t)
+    if t>=AREA_ARRIVE-.08 and t<CROWN_END:
+        # R7 painted overlap fixes a nearly black handoff at 1.90-2.02 seconds.
+        # Contact retains optical priority after 2.24; no new target or hit is created.
         var span:=lerpf(400.0,535.0,smoothstep(AREA_ARRIVE,2.40,t))
-        _flip(crown_frames,AREA_CENTER+Vector2(0,-72),Vector2(span,span*.62),crown_index(t),up*out*.97)
+        _flip(crown_frames,AREA_CENTER+Vector2(0,-72),Vector2(span,span*.62),crown_index(t),crown_alpha(t))
         # Secondary center flash from the *same* original painted contact source, NOT a new hit.
         if t<2.58:
             var core_gain:=smoothstep(1.94,2.13,t)*(1.0-smoothstep(2.30,2.58,t))
