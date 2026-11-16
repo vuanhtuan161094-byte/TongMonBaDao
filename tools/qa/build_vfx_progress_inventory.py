@@ -38,6 +38,7 @@ LABS={
  "tmb.skill.talisman.hoa_phu.active_02":"godot/labs/combat_lab/talisman07/lien_diem_phan_gioi.tscn",
  "tmb.skill.talisman.hoa_phu.active_03":"godot/labs/combat_lab/talisman08/hoa_tam_ngung_phu.tscn",
  "tmb.skill.talisman.hoa_phu.active_04":"godot/labs/combat_lab/talisman09/chu_tuoc_hoi_hoan.tscn",
+ "tmb.skill.talisman.hoa_phu.ultimate":"godot/labs/combat_lab/talisman10/van_phu_phan_thien.tscn",
  "tmb.skill.fist.ba_quyen.active_01":"godot/labs/combat_lab/fist01/khai_son_trong_quyen.tscn",
  "tmb.skill.fist.ba_quyen.active_02":"godot/labs/combat_lab/fist02/phi_than_lien_cuoc.tscn",
  "tmb.skill.fist.ba_quyen.active_03":"godot/labs/combat_lab/fist04/lei_dinh_chan_quyen.tscn",
@@ -56,7 +57,8 @@ APPROVED={
  "tmb.skill.talisman.hoa_phu.active_03":"HF03_R2_OWNER_APPROVAL_20261116",
 }
 PREVIEW_ONLY={"tmb.skill.poison.co_doc.ultimate":"POI06_R11_OWNER_PREVIEW_ACCEPTED_NATIVE_QA_PASS"}
-IN_PROGRESS={"tmb.skill.talisman.hoa_phu.active_04":"HF04_R3_V4_AND_FULL_GODOT472_EXACT_BB681DBB_TECH_PASS_OWNER_PENDING"}
+IN_PROGRESS={"tmb.skill.talisman.hoa_phu.active_04":"HF04_R3_OWNER_PROVISIONAL_USE_ART_REWORK_DEFERRED",
+ "tmb.skill.talisman.hoa_phu.ultimate":"HF05_R2_V4_GODOT_PREVIEW_OWNER_PENDING"}
 
 def main():
     p=argparse.ArgumentParser()
@@ -76,7 +78,7 @@ def main():
     assert len({r["family_id"] for r in humans})==204,"Human cast family count inconsistent"
     assert set(LABS)<={r["family_id"] for r in humans}, "A listed LAB is not a canonical Human cast"
     assert all((ROOT / lab).exists() for lab in LABS.values()),"Missing actual LAB scene"
-    assert len(LABS)==24 and len(APPROVED)==7
+    assert len(LABS)==25 and len(APPROVED)==7
     for r in records:
         is_human_cast=r["tier"]=="human" and r["visual_work_class"]=="CAST_MASTER"
         fam=r["family_id"]
@@ -84,7 +86,9 @@ def main():
         if is_human_cast:
             if fam in APPROVED:r["vfx_actual"]="OWNER_VISUAL_APPROVED_HUMAN_LAB"
             elif fam in PREVIEW_ONLY:r["vfx_actual"]="PREVIEW_ACCEPTED_NATIVE_QA_NOT_FINAL_OWNER"
-            elif fam in IN_PROGRESS:r["vfx_actual"]="LAB_GODOT_NATIVE_TECH_PASS_OWNER_PENDING"
+            elif fam in IN_PROGRESS:
+                r["vfx_actual"]=("OWNER_PROVISIONAL_USE_ART_REWORK_DEFERRED" if fam=="tmb.skill.talisman.hoa_phu.active_04"
+                    else "LAB_G3_5_ART_REWORK_IN_PROGRESS_OWNER_PENDING")
             elif fam in LABS:r["vfx_actual"]="DEDICATED_LAB_OWNER_PENDING_OR_REWORK"
             else:r["vfx_actual"]="NO_DEDICATED_HUMAN_LAB"
         elif r["visual_work_class"]!="CAST_MASTER":
@@ -108,9 +112,9 @@ def main():
       "", "This is a reproducible **source-catalogue + dedicated-LAB / owner decision** audit, NOT a release completeness claim.",
       "12 schools × 183 IDs = **2,196 IDs**, 420 families; **204 Human CAST_MASTER**",
       "(12 × 17), with other tiers/lineages and passive/event categories requiring separate art/event work.",
-      "**24/204** distinct Human cast masters have dedicated isolated Godot LAB scenes, **7/204** have explicit owner-art approval as understood at this checkpoint. **180/204** do not have a dedicated Human cast LAB yet.",
+      "**25/204** distinct Human cast masters have dedicated isolated Godot LAB scenes, **7/204** have explicit owner-art approval as understood at this checkpoint. **179/204** do not have a dedicated Human cast LAB yet.",
       "Technical CI/illustrative previews do **not** count as owner approval or live PvE integration.",
-      "HF02 R6 approved 10/10, exact art SHA b5a29f1504078a0e66acc9c79306dc86f5f28463. POI06 R11 accepted *preview* only. HF03 R2 owner visual approved on 16 Nov 2026; exact native art SHA ac3b02b1aa6c0d7e0c5dd7e418c59c4dc52a0bb4. HF04 first independent LAB currently V4 G3.5 / owner review pending.",
+      "HF02 R6 approved 10/10, exact art SHA b5a29f1504078a0e66acc9c79306dc86f5f28463. POI06 R11 accepted *preview* only. HF03 R2 owner visual approved on 16 Nov 2026; exact native art SHA ac3b02b1aa6c0d7e0c5dd7e418c59c4dc52a0bb4. HF04 R3 owner authorized TEMPORARY use only and criticized phoenix art/smoothness; not owner-final approved. HF05 ultimate new isolated LAB, technical/art gates underway.",
       "", "| School | Human cast | Dedicated LAB | Explicit owner approved | Not yet dedicated |",
       "|---|---:|---:|---:|---:|"]
     for name,allnum,labs,approved in school_rows:
@@ -127,7 +131,7 @@ def main():
        "- Status overlay must be revised after each exact owner decision and actual Godot technical evidence; this report is a dated snapshot.", ""]
     (out/"HUMAN_204_VFX_STATUS.md").write_text("\n".join(lines),encoding="utf-8")
     sums=Counter(r["vfx_actual"] for r in humans)
-    print("VFX_INVENTORY_VERIFIED_ALL_IDS=2196 HUMAN_CAST_MASTERS=204 DEDICATED_LABS=24 OWNER_APPROVED=7 NO_DEDICATED_LABS=180")
+    print("VFX_INVENTORY_VERIFIED_ALL_IDS=2196 HUMAN_CAST_MASTERS=204 DEDICATED_LABS=25 OWNER_APPROVED=7 NO_DEDICATED_LABS=179")
     print("VFX_INVENTORY_HUMAN_BUCKETS",dict(sums))
     for name,_,labs,approved in school_rows:
         print("VFX_SCHOOL",name,"LAB",labs,"APPROVED",approved)
