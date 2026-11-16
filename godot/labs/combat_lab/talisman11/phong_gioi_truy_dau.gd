@@ -94,7 +94,7 @@ func _ready()->void:
             var a:=clampf(exp(-8.8*p.length_squared())*(1.0-smoothstep(.78,1.0,p.length())),0,1)
             im.set_pixel(x,y,Color(1,1,1,a))
     _light=ImageTexture.create_from_image(im)
-    print("VFX_TAL11_READY id=",SKILL_ID," PhongAn PAF01 view_only=true target_moving=true mark_duration=6.0 projectile_speed=0 no_damage_receipts=true")
+    print("VFX_TAL11_READY id=",SKILL_ID," PhongAn PAF01_R2_FLYING_ORIGINAL_PAPER view_only=true target_moving=true mark_duration=6.0 projectile_speed=0 no_damage_receipts=true")
     set_process(true)
 
 func _process(delta:float)->void:
@@ -142,7 +142,7 @@ func _draw()->void:
         var vec:=end-start
         draw_set_transform(start,vec.angle(),Vector2.ONE)
         _blended(STREAM,16,512,256,clampf((t-RELEASE_START)/(RELEASE_END-RELEASE_START),0,1)*15.0,
-            Rect2(0,-58,vec.length(),116),Color(1,1,1,wind*.84))
+            Rect2(0,-90,vec.length(),180),Color(1,1,1,wind*.98))
         draw_set_transform(Vector2.ZERO)
         _glow(end,30,Color("79f9ec",wind*.14))
     # Tiny arrival imprint on target chest (one mark application, zero damage).
@@ -157,11 +157,11 @@ func _draw()->void:
     var m:=mark_gain(t)
     if m>.003:
         var p:=mark_icon(0,t)
-        var size:=116.0+4.0*sin(t*3.4)
+        var size:=146.0+4.0*sin(t*3.4)
         _blended(MARK,20,256,256,fposmod(t*7.9,19.0),
             Rect2(p-Vector2.ONE*size*.5,Vector2.ONE*size),
-            Color(1,1,1,m*.93))
-        _glow(p,45,Color("76eada",m*.09))
+            Color(1,1,1,m*.96))
+        _glow(p,45,Color("76eada",m*.12))
         # One small stable wind-linked tag cue; no invented shield/stun/DoT.
         _glow(target_contact(0,t)+Vector2(0,11),17,Color("74d7d1",m*.085))
     draw_texture_rect_region(CASTER_ART,Rect2(CASTER-Vector2(72,163),Vector2(144,163)),
