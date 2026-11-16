@@ -83,3 +83,18 @@ State cast_time, cooldown, projectile_speed, effect, duration and hit_count sepa
 - Owner approved revision SHA and immutable protected art; if user pivots, keep prior unresolved revision as REWORK/PENDING, not approved:
 - Production measurements (when actually observed): G3.5 attempts, full renders, rework count, owner-approved masters per session; no invented work time:
 
+
+## V4.1 efficient QA frame budget (mandatory from 2026-11-16)
+
+| Quantity | Number / reason / evidence |
+| --- | --- |
+| **Authored atlas key poses** (not encoded frames) | |
+| Atlas dimensions and uncompressed RGBA8 + loading/pooling assumptions | |
+| True native Godot G3.5 preflight clip + charge / peak / moving contact timestamps | |
+| G3.5 1× art STOP result (including cropped-square/alpha defect) | |
+| **Attack-only** full-motion clip start/fade; native 1280×720 fps, frames and >=12 useful inspection points when warranted | |
+| Long-lived status visual probe at start/mid/expiry (2–4 exact native stills or focused deterministic test); mock versus actual receipt | |
+| Reason for optional full combined film (e.g. owner 11s / full regression) or SKIPPED | |
+| Actual Actions run / output bytes / device FPS separately (NO invented throughput) | |
+
+Do not export an 8–11s status-loop movie at **every** art iteration if the actual attack is only ~3s; do not shortcut genuine motion inspection or required long-duration phase behavior. Fixed 60 FPS movie frames are not sprite textures or measured physical GPU FPS. Every new skill must still be owner-reviewed and remain PvE HOLD until a separate authorization.

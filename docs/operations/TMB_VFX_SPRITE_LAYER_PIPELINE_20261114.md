@@ -48,3 +48,10 @@ This is a **companion** to the canonical Production System V4 addendum in TMB_VF
 - **G6–G8 separation:** self art review, technical exact-SHA QA, owner visual approval, live/PvE authorization and physical Windows/Android FPS are distinct. Preserve previously approved TAL02 R6/TAL03 R4 and accepted Poison sources; revise only authorized portions.
 - **Cross-chat handoff** is mandatory: latest branch SHA; school skill exact ID; three-clock matrix; art master/atlas manifest and provenance; G3.5 visual gate result with three frame locations; actual movie and moving-contact findings; art self-score; technical CI/run; owner/PvE/device status. If not run, mark NOT_EXECUTED rather than using historical run as current validation.
 
+
+
+## QA production optimization, V4.1 — owner direction 2026-11-16
+
+The authoritative step-by-step acceptance rules are in the **G5/V4.1** addition to [the canonical Art-First SOP](TMB_VFX_ART_FIRST_SINGLE_SKILL_SOP_V3_20261114.md). Apply them to all new/changed skills rather than treating the old "8–12 frames" or "always make 11 s movie" examples above as mandatory. **Atlas sprite poses != encoded QA video frames**: POI11 R9 has 38 authored atlas poses, while its final 11-second 60-FPS proof had 660 video frames. The attack VFX ended near 3.08s; the rest was a LAB poison badge test.
+
+Default: **G3.5 true native 1280×720 charge/peak/moving-contact** → human STOP/repair → **short native full-motion attack-only clip through fade** (commonly 3–4s if actual animation fits) with meaningful checkpoints → **separate timed screenshots/deterministic tests of sustained marks and expiry** → optional **full combined video for owner/regression**, not every iteration. Maintain 1× art and smooth 60 FPS engine playback, genuine source alpha (no poster crop / hard square), exact-SHA logs, real moving anchors and independent owner approval. Long-running guards or statuses may require longer actual review when their appearance changes during sustain; this is not a universal compression of skill length.
