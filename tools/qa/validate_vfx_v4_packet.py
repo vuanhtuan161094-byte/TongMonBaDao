@@ -101,7 +101,17 @@ def validate_packet(root: Path, packet: dict) -> dict:
     require([p.get("id") for p in phases] == ["charge", "peak", "contact"], "preflight phase order mismatch")
     times = [p.get("at_seconds") for p in phases]
     require(all(isinstance(t, (int, float)) and t >= 0 for t in times), "preflight times missing")
-    require(times[0] < declared["cast_time"] < times[1] < times[2] < timing.get("demo_loop_seconds", 0), "charge/peak/contact must be ordered and inside demonstration")
+    # Zero-cast basic actions have no gameplay wind-up: any displayed charge is
+    # LAB-only cosmetic motion, not a fabricated Combat V2 cast time.
+    if equals_number(declared["cast_time"], 0.0):
+        require(0.0 <= times[0] < times[1] < times[2] < timing.get("demo_loop_seconds", 0),
+                "instant-cast basic: LAB phase timing must remain ordered")
+        warning = str(timing.get("demo_clock_warning", "")).lower()
+        require("cosmetic" in warning and "cast" in warning,
+                "zero-cast skill requires explicit cosmetic-vs-gameplay timing warning")
+    else:
+        require(times[0] < declared["cast_time"] < times[1] < times[2] < timing.get("demo_loop_seconds", 0),
+                "charge/peak/contact must be ordered and inside demonstration")
     require(times[2] > timing.get("simulated_hit_seconds", 10e9), "contact frame precedes simulated hit")
     require(all(isinstance(p.get("file"), str) and re.fullmatch(r"v4-[a-z-]+[.]png", p["file"]) for p in phases), "phase PNG filenames invalid")
 
