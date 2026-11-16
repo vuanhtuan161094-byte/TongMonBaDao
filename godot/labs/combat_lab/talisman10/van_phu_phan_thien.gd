@@ -28,12 +28,16 @@ const RAIN_END := 2.03
 const CONTACT_START := 1.85
 const CONTACT_END := 2.17
 const FADE_END := 2.74
+const FINALE_START := 1.80
+const FINALE_END := 2.74
+const FINALE_POSES := 20
 const DEMO_LOOP := 3.35
 
 const CHARGE:Texture2D=preload("res://labs/combat_lab/talisman10/assets/tal10_r1_charge.webp")
 const STORM:Texture2D=preload("res://labs/combat_lab/talisman10/assets/tal10_r1_storm.webp")
 const RAIN:Texture2D=preload("res://labs/combat_lab/talisman10/assets/tal10_r1_rain.webp")
 const IMPACT:Texture2D=preload("res://labs/combat_lab/talisman10/assets/tal10_r1_impact.webp")
+const FINALE:Texture2D=preload("res://labs/combat_lab/talisman10/assets/tal10_r6_fire_lotus.webp")
 const BACKDROP:Texture2D=preload("res://labs/combat_lab/poison05/remake_r6/assets/immortal_valley.svg")
 const CASTER_ART:Texture2D=preload("res://labs/character_family/assets/nu_doc_tu_v4_candidate/idle_4dir_APPROVED_UNCHANGED.png")
 const MONSTER:SpriteFrames=preload("res://assets/actors/v5_sa_monster_1113031_1/animations.tres")
@@ -75,6 +79,13 @@ static func impact_gain(t:float)->float:
     if t<CONTACT_START or t>=CONTACT_END:return 0.0
     return smoothstep(CONTACT_START,CONTACT_START+.04,t)*(1.0-smoothstep(2.02,CONTACT_END,t))
 
+static func finale_gain(t:float)->float:
+    if t<FINALE_START or t>=FINALE_END:return 0.0
+    return smoothstep(FINALE_START,1.96,t)*(1.0-smoothstep(2.51,FINALE_END,t))
+
+static func finale_frame_pos(t:float)->float:
+    return clampf((t-FINALE_START)/(FINALE_END-FINALE_START),0.0,1.0)*float(FINALE_POSES-1)
+
 static func charge_frame(t:float)->int:
     return clampi(int(floor(clampf(t/CHARGE_END,0,1)*15.99)),0,15)
 
@@ -97,7 +108,7 @@ func _ready()->void:
             var a:=clampf(exp(-8.6*p.length_squared())*(1.0-smoothstep(.78,1,p.length())),0,1)
             im.set_pixel(x,y,Color(1,1,1,a))
     _light=ImageTexture.create_from_image(im)
-    print("VFX_TAL10_READY id=",SKILL_ID," art=HF05_R5_BLEND_FLIPBOOK_ULTIMATE frames=16/24/20/12 moving_monsters=3 real_projectile_speed=0 circle_hit_count=1 view_only=true")
+    print("VFX_TAL10_READY id=",SKILL_ID," art=HF05_R6_PAINTED_FIRE_LOTUS_FINALE frames=16/24/20/12/20 moving_monsters=3 real_projectile_speed=0 circle_hit_count=1 view_only=true")
     set_process(true)
 
 func _process(delta:float)->void:
@@ -150,22 +161,29 @@ func _draw()->void:
         var area:=CIRCLE_CENTER+Vector2(0,-77)
         _atlas_smooth(RAIN,20,640,440,clampf((t-RAIN_START)/(RAIN_END-RAIN_START),0.0,1.0)*19.0,
             Rect2(area-Vector2(267,192),Vector2(534,348)),Color(1,1,1,rain*.98))
-    # R4: a single giant original illustrated master sigil stays recognizable
-    # during the ONE circle pulse. Purely visual, behind WALK actors, not a hit.
-    var royal_scroll:=smoothstep(1.63,1.84,t)*(1.0-smoothstep(2.04,2.20,t))
+    # R6: the one chief paper seal COLLAPSES into the same single-area contact
+    # rather than hanging overhead or suddenly disappearing after the hit.
+    var royal_scroll:=smoothstep(1.63,1.82,t)*(1.0-smoothstep(1.91,2.08,t))
     if royal_scroll>.003:
-        var q:=smoothstep(1.63,2.07,t)
-        var hero_center:=CIRCLE_CENTER+Vector2(0,lerpf(-213.0,-150.0,q))
-        var hero_size:=lerpf(335.0,440.0,q)
+        var q:=smoothstep(1.77,2.07,t)
+        var hero_center:=CIRCLE_CENTER+Vector2(0,lerpf(-211.0,-90.0,q))
+        var hero_size:=lerpf(356.0,94.0,q)
         _atlas(CHARGE,15,320,320,
             Rect2(hero_center-Vector2.ONE*hero_size*.5,Vector2.ONE*hero_size),
-            Color(1,1,1,royal_scroll*.89))
-        _halo(hero_center+Vector2(0,-26),72,Color("ffb74d",royal_scroll*.16))
+            Color(1,1,1,royal_scroll*.95))
+        _halo(hero_center,56,Color("ffca6b",royal_scroll*.18))
+    # NEW source-painted fire LOTUS grows outward after ONE circular hit,
+    # then turns into flying textured embers. Its timing is LAB-only.
+    var lotus:=finale_gain(t)
+    if lotus>.003:
+        _atlas_smooth(FINALE,FINALE_POSES,640,400,finale_frame_pos(t),
+            Rect2(CIRCLE_CENTER-Vector2(294,213),Vector2(588,350)),
+            Color(1,1,1,lotus*.98))
+        _halo(CIRCLE_CENTER+Vector2(0,-72),85,
+            Color("ff9e41",lotus*.11))
     var hit:=impact_gain(t)
     if hit>.003:
-        _atlas_smooth(IMPACT,12,640,320,clampf((t-CONTACT_START)/.22,0.0,1.0)*11.0,
-            Rect2(CIRCLE_CENTER-Vector2(311,166),Vector2(622,302)),Color(1,1,1,hit*.94))
-        _halo(CIRCLE_CENTER+Vector2(0,-31),116,Color("ff8238",hit*.29))
+        _halo(CIRCLE_CENTER+Vector2(0,-42),57,Color("ffcd63",hit*.12))
     # Real three WALK monster sprites (different phases), deliberately drawn
     # AFTER broad fire effects, so faces/body do not disappear.
     var frames:=MONSTER.get_frame_count("walk")
@@ -190,10 +208,3 @@ func _draw()->void:
         _atlas_smooth(CHARGE,16,320,320,clampf(t/CHARGE_END,0.0,1.0)*15.0,Rect2(p-Vector2.ONE*s*.5,Vector2.ONE*s),
             Color(1,1,1,charge))
         _halo(HAND+Vector2(12,-6),45,Color("ffe48f",charge*.22))
-    var ash:=smoothstep(2.05,2.26,t)*(1.0-smoothstep(2.52,FADE_END,t))
-    if ash>.003:
-        for k in range(15):
-            var angle:=float(k)*2.39996
-            var p:=CIRCLE_CENTER+Vector2(cos(angle)*(67+float(k%5)*27),
-                 sin(angle)*(41+float(k%3)*19)-(t-2.0)*42)
-            _halo(p,2.7,Color("ffc66e",ash*.26))
