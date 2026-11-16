@@ -207,7 +207,12 @@ def validate_evidence(packet: dict, output: Path, git_sha: str) -> dict:
     movie_log = (output / "godot-preflight.log")
     require(movie_log.is_file() and native_marker in movie_log.read_text(errors="replace"),
             "actual Godot LAB boot marker missing")
-    video = output / "v4-hf02-native.mp4"
+    # School-neutral V4 evidence: HF02 keeps legacy default for older packets,
+    # while each new skill declares its native movie filename explicitly.
+    filename = proof_contract.get("video_filename", "v4-hf02-native.mp4")
+    require(isinstance(filename, str) and re.fullmatch(r"[A-Za-z0-9_.-]+[.]mp4", filename),
+            "invalid native proof video filename in packet")
+    video = output / filename
     require(video.is_file() and video.stat().st_size > 0, "native Godot proof video missing")
     info = video_probe(video, float(packet["time_contract"]["phases"][-1]["at_seconds"]) + 0.03)
     frames = []
