@@ -193,3 +193,12 @@ Owner observed that creating a short, carefully motion-designed **GIF of a skill
 8. **Strict gates:** GIF concept created ≠ effect atlas extracted ≠ Godot tech PASS ≠ human art self PASS ≠ owner approval ≠ PvE integrated. Store these statuses independently. Preserve source/atlas and original owner-approved revisions, no rig, Codex, new branch/merge or gameplay/SaveService changes.
 
 **First controlled trial:** Poison Human normal attack `tmb.skill.poison.basic.human` (Độc Châm Thường Thức). Source GIF storyboard 8 frames, 110ms each. It contains a *noncanonical illustrated caster*; it MUST be extracted as FX-only before Godot use. The first extracted layers are a **pilot candidate**, not owner-approved. Only create the Immortal/Divine differentiated variants after Human baseline actual native VFX approval, with tier-specific catalogue contracts and separate owner review. See [Poison basic GIF-first pilot](VFX_POISON_BASIC_GIF_FIRST_PILOT_20261116.md).
+
+
+### V4.2.1 — GIF LÀ THAM KHẢO CHUYỂN ĐỘNG, KHÔNG PHẢI NGUỒN PIXEL VFX (CHỈ ĐẠO CHỦ DỰ ÁN 16/11/2026)
+
+**Quy tắc ưu tiên mới, thay thế mọi hướng dẫn V4.2 nói về cắt GIF làm atlas:** GIF chỉ dùng quan sát nhịp chuyển động, tụ lực, đường bay, va chạm và tan. **KHÔNG cắt nền / key màu / lấy trực tiếp pixel từ GIF hoặc poster đã ghép nhân vật** để làm sprite phát hành. Thử nghiệm Độc Châm Thường Thức GIF→alpha vừa rồi khiến VFX đục, kém trong suốt và mất độ thuần màu; mẫu atlas tách từ GIF **ART_REWORK_REQUIRED, NOT APPROVED**. Giữ GIF làm reference lịch sử.
+
+Sau khi tham khảo GIF, **vẽ lại từ đầu các master VFX độc lập** với RGBA alpha thật ở độ phân giải đủ dùng, lưu cả file nguồn và frame-by-frame atlas. Giữ **RGB xanh ngọc/tím rực rỡ ngay cả tại pixel có alpha nhỏ**; alpha quyết định độ xuyên sáng chứ không phải làm xám hay nhạt sắc RGB. Tách các lớp: thân linh lực có chất liệu trong suốt (MIX), lõi sáng trắng ấm nhỏ, các dải năng lượng bán trong suốt, ánh sáng ngoài mềm (ADD tiết chế), và vệt dư/va chạm. Không làm khối màu đặc hoặc khói mù đục; không tạo mép vuông hay viền đen do tách nền GIF. Dùng sprite nhân vật đã được duyệt riêng; tuyệt đối không rig.
+
+**QA bắt buộc:** kiểm tra alpha/độ thuần màu trên nền sáng và tối, so sánh hình dáng/timing với GIF reference, ba ảnh Godot thật 1280×720 tại charge/peak/contact trên quái di chuyển, sau đó video VFX ngắn và exact-SHA; kỹ thuật PASS không thay cho mỹ thuật/owner PASS. Đánh thường Nhân giới `tmb.skill.poison.basic.human` tiếp tục OWNER_VISUAL_PENDING và V6.3/PvE HOLD. GIF không phải nguồn sprite dùng trong game.
