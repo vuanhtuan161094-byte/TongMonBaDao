@@ -1,0 +1,149 @@
+name: VFX POI10 R1 | Độc Khí Phệ Tâm radial devour three moving targets native
+on:
+  workflow_dispatch:
+  push:
+    branches: [integration/pve-p0-playable-ui-20261103]
+    paths:
+      - 'godot/labs/combat_lab/poison10/r1_painted/**'
+      - 'godot/tests/labs/combat_lab/vfx_poi10_r1_contract_test.gd'
+      - 'tools/vfx/generate_poi10_painted.py'
+      - '.github/workflows/vfx-poi-10-r1-painted-native.yml'
+permissions:
+  contents: write
+  actions: write
+jobs:
+  poi10-r1-native:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      GODOT_AUDIO_DRIVER: Dummy
+      GODOT_RENDERING_DRIVER: opengl3
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+      - name: Install official SHA-pinned Godot and dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq xvfb ffmpeg unzip python3-pil
+          curl --fail --location --retry 3 -o /tmp/godot472.zip 'https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip'
+          echo 'cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4  /tmp/godot472.zip' | sha256sum --check --strict
+          unzip -q /tmp/godot472.zip -d /tmp
+          sudo install -m0755 /tmp/Godot_v4.7.2-stable_linux.x86_64 /usr/local/bin/godot
+          mkdir -p "$RUNNER_TEMP/poi10-r1"
+          godot --version | tee "$RUNNER_TEMP/poi10-r1/engine.txt"
+          printf 'SOURCE_SHA=%s\nOWNER_VISUAL_PENDING\nPVE_HOLD\nV63_OFF\nNO_RIG\n' "$GITHUB_SHA" > "$RUNNER_TEMP/poi10-r1/metadata.txt"
+      - name: Bake 46 new painted core/expanding corona/contact/6-second mark RGBA frames
+        shell: bash
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/poi10-r1"
+          python3 tools/vfx/generate_poi10_painted.py | tee "$d/bake.log"
+          python3 - <<'PY'
+          from PIL import Image
+          import hashlib
+          p="godot/labs/combat_lab/poison10/r1_painted/assets/"
+          cases=[("devour_charge_r1_12.png",(896,576),(224,192),12),("devour_corona_r1_12.png",(896,672),(224,224),12),("devour_contact_r1_10.png",(768,480),(192,160),10),("devour_mark_r1_12.png",(640,480),(160,160),12)]
+          raw=0
+          for name,dims,cell,count in cases:
+              im=Image.open(p+name).convert("RGBA")
+              assert im.size==dims,(name,"dimensions")
+              raw += im.width*im.height*4
+              distinct=set()
+              for i in range(count):
+                  x=i%4*cell[0];y=i//4*cell[1]
+                  crop=im.crop((x,y,x+cell[0],y+cell[1]))
+                  a=crop.getchannel("A")
+                  assert a.getbbox(),(name,i,"empty")
+                  borders=[(0,0,cell[0],1),(0,cell[1]-1,cell[0],cell[1]),(0,0,1,cell[1]),(cell[0]-1,0,cell[0],cell[1])]
+                  assert all(a.crop(box).getextrema()[1]==0 for box in borders),(name,i,"alpha bleed")
+                  distinct.add(hashlib.sha256(crop.tobytes()).hexdigest())
+              assert len(distinct)==count,(name,"duplicate frames")
+              print("POI10_R1_ALPHA_AND_DISTINCT_PASS",name,count)
+          assert raw<8*1048576,("TOO_MANY_RGBA8_BYTES",raw)
+          print("POI10_R1_TEXTURE_RAW_BYTES=",raw)
+          PY
+          sha256sum godot/labs/combat_lab/poison10/r1_painted/assets/*.png > "$d/atlas-sha256.txt"
+      - name: Restore known Stage A actor reference without modifying tracked files
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat .github/assets/p3/female_stage_a/part{01..14}.b64 .github/assets/p3/female_stage_a/part15a.b64 .github/assets/p3/female_stage_a/part15b.b64 .github/assets/p3/female_stage_a/part{16..20}.b64 | tr -d '\r\n\t ' | base64 --decode > /tmp/tmb_stage_a_pack.zip
+          test "$(stat -c%s /tmp/tmb_stage_a_pack.zip)" -eq 44838
+          echo '6a4213b9129ffb3f438c21cbb5326672ddf8915323836bf80cb33b8e5fabfdca  /tmp/tmb_stage_a_pack.zip' | sha256sum --check --strict
+          unzip -q /tmp/tmb_stage_a_pack.zip -d .
+      - name: Official Godot 4.7.2 strict import parse and original skill contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/poi10-r1"
+          bash tools/qa/run_godot_strict.sh --headless --path godot --import 2>&1 | tee "$d/import.log"
+          bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://labs/combat_lab/poison10/r1_painted/doc_khi_phe_tam_r1.gd 2>&1 | tee "$d/parse.log"
+          bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/labs/combat_lab/vfx_poi10_r1_contract_test.gd 2>&1 | tee "$d/focused.log"
+          grep -Fq 'VFX_POI10_R1_RESULT=PASS failures=0' "$d/focused.log"
+      - name: Capture genuine native Godot 1280x720 513 frames with radial glow, 3 moving targets and 6-second marks
+        shell: bash
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/poi10-r1"
+          xvfb-run -a -s '-screen 0 1280x720x24' bash tools/qa/run_godot_strict.sh --path godot --resolution 1280x720 --fixed-fps 60 --write-movie "$d/POI10-R1-native.avi" --quit-after 513 res://labs/combat_lab/poison10/r1_painted/doc_khi_phe_tam_r1.tscn 2>&1 | tee "$d/movie.log"
+          grep -Fq 'VFX_POI10_R1_READY' "$d/movie.log"
+          test -s "$d/POI10-R1-native.avi"
+          ffmpeg -y -hide_banner -loglevel error -i "$d/POI10-R1-native.avi" -pix_fmt yuv420p -c:v libx264 -crf 16 -movflags +faststart "$d/POI10-R1-native.mp4"
+          ffprobe -v error -select_streams v:0 -show_entries stream=width,height,nb_frames,avg_frame_rate -of default=noprint_wrappers=1 "$d/POI10-R1-native.mp4" | tee "$d/dimensions.txt"
+          grep -Fxq width=1280 "$d/dimensions.txt"
+          grep -Fxq height=720 "$d/dimensions.txt"
+          for at in 0.12 0.33 0.61 0.77 1.06 1.35 1.51 1.68 1.89 2.12 3.80 6.20 7.83 8.35; do
+            ffmpeg -y -hide_banner -loglevel error -ss "$at" -i "$d/POI10-R1-native.mp4" -frames:v 1 "$d/frame-$at.png"
+          done
+          ffmpeg -y -hide_banner -loglevel error -i "$d/POI10-R1-native.mp4" -vf 'fps=6,scale=640:-1:flags=lanczos' -loop 0 "$d/POI10-R1-native.gif"
+          sha256sum "$d/"*.mp4 "$d/"*.png "$d/"*.gif > "$d/SHA256SUMS.txt"
+          rm -f "$d/POI10-R1-native.avi"
+      - name: Guarded fast-forward commit for 4 independently painted POI10 heart-devour aura/contact/poison atlas assets, same PR branch
+        if: success() && github.event_name == 'push'
+        shell: bash
+        run: |
+          set -euo pipefail
+          branch='integration/pve-p0-playable-ui-20261103'
+          folder='godot/labs/combat_lab/poison10/r1_painted/assets'
+          mkdir -p "$RUNNER_TEMP/poi10-r1/staged"
+          cp "$folder/"*.png "$RUNNER_TEMP/poi10-r1/staged/"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          for attempt in 1 2 3; do
+            git fetch origin "$branch"
+            current="$(git rev-parse FETCH_HEAD)"
+            if ! git merge-base --is-ancestor "$GITHUB_SHA" "$current"; then echo BRANCH_REWRITTEN_ABORT; exit 0; fi
+            if test -n "$(git diff --name-only "$GITHUB_SHA" "$current" -- godot/labs/combat_lab/poison10/r1_painted godot/labs/combat_lab/poison10/r1_painted/assets/master tools/vfx/generate_poi10_painted.py godot/tests/labs/combat_lab/vfx_poi10_r1_contract_test.gd .github/workflows/vfx-poi-10-r1-painted-native.yml)"; then echo SOURCE_CHANGED_NO_PUSH; exit 0; fi
+            git reset --hard "$current"
+            mkdir -p "$folder"
+            cp "$RUNNER_TEMP/poi10-r1/staged/"*.png "$folder/"
+            git add "$folder"
+            if git diff --cached --quiet; then echo ATLAS_ALREADY_TRACKED; exit 0; fi
+            git commit -m 'art(poi10-r1): track POI10 original painted radial devour poison-light RGBA flipbooks'
+            if git push origin "HEAD:refs/heads/$branch"; then
+              echo "TRACKED_ASSETS_SHA=$(git rev-parse HEAD)" | tee "$RUNNER_TEMP/poi10-r1/commit.txt"
+              gh workflow run vfx-poi-10-r1-painted-native.yml --repo "$GITHUB_REPOSITORY" --ref "$branch" || echo FINAL_DISPATCH_FAILED
+              exit 0
+            fi
+          done
+          echo CONCURRENT_PUSH_BLOCKED
+          exit 1
+      - name: Upload original atlases and genuine Godot evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vfx-poi10-r1-${{ github.sha }}
+          retention-days: 14
+          if-no-files-found: warn
+          path: |
+            ${{ runner.temp }}/poi10-r1/*.log
+            ${{ runner.temp }}/poi10-r1/*.txt
+            ${{ runner.temp }}/poi10-r1/*.png
+            ${{ runner.temp }}/poi10-r1/*.mp4
+            ${{ runner.temp }}/poi10-r1/*.gif
+            godot/labs/combat_lab/poison10/r1_painted/assets/*.png
