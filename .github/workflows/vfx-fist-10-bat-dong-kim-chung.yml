@@ -1,0 +1,118 @@
+name: VFX-FIST-10 Bat Dong Kim Chung Godot V4 exact-SHA
+on:
+  workflow_dispatch:
+  push:
+    branches: [integration/pve-p0-playable-ui-20261103]
+    paths:
+      - '.github/workflows/vfx-fist-10-bat-dong-kim-chung.yml'
+      - 'godot/labs/combat_lab/fist10/**'
+      - 'tools/vfx/generate_fist10_bat_dong_kim_chung.py'
+      - 'godot/tests/labs/combat_lab/vfx_fist10_contract_test.gd'
+      - 'docs/operations/vfx_packets/FIST10_R1_BAT_DONG_KIM_CHUNG_V4.json'
+      - 'tools/qa/validate_vfx_v4_packet.py'
+permissions:
+  contents: read
+jobs:
+  native-guard-v4:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      GODOT_AUDIO_DRIVER: Dummy
+      GODOT_RENDERING_DRIVER: opengl3
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pinned Godot 4.7.2 and PIL
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq xvfb ffmpeg unzip python3-pil python3-numpy
+          curl --fail --location --retry 3 -o /tmp/godot472.zip 'https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip'
+          echo 'cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4  /tmp/godot472.zip' | sha256sum --check --strict
+          unzip -q /tmp/godot472.zip -d /tmp
+          sudo install -m0755 /tmp/Godot_v4.7.2-stable_linux.x86_64 /usr/local/bin/godot
+          mkdir -p /tmp/vfx-fist10
+          godot --version | tee /tmp/vfx-fist10/engine.txt
+          echo "EXACT_SHA=$GITHUB_SHA; FIST10=earth_ultimate_guard_4s; ART_PENDING; NO_RIG; PVE_HOLD; V63_OFF" > /tmp/vfx-fist10/metadata.txt
+      - name: Restore approved unchanged idle and walk actors for demo
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat .github/assets/p3/female_stage_a/part{01..14}.b64 .github/assets/p3/female_stage_a/part15a.b64 .github/assets/p3/female_stage_a/part15b.b64 .github/assets/p3/female_stage_a/part{16..20}.b64 | tr -d '\r\n\t ' | base64 --decode > /tmp/tmb_stage_a_pack.zip
+          echo '6a4213b9129ffb3f438c21cbb5326672ddf8915323836bf80cb33b8e5fabfdca  /tmp/tmb_stage_a_pack.zip' | sha256sum --check --strict
+          unzip -q /tmp/tmb_stage_a_pack.zip -d .
+      - name: Validate canonical V4 packet
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 tools/qa/validate_vfx_v4_packet.py --stage packet --packet docs/operations/vfx_packets/FIST10_R1_BAT_DONG_KIM_CHUNG_V4.json | tee /tmp/vfx-fist10/v4-packet.log
+      - name: Bake 28 painted golden-bell/guard RGBA poses and validate
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 tools/vfx/generate_fist10_bat_dong_kim_chung.py | tee /tmp/vfx-fist10/bake.log
+          grep -Fq 'FIST10_BAKE_PASS poses=28 pages=3 raw_rgba_bytes=10354688 no_rig=true first_party_derived_material=true' /tmp/vfx-fist10/bake.log
+          python3 tools/qa/validate_vfx_v4_packet.py --stage assets --packet docs/operations/vfx_packets/FIST10_R1_BAT_DONG_KIM_CHUNG_V4.json | tee /tmp/vfx-fist10/v4-assets.log
+          cp godot/labs/combat_lab/fist10/assets/generated/f10_*.png /tmp/vfx-fist10/
+          cp godot/labs/combat_lab/fist10/assets/generated/f10_original_illustrated_bell_master.png /tmp/vfx-fist10/first_party_illustrated_bell_master.png
+          cp godot/labs/combat_lab/fist07/assets/source/kim_cang_guardian_master_r5.webp.b64 /tmp/vfx-fist10/first_party_gold_illustrated_master.webp.b64
+          sha256sum /tmp/vfx-fist10/f10_*.png /tmp/vfx-fist10/*.webp.b64 > /tmp/vfx-fist10/ART_SOURCE_SHA256SUMS.txt
+      - name: Godot strict import parse and moving single protected target contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash tools/qa/run_godot_strict.sh --headless --path godot --import 2>&1 | tee /tmp/vfx-fist10/import.log
+          bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://labs/combat_lab/fist10/bat_dong_kim_chung.gd 2>&1 | tee /tmp/vfx-fist10/parse.log
+          bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/labs/combat_lab/vfx_fist10_contract_test.gd 2>&1 | tee /tmp/vfx-fist10/godot-focused.log
+          grep -Fq 'VFX_FIST10_FOCUSED_RESULT=PASS failures=0' /tmp/vfx-fist10/godot-focused.log
+      - name: Mandatory G3.5 Godot preflight 1280x720 charge peak contact on moving actor
+        shell: bash
+        run: |
+          set -euo pipefail
+          d=/tmp/vfx-fist10
+          xvfb-run -a -s '-screen 0 1280x720x24' bash tools/qa/run_godot_strict.sh --path godot --resolution 1280x720 --fixed-fps 60 --write-movie "$d/v4-fist10-native.avi" --quit-after 140 res://labs/combat_lab/fist10/bat_dong_kim_chung.tscn 2>&1 | tee "$d/godot-preflight.log"
+          test -s "$d/v4-fist10-native.avi"
+          ffmpeg -y -hide_banner -loglevel error -i "$d/v4-fist10-native.avi" -pix_fmt yuv420p -c:v libx264 -crf 16 -movflags +faststart "$d/v4-fist10-native.mp4"
+          for at in 0.42 1.23 2.16; do
+            case "$at" in
+              0.42) stage=charge ;;
+              1.23) stage=peak ;;
+              2.16) stage=contact ;;
+            esac
+            ffmpeg -y -hide_banner -loglevel error -ss "$at" -i "$d/v4-fist10-native.mp4" -frames:v 1 "$d/v4-$stage.png"
+            test -s "$d/v4-$stage.png"
+          done
+          python3 tools/qa/validate_vfx_v4_packet.py --stage evidence --packet docs/operations/vfx_packets/FIST10_R1_BAT_DONG_KIM_CHUNG_V4.json --out "$d" --sha "$GITHUB_SHA" | tee "$d/v4-evidence.log"
+          rm "$d/v4-fist10-native.avi"
+      - name: Full Godot 1280x720 video GIF and 17 frame review
+        shell: bash
+        run: |
+          set -euo pipefail
+          d=/tmp/vfx-fist10
+          xvfb-run -a -s '-screen 0 1280x720x24' bash tools/qa/run_godot_strict.sh --path godot --resolution 1280x720 --fixed-fps 60 --write-movie "$d/fist10-r1.avi" --quit-after 372 res://labs/combat_lab/fist10/bat_dong_kim_chung.tscn 2>&1 | tee "$d/godot-full.log"
+          ffmpeg -y -hide_banner -loglevel error -i "$d/fist10-r1.avi" -pix_fmt yuv420p -c:v libx264 -crf 16 -movflags +faststart "$d/fist10-r1.mp4"
+          ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of default=noprint_wrappers=1 "$d/fist10-r1.mp4" | tee "$d/dimensions.txt"
+          grep -Fxq width=1280 "$d/dimensions.txt"
+          grep -Fxq height=720 "$d/dimensions.txt"
+          for at in 0.22 0.42 0.68 0.88 1.05 1.23 1.33 1.48 1.75 2.10 2.16 2.33 3.12 4.08 4.16 5.10 5.44 5.83 6.05; do
+            ffmpeg -y -hide_banner -loglevel error -ss "$at" -i "$d/fist10-r1.mp4" -frames:v 1 "$d/frame-$at.png"
+          done
+          ffmpeg -y -hide_banner -loglevel error -i "$d/fist10-r1.mp4" -vf 'fps=3,scale=320:180,tile=5x4:nb_frames=20' -frames:v 1 "$d/timeline.png"
+          ffmpeg -y -hide_banner -loglevel error -i "$d/fist10-r1.mp4" -vf 'fps=12,scale=640:360:flags=lanczos' -loop 0 "$d/fist10-r1.gif"
+          sha256sum "$d/"*.mp4 "$d/"*.gif "$d/"*.png > "$d/SHA256SUMS.txt"
+          rm "$d/fist10-r1.avi"
+      - name: Upload exact-SHA art technical evidence; owner gate manual
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vfx-fist10-r1-v4-native
+          retention-days: 14
+          if-no-files-found: warn
+          path: |
+            /tmp/vfx-fist10/*.txt
+            /tmp/vfx-fist10/*.json
+            /tmp/vfx-fist10/*.log
+            /tmp/vfx-fist10/*.png
+            /tmp/vfx-fist10/*.mp4
+            /tmp/vfx-fist10/*.gif
+            /tmp/vfx-fist10/*.webp.b64
