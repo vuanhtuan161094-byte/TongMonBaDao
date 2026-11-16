@@ -50,6 +50,13 @@ def place(dst,im,x,y,halo=.2):
 def frame(i,master):
     q=i/(COUNT-1)
     c=Image.new("RGBA",CELL)
+    # First pose MUST carry actual glowing compression source material. The
+    # full atlas is preflight-validated frame-by-frame and cannot start empty.
+    compression_gain=.40*(1.0-smooth(.02,.28,q))
+    if compression_gain>.002:
+        molten=flame_petal(master,i+101,135+int(q*38),55,83,
+                           compression_gain)
+        place(c,molten,320,240-12*q,.26*compression_gain)
     open_amt=smooth(.04,.38,q)
     bloom_gain=smooth(.0,.16,q)*(1.0-smooth(.57,.91,q))
     # Five long, irregular painterly flame-petals sweep from a shared hot
