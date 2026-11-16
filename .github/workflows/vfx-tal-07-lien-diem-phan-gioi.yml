@@ -6,6 +6,7 @@ on:
     paths:
       - '.github/workflows/vfx-tal-07-lien-diem-phan-gioi.yml'
       - 'tools/vfx/paint_tal07_lien_diem.py'
+      - 'tools/vfx/hf02_r5_source_painted.py'
       - 'godot/labs/combat_lab/talisman07/**'
       - 'godot/tests/labs/combat_lab/vfx_tal07_contract_test.gd'
 permissions:
@@ -63,6 +64,41 @@ jobs:
           PY
           sha256sum godot/labs/combat_lab/talisman07/assets/tal07_*.webp > "$d/ATLAS_SHA256SUMS.txt"
           # Do not normalize or modify unrelated legacy CRLF files in this art-only runner.\n          git status --porcelain -- godot/labs/combat_lab/talisman07 tools/vfx/paint_tal07_lien_diem.py | tee \"$d/art_scope_status.txt\"
+      - name: Bake R5 genuine luminous source-painted fire atlases and validate alpha
+        shell: bash
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/vfx-tal07"
+          /usr/bin/python3 tools/vfx/hf02_r5_source_painted.py | tee "$d/r5-bake.log"
+          grep -Fxq 'HF02_R5_PAINTED_REBUILD_PASS' "$d/r5-bake.log"
+          /usr/bin/python3 - <<'PY'
+          from PIL import Image
+          from pathlib import Path
+          import hashlib,base64,io
+          root=Path('godot/labs/combat_lab/talisman07')
+          raw=base64.b64decode((root/'art_sources/hf02_r5_owner_fire_blast.webp.b64').read_text().strip(),validate=True)
+          src=Image.open(io.BytesIO(raw))
+          assert src.size==(320,91),src.size
+          print('HF02_R5_MASTER_SOURCE_SHA256',hashlib.sha256(raw).hexdigest())
+          specs=[
+              ('tal07_r5_lotus_atlas.webp',2048,1152,512,384,12),
+              ('tal07_r5_seal_atlas.webp',1024,768,256,256,12),
+              ('tal07_r5_contact_atlas.webp',1024,512,256,256,8)]
+          for name,w,h,cw,ch,n in specs:
+              im=Image.open(root/'assets'/name).convert('RGBA')
+              assert im.size==(w,h),name
+              assert im.getchannel('A').getextrema()[0]==0,name
+              hashes=set()
+              for i in range(n):
+                  x=i%4*cw;y=i//4*ch
+                  crop=im.crop((x,y,x+cw,y+ch))
+                  hashes.add(hashlib.sha256(crop.tobytes()).hexdigest())
+                  assert crop.getchannel('A').getextrema()[1]>0,(name,i)
+              assert len(hashes)==n,(name,len(hashes))
+              print('HF02_R5_SOURCE_PAINTED_ALPHA_PASS',name,n)
+          print('HF02_R5_ATLAS_GATE=PASS')
+          PY
+          sha256sum godot/labs/combat_lab/talisman07/assets/tal07_r5_*.webp > "$d/R5_ASSET_SHA256SUMS.txt"
       - name: Restore existing unchanged Stage A character asset overlay
         shell: bash
         run: |
