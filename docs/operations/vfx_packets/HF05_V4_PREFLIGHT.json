@@ -1,0 +1,148 @@
+{
+  "schema": "tmb-vfx-production-system-v4.1",
+  "packet_id": "HF05_R1_VAN_PHU_PHAN_THIEN_NATIVE_V4",
+  "skill_id": "tmb.skill.talisman.hoa_phu.ultimate.human",
+  "school": "talisman",
+  "revision": "HF05_R1_ORIGINAL_ILLUSTRATED_PAPER_CONSTELLATION_ART_PENDING",
+  "catalogue_path": "godot/data/combat/v63_talisman_combat_catalog.json",
+  "scene_path": "godot/labs/combat_lab/talisman10/van_phu_phan_thien.tscn",
+  "lab_script": "godot/labs/combat_lab/talisman10/van_phu_phan_thien.gd",
+  "focused_test": "godot/tests/labs/combat_lab/vfx_tal10_contract_test.gd",
+  "declared_contract": {
+    "effect": "damage",
+    "element": "fire",
+    "shape": "circle",
+    "target_limit": 3,
+    "hit_count": 1,
+    "range": 9.5,
+    "radius": 2.8,
+    "cast_time": 1.05,
+    "cooldown": 23,
+    "projectile_speed": 0,
+    "duration": 0
+  },
+  "provenance": {
+    "source_class": "FIRST_PARTY_IMAGE_GENERATED_MEGA_PAPER_TALISMAN_WITH_SOURCE_PAINTED_FLAME",
+    "rights_note": "HF05 new original AI-illustrated 炎 central talisman created for TMB; its 96×132 RGBA master isolated from the promotional concept and saved as first-party native alpha WEBP base64 in repo, but the promotional poster is NOT a Godot screenshot. Support scroll and fire are original in-repo first-party artworks. No unlicensed source A/JX/VL pixels.",
+    "master_quality_status": "MANUAL_ART_REVIEW_REQUIRED",
+    "known_source_limitation": "Master is 96×132 compact painted alpha WebP derived from larger 1672×941 promotional illustration; only the isolated card image enters the atlas, not text or scenery. Storm and rain are independently COMPOSED source-image poses with staggered position/angle/splashes, NOT 72 individually hand-painted masters. Must visually inspect 1× and movement; hashes are technical only.",
+    "master_files": [
+      {
+        "path": "godot/labs/combat_lab/talisman10/art_sources/hf05_original_van_phu_hero_master_rgba.webp.b64",
+        "encoding": "base64-webp",
+        "role": "first-party original glowing 炎 mega-paper master RGBA 96x132"
+      },
+      {
+        "path": "godot/labs/combat_lab/talisman06/art_sources/hf01_r5_talisman_master_png.b64",
+        "encoding": "base64-png",
+        "role": "approved small gold-red scroll source"
+      },
+      {
+        "path": "godot/labs/combat_lab/talisman07/art_sources/hf02_r5_owner_fire_blast.webp.b64",
+        "encoding": "base64-webp",
+        "role": "luminosity-unmatted first-party painted flame"
+      }
+    ],
+    "generators": [
+      "tools/vfx/hf05_r1_van_phu.py"
+    ]
+  },
+  "atlases": [
+    {
+      "path": "godot/labs/combat_lab/talisman10/assets/tal10_r1_charge.webp",
+      "width": 1280,
+      "height": 1280,
+      "cell_width": 320,
+      "cell_height": 320,
+      "frames": 16,
+      "columns": 4,
+      "layer": "golden original 炎 grand talisman charge plus converging small paper"
+    },
+    {
+      "path": "godot/labs/combat_lab/talisman10/assets/tal10_r1_storm.webp",
+      "width": 2560,
+      "height": 2304,
+      "cell_width": 640,
+      "cell_height": 384,
+      "frames": 24,
+      "columns": 4,
+      "layer": "organic airborne constellation of 13 original scrolls plus one unique hero giant"
+    },
+    {
+      "path": "godot/labs/combat_lab/talisman10/assets/tal10_r1_rain.webp",
+      "width": 2560,
+      "height": 2200,
+      "cell_width": 640,
+      "cell_height": 440,
+      "frames": 20,
+      "columns": 4,
+      "layer": "staggered descending paper/fire beams, cosmetic only, zero projectile instances"
+    },
+    {
+      "path": "godot/labs/combat_lab/talisman10/assets/tal10_r1_impact.webp",
+      "width": 2560,
+      "height": 960,
+      "cell_width": 640,
+      "cell_height": 320,
+      "frames": 12,
+      "columns": 4,
+      "layer": "one original asymmetric luminous fire burst under up to three live WALK actors"
+    }
+  ],
+  "time_contract": {
+    "combat_clock": "CATALOGUE_GATED_NOT_LIVE",
+    "declared_cast_end_seconds": 1.05,
+    "declared_status_duration_seconds": 0,
+    "runtime_receipt_timestamp": "RUNTIME_MAPPING_PENDING",
+    "vfx_clock": "LAB_ONLY",
+    "simulated_hit_seconds": 1.85,
+    "visual_fade_end_seconds": 2.74,
+    "demo_loop_seconds": 3.35,
+    "demo_clock_warning": "Catalogue cast1.05, cooldown23, speed0, one circular damage event. Rain/scroll movement is cosmetic not runtime projectiles or multiple hits. LAB at1.85 is NOT a confirmed Combat V2 receipt; 3.35 demo length NOT cooldown.",
+    "key_pose_budget_note": "16 charge cells/1s, 24 moving seal storm/1.31s, 20 rain/0.84s, 12 asymmetric impact/0.32s; unique frame source compositions, not separately handpainted full scenes. Display cadence and native motion subject to 1x inspection.",
+    "phases": [
+      {
+        "id": "charge",
+        "at_seconds": 0.52,
+        "expected_phase": "charge_and_storm",
+        "file": "v4-charge.png"
+      },
+      {
+        "id": "peak",
+        "at_seconds": 1.44,
+        "expected_phase": "cosmetic_flame_rain",
+        "file": "v4-peak.png"
+      },
+      {
+        "id": "contact",
+        "at_seconds": 1.96,
+        "expected_phase": "one_circle_contact",
+        "file": "v4-contact.png"
+      }
+    ]
+  },
+  "moving_target": {
+    "actor_animation": "walk",
+    "locked_demo_target_index": 0,
+    "movement_from_seconds": 0.52,
+    "movement_to_seconds": 1.96,
+    "minimum_displacement_px": 12,
+    "contact_anchor": "LAB.target_contact(index,t)",
+    "tracking_rule": "Three preselected independent WALK actors move while the scroll cloud and FIRE rain decorate a fixed predetermined circle; one local glint per actor follows its current body position; no live targeting/hit events.",
+    "receipt_claim": "SIMULATED_VISUAL_ONLY"
+  },
+  "gate_status": {
+    "g3_5_capture": "NOT_EXECUTED_UNTIL_RUN",
+    "technical": "NOT_EXECUTED_UNTIL_RUN",
+    "art": "MANUAL_ART_REVIEW_REQUIRED",
+    "owner": "OWNER_VISUAL_PENDING",
+    "live": "PVE_INTEGRATION_HOLD",
+    "device": "PHYSICAL_QA_PENDING"
+  },
+  "proof_contract": {
+    "focused_marker": "VFX_TAL10_FOCUSED_RESULT=PASS failures=0",
+    "native_marker": "VFX_TAL10_READY",
+    "source": "HF05 fixed circular ultimate, cap 3 moving actors, one simultaneous cosmetic pulse, zero real projectiles, separate catalogue cast and 3.35 movie demo.",
+    "video_filename": "v4-hf05-native.mp4"
+  }
+}
