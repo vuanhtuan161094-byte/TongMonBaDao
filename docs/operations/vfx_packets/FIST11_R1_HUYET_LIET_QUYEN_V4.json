@@ -1,0 +1,139 @@
+{
+  "schema": "tmb-vfx-production-system-v4.1",
+  "packet_id": "FIST11_R1_HUYET_LIET_QUYEN_ORIGINAL_CRIMSON_CURRENT_V4",
+  "skill_id": "tmb.skill.fist.huyet_quyen.active_01.human",
+  "school": "fist",
+  "revision": "R1_ORIGINAL_CRIMSON_CURRENT",
+  "catalogue_path": "godot/data/combat/v63_human_combat_catalog.json",
+  "scene_path": "godot/labs/combat_lab/fist11/huyet_liet_quyen.tscn",
+  "lab_script": "godot/labs/combat_lab/fist11/huyet_liet_quyen.gd",
+  "focused_test": "godot/tests/labs/combat_lab/vfx_fist11_contract_test.gd",
+  "declared_contract": {
+    "effect": "damage",
+    "element": "nether",
+    "shape": "single_target",
+    "target_limit": 1,
+    "hit_count": null,
+    "range": 2.8,
+    "radius": 0,
+    "cast_time": 0.45,
+    "cooldown": 8,
+    "projectile_speed": 8,
+    "duration": 0
+  },
+  "provenance": {
+    "source_class": "FIRST_PARTY_ORIGINAL_ILLUSTRATED_CRIMSON_MASTERS",
+    "rights_note": "Three completely new original artist-coded painterly RGBA source masters: nether current charge, asymmetrically clenched spectral fist with four pressure knuckles, noncircular nether contact splash. First-party Pillow/Numpy deterministic artwork owned in this repository. NOT recolored FIST01, unrelated Poison VFX, commercial JX assets, actor sprites or extracted GIF frames.",
+    "master_quality_status": "MANUAL_ART_REVIEW_REQUIRED",
+    "known_source_limitation": "Artwork is a first-party illustrated/code-painted candidate, not professionally hand-illustrated or independently owner-approved. 12 flight frames are deformed source art rather than 12 independently commissioned paintings. Do not claim in-game damage or hit receipts. Need owner aesthetic assessment at native 1x.",
+    "master_files": [
+      {
+        "path": "godot/labs/combat_lab/fist11/assets/source/f11_charge_master.webp",
+        "encoding": "webp",
+        "role": "Original dark-red source master: charge"
+      },
+      {
+        "path": "godot/labs/combat_lab/fist11/assets/source/f11_fist_master.webp",
+        "encoding": "webp",
+        "role": "Original dark-red source master: fist"
+      },
+      {
+        "path": "godot/labs/combat_lab/fist11/assets/source/f11_contact_master.webp",
+        "encoding": "webp",
+        "role": "Original dark-red source master: contact"
+      }
+    ],
+    "generators": [
+      "tools/vfx/create_fist11_original_masters.py",
+      "tools/vfx/generate_fist11_huyet_liet_quyen.py"
+    ]
+  },
+  "atlases": [
+    {
+      "path": "godot/labs/combat_lab/fist11/assets/generated/f11_charge.png",
+      "width": 1024,
+      "height": 512,
+      "cell_width": 256,
+      "cell_height": 256,
+      "frames": 8,
+      "columns": 4,
+      "layer": "Single-caster dark red living qi converges from outside into fist hand (8 source-painted poses)"
+    },
+    {
+      "path": "godot/labs/combat_lab/fist11/assets/generated/f11_flight_fist.png",
+      "width": 1280,
+      "height": 960,
+      "cell_width": 320,
+      "cell_height": 320,
+      "frames": 12,
+      "columns": 4,
+      "layer": "One compressed asymmetric crimson ethereal fist flying at independently moving enemy; not generic beam"
+    },
+    {
+      "path": "godot/labs/combat_lab/fist11/assets/generated/f11_contact.png",
+      "width": 1024,
+      "height": 512,
+      "cell_width": 256,
+      "cell_height": 256,
+      "frames": 8,
+      "columns": 4,
+      "layer": "One local nether-colored contact and fading torn current on designated moving target, LAB demo only"
+    }
+  ],
+  "time_contract": {
+    "combat_clock": "CATALOGUE_GATED_NOT_LIVE",
+    "declared_cast_end_seconds": 0.45,
+    "declared_status_duration_seconds": 0,
+    "runtime_receipt_timestamp": "RUNTIME_MAPPING_PENDING",
+    "vfx_clock": "LAB_ONLY",
+    "simulated_hit_seconds": 0.8,
+    "visual_fade_end_seconds": 1.36,
+    "demo_loop_seconds": 1.85,
+    "demo_clock_warning": "The t=.80 strike is only a synthetic Combat Lab demonstration, NOT real Combat V2 receipt, damage or status. One attack single_target; no AoE, no fake bleed/mark, cast ends .45, projectile moves .45-.80, contact and residual fade .80-1.36.",
+    "key_pose_budget_note": "8 charge, 12 living-fist projectile, 8 contact poses from three original separate source masters, all pre-baked RGBA. No rig, GIF, geometric runtime generation or source reuse from other schools.",
+    "phases": [
+      {
+        "id": "charge",
+        "at_seconds": 0.25,
+        "expected_phase": "charge",
+        "file": "v4-charge.png"
+      },
+      {
+        "id": "peak",
+        "at_seconds": 0.59,
+        "expected_phase": "flight",
+        "file": "v4-peak.png"
+      },
+      {
+        "id": "contact",
+        "at_seconds": 0.84,
+        "expected_phase": "single_target_contact",
+        "file": "v4-contact.png"
+      }
+    ]
+  },
+  "moving_target": {
+    "actor_animation": "walk",
+    "locked_demo_target_index": 0,
+    "movement_from_seconds": 0.25,
+    "movement_to_seconds": 0.84,
+    "minimum_displacement_px": 12,
+    "contact_anchor": "LAB.contact_at(0,t): enemy-at-time plus chest offset, updates on every rendered frame; caster also moves independently",
+    "tracking_rule": "All hit art follows ONLY one moving target. Projectile interpolates between caster hand and moving enemy. Other moving actor remains separate. No actual damage/recoil status receipts.",
+    "receipt_claim": "SIMULATED_VISUAL_ONLY"
+  },
+  "gate_status": {
+    "g3_5_capture": "NOT_EXECUTED_UNTIL_EXACT_SHA_GODOT_PROOF",
+    "technical": "NOT_EXECUTED_UNTIL_EXACT_SHA_GODOT_PROOF",
+    "art": "MANUAL_ART_REVIEW_REQUIRED",
+    "owner": "OWNER_VISUAL_PENDING",
+    "live": "PVE_INTEGRATION_HOLD",
+    "device": "PHYSICAL_QA_PENDING"
+  },
+  "proof_contract": {
+    "focused_marker": "VFX_FIST11_FOCUSED_RESULT=PASS failures=0",
+    "native_marker": "VFX_FIST11_R1_READY",
+    "video_filename": "v4-fist11-native.mp4",
+    "source": "FIST11 Huyet Liet Quyen original first-party 28-pose crimson VFX; native moving single enemy; no runtime hit receipt or GIF."
+  }
+}
