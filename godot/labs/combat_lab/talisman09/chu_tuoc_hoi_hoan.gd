@@ -42,7 +42,7 @@ static func target_foot(index:int,t:float)->Vector2:
     if index<0 or index>=TARGET_LIMIT:return Vector2.INF
     var b:Vector2=TARGET_BASE[index]
     # Three DIFFERENT walking stand-in actors; genuine current-position anchors.
-    return b+Vector2(22.0*sin(1.12*t+.64*float(index)+.2),
+    return b+Vector2(36.0*sin(1.85*t+.64*float(index)+.2),
                      10.0*sin(1.55*t+float(index)*.87))
 
 static func target_contact(index:int,t:float)->Vector2:
