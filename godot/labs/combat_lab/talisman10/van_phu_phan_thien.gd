@@ -97,7 +97,7 @@ func _ready()->void:
             var a:=clampf(exp(-8.6*p.length_squared())*(1.0-smoothstep(.78,1,p.length())),0,1)
             im.set_pixel(x,y,Color(1,1,1,a))
     _light=ImageTexture.create_from_image(im)
-    print("VFX_TAL10_READY id=",SKILL_ID," art=HF05_R1_ORIGINAL_PAPER_STORM frames=16/24/20/12 moving_monsters=3 real_projectile_speed=0 circle_hit_count=1 view_only=true")
+    print("VFX_TAL10_READY id=",SKILL_ID," art=HF05_R2_PURE_LIGHT_PAPER_STORM frames=16/24/20/12 moving_monsters=3 real_projectile_speed=0 circle_hit_count=1 view_only=true")
     set_process(true)
 
 func _process(delta:float)->void:
@@ -124,18 +124,18 @@ func _draw()->void:
     if storm>.003:
         var p:=CIRCLE_CENTER+Vector2(0,-118+9*sin(t*6))
         _atlas(STORM,storm_frame(t),640,384,
-            Rect2(p-Vector2(265,159),Vector2(530,318)),Color(1,1,1,storm*.92))
+            Rect2(p-Vector2(265,159),Vector2(530,318)),Color(1,1,1,storm*.98))
         _halo(CIRCLE_CENTER+Vector2(0,-160),96,Color("ffba59",storm*.17))
     var rain:=rain_gain(t)
     if rain>.003:
         var area:=CIRCLE_CENTER+Vector2(0,-77)
         _atlas(RAIN,rain_frame(t),640,440,
-            Rect2(area-Vector2(267,192),Vector2(534,348)),Color(1,1,1,rain*.84))
+            Rect2(area-Vector2(267,192),Vector2(534,348)),Color(1,1,1,rain*.98))
     var hit:=impact_gain(t)
     if hit>.003:
         _atlas(IMPACT,impact_frame(t),640,320,
-            Rect2(CIRCLE_CENTER-Vector2(282,153),Vector2(564,281)),Color(1,1,1,hit*.75))
-        _halo(CIRCLE_CENTER+Vector2(0,-31),116,Color("ff8238",hit*.15))
+            Rect2(CIRCLE_CENTER-Vector2(282,153),Vector2(564,281)),Color(1,1,1,hit*.94))
+        _halo(CIRCLE_CENTER+Vector2(0,-31),116,Color("ff8238",hit*.23))
     # Real three WALK monster sprites (different phases), deliberately drawn
     # AFTER broad fire effects, so faces/body do not disappear.
     var frames:=MONSTER.get_frame_count("walk")
@@ -149,8 +149,8 @@ func _draw()->void:
         for k in range(TARGET_LIMIT):
             var at:=target_contact(k,t)
             _halo(at,26,Color("ff8c38",hit*.25))
-            _halo(at,11,Color("ffe59f",hit*.53))
-            _halo(at,5,Color("fff9dc",hit*.72))
+            _halo(at,11,Color("ffe59f",hit*.69))
+            _halo(at,5,Color("fff9dc",hit*.88))
     draw_texture_rect_region(CASTER_ART,Rect2(CASTER-Vector2(72,163),Vector2(144,163)),
         Rect2(0,0,320,384),Color("f2d5bb"))
     var charge:=charge_gain(t)
