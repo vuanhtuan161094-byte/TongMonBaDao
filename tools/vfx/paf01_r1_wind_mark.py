@@ -118,33 +118,41 @@ def copy_at(dst,src,x,y,scale=1,rot=0,alpha=1):
     dst.alpha_composite(src,(round(x-src.width*.5),round(y-src.height*.5)))
 
 def streamer(i,scroll):
-    w,h=512,256;c=Image.new("RGBA",(w,h))
-    src=Image.new("RGBA",(w,h))
-    d=ImageDraw.Draw(src,"RGBA")
-    q=i/15
-    # An asymmetrical wind *trace*; source is painted before engine, never a
-    # gameplay projectile or real homing entity. The transfer follows the
-    # current selected target in the LAB scene (projectile_speed = 0).
-    for k in range(4):
-        coords=[]
-        for j in range(91):
-            p=j/90
-            x=24+465*p
-            y=124+26*math.sin(p*math.tau*(1.03+k*.18)+i*.36+k*2.05)*(1-p*.61)
-            y+=14*math.sin(p*math.tau*2.13-i*.28+k)
-            coords.append((x,y))
-        for j in range(1,len(coords)):
-            p=j/90
-            ww=max(1,int((14+7*(k==0))*(1-p)**.78))
-            a=int((.52+.46*smooth(.0,.20,p))*(1-smooth(.82,1,p))*234)
-            d.line([coords[j-1],coords[j]],fill=(174+16*(k==0),251,235,a),width=ww)
-    shine(c,src,blur=16,gain=.72)
-    # One real paper SIGIL is carried inside the view-only optical wind trace.
-    # The master itself is the original Phong Giới scroll with independent
-    # change of x, y, angle, scale in 16 rendered alpha flipbook poses.
-    sx=105+310*q
-    sy=125+15*math.sin(i*.42)
-    copy_at(c,scroll,sx,sy,.165+.03*math.sin(i*.23),rot=-13+22*math.sin(i*.28),alpha=.72+.21*math.sin(math.pi*q))
+    w,h=512,256
+    c=Image.new("RGBA",(w,h));q=i/15
+    # R3 replaces R1 four parallel noodle-like sine tracers with ONE
+    # painterly fan: a broad uneven primary wind stroke, a whiplash bright
+    # core and two organic fragmentation tails. All 16 cells are really
+    # source-baked before Godot, no runtime SVG/UI line rendering.
+    low=Image.new("RGBA",c.size)
+    d=ImageDraw.Draw(low,"RGBA")
+    for k in range(3):
+        pts=[]
+        for j in range(105):
+            p=j/104
+            x=19+480*p
+            phase=p*5.35+i*.27+k*1.92
+            envelope=(1-.48*p)
+            y=119+(42-12*k)*math.sin(phase)*envelope
+            y+=9*math.sin(p*14.2-i*.21+k*.89)
+            if k==2:y+=24*math.sin(math.pi*p)
+            pts.append((x,y))
+        for j in range(1,105):
+            p=j/104
+            taper=(1-smooth(.65,1,p))*(.57+.43*smooth(0,.16,p))
+            thick=round((23 if k==0 else 8 if k==1 else 5)*taper)
+            if thick<1:continue
+            alpha=round((196 if k==0 else 161 if k==1 else 127)*taper)
+            d.line([pts[j-1],pts[j]],fill=((82,231,225,alpha) if k!=1 else (211,255,238,alpha)),
+                   width=max(1,thick))
+    shine(c,low,blur=21,gain=.64)
+    # A genuine 風 seal rises inside the primary optical brush; this stamp
+    # is NOT a gameplay projectile. It is visually tracked by the single
+    # source→target transfer animation, canonical projectile speed remains0.
+    sx=79+358*q
+    sy=118+24*math.sin(i*.34)
+    copy_at(c,scroll,sx,sy,.245+.035*math.sin(i*.33),rot=-11+26*math.sin(i*.26),
+            alpha=.82+.17*math.sin(math.pi*q))
     return c
 
 def charge(i,scroll):
