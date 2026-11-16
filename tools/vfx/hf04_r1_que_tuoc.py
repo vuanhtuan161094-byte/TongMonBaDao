@@ -18,6 +18,7 @@ OUT=LAB/"assets"
 PAPER=ROOT/"godot/labs/combat_lab/talisman06/art_sources/hf01_r5_talisman_master_png.b64"
 DRAGON=ROOT/"godot/labs/combat_lab/talisman06/art_sources/hf01_r5_dragon_master_png.b64"
 FIRE=ROOT/"godot/labs/combat_lab/talisman07/art_sources/hf02_r5_owner_fire_blast.webp.b64"
+PHOENIX_SOURCE=LAB/"art_sources/hf04_chu_tuoc_original_rgb.webp.b64"
 
 def source(path,expected):
     raw=base64.b64decode(path.read_text().strip(),validate=True)
@@ -51,53 +52,65 @@ def splash(dst,img,x,y,glow=.27):
     halo.putalpha(halo.getchannel("A").point(lambda a:int(a*glow)))
     dst.alpha_composite(halo);dst.alpha_composite(layer)
 
-def phoenix(i,dragon,fire):
+def load_original_phoenix():
+    """Original first-party AI-painted Chu Tước material, never a screenshot.
+    Source was independently illustrated for TMB; a 304x112 RGB artwork crop.
+    Extract hot flame photons with a feathered alpha, rejecting dark background.
+    """
+    raw=base64.b64decode(PHOENIX_SOURCE.read_text().strip(),validate=True)
+    rgb=np.asarray(Image.open(io.BytesIO(raw)).convert("RGB"),dtype=np.float32)
+    assert rgb.shape==(112,304,3),rgb.shape
+    r,g,b=np.moveaxis(rgb,2,0)
+    luminance=.65*r+.35*g
+    a=np.clip((luminance-69)/148,0,1)*np.clip((r-1.28*b-25)/125,0,1)
+    a=np.clip(a,0,1)**.72
+    yy,xx=np.indices(a.shape,dtype=np.float32)
+    edge=np.minimum.reduce([np.clip(xx/13,0,1),np.clip((303-xx)/14,0,1),
+        np.clip(yy/10,0,1),np.clip((111-yy)/13,0,1)])
+    a=a*edge
+    rgba=np.stack([np.clip(r*1.08,0,255),np.clip(g*1.13,0,255),
+                   np.clip(b*.82,0,255),np.clip(a*255,0,255)],axis=-1).astype(np.uint8)
+    image=Image.fromarray(rgba,"RGBA")
+    assert image.getchannel("A").getextrema()[0]==0
+    print("HF04_ORIGINAL_PHOENIX_ART_SHA",hashlib.sha256(raw).hexdigest())
+    return image
+
+def phoenix(i,original,fire):
     c=Image.new("RGBA",(512,320))
     t=i/15.
-    wingspread=.76+.20*math.sin(t*math.pi*2.7)**2
-    flap=math.sin(t*math.pi*3.8)
-    # Distinct asymmetrical wing-feather fan. No repeated seven-candle columns.
-    for side in (-1,1):
-        for f in range(6):
-            breadth=f/5.
-            # The actual feather edges are from original painterly fire RGBA.
-            w=int((157-56*breadth)*(1+.16*flap))
-            h=int(51+18*(1-breadth))
-            angle=side*(16+f*11+10*flap)
-            local=reshape(fire,i*2+side*7+f,(w,h),angle,.79-.24*breadth)
-            x=258+side*(62+f*20)*wingspread
-            y=147-(30+f*17)*(1+.12*flap)
-            splash(c,local,x,y,.17)
-    # Cropped original ember/draft is the bird's lively, tapered central mass.
-    body=reshape(dragon,i+41,(176,101),(-10+10*flap),.92)
-    splash(c,body,250,160,.33)
-    head=reshape(fire,i+31,(104,52),(-21+8*flap),.85)
-    splash(c,head,207,143,.30)
-    # Long returning "Chu Tước" tail: three differently timed loose fire plumes.
+    flutter=math.sin(t*math.pi*3.6)
+    # Main silhouette remains a PAINTED recognizable living flame-bird.
+    # Variable wing width/height, irregular flutter and twist yield distinct
+    # flipbook poses but do NOT assert 16 independently handpainted masters.
+    wingspan=456+int(13*flutter)
+    wingheight=192+int(15*math.sin(t*math.pi*2.4))
+    body=reshape(original,i+17,(wingspan,wingheight),
+        2.7*math.sin(t*math.pi*2.9),.96)
+    splash(c,body,258,129,.34)
+    # Three long trailing radiant feathers behind body, subdued; never
+    # reconstruct a phoenix with six symmetric geometric stick wings.
     for k in range(3):
-        plume=reshape(fire,i+54+k*7,(212-16*k,62+8*k),
-            -39+13*k+5*math.sin(i*.45+k),.72-.12*k)
-        splash(c,plume,286+15*k,223+10*k,.25)
+        plum=reshape(fire,i*2+47+k*11,(153-k*16,50+k*4),
+            -27+13*k+7*math.sin(i*.49+k),.38-k*.08)
+        splash(c,plum,294+12*k,227+7*k,.11)
     return c
 
 def orbit(i,fire,paper):
     c=Image.new("RGBA",(640,340))
     q=i/11.
-    # Material-rich energy fragments tangent to an ELLIPTICAL footprint, not
-    # hard-code geometry drawing a flat ring. Different pigments move in frames.
-    for j in range(5):
-        a=i*.24+j*2*math.pi/5
-        x=320+233*math.cos(a)
-        y=178+86*math.sin(a)
-        tangent=math.degrees(a)+89
-        paint=reshape(fire,i+j*9,(247+int(24*math.sin(a)**2),79),
-            -tangent,.43+.22*math.sin(i*.35+j)**2)
-        splash(c,paint,x,y,.16)
-    # Two individual gold-red paper seals ride the ritual orbit for readability.
+    # Only three asymmetric narrow painted flame trails, no huge X-shaped
+    # rune/UI circle overwhelming the three moving monsters.
+    for j in range(3):
+        a=i*.205+j*2*math.pi/3
+        x=320+199*math.cos(a)
+        y=176+63*math.sin(a)
+        paint=reshape(fire,i+j*9,(185+int(15*math.sin(a)**2),62),
+            -math.degrees(a)-75,.28+.12*math.sin(i*.35+j)**2)
+        splash(c,paint,x,y,.11)
     for j in range(2):
-        a=i*.19+j*math.pi
-        seal=reshape(paper,i+j*15,(57,78),-25+math.degrees(a)*.3,.53+.40*q)
-        splash(c,seal,320+184*math.cos(a),166+68*math.sin(a),.25)
+        a=i*.18+j*math.pi
+        seal=reshape(paper,i+j*15,(45,67),-25+math.degrees(a)*.26,.44+.23*q)
+        splash(c,seal,320+180*math.cos(a),166+56*math.sin(a),.12)
     return c
 
 def charge(i,fire,paper):
@@ -134,9 +147,10 @@ def main():
     OUT.mkdir(parents=True,exist_ok=True)
     paper=source(PAPER,(96,132));dragon=source(DRAGON,(160,94))
     fire=source_flame()  # never composite the opaque dark poster matte
+    original_phoenix=load_original_phoenix()
     items={
       "tal09_r1_charge.webp":(atlas([charge(i,fire,paper) for i in range(12)],320,320),320,320,12),
-      "tal09_r1_phoenix.webp":(atlas([phoenix(i,dragon,fire) for i in range(16)],512,320),512,320,16),
+      "tal09_r1_phoenix.webp":(atlas([phoenix(i,original_phoenix,fire) for i in range(16)],512,320),512,320,16),
       "tal09_r1_orbit.webp":(atlas([orbit(i,fire,paper) for i in range(12)],640,340),640,340,12),
       "tal09_r1_contact.webp":(atlas([hit(i,fire,dragon) for i in range(10)],256,256),256,256,10),
     }
