@@ -85,7 +85,7 @@ static func rain_frame(t:float)->int:
     return clampi(int(floor(clampf((t-RAIN_START)/(RAIN_END-RAIN_START),0,1)*19.99)),0,19)
 
 static func impact_frame(t:float)->int:
-    return clampi(int(floor(clampf((t-CONTACT_START)/(CONTACT_END-CONTACT_START),0,1)*11.99)),0,11)
+    return clampi(int(floor(clampf((t-CONTACT_START)/.22,0,1)*11.99)),0,11)
 
 func _ready()->void:
     custom_minimum_size=Vector2(1280,720)
@@ -97,7 +97,7 @@ func _ready()->void:
             var a:=clampf(exp(-8.6*p.length_squared())*(1.0-smoothstep(.78,1,p.length())),0,1)
             im.set_pixel(x,y,Color(1,1,1,a))
     _light=ImageTexture.create_from_image(im)
-    print("VFX_TAL10_READY id=",SKILL_ID," art=HF05_R2_PURE_LIGHT_PAPER_STORM frames=16/24/20/12 moving_monsters=3 real_projectile_speed=0 circle_hit_count=1 view_only=true")
+    print("VFX_TAL10_READY id=",SKILL_ID," art=HF05_R3_RADIANT_ULTIMATE frames=16/24/20/12 moving_monsters=3 real_projectile_speed=0 circle_hit_count=1 view_only=true")
     set_process(true)
 
 func _process(delta:float)->void:
@@ -124,7 +124,7 @@ func _draw()->void:
     if storm>.003:
         var p:=CIRCLE_CENTER+Vector2(0,-118+9*sin(t*6))
         _atlas(STORM,storm_frame(t),640,384,
-            Rect2(p-Vector2(265,159),Vector2(530,318)),Color(1,1,1,storm*.98))
+            Rect2(p-Vector2(291,169),Vector2(582,338)),Color(1,1,1,storm*.98))
         _halo(CIRCLE_CENTER+Vector2(0,-160),96,Color("ffba59",storm*.17))
     var rain:=rain_gain(t)
     if rain>.003:
@@ -134,8 +134,8 @@ func _draw()->void:
     var hit:=impact_gain(t)
     if hit>.003:
         _atlas(IMPACT,impact_frame(t),640,320,
-            Rect2(CIRCLE_CENTER-Vector2(282,153),Vector2(564,281)),Color(1,1,1,hit*.94))
-        _halo(CIRCLE_CENTER+Vector2(0,-31),116,Color("ff8238",hit*.23))
+            Rect2(CIRCLE_CENTER-Vector2(311,166),Vector2(622,302)),Color(1,1,1,hit*.94))
+        _halo(CIRCLE_CENTER+Vector2(0,-31),116,Color("ff8238",hit*.29))
     # Real three WALK monster sprites (different phases), deliberately drawn
     # AFTER broad fire effects, so faces/body do not disappear.
     var frames:=MONSTER.get_frame_count("walk")
@@ -148,8 +148,8 @@ func _draw()->void:
     if hit>.003:
         for k in range(TARGET_LIMIT):
             var at:=target_contact(k,t)
-            _halo(at,26,Color("ff8c38",hit*.25))
-            _halo(at,11,Color("ffe59f",hit*.69))
+            _halo(at,26,Color("ff8c38",hit*.36))
+            _halo(at,11,Color("ffe59f",hit*.80))
             _halo(at,5,Color("fff9dc",hit*.88))
     draw_texture_rect_region(CASTER_ART,Rect2(CASTER-Vector2(72,163),Vector2(144,163)),
         Rect2(0,0,320,384),Color("f2d5bb"))
