@@ -97,7 +97,7 @@ func _ready()->void:
             var a:=clampf(exp(-8.6*p.length_squared())*(1.0-smoothstep(.78,1,p.length())),0,1)
             im.set_pixel(x,y,Color(1,1,1,a))
     _light=ImageTexture.create_from_image(im)
-    print("VFX_TAL10_READY id=",SKILL_ID," art=HF05_R4_GIANT_SIGIL_ULTIMATE frames=16/24/20/12 moving_monsters=3 real_projectile_speed=0 circle_hit_count=1 view_only=true")
+    print("VFX_TAL10_READY id=",SKILL_ID," art=HF05_R5_BLEND_FLIPBOOK_ULTIMATE frames=16/24/20/12 moving_monsters=3 real_projectile_speed=0 circle_hit_count=1 view_only=true")
     set_process(true)
 
 func _process(delta:float)->void:
@@ -117,19 +117,38 @@ func _halo(at:Vector2,r:float,c:Color)->void:
 func _atlas(tex:Texture2D,index:int,cw:int,ch:int,rect:Rect2,col:Color)->void:
     draw_texture_rect_region(tex,rect,Rect2(float(index%4*cw),float(int(index/4)*ch),float(cw),float(ch)),col)
 
+# R5 frame-by-frame continuity: blend neighboring PREPAINTED sprite cells
+# instead of jumping at 16/20/24 fps in a 60 fps movie. This is not rigging.
+# Gamma-aware near-full weights retain the pure-color emitting material.
+func _atlas_smooth(tex:Texture2D,count:int,cw:int,ch:int,pos:float,rect:Rect2,col:Color)->void:
+    var bounded:=clampf(pos,0.0,float(count-1))
+    var f:=int(floor(bounded))
+    var u:=bounded-float(f)
+    var next:=mini(f+1,count-1)
+    if f==next or u<.005:
+        _atlas(tex,f,cw,ch,rect,col)
+        return
+    if u>.995:
+        _atlas(tex,next,cw,ch,rect,col)
+        return
+    var a:=sqrt(1.0-u)
+    var b:=sqrt(u)
+    _atlas(tex,f,cw,ch,rect,Color(col.r,col.g,col.b,col.a*a))
+    _atlas(tex,next,cw,ch,rect,Color(col.r,col.g,col.b,col.a*b))
+
 func _draw()->void:
     var t:=time
     draw_texture_rect(BACKDROP,Rect2(0,0,1280,720),false)
     var storm:=storm_gain(t)
     if storm>.003:
         var p:=CIRCLE_CENTER+Vector2(0,-118+9*sin(t*6))
-        _atlas(STORM,storm_frame(t),640,384,
+        _atlas_smooth(STORM,24,640,384,clampf((t-STORM_START)/(STORM_END-STORM_START),0.0,1.0)*23.0,
             Rect2(p-Vector2(291,169),Vector2(582,338)),Color(1,1,1,storm*.98))
         _halo(CIRCLE_CENTER+Vector2(0,-160),96,Color("ffba59",storm*.17))
     var rain:=rain_gain(t)
     if rain>.003:
         var area:=CIRCLE_CENTER+Vector2(0,-77)
-        _atlas(RAIN,rain_frame(t),640,440,
+        _atlas_smooth(RAIN,20,640,440,clampf((t-RAIN_START)/(RAIN_END-RAIN_START),0.0,1.0)*19.0,
             Rect2(area-Vector2(267,192),Vector2(534,348)),Color(1,1,1,rain*.98))
     # R4: a single giant original illustrated master sigil stays recognizable
     # during the ONE circle pulse. Purely visual, behind WALK actors, not a hit.
@@ -144,7 +163,7 @@ func _draw()->void:
         _halo(hero_center+Vector2(0,-26),72,Color("ffb74d",royal_scroll*.16))
     var hit:=impact_gain(t)
     if hit>.003:
-        _atlas(IMPACT,impact_frame(t),640,320,
+        _atlas_smooth(IMPACT,12,640,320,clampf((t-CONTACT_START)/.22,0.0,1.0)*11.0,
             Rect2(CIRCLE_CENTER-Vector2(311,166),Vector2(622,302)),Color(1,1,1,hit*.94))
         _halo(CIRCLE_CENTER+Vector2(0,-31),116,Color("ff8238",hit*.29))
     # Real three WALK monster sprites (different phases), deliberately drawn
@@ -168,7 +187,7 @@ func _draw()->void:
     if charge>.003:
         var s:=lerpf(240.0,284.0,smoothstep(.21,.84,t))
         var p:=HAND+Vector2(11,-19)
-        _atlas(CHARGE,charge_frame(t),320,320,Rect2(p-Vector2.ONE*s*.5,Vector2.ONE*s),
+        _atlas_smooth(CHARGE,16,320,320,clampf(t/CHARGE_END,0.0,1.0)*15.0,Rect2(p-Vector2.ONE*s*.5,Vector2.ONE*s),
             Color(1,1,1,charge))
         _halo(HAND+Vector2(12,-6),45,Color("ffe48f",charge*.22))
     var ash:=smoothstep(2.05,2.26,t)*(1.0-smoothstep(2.52,FADE_END,t))
