@@ -105,7 +105,7 @@ func _ready()->void:
             var a:=clampf(exp(-8.5*p.length_squared())*(1.0-smoothstep(.78,1,p.length())),0,1)
             im.set_pixel(x,y,Color(1,1,1,a))
     _light=ImageTexture.create_from_image(im)
-    print("VFX_TAL09_READY id=",SKILL_ID," stage=HF04_R2_ILLUSTRATED_PHOENIX_SPRITE actor_walk=3 contract=circle_cap3_one_hit projectile_speed=0 view_only=true")
+    print("VFX_TAL09_READY id=",SKILL_ID," stage=HF04_R3_PHOENIX_PAINTED_CONTACT actor_walk=3 contract=circle_cap3_one_hit projectile_speed=0 view_only=true")
     set_process(true)
 
 func _process(delta:float)->void:
@@ -141,10 +141,19 @@ func _draw()->void:
         _atlas(PHOENIX,bird_frame(t),512,320,Rect2(-271,-193,542,337),Color(1,1,1,bird*.99))
         draw_set_transform(Vector2.ZERO)
         _halo(p,48,Color("ff8c33",bird*.19))
+    # R3: one broad SOURCE-PAINTED soft flame-pulse behind the actor group
+    # visually ties the three legal contacts into ONE circular-area hit.
+    # Not another gameplay hit, not a vector ring or dynamic target selector.
+    var hit:=contact_gain(t)
+    if hit>.003:
+        var core_idx:=hit_frame(t)
+        _atlas(CONTACT,core_idx,256,256,
+            Rect2(CIRCLE_CENTER-Vector2(135,136),Vector2(270,234)),
+            Color(1,1,1,hit*.53))
+        _halo(CIRCLE_CENTER+Vector2(0,-21),102,Color("ff8b37",hit*.12))
     # Three monsters are truly moving, max cap3; one simultaneous circle
     # flash only. No fake projectiles or separated fake hits.
     var f:=MONSTER.get_frame_count("walk")
-    var hit:=contact_gain(t)
     for k in range(TARGET_LIMIT):
         var foot:=target_foot(k,t)
         var tex:Texture2D=MONSTER.get_frame_texture("walk",int(t*15+float(k)*2.0)%maxi(1,f))
@@ -156,7 +165,7 @@ func _draw()->void:
             var at:=target_contact(k,t)
             _atlas(CONTACT,idx,256,256,Rect2(at-Vector2(70,76),Vector2(140,140)),Color(1,1,1,hit*.72))
             _halo(at,23,Color("ff6a2e",hit*.24))
-            _halo(at,7,Color("fffbdd",hit*.68))
+            _halo(at,10,Color("fffbe3",hit*.86))
     draw_texture_rect_region(CASTER_ART,
         Rect2(CASTER-Vector2(72,163),Vector2(144,163)),
         Rect2(0,0,320,384),Color("f6d6bd"))
