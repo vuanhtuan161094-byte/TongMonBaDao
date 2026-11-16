@@ -34,3 +34,12 @@ Scene `godot/labs/combat_lab/poison_basic_tiers_v3/poison_basic_tiers.tscn` and 
 **Three-clock truth:** catalogue all three `cast_time=0` and `duration=0`; .15s display-only charging, demo contact .70s, fade through 1.03s per tier, 1.26s per-tier slot. No automatic DoT/status, no extra hit, no canonical Combat V2 3.9 second cooldown/attack. All three basic-tier catalogues retain `v63...` gated keys; LAB does not enable them.
 
 **Final technical gates:** `V4_NATIVE_GODOT_TECH_PASS_EXACT_SHA`, `ORIGINAL_RGBA_SOURCE_COMMITTED`, `HUMAN_ART_SELF_REVIEW_READY_FOR_OWNER`, `OWNER_VISUAL_PENDING_THREE_TIERS`, `RUNTIME_MAPPING_PENDING`, `PVE_INTEGRATION_HOLD`, `V63_OFF`, `PHYSICAL_WINDOWS_ANDROID_QA_PENDING`. No rig, CodeX, merge, branch, or unrelated gameplay modifications.
+
+
+## Owner decision 2026-11-16 — V3.1 THREE TIERS **TEMPORARILY ACCEPTED, NOT FINAL**
+
+Owner response after viewing native Godot V3.1 comparison of Human / Immortal / Divine: **“chưa ok lắm nhỉ. nhưng thôi tạm vậy”**. This is consent to **keep V3.1 provisionally and proceed**, not final visual acceptance of quality. Do not incorrectly mark these three sprites OWNER_VISUAL_APPROVED. Existing Godot technical PASS and source SHA/evidence remain valid for the same V3.1 assets; user still finds the artwork not quite satisfactory. Freeze the current three-tier V3.1 assets and preserve their history, do **not** redo immediately or silently upgrade versions.
+
+**Future optional polish backlog (subject to later owner direction):** improve vivid layered transparency and material sophistication inspired by the luminous clarity of Võ Lâm / Kiếm Thế without copying pixels, stronger distinct Human→Immortal→Divine silhouettes and local contact patterns, keep needles straight and avoid snake-like wobbling, maintain tiny basic-attack readability at 1× while limiting target occlusion. No need for a GIF or GIF-based workflow. Previous native MP4/9 screenshots are evidence, not a playable PvE integration.
+
+**Current gate for all 3:** `GODOT_V4_TECH_PASS_V3_1`, `OWNER_PROVISIONAL_ACCEPTED_NOT_FINAL`, `POLISH_BACKLOG_OPEN`, `PVE_INTEGRATION_HOLD`, `V6.3_OFF`, `PHYSICAL_QA_PENDING`. No rig, Codex, branch/merge, new gameplay effect or unsanctioned V6.3 enabling.
