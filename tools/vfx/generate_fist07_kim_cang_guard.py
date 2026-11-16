@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Original pure-gold light armor VFX / Kim Cang Ho The. No rig, no stock pixels.
 
-V1: 16 distinct ward frames in 4x4 of 256x256 (activation 0..3,
+R2: 16 independent saturated gold plasma-ward frames in 4x4 of 256x256 (activation 0..3,
 continuous breath 4..11, fade 12..15), and 8 guarded-hit reaction poses
 in 4x2. RGBA PNG, source seed fixed; 6 MiB total uncompressed.
 """
@@ -73,68 +73,107 @@ def scatter(img,k,center,count,spread,opacity=1.):
         if i%7==0:
             d.line(PTS([(x-3,y),(x+3,y)]),fill=(255,255,215,round(a*.56)),width=1)
 
+def flame_band(canvas, points, fat, strength, seed, phase):
+    """A painted, variable-width luminous silk plume: gold fluid body with
+    soft feathered alpha, fine irregular white-hot filament and sharp tip.
+    It is original raster art, NOT a flat SVG polygon / concentric GUI ring.
+    """
+    import math
+    rng=random.Random(seed)
+    if len(points)<8:return
+    n=len(points)
+    offsets=[]
+    for j,p in enumerate(points):
+        u=j/(n-1)
+        a=points[max(0,j-1)];b=points[min(n-1,j+1)]
+        dx=b[0]-a[0];dy=b[1]-a[1]
+        length=max(.001,math.hypot(dx,dy))
+        nx,ny=-dy/length,dx/length
+        # width tapers into sharp tips; uneven live light on the sides.
+        shape=max(.02,math.sin(math.pi*u))**.85
+        shape*=.89+.12*math.sin(u*11.0+phase)+.09*math.sin(u*23.0+seed*.1)
+        offsets.append((p[0],p[1],nx,ny,shape))
+    def boundary(frac=1.):
+        l=[];r=[]
+        for u,(x,y,nx,ny,w) in enumerate(offsets):
+            bend=.11*math.sin(u*.63+phase)
+            l.append((x+nx*fat*w*frac*(1+bend),y+ny*fat*w*frac*(1+bend)))
+            r.append((x-nx*fat*w*frac*(1-bend),y-ny*fat*w*frac*(1-bend)))
+        return PTS(l+list(reversed(r)))
+    g=empty();draw=ImageDraw.Draw(g,'RGBA')
+    draw.polygon(boundary(2.5),fill=(244,166,18,round(strength*134)))
+    canvas.alpha_composite(g.filter(ImageFilter.GaussianBlur(9*S)))
+    g=empty();draw=ImageDraw.Draw(g,'RGBA')
+    draw.polygon(boundary(1.25),fill=(255,186,29,round(strength*172)))
+    canvas.alpha_composite(g.filter(ImageFilter.GaussianBlur(2.5*S)))
+    draw=ImageDraw.Draw(canvas,'RGBA')
+    draw.polygon(boundary(1.0),fill=(255,207,35,round(strength*214)))
+    draw.polygon(boundary(.45),fill=(255,240,115,round(strength*216)))
+    draw.line(PTS(points[3:-2]),fill=(255,251,201,round(strength*255)),width=max(1,round((1.85+.12*fat)*S)),joint='curve')
+    # Broken smaller plasma traces inside the wide light, never parallel lines.
+    for m in range(5):
+        first=rng.randrange(3,n-13)
+        section=points[first:first+rng.randint(5,11)]
+        draw.line(PTS(section),fill=(255,255,232,round(strength*rng.randint(80,165))),width=S)
+
 def draw_ward(k):
-    img=empty();r=random.Random(SEED+17*k)
+    """Pure luminous armor — shaped, flowing pressure, NO schematic plates."""
+    img=empty()
+    rng=random.Random(SEED+k*101)
+    phase=k*.76
     if k<4:
-        q=(k+1)/4
-        env=.34+.66*q
+        progression=(k+1)/4.
+        strength=.47+.53*progression
     elif k<12:
-        q=1
-        env=.91+.08*sin((k-4)*pi/4)
+        progression=1.0
+        strength=.94+.06*sin(phase)
     else:
-        q=max(.0,(16-k)/4)
-        env=q*q*.89
-    phase=k*.65
-    breath=sin(phase)*3.0
-    # The hero is negative-space architecture: separate side shield wings,
-    # open head, chest and body. Pure yellow/gold light, no orange/brown rubble.
-    soft_glow(img,128,132,67*q,103*q,int(87*env),19,color=(255,191,47))
-    soft_glow(img,128,174,44*q,54*q,int(42*env),12,color=(255,233,103))
+        progression=max(.02,(16-k)/4.)
+        strength=progression*.96
+    breath=sin(phase)*4.3
+    # Back-light has saturated pure gold, never smoky brown texture.
+    soft_glow(img,128,153,56*progression,88*progression,int(83*strength),18,color=(255,210,55))
+    soft_glow(img,128,168,35*progression,42*progression,int(61*strength),11,color=(255,240,102))
     for side in [-1,1]:
-        shift=side*(3*sin(phase+side)+2*cos(phase*.8))
-        x=128+side*(80*q)+shift
-        # Outer pressure crest reaches overhead but never closes into a ring.
-        arch=cubic((128+side*20,52-8*q),
-                   (128+side*(99*q),61-breath),
-                   (128+side*(124*q),132),
-                   (128+side*(96*q),231+breath),44)
-        glow_ribbon(img,arch,3.1,env*.98)
-        # Shoulder and flank gold refractive armor facets, visually separated.
-        for band in range(3):
-            cy=98+band*45+breath*(.5+band*.08)
-            xx=128+side*(77+6*sin(phase*.6+band+side)) * q
-            pts=[(xx-side*16,cy-23),(xx+side*9,cy-31),
-                 (xx+side*(17+4*sin(phase+band)),cy-1),
-                 (xx+side*6,cy+24),(xx-side*8,cy+10)]
-            shade_shard(img,pts,env*(.92-.07*band))
-            gl=cubic((xx-side*13,cy-20),(xx+side*8,cy-27),
-                     (xx+side*15,cy+8),(xx-side*2,cy+25),24)
-            glow_ribbon(img,gl,2.2,env*.85)
-        # Energetic sweep outside the shields: unequal lengths and changing
-        # height so sustain is not rotating a single ring icon.
-        a=91+19*sin(phase+side*.8)
-        curl=cubic((128+side*42,28+a*.16),
-                   (128+side*112,83+a*.26),
-                   (128+side*104,179-8*sin(phase*.8)),
-                   (128+side*61,241-a*.06),39)
-        glow_ribbon(img,curl,1.35,env*.57)
-    # Broken shoulder crest, no halo-ring UI around the character.
-    for side in [-1,1]:
-        top=cubic((128+side*18,48-2*breath),
-                  (128+side*41,31-3*breath),
-                  (128+side*69,46+2*breath),
-                  (128+side*70,74+2*breath),20)
-        glow_ribbon(img,top,2.8,env*.84)
-    # A small brilliant sternum point, controlled bloom / not a white disk.
-    soft_glow(img,128,139,16,19,int(147*env),8,color=(255,225,84))
-    glow_ribbon(img,cubic((123,148),(129,142),(123,132),(128,128),14),1.9,env*.7)
-    scatter(img,k,(128,145),42,(77,75),env*.9)
+        # Outer protective silk curls around the actor, terminates in sharp
+        # golden crown rather than completing a geometric circle.
+        outer=cubic((128+side*(57*progression),238),
+                    (128+side*(112*progression),194+breath),
+                    (128+side*(116*progression),72-breath),
+                    (128+side*(32+4*cos(phase+side)),45),40)
+        flame_band(img,outer,8.5,strength*.92,SEED+k*11+side,phase)
+        # Second live wing follows a different asymmetrical path and tempo.
+        inner=cubic((128+side*(48*progression),219+breath),
+                    (128+side*(88*progression),202),
+                    (128+side*(81*progression),90-8*sin(phase*.8+side)),
+                    (128+side*(58*progression),74+6*cos(phase+side)),40)
+        flame_band(img,inner,5.8,strength*.75,SEED+200+k*31+side,phase*1.3+side)
+        # Three tapered moving flame plates, not polygons/physical armor.
+        for j in range(3):
+            origin=(128+side*(48+5*sin(phase+j*1.3+side)),207-j*46+breath)
+            tip=(128+side*(88+6*cos(phase*.8+j)),156-j*54-3*sin(phase*.7))
+            mid1=(origin[0]+side*(24-3*j),origin[1]-19)
+            mid2=(tip[0]+side*(11-2*j),tip[1]+23)
+            branch=cubic(origin,mid1,mid2,tip,23)
+            flame_band(img,branch,4.8-j*.62,strength*(.72-.08*j),SEED+900+k*67+j*2+side,phase+j)
+        # White-hot guardian crest, open near head to preserve face silhouette.
+        crown=cubic((128+side*27,63+2*breath),
+                    (128+side*47,37-6*sin(phase*.5)),
+                    (128+side*69,35+3*cos(phase)),
+                    (128+side*75,83),27)
+        flame_band(img,crown,4.3,strength*.78,SEED+1000+k*19+side,phase*.8)
+    # Gold-white heart pulse from original painting underneath idle actor.
+    soft_glow(img,128,144,20,26,int(184*strength),5,color=(255,252,159))
+    flame_band(img,cubic((128,161),(122,151),(132,137),(128,125),16),3.6,
+               strength*.92,SEED+4000+k,phase)
+    # Directed glitter, never indiscriminate orange circles.
+    scatter(img,k,(128,151),65,(77,65),strength)
     if k>=12:
-        # Different ending frame contents: released light filaments drift up.
-        for i in range(6):
-            xx=80+i*19+4*sin(k+i);yy=185-i*19-(k-12)*9
-            p=cubic((xx,yy+8),(xx-3,yy),(xx+2,yy-9),(xx+4,yy-18),12)
-            glow_ribbon(img,p,1.0,env*.5)
+        for j in range(8):
+            x=69+j*17+4*cos(j+phase)
+            y=205-j*11-(k-12)*11
+            w=cubic((x,y+9),(x-6,y-3),(x+2,y-11),(x+3,y-23),18)
+            flame_band(img,w,1.4,strength*.48,SEED+7300+k*15+j,phase)
     return img.resize((CELL,CELL),Image.Resampling.LANCZOS)
 
 def draw_reaction(k):
@@ -142,15 +181,15 @@ def draw_reaction(k):
     img=empty();t=k/7.;env=(1-t)**1.12
     # Shield is pushed inward and then snaps back. Local impact x~166 y~123.
     center=(171+12*t,119-7*t)
-    soft_glow(img,*center,38+28*t,31+25*t,int(120*env),13,(255,199,54))
-    soft_glow(img,*center,18+14*t,14+12*t,int(164*env),5,(255,251,182))
+    soft_glow(img,*center,47+25*t,41+27*t,int(171*env),13,(255,199,54))
+    soft_glow(img,*center,22+16*t,19+14*t,int(229*env),5,(255,251,182))
     # Off-centered crescent, no huge circular screen-space ripple.
     arc=[]
     for i in range(33):
         a=-1.20 + 2.2*i/32
         rr=34+39*t+3*sin(5*a+k*.6)
         arc.append((center[0]+rr*cos(a),center[1]+rr*.85*sin(a)))
-    glow_ribbon(img,arc,2.75,env)
+    glow_ribbon(img,arc,4.3,env)
     # Shattered bright filaments emitted from exact block point.
     r=random.Random(SEED+88*k)
     for j in range(11):
@@ -159,7 +198,7 @@ def draw_reaction(k):
         p=cubic(center,(center[0]+length*.3,center[1]+5*sin(a)),
                 (center[0]+length*.68*cos(a),center[1]+length*.5*sin(a)),
                 (center[0]+length*cos(a),center[1]+length*sin(a)),13)
-        glow_ribbon(img,p,r.uniform(.8,2.1),env*(.66 if j%2 else .92))
+        glow_ribbon(img,p,r.uniform(1.3,3.2),env*(.83 if j%2 else 1.0))
     scatter(img,k+100,center,52,(53+25*t,42+27*t),env)
     return img.resize((CELL,CELL),Image.Resampling.LANCZOS)
 

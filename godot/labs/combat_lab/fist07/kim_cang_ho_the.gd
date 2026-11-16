@@ -4,7 +4,7 @@ extends Control
 ## Original RGBA sprite art + narrow contact flash. VIEW ONLY: no damage/status.
 ## No rig, body/weapon transformation, gameplay receipt, or movement spoofing.
 const SKILL_ID := "tmb.skill.fist.kim_cang.active_02.human"
-const ART_REVISION := "R1_LUMINOUS_GOLD_WARD"
+const ART_REVISION := "R2_LIVING_PLASMA_GOLD_WARD"
 const EFFECT := "guard"
 const ELEMENT := "earth"
 const SHAPE := "single_target"
@@ -65,7 +65,7 @@ func _ready() -> void:
     set_process(true)
     queue_redraw()
     if not vfx_only_benchmark:
-        print("VFX_FIST07_R1_READY id=",SKILL_ID,
+        print("VFX_FIST07_R2_READY id=",SKILL_ID,
             " guard=true earth=true single_target=true cast=0.45 duration=4",
             " atlas_frames=24 two_textures=true no_rig=true view_only=true")
 
@@ -158,7 +158,7 @@ func _draw() -> void:
         _actor(DUMMY,Color("bac2c8"))
     # Demo protected-hit response: instant, localized, no outgoing damage cue.
     if impact > 0.003 and t>=GUARD_START and t<GUARD_END:
-        _glow(BLOCK_ANCHOR,51.0,impact*.62)
+        _glow(BLOCK_ANCHOR,66.0,impact*.90)
         var event_age:=0.0
         var active:=false
         for event_at in DEMO_BLOCK_TIMES:
@@ -171,13 +171,13 @@ func _draw() -> void:
                 active=true
         if active:
             var f:=clampi(int(floor(event_age/HIT_DURATION*8.0)),0,7)
-            _atlas(BLOCK,f,BLOCK_ANCHOR,1.02,impact,Vector2(171.0,119.0))
+            _atlas(BLOCK,f,BLOCK_ANCHOR,1.23,impact,Vector2(171.0,119.0))
     if not vfx_only_benchmark:
         draw_string(ThemeDB.fallback_font,Vector2(28.0,32.0),
             "KIM CANG HO THE  /  QUYEN TU",HORIZONTAL_ALIGNMENT_LEFT,-1,24,
             Color("fff2d4"))
         draw_string(ThemeDB.fallback_font,Vector2(28.0,58.0),
-            "FIST07 R1 | PURE GOLD WARD + GUARDED-HIT RESPONSE / 4 SECONDS",
+            "FIST07 R2 | GOLD-PLASMA WARD + GUARDED-HIT RESPONSE / 4 SECONDS",
             HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("e9cca1"))
         draw_string(ThemeDB.fallback_font,Vector2(28.0,682.0),
             "GODOT 4.7.2 COMPATIBILITY | GUARD ONLY | DEMO BLOCKS | NO RIG",
