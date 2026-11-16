@@ -44,7 +44,7 @@ jobs:
           python3 tools/vfx/generate_poison_basic_tiers_v3.py 2>&1 | tee "$d/bake.log"
           for tier in human immortal divine; do
             upper="$(echo "$tier" | tr '[:lower:]' '[:upper:]')"
-            packet="docs/operations/vfx_packets/POISON_BASIC_$upper_V3_V4_PREFLIGHT.json"
+            packet="docs/operations/vfx_packets/POISON_BASIC_${upper}_V3_V4_PREFLIGHT.json"
             python3 tools/qa/validate_vfx_v4_packet.py --stage packet --packet "$packet" | tee "$d/packet-$tier.log"
             python3 tools/qa/validate_vfx_v4_packet.py --stage assets --packet "$packet" | tee "$d/assets-$tier.log"
           done
@@ -100,7 +100,7 @@ jobs:
             cp "$sub/v4-peak.png" "$d/$tier-peak.png"
             cp "$sub/v4-contact.png" "$d/$tier-contact.png"
             upper="$(echo "$tier" | tr '[:lower:]' '[:upper:]')"
-            packet="docs/operations/vfx_packets/POISON_BASIC_$upper_V3_V4_PREFLIGHT.json"
+            packet="docs/operations/vfx_packets/POISON_BASIC_${upper}_V3_V4_PREFLIGHT.json"
             python3 tools/qa/validate_vfx_v4_packet.py --stage evidence --packet "$packet" --out "$sub" --sha "$GITHUB_SHA" | tee "$d/evidence-$tier.log"
           done
           sha256sum "$d/v4-poison-basic-tiers-v3-native.mp4" "$d/"*-charge.png "$d/"*-peak.png "$d/"*-contact.png > "$d/G35-SHA256.txt"
