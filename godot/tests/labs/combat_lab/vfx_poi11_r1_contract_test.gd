@@ -26,6 +26,8 @@ func _run()->void:
     for i in range(3):
         check(LAB.monster_foot(i,.55).distance_to(LAB.monster_foot(i,2.45))>10.0,"actual moving target "+str(i))
         check(LAB.monster_chest(i,2.45).distance_to(LAB.monster_foot(i,2.45)+Vector2(-5,-79))<.01,"contact follows target "+str(i))
+        check(LAB.contact_anchor(i,2.45).distance_to(LAB.monster_chest(i,2.45)+Vector2(0,12))<.01,"R6 torso glint below face "+str(i))
+        check(LAB.contact_anchor(i,.55).distance_to(LAB.contact_anchor(i,2.45))>10.0,"R6 contact tracks moving actor "+str(i))
         var hit:float=LAB.mock_contact_time(i)
         check(not Badge.should_show(2,LAB.demo_status_remaining(i,hit-.01)),"no pre-emptive poison badge")
         check(Badge.should_show(2,LAB.demo_status_remaining(i,hit+3.0)),"one shared poison icon")
