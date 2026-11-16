@@ -37,7 +37,7 @@ const CHARGE:Texture2D=preload("res://labs/combat_lab/talisman10/assets/tal10_r1
 const STORM:Texture2D=preload("res://labs/combat_lab/talisman10/assets/tal10_r1_storm.webp")
 const RAIN:Texture2D=preload("res://labs/combat_lab/talisman10/assets/tal10_r1_rain.webp")
 const IMPACT:Texture2D=preload("res://labs/combat_lab/talisman10/assets/tal10_r1_impact.webp")
-const FINALE:Texture2D=preload("res://labs/combat_lab/talisman10/assets/tal10_r6_fire_lotus.webp")
+const FINALE:Texture2D=preload("res://labs/combat_lab/talisman10/assets/tal10_r7_solar_pillar.webp")
 const BACKDROP:Texture2D=preload("res://labs/combat_lab/poison05/remake_r6/assets/immortal_valley.svg")
 const CASTER_ART:Texture2D=preload("res://labs/character_family/assets/nu_doc_tu_v4_candidate/idle_4dir_APPROVED_UNCHANGED.png")
 const MONSTER:SpriteFrames=preload("res://assets/actors/v5_sa_monster_1113031_1/animations.tres")
@@ -108,7 +108,7 @@ func _ready()->void:
             var a:=clampf(exp(-8.6*p.length_squared())*(1.0-smoothstep(.78,1,p.length())),0,1)
             im.set_pixel(x,y,Color(1,1,1,a))
     _light=ImageTexture.create_from_image(im)
-    print("VFX_TAL10_READY id=",SKILL_ID," art=HF05_R6_PAINTED_FIRE_LOTUS_FINALE frames=16/24/20/12/20 moving_monsters=3 real_projectile_speed=0 circle_hit_count=1 view_only=true")
+    print("VFX_TAL10_READY id=",SKILL_ID," art=HF05_R7_SOURCE_PAINTED_SOLAR_PILLAR_FINALE frames=16/24/20/12/20 moving_monsters=3 real_projectile_speed=0 circle_hit_count=1 view_only=true")
     set_process(true)
 
 func _process(delta:float)->void:
@@ -161,7 +161,7 @@ func _draw()->void:
         var area:=CIRCLE_CENTER+Vector2(0,-77)
         _atlas_smooth(RAIN,20,640,440,clampf((t-RAIN_START)/(RAIN_END-RAIN_START),0.0,1.0)*19.0,
             Rect2(area-Vector2(267,192),Vector2(534,348)),Color(1,1,1,rain*.98))
-    # R6: the one chief paper seal COLLAPSES into the same single-area contact
+    # R7: the one chief paper seal COLLAPSES into the same single-area contact
     # rather than hanging overhead or suddenly disappearing after the hit.
     var royal_scroll:=smoothstep(1.63,1.82,t)*(1.0-smoothstep(1.91,2.08,t))
     if royal_scroll>.003:
@@ -172,8 +172,8 @@ func _draw()->void:
             Rect2(hero_center-Vector2.ONE*hero_size*.5,Vector2.ONE*hero_size),
             Color(1,1,1,royal_scroll*.95))
         _halo(hero_center,56,Color("ffca6b",royal_scroll*.18))
-    # NEW source-painted fire LOTUS grows outward after ONE circular hit,
-    # then turns into flying textured embers. Its timing is LAB-only.
+    # NEW source-painted GOLD-WHITE SOLAR PILLAR rises from ONE circle hit,
+    # opens two irregular flame wings, then fades to textured rising embers; LAB-only.
     var lotus:=finale_gain(t)
     if lotus>.003:
         _atlas_smooth(FINALE,FINALE_POSES,640,400,finale_frame_pos(t),
