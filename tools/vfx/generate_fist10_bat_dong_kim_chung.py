@@ -269,24 +269,26 @@ def sustain_pose(k):
     im.alpha_composite(sm,(21*K,21*K))
     return im.resize((192,192),Image.Resampling.LANCZOS)
 
-def block_pose(k):
-    im=Image.new('RGBA',(256*K,256*K))
-    full=Image.new('RGBA',(384*K,384*K))
-    op=[.17,.49,.95,.88,.68,.38,.16,.05][k]
-    style_bell(full,time=k*.27,phase=k*.38,op=.78*op,energy=.85+.09*math.sin(k*.4),limit=1.)
-    sm=full.resize((214*K,214*K),Image.Resampling.LANCZOS)
-    im.alpha_composite(sm,(16*K,20*K))
-    # Incoming hit at RIGHT flank; light deflects toward the shield but
-    # no outgoing attack, projectile or fake damage to the moving monster.
-    cx=206;cy=111
-    for i in range(3):
-        dx=13*i
-        stroke=bezier((252,cy-33+i*21),(244-dx,cy-23+i*18),(224-dx,cy-8+i*13),(cx-2,cy+4))
-        polyline(im,stroke,(255,179,76),(255,252,218),2.6-.4*i,op*.83,seed=100+k*3+i)
-    # Bright impact arc and brief local bloom, no huge diagonal outgoing ray.
-    impact=oval(198,115,21+5*math.sin(k),43,-math.pi*.58,math.pi*.62,69,.03,k*.3)
-    polyline(im,impact,(255,186,63),(255,255,218),3,op*.97,seed=k)
-    return im.resize((256,256),Image.Resampling.LANCZOS)
+def fade_pose(k):
+    """Owner-approved: the third atlas is DISSOLVE, never a blocked-hit VFX.
+    8 original alpha poses; no incoming contact, glow hit or outgoing effect.
+    """
+    canvas=Image.new('RGBA',(256*K,256*K))
+    detail=Image.new('RGBA',(384*K,384*K))
+    q=k/7.
+    opacity=[.82,.73,.63,.49,.34,.20,.095,.022][k]
+    style_bell(detail,time=3.8+k*.31,phase=2.3+k*.22,
+               op=opacity,energy=.91+q*.24,limit=1.,detail=True,floor=k<5)
+    a=np.array(detail,dtype=np.uint8)
+    row=np.arange(a.shape[0],dtype=np.float32)[:,None]
+    fade_boundary=a.shape[0]*(.88-q*.60)
+    taper=np.clip((fade_boundary-row)/(a.shape[0]*.23),0.,1.)
+    grain=np.clip(.88+.12*np.sin(row*.13+k*.8),0.,1.)
+    a[:,:,3]=np.clip(a[:,:,3].astype(np.float32)*taper*grain,0,255).astype('uint8')
+    detail=Image.fromarray(a,'RGBA')
+    sh=detail.resize((218*K,218*K),Image.Resampling.LANCZOS)
+    canvas.alpha_composite(sh,(19*K,17*K))
+    return canvas.resize((256,256),Image.Resampling.LANCZOS)
 
 def atlas(poses,cell,outfile):
     out=Image.new('RGBA',(cell*4,cell*((len(poses)+3)//4)))
@@ -296,13 +298,13 @@ def atlas(poses,cell,outfile):
 
 cast=atlas([cast_pose(i) for i in range(12)],384,'f10_cast_bell.png')
 status=atlas([sustain_pose(i) for i in range(8)],192,'f10_status_seal.png')
-block=atlas([block_pose(i) for i in range(8)],256,'f10_guard_resonance.png')
+fade=atlas([fade_pose(i) for i in range(8)],256,'f10_bell_fade.png')
 # Full original independent golden qi brush master: two first-party layers.
 # No screenshots/GIF input. Deterministic source allows exact GitHub bake.
 master_small=Image.new('RGBA',(384,384))
 style_bell(master_small,time=.72,phase=.28,op=1.,energy=1.,limit=1.)
 master_small.resize((768,768),Image.Resampling.LANCZOS).save(OUT/'f10_r4_original_transparent_qi_master.png',optimize=True)
-raw=sum((p.width*p.height*4) for p in [cast,status,block])
+raw=sum((p.width*p.height*4) for p in [cast,status,fade])
 assert raw==10354688,raw
 print('FIST10_BAKE_PASS poses=28 pages=3 raw_rgba_bytes=10354688 no_rig=true first_party_derived_material=true')
-print('FIST10_R4_INDEPENDENT_BRUSH_MASTER no_gif_input=true no_actor_input=true scene_separated=true')
+print('FIST10_R4_NO_HIT_FINAL no_gif_input=true no_actor_input=true scene_separated=true')

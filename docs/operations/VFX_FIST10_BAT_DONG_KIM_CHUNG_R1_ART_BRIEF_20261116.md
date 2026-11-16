@@ -47,3 +47,10 @@
 - Initial R4 `883e582d97c6d06d1c44f660a9b0c03a043d56d2` Actions #43851115789 exact SHA **Godot technical PASS** but self ART_FAIL at 1x: thin gold curves too geometric/weak. Video archived unchanged.
 - Corrected source takes only luminous high-luminance detail from first-party FIST10 R2 owned illustration and integrates into independently authored transparent spiritual qi bell brushwork. Actor/map/monster/GIF NEVER read or extracted; original reference GIF is prohibited as source.
 - Workflow still native Godot MP4 plus 19 screenshots (NO GIF), manual art/owner gates, PVE hold.
+
+
+## OWNER NO-HIT ACCEPTANCE — 16 November 2026
+- Owner accepts Bất Động Kim Chung, **remove the entire on-hit reaction as visually redundant**, then proceed to next skill.
+- Rendering carries ONLY charge, golden-qi cast, single moving recipient 4-second ward, natural fade. No H input, synthetic contact event, block atlas or outgoing counterdamage.
+- Third 8-pose alpha atlas is repurposed to an **automatic end-of-guard fade** (not impact). Generic V4 t2.16 `v4-contact.png` is a legacy-named *quiet guard movement screenshot*, not an event.
+- No GIF pipeline. Independent 1280×720 native Godot exact-SHA QA needed after this change. Do not reuse prior MP4 as evidence.
