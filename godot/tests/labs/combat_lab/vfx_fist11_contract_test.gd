@@ -8,7 +8,7 @@ func check(ok: bool,note: String) -> void:
 func _initialize() -> void:call_deferred("_run")
 func _run() -> void:
     check(LAB.SKILL_ID=="tmb.skill.fist.huyet_quyen.active_01.human","canonical ID")
-    check(LAB.ART_REVISION=="R1_ORIGINAL_CRIMSON_CURRENT","revision")
+    check(LAB.ART_REVISION=="R2_COMPACT_CRIMSON_FIST","revision")
     check(LAB.EFFECT=="damage" and LAB.ELEMENT=="nether","contract effect element")
     check(LAB.SHAPE=="single_target" and LAB.TARGET_LIMIT==1,"target limit")
     check(is_equal_approx(LAB.CAST_TIME,.45) and is_equal_approx(LAB.COOLDOWN,8.0),"cast/cooldown")

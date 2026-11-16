@@ -1,9 +1,9 @@
 {
   "schema": "tmb-vfx-production-system-v4.1",
-  "packet_id": "FIST11_R1_HUYET_LIET_QUYEN_ORIGINAL_CRIMSON_CURRENT_V4",
+  "packet_id": "FIST11_R2_COMPACT_CRIMSON_FIST_V4",
   "skill_id": "tmb.skill.fist.huyet_quyen.active_01.human",
   "school": "fist",
-  "revision": "R1_ORIGINAL_CRIMSON_CURRENT",
+  "revision": "R2_COMPACT_CRIMSON_FIST",
   "catalogue_path": "godot/data/combat/v63_human_combat_catalog.json",
   "scene_path": "godot/labs/combat_lab/fist11/huyet_liet_quyen.tscn",
   "lab_script": "godot/labs/combat_lab/fist11/huyet_liet_quyen.gd",
@@ -25,7 +25,7 @@
     "source_class": "FIRST_PARTY_ORIGINAL_ILLUSTRATED_CRIMSON_MASTERS",
     "rights_note": "Three completely new original artist-coded painterly RGBA source masters: nether current charge, asymmetrically clenched spectral fist with four pressure knuckles, noncircular nether contact splash. First-party Pillow/Numpy deterministic artwork owned in this repository. NOT recolored FIST01, unrelated Poison VFX, commercial JX assets, actor sprites or extracted GIF frames.",
     "master_quality_status": "MANUAL_ART_REVIEW_REQUIRED",
-    "known_source_limitation": "Artwork is a first-party illustrated/code-painted candidate, not professionally hand-illustrated or independently owner-approved. 12 flight frames are deformed source art rather than 12 independently commissioned paintings. Do not claim in-game damage or hit receipts. Need owner aesthetic assessment at native 1x.",
+    "known_source_limitation": "Artwork is a first-party illustrated/code-painted candidate, not professionally hand-illustrated or independently owner-approved. 12 flight frames are deformed source art rather than 12 independently commissioned paintings. Do not claim in-game damage or hit receipts. Need owner aesthetic assessment at native 1x. R1 native exact-SHA technical pass revealed the animated projectile looked like separate long red claws. R2 repaints original source into a compact lobe-connected translucent clenched fist, source remains first-party deterministic. Native manual owner art gate still pending.",
     "master_files": [
       {
         "path": "godot/labs/combat_lab/fist11/assets/source/f11_charge_master.webp",
@@ -67,7 +67,7 @@
       "cell_height": 320,
       "frames": 12,
       "columns": 4,
-      "layer": "One compressed asymmetric crimson ethereal fist flying at independently moving enemy; not generic beam"
+      "layer": "12 original painted compact clenched nether fist frames with four glowing knuckles, coherent palm and organic wake, not four free claws"
     },
     {
       "path": "godot/labs/combat_lab/fist11/assets/generated/f11_contact.png",
@@ -132,7 +132,7 @@
   },
   "proof_contract": {
     "focused_marker": "VFX_FIST11_FOCUSED_RESULT=PASS failures=0",
-    "native_marker": "VFX_FIST11_R1_READY",
+    "native_marker": "VFX_FIST11_R2_READY",
     "video_filename": "v4-fist11-native.mp4",
     "source": "FIST11 Huyet Liet Quyen original first-party 28-pose crimson VFX; native moving single enemy; no runtime hit receipt or GIF."
   }

@@ -18,3 +18,9 @@
 ## Prior acceptance
 - FIST09 Trấn Sơn Hộ Đồng owner accepted, untouched.
 - FIST10 Bất Động Kim Chung R4 final user removed all hit VFX, preserved in `FIST10_R4_FINAL_NO_HIT_V4`; new native film exact SHA 215e07ba… Action 43900897112 SUCCESS.
+
+## R1 exact-SHA self-art rejection and R2 compact source (2026-11-16)
+- R1 commit `c7da5ad5a53921f7183c444349239092549cd0be`, Actions #43903967944: **technical success** with 3 painted original masters, 28 alpha poses, 1280×720 Godot native MP4 and G3.5 at .25/.59/.84; artifact #14244202092.
+- Visual 1× review: projectile reads as several disconnected long magenta claws instead of a strong clenched martial punch. R1 **ART_SELF_FAIL**, despite technical pass.
+- R2 source revision keeps first-party original charge/contact but **repaints just the compressed fist master** with contiguous broken-pigment palm, pressure knuckles, thumb and short luminous veins. No borrowed commercial/master from other schools; no GIF. Source generator included for provenance.
+- DO NOT claim owner art PASS or gameplay integration from Godot test pass. Still `ART_MANUAL_REVIEW` / `OWNER_VISUAL_PENDING` / `PVE_HOLD`.

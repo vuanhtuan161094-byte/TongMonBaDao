@@ -118,18 +118,63 @@ def charge():
     cloud(im,(390,389),68,65,(245,76,105),118,18,30)
     return im
 
+def compact_phantom_fist():
+    """Asymmetric closed-fist paint silhouette with fractured glowing knuckles.
+    This is painted plasma, not a glove or literal anatomical cutout.
+    """
+    silhouette=Image.new('L',(S,S),0)
+    ink=ImageDraw.Draw(silhouette)
+    # Four rounded knuckles compressed into one mass, single thumb under palm.
+    polygon=[(172,411),(260,339),(345,335),(400,287),(465,261),
+             (514,256),(564,265),(610,287),(641,318),(640,347),
+             (651,364),(645,392),(639,412),(627,437),(599,465),
+             (571,482),(530,492),(493,519),(450,521),(426,483),
+             (354,472),(266,480),(182,460)]
+    ink.polygon(polygon,fill=210)
+    for cx,cy,rx,ry in ((525,315,46,48),(572,351,46,40),
+                        (574,404,48,43),(519,447,60,45),(459,480,57,37)):
+        ink.ellipse((cx-rx,cy-ry,cx+rx,cy+ry),fill=225)
+    mask=np.array(silhouette.filter(ImageFilter.GaussianBlur(10)),dtype=np.float32)/255.
+    yy,xx=np.mgrid[:S,:S].astype(np.float32)
+    rn=np.random.default_rng(88911)
+    texture=np.zeros((S,S),dtype=np.float32)
+    for grid,weight in ((6,.31),(13,.23),(33,.17),(79,.12)):
+        tile=Image.fromarray((rn.random((grid,grid))*255).astype('uint8'),'L')
+        texture+=(np.array(tile.resize((S,S),Image.Resampling.BICUBIC),dtype=np.float32)/255.-.5)*weight
+    cracks=.62+.27*np.sin(xx*.072+yy*.013+texture*8.)**2
+    mineral=np.clip(.59+texture*2.4,0,1)*cracks
+    # Broken line slots cut through the fill so it remains an energy entity.
+    fracture=np.abs(np.sin((xx+yy*.35)*.042+texture*12))
+    mineral*=np.clip(fracture*.57+.52,.3,1.)
+    mask*=mineral
+    radial=np.clip((xx-270)/370,0,1)
+    alpha=np.clip(mask*(115+130*radial),0,195).astype('uint8')
+    color=np.zeros((S,S,4),dtype='uint8')
+    color[:,:,0]=np.clip(128+116*radial+30*mineral,0,255)
+    color[:,:,1]=np.clip(17+70*mineral*radial+25*fracture,0,160)
+    color[:,:,2]=np.clip(38+72*radial+34*mineral,0,180)
+    color[:,:,3]=alpha
+    im=Image.fromarray(color,'RGBA')
+    d=ImageDraw.Draw(im,'RGBA')
+    # Painted broken knuckle strikes in white-coral, clearly no long claws.
+    for k,(x,y) in enumerate(((552,301),(598,349),(593,403),(533,449))):
+        d.arc((x-38,y-23,x+28,y+27),200,355,fill=(255,215,181,135),width=4)
+        d.arc((x-34,y-20,x+24,y+23),202,342,fill=(255,121,139,120),width=9)
+    return im
+
 def fist():
-    im=volume('fist')
+    im=compact_phantom_fist()
     cloud(im,(378,390),280,134,(126,9,49),98,35,5)
     # Bending forearm current from left, central hollow tendon volume.
     ribbon(im,bez((45,515),(184,584),(312,451),(455,418),126),54,.56,33)
     ribbon(im,bez((60,299),(197,209),(299,331),(466,343),126),38,.50,34)
     ribbon(im,bez((72,436),(233,416),(285,405),(469,389),126),53,.68,35)
     # Four fragmented knuckle pressure ridges (read as an ethereal fist)
+    # Tuck current branches into the COMPACT palm (no extended talons).
     for k in range(4):
-        y=310+k*53
-        ribbon(im,bez((396,y+25),(483,y-32),(561,y-28),(633-k*12,y-16),89),29-k*3,.89,60+k)
-        cloud(im,(587-k*12,y-12),28,19,(255,100,117),77,9,64+k)
+        y=314+k*44
+        ribbon(im,bez((415,y+18),(470,y-15),(528,y-11),(576-k*6,y-5),70),12-k*2,.34,60+k)
+        cloud(im,(542-k*9,y-5),24,17,(255,120,136),50,7,64+k)
     # Thumb wraps down into the hollow fist, visually NOT a glove outline.
     ribbon(im,bez((385,483),(455,545),(524,556),(556,516),90),38,.75,112)
     for j in range(5):

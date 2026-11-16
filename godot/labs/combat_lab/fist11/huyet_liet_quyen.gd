@@ -2,7 +2,7 @@ extends Control
 ## FIST11 Huyet Liet Quyen: original first-party nether fist VFX.
 ## LAB preview only. No damage writes / no rig / no GIF / no actual Combat V2 receipts.
 const SKILL_ID := "tmb.skill.fist.huyet_quyen.active_01.human"
-const ART_REVISION := "R1_ORIGINAL_CRIMSON_CURRENT"
+const ART_REVISION := "R2_COMPACT_CRIMSON_FIST"
 const EFFECT := "damage"
 const ELEMENT := "nether"
 const SHAPE := "single_target"
@@ -72,7 +72,7 @@ func _ready() -> void:
     set_process(true)
     queue_redraw()
     if not vfx_only_benchmark:
-        print("VFX_FIST11_R1_READY skill=",SKILL_ID," effect=damage target_cap=1 moving=true view_only=true no_rig=true no_gif=true")
+        print("VFX_FIST11_R2_READY skill=",SKILL_ID," effect=damage target_cap=1 moving=true view_only=true no_rig=true no_gif=true")
 
 func _process(delta: float) -> void:
     if paused:return
@@ -129,7 +129,7 @@ func _draw() -> void:
         draw_string(ThemeDB.fallback_font,Vector2(28,32),
             "HUYET LIET QUYEN / HUYET QUYEN",HORIZONTAL_ALIGNMENT_LEFT,-1,23,Color("ffe1dc"))
         draw_string(ThemeDB.fallback_font,Vector2(28,57),
-            "FIST11 R1 | CRIMSON LIVING CURRENT | SINGLE TARGET | LAB ONLY",
+            "FIST11 R2 | COMPACT CRIMSON FIST | SINGLE TARGET | LAB ONLY",
             HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("f0a3b2"))
         draw_string(ThemeDB.fallback_font,Vector2(28,684),
             "GODOT 4.7.2 | NETHER DAMAGE VISUAL ONLY | WALK TRACKING | NO RIG",
