@@ -22,3 +22,8 @@
 `G0_VALIDATED`, `SOURCE_REUSED_PROJECT_ONLY`, `ART_OWNER_PENDING`, `VFX_PROOF_PENDING`, `PVE_INTEGRATION_HOLD`, `PHYSICAL_QA_PENDING`, `V6.3_OFF`.
 
 Do not merge, do not use rig, do not edit Combat V2, SaveService, gameplay economy or release-mode PvE. The owner-accepted FIST09 Trấn Sơn Hộ Đồng and FIST10 R4 no-hit are kept intact.
+
+## R1 native self-FAIL → R2 painterly matte correction (2026-11-16)
+- R1 exact SHA `92b07ee8767c218030efee7aff10bec791c4ff4b`, GitHub Actions #43905801051 **technical SUCCESS**, 30 RGBA frames and genuine Godot MP4 at 1280×720. 1x QA: flat/desaturated crimson flight and hard lower poster edge in the contacted impact at t0.86. **ART_SELF_FAIL.**
+- R2 strengthens saturated garnet body and rose-white knuckle light, applies source-aware lobed edge alpha feather to the impact painting instead of scaling cropped rectangle, slightly reduces solid trail width. No GIF or source duplication from external commercial titles.
+- Re-render charge .22 / flight .62 / moving foe contact .86 and full native MP4 exact SHA. FIST09 and FIST10 remain untouched. Manual owner art gate pending.

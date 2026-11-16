@@ -3,7 +3,7 @@ extends Control
 ## First-party DERIVATIVE painted art. View-only Combat Lab, not Combat V2.
 ## Source-authoritative Nether single-target DAMAGE; fake LAB impact has no HP.
 const SKILL_ID := "tmb.skill.fist.huyet_quyen.active_01.human"
-const ART_REVISION := "R1_PAINTED_CRIMSON_FIST"
+const ART_REVISION := "R2_BLOOD_INK_BURST_ORGANIC"
 const EFFECT := "damage"
 const ELEMENT := "nether"
 const SHAPE := "single_target"
@@ -79,7 +79,7 @@ func _ready() -> void:
     set_process(true)
     queue_redraw()
     if not vfx_only_benchmark:
-        print("VFX_FIST11_R1_READY skill=",SKILL_ID," impact=SIMULATED_LAB_ONLY nether=true cap=1 no_rig=true")
+        print("VFX_FIST11_R2_READY skill=",SKILL_ID," impact=SIMULATED_LAB_ONLY nether=true cap=1 no_rig=true")
 
 func _process(delta: float) -> void:
     if paused:return
@@ -131,5 +131,5 @@ func _draw() -> void:
         _frame(CONTACT,k,320.,contact_at(0,t),1.09,hit,Vector2(160,160))
     if not vfx_only_benchmark:
         draw_string(ThemeDB.fallback_font,Vector2(26,33),"HUYET LIET QUYEN / FIST11",HORIZONTAL_ALIGNMENT_LEFT,-1,22,Color("ffe5eb"))
-        draw_string(ThemeDB.fallback_font,Vector2(26,56),"R1 | BLOOD QI -> SINGLE FIST -> CONTACT / HUMAN",HORIZONTAL_ALIGNMENT_LEFT,-1,12,Color("f5a9ba"))
+        draw_string(ThemeDB.fallback_font,Vector2(26,56),"R2 | RED INK FIST / MOVING TARGET / FEATHERED CONTACT",HORIZONTAL_ALIGNMENT_LEFT,-1,12,Color("f5a9ba"))
         draw_string(ThemeDB.fallback_font,Vector2(26,681),"GODOT 4.7.2 | NETHER DAMAGE 1 TARGET | MOVING WALK | LAB ONLY / NO RIG",HORIZONTAL_ALIGNMENT_LEFT,-1,12,Color("f2d4e1"))

@@ -28,12 +28,12 @@ def tint_material(source, size, *, pale=0.0, alpha=1.0):
     ar=np.asarray(src,dtype=np.uint8).copy()
     rgb=ar[:,:,:3].astype(np.float32)
     lum=(rgb[:,:,0]*.50+rgb[:,:,1]*.38+rgb[:,:,2]*.12)/255.
-    white=np.clip((lum-.38)/.52,0,1)**1.2
-    blood=np.clip((lum-.12)/.66,0,1)
+    white=np.clip((lum-.29)/.47,0,1)**1.15
+    blood=np.clip((lum-.10)/.66,0,1)
     # A dark burgundy body with rose-white knuckle highlights; NOT simple hue rotate.
-    rr=55+155*blood+45*white+37*pale
-    gg=12+29*blood+130*white+34*pale
-    bb=26+40*blood+110*white+40*pale
+    rr=61+172*blood+35*white+27*pale
+    gg=7+22*blood+153*white+25*pale
+    bb=19+23*blood+134*white+31*pale
     ar[:,:,0]=np.clip(rr,0,255).astype('uint8')
     ar[:,:,1]=np.clip(gg,0,255).astype('uint8')
     ar[:,:,2]=np.clip(bb,0,255).astype('uint8')
@@ -117,7 +117,7 @@ def spark(img, pos, scale=1.0, strength=1.0, seed=0):
         d.polygon(pts,fill=(255,90+j*14,152+j*9,round(145*strength)))
 
 def fist_sprite(size=154):
-    base=tint_material(FIST,(size,size),alpha=.91)
+    base=tint_material(FIST,(size,size),alpha=.97)
     # Heavy blood-ink silhouette underneath the source first-party painted fist.
     return base
 
@@ -145,7 +145,7 @@ def flight_pose(k):
     for j in range(4):
         origin=(17+20*j-9*p,cy+(j-1.5)*(18+5*math.sin(p*math.pi)))
         end=(head-24,cy+(j-1.5)*(5+math.sin(k*.7)))
-        band(im,origin,end,phase=p*3.8+j*1.4,amp=8+4*j,width=10-j,alpha=.78-p*.1,seed=k*13+j)
+        band(im,origin,end,phase=p*3.8+j*1.4,amp=8+4*j,width=9-j,alpha=.70-p*.08,seed=k*13+j)
     fist=fist_sprite(round(147+12*math.sin(p*math.pi)))
     layer(im,fist,head,cy,opacity=.92)
     # A tiny white-hot leading crest, baked from original paint, not vector UI.
@@ -153,12 +153,30 @@ def flight_pose(k):
     return im
 
 def contact_pose(k):
+    # R2: locally compressed painted collision without rectangular clipping.
     im=Image.new('RGBA',(320,320))
     pulse=[.27,.66,1.,.94,.80,.61,.40,.21,.09,.035][k]
     p=k/9
     # Grounded fist-splash receives the moving target: one local impact.
-    painted=tint_material(IMPACT,(round(222+56*p),round(196+45*p)),pale=.06,alpha=pulse*.82)
-    layer(im,painted,158,178+10*p)
+    painted=tint_material(IMPACT,(round(204+28*p),round(177+28*p)),pale=.10,alpha=pulse*.89)
+    # FIST11 R1 Godot 1x art self-fail: the FIST03 impact poster has a
+    # HARD horizontal crop edge. R2 applies a broad irregular alpha matte
+    # to the ORIGINAL painted pigment before it can be used as a sprite.
+    arr=np.asarray(painted,dtype=np.uint8).copy()
+    h,w=arr.shape[:2]
+    yy,xx=np.mgrid[0:h,0:w].astype('float32')
+    rx=(xx-(w-1)*.48)/max(1,w*.53)
+    ry=(yy-(h-1)*.45)/max(1,h*.51)
+    # Lobed gradient avoids perfectly circular HUD look, preserves
+    # handpainted source ink while hiding ALL rectangular source edges.
+    angle=np.arctan2(ry,rx)
+    rad=np.sqrt(rx*rx+ry*ry)*(1.0+.08*np.sin(angle*5+k*.29))
+    matte=np.clip((1.03-rad)/.35,0.,1.)
+    feather=np.clip(np.minimum(xx,w-1-xx)/max(1,w*.09),0,1)
+    feather*=np.clip(np.minimum(yy,h-1-yy)/max(1,h*.09),0,1)
+    arr[:,:,3]=np.clip(arr[:,:,3]*matte*feather,0,255).astype('uint8')
+    painted=Image.fromarray(arr,'RGBA')
+    layer(im,painted,157,159+6*p)
     for j in range(6):
         a=(j/6-.55)*math.pi+.12*k
         dist=(15+68*p)

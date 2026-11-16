@@ -9,7 +9,7 @@ func _initialize()->void:
     call_deferred("_run")
 func _run()->void:
     check(LAB.SKILL_ID=="tmb.skill.fist.huyet_quyen.active_01.human","skill ID")
-    check(LAB.ART_REVISION=="R1_PAINTED_CRIMSON_FIST","art revision")
+    check(LAB.ART_REVISION=="R2_BLOOD_INK_BURST_ORGANIC","art revision")
     check(LAB.EFFECT=="damage" and LAB.ELEMENT=="nether","canonical effect and element")
     check(LAB.SHAPE=="single_target" and LAB.TARGET_LIMIT==1,"no false AoE")
     check(is_equal_approx(LAB.CAST_TIME,.45) and is_equal_approx(LAB.COOLDOWN,8.0),"authority cast/cd")
