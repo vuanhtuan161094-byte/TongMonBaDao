@@ -14,7 +14,7 @@ func _run()->void:
     check(LAB.DECLARED_RANGE==8.0 and LAB.DECLARED_CAST==1.15,"cast and range")
     check(LAB.DECLARED_COOLDOWN==36.0 and LAB.DECLARED_PROJECTILE_SPEED==8.0,"cooldown and projectile")
     check(LAB.DECLARED_DURATION==8.0 and LAB.DECLARED_POISON_STACKS==2 and LAB.DECLARED_DAMAGE_RATIO==1.8,"duration stacks and damage")
-    check(LAB.CROWN_PATH.ends_with("poison11_crown_10_r8.png"),"R8 freeform alpha matte crown")
+    check(LAB.CROWN_PATH.ends_with("poison11_crown_10_r9.png"),"R8 freeform alpha matte crown")
     check(LAB.phase_at(.55)=="charge" and LAB.phase_at(1.50)=="one_cosmetic_spear_approach","charge/flight")
     check(LAB.phase_at(2.06)=="poison_piercer_crown" and LAB.phase_at(2.47)=="localized_piercing_contacts","area burst/contact")
     check(LAB.spear_alpha(1.86)>.75 and LAB.crown_alpha(1.86)>0.0,"R7 painted vortex begins while spear remains visible")

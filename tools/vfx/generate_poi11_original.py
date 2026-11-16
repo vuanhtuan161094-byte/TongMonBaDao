@@ -95,6 +95,16 @@ def crown_freeform_alpha(im,t):
     edge=.982+.037*np.sin(5.0*theta+t*2.4)+.023*np.sin(9.0*theta-t*3.3)
     k=np.clip((edge-radius)/.25,0.0,1.0)
     organic_feather=k*k*(3.0-2.0*k)
+
+    # R9: a wider non-circular dissolving pigment falloff removes the residual
+    # 'painted-in-a-square' frame silhouette seen in the true R8 Godot capture.
+    rim_x=(xx-.50*ww)/(.52*ww)
+    rim_y=(yy-.485*hh)/(.57*hh)
+    rim_radius=np.sqrt(rim_x*rim_x+rim_y*rim_y)
+    rim_angle=np.arctan2(rim_y,rim_x)
+    rim_bound=.94+.064*np.sin(5.0*rim_angle+t*2.7)+.032*np.sin(11.0*rim_angle-t*2.0)
+    rim_k=np.clip((rim_bound-rim_radius)/.46,0.0,1.0)
+    organic_feather*=rim_k*rim_k*(3.0-2.0*rim_k)
     tail=np.clip((hh*.985-yy)/(hh*.17),0.0,1.0)
     floor_feather=tail*tail*(3.0-2.0*tail)
     pix[:,:,3]=np.clip(alpha*pigment*backdrop_suppress*organic_feather*floor_feather,0,255).astype(np.uint8)
@@ -156,7 +166,7 @@ def atlas(name,kind,count,cell):
     return sheet
 
 def main():
-    names=[('poison11_charge_10.png','charge',10,(192,192)),('poison11_flight_10.png','flight',10,(224,160)),('poison11_crown_10_r8.png','crown',10,(320,192)),('poison11_contact_08.png','contact',8,(192,160))]
+    names=[('poison11_charge_10.png','charge',10,(192,192)),('poison11_flight_10.png','flight',10,(224,160)),('poison11_crown_10_r9.png','crown',10,(320,192)),('poison11_contact_08.png','contact',8,(192,160))]
     atlas_list=[atlas(*r) for r in names]
     raw=sum(im.width*im.height*4 for im in atlas_list)
     print('POI11_RAW_RGBA8_BYTES',raw,'MiB',round(raw/1048576,3))

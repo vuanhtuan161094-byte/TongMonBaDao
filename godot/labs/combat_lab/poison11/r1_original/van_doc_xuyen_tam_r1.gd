@@ -27,7 +27,7 @@ const AREA_CENTER := Vector2(1002.0,518.0)
 const CASTER := Vector2(273.0,540.0)
 const CHARGE_PATH := "res://labs/combat_lab/poison11/r1_original/assets/poison11_charge_10.png"
 const FLIGHT_PATH := "res://labs/combat_lab/poison11/r1_original/assets/poison11_flight_10.png"
-const CROWN_PATH := "res://labs/combat_lab/poison11/r1_original/assets/poison11_crown_10_r8.png"
+const CROWN_PATH := "res://labs/combat_lab/poison11/r1_original/assets/poison11_crown_10_r9.png"
 const CONTACT_PATH := "res://labs/combat_lab/poison11/r1_original/assets/poison11_contact_08.png"
 const CHARGE_CELL := Vector2(192,192)
 const FLIGHT_CELL := Vector2(224,160)
@@ -128,7 +128,7 @@ func _ready()->void:
     for i in range(10):crown_frames.append(_frame(s,i,CROWN_CELL))
     for i in range(8):contact_frames.append(_frame(h,i,CONTACT_CELL))
     set_process(true)
-    print("VFX_POI11_R1_READY painted_vortex=true crown_matte_r8=true original_spears=true frames=38 moving_monsters=3 shared_poison_badge=true view_only=true")
+    print("VFX_POI11_R1_READY painted_vortex=true crown_matte_r9=true original_spears=true frames=38 moving_monsters=3 shared_poison_badge=true view_only=true")
     queue_redraw()
 
 func _process(delta:float)->void:
