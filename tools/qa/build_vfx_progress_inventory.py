@@ -54,7 +54,7 @@ APPROVED={
  "tmb.skill.talisman.hoa_phu.active_02":"HF02_R6_OWNER_APPROVAL_20261116",
 }
 PREVIEW_ONLY={"tmb.skill.poison.co_doc.ultimate":"POI06_R11_OWNER_PREVIEW_ACCEPTED_NATIVE_QA_PASS"}
-IN_PROGRESS={"tmb.skill.talisman.hoa_phu.active_03":"HF03_R1_V4_G3_5_OWNER_REVIEW_PENDING"}
+IN_PROGRESS={"tmb.skill.talisman.hoa_phu.active_03":"HF03_R2_V4_NATIVE_FULL_MOVIE_TECH_PASS_OWNER_PENDING"}
 
 def main():
     p=argparse.ArgumentParser()
@@ -82,7 +82,7 @@ def main():
         if is_human_cast:
             if fam in APPROVED:r["vfx_actual"]="OWNER_VISUAL_APPROVED_HUMAN_LAB"
             elif fam in PREVIEW_ONLY:r["vfx_actual"]="PREVIEW_ACCEPTED_NATIVE_QA_NOT_FINAL_OWNER"
-            elif fam in IN_PROGRESS:r["vfx_actual"]="LAB_G3_5_QA_IN_PROGRESS_OWNER_PENDING"
+            elif fam in IN_PROGRESS:r["vfx_actual"]="LAB_GODOT_NATIVE_TECH_PASS_OWNER_PENDING"
             elif fam in LABS:r["vfx_actual"]="DEDICATED_LAB_OWNER_PENDING_OR_REWORK"
             else:r["vfx_actual"]="NO_DEDICATED_HUMAN_LAB"
         elif r["visual_work_class"]!="CAST_MASTER":
@@ -108,7 +108,7 @@ def main():
       "(12 × 17), with other tiers/lineages and passive/event categories requiring separate art/event work.",
       "**23/204** distinct Human cast masters have dedicated isolated Godot LAB scenes, **6/204** have explicit owner-art approval as understood at this checkpoint. **181/204** do not have a dedicated Human cast LAB yet.",
       "Technical CI/illustrative previews do **not** count as owner approval or live PvE integration.",
-      "HF02 R6 approved 10/10, exact art SHA b5a29f1504078a0e66acc9c79306dc86f5f28463. POI06 R11 accepted *preview* only. HF03 candidate in V4 G3.5 art review.",
+      "HF02 R6 approved 10/10, exact art SHA b5a29f1504078a0e66acc9c79306dc86f5f28463. POI06 R11 accepted *preview* only. HF03 R2 completed native V4 G3.5 and full MP4 technical PASS, exact art SHA ac3b02b1aa6c0d7e0c5dd7e418c59c4dc52a0bb4; owner art review PENDING.",
       "", "| School | Human cast | Dedicated LAB | Explicit owner approved | Not yet dedicated |",
       "|---|---:|---:|---:|---:|"]
     for name,allnum,labs,approved in school_rows:
