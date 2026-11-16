@@ -1,10 +1,11 @@
-name: VFX Poison Basic Human R2 | GIF-motion → painted-alpha V4.2.1
+name: VFX Poison Basic Human R2 | original RGBA direct Godot V4.3
 on:
   workflow_dispatch:
   push:
     branches: [integration/pve-p0-playable-ui-20261103]
     paths:
       - 'tools/vfx/generate_poison_basic_human_v2.py'
+      - 'docs/operations/TMB_VFX_ART_FIRST_SINGLE_SKILL_SOP_V3_20261114.md'
       - 'tools/qa/validate_vfx_v4_packet.py'
       - 'godot/labs/combat_lab/poison_basic_human_v2/*.gd'
       - 'godot/labs/combat_lab/poison_basic_human_v2/*.tscn'
@@ -86,8 +87,7 @@ jobs:
           for t in 0.08 0.08 0.08 0.27 0.35 0.40 0.42 0.63 0.68 0.71 0.78 0.90 0.95 1.10; do
             ffmpeg -y -hide_banner -loglevel error -ss "$t" -i "$d/POISON_BASIC_R2-attack.mp4" -frames:v 1 "$d/frame-$t.png"
           done
-          ffmpeg -y -hide_banner -loglevel error -i "$d/POISON_BASIC_R2-attack.mp4" -vf 'fps=8,scale=640:-1:flags=lanczos' -loop 0 "$d/POISON_BASIC_R2-attack.gif"
-          sha256sum "$d/POISON_BASIC_R2-attack.mp4" "$d/POISON_BASIC_R2-attack.gif" "$d"/frame-*.png > "$d/ATTACK-SHA256.txt"
+          sha256sum "$d/POISON_BASIC_R2-attack.mp4" "$d"/frame-*.png > "$d/ATTACK-SHA256.txt"
           rm "$d/attack.avi"
       - name: Preserve original generated alpha masters and atlases in existing PR
         if: success() && github.event_name == 'push'
@@ -130,6 +130,5 @@ jobs:
             ${{ runner.temp }}/poisonbasic2/*.json
             ${{ runner.temp }}/poisonbasic2/*.png
             ${{ runner.temp }}/poisonbasic2/*.mp4
-            ${{ runner.temp }}/poisonbasic2/*.gif
             godot/labs/combat_lab/poison_basic_human_v2/assets/**/*.png
             godot/labs/combat_lab/poison_basic_human_v2/assets/atlas/*.png
