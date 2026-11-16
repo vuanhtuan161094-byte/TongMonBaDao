@@ -16,6 +16,9 @@ func _run()->void:
     check(LAB.DECLARED_DURATION==8.0 and LAB.DECLARED_POISON_STACKS==2 and LAB.DECLARED_DAMAGE_RATIO==1.8,"duration stacks and damage")
     check(LAB.phase_at(.55)=="charge" and LAB.phase_at(1.50)=="one_cosmetic_spear_approach","charge/flight")
     check(LAB.phase_at(2.06)=="poison_piercer_crown" and LAB.phase_at(2.47)=="localized_piercing_contacts","area burst/contact")
+    check(LAB.spear_alpha(1.86)>.75 and LAB.crown_alpha(1.86)>0.0,"R7 painted vortex begins while spear remains visible")
+    for t in [1.90,1.94,1.98,2.02]:
+        check(LAB.spear_alpha(t)+LAB.crown_alpha(t)>.40,"R7 no empty spear-to-burst handoff at "+str(t))
     check(LAB.phase_at(4.0)=="shared_poison_status_only" and LAB.phase_at(10.60)=="idle","not 8s VFX aura")
     check(LAB.flight_position(LAB.CAST_END).distance_to(LAB.PALM)<.01,"launch palm")
     check(LAB.flight_position(LAB.AREA_ARRIVE).distance_to(LAB.AREA_CENTER)<.01,"area centroid")
