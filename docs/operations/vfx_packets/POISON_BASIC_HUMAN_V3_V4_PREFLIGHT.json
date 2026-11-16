@@ -1,0 +1,137 @@
+{
+  "schema": "tmb-vfx-production-system-v4.1",
+  "packet_id": "POISON_BASIC_V3_HUMAN",
+  "skill_id": "tmb.skill.poison.basic.human",
+  "school": "poison",
+  "revision": "V3_DIRECT_GODOT_NO_GIF_HUMAN",
+  "catalogue_path": "godot/data/combat/v63_human_combat_catalog.json",
+  "scene_path": "godot/labs/combat_lab/poison_basic_tiers_v3/poison_basic_tiers.tscn",
+  "lab_script": "godot/labs/combat_lab/poison_basic_tiers_v3/poison_basic_tiers.gd",
+  "focused_test": "godot/tests/labs/combat_lab/vfx_poison_basic_tiers_v3_contract_test.gd",
+  "declared_contract": {
+    "effect": "damage",
+    "element": "metal",
+    "shape": "single_target",
+    "target_limit": 1,
+    "hit_count": null,
+    "range": 6,
+    "radius": 0,
+    "cast_time": 0,
+    "cooldown": 1.6,
+    "projectile_speed": 12,
+    "duration": 0
+  },
+  "provenance": {
+    "source_class": "FIRST_PARTY_CODE_PAINTED_TRUE_RGBA_RASTER",
+    "master_quality_status": "MANUAL_ART_REVIEW_REQUIRED",
+    "rights_note": "Independent original full-color true RGBA key pose sources. Three independently authored original silhouettes, not color remaps. No GIF media or pixel extraction, no external commercial assets, no character rigging.",
+    "master_files": [
+      {
+        "path": "godot/labs/combat_lab/poison_basic_tiers_v3/assets/human/master/human_charge_master_rgba.png",
+        "encoding": "png",
+        "role": "Original semi-transparent human charge master"
+      },
+      {
+        "path": "godot/labs/combat_lab/poison_basic_tiers_v3/assets/human/master/human_flight_master_rgba.png",
+        "encoding": "png",
+        "role": "Original semi-transparent human flight master"
+      },
+      {
+        "path": "godot/labs/combat_lab/poison_basic_tiers_v3/assets/human/master/human_contact_master_rgba.png",
+        "encoding": "png",
+        "role": "Original semi-transparent human contact master"
+      }
+    ],
+    "generators": [
+      "tools/vfx/generate_poison_basic_tiers_v3.py"
+    ]
+  },
+  "atlases": [
+    {
+      "path": "godot/labs/combat_lab/poison_basic_tiers_v3/assets/human/human_charge_06.png",
+      "width": 768,
+      "height": 384,
+      "cell_width": 192,
+      "cell_height": 192,
+      "frames": 6,
+      "columns": 4,
+      "layer": "Original painted human tier charge with source true alpha, separate form"
+    },
+    {
+      "path": "godot/labs/combat_lab/poison_basic_tiers_v3/assets/human/human_flight_08.png",
+      "width": 1152,
+      "height": 320,
+      "cell_width": 288,
+      "cell_height": 160,
+      "frames": 8,
+      "columns": 4,
+      "layer": "Original painted human tier flight with source true alpha, separate form"
+    },
+    {
+      "path": "godot/labs/combat_lab/poison_basic_tiers_v3/assets/human/human_contact_08.png",
+      "width": 1024,
+      "height": 512,
+      "cell_width": 256,
+      "cell_height": 256,
+      "frames": 8,
+      "columns": 4,
+      "layer": "Original painted human tier contact with source true alpha, separate form"
+    }
+  ],
+  "time_contract": {
+    "combat_clock": "CATALOGUE_GATED_NOT_LIVE",
+    "declared_cast_end_seconds": 0,
+    "declared_status_duration_seconds": 0,
+    "runtime_receipt_timestamp": "RUNTIME_MAPPING_PENDING",
+    "vfx_clock": "LAB_ONLY",
+    "simulated_hit_seconds": 0.7,
+    "visual_fade_end_seconds": 1.03,
+    "demo_loop_seconds": 3.78,
+    "demo_clock_warning": "Canonical cast 0; cosmetic .15 sec windup is only visual LAB, NOT the real Combat V2 cast. Demo has one moving target, no true damage receipt, and NO GIF.",
+    "key_pose_budget_note": "Each tier 6 charge + 8 spear + 8 localized impact = 22 distinct original poses, 66 total across visually evolved tiers.",
+    "phases": [
+      {
+        "id": "charge",
+        "at_seconds": 0.08,
+        "expected_phase": "charge",
+        "file": "v4-charge.png"
+      },
+      {
+        "id": "peak",
+        "at_seconds": 0.42,
+        "expected_phase": "flight",
+        "file": "v4-peak.png"
+      },
+      {
+        "id": "contact",
+        "at_seconds": 0.8,
+        "expected_phase": "contact",
+        "file": "v4-contact.png"
+      }
+    ]
+  },
+  "moving_target": {
+    "actor_animation": "walk",
+    "locked_demo_target_index": 0,
+    "movement_from_seconds": 0.08,
+    "movement_to_seconds": 0.8,
+    "minimum_displacement_px": 10,
+    "contact_anchor": "single moving WALK monster current chest(t), local cosmetic contact",
+    "tracking_rule": "one visually locked target, 4-way projectile rotation to screen-space target vector",
+    "receipt_claim": "SIMULATED_VISUAL_ONLY"
+  },
+  "gate_status": {
+    "g3_5_capture": "NOT_EXECUTED_UNTIL_NATIVE_PROOF",
+    "technical": "NOT_EXECUTED_UNTIL_NATIVE_PROOF",
+    "art": "MANUAL_ART_REVIEW_REQUIRED",
+    "owner": "OWNER_VISUAL_PENDING",
+    "live": "PVE_INTEGRATION_HOLD",
+    "device": "PHYSICAL_QA_PENDING"
+  },
+  "proof_contract": {
+    "focused_marker": "VFX_POISON_BASIC_TIERS_V3_RESULT=PASS failures=0",
+    "native_marker": "VFX_POISON_BASIC_TIERS_V3_READY",
+    "source": "Godot three tier sequential clip with one real WALK monster actor, no simulated HP damage receipt",
+    "video_filename": "v4-poison-basic-tiers-v3-native.mp4"
+  }
+}
