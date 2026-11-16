@@ -1,3 +1,7 @@
+## LATEST OWNER RULE 2026-11-16: NO GIF
+
+Do not auto-create GIF concepts or video exports and do not require them as a G2/G5 step. GIF-first V4.2 is revoked by owner. Deliver **Godot-native animated VFX (MP4)** from original true-alpha sprite layers, plus screenshots and exact-SHA acceptance. For Poison basic tiers, fix wobbling trails and make Human/Immortal/Divine art visibly evolve beyond recolors. Explicit user request is the only GIF exception. Older GIF mentions below are historical and subordinate.
+
 ## OWNER 2026-11-16 — CROSS-CHAT PRODUCTION SYSTEM V4 ENFORCEMENT (LATEST BINDING RULE)
 
 Before **ANY** VFX research intended for implementation, artwork, sprite generation, scene integration, CI claim or handoff, read the current branch HEAD and mandatory addendum **Production System V4** inside docs/operations/TMB_VFX_ART_FIRST_SINGLE_SKILL_SOP_V3_20261114.md. Also read AGENTS.md, the shared sprite-layer pipeline, the school-specific playbook, actual skill catalogue and docs/templates/VFX_SKILL_ART_FIRST_TEMPLATE.md. Do not ask the owner to restate these rules. Older sections below are subordinate where they imply a universal 8–12 atlas frame quota, fixed demo length, inferred hit times or approval from CI.
