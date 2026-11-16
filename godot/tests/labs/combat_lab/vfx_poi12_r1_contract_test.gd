@@ -17,6 +17,18 @@ func _run()->void:
     check(LAB.monster_foot(.20).distance_to(LAB.monster_foot(1.12))>10,"actual moving walking target displacement")
     check(LAB.demo_flight_at(LAB.CAST_END).distance_to(LAB.PALM)<.01,"palm origin")
     check(LAB.demo_flight_at(LAB.DEMO_CONTACT).distance_to(LAB.monster_chest(LAB.DEMO_CONTACT))<.01,"one moving target anchor")
+    # Four cardinal vectors work from ONE reused right-facing atlas.
+    var origin:=Vector2(400.0,330.0)
+    var cases: Array[Vector2]=[Vector2(600,330),Vector2(200,330),Vector2(400,130),Vector2(400,530)]
+    for target in cases:
+        var d:Vector2=target-origin
+        var angle:=LAB.projectile_angle(origin,target)
+        var facing:=Vector2.RIGHT.rotated(angle)
+        check(facing.dot(d.normalized())>.9999,"four-direction flight angle reaches target: "+str(target))
+        check(LAB.directional_flight_position(origin,target,0.0).distance_to(origin)<.01,"four directions start at caster")
+        check(LAB.directional_flight_position(origin,target,1.0).distance_to(target)<.01,"four directions end at target")
+        check(LAB.directional_flight_position(origin,target,0.5).distance_to(origin.lerp(target,0.5))<.01,"four directions travel to target")
+    check(LAB.projectile_angle(origin,origin)==0.0,"zero vector safe")
     check(LAB.MONSTER_FRAMES.has_animation("walk") and LAB.MONSTER_FRAMES.get_frame_count("walk")>=8,"actual monster walk frames")
     var src:=FileAccess.get_file_as_string("res://labs/combat_lab/poison12/tay_mach_linh_duoc.gd")
     for bad in ["SaveService.","CombatV2.","apply_damage","apply_status","poison_status_badge","heal_target","add_health","summon_actor"]:

@@ -40,10 +40,20 @@ static func monster_foot(t: float)->Vector2:
 static func monster_chest(t:float)->Vector2:
     return monster_foot(t)+Vector2(-5.0,-79.0)
 
+## One reusable raster projectile for all four screen directions. The existing
+## sprite was painted pointing RIGHT; orient only its FLIGHT layer, not the
+## actor, impact, or gameplay. At zero distance, do not generate NaN.
+static func projectile_angle(from:Vector2,to:Vector2)->float:
+    var delta:=to-from
+    return 0.0 if delta.length_squared()<=0.000001 else delta.angle()
+
+static func directional_flight_position(from:Vector2,to:Vector2,progress:float)->Vector2:
+    return from.lerp(to,clampf(progress,0.0,1.0))
+
 static func demo_flight_at(t:float)->Vector2:
-    # Visual lock to ONE walking demo monster; not target acquisition or hit authority.
+    # Visual lock to ONE walking demo monster; no Combat V2 target authority.
     var q:=clampf((t-CAST_END)/(DEMO_CONTACT-CAST_END),0.0,1.0)
-    return PALM.lerp(monster_chest(t),q)
+    return directional_flight_position(PALM,monster_chest(t),q)
 
 static func phase_at(t:float)->String:
     if t<CAST_END:return "medicinal_charge"
@@ -77,7 +87,7 @@ func _ready()->void:
     for i in range(12):flight_frames.append(_frame(b,i,FLIGHT_CELL))
     for i in range(10):impact_frames.append(_frame(c,i,IMPACT_CELL))
     set_process(true)
-    print("VFX_POI12_R1_READY revision=r2_cured_flat_polygon original_code_painted=true charge=8 flight=12 impact=10 damage_only=true moving_monster=true")
+    print("VFX_POI12_R1_READY revision=r2_directional_aim original_code_painted=true charge=8 flight=12 impact=10 damage_only=true moving_monster=true")
     queue_redraw()
 
 func _process(delta:float)->void:
@@ -122,8 +132,13 @@ func _draw()->void:
         var q:=clampf((t-CAST_END)/(DEMO_CONTACT-CAST_END),0.0,1.0)
         var out:=1.0-smoothstep(DEMO_CONTACT-.045,DEMO_CONTACT+.03,t)
         var pos:=demo_flight_at(t)
-        _flip(flight_frames,pos-Vector2(22,0),Vector2(253,161),q*11.0,out*.23)
-        _flip(flight_frames,pos,Vector2(350,214),q*11.0,out*.93)
+        # Rotate the painted RIGHT-pointing arrow with the target vector.
+        # Trail is placed 22 px behind in arrow-local space, never hard-left.
+        var angle:=projectile_angle(PALM,monster_chest(t))
+        draw_set_transform(pos,angle,Vector2.ONE)
+        _flip(flight_frames,Vector2(-22,0),Vector2(253,161),q*11.0,out*.23)
+        _flip(flight_frames,Vector2.ZERO,Vector2(350,214),q*11.0,out*.93)
+        draw_set_transform(Vector2.ZERO,0.0,Vector2.ONE)
     draw_texture_rect_region(CASTER_ART,Rect2(CASTER-Vector2(160,351)*.47,Vector2(320,384)*.47),Rect2(0,0,320,384))
     _draw_monster(t)
     if t>=DEMO_CONTACT and t<IMPACT_END:
