@@ -20,3 +20,9 @@ Date: 2026-11-16. Branch integration/pve-p0-playable-ui-20261103; PR #72 Draft.
 - G4 motion/anchors: one moving protected WALK actor and independently walking enemy; blocked impact follows protected actual frame. No fake strike.
 - G5 15-timecode genuine 1280x720 movie inspection, dark/bright terrain review required. Art risk: three pillars may feel too rocky versus pure light quality target; decide by screenshots, not CI.
 - G7: exact SHA V4 packet/assets/evidence manifest, original art SHA256, focused test and 1280x720 proof. OWNER_VISUAL_PENDING; PVE_INTEGRATION_HOLD; V6.3_OFF; PHYSICAL_ANDROID_PENDING.
+
+
+## R1 native G3.5 / full film ART FAIL and R2 correction
+- R1 exact SHA \`6ef9ffb84c19fc344ba9627eb504150d4ea0101c\`, Actions #43822106152 technical SUCCESS, full 333-frame 1280×720 Godot movie and V4 proof. Native 1x art at charge/peak: three duplicate golden oblongs due to full-alpha yellow haze, small weak status markers and soft block. **R1 ART SELF_FAIL; owner was not asked to approve it.**
+- R2 is an ART-source correction not code-drawn runtime geometry: luminosity-selected ONLY original rock-vein emission, overlap three different rock poses into a more integrated mountain ward, strengthen 4s shoulder marks and 0.26s protected hit contact. 24 poses, three atlases, 6.25MiB unchanged. Validate exact Godot V4 again and manually inspect; no art PASS or PvE enable until owner.
+- This R2 belongs ONLY to FIST09; FIST08 Phản Chấn Quyền R1 remains restored per owner's decision.

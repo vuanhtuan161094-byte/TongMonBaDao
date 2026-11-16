@@ -49,9 +49,16 @@ def stone(canvas, center, wh, angle, opacity, light=1.0, glow=0.65):
     arr[:,:,:3]=rgb.astype('uint8')
     img=Image.fromarray(arr,'RGBA').rotate(angle,Image.Resampling.BICUBIC,expand=True)
     if glow>0:
-        blurred=img.getchannel('A').filter(ImageFilter.GaussianBlur(8))
-        haze=Image.new('RGBA',img.size,(255,193,69,0))
-        haze.putalpha(blurred.point(lambda a:int(a*opacity*glow*.67)))
+        # Illuminated *mineral veins* emit light, not the whole rock silhouette.
+        # R1 was bad: full-source blur produced giant flat yellow capsules.
+        pixels=np.asarray(img,dtype=np.uint8)
+        luminosity=np.max(pixels[:,:,:3],axis=2).astype(np.float32)
+        hot_filament=np.clip((luminosity-193.)/62.,0.,1.)
+        source_alpha=pixels[:,:,3].astype(np.float32)/255.
+        emitting=(255.*hot_filament*source_alpha).astype('uint8')
+        veil=Image.fromarray(emitting,'L').filter(ImageFilter.GaussianBlur(7))
+        haze=Image.new('RGBA',img.size,(255,229,162,0))
+        haze.putalpha(veil.point(lambda a:int(a*opacity*glow*.47)))
         layer_at(canvas,haze,center)
     layer_at(canvas,scaled_alpha(img,opacity),center)
 
@@ -83,12 +90,12 @@ def cast_pose(k):
     growth=[.20,.36,.57,.77,1.0,.89,.61,.31][k]
     # Three authored mountain plates, unequal masses, asymmetric to prevent
     # generic symmetric circles. Real stone pixels retained in all frames.
-    left=(98-15*growth,177-18*growth)
-    right=(226+14*growth,164-24*growth)
-    center=(166+4*math.sin(k*.9),154-30*growth)
-    stone(im,left,(74+36*growth,124+63*growth),-26+6*math.sin(k*.8),growth*.86,1.35)
-    stone(im,right,(66+35*growth,130+58*growth),22-4*math.cos(k*.9),growth*.84,1.55)
-    stone(im,center,(72+38*growth,143+71*growth),2+7*math.sin(k*.7),growth*.64,1.65)
+    left=(120-15*growth,180-14*growth)
+    right=(214+15*growth,179-22*growth)
+    center=(166+6*math.sin(k*.9),155-25*growth)
+    stone(im,left,(84+38*growth,124+67*growth),-26+6*math.sin(k*.8),growth*.86,1.35)
+    stone(im,right,(82+38*growth,131+69*growth),22-4*math.cos(k*.9),growth*.84,1.55)
+    stone(im,center,(90+40*growth,145+80*growth),2+7*math.sin(k*.7),growth*.64,1.65)
     ground_light(im,growth,(160,278))
     strokes(im,SEED+k*23,22,(165,174),(97,112),growth)
     # Brightly coloured "mountain crown", not circular quang-giap/runes.
@@ -99,8 +106,8 @@ def status_pose(k):
     phase=2*math.pi*k/8.0
     breath=.72+.08*math.sin(phase)
     # Two small chipped armor markers near shoulder/waist, with empty actor.
-    stone(im,(42+3*math.sin(phase),89),(41,78),-24+3*math.sin(phase),.76*breath,1.5,.51)
-    stone(im,(151+2*math.cos(phase),80),(39,73),26-3*math.cos(phase),.72*breath,1.45,.48)
+    stone(im,(42+3*math.sin(phase),89),(41,78),-24+3*math.sin(phase),.83*breath,1.5,.51)
+    stone(im,(151+2*math.cos(phase),80),(39,73),26-3*math.cos(phase),.81*breath,1.45,.48)
     ground_light(im,.42*breath,(96,168))
     strokes(im,SEED+200+k,13,(97,137),(74,36),breath*.43)
     return im
