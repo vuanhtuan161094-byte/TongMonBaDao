@@ -5,12 +5,12 @@ on:
     branches: [integration/pve-p0-playable-ui-20261103]
     paths:
       - 'tools/vfx/generate_poison_basic_human_v2.py'
-      - 'godot/labs/combat_lab/poison12/*.gd'
-      - 'godot/labs/combat_lab/poison12/*.tscn'
+      - 'godot/labs/combat_lab/poison_basic_human_v2/*.gd'
+      - 'godot/labs/combat_lab/poison_basic_human_v2/*.tscn'
       - 'godot/tests/labs/combat_lab/vfx_poison_basic_human_r2_contract_test.gd'
       - 'docs/operations/vfx_packets/POISON_BASIC_HUMAN_R2_V4_PREFLIGHT.json'
       - 'docs/operations/VFX_POISON_BASIC_HUMAN_RGBA_R2_20261116.md'
-      - '.github/workflows/vfx-poi-12-r1-native.yml'
+      - '.github/workflows/vfx-poison-basic-human-r2-native.yml'
 permissions:
   contents: write
 jobs:
@@ -39,14 +39,14 @@ jobs:
           mkdir -p "$RUNNER_TEMP/poisonbasic2"
           godot --version | tee "$RUNNER_TEMP/poisonbasic2/engine.txt"
           printf 'EXACT_SHA=%s\nSTATUS=G35_TECH_PENDING\nOWNER_VISUAL_PENDING\nPVE_HOLD\nV63_OFF\nCODE_PAINTED_RASTER_SOURCE\nNO_RIG\n' "$GITHUB_SHA" > "$RUNNER_TEMP/poisonbasic2/metadata.txt"
-      - name: Bake first-party botanical brush masters and 30 original poses, validate V4
+      - name: Bake first-party botanical brush masters and 22 original poses, validate V4
         run: |
           set -euo pipefail
           d="$RUNNER_TEMP/poisonbasic2"
           python3 tools/vfx/generate_poison_basic_human_v2.py 2>&1 | tee "$d/bake.log"
           python3 tools/qa/validate_vfx_v4_packet.py --stage packet --packet docs/operations/vfx_packets/POISON_BASIC_HUMAN_R2_V4_PREFLIGHT.json | tee "$d/v4-packet.log"
           python3 tools/qa/validate_vfx_v4_packet.py --stage assets --packet docs/operations/vfx_packets/POISON_BASIC_HUMAN_R2_V4_PREFLIGHT.json | tee "$d/v4-assets.log"
-          sha256sum godot/labs/combat_lab/poison12/assets/*.png godot/labs/combat_lab/poison12/assets/master/*.png > "$d/atlas-sha256.txt"
+          sha256sum godot/labs/combat_lab/poison_basic_human_v2/assets/atlas/*.png godot/labs/combat_lab/poison_basic_human_v2/assets/master/*.png > "$d/atlas-sha256.txt"
       - name: Restore original Stage A actor fixture for isolated lab QA
         run: |
           set -euo pipefail
@@ -58,14 +58,14 @@ jobs:
           set -euo pipefail
           d="$RUNNER_TEMP/poisonbasic2"
           bash tools/qa/run_godot_strict.sh --headless --path godot --import 2>&1 | tee "$d/import.log"
-          bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://labs/combat_lab/poison12/doc_cham_thuong_thuc.gd 2>&1 | tee "$d/parse.log"
+          bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://labs/combat_lab/poison_basic_human_v2/doc_cham_thuong_thuc.gd 2>&1 | tee "$d/parse.log"
           bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/labs/combat_lab/vfx_poison_basic_human_r2_contract_test.gd 2>&1 | tee "$d/godot-focused.log"
           grep -Fq 'VFX_POISON_BASIC_R2_RESULT=PASS failures=0' "$d/godot-focused.log"
       - name: V4 G3.5 native 1280x720 3 frames charge peak moving contact
         run: |
           set -euo pipefail
           d="$RUNNER_TEMP/poisonbasic2"
-          xvfb-run -a -s '-screen 0 1280x720x24' bash tools/qa/run_godot_strict.sh --path godot --resolution 1280x720 --fixed-fps 60 --write-movie "$d/preflight.avi" --quit-after 73 res://labs/combat_lab/poison12/doc_cham_thuong_thuc.tscn 2>&1 | tee "$d/godot-preflight.log"
+          xvfb-run -a -s '-screen 0 1280x720x24' bash tools/qa/run_godot_strict.sh --path godot --resolution 1280x720 --fixed-fps 60 --write-movie "$d/preflight.avi" --quit-after 73 res://labs/combat_lab/poison_basic_human_v2/doc_cham_thuong_thuc.tscn 2>&1 | tee "$d/godot-preflight.log"
           grep -Fq 'VFX_POISON_BASIC_R2_READY' "$d/godot-preflight.log"
           ffmpeg -y -hide_banner -loglevel error -i "$d/preflight.avi" -pix_fmt yuv420p -c:v libx264 -crf 16 -movflags +faststart "$d/v4-poison-basic-human-r2-native.mp4"
           ffmpeg -y -hide_banner -loglevel error -ss 0.08 -i "$d/v4-poison-basic-human-r2-native.mp4" -frames:v 1 "$d/v4-charge.png"
@@ -79,21 +79,21 @@ jobs:
         run: |
           set -euo pipefail
           d="$RUNNER_TEMP/poisonbasic2"
-          xvfb-run -a -s '-screen 0 1280x720x24' bash tools/qa/run_godot_strict.sh --path godot --resolution 1280x720 --fixed-fps 60 --write-movie "$d/attack.avi" --quit-after 78 res://labs/combat_lab/poison12/doc_cham_thuong_thuc.tscn 2>&1 | tee "$d/full-movie.log"
+          xvfb-run -a -s '-screen 0 1280x720x24' bash tools/qa/run_godot_strict.sh --path godot --resolution 1280x720 --fixed-fps 60 --write-movie "$d/attack.avi" --quit-after 78 res://labs/combat_lab/poison_basic_human_v2/doc_cham_thuong_thuc.tscn 2>&1 | tee "$d/full-movie.log"
           grep -Fq 'VFX_POISON_BASIC_R2_READY' "$d/full-movie.log"
-          ffmpeg -y -hide_banner -loglevel error -i "$d/attack.avi" -pix_fmt yuv420p -c:v libx264 -crf 16 -movflags +faststart "$d/POISON_BASIC_R2-R1-attack.mp4"
+          ffmpeg -y -hide_banner -loglevel error -i "$d/attack.avi" -pix_fmt yuv420p -c:v libx264 -crf 16 -movflags +faststart "$d/POISON_BASIC_R2-attack.mp4"
           for t in 0.08 0.08 0.08 0.27 0.35 0.40 0.42 0.63 0.68 0.71 0.78 0.90 0.95 1.10; do
-            ffmpeg -y -hide_banner -loglevel error -ss "$t" -i "$d/POISON_BASIC_R2-R1-attack.mp4" -frames:v 1 "$d/frame-$t.png"
+            ffmpeg -y -hide_banner -loglevel error -ss "$t" -i "$d/POISON_BASIC_R2-attack.mp4" -frames:v 1 "$d/frame-$t.png"
           done
-          ffmpeg -y -hide_banner -loglevel error -i "$d/POISON_BASIC_R2-R1-attack.mp4" -vf 'fps=8,scale=640:-1:flags=lanczos' -loop 0 "$d/POISON_BASIC_R2-R1-attack.gif"
-          sha256sum "$d/POISON_BASIC_R2-R1-attack.mp4" "$d/POISON_BASIC_R2-R1-attack.gif" "$d"/frame-*.png > "$d/ATTACK-SHA256.txt"
+          ffmpeg -y -hide_banner -loglevel error -i "$d/POISON_BASIC_R2-attack.mp4" -vf 'fps=8,scale=640:-1:flags=lanczos' -loop 0 "$d/POISON_BASIC_R2-attack.gif"
+          sha256sum "$d/POISON_BASIC_R2-attack.mp4" "$d/POISON_BASIC_R2-attack.gif" "$d"/frame-*.png > "$d/ATTACK-SHA256.txt"
           rm "$d/attack.avi"
       - name: Preserve original generated alpha masters and atlases in existing PR
         if: success() && github.event_name == 'push'
         run: |
           set -euo pipefail
           branch='integration/pve-p0-playable-ui-20261103'
-          folder='godot/labs/combat_lab/poison12/assets'
+          folder='godot/labs/combat_lab/poison_basic_human_v2/assets'
           mkdir -p "$RUNNER_TEMP/poisonbasic2/saved"
           cp -R "$folder"/. "$RUNNER_TEMP/poisonbasic2/saved/"
           git config user.name 'github-actions[bot]'
@@ -102,7 +102,7 @@ jobs:
             git fetch origin "$branch"
             latest="$(git rev-parse FETCH_HEAD)"
             if ! git merge-base --is-ancestor "$GITHUB_SHA" "$latest"; then echo BRANCH_REWRITTEN_ABORT; exit 0; fi
-            if test -n "$(git diff --name-only "$GITHUB_SHA" "$latest" -- tools/vfx/generate_poison_basic_human_v2.py godot/labs/combat_lab/poison12/ .github/workflows/vfx-poi-12-r1-native.yml)"; then
+            if test -n "$(git diff --name-only "$GITHUB_SHA" "$latest" -- tools/vfx/generate_poison_basic_human_v2.py godot/labs/combat_lab/poison_basic_human_v2/ .github/workflows/vfx-poison-basic-human-r2-native.yml)"; then
               echo POISON_BASIC_R2_CONCURRENT_SOURCE_MODIFIED_ABORT
               exit 0
             fi
@@ -111,7 +111,7 @@ jobs:
             cp -R "$RUNNER_TEMP/poisonbasic2/saved"/. "$folder/"
             git add "$folder"/atlas/*.png "$folder"/master/*.png
             if git diff --cached --quiet; then echo POISON_BASIC_R2_ART_ALREADY_STORED; exit 0; fi
-            git commit -m 'art(poisonbasic2): store code-painted botanical elixir masters and 30 RGBA poses'
+            git commit -m 'art(poisonbasic2): store code-painted luminous basic metal needle masters and 22 true RGBA poses'
             if git push origin "HEAD:refs/heads/$branch"; then echo "POISON_BASIC_R2_ART_COMMIT=$(git rev-parse HEAD)" | tee "$RUNNER_TEMP/poisonbasic2/tracked-assets.txt"; exit 0; fi
           done
           echo POISON_BASIC_R2_ART_PUSH_CONFLICT
@@ -130,5 +130,5 @@ jobs:
             ${{ runner.temp }}/poisonbasic2/*.png
             ${{ runner.temp }}/poisonbasic2/*.mp4
             ${{ runner.temp }}/poisonbasic2/*.gif
-            godot/labs/combat_lab/poison12/assets/**/*.png
-            godot/labs/combat_lab/poison12/assets/*.png
+            godot/labs/combat_lab/poison_basic_human_v2/assets/**/*.png
+            godot/labs/combat_lab/poison_basic_human_v2/assets/atlas/*.png
