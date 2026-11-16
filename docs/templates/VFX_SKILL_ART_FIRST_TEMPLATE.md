@@ -35,3 +35,51 @@ Generated concept posters cannot substitute for production assets or Godot evide
 - Visual issues by timecode and corrective action:
 - Owner visual gate: PENDING / EXPLICITLY APPROVED:
 - PvE gate: HOLD until separately instructed:
+
+
+## Mandatory V4 three-clock timeline (complete BEFORE drawing)
+
+| Event / phase | Canonical catalogue value or exact real Combat V2 receipt | LAB-only simulation? | VFX local start/end seconds | Origin/target anchor and moving-follow rule | Status/confidence |
+| --- | --- | --- | --- | --- | --- |
+| Cast start / charge | | | | | |
+| Cast end / release | | | | | |
+| Travel / zone formation (if any) | | | | | |
+| Impact / mark / guard receipt | | | | | |
+| Status sustain / expiration (if any) | | | | | |
+| Residual light / visual cleanup | | | | | |
+| QA pre-roll / demo replay (not gameplay) | | | | | |
+
+State cast_time, cooldown, projectile_speed, effect, duration and hit_count separately; distinguish actual receipts from LAB movie times. UNKNOWN receipt => RUNTIME_MAPPING_PENDING and view-only. Record visual overlap with next action and reason for each afterglow length. Persistent guard/mark is not a longer cast.
+
+## Motion-derived pose budget and source fidelity
+
+- Original transparent hero master path, origin/licence, dimensions, **visible-alpha bounds at 1×**:
+- Per-layer pose list with key silhouettes and what really grows, bends, twists, condenses, splits, hits and fades:
+- Frame count, authored key poses, in-between/holds, atlas FPS and displayed time **per layer** (no arbitrary fixed 8–12 requirement):
+- Palette and light hierarchy: opaque MIX body, hot focused ADD highlight, restrained soft bloom, negative space:
+- First-party master/atlas durability: committed source or long-lived object-storage URI, SHA and reproducible bake tool; artifact expiry:
+- Reference and equivalent 1× game-space crop comparison; provenance/rights:
+- Do not use frame-byte hashes alone to assert animation quality; no rig.
+
+## G3.5 mandatory 3-frame actual Godot preflight STOP
+
+| Frame (1× / 1280×720) | Timestamp | Evidence location | Source-to-Godot match | Pass/Fail and repair |
+| --- | --- | --- | --- | --- |
+| Charge / formation | | | | |
+| Energy peak / main silhouette | | | | |
+| Contact **on moving target** | | | | |
+
+- Compare original hero silhouette, hot core, saturation, alpha, hand/ground contact and actor occlusion on true gameplay scale and bright/dark terrain.
+- If any frame is dull, candle-like, flat HUD geometry, disconnected from palm or hides target: **STOP G3.5**, repair hero art; do NOT progress to expensive full movie. Automated capture is technical evidence, not automated art approval.
+- Preflight review: PASS / FAIL / NOT_EXECUTED; reviewer/time; open defects and exact owner feedback:
+
+## G4–G7 post-preflight evidence
+
+- Motion cases: stationary target; moving left/right; multiple asynchronous moving targets; fixed zone vs homing policy; screenshots/video:
+- Actual Godot 4.7.2 Compatibility MP4 1280×720, GIF/ZIP, continuous playback reviewed and >=12 useful frame timestamps (or justified fewer for short clip):
+- Separate visual self-review (/5 each): silhouette, material, local-light/color purity, motion continuity, event timing, moving-contact, actor visibility/layering, fade, school identity. Each critical item >=4/5 before owner review:
+- Technical QA: strict import/parse/focused, frame integrity, source commit exact SHA, workflow/run/artifact paths; never infer device fps from fixed movie:
+- Distinct statuses: ART_SELF_QA_PASS/REWORK; GODOT_TECH_PASS/NOT_RUN/FAIL; OWNER_VISUAL_APPROVED/PENDING/REJECTED; PVE_INTEGRATION_HOLD; PHYSICAL_QA_PENDING:
+- Owner approved revision SHA and immutable protected art; if user pivots, keep prior unresolved revision as REWORK/PENDING, not approved:
+- Production measurements (when actually observed): G3.5 attempts, full renders, rework count, owner-approved masters per session; no invented work time:
+
