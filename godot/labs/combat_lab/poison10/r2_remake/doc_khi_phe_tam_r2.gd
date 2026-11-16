@@ -64,7 +64,7 @@ static func charge_index_at(t: float) -> float:
     return clampf(t/CAST_END*9.0,0,9)
 
 static func bloom_index_at(t: float) -> float:
-    return clampf((t-BLOOM_START)/(BLOOM_END-BLOOM_START)*11,0,11)
+    return clampf(sqrt(clampf((t-BLOOM_START)/(BLOOM_END-BLOOM_START),0.0,1.0))*11.0,0.0,11.0)
 
 static func contact_index_at(index: int,t: float) -> float:
     return clampf((t-mock_contact_time(index))/CONTACT_VISUAL_SECONDS*7,0,7)
@@ -144,7 +144,7 @@ func _draw()->void:
     # Painted lotus unfurls behind targets; no 6-second large bloom or extra status silhouettes.
     if t>=BLOOM_START and t<BLOOM_END:
         var fade:=1.0-smoothstep(1.85,BLOOM_END,t)
-        _draw_flipbook(bloom_frames,AREA_CENTER+Vector2(0,-64),Vector2(500,342),bloom_index_at(t),fade*.97)
+        _draw_flipbook(bloom_frames,AREA_CENTER+Vector2(0,-48),Vector2(470,325),bloom_index_at(t),fade*.97)
     draw_texture_rect_region(CASTER_ART,Rect2(CASTER-Vector2(160,351)*.47,Vector2(320,384)*.47),Rect2(0,0,320,384))
     for i in range(TARGET_LIMIT):
         _draw_monster(i,t)

@@ -16,6 +16,7 @@ func _run()->void:
     check(LAB.DECLARED_POISON_STACKS==1 and LAB.DECLARED_DAMAGE_RATIO==0.9,"one stack/damage ratio from catalogue")
     check(LAB.phase_at(.33)=="seed_charge" and LAB.phase_at(.85)=="one_cosmetic_bud_flight","phase initial")
     check(LAB.phase_at(1.40)=="poison_lotus_peak" and LAB.phase_at(1.66)=="local_contacts","phase bloom/contact")
+    check(LAB.bloom_index_at(1.40)>=3.5 and LAB.bloom_index_at(1.67)>=6.0,"organic bloom opens early enough for peak and moving impact")
     check(LAB.phase_at(5.0)=="shared_status_badges" and LAB.phase_at(8.3)=="idle","badge hold vs idle")
     check(LAB.demo_flight_at(LAB.CAST_END).distance_to(LAB.PALM)<.05,"flight start anchor")
     check(LAB.demo_flight_at(LAB.BLOOM_START).distance_to(LAB.AREA_CENTER)<.05,"flight area center")
