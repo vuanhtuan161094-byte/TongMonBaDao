@@ -1,3 +1,7 @@
+## OWNER VFX NO-GIF OVERRIDE — 2026-11-16 (LATEST, HIGHEST PRIORITY)
+
+**No GIF creation requirement. Do NOT generate GIFs, storyboard GIF previews or GIF exports during VFX production unless the owner explicitly asks for a GIF.** Direct process: canonical skill data → source-preserved original true-RGBA sprite layers → Godot 4.7.2 native 1280×720 charge/peak/moving-contact screenshots → short real Godot MP4 motion review and exact-SHA proof → manual owner art gate. Historical GIF-first experiments are REVOKED and are not a gate. No rig, no Codex, no merges, no gameplay modifications by default.
+
 ## VFX MANDATORY PRODUCTION SYSTEM V4 — 2026-11-16 (ALL VFX SCHOOL CHATS, HIGHEST VFX SOP PRIORITY)
 
 **VFX V4 reusable technical gate (pilot 16/11/2026):** All new VFX school chats must also read [V4 packet onboarding](docs/operations/vfx_packets/README.md) and use [shared V4 validator](tools/qa/validate_vfx_v4_packet.py) with a **school-specific** skill packet, real Godot moving-target contract and preflight evidence. [HF02 workflow](.github/workflows/vfx-v4-hf02-preflight.yml) / [verified pilot](docs/operations/vfx_packets/HF02_V4_TECHNICAL_RESULT_20261116.md) are the first implementation example, not blanket CI coverage for 12 schools. A missing packet/3 images/manifest/Godot focused evidence fails technical QA; never auto-PASS art. The pilot explicitly preserves ART/OWNER PENDING and PvE HOLD.
