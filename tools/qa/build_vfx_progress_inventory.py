@@ -58,7 +58,7 @@ APPROVED={
 }
 PREVIEW_ONLY={"tmb.skill.poison.co_doc.ultimate":"POI06_R11_OWNER_PREVIEW_ACCEPTED_NATIVE_QA_PASS"}
 IN_PROGRESS={"tmb.skill.talisman.hoa_phu.active_04":"HF04_R3_OWNER_PROVISIONAL_USE_ART_REWORK_DEFERRED",
- "tmb.skill.talisman.hoa_phu.ultimate":"HF05_R5_FULL_GODOT_NATIVE_201FRAMES_TECH_PASS_OWNER_PENDING"}
+ "tmb.skill.talisman.hoa_phu.ultimate":"HF05_R7_NATIVE_201FRAMES_SOLAR_PILLAR_TECH_PASS_OWNER_PENDING"}
 
 def main():
     p=argparse.ArgumentParser()
