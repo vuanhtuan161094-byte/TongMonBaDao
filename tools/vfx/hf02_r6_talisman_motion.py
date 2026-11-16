@@ -66,6 +66,11 @@ def charge(i,sigil,flame):
         x=160+int(math.cos(a)*(57-26*progress))-sheet.width//2
         y=155+int(math.sin(a)*(43-18*progress))-sheet.height//2
         bloom(dst,sheet,(x,y),.22)
+    # The main gathering focal point is part of the painted source itself:
+    # a compact, white-gold curling fire material, never a vector HUD ring.
+    hot=colored_flame(flame,i+41,(108,64),opacity=.50+.37*progress)
+    hot=hot.rotate(-18+7*math.sin(i*.56),Image.Resampling.BICUBIC,expand=True)
+    bloom(dst,hot,(160-hot.width//2,155-hot.height//2),.48)
     for k in range(4):
         # 4 prominent owner-style golden talismans circle, then tighten.
         a=i*.19+k*math.pi*.5
