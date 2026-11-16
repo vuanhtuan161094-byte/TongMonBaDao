@@ -97,18 +97,24 @@ def burst_frame(i):
     return finish(out)
 
 def contact_frame(i):
+    # A pointwise white-hot puncture with irregular radiant violet-jade tongues.
+    # 100% painted-source filaments; no black sun cutout from the reference poster.
     w,h=192,160;out=image(w,h)
-    timing=[.24,.63,.98,1,.85,.69,.48,.29,.14,.035][i]
-    k=scaled(variation(HIT,i,3.3),int(112+42*timing),int(64+22*timing))
-    x=(w-k.width)//2;y=(h-k.height)//2
-    light_blend(out,k,(x,y),9,.71*timing)
-    light_blend(out,k,(x,y),2,.58*timing)
-    light_blend(out,k,(x,y),0,.95*timing)
-    if timing>.18:
-        flash=scaled(HOT,int(17+30*timing),int(18+30*timing))
-        at=(w//2-flash.width//2,h//2-flash.height//2)
-        light_blend(out,flash,at,5,.65*timing)
-        light_blend(out,flash,at,0,.93*timing)
+    timing=[.24,.63,.94,1.0,.84,.69,.48,.29,.14,.035][i]
+    for k,a0 in enumerate([-157,-103,-41,19,79,145]):
+        a=a0 + i*(3 if k%2 else -4)
+        rr=(20+28*timing)*(0.75+(k%3)*.13)
+        xx=96+cos(a*pi/180)*rr;yy=80+sin(a*pi/180)*rr*.80
+        light=scaled(variation(WAVE,(i+2*k)%12,3.5),71+(k%2)*13,35+(i%3)*3)
+        light=light.rotate(a,Image.Resampling.BICUBIC,expand=True)
+        at=(round(xx-light.width/2),round(yy-light.height/2))
+        light_blend(out,light,at,7,.45*timing)
+        light_blend(out,light,at,0,.82*timing)
+    spot=scaled(HOT,int(34+43*timing),int(37+42*timing))
+    at=(96-spot.width//2,80-spot.height//2)
+    light_blend(out,spot,at,10,.85*timing)
+    light_blend(out,spot,at,4,.92*timing)
+    light_blend(out,spot,at,0,.98*timing)
     return finish(out)
 
 def mark_frame(i):
