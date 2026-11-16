@@ -66,12 +66,21 @@ def validate_packet(root: Path, packet: dict) -> dict:
     for name in ("scene_path", "lab_script", "focused_test"):
         checked_path(root, packet.get(name, ""))
     catalogue = read_json(checked_path(root, packet.get("catalogue_path", "")))
-    require(catalogue.get("school") == packet["school"], "packet school != catalogue school")
+    # Early Fist/legacy human catalogues may omit top-level school metadata.
+    # The exact matched skill MUST still identify the requested school.
+    catalogue_school = catalogue.get("school")
+    require(catalogue_school is None or catalogue_school == packet["school"], "packet school != catalogue school")
     matching = [skill for skill in catalogue.get("skills", []) if skill.get("id") == packet["skill_id"]]
     require(len(matching) == 1, "skill ID must appear exactly once in canonical catalogue")
     canonical = matching[0]
+    require(canonical.get("school") == packet["school"], "matched canonical skill school mismatch")
     declared = packet.get("declared_contract", {})
     for field in ("effect", "element", "shape", "target_limit", "hit_count", "range", "radius", "cast_time", "cooldown", "projectile_speed", "duration"):
+        # Missing hit_count on some older GUARD catalogues means no declared
+        # outgoing hit (do not invent a damage event or edit game balance).
+        if field == "hit_count" and field not in canonical and canonical.get("effect") == "guard":
+            require(equals_number(declared.get(field), 0), "legacy guard must declare zero visual outgoing hits")
+            continue
         require(field in declared and field in canonical, "missing canonical contract field: " + field)
         a, b = declared[field], canonical[field]
         require(equals_number(a, b) if isinstance(b, (int, float)) else a == b, "catalogue mismatch for " + field + ": " + str(a) + " != " + str(b))

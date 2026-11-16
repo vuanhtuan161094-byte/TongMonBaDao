@@ -1,4 +1,4 @@
-name: VFX-FIST-07 R4 owner illustration soft alpha guardian+dome sprites Godot native
+name: VFX-FIST-07 R5 Production V4 guardian burst / persistent small status / moving guarded hit
 on:
   workflow_dispatch:
   push:
@@ -6,20 +6,22 @@ on:
     paths:
       - '.github/workflows/vfx-fist-07-kim-cang-ho-the.yml'
       - 'godot/labs/combat_lab/fist07/**'
-      - 'tools/vfx/generate_fist07_owner_ref_atlas.py'
+      - 'tools/vfx/generate_fist07_jx_buff_r5.py'
       - 'godot/tests/labs/combat_lab/vfx_fist07_contract_test.gd'
+      - 'docs/operations/vfx_packets/FIST07_R5_PERSISTENT_GUARD_V4.json'
+      - 'tools/qa/validate_vfx_v4_packet.py'
 permissions:
   contents: read
 jobs:
-  native-godot-film:
+  f7-r5-godot-v4:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 35
     env:
       GODOT_AUDIO_DRIVER: Dummy
       GODOT_RENDERING_DRIVER: opengl3
     steps:
       - uses: actions/checkout@v4
-      - name: Official SHA256 pinned Godot 4.7.2 + rendering tools
+      - name: Official pinned Godot 4.7.2 and original source-provenance
         shell: bash
         run: |
           set -euo pipefail
@@ -29,79 +31,81 @@ jobs:
           echo 'cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4  /tmp/godot472.zip' | sha256sum --check --strict
           unzip -q /tmp/godot472.zip -d /tmp
           sudo install -m0755 /tmp/Godot_v4.7.2-stable_linux.x86_64 /usr/local/bin/godot
-          mkdir -p /tmp/vfx-fist07
-          godot --version | tee /tmp/vfx-fist07/engine.txt
-          echo "EXACT_SHA=$GITHUB_SHA; SKILL=tmb.skill.fist.kim_cang.active_02.human; EFFECT=guard; ELEMENT=earth; CAST=0.45; DURATION=4; CAP=1; RENDER_HUE=pure-gold-light; SOURCE=user-provided reference art crop; VIEW_ONLY=TRUE; NO_RIG=TRUE; OWNER_VISUAL_PENDING; PVE_INTEGRATION_HOLD" > /tmp/vfx-fist07/metadata.txt
-      - name: Restore existing test actor without modifying tracked sources
+          mkdir -p /tmp/vfx-fist07-r5
+          godot --version | tee /tmp/vfx-fist07-r5/engine.txt
+          echo "EXACT_SHA=$GITHUB_SHA; SKILL=tmb.skill.fist.kim_cang.active_02.human; EFFECT=guard; DURATION=4s; CAST=0.45s; G3.5=required; SELF_ART=MANUAL_REVIEW_REQUIRED; OWNER_VISUAL_PENDING; PVE_INTEGRATION_HOLD" > /tmp/vfx-fist07-r5/metadata.txt
+      - name: Restore approved unchanged IDLE/WALK demonstration actors
         shell: bash
         run: |
           set -euo pipefail
           cat .github/assets/p3/female_stage_a/part{01..14}.b64 .github/assets/p3/female_stage_a/part15a.b64 .github/assets/p3/female_stage_a/part15b.b64 .github/assets/p3/female_stage_a/part{16..20}.b64 | tr -d '\r\n\t ' | base64 --decode > /tmp/tmb_stage_a_pack.zip
           echo '6a4213b9129ffb3f438c21cbb5326672ddf8915323836bf80cb33b8e5fabfdca  /tmp/tmb_stage_a_pack.zip' | sha256sum --check --strict
           unzip -q /tmp/tmb_stage_a_pack.zip -d .
-      - name: Bake user-illustrated guardian and dome into 24 RGBA sprite poses
+      - name: V4 packet before assets (canonical catalogue)
         shell: bash
         run: |
           set -euo pipefail
-          python3 tools/vfx/generate_fist07_owner_ref_atlas.py | tee /tmp/vfx-fist07/generator.log
-          grep -Fq 'FIST07_OWNER_REFERENCE_ATLAS_PASS=1 poses=24 pages=2 raw_rgba_bytes=8650752 source=owner_concept_no_rig' /tmp/vfx-fist07/generator.log
-          for f in gold_ward guarded_hit; do
-            test -s "godot/labs/combat_lab/fist07/assets/generated/$f.png"
-            cp "godot/labs/combat_lab/fist07/assets/generated/$f.png" "/tmp/vfx-fist07/$f.png"
+          python3 tools/qa/validate_vfx_v4_packet.py --stage packet --packet docs/operations/vfx_packets/FIST07_R5_PERSISTENT_GUARD_V4.json | tee /tmp/vfx-fist07-r5/v4-packet.log
+      - name: Bake three original-image-based sprite atlases and prove source alpha
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 tools/vfx/generate_fist07_jx_buff_r5.py | tee /tmp/vfx-fist07-r5/bake.log
+          grep -Fq 'FIST07_R5_BAKE_PASS atlases=3 poses=24 rgba_bytes=6553600 source=original_illustrated_no_rig' /tmp/vfx-fist07-r5/bake.log
+          python3 tools/qa/validate_vfx_v4_packet.py --stage assets --packet docs/operations/vfx_packets/FIST07_R5_PERSISTENT_GUARD_V4.json | tee /tmp/vfx-fist07-r5/v4-assets.log
+          cp godot/labs/combat_lab/fist07/assets/generated/r5_*.png /tmp/vfx-fist07-r5/
+          sha256sum /tmp/vfx-fist07-r5/r5_*.png > /tmp/vfx-fist07-r5/ASSET_SHA256SUMS.txt
+      - name: Godot 4.7.2 strict import / parse and moving-guard contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash tools/qa/run_godot_strict.sh --headless --path godot --import 2>&1 | tee /tmp/vfx-fist07-r5/import.log
+          bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://labs/combat_lab/fist07/kim_cang_ho_the.gd 2>&1 | tee /tmp/vfx-fist07-r5/parse.log
+          bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/labs/combat_lab/vfx_fist07_contract_test.gd 2>&1 | tee /tmp/vfx-fist07-r5/godot-focused.log
+          grep -Fq 'VFX_FIST07_R5_FOCUSED_RESULT=PASS failures=0' /tmp/vfx-fist07-r5/godot-focused.log
+      - name: Mandatory G3.5 preflight 3 actual Godot 1280x720 frames
+        shell: bash
+        run: |
+          set -euo pipefail
+          d=/tmp/vfx-fist07-r5
+          xvfb-run -a -s '-screen 0 1280x720x24' bash tools/qa/run_godot_strict.sh --path godot --resolution 1280x720 --fixed-fps 60 --write-movie "$d/v4-hf02-native.avi" --quit-after 92 res://labs/combat_lab/fist07/kim_cang_ho_the.tscn 2>&1 | tee "$d/godot-preflight.log"
+          test -s "$d/v4-hf02-native.avi"
+          ffmpeg -y -hide_banner -loglevel error -i "$d/v4-hf02-native.avi" -pix_fmt yuv420p -c:v libx264 -crf 16 "$d/v4-hf02-native.mp4"
+          for part in 'charge:0.30' 'peak:0.59' 'contact:1.33'; do
+            key="${part%%:*}"; sec="${part##*:}"
+            ffmpeg -y -hide_banner -loglevel error -ss "$sec" -i "$d/v4-hf02-native.mp4" -frames:v 1 "$d/v4-$key.png"
+            test -s "$d/v4-$key.png"
           done
-          python3 - <<'ART_CHECK' | tee /tmp/vfx-fist07/art_budget.txt
-          from PIL import Image,ImageChops
-          from pathlib import Path
-          root=Path('/tmp/vfx-fist07')
-          ward=Image.open(root/'gold_ward.png').convert('RGBA')
-          hit=Image.open(root/'guarded_hit.png').convert('RGBA')
-          assert ward.size==(1280,1280) and hit.size==(1024,512)
-          assert ward.getpixel((0,0))[3]==0 and hit.getpixel((0,0))[3]==0
-          frame=lambda im,k,cell:im.crop((k%4*cell,k//4*cell,k%4*cell+cell,k//4*cell+cell))
-          assert ImageChops.difference(frame(ward,4,320),frame(ward,9,320)).getbbox(), 'ward pose must vary'
-          assert ImageChops.difference(frame(hit,0,256),frame(hit,6,256)).getbbox(), 'contact must vary'
-          assert frame(ward,7,320).getchannel('A').getbbox()
-          assert (ward.width*ward.height+hit.width*hit.height)*4==8650752
-          print('FIST07_ART_ALPHA_QA=PASS frame_count=24 raw_rgba_bytes=8650752 transparent_background=TRUE')
-          ART_CHECK
-          sha256sum /tmp/vfx-fist07/{gold_ward,guarded_hit}.png > /tmp/vfx-fist07/ATLAS_SHA256SUMS.txt
-          sha256sum godot/labs/combat_lab/fist07/assets/source/*.b64 > /tmp/vfx-fist07/REFERENCE_SOURCE_SHA256SUMS.txt
-      - name: Strict Godot import/parse and focused GUARD contract
+          python3 tools/qa/validate_vfx_v4_packet.py --stage evidence --packet docs/operations/vfx_packets/FIST07_R5_PERSISTENT_GUARD_V4.json --out "$d" --sha "$GITHUB_SHA" | tee "$d/v4-evidence.log"
+          rm "$d/v4-hf02-native.avi"
+      - name: Complete real Godot film with moving buff, two demo blocks, clear
         shell: bash
         run: |
           set -euo pipefail
-          bash tools/qa/run_godot_strict.sh --headless --path godot --import 2>&1 | tee /tmp/vfx-fist07/import.log
-          bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://labs/combat_lab/fist07/kim_cang_ho_the.gd 2>&1 | tee /tmp/vfx-fist07/parse.log
-          bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/labs/combat_lab/vfx_fist07_contract_test.gd 2>&1 | tee /tmp/vfx-fist07/test.log
-          grep -Fq 'VFX_FIST07_FOCUSED_RESULT=PASS failures=0' /tmp/vfx-fist07/test.log
-      - name: Real 1280x720 Godot film using illustrated reference atlas, 15 checkpoints
-        shell: bash
-        run: |
-          set -euo pipefail
-          d=/tmp/vfx-fist07
-          xvfb-run -a -s '-screen 0 1280x720x24' bash tools/qa/run_godot_strict.sh --path godot --resolution 1280x720 --fixed-fps 60 --write-movie "$d/fist-07.avi" --quit-after 323 res://labs/combat_lab/fist07/kim_cang_ho_the.tscn 2>&1 | tee "$d/movie.log"
-          test -s "$d/fist-07.avi"
-          ffmpeg -y -hide_banner -loglevel error -i "$d/fist-07.avi" -pix_fmt yuv420p -c:v libx264 -crf 16 -movflags +faststart "$d/fist-07.mp4"
-          ffprobe -v error -select_streams v:0 -show_entries stream=width,height,avg_frame_rate -of default=noprint_wrappers=1 "$d/fist-07.mp4" | tee "$d/dimensions.txt"
-          grep -Fxq 'width=1280' "$d/dimensions.txt"
-          grep -Fxq 'height=720' "$d/dimensions.txt"
-          for at in 0.11 0.29 0.42 0.54 0.88 1.27 1.34 1.44 2.22 3.10 3.18 4.22 4.55 4.74 5.03; do
-            ffmpeg -y -hide_banner -loglevel error -ss "$at" -i "$d/fist-07.mp4" -frames:v 1 "$d/frame-$at.png"
+          d=/tmp/vfx-fist07-r5
+          xvfb-run -a -s '-screen 0 1280x720x24' bash tools/qa/run_godot_strict.sh --path godot --resolution 1280x720 --fixed-fps 60 --write-movie "$d/fist07-r5.avi" --quit-after 315 res://labs/combat_lab/fist07/kim_cang_ho_the.tscn 2>&1 | tee "$d/godot-full.log"
+          ffmpeg -y -hide_banner -loglevel error -i "$d/fist07-r5.avi" -pix_fmt yuv420p -c:v libx264 -crf 16 -movflags +faststart "$d/fist07-r5.mp4"
+          ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of default=noprint_wrappers=1 "$d/fist07-r5.mp4" | tee "$d/dimensions.txt"
+          grep -Fxq width=1280 "$d/dimensions.txt"
+          grep -Fxq height=720 "$d/dimensions.txt"
+          for at in 0.12 0.30 0.42 0.52 0.59 0.76 0.90 1.25 1.33 1.43 2.15 3.12 3.19 4.21 4.58 4.78 5.02; do
+            ffmpeg -y -hide_banner -loglevel error -ss "$at" -i "$d/fist07-r5.mp4" -frames:v 1 "$d/frame-$at.png"
           done
-          ffmpeg -y -hide_banner -loglevel error -i "$d/fist-07.mp4" -vf 'fps=3,scale=320:180,tile=5x3:nb_frames=15' -frames:v 1 "$d/timeline.png"
-          ffmpeg -y -hide_banner -loglevel error -i "$d/fist-07.mp4" -vf 'fps=12,scale=640:360:flags=lanczos' -loop 0 "$d/fist-07.gif"
+          ffmpeg -y -hide_banner -loglevel error -i "$d/fist07-r5.mp4" -vf 'fps=3,scale=320:180,tile=5x4:nb_frames=20' -frames:v 1 "$d/timeline.png"
+          ffmpeg -y -hide_banner -loglevel error -i "$d/fist07-r5.mp4" -vf 'fps=12,scale=640:360:flags=lanczos' -loop 0 "$d/fist07-r5.gif"
           sha256sum "$d/"*.mp4 "$d/"*.gif "$d/"*.png > "$d/SHA256SUMS.txt"
-          rm "$d/fist-07.avi"
-      - name: Upload exact-SHA native art+QA evidence
+          rm "$d/fist07-r5.avi"
+      - name: Exact-SHA artifact; technical gate never implies owner art PASS
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: vfx-fist07-native
+          name: vfx-fist07-r5-v4-native
           retention-days: 14
           if-no-files-found: warn
           path: |
-            /tmp/vfx-fist07/*.txt
-            /tmp/vfx-fist07/*.log
-            /tmp/vfx-fist07/*.png
-            /tmp/vfx-fist07/*.gif
-            /tmp/vfx-fist07/*.mp4
+            /tmp/vfx-fist07-r5/*.txt
+            /tmp/vfx-fist07-r5/*.json
+            /tmp/vfx-fist07-r5/*.log
+            /tmp/vfx-fist07-r5/*.png
+            /tmp/vfx-fist07-r5/*.mp4
+            /tmp/vfx-fist07-r5/*.gif
