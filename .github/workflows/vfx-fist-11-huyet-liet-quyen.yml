@@ -7,13 +7,13 @@ on:
       - '.github/workflows/vfx-fist-11-huyet-liet-quyen.yml'
       - 'godot/labs/combat_lab/fist11/**'
       - 'tools/vfx/generate_fist11_huyet_liet_quyen.py'
-      - 'tools/vfx/create_fist11_original_masters.py'
       - 'godot/tests/labs/combat_lab/vfx_fist11_contract_test.gd'
       - 'docs/operations/vfx_packets/FIST11_R1_HUYET_LIET_QUYEN_V4.json'
+      - 'tools/qa/validate_vfx_v4_packet.py'
 permissions:
   contents: read
 jobs:
-  native-single-target-v4:
+  native-strike-v4:
     runs-on: ubuntu-latest
     timeout-minutes: 35
     env:
@@ -21,7 +21,7 @@ jobs:
       GODOT_RENDERING_DRIVER: opengl3
     steps:
       - uses: actions/checkout@v4
-      - name: Install SHA-pinned Godot 4.7.2 and raster tooling
+      - name: Install pinned Godot 4.7.2 and PIL
         shell: bash
         run: |
           set -euo pipefail
@@ -33,30 +33,32 @@ jobs:
           sudo install -m0755 /tmp/Godot_v4.7.2-stable_linux.x86_64 /usr/local/bin/godot
           mkdir -p /tmp/vfx-fist11
           godot --version | tee /tmp/vfx-fist11/engine.txt
-          echo "EXACT_SHA=$GITHUB_SHA; FIST11=nether_single_damage; R1_ORIGINAL; ART_PENDING; NO_GIF; NO_RIG; PVE_HOLD; V63_OFF" > /tmp/vfx-fist11/metadata.txt
-      - name: Restore unchanged approved dummy actors for LAB
+          echo "EXACT_SHA=$GITHUB_SHA; FIST11=R1_PAINTED_CRIMSON_FIST_SINGLE_TARGET_LAB; ART_PENDING; NO_RIG; PVE_HOLD; V63_OFF" > /tmp/vfx-fist11/metadata.txt
+      - name: Restore approved unchanged idle and walk actors for demo
         shell: bash
         run: |
           set -euo pipefail
           cat .github/assets/p3/female_stage_a/part{01..14}.b64 .github/assets/p3/female_stage_a/part15a.b64 .github/assets/p3/female_stage_a/part15b.b64 .github/assets/p3/female_stage_a/part{16..20}.b64 | tr -d '\r\n\t ' | base64 --decode > /tmp/tmb_stage_a_pack.zip
           echo '6a4213b9129ffb3f438c21cbb5326672ddf8915323836bf80cb33b8e5fabfdca  /tmp/tmb_stage_a_pack.zip' | sha256sum --check --strict
           unzip -q /tmp/tmb_stage_a_pack.zip -d .
-      - name: V4 packet and source provenance
+      - name: Validate canonical V4 packet
         shell: bash
         run: |
           set -euo pipefail
           python3 tools/qa/validate_vfx_v4_packet.py --stage packet --packet docs/operations/vfx_packets/FIST11_R1_HUYET_LIET_QUYEN_V4.json | tee /tmp/vfx-fist11/v4-packet.log
-      - name: Bake true-alpha 8 charge 12 fist-flight 8 target-contact R1
+      - name: Bake 8 charge + 12 blood-fist flight + 10 protected-contact RGBA poses (NO GIF)
         shell: bash
         run: |
           set -euo pipefail
           python3 tools/vfx/generate_fist11_huyet_liet_quyen.py | tee /tmp/vfx-fist11/bake.log
-          grep -Fq 'FIST11_BAKE_PASS atlas=3 poses=28 rgba_bytes=9109504 8charge_12flight_8contact=true no_gif=true no_rig=true' /tmp/vfx-fist11/bake.log
+          grep -Fq 'FIST11_BAKE_PASS frames=30 pages=3 raw_rgba_bytes=10158080 no_rig=true no_gif=true view_only=true' /tmp/vfx-fist11/bake.log
           python3 tools/qa/validate_vfx_v4_packet.py --stage assets --packet docs/operations/vfx_packets/FIST11_R1_HUYET_LIET_QUYEN_V4.json | tee /tmp/vfx-fist11/v4-assets.log
           cp godot/labs/combat_lab/fist11/assets/generated/f11_*.png /tmp/vfx-fist11/
-          cp godot/labs/combat_lab/fist11/assets/source/*.webp /tmp/vfx-fist11/
+          cp godot/labs/combat_lab/fist11/assets/generated/f11_original_composite_painted_master.png /tmp/vfx-fist11/f11_original_composite_painted_master.png
+          cp godot/labs/combat_lab/fist03/assets/godfist_master.webp /tmp/vfx-fist11/first_party_fist03_fist_source.webp
+          cp godot/labs/combat_lab/fist03/assets/impact_master.webp /tmp/vfx-fist11/first_party_fist03_contact_source.webp
           sha256sum /tmp/vfx-fist11/f11_*.png /tmp/vfx-fist11/*.webp > /tmp/vfx-fist11/ART_SOURCE_SHA256SUMS.txt
-      - name: Godot strict import parse and focused moving-target contract
+      - name: Godot strict import parse and moving single foe contact contract
         shell: bash
         run: |
           set -euo pipefail
@@ -64,46 +66,47 @@ jobs:
           bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://labs/combat_lab/fist11/huyet_liet_quyen.gd 2>&1 | tee /tmp/vfx-fist11/parse.log
           bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/labs/combat_lab/vfx_fist11_contract_test.gd 2>&1 | tee /tmp/vfx-fist11/godot-focused.log
           grep -Fq 'VFX_FIST11_FOCUSED_RESULT=PASS failures=0' /tmp/vfx-fist11/godot-focused.log
-      - name: G3.5 actual Godot 1280x720 charge/flight/contact moving proof
+      - name: Mandatory G3.5 Godot preflight 1280x720 crimson charge flight contact on moving foe
         shell: bash
         run: |
           set -euo pipefail
           d=/tmp/vfx-fist11
-          xvfb-run -a -s '-screen 0 1280x720x24' bash tools/qa/run_godot_strict.sh --path godot --resolution 1280x720 --fixed-fps 60 --write-movie "$d/v4-fist11-native.avi" --quit-after 73 res://labs/combat_lab/fist11/huyet_liet_quyen.tscn 2>&1 | tee "$d/godot-preflight.log"
+          xvfb-run -a -s '-screen 0 1280x720x24' bash tools/qa/run_godot_strict.sh --path godot --resolution 1280x720 --fixed-fps 60 --write-movie "$d/v4-fist11-native.avi" --quit-after 100 res://labs/combat_lab/fist11/huyet_liet_quyen.tscn 2>&1 | tee "$d/godot-preflight.log"
           test -s "$d/v4-fist11-native.avi"
           ffmpeg -y -hide_banner -loglevel error -i "$d/v4-fist11-native.avi" -pix_fmt yuv420p -c:v libx264 -crf 16 -movflags +faststart "$d/v4-fist11-native.mp4"
-          for at in 0.25 0.59 0.84; do
+          for at in 0.22 0.62 0.86; do
             case "$at" in
-              0.25) stage=charge ;;
-              0.59) stage=peak ;;
-              0.84) stage=contact ;;
+              0.22) stage=charge ;;
+              0.62) stage=peak ;;
+              0.86) stage=contact ;;
             esac
             ffmpeg -y -hide_banner -loglevel error -ss "$at" -i "$d/v4-fist11-native.mp4" -frames:v 1 "$d/v4-$stage.png"
             test -s "$d/v4-$stage.png"
           done
           python3 tools/qa/validate_vfx_v4_packet.py --stage evidence --packet docs/operations/vfx_packets/FIST11_R1_HUYET_LIET_QUYEN_V4.json --out "$d" --sha "$GITHUB_SHA" | tee "$d/v4-evidence.log"
           rm "$d/v4-fist11-native.avi"
-      - name: Full native Godot MP4 and 18 timestamped review stills NO GIF
+      - name: Full native Godot 1280x720 MP4 crimson fist motion review (NO GIF)
         shell: bash
         run: |
           set -euo pipefail
           d=/tmp/vfx-fist11
-          xvfb-run -a -s '-screen 0 1280x720x24' bash tools/qa/run_godot_strict.sh --path godot --resolution 1280x720 --fixed-fps 60 --write-movie "$d/fist11-r2.avi" --quit-after 111 res://labs/combat_lab/fist11/huyet_liet_quyen.tscn 2>&1 | tee "$d/godot-full.log"
-          ffmpeg -y -hide_banner -loglevel error -i "$d/fist11-r2.avi" -pix_fmt yuv420p -c:v libx264 -crf 16 -movflags +faststart "$d/fist11-r2.mp4"
-          ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of default=noprint_wrappers=1 "$d/fist11-r2.mp4" | tee "$d/dimensions.txt"
+          xvfb-run -a -s '-screen 0 1280x720x24' bash tools/qa/run_godot_strict.sh --path godot --resolution 1280x720 --fixed-fps 60 --write-movie "$d/fist11-r1.avi" --quit-after 150 res://labs/combat_lab/fist11/huyet_liet_quyen.tscn 2>&1 | tee "$d/godot-full.log"
+          ffmpeg -y -hide_banner -loglevel error -i "$d/fist11-r1.avi" -pix_fmt yuv420p -c:v libx264 -crf 16 -movflags +faststart "$d/fist11-r1.mp4"
+          ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of default=noprint_wrappers=1 "$d/fist11-r1.mp4" | tee "$d/dimensions.txt"
           grep -Fxq width=1280 "$d/dimensions.txt"
           grep -Fxq height=720 "$d/dimensions.txt"
-          for at in 0.12 0.25 0.33 0.44 0.50 0.59 0.67 0.74 0.80 0.84 0.90 0.97 1.05 1.18 1.32 1.42 1.65 1.78; do
-            ffmpeg -y -hide_banner -loglevel error -ss "$at" -i "$d/fist11-r2.mp4" -frames:v 1 "$d/frame-$at.png"
+          for at in 0.10 0.22 0.35 0.44 0.53 0.62 0.72 0.80 0.83 0.86 0.90 1.00 1.12 1.28 1.36 1.45 1.62 1.85 2.07; do
+            ffmpeg -y -hide_banner -loglevel error -ss "$at" -i "$d/fist11-r1.mp4" -frames:v 1 "$d/frame-$at.png"
           done
-          ffmpeg -y -hide_banner -loglevel error -i "$d/fist11-r2.mp4" -vf 'fps=10,scale=320:180,tile=5x4:nb_frames=20' -frames:v 1 "$d/timeline.png"
+          ffmpeg -y -hide_banner -loglevel error -i "$d/fist11-r1.mp4" -vf 'fps=3,scale=320:180,tile=5x4:nb_frames=20' -frames:v 1 "$d/timeline.png"
+          # R1: no GIF; native Godot MP4 is the only animation evidence
           sha256sum "$d/"*.mp4 "$d/"*.png > "$d/SHA256SUMS.txt"
-          rm "$d/fist11-r2.avi"
-      - name: Upload exact SHA native VFX and provenance (art gate manual)
+          rm "$d/fist11-r1.avi"
+      - name: Upload exact-SHA art technical evidence; owner gate manual
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: vfx-fist11-r2-compact-fist-native
+          name: vfx-fist11-r1-v4-native
           retention-days: 14
           if-no-files-found: warn
           path: |
@@ -111,5 +114,5 @@ jobs:
             /tmp/vfx-fist11/*.json
             /tmp/vfx-fist11/*.log
             /tmp/vfx-fist11/*.png
-            /tmp/vfx-fist11/*.webp
             /tmp/vfx-fist11/*.mp4
+            /tmp/vfx-fist11/*.webp

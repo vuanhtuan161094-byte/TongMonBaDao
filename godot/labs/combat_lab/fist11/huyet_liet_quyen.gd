@@ -1,70 +1,77 @@
 extends Control
-## FIST11 Huyet Liet Quyen: original first-party nether fist VFX.
-## LAB preview only. No damage writes / no rig / no GIF / no actual Combat V2 receipts.
+## FIST11 / Huyet Liet Quyen, Huyet Quyen Human active_01.
+## First-party DERIVATIVE painted art. View-only Combat Lab, not Combat V2.
+## Source-authoritative Nether single-target DAMAGE; fake LAB impact has no HP.
 const SKILL_ID := "tmb.skill.fist.huyet_quyen.active_01.human"
-const ART_REVISION := "R2_COMPACT_CRIMSON_FIST"
+const ART_REVISION := "R1_PAINTED_CRIMSON_FIST"
 const EFFECT := "damage"
 const ELEMENT := "nether"
 const SHAPE := "single_target"
 const TARGET_LIMIT := 1
-const DECLARED_RANGE := 2.8
 const CAST_TIME := 0.45
 const COOLDOWN := 8.0
-const PROJECTILE_SPEED := 8.0
-const DECLARED_DURATION := 0.0
+const DECLARED_RANGE := 2.8
 const DECLARED_RADIUS := 0.0
-const CHARGE_END := 0.45
-const RELEASE_END := 0.45
-const CONTACT_AT := 0.80
-const IMPACT_END := 1.13
-const FADE_END := 1.36
-const LOOP_END := 1.85
-const ATLAS_RAW_RGBA_BYTES := 9109504
+const DECLARED_DURATION := 0.0
+const DECLARED_POWER := 0.0
+const DECLARED_PROJECTILE_SPEED := 8.0
+const FLIGHT_START := 0.45
+const CONTACT_TIME := 0.82 # LAB synthetic; not a Combat V2 receipt
+const CONTACT_END := 1.32
+const FADE_END := 1.54
+const LOOP_END := 2.20
+const RAW_RGBA_BUDGET := 10158080
 const BG: Texture2D = preload("res://labs/combat_lab/poison05/remake_r6/assets/immortal_valley.svg")
 const IDLE: Texture2D = preload("res://labs/character_family/assets/nu_doc_tu_v4_candidate/idle_4dir_APPROVED_UNCHANGED.png")
 const WALK: Texture2D = preload("res://labs/character_family/assets/nu_doc_tu_v4_candidate/walk_4dir_APPROVED_UNCHANGED.png")
 const CHARGE: Texture2D = preload("res://labs/combat_lab/fist11/assets/generated/f11_charge.png")
-const FLIGHT: Texture2D = preload("res://labs/combat_lab/fist11/assets/generated/f11_flight_fist.png")
+const FLIGHT: Texture2D = preload("res://labs/combat_lab/fist11/assets/generated/f11_blood_fist.png")
 const CONTACT: Texture2D = preload("res://labs/combat_lab/fist11/assets/generated/f11_contact.png")
-const CASTER_START := Vector2(445.0,551.0)
-const ENEMY_START := Vector2(810.0,551.0)
+const CASTER_START := Vector2(436.0, 551.0)
+const FOE_START := Vector2(786.0, 551.0)
 @export var vfx_only_benchmark := false
 var elapsed := 0.0
 var paused := false
 
 static func phase_at(t: float) -> String:
-    if t < CHARGE_END: return "charge"
-    if t < CONTACT_AT: return "flight"
-    if t < FADE_END: return "contact_and_fade"
+    if t < CAST_TIME: return "gather_blood_qi"
+    if t < CONTACT_TIME: return "single_target_blood_fist_flight"
+    if t < CONTACT_END: return "lab_only_impact"
+    if t < FADE_END: return "red_ink_dissipate"
     return "idle"
 
 static func charge_alpha(t: float) -> float:
-    if t < 0.0 or t >= RELEASE_END: return 0.0
-    return smoothstep(0.02,0.30,t)*(1.0-smoothstep(.39,RELEASE_END,t))
+    if t<0.0 or t>=CAST_TIME:return 0.0
+    return smoothstep(0.0,0.15,t)*(1.0-smoothstep(0.37,CAST_TIME,t))
 
-static func flight_at(t: float) -> float:
-    return clampf((t-RELEASE_END)/(CONTACT_AT-RELEASE_END),0.0,1.0)
+static func flight_alpha(t: float) -> float:
+    if t < FLIGHT_START or t>=CONTACT_TIME:return 0.0
+    return smoothstep(FLIGHT_START,FLIGHT_START+0.045,t)*(1.0-smoothstep(CONTACT_TIME-0.09,CONTACT_TIME,t))
 
-static func impact_alpha(t: float) -> float:
-    if t<CONTACT_AT or t>=FADE_END:return 0.0
-    return smoothstep(CONTACT_AT,CONTACT_AT+.055,t)*(1.0-smoothstep(IMPACT_END,FADE_END,t))
+static func contact_alpha(t: float) -> float:
+    if t < CONTACT_TIME or t>=CONTACT_END:return 0.0
+    return smoothstep(CONTACT_TIME,CONTACT_TIME+0.035,t)*(1.0-smoothstep(CONTACT_TIME+0.14,CONTACT_END,t))
 
 static func caster_at(t: float) -> Vector2:
-    return CASTER_START+Vector2(16.0*smoothstep(.10,.68,t),0.0)
+    return CASTER_START+Vector2(31.0*smoothstep(0.38,0.94,t)-17.0*smoothstep(1.08,1.62,t),0.0)
 
-static func enemy_at(t: float) -> Vector2:
-    return ENEMY_START+Vector2(-42.0*smoothstep(.23,.84,t)+9.0*smoothstep(1.02,1.37,t),0.0)
+static func foe_at(t: float) -> Vector2:
+    # Independently walking, nonstationary target throughout charge/contact.
+    return FOE_START+Vector2(-56.0*smoothstep(.18,1.05,t)+15.0*smoothstep(1.35,1.90,t),0.0)
 
-static func target_at(index: int,t: float) -> Vector2:
+static func target_position(index: int,t: float) -> Vector2:
     if index!=0:return Vector2(-10000.0,-10000.0)
-    return enemy_at(t)
-
-static func hand_at(t: float) -> Vector2:
-    return caster_at(t)+Vector2(45.0,-118.0)
+    return foe_at(t)
 
 static func contact_at(index: int,t: float) -> Vector2:
-    if index!=0:return Vector2(-10000.0,-10000.0)
-    return target_at(index,t)+Vector2(0.0,-111.0)
+    return target_position(index,t)+Vector2(0.0,-103.0)
+
+static func punch_at(t: float) -> Vector2:
+    var p:=clampf((t-FLIGHT_START)/(CONTACT_TIME-FLIGHT_START),0.,1.)
+    var power:=smoothstep(0.0,1.0,p)
+    var source:=caster_at(t)+Vector2(43.0,-102.0)
+    var dest:=contact_at(0,t)-Vector2(14.0,0.0)
+    return source.lerp(dest,power)
 
 func _ready() -> void:
     custom_minimum_size=Vector2(1280,720)
@@ -72,65 +79,57 @@ func _ready() -> void:
     set_process(true)
     queue_redraw()
     if not vfx_only_benchmark:
-        print("VFX_FIST11_R2_READY skill=",SKILL_ID," effect=damage target_cap=1 moving=true view_only=true no_rig=true no_gif=true")
+        print("VFX_FIST11_R1_READY skill=",SKILL_ID," impact=SIMULATED_LAB_ONLY nether=true cap=1 no_rig=true")
 
 func _process(delta: float) -> void:
     if paused:return
-    elapsed=fposmod(elapsed+maxf(delta,0.0),LOOP_END)
+    elapsed=fposmod(elapsed+maxf(0.,delta),LOOP_END)
     queue_redraw()
 
 func _unhandled_input(event: InputEvent) -> void:
     if vfx_only_benchmark or not event is InputEventKey or not event.pressed or event.echo:return
-    if event.keycode==KEY_SPACE:
-        elapsed=0.0
+    if event.keycode == KEY_SPACE:
+        elapsed=0.
         queue_redraw()
     elif event.keycode==KEY_P:paused=not paused
 
-func _frame(tex: Texture2D,k: int,cell: float,at: Vector2,scale: float,alpha: float) -> void:
-    var col:=k%4
-    var row:=int(k/4)
-    draw_set_transform(at,0.0,Vector2.ONE*scale)
-    draw_texture_rect_region(tex,Rect2(-Vector2.ONE*cell*.5,Vector2.ONE*cell),
-        Rect2(float(col)*cell,float(row)*cell,cell,cell),Color(1,1,1,clampf(alpha,0,1)))
+func _frame(tex: Texture2D,frame: int, cell: float, pos: Vector2, scale_factor: float, opacity: float, anchor: Vector2) -> void:
+    draw_set_transform(pos,0.0,Vector2.ONE*scale_factor)
+    draw_texture_rect_region(tex,Rect2(-anchor,Vector2(cell,cell)),Rect2(float(frame%4)*cell,float(int(frame/4))*cell,cell,cell),Color(1.,1.,1.,clampf(opacity,0.,1.)))
     draw_set_transform(Vector2.ZERO,0.0,Vector2.ONE)
 
-func _actor(feet: Vector2,tint: Color,walk: bool) -> void:
-    var tex:=WALK if walk else IDLE
-    var cells:=maxi(1,int(tex.get_width()/320))
-    var col:=int(floor(elapsed*7.0))%cells if walk else 0
-    draw_texture_rect_region(tex,
-        Rect2(feet-Vector2(68.0,151.0),Vector2(136.0,169.0)),
-        Rect2(float(col)*320.0,0.0,320.0,384.0),tint)
+func _actor(feet: Vector2, tint: Color, walking: bool) -> void:
+    var tex:=WALK if walking else IDLE
+    var columns:=maxi(1,int(tex.get_width()/320))
+    var idx:=int(floor(elapsed*7.0))%columns if walking else 0
+    draw_texture_rect_region(tex,Rect2(feet-Vector2(68,151),Vector2(136,169)),Rect2(float(idx)*320.0,0,320,384),tint)
 
 func _draw() -> void:
     var t:=elapsed
     var caster:=caster_at(t)
-    var victim:=enemy_at(t)
+    var foe:=foe_at(t)
+    var charge:=charge_alpha(t)
+    var flight:=flight_alpha(t)
+    var hit:=contact_alpha(t)
     if not vfx_only_benchmark:
         draw_texture_rect(BG,Rect2(0,0,1280,720),false,Color.WHITE)
-        draw_rect(Rect2(0,0,1280,75),Color("14121e",.80))
-    if t<RELEASE_END:
-        var charge:=charge_alpha(t)
-        if charge>.005:
-            var k:=clampi(int(floor(t/RELEASE_END*8.0)),0,7)
-            _frame(CHARGE,k,256.0,hand_at(t),.69+.08*t/RELEASE_END,charge)
-    if t>=RELEASE_END and t<CONTACT_AT:
-        var q:=flight_at(t)
-        var tip:=hand_at(RELEASE_END).lerp(contact_at(0,t),smoothstep(0.0,1.0,q))
-        var k:=clampi(int(floor(q*12.0)),0,11)
-        _frame(FLIGHT,k,320.0,tip,.91+.11*q,.92)
-    var burst:=impact_alpha(t)
-    if burst>.006:
-        var k:=clampi(int(floor((t-CONTACT_AT)/(FADE_END-CONTACT_AT)*8.0)),0,7)
-        _frame(CONTACT,k,256.0,contact_at(0,t),1.09,burst)
+        draw_rect(Rect2(0,0,1280,72),Color("14141f",.76))
+    if charge>.002:
+        var k:=clampi(int(floor(t/CAST_TIME*8.)),0,7)
+        _frame(CHARGE,k,256.,caster+Vector2(29,-100),.78,charge,Vector2(128,128))
+    if flight>.002:
+        var k:=clampi(int(floor((t-FLIGHT_START)/(CONTACT_TIME-FLIGHT_START)*12.)),0,11)
+        _frame(FLIGHT,k,256.,punch_at(t),1.17,flight,Vector2(128,128))
+    var moving_caster:=t>=.38 and t<.94
+    var moving_foe:=t>=.18 and t<1.05 or t>=1.35 and t<1.90
     if not vfx_only_benchmark:
-        _actor(caster,Color.WHITE,t>=.12 and t<.70)
-        _actor(victim,Color("c4c6d6"),t>=.22 and t<1.22)
-        draw_string(ThemeDB.fallback_font,Vector2(28,32),
-            "HUYET LIET QUYEN / HUYET QUYEN",HORIZONTAL_ALIGNMENT_LEFT,-1,23,Color("ffe1dc"))
-        draw_string(ThemeDB.fallback_font,Vector2(28,57),
-            "FIST11 R2 | COMPACT CRIMSON FIST | SINGLE TARGET | LAB ONLY",
-            HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("f0a3b2"))
-        draw_string(ThemeDB.fallback_font,Vector2(28,684),
-            "GODOT 4.7.2 | NETHER DAMAGE VISUAL ONLY | WALK TRACKING | NO RIG",
-            HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("ecbec7"))
+        _actor(caster,Color.WHITE,moving_caster)
+        _actor(foe,Color("b8c4d5"),moving_foe)
+    # LAB-only demonstration of one moving foe contact; DOES NOT alter HP.
+    if hit>.002:
+        var k:=clampi(int(floor((t-CONTACT_TIME)/(CONTACT_END-CONTACT_TIME)*10.)),0,9)
+        _frame(CONTACT,k,320.,contact_at(0,t),1.09,hit,Vector2(160,160))
+    if not vfx_only_benchmark:
+        draw_string(ThemeDB.fallback_font,Vector2(26,33),"HUYET LIET QUYEN / FIST11",HORIZONTAL_ALIGNMENT_LEFT,-1,22,Color("ffe5eb"))
+        draw_string(ThemeDB.fallback_font,Vector2(26,56),"R1 | BLOOD QI -> SINGLE FIST -> CONTACT / HUMAN",HORIZONTAL_ALIGNMENT_LEFT,-1,12,Color("f5a9ba"))
+        draw_string(ThemeDB.fallback_font,Vector2(26,681),"GODOT 4.7.2 | NETHER DAMAGE 1 TARGET | MOVING WALK | LAB ONLY / NO RIG",HORIZONTAL_ALIGNMENT_LEFT,-1,12,Color("f2d4e1"))

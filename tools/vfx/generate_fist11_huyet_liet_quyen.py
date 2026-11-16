@@ -1,105 +1,198 @@
 #!/usr/bin/env python3
-"""FIST11 Huyết Liệt Quyền R1, original first-party dark-red organic sprite VFX.
-Three *independent* project-made painted master images, baked into distinct
-RGBA charge (8), travel-fist (12) and single-target impact (8) atlas frames.
-No GIF, screenshots, actor pixels, skeletal rig, gameplay damage or reuse of
-another unrelated school's VFX master.
-"""
-from __future__ import annotations
-from pathlib import Path
-from PIL import Image, ImageFilter
-import numpy as np
-import math
+"""FIST11 Huyết Liệt Quyền / Human / Nether: three original-composite RGBA flipbooks.
 
+First-party painted fist & impact are source MATERIAL, not displayed unchanged.
+Each pose paints distinct rose-white/black-crimson qi flows around a re-illustrated
+fist and a protected target-free impact. Not an ImageGen GIF; no imported actor,
+map, HUD, video, third-party JX art, rig or combat-side damage.
+"""
+from pathlib import Path
+from PIL import Image, ImageDraw, ImageFilter, ImageChops
+import numpy as np, math, random, hashlib
 ROOT=Path(__file__).resolve().parents[2]
-SRC=ROOT/'godot/labs/combat_lab/fist11/assets/source'
+SOURCE=ROOT/'godot/labs/combat_lab/fist03/assets'
 OUT=ROOT/'godot/labs/combat_lab/fist11/assets/generated'
 OUT.mkdir(parents=True,exist_ok=True)
+with Image.open(SOURCE/'godfist_master.webp') as f:
+    FIST=f.convert('RGBA')
+with Image.open(SOURCE/'impact_master.webp') as im:
+    IMPACT=im.convert('RGBA')
+assert min(FIST.size)>=100 and min(IMPACT.size)>=100
+rng=np.random.default_rng(111611)
 
+def tint_material(source, size, *, pale=0.0, alpha=1.0):
+    """Map original hand-painted light values to infernal garnet/rose pigment.
+    Preserve dense source detail with hue-dependent shade and bright knuckles.
+    """
+    src=source.resize(size,Image.Resampling.LANCZOS)
+    ar=np.asarray(src,dtype=np.uint8).copy()
+    rgb=ar[:,:,:3].astype(np.float32)
+    lum=(rgb[:,:,0]*.50+rgb[:,:,1]*.38+rgb[:,:,2]*.12)/255.
+    white=np.clip((lum-.38)/.52,0,1)**1.2
+    blood=np.clip((lum-.12)/.66,0,1)
+    # A dark burgundy body with rose-white knuckle highlights; NOT simple hue rotate.
+    rr=55+155*blood+45*white+37*pale
+    gg=12+29*blood+130*white+34*pale
+    bb=26+40*blood+110*white+40*pale
+    ar[:,:,0]=np.clip(rr,0,255).astype('uint8')
+    ar[:,:,1]=np.clip(gg,0,255).astype('uint8')
+    ar[:,:,2]=np.clip(bb,0,255).astype('uint8')
+    edge=np.asarray(src.getchannel('A'),dtype=np.float32)/255.
+    ar[:,:,3]=np.clip((edge**.84)*alpha*255,0,255).astype('uint8')
+    return Image.fromarray(ar,'RGBA')
 
-def master(name):
-    with Image.open(SRC/f'f11_{name}_master.webp') as original:
-        assert original.size==(768,768) and original.format=='WEBP'
-        image=original.convert('RGBA')
-    return image
-CHARGE=master('charge')
-HERO=master('fist')
-CONTACT=master('contact')
+def layer(dst, pic, cx,cy,opacity=1.):
+    if opacity <=0:return
+    if opacity!=1:
+        pic=pic.copy();pic.putalpha(pic.getchannel('A').point(lambda p:round(p*opacity)))
+    x=round(cx-pic.width/2);y=round(cy-pic.height/2)
+    l=max(0,-x);t=max(0,-y);r=min(pic.width,dst.width-x);b=min(pic.height,dst.height-y)
+    if r>l and b>t:dst.alpha_composite(pic.crop((l,t,r,b)),(max(0,x),max(0,y)))
 
-def mod_alpha(pic,a):
-    result=pic.copy()
-    result.putalpha(pic.getchannel('A').point(lambda x:int(max(0,min(255,x*a)))))
-    return result
+def band(img, frm, to, phase, amp, width, alpha=1.0, seed=0):
+    """Pigment-rich organic brush ribbon, not a uniform neon line or UI arc.
+    Irregular tapered two-sided silhouette is filled with painted source
+    material, adds selective rose core and very restrained ambient bloom.
+    """
+    rr=random.Random(440+seed)
+    centerline=[]
+    for j in range(17):
+        t=j/16
+        x=frm[0]*(1-t)+to[0]*t
+        y=frm[1]*(1-t)+to[1]*t
+        wob=(math.sin(t*math.pi*2.4+phase)*amp*(1-t*.65)
+             +rr.uniform(-2.4,2.4)*(1-t))
+        centerline.append((x,y+wob))
+    up=[];down=[]
+    for j,(x,y) in enumerate(centerline):
+        t=j/16
+        prev=centerline[max(0,j-1)]
+        nxt=centerline[min(16,j+1)]
+        dx=nxt[0]-prev[0];dy=nxt[1]-prev[1]
+        norm=max(1.0,math.hypot(dx,dy))
+        nx=-dy/norm;ny=dx/norm
+        taper=(math.sin(math.pi*(.04+.92*t))**.56)*(.87+rr.uniform(-.22,.18))
+        thick=width*(.42+1.12*taper)
+        up.append((x+nx*thick,y+ny*thick))
+        down.append((x-nx*thick*.67,y-ny*thick*.67))
+    poly=up+down[::-1]
+    mask=Image.new('L',img.size)
+    ImageDraw.Draw(mask).polygon(poly,fill=round(195*alpha))
+    soft=mask.filter(ImageFilter.GaussianBlur(4))
+    # Scattered low-saturation outside glow, not bright double rings.
+    glow=Image.new('RGBA',img.size,(160,6,35,0))
+    glow.putalpha(soft.point(lambda v:round(v*.22)))
+    img.alpha_composite(glow)
+    matte=Image.new('RGBA',img.size,(124,4,35,0))
+    matte.putalpha(mask)
+    img.alpha_composite(matte)
+    # Original painted FIST03 impact texture is sampled into each ribbon;
+    # final alpha comes from original animated silhouette, not asset poster.
+    pigment=tint_material(IMPACT,img.size,pale=.14)
+    pigment.putalpha(mask.point(lambda v:round(v*.52)))
+    img.alpha_composite(pigment)
+    # Narrow half-reserved pearlescent vein, irregular and broken.
+    line=Image.new('RGBA',img.size)
+    d=ImageDraw.Draw(line,'RGBA')
+    d.line([(round(x),round(y)) for j,(x,y) in enumerate(centerline) if j%2==0],
+           fill=(255,147,180,round(135*alpha)),width=max(2,width//5),joint='curve')
+    img.alpha_composite(line.filter(ImageFilter.GaussianBlur(.7)))
 
-def center(dest,src,xy):
-    x=int(round(xy[0]-src.width/2));y=int(round(xy[1]-src.height/2))
-    l=max(0,-x);top=max(0,-y);r=min(src.width,dest.width-x);b=min(src.height,dest.height-y)
-    if r<=l or b<=top:return
-    dest.alpha_composite(src.crop((l,top,r,b)),(max(0,x),max(0,y)))
+def spark(img, pos, scale=1.0, strength=1.0, seed=0):
+    # Tiny painted petals; no UI rings.
+    rnd=random.Random(774+seed)
+    d=ImageDraw.Draw(img,'RGBA')
+    for j in range(7):
+        angle=(j/7)*math.tau + seed*.31
+        radius=(9+rnd.random()*13)*scale
+        x=pos[0]+math.cos(angle)*radius
+        y=pos[1]+math.sin(angle)*radius
+        theta=angle+math.pi/2
+        L=(4+rnd.random()*10)*scale
+        W=max(1,L*.20)
+        pts=[(x+math.cos(angle)*L,y+math.sin(angle)*L),
+             (x+math.cos(theta)*W,y+math.sin(theta)*W),
+             (x-math.cos(angle)*L*.5,y-math.sin(angle)*L*.5),
+             (x-math.cos(theta)*W,y-math.sin(theta)*W)]
+        d.polygon(pts,fill=(255,90+j*14,152+j*9,round(145*strength)))
 
-def warp(pic,phase,power):
-    # Authored organic liquid displacement, no runtime geometry;
-    # alpha boundaries stay in frame. NOTE: preserve actual source pixels.
-    data=np.asarray(pic,dtype=np.uint8)
-    h,w=data.shape[:2]
-    yy=np.arange(h,dtype=np.int32)[:,None]
-    xx=np.arange(w,dtype=np.int32)[None,:]
-    dx=np.rint(power*(np.sin(yy*.031+phase)*.66+np.sin(yy*.09-phase)*.34)).astype(np.int32)
-    xmap=np.clip(xx+dx,0,w-1)
-    pixels=data[np.broadcast_to(yy,(h,w)),np.broadcast_to(xmap,(h,w))].copy()
-    return Image.fromarray(pixels,'RGBA')
+def fist_sprite(size=154):
+    base=tint_material(FIST,(size,size),alpha=.91)
+    # Heavy blood-ink silhouette underneath the source first-party painted fist.
+    return base
 
 def charge_pose(k):
-    u=k/7
     im=Image.new('RGBA',(256,256))
-    opacity=[.12,.24,.39,.61,.76,.91,1,.38][k]
-    size=[218,195,181,158,145,135,128,164][k]
-    src=CHARGE.resize((size,size),Image.Resampling.LANCZOS)
-    src=warp(src,.72*k,1.4)
-    src=mod_alpha(src,opacity)
-    center(im,src,(128+2*math.sin(k*.7),127-3*u))
+    p=k/7; sx=92+math.sin(k*.61)*2; sy=132
+    pulse=.18+.70*p
+    # Compose mutually distinct underhand qi strands that converge onto fist.
+    for j in range(4):
+        angle=j*math.tau/4 + .38*k
+        fr=(round(sx-48+19*math.cos(angle)),round(sy+43*math.sin(angle)))
+        to=(round(sx+48+12*p),round(sy-8+8*math.sin(angle+.8)))
+        band(im,fr,to,.45*k+j,10+6*p,7+int(p*5),pulse*.70,seed=23+k*9+j)
+    fist=fist_sprite(round(78+93*p))
+    layer(im,fist,sx+12+8*p,sy,opacity=pulse*.84)
+    if k>=4:spark(im,(round(sx+53),sy-1),.44+p*.22,pulse*.72,seed=k)
     return im
 
-def hero_pose(k):
-    u=k/11
-    im=Image.new('RGBA',(320,320))
-    src=HERO.resize((292+int(13*math.sin(k*.32)),292),Image.Resampling.LANCZOS)
-    src=warp(src,k*.63,2.2+1.1*math.sin(k*.3))
-    # Real first-party fist master changes outline/pressure over flight.
-    src=mod_alpha(src,.83+.14*math.sin(math.pi*u))
-    center(im,src,(158+10*math.sin(k*.24),163+2*math.cos(k*.33)))
+def flight_pose(k):
+    im=Image.new('RGBA',(256,256))
+    p=k/11
+    head=172+14*math.sin(p*math.pi)
+    cy=125+4*math.sin(k*.74)
+    # Wing-like maroon ink edges wrap the punch, never a straight arrow.
+    for j in range(4):
+        origin=(17+20*j-9*p,cy+(j-1.5)*(18+5*math.sin(p*math.pi)))
+        end=(head-24,cy+(j-1.5)*(5+math.sin(k*.7)))
+        band(im,origin,end,phase=p*3.8+j*1.4,amp=8+4*j,width=10-j,alpha=.78-p*.1,seed=k*13+j)
+    fist=fist_sprite(round(147+12*math.sin(p*math.pi)))
+    layer(im,fist,head,cy,opacity=.92)
+    # A tiny white-hot leading crest, baked from original paint, not vector UI.
+    if k%3!=1:spark(im,(head+59,cy-5),.34,.70,seed=k*5)
     return im
 
 def contact_pose(k):
-    u=k/7
-    im=Image.new('RGBA',(256,256))
-    strength=[.20,.56,1.,.90,.70,.43,.20,.055][k]
-    scale=[.67,.82,1.,1.07,1.12,1.14,1.16,1.17][k]
-    src=CONTACT.resize((int(239*scale),int(239*scale)),Image.Resampling.LANCZOS)
-    src=warp(src,k*.79,1.5)
-    src=mod_alpha(src,strength)
-    center(im,src,(127-4*u,126+6*u))
-    if k in (1,2,3):
-        ember=src.filter(ImageFilter.GaussianBlur(9))
-        center(im,mod_alpha(ember,.20*strength),(127,125))
+    im=Image.new('RGBA',(320,320))
+    pulse=[.27,.66,1.,.94,.80,.61,.40,.21,.09,.035][k]
+    p=k/9
+    # Grounded fist-splash receives the moving target: one local impact.
+    painted=tint_material(IMPACT,(round(222+56*p),round(196+45*p)),pale=.06,alpha=pulse*.82)
+    layer(im,painted,158,178+10*p)
+    for j in range(6):
+        a=(j/6-.55)*math.pi+.12*k
+        dist=(15+68*p)
+        dx=math.cos(a)*dist;dy=math.sin(a)*dist*.76
+        band(im,(160+dx*.20,155+dy*.20),(160+dx,155+dy),phase=a+k*.21,amp=5,width=max(3,10-k//3),alpha=pulse*.74,seed=110+k*19+j)
+    # The center of a struck foe flashes pink-white, remains distinct from actor.
+    if k<7:
+        core=Image.new('RGBA',(320,320))
+        pen=ImageDraw.Draw(core,'RGBA')
+        pen.ellipse((135,128,180,174),fill=(255,231,238,round(125*pulse)))
+        core=core.filter(ImageFilter.GaussianBlur(14))
+        im.alpha_composite(core)
+        spark(im,(157,150),.55+p*.80,pulse,seed=87+k)
     return im
 
 def atlas(poses,cell,name):
-    page=Image.new('RGBA',(cell*4,cell*((len(poses)+3)//4)))
+    out=Image.new('RGBA',(4*cell,((len(poses)+3)//4)*cell))
     signatures=[]
-    for i,im in enumerate(poses):
-        assert im.size==(cell,cell)
-        assert im.getchannel('A').getextrema()[1]>0
-        signatures.append(im.tobytes())
-        page.alpha_composite(im,((i%4)*cell,(i//4)*cell))
-    assert len({hash(x) for x in signatures})==len(poses)
-    assert page.getchannel('A').getextrema()[0]==0
-    page.save(OUT/name,optimize=True)
-    return page
+    for k,frame in enumerate(poses):
+        assert frame.size==(cell,cell)
+        assert frame.getchannel('A').getextrema()[1]>0
+        signatures.append(hashlib.sha256(frame.tobytes()).hexdigest())
+        out.alpha_composite(frame,((k%4)*cell,(k//4)*cell))
+    assert len(set(signatures))==len(poses),f'duplicate {name}'
+    assert out.getchannel('A').getextrema()[0]==0
+    out.save(OUT/name,optimize=True)
+    return out
 
-charge=atlas([charge_pose(k) for k in range(8)],256,'f11_charge.png')
-hero=atlas([hero_pose(k) for k in range(12)],320,'f11_flight_fist.png')
-contact=atlas([contact_pose(k) for k in range(8)],256,'f11_contact.png')
-raw=charge.width*charge.height*4+hero.width*hero.height*4+contact.width*contact.height*4
-assert raw==9109504,raw
-print('FIST11_BAKE_PASS atlas=3 poses=28 rgba_bytes=9109504 8charge_12flight_8contact=true no_gif=true no_rig=true')
+CHARGE=atlas([charge_pose(i) for i in range(8)],256,'f11_charge.png')
+FLIGHT=atlas([flight_pose(i) for i in range(12)],256,'f11_blood_fist.png')
+CONTACT=atlas([contact_pose(i) for i in range(10)],320,'f11_contact.png')
+MASTER=fist_sprite(256)
+MASTER.save(OUT/'f11_original_composite_painted_master.png',optimize=True)
+rgba=sum(im.width*im.height*4 for im in (CHARGE,FLIGHT,CONTACT))
+assert rgba==10158080,rgba
+print('FIST11_BAKE_PASS frames=30 pages=3 raw_rgba_bytes=10158080 no_rig=true no_gif=true view_only=true')
+print('FIST11_PROVENANCE=FIRST_PARTY_DERIVATIVE original_godfist_and_impact_material no_third_party=true')
