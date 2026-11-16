@@ -10,6 +10,7 @@ those material strokes, not a resized HF02 effect or simple vector HUD ring.
 from pathlib import Path
 from PIL import Image, ImageFilter
 import numpy as np, base64, io, math, hashlib
+from hf02_r5_source_painted import source_flame  # audited bright-source alpha unmatting
 
 ROOT=Path(__file__).resolve().parents[2]
 LAB=ROOT/"godot/labs/combat_lab/talisman09"
@@ -132,7 +133,7 @@ def atlas(frames,w,h):
 def main():
     OUT.mkdir(parents=True,exist_ok=True)
     paper=source(PAPER,(96,132));dragon=source(DRAGON,(160,94))
-    fire=source(FIRE,(320,91))
+    fire=source_flame()  # never composite the opaque dark poster matte
     items={
       "tal09_r1_charge.webp":(atlas([charge(i,fire,paper) for i in range(12)],320,320),320,320,12),
       "tal09_r1_phoenix.webp":(atlas([phoenix(i,dragon,fire) for i in range(16)],512,320),512,320,16),
