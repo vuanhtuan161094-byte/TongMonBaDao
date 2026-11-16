@@ -49,3 +49,12 @@ Dựng sân thử **Godot 4.7.2 Compatibility 1280×720** dùng Nữ Kiếm Tu V
 - **Static transfer checks: PASS** (240 references resolvable within transfer ZIP; 8 atlas SHA checked; ZIP CRC PASS). **Godot 4.7.2 import/scene/Windows physical QA/native 1280×720 movie: NOT_RUN**. **No real runtime hit receipts / HP/status** by design.
 - Controls: WASD/arrows hero move; 3 real moving monster SpriteFrames (if repo asset installed); click/TAB lock target; 1–7 owner-approved visual packs; SPACE attack; M toggle mobs. Death_Left absent; known Cast/Hit clipping unchanged.
 - Never mark runtime or owner review PASS until a real native Godot run and human inspection at exact source SHA.
+
+## 16 November 2026 — Installer R2 hotfix (supersedes R1 launcher only)
+
+- Owner reported Windows PowerShell 5.1 parse failure in original `INSTALL_AND_RUN.ps1` (garbled Vietnamese, `TerminatorExpectedAtEndOfString`, unmatched brace). Root cause: original PS1 UTF-8 without BOM when read under Windows legacy ANSI settings.
+- **R2 full Library ZIP:** `/TMB-Character-Art/AS_CHAR49_V10_POISON_TALISMAN_MOVING_LAB_R2_INSTALLER_FIX_20261116.zip` — 30,699,569 bytes, SHA256 `ffb065aa26d77661138bfc1bfa94e7bd5c6f0e1a7838d0555a45d76c27fcb21b`.
+- **R2 patch-only Library ZIP:** `/TMB-Character-Art/AS_CHAR49_INSTALLER_R2_PATCH_ONLY_20261116.zip` — 2,540 bytes, SHA256 `a6edcdbfb76119b181128aff3a52662848e0b9a3d83823527d11b6aed693c56a`. Extract into original R1 package directory, overwrite `CHAY_THU_VFX.cmd` and `INSTALL_AND_RUN.ps1`; then run CMD.
+- Fixed `INSTALL_AND_RUN.ps1` is ASCII-only and includes UTF-8 BOM; launcher runs `powershell.exe -NoProfile -STA -ExecutionPolicy Bypass -File`. Accepts either checkout root or `godot` directory; backs up **only** the isolated prior QA Lab when re-run.
+- **Static checks:** replacement PS1 ASCII source/BOM + balanced quotes/braces + manifest SHA verified; full R2 ZIP CRC PASS; all original **240 actor PNG** and **8 R6/R2 VFX WEBP atlases** unchanged byte-for-byte, original `playtest.gd`, scene and FX bridge unmodified.
+- **Native Windows PowerShell parsing / Godot boot / moving actor rendering: NOT_RUN** in the build environment; do not claim integration QA or visual PASS. Preserve PR #72 Draft and gameplay gates.
