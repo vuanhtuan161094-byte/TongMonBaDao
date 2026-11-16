@@ -31,3 +31,12 @@ Date: 2026-11-16. Branch integration/pve-p0-playable-ui-20261103; PR #72 Draft.
 ## R2 native QA and R3 scale/lighting rework
 - R2 exact SHA \`decf66d441153a7c2b0922a218f0a4efffd993ce\`, Actions #43822930260 technical SUCCESS: full 333-frame 1280×720 Godot movie, 17 1× frames, V4 packet/asset/3 native preflight proofs and strict focused PASS. Manual 1× frames: flat yellow capsule outlines fixed; still undersized cast and weak 4s sign/local block. ART_SELF_REWORK.
 - R3 adjusts only genuine existing atlas's hot vein emission (not whole-rock glow), LAB cast scale 1.13→1.43, status 1.11→1.29, protected-hit contact .95→1.22. 24 poses and 6.25MiB unchanged. No runtime generated circles, rig, fake damage or PvE integration. Another native exact-SHA film is mandatory before judging.
+
+
+## R3 exact-SHA outcome and human 1× visual gate — 2026-11-16
+- Tested exact code SHA: \`a3d2c7747278152383d3b030e6c33b1dbd169af4\`; workflow [Actions #43823508990](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/43823508990) **SUCCESS**.
+- Reproducible V4 packet/atlas/evidence validations PASS; Godot 4.7.2 official strict parse and focused moving-guard contract \`VFX_FIST09_FOCUSED_RESULT=PASS failures=0\`; 333-frame true native 1280×720 movie (5.55s at encoded 60 fps) and 17 timestamped PNGs. Original project-owned 24 frames / 3 atlases / 6,553,600 raw RGBA bytes.
+- **Manual native 1× review:** 0.25/0.42/0.59 guardian looks like three nearly parallel jagged luminous stone spikes, not yet a distinguished mountain shield; 0.84/2.22 sustained buff is two tiny detached marks difficult to perceive in actual battle; 1.34/3.19 protected contact is an oversized diagonal flare, lacking a crisp local impact. Real actors and ground composition readable, but visual identity/impact still below owner JX-quality target.
+- **ART_SELF_FAIL / ART_REWORK_REQUIRED**, \`OWNER_VISUAL_PENDING\`, \`PVE_INTEGRATION_HOLD\`, \`V63_OFF\`, \`PHYSICAL_ANDROID_PENDING\`. Do not promote to finished/approved art from technical CI success, and do not pretend an encoded 60-fps fixed-clock video proves Android FPS.
+- Verified downloadable GitHub workflow artifact: \`vfx-fist09-r1-v4-native\` (historical name despite R3 code) artifact #14204939737, contains \`fist09-r1.mp4\` (historical filename) plus PNG atlas and native times. Both filename and artifact label are legacy; **SHA and \`R3_BRIGHT_SCALE_MOUNTAIN_GUARD\` script define the actual R3 version**.
+- Owner-selected FIST08 R1 remains restored; this FIST09 review does not alter earlier skill selection.
