@@ -24,7 +24,7 @@ Generated concept posters cannot substitute for production assets or Godot evide
 
 ## Godot visual contract
 - Dedicated scene/script and source texture paths:
-- Exact 1280x720 native movie, GIF and >=8 checkpoint frames:
+- Exact 1280x720 native movie and >=8 checkpoint frames:
 - Actor/target silhouette visibility and correct hit semantics:
 - No skeletal rig, Codex, new branch, merge or unauthorized live gameplay edits.
 
@@ -76,7 +76,7 @@ State cast_time, cooldown, projectile_speed, effect, duration and hit_count sepa
 ## G4–G7 post-preflight evidence
 
 - Motion cases: stationary target; moving left/right; multiple asynchronous moving targets; fixed zone vs homing policy; screenshots/video:
-- Actual Godot 4.7.2 Compatibility MP4 1280×720, GIF/ZIP, continuous playback reviewed and >=12 useful frame timestamps (or justified fewer for short clip):
+- Actual Godot 4.7.2 Compatibility MP4 1280×720, PNG/ZIP, continuous playback reviewed and >=12 useful frame timestamps (or justified fewer for short clip):
 - Separate visual self-review (/5 each): silhouette, material, local-light/color purity, motion continuity, event timing, moving-contact, actor visibility/layering, fade, school identity. Each critical item >=4/5 before owner review:
 - Technical QA: strict import/parse/focused, frame integrity, source commit exact SHA, workflow/run/artifact paths; never infer device fps from fixed movie:
 - Distinct statuses: ART_SELF_QA_PASS/REWORK; GODOT_TECH_PASS/NOT_RUN/FAIL; OWNER_VISUAL_APPROVED/PENDING/REJECTED; PVE_INTEGRATION_HOLD; PHYSICAL_QA_PENDING:
@@ -99,23 +99,12 @@ State cast_time, cooldown, projectile_speed, effect, duration and hit_count sepa
 
 Do not export an 8–11s status-loop movie at **every** art iteration if the actual attack is only ~3s; do not shortcut genuine motion inspection or required long-duration phase behavior. Fixed 60 FPS movie frames are not sprite textures or measured physical GPU FPS. Every new skill must still be owner-reviewed and remain PvE HOLD until a separate authorization.
 
-## G2.5 optional-but-default motion GIF trial (V4.2)
+## V4.3 DIRECT VFX checklist (GIF requirement REMOVED)
 
-- GIF-first suitable for this skill? YES/NO and reason; phase duration/shape should match canonical G0:
-- Source original GIF/spritesheet, provenance, width×height, frames, frame duration, SHA-256, durable repo/library source:
-- Caster in source GIF? Is it **noncanonical illustration**, and how is it removed before integration?
-- Frame-by-frame breakdown of **charge / flight / contact / fade**; meaningful geometry and timing:
-- Extraction command, source-to-alpha atlas mapping; check body/face leakage, matte square, banding, alpha RGB halos:
-- Source GIF contact sheet and **native Godot** three phase screenshots at 1×; defects and action:
-- Sprite poses vs GIF frames vs encoded MP4 frames (report three separate counts):
-- Four-way visual projectile aiming where relevant (one atlas, no 4 artwork sets):
-- Source/atlas/technical/art/owner/PvE/physical gates all **separate**:
-
-
-## V4.2.1 GIF-only reference and original RGBA color/alpha gate
-
-- GIF reference used for movement/timing only? YES/NO. **NO direct pixel extraction / background removal from GIF into production atlases**.
-- Independently repainted transparent FX master paths, frame-by-frame pose source, saturated colored semi-transparent materials, MIX + restrained ADD:
-- Bright-background and dark-background RGB/alpha evidence (avoid black/gray fringing, muddy opacity and rectangular matte):
-- Native 1x Godot three-shot source-to-render comparison, art self gate, owner gate and exact SHA:
-- Previously attempted GIF-crop prototypes are historical rejected examples, not approved game artwork.
+- [ ] Do not generate or export a GIF unless user explicitly requests one; archived GIF tests are not production gates.
+- [ ] Canonical contract/three clocks; zero-cast attacks distinguish cosmetic motion from real gameplay time.
+- [ ] Original source-preserved RGBA colored semi-transparent materials, clear tapered energy core, no wobble/opaque smoky rectangle; approved actor stays unchanged.
+- [ ] Human/Immortal/Divine (if requested): separate actual silhouettes, trail layers, impact patterns; NOT color-only recolors and do not invent extra hit targets or statuses.
+- [ ] Native Godot charge/peak/moving-target contact 1280×720 photos, manual 1× art check incl. bright/dark background.
+- [ ] Native short Godot MP4 through complete active attack and separate timed status stills only when canonical status exists; no arbitrary full-cycle 660-frame export.
+- [ ] Exact-SHA V4 packet, technical CI, art self/owner/physical/PvE independent flags. NO RIG.
