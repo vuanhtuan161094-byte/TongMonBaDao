@@ -19,13 +19,13 @@ func _run()->void:
     check(LAB.STORM.get_size()==Vector2(2560,2304),"24 pose animated mega-seal sky constellation")
     check(LAB.RAIN.get_size()==Vector2(2560,2200),"20 pose source-painted paper rain")
     check(LAB.IMPACT.get_size()==Vector2(2560,960),"12 pose area fire burst")
-    check(LAB.FINALE.get_size()==Vector2(2560,2000),"20 new independent 640x400 source-painted fire-lotus poses")
+    check(LAB.FINALE.get_size()==Vector2(2560,2000),"20 new independent 640x400 source-painted solar-pillar flame fan poses")
     check(LAB.FINALE_POSES==20 and LAB.FINALE_START==1.80 and LAB.FINALE_END==2.74,
-        "R6 bounded visual finale must not alter catalogue or movie loop")
+        "R7 bounded visual finale must not alter catalogue or movie loop")
     check(LAB.finale_gain(1.76)==0.0 and LAB.finale_gain(2.07)>.9 and LAB.finale_gain(2.74)==0.0,
-        "R6 final hit, lotus and ash fade are one bounded visual event")
+        "R7 final hit, lotus and ash fade are one bounded visual event")
     check(LAB.finale_frame_pos(1.80)==0.0 and absf(LAB.finale_frame_pos(2.74)-19.0)<.001,
-        "R6 adjacent original sprite positions are continuous and valid")
+        "R7 adjacent original sprite positions are continuous and valid")
     check(LAB.MONSTER.has_animation("walk") and LAB.MONSTER.get_frame_count("walk")>=8,"actual moving WALK sprite")
     check(LAB.phase(.58)=="charge_and_storm" and LAB.phase(1.44)=="cosmetic_flame_rain","correct cast and rain phase")
     check(LAB.phase(1.96)=="one_circle_contact" and LAB.phase(2.38)=="residue","bounded contact and afterburn")
