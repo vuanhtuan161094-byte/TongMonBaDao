@@ -143,7 +143,7 @@ def make_block(src,k):
         part=scaled(art,(w,h)).rotate(rot,Image.Resampling.BICUBIC,expand=True)
         # clip without painting a rectangular border or colored fill
         temp=Image.new('RGBA',(S,S),(0,0,0,0));temp.paste(part,(cx-part.width//2,cy-part.height//2),part)
-        im.alpha_composite(alpha_scale(temp,(1-q)**.88*.98))
+        im.alpha_composite(alpha_scale(temp,max(.024,(1-q)**.88*.98)))
     halo=im.filter(ImageFilter.GaussianBlur(6))
     halo=alpha_scale(halo,(1-q)*.42)
     halo.alpha_composite(im)
