@@ -5,6 +5,7 @@ on:
     branches: [integration/pve-p0-playable-ui-20261103]
     paths:
       - 'tools/vfx/generate_poison_basic_human_v2.py'
+      - 'tools/qa/validate_vfx_v4_packet.py'
       - 'godot/labs/combat_lab/poison_basic_human_v2/*.gd'
       - 'godot/labs/combat_lab/poison_basic_human_v2/*.tscn'
       - 'godot/tests/labs/combat_lab/vfx_poison_basic_human_r2_contract_test.gd'
