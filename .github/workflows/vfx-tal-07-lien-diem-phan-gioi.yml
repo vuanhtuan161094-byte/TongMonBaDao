@@ -7,6 +7,7 @@ on:
       - '.github/workflows/vfx-tal-07-lien-diem-phan-gioi.yml'
       - 'tools/vfx/paint_tal07_lien_diem.py'
       - 'tools/vfx/hf02_r5_source_painted.py'
+      - 'tools/vfx/hf02_r6_talisman_motion.py'
       - 'godot/labs/combat_lab/talisman07/**'
       - 'godot/tests/labs/combat_lab/vfx_tal07_contract_test.gd'
 permissions:
@@ -99,6 +100,14 @@ jobs:
           print('HF02_R5_ATLAS_GATE=PASS')
           PY
           sha256sum godot/labs/combat_lab/talisman07/assets/tal07_r5_*.webp > "$d/R5_ASSET_SHA256SUMS.txt"
+      - name: Bake R6 gold-red talisman charge and cosmetic flight sprite atlases
+        shell: bash
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/vfx-tal07"
+          /usr/bin/python3 tools/vfx/hf02_r6_talisman_motion.py 2>&1 | tee "$d/r6-charge-flight.log"
+          grep -Fq 'HF02_R6_ART_ATLAS_GATE_PASS' "$d/r6-charge-flight.log"
+          sha256sum godot/labs/combat_lab/talisman07/assets/tal07_r6_*.webp > "$d/R6_ATLAS_SHA256SUMS.txt"
       - name: Restore existing unchanged Stage A character asset overlay
         shell: bash
         run: |
