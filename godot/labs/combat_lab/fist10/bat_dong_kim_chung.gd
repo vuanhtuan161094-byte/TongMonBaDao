@@ -1,9 +1,9 @@
 extends Control
 ## FIST10 / Bat Dong Kim Chung: first-party illustrated GOLDEN BELL guard ultimate, ONE target.
-## Earth GUARD 4 seconds. Dedicated bell-shaped composition uses first-party illustrated material. Master is source-reproducible.
+## Earth GUARD 4 seconds. ImageGen original high-detail golden bell, first-party 640px WebP master baked into full-alpha frames.
 ## Preview receipts ONLY, no gameplay writes, no rig, no fake damage.
 const SKILL_ID := "tmb.skill.fist.kim_cang.ultimate.human"
-const ART_REVISION := "R1_BELL_ULTIMATE_MASTER_FIRST"
+const ART_REVISION := "R2_ILLUSTRATED_GOLDEN_BELL"
 const EFFECT := "guard"
 const ELEMENT := "earth"
 const SHAPE := "single_target"
@@ -75,7 +75,7 @@ func _ready() -> void:
     set_process(true)
     queue_redraw()
     if not vfx_only_benchmark:
-        print("VFX_FIST10_R1_READY skill=",SKILL_ID," effect=guard cap=1 moving_target=true no_rig=true view_only=true")
+        print("VFX_FIST10_R2_READY skill=",SKILL_ID," effect=guard cap=1 moving_target=true no_rig=true view_only=true")
 
 func _process(delta: float) -> void:
     if paused:return
@@ -164,7 +164,7 @@ func _draw() -> void:
         draw_string(ThemeDB.fallback_font,Vector2(28,33),
             "BAT DONG KIM CHUNG / ULTIMATE",HORIZONTAL_ALIGNMENT_LEFT,-1,22,Color("fff0d4"))
         draw_string(ThemeDB.fallback_font,Vector2(28,59),
-            "FIST10 R1 | GOLDEN BELL / 4S GUARD / DEFENSIVE RESONANCE",
+            "FIST10 R2 | PAINTED GOLDEN BELL / 4S WARD / BLOCK",
             HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("eccba3"))
         draw_string(ThemeDB.fallback_font,Vector2(28,683),
             "GODOT 4.7.2 | EARTH GUARD 4S | MOVING WALK | LAB ONLY / NO RIG",

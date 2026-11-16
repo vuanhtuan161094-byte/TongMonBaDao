@@ -22,3 +22,10 @@
 
 ## Reference rights and limitations
 - FIST School Playbook; Golden Bell Shield is documented as a protective technique in JX2 https://jx2.world/articles/13604 ; JX1 community technical description separates `PrecastSpr` and `StateSpecialId` https://github.com/lichnt318/jx1 . Both REFERENCES ONLY, no third-party pixels copied.
+
+## R1 art rejection → R2 true ImageGen illustration source integration (2026-11-16)
+- Owner correctly called out source-only deliveries: deliver a full **actual Godot moving VFX** movie, not a concept poster or sprite-only GIF.
+- R1 SHA b5ce69d0b23e3a2e3a753fdd897c6a9bf230682a Actions #43839262981 TECH_SUCCESS but native art SELF_FAIL (thin geometric bell, dark poor material).
+- R2 uses original independently generated 1254px transparent Golden Bell ImageGen painting (gold metal relief, jade center, warm light): full original 1254px in ChatGPT Library `/TMB-VFX-Art/TMB_FIST10_BAT_DONG_KIM_CHUNG_R2_ORIGINAL_SPRITES.zip`; actual GitHub source a downsampled 640px RGBA WebP in `godot/labs/combat_lab/fist10/assets/source/r2_illustrated_bell_640.webp.b64`.
+- Deterministic 28 frame generator derives original painted cast/status/contact sheets, replacing the old procedural bell hero (not changing guard timings / Combat V2).
+- Required: Godot 4.7.2 1280x720 G3.5 charge 0.42/peak1.23/contact2.16 on moving recipient + full 6.2s MP4/GIF + 19 1x screenshots. Native visual gate is MANUAL; no owner pass from CI alone. Art NEVER claimed finished without actually watching native R2.
