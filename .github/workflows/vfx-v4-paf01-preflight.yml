@@ -52,7 +52,7 @@ jobs:
           set -euo pipefail
           d="$RUNNER_TEMP/vfx-v4-paf01"
           /usr/bin/python3 tools/vfx/paf01_r1_wind_mark.py 2>&1 | tee "$d/paf01-bake.log"
-          grep -Fq 'PAF01_R4_PAPER_SOURCE_BAKE_PASS' "$d/paf01-bake.log"
+          grep -Fq 'PAF01_R5_PAPER_SOURCE_BAKE_PASS' "$d/paf01-bake.log"
           python3 tools/qa/validate_vfx_v4_packet.py --stage assets --packet "$PACKET" 2>&1 | tee "$d/atlas.log"
           grep -Fq 'VFX_V4_ASSETS_TECHNICAL_PASS' "$d/atlas.log"
       - name: Restore unchanged Stage A character overlay

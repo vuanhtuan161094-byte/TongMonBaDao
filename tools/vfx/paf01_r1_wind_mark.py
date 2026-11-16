@@ -14,7 +14,7 @@ from pathlib import Path
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
 import io,base64,math,hashlib
 import numpy as np
-from paf01_r4_paper import make_talisman
+from paf01_r5_paper_finishes import make_talisman_r5 as make_talisman
 
 ROOT=Path(__file__).resolve().parents[2]
 OUT=ROOT/"godot/labs/combat_lab/talisman11/assets"
@@ -219,5 +219,5 @@ def main():
         im.save(p,"WEBP",quality=91,method=6,exact=True)
         print("PAF01_VFX_ATLAS_TECH_PASS",name,im.size,"frames",n,"sha256",hashlib.sha256(p.read_bytes()).hexdigest())
     print("PAF01_R1_SOURCE_BAKE_PASS")  # historical CI marker
-    print("PAF01_R4_PAPER_SOURCE_BAKE_PASS")
+    print("PAF01_R5_PAPER_SOURCE_BAKE_PASS")
 if __name__=="__main__":main()
