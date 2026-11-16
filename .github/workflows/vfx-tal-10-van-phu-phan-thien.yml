@@ -1,10 +1,10 @@
-name: VFX-TAL-09 | HF05 Van Phu Phan Thien native Godot 4.7.2 movie
+name: VFX-TAL-10 | HF05 Van Phu Phan Thien native Godot 4.7.2 movie
 on:
   workflow_dispatch:
   push:
     branches: [integration/pve-p0-playable-ui-20261103]
     paths:
-      - '.github/workflows/vfx-tal-09-chu-tuoc-hoi-hoan.yml'
+      - '.github/workflows/vfx-tal-10-van-phu-phan-thien.yml'
       - 'tools/vfx/hf05_r1_van_phu.py'
       - 'godot/labs/combat_lab/talisman10/**'
       - 'godot/tests/labs/combat_lab/vfx_tal10_contract_test.gd'
