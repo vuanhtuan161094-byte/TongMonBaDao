@@ -90,7 +90,7 @@ def main():
         else:
             r["vfx_actual"]="IMMORTAL_DIVINE_VARIANT_NOT_ART_APPROVED"
         r["owner_art_source_note"]=(APPROVED.get(fam) or PREVIEW_ONLY.get(fam) or IN_PROGRESS.get(fam) or "") if is_human_cast else ""
-    columns=list(records[0])+["dedicated_human_lab","vfx_actual","owner_art_source_note"]
+    columns=list(records[0])  # fields include the three just-added status columns
     with (out/"ALL_2196_VFX_STATUS.csv").open("w",encoding="utf-8-sig",newline="") as file:
         w=csv.DictWriter(file,fieldnames=columns);w.writeheader();w.writerows(records)
     with (out/"HUMAN_204_VFX_STATUS.csv").open("w",encoding="utf-8-sig",newline="") as file:
