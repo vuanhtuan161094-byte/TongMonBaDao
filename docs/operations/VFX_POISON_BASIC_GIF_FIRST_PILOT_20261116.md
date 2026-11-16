@@ -1,3 +1,5 @@
+> **DEPRECATED, historical failed experiment (2026-11-16).** User explicitly cancelled the GIF-first mandate. Do not use this file as a current production procedure or generate new GIFs by default. Current binding V4.3 in the canonical Art-First SOP specifies original RGBA sprite layers → actual Godot MP4/native 3-frame QA. Existing GIF artifact only for historical auditing; it is not a required input/output.
+
 # VFX Poison Basic — GIF-first pilot / current 16 Nov 2026
 
 ## Scope and status
