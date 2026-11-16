@@ -1,0 +1,156 @@
+name: VFX POI11 R1 | Vạn Độc Xuyên Tâm V4 painted needle-crown
+on:
+  workflow_dispatch:
+  push:
+    branches: [integration/pve-p0-playable-ui-20261103]
+    paths:
+      - 'godot/labs/combat_lab/poison11/r1_original/**'
+      - 'tools/vfx/generate_poi11_original.py'
+      - 'godot/tests/labs/combat_lab/vfx_poi11_r1_contract_test.gd'
+      - 'docs/operations/vfx_packets/POI11_R1_V4_PREFLIGHT.json'
+      - 'docs/operations/VFX_POI11_VAN_DOC_XUYEN_TAM_R1_20261116.md'
+      - '.github/workflows/vfx-poi-11-r1-native.yml'
+permissions:
+  contents: write
+  actions: write
+jobs:
+  poi11-r1-v4:
+    runs-on: ubuntu-latest
+    timeout-minutes: 32
+    env:
+      GODOT_AUDIO_DRIVER: Dummy
+      GODOT_RENDERING_DRIVER: opengl3
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+      - name: Install SHA256 pinned official Godot 4.7.2 and media QA
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq unzip ffmpeg xvfb python3-pil python3-numpy
+          curl --fail --location --retry 3 -o /tmp/godot472.zip 'https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip'
+          echo 'cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4  /tmp/godot472.zip' | sha256sum --check --strict
+          unzip -q /tmp/godot472.zip -d /tmp
+          sudo install -m0755 /tmp/Godot_v4.7.2-stable_linux.x86_64 /usr/local/bin/godot
+          mkdir -p "$RUNNER_TEMP/poi11-r1"
+          godot --version | tee "$RUNNER_TEMP/poi11-r1/engine.txt"
+          printf 'EXACT_SHA=%s\nOWNER_VISUAL_PENDING\nPVE_HOLD\nV63_OFF\nNO_RIG\nSTATUS_VIEW_ONLY\n' "$GITHUB_SHA" > "$RUNNER_TEMP/poi11-r1/metadata.txt"
+      - name: Bake original full-size RGBA masters into 30 attack poses; V4 packet and asset gates
+        shell: bash
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/poi11-r1"
+          python3 tools/vfx/generate_poi11_original.py 2>&1 | tee "$d/bake.log"
+          python3 tools/qa/validate_vfx_v4_packet.py --stage packet --packet docs/operations/vfx_packets/POI11_R1_V4_PREFLIGHT.json | tee "$d/v4-packet.log"
+          python3 tools/qa/validate_vfx_v4_packet.py --stage assets --packet docs/operations/vfx_packets/POI11_R1_V4_PREFLIGHT.json | tee "$d/v4-assets.log"
+          sha256sum godot/labs/combat_lab/poison11/r1_original/assets/*.png > "$d/atlas-sha256.txt"
+          python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image
+          d=Path('godot/labs/combat_lab/poison11/r1_original/assets')
+          expected=['poison11_charge_10.png','poison11_crown_12.png','poison11_contact_08.png']
+          total=0
+          for n in expected:
+              with Image.open(d/n) as im:total+=im.width*im.height*4
+          assert total<8*1024*1024,total
+          print('VFX_POI11_R1_RGBA8_BUDGET_PASS=',total)
+          PY
+      - name: Restore approved Stage A character fixture without changing tracking
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat .github/assets/p3/female_stage_a/part{01..14}.b64 .github/assets/p3/female_stage_a/part15a.b64 .github/assets/p3/female_stage_a/part15b.b64 .github/assets/p3/female_stage_a/part{16..20}.b64 | tr -d '\r\n\t ' | base64 --decode > /tmp/tmb_stage_a_pack.zip
+          test "$(stat -c%s /tmp/tmb_stage_a_pack.zip)" -eq 44838
+          echo '6a4213b9129ffb3f438c21cbb5326672ddf8915323836bf80cb33b8e5fabfdca  /tmp/tmb_stage_a_pack.zip' | sha256sum --check --strict
+          unzip -q /tmp/tmb_stage_a_pack.zip -d .
+      - name: Official Godot 4.7.2 import parse and moving-monster shared badge contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/poi11-r1"
+          bash tools/qa/run_godot_strict.sh --headless --path godot --import 2>&1 | tee "$d/import.log"
+          bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://labs/combat_lab/poison11/r1_original/van_doc_xuyen_tam_r1.gd 2>&1 | tee "$d/parse.log"
+          bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/labs/combat_lab/vfx_poi11_r1_contract_test.gd 2>&1 | tee "$d/godot-focused.log"
+          grep -Fq 'VFX_POI11_R1_RESULT=PASS failures=0' "$d/godot-focused.log"
+      - name: G3.5 genuine Godot preflight — charge peak and moving-monster puncture
+        shell: bash
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/poi11-r1"
+          xvfb-run -a -s '-screen 0 1280x720x24' bash tools/qa/run_godot_strict.sh --path godot --resolution 1280x720 --fixed-fps 60 --write-movie "$d/v4-poi11-r1-native.avi" --quit-after 160 res://labs/combat_lab/poison11/r1_original/van_doc_xuyen_tam_r1.tscn 2>&1 | tee "$d/godot-preflight.log"
+          grep -Fq 'VFX_POI11_R1_READY' "$d/godot-preflight.log"
+          test -s "$d/v4-poi11-r1-native.avi"
+          ffmpeg -y -hide_banner -loglevel error -i "$d/v4-poi11-r1-native.avi" -pix_fmt yuv420p -c:v libx264 -crf 16 -movflags +faststart "$d/v4-poi11-r1-native.mp4"
+          ffmpeg -y -hide_banner -loglevel error -ss 0.55 -i "$d/v4-poi11-r1-native.mp4" -frames:v 1 "$d/v4-charge.png"
+          ffmpeg -y -hide_banner -loglevel error -ss 2.10 -i "$d/v4-poi11-r1-native.mp4" -frames:v 1 "$d/v4-peak.png"
+          ffmpeg -y -hide_banner -loglevel error -ss 2.43 -i "$d/v4-poi11-r1-native.mp4" -frames:v 1 "$d/v4-contact.png"
+          python3 tools/qa/validate_vfx_v4_packet.py --stage evidence --packet docs/operations/vfx_packets/POI11_R1_V4_PREFLIGHT.json --out "$d" --sha "$GITHUB_SHA" | tee "$d/v4-evidence.log"
+          sha256sum "$d/v4-poi11-r1-native.mp4" "$d/v4-"*.png > "$d/G35-SHA256.txt"
+          rm "$d/v4-poi11-r1-native.avi"
+      - name: 660-frame native full movie after written self G3.5 art approval only
+        if: contains(github.event.head_commit.message, '[POI11_R1_G35_ART_OK]')
+        shell: bash
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/poi11-r1"
+          xvfb-run -a -s '-screen 0 1280x720x24' bash tools/qa/run_godot_strict.sh --path godot --resolution 1280x720 --fixed-fps 60 --write-movie "$d/POI11-R1-full.avi" --quit-after 660 res://labs/combat_lab/poison11/r1_original/van_doc_xuyen_tam_r1.tscn 2>&1 | tee "$d/full-movie.log"
+          grep -Fq 'VFX_POI11_R1_READY' "$d/full-movie.log"
+          test -s "$d/POI11-R1-full.avi"
+          ffmpeg -y -hide_banner -loglevel error -i "$d/POI11-R1-full.avi" -pix_fmt yuv420p -c:v libx264 -crf 16 -movflags +faststart "$d/POI11-R1-full.mp4"
+          ffprobe -v error -select_streams v:0 -show_entries stream=width,height,nb_frames,avg_frame_rate -of default=noprint_wrappers=1 "$d/POI11-R1-full.mp4" | tee "$d/full-dimensions.txt"
+          grep -Fxq width=1280 "$d/full-dimensions.txt"
+          grep -Fxq height=720 "$d/full-dimensions.txt"
+          for sec in 0.20 0.55 0.98 1.24 1.55 1.84 2.10 2.22 2.43 2.71 3.13 5.50 8.50 10.60; do
+            ffmpeg -y -hide_banner -loglevel error -ss "$sec" -i "$d/POI11-R1-full.mp4" -frames:v 1 "$d/frame-$sec.png"
+          done
+          ffmpeg -y -hide_banner -loglevel error -i "$d/POI11-R1-full.mp4" -vf 'fps=8,scale=640:-1:flags=lanczos' -loop 0 "$d/POI11-R1-full.gif"
+          sha256sum "$d/POI11-R1-full.mp4" "$d/POI11-R1-full.gif" "$d"/frame-*.png > "$d/FULL-SHA256.txt"
+          rm "$d/POI11-R1-full.avi"
+      - name: Guarded same-branch save of independently painted atlas images only
+        if: success() && github.event_name == 'push'
+        shell: bash
+        run: |
+          set -euo pipefail
+          branch='integration/pve-p0-playable-ui-20261103'
+          folder='godot/labs/combat_lab/poison11/r1_original/assets'
+          mkdir -p "$RUNNER_TEMP/poi11-r1/staged"
+          cp "$folder/"*.png "$RUNNER_TEMP/poi11-r1/staged/"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          for attempt in 1 2 3; do
+            git fetch origin "$branch"
+            latest="$(git rev-parse FETCH_HEAD)"
+            if ! git merge-base --is-ancestor "$GITHUB_SHA" "$latest"; then echo BRANCH_REWRITTEN_ABORT; exit 0; fi
+            if test -n "$(git diff --name-only "$GITHUB_SHA" "$latest" -- "$folder" tools/vfx/generate_poi11_original.py .github/workflows/vfx-poi-11-r1-native.yml docs/operations/vfx_packets/POI11_R1_V4_PREFLIGHT.json)"; then echo POI11_SOURCE_CHANGED_ABORT; exit 0; fi
+            git reset --hard "$latest"
+            mkdir -p "$folder"
+            cp "$RUNNER_TEMP/poi11-r1/staged/"*.png "$folder/"
+            git add "$folder/"*.png
+            if git diff --cached --quiet; then echo POI11_ATLASES_ALREADY_TRACKED; exit 0; fi
+            git commit -m 'art(poi11-r1): track independent painted poison spear-crown RGBA poses'
+            if git push origin "HEAD:refs/heads/$branch"; then
+              echo "POI11_BINARY_COMMIT=$(git rev-parse HEAD)" | tee "$RUNNER_TEMP/poi11-r1/tracked-assets.txt"
+              exit 0
+            fi
+          done
+          echo POI11_BINARY_PUSH_CONFLICT
+          exit 1
+      - name: Upload true native screenshot proof and art-gated movie evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: poi11-r1-v4-${{ github.sha }}
+          retention-days: 14
+          if-no-files-found: warn
+          path: |
+            ${{ runner.temp }}/poi11-r1/*.log
+            ${{ runner.temp }}/poi11-r1/*.txt
+            ${{ runner.temp }}/poi11-r1/*.json
+            ${{ runner.temp }}/poi11-r1/*.png
+            ${{ runner.temp }}/poi11-r1/*.mp4
+            ${{ runner.temp }}/poi11-r1/*.gif
+            godot/labs/combat_lab/poison11/r1_original/assets/*.png

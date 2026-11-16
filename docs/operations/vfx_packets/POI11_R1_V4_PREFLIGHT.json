@@ -1,0 +1,74 @@
+{
+  "schema": "tmb-vfx-production-system-v4.1",
+  "packet_id": "POI11_R1_VAN_DOC_XUYEN_TAM_ORIGINAL_SPEAR_CROWN_G35",
+  "skill_id": "tmb.skill.poison.doc_cham.ultimate.human",
+  "school": "poison",
+  "revision": "R1_ORIGINAL_PAINTED_SPEAR_CROWN_OWNER_PENDING",
+  "catalogue_path": "godot/data/combat/v63_human_combat_catalog.json",
+  "scene_path": "godot/labs/combat_lab/poison11/r1_original/van_doc_xuyen_tam_r1.tscn",
+  "lab_script": "godot/labs/combat_lab/poison11/r1_original/van_doc_xuyen_tam_r1.gd",
+  "focused_test": "godot/tests/labs/combat_lab/vfx_poi11_r1_contract_test.gd",
+  "declared_contract": {
+    "effect": "poison", "element": "nether", "shape": "circle", "target_limit": 3,
+    "hit_count": null, "range": 8, "radius": 3,
+    "cast_time": 1.15, "cooldown": 36, "projectile_speed": 8, "duration": 8
+  },
+  "provenance": {
+    "source_class": "FIRST_PARTY_IMAGEGEN_CONCEPT_EFFECT_PIXELS",
+    "master_quality_status": "MANUAL_ART_REVIEW_REQUIRED",
+    "rights_note": "Original first-party AI-painted effect regions from in-conversation generated concept sheet, never imported third-party game textures. Poster carries fictitious skill names, numbers and QA badges and is NOT a Godot screenshot. Only three new RGBA VFX source crops were matte-extracted and stored in this PR. Catalogue defines mechanics; stage art stays pending owner review.",
+    "known_source_limitation": "Concept-sheet effect crops originally approximately 301x185, 337x199 and 351x199 source pixels, independently resampled to large transparent source masters. Native 1x sharpness and material fidelity MUST be checked manually; upscaling alone does not establish professional quality.",
+    "master_files": [
+      {"path": "godot/labs/combat_lab/poison11/r1_original/assets/master/needle_crown_source.webp", "encoding": "webp", "role": "original independently extracted luminous toxic needle crown, caster charge"},
+      {"path": "godot/labs/combat_lab/poison11/r1_original/assets/master/heart_piercer_source.webp", "encoding": "webp", "role": "original painterly diagonally crossing poison needles, unique ultimate hero"},
+      {"path": "godot/labs/combat_lab/poison11/r1_original/assets/master/heart_rupture_source.webp", "encoding": "webp", "role": "original pointed purple-jade local puncture brush emission"}
+    ],
+    "generators": ["tools/vfx/generate_poi11_original.py"]
+  },
+  "atlases": [
+    {"path": "godot/labs/combat_lab/poison11/r1_original/assets/poison11_charge_10.png", "width": 768, "height": 576, "cell_width": 192, "cell_height": 192, "frames": 10, "columns": 4, "layer": "new independent toxic needle-crown charge"},
+    {"path": "godot/labs/combat_lab/poison11/r1_original/assets/poison11_crown_12.png", "width": 1280, "height": 672, "cell_width": 320, "cell_height": 224, "frames": 12, "columns": 4, "layer": "hero original luminous multi-needle cross-piercing barrage"},
+    {"path": "godot/labs/combat_lab/poison11/r1_original/assets/poison11_contact_08.png", "width": 768, "height": 320, "cell_width": 192, "cell_height": 160, "frames": 8, "columns": 4, "layer": "localized moving-target puncture, not a second spell"}
+  ],
+  "time_contract": {
+    "combat_clock": "CATALOGUE_GATED_NOT_LIVE",
+    "declared_cast_end_seconds": 1.15,
+    "declared_status_duration_seconds": 8,
+    "runtime_receipt_timestamp": "RUNTIME_MAPPING_PENDING",
+    "vfx_clock": "LAB_ONLY",
+    "simulated_hit_seconds": 2.20,
+    "visual_fade_end_seconds": 3.08,
+    "demo_loop_seconds": 11.0,
+    "demo_clock_warning": "Canonical cast 1.15s/cooldown36s/duration8s/2 stacks; isolated LAB approximates 1.15-1.90 cosmetic approach, synthetic moving target contacts 2.20/2.28/2.36. Contact timing is NOT Combat V2 receipt. Shared poisoned badge, not a massive eight-second status VFX.",
+    "key_pose_budget_note": "10 source painted charge poses, 12 nonrigid luminous multineedle barrage, 8 local impact. Pose budget based on about 3.08s primary cast animation; 8s poisoned state is one shared icon from POI10, not repeated sprite animation.",
+    "phases": [
+      {"id": "charge", "at_seconds": 0.55, "expected_phase": "charge", "file": "v4-charge.png"},
+      {"id": "peak", "at_seconds": 2.10, "expected_phase": "poison_piercer_crown", "file": "v4-peak.png"},
+      {"id": "contact", "at_seconds": 2.43, "expected_phase": "localized_piercing_contacts", "file": "v4-contact.png"}
+    ]
+  },
+  "moving_target": {
+    "actor_animation": "walk",
+    "locked_demo_target_index": 0,
+    "movement_from_seconds": 0.55,
+    "movement_to_seconds": 2.43,
+    "minimum_displacement_px": 10,
+    "contact_anchor": "LAB.monster_chest(index,t): moving existing walk SpriteFrames actor, deterministic laboratory mock position",
+    "tracking_rule": "One fixed demo circle, target-specific local light contact follows monster every frame, badges remain above its head. No implied new target acquisition or hits.",
+    "receipt_claim": "SIMULATED_VISUAL_ONLY"
+  },
+  "gate_status": {
+    "g3_5_capture": "NOT_EXECUTED_UNTIL_NATIVE_PROOF",
+    "technical": "NOT_EXECUTED_UNTIL_NATIVE_PROOF",
+    "art": "MANUAL_ART_REVIEW_REQUIRED",
+    "owner": "OWNER_VISUAL_PENDING",
+    "live": "PVE_INTEGRATION_HOLD",
+    "device": "PHYSICAL_QA_PENDING"
+  },
+  "proof_contract": {
+    "focused_marker": "VFX_POI11_R1_RESULT=PASS failures=0",
+    "native_marker": "VFX_POI11_R1_READY",
+    "source": "Godot focused test checks actual walk animation, 3 moving target chest anchors, noninvented 8s 2-stack poison visual, reference to shared poisoned badge; native 1280x720 G3.5 on exact SHA.",
+    "video_filename": "v4-poi11-r1-native.mp4"
+  }
+}
