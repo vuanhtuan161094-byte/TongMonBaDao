@@ -8,7 +8,6 @@ on:
       - 'tools/qa/validate_vfx_v4_packet.py'
       - 'docs/operations/vfx_packets/HF03_V4_PREFLIGHT.json'
       - 'tools/vfx/hf03_r1_fire_heart.py'
-      - 'tools/vfx/paint_tal08_lien_diem.py'
       - 'godot/labs/combat_lab/talisman08/**'
       - 'godot/tests/labs/combat_lab/vfx_tal08_contract_test.gd'
 permissions:
