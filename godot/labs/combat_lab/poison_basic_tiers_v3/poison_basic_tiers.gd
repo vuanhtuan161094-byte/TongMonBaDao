@@ -132,13 +132,13 @@ func _draw()->void:
     var src:Dictionary=atlas[idx]
     if t<CAST_END+.03:
         var fade:=smoothstep(0.0,.05,t)*(1.0-smoothstep(CAST_END-.02,CAST_END+.03,t))
-        _flip(src["charge"],PALM,Vector2(156+idx*19,156+idx*19),clampf(t/CAST_END*5.0,0.0,5.0),fade)
+        _flip(src["charge"],PALM,Vector2(156+idx*24,156+idx*24),clampf(t/CAST_END*5.0,0.0,5.0),fade)
     if t>=CAST_END and t<DEMO_CONTACT+.02:
         var q:=clampf((t-CAST_END)/(DEMO_CONTACT-CAST_END),0.0,1.0)
         var fade:=1.0-smoothstep(DEMO_CONTACT-.025,DEMO_CONTACT+.02,t)
         var center:=flight_pos(t,PALM,monster_chest(elapsed))
         draw_set_transform(center,aim_angle(PALM,monster_chest(elapsed)),Vector2.ONE)
-        _flip(src["flight"],Vector2.ZERO,Vector2(275+idx*18,155+idx*14),q*7.0,fade*.96)
+        _flip(src["flight"],Vector2.ZERO,Vector2(265+idx*68,150+idx*34),q*7.0,fade*.96)
         draw_set_transform(Vector2.ZERO,0.0,Vector2.ONE)
     # Actual existing game sprite fixture, not any generated human concept.
     draw_texture_rect_region(CASTER_ART,Rect2(CASTER-Vector2(160,351)*.47,Vector2(320,384)*.47),Rect2(0,0,320,384))
@@ -146,4 +146,4 @@ func _draw()->void:
     if t>=DEMO_CONTACT and t<IMPACT_END:
         var q:=clampf((t-DEMO_CONTACT)/(IMPACT_END-DEMO_CONTACT),0.0,1.0)
         var fade:=smoothstep(0.0,.12,q)*(1.0-smoothstep(.55,1.0,q))
-        _flip(src["contact"],monster_chest(elapsed)+Vector2(0,16),Vector2(170+idx*42,170+idx*42),q*7.0,fade*.88)
+        _flip(src["contact"],monster_chest(elapsed)+Vector2(0,16),Vector2(170+idx*79,170+idx*79),q*7.0,fade*.88)
