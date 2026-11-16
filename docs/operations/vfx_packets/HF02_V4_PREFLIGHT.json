@@ -1,9 +1,9 @@
 {
   "schema": "tmb-vfx-production-system-v4.1",
-  "packet_id": "HF02_R5_V4_PRELIGHT_TECHNICAL_PROOF",
+  "packet_id": "HF02_R6_CHARGE_FLIGHT_V4_TECHNICAL_PREFLIGHT",
   "skill_id": "tmb.skill.talisman.hoa_phu.active_02.human",
   "school": "talisman",
-  "revision": "HF02_R5_EXISTING_ART_NOT_OWNER_APPROVED",
+  "revision": "HF02_R6_PAINTED_CHARGE_COSMETIC_SEALS_OWNER_PENDING",
   "catalogue_path": "godot/data/combat/v63_talisman_combat_catalog.json",
   "scene_path": "godot/labs/combat_lab/talisman07/lien_diem_phan_gioi.tscn",
   "lab_script": "godot/labs/combat_lab/talisman07/lien_diem_phan_gioi.gd",
@@ -25,7 +25,7 @@
     "source_class": "FIRST_PARTY_OWNER_SUPPLIED_GENERATED_CONCEPT_CROP",
     "rights_note": "Own TMB conversation-generated source, not licensed commercial JX/Source VL pixels. Asset authorship and publication rights remain documented separately.",
     "master_quality_status": "MANUAL_ART_REVIEW_REQUIRED",
-    "known_source_limitation": "R5 main blast source is a 320x91 crop, not a full-size independently painted alpha hero. Technical provenance PASS cannot approve source art.",
+    "known_source_limitation": "R6 reuses accepted-as-temporarily-okay R5 explosion; painted large charge and paper seals from first-party HF01 master. R5 explosion remains only 320x91 source, ART MANUAL PENDING.",
     "master_files": [
       {
         "path": "godot/labs/combat_lab/talisman07/art_sources/hf02_r5_owner_fire_blast.webp.b64",
@@ -40,7 +40,8 @@
     ],
     "generators": [
       "tools/vfx/paint_tal07_lien_diem.py",
-      "tools/vfx/hf02_r5_source_painted.py"
+      "tools/vfx/hf02_r5_source_painted.py",
+      "tools/vfx/hf02_r6_talisman_motion.py"
     ]
   },
   "atlases": [
@@ -83,6 +84,26 @@
       "frames": 8,
       "columns": 4,
       "layer": "contact"
+    },
+    {
+      "path": "godot/labs/combat_lab/talisman07/assets/tal07_r6_charge_atlas.webp",
+      "width": 1280,
+      "height": 960,
+      "cell_width": 320,
+      "cell_height": 320,
+      "frames": 12,
+      "columns": 4,
+      "layer": "R6 painted four-talisman converging charge"
+    },
+    {
+      "path": "godot/labs/combat_lab/talisman07/assets/tal07_r6_flying_atlas.webp",
+      "width": 1280,
+      "height": 576,
+      "cell_width": 320,
+      "cell_height": 192,
+      "frames": 12,
+      "columns": 4,
+      "layer": "R6 four cosmetic visually flying paper talismans (NOT gameplay projectile)"
     }
   ],
   "time_contract": {
@@ -94,8 +115,8 @@
     "simulated_hit_seconds": 1.37,
     "visual_fade_end_seconds": 2.62,
     "demo_loop_seconds": 3.3,
-    "demo_clock_warning": "LAB simulated hit 1.37s is not a Combat V2 receipt, and the 3.30s video loop is not the cast duration.",
-    "key_pose_budget_note": "12 charge + 12 fire + 8 ground + 8 contact frames are technical atlas counts, not art-motion approval.",
+    "demo_clock_warning": "HF02 cast .62, no gameplay projectile. Isolated LAB charge .02-.70, four purely visual flying paper seals stagger .52-1.36, mock contact 1.37, fade 2.62; RUNTIME_MAPPING_PENDING. Never treat flying seals as real Combat V2 projectile or hits.",
+    "key_pose_budget_note": "R6 12 independent painted charge poses + 12 painted flight poses, added to original R5 explosion/fade atlas; independent source art plus deformation, no rig. Unique hashes are technical only.",
     "phases": [
       {
         "id": "charge",
@@ -115,7 +136,15 @@
         "expected_phase": "demo_hit",
         "file": "v4-contact.png"
       }
-    ]
+    ],
+    "cosmetic_timing": {
+      "charge_start_seconds": 0.02,
+      "charge_release_seconds": 0.62,
+      "cosmetic_seals_start_seconds": 0.52,
+      "cosmetic_seals_end_seconds": 1.36,
+      "cosmetic_seal_count": 4,
+      "cosmetic_not_gameplay_projectile": true
+    }
   },
   "moving_target": {
     "actor_animation": "walk",
@@ -128,8 +157,8 @@
     "receipt_claim": "SIMULATED_VISUAL_ONLY"
   },
   "gate_status": {
-    "g3_5_capture": "NOT_EXECUTED_UNTIL_WORKFLOW_RUN",
-    "technical": "NOT_EXECUTED_UNTIL_WORKFLOW_RUN",
+    "g3_5_capture": "NOT_EXECUTED_UNTIL_R6_GODOT_PROOF",
+    "technical": "NOT_EXECUTED_UNTIL_R6_GODOT_PROOF",
     "art": "MANUAL_ART_REVIEW_REQUIRED",
     "owner": "OWNER_VISUAL_PENDING",
     "live": "PVE_INTEGRATION_HOLD",
@@ -138,6 +167,6 @@
   "proof_contract": {
     "focused_marker": "VFX_TAL07_FOCUSED_RESULT=PASS failures=0",
     "native_marker": "VFX_TAL07_READY",
-    "source": "Existing HF02 focused Godot contract checks walk frame count, demo target displacement, contact anchor follows moving target, circle cap3."
+    "source": "R6 focused moving-target contract verifies real walk frames, 4 cosmetic painted seal trajectories, cast charge and unchanged zero-projectile FIRE/circle/cap3/one cosmetic hit per moving actor."
   }
 }
