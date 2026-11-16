@@ -27,3 +27,7 @@ Total **30 original key pose frames** and **6,193,152 bytes ≈ 5.906 MiB raw RG
 Godot 4.7.2 Compatibility strict import/parse/focused contract, general V4 packet/atlas/evidence validator, 3 native proof images and media SHA. Art self review at actual native 1× on dark/bright backdrop must reject weak/out-of-scale/matted box/face occlusion. Continuous movie and 14 timed frames after G3.5. Actual `OWNER_VISUAL_APPROVED` never inferred from CI. No branch, merge, rig, Codex, Combat V2, SaveService, economy, targeting, AI, PvE or V6.3 modifications. Final handoff must disclose exact SHA, result, failure if any and status.
 
 **At file creation:** `G3.5_NOT_RUN`; `FULL_VIDEO_NOT_RUN`; `OWNER_VISUAL_PENDING`; `PVE_INTEGRATION_HOLD`; `PHYSICAL_QA_PENDING`.
+## First G3.5 STOP — visually rejected
+- Initial source SHA `973f8ee15964b8008791f3e3e4e2255f2c0fa6eb`, native Godot [run #43817362116](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/43817362116). Godot 4.7.2 and V4 technical PASS, genuine 160-frame 1280×720 charge/peak/contact images.
+- **SELF-ART G3.5 FAIL:** 0.55-second charge had rectangular semi-opaque source matte; peak lacked concentrated hot core; local hit was weak. Correct technical PASS did not authorize movie/approval, so full video was gated off.
+- R2 generator improves low-chroma transparency, organically feathers charge envelope, brightens actual painted purple/jade brushwork and local contact. Repeat native G3.5 before self art approval.

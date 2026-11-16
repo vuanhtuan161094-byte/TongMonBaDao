@@ -8,6 +8,7 @@ Character rigging, SVG/line primary effects and shared POI10 skill textures are 
 from PIL import Image, ImageFilter, ImageEnhance, ImageChops, ImageDraw
 from pathlib import Path
 import hashlib, math, random
+from functools import lru_cache
 import numpy as np
 ROOT=Path(__file__).resolve().parents[2]
 OUT=ROOT/'godot/labs/combat_lab/poison11/r1_original/assets'
@@ -17,12 +18,34 @@ FILES={
     'crown':'heart_piercer_source.webp',
     'contact':'heart_rupture_source.webp',
 }
+@lru_cache(maxsize=3)
 def source(name):
     p=MASTER/FILES[name]
     if not p.is_file():raise FileNotFoundError('original first-party master missing '+str(p))
     im=Image.open(p).convert('RGBA')
     assert im.width>=600 and im.height>=500,(name,im.size)
-    return im
+    # Art stop gate: remove illustrated UI-poster background, not only corner alpha.
+    # Preserve actual white/jade/violet painted strokes; suppress low-chroma rectangles.
+    pix=np.asarray(im).copy()
+    rgb=pix[:,:,:3].astype(np.float32)
+    original=pix[:,:,3].astype(np.float32)
+    signal=np.maximum.reduce([rgb[:,:,0]*.98,rgb[:,:,1]*1.48,rgb[:,:,2]*.77])
+    pigment=np.clip((signal-76.0)*3.25,0,255)
+    hh,ww=original.shape
+    ys,xs=np.mgrid[:hh,:ww]
+    edge=np.minimum.reduce([xs,ww-1-xs,ys,hh-1-ys]); edgegain=np.clip(edge/16.0,0,1)
+    # Clean art *envelope* around unique charge master; no massive rectangular alpha.
+    if name=='charge':
+        dx=(xs-ww*.52)/(ww*.54);dy=(ys-hh*.49)/(hh*.54)
+        envelope=np.clip((1.35-(dx*dx+dy*dy))/.45,0,1)
+        edgegain*=envelope
+    alpha=np.clip(original*(pigment/255.0)*edgegain*1.14,0,255)
+    # Colored pixels brighten a little, but alpha always carries shape/material.
+    pure=np.clip(rgb*1.13+np.where(alpha[:,:,None]>60,5,0),0,255)
+    pix[:,:,:3]=pure.astype(np.uint8)
+    pix[:,:,3]=alpha.astype(np.uint8)
+    pix[pix[:,:,3]<3,:3]=0
+    return Image.fromarray(pix,'RGBA')
 
 def row_warp(im,t,amplitude=4.0,frequency=3):
     # Move actual brushstrokes in local bands, with neighboring strokes changing
@@ -53,17 +76,17 @@ def pose(name,i,total,cell):
     if name=='charge':
         # Crown point erects from a compact charge, then gathers closer to release.
         scale=.48+.44*math.sin((t*.92+.05)*math.pi/2)
-        gain=.46+.49*math.sin((t*.83+.10)*math.pi/2)
+        gain=.67+.33*math.sin((t*.83+.10)*math.pi/2)
         angle=-4+7*math.sin(t*math.pi*.75)
     elif name=='crown':
         # Projectile canopy stretches its hand-painted spears as it travels.
         scale=.69+.29*math.sin((t*.95+.02)*math.pi/2)
-        gain=.75+.24*math.sin((t*.78+.2)*math.pi/2)
+        gain=.92+.08*math.sin((t*.78+.2)*math.pi/2)
         angle=-7+12*t+math.sin(t*math.tau)*2
     else:
         # Penetration lights reach peak in the first third then disintegrate.
         scale=.37+.62*math.sin((.10+.75*t)*math.pi/2)
-        gain=(.33+.64*math.sin(min(1,.15+1.15*t)*math.pi/2))*(1-.62*max(0,(t-.52)/.48))
+        gain=(.70+.30*math.sin(min(1,.20+1.10*t)*math.pi/2))*(1-.62*max(0,(t-.52)/.48))
         angle=-3+6*math.sin(t*math.pi)
     im=im.rotate(angle,Image.Resampling.BICUBIC,expand=False)
     nw=max(1,int(w*scale));nh=max(1,int(h*scale))
