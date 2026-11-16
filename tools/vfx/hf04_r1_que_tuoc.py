@@ -111,7 +111,7 @@ def charge(i,fire,paper):
     # A flickering colored source-painted core takes priority, never a fake
     # radial HUD vector; the center brightens without white clipping.
     center=reshape(fire,i+57,(113+int(19*q),48+int(9*q)),84+6*math.sin(i*.43),.24+.60*q)
-    splash(c,160,157,center,.46) if False else splash(c,center,160,157,.46)
+    splash(c,center,160,157,.46)
     return c
 
 def hit(i,fire,dragon):
