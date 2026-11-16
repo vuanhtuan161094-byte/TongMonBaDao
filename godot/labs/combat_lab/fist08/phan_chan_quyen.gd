@@ -4,7 +4,7 @@ extends Control
 ## The dragon-pigment crest manifests only in cast; the long state is subtle.
 ## All shape art is authored offline into three alpha atlas pages, NOT GDScript lines.
 const SKILL_ID := "tmb.skill.fist.kim_cang.active_03.human"
-const ART_REVISION := "R1_GOLD_COUNTERFORCE_ALPHA_V4"
+const ART_REVISION := "R2_BRIGHT_COUNTERFORCE_CONTACT"
 const EFFECT := "guard"
 const ELEMENT := "earth"
 const SHAPE := "single_target"
@@ -75,7 +75,7 @@ func _ready() -> void:
     set_process(true)
     queue_redraw()
     if not vfx_only_benchmark:
-        print("VFX_FIST08_R1_READY art_source=FIRST_PARTY_GOLD_RECOIL effect=guard moving_walk=true no_rig=true no_damage=true view_only=true")
+        print("VFX_FIST08_R2_READY art_source=FIRST_PARTY_GOLD_RECOIL effect=guard moving_walk=true no_rig=true no_damage=true view_only=true")
 
 func _process(delta: float) -> void:
     if paused: return
@@ -139,7 +139,7 @@ func _draw() -> void:
     if guard>.003:
         var f:=posmod(int(floor((t-GUARD_START)*6.0)),8)
         _frame(STATUS,f,192.0,feet+Vector2(0,-88),1.04,
-            guard*(.79+.07*sin(t*6.8)),Vector2(96,96))
+            guard*(.96+.04*sin(t*6.8)),Vector2(96,96))
     var walking:=t>=.62 and t<1.55 or t>=2.61 and t<3.46
     var enemy_walking:=t>=.30 and t<1.30 or t>=1.67 and t<2.77
     if not vfx_only_benchmark:
@@ -150,7 +150,7 @@ func _draw() -> void:
     if age>=0.0 and t>=GUARD_START and t<GUARD_END:
         var q:=clampi(int(floor(age/HIT_DURATION*10.0)),0,9)
         var alpha:=contact_alpha(t,t-age)
-        _frame(CONTACT,q,256.0,demo_target_contact(0,t),.89,alpha,Vector2(120,127))
+        _frame(CONTACT,q,256.0,demo_target_contact(0,t),1.07,alpha,Vector2(120,127))
         if not vfx_only_benchmark:
             _actor(feet,Color(1.0,.95,.80,clampf(alpha*.15,0.0,.15)),walking)
     if not vfx_only_benchmark:

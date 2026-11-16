@@ -48,14 +48,28 @@ def bake_atlas(pics,cell,cols,name):
     assert len({pics[k].tobytes()[:1000]+pics[k].tobytes()[-1000:] for k in range(len(pics))})>=1
     return full
 
-C=load_b64('counterforce_master.png','PNG')
-H=load_b64('guard_contact_master.png','PNG')
-D=load_b64('golden_recoil_dragon.webp','WEBP')
+def saturated_light(src,alpha_gain):
+    # Gold-grade ACTUAL source pixels, not Godot geometry. Preserve luminance
+    # variations, intensify pale-white filament edges and full chroma gold.
+    arr=np.array(src,dtype=np.uint8)
+    rgb=arr[:,:,:3].astype(np.float32)
+    luminance=rgb.max(axis=2)
+    hot=np.clip((luminance-125.0)/125.0,0.0,1.0)
+    rgb[:,:,0]=np.clip(rgb[:,:,0]*1.14+18.0*hot,0,255)
+    rgb[:,:,1]=np.clip(rgb[:,:,1]*1.12+36.0*hot,0,255)
+    rgb[:,:,2]=np.clip(rgb[:,:,2]+26.0*hot,0,255)
+    arr[:,:,:3]=rgb.astype(np.uint8)
+    arr[:,:,3]=np.clip(arr[:,:,3].astype(np.float32)*alpha_gain,0,255).astype(np.uint8)
+    return Image.fromarray(arr,'RGBA')
+
+C=saturated_light(load_b64('counterforce_master.png','PNG'),1.52)
+H=saturated_light(load_b64('guard_contact_master.png','PNG'),1.66)
+D=saturated_light(load_b64('golden_recoil_dragon.webp','WEBP'),1.40)
 assert C.size==H.size==(512,512) and D.width>=600
 
 def cast_frame(k):
     out=Image.new('RGBA',(320,320))
-    reveal=[.18,.32,.54,.82,1.00,.94,.60,.22][k]
+    reveal=[.27,.44,.71,.94,1.00,.97,.69,.28][k]
     bloom=[.03,.10,.23,.35,.43,.37,.20,.08][k]
     # original pressure forms grow around, leave negative space at center
     force=warp(C,k*.63)
@@ -77,7 +91,7 @@ def sustain_frame(k):
     force=warp(C,phase)
     # Two tiny asymmetric arc fragments at shoulders & low feet only.
     # center is left blank so the real chibi sprite stays readable.
-    composite(out,force,(16+int(2*math.sin(phase)),30,160,160),.46)
+    composite(out,force,(16+int(2*math.sin(phase)),30,160,160),.89)
     a=np.asarray(out,dtype=np.uint8).copy()
     yy,xx=np.mgrid[0:192,0:192]
     # remove middle panel, keep disjoint top & feet highlights
@@ -93,14 +107,28 @@ def hit_frame(k):
     p=warp(H,k*.83)
     # A short concussive compression followed by a directional release.
     if k<3:
-        sc=.48+.18*k; energy=.40+.21*k
+        sc=.58+.18*k; energy=.56+.20*k
     else:
-        sc=.90+.42*q;energy=max(.018,(1-q)**.74)  # retained final small residual ember for V4 asset integrity
+        sc=1.04+.28*q;energy=max(.022,(1-q)**.74)  # retained final small residual ember for V4 asset integrity
     width=int(215*sc);height=int(215*sc)
     composite(out,p,(142-width//2-8*math.sin(q*5),130-height//2,width,height),energy)
     if k in (1,2,3):
-        bloom=alpha(out.filter(ImageFilter.GaussianBlur(5)),.25)
+        bloom=alpha(out.filter(ImageFilter.GaussianBlur(5)),.42)
         bloom.alpha_composite(out);out=bloom
+    # Localized white-hot shield reaction, baked into pixel art; never an
+    # infinitely repeated Godot draw_arc or outgoing enemy damage cue.
+    if 1<=k<=5:
+        from PIL import ImageDraw
+        flash=Image.new('RGBA',(256,256))
+        d=ImageDraw.Draw(flash,'RGBA')
+        center=(123,126)
+        core_radius=12.0*(1.0-min(1.0,(k-2)/5.0))
+        d.ellipse((center[0]-core_radius,center[1]-core_radius,
+                   center[0]+core_radius,center[1]+core_radius),
+                  fill=(255,250,213,round(168*(1.0-k/8.0))))
+        mist=flash.filter(ImageFilter.GaussianBlur(11))
+        out.alpha_composite(mist)
+        out.alpha_composite(alpha(flash,.68))
     return out
 
 atlases=[
