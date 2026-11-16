@@ -1,3 +1,5 @@
+> **CURRENT VFX PROCESS RULE (16/11/2026):** mandatory Production System V4 addendum at the end of this SOP. Every VFX school/chat must apply explicit timeline contract, motion-derived sprite frames, early 3-frame native Godot preflight, moving-target hit review, separate art/technical/owner gates, durable asset source. This augments existing G0–G8; read before using older estimates or fixed 8–12-frame examples.
+
 # TÔNG MÔN BÁ ĐẠO — VFX ART-FIRST / ONE SKILL AT A TIME — SOP V3
 ## Hiệu chỉnh dự báo sau phản hồi ngày 14/11: không mặc định 14–21 tháng
 
@@ -81,3 +83,74 @@ Mẫu số chính: **201 cast masters Human cần art approval**. Giả định 
 
 ## Source of truth và phạm vi
 PR #72 Draft, integration/pve-p0-playable-ui-20261103. SOP này supersedes batch-style priority; TMB_VFX_SOURCE_VL_PRODUCTION_STANDARD_20261114.md, TMB_VFX_SCHOOL_BY_SCHOOL_MASTERPLAN_20261113.md và QA_AND_EVIDENCE vẫn là chuẩn kỹ thuật/tài liệu bổ sung không mâu thuẫn. Chỉ sửa art LAB/tài liệu, không động live gameplay.
+
+---
+
+## ADDENDUM 16/11/2026 — VFX PRODUCTION SYSTEM V4 (CURRENT BINDING OPERATING RULE)
+
+**Authority and rollout.** This section amends the existing SOP V3 and its G3.5 gate; it is not a competing process document. Read it together with AGENTS.md, the repo-scoped tmb-vfx-art-director skill, the school catalogue, the painted-asset gate, and the shared sprite-layer pipeline. All VFX school chats MUST apply it before new art, iteration, reviews, or handoff. Older 8–12-frame examples and phase lengths are examples, NOT universal quotas. Preserve previously owner-approved assets and frozen gameplay contracts. No rig, no Codex by default, no new branch/merge, no Combat V2, SaveService, AI, economy, PvE or V6.3 changes by this SOP.
+
+### A. Audit diagnosis, traceable findings and remedies
+
+| Root cause / evidence | Why it fails | Mandatory correction / gate |
+| --- | --- | --- |
+| Attractive concept poster is presented as production quality; HF02 audit identifies 80×65 source fragment and procedural seven-plume hero | concept fidelity is lost before engine rendering | compare original transparent full-size HERO sprite with reference at native display size before committing to animation (G3); keep licensed first-party source/provenance |
+| Byte-unique atlas poses created by noise/rotation or uniform distortion | distinct hashes do not establish readable actual motion | key-pose silhouette contact sheet, growth/shape/head-tail/energy progression, loop/temporal review; hashes are integrity-only |
+| Generic circles/glow and under-saturated composite | dull/blown out light, lost volume and school identity | distinct opaque MIX material, localized restrained ADD core, feathered atmospheric light, protected negative spaces; inspect on dark AND bright terrain |
+| Native painted pixels positioned off palm/target (TAL02 R5→R6) | physically disconnected VFX despite excellent atlas | measure occupied-alpha bounds and screen-space hand/weapon/ground/contact anchors at native 1× |
+| Timing in LAB authored independently of catalogue events (e.g. HF02 declared cast 0.62s, demo contact 1.37s) | convincing showcase may be late or misleading in real combat | timing contract sheet and event-aligned hit/receipt; never label a synthetic hit as runtime-confirmed |
+| Self-review based only on 3 stills, encoded fps or automated atlas integrity | no proof of fluid motion, actor visibility, target following, or device performance | G3.5 three genuine Godot preflight frames to STOP early; later full video checked >=12 meaningful times plus continuous motion review and multi-target test |
+| 14-day GitHub Actions artifacts are treated as stable output | source and approved revision become unavailable | commit or durable asset storage for source/master/release atlases; immutable manifest SHA and evidence URI; artifact expiry is never the only archive |
+| Art approved verbally while ledger remains PENDING; code-green interpreted as art-green | bad revisions propagate or correct versions get overwritten | separate ART_SELF_QA, OWNER_VISUAL, TECH_QA, LIVE/PHYSICAL gates; update ledger only on explicit owner decision; do not overwrite approved source |
+| Uniform fixed 8–12 frame quota and monolithic full movies for every iteration | under-animated long FX, bloated short FX, costly redo cycles | timeline-derived pose budget, cheap preflight STOP before full movie, increment revision on meaningful visual changes only |
+
+Evidence: TMB_HF02_ART_FIDELITY_FAILURE_AUDIT_20261116.md, TMB_VFX_PAINTED_SOURCE_TO_GODOT_ASSET_GATE_20261114.md, TMB_VFX_SPRITE_LAYER_PIPELINE_20261114.md, sample LABs talisman02/talisman07/fist07/poison10. Findings are code/document audit, NOT an assertion that all rendered videos were re-watched.
+
+### B. Mandatory VFX time contract — three independent clocks, no gameplay invention
+
+Every skill MUST write a timeline matrix with canonical data and distinct laboratory assumptions:
+
+- **Combat-authority clock:** skill cast_time, cooldown, projectile_speed, shape, cap, effect, duration, and actual runtime receipts (cast/start, cast/release, hit/guard/mark, expire). These fields have priority; candidate catalogue values remain gated and cannot be silently balanced from VFX.
+- **Visual clip clock:** initial local VFX time, charge, anticipation, release, travel/formation, impact, sustain/status, residual light and cleanup. These are presentation choices attached to events; never apply damage, change hit counts, create a status or delay the actual combat command.
+- **Showcase/video clock:** optional pre-roll, replay gap, slow inspection or demo target paths. These are QA-only; NEVER infer production cast timing from movie length or looping scene.
+
+Timeline contract table required for each skill: event | source field/receipt | canonical or simulated | local time | visual start/end | anchor | target follow policy | confidence/owner approval. If the exact runtime receipt moment is unknown, write UNKNOWN/RUNTIME_MAPPING_PENDING and keep view-only. A zero projectile_speed field means no invented gameplay projectile; cosmetic unfolding must not imply additional damage hits. Travel distance / projectile speed must be checked in world units with the real integration coordinate mapping, never guessed from screen pixels.
+
+**Timing audit examples (NOT established gameplay defects):**
+- HF02 Liên Diệm Phần Giới: cast_time 0.62s, projectile_speed 0, LAB DEMO_HIT_AT 1.37s, FADE_END 2.62s, LOOP_SECONDS 3.30s. The +0.75s between cast boundary and simulated hit needs explicit reason and event-alignment review; do not treat demo hit as Combat V2 hit.
+- TAL02 Thiên Lôi Dẫn Nét: cast_time 0.62s, projectile_speed 0, LAB clip roughly 3.13s including fade/replay. Align line/contact to actual event, not the finished MP4 duration.
+- FIST07 Kim Cang Hộ Thể: cast 0.45s, canonical guard duration 4.0s; LAB protection 0.45–4.45s with .40s farewell fade. **4s persistent readable guard is not a 4s cast animation**; separate local block flashes from guard life.
+- POI10 Độc Khí Phệ Tâm: cast 0.65s, projectile_speed 8, status duration 6s; LAB first hit at 1.47s, mark and 8.55s showcase loop. Until the world-distance and runtime event mapping are verified, its simulated travel and hit intervals are NOT validated gameplay timings.
+
+**Indicative visual rhythm, never universal mechanical limits:** for common immediate damage, prioritize readable charge matching cast, contact accent near the confirmed hit event, quick peak (~0.06–0.20s) and short residual (~0.20–0.60s); extra cinematic tail should not block the next action. Ultimates may need a larger authored sequence and must be tested for readability in crowded combat. Persistent guard, mark, healing-over-time and summon cues follow their real status/actor lifecycle; they need not consume a full set of animated hero frames for each second. Choose actual timing from skill contract and visual review, NOT from these indicative ranges. If visuals occlude moving actors or overlap the next cast, shorten/recompose residual light rather than changing combat cooldown.
+
+### C. Frame and art budgets derived from motion
+
+Do not force every skill to 8–12 total frames. Define **key poses** (art-authored silhouette changes), in-betweens / timing holds, atlas/display FPS and layer loops independently. A static spell icon rotating/scaling with per-frame noise does NOT qualify as original frame-by-frame motion. Use a storyboard of roughly 5–6 action beats where applicable; 8–12 key poses is a useful initial drafting aid, NOT a pass/fail count. Short one-shot impacts might use 6–12 genuinely distinct pose frames; longer living light/animal/flame transformations often need 12–24+ where needed; long status cues can loop a small clean atlas and sustain without endlessly baking frames. These are initial production heuristics, not measured requirements or guarantees.
+
+For every atlas report displayed duration, pose count, frame cadence, repeated/held frames, pivot/alpha, and why motion reads at **actual 1× gameplay size**. Assess motion continuity across adjacent frames, not SHA uniqueness alone. Maintain visual identity of each school, original first-party sprite source and independent effects (charge hero, principal energy, actor contact, grounding, ambient fade). Shader/particles remain optional aids; organic circular light bursts are allowed where skill-specific, but generic HUD-like mathematical rings are rejected.
+
+### D. Mandatory progressive gates / STOP economy
+
+1. **G0 Contract & ownership**: live PR HEAD, exact skill ID, catalogue values, visual-only scope, one-writer path, previous approved/rejected owner feedback; timing matrix with UNKNOWN fields.
+2. **G1 Reference deconstruction**: 2–3 observed screenshots/actual frames for material, shape, motion, timing and target response; JX/Source VL external art is research-only, not copied into commercial assets. State observed vs inferred.
+3. **G2 Motion direction**: distinct original silhouette, palette, focal core/body/falloff/negative space, 5–6 beats where relevant, storyboard and hand/weapon/target anchor + follow policy. Review 1× storyboard before baking.
+4. **G3 Hero master**: independent authored high-resolution transparent first-party sprite(s), real key-pose changes, separated MIX body / local ADD / low bloom / impact / residue, original-source provenance and stable storage. NO RIG.
+5. **G3.5 Visual preflight (hard STOP)**: bake tiny provisional Godot LAB before full render; capture real Godot 1280×720 at charge, main energy peak, and contact on a **moving target**. Compare same framing/native 1× against source art/reference; verify hot core, silhouette, anchor and occlusion. Flag MANUAL_ART_REVIEW_REQUIRED; automation may generate proof but cannot automatically certify beauty. Fail => return to G2/G3, not scale/halo patching.
+6. **G4 Motion timeline & collision**: event-indexed visual player; stationary target, left/right moving target, multi-target mixed directions. Source/target anchor follow policy must account for moving enemies; no post-release tracking if skill is intentionally a fixed ground zone. Simulated effects CLEARLY labelled demo, never damage receipts.
+7. **G5 Native full-motion review**: only after G3.5 art preflight passes by a documented self-review; export genuine Godot 4.7.2 Compatibility 1280×720 MP4 + GIF/ZIP fallback, contact sheet >=12 phase/motion checkpoints (or documented fewer for a genuinely shorter clip) including immediately BEFORE/AT/AFTER hit. Watch continuous motion, not just stills; test dark/bright terrain and 1×, inspect target faces and layer order.
+8. **G6 Art decision**: score silhouette, original material, color/light hierarchy, movement continuity, timing, moving-contact accuracy, occlusion/readability, fade, school identity each ≥4/5 as self-gate. Failing any critical category => ART_REWORK_REQUIRED. These are human assessments and cannot honestly be CI asserted.
+9. **G7 Exact-SHA technical QA & handoff**: Godot strict import/parse/focused contract, alpha/atlas/integrity, no unauthorized gameplay changes, run ID, source SHA, emitted movie and 12-frame evidence, manifest with clip/receipt mapping and owner status. Technical QA may pass while art fails. Preserve full assets durably, not just a 14-day CI artifact.
+10. **G8 Separate release authorization**: only explicitly approved skill art and separately authorized event integration/performance/device verification. Fixed 60fps movie is not measured Android/Windows FPS; unchanged V6.3/PvE gate.
+
+**Efficiency rules:** self-review the 3-frame gate and silhouette before a costly full render; do not make release build for art known to be poor; repair one failed phase without repainting owner-approved content. Iterate on one skill until approval or explicit owner pivot; an explicit pivot does not transform prior rejected art into approved art.
+
+### E. Throughput, production times and quality tracking
+
+**Do not promise a fixed number of skills per day or estimate a wall-clock delivery time from a single pilot.** Three owner-accepted Human Poison skills in one morning is a one-session observation, not a validated per-skill SLA. The ~201 Human masters and separate passive/event cues, tiers, live integration and real device QA must not be conflated with 2,196 unique catalogue IDs. Estimate after 10 **new** owner-approved masters, stratified by simpler strike, long projectile, living creature and ultimate.
+
+Record per skill: first-source SHA, source-art creation effort, storyboard/key pose count, G3.5 attempts, full render attempts, visual defect categories, artist iteration count, actual number of owner-approved masters per session, rejected/approved state and exact evidence. Record real elapsed effort only when observable; never invent timings. Optimize approved quality/rework cycles, not artifact counts or generated atlas numbers. Parallel independent school writers are allowed on disjoint files, but central SOP/AGENTS edits have one owner.
+
+### F. Required handoff / school-chat compliance
+
+Every VFX chat MUST independently read the live current **AGENTS.md → this SOP → .agents/skills/tmb-vfx-art-director/SKILL.md → TMB_VFX_SPRITE_LAYER_PIPELINE_20261114.md → school playbook → actual catalogue/ledger**, not copy a stale prior-chat summary. At the start of its work report checked HEAD and exact skill identity; at handoff report G0–G8 result, timing contract, self-score, visual preflight status, actual Godot evidence (or explicitly NOT EXECUTED), exact QA SHA, durable art source path, owner decision and PvE/device hold. For active work on distinct schools, record school-owned write paths; never make contradictory simultaneous global SOP writes. Update owner-approval ledger only from explicit owner statements and keep tier approvals independent. Changes to this central SOP do not themselves create a green CI result, apply to currently running sessions automatically, or publish assets.
