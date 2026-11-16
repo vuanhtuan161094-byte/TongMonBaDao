@@ -37,6 +37,7 @@ LABS={
  "tmb.skill.talisman.hoa_phu.active_01":"godot/labs/combat_lab/talisman06/xich_diem_khai_van.tscn",
  "tmb.skill.talisman.hoa_phu.active_02":"godot/labs/combat_lab/talisman07/lien_diem_phan_gioi.tscn",
  "tmb.skill.talisman.hoa_phu.active_03":"godot/labs/combat_lab/talisman08/hoa_tam_ngung_phu.tscn",
+ "tmb.skill.talisman.hoa_phu.active_04":"godot/labs/combat_lab/talisman09/chu_tuoc_hoi_hoan.tscn",
  "tmb.skill.fist.ba_quyen.active_01":"godot/labs/combat_lab/fist01/khai_son_trong_quyen.tscn",
  "tmb.skill.fist.ba_quyen.active_02":"godot/labs/combat_lab/fist02/phi_than_lien_cuoc.tscn",
  "tmb.skill.fist.ba_quyen.active_03":"godot/labs/combat_lab/fist04/lei_dinh_chan_quyen.tscn",
@@ -52,9 +53,10 @@ APPROVED={
  "tmb.skill.talisman.loi_phu.active_02":"OWNER_EXPLICIT_TAL02_R6_APPROVAL",
  "tmb.skill.talisman.loi_phu.active_03":"OWNER_EXPLICIT_TAL03_R4_APPROVAL",
  "tmb.skill.talisman.hoa_phu.active_02":"HF02_R6_OWNER_APPROVAL_20261116",
+ "tmb.skill.talisman.hoa_phu.active_03":"HF03_R2_OWNER_APPROVAL_20261116",
 }
 PREVIEW_ONLY={"tmb.skill.poison.co_doc.ultimate":"POI06_R11_OWNER_PREVIEW_ACCEPTED_NATIVE_QA_PASS"}
-IN_PROGRESS={"tmb.skill.talisman.hoa_phu.active_03":"HF03_R2_V4_NATIVE_FULL_MOVIE_TECH_PASS_OWNER_PENDING"}
+IN_PROGRESS={"tmb.skill.talisman.hoa_phu.active_04":"HF04_R1_V4_G3_5_OWNER_REVIEW_PENDING"}
 
 def main():
     p=argparse.ArgumentParser()
@@ -74,7 +76,7 @@ def main():
     assert len({r["family_id"] for r in humans})==204,"Human cast family count inconsistent"
     assert set(LABS)<={r["family_id"] for r in humans}, "A listed LAB is not a canonical Human cast"
     assert all((ROOT / lab).exists() for lab in LABS.values()),"Missing actual LAB scene"
-    assert len(LABS)==23 and len(APPROVED)==6
+    assert len(LABS)==24 and len(APPROVED)==7
     for r in records:
         is_human_cast=r["tier"]=="human" and r["visual_work_class"]=="CAST_MASTER"
         fam=r["family_id"]
@@ -106,9 +108,9 @@ def main():
       "", "This is a reproducible **source-catalogue + dedicated-LAB / owner decision** audit, NOT a release completeness claim.",
       "12 schools × 183 IDs = **2,196 IDs**, 420 families; **204 Human CAST_MASTER**",
       "(12 × 17), with other tiers/lineages and passive/event categories requiring separate art/event work.",
-      "**23/204** distinct Human cast masters have dedicated isolated Godot LAB scenes, **6/204** have explicit owner-art approval as understood at this checkpoint. **181/204** do not have a dedicated Human cast LAB yet.",
+      "**24/204** distinct Human cast masters have dedicated isolated Godot LAB scenes, **7/204** have explicit owner-art approval as understood at this checkpoint. **180/204** do not have a dedicated Human cast LAB yet.",
       "Technical CI/illustrative previews do **not** count as owner approval or live PvE integration.",
-      "HF02 R6 approved 10/10, exact art SHA b5a29f1504078a0e66acc9c79306dc86f5f28463. POI06 R11 accepted *preview* only. HF03 R2 completed native V4 G3.5 and full MP4 technical PASS, exact art SHA ac3b02b1aa6c0d7e0c5dd7e418c59c4dc52a0bb4; owner art review PENDING.",
+      "HF02 R6 approved 10/10, exact art SHA b5a29f1504078a0e66acc9c79306dc86f5f28463. POI06 R11 accepted *preview* only. HF03 R2 owner visual approved on 16 Nov 2026; exact native art SHA ac3b02b1aa6c0d7e0c5dd7e418c59c4dc52a0bb4. HF04 first independent LAB currently V4 G3.5 / owner review pending.",
       "", "| School | Human cast | Dedicated LAB | Explicit owner approved | Not yet dedicated |",
       "|---|---:|---:|---:|---:|"]
     for name,allnum,labs,approved in school_rows:
@@ -125,7 +127,7 @@ def main():
        "- Status overlay must be revised after each exact owner decision and actual Godot technical evidence; this report is a dated snapshot.", ""]
     (out/"HUMAN_204_VFX_STATUS.md").write_text("\n".join(lines),encoding="utf-8")
     sums=Counter(r["vfx_actual"] for r in humans)
-    print("VFX_INVENTORY_VERIFIED_ALL_IDS=2196 HUMAN_CAST_MASTERS=204 DEDICATED_LABS=23 OWNER_APPROVED=6 NO_DEDICATED_LABS=181")
+    print("VFX_INVENTORY_VERIFIED_ALL_IDS=2196 HUMAN_CAST_MASTERS=204 DEDICATED_LABS=24 OWNER_APPROVED=7 NO_DEDICATED_LABS=180")
     print("VFX_INVENTORY_HUMAN_BUCKETS",dict(sums))
     for name,_,labs,approved in school_rows:
         print("VFX_SCHOOL",name,"LAB",labs,"APPROVED",approved)
