@@ -8,6 +8,7 @@ on:
       - 'tools/qa/validate_vfx_v4_packet.py'
       - 'docs/operations/vfx_packets/HF05_V4_PREFLIGHT.json'
       - 'tools/vfx/hf05_r1_van_phu.py'
+      - 'tools/vfx/hf05_r6_fire_lotus.py'
       - 'godot/labs/combat_lab/talisman10/**'
       - 'godot/tests/labs/combat_lab/vfx_tal10_contract_test.gd'
 permissions:
@@ -52,6 +53,8 @@ jobs:
           set -euo pipefail
           d="$RUNNER_TEMP/vfx-v4-hf05"
           /usr/bin/python3 tools/vfx/hf05_r1_van_phu.py 2>&1 | tee "$d/hf05-bake.log"
+          /usr/bin/python3 tools/vfx/hf05_r6_fire_lotus.py 2>&1 | tee "$d/hf05-r6-finale-bake.log"
+          grep -Fq 'HF05_R6_FINALE_SOURCE_BAKE_PASS' "$d/hf05-r6-finale-bake.log"
           grep -Fq 'HF05_R1_SOURCE_ART_BAKE_PASS' "$d/hf05-bake.log"
           python3 tools/qa/validate_vfx_v4_packet.py --stage assets --packet "$PACKET" 2>&1 | tee "$d/atlas.log"
           grep -Fq 'VFX_V4_ASSETS_TECHNICAL_PASS' "$d/atlas.log"
