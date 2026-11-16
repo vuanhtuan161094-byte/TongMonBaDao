@@ -43,3 +43,11 @@ New R4 original painted-source violet-jade spiral extracted from a second first-
 - Three clocks intact: catalogue cast1.15/cooldown36/speed8/status8s/2 stacks; local attack 0–3.08s and isolated demo contact 2.20/2.28/2.36; showcase 11s replay. Actual Combat V2 hit receipt moment and world-to-screen projectile mapping **RUNTIME_MAPPING_PENDING**. No damage, state, stack, targeting or SaveService implementation added. `PVE_INTEGRATION_HOLD / V63_OFF / PHYSICAL_QA_PENDING / NO_RIG`.
 
 **R7 next gate:** full 660-frame native movie, ≥12 timecoded stills and true-frame review. This written G3.5 self authorization is for CI movie capture, **not owner visual approval**.
+
+## R8 — remove rectangular square-bounded vortex during expansion (2026-11-16)
+
+Owner's R7 feedback: provisionally usable overall, but the expanding poison region looks imprisoned inside a visible square. R7 remains a versioned baseline, not final art approval. Root cause: diffuse dark source-poster pixels survived alpha extraction and appeared as a rectangle when scaled in Godot.
+
+R8 is a scoped art-source repair, not a new skill. The original 10 painted vortex poses are kept; new independent atlas `poison11_crown_10_r8.png` removes dark rectangular backdrop through luminance/chroma-based opacity suppression, irregular smoothly feathered edges and lower source-floor fading. Original R7 atlas `poison11_crown_10.png` remains tracked for regression. No change to approved other skills or POI11's charge/flight/contact atlas, target motion, cast 1.15s, cap 3, duration 8s, poisoned icon, Combat V2/SaveService/PvE or no-rig constraints. Technical pixel/gutter checks cannot substitute native 1x human review.
+
+At edit time: R8 **G3.5_NATIVE_PENDING**, **FULL_MOVIE_PENDING**, **OWNER_VISUAL_PENDING**, **PVE_INTEGRATION_HOLD** and **PHYSICAL_QA_PENDING**. Run exact-SHA Godot native 1280x720 charge/peak/contact first; only render full native video after direct visual self-review.

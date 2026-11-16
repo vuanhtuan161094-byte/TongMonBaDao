@@ -75,6 +75,32 @@ def feather_frame(im,w,h):
     result.putalpha(ImageChops.multiply(result.getchannel('A'),mask))
     return result
 
+def crown_freeform_alpha(im,t):
+    """R8: preserve original luminous brush strokes, remove rectangular dark source matte."""
+    pix=np.asarray(im).copy()
+    hh,ww=pix.shape[:2]
+    rgb=pix[:,:,:3].astype(np.float32)
+    alpha=pix[:,:,3].astype(np.float32)
+    high=rgb.max(axis=2)
+    low=rgb.min(axis=2)
+    luminance=np.clip((high-71.0)/125.0,0.0,1.0)
+    chroma=np.clip((high-low-15.0)/90.0,0.0,1.0)
+    pigment=np.clip(.23+.77*np.maximum(luminance**.83,chroma**.85),0.0,1.0)
+    backdrop_suppress=np.clip((alpha-13.0)/73.0,0.0,1.0)
+    yy,xx=np.mgrid[:hh,:ww]
+    nx=(xx-.515*ww)/(.55*ww)
+    ny=(yy-.495*hh)/(.58*hh)
+    radius=np.sqrt(nx*nx+ny*ny)
+    theta=np.arctan2(ny,nx)
+    edge=.982+.037*np.sin(5.0*theta+t*2.4)+.023*np.sin(9.0*theta-t*3.3)
+    k=np.clip((edge-radius)/.25,0.0,1.0)
+    organic_feather=k*k*(3.0-2.0*k)
+    tail=np.clip((hh*.985-yy)/(hh*.17),0.0,1.0)
+    floor_feather=tail*tail*(3.0-2.0*tail)
+    pix[:,:,3]=np.clip(alpha*pigment*backdrop_suppress*organic_feather*floor_feather,0,255).astype(np.uint8)
+    pix[pix[:,:,3]==0,:3]=0
+    return Image.fromarray(pix,'RGBA')
+
 def pose(name,i,total,cell):
     w,h=cell;t=i/max(1,total-1)
     im=source(name)
@@ -110,7 +136,8 @@ def pose(name,i,total,cell):
     glow.putalpha(glow.getchannel('A').point(lambda a:round(a*.19*gain)))
     canvas=Image.alpha_composite(glow,canvas)
     canvas.putalpha(canvas.getchannel('A').point(lambda a:min(255,int(a*gain))))
-    return feather_frame(canvas,w,h)
+    frame=feather_frame(canvas,w,h)
+    return crown_freeform_alpha(frame,t) if name=='crown' else frame
 
 def atlas(name,kind,count,cell):
     w,h=cell;cols=4;rows=(count+cols-1)//cols
@@ -129,7 +156,7 @@ def atlas(name,kind,count,cell):
     return sheet
 
 def main():
-    names=[('poison11_charge_10.png','charge',10,(192,192)),('poison11_flight_10.png','flight',10,(224,160)),('poison11_crown_10.png','crown',10,(320,192)),('poison11_contact_08.png','contact',8,(192,160))]
+    names=[('poison11_charge_10.png','charge',10,(192,192)),('poison11_flight_10.png','flight',10,(224,160)),('poison11_crown_10_r8.png','crown',10,(320,192)),('poison11_contact_08.png','contact',8,(192,160))]
     atlas_list=[atlas(*r) for r in names]
     raw=sum(im.width*im.height*4 for im in atlas_list)
     print('POI11_RAW_RGBA8_BYTES',raw,'MiB',round(raw/1048576,3))

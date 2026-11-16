@@ -52,12 +52,22 @@ jobs:
           from pathlib import Path
           from PIL import Image
           d=Path('godot/labs/combat_lab/poison11/r1_original/assets')
-          expected=['poison11_charge_10.png','poison11_flight_10.png','poison11_crown_10.png','poison11_contact_08.png']
+          expected=['poison11_charge_10.png','poison11_flight_10.png','poison11_crown_10_r8.png','poison11_contact_08.png']
           total=0
           for n in expected:
               with Image.open(d/n) as im:total+=im.width*im.height*4
           assert total<8*1024*1024,total
           print('VFX_POI11_R1_RGBA8_BUDGET_PASS=',total)
+          import numpy as np
+          with Image.open(d/'poison11_crown_10_r8.png') as img: array=np.asarray(img.convert('RGBA'))
+          for i in range(10):
+              y=(i//4)*192
+              x=(i%4)*320
+              alpha=array[y:y+192,x:x+320,3]
+              assert int(alpha.max())>=170, ('crown faded out',i)
+              assert int(alpha[0,:].max())==0 and int(alpha[-1,:].max())==0, ('rectangular top/bottom edge',i)
+              assert int(alpha[:,0].max())==0 and int(alpha[:,-1].max())==0, ('rectangular left/right edge',i)
+          print('VFX_POI11_R8_FREEFORM_ALPHA_TECH_PASS=10 painted poses, zero outer perimeter')
           PY
       - name: Restore approved Stage A character fixture without changing tracking
         shell: bash
