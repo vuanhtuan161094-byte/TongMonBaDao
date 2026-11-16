@@ -1,0 +1,153 @@
+name: VFX Poison Basic Human Immortal Divine V3 - Godot MP4 no GIF
+on:
+  workflow_dispatch:
+  push:
+    branches: [integration/pve-p0-playable-ui-20261103]
+    paths:
+      - 'tools/vfx/generate_poison_basic_tiers_v3.py'
+      - 'godot/labs/combat_lab/poison_basic_tiers_v3/**'
+      - 'godot/tests/labs/combat_lab/vfx_poison_basic_tiers_v3_contract_test.gd'
+      - 'docs/operations/vfx_packets/POISON_BASIC_*_V3_V4_PREFLIGHT.json'
+      - 'docs/operations/VFX_POISON_BASIC_THREE_TIER_V3_20261116.md'
+      - '.github/workflows/vfx-poison-basic-tiers-v3-native.yml'
+permissions:
+  contents: write
+jobs:
+  poison-basic-v3-native:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    env:
+      GODOT_AUDIO_DRIVER: Dummy
+      GODOT_RENDERING_DRIVER: opengl3
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+      - name: Install Godot 4.7.2, ffmpeg and RGBA raster tools
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y unzip ffmpeg xvfb python3-pil python3-numpy
+          python3 -c 'import numpy; from PIL import Image; print("POISON_V3_RGBA_SOURCE_READY")'
+          curl --fail --location --retry 3 -o /tmp/godot472.zip 'https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip'
+          echo 'cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4  /tmp/godot472.zip' | sha256sum --check --strict
+          unzip -q /tmp/godot472.zip -d /tmp
+          sudo install -m0755 /tmp/Godot_v4.7.2-stable_linux.x86_64 /usr/local/bin/godot
+          mkdir -p "$RUNNER_TEMP/poisonv3"
+          godot --version | tee "$RUNNER_TEMP/poisonv3/engine.txt"
+          printf 'EXACT_SOURCE_SHA=%s\nNO_GIF\nNO_RIG\nOWNER_VISUAL_PENDING\nPVE_HOLD\nV63_OFF\n' "$GITHUB_SHA" > "$RUNNER_TEMP/poisonv3/metadata.txt"
+      - name: Bake original true-RGBA tier masters and validate V4 packet assets
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/poisonv3"
+          python3 tools/vfx/generate_poison_basic_tiers_v3.py 2>&1 | tee "$d/bake.log"
+          for tier in human immortal divine; do
+            upper="$(echo "$tier" | tr '[:lower:]' '[:upper:]')"
+            packet="docs/operations/vfx_packets/POISON_BASIC_$upper_V3_V4_PREFLIGHT.json"
+            python3 tools/qa/validate_vfx_v4_packet.py --stage packet --packet "$packet" | tee "$d/packet-$tier.log"
+            python3 tools/qa/validate_vfx_v4_packet.py --stage assets --packet "$packet" | tee "$d/assets-$tier.log"
+          done
+          python3 - <<'PY'
+          import numpy as np
+          from PIL import Image
+          from pathlib import Path
+          for tier in ('human','immortal','divine'):
+              root=Path('godot/labs/combat_lab/poison_basic_tiers_v3/assets')/tier
+              for p in root.glob('*.png'):
+                  a=np.asarray(Image.open(p).convert('RGBA'))
+                  assert int(a[:,:,3].max())>75,(p,'empty')
+                  assert np.any((a[:,:,3]>0)&(a[:,:,3]<245)),(p,'no translucent pixels')
+                  assert int(a[0,:,3].max())==0 and int(a[-1,:,3].max())==0,(p,'square source matte')
+              print('POISON_V3_ALPHA_COLOR_PASS',tier)
+          PY
+          find godot/labs/combat_lab/poison_basic_tiers_v3/assets -type f -name '*.png' -print0 | sort -z | xargs -0 sha256sum > "$d/atlas-masters-sha256.txt"
+      - name: Restore previously approved actor fixture, never rig characters
+        run: |
+          set -euo pipefail
+          cat .github/assets/p3/female_stage_a/part{01..14}.b64 .github/assets/p3/female_stage_a/part15a.b64 .github/assets/p3/female_stage_a/part15b.b64 .github/assets/p3/female_stage_a/part{16..20}.b64 | tr -d '\r\n\t ' | base64 --decode > /tmp/tmb_stage_a_pack.zip
+          echo '6a4213b9129ffb3f438c21cbb5326672ddf8915323836bf80cb33b8e5fabfdca  /tmp/tmb_stage_a_pack.zip' | sha256sum --check --strict
+          unzip -q /tmp/tmb_stage_a_pack.zip -d .
+      - name: Godot strict import, parse and three-tier moving-WALK-target test
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/poisonv3"
+          bash tools/qa/run_godot_strict.sh --headless --path godot --import 2>&1 | tee "$d/import.log"
+          bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://labs/combat_lab/poison_basic_tiers_v3/poison_basic_tiers.gd 2>&1 | tee "$d/parse.log"
+          bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/labs/combat_lab/vfx_poison_basic_tiers_v3_contract_test.gd 2>&1 | tee "$d/godot-focused.log"
+          grep -Fq 'VFX_POISON_BASIC_TIERS_V3_RESULT=PASS failures=0' "$d/godot-focused.log"
+      - name: Real 1280x720 Godot MP4 plus 9 phase screenshots for three tiers
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/poisonv3"
+          xvfb-run -a -s '-screen 0 1280x720x24' bash tools/qa/run_godot_strict.sh --path godot --resolution 1280x720 --fixed-fps 60 --write-movie "$d/native.avi" --quit-after 234 res://labs/combat_lab/poison_basic_tiers_v3/poison_basic_tiers.tscn 2>&1 | tee "$d/godot-preflight.log"
+          grep -Fq 'VFX_POISON_BASIC_TIERS_V3_READY' "$d/godot-preflight.log"
+          ffmpeg -y -hide_banner -loglevel error -i "$d/native.avi" -pix_fmt yuv420p -c:v libx264 -crf 16 -movflags +faststart "$d/v4-poison-basic-tiers-v3-native.mp4"
+          for tier in human immortal divine; do
+            case "$tier" in
+              human) a=0.08; p=0.42; c=0.80;;
+              immortal) a=1.34; p=1.68; c=2.06;;
+              divine) a=2.60; p=2.94; c=3.32;;
+            esac
+            sub="$d/$tier"
+            mkdir -p "$sub"
+            cp "$d/godot-focused.log" "$d/godot-preflight.log" "$sub/"
+            ln -s ../v4-poison-basic-tiers-v3-native.mp4 "$sub/v4-poison-basic-tiers-v3-native.mp4"
+            ffmpeg -y -hide_banner -loglevel error -ss "$a" -i "$d/v4-poison-basic-tiers-v3-native.mp4" -frames:v 1 "$sub/v4-charge.png"
+            ffmpeg -y -hide_banner -loglevel error -ss "$p" -i "$d/v4-poison-basic-tiers-v3-native.mp4" -frames:v 1 "$sub/v4-peak.png"
+            ffmpeg -y -hide_banner -loglevel error -ss "$c" -i "$d/v4-poison-basic-tiers-v3-native.mp4" -frames:v 1 "$sub/v4-contact.png"
+            cp "$sub/v4-charge.png" "$d/$tier-charge.png"
+            cp "$sub/v4-peak.png" "$d/$tier-peak.png"
+            cp "$sub/v4-contact.png" "$d/$tier-contact.png"
+            upper="$(echo "$tier" | tr '[:lower:]' '[:upper:]')"
+            packet="docs/operations/vfx_packets/POISON_BASIC_$upper_V3_V4_PREFLIGHT.json"
+            python3 tools/qa/validate_vfx_v4_packet.py --stage evidence --packet "$packet" --out "$sub" --sha "$GITHUB_SHA" | tee "$d/evidence-$tier.log"
+          done
+          sha256sum "$d/v4-poison-basic-tiers-v3-native.mp4" "$d/"*-charge.png "$d/"*-peak.png "$d/"*-contact.png > "$d/G35-SHA256.txt"
+          rm "$d/native.avi"
+      - name: Safely preserve original masters and atlas outputs on existing branch
+        if: success() && github.event_name == 'push'
+        run: |
+          set -euo pipefail
+          branch='integration/pve-p0-playable-ui-20261103'
+          folder='godot/labs/combat_lab/poison_basic_tiers_v3/assets'
+          mkdir -p "$RUNNER_TEMP/poisonv3/saved"
+          cp -R "$folder"/. "$RUNNER_TEMP/poisonv3/saved/"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          for attempt in 1 2 3; do
+            git fetch origin "$branch"
+            latest="$(git rev-parse FETCH_HEAD)"
+            if ! git merge-base --is-ancestor "$GITHUB_SHA" "$latest"; then echo SOURCE_CHANGED_ABORT; exit 0; fi
+            if test -n "$(git diff --name-only "$GITHUB_SHA" "$latest" -- tools/vfx/generate_poison_basic_tiers_v3.py godot/labs/combat_lab/poison_basic_tiers_v3/ .github/workflows/vfx-poison-basic-tiers-v3-native.yml)"; then
+              echo POISON_V3_CONCURRENT_SOURCE_CHANGE_ABORT; exit 0
+            fi
+            git reset --hard "$latest"
+            mkdir -p "$folder"
+            cp -R "$RUNNER_TEMP/poisonv3/saved"/. "$folder/"
+            git add "$folder"
+            if git diff --cached --quiet; then echo ALREADY_SAVED; exit 0; fi
+            git commit -m 'art(poison-basic-v3): persist source-preserved three-tier original RGBA atlases'
+            if git push origin "HEAD:refs/heads/$branch"; then
+              echo "ASSET_COMMIT=$(git rev-parse HEAD)" | tee "$RUNNER_TEMP/poisonv3/assets-commit.txt"
+              exit 0
+            fi
+          done
+          echo ART_PUSH_CONFLICT; exit 1
+      - name: Upload real native MP4, nine screenshot/three V4 manifests and source
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: poison-basic-tiers-v3-${{ github.sha }}
+          retention-days: 14
+          if-no-files-found: warn
+          path: |
+            ${{ runner.temp }}/poisonv3/*.log
+            ${{ runner.temp }}/poisonv3/*.txt
+            ${{ runner.temp }}/poisonv3/*.png
+            ${{ runner.temp }}/poisonv3/*.mp4
+            ${{ runner.temp }}/poisonv3/**/*.log
+            ${{ runner.temp }}/poisonv3/**/*.json
+            ${{ runner.temp }}/poisonv3/**/*.png
+            godot/labs/combat_lab/poison_basic_tiers_v3/assets/**/*.png
+            godot/labs/combat_lab/poison_basic_tiers_v3/assets/**/**/*.png
