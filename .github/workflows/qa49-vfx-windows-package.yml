@@ -87,11 +87,28 @@ jobs:
           "PACKAGE_ZIP=$output\TMB_VFX_PLAYTEST_WINDOWS.zip" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
           "GODOT_IMPORT_EXIT=$importExit" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
           "R1_V10_TRANSFER_REQUIRED_ON_FIRST_OWNER_LAUNCH=YES (not uploaded; proprietary transfer source remains local)" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
+          $artifactStage = Join-Path $output "artifact_unpacked"
+          Expand-Archive -LiteralPath (Join-Path $output "TMB_VFX_PLAYTEST_WINDOWS.zip") -DestinationPath $artifactStage
+          $artifactPackage = Join-Path $artifactStage "TMB_VFX_PLAYTEST_WINDOWS"
+          if (-not (Test-Path -LiteralPath (Join-Path $artifactPackage "START_TEST.cmd") -PathType Leaf)) { throw "Staged artifact package is missing its one-click launcher." }
+          $packageManifest = Get-Content -Raw -LiteralPath (Join-Path $artifactPackage "package_manifest.json") | ConvertFrom-Json
+          $expectedPaths = @($packageManifest.files.PSObject.Properties.Name) + @("package_manifest.json")
+          $actualPaths = @(Get-ChildItem -LiteralPath $artifactPackage -Recurse -File | ForEach-Object { $_.FullName.Substring($artifactPackage.Length).TrimStart("\").Replace("\", "/") })
+          $pathDifference = @(Compare-Object -ReferenceObject $expectedPaths -DifferenceObject $actualPaths)
+          if ($pathDifference.Count -ne 0) { throw "Staged artifact differs from package checksum manifest: $($pathDifference | Out-String)" }
+          Push-Location $artifactPackage
+          try {
+            & $env:ComSpec /d /c "START_TEST.cmd --smoke"
+            if ($LASTEXITCODE -ne 0) { throw "Staged artifact launcher smoke failed with exit $LASTEXITCODE." }
+          } finally {
+            Pop-Location
+          }
+          "ARTIFACT_MANIFEST_FILE_COUNT=$($actualPaths.Count)" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
       - name: Upload one-click Windows package
         uses: actions/upload-artifact@v4
         with:
           name: TMB_VFX_PLAYTEST_WINDOWS
-          path: ${{ runner.temp }}/QA49 package (thử 中文)/TMB_VFX_PLAYTEST_WINDOWS/
+          path: ${{ runner.temp }}/QA49 package (thử 中文)/artifact_unpacked/TMB_VFX_PLAYTEST_WINDOWS/
           if-no-files-found: error
           retention-days: 90
 
