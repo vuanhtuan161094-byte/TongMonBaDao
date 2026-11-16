@@ -40,9 +40,16 @@ def gold_fragment(box, size):
     alpha=px[:,:,3].astype(np.float32)*keep*np.clip((light-75.)/120.,0,1)
     h,w=alpha.shape
     xx=np.arange(w,dtype=float);yy=np.arange(h,dtype=float)
-    ex=np.minimum(1,np.minimum(xx,w-1-xx)/max(1,w*.055))
-    ey=np.minimum(1,np.minimum(yy,h-1-yy)/max(1,h*.075))
-    px[:,:,3]=np.clip(alpha*ex[None,:]*ey[:,None],0,255).astype('uint8')
+    # R4 Godot 1x review exposed hard rectangular matte boundaries.
+    # R5 feathering happens on painted alpha, not as a runtime HUD shape.
+    ex=np.clip(np.minimum(xx,w-1-xx)/max(1,w*.235),0,1)
+    ey=np.clip(np.minimum(yy,h-1-yy)/max(1,h*.275),0,1)
+    nx=(xx-(w-1)*.5)/max(1,w*.55)
+    ny=(yy-(h-1)*.5)/max(1,h*.57)
+    radial=np.sqrt(nx[None,:]**2+ny[:,None]**2)
+    falloff=np.clip((1.10-radial)/.31,0,1)
+    matte=np.sqrt(ex[None,:]*ey[:,None])*falloff
+    px[:,:,3]=np.clip(alpha*matte,0,255).astype('uint8')
     return Image.fromarray(px,'RGBA')
 
 ARCH=gold_fragment((52,323,720,660),(283,175))
@@ -135,9 +142,9 @@ def cast_pose(k):
           energy*.87,1.4,.30)
     dome=ARCH.resize((round(246+33*lock),round(150+19*lock)),
                      Image.Resampling.LANCZOS)
-    layer_at(im,scaled_alpha(dome,energy*(.55+.30*lock)),
+    layer_at(im,scaled_alpha(dome,energy*(.63+.32*lock)),
              (160,166+rising*.33))
-    layer_at(im,scaled_alpha(CROWN,energy*(.27+.48*lock)),
+    layer_at(im,scaled_alpha(CROWN,energy*(.32+.50*lock)),
              (160,94+rising))
     layer_at(im,scaled_alpha(FOOTSEAL,energy*.93),(160,272))
     if k in (3,4,5):
@@ -157,12 +164,12 @@ def status_pose(k):
           breath*.65,1.30,.22)
     left=LEFT_GOLD.resize((34,62),Image.Resampling.LANCZOS)
     right=RIGHT_GOLD.resize((34,62),Image.Resampling.LANCZOS)
-    layer_at(im,scaled_alpha(left,breath*.56),(39,92))
-    layer_at(im,scaled_alpha(right,breath*.58),(153,92))
+    layer_at(im,scaled_alpha(left,breath*.85),(39,92))
+    layer_at(im,scaled_alpha(right,breath*.87),(153,92))
     base=FOOTSEAL.resize((151,29),Image.Resampling.LANCZOS)
-    layer_at(im,scaled_alpha(base,breath*.82),(96,168+1.8*math.sin(phase)))
+    layer_at(im,scaled_alpha(base,breath*.97),(96,168+1.8*math.sin(phase)))
     crest=CROWN.resize((90,36),Image.Resampling.LANCZOS)
-    layer_at(im,scaled_alpha(crest,breath*.48),(96,42))
+    layer_at(im,scaled_alpha(crest,breath*.48),(96,56))
     return im
 
 def contact_pose(k):
@@ -176,12 +183,12 @@ def contact_pose(k):
     stone(im,(166+recoil,132),(95,129),-23+13*progress,
           intensity*.90,1.7,.40)
     layer_at(im,scaled_alpha(BLOCK_CURVE,intensity*.92),
-             (154+recoil,129))
+             (168+recoil,129))
     layer_at(im,scaled_alpha(BLOCK_FLASH,intensity*.58),
-             (166+recoil,146))
+             (179+recoil,146))
     if k in (1,2,3,4):
         bloom=BLOCK_CURVE.filter(ImageFilter.GaussianBlur(7))
-        layer_at(im,scaled_alpha(bloom,intensity*.28),(157+recoil,130))
+        layer_at(im,scaled_alpha(bloom,intensity*.28),(170+recoil,130))
     randomizer=random.Random(SEED+101*k)
     for j in range(9):
         dx=(16+j*4)*progress+randomizer.randrange(-5,6)
