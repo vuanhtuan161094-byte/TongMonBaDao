@@ -110,3 +110,12 @@ Do not export an 8–11s status-loop movie at **every** art iteration if the act
 - Sprite poses vs GIF frames vs encoded MP4 frames (report three separate counts):
 - Four-way visual projectile aiming where relevant (one atlas, no 4 artwork sets):
 - Source/atlas/technical/art/owner/PvE/physical gates all **separate**:
+
+
+## V4.2.1 GIF-only reference and original RGBA color/alpha gate
+
+- GIF reference used for movement/timing only? YES/NO. **NO direct pixel extraction / background removal from GIF into production atlases**.
+- Independently repainted transparent FX master paths, frame-by-frame pose source, saturated colored semi-transparent materials, MIX + restrained ADD:
+- Bright-background and dark-background RGB/alpha evidence (avoid black/gray fringing, muddy opacity and rectangular matte):
+- Native 1x Godot three-shot source-to-render comparison, art self gate, owner gate and exact SHA:
+- Previously attempted GIF-crop prototypes are historical rejected examples, not approved game artwork.
