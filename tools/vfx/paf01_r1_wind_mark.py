@@ -162,7 +162,9 @@ def contact(i,master):
     c=Image.new("RGBA",(256,256))
     q=i/11
     scale=.26+.34*smooth(.02,.79,q)
-    alpha=smooth(.0,.22,q)*(1-smooth(.70,1,q))
+    # A real source-pigment first and final cell are required; the Godot
+    # renderer owns the actual fade. No empty-frame discontinuity.
+    alpha=(.22+.78*smooth(.0,.22,q))*(.12+.88*(1-smooth(.70,1,q)))
     copy_at(c,master,128,126,scale,rot=-9+14*q,alpha=alpha)
     return c
 
