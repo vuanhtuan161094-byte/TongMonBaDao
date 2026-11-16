@@ -70,7 +70,7 @@ def charge(i,hero,small,fire):
         f=fire_spray(fire,i+j*4,157,51,.20+.39*q)
         place(c,f,(164+math.cos(a)*(36-15*q),151+math.sin(a)*(29-12*q)),
               1,-39+j*59,.98)
-    place(c,hero,(158,147),.70+.23*q,math.sin(q*math.pi*1.7)*7,.42+.55*q)
+    place(c,hero,(158,147),.96+.28*q,math.sin(q*math.pi*1.7)*7,.54+.45*q)
     return lumina(c,.33)
 
 def storm(i,hero,small,fire):
@@ -116,13 +116,13 @@ def impact(i,hero,fire):
     # One broad irregular original fire burst plus signed paper fragments.
     for j in range(7):
         a=j*math.tau/7+i*.07
-        r=34+123*q*(.68+.20*math.sin(j*1.47))
+        r=58+202*(min(1.0,q*1.75))*(.71+.24*math.sin(j*1.47))
         x=320+math.cos(a)*r;y=183+math.sin(a)*r*.48
-        f=fire_spray(fire,i+j*11,198+int(47*q),79+int(26*q),decay*.94)
+        f=fire_spray(fire,i+j*11,237+int(57*q),87+int(32*q),min(1.0,decay*1.12))
         place(c,f,(x,y),1,-math.degrees(a)*.24-28,1.0)
     if q<.64:
-        place(c,hero,(320,159),.78+q*.64,5*math.sin(i*.5),decay*.66)
-    return lumina(c,decay*.55)
+        place(c,hero,(320,161),.96+q*.74,5*math.sin(i*.5),decay*.75)
+    return lumina(c,decay*.63)
 
 def atlas(seq,w,h):
     result=Image.new("RGBA",(w*4,h*math.ceil(len(seq)/4)))
