@@ -1,0 +1,43 @@
+name: VFX inventory | 2196 IDs / 204 Human cast status snapshot
+on:
+  workflow_dispatch:
+  push:
+    branches: [integration/pve-p0-playable-ui-20261103]
+    paths:
+      - '.github/workflows/vfx-human-inventory.yml'
+      - 'tools/qa/build_vfx_progress_inventory.py'
+      - 'docs/operations/vfx_school_ledgers/**'
+      - 'docs/operations/vfx_packets/HF02_R6_OWNER_APPROVAL_20261116.md'
+permissions:
+  contents: read
+jobs:
+  catalogue-to-real-lab-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Check immutable 12-school ledger and produce exact-SHA status
+        shell: bash
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/vfx-inventory"
+          mkdir -p "$d"
+          echo "REPO_SHA=$GITHUB_SHA" > "$d/SOURCE_SHA.txt"
+          python3 tools/qa/build_vfx_progress_inventory.py --out "$d" | tee "$d/INVENTORY_CHECKS.log"
+          grep -Fq 'VFX_INVENTORY_VERIFIED_ALL_IDS=2196 HUMAN_CAST_MASTERS=204 DEDICATED_LABS=23 OWNER_APPROVED=6 NO_DEDICATED_LABS=181' "$d/INVENTORY_CHECKS.log"
+          test "$(($(wc -l < "$d/ALL_2196_VFX_STATUS.csv")-1))" -eq 2196
+          test "$(($(wc -l < "$d/HUMAN_204_VFX_STATUS.csv")-1))" -eq 204
+          sha256sum "$d/"*.csv "$d/"*.md > "$d/STATUS_SHA256SUMS.txt"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: vfx-inventory-${{ github.sha }}
+          retention-days: 30
+          if-no-files-found: warn
+          path: |
+            ${{ runner.temp }}/vfx-inventory/*.csv
+            ${{ runner.temp }}/vfx-inventory/*.md
+            ${{ runner.temp }}/vfx-inventory/*.txt
+            ${{ runner.temp }}/vfx-inventory/*.log
