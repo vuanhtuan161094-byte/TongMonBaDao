@@ -1,0 +1,150 @@
+name: VFX POI10 R2 | Painted Lotus + Shared Poison Status V4
+on:
+  workflow_dispatch:
+  push:
+    branches: [integration/pve-p0-playable-ui-20261103]
+    paths:
+      - 'godot/labs/combat_lab/poison10/r2_remake/**'
+      - 'godot/labs/combat_lab/shared_poison_status/**'
+      - 'tools/vfx/generate_poi10_r2_painted.py'
+      - 'godot/tests/labs/combat_lab/vfx_poi10_r2_contract_test.gd'
+      - 'docs/operations/vfx_packets/POI10_R2_V4_PREFLIGHT.json'
+      - 'docs/operations/VFX_POI10_R2_REMAKE_20261116.md'
+      - '.github/workflows/vfx-poi-10-r2-native.yml'
+permissions:
+  contents: write
+  actions: write
+jobs:
+  poi10-r2-preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      GODOT_AUDIO_DRIVER: Dummy
+      GODOT_RENDERING_DRIVER: opengl3
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+      - name: Install official Godot 4.7.2 and media QA dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq unzip ffmpeg xvfb python3-pil
+          curl --fail --location --retry 3 -o /tmp/godot472.zip 'https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip'
+          echo 'cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4  /tmp/godot472.zip' | sha256sum --check --strict
+          unzip -q /tmp/godot472.zip -d /tmp
+          sudo install -m0755 /tmp/Godot_v4.7.2-stable_linux.x86_64 /usr/local/bin/godot
+          mkdir -p "$RUNNER_TEMP/poi10-r2"
+          godot --version | tee "$RUNNER_TEMP/poi10-r2/engine.txt"
+          printf 'EXACT_SHA=%s\nOWNER_VISUAL_PENDING\nV63_OFF\nPVE_HOLD\nNO_RIG\nNO_LIVE_STATUS_WRITES\n' "$GITHUB_SHA" > "$RUNNER_TEMP/poi10-r2/metadata.txt"
+      - name: Bake ORIGINAL image-backed poses, one shared status badge, validate V4 packet and atlas
+        shell: bash
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/poi10-r2"
+          python3 tools/vfx/generate_poi10_r2_painted.py | tee "$d/bake.log"
+          python3 tools/qa/validate_vfx_v4_packet.py --stage packet --packet docs/operations/vfx_packets/POI10_R2_V4_PREFLIGHT.json | tee "$d/v4-packet.log"
+          python3 tools/qa/validate_vfx_v4_packet.py --stage assets --packet docs/operations/vfx_packets/POI10_R2_V4_PREFLIGHT.json | tee "$d/v4-assets.log"
+          sha256sum godot/labs/combat_lab/poison10/r2_remake/assets/*.png godot/labs/combat_lab/shared_poison_status/assets/*.png > "$d/atlas-sha256.txt"
+      - name: Restore original accepted Stage A actor, without touching tracked source
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat .github/assets/p3/female_stage_a/part{01..14}.b64 .github/assets/p3/female_stage_a/part15a.b64 .github/assets/p3/female_stage_a/part15b.b64 .github/assets/p3/female_stage_a/part{16..20}.b64 | tr -d '\r\n\t ' | base64 --decode > /tmp/tmb_stage_a_pack.zip
+          test "$(stat -c%s /tmp/tmb_stage_a_pack.zip)" -eq 44838
+          echo '6a4213b9129ffb3f438c21cbb5326672ddf8915323836bf80cb33b8e5fabfdca  /tmp/tmb_stage_a_pack.zip' | sha256sum --check --strict
+          unzip -q /tmp/tmb_stage_a_pack.zip -d .
+      - name: Exact Godot strict import, script parse, moving MONSTER and shared status contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/poi10-r2"
+          bash tools/qa/run_godot_strict.sh --headless --path godot --import 2>&1 | tee "$d/import.log"
+          bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://labs/combat_lab/poison10/r2_remake/doc_khi_phe_tam_r2.gd 2>&1 | tee "$d/parse.log"
+          bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/labs/combat_lab/vfx_poi10_r2_contract_test.gd 2>&1 | tee "$d/godot-focused.log"
+          grep -Fq 'VFX_POI10_R2_RESULT=PASS failures=0' "$d/godot-focused.log"
+      - name: G3.5 real native Godot charge, peak and moving-monster contact STOP gate
+        shell: bash
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/poi10-r2"
+          xvfb-run -a -s '-screen 0 1280x720x24' bash tools/qa/run_godot_strict.sh --path godot --resolution 1280x720 --fixed-fps 60 --write-movie "$d/v4-poi10-r2-native.avi" --quit-after 115 res://labs/combat_lab/poison10/r2_remake/doc_khi_phe_tam_r2.tscn 2>&1 | tee "$d/godot-preflight.log"
+          grep -Fq 'VFX_POI10_R2_READY' "$d/godot-preflight.log"
+          test -s "$d/v4-poi10-r2-native.avi"
+          ffmpeg -y -hide_banner -loglevel error -i "$d/v4-poi10-r2-native.avi" -pix_fmt yuv420p -c:v libx264 -crf 16 -movflags +faststart "$d/v4-poi10-r2-native.mp4"
+          ffmpeg -y -hide_banner -loglevel error -ss 0.33 -i "$d/v4-poi10-r2-native.mp4" -frames:v 1 "$d/v4-charge.png"
+          ffmpeg -y -hide_banner -loglevel error -ss 1.40 -i "$d/v4-poi10-r2-native.mp4" -frames:v 1 "$d/v4-peak.png"
+          ffmpeg -y -hide_banner -loglevel error -ss 1.67 -i "$d/v4-poi10-r2-native.mp4" -frames:v 1 "$d/v4-contact.png"
+          python3 tools/qa/validate_vfx_v4_packet.py --stage evidence --packet docs/operations/vfx_packets/POI10_R2_V4_PREFLIGHT.json --out "$d" --sha "$GITHUB_SHA" | tee "$d/v4-evidence.log"
+          sha256sum "$d/v4-poi10-r2-native.mp4" "$d/v4-"*.png > "$d/G35-SHA256.txt"
+          rm "$d/v4-poi10-r2-native.avi"
+      - name: Full native movie only after explicit G3.5 ART self-gate commit
+        if: contains(github.event.head_commit.message, '[POI10_R2_G35_ART_OK]')
+        shell: bash
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/poi10-r2"
+          xvfb-run -a -s '-screen 0 1280x720x24' bash tools/qa/run_godot_strict.sh --path godot --resolution 1280x720 --fixed-fps 60 --write-movie "$d/POI10-R2-full.avi" --quit-after 513 res://labs/combat_lab/poison10/r2_remake/doc_khi_phe_tam_r2.tscn 2>&1 | tee "$d/full-movie.log"
+          grep -Fq 'VFX_POI10_R2_READY' "$d/full-movie.log"
+          test -s "$d/POI10-R2-full.avi"
+          ffmpeg -y -hide_banner -loglevel error -i "$d/POI10-R2-full.avi" -pix_fmt yuv420p -c:v libx264 -crf 16 -movflags +faststart "$d/POI10-R2-full.mp4"
+          ffprobe -v error -select_streams v:0 -show_entries stream=width,height,nb_frames,avg_frame_rate -of default=noprint_wrappers=1 "$d/POI10-R2-full.mp4" | tee "$d/full-dimensions.txt"
+          grep -Fxq width=1280 "$d/full-dimensions.txt"
+          grep -Fxq height=720 "$d/full-dimensions.txt"
+          for sec in 0.12 0.33 0.59 0.77 1.05 1.27 1.40 1.51 1.67 1.95 2.28 4.50 6.60 7.90; do
+            ffmpeg -y -hide_banner -loglevel error -ss "$sec" -i "$d/POI10-R2-full.mp4" -frames:v 1 "$d/frame-$sec.png"
+          done
+          ffmpeg -y -hide_banner -loglevel error -i "$d/POI10-R2-full.mp4" -vf 'fps=8,scale=640:-1:flags=lanczos' -loop 0 "$d/POI10-R2-full.gif"
+          sha256sum "$d/POI10-R2-full.mp4" "$d/POI10-R2-full.gif" "$d"/frame-*.png > "$d/FULL-SHA256.txt"
+          rm "$d/POI10-R2-full.avi"
+      - name: Guarded fast-forward source sprites to SAME PR branch (no force, no merge)
+        if: success() && github.event_name == 'push'
+        shell: bash
+        run: |
+          set -euo pipefail
+          branch='integration/pve-p0-playable-ui-20261103'
+          folder='godot/labs/combat_lab/poison10/r2_remake/assets'
+          common='godot/labs/combat_lab/shared_poison_status/assets'
+          mkdir -p "$RUNNER_TEMP/poi10-r2/staged"
+          cp "$folder/"*.png "$RUNNER_TEMP/poi10-r2/staged/"
+          cp "$common/poisoned_badge_64.png" "$RUNNER_TEMP/poi10-r2/staged/"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          for attempt in 1 2 3; do
+            git fetch origin "$branch"
+            latest="$(git rev-parse FETCH_HEAD)"
+            if ! git merge-base --is-ancestor "$GITHUB_SHA" "$latest"; then echo BRANCH_REWRITTEN_ABORT; exit 0; fi
+            if test -n "$(git diff --name-only "$GITHUB_SHA" "$latest" -- "$folder" "$common" tools/vfx/generate_poi10_r2_painted.py .github/workflows/vfx-poi-10-r2-native.yml docs/operations/vfx_packets/POI10_R2_V4_PREFLIGHT.json)"; then echo POI10_SOURCE_CHANGED_ABORT; exit 0; fi
+            git reset --hard "$latest"
+            mkdir -p "$folder" "$common"
+            cp "$RUNNER_TEMP/poi10-r2/staged/poison10_r2_"*.png "$folder/"
+            cp "$RUNNER_TEMP/poi10-r2/staged/poisoned_badge_64.png" "$common/"
+            git add "$folder/"*.png "$common/poisoned_badge_64.png"
+            if git diff --cached --quiet; then echo POI10_ATLASES_ALREADY_TRACKED; exit 0; fi
+            git commit -m 'art(poi10-r2): commit original alpha flipbooks and shared status icon'
+            if git push origin "HEAD:refs/heads/$branch"; then
+              echo "POI10_ATLAS_BINARY_SHA=$(git rev-parse HEAD)" | tee "$RUNNER_TEMP/poi10-r2/tracked-assets.txt"
+              exit 0
+            fi
+          done
+          echo POI10_BINARY_PUSH_CONFLICT
+          exit 1
+      - name: Publish actual native evidence; art/owner gate intentionally PENDING
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: poi10-r2-v4-${{ github.sha }}
+          retention-days: 14
+          if-no-files-found: warn
+          path: |
+            ${{ runner.temp }}/poi10-r2/*.log
+            ${{ runner.temp }}/poi10-r2/*.txt
+            ${{ runner.temp }}/poi10-r2/*.json
+            ${{ runner.temp }}/poi10-r2/*.png
+            ${{ runner.temp }}/poi10-r2/*.mp4
+            ${{ runner.temp }}/poi10-r2/*.gif
+            godot/labs/combat_lab/poison10/r2_remake/assets/*.png
+            godot/labs/combat_lab/shared_poison_status/assets/*.png

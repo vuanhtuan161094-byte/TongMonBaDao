@@ -76,16 +76,19 @@ def validate_packet(root: Path, packet: dict) -> dict:
     require(canonical.get("school") == packet["school"], "matched canonical skill school mismatch")
     declared = packet.get("declared_contract", {})
     for field in ("effect", "element", "shape", "target_limit", "hit_count", "range", "radius", "cast_time", "cooldown", "projectile_speed", "duration"):
-        # Missing hit_count on some older GUARD catalogues means no declared
-        # outgoing hit (do not invent a damage event or edit game balance).
-        if field == "hit_count" and field not in canonical and canonical.get("effect") == "guard":
-            require(equals_number(declared.get(field), 0), "legacy guard must declare zero visual outgoing hits")
+        # Missing canonical hit_count must NOT be invented in VFX metadata.
+        if field == "hit_count" and field not in canonical:
+            if canonical.get("effect") == "guard":
+                require(equals_number(declared.get(field), 0), "legacy guard must declare zero visual outgoing hits")
+            else:
+                require("hit_count" in declared and declared.get("hit_count") is None,
+                        "undeclared catalogue hit_count must be explicitly null, not invented")
             continue
         require(field in declared and field in canonical, "missing canonical contract field: " + field)
         a, b = declared[field], canonical[field]
         require(equals_number(a, b) if isinstance(b, (int, float)) else a == b, "catalogue mismatch for " + field + ": " + str(a) + " != " + str(b))
     require(canonical.get("enabled", False) is not True, "unexpected skill-level enabling")
-    require(declared["target_limit"] >= 1 and declared["hit_count"] >= 0, "invalid declared target or hit count")
+    require(declared["target_limit"] >= 1 and (declared["hit_count"] is None or declared["hit_count"] >= 0), "invalid declared target or hit count")
 
     timing = packet.get("time_contract", {})
     require(timing.get("combat_clock") == "CATALOGUE_GATED_NOT_LIVE", "must label gated combat clock")
