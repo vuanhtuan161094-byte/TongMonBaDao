@@ -3,7 +3,7 @@
   "packet_id": "HF05_R1_VAN_PHU_PHAN_THIEN_NATIVE_V4",
   "skill_id": "tmb.skill.talisman.hoa_phu.ultimate.human",
   "school": "talisman",
-  "revision": "HF05_R6_FINALE_ONLY_SOURCE_PAINTED_FIRE_LOTUS_OWNER_VISUAL_PENDING",
+  "revision": "HF05_R7_SOLAR_PILLAR_ASYMMETRIC_WINGS_AND_EMBERS_OWNER_PENDING",
   "catalogue_path": "godot/data/combat/v63_talisman_combat_catalog.json",
   "scene_path": "godot/labs/combat_lab/talisman10/van_phu_phan_thien.tscn",
   "lab_script": "godot/labs/combat_lab/talisman10/van_phu_phan_thien.gd",
@@ -25,7 +25,7 @@
     "source_class": "FIRST_PARTY_IMAGE_GENERATED_MEGA_PAPER_TALISMAN_WITH_SOURCE_PAINTED_FLAME",
     "rights_note": "HF05 new original AI-illustrated 炎 central talisman created for TMB; its 96×132 RGBA master isolated from the promotional concept and saved as first-party native alpha WEBP base64 in repo, but the promotional poster is NOT a Godot screenshot. Support scroll and fire are original in-repo first-party artworks. No unlicensed source A/JX/VL pixels.",
     "master_quality_status": "MANUAL_ART_REVIEW_REQUIRED",
-    "known_source_limitation": "Master is 96×132 compact painted alpha WebP derived from larger 1672×941 promotional illustration; only the isolated card image enters the atlas, not text or scenery. Storm and rain are independently COMPOSED source-image poses with staggered position/angle/splashes, NOT 72 individually hand-painted masters. Must visually inspect 1× and movement; hashes are technical only. R6 ending-only additional 20 RGBA poses for asymmetric petal-shaped flame bloom and source-painted ember drift from an existing project-owned original. This is not a separately hand-painted 20-cell painted master or a new hit. G3.5 source review recognizes user rejected R5 final ending; R6's owner acceptance is still pending.",
+    "known_source_limitation": "Master is 96×132 compact painted alpha WebP derived from larger 1672×941 promotional illustration; only the isolated card image enters the atlas, not text or scenery. Storm and rain are independently COMPOSED source-image poses with staggered position/angle/splashes, NOT 72 individually hand-painted masters. Must visually inspect 1× and movement; hashes are technical only. R6 ending-only additional 20 RGBA poses for asymmetric petal-shaped flame bloom and source-painted ember drift from an existing project-owned original. This is not a separately hand-painted 20-cell painted master or a new hit. G3.5 source review recognizes user rejected R5 final ending; R6's owner acceptance is still pending. R6 self-rejected because native movie showed one generic circular ring; R7 pivots to first-party painterly GOLD-WHITE vertical solar flame column, two nonidentical side flame fans and actual painted ember crops, so original silhouette stays irregular (no geometric ring).",
     "master_files": [
       {
         "path": "godot/labs/combat_lab/talisman10/art_sources/hf05_original_van_phu_hero_master_rgba.webp.b64",
@@ -45,7 +45,7 @@
     ],
     "generators": [
       "tools/vfx/hf05_r1_van_phu.py",
-      "tools/vfx/hf05_r6_fire_lotus.py"
+      "tools/vfx/hf05_r7_solar_pillar.py"
     ]
   },
   "atlases": [
@@ -90,14 +90,14 @@
       "layer": "one original asymmetric luminous fire burst under up to three live WALK actors"
     },
     {
-      "path": "godot/labs/combat_lab/talisman10/assets/tal10_r6_fire_lotus.webp",
+      "path": "godot/labs/combat_lab/talisman10/assets/tal10_r7_solar_pillar.webp",
       "width": 2560,
       "height": 2000,
       "cell_width": 640,
       "cell_height": 400,
       "frames": 20,
       "columns": 4,
-      "layer": "R6 ONLY finale replacement: source-painted focused fire compression, asymmetric flame-lotus bloom, genuine painted ember drift; NO extra hit or floor status"
+      "layer": "R7 END ONLY: one painted solar fire pillar plus asymmetric luminous wings, ground splash and rising original material embers; no circular HUD ring; no second hit or floor status"
     }
   ],
   "time_contract": {
@@ -110,7 +110,7 @@
     "visual_fade_end_seconds": 2.74,
     "demo_loop_seconds": 3.35,
     "demo_clock_warning": "Catalogue cast1.05, cooldown23, speed0, one circular damage event. Rain/scroll movement is cosmetic not runtime projectiles or multiple hits. LAB at1.85 is NOT a confirmed Combat V2 receipt; 3.35 demo length NOT cooldown. R6 expands only the final illustrative one-hit reaction, does not change cast/cooldown or real Combat V2 receipts.",
-    "key_pose_budget_note": "16 charge cells/1s, 24 moving seal storm/1.31s, 20 rain/0.84s, 12 asymmetric impact/0.32s; unique frame source compositions, not separately handpainted full scenes. Display cadence and native motion subject to 1x inspection. R6 20 extra original-source composite poses for 1.80–2.74s finale, adjacent-frame blending 60Hz; user specifically rejected R5 end as underwhelming.",
+    "key_pose_budget_note": "16 charge cells/1s, 24 moving seal storm/1.31s, 20 rain/0.84s, 12 asymmetric impact/0.32s; unique frame source compositions, not separately handpainted full scenes. Display cadence and native motion subject to 1x inspection. R7 20 new asymmetric, original-source painterly poses for 1.80–2.74s finale, adjacent-frame blending 60Hz; user specifically rejected R5 end as underwhelming.",
     "phases": [
       {
         "id": "charge",
@@ -153,7 +153,7 @@
   "proof_contract": {
     "focused_marker": "VFX_TAL10_FOCUSED_RESULT=PASS failures=0",
     "native_marker": "VFX_TAL10_READY",
-    "source": "HF05 fixed circular ultimate, cap 3 moving actors, one simultaneous cosmetic pulse, zero real projectiles, separate catalogue cast and 3.35 movie demo. R6 20 original source-painted ending frames and explicitly no post-hit HP/status writes.",
+    "source": "HF05 fixed circular ultimate, cap 3 moving actors, one simultaneous cosmetic pulse, zero real projectiles, separate catalogue cast and 3.35 movie demo. R7 20 original source-painted ending frames and explicitly no post-hit HP/status writes.",
     "video_filename": "v4-hf05-native.mp4"
   }
 }
