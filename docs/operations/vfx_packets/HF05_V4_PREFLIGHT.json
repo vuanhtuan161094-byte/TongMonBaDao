@@ -25,7 +25,7 @@
     "source_class": "FIRST_PARTY_IMAGE_GENERATED_MEGA_PAPER_TALISMAN_WITH_SOURCE_PAINTED_FLAME",
     "rights_note": "HF05 new original AI-illustrated 炎 central talisman created for TMB; its 96×132 RGBA master isolated from the promotional concept and saved as first-party native alpha WEBP base64 in repo, but the promotional poster is NOT a Godot screenshot. Support scroll and fire are original in-repo first-party artworks. No unlicensed source A/JX/VL pixels.",
     "master_quality_status": "MANUAL_ART_REVIEW_REQUIRED",
-    "known_source_limitation": "Master is 96×132 compact painted alpha WebP derived from larger 1672×941 promotional illustration; only the isolated card image enters the atlas, not text or scenery. Storm and rain are independently COMPOSED source-image poses with staggered position/angle/splashes, NOT 72 individually hand-painted masters. Must visually inspect 1× and movement; hashes are technical only. R6 ending-only additional 20 RGBA poses for asymmetric petal-shaped flame bloom and source-painted ember drift from an existing project-owned original. This is not a separately hand-painted 20-cell painted master or a new hit.",
+    "known_source_limitation": "Master is 96×132 compact painted alpha WebP derived from larger 1672×941 promotional illustration; only the isolated card image enters the atlas, not text or scenery. Storm and rain are independently COMPOSED source-image poses with staggered position/angle/splashes, NOT 72 individually hand-painted masters. Must visually inspect 1× and movement; hashes are technical only. R6 ending-only additional 20 RGBA poses for asymmetric petal-shaped flame bloom and source-painted ember drift from an existing project-owned original. This is not a separately hand-painted 20-cell painted master or a new hit. G3.5 source review recognizes user rejected R5 final ending; R6's owner acceptance is still pending.",
     "master_files": [
       {
         "path": "godot/labs/combat_lab/talisman10/art_sources/hf05_original_van_phu_hero_master_rgba.webp.b64",
@@ -145,8 +145,8 @@
   "gate_status": {
     "g3_5_capture": "NOT_EXECUTED_FOR_R6_UNTIL_NEW_EXACT_SHA_RUN",
     "technical": "NOT_EXECUTED_FOR_R6_UNTIL_NEW_EXACT_SHA_RUN",
-    "art": "R5_END_REWORK_REQUESTED_R6_REVIEW_PENDING",
-    "owner": "OWNER_VISUAL_PENDING_R6_END_REWORK",
+    "art": "MANUAL_ART_REVIEW_REQUIRED",
+    "owner": "OWNER_VISUAL_PENDING",
     "live": "PVE_INTEGRATION_HOLD",
     "device": "PHYSICAL_QA_PENDING"
   },
