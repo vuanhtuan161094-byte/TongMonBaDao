@@ -94,7 +94,6 @@ func _draw()->void:
     var count:=ALLY.get_frame_count("walk")
     var ally_texture:Texture2D=ALLY.get_frame_texture("walk",int(t*13)%maxi(1,count))
     _glow(foot+Vector2(0,-5),47,Color("83e9c4",.055))
-    draw_texture_rect(ally_texture,Rect2(foot-Vector2(62,127),Vector2(124,127)),false)
     # An invented dark stain is a *visual illustration only*; no game debuff is applied.
     var bad:=curse_gain(t)
     if bad>.004:
@@ -113,13 +112,15 @@ func _draw()->void:
     if arrival>.003:
         var p:=target_contact(0,t)
         _flip(CLEANSE,14,320,320,clampf((t-CLEANSE_RECEIPT_SIMULATED)/.43,0,1),
-              Rect2(p-Vector2(131,133),Vector2(262,262)),Color(1,1,1,arrival*.96))
+              Rect2(p-Vector2(112,91),Vector2(224,224)),Color(1,1,1,arrival*.96))
         _glow(p,39,Color("e4fff1",arrival*.20))
     var tail:=residue_gain(t)
     if tail>.003:
         var p:=target_contact(0,t)
         _flip(RESIDUE,8,256,256,clampf((t-1.08)/.45,0,1),
               Rect2(p-Vector2(112,117),Vector2(224,224)),Color(1,1,1,tail*.88))
+    # Keep the moving ally above cleansing petals so face/armor stays legible.
+    draw_texture_rect(ally_texture,Rect2(foot-Vector2(62,127),Vector2(124,127)),false)
     draw_texture_rect_region(CASTER_ART,Rect2(CASTER-Vector2(72,163),Vector2(144,163)),
                              Rect2(0,0,320,384),Color("e5d7ca"))
     var c:=charge_gain(t)

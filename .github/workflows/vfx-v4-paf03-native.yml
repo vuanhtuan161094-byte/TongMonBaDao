@@ -6,6 +6,7 @@ on:
     paths:
       - '.github/workflows/vfx-v4-paf03-native.yml'
       - 'tools/vfx/paf03_cleansing_assets.py'
+      - 'tools/vfx/paf03_r2_illustrated_paper.py'
       - 'docs/operations/vfx_packets/PAF03_V4_PREFLIGHT.json'
       - 'godot/labs/combat_lab/talisman13/**'
       - 'godot/tests/labs/combat_lab/vfx_paf03_contract_test.gd'
@@ -46,6 +47,7 @@ jobs:
           d="$RUNNER_TEMP/vfx-paf03"
           /usr/bin/python3 tools/vfx/paf03_cleansing_assets.py 2>&1 | tee "$d/bake.log"
           grep -Fq 'PAF03_ORIGINAL_RGBA_BAKE_PASS' "$d/bake.log"
+          grep -Fq 'PAF03_R2_ILLUSTRATED_PAPER_BAKE_PASS' "$d/bake.log"
           python3 tools/qa/validate_vfx_v4_packet.py --stage packet --packet "$PACKET" 2>&1 | tee "$d/packet.log"
           grep -Fq 'VFX_V4_PACKET_TECHNICAL_PASS' "$d/packet.log"
           python3 tools/qa/validate_vfx_v4_packet.py --stage assets --packet "$PACKET" 2>&1 | tee "$d/atlas.log"

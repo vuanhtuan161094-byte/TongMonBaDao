@@ -2,6 +2,7 @@
 """PAF03 independent first-party true-RGBA cleanse sprite painter. No rig/GIF/gameplay."""
 from pathlib import Path
 from PIL import Image,ImageDraw,ImageFilter
+from paf03_r2_illustrated_paper import charge as r2_charge
 import math,random,hashlib
 R=Path(__file__).resolve().parents[2];B=R/'godot/labs/combat_lab/talisman13';OUT=B/'assets';SRC=B/'art_sources';S=2
 def P(pts):return [(round(x*S),round(y*S)) for x,y in pts]
@@ -70,8 +71,8 @@ def transfer(i):
             y=128+(22+k*9)*math.sin(u*5.3+q*4.9+k*.58)*(1-.40*u)
             y+=12*math.sin(u*10.2+q*3.5+k)
             pts.append((8+495*u,y))
-        L(d,pts,(60,241,210,122 if k==0 else 69),11 if k==0 else 4 if k<3 else 2)
-        if k<3:L(d,pts,(233,255,210,73),1.25)
+        L(d,pts,(60,241,210,175 if k==0 else 96),15 if k==0 else 5 if k<3 else 2.5)
+        if k<3:L(d,pts,(247,255,213,128),2.0)
     lay(out,body,12,.24)
     streak=new(512,256);d=ImageDraw.Draw(streak,'RGBA')
     for k in range(15):
@@ -98,10 +99,10 @@ def cleanse(i,n=14,size=320):
         mid=(160+r*.55*math.cos(theta),160+r*.55*math.sin(theta))
         p=bez(a,(mid[0]+24,mid[1]-27),tip,tip,21)
         p+=bez(tip,tip,(mid[0]-24,mid[1]+22),a,21)
-        d.polygon(P(p),fill=(58+7*k,221,182,145))
-        L(d,p,(245,238,171,132),1.3)
+        d.polygon(P(p),fill=(58+7*k,235,191,174))
+        L(d,p,(253,235,157,164),1.5)
         L(d,bez(a,(mid[0],mid[1]+4),(tip[0]-7,tip[1]+2),tip),(225,255,211,117),1.6)
-    lay(out,petals,14,.22)
+    lay(out,petals,14,.32)
     shadow=new(320,320);d=ImageDraw.Draw(shadow,'RGBA')
     for k in range(6):
         height=28+95*q
@@ -136,10 +137,10 @@ def atlas(items,w,h):
     return canvas
 def main():
     OUT.mkdir(parents=True,exist_ok=True);SRC.mkdir(parents=True,exist_ok=True)
-    charge(7,size=640).save(SRC/'paf03_cleansing_silk_master.png')
+    r2_charge(7,size=640).save(SRC/'paf03_cleansing_silk_master.png')
     cleanse(7,size=640).save(SRC/'paf03_cleansing_lotus_master.png')
     a={
-    'paf03_charge.webp':(atlas([charge(i) for i in range(12)],320,320),12),
+    'paf03_charge.webp':(atlas([r2_charge(i) for i in range(12)],320,320),12),
     'paf03_transfer.webp':(atlas([transfer(i) for i in range(16)],512,256),16),
     'paf03_curse.webp':(atlas([curse(i) for i in range(8)],128,128),8),
     'paf03_cleanse.webp':(atlas([cleanse(i) for i in range(14)],320,320),14),
@@ -149,4 +150,5 @@ def main():
         p=OUT/name;art.save(p,'WEBP',quality=88,method=3,exact=True)
         print('PAF03_ATLAS',name,frames,art.size,hashlib.sha256(p.read_bytes()).hexdigest())
     print('PAF03_ORIGINAL_RGBA_BAKE_PASS')
+    print('PAF03_R2_ILLUSTRATED_PAPER_BAKE_PASS')
 if __name__=='__main__':main()
