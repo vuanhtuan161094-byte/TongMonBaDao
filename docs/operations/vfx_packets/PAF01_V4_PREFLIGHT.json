@@ -1,0 +1,138 @@
+{
+  "schema": "tmb-vfx-production-system-v4.1",
+  "packet_id": "PAF01_R1_PHONG_GIOI_TRUY_DAU_NATIVE_V4",
+  "skill_id": "tmb.skill.talisman.phong_an_phu.active_01.human",
+  "school": "talisman",
+  "revision": "PAF01_R1_CYAN_GOLD_MOVING_SINGLE_TARGET_6S_MARK_OWNER_PENDING",
+  "catalogue_path": "godot/data/combat/v63_talisman_combat_catalog.json",
+  "scene_path": "godot/labs/combat_lab/talisman11/phong_gioi_truy_dau.tscn",
+  "lab_script": "godot/labs/combat_lab/talisman11/phong_gioi_truy_dau.gd",
+  "focused_test": "godot/tests/labs/combat_lab/vfx_tal11_contract_test.gd",
+  "declared_contract": {
+    "effect": "mark",
+    "element": "wind",
+    "shape": "single_target",
+    "target_limit": 1,
+    "hit_count": 1,
+    "range": 8.5,
+    "radius": 0,
+    "cast_time": 0.5,
+    "cooldown": 9.4,
+    "projectile_speed": 0,
+    "duration": 6
+  },
+  "provenance": {
+    "source_class": "FIRST_PARTY_AUTHOR_CODE_PAINTED_WIND_MASTER_USING_TMB_APPROVED_PAPER",
+    "rights_note": "Original PAF01 cyan-gold 風 scroll/wind brush source art is directly authored for this project by deterministic Pillow source recipe; base paper pigment is original first-party TMB Hỏa Phù talisman master. CJK glyphs rendered using system-installed Noto Serif CJK font licensed as external rendering font, not distributed or added to repo. No Source A, JX, Source VL commercial pixels. Promotional HF06 fire dragon poster generated earlier was WRONG-SKILL and expressly REJECTED, never used for this art, source or Godot evidence.",
+    "master_quality_status": "MANUAL_ART_REVIEW_REQUIRED",
+    "known_source_limitation": "Original 480x560 scroll and 420x420 mark masters are built reproducibly from this committed first-party author recipe + original project-owned paper; new wind material is code-painted in Pillow, NOT individually hand-painted commissioned pictorial art. Owner must judge true 1x native visual quality, not confusing generated promotional posters with Godot evidence. Four atlases are composites of authored raster strokes; key poses vary but do not prove art excellence.",
+    "master_files": [
+      {
+        "path": "godot/labs/combat_lab/talisman06/art_sources/hf01_r5_talisman_master_png.b64",
+        "encoding": "base64-png",
+        "role": "original first-party project talisman paper pigment: only supporting parchment, not reused HF01 animation"
+      }
+    ],
+    "generators": [
+      "tools/vfx/paf01_r1_wind_mark.py"
+    ]
+  },
+  "atlases": [
+    {
+      "path": "godot/labs/combat_lab/talisman11/assets/tal11_r1_charge.webp",
+      "width": 1280,
+      "height": 960,
+      "cell_width": 320,
+      "cell_height": 320,
+      "frames": 12,
+      "columns": 4,
+      "layer": "Original wind/cyan gold 風 paper charge, caster-hand bound"
+    },
+    {
+      "path": "godot/labs/combat_lab/talisman11/assets/tal11_r1_stream.webp",
+      "width": 2048,
+      "height": 1024,
+      "cell_width": 512,
+      "cell_height": 256,
+      "frames": 16,
+      "columns": 4,
+      "layer": "View-only original painterly wind transfer trace, NO gameplay projectile"
+    },
+    {
+      "path": "godot/labs/combat_lab/talisman11/assets/tal11_r1_contact.webp",
+      "width": 1024,
+      "height": 768,
+      "cell_width": 256,
+      "cell_height": 256,
+      "frames": 12,
+      "columns": 4,
+      "layer": "One brief non-damaging mark imprint on selected moving target"
+    },
+    {
+      "path": "godot/labs/combat_lab/talisman11/assets/tal11_r1_mark.webp",
+      "width": 1024,
+      "height": 1280,
+      "cell_width": 256,
+      "cell_height": 256,
+      "frames": 20,
+      "columns": 4,
+      "layer": "Animated bright wind 風 glyph maintained on ONE moving target for six LAB-simulated status seconds"
+    }
+  ],
+  "time_contract": {
+    "combat_clock": "CATALOGUE_GATED_NOT_LIVE",
+    "declared_cast_end_seconds": 0.5,
+    "declared_status_duration_seconds": 6,
+    "runtime_receipt_timestamp": "RUNTIME_MAPPING_PENDING",
+    "vfx_clock": "LAB_ONLY",
+    "simulated_hit_seconds": 1.15,
+    "visual_fade_end_seconds": 7.51,
+    "demo_loop_seconds": 8,
+    "demo_clock_warning": "Real status duration6s != cast .5s, target cap1, projectile_speed0; all wound/rune emission purely visual and NOT a real hit/damage or Combat V2 status receipt. LAB imagines mark receipt1.15 and expiry7.15, but runtime mapping UNKNOWN. 8s native QA movie is not cooldown9.4.",
+    "key_pose_budget_note": "12 changing painted charge poses in .5s, 16 independently changed pre-baked tracer frames in .61s, 12 initial non-damage imprint frames in .37s, a 20-cell animated 風 sign held looped through mark duration; no universal frame cap, no rig, long 6s mark is distinct from short casting.",
+    "phases": [
+      {
+        "id": "charge",
+        "at_seconds": 0.3,
+        "expected_phase": "charge",
+        "file": "v4-charge.png"
+      },
+      {
+        "id": "peak",
+        "at_seconds": 0.84,
+        "expected_phase": "visual_wind_transfer",
+        "file": "v4-peak.png"
+      },
+      {
+        "id": "contact",
+        "at_seconds": 1.28,
+        "expected_phase": "mark_receipt_light",
+        "file": "v4-contact.png"
+      }
+    ]
+  },
+  "moving_target": {
+    "actor_animation": "walk",
+    "locked_demo_target_index": 0,
+    "movement_from_seconds": 0.3,
+    "movement_to_seconds": 1.28,
+    "minimum_displacement_px": 15,
+    "contact_anchor": "LAB.target_contact(0,t)",
+    "tracking_rule": "ONE preselected genuine WALK enemy follows a non-static horizontal + vertical motion. Cosmetic wind tracer targets current actor contact position, and living 風 mark is attached every frame to current mark_icon(0,t); mark is LAB-only and never damages or changes status.",
+    "receipt_claim": "SIMULATED_VISUAL_ONLY"
+  },
+  "gate_status": {
+    "g3_5_capture": "NOT_EXECUTED_UNTIL_RUN",
+    "technical": "NOT_EXECUTED_UNTIL_RUN",
+    "art": "MANUAL_ART_REVIEW_REQUIRED",
+    "owner": "OWNER_VISUAL_PENDING",
+    "live": "PVE_INTEGRATION_HOLD",
+    "device": "PHYSICAL_QA_PENDING"
+  },
+  "proof_contract": {
+    "focused_marker": "VFX_TAL11_FOCUSED_RESULT=PASS failures=0",
+    "native_marker": "VFX_TAL11_READY",
+    "source": "Single moving WALK target wind mark 6s, no projectile/no real status or damage, native 3 screenshot plus long movie status sustain/expiry",
+    "video_filename": "v4-paf01-native.mp4"
+  }
+}
