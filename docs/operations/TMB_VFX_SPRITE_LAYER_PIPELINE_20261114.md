@@ -60,3 +60,8 @@ Default: **G3.5 true native 1280×720 charge/peak/moving-contact** → human STO
 ## V4.2 GIF-first motion blueprint (owner 16/11/2026)
 
 For motion-intensive effects, insert G2.5 **short animated GIF prototype** after source contract and before atlas extraction. Aim for a small number of useful original frames; for a basic poison dart, 8 × 110ms = 0.88s, not 660 individually authored PNGs. Extract FX-only transparent sprite frames from the source gif/sheet, **never import generated character art as a substitute for approved character sprites**. Group by function (charge / flight / impact / fade), verify no dark rectangular matte, and use one projectile sheet oriented to target vector. Compare source animation to actual Godot 1× charge/peak/moving-contact frames. A GIF is motion-art reference, NOT actual engine validation or a committed atlas until originals and textures are durably stored. Maintain V4 packet/exact-SHA / owner gates and don't over-extend the short clip to long-lasting status.
+
+
+### V4.2.1 correction — GIF chỉ dùng tham khảo chuyển động
+
+Owner corrected the previous GIF-first wording on 16/11/2026: **do NOT extract game sprite RGB/alpha from a flattened GIF**. Use its choreography, pacing and phase silhouettes only. **Repaint original vivid RGBA alpha source FX** with colored translucent MIX body, small white-hot energy core and restrained soft ADD halo; preserve RGB saturation independently of opacity. Inspect on bright/dark Godot backgrounds. The first Poison basic GIF-crop prototype was visually unsatisfactory (muddy/opaque); NOT owner approved, not a usable production atlas. All other V4 G3.5/Godot evidence and sprite-first rules still apply.
