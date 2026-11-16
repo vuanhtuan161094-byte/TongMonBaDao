@@ -58,7 +58,7 @@ APPROVED={
 }
 PREVIEW_ONLY={"tmb.skill.poison.co_doc.ultimate":"POI06_R11_OWNER_PREVIEW_ACCEPTED_NATIVE_QA_PASS"}
 IN_PROGRESS={"tmb.skill.talisman.hoa_phu.active_04":"HF04_R3_OWNER_PROVISIONAL_USE_ART_REWORK_DEFERRED",
- "tmb.skill.talisman.hoa_phu.ultimate":"HF05_R2_V4_GODOT_PREVIEW_OWNER_PENDING"}
+ "tmb.skill.talisman.hoa_phu.ultimate":"HF05_R5_FULL_GODOT_NATIVE_201FRAMES_TECH_PASS_OWNER_PENDING"}
 
 def main():
     p=argparse.ArgumentParser()
@@ -88,7 +88,7 @@ def main():
             elif fam in PREVIEW_ONLY:r["vfx_actual"]="PREVIEW_ACCEPTED_NATIVE_QA_NOT_FINAL_OWNER"
             elif fam in IN_PROGRESS:
                 r["vfx_actual"]=("OWNER_PROVISIONAL_USE_ART_REWORK_DEFERRED" if fam=="tmb.skill.talisman.hoa_phu.active_04"
-                    else "LAB_G3_5_ART_REWORK_IN_PROGRESS_OWNER_PENDING")
+                    else "LAB_GODOT_NATIVE_201_FRAME_TECH_PASS_OWNER_PENDING")
             elif fam in LABS:r["vfx_actual"]="DEDICATED_LAB_OWNER_PENDING_OR_REWORK"
             else:r["vfx_actual"]="NO_DEDICATED_HUMAN_LAB"
         elif r["visual_work_class"]!="CAST_MASTER":
