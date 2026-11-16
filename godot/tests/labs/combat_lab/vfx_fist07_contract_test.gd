@@ -42,7 +42,7 @@ func _test() -> void:
     var scene:=LAB.new()
     root.add_child(scene)
     await process_frame
-    _check(scene.ART_REVISION=="R3_OWNER_REFERENCE_PAINTED_SPRITES","art-first reference revision")
+    _check(scene.ART_REVISION=="R4_OWNER_REFERENCE_SOFT_MATTE","art-first reference revision")
     scene.queue_free()
     print("VFX_FIST07_FOCUSED_RESULT="+("PASS" if failures==0 else "FAIL")+" failures="+str(failures))
     quit(0 if failures==0 else 1)

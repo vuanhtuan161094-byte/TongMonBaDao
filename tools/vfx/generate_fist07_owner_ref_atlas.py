@@ -38,10 +38,37 @@ def keyed(im: Image.Image, gain: float=1.):
     # Highlight very white / yellow filament cores that are weakly saturated.
     white=(np.minimum(arr[:,:,0],arr[:,:,1]) > 212) & (arr[:,:,0] > arr[:,:,2]+21) & (h>20)&(h<63)
     alpha=np.maximum(alpha,np.where(white, np.clip((v-165)*2.1,0,245),0))
-    out=np.concatenate([arr,np.expand_dims(alpha,2)],axis=2).astype(np.uint8)
+    # Preserve actual reference stroke/luminance variations while lifting the
+    # poster's brown shadows toward the requested clean white-gold spectrum.
+    # This grades existing source pixels; it does NOT draw substitute motifs.
+    grade=np.empty_like(arr)
+    grade[:,:,0]=np.clip(165.+.36*arr[:,:,0],0,255)
+    grade[:,:,1]=np.clip(78.+.65*arr[:,:,1],0,255)
+    grade[:,:,2]=np.clip(9.+.86*arr[:,:,2],0,255)
+    out=np.concatenate([grade,np.expand_dims(alpha,2)],axis=2).astype(np.uint8)
     rgba=Image.fromarray(out,'RGBA')
     rgba.putalpha(rgba.getchannel('A').filter(ImageFilter.GaussianBlur(.60)))
     return rgba
+
+
+def keyed_impact(im):
+    """Opaque white-hot centre + gold rays from the original star artwork.
+    Unlike the dome chroma matte, the protective HIT must retain near-white
+    low-saturation pixels; otherwise the flash looks like a black-centred ring.
+    """
+    arr=np.asarray(im.convert('RGB'),dtype=np.float32)
+    value=np.max(arr,axis=2)
+    intensity=np.clip((value-58.)/145.,0,1)
+    intensity=intensity*intensity*(3.0-2.0*intensity)
+    alpha=np.clip(intensity*252.,0,255)
+    rgb=arr.copy()
+    rgb[:,:,0]=np.clip(105+arr[:,:,0]*.59,0,255)
+    rgb[:,:,1]=np.clip(55+arr[:,:,1]*.79,0,255)
+    rgb[:,:,2]=np.clip(18+arr[:,:,2]*.91,0,255)
+    out=np.concatenate([rgb,alpha[:,:,None]],axis=2).astype(np.uint8)
+    image=Image.fromarray(out,'RGBA')
+    image.putalpha(image.getchannel('A').filter(ImageFilter.GaussianBlur(.36)))
+    return image
 
 
 def layer_alpha(src, const):
@@ -69,8 +96,15 @@ def prepare_components(hero,impact):
     gy,gx=np.indices(ga.shape)
     fade=np.clip((119-gy)/28.,0,1)
     fade=fade*fade*(3-2*fade)
-    ga*=fade
-    guardian.putalpha(Image.fromarray(ga.astype('uint8'),'L').filter(ImageFilter.GaussianBlur(1.2)))
+    # Drop only the horizontal shadow of the concept's foreground character:
+    # keep the statue's head and both luminous shoulder horns.
+    center_x=np.clip((gx-70)/48.,0,1)*np.clip((374-gx)/46.,0,1)
+    center_y=np.clip((gy-75)/30.,0,1)
+    center_x=center_x*center_x*(3-2*center_x)
+    center_y=center_y*center_y*(3-2*center_y)
+    topfade=np.clip(gy/11.,0,1)
+    ga*=topfade*fade*(1.0-.998*center_x*center_y)
+    guardian.putalpha(Image.fromarray(ga.astype('uint8'),'L').filter(ImageFilter.GaussianBlur(2.0)))
     left=keyed(hero.crop((43,17,124,190)),gain=1.25)
     right=keyed(hero.crop((569,14,649,189)),gain=1.25)
     entire=keyed(hero.crop((79,80,576,341)),gain=1.05)
@@ -89,13 +123,26 @@ def prepare_components(hero,impact):
     r_actor=np.sqrt(((original_x-326)/171.)**2+((original_y-242)/137.)**2)
     no_human=np.clip((r_actor-.79)/.38,0,1)
     no_human=no_human*no_human*(3-2*no_human)
-    a*=np.maximum(material*.98,.055)*no_human
-    entire.putalpha(Image.fromarray(a.astype('uint8'),'L').filter(ImageFilter.GaussianBlur(1.1)))
+    # A photographic crop must never reveal its square rectangle edges.
+    side=np.minimum(X, 496-X)
+    fade_side=np.clip(side/31.,0,1)
+    fade_top=np.clip((Y+4)/7.,0,1)
+    fade_bottom=np.clip((260-Y)/37.,0,1)
+    envelope=fade_side*fade_top*fade_bottom
+    a*=np.maximum(material*.98,.055)*no_human*envelope
+    entire.putalpha(Image.fromarray(a.astype('uint8'),'L').filter(ImageFilter.GaussianBlur(1.3)))
     # Actual flattened golden footfall/lotus artwork sourced from banner.
     # Bottom 20px captures pure golden ground glare, below human clothes.
-    ground=keyed(hero.crop((0,321,650,341)),gain=1.14)
+    ground=keyed(hero.crop((0,321,650,341)),gain=1.30)
+    # Fade edges of the poster's rectangular bottom strip into real ground.
+    ga=np.asarray(ground.getchannel('A'),dtype=np.float32).copy()
+    gy,gx=np.indices(ga.shape)
+    xfade=np.clip(np.sin(np.pi*gx/649.),0,1)**.57
+    yfade=np.clip((gy+1)/5.,0,1)*np.clip((19-gy)/10.,0,1)
+    ga*=xfade*yfade
+    ground.putalpha(Image.fromarray(ga.astype('uint8'),'L').filter(ImageFilter.GaussianBlur(1.35)))
     # Contact consists of captured painted explosion from bottom asset icons.
-    hit=keyed(impact,gain=1.4)
+    hit=keyed_impact(impact)
     return guardian,left,right,entire,ground,hit
 
 
@@ -115,13 +162,13 @@ def pose_ward(n, parts):
     composite(img,lb,(8,12+round(4*breathe)),alpha=.66*strength)
     composite(img,rb,(262,13-round(3*breathe)),alpha=.66*strength)
     dm=resize_to(dome,281+round(7*breathe),198+round(2*breathe))
-    composite(img,dm,(19-round(4*breathe),103),alpha=strength*.94)
+    composite(img,dm,(19-round(4*breathe),91),alpha=strength*1.0)
     gr=resize_to(ground,308,41)
     composite(img,gr,(6,264+round(2*breathe)),alpha=strength*.95)
     # Add a soft optical bloom derived solely from image-extracted painted
     # pixels, never hand-drawn shape primitives.
     glow=img.filter(ImageFilter.GaussianBlur(5))
-    glow.putalpha(glow.getchannel('A').point(lambda x:int(x*.24*strength)))
+    glow.putalpha(glow.getchannel('A').point(lambda x:int(x*.45*strength)))
     glow.alpha_composite(img)
     # Fade original artwork via alpha instead of a fake geometric shield.
     if n>=12:

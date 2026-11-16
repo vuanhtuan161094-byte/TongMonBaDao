@@ -4,7 +4,7 @@ extends Control
 ## illustrated owner reference extracted and pre-baked into RGBA frames.
 ## This is a view-only lab: Earth GUARD / ONE recipient / 4 seconds / 0.45 cast.
 const SKILL_ID := "tmb.skill.fist.kim_cang.active_02.human"
-const ART_REVISION := "R3_OWNER_REFERENCE_PAINTED_SPRITES"
+const ART_REVISION := "R4_OWNER_REFERENCE_SOFT_MATTE"
 const EFFECT := "guard"
 const ELEMENT := "earth"
 const SHAPE := "single_target"
@@ -60,7 +60,7 @@ func _ready() -> void:
     set_process(true)
     queue_redraw()
     if not vfx_only_benchmark:
-        print("VFX_FIST07_R3_READY skill=",SKILL_ID,
+        print("VFX_FIST07_R4_READY skill=",SKILL_ID,
             " source=owner_illustrated_reference hero=gold_guardian_dome",
             " guard=true earth=true cast=0.45 sustain=4 no_rig=true view_only=true")
 
@@ -152,7 +152,7 @@ func _draw() -> void:
     if age>=0.0:
         intensity=smoothstep(0.0,0.026,age)*(1.0-smoothstep(.07,HIT_DURATION,age))
     if not vfx_only_benchmark:
-        _actor(CASTER,Color.WHITE.lerp(Color("fff8c9"),intensity*.19))
+        _actor(CASTER,Color.WHITE.lerp(Color("ffe9b4"),clampf(shield*.22+intensity*.18,0.0,.45)))
         _actor(DUMMY,Color("bac2c8"))
     if visible>.002:
         _ward_front_foot(ward_frame,WARD_CENTER,1.08,visible)
@@ -166,7 +166,7 @@ func _draw() -> void:
         draw_string(ThemeDB.fallback_font,Vector2(28,33),
             "KIM CANG HO THE / QUYEN TU",HORIZONTAL_ALIGNMENT_LEFT,-1,24,Color("fff4dc"))
         draw_string(ThemeDB.fallback_font,Vector2(28,58),
-            "FIST07 R3 | OWNER-ILLUSTRATED GOLD GUARDIAN + TRUE SPRITE WARD",
+            "FIST07 R4 | ILLUSTRATED GUARDIAN / PURE GOLD / SOFT ALPHA",
             HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("eed19f"))
         draw_string(ThemeDB.fallback_font,Vector2(28,683),
             "GODOT 4.7.2 | GUARD 4s | H = BLOCK REACTION | NO RIG / NO DAMAGE",
