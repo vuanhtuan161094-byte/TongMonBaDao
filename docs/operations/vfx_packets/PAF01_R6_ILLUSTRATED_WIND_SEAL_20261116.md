@@ -19,3 +19,19 @@ Live user decision 16 Nov: reject R5 talisman despite R5 technical PASS, preserv
 - Inspect paper on bright/dark background at 1x. Check alpha halo, left edge, excessive scale, motion pops; if ugly, self FAIL and do not call owner approved.
 - After preflight passes visually, inspect native 8s 480-frame movie and >=12 checkpoints, 風 mark tracking and fade. Old R5 tech success is historical only.
 - Owner art PENDING; PvE and V6.3 OFF; Windows/Android physical QA PENDING; no Codex, rig, new branch, merge, Combat V2 or SaveService edits.
+
+## R6 actual exact-SHA Godot 4.7.2 QA outcome
+
+- Tested SOURCE SHA: `8bd765ba17f30a23ecc1ee1fa586266ed6977379`, original first-party 180×216 RGBA master Git blob `9d5502fb68db2492650ef46f0713017f361324ea` (local Git blob SHA independently matched). SHA256 master `5e0f1409bb2975ca03052932013121f052346314c59765ada51657147333f018`.
+- [Native V4 G3.5 Action #43838930601](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/43838930601) SUCCESS; artifact `14211274774`; native charge0.30s/peak0.84s/contact1.28s 1280×720 screenshots on moving actor, source/atlas packet validator, strict Godot import/parse/focused, exact-SHA manifest and negative missing-contact fail-closed all PASS.
+- [Full native 8-second Action #43838930612](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/43838930612) SUCCESS; artifact `14211303774`; Godot 4.7.2 Compatibility 1280×720 480 frames fixed 60 fps, MP4, GIF, 15 actual timed frame screenshots; movie SHA256 `bfd637f67232ae6dfdf4a674827d1762403d548ff1d622899344eef556207091`.
+- Focused contract `VFX_TAL11_FOCUSED_RESULT=PASS failures=0`, one locked moving WALK monster, one simulated mark lasting 6s, no projectile/HP/status action.
+- Verified same-camera same-time rendered R5/R6: 0.30s significantly changed paper material/silhouette; 0.84s R3 wind shape preserved with new R6 painted paper overlay; sustain 4.22s and fade 7.30s **pixel-identical** to R5 screenshot (mean absolute pixel diff = 0). 1.28s varies only slightly due to encoding noise, no mark design rewrite.
+
+## G3.5 manual 1× art self-review and remaining defects
+- R5 was a straight flat rectangular calligraphy icon. Actual R6 charge 0.30s reads as diagonally curled ornamental silk-paper with gold-crafted head, jade bead and hanging tassel, materially different in true Godot movie. Silhouette 4.1/5, school identity 4.2/5, color identity 4/5.
+- Original first-party pictorial master source only 180×216 pixels; at 1280×720 film close crop fine filigree gets visibly soft. Material fidelity 3.6/5; some dark translucent edge halo; pose-to-pose elastic curl remains subtle (motion distinctiveness 3.7/5). This is **NOT art self-QA full PASS**: owner previously explicitly rejected the flat shape and must review R6 material/motion at real scale.
+- Existing R3 wind/moving mark 4.5/5 inherited acceptance; target contact and fade 4.3/5; physical Windows/Android FPS unmeasured; no light-terrain visual QA in this native dark LAB.
+- **Final independent gate status:** `R6_G3_5_TECH_PASS / R6_NATIVE_FULL_480_FRAME_TECH_PASS / R6_ART_SELF_REVIEW_OPEN_MATERIAL_MOTION / OWNER_R6_VISUAL_PENDING / R3_WIND_MARK_PROVISIONALLY_LOCKED / COMBAT_RECEIPT_MAPPING_PENDING / PVE_HOLD / V63_OFF / DEVICE_PENDING`.
+
+All displayed images from GitHub are engine-rendered; generated concept reference is not gameplay. No change to V6.3, Combat V2, SaveService, economy, PvE, no rig/Codex/new branch/merge.
