@@ -1,0 +1,106 @@
+name: QA49 Windows VFX Playtest Package
+
+on:
+  push:
+    branches:
+      - integration/pve-p0-playable-ui-20261103
+    paths:
+      - "godot/labs/combat_lab/as_char49_vfx_playtest/**"
+      - "godot/assets/actors/v5_sa_monster_1113031_1/**"
+      - "godot/labs/combat_lab/poison02/assets/**"
+      - "godot/labs/combat_lab/poison03/assets/**"
+      - "godot/labs/combat_lab/poison04/assets/**"
+      - "godot/labs/combat_lab/talisman02/assets/**"
+      - "godot/labs/combat_lab/talisman03/assets/**"
+      - ".github/workflows/qa49-vfx-windows-package.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  windows-package:
+    runs-on: windows-latest
+    timeout-minutes: 35
+    steps:
+      - name: Checkout exact PR source
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          lfs: false
+
+      - name: Download and verify official portable Godot 4.7.2
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          Import-Module Microsoft.PowerShell.Utility -ErrorAction Stop
+          $releaseUrl = "https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_win64.exe.zip"
+          $expectedSha256 = "731980f9608d61333e5baf54a2ef17210acc7a538446c0cb9969f002aca1e953"
+          $archive = Join-Path $env:RUNNER_TEMP "Godot_v4.7.2-stable_win64.exe.zip"
+          Invoke-WebRequest -UseBasicParsing -Uri $releaseUrl -OutFile $archive
+          $actualSha256 = (Get-FileHash -LiteralPath $archive -Algorithm SHA256).Hash.ToLowerInvariant()
+          if ($actualSha256 -ne $expectedSha256) { throw "Official Godot archive SHA-256 mismatch: $actualSha256" }
+          $extract = Join-Path $env:RUNNER_TEMP "Godot_4.7.2_portable"
+          Expand-Archive -LiteralPath $archive -DestinationPath $extract
+          $engine = Join-Path $extract "Godot_v4.7.2-stable_win64.exe"
+          if (-not (Test-Path -LiteralPath $engine -PathType Leaf)) { throw "Portable Godot executable was not found after extraction." }
+          $version = (& $engine --headless --version 2>&1 | Out-String).Trim()
+          if ($LASTEXITCODE -ne 0 -or $version -notmatch "4\.7\.2\.stable\.official\.ed1daf0bf") { throw "Wrong Godot runtime: $version" }
+          "GODOT_VERSION=$version" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
+          "GODOT_ARCHIVE_SHA256=$actualSha256" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
+
+      - name: Build isolated portable package in Unicode path
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          Import-Module Microsoft.PowerShell.Utility -ErrorAction Stop
+          $repoRoot = $env:GITHUB_WORKSPACE
+          $godot = Join-Path $env:RUNNER_TEMP "Godot_4.7.2_portable\Godot_v4.7.2-stable_win64.exe"
+          $output = Join-Path $env:RUNNER_TEMP "QA49 package (thử 中文)"
+          $build = Join-Path $repoRoot "godot\labs\combat_lab\as_char49_vfx_playtest\windows\Build-QA49-WindowsPackage.ps1"
+          & $build -RepoRoot $repoRoot -GodotExe $godot -OutputDirectory $output -SourceCommit $env:GITHUB_SHA -GodotArchiveSha256 "731980f9608d61333e5baf54a2ef17210acc7a538446c0cb9969f002aca1e953"
+          if ($LASTEXITCODE -ne 0) { throw "Package builder failed." }
+          $packageRoot = Join-Path $output "TMB_VFX_PLAYTEST_WINDOWS"
+          $script = Join-Path $packageRoot "Start-Test.ps1"
+          $tokens = $null
+          $parseErrors = $null
+          [System.Management.Automation.Language.Parser]::ParseFile($script, [ref]$tokens, [ref]$parseErrors) | Out-Null
+          if ($parseErrors.Count -gt 0) { throw "Windows PowerShell 5.1 parse failed: $($parseErrors -join '; ')" }
+          Push-Location $packageRoot
+          try {
+            & $env:ComSpec /d /c "START_TEST.cmd --smoke"
+            if ($LASTEXITCODE -ne 0) { throw "CMD launcher smoke failed with exit $LASTEXITCODE." }
+          } finally {
+            Pop-Location
+          }
+          $project = Join-Path $packageRoot "project"
+          $importLog = Join-Path $output "godot_import.log"
+          $importStdout = Join-Path $output "godot_import_stdout.log"
+          $importStderr = Join-Path $output "godot_import_stderr.log"
+          $importArguments = '--headless --path "' + $project + '" --editor --import --quit --log-file "' + $importLog + '"'
+          $importProcess = Start-Process -FilePath $godot -ArgumentList $importArguments -WorkingDirectory $project -Wait -PassThru -RedirectStandardOutput $importStdout -RedirectStandardError $importStderr
+          $importExit = $importProcess.ExitCode
+          if ($importExit -ne 0) { throw "Godot 4.7.2 import failed with exit $importExit. Log: $importLog" }
+          if (Select-String -LiteralPath $importLog,$importStdout,$importStderr -Pattern "SCRIPT ERROR|Parse Error|Failed to load resource" -Quiet) { throw "Godot import logs contain parse/resource errors." }
+          "SOURCE_SHA=$env:GITHUB_SHA" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
+          "PACKAGE_ZIP=$output\TMB_VFX_PLAYTEST_WINDOWS.zip" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
+          "GODOT_IMPORT_EXIT=$importExit" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
+          "R1_V10_TRANSFER_REQUIRED_ON_FIRST_OWNER_LAUNCH=YES (not uploaded; proprietary transfer source remains local)" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
+      - name: Upload one-click Windows package
+        uses: actions/upload-artifact@v4
+        with:
+          name: TMB_VFX_PLAYTEST_WINDOWS
+          path: ${{ runner.temp }}/QA49 package (thử 中文)/TMB_VFX_PLAYTEST_WINDOWS.zip
+          if-no-files-found: error
+          retention-days: 90
+
+      - name: Upload exact-SHA build evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: QA49_WINDOWS_BUILD_EVIDENCE
+          path: |
+            ${{ runner.temp }}/QA49 package (thử 中文)/TMB_VFX_PLAYTEST_WINDOWS/package_manifest.json
+            ${{ runner.temp }}/QA49 package (thử 中文)/godot_import.log
+          if-no-files-found: error
+          retention-days: 90
+

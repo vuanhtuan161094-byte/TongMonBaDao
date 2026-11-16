@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://labs/combat_lab/as_char49_vfx_playtest/qa_capture.gd" id="1"]
+
+[node name="QA49CaptureRunner" type="Node"]
+script = ExtResource("1")
+
