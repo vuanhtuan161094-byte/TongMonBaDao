@@ -152,50 +152,68 @@ def cast_pose(k):
         layer_at(im,scaled_alpha(hot,.20*energy),(160,94))
     return im
 
+# R6: use the previously painted WHOLE arch silhouette for the blocked
+# flank instead of R4/R5's rectangular cropped crossing streaks.
+def panel_from_arch():
+    original=ARCH.resize((205,178),Image.Resampling.LANCZOS)
+    arr=np.array(original,dtype=np.uint8)
+    h,w=arr.shape[:2]
+    xx=np.arange(w,dtype=np.float32)/w
+    yy=np.arange(h,dtype=np.float32)/h
+    # Keep only the incoming right flank, with an organic soft partial arch.
+    flank=np.clip((xx-.24)/.44,0,1)**.70
+    taper=np.sin(np.pi*np.clip(yy,0,1))**.34
+    arr[:,:,3]=np.clip(arr[:,:,3]*flank[None,:]*taper[:,None],0,255).astype('uint8')
+    return Image.fromarray(arr,'RGBA')
+RIGHT_WARD=panel_from_arch()
+
 def status_pose(k):
-    """Painted four-second buff stays LEGIBLE during WALK without covering
-    the sprite face. Shoulders and foot seal track the SAME protected actor."""
+    """R6 keeps foot-seal and central ward crest. Two disjoint tall gold
+    rectangles were visually distracting at 1x; remove the tall ribbons.
+    """
     S=192;im=paper(S)
     phase=math.tau*k/8
-    breath=.85+.10*math.sin(phase)
-    stone(im,(40+2*math.sin(phase),94),(23,63),-61+3*math.sin(phase),
-          breath*.65,1.30,.22)
-    stone(im,(152+2*math.cos(phase),94),(23,63),63-3*math.cos(phase),
-          breath*.65,1.30,.22)
-    left=LEFT_GOLD.resize((34,62),Image.Resampling.LANCZOS)
-    right=RIGHT_GOLD.resize((34,62),Image.Resampling.LANCZOS)
-    layer_at(im,scaled_alpha(left,breath*.85),(39,92))
-    layer_at(im,scaled_alpha(right,breath*.87),(153,92))
+    breath=.81+.13*math.sin(phase)
+    # Compact protecting stone material close to actual shoulder silhouette.
+    stone(im,(63+2*math.sin(phase),107),(25,65),-58+3*math.sin(phase),
+          breath*.45,1.18,.13)
+    stone(im,(129+2*math.cos(phase),107),(25,65),58-3*math.cos(phase),
+          breath*.47,1.18,.13)
     base=FOOTSEAL.resize((151,29),Image.Resampling.LANCZOS)
-    layer_at(im,scaled_alpha(base,breath*.97),(96,168+1.8*math.sin(phase)))
-    crest=CROWN.resize((90,36),Image.Resampling.LANCZOS)
-    layer_at(im,scaled_alpha(crest,breath*.48),(96,56))
+    layer_at(im,scaled_alpha(base,breath*.98),(96,168+1.8*math.sin(phase)))
+    crest=CROWN.resize((89,36),Image.Resampling.LANCZOS)
+    layer_at(im,scaled_alpha(crest,breath*.68),(96,55))
     return im
 
 def contact_pose(k):
-    """One defended hit on the incoming RIGHT flank, no retaliation.
-    Broad painted barrier compresses and throws original mineral fragments.
+    """R6 painterly curved RIGHT shield takes one hit; no explosive
+    rectilinear patch, damage, retaliation or fake Combat V2 receipt.
     """
     S=256;im=paper(S)
-    intensity=[.29,.66,1.0,.92,.73,.47,.23,.06][k]
-    recoil=[0,5,10,8,4,0,-2,0][k]
-    progress=k/7
-    stone(im,(166+recoil,132),(95,129),-23+13*progress,
-          intensity*.90,1.7,.40)
-    layer_at(im,scaled_alpha(BLOCK_CURVE,intensity*.92),
-             (168+recoil,129))
-    layer_at(im,scaled_alpha(BLOCK_FLASH,intensity*.58),
-             (179+recoil,146))
-    if k in (1,2,3,4):
-        bloom=BLOCK_CURVE.filter(ImageFilter.GaussianBlur(7))
-        layer_at(im,scaled_alpha(bloom,intensity*.28),(170+recoil,130))
-    randomizer=random.Random(SEED+101*k)
-    for j in range(9):
-        dx=(16+j*4)*progress+randomizer.randrange(-5,6)
-        dy=((j%5)-2)*(9+5*progress)
-        stone(im,(167+dx,131+dy),(9+j%3*3,18+j%4*2),
-              -61+randomizer.randrange(-12,13),
-              intensity*(.14+(j%3)*.06),1.25,.06)
+    impulse=[.25,.61,1.0,.94,.73,.46,.22,.04][k]
+    recoil=[0,3,8,9,6,3,0,0][k]
+    q=k/7.
+    # Actual physical earth content is a lower supporting defensive
+    # masonry shoulder; the painted LIGHT is a separate incoming face.
+    stone(im,(158+recoil,159),(52,110),-68+5*q,impulse*.65,1.35,.22)
+    layer_at(im,scaled_alpha(RIGHT_WARD,impulse*.92),
+             (142+recoil,124))
+    # Concentrated painterly hotspot at enemy-facing contact, no screen-wide
+    # white-out. The hotspot is original illustrated paint, not a vector ray.
+    core=CROWN.resize((78,42),Image.Resampling.LANCZOS)
+    layer_at(im,scaled_alpha(core,impulse*.92),(198+recoil,122))
+    if k in (1,2,3):
+        blur=core.filter(ImageFilter.GaussianBlur(8))
+        layer_at(im,scaled_alpha(blur,impulse*.25),(198+recoil,122))
+    rand=random.Random(SEED+200*k)
+    for j in range(6):
+        angle=-.72+j*.27
+        distance=(9+33*q)*(1+(j%3)*.06)
+        x=186+recoil+distance*math.cos(angle)
+        y=129+distance*.76*math.sin(angle)
+        chip=(9+j%3*3,17+j%2*4)
+        stone(im,(x,y),chip,-60+rand.randint(-12,12),
+              impulse*(.12+.04*(j%3)),1.45,.07)
     return im
 
 def atlas(images, cell, filename):

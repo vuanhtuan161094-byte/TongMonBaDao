@@ -3,7 +3,7 @@ extends Control
 ## Earth GUARD 4 seconds. Original atlas generated from first-party project art.
 ## Preview receipts ONLY, no gameplay writes, no rig, no fake damage.
 const SKILL_ID := "tmb.skill.fist.kim_cang.active_04.human"
-const ART_REVISION := "R5_FEATHERED_PAINTED_BULWARK"
+const ART_REVISION := "R6_CURVED_DEFLECTION_GUARD"
 const EFFECT := "guard"
 const ELEMENT := "earth"
 const SHAPE := "single_target"
@@ -75,7 +75,7 @@ func _ready() -> void:
     set_process(true)
     queue_redraw()
     if not vfx_only_benchmark:
-        print("VFX_FIST09_R5_READY skill=",SKILL_ID," effect=guard cap=1 moving_target=true no_rig=true view_only=true")
+        print("VFX_FIST09_R6_READY skill=",SKILL_ID," effect=guard cap=1 moving_target=true no_rig=true view_only=true")
 
 func _process(delta: float) -> void:
     if paused:return
@@ -164,7 +164,7 @@ func _draw() -> void:
         draw_string(ThemeDB.fallback_font,Vector2(28,33),
             "TRAN SON HO DONG / KIM CANG",HORIZONTAL_ALIGNMENT_LEFT,-1,22,Color("fff0d4"))
         draw_string(ThemeDB.fallback_font,Vector2(28,59),
-            "FIST09 R5 | FEATHERED BULWARK -> GUARD -> DEFLECT",
+            "FIST09 R6 | CURVED DEFLECTION / COMPACT 4S GUARD",
             HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("eccba3"))
         draw_string(ThemeDB.fallback_font,Vector2(28,683),
             "GODOT 4.7.2 | EARTH GUARD 4S | MOVING WALK | LAB ONLY / NO RIG",
