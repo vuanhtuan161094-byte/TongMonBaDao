@@ -44,6 +44,18 @@ Không cho phép tạo hàng trăm skill bằng một hình SVG lớn đổi mà
 - Video MP4 Godot thật 1280×720, GIF xem nhanh, ZIP, 8–12 phase PNG, tên SHA/run và báo cáo tác phẩm; không giao riêng ảnh concept.
 - Art rubric, những lỗi đã sửa theo timecode; ghi **owner gate** và **PVE gate** tách biệt.
 
+## ADDENDUM 16/11/2026 — G3.5 CONCEPT → GODOT VISUAL FIDELITY GATE (MANDATORY)
+
+Trigger: Owner-provided Hỏa Phù visual benchmark vs actual HF02 R4. Read the [root-cause audit](TMB_HF02_ART_FIDELITY_FAILURE_AUDIT_20261116.md). A superb ImageGen concept/poster may look nothing like the runnable VFX if its main incandescent artwork is replaced by tiny cutout fragments, procedural tubes and normal-alpha translucent drawings. **Do not present a concept poster claiming Godot/FPS as proof of native render.**
+
+**Mandatory STOP before G4:**
+1. Retain a **full-size, independently owned high-resolution transparent hero master** for the main moving energy shape. An 80×65 concept fragment enlarged/duplicated to cover the battlefield is **insufficient** as the primary hero art.
+2. Present a **source-art frame contact sheet** (8–12 genuinely changing painted poses), explicitly identify core/colored fire/ambient bloom/contact/embers and actor occlusion. Unique byte hashes alone are not evidence of real artistic motion.
+3. Match the owner's **high-saturation emissive energy**: small ivory-white hottest focal point, vivid yellow→orange→red body, clear dark gaps, independent carefully restrained ADD light and MIX opaque material. Do not flatten vivid fire into dark translucent orange or enlarge uniform radial halos.
+4. Produce an early **3-frame genuine Godot 1× proof** (charge / maximum skill / moving-actor contact). Visually compare with owner reference in equivalent crop/framing before 198-frame movie/CI. If shape looks like seven candles, wireframe, UI geometric rays or hidden targets: **reject primary art, return to G2/G3**. Raising scale, passing alpha or adding glow is not a fix.
+5. Keep source exact name/ID/shape/cap; promotional art may contain fictional skills. HF02 canon: Liên Diệm Phần Giới, FIRE circle, cap3, projectile_speed0. Never copy extra flying hits from a poster.
+6. Technical build/alpha/exact-SHA PASS remains independent from visual PASS and explicit owner approval. If the owner explicitly changes to another skill before approval, retain the previous skill as **ART_REWORK_REQUIRED**, not as accepted/final.
+
 ## STOP RULES chống tái diễn VFX-BATCH-01
 1. Một mẫu SVG phóng to, đổi màu, xoay, không có frame motion riêng = **không đạt**.
 2. Giống biểu tượng UI hơn skill võ lâm, đầu/đuôi không đúng, mờ yếu hoặc neon quá đà = **làm lại**, không thêm glow che lỗi.
