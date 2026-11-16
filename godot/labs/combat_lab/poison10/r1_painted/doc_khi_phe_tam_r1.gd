@@ -50,7 +50,7 @@ static func target_at(i: int,t: float) -> Vector2:
     return base+Vector2(11.0*sin(t*.90+phase),7.0*cos(t*1.12+phase))
 
 static func chest_at(i: int,t: float) -> Vector2:
-    return target_at(i,t)+Vector2(0,-67)
+    return target_at(i,t)+Vector2(0,-40)
 
 static func hit_time(i: int) -> float:
     return FIRST_HIT+HIT_SPACING*float(i)

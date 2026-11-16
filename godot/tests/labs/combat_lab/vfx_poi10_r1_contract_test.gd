@@ -24,7 +24,7 @@ func _run() -> void:
         var h:float=LAB.hit_time(i)
         check(LAB.target_at(i,.0).distance_to(LAB.target_at(i,2.0))>2.0,"mock target moves "+str(i))
         check(LAB.mark_alpha_at(i,h-.01)==0 and LAB.mark_alpha_at(i,h+3)>.9 and LAB.mark_alpha_at(i,h+6.35)==0,"6-second mark "+str(i))
-        check(LAB.chest_at(i,h).distance_to(LAB.target_at(i,h)+Vector2(0,-67))<.01,"local mark follows target "+str(i))
+        check(LAB.chest_at(i,h).distance_to(LAB.target_at(i,h)+Vector2(0,-40))<.01,"local mark follows target "+str(i))
     var src:=FileAccess.get_file_as_string("res://labs/combat_lab/poison10/r1_painted/doc_khi_phe_tam_r1.gd")
     for forbidden in ["SaveService.","CombatV2.","MapBattleV2.","apply_damage","apply_status","V63FeatureGates.","summon_actor"]:
         check(not src.contains(forbidden),"view-only "+forbidden)
