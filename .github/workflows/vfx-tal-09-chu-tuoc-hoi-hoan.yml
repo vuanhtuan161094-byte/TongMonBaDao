@@ -38,7 +38,7 @@ jobs:
           sudo install -m0755 /tmp/Godot_v4.7.2-stable_linux.x86_64 /usr/local/bin/godot
           godot --version | tee "$d/engine.txt"
           printf 'SOURCE_SHA=%s\nHF04=HUMAN_CIRCLE_CAP3_ZERO_PROJECTILE\nG3_5=GODOT_NATIVE_PREFLIGHT_TECH_PASS\nRUNTIME_MAPPING=PENDING\nOWNER_VISUAL=PENDING\nPVE_INTEGRATION=HOLD\nPHYSICAL_QA=PENDING\nNO_RIG=TRUE\n' "$GITHUB_SHA" > "$d/SCOPE.txt"
-      - name: Verify HF04 canonical packet then bake three source-painted alpha atlases
+      - name: Verify HF04 canonical packet then bake four distinct original source-painted alpha atlases
         shell: bash
         run: |
           set -euo pipefail
@@ -75,16 +75,16 @@ jobs:
           xvfb-run -a -s '-screen 0 1280x720x24' bash tools/qa/run_godot_strict.sh --path godot --resolution 1280x720 --fixed-fps 60 --write-movie "$d/hf04-native.avi" --quit-after 187 res://labs/combat_lab/talisman09/chu_tuoc_hoi_hoan.tscn 2>&1 | tee "$d/godot-native.log"
           grep -Fq 'VFX_TAL09_READY' "$d/godot-native.log"
           test -s "$d/hf04-native.avi"
-          ffmpeg -y -hide_banner -loglevel error -i "$d/hf04-native.avi" -pix_fmt yuv420p -c:v libx264 -crf 16 -movflags +faststart "$d/HF04_Hoa_Tam_Ngung_Phu_Godot_1280x720.mp4"
-          ffprobe -v error -select_streams v:0 -show_entries stream=width,height,nb_frames,avg_frame_rate -of default=noprint_wrappers=1 "$d/HF04_Hoa_Tam_Ngung_Phu_Godot_1280x720.mp4" | tee "$d/ffprobe.txt"
+          ffmpeg -y -hide_banner -loglevel error -i "$d/hf04-native.avi" -pix_fmt yuv420p -c:v libx264 -crf 16 -movflags +faststart "$d/HF04_Chu_Tuoc_Hoi_Hoan_Godot_1280x720.mp4"
+          ffprobe -v error -select_streams v:0 -show_entries stream=width,height,nb_frames,avg_frame_rate -of default=noprint_wrappers=1 "$d/HF04_Chu_Tuoc_Hoi_Hoan_Godot_1280x720.mp4" | tee "$d/ffprobe.txt"
           grep -Fxq 'width=1280' "$d/ffprobe.txt"
           grep -Fxq 'height=720' "$d/ffprobe.txt"
           grep -Fxq 'nb_frames=187' "$d/ffprobe.txt"
           for at in 0.12 0.30 0.44 0.62 0.82 1.04 1.29 1.43 1.55 1.63 1.71 1.82 2.06 2.36 2.84; do
-             ffmpeg -y -hide_banner -loglevel error -ss "$at" -i "$d/HF04_Hoa_Tam_Ngung_Phu_Godot_1280x720.mp4" -frames:v 1 "$d/frame-$at.png"
+             ffmpeg -y -hide_banner -loglevel error -ss "$at" -i "$d/HF04_Chu_Tuoc_Hoi_Hoan_Godot_1280x720.mp4" -frames:v 1 "$d/frame-$at.png"
           done
-          ffmpeg -y -hide_banner -loglevel error -i "$d/HF04_Hoa_Tam_Ngung_Phu_Godot_1280x720.mp4" -vf 'fps=5,scale=320:180,tile=5x3:nb_frames=15' -frames:v 1 "$d/HF04_15frame_sheet.png"
-          ffmpeg -y -hide_banner -loglevel error -i "$d/HF04_Hoa_Tam_Ngung_Phu_Godot_1280x720.mp4" -vf 'fps=10,scale=640:-1:flags=lanczos' -loop 0 "$d/HF04_Hoa_Tam_Ngung_Phu_Godot.gif"
+          ffmpeg -y -hide_banner -loglevel error -i "$d/HF04_Chu_Tuoc_Hoi_Hoan_Godot_1280x720.mp4" -vf 'fps=5,scale=320:180,tile=5x3:nb_frames=15' -frames:v 1 "$d/HF04_15frame_sheet.png"
+          ffmpeg -y -hide_banner -loglevel error -i "$d/HF04_Chu_Tuoc_Hoi_Hoan_Godot_1280x720.mp4" -vf 'fps=10,scale=640:-1:flags=lanczos' -loop 0 "$d/HF04_Chu_Tuoc_Hoi_Hoan_Godot.gif"
           sha256sum "$d/"*.mp4 "$d/"*.gif "$d/"*.png > "$d/HF04_VIDEO_SHA256SUMS.txt"
           rm "$d/hf04-native.avi"
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
