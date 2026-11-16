@@ -104,7 +104,7 @@
   "moving_target": {
     "actor_animation": "walk",
     "locked_demo_target_index": 0,
-    "movement_from_seconds": 0.26,
+    "movement_from_seconds": 0.25,
     "movement_to_seconds": 1.34,
     "minimum_displacement_px": 12,
     "contact_anchor": "LAB.contact_at(0,t)",
