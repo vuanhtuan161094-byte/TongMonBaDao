@@ -6,6 +6,7 @@ on:
     paths:
       - '.github/workflows/vfx-v4-paf02-native.yml'
       - 'tools/vfx/paf02_assets.py'
+      - 'tools/vfx/paf02_r3_initial_paper.py'
       - 'godot/labs/combat_lab/talisman12/**'
       - 'godot/tests/labs/combat_lab/vfx_paf02_contract_test.gd'
       - 'docs/operations/vfx_packets/PAF02_V4_PREFLIGHT.json'
@@ -46,6 +47,7 @@ jobs:
           d="$RUNNER_TEMP/vfx-paf02"
           /usr/bin/python3 tools/vfx/paf02_assets.py 2>&1 | tee "$d/asset-bake.log"
           grep -Fq 'PAF02_ORIGINAL_ART_BAKE_PASS' "$d/asset-bake.log"
+          grep -Fq 'PAF02_R3_OPENING_TALISMAN_BAKE_PASS' "$d/asset-bake.log"
           python3 tools/qa/validate_vfx_v4_packet.py --stage packet --packet "$PACKET" 2>&1 | tee "$d/packet.log"
           grep -Fq 'VFX_V4_PACKET_TECHNICAL_PASS' "$d/packet.log"
           python3 tools/qa/validate_vfx_v4_packet.py --stage assets --packet "$PACKET" 2>&1 | tee "$d/atlas.log"

@@ -6,6 +6,7 @@ One original source master plus 14/18/12/8 painted optical poses.
 from pathlib import Path
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
 import math, random, hashlib, argparse
+from paf02_r3_initial_paper import build_hero as painted_initial_paper
 
 ROOT=Path(__file__).resolve().parents[2]
 OUT=ROOT/'godot/labs/combat_lab/talisman12/assets'
@@ -155,10 +156,12 @@ def atlas(frames,w,h):
 
 def main():
     OUT.mkdir(parents=True,exist_ok=True);SRC.mkdir(parents=True,exist_ok=True)
-    master=render_hero(9)
+    # R3 repair only the opening talisman, using owner-approved paper material.
+    # PAF02 wind_line/contact/badge generators remain byte-for-byte identical.
+    master=painted_initial_paper(7)
     master.save(SRC/'paf02_thai_huyen_original_master.png')
     files={
-        'paf02_charge.webp': (atlas([render_hero(i).resize((320,320),Image.Resampling.LANCZOS) for i in range(14)],320,320),14),
+        'paf02_charge.webp': (atlas([painted_initial_paper(i,14).resize((320,320),Image.Resampling.LANCZOS) for i in range(14)],320,320),14),
         'paf02_line.webp': (atlas([wind_line(i) for i in range(18)],512,256),18),
         'paf02_contact.webp':(atlas([close_seal(i) for i in range(12)],256,256),12),
         'paf02_badge.webp': (atlas([status_badge(i) for i in range(8)],128,128),8)
@@ -167,4 +170,5 @@ def main():
         p=OUT/name;image.save(p,'WEBP',quality=88,method=3,exact=True)
         print('PAF02_ATLAS',name,'size',image.size,'frames',n,'sha',hashlib.sha256(p.read_bytes()).hexdigest())
     print('PAF02_ORIGINAL_ART_BAKE_PASS')
+    print('PAF02_R3_OPENING_TALISMAN_BAKE_PASS')
 if __name__=='__main__':main()
