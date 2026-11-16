@@ -14,6 +14,7 @@ from pathlib import Path
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
 import io,base64,math,hashlib
 import numpy as np
+from paf01_r4_paper import make_talisman
 
 ROOT=Path(__file__).resolve().parents[2]
 OUT=ROOT/"godot/labs/combat_lab/talisman11/assets"
@@ -190,16 +191,19 @@ def atlas(images,w,h):
 
 def main():
     OUT.mkdir(parents=True,exist_ok=True)
-    paper=paper_source()
-    sigil=original_scroll(paper)
+    # R4 only improves paper; preserve every accepted R3 wind and moving-mark routine.
+    poses=[make_talisman(i) for i in range(4)]
+    sigil=poses[0]
+    for k,p in enumerate(poses):
+        p.save(OUT/f'paf01_r4_paper_pose_{k}.png')
     glyph=original_mark()
     # Original 480x560 / 420x420 master PNGs are reproducibly authored by
     # this committed Python source, and archived in technical CI evidence.
     sigil.save(OUT/"paf01_original_480x560.png")
     glyph.save(OUT/"paf01_mark_original_420.png")
     frames={
-      "tal11_r1_charge.webp":(atlas([charge(i,sigil) for i in range(12)],320,320),320,320,12),
-      "tal11_r1_stream.webp":(atlas([streamer(i,sigil) for i in range(16)],512,256),512,256,16),
+      "tal11_r1_charge.webp":(atlas([charge(i,poses[i%4]) for i in range(12)],320,320),320,320,12),
+      "tal11_r1_stream.webp":(atlas([streamer(i,poses[i%4]) for i in range(16)],512,256),512,256,16),
       "tal11_r1_contact.webp":(atlas([contact(i,glyph) for i in range(12)],256,256),256,256,12),
       "tal11_r1_mark.webp":(atlas([mark(i,glyph) for i in range(20)],256,256),256,256,20)
     }
@@ -214,5 +218,6 @@ def main():
         p=OUT/name
         im.save(p,"WEBP",quality=91,method=6,exact=True)
         print("PAF01_VFX_ATLAS_TECH_PASS",name,im.size,"frames",n,"sha256",hashlib.sha256(p.read_bytes()).hexdigest())
-    print("PAF01_R1_SOURCE_BAKE_PASS")
+    print("PAF01_R1_SOURCE_BAKE_PASS")  # historical CI marker
+    print("PAF01_R4_PAPER_SOURCE_BAKE_PASS")
 if __name__=="__main__":main()

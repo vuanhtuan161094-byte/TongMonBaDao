@@ -31,7 +31,7 @@ jobs:
           set -euo pipefail
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
           sudo apt-get update -qq
-          sudo apt-get install -y -qq xvfb ffmpeg unzip python3-pil python3-numpy fonts-noto-cjk
+          sudo apt-get install -y -qq xvfb ffmpeg unzip python3-pil python3-numpy fonts-noto-cjk fonts-arphic-bkai00mp
           curl --fail --location --retry 3 -o /tmp/godot472.zip 'https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip'
           echo 'cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4  /tmp/godot472.zip' | sha256sum --check --strict
           unzip -q /tmp/godot472.zip -d /tmp
@@ -52,7 +52,7 @@ jobs:
           set -euo pipefail
           d="$RUNNER_TEMP/vfx-v4-paf01"
           /usr/bin/python3 tools/vfx/paf01_r1_wind_mark.py 2>&1 | tee "$d/paf01-bake.log"
-          grep -Fq 'PAF01_R1_SOURCE_BAKE_PASS' "$d/paf01-bake.log"
+          grep -Fq 'PAF01_R4_PAPER_SOURCE_BAKE_PASS' "$d/paf01-bake.log"
           python3 tools/qa/validate_vfx_v4_packet.py --stage assets --packet "$PACKET" 2>&1 | tee "$d/atlas.log"
           grep -Fq 'VFX_V4_ASSETS_TECHNICAL_PASS' "$d/atlas.log"
       - name: Restore unchanged Stage A character overlay
