@@ -39,3 +39,13 @@ Dựng sân thử **Godot 4.7.2 Compatibility 1280×720** dùng Nữ Kiếm Tu V
 5. Ghi exact source SHA của Godot repo khi chạy, hash PDF/PNG evidence, fps trên máy thực; quan sát lại 1x/2x/3x. Chủ sở hữu duyệt mỹ thuật riêng.
 
 **Không merge, rig, Codex, V6.3 bật, Combat V2/SaveService/economy/AI/PvE thay đổi.**
+## R1 transfer / QA checkpoint (do not claim native PASS)
+- ChatGPT Library: `/TMB-Character-Art/AS_CHAR49_V10_POISON_TALISMAN_MOVING_LAB_R1_20261116.zip`.
+- Transfer ZIP SHA256: `a271446dad18a8c9d5ab3b6a61ac0278b58d6bc950911043a4db32381d05ed28`; 30,698,020 bytes; **256 entries**, ZIP CRC PASS.
+- This package contains **240 original V10 PNG** (byte-preserved), retargeted SpriteFrames path only, **8 verified first-party approved HF02 R6/HF03 R2 WEBP atlas assets**, Godot source QA moving stage, installer, and file-hash manifest.
+- Original asset evidence: HF02 R6 workflow artifact `14194687188`; HF03 R2 workflow artifact `14195924457`. V10 source ZIP SHA is recorded above.
+- Godot scene source committed at `godot/labs/combat_lab/as_char49_vfx_playtest/playtest.{gd,tscn}`, `fx_layer.gd`; **binary character assets intentionally remain only in separate transfer ZIP** to avoid unreviewed production imports or GitHub-large-asset churn. Install ZIP Lab directory locally into the corresponding `godot/` before running.
+- Bridge uses original Poison/Talisman source textures by path from the current PR branch. The bridge's new dynamic placements/timing are **not owner approved** merely because the source art is.
+- **Static transfer checks: PASS** (240 references resolvable within transfer ZIP; 8 atlas SHA checked; ZIP CRC PASS). **Godot 4.7.2 import/scene/Windows physical QA/native 1280×720 movie: NOT_RUN**. **No real runtime hit receipts / HP/status** by design.
+- Controls: WASD/arrows hero move; 3 real moving monster SpriteFrames (if repo asset installed); click/TAB lock target; 1–7 owner-approved visual packs; SPACE attack; M toggle mobs. Death_Left absent; known Cast/Hit clipping unchanged.
+- Never mark runtime or owner review PASS until a real native Godot run and human inspection at exact source SHA.
