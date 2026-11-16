@@ -18,8 +18,9 @@ func _test()->void:
     check(LAB.visual_flight_at(LAB.CAST_END,LAB.PALM,LAB.monster_chest(LAB.CAST_END)).distance_to(LAB.PALM)<.01,"flight start")
     check(LAB.visual_flight_at(LAB.DEMO_CONTACT,LAB.PALM,LAB.monster_chest(LAB.DEMO_CONTACT)).distance_to(LAB.monster_chest(LAB.DEMO_CONTACT))<.01,"moving target contact")
     var o:=Vector2(400,330)
-    for d in [Vector2.RIGHT,Vector2.LEFT,Vector2.UP,Vector2.DOWN]:
-        var target:=o+d*190.0
+    var dirs: Array[Vector2]=[Vector2.RIGHT,Vector2.LEFT,Vector2.UP,Vector2.DOWN]
+    for d in dirs:
+        var target: Vector2 = o+d*190.0
         check(Vector2.RIGHT.rotated(LAB.projectile_angle(o,target)).dot(d)>.9999,"direction "+str(d))
         check(LAB.visual_flight_at(LAB.DEMO_CONTACT,o,target).distance_to(target)<.01,"direction target")
     check(LAB.projectile_angle(o,o)==0.0,"zero vector")
