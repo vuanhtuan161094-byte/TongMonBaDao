@@ -95,7 +95,7 @@ def hit_frame(k):
     if k<3:
         sc=.48+.18*k; energy=.40+.21*k
     else:
-        sc=.90+.42*q;energy=(1-q)**.74
+        sc=.90+.42*q;energy=max(.018,(1-q)**.74)  # retained final small residual ember for V4 asset integrity
     width=int(215*sc);height=int(215*sc)
     composite(out,p,(142-width//2-8*math.sin(q*5),130-height//2,width,height),energy)
     if k in (1,2,3):
