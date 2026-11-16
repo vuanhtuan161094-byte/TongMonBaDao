@@ -1,0 +1,34 @@
+# POI12 — Tẩy Mạch Linh Dược R1 — independent original botanical elixir VFX
+
+**Current source / owner direction:** 2026-11-16, existing PR #72 Draft, integration/pve-p0-playable-ui-20261103. The owner accepted POI11 R9 and directed the next poison skill plus permanent optimized QA V4.1. Older POI11 masters and accepted Poison art are LOCKED; no rig, no Codex, new branch, merge, Combat V2, SaveService, economy, PvE or V6.3 changes.
+
+## G0: exact canonical Human catalogue, NOT inferred from the friendly name
+
+`tmb.skill.poison.duoc_doc.active_01.human` / **Tẩy Mạch Linh Dược** / Dược Độc / Human active / element **wood**, effect **damage**, shape **single_target** cap **1**, cast **0.45s**, cooldown **8.0s**, projectile speed **8**, range **7.5**, damage_ratio **1.35**, radius **0**, duration **0**, stacks **0**. The source **does not** declare hit_count. This skill is NOT a heal and NOT an ongoing poison mark. Do not infer effect from Vietnamese name, poster or visual metaphor. V6.3 OFF; no true hit receipt mapped.
+
+## G1 / G2: separate unique identity
+
+One translucent jade-lime medicinal elixir with warm ivory living highlight and tapering floating botanical filaments. Unlike Độc Châm and the huge purple Vạn Độc burst: this is **one compact fast plant-liquid dart**, not a ring, area burst or lotus. Five visible animation beats: three swirling herb particles converge over the caster palm → single distilled glasslike green droplet forms → one living leaf-tailed dart flies to a LOCKED DEMO moving monster → tiny off-center organic jade-white puncture → narrow residue dissipates, NO poison icon or recovery flash. Use first-party CODE-PAINTED RASTER source, NOT ImageGen painting and NO copied JX/VL commercial pixels. Code painter is a QA candidate only; owner material/shape self-review can REJECT and force replacement with higher-quality painted source.
+
+## G3: source preservation and pose atlas
+
+- Generator: `tools/vfx/generate_poi12_elixir.py` (first-party authored Pillow raster brush, deterministic); permanent source file, not a sticker icon.
+- 640×640 transparent PNG first-party source masters `assets/master/poi12_charge_master_640.png`, `poi12_flight_master_640.png`, `poi12_contact_master_640.png`.
+- Separate animated RGBA atlases: **8×192² charge; 12×288×160 moving elixir; 10×256² pointed local contact**. 30 distinct code-painted poses, not 30 recorded video frames. Three atlas uncompressed budget ~6.5 MiB; measure actual bytes/QA. Generated alpha masters must be committed after source QA and not replaced with expiring artifact only.
+- No character rig and no static identical asset recolored as a different Poison family.
+
+## Three-clock matrix — all contact / target numbers below LAB-only
+
+| Phase | Catalogue or actual receipt | Local visual timeline | Anchor / target following | Confidence |
+| --- | --- | --- | --- | --- |
+| Charge | cast 0–0.45s | 0–0.45s, 8 painted poses | fixed caster palm (342,426) | canonical cast / synthetic visual |
+| Launch / travel | projectile_speed 8 world units; no receipt mapping | 0.45–0.98s, 12 liquid-tail poses | one preselected WALK monster, visual-only interpolation; range in world units NOT validated | RUNTIME_MAPPING_PENDING |
+| Contact | target_limit1; damage_ratio1.35; hit_count missing | 0.98s synthetic contact; impact through 1.65s | current monster chest, head remains clear | LAB_SIMULATED_VISUAL_ONLY |
+| Fade | no long status / duration0 | 1.40–1.65s dissipates | one target only | no poison badge, no heal |
+| QA loop | demo only | 2.30s; G3.5 charge .20 / peak .80 / contact 1.12 | one actually walking fixture and focused moving-anchor test | not game timing |
+
+## G3.5/V4.1 STOP and status
+
+Proposed real native preflight Godot 4.7.2 Compatibility 1280×720 / 86 fixed movie frames; three native images at .20/.80/1.12 on a WALK actor and original master/alpha/pose validation. **G3.5 NOT_EXECUTED until exact-SHA Actions evidence exists.** Then human self-review of actually rendered native 1× art and STOP if generic UI/vector glow, poorly shaped elixir, occlusion, cropping/square halo or weak contact. If it passes human art preflight, only then run compact 132-frame / 2.2s attack-specific movie and >=12 meaningful timestamps. Duration=0 so NO unnecessary 8-second status film. Encoded FPS is NOT physical Windows/Android FPS.
+
+**Strict initial statuses**: `ART_MANUAL_PENDING / OWNER_VISUAL_PENDING / RUNTIME_MAPPING_PENDING / GODOT_TECH_NOT_RUN / PVE_INTEGRATION_HOLD / PHYSICAL_QA_PENDING`. Does not affect previous POI11 R9 acceptance.
