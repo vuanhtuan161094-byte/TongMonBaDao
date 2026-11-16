@@ -58,7 +58,7 @@ def stone(canvas, center, wh, angle, opacity, light=1.0, glow=0.65):
         emitting=(255.*hot_filament*source_alpha).astype('uint8')
         veil=Image.fromarray(emitting,'L').filter(ImageFilter.GaussianBlur(7))
         haze=Image.new('RGBA',img.size,(255,229,162,0))
-        haze.putalpha(veil.point(lambda a:int(a*opacity*glow*.47)))
+        haze.putalpha(veil.point(lambda a:int(a*opacity*glow*.78)))
         layer_at(canvas,haze,center)
     layer_at(canvas,scaled_alpha(img,opacity),center)
 

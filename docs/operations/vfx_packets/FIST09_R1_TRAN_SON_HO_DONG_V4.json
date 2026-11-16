@@ -3,7 +3,7 @@
   "packet_id": "FIST09_R1_MOUNTAIN_SLAB_THREE_CLOCK_V4",
   "skill_id": "tmb.skill.fist.kim_cang.active_04.human",
   "school": "fist",
-  "revision": "R2_HOT_VEIN_MOUNTAIN_WARD",
+  "revision": "R3_BRIGHT_SCALE_MOUNTAIN_GUARD",
   "catalogue_path": "godot/data/combat/v63_human_combat_catalog.json",
   "scene_path": "godot/labs/combat_lab/fist09/tran_son_ho_dong.tscn",
   "lab_script": "godot/labs/combat_lab/fist09/tran_son_ho_dong.gd",
@@ -121,7 +121,7 @@
   },
   "proof_contract": {
     "focused_marker": "VFX_FIST09_FOCUSED_RESULT=PASS failures=0",
-    "native_marker": "VFX_FIST09_R2_READY",
+    "native_marker": "VFX_FIST09_R3_READY",
     "video_filename": "v4-fist09-native.mp4",
     "source": "FIST09 one guarded moving target, real WALK demonstration and synthetic defensive block only, no outgoing hit."
   }

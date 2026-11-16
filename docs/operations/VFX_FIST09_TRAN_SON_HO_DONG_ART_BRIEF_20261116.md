@@ -26,3 +26,8 @@ Date: 2026-11-16. Branch integration/pve-p0-playable-ui-20261103; PR #72 Draft.
 - R1 exact SHA \`6ef9ffb84c19fc344ba9627eb504150d4ea0101c\`, Actions #43822106152 technical SUCCESS, full 333-frame 1280×720 Godot movie and V4 proof. Native 1x art at charge/peak: three duplicate golden oblongs due to full-alpha yellow haze, small weak status markers and soft block. **R1 ART SELF_FAIL; owner was not asked to approve it.**
 - R2 is an ART-source correction not code-drawn runtime geometry: luminosity-selected ONLY original rock-vein emission, overlap three different rock poses into a more integrated mountain ward, strengthen 4s shoulder marks and 0.26s protected hit contact. 24 poses, three atlases, 6.25MiB unchanged. Validate exact Godot V4 again and manually inspect; no art PASS or PvE enable until owner.
 - This R2 belongs ONLY to FIST09; FIST08 Phản Chấn Quyền R1 remains restored per owner's decision.
+
+
+## R2 native QA and R3 scale/lighting rework
+- R2 exact SHA \`decf66d441153a7c2b0922a218f0a4efffd993ce\`, Actions #43822930260 technical SUCCESS: full 333-frame 1280×720 Godot movie, 17 1× frames, V4 packet/asset/3 native preflight proofs and strict focused PASS. Manual 1× frames: flat yellow capsule outlines fixed; still undersized cast and weak 4s sign/local block. ART_SELF_REWORK.
+- R3 adjusts only genuine existing atlas's hot vein emission (not whole-rock glow), LAB cast scale 1.13→1.43, status 1.11→1.29, protected-hit contact .95→1.22. 24 poses and 6.25MiB unchanged. No runtime generated circles, rig, fake damage or PvE integration. Another native exact-SHA film is mandatory before judging.

@@ -9,7 +9,7 @@ func _initialize() -> void:
     call_deferred("_run")
 func _run() -> void:
     check(LAB.SKILL_ID=="tmb.skill.fist.kim_cang.active_04.human","ID")
-    check(LAB.ART_REVISION=="R2_HOT_VEIN_MOUNTAIN_WARD","revision")
+    check(LAB.ART_REVISION=="R3_BRIGHT_SCALE_MOUNTAIN_GUARD","revision")
     check(LAB.EFFECT=="guard" and LAB.ELEMENT=="earth","canonical effect/element")
     check(LAB.SHAPE=="single_target" and LAB.TARGET_LIMIT==1,"no AoE/multitarget")
     check(is_equal_approx(LAB.CAST_TIME,.45) and is_equal_approx(LAB.COOLDOWN,8.0),"authority times")
