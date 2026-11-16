@@ -26,6 +26,11 @@ const LOTUS:Texture2D = preload("res://labs/combat_lab/talisman07/assets/tal07_r
 const SEALS:Texture2D = preload("res://labs/combat_lab/talisman07/assets/tal07_r5_seal_atlas.webp")
 const GROUND:Texture2D = preload("res://labs/combat_lab/talisman07/assets/tal07_ground_flipbook.webp")
 const CONTACT:Texture2D = preload("res://labs/combat_lab/talisman07/assets/tal07_r5_contact_atlas.webp")
+const CHARGE_R6:Texture2D = preload("res://labs/combat_lab/talisman07/assets/tal07_r6_charge_atlas.webp")
+const FLY_R6:Texture2D = preload("res://labs/combat_lab/talisman07/assets/tal07_r6_flying_atlas.webp")
+const R6_VISUAL_SEAL_COUNT := 4
+const R6_VISUAL_FLIGHT_START := 0.52
+const R6_VISUAL_FLIGHT_END := 1.36
 const BACKDROP:Texture2D = preload("res://labs/combat_lab/poison05/remake_r6/assets/immortal_valley.svg")
 const CASTER_ART:Texture2D = preload("res://labs/character_family/assets/nu_doc_tu_v4_candidate/idle_4dir_APPROVED_UNCHANGED.png")
 const MONSTER_FRAMES:SpriteFrames = preload("res://assets/actors/v5_sa_monster_1113031_1/animations.tres")
@@ -63,8 +68,8 @@ static func inside_demo_circle(index:int,t:float)->bool:
     return Vector2(d.x,d.y*2.2).length()<=181.0
 
 static func charge_gain(t:float)->float:
-    if t<.02 or t>=.94:return 0.0
-    return smoothstep(.02,.18,t)*(1.0-smoothstep(.65,.94,t))
+    if t<.02 or t>=.70:return 0.0
+    return smoothstep(.02,.21,t)*(1.0-smoothstep(.48,.70,t))
 
 static func bloom_gain(t:float)->float:
     if t<BLOOM_START or t>=FADE_END:return 0.0
@@ -80,6 +85,31 @@ static func hit_gain(index:int,t:float)->float:
     var end:=CONTACT_END+shift
     if t<start or t>=end:return 0.0
     return smoothstep(start,start+.035,t)*(1.0-smoothstep(start+.09,end,t))
+
+# R6 four flying paper talismans are presentation-only: NO runtime projectile,
+# NO additional targets, ZERO extra hit receipts. The whole group ignites a
+# preselected stationary circle. Each pose is sampled from the original atlas.
+static func cosmetic_fly_phase(index:int,t:float)->float:
+    if index<0 or index>=R6_VISUAL_SEAL_COUNT:return -1.0
+    var begin:=R6_VISUAL_FLIGHT_START+float(index)*.058
+    var finish:=1.16+float(index)*.064
+    if t<begin or t>finish:return -1.0
+    return clampf((t-begin)/(finish-begin),0.0,1.0)
+
+static func cosmetic_fly_position(index:int,t:float)->Vector2:
+    if index<0 or index>=R6_VISUAL_SEAL_COUNT:return Vector2.INF
+    var q:=clampf(cosmetic_fly_phase(index,t),0.0,1.0)
+    var p0:=HAND+Vector2(18.0,-24.0+float(index-2)*15.0)
+    var p3:=CIRCLE_CENTER+Vector2(float(index-2)*39.0,-54.0+float(index%2)*12.0)
+    var p1:=p0+Vector2(149.0,-95.0-float(index%2)*32.0)
+    var p2:=p3+Vector2(-160.0,-106.0+float(index)*13.0)
+    var u:=1.0-q
+    return u*u*u*p0+3.0*u*u*q*p1+3.0*u*q*q*p2+q*q*q*p3
+
+static func cosmetic_fly_alpha(index:int,t:float)->float:
+    var q:=cosmetic_fly_phase(index,t)
+    if q<0.0:return 0.0
+    return smoothstep(0.0,.095,q)*(1.0-smoothstep(.86,1.0,q))
 
 static func lotus_index(t:float)->int:
     return clampi(int(floor(clampf((t-BLOOM_START)/1.39,0,1)*11.99)),0,11)
@@ -103,7 +133,7 @@ func _ready()->void:
             im.set_pixel(x,y,Color(1.0,1.0,1.0,
                 clampf(exp(-7.5*p.length_squared())*(1.0-smoothstep(.76,1.0,p.length())),0.0,1.0)))
     _glow=ImageTexture.create_from_image(im)
-    print("VFX_TAL07_READY id=",SKILL_ID," rework=R5 source_painted_owner_fire=true frames=12/12/8/8 moving_monsters=3 circle=true view_only=true")
+    print("VFX_TAL07_READY id=",SKILL_ID," rework=R6 painted_charge=true cosmetic_flying_seals=4 native_moving_monsters=3 circle=true real_projectile_speed=0 view_only=true")
     set_process(true)
 
 func _process(delta:float)->void:
@@ -160,6 +190,26 @@ func _draw()->void:
                 Rect2(pos-Vector2(74,73),Vector2(148,146)),
                 Rect2(float(f%4)*256.0,float(int(f/4))*256.0,256,256),
                 Color(1,1,1,hg*.96))
+    # R6 flying sigils travel towards an already selected area; they never
+    # carry gameplay damage. Show this below WALK actors and above the lotus.
+    for k in range(R6_VISUAL_SEAL_COUNT):
+        var flight_alpha:=cosmetic_fly_alpha(k,t)
+        if flight_alpha>.004:
+            var u:=cosmetic_fly_phase(k,t)
+            var center:=cosmetic_fly_position(k,t)
+            var before:=cosmetic_fly_position(k,t-.004)
+            var after:=cosmetic_fly_position(k,t+.004)
+            # Protect first/last poses from outside-window invalid endpoints.
+            if before==Vector2.INF:before=center-Vector2(2,0)
+            if after==Vector2.INF:after=center+Vector2(2,0)
+            var direction:=(after-before).angle()
+            var frame:=clampi(int(floor(u*11.99)),0,11)
+            var src:=Rect2(float(frame%4)*320.0,float(int(frame/4))*192.0,320.0,192.0)
+            var size:=lerpf(.76,1.05,smoothstep(0.0,.82,u))
+            draw_set_transform(center,direction,Vector2.ONE*size)
+            draw_texture_rect_region(FLY_R6,Rect2(-112,-66,224,132),
+                src,Color(1,1,1,flight_alpha*.98))
+            draw_set_transform(Vector2.ZERO)
     _draw_caster()
     for i in range(TARGET_LIMIT):
         _draw_monster(i,t)
@@ -171,20 +221,17 @@ func _draw()->void:
             _halo(pos,35,Color("f9592a",hg*.31))
             _halo(pos,17,Color("ffcc72",hg*.65))
             _halo(pos,7,Color("fff6d9",hg*.70))
+    # R6 separate alpha-painted energy convergence around caster.
     var charge:=charge_gain(t)
     if charge>.003:
-        var f:=seal_index(t)
-        var at:=HAND+Vector2(27,-18-13*smoothstep(.14,.60,t))
-        draw_set_transform(at,-.16+.09*sin(t*7.0),Vector2.ONE)
-        draw_texture_rect_region(SEALS,Rect2(-82,-82,164,164),
-            Rect2(float(f%4)*256.0,float(int(f/4))*256.0,256,256),Color(1,1,1,charge))
-        draw_set_transform(Vector2.ZERO)
-        _halo(HAND+Vector2(8,-6),54,Color("ffb23c",charge*.30))
-        for k in range(7):
-            var a:=float(k)*2.399
-            var q:=clampf(t/.62,0.0,1.0)
-            var p:=HAND+Vector2(cos(a)*(86-69*q),sin(a)*(59-43*q))
-            _halo(p,4.0,Color("ffd280",charge*.35))
+        var frame:=clampi(int(floor(clampf(t/.62,0,1)*11.99)),0,11)
+        var src:=Rect2(float(frame%4)*320.0,float(int(frame/4))*320.0,320.0,320.0)
+        var grow:=lerpf(.78,1.02,smoothstep(.08,.51,t))
+        var side:=255.0*grow
+        draw_texture_rect_region(CHARGE_R6,
+            Rect2(HAND+Vector2(-side*.47,-side*.54),Vector2(side,side)),
+            src,Color(1.0,1.0,1.0,charge*.95))
+        _halo(HAND+Vector2(9,-7),26,Color("fff0ad",charge*.33))
     # Delayed, non-damaging ember motes; no long-lasting burn status.
     var ember:=smoothstep(DEMO_HIT_AT,DEMO_HIT_AT+.14,t)*(1.0-smoothstep(1.95,FADE_END,t))
     if ember>.003:
