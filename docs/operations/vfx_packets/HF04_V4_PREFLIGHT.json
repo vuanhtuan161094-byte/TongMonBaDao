@@ -3,7 +3,7 @@
   "packet_id": "HF04_R1_CHU_TUOC_HOI_HOAN_NATIVE_V4",
   "skill_id": "tmb.skill.talisman.hoa_phu.active_04.human",
   "school": "talisman",
-  "revision": "HF04_R2_ORIGINAL_ILLUSTRATED_PHOENIX_ALPHA_OWNER_PENDING",
+  "revision": "HF04_R3_OWNER_ILLUSTRATED_PHOENIX_WITH_BEHIND_ACTOR_LOCAL_IMPACT_ART_PENDING",
   "catalogue_path": "godot/data/combat/v63_talisman_combat_catalog.json",
   "scene_path": "godot/labs/combat_lab/talisman09/chu_tuoc_hoi_hoan.tscn",
   "lab_script": "godot/labs/combat_lab/talisman09/chu_tuoc_hoi_hoan.gd",
@@ -25,7 +25,7 @@
     "source_class": "FIRST_PARTY_IMAGE_GENERATED_PHOENIX_AND_AUTHORED_PAINTED_FLAME",
     "rights_note": "Chu Tước master illustrated by ImageGen for this user's original Tông Môn Bá Đạo concept, then selected RGB bird-only pixel material was isolated and reconstructed with custom luminosity alpha; it is NOT a Godot screenshot. Supporting fire, gold-red talisman, Hỏa Long are other original first-party project images. No unlicensed commercial JX/Source VL/Source A pixels.",
     "master_quality_status": "MANUAL_ART_REVIEW_REQUIRED",
-    "known_source_limitation": "Original illustrated Chu Tước bird crop stored in repo is only RGB 304x112 WEBP due to text-source GitHub transport, so atlas animates the painted wing silhouette by frame-specific warp and separate original fire-tail poses. No claim of 16 separately hand-painted original bird masters. G3.5 native 1x judge must verify no poster background/rectangular matte and wing readability.",
+    "known_source_limitation": "Original illustrated Chu Tước bird crop stored in repo is only RGB 304x112 WEBP due to text-source GitHub transport, so atlas animates the painted wing silhouette by frame-specific warp and separate original fire-tail poses. No claim of 16 separately hand-painted original bird masters. G3.5 native 1x judge must verify no poster background/rectangular matte and wing readability. R3 expands only behind-actor painted center during ONE verified-design circle pulse and small current-position contact hot-cues; actual gameplay event mapping remains pending.",
     "master_files": [
       {
         "path": "godot/labs/combat_lab/talisman06/art_sources/hf01_r5_talisman_master_png.b64",
