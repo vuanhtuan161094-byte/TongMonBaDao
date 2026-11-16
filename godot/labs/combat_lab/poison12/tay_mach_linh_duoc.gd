@@ -19,9 +19,9 @@ const LOOP_SECONDS := 2.30
 const PALM := Vector2(342.0,426.0)
 const CASTER := Vector2(273.0,540.0)
 const BASE_FOOT := Vector2(997.0,563.0)
-const CHARGE_PATH := "res://labs/combat_lab/poison12/assets/poi12_charge_08.png"
-const FLIGHT_PATH := "res://labs/combat_lab/poison12/assets/poi12_flight_12.png"
-const IMPACT_PATH := "res://labs/combat_lab/poison12/assets/poi12_contact_10.png"
+const CHARGE_PATH := "res://labs/combat_lab/poison12/assets/poi12_charge_08_r2.png"
+const FLIGHT_PATH := "res://labs/combat_lab/poison12/assets/poi12_flight_12_r2.png"
+const IMPACT_PATH := "res://labs/combat_lab/poison12/assets/poi12_contact_10_r2.png"
 const CHARGE_CELL := Vector2(192,192)
 const FLIGHT_CELL := Vector2(288,160)
 const IMPACT_CELL := Vector2(256,256)
@@ -77,7 +77,7 @@ func _ready()->void:
     for i in range(12):flight_frames.append(_frame(b,i,FLIGHT_CELL))
     for i in range(10):impact_frames.append(_frame(c,i,IMPACT_CELL))
     set_process(true)
-    print("VFX_POI12_R1_READY original_code_painted=true charge=8 flight=12 impact=10 damage_only=true moving_monster=true")
+    print("VFX_POI12_R1_READY revision=r2_cured_flat_polygon original_code_painted=true charge=8 flight=12 impact=10 damage_only=true moving_monster=true")
     queue_redraw()
 
 func _process(delta:float)->void:
@@ -117,17 +117,17 @@ func _draw()->void:
         var appear:=smoothstep(0.015,.15,t)
         var depart:=1.0-smoothstep(CAST_END-.02,CAST_END+.07,t)
         var i:=clampf(t/CAST_END*7.0,0.0,7.0)
-        _flip(charge_frames,PALM,Vector2(210,194),i,appear*depart*.95)
+        _flip(charge_frames,PALM,Vector2(242,219),i,appear*depart*.95)
     if t>=CAST_END and t<DEMO_CONTACT+.03:
         var q:=clampf((t-CAST_END)/(DEMO_CONTACT-CAST_END),0.0,1.0)
         var out:=1.0-smoothstep(DEMO_CONTACT-.045,DEMO_CONTACT+.03,t)
         var pos:=demo_flight_at(t)
-        _flip(flight_frames,pos-Vector2(22,0),Vector2(215,136),q*11.0,out*.23)
-        _flip(flight_frames,pos,Vector2(290,173),q*11.0,out*.93)
+        _flip(flight_frames,pos-Vector2(22,0),Vector2(253,161),q*11.0,out*.23)
+        _flip(flight_frames,pos,Vector2(350,214),q*11.0,out*.93)
     draw_texture_rect_region(CASTER_ART,Rect2(CASTER-Vector2(160,351)*.47,Vector2(320,384)*.47),Rect2(0,0,320,384))
     _draw_monster(t)
     if t>=DEMO_CONTACT and t<IMPACT_END:
         var q:=clampf((t-DEMO_CONTACT)/(IMPACT_END-DEMO_CONTACT),0.0,1.0)
         var strength:=smoothstep(0.0,.11,q)*(1.0-smoothstep(.48,1.0,q))
         # Local head-clear botanical light follows the same single moving dummy.
-        _flip(impact_frames,monster_chest(t)+Vector2(0,18),Vector2(248,235),q*9.0,strength*.88)
+        _flip(impact_frames,monster_chest(t)+Vector2(0,18),Vector2(316,304),q*9.0,strength*.88)

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""POI12 first-party CODE-PAINTED RASTER FX source: botanical toxic elixir.
+"""POI12 R2 first-party CODE-PAINTED RASTER FX source: botanical toxic elixir.
 Authored raster geometry and brushwork, NOT ImageGen painting or external pixels.
 Sprite-first, 3 masters + 8 charge/12 liquid flight/10 contact nonrigged poses.
 Every non-UI output has clean transparent borders; no atlas as painterly proof.
@@ -86,12 +86,41 @@ def scene(kind,phase,size=(640,640)):
             a=-1.2+j*1.35+q*.28
             leaf(work,x0-60-j*32,y0+(j-1)*21,50+12*math.sin(q*5+j),
                  a+math.pi*.7,10,False)
-        # Irregular translucent amber-glass liquid body, pointed toward the monster.
-        body=[(x0-90,y0-18),(x0-65,y0-62),(x0+26,y0-57),(x0+87,y0-23),
-              (x0+139,y0+1),(x0+67,y0+42),(x0-10,y0+63),(x0-68,y0+29)]
-        ImageDraw.Draw(work,"RGBA").polygon([pt(*p) for p in body],fill=(25,170,106,177))
-        curved(work,[(x0-70,y0-23),(x0-13,y0-43),(x0+90,y0-8),(x0+132,y0+1)],
-               (231,255,179,238),3.9,10)
+
+        # R2: original translucent jade sap rendered as a curved painterly body.
+        # This replaces R1's filled flat polygon (visually rejected in real Godot).
+        # The silhouette changes with the pose: supple head, asymmetric glass belly.
+        ripple=math.sin(q*math.tau*1.2)*.16
+        outline_top=[]
+        outline_bottom=[]
+        for k in range(37):
+            u=k/36.0
+            xx=x0-101+260*u
+            width=(38+8*math.sin(u*math.pi*3+q*math.tau))*math.sin(math.pi*u)**.85
+            spine_y=y0+math.sin(u*math.pi*2+q*math.tau)*8+4*math.sin(u*math.pi*4)
+            outline_top.append((xx,spine_y-width))
+            outline_bottom.append((xx,spine_y+width*.81))
+        contour=outline_top+outline_bottom[::-1]
+        shape=Image.new("L",work.size,0)
+        ImageDraw.Draw(shape).polygon([pt(*p) for p in contour],fill=238)
+        shape=shape.filter(ImageFilter.GaussianBlur(2*S))
+        alpha=np.asarray(shape).astype(np.float32)
+        yy,xx=np.mgrid[:work.height,:work.width]
+        centre=(xx/S-x0)
+        vertical=(yy/S-y0)
+        veins=.5+.5*np.sin(centre*.08+vertical*.10+q*7.5)
+        grain=.5+.5*np.sin(centre*.45+vertical*.22+q*12)*np.sin(centre*.17-vertical*.38)
+        highlight=np.exp(-((vertical+14+9*np.sin(centre*.023+q*math.tau))/17.0)**2)
+        arr=np.zeros((work.height,work.width,4),dtype=np.uint8)
+        arr[:,:,0]=np.clip(21+83*veins+98*highlight,0,255).astype(np.uint8)
+        arr[:,:,1]=np.clip(127+77*veins+63*highlight+12*grain,0,255).astype(np.uint8)
+        arr[:,:,2]=np.clip(75+68*veins+67*highlight,0,255).astype(np.uint8)
+        arr[:,:,3]=np.clip(alpha*(.56+.15*grain),0,255).astype(np.uint8)
+        work.alpha_composite(Image.fromarray(arr,"RGBA"))
+        curved(work,[(x0-86,y0-9),(x0-40,y0-32+q*6),(x0+38,y0-23),(x0+145,y0)],
+               (246,255,216,248),4.7,16)
+        curved(work,[(x0-64,y0+19),(x0-2,y0+31),(x0+67,y0+24),(x0+130,y0+5)],
+               (140,252,173,165),2.1,8)
         for j in range(4):
             x=x0-47+j*35
             leaf(work,x,y0+math.sin(j+q*3)*12,18+j*5,-.25+q*.23,7,j==2)
@@ -99,15 +128,15 @@ def scene(kind,phase,size=(640,640)):
     else:
         # Compact organic puncture, NOT an endlessly sustained poison aura.
         q=phase
-        radius=(35+103*math.sin(math.pi*min(1,q*.84+.10))) * (1-.52*max(0,q-.58)/.42)
+        radius=(47+134*math.sin(math.pi*min(1,q*.84+.10))) * (1-.52*max(0,q-.58)/.42)
         fade_ellipse(work,(x0-radius*.55,y0-radius*.55,x0+radius*.55,y0+radius*.55),
                     (68,245,155),14,135)
-        for j in range(9):
-            a=j*math.tau/9+.2*math.sin(j*.87+q*3)
+        for j in range(11):
+            a=j*math.tau/11+.28*math.sin(j*.87+q*3)
             length=radius*(.72+.32*math.sin(j*1.8+q*3))
             offset=(x0+math.cos(a)*length*.24,y0+math.sin(a)*length*.24)
             tip=(x0+math.cos(a)*length,y0+math.sin(a)*length)
-            leaf(work,offset[0],offset[1],length*.63,a,11+3*math.sin(j),j%5==0)
+            leaf(work,offset[0],offset[1],length*.70,a,9+4*math.sin(j),j%5==0)
             curved(work,[(x0,y0),(x0+math.cos(a+.1)*length*.49,y0+math.sin(a+.1)*length*.49),tip],
                    (224,255,190,max(35,int(245*(1-q*.85)))),2.8,10)
         fade_ellipse(work,(x0-22,y0-25,x0+22,y0+25),(255,255,229),5,int(235*(1-q*.5)))
@@ -151,12 +180,12 @@ def main():
     MASTER.mkdir(parents=True,exist_ok=True)
     for kind in ("charge","flight","contact"):
         im=scene(kind,.52)
-        path=MASTER/("poi12_"+kind+"_master_640.png")
+        path=MASTER/("poi12_"+kind+"_master_640_r2.png")
         im.save(path,optimize=True)
         print("POI12_FIRST_PARTY_CODE_ART_MASTER",path.name,im.size)
-    sheets=[atlas("poi12_charge_08.png","charge",8,(192,192)),
-        atlas("poi12_flight_12.png","flight",12,(288,160)),
-        atlas("poi12_contact_10.png","contact",10,(256,256))]
+    sheets=[atlas("poi12_charge_08_r2.png","charge",8,(192,192)),
+        atlas("poi12_flight_12_r2.png","flight",12,(288,160)),
+        atlas("poi12_contact_10_r2.png","contact",10,(256,256))]
     raw=sum(im.width*im.height*4 for im in sheets)
     print("POI12_RGBA8_RAW_BYTES",raw)
     assert raw<9*1024*1024
