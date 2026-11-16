@@ -109,7 +109,7 @@
     }
   ],
   "time_contract": {
-    "combat_clock": "CATALOGUE_GATED_V63_OFF",
+    "combat_clock": "CATALOGUE_GATED_NOT_LIVE",
     "declared_cast_end_seconds": 0,
     "declared_status_duration_seconds": 0,
     "runtime_receipt_timestamp": "RUNTIME_MAPPING_PENDING",
