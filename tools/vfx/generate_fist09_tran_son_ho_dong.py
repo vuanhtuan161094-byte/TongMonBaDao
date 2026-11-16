@@ -3,11 +3,12 @@
 
 This is an offline sprite painter. The primary material is original project
 art from FIST05, NOT a JX/Source-VL asset. It is independently reframed into
-three defensive mountain-plates; it is not an attack animation or damage.
+a broad protective painted arch and two horizontal load-bearing stone shoulders; it is not an attack animation or damage.
 No skeletal rig or runtime draw-line imitation of the primary image.
 """
 from pathlib import Path
 from PIL import Image, ImageFilter, ImageEnhance, ImageDraw
+import base64, io
 import math, random
 import numpy as np
 
@@ -18,7 +19,40 @@ OUT.mkdir(parents=True,exist_ok=True)
 with Image.open(SOURCE) as input_art:
     MATERIAL=input_art.convert('RGBA')
 assert MATERIAL.width>=100 and MATERIAL.height>=100
+# Second first-party source: original FIST07 illustrated golden energy.
+# R4 uses its lower protective arch/filigree only, NOT the deity or face.
+# Distinct FIST09 dedicated concept master remains a known art limitation.
+PAINTED_SOURCE=ROOT/'godot/labs/combat_lab/fist07/assets/source/kim_cang_guardian_master_r5.webp.b64'
+gold_bytes=base64.b64decode(''.join(PAINTED_SOURCE.read_text(encoding='ascii').split()),validate=True)
+with Image.open(io.BytesIO(gold_bytes)) as source_image:
+    GOLD=source_image.convert('RGBA')
+assert GOLD.width>=700 and GOLD.height>=700
 SEED=160911
+
+def gold_fragment(box, size):
+    """Original illustrated gold pixels; remove red edge-matte and box crop."""
+    out=GOLD.crop(box).resize(size,Image.Resampling.LANCZOS)
+    px=np.array(out,dtype=np.uint8)
+    rgb=px[:,:,:3].astype(np.float32)
+    r,g,b=rgb[:,:,0],rgb[:,:,1],rgb[:,:,2]
+    keep=((r>100)&(g>72)&(g>.67*r)&(b<1.24*g)).astype(np.float32)
+    light=np.maximum(r,g)
+    alpha=px[:,:,3].astype(np.float32)*keep*np.clip((light-75.)/120.,0,1)
+    h,w=alpha.shape
+    xx=np.arange(w,dtype=float);yy=np.arange(h,dtype=float)
+    ex=np.minimum(1,np.minimum(xx,w-1-xx)/max(1,w*.055))
+    ey=np.minimum(1,np.minimum(yy,h-1-yy)/max(1,h*.075))
+    px[:,:,3]=np.clip(alpha*ex[None,:]*ey[:,None],0,255).astype('uint8')
+    return Image.fromarray(px,'RGBA')
+
+ARCH=gold_fragment((52,323,720,660),(283,175))
+CROWN=gold_fragment((205,571,558,702),(163,65))
+FOOTSEAL=gold_fragment((19,616,748,711),(243,44))
+LEFT_GOLD=gold_fragment((38,360,216,582),(51,90))
+RIGHT_GOLD=gold_fragment((549,360,730,582),(51,90))
+BLOCK_CURVE=gold_fragment((365,357,710,650),(145,160))
+BLOCK_FLASH=gold_fragment((140,577,650,704),(178,69))
+
 
 def paper(w):
     return Image.new('RGBA',(w,w),(0,0,0,0))
@@ -86,55 +120,75 @@ def ground_light(im,alpha,pivot):
     im.alpha_composite(fx.filter(ImageFilter.GaussianBlur(.8)))
 
 def cast_pose(k):
-    S=320; im=paper(S)
-    growth=[.20,.36,.57,.77,1.0,.89,.61,.31][k]
-    # Three authored mountain plates, unequal masses, asymmetric to prevent
-    # generic symmetric circles. Real stone pixels retained in all frames.
-    left=(120-15*growth,180-14*growth)
-    right=(214+15*growth,179-22*growth)
-    center=(166+6*math.sin(k*.9),155-25*growth)
-    stone(im,left,(84+38*growth,124+67*growth),-26+6*math.sin(k*.8),growth*.86,1.35)
-    stone(im,right,(82+38*growth,131+69*growth),22-4*math.cos(k*.9),growth*.84,1.55)
-    stone(im,center,(90+40*growth,145+80*growth),2+7*math.sin(k*.7),growth*.64,1.65)
-    ground_light(im,growth,(160,278))
-    strokes(im,SEED+k*23,22,(165,174),(97,112),growth)
-    # Brightly coloured "mountain crown", not circular quang-giap/runes.
+    """Eight progressive protection poses: broad shoulder masonry -> painted
+    arch locks across the body -> short luminous release -> retraction.
+    No three upright stone spikes. Cast is separate from the 4-second buff.
+    """
+    S=320;im=paper(S)
+    energy=[.13,.25,.45,.71,.95,1.0,.68,.30][k]
+    lock=[.0,.04,.13,.35,.82,1.0,.74,.22][k]
+    rising=[26,19,11,4,0,-3,6,14][k]
+    # Rotate TWO long pieces horizontally: protection, not projectiles.
+    stone(im,(83-7*lock,201+rising),(65,132),-72+k*.9,
+          energy*.86,1.4,.30)
+    stone(im,(234+7*lock,201+rising),(68,135),70-k*.8,
+          energy*.87,1.4,.30)
+    dome=ARCH.resize((round(246+33*lock),round(150+19*lock)),
+                     Image.Resampling.LANCZOS)
+    layer_at(im,scaled_alpha(dome,energy*(.55+.30*lock)),
+             (160,166+rising*.33))
+    layer_at(im,scaled_alpha(CROWN,energy*(.27+.48*lock)),
+             (160,94+rising))
+    layer_at(im,scaled_alpha(FOOTSEAL,energy*.93),(160,272))
+    if k in (3,4,5):
+        hot=CROWN.filter(ImageFilter.GaussianBlur(8))
+        layer_at(im,scaled_alpha(hot,.20*energy),(160,94))
     return im
 
 def status_pose(k):
-    S=192; im=paper(S)
-    phase=2*math.pi*k/8.0
-    breath=.72+.08*math.sin(phase)
-    # Two small chipped armor markers near shoulder/waist, with empty actor.
-    stone(im,(42+3*math.sin(phase),89),(41,78),-24+3*math.sin(phase),.83*breath,1.5,.51)
-    stone(im,(151+2*math.cos(phase),80),(39,73),26-3*math.cos(phase),.81*breath,1.45,.48)
-    ground_light(im,.42*breath,(96,168))
-    strokes(im,SEED+200+k,13,(97,137),(74,36),breath*.43)
+    """Painted four-second buff stays LEGIBLE during WALK without covering
+    the sprite face. Shoulders and foot seal track the SAME protected actor."""
+    S=192;im=paper(S)
+    phase=math.tau*k/8
+    breath=.85+.10*math.sin(phase)
+    stone(im,(40+2*math.sin(phase),94),(23,63),-61+3*math.sin(phase),
+          breath*.65,1.30,.22)
+    stone(im,(152+2*math.cos(phase),94),(23,63),63-3*math.cos(phase),
+          breath*.65,1.30,.22)
+    left=LEFT_GOLD.resize((34,62),Image.Resampling.LANCZOS)
+    right=RIGHT_GOLD.resize((34,62),Image.Resampling.LANCZOS)
+    layer_at(im,scaled_alpha(left,breath*.56),(39,92))
+    layer_at(im,scaled_alpha(right,breath*.58),(153,92))
+    base=FOOTSEAL.resize((151,29),Image.Resampling.LANCZOS)
+    layer_at(im,scaled_alpha(base,breath*.82),(96,168+1.8*math.sin(phase)))
+    crest=CROWN.resize((90,36),Image.Resampling.LANCZOS)
+    layer_at(im,scaled_alpha(crest,breath*.48),(96,42))
     return im
 
 def contact_pose(k):
-    S=256; im=paper(S);p=k/7.0
-    impulse=[.45,.88,1.0,.94,.74,.53,.31,.13][k]
-    # Paint localized stone shield compression, not an explosion hitting enemy.
-    stone(im,(119+6*p,130-5*p),(106+48*p,163-26*p),-28-16*p,
-          impulse*.92,1.8,.89)
-    rand=random.Random(SEED+900+k*17)
-    # Fractured chips shear out from protected recipient only.
-    for j in range(8):
-        angle=j*math.tau/8+0.2*j
-        radius=(14+51*p)*(1+(j%3)*.07)
-        x=122+radius*math.cos(angle)
-        y=136+radius*.72*math.sin(angle)
-        wh=(10+rand.randint(0,10),18+rand.randint(0,11))
-        stone(im,(x,y),wh,rand.randint(-55,55),impulse*(.34+.12*(j%3)),1.55,.27)
-    if k<5:
-        core=Image.new('RGBA',(S,S),(0,0,0,0))
-        d=ImageDraw.Draw(core,'RGBA')
-        x,y=138+12*p,120-9*p
-        r=11+24*p
-        d.ellipse((x-r,y-r,x+r,y+r),fill=(255,240,189,int(83*impulse)))
-        im.alpha_composite(core.filter(ImageFilter.GaussianBlur(9)))
-    strokes(im,SEED+2400+k*9,27,(139,123),(78,83),impulse)
+    """One defended hit on the incoming RIGHT flank, no retaliation.
+    Broad painted barrier compresses and throws original mineral fragments.
+    """
+    S=256;im=paper(S)
+    intensity=[.29,.66,1.0,.92,.73,.47,.23,.06][k]
+    recoil=[0,5,10,8,4,0,-2,0][k]
+    progress=k/7
+    stone(im,(166+recoil,132),(95,129),-23+13*progress,
+          intensity*.90,1.7,.40)
+    layer_at(im,scaled_alpha(BLOCK_CURVE,intensity*.92),
+             (154+recoil,129))
+    layer_at(im,scaled_alpha(BLOCK_FLASH,intensity*.58),
+             (166+recoil,146))
+    if k in (1,2,3,4):
+        bloom=BLOCK_CURVE.filter(ImageFilter.GaussianBlur(7))
+        layer_at(im,scaled_alpha(bloom,intensity*.28),(157+recoil,130))
+    randomizer=random.Random(SEED+101*k)
+    for j in range(9):
+        dx=(16+j*4)*progress+randomizer.randrange(-5,6)
+        dy=((j%5)-2)*(9+5*progress)
+        stone(im,(167+dx,131+dy),(9+j%3*3,18+j%4*2),
+              -61+randomizer.randrange(-12,13),
+              intensity*(.14+(j%3)*.06),1.25,.06)
     return im
 
 def atlas(images, cell, filename):

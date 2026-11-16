@@ -3,7 +3,7 @@ extends Control
 ## Earth GUARD 4 seconds. Original atlas generated from first-party project art.
 ## Preview receipts ONLY, no gameplay writes, no rig, no fake damage.
 const SKILL_ID := "tmb.skill.fist.kim_cang.active_04.human"
-const ART_REVISION := "R3_BRIGHT_SCALE_MOUNTAIN_GUARD"
+const ART_REVISION := "R4_PAINTED_MOUNTAIN_BULWARK"
 const EFFECT := "guard"
 const ELEMENT := "earth"
 const SHAPE := "single_target"
@@ -75,7 +75,7 @@ func _ready() -> void:
     set_process(true)
     queue_redraw()
     if not vfx_only_benchmark:
-        print("VFX_FIST09_R3_READY skill=",SKILL_ID," effect=guard cap=1 moving_target=true no_rig=true view_only=true")
+        print("VFX_FIST09_R4_READY skill=",SKILL_ID," effect=guard cap=1 moving_target=true no_rig=true view_only=true")
 
 func _process(delta: float) -> void:
     if paused:return
@@ -136,11 +136,11 @@ func _draw() -> void:
     # 4-second bright permanent fortress obscuring the battlefield.
     if burst>.002:
         var k:=clampi(int(floor(t/CAST_BURST_END*8.0)),0,7)
-        _frame(CAST,k,320.0,protected+Vector2(0,-143),1.43,burst,Vector2(160,167))
+        _frame(CAST,k,320.0,protected+Vector2(0,-143),1.36,burst,Vector2(160,167))
     # A small readable two-plate sign breathes with the moving recipient.
     if state>.002:
         var k:=posmod(int(floor((t-GUARD_START)*5.8)),8)
-        _frame(STATUS,k,192.0,protected+Vector2(0,-93),1.29,
+        _frame(STATUS,k,192.0,protected+Vector2(0,-93),1.43,
             state*(.92+.05*sin(t*6.9)),Vector2(96,98))
     var caster_walk:=t>=.54 and t<1.40 or t>=2.6 and t<3.55
     var enemy_walk:=t>=.31 and t<1.28 or t>=1.60 and t<2.72
@@ -152,7 +152,7 @@ func _draw() -> void:
     if impact_age>=0.0 and t>=GUARD_START and t<GUARD_END:
         var k:=clampi(int(floor(impact_age/BLOCK_TIME*8.0)),0,7)
         var a:=block_alpha(t,t-impact_age)
-        _frame(BLOCK,k,256.0,contact_at(0,t),1.22,a,Vector2(132,132))
+        _frame(BLOCK,k,256.0,contact_at(0,t),1.18,a,Vector2(132,132))
         if not vfx_only_benchmark:
             _actor(protected,Color(1.0,.97,.84,clampf(a*.16,0.0,.16)),caster_walk)
     if not vfx_only_benchmark:
@@ -164,7 +164,7 @@ func _draw() -> void:
         draw_string(ThemeDB.fallback_font,Vector2(28,33),
             "TRAN SON HO DONG / KIM CANG",HORIZONTAL_ALIGNMENT_LEFT,-1,22,Color("fff0d4"))
         draw_string(ThemeDB.fallback_font,Vector2(28,59),
-            "FIST09 R3 | BRIGHT MOUNTAIN WARD -> STATUS -> BLOCK",
+            "FIST09 R4 | PAINTED BULWARK -> GUARD -> DEFLECT",
             HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("eccba3"))
         draw_string(ThemeDB.fallback_font,Vector2(28,683),
             "GODOT 4.7.2 | EARTH GUARD 4S | MOVING WALK | LAB ONLY / NO RIG",

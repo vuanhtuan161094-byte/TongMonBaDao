@@ -40,3 +40,10 @@ Date: 2026-11-16. Branch integration/pve-p0-playable-ui-20261103; PR #72 Draft.
 - **ART_SELF_FAIL / ART_REWORK_REQUIRED**, \`OWNER_VISUAL_PENDING\`, \`PVE_INTEGRATION_HOLD\`, \`V63_OFF\`, \`PHYSICAL_ANDROID_PENDING\`. Do not promote to finished/approved art from technical CI success, and do not pretend an encoded 60-fps fixed-clock video proves Android FPS.
 - Verified downloadable GitHub workflow artifact: \`vfx-fist09-r1-v4-native\` (historical name despite R3 code) artifact #14204939737, contains \`fist09-r1.mp4\` (historical filename) plus PNG atlas and native times. Both filename and artifact label are legacy; **SHA and \`R3_BRIGHT_SCALE_MOUNTAIN_GUARD\` script define the actual R3 version**.
 - Owner-selected FIST08 R1 remains restored; this FIST09 review does not alter earlier skill selection.
+
+## R4 source-composite remake — 16 Nov 2026
+- Owner REJECTS FIST09 R3. R3 video and artifact remain archival, not art PASS.
+- Replaces the **three offensive-looking upright spikes** with a wide gold illustrated protective arch and two horizontal weight-bearing rock shoulders, crown and foot seal, more readable 4-second moving buff, and incoming right-flank compressed painted shield on block. Same single-target Earth guard contract.
+- Original source/rights: both FIST05 cracked rock painting and FIST07 first-party gold illustration; R4 crops the lower protective arch/ornaments, NOT the deity. This is an explicitly acknowledged **first-party derivative composite** rather than a new standalone commissioned/ImageGen master. Duplicated art language and matte quality require manual inspection.
+- Three clocks unchanged: canonical cast 0.45s and guard 0.45–4.45s; LAB-only 0–0.78s cast visuals, synthetic blocks at 1.30s/3.13s and fade by 4.88s; actual Combat V2 guard receipt mapping pending.
+- Visual gate: G3.5 three true native Godot frames at .25/.59/1.34 on protected walking actor, full 1280x720 movie and >=12 timestamps, manually inspect on actual 1x terrain. R3 technical CI success is NOT R4 evidence. Until reviewed: ART_REVIEW_PENDING, OWNER_VISUAL_PENDING, PVE_INTEGRATION_HOLD, physical QA pending.
