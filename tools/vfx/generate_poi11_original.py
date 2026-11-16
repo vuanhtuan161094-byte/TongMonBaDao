@@ -41,6 +41,10 @@ def source(name):
         d=np.sqrt(dx*dx+dy*dy)
         envelope=np.clip((1.06-d)/.22,0,1)
         edgegain*=envelope
+    if name=='crown':
+        # Concept image contains painted ground at its lower edge. Remove the
+        # straight cropped-floor alpha line; keep only airborne emissive vortex.
+        edgegain*=np.clip((hh*.91-ys)/(hh*.22),0,1)
     alpha=np.clip(original*(pigment/255.0)*edgegain*1.14,0,255)
     # Colored pixels brighten a little, but alpha always carries shape/material.
     pure=np.clip(rgb*1.13+np.where(alpha[:,:,None]>60,5,0),0,255)

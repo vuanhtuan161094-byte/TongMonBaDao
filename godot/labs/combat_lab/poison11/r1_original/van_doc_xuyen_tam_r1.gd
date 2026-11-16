@@ -149,8 +149,8 @@ func _draw()->void:
     draw_texture_rect(BACKDROP,Rect2(0,0,1280,720),false,Color.WHITE)
     if charge_frames.size()!=10 or flight_frames.size()!=10 or crown_frames.size()!=10 or contact_frames.size()!=8:return
     if t<CAST_END:
-        var rise:=smoothstep(.03,.79,t)
-        _flip(charge_frames,PALM,Vector2(186,170),charge_index(t),rise*.96)
+        var rise:=smoothstep(.02,.36,t)
+        _flip(charge_frames,PALM,Vector2(221,202),charge_index(t),rise*.98)
     if t>=CAST_END and t<AREA_ARRIVE:
         var q:=clampf((t-CAST_END)/(AREA_ARRIVE-CAST_END),0.0,1.0)
         _flip(flight_frames,flight_position(t),Vector2(220+65*q,154+45*q),clampf(q*9.0,0.0,9.0),.92)
