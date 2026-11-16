@@ -108,7 +108,7 @@ func _draw() -> void:
         for i in range(TARGET_LIMIT):
             var p := target_contact(i, t)
             var local: float = clampf((t - APPLY_SIMULATED) / .45, 0, 1)
-            _flip(CONTACT, 12, 256, 256, local, Rect2(p - Vector2(57, 60), Vector2(114, 120)), Color(1, 1, 1, imprint * .88))
+            _flip(CONTACT, 12, 256, 256, local, Rect2(p - Vector2(66, 58), Vector2(132, 140)), Color(1, 1, 1, imprint * .88))
             _glow(p, 23, Color("e0ffed", imprint * .19))
     # LAB-only debuff icons. On integration these MUST subscribe to actual Combat V2 status receipts.
     for i in range(TARGET_LIMIT):
@@ -118,7 +118,7 @@ func _draw() -> void:
     draw_texture_rect_region(CASTER_ART, Rect2(CASTER - Vector2(72, 163), Vector2(144, 163)), Rect2(0, 0, 320, 384), Color("e5d7ca"))
     var charge := charge_gain(t)
     if charge > .004:
-        var center := HAND + Vector2(22, -14)
-        var sz := 232.0 + 28.0 * smoothstep(.08, .46, t)
+        var center := HAND + Vector2(63, -22)
+        var sz := 320.0 + 22.0 * smoothstep(.08, .46, t)
         _flip(CHARGE, 14, 320, 320, clampf(t / .50, 0, 1), Rect2(center - Vector2.ONE * sz * .5, Vector2.ONE * sz), Color(1, 1, 1, charge * .94))
         _glow(HAND + Vector2(7, -5), 39, Color("beffe8", charge * .22))

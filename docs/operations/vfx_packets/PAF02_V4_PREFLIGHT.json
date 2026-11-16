@@ -3,7 +3,7 @@
   "packet_id": "PAF02_R1_THAI_HUYEN_KHEP_AN_NATIVE_SHORT_V4",
   "skill_id": "tmb.skill.talisman.phong_an_phu.active_02.human",
   "school": "talisman",
-  "revision": "PAF02_R1_ORIGINAL_JADE_GOLD_WIND_LINE_SHORT_CAST_STATUS_SEPARATE",
+  "revision": "PAF02_R2_ILLUSTRATED_PAINTED_LINE_JADE_SEAL_SHORT_GESTURE_MOVING_3_STATUS_SEPARATE",
   "catalogue_path": "godot/data/combat/v63_talisman_combat_catalog.json",
   "scene_path": "godot/labs/combat_lab/talisman12/thai_huyen_khep_an.tscn",
   "lab_script": "godot/labs/combat_lab/talisman12/thai_huyen_khep_an.gd",
@@ -22,15 +22,25 @@
     "duration": 5.5
   },
   "provenance": {
-    "source_class": "FIRST_PARTY_CODE_PAINTED_ORIGINAL_PAF02_JADE_GOLD_SEAL",
-    "rights_note": "TMB-only original deterministic 560x560 transparent alpha master, authored supersampled wind-script jade-gold folding slivers and gold-calligraphy 玄, with 14 charge poses, 18 line poses, 12 contact poses and eight small badges. Reproducible source code tools/vfx/paf02_assets.py, original source master is created before packet validation and archived with the CI evidence. No PAF01 atlas copied, commercial Source VL/JX/Source A pixels or rig. OS-installed CJK font is used but never copied.",
+    "source_class": "FIRST_PARTY_IMAGEGEN_REFERENCE_PAINT_EXTRACT_AND_ORIGINAL_ATLAS",
+    "rights_note": "The separate PAF02 original jade-wind LINE and impact source WebPs are alpha-extracted exclusively from first-party image-generated PAF02 concept art specifically made for this project, then transformed and blended with independently authored first-party raster sprite poses in tools/vfx/paf02_assets.py. No third-party commercial Võ Lâm/Source A/JX pixels, no skeletal rig. The source images and generator are all durably committed. The 560x560 generated transparent jade crest master and independent 14/18/12/8 moving poses are baked reproducibly, no PAF01 atlas reused.",
     "master_quality_status": "MANUAL_ART_REVIEW_REQUIRED",
-    "known_source_limitation": "Original code-painted independent art may still look graphical rather than pictorial at native 1x. G3.5 art must be manually reviewed and may be rejected. Source master can always be regenerated from durable script; CI generated master is not independently committed as binary. Technical integrity cannot certify art.",
+    "known_source_limitation": "R1 Godot 1280x720 exactly tested 342dfd8b technical PASS but manual G3.5 art self-review FAIL: charge glyph was small/icon-like, line too thin and contact too faint. R2 inserts original first-party illustrated wind brush texture/impact and enlarges native charge/contact without changing any canonical mechanic. Retain owner visual PENDING until new 1x Godot inspection. Art concept cutouts are not themselves Godot proof.",
     "master_files": [
       {
         "path": "godot/labs/combat_lab/talisman12/art_sources/paf02_thai_huyen_original_master.png",
         "encoding": "png",
         "role": "Original generated first-party 560x560 transparent hero master, reproducible and uploaded in exact-SHA archive"
+      },
+      {
+        "path": "godot/labs/combat_lab/talisman12/art_sources/paf02_r2_line_paint.webp",
+        "encoding": "webp",
+        "role": "Independent illustrated PAF02 line light alpha source, sourced from original project-only generated concept image"
+      },
+      {
+        "path": "godot/labs/combat_lab/talisman12/art_sources/paf02_r2_impact_paint.webp",
+        "encoding": "webp",
+        "role": "Independent illustrated PAF02 impact light alpha source, sourced from original project-only generated concept image"
       }
     ],
     "generators": [
@@ -46,7 +56,7 @@
       "cell_height": 320,
       "frames": 14,
       "columns": 4,
-      "layer": "14 original folding, expanding 玄 wind-seal poses in the 0.5s caster-hand clip"
+      "layer": "R2: illustrated luminous wind-current layered over 14 independent folding jade 玄 seal poses; native caster hand visual under 0.5s"
     },
     {
       "path": "godot/labs/combat_lab/talisman12/assets/paf02_line.webp",
@@ -56,7 +66,7 @@
       "cell_height": 256,
       "frames": 18,
       "columns": 4,
-      "layer": "18 original directional wind-light line poses (view-only, not a gameplay projectile)"
+      "layer": "R2: first-party illustrated organic white-hot jade wind-line painted alpha source, 18 independent view-only directional poses across 3 selected WALK actors"
     },
     {
       "path": "godot/labs/combat_lab/talisman12/assets/paf02_contact.webp",
@@ -66,7 +76,7 @@
       "cell_height": 256,
       "frames": 12,
       "columns": 4,
-      "layer": "12 original small closing-sign contact poses attached to three selected walking actors"
+      "layer": "R2: illustrated emerald upward plume plus 12 local closing seal contact poses anchored to moving actor, no damage"
     },
     {
       "path": "godot/labs/combat_lab/talisman12/assets/paf02_badge.webp",

@@ -11,6 +11,8 @@ ROOT=Path(__file__).resolve().parents[2]
 OUT=ROOT/'godot/labs/combat_lab/talisman12/assets'
 SRC=ROOT/'godot/labs/combat_lab/talisman12/art_sources'
 FONT='/usr/share/fonts/opentype/noto/NotoSerifCJK-Bold.ttc'
+PAINT_LINE=SRC/'paf02_r2_line_paint.webp'
+PAINT_IMPACT=SRC/'paf02_r2_impact_paint.webp'
 S=3
 
 def C(x):return round(x*S)
@@ -27,6 +29,16 @@ def luma(img,blur=8,gain=.33):
 def glyph(img,ch,x,y,sz,ink,stroke=(196,165,77,195)):
     d=ImageDraw.Draw(img,'RGBA')
     d.text((C(x),C(y)),ch,font=ImageFont.truetype(FONT,C(sz)),fill=ink,stroke_width=C(1.4),stroke_fill=stroke)
+
+def paint_source(file,width,height,alpha=1):
+    source=Image.open(file).convert("RGBA")
+    source=source.resize((C(width),C(height)),Image.Resampling.LANCZOS)
+    if alpha<1:
+        source.putalpha(source.getchannel("A").point(lambda v:int(v*alpha)))
+    return source
+
+def place_center(dst,src,x,y):
+    dst.alpha_composite(src,(int(C(x)-src.width/2),int(C(y)-src.height/2)))
 
 def render_hero(i=9,n=14):
     W=H=560; out=Image.new('RGBA',(C(W),C(H))); k=i/(n-1)
@@ -56,6 +68,9 @@ def render_hero(i=9,n=14):
             pts.append((278+r*math.cos(a)*1.30,270+r*math.sin(a)*.72))
         path(arc,pts,(89,240,215,200 if s==0 else 104),7 if s==0 else 3)
     out.alpha_composite(luma(arc,12,.25))
+    painted=paint_source(PAINT_LINE,314+18*q,150+8*q,.56)
+    painted=painted.rotate(-41+12*q,Image.Resampling.BICUBIC,expand=True)
+    place_center(out,painted,278,277)
     crest=Image.new('RGBA',out.size)
     # Brush-calligraphy jade spirit 玄, crossed with two quill-like ribbons.
     glyph(crest,'玄',213,173,136,(228,252,211,232),(24,155,139,215))
@@ -95,6 +110,8 @@ def wind_line(i):
             ink=(83,242,211,round((170 if s==0 else 113)*fade)) if s!=1 else (244,240,182,round(210*fade))
             path(trails,[points[j-1],points[j]],ink,max(.33,width))
     out.alpha_composite(luma(trails,14,.45))
+    painting=paint_source(PAINT_LINE,472,151,.92)
+    place_center(out,painting,253,125)
     d=ImageDraw.Draw(out,'RGBA')
     # Natural broken golden embroidery along a single LINE, not three fake gameplay shots.
     for s in range(11):
@@ -119,6 +136,8 @@ def close_seal(i):
         path(overlay,pts,(245,239,182,round(140*(1-q*.24))),2)
     glyph(overlay,'玄',92,71,68,(225,253,219,round(230*(1-q*.36))),(42,190,157,156))
     out.alpha_composite(luma(overlay,11,.42))
+    bloom=paint_source(PAINT_IMPACT,116,150,.56*(1-.36*q))
+    place_center(out,bloom,128,130)
     return out.resize((W,H),Image.Resampling.LANCZOS)
 
 def status_badge(i):
