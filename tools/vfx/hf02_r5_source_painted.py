@@ -28,7 +28,17 @@ def source_flame():
     mask=np.clip((r-b*.82-8)/126,0,1)**.67
     light=np.maximum(r,g*1.12)
     alpha=np.clip((light-10)*1.43,0,255)*mask
-    alpha=np.where((r>21)&(r>g*.93)&(r>b*1.30),alpha,0)
+    # Remove the BLACK PRESENTATION MATTE. R5 first native movie exposed
+    # an unacceptable rectangular dark plate at 1.49s on the purple backdrop.
+    # Remove low-luminance poster pixels BEFORE unmatting and feather all edges.
+    alpha=np.where((r>64)&(r>g*.93)&(r>b*1.30),alpha,0)
+    alpha=np.clip((alpha-82)*1.53,0,255)
+    hh,ww=alpha.shape
+    yy,xx=np.indices((hh,ww),dtype=np.float32)
+    feather=np.minimum.reduce([np.clip(xx/17,0,1),
+        np.clip((ww-1-xx)/17,0,1),np.clip(yy/12,0,1),
+        np.clip((hh-1-yy)/12,0,1)])
+    alpha*=feather
     z=np.maximum(alpha/255,.1)
     img=Image.fromarray(np.stack([np.uint8(np.clip(r/z*1.05,0,255)),
         np.uint8(np.clip(g/z*1.11,0,255)),
