@@ -8,6 +8,7 @@ on:
       - 'tools/qa/validate_vfx_v4_packet.py'
       - 'docs/operations/vfx_packets/HF02_V4_PREFLIGHT.json'
       - 'tools/vfx/hf02_r5_source_painted.py'
+      - 'tools/vfx/hf02_r6_talisman_motion.py'
       - 'tools/vfx/paint_tal07_lien_diem.py'
       - 'godot/labs/combat_lab/talisman07/**'
       - 'godot/tests/labs/combat_lab/vfx_tal07_contract_test.gd'
@@ -56,6 +57,8 @@ jobs:
           grep -Fq 'HF02_SPRITE_ALPHA_GATE=PASS' "$d/legacy-atlas.log"
           /usr/bin/python3 tools/vfx/hf02_r5_source_painted.py 2>&1 | tee "$d/r5-bake.log"
           grep -Fq 'HF02_R5_PAINTED_REBUILD_PASS' "$d/r5-bake.log"
+          /usr/bin/python3 tools/vfx/hf02_r6_talisman_motion.py 2>&1 | tee "$d/r6-charge-flight.log"
+          grep -Fq 'HF02_R6_ART_ATLAS_GATE_PASS' "$d/r6-charge-flight.log"
           python3 tools/qa/validate_vfx_v4_packet.py --stage assets --packet "$PACKET" 2>&1 | tee "$d/atlas.log"
           grep -Fq 'VFX_V4_ASSETS_TECHNICAL_PASS' "$d/atlas.log"
       - name: Restore unchanged Stage A character overlay
