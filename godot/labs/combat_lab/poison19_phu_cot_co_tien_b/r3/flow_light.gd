@@ -96,24 +96,36 @@ func _charge(t: float) -> void:
 func _flight(t: float) -> void:
     var gate: float=smoothstep(.53,.64,t)*(1.0-smoothstep(1.29,1.38,t))
     var head: Vector2=selected_projectile
+    # Native Godot gradient polylines, NOT dozens of disconnected bright rungs.
+    # 3 independent translucent feather strands follow the true past projectile
+    # positions; colors/alpha change smoothly per point, unlike baked PNG trails.
     for strand in range(3):
         var f: float=float(strand)
-        var previous: Vector2=head
-        for k in range(1,29):
-            var tt: float=t-0.016*float(k)
+        var points:=PackedVector2Array()
+        var halo:=PackedColorArray()
+        var body:=PackedColorArray()
+        var core:=PackedColorArray()
+        for k in range(29):
+            var tt: float=t-.016*float(k)
             if tt<RELEASE_AT:break
             var p: Vector2=flight_at(tt)
-            # Mild curved temporal filaments, not jitter or hand-drawn X shapes.
             var tangent: Vector2=flight_at(minf(tt+.015,CONTACT_AT))-flight_at(maxf(RELEASE_AT,tt-.015))
             var normal: Vector2=Vector2(-tangent.y,tangent.x).normalized()
-            var phase: float=(t-tt)*18.0+f*2.094+2.2*t
-            var displacement: float=sin(phase)*(4.6+2.1*f)*sin(float(k)/28.0*PI)
-            p+=normal*displacement
-            var falloff: float=pow(1.0-float(k)/29.0,1.18)
-            _stroke(previous,p,falloff*gate*.86,4.5-f*.58)
-            previous=p
+            var tail: float=float(k)/29.0
+            var separation: float=(f-1.0)*(3.7+2.2*sin(PI*tail))
+            var silk: float=2.0*sin(1.55*t+2.1*tail+f*2.09)*sin(PI*tail)
+            p+=normal*(separation+silk)
+            var gain: float=pow(1.0-tail,1.42)*gate
+            var prominence: float=1.0 if strand==1 else .48
+            points.append(p)
+            halo.append(Color(.43,.16,.98,.095*gain*prominence))
+            body.append(Color(.52,.36,1.0,.21*gain*prominence))
+            core.append(Color(.63,.98,.88,.25*gain*prominence))
+        if points.size()>1:
+            draw_polyline_colors(points,halo,21.0,true)
+            draw_polyline_colors(points,body,8.4,true)
+            draw_polyline_colors(points,core,2.4,true)
     _glow(head,9.0,gate*.95)
-    # Sparse deterministic photons follow flight; no particle emitter loop.
     for i in range(4):
         var sample_t: float=maxf(RELEASE_AT,t-.066*float(i+1))
         var pp: Vector2=flight_at(sample_t)
@@ -132,9 +144,9 @@ func _contact(t: float) -> void:
         var prev: Vector2=Vector2.ZERO
         for k in range(23):
             var v: float=float(k)/22.0
-            var angle: float=PI*(1.36*v+.45*f)+u*4.4+f*.9
+            var angle: float=PI*(.89*v+.46*f)+u*3.4+f*.7
             var radius: float=(66.0-37.0*u)*(1.0-.45*v)
-            var point:=center+Vector2(cos(angle)*radius,sin(angle)*radius*.80)
+            var point:=center+Vector2(cos(angle)*radius,sin(angle)*radius*.68)
             point+=Vector2(0.0,-9.0*sin(2.4*v+u*3.0+f))
             if k>0:
                 _stroke(prev,point,fade*(.41+.56*v),4.4-f*.65)
