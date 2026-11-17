@@ -42,11 +42,15 @@ def paint(mask,frame,kind,*,warm=.0):
     bright=np.clip(((xx-346)/220),0,1)**.7
     heat=np.clip(bright*.83+.15*np.sin((yy+frame*17)*.035)+.14*warm,0,1)
     pigment=np.clip(grain+.10*bright,0,1)
+    if kind==3:
+        # status has to survive dark monster clothing at 1x for the full 6s
+        heat=np.maximum(heat,np.clip((xx-230)/180.0,0,.78))
+        pigment=np.clip(pigment*.8+.31,0,1)
     a=np.clip(arr*(.78+.18*pigment)*255,0,255)
     rgb=np.empty((S,S,4),dtype=np.uint8)
     rgb[:,:,0]=np.clip(96+145*pigment+33*heat,0,255).astype('uint8')
-    rgb[:,:,1]=np.clip(8+38*pigment+165*heat**2,0,255).astype('uint8')
-    rgb[:,:,2]=np.clip(29+48*pigment+125*heat**2,0,255).astype('uint8')
+    rgb[:,:,1]=np.clip(10+30*pigment+215*heat**.82,0,255).astype('uint8')
+    rgb[:,:,2]=np.clip(34+38*pigment+169*heat**.92,0,255).astype('uint8')
     rgb[:,:,3]=a.astype('uint8')
     rgb[a<2,:3]=0
     im=Image.fromarray(rgb,'RGBA')
@@ -71,18 +75,23 @@ def claws(frame,kind):
         size=math.sin(math.pi*(.12+.79*t))**.68
         head=404+126*size
         base=260-25*(1-size)
-        d.polygon([(114,344),(185,301),(242,284),(331,291),
-                   (head-96,301),(head-118,363),(315,389),(193,390)],
-                   fill=158)
+        # Irregular painted muscle current with negative-space, NOT one flat slab.
+        d.polygon([(122,346),(190,314),(227,278),(306,297),
+                   (head-119,309),(head-126,357),(299,392),(208,380)],
+                   fill=68)
+        trace(d,bez((151,352),(238,328),(310,320),(head-102,327),48),40+20*size,color=170)
         for j,yend in enumerate((225,312,400)):
             dy=yend-315
             start=(290,317+dy*.19)
             pts=bez(start,(385,292+dy*.47),(head-50,270+dy*.66),
                     (head,312+dy*.93),48)
-            trace(d,pts,34+8*size)
+            trace(d,pts,32+17*size,color=230)
+            # Pointed tip cuts: distinct hunting talons at real gameplay scale.
+            tip=(head,312+dy*.93)
+            d.polygon([(tip[0]-78,tip[1]-18),(tip[0]+18,tip[1]),(tip[0]-70,tip[1]+15)],fill=255)
         # not a uniform neon contour: negative-space cutouts at claw roots
         for j in (-1,1):
-            d.ellipse((head-132,309+j*46-13,head-71,309+j*46+16),fill=0)
+            d.ellipse((head-135,309+j*46-18,head-76,309+j*46+17),fill=0)
     elif kind==2: # single contact: one compressed three-notch claw landing
         strength=math.sin(math.pi*(.10+.86*t))**.8
         d.ellipse((240-27*strength,252-25*strength,417+27*strength,405+25*strength),fill=130)
@@ -94,7 +103,7 @@ def claws(frame,kind):
             t2=t*math.tau
             pts=bez((267+j*3,259+dy),(304,287+dy*.80),
                     (305,342+dy*.71),(351+j*4,361+dy*.42),35)
-            trace(d,pts,15+2*math.sin(t2+j))
+            trace(d,pts,21+3*math.sin(t2+j),color=255)
     return m
 def frame(kind,k):
     mask=claws(k,kind)
@@ -107,7 +116,8 @@ def frame(kind,k):
         for j,yy in enumerate((237,312,396)):
             coords=bez((332,309+(j-1)*19),(395,289+(j-1)*44),
                        (460,255+(j-1)*75),(499,yy),35)
-            trace(pen,coords,4,(255,222,213,int(120*strength)))
+            trace(pen,coords,12,(255,228,208,int(185*strength)))
+            trace(pen,coords,3,(255,255,233,int(236*strength)))
     elif kind==2:
         for j,yy in enumerate((245,316,399)):
             coords=bez((289,312+(j-1)*20),(341,300+(j-1)*35),
@@ -117,7 +127,8 @@ def frame(kind,k):
         for j,dy in enumerate((-47,0,47)):
             coords=bez((279,266+dy),(307,294+dy*.79),
                        (312,338+dy*.75),(352,351+dy*.43),35)
-            trace(pen,coords,3,(255,217,182,135))
+            trace(pen,coords,9,(255,239,219,220))
+            trace(pen,coords,3,(255,255,242,250))
     else:
         trace(pen,bez((267,337),(288,321),(316,319),(351,318),25),3,(255,216,197,110))
     core.alpha_composite(glow.filter(ImageFilter.GaussianBlur(.8)))
@@ -128,7 +139,7 @@ kinds=[("charge",0,8),("talon",1,12),("contact",2,8),("mark",3,8)]
 report={"source_class":"FIRST_PARTY_ORIGINAL_DETERMINISTIC_RASTER_CODE_ART",
         "art_source":"code, not hand-painted and not ImageGen",
         "rights":"Original algorithmic pigmented RGBA and independent key poses, no foreign pixels",
-        "pose_total":36,"masters":{},"atlases":{}}
+        "pose_total":36,"revision":"R2_ENERGY_CLAW_MASTER","masters":{},"atlases":{}}
 for name,typ,n in kinds:
     pages=[frame(typ,i) for i in range(n)]
     # Keep 640x640 ORIGINAL source masters, reproducible in CI/Git, no poster crops.
@@ -151,4 +162,4 @@ for name,typ,n in kinds:
     report["atlases"][name]={"path":str(output.relative_to(ROOT)),"frames":n,
            "size":list(atlas.size),"sha256":hashlib.sha256(output.read_bytes()).hexdigest()}
 (OUT/'f14_provenance.json').write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding='utf-8')
-print("FIST14_R1_BAKE_PASS poses=36 masters=4 pages=4 code_original=true rgba=true no_gif=true no_rig=true")
+print("FIST14_R2_BAKE_PASS poses=36 masters=4 pages=4 code_original=true rgba=true no_gif=true no_rig=true")
