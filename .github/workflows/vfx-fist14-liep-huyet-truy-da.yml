@@ -49,7 +49,7 @@ jobs:
           grep -Fq 'FIST14_R1_BAKE_PASS poses=36 masters=4 pages=4 code_original=true rgba=true no_gif=true no_rig=true' "$d/bake.log"
           python3 tools/qa/validate_vfx_v4_packet.py --stage packet --packet docs/operations/vfx_packets/FIST14_R1_LIEP_HUYET_TRUY_DA_V4.json | tee "$d/packet.log"
           python3 tools/qa/validate_vfx_v4_packet.py --stage assets --packet docs/operations/vfx_packets/FIST14_R1_LIEP_HUYET_TRUY_DA_V4.json | tee "$d/assets.log"
-          cp godot/labs/combat_lab/fist14/assets/generated/f13_* "$d/"
+          cp godot/labs/combat_lab/fist14/assets/generated/f14_* "$d/"
       - name: Godot strict import parse focused moving-target contract
         run: |
           set -euo pipefail
