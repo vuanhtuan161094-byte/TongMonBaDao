@@ -60,15 +60,15 @@ def ink_body(dst,curve,thick,intensity=1,seed=0,phase=0):
 def src_frame(layer,k):
     t=k/FRAMES;out=blank()
     if layer=='rear':
-        curves=[((89,233),(48,215),(60,151),(133,121),8.5),
-                ((222,246),(262,212),(250,149),(199,112),5.8),
-                ((105,259),(73,234),(86,193),(126,182),4.7)]
+        curves=[((113,225),(89,207),(100,168),(154,155),5.0),
+                ((214,221),(222,201),(206,178),(188,166),3.8),
+                ((117,242),(138,232),(133,210),(158,199),3.3)]
         for j,(a,b,c,d,w) in enumerate(curves):
             ink_body(out,bez(a,b,c,d),w,intensity=.67 if j else .78,seed=j+1,phase=(t+j*.21)%1)
     elif layer=='front':
-        curves=[((106,235),(70,193),(130,162),(182,189),9.0),
-                ((229,210),(229,169),(188,151),(161,117),7.0),
-                ((136,250),(154,220),(183,221),(205,189),4.9)]
+        curves=[((113,218),(134,211),(142,190),(175,178),5.3),
+                ((202,217),(205,185),(194,169),(182,143),3.9),
+                ((135,232),(162,214),(177,209),(191,191),3.6)]
         for j,(a,b,c,d,w) in enumerate(curves):
             shift=4.0*math.sin(TAU*t+j*.8)
             head=(d[0]+shift,d[1]-shift*.33)
@@ -76,23 +76,41 @@ def src_frame(layer,k):
             ink_body(out,bez(a,b,mid,head),w,intensity=.95 if j==0 else .83,
                      seed=6+j,phase=(t*.95+j*.28)%1)
     else:
-        # Linked inscription-like strokes around waist: not circle/lotus/paper UI.
-        arcs=[((143,185),(141,155),(169,151),(183,174),5.3),
-              ((180,172),(194,194),(177,209),(155,208),4.6),
-              ((154,210),(133,201),(134,184),(153,177),3.6)]
-        for j,(a,b,c,d,w) in enumerate(arcs):
-            v=(t+.12*j)%1
-            ink_body(out,bez(a,b,c,d),w,
-                     intensity=.62+.25*math.sin(TAU*t+j*.41)**2,
-                     seed=j+13,phase=(v+.19*j)%1)
-        line=blank();br=ImageDraw.Draw(line,'RGBA')
-        for j in range(3):
-            angle=-math.pi/2+j*TAU/3
-            x=161+math.cos(angle)*9.8;y=183+math.sin(angle)*8.4
-            br.line(points([(161,183),(x,y)]),fill=(*GOLD,150),width=max(1,S))
-        cx=161+2.6*math.cos(TAU*t);cy=183+2.5*math.sin(TAU*t)
-        br.ellipse(((cx-2)*S,(cy-2)*S,(cx+2)*S,(cy+2)*S),fill=(*IVORY,225))
-        composite(out,line,3,.24)
+        # R2 semantic rescue: a DISTINCT vertical gold ink scripture flows
+        # over the robe, with individual tapered brush heads. No giant HUD
+        # glyph, no circle/three paper talismans, no generic halo repeat.
+        glyph=[
+          ((147,142),(160,132),(182,136),(196,147),4.1),
+          ((164,143),(162,155),(158,172),(150,182),4.9),
+          ((177,151),(192,163),(195,183),(182,191),3.9),
+          ((148,179),(163,174),(179,173),(188,182),2.6),
+          ((151,194),(166,209),(179,218),(199,206),4.4),
+          ((135,160),(146,166),(151,154),(163,155),2.9),
+          ((174,191),(167,205),(163,214),(155,224),3.2),
+        ]
+        for j,(a,b,c,d,w) in enumerate(glyph):
+            line=blank();brush=ImageDraw.Draw(line,'RGBA')
+            path=bez(a,b,c,d,42)
+            upper=[];lower=[]
+            for idx,(x,y) in enumerate(path):
+                u=idx/(len(path)-1)
+                old=path[max(0,idx-1)];nxt=path[min(idx+1,len(path)-1)]
+                dx=nxt[0]-old[0];dy=nxt[1]-old[1]
+                mag=max(.001,math.hypot(dx,dy))
+                nx,ny=-dy/mag,dx/mag
+                thick=w*(.10+.90*math.sin(math.pi*u)**.65)
+                upper.append((x+nx*thick,y+ny*thick))
+                lower.append((x-nx*thick*.43,y-ny*thick*.43))
+            brush.polygon(points(upper+lower[::-1]),fill=(*GOLD,174))
+            brush.line(points(path),fill=(*IVORY,194),width=max(1,int(w*.22*S)),joint='curve')
+            # Real light packets advance through the carved gold ink glyph.
+            active=(t*1.36+j*.17)%1.0
+            tip=path[int(active*(len(path)-1))]
+            radius=(1.4+.7*math.sin(TAU*t+j)) * S
+            brush.ellipse((tip[0]*S-radius,tip[1]*S-radius,
+                           tip[0]*S+radius,tip[1]*S+radius),
+                          fill=(*IVORY,225))
+            composite(out,line,3.8,.26)
     flick=blank();dd=ImageDraw.Draw(flick,'RGBA')
     for j in range(17):
         u=(t+.6180339*j)%1
@@ -114,7 +132,7 @@ def save(p,im):
             'size':[im.width,im.height]}
 
 if __name__=='__main__':
-    m={'schema':'PAF08_R1_FIRST_PARTY_LIVING_CALLIGRAPHIC_ENERGY',
+    m={'schema':'PAF08_R2_FIRST_PARTY_GOLD_INSCRIPTION_ENERGY',
        'skill_id':'tmb.skill.talisman.phong_an_phu.passive_03.human',
        'contract':'PASSIVE_ALWAYS_ON_OUTGOING_FACTOR_0.015_NO_HIT',
        'rights':'FIRST_PARTY_ISOLATED_RGBA_PAINTED_FROM_CODE',
