@@ -39,6 +39,10 @@ static func target_foot(t: float) -> Vector2:
 static func decoy_foot(t: float) -> Vector2:
     return DECOY_BASE + Vector2(15.0 * sin(2.7 * t + 1.1), 7.0 * cos(t * 1.5))
 
+static func mark_anchor_at(t: float) -> Vector2:
+    # Small luminous orchid FLOATS above chosen WALK enemy, not glued to clothing.
+    return target_foot(t) + Vector2(0.0,-167.0)
+
 static func flight_fraction(t: float) -> float:
     if t <= RELEASE_AT: return 0.0
     if t >= CONTACT_AT: return 1.0
@@ -166,4 +170,4 @@ func _draw() -> void:
     if t>=CONTACT_AT and t<MARK_FADE_END:
         var q3:=mark_gain(t)
         var cycle:=fposmod((t-CONTACT_AT)*5.0,12.0)
-        _pose(mark_frames,target_foot(t)+Vector2(0,-89),Vector2(130,130),cycle,.96*q3)
+        _pose(mark_frames,mark_anchor_at(t),Vector2(175,175),cycle,.96*q3)
