@@ -1,0 +1,78 @@
+{
+  "schema": "TMB_VFX_V4_PASSIVE_REAL_SCENE_PACKET",
+  "name": "PAF08_R1D_Luu_Van_Liem_Tuc",
+  "skill_id": "tmb.skill.talisman.phong_an_phu.passive_03.human",
+  "catalogue": "godot/data/combat/v63_talisman_combat_catalog.json",
+  "canonical": {
+    "effect": "passive",
+    "element": "wind",
+    "shape": "single_target",
+    "target_limit": 1,
+    "ai_profile": "passive_always_on",
+    "cast_time": 0,
+    "cooldown": 0,
+    "duration": 0,
+    "projectile_speed": 0,
+    "range": 0,
+    "radius": 0,
+    "damage_ratio": 0,
+    "passive_modifiers": {
+      "outgoing_factor": 0.015
+    }
+  },
+  "three_clocks": {
+    "combat": "PASSIVE_ALWAYS_ON_NO_CAST_NO_HIT",
+    "visual": "3_SECONDS_SCRIPT_REVEAL_RETRACT_REPEAT",
+    "demo": "4.2_SECONDS_252_FRAMES_FIXED_60FPS",
+    "moving_target_contact": "NOT_APPLICABLE_PASSIVE"
+  },
+  "source": {
+    "first_party": true,
+    "path": "tools/vfx/paint_paf08_liem_tuc.py",
+    "layers": [
+      "rear",
+      "front",
+      "script"
+    ],
+    "frames_per_layer": 36,
+    "cell_px": [
+      320,
+      320
+    ],
+    "columns": 9,
+    "original_rgba": true,
+    "rights": "FIRST_PARTY_CODE_PAINTED_NO_THIRD_PARTY_TEXTURE",
+    "master_custody": "source script committed, full PNG masters and WebP atlases in exact-SHA Actions/user ZIP"
+  },
+  "native": {
+    "scene": "godot/labs/combat_lab/talisman18/luu_van_liem_tuc_r1.tscn",
+    "off_scene": "godot/labs/combat_lab/talisman18/luu_van_liem_tuc_r1_off.tscn",
+    "focused_test": "godot/tests/labs/combat_lab/vfx_paf08_r1_contract_test.gd",
+    "workflow": ".github/workflows/vfx-paf08-script-native.yml",
+    "run_id": 44135022832,
+    "exact_sha": "d5c092b853b92727540a9f8bb94898293b54daad",
+    "native_fps": "fixed_60_encoding_not_measured",
+    "native_resolution": [
+      1280,
+      720
+    ],
+    "frames": 252,
+    "focused": "PASS",
+    "visible_pixels_gt22": 2114,
+    "forearm_glyph_pixels_gt26": 799
+  },
+  "gates": {
+    "G0": "PASS",
+    "G1": "FIRST_PARTY_NO_RIPPED_ART",
+    "G3": "ISOLATED_RGBA_CODE_SOURCE",
+    "G3_5": "NA_BY_PASSIVE_CONTRACT",
+    "G3_6": "PASS_NATIVE_ON_OFF",
+    "G3_7": "OWNER_PENDING",
+    "G5": "TRUE_GODOT_NATIVE_MP4_PASS",
+    "G7": "EXACT_SHA_TECH_PASS",
+    "G8": "PVE_HOLD",
+    "art": "ART_SELF_REWORK_SUGGESTED",
+    "owner": "PENDING",
+    "physical": "PENDING"
+  }
+}
