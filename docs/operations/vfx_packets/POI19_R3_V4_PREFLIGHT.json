@@ -1,0 +1,183 @@
+{
+  "schema": "tmb-vfx-production-system-v4.1",
+  "packet_id": "POI19_R3_GODOT_NATIVE_TEMPORAL_FLOW_OVER_80_RGBA",
+  "skill_id": "tmb.skill.poison.co_doc.active_01.immortal.b",
+  "school": "poison",
+  "revision": "POI19_R3_SMOOTH_GODOT_EMISSION_TRAILS_ADD_JADE_VIOLET",
+  "catalogue_path": "godot/data/combat/v63_immortal_combat_catalog.json",
+  "scene_path": "godot/labs/combat_lab/poison19_phu_cot_co_tien_b/r3/phu_cot_co_tien_b.tscn",
+  "lab_script": "godot/labs/combat_lab/poison19_phu_cot_co_tien_b/r3/phu_cot_co_tien_b.gd",
+  "focused_test": "godot/tests/labs/combat_lab/vfx_poi19_native_flow_r3_contract_test.gd",
+  "declared_contract": {
+    "effect": "mark",
+    "element": "wood",
+    "shape": "single_target",
+    "target_limit": 1,
+    "hit_count": null,
+    "range": 7.8,
+    "radius": 0,
+    "cast_time": 0.43,
+    "cooldown": 9.6,
+    "projectile_speed": 8.96,
+    "duration": 6.5
+  },
+  "provenance": {
+    "source_class": "FIRST_PARTY_80_TRUE_RGBA_R2_AND_NATIVE_GODOT_REALTIME_ADD_LIGHT_R3",
+    "master_quality_status": "MANUAL_ART_REVIEW_REQUIRED",
+    "rights_note": "R3 reuses original first-party R2 six RGBA masters/80 poses unchanged, retains their generator and original assets. NEW independent native Godot drawn continuously moving energy light flowing from caster toward ONE moving selected enemy: CanvasItemMaterial.BLEND_MODE_ADD applied ONLY to child light layer; analytic bezier charge, continuous history-sampled pearl flight, soft translucent strands wrapping target at impact, thin intermittent wisps on sustained orchid; all real draw_line/draw_circle primitives in Godot 4.7.2, no baked image/montage/trails, no rig/GIF. R2 visual still available for exact baseline comparison. R3 art not automatically approved, and scene is LAB view only: no live Combat V2 or PvE receipt.",
+    "generators": [
+      "tools/vfx/generate_poi19_phu_cot_co_tien_b_r2.py"
+    ],
+    "master_files": [
+      {
+        "path": "godot/labs/combat_lab/poison19_phu_cot_co_tien_b/r2/assets/master/poi19_gather_master_rgba.png",
+        "encoding": "png",
+        "role": "five hand-curved lilac orchids orbit concentrated casting pearl"
+      },
+      {
+        "path": "godot/labs/combat_lab/poison19_phu_cot_co_tien_b/r2/assets/master/poi19_seed_master_rgba.png",
+        "encoding": "png",
+        "role": "flying warm-gold jade core framed by changing asymmetric silk petals"
+      },
+      {
+        "path": "godot/labs/combat_lab/poison19_phu_cot_co_tien_b/r2/assets/master/poi19_fold_master_rgba.png",
+        "encoding": "png",
+        "role": "five large ornate violet petals fold inward only on selected WALK monster"
+      },
+      {
+        "path": "godot/labs/combat_lab/poison19_phu_cot_co_tien_b/r2/assets/master/poi19_mark_master_rgba.png",
+        "encoding": "png",
+        "role": "one sustained violet orchid head mark with hot golden center"
+      },
+      {
+        "path": "godot/labs/combat_lab/poison19_phu_cot_co_tien_b/r2/assets/master/poi19_ground_master_rgba.png",
+        "encoding": "png",
+        "role": "small single-target ritual seal under selected monster feet, NOT an AoE"
+      },
+      {
+        "path": "godot/labs/combat_lab/poison19_phu_cot_co_tien_b/r2/assets/master/poi19_veil_master_rgba.png",
+        "encoding": "png",
+        "role": "soft organic jade-violet silk curtains and sparse blossom dust"
+      }
+    ]
+  },
+  "atlases": [
+    {
+      "path": "godot/labs/combat_lab/poison19_phu_cot_co_tien_b/r2/assets/poi19_gather_12.png",
+      "width": 1280,
+      "height": 960,
+      "cell_width": 320,
+      "cell_height": 320,
+      "frames": 12,
+      "columns": 4,
+      "layer": "five hand-curved lilac orchids orbit concentrated casting pearl"
+    },
+    {
+      "path": "godot/labs/combat_lab/poison19_phu_cot_co_tien_b/r2/assets/poi19_seed_16.png",
+      "width": 1536,
+      "height": 1024,
+      "cell_width": 384,
+      "cell_height": 256,
+      "frames": 16,
+      "columns": 4,
+      "layer": "flying warm-gold jade core framed by changing asymmetric silk petals"
+    },
+    {
+      "path": "godot/labs/combat_lab/poison19_phu_cot_co_tien_b/r2/assets/poi19_fold_16.png",
+      "width": 1536,
+      "height": 1536,
+      "cell_width": 384,
+      "cell_height": 384,
+      "frames": 16,
+      "columns": 4,
+      "layer": "five large ornate violet petals fold inward only on selected WALK monster"
+    },
+    {
+      "path": "godot/labs/combat_lab/poison19_phu_cot_co_tien_b/r2/assets/poi19_mark_12.png",
+      "width": 1280,
+      "height": 960,
+      "cell_width": 320,
+      "cell_height": 320,
+      "frames": 12,
+      "columns": 4,
+      "layer": "one sustained violet orchid head mark with hot golden center"
+    },
+    {
+      "path": "godot/labs/combat_lab/poison19_phu_cot_co_tien_b/r2/assets/poi19_ground_12.png",
+      "width": 1536,
+      "height": 768,
+      "cell_width": 384,
+      "cell_height": 256,
+      "frames": 12,
+      "columns": 4,
+      "layer": "small single-target ritual seal under selected monster feet, NOT an AoE"
+    },
+    {
+      "path": "godot/labs/combat_lab/poison19_phu_cot_co_tien_b/r2/assets/poi19_veil_12.png",
+      "width": 1536,
+      "height": 960,
+      "cell_width": 384,
+      "cell_height": 320,
+      "frames": 12,
+      "columns": 4,
+      "layer": "soft organic jade-violet silk curtains and sparse blossom dust"
+    }
+  ],
+  "time_contract": {
+    "combat_clock": "CATALOGUE_GATED_NOT_LIVE",
+    "declared_cast_end_seconds": 0.43,
+    "declared_status_duration_seconds": 6.5,
+    "runtime_receipt_timestamp": "RUNTIME_MAPPING_PENDING",
+    "vfx_clock": "LAB_ONLY",
+    "simulated_hit_seconds": 1.35,
+    "visual_fade_end_seconds": 8.1,
+    "demo_loop_seconds": 8.5,
+    "demo_clock_warning": "R3 art request specifically native Godot emission/trails instead of flat sprite overlay. Canonical gameplay remains single target mark with cast0.43s, duration6.5s, cooldown9.6s, projectile_speed8.96 WORLD units/sec; actual Combat V2 release and receipt unknown. Cosmetic LAB contact 1.35s and movement demo only, no hit/damage/DoT. R3 procedural light is rendered inside Godot at 60FPS, not in Python video. Existing 80 R2 sprite poses retain MIX look; only dedicated child Control BLEND_MODE_ADD. 108 frame native G3.5 initial STOP; full movie must follow art inspection.",
+    "key_pose_budget_note": "80 source-preserved independently articulated RGBA poses from R2 unchanged PLUS actual continuous Godot 60FPS draw_line/additive light evaluated every native frame. Analytic temporal history from projectile function, no stored sprites or rig. Video 108 frames only on G3.5 preflight, full 510 frames after manual 1x art gate.",
+    "phases": [
+      {
+        "id": "charge",
+        "at_seconds": 0.21,
+        "file": "v4-charge.png",
+        "expected_phase": "charging_jade_seed"
+      },
+      {
+        "id": "peak",
+        "at_seconds": 0.98,
+        "file": "v4-peak.png",
+        "expected_phase": "jade_seed_flight_lab"
+      },
+      {
+        "id": "contact",
+        "at_seconds": 1.48,
+        "file": "v4-contact.png",
+        "expected_phase": "jade_orchid_folding_contact"
+      }
+    ]
+  },
+  "moving_target": {
+    "actor_animation": "Unchanged original caster + two independent V5 WALK monsters, R3 procedural additive flow follows only selected via analytic moving-target trajectory. Orchid mark and small ground seal follow selected on clock; decoy never receives any aura, emission or mark.",
+    "locked_demo_target_index": 0,
+    "movement_from_seconds": 0.21,
+    "movement_to_seconds": 1.48,
+    "minimum_displacement_px": 10,
+    "contact_anchor": "target_foot(t)+Vector2(0,-75) petals/veil, target_foot(t)+Vector2(0,-6) small ground seal, selected mark_anchor_at(t) above head",
+    "tracking_rule": "Flight history curve is sampled in Godot with 28 ticks over 0.448s, exact same moving-target trajectory and interpolation as R2 scene. Contact wraps around only selected moving target's torso; sustained 2 wisps follow mark_anchor_at(t), 6.5s. LAB view-only, not actual Combat V2 receipt.",
+    "receipt_claim": "SIMULATED_VISUAL_ONLY"
+  },
+  "gate_status": {
+    "g3_5_capture": "NOT_EXECUTED_R3",
+    "technical": "NOT_EXECUTED_R3",
+    "art": "MANUAL_ART_REVIEW_REQUIRED",
+    "owner": "OWNER_VISUAL_PENDING",
+    "live": "PVE_INTEGRATION_HOLD",
+    "device": "PHYSICAL_QA_PENDING",
+    "g3_7_semantic": "SOURCE_PEARL_TO_ONE_ENEMY_TO_FLOW_WRAP_AND_MARK_OWNER_PENDING"
+  },
+  "proof_contract": {
+    "focused_marker": "POI19_NATIVE_FLOW_R3_RESULT=PASS failures=0",
+    "native_marker": "POI19_PHU_COT_CO_TIENB_R3_READY",
+    "video_filename": "v4-poi19-r3-native.mp4",
+    "source": "Godot 4.7.2 additive CanvasItem real-time light over original source-preserved 80 RGBA 6 atlas sprites. LAB-only moving one-target t0.43 cast / 6.5 mark. Technical source/Godot video is not PvE integration nor art approval."
+  }
+}
