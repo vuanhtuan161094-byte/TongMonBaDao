@@ -158,7 +158,7 @@ func _draw()->void:
         var fade:=status_alpha(t)
         for idx in chosen:
             _flip(mark_frames,monster_chest(idx,t)+Vector2(0,6),
-                  Vector2(125,135),qmark,fade*.39)
+                  Vector2(151,158),qmark,fade*.64)
     for i in range(MONSTER_BASE_POSITIONS.size()):
         _draw_monster(i,t)
     if status_active(t):
@@ -166,4 +166,4 @@ func _draw()->void:
         var fade2:=status_alpha(t)
         for idx in chosen:
             _flip(mark_frames,monster_chest(idx,t)+Vector2(0,-9),
-                  Vector2(97,118),qmark2,fade2*.81)
+                  Vector2(123,145),qmark2,fade2*.96)

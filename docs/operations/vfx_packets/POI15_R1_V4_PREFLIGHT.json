@@ -3,7 +3,7 @@
   "packet_id": "POI15_HOA_DOC_TAN_R1_POISON_AOE_MOVING_THREE_TARGETS",
   "skill_id": "tmb.skill.poison.duoc_doc.active_04.human",
   "school": "poison",
-  "revision": "POI15_R1_ORIGINAL_TRANSLUCENT_AREA_POISON_3_MOVING_TARGETS_6S",
+  "revision": "POI15_R1B_MORE_READABLE_3_MOVING_POISON_MARKS_NATIVE",
   "catalogue_path": "godot/data/combat/v63_human_combat_catalog.json",
   "scene_path": "godot/labs/combat_lab/poison15_hoa_doc_tan/r1/hoa_doc_tan.tscn",
   "lab_script": "godot/labs/combat_lab/poison15_hoa_doc_tan/r1/hoa_doc_tan.gd",
@@ -24,7 +24,7 @@
   "provenance": {
     "source_class": "FIRST_PARTY_CODE_PAINTED_TRUE_RGBA_RASTER",
     "master_quality_status": "MANUAL_ART_REVIEW_REQUIRED",
-    "rights_note": "Independent original luminous 2D RGBA shader-free source created from Python per-pixel floating-point artist-defined plume/strand and hot-light forms. Visual POISON area, not heal/cleanse; no GIF, rig or borrowed game asset pixels. 3 moving enemy marks are visual-only test fixture, not fabricated actual poison receipts. Requires owner aesthetic review.",
+    "rights_note": "Independent original luminous 2D RGBA shader-free source created from Python per-pixel floating-point artist-defined plume/strand and hot-light forms. Visual POISON area, not heal/cleanse; no GIF, rig or borrowed game asset pixels. 3 moving enemy marks are visual-only test fixture, not fabricated actual poison receipts. Requires owner aesthetic review. R1B owner-unreviewed polish: independent per-target jade/plum poison wisps have slightly stronger true-alpha and larger overlay only, while field and actual target/status rules are identical.",
     "master_files": [
       {
         "path": "godot/labs/combat_lab/poison15_hoa_doc_tan/r1/assets/master/poi15_charge_master_rgba.png",
@@ -88,7 +88,7 @@
     "visual_fade_end_seconds": 7.05,
     "demo_loop_seconds": 7.44,
     "demo_clock_warning": "Actual catalogue circle area radius2.3 WORLD units, range7, max3, poison stacks1, duration6s; 165 screen-pixel radius is LAB art fixture and is NOT a conversion formula. Cast0.6, cooldown13 not overruled by movie. One cinematic area hit does not imply multiple receipts. Three moving monsters have visually simulated poison marks from 1.05 to 7.05, no real Combat V2 poison application, ticking damage or removal. No GIF/rig. Movie FPS is encoded, not runtime performance.",
-    "key_pose_budget_note": "8 charge+12 expanding area field+8 status mark = 28 ORIGINAL sprite poses. Unlike 450-frame native movie, 28 source poses budgeted. Visual status repeated over six seconds on max THREE targets only. Native 7.5s full-expiry video is intentional for duration QA.",
+    "key_pose_budget_note": "8 charge+12 expanding area field+8 status mark = 28 ORIGINAL sprite poses. Unlike 450-frame native movie, 28 source poses budgeted. Visual status repeated over six seconds on max THREE targets only. Native 7.5s full-expiry video is intentional for duration QA. R1B small mark-alpha and scaling changes improve visual legibility over R1; no new status, timing, or atlas poses.",
     "phases": [
       {
         "id": "charge",

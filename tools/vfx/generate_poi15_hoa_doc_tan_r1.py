@@ -108,21 +108,21 @@ def frame(part,t,wh):
         # Distinct per-target 6-second LAB-only affliction visual.
         # Not a square UI mark. Tiny jade vapour + purple disintegrating motes.
         power=.52+.48*np.sin(t*math.pi*.82+.28)
-        paint("emerald",gauss(x,y,0,5,23,30)*.09*power*noise)
+        paint("emerald",gauss(x,y,0,5,23,30)*.21*power*noise)
         for j in range(5):
             phase=2.39996*j+.42
             cx=(j-2)*8+2*np.sin(t*4.5+j)
             cy=21-28*t+(j%3)*6
             strand=np.exp(-((x-cx-3.5*np.sin(y*.035+j*.9))/4.0)**2)*g(y,cy-18,cy+21,11)
-            paint("jade" if j%2 else "purple",strand*.25*power*noise)
+            paint("jade" if j%2 else "purple",strand*.47*power*noise)
         for i in range(8):
             a=i*2.39996+.8
             cx=(12+5*(i%3))*np.sin(a)+5*np.sin(t*5+i)
             cy=(15+3*(i%3))*np.cos(a)-10*t
             mote=gauss(x,y,cx,cy,2.3+(i%3),4+(i%4))
-            paint("lime" if i%3 else "plum",mote*.51*power)
+            paint("lime" if i%3 else "plum",mote*.77*power)
             paint("silver",gauss(x,y,cx,cy,1.1,1.6)*.21*power)
-        paint("jade",gauss(x,y,0,4,7,10)*.18*power)
+        paint("jade",gauss(x,y,0,4,11,16)*.39*power)
         paint("ivory",gauss(x,y,0,4,2.4,3.6)*.31*power)
     else:raise ValueError(part)
     rgba=np.zeros_like(p,dtype=np.uint8)

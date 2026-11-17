@@ -29,3 +29,8 @@
 - **Visual target contract:** 4 genuinely WALK-animated enemies, 3 within the **LAB-only visual circular area** and fourth outside; `poison_stacks=1` and `duration=6s` from t1.05 to t7.05, mark disappears by t7.20. Visual checks plus focused test demonstrate timing and target fixtures only. **No real damage, poisoned-state application, real Combat V2 hit receipt or actual live area-to-pixel mapping**, no PVE. No unverified Android fps claims.
 - **Self-art review:** soft green poison field with violet accents is translucent and does not form a black rectangle. However at 1280×720 full-screen display the three individual status wisps are rather subtle and may need bolder selective luminance/contrast on owner request. **Art not finally approved**; this R1 is an OWNER_VISUAL_PENDING candidate, not owner-approved and not live-ready.
 - **Gates:** `TECH_GODOT_V4_G35_EXACT_SHA_PASS`, `ART_SELF_REVIEW_LIMITATIONS_RECORDED`, `OWNER_VISUAL_PENDING`, `RUNTIME_MAPPING_PENDING`, `PVE_HOLD`, `V63_OFF`, `PHYSICAL_QA_PENDING`. Prior POI14 R1B and POI13 R2 remain temporarily approved and not modified.
+
+
+## R1B focused 1× mark-legibility polish — 17/11/2026
+
+Manual review of real R1 native 1280×720 at t1.2 vs t3.95 showed area toxic wave clearly but independent target status wisps were nearly invisible on 1×. R1B increases **only the mark** brightness and slight displayed footprint, preserving its genuine true-alpha translucency, three targets, no fourth mark, exact 6-second fade, base field and charge, original generator-based sprite master workflow. Requires fresh exact-SHA Godot Actions test and native media review. **Not owner approved**.
