@@ -1,0 +1,105 @@
+name: VFX FIST12 R10 full native mark review
+on:
+  push:
+    branches: [integration/pve-p0-playable-ui-20261103]
+    paths:
+      - '.github/workflows/vfx-fist12-r10-native.yml'
+      - 'godot/labs/combat_lab/fist12/r10/**'
+      - 'godot/labs/combat_lab/fist12/assets/r9_sources/**'
+      - 'tools/vfx/generate_fist12_r10.py'
+      - 'godot/tests/labs/combat_lab/vfx_fist12_r10_contract_test.gd'
+      - 'docs/operations/vfx_packets/FIST12_R10_DOAN_MACH_LIEN_QUYEN_V4.json'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  r9-native-g35:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      GODOT_AUDIO_DRIVER: Dummy
+      GODOT_RENDERING_DRIVER: opengl3
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pinned Godot 4.7.2 and art QA dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq xvfb ffmpeg unzip python3-pil python3-numpy
+          curl --fail --location --retry 3 -o /tmp/godot472.zip 'https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip'
+          echo 'cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4  /tmp/godot472.zip' | sha256sum --check --strict
+          unzip -q /tmp/godot472.zip -d /tmp
+          sudo install -m0755 /tmp/Godot_v4.7.2-stable_linux.x86_64 /usr/local/bin/godot
+          mkdir -p /tmp/vfx-fist12-r10
+          godot --version | tee /tmp/vfx-fist12-r10/engine.txt
+          echo "EXACT_SHA=$GITHUB_SHA; FIST12=R9; PREVIEW_ONLY; ART_PENDING; NO_RIG; PVE_HOLD; V63_OFF" > /tmp/vfx-fist12-r10/metadata.txt
+      - name: Restore actor source for unmodified LAB placeholder
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat .github/assets/p3/female_stage_a/part{01..14}.b64 .github/assets/p3/female_stage_a/part15a.b64 .github/assets/p3/female_stage_a/part15b.b64 .github/assets/p3/female_stage_a/part{16..20}.b64 | tr -d '\r\n\t ' | base64 --decode > /tmp/tmb_stage_a_pack.zip
+          echo '6a4213b9129ffb3f438c21cbb5326672ddf8915323836bf80cb33b8e5fabfdca  /tmp/tmb_stage_a_pack.zip' | sha256sum --check --strict
+          unzip -q /tmp/tmb_stage_a_pack.zip -d .
+      - name: Validate catalogue and direct RGBA source-pose provenance
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 tools/qa/validate_vfx_v4_packet.py --stage packet --packet docs/operations/vfx_packets/FIST12_R10_DOAN_MACH_LIEN_QUYEN_V4.json | tee /tmp/vfx-fist12-r10/v4-packet.log
+          python3 tools/vfx/generate_fist12_r10.py | tee /tmp/vfx-fist12-r10/bake.log
+          grep -Fq 'FIST12_R10_BAKE_PASS poses=48 masters=R9_INDEPENDENT_SOURCE_DERIVATIVE no_gif=true no_rig=true' /tmp/vfx-fist12-r10/bake.log
+          python3 tools/qa/validate_vfx_v4_packet.py --stage assets --packet docs/operations/vfx_packets/FIST12_R10_DOAN_MACH_LIEN_QUYEN_V4.json | tee /tmp/vfx-fist12-r10/v4-assets.log
+          cp godot/labs/combat_lab/fist12/assets/r10_generated/r10_*.png /tmp/vfx-fist12-r10/
+          sha256sum godot/labs/combat_lab/fist12/assets/r9_sources/*.b64 /tmp/vfx-fist12-r10/*.png > /tmp/vfx-fist12-r10/ART_SOURCE_SHA256SUMS.txt
+      - name: Godot strict import / parse / focused moving-target contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash tools/qa/run_godot_strict.sh --headless --path godot --import 2>&1 | tee /tmp/vfx-fist12-r10/import.log
+          bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://labs/combat_lab/fist12/r10/doan_mach_lien_quyen_r10.gd 2>&1 | tee /tmp/vfx-fist12-r10/parse.log
+          bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/labs/combat_lab/vfx_fist12_r10_contract_test.gd 2>&1 | tee /tmp/vfx-fist12-r10/godot-focused.log
+          grep -Fq 'VFX_FIST12_R10_FOCUSED_RESULT=PASS failures=0' /tmp/vfx-fist12-r10/godot-focused.log
+      - name: Actual Godot 4.7.2 1280x720 G3.5 source-art STOP preflight
+        shell: bash
+        run: |
+          set -euo pipefail
+          d=/tmp/vfx-fist12-r10
+          xvfb-run -a -s '-screen 0 1280x720x24' bash tools/qa/run_godot_strict.sh --path godot --resolution 1280x720 --fixed-fps 60 --write-movie "$d/fist12-r10-preflight.avi" --quit-after 85 res://labs/combat_lab/fist12/r10/doan_mach_lien_quyen_r10.tscn 2>&1 | tee "$d/godot-preflight.log"
+          test -s "$d/fist12-r10-preflight.avi"
+          grep -Fq 'VFX_FIST12_R10_READY' "$d/godot-preflight.log"
+          ffmpeg -y -hide_banner -loglevel error -i "$d/fist12-r10-preflight.avi" -pix_fmt yuv420p -c:v libx264 -crf 16 -movflags +faststart "$d/fist12-r10-preflight.mp4"
+          for spec in charge:0.22 peak:0.74 contact:0.99; do
+            stage="${spec%%:*}";at="${spec#*:}"
+            ffmpeg -y -hide_banner -loglevel error -ss "$at" -i "$d/fist12-r10-preflight.mp4" -frames:v 1 "$d/v4-$stage.png"
+            test -s "$d/v4-$stage.png"
+          done
+          python3 tools/qa/validate_vfx_v4_packet.py --stage evidence --packet docs/operations/vfx_packets/FIST12_R10_DOAN_MACH_LIEN_QUYEN_V4.json --out "$d" --sha "$GITHUB_SHA" | tee "$d/v4-evidence.log"
+          rm "$d/fist12-r10-preflight.avi"
+      - name: FULL 7.6-second native Godot R9 mark lifetime (real scene, no fake video)
+        shell: bash
+        run: |
+          set -euo pipefail
+          d=/tmp/vfx-fist12-r10
+          xvfb-run -a -s '-screen 0 1280x720x24' bash tools/qa/run_godot_strict.sh --path godot --resolution 1280x720 --fixed-fps 60 --write-movie "$d/fist12-r10-full.avi" --quit-after 456 res://labs/combat_lab/fist12/r10/doan_mach_lien_quyen_r10.tscn 2>&1 | tee "$d/godot-full.log"
+          ffmpeg -y -hide_banner -loglevel error -i "$d/fist12-r10-full.avi" -c:v libx264 -crf 16 -pix_fmt yuv420p -movflags +faststart "$d/fist12-r10-full-native.mp4"
+          ffprobe -v error -select_streams v:0 -show_entries stream=width,height:format=duration -of default=noprint_wrappers=1 "$d/fist12-r10-full-native.mp4" | tee "$d/full-dimensions.txt"
+          grep -Fxq width=1280 "$d/full-dimensions.txt"
+          grep -Fxq height=720 "$d/full-dimensions.txt"
+          for at in 0.22 0.55 0.74 0.92 0.99 1.15 1.8 2.6 3.6 4.8 5.8 6.4 6.78 6.95 7.12 7.36; do
+            ffmpeg -y -hide_banner -loglevel error -ss "$at" -i "$d/fist12-r10-full-native.mp4" -frames:v 1 "$d/full-frame-$at.png"
+          done
+          sha256sum "$d"/fist12-r10-full-native.mp4 "$d"/full-frame-*.png > "$d/FULL_VIDEO_SHA256SUMS.txt"
+          rm "$d/fist12-r10-full.avi"
+      - name: Upload genuine exact-SHA Godot proof for manual art gate; no automatic art approval
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vfx-fist12-r10-godot-native-art-review
+          retention-days: 14
+          if-no-files-found: warn
+          path: |
+            /tmp/vfx-fist12-r10/*.txt
+            /tmp/vfx-fist12-r10/*.json
+            /tmp/vfx-fist12-r10/*.log
+            /tmp/vfx-fist12-r10/*.png
+            /tmp/vfx-fist12-r10/*.mp4

@@ -1,0 +1,163 @@
+{
+  "schema": "tmb-vfx-production-system-v4.1",
+  "packet_id": "FIST12_R10_DIRECTIONAL_PAINTERLY_FIST_CHAIN_V4",
+  "skill_id": "tmb.skill.fist.huyet_quyen.active_02.human",
+  "school": "fist",
+  "revision": "R10_OWNER_REWORK_THREE_CONTRASTED_FIST_SILHOUETTES",
+  "catalogue_path": "godot/data/combat/v63_human_combat_catalog.json",
+  "scene_path": "godot/labs/combat_lab/fist12/r10/doan_mach_lien_quyen_r10.tscn",
+  "lab_script": "godot/labs/combat_lab/fist12/r10/doan_mach_lien_quyen_r10.gd",
+  "focused_test": "godot/tests/labs/combat_lab/vfx_fist12_r10_contract_test.gd",
+  "declared_contract": {
+    "effect": "mark",
+    "element": "nether",
+    "shape": "single_target",
+    "target_limit": 1,
+    "hit_count": null,
+    "range": 2.8,
+    "radius": 0,
+    "cast_time": 0.45,
+    "cooldown": 8,
+    "projectile_speed": 0,
+    "duration": 6
+  },
+  "provenance": {
+    "source_class": "FIRST_PARTY_R9_IMAGEGEN_SOURCE_DERIVATIVE_WITH_NEW_R10_COMPOSITION",
+    "rights_note": "R10 uses SIX existing first-party original R9 true-alpha standalone 4x2 VFX sprite master WebPs, preserved EXACTLY byte-for-byte; all R10 atlas poses are newly composited/scaled/warped from these same authorised original pigments with different directional shapes (narrow jab, +40 degree rising hook, heavy straight). Source ownership is TMB first-party. This is an explicit DERIVATIVE, NOT independently newly generated R10 original art, not copyrighted Võ Lâm / Kiếm Thế / DNF assets, and never a cut poster, image overlay, scene screenshot or GIF.",
+    "master_quality_status": "MANUAL_ART_REVIEW_REQUIRED",
+    "known_source_limitation": "Owner rejected R9 entire rendered presentation; R10 preserves its six separate original VFX source masters only, reauthors motion, scale, direction, and mark geometry. Original R10 *new painting* not authored, so owner art may still reject. Caster placeholder is unchanged, no frame-by-frame fist actor animation. HIT_COUNT undefined; three visible accents NEVER imply three real damage receipts.",
+    "master_files": [
+      {
+        "path": "godot/labs/combat_lab/fist12/assets/r9_sources/f12_r9_charge_master.webp.b64",
+        "encoding": "base64-webp",
+        "role": "First-party authored true RGBA charge eight independent source keyposes at 224x224 before bake"
+      },
+      {
+        "path": "godot/labs/combat_lab/fist12/assets/r9_sources/f12_r9_punch1_master.webp.b64",
+        "encoding": "base64-webp",
+        "role": "First-party authored true RGBA punch1 eight independent source keyposes at 224x224 before bake"
+      },
+      {
+        "path": "godot/labs/combat_lab/fist12/assets/r9_sources/f12_r9_punch2_master.webp.b64",
+        "encoding": "base64-webp",
+        "role": "First-party authored true RGBA punch2 eight independent source keyposes at 224x224 before bake"
+      },
+      {
+        "path": "godot/labs/combat_lab/fist12/assets/r9_sources/f12_r9_punch3_master.webp.b64",
+        "encoding": "base64-webp",
+        "role": "First-party authored true RGBA punch3 eight independent source keyposes at 224x224 before bake"
+      },
+      {
+        "path": "godot/labs/combat_lab/fist12/assets/r9_sources/f12_r9_contact_master.webp.b64",
+        "encoding": "base64-webp",
+        "role": "First-party authored true RGBA contact eight independent source keyposes at 224x224 before bake"
+      },
+      {
+        "path": "godot/labs/combat_lab/fist12/assets/r9_sources/f12_r9_mark_master.webp.b64",
+        "encoding": "base64-webp",
+        "role": "First-party authored true RGBA mark eight independent source keyposes at 224x224 before bake"
+      }
+    ],
+    "generators": [
+      "tools/vfx/generate_fist12_r10.py"
+    ]
+  },
+  "atlases": [
+    {
+      "path": "godot/labs/combat_lab/fist12/assets/r10_generated/r10_charge.png",
+      "width": 1280,
+      "height": 640,
+      "cell_width": 320,
+      "cell_height": 320,
+      "frames": 8,
+      "columns": 4,
+      "layer": "R10 compact painterly directional qi gathering (8 poses)"
+    },
+    {
+      "path": "godot/labs/combat_lab/fist12/assets/r10_generated/r10_punches.png",
+      "width": 1280,
+      "height": 1920,
+      "cell_width": 320,
+      "cell_height": 320,
+      "frames": 24,
+      "columns": 4,
+      "layer": "R10 distinct source-preserved hand-painted 3x8: narrow jab, diagonal rising hook, thick compressed finisher"
+    },
+    {
+      "path": "godot/labs/combat_lab/fist12/assets/r10_generated/r10_contact.png",
+      "width": 1280,
+      "height": 640,
+      "cell_width": 320,
+      "cell_height": 320,
+      "frames": 8,
+      "columns": 4,
+      "layer": "R10 single target-relative compact compression and white-hot painted local contact"
+    },
+    {
+      "path": "godot/labs/combat_lab/fist12/assets/r10_generated/r10_mark.png",
+      "width": 1280,
+      "height": 640,
+      "cell_width": 320,
+      "cell_height": 320,
+      "frames": 8,
+      "columns": 4,
+      "layer": "R10 small crossed broken-meridian material only on enemy shoulder or chest, no face cover"
+    }
+  ],
+  "time_contract": {
+    "combat_clock": "CATALOGUE_GATED_NOT_LIVE",
+    "declared_cast_end_seconds": 0.45,
+    "declared_status_duration_seconds": 6,
+    "runtime_receipt_timestamp": "RUNTIME_MAPPING_PENDING",
+    "vfx_clock": "LAB_ONLY",
+    "simulated_hit_seconds": 0.92,
+    "visual_fade_end_seconds": 7.22,
+    "demo_loop_seconds": 7.6,
+    "demo_clock_warning": "LAB-only 0-.45s charge, three art-only beat accents .45-.92s (NOT three gameplay hits), exactly one locally simulated mark at .92s for 6.0 seconds through 6.92s, fade until 7.22s, 7.6s proof loop. Unknown real receipt: RUNTIME_MAPPING_PENDING.",
+    "key_pose_budget_note": "48 R10 DERIVATIVE, but individually recomposed real-alpha poses from 6 separate first-party R9 master image sources: charge 8; 3 visibly different fist shapes 8 each; single local CONTACT 8; small mark 8. No actor rig; owner approval pending; derivative material retained.",
+    "phases": [
+      {
+        "id": "charge",
+        "at_seconds": 0.22,
+        "expected_phase": "compressed_hand_qi",
+        "file": "v4-charge.png"
+      },
+      {
+        "id": "peak",
+        "at_seconds": 0.74,
+        "expected_phase": "three_directional_punch_accents",
+        "file": "v4-peak.png"
+      },
+      {
+        "id": "contact",
+        "at_seconds": 0.99,
+        "expected_phase": "one_local_mark_contact",
+        "file": "v4-contact.png"
+      }
+    ]
+  },
+  "moving_target": {
+    "actor_animation": "walk",
+    "locked_demo_target_index": 0,
+    "movement_from_seconds": 0.22,
+    "movement_to_seconds": 0.99,
+    "minimum_displacement_px": 12,
+    "contact_anchor": "R10 impact_at(t) always tracks selected moving foe at (-51,-78) incoming side; mark_at(0,t)=foe_at(t)+(29,-63) on right upper torso below face. No change of selected target.",
+    "tracking_rule": "One moving enemy receives three art-only pressure accents 0.45-.92 and precisely ONE synthetic MARK at .92, mark follows target 6s at right shoulder, no multiple receipts.",
+    "receipt_claim": "SIMULATED_VISUAL_ONLY"
+  },
+  "gate_status": {
+    "g3_5_capture": "NOT_EXECUTED_UNTIL_EXACT_SHA_GODOT_PROOF",
+    "technical": "NOT_EXECUTED_UNTIL_EXACT_SHA_GODOT_PROOF",
+    "art": "MANUAL_ART_REVIEW_REQUIRED",
+    "owner": "OWNER_VISUAL_PENDING",
+    "live": "PVE_INTEGRATION_HOLD",
+    "device": "PHYSICAL_QA_PENDING"
+  },
+  "proof_contract": {
+    "focused_marker": "VFX_FIST12_R10_FOCUSED_RESULT=PASS failures=0",
+    "native_marker": "VFX_FIST12_R10_READY",
+    "video_filename": "fist12-r10-full-native.mp4",
+    "source": "R10 V4 dedicated fist-only lab, 4 procedural-composited atlases baked from original first-party independent R9 image-painted sources; renderer true Godot 4.7.2 1280x720, 3 early native evidence, full native movie / 16 timestamps, manual art pending."
+  }
+}
