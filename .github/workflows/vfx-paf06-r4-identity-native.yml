@@ -1,0 +1,141 @@
+name: VFX PAF06 R4 | Tinh Gioi Tinh Tam semantic halo Godot native
+on:
+  workflow_dispatch:
+  push:
+    branches: [integration/pve-p0-playable-ui-20261103]
+    paths:
+      - '.github/workflows/vfx-paf06-r4-identity-native.yml'
+      - 'tools/vfx/paint_paf06_r3_orbit.py'
+      - 'tools/vfx/paint_paf06_r4_tinh_tam.py'
+      - 'tools/vfx/paint_paf06_tinh_gioi.py'
+      - 'tools/qa/check_paf06_r3_orbit.py'
+      - 'tools/qa/check_paf06_r4_identity.py'
+      - 'tools/qa/check_paf06_passive.py'
+      - 'godot/labs/combat_lab/talisman16/**'
+      - 'godot/tests/labs/combat_lab/vfx_paf06_r4_contract_test.gd'
+      - 'docs/operations/vfx_packets/PAF06_R3_ROTATING_RING_REVIEW_20261117.md'
+permissions:
+  contents: read
+jobs:
+  paf06-passive-native:
+    runs-on: ubuntu-latest
+    timeout-minutes: 24
+    env:
+      GODOT_AUDIO_DRIVER: Dummy
+      GODOT_RENDERING_DRIVER: opengl3
+    steps:
+      - name: Checkout exact SHA
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Install pinned Godot 4.7.2 and original source dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/vfx-paf06";mkdir -p "$d"
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          printf '%s\n' "$GITHUB_SHA" > "$d/exact-sha.txt"
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq xvfb ffmpeg unzip python3-pil
+          curl --fail --location --retry 3 -o /tmp/godot472.zip 'https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip'
+          echo 'cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4  /tmp/godot472.zip' | sha256sum --check --strict
+          unzip -q /tmp/godot472.zip -d /tmp
+          sudo install -m0755 /tmp/Godot_v4.7.2-stable_linux.x86_64 /usr/local/bin/godot
+          godot --version | tee "$d/engine.txt"
+      - name: Generate first-party true RGBA multi-pose atlas
+        shell: bash
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/vfx-paf06"
+          /usr/bin/python3 tools/vfx/paint_paf06_tinh_gioi.py 2>&1 | tee "$d/source.log"
+          grep -Fq 'PAF06_R1_RGBA_SOURCE_PASS' "$d/source.log"
+          /usr/bin/python3 tools/qa/check_paf06_passive.py --stage assets 2>&1 | tee "$d/source-qa.log"
+          grep -Fq 'PAF06_R1_PACKET_ASSET_TECH_PASS' "$d/source-qa.log"
+          /usr/bin/python3 tools/vfx/paint_paf06_r3_orbit.py 2>&1 | tee "$d/r3-source.log"
+          grep -Fq 'PAF06_R3_ORIGINAL_RGBA_PASS' "$d/r3-source.log"
+          /usr/bin/python3 tools/qa/check_paf06_r3_orbit.py --stage source 2>&1 | tee "$d/r3-source-qa.log"
+          grep -Fq 'PAF06_R3_SOURCE_PASS' "$d/r3-source-qa.log"
+          /usr/bin/python3 tools/vfx/paint_paf06_r4_tinh_tam.py 2>&1 | tee "$d/r4-source.log"
+          grep -Fq 'PAF06_R4_SEMANTIC_SOURCE_PASS' "$d/r4-source.log"
+          /usr/bin/python3 tools/qa/check_paf06_r4_identity.py --stage source 2>&1 | tee "$d/r4-source-qa.log"
+          grep -Fq 'PAF06_R4_SOURCE_PASS' "$d/r4-source-qa.log"
+          sha256sum godot/labs/combat_lab/talisman16/r3/assets/*.webp godot/labs/combat_lab/talisman16/r4/assets/*.webp godot/labs/combat_lab/talisman16/r4/art_sources/*.png > "$d/source-sha256.txt"
+      - name: Restore approved unchanged caster artwork
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat .github/assets/p3/female_stage_a/part{01..14}.b64 .github/assets/p3/female_stage_a/part15a.b64 .github/assets/p3/female_stage_a/part15b.b64 .github/assets/p3/female_stage_a/part{16..20}.b64 | tr -d '\r\n\t ' | base64 --decode > /tmp/tmb_stage_a_pack.zip
+          test "$(stat -c%s /tmp/tmb_stage_a_pack.zip)" -eq 44838
+          echo '6a4213b9129ffb3f438c21cbb5326672ddf8915323836bf80cb33b8e5fabfdca  /tmp/tmb_stage_a_pack.zip' | sha256sum --check --strict
+          unzip -q /tmp/tmb_stage_a_pack.zip -d .
+      - name: Official Godot strict import and passive-focused test
+        shell: bash
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/vfx-paf06"
+          bash tools/qa/run_godot_strict.sh --headless --path godot --import 2>&1 | tee "$d/import.log"
+          bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://labs/combat_lab/talisman16/tinh_gioi_tinh_tam_r1.gd 2>&1 | tee "$d/parse.log"
+          bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/labs/combat_lab/vfx_paf06_r1_contract_test.gd 2>&1 | tee "$d/focused-r1.log"
+          grep -Fq 'PAF06_R1_FOCUSED_RESULT=PASS failures=0' "$d/focused-r1.log"
+          bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://labs/combat_lab/talisman16/r3/vo_lam_orbit_buff_r3.gd 2>&1 | tee "$d/paf06-r3-parse.txt"
+          bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/labs/combat_lab/vfx_paf06_r3_contract_test.gd 2>&1 | tee "$d/paf06-r3-focused.txt"
+          grep -Fq 'PAF06_R3_FOCUSED_RESULT=PASS failures=0' "$d/paf06-r3-focused.txt"
+          bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://labs/combat_lab/talisman16/r4/vo_lam_tinh_tam_buff_r4.gd 2>&1 | tee "$d/r4-parse.txt"
+          bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/labs/combat_lab/vfx_paf06_r4_contract_test.gd 2>&1 | tee "$d/r4-focused.txt"
+          grep -Fq 'PAF06_R4_FOCUSED_RESULT=PASS failures=0' "$d/r4-focused.txt"
+      - name: True 1280x720 Godot R4 buff and same-clock R3/OFF comparisons
+        shell: bash
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/vfx-paf06"
+          xvfb-run -a -s '-screen 0 1280x720x24' bash tools/qa/run_godot_strict.sh --path godot --resolution 1280x720 --fixed-fps 60 --write-movie "$d/paf06-r4-native.avi" --quit-after 252 res://labs/combat_lab/talisman16/r4/vo_lam_tinh_tam_buff_r4.tscn 2>&1 | tee "$d/r4-render.log"
+          grep -Fq 'PAF06_R4_READY' "$d/r4-render.log"
+          xvfb-run -a -s '-screen 0 1280x720x24' bash tools/qa/run_godot_strict.sh --path godot --resolution 1280x720 --fixed-fps 60 --write-movie "$d/paf06-r4-off.avi" --quit-after 96 res://labs/combat_lab/talisman16/r4/vo_lam_tinh_tam_buff_r4_off.tscn 2>&1 | tee "$d/r4-off.log"
+          xvfb-run -a -s '-screen 0 1280x720x24' bash tools/qa/run_godot_strict.sh --path godot --resolution 1280x720 --fixed-fps 60 --write-movie "$d/paf06-r3-control.avi" --quit-after 96 res://labs/combat_lab/talisman16/r3/vo_lam_orbit_buff_r3.tscn 2>&1 | tee "$d/r4-r3-control.log"
+          ffmpeg -y -hide_banner -loglevel error -i "$d/paf06-r4-native.avi" -pix_fmt yuv420p -c:v libx264 -crf 15 -movflags +faststart "$d/paf06-r4-native.mp4"
+          ffmpeg -y -hide_banner -loglevel error -ss 1.32 -i "$d/paf06-r4-off.avi" -frames:v 1 "$d/paf06-r4-off.png"
+          ffmpeg -y -hide_banner -loglevel error -ss 1.32 -i "$d/paf06-r3-control.avi" -frames:v 1 "$d/paf06-r3-baseline.png"
+          ffmpeg -y -hide_banner -loglevel error -ss 0.42 -i "$d/paf06-r4-native.mp4" -frames:v 1 "$d/paf06-r4-0.42.png"
+          ffmpeg -y -hide_banner -loglevel error -ss 0.72 -i "$d/paf06-r4-native.mp4" -frames:v 1 "$d/paf06-r4-seals.png"
+          ffmpeg -y -hide_banner -loglevel error -ss 1.32 -i "$d/paf06-r4-native.mp4" -frames:v 1 "$d/paf06-r4-peak.png"
+          ffmpeg -y -hide_banner -loglevel error -ss 1.80 -i "$d/paf06-r4-native.mp4" -frames:v 1 "$d/paf06-r4-heart.png"
+          ffmpeg -y -hide_banner -loglevel error -ss 2.26 -i "$d/paf06-r4-native.mp4" -frames:v 1 "$d/paf06-r4-2.26.png"
+          ffmpeg -y -hide_banner -loglevel error -ss 2.65 -i "$d/paf06-r4-native.mp4" -frames:v 1 "$d/paf06-r4-glint.png"
+          ffmpeg -y -hide_banner -loglevel error -ss 3.22 -i "$d/paf06-r4-native.mp4" -frames:v 1 "$d/paf06-r4-3.22.png"
+          ffmpeg -y -hide_banner -loglevel error -ss 4.06 -i "$d/paf06-r4-native.mp4" -frames:v 1 "$d/paf06-r4-tail.png"
+          ffprobe -v error -select_streams v:0 -show_entries stream=width,height,nb_frames -of default=noprint_wrappers=1 "$d/paf06-r4-native.mp4" | tee "$d/r4-probe.txt"
+          grep -Fxq 'width=1280' "$d/r4-probe.txt"
+          grep -Fxq 'height=720' "$d/r4-probe.txt"
+          grep -Fxq 'nb_frames=252' "$d/r4-probe.txt"
+          rm -f "$d/paf06-r4-native.avi" "$d/paf06-r4-off.avi" "$d/paf06-r3-control.avi"
+      - name: R4 native 1x technical identity and non-occlusion gate
+        shell: bash
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/vfx-paf06"
+          /usr/bin/python3 tools/qa/check_paf06_r4_identity.py --stage evidence --out "$d" 2>&1 | tee "$d/r4-native-qa.log"
+          grep -Fq 'PAF06_R4_GODOT_NATIVE_VISIBILITY_PASS' "$d/r4-native-qa.log"
+          sha256sum "$d/paf06-r4-native.mp4" "$d"/paf06-r4-*.png > "$d/paf06-r4-proof-sha256.txt"
+          echo "PAF06_R4_TECH_PASS=$GITHUB_SHA OWNER_SEMANTIC_ART=PENDING NO_VO_LAM_RIPPED_ASSETS=TRUE PVE=HOLD"
+      - name: Archive native MP4, RGBA masters and proof
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vfx-paf06-r4-native-${{ github.sha }}
+          retention-days: 30
+          if-no-files-found: warn
+          path: |
+            ${{ runner.temp }}/vfx-paf06/*.log
+            ${{ runner.temp }}/vfx-paf06/*.txt
+            ${{ runner.temp }}/vfx-paf06/*.json
+            ${{ runner.temp }}/vfx-paf06/*.png
+            ${{ runner.temp }}/vfx-paf06/*.mp4
+            godot/labs/combat_lab/talisman16/art_sources/*.png
+            godot/labs/combat_lab/talisman16/art_sources/*.json
+            godot/labs/combat_lab/talisman16/r4/assets/*.webp
+            godot/labs/combat_lab/talisman16/r4/art_sources/*.png
+            godot/labs/combat_lab/talisman16/r4/art_sources/*.json
+            godot/labs/combat_lab/talisman16/r3/assets/*.webp
+            godot/labs/combat_lab/talisman16/r3/art_sources/*.png
+            godot/labs/combat_lab/talisman16/r3/art_sources/*.json
+            godot/labs/combat_lab/talisman16/assets/*.webp
