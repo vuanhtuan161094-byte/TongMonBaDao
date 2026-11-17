@@ -100,46 +100,47 @@ def render(name,t,cell):
         # Seed has soft upward light, not a dark egg or scary head.
         ink("ivory",gauss(x,y,0,-30+12*t,3.1,11)*.26*q)
     elif name=="gu":
-        # Floating small two-wing light spirit; visually closer to luminous
-        # silk butterfly/lotus than an anatomically rendered beetle.
-        # No legs, claws, mandibles, eyes, segmented shell or hard outline.
-        flap=np.sin(2*pi*(2.2*t+.13))
-        sway=3*np.sin(2*pi*t)
-        ink("jade",gauss(x,y,-13+sway,0,74,50)*.10)
+        # R2C: distinct jade silk petals, NOT the R2 crossed-X light sticks.
+        # Upper and lower feathery lobes have clear negative space between them.
+        # Neither a physical insect nor a dark armored body remains.
+        flap=np.sin(2*pi*(2.3*t+.13))
+        sway=3.0*np.sin(2*pi*t)
+        a=x-sway;b=y
+        ink("jade",gauss(a,b,-5,0,61,49)*.08)
         for side in (-1.0,1.0):
-            ang=side*(.50+.25*flap)
-            cy=side*(27+10*flap)
-            wing=silk(-38+sway,cy,71,19+3*flap,ang)
-            inner=silk(-26+sway,side*(24+6*flap),46,10,side*(.44+.16*flap))
-            ink("shadow",wing*.13)
-            ink("jade",wing*.46*noise)
-            ink("mint",inner*.29)
-            ink("ivory",silk(-23+sway,side*(25+4*flap),34,4.3,side*.45)*.23)
-            # Real feather veins: varying length, soft connected strokes.
-            wingpath=[(12+sway,side*1),(-18+sway,side*17),
-                      (-60+sway,side*(34+14*flap)),
-                      (-98+sway,side*(62+18*flap))]
-            ink("gold",filament(x,y,wingpath,2.2)*.36)
-            ink("ivory",filament(x,y,wingpath,.95)*.47)
-            flank=[(1+sway,side*5),(-40+sway,side*(18+4*flap)),
-                   (-73+sway,side*(19+11*flap))]
-            ink("mint",filament(x,y,flank,2.9)*.23)
-            ink("gold",filament(x,y,flank,1.0)*.24)
-            # Two tiny curved ribbon tips are wing ornament, not anatomy.
-            ribbon=[(-87+sway,side*(52+12*flap)),
-                    (-113+sway,side*(61+17*flap)),
-                    (-127+sway,side*(55+17*flap))]
-            ink("jade",filament(x,y,ribbon,3.1)*.20)
-            ink("ivory",gauss(x,y,-98+sway,side*(62+18*flap),6.0,5.1)*.31)
-        # Center is pure rounded light, not a bug torso.
-        ink("jade",gauss(x,y,8+sway,1,26,19)*.22)
-        ink("mint",gauss(x,y,15+sway,-1,15,12)*.60)
-        ink("gold",gauss(x,y,19+sway,-1,10,9)*.66)
-        ink("ivory",gauss(x,y,24+sway,-2,6,5.5)*.94)
-        # Wake tapers to transparent; no copied circle trail.
-        for k in range(5):
-            px=-90-14*k+6*t; py=9*np.sin(k*1.17+7*t)
-            ink("mint",gauss(x,y,px,py,2.4,3.4)*(.24-.035*k))
+            # Fine asymmetric butterfly-like silk. Wing tips remain separated.
+            cy=side*(48+12*flap+side*4)
+            angle=side*(-.42-.08*flap)
+            outer=silk(-41+sway,cy,54,21+3*flap,angle)
+            inner=silk(-39+sway,side*(45+9*flap+side*4),36,12,angle)
+            highlight=silk(-37+sway,side*(43+8*flap+side*4),27,5.5,angle)
+            ink("jade",outer*.84*noise)
+            ink("mint",inner*.56)
+            ink("ivory",highlight*.24)
+            # Curved trim belongs INSIDE each wing, not in an X crossing core.
+            path=[(-82+sway,side*(71+14*flap)),
+                  (-67+sway,side*(63+11*flap)),
+                  (-45+sway,side*(52+9*flap))]
+            ink("gold",filament(x,y,path,2.6)*.23)
+            ink("ivory",filament(x,y,path,1.0)*.32)
+            # Sparkling dissolving tassels extend behind each independent petal.
+            tail=[(-87+sway,side*(58+16*flap)),(-108+sway,side*(63+18*flap)),
+                  (-128+sway,side*(50+14*flap))]
+            ink("jade",filament(x,y,tail,3.6)*.17)
+            ink("ivory",gauss(x,y,-88+sway,side*(70+13*flap),4.4,4.5)*.31)
+            # One faint second leaf prevents a flat digital kite shape.
+            secondary=silk(-25+sway,side*(21+4*flap),33,8.5,side*(-.19))
+            ink("mint",secondary*.24*noise)
+        # A tiny warm seed glows at front, no visible mandibles/face/abdomen.
+        ink("jade",gauss(x,y,16+sway,0,24,19)*.22)
+        ink("mint",gauss(x,y,18+sway,0,14,12)*.60)
+        ink("gold",gauss(x,y,21+sway,-1,10,10)*.72)
+        ink("ivory",gauss(x,y,25+sway,-2,5.9,6.5)*.98)
+        # Very limited restrained wake behind active motion.
+        for k in range(4):
+            px=-91-15*k+8*t
+            py=6*np.sin(k*1.18+7*t)
+            ink("mint",gauss(x,y,px,py,2.1,3.3)*(.23-.034*k))
     elif name=="burst":
         # Soft local nectar bloom and three unequal silk petals at TARGET ONLY.
         q=max(.11,np.sin(pi*min(1,t+.07)))
