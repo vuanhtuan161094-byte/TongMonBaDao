@@ -128,22 +128,31 @@ def paint(name,t,size):
             xx,yy=pts[int(s*31)]
             dot(im,xx-4*sin(k+t*7),yy+7*cos(k+t*5),2.7,C["lilac"],.30*(1-s))
     elif name in ("coil_back","coil_front"):
-        # Two independently animated half-helix winding ribbons.
-        # Back and front are alpha transparent so WALK monster can be BETWEEN.
+        # R1B native G3.7 rework: two distinct organic S-shaped light snakes
+        # curl UP the one selected victim, not opaque concentric circular rings.
         front=name=="coil_front"
-        side=1 if front else -1
-        reveal=.34+.66*min(1.,t*1.9)
+        # Color-coherent shadow/front depth; both contain obvious tails + heads.
         for snake in range(2):
-            pts=arc_serpent(x,y-3,
-                (pi*.15 if front else -pi*.73)+snake*pi*.39+2*pi*t*.08,
-                t+.13*snake,59+13*snake, .76*reveal,1)
-            filament(im,pts,8.5 if front else 7.0,.91 if front else .67,snake)
-            p=pts[-1];prev=pts[-3];head(im,*p,p[0]-prev[0],p[1]-prev[1],.75)
-            # two visible channels stand for the two declared poison strands;
-            # these sprites do NOT directly apply game poison stacks.
+            side=-1 if snake==0 else 1
+            path=[]
+            for k in range(44):
+                u=k/43.
+                offset=side*(22+20*sin(pi*u))
+                sway=23*sin(2*pi*1.18*u+2*pi*t*.42+snake*1.73)*sin(pi*u)
+                xx=x+offset+sway
+                yy=y+93-181*u+5*sin(2*pi*u+3.2*t+snake)
+                path.append((xx,yy))
+            filament(im,path,9.6 if front else 8.1,.94 if front else .77,snake)
+            p=path[-1];prev=path[-3]
+            head(im,*p,p[0]-prev[0],p[1]-prev[1],.88)
+            # One short fine silk tendril follows the snake's body not a ring.
+            runner=path[7:28:2]
+            runner=[(a+side*4,b+3*sin(i*.5+t*3)) for i,(a,b) in enumerate(runner)]
+            filament(im,runner,2.2,.24,snake)
         for k in range(4):
-            th=k*2.399+3*t;rad=55+13*sin(2*t+k)
-            dot(im,x+rad*cos(th),y-8+rad*.64*sin(th),2.3,C["gold"],.22)
+            yy=y+64-42*k
+            xx=x+(-1 if k%2 else 1)*(33+7*sin(t*3+k))
+            dot(im,xx,yy,2.2,C["gold"],.20)
     elif name=="mark":
         # Persistent soft double fang-shaped jade seeds and silken binding.
         beat=.5+.5*sin(2*pi*t)

@@ -103,40 +103,44 @@ func _flight(t: float)->void:
     halo(projectile_head,gate,10.5)
 
 func _wrapping(t: float)->void:
-    var u: float=clampf((t-CONTACT_AT)/.98,0.0,1.0)
-    var gain: float=(1.0-smoothstep(.63,1.0,u))
-    var center: Vector2=selected_foot+Vector2(0,-92)
+    var u:float=clampf((t-CONTACT_AT)/.98,0.0,1.0)
+    var gain:float=(1.0-smoothstep(.63,1.0,u))
+    var origin:Vector2=selected_foot+Vector2(0,-93)
+    # R1B semantic: two flowing S-shaped snakes rise along torso; no orbit rings.
     for strand in range(2):
-        var pts:=PackedVector2Array()
-        var side: float=float(strand)
-        for k in range(37):
-            var v: float=float(k)/36.0
-            var angle: float=-2.65+v*TAU*1.20+u*2.1+side*PI*.48
-            var radius: float=(66.0-15*u)*(1.0-.24*v)
-            pts.append(center+Vector2(cos(angle)*radius,sin(angle)*radius*.77-20.0*v))
-        line_light(pts,gain*.75,4.5)
-    halo(center,gain*.75,12.0)
+        var side:float=-1.0 if strand==0 else 1.0
+        var ribbon:=PackedVector2Array()
+        for k in range(35):
+            var v:float=float(k)/34.0
+            var xx:float=side*(19.0+21.0*sin(PI*v))
+            xx+=20.0*sin(2.0*PI*(v*1.15+u*.46)+1.6*strand)*sin(PI*v)
+            var yy:float=86.0-174.0*v+6.5*sin(5.5*v+u*3.1+strand)
+            ribbon.append(origin+Vector2(xx,yy))
+        line_light(ribbon,gain*.85,5.4)
+        halo(ribbon[ribbon.size()-1],gain*.70,7.5)
+    halo(origin+Vector2(0,-32),gain*.52,8.0)
 
 func _sustain(t: float)->void:
     if status_alpha<.003:return
-    var pulse: float=.79+.21*sin(2.0*PI*(t-CONTACT_AT)*1.15)
-    var center: Vector2=selected_foot+Vector2(0,-96)
+    var pulse:float=.80+.20*sin(2.0*PI*(t-CONTACT_AT)*1.12)
+    var origin:Vector2=selected_foot+Vector2(0,-94)
     for strand in range(2):
-        var side: float=-1.0 if strand==0 else 1.0
+        var side:float=-1.0 if strand==0 else 1.0
         var curve:=PackedVector2Array()
-        for k in range(26):
-            var u: float=float(k)/25.0
-            var th: float=-1.05+u*TAU*.83+1.1*t+float(strand)*PI
-            var rad: float=45.0+7.0*sin(1.7*t+u*5.5+strand)
-            var p:=center+Vector2(cos(th)*rad*side,sin(th)*rad*.65-19*u)
-            curve.append(p)
-        line_light(curve,status_alpha*pulse*.24,2.0)
-    halo(status_anchor,status_alpha*pulse*.57,9.5)
-    # two soft particles above the target indicate DOUBLE poison-vein motif.
+        for k in range(34):
+            var v:float=float(k)/33.0
+            var phase:float=2*PI*v*1.23+t*1.34+strand*PI*.69
+            var xx:float=side*(20.0+18.0*sin(PI*v))
+            xx+=12.0*sin(phase)*sin(PI*v)
+            var yy:float=72.0-158.0*v+3.5*sin(phase*.8)
+            curve.append(origin+Vector2(xx,yy))
+        line_light(curve,status_alpha*pulse*.44,3.0)
+        halo(curve[curve.size()-1],status_alpha*pulse*.30,5.2)
+    halo(status_anchor,status_alpha*pulse*.50,9.0)
     for k in range(2):
-        var z: float=fposmod(t*.28+k*.43,1.0)
-        halo(status_anchor+Vector2((k*2-1)*13+6*sin(t*2),-11-34*z),
-            status_alpha*(1.0-z)*.23,2.5)
+        var z:float=fposmod(t*.31+k*.43,1.0)
+        halo(status_anchor+Vector2((k*2-1)*13+5*sin(t*2),-8-30*z),
+            status_alpha*(1.0-z)*.19,2.6)
 
 func _draw()->void:
     if visual_time<RELEASE_AT:
