@@ -15,6 +15,12 @@ SRC=ROOT/'godot/labs/combat_lab/fist12/assets/r9_sources'
 OUT=ROOT/'godot/labs/combat_lab/fist12/assets/r10_generated'
 OUT.mkdir(parents=True,exist_ok=True)
 CELL=320; SC=224
+# Authored first-party illuminated *fist* source already owned by FIST03,
+# also used by FIST11 as material; never a proprietary JX game sprite.
+FIST_SOURCE=ROOT/'godot/labs/combat_lab/fist03/assets/godfist_master.webp'
+FIST_SOURCE_BYTES=FIST_SOURCE.read_bytes()
+FIST_MASTER=Image.open(io.BytesIO(FIST_SOURCE_BYTES)).convert('RGBA')
+assert FIST_MASTER.size==(384,384)
 NAMES=('charge','punch1','punch2','punch3','contact','mark')
 def source(name):
     raw=base64.b64decode(''.join((SRC/f'f12_r9_{name}_master.webp.b64').read_text().split()),validate=True)
@@ -40,6 +46,18 @@ def pigment(src,power=1.0,hot=.0):
     z[:,:,3]=np.clip(z[:,:,3]*power,0,255)
     z[z[:,:,3]<4,:3]=0
     return Image.fromarray(z.astype(np.uint8),'RGBA')
+def colored_spirit_fist(src,frame,beat):
+    # Transform existing first-party *painted* fist. Crimson body, warm white
+    # light crests; source opacity and knuckle outline stay intact, not vector.
+    pix=np.asarray(src.convert('RGBA'),dtype=np.float32).copy()
+    rgb=pix[:,:,:3].copy()
+    hot=np.clip((.45*rgb[:,:,0]+.47*rgb[:,:,1]+.08*rgb[:,:,2]-110)/125,0,1)**1.2
+    base=np.clip((rgb.max(axis=2)-35)/210,0,1)
+    pix[:,:,0]=np.clip(65+185*base+22*hot,0,255)
+    pix[:,:,1]=np.clip(12+25*base+166*hot,0,255)
+    pix[:,:,2]=np.clip(29+42*base+116*hot,0,255)
+    pix[:,:,3]=np.clip(pix[:,:,3]*(.91+.08*math.sin(frame*.6+beat)),0,255)
+    return Image.fromarray(pix.astype(np.uint8),'RGBA')
 def feather(img):
     a=np.asarray(img.getchannel('A'),dtype=np.float32)
     hh,ww=a.shape
@@ -97,6 +115,25 @@ def pressure(beat,i):
         rotation=-4
     centered(out,src,cx,cy,w*(.92+.09*math.sin(t*math.pi)),h,
              rotation,gain=.99,halo=.13 if beat<2 else .22)
+    # A TRUE FIRST-PARTY PAINTED clenched hand anchors each visual punch.
+    # It is different in scale/angle and keyed illumination across the 3 beats,
+    # not a repeated glowing orb or a rigged/recolored character.
+    fist=colored_spirit_fist(FIST_MASTER,i,beat)
+    ramp=.45+.55*math.sin(math.pi*(.13+.79*t))
+    if beat==0:
+        fw,fh=126+18*ramp,126+18*ramp
+        angle=-8
+        focal=(222,164)
+    elif beat==1:
+        fw,fh=145+14*ramp,145+14*ramp
+        angle=38
+        focal=(213,135)
+    else:
+        fw,fh=163+28*ramp,163+28*ramp
+        angle=-4
+        focal=(220,159)
+    centered(out,fist,focal[0],focal[1],fw,fh,rotation=angle,
+             gain=(.54+.40*ramp)*(1-.36*t),halo=.12)
     if beat==2 and 2<=i<=6:
         # Real painted local collision pigment only at heaviest final punch.
         contact=pigment(feather(MASTER['contact'][i]),power=.62,hot=.6)
@@ -127,7 +164,7 @@ pages={
     'r10_contact.png':([contact(i) for i in range(8)],8),
     'r10_mark.png':([mark(i) for i in range(8)],8),
 }
-report={'art_source_class':'FIRST_PARTY_R9_INDEPENDENT_PAINTED_SOURCE_DERIVATIVE','source_sha256':SRC_HASHES,'revision':'R10',
+report={'art_source_class':'FIRST_PARTY_R9_INDEPENDENT_PAINTED_SOURCE_DERIVATIVE','source_sha256':{**SRC_HASHES,'first_party_fist03_illuminated_fist':hashlib.sha256(FIST_SOURCE_BYTES).hexdigest()},'revision':'R10',
         'rejected_previous_owner_version':'R9','new_master_created':False,'atlas':{}}
 for f,(frames,count) in pages.items():
     atlas=Image.new('RGBA',(1280,320*((count+3)//4)))
@@ -146,4 +183,4 @@ for f,(frames,count) in pages.items():
     p=OUT/f;atlas.save(p,optimize=True)
     report['atlas'][f]={'frame_count':count,'size_px':list(atlas.size),'sha256':hashlib.sha256(p.read_bytes()).hexdigest()}
 (OUT/'r10_source_manifest.json').write_text(json.dumps(report,indent=2,ensure_ascii=False),encoding='utf-8')
-print('FIST12_R10_BAKE_PASS poses=48 masters=R9_INDEPENDENT_SOURCE_DERIVATIVE no_gif=true no_rig=true')
+print('FIST12_R10_BAKE_PASS poses=48 masters=R9_PAINTERLY_PLUS_FIST03_FIST_DERIVATIVE no_gif=true no_rig=true')
