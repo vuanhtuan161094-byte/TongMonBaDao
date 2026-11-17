@@ -20,3 +20,13 @@ for name,((x1,x2,y1,y2),need) in limits.items():
     passed=passed and ok
 print("FIST14_G36_MIN_VISIBILITY="+("PASS" if passed else "FAIL"))
 if not passed:raise SystemExit(1)
+
+if len(sys.argv)>2 and sys.argv[2]=='status':
+    p=np.array(Image.open(d/'frame-3.6.png').convert('RGB'),dtype=np.float32)
+    # Definite crimson-white scar must remain visible on torso at 1x.
+    a=p[445:540,690:820,:]
+    hit=(a[:,:,0]>158)&(a[:,:,0]>a[:,:,1]*1.20)&(a[:,:,0]>a[:,:,2]*1.12)
+    cnt=int(hit.sum())
+    ok=cnt>=65
+    print(f"FIST14_G36_STATUS_3P6 red_light_pixels={cnt} minimum=65 {'PASS' if ok else 'FAIL'}")
+    if not ok:raise SystemExit(1)

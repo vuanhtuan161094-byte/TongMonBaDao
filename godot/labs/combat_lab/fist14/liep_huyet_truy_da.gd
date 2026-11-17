@@ -58,7 +58,7 @@ func _ready()->void:
     custom_minimum_size=Vector2(1280,720)
     mouse_filter=Control.MOUSE_FILTER_IGNORE
     set_process(true)
-    print("VFX_FIST14_R1_READY original_code_raster_rgba=true hunter_three_talon=true one_mark_6s=true no_rig=true")
+    print("VFX_FIST14_R2_READY original_code_raster_rgba=true hunter_three_talon=true one_mark_6s=true no_rig=true")
 func _process(delta:float)->void:
     if paused:return
     elapsed=fposmod(elapsed+maxf(0,delta),LOOP_END)
@@ -102,7 +102,7 @@ func _draw()->void:
     if t>=CAST_TIME and t<CONTACT_TIME:
         var q:=clampf((t-CAST_TIME)/(CONTACT_TIME-CAST_TIME),0,1)
         var gain:=smoothstep(0,.075,q)*(1-smoothstep(.90,1,q))
-        _flip(TALON,12,q*10.6,talon_at(t),.92,gain*.96)
+        _flip(TALON,12,q*10.6,talon_at(t),1.04,gain*.98)
     _caster(caster)
     _monster(foe,t)
     if t>=CONTACT_TIME and t<CONTACT_END:
@@ -111,4 +111,4 @@ func _draw()->void:
     var status:=mark_opacity(t)
     if status>.002:
         # Three scratches visually form ONE status, anchored below face.
-        _flip(MARK,8,fposmod((t-MARK_START)*5.2,8),mark_at(0,t),.46,status*.89)
+        _flip(MARK,8,fposmod((t-MARK_START)*5.2,8),mark_at(0,t),.76,status*.98)

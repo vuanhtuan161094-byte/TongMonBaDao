@@ -1,4 +1,4 @@
-name: VFX-FIST-14 Liep Huyet Truy Da R1 original talon V4 native
+name: VFX-FIST-14 Liep Huyet Truy Da R2 original talon V4 native
 on:
   workflow_dispatch:
   push:
@@ -46,7 +46,7 @@ jobs:
           set -euo pipefail
           d=/tmp/vfx-fist14
           python3 tools/vfx/generate_fist14_liep_huyet_truy_da.py | tee "$d/bake.log"
-          grep -Fq 'FIST14_R1_BAKE_PASS poses=36 masters=4 pages=4 code_original=true rgba=true no_gif=true no_rig=true' "$d/bake.log"
+          grep -Fq 'FIST14_R2_BAKE_PASS poses=36 masters=4 pages=4 code_original=true rgba=true no_gif=true no_rig=true' "$d/bake.log"
           python3 tools/qa/validate_vfx_v4_packet.py --stage packet --packet docs/operations/vfx_packets/FIST14_R1_LIEP_HUYET_TRUY_DA_V4.json | tee "$d/packet.log"
           python3 tools/qa/validate_vfx_v4_packet.py --stage assets --packet docs/operations/vfx_packets/FIST14_R1_LIEP_HUYET_TRUY_DA_V4.json | tee "$d/assets.log"
           cp godot/labs/combat_lab/fist14/assets/generated/f14_* "$d/"
@@ -79,13 +79,14 @@ jobs:
           for at in 0.12 0.22 0.36 0.45 0.54 0.65 0.74 0.82 0.90 1.04 1.26 2.3 3.6 4.8 5.9 6.68 6.95 7.2; do
             ffmpeg -y -hide_banner -loglevel error -ss "$at" -i "$d/fist14-full.mp4" -frames:v 1 "$d/frame-$at.png"
           done
+          python3 tools/qa/check_fist14_native_visibility.py "$d" status | tee "$d/g36-status.log"
           sha256sum "$d/"*.png "$d/"*.mp4 > "$d/SHA256SUMS.txt"
           rm "$d/full.avi"
       - name: Upload exact-SHA evidence, owner art manual
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: vfx-fist14-r1-native-owner-pending
+          name: vfx-fist14-r2-native-owner-pending
           retention-days: 14
           if-no-files-found: warn
           path: |
