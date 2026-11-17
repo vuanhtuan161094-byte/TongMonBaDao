@@ -28,7 +28,7 @@ const CHARGE:Texture2D=preload("res://labs/combat_lab/fist12/assets/r10_generate
 const WAVE:Texture2D=preload("res://labs/combat_lab/fist12/assets/r10_generated/r10_punches.png")
 const CONTACT:Texture2D=preload("res://labs/combat_lab/fist12/assets/r10_generated/r10_contact.png")
 const MARK:Texture2D=preload("res://labs/combat_lab/fist12/assets/r10_generated/r10_mark.png")
-const BEATS:=PackedFloat32Array([.45,.60,.76,.92])
+const BEATS = [.45,.60,.76,.92]
 const CASTER_START := Vector2(433,552)
 const FOE_START := Vector2(785,552)
 var elapsed:float=0
@@ -64,7 +64,9 @@ static func beat_progress(t:float)->float:
 static func beat_position(t:float)->Vector2:
     var b:=beat_at(t)
     var source:=caster_at(t)+Vector2(46,-106)
-    var dest:=impact_at(t)+[Vector2(-14,14),Vector2(12,-10),Vector2(0,0)][b]
+    var dest:Vector2=impact_at(t)
+    if b==0:dest+=Vector2(-14,14)
+    elif b==1:dest+=Vector2(12,-10)
     return source.lerp(dest,smoothstep(0,1,beat_progress(t)))
 static func mark_alpha(t:float)->float:
     if t<MARK_START or t>=FADE_END:return 0
