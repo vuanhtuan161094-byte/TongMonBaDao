@@ -148,7 +148,7 @@
     "minimum_displacement_px": 10,
     "contact_anchor": "Target WALK foot(t)+Vector2(0,-91) for overlapping back/front snake; +Vector2(0,-167) double-venom mark; no effect on decoy",
     "tracking_rule": "Projectile head is real curve from caster hand to selected moving target; two target-coiling sprite layers are separated by actual WALK actor; native Godot light follows selected target and 8.5s mark then vanishes. Never fabricate Combat V2 poison status or damage.",
-    "receipt_claim": "LAB_ONLY_NO_AUTHORITY"
+    "receipt_claim": "SIMULATED_VISUAL_ONLY"
   },
   "gate_status": {
     "g3_5_capture": "NOT_EXECUTED_R1",
