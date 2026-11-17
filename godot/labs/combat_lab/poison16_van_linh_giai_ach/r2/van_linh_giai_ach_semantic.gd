@@ -54,7 +54,7 @@ static func ally_foot(i:int,t:float)->Vector2:
                         (7.0+float(index))*cos(t*.84+float(index)*.59))
 
 static func ally_chest(i:int,t:float)->Vector2:
-    return ally_foot(i,t)+Vector2(0,-99)
+    return ally_foot(i,t)+Vector2(0,-65)
 
 static func monster_foot(t:float)->Vector2:
     return MONSTER_BASE+Vector2(31*sin(1.22*t+.3),7*cos(t*.97))
@@ -118,7 +118,7 @@ func _ready()->void:
                 "seal":seal_frames.append(f)
                 "fade":fade_frames.append(f)
     set_process(true)
-    print("POI16_SEMANTIC_R2_READY heal_circle_threefold_leaves=true independent_transferring_streams=3 medicinal_seals=3 moving_allies=true outside_ally_unaffected=true rgba_poses=48 no_gif=true no_rig=true")
+    print("POI16_SEMANTIC_R2C_READY heal_circle_threefold_leaves=true independent_transferring_streams=3 medicinal_seals=3 moving_allies=true outside_ally_unaffected=true rgba_poses=48 no_gif=true no_rig=true")
     queue_redraw()
 
 func _process(dt:float)->void:
@@ -208,7 +208,7 @@ func _draw()->void:
         var seal_q:=clampf((t-SEAL_START)/(SEAL_END-SEAL_START),0.0,1.0)
         var seal_alpha:=smoothstep(0.0,.15,seal_q)*(1.0-smoothstep(.80,1.0,seal_q))
         for i in chosen:
-            _flip(seal_frames,ally_chest(i,t)+Vector2(0,-14),Vector2(182,191),seal_q*9.0,seal_alpha*.67)
+            _flip(seal_frames,ally_chest(i,t)+Vector2(0,-8),Vector2(128,139),seal_q*9.0,seal_alpha*.48)
     if t>=FADE_START and t<FADE_END:
         var fade_q:=clampf((t-FADE_START)/(FADE_END-FADE_START),0.0,1.0)
         var fade_alpha:=smoothstep(0.0,.12,fade_q)*(1.0-smoothstep(.55,1.0,fade_q))
@@ -223,7 +223,7 @@ func _draw()->void:
         var q:=clampf((t-SEAL_START)/(SEAL_END-SEAL_START),0.0,1.0)
         var alpha:=smoothstep(0.0,.14,q)*(1.0-smoothstep(.80,1.0,q))
         for i in chosen:
-            _flip(seal_frames,ally_chest(i,t)+Vector2(0,-14),Vector2(124,138),q*9.0,alpha*.99)
+            _flip(seal_frames,ally_chest(i,t)+Vector2(0,-8),Vector2(84,100),q*9.0,alpha*.94)
     if t>=FADE_START and t<FADE_END:
         var q2:=clampf((t-FADE_START)/(FADE_END-FADE_START),0.0,1.0)
         var end_alpha:=smoothstep(0.0,.09,q2)*(1.0-smoothstep(.52,1.0,q2))

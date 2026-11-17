@@ -77,7 +77,7 @@ jobs:
           set -euo pipefail
           d="$RUNNER_TEMP/poi16r2"
           xvfb-run -a -s '-screen 0 1280x720x24' bash tools/qa/run_godot_strict.sh --path godot --resolution 1280x720 --fixed-fps 60 --write-movie "$d/native.avi" --quit-after 177 res://labs/combat_lab/poison16_van_linh_giai_ach/r2/van_linh_giai_ach_semantic.tscn 2>&1 | tee "$d/godot-preflight.log"
-          grep -Fq 'POI16_SEMANTIC_R2_READY' "$d/godot-preflight.log"
+          grep -Fq 'POI16_SEMANTIC_R2C_READY' "$d/godot-preflight.log"
           ffmpeg -y -hide_banner -loglevel error -i "$d/native.avi" -pix_fmt yuv420p -c:v libx264 -crf 16 -movflags +faststart "$d/v4-poi16-r2-native.mp4"
           ffmpeg -y -hide_banner -loglevel error -ss 0.62 -i "$d/v4-poi16-r2-native.mp4" -frames:v 1 "$d/v4-charge.png"
           ffmpeg -y -hide_banner -loglevel error -ss 1.62 -i "$d/v4-poi16-r2-native.mp4" -frames:v 1 "$d/v4-peak.png"

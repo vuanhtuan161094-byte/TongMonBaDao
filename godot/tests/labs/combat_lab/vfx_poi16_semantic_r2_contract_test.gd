@@ -28,6 +28,9 @@ func _check()->void:
     var source:=FileAccess.get_file_as_string("res://labs/combat_lab/poison16_van_linh_giai_ach/r2/van_linh_giai_ach_semantic.gd")
     for forbidden in ["SaveService.","CombatV2.","apply_damage","apply_status","apply_heal","heal_target","set_health","spawn_projectile","summon_actor"]:
         check(not source.contains(forbidden),"view only no real HP receipt "+forbidden)
+    for index in range(3):
+        var torso_gap:=LAB.ally_foot(index,1.92).y-LAB.ally_chest(index,1.92).y
+        check(torso_gap>=55.0 and torso_gap<=74.0,"herbal stamp must anchor around TORSO not face or head "+str(index))
     check(LAB.semantic_phase_at(.64)=="medicine_seed","recognizable medicine seed")
     check(LAB.semantic_phase_at(1.28)=="three_leaf_herb","READABLE tripetal herbal bloom")
     check(LAB.semantic_phase_at(1.51)=="three_healing_links","real three branch transfer to ally")
