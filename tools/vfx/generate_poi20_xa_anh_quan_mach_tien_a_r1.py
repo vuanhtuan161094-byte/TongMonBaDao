@@ -56,13 +56,13 @@ def filament(im,xy,body=5,opacity=.8,seed=0):
         w=body*(.24+.76*sin(pi*u)**.46)
         m.line([vec(*pts[k-1]),vec(*pts[k])],fill=203,width=max(1,round(w*SS)),joint="curve")
     blit(im,mask.filter(ImageFilter.GaussianBlur(7.0*SS)),C["indigo"],.13*opacity)
-    blit(im,mask.filter(ImageFilter.GaussianBlur(4.0*SS)),C["lilac"],.30*opacity)
-    blit(im,mask.filter(ImageFilter.GaussianBlur(1.8*SS)),C["jade"],.70*opacity)
+    blit(im,mask.filter(ImageFilter.GaussianBlur(4.0*SS)),C["lilac"],.24*opacity)
+    blit(im,mask.filter(ImageFilter.GaussianBlur(1.8*SS)),C["jade"],.79*opacity)
     blit(im,mask,C["sea"],.33*opacity)
     spine=Image.new("L",im.size,0);d=ImageDraw.Draw(spine)
     d.line([vec(*v) for v in pts],fill=220,width=max(1,int(body*.27*SS)),joint="curve")
-    blit(im,spine.filter(ImageFilter.GaussianBlur(1.1*SS)),C["silver"],.65*opacity)
-    blit(im,spine,C["ivory"],.61*opacity)
+    blit(im,spine.filter(ImageFilter.GaussianBlur(1.1*SS)),C["silver"],.79*opacity)
+    blit(im,spine,C["ivory"],.79*opacity)
     # small rare gold joints, not repeated geometric rings
     for k in (max(2,int(n*.27)),max(4,int(n*.67))):
         x,y=pts[k];dot(im,x,y,1.8,C["gold"],.36*opacity)

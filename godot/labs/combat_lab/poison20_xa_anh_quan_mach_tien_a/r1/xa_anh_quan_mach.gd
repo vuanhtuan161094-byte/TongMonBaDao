@@ -160,16 +160,16 @@ func _draw()->void:
         var onset:float=smoothstep(CONTACT_AT,CONTACT_AT+.2,t)
         var alpha:float=mark_gain(t)
         var cycle:float=fposmod((t-CONTACT_AT)*5.5,12)
-        _pose(coil_back_frames,target+Vector2(0,-91),Vector2(236,246),cycle,onset*alpha*.75)
+        _pose(coil_back_frames,target+Vector2(0,-91),Vector2(251,265),cycle,onset*alpha*.85)
     _monster(target,t)
     _monster(decoy_foot(t),t+.22)
     _disciple()
     # Only a small front coil; no target-face-covering solid sticker.
     if t>=CONTACT_AT and t<FADE_END:
         var cycle_front:float=fposmod((t-CONTACT_AT)*5.4+2,12)
-        _pose(coil_front_frames,target+Vector2(0,-91),Vector2(217,222),cycle_front,mark_gain(t)*.58)
+        _pose(coil_front_frames,target+Vector2(0,-91),Vector2(236,247),cycle_front,mark_gain(t)*.70)
         _pose(mark_frames,mark_anchor_at(t),Vector2(134,134),
-            fposmod((t-CONTACT_AT)*3.8,12),mark_gain(t)*.87)
+            fposmod((t-CONTACT_AT)*3.8,12),mark_gain(t)*.96)
     if t<RELEASE_AT:
         var q:float=smoothstep(0,.12,t)*(1.0-smoothstep(CAST_END,RELEASE_AT,t))
         _pose(gather_frames,CASTER_HAND,Vector2(198,198),

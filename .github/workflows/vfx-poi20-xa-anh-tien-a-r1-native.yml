@@ -5,6 +5,7 @@ on:
     branches: [integration/pve-p0-playable-ui-20261103]
     paths:
       - 'tools/vfx/generate_poi20_xa_anh_quan_mach_tien_a_r1.py'
+      - 'tools/qa/check_poi20_native_visibility.py'
       - 'godot/labs/combat_lab/poison20_xa_anh_quan_mach_tien_a/r1/*.gd'
       - 'godot/labs/combat_lab/poison20_xa_anh_quan_mach_tien_a/r1/*.tscn'
       - 'godot/tests/labs/combat_lab/vfx_poi20_xa_anh_r1_contract_test.gd'
@@ -73,23 +74,29 @@ jobs:
           bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://labs/combat_lab/poison20_xa_anh_quan_mach_tien_a/r1/xa_anh_quan_mach.gd 2>&1 | tee "$d/parse.log"
           bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/labs/combat_lab/vfx_poi20_xa_anh_r1_contract_test.gd 2>&1 | tee "$d/godot-focused.log"
           grep -Fq 'POI20_XA_ANH_R1_RESULT=PASS failures=0' "$d/godot-focused.log"
-      - name: G3.5 native 108-frame REAL Godot charging / flight / moving-target coil
+      - name: G3.5/G3.6/G5 exact-SHA 639-frame REAL Godot silver-jade two-snake effect and expiry
         run: |
           set -euo pipefail
           d="$RUNNER_TEMP/poi20"
-          xvfb-run -a -s '-screen 0 1280x720x24' bash tools/qa/run_godot_strict.sh --path godot --resolution 1280x720 --fixed-fps 60 --write-movie "$d/native.avi" --quit-after 108 res://labs/combat_lab/poison20_xa_anh_quan_mach_tien_a/r1/xa_anh_quan_mach.tscn 2>&1 | tee "$d/godot-preflight.log"
+          xvfb-run -a -s '-screen 0 1280x720x24' bash tools/qa/run_godot_strict.sh --path godot --resolution 1280x720 --fixed-fps 60 --write-movie "$d/native.avi" --quit-after 639 res://labs/combat_lab/poison20_xa_anh_quan_mach_tien_a/r1/xa_anh_quan_mach.tscn 2>&1 | tee "$d/godot-preflight.log"
           grep -Fq 'POI20_XA_ANH_TIEN_A_R1_READY' "$d/godot-preflight.log"
           ffmpeg -y -hide_banner -loglevel error -i "$d/native.avi" -pix_fmt yuv420p -c:v libx264 -crf 16 -movflags +faststart "$d/v4-poi20-r1-native.mp4"
           ffmpeg -y -hide_banner -loglevel error -ss 0.21 -i "$d/v4-poi20-r1-native.mp4" -frames:v 1 "$d/v4-charge.png"
           ffmpeg -y -hide_banner -loglevel error -ss 0.98 -i "$d/v4-poi20-r1-native.mp4" -frames:v 1 "$d/v4-peak.png"
           ffmpeg -y -hide_banner -loglevel error -ss 1.48 -i "$d/v4-poi20-r1-native.mp4" -frames:v 1 "$d/v4-contact.png"
-          for t in 0.05 0.21 0.38 0.43 0.57 0.68 0.81 0.98 1.10 1.23 1.35 1.48 1.62 1.75; do
+          for t in 0.05 0.21 0.38 0.43 0.57 0.68 0.81 0.98 1.10 1.23 1.35 1.48 1.62 1.75 2.30 3.50 5.10 7.30 9.50 9.75 10.04 10.27 10.50; do
             ffmpeg -y -hide_banner -loglevel error -ss "$t" -i "$d/v4-poi20-r1-native.mp4" -frames:v 1 "$d/check-$t.png"
           done
+          ffmpeg -y -hide_banner -loglevel error -ss 2.30 -i "$d/v4-poi20-r1-native.mp4" -frames:v 1 "$d/status-active.png"
+          ffmpeg -y -hide_banner -loglevel error -ss 5.10 -i "$d/v4-poi20-r1-native.mp4" -frames:v 1 "$d/status-mid.png"
+          ffmpeg -y -hide_banner -loglevel error -ss 9.75 -i "$d/v4-poi20-r1-native.mp4" -frames:v 1 "$d/status-expiring.png"
+          ffmpeg -y -hide_banner -loglevel error -ss 10.04 -i "$d/v4-poi20-r1-native.mp4" -frames:v 1 "$d/status-fade.png"
+          ffmpeg -y -hide_banner -loglevel error -ss 10.27 -i "$d/v4-poi20-r1-native.mp4" -frames:v 1 "$d/status-clear.png"
+          python3 tools/qa/check_poi20_native_visibility.py --out "$d" | tee "$d/g36-poi20.log"
           python3 tools/qa/validate_vfx_v4_packet.py --stage evidence --packet docs/operations/vfx_packets/POI20_R1_V4_PREFLIGHT.json --out "$d" --sha "$GITHUB_SHA" | tee "$d/v4-evidence.log"
           ffprobe -v error -show_entries stream=width,height,nb_frames,duration -of default=noprint_wrappers=1 "$d/v4-poi20-r1-native.mp4" | tee "$d/movie-metadata.txt"
           sha256sum "$d/v4-poi20-r1-native.mp4" "$d/v4-"*.png > "$d/NATIVE-G35-SHA256.txt"
-          printf 'G3.5_NATIVE_GODOT_TRUE_SOURCE_EVIDENCE_CAPTURED\nG3.5_NATIVE_SOURCE_NEEDS_OWNER_VISUAL_REVIEW\nG5_FULL_VIDEO_NOT_EXECUTED_ART_STOP\nG6_ART_OWNER_PENDING\nG8_PVE_HOLD\n' > "$d/gate.txt"
+          printf 'G3.5_R1C_TRUE_GODOT_THREE_PHASES_CAPTURED\nG3.5_R1B_S_SERPENT_REVIEWED_R1C_HOT_CORE_LIGHT_POLISH\nG5_GODOT_NATIVE_639_FRAMES_CAPTURED_TECH_ONLY\nG6_ART_OWNER_PENDING\nG8_PVE_HOLD\n' > "$d/gate.txt"
           rm -f "$d/native.avi"
       - name: Preserve original master and atlas PNGs on current PR branch
         if: success() && github.event_name == 'push'

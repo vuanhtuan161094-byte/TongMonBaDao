@@ -64,9 +64,9 @@ func line_light(points: PackedVector2Array,power: float,width: float)->void:
     for i in range(points.size()):
         var u: float=float(i)/float(points.size()-1)
         var fall: float=pow(maxf(0.0,1.0-u),1.2)
-        outside.append(Color(.31,.22,.83,.09*power*fall))
-        middle.append(Color(.24,.92,.70,.20*power*fall))
-        core.append(Color(.99,1.0,.95,.23*power*fall))
+        outside.append(Color(.31,.22,.83,.085*power*fall))
+        middle.append(Color(.24,.92,.70,.28*power*fall))
+        core.append(Color(.99,1.0,.95,.39*power*fall))
     draw_polyline_colors(points,outside,width*4.1,true)
     draw_polyline_colors(points,middle,width*1.75,true)
     draw_polyline_colors(points,core,maxf(.8,width*.42),true)
@@ -116,7 +116,7 @@ func _wrapping(t: float)->void:
             xx+=20.0*sin(2.0*PI*(v*1.15+u*.46)+1.6*strand)*sin(PI*v)
             var yy:float=86.0-174.0*v+6.5*sin(5.5*v+u*3.1+strand)
             ribbon.append(origin+Vector2(xx,yy))
-        line_light(ribbon,gain*.85,5.4)
+        line_light(ribbon,gain*.96,5.8)
         halo(ribbon[ribbon.size()-1],gain*.70,7.5)
     halo(origin+Vector2(0,-32),gain*.52,8.0)
 
@@ -134,9 +134,9 @@ func _sustain(t: float)->void:
             xx+=12.0*sin(phase)*sin(PI*v)
             var yy:float=72.0-158.0*v+3.5*sin(phase*.8)
             curve.append(origin+Vector2(xx,yy))
-        line_light(curve,status_alpha*pulse*.44,3.0)
+        line_light(curve,status_alpha*pulse*.59,3.3)
         halo(curve[curve.size()-1],status_alpha*pulse*.30,5.2)
-    halo(status_anchor,status_alpha*pulse*.50,9.0)
+    halo(status_anchor,status_alpha*pulse*.68,10.4)
     for k in range(2):
         var z:float=fposmod(t*.31+k*.43,1.0)
         halo(status_anchor+Vector2((k*2-1)*13+5*sin(t*2),-8-30*z),
