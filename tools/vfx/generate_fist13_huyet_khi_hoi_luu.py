@@ -27,11 +27,11 @@ def ruby(source,level=1.0,phase=0.0):
     light=np.maximum.reduce([r,g,b])
     hot=np.clip((light-194)/61,0,1)**1.7
     warm=np.clip(.36*r+.57*g+.07*b,0,255)
-    p[:,:,0]=np.clip(.55*light+.28*warm+66,0,255)
-    p[:,:,1]=np.clip(.27*light+.11*warm+16 + 97*hot,0,255)
-    p[:,:,2]=np.clip(.40*light+.16*warm+40 + 102*hot,0,255)
+    p[:,:,0]=np.clip(.85*light+.22*warm+74,0,255)
+    p[:,:,1]=np.clip(.31*light+.08*warm+15 + 112*hot,0,255)
+    p[:,:,2]=np.clip(.33*light+.11*warm+29 + 121*hot,0,255)
     p[:,:,:3]=np.clip(p[:,:,:3]*(.95+.09*np.sin(phase))+hot[:,:,None]*30,0,255)
-    p[:,:,3]=np.clip(p[:,:,3]*level,0,255)
+    p[:,:,3]=np.clip(p[:,:,3]*level*1.52 + 32*hot,0,255)
     p[p[:,:,3]<3,:3]=0
     return Image.fromarray(p.astype("uint8"),"RGBA")
 def warp(src,frame,phase,dx=5.4):
@@ -84,11 +84,11 @@ def charge(i):
     for j in range(3):
         raw=crop(CROWN,"crown",(i+j*3)%10)
         mat=feather(ruby(warp(raw,i+j,1.3+j),.62+.2*t,phase=i*.27))
-        scale=.42+.18*t
+        scale=.59+.19*t
         sz=(round(230*scale),round(145*scale))
         m=mat.resize(sz,Image.Resampling.LANCZOS)
         ang=j*2*math.pi/3+i*.19
-        rad=35-23*t
+        rad=40-24*t
         x=160+rad*math.cos(ang)-sz[0]/2
         y=159+rad*.72*math.sin(ang)-sz[1]/2
         over(dst,m,(x,y),glow=.3,intensity=.66+.24*t)
@@ -103,12 +103,12 @@ def contact(i):
     # One dense inward whirlpool of genuine painterly pixels, not three strokes/claws.
     src=crop(CROWN,"crown",min(9,int((.25+.70*t)*9)))
     src=feather(ruby(warp(src,i*1.32,.8),.82+.13*math.sin(t*math.pi),i*.09),depth=.34)
-    scale=1.09-.42*t+.04*math.sin(t*math.pi)
+    scale=1.18-.39*t+.04*math.sin(t*math.pi)
     cw,ch=(round(280*scale),round(184*scale))
     m=src.resize((cw,ch),Image.Resampling.LANCZOS)
     # Asymmetrical compressed qi whorl, single target chest.
     m=m.rotate(-9+17*math.sin(t*math.pi),Image.Resampling.BICUBIC,expand=True)
-    over(dst,m,((320-m.width)/2,(320-m.height)/2),glow=.32,intensity=.89)
+    over(dst,m,((320-m.width)/2,(320-m.height)/2),glow=.34,intensity=.97)
     # Localized chest collapse: source-painted contact overtakes ambient at 70% progress.
     core=crop(CONTACT,"contact",min(7,int(t*7.99)))
     core=feather(ruby(warp(core,i,2.1),(.15+.76*max(0,t-.3)/.7),t),depth=.38)
@@ -123,9 +123,9 @@ def mark(i):
     # Pulse artifact at torso, no 3 separate claws, no explosion repeated each tick.
     core=crop(CONTACT,"contact",(i+1)%8)
     core=feather(ruby(warp(core,i*.7,3.2),.66+.16*math.sin(t*math.tau),t),depth=.38)
-    w=114+round(5*math.sin(t*math.tau));h=round(w*.85)
+    w=122+round(7*math.sin(t*math.tau));h=round(w*.85)
     tiny=core.resize((w,h),Image.Resampling.LANCZOS)
-    over(dst,tiny,((CELL-w)/2,(CELL-h)/2),glow=.34,intensity=.78)
+    over(dst,tiny,((CELL-w)/2,(CELL-h)/2),glow=.41,intensity=.95)
     focus_ink(dst,t)
     return dst
 stats={}
@@ -146,10 +146,10 @@ for kind,count in (("charge",8),("contact",12),("mark",8)):
 hero=contact(8)
 hero.save(OUT/"f13_original_code_painted_hero.png",optimize=True)
 (OUT/"f13_art_source_manifest.json").write_text(json.dumps({
-    "revision":"R3","art_source":"first-party project-owned previously painted pigment, newly recomposed/warped",
+    "revision":"R4","art_source":"first-party project-owned previously painted pigment, newly recomposed/warped",
     "actual_masters":["godot/labs/combat_lab/poison11/r1_original/assets/poison11_crown_10_r9.png",
                       "godot/labs/combat_lab/poison11/r1_original/assets/poison11_contact_08.png"],
     "derivative_not_novel_painted_original":True,
     "generated_source_png":"f13_original_code_painted_hero.png",
     "no_gif":True,"no_rig":True,"views_only":True,"atlases":stats},indent=2),encoding="utf-8")
-print("FIST13_R3_PAINTED_MATERIAL_BAKE_PASS poses=28 atlas=3 no_gif=true no_rig=true")
+print("FIST13_R4_PAINTED_MATERIAL_BAKE_PASS poses=28 atlas=3 no_gif=true no_rig=true")

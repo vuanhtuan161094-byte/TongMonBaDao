@@ -44,7 +44,7 @@ func _ready()->void:
     custom_minimum_size=Vector2(1280,720)
     mouse_filter=Control.MOUSE_FILTER_IGNORE
     set_process(true)
-    print("VFX_FIST13_R3_READY painted_material=true moving_monster=true one_mark_six_seconds=true")
+    print("VFX_FIST13_R4_READY painted_material=true moving_monster=true one_mark_six_seconds=true")
 func _process(delta:float)->void:
     if paused:return
     elapsed=fposmod(elapsed+maxf(delta,0),LOOP_END)
@@ -78,12 +78,12 @@ func _draw()->void:
     var hand:=caster_at(t)+Vector2(51,-99)
     if t<.52:
         var gain:=smoothstep(0,.12,t)*(1.0-smoothstep(.39,.52,t))
-        _flip(CHARGE,clampf(t/CAST_TIME*7,0,7),hand,.70,gain*.96)
+        _flip(CHARGE,clampf(t/CAST_TIME*7,0,7),hand,.82,gain*.98)
     # Inward flow: 1 target-relative compressive painted whorl. No projectile.
     if t>=.45 and t<1.17:
         var q:=clampf((t-.45)/.39,0,1)
         var opacity:=smoothstep(.45,.55,t)*(1.0-smoothstep(.91,1.17,t))
-        _flip(CONTACT,11*q,mark_at(0,t),.64,opacity)
+        _flip(CONTACT,11*q,mark_at(0,t),.92,opacity)
     _caster(caster_at(t))
     _monster(foe_at(t),t)
     if t>=MARK_START and t<1.17:
@@ -91,4 +91,4 @@ func _draw()->void:
         _flip(CONTACT,11,mark_at(0,t),.41,flash*.47)
     var sign:=mark_opacity(t)
     if sign>.002:
-        _flip(MARK,fposmod((t-MARK_START)*5.6,8.0),mark_at(0,t),.76,sign*.97)
+        _flip(MARK,fposmod((t-MARK_START)*5.6,8.0),mark_at(0,t),1.03,sign*.99)
