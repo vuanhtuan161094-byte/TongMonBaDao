@@ -118,12 +118,12 @@ func _flight(t: float) -> void:
             var gain: float=pow(1.0-tail,1.42)*gate
             var prominence: float=1.0 if strand==1 else .48
             points.append(p)
-            halo.append(Color(.43,.16,.98,.095*gain*prominence))
-            body.append(Color(.52,.36,1.0,.21*gain*prominence))
-            core.append(Color(.63,.98,.88,.25*gain*prominence))
+            halo.append(Color(.43,.16,.98,.14*gain*prominence))
+            body.append(Color(.52,.36,1.0,.30*gain*prominence))
+            core.append(Color(.63,.98,.88,.31*gain*prominence))
         if points.size()>1:
             draw_polyline_colors(points,halo,21.0,true)
-            draw_polyline_colors(points,body,8.4,true)
+            draw_polyline_colors(points,body,10.6,true)
             draw_polyline_colors(points,core,2.4,true)
     _glow(head,9.0,gate*.95)
     for i in range(4):
@@ -170,9 +170,9 @@ func _sustain(t: float) -> void:
             var y: float=21.0-44.0*u+3.0*sin(t*2.0+7.0*u)
             var point:=anchor+Vector2(x,y)
             if k>0:
-                _stroke(prev,point,mark_opacity*pulse*.22*sin(PI*u),1.45)
+                _stroke(prev,point,mark_opacity*pulse*.36*sin(PI*u),1.7)
             prev=point
-    _glow(anchor,6.8,mark_opacity*.35*pulse)
+    _glow(anchor,10.8,mark_opacity*.74*pulse)
     # Small upward sparks. Not real poison stacks and not independent targets.
     for k in range(4):
         var f: float=float(k)
