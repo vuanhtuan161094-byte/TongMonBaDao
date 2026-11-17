@@ -1,0 +1,132 @@
+name: VFX POI19 R2 Phu Cot Co Tien B - layered violet-jade orchid original VFX native Godot
+on:
+  workflow_dispatch:
+  push:
+    branches: [integration/pve-p0-playable-ui-20261103]
+    paths:
+      - 'tools/vfx/generate_poi19_phu_cot_co_tien_b_r2.py'
+      - 'godot/labs/combat_lab/poison19_phu_cot_co_tien_b/r2/*.gd'
+      - 'godot/labs/combat_lab/poison19_phu_cot_co_tien_b/r2/*.tscn'
+      - 'godot/tests/labs/combat_lab/vfx_poi19_immortal_mark_r2_contract_test.gd'
+      - 'docs/operations/vfx_packets/POI19_R2_V4_PREFLIGHT.json'
+      - 'docs/operations/VFX_POI19_PHU_COT_CO_TIENB_R2_20261117.md'
+      - '.github/workflows/vfx-poi19-phu-cot-co-tien-b-r2-native.yml'
+permissions:
+  contents: write
+jobs:
+  poi19-native:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      GODOT_AUDIO_DRIVER: Dummy
+      GODOT_RENDERING_DRIVER: opengl3
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+      - name: Official Godot 4.7.2 and original-alpha generation libraries
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y unzip ffmpeg xvfb python3-pil python3-numpy
+          python3 -c 'import numpy; from PIL import Image; print("POI19_R2_RGBA_TOOLS_READY")'
+          curl --fail --location --retry 3 -o /tmp/godot472.zip 'https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip'
+          echo 'cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4  /tmp/godot472.zip' | sha256sum --check --strict
+          unzip -q /tmp/godot472.zip -d /tmp
+          sudo install -m0755 /tmp/Godot_v4.7.2-stable_linux.x86_64 /usr/local/bin/godot
+          mkdir -p "$RUNNER_TEMP/poi19"
+          godot --version | tee "$RUNNER_TEMP/poi19/engine.txt"
+          printf 'EXACT_SHA=%s\nNO_GIF\nNO_RIG\nOWNER_VISUAL_PENDING\nPVE_HOLD\nV63_OFF\n' "$GITHUB_SHA" > "$RUNNER_TEMP/poi19/metadata.txt"
+      - name: Paint 80 individually changing violet-jade layered Orchid RGBA poses, validate V4
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/poi19"
+          python3 tools/vfx/generate_poi19_phu_cot_co_tien_b_r2.py 2>&1 | tee "$d/bake.log"
+          python3 tools/qa/validate_vfx_v4_packet.py --stage packet --packet docs/operations/vfx_packets/POI19_R2_V4_PREFLIGHT.json | tee "$d/v4-packet.log"
+          python3 tools/qa/validate_vfx_v4_packet.py --stage assets --packet docs/operations/vfx_packets/POI19_R2_V4_PREFLIGHT.json | tee "$d/v4-assets.log"
+          python3 - <<'PY'
+          import numpy as np
+          from PIL import Image
+          from pathlib import Path
+          root=Path('godot/labs/combat_lab/poison19_phu_cot_co_tien_b/r2/assets')
+          for f in root.glob('*.png'):
+              rgba=np.asarray(Image.open(f).convert('RGBA'))
+              assert int(rgba[:,:,3].max())>65,(f,'blank')
+              assert np.any((rgba[:,:,3]>0)&(rgba[:,:,3]<250)),(f,'not translucent')
+              assert int(rgba[0,:,3].max())==0 and int(rgba[-1,:,3].max())==0,(f,'hard square')
+          print('POI19_R2_TRUE_ALPHA_COLOR_BORDER_PASS')
+          PY
+          find godot/labs/combat_lab/poison19_phu_cot_co_tien_b/r2/assets -name '*.png' -print0 | sort -z | xargs -0 sha256sum > "$d/original-source-sha256.txt"
+      - name: Restore existing approved actor fixture for LAB preview only
+        run: |
+          set -euo pipefail
+          cat .github/assets/p3/female_stage_a/part{01..14}.b64 .github/assets/p3/female_stage_a/part15a.b64 .github/assets/p3/female_stage_a/part15b.b64 .github/assets/p3/female_stage_a/part{16..20}.b64 | tr -d '\r\n\t ' | base64 --decode > /tmp/tmb_stage_a_pack.zip
+          echo '6a4213b9129ffb3f438c21cbb5326672ddf8915323836bf80cb33b8e5fabfdca  /tmp/tmb_stage_a_pack.zip' | sha256sum --check --strict
+          unzip -q /tmp/tmb_stage_a_pack.zip -d .
+      - name: Godot strict caster immortal_mark and independent WALK monster single-target mark QA
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/poi19"
+          bash tools/qa/run_godot_strict.sh --headless --path godot --import 2>&1 | tee "$d/import.log"
+          bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://labs/combat_lab/poison19_phu_cot_co_tien_b/r2/phu_cot_co_tien_b.gd 2>&1 | tee "$d/parse.log"
+          bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/labs/combat_lab/vfx_poi19_immortal_mark_r2_contract_test.gd 2>&1 | tee "$d/godot-focused.log"
+          grep -Fq 'POI19_IMMORTAL_MARK_R2_RESULT=PASS failures=0' "$d/godot-focused.log"
+      - name: G3.5 genuine Godot 1.8s moving target native preflight; ART STOP
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/poi19"
+          xvfb-run -a -s '-screen 0 1280x720x24' bash tools/qa/run_godot_strict.sh --path godot --resolution 1280x720 --fixed-fps 60 --write-movie "$d/native.avi" --quit-after 108 res://labs/combat_lab/poison19_phu_cot_co_tien_b/r2/phu_cot_co_tien_b.tscn 2>&1 | tee "$d/godot-preflight.log"
+          grep -Fq 'POI19_PHU_COT_CO_TIENB_R2_READY' "$d/godot-preflight.log"
+          ffmpeg -y -hide_banner -loglevel error -i "$d/native.avi" -pix_fmt yuv420p -c:v libx264 -crf 16 -movflags +faststart "$d/v4-poi19-r2-native.mp4"
+          ffmpeg -y -hide_banner -loglevel error -ss 0.21 -i "$d/v4-poi19-r2-native.mp4" -frames:v 1 "$d/v4-charge.png"
+          ffmpeg -y -hide_banner -loglevel error -ss 0.98 -i "$d/v4-poi19-r2-native.mp4" -frames:v 1 "$d/v4-peak.png"
+          ffmpeg -y -hide_banner -loglevel error -ss 1.48 -i "$d/v4-poi19-r2-native.mp4" -frames:v 1 "$d/v4-contact.png"
+          for t in 0.05 0.21 0.38 0.43 0.57 0.68 0.81 0.98 1.10 1.23 1.35 1.48 1.62 1.75 ; do
+            ffmpeg -y -hide_banner -loglevel error -ss "$t" -i "$d/v4-poi19-r2-native.mp4" -frames:v 1 "$d/check-$t.png"
+          done
+          python3 tools/qa/validate_vfx_v4_packet.py --stage evidence --packet docs/operations/vfx_packets/POI19_R2_V4_PREFLIGHT.json --out "$d" --sha "$GITHUB_SHA" | tee "$d/v4-evidence.log"
+          ffprobe -v error -show_entries stream=width,height,nb_frames,duration -of default=noprint_wrappers=1 "$d/v4-poi19-r2-native.mp4" | tee "$d/movie-metadata.txt"
+          sha256sum "$d/v4-poi19-r2-native.mp4" "$d/v4-"*.png > "$d/NATIVE-G35-SHA256.txt"
+          printf 'G3.5_NATIVE_TECH_EVIDENCE_CAPTURED\nG3.5_POI19_NATIVE_ART_REVIEW_REQUIRED\nG3.6_VISIBILITY_PENDING_NATIVE_REVIEW\nG5_FULL_NATIVE_NOT_EXECUTED_ART_STOP\nG6_ART_OWNER_PENDING\nG8_PVE_HOLD\n' > "$d/gate.txt"
+          rm -f "$d/native.avi"
+      - name: Preserve original master and atlas PNGs on current PR branch
+        if: success() && github.event_name == 'push'
+        run: |
+          set -euo pipefail
+          branch='integration/pve-p0-playable-ui-20261103'
+          folder='godot/labs/combat_lab/poison19_phu_cot_co_tien_b/r2/assets'
+          mkdir -p "$RUNNER_TEMP/poi19/saved"
+          cp -R "$folder"/. "$RUNNER_TEMP/poi19/saved/"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          for attempt in 1 2 3; do
+            git fetch origin "$branch"
+            latest="$(git rev-parse FETCH_HEAD)"
+            if ! git merge-base --is-ancestor "$GITHUB_SHA" "$latest"; then echo POI19_R2_REWRITE_ABORT; exit 0; fi
+            if test -n "$(git diff --name-only "$GITHUB_SHA" "$latest" -- tools/vfx/generate_poi19_phu_cot_co_tien_b_r2.py godot/labs/combat_lab/poison19_phu_cot_co_tien_b/ .github/workflows/vfx-poi19-phu-cot-co-tien-b-r2-native.yml)"; then
+              echo POI19_R2_CONCURRENT_SOURCE_CHANGE_ABORT; exit 0
+            fi
+            git reset --hard "$latest"
+            mkdir -p "$folder"; cp -R "$RUNNER_TEMP/poi19/saved"/. "$folder/"
+            git add "$folder"
+            if git diff --cached --quiet; then echo POI19_R2_ALREADY_ARCHIVED; exit 0; fi
+            git commit -m 'art(poi19): preserve first-party R2 violet orchard 6-layer source master and atlases'
+            if git push origin "HEAD:refs/heads/$branch"; then echo "POI19_R2_ART_COMMIT=$(git rev-parse HEAD)" | tee "$RUNNER_TEMP/poi19/saved-commit.txt"; exit 0; fi
+          done
+          echo POI19_R2_ART_SAVE_CONFLICT; exit 1
+      - name: Upload MP4 and native proof, NO GIF
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: poi19-r2-immortal-mark-native-${{ github.sha }}
+          retention-days: 14
+          if-no-files-found: warn
+          path: |
+            ${{ runner.temp }}/poi19/*.log
+            ${{ runner.temp }}/poi19/*.txt
+            ${{ runner.temp }}/poi19/*.json
+            ${{ runner.temp }}/poi19/*.png
+            ${{ runner.temp }}/poi19/*.mp4
+            godot/labs/combat_lab/poison19_phu_cot_co_tien_b/r2/assets/**/*.png
+            godot/labs/combat_lab/poison19_phu_cot_co_tien_b/r2/assets/*.png
