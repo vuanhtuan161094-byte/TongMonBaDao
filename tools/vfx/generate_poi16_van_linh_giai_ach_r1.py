@@ -125,8 +125,8 @@ def src(part,t,cell):
             main=np.exp(-((x-drift)/(3.2+1.2*(k%3)))**2)*length
             lay("jade" if k%3 else "aqua",main*(.25+.055*(k%4))*power*tex)
             lay("pearl",np.exp(-((x-drift)/1.6)**2)*length*.13*power)
-        lay("emerald",gauss(x,y,-6,4,44,68)*.12*power*tex
-        lay("aqua",gauss(x,y,8,-10,28,52)*.17*power*tex
+        lay("emerald",gauss(x,y,-6,4,44,68)*.12*power*tex)
+        lay("aqua",gauss(x,y,8,-10,28,52)*.17*power*tex)
         # Individual translucent droplets rise as life-energy.
         for i in range(11):
             phase=i*2.39996
@@ -136,8 +136,8 @@ def src(part,t,cell):
                 gauss(x,y,cx,cy,2.0+(i%3),3.9+(i%4))*(.42+.065*(i%3))*power)
             lay("pearl",gauss(x,y,cx,cy,1.1,1.9)*.19*power)
         lay("jade",gauss(x,y,0,3,18,23)*.17*power)
-        lay("pearl",gauss(x,y,0,2,5,7.2)*.76*power
-        lay("ivory",gauss(x,y,0,2,2.6,3.7)*.70*power
+        lay("pearl",gauss(x,y,0,2,5,7.2)*.76*power)
+        lay("ivory",gauss(x,y,0,2,2.6,3.7)*.70*power)
     elif part=="fade":
         retained=max(.08,(1-t)**1.55)
         lay("aqua",gauss(x,y,0,-10-15*t,68+19*t,59+18*t)*.077*retained*tex)
