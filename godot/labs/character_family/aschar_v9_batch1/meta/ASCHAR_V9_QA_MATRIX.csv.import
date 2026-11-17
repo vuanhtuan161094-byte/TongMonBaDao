@@ -1,0 +1,19 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://r50brkl6rqmn"
+
+[deps]
+
+files=["res://meta/ASCHAR_V9_QA_MATRIX.command.translation", "res://meta/ASCHAR_V9_QA_MATRIX.engine.translation", "res://meta/ASCHAR_V9_QA_MATRIX.result.translation", "res://meta/ASCHAR_V9_QA_MATRIX.exit.translation", "res://meta/ASCHAR_V9_QA_MATRIX.notes.translation"]
+
+source_file="res://meta/ASCHAR_V9_QA_MATRIX.csv"
+dest_files=["res://meta/ASCHAR_V9_QA_MATRIX.command.translation", "res://meta/ASCHAR_V9_QA_MATRIX.engine.translation", "res://meta/ASCHAR_V9_QA_MATRIX.result.translation", "res://meta/ASCHAR_V9_QA_MATRIX.exit.translation", "res://meta/ASCHAR_V9_QA_MATRIX.notes.translation"]
+
+[params]
+
+compress=1
+delimiter=0
+unescape_keys=false
+unescape_translations=true

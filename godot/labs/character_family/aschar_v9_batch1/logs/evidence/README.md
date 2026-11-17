@@ -1,0 +1,1 @@
+These logs are the Godot 4.7.2 import, asset-build, focused verification, and native OpenGL movie runs for this candidate package. Local absolute paths are redacted to `<CANDIDATE_PROJECT>` and user profile paths to `<USER_PROFILE>`. No credentials or save data are included.

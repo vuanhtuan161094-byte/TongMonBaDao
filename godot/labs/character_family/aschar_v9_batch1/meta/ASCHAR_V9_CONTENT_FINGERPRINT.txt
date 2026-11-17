@@ -1,0 +1,4 @@
+schema=tmb.aschar.v9.file_tree_fingerprint.v1
+file_count=166
+sha256=1d3b895a5ec17bdbc16141fac1e4bb9eda904fddc8d5d6829d8c1e4f364e5215
+excludes=.godot cache; generated .translation cache; this fingerprint file; its CSV hash manifest

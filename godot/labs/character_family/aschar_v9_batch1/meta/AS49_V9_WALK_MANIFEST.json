@@ -1,0 +1,74 @@
+{
+  "atlas": "assets/atlases/AS49_walk_front_atlas.png",
+  "atlas_sha256": "921cccc2c2029e962e95c8be2d4222f60db7c79c2d3d5e75b8be67e6a4a3e555",
+  "body_mode": "whole-body PNG cels; no rig/skeleton/body split",
+  "candidate_status": "OWNER_ART_APPROVAL_PENDING",
+  "canvas": "(400, 440)",
+  "clip": "Walk_Front",
+  "foot_baseline_y": 430,
+  "fps": 8.0,
+  "frame_count": 4,
+  "frames": [
+    {
+      "alpha_bounds": {
+        "h": 1367,
+        "w": 954,
+        "x": 106,
+        "y": 25
+      },
+      "estimated_not_pose_locked": true,
+      "pivot_y": 430,
+      "registered": "assets/frames/AS49/walk_front_registered/walk_front_00.png",
+      "registered_sha256": "d8d3b1b3ecc416d42e1d0720ded28fe0687d3e8f180343f53e58bff340418b6d",
+      "source": "assets/frames/AS49/walk_front/AS49_walk_front_f00_left_contact.png",
+      "source_sha256": "8a3a9a0280f2b8e00b1962e335ac6b9cbb6750051d9ad4e17e8c1058a0f066f0"
+    },
+    {
+      "alpha_bounds": {
+        "h": 1351,
+        "w": 942,
+        "x": 106,
+        "y": 97
+      },
+      "estimated_not_pose_locked": true,
+      "pivot_y": 430,
+      "registered": "assets/frames/AS49/walk_front_registered/walk_front_01.png",
+      "registered_sha256": "6ae5767a94853f7bc73fe14e71121b01aa84e8fc6ab22b960cc56fae812194bd",
+      "source": "assets/frames/AS49/walk_front/AS49_walk_front_f01_passing.png",
+      "source_sha256": "7b592ffd2915e74b837196a7d5080b821cc6ebdff3670faf0255231ea3301d89"
+    },
+    {
+      "alpha_bounds": {
+        "h": 1351,
+        "w": 1005,
+        "x": 43,
+        "y": 97
+      },
+      "estimated_not_pose_locked": true,
+      "pivot_y": 430,
+      "registered": "assets/frames/AS49/walk_front_registered/walk_front_02.png",
+      "registered_sha256": "b6a2347e1182e1d131ce9289e7a22764318def3cbbfd563ff6928d50625cb14d",
+      "source": "assets/frames/AS49/walk_front/AS49_walk_front_f02_right_contact.png",
+      "source_sha256": "b72ddbe018b6b87f8c9e0c6760271cb033e7b3e906e05deb395e6fe352266c13"
+    },
+    {
+      "alpha_bounds": {
+        "h": 1311,
+        "w": 963,
+        "x": 76,
+        "y": 73
+      },
+      "estimated_not_pose_locked": true,
+      "pivot_y": 430,
+      "registered": "assets/frames/AS49/walk_front_registered/walk_front_03.png",
+      "registered_sha256": "314e77239d6eefee13371003d2f3ee4608a83ed2aa15179e22642b054e496149",
+      "source": "assets/frames/AS49/walk_front/AS49_walk_front_f03_passing.png",
+      "source_sha256": "ae74a156fb8a94ac8ce640af7374737ab16ade8e6ce736540cdd918f4ea3b1e5"
+    }
+  ],
+  "identity": "AS-CHAR-49 Kiếm Tu Nữ",
+  "loop": true,
+  "prompt_provenance": "AS49_V9_WALK_PROMPTS.md",
+  "schema": "tmb.aschar.v9.batch1.candidate.v1",
+  "weapon_overlay": "not embedded; separate asset and grip calibration pending"
+}

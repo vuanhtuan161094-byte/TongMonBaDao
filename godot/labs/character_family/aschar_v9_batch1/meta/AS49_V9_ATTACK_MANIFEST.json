@@ -1,0 +1,88 @@
+{
+  "atlas": "assets/atlases/AS49_attack_front_atlas.png",
+  "atlas_sha256": "280f72233721db31ede22b08dc461881dd2168c252b103e2e63455af93e6731b",
+  "body_mode": "monolithic whole-body sprite per frame; no rig/bones/body split",
+  "candidate_status": "OWNER_ART_APPROVAL_PENDING",
+  "canvas": "(400, 440)",
+  "clip": "Attack_Front",
+  "foot_baseline_y": 430,
+  "fps": 7.0,
+  "frame_count": 4,
+  "frames": [
+    {
+      "foot_baseline_y": 430,
+      "pose_locked": false,
+      "registered": "assets/frames/AS49/attack_front_registered/attack_front_00.png",
+      "registered_sha256": "d2fa8b81a6001a60c61600195bf77bfc3080bcdd6dc334b45142f2009caa05f8",
+      "registered_size": "(400, 440)",
+      "source": "assets/frames/AS49/attack_front/AS49_attack_front_f00_windup.png",
+      "source_alpha_bounds": {
+        "h": 1254,
+        "w": 1230,
+        "x": 0,
+        "y": 0
+      },
+      "source_canvas": "(1254, 1254)",
+      "source_sha256": "a33407253516d029c1bb37ba17f65ad90024e215bac40bc51a976cf88af5aaa4"
+    },
+    {
+      "foot_baseline_y": 430,
+      "pose_locked": false,
+      "registered": "assets/frames/AS49/attack_front_registered/attack_front_01.png",
+      "registered_sha256": "f5b3e6dc9e8cc1168c5baa06c8f4015445cacd076d9799be3d84b2180a06983b",
+      "registered_size": "(400, 440)",
+      "source": "assets/frames/AS49/attack_front/AS49_attack_front_f01_draw.png",
+      "source_alpha_bounds": {
+        "h": 1245,
+        "w": 1242,
+        "x": 0,
+        "y": 9
+      },
+      "source_canvas": "(1254, 1254)",
+      "source_sha256": "37e7892c0fd3d10c3f67b6773b34827ce63caffcef9aa6fafa085b8de69ba9e4"
+    },
+    {
+      "foot_baseline_y": 430,
+      "pose_locked": false,
+      "registered": "assets/frames/AS49/attack_front_registered/attack_front_02.png",
+      "registered_sha256": "5eca959be844f513a25a8a5e854d210f39c6db99463cf13e30fcf6e84644fc97",
+      "registered_size": "(400, 440)",
+      "source": "assets/frames/AS49/attack_front/AS49_attack_front_f02_release.png",
+      "source_alpha_bounds": {
+        "h": 1221,
+        "w": 1234,
+        "x": 0,
+        "y": 33
+      },
+      "source_canvas": "(1254, 1254)",
+      "source_sha256": "8978d52816823b27bb779e4297fbbe576ef964b3490138ca6520ff4c26d0d10e"
+    },
+    {
+      "foot_baseline_y": 430,
+      "pose_locked": false,
+      "registered": "assets/frames/AS49/attack_front_registered/attack_front_03.png",
+      "registered_sha256": "c968ee95c85c45e3120b9dc397ddc9fbf3b03eb607e234ee063f264dc1d25be9",
+      "registered_size": "(400, 440)",
+      "source": "assets/frames/AS49/attack_front/AS49_attack_front_f03_recovery.png",
+      "source_alpha_bounds": {
+        "h": 1235,
+        "w": 1179,
+        "x": 27,
+        "y": 19
+      },
+      "source_canvas": "(1254, 1254)",
+      "source_sha256": "2674be36ca4c8fa1242d6c0c4cb3fc91f6ca92fc5d20ad1572c9caff722a4f77"
+    }
+  ],
+  "identity": "AS-CHAR-49 Kiếm Tu Nữ",
+  "loop": false,
+  "pose_sequence": [
+    "windup",
+    "draw initiation",
+    "release/contact pose",
+    "recovery"
+  ],
+  "prompt_provenance": "AS49_V9_ATTACK_PROMPTS.md",
+  "schema": "tmb.aschar.v9.batch1.candidate.v1",
+  "weapon": "not drawn in body; separate overlay pending approved sword choice and measured grip metadata"
+}

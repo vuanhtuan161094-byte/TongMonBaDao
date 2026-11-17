@@ -1,0 +1,78 @@
+[gd_resource type="SpriteFrames" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/atlases/AS49_attack_front_atlas.png" id="1_a5stj"]
+[ext_resource type="Texture2D" path="res://assets/atlases/AS49_walk_front_atlas.png" id="2_7mkyn"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5a5he"]
+atlas = ExtResource("1_a5stj")
+region = Rect2(0, 0, 400, 440)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_djj2o"]
+atlas = ExtResource("1_a5stj")
+region = Rect2(400, 0, 400, 440)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ok4a7"]
+atlas = ExtResource("1_a5stj")
+region = Rect2(800, 0, 400, 440)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_esk48"]
+atlas = ExtResource("1_a5stj")
+region = Rect2(1200, 0, 400, 440)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_uqrxf"]
+atlas = ExtResource("2_7mkyn")
+region = Rect2(0, 0, 400, 440)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_uhn2t"]
+atlas = ExtResource("2_7mkyn")
+region = Rect2(400, 0, 400, 440)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_c23mk"]
+atlas = ExtResource("2_7mkyn")
+region = Rect2(800, 0, 400, 440)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_es07j"]
+atlas = ExtResource("2_7mkyn")
+region = Rect2(1200, 0, 400, 440)
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5a5he")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_djj2o")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ok4a7")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_esk48")
+}],
+"loop": 0,
+"name": &"Attack_Front",
+"speed": 7.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_uqrxf")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_uhn2t")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_c23mk")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_es07j")
+}],
+"loop": 1,
+"name": &"Walk_Front",
+"speed": 8.0
+}, {
+"frames": [],
+"loop": 1,
+"name": &"default",
+"speed": 5.0
+}]

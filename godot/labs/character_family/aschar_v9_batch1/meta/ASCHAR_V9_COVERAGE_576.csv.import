@@ -1,0 +1,19 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://dracpf4fa10wl"
+
+[deps]
+
+files=["res://meta/ASCHAR_V9_COVERAGE_576.gender.translation", "res://meta/ASCHAR_V9_COVERAGE_576.direction.translation", "res://meta/ASCHAR_V9_COVERAGE_576.action.translation", "res://meta/ASCHAR_V9_COVERAGE_576.master.translation", "res://meta/ASCHAR_V9_COVERAGE_576.clip.translation", "res://meta/ASCHAR_V9_COVERAGE_576.visual.translation", "res://meta/ASCHAR_V9_COVERAGE_576.weapon.translation", "res://meta/ASCHAR_V9_COVERAGE_576.owner.translation", "res://meta/ASCHAR_V9_COVERAGE_576.evidence.translation"]
+
+source_file="res://meta/ASCHAR_V9_COVERAGE_576.csv"
+dest_files=["res://meta/ASCHAR_V9_COVERAGE_576.gender.translation", "res://meta/ASCHAR_V9_COVERAGE_576.direction.translation", "res://meta/ASCHAR_V9_COVERAGE_576.action.translation", "res://meta/ASCHAR_V9_COVERAGE_576.master.translation", "res://meta/ASCHAR_V9_COVERAGE_576.clip.translation", "res://meta/ASCHAR_V9_COVERAGE_576.visual.translation", "res://meta/ASCHAR_V9_COVERAGE_576.weapon.translation", "res://meta/ASCHAR_V9_COVERAGE_576.owner.translation", "res://meta/ASCHAR_V9_COVERAGE_576.evidence.translation"]
+
+[params]
+
+compress=1
+delimiter=0
+unescape_keys=false
+unescape_translations=true

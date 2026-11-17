@@ -1,0 +1,225 @@
+{
+  "body_mode": "monolithic full-body cel per frame; no rig; no body part splitting",
+  "candidate_status": "OWNER_ART_APPROVAL_PENDING",
+  "canvas": {
+    "foot_baseline_y": 430,
+    "frame": "(400, 440)",
+    "visual_target_px": "(360, 420)"
+  },
+  "clips": {
+    "Attack_Front": {
+      "atlas": "assets/atlases/AS48_attack_front_atlas.png",
+      "atlas_sha256": "a0c54b57adf93d0b2ed07001f807da191bf2761e2019703bfa40c61cd89fb356",
+      "direction": "Front",
+      "fps": 7.0,
+      "frame_count": 4,
+      "frames": [
+        {
+          "alpha_bounds": {
+            "h": 1117,
+            "w": 1150,
+            "x": 49,
+            "y": 111
+          },
+          "estimated_not_pose_locked": true,
+          "foot_baseline_y": 430,
+          "registered": "assets/frames/AS48/attack_front_registered/attack_front_00.png",
+          "registered_sha256": "3e83bed27887343b5ebd0e085398fd93a228d717aadf47ce8dcb8203762da5ec",
+          "registered_size": "(400, 440)",
+          "source": "assets/frames/AS48/attack_front/AS48_attack_front_f00_windup.png",
+          "source_sha256": "37a641fdec369c86d2bc6a398aa342eabadb013890c937f233560d325144dd9f"
+        },
+        {
+          "alpha_bounds": {
+            "h": 1229,
+            "w": 1226,
+            "x": 0,
+            "y": 25
+          },
+          "estimated_not_pose_locked": true,
+          "foot_baseline_y": 430,
+          "registered": "assets/frames/AS48/attack_front_registered/attack_front_01.png",
+          "registered_sha256": "342503fc57e1ea66ebcac57c78fe963bff1273b2607999c26d52b4c345b8d136",
+          "registered_size": "(400, 440)",
+          "source": "assets/frames/AS48/attack_front/AS48_attack_front_f01_guard_rise.png",
+          "source_sha256": "2deeb1d0ff49d9c971854d000161741c5392b67df1ff7fd2b14770ad8991f4af"
+        },
+        {
+          "alpha_bounds": {
+            "h": 1245,
+            "w": 1234,
+            "x": 0,
+            "y": 9
+          },
+          "estimated_not_pose_locked": true,
+          "foot_baseline_y": 430,
+          "registered": "assets/frames/AS48/attack_front_registered/attack_front_02.png",
+          "registered_sha256": "afbeae3d666b8711048cd0f541f15a88aace403b6f195f47a6d78e0aa7a16665",
+          "registered_size": "(400, 440)",
+          "source": "assets/frames/AS48/attack_front/AS48_attack_front_f02_release.png",
+          "source_sha256": "1dfc473da37e2d4a548c4ba020c4962476d46ba53a6a9aa10afb8a91cb8e8677"
+        },
+        {
+          "alpha_bounds": {
+            "h": 1231,
+            "w": 1234,
+            "x": 0,
+            "y": 23
+          },
+          "estimated_not_pose_locked": true,
+          "foot_baseline_y": 430,
+          "registered": "assets/frames/AS48/attack_front_registered/attack_front_03.png",
+          "registered_sha256": "989cc154b8dd034638fe9ce6548a95a057a5eb7cd77ea67bb53b27e4db51a1be",
+          "registered_size": "(400, 440)",
+          "source": "assets/frames/AS48/attack_front/AS48_attack_front_f03_recovery.png",
+          "source_sha256": "eaf73e6a2eb5ceb1ced3f99b2005a28d46d0845a6df419f8c0d1fb14512e8fee"
+        }
+      ],
+      "loop": false
+    },
+    "Walk_Front": {
+      "atlas": "assets/atlases/AS48_walk_front_atlas.png",
+      "atlas_sha256": "d4e68719bea1a0a4c7cbdee8eb5a60d86320463a1c1cf2018e42790e88532d16",
+      "direction": "Front",
+      "fps": 8.0,
+      "frame_count": 4,
+      "frames": [
+        {
+          "alpha_bounds": {
+            "h": 1331,
+            "w": 1118,
+            "x": 25,
+            "y": 1
+          },
+          "estimated_not_pose_locked": true,
+          "foot_baseline_y": 430,
+          "registered": "assets/frames/AS48/walk_front_registered/walk_front_00.png",
+          "registered_sha256": "485372f848b8d126ddde5fd0913f274bd103774acb8b1f5bd1f6e0e09a663fc6",
+          "registered_size": "(400, 440)",
+          "source": "assets/frames/AS48/walk_front/AS48_walk_front_f00_left_contact.png",
+          "source_sha256": "8d1f4acfe36fd1733b1a18df3ea249f1d817e8d9f5a088b65e9b75c7a73d4c83"
+        },
+        {
+          "alpha_bounds": {
+            "h": 1314,
+            "w": 970,
+            "x": 49,
+            "y": 0
+          },
+          "estimated_not_pose_locked": true,
+          "foot_baseline_y": 430,
+          "registered": "assets/frames/AS48/walk_front_registered/walk_front_01.png",
+          "registered_sha256": "98222ec6790c731b7bdb530b43c30c4ab43f8773c9b32253d8cd97690dcf0d26",
+          "registered_size": "(400, 440)",
+          "source": "assets/frames/AS48/walk_front/AS48_walk_front_f01_passing.png",
+          "source_sha256": "873eb0b80584a46278a4e63aa27baef4c24a64b0d9684d7b3a86120851be00b1"
+        },
+        {
+          "alpha_bounds": {
+            "h": 1316,
+            "w": 1118,
+            "x": 0,
+            "y": 0
+          },
+          "estimated_not_pose_locked": true,
+          "foot_baseline_y": 430,
+          "registered": "assets/frames/AS48/walk_front_registered/walk_front_02.png",
+          "registered_sha256": "65a1d95b46e7773fa39c1998f1bdaa31b1e03080bc2a05d569bd2b92a363f3ca",
+          "registered_size": "(400, 440)",
+          "source": "assets/frames/AS48/walk_front/AS48_walk_front_f02_right_contact.png",
+          "source_sha256": "f06e5a63e18918199dba2eaa03e8c835365c0714d5a7f99c586673f1c24f97fd"
+        },
+        {
+          "alpha_bounds": {
+            "h": 1312,
+            "w": 1116,
+            "x": 25,
+            "y": 0
+          },
+          "estimated_not_pose_locked": true,
+          "foot_baseline_y": 430,
+          "registered": "assets/frames/AS48/walk_front_registered/walk_front_03.png",
+          "registered_sha256": "8183eb99b7706c15927544c79101c0e9350310f1f38895c817640e28c154a701",
+          "registered_size": "(400, 440)",
+          "source": "assets/frames/AS48/walk_front/AS48_walk_front_f03_passing.png",
+          "source_sha256": "6bf1953d0f00b12ad6c3642d388511aeb397ec4e9c22ec896d341aa507435ba6"
+        }
+      ],
+      "loop": true
+    }
+  },
+  "engine": "Godot 4.7.2 official",
+  "identity": "AS-CHAR-48 Kiếm Tu Nam",
+  "schema": "tmb.aschar.v9.batch1.candidate.v1",
+  "weapon_overlay": {
+    "embedded_in_body": false,
+    "status": "PENDING_APPROVED_WEAPON_ASSET_AND_GRIP_CALIBRATION"
+  },
+  "qa": {
+    "headless_movie_attempt": {
+      "exit_code": -1073741819,
+      "status": "FAIL",
+      "reason": "dummy renderer texture_2d_get null; successful OpenGL Compatibility movie run followed"
+    },
+    "renderer": "OpenGL API 3.3 Compatibility / Intel Iris Plus",
+    "gameplay_changes": false,
+    "godot": "4.7.2.stable.official.ed1daf0bf",
+    "owner_art": "PENDING",
+    "baseline_pr_sha": "5e0ffb83d85105a5e2e9b7a4a22c48882f8e0413",
+    "source_prompt_debt": "verbatim prompt archive missing for previously generated Walk_Front cels",
+    "native_run": {
+      "video_frames": 240,
+      "exit_code": 0,
+      "resolution": "1280x720",
+      "captures": {
+        "AS48_WALK_FRONT_NATIVE_1280x720.png": {
+          "sha256": "3bbcb2f59fe68ba50ede78d67e6cda5f11a5af55773bfaf59f05d10179708c6e",
+          "path": "captures/AS48_WALK_FRONT_NATIVE_1280x720.png",
+          "bytes": 121195
+        },
+        "AS48_V9_BATCH1_NATIVE_1280x720.avi": {
+          "sha256": "093485877d3bfea3e1ad2dde22238560195573cafe95fe4ed785f3ab1eab0518",
+          "path": "captures/AS48_V9_BATCH1_NATIVE_1280x720.avi",
+          "bytes": 12316544
+        },
+        "AS48_WALK_FRONT_RETURN_NATIVE_1280x720.png": {
+          "sha256": "246fd05cb90a6cc673b4abf45186be687aad83d32dcfa7db6da2d999422341d0",
+          "path": "captures/AS48_WALK_FRONT_RETURN_NATIVE_1280x720.png",
+          "bytes": 123473
+        },
+        "AS48_ATTACK_FRONT_NATIVE_1280x720.png": {
+          "sha256": "a4b3a5b93ab1a76877c4cdbec7400b74f197ae0c8878d1d22a99c0b768a334df",
+          "path": "captures/AS48_ATTACK_FRONT_NATIVE_1280x720.png",
+          "bytes": 89321
+        },
+        "AS49_WALK_FRONT_NATIVE_1280x720.png": {
+          "path": "captures/AS49_WALK_FRONT_NATIVE_1280x720.png",
+          "sha256": "00e851a1ae59bffe1f35f8742e679af5cefab6c1573c72839997a85cd2eeef60",
+          "bytes": 101106
+        },
+        "AS49_WALK_FRONT_NATIVE_1280x720.avi": {
+          "path": "captures/AS49_WALK_FRONT_NATIVE_1280x720.avi",
+          "sha256": "e25bba00d094ee79b57f7924e38cd0dd1a9d3d8204c0d5939cc4e9da80b6a1a1",
+          "bytes": 8803348
+        }
+      },
+      "duration_seconds": 4,
+      "fps": 60,
+      "as49_walk_frames": 180,
+      "as49_walk_exit": 0
+    },
+    "source_kind": "local staged payload; not native Git checkout",
+    "production_integration": "NOT_INTEGRATED",
+    "engine_import": {
+      "exit_code": 0,
+      "status": "IMPORTED_WITH_ENVIRONMENT_WARNINGS",
+      "warnings": [
+        "Windows root certificate store unavailable",
+        "sandbox cannot write user:// Godot logs/editor settings"
+      ]
+    },
+    "technical_pass_clips": 3,
+    "not_started_clips": 573,
+    "owner_visual_approved_clips": 0
+  }
+}

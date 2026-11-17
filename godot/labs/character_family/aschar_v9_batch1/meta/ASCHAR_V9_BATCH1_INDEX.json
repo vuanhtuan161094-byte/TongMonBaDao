@@ -1,0 +1,94 @@
+{
+  "technical_pass_clips": 4,
+  "production_integration": "NOT_INTEGRATED",
+  "schema": "tmb.aschar.v9.batch1.index.v1",
+  "workstream": "12 schools × 2 identities × 4 directions × 6 actions",
+  "clips": [
+    {
+      "identity": "AS-CHAR-48",
+      "status": "TECHNICAL_PASS",
+      "weapon": "N/A_BODY_CLIP",
+      "clip": "Walk_Front"
+    },
+    {
+      "identity": "AS-CHAR-48",
+      "status": "TECHNICAL_PASS_BODY_ONLY",
+      "weapon": "PENDING_APPROVED_WEAPON_AND_MEASURED_GRIP",
+      "clip": "Attack_Front"
+    },
+    {
+      "identity": "AS-CHAR-49",
+      "status": "TECHNICAL_PASS",
+      "weapon": "PENDING_APPROVED_WEAPON_ASSET",
+      "clip": "Walk_Front"
+    },
+    {
+      "identity": "AS-CHAR-49",
+      "status": "TECHNICAL_PASS_BODY_ONLY",
+      "weapon": "PENDING_APPROVED_WEAPON_AND_MEASURED_GRIP",
+      "clip": "Attack_Front"
+    }
+  ],
+  "target_clips": 576,
+  "not_started_clips": 572,
+  "branch": "integration/pve-p0-playable-ui-20261103",
+  "owner_approved": 0,
+  "baseline_pr_sha": "5e0ffb83d85105a5e2e9b7a4a22c48882f8e0413",
+  "pr_head_observed_before_publication": "95278e0120794590ee76176204301bb11abe9f51",
+  "qa_scope": "isolated Godot review project; no native PR checkout; candidate assets only",
+  "masters": [
+    {
+      "id": "AS-CHAR-48",
+      "status": "MASTER_CANDIDATE",
+      "school": "Kiếm Tu",
+      "gender": "Nam",
+      "project_asset": "assets/AS48_MASTER_CANDIDATE.png"
+    },
+    {
+      "id": "AS-CHAR-49",
+      "status": "MASTER_CANDIDATE",
+      "school": "Kiếm Tu",
+      "gender": "Nữ",
+      "project_asset": "assets/AS49_MASTER_CANDIDATE.png"
+    },
+    {
+      "id": "AS-CHAR-50",
+      "status": "MASTER_CANDIDATE_LOCAL_ONLY",
+      "school": "Đao Tu",
+      "gender": "Nam"
+    },
+    {
+      "id": "AS-CHAR-51",
+      "status": "MASTER_CANDIDATE_LOCAL_ONLY",
+      "school": "Đao Tu",
+      "gender": "Nữ"
+    },
+    {
+      "id": "AS-CHAR-52",
+      "status": "MASTER_CANDIDATE_LOCAL_ONLY",
+      "school": "Song Đao",
+      "gender": "Nam"
+    },
+    {
+      "id": "AS-CHAR-53",
+      "status": "MASTER_CANDIDATE_LOCAL_ONLY",
+      "school": "Song Đao",
+      "gender": "Nữ"
+    }
+  ],
+  "quality_gate": "OWNER_ART_APPROVAL_PENDING",
+  "native_godot_video": "true",
+  "qa_matrix": "meta/ASCHAR_V9_QA_MATRIX.csv",
+  "artifact_hashes": "meta/ASCHAR_V9_ARTIFACT_SHA256.csv",
+  "native_videos": [
+    "captures/AS48_V9_BATCH1_NATIVE_1280x720.avi",
+    "captures/AS49_WALK_FRONT_NATIVE_1280x720.avi",
+    "captures/AS49_ATTACK_FRONT_NATIVE_1280x720.avi"
+  ],
+  "attack_pose_captures": [
+    "captures/AS49_ATTACK_FRONT_WINDUP_NATIVE_1280x720.png",
+    "captures/AS49_ATTACK_FRONT_DRAW_NATIVE_1280x720.png",
+    "captures/AS49_ATTACK_FRONT_RELEASE_NATIVE_1280x720.png",
+    "captures/AS49_ATTACK_FRONT_RECOVERY_NATIVE_1280x720.png"
+  ]
+}
