@@ -54,6 +54,10 @@ func _emitter(n: int, life: float, speed: float, tint: Color) -> CPUParticles2D:
 	p.initial_velocity_max=speed
 	p.tangential_accel_min=38.0
 	p.tangential_accel_max=85.0
+	# Pixel-scale motes, never the 64px blurry jade balls from R4.0.
+	p.scale_amount_min=.10
+	p.scale_amount_max=.24
+	p.lifetime_randomness=.18
 	p.emitting=false
 	return p
 func _ready() -> void:
@@ -110,7 +114,7 @@ func _ribbons(t: float) -> void:
 		for j in range(31): curve.append(_sweep(k,j/30.0,t,f))
 		for layer in range(3):
 			var wm: float=[1.65,1.0,.15][layer]
-			var alpha: float=[.19,.45,.82][layer]*f
+			var alpha: float=[.16,.42,.75][layer]*f
 			var col: Color=[Color(.09,.92,.78,alpha),Color(.22,.97,.75,alpha),Color(.96,1,.89,alpha)][layer]
 			# Draw one convex ribbon segment at a time. A single highly curved
 			# polygon self-intersects and Godot triangulation correctly rejects it.
@@ -127,10 +131,11 @@ func _ribbons(t: float) -> void:
 					curve[j+1]-norm*w1*.56,
 					curve[j]-norm*w0*.56
 				])
-				draw_colored_polygon(quad,col)
+				var segment_light: float=.46+.54*pow(sin(PI*(u0+u1)*.5),.7)
+				draw_colored_polygon(quad,Color(col.r,col.g,col.b,col.a*segment_light))
 		var u: float=fposmod((t-.6)+k*.26,1.0)
 		var h: Vector2=_sweep(k,u,t,f)
-		draw_line(h,_sweep(k,minf(1.0,u+.13),t,f),Color(.99,1,.86,.89*f),3,true)
+		draw_line(h,_sweep(k,minf(1.0,u+.13),t,f),Color(.99,1,.88,.86*f),2.1,true)
 		draw_texture_rect(glow,Rect2(h-Vector2(15,15),Vector2(30,30)),false,Color(.8,1,.8,.55*f))
 func _draw() -> void:
 	var t: float=clock
