@@ -1,10 +1,11 @@
-name: VFX POI16 R1 Van Linh Giai Ach - 3 moving ally area heal ultimate
+name: VFX POI16 R1C Visibility Rework - Godot 3 Ally Ultimate
 on:
   workflow_dispatch:
   push:
     branches: [integration/pve-p0-playable-ui-20261103]
     paths:
       - 'tools/vfx/generate_poi16_van_linh_giai_ach_r1.py'
+      - 'tools/qa/check_poi16_native_visibility.py'
       - 'godot/labs/combat_lab/poison16_van_linh_giai_ach/**'
       - 'godot/tests/labs/combat_lab/vfx_poi16_van_linh_giai_ach_r1_contract_test.gd'
       - 'docs/operations/vfx_packets/POI16_R1_V4_PREFLIGHT.json'
@@ -76,7 +77,7 @@ jobs:
           set -euo pipefail
           d="$RUNNER_TEMP/poi16"
           xvfb-run -a -s '-screen 0 1280x720x24' bash tools/qa/run_godot_strict.sh --path godot --resolution 1280x720 --fixed-fps 60 --write-movie "$d/native.avi" --quit-after 177 res://labs/combat_lab/poison16_van_linh_giai_ach/r1/van_linh_giai_ach.tscn 2>&1 | tee "$d/godot-preflight.log"
-          grep -Fq 'POI16_VAN_LINH_R1_READY' "$d/godot-preflight.log"
+          grep -Fq 'POI16_VAN_LINH_R1C_READY' "$d/godot-preflight.log"
           ffmpeg -y -hide_banner -loglevel error -i "$d/native.avi" -pix_fmt yuv420p -c:v libx264 -crf 16 -movflags +faststart "$d/v4-poi16-r1-native.mp4"
           ffmpeg -y -hide_banner -loglevel error -ss 0.62 -i "$d/v4-poi16-r1-native.mp4" -frames:v 1 "$d/v4-charge.png"
           ffmpeg -y -hide_banner -loglevel error -ss 1.62 -i "$d/v4-poi16-r1-native.mp4" -frames:v 1 "$d/v4-peak.png"
@@ -89,7 +90,10 @@ jobs:
           ffmpeg -y -hide_banner -loglevel error -ss 2.42 -i "$d/v4-poi16-r1-native.mp4" -frames:v 1 "$d/v4-fade.png"
           ffmpeg -y -hide_banner -loglevel error -ss 2.80 -i "$d/v4-poi16-r1-native.mp4" -frames:v 1 "$d/v4-expired.png"
           ffprobe -v error -show_entries stream=width,height,nb_frames,duration -of default=noprint_wrappers=1 "$d/v4-poi16-r1-native.mp4" | tee "$d/movie-metadata.txt"
-          sha256sum "$d/v4-poi16-r1-native.mp4" "$d/v4-"*.png > "$d/NATIVE-G35-SHA256.txt"
+          # G3.6 mandatory native-scale READABILITY gate, independent from mechanics.
+          # R1B was technically PASS while invisible at 1x; block that regression.
+          python3 tools/qa/check_poi16_native_visibility.py --evidence-dir "$d" | tee "$d/readability-gate.log"
+                    sha256sum "$d/v4-poi16-r1-native.mp4" "$d/v4-"*.png > "$d/NATIVE-G35-SHA256.txt"
           rm "$d/native.avi"
       - name: Preserve original master and atlas PNGs on current PR branch
         if: success() && github.event_name == 'push'
