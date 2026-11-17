@@ -1,0 +1,147 @@
+name: VFX POI16 R2 Tam Diep Linh Duoc - semantic Godot native
+on:
+  workflow_dispatch:
+  push:
+    branches: [integration/pve-p0-playable-ui-20261103]
+    paths:
+      - 'tools/vfx/generate_poi16_semantic_r2.py'
+      - 'tools/qa/check_poi16_native_visibility.py'
+      - 'godot/labs/combat_lab/poison16_van_linh_giai_ach/**'
+      - 'godot/tests/labs/combat_lab/vfx_poi16_semantic_r2_contract_test.gd'
+      - 'docs/operations/vfx_packets/POI16_R2_V4_PREFLIGHT.json'
+      - 'docs/operations/VFX_POI16_SEMANTIC_R2_20261117.md'
+      - '.github/workflows/vfx-poi16-semantic-r2-native.yml'
+permissions:
+  contents: write
+jobs:
+  poi16-native:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      GODOT_AUDIO_DRIVER: Dummy
+      GODOT_RENDERING_DRIVER: opengl3
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+      - name: Official Godot 4.7.2 and original-alpha generation libraries
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y unzip ffmpeg xvfb python3-pil python3-numpy
+          python3 -c 'import numpy; from PIL import Image; print("POI16_R1_RGBA_TOOLS_READY")'
+          curl --fail --location --retry 3 -o /tmp/godot472.zip 'https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip'
+          echo 'cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4  /tmp/godot472.zip' | sha256sum --check --strict
+          unzip -q /tmp/godot472.zip -d /tmp
+          sudo install -m0755 /tmp/Godot_v4.7.2-stable_linux.x86_64 /usr/local/bin/godot
+          mkdir -p "$RUNNER_TEMP/poi16r2"
+          godot --version | tee "$RUNNER_TEMP/poi16r2/engine.txt"
+          printf 'EXACT_SHA=%s\nNO_GIF\nNO_RIG\nOWNER_VISUAL_PENDING\nPVE_HOLD\nV63_OFF\n' "$GITHUB_SHA" > "$RUNNER_TEMP/poi16r2/metadata.txt"
+      - name: Create 48 original meaningful herb / 3 streams / 3 seals RGBA poses and validate V4
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/poi16r2"
+          python3 tools/vfx/generate_poi16_semantic_r2.py 2>&1 | tee "$d/bake.log"
+          python3 tools/qa/validate_vfx_v4_packet.py --stage packet --packet docs/operations/vfx_packets/POI16_R2_V4_PREFLIGHT.json | tee "$d/v4-packet.log"
+          python3 tools/qa/validate_vfx_v4_packet.py --stage assets --packet docs/operations/vfx_packets/POI16_R2_V4_PREFLIGHT.json | tee "$d/v4-assets.log"
+          python3 - <<'PY'
+          import numpy as np
+          from PIL import Image
+          from pathlib import Path
+          root=Path('godot/labs/combat_lab/poison16_van_linh_giai_ach/r2/assets')
+          for f in root.glob('*.png'):
+              rgba=np.asarray(Image.open(f).convert('RGBA'))
+              assert int(rgba[:,:,3].max())>65,(f,'blank')
+              assert np.any((rgba[:,:,3]>0)&(rgba[:,:,3]<250)),(f,'not translucent')
+              assert int(rgba[0,:,3].max())==0 and int(rgba[-1,:,3].max())==0,(f,'hard square')
+          print('POI16_R1_TRUE_ALPHA_COLOR_BORDER_PASS')
+          PY
+          find godot/labs/combat_lab/poison16_van_linh_giai_ach/r2/assets -name '*.png' -print0 | sort -z | xargs -0 sha256sum > "$d/original-source-sha256.txt"
+      - name: Restore existing approved actor fixture for LAB preview only
+        run: |
+          set -euo pipefail
+          cat .github/assets/p3/female_stage_a/part{01..14}.b64 .github/assets/p3/female_stage_a/part15a.b64 .github/assets/p3/female_stage_a/part15b.b64 .github/assets/p3/female_stage_a/part{16..20}.b64 | tr -d '\r\n\t ' | base64 --decode > /tmp/tmb_stage_a_pack.zip
+          echo '6a4213b9129ffb3f438c21cbb5326672ddf8915323836bf80cb33b8e5fabfdca  /tmp/tmb_stage_a_pack.zip' | sha256sum --check --strict
+          unzip -q /tmp/tmb_stage_a_pack.zip -d .
+      - name: Godot focused THREE SEMANTIC links on moving allies, strict import, 4th excluded
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/poi16r2"
+          bash tools/qa/run_godot_strict.sh --headless --path godot --import 2>&1 | tee "$d/import.log"
+          bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://labs/combat_lab/poison16_van_linh_giai_ach/r2/van_linh_giai_ach_semantic.gd 2>&1 | tee "$d/parse.log"
+          bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/labs/combat_lab/vfx_poi16_semantic_r2_contract_test.gd 2>&1 | tee "$d/godot-focused.log"
+          grep -Fq 'POI16_SEMANTIC_R2_RESULT=PASS failures=0' "$d/godot-focused.log"
+      - name: Real native Godot 1280x720 meaningful herbal healing MP4 and G3.5 images
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/poi16r2"
+          xvfb-run -a -s '-screen 0 1280x720x24' bash tools/qa/run_godot_strict.sh --path godot --resolution 1280x720 --fixed-fps 60 --write-movie "$d/native.avi" --quit-after 177 res://labs/combat_lab/poison16_van_linh_giai_ach/r2/van_linh_giai_ach_semantic.tscn 2>&1 | tee "$d/godot-preflight.log"
+          grep -Fq 'POI16_SEMANTIC_R2_READY' "$d/godot-preflight.log"
+          ffmpeg -y -hide_banner -loglevel error -i "$d/native.avi" -pix_fmt yuv420p -c:v libx264 -crf 16 -movflags +faststart "$d/v4-poi16-r2-native.mp4"
+          ffmpeg -y -hide_banner -loglevel error -ss 0.62 -i "$d/v4-poi16-r2-native.mp4" -frames:v 1 "$d/v4-charge.png"
+          ffmpeg -y -hide_banner -loglevel error -ss 1.62 -i "$d/v4-poi16-r2-native.mp4" -frames:v 1 "$d/v4-peak.png"
+          ffmpeg -y -hide_banner -loglevel error -ss 1.92 -i "$d/v4-poi16-r2-native.mp4" -frames:v 1 "$d/v4-contact.png"
+          python3 tools/qa/validate_vfx_v4_packet.py --stage evidence --packet docs/operations/vfx_packets/POI16_R2_V4_PREFLIGHT.json --out "$d" --sha "$GITHUB_SHA" | tee "$d/v4-evidence.log"
+          # Short native movie covers cast + distinct 3-target instant heal + fade.
+          for t in 0.08 0.25 0.62 0.99 1.14 1.20 1.33 1.48 1.62 1.75 1.92 2.05 2.19 2.42 2.62 2.80; do
+            ffmpeg -y -hide_banner -loglevel error -ss "$t" -i "$d/v4-poi16-r2-native.mp4" -frames:v 1 "$d/check-$t.png"
+          done
+          ffmpeg -y -hide_banner -loglevel error -ss 2.42 -i "$d/v4-poi16-r2-native.mp4" -frames:v 1 "$d/v4-fade.png"
+          ffmpeg -y -hide_banner -loglevel error -ss 2.80 -i "$d/v4-poi16-r2-native.mp4" -frames:v 1 "$d/v4-expired.png"
+          ffprobe -v error -show_entries stream=width,height,nb_frames,duration -of default=noprint_wrappers=1 "$d/v4-poi16-r2-native.mp4" | tee "$d/movie-metadata.txt"
+          # G3.6 mandatory native-scale READABILITY gate, independent from mechanics.
+          # R1B was technically PASS while invisible at 1x; block that regression.
+          python3 tools/qa/check_poi16_native_visibility.py --evidence-dir "$d" | tee "$d/readability-gate.log"
+                    python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image
+          root=Path('godot/labs/combat_lab/poison16_van_linh_giai_ach/r2/assets/master')
+          for part in ('seed','herb','stream','seal','fade'):
+              f=root/f'poi16_r2_{part}_master_rgba.png'
+              assert f.is_file(),(part,'missing original')
+              assert Image.open(f).convert('RGBA').getchannel('A').getbbox(),(part,'blank')
+          print('POI16_G37_SEMANTIC_ORIGINAL_SOURCE_PRESENT_MANUAL_OWNER_REVIEW_PENDING')
+          PY
+          sha256sum "$d/v4-poi16-r2-native.mp4" "$d/v4-"*.png > "$d/NATIVE-G35-SHA256.txt"
+          rm "$d/native.avi"
+      - name: Preserve original master and atlas PNGs on current PR branch
+        if: success() && github.event_name == 'push'
+        run: |
+          set -euo pipefail
+          branch='integration/pve-p0-playable-ui-20261103'
+          folder='godot/labs/combat_lab/poison16_van_linh_giai_ach/r2/assets'
+          mkdir -p "$RUNNER_TEMP/poi16r2/saved"
+          cp -R "$folder"/. "$RUNNER_TEMP/poi16r2/saved/"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          for attempt in 1 2 3; do
+            git fetch origin "$branch"
+            latest="$(git rev-parse FETCH_HEAD)"
+            if ! git merge-base --is-ancestor "$GITHUB_SHA" "$latest"; then echo POI16_R2_REWRITE_ABORT; exit 0; fi
+            if test -n "$(git diff --name-only "$GITHUB_SHA" "$latest" -- tools/vfx/generate_poi16_semantic_r2.py godot/labs/combat_lab/poison16_van_linh_giai_ach/ .github/workflows/vfx-poi16-semantic-r2-native.yml)"; then
+              echo POI16_R2_CONCURRENT_SOURCE_CHANGE_ABORT; exit 0
+            fi
+            git reset --hard "$latest"
+            mkdir -p "$folder"; cp -R "$RUNNER_TEMP/poi16r2/saved"/. "$folder/"
+            git add "$folder"
+            if git diff --cached --quiet; then echo POI16_R2_ALREADY_ARCHIVED; exit 0; fi
+            git commit -m 'art(poi16): preserve original three-leaf spiritual herb and target-linked light sources'
+            if git push origin "HEAD:refs/heads/$branch"; then echo "POI16_R2_ART_COMMIT=$(git rev-parse HEAD)" | tee "$RUNNER_TEMP/poi16r2/saved-commit.txt"; exit 0; fi
+          done
+          echo POI16_R2_ART_SAVE_CONFLICT; exit 1
+      - name: Upload MP4 and native proof, NO GIF
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: poi16-r2-semantic-native-${{ github.sha }}
+          retention-days: 14
+          if-no-files-found: warn
+          path: |
+            ${{ runner.temp }}/poi16r2/*.log
+            ${{ runner.temp }}/poi16r2/*.txt
+            ${{ runner.temp }}/poi16r2/*.json
+            ${{ runner.temp }}/poi16r2/*.png
+            ${{ runner.temp }}/poi16r2/*.mp4
+            godot/labs/combat_lab/poison16_van_linh_giai_ach/r2/assets/**/*.png
+            godot/labs/combat_lab/poison16_van_linh_giai_ach/r2/assets/*.png
