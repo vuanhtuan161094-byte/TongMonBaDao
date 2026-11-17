@@ -173,8 +173,8 @@ def render(name,t,cell):
     elif name=="seal":
         # Persistent two SOLID, legible heart-seeds, linked by glowing tendons.
         # A heartbeat mark, deliberately not an open geometry shield/ring.
-        beat=1+.025*np.sin(t*2*pi)
-        a=x/beat;b=y/beat
+        beat=1+.025*np.sin(t*2*pi)+.021*t
+        a=(x-3.4*t)/beat;b=(y+1.5*t)/beat
         ink("deep",gauss(a,b,0,0,64,47)*.12)
         ink("gold",filament(a,b,[(-27,-10),(-10,12),(0,23),
                                  (10,12),(27,-10)],3.8)*.33)
@@ -198,7 +198,7 @@ def render(name,t,cell):
             ink("emerald",root*.50)
             ink("gold",filament(a,b,[(cx,18),(cx+side*12,27),
                                     (cx+side*27,17)],.75)*.43)
-        ink("ivory",gauss(a,b,0,20,7,6)*.75)
+        ink("ivory",gauss(a,b,2.0*t,20-3*t,7+3*t,6)*(.60+.15*t))
     # Full-size original alpha master/cells with no extracted poster or matte.
     orig=p[:,:,3]
     gain={"gather":1.40,"gu":1.45,"burst":1.53,"seal":1.51}[name]
