@@ -1,0 +1,154 @@
+{
+  "schema": "tmb-vfx-production-system-v4.1",
+  "packet_id": "POI17_R1_YEM_ANH_BO_ORIGINAL_TRUE_RGBA_SHADOW_STEP",
+  "skill_id": "tmb.skill.poison.mobility.human",
+  "school": "poison",
+  "revision": "POI17_R1_40_POSES_SHADOW_FOOTSTEPS_CASTER_HISTORICAL_ECHO",
+  "catalogue_path": "godot/data/combat/v63_human_combat_catalog.json",
+  "scene_path": "godot/labs/combat_lab/poison17_yem_anh_bo/r1/yem_anh_bo.tscn",
+  "lab_script": "godot/labs/combat_lab/poison17_yem_anh_bo/r1/yem_anh_bo.gd",
+  "focused_test": "godot/tests/labs/combat_lab/vfx_poi17_mobility_r1_contract_test.gd",
+  "declared_contract": {
+    "effect": "mobility",
+    "element": "metal",
+    "shape": "single_target",
+    "target_limit": 1,
+    "hit_count": null,
+    "range": 11,
+    "radius": 0,
+    "cast_time": 0.1,
+    "cooldown": 10,
+    "projectile_speed": 0,
+    "duration": 1
+  },
+  "provenance": {
+    "source_class": "FIRST_PARTY_CODE_PAINTED_TRUE_RGBA_RASTER",
+    "master_quality_status": "MANUAL_ART_REVIEW_REQUIRED",
+    "rights_note": "Original first-party true-RGBA layered mobility-shadows: readable paired shadow boot soles/toes, jade wake, historic 3 ghosts of the original approved (UNCHANGED) caster sprite, and a finite boot landing pulse. No GIF, rig, borrowed game art, teleport/invisibility/damage status or real PvE movement claim. Owner G3.7 meaning gate PENDING.",
+    "generators": [
+      "tools/vfx/generate_poi17_yem_anh_bo_r1.py"
+    ],
+    "master_files": [
+      {
+        "path": "godot/labs/combat_lab/poison17_yem_anh_bo/r1/assets/master/poi17_gather_master_rgba.png",
+        "encoding": "png",
+        "role": "Original gather 2D translucent shadow-step source pose"
+      },
+      {
+        "path": "godot/labs/combat_lab/poison17_yem_anh_bo/r1/assets/master/poi17_stride_master_rgba.png",
+        "encoding": "png",
+        "role": "Original stride 2D translucent shadow-step source pose"
+      },
+      {
+        "path": "godot/labs/combat_lab/poison17_yem_anh_bo/r1/assets/master/poi17_footprint_master_rgba.png",
+        "encoding": "png",
+        "role": "Original footprint 2D translucent shadow-step source pose"
+      },
+      {
+        "path": "godot/labs/combat_lab/poison17_yem_anh_bo/r1/assets/master/poi17_landing_master_rgba.png",
+        "encoding": "png",
+        "role": "Original landing 2D translucent shadow-step source pose"
+      }
+    ]
+  },
+  "atlases": [
+    {
+      "path": "godot/labs/combat_lab/poison17_yem_anh_bo/r1/assets/poi17_gather_08.png",
+      "width": 1024,
+      "height": 448,
+      "cell_width": 256,
+      "cell_height": 224,
+      "frames": 8,
+      "columns": 4,
+      "layer": "two boot soles and torso shadow energy ready to step"
+    },
+    {
+      "path": "godot/labs/combat_lab/poison17_yem_anh_bo/r1/assets/poi17_stride_12.png",
+      "width": 1280,
+      "height": 480,
+      "cell_width": 320,
+      "cell_height": 160,
+      "frames": 12,
+      "columns": 4,
+      "layer": "one true RGBA jade speed wake behind the actual moving caster"
+    },
+    {
+      "path": "godot/labs/combat_lab/poison17_yem_anh_bo/r1/assets/poi17_footprint_12.png",
+      "width": 1024,
+      "height": 576,
+      "cell_width": 256,
+      "cell_height": 192,
+      "frames": 12,
+      "columns": 4,
+      "layer": "two legible staggered spectral boot footprints and toes, 3 historical locations"
+    },
+    {
+      "path": "godot/labs/combat_lab/poison17_yem_anh_bo/r1/assets/poi17_landing_08.png",
+      "width": 1024,
+      "height": 448,
+      "cell_width": 256,
+      "cell_height": 224,
+      "frames": 8,
+      "columns": 4,
+      "layer": "short-lived arrival footprint seal and dissolving dark jade light"
+    }
+  ],
+  "time_contract": {
+    "combat_clock": "CATALOGUE_GATED_NOT_LIVE",
+    "declared_cast_end_seconds": 0.1,
+    "declared_status_duration_seconds": 1,
+    "runtime_receipt_timestamp": "RUNTIME_MAPPING_PENDING",
+    "vfx_clock": "LAB_ONLY",
+    "simulated_hit_seconds": 1.15,
+    "visual_fade_end_seconds": 1.52,
+    "demo_loop_seconds": 1.8,
+    "demo_clock_warning": "SIMULATED ARRIVAL at1.15, NOT combat hit. Catalogue effect=mobility, metal, target1, range11 WORLD units (not px), cast.1,cooldown10,duration1,projectile_speed0,poison_stacks0. Continuous caster move START_FOOT→END_FOOT over 1 second is ONLY LAB CHOREOGRAPHY, not real movement or teleport. No actual mobility/hit/invisibility/status game receipts. 108 video frames at fixed60fps NOT physical Android performance.",
+    "key_pose_budget_note": "40 original RGBA poses: 8 gather,12 stride wake,12 spectral bootmarks,8 finite landing. 3 approved original unrigged character echoes at real historical caster_foot(t−offset); no new character skeleton.",
+    "phases": [
+      {
+        "id": "charge",
+        "at_seconds": 0.075,
+        "expected_phase": "gather_footprint",
+        "file": "v4-charge.png"
+      },
+      {
+        "id": "peak",
+        "at_seconds": 0.63,
+        "expected_phase": "step_afterimages",
+        "file": "v4-peak.png"
+      },
+      {
+        "id": "contact",
+        "at_seconds": 1.15,
+        "expected_phase": "landing_shadow_seal",
+        "file": "v4-contact.png"
+      }
+    ]
+  },
+  "moving_target": {
+    "actor_animation": "Caster actual 2D sprite translated continuously over 1s; 3 prior-position caster echoes; independent WALK monster moves but remains UNHIT",
+    "locked_demo_target_index": 0,
+    "movement_from_seconds": 0.1,
+    "movement_to_seconds": 1.1,
+    "minimum_displacement_px": 100,
+    "contact_anchor": "Caster's own arrival FOOT at 1.15s and 3 past shadow-step footprints; WALK monster untouched, NOT an enemy damage-contact",
+    "tracking_rule": "caster mobility VFX follows caster_foot(t); afterimages/footsteps follow caster_foot(t-.12/.26/.40), no teleport or attack",
+    "receipt_claim": "SIMULATED_VISUAL_ONLY_NO_HIT"
+  },
+  "gate_status": {
+    "g3_5_capture": "NOT_EXECUTED_UNTIL_NATIVE_PROOF",
+    "technical": "NOT_EXECUTED_UNTIL_NATIVE_PROOF",
+    "art": "MANUAL_ART_REVIEW_REQUIRED",
+    "owner": "OWNER_VISUAL_PENDING",
+    "live": "PVE_INTEGRATION_HOLD",
+    "device": "PHYSICAL_QA_PENDING",
+    "g3_6_native_visibility": "REQUIRES_POI17_NATIVE_VISIBILITY_PASS",
+    "g3_7_semantic": "OWNER_SHADOW_STEP_RECOGNITION_PENDING"
+  },
+  "proof_contract": {
+    "focused_marker": "POI17_MOBILITY_R1_RESULT=PASS failures=0",
+    "native_marker": "POI17_YEM_ANH_BO_R1_READY",
+    "source": "Godot4.7.2 real 1280x720 original bootprint and afterimage 2D mobility VFX, caster moving, independent enemy WALK unaffected, V4 native/1x G3.6 and G3.7 owner semantic test; no actual gameplay movement or hit receipt.",
+    "video_filename": "v4-poi17-r1-native.mp4"
+  }
+}
