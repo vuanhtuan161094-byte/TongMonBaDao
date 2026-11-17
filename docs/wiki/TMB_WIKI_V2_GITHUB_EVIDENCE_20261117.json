@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "purpose": "Snapshot of exact-skill GitHub Actions records. Technical Action results do not establish production runtime, Owner Art approval, or release.",
-  "observedAtHead": "6d3176124a37ab37f700a88f8a3993d97c42c90e",
+  "observedAtHead": "31a948eed00bdef996634636991c208a01d968d8",
   "runs": [
     {
       "runId": 44107080463,
@@ -95,11 +95,11 @@
       "name": "VFX POI20 R1 Xa Anh Quan Mach Tien A - true RGBA light serpent Godot",
       "skillId": "tmb.skill.poison.co_doc.active_02.immortal.a",
       "headSha": "6d3176124a37ab37f700a88f8a3993d97c42c90e",
-      "conclusion": null,
-      "runStatus": "in_progress",
+      "conclusion": "success",
+      "runStatus": "completed",
       "createdAt": "2026-11-17T17:21:46Z",
       "url": "https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/44136137802",
-      "evidenceScope": "A newer POI20 exact-SHA run was in progress when this snapshot was captured. Its result is pending and does not override earlier completed result."
+      "evidenceScope": "Completed exact-SHA POI20 action after the prior in-progress snapshot. Source SHA remains 6d3176124a37ab37f700a88f8a3993d97c42c90e; technical evidence only, not Owner Art or PvE approval."
     }
   ],
   "sourceIdentityNote": "Per-skill mapping exists only when a record contains its exact skillId. The latest recorded status is surfaced separately; test source IDs do not prove execution. Technical PASS is not Owner Art Approval."
