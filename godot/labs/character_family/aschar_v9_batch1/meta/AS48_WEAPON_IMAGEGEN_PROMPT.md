@@ -1,0 +1,9 @@
+# AS-CHAR-48 Kiếm Tu jian — candidate image-generation prompt
+
+Route: host image generation. State: `RECREATED / CANDIDATE_OWNER_ART_APPROVAL_PENDING`.
+
+Owner-supplied sword references were provided as visual evidence of craftsmanship and layered metal detail. They were not copied; the result uses a narrow straight jian with a compact crescent/ring guard, a midnight-navy handle, silver wrapping and restrained pale-cyan/jade insets. The references' wing/star silhouettes and blade outlines were explicitly excluded.
+
+Prompt used: “Create one ORIGINAL, isolated premium xianxia jian weapon sprite for a chibi sword cultivator game. Use the two references only as evidence of the requested craftsmanship and material richness; do not copy either silhouette, guard, blade contour, emblem, rune layout, or composition. Portrait canvas, full weapon visible, centered, blade tip pointing down and pommel at top. Silhouette: elegant narrow straight double-edged jian, long clean central blade with a subtle tapered central channel, a compact three-layer crescent-and-ring guard with small jade inset, midnight navy grip with silver wrapping and one modest cyan tassel. Palette cool silver, midnight blue, pale cyan, a restrained jade accent. Hand-painted 2.5D game sprite, polished cel shading, crisp dark outline, rich layered metal facets and carved details, strong readable silhouette at small game scale. Single object only, no hand, no character, no scabbard, no glow trail, no sparks, no background, no typography, no frame, no watermark. Preserve transparent empty margins around the whole sword. This is a candidate art asset, not an approved design.”
+
+Generated PNG: `assets/weapons/AS48_KIEMTU_JIAN_CANDIDATE.png`; SHA-256 `8c9869ba06e39799c5eb3b6b2e3060284c04197abc034993b1831f1572c60285`; 887×1774; alpha present.

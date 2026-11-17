@@ -1,0 +1,475 @@
+{
+  "cell": "(400, 440)",
+  "clips": [
+    {
+      "atlas": "assets/atlases/AS48_walk_front_consistency_v2_atlas.png",
+      "atlas_sha256": "d45ea86a72e1a920cfcb1a83338410a463e379488b24ba345e44a1fd675f1a89",
+      "clip": "Walk_Front",
+      "fps": 8.0,
+      "frames": [
+        {
+          "index": 0,
+          "output": "assets/frames/AS48/walk_front_consistency_v2/walk_front_00.png",
+          "output_alpha_bbox": [
+            36,
+            10,
+            340,
+            420
+          ],
+          "output_sha256": "2654d9582acde508c685d07107b00a83959a5caabbf4cd7a2b7caee605ff8238",
+          "source_alpha_bbox": [
+            36,
+            10,
+            340,
+            420
+          ],
+          "source_registered": "assets/frames/AS48/walk_front_registered/walk_front_00.png",
+          "source_sha256": "2654d9582acde508c685d07107b00a83959a5caabbf4cd7a2b7caee605ff8238",
+          "transform": {
+            "dx": 0,
+            "dy": 0,
+            "kind": "translate_only",
+            "scale": 1.0
+          },
+          "visible_foot_row": 429
+        },
+        {
+          "index": 1,
+          "output": "assets/frames/AS48/walk_front_consistency_v2/walk_front_01.png",
+          "output_alpha_bbox": [
+            45,
+            10,
+            310,
+            420
+          ],
+          "output_sha256": "e3729a20d2955b43bb1591899f6a17429fd7ae075bf86a9212f1d2cd6ef31b85",
+          "source_alpha_bbox": [
+            45,
+            10,
+            310,
+            420
+          ],
+          "source_registered": "assets/frames/AS48/walk_front_registered/walk_front_01.png",
+          "source_sha256": "e3729a20d2955b43bb1591899f6a17429fd7ae075bf86a9212f1d2cd6ef31b85",
+          "transform": {
+            "dx": 0,
+            "dy": 0,
+            "kind": "translate_only",
+            "scale": 1.0
+          },
+          "visible_foot_row": 429
+        },
+        {
+          "index": 2,
+          "output": "assets/frames/AS48/walk_front_consistency_v2/walk_front_02.png",
+          "output_alpha_bbox": [
+            37,
+            10,
+            334,
+            420
+          ],
+          "output_sha256": "1ba79fd83d5268ad18b2746985af4b7aa6e4f231e1148fbe8181c144b7e47b22",
+          "source_alpha_bbox": [
+            37,
+            10,
+            334,
+            420
+          ],
+          "source_registered": "assets/frames/AS48/walk_front_registered/walk_front_02.png",
+          "source_sha256": "1ba79fd83d5268ad18b2746985af4b7aa6e4f231e1148fbe8181c144b7e47b22",
+          "transform": {
+            "dx": 0,
+            "dy": 0,
+            "kind": "translate_only",
+            "scale": 1.0
+          },
+          "visible_foot_row": 429
+        },
+        {
+          "index": 3,
+          "output": "assets/frames/AS48/walk_front_consistency_v2/walk_front_03.png",
+          "output_alpha_bbox": [
+            28,
+            14,
+            324,
+            416
+          ],
+          "output_sha256": "1604dabb2e8e28ded1473d8e041edd47e86b480d2b2923ca3e0a0655ac2eeb17",
+          "source_alpha_bbox": [
+            28,
+            10,
+            324,
+            416
+          ],
+          "source_registered": "assets/frames/AS48/walk_front_registered/walk_front_03.png",
+          "source_sha256": "c2424e485033775b613cd60f880f82c86bed71e9eb60f2c3339dd2be00176193",
+          "transform": {
+            "dx": 0,
+            "dy": 4,
+            "kind": "translate_only",
+            "scale": 1.0
+          },
+          "visible_foot_row": 429
+        }
+      ],
+      "identity": "AS48",
+      "loop": true,
+      "unique_frames": 4
+    },
+    {
+      "atlas": "assets/atlases/AS48_attack_front_consistency_v2_atlas.png",
+      "atlas_sha256": "7cd205ac2a3e691bc6097598978776c7ef0bc4f3eb0d5227e0b3900127902107",
+      "clip": "Attack_Front",
+      "fps": 7.0,
+      "frames": [
+        {
+          "index": 0,
+          "output": "assets/frames/AS48/attack_front_consistency_v2/attack_front_00.png",
+          "output_alpha_bbox": [
+            82,
+            92,
+            236,
+            338
+          ],
+          "output_sha256": "9631f1bdb6e600113aa0262ce33515d7508c6f1b9c77544d189c1eaf444bd887",
+          "source_alpha_bbox": [
+            97,
+            101,
+            201,
+            288
+          ],
+          "source_registered": "assets/frames/AS48/attack_front_registered/attack_front_00.png",
+          "source_sha256": "06c2631e93a0bab31e3ce3bb1f685f5e0da8ac6c4f5298224dd19b05a6e16905",
+          "transform": {
+            "dx": -15,
+            "dy": -9,
+            "kind": "uniform_whole_cel_scale_and_foot_anchor",
+            "scale": 1.17361111111111,
+            "target_height_px": 338
+          },
+          "visible_foot_row": 429
+        },
+        {
+          "index": 1,
+          "output": "assets/frames/AS48/attack_front_consistency_v2/attack_front_01.png",
+          "output_alpha_bbox": [
+            20,
+            92,
+            313,
+            338
+          ],
+          "output_sha256": "fec6f6b6391c3488221b38eb8c727bc9f9d874c2efa64e21cab3f6484de213bf",
+          "source_alpha_bbox": [
+            20,
+            87,
+            313,
+            338
+          ],
+          "source_registered": "assets/frames/AS48/attack_front_registered/attack_front_01.png",
+          "source_sha256": "1459afd5878118536096f9d06381ab682ed9f5bff755d3bb339fe5e61683df36",
+          "transform": {
+            "dx": 0,
+            "dy": 5,
+            "kind": "translate_only",
+            "scale": 1.0
+          },
+          "visible_foot_row": 429
+        },
+        {
+          "index": 2,
+          "output": "assets/frames/AS48/attack_front_consistency_v2/attack_front_02.png",
+          "output_alpha_bbox": [
+            20,
+            72,
+            318,
+            358
+          ],
+          "output_sha256": "fc4010b33fb56a25dd174a9b2e0e0b86e72c47bcc5d5d46cf685b9851bdeef75",
+          "source_alpha_bbox": [
+            20,
+            68,
+            318,
+            358
+          ],
+          "source_registered": "assets/frames/AS48/attack_front_registered/attack_front_02.png",
+          "source_sha256": "6e8da2a9b530767910335fb79a4430d22d85bcde0bd3adb028780041a29accf0",
+          "transform": {
+            "dx": 0,
+            "dy": 4,
+            "kind": "translate_only",
+            "scale": 1.0
+          },
+          "visible_foot_row": 429
+        },
+        {
+          "index": 3,
+          "output": "assets/frames/AS48/attack_front_consistency_v2/attack_front_03.png",
+          "output_alpha_bbox": [
+            79,
+            96,
+            240,
+            334
+          ],
+          "output_sha256": "e207a272021541f7fcf61853a56cf1478e7b86375c6b7a38ae7be8a962c1e2f6",
+          "source_alpha_bbox": [
+            79,
+            89,
+            240,
+            334
+          ],
+          "source_registered": "assets/frames/AS48/attack_front_registered/attack_front_03.png",
+          "source_sha256": "b6fa8f6ac3138433c1dd301b188e257f919c682b2855e12c61ea871efb4a4799",
+          "transform": {
+            "dx": 0,
+            "dy": 7,
+            "kind": "translate_only",
+            "scale": 1.0
+          },
+          "visible_foot_row": 429
+        }
+      ],
+      "identity": "AS48",
+      "loop": false,
+      "unique_frames": 4
+    },
+    {
+      "atlas": "assets/atlases/AS49_walk_front_consistency_v2_atlas.png",
+      "atlas_sha256": "cd4a4db10431df443317f833b81878d9725a62078da457163593e517c3ad0a0d",
+      "clip": "Walk_Front",
+      "fps": 8.0,
+      "frames": [
+        {
+          "index": 0,
+          "output": "assets/frames/AS49/walk_front_consistency_v2/walk_front_00.png",
+          "output_alpha_bbox": [
+            70,
+            50,
+            236,
+            380
+          ],
+          "output_sha256": "17611af161e40725b9d2e8b4a91fc5c5ec5afb73357703461d8b47be04039303",
+          "source_alpha_bbox": [
+            70,
+            32,
+            236,
+            380
+          ],
+          "source_registered": "assets/frames/AS49/walk_front_registered/walk_front_00.png",
+          "source_sha256": "73908b72b8e741db89b58f2be705a397a5f6d4407d06977377e7cbad2d0f6926",
+          "transform": {
+            "dx": 0,
+            "dy": 18,
+            "kind": "translate_only",
+            "scale": 1.0
+          },
+          "visible_foot_row": 429
+        },
+        {
+          "index": 1,
+          "output": "assets/frames/AS49/walk_front_consistency_v2/walk_front_01.png",
+          "output_alpha_bbox": [
+            68,
+            43,
+            245,
+            387
+          ],
+          "output_sha256": "54ac7744df289e92c7a9d90a97a5e2cd5035ac5017475704398485f24bae8464",
+          "source_alpha_bbox": [
+            68,
+            10,
+            245,
+            387
+          ],
+          "source_registered": "assets/frames/AS49/walk_front_registered/walk_front_01.png",
+          "source_sha256": "3b4bbc2e27d2c63701e741bb61aa1e3c92632411d11d4aea26b445ea63e7d65d",
+          "transform": {
+            "dx": 0,
+            "dy": 33,
+            "kind": "translate_only",
+            "scale": 1.0
+          },
+          "visible_foot_row": 429
+        },
+        {
+          "index": 2,
+          "output": "assets/frames/AS49/walk_front_consistency_v2/walk_front_02.png",
+          "output_alpha_bbox": [
+            56,
+            31,
+            267,
+            399
+          ],
+          "output_sha256": "95727b88cc1745b71c6a48660309f954d074915689d6e58a09c6c61dbe2fe25e",
+          "source_alpha_bbox": [
+            56,
+            10,
+            267,
+            399
+          ],
+          "source_registered": "assets/frames/AS49/walk_front_registered/walk_front_02.png",
+          "source_sha256": "0cc174c576c51bb3bc7f95c0b2733d44b00e0ecd1b8105200411e1d1329e98ef",
+          "transform": {
+            "dx": 0,
+            "dy": 21,
+            "kind": "translate_only",
+            "scale": 1.0
+          },
+          "visible_foot_row": 429
+        },
+        {
+          "index": 3,
+          "output": "assets/frames/AS49/walk_front_consistency_v2/walk_front_03.png",
+          "output_alpha_bbox": [
+            54,
+            31,
+            289,
+            399
+          ],
+          "output_sha256": "a50e2ceadb75ebc12258aafe5227cad1bb424d210ece15ea87fb8bdb108ad534",
+          "source_alpha_bbox": [
+            54,
+            15,
+            289,
+            399
+          ],
+          "source_registered": "assets/frames/AS49/walk_front_registered/walk_front_03.png",
+          "source_sha256": "46e0e7d5e11bd8a54fca34fcf5e1c89c1276cff2892d6656f1fd40e365807971",
+          "transform": {
+            "dx": 0,
+            "dy": 16,
+            "kind": "translate_only",
+            "scale": 1.0
+          },
+          "visible_foot_row": 429
+        }
+      ],
+      "identity": "AS49",
+      "loop": true,
+      "unique_frames": 4
+    },
+    {
+      "atlas": "assets/atlases/AS49_attack_front_consistency_v2_atlas.png",
+      "atlas_sha256": "e916880827d618932b2f1834e992f9008d0dcebd2d4ff6e723af0a9944288adf",
+      "clip": "Attack_Front",
+      "fps": 7.0,
+      "frames": [
+        {
+          "index": 0,
+          "output": "assets/frames/AS49/attack_front_consistency_v2/attack_front_00.png",
+          "output_alpha_bbox": [
+            30,
+            66,
+            346,
+            364
+          ],
+          "output_sha256": "514d174b6ba643cdb9f7f55a1f264f80423b51607fad4e8219333dae474dc300",
+          "source_alpha_bbox": [
+            30,
+            63,
+            346,
+            364
+          ],
+          "source_registered": "assets/frames/AS49/attack_front_registered/attack_front_00.png",
+          "source_sha256": "d504e319d6ee8188fa2bf95bf4e2f9f7f30746167ae1cd28f7ff8a278fced530",
+          "transform": {
+            "dx": 0,
+            "dy": 3,
+            "kind": "translate_only",
+            "scale": 1.0
+          },
+          "visible_foot_row": 429
+        },
+        {
+          "index": 1,
+          "output": "assets/frames/AS49/attack_front_consistency_v2/attack_front_01.png",
+          "output_alpha_bbox": [
+            29,
+            72,
+            349,
+            358
+          ],
+          "output_sha256": "7db8a93d4407ad946e5859bd5738897fbc947d5dd4d38a0268be3e82c1c0e7a2",
+          "source_alpha_bbox": [
+            29,
+            69,
+            349,
+            358
+          ],
+          "source_registered": "assets/frames/AS49/attack_front_registered/attack_front_01.png",
+          "source_sha256": "f326ec9629096409dac211ca52912039f8ae2fa1a74d46c7822f19af8b9545be",
+          "transform": {
+            "dx": 0,
+            "dy": 3,
+            "kind": "translate_only",
+            "scale": 1.0
+          },
+          "visible_foot_row": 429
+        },
+        {
+          "index": 2,
+          "output": "assets/frames/AS49/attack_front_consistency_v2/attack_front_02.png",
+          "output_alpha_bbox": [
+            30,
+            77,
+            342,
+            353
+          ],
+          "output_sha256": "4cfa88d0c368c227bc1ed2ce00cce6b2ea6a7e38c663aa13a43163fd892def09",
+          "source_alpha_bbox": [
+            30,
+            77,
+            342,
+            353
+          ],
+          "source_registered": "assets/frames/AS49/attack_front_registered/attack_front_02.png",
+          "source_sha256": "4cfa88d0c368c227bc1ed2ce00cce6b2ea6a7e38c663aa13a43163fd892def09",
+          "transform": {
+            "dx": 0,
+            "dy": 0,
+            "kind": "translate_only",
+            "scale": 1.0
+          },
+          "visible_foot_row": 429
+        },
+        {
+          "index": 3,
+          "output": "assets/frames/AS49/attack_front_consistency_v2/attack_front_03.png",
+          "output_alpha_bbox": [
+            48,
+            60,
+            312,
+            370
+          ],
+          "output_sha256": "fc6cd466dab60d30070fbd462ff7715e8fac467e3f3a608a1179a5e3e18ac2d3",
+          "source_alpha_bbox": [
+            48,
+            53,
+            312,
+            370
+          ],
+          "source_registered": "assets/frames/AS49/attack_front_registered/attack_front_03.png",
+          "source_sha256": "19c07879513bacfb81cd7afaded46a421f8906bd8fd8fa091c437fb92dc1137d",
+          "transform": {
+            "dx": 0,
+            "dy": 7,
+            "kind": "translate_only",
+            "scale": 1.0
+          },
+          "visible_foot_row": 429
+        }
+      ],
+      "identity": "AS49",
+      "loop": false,
+      "unique_frames": 4
+    }
+  ],
+  "foot_pivot_line_y": 430,
+  "method": "registered-cell alignment only; no inter-frame interpolation; original source PNGs preserved",
+  "schema": "tmb.aschar.v9.consistency.registration.v2",
+  "status": "CANDIDATE_TECHNICAL",
+  "target_visible_foot_row": 429,
+  "identity_lock_manifest": "meta/ASCHAR_V9_IDENTITY_LOCKS_V91.json",
+  "reference_chain_candidate": "meta/AS48_ATTACK_TRANSITION_CANDIDATE.json",
+  "reference_chain_candidate_production_integrated": false,
+  "weapon_overlay_candidate": "meta/AS48_ATTACK_WEAPON_OVERLAY_CANDIDATE.json"
+}

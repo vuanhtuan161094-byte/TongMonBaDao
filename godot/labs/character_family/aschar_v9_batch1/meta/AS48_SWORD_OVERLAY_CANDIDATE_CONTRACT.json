@@ -1,0 +1,24 @@
+{
+  "schema": "tmb.aschar_v9.weapon_overlay_candidate.v1",
+  "status": "CANDIDATE_OWNER_ART_APPROVAL_PENDING",
+  "identity": "AS-CHAR-48",
+  "school": "Kiếm Tu",
+  "scope": "technical overlay study for Attack_Front only; not production combat integration",
+  "reference_images": [
+    {"path": "owner-supplied sword reference 1", "use": "quality/material/detail inspiration only; do not copy silhouette"},
+    {"path": "owner-supplied sword reference 2", "use": "quality/material/detail inspiration only; do not copy silhouette"}
+  ],
+  "design": {
+    "silhouette": "slender straight jian with a narrow double-edged blade and a compact layered crescent guard, distinct from the references' wing/star silhouettes",
+    "palette": ["midnight navy", "cool silver", "pale cyan", "small jade accent"],
+    "motifs": ["single original cloud-channel engraving", "small jade ring pommel"],
+    "prohibitions": ["no copied reference silhouette", "no text", "no baked glow trail", "no attack VFX baked into weapon"]
+  },
+  "asset_contract": {
+    "kind": "single isolated transparent RGBA weapon sprite",
+    "route": "host image generation, then Godot native overlay preview",
+    "body_rule": "body remains a single unmodified monolithic frame; weapon is an independent layer",
+    "frame_metadata_required": ["hand_grip_px", "weapon_pivot_px", "rotation_deg", "occlusion_order", "pose_source_sha256"],
+    "qa": ["alpha", "grip alignment on all four attack poses", "screen-size legibility", "no duplicate/merged sword", "visual candidate review"]
+  }
+}

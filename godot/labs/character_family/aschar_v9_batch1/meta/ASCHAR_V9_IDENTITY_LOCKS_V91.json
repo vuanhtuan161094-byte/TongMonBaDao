@@ -1,0 +1,102 @@
+{
+  "schema": "tmb.aschar.v9.identity_locks.v1",
+  "status": "CANDIDATE_MASTER_LOCKS_NOT_OWNER_APPROVED",
+  "source_project": "isolated AS-CHAR V9 review package; not a native full-repository checkout",
+  "shared_registration": {
+    "body_output": "one complete monolithic RGBA body sprite per frame",
+    "canvas_px": [
+      400,
+      440
+    ],
+    "pivot": [
+      200,
+      430
+    ],
+    "visible_foot_row": 429,
+    "directions_in_this_batch": [
+      "Front"
+    ],
+    "prohibitions": [
+      "no rig",
+      "no bones",
+      "no IK",
+      "no body-part splitting",
+      "no mirrored missing direction",
+      "no inter-frame interpolation"
+    ]
+  },
+  "characters": [
+    {
+      "id": "AS-CHAR-48",
+      "school": "Kiếm Tu",
+      "gender": "Nam",
+      "master": "assets/AS48_MASTER_CANDIDATE.png",
+      "master_sha256": "ccb69d584837e14236e4f7b4742943219580703dee830966d09cd72ac8627673",
+      "approval": "OWNER_ART_APPROVAL_PENDING",
+      "identity_keys": {
+        "face": "same mature-chibi face, violet-blue eyes, brow shape, nose/mouth placement and cheek silhouette",
+        "hair": "same silver-white swept hair silhouette, dark underlayers and blue/cyan ornament placement",
+        "costume": "same navy combat robe, cyan panels, pale/silver edging and restrained gold hardware",
+        "material": "cel-shaded silver hair, dark cloth, cool metal and cyan accents; preserve value contrast"
+      }
+    },
+    {
+      "id": "AS-CHAR-49",
+      "school": "Kiếm Tu",
+      "gender": "Nữ",
+      "master": "assets/AS49_MASTER_CANDIDATE.png",
+      "master_sha256": "f7a3c10db4bda54c9d0dab05e34554020debd3bb2a05706e1faa1636267fa596",
+      "approval": "OWNER_ART_APPROVAL_PENDING",
+      "identity_keys": {
+        "face": "same mature-chibi face, large crimson eyes, brow/eyeliner, nose/mouth placement and cheek silhouette",
+        "hair": "same silver-white hair with black underlayer, high gathered bun, red jewel and flower ornament placement",
+        "costume": "same charcoal/black and ivory combat layers with vivid crimson sash/lining and silver trim",
+        "material": "cel-shaded silver hair, pale cloth, dark armor and crimson accents; preserve high contrast"
+      }
+    }
+  ],
+  "generation_edit_rule": "For every new frame, reference the frozen character master and both neighboring key poses together. Prefer local image edit/inpaint; reject identity drift rather than using the drifted frame as the next source.",
+  "manual_landmarks": [
+    "crown/hair silhouette",
+    "eye line and face width",
+    "shoulder line",
+    "belt/waist ornament",
+    "dominant hand or measured weapon grip",
+    "plant-foot contact",
+    "trailing sash/robe point"
+  ],
+  "landmarks_are_review_guides_not_rig_bones": true,
+  "direction_master_status": {
+    "Front": "CANDIDATE_MASTER_PRESENT",
+    "Left": "MISSING_SOURCE",
+    "Right": "MISSING_SOURCE",
+    "Back": "MISSING_SOURCE"
+  },
+  "storyboards": {
+    "Walk_Front": [
+      "F00 left-foot contact; body center stable; opposite arm swing",
+      "F01 passing pose; trailing hair/sash follows",
+      "F02 right-foot contact",
+      "F03 passing return; loop to F00; keep visible shoes on shared baseline"
+    ],
+    "Attack_Front": [
+      "F00 windup / guarded low ready",
+      "F01 guard rise / raise weapon-side arm",
+      "F01_5 referenced mid-swing candidate between F01 and F02",
+      "F02 release / forward extension",
+      "F03 recovery / return to balance"
+    ]
+  },
+  "v91_transition_reference_chain": {
+    "new_cel": "AS48 Attack_Front transition between key poses 01 and 02",
+    "inputs": [
+      "frozen AS48 master",
+      "AS48 V2 key pose 01",
+      "AS48 V2 key pose 02"
+    ],
+    "raw_output": "assets/frames/AS48/attack_front_consistency_v2/attack_front_transition_01_5_raw_candidate.png",
+    "registered_output": "assets/frames/AS48/attack_front_consistency_v2/attack_front_transition_01_5_registered_candidate.png",
+    "metadata": "meta/AS48_ATTACK_TRANSITION_CANDIDATE.json",
+    "production_integrated": false
+  }
+}

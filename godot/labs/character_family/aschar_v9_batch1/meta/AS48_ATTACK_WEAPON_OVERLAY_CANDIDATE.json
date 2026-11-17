@@ -1,0 +1,124 @@
+{
+  "canvas_px": [
+    887,
+    1774
+  ],
+  "weapon_source_status": "RECREATED",
+  "body_cell_px": [
+    400,
+    440
+  ],
+  "identity": "AS-CHAR-48",
+  "weapon_to_body_scale_ratio": 0.19,
+  "body_foot_baseline_y": 429,
+  "generation": "host image generation, original derivative design; user sword references used for craftsmanship only, not copied",
+  "school": "Kiếm Tu",
+  "map_body_scale": 0.17,
+  "schema": "tmb.aschar_v9.attack_weapon_overlay_candidate.v1",
+  "status": "CANDIDATE_TECHNICAL_OWNER_ART_APPROVAL_PENDING",
+  "asset_grip_pivot_px": [
+    443,
+    360
+  ],
+  "alpha": "RGBA_ALPHA_PRESENT",
+  "limitations": [
+    "Sword is an isolated art candidate, not owner-approved.",
+    "Attack body poses are existing monolithic cels; no body parts were extracted.",
+    "Whole-body occlusion is used; exact hand-over-hilt partial occlusion cannot be authored without a separate accepted hand mask or a revised pose.",
+    "The contact marker is a manual pixel anchor and still needs owner acceptance.",
+    "No Combat V2/VFX integration."
+  ],
+  "frame_data": [
+    {
+      "weapon_grip_asset_px": [
+        443,
+        360
+      ],
+      "occlusion_order": "WEAPON_BEHIND_WHOLE_MONOLITHIC_BODY",
+      "frame": 0,
+      "owner_approval": "PENDING",
+      "body_frame_sha256": "9631f1bdb6e600113aa0262ce33515d7508c6f1b9c77544d189c1eaf444bd887",
+      "hand_grip_body_canvas_px": [
+        266,
+        336
+      ],
+      "measure": "manual pixel anchor from 400x440 pose, marker reviewed in native Godot preview",
+      "pose": "WINDUP",
+      "body_frame": "assets/frames/AS48/attack_front_consistency_v2/attack_front_00.png",
+      "rotation_degrees": -95,
+      "weapon_pivot_asset_px": [
+        443,
+        360
+      ]
+    },
+    {
+      "weapon_grip_asset_px": [
+        443,
+        360
+      ],
+      "occlusion_order": "WEAPON_BEHIND_WHOLE_MONOLITHIC_BODY",
+      "frame": 1,
+      "owner_approval": "PENDING",
+      "body_frame_sha256": "fec6f6b6391c3488221b38eb8c727bc9f9d874c2efa64e21cab3f6484de213bf",
+      "hand_grip_body_canvas_px": [
+        311,
+        221
+      ],
+      "measure": "manual pixel anchor from 400x440 pose, marker reviewed in native Godot preview",
+      "pose": "GUARD_RISE",
+      "body_frame": "assets/frames/AS48/attack_front_consistency_v2/attack_front_01.png",
+      "rotation_degrees": -150,
+      "weapon_pivot_asset_px": [
+        443,
+        360
+      ]
+    },
+    {
+      "weapon_grip_asset_px": [
+        443,
+        360
+      ],
+      "occlusion_order": "WEAPON_BEHIND_WHOLE_MONOLITHIC_BODY",
+      "frame": 2,
+      "owner_approval": "PENDING",
+      "body_frame_sha256": "fc4010b33fb56a25dd174a9b2e0e0b86e72c47bcc5d5d46cf685b9851bdeef75",
+      "hand_grip_body_canvas_px": [
+        290,
+        315
+      ],
+      "measure": "manual pixel anchor from 400x440 pose, marker reviewed in native Godot preview",
+      "pose": "RELEASE",
+      "body_frame": "assets/frames/AS48/attack_front_consistency_v2/attack_front_02.png",
+      "rotation_degrees": -95,
+      "weapon_pivot_asset_px": [
+        443,
+        360
+      ]
+    },
+    {
+      "weapon_grip_asset_px": [
+        443,
+        360
+      ],
+      "occlusion_order": "WEAPON_BEHIND_WHOLE_MONOLITHIC_BODY",
+      "frame": 3,
+      "owner_approval": "PENDING",
+      "body_frame_sha256": "e207a272021541f7fcf61853a56cf1478e7b86375c6b7a38ae7be8a962c1e2f6",
+      "hand_grip_body_canvas_px": [
+        263,
+        263
+      ],
+      "measure": "manual pixel anchor from 400x440 pose, marker reviewed in native Godot preview",
+      "pose": "RECOVERY",
+      "body_frame": "assets/frames/AS48/attack_front_consistency_v2/attack_front_03.png",
+      "rotation_degrees": -30,
+      "weapon_pivot_asset_px": [
+        443,
+        360
+      ]
+    }
+  ],
+  "weapon_asset": "assets/weapons/AS48_KIEMTU_JIAN_CANDIDATE.png",
+  "authored_attack_fps": 7,
+  "weapon_sha256": "8c9869ba06e39799c5eb3b6b2e3060284c04197abc034993b1831f1572c60285"
+}

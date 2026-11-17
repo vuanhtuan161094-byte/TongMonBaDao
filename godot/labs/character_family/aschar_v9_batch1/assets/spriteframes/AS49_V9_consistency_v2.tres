@@ -1,0 +1,78 @@
+[gd_resource type="SpriteFrames" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/atlases/AS49_attack_front_consistency_v2_atlas.png" id="1_p207r"]
+[ext_resource type="Texture2D" path="res://assets/atlases/AS49_walk_front_consistency_v2_atlas.png" id="2_442j8"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7uvke"]
+atlas = ExtResource("1_p207r")
+region = Rect2(0, 0, 400, 440)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_88h2d"]
+atlas = ExtResource("1_p207r")
+region = Rect2(400, 0, 400, 440)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_71a8e"]
+atlas = ExtResource("1_p207r")
+region = Rect2(800, 0, 400, 440)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_w4jut"]
+atlas = ExtResource("1_p207r")
+region = Rect2(1200, 0, 400, 440)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_woaw2"]
+atlas = ExtResource("2_442j8")
+region = Rect2(0, 0, 400, 440)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_a7n63"]
+atlas = ExtResource("2_442j8")
+region = Rect2(400, 0, 400, 440)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_m4sbn"]
+atlas = ExtResource("2_442j8")
+region = Rect2(800, 0, 400, 440)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3motq"]
+atlas = ExtResource("2_442j8")
+region = Rect2(1200, 0, 400, 440)
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7uvke")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_88h2d")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_71a8e")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_w4jut")
+}],
+"loop": 0,
+"name": &"Attack_Front",
+"speed": 7.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_woaw2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_a7n63")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_m4sbn")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3motq")
+}],
+"loop": 1,
+"name": &"Walk_Front",
+"speed": 8.0
+}, {
+"frames": [],
+"loop": 1,
+"name": &"default",
+"speed": 5.0
+}]

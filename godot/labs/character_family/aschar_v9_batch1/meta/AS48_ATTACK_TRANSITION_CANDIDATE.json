@@ -1,0 +1,65 @@
+{
+  "status": "CANDIDATE_ART_PENDING",
+  "export": {
+    "source_canvas_px": [
+      1196,
+      1315
+    ],
+    "target_foot_row": 429,
+    "alpha_bbox_threshold_0_01": [
+      193,
+      255,
+      930,
+      1161
+    ],
+    "crop_with_margin_px": [
+      746,
+      915
+    ],
+    "output_cell_px": [
+      400,
+      440
+    ],
+    "output_alpha_bbox_px": [
+      62,
+      92,
+      276,
+      338
+    ],
+    "scale": 0.369399,
+    "output_foot_row": 429
+  },
+  "interpolation": "none",
+  "reference_images": [
+    {
+      "path": "assets/AS48_MASTER_CANDIDATE.png",
+      "role": "identity lock",
+      "sha256": "ccb69d584837e14236e4f7b4742943219580703dee830966d09cd72ac8627673"
+    },
+    {
+      "path": "assets/frames/AS48/attack_front_consistency_v2/attack_front_01.png",
+      "role": "previous neighboring key pose",
+      "sha256": "fec6f6b6391c3488221b38eb8c727bc9f9d874c2efa64e21cab3f6484de213bf"
+    },
+    {
+      "path": "assets/frames/AS48/attack_front_consistency_v2/attack_front_02.png",
+      "role": "next neighboring key pose",
+      "sha256": "fc4010b33fb56a25dd174a9b2e0e0b86e72c47bcc5d5d46cf685b9851bdeef75"
+    }
+  ],
+  "owner_art_approval": "PENDING",
+  "integrated_in_candidate_spriteframes": true,
+  "clip": "Attack_Front",
+  "raw_source_sha256": "7056e0bff459e2de9049006d901c54ff6dea83963b0f7c2d480690cdf4c292ec",
+  "identity": "AS-CHAR-48",
+  "position": "between key pose 01 GUARD_RISE and key pose 02 RELEASE",
+  "manual_review": "Godot 1280x720 contact sheet visually compared with both adjacent cels; face/hair/palette read consistent, detailed owner review pending",
+  "generation_route": "image generation using simultaneous fixed references: AS48 master + adjacent key poses 01 and 02",
+  "raw_source": "assets/frames/AS48/attack_front_consistency_v2/attack_front_transition_01_5_raw_candidate.png",
+  "schema": "tmb.aschar_v9.referenced_transition_cel.v1",
+  "candidate_output": "assets/frames/AS48/attack_front_consistency_v2/attack_front_transition_01_5_registered_candidate.png",
+  "candidate_sha256": "ca06b828f5e9bcb544d9287962f0eca7635609455f7575290d57a0df6cababd9",
+  "weapon_or_vfx_baked": false,
+  "candidate_spriteframes": "assets/spriteframes/AS48_V9_attack_transition_candidate.tres",
+  "production_integrated": false
+}

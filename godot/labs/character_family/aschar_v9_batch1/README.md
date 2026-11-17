@@ -16,3 +16,8 @@ For deterministic rebuild, import first, then run the two resource scripts in or
 Four of 576 target clips have technical evidence; none has owner art approval. These are candidate animations for the first two Kiếm Tu identities only. Right/Back/Left, the other four actions, all other schools, weapon overlay/grip metadata, clipping review at runtime scale, and owner approval remain open. Do not wire these assets into the production game yet.
 
 The test source was this isolated local review project. PR #72 was checked live before publication, but this folder is not a native checkout of PR #72; its current head and exact artifact hashes are recorded in `meta/`. Godot system-certificate, user-profile-write, and shader-cache warnings are environment issues documented with the logs. Native OpenGL Compatibility runs completed with exit 0.
+
+## AS-CHAR V9.1 review assets
+
+The separate *_consistency_v2 cels, atlases and SpriteFrames provide registered AS48/AS49 Walk_Front and Attack_Front comparisons. Open scenes/consistency_review_v2.tscn with Godot 4.7.2 for before/after motion; use identity=AS49 after -- for the female candidate. The independent AS48 sword and referenced transition are review-only candidates; neither is production integrated or owner-approved. See meta/ASCHAR_V9_BATCH1_QA.md and meta/ASCHAR_V9_1_DELIVERY_SHA256.csv. The 6-second native AVI captures remain local-only; the committed viewport PNGs and logs are individually hash-listed.
+

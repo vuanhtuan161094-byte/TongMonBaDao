@@ -1,0 +1,35 @@
+[gd_resource type="SpriteFrames" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/frames/AS48/attack_front_consistency_v2/attack_front_00.png" id="1_jgxlu"]
+[ext_resource type="Texture2D" path="res://assets/frames/AS48/attack_front_consistency_v2/attack_front_01.png" id="2_jk01t"]
+[ext_resource type="Texture2D" path="res://assets/frames/AS48/attack_front_consistency_v2/attack_front_transition_01_5_registered_candidate.png" id="3_awhm6"]
+[ext_resource type="Texture2D" path="res://assets/frames/AS48/attack_front_consistency_v2/attack_front_02.png" id="4_b1jkh"]
+[ext_resource type="Texture2D" path="res://assets/frames/AS48/attack_front_consistency_v2/attack_front_03.png" id="5_s25gi"]
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_jgxlu")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_jk01t")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_awhm6")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_b1jkh")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_s25gi")
+}],
+"loop": 0,
+"name": &"Attack_Front",
+"speed": 7.0
+}, {
+"frames": [],
+"loop": 1,
+"name": &"default",
+"speed": 5.0
+}]

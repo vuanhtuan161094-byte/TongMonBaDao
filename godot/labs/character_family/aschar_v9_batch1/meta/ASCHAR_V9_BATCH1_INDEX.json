@@ -34,7 +34,7 @@
   "branch": "integration/pve-p0-playable-ui-20261103",
   "owner_approved": 0,
   "baseline_pr_sha": "5e0ffb83d85105a5e2e9b7a4a22c48882f8e0413",
-  "pr_head_observed_before_publication": "95278e0120794590ee76176204301bb11abe9f51",
+  "pr_head_observed_before_publication": "5082201970f3d0335f577a661859e7cb74f36707",
   "qa_scope": "isolated Godot review project; no native PR checkout; candidate assets only",
   "masters": [
     {
@@ -90,5 +90,59 @@
     "captures/AS49_ATTACK_FRONT_DRAW_NATIVE_1280x720.png",
     "captures/AS49_ATTACK_FRONT_RELEASE_NATIVE_1280x720.png",
     "captures/AS49_ATTACK_FRONT_RECOVERY_NATIVE_1280x720.png"
-  ]
+  ],
+  "v91_consistency": {
+    "clips": [
+      "AS48/Walk_Front",
+      "AS48/Attack_Front",
+      "AS49/Walk_Front",
+      "AS49/Attack_Front"
+    ],
+    "registered_output": "V2 separate frames/atlases/SpriteFrames; originals preserved",
+    "foot_row": 429,
+    "identity_masters": "OWNER_ART_APPROVAL_PENDING",
+    "native_before_after": [
+      "captures/AS48_WALK_ATTACK_BEFORE_AFTER_NATIVE_1280x720.avi",
+      "captures/AS49_WALK_ATTACK_BEFORE_AFTER_NATIVE_1280x720.avi"
+    ],
+    "qa_status": "TECHNICAL_PASS_REGISTRATION; VISUAL_OWNER_PENDING"
+  },
+  "referenced_transition_candidate": {
+    "identity": "AS-CHAR-48",
+    "clip": "Attack_Front",
+    "frame_position": "between frame 01 and frame 02",
+    "candidate_spriteframes": "assets/spriteframes/AS48_V9_attack_transition_candidate.tres",
+    "metadata": "meta/AS48_ATTACK_TRANSITION_CANDIDATE.json",
+    "actual_unique_rgba_cels": 5,
+    "production_integrated": false,
+    "owner_approval": "PENDING",
+    "native_video": "captures/AS48_ATTACK_REFERENCE_CHAIN_NATIVE_1280x720.avi"
+  },
+  "weapon_overlay_candidate": {
+    "identity": "AS-CHAR-48",
+    "weapon_asset": "assets/weapons/AS48_KIEMTU_JIAN_CANDIDATE.png",
+    "metadata": "meta/AS48_ATTACK_WEAPON_OVERLAY_CANDIDATE.json",
+    "status": "CANDIDATE_OWNER_ART_APPROVAL_PENDING",
+    "body_remains_monolithic": true,
+    "occlusion": "behind whole body cel",
+    "native_video": "captures/AS48_ATTACK_WEAPON_CANDIDATE_NATIVE_1280x720.avi"
+  },
+  "direction_masters": {
+    "Front": "EXISTING_CANDIDATE",
+    "Back": "MISSING_SOURCE",
+    "Left": "MISSING_SOURCE",
+    "Right": "MISSING_SOURCE"
+  },
+  "v91_local_only_native_videos": [
+    "captures/AS48_WALK_ATTACK_BEFORE_AFTER_NATIVE_1280x720.avi",
+    "captures/AS49_WALK_ATTACK_BEFORE_AFTER_NATIVE_1280x720.avi",
+    "captures/AS48_ATTACK_WEAPON_CANDIDATE_NATIVE_1280x720.avi",
+    "captures/AS48_ATTACK_REFERENCE_CHAIN_NATIVE_1280x720.avi"
+  ],
+  "v91_published_viewport_captures": [
+    "captures/AS48_ATTACK_TRANSITION_COMPARE_NATIVE_1280x720.png",
+    "captures/AS48_ATTACK_WEAPON_OVERLAY_NATIVE_1280x720.png"
+  ],
+  "v91_delivery_manifest": "meta/ASCHAR_V9_1_DELIVERY_SHA256.csv",
+  "v1_source_preserved": true
 }
