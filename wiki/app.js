@@ -4,8 +4,8 @@
   const page = document.querySelector('#page');
   const nav = document.querySelector('#nav');
   const searchInput = document.querySelector('#global-search');
-  const state = { catalog: null, view: 'dashboard', selected: null, query: '', statusFilter: 'all', schoolFilter: 'all', page: 0 };
-  const titles = { dashboard:'Bảng phát triển', gaps:'Gap Analysis', schools:'Môn phái', branches:'36 nhánh', skills:'Kỹ năng V6.3', techniques:'Công pháp', realms:'Cảnh giới', disciples:'Đệ tử & thuộc tính', roots:'Linh căn', medicine:'Đan dược', equipment:'Trang bị', resources:'Tài nguyên', vfx:'VFX & asset', editor:'Design Editor', requests:'Change Request Manager' };
+  const state = { catalog: null, progress: null, view: 'dashboard', selected: null, selectedSkillId: '', query: '', statusFilter: 'all', schoolFilter: 'all', page: 0, progressPage: 0, progressFilters: { query: '', school: 'all', branch: 'all', axis: 'all', status: 'all' } };
+  const titles = { dashboard:'Bảng phát triển', progress:'Tiến độ kỹ năng V2', 'skill-detail':'Chi tiết kỹ năng', work:'Việc cần xử lý', gaps:'Gap Analysis', schools:'Môn phái', branches:'36 nhánh', skills:'Kỹ năng V6.3', techniques:'Công pháp', realms:'Cảnh giới', disciples:'Đệ tử & thuộc tính', roots:'Linh căn', medicine:'Đan dược', equipment:'Trang bị', resources:'Tài nguyên', vfx:'VFX & asset', editor:'Design Editor', requests:'Change Request Manager' };
   const labels = { id:'ID', name:'Tên', schoolName:'Môn phái', schoolId:'School ID', branchId:'Nhánh', generation:'Cảnh giới skill', slot:'Slot', element:'Ngũ hành', effect:'Hiệu ứng catalog', damageRatio:'damage_ratio', range:'Tầm', castTime:'Cast time', cooldown:'Cooldown', shape:'Hình dạng', radius:'Bán kính', targetLimit:'Giới hạn mục tiêu', power:'Power', duration:'Thời lượng', poisonStacks:'Độc stack', animationKey:'Animation key', vfxKey:'VFX key', sourceCodexId:'Codex ID', candidateStatus:'Candidate', balanceStatus:'Balance', formulaStatus:'Nguồn công thức', presentationStatus:'Presentation', runtimeStatus:'Runtime', artStatus:'Mỹ thuật', silhouette:'Silhouette', motionSignature:'Motion', skillCount:'Skill IDs', inD1Registry:'D1 registry', cultivationName:'Tu Vi', bodyName:'Luyện Thể', rank:'Thứ tự', family:'Nhóm', realm:'Cảnh giới', quality:'Chất lượng', craftability:'Chế tạo', slot:'Slot', path:'Path', realmRank:'Hạng cảnh giới', eventCount:'Event cue', assetFileCount:'Asset file', foundationAttributes:'Sáu nền tảng', sourcePath:'Source path', sourceSha:'Source SHA-256', version:'Version', qaEvidence:'QA evidence' };
 
   function esc(value) {
@@ -36,7 +36,7 @@
   function setView(view) {
     state.view = view; state.page = 0; state.query = '';
     if (searchInput) searchInput.value = '';
-    nav.querySelectorAll('[data-view]').forEach(button => button.classList.toggle('active', button.dataset.view === view));
+    nav.querySelectorAll('[data-view]').forEach(button => button.classList.toggle('active', button.dataset.view === (view === 'skill-detail' ? 'progress' : view)));
     document.querySelector('#crumb-title').textContent = titles[view] || view;
     document.querySelector('#sidebar').classList.remove('open');
     render();
@@ -47,7 +47,7 @@
   function statusBadge(value) {
     const s = String(value || 'UNKNOWN');
     let tone = 'gray';
-    if (/LIVE|PRESENT|AUTHORED|PASS|APPROVED/.test(s)) tone = 'green';
+    if (/LIVE|PRESENT|AUTHORED|PASS|APPROVED|SUCCESS/.test(s)) tone = 'green';
     if (/GATED|PENDING|DESIGN|UNKNOWN|NOT_|MISSING|DIVERGE|OFF|DISABLED/.test(s)) tone = 'gold';
     if (/BLOCKER|FAIL|CONFLICT/.test(s)) tone = 'red';
     return `<span class="badge ${tone}">${esc(s.replaceAll('_',' '))}</span>`;
@@ -104,6 +104,7 @@
     const gaps = state.catalog.gaps.slice(0,4).map(gap => `<div class="gap-row"><div><h3>${esc(gap.title)}</h3><p>${esc(gap.summary)}</p></div>${statusBadge(gap.severity)}</div>`).join('');
     return `${pageHead('Bảng phát triển','Bảng điều hành thiết kế nội bộ. Mỗi số liệu có thể mở về nguồn; trạng thái thiếu bằng chứng luôn để PENDING hoặc UNKNOWN.',`SOURCE HEAD<br><b>${esc(state.catalog.sourceCommitSha.slice(0,12))}</b><br>12 · 36 · schema ${esc(state.catalog.schemaVersion)}`)}
       <div class="stat-grid">${cards.map(([value,label,note,view]) => `<button class="stat-card" data-go="${view}" style="text-align:left;color:inherit"><div class="stat-label">${esc(label)}</div><div class="stat-value">${esc(value)}</div><div class="stat-note">${esc(note)}</div></button>`).join('')}</div>
+      ${state.progress ? `<div class="v2-callout"><div><small>V2 · COVERAGE PER SKILL</small><strong>${state.progress.summary.skillCandidates.toLocaleString('vi-VN')} skill candidate · ${state.progress.summary.directVfxPackets} packet theo đúng ID</strong><span>V6.3 OFF · animation từng skill UNKNOWN nếu chưa có mapping · Owner art độc lập với TECH QA.</span></div><button class="button" data-go="progress">Mở bảng tiến độ →</button></div>` : ''}
       <div class="section-grid"><div class="panel"><div class="panel-head"><div><h2>Tiến độ hệ thống</h2><small>Designed / implemented / tested / approved / missing · dữ liệu gắn nguồn</small></div><span class="badge blue">LIVE SOURCE SNAPSHOT</span></div><div class="panel-body"><div class="system-row header"><div>Hệ thống</div><div class="system-num">Thiết kế</div><div class="system-num">Mã/registry</div><div class="system-num">Đã test</div><div class="system-num">Đã duyệt</div><div class="system-num">Còn thiếu</div></div>${systemCards.map(statusRow).join('')}<p class="footnote">“Đã có code” không đồng nghĩa release/live. Test source chưa được chạy lại tại exact Wiki SHA nên hiển thị PENDING; phê duyệt owner không có nguồn ID thì hiển thị UNKNOWN.</p></div></div>
         <div class="panel"><div class="panel-head"><div><h2>Gap cần chú ý</h2><small>${state.catalog.gaps.length} vấn đề có nguồn</small></div><button class="link-button" data-go="gaps">Mở danh sách</button></div><div class="panel-body">${gaps}</div></div></div>
       <div class="section-grid"><div class="panel"><div class="panel-head"><div><h2>Coverage nguồn</h2><small>Snapshot sinh tự động, không gồm save cá nhân</small></div><span class="badge green">SHA CHECKED</span></div><div class="panel-body"><div class="detail-grid"><div class="detail-cell"><small>Source HEAD</small><b>${esc(state.catalog.sourceCommitSha)}</b></div><div class="detail-cell"><small>Skill family / IDs</small><b>${esc(c.skillFamilies)} family · ${esc(c.skillIdsUnique)} skill</b></div><div class="detail-cell"><small>Đan</small><b>${esc(c.medicineIdentities)} identity · ${esc(c.authoredMedicineRecipes)} recipe V2 · ${esc(c.legacyMedicineRecipes)} legacy</b></div><div class="detail-cell"><small>Trang bị / resource</small><b>${esc(c.equipmentRecipes)} recipe · ${esc(c.resources)} resource ID</b></div></div><div class="notice">Nguồn có spec 10 slot trang bị nhưng EquipmentSystem đang dùng 3 slot; đây là gap cần chủ dự án quyết định, Wiki không tự hợp nhất.</div></div></div>
@@ -183,6 +184,7 @@
     const before = record ? JSON.stringify(record, null, 2) : '{}';
     const proposals = proposalRows().slice().reverse();
     return `${pageHead('Design Editor','Ghi giá trị đề xuất, lý do và ghi chú. Mọi thay đổi chỉ nằm trong local profile; nguồn game không bị ghi.',`${proposals.length} PROPOSAL<br>${state.catalog.counts.approvedFromExplicitSource} phê duyệt được ghi nguồn`)}
+      ${ownerBackupControls()}
       <div class="notice">Chế độ đề xuất. Nút lưu chỉ ghi vào localStorage của browser. Không có đường ghi ngược vào godot/, spec hoặc source runtime.</div>
       <div class="two-column"><div class="panel"><div class="panel-head"><div><h2>Soạn đề xuất</h2><small>Chọn ID trong danh mục rồi nêu field cụ thể</small></div>${statusBadge('NO SOURCE WRITE')}</div><div class="panel-body"><form id="proposal-form" class="form-grid">
         <div class="field"><label for="p-id">ID liên quan</label><input id="p-id" class="form-control" list="record-ids" value="${esc(chosenId)}" placeholder="tmb.skill…"><datalist id="record-ids">${allRecordIds().map(item=>`<option value="${esc(item.id)}">${esc(item.name)}</option>`).join('')}</datalist></div>
@@ -205,6 +207,7 @@
   function requestView() {
     const rows = requestRows().slice().reverse();
     return `${pageHead('Change Request Manager','Tạo danh sách việc cần Codex sửa. CR không kích hoạt thay đổi code; trạng thái chỉ là tiến độ quản trị nội bộ.',`${rows.length} CR LOCAL<br>${rows.filter(r=>r.status==='DONE').length} DONE · owner-only`)}
+      ${ownerBackupControls()}
       <div class="two-column"><div class="panel"><div class="panel-head"><div><h2>Tạo Change Request</h2><small>ID, before/after, priority và tiêu chí nghiệm thu bắt buộc</small></div>${statusBadge('DRAFT')}</div><div class="panel-body"><form id="cr-form" class="form-grid">
         <div class="field"><label for="cr-title">Tiêu đề</label><input id="cr-title" class="form-control" required placeholder="Ví dụ: Link VFX skill ID…"></div>
         <div class="field"><label for="cr-id">ID liên quan</label><input id="cr-id" class="form-control" list="record-ids" value="${esc(state.selected?.id || '')}" placeholder="ID source"><datalist id="record-ids">${allRecordIds().map(item=>`<option value="${esc(item.id)}">${esc(item.name)}</option>`).join('')}</datalist></div>
@@ -225,9 +228,104 @@
     state.page = Math.max(0, state.page + delta);
     render();
   }
+  function progressAxisValue(row, axis) {
+    if (axis === 'design') return row.design.status;
+    if (axis === 'runtime') return row.runtime.status;
+    if (axis === 'vfx') return row.vfx.technicalStatus;
+    if (axis === 'animation') return row.animation.status;
+    if (axis === 'qa') return row.qa.status;
+    if (axis === 'owner') return row.vfx.ownerStatus;
+    return 'ALL';
+  }
+  function renderProgress() {
+    if (!state.progress) return pageHead('Tiến độ kỹ năng V2','Projection chưa được nạp. Kiểm tra source sync.', 'PENDING');
+    const p = state.progress, f = state.progressFilters, allRows = p.skills;
+    const axes = [['all','Mọi trục'],['design','Thiết kế'],['runtime','Runtime'],['vfx','VFX kỹ thuật'],['animation','Animation'],['qa','QA'],['owner','Owner Art']];
+    const filtered = allRows.filter(row => {
+      if (f.school !== 'all' && row.schoolId !== f.school) return false;
+      if (f.branch !== 'all' && (f.branch === 'shared' ? row.branch !== 'shared' : row.branchId !== f.branch)) return false;
+      if (f.axis !== 'all' && f.status !== 'all' && progressAxisValue(row,f.axis) !== f.status) return false;
+      if (f.query && !normalize(JSON.stringify(row)).includes(normalize(f.query))) return false;
+      return true;
+    });
+    const pageSize=40, pages=Math.max(1,Math.ceil(filtered.length/pageSize));
+    state.progressPage=Math.min(state.progressPage,pages-1);
+    const visible=filtered.slice(state.progressPage*pageSize,(state.progressPage+1)*pageSize);
+    const statusSet=[...new Set(allRows.map(row=>progressAxisValue(row,f.axis)).filter(v=>v&&v!=='ALL'))].sort();
+    const branches=p.branches.filter(b=>f.school==='all'||b.id.startsWith('tmb.branch.'+f.school+'.'));
+    const sharedOption=allRows.some(row=>row.branch==='shared')?'<option value="shared" '+(f.branch==='shared'?'selected':'')+'>Dùng chung</option>':'';
+    const s=p.summary;
+    const cards=[
+      [s.skillCandidates.toLocaleString('vi-VN'),'V6.3 candidate IDs','Metadata thiết kế · không active'],
+      [s.runtimeActive.toLocaleString('vi-VN'),'Runtime active','V6.3 đang OFF'],
+      [s.directVfxPackets.toLocaleString('vi-VN'),'Packet đúng skill ID','Có packet ≠ art approved'],
+      [s.exactShaActionEvidenceSkills.toLocaleString('vi-VN'),'Skill có Action exact-SHA','Chỉ bằng chứng đã liên kết'],
+      [s.ownerApprovedRecorded.toLocaleString('vi-VN'),'Owner Art approval ghi nhận','Raw ledger source'],
+      [s.animationSkillMappingsVerified.toLocaleString('vi-VN'),'Skill→animation mapping','UNKNOWN đến khi có bằng chứng'],
+    ];
+    const rows=visible.map(row=>`<tr data-progress-skill="${esc(row.id)}"><td><b>${esc(row.name)}</b><code>${esc(row.id)}</code></td><td>${esc(row.schoolName)}<small>${esc(row.branchName||row.branch||'Nhánh chưa gán')} · ${esc(row.generation)}</small></td><td>${statusBadge(row.design.status)}</td><td>${statusBadge(row.runtime.status)}</td><td><span title="${esc(row.vfx.ledgerStatus)}">${statusBadge(row.vfx.technicalStatus)}</span><small>${esc(row.vfx.ledgerStatus)}</small></td><td>${statusBadge(row.animation.status)}</td><td>${statusBadge(row.qa.status)}</td><td>${statusBadge(row.vfx.ownerStatus)}</td></tr>`).join('');
+    const schoolRows=p.schools.map(school=>`<button class="school-progress" data-filter-school="${esc(school.id)}"><b>${esc(school.name)}</b><strong>${school.designedCandidates}</strong><small>${school.ownerArtApprovedRecorded} duyệt · ${school.animationUnknown} animation UNKNOWN</small></button>`).join('');
+    return `${pageHead('Tiến độ kỹ năng V2','Theo dõi 12 môn phái, 36 nhánh và từng skill ID. Mỗi trục có nguồn riêng; candidate không đồng nghĩa gameplay.',`${filtered.length.toLocaleString('vi-VN')} KẾT QUẢ<br>SHA ${esc(p.sourceCommitSha.slice(0,12))}`)}
+      <div class="notice">V6.3 hiện <b>OFF</b>. 2.196 skill là candidate metadata. TECH_PASS không phải Owner Art Approval; clip/asset cấp nhân vật không chứng minh animation của từng skill.</div>
+      <div class="progress-metrics">${cards.map(([v,l,n])=>`<div class="progress-metric"><strong>${esc(v)}</strong><span>${esc(l)}</span><small>${esc(n)}</small></div>`).join('')}</div>
+      <div class="panel"><div class="panel-head"><div><h2>12 môn phái · 36 nhánh</h2><small>Coverage số lượng theo từng môn phái; bấm để lọc bảng skill</small></div><span class="badge blue">SOURCE-BACKED</span></div><div class="panel-body"><div class="school-progress-grid">${schoolRows}</div></div></div>
+      <div class="toolbar progress-filters"><input id="progress-search" placeholder="Tìm tên, skill ID, packet, source…" value="${esc(f.query)}"><select id="progress-school"><option value="all">Mọi môn phái</option>${p.schools.map(x=>`<option value="${esc(x.id)}" ${f.school===x.id?'selected':''}>${esc(x.name)}</option>`).join('')}</select><select id="progress-branch"><option value="all">Mọi nhánh</option>${branches.map(x=>`<option value="${esc(x.id)}" ${f.branch===x.id?'selected':''}>${esc(x.name)} · ${x.designedCandidates}</option>`).join('')}${sharedOption}</select><select id="progress-axis">${axes.map(x=>`<option value="${x[0]}" ${f.axis===x[0]?'selected':''}>${x[1]}</option>`).join('')}</select><select id="progress-status"><option value="all">Mọi trạng thái</option>${statusSet.map(x=>`<option value="${esc(x)}" ${f.status===x?'selected':''}>${esc(x)}</option>`).join('')}</select></div>
+      <div class="panel"><div class="panel-head"><div><h2>Skill matrix</h2><small>${filtered.length.toLocaleString('vi-VN')} dòng · trang ${state.progressPage+1}/${pages} · click skill để xem traceability</small></div><div class="head-actions"><button class="small-button" data-progress-page="-1" ${state.progressPage===0?'disabled':''}>←</button><button class="small-button" data-progress-page="1" ${state.progressPage>=pages-1?'disabled':''}>→</button><button class="small-button" data-go="work">Mở việc cần xử lý</button></div></div><div class="table-wrap progress-table-wrap"><table class="data-table progress-table"><thead><tr><th>Skill / ID</th><th>Môn phái / nhánh</th><th>Thiết kế</th><th>Runtime</th><th>VFX kỹ thuật</th><th>Animation</th><th>QA</th><th>Owner Art</th></tr></thead><tbody>${rows||'<tr><td colspan="8" class="empty">Không có kết quả.</td></tr>'}</tbody></table></div></div>`;
+  }
+  function evidenceLink(path, sha, label) {
+    if (!path) return '<div class="trace-line"><span>Nguồn</span><b>UNKNOWN</b></div>';
+    const href='/'+String(path).replace(/^\//,'');
+    return `<div class="trace-line"><span>${esc(label||'Source')}</span><b><a href="${esc(href)}" target="_blank" rel="noopener">${esc(path)}</a><br><code>${esc(sha||'SHA UNKNOWN')}</code></b></div>`;
+  }
+  function skillDetailView() {
+    const row=state.progress?.skills.find(item=>item.id===state.selectedSkillId);
+    if(!row) return `${pageHead('Chi tiết kỹ năng','Chưa chọn skill.','UNKNOWN')}<button class="button" data-go="progress">← Trở lại tiến độ</button>`;
+    const packets=row.vfx.packets.map(packet=>`<article class="evidence-card"><h3>${esc(packet.packetId)} · ${esc(packet.revision)}</h3>${evidenceLink(packet.path,packet.sourceSha256,'VFX packet')}<p>Gate packet: <code>${esc(typeof packet.gateStatus==='string'?packet.gateStatus:JSON.stringify(packet.gateStatus))}</code></p><div class="asset-list">${packet.refs.map(ref=>`<div class="asset-ref"><span>${statusBadge(ref.exists?'PRESENT':'MISSING')} ${esc(ref.kind)}</span><a href="/${esc(ref.projectPath||ref.path)}" target="_blank" rel="noopener">${esc(ref.path)}</a><code>${esc(ref.sourceSha256||'NO FILE HASH')}</code></div>`).join('')||'<small>Packet không liệt kê asset/scene path.</small>'}</div></article>`).join('')||'<div class="empty">Chưa có packet gắn đúng skill ID.</div>';
+    const tests=row.qa.tests.map(test=>`<div class="trace-line"><span>${statusBadge(test.status)}</span><b><a href="/${esc(test.path)}" target="_blank" rel="noopener">${esc(test.path)}</a><br><code>${esc(test.sourceSha256)}</code></b></div>`).join('')||'<div class="empty">Không có test source match ID này.</div>';
+    const runs=row.qa.githubRuns.map(run=>`<div class="evidence-card"><h3><a href="${esc(run.url)}" target="_blank" rel="noopener">${esc(run.name)} · run ${esc(run.runId)}</a> ${statusBadge(run.status)}</h3><code>${esc(run.headSha)}</code><p>${esc(run.scope)}</p></div>`).join('')||'<div class="empty">Chưa có GitHub Action exact-SHA gắn đúng ID.</div>';
+    const actorAssets=row.animation.relatedSchoolAssets.map(asset=>`<div class="asset-ref"><span>${statusBadge(asset.hashStatus)}</span><a href="/${esc(asset.projectPath||asset.path)}" target="_blank" rel="noopener">${esc(asset.clip||asset.assetId||asset.path)}</a><small>${esc(asset.frames||'')} frames · hash manifest ${esc(asset.declaredSha256||'')}</small></div>`).join('')||'<div class="empty">Không có actor asset cấp môn phái trong snapshot.</div>';
+    const schoolVfx=row.vfx.relatedSchoolAssets.filter(asset=>asset.kind==='vfx_master').map(asset=>`<div class="asset-ref"><span>${statusBadge(asset.hashStatus)}</span><a href="/${esc(asset.projectPath||asset.path)}" target="_blank" rel="noopener">${esc(asset.assetId||asset.path)}</a><small>${esc((asset.branches||[]).join(', '))} · sha ${esc(asset.declaredSha256||'')}</small></div>`).join('')||'<div class="empty">Không có VFX master cấp môn phái trong snapshot.</div>';
+    return `${pageHead(row.name,'Traceability theo skill ID. Mọi trạng thái giữ riêng nguồn, runtime, asset, QA và Owner.',String(row.generation||'UNKNOWN').toUpperCase()+' · '+row.schoolName)}
+      <div class="head-actions"><button class="button secondary" data-go="progress">← Tiến độ</button><button class="button" data-skill-cr="${esc(row.id)}">Tạo Change Request cho skill</button></div>
+      <div class="skill-hero"><div><small>SKILL ID</small><code>${esc(row.id)}</code><p>Family: ${esc(row.familyId)} · Branch: ${esc(row.branch||'Chưa gán')} · Slot: ${esc(row.slot)}</p></div><div>${statusBadge(row.design.status)} ${statusBadge(row.runtime.status)} ${statusBadge(row.vfx.technicalStatus)} ${statusBadge(row.animation.status)} ${statusBadge(row.qa.status)} ${statusBadge(row.vfx.ownerStatus)}</div></div>
+      <div class="axis-grid">
+        <section class="panel"><div class="panel-head"><h2>Thiết kế & runtime</h2></div><div class="panel-body">${evidenceLink(row.design.sourcePath,row.design.sourceSha256,'Catalog source')}<div class="notice">Runtime: <b>${esc(row.runtime.status)}</b> · V6.3 OFF. Giá trị catalog không được coi là công thức/gameplay đang dùng.</div>${row.runtime.sourcePaths.map(ref=>evidenceLink(ref.sourcePath,ref.sourceSha256,'Gate/registry source')).join('')}</div></section>
+        <section class="panel"><div class="panel-head"><h2>VFX</h2><small>Ledger: ${esc(row.vfx.ledgerStatus)}</small></div><div class="panel-body">${evidenceLink(row.vfx.ledgerPath,row.vfx.ledgerSha256,'VFX ledger')}<div class="detail-grid"><div class="detail-cell"><small>Owner raw gate</small><b>${esc(row.vfx.ownerGateRaw)}</b></div><div class="detail-cell"><small>Live integration</small><b>${esc(row.vfx.liveIntegration)}</b></div><div class="detail-cell"><small>VFX declaration</small><b>${esc(row.vfx.declaredKey)}</b></div><div class="detail-cell"><small>Technical status</small><b>${esc(row.vfx.technicalStatus)}</b></div></div>${packets}</div></section>
+        <section class="panel"><div class="panel-head"><h2>Animation</h2>${statusBadge(row.animation.status)}</div><div class="panel-body"><p>animationKey: <code>${esc(row.animation.key)}</code></p><p>${esc(row.animation.note)}</p>${actorAssets}</div></section>
+        <section class="panel"><div class="panel-head"><h2>QA & Owner Art</h2></div><div class="panel-body"><p>QA state: ${statusBadge(row.qa.status)}</p><p>Owner state: ${statusBadge(row.vfx.ownerStatus)} · raw: <code>${esc(row.vfx.ownerGateRaw)}</code></p><h3>Test source</h3>${tests}<h3>GitHub evidence exact SHA</h3>${runs}</div></section>
+        <section class="panel"><div class="panel-head"><h2>VFX master cấp môn phái</h2><small>Không suy ra mapping per-skill</small></div><div class="panel-body">${schoolVfx}</div></section>
+      </div>`;
+  }
+  function workQueueView() {
+    const p=state.progress;
+    if(!p) return pageHead('Việc cần xử lý','Chưa nạp projection V2.','PENDING');
+    const s=p.summary;
+    const missingRefs=p.skills.filter(row=>row.vfx.packets.some(packet=>packet.refs.some(ref=>!ref.exists)));
+    const vfxPending=p.skills.filter(row=>row.vfx.ownerStatus!=='OWNER_APPROVED_RECORDED');
+    const noExactRun=p.skills.filter(row=>!row.qa.githubRuns.length);
+    const failedActions=p.skills.filter(row=>row.qa.status==='ACTION_FAILURE_AT_RECORDED_SHA');
+    const inProgressActions=p.skills.filter(row=>row.qa.status==='ACTION_IN_PROGRESS_AT_RECORDED_SHA');
+    const tasks=[
+      {id:'ANIM-MAPPING',title:'Ánh xạ skill ID → clip animation',count:s.animationSkillMappingsVerified+'/'+s.skillCandidates,scope:'Không có bằng chứng per-skill; clip/actor docs chỉ là cấp nhân vật.',status:'UNKNOWN'},
+      {id:'VFX-OWNER-GATE',title:'Nghiệm thu mỹ thuật VFX theo từng skill',count:vfxPending.length,scope:'TECH_PASS và provisional không tự thành Owner Art Approval.',status:'OWNER_PENDING'},
+      {id:'QA-EXACT-SHA',title:'Bằng chứng QA exact-SHA theo skill',count:noExactRun.length+' chưa có run được liên kết',scope:'Source ID trong test chỉ chứng minh có liên kết code, không chứng minh đã chạy.',status:'PENDING'},
+      {id:'QA-ACTION-FAIL',title:'Action exact-SHA gần nhất thất bại',count:failedActions.length,scope:'Hiển thị lỗi ở SHA đã chạy; không nâng run cũ thành PASS.',status:failedActions.length?'FAIL':'NONE'},
+      {id:'QA-ACTION-PENDING',title:'Action exact-SHA đang chạy',count:inProgressActions.length,scope:'Run đã được liên kết nhưng chưa có kết luận; không tính là PASS.',status:inProgressActions.length?'IN_PROGRESS':'NONE'},
+      {id:'PACKET-ASSETS',title:'Đối chiếu asset/scene được khai báo trong packet',count:missingRefs.length+' skill có ít nhất một đường dẫn thiếu',scope:'Kết quả dựa trên file thực có trong checkout khi build projection.',status:missingRefs.length?'MISSING':'PENDING'},
+      {id:'V63-GATE',title:'V6.3 gameplay',count:s.runtimeActive+'/'+s.skillCandidates+' active',scope:'Gate OFF là trạng thái phát hành chủ động, không được tính là lỗi tự động cần sửa.',status:'GATED_OFF'},
+    ];
+    return `${pageHead('Việc cần xử lý','Backlog bằng chứng và gap. Đây là đề xuất theo dõi; không tự tạo quyền sửa gameplay.',tasks.length+' NHÓM')}
+      <div class="notice">Các mục bên dưới không thay đổi 10 gap V1. Gap trang bị 3/10 slot cần Owner quyết định; Wiki chỉ giữ bằng chứng và đề xuất, không sửa authority.</div>
+      <div class="panel"><div class="panel-head"><h2>Evidence backlog</h2><span class="badge gold">PENDING ≠ FAIL</span></div><div class="panel-body">${tasks.map(task=>`<article class="gap-row"><div><h3>${esc(task.id)} · ${esc(task.title)}</h3><p>${esc(task.scope)}</p><small>${esc(task.count)}</small></div>${statusBadge(task.status)}</article>`).join('')}</div></div>
+      <div class="panel"><div class="panel-head"><div><h2>Gap register gốc</h2><small>${p.gapRegister.length} gap · sao chép từ Wiki V1, không tự đóng</small></div><button class="small-button" data-go="gaps">Mở Gap Analysis</button></div><div class="panel-body">${p.gapRegister.map(gap=>`<article class="gap-row"><div><h3>${esc(gap.id)} · ${esc(gap.title)}</h3><p>${esc(gap.summary)}</p><small>${esc(gap.sourcePath)} · ${esc(gap.sourceSha)}</small></div>${statusBadge(gap.status)}</article>`).join('')}</div></div>
+      <div class="panel"><div class="panel-head"><h2>Skill chưa có Action exact-SHA</h2><small>${noExactRun.length.toLocaleString('vi-VN')} candidate</small></div><div class="panel-body"><div class="toolbar"><input id="work-search" placeholder="Lọc backlog theo ID / tên / môn phái"></div><div class="table-wrap"><table class="data-table"><thead><tr><th>Skill</th><th>School</th><th>QA</th><th>Owner</th></tr></thead><tbody>${noExactRun.slice(0,50).map(row=>`<tr data-progress-skill="${esc(row.id)}"><td><b>${esc(row.name)}</b><code>${esc(row.id)}</code></td><td>${esc(row.schoolName)}</td><td>${statusBadge(row.qa.status)}</td><td>${statusBadge(row.vfx.ownerStatus)}</td></tr>`).join('')}</tbody></table></div><button class="small-button" data-go="progress">Duyệt toàn bộ / lọc</button></div></div>`;
+  }
   function render() {
     if (!state.catalog) return;
     if (state.view === 'dashboard') page.innerHTML = state.query ? globalResults() : dashboard();
+    else if (state.view === 'progress') page.innerHTML = renderProgress();
+    else if (state.view === 'skill-detail') page.innerHTML = skillDetailView();
+    else if (state.view === 'work') page.innerHTML = workQueueView();
     else if (state.view === 'gaps') page.innerHTML = renderGaps();
     else if (state.view === 'editor') page.innerHTML = editorView();
     else if (state.view === 'requests') page.innerHTML = requestView();
@@ -263,6 +361,19 @@
     const exportCr=page.querySelector('#cr-export'); if(exportCr) exportCr.addEventListener('click',()=>downloadJson('tmb-wiki-local-change-requests.json',exportBundle({changeRequests:requestRows()})));
     const importCr=page.querySelector('#cr-import'); if(importCr) importCr.addEventListener('click',()=>page.querySelector('#cr-file').click());
     const crFile=page.querySelector('#cr-file'); if(crFile) crFile.addEventListener('change',event=>importLocalData(event,'changeRequests'));
+    page.querySelectorAll('[data-progress-skill]').forEach(row=>row.addEventListener('click',()=>{state.selectedSkillId=row.dataset.progressSkill;setView('skill-detail');}));
+    page.querySelectorAll('[data-filter-school]').forEach(button=>button.addEventListener('click',()=>{state.progressFilters.school=button.dataset.filterSchool;state.progressFilters.branch='all';state.progressPage=0;setView('progress');}));
+    page.querySelectorAll('[data-progress-page]').forEach(button=>button.addEventListener('click',()=>{state.progressPage=Math.max(0,state.progressPage+Number(button.dataset.progressPage));render();}));
+    const progressSearch=page.querySelector('#progress-search'); if(progressSearch) progressSearch.addEventListener('input',event=>{state.progressFilters.query=event.target.value;state.progressPage=0;const pos=event.target.selectionStart;render();const next=page.querySelector('#progress-search');next?.focus();next?.setSelectionRange(pos,pos);});
+    const progressSchool=page.querySelector('#progress-school'); if(progressSchool) progressSchool.addEventListener('change',event=>{state.progressFilters.school=event.target.value;state.progressFilters.branch='all';state.progressPage=0;render();});
+    const progressBranch=page.querySelector('#progress-branch'); if(progressBranch) progressBranch.addEventListener('change',event=>{state.progressFilters.branch=event.target.value;state.progressPage=0;render();});
+    const progressAxis=page.querySelector('#progress-axis'); if(progressAxis) progressAxis.addEventListener('change',event=>{state.progressFilters.axis=event.target.value;state.progressFilters.status='all';render();});
+    const progressStatus=page.querySelector('#progress-status'); if(progressStatus) progressStatus.addEventListener('change',event=>{state.progressFilters.status=event.target.value;state.progressPage=0;render();});
+    const workSearch=page.querySelector('#work-search'); if(workSearch) workSearch.addEventListener('input',event=>{const q=normalize(event.target.value);page.querySelectorAll('[data-progress-skill]').forEach(row=>row.hidden=!normalize(row.textContent).includes(q));});
+    page.querySelectorAll('[data-skill-cr]').forEach(button=>button.addEventListener('click',()=>{const row=state.progress?.skills.find(item=>item.id===button.dataset.skillCr);if(!row)return;setView('requests');setTimeout(()=>{const set=(selector,value)=>{const el=page.querySelector(selector);if(el)el.value=value;};set('#cr-title','Bổ sung bằng chứng/hoàn thiện '+row.id);set('#cr-id',row.id);set('#cr-before',JSON.stringify({runtime:row.runtime.status,vfx:row.vfx.ledgerStatus,animation:row.animation.status,qa:row.qa.status,owner:row.vfx.ownerGateRaw},null,2));set('#cr-after','Đề xuất: bổ sung mapping/bằng chứng cụ thể; không tự bật runtime hoặc phê duyệt mỹ thuật.');set('#cr-criteria','Có source/asset/test hoặc Action exact-SHA gắn đúng skill ID; giữ TECH, Owner Art và runtime thành các trạng thái độc lập.');},0);}));
+    const backupExport=page.querySelector('#owner-backup-export'); if(backupExport) backupExport.addEventListener('click',()=>downloadJson('tmb-wiki-owner-backup-v2.json',ownerBackupBundle()));
+    const backupImport=page.querySelector('#owner-backup-import'); if(backupImport) backupImport.addEventListener('click',()=>{if(confirm('Restore sẽ chỉ thêm bản ghi mới; dữ liệu Owner hiện có được giữ nguyên. Tiếp tục chọn backup JSON?'))page.querySelector('#owner-backup-file')?.click();});
+    const backupFile=page.querySelector('#owner-backup-file'); if(backupFile) backupFile.addEventListener('change',event=>importLocalData(event,'all'));
   }
   function bindProposalForm(form) {
     const id=page.querySelector('#p-id'), field=page.querySelector('#p-field'), before=page.querySelector('#p-before'), after=page.querySelector('#p-after'), compareBefore=page.querySelector('#compare-before'), compareAfter=page.querySelector('#compare-after');
@@ -274,6 +385,8 @@
     event.preventDefault();const rows=requestRows();rows.push({localId:crypto.randomUUID(),title:page.querySelector('#cr-title').value,relatedIds:page.querySelector('#cr-id').value,current:page.querySelector('#cr-before').value,proposed:page.querySelector('#cr-after').value,priority:page.querySelector('#cr-priority').value,status:page.querySelector('#cr-status').value,criteria:page.querySelector('#cr-criteria').value,note:page.querySelector('#cr-note').value,createdAt:new Date().toISOString(),sourceHead:state.catalog.sourceCommitSha});persist(STORAGE.requests,rows);render();
   }
   function exportBundle(data) { return { schemaVersion:1, exportedAt:new Date().toISOString(), sourceHead:state.catalog.sourceCommitSha, ...data }; }
+  function ownerBackupBundle() { return { schemaVersion:2, bundleType:'tmb-wiki-owner-data', exportedAt:new Date().toISOString(), sourceHead:state.catalog.sourceCommitSha, proposals:proposalRows(), changeRequests:requestRows() }; }
+  function ownerBackupControls() { return '<div class="backup-actions"><span>Backup/restore chỉ hợp nhất dữ liệu local; bản ghi đã có không bị ghi đè hoặc xóa.</span><button class="small-button" id="owner-backup-export" type="button">Backup toàn bộ JSON · v2</button><button class="small-button" id="owner-backup-import" type="button">Restore hợp nhất</button><input type="file" id="owner-backup-file" accept="application/json" hidden></div>'; }
   function mergeLocalRows(existing, incoming, requiredFields) {
     if (!Array.isArray(incoming)) throw new Error('Danh sách JSON không hợp lệ.');
     const merged=[...existing];const known=new Set(existing.map(row=>row.localId));let added=0;
@@ -307,7 +420,12 @@
     reader.onload=()=>{
       try {
         const data=JSON.parse(reader.result);
-        if(data.schemaVersion!==1)throw new Error('Chỉ hỗ trợ backup JSON schemaVersion 1.');
+        if(![1,2].includes(data.schemaVersion))throw new Error('Schema không hỗ trợ. Chỉ nhận phiên bản 1 hoặc 2.');
+        if(data.schemaVersion===2&&data.bundleType!=='tmb-wiki-owner-data')throw new Error('Backup schema 2 sai bundleType.');
+        for(const key of ['proposals','changeRequests']) if(Array.isArray(data[key])) {
+          const ids=new Set();
+          for(const row of data[key]) { if(!row||typeof row!=='object') throw new Error('Bản ghi JSON không hợp lệ.'); if(row.localId&&ids.has(row.localId)) throw new Error('Backup có localId trùng lặp: '+row.localId); if(row.localId) ids.add(row.localId); }
+        }
         if(onlyKind==='changeRequests'&&!Array.isArray(data.changeRequests))throw new Error('File CR phải có danh sách changeRequests.');
         if(onlyKind==='proposals'&&!Array.isArray(data.proposals))throw new Error('File đề xuất phải có danh sách proposals.');
         const hasProposals=Array.isArray(data.proposals);
@@ -338,17 +456,24 @@
   document.querySelector('#sync-command').addEventListener('click',()=>document.querySelector('#sync-dialog').showModal());
   document.querySelectorAll('[data-close="sync-dialog"]').forEach(button=>button.addEventListener('click',()=>document.querySelector('#sync-dialog').close()));
   document.querySelector('#sync-dialog').addEventListener('click',event=>{if(event.target===event.currentTarget)event.currentTarget.close();});
-  document.querySelector('#copy-sync').addEventListener('click',async()=>{try{await navigator.clipboard.writeText('python tools/wiki/build_wiki_catalog.py --write');document.querySelector('#copy-sync').textContent='Đã sao chép';}catch{document.querySelector('#copy-sync').textContent='Copy bị chặn';}});
+  document.querySelector('#copy-sync').addEventListener('click',async()=>{try{await navigator.clipboard.writeText('tools/wiki/SYNC_WIKI_SOURCE.cmd');document.querySelector('#copy-sync').textContent='Đã sao chép';}catch{document.querySelector('#copy-sync').textContent='Copy bị chặn';}});
   document.querySelector('#privacy-close').addEventListener('click',()=>document.querySelector('.privacy-banner').remove());
   document.addEventListener('keydown',event=>{if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==='k'){event.preventDefault();searchInput.focus();}if(event.key==='Escape')document.querySelector('#sidebar').classList.remove('open');});
 
   if (!['localhost','127.0.0.1','::1'].includes(location.hostname)) {
     page.innerHTML='<div class="panel"><div class="panel-body"><div class="eyebrow">LOCAL-ONLY ACCESS GATE</div><h1>Tàng Kinh Các không phục vụ trên host từ xa</h1><p class="detail-description">Để bảo vệ ghi chú quản trị trong profile trình duyệt, Wiki chỉ chạy trên localhost. Hãy dùng <code>tools/wiki/OPEN_TANG_KINH_CAC.cmd</code> trong checkout nội bộ.</p></div></div>';
     document.querySelector('#sync-state').textContent='LOCAL ONLY';
-  } else fetch('./data/catalog.json',{cache:'no-store'}).then(response=>{if(!response.ok)throw new Error(`HTTP ${response.status}`);return response.json();}).then(data=>{
-    state.catalog=data;document.querySelector('#sync-state').textContent='Snapshot đã kiểm SHA';document.querySelector('#head-mini').textContent=data.sourceCommitSha.slice(0,12);updateCounters();render();
+  } else Promise.all([
+    fetch('./data/catalog.json',{cache:'no-store'}).then(response=>{if(!response.ok)throw new Error('catalog.json HTTP '+response.status);return response.json();}),
+    fetch('./data/skill_progress_v2.json',{cache:'no-store'}).then(response=>{if(!response.ok)throw new Error('skill_progress_v2.json HTTP '+response.status);return response.json();}).catch(error=>({__loadError:error.message}))
+  ]).then(([catalog,progress])=>{
+    state.catalog=catalog;
+    state.progress=progress?.__loadError?null:progress;
+    document.querySelector('#sync-state').textContent=state.progress?'V1 + V2 đã nạp':'V1 nạp · V2 pending';
+    document.querySelector('#head-mini').textContent=catalog.sourceCommitSha.slice(0,12);
+    updateCounters();render();
   }).catch(error=>{
-    page.innerHTML=`<div class="panel"><div class="panel-body"><div class="eyebrow">LOCAL LAUNCH REQUIRED</div><h1>Không tải được source snapshot</h1><p class="detail-description">${esc(error.message)}. Hãy mở qua <code>tools/wiki/OPEN_TANG_KINH_CAC.cmd</code> để chạy HTTP server chỉ bind 127.0.0.1. Không mở file HTML trực tiếp.</p></div></div>`;
+    page.innerHTML=`<div class="panel"><div class="panel-body"><div class="eyebrow">LOCAL LAUNCH REQUIRED</div><h1>Không tải được source snapshot</h1><p class="detail-description">${esc(error.message)}. Hãy mở qua <code>tools/wiki/OPEN_TANG_KINH_CAC.cmd</code> để chạy HTTP server chỉ bind 127.0.0.1.</p></div></div>`;
     document.querySelector('#sync-state').textContent='Chưa nạp catalog';
   });
 })();

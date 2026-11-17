@@ -1,0 +1,106 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Snapshot of exact-skill GitHub Actions records. Technical Action results do not establish production runtime, Owner Art approval, or release.",
+  "observedAtHead": "6d3176124a37ab37f700a88f8a3993d97c42c90e",
+  "runs": [
+    {
+      "runId": 44107080463,
+      "name": "TMB Wiki source validation",
+      "headSha": "b67a4d218f79bcfb50a4f7e68a133523e99a2be1",
+      "conclusion": "success",
+      "createdAt": "2026-11-17T14:48:02Z",
+      "url": "https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/44107080463",
+      "evidenceScope": "Historical Wiki V1 source validation at exact SHA; not evidence for V2 or gameplay."
+    },
+    {
+      "runId": 44107346724,
+      "name": "VFX FIST12 R10 full native mark review",
+      "skillId": "tmb.skill.fist.huyet_quyen.active_02.human",
+      "headSha": "e178095b43a9b1f21b77544a821622f0cc9d706a",
+      "conclusion": "success",
+      "createdAt": "2026-11-17T14:49:30Z",
+      "url": "https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/44107346724",
+      "evidenceScope": "Exact run reports Godot 4.7.2 strict import/parse, focused moving-target, G3.5 native preflight, 7.6s native video and proof upload. G3.7 and Owner final art approval remain pending; V6.3/PvE remain OFF/HOLD.",
+      "statuses": {
+        "engine": "ENGINE_TECH_PASS",
+        "g35": "G3_5_NATIVE_PASS",
+        "visibility": "G3_6_MINIMUM_VISIBILITY_PASS",
+        "semantic": "G3_7_SEMANTIC_REVIEW_PENDING",
+        "ownerArt": "ART_OWNER_PENDING",
+        "liveIntegration": "PVE_HOLD"
+      }
+    },
+    {
+      "runId": 44126456386,
+      "name": "PAF06 R5 | Original RGBA Spirit Wind Buff Godot native",
+      "skillId": "tmb.skill.talisman.phong_an_phu.passive_01.human",
+      "headSha": "ba408c75a602d22b7ca523860e74f3886403f1a9",
+      "conclusion": "failure",
+      "createdAt": "2026-11-17T16:30:04Z",
+      "url": "https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/44126456386",
+      "evidenceScope": "Earlier PAF06 R5 exact-SHA run failed; retained as history and superseded by later successful R5 run. Failure does not establish asset absence."
+    },
+    {
+      "runId": 44127403896,
+      "name": "PAF07 R1 | Duong Phu Quy Nguyen Godot native",
+      "skillId": "tmb.skill.talisman.phong_an_phu.passive_02.human",
+      "headSha": "4c1638fae286c29a0e618c41631a78aeefd7951a",
+      "conclusion": "success",
+      "createdAt": "2026-11-17T16:34:59Z",
+      "url": "https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/44127403896",
+      "evidenceScope": "Exact run passed pinned official Godot 4.7.2, original alpha source, strict parse/focused test, 192-frame native Godot and OFF comparison. Lab only; Owner Art and V6.3 integration remain separate."
+    },
+    {
+      "runId": 44127908258,
+      "name": "PAF06 R5 | Original RGBA Spirit Wind Buff Godot native",
+      "skillId": "tmb.skill.talisman.phong_an_phu.passive_01.human",
+      "headSha": "de2aeb5e6aaff60c08214d99a7ed23dd905be880",
+      "conclusion": "success",
+      "createdAt": "2026-11-17T16:37:38Z",
+      "url": "https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/44127908258",
+      "evidenceScope": "Exact run passed pinned official Godot 4.7.2, strict import/focused test, 252-frame native 1280x720, visibility check and archive. Lab only; Owner Art and V6.3 integration remain separate."
+    },
+    {
+      "runId": 44135022832,
+      "name": "PAF08 R1 | Luu Van Liem Tuc Godot native",
+      "skillId": "tmb.skill.talisman.phong_an_phu.passive_03.human",
+      "headSha": "d5c092b853b92727540a9f8bb94898293b54daad",
+      "conclusion": "success",
+      "createdAt": "2026-11-17T17:15:46Z",
+      "url": "https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/44135022832",
+      "evidenceScope": "Exact-ID test maps passive_03.human; job passed official Godot 4.7.2 strict import/focused contract and native 1280x720 looping passive comparison. Passive only, no fake cast/hit; Owner Art pending and V6.3/PvE held."
+    },
+    {
+      "runId": 44133032912,
+      "name": "VFX POI20 R1 Xa Anh Quan Mach Tien A - true RGBA light serpent Godot",
+      "skillId": "tmb.skill.poison.co_doc.active_02.immortal.a",
+      "headSha": "1e426fab0edd90ad41738de158a6a49c9a6611c6",
+      "conclusion": "failure",
+      "createdAt": "2026-11-17T17:05:08Z",
+      "url": "https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/44133032912",
+      "evidenceScope": "Earlier POI20 exact-SHA run failed; retained as history and superseded by later completed native run."
+    },
+    {
+      "runId": 44135139429,
+      "name": "VFX POI20 R1 Xa Anh Quan Mach Tien A - true RGBA light serpent Godot",
+      "skillId": "tmb.skill.poison.co_doc.active_02.immortal.a",
+      "headSha": "26f759a629adac63bffe07fa33f24ea967bab537",
+      "conclusion": "success",
+      "createdAt": "2026-11-17T17:16:23Z",
+      "url": "https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/44135139429",
+      "evidenceScope": "Exact ID occurs in the POI20 packet/test. Completed run passed official Godot 4.7.2 strict import, one-target contract and native 1280x720 moving-target/expiry QA. Owner art gate separate; no gameplay receipt, V6.3 OFF."
+    },
+    {
+      "runId": 44136137802,
+      "name": "VFX POI20 R1 Xa Anh Quan Mach Tien A - true RGBA light serpent Godot",
+      "skillId": "tmb.skill.poison.co_doc.active_02.immortal.a",
+      "headSha": "6d3176124a37ab37f700a88f8a3993d97c42c90e",
+      "conclusion": null,
+      "runStatus": "in_progress",
+      "createdAt": "2026-11-17T17:21:46Z",
+      "url": "https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/44136137802",
+      "evidenceScope": "A newer POI20 exact-SHA run was in progress when this snapshot was captured. Its result is pending and does not override earlier completed result."
+    }
+  ],
+  "sourceIdentityNote": "Per-skill mapping exists only when a record contains its exact skillId. The latest recorded status is surfaced separately; test source IDs do not prove execution. Technical PASS is not Owner Art Approval."
+}

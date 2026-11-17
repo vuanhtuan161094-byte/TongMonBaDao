@@ -37,23 +37,39 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Resolve latest non-Wiki source commit
-        shell: bash
-        env:
-          SOURCE_REF: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
-        run: |
-          source_sha="$(git log -1 --format=%H "$SOURCE_REF" -- . ':!wiki' ':!docs/wiki' ':!tools/wiki' ':!.github/workflows/wiki-source-validation.yml')"
-          test "${#source_sha}" = 40
-          echo "TMB_WIKI_SOURCE_SHA=$source_sha" >> "$GITHUB_ENV"
-          echo "Wiki source SHA: $source_sha"
       - name: Record exact revision
         run: |
           echo "GitHub event SHA: $GITHUB_SHA"
           echo "Checked out SHA: $(git rev-parse HEAD)"
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+      - name: Preserve the V1 source watermark while validating source hashes
+        run: |
+          python - <<'PY'
+          import json, os, re
+          from pathlib import Path
+          sha = json.loads(Path("wiki/data/catalog.json").read_text(encoding="utf-8"))["sourceCommitSha"]
+          if not re.fullmatch(r"[0-9a-f]{40}", sha):
+              raise SystemExit("invalid Wiki V1 source watermark")
+          with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as env:
+              env.write(f"TMB_WIKI_SOURCE_SHA={sha}\n")
+          print(f"V1 baseline source SHA: {sha}")
+          PY
       - name: Verify source projection is current
         run: python tools/wiki/build_wiki_catalog.py --check
+      - name: Generate the local-only V2 progress projection
+        run: python tools/wiki/build_skill_progress_v2.py --write
+      - name: Verify V2 skill progress projection is deterministic
+        run: python tools/wiki/build_skill_progress_v2.py --check
       - name: Run focused Wiki tests
         run: python -m unittest discover -s tools/wiki/tests -v
       - name: Validate browser scripts parse
         run: node --check wiki/app.js
+      - name: Archive exact-SHA V2 projection for review
+        uses: actions/upload-artifact@v4
+        with:
+          name: tmb-wiki-v2-projection-${{ github.sha }}
+          path: |
+            wiki/data/skill_progress_v2.json
+            wiki/data/skill_progress_v2_coverage.md
+          if-no-files-found: error
+          retention-days: 7

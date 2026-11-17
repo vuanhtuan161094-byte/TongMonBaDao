@@ -42,10 +42,11 @@ Các trạng thái phê duyệt trong UI chỉ là quản trị nội bộ; chú
 
 ## Đồng bộ nguồn một chiều
 
-Chạy `tools/wiki/SYNC_WIKI_SOURCE.cmd` hoặc:
+Nhấp đúp `tools/wiki/OPEN_TANG_KINH_CAC.cmd`; launcher chạy source sync trước khi mở server. Nếu cần chủ động đồng bộ riêng, chạy `tools/wiki/SYNC_WIKI_SOURCE.cmd` hoặc:
 
 ```powershell
 python tools/wiki/build_wiki_catalog.py --write
+python tools/wiki/build_skill_progress_v2.py --write
 ```
 
 Script chỉ cập nhật `wiki/data/catalog.json` và file kiểm kê này. Kiểm tra stale projection bằng:
@@ -69,3 +70,25 @@ Không có chức năng ghi ngược từ Wiki vào `godot/`. Không chép local
 ## Phạm vi snapshot hiện tại
 
 Source audit ở [TMB_WIKI_SOURCE_AUDIT.md](TMB_WIKI_SOURCE_AUDIT.md) nêu count và gap tại source snapshot. Wiki không đọc save, tài khoản, dữ liệu người chơi hay thư mục bên ngoài repo.
+
+## Tiến độ toàn bộ kỹ năng — Wiki V2
+
+1. Mở **Tiến độ skill V2** để duyệt 12 môn phái, 36 nhánh và từng skill ID. Có thể lọc theo môn phái, nhánh, trục trạng thái và tìm kiếm.
+2. Bấm một skill để mở trang chi tiết. Trang tách riêng nguồn thiết kế, runtime, VFX ledger/packet, animation, test, GitHub Action và Owner Art. Link asset theo packet chỉ được gắn khi packet nêu đúng skill ID.
+3. **V6.3 candidate** là nội dung thiết kế. V6.3 đang OFF nên candidate không được tính là gameplay đang chạy. Presentation metadata không phải asset.
+4. **TECH_PASS_REPORTED** chỉ là trạng thái kỹ thuật được ghi nguồn; không chứng minh chất lượng mỹ thuật. **PROVISIONAL_NOT_FINAL** không phải Owner Art Approval cuối. Test source có ID chỉ là liên kết mã, chưa chứng minh test chạy.
+5. Manifest animation Nữ Độc Tu cho biết các atlas cấp nhân vật, frame count, pivot và SHA khai báo. V2 không suy ra chiêu nào dùng clip nào khi không có mapping. SHA của ảnh lấy từ manifest và được ghi rõ là chưa rehash trong quá trình Wiki build.
+6. **Việc cần xử lý** gom các thiếu hụt bằng chứng và chép nguyên 10 gap của V1. Gate V6.3 OFF là trạng thái chủ động, không tự biến thành đề xuất bật gameplay. Gap 3/10 slot thiết bị tiếp tục chờ Owner quyết định.
+7. Trong Design Editor hoặc Change Request Manager, bấm **Backup toàn bộ JSON · v2** để tải snapshot local. **Restore hợp nhất** chỉ thêm localId mới; bản ghi cùng ID hiện có được giữ, file sai schema hoặc trùng localId sẽ bị từ chối. Schema V1 cũ vẫn được nhập.
+8. Source sync chạy tools/wiki/SYNC_WIKI_SOURCE.cmd; lệnh gọi hai builder tuần tự và chỉ cập nhật projection/report đã sinh. Nó không ghi ngược đề xuất vào nguồn gameplay.
+
+### Trục coverage
+
+- **Thiết kế:** candidate metadata trong catalog V1.
+- **Runtime:** status registry/feature gate; V6.3 vẫn GATED_OFF.
+- **VFX:** trạng thái raw từ 12 ledger, packet exact-skill nếu có, asset/scene path và availability.
+- **Animation:** UNKNOWN per skill khi chưa có mapping; manifest cấp actor được hiển thị riêng.
+- **Technical QA:** Action exact-SHA nếu có; còn lại có test source chỉ ghi NOT_EXECUTED.
+- **Owner Art:** raw gate được giữ nguyên và phân loại APPROVED / PROVISIONAL / PENDING, không suy ra từ TECH_PASS.
+
+Coverage được sinh tại wiki/data/skill_progress_v2_coverage.md khi source sync chạy; evidence GitHub được đóng gói trong docs/wiki/TMB_WIKI_V2_GITHUB_EVIDENCE_20261117.json. Trang vẫn chỉ bind localhost và không có bước deploy.

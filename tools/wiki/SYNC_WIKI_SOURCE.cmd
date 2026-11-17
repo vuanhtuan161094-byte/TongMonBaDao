@@ -11,4 +11,6 @@ pause
 exit /b 2
 :UsePython
 "%PYTHON_EXE%" tools\wiki\build_wiki_catalog.py --write
+if errorlevel 1 exit /b %errorlevel%
+"%PYTHON_EXE%" tools\wiki\build_skill_progress_v2.py --write
 exit /b %errorlevel%

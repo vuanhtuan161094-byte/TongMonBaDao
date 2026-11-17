@@ -20,6 +20,8 @@
       <nav class="nav" id="nav">
         <button class="nav-item active" data-view="dashboard"><span>◈</span>Bảng phát triển</button>
         <button class="nav-item" data-view="gaps"><span>⌁</span>Gap Analysis <i id="gap-count">0</i></button>
+        <button class="nav-item" data-view="progress"><span>▦</span>Tiến độ skill V2</button>
+        <button class="nav-item" data-view="work"><span>⚑</span>Việc cần xử lý</button>
         <div class="nav-label">DANH MỤC NGUỒN</div>
         <button class="nav-item" data-view="schools"><span>門</span>Môn phái</button>
         <button class="nav-item" data-view="branches"><span>⌘</span>36 nhánh</button>
@@ -53,14 +55,14 @@
         </div>
       </header>
       <div class="privacy-banner"><span>▣</span><span><b>Không gian nội bộ</b> · Site chỉ được phục vụ trên <code>127.0.0.1</code>. Nội dung Wiki là snapshot một chiều; đề xuất của bạn không sửa nguồn game.</span><button id="privacy-close" aria-label="Đóng">×</button></div>
-      <section id="page" class="page" aria-live="polite"><div class="loading"><span class="spinner"></span>Đang đọc catalog có kiểm chứng…</div></section>
+      <section id="page" class="page" aria-live="polite"><div class="loading"><span class="spinner"></span>Đang đọc catalog và progress source có kiểm chứng…</div></section>
     </main>
   </div>
   <dialog id="sync-dialog" class="modal">
     <div class="modal-head"><div><small>ONE-WAY SOURCE SYNC</small><h2>Đồng bộ nguồn game → Wiki</h2></div><button class="icon-button" data-close="sync-dialog">×</button></div>
-    <p>Đồng bộ chỉ sinh lại <code>wiki/data/catalog.json</code> và báo cáo coverage. Bản ghi đề xuất và Change Request nằm trong localStorage của browser, không bị ghi đè bởi tác vụ này.</p>
-    <div class="command"><code>python tools/wiki/build_wiki_catalog.py --write</code><button class="small-button" id="copy-sync">Sao chép</button></div>
-    <div class="modal-note">Sau khi đồng bộ, tải lại trang để đọc snapshot mới. Duyệt `docs/wiki/TMB_WIKI_SOURCE_AUDIT.md` trước khi commit dữ liệu sinh.</div>
+    <p>Đồng bộ sinh <code>wiki/data/catalog.json</code>, progress V2 và báo cáo coverage. Dữ liệu V1 giữ nguyên nguồn/semantics. Bản ghi đề xuất và Change Request nằm trong localStorage của browser, không bị ghi đè bởi tác vụ này.</p>
+    <div class="command"><code>tools/wiki/SYNC_WIKI_SOURCE.cmd</code><button class="small-button" id="copy-sync">Sao chép</button></div>
+    <div class="modal-note">Lệnh chạy tuần tự hai builder. Sau khi đồng bộ, tải lại trang để đọc snapshot mới. Duyệt `docs/wiki/TMB_WIKI_SOURCE_AUDIT.md` trước khi commit dữ liệu sinh.</div>
   </dialog>
   <script src="./app.js" defer></script>
 </body>
