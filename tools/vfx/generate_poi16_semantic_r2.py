@@ -43,7 +43,7 @@ def leaf(yx,xx,yy,angle,reach,grow,phase):
     v=-xx*np.sin(angle)+yy*np.cos(angle)
     effective=reach*grow
     s=np.clip((u-6)/max(effective-6,1),0,1)
-    width=(3+30*(np.sin(np.pi*s)**.89))*grow
+    width=(3+30*(np.maximum(np.sin(np.pi*s),0.0)**.89))*grow
     bend=5.0*np.sin(np.pi*s)*(phase-.5)+4*np.sin(np.pi*s*1.3+phase*.5)
     diff=v-bend
     feather=np.exp(-(np.abs(diff)/(np.maximum(width,2.3)))**4)
@@ -127,12 +127,12 @@ def render(part,phase,wh):
         t=np.clip((x-left)/(right-left),0,1)
         path=7.0*np.sin(t*5.1+phase*3.1)+4*np.sin(t*10.3-2.4*phase)
         envelope=gate(x,left,right,22)
-        ribbon=np.exp(-((y-path)/(5.5+3*np.sin(np.pi*t)**2))**2)*envelope
+        ribbon=np.exp(-((y-path)/(7.3+3.5*np.sin(np.pi*t)**2))**2)*envelope
         silk=np.exp(-((y-path)/2.5)**2)*envelope
-        lay("jade",np.exp(-((y-path)/24)**2)*envelope*.19*noise)
-        lay("aqua",ribbon*.59*noise)
-        lay("mint",ribbon*.35)
-        lay("ivory",silk*.59)
+        lay("jade",np.exp(-((y-path)/28)**2)*envelope*.32*noise)
+        lay("aqua",ribbon*.73*noise)
+        lay("mint",ribbon*.48)
+        lay("ivory",silk*.65)
         # Traveling luminous pearl: one discernible transfer direction.
         lead=np.clip(.08+.87*phase,0,1)
         hx=left+(right-left)*lead
@@ -153,7 +153,7 @@ def render(part,phase,wh):
         # Drop shape: pointed top, broad near middle, taper underneath.
         v=y+4.0
         norm=np.clip((v+35)/70,0,1)
-        half=2+19*np.sin(np.pi*norm)**.76
+        half=2+19*np.maximum(np.sin(np.pi*norm),0.0)**.76
         drop=np.exp(-((np.abs(x)/np.maximum(half,2.1))**4))*gate(v,-37,34,8)
         lay("jade",drop*.68*alpha)
         lay("mint",drop*.43*alpha)

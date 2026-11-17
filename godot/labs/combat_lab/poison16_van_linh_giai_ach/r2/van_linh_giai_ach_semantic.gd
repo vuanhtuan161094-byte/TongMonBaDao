@@ -54,7 +54,7 @@ static func ally_foot(i:int,t:float)->Vector2:
                         (7.0+float(index))*cos(t*.84+float(index)*.59))
 
 static func ally_chest(i:int,t:float)->Vector2:
-    return ally_foot(i,t)+Vector2(0,-65)
+    return ally_foot(i,t)+Vector2(0,-56)
 
 static func monster_foot(t:float)->Vector2:
     return MONSTER_BASE+Vector2(31*sin(1.22*t+.3),7*cos(t*.97))
@@ -118,7 +118,7 @@ func _ready()->void:
                 "seal":seal_frames.append(f)
                 "fade":fade_frames.append(f)
     set_process(true)
-    print("POI16_SEMANTIC_R2C_READY heal_circle_threefold_leaves=true independent_transferring_streams=3 medicinal_seals=3 moving_allies=true outside_ally_unaffected=true rgba_poses=48 no_gif=true no_rig=true")
+    print("POI16_SEMANTIC_R2D_READY heal_circle_threefold_leaves=true independent_transferring_streams=3 medicinal_seals=3 moving_allies=true outside_ally_unaffected=true rgba_poses=48 no_gif=true no_rig=true")
     queue_redraw()
 
 func _process(dt:float)->void:

@@ -30,7 +30,7 @@ func _check()->void:
         check(not source.contains(forbidden),"view only no real HP receipt "+forbidden)
     for index in range(3):
         var torso_gap:=LAB.ally_foot(index,1.92).y-LAB.ally_chest(index,1.92).y
-        check(torso_gap>=55.0 and torso_gap<=74.0,"herbal stamp must anchor around TORSO not face or head "+str(index))
+        check(torso_gap>=50.0 and torso_gap<=65.0,"herbal stamp must anchor around TORSO not face or head "+str(index))
     check(LAB.semantic_phase_at(.64)=="medicine_seed","recognizable medicine seed")
     check(LAB.semantic_phase_at(1.28)=="three_leaf_herb","READABLE tripetal herbal bloom")
     check(LAB.semantic_phase_at(1.51)=="three_healing_links","real three branch transfer to ally")
