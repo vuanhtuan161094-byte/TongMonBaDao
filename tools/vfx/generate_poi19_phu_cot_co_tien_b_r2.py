@@ -101,6 +101,11 @@ def runic_ring(im,cx,cy,rx,ry,t,power):
     add(im,dots,C["gold"],.59*power)
     twinkle(im,cx+rx*.8,cy,2.7,.7*power)
 
+def twinkle(im,x,y,r,opacity):
+    orb(im,x,y,r*5,r*4,C["violet"],.19*opacity)
+    orb(im,x,y,r*1.7,r*1.8,C["gold"],.28*opacity)
+    orb(im,x,y,r,r,C["milk"],.64*opacity)
+
 def flower(im,cx,cy,t,phase):
     petals=5
     for k in range(petals):
