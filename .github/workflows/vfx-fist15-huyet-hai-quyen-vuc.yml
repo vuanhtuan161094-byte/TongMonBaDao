@@ -57,7 +57,7 @@ jobs:
           bash tools/qa/run_godot_strict.sh --headless --path godot --import 2>&1 | tee "$d/import.log"
           bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://labs/combat_lab/fist15/huyet_hai_quyen_vuc.gd 2>&1 | tee "$d/parse.log"
           bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/labs/combat_lab/vfx_fist15_contract_test.gd 2>&1 | tee "$d/godot-focused.log"
-          grep -Fq 'VFX_FIST15_FOCUSED_RESULT=PASS failures=0' "$d/godot-focused.log"
+          grep -Fq 'VFX_FIST15_R1_FOCUSED_RESULT=PASS failures=0' "$d/godot-focused.log"
       - name: G3.5 genuine 1280x720 charge/peak/3 moving-target contacts STOP
         run: |
           set -euo pipefail
