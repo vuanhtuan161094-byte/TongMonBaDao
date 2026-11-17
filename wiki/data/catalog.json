@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "project": "Tông Môn Bá Đạo — Tàng Kinh Các (owner-only)",
   "visibility": "LOCAL_ONLY_PRIVATE_BY_DEFAULT",
-  "sourceCommitSha": "7d0284e529f092ae4367afc47f2cec2ac0a544d6",
+  "sourceCommitSha": "21023942b1796b3fd5829accd55b3d2f916f7472",
   "sourceSyncPolicy": "ONE_WAY_GAME_SOURCE_TO_WIKI; browser proposals are not part of this generated file",
   "counts": {
     "schools": 12,
@@ -110649,7 +110649,7 @@
       "qaEvidence": {
         "status": "WIKI_SOURCE_VALIDATOR",
         "sourcePath": "tools/wiki/build_wiki_catalog.py",
-        "sourceSha": "f3705f2d877fcde5554245627f214ad21fbf9ac2f8f75f2b8191929c547b06c0"
+        "sourceSha": "032a48ef110a8329b23f7de173efe8a880a0f8850c4250d1ce5884206ba0fc6f"
       }
     },
     {
@@ -110718,7 +110718,7 @@
       "qaEvidence": {
         "status": "STATIC_HEURISTIC",
         "sourcePath": "tools/wiki/build_wiki_catalog.py",
-        "sourceSha": "f3705f2d877fcde5554245627f214ad21fbf9ac2f8f75f2b8191929c547b06c0"
+        "sourceSha": "032a48ef110a8329b23f7de173efe8a880a0f8850c4250d1ce5884206ba0fc6f"
       }
     },
     {

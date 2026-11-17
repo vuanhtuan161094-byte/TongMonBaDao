@@ -35,6 +35,10 @@ class WikiCatalogTests(unittest.TestCase):
             crlf.write_bytes(b"line one\r\nline two\r\n")
             self.assertEqual(builder.sha256(lf), builder.sha256(crlf))
 
+    def test_source_sync_reports_first_structural_difference(self) -> None:
+        difference = builder.first_difference({"a": [1, {"b": 2}]}, {"a": [1, {"b": 3}]})
+        self.assertEqual(("$.a[1].b", 2, 3), difference)
+
     def test_v63_is_not_reported_as_live(self) -> None:
         self.assertEqual(0, self.catalog["counts"]["v63Enabled"])
         self.assertTrue(all(skill["runtimeStatus"] == "GATED_OFF" for skill in self.catalog["skills"]))

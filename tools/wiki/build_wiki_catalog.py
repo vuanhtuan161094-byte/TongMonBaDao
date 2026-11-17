@@ -677,6 +677,34 @@ def make_audit(catalog: dict[str, Any]) -> str:
     return "\n".join(lines)
 
 
+def first_difference(expected: Any, actual: Any, path: str = "$", depth: int = 0) -> tuple[str, Any, Any] | None:
+    if depth > 32:
+        return None if expected == actual else (path, expected, actual)
+    if type(expected) is not type(actual):
+        return path, expected, actual
+    if isinstance(expected, dict):
+        keys = sorted(set(expected) | set(actual))
+        for key in keys:
+            child = f"{path}.{key}"
+            if key not in expected:
+                return child, "<missing>", actual[key]
+            if key not in actual:
+                return child, expected[key], "<missing>"
+            difference = first_difference(expected[key], actual[key], child, depth + 1)
+            if difference:
+                return difference
+    elif isinstance(expected, list):
+        if len(expected) != len(actual):
+            return f"{path}.length", len(expected), len(actual)
+        for index, (left, right) in enumerate(zip(expected, actual)):
+            difference = first_difference(left, right, f"{path}[{index}]", depth + 1)
+            if difference:
+                return difference
+    elif expected != actual:
+        return path, expected, actual
+    return None
+
+
 def write_projection(catalog: dict[str, Any], root: Path = ROOT, output_override: Path | None = None) -> tuple[Path, Path]:
     data_path = output_override or (root / "wiki/data/catalog.json")
     audit_path = root / "docs/wiki/TMB_WIKI_SOURCE_AUDIT.md"
@@ -701,8 +729,16 @@ def main() -> int:
     if args.check:
         expected = json.dumps(catalog, ensure_ascii=False, indent=2) + "\n"
         checked = ROOT / "wiki/data/catalog.json"
-        if not checked.exists() or checked.read_text(encoding="utf-8") != expected:
+        checked_text = checked.read_text(encoding="utf-8") if checked.exists() else ""
+        if checked_text != expected:
             print("WIKI SOURCE SYNC STALE")
+            try:
+                difference = first_difference(catalog, json.loads(checked_text))
+                if difference:
+                    path, wanted, found = difference
+                    print(f"FIRST DIFFERENCE {path}: expected={str(wanted)[:160]!r}; actual={str(found)[:160]!r}")
+            except (json.JSONDecodeError, TypeError):
+                print("Checked catalog is missing or invalid JSON.")
             return 2
         print("WIKI SOURCE SYNC PASS")
     elif args.write:

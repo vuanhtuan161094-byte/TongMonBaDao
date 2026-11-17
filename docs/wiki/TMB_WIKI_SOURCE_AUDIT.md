@@ -1,6 +1,6 @@
 # TMB Wiki — kiểm kê nguồn và coverage
 
-- Snapshot source HEAD: `7d0284e529f092ae4367afc47f2cec2ac0a544d6`
+- Snapshot source HEAD: `ec569cd36b0dae16f93e9c68fcbe4d2f39969022`
 - Schema: `1` · chế độ: `LOCAL_ONLY_PRIVATE_BY_DEFAULT` · đồng bộ: một chiều game → Wiki.
 - Generated projection chỉ chứa nguồn repo; ghi chú và đề xuất owner nằm trong localStorage của trình duyệt, không được ghi vào repo.
 - SHA trong bảng là SHA-256 tại snapshot này; file văn bản chuẩn hóa CRLF/CR thành LF trước khi băm để kết quả ổn định giữa Windows/Linux. File nhị phân (nếu bổ sung sau) giữ hash byte gốc.
