@@ -17,7 +17,7 @@ SOURCE=BASE/"art_sources";ASSETS=BASE/"assets"
 SOURCE.mkdir(parents=True,exist_ok=True);ASSETS.mkdir(parents=True,exist_ok=True)
 N=320;SS=3;SZ=N*SS;FRAMES=48;COLS=8;TAU=math.tau
 JADE=(39,232,172);PEARL=(227,255,229);GOLD=(248,197,93);WHITE=(255,255,224)
-PIVOT=(160.0,159.0)
+PIVOT=(160.0,198.0)
 def img():return Image.new("RGBA",(SZ,SZ),(0,0,0,0))
 def pol(pt):return [(round(x*SS),round(y*SS)) for x,y in pt]
 def drawpath(d,pt,tint,width):
@@ -43,8 +43,8 @@ def paint_feather(out,theta,front,idx,time):
     x,y=orbit_location(theta,idx%2)
     # Perspective and material: near side larger/hotter; far partly hidden.
     depth=.65+.35*max(0.0,math.sin(theta))
-    length=22.0*depth if idx%2==0 else 17.5*depth
-    width=11.0*depth
+    length=43.0*depth if idx%2==0 else 33.0*depth
+    width=18.5*depth
     # Visibly feathers, NOT diamonds or flat UI icons. Leading point follows orbit
     # tangential velocity, with inward curl and a short fragmented energy tail.
     tangent=theta+math.pi/2.0
@@ -61,11 +61,11 @@ def paint_feather(out,theta,front,idx,time):
                     (x+dx*length*.28+norm[0]*width*.61,y+dy*length*.28+norm[1]*width*.61),tip,29)
     innercurve=cubic(tip,(x+dx*length*.32-norm[0]*width*.33,y+dy*length*.32-norm[1]*width*.33),
                      (x-dx*length*.22-norm[0]*width*.33,y-dy*length*.22-norm[1]*width*.33),tail,29)
-    d.polygon(pol(bodycurve+innercurve),fill=(*JADE,round(148*depth)),)
-    d.line(pol(bodycurve),fill=(*PEARL,round(168*depth)),width=2*SS,joint="curve")
-    d.line(pol(innercurve),fill=(*GOLD,round(148*depth)),width=max(1,SS),joint="curve")
+    d.polygon(pol(bodycurve+innercurve),fill=(*GOLD,round(170*depth)),)
+    d.line(pol(bodycurve),fill=(*WHITE,round(208*depth)),width=2*SS,joint="curve")
+    d.line(pol(innercurve),fill=(*JADE,round(212*depth)),width=max(1,SS),joint="curve")
     mid=cubic(tail,(x-dx*3,y-dy*3),(x+dx*9,y+dy*9),tip,21)
-    d.line(pol(mid),fill=(*WHITE,round(216*depth)),width=max(1,round(1.6*SS)),joint="curve")
+    d.line(pol(mid),fill=(*WHITE,round(235*depth)),width=max(1,round(1.6*SS)),joint="curve")
     # Three antique brush marks on the moving talisman; never full-size font/UI.
     for k in range(3):
         f=.25+.19*k
@@ -74,14 +74,14 @@ def paint_feather(out,theta,front,idx,time):
         off=(k-1)*2.3
         d.line(pol([(xx+norm[0]*(off-3),yy+norm[1]*(off-3)),
                     (xx+norm[0]*(off+3),yy+norm[1]*(off+3))]),
-               fill=(*GOLD,round(202*depth)),width=max(1,round(1.2*SS)))
+               fill=(*JADE,round(227*depth)),width=max(1,round(1.2*SS)))
     # A few trailing soft wisps along tangent, not a noisy wobbly screen-space line.
     for k in range(3):
         t=(k+1)*.24
         base=(tail[0]-dx*(4+k*4),tail[1]-dy*(4+k*4))
         d.line(pol([base,(base[0]-dx*(5+t*6),base[1]-dy*(5+t*6)+norm[1]*k*1.3)]),
                fill=(*PEARL,round((132-k*32)*depth)),width=max(1,round((2.6-k*.5)*SS)))
-    composite_light(out,layer,4,.39)
+    composite_light(out,layer,4,.30)
     # Hot crest at moving head; maximum intentionally limited relative to face.
     dot=img();ImageDraw.Draw(dot,"RGBA").ellipse(((tip[0]-2.3)*SS,(tip[1]-2.3)*SS,
                                                   (tip[0]+2.3)*SS,(tip[1]+2.3)*SS),
@@ -127,13 +127,13 @@ def gold_lotus(index):
     caustic_angle=-math.pi/2.0+TAU*t
     cxh=cx+math.cos(caustic_angle)*13.0
     cyh=cy+math.sin(caustic_angle)*10.6
-    c_rad=2.0
+    c_rad=1.6
     brush.ellipse(((cxh-c_rad)*SS,(cyh-c_rad)*SS,(cxh+c_rad)*SS,(cyh+c_rad)*SS),
                   fill=(*WHITE,206))
     brush.line(pol([(cxh-3.4*math.cos(caustic_angle),cyh-3.4*math.sin(caustic_angle)),
                     (cxh+2.4*math.cos(caustic_angle),cyh+2.4*math.sin(caustic_angle))]),
               fill=(*GOLD,162),width=SS)
-    out=img();composite_light(out,material,4.3,.31)
+    out=img();composite_light(out,material,3.3,.19)
     return out
 
 def layer_frame(name,i):
@@ -172,7 +172,7 @@ def put(name,im,folder):
             "sha256":hashlib.sha256(path.read_bytes()).hexdigest()}
 if __name__=="__main__":
     man={"skill_id":"tmb.skill.talisman.phong_an_phu.passive_01.human",
-         "version":"PAF06_R4_SEMANTIC_HEART_LOTUS_WIND_TALISMANS",
+         "version":"PAF06_R4B_READABLE_GOLD_WIND_TALISMANS_LOWER_DANTIAN_LOTUS",
          "rights":"FIRST_PARTY_PAINTED_RGBA_NOT_VO_LAM_RIPPED",
          "canonical":"PASSIVE_ALWAYS_ON_NO_CAST_OR_HIT",
          "R3_orbit_preserved":True,"layers":{},
