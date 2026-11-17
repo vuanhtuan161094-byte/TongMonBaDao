@@ -1,9 +1,9 @@
 {
   "schema": "tmb-vfx-production-system-v4.1",
-  "packet_id": "FIST12_R2_BRAIDED_LIGHT_MARK_V4",
+  "packet_id": "FIST12_R3_TRIPLE_QI_PUNCH_BROKEN_MERIDIANS_V4",
   "skill_id": "tmb.skill.fist.huyet_quyen.active_02.human",
   "school": "fist",
-  "revision": "R2_BRAIDED_ENERGY_MERIDIAN",
+  "revision": "R3_TRIPLE_QI_PUNCH_MERIDIAN_BREAK",
   "catalogue_path": "godot/data/combat/v63_human_combat_catalog.json",
   "scene_path": "godot/labs/combat_lab/fist12/doan_mach_lien_quyen.tscn",
   "lab_script": "godot/labs/combat_lab/fist12/doan_mach_lien_quyen.gd",
@@ -25,7 +25,7 @@
     "source_class": "FIRST_PARTY_ORIGINAL_ENERGY_PATHS_DERIVED_FIST03_PAINT_GRAIN",
     "rights_note": "Newly authored independent organic energy current geometry, forked meridian veins, flowing ruby-purple light, contact burst and six-second status mark, rasterized from transparent source strokes. Only micrograin luminance is sampled from the original FIST03 painterly impact artwork owned by this project. No fist sprite/weapon/item, no copied game UI, screen, GIF, or licensed commercial JX/VL asset is in the VFX atlas. This is code-authored source art, NOT individually ImageGen-painted masters; manual review is mandatory.",
     "master_quality_status": "MANUAL_ART_REVIEW_REQUIRED",
-    "known_source_limitation": "Original light-first form painted by Pillow/NumPy with FIST03 hand-painted luminance noise, not an independently ImageGen-painted high-resolution hero silhouette. Technical alpha uniqueness != organic motion/art acceptance; owner to review at 1x. Three bundled light filaments are one cosmetic streamed mark application; they are not multiple true combat hit receipts. R1 actual 1x Godot looked like a broad pink triangular arrow (ART_SELF_FAIL). R2 builds five intertwined crossing plasma ribbons with distinct wave poses and no circular head arc; marks/contact move to chest instead of obscuring face.",
+    "known_source_limitation": "Original light-first form painted by Pillow/NumPy with FIST03 hand-painted luminance noise, not an independently ImageGen-painted high-resolution hero silhouette. Technical alpha uniqueness != organic motion/art acceptance; owner to review at 1x. Three bundled light filaments are one cosmetic streamed mark application; they are not multiple true combat hit receipts. R1 actual 1x Godot looked like a broad pink triangular arrow (ART_SELF_FAIL). R2 builds five intertwined crossing plasma ribbons with distinct wave poses and no circular head arc; marks/contact move to chest instead of obscuring face. Owner rejects R2 because it does not read as Duan Mach Lien Quan skill. R3 does 3 time-separated cosmetic pressure-echo punches near moving target, then visually tears 3 meridian branches, leaving 6-second interrupted vein mark. Three flashes are NOT 3 Combat V2 hits. Visual art still manual pending.",
     "master_files": [
       {
         "path": "godot/labs/combat_lab/fist03/assets/impact_master.webp",
@@ -56,7 +56,7 @@
       "cell_height": 320,
       "frames": 12,
       "columns": 4,
-      "layer": "Five distinct helical strands of original ruby/rose light with crossing wisps and granular hot spots; no pointed physical arrow or fist silhouette"
+      "layer": "Three angle-distinct, time-separated martial crimson qi pressure echoes, 4 individually changing poses each, anchored near one moving target (no projectile or arrow)"
     },
     {
       "path": "godot/labs/combat_lab/fist12/assets/generated/f12_contact.png",
@@ -66,7 +66,7 @@
       "cell_height": 320,
       "frames": 8,
       "columns": 4,
-      "layer": "One local cosmetic mark-application pulse, broken vein branches and white-hot light falloff only on moving target"
+      "layer": "Single mark application: interrupted meridian veins tear across target, white-hot local pulse; no extra gameplay damage"
     },
     {
       "path": "godot/labs/combat_lab/fist12/assets/generated/f12_six_second_mark.png",
@@ -76,7 +76,7 @@
       "cell_height": 192,
       "frames": 8,
       "columns": 4,
-      "layer": "Subtle actor-following crimson fractured-meridian mark for exactly six declared seconds; no ring UI or gameplay status application"
+      "layer": "Six-second interrupted meridian trace on target chest (not circular UI glyph), actor following"
     }
   ],
   "time_contract": {
@@ -88,8 +88,8 @@
     "simulated_hit_seconds": 0.92,
     "visual_fade_end_seconds": 7.22,
     "demo_loop_seconds": 7.6,
-    "demo_clock_warning": "The .45-.92s visual light travel is LAB cosmetic only: canonical projectile_speed=0 and effect=mark, no actual projectile hit, no damage/HP change and no multi-hit guarantee. One simulated mark application at t.92 starts a full visual 6-second status mark until 6.92, then art fade to 7.22. No live Combat V2 receipts.",
-    "key_pose_budget_note": "8 charge +12 energy currents +8 cosmetic application +8 6s actor-following mark = 36 distinct RGBA flipbook cells across four pages; no rig/no GIF. This is NOT a solid sprite fist and not an authored extra hit count.",
+    "demo_clock_warning": "LAB 0.45–0.92s displays THREE sequential local qi-pressure echoes as one illustrative technique; this is NOT three actual combat hits or an added projectile. Canonical projectile speed=0, hit_count undeclared, effect=mark. One LAB synthetic mark application at .92, six-second visual mark to 6.92 and fade by 7.22. No Combat V2 receipts.",
+    "key_pose_budget_note": "8 charge + 12 THREE martial visual echo poses (3x4) + 8 broken-meridian contact + 8 6s target-following status mark; total 36 poses; 3 echoes are strictly cosmetic, NOT three gameplay hits.",
     "phases": [
       {
         "id": "charge",
@@ -100,7 +100,7 @@
       {
         "id": "peak",
         "at_seconds": 0.74,
-        "expected_phase": "meridian_light_stream",
+        "expected_phase": "triple_qi_fist_echoes",
         "file": "v4-peak.png"
       },
       {
@@ -118,7 +118,7 @@
     "movement_to_seconds": 0.99,
     "minimum_displacement_px": 12,
     "contact_anchor": "LAB.mark_at(0,t) continually evaluates foe_at(t)-84px at CHEST, not face; contact and 6s mark move with recipient",
-    "tracking_rule": "Caster and target move separately. All VFX channels render against one recipient only. Single cosmetic application, 6-second mark follows walking actor; no damage or status write.",
+    "tracking_rule": "Caster and foe move separately; three distinct LOCAL cinematic qi-pressure echoes play at adjusted torso offsets near same moving recipient, then one mark follows foe for 6s. No actual multiple hit receipts or live status.",
     "receipt_claim": "SIMULATED_VISUAL_ONLY"
   },
   "gate_status": {
@@ -131,8 +131,8 @@
   },
   "proof_contract": {
     "focused_marker": "VFX_FIST12_FOCUSED_RESULT=PASS failures=0",
-    "native_marker": "VFX_FIST12_R2_READY",
+    "native_marker": "VFX_FIST12_R3_READY",
     "video_filename": "v4-fist12-native.mp4",
-    "source": "FIST12 energy-first: original first-party alpha currents, one 6-second cosmetic mark application on moving target, no fake hit or live Combat V2 integration"
+    "source": "FIST12 R3 actual native Godot: three VISUAL pressure echoes at varied angles, one 6s mark applied to a moving actor; mark gameplay remains off; no false damage/hit_count."
   }
 }

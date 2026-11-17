@@ -1,9 +1,9 @@
 extends Control
 ## FIST12 Doan Mach Lien Quyen — Nether, one-target 6s MARK.
-## Original ENERGY LIGHT alpha sprites / 3 braided currents / local mark application.
+## THREE local martial qi pressure echoes (not 3 hits), local meridian fracture mark.
 ## View-only Godot 4.7.2 LAB: synthetic timing, NO combat damage/status writes.
 const SKILL_ID := "tmb.skill.fist.huyet_quyen.active_02.human"
-const ART_REVISION := "R2_BRAIDED_ENERGY_MERIDIAN"
+const ART_REVISION := "R3_TRIPLE_QI_PUNCH_MERIDIAN_BREAK"
 const EFFECT := "mark"
 const ELEMENT := "nether"
 const SHAPE := "single_target"
@@ -38,7 +38,7 @@ var paused := false
 
 static func phase_at(t: float) -> String:
     if t < CAST_TIME: return "huyet_qi_charge"
-    if t < CONTACT_START: return "meridian_light_stream"
+    if t < CONTACT_START: return "triple_qi_fist_echoes"
     if t < CONTACT_END: return "lab_only_mark_application"
     if t < MARK_END: return "six_second_vein_mark"
     if t < FADE_END: return "vein_mark_fade"
@@ -74,13 +74,17 @@ static func target_position(index: int,t: float) -> Vector2:
 static func mark_at(index: int,t: float) -> Vector2:
     return target_position(index,t)+Vector2(0.0,-84.0)
 
+static func echo_index(t: float) -> int:
+    # Three distinct COSMETIC pressure echoes, not three gameplay hits.
+    var f:=clampf((t-WAVE_START)/(CONTACT_START-WAVE_START),0.0,0.999)
+    return clampi(int(floor(f*3.0)),0,2)
+
 static func wave_at(t: float) -> Vector2:
-    # LAB visual travel is cosmetic; catalogue speed=0 (not a projectile).
-    var p:=clampf((t-WAVE_START)/(CONTACT_START-WAVE_START),0.0,1.0)
-    var interp:=smoothstep(0.0,1.0,p)
-    var src:=caster_at(t)+Vector2(39.0,-105.0)
-    var dst:=mark_at(0,t)-Vector2(25.0,0.0)
-    return src.lerp(dst,interp)
+    # Target-locked close-range strike; canonical projectile_speed=0.
+    # Pressure originates near foe's body, never a pink arrow flying across map.
+    var beat:=echo_index(t)
+    var offsets:=[Vector2(-48.0,-20.0),Vector2(-47.0,17.0),Vector2(-41.0,-3.0)]
+    return mark_at(0,t)+offsets[beat]
 
 func _ready() -> void:
     custom_minimum_size=Vector2(1280.0,720.0)
@@ -88,7 +92,7 @@ func _ready() -> void:
     set_process(true)
     queue_redraw()
     if not vfx_only_benchmark:
-        print("VFX_FIST12_R2_READY skill=",SKILL_ID,
+        print("VFX_FIST12_R3_READY skill=",SKILL_ID,
              " effect=mark status_duration=6 target=1 particle=alpha_sprite",
              " no_gif=true no_rig=true no_gameplay_writes=true")
 
@@ -137,7 +141,7 @@ func _draw() -> void:
         _frame(CHARGE,k,256.0,caster+Vector2(34.0,-100.0),.90,gather,Vector2(128.0,128.0))
     if stream>.002:
         var k:=clampi(int(floor((t-WAVE_START)/(CONTACT_START-WAVE_START)*12.0)),0,11)
-        # Braided currents, not three invented impact receipts.
+        # Three visually separated inner-force punches, NOT three combat hits.
         _frame(WAVE,k,320.0,wave_at(t),1.06,stream,Vector2(160.0,160.0))
     var caster_walk:=t>=.35 and t<1.11
     var foe_walk:=t>=.18 and t<1.13 or t>=2.95 and t<4.10 or t>=5.10 and t<6.36
@@ -154,10 +158,10 @@ func _draw() -> void:
         draw_string(ThemeDB.fallback_font,Vector2(26,33),
             "DOAN MACH LIEN QUYEN / HUYET QUYEN",HORIZONTAL_ALIGNMENT_LEFT,-1,22,Color("ffe9f1"))
         draw_string(ThemeDB.fallback_font,Vector2(26,56),
-            "FIST12 R2 | BRAIDED PLASMA LIGHT / 6S VEIN MARK / LAB ONLY",HORIZONTAL_ALIGNMENT_LEFT,-1,12,Color("ffb2d6"))
+            "FIST12 R3 | THREE INNER QI PUNCHES / MERIDIAN BREAK / LAB ONLY",HORIZONTAL_ALIGNMENT_LEFT,-1,12,Color("ffb2d6"))
         if t>=MARK_START and t<MARK_END:
             draw_string(ThemeDB.fallback_font,Vector2(1040,32),
                 "MARK %.1f s"%(MARK_END-t),HORIZONTAL_ALIGNMENT_LEFT,-1,14,Color("ff86bd"))
         draw_string(ThemeDB.fallback_font,Vector2(26,684),
-            "GODOT 4.7.2 | SINGLE TARGET MARK | ENERGY-FIRST | NO GIF/NO RIG/NO LIVE PvE",
+            "GODOT 4.7.2 | TRIPLE VISUAL ECHO / ONE MARK 6S | NO GIF/NO RIG/PvE HOLD",
             HORIZONTAL_ALIGNMENT_LEFT,-1,12,Color("ead1df"))

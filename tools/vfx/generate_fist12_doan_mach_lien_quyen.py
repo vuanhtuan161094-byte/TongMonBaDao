@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""FIST12: Doan Mach Lien Quyen - energy-first Nether mark VFX.
+"""FIST12 R3: Doan Mach Lien Quyen - triple qi-punch echoes + broken meridian mark.
 
-Godot flipbook generator. NEW energy strokes (no moving fist icon) inspired by
+Godot flipbook generator. Three martial qi impact echoes (no moving fist icon) inspired by
 first-party FIST03 hand-painted IMPACT luminance as MICROGRAIN only. Painting
 shape is authored here with irregular alpha strokes; neither a GIF nor any
 video, actor, map, or external JX/VL pixel is a source. This code-produced
@@ -123,80 +123,139 @@ def charge(k):
     return img
 
 
-def wave(k):
-    """Five BRAIDED plasma currents. No pointed triangular fist/arrow sprite.
-    Nonuniform knots, crossing helical threads and soft luminescent wake
-    oscillate independently for every animation frame.
-    """
-    S=320;f=k/11
-    phase=k*.47
-    cur=[]
-    for j in range(5):
-        pts=[]
-        strand=(j-2)
-        for n in range(56):
-            t=n/55
-            x=42+227*t + (j-2)*7*(1-t) + 5*math.sin(phase+j*1.8+t*3.9)
-            # braided luminous filaments exchange upper/lower positions,
-            # with asymmetry to avoid wedge, neon arrow or uniform ribbons
-            envelope=(.33+.67*math.sin(math.pi*t)**.62)
-            y=153+strand*8.5*(1-.30*t)+(24+5*j%3)*math.sin((1.62+.33*j)*math.pi*t+phase*(.62+.11*j)+j*1.76)*envelope
-            y+=9*math.sin((3.3+j*.34)*math.pi*t+phase*.55+j*2.4)
-            pts.append((x,y))
-        cur.append((pts,5.3+(j%2)*2.4+1.3*math.sin(k*.31+j)**2))
-    im=paint_masks(S,cur,phase,.76+.21*math.sin(f*math.pi),120+k)
-    # Broken, painterly white-hot energy knots, not a hard crescent ring.
+def qi_burst(im, center, strength, beat, seed):
+    """Painted localized pressure light: soft irregular core, not an outlined
+    circle, projectile arrowhead, screen-white flash or second gameplay hit."""
+    size=im.width
+    yy,xx=np.mgrid[0:size,0:size].astype('float32')
+    cx,cy=center
+    r=((xx-cx)/(17+11*strength))**2+((yy-cy)/(11+8*strength))**2
+    # Two soft layers: saturated blood ambience and tiny ivory-hot core.
+    for spread,color,a in [(.42,(154,0,57),.55),(.14,(255,81,136),.72),(.035,(255,226,217),.68)]:
+        v=np.exp(-r/(spread+.055)) * a * strength
+        alpha=Image.fromarray(np.clip(v*255,0,255).astype('uint8'),'L')
+        layer=Image.new('RGBA',(size,size),color+(0,))
+        layer.putalpha(alpha)
+        im.alpha_composite(layer)
+    # Tilted, broken slashes crossing the pressure-point for each visual beat.
+    rr=random.Random(12180+beat*23+seed)
     d=ImageDraw.Draw(im,'RGBA')
-    rr=random.Random(1907+k)
-    for i in range(11):
-        x=75+i*17+rr.uniform(-6,6)
-        y=150+29*math.sin(x*.031+phase+i*.7)
-        length=rr.uniform(3,12)
-        d.line([(x,y),(x+length,y+rr.uniform(-8,8))],
-               fill=(255,rr.randint(143,219),rr.randint(168,230),rr.randint(85,155)),
-               width=rr.choice([1,2,3]))
-    splinters(im,k,(234,150),scale=.22+.13*math.sin(f*math.pi),count=6,brightness=.39)
-    return im
+    for j in range(6):
+        y=cy+(j-2.5)*5.4+rr.uniform(-2.4,2.4)
+        x=cx-4+j*2+rr.uniform(-4,4)
+        x2=x+(13+rr.randrange(3,16))
+        y2=y+(-8 if beat==0 else 8 if beat==1 else -2)+rr.uniform(-5,5)
+        light=(255,205 if j%2 else 113,172 if j%2 else 139,round(170*strength))
+        d.line([(x,y),(x2,y2)],fill=light,width=rr.choice([1,2,3]))
+
+def wave(k):
+    """THREE DISTINCT timed visual fist-pressure impacts (3x4 poses):
+    not a single object crossing the map, not three combat receipts.
+    Crimson/ivory pressure flows emerge from the attacker's side, curve into
+    one defensive-side enemy torso, then shed ripped-meridian micro sparks.
+    Each impact has a different diagonal, shape, size and temporal posture.
+    """
+    S=320
+    beat=k//4
+    f=k%4
+    strength=[.37,.72,1.0,.27][f]
+    angle=[-23,19,-8][beat]
+    center=(194+4*math.sin(beat*1.7),159+[-17,12,-3][beat])
+    cur=[]
+    rr=random.Random(220114+beat*149+f*3)
+    # Three transverse, asymmetric strokes: kinetic fist pressure, not arrow.
+    for j in range(3):
+        rise=(j-1)*17 + angle*.62
+        x_shift=[0,12,-7][beat]
+        p0=(22+6*j + 6*f,179+rise*.84 + rr.uniform(-8,8))
+        p1=(71+8*j,125+rise*.7+rr.uniform(-11,11))
+        p2=(123+x_shift,200+rise*.9+rr.uniform(-13,13))
+        p3=(center[0]-8+j*8,center[1]+(j-1)*8)
+        pts=curve(p0,p1,p2,p3,47)
+        cur.append((pts,(6.0+j*1.5+beat*.9)*(.64+.35*strength)))
+    # Return-running torn vortices form a visual break in the qi circuit.
+    for j in range(2):
+        sign=(-1 if j==0 else 1)
+        u=(31+15*j,center[1]+sign*(39+beat*4))
+        v=(center[0]-52,center[1]+sign*(13+f))
+        pts=curve(u,(84,center[1]+sign*43),
+                  (157,center[1]+sign*(36+f*6)),v,39)
+        cur.append((pts,2.7+.4*f))
+    img=paint_masks(S,cur,f*.83+beat*.95,strength,331+beat*31+f)
+    qi_burst(img,center,strength,beat,f)
+    # Narrow directional follow-through strokes after the impact.
+    d=ImageDraw.Draw(img,'RGBA')
+    for i in range(6):
+        dist=7+i*8+f*2
+        xx=center[0]+dist
+        yy=center[1]+(i-3)*7+math.sin(i*1.6+beat)*7
+        ll=(5+f*2)*(1-i/9)
+        d.line([(xx,yy),(xx+ll,yy+2*math.sin(i+beat))],
+               fill=(255,110+i*12,143+i*7,round(96*strength)),width=1+(i%3==0))
+    splinters(img,k,center,scale=.26+.39*strength,count=6+f,brightness=strength*.78)
+    # Three successive pressure echoes arrive at different martial angles.
+    # Rotation belongs to the source flipbook, not the Godot actor or a rig.
+    return img.rotate([24,-21,5][beat],Image.Resampling.BICUBIC,expand=False)
 
 
 def contact(k):
-    S=320;p=k/7
-    life=[.30,.58,.94,1.,.84,.61,.34,.10][k]
-    c=(155+5*math.sin(k*.5),155)
-    cur=[]
-    # Three spreading, asymmetrical meridian fractures; physically one
-    # LOCAL mark-application cue, not three invented gameplay hits.
-    for j in range(5):
-        angle=[-.92,-.38,.22,.69,1.11][j]
-        dist=(23+115*p**.83)*(1+.15*math.sin(j*.93+k*.21))
-        dest=(c[0]+math.cos(angle)*dist,c[1]+math.sin(angle)*dist*.66)
-        a=curve((c[0]-10,c[1]+3*math.sin(j)),(c[0]+28,c[1]-18+j*9),
-                (dest[0]-12,dest[1]+14*math.sin(j+ k*.5)),dest,36)
-        cur.append((a,3.5+7*(1-p)+j%2*2))
-    img=paint_masks(S,cur,k*.42,life,270+k)
-    # Controlled blast: elliptical soft light not a hard circular UI ring.
-    buff=Image.new('L',(S,S));ImageDraw.Draw(buff).ellipse((c[0]-31,c[1]-23,c[0]+32,c[1]+23),fill=round(150*life))
-    buff=buff.filter(ImageFilter.GaussianBlur(17+5*p))
-    ly=Image.new('RGBA',(S,S),(255,115,147,0));ly.putalpha(buff)
-    img.alpha_composite(ly)
-    splinters(img,k,c,scale=.55+2*p,count=12,brightness=life)
-    return img
+    """The delayed meridian CUT is a single mark application (not another
+    injury/hit); bright interrupted vein channels, split on the target.
+    """
+    S=320;f=k/7
+    power=[.13,.45,.79,1.,.88,.55,.29,.075][k]
+    cx,cy=160,159
+    curves=[]
+    for i in range(3):
+        dx=(i-1)*27
+        start=(cx-9+dx,cy-55-4*i)
+        a=(cx+12+dx,cy-26+8*math.sin(k*.47+i))
+        b=(cx-16+dx,cy+7+7*i)
+        end=(cx+5+dx,cy+42+i*5)
+        # Cut is discontinuous: a fluid vein *broken into pieces*.
+        lines=curve(start,a,b,end,55)
+        cuts=[lines[:21],lines[28:38],lines[44:]]
+        for part in cuts:
+            curves.append((part,2.6+1.2*(i==1)+2.0*(1-f)))
+    for i in range(4):
+        side=(-1 if i%2==0 else 1)
+        x=cx+side*(8+i*6)
+        pts=curve((x,cy-23+i*11),(x+side*15,cy-9+i*8),
+                  (x+side*25,cy+7+i*8),(x+side*(29+20*f),cy+18+i*6),24)
+        curves.append((pts,2.4+1.4*(1-f)))
+    im=paint_masks(S,curves,k*.71,power,410+k)
+    qi_burst(im,(cx,cy),power*.74,1,k)
+    splinters(im,k,(cx,cy),scale=.18+.73*f,count=12,brightness=power*.48)
+    return im
 
 
 def mark(k):
-    S=192;phase=k*math.tau/8
-    c=(96,102)
-    cur=[]
-    # Small living cracked-vein mark that breathes at target's upper chest.
+    """Small, non-circular, breathing broken MERIDIAN SIGN on recipient chest.
+    Three glowing interrupted channels rather than a decorative UI symbol.
+    """
+    S=192;phase=math.tau*k/8
+    c=(96,104)
+    lines=[]
+    for i in range(3):
+        dx=(i-1)*13
+        start=(c[0]+dx-6,c[1]-25+math.sin(phase+i)*2)
+        a=(c[0]+dx+8,c[1]-9+math.sin(phase+i)*4)
+        b=(c[0]+dx-9,c[1]+5+i*2)
+        end=(c[0]+dx+6,c[1]+22+math.cos(phase+i)*2)
+        p=curve(start,a,b,end,45)
+        for segment in [p[:18],p[25:31],p[35:]]:
+            lines.append((segment,2.0 if i!=1 else 3.2))
+    for j in range(4):
+        x=c[0]+(-20+j*13)
+        y=c[1]-9+(j%2)*15+math.sin(phase+j)*2
+        lines.append(([(x-7,y-6),(x+1,y+2),(x+8,y+3)],1.7))
+    power=.57+.14*math.sin(phase+.7)
+    img=paint_masks(S,lines,phase,power,550+k)
+    d=ImageDraw.Draw(img,'RGBA')
     for j in range(3):
-        s=(-1 if j==0 else 1)
-        start=(c[0]+(j-1)*2,c[1]-19-4*math.sin(phase+j))
-        a=(c[0]-16+j*15,c[1]-11+7*math.sin(phase+j*2))
-        b=(c[0]-11+j*18,c[1]+7+7*math.cos(phase+j*.9))
-        end=(c[0]-21+j*21,c[1]+25+3*math.sin(phase+j*1.4))
-        cur.append((curve(start,a,b,end,32),2.5+(j%2)*1.4))
-    img=paint_masks(S,cur,phase,.50+.17*math.sin(phase),500+k)
-    splinters(img,k,c,scale=.25,count=4,brightness=.31)
+        px=c[0]+(j-1)*13;py=c[1]-2+2*math.sin(phase+j*.8)
+        r=2.2+(.6 if j==1 else 0)
+        d.ellipse((px-r,py-r,px+r,py+r),fill=(255,215,202,round(145*power)))
     return img
 
 

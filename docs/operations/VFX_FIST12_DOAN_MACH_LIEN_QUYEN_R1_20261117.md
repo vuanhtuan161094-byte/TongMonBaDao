@@ -28,3 +28,10 @@ Required at 1x: convincing energy light (not rigid UI lines), smooth braid flow,
 - R1 exact-SHA `205e6d0f49ace65de9e9ec4f453d6d3b997f8951`, Actions #43995071867 technical **SUCCESS**; actual 1280×720 video and 20 screenshots showed an energy WEDGE/arrow with rigid crescent at t0.74 and a large pink contact obscuring the target's face t0.99. **R1 ART_SELF_FAIL**, not owner-accepted.
 - R2 changes the actual **sprite source**: five independent intertwined meridian-current curves dynamically crossing and oscillating, broken light knots and source-derived granular detail; remove the fake UI crescent and pointed arrow silhouette. Contact and six-second vein mark moved to target upper chest (-84px from foot) and local burst slightly reduced. Mark contract remains 6 seconds, no real damage or status mutations.
 - Repeat true 1x native G3.5 and full 7.6s movie, inspect target head/alpha/marked-mover behavior. No GIF pipeline, no rig, V6.3 OFF.
+
+## R3 — R2 owner rejected; distinct triple pressure-echo remake (17 Nov 2026)
+- OWNER REJECTS R2: "không đẹp. k có cảm giác skill đó." R2 exact-SHA technical PASS is not art approval.
+- R3 replaces the generic moving pink plasma rope with **three visual-only martial force echoes**, four different hand-authored transparent RGBA source poses per beat, entering from three different angles at ONE moving enemy. Three visual echoes are NOT hit_count=3 nor additional Combat V2 hit receipts. Canonical mark is still one application on one actor.
+- Instead of a UI ring, the local application draws THREE interrupted glowing meridian channels and a six-second broken-vein tracer attached to the recipient's chest.
+- Code-authored first-party raster light paths with owned FIST03 painting luminance grain; it is NOT a newly independent ImageGen master and may still require source-art improvements. No GIF, rig, actor/background pixels or commercial JX art in VFX atlas.
+- Actual exact-SHA Godot 4.7.2 1280×720 MP4 at charge 0.22, second echo/peak 0.74 and one mark application 0.99; review 6s mark in motion, owner approval manual. Keep PvE integration, V6.3 and physical QA on hold.
