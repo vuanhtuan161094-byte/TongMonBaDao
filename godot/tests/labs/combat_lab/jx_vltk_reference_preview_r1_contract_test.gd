@@ -33,7 +33,7 @@ func _run()->void:
         check(atlas.frame_region(id,atlas.duration(id)+.03).is_empty(),"source clip really expires "+id)
     check(not atlas.effects.has("jx_wudu_63_precast"),"do not fabricate nonexistent Ngũ Độc precast")
     check(SCENE.TOTAL_SECONDS==12.0 and SCENE.STYLE_COUNT==4,"four side-by-side style slots 3 secs each")
-    check(SCENE.target_foot(.2).distance_to(SCENE.target_foot(1.2))>10.0,"selected target WALK movement")
+    check(SCENE.target_foot(.2).distance_to(SCENE.target_foot(1.75))>20.0,"selected target WALK movement")
     check(SCENE.target_foot(1.2).distance_to(SCENE.decoy_foot(1.2))>120.0,"independent untouched moving decoy")
     var source:=FileAccess.get_file_as_string("res://labs/combat_lab/jx_reference_preview/r1/jx_reference_preview.gd")
     var fx_source:=FileAccess.get_file_as_string("res://labs/combat_lab/jx_reference_preview/r1/jx_effect_layer.gd")
