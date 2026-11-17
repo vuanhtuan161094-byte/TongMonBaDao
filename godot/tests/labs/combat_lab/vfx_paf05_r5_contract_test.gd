@@ -15,7 +15,7 @@ func _run() -> void:
 		check(R5.target(k,.30).distance_to(R5.target(k,1.49))>8.0,"moving target k="+str(k))
 		check(R5.latched_mark(k,1.40) and R5.latched_mark(k,8.28),"mark persists through 7s k="+str(k))
 		check(not R5.latched_mark(k,8.34),"mark expires k="+str(k))
-		check(R5.mark_pos(k,1.40).distance_to(R5.target_anchor(k,1.40)+Vector2(23,-2))<.01,"shoulder contact follows target "+str(k))
+		check(R5.mark_pos(k,1.40).distance_to(R5.target_anchor(k,1.40)+Vector2(32,10))<.01,"shoulder contact follows target "+str(k))
 	check(not R5.latched_mark(3,1.4),"fourth target forbidden")
 	check(R5.mark_frame(1.33)==0 and R5.mark_frame(1.55)>=2,"handwritten stamp reveals distinct phases")
 	check(R5.MARK_TEX.get_size()==Vector2(1280,960),"mark 12 real RGBA poses")
