@@ -142,7 +142,7 @@ def render(name,t,cell):
             ink("mint",gauss(x,y,px,py,2.4,3.4)*(.24-.035*k))
     elif name=="burst":
         # Soft local nectar bloom and three unequal silk petals at TARGET ONLY.
-        q=np.sin(pi*min(1,t+.07))
+        q=max(.11,np.sin(pi*min(1,t+.07)))
         extent=.32+.68*np.sin(pi*.5*t)
         ink("jade",gauss(x,y,0,0,59+34*t,52+34*t)*.13*(1-t))
         for k in range(3):
