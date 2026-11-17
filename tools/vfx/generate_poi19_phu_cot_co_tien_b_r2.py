@@ -43,7 +43,7 @@ def petal(im,x,y,ang,l,w,bend,opacity,light=True):
     mask=Image.new("L",im.size,0);d=ImageDraw.Draw(mask)
     d.polygon([P(*v) for v in vertices],fill=205)
     add(im,mask.filter(ImageFilter.GaussianBlur(6*SS)),C["violet"],.23*opacity)
-    add(im,mask,C["lilac" if light else "violet"],.65*opacity)
+    add(im,mask,C["lilac" if light else "violet"],.89*opacity)
     inner=Image.new("L",im.size,0);v=ImageDraw.Draw(inner)
     spine=bez(root,(x+dx*l*.30+nx*w*.07,y+dy*l*.30+ny*w*.07),
                  (x+dx*l*.71+nx*w*.04,y+dy*l*.71+ny*w*.04),tip)
@@ -53,12 +53,12 @@ def petal(im,x,y,ang,l,w,bend,opacity,light=True):
         for direction in (-1,1):
             q=(sx+nx*w*.50*direction+dx*l*.07,sy+ny*w*.50*direction+dy*l*.07)
             v.line([P(sx,sy),P(*q)],fill=117,width=SS)
-    add(im,inner,C["gold"],.63*opacity)
+    add(im,inner,C["gold"],.79*opacity)
     # one soft white inner fold rather than electric arcs
     bright=Image.new("L",im.size,0)
     z=ImageDraw.Draw(bright)
     z.line([P(*pt) for pt in spine[4:22]],fill=180,width=SS)
-    add(im,bright.filter(ImageFilter.GaussianBlur(SS*.75)),C["milk"],.44*opacity)
+    add(im,bright.filter(ImageFilter.GaussianBlur(SS*.75)),C["milk"],.65*opacity)
 
 def veilbrush(im,x,y,turn,spread,power):
     """Transparent painterly ribbons with diffuse halo, jade edge and lilac core."""
@@ -85,20 +85,20 @@ def runic_ring(im,cx,cy,rx,ry,t,power):
             x=cx+rx*ring_scale*cos(th)
             y=cy+ry*ring_scale*sin(th)
             pts.append(P(x,y))
-        d.line(pts,fill=130 if ring_scale==1 else 74,width=SS*2,joint="curve")
+        d.line(pts,fill=205 if ring_scale==1 else 118,width=SS*3,joint="curve")
     for k in range(10):
         a=2*pi*k/10+2*pi*.06*t
         px=cx+rx*.94*cos(a);py=cy+ry*.94*sin(a)
         d.line([P(px-2.5,py-4),P(px,py+4),P(px+3,py-2)],fill=150,width=SS)
     add(im,ring.filter(ImageFilter.GaussianBlur(6*SS)),C["deep"],.26*power)
-    add(im,ring,C["violet"],.40*power)
+    add(im,ring,C["violet"],.73*power)
     dots=Image.new("L",im.size,0);v=ImageDraw.Draw(dots)
     for k in range(12):
         phi=2*pi*k/12+2*pi*t*.06
         xx=cx+rx*cos(phi);yy=cy+ry*sin(phi)
         rr=1.1+(k%3)*.45
         v.ellipse((P(xx-rr,yy-rr),P(xx+rr,yy+rr)),fill=220)
-    add(im,dots,C["gold"],.59*power)
+    add(im,dots,C["gold"],.82*power)
     twinkle(im,cx+rx*.8,cy,2.7,.7*power)
 
 def twinkle(im,x,y,r,opacity):
@@ -116,10 +116,10 @@ def flower(im,cx,cy,t,phase):
             x=cx+r*cos(th);y=cy+r*sin(th);w=11.8+1.2*t
         elif phase=="fold":
             fold=max(0,min(1,(t-.22)/.78))
-            r=15+31*sin(pi*t)
-            l=57+26*sin(pi*t)-28*fold
+            r=18+40*sin(pi*t)
+            l=70+31*sin(pi*t)-30*fold
             x=cx+r*cos(th);y=cy+r*sin(th);th+=pi*.48*fold+flutter
-            w=14.5+3*sin(pi*t)
+            w=20.0+4*sin(pi*t)
         else:
             x=cx+4*cos(th);y=cy+4*sin(th)
             l=31+3*sin(2*pi*t+k*.7)+1.1*t;th+=flutter
@@ -152,24 +152,24 @@ def paint(name,t,size):
             x=cx-29-(k%2)*8
             y=cy+sway+(k-2)*9
             petal(im,x,y,ang,50+8*sin(2*pi*t+k*.47),9+(k%3)*2,.5*sin(k+t*3),.72,(k%2==0))
-        orb(im,cx+26,cy+sway,48,38,C["violet"],.29)
-        orb(im,cx+29,cy+sway,27,23,C["jade"],.50)
-        orb(im,cx+32,cy+sway,17,14,C["gold"],.80)
-        orb(im,cx+34,cy+sway-2,8.5,9,C["milk"],.94)
+        orb(im,cx+26,cy+sway,62,48,C["violet"],.34)
+        orb(im,cx+29,cy+sway,48,38,C["jade"],.58)
+        orb(im,cx+32,cy+sway,30,24,C["gold"],.85)
+        orb(im,cx+34,cy+sway-2,16,17,C["milk"],.99)
         for k in range(9):
             x=cx-70-k*11+4*t
             y=cy+sway+12*sin(k*1.18+7*t)
             twinkle(im,x,y,2.0-(k%3)*.25,max(.05,.48-.036*k))
     elif name=="fold":
         q=max(.08,sin(pi*min(1,t+.07)))
-        veilbrush(im,cx-17,cy+5,t*2.5,63,q*.7)
-        veilbrush(im,cx+19,cy-9,3+t*3,42,q*.43)
+        veilbrush(im,cx-17,cy+5,t*2.5,76,q*.86)
+        veilbrush(im,cx+19,cy-9,3+t*3,65,q*.70)
         flower(im,cx,cy,t,"fold")
         close=max(0,min(1,(t-.30)/.70))
-        orb(im,cx,cy,54-22*close,54-21*close,C["violet"],.24*q)
-        orb(im,cx,cy,24-11*close,23-10*close,C["jade"],.43*q)
-        orb(im,cx,cy,13-5*close,13-4*close,C["gold"],.65*q)
-        orb(im,cx,cy,6.5-2*close,7-2*close,C["milk"],.88*q)
+        orb(im,cx,cy,70-26*close,68-24*close,C["violet"],.35*q)
+        orb(im,cx,cy,34-13*close,33-12*close,C["jade"],.62*q)
+        orb(im,cx,cy,23-9*close,23-8*close,C["gold"],.72*q)
+        orb(im,cx,cy,12-4*close,13-4*close,C["milk"],.95*q)
         for k in range(9):
             a=2*pi*k/9+1.4*t
             r=83-40*close+3*sin(k)
@@ -191,7 +191,7 @@ def paint(name,t,size):
         # Small target foot locator, never the large multi-target arena ring.
         # All marks are on selected monster's floor only.
         q=.80+.15*sin(pi*t)
-        runic_ring(im,cx,cy,110,28,t,q)
+        runic_ring(im,cx,cy,122,30,t,q)
         orb(im,cx,cy,65,24,C["violet"],.09*q)
         for k in range(6):
             ang=2*pi*k/6+t*.33
