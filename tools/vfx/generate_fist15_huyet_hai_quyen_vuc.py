@@ -47,47 +47,61 @@ def masks(kind,k,n):
         ellipse(body,(235-18*t,236-18*t,277+18*t,278+18*t),140)
         ellipse(core,(249-8*t,248-8*t,263+8*t,264+8*t),225)
     elif kind=='sea':
-        # NOT flat concentric circles: irregular crescent sea tides with blank center,
-        # separate asymmetrical wave paths and changing wave envelopes.
-        amp=math.sin(math.pi*(.10+.80*t))
-        for j in range(4):
-            phase=(j*1.17+0.14*k)
-            radius=90+19*j+43*amp
-            pts=[]
-            for i in range(80):
-                th=(.13+1.62*i/79)*math.pi+phase
-                rr=radius*(1+.085*math.sin(5*th+phase)+.046*math.sin(9*th-k*.25))
-                pts.append((256+rr*math.cos(th),282+rr*.46*math.sin(th)))
-            brush(body,pts,17+9*amp-j*2)
-            if j in (0,2):brush(core,pts[12:70],3+int(amp*3))
+        # A turbulent veil of *flowing blood tide* rather than a HUD ellipse.
+        # Several uneven soft ribbons separated in Y with rising fine foam.
+        amp=math.sin(math.pi*(.08+.84*t))
+        for j in range(6):
+            phase=k*.31+j*1.79
+            y0=223+j*21
+            push=18*math.sin(phase)+15*amp
+            pts=spline((82,y0+36*math.sin(phase)),
+                (163,y0-63+push),(318,y0+57*math.sin(phase*.5)),
+                (440,y0-16+23*math.sin(phase+1)),75)
+            brush(mist,pts,38+10*amp+5*(j%2))
+            brush(body,pts[8:66],15+6*amp-1.7*(j%3))
+            if j in (1,4):
+                brush(core,pts[20:48],5+int(3*amp))
+        # Disconnected little updrafts are light mist, not radial UI arcs.
         for j in range(5):
-            x=125+j*53+27*math.sin(t*4+j)
-            y=333+j%3*12
-            brush(mist,spline((x-23,y+17),(x,y+2),(x+25,y-38),(x+45,y-22)),12)
-        # area is atmospheric, no huge opaque disk hiding monster feet.
+            x=137+j*60+10*math.sin(j+t*8)
+            y=316-7*(j%2)
+            stream=spline((x,y+20),(x-35,y-5),(x+15,y-65),
+                          (x+26+8*t,y-78),35)
+            brush(mist,stream,12)
     elif kind=='fall':
-        # Wudang-inspired vertical light choreography; a recognizable 5-knuckle
-        # qi fist descends with living filaments, NOT stolen sword images.
-        squeeze=math.sin(math.pi*(.08+.82*t))
-        head_y=205+148*t
-        for j in range(5):
-            off=(j-2)*18
-            head_x=253+off+7*math.sin(t*9+j)
-            end=(head_x+2*math.sin(t*8+j),head_y+8*(j%2))
-            start=(head_x+off*.42-22,35-14*math.sin(t*5+j))
-            curve=spline(start,(head_x+32,128+35*t),(head_x-20,head_y-74),end)
-            brush(body,curve,14+7*squeeze-(abs(j-2)*1.5))
-            if j in (1,2,3):brush(core,curve[17:],2+int(3*squeeze))
-        # Five glowing knuckles, one condensed hand-shaped front at strike.
-        for j in range(4):
-            x=224+j*17+2*math.sin(k*.9+j)
-            ellipse(body,(x-15,head_y-10,x+15,head_y+17),195)
-            ellipse(core,(x-3,head_y-5,x+6,head_y+8),200)
-        brush(body,spline((233,head_y-6),(240,head_y+22),(272,head_y+26),(287,head_y+9)),23,False)
-        brush(core,spline((237,head_y-1),(245,head_y+13),(270,head_y+13),(283,head_y+1)),4,False)
-        for j in range(4):
-            dy=j*31
-            brush(mist,spline((188+j*37,40),(200+j*27,122),(220+j*24,190),(223+j*17,head_y-dy)),26)
+        # Descending WHITE-core spiritual pressure with one visible front and
+        # unequal secondary air currents. The head is a compact clenched
+        # knuckle-shaped qi crest, not 5 equal vertical bar sprites.
+        squeeze=math.sin(math.pi*(.07+.86*t))
+        front=199+153*t
+        center=255+6*math.sin(k*.44)
+        main=spline((center-16,56),(center+33,107+11*t),
+                    (center-22,front-73),(center,front-8),72)
+        brush(mist,main,82)
+        brush(body,main[8:],52+11*squeeze)
+        brush(core,main[19:],17+6*squeeze)
+        # Two irregular side wisps follow the same moving luminous body,
+        # with different width, length and phase. Neither is full hot white.
+        for j,side in enumerate((-1,1)):
+            offs=66+12*j
+            pts=spline((center+side*(offs+13),51+j*35),
+                       (center+side*(offs+31),128+j*22),
+                       (center+side*(27+6*math.sin(k*.31+j)),front-61),
+                       (center+side*(34+5*j),front-8-j*21),55)
+            brush(mist,pts,33-4*j)
+            brush(body,pts[11:],13+6*squeeze)
+            if j==0:brush(core,pts[24:43],3)
+        # Image-space spiritual fists: four unequal luminous knuckles all
+        # CONNECT to the one white-condensed palm, not four parallel swords.
+        for j,(dx,scale) in enumerate(((-31,.91),(-11,1.16),(12,1.12),(34,.83))):
+            x=center+dx
+            y=front+5*math.sin(.52*k+j)
+            ellipse(body,(x-15*scale,y-15*scale,x+15*scale,y+13*scale),224)
+            ellipse(core,(x-7*scale,y-9*scale,x+8*scale,y+6*scale),242)
+        palm=spline((center-28,front-5),(center-13,front+24),
+                    (center+15,front+21),(center+29,front-4),45)
+        brush(body,palm,27,False)
+        brush(core,palm[9:37],11,False)
     elif kind=='hit':
         # 3 unequal impact petals and a sharp short core at receiving foe;
         # triangular directionality, no repeated circular GUI explosion.
@@ -121,22 +135,29 @@ def paint_layer(mask,rgb,opacity,noise_seed):
     return Image.fromarray(out,'RGBA')
 def mix(kind,k,n):
     body,core,mist=masks(kind,k,n)
-    # 3 separately composited actual textures, no full alpha background.
     base=Image.new('RGBA',(N,N))
-    soft=paint_layer(mist,(106,42,119),.33,13000+k+{'charge':1,'sea':2,'fall':3,'hit':4}[kind]*47)
-    # softer burgundy/purple halo painted around main stroke (additive-like in
-    # source, but RGB and alpha remain inspectable in atlas).
-    halo=body.filter(ImageFilter.GaussianBlur(15))
-    base.alpha_composite(paint_layer(halo,(153,69,168),.30,11+k))
-    base.alpha_composite(soft.filter(ImageFilter.GaussianBlur(9)))
-    base.alpha_composite(paint_layer(body,(224,111,163),.93,83+k))
-    base.alpha_composite(paint_layer(core,(255,248,246),.98,191+k))
+    palettes={
+       # These are COLOR-PURE physically separable luminosity zones (white
+       # source, lavender mid-body, ruby atmospheric shadow), never a fully
+       # opaque magenta ring or 5 uniformly colored streaks.
+       'charge':((212,162,222),.91,(255,250,251),.98,(128,61,155),.33),
+       'sea':((158,119,200),.44,(242,222,242),.52,(110,72,152),.33),
+       'fall':((199,158,227),.90,(255,253,248),1.0,(113,78,156),.32),
+       'hit':((235,172,218),.93,(255,252,238),1.0,(130,76,173),.34)}
+    br,bo,cr,co,mr,mo=palettes[kind]
+    soft=paint_layer(mist,mr,mo,13000+k+{'charge':1,'sea':2,'fall':3,'hit':4}[kind]*47)
+    halo=body.filter(ImageFilter.GaussianBlur(14 if kind!='sea' else 24))
+    base.alpha_composite(paint_layer(halo,(145,113,192),.24,11+k))
+    base.alpha_composite(soft.filter(ImageFilter.GaussianBlur(12)))
+    base.alpha_composite(paint_layer(body,br,bo,83+k))
+    base.alpha_composite(paint_layer(core,cr,co,191+k))
     a=np.asarray(base.getchannel('A'))
     assert (a>28).sum()>90,(kind,k,'nonvisible')
     assert max(a[0,:].max(),a[-1,:].max(),a[:,0].max(),a[:,-1].max())<14,(kind,k,'border crop')
     return base
+
 names=[('charge',10),('sea',12),('fall',17),('hit',8)]
-manifest={'revision':'FIST15_R1','provenance':'ORIGINAL_FIRST_PARTY_CODE_PAINTED_RGBA_NOT_HAND_PAINTED','reference':'JX Wudang #158 timing and pure light language only; NO copied commercial pixels','atlases':{},'masters':{}}
+manifest={'revision':'FIST15_R2','provenance':'ORIGINAL_FIRST_PARTY_CODE_PAINTED_RGBA_NOT_HAND_PAINTED','reference':'JX Wudang #158 timing and pure light language only; NO copied commercial pixels','atlases':{},'masters':{}}
 for name,n in names:
     frames=[mix(name,k,n) for k in range(n)]
     source=OUT/f'f15_{name}_master.png'
@@ -154,4 +175,4 @@ for name,n in names:
     manifest['atlases'][name]={'sha256':hashlib.sha256(outfile.read_bytes()).hexdigest(),
         'frames':n,'size':list(atlas.size),'cell':CELL}
 (OUT/'f15_manifest.json').write_text(json.dumps(manifest,indent=2,ensure_ascii=False),encoding='utf-8')
-print('FIST15_R1_BAKE_PASS total=47 originals=4 true_rgba=true no_gif=true no_rig=true')
+print('FIST15_R2_BAKE_PASS total=47 originals=4 true_rgba=true no_gif=true no_rig=true')
