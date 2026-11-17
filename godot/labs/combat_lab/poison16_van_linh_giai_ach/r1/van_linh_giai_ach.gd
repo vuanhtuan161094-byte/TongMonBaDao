@@ -155,13 +155,13 @@ func _draw()->void:
     # Broad 3-fold half-transparent field lies BEHIND and does not paint an icon.
     if t>=CAST_END and t<FADE_START:
         var q:=clampf((t-CAST_END)/(FADE_START-CAST_END),0,1)
-        _flip(bloom_frames,AOE_CENTER+Vector2(0,-47),Vector2(520,397),q*11.0,field_alpha(t)*.90)
+        _flip(bloom_frames,AOE_CENTER+Vector2(0,-47),Vector2(540,418),q*11.0,field_alpha(t)*.96)
     if t>=BLESSING_START and t<BLESSING_END:
         var q:=clampf((t-BLESSING_START)/(BLESSING_END-BLESSING_START),0,1)
         var alpha:=smoothstep(0,.18,q)*(1.0-smoothstep(.78,1.0,q))
         for i in chosen:
             _flip(blessing_frames,ally_chest(i,t)+Vector2(0,-10),
-                  Vector2(205,260),q*9.0,alpha*.63)
+                  Vector2(217,276),q*9.0,alpha*.79)
     if t>=FADE_START and t<FADE_END:
         var q:=clampf((t-FADE_START)/(FADE_END-FADE_START),0,1)
         var opacity:=smoothstep(0,.11,q)*(1.0-smoothstep(.52,1.0,q))
@@ -177,7 +177,7 @@ func _draw()->void:
         var front:=smoothstep(0,.18,q2)*(1.0-smoothstep(.78,1.0,q2))
         for i in chosen:
             _flip(blessing_frames,ally_chest(i,t)+Vector2(0,-8),
-                  Vector2(143,210),q2*9.0,front*.81)
+                  Vector2(164,228),q2*9.0,front*.97)
     if t>=FADE_START and t<FADE_END:
         var q3:=clampf((t-FADE_START)/(FADE_END-FADE_START),0,1)
         var frontfade:=smoothstep(0,.10,q3)*(1.0-smoothstep(.50,1.0,q3))
