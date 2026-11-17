@@ -4,7 +4,7 @@ Each key represents an authored new change in gold stroke emergence, jade feathe
 growth, contact bloom or dissolution. Pillow is the source painting pipeline.
 No commercial pixels, no single-frame UV wave, no actor rig.
 """
-from PIL import Image, ImageDraw, ImageFilter
+from PIL import Image, ImageDraw, ImageFilter, ImageFont, ImageChops
 from pathlib import Path
 import math, random, hashlib, json
 
@@ -133,14 +133,87 @@ def master(progress,jade,seed=0):
             brushed(dst,st,1.3,195,GOLD,max(0,min(1,(jade-.32)*1.7)),seed=k+seed,glow=4)
     small_dust(dst,jade,seed)
     return dst.resize((N,N),Image.Resampling.LANCZOS)
+# R5B revision: replace self-rejected turquoise curls with a legible original
+# WIND character seal. Noto Serif CJK is OFL-licensed, font file NOT bundled.
+# The copied glyph is rasterized as one input mask; separate painted energy /
+# gold brush strokes and contact are original first-party art.
+FONT=Path('/usr/share/fonts/opentype/noto/NotoSerifCJK-Regular.ttc')
+if not FONT.exists():
+    raise RuntimeError("OFL Noto Serif CJK is required: install fonts-noto-cjk")
+def glyph_mask(stage,step=0):
+    m=Image.new('L',(N*S,N*S),0)
+    d=ImageDraw.Draw(m)
+    font=ImageFont.truetype(str(FONT),164*S)
+    bounds=d.textbbox((0,0),'風',font=font)
+    px=((N*S-(bounds[2]-bounds[0]))//2)-bounds[0]
+    py=((N*S-(bounds[3]-bounds[1]))//2)-bounds[1]-14*S
+    d.text((px,py),'風',font=font,fill=255)
+    if stage<.999:
+        # Strokes are REVEALED as painting; never UV-shift or wobble whole image.
+        mask=Image.new('L',(N*S,N*S),0)
+        dr=ImageDraw.Draw(mask)
+        cutoff=int((.12+.88*stage)*N*S)
+        coords=[(0,0),(N*S,0)]
+        coords.extend((xx,cutoff+int(5*S*math.sin(xx/(52*S)+step*.2))) for xx in range(N*S,-1,-3*S))
+        dr.polygon(coords,fill=255)
+        m=ImageChops.multiply(m,mask)
+    return m.resize((N,N),Image.Resampling.LANCZOS)
 def brand_frame(i):
-    # A true temporal calligraphy reveal; the hold loop has changing energy,
-    # but a coherent constant mark silhouette (unlike R3's global sine warp).
-    if i<5: gold=(i+1)/5; qi=max(.02,(i-1)/4)
-    else: gold=1.0;qi=.85+.12*math.sin((i-5)*math.pi/5)
-    return master(gold,qi,i)
+    stage=max(.0,min(1.0,(i+1)/6))
+    layer=master(min(1,stage),min(1,stage+.2),i+5)
+    # Keep only a trace of subordinate jade currents; not three big neon noodles.
+    alpha=layer.getchannel('A').point(lambda v:int(v*.17))
+    layer.putalpha(alpha)
+    mask=glyph_mask(stage,i)
+    # Painterly glow: very faint large atmospheric halo, medium pigment body,
+    # tiny white-hot core. No hard flat neon-vector outline.
+    outer=Image.new('RGBA',(N,N),(24,181,148,255))
+    outer.putalpha(mask.filter(ImageFilter.GaussianBlur(5)).point(lambda v:int(v*.17)))
+    layer.alpha_composite(outer)
+    inner=Image.new('RGBA',(N,N),(91,244,204,255))
+    inner.putalpha(mask.filter(ImageFilter.GaussianBlur(1.6)).point(lambda v:int(v*.30)))
+    layer.alpha_composite(inner)
+    # Thin irregular antique-gold etched rim.
+    outline=ImageChops.subtract(mask.filter(ImageFilter.MaxFilter(5)),mask)
+    gold=Image.new('RGBA',(N,N),(249,205,114,255))
+    gold.putalpha(outline.point(lambda v:int(v*.29)))
+    layer.alpha_composite(gold)
+    # Textured saturated jade with directional hot packets on the rune itself.
+    ink=Image.new('RGBA',(N,N),(0,0,0,0))
+    ip=ink.load(); mp=mask.load()
+    for yy in range(N):
+        for xx in range(N):
+            a=mp[xx,yy]
+            if a==0:continue
+            light=.47+.13*math.sin(xx/14+i*.18)+.12*math.sin(yy/21-i*.35)
+            light=max(0,min(1,light))
+            ip[xx,yy]=(int(105+110*light),int(206+46*light),int(178+64*light),int(a*.88))
+    layer.alpha_composite(ink)
+    # Unclosed gold brush inscriptions around the main glyph. Not a UI ring.
+    rnd=random.Random(7091+i)
+    gold_layer=Image.new('RGBA',(N,N),(0,0,0,0))
+    dd=ImageDraw.Draw(gold_layer,'RGBA')
+    arms=[
+       [(88,88),(100,55),(129,47)],[(215,62),(231,78),(221,95)],
+       [(95,231),(83,254),(110,270)],[(215,231),(224,263),(199,277)],
+       [(146,31),(160,26),(177,35)],[(150,284),(164,297),(188,275)]
+    ]
+    for k,pts in enumerate(arms):
+        if stage<(k+.5)/8:continue
+        dd.line(pts,fill=(251,207,118,165),width=2,joint='curve')
+        for x,y in pts[1:2]:
+            dd.ellipse((x-2,y-2,x+2,y+2),fill=(255,247,191,205))
+    layer.alpha_composite(gold_layer)
+    # Two independent moving caustic freckles, not global alpha pulsation.
+    for k in range(2):
+        if i<5:continue
+        x=125+(i*21+k*39)%77
+        y=107+(i*9+k*49)%93
+        d=ImageDraw.Draw(layer,'RGBA')
+        d.ellipse((x-1.2,y-1.2,x+1.2,y+1.2),fill=(255,255,228,218))
+    return layer
 def burst_frame(i):
-    dst=master(min(1.0,.18+i*.22),min(1.0,.14+i*.22),i+17)
+    dst=brand_frame(min(11,i+2))
     scale=2
     canvas2=Image.new('RGBA',(N*scale,N*scale),(0,0,0,0))
     # Localized burst around the anchoring mark, golden hot facets.
@@ -173,11 +246,11 @@ def store(name,img):
 if __name__=="__main__":
     frames=[brand_frame(i) for i in range(12)]
     contact=[burst_frame(i) for i in range(11)]
-    hero=master(1.0,1.0,8)
+    hero=brand_frame(11)
     hero.save(SRC/'paf05_r5_phong_linh_trien_master.png')
     entry={
        'schema':'PAF05_R5_ISOLATED_RGBA_ART_SOURCE',
-       'art':'FIRST_PARTY_CODE_PAINTED_SEPARATE_MARK_NOT_UI_NOT_POSTER',
+       'art':'R5B_FIRST_PARTY_INK_BRUSH_WITH_OFL_CJK_WIND_SEAL_AND_ANIMATED_RUNE',
        'frames_status':12,'frames_contact':11,
        'render_cell':[N,N], 'columns':4,
        'master':str((SRC/'paf05_r5_phong_linh_trien_master.png').relative_to(ROOT)),
