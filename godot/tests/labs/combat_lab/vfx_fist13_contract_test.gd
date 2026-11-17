@@ -22,6 +22,8 @@ func _run()->void:
     verify(LAB.mark_at(1,.9)==Vector2(-9999.0,-9999.0),"single mark target")
     verify(LAB.mark_opacity(.6)==0 and LAB.mark_opacity(1.2)>.99 and LAB.mark_opacity(7.2)==0,"opacity")
     verify(LAB.CHARGE.get_size()==Vector2(1280,640),"charge")
+    verify(LAB.fist_at(.74).x>LAB.fist_at(.48).x+80,"moving fist progression")
+    verify(LAB.return_qi_at(1.17).x<LAB.return_qi_at(.89).x-80,"backflow toward caster")
     verify(LAB.CONTACT.get_size()==Vector2(1280,960),"contact")
     verify(LAB.MARK.get_size()==Vector2(1280,640),"mark")
     var src:=FileAccess.get_file_as_string("res://labs/combat_lab/fist13/huyet_khi_hoi_luu.gd")

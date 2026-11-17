@@ -1,6 +1,6 @@
 extends Control
-## FIST13 R3: real first-party illustrated material atlas and native target-bound mark.
-## Concept montage imagery is never imported. VFX cosmetic only; no combat mutation.
+## FIST13 R6 painted Quyền Tu hero. Cosmetic mark visual only.
+## The returning qi is an ART-ONLY release motion, not healing, projectile or extra hit.
 const SKILL_ID := "tmb.skill.fist.huyet_quyen.active_03.human"
 const EFFECT := "mark"
 const ELEMENT := "nether"
@@ -40,11 +40,17 @@ static func mark_at(index:int,t:float)->Vector2:
 static func mark_opacity(t:float)->float:
     if t<MARK_START or t>=FADE_END:return 0.0
     return smoothstep(MARK_START,MARK_START+.11,t)*(1.0-smoothstep(MARK_END,FADE_END,t))
+static func fist_at(t:float)->Vector2:
+    var q:=smoothstep(CAST_TIME,MARK_START,clampf(t,CAST_TIME,MARK_START))
+    return (caster_at(t)+Vector2(56,-100)).lerp(mark_at(0,t),q)
+static func return_qi_at(t:float)->Vector2:
+    var q:=smoothstep(MARK_START,1.24,clampf(t,MARK_START,1.24))
+    return mark_at(0,t).lerp(caster_at(t)+Vector2(54,-102),q)
 func _ready()->void:
     custom_minimum_size=Vector2(1280,720)
     mouse_filter=Control.MOUSE_FILTER_IGNORE
     set_process(true)
-    print("VFX_FIST13_R5_READY painted_material=true moving_monster=true one_mark_six_seconds=true")
+    print("VFX_FIST13_R6_READY painted_fist=true returning_qi=true moving_target=true one_mark_6s=true")
 func _process(delta:float)->void:
     if paused:return
     elapsed=fposmod(elapsed+maxf(delta,0),LOOP_END)
@@ -53,46 +59,52 @@ func _unhandled_input(e:InputEvent)->void:
     if e is InputEventKey and e.pressed and not e.echo:
         if e.keycode==KEY_SPACE:elapsed=0.0
         elif e.keycode==KEY_P:paused=not paused
-func _flip(tex:Texture2D,index:float,at:Vector2,scale:float,opacity:float)->void:
-    if opacity<=.002:return
-    var lo:=clampi(int(floor(index)),0,int(tex.get_height()/320)*4-1)
-    var hi:=mini(lo+1,int(tex.get_height()/320)*4-1)
-    var q:=smoothstep(0,1,clampf(index-float(lo),0,1))
-    _cell(tex,lo,at,scale,opacity*(1-q))
-    if hi!=lo:_cell(tex,hi,at,scale,opacity*q)
 func _cell(tex:Texture2D,index:int,at:Vector2,scale:float,opacity:float)->void:
     var c:=320.0
-    draw_set_transform(at,0.0,Vector2.ONE*scale)
-    draw_texture_rect_region(tex,Rect2(-Vector2(160,160),Vector2(c,c)),
-        Rect2(float(index%4)*c,float(int(index/4))*c,c,c),Color(1,1,1,clampf(opacity,0,1)))
-    draw_set_transform(Vector2.ZERO,0.0,Vector2.ONE)
+    draw_set_transform(at,0,Vector2.ONE*scale)
+    draw_texture_rect_region(tex,Rect2(-Vector2(160,160),Vector2(c,c)),Rect2(float(index%4)*c,float(int(index/4))*c,c,c),Color(1,1,1,clampf(opacity,0,1)))
+    draw_set_transform(Vector2.ZERO,0,Vector2.ONE)
+func _flip(tex:Texture2D,p:float,n:int,at:Vector2,scale:float,opacity:float)->void:
+    if opacity<=.002:return
+    var idx:=clampf(p,0,float(n-1))
+    var lo:=clampi(int(floor(idx)),0,n-1)
+    var hi:=mini(lo+1,n-1)
+    var q:=smoothstep(0,1,idx-float(lo))
+    _cell(tex,lo,at,scale,opacity*(1-q))
+    if hi!=lo:_cell(tex,hi,at,scale,opacity*q)
 func _caster(pos:Vector2)->void:
     draw_texture_rect_region(IDLE,Rect2(pos-Vector2(69,151),Vector2(138,169)),Rect2(0,0,320,384),Color.WHITE)
 func _monster(pos:Vector2,t:float)->void:
     var n:=MONSTER_FRAMES.get_frame_count("walk")
-    var tex:Texture2D=MONSTER_FRAMES.get_frame_texture("walk",int(floor(t*13.0))%maxi(n,1))
+    var tex:Texture2D=MONSTER_FRAMES.get_frame_texture("walk",int(floor(t*13))%maxi(n,1))
     draw_texture_rect(tex,Rect2(pos-Vector2(76,139),Vector2(152,139)),false,Color.WHITE)
 func _draw()->void:
     var t:=elapsed
     draw_texture_rect(BG,Rect2(0,0,1280,720),false,Color.WHITE)
-    var hand:=caster_at(t)+Vector2(51,-99)
-    if t<.52:
-        var gain:=smoothstep(0,.12,t)*(1.0-smoothstep(.39,.52,t))
-        _flip(CHARGE,clampf(t/CAST_TIME*7,0,7),hand,.82,gain*.98)
-    # Inward flow: 1 target-relative compressive painted whorl. No projectile.
-    if t>=.45 and t<1.17:
-        var q:=clampf((t-.45)/.39,0,1)
-        var opacity:=smoothstep(.45,.55,t)*(1.0-smoothstep(.91,1.17,t))
-        _flip(CONTACT,11*q,mark_at(0,t),.92,opacity)
+    var hand:=caster_at(t)+Vector2(54,-103)
+    if t<.51:
+        var gain:=smoothstep(.02,.14,t)*(1.0-smoothstep(.40,.51,t))
+        _flip(CHARGE,7.0*t/CAST_TIME,8,hand,.78,gain)
+    # Meaningful fist silhouette advances toward an already selected enemy.
+    # This is a non-projectile presentation of the original MARK cast.
+    if t>=CAST_TIME and t<MARK_START:
+        var q:=clampf((t-CAST_TIME)/(MARK_START-CAST_TIME),0,1)
+        var alpha:=smoothstep(CAST_TIME,CAST_TIME+.065,t)
+        _flip(CONTACT,q*11.0,12,fist_at(t),.77+q*.08,alpha*.97)
+    # One faint BACKWARD blood-qi echo returns to caster; strictly cosmetic.
+    # There is still only one mark and no new damage, hit, heal or status.
+    if t>=MARK_START and t<1.24:
+        var rq:=clampf((t-MARK_START)/.40,0,1)
+        var ra:float=(1.0-smoothstep(.68,1.0,rq))*.43
+        _flip(CHARGE,(1.0-rq)*7.0,8,return_qi_at(t),.46,ra)
     _caster(caster_at(t))
     _monster(foe_at(t),t)
-    if t>=MARK_START and t<1.17:
-        var flash:=smoothstep(MARK_START,MARK_START+.07,t)*(1.0-smoothstep(.93,1.17,t))
-        _flip(CONTACT,11,mark_at(0,t),.41,flash*.47)
-    var sign:=mark_opacity(t)
-    if sign>.002:
-        # Same one mark event, two cosmetic cues: a modest local chest signature
-        # and a clear floating seal above the moving target's head.
-        var pose:=fposmod((t-MARK_START)*5.6,8.0)
-        _flip(MARK,pose,mark_at(0,t),.73,sign*.54)
-        _flip(MARK,pose,foe_at(t)+Vector2(-3,-182),.90,sign*.96)
+    if t>=MARK_START and t<1.13:
+        var flash:=smoothstep(MARK_START,MARK_START+.045,t)*(1.0-smoothstep(.92,1.13,t))
+        _flip(CONTACT,11.0,12,mark_at(0,t),.58,flash*.43)
+    var ink:=mark_opacity(t)
+    if ink>.002:
+        var p:=fposmod((t-MARK_START)*6.0,8.0)
+        _flip(MARK,p,8,mark_at(0,t),.72,ink*.84)
+        # A smaller floating scar on the SAME target keeps the mark readable.
+        _flip(MARK,p,8,foe_at(t)+Vector2(-3,-170),.37,ink*.55)

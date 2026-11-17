@@ -1,4 +1,4 @@
-name: VFX-FIST-13 Huyet Khi Hoi Luu R5 V4 native
+name: VFX-FIST-13 Huyet Khi Hoi Luu R6 fist art V4 native
 on:
   workflow_dispatch:
   push:
@@ -45,7 +45,7 @@ jobs:
           set -euo pipefail
           d=/tmp/vfx-fist13
           python3 tools/vfx/generate_fist13_huyet_khi_hoi_luu.py | tee "$d/bake.log"
-          grep -Fq 'FIST13_R4_PAINTED_MATERIAL_BAKE_PASS poses=28 atlas=3 no_gif=true no_rig=true' "$d/bake.log"
+          grep -Fq 'FIST13_R6_FIST_SOURCE_BAKE_PASS frames=28 pages=3 alpha=true no_gif=true no_rig=true' "$d/bake.log"
           python3 tools/qa/validate_vfx_v4_packet.py --stage packet --packet docs/operations/vfx_packets/FIST13_R1_HUYET_KHI_HOI_LUU_V4.json | tee "$d/packet.log"
           python3 tools/qa/validate_vfx_v4_packet.py --stage assets --packet docs/operations/vfx_packets/FIST13_R1_HUYET_KHI_HOI_LUU_V4.json | tee "$d/assets.log"
           cp godot/labs/combat_lab/fist13/assets/generated/f13_* "$d/"
@@ -83,7 +83,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: vfx-fist13-r5-native-owner-pending
+          name: vfx-fist13-r6-native-owner-pending
           retention-days: 14
           if-no-files-found: warn
           path: |
