@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>Tàng Kinh Các — Tông Môn Bá Đạo</title>
+  <link rel="stylesheet" href="./styles.css">
+  <link rel="icon" href="data:,">
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="#dashboard" aria-label="Tàng Kinh Các">
+        <span class="brand-mark">藏</span>
+        <span><strong>TÀNG KINH CÁC</strong><small>TÔNG MÔN BÁ ĐẠO · OWNER STUDIO</small></span>
+      </a>
+      <div class="private-chip"><span class="pulse"></span> LOCAL · PRIVATE</div>
+      <div class="nav-label">TỔNG QUAN</div>
+      <nav class="nav" id="nav">
+        <button class="nav-item active" data-view="dashboard"><span>◈</span>Bảng phát triển</button>
+        <button class="nav-item" data-view="gaps"><span>⌁</span>Gap Analysis <i id="gap-count">0</i></button>
+        <div class="nav-label">DANH MỤC NGUỒN</div>
+        <button class="nav-item" data-view="schools"><span>門</span>Môn phái</button>
+        <button class="nav-item" data-view="branches"><span>⌘</span>36 nhánh</button>
+        <button class="nav-item" data-view="skills"><span>✦</span>Kỹ năng V6.3</button>
+        <button class="nav-item" data-view="techniques"><span>冊</span>Công pháp</button>
+        <button class="nav-item" data-view="realms"><span>☯</span>Cảnh giới</button>
+        <button class="nav-item" data-view="disciples"><span>人</span>Đệ tử & thuộc tính</button>
+        <button class="nav-item" data-view="roots"><span>◉</span>Linh căn</button>
+        <button class="nav-item" data-view="medicine"><span>丹</span>Đan dược</button>
+        <button class="nav-item" data-view="equipment"><span>⚔</span>Trang bị</button>
+        <button class="nav-item" data-view="resources"><span>◇</span>Tài nguyên</button>
+        <button class="nav-item" data-view="vfx"><span>✧</span>VFX & asset</button>
+        <div class="nav-label">QUẢN TRỊ THIẾT KẾ</div>
+        <button class="nav-item" data-view="editor"><span>✎</span>Design Editor</button>
+        <button class="nav-item" data-view="requests"><span>☷</span>Change Requests <i id="request-count">0</i></button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="source-mini"><span class="mini-dot"></span><div><b id="sync-state">Đang nạp nguồn</b><small id="head-mini">Snapshot local</small></div></div>
+        <button class="sync-button" id="sync-command" type="button">⟳　Hướng dẫn đồng bộ nguồn</button>
+        <p>Đề xuất chỉ nằm trong profile trình duyệt. Không ghi vào gameplay.</p>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <button class="mobile-menu" id="mobile-menu" aria-label="Mở menu">☰</button>
+        <div class="crumb"><span>TMB /</span> <b id="crumb-title">Bảng phát triển</b></div>
+        <div class="top-actions">
+          <label class="searchbox"><span>⌕</span><input id="global-search" type="search" placeholder="Tìm ID, kỹ năng, môn phái…" autocomplete="off"><kbd>Ctrl K</kbd></label>
+          <div class="owner-pill"><span class="owner-avatar">主</span><span>Chủ dự án<small>DESIGN CONTROL</small></span></div>
+        </div>
+      </header>
+      <div class="privacy-banner"><span>▣</span><span><b>Không gian nội bộ</b> · Site chỉ được phục vụ trên <code>127.0.0.1</code>. Nội dung Wiki là snapshot một chiều; đề xuất của bạn không sửa nguồn game.</span><button id="privacy-close" aria-label="Đóng">×</button></div>
+      <section id="page" class="page" aria-live="polite"><div class="loading"><span class="spinner"></span>Đang đọc catalog có kiểm chứng…</div></section>
+    </main>
+  </div>
+  <dialog id="sync-dialog" class="modal">
+    <div class="modal-head"><div><small>ONE-WAY SOURCE SYNC</small><h2>Đồng bộ nguồn game → Wiki</h2></div><button class="icon-button" data-close="sync-dialog">×</button></div>
+    <p>Đồng bộ chỉ sinh lại <code>wiki/data/catalog.json</code> và báo cáo coverage. Bản ghi đề xuất và Change Request nằm trong localStorage của browser, không bị ghi đè bởi tác vụ này.</p>
+    <div class="command"><code>python tools/wiki/build_wiki_catalog.py --write</code><button class="small-button" id="copy-sync">Sao chép</button></div>
+    <div class="modal-note">Sau khi đồng bộ, tải lại trang để đọc snapshot mới. Duyệt `docs/wiki/TMB_WIKI_SOURCE_AUDIT.md` trước khi commit dữ liệu sinh.</div>
+  </dialog>
+  <script src="./app.js" defer></script>
+</body>
+</html>

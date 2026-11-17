@@ -1,0 +1,59 @@
+name: TMB Wiki source validation
+
+on:
+  push:
+    branches: [integration/pve-p0-playable-ui-20261103]
+    paths:
+      - 'wiki/**'
+      - 'docs/wiki/**'
+      - 'tools/wiki/**'
+      - '.github/workflows/wiki-source-validation.yml'
+  pull_request:
+    branches: [integration/pve-p0-playable-ui-20261103]
+    paths:
+      - 'wiki/**'
+      - 'docs/wiki/**'
+      - 'tools/wiki/**'
+      - '.github/workflows/wiki-source-validation.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tmb-wiki-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  wiki-source-validation:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact event SHA
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Resolve latest non-Wiki source commit
+        shell: bash
+        env:
+          SOURCE_REF: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
+        run: |
+          source_sha="$(git log -1 --format=%H "$SOURCE_REF" -- . ':!wiki' ':!docs/wiki' ':!tools/wiki' ':!.github/workflows/wiki-source-validation.yml')"
+          test "${#source_sha}" = 40
+          echo "TMB_WIKI_SOURCE_SHA=$source_sha" >> "$GITHUB_ENV"
+          echo "Wiki source SHA: $source_sha"
+      - name: Record exact revision
+        run: |
+          echo "GitHub event SHA: $GITHUB_SHA"
+          echo "Checked out SHA: $(git rev-parse HEAD)"
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+      - name: Verify source projection is current
+        run: python tools/wiki/build_wiki_catalog.py --check
+      - name: Run focused Wiki tests
+        run: python -m unittest discover -s tools/wiki/tests -v
+      - name: Validate browser scripts parse
+        run: node --check wiki/app.js
