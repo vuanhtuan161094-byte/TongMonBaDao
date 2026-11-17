@@ -1,0 +1,121 @@
+name: VFX V4 | PAF04 Ho Menh Luu Van translucent glass guard (Godot 4.7.2, NO GIF)
+on:
+  workflow_dispatch:
+  push:
+    branches: [integration/pve-p0-playable-ui-20261103]
+    paths:
+      - '.github/workflows/vfx-v4-paf04-native.yml'
+      - 'tools/vfx/paf04_glass_guard_assets.py'
+      - 'tools/vfx/paf04_glass_guard_assets.py'
+      - 'docs/operations/vfx_packets/PAF04_V4_PREFLIGHT.json'
+      - 'godot/labs/combat_lab/talisman14/**'
+      - 'godot/tests/labs/combat_lab/vfx_paf04_contract_test.gd'
+      - 'tools/qa/validate_vfx_v4_packet.py'
+permissions:
+  contents: read
+jobs:
+  paf04-native:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      GODOT_AUDIO_DRIVER: Dummy
+      GODOT_RENDERING_DRIVER: opengl3
+      PACKET: docs/operations/vfx_packets/PAF04_V4_PREFLIGHT.json
+    steps:
+      - name: Checkout exact SHA
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Pin Godot 4.7.2 and painter/MP4 dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/vfx-paf04";mkdir -p "$d"
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq xvfb ffmpeg unzip python3-pil python3-numpy fonts-noto-cjk
+          curl --fail --location --retry 3 -o /tmp/godot472.zip 'https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip'
+          echo 'cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4  /tmp/godot472.zip' | sha256sum --check --strict
+          unzip -q /tmp/godot472.zip -d /tmp
+          sudo install -m0755 /tmp/Godot_v4.7.2-stable_linux.x86_64 /usr/local/bin/godot
+          godot --version > "$d/engine.txt"
+          printf 'EXACT_SHA=%s\nPAF04_SELF_GUARD=TRUE\nNO_GIF=TRUE\nOWNER_VISUAL=PENDING\nPVE=HOLD\n' "$GITHUB_SHA" > "$d/scope.txt"
+      - name: Bake five original RGBA atlases and two painted masters, validate V4
+        shell: bash
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/vfx-paf04"
+          /usr/bin/python3 tools/vfx/paf04_glass_guard_assets.py 2>&1 | tee "$d/bake.log"
+          grep -Fq 'PAF04_ORIGINAL_GLASS_RGBA_BAKE_PASS' "$d/bake.log"
+          python3 tools/qa/validate_vfx_v4_packet.py --stage packet --packet "$PACKET" 2>&1 | tee "$d/packet.log"
+          grep -Fq 'VFX_V4_PACKET_TECHNICAL_PASS' "$d/packet.log"
+          python3 tools/qa/validate_vfx_v4_packet.py --stage assets --packet "$PACKET" 2>&1 | tee "$d/atlas.log"
+          grep -Fq 'VFX_V4_ASSETS_TECHNICAL_PASS' "$d/atlas.log"
+          sha256sum godot/labs/combat_lab/talisman14/assets/*.webp godot/labs/combat_lab/talisman14/art_sources/*.png > "$d/art-sha256.txt"
+      - name: Restore approved unchanged first-party caster sprite overlay
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat .github/assets/p3/female_stage_a/part{01..14}.b64 .github/assets/p3/female_stage_a/part15a.b64 .github/assets/p3/female_stage_a/part15b.b64 .github/assets/p3/female_stage_a/part{16..20}.b64 | tr -d '\r\n\t ' | base64 --decode > /tmp/tmb_stage_a_pack.zip
+          test "$(stat -c%s /tmp/tmb_stage_a_pack.zip)" -eq 44838
+          echo '6a4213b9129ffb3f438c21cbb5326672ddf8915323836bf80cb33b8e5fabfdca  /tmp/tmb_stage_a_pack.zip' | sha256sum --check --strict
+          unzip -q /tmp/tmb_stage_a_pack.zip -d .
+      - name: Godot strict import / parse / moving-self instant-cleanse test
+        shell: bash
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/vfx-paf04"
+          bash tools/qa/run_godot_strict.sh --headless --path godot --import 2>&1 | tee "$d/godot-import.log"
+          bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://labs/combat_lab/talisman14/ho_menh_luu_van.gd 2>&1 | tee "$d/godot-parse.log"
+          bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/labs/combat_lab/vfx_paf04_contract_test.gd 2>&1 | tee "$d/godot-focused.log"
+          grep -Fq 'VFX_PAF04_FOCUSED_RESULT=PASS failures=0' "$d/godot-focused.log"
+      - name: Real Godot 1280x720 MP4 120 frames and moving contact proof (NO GIF)
+        shell: bash
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/vfx-paf04"
+          xvfb-run -a -s '-screen 0 1280x720x24' bash tools/qa/run_godot_strict.sh --path godot --resolution 1280x720 --fixed-fps 60 --write-movie "$d/paf04-native.avi" --quit-after 120 res://labs/combat_lab/talisman14/ho_menh_luu_van.tscn 2>&1 | tee "$d/godot-preflight.log"
+          grep -Fq 'VFX_PAF04_READY' "$d/godot-preflight.log"
+          test -s "$d/paf04-native.avi"
+          ffmpeg -y -hide_banner -loglevel error -i "$d/paf04-native.avi" -pix_fmt yuv420p -c:v libx264 -crf 16 -movflags +faststart "$d/paf04-native.mp4"
+          ffprobe -v error -select_streams v:0 -show_entries stream=width,height,nb_frames -of default=noprint_wrappers=1 "$d/paf04-native.mp4" | tee "$d/ffprobe.txt"
+          grep -Fxq 'width=1280' "$d/ffprobe.txt"
+          grep -Fxq 'height=720' "$d/ffprobe.txt"
+          grep -Fxq 'nb_frames=120' "$d/ffprobe.txt"
+          ffmpeg -y -hide_banner -loglevel error -ss 0.30 -i "$d/paf04-native.mp4" -frames:v 1 "$d/v4-charge.png"
+          ffmpeg -y -hide_banner -loglevel error -ss 0.72 -i "$d/paf04-native.mp4" -frames:v 1 "$d/v4-peak.png"
+          ffmpeg -y -hide_banner -loglevel error -ss 0.99 -i "$d/paf04-native.mp4" -frames:v 1 "$d/v4-contact.png"
+          for at in 0.10 0.20 0.30 0.40 0.51 0.59 0.72 0.77 0.85 0.90 0.99 1.10 1.22 1.39 1.52 1.82; do
+            ffmpeg -y -hide_banner -loglevel error -ss "$at" -i "$d/paf04-native.mp4" -frames:v 1 "$d/frame-$at.png"
+          done
+          sha256sum "$d/paf04-native.mp4" "$d/v4-charge.png" "$d/v4-peak.png" "$d/v4-contact.png" > "$d/movie-sha256.txt"
+          rm "$d/paf04-native.avi"
+      - name: Exact SHA V4 proof; fail when contact screenshot missing
+        shell: bash
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/vfx-paf04"
+          python3 tools/qa/validate_vfx_v4_packet.py --stage evidence --packet "$PACKET" --out "$d" --sha "$GITHUB_SHA" 2>&1 | tee "$d/evidence.log"
+          grep -Fq 'VFX_V4_EVIDENCE_TECHNICAL_PASS' "$d/evidence.log"
+          mkdir -p "$d/missing-contact"
+          cp "$d/paf04-native.mp4" "$d/godot-preflight.log" "$d/godot-focused.log" "$d/v4-charge.png" "$d/v4-peak.png" "$d/missing-contact/"
+          if python3 tools/qa/validate_vfx_v4_packet.py --stage evidence --packet "$PACKET" --out "$d/missing-contact" --sha "$GITHUB_SHA"; then
+            echo 'ERROR missing-contact falsely passed' >&2;exit 1
+          fi
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          echo "PAF04_V4_TECH_PASS=$GITHUB_SHA ART=MANUAL PVE=HOLD"
+      - name: Archive original source art and genuine native MP4 + 3 phase screenshots; NO GIF
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vfx-paf04-native-${{ github.sha }}
+          retention-days: 30
+          if-no-files-found: warn
+          path: |
+            ${{ runner.temp }}/vfx-paf04/*.log
+            ${{ runner.temp }}/vfx-paf04/*.txt
+            ${{ runner.temp }}/vfx-paf04/*.png
+            ${{ runner.temp }}/vfx-paf04/*.mp4
+            ${{ runner.temp }}/vfx-paf04/*.json
+            godot/labs/combat_lab/talisman14/art_sources/*.png
+            godot/labs/combat_lab/talisman14/assets/*.webp

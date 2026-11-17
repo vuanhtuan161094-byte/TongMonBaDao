@@ -1,0 +1,163 @@
+{
+  "schema": "tmb-vfx-production-system-v4.1",
+  "packet_id": "PAF04_R1_HO_MENH_LUU_VAN_GLASS_GUARD_V4",
+  "skill_id": "tmb.skill.talisman.phong_an_phu.active_04.human",
+  "school": "talisman",
+  "revision": "PAF04_R1_ORIGINAL_PEARLESCENT_TRANSLUCENT_CRYSTAL_SELF_GUARD",
+  "catalogue_path": "godot/data/combat/v63_talisman_combat_catalog.json",
+  "scene_path": "godot/labs/combat_lab/talisman14/ho_menh_luu_van.tscn",
+  "lab_script": "godot/labs/combat_lab/talisman14/ho_menh_luu_van.gd",
+  "focused_test": "godot/tests/labs/combat_lab/vfx_paf04_contract_test.gd",
+  "declared_contract": {
+    "effect": "guard",
+    "element": "wind",
+    "shape": "single_target",
+    "target_limit": 1,
+    "hit_count": 1,
+    "range": 8.5,
+    "radius": 0,
+    "cast_time": 0.5,
+    "cooldown": 13.6,
+    "projectile_speed": 0,
+    "duration": 4
+  },
+  "provenance": {
+    "source_class": "FIRST_PARTY_ORIGINAL_HIGH_RES_RGBA_TRANSLUCENT_GLASS_WIND_GUARD",
+    "rights_note": "Original first-party PAF04 transparent glass-energy sprite art: 12 charge,16 glass rear,16 glass front,14 lock,8 caustics and8 tiny badge frames. Authored and reproducible from tools/vfx/paf04_glass_guard_assets.py, with independently generated RGBA master PNGs. Translucent cyan glass material and thin white/gold refractive bright facets, not a full opaque GUI circle. No third party JX/VL/Source A textures; no rig. Existing first-party actor and background are separate.",
+    "master_quality_status": "MANUAL_ART_REVIEW_REQUIRED",
+    "known_source_limitation": "Procedurally authored supersampled original raster, not actual volumetric optics or a commissioned painting. Color purity and edge alpha must be checked in genuine native Godot 1x, independent from technical QA. Visual LAB shows a simulated guard receipt but does not modify real CombatV2 or SaveService state.",
+    "master_files": [
+      {
+        "path": "godot/labs/combat_lab/talisman14/art_sources/paf04_pearlescent_glass_shield_master.png",
+        "encoding": "png",
+        "role": "Original 704x896 RGBA protective glass energy shell source"
+      },
+      {
+        "path": "godot/labs/combat_lab/talisman14/art_sources/paf04_condensing_crystal_master.png",
+        "encoding": "png",
+        "role": "Original 640x640 transparent glass shard charge source"
+      }
+    ],
+    "generators": [
+      "tools/vfx/paf04_glass_guard_assets.py"
+    ]
+  },
+  "atlases": [
+    {
+      "path": "godot/labs/combat_lab/talisman14/assets/paf04_charge.webp",
+      "width": 1280,
+      "height": 960,
+      "cell_width": 320,
+      "cell_height": 320,
+      "frames": 12,
+      "columns": 4,
+      "layer": "12 first-party folding crystal condensations: transparent jade and local gold faceting"
+    },
+    {
+      "path": "godot/labs/combat_lab/talisman14/assets/paf04_glass_back.webp",
+      "width": 1408,
+      "height": 1792,
+      "cell_width": 352,
+      "cell_height": 448,
+      "frames": 16,
+      "columns": 4,
+      "layer": "16 transparent protection glass shards behind moving SELF actor"
+    },
+    {
+      "path": "godot/labs/combat_lab/talisman14/assets/paf04_glass_front.webp",
+      "width": 1408,
+      "height": 1792,
+      "cell_width": 352,
+      "cell_height": 448,
+      "frames": 16,
+      "columns": 4,
+      "layer": "16 peripheral transparent crystal shards in front without hiding SELF face"
+    },
+    {
+      "path": "godot/labs/combat_lab/talisman14/assets/paf04_lock.webp",
+      "width": 1280,
+      "height": 1280,
+      "cell_width": 320,
+      "cell_height": 320,
+      "frames": 14,
+      "columns": 4,
+      "layer": "14 faceted translucent shield-lock flashes in a single target"
+    },
+    {
+      "path": "godot/labs/combat_lab/talisman14/assets/paf04_shimmer.webp",
+      "width": 1024,
+      "height": 512,
+      "cell_width": 256,
+      "cell_height": 256,
+      "frames": 8,
+      "columns": 4,
+      "layer": "8 small warm-white/gold optical caustic fade poses"
+    },
+    {
+      "path": "godot/labs/combat_lab/talisman14/assets/paf04_badge.webp",
+      "width": 512,
+      "height": 256,
+      "cell_width": 128,
+      "cell_height": 128,
+      "frames": 8,
+      "columns": 4,
+      "layer": "8 separate compact indicator poses, not four seconds of VFX animation"
+    }
+  ],
+  "time_contract": {
+    "combat_clock": "CATALOGUE_GATED_NOT_LIVE",
+    "declared_cast_end_seconds": 0.5,
+    "declared_status_duration_seconds": 4,
+    "runtime_receipt_timestamp": "RUNTIME_MAPPING_PENDING",
+    "vfx_clock": "LAB_ONLY",
+    "simulated_hit_seconds": 0.82,
+    "visual_fade_end_seconds": 1.48,
+    "demo_loop_seconds": 2,
+    "demo_clock_warning": "PAF04 guard/wind/self-only cap1, mitigation power0.16, cast0.5s, status duration4s, cooldown13.6. Four-second buff state separate from 2-second active skill movie. LAB self guard receipt0.82 is simulated visual only, not CombatV2 guard application. No gameplay projectile/damage.",
+    "key_pose_budget_note": "12 charge, 16 rear shield, 16 edge shield, 14 lock, 8 glints, 8 badge authored pose frames; 120 60FPS Godot-encoded video frames are NOT authored poses. Four-second status separately unit tested at t.88,3.4,4.81,4.83. No GIF per V4.3.",
+    "phases": [
+      {
+        "id": "charge",
+        "at_seconds": 0.3,
+        "expected_phase": "self_charge",
+        "file": "v4-charge.png"
+      },
+      {
+        "id": "peak",
+        "at_seconds": 0.72,
+        "expected_phase": "glass_forming",
+        "file": "v4-peak.png"
+      },
+      {
+        "id": "contact",
+        "at_seconds": 0.99,
+        "expected_phase": "self_guard_lock",
+        "file": "v4-contact.png"
+      }
+    ]
+  },
+  "moving_target": {
+    "actor_animation": "walk",
+    "locked_demo_target_index": 0,
+    "movement_from_seconds": 0.3,
+    "movement_to_seconds": 0.99,
+    "minimum_displacement_px": 20,
+    "contact_anchor": "LAB.self_contact(0,t)",
+    "tracking_rule": "One moving WALK caster simultaneously SELF recipient; glass follows currently moving actor, optical shield on caster not another ally, no enemy projectile, no gameplay state changes. Guard duration4s is an independently tested simulated state.",
+    "receipt_claim": "SIMULATED_VISUAL_ONLY"
+  },
+  "gate_status": {
+    "g3_5_capture": "NOT_EXECUTED_UNTIL_RUN",
+    "technical": "NOT_EXECUTED_UNTIL_RUN",
+    "art": "MANUAL_ART_REVIEW_REQUIRED",
+    "owner": "OWNER_VISUAL_PENDING",
+    "live": "PVE_INTEGRATION_HOLD",
+    "device": "PHYSICAL_QA_PENDING"
+  },
+  "proof_contract": {
+    "focused_marker": "VFX_PAF04_FOCUSED_RESULT=PASS failures=0",
+    "native_marker": "VFX_PAF04_READY",
+    "source": "Single moving caster SELF guard; short transparent jade glass VFX and separate 4s mitigation state; strict Godot G3.5 proof without gameplay writes",
+    "video_filename": "paf04-native.mp4"
+  }
+}
