@@ -19,7 +19,7 @@ func _run()->void:
 	ck(FX.identity_frame(0.0)==FX.identity_frame(3.0),"loop seam")
 	ck(FX.identity_frame(.30)!=FX.identity_frame(.60),"traveling feathers motion")
 	ck(FX.depth_front(PI/2.0) and not FX.depth_front(3.0*PI/2.0),"front behind actor correct")
-	ck(FX.CORE_POS==Vector2(632,466),"chest center not head badge")
+	ck(FX.CORE_POS==Vector2(632,505),"chest center not head badge")
 	var node:Control=FX.new()
 	root.add_child(node)
 	await process_frame
