@@ -1,5 +1,5 @@
 "stage","command_or_evidence","engine","result","exit_code","notes"
-"Source identity","Local isolated candidate project; PR #72 observed at 11864a9312fb591e08c538d97f04d36dc1e1b295","Godot 4.7.2 stable ed1daf0bf","LIMITED","N/A","Not a native full-repository checkout; no claim that the entire PR tree was tested"
+"Source identity","Local isolated candidate project; pre-upload PR #72 HEAD 95278e0120794590ee76176204301bb11abe9f51; published commit 0a205e0ff3b5d7e7d5d91081b91f32aaf37a2048 appended atop live parent 887da5a1eb5f0b97742b74374083cf08ce25418c","Godot 4.7.2 stable ed1daf0bf","LIMITED","N/A","Not a native full-repository checkout; candidate folder bytes are committed at the exact publication SHA, but this does not claim the entire PR tree was tested"
 "Import/parse","--headless --editor --path <candidate> --quit","Godot 4.7.2 stable ed1daf0bf","PASS","0","Final import after new source cels and scenes"
 "AS49 attack atlas","build_as49_attack.gd","Godot 4.7.2 stable ed1daf0bf","PASS","0","4 RGBA source poses; 4 distinct registered cels; 400x440 baseline 430"
 "AS49 SpriteFrames","build_as49_spriteframes.gd","Godot 4.7.2 stable ed1daf0bf","PASS","0","Two clips, eight frames; first attempt before importing generated atlas failed, then import and rerun passed"
