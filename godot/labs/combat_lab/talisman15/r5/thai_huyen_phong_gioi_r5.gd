@@ -97,10 +97,12 @@ func _draw_contact_and_marks_r5(t: float) -> void:
 			var anchor_now: Vector2=mark_pos(k,t)
 			var phase: float=t-RECEIPT
 			var frame: int=mark_frame(t)
-			var ink: float=.93*(.91+.09*sin(phase*2.3))
-			# Persistent 7s state is engraved slightly to the side of the
-			# shoulder. The rune is ART-TEXTURE, not the old draw_arc badge.
-			_atlas(MARK_TEX,frame,anchor_now,Vector2(73,73),Color(1,1,1,ink*.86))
+			var lock_progress: float=smoothstep(.22,.62,phase)
+			var ink: float=.93*(.91+.09*sin(phase*2.3))*(1.0-.14*lock_progress)
+			# Momentary bright contact compresses into a legible 7s seal.
+			# This one-time contraction is not the main VFX's motion.
+			var diameter: float=73.0-17.0*lock_progress
+			_atlas(MARK_TEX,frame,anchor_now,Vector2(diameter,diameter),Color(1,1,1,ink*.84))
 			if phase<.28:
 				var white: float=1.0-smoothstep(.08,.28,phase)
 				draw_texture_rect(glow,Rect2(anchor_now-Vector2(22,22),Vector2(44,44)),false,Color(.94,1,.80,.34*white))
