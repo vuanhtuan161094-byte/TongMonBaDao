@@ -22,6 +22,7 @@ const MOVIE_LOOP := 2.0
 const CHARGE:Texture2D=preload("res://labs/combat_lab/talisman14/assets/paf04_charge.webp")
 const GLASS_BACK:Texture2D=preload("res://labs/combat_lab/talisman14/assets/paf04_glass_back.webp")
 const GLASS_FRONT:Texture2D=preload("res://labs/combat_lab/talisman14/assets/paf04_glass_front.webp")
+const REFRACT_SHADER:Shader=preload("res://labs/combat_lab/talisman14/living_glass_refraction.gdshader")
 const LOCK:Texture2D=preload("res://labs/combat_lab/talisman14/assets/paf04_lock.webp")
 const SHIMMER:Texture2D=preload("res://labs/combat_lab/talisman14/assets/paf04_shimmer.webp")
 const BADGE:Texture2D=preload("res://labs/combat_lab/talisman14/assets/paf04_badge.webp")
@@ -30,6 +31,9 @@ const CASTER:SpriteFrames=preload("res://assets/actors/1113028_1/animations.tres
 var time:=0.0
 var paused:=false
 var _light:Texture2D
+var _living_front:TextureRect
+var _living_atlas:AtlasTexture
+var _living_material:ShaderMaterial
 
 static func self_foot(index:int,t:float)->Vector2:
     if index!=0:return Vector2.INF
@@ -66,11 +70,34 @@ func _ready()->void:
             var a:=clampf(exp(-8.3*pos.length_squared())*(1.0-smoothstep(.8,1.0,pos.length())),0.0,1.0)
             im.set_pixel(xx,yy,Color(1.0,1.0,1.0,a))
     _light=ImageTexture.create_from_image(im)
+    # The foreground genuinely refracts the background, with moving normals.
+    # Independent animated sprite frames keep internal flow even without shader.
+    _living_atlas=AtlasTexture.new()
+    _living_atlas.atlas=GLASS_FRONT
+    _living_atlas.region=Rect2(0,0,352,448)
+    _living_material=ShaderMaterial.new()
+    _living_material.shader=REFRACT_SHADER
+    _living_front=TextureRect.new()
+    _living_front.mouse_filter=Control.MOUSE_FILTER_IGNORE
+    _living_front.texture=_living_atlas
+    _living_front.expand_mode=TextureRect.EXPAND_IGNORE_SIZE
+    _living_front.stretch_mode=TextureRect.STRETCH_SCALE
+    _living_front.material=_living_material
+    add_child(_living_front)
     print("VFX_PAF04_READY skill=",SKILL_ID," moving_caster=SELF guard_status_4s=SEPARATE projectile=ZERO combat_writes=FALSE")
     set_process(true)
 func _process(delta:float)->void:
     if paused:return
     time=fposmod(time+maxf(0.0,delta),MOVIE_LOOP)
+    var energy:=crystal_gain(time)
+    _living_front.visible=energy>.005
+    if energy>.005:
+        var frame:=mini(15,int(clampf((time-.55)/.93,0,1)*15.0))
+        _living_atlas.region=Rect2(frame%4*352,int(frame/4)*448,352,448)
+        _living_front.position=self_foot(0,time)-Vector2(132,247)
+        _living_front.size=Vector2(264,293)
+        _living_front.modulate=Color(1,1,1,energy*.95)
+        _living_material.set_shader_parameter("flow_time",time)
     queue_redraw()
 func _glow(pos:Vector2,radius:float,col:Color)->void:
     if col.a>.001:
@@ -97,21 +124,19 @@ func _draw()->void:
     var cg:=crystal_gain(t)
     var lock:=lock_gain(t)
     var shimmer:=shimmer_gain(t)
-    var area:=Rect2(foot-Vector2(108,220),Vector2(216,248))
+    var area:=Rect2(foot-Vector2(132,247),Vector2(264,293))
     if cg>.005:
         _flip(GLASS_BACK,16,352,448,clampf((t-.55)/.93,0,1),
               area,Color(1,1,1,cg*.95))
     if lock>.005:
         var centre:=chest
         _flip(LOCK,14,320,320,clampf((t-SELF_GUARD_RECEIPT_SIMULATED)/.48,0,1),
-              Rect2(centre-Vector2(109,112),Vector2(218,224)),
+              Rect2(centre-Vector2(130,131),Vector2(260,262)),
               Color(1,1,1,lock*.75))
         _glow(centre,62,Color("bcfff0",lock*.18))
     # Original first-party sprite character is neither generated nor rigged by VFX.
     draw_texture_rect(hero,Rect2(foot-Vector2(62,127),Vector2(124,127)),false)
-    if cg>.005:
-        _flip(GLASS_FRONT,16,352,448,clampf((t-.55)/.93,0,1),
-              area,Color(1,1,1,cg*.86))
+    # The FRONT transparent energy is drawn by its child shader, not duplicated.
     if shimmer>.005:
         _flip(SHIMMER,8,256,256,clampf((t-.68)/.98,0,1),
               Rect2(chest-Vector2(116,115),Vector2(232,230)),
@@ -119,7 +144,7 @@ func _draw()->void:
     var charge:=charge_gain(t)
     if charge>.005:
         _flip(CHARGE,12,320,320,clampf(t/.55,0,1),
-              Rect2(chest+Vector2(-100,-132),Vector2(200,200)),
+              Rect2(chest+Vector2(-128,-140),Vector2(256,240)),
               Color(1,1,1,charge*.95))
         _glow(chest+Vector2(0,-33),50,Color("f8ffda",charge*.12))
     # Persistent four-second mitigation is NOT four seconds of large guard FX.

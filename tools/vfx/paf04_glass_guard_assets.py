@@ -207,9 +207,9 @@ def r4_ribbon(d,points,q,k,front=False):
         if front:span*=.60
         e1.append((x+nx*span,y+ny*span))
         e2.append((x-nx*span*.65,y-ny*span*.65))
-    d.polygon(pt(e1+e2[::-1]),fill=(27,224,206,10 if front else 17))
-    L(d,e1,(139,255,227,77 if front else 96),1.25)
-    L(d,e2,(45,224,213,39 if front else 60),.85)
+    d.polygon(pt(e1+e2[::-1]),fill=(27,224,206,20 if front else 30))
+    L(d,e1,(184,255,238,153 if front else 182),2.55)
+    L(d,e2,(52,242,220,90 if front else 112),1.35)
     # The luminous energy MOVES INSIDE the shape every authored frame.
     for m in range(5):
         u=(m*.175+.17*q+k*.137)%1
@@ -217,11 +217,11 @@ def r4_ribbon(d,points,q,k,front=False):
         a=max(0,int((u-width)*(len(points)-1)))
         b=min(len(points)-1,int((u+width)*(len(points)-1)))
         if b>a:
-            col=(255,238,172,135 if not front else 95) if m%2==0 else (223,255,238,170 if not front else 128)
-            L(d,points[a:b+1],col,1.65 if m%3==0 else 1.05)
+            col=(255,239,172,205 if not front else 162) if m%2==0 else (243,255,242,231 if not front else 178)
+            L(d,points[a:b+1],col,3.25 if m%3==0 else 2.0)
             x,y=points[b]
             d.ellipse(pt([(x-1.7,y-1.7),(x+1.7,y+1.7)]),
-                      fill=(255,247,214,176 if not front else 140))
+                      fill=(255,247,214,232 if not front else 190))
 
 def r4_shell(i,n=16,front=False):
     q=i/max(1,n-1)
@@ -251,7 +251,7 @@ def r4_shell(i,n=16,front=False):
               y+2.6*math.cos(j*.14-q*math.tau*1.53+k*.72)*math.sin(j/76*math.pi))
              for j,(x,y) in enumerate(raw)]
         r4_ribbon(d,pts,q,k,front)
-    glow(out,light,11,.32)
+    glow(out,light,14,.42)
     # Irregularly timed moving particles follow the filaments, not overall scale.
     small=new(352,448);d=ImageDraw.Draw(small,'RGBA')
     rng=random.Random(9412)
@@ -266,7 +266,7 @@ def r4_shell(i,n=16,front=False):
         color=(238,255,216,110+j%3*21) if j%4 else (255,229,152,170)
         d.ellipse(pt([(x-r,y-r),(x+r,y+r)]),fill=color)
         if j%11==0:L(d,[(x-5,y+3),(x+4,y-4)],(223,255,234,123),.7)
-    glow(out,small,4,.17)
+    glow(out,small,7,.32)
     return final(out,352,448)
 
 def r4_charge(i,n=12,size=320):
@@ -281,14 +281,14 @@ def r4_charge(i,n=12,size=320):
         c=(150+34*math.cos(ang-1.2),149+27*math.sin(ang-1.2))
         e=(160+13*math.cos(ang+2*q),153+11*math.sin(ang+2*q))
         curve=b3(a,b,c,e,48)
-        L(d,curve,(26,230,195,83),3.1)
-        L(d,curve,(174,255,223,139),1.05)
+        L(d,curve,(38,241,204,142),5.0)
+        L(d,curve,(226,255,235,206),2.0)
         for z in range(2):
             u=(q*.8+k*.23+z*.4)%1
             x,y=curve[int(u*(len(curve)-1))]
             r=1.8+2.4*(1-q)
             d.ellipse(pt([(x-r,y-r),(x+r,y+r)]),fill=(250,254,218,190))
-    glow(out,paths,8,.27)
+    glow(out,paths,11,.38)
     return final(out,size,size)
 
 def r4_lock(i,n=14,size=320):
@@ -302,13 +302,13 @@ def r4_lock(i,n=14,size=320):
         end=(160+r*math.cos(a),164+r*.78*math.sin(a))
         path=b3(origin,(160+r*.4*math.cos(a+1),151+r*.2*math.sin(a)),
                 (end[0]+12,end[1]-13),end,48)
-        L(d,path,(45,237,207,73),4)
-        L(d,path,(225,255,229,151),1.25)
+        L(d,path,(45,237,207,123),5.4)
+        L(d,path,(248,255,229,208),2.4)
         j=int((.5+.38*math.sin(q*9+k))*48)
         x,y=path[j]
         d.ellipse(pt([(x-2,y-2),(x+2,y+2)]),fill=(255,243,183,178))
     d.ellipse(pt([(152,156),(168,172)]),fill=(250,255,231,165))
-    glow(out,energy,12,.3)
+    glow(out,energy,15,.38)
     return final(out,size,size)
 
 def main():
@@ -328,4 +328,5 @@ def main():
         print('PAF04_ATLAS',name,frames,image.size,hashlib.sha256(p.read_bytes()).hexdigest())
     print('PAF04_ORIGINAL_GLASS_RGBA_BAKE_PASS')
     print('PAF04_R4_ADVECTED_LIGHT_ATLAS_PASS')
+    print('PAF04_R5_FLOW_CAUSTIC_SHADER_SOURCE_PASS')
 if __name__=='__main__':main()
