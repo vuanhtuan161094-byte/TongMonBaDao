@@ -97,14 +97,14 @@ func _draw()->void:
     var cg:=crystal_gain(t)
     var lock:=lock_gain(t)
     var shimmer:=shimmer_gain(t)
-    var area:=Rect2(foot-Vector2(154,312),Vector2(308,359))
+    var area:=Rect2(foot-Vector2(108,220),Vector2(216,248))
     if cg>.005:
         _flip(GLASS_BACK,16,352,448,clampf((t-.55)/.93,0,1),
               area,Color(1,1,1,cg*.95))
     if lock>.005:
         var centre:=chest
         _flip(LOCK,14,320,320,clampf((t-SELF_GUARD_RECEIPT_SIMULATED)/.48,0,1),
-              Rect2(centre-Vector2(154,154),Vector2(308,308)),
+              Rect2(centre-Vector2(109,112),Vector2(218,224)),
               Color(1,1,1,lock*.75))
         _glow(centre,62,Color("bcfff0",lock*.18))
     # Original first-party sprite character is neither generated nor rigged by VFX.
@@ -114,12 +114,12 @@ func _draw()->void:
               area,Color(1,1,1,cg*.86))
     if shimmer>.005:
         _flip(SHIMMER,8,256,256,clampf((t-.68)/.98,0,1),
-              Rect2(chest-Vector2(167,152),Vector2(334,316)),
+              Rect2(chest-Vector2(116,115),Vector2(232,230)),
               Color(1,1,1,shimmer*.90))
     var charge:=charge_gain(t)
     if charge>.005:
         _flip(CHARGE,12,320,320,clampf(t/.55,0,1),
-              Rect2(chest+Vector2(-112,-138),Vector2(225,225)),
+              Rect2(chest+Vector2(-100,-132),Vector2(200,200)),
               Color(1,1,1,charge*.95))
         _glow(chest+Vector2(0,-33),50,Color("f8ffda",charge*.12))
     # Persistent four-second mitigation is NOT four seconds of large guard FX.

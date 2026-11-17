@@ -3,7 +3,7 @@
   "packet_id": "PAF04_R1_HO_MENH_LUU_VAN_GLASS_GUARD_V4",
   "skill_id": "tmb.skill.talisman.phong_an_phu.active_04.human",
   "school": "talisman",
-  "revision": "PAF04_R3_ASYMMETRIC_LIQUID_GLASS_CRESCENTS_NO_REGULAR_RING",
+  "revision": "PAF04_R4_ADVECTED_INNER_FLOW_SELF_GUARD_NO_STRETCHING_NO_ICON",
   "catalogue_path": "godot/data/combat/v63_talisman_combat_catalog.json",
   "scene_path": "godot/labs/combat_lab/talisman14/ho_menh_luu_van.tscn",
   "lab_script": "godot/labs/combat_lab/talisman14/ho_menh_luu_van.gd",
@@ -22,10 +22,10 @@
     "duration": 4
   },
   "provenance": {
-    "source_class": "FIRST_PARTY_ORIGINAL_HIGH_RES_RGBA_TRANSLUCENT_GLASS_WIND_GUARD",
-    "rights_note": "Original first-party PAF04 transparent glass-energy sprite art: 12 charge,16 glass rear,16 glass front,14 lock,8 caustics and8 tiny badge frames. Authored and reproducible from tools/vfx/paf04_glass_guard_assets.py, with independently generated RGBA master PNGs. Translucent cyan glass material and thin white/gold refractive bright facets, not a full opaque GUI circle. No third party JX/VL/Source A textures; no rig. Existing first-party actor and background are separate.",
+    "source_class": "FIRST_PARTY_TRUE_RGBA_ADVECTED_LIGHT_PATHS_GLASS_LIQUID_ENERGY",
+    "rights_note": "PAF04 R4 original true RGBA moving fields, authored in tools/vfx/paf04_glass_guard_assets.py. Replaces R3 hand-drawn rigid ribbon shell with six distinct advected independent energy lanes and bright packets moving ALONG them per distinct atlas frame; original changing charge streams and non-petal guard lock, 16 back +16 front poses. No repurposed commercial assets or rig. Caster from original first-party actor.",
     "master_quality_status": "MANUAL_ART_REVIEW_REQUIRED",
-    "known_source_limitation": "Native Godot R1 technical PASS but self art FAIL due rigid glass cards above actor. R2 technical PASS but repeated oval petals formed a regular ring resembling UI. R3 reauthored entire glass shield from 7 unique asymmetric curved transparent ribbons with varying widths, jade white-gold reflections, pure color, no center face occlusion. Source original supersampled Pillow raster. New exact-SHA Godot and owner art review required.",
+    "known_source_limitation": "R1/R2/R3 true Godot 1280x720 visuals technically PASS but rejected by owner due solid glass cards, regular rings and apparent stretch/fade, not living VFX. R4 changes authored INTRA-FRAME animated texture flow, separate seven-source light condensers, moving streak packets, irregular open-silhouette guard and non-floral protect-lock. Shield is 2D semi-transparent simulated glass, not raytraced 3D physical refraction; actual GameGuard CombatV2 state remains unknown. R4 owner/art QA pending.",
     "master_files": [
       {
         "path": "godot/labs/combat_lab/talisman14/art_sources/paf04_pearlescent_glass_shield_master.png",
@@ -51,7 +51,7 @@
       "cell_height": 320,
       "frames": 12,
       "columns": 4,
-      "layer": "12 first-party folding crystal condensations: transparent jade and local gold faceting"
+      "layer": "R4 12 independent converging energy path poses with real moving luminous packets, not a resized flat emblem"
     },
     {
       "path": "godot/labs/combat_lab/talisman14/assets/paf04_glass_back.webp",
@@ -61,7 +61,7 @@
       "cell_height": 448,
       "frames": 16,
       "columns": 4,
-      "layer": "R3: independent rear guard glass ribbons in asymmetric non-UI liquid-crystal crescent shapes, jade-glass true transparency and controlled pearl highlights"
+      "layer": "R4 16 authored evolving back field frames: six asymmetric guard flow lanes with colored alpha, internal independently advected hotspots and drifting motes; not regular ring"
     },
     {
       "path": "godot/labs/combat_lab/talisman14/assets/paf04_glass_front.webp",
@@ -71,7 +71,7 @@
       "cell_height": 448,
       "frames": 16,
       "columns": 4,
-      "layer": "R3: delicate peripheral front fluid crystal ribbons only, leaving caster face open; no regular shield ring"
+      "layer": "R4 16 authored front field frames: only side/peripheral transmitted-flow filaments, no occluded face; variation from true changing path points"
     },
     {
       "path": "godot/labs/combat_lab/talisman14/assets/paf04_lock.webp",
@@ -81,7 +81,7 @@
       "cell_height": 320,
       "frames": 14,
       "columns": 4,
-      "layer": "14 faceted translucent shield-lock flashes in a single target"
+      "layer": "R4 14 independently changing directional energy-lock light pulses, NOT a flower/petal or magic attack"
     },
     {
       "path": "godot/labs/combat_lab/talisman14/assets/paf04_shimmer.webp",
@@ -114,7 +114,7 @@
     "visual_fade_end_seconds": 1.48,
     "demo_loop_seconds": 2,
     "demo_clock_warning": "PAF04 guard/wind/self-only cap1, mitigation power0.16, cast0.5s, status duration4s, cooldown13.6. Four-second buff state separate from 2-second active skill movie. LAB self guard receipt0.82 is simulated visual only, not CombatV2 guard application. No gameplay projectile/damage.",
-    "key_pose_budget_note": "12 charge, 16 rear shield, 16 edge shield, 14 lock, 8 glints, 8 badge authored pose frames; 120 60FPS Godot-encoded video frames are NOT authored poses. Four-second status separately unit tested at t.88,3.4,4.81,4.83. No GIF per V4.3.",
+    "key_pose_budget_note": "R4 keeps atlas 12+16+16+14+8+8 authored poses; each R4 pose has different internal light packet positions, curve displacement and channel variance; must inspect movement frame-by-frame, not rely on entire sprite scaling. Status 4 seconds is independent of active 2s movie.",
     "phases": [
       {
         "id": "charge",

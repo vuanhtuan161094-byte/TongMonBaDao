@@ -191,15 +191,135 @@ def atlas(frames,w,h):
     im=Image.new('RGBA',(4*w,h*((len(frames)+3)//4)))
     for k,f in enumerate(frames): im.alpha_composite(f,((k%4)*w,(k//4)*h))
     return im
+
+# R4: A physically *advected 2D energy field*, not rigid sprite motion.
+# Multiple independently moving luminous packets travel along six nonuniform
+# light paths. Painted true-RGBA layers are source-preserved; no skeletal rig.
+def r4_ribbon(d,points,q,k,front=False):
+    e1=[];e2=[]
+    for j,(x,y) in enumerate(points):
+        u=j/max(1,len(points)-1)
+        before=points[max(0,j-1)];after=points[min(len(points)-1,j+1)]
+        vx=after[0]-before[0];vy=after[1]-before[1]
+        norm=max(.001,math.hypot(vx,vy));nx=-vy/norm;ny=vx/norm
+        wave=math.sin(9.5*u-6.5*q+k*.80)
+        span=(3.0+5.0*math.sin(math.pi*u)**.65)*(1+.22*wave)
+        if front:span*=.60
+        e1.append((x+nx*span,y+ny*span))
+        e2.append((x-nx*span*.65,y-ny*span*.65))
+    d.polygon(pt(e1+e2[::-1]),fill=(27,224,206,10 if front else 17))
+    L(d,e1,(139,255,227,77 if front else 96),1.25)
+    L(d,e2,(45,224,213,39 if front else 60),.85)
+    # The luminous energy MOVES INSIDE the shape every authored frame.
+    for m in range(5):
+        u=(m*.175+.17*q+k*.137)%1
+        width=.038+.026*(m%3)
+        a=max(0,int((u-width)*(len(points)-1)))
+        b=min(len(points)-1,int((u+width)*(len(points)-1)))
+        if b>a:
+            col=(255,238,172,135 if not front else 95) if m%2==0 else (223,255,238,170 if not front else 128)
+            L(d,points[a:b+1],col,1.65 if m%3==0 else 1.05)
+            x,y=points[b]
+            d.ellipse(pt([(x-1.7,y-1.7),(x+1.7,y+1.7)]),
+                      fill=(255,247,214,176 if not front else 140))
+
+def r4_shell(i,n=16,front=False):
+    q=i/max(1,n-1)
+    out=new(352,448)
+    # Optical field is very thin. No opaque disc, rigid leaf or perfect ring.
+    field=new(352,448);d=ImageDraw.Draw(field,'RGBA')
+    d.ellipse(pt([(91,130),(265,353)]),fill=(61,224,203,7 if front else 11))
+    glow(out,field,24,.25)
+    lanes=[
+      ((137,330),(93,289),(95,218),(137,187)),
+      ((221,329),(274,284),(264,226),(219,188)),
+      ((123,223),(105,150),(176,118),(223,151)),
+      ((116,322),(142,347),(198,359),(239,318)),
+      ((103,261),(125,244),(137,222),(147,205)),
+      ((237,267),(221,244),(209,222),(199,203)),
+    ]
+    light=new(352,448);d=ImageDraw.Draw(light,'RGBA')
+    for k,(a,b,c,e) in enumerate(lanes):
+        if front and k in (2,4,5):continue
+        if not front and k==3:continue
+        energy=math.sin(q*math.tau*(.83+.09*(k%3))+.5*k)
+        drift=5.0*energy
+        shift=lambda z,v:(z[0]+v,z[1]+3*math.sin(q*math.tau*.8+k*.9))
+        raw=b3(shift(a,drift*.5),shift(b,drift*.8),
+               shift(c,-drift*.8),shift(e,-drift*.4),76)
+        pts=[(x+3.8*math.sin(j*.16-q*math.tau*1.85+k*1.23)*math.sin(j/76*math.pi),
+              y+2.6*math.cos(j*.14-q*math.tau*1.53+k*.72)*math.sin(j/76*math.pi))
+             for j,(x,y) in enumerate(raw)]
+        r4_ribbon(d,pts,q,k,front)
+    glow(out,light,11,.32)
+    # Irregularly timed moving particles follow the filaments, not overall scale.
+    small=new(352,448);d=ImageDraw.Draw(small,'RGBA')
+    rng=random.Random(9412)
+    for j in range(45):
+        k=j%len(lanes)
+        a,b,c,e=lanes[k]
+        u=(rng.random()+q*(.63+(j%6)*.094))%1
+        curve=b3(a,b,c,e,60)
+        x,y=curve[min(60,int(u*61))]
+        x+=5*math.sin(j*.9+q*9);y+=6*math.cos(j*.43-q*11)
+        r=.45+1.05*(j%4)/3
+        color=(238,255,216,110+j%3*21) if j%4 else (255,229,152,170)
+        d.ellipse(pt([(x-r,y-r),(x+r,y+r)]),fill=color)
+        if j%11==0:L(d,[(x-5,y+3),(x+4,y-4)],(223,255,234,123),.7)
+    glow(out,small,4,.17)
+    return final(out,352,448)
+
+def r4_charge(i,n=12,size=320):
+    q=i/max(1,n-1)
+    out=new(320,320)
+    paths=new(320,320);d=ImageDraw.Draw(paths,'RGBA')
+    for k in range(7):
+        ang=k*math.tau/7+.36
+        r0=104-78*q
+        a=(160+r0*math.cos(ang),161+r0*.73*math.sin(ang))
+        b=(160+64*math.cos(ang+1),150+61*math.sin(ang+1))
+        c=(150+34*math.cos(ang-1.2),149+27*math.sin(ang-1.2))
+        e=(160+13*math.cos(ang+2*q),153+11*math.sin(ang+2*q))
+        curve=b3(a,b,c,e,48)
+        L(d,curve,(26,230,195,83),3.1)
+        L(d,curve,(174,255,223,139),1.05)
+        for z in range(2):
+            u=(q*.8+k*.23+z*.4)%1
+            x,y=curve[int(u*(len(curve)-1))]
+            r=1.8+2.4*(1-q)
+            d.ellipse(pt([(x-r,y-r),(x+r,y+r)]),fill=(250,254,218,190))
+    glow(out,paths,8,.27)
+    return final(out,size,size)
+
+def r4_lock(i,n=14,size=320):
+    q=i/max(1,n-1)
+    out=new(320,320);energy=new(320,320);d=ImageDraw.Draw(energy,'RGBA')
+    # Directed crest of white-gold light flows across self, not petals/flower.
+    for k in range(8):
+        a=-2.8+k*.71+.14*q
+        r=18+87*math.sin(q*math.pi*.79)*(.7+.26*math.sin(k+1.2)**2)
+        origin=(160+4*math.cos(a),164+4*math.sin(a))
+        end=(160+r*math.cos(a),164+r*.78*math.sin(a))
+        path=b3(origin,(160+r*.4*math.cos(a+1),151+r*.2*math.sin(a)),
+                (end[0]+12,end[1]-13),end,48)
+        L(d,path,(45,237,207,73),4)
+        L(d,path,(225,255,229,151),1.25)
+        j=int((.5+.38*math.sin(q*9+k))*48)
+        x,y=path[j]
+        d.ellipse(pt([(x-2,y-2),(x+2,y+2)]),fill=(255,243,183,178))
+    d.ellipse(pt([(152,156),(168,172)]),fill=(250,255,231,165))
+    glow(out,energy,12,.3)
+    return final(out,size,size)
+
 def main():
     ASSET.mkdir(parents=True,exist_ok=True); SOURCE.mkdir(parents=True,exist_ok=True)
-    shell(9,front=False).resize((704,896),Image.Resampling.LANCZOS).save(SOURCE/'paf04_pearlescent_glass_shield_master.png')
-    charge(7).resize((640,640),Image.Resampling.LANCZOS).save(SOURCE/'paf04_condensing_crystal_master.png')
+    r4_shell(9,front=False).resize((704,896),Image.Resampling.LANCZOS).save(SOURCE/'paf04_pearlescent_glass_shield_master.png')
+    r4_charge(7).resize((640,640),Image.Resampling.LANCZOS).save(SOURCE/'paf04_condensing_crystal_master.png')
     all={
-      'paf04_charge.webp':(atlas([charge(k) for k in range(12)],320,320),12),
-      'paf04_glass_back.webp':(atlas([shell(k,front=False) for k in range(16)],352,448),16),
-      'paf04_glass_front.webp':(atlas([shell(k,front=True) for k in range(16)],352,448),16),
-      'paf04_lock.webp':(atlas([impact(k) for k in range(14)],320,320),14),
+      'paf04_charge.webp':(atlas([r4_charge(k) for k in range(12)],320,320),12),
+      'paf04_glass_back.webp':(atlas([r4_shell(k,front=False) for k in range(16)],352,448),16),
+      'paf04_glass_front.webp':(atlas([r4_shell(k,front=True) for k in range(16)],352,448),16),
+      'paf04_lock.webp':(atlas([r4_lock(k) for k in range(14)],320,320),14),
       'paf04_shimmer.webp':(atlas([glint(k) for k in range(8)],256,256),8),
       'paf04_badge.webp':(atlas([badge(k) for k in range(8)],128,128),8),
     }
@@ -207,4 +327,5 @@ def main():
         p=ASSET/name;image.save(p,'WEBP',quality=92,method=4,exact=True)
         print('PAF04_ATLAS',name,frames,image.size,hashlib.sha256(p.read_bytes()).hexdigest())
     print('PAF04_ORIGINAL_GLASS_RGBA_BAKE_PASS')
+    print('PAF04_R4_ADVECTED_LIGHT_ATLAS_PASS')
 if __name__=='__main__':main()
