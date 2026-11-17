@@ -99,10 +99,10 @@
     "declared_status_duration_seconds": 1,
     "runtime_receipt_timestamp": "RUNTIME_MAPPING_PENDING",
     "vfx_clock": "LAB_ONLY",
-    "simulated_hit_seconds": 1.15,
+    "simulated_hit_seconds": 1.12,
     "visual_fade_end_seconds": 1.52,
     "demo_loop_seconds": 1.8,
-    "demo_clock_warning": "SIMULATED ARRIVAL at1.15, NOT combat hit. Catalogue effect=mobility, metal, target1, range11 WORLD units (not px), cast.1,cooldown10,duration1,projectile_speed0,poison_stacks0. Continuous caster move START_FOOT→END_FOOT over 1 second is ONLY LAB CHOREOGRAPHY, not real movement or teleport. No actual mobility/hit/invisibility/status game receipts. 108 video frames at fixed60fps NOT physical Android performance.",
+    "demo_clock_warning": "SIMULATED ARRIVAL at1.15, NOT combat hit. Catalogue effect=mobility, metal, target1, range11 WORLD units (not px), cast.1,cooldown10,duration1,projectile_speed0,poison_stacks0. Continuous caster move START_FOOT→END_FOOT over 1 second is ONLY LAB CHOREOGRAPHY, not real movement or teleport. No actual mobility/hit/invisibility/status game receipts. 108 video frames at fixed60fps NOT physical Android performance. V4 generic 'simulated_hit_seconds' is reused solely as first lab-only landing event t1.12; capture contact t1.15 is AFTER landing, no hostile hit or target damage; this is an adapter field for V4 contract not a gameplay event.",
     "key_pose_budget_note": "40 original RGBA poses: 8 gather,12 stride wake,12 spectral bootmarks,8 finite landing. 3 approved original unrigged character echoes at real historical caster_foot(t−offset); no new character skeleton.",
     "phases": [
       {
