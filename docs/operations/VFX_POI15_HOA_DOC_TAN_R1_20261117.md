@@ -34,3 +34,14 @@
 ## R1B focused 1× mark-legibility polish — 17/11/2026
 
 Manual review of real R1 native 1280×720 at t1.2 vs t3.95 showed area toxic wave clearly but independent target status wisps were nearly invisible on 1×. R1B increases **only the mark** brightness and slight displayed footprint, preserving its genuine true-alpha translucency, three targets, no fourth mark, exact 6-second fade, base field and charge, original generator-based sprite master workflow. Requires fresh exact-SHA Godot Actions test and native media review. **Not owner approved**.
+
+
+## R1B native exact-SHA technical QA — 17 November 2026
+
+After 1× manual comparison of R1 native screenshots, the status marks on three moving monsters were too faint. R1B improved **only the 8-pose per-monster status atlas translucency/luminance and its on-screen scale/alpha**, preserving all 3 targets, the separate unmarked fourth, the 6.00s status duration, 2.3 world-unit area catalogue and original green-violet expanding field without extra overdraw. R1 media remains as historical QA only, NOT evidence for R1B.
+
+- **Immutable R1B tested source:** `1b40811248fcaca9b33a5e4cbc35e8b03e2ca9b5`, [GitHub Actions #43999563772](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/43999563772) **SUCCESS**, artifact **#14292200693**, `poi15-r1-poison-native-1b40811248fcaca9b33a5e4cbc35e8b03e2ca9b5`.
+- Original R1B true RGBA 3 atlas/source master PNG files were saved on existing PR branch automatically via same CI; no new branch/merge. Source generator retained; this was **not GIF-based** and not actual PvE integration.
+- Godot 4.7.2 Compatibility: V4 packet/assets/evidence technical PASS, strict import/parse/focused `POI15_HOA_DOC_TAN_R1_RESULT=PASS failures=0`, real **1280x720 native MP4 7.5sec 450 encoded 60fps frames**, and actual Godot screenshots at t0.28 charge, t0.84 area peak, t1.20 three enemy marks, t3.95 status mid, t6.90 pre-expiry, t7.20 clean expiry. Test verifies moving enemies and fourth unaffected and 6-second LAB-only status duration. FPS recording does not imply Android performance.
+- **1× manual source-vs-native visual check:** R1B now has brighter individual poison wisps legible on all three enemies; diffuse field has soft jade-green and purple energy with genuine alpha, no hard UI disc. Fourth outside target area receives no visible mark. The skill is clearly an area POISON event distinct from earlier POI13 HEAL and POI14 CLEANSE. This still does NOT prove AAA/JX-grade visual acceptance, and users may request refined artistic texture/motion.
+- **Current gates:** `TECH_G3.5_R1B_PASS`, `ART_CANDIDATE_OWNER_VISUAL_PENDING`, `RUNTIME_MAPPING_PENDING`, `PVE_HOLD`, `V6.3_OFF`, `PHYSICAL_QA_PENDING`. There is **no Combat V2 damage/status receipt**, no invented extra target or DoT tick in Godot Lab.
