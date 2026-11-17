@@ -3,7 +3,7 @@
   "packet_id": "POI20_R1_XA_ANH_QUAN_MACH_TIEN_A_GODOT_TRUE_RGBA_LIGHT",
   "skill_id": "tmb.skill.poison.co_doc.active_02.immortal.a",
   "school": "poison",
-  "revision": "POI20_R1_NATIVE_GODOT_ART_FIRST_SILVER_JADE_V4_PREFLIGHT",
+  "revision": "POI20_R1C_TRUE_GODOT_NATIVE_639F_G35_G36_G5_TECH_PASS",
   "catalogue_path": "godot/data/combat/v63_immortal_combat_catalog.json",
   "scene_path": "godot/labs/combat_lab/poison20_xa_anh_quan_mach_tien_a/r1/xa_anh_quan_mach.tscn",
   "lab_script": "godot/labs/combat_lab/poison20_xa_anh_quan_mach_tien_a/r1/xa_anh_quan_mach.gd",
@@ -151,17 +151,21 @@
     "receipt_claim": "SIMULATED_VISUAL_ONLY"
   },
   "gate_status": {
-    "g3_5_capture": "NOT_EXECUTED_R1",
-    "technical": "NOT_EXECUTED_R1",
+    "g3_5_capture": "R1C_EXACT_SHA_THREE_PHASE_NATIVE_CAPTURED",
+    "technical": "GODOT_4_7_2_EXACT_SHA_26f759a6_NATIVE_TEST_PASS",
     "art": "MANUAL_ART_REVIEW_REQUIRED",
     "owner": "OWNER_VISUAL_PENDING",
     "live": "PVE_INTEGRATION_HOLD",
-    "device": "PHYSICAL_QA_PENDING"
+    "device": "PHYSICAL_QA_PENDING",
+    "g3_6": "NATIVE_1X_PASS_CHARGE304_PEAK1578_CONTACT2993_ACTIVE1017_MID1094_CLEAR176",
+    "g5": "REAL_NATIVE_1280_720_639_FRAMES_10_65_SECONDS_VIDEO",
+    "g3_7": "TWO_ORIGINAL_S_SNAKE_SERPENT_FX_ON_ONE_MOVING_TARGET_NOT_HUD_RINGS",
+    "art_self": "SERPENT_MOTIF_3_OF_5_AND_ART_RICHNESS_3_OF_5_REWORK_BACKLOG"
   },
   "proof_contract": {
     "focused_marker": "POI20_XA_ANH_R1_RESULT=PASS failures=0",
     "native_marker": "POI20_XA_ANH_TIEN_A_R1_READY",
     "video_filename": "v4-poi20-r1-native.mp4",
-    "source": "First-party 60 transparent RGBA poses + live silver-white core/jade Godot ADD on one moving chosen WALK monster, secondary untouched. Native exact-SHA 4.7.2 LAB only; NOT PvE/actual Combat V2 poison receipt."
+    "source": "R1C first-party true-alpha 60 independent snake RGBA poses and real Godot 4.7.2 original ADD light. Exact tested SHA 26f759a629adac63bffe07fa33f24ea967bab537, Actions #44135139429, 639 frames 10.65s, G36 real 1x delta charge304 peak1578 contact2993. Artist self 3/5 motif/3 richness, OWNER_PENDING, no PvE."
   }
 }
