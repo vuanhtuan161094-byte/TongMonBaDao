@@ -13,7 +13,7 @@ on:
 permissions:
   contents: read
 jobs:
-  r9-native-g35:
+  r10-native-full:
     runs-on: ubuntu-latest
     timeout-minutes: 35
     env:
@@ -33,7 +33,7 @@ jobs:
           sudo install -m0755 /tmp/Godot_v4.7.2-stable_linux.x86_64 /usr/local/bin/godot
           mkdir -p /tmp/vfx-fist12-r10
           godot --version | tee /tmp/vfx-fist12-r10/engine.txt
-          echo "EXACT_SHA=$GITHUB_SHA; FIST12=R9; PREVIEW_ONLY; ART_PENDING; NO_RIG; PVE_HOLD; V63_OFF" > /tmp/vfx-fist12-r10/metadata.txt
+          echo "EXACT_SHA=$GITHUB_SHA; FIST12=R10; PREVIEW_ONLY; ART_PENDING; NO_RIG; PVE_HOLD; V63_OFF" > /tmp/vfx-fist12-r10/metadata.txt
       - name: Restore actor source for unmodified LAB placeholder
         shell: bash
         run: |
