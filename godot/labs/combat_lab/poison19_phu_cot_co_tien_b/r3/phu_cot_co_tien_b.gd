@@ -202,4 +202,4 @@ func _draw() -> void:
     if t>=CONTACT_AT and t<MARK_FADE_END:
         var mark_alpha:=mark_gain(t)
         var mark_f:=fposmod((t-CONTACT_AT)*5.0,12.0)
-        _pose(mark_frames,mark_anchor_at(t),Vector2(154,154),mark_f,mark_alpha*.63)
+        _pose(mark_frames,mark_anchor_at(t),Vector2(164,164),mark_f,mark_alpha*.89)
