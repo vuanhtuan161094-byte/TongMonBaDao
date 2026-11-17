@@ -55,7 +55,7 @@ def evidence(folder):
         ck((d/fn).is_file() and (d/fn).stat().st_size>0,fn)
     onoff=screenshot_diff(d/"paf06-r4-peak.png",d/"paf06-r4-off.png",(475,355,795,610),22)
     identity=screenshot_diff(d/"paf06-r4-peak.png",d/"paf06-r3-baseline.png",(520,409,748,553),15)
-    center=screenshot_diff(d/"paf06-r4-peak.png",d/"paf06-r3-baseline.png",(606,437,658,497),14)
+    center=screenshot_diff(d/"paf06-r4-peak.png",d/"paf06-r3-baseline.png",(606,477,658,535),14)
     face=screenshot_diff(d/"paf06-r4-peak.png",d/"paf06-r3-baseline.png",(612,405,659,440),60)
     ck(onoff>=1000,"buff invisible "+str(onoff))
     ck(identity>=175,"new identity not visible vs R3 "+str(identity))
