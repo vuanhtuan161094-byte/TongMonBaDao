@@ -25,7 +25,9 @@ def composite(base,layer,blur=5,opacity=.3):
 
 def ink_body(dst,curve,thick,intensity=1,seed=0,phase=0):
     # Independent original variable-width painted brush, tapered and internally lit.
-    # Highlights travel along it. No global picture waves or poster crops.
+    # Each evolving key-pose lengthens/contracts its OWN ink stroke. No whole-picture wave.
+    extent=.68+.32*(.5+.5*math.sin(TAU*phase+seed*.42))
+    curve=curve[:max(18,int(len(curve)*extent))]
     paint=blank();draw=ImageDraw.Draw(paint,'RGBA')
     left=[];right=[]
     for i,(x,y) in enumerate(curve):
@@ -93,6 +95,9 @@ def src_frame(layer,k):
             # Move the writing next to the forearm, outside gold-on-gold costume.
             # The jade ink currents still lead INTO the inscription.
             path=[(x+39.0,y-7.0) for x,y in bez(a,b,c,d,42)]
+            # R1D: handwriting appears stroke-by-stroke and retreats into the jade ink.
+            write=.51+.49*(.5+.5*math.sin(TAU*(t+j*.19)))
+            path=path[:max(16,int(len(path)*write))]
             upper=[];lower=[]
             for idx,(x,y) in enumerate(path):
                 u=idx/(len(path)-1)
@@ -134,7 +139,7 @@ def save(p,im):
             'size':[im.width,im.height]}
 
 if __name__=='__main__':
-    m={'schema':'PAF08_R1C_FOREARM_GOLD_INSCRIPTION_ENERGY',
+    m={'schema':'PAF08_R1D_AUTHORED_WRITING_AND_RETRACTION',
        'skill_id':'tmb.skill.talisman.phong_an_phu.passive_03.human',
        'contract':'PASSIVE_ALWAYS_ON_OUTGOING_FACTOR_0.015_NO_HIT',
        'rights':'FIRST_PARTY_ISOLATED_RGBA_PAINTED_FROM_CODE',
