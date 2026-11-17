@@ -1,0 +1,201 @@
+name: PAF05 R5 | Phong Linh Trien Genuine Godot VFX
+on:
+  workflow_dispatch:
+  push:
+    branches: [integration/pve-p0-playable-ui-20261103]
+    paths:
+      - '.github/workflows/vfx-v4-paf05-r5-native.yml'
+      - 'tools/vfx/paint_paf05_r5_mark.py'
+      - 'godot/labs/combat_lab/talisman15/r5/**'
+      - 'godot/tests/labs/combat_lab/vfx_paf05_r5_contract_test.gd'
+      - 'godot/labs/combat_lab/talisman15/r4/**'
+      - 'godot/tests/labs/combat_lab/vfx_paf05_r4_contract_test.gd'
+      - 'tools/vfx/paf05_paint_master.py'
+      - 'tools/vfx/paf05_luminous_raster.py'
+      - 'tools/qa/check_paf05_native_visibility.py'
+      - 'docs/operations/vfx_packets/PAF05_V4_PREFLIGHT.json'
+      - 'godot/labs/combat_lab/talisman15/**'
+      - 'godot/tests/labs/combat_lab/vfx_paf05_contract_test.gd'
+      - 'tools/qa/validate_vfx_v4_packet.py'
+permissions:
+  contents: read
+jobs:
+  paf05-native:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      GODOT_AUDIO_DRIVER: Dummy
+      GODOT_RENDERING_DRIVER: opengl3
+      PACKET: docs/operations/vfx_packets/PAF05_V4_PREFLIGHT.json
+    steps:
+      - name: Checkout exact source SHA
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Pin Godot and original source raster dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/vfx-paf05";mkdir -p "$d"
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq xvfb ffmpeg unzip python3-pil python3-numpy python3-scipy python3-opencv
+          curl --fail --location --retry 3 -o /tmp/godot472.zip 'https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip'
+          echo 'cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4  /tmp/godot472.zip' | sha256sum --check --strict
+          unzip -q /tmp/godot472.zip -d /tmp
+          sudo install -m0755 /tmp/Godot_v4.7.2-stable_linux.x86_64 /usr/local/bin/godot
+          godot --version | tee "$d/engine.txt"
+          printf 'EXACT_SHA=%s\nPAF05_CIRCLE_MARK_RADIUS=2.1\nMAX_TARGETS=3\nSTATUS_MARK_7S=SEPARATE\nNO_GIF=TRUE\nOWNER_VISUAL=PENDING\nPVE=HOLD\n' "$GITHUB_SHA" > "$d/scope.txt"
+      - name: Generate original independent 2D painted RGBA atlases and verify V4 schema + assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/vfx-paf05"
+          /usr/bin/python3 tools/vfx/paf05_paint_master.py 2>&1 | tee "$d/bake.log"
+          grep -Fq 'PAF05_SOURCE_BAKE_PASS' "$d/bake.log"
+          python3 tools/qa/validate_vfx_v4_packet.py --stage packet --packet "$PACKET" 2>&1 | tee "$d/packet.log"
+          grep -Fq 'VFX_V4_PACKET_TECHNICAL_PASS' "$d/packet.log"
+          python3 tools/qa/validate_vfx_v4_packet.py --stage assets --packet "$PACKET" 2>&1 | tee "$d/atlas.log"
+          grep -Fq 'VFX_V4_ASSETS_TECHNICAL_PASS' "$d/atlas.log"
+          sha256sum godot/labs/combat_lab/talisman15/assets/*.webp godot/labs/combat_lab/talisman15/art_sources/*.png > "$d/art-sha256.txt"
+      - name: Paint isolated PAF05 R5 jade-brush and antique gold Phong Linh Trien source
+        shell: bash
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/vfx-paf05"
+          /usr/bin/python3 tools/vfx/paint_paf05_r5_mark.py 2>&1 | tee "$d/r5-source.log"
+          grep -Fq 'PAF05_R5_ART_SOURCE_PASS' "$d/r5-source.log"
+          python3 - <<'PY'
+          from PIL import Image
+          from pathlib import Path
+          d=Path("godot/labs/combat_lab/talisman15/r5")
+          for p in [d/"art_sources/paf05_r5_phong_linh_trien_master.png",d/"assets/paf05_r5_mark.webp",d/"assets/paf05_r5_contact.webp"]:
+              im=Image.open(p).convert("RGBA")
+              assert im.getextrema()[3][0]==0, f"transparent background required: {p}"
+              assert im.getextrema()[3][1]>=180, f"opaque hot core required: {p}"
+              print("PAF05_R5_ALPHA",p,im.size,im.getextrema()[3])
+          PY
+          sha256sum godot/labs/combat_lab/talisman15/r5/art_sources/*.png godot/labs/combat_lab/talisman15/r5/assets/*.webp > "$d/r5-art-sha256.txt"
+      - name: Restore unchanged first-party caster animation assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat .github/assets/p3/female_stage_a/part{01..14}.b64 .github/assets/p3/female_stage_a/part15a.b64 .github/assets/p3/female_stage_a/part15b.b64 .github/assets/p3/female_stage_a/part{16..20}.b64 | tr -d '\r\n\t ' | base64 --decode > /tmp/tmb_stage_a_pack.zip
+          test "$(stat -c%s /tmp/tmb_stage_a_pack.zip)" -eq 44838
+          echo '6a4213b9129ffb3f438c21cbb5326672ddf8915323836bf80cb33b8e5fabfdca  /tmp/tmb_stage_a_pack.zip' | sha256sum --check --strict
+          unzip -q /tmp/tmb_stage_a_pack.zip -d .
+      - name: Godot official 4.7.2 strict import parse and moving THREE-monster contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/vfx-paf05"
+          bash tools/qa/run_godot_strict.sh --headless --path godot --import 2>&1 | tee "$d/godot-import.log"
+          bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://labs/combat_lab/talisman15/thai_huyen_phong_gioi_phu.gd 2>&1 | tee "$d/godot-parse.log"
+          bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/labs/combat_lab/vfx_paf05_contract_test.gd 2>&1 | tee "$d/godot-focused.log"
+          grep -Fq 'VFX_PAF05_FOCUSED_RESULT=PASS failures=0' "$d/godot-focused.log"
+      - name: Genuine Godot native 1280x720 160 frames and G3.5 images, no GIF
+        shell: bash
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/vfx-paf05"
+          xvfb-run -a -s '-screen 0 1280x720x24' bash tools/qa/run_godot_strict.sh --path godot --resolution 1280x720 --fixed-fps 60 --write-movie "$d/paf05-native.avi" --quit-after 160 res://labs/combat_lab/talisman15/thai_huyen_phong_gioi_phu.tscn 2>&1 | tee "$d/godot-preflight.log"
+          grep -Fq 'VFX_PAF05_READY' "$d/godot-preflight.log"
+          test -s "$d/paf05-native.avi"
+          ffmpeg -y -hide_banner -loglevel error -i "$d/paf05-native.avi" -pix_fmt yuv420p -c:v libx264 -crf 16 -movflags +faststart "$d/paf05-native.mp4"
+          ffprobe -v error -select_streams v:0 -show_entries stream=width,height,nb_frames -of default=noprint_wrappers=1 "$d/paf05-native.mp4" | tee "$d/ffprobe.txt"
+          grep -Fxq 'width=1280' "$d/ffprobe.txt"
+          grep -Fxq 'height=720' "$d/ffprobe.txt"
+          grep -Fxq 'nb_frames=160' "$d/ffprobe.txt"
+          ffmpeg -y -hide_banner -loglevel error -ss 0.42 -i "$d/paf05-native.mp4" -frames:v 1 "$d/v4-charge.png"
+          ffmpeg -y -hide_banner -loglevel error -ss 1.16 -i "$d/paf05-native.mp4" -frames:v 1 "$d/v4-peak.png"
+          ffmpeg -y -hide_banner -loglevel error -ss 1.49 -i "$d/paf05-native.mp4" -frames:v 1 "$d/v4-contact.png"
+          ffmpeg -y -hide_banner -loglevel error -ss 2.62 -i "$d/paf05-native.mp4" -frames:v 1 "$d/v4-idle.png"
+          for at in 0.10 0.26 0.42 0.62 0.81 0.94 1.06 1.16 1.26 1.35 1.49 1.62 1.77 1.92 2.08 2.26 2.47 2.62; do
+            ffmpeg -y -hide_banner -loglevel error -ss "$at" -i "$d/paf05-native.mp4" -frames:v 1 "$d/frame-$at.png"
+          done
+          sha256sum "$d/paf05-native.mp4" "$d/v4-charge.png" "$d/v4-peak.png" "$d/v4-contact.png" > "$d/movie-sha256.txt"
+          rm "$d/paf05-native.avi"
+      - name: G3.6 native visibility minimum brightness and contrast check
+        shell: bash
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/vfx-paf05"
+          /usr/bin/python3 tools/qa/check_paf05_native_visibility.py --dir "$d" 2>&1 | tee "$d/visibility.log"
+          grep -Fq 'PAF05_G3_6_NATIVE_VISIBILITY_PASS' "$d/visibility.log"
+      - name: V4 exact SHA evidentiary checks and missing-contact negative test
+        shell: bash
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/vfx-paf05"
+          python3 tools/qa/validate_vfx_v4_packet.py --stage evidence --packet "$PACKET" --out "$d" --sha "$GITHUB_SHA" 2>&1 | tee "$d/evidence.log"
+          grep -Fq 'VFX_V4_EVIDENCE_TECHNICAL_PASS' "$d/evidence.log"
+          mkdir -p "$d/missing-contact"
+          cp "$d/paf05-native.mp4" "$d/godot-preflight.log" "$d/godot-focused.log" "$d/v4-charge.png" "$d/v4-peak.png" "$d/missing-contact/"
+          if python3 tools/qa/validate_vfx_v4_packet.py --stage evidence --packet "$PACKET" --out "$d/missing-contact" --sha "$GITHUB_SHA"; then
+            echo 'ERROR: missing contact wrongly passed' >&2;exit 1
+          fi
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          echo "PAF05_G3_5_G3_6_V4_TECH_PASS=$GITHUB_SHA ART=MANUAL PVE=HOLD"
+      - name: R4 REAL Godot Compatibility moving wind shader particles and MP4
+        shell: bash
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/vfx-paf05"
+          bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://labs/combat_lab/talisman15/r4/thai_huyen_phong_gioi_r4.gd 2>&1 | tee "$d/r4-parse.log"
+          bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/labs/combat_lab/vfx_paf05_r4_contract_test.gd 2>&1 | tee "$d/r4-focused.log"
+          grep -Fq 'VFX_PAF05_R4_FOCUSED_RESULT=PASS failures=0' "$d/r4-focused.log"
+          xvfb-run -a -s '-screen 0 1280x720x24' bash tools/qa/run_godot_strict.sh --path godot --resolution 1280x720 --fixed-fps 60 --write-movie "$d/paf05-r4-native.avi" --quit-after 180 res://labs/combat_lab/talisman15/r4/thai_huyen_phong_gioi_r4.tscn 2>&1 | tee "$d/r4-native.log"
+          grep -Fq 'VFX_PAF05_R4_READY' "$d/r4-native.log"
+          ffmpeg -y -hide_banner -loglevel error -i "$d/paf05-r4-native.avi" -pix_fmt yuv420p -c:v libx264 -crf 16 -movflags +faststart "$d/paf05-r4-native.mp4"
+          for at in 0.42 1.16 1.49 2.25 2.65; do ffmpeg -y -hide_banner -loglevel error -ss "$at" -i "$d/paf05-r4-native.mp4" -frames:v 1 "$d/r4-frame-$at.png"; done
+          ffprobe -v error -select_streams v:0 -show_entries stream=width,height,nb_frames -of default=noprint_wrappers=1 "$d/paf05-r4-native.mp4" | tee "$d/r4-ffprobe.txt"
+          grep -Fxq 'width=1280' "$d/r4-ffprobe.txt"
+          grep -Fxq 'height=720' "$d/r4-ffprobe.txt"
+          grep -Fxq 'nb_frames=180' "$d/r4-ffprobe.txt"
+          sha256sum "$d/paf05-r4-native.mp4" "$d"/r4-frame-*.png > "$d/r4-sha256.txt"
+          rm "$d/paf05-r4-native.avi"
+          echo "VFX_PAF05_R4_GODOT_NATIVE_TECH_PASS=$GITHUB_SHA ART=MANUAL_OWNER_PENDING PVE=HOLD"
+      - name: R5 strict Godot 4.7.2 import, three moving targets and genuine native phase movies
+        shell: bash
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/vfx-paf05"
+          bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://labs/combat_lab/talisman15/r5/thai_huyen_phong_gioi_r5.gd 2>&1 | tee "$d/r5-parse.log"
+          bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/labs/combat_lab/vfx_paf05_r5_contract_test.gd 2>&1 | tee "$d/r5-focused.log"
+          grep -Fq 'VFX_PAF05_R5_FOCUSED_RESULT=PASS failures=0' "$d/r5-focused.log"
+          xvfb-run -a -s '-screen 0 1280x720x24' bash tools/qa/run_godot_strict.sh --path godot --resolution 1280x720 --fixed-fps 60 --write-movie "$d/paf05-r5-short.avi" --quit-after 192 res://labs/combat_lab/talisman15/r5/thai_huyen_phong_gioi_r5.tscn 2>&1 | tee "$d/r5-native.log"
+          grep -Fq 'VFX_PAF05_R5_READY' "$d/r5-native.log"
+          ffmpeg -y -hide_banner -loglevel error -i "$d/paf05-r5-short.avi" -pix_fmt yuv420p -c:v libx264 -crf 16 -movflags +faststart "$d/paf05-r5-native.mp4"
+          ffprobe -v error -select_streams v:0 -show_entries stream=width,height,nb_frames -of default=noprint_wrappers=1 "$d/paf05-r5-native.mp4" | tee "$d/r5-ffprobe.txt"
+          grep -Fxq 'width=1280' "$d/r5-ffprobe.txt"
+          grep -Fxq 'height=720' "$d/r5-ffprobe.txt"
+          grep -Fxq 'nb_frames=192' "$d/r5-ffprobe.txt"
+          for at in 0.30 0.42 0.76 1.00 1.16 1.33 1.49 1.68 1.96 2.25 2.65 3.00; do
+            ffmpeg -y -hide_banner -loglevel error -ss "$at" -i "$d/paf05-r5-native.mp4" -frames:v 1 "$d/r5-frame-$at.png"
+          done
+          # Separate whole-status proof. Never confuse 7s mark with a long cast.
+          xvfb-run -a -s '-screen 0 1280x720x24' bash tools/qa/run_godot_strict.sh --path godot --resolution 1280x720 --fixed-fps 60 --write-movie "$d/paf05-r5-status.avi" --quit-after 540 res://labs/combat_lab/talisman15/r5/thai_huyen_phong_gioi_r5.tscn 2>&1 | tee "$d/r5-status.log"
+          ffmpeg -y -hide_banner -loglevel error -i "$d/paf05-r5-status.avi" -pix_fmt yuv420p -c:v libx264 -crf 19 -movflags +faststart "$d/paf05-r5-status.mp4"
+          for at in 1.52 3.18 5.11 7.96 8.28 8.52 8.80; do
+            ffmpeg -y -hide_banner -loglevel error -ss "$at" -i "$d/paf05-r5-status.mp4" -frames:v 1 "$d/r5-status-$at.png"
+          done
+          sha256sum "$d/paf05-r5-native.mp4" "$d/paf05-r5-status.mp4" "$d"/r5-*.png > "$d/r5-native-sha256.txt"
+          rm -f "$d/paf05-r5-short.avi" "$d/paf05-r5-status.avi"
+          echo "PAF05_R5_NATIVE_TECH_PASS=$GITHUB_SHA ART=OWNER_PENDING PVE=HOLD"
+      - name: Archive original RGBA source and Godot native MP4 + G3.5/3.6 evidence; no GIF
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vfx-paf05-r5-native-${{ github.sha }}
+          retention-days: 30
+          if-no-files-found: warn
+          path: |
+            ${{ runner.temp }}/vfx-paf05/*.log
+            ${{ runner.temp }}/vfx-paf05/*.txt
+            ${{ runner.temp }}/vfx-paf05/*.png
+            ${{ runner.temp }}/vfx-paf05/*.mp4
+            godot/labs/combat_lab/talisman15/art_sources/*.png
+            godot/labs/combat_lab/talisman15/r5/art_sources/*.png
+            godot/labs/combat_lab/talisman15/r5/art_sources/*.json
+            godot/labs/combat_lab/talisman15/r5/assets/*.webp
+            godot/labs/combat_lab/talisman15/assets/*.webp
