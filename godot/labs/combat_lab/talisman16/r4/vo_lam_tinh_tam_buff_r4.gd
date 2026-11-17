@@ -7,7 +7,7 @@ const R4_COLUMNS := 8
 const ID_REAR: Texture2D = preload("res://labs/combat_lab/talisman16/r4/assets/paf06_r4_rear.webp")
 const ID_FRONT: Texture2D = preload("res://labs/combat_lab/talisman16/r4/assets/paf06_r4_front.webp")
 const ID_HEART: Texture2D = preload("res://labs/combat_lab/talisman16/r4/assets/paf06_r4_heart.webp")
-const CORE_POS := Vector2(632.0,466.0)
+const CORE_POS := Vector2(632.0,505.0)
 
 static func canonical_motif() -> String:
 	return "THREE_MOVING_JADE_GOLD_WIND_TALISMANS_PLUS_QUIET_HEART_LOTUS"
