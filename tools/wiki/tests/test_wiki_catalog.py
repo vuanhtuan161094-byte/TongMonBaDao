@@ -39,6 +39,12 @@ class WikiCatalogTests(unittest.TestCase):
         difference = builder.first_difference({"a": [1, {"b": 2}]}, {"a": [1, {"b": 3}]})
         self.assertEqual(("$.a[1].b", 2, 3), difference)
 
+    def test_json_serialization_and_numeric_formatting_do_not_change_projection_data(self) -> None:
+        expected = {"schools": ["poison"], "count": 12, "zero": 0}
+        actual = json.loads('{ "schools" : [ "poison" ], "count" : 12.0, "zero": 0.0 }')
+        self.assertIsNone(builder.first_difference(expected, actual))
+        self.assertEqual(("$.value", True, 1), builder.first_difference({"value": True}, {"value": 1}))
+
     def test_v63_is_not_reported_as_live(self) -> None:
         self.assertEqual(0, self.catalog["counts"]["v63Enabled"])
         self.assertTrue(all(skill["runtimeStatus"] == "GATED_OFF" for skill in self.catalog["skills"]))
@@ -138,3 +144,4 @@ class WikiCatalogTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
+

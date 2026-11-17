@@ -1,6 +1,6 @@
 # TMB Wiki — kiểm kê nguồn và coverage
 
-- Snapshot source HEAD: `eb2ca7dcc5a30da4fd7526d267fdf990cb4908cb`
+- Snapshot source HEAD: `176a9863f4071c8de554fb4f5fad14f539ad943f`
 - Schema: `1` · chế độ: `LOCAL_ONLY_PRIVATE_BY_DEFAULT` · đồng bộ: một chiều game → Wiki.
 - Generated projection chỉ chứa nguồn repo; ghi chú và đề xuất owner nằm trong localStorage của trình duyệt, không được ghi vào repo.
 - SHA trong bảng là SHA-256 tại snapshot này; file văn bản chuẩn hóa CRLF/CR thành LF trước khi băm để kết quả ổn định giữa Windows/Linux. File nhị phân (nếu bổ sung sau) giữ hash byte gốc.
@@ -45,3 +45,4 @@
 - `SPEC_ONLY` không được đổi thành `LIVE_VERIFIED`; `TECH_PASS` không được đổi thành `ART_APPROVED`.
 - Dashboard phân biệt dữ liệu thiết kế, mã/registry, feature gate, test source, kết quả test và phê duyệt owner.
 - Không có file save cá nhân hoặc dữ liệu người chơi được đưa vào catalog.
+

@@ -680,6 +680,11 @@ def make_audit(catalog: dict[str, Any]) -> str:
 def first_difference(expected: Any, actual: Any, path: str = "$", depth: int = 0) -> tuple[str, Any, Any] | None:
     if depth > 32:
         return None if expected == actual else (path, expected, actual)
+    if (
+        isinstance(expected, (int, float)) and not isinstance(expected, bool)
+        and isinstance(actual, (int, float)) and not isinstance(actual, bool)
+    ):
+        return None if expected == actual else (path, expected, actual)
     if type(expected) is not type(actual):
         return path, expected, actual
     if isinstance(expected, dict):
@@ -730,17 +735,20 @@ def main() -> int:
         expected = json.dumps(catalog, ensure_ascii=False, indent=2) + "\n"
         checked = ROOT / "wiki/data/catalog.json"
         checked_text = checked.read_text(encoding="utf-8") if checked.exists() else ""
-        if checked_text != expected:
+        try:
+            checked_catalog = json.loads(checked_text)
+        except (json.JSONDecodeError, TypeError):
+            checked_catalog = None
+        difference = first_difference(catalog, checked_catalog) if checked_catalog is not None else ("$", "valid JSON", "missing or invalid JSON")
+        if difference:
             print("WIKI SOURCE SYNC STALE")
-            try:
-                difference = first_difference(catalog, json.loads(checked_text))
-                if difference:
-                    path, wanted, found = difference
-                    print(f"FIRST DIFFERENCE {path}: expected={str(wanted)[:160]!r}; actual={str(found)[:160]!r}")
-            except (json.JSONDecodeError, TypeError):
-                print("Checked catalog is missing or invalid JSON.")
+            path, wanted, found = difference
+            print(f"FIRST DIFFERENCE {path}: expected={str(wanted)[:160]!r}; actual={str(found)[:160]!r}")
             return 2
-        print("WIKI SOURCE SYNC PASS")
+        if checked_text == expected:
+            print("WIKI SOURCE SYNC PASS")
+        else:
+            print("WIKI SOURCE SYNC PASS (JSON values match; serialization differs)")
     elif args.write:
         data_path, audit_path = write_projection(catalog, ROOT)
         print(f"WROTE {data_path.relative_to(ROOT).as_posix()}")
@@ -753,3 +761,4 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
