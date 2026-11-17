@@ -40,3 +40,8 @@ Required at 1x: convincing energy light (not rigid UI lines), smooth braid flow,
 - R3 SHA 2b5ca416ffa9cff1f5381400cb5f73d9a96adb5a exact-SHA Godot Actions #43998534486 TECH SUCCESS, but manual review shows floating claw-like ribbons and a mostly stationary caster: ART_SELF_FAIL; owner rejection of R2 remains unaddressed.
 - R4 adds a short, actual LAB-only actor dash to contact range followed by three timed wrist-origin light punches and retreat. Uses preexisting separate approved actor sprite for a faint motion afterimage, not copied into the VFX atlas. Contact contraction to 0.77 centers the broken meridians on the recipient's chest.
 - Three echoes remain one illustrative MARK event with no invented 3 hits. Code source derives original alpha assets; no GIF or rig. Recheck exact-SHA Godot movie and manually inspect before reporting art.
+
+## R5 deliberate strike silhouette re-authoring (17 Nov 2026)
+- Exact R4 Godot Actions #43999142484 TECH PASS on SHA b6c073aa3ce3474ec6783555cf871e4287958f53; manual art review: caster dashes but pink claw ribbons remain poor articulation of repeated fists. **ART_SELF_FAIL**.
+- R5 re-authors 12 consecutive strike-pulse RGBA poses (3 visual beats × 4 frames each) as localized **three asymmetrical inward pressure blooms with a compact hot ivory impact**, burst petals and original first-party painterly pigment rather than a long uniform ribbon. R4 LAB martial dash + hand-source synchronized flashes are retained. Mark-apply moved 28px down to target chest; 6s mark remains independent.
+- No new gameplay hit_count or outgoing damage; canonical projectile_speed 0 mark, no rig, no GIF, no actor pixels in VFX source, V6.3/PvE/CombatV2 unchanged. Technical exact-SHA and owner visual gates separate.

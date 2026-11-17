@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""FIST12 R3: Doan Mach Lien Quyen - triple qi-punch echoes + broken meridian mark.
+"""FIST12 R5: Doan Mach Lien Quyen - close pressure blooms and broken meridian mark.
 
 Godot flipbook generator. Three martial qi impact echoes (no moving fist icon) inspired by
 first-party FIST03 hand-painted IMPACT luminance as MICROGRAIN only. Painting
@@ -149,53 +149,58 @@ def qi_burst(im, center, strength, beat, seed):
         d.line([(x,y),(x2,y2)],fill=light,width=rr.choice([1,2,3]))
 
 def wave(k):
-    """THREE DISTINCT timed visual fist-pressure impacts (3x4 poses):
-    not a single object crossing the map, not three combat receipts.
-    Crimson/ivory pressure flows emerge from the attacker's side, curve into
-    one defensive-side enemy torso, then shed ripped-meridian micro sparks.
-    Each impact has a different diagonal, shape, size and temporal posture.
+    """R5: THREE compact MARTIAL PRESSURE BLOOMS rather than streaming ropes.
+
+    Each of the 3x4 beats is an inward-compressed qi fist, then rupturing
+    non-circular shock edges with a bright textured center. No flat fist sprite
+    and NO declared combat hits, projectiles or actor pixels in the atlas.
     """
-    S=320
-    beat=k//4
-    f=k%4
-    strength=[.37,.72,1.0,.27][f]
-    angle=[-23,19,-8][beat]
-    center=(194+4*math.sin(beat*1.7),159+[-17,12,-3][beat])
-    cur=[]
-    rr=random.Random(220114+beat*149+f*3)
-    # Three transverse, asymmetric strokes: kinetic fist pressure, not arrow.
+    S=320;beat=k//4;sub=k%4
+    pulse=[.30,.74,1.0,.27][sub]
+    rr=random.Random(19500+beat*117+sub*23)
+    phi=[-.48,.35,-.08][beat]
+    cx,cy=(174+5*math.sin(beat*1.3),160+[-15,15,-3][beat])
+    curves=[]
+    # Thick energy wake has an actual compression point, not a ribbon arrow.
     for j in range(3):
-        rise=(j-1)*17 + angle*.62
-        x_shift=[0,12,-7][beat]
-        p0=(22+6*j + 6*f,179+rise*.84 + rr.uniform(-8,8))
-        p1=(71+8*j,125+rise*.7+rr.uniform(-11,11))
-        p2=(123+x_shift,200+rise*.9+rr.uniform(-13,13))
-        p3=(center[0]-8+j*8,center[1]+(j-1)*8)
-        pts=curve(p0,p1,p2,p3,47)
-        cur.append((pts,(6.0+j*1.5+beat*.9)*(.64+.35*strength)))
-    # Return-running torn vortices form a visual break in the qi circuit.
-    for j in range(2):
-        sign=(-1 if j==0 else 1)
-        u=(31+15*j,center[1]+sign*(39+beat*4))
-        v=(center[0]-52,center[1]+sign*(13+f))
-        pts=curve(u,(84,center[1]+sign*43),
-                  (157,center[1]+sign*(36+f*6)),v,39)
-        cur.append((pts,2.7+.4*f))
-    img=paint_masks(S,cur,f*.83+beat*.95,strength,331+beat*31+f)
-    qi_burst(img,center,strength,beat,f)
-    # Narrow directional follow-through strokes after the impact.
-    d=ImageDraw.Draw(img,'RGBA')
-    for i in range(6):
-        dist=7+i*8+f*2
-        xx=center[0]+dist
-        yy=center[1]+(i-3)*7+math.sin(i*1.6+beat)*7
-        ll=(5+f*2)*(1-i/9)
-        d.line([(xx,yy),(xx+ll,yy+2*math.sin(i+beat))],
-               fill=(255,110+i*12,143+i*7,round(96*strength)),width=1+(i%3==0))
-    splinters(img,k,center,scale=.26+.39*strength,count=6+f,brightness=strength*.78)
-    # Three successive pressure echoes arrive at different martial angles.
-    # Rotation belongs to the source flipbook, not the Godot actor or a rig.
-    return img.rotate([24,-21,5][beat],Image.Resampling.BICUBIC,expand=False)
+        sign=(j-1)
+        src=(62+j*8,cy+sign*(30+4*beat))
+        c1=(91,cy+sign*49+rr.uniform(-5,5))
+        c2=(144,cy+sign*15+rr.uniform(-6,6))
+        dst=(cx-13,cy+sign*5)
+        curves.append((curve(src,c1,c2,dst,44),3.5+j*.9))
+    # Irregular, separated open shockwave lobes wrapping each punch pressure.
+    for j in range(9):
+        a=phi + j*math.tau/9+rr.uniform(-.10,.10)
+        radius=23+56*max(0.,pulse-.15)+rr.uniform(-10,10)
+        start=(cx+math.cos(a)*12,cy+math.sin(a)*9)
+        tip=(cx+math.cos(a)*radius,cy+math.sin(a)*radius*.81)
+        mid=(cx+math.cos(a+.28)*radius*.69,cy+math.sin(a+.28)*radius*.62)
+        pts=curve(start,(cx+math.cos(a-.4)*20,cy+math.sin(a-.4)*24),mid,tip,33)
+        curves.append((pts,2.7+(j%3)*1.25))
+    # Curl around only PART of the contact surface; arcs are broken, not a UI ring.
+    for j in (0,1,2):
+        cen=phi+j*1.75
+        pts=[]
+        for i in range(32):
+            t=i/31
+            a=cen+(t-.5)*1.08
+            radius=(47+10*j)*(1+.10*math.sin(i*.41+beat))
+            pts.append((cx+radius*math.cos(a),cy+radius*.78*math.sin(a)))
+        curves.append((pts,3.6+j*.75))
+    im=paint_masks(S,curves,sub*.83+beat*1.37,pulse,870+beat*20+sub)
+    qi_burst(im,(cx,cy),pulse*1.32,beat,sub)
+    # Four pressure-knuckle light dents at peak; luminous, NOT a fist item.
+    d=ImageDraw.Draw(im,'RGBA')
+    for j in range(4):
+        a=phi+j*.44-.66
+        x=cx+14*math.cos(a)
+        y=cy+14*math.sin(a)
+        rad=2.8+pulse*3.0+((j+beat)%2)*1.4
+        d.ellipse((x-rad,y-rad*.67,x+rad,y+rad*.67),
+                  fill=(255,225-j*21,197-j*14,round(190*pulse)))
+    splinters(im,k,(cx,cy),scale=.38+.77*pulse,count=13,brightness=pulse*.92)
+    return im
 
 
 def contact(k):

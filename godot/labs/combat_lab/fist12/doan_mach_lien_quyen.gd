@@ -3,7 +3,7 @@ extends Control
 ## R4 martial dash + THREE local qi pressure echoes (NOT 3 combat hits), meridian break mark.
 ## View-only Godot 4.7.2 LAB: synthetic timing, NO combat damage/status writes.
 const SKILL_ID := "tmb.skill.fist.huyet_quyen.active_02.human"
-const ART_REVISION := "R4_MARTIAL_DASH_THREE_ECHOES"
+const ART_REVISION := "R5_THREE_PRESSURE_BLOOMS_MERIDIAN_CUT"
 const EFFECT := "mark"
 const ELEMENT := "nether"
 const SHAPE := "single_target"
@@ -95,7 +95,7 @@ func _ready() -> void:
     set_process(true)
     queue_redraw()
     if not vfx_only_benchmark:
-        print("VFX_FIST12_R4_READY skill=",SKILL_ID,
+        print("VFX_FIST12_R5_READY skill=",SKILL_ID,
              " effect=mark status_duration=6 target=1 particle=alpha_sprite",
              " no_gif=true no_rig=true no_gameplay_writes=true")
 
@@ -167,7 +167,7 @@ func _draw() -> void:
         _frame(CHARGE,palm_frame,256.0,caster+Vector2(53.0,-104.0),.42,wrist_power,Vector2(128.0,128.0))
     if touch>.002:
         var k:=clampi(int(floor((t-CONTACT_START)/(CONTACT_END-CONTACT_START)*8.0)),0,7)
-        _frame(CONTACT,k,320.0,mark_at(0,t),0.77,touch,Vector2(160.0,160.0))
+        _frame(CONTACT,k,320.0,mark_at(0,t)+Vector2(0.0,28.0),0.76,touch,Vector2(160.0,160.0))
     if sigil>.002:
         var k:=posmod(int(floor((t-MARK_START)*7.2)),8)
         _frame(MARK,k,192.0,mark_at(0,t),.93,sigil*(.91+.05*sin(t*5.4)),Vector2(96.0,103.0))
@@ -175,7 +175,7 @@ func _draw() -> void:
         draw_string(ThemeDB.fallback_font,Vector2(26,33),
             "DOAN MACH LIEN QUYEN / HUYET QUYEN",HORIZONTAL_ALIGNMENT_LEFT,-1,22,Color("ffe9f1"))
         draw_string(ThemeDB.fallback_font,Vector2(26,56),
-            "FIST12 R4 | THREE CLOSE STRIKES / BROKEN MERIDIANS / LAB ONLY",HORIZONTAL_ALIGNMENT_LEFT,-1,12,Color("ffb2d6"))
+            "FIST12 R5 | THREE BLOOD-QI BLOWS / CUT MERIDIANS / LAB ONLY",HORIZONTAL_ALIGNMENT_LEFT,-1,12,Color("ffb2d6"))
         if t>=MARK_START and t<MARK_END:
             draw_string(ThemeDB.fallback_font,Vector2(1040,32),
                 "MARK %.1f s"%(MARK_END-t),HORIZONTAL_ALIGNMENT_LEFT,-1,14,Color("ff86bd"))

@@ -1,9 +1,9 @@
 {
   "schema": "tmb-vfx-production-system-v4.1",
-  "packet_id": "FIST12_R4_MARTIAL_DASH_THREE_ECHOES_V4",
+  "packet_id": "FIST12_R5_THREE_PRESSURE_BLOOMS_MERIDIAN_CUT_V4",
   "skill_id": "tmb.skill.fist.huyet_quyen.active_02.human",
   "school": "fist",
-  "revision": "R4_MARTIAL_DASH_THREE_ECHOES",
+  "revision": "R5_THREE_PRESSURE_BLOOMS_MERIDIAN_CUT",
   "catalogue_path": "godot/data/combat/v63_human_combat_catalog.json",
   "scene_path": "godot/labs/combat_lab/fist12/doan_mach_lien_quyen.tscn",
   "lab_script": "godot/labs/combat_lab/fist12/doan_mach_lien_quyen.gd",
@@ -25,7 +25,7 @@
     "source_class": "FIRST_PARTY_ORIGINAL_ENERGY_PATHS_DERIVED_FIST03_PAINT_GRAIN",
     "rights_note": "Newly authored independent organic energy current geometry, forked meridian veins, flowing ruby-purple light, contact burst and six-second status mark, rasterized from transparent source strokes. Only micrograin luminance is sampled from the original FIST03 painterly impact artwork owned by this project. No fist sprite/weapon/item, no copied game UI, screen, GIF, or licensed commercial JX/VL asset is in the VFX atlas. This is code-authored source art, NOT individually ImageGen-painted masters; manual review is mandatory.",
     "master_quality_status": "MANUAL_ART_REVIEW_REQUIRED",
-    "known_source_limitation": "Original light-first form painted by Pillow/NumPy with FIST03 hand-painted luminance noise, not an independently ImageGen-painted high-resolution hero silhouette. Technical alpha uniqueness != organic motion/art acceptance; owner to review at 1x. Three bundled light filaments are one cosmetic streamed mark application; they are not multiple true combat hit receipts. R1 actual 1x Godot looked like a broad pink triangular arrow (ART_SELF_FAIL). R2 builds five intertwined crossing plasma ribbons with distinct wave poses and no circular head arc; marks/contact move to chest instead of obscuring face. Owner rejects R2 because it does not read as Duan Mach Lien Quan skill. R3 does 3 time-separated cosmetic pressure-echo punches near moving target, then visually tears 3 meridian branches, leaving 6-second interrupted vein mark. Three flashes are NOT 3 Combat V2 hits. Visual art still manual pending. Real R3 native Godot is still visually weak: scratch-like trails and caster mostly standing still. R4 improves martial choreography with fast LAB-only caster approach and wrist-origin charge flashes synchronized with three localized target-locked pressure echoes; contact scaled tighter to chest. Character frames unchanged; no rig.",
+    "known_source_limitation": "Original light-first form painted by Pillow/NumPy with FIST03 hand-painted luminance noise, not an independently ImageGen-painted high-resolution hero silhouette. Technical alpha uniqueness != organic motion/art acceptance; owner to review at 1x. Three bundled light filaments are one cosmetic streamed mark application; they are not multiple true combat hit receipts. R1 actual 1x Godot looked like a broad pink triangular arrow (ART_SELF_FAIL). R2 builds five intertwined crossing plasma ribbons with distinct wave poses and no circular head arc; marks/contact move to chest instead of obscuring face. Owner rejects R2 because it does not read as Duan Mach Lien Quan skill. R3 does 3 time-separated cosmetic pressure-echo punches near moving target, then visually tears 3 meridian branches, leaving 6-second interrupted vein mark. Three flashes are NOT 3 Combat V2 hits. Visual art still manual pending. Real R3 native Godot is still visually weak: scratch-like trails and caster mostly standing still. R4 improves martial choreography with fast LAB-only caster approach and wrist-origin charge flashes synchronized with three localized target-locked pressure echoes; contact scaled tighter to chest. Character frames unchanged; no rig. R4 video showed static-looking claw streaks even after caster martial rush. R5 re-authors all 12 pressure frames as impact-centered, compact irregular blooming qi compression, 3 beats x 4 distinct poses, changing center/radius/color. Does not introduce 3 gameplay hits. Mark application moved 28px lower so animated fractured veins hit chest rather than covering face.",
     "master_files": [
       {
         "path": "godot/labs/combat_lab/fist03/assets/impact_master.webp",
@@ -56,7 +56,7 @@
       "cell_height": 320,
       "frames": 12,
       "columns": 4,
-      "layer": "Three angle-distinct, time-separated martial crimson qi pressure echoes, 4 individually changing poses each, anchored near one moving target (no projectile or arrow)"
+      "layer": "R5 three separate, source-authored, asymmetrical crimson/ivory pressure bursts (3x4 frames) compressed from caster towards one enemy; visual beat only"
     },
     {
       "path": "godot/labs/combat_lab/fist12/assets/generated/f12_contact.png",
@@ -66,7 +66,7 @@
       "cell_height": 320,
       "frames": 8,
       "columns": 4,
-      "layer": "Single mark application: interrupted meridian veins tear across target, white-hot local pulse; no extra gameplay damage"
+      "layer": "One mark event with interrupted meridians and local white-hot emission at enemy torso, not face, no gameplay damage"
     },
     {
       "path": "godot/labs/combat_lab/fist12/assets/generated/f12_six_second_mark.png",
@@ -131,8 +131,8 @@
   },
   "proof_contract": {
     "focused_marker": "VFX_FIST12_FOCUSED_RESULT=PASS failures=0",
-    "native_marker": "VFX_FIST12_R4_READY",
+    "native_marker": "VFX_FIST12_R5_READY",
     "video_filename": "v4-fist12-native.mp4",
-    "source": "FIST12 R3 actual native Godot: three VISUAL pressure echoes at varied angles, one 6s mark applied to a moving actor; mark gameplay remains off; no false damage/hit_count."
+    "source": "R5 original pressure-bloom alpha source. Actual Godot native actor rush + three visual force beats; one visual mark for six seconds; no new gameplay events."
   }
 }

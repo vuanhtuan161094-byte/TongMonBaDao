@@ -33,7 +33,7 @@ jobs:
           sudo install -m0755 /tmp/Godot_v4.7.2-stable_linux.x86_64 /usr/local/bin/godot
           mkdir -p /tmp/vfx-fist12
           godot --version | tee /tmp/vfx-fist12/engine.txt
-          echo "EXACT_SHA=$GITHUB_SHA; FIST12=R4_MARTIAL_DASH_THREE_PRESSURE_ECHOES_6S; ART_PENDING; NO_RIG; PVE_HOLD; V63_OFF" > /tmp/vfx-fist12/metadata.txt
+          echo "EXACT_SHA=$GITHUB_SHA; FIST12=R5_THREE_RUBY_PRESSURE_BLOOMS_6S; ART_PENDING; NO_RIG; PVE_HOLD; V63_OFF" > /tmp/vfx-fist12/metadata.txt
       - name: Restore approved unchanged idle and walk actors for demo
         shell: bash
         run: |
@@ -89,23 +89,23 @@ jobs:
         run: |
           set -euo pipefail
           d=/tmp/vfx-fist12
-          xvfb-run -a -s '-screen 0 1280x720x24' bash tools/qa/run_godot_strict.sh --path godot --resolution 1280x720 --fixed-fps 60 --write-movie "$d/fist12-r4.avi" --quit-after 456 res://labs/combat_lab/fist12/doan_mach_lien_quyen.tscn 2>&1 | tee "$d/godot-full.log"
-          ffmpeg -y -hide_banner -loglevel error -i "$d/fist12-r4.avi" -pix_fmt yuv420p -c:v libx264 -crf 16 -movflags +faststart "$d/fist12-r4.mp4"
-          ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of default=noprint_wrappers=1 "$d/fist12-r4.mp4" | tee "$d/dimensions.txt"
+          xvfb-run -a -s '-screen 0 1280x720x24' bash tools/qa/run_godot_strict.sh --path godot --resolution 1280x720 --fixed-fps 60 --write-movie "$d/fist12-r5.avi" --quit-after 456 res://labs/combat_lab/fist12/doan_mach_lien_quyen.tscn 2>&1 | tee "$d/godot-full.log"
+          ffmpeg -y -hide_banner -loglevel error -i "$d/fist12-r5.avi" -pix_fmt yuv420p -c:v libx264 -crf 16 -movflags +faststart "$d/fist12-r5.mp4"
+          ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of default=noprint_wrappers=1 "$d/fist12-r5.mp4" | tee "$d/dimensions.txt"
           grep -Fxq width=1280 "$d/dimensions.txt"
           grep -Fxq height=720 "$d/dimensions.txt"
           for at in 0.10 0.22 0.37 0.45 0.58 0.74 0.86 0.92 0.99 1.13 1.32 1.80 2.65 3.50 4.45 5.30 6.28 6.80 7.06 7.40; do
-            ffmpeg -y -hide_banner -loglevel error -ss "$at" -i "$d/fist12-r4.mp4" -frames:v 1 "$d/frame-$at.png"
+            ffmpeg -y -hide_banner -loglevel error -ss "$at" -i "$d/fist12-r5.mp4" -frames:v 1 "$d/frame-$at.png"
           done
-          ffmpeg -y -hide_banner -loglevel error -i "$d/fist12-r4.mp4" -vf 'fps=3,scale=320:180,tile=5x4:nb_frames=20' -frames:v 1 "$d/timeline.png"
+          ffmpeg -y -hide_banner -loglevel error -i "$d/fist12-r5.mp4" -vf 'fps=3,scale=320:180,tile=5x4:nb_frames=20' -frames:v 1 "$d/timeline.png"
           # R4 three actor-synchronized qi-pressure echoes and single six-second mark: no GIF conversion, no preview sprite fake; native Godot MP4 only
           sha256sum "$d/"*.mp4 "$d/"*.png > "$d/SHA256SUMS.txt"
-          rm "$d/fist12-r4.avi"
+          rm "$d/fist12-r5.avi"
       - name: Upload exact-SHA art technical evidence; owner gate manual
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: vfx-fist12-r4-energy-first-v4-native
+          name: vfx-fist12-r5-energy-first-v4-native
           retention-days: 14
           if-no-files-found: warn
           path: |
