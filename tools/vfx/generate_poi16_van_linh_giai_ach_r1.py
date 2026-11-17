@@ -156,7 +156,7 @@ def src(part,t,cell):
         lay("pearl",gauss(x,y,0,-9,6+8*t,10+10*t)*.27*retained)
     else:raise ValueError(part)
 
-    # R1D G3.5/G3.6 VISIBILITY REWORK (true-energy RGBA, no flat opaque glyph).
+    # R1E G3.5/G3.6 VISIBILITY REWORK (true-energy RGBA, no flat opaque glyph).
     # Separate hot ivory nucleus, saturated jade BODY and faint transparent halo.
     if part=="charge":
         a=.22+.78*t
@@ -202,14 +202,14 @@ def src(part,t,cell):
         lay("ivory",gauss(x,y,0,-7,9,10)*.82*a)
         lay("pearl",gauss(x,y,0,-7,4.6,5.7)*.91*a)
     elif part=="fade":
-        a=max(.10,(1-t)**.78)
+        a=max(.23,(1-t)**.46)
         for k in range(23):
             phi=k*2.39996
             cx=(14+8*(k%5))*np.sin(phi)+13*t*np.cos(phi)
             cy=(19+6*(k%4))*np.cos(phi)-62*t
-            lay("jade",gauss(x,y,cx,cy,5.7,8.4)*.58*a)
-            lay("ivory",gauss(x,y,cx,cy,2.4,3.4)*.53*a)
-        lay("aqua",gauss(x,y,0,-12-16*t,63,56)*.21*a)
+            lay("jade",gauss(x,y,cx,cy,6.0,9.2)*.89*a)
+            lay("ivory",gauss(x,y,cx,cy,1.9,2.9)*.34*a)
+        lay("aqua",gauss(x,y,0,-12-16*t,63,56)*.26*a)
     # R1B median nonzero alpha = charge8 / bloom20 / blessing9 of 255:
     # recover midtone legibility without hard edges/opaque stamps.
     old_alpha=p[:,:,3]
@@ -242,6 +242,6 @@ def main():
         atlas.save(dest,optimize=True)
         raw+=atlas.width*atlas.height*4
         print("POI16_ORIGINAL_RGBA_ATLAS",kind,count,atlas.size,"png_bytes",dest.stat().st_size)
-    print("POI16_VAN_LINH_GIAI_ACH_R1D_SOURCE_PASS poses=38 atlases=4 no_gif=true raw_rgba_bytes=",raw)
+    print("POI16_VAN_LINH_GIAI_ACH_R1E_SOURCE_PASS poses=38 atlases=4 no_gif=true raw_rgba_bytes=",raw)
 
 if __name__=="__main__":main()
