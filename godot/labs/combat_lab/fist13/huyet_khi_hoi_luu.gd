@@ -50,7 +50,7 @@ func _ready()->void:
     custom_minimum_size=Vector2(1280,720)
     mouse_filter=Control.MOUSE_FILTER_IGNORE
     set_process(true)
-    print("VFX_FIST13_R6_READY painted_fist=true returning_qi=true moving_target=true one_mark_6s=true")
+    print("VFX_FIST13_R7_READY painted_fist=true returning_qi=true moving_target=true one_mark_6s=true")
 func _process(delta:float)->void:
     if paused:return
     elapsed=fposmod(elapsed+maxf(delta,0),LOOP_END)
@@ -95,16 +95,16 @@ func _draw()->void:
     # There is still only one mark and no new damage, hit, heal or status.
     if t>=MARK_START and t<1.24:
         var rq:=clampf((t-MARK_START)/.40,0,1)
-        var ra:float=(1.0-smoothstep(.68,1.0,rq))*.43
+        var ra:float=(1.0-smoothstep(.68,1.0,rq))*.63
         _flip(CHARGE,(1.0-rq)*7.0,8,return_qi_at(t),.46,ra)
     _caster(caster_at(t))
     _monster(foe_at(t),t)
     if t>=MARK_START and t<1.13:
         var flash:=smoothstep(MARK_START,MARK_START+.045,t)*(1.0-smoothstep(.92,1.13,t))
-        _flip(CONTACT,11.0,12,mark_at(0,t),.58,flash*.43)
+        _flip(CONTACT,11.0,12,mark_at(0,t),.40,flash*.57)
     var ink:=mark_opacity(t)
     if ink>.002:
         var p:=fposmod((t-MARK_START)*6.0,8.0)
-        _flip(MARK,p,8,mark_at(0,t),.72,ink*.84)
+        _flip(MARK,p,8,mark_at(0,t),.42,ink*.65)
         # A smaller floating scar on the SAME target keeps the mark readable.
-        _flip(MARK,p,8,foe_at(t)+Vector2(-3,-170),.37,ink*.55)
+        _flip(MARK,p,8,foe_at(t)+Vector2(-3,-169),.58,ink*.98)

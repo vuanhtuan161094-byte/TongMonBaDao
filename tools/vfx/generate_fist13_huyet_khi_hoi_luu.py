@@ -99,21 +99,24 @@ def pose_contact(k):
 def pose_mark(k):
     t=k/8
     dst=Image.new("RGBA",(CELL,CELL))
-    # A broken blood-meridian scar with a textured fist imprint, not poison halo.
-    base=material(INK,k*.72,opacity=.55+.15*math.sin(t*math.tau),kind=4)
-    w=156+int(6*math.sin(t*math.tau))
-    base=base.resize((w,int(w*.85)),Image.Resampling.LANCZOS)
-    composite(dst,base,160-base.width/2,160-base.height/2,.82,.12)
-    # Narrow irregular meridian break uses original painted core as main material;
-    # the two hand-drawn scar cuts are small supporting details only.
+    # ONE compact painterly spirit-fist imprint. Never a POISON haze, UI ring
+    # or a huge cloud covering the receiving actor's body.
+    main=material(FIST,k*.67,opacity=.83+.14*math.sin(t*math.tau),kind=6)
+    w=116+int(7*math.sin(t*math.tau))
+    main=main.resize((w,w),Image.Resampling.LANCZOS)
+    composite(dst,main,160-w//2,162-w//2,.98,.29)
+    # Tiny broken-meridian accents from original strike pigment, secondary only.
+    ink=material(INK,k*.77,opacity=.38,kind=7)
+    ink=ink.resize((110,74),Image.Resampling.LANCZOS)
+    composite(dst,ink,160-55,158-37,.33,.11)
     d=ImageDraw.Draw(dst,"RGBA")
     q=math.sin(t*math.tau)
-    dx=int(2*q)
-    points=[(152,136),(169+dx,148),(154-dx,164),(178,179)]
-    d.line(points,fill=(79,4,29,155),width=11,joint="curve")
-    d.line(points,fill=(235,32,78,195),width=6,joint="curve")
-    d.line(points,fill=(255,223,197,200),width=2,joint="curve")
+    scar=[(156,141),(169+int(2*q),151),(154-int(2*q),161),(171,177)]
+    d.line(scar,fill=(139,10,39,130),width=8,joint="curve")
+    d.line(scar,fill=(255,158,167,192),width=4,joint="curve")
+    d.line(scar,fill=(255,241,210,215),width=2,joint="curve")
     return dst
+
 manifest={}
 for name,n,fn in (("charge",8,pose_charge),("contact",12,pose_contact),("mark",8,pose_mark)):
     atlas=Image.new("RGBA",(CELL*4,CELL*((n+3)//4)))
@@ -129,9 +132,9 @@ for name,n,fn in (("charge",8,pose_charge),("contact",12,pose_contact),("mark",8
     manifest[name]={"frames":n,"dimensions":list(atlas.size),"sha256":hashlib.sha256(p.read_bytes()).hexdigest()}
 pose_contact(8).save(OUT/"f13_original_code_painted_hero.png",optimize=True)
 (OUT/"f13_art_source_manifest.json").write_text(json.dumps({
-"revision":"R6","source_class":"FIRST_PARTY_FIST03_PAINTED_MATERIAL_DERIVATIVE",
+"revision":"R7","source_class":"FIRST_PARTY_FIST03_PAINTED_MATERIAL_DERIVATIVE",
 "rights":"Project-owned original painted FIST03 godfist_master.webp and impact_master.webp",
 "not_new_illustration":True,"no_poison_master":True,"no_rig":True,"no_gif":True,
 "original_sources":[str(SRC/"godfist_master.webp"),str(SRC/"impact_master.webp")],
 "atlases":manifest},ensure_ascii=False,indent=2),encoding="utf-8")
-print("FIST13_R6_FIST_SOURCE_BAKE_PASS frames=28 pages=3 alpha=true no_gif=true no_rig=true")
+print("FIST13_R7_FIST_SOURCE_BAKE_PASS frames=28 pages=3 alpha=true no_gif=true no_rig=true")
