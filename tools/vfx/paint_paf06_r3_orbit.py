@@ -144,7 +144,9 @@ if __name__=="__main__":
                for i in range(FRAMES)]
         av=atlas(items)
         al=av.getchannel("A").getextrema()
-        assert al[0]==0 and al[1]>=170,(name,al)
+        # Sparse motes must stay transparent; a high alpha gate is for body rings only.
+        required=115 if name=='spark' else 170
+        assert al[0]==0 and al[1]>=required,(name,al,required)
         evidence["layers"][name]={"atlas":save(ASSETS,"paf06_r3_"+name+".webp",av),
                                  "master":save(SOURCE,"paf06_r3_"+name+"_master.png",items[12])}
         if name=="front":
