@@ -3,7 +3,7 @@
   "packet_id": "POI16_VAN_LINH_GIAI_ACH_R1_ULTIMATE_3_MOVING_ALLY_HEAL",
   "skill_id": "tmb.skill.poison.duoc_doc.ultimate.human",
   "school": "poison",
-  "revision": "POI16_R1D_VISIBLE_HOT_CORE_CURVED_BLESSING_AND_FINITE_GOLDEN_FADE",
+  "revision": "POI16_R1E_NO_LINGERING_THREE_TARGET_VISIBLE_JADE_GOLD_DISSIPATION",
   "catalogue_path": "godot/data/combat/v63_human_combat_catalog.json",
   "scene_path": "godot/labs/combat_lab/poison16_van_linh_giai_ach/r1/van_linh_giai_ach.tscn",
   "lab_script": "godot/labs/combat_lab/poison16_van_linh_giai_ach/r1/van_linh_giai_ach.gd",
@@ -143,12 +143,12 @@
     "live": "PVE_INTEGRATION_HOLD",
     "device": "PHYSICAL_QA_PENDING",
     "g3_6_native_visibility": "REQUIRES_CHECK_POI16_NATIVE_VISIBILITY_PASS",
-    "owner_history": "R1B_OWNER_REJECTED_INVISIBLE;R1C_G36_FADE_FAIL;R1D_PENDING"
+    "owner_history": "R1B_REJECTED_INVISIBLE;R1C_G36_FADE_FAIL;R1D_G36_FADE_FAIL;R1E_OWNER_PENDING"
   },
   "proof_contract": {
     "focused_marker": "POI16_VAN_LINH_R1_RESULT=PASS failures=0",
-    "native_marker": "POI16_VAN_LINH_R1D_READY",
-    "source": "Godot 4.7.2 native 1280x720 original VFX on three moving allied disciples with one out-of-area ally and moving unhealed WALK monster; no game receipt R1B self-review improvement from R1 native, enhanced visual quality, owner pending. Now R1C requires native screen-space charge/bloom/contact/fade readability G3.6 plus G3.5; OWNER_ART_REWORK_REQUIRED_FOR_R1B, OWNER_VISUAL_PENDING_FOR_R1C. R1C succeeded at charge/peak/contact but G3.6 blocked fading phase (303 jade-bright pixels vs 500 minimum). R1D strengthens painterly dissipating motes and curves ally light strands; no QA threshold lowering.",
+    "native_marker": "POI16_VAN_LINH_R1E_READY",
+    "source": "Godot 4.7.2 native 1280x720 original VFX on three moving allied disciples with one out-of-area ally and moving unhealed WALK monster; no game receipt R1B self-review improvement from R1 native, enhanced visual quality, owner pending. Now R1C requires native screen-space charge/bloom/contact/fade readability G3.6 plus G3.5; OWNER_ART_REWORK_REQUIRED_FOR_R1B, OWNER_VISUAL_PENDING_FOR_R1C. R1C succeeded at charge/peak/contact but G3.6 blocked fading phase (303 jade-bright pixels vs 500 minimum). R1D strengthens painterly dissipating motes and curves ally light strands; no QA threshold lowering. R1D charge/peak/contact pass but fade 179<500 after changing motes to ivory; R1E adds individually drifting bright jade source and time-limited fades above each moving ally without adjusting QA thresholds.",
     "video_filename": "v4-poi16-r1-native.mp4"
   }
 }
