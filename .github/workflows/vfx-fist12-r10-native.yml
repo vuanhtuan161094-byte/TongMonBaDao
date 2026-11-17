@@ -69,7 +69,7 @@ jobs:
           test -s "$d/fist12-r10-preflight.avi"
           grep -Fq 'VFX_FIST12_R10_READY' "$d/godot-preflight.log"
           ffmpeg -y -hide_banner -loglevel error -i "$d/fist12-r10-preflight.avi" -pix_fmt yuv420p -c:v libx264 -crf 16 -movflags +faststart "$d/fist12-r10-preflight.mp4"
-          for spec in charge:0.22 peak:0.74 contact:0.99; do
+          for spec in charge:0.22 peak:0.83 contact:0.99; do
             stage="${spec%%:*}";at="${spec#*:}"
             ffmpeg -y -hide_banner -loglevel error -ss "$at" -i "$d/fist12-r10-preflight.mp4" -frames:v 1 "$d/v4-$stage.png"
             test -s "$d/v4-$stage.png"
@@ -77,7 +77,7 @@ jobs:
           python3 tools/qa/validate_vfx_v4_packet.py --stage evidence --packet docs/operations/vfx_packets/FIST12_R10_DOAN_MACH_LIEN_QUYEN_V4.json --out "$d" --sha "$GITHUB_SHA" | tee "$d/v4-evidence.log"
           python3 tools/qa/check_fist12_r10_visibility.py "$d" | tee "$d/g36-visibility.log"
           rm "$d/fist12-r10-preflight.avi"
-      - name: FULL 7.6-second native Godot R9 mark lifetime (real scene, no fake video)
+      - name: FULL 7.6-second native Godot R10 mark lifetime (real scene, no fake video)
         shell: bash
         run: |
           set -euo pipefail
@@ -87,7 +87,7 @@ jobs:
           ffprobe -v error -select_streams v:0 -show_entries stream=width,height:format=duration -of default=noprint_wrappers=1 "$d/fist12-r10-full-native.mp4" | tee "$d/full-dimensions.txt"
           grep -Fxq width=1280 "$d/full-dimensions.txt"
           grep -Fxq height=720 "$d/full-dimensions.txt"
-          for at in 0.22 0.55 0.74 0.92 0.99 1.15 1.8 2.6 3.6 4.8 5.8 6.4 6.78 6.95 7.12 7.36; do
+          for at in 0.22 0.53 0.55 0.68 0.74 0.83 0.92 0.99 1.15 1.8 2.6 3.6 4.8 5.8 6.4 6.78 6.95 7.12 7.36; do
             ffmpeg -y -hide_banner -loglevel error -ss "$at" -i "$d/fist12-r10-full-native.mp4" -frames:v 1 "$d/full-frame-$at.png"
           done
           sha256sum "$d"/fist12-r10-full-native.mp4 "$d"/full-frame-*.png > "$d/FULL_VIDEO_SHA256SUMS.txt"
