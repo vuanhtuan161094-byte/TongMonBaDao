@@ -105,15 +105,16 @@ func _draw()->void:
     if field>.003:
         _flip(WARD,16,512,512,clampf((t-.73)/1.48,0,1),
               Rect2(floor-Vector2(244,139),Vector2(488,238)),Color(1,1,1,field*.85))
+    # R2 art repair: aerial seal BEHIND all WALK monsters; targets readable at native 1x.
+    var hero:=hero_gain(t)
+    if hero>.003:
+        _flip(HERO,20,480,480,clampf((t-.70)/1.62,0.,1.),
+              Rect2(floor-Vector2(190,359),Vector2(380,307)),Color(1,1,1,hero*.91))
     var count:=MONSTER.get_frame_count("walk")
     for k in range(TARGET_LIMIT):
         var p:=target_foot(k,t)
         var texture:Texture2D=MONSTER.get_frame_texture("walk",(int(t*14.0)+k*3)%maxi(1,count))
         draw_texture_rect(texture,Rect2(p-Vector2(48,124),Vector2(96,124)),false)
-    var hero:=hero_gain(t)
-    if hero>.003:
-        _flip(HERO,20,480,480,clampf((t-.70)/1.62,0.,1.),
-              Rect2(floor-Vector2(233,325),Vector2(466,402)),Color(1,1,1,hero*.94))
     var hit:=contact_gain(t)
     if hit>.003:
         for k in range(TARGET_LIMIT):
