@@ -3,7 +3,7 @@
   "packet_id": "POI16_VAN_LINH_GIAI_ACH_R1_ULTIMATE_3_MOVING_ALLY_HEAL",
   "skill_id": "tmb.skill.poison.duoc_doc.ultimate.human",
   "school": "poison",
-  "revision": "POI16_R1B_3_FOLD_STRONGER_SOFT_ALPHA_LIFE_RAYS_DISTINCT_PEAK",
+  "revision": "POI16_R1C_VISIBILITY_REWORK_AFTER_OWNER_REJECTION_R1B",
   "catalogue_path": "godot/data/combat/v63_human_combat_catalog.json",
   "scene_path": "godot/labs/combat_lab/poison16_van_linh_giai_ach/r1/van_linh_giai_ach.tscn",
   "lab_script": "godot/labs/combat_lab/poison16_van_linh_giai_ach/r1/van_linh_giai_ach.gd",
@@ -24,7 +24,7 @@
   "provenance": {
     "source_class": "FIRST_PARTY_CODE_PAINTED_TRUE_RGBA_RASTER",
     "master_quality_status": "MANUAL_ART_REVIEW_REQUIRED",
-    "rights_note": "Independent first-party RGBA luminous 3-fold broad life-light and three independent ally fountains; new artwork, NOT a recolor of POI13 or POI15. Poster/rig/GIF/pixel extraction prohibited. Retained source masters; per-pixel low alpha, high saturation jade/aqua/pearl/gold. Manual owner's art gate remains separate from CI. R1B increases the three independent soft jade+gold life currents and glowing individual blessings while reducing ring boundary opacity, without adding opaque sprites or gameplay. R1 native video/source proof frozen by prior commit SHA.",
+    "rights_note": "Independent first-party RGBA luminous 3-fold broad life-light and three independent ally fountains; new artwork, NOT a recolor of POI13 or POI15. Poster/rig/GIF/pixel extraction prohibited. Retained source masters; per-pixel low alpha, high saturation jade/aqua/pearl/gold. Manual owner's art gate remains separate from CI. R1B increases the three independent soft jade+gold life currents and glowing individual blessings while reducing ring boundary opacity, without adding opaque sprites or gameplay. R1 native video/source proof frozen by prior commit SHA. R1B owner visually rejected as nearly invisible; source reworked with concentrated hot core, medium-high alpha colored streams, faint halo and isolated 3-ally contact. No GIF, no borrowed pixels.",
     "master_files": [
       {
         "path": "godot/labs/combat_lab/poison16_van_linh_giai_ach/r1/assets/master/poi16_charge_master_rgba.png",
@@ -103,7 +103,7 @@
     "visual_fade_end_seconds": 2.65,
     "demo_loop_seconds": 2.95,
     "demo_clock_warning": "No gameplay heal receipts or enemy damage; three allied visual targets maximum, fourth visually out of area. Catalogue heal circle radius2.5 world units, cast1.2, cooldown46, duration0, speed0; LAB 205px radius is ART ONLY, not world-distance mapping. 177 Godot encoded frames at 60fps are NOT authored 38 poses nor device FPS. No GIF, no rig.",
-    "key_pose_budget_note": "38 independent original RGBA source poses: 8 charge +12 life-bloom +10 single-ally blessing +8 fade. The same 10 blessing frames are anchored separately to 3 moving allies with two-layer 2.5D effect, not three combat heals. R1B revises existing RGBA painting and scene alpha/geometry; source pose count still 38, canonical declaration unchanged.",
+    "key_pose_budget_note": "38 independent original RGBA source poses: 8 charge +12 life-bloom +10 single-ally blessing +8 fade. The same 10 blessing frames are anchored separately to 3 moving allies with two-layer 2.5D effect, not three combat heals. R1B revises existing RGBA painting and scene alpha/geometry; source pose count still 38, canonical declaration unchanged. Native charge/peak/contact/idle ROI contrast and area thresholds required for R1C; no automatic visual approval.",
     "phases": [
       {
         "id": "charge",
@@ -138,15 +138,16 @@
   "gate_status": {
     "g3_5_capture": "NOT_EXECUTED_UNTIL_NATIVE_PROOF",
     "technical": "NOT_EXECUTED_UNTIL_NATIVE_PROOF",
-    "art": "MANUAL_ART_REVIEW_REQUIRED",
-    "owner": "OWNER_VISUAL_PENDING",
+    "art": "R1B_OWNER_REJECTED_INVISIBLE_R1C_PENDING",
+    "owner": "R1C_OWNER_VISUAL_PENDING",
     "live": "PVE_INTEGRATION_HOLD",
-    "device": "PHYSICAL_QA_PENDING"
+    "device": "PHYSICAL_QA_PENDING",
+    "g3_6_native_visibility": "REQUIRES_CHECK_POI16_NATIVE_VISIBILITY_PASS"
   },
   "proof_contract": {
     "focused_marker": "POI16_VAN_LINH_R1_RESULT=PASS failures=0",
-    "native_marker": "POI16_VAN_LINH_R1_READY",
-    "source": "Godot 4.7.2 native 1280x720 original VFX on three moving allied disciples with one out-of-area ally and moving unhealed WALK monster; no game receipt R1B self-review improvement from R1 native, enhanced visual quality, owner pending.",
+    "native_marker": "POI16_VAN_LINH_R1C_READY",
+    "source": "Godot 4.7.2 native 1280x720 original VFX on three moving allied disciples with one out-of-area ally and moving unhealed WALK monster; no game receipt R1B self-review improvement from R1 native, enhanced visual quality, owner pending. Now R1C requires native screen-space charge/bloom/contact/fade readability G3.6 plus G3.5; OWNER_ART_REWORK_REQUIRED_FOR_R1B, OWNER_VISUAL_PENDING_FOR_R1C.",
     "video_filename": "v4-poi16-r1-native.mp4"
   }
 }
