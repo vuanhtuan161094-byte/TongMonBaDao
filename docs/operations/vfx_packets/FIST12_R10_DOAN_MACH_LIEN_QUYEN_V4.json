@@ -1,9 +1,9 @@
 {
   "schema": "tmb-vfx-production-system-v4.1",
-  "packet_id": "FIST12_R10_G36_PUNCH_VISIBILITY_REPAIRED_V4",
+  "packet_id": "FIST12_R10_QUYEN_ENERGY_FIST_HERO_V4",
   "skill_id": "tmb.skill.fist.huyet_quyen.active_02.human",
   "school": "fist",
-  "revision": "R10_G36_VISIBLE_DIRECTIONAL_FIST_CHAIN",
+  "revision": "R10C_VFX_REAL_FIST_SILHOUETTE_G36",
   "catalogue_path": "godot/data/combat/v63_human_combat_catalog.json",
   "scene_path": "godot/labs/combat_lab/fist12/r10/doan_mach_lien_quyen_r10.tscn",
   "lab_script": "godot/labs/combat_lab/fist12/r10/doan_mach_lien_quyen_r10.gd",
@@ -22,10 +22,10 @@
     "duration": 6
   },
   "provenance": {
-    "source_class": "FIRST_PARTY_R9_IMAGEGEN_SOURCE_DERIVATIVE_WITH_NEW_R10_COMPOSITION",
-    "rights_note": "R10 uses SIX existing first-party original R9 true-alpha standalone 4x2 VFX sprite master WebPs, preserved EXACTLY byte-for-byte; all R10 atlas poses are newly composited/scaled/warped from these same authorised original pigments with different directional shapes (narrow jab, +40 degree rising hook, heavy straight). Source ownership is TMB first-party. This is an explicit DERIVATIVE, NOT independently newly generated R10 original art, not copyrighted Võ Lâm / Kiếm Thế / DNF assets, and never a cut poster, image overlay, scene screenshot or GIF.",
+    "source_class": "FIRST_PARTY_R9_ORIGINAL_PIGMENT_PLUS_FIST03_ILLUSTRATED_FIST_DERIVATIVE",
+    "rights_note": "R10 uses SIX existing first-party original R9 true-alpha standalone 4x2 VFX sprite master WebPs, preserved EXACTLY byte-for-byte; all R10 atlas poses are newly composited/scaled/warped from these same authorised original pigments with different directional shapes (narrow jab, +40 degree rising hook, heavy straight). Source ownership is TMB first-party. This is an explicit DERIVATIVE, NOT independently newly generated R10 original art, not copyrighted Võ Lâm / Kiếm Thế / DNF assets, and never a cut poster, image overlay, scene screenshot or GIF. R10C additionally composites project-owned 384px original illustrated godfist source from FIST03 with distinct tints/rotations/sizes, preserving real clenched-fist silhouette rather than just fire-blobs. This source is shared across FIST03/FIST11, so source independence remains limited.",
     "master_quality_status": "MANUAL_ART_REVIEW_REQUIRED",
-    "known_source_limitation": "Owner rejected R9 entire rendered presentation; R10 preserves its six separate original VFX source masters only, reauthors motion, scale, direction, and mark geometry. Original R10 *new painting* not authored, so owner art may still reject. Caster placeholder is unchanged, no frame-by-frame fist actor animation. HIT_COUNT undefined; three visible accents NEVER imply three real damage receipts. R10A native exact-SHA 1× preview showed 0.74-second punch barely visible (only 3 red pixels in target ROI) because original pose began dissolving too early. R10B holds original painted middle poses, scales fist-up and repositions contact left/down away from target head. Enforce native G3.6 numerical minimum. Art still OWNER_PENDING. The original G3.6 sample t=.74 fell between upward hook and heavy finisher, i.e. a deliberately sparse beat handoff; it must not be mislabeled PEAK. Three true visible Godot beat-frame sample times now 0.53/0.68/0.83, with authentic full impact peak at 0.83. G3.6 measures peak 0.83 at game scale, cannot certify art.",
+    "known_source_limitation": "Owner rejected R9 entire rendered presentation; R10 preserves its six separate original VFX source masters only, reauthors motion, scale, direction, and mark geometry. Original R10 *new painting* not authored, so owner art may still reject. Caster placeholder is unchanged, no frame-by-frame fist actor animation. HIT_COUNT undefined; three visible accents NEVER imply three real damage receipts. R10A native exact-SHA 1× preview showed 0.74-second punch barely visible (only 3 red pixels in target ROI) because original pose began dissolving too early. R10B holds original painted middle poses, scales fist-up and repositions contact left/down away from target head. Enforce native G3.6 numerical minimum. Art still OWNER_PENDING. The original G3.6 sample t=.74 fell between upward hook and heavy finisher, i.e. a deliberately sparse beat handoff; it must not be mislabeled PEAK. Three true visible Godot beat-frame sample times now 0.53/0.68/0.83, with authentic full impact peak at 0.83. G3.6 measures peak 0.83 at game scale, cannot certify art. R10B 0.53,0.68,0.83 true native Godot confirms directional three different wave shapes but they still read as colored flame pressure rather than clenched fists. R10C adds original first-party FIST03 clenched-fist master texture to each appropriate pressure head. Must visually review native R10C; never claim final aesthetic approval from G3.6 or passing CI.",
     "master_files": [
       {
         "path": "godot/labs/combat_lab/fist12/assets/r9_sources/f12_r9_charge_master.webp.b64",
@@ -56,6 +56,11 @@
         "path": "godot/labs/combat_lab/fist12/assets/r9_sources/f12_r9_mark_master.webp.b64",
         "encoding": "base64-webp",
         "role": "First-party authored true RGBA mark eight independent source keyposes at 224x224 before bake"
+      },
+      {
+        "path": "godot/labs/combat_lab/fist03/assets/godfist_master.webp",
+        "encoding": "webp",
+        "role": "Original first-party illustrated 384x384 transparent clenched spirit-fist as hit-direction semantic hero; not source from licensed third-party games; reused and re-composed independently across three punch beats."
       }
     ],
     "generators": [
@@ -81,7 +86,7 @@
       "cell_height": 320,
       "frames": 24,
       "columns": 4,
-      "layer": "R10 distinct source-preserved hand-painted 3x8: narrow jab, diagonal rising hook, thick compressed finisher"
+      "layer": "24 R10 C real painterly directional pressure poses + 3 differently tilted/weighted reworked project-owned fist-hero masters; single mark only"
     },
     {
       "path": "godot/labs/combat_lab/fist12/assets/r10_generated/r10_contact.png",
@@ -114,7 +119,7 @@
     "visual_fade_end_seconds": 7.22,
     "demo_loop_seconds": 7.6,
     "demo_clock_warning": "LAB-only 0-.45s charge, three art-only beat accents .45-.92s (NOT three gameplay hits), exactly one locally simulated mark at .92s for 6.0 seconds through 6.92s, fade until 7.22s, 7.6s proof loop. Unknown real receipt: RUNTIME_MAPPING_PENDING.",
-    "key_pose_budget_note": "48 R10 DERIVATIVE, but individually recomposed real-alpha poses from 6 separate first-party R9 master image sources: charge 8; 3 visibly different fist shapes 8 each; single local CONTACT 8; small mark 8. No actor rig; owner approval pending; derivative material retained. R10B interpolates original painterly pose0-5 across each beat until near ending so substantial energy persists at 0.74s; all 48 independently keyed source poses remain in reusable atlases.",
+    "key_pose_budget_note": "48 R10 DERIVATIVE, but individually recomposed real-alpha poses from 6 separate first-party R9 master image sources: charge 8; 3 visibly different fist shapes 8 each; single local CONTACT 8; small mark 8. No actor rig; owner approval pending; derivative material retained. R10B interpolates original painterly pose0-5 across each beat until near ending so substantial energy persists at 0.74s; all 48 independently keyed source poses remain in reusable atlases. R10C independently composites a source-preserved outlined clenched fist into 24 pressure poses with different angle/scale/opacity, with R9 painted pressure remaining true-alpha base.",
     "phases": [
       {
         "id": "charge",
@@ -158,7 +163,7 @@
     "focused_marker": "VFX_FIST12_R10_FOCUSED_RESULT=PASS failures=0",
     "native_marker": "VFX_FIST12_R10_READY",
     "video_filename": "fist12-r10-preflight.mp4",
-    "source": "R10 V4 dedicated fist-only lab, 4 procedural-composited atlases baked from original first-party independent R9 image-painted sources; renderer true Godot 4.7.2 1280x720, 3 early native evidence, full native movie / 16 timestamps, manual art pending. Three-frame V4 G3.5 proof uses short native preflight MP4; separately stage full 7.6-second native MP4 with sustained mark (no preview substitution). R10B G3.6 measures real screen-space red-energy pixels in 1280x720 Godot screenshots, not alpha counts or stylized stills. R10B G3.5 true peak sample corrected to t=.83 (heavy finisher), plus 0.53 jab, 0.68 rising hook proof timestamps.",
+    "source": "R10 V4 dedicated fist-only lab, 4 procedural-composited atlases baked from original first-party independent R9 image-painted sources; renderer true Godot 4.7.2 1280x720, 3 early native evidence, full native movie / 16 timestamps, manual art pending. Three-frame V4 G3.5 proof uses short native preflight MP4; separately stage full 7.6-second native MP4 with sustained mark (no preview substitution). R10B G3.6 measures real screen-space red-energy pixels in 1280x720 Godot screenshots, not alpha counts or stylized stills. R10B G3.5 true peak sample corrected to t=.83 (heavy finisher), plus 0.53 jab, 0.68 rising hook proof timestamps. R10C includes first-party FIST03 painted fist hero at three directions. Clip still native Godot LAB only, owner visual pending.",
     "full_native_video_filename": "fist12-r10-full-native.mp4"
   }
 }
