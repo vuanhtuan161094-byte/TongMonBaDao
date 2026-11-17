@@ -3,7 +3,7 @@
   "packet_id": "POI19_R3_GODOT_NATIVE_TEMPORAL_FLOW_OVER_80_RGBA",
   "skill_id": "tmb.skill.poison.co_doc.active_01.immortal.b",
   "school": "poison",
-  "revision": "POI19_R3_SMOOTH_GODOT_EMISSION_TRAILS_ADD_JADE_VIOLET",
+  "revision": "POI19_R3_NATIVE_ADD_GRADIENT_BRIGHT_STATUS_G35_G36_G5_EXACT_SHA_PASS",
   "catalogue_path": "godot/data/combat/v63_immortal_combat_catalog.json",
   "scene_path": "godot/labs/combat_lab/poison19_phu_cot_co_tien_b/r3/phu_cot_co_tien_b.tscn",
   "lab_script": "godot/labs/combat_lab/poison19_phu_cot_co_tien_b/r3/phu_cot_co_tien_b.gd",
@@ -166,18 +166,21 @@
     "receipt_claim": "SIMULATED_VISUAL_ONLY"
   },
   "gate_status": {
-    "g3_5_capture": "NOT_EXECUTED_R3",
-    "technical": "NOT_EXECUTED_R3",
+    "g3_5_capture": "R3_FINAL_NATIVE_CHARGE_PEAK_MOVING_CONTACT_CAPTURED",
+    "technical": "GODOT_4_7_2_EXACT_SHA_4a316afc_R3_NATIVE_FLOW_TECH_PASS",
     "art": "MANUAL_ART_REVIEW_REQUIRED",
     "owner": "OWNER_VISUAL_PENDING",
     "live": "PVE_INTEGRATION_HOLD",
     "device": "PHYSICAL_QA_PENDING",
-    "g3_7_semantic": "SOURCE_PEARL_TO_ONE_ENEMY_TO_FLOW_WRAP_AND_MARK_OWNER_PENDING"
+    "g3_6": "NATIVE_1X_PASS_CHARGE499_PEAK1274_CONTACT1666_STATUS_ACTIVE235_MID175_CLEARED32",
+    "g5": "REAL_NATIVE_1280_720_510_FRAMES_8_5_SEC_MP4_CAPTURED",
+    "g3_7_semantic": "SINGLE_TARGET_PEARL_FLOW_TO_ORCHID_FOLD_AND_SUSTAIN_PASS_SELF_REVIEW_OWNER_PENDING",
+    "art_self": "MATERIAL_MOTION_4_OF_5_FLOWER_IMPACT_RICHNESS_3_OF_5_POLISH_OPEN"
   },
   "proof_contract": {
     "focused_marker": "POI19_NATIVE_FLOW_R3_RESULT=PASS failures=0",
     "native_marker": "POI19_PHU_COT_CO_TIENB_R3_READY",
     "video_filename": "v4-poi19-r3-native.mp4",
-    "source": "Godot 4.7.2 additive CanvasItem real-time light over original source-preserved 80 RGBA 6 atlas sprites. LAB-only moving one-target t0.43 cast / 6.5 mark. Technical source/Godot video is not PvE integration nor art approval."
+    "source": "Godot 4.7.2 real native 510 frames/8.5s, first-party R2 80 RGBA source + live dynamically drawn gradient polylines additive Godot R3. Exact source SHA 4a316afc28243f632e0c61b07ccb984dab2c310b / run 44105241617. G36 mark 235 active,175 mid,32 clear. Owner art PENDING, PvE HOLD."
   }
 }
