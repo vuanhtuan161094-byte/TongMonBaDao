@@ -37,18 +37,28 @@ func _atlas(tex: Texture2D,k: int,at: Vector2,size: Vector2,color: Color=Color.W
 	var uv := Rect2((clamped%4)*MARK_CELL,int(clamped/4)*MARK_CELL,MARK_CELL,MARK_CELL)
 	draw_texture_rect_region(tex,Rect2(at-size*.5,size),uv,color)
 
+# R5D: move four DIFFERENT stream heads/tails at independent phase/sweep speeds.
+# Only actual energy-geometry movement, never global sprite wave/UV remap.
+func _sweep(k: int,u: float,t: float,ext: float) -> Vector2:
+	var angles: Array[float]=[-.11,.17,-.24,.09]
+	var scales: Array[float]=[.92,1.11,.83,1.03]
+	var speeds: Array[float]=[.83,.96,.76,.88]
+	var angle: float=k*TAU/4.0+t*speeds[k]+u*(1.12+.16*sin(float(k)*1.4))-1.28+angles[k]
+	var radius: float=22.0+157.0*u*ext*scales[k]
+	return AREA+Vector2(cos(angle)*radius,sin(angle)*radius*.46-39.0*(1.0-u))
+
 func _draw_charge_r5(t: float) -> void:
 	var strength: float = charge_envelope(t)
 	if strength <= .004: return
 	# Three luminous handwritten strands draw towards the actual raised hand.
 	for j in range(3):
 		var a: float = (float(j)*TAU/3.0+t*2.8)
-		var radius: float = 48.0-33.0*smoothstep(.04,.90,t)
+		var radius: float = 67.0-45.0*smoothstep(.04,.90,t)
 		var p: Vector2 = HAND+Vector2(cos(a),sin(a)) * radius
 		var tang: Vector2 = Vector2(-sin(a),cos(a))
-		draw_line(p-12.0*tang,p+13.0*tang,Color(.11,.85,.72,.32*strength),6.2,true)
-		draw_line(p-9.0*tang,p+11.0*tang,Color(.96,1,.88,.89*strength),1.7,true)
-	draw_texture_rect(glow,Rect2(HAND-Vector2(38,38),Vector2(76,76)),false,Color(.77,1.0,.86,.65*strength))
+		draw_line(p-22.0*tang,p+22.0*tang,Color(.11,.85,.72,.37*strength),8.2,true)
+		draw_line(p-16.0*tang,p+19.0*tang,Color(.96,1,.88,.92*strength),2.0,true)
+	draw_texture_rect(glow,Rect2(HAND-Vector2(48,48),Vector2(96,96)),false,Color(.77,1.0,.86,.65*strength))
 	# The talisman visibly grows from an authored stroke, not scaling one still.
 	if t>.34:
 		var idx: int=mini(5,int((t-.34)/.09))
