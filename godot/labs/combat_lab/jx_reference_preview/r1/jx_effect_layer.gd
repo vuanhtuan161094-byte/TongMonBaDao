@@ -22,6 +22,14 @@ func update_cue(style: int,t: float,target: Vector2) -> void:
     selected_target=target
     queue_redraw()
 
+static func wudang_overhead_anchor(t: float,target_foot: Vector2) -> Vector2:
+    # View-only top-down staging experiment, NOT original animation metadata.
+    # Starts 220 px above target chest, eases STRAIGHT DOWN to same moving
+    # target. The source WebP frames are never mutated or rotated.
+    var u: float=clampf((t-.50)/.85,0.0,1.0)
+    var ease: float=u*u*(3.0-2.0*u)
+    return target_foot+Vector2(-12.0,-79.0-220.0*(1.0-ease))
+
 func _native(kind: String,position: Vector2,elapsed: float,art_scale: float) -> void:
     # Exact native atlas adapter; if a frame is out of bounds, it is skipped.
     atlas.draw_effect(self,kind,position,elapsed,art_scale)
@@ -35,13 +43,13 @@ func _draw() -> void:
             if t < .50:
                 _native("jx_wudang_158_precast",CASTER_HAND,t,.95)
             elif t<1.35:
-                var progress:=clampf((t-.50)/.85,0,1)
-                var moving_dest:=target_chest+Vector2(-20,-12)
-                var at:=CASTER_HAND.lerp(moving_dest,progress)
-                at+=Vector2(0,-55.0*sin(progress*PI))
-                _native("jx_wudang_158_cast",at,t-.50,.47)
+                # R1B comparison correction: original JX #158 cast frames are
+                # elongated (218x387px) and can be visually anchored ABOVE the
+                # enemy. The previously hardcoded CASTER_HAND.lerp() was our
+                # demo motion, NOT a verified JX1 source trajectory.
+                _native("jx_wudang_158_cast",wudang_overhead_anchor(t,selected_target),t-.50,.68)
             elif t<1.67:
-                _native("jx_wudang_158_impact",target_chest,t-1.35,1.12)
+                _native("jx_wudang_158_impact",target_chest,t-1.35,1.26)
         1:
             # Existing Wudu #63 atlas is an IMPACT ONLY; no invented precast
             # or flight source frames are labelled original.
