@@ -15,13 +15,13 @@ const MODE_SECONDS:=3.0
 const STYLE_COUNT:=4
 const TOTAL_SECONDS:=MODE_SECONDS*STYLE_COUNT
 const LABELS = [
-    "A  |  JX1 Võ Đang #158: Precast → Cast → Impact",
+    "A  |  JX1 Võ Đang #158: thử giáng từ trên xuống",
     "B  |  JX1 Ngũ Độc #63: Impact (chỉ có atlas impact)",
     "C  |  Source VL: Kiếm - Cast → Impact",
     "D  |  POI19 R3: Linh lực Godot tự sản xuất"
 ]
 const DESCRIPTIONS = [
-    "Nguồn có sẵn trong repo · 10+17+8 frame gốc · chỉ đối chiếu hình ảnh",
+    "10+17+8 frame gốc · quỹ đạo giáng xuống do LAB đặt, chưa xác thực chuyển động JX gốc",
     "Nguồn có sẵn trong repo · 13 frame impact · không bịa precast",
     "Nguồn có sẵn trong repo · 36 frame cast + 21 frame impact",
     "80 sprite RGBA + native gradient ADD · 1 mục tiêu · LAB only"
