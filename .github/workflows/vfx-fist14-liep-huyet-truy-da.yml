@@ -1,0 +1,96 @@
+name: VFX-FIST-14 Liep Huyet Truy Da R1 original talon V4 native
+on:
+  workflow_dispatch:
+  push:
+    branches: [integration/pve-p0-playable-ui-20261103]
+    paths:
+      - '.github/workflows/vfx-fist14-liep-huyet-truy-da.yml'
+      - 'godot/labs/combat_lab/fist14/**'
+      - 'godot/tests/labs/combat_lab/vfx_fist14_contract_test.gd'
+      - 'tools/vfx/generate_fist14_liep_huyet_truy_da.py'
+      - 'tools/qa/check_fist14_native_visibility.py'
+      - 'docs/operations/vfx_packets/FIST14_R1_LIEP_HUYET_TRUY_DA_V4.json'
+permissions:
+  contents: read
+jobs:
+  godot-v4:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      GODOT_AUDIO_DRIVER: Dummy
+      GODOT_RENDERING_DRIVER: opengl3
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Godot 4.7.2 and proof dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq xvfb ffmpeg unzip python3-pil python3-numpy
+          curl --fail --location --retry 3 -o /tmp/godot472.zip 'https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip'
+          echo 'cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4  /tmp/godot472.zip' | sha256sum --check --strict
+          unzip -q /tmp/godot472.zip -d /tmp
+          sudo install -m0755 /tmp/Godot_v4.7.2-stable_linux.x86_64 /usr/local/bin/godot
+          mkdir -p /tmp/vfx-fist14
+          godot --version | tee /tmp/vfx-fist14/engine.txt
+          echo "SHA=$GITHUB_SHA SOURCE=CODE ART_PENDING PVE_HOLD" > /tmp/vfx-fist14/meta.txt
+      - name: Restore existing unchanged LAB actor PNGs
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat .github/assets/p3/female_stage_a/part{01..14}.b64 .github/assets/p3/female_stage_a/part15a.b64 .github/assets/p3/female_stage_a/part15b.b64 .github/assets/p3/female_stage_a/part{16..20}.b64 | tr -d '\r\n\t ' | base64 --decode > /tmp/tmb_stage_a_pack.zip
+          echo '6a4213b9129ffb3f438c21cbb5326672ddf8915323836bf80cb33b8e5fabfdca  /tmp/tmb_stage_a_pack.zip' | sha256sum --check --strict
+          unzip -q /tmp/tmb_stage_a_pack.zip -d .
+      - name: Bake 36 original 640px RGBA keys and validate V4
+        run: |
+          set -euo pipefail
+          d=/tmp/vfx-fist14
+          python3 tools/vfx/generate_fist14_liep_huyet_truy_da.py | tee "$d/bake.log"
+          grep -Fq 'FIST14_R1_BAKE_PASS poses=36 masters=4 pages=4 code_original=true rgba=true no_gif=true no_rig=true' "$d/bake.log"
+          python3 tools/qa/validate_vfx_v4_packet.py --stage packet --packet docs/operations/vfx_packets/FIST14_R1_LIEP_HUYET_TRUY_DA_V4.json | tee "$d/packet.log"
+          python3 tools/qa/validate_vfx_v4_packet.py --stage assets --packet docs/operations/vfx_packets/FIST14_R1_LIEP_HUYET_TRUY_DA_V4.json | tee "$d/assets.log"
+          cp godot/labs/combat_lab/fist14/assets/generated/f13_* "$d/"
+      - name: Godot strict import parse focused moving-target contract
+        run: |
+          set -euo pipefail
+          d=/tmp/vfx-fist14
+          bash tools/qa/run_godot_strict.sh --headless --path godot --import 2>&1 | tee "$d/import.log"
+          bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://labs/combat_lab/fist14/liep_huyet_truy_da.gd 2>&1 | tee "$d/parse.log"
+          bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/labs/combat_lab/vfx_fist14_contract_test.gd 2>&1 | tee "$d/godot-focused.log"
+          grep -Fq 'VFX_FIST14_FOCUSED_RESULT=PASS failures=0' "$d/godot-focused.log"
+      - name: G3.5 native 1280x720 charge peak moving-contact STOP
+        run: |
+          set -euo pipefail
+          d=/tmp/vfx-fist14
+          xvfb-run -a -s '-screen 0 1280x720x24' bash tools/qa/run_godot_strict.sh --path godot --resolution 1280x720 --fixed-fps 60 --write-movie "$d/native.avi" --quit-after 72 res://labs/combat_lab/fist14/liep_huyet_truy_da.tscn 2>&1 | tee "$d/godot-preflight.log"
+          ffmpeg -y -hide_banner -loglevel error -i "$d/native.avi" -pix_fmt yuv420p -c:v libx264 -crf 16 "$d/v4-fist14-native.mp4"
+          ffmpeg -y -hide_banner -loglevel error -ss 0.22 -i "$d/v4-fist14-native.mp4" -frames:v 1 "$d/v4-charge.png"
+          ffmpeg -y -hide_banner -loglevel error -ss 0.65 -i "$d/v4-fist14-native.mp4" -frames:v 1 "$d/v4-peak.png"
+          ffmpeg -y -hide_banner -loglevel error -ss 0.90 -i "$d/v4-fist14-native.mp4" -frames:v 1 "$d/v4-contact.png"
+          python3 tools/qa/validate_vfx_v4_packet.py --stage evidence --packet docs/operations/vfx_packets/FIST14_R1_LIEP_HUYET_TRUY_DA_V4.json --out "$d" --sha "$GITHUB_SHA" | tee "$d/v4-evidence.log"
+          python3 tools/qa/check_fist14_native_visibility.py "$d" | tee "$d/g36-visibility.log"
+          rm "$d/native.avi"
+      - name: Native full mark animation (no GIF)
+        run: |
+          set -euo pipefail
+          d=/tmp/vfx-fist14
+          xvfb-run -a -s '-screen 0 1280x720x24' bash tools/qa/run_godot_strict.sh --path godot --resolution 1280x720 --fixed-fps 60 --write-movie "$d/full.avi" --quit-after 446 res://labs/combat_lab/fist14/liep_huyet_truy_da.tscn 2>&1 | tee "$d/godot-full.log"
+          ffmpeg -y -hide_banner -loglevel error -i "$d/full.avi" -pix_fmt yuv420p -c:v libx264 -crf 16 "$d/fist14-full.mp4"
+          for at in 0.12 0.22 0.36 0.45 0.54 0.65 0.74 0.82 0.90 1.04 1.26 2.3 3.6 4.8 5.9 6.68 6.95 7.2; do
+            ffmpeg -y -hide_banner -loglevel error -ss "$at" -i "$d/fist14-full.mp4" -frames:v 1 "$d/frame-$at.png"
+          done
+          sha256sum "$d/"*.png "$d/"*.mp4 > "$d/SHA256SUMS.txt"
+          rm "$d/full.avi"
+      - name: Upload exact-SHA evidence, owner art manual
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vfx-fist14-r1-native-owner-pending
+          retention-days: 14
+          if-no-files-found: warn
+          path: |
+            /tmp/vfx-fist14/*.txt
+            /tmp/vfx-fist14/*.json
+            /tmp/vfx-fist14/*.log
+            /tmp/vfx-fist14/*.png
+            /tmp/vfx-fist14/*.mp4
