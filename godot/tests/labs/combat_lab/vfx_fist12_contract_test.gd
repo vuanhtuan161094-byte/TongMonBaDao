@@ -26,7 +26,7 @@ func _run()->void:
     check(LAB.mark_alpha(.86)==0.0 and LAB.mark_alpha(2.15)>.95 and LAB.mark_alpha(6.73)>.95,"persistent mark")
     check(LAB.mark_alpha(7.24)==0.0,"no persistent ghost")
     check(LAB.target_position(0,.99).distance_to(LAB.target_position(0,.22))>12.0,"moving target")
-    check(LAB.target_position(0,6.12).distance_to(LAB.target_position(0,2.20))>12.0,"mark follows later walk")
+    check(LAB.target_position(0,4.20).distance_to(LAB.target_position(0,2.20))>12.0,"mark follows later walk")
     check(LAB.wave_at(.59).distance_to(LAB.wave_at(.85))>50.0,"animated light stream motion")
     check(LAB.target_position(1,.99)==Vector2(-10000.0,-10000.0),"no invented other target")
     check(LAB.CHARGE.get_size()==Vector2(1024,512),"eight charge PNG")
