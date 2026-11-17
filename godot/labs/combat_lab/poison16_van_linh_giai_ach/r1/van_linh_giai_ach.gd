@@ -110,7 +110,7 @@ func _ready()->void:
                 "blessing":blessing_frames.append(f)
                 "fade":fade_frames.append(f)
     set_process(true)
-    print("POI16_VAN_LINH_R1_READY effect=heal type=ultimate circle=2.5 world cap=3 moving_allies=4 one_outside=true background_monster_walk=true original_alpha_poses=38 no_gif=true no_actual_receipts=true")
+    print("POI16_VAN_LINH_R1C_READY effect=heal type=ultimate circle=2.5 world cap=3 moving_allies=4 one_outside=true background_monster_walk=true original_alpha_poses=38 no_gif=true no_actual_receipts=true")
     queue_redraw()
 
 func _process(dt:float)->void:
@@ -155,29 +155,29 @@ func _draw()->void:
     # Broad 3-fold half-transparent field lies BEHIND and does not paint an icon.
     if t>=CAST_END and t<FADE_START:
         var q:=clampf((t-CAST_END)/(FADE_START-CAST_END),0,1)
-        _flip(bloom_frames,AOE_CENTER+Vector2(0,-47),Vector2(540,418),q*11.0,field_alpha(t)*.96)
+        _flip(bloom_frames,AOE_CENTER+Vector2(0,-47),Vector2(562,430),q*11.0,field_alpha(t)*.99)
     if t>=BLESSING_START and t<BLESSING_END:
         var q:=clampf((t-BLESSING_START)/(BLESSING_END-BLESSING_START),0,1)
         var alpha:=smoothstep(0,.18,q)*(1.0-smoothstep(.78,1.0,q))
         for i in chosen:
             _flip(blessing_frames,ally_chest(i,t)+Vector2(0,-10),
-                  Vector2(217,276),q*9.0,alpha*.79)
+                  Vector2(244,304),q*9.0,alpha*.91)
     if t>=FADE_START and t<FADE_END:
         var q:=clampf((t-FADE_START)/(FADE_END-FADE_START),0,1)
         var opacity:=smoothstep(0,.11,q)*(1.0-smoothstep(.52,1.0,q))
-        _flip(fade_frames,AOE_CENTER+Vector2(0,-51),Vector2(491,380),q*7.0,opacity*.59)
+        _flip(fade_frames,AOE_CENTER+Vector2(0,-51),Vector2(510,400),q*7.0,opacity*.77)
     # Real frozen actor sprite is between back and front light.
     for i in range(ALLY_BASE_POSITIONS.size()):
         _draw_disciple(ally_foot(i,t))
     if t<CAST_END+.06:
         var a:=smoothstep(.02,.19,t)*(1.0-smoothstep(CAST_END-.05,CAST_END+.06,t))
-        _flip(charge_frames,PALM,Vector2(190,187),clampf(t/CAST_END*7.0,0,7.0),a*.96)
+        _flip(charge_frames,PALM,Vector2(240,229),clampf(t/CAST_END*7.0,0,7.0),a*.99)
     if t>=BLESSING_START and t<BLESSING_END:
         var q2:=clampf((t-BLESSING_START)/(BLESSING_END-BLESSING_START),0,1)
         var front:=smoothstep(0,.18,q2)*(1.0-smoothstep(.78,1.0,q2))
         for i in chosen:
             _flip(blessing_frames,ally_chest(i,t)+Vector2(0,-8),
-                  Vector2(164,228),q2*9.0,front*.97)
+                  Vector2(185,249),q2*9.0,front*.99)
     if t>=FADE_START and t<FADE_END:
         var q3:=clampf((t-FADE_START)/(FADE_END-FADE_START),0,1)
         var frontfade:=smoothstep(0,.10,q3)*(1.0-smoothstep(.50,1.0,q3))
