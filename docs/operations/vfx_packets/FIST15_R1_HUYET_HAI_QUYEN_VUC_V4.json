@@ -24,7 +24,7 @@
   "provenance": {
     "source_class": "FIRST_PARTY_ORIGINAL_RASTER_PIGMENT_ALPHA_CODE_ART",
     "rights_note": "Original independently coded true RGBA first-party assets. Draws from JX Võ Đang #158 10/17/8 structural timing and pure white-silver core/lavender halo aesthetics only. NO copied JX or Source VL atlas, pixels, screenshots, or original video. Not ImageGen or independently hand-painted art.",
-    "master_quality_status": "OWNER_ART_REVIEW_PENDING",
+    "master_quality_status": "MANUAL_ART_REVIEW_REQUIRED",
     "known_source_limitation": "Generator-based raster art may appear less organic than painter art. Visual proof G3.7 required, no real runtime combat receipt, no poison stacks created or consumed in LAB. True skill has effect=consume_poison, not MARK, and duration=0, so NO lasting icon. Source #158 frame counts as reference, not validated actual game timing. No rig.",
     "master_files": [
       {
@@ -129,8 +129,8 @@
   "moving_target": {
     "actor_animation": "walk",
     "locked_demo_target_index": 0,
-    "movement_from_seconds": 0.3,
-    "movement_to_seconds": 1.8,
+    "movement_from_seconds": 0.7,
+    "movement_to_seconds": 1.82,
     "minimum_displacement_px": 10,
     "contact_anchor": "Three selected moving monster sprites, vertical strike target centers anchor to actual sampled foe position+(-7,-87); caster unchanged",
     "tracking_rule": "Exactly 3 visual target anchors (and no 4th), art-only staged contacts, no debuff icon after skill",
