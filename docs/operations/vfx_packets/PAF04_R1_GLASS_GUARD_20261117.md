@@ -12,3 +12,6 @@ Three separate clocks: canonical cast0.5 and 4s guard, scene formation .55-.82, 
 
 ## QA contract
 Native Godot 4.7.2 Compatibility at exact commit: source and V4 schema + atlas/alpha; actual moving-WALK self, G3.5 charge .30 / peak .72 / shield lock .99 at 1280x720, short MP4 with 16 checkpoint images, focused contract, exact SHA + missing-contact fail-closed. Visual score judged separately; do not claim owner approved art from CI PASS. PvE/V6.3 and physical Windows/Android performance QA on HOLD.
+
+## R2 source correction after real R1 G3.5 art self FAIL
+R1 technical run [#43994948917](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/43994948917) PASS on commit `43f9f2e292efd70fdfff12e876f8561298c09775`, but real charge/peak/lock Godot 1x screenshots show rigid green transparent rectangles vertically hovering over caster. R1 self ART FAIL (not owner accepted). R2 replaces whole glass shell source shape with 13 curvilinear refractive feather panes, pearlescent lit edges, low alpha organic lens, freehand caustic streaks and independently animated 16 front+16 rear key frames around a WALK SELF target. No gameplay, cast, status timing, face layering, or copied external assets changed. R2 requires new exact SHA proof before technical or art acceptance.

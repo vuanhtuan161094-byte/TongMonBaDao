@@ -68,43 +68,72 @@ def charge(i,n=12):
                   fill=(249,255,218,150 if k%3==0 else 70))
     return final(out,320,320)
 def shell(i,n=16,front=False):
-    q=i/max(n-1,1);out=new(352,448)
-    facets=new(352,448);d=ImageDraw.Draw(facets,'RGBA')
-    # Wide semi-transparent asymmetric panes: an actual *glass skin* around
-    # the moving actor, with light transmitted through each facet.
-    center=176
-    for j in range(7):
-        a=-2.88+(j/6)*2.65+q*.032
-        base=110+14*math.sin(j*1.7)+8*math.sin(q*6+j)
-        nx=math.cos(a);ny=math.sin(a)
-        lift=9*math.sin(q*math.pi*1.4+j*.8)
-        cx=center+nx*base*.82
-        cy=236+ny*base*1.30+lift
-        w=24+12*math.sin(j*1.6)**2
-        h=80+36*math.sin(j*.92)**2
-        # front = outside edges only; NEVER mask the moving actor's face.
-        if front and (j in (2,3,4)):
-            continue
-        if not front and (j in (0,6)):
-            continue
-        slant=19*math.sin(a+q*3)
-        poly=[(cx-w*.5,cy-h*.58),(cx+w*.69+slant*.2,cy-h*.72),
-              (cx+w*.37+slant,cy+h*.53),(cx-w*.74+slant*.3,cy+h*.43)]
-        shard(d,poly,shade=q,detail=slant,front=front)
-        d.ellipse(pt([(cx-2,cy-h*.73-2),(cx+2,cy-h*.73+2)]),
-                  fill=(253,244,192,190))
-    glow(out,facets,12,.23)
-    # Sweeping caustic light only at periphery (not a geometric UI ring).
-    sweep=new(352,448);d=ImageDraw.Draw(sweep,'RGBA')
-    for j in range(5):
-        side=-1 if j%2 else 1
-        yy=95+j*57
-        x0=center+side*(80+11*math.sin(q*7+j))
-        p=b3((x0,yy+26),(x0+side*47,yy-25),
-             (x0+side*38,yy+45),(x0-side*8,yy+87))
-        L(d,p,(65,255,222,53 if front else 91),2.4 if j==2 else 1.2)
-        L(d,p,(243,251,210,62),.65)
-    glow(out,sweep,10,.24)
+    q=i/max(n-1,1)
+    out=new(352,448)
+    # Low-alpha pearlescent lens: a TRANSPARENT field, never an opaque card.
+    lens=new(352,448)
+    mask=Image.new('L',lens.size,0)
+    md=ImageDraw.Draw(mask)
+    center=(176,243)
+    md.ellipse(pt([(center[0]-112,center[1]-133),
+                   (center[0]+115,center[1]+135)]),fill=37 if not front else 13)
+    mask=mask.filter(ImageFilter.GaussianBlur(22*S))
+    body=Image.new('RGBA',lens.size,(54,224,209,0))
+    body.putalpha(mask)
+    out.alpha_composite(body)
+    # Rotating translucent, CURVED crescent feathers: no rigid glass rectangles.
+    paint=new(352,448)
+    d=ImageDraw.Draw(paint,'RGBA')
+    N=13
+    for k in range(N):
+        a=2*math.pi*k/N-q*.055-.18
+        radial=(math.cos(a),math.sin(a))
+        tangent=(-math.sin(a),math.cos(a))
+        x=176+111*radial[0]+7*math.sin(q*6+k*1.31)
+        y=242+120*radial[1]+5*math.sin(q*8+k*.97)
+        # Only narrow peripheral / low glass is FRONT: center actor remains visible.
+        if front and not (abs(radial[0])>.64 or radial[1]>.81):continue
+        if not front and (abs(radial[0])>.86 and radial[1]>.26):continue
+        length=30+12*math.sin(k*1.71)**2
+        width=14+12*math.sin(k*.87)**2
+        begin=(x-radial[0]*length*.86,y-radial[1]*length*.86)
+        tip=(x+radial[0]*length,y+radial[1]*length)
+        c1=(begin[0]+tangent[0]*width*1.5-radial[0]*5,
+            begin[1]+tangent[1]*width*1.5-radial[1]*5)
+        c2=(tip[0]+tangent[0]*width*.78,
+            tip[1]+tangent[1]*width*.78)
+        c3=(tip[0]-tangent[0]*width*1.1,
+            tip[1]-tangent[1]*width*1.1)
+        c4=(begin[0]-tangent[0]*width*.98,
+            begin[1]-tangent[1]*width*.98)
+        edge1=b3(begin,c1,c2,tip,22)
+        edge2=b3(tip,c3,c4,begin,22)
+        leaf=edge1+edge2
+        d.polygon(pt(leaf),fill=(49+5*(k%3),223,195,31 if front else 53))
+        L(d,edge1,(190,255,239,164 if not front else 124),1.75)
+        L(d,edge2,(92,240,215,88 if not front else 74),1.25)
+        L(d,b3(begin,(x+tangent[0]*5,y+tangent[1]*5),
+               (tip[0]-radial[0]*6,tip[1]-radial[1]*6),tip),
+          (252,232,157,144 if k%3==0 else 85),.85)
+        # Tiny lifted pearlescent reflection at the tip.
+        d.ellipse(pt([(tip[0]-1.6,tip[1]-1.6),(tip[0]+1.6,tip[1]+1.6)]),
+                  fill=(255,250,209,192))
+    glow(out,paint,11,.20)
+    # Loose liquid refraction streaks follow an irregular guard surface.
+    caustics=new(352,448)
+    d=ImageDraw.Draw(caustics,'RGBA')
+    for k in range(9):
+        a=-2.65+(k/8)*5.30+q*.13
+        r1=100+13*math.sin(k*1.4+q*2)
+        r2=124+11*math.sin(k*.7+q*5)
+        p0=(176+r1*math.cos(a),241+r1*1.06*math.sin(a))
+        p3=(176+r2*math.cos(a+.35),241+r2*1.06*math.sin(a+.35))
+        v=(-math.sin(a),math.cos(a))
+        p=b3(p0,(p0[0]+v[0]*33,p0[1]+v[1]*33),
+             (p3[0]-v[0]*29,p3[1]-v[1]*29),p3)
+        L(d,p,(82,248,221,113 if k%3==0 else 67),1.6 if k%3==0 else 1.0)
+        if k%3==0:L(d,p,(252,245,209,87),.6)
+    glow(out,caustics,11,.18)
     return final(out,352,448)
 def impact(i,n=14):
     q=i/max(n-1,1);out=new(320,320)
