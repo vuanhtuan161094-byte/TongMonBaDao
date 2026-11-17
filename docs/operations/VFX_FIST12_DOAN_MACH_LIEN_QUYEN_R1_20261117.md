@@ -35,3 +35,8 @@ Required at 1x: convincing energy light (not rigid UI lines), smooth braid flow,
 - Instead of a UI ring, the local application draws THREE interrupted glowing meridian channels and a six-second broken-vein tracer attached to the recipient's chest.
 - Code-authored first-party raster light paths with owned FIST03 painting luminance grain; it is NOT a newly independent ImageGen master and may still require source-art improvements. No GIF, rig, actor/background pixels or commercial JX art in VFX atlas.
 - Actual exact-SHA Godot 4.7.2 1280×720 MP4 at charge 0.22, second echo/peak 0.74 and one mark application 0.99; review 6s mark in motion, owner approval manual. Keep PvE integration, V6.3 and physical QA on hold.
+
+## R4 in-engine martial choreography correction, 17 Nov 2026
+- R3 SHA 2b5ca416ffa9cff1f5381400cb5f73d9a96adb5a exact-SHA Godot Actions #43998534486 TECH SUCCESS, but manual review shows floating claw-like ribbons and a mostly stationary caster: ART_SELF_FAIL; owner rejection of R2 remains unaddressed.
+- R4 adds a short, actual LAB-only actor dash to contact range followed by three timed wrist-origin light punches and retreat. Uses preexisting separate approved actor sprite for a faint motion afterimage, not copied into the VFX atlas. Contact contraction to 0.77 centers the broken meridians on the recipient's chest.
+- Three echoes remain one illustrative MARK event with no invented 3 hits. Code source derives original alpha assets; no GIF or rig. Recheck exact-SHA Godot movie and manually inspect before reporting art.

@@ -9,7 +9,7 @@ func _initialize()->void:
     call_deferred("_run")
 func _run()->void:
     check(LAB.SKILL_ID=="tmb.skill.fist.huyet_quyen.active_02.human","canonical skill")
-    check(LAB.ART_REVISION=="R3_TRIPLE_QI_PUNCH_MERIDIAN_BREAK","R1 revision")
+    check(LAB.ART_REVISION=="R4_MARTIAL_DASH_THREE_ECHOES","R1 revision")
     check(LAB.EFFECT=="mark" and LAB.ELEMENT=="nether","mark/nether")
     check(LAB.SHAPE=="single_target" and LAB.TARGET_LIMIT==1,"only one target")
     check(is_equal_approx(LAB.CAST_TIME,.45) and is_equal_approx(LAB.COOLDOWN,8.0),"cast cooldown")
@@ -28,6 +28,8 @@ func _run()->void:
     check(LAB.target_position(0,.99).distance_to(LAB.target_position(0,.22))>12.0,"moving target")
     check(LAB.target_position(0,4.20).distance_to(LAB.target_position(0,2.20))>12.0,"mark follows later walk")
     check(LAB.echo_index(.52)==0 and LAB.echo_index(.70)==1 and LAB.echo_index(.85)==2,"three temporal visual echo beats")
+    check(LAB.caster_at(.70).x-LAB.caster_at(.22).x>110.0,"martial rush connects with enemy")
+    check(LAB.caster_at(1.38).x<LAB.caster_at(.70).x-90.0,"retreat after combo")
     check(LAB.wave_at(.53).distance_to(LAB.wave_at(.73))>22.0,"different diagonal echo anchor")
     check(LAB.target_position(1,.99)==Vector2(-10000.0,-10000.0),"no invented other target")
     check(LAB.CHARGE.get_size()==Vector2(1024,512),"eight charge PNG")
