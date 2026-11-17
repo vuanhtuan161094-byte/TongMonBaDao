@@ -121,6 +121,18 @@ def gold_lotus(index):
     radius=2.2+1.5*breath
     brush.ellipse(((cx-radius)*SS,(cy-radius)*SS,(cx+radius)*SS,(cy+radius)*SS),
                   fill=(*WHITE,round(188+45*breath)))
+    # A moving concentrated caustic travels PETAL TO PETAL. This is an
+    # intentional 48-position energy-flow cycle, never duplicated breathe
+    # poses or whole-image displacement.
+    caustic_angle=-math.pi/2.0+TAU*t
+    cxh=cx+math.cos(caustic_angle)*13.0
+    cyh=cy+math.sin(caustic_angle)*10.6
+    c_rad=2.0
+    brush.ellipse(((cxh-c_rad)*SS,(cyh-c_rad)*SS,(cxh+c_rad)*SS,(cyh+c_rad)*SS),
+                  fill=(*WHITE,206))
+    brush.line(pol([(cxh-3.4*math.cos(caustic_angle),cyh-3.4*math.sin(caustic_angle)),
+                    (cxh+2.4*math.cos(caustic_angle),cyh+2.4*math.sin(caustic_angle))]),
+              fill=(*GOLD,162),width=SS)
     out=img();composite_light(out,material,4.3,.31)
     return out
 
