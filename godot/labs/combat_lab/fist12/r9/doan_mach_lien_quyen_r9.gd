@@ -145,7 +145,7 @@ func _draw() -> void:
     if stream>.002:
         # Three genuinely different painted flipbooks; one cinematic mark receipt.
         var beat:=beat_at(t)
-        var scale:=[.66,.72,.84][beat]
+        var scale:float=[.66,.72,.84][beat]
         _frame(WAVE,pressure_pose(t),wave_at(t),scale,stream,Vector2(160,160))
         # Small local hand release ties energy to caster; actor itself is unchanged.
         var frac:=fposmod((t-WAVE_START)/(CONTACT_START-WAVE_START)*3.0,1.0)
