@@ -158,7 +158,7 @@ def charge(i,n=12,size=320):
 def lock(i,n=14,size=320):
     q=i/max(1,n-1)
     im=paint(320,320);light=paint(320,320);d=ImageDraw.Draw(light,'RGBA')
-    power=math.sin(math.pi*min(1.,q*1.14))
+    power=.12+.88*math.sin(math.pi*min(1.,q*1.14))
     # Low elliptical grounding on the floor as open luminous broken strokes.
     # This is not a full opaque HUD ring; 5 independent elliptical arcs.
     for k in range(5):
