@@ -144,7 +144,7 @@ func _draw()->void:
     var charge:=charge_gain(t)
     if charge>.005:
         _flip(CHARGE,12,320,320,clampf(t/.55,0,1),
-              Rect2(chest+Vector2(-128,-140),Vector2(256,240)),
+              Rect2(foot+Vector2(-103,-169),Vector2(206,202)),
               Color(1,1,1,charge*.95))
         _glow(chest+Vector2(0,-33),50,Color("f8ffda",charge*.12))
     # Persistent four-second mitigation is NOT four seconds of large guard FX.

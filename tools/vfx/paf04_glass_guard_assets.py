@@ -250,7 +250,15 @@ def r4_shell(i,n=16,front=False):
         pts=[(x+3.8*math.sin(j*.16-q*math.tau*1.85+k*1.23)*math.sin(j/76*math.pi),
               y+2.6*math.cos(j*.14-q*math.tau*1.53+k*.72)*math.sin(j/76*math.pi))
              for j,(x,y) in enumerate(raw)]
-        r4_ribbon(d,pts,q,k,front)
+        # A STREAM materializes as a travelling front. The whole shield
+        # NEVER appears or fades as one static circular texture.
+        lead=max(0.,min(1.,.13+q*1.85-k*.12))
+        length=.22+.22*(.5+.5*math.sin(q*5+k*.87))
+        tail=max(0.,lead-length)
+        begin=max(0,int(tail*(len(pts)-1)))
+        last=min(len(pts)-1,int(lead*(len(pts)-1)))
+        if last>begin+3:
+            r4_ribbon(d,pts[begin:last+1],q,k,front)
     glow(out,light,14,.42)
     # Irregularly timed moving particles follow the filaments, not overall scale.
     small=new(352,448);d=ImageDraw.Draw(small,'RGBA')
@@ -270,25 +278,33 @@ def r4_shell(i,n=16,front=False):
     return final(out,352,448)
 
 def r4_charge(i,n=12,size=320):
+    """Energy condenses at the caster's palms, not a symmetric tentacle crown."""
     q=i/max(1,n-1)
-    out=new(320,320)
-    paths=new(320,320);d=ImageDraw.Draw(paths,'RGBA')
-    for k in range(7):
-        ang=k*math.tau/7+.36
-        r0=104-78*q
-        a=(160+r0*math.cos(ang),161+r0*.73*math.sin(ang))
-        b=(160+64*math.cos(ang+1),150+61*math.sin(ang+1))
-        c=(150+34*math.cos(ang-1.2),149+27*math.sin(ang-1.2))
-        e=(160+13*math.cos(ang+2*q),153+11*math.sin(ang+2*q))
-        curve=b3(a,b,c,e,48)
-        L(d,curve,(38,241,204,142),5.0)
-        L(d,curve,(226,255,235,206),2.0)
+    out=new(320,320);paths=new(320,320);d=ImageDraw.Draw(paths,'RGBA')
+    lanes=[
+      ((73,237),(79,185),(119,165),(163,168)),
+      ((96,283),(101,227),(115,183),(163,168)),
+      ((239,254),(218,200),(210,152),(163,168)),
+      ((233,117),(197,98),(174,132),(163,168)),
+      ((121,100),(109,131),(150,150),(163,168)),
+    ]
+    for k,(a,b,c,e) in enumerate(lanes):
+        drift=16*math.sin(q*6+k*1.23)
+        curve=b3((a[0]+drift,a[1]),(b[0]+drift*.50,b[1]-5*math.sin(q*5+k)),
+                 (c[0]-drift*.3,c[1]),e,72)
+        # Spiraling internal light rushes inward with its own velocity.
+        L(d,curve,(35,226,198,105),4.0)
+        L(d,curve,(124,255,226,129),1.4)
         for z in range(2):
-            u=(q*.8+k*.23+z*.4)%1
+            u=(q*.72+k*.19+z*.31)%1
             x,y=curve[int(u*(len(curve)-1))]
-            r=1.8+2.4*(1-q)
-            d.ellipse(pt([(x-r,y-r),(x+r,y+r)]),fill=(250,254,218,190))
-    glow(out,paths,11,.38)
+            rr=1.3+2.0*(1-q*.4)
+            d.ellipse(pt([(x-rr,y-rr),(x+rr,y+rr)]),
+                      fill=(253,252,214,206))
+            idx=int(u*72)
+            L(d,curve[max(0,idx-3):min(73,idx+4)],
+              (251,245,213,197),2.5)
+    glow(out,paths,13,.39)
     return final(out,size,size)
 
 def r4_lock(i,n=14,size=320):
@@ -329,4 +345,5 @@ def main():
     print('PAF04_ORIGINAL_GLASS_RGBA_BAKE_PASS')
     print('PAF04_R4_ADVECTED_LIGHT_ATLAS_PASS')
     print('PAF04_R5_FLOW_CAUSTIC_SHADER_SOURCE_PASS')
+    print('PAF04_R6_PROGRESSIVE_FLOW_FORM_AND_RELEASE_PASS')
 if __name__=='__main__':main()
