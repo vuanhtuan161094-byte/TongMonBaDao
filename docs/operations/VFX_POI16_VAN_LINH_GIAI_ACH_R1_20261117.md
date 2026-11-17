@@ -19,3 +19,22 @@ Combat: cast1.20, cooldown46, no projectile, duration0; **no actual Combat V2 he
 Real 1280×720 Godot 4.7.2 native 177-frame MP4 (2.95 seconds @60fps encoded), charge screenshot0.62, bloom1.48, 3-ally contact1.92, fade2.42, idle2.80. 38 authored key poses ≠ 177 video frames ≠ physical Android FPS. Focused QA asserts three inside-fourth outside, moving actors, zero invented states. V4 packet, source/color alpha import, strict Godot and exact-SHA evidence mandatory.
 
 **Initial QA gates:** `G3.5_NATIVE_NOT_YET_EXECUTED`, `TECH_PENDING`, `ART_SELF_REVIEW_REQUIRED`, `OWNER_VISUAL_PENDING`, `RUNTIME_MAPPING_PENDING`, `PVE_INTEGRATION_HOLD`, `V6.3_OFF`, `PHYSICAL_QA_PENDING`. No Codex, new branch or merge. Owner approval from POI15 does NOT carry over to POI16.
+
+
+## ART CORRECTIVE ACTION — R1B OWNER REJECTED 17/11/2026
+
+Owner explicitly stated **“làm rõ hơn các hiệu ứng. mờ quá rồi. k thấy gì luôn. xem lại quy trình làm vfx”** after reviewing genuine R1B Godot footage. This overrides previous internal self-QA positive notes. **R1B ART REWORK REQUIRED**. No “owner accepted” or “art PASS” may be inferred from Godot technical PASS.
+
+### Root-cause evidence from exact native R1B
+Source \`e876d605416f0e200be1d2eed30135c855ee637d\`; QA Actions #44002926808 (TECH PASS) and same SHA frame captures.
+- Median nonzero sprite alpha / 255: charge 8, bloom 20, blessing 9; despite very bright RGB source values and valid transparency, the rendered pixel weights averaged far too small.
+- Bright jade pixels at actual native-resolution ROI: charge ~79; bloom peak ~7,747; contact ~7,539; expired background ~91. Charge was effectively invisible and complex 3fold bloom was not readable at 1×.
+- Layer/temporal alpha multiplies the already-low source alpha, while interpolation and background/character composition further attenuate contrast. Source alpha-check only saw *some* translucent pixels, not effective chromatic contrast. Full-frame screenshot overviews had encouraged passing a weak effect.
+
+### R1C corrective implementation
+1. **Rebuild first-party alpha material hierarchy** for all 38 authored RGBA poses using the existing generator (source original R1B retrievable at prior SHA): sharp ivory hot nucleus; medium-opacity jade/aqua luminous paths; genuinely translucent exterior. Independently shaped 3fold life-streams and visible pulse on three moving allied targets; do not add hard ring/UI graphics.
+2. Increase Godot world-screen sprite geometry/visibility of palm, threefold bloom, translucent 3-ally blessing and dissolving motes. Original frozen actors and target cap/clip/Combat V2 unchanged; no rig/GIF.
+3. Add **G3.6 quantitative visibility STOP gate** \`tools/qa/check_poi16_native_visibility.py\` to real native Godot 1280×720 screenshot flow, in addition to V4 alpha/provenance/motion/contract checks. Thresholds for charge/peak/contact/fade are specific to POI16 color and screenshots; expiry image must return to background. Any threshold violation FAILS CI. Passing is not equivalent to art acceptance or accessibility for all color-vision types.
+4. Before owner review, self-check native size 1× (not zoom-only), contrast both dark and bright scene, moving targets and alpha material separation, distinct contact and fade. Optional 6v8/30-disciple crowd + physical Android QA remain separate HOLD, never claimed executed without proof.
+
+Status: \`R1B_OWNER_ART_REJECTED_INVISIBLE\` → \`R1C_REWORK_IN_PROGRESS\`, pending new exact-SHA technical G3.5/G3.6 evidence and later human owner visual review; \`V6.3_OFF\`, \`PVE_INTEGRATION_HOLD\`, \`PHYSICAL_QA_PENDING\`. Do not move to next skill until owner direction.
