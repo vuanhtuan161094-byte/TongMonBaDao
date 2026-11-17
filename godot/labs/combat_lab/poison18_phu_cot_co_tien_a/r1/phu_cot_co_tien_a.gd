@@ -1,6 +1,6 @@
 extends Control
 ## POI18 — Phụ Cốt Cổ · Tiên A (Liên Tâm).
-## Isolated VIEW-ONLY Godot lab. No real Combat V2 hit/status/movement receipt.
+## R1B visual rework after G3.5 R1 art STOP. Isolated VIEW-ONLY Godot lab. No real Combat V2 hit/status/movement receipt.
 ## First-party transparent art: winged gu insect, linked thorn-heart mark.
 const SKILL_ID := "tmb.skill.poison.co_doc.active_01.immortal.a"
 const EFFECT := "mark"
@@ -146,20 +146,20 @@ func _draw() -> void:
     _draw_disciple()
     if t<RELEASE_AT:
         var q:=smoothstep(0.0,.12,t)*(1.0-smoothstep(CAST_END,RELEASE_AT,t))
-        _pose(gather_frames,CASTER_FOOT+Vector2(49,-89),Vector2(198,198),clampf(t/CAST_END*7,0,7),q*.94)
+        _pose(gather_frames,CASTER_FOOT+Vector2(49,-89),Vector2(240,240),clampf(t/CAST_END*7,0,7),q*.94)
     if t>=CAST_END and t<CONTACT_AT:
         var fade:=smoothstep(CAST_END,RELEASE_AT+.06,t)
         var travel:=flight_fraction(t)
-        for k in range(3,0,-1):
+        for k in range(2,0,-1):
             var past_t:=maxf(RELEASE_AT,t-.09*float(k))
             var past:=projectile_pos(past_t)
-            _pose(gu_frames,past,Vector2(164,133),float((int(past_t*22)+k)%16),fade*(.20-.035*k))
-        _pose(gu_frames,projectile_pos(t),Vector2(196,154),clampf(travel*15,0,15),.95*fade)
+            _pose(gu_frames,past,Vector2(208,165),float((int(past_t*22)+k)%16),fade*(.145-.030*k))
+        _pose(gu_frames,projectile_pos(t),Vector2(284,222),clampf(travel*15,0,15),.95*fade)
     if t>=CONTACT_AT and t<IMPACT_FADE_AT:
         var q2:=clampf((t-CONTACT_AT)/(IMPACT_FADE_AT-CONTACT_AT),0,1)
-        _pose(burst_frames,target_foot(t)+Vector2(0,-81),Vector2(241,231),q2*11,
+        _pose(burst_frames,target_foot(t)+Vector2(0,-81),Vector2(268,259),q2*11,
              .96*(1-smoothstep(.78,1,q2)))
     if t>=CONTACT_AT and t<MARK_FADE_END:
         var q3:=mark_gain(t)
         var cycle:=fposmod((t-CONTACT_AT)*7.0,12.0)
-        _pose(seal_frames,target_foot(t)+Vector2(0,-89),Vector2(137,137),cycle,.96*q3)
+        _pose(seal_frames,target_foot(t)+Vector2(0,-89),Vector2(168,168),cycle,.96*q3)

@@ -48,6 +48,14 @@ def filament(x,y,pts,width):
         field=np.maximum(field,np.exp(-(((x-x0-t*dx)**2+(y-y0-t*dy)**2)/(width*width))))
     return field
 
+def heartfield(x,y,cx,cy,r):
+    """A filled hand-drawn fantasy heart/living seed, not a neon HUD polygon."""
+    u=(x-cx)/r
+    v=-(y-cy)/(r*.98)
+    f=(u*u+v*v-1)**3-u*u*v*v*v
+    # Distinct filled-petal body and independently bright edge.
+    return 1/(1+np.exp(np.clip(f*22,-30,30))),np.exp(-((f/.14)**2))
+
 def render(name,t,cell):
     w,h=cell
     yy,xx=np.mgrid[:h*SS,:w*SS].astype(np.float32)
@@ -79,92 +87,118 @@ def render(name,t,cell):
             ink("gold",horn*.48*q)
             ink("lime",horn*.27*q)
     elif name=="gu":
-        # Living winged gu: independent opening/closing wing geometry each pose.
-        wbeat=np.sin(t*2*pi*3.1)
-        angle=(.16+.29*(.5+.5*wbeat))
-        travel_x=2.5*np.sin(t*pi*4.0)
-        travel_y=1.4*np.cos(t*pi*5.0)
-        a=x-travel_x;b=y-travel_y
-        ink("emerald",gauss(a,b,-27,0,81,53)*.17)
-        # Wing pairs extend to different tips and angles as the pose progresses.
-        for side in [-1.0,1.0]:
-            wing=oval(a,b,-27,-side*(24+15*wbeat),58,23+5*wbeat,side*angle,1.8)
-            ink("deep",wing*.37)
-            ink("jade",wing*.25*noise)
-            rib=filament(a,b,[(-20,side*2),(-38,side*29),(-85,side*(50+12*wbeat))],2.8)
-            ink("gold",rib*.37)
-            ink("ivory",filament(a,b,[(-13,side*3),(-38,side*29),(-85,side*(50+12*wbeat))],.9)*.38)
-            wingtip=gauss(a,b,-77,side*(46+12*wbeat),12,11)
-            ink("lime",wingtip*.31)
-        # Abdomen: dark armored segments and hot flecks. HEAD points RIGHT.
-        body=oval(a,b,0,0,57,22,-.08,2.5)
-        ink("shadow",body*.83)
-        ink("deep",oval(a,b,7,0,51,20,-.08)*.89)
-        ink("jade",oval(a,b,4,-4,45,14,-.08)*.58*noise)
-        ink("gold",oval(a,b,36,-3,16,15,.12)*.76)
-        ink("ivory",gauss(a,b,46,-9,8,5)*.86)
+        # R1B: articulated horned scarab with visibly separated membrane wings,
+        # central opaque chitin, four leg pairs and curved golden antennae.
+        # R1 dark-UFO oval FAILED art review; deliberately remove its umbrella.
+        flutter=np.sin(t*2*pi*3.5)
+        driftx=2*np.sin(t*8*pi); drifty=2*np.cos(t*9*pi)
+        a=x-driftx;b=y-drifty
+        ink("emerald",gauss(a,b,-8,0,67,51)*.095)
+        for side in (-1.0,1.0):
+            spread=40+22*flutter
+            wing=oval(a,b,-51,side*spread,53,13,side*(.66+.23*flutter),2.6)
+            innerwing=oval(a,b,-46,side*(28+9*flutter),39,9,side*(.48+.14*flutter),2.5)
+            ink("shadow",wing*.49)
+            ink("jade",wing*.55*noise)
+            ink("lime",innerwing*.37)
+            rib=filament(a,b,[(-19,side*8),(-44,side*37),(-90,side*(61+19*flutter))],2.6)
+            ink("gold",rib*.52)
+            ink("ivory",filament(a,b,[(-24,side*13),(-46,side*40),(-91,side*(63+19*flutter))],.9)*.65)
+            ink("gold",filament(a,b,[(-30,side*17),(-60,side*(46+9*flutter)),(-106,side*(45+13*flutter))],1.25)*.30)
+            ink("ivory",gauss(a,b,-90,side*(62+18*flutter),5,5)*.65)
+        # Carapace: dark segmented armor with a visibly hot golden head,
+        # not a uniformly transparent electric ellipse.
+        body=oval(a,b,-6,0,62,25,-.03,2.9)
+        ink("shadow",body*.98)
+        ink("deep",oval(a,b,-5,0,59,22,-.03,2.8)*.95)
+        ink("jade",oval(a,b,-7,-6,51,15,-.07,2.1)*.75*noise)
+        ink("lime",oval(a,b,-35,-8,24,9,-.07,2)*.36)
         for k in range(4):
-            segx=-41+k*19
-            ink("gold",filament(a,b,[(segx,-15),(segx+5,0),(segx,16)],1.75)*.49)
-        for side in [-1.0,1.0]:
-            for j in range(3):
-                bx=-27+j*24
-                leg=filament(a,b,[(bx,side*11),(bx-13,side*(26+5*wbeat)),(bx-31,side*(39+8*wbeat))],1.9)
-                ink("gold",leg*.52)
-                ink("ivory",filament(a,b,[(bx-13,side*(26+5*wbeat)),(bx-31,side*(39+8*wbeat))],.65)*.30)
-        for side in [-1.0,1.0]:
-            anten=filament(a,b,[(43,side*4),(63,side*(15+3*wbeat)),(81,side*(25+8*wbeat))],1.5)
-            ink("lime",anten*.69)
-            ink("ivory",filament(a,b,[(62,side*(15+3*wbeat)),(81,side*(25+8*wbeat))],.8)*.65)
-        for k in range(7):
-            px=-112+k*14-8*t
-            py=24*np.sin(k*2.2+t*7.0)
-            ink("jade",gauss(a,b,px,py,2.6,4.0)*.28)
+            px=-47+18*k
+            shell=filament(a,b,[(px,-20),(px+9,-6),(px+8,9),(px,20)],2.0)
+            ink("gold",shell*.66)
+            ink("ivory",filament(a,b,[(px,-18),(px+8,-5)],.7)*.37)
+        # A distinct head, two side eyes, curved split mandibles.
+        ink("gold",oval(a,b,49,0,24,21,.03,2.5)*.82)
+        ink("lime",oval(a,b,56,-3,15,15,0,2)*.70)
+        ink("ivory",gauss(a,b,58,-7,7,6)*.79)
+        for side in (-1.0,1.0):
+            ink("ivory",gauss(a,b,49,side*11,4.3,3.5)*.82)
+            for j in range(4):
+                legx=-42+22*j
+                bendx=legx-7+(j%2)*8+4*flutter
+                leg=filament(a,b,[(legx,side*20),(bendx,side*34),(bendx-12,side*(51+6*flutter))],2.1)
+                ink("gold",leg*.75)
+                ink("lime",filament(a,b,[(bendx,side*34),(bendx-12,side*(51+6*flutter))],.8)*.42)
+            mandible=filament(a,b,[(58,side*11),(72,side*(22+3*flutter)),
+                                   (89,side*16),(95,side*7)],2.1)
+            ink("gold",mandible*.82)
+            ink("ivory",filament(a,b,[(73,side*(22+3*flutter)),(89,side*16),(95,side*7)],.8)*.72)
+            anten=filament(a,b,[(62,side*10),(74,side*21),(78,side*36),(89,side*39)],1.4)
+            ink("lime",anten*.72)
+        for k in range(9):
+            px=-121+k*10-6*t
+            py=7*np.sin(1.6*k+8*t)
+            ink("jade",gauss(a,b,px,py,2.2,3.3)*.26)
     elif name=="burst":
-        # Local single-target bond conversion, not damage hit or circle AOE.
-        q=np.sin(pi*.5*t)
-        span=27+43*t
-        core=gauss(x,y,0,0,18+18*t,20+22*t)
-        ink("deep",gauss(x,y,0,0,65+45*t,56+36*t)*.16*(1-t))
-        for side in [-1.0,1.0]:
-            path=[(0,-9),(side*(15+10*t),-21),(side*(32+17*t),1),
-                  (side*(18+20*t),29),(side*5,11)]
-            ribbon=filament(x,y,path,6.2+3.0*t)
-            ink("deep",ribbon*.34*q)
-            ink("jade",filament(x,y,path,3.1+1.2*t)*.65*q)
-            ink("gold",filament(x,y,path,1.35)*.64*q)
-            ink("ivory",filament(x,y,path,.65)*.50*q)
-            # Bone/heart thorns visibly grow out from the two hooked vines.
-            for i in range(3):
-                tx=side*(21+14*t+i*7)
-                ty=-13+18*i
-                claw=filament(x,y,[(tx,ty),(tx+side*(10+8*t),ty-11),(tx+side*(20+11*t),ty-7)],1.5)
-                ink("lime",claw*.46*q)
-        ink("jade",core*.21*(1-t))
-        ink("ivory",gauss(x,y,0,0,8+9*t,9+9*t)*.83*(1-t))
+        # Two bloom-open organic heart-petals become one linked curse on impact.
+        q=1.0-t
+        opens=.45+.55*np.sin(pi*.5*t)
+        ink("emerald",gauss(x,y,0,1,45+23*t,37+22*t)*.13*q)
+        for side in (-1.0,1.0):
+            cx=side*(14+16*t)
+            filled,rim=heartfield(x,y,cx,-6,17+10*t)
+            ink("shadow",filled*.72*opens)
+            ink("jade",filled*.49*opens)
+            ink("lime",filled*.38*opens*noise)
+            ink("gold",rim*.68*opens)
+            ink("ivory",rim*.40*opens)
+            # Different anatomical heart veins grow outward from each lobe.
+            vine=filament(x,y,[(0,22),(side*8,16),(cx,-5),(cx+side*18,-19),
+                               (cx+side*(28+10*t),-30)],2.8)
+            ink("deep",vine*.28*opens)
+            ink("gold",filament(x,y,[(0,22),(side*8,16),(cx,-5),
+                                   (cx+side*18,-19)],1.2)*.68*opens)
+            ink("ivory",gauss(x,y,cx,-17,4.2,5)*.68*opens)
+            for k in range(3):
+                px=cx+side*(10+13*t+k*7)
+                py=-18+15*k
+                thorn=filament(x,y,[(px,py),(px+side*(9+9*t),py-8),
+                                   (px+side*(15+9*t),py-5)],1.65)
+                ink("jade",thorn*.42*opens)
+                ink("ivory",filament(x,y,[(px+side*(9+9*t),py-8),
+                                       (px+side*(15+9*t),py-5)],.75)*.30*opens)
+        ink("gold",gauss(x,y,0,14,10+8*t,8+5*t)*.32*q)
+        ink("ivory",gauss(x,y,0,12,6+6*t,5+4*t)*.66*q)
     elif name=="seal":
-        # One recognizable pair of linked heart-thorns, small and readable on chest.
-        q=1.0-.19*t
-        beat=1+.035*np.sin(t*2*pi)
+        # Persistent two SOLID, legible heart-seeds, linked by glowing tendons.
+        # A heartbeat mark, deliberately not an open geometry shield/ring.
+        beat=1+.025*np.sin(t*2*pi)
         a=x/beat;b=y/beat
-        ink("shadow",gauss(a,b,0,1,52,51)*.20*q)
-        # Asymmetric living connected two-lobe heart knot, NOT a circular rune.
-        for side in [-1.0,1.0]:
-            stem=[(0,26),(side*23,11),(side*35,-9),(side*27,-30),
-                  (side*9,-33),(0,-16)]
-            ink("deep",filament(a,b,stem,7.3)*.37*q)
-            ink("jade",filament(a,b,stem,4.2)*.66*q)
-            ink("gold",filament(a,b,stem,1.8)*.66*q)
-            ink("ivory",filament(a,b,stem,.8)*.58*q)
-            thorn=filament(a,b,[(side*26,-8),(side*49,-21),(side*40,-39)],1.6)
-            ink("lime",thorn*.56*q)
-        ink("gold",oval(a,b,0,15,7,18,0)*.52*q)
-        ink("ivory",gauss(a,b,0,12,4,7)*.71*q)
-        for k in range(4):
-            v=-1 if k%2 else 1
-            px=v*(42+6*t)
-            py=-25+k*16
-            ink("lime",gauss(a,b,px,py,2.0,4.5)*.28*q)
+        ink("deep",gauss(a,b,0,0,64,47)*.12)
+        ink("gold",filament(a,b,[(-27,-10),(-10,12),(0,23),
+                                 (10,12),(27,-10)],3.8)*.33)
+        for side in (-1.0,1.0):
+            cx=side*27
+            filled,rim=heartfield(a,b,cx,-4,23)
+            ink("shadow",filled*.78)
+            ink("jade",filled*.65)
+            ink("lime",filled*.28)
+            ink("gold",rim*.68)
+            ink("ivory",rim*.52)
+            vein=filament(a,b,[(cx,-23),(cx+side*7,-9),
+                               (cx-side*4,4),(cx,18)],1.4)
+            ink("ivory",vein*.59)
+            ink("gold",filament(a,b,[(cx-side*3,-18),(cx+side*8,-14),
+                                   (cx+side*11,0)],1.8)*.44)
+            ink("ivory",gauss(a,b,cx-7,-16,6,4)*.70)
+            # Unpaired botanical tendril identifies the Liên Tâm lineage.
+            root=filament(a,b,[(cx,18),(cx+side*12,27),
+                               (cx+side*27,17),(cx+side*41,8)],2.0)
+            ink("emerald",root*.50)
+            ink("gold",filament(a,b,[(cx,18),(cx+side*12,27),
+                                    (cx+side*27,17)],.75)*.43)
+        ink("ivory",gauss(a,b,0,20,7,6)*.75)
     # Full-size original alpha master/cells with no extracted poster or matte.
     orig=p[:,:,3]
     gain={"gather":1.40,"gu":1.45,"burst":1.53,"seal":1.51}[name]
@@ -194,6 +228,6 @@ def main():
         atlas.save(target,optimize=True)
         raw+=atlas.width*atlas.height*4
         print("POI18_ORIGINAL_MARK_RGBA",name,count,atlas.size,target.stat().st_size)
-    print("POI18_PHU_COT_CO_TIENA_R1_SOURCE_PASS poses=40 atlases=4 no_gif_no_rig=true raw_rgba_bytes=",raw)
+    print("POI18_PHU_COT_CO_TIENA_R1_SOURCE_PASS poses=48 atlases=4 no_gif_no_rig=true raw_rgba_bytes=",raw)
 
 if __name__=="__main__":main()
