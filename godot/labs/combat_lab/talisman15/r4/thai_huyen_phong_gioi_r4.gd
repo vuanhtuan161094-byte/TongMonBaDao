@@ -109,26 +109,25 @@ func _ribbons(t: float) -> void:
 		var curve: Array[Vector2]=[]
 		for j in range(31): curve.append(_sweep(k,j/30.0,t,f))
 		for layer in range(3):
-			var wm: float=[1.8,1.0,.18][layer]
-			var alpha: float=[.22,.47,.88][layer]*f
+			var wm: float=[1.65,1.0,.15][layer]
+			var alpha: float=[.19,.45,.82][layer]*f
 			var col: Color=[Color(.09,.92,.78,alpha),Color(.22,.97,.75,alpha),Color(.96,1,.89,alpha)][layer]
-			var poly:=PackedVector2Array()
-			var colors:=PackedColorArray()
-			for j in range(31):
-				var u: float=j/30.0
-				var tangent: Vector2=(curve[mini(j+1,30)]-curve[maxi(j-1,0)]).normalized()
-				var normal:=Vector2(-tangent.y,tangent.x)
-				var w: float=(3.0+25.0*pow(sin(PI*u),1.2))*(1.0-.56*u)*wm
-				poly.append(curve[j]+normal*w)
-				colors.append(col)
-			for j in range(30,-1,-1):
-				var u: float=j/30.0
-				var tangent: Vector2=(curve[mini(j+1,30)]-curve[maxi(j-1,0)]).normalized()
-				var normal:=Vector2(-tangent.y,tangent.x)
-				var w: float=(3.0+25.0*pow(sin(PI*u),1.2))*(1.0-.56*u)*wm
-				poly.append(curve[j]-normal*w*.55)
-				colors.append(col)
-			draw_polygon(poly,colors)
+			# Draw one convex ribbon segment at a time. A single highly curved
+			# polygon self-intersects and Godot triangulation correctly rejects it.
+			for j in range(30):
+				var u0: float=j/30.0
+				var u1: float=(j+1)/30.0
+				var dir: Vector2=(curve[j+1]-curve[j]).normalized()
+				var norm: Vector2=Vector2(-dir.y,dir.x)
+				var w0: float=(3.0+18.0*pow(sin(PI*u0),1.2))*(1.0-.54*u0)*wm
+				var w1: float=(3.0+18.0*pow(sin(PI*u1),1.2))*(1.0-.54*u1)*wm
+				var quad:=PackedVector2Array([
+					curve[j]+norm*w0,
+					curve[j+1]+norm*w1,
+					curve[j+1]-norm*w1*.56,
+					curve[j]-norm*w0*.56
+				])
+				draw_colored_polygon(quad,col)
 		var u: float=fposmod((t-.6)+k*.26,1.0)
 		var h: Vector2=_sweep(k,u,t,f)
 		draw_line(h,_sweep(k,minf(1.0,u+.13),t,f),Color(.99,1,.86,.89*f),3,true)
