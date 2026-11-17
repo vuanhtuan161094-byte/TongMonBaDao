@@ -68,72 +68,67 @@ def charge(i,n=12):
                   fill=(249,255,218,150 if k%3==0 else 70))
     return final(out,320,320)
 def shell(i,n=16,front=False):
-    q=i/max(n-1,1)
+    """Organic liquid-crystal protection: transparent flowing ribbons, not rings/UI."""
+    q=i/max(1,n-1)
     out=new(352,448)
-    # Low-alpha pearlescent lens: a TRANSPARENT field, never an opaque card.
-    lens=new(352,448)
-    mask=Image.new('L',lens.size,0)
-    md=ImageDraw.Draw(mask)
-    center=(176,243)
-    md.ellipse(pt([(center[0]-112,center[1]-133),
-                   (center[0]+115,center[1]+135)]),fill=37 if not front else 13)
-    mask=mask.filter(ImageFilter.GaussianBlur(22*S))
-    body=Image.new('RGBA',lens.size,(54,224,209,0))
-    body.putalpha(mask)
+    # Very low-opacity refractive surface: performer is visible through every layer.
+    m=Image.new('L',(352*S,448*S),0)
+    ImageDraw.Draw(m).ellipse(pt([(73,109),(288,369)]),fill=25 if not front else 9)
+    body=Image.new('RGBA',m.size,(42,225,201,0))
+    body.putalpha(m.filter(ImageFilter.GaussianBlur(19*S)))
     out.alpha_composite(body)
-    # Rotating translucent, CURVED crescent feathers: no rigid glass rectangles.
-    paint=new(352,448)
-    d=ImageDraw.Draw(paint,'RGBA')
-    N=13
-    for k in range(N):
-        a=2*math.pi*k/N-q*.055-.18
-        radial=(math.cos(a),math.sin(a))
-        tangent=(-math.sin(a),math.cos(a))
-        x=176+111*radial[0]+7*math.sin(q*6+k*1.31)
-        y=242+120*radial[1]+5*math.sin(q*8+k*.97)
-        # Only narrow peripheral / low glass is FRONT: center actor remains visible.
-        if front and not (abs(radial[0])>.64 or radial[1]>.81):continue
-        if not front and (abs(radial[0])>.86 and radial[1]>.26):continue
-        length=30+12*math.sin(k*1.71)**2
-        width=14+12*math.sin(k*.87)**2
-        begin=(x-radial[0]*length*.86,y-radial[1]*length*.86)
-        tip=(x+radial[0]*length,y+radial[1]*length)
-        c1=(begin[0]+tangent[0]*width*1.5-radial[0]*5,
-            begin[1]+tangent[1]*width*1.5-radial[1]*5)
-        c2=(tip[0]+tangent[0]*width*.78,
-            tip[1]+tangent[1]*width*.78)
-        c3=(tip[0]-tangent[0]*width*1.1,
-            tip[1]-tangent[1]*width*1.1)
-        c4=(begin[0]-tangent[0]*width*.98,
-            begin[1]-tangent[1]*width*.98)
-        edge1=b3(begin,c1,c2,tip,22)
-        edge2=b3(tip,c3,c4,begin,22)
-        leaf=edge1+edge2
-        d.polygon(pt(leaf),fill=(49+5*(k%3),223,195,31 if front else 53))
-        L(d,edge1,(190,255,239,164 if not front else 124),1.75)
-        L(d,edge2,(92,240,215,88 if not front else 74),1.25)
-        L(d,b3(begin,(x+tangent[0]*5,y+tangent[1]*5),
-               (tip[0]-radial[0]*6,tip[1]-radial[1]*6),tip),
-          (252,232,157,144 if k%3==0 else 85),.85)
-        # Tiny lifted pearlescent reflection at the tip.
-        d.ellipse(pt([(tip[0]-1.6,tip[1]-1.6),(tip[0]+1.6,tip[1]+1.6)]),
-                  fill=(255,250,209,192))
-    glow(out,paint,11,.20)
-    # Loose liquid refraction streaks follow an irregular guard surface.
-    caustics=new(352,448)
-    d=ImageDraw.Draw(caustics,'RGBA')
-    for k in range(9):
-        a=-2.65+(k/8)*5.30+q*.13
-        r1=100+13*math.sin(k*1.4+q*2)
-        r2=124+11*math.sin(k*.7+q*5)
-        p0=(176+r1*math.cos(a),241+r1*1.06*math.sin(a))
-        p3=(176+r2*math.cos(a+.35),241+r2*1.06*math.sin(a+.35))
-        v=(-math.sin(a),math.cos(a))
-        p=b3(p0,(p0[0]+v[0]*33,p0[1]+v[1]*33),
-             (p3[0]-v[0]*29,p3[1]-v[1]*29),p3)
-        L(d,p,(82,248,221,113 if k%3==0 else 67),1.6 if k%3==0 else 1.0)
-        if k%3==0:L(d,p,(252,245,209,87),.6)
-    glow(out,caustics,11,.18)
+    # Seven differently authored silk-glass ribbons wrap around the self character.
+    paths=[
+        ((151,125),(97,129),(63,198),(98,311),25),
+        ((196,119),(250,150),(301,200),(254,314),30),
+        ((103,166),(130,95),(213,100),(242,162),22),
+        ((92,293),(117,355),(160,372),(194,342),24),
+        ((256,284),(252,347),(198,367),(174,341),23),
+        ((111,216),(147,179),(202,182),(247,230),12),
+        ((243,246),(199,267),(150,265),(108,252),10),
+    ]
+    paint=new(352,448);d=ImageDraw.Draw(paint,'RGBA')
+    for k,(a,b,c,e,width) in enumerate(paths):
+        if front and k in (2,5,6):continue
+        if not front and k in (3,4):continue
+        sway=7*math.sin(q*5+k*.9)
+        a=(a[0]+sway*.2,a[1])
+        b=(b[0]+sway*.55,b[1]+4*math.sin(q*5+k))
+        c=(c[0]-sway*.4,c[1]-4*math.cos(q*4+k))
+        e=(e[0]-sway*.2,e[1])
+        arc=b3(a,b,c,e,44)
+        left=[];right=[]
+        for j,(x,y) in enumerate(arc):
+            z=j/max(1,len(arc)-1)
+            prev=arc[max(0,j-1)];nxt=arc[min(len(arc)-1,j+1)]
+            vx=nxt[0]-prev[0];vy=nxt[1]-prev[1]
+            length=max(.01,math.hypot(vx,vy))
+            thick=width*(.12+.88*math.sin(z*math.pi)**.75)
+            thick*=1+.12*math.sin(z*13+q*6+k)
+            dx=-vy/length*thick;dy=vx/length*thick
+            left.append((x+dx,y+dy))
+            right.append((x-dx*.54,y-dy*.54))
+        d.polygon(pt(left+right[::-1]),fill=(49,224,201,39 if front else 61))
+        L(d,left,(181,255,234,170 if not front else 133),2.1)
+        L(d,right,(71,239,215,93),1.0)
+        L(d,arc,(253,234,169,114 if k%3==0 else 67),1.1)
+        for j in (12,29):
+            xx,yy=arc[j]
+            d.ellipse(pt([(xx-1.7,yy-1.7),(xx+1.7,yy+1.7)]),
+                      fill=(251,251,222,164))
+    glow(out,paint,11,.27)
+    dust=new(352,448);d=ImageDraw.Draw(dust,'RGBA')
+    rng=random.Random(7819+i)
+    for k in range(47):
+        x=rng.uniform(92,264);y=rng.uniform(129,347)
+        dis=((x-176)/105)**2+((y-238)/125)**2
+        if dis<.38:continue
+        length=rng.uniform(2,8)
+        L(d,[(x-length*.6,y+3),(x,y-3),(x+length,y-6)],
+          (221,255,224,rng.randint(54,134)),.85)
+        if k%9==0:d.ellipse(pt([(x-1,y-1),(x+1,y+1)]),
+                           fill=(255,232,166,178))
+    glow(out,dust,5,.17)
     return final(out,352,448)
 def impact(i,n=14):
     q=i/max(n-1,1);out=new(320,320)
