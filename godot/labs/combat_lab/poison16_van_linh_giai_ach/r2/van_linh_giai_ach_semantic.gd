@@ -31,7 +31,7 @@ const ALLY_BASE_POSITIONS := [
     Vector2(702,552), Vector2(856,543), Vector2(1013,553), Vector2(1220,552)
 ]
 const ASSET_ROOT := "res://labs/combat_lab/poison16_van_linh_giai_ach/r2/assets/"
-const HERB_CORE := Vector2(860,382)
+const HERB_CORE := Vector2(859,348)
 const STREAM_START := 1.39
 const STREAM_END := 2.12
 const SEAL_START := 1.64

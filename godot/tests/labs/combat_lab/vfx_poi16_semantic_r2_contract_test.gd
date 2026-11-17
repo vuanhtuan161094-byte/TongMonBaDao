@@ -38,7 +38,7 @@ func _check()->void:
         check(pts.size()==3,"exactly THREE linked recipients at "+str(t))
         for i in range(3):
             check(pts[i].distance_to(LAB.ally_chest(i,t)+Vector2(0,-12))<.01,"link ends on continuously MOVING target chest "+str(i))
-            check(LAB.link_length(i,t)>50.0 and LAB.link_length(i,t)<260.0,"clear spatial link length "+str(i))
+            check(LAB.link_length(i,t)>60.0 and LAB.link_length(i,t)<260.0,"clear spatial link length "+str(i))
         check(not pts.has(LAB.ally_chest(3,t)+Vector2(0,-12)),"exclude fourth moving ally")
     var semantic_source:=FileAccess.get_file_as_string("res://labs/combat_lab/poison16_van_linh_giai_ach/r2/van_linh_giai_ach_semantic.gd")
     check(semantic_source.contains("draw_set_transform(origin,delta.angle()"),"three spatially oriented atlas-backed links")
