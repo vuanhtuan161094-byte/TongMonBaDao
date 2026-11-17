@@ -32,6 +32,16 @@ func _run()->void:
         check(not atlas.frame_region(id,.08).is_empty(),"original cropped WebP frame exists "+id)
         check(atlas.frame_region(id,atlas.duration(id)+.03).is_empty(),"source clip really expires "+id)
     check(not atlas.effects.has("jx_wudu_63_precast"),"do not fabricate nonexistent Ngũ Độc precast")
+    var stationary_foot:=Vector2(895,548)
+    var above:=FX_LAYER.wudang_overhead_anchor(.50,stationary_foot)
+    var middle:=FX_LAYER.wudang_overhead_anchor(.925,stationary_foot)
+    var at_hit:=FX_LAYER.wudang_overhead_anchor(1.35,stationary_foot)
+    check(above.y < middle.y and middle.y < at_hit.y,"JX visual staging descends top to bottom")
+    check(absf(at_hit.y-stationary_foot.y+79.0)<.01,"drop ends at selected enemy chest")
+    check(absf(above.x-middle.x)<.01 and absf(middle.x-at_hit.x)<.01,"top-down FX has no invented caster-to-target X drift")
+    check(FX_LAYER.wudang_overhead_anchor(.8,stationary_foot+Vector2(17,0)).x
+        -FX_LAYER.wudang_overhead_anchor(.8,stationary_foot).x==17.0,
+        "vertical strike follows moving target instead of static coordinates")
     check(SCENE.TOTAL_SECONDS==12.0 and SCENE.STYLE_COUNT==4,"four side-by-side style slots 3 secs each")
     check(SCENE.target_foot(.2).distance_to(SCENE.target_foot(1.75))>20.0,"selected target WALK movement")
     check(SCENE.target_foot(1.2).distance_to(SCENE.decoy_foot(1.2))>120.0,"independent untouched moving decoy")
