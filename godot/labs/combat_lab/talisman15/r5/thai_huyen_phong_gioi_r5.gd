@@ -17,7 +17,7 @@ static func latched_mark(k: int, t: float) -> bool:
 
 static func mark_pos(k: int, t: float) -> Vector2:
 	# Near the moving enemy shoulder/chest, no UI icon above its head.
-	return target_anchor(k,t) + Vector2(23,-2)
+	return target_anchor(k,t) + Vector2(32,10)
 
 static func mark_frame(t: float) -> int:
 	if t < RECEIPT: return 0
@@ -52,7 +52,7 @@ func _draw_charge_r5(t: float) -> void:
 	# The talisman visibly grows from an authored stroke, not scaling one still.
 	if t>.34:
 		var idx: int=mini(5,int((t-.34)/.09))
-		_atlas(MARK_TEX,idx,HAND+Vector2(-7,-19),Vector2(86,92),Color(1,1,1,.77*strength))
+		_atlas(MARK_TEX,idx,HAND+Vector2(-7,-17),Vector2(76,82),Color(1,1,1,.73*strength))
 
 func _draw_field_r5(t: float) -> void:
 	var p: float=field_envelope(t)
@@ -70,8 +70,8 @@ func _draw_field_r5(t: float) -> void:
 	# This is the transient ORIGINAL artwork, but never the sole animation:
 	# moving heads/tails/caustics/particles below are all genuine runtime motion.
 	var k: int = seal_frame(t)
-	var seal_opacity: float = p * .49
-	_atlas(MARK_TEX,k,AREA+Vector2(0,-110),Vector2(355,274),Color(1,1,1,seal_opacity))
+	var seal_opacity: float = p * .31
+	_atlas(MARK_TEX,k,AREA+Vector2(0,-23),Vector2(165,102),Color(1,1,1,seal_opacity))
 	_ribbons(t)
 
 func _draw_contact_and_marks_r5(t: float) -> void:
@@ -81,7 +81,7 @@ func _draw_contact_and_marks_r5(t: float) -> void:
 		if v>.003 and in_circle(k,RECEIPT):
 			var contact_at: Vector2=mark_pos(k,t)
 			var idx: int=clampi(int((t-RECEIPT)/.59*(CONTACT_FRAMES-1)),0,CONTACT_FRAMES-1)
-			_atlas(CONTACT_TEX,idx,contact_at,Vector2(166,166),Color(1,1,1,.84*v))
+			_atlas(CONTACT_TEX,idx,contact_at,Vector2(122,122),Color(1,1,1,.79*v))
 			draw_texture_rect(glow,Rect2(contact_at-Vector2(28,28),Vector2(56,56)),false,Color(1.0,.98,.77,.44*v))
 		if latched_mark(k,t):
 			var anchor_now: Vector2=mark_pos(k,t)
@@ -90,7 +90,7 @@ func _draw_contact_and_marks_r5(t: float) -> void:
 			var ink: float=.93*(.91+.09*sin(phase*2.3))
 			# Persistent 7s state is engraved slightly to the side of the
 			# shoulder. The rune is ART-TEXTURE, not the old draw_arc badge.
-			_atlas(MARK_TEX,frame,anchor_now,Vector2(95,95),Color(1,1,1,ink))
+			_atlas(MARK_TEX,frame,anchor_now,Vector2(73,73),Color(1,1,1,ink*.86))
 			if phase<.28:
 				var white: float=1.0-smoothstep(.08,.28,phase)
 				draw_texture_rect(glow,Rect2(anchor_now-Vector2(22,22),Vector2(44,44)),false,Color(.94,1,.80,.34*white))
