@@ -53,7 +53,7 @@ static func mark_at(index:int,t:float)->Vector2:
     return target_position(index,t)+Vector2(29,-63)
 static func impact_at(t:float)->Vector2:
     # Keeps every local light burst BELOW enemy face and toward incoming side.
-    return foe_at(t)+Vector2(-51,-78)
+    return foe_at(t)+Vector2(-65,-60)
 static func beat_at(t:float)->int:
     if t<BEATS[1]:return 0
     if t<BEATS[2]:return 1
@@ -129,7 +129,7 @@ func _draw()->void:
     if t>=PRESSURE_START and t<CONTACT_TIME:
         var beat:=beat_at(t)
         var p:=beat_progress(t)
-        _flip(WAVE,float(beat*8)+p*7,24,beat_position(t),[.76,.84,1.04][beat],punch_alpha(t))
+        _flip(WAVE,float(beat*8)+p*5.18,24,beat_position(t)+Vector2(22,-4),[.98,1.09,1.23][beat],punch_alpha(t))
         # Quiet source hand compression helps visually connect the moving arm.
         if p<.52:
             _flip(CHARGE,p*7,8,caster+Vector2(48,-103),.22,(1.0-p)*.48)
@@ -137,7 +137,7 @@ func _draw()->void:
     _actor(foe,Color("b8c4d5"),foe_walk)
     if t>=CONTACT_TIME and t<CONTACT_END:
         var q:=clampf((t-CONTACT_TIME)/(CONTACT_END-CONTACT_TIME),0,1)
-        _flip(CONTACT,q*7,8,impact_at(t),.58,contact_alpha(t)*.96)
+        _flip(CONTACT,q*7,8,impact_at(t),.48,contact_alpha(t)*.97)
     if t>=MARK_START and t<FADE_END:
         # A single compact mark, on upper CHEST/SHOULDER, below the target's face.
         var pose:=fposmod((t-MARK_START)*5.8,8.0)
