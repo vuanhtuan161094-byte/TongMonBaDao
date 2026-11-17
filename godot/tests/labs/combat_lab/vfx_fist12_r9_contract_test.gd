@@ -1,0 +1,41 @@
+extends SceneTree
+const LAB=preload("res://labs/combat_lab/fist12/r9/doan_mach_lien_quyen_r9.gd")
+var failures:=0
+func check(ok:bool,label:String) -> void:
+    if not ok:
+        failures+=1
+        push_error("VFX_FIST12_R9_FAILURE " + label)
+func _initialize() -> void:
+    call_deferred("_run")
+func _run() -> void:
+    check(LAB.SKILL_ID=="tmb.skill.fist.huyet_quyen.active_02.human","skill")
+    check(LAB.EFFECT=="mark" and LAB.ELEMENT=="nether","mark/nether")
+    check(LAB.SHAPE=="single_target" and LAB.TARGET_LIMIT==1,"single target")
+    check(is_equal_approx(LAB.CAST_TIME,0.45) and is_equal_approx(LAB.COOLDOWN,8.0),"cast/cooldown")
+    check(is_equal_approx(LAB.DECLARED_DURATION,6.0) and is_equal_approx(LAB.DECLARED_RANGE,2.8),"duration/range")
+    check(is_zero_approx(LAB.DECLARED_PROJECTILE_SPEED) and is_zero_approx(LAB.DECLARED_RADIUS),"no projectile/aoe")
+    check(LAB.ART_REVISION=="R9_THREE_INDEPENDENT_CRIMSON_QI_PUNCH_ATLASES","revision")
+    check(LAB.phase_at(.22)=="huyet_qi_charge" and LAB.phase_at(.74)=="three_cinematic_punches","charge/punch")
+    check(LAB.phase_at(.99)=="one_visual_mark_application" and LAB.phase_at(2.0)=="six_second_vein_mark","contact/sustain")
+    check(LAB.phase_at(7.06)=="vein_mark_fade" and LAB.phase_at(7.40)=="idle","expiry")
+    check(is_equal_approx(LAB.MARK_END-LAB.MARK_START,6.0),"exact 6s mark")
+    check(LAB.charge_alpha(.22)>.12 and LAB.charge_alpha(.50)==0.0,"charge")
+    check(LAB.wave_alpha(.74)>.12 and LAB.wave_alpha(.99)==0.0,"punch alpha")
+    check(LAB.contact_alpha(.99)>.12 and LAB.contact_alpha(1.45)==0.0,"mark apply alpha")
+    check(LAB.mark_alpha(.90)==0.0 and LAB.mark_alpha(2.15)>.95 and LAB.mark_alpha(6.73)>.95,"mark sustain")
+    check(LAB.mark_alpha(7.30)==0.0,"mark dissipates")
+    check(LAB.target_position(0,.99).distance_to(LAB.target_position(0,.22))>12.0,"moving target contact")
+    check(LAB.target_position(0,4.20).distance_to(LAB.target_position(0,2.20))>12.0,"moving target while marked")
+    check(LAB.mark_at(0,4.20).distance_to(LAB.mark_at(0,2.20))>12.0,"mark follows target")
+    check(LAB.target_position(1,.99)==Vector2(-10000.0,-10000.0),"no second target")
+    check(LAB.beat_at(.52)==0 and LAB.beat_at(.70)==1 and LAB.beat_at(.85)==2,"three visual beats")
+    check(LAB.pressure_pose(.54)<8 and LAB.pressure_pose(.70)>=8 and LAB.pressure_pose(.86)>=16,"three distinct atlas spans")
+    check(LAB.caster_at(.70).x-LAB.caster_at(.22).x>110.0,"caster approaches")
+    check(LAB.caster_at(1.38).x<LAB.caster_at(.70).x-90.0,"caster retreats")
+    check(LAB.CHARGE.get_size()==Vector2(1280,640),"charge atlas")
+    check(LAB.WAVE.get_size()==Vector2(1280,1920),"three independently painted punch flipbooks")
+    check(LAB.CONTACT.get_size()==Vector2(1280,640),"contact atlas")
+    check(LAB.MARK.get_size()==Vector2(1280,640),"status atlas")
+    check(LAB.ATLAS_RAW_RGBA_BYTES==19660800,"texture budget manifest")
+    print("VFX_FIST12_R9_FOCUSED_RESULT="+("PASS" if failures==0 else "FAIL")+" failures="+str(failures))
+    quit(0 if failures==0 else 1)
