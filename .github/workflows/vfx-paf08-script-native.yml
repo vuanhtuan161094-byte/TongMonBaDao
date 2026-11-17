@@ -1,0 +1,149 @@
+name: PAF08 R1 | Luu Van Liem Tuc Godot native
+on:
+  workflow_dispatch:
+  push:
+    branches: [integration/pve-p0-playable-ui-20261103]
+    paths:
+      - '.github/workflows/vfx-paf08-script-native.yml'
+      - 'tools/vfx/paint_paf06_r3_orbit.py'
+      - 'tools/vfx/paint_paf06_tinh_gioi.py'
+      - 'tools/vfx/paint_paf08_liem_tuc.py'
+      - 'tools/qa/check_paf06_r3_orbit.py'
+      - 'tools/qa/check_paf06_passive.py'
+      - 'godot/labs/combat_lab/talisman18/**'
+      - 'godot/tests/labs/combat_lab/vfx_paf08_r1_contract_test.gd'
+      - 'docs/operations/vfx_packets/PAF06_R3_ROTATING_RING_REVIEW_20261117.md'
+permissions:
+  contents: read
+jobs:
+  paf06-passive-native:
+    runs-on: ubuntu-latest
+    timeout-minutes: 24
+    env:
+      GODOT_AUDIO_DRIVER: Dummy
+      GODOT_RENDERING_DRIVER: opengl3
+    steps:
+      - name: Checkout exact SHA
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Install pinned Godot 4.7.2 and original source dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/vfx-paf06";mkdir -p "$d"
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          printf '%s\n' "$GITHUB_SHA" > "$d/exact-sha.txt"
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq xvfb ffmpeg unzip python3-pil
+          curl --fail --location --retry 3 -o /tmp/godot472.zip 'https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip'
+          echo 'cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4  /tmp/godot472.zip' | sha256sum --check --strict
+          unzip -q /tmp/godot472.zip -d /tmp
+          sudo install -m0755 /tmp/Godot_v4.7.2-stable_linux.x86_64 /usr/local/bin/godot
+          godot --version | tee "$d/engine.txt"
+      - name: PAF08 independent 36x3 first-party living RGBA sources
+        shell: bash
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/vfx-paf06"
+          /usr/bin/python3 tools/vfx/paint_paf08_liem_tuc.py 2>&1 | tee "$d/paf08-source.log"
+          grep -Fq 'PAF08_R1_SOURCE_PASS' "$d/paf08-source.log"
+          /usr/bin/python3 - <<'PY'
+          from PIL import Image
+          from pathlib import Path
+          import json,hashlib
+          base=Path('godot/labs/combat_lab/talisman18')
+          man=json.loads((base/'art_sources/PAF08_R1_ART_MANIFEST.json').read_text())
+          assert man['skill_id']=='tmb.skill.talisman.phong_an_phu.passive_03.human'
+          assert man['frames_per_layer']==36 and man['columns']==9 and man['cell_px']==320
+          for name in ('rear','front','script'):
+              item=man['layers'][name]
+              atlas=Path(item['atlas']['path'])
+              master=Path(item['master']['path'])
+              with Image.open(atlas) as source: im=source.convert('RGBA')
+              assert im.size==(2880,1280),name
+              assert im.getchannel('A').getextrema()[0]==0
+              poses=[]
+              for k in range(36):
+                  x=(k%9)*320;y=(k//9)*320
+                  tile=im.crop((x,y,x+320,y+320))
+                  assert tile.getchannel('A').getextrema()[1]>95,(name,k)
+                  poses.append(hashlib.sha256(tile.tobytes()).hexdigest())
+              assert len(set(poses))>=30,(name,'too few independent poses')
+              assert hashlib.sha256(atlas.read_bytes()).hexdigest()==item['atlas']['sha256']
+              assert hashlib.sha256(master.read_bytes()).hexdigest()==item['master']['sha256']
+              print('PAF08_R1_ORIGINAL_RGBA_LAYER_PASS',name,len(set(poses)))
+          PY
+          sha256sum godot/labs/combat_lab/talisman18/assets/*.webp godot/labs/combat_lab/talisman18/art_sources/*.png > "$d/paf08-source-sha256.txt"
+      - name: Restore approved unchanged caster artwork
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat .github/assets/p3/female_stage_a/part{01..14}.b64 .github/assets/p3/female_stage_a/part15a.b64 .github/assets/p3/female_stage_a/part15b.b64 .github/assets/p3/female_stage_a/part{16..20}.b64 | tr -d '\r\n\t ' | base64 --decode > /tmp/tmb_stage_a_pack.zip
+          test "$(stat -c%s /tmp/tmb_stage_a_pack.zip)" -eq 44838
+          echo '6a4213b9129ffb3f438c21cbb5326672ddf8915323836bf80cb33b8e5fabfdca  /tmp/tmb_stage_a_pack.zip' | sha256sum --check --strict
+          unzip -q /tmp/tmb_stage_a_pack.zip -d .
+      - name: Strict Godot 4.7.2 import and passive-specific PAF08 focused contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/vfx-paf06"
+          bash tools/qa/run_godot_strict.sh --headless --path godot --import 2>&1 | tee "$d/paf08-import.log"
+          bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://labs/combat_lab/talisman18/luu_van_liem_tuc_r1.gd 2>&1 | tee "$d/paf08-parse.log"
+          bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/labs/combat_lab/vfx_paf08_r1_contract_test.gd 2>&1 | tee "$d/paf08-focused.log"
+          grep -Fq 'PAF08_R1_FOCUSED_RESULT=PASS failures=0' "$d/paf08-focused.log"
+      - name: Real native Godot 1280x720 flowing-script demo and disabled control
+        shell: bash
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/vfx-paf06"
+          xvfb-run -a -s '-screen 0 1280x720x24' bash tools/qa/run_godot_strict.sh --path godot --resolution 1280x720 --fixed-fps 60 --write-movie "$d/paf08-on.avi" --quit-after 252 res://labs/combat_lab/talisman18/luu_van_liem_tuc_r1.tscn 2>&1 | tee "$d/paf08-native.log"
+          grep -Fq 'PAF08_R1_READY' "$d/paf08-native.log"
+          xvfb-run -a -s '-screen 0 1280x720x24' bash tools/qa/run_godot_strict.sh --path godot --resolution 1280x720 --fixed-fps 60 --write-movie "$d/paf08-off.avi" --quit-after 96 res://labs/combat_lab/talisman18/luu_van_liem_tuc_r1_off.tscn 2>&1 | tee "$d/paf08-off.log"
+          ffmpeg -y -hide_banner -loglevel error -i "$d/paf08-on.avi" -pix_fmt yuv420p -c:v libx264 -crf 16 -movflags +faststart "$d/paf08-r1-native.mp4"
+          ffmpeg -y -hide_banner -loglevel error -ss 1.32 -i "$d/paf08-r1-native.mp4" -frames:v 1 "$d/paf08-on.png"
+          ffmpeg -y -hide_banner -loglevel error -ss 1.32 -i "$d/paf08-off.avi" -frames:v 1 "$d/paf08-off.png"
+          ffmpeg -y -hide_banner -loglevel error -ss 0.42 -i "$d/paf08-r1-native.mp4" -frames:v 1 "$d/paf08-script-origin.png"
+          ffmpeg -y -hide_banner -loglevel error -ss 2.37 -i "$d/paf08-r1-native.mp4" -frames:v 1 "$d/paf08-ink-flow.png"
+          ffmpeg -y -hide_banner -loglevel error -ss 3.72 -i "$d/paf08-r1-native.mp4" -frames:v 1 "$d/paf08-second-cycle.png"
+          ffprobe -v error -select_streams v:0 -show_entries stream=width,height,nb_frames -of default=noprint_wrappers=1 "$d/paf08-r1-native.mp4" | tee "$d/paf08-probe.txt"
+          grep -Fxq 'width=1280' "$d/paf08-probe.txt"
+          grep -Fxq 'height=720' "$d/paf08-probe.txt"
+          grep -Fxq 'nb_frames=252' "$d/paf08-probe.txt"
+          /usr/bin/python3 - <<'PY'
+          from PIL import Image,ImageChops
+          import os
+          from pathlib import Path
+          base=Path(os.environ['RUNNER_TEMP'])/'vfx-paf06'
+          a=Image.open(base/'paf08-on.png').convert('RGB')
+          b=Image.open(base/'paf08-off.png').convert('RGB')
+          assert a.size==b.size==(1280,720)
+          delta=ImageChops.difference(a.crop((498,345,778,597)),b.crop((498,345,778,597)))
+          count=sum(max(rgb)>22 for rgb in delta.getdata())
+          assert count>=220, f'PAF08 first-party VFX invisible at native 1x: {count}'
+          head=ImageChops.difference(a.crop((608,401,665,440)),b.crop((608,401,665,440)))
+          face=sum(max(rgb)>105 for rgb in head.getdata())
+          assert face<950, f'PAF08 strong face occlusion: {face}'
+          print('PAF08_R1_GODOT_NATIVE_VISIBLE_PASS changed_pixels=',count,'face_covered_pixels=',face)
+          PY
+          sha256sum "$d/paf08-r1-native.mp4" "$d"/paf08-*.png > "$d/paf08-native-sha256.txt"
+          rm -f "$d/paf08-on.avi" "$d/paf08-off.avi"
+          echo "PAF08_R1_NATIVE_TECH_PASS=$GITHUB_SHA OWNER_ART=PENDING PV_E=HOLD NO_FAKE_CAST=TRUE"
+      - name: Archive native MP4, RGBA masters and proof
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vfx-paf08-native-${{ github.sha }}
+          retention-days: 30
+          if-no-files-found: warn
+          path: |
+            ${{ runner.temp }}/vfx-paf06/*.log
+            ${{ runner.temp }}/vfx-paf06/*.txt
+            ${{ runner.temp }}/vfx-paf06/*.json
+            ${{ runner.temp }}/vfx-paf06/*.png
+            ${{ runner.temp }}/vfx-paf06/*.mp4
+            godot/labs/combat_lab/talisman18/assets/*.webp
+            godot/labs/combat_lab/talisman18/art_sources/*.png
+            godot/labs/combat_lab/talisman18/art_sources/*.json
+            godot/labs/combat_lab/talisman18/art_sources/*.png
+            godot/labs/combat_lab/talisman18/art_sources/*.json
