@@ -157,7 +157,8 @@
   "proof_contract": {
     "focused_marker": "VFX_FIST12_R10_FOCUSED_RESULT=PASS failures=0",
     "native_marker": "VFX_FIST12_R10_READY",
-    "video_filename": "fist12-r10-full-native.mp4",
-    "source": "R10 V4 dedicated fist-only lab, 4 procedural-composited atlases baked from original first-party independent R9 image-painted sources; renderer true Godot 4.7.2 1280x720, 3 early native evidence, full native movie / 16 timestamps, manual art pending."
+    "video_filename": "fist12-r10-preflight.mp4",
+    "source": "R10 V4 dedicated fist-only lab, 4 procedural-composited atlases baked from original first-party independent R9 image-painted sources; renderer true Godot 4.7.2 1280x720, 3 early native evidence, full native movie / 16 timestamps, manual art pending. Three-frame V4 G3.5 proof uses short native preflight MP4; separately stage full 7.6-second native MP4 with sustained mark (no preview substitution).",
+    "full_native_video_filename": "fist12-r10-full-native.mp4"
   }
 }
