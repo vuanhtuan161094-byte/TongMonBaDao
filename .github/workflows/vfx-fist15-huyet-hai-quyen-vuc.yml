@@ -1,4 +1,4 @@
-name: VFX-FIST-15 Huyet Hai Quyen Vuc R1 Wudang-light V4 native
+name: VFX-FIST-15 Huyet Hai Quyen Vuc R2 White-Core Qi V4 native
 on:
   workflow_dispatch:
   push:
@@ -46,7 +46,7 @@ jobs:
           set -euo pipefail
           d=/tmp/vfx-fist15
           python3 tools/vfx/generate_fist15_huyet_hai_quyen_vuc.py | tee "$d/bake.log"
-          grep -Fq 'FIST15_R1_BAKE_PASS total=47 originals=4 true_rgba=true no_gif=true no_rig=true' "$d/bake.log"
+          grep -Fq 'FIST15_R2_BAKE_PASS total=47 originals=4 true_rgba=true no_gif=true no_rig=true' "$d/bake.log"
           python3 tools/qa/validate_vfx_v4_packet.py --stage packet --packet docs/operations/vfx_packets/FIST15_R1_HUYET_HAI_QUYEN_VUC_V4.json | tee "$d/packet.log"
           python3 tools/qa/validate_vfx_v4_packet.py --stage assets --packet docs/operations/vfx_packets/FIST15_R1_HUYET_HAI_QUYEN_VUC_V4.json | tee "$d/assets.log"
           cp godot/labs/combat_lab/fist15/assets/generated/f15_* "$d/"
@@ -86,7 +86,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: vfx-fist15-r1-native-owner-pending
+          name: vfx-fist15-r2-native-owner-pending
           retention-days: 14
           if-no-files-found: warn
           path: |
