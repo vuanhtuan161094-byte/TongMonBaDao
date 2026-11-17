@@ -19,3 +19,13 @@
 - V4 packet/assets/evidence exact-SHA; QA import/parse/focused contract stage; 4 mobile WALK fixture, targeted conditions, 3 status screenshots, separate owner visual review.
 
 **Initial gates:** `G3.5_NATIVE_NOT_YET_EXECUTED`, `TECH_QA_PENDING`, `ART_MANUAL_REVIEW_REQUIRED`, `OWNER_VISUAL_PENDING`, `RUNTIME_MAPPING_PENDING`, `PVE_INTEGRATION_HOLD`, `V6.3_OFF`, `PHYSICAL_QA_PENDING`.
+
+
+## Real Godot R1 exact-SHA technical result — 17 November 2026
+
+- **PASS technical (NOT art approval):** commit `65716b74fd8cfeb9f66ed717d0e18265ca59e634`, [GitHub Actions #43999000999](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/43999000999), exact artifact **#14292070078** `poi15-r1-poison-native-65716b74fd8cfeb9f66ed717d0e18265ca59e634`. Strict Godot 4.7.2 import/parse/focused `POI15_HOA_DOC_TAN_R1_RESULT=PASS failures=0`, packet/assets/evidence V4 stage PASS, all workflow steps success.
+- **Native media proof:** **1280×720, 450 recorded 60fps frames, 7.5s native MP4** (not 450 authored sprite poses or measured Android runtime FPS); real screen snapshots charge0.28, expanding-field peak0.84, contact1.20; independent on-screen mark status snapshots t1.50,3.95,6.90 and expired7.20, plus 15 timeline captures and SHA256 file manifest.
+- **Original durable source:** first-party code `tools/vfx/generate_poi15_hoa_doc_tan_r1.py`, **28 original RGBA source poses** (8 charge/12 field/8 status) + 3 real original alpha atlas PNG and middle-pose master sources persisted in PR #72 at CI follow-up commit. The source dimensions are 192², 320², 128² and original palette jade/aqua/purple. No GIF, rigs, branch creation or reused commercial pixels.
+- **Visual target contract:** 4 genuinely WALK-animated enemies, 3 within the **LAB-only visual circular area** and fourth outside; `poison_stacks=1` and `duration=6s` from t1.05 to t7.05, mark disappears by t7.20. Visual checks plus focused test demonstrate timing and target fixtures only. **No real damage, poisoned-state application, real Combat V2 hit receipt or actual live area-to-pixel mapping**, no PVE. No unverified Android fps claims.
+- **Self-art review:** soft green poison field with violet accents is translucent and does not form a black rectangle. However at 1280×720 full-screen display the three individual status wisps are rather subtle and may need bolder selective luminance/contrast on owner request. **Art not finally approved**; this R1 is an OWNER_VISUAL_PENDING candidate, not owner-approved and not live-ready.
+- **Gates:** `TECH_GODOT_V4_G35_EXACT_SHA_PASS`, `ART_SELF_REVIEW_LIMITATIONS_RECORDED`, `OWNER_VISUAL_PENDING`, `RUNTIME_MAPPING_PENDING`, `PVE_HOLD`, `V63_OFF`, `PHYSICAL_QA_PENDING`. Prior POI14 R1B and POI13 R2 remain temporarily approved and not modified.
