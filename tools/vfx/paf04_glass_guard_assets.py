@@ -154,10 +154,14 @@ def badge(i,n=8):
     d=ImageDraw.Draw(out,'RGBA')
     # Compact persistent status motif; NOT a four-second animated cast.
     coords=[(62,21),(86,30),(102,59),(84,94),(62,111),(37,91),(24,57),(40,29)]
-    d.polygon(pt(coords),fill=(42,178,154,45))
-    L(d,coords+[coords[0]],(104,246,224,130),1.8)
-    L(d,[(61,30),(77,52),(64,83),(51,65),(61,30)],
-      (252,237,171,188),1.8)
+    # A compact independent 8-pose shimmer, not eight duplicate static GIF frames.
+    pulse=.72+.28*math.sin(2*math.pi*q+.3)
+    shift=3.5*math.sin(2*math.pi*q)
+    coords=[(x+shift,y+1.7*math.sin(2*math.pi*q+y*.05)) for x,y in coords]
+    d.polygon(pt(coords),fill=(42,178,154,round(45*pulse)))
+    L(d,coords+[coords[0]],(104,246,224,round(142*pulse)),1.8)
+    L(d,[(61+shift,30),(77+shift*.5,52),(64,83),(51-shift*.4,65),(61+shift,30)],
+      (252,237,171,round(203*pulse)),1.8)
     return final(out,128,128)
 def atlas(frames,w,h):
     im=Image.new('RGBA',(4*w,h*((len(frames)+3)//4)))
