@@ -27,7 +27,7 @@ func _check()->void:
         var history:Array[Vector2]=LAB.step_history(t)
         check(history.size()>=2,"at least 2 history afterimages "+str(t))
         check(not LAB.has_damage_receipt(t),"ZERO fabricated enemy hit receipts")
-    check(LAB.moving_monster_foot(.4).distance_to(LAB.moving_monster_foot(1.52))>10.0,"unaffected monster is really WALKING")
+    check(LAB.moving_monster_foot(.1).distance_to(LAB.moving_monster_foot(1.10))>10.0,"unaffected monster is really WALKING")
     check(LAB.MONSTER_FRAMES.has_animation("walk"),"real WALK animated actor")
     var s:=FileAccess.get_file_as_string("res://labs/combat_lab/poison17_yem_anh_bo/r1/yem_anh_bo.gd")
     for forbidden in ["SaveService.","CombatV2.","apply_damage","apply_poison","apply_status","set_health","spawn_projectile","teleport_actor","stealth_invulnerable"]:
