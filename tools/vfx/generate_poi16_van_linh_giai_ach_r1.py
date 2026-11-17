@@ -155,6 +155,68 @@ def src(part,t,cell):
             lay("mist",body*.10*retained*tex)
         lay("pearl",gauss(x,y,0,-9,6+8*t,10+10*t)*.27*retained)
     else:raise ValueError(part)
+
+    # R1C G3.5 VISIBILITY REWORK (true-energy RGBA, no flat opaque glyph).
+    # Separate hot ivory nucleus, saturated jade BODY and faint transparent halo.
+    if part=="charge":
+        a=.22+.78*t
+        for k in range(5):
+            off=(k-2)*11.0
+            v=off+6*np.sin(y*.026+k*1.1+t*.5)
+            m=np.exp(-((x-v)/5.3)**2)*gate(y,-48,48,19)
+            lay("jade" if k%2 else "aqua",m*.54*a*tex)
+            lay("pearl",np.exp(-((x-v)/1.8)**2)*gate(y,-37,31,12)*.37*a)
+        lay("jade",gauss(x,y,0,0,30,30)*.37*a)
+        lay("gold",gauss(x,y,0,0,13,15)*.30*a)
+        lay("ivory",gauss(x,y,0,0,7,8)*.90*a)
+        lay("pearl",gauss(x,y,0,0,3.8,4.8)*.90*a)
+    elif part=="bloom":
+        a=.32+.68*np.sin(np.pi*(.1+.74*t))**.75
+        g=.35+.76*t
+        for k in range(3):
+            phi=-.25+k*math.tau/3
+            along=x*np.cos(phi)+y*np.sin(phi)
+            across=-x*np.sin(phi)+y*np.cos(phi)
+            center=6*np.sin(along*.015+k*.93+t*.88)
+            m=gate(along,-8,142*g,24)
+            body=np.exp(-((across-center)/(12+3*k))**2)*m
+            core=np.exp(-((across-center)/(3.0+.5*k))**2)*m
+            lay("jade" if k%2 else "aqua",body*.49*a*tex)
+            lay("pearl",core*.52*a)
+            tip=gauss(x,y,119*g*np.cos(phi),119*g*np.sin(phi),9+2*k,11+2*k)
+            lay("gold",tip*.38*a)
+        lay("jade",gauss(x,y,0,-4,39,42)*.34*a)
+        lay("pearl",gauss(x,y,0,-4,11,12)*.79*a)
+        lay("ivory",gauss(x,y,0,-4,5,6)*.94*a)
+    elif part=="blessing":
+        a=.43+.57*np.sin(np.pi*(.13+.74*t))**.78
+        for k in range(6):
+            off=(k-2.5)*11
+            path=off+5*np.sin(y*.021+k*1.2+t*.9)
+            mask=np.exp(-((x-path)/(5.8+1.2*(k%3)))**2)*gate(y,-70,72,21)
+            hot=np.exp(-((x-path)/1.8)**2)*gate(y,-58,61,16)
+            lay("jade" if k%2 else "aqua",mask*.54*a*tex)
+            lay("pearl",hot*.31*a)
+        lay("aqua",gauss(x,y,0,-5,31,40)*.30*a)
+        lay("gold",gauss(x,y,0,-7,18,20)*.24*a)
+        lay("ivory",gauss(x,y,0,-7,9,10)*.82*a)
+        lay("pearl",gauss(x,y,0,-7,4.6,5.7)*.91*a)
+    elif part=="fade":
+        a=max(.08,(1-t)**1.14)
+        for k in range(13):
+            phi=k*2.39996
+            cx=(14+8*(k%5))*np.sin(phi)+13*t*np.cos(phi)
+            cy=(19+6*(k%4))*np.cos(phi)-62*t
+            lay("jade",gauss(x,y,cx,cy,4,7)*.32*a)
+            lay("ivory",gauss(x,y,cx,cy,1.9,2.8)*.39*a)
+        lay("aqua",gauss(x,y,0,-12-16*t,59,53)*.13*a)
+    # R1B median nonzero alpha = charge8 / bloom20 / blessing9 of 255:
+    # recover midtone legibility without hard edges/opaque stamps.
+    old_alpha=p[:,:,3]
+    gain={"charge":2.05,"bloom":1.85,"blessing":2.0,"fade":1.9}[part]
+    p[:,:,3]=np.clip(np.where(old_alpha>.045,1-(1-old_alpha)**gain,
+                               old_alpha*1.20),0,.965)
+
     rgba=np.zeros_like(p,dtype=np.uint8)
     rgba[:,:,:3]=np.clip(p[:,:,:3],0,255).astype(np.uint8)
     rgba[:,:,3]=np.clip(p[:,:,3]*255,0,255).astype(np.uint8)
@@ -180,6 +242,6 @@ def main():
         atlas.save(dest,optimize=True)
         raw+=atlas.width*atlas.height*4
         print("POI16_ORIGINAL_RGBA_ATLAS",kind,count,atlas.size,"png_bytes",dest.stat().st_size)
-    print("POI16_VAN_LINH_GIAI_ACH_R1B_SOURCE_PASS poses=38 atlases=4 no_gif=true raw_rgba_bytes=",raw)
+    print("POI16_VAN_LINH_GIAI_ACH_R1C_SOURCE_PASS poses=38 atlases=4 no_gif=true raw_rgba_bytes=",raw)
 
 if __name__=="__main__":main()
