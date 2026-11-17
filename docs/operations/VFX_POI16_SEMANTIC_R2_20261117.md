@@ -10,3 +10,7 @@ Date: 17 Nov 2026. The owner accepted R1E visibility provisionally but rejected 
 **QA G3.5/G3.6/G3.7:** Godot original-asset import + focused contract checks the actual 3 moving target links/seals and status expiry, V4 packet/assets/evidence and unscaled native light visibility. Semantic-shape **G3.7 HUMAN / OWNER** checks whether an observer at 1×, without a label, sees *medicine/herb → 3 transfer channels → 3 healing target seals*. CI cannot approve subjective recognition. Color/tone must remain clear and transparent but not too stiff. No PvE, V6.3, SaveService, rig, branch or merge.
 
 Status: `TECH_QA_PENDING`, `ART_OWNER_PENDING`, `PVE_HOLD`, `V63_OFF`, `PHYSICAL_QA_PENDING`.
+
+
+### R2B 1× native contrast correction (17/11/2026)
+R2 initial Godot at SHA `90df0dd8a78ea761a79d3ac62d0b09ddb2e81958` checked three moving real connections/3 leaves/3 seals: focused technical PASS, but native G3.6 blocked charge268<300, bloom11448<13000, contact10108<14500, fade146<500; expired104<=200. Actual captured video shows clear 3-leaf figure and link locations but insufficient brightness. R2B preserves precisely the semantically meaningful geometry and source 48 poses; increases core/body color saturation, screen size of central herb, flow thickness and individual seals, bright-but-finite jade fade. **Do not lower G3.6 thresholds**; owner semantic G3.7 and visual acceptance still pending. R2 initial source/artifacts retained via exact SHA.

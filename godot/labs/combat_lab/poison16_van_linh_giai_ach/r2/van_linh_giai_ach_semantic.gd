@@ -180,7 +180,7 @@ func _draw_live_link(origin:Vector2,target:Vector2,index:float,opacity:float)->v
     if distance<8.0:return
     # The source light stream is a real 384x128 original RGBA atlas sprite.
     # A per-target CanvasItem transform connects the origin to a MOVING chest.
-    draw_set_transform(origin,delta.angle(),Vector2(distance/384.0,0.70))
+    draw_set_transform(origin,delta.angle(),Vector2(distance/384.0,1.12))
     _flip(stream_frames,Vector2(192,0),Vector2(384,128),index,opacity)
     draw_set_transform(Vector2.ZERO,0.0,Vector2.ONE)
 
@@ -196,7 +196,7 @@ func _draw()->void:
     if t>=CAST_END and t<FADE_START:
         var herb_q:=clampf((t-CAST_END)/(FADE_START-CAST_END),0.0,1.0)
         var herb_alpha:=smoothstep(CAST_END,CAST_END+.13,t)*(1.0-smoothstep(FADE_START-.22,FADE_START,t))
-        _flip(herb_frames,HERB_CORE,Vector2(460,379),herb_q*11.0,herb_alpha*.99)
+        _flip(herb_frames,HERB_CORE,Vector2(528,425),herb_q*11.0,herb_alpha*.99)
     # Three moving silk-energy streams are transformed and endpoint-locked.
     if t>=STREAM_START and t<STREAM_END:
         var stream_q:=clampf((t-STREAM_START)/(STREAM_END-STREAM_START),0.0,1.0)
@@ -208,24 +208,24 @@ func _draw()->void:
         var seal_q:=clampf((t-SEAL_START)/(SEAL_END-SEAL_START),0.0,1.0)
         var seal_alpha:=smoothstep(0.0,.15,seal_q)*(1.0-smoothstep(.80,1.0,seal_q))
         for i in chosen:
-            _flip(seal_frames,ally_chest(i,t)+Vector2(0,-14),Vector2(147,156),seal_q*9.0,seal_alpha*.48)
+            _flip(seal_frames,ally_chest(i,t)+Vector2(0,-14),Vector2(182,191),seal_q*9.0,seal_alpha*.67)
     if t>=FADE_START and t<FADE_END:
         var fade_q:=clampf((t-FADE_START)/(FADE_END-FADE_START),0.0,1.0)
         var fade_alpha:=smoothstep(0.0,.12,fade_q)*(1.0-smoothstep(.55,1.0,fade_q))
-        _flip(fade_frames,HERB_CORE,Vector2(432,353),fade_q*7.0,fade_alpha*.62)
+        _flip(fade_frames,HERB_CORE,Vector2(464,392),fade_q*7.0,fade_alpha*.81)
     # Original approved frozen actor art between back bloom and front seal.
     for i in range(ALLY_BASE_POSITIONS.size()):
         _draw_disciple(ally_foot(i,t))
     if t<CAST_END+.05:
         var charge_alpha:=smoothstep(.02,.19,t)*(1.0-smoothstep(CAST_END-.07,CAST_END+.05,t))
-        _flip(seed_frames,PALM,Vector2(200,199),clampf(t/CAST_END*7.0,0.0,7.0),charge_alpha*.99)
+        _flip(seed_frames,PALM,Vector2(240,235),clampf(t/CAST_END*7.0,0.0,7.0),charge_alpha*.99)
     if t>=SEAL_START and t<SEAL_END:
         var q:=clampf((t-SEAL_START)/(SEAL_END-SEAL_START),0.0,1.0)
         var alpha:=smoothstep(0.0,.14,q)*(1.0-smoothstep(.80,1.0,q))
         for i in chosen:
-            _flip(seal_frames,ally_chest(i,t)+Vector2(0,-14),Vector2(99,115),q*9.0,alpha*.96)
+            _flip(seal_frames,ally_chest(i,t)+Vector2(0,-14),Vector2(124,138),q*9.0,alpha*.99)
     if t>=FADE_START and t<FADE_END:
         var q2:=clampf((t-FADE_START)/(FADE_END-FADE_START),0.0,1.0)
         var end_alpha:=smoothstep(0.0,.09,q2)*(1.0-smoothstep(.52,1.0,q2))
         for i in chosen:
-            _flip(fade_frames,ally_chest(i,t)+Vector2(0,-22),Vector2(183,174),q2*7.0,end_alpha*.80)
+            _flip(fade_frames,ally_chest(i,t)+Vector2(0,-22),Vector2(220,204),q2*7.0,end_alpha*.98)

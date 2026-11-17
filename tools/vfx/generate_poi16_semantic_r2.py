@@ -79,9 +79,9 @@ def render(part,phase,wh):
                 u=x*np.cos(a)+y*np.sin(a)
                 ribbon=np.exp(-(v/4.1)**2)*gate(u,8,dist,11)
                 lay("mint",ribbon*.17*strength)
-        lay("jade",ellipse(x,y,0,0,30,31)*.34*strength)
-        lay("gold",ellipse(x,y,0,0,19,17)*.26*strength)
-        lay("ivory",ellipse(x,y,0,0,8.7,9.7)*.86*strength)
+        lay("jade",ellipse(x,y,0,0,38,39)*.59*strength)
+        lay("gold",ellipse(x,y,0,0,24,22)*.32*strength)
+        lay("ivory",ellipse(x,y,0,0,11.7,12.7)*.93*strength)
         lay("pearl",ellipse(x,y,0,0,3.6,4.3)*.95*strength)
     elif part=="herb":
         # A readable luminous three-leaf medicinal bloom. Source silhouette
@@ -92,11 +92,11 @@ def render(part,phase,wh):
         for k in range(3):
             a=-np.pi/2+k*2*np.pi/3 +.06*np.sin(phase*2.5+k)
             fill,edge,vein,u,v,s=leaf(p,x,y,a,129,grown,phase)
-            lay("deep",fill*.21*intensity)
-            lay("jade",fill*.52*intensity*noise)
-            lay("mint",fill*.24*intensity)
-            lay("aqua",edge*.25*intensity)
-            lay("pearl",vein*.59*intensity)
+            lay("deep",fill*.27*intensity)
+            lay("jade",fill*.70*intensity*noise)
+            lay("mint",fill*.32*intensity)
+            lay("aqua",edge*.31*intensity)
+            lay("pearl",vein*.74*intensity)
             lay("gold",vein*.12*intensity)
             # Four short branching leaf veins: organic medicine, not lightning.
             for j in range(2):
@@ -129,10 +129,10 @@ def render(part,phase,wh):
         envelope=gate(x,left,right,22)
         ribbon=np.exp(-((y-path)/(5.5+3*np.sin(np.pi*t)**2))**2)*envelope
         silk=np.exp(-((y-path)/2.5)**2)*envelope
-        lay("jade",np.exp(-((y-path)/21)**2)*envelope*.11*noise)
-        lay("aqua",ribbon*.43*noise)
-        lay("mint",ribbon*.26)
-        lay("ivory",silk*.47)
+        lay("jade",np.exp(-((y-path)/24)**2)*envelope*.19*noise)
+        lay("aqua",ribbon*.59*noise)
+        lay("mint",ribbon*.35)
+        lay("ivory",silk*.59)
         # Traveling luminous pearl: one discernible transfer direction.
         lead=np.clip(.08+.87*phase,0,1)
         hx=left+(right-left)*lead
@@ -155,15 +155,15 @@ def render(part,phase,wh):
         norm=np.clip((v+35)/70,0,1)
         half=2+19*np.sin(np.pi*norm)**.76
         drop=np.exp(-((np.abs(x)/np.maximum(half,2.1))**4))*gate(v,-37,34,8)
-        lay("jade",drop*.47*alpha)
-        lay("mint",drop*.33*alpha)
+        lay("jade",drop*.68*alpha)
+        lay("mint",drop*.43*alpha)
         lay("pearl",ellipse(x,y,0,5,7,10)*.81*alpha)
         lay("ivory",ellipse(x,y,0,3,3,6)*.89*alpha)
         for sign in (-1,1):
             # Pair of small botanical leaves separated from drop, pixel alpha soft.
             angle=(-.52 if sign==1 else -np.pi+.52)
             fill,edge,vein,_,_,_=leaf(p,x-sign*8,y+9,angle,38,.79,phase)
-            lay("jade",fill*.57*alpha)
+            lay("jade",fill*.75*alpha)
             lay("aqua",edge*.28*alpha)
             lay("ivory",vein*.35*alpha)
         for k in range(5):
@@ -172,19 +172,19 @@ def render(part,phase,wh):
             lay("gold",ellipse(x,y,xp,yp,2.2,3.6)*.30*alpha)
     elif part=="fade":
         # Compact, visible but FINITE jade/gold motes (never another cast).
-        amount=max(.14,(1-phase)**.70)
+        amount=max(.28,(1-phase)**.56)
         for i in range(21):
             a=i*2.399963
             rr=19+10*(i%6)+11*phase
             x0=rr*np.sin(a)+phase*13*np.cos(a)
             y0=rr*np.cos(a)*.83-54*phase
-            lay("jade",ellipse(x,y,x0,y0,4.7,8)*.54*amount)
-            lay("ivory",ellipse(x,y,x0,y0,2.2,3.3)*.39*amount)
-        lay("aqua",ellipse(x,y,0,-13-17*phase,54+14*phase,52+14*phase)*.18*amount)
+            lay("jade",ellipse(x,y,x0,y0,6.2,9.8)*.91*amount)
+            lay("ivory",ellipse(x,y,x0,y0,2.3,3.7)*.44*amount)
+        lay("aqua",ellipse(x,y,0,-13-17*phase,59+15*phase,57+15*phase)*.31*amount)
     else:raise ValueError(part)
     # High-visibility core+colored body with true soft edges, G3.6 compliant.
     old=p[:,:,3]
-    boosts={"seed":1.5,"herb":1.35,"stream":1.36,"seal":1.37,"fade":1.32}
+    boosts={"seed":1.75,"herb":1.52,"stream":1.51,"seal":1.57,"fade":1.65}
     p[:,:,3]=np.clip(np.where(old>.035,1-(1-old)**boosts[part],old*1.07),0,.975)
     arr=np.zeros_like(p,dtype=np.uint8)
     arr[:,:,:3]=np.clip(p[:,:,:3],0,255).astype(np.uint8)
@@ -210,6 +210,6 @@ def main():
         atlas.save(f,optimize=True)
         print("POI16_R2_ORIGINAL_RGBA",name,n,atlas.size,f.stat().st_size)
         raw+=atlas.width*atlas.height*4
-    print("POI16_R2_SEMANTIC_SOURCE_PASS original_true_alpha_poses=48 five_atlases=true no_gif=true raw_rgba_bytes=",raw)
+    print("POI16_R2B_SEMANTIC_SOURCE_PASS original_true_alpha_poses=48 five_atlases=true no_gif=true raw_rgba_bytes=",raw)
 
 if __name__=="__main__":main()
