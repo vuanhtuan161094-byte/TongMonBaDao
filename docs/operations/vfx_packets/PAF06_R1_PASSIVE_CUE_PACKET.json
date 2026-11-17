@@ -1,0 +1,78 @@
+{
+  "schema": "tmb-vfx-passive-visual-packet-v1",
+  "packet_id": "PAF06_R1_TINH_GIOI_TINH_TAM",
+  "skill_id": "tmb.skill.talisman.phong_an_phu.passive_01.human",
+  "skill_name_vi": "Tĩnh Giới Tĩnh Tâm",
+  "catalogue_path": "godot/data/combat/v63_talisman_combat_catalog.json",
+  "lab_scene": "godot/labs/combat_lab/talisman16/tinh_gioi_tinh_tam_r1.tscn",
+  "generator": "tools/vfx/paint_paf06_tinh_gioi.py",
+  "focused_test": "godot/tests/labs/combat_lab/vfx_paf06_r1_contract_test.gd",
+  "declared_contract": {
+    "effect": "passive",
+    "element": "wind",
+    "shape": "single_target",
+    "target_limit": 1,
+    "cast_time": 0,
+    "cooldown": 0,
+    "duration": 0,
+    "damage_ratio": 0,
+    "range": 0,
+    "radius": 0,
+    "projectile_speed": 0,
+    "ai_profile": "passive_always_on",
+    "passive_modifiers": {
+      "cooldown_recovery_factor": 0.015
+    }
+  },
+  "three_clocks": {
+    "combat": "PASSIVE_ALWAYS_ON_NO_CAST_OR_PROC_RECEIPT",
+    "vfx": "CONTINUOUS_COSMETIC_AURA_LOOP_ONLY",
+    "demo": "3.0S_NATIVE_ANIMATION_SAMPLE_NO_NEW_COMBAT_HITS",
+    "runtime_receipt": "NOT_APPLICABLE_NO_EVENT",
+    "charge_contact_phases": "NOT_APPLICABLE_BY_CANONICAL_PASSIVE"
+  },
+  "source": {
+    "class": "FIRST_PARTY_CODE_PAINTED_ALPHA_RASTER",
+    "rights": "First party Python PIL authored changing feather forms and brushwork. No external commercial art, no font files, no copyrighted pixels.",
+    "art_quality": "MANUAL_REVIEW_REQUIRED",
+    "frames_per_layer": 24,
+    "geometry": [
+      6,
+      4,
+      320,
+      320
+    ],
+    "layers": [
+      "back",
+      "front",
+      "heart"
+    ],
+    "note": "Pose hash proves data validity only. 1x actual Godot loop review mandatory."
+  },
+  "review_screens": [
+    {
+      "id": "calm",
+      "at": 0.42,
+      "file": "paf06-calm.png"
+    },
+    {
+      "id": "flow",
+      "at": 1.32,
+      "file": "paf06-flow.png"
+    },
+    {
+      "id": "breath",
+      "at": 2.64,
+      "file": "paf06-breath.png"
+    }
+  ],
+  "evidence": {
+    "valid_script": "PAF06_R1_FOCUSED_RESULT=PASS failures=0",
+    "valid_native": "PAF06_R1_READY",
+    "native_mp4": "paf06-r1-native.mp4",
+    "target_hit": "NONE",
+    "owner": "OWNER_VISUAL_PENDING",
+    "gameplay": "PVE_INTEGRATION_HOLD",
+    "device": "PHYSICAL_QA_PENDING"
+  }
+}
