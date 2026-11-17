@@ -7,6 +7,7 @@ on:
       - 'godot/labs/combat_lab/fist12/r10/**'
       - 'godot/labs/combat_lab/fist12/assets/r9_sources/**'
       - 'tools/vfx/generate_fist12_r10.py'
+      - 'godot/labs/combat_lab/fist03/assets/godfist_master.webp'
       - 'tools/qa/check_fist12_r10_visibility.py'
       - 'godot/tests/labs/combat_lab/vfx_fist12_r10_contract_test.gd'
       - 'docs/operations/vfx_packets/FIST12_R10_DOAN_MACH_LIEN_QUYEN_V4.json'
@@ -48,7 +49,7 @@ jobs:
           set -euo pipefail
           python3 tools/qa/validate_vfx_v4_packet.py --stage packet --packet docs/operations/vfx_packets/FIST12_R10_DOAN_MACH_LIEN_QUYEN_V4.json | tee /tmp/vfx-fist12-r10/v4-packet.log
           python3 tools/vfx/generate_fist12_r10.py | tee /tmp/vfx-fist12-r10/bake.log
-          grep -Fq 'FIST12_R10_BAKE_PASS poses=48 masters=R9_INDEPENDENT_SOURCE_DERIVATIVE no_gif=true no_rig=true' /tmp/vfx-fist12-r10/bake.log
+          grep -Fq 'FIST12_R10_BAKE_PASS poses=48 masters=R9_PAINTERLY_PLUS_FIST03_FIST_DERIVATIVE no_gif=true no_rig=true' /tmp/vfx-fist12-r10/bake.log
           python3 tools/qa/validate_vfx_v4_packet.py --stage assets --packet docs/operations/vfx_packets/FIST12_R10_DOAN_MACH_LIEN_QUYEN_V4.json | tee /tmp/vfx-fist12-r10/v4-assets.log
           cp godot/labs/combat_lab/fist12/assets/r10_generated/r10_*.png /tmp/vfx-fist12-r10/
           sha256sum godot/labs/combat_lab/fist12/assets/r9_sources/*.b64 /tmp/vfx-fist12-r10/*.png > /tmp/vfx-fist12-r10/ART_SOURCE_SHA256SUMS.txt
