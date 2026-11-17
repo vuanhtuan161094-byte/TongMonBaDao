@@ -1,3 +1,15 @@
+> **ADDENDUM 17/11/2026 — VFX G3.6: KHẢ NĂNG NHÌN THẤY Ở 1× BẮT BUỘC.**
+> Bài học **POI16 R1B**: Godot import/parse/contract/source RGBA đều PASS nhưng chủ dự án gần như **không nhìn thấy hiệu ứng**. Audit atlas alpha khác 0 ghi nhận *median* charge **8/255**, bloom **20/255**, blessing **9/255**; ảnh Godot 1280×720 tụ lực chỉ khoảng **79 pixel xanh sáng** theo bộ lọc ROI, không đạt khả năng đọc ở 1×. Đây là lỗi production-level, không thể lấy CI PASS để bào chữa.
+>
+> **Quy trình bắt buộc mới G0→G3.5→G3.6→G4–G8** (sau khi dựng scene có ảnh native thật):
+> 1. **Material separation:** source phải thể hiện rõ *HOT CORE* ngọc trắng (~alpha cao), *COLORED ENERGY BODY* jade/cyan/kim vừa đậm, *SOFT HALO* mới thật trong; alpha thấp liên tục trên tất cả pixel làm toàn chiêu biến mất. Giữ RGBA gốc/alpha0 ở nền, không biến thành sticker/SVG/geometric UI hoặc hình vuông đục; thêm/mix ADD chỉ tại lõi nhỏ, tránh cháy trắng.
+> 2. **G3.5 sớm, trước full movie:** chụp ba ảnh native 1280×720 t=charge/peak/contact trên nhân vật/quái đang di chuyển; xem **1×** (không chỉ zoom), cùng ảnh tham chiếu owner-approved. Kích thước nhân vật, mặt, target, contact và hướng năng lượng phải nhìn thấy ngay; nếu 1× không thấy: **STOP ART REWORK** trước khi quay hàng trăm frame.
+> 3. **G3.6 độ nổi đo trên ảnh thực:** bắt buộc có *screen-space native brightness/contrast* probe cho các vùng charge/peak/contact/fade so với idle/expired; loại metric ngưỡng và ROI phải được xác định theo màu, bố cục và map **của chính skill** (không áp một ngưỡng xanh cho 12 môn phái). Ghi số vùng ảnh đủ sáng, độ tương phản và alpha; **fail kỹ thuật** nếu gần như vô hình. Ví dụ POI16: \`tools/qa/check_poi16_native_visibility.py\`. Đây là *minimum visibility check*, không tự chấm mỹ thuật PASS.
+> 4. **MOTION/FPS & crowd test:** kiểm tra nén PNG, crossfade alpha nhân trọng số hai frame, render layer trước/sau nhân vật, vật liệu ADD cục bộ; đo đọc rõ ở tỉ lệ 1× khi có **3 mục tiêu di chuyển**, không che mặt và không làm lóe quá mức trong cảnh nhiều đệ tử. Màn sáng và màn tối phải được nghiệm thu thủ công qua native Godot trước khi phát hành; stress 6v8/30 đệ tử+40 quái và Android vật lý vẫn PENDING nếu chưa làm.
+> 5. **Cổng art tách biệt:** Technical PASS + visibility PASS = ứng viên **owner review**, **không đồng nghĩa đẹp**. Owner chê “mờ, không thấy gì” → \`ART_REWORK_REQUIRED\`, không qua skill kế, không merge/PvE. Giữ source và video phiên bản cũ theo exact SHA. Không GIF, không rig.
+>
+> G3.6 phải được thêm vào cả skill ledger/handoff và CI của các skill mới. Bản R1B POI16 không qua G3.6; R1C cần qua Godot và cho chủ dự án duyệt lại.
+
 > **CURRENT VFX PROCESS RULE (16/11/2026):** mandatory Production System V4 addendum at the end of this SOP. Every VFX school/chat must apply explicit timeline contract, motion-derived sprite frames, early 3-frame native Godot preflight, moving-target hit review, separate art/technical/owner gates, durable asset source. This augments existing G0–G8; read before using older estimates or fixed 8–12-frame examples.
 
 # TÔNG MÔN BÁ ĐẠO — VFX ART-FIRST / ONE SKILL AT A TIME — SOP V3
