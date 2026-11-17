@@ -42,8 +42,9 @@ def petal(im,x,y,ang,l,w,bend,opacity,light=True):
     vertices=bez(root,b1,b2,tip)+bez(tip,b4,b3,root)
     mask=Image.new("L",im.size,0);d=ImageDraw.Draw(mask)
     d.polygon([P(*v) for v in vertices],fill=205)
-    add(im,mask.filter(ImageFilter.GaussianBlur(6*SS)),C["violet"],.23*opacity)
-    add(im,mask,C["lilac" if light else "violet"],.89*opacity)
+    add(im,mask.filter(ImageFilter.GaussianBlur(7*SS)),C["violet"],.30*opacity)
+    add(im,mask,C["violet" if light else "deep"],.50*opacity)
+    add(im,mask.filter(ImageFilter.GaussianBlur(4*SS)),C["lilac"],.29*opacity)
     inner=Image.new("L",im.size,0);v=ImageDraw.Draw(inner)
     spine=bez(root,(x+dx*l*.30+nx*w*.07,y+dy*l*.30+ny*w*.07),
                  (x+dx*l*.71+nx*w*.04,y+dy*l*.71+ny*w*.04),tip)
@@ -53,12 +54,12 @@ def petal(im,x,y,ang,l,w,bend,opacity,light=True):
         for direction in (-1,1):
             q=(sx+nx*w*.50*direction+dx*l*.07,sy+ny*w*.50*direction+dy*l*.07)
             v.line([P(sx,sy),P(*q)],fill=117,width=SS)
-    add(im,inner,C["gold"],.79*opacity)
+    add(im,inner,C["gold"],.86*opacity)
     # one soft white inner fold rather than electric arcs
     bright=Image.new("L",im.size,0)
     z=ImageDraw.Draw(bright)
     z.line([P(*pt) for pt in spine[4:22]],fill=180,width=SS)
-    add(im,bright.filter(ImageFilter.GaussianBlur(SS*.75)),C["milk"],.65*opacity)
+    add(im,bright.filter(ImageFilter.GaussianBlur(SS*1.15)),C["milk"],.67*opacity)
 
 def veilbrush(im,x,y,turn,spread,power):
     """Transparent painterly ribbons with diffuse halo, jade edge and lilac core."""
@@ -68,11 +69,11 @@ def veilbrush(im,x,y,turn,spread,power):
     layer=Image.new("L",im.size,0);d=ImageDraw.Draw(layer)
     d.line([P(*p) for p in pts],fill=195,width=SS*18,joint="curve")
     add(im,layer.filter(ImageFilter.GaussianBlur(13*SS)),C["deep"],.11*power)
-    add(im,layer.filter(ImageFilter.GaussianBlur(5*SS)),C["violet"],.25*power)
-    add(im,layer,C["violet"],.16*power)
+    add(im,layer.filter(ImageFilter.GaussianBlur(5*SS)),C["violet"],.39*power)
+    add(im,layer,C["violet"],.30*power)
     slim=Image.new("L",im.size,0);d=ImageDraw.Draw(slim)
     d.line([P(*p) for p in pts[8:44]],fill=154,width=SS*4,joint="curve")
-    add(im,slim,C["jade"],.39*power)
+    add(im,slim,C["jade"],.57*power)
     add(im,slim.filter(ImageFilter.GaussianBlur(2*SS)),C["gold"],.12*power)
 
 def runic_ring(im,cx,cy,rx,ry,t,power):
@@ -162,11 +163,12 @@ def paint(name,t,size):
             twinkle(im,x,y,2.0-(k%3)*.25,max(.05,.48-.036*k))
     elif name=="fold":
         q=max(.08,sin(pi*min(1,t+.07)))
-        veilbrush(im,cx-17,cy+5,t*2.5,76,q*.86)
+        veilbrush(im,cx-17,cy+5,t*2.5,76,q*.94)
+        veilbrush(im,cx+26,cy+18,2.35+t*1.6,63,q*.60)
         veilbrush(im,cx+19,cy-9,3+t*3,65,q*.70)
         flower(im,cx,cy,t,"fold")
         close=max(0,min(1,(t-.30)/.70))
-        orb(im,cx,cy,70-26*close,68-24*close,C["violet"],.35*q)
+        orb(im,cx,cy,70-26*close,68-24*close,C["violet"],.44*q)
         orb(im,cx,cy,34-13*close,33-12*close,C["jade"],.62*q)
         orb(im,cx,cy,23-9*close,23-8*close,C["gold"],.72*q)
         orb(im,cx,cy,12-4*close,13-4*close,C["milk"],.95*q)

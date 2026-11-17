@@ -181,6 +181,12 @@ func _draw() -> void:
             var past_t:=maxf(RELEASE_AT,t-.045*float(k))
             _pose(seed_frames,projectile_pos(past_t),Vector2(252,176),float((int(past_t*20)+k)%16),fade*(.125-.027*k))
         _pose(seed_frames,projectile_pos(t),Vector2(478,327),clampf(flight*15,0,15),fade*.97)
+    # At contact a SMALL foreground hot core locks the same selected target;
+    # does not claim damage or add a gameplay mark to a second actor.
+    if t>=CONTACT_AT and t<1.96:
+        var contact_u:=clampf((t-CONTACT_AT)/(1.96-CONTACT_AT),0,1)
+        var contact_glow:=.55*(1.0-smoothstep(.53,1.0,contact_u))
+        _pose(mark_frames,target_foot(t)+Vector2(0,-85),Vector2(110,110),contact_u*11,contact_glow)
     # Foreground small living orchid status mark, over head on selected monster.
     if t>=CONTACT_AT and t<MARK_FADE_END:
         var mark_alpha:=mark_gain(t)
