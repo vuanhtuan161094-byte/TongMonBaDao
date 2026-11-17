@@ -73,23 +73,27 @@ jobs:
           bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://labs/combat_lab/poison18_phu_cot_co_tien_a/r1/phu_cot_co_tien_a.gd 2>&1 | tee "$d/parse.log"
           bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/labs/combat_lab/vfx_poi18_immortal_mark_r1_contract_test.gd 2>&1 | tee "$d/godot-focused.log"
           grep -Fq 'POI18_IMMORTAL_MARK_R1_RESULT=PASS failures=0' "$d/godot-focused.log"
-      - name: G3.5 STOP - genuine Godot 1280x720 moving-contact mini preflight
+      - name: G5 original Godot 8.5-second full-motion plus 6.5-second mark expiry proof
         run: |
           set -euo pipefail
           d="$RUNNER_TEMP/poi18"
-          xvfb-run -a -s '-screen 0 1280x720x24' bash tools/qa/run_godot_strict.sh --path godot --resolution 1280x720 --fixed-fps 60 --write-movie "$d/native.avi" --quit-after 108 res://labs/combat_lab/poison18_phu_cot_co_tien_a/r1/phu_cot_co_tien_a.tscn 2>&1 | tee "$d/godot-preflight.log"
+          xvfb-run -a -s '-screen 0 1280x720x24' bash tools/qa/run_godot_strict.sh --path godot --resolution 1280x720 --fixed-fps 60 --write-movie "$d/native.avi" --quit-after 510 res://labs/combat_lab/poison18_phu_cot_co_tien_a/r1/phu_cot_co_tien_a.tscn 2>&1 | tee "$d/godot-preflight.log"
           grep -Fq 'POI18_PHU_COT_CO_TIENA_R1_READY' "$d/godot-preflight.log"
           ffmpeg -y -hide_banner -loglevel error -i "$d/native.avi" -pix_fmt yuv420p -c:v libx264 -crf 16 -movflags +faststart "$d/v4-poi18-r1-native.mp4"
           ffmpeg -y -hide_banner -loglevel error -ss 0.21 -i "$d/v4-poi18-r1-native.mp4" -frames:v 1 "$d/v4-charge.png"
           ffmpeg -y -hide_banner -loglevel error -ss 0.98 -i "$d/v4-poi18-r1-native.mp4" -frames:v 1 "$d/v4-peak.png"
           ffmpeg -y -hide_banner -loglevel error -ss 1.48 -i "$d/v4-poi18-r1-native.mp4" -frames:v 1 "$d/v4-contact.png"
-          for t in 0.05 0.21 0.38 0.43 0.57 0.68 0.81 0.98 1.10 1.23 1.35 1.48 1.62 1.75; do
+          for t in 0.05 0.21 0.38 0.43 0.57 0.68 0.81 0.98 1.10 1.23 1.35 1.48 1.62 1.75 2.04 2.30 3.80 5.10 6.40 7.60 7.92 8.04 8.22 8.40; do
             ffmpeg -y -hide_banner -loglevel error -ss "$t" -i "$d/v4-poi18-r1-native.mp4" -frames:v 1 "$d/check-$t.png"
           done
+          ffmpeg -y -hide_banner -loglevel error -ss 2.30 -i "$d/v4-poi18-r1-native.mp4" -frames:v 1 "$d/status-active.png"
+          ffmpeg -y -hide_banner -loglevel error -ss 5.10 -i "$d/v4-poi18-r1-native.mp4" -frames:v 1 "$d/status-mid.png"
+          ffmpeg -y -hide_banner -loglevel error -ss 7.92 -i "$d/v4-poi18-r1-native.mp4" -frames:v 1 "$d/status-expiring.png"
+          ffmpeg -y -hide_banner -loglevel error -ss 8.22 -i "$d/v4-poi18-r1-native.mp4" -frames:v 1 "$d/status-cleared.png"
           python3 tools/qa/validate_vfx_v4_packet.py --stage evidence --packet docs/operations/vfx_packets/POI18_R1_V4_PREFLIGHT.json --out "$d" --sha "$GITHUB_SHA" | tee "$d/v4-evidence.log"
           ffprobe -v error -show_entries stream=width,height,nb_frames,duration -of default=noprint_wrappers=1 "$d/v4-poi18-r1-native.mp4" | tee "$d/movie-metadata.txt"
           sha256sum "$d/v4-poi18-r1-native.mp4" "$d/v4-"*.png > "$d/NATIVE-G35-SHA256.txt"
-          printf 'G3.5_NATIVE_TECH_EVIDENCE_CAPTURED\nG3.5_HUMAN_ART_STOP_PENDING\nG5_FULL_NATIVE_MOVIE_NOT_EXECUTED\nG8_PVE_HOLD\n' > "$d/gate.txt"
+          printf 'G3.5_NATIVE_TECH_EVIDENCE_CAPTURED\nG3.5_R1B_NATIVE_REVIEW_COMPLETED_ART_POLISH_REMAINS\nG5_NATIVE_510_FRAMES_CAPTURED\nG6_ART_OWNER_PENDING\nG8_PVE_HOLD\n' > "$d/gate.txt"
           rm -f "$d/native.avi"
       - name: Preserve original master and atlas PNGs on current PR branch
         if: success() && github.event_name == 'push'
