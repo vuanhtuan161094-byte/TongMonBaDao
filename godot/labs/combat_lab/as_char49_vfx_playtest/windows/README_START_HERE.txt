@@ -2,7 +2,7 @@ TMB VFX PLAYTEST QA49 — MỞ BẰNG MỘT CÚ NHẤP
 
 1. Tải artifact TMB_VFX_PLAYTEST_WINDOWS từ run GitHub Actions được liên kết ở PR #72, rồi giải nén ZIP một lần. Thư mục vừa giải nén có sẵn START_TEST.cmd, không có ZIP lồng bên trong.
 2. Nhấp đúp START_TEST.cmd. Godot 4.7.2 portable đã nằm trong gói; không cần cài hoặc tự tìm Godot.
-3. Lần đầu, nếu gói chưa tự tìm thấy nguồn, chọn thư mục R1 V10 đã giải nén khi hộp thoại xuất hiện. Chọn thư mục có ASSET_MANIFEST_SHA256.json. Không chọn thư mục Tông Môn hoặc Godot. Chỉ chọn một lần; launcher xác minh SHA rồi chép ảnh vào profile QA riêng.
+3. Lần đầu, nếu gói chưa tự tìm thấy nguồn, chọn thư mục R1 V10 đã giải nén khi hộp thoại xuất hiện. Chọn thư mục có ASSET_MANIFEST_SHA256.json và SHA-256 A766948A82171909DE4DF3B2DA5F30EB587DB71CB3444141D2DF53B0FB401B49. Không chọn thư mục Tông Môn hoặc Godot. Chỉ chọn một lần; launcher xác minh SHA rồi chép ảnh vào profile QA riêng.
 4. Đợi cửa sổ thử nghiệm 1280 x 720 mở. Gói chỉ là lab hình ảnh, không gây sát thương, trạng thái, không sửa Combat V2, SaveService, PvE hay save người chơi.
 5. Điều khiển: WASD/phím mũi tên di chuyển; phím 1–7 xem bảy hiệu ứng Độc/Phù; SPACE đánh; nhấp chuột trái/TAB đổi quái; M bật/tắt quái di chuyển; V bật/tắt VFX; P tạm dừng; R đặt lại; H ẩn HUD.
 6. Sau khi đóng game, log và profile QA nằm trong %LOCALAPPDATA%\TMB\QA49. Launcher không ghi ngược vào thư mục R1 đã chọn.
