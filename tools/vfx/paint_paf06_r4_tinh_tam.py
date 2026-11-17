@@ -87,6 +87,48 @@ def paint_feather(out,theta,front,idx,time):
                                                   (tip[0]+2.3)*SS,(tip[1]+2.3)*SS),
                                                  fill=(*WHITE,round(174*depth)))
     composite_light(out,dot,3,.31)
+    # R4C: the original VLTK-style ring had no unique visual identity. Add
+    # three distinct VERTICAL floating wind talismans. Every seal follows an
+    # orbit position (theta), scales with perspective and crosses in front of
+    # or behind the actor. Material is warm gold with a readable jade inscription,
+    # NOT a generic neon bead and NOT a physical pasted paper image.
+    tal=img(); td=ImageDraw.Draw(tal,"RGBA")
+    h=30.5*depth
+    w=12.5*depth
+    skew=3.3*math.cos(theta)
+    ytop=y-h; ybottom=y+h*.74
+    verts=[
+        (x-w*.66+skew,ytop+4),(x+skew,ytop),
+        (x+w*.76+skew,ytop+4),(x+w+skew,y-5),
+        (x+w*.52+skew,y+12),(x+skew,ybottom),
+        (x-w*.74+skew,y+14),(x-w+skew,y-7)]
+    td.polygon(pol(verts),fill=(*GOLD,round(143*depth)))
+    # The point is a jade-etched talisman silhouette, legible at native 1x.
+    td.line(pol(verts+[verts[0]]),fill=(*WHITE,round(182*depth)),
+            width=max(2,round(1.7*SS)),joint="curve")
+    td.line(pol([(x+skew,y-h*.68),(x+skew+2.3,y-h*.29),
+                  (x+skew-2.5,y+h*.1),(x+skew,y+h*.37)]),
+            fill=(*JADE,round(234*depth)),width=max(2,round(2.2*SS)),
+            joint="curve")
+    for line_index in range(3):
+        yy=y-h*.33+line_index*h*.34
+        shift=(line_index-1)*2.0
+        td.line(pol([(x-w*.45+skew+shift,yy),
+                     (x+w*.47+skew+shift,yy+2.0)]),
+                fill=(*PEARL,round(222*depth)),width=max(1,round(1.8*SS)))
+    # Unclosed streaks streaming from the lower tip: energy, not an icon.
+    for arm in range(2):
+        t=arm*3.1
+        start=(x+skew+arm*2.0,ybottom)
+        end=(x+skew-7.0-arm*4.0,ybottom+8.0+t)
+        td.line(pol([start,end]),fill=(*JADE,round((126-arm*35)*depth)),
+                width=max(1,round((2.0-arm*.4)*SS)))
+    # Brightest enamel belongs to the small rune, not the entire glow.
+    spot=(x+skew,y-h*.66)
+    td.ellipse(((spot[0]-2.1)*SS,(spot[1]-2.1)*SS,
+                (spot[0]+2.1)*SS,(spot[1]+2.1)*SS),
+               fill=(*WHITE,round(205*depth)))
+    composite_light(out,tal,6.0,.25)
 
 def gold_lotus(index):
     """Small active HEART-LOTUS made from six calligraphic, asymmetric petals.
@@ -172,7 +214,7 @@ def put(name,im,folder):
             "sha256":hashlib.sha256(path.read_bytes()).hexdigest()}
 if __name__=="__main__":
     man={"skill_id":"tmb.skill.talisman.phong_an_phu.passive_01.human",
-         "version":"PAF06_R4B_READABLE_GOLD_WIND_TALISMANS_LOWER_DANTIAN_LOTUS",
+         "version":"PAF06_R4C_GOLD_WIND_TALISMAN_BANNERS_AND_LOWER_DANTIAN_LOTUS",
          "rights":"FIRST_PARTY_PAINTED_RGBA_NOT_VO_LAM_RIPPED",
          "canonical":"PASSIVE_ALWAYS_ON_NO_CAST_OR_HIT",
          "R3_orbit_preserved":True,"layers":{},
