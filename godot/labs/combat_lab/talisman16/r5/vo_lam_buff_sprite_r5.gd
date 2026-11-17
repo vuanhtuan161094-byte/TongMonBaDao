@@ -4,10 +4,10 @@ extends "res://labs/combat_lab/talisman16/r3/vo_lam_orbit_buff_r3.gd"
 ## isolated via RGB->alpha, palette-compressed solely for shipping in Git.
 ## Keeps user-approved R3 genuine rotating 2.5D rings, far/near placement.
 const ATLAS: Texture2D = preload("res://labs/combat_lab/talisman16/r5/assets/paf06_r5_original_energy_sprites.png")
-const CELL := 96
-const WIND := Rect2(0,0,CELL,CELL)
-const SWIRL := Rect2(CELL,0,CELL,CELL)
-const GROUND := Rect2(CELL*2,0,CELL,CELL)
+const SPRITE_CELL := 96
+const WIND := Rect2(0,0,SPRITE_CELL,SPRITE_CELL)
+const SWIRL := Rect2(SPRITE_CELL,0,SPRITE_CELL,SPRITE_CELL)
+const GROUND := Rect2(SPRITE_CELL*2,0,SPRITE_CELL,SPRITE_CELL)
 const SWIRL_AREA := Rect2(503.0,424.0,258.0,139.0)
 const GROUND_AREA := Rect2(514.0,511.0,238.0,116.0)
 const SEAL_AREA := Rect2(591.0,323.0,82.0,82.0)
@@ -17,23 +17,23 @@ var flow_front: Texture2D
 var texture_source_valid := false
 
 static func full_sprite_region(kind:int) -> Rect2:
-	return Rect2(kind*CELL,0,CELL,CELL)
+	return Rect2(kind*SPRITE_CELL,0,SPRITE_CELL,SPRITE_CELL)
 
 static func material_alpha(t:float) -> float:
 	return .75+.11*sin(TAU*t/PERIOD)
 
 func _make_depth_split() -> void:
 	var orig: Image=ATLAS.get_image()
-	if orig.get_width()!=CELL*3 or orig.get_height()!=CELL:
+	if orig.get_width()!=SPRITE_CELL*3 or orig.get_height()!=SPRITE_CELL:
 		push_error("PAF06_R5_ATLAS_DIMENSIONS_INVALID")
 		return
 	# The user approved the R3 orbit: preserve it. Wind source is split into
 	# separate actual RGBA textures so it truly passes BEHIND/IN FRONT of actor.
-	var sprite:Image=orig.get_region(Rect2i(CELL,0,CELL,CELL))
+	var sprite:Image=orig.get_region(Rect2i(SPRITE_CELL,0,SPRITE_CELL,SPRITE_CELL))
 	var behind:Image=sprite.duplicate()
 	var ahead:Image=sprite.duplicate()
-	for y in range(CELL):
-		for x in range(CELL):
+	for y in range(SPRITE_CELL):
+		for x in range(SPRITE_CELL):
 			if y < 49:
 				ahead.set_pixel(x,y,Color.TRANSPARENT)
 			else:
