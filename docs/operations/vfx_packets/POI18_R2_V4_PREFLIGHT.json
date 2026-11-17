@@ -136,14 +136,16 @@
     "receipt_claim": "SIMULATED_VISUAL_ONLY"
   },
   "gate_status": {
-    "g3_5_capture": "NOT_EXECUTED_R2_UNTIL_REAL_GODOT",
-    "technical": "NOT_EXECUTED_R2",
+    "g3_5_capture": "R2C_REAL_NATIVE_3_FRAMES_TECH_PASS",
+    "technical": "R2C_EXACT_SHA_G35_TECH_PASS_ONLY",
     "art": "MANUAL_ART_REVIEW_REQUIRED",
     "owner": "OWNER_VISUAL_PENDING",
     "live": "PVE_INTEGRATION_HOLD",
     "device": "PHYSICAL_QA_PENDING",
     "r1b_owner_feedback": "OWNER_REJECTED_UGLY_FRIGHTENING",
-    "r2_design": "SOFT_SPIRIT_SILK_NO_BUG_ANATOMY"
+    "r2_design": "SOFT_SPIRIT_SILK_NO_BUG_ANATOMY",
+    "r2c_manual_self_review": "ART_FAIL_SYNTHETIC_CHEVRON_TOO_WEAK_OWNER_NOT_YET_REVIEWED",
+    "g5_full_movie": "NOT_EXECUTED_ART_STOP"
   },
   "proof_contract": {
     "focused_marker": "POI18_IMMORTAL_MARK_R2_RESULT=PASS failures=0",
