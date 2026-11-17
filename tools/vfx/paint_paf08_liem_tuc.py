@@ -90,7 +90,9 @@ def src_frame(layer,k):
         ]
         for j,(a,b,c,d,w) in enumerate(glyph):
             line=blank();brush=ImageDraw.Draw(line,'RGBA')
-            path=bez(a,b,c,d,42)
+            # Move the writing next to the forearm, outside gold-on-gold costume.
+            # The jade ink currents still lead INTO the inscription.
+            path=[(x+39.0,y-7.0) for x,y in bez(a,b,c,d,42)]
             upper=[];lower=[]
             for idx,(x,y) in enumerate(path):
                 u=idx/(len(path)-1)
@@ -132,7 +134,7 @@ def save(p,im):
             'size':[im.width,im.height]}
 
 if __name__=='__main__':
-    m={'schema':'PAF08_R2_FIRST_PARTY_GOLD_INSCRIPTION_ENERGY',
+    m={'schema':'PAF08_R1C_FOREARM_GOLD_INSCRIPTION_ENERGY',
        'skill_id':'tmb.skill.talisman.phong_an_phu.passive_03.human',
        'contract':'PASSIVE_ALWAYS_ON_OUTGOING_FACTOR_0.015_NO_HIT',
        'rights':'FIRST_PARTY_ISOLATED_RGBA_PAINTED_FROM_CODE',
