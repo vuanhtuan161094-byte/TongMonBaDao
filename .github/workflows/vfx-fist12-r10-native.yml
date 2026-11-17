@@ -7,6 +7,7 @@ on:
       - 'godot/labs/combat_lab/fist12/r10/**'
       - 'godot/labs/combat_lab/fist12/assets/r9_sources/**'
       - 'tools/vfx/generate_fist12_r10.py'
+      - 'tools/qa/check_fist12_r10_visibility.py'
       - 'godot/tests/labs/combat_lab/vfx_fist12_r10_contract_test.gd'
       - 'docs/operations/vfx_packets/FIST12_R10_DOAN_MACH_LIEN_QUYEN_V4.json'
   workflow_dispatch:
@@ -74,6 +75,7 @@ jobs:
             test -s "$d/v4-$stage.png"
           done
           python3 tools/qa/validate_vfx_v4_packet.py --stage evidence --packet docs/operations/vfx_packets/FIST12_R10_DOAN_MACH_LIEN_QUYEN_V4.json --out "$d" --sha "$GITHUB_SHA" | tee "$d/v4-evidence.log"
+          python3 tools/qa/check_fist12_r10_visibility.py "$d" | tee "$d/g36-visibility.log"
           rm "$d/fist12-r10-preflight.avi"
       - name: FULL 7.6-second native Godot R9 mark lifetime (real scene, no fake video)
         shell: bash
