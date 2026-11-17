@@ -34,3 +34,8 @@ The visual demo timing is charge0–.55, extraction .55–.98, purge .98–1.56,
 - Original 3 true RGBA atlas images: 8+12+10 **authored poses (30)** and three original retained RGBA key-master PNGs. Atlas raw RGBA8 7,471,104 bytes, before compression/texture residency/overdraw. Native MP4 is not native performance FPS.
 - **Manual art self-review:** R1B has a clearer pale cyan cutting line and more readable violet contamination leaving the ally; no rigid leaf drawing or GIF-cutout. At full 1280×720 overview it is still a relatively compact/light effect, and may need further aesthetic refinement if owner expects high-contrast Võ Lâm/Kiếm Thế-grade visuals. **DO NOT call this owner-approved.**
 - Gates: `V4_G35_NATIVE_TECH_PASS_R1B`, `TRUE_RGBA_SOURCE_AND_MASTERS_COMMITTED`, `ART_CANDIDATE_OWNER_REVIEW`, `OWNER_VISUAL_PENDING`, `PVE_INTEGRATION_HOLD`, `V6.3_OFF`, `PHYSICAL_QA_PENDING`. No invented real poison cleanse receipt; the live skill catalogue and Combat V2 not modified. No merge/rig/Codex/GIF.
+
+
+## Owner decision — 17/11/2026: R1B TEMPORARILY ACCEPTED
+
+After viewing the true Godot R1B, owner stated “ok tạm đc. tiếp skill tiép theo”. **Freeze current R1B assets and native proof as a provisionally usable art candidate, not final visual approval.** Continue directly to POI15 Hóa Độc Tán; do not redo POI14 now. Keep `OWNER_PROVISIONAL_ACCEPTED_NOT_FINAL`, `POLISH_BACKLOG_OPEN`, `V6.3_OFF`, `PVE_INTEGRATION_HOLD`, `PHYSICAL_QA_PENDING`. Technical Godot acceptance from its exact SHA is not a PvE or art release.
