@@ -187,7 +187,7 @@ def brand_frame(i):
             if a==0:continue
             light=.47+.13*math.sin(xx/14+i*.18)+.12*math.sin(yy/21-i*.35)
             light=max(0,min(1,light))
-            ip[xx,yy]=(int(105+110*light),int(206+46*light),int(178+64*light),int(a*.88))
+            ip[xx,yy]=(int(235+19*light),int(196+51*light),int(120+107*light),int(a*.76))
     layer.alpha_composite(ink)
     # Unclosed gold brush inscriptions around the main glyph. Not a UI ring.
     rnd=random.Random(7091+i)
@@ -250,7 +250,7 @@ if __name__=="__main__":
     hero.save(SRC/'paf05_r5_phong_linh_trien_master.png')
     entry={
        'schema':'PAF05_R5_ISOLATED_RGBA_ART_SOURCE',
-       'art':'R5B_FIRST_PARTY_INK_BRUSH_WITH_OFL_CJK_WIND_SEAL_AND_ANIMATED_RUNE',
+       'art':'R5D_FIRST_PARTY_GOLD_WIND_RUNE_JADE_HOT_LIGHT_NO_UI_RING',
        'frames_status':12,'frames_contact':11,
        'render_cell':[N,N], 'columns':4,
        'master':str((SRC/'paf05_r5_phong_linh_trien_master.png').relative_to(ROOT)),
