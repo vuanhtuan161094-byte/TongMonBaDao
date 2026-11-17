@@ -138,11 +138,13 @@
   "gate_status": {
     "g3_5_capture": "R1_PASS_R1B_RERUN_PENDING",
     "technical": "R1_PASS_R1B_RERUN_PENDING",
-    "art": "R1_ART_REWORK_REQUIRED_R1B_PENDING",
-    "owner": "OWNER_VISUAL_PENDING_R1B",
+    "art": "MANUAL_ART_REVIEW_REQUIRED",
+    "owner": "OWNER_VISUAL_PENDING",
     "live": "PVE_INTEGRATION_HOLD",
     "device": "PHYSICAL_QA_PENDING",
-    "g3_7_semantic": "MANUAL_OWNER_LIEN_TAM_MARK_RECOGNITION_PENDING"
+    "g3_7_semantic": "MANUAL_OWNER_LIEN_TAM_MARK_RECOGNITION_PENDING",
+    "r1_failure": "R1_NATIVE_G35_TECH_PASS_BUT_ART_STOP_DUE_TO_ARROW_LIKE_GU_AND_GEOMETRIC_SEAL",
+    "r1b_art": "R1B_REWORK_NOT_YET_RENDERED"
   },
   "proof_contract": {
     "focused_marker": "POI18_IMMORTAL_MARK_R1_RESULT=PASS failures=0",
