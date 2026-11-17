@@ -1,0 +1,190 @@
+{
+  "repository": "vuanhtuan161094-byte/TongMonBaDao",
+  "pr": 72,
+  "branch": "integration/pve-p0-playable-ui-20261103",
+  "source_sha_at_task_start": "0b05affadfc85751a984dccfcf1d4cf594c2b1a8",
+  "source_sha_parent_for_review": "7a6875302552043bd7ff43c5cb796de1c55d9f36",
+  "source_sha_advance_note": "Since task start, PR head advanced through VFX-only commits: 36f0517 changed the POI18 workflow; 7a68753 changed the POI18 report and school ledger. This review does not overlap those paths.",
+  "engine": "Godot 4.7.2.stable.official.ed1daf0bf",
+  "review_canvas": "1280x720",
+  "review_scope": "isolated art review; no production/gameplay integration",
+  "owner_approval": "PENDING",
+  "runtime_integration": "NOT_STARTED",
+  "qa": {
+    "import_exit_code": 0,
+    "scene_capture_exit_code": 0,
+    "capture": "captures/SWORD_ART_REVIEW_1280x720_GODOT.png",
+    "capture_source": "get_viewport().get_texture().get_image().save_png",
+    "capture_resolution": "1280x720",
+    "appdata_profile": "isolated_appdata under this review project",
+    "player_save_accessed": false,
+    "warning": "Godot reported root certificate store unreadable in sandbox; import and scene capture still exited 0."
+  },
+  "game_scale_comparison": {
+    "source": "PR72 HEAD 7a6875302552043bd7ff43c5cb796de1c55d9f36, godot/src/presentation/p3_1_landscape_sect.gd",
+    "dimension": "52x52 current map portrait-button slot; not future full-body actor scale",
+    "overlay_status": "not attached; no grip/pivot/occlusion claimed"
+  },
+  "identity_sources": [
+    {
+      "character": "AS-CHAR-48",
+      "file": "assets/characters/AS48_MALE_IDENTITY_SOURCE.png",
+      "sha256": "67e0c8c43fb67cb195f856424d9c1195613882de362a4ed97c95e10b31177449",
+      "width": 512,
+      "height": 512,
+      "use": "identity only; existing baked weapon retained"
+    },
+    {
+      "character": "AS-CHAR-49",
+      "file": "assets/characters/AS49_FEMALE_IDENTITY_SOURCE.png",
+      "sha256": "143dcdddeb2af9e42a1782d93e8d2ecbd02448557bcde57ac3acabe2ce33a6cf",
+      "width": 512,
+      "height": 512,
+      "use": "identity only; existing baked weapon retained"
+    }
+  ],
+  "candidates": [
+    {
+      "id": "A",
+      "name": "Huyen Moc - Tu Khung",
+      "file": "assets/weapons/SWORD_OPTION_A_HUYEN_MOC_TU_KHUNG_CANDIDATE.png",
+      "sha256": "63606518e0cf5bc943983394fe5b0ffa2b0b9debac8258468cd883afccc4caf0",
+      "width": 887,
+      "height": 1774,
+      "alpha": true,
+      "silhouette": "slim straight, offset rectangular frame guard"
+    },
+    {
+      "id": "B",
+      "name": "Tu Yen - Song Khuyet",
+      "file": "assets/weapons/SWORD_OPTION_B_TU_YEN_SONG_KHUYET_CANDIDATE.png",
+      "sha256": "72082f5426165f5035c51f1590a225afaf155d88ef2f5164e78e594d079e84cb",
+      "width": 887,
+      "height": 1774,
+      "alpha": true,
+      "silhouette": "broad leaf blade with negative-space openings and braided knot guard"
+    },
+    {
+      "id": "C",
+      "name": "Thanh Xa - Luu Van",
+      "file": "assets/weapons/SWORD_OPTION_C_THANH_XA_LUU_VAN_CANDIDATE.png",
+      "sha256": "bf51a7e0fc1269405323b9c07855a7ff7ee869d773fcc42fd5be105f5a0eeb8a",
+      "width": 887,
+      "height": 1774,
+      "alpha": true,
+      "silhouette": "long curved blade with asymmetric folded-ribbon guard"
+    }
+  ],
+  "files": [
+    {
+      "path": "OPEN_SWORD_ART_REVIEW.cmd",
+      "bytes": 231,
+      "sha256": "2c7a36e33242453dc0e5639dd43160a251239cbdb802c419393a5824e92756e1"
+    },
+    {
+      "path": "project.godot",
+      "bytes": 549,
+      "sha256": "9a51abf4ad9dfe988bbc87faa0a7138b0d51a0400dbfd0f256dcdc210ec3a326"
+    },
+    {
+      "path": "README.md",
+      "bytes": 748,
+      "sha256": "42642b38a7bf7b85588d4f8e4c2c138553ec6cb04235f728ff3e8bc307d4ec6c"
+    },
+    {
+      "path": "assets/characters/AS48_MALE_IDENTITY_SOURCE.png",
+      "bytes": 131479,
+      "sha256": "67e0c8c43fb67cb195f856424d9c1195613882de362a4ed97c95e10b31177449"
+    },
+    {
+      "path": "assets/characters/AS48_MALE_IDENTITY_SOURCE.png.import",
+      "bytes": 996,
+      "sha256": "11082f3a5f4bfc5028fac5568c05a9248028c971b60934fac144e86c702bc0c3"
+    },
+    {
+      "path": "assets/characters/AS49_FEMALE_IDENTITY_SOURCE.png",
+      "bytes": 134397,
+      "sha256": "143dcdddeb2af9e42a1782d93e8d2ecbd02448557bcde57ac3acabe2ce33a6cf"
+    },
+    {
+      "path": "assets/characters/AS49_FEMALE_IDENTITY_SOURCE.png.import",
+      "bytes": 1003,
+      "sha256": "3f74e13f912518f51dfcc1d1710239c3e414ecc99a0f496be292389c669c628e"
+    },
+    {
+      "path": "assets/weapons/SWORD_OPTION_A_HUYEN_MOC_TU_KHUNG_CANDIDATE.png",
+      "bytes": 370925,
+      "sha256": "63606518e0cf5bc943983394fe5b0ffa2b0b9debac8258468cd883afccc4caf0"
+    },
+    {
+      "path": "assets/weapons/SWORD_OPTION_A_HUYEN_MOC_TU_KHUNG_CANDIDATE.png.import",
+      "bytes": 1048,
+      "sha256": "32485c3d2010232ae85f74c1c32c9c1cb152a57d7fd5e06db368f77a0757b926"
+    },
+    {
+      "path": "assets/weapons/SWORD_OPTION_B_TU_YEN_SONG_KHUYET_CANDIDATE.png",
+      "bytes": 660212,
+      "sha256": "72082f5426165f5035c51f1590a225afaf155d88ef2f5164e78e594d079e84cb"
+    },
+    {
+      "path": "assets/weapons/SWORD_OPTION_B_TU_YEN_SONG_KHUYET_CANDIDATE.png.import",
+      "bytes": 1048,
+      "sha256": "f846cbfb0107fba23ef5c82ea644373303320b6b15c86e2183c1ec20ee3fcd05"
+    },
+    {
+      "path": "assets/weapons/SWORD_OPTION_C_THANH_XA_LUU_VAN_CANDIDATE.png",
+      "bytes": 463868,
+      "sha256": "bf51a7e0fc1269405323b9c07855a7ff7ee869d773fcc42fd5be105f5a0eeb8a"
+    },
+    {
+      "path": "assets/weapons/SWORD_OPTION_C_THANH_XA_LUU_VAN_CANDIDATE.png.import",
+      "bytes": 1041,
+      "sha256": "88e2b7b70901e98050d8a417288c0683d0e92621b19683a1c101537fd6a65c94"
+    },
+    {
+      "path": "captures/SWORD_ART_REVIEW_1280x720_GODOT.png",
+      "bytes": 136968,
+      "sha256": "180b2a1a20072072f6c914a02215cbee6d83b8ce2dfe387e47adde92e433e7dc"
+    },
+    {
+      "path": "captures/SWORD_ART_REVIEW_1280x720_GODOT.png.import",
+      "bytes": 1006,
+      "sha256": "3cb24bca2f8ff0b7b507c223b8cd2743287c3de14a62db1682ae01a6e2f98829"
+    },
+    {
+      "path": "logs/godot_import_isolated.log",
+      "bytes": 1289,
+      "sha256": "5f7e357fe7f89eb614fd6d4dadf0404108e1b1167efff45c69e4ac0286b7eda2"
+    },
+    {
+      "path": "logs/godot_native_viewport.log",
+      "bytes": 529,
+      "sha256": "cd4ec8d083d6e1cc19777a978d771a69b7b505590bf6f6918fa22ec9d028efe0"
+    },
+    {
+      "path": "meta/ART_REVIEW.md",
+      "bytes": 2223,
+      "sha256": "506802875e0fc90694364b3bfd65023e7555883c8f38b9323952f599a5b9f740"
+    },
+    {
+      "path": "meta/IMAGEGEN_PROMPTS.md",
+      "bytes": 3506,
+      "sha256": "82996bd6ed35eeed438c843633cd4b71911bbacc6efdb891b9eb9b1c5a11da2e"
+    },
+    {
+      "path": "scenes/sword_art_review.tscn",
+      "bytes": 296,
+      "sha256": "3b124995204b379830844a7f3663db90005aeb7820feafb10b70fcad9a9b14ee"
+    },
+    {
+      "path": "scripts/sword_art_review.gd",
+      "bytes": 9315,
+      "sha256": "12aea56fbbeddb184d517312b7ea2c85de3a1a2c83ec484d85de6a3dbfd721fa"
+    },
+    {
+      "path": "scripts/sword_art_review.gd.uid",
+      "bytes": 20,
+      "sha256": "9b894d63a6ef1fe485b8d3af3715d2d6e79eb875d775ad8f38edff51294e2f00"
+    }
+  ]
+}
