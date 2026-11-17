@@ -123,7 +123,7 @@ def mix(kind,k,n):
     body,core,mist=masks(kind,k,n)
     # 3 separately composited actual textures, no full alpha background.
     base=Image.new('RGBA',(N,N))
-    soft=paint_layer(mist,(106,42,119),.33,13000+k+kind.__hash__()%700)
+    soft=paint_layer(mist,(106,42,119),.33,13000+k+{'charge':1,'sea':2,'fall':3,'hit':4}[kind]*47)
     # softer burgundy/purple halo painted around main stroke (additive-like in
     # source, but RGB and alpha remain inspectable in atlas).
     halo=body.filter(ImageFilter.GaussianBlur(15))
