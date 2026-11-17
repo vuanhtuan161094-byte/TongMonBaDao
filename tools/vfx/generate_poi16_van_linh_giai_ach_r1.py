@@ -73,16 +73,16 @@ def src(part,t,cell):
         lay("ivory",gauss(x,y,0,1,2.8,4.0)*.71*strength)
     elif part=="bloom":
         # Threefold radiant life-wave. Not a solid disk or UI/geometric sigil.
-        strength=np.clip(.20+.8*np.sin(math.pi*(.10+.72*t))**.71,0,1)
+        strength=np.clip(.35+.65*np.sin(math.pi*(.10+.72*t))**.71,0,1)
         growth=.35+.76*t
         ell=np.hypot(x/1.15,y/0.84)
         orbit=1+.08*np.sin(3*ang+1.8*t)+.045*np.sin(7*ang-.5*t)
         wave_radius=144*growth
         edge=np.exp(-((ell/np.maximum(.73,orbit)-wave_radius)/(9+4*t))**2)
-        lay("emerald",gauss(x,y,0,2,92*growth+25,72*growth+18)*.11*strength*tex)
-        lay("jade",gauss(x,y,0,0,67*growth+15,53*growth+15)*.13*strength)
-        lay("aqua",edge*.22*strength*tex)
-        lay("gold",edge*.10*strength)
+        lay("emerald",gauss(x,y,0,2,92*growth+25,72*growth+18)*.16*strength*tex)
+        lay("jade",gauss(x,y,0,0,67*growth+15,53*growth+15)*.23*strength)
+        lay("aqua",edge*.10*strength*tex)
+        lay("gold",edge*.045*strength)
         # 3 luminous organic "wings", each a stream made of independent wisps.
         for i in range(3):
             phi=i*math.tau/3-.25
@@ -94,9 +94,15 @@ def src(part,t,cell):
                 side=center+(k-1)*11*(.36+.64*np.clip(longitudinal/145,0,1))
                 width=(3.3+2.5*k+2*i%3)
                 feather=np.exp(-((transverse-side)/width)**2)*envelope
-                lay(["aqua","jade","gold"][(k+i)%3],feather*(.16+.04*(k%2))*strength*tex)
+                lay(["aqua","jade","gold"][(k+i)%3],feather*(.33+.075*(k%2))*strength*tex)
+            # R1B independently painted bright threefold life currents, not a thin UI circle.
+            fan_center=center+11*np.sin(longitudinal*.010+i*.83+t*.65)
+            fan=np.exp(-((transverse-fan_center)/15.0)**2)*gate(longitudinal,15,135*growth,28)
+            lay("mist",fan*.17*strength*tex)
+            lay("gold",np.exp(-((transverse-fan_center)/5.2)**2)*gate(longitudinal,37,112*growth,24)*.12*strength)
+
             tip=gauss(x,y,108*growth*np.cos(phi),108*growth*np.sin(phi),11,13)
-            lay("pearl",tip*.14*strength)
+            lay("pearl",tip*.34*strength)
         # A drifting constellation of green-ivory sparks: 3fold, NOT a rigid lotus icon.
         for i in range(25):
             a=i*2.39996+.19
@@ -104,34 +110,34 @@ def src(part,t,cell):
             cx=dist*np.cos(a)+7*np.sin(2.1*t+i*.85)
             cy=dist*np.sin(a)*.75-3*np.cos(t*2+i)
             dust=gauss(x,y,cx,cy,2.8+.65*(i%3),4.4+(i%4))
-            lay("gold" if i%5==0 else "aqua",dust*(.18+.065*(i%4))*strength)
+            lay("gold" if i%5==0 else "aqua",dust*(.28+.068*(i%4))*strength)
             lay("pearl",gauss(x,y,cx,cy,1.25,2.1)*.19*strength)
         lay("jade",gauss(x,y,0,0,36,39)*.20*strength)
-        lay("pearl",gauss(x,y,0,0,9.3,11)*.61*strength)
-        lay("ivory",gauss(x,y,0,0,4.1,5.0)*.77*strength)
+        lay("pearl",gauss(x,y,0,0,9.3,11)*.88*strength)
+        lay("ivory",gauss(x,y,0,0,4.1,5.0)*.92*strength)
     elif part=="blessing":
         # A slim, non-solid fountain of life around each real moving ally.
-        power=.42+.58*np.sin(math.pi*(.12+.76*t))**.75
+        power=.53+.47*np.sin(math.pi*(.12+.76*t))**.75
         for k in range(9):
             offset=(k-4)*8
             drift=offset+3.8*np.sin(y*.023+k*1.14+t*.78)
             length=gate(y,-74+(k%3)*5,69-(k%4)*6,22)
             main=np.exp(-((x-drift)/(3.2+1.2*(k%3)))**2)*length
-            lay("jade" if k%3 else "aqua",main*(.12+.034*(k%4))*power*tex)
-            lay("pearl",np.exp(-((x-drift)/1.6)**2)*length*.055*power)
-        lay("emerald",gauss(x,y,-6,4,44,68)*.075*power*tex)
-        lay("aqua",gauss(x,y,8,-10,28,52)*.095*power*tex)
+            lay("jade" if k%3 else "aqua",main*(.25+.055*(k%4))*power*tex)
+            lay("pearl",np.exp(-((x-drift)/1.6)**2)*length*.13*power)
+        lay("emerald",gauss(x,y,-6,4,44,68)*.12*power*tex
+        lay("aqua",gauss(x,y,8,-10,28,52)*.17*power*tex
         # Individual translucent droplets rise as life-energy.
         for i in range(11):
             phase=i*2.39996
             cx=23*np.sin(phase)+4*np.sin(i*.77+t*3)
             cy=40-67*t+23*np.cos(phase*.62)+(i%3)*3
             lay("gold" if i%4==0 else "mist",
-                gauss(x,y,cx,cy,2.0+(i%3),3.9+(i%4))*(.29+.046*(i%3))*power)
+                gauss(x,y,cx,cy,2.0+(i%3),3.9+(i%4))*(.42+.065*(i%3))*power)
             lay("pearl",gauss(x,y,cx,cy,1.1,1.9)*.19*power)
         lay("jade",gauss(x,y,0,3,18,23)*.17*power)
-        lay("pearl",gauss(x,y,0,2,5,7.2)*.49*power)
-        lay("ivory",gauss(x,y,0,2,2.6,3.7)*.48*power)
+        lay("pearl",gauss(x,y,0,2,5,7.2)*.76*power
+        lay("ivory",gauss(x,y,0,2,2.6,3.7)*.70*power
     elif part=="fade":
         retained=max(.08,(1-t)**1.55)
         lay("aqua",gauss(x,y,0,-10-15*t,68+19*t,59+18*t)*.077*retained*tex)
@@ -174,6 +180,6 @@ def main():
         atlas.save(dest,optimize=True)
         raw+=atlas.width*atlas.height*4
         print("POI16_ORIGINAL_RGBA_ATLAS",kind,count,atlas.size,"png_bytes",dest.stat().st_size)
-    print("POI16_VAN_LINH_GIAI_ACH_SOURCE_PASS poses=38 atlases=4 no_gif=true raw_rgba_bytes=",raw)
+    print("POI16_VAN_LINH_GIAI_ACH_R1B_SOURCE_PASS poses=38 atlases=4 no_gif=true raw_rgba_bytes=",raw)
 
 if __name__=="__main__":main()
