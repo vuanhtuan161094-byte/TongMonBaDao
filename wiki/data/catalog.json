@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "project": "Tông Môn Bá Đạo — Tàng Kinh Các (owner-only)",
   "visibility": "LOCAL_ONLY_PRIVATE_BY_DEFAULT",
-  "sourceCommitSha": "176a9863f4071c8de554fb4f5fad14f539ad943f",
+  "sourceCommitSha": "459b58b19f1e25fe7dacc68172b1935cfee8cd96",
   "sourceSyncPolicy": "ONE_WAY_GAME_SOURCE_TO_WIKI; browser proposals are not part of this generated file",
   "counts": {
     "schools": 12,
