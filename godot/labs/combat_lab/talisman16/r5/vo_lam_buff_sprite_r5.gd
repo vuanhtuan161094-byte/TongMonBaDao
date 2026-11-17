@@ -15,6 +15,8 @@ const PERIOD := 3.0
 var flow_rear: Texture2D
 var flow_front: Texture2D
 var texture_source_valid := false
+var seal_clean: Texture2D
+var ground_clean: Texture2D
 
 static func full_sprite_region(kind:int) -> Rect2:
 	return Rect2(kind*SPRITE_CELL,0,SPRITE_CELL,SPRITE_CELL)
@@ -40,6 +42,22 @@ func _make_depth_split() -> void:
 				behind.set_pixel(x,y,Color.TRANSPARENT)
 	flow_rear=ImageTexture.create_from_image(behind)
 	flow_front=ImageTexture.create_from_image(ahead)
+	# Source artwork is original RGB/alpha, but its concept-board extraction
+	# retained one thin gold layout rule (row 19) above the sigil.
+	# Remove that rule once on GPU import. No flat poster/border in game.
+	var seal:Image=orig.get_region(Rect2i(0,0,SPRITE_CELL,SPRITE_CELL))
+	for x in range(SPRITE_CELL):
+		seal.set_pixel(x,19,Color.TRANSPARENT)
+	seal_clean=ImageTexture.create_from_image(seal)
+	# Kill low-alpha dark matte from the concept board under the gold ring.
+	# The floor should be clear engraved light, not a muddy rectangular patch.
+	var grounding:Image=orig.get_region(Rect2i(SPRITE_CELL*2,0,SPRITE_CELL,SPRITE_CELL))
+	for y in range(SPRITE_CELL):
+		for x in range(SPRITE_CELL):
+			var ink:Color=grounding.get_pixel(x,y)
+			if ink.a < .62:
+				grounding.set_pixel(x,y,Color.TRANSPARENT)
+	ground_clean=ImageTexture.create_from_image(grounding)
 	texture_source_valid=true
 
 func _ready() -> void:
@@ -62,7 +80,7 @@ func _draw() -> void:
 		# luminous MATERIAL, never a poster of the whole character.
 		_r3_layer(R3_REAR,.83)
 		if texture_source_valid:draw_texture_rect(flow_rear,SWIRL_AREA,false,Color(1,1,1,ink*.69))
-		draw_texture_rect_region(ATLAS,GROUND_AREA,GROUND,Color(1,1,1,.53+.10*sin(time_s*2.6)))
+		draw_texture_rect(ground_clean,GROUND_AREA,false,Color(1,1,1,.42+.08*sin(time_s*2.6)))
 	draw_texture_rect_region(ACTOR,Rect2(HERO_FEET-Vector2(72,163),Vector2(144,163)),Rect2(0,0,320,384),Color(.97,.94,.88))
 	if passive_equipped:
 		if texture_source_valid:draw_texture_rect(flow_front,SWIRL_AREA,false,Color(1,1,1,material_alpha(time_s)*.85))
@@ -70,4 +88,4 @@ func _draw() -> void:
 		_r3_layer(R3_SPARK,.71)
 		# One recognisable WIND seal, not three ugly rotating paper talismans.
 		var beat:float=.84+.09*sin(time_s*1.9)
-		draw_texture_rect_region(ATLAS,SEAL_AREA,WIND,Color(1,1,1,beat))
+		draw_texture_rect(seal_clean,SEAL_AREA,false,Color(1,1,1,beat))
