@@ -1,3 +1,20 @@
+> **ADDENDUM G3.7 (17/11/2026) — SEMANTIC SILHOUETTE / NGỮ NGHĨA CHIÊU THỨC, BẮT BUỘC SAU G3.6.**
+>
+> Lý do: POI16 R1E đã đủ sáng và rõ nhưng owner xác nhận hình thù "quá mức vô nghĩa", không biết nhìn thấy chiêu gì. **Màu đẹp, RGB alpha, glow, source provenance, Godot/G3.6 PASS KHÔNG THAY THẾ tính nhận diện.**
+>
+> **Trước khi sản xuất sprite:** chốt *một hình tượng skill dễ đọc* (nguồn, ấn/chủ thể, hình biến đổi, đích nhận, dấu kết quả). Viết rõ **"người chơi sẽ nhìn thấy gì → hiểu cơ chế nào"** mà không dựa vào text/UI. Không vẽ 5 vòng tròn/vệt quang ngẫu nhiên hoặc icon cứng dán lên nhân vật; phải kết hợp **semantic silhouette có hình** với **vật liệu linh lực thuần màu RGBA mềm**.
+>
+> **G3.7 kiểm thử trên video Godot 1280×720 1×:**
+> (i) che tên skill và HUD rồi tự xem tại 1× có đoán đúng *loại chiêu* (heal/poison/cleanse/guard/attack) không;
+> (ii) nhìn rõ *nguồn → hành trình → mục tiêu → kết quả*, với hướng/đích bám theo nhân vật/quái DI CHUYỂN;
+> (iii) riêng AoE/truyền hiệu ứng: số nhánh/nút ấn phải đúng target_limit, không tạo cảm giác đánh nhầm đồng đội/nhầm quái;
+> (iv) hình tượng phải khác nhau giữa các skill kể cả khi cùng màu hệ phái; không tái dùng một đám sáng rỗng hoặc vòng HUD cho mọi kỹ năng;
+> (v) **không phóng quá to** rồi nhận đẹp: tự xem hình thực ở kích thước game, cùng bối cảnh tối/sáng, overlay nhân vật và 6v8 khi có QA được ủy quyền.
+>
+> Chứng cứ: khung native charge/peak/contact, ảnh/phân cảnh góc nhìn 1× không có tên skill, bảng motif→ý nghĩa, source attribution, số mục tiêu và target trajectory. Bài test CI có thể bảo vệ *cấu trúc hình tượng* và ba nhánh theo anchor thật, nhưng **KHÔNG tự động nhận PASS chủ quan**. Owner quyết định \`OWNER_SEMANTIC_ART_APPROVED\`; nếu bị đánh giá "vô nghĩa", \`ART_REWORK_REQUIRED\` dù V4+G3.6 PASS.
+>
+> **Ví dụ POI16 R2**: ba lá linh dược → ba luồng truyền sinh khí khớp vị trí ba đồng đội → ba ấn dược nhỏ biến mất; không thêm HP receipt thực, không giữ buff, không dùng GIF/rig.
+
 > **ADDENDUM 17/11/2026 — VFX G3.6: KHẢ NĂNG NHÌN THẤY Ở 1× BẮT BUỘC.**
 > Bài học **POI16 R1B**: Godot import/parse/contract/source RGBA đều PASS nhưng chủ dự án gần như **không nhìn thấy hiệu ứng**. Audit atlas alpha khác 0 ghi nhận *median* charge **8/255**, bloom **20/255**, blessing **9/255**; ảnh Godot 1280×720 tụ lực chỉ khoảng **79 pixel xanh sáng** theo bộ lọc ROI, không đạt khả năng đọc ở 1×. Đây là lỗi production-level, không thể lấy CI PASS để bào chữa.
 >
