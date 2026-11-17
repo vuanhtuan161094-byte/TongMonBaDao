@@ -6,6 +6,7 @@ on:
     paths:
       - '.github/workflows/vfx-v4-paf04-native.yml'
       - 'tools/vfx/paf04_glass_guard_assets.py'
+      - 'tools/vfx/paf04_r7_painterly_guard.py'
       - 'tools/vfx/paf04_glass_guard_assets.py'
       - 'docs/operations/vfx_packets/PAF04_V4_PREFLIGHT.json'
       - 'godot/labs/combat_lab/talisman14/**'
@@ -47,6 +48,7 @@ jobs:
           d="$RUNNER_TEMP/vfx-paf04"
           /usr/bin/python3 tools/vfx/paf04_glass_guard_assets.py 2>&1 | tee "$d/bake.log"
           grep -Fq 'PAF04_ORIGINAL_GLASS_RGBA_BAKE_PASS' "$d/bake.log"
+          grep -Fq 'PAF04_R7_PAINTERLY_GLASS_FLOW_BAKE_PASS' "$d/bake.log"
           python3 tools/qa/validate_vfx_v4_packet.py --stage packet --packet "$PACKET" 2>&1 | tee "$d/packet.log"
           grep -Fq 'VFX_V4_PACKET_TECHNICAL_PASS' "$d/packet.log"
           python3 tools/qa/validate_vfx_v4_packet.py --stage assets --packet "$PACKET" 2>&1 | tee "$d/atlas.log"

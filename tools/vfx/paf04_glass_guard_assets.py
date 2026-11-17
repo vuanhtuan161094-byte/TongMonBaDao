@@ -6,6 +6,7 @@ All source layers and frames reproducible at exact Git SHA.
 """
 from pathlib import Path
 from PIL import Image,ImageDraw,ImageFilter
+from paf04_r7_painterly_guard import charge as r7_charge, glass_shell as r7_shell, lock as r7_lock, shimmer as r7_shimmer
 import math,random,hashlib
 ROOT=Path(__file__).resolve().parents[2]
 BASE=ROOT/'godot/labs/combat_lab/talisman14'
@@ -329,14 +330,14 @@ def r4_lock(i,n=14,size=320):
 
 def main():
     ASSET.mkdir(parents=True,exist_ok=True); SOURCE.mkdir(parents=True,exist_ok=True)
-    r4_shell(9,front=False).resize((704,896),Image.Resampling.LANCZOS).save(SOURCE/'paf04_pearlescent_glass_shield_master.png')
-    r4_charge(7).resize((640,640),Image.Resampling.LANCZOS).save(SOURCE/'paf04_condensing_crystal_master.png')
+    r7_shell(9,front=False).resize((704,896),Image.Resampling.LANCZOS).save(SOURCE/'paf04_pearlescent_glass_shield_master.png')
+    r7_charge(7).resize((640,640),Image.Resampling.LANCZOS).save(SOURCE/'paf04_condensing_crystal_master.png')
     all={
-      'paf04_charge.webp':(atlas([r4_charge(k) for k in range(12)],320,320),12),
-      'paf04_glass_back.webp':(atlas([r4_shell(k,front=False) for k in range(16)],352,448),16),
-      'paf04_glass_front.webp':(atlas([r4_shell(k,front=True) for k in range(16)],352,448),16),
-      'paf04_lock.webp':(atlas([r4_lock(k) for k in range(14)],320,320),14),
-      'paf04_shimmer.webp':(atlas([glint(k) for k in range(8)],256,256),8),
+      'paf04_charge.webp':(atlas([r7_charge(k) for k in range(12)],320,320),12),
+      'paf04_glass_back.webp':(atlas([r7_shell(k,front=False) for k in range(16)],352,448),16),
+      'paf04_glass_front.webp':(atlas([r7_shell(k,front=True) for k in range(16)],352,448),16),
+      'paf04_lock.webp':(atlas([r7_lock(k) for k in range(14)],320,320),14),
+      'paf04_shimmer.webp':(atlas([r7_shimmer(k) for k in range(8)],256,256),8),
       'paf04_badge.webp':(atlas([badge(k) for k in range(8)],128,128),8),
     }
     for name,(image,frames) in all.items():
@@ -346,4 +347,5 @@ def main():
     print('PAF04_R4_ADVECTED_LIGHT_ATLAS_PASS')
     print('PAF04_R5_FLOW_CAUSTIC_SHADER_SOURCE_PASS')
     print('PAF04_R6_PROGRESSIVE_FLOW_FORM_AND_RELEASE_PASS')
+    print('PAF04_R7_PAINTERLY_GLASS_FLOW_BAKE_PASS')
 if __name__=='__main__':main()
