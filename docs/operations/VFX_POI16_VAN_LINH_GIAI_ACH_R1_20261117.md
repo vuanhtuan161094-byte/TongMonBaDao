@@ -38,3 +38,8 @@ Source \`e876d605416f0e200be1d2eed30135c855ee637d\`; QA Actions #44002926808 (TE
 4. Before owner review, self-check native size 1× (not zoom-only), contrast both dark and bright scene, moving targets and alpha material separation, distinct contact and fade. Optional 6v8/30-disciple crowd + physical Android QA remain separate HOLD, never claimed executed without proof.
 
 Status: \`R1B_OWNER_ART_REJECTED_INVISIBLE\` → \`R1C_REWORK_IN_PROGRESS\`, pending new exact-SHA technical G3.5/G3.6 evidence and later human owner visual review; \`V6.3_OFF\`, \`PVE_INTEGRATION_HOLD\`, \`PHYSICAL_QA_PENDING\`. Do not move to next skill until owner direction.
+
+
+### R1C native G3.6 STOP and R1D correction (17/11/2026)
+
+True native Godot 1280×720 source SHA `99ce4a4300b795b9d22871b0b9e06a9ad4b204ba`, Actions #44014452070: focused Godot/V4 technical PASS; **G3.6 VISIBILITY FAIL** with unedited charge **3,884** (minimum 300), peak **55,726** (minimum13,000), contact **45,746** (minimum14,500), fade **303** (minimum500), expired **105** (maximum200). R1B baseline charge79/peak7747/contact7539. This demonstrates a truthful threshold-based STOP before owner review. New R1D (same source family, new SHA) smooths and curves rectangular-looking 3-ally streams, and strengthens/fans 23 soft fade motes and final true-alpha light to pass fade threshold without extending the real skill duration, or relaxing visibility limits. Owner aesthetic approval remains PENDING. R1C assets/movie retrievable via exact-SHA CI artifact; none of these changes touches Combat V2, SaveService, economy or PvE.
