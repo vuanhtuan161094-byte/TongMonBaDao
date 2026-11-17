@@ -1,3 +1,9 @@
+## VFX R6 NEGATIVE-CASE GATE — 2026-11-17 (ALL SCHOOL CHATS)
+
+**Read [FIST12 R6 failure postmortem](docs/operations/FIST12_R6_PROCESS_FAILURE_POSTMORTEM_20261117.md) before delivering any new VFX.** Poster/infographic source crops, threshold-keyed alpha cells from labeled artboards, still-montage previews, and offline MP4s are **not accepted** as authored VFX masters, native Godot evidence, or a technical PASS. Alpha>0/unique hash only checks file validity, never motion/art quality. Enforce existing G0–G8 and G3.5 hard STOP: only original isolated true-RGBA source + real Godot 4.7.2 1280×720 charge/peak/moving-contact, followed by actual native video, moving-target/1× art review, exact-SHA V4 packet. If Godot cannot run, explicitly report NOT_EXECUTED and STOP; never hand off an offline proof as the finished skill. FIST12 R6 local poster-crop candidate is REJECTED, R5 remains TECH_PASS/ART_FAIL; neither enters PvE. No rig, GIF by default, Codex, branch or merge.
+
+---
+
 ## OWNER VFX NO-GIF OVERRIDE — 2026-11-16 (LATEST, HIGHEST PRIORITY)
 
 **No GIF creation requirement. Do NOT generate GIFs, storyboard GIF previews or GIF exports during VFX production unless the owner explicitly asks for a GIF.** Direct process: canonical skill data → source-preserved original true-RGBA sprite layers → Godot 4.7.2 native 1280×720 charge/peak/moving-contact screenshots → short real Godot MP4 motion review and exact-SHA proof → manual owner art gate. Historical GIF-first experiments are REVOKED and are not a gate. No rig, no Codex, no merges, no gameplay modifications by default.
