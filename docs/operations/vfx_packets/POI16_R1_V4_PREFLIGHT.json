@@ -138,11 +138,12 @@
   "gate_status": {
     "g3_5_capture": "NOT_EXECUTED_UNTIL_NATIVE_PROOF",
     "technical": "NOT_EXECUTED_UNTIL_NATIVE_PROOF",
-    "art": "R1B_OWNER_REJECTED_INVISIBLE_R1C_PENDING",
-    "owner": "R1C_OWNER_VISUAL_PENDING",
+    "art": "MANUAL_ART_REVIEW_REQUIRED",
+    "owner": "OWNER_VISUAL_PENDING",
     "live": "PVE_INTEGRATION_HOLD",
     "device": "PHYSICAL_QA_PENDING",
-    "g3_6_native_visibility": "REQUIRES_CHECK_POI16_NATIVE_VISIBILITY_PASS"
+    "g3_6_native_visibility": "REQUIRES_CHECK_POI16_NATIVE_VISIBILITY_PASS",
+    "owner_history": "R1B_REJECTED_AS_NEAR_INVISIBLE_R1C_REWORK_PENDING_REVIEW"
   },
   "proof_contract": {
     "focused_marker": "POI16_VAN_LINH_R1_RESULT=PASS failures=0",
