@@ -110649,7 +110649,7 @@
       "qaEvidence": {
         "status": "WIKI_SOURCE_VALIDATOR",
         "sourcePath": "tools/wiki/build_wiki_catalog.py",
-        "sourceSha": "d6d92e982b4ba95681dc1c84c240df8b2fc53ef0316ab1d4e8efb150ae3071e0"
+        "sourceSha": "f3705f2d877fcde5554245627f214ad21fbf9ac2f8f75f2b8191929c547b06c0"
       }
     },
     {
@@ -110718,7 +110718,7 @@
       "qaEvidence": {
         "status": "STATIC_HEURISTIC",
         "sourcePath": "tools/wiki/build_wiki_catalog.py",
-        "sourceSha": "d6d92e982b4ba95681dc1c84c240df8b2fc53ef0316ab1d4e8efb150ae3071e0"
+        "sourceSha": "f3705f2d877fcde5554245627f214ad21fbf9ac2f8f75f2b8191929c547b06c0"
       }
     },
     {

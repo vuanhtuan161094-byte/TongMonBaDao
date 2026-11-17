@@ -39,7 +39,13 @@ STRING_RE = re.compile(r'"((?:[^"\\]|\\.)*)"')
 
 
 def sha256(path: Path) -> str:
-    return hashlib.sha256(path.read_bytes()).hexdigest()
+    data = path.read_bytes()
+    # Git checkout may normalize text eol=lf differently across platforms.
+    # Keep source traceability stable for text inputs while preserving exact
+    # bytes for any future binary source paths.
+    if path.suffix.lower() in {".gd", ".json", ".md", ".py", ".csv", ".tscn", ".tres", ".cfg", ".godot", ".cmd", ".ps1", ".txt"}:
+        data = data.replace(b"\r\n", b"\n").replace(b"\r", b"\n")
+    return hashlib.sha256(data).hexdigest()
 
 
 def source(root: Path, relative: str, version: Any = None) -> dict[str, Any]:
@@ -636,7 +642,7 @@ def make_audit(catalog: dict[str, Any]) -> str:
         f"- Snapshot source HEAD: `{catalog['sourceCommitSha']}`",
         f"- Schema: `{catalog['schemaVersion']}` · chế độ: `{catalog['visibility']}` · đồng bộ: một chiều game → Wiki.",
         "- Generated projection chỉ chứa nguồn repo; ghi chú và đề xuất owner nằm trong localStorage của trình duyệt, không được ghi vào repo.",
-        "- SHA trong bảng là SHA-256 của từng file nguồn tại snapshot này.",
+        "- SHA trong bảng là SHA-256 tại snapshot này; file văn bản chuẩn hóa CRLF/CR thành LF trước khi băm để kết quả ổn định giữa Windows/Linux. File nhị phân (nếu bổ sung sau) giữ hash byte gốc.",
         "",
         "## Coverage đã trích xuất",
         "",

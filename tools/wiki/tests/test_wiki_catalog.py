@@ -4,6 +4,7 @@ import copy
 import json
 import os
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 from unittest.mock import patch
@@ -25,6 +26,14 @@ class WikiCatalogTests(unittest.TestCase):
         self.assertEqual(2196, self.catalog["counts"]["skillIdsUnique"])
         self.assertEqual([], self.catalog["dataQuality"]["duplicateSkillIds"])
         self.assertEqual(420, self.catalog["counts"]["skillFamilies"])
+
+    def test_source_sha_normalizes_text_line_endings(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            lf = Path(directory) / "source.gd"
+            crlf = Path(directory) / "source-copy.gd"
+            lf.write_bytes(b"line one\nline two\n")
+            crlf.write_bytes(b"line one\r\nline two\r\n")
+            self.assertEqual(builder.sha256(lf), builder.sha256(crlf))
 
     def test_v63_is_not_reported_as_live(self) -> None:
         self.assertEqual(0, self.catalog["counts"]["v63Enabled"])
