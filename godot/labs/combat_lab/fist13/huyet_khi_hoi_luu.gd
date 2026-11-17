@@ -44,7 +44,7 @@ func _ready()->void:
     custom_minimum_size=Vector2(1280,720)
     mouse_filter=Control.MOUSE_FILTER_IGNORE
     set_process(true)
-    print("VFX_FIST13_R4_READY painted_material=true moving_monster=true one_mark_six_seconds=true")
+    print("VFX_FIST13_R5_READY painted_material=true moving_monster=true one_mark_six_seconds=true")
 func _process(delta:float)->void:
     if paused:return
     elapsed=fposmod(elapsed+maxf(delta,0),LOOP_END)
@@ -91,4 +91,8 @@ func _draw()->void:
         _flip(CONTACT,11,mark_at(0,t),.41,flash*.47)
     var sign:=mark_opacity(t)
     if sign>.002:
-        _flip(MARK,fposmod((t-MARK_START)*5.6,8.0),mark_at(0,t),1.03,sign*.99)
+        # Same one mark event, two cosmetic cues: a modest local chest signature
+        # and a clear floating seal above the moving target's head.
+        var pose:=fposmod((t-MARK_START)*5.6,8.0)
+        _flip(MARK,pose,mark_at(0,t),.73,sign*.54)
+        _flip(MARK,pose,foe_at(t)+Vector2(-3,-182),.90,sign*.96)

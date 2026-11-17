@@ -1,4 +1,4 @@
-name: VFX-FIST-13 Huyet Khi Hoi Luu R4 V4 native
+name: VFX-FIST-13 Huyet Khi Hoi Luu R5 V4 native
 on:
   workflow_dispatch:
   push:
@@ -83,7 +83,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: vfx-fist13-r4-native-owner-pending
+          name: vfx-fist13-r5-native-owner-pending
           retention-days: 14
           if-no-files-found: warn
           path: |
