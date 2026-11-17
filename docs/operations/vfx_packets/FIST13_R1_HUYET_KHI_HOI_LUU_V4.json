@@ -1,9 +1,9 @@
 {
   "schema": "tmb-vfx-production-system-v4.1",
-  "packet_id": "FIST13_R1_CODE_PAINTED_HUYET_KHI_HOI_LUU",
+  "packet_id": "FIST13_R2_HUYET_KHI_HOI_LUU_SOFT_RUBY_V4",
   "skill_id": "tmb.skill.fist.huyet_quyen.active_03.human",
   "school": "fist",
-  "revision": "R1_INWARD_BLOOD_VEINS_CODE_ART",
+  "revision": "R2_THREE_VOLUMETRIC_INWARD_RUBY_STREAMS",
   "catalogue_path": "godot/data/combat/v63_human_combat_catalog.json",
   "scene_path": "godot/labs/combat_lab/fist13/huyet_khi_hoi_luu.tscn",
   "lab_script": "godot/labs/combat_lab/fist13/huyet_khi_hoi_luu.gd",
@@ -23,9 +23,9 @@
   },
   "provenance": {
     "source_class": "FIRST_PARTY_CODE_PAINTED_RGBA",
-    "rights_note": "Original deterministic Python Pillow code painting of independent alpha blood-pressure, contact and residual vein marks. Art source is CODE, not ImageGen/hand painting or copyrighted game artwork; original generator is durable in repository. Material quality remains human-review pending.",
+    "rights_note": "R2 first-party deterministic CODE-PAINTED organic red energy volumes, three thick smoothly curved luminous rivers converging on one moving target and one subtle six-second nether mark. The master is code-generated in CI; NOT ImageGen painting, not owner-approved, and contains no proprietary pixels. R1 remains traceable by Git commit 4e63c8c7ff0fc0f9befb2e2f5e8d00bab24b1ac7.",
     "master_quality_status": "MANUAL_ART_REVIEW_REQUIRED",
-    "known_source_limitation": "Procedural strokes may look geometric. Reject at Godot G3.5 if fails game-scale manual art gate. Source master is reproducibly generated, not an independent hand-illustrated painting.",
+    "known_source_limitation": "R1 native visual reviewed ART_SELF_FAIL for skeletal pink angular scribbles. R2 soft color energy changes painting method but remains code-drawn, not manually painted; human 1x Godot review required. STOP if stream silhouettes resemble unconvincing three claws, too opaque, or cover actor.",
     "master_files": [
       {
         "path": "godot/labs/combat_lab/fist13/assets/generated/f13_original_code_painted_hero.png",
@@ -79,7 +79,7 @@
     "visual_fade_end_seconds": 7.12,
     "demo_loop_seconds": 7.55,
     "demo_clock_warning": "LAB simulated mark at .84 only; no projectile, damage, heal, or real Combat V2 receipt. 6-second status visual is separate from .45-second cast.",
-    "key_pose_budget_note": "8 charge + 12 inward contact + 8 looping mark; 28 independent CODE-PAINTED key poses, not an ImageGen source.",
+    "key_pose_budget_note": "R2 re-authored 8 charge, 12 flowing convergent crimson qi and 8 small mark RGBA poses using bezier volume painting, transparent additive localized cores, not R1 thin lines. First-party code art.",
     "phases": [
       {
         "id": "charge",
@@ -123,6 +123,6 @@
     "focused_marker": "VFX_FIST13_FOCUSED_RESULT=PASS failures=0",
     "native_marker": "VFX_FIST13_R1_READY",
     "video_filename": "v4-fist13-native.mp4",
-    "source": "Original first party code-painted painted RGBA; exact SHA Godot movie & owner manual review required"
+    "source": "R2 volumetric ruby soft energy RGB and true alpha, exact native Godot movie and moving target; code-art first-party, owner art pending."
   }
 }

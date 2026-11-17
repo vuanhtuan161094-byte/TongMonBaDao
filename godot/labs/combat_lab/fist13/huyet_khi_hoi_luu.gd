@@ -77,7 +77,7 @@ func _draw()->void:
     if t>=.45 and t<1.12:
         var impact_alpha:=smoothstep(.45,.55,t)*(1.0-smoothstep(.9,1.12,t))
         var contact_frame:=clampi(int(floor((t-.45)/.39*12)),0,11)
-        _page(CONTACT,contact_frame,mark_at(0,t),.8,impact_alpha)
+        _page(CONTACT,contact_frame,mark_at(0,t),.64,impact_alpha)
     var sign_alpha:=mark_opacity(t)
     if sign_alpha>.002:
         _page(MARK,posmod(int(floor((t-MARK_START)*6)),8),mark_at(0,t),.43,sign_alpha)
