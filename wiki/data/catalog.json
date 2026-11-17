@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "project": "Tông Môn Bá Đạo — Tàng Kinh Các (owner-only)",
   "visibility": "LOCAL_ONLY_PRIVATE_BY_DEFAULT",
-  "sourceCommitSha": "51a29a7911b003f78310da09062bfc3edce80f16",
+  "sourceCommitSha": "eb2ca7dcc5a30da4fd7526d267fdf990cb4908cb",
   "sourceSyncPolicy": "ONE_WAY_GAME_SOURCE_TO_WIKI; browser proposals are not part of this generated file",
   "counts": {
     "schools": 12,
@@ -100886,7 +100886,7 @@
       "version": "FULL DESIGN LOCKED — NOT IMPLEMENTED",
       "exists": true,
       "additionalSourcePath": "godot/src/simulation/cultivation/spiritual_root_system.gd",
-      "additionalSourceSha": "",
+      "additionalSourceSha": "a35a3171d844bfb60f11c6d882907d66125d430037eca4f39877dbd4c3838709",
       "runtimeStatus": "FEATURE_GATED_OFF",
       "qaEvidence": {
         "status": "TEST_SOURCE_NOT_RUN_AT_WIKI_SHA",
