@@ -21,3 +21,13 @@ Initial gate: G3.5 NOT_EXECUTED before CI; G5 FULL NOT_EXECUTED; owner VISUAL_PE
 
 ## R1 visual STOP and R1B correction (2026-11-17)
 R1 source SHA c892b7bc952a88b13b94db9e27f3f1b722a04371 technical G3.5 PASS run 44049801897; manual actual native 1× charge/peak/contact review fails ART: gather too small, gu body resembles electrical arrow/UFO with circular transparent umbrella, mark too geometric/open. No PvE use. R1B modifies original isolated source poses to separated fluttering wings, dark segmented beetle carapace, curved mandibles/legs, two filled non-geometric linked-heart seeds plus stronger chest-layer rendering. G3.5 re-run MUST provide new exact-SHA screenshots before G5. R1 source remains in Git history; art branch untouched.
+
+## R1B final genuine Godot G5 review — 2026-11-17
+- Native full Godot Actions: https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/44051888617
+- Exact source SHA tested: 36f0517d44cefc5bda3b10c9105a9251cc21dfce. Workflow SOURCE SHA here is separate from later automatic asset archival/document-only commits.
+- G3.5 charge t0.21, peak t0.98, moving-target contact t1.48 captured 1280×720: technical PASS; no engine errors.
+- G4 focused test marker POI18_IMMORTAL_MARK_R1_RESULT=PASS failures=0. Single moving target, independently moving unmarked decoy; no live Combat V2 event or fabricated damage/status.
+- G5 native video 8.500 seconds / 510 fixed60 encoded frames, 1280×720, artifact name poi18-r1-immortal_mark-native-36f0517d44cefc5bda3b10c9105a9251cc21dfce. Source masters and atlases included in artifact and committed via safe GitHub Actions archive step.
+- Actual stage screenshots: charge .21, peak .98, contact 1.48, status-active 2.30, status-mid 5.10, status-expiring 7.92, status-cleared 8.22. Status 6.5s measured on LAB clock from simulated t1.35 to7.85; disappearance confirmed at8.22. This is NOT live game status timing.
+- Art self-review at actual native 1×: insect body silhouette4/5, light/purity3/5, motion4/5, moving-target contact4/5, sustained mark recognizability3/5, fade4/5; G6 ART POLISH BACKLOG (simplify techno outlines, organically reshape double linked heart, improve white-hot gold core). Do not mark OWNER_VISUAL_APPROVED; owner sees actual MP4 first. Native pixel/QA success is not approval.
+- G7 exact-SHA technical PASS. G8 PvE/V6.3 integration HOLD. Windows/Android physical QA PENDING. No code/gameplay/SaveService merge.
