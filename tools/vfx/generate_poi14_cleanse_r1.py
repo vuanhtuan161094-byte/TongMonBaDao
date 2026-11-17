@@ -15,7 +15,7 @@ SCALE=2
 SPECS=(("charge",8,(192,192)),("sever",12,(256,256)),("purge",10,(256,256)))
 RGB={
     "jade":(35,249,181),"aqua":(55,204,235),"silver":(218,253,255),
-    "ivory":(253,255,215),"poison":(125,59,206),"wine":(182,64,192),
+    "ivory":(253,255,215),"poison":(166,66,238),"wine":(225,73,217),
     "gold":(242,228,151)
 }
 def over(p,rgb,opacity):
@@ -60,7 +60,7 @@ def pose(phase,q,wh):
     elif phase=="sever":
         # Translucent poison contamination exits UP and AWAY from one ally.
         # This fades over time; never represents adding poison/status.
-        poison_strength=np.clip((.87-q)/.87,0,1)**.83
+        poison_strength=np.clip((1.08-q)/1.08,0,1)**.58
         for i in range(9):
             angle=i*2.39996+.55
             bx=math.sin(angle)*(19+7*(i%3))
@@ -69,31 +69,31 @@ def pose(phase,q,wh):
             cy=by-q*(42+5*i)
             blob=gauss(x,y,cx,cy,7+(i%3)*2.2,11+(i%4)*2.5)
             # Violet is seen being REMOVED; transparency and size diminish.
-            paint("poison" if i%3 else "wine",blob*(.11+.055*(i%3))*poison_strength*texture)
+            paint("poison" if i%3 else "wine",blob*(.30+.08*(i%3))*poison_strength*texture)
             kernel=gauss(x,y,cx,cy,2.5,4.5)
-            paint("wine",kernel*.17*poison_strength)
+            paint("wine",kernel*.30*poison_strength)
         # Clean energy flows IN through the chest in bands that are not rigid rings.
         cleanse_strength=.43+.57*np.sin(np.pi*(.11+.78*q))**.75
-        paint("aqua",gauss(x,y,0,3,49,61)*.105*cleanse_strength*texture)
-        paint("jade",gauss(x,y,-7,-4,34,49)*.105*cleanse_strength)
+        paint("aqua",gauss(x,y,0,3,49,61)*.16*cleanse_strength*texture)
+        paint("jade",gauss(x,y,-7,-4,34,49)*.15*cleanse_strength)
         for i in range(8):
             pos=(i-3.5)*10.5
             slant=pos+4.5*np.sin(y*.019+i*1.26+q*.64)
             body=np.exp(-((x-slant)/(4.0+1.0*(i%3)))**2)*gate(y,-81+6*(i%3),79-5*(i%4),25)
-            paint("jade" if i%3 else "aqua",body*(.10+.027*(i%4))*cleanse_strength*texture)
+            paint("jade" if i%3 else "aqua",body*(.13+.034*(i%4))*cleanse_strength*texture)
             if i in (2,5):
-                paint("silver",np.exp(-((x-slant)/2.0)**2)*gate(y,-46,62,25)*.10*cleanse_strength)
+                paint("silver",np.exp(-((x-slant)/2.0)**2)*gate(y,-46,62,25)*.15*cleanse_strength)
         # Singular thin cleansing slash, not a geometric icon. It advances upward.
         slash_y=36-62*q
-        slash=gauss(x,y,-3,slash_y,29,3.1)
-        paint("jade",slash*.34*cleanse_strength)
-        paint("silver",gauss(x,y,-3,slash_y,21,1.25)*.40*cleanse_strength)
-        paint("ivory",gauss(x,y,-4,slash_y,6,2.3)*.42*cleanse_strength)
+        slash=gauss(x,y,-3,slash_y,35,4.0)
+        paint("jade",slash*.52*cleanse_strength)
+        paint("silver",gauss(x,y,-3,slash_y,24,1.75)*.70*cleanse_strength)
+        paint("ivory",gauss(x,y,-4,slash_y,7.0,2.8)*.55*cleanse_strength)
         paint("aqua",gauss(x,y,0,3,18,26)*.18*cleanse_strength)
         paint("ivory",gauss(x,y,0,3,4.2,5.0)*.54*cleanse_strength)
     elif phase=="purge":
         # No shield and no 8-second status. Dissolve remnants into tiny light.
-        fading=max(.10,(1-q)**1.37)
+        fading=max(.11,(1-q)**1.12)
         paint("aqua",gauss(x,y,0,-17-q*19,42+10*q,53+12*q)*.084*fading*texture)
         # Trace residual purple converts to pale jade sparks, never persists.
         for i in range(6):
@@ -101,14 +101,14 @@ def pose(phase,q,wh):
             cx=math.cos(theta)*(22+18*q)
             cy=5+math.sin(theta)*(16+11*q)-q*49
             rem=gauss(x,y,cx,cy,9+q*2,12+q*5)
-            paint("poison",rem*.07*((1-q)**2.1))
+            paint("poison",rem*.13*((1-q)**1.8))
         for k in range(18):
             a=k*2.399963
             cx=(17+4*(k%5))*math.sin(a)+q*(15+3*(k%3))*math.cos(a+.6)
             cy=19+math.cos(a)*(14+4*(k%3))-q*(55+4*(k%6))
             particle=gauss(x,y,cx,cy,2.5+.7*(k%3),4.2+1.0*(k%4))
-            paint("jade" if k%4 else "gold",particle*(.36+.045*(k%4))*fading)
-            paint("silver",gauss(x,y,cx,cy,1.1,1.8)*.35*fading)
+            paint("jade" if k%4 else "gold",particle*(.58+.045*(k%4))*fading)
+            paint("silver",gauss(x,y,cx,cy,1.45,2.15)*.49*fading)
         paint("silver",gauss(x,y,0,-6,7+8*q,9+9*q)*.20*fading)
     else:raise ValueError(phase)
     arr=np.zeros_like(p,dtype=np.uint8)
