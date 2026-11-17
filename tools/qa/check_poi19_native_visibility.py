@@ -40,6 +40,25 @@ def main():
     d0=jade_count(idle,REGIONS["decoy"]);d1=jade_count(im,REGIONS["decoy"])
     report["decoy"]={"baseline":d0,"contact":d1,"delta":d1-d0,"false_jade_spread":d1-d0>50}
     assert d1-d0<=50,"mark appeared on unrelated decoy"
+    # Sustain G3.6: visible orchid above selected moving target, absent on expiry.
+    # Source of time-to-position is the LAB movement equation, not Combat V2.
+    from math import sin,cos
+    def mark_region(t):
+        foot_x=895+31*sin(2*t+.2)
+        foot_y=548+8.5*cos(1.3*t)
+        cy=foot_y-167
+        return (round(foot_x-68),round(cy-56),round(foot_x+68),round(cy+56))
+    stage_counts={}
+    for name,t in (("active",2.30),("mid",5.10),("expiring",7.92),("cleared",8.22)):
+        f=root/("status-"+name+".png")
+        assert f.is_file(), "missing actual Godot 6.5s status screenshot: "+str(f)
+        shot=Image.open(f).convert("RGB")
+        cnt=jade_count(shot,mark_region(t))
+        stage_counts[name]=cnt
+    report["sustain_status"]={"counts":stage_counts,"note":"G36 visibility only; not proof of actual combat status"}
+    assert stage_counts["active"]>=70, "Phé Cổ mark too faint at active2.30"
+    assert stage_counts["mid"]>=70, "Phé Cổ mark too faint at mid5.10"
+    assert stage_counts["cleared"]<=max(20,stage_counts["active"]//4), "Phé Cổ mark fails to disappear at 8.22"
     (root/"G36_VISIBILITY.json").write_text(json.dumps(report,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
-    print("POI19_NATIVE_G36_VISIBILITY_PASS_NOT_ART_APPROVAL",json.dumps({k:v["delta"] for k,v in report["phases"].items()}))
+    print("POI19_NATIVE_G36_VISIBILITY_PASS_NOT_ART_APPROVAL",json.dumps({**{k:v["delta"] for k,v in report["phases"].items()},"status":report["sustain_status"]["counts"]}))
 if __name__=="__main__":main()

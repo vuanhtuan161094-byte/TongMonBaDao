@@ -27,6 +27,8 @@ func _test() -> void:
     check(LAB.projectile_pos(.89).distance_to(LAB.projectile_pos(.68))>45.0,"gu moves across actual scene")
     check(LAB.projectile_pos(LAB.CONTACT_AT).distance_to(LAB.target_foot(LAB.CONTACT_AT)+Vector2(-13,-70))<.1,"contact follows moving target")
     check(LAB.target_foot(1.45).distance_to(LAB.decoy_foot(1.45))>120,"unaffected second enemy present")
+    check(absf(LAB.mark_anchor_at(2.30).y - LAB.target_foot(2.30).y + 167)<.1,"orchid mark is above selected target head")
+    check(LAB.mark_anchor_at(2.30).distance_to(LAB.mark_anchor_at(5.10))>5.0,"orchid mark follows WALK target instead of static UI")
     check(not LAB.has_gameplay_receipt(1.45) and not LAB.has_gameplay_receipt(4.5),"no forged Combat V2 hits/status")
     check(LAB.MONSTER_FRAMES.has_animation("walk"),"moving actual monster frames")
     check(LAB.SKILL_ID.ends_with(".immortal.b"),"Tiên B lineage not Liên Tâm A")
