@@ -1,6 +1,6 @@
 extends Control
 ## POI19 — Phụ Cốt Cổ · Tiên B (Phệ Cổ).
-## First-party original luminous orchid/seed, leaf-fold contact and one sustained orchid mark.
+## First-party orchid/seed art; R1B fix native G3.5 1x: enlarged seed + fold behind real moving actor.
 ## VIEW-ONLY genuine Godot 4.7.2 LAB, not a Combat V2 receipt. No insect anatomy, rig, GIF, copied sprites.
 const SKILL_ID := "tmb.skill.poison.co_doc.active_01.immortal.b"
 const EFFECT := "mark"
@@ -139,27 +139,31 @@ func _draw_monster(pos: Vector2,t: float) -> void:
 func _draw() -> void:
     var t:=clock
     draw_texture_rect(BACKGROUND,Rect2(0,0,1280,720),false,Color.WHITE)
+    if gather_frames.size()!=8 or seed_frames.size()!=16 or fold_frames.size()!=12 or mark_frames.size()!=12:
+        _draw_monster(target_foot(t),t)
+        _draw_monster(decoy_foot(t),t+0.22)
+        _draw_disciple()
+        return
+    # Folding petals are behind WALKING monster: never paste flower on its face.
+    if t>=CONTACT_AT and t<IMPACT_FADE_AT:
+        var q2:=clampf((t-CONTACT_AT)/(IMPACT_FADE_AT-CONTACT_AT),0,1)
+        _pose(fold_frames,target_foot(t)+Vector2(0,-78),Vector2(236,228),q2*11,
+             .92*(1-smoothstep(.80,1,q2)))
     _draw_monster(target_foot(t),t)
     _draw_monster(decoy_foot(t),t+0.22)
-    if gather_frames.size()!=8 or seed_frames.size()!=16 or fold_frames.size()!=12 or mark_frames.size()!=12:
-        return
     _draw_disciple()
     if t<RELEASE_AT:
         var q:=smoothstep(0.0,.12,t)*(1.0-smoothstep(CAST_END,RELEASE_AT,t))
-        _pose(gather_frames,CASTER_FOOT+Vector2(49,-89),Vector2(186,186),clampf(t/CAST_END*7,0,7),q*.94)
+        _pose(gather_frames,CASTER_FOOT+Vector2(49,-89),Vector2(210,200),clampf(t/CAST_END*7,0,7),q*.94)
     if t>=CAST_END and t<CONTACT_AT:
         var fade:=smoothstep(CAST_END,RELEASE_AT+.06,t)
         var travel:=flight_fraction(t)
         for k in range(2,0,-1):
             var past_t:=maxf(RELEASE_AT,t-.09*float(k))
             var past:=projectile_pos(past_t)
-            _pose(seed_frames,past,Vector2(145,114),float((int(past_t*22)+k)%16),fade*(.145-.030*k))
-        _pose(seed_frames,projectile_pos(t),Vector2(194,153),clampf(travel*15,0,15),.95*fade)
-    if t>=CONTACT_AT and t<IMPACT_FADE_AT:
-        var q2:=clampf((t-CONTACT_AT)/(IMPACT_FADE_AT-CONTACT_AT),0,1)
-        _pose(fold_frames,target_foot(t)+Vector2(0,-81),Vector2(260,250),q2*11,
-             .96*(1-smoothstep(.78,1,q2)))
+            _pose(seed_frames,past,Vector2(202,155),float((int(past_t*22)+k)%16),fade*(.145-.030*k))
+        _pose(seed_frames,projectile_pos(t),Vector2(333,252),clampf(travel*15,0,15),.95*fade)
     if t>=CONTACT_AT and t<MARK_FADE_END:
         var q3:=mark_gain(t)
         var cycle:=fposmod((t-CONTACT_AT)*5.0,12.0)
-        _pose(mark_frames,target_foot(t)+Vector2(0,-89),Vector2(135,135),cycle,.96*q3)
+        _pose(mark_frames,target_foot(t)+Vector2(0,-89),Vector2(130,130),cycle,.96*q3)
