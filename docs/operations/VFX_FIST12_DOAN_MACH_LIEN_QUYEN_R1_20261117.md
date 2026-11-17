@@ -23,3 +23,8 @@ R1 original four atlas pages: charge `8×256px`, energy stream `12×320px`, cont
 ## Human-owner gates
 
 Required at 1x: convincing energy light (not rigid UI lines), smooth braid flow, correct contact anchor on WALK mover, clear 6-second but unobtrusive mark, no hard crop edges or photoposter alpha, no missing frames or imaginary multiple hits. **Never** state art approved from GitHub Actions technical success. `OWNER_VISUAL_PENDING`, `PVE_INTEGRATION_HOLD`, `PHYSICAL_QA_PENDING`; do not change Combat V2, SaveService, PvE, economy or V6.3.
+
+## R1 native G3.5 review → R2 repair (2026-11-17)
+- R1 exact-SHA `205e6d0f49ace65de9e9ec4f453d6d3b997f8951`, Actions #43995071867 technical **SUCCESS**; actual 1280×720 video and 20 screenshots showed an energy WEDGE/arrow with rigid crescent at t0.74 and a large pink contact obscuring the target's face t0.99. **R1 ART_SELF_FAIL**, not owner-accepted.
+- R2 changes the actual **sprite source**: five independent intertwined meridian-current curves dynamically crossing and oscillating, broken light knots and source-derived granular detail; remove the fake UI crescent and pointed arrow silhouette. Contact and six-second vein mark moved to target upper chest (-84px from foot) and local burst slightly reduced. Mark contract remains 6 seconds, no real damage or status mutations.
+- Repeat true 1x native G3.5 and full 7.6s movie, inspect target head/alpha/marked-mover behavior. No GIF pipeline, no rig, V6.3 OFF.

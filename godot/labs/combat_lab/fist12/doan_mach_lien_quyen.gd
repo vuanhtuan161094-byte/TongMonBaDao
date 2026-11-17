@@ -3,7 +3,7 @@ extends Control
 ## Original ENERGY LIGHT alpha sprites / 3 braided currents / local mark application.
 ## View-only Godot 4.7.2 LAB: synthetic timing, NO combat damage/status writes.
 const SKILL_ID := "tmb.skill.fist.huyet_quyen.active_02.human"
-const ART_REVISION := "R1_ENERGY_FIRST_CRIMSON_MERIDIAN"
+const ART_REVISION := "R2_BRAIDED_ENERGY_MERIDIAN"
 const EFFECT := "mark"
 const ELEMENT := "nether"
 const SHAPE := "single_target"
@@ -72,7 +72,7 @@ static func target_position(index: int,t: float) -> Vector2:
     return foe_at(t)
 
 static func mark_at(index: int,t: float) -> Vector2:
-    return target_position(index,t)+Vector2(0.0,-107.0)
+    return target_position(index,t)+Vector2(0.0,-84.0)
 
 static func wave_at(t: float) -> Vector2:
     # LAB visual travel is cosmetic; catalogue speed=0 (not a projectile).
@@ -88,7 +88,7 @@ func _ready() -> void:
     set_process(true)
     queue_redraw()
     if not vfx_only_benchmark:
-        print("VFX_FIST12_R1_READY skill=",SKILL_ID,
+        print("VFX_FIST12_R2_READY skill=",SKILL_ID,
              " effect=mark status_duration=6 target=1 particle=alpha_sprite",
              " no_gif=true no_rig=true no_gameplay_writes=true")
 
@@ -146,7 +146,7 @@ func _draw() -> void:
         _actor(foe,Color("b8c4d5"),foe_walk)
     if touch>.002:
         var k:=clampi(int(floor((t-CONTACT_START)/(CONTACT_END-CONTACT_START)*8.0)),0,7)
-        _frame(CONTACT,k,320.0,mark_at(0,t),1.08,touch,Vector2(160.0,160.0))
+        _frame(CONTACT,k,320.0,mark_at(0,t),0.96,touch,Vector2(160.0,160.0))
     if sigil>.002:
         var k:=posmod(int(floor((t-MARK_START)*7.2)),8)
         _frame(MARK,k,192.0,mark_at(0,t),.93,sigil*(.91+.05*sin(t*5.4)),Vector2(96.0,103.0))
@@ -154,7 +154,7 @@ func _draw() -> void:
         draw_string(ThemeDB.fallback_font,Vector2(26,33),
             "DOAN MACH LIEN QUYEN / HUYET QUYEN",HORIZONTAL_ALIGNMENT_LEFT,-1,22,Color("ffe9f1"))
         draw_string(ThemeDB.fallback_font,Vector2(26,56),
-            "FIST12 R1 | CRIMSON MERIDIAN ENERGY / 6S MARK / LAB ONLY",HORIZONTAL_ALIGNMENT_LEFT,-1,12,Color("ffb2d6"))
+            "FIST12 R2 | BRAIDED PLASMA LIGHT / 6S VEIN MARK / LAB ONLY",HORIZONTAL_ALIGNMENT_LEFT,-1,12,Color("ffb2d6"))
         if t>=MARK_START and t<MARK_END:
             draw_string(ThemeDB.fallback_font,Vector2(1040,32),
                 "MARK %.1f s"%(MARK_END-t),HORIZONTAL_ALIGNMENT_LEFT,-1,14,Color("ff86bd"))

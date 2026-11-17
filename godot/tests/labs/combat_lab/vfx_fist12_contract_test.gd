@@ -9,7 +9,7 @@ func _initialize()->void:
     call_deferred("_run")
 func _run()->void:
     check(LAB.SKILL_ID=="tmb.skill.fist.huyet_quyen.active_02.human","canonical skill")
-    check(LAB.ART_REVISION=="R1_ENERGY_FIRST_CRIMSON_MERIDIAN","R1 revision")
+    check(LAB.ART_REVISION=="R2_BRAIDED_ENERGY_MERIDIAN","R1 revision")
     check(LAB.EFFECT=="mark" and LAB.ELEMENT=="nether","mark/nether")
     check(LAB.SHAPE=="single_target" and LAB.TARGET_LIMIT==1,"only one target")
     check(is_equal_approx(LAB.CAST_TIME,.45) and is_equal_approx(LAB.COOLDOWN,8.0),"cast cooldown")

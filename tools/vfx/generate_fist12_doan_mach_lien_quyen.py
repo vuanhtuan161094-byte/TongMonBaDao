@@ -124,29 +124,38 @@ def charge(k):
 
 
 def wave(k):
-    S=320;p=k/11
-    # A short-lived braided ENERGY WAVE, no fist-shaped solid silhouette.
-    # The contour bends and exchanges rank between poses, like living meridians.
-    head=(256+7*math.sin(p*math.pi*1.5),151+6*math.sin(k*.61))
+    """Five BRAIDED plasma currents. No pointed triangular fist/arrow sprite.
+    Nonuniform knots, crossing helical threads and soft luminescent wake
+    oscillate independently for every animation frame.
+    """
+    S=320;f=k/11
+    phase=k*.47
     cur=[]
     for j in range(5):
-        offset=(j-2)*(17+4*math.sin(p*math.pi))
-        start=(25+11*math.cos(k*.33+j*1.3),154+offset*.96)
-        c1=(82,145+offset*1.26+10*math.sin(k*.28+j))
-        c2=(200,149+offset*.17+9*math.sin(k*.42+j*1.5))
-        end=(head[0]-(j%3)*3,head[1]+offset*.10)
-        cur.append((curve(start,c1,c2,end,48),5.8+(j%2)*3.4+2*math.sin(k*.28+j)**2))
-    im=paint_masks(S,cur,k*.47,.69+.27*math.sin(p*math.pi),120+k)
-    # Narrow bright moving front: an oblique crescent from single image-owned
-    # energy source, not a fake hand, icon, or rectangular sprite.
-    m=Image.new('L',(S,S))
-    dr=ImageDraw.Draw(m)
-    dr.arc((head[0]-24,head[1]-36,head[0]+34,head[1]+36),-96,91,fill=175,width=4)
-    glow=m.filter(ImageFilter.GaussianBlur(8))
-    for mask,color,mult in [(glow,(226,31,102),.45),(m,(255,208,202),.88)]:
-        ly=Image.new('RGBA',(S,S),color+(0,));ly.putalpha(mask.point(lambda a:int(a*mult)))
-        im.alpha_composite(ly)
-    splinters(im,k,(head[0]-7,head[1]),scale=.34+.18*math.sin(p*math.pi),count=7,brightness=.55)
+        pts=[]
+        strand=(j-2)
+        for n in range(56):
+            t=n/55
+            x=42+227*t + (j-2)*7*(1-t) + 5*math.sin(phase+j*1.8+t*3.9)
+            # braided luminous filaments exchange upper/lower positions,
+            # with asymmetry to avoid wedge, neon arrow or uniform ribbons
+            envelope=(.33+.67*math.sin(math.pi*t)**.62)
+            y=153+strand*8.5*(1-.30*t)+(24+5*j%3)*math.sin((1.62+.33*j)*math.pi*t+phase*(.62+.11*j)+j*1.76)*envelope
+            y+=9*math.sin((3.3+j*.34)*math.pi*t+phase*.55+j*2.4)
+            pts.append((x,y))
+        cur.append((pts,5.3+(j%2)*2.4+1.3*math.sin(k*.31+j)**2))
+    im=paint_masks(S,cur,phase,.76+.21*math.sin(f*math.pi),120+k)
+    # Broken, painterly white-hot energy knots, not a hard crescent ring.
+    d=ImageDraw.Draw(im,'RGBA')
+    rr=random.Random(1907+k)
+    for i in range(11):
+        x=75+i*17+rr.uniform(-6,6)
+        y=150+29*math.sin(x*.031+phase+i*.7)
+        length=rr.uniform(3,12)
+        d.line([(x,y),(x+length,y+rr.uniform(-8,8))],
+               fill=(255,rr.randint(143,219),rr.randint(168,230),rr.randint(85,155)),
+               width=rr.choice([1,2,3]))
+    splinters(im,k,(234,150),scale=.22+.13*math.sin(f*math.pi),count=6,brightness=.39)
     return im
 
 
