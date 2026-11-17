@@ -110,7 +110,7 @@ func _ready()->void:
                 "blessing":blessing_frames.append(f)
                 "fade":fade_frames.append(f)
     set_process(true)
-    print("POI16_VAN_LINH_R1D_READY effect=heal type=ultimate circle=2.5 world cap=3 moving_allies=4 one_outside=true background_monster_walk=true original_alpha_poses=38 no_gif=true no_actual_receipts=true")
+    print("POI16_VAN_LINH_R1E_READY effect=heal type=ultimate circle=2.5 world cap=3 moving_allies=4 one_outside=true background_monster_walk=true original_alpha_poses=38 no_gif=true no_actual_receipts=true")
     queue_redraw()
 
 func _process(dt:float)->void:
@@ -184,3 +184,7 @@ func _draw()->void:
         for i in chosen:
             _flip(blessing_frames,ally_chest(i,t)+Vector2(0,-19),
                   Vector2(138,204),9.0,frontfade*.23)
+            # R1E: separate short-lived true-alpha jade motes leave EACH ally.
+            # Finite local VFX, never a persistent status or HP regeneration.
+            _flip(fade_frames,ally_chest(i,t)+Vector2(0,-33),
+                  Vector2(212,207),q3*7.0,frontfade*.96)
