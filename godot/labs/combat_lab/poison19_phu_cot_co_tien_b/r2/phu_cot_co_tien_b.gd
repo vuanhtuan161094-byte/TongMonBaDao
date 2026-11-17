@@ -158,29 +158,29 @@ func _draw() -> void:
     if t>=CONTACT_AT and t<MARK_FADE_END:
         var gain:=mark_gain(t)
         var ground_beat:=fposmod((t-CONTACT_AT)*4.0,12.0)
-        _pose(ground_frames,target_foot(t)+Vector2(0,-6),Vector2(278,117),ground_beat,.70*gain)
+        _pose(ground_frames,target_foot(t)+Vector2(0,-6),Vector2(295,134),ground_beat,.97*gain)
     # Ribbons are localized behind the one targeted WALK monster.
     if t>=CONTACT_AT and t<2.65:
         var veil_u:=clampf((t-CONTACT_AT)/(2.65-CONTACT_AT),0,1)
         var veil_alpha:=.84*(1.0-smoothstep(.50,1.0,veil_u))
-        _pose(veil_frames,target_foot(t)+Vector2(0,-86),Vector2(226,191),veil_u*11,veil_alpha)
+        _pose(veil_frames,target_foot(t)+Vector2(0,-86),Vector2(315,262),veil_u*11,veil_alpha*.96)
     if t>=CONTACT_AT and t<IMPACT_FADE_AT:
         var fold_u:=clampf((t-CONTACT_AT)/(IMPACT_FADE_AT-CONTACT_AT),0,1)
         var fold_alpha:=.92*(1.0-smoothstep(.79,1.0,fold_u))
-        _pose(fold_frames,target_foot(t)+Vector2(0,-75),Vector2(264,264),fold_u*15,fold_alpha)
+        _pose(fold_frames,target_foot(t)+Vector2(0,-75),Vector2(344,344),fold_u*15,fold_alpha)
     _draw_monster(target_foot(t),t)
     _draw_monster(decoy_foot(t),t+0.22)
     _draw_disciple()
     if t<RELEASE_AT:
         var charge_alpha:=smoothstep(0,.10,t)*(1-smoothstep(CAST_END,RELEASE_AT,t))
-        _pose(gather_frames,CASTER_FOOT+Vector2(47,-91),Vector2(230,224),clampf(t/CAST_END*11,0,11),.98*charge_alpha)
+        _pose(gather_frames,CASTER_FOOT+Vector2(47,-91),Vector2(282,280),clampf(t/CAST_END*11,0,11),.98*charge_alpha)
     if t>=CAST_END and t<CONTACT_AT:
         var fade:=smoothstep(CAST_END,RELEASE_AT+.05,t)
         var flight:=flight_fraction(t)
         for k in range(3,0,-1):
             var past_t:=maxf(RELEASE_AT,t-.045*float(k))
-            _pose(seed_frames,projectile_pos(past_t),Vector2(220,155),float((int(past_t*20)+k)%16),fade*(.125-.027*k))
-        _pose(seed_frames,projectile_pos(t),Vector2(325,220),clampf(flight*15,0,15),fade*.97)
+            _pose(seed_frames,projectile_pos(past_t),Vector2(252,176),float((int(past_t*20)+k)%16),fade*(.125-.027*k))
+        _pose(seed_frames,projectile_pos(t),Vector2(478,327),clampf(flight*15,0,15),fade*.97)
     # Foreground small living orchid status mark, over head on selected monster.
     if t>=CONTACT_AT and t<MARK_FADE_END:
         var mark_alpha:=mark_gain(t)
