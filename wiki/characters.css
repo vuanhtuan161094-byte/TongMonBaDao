@@ -1,0 +1,14 @@
+
+.menu .navlink{border:0;text-align:left;background:transparent;color:#dbebe5;border-radius:10px;padding:11px 13px;display:flex;align-items:center;gap:12px;font-size:15px;text-decoration:none}
+.menu .navlink:hover,.menu .navlink.active{background:#2d756d;color:white}
+.menu .navlink span{flex:1}
+.char-hero{background:linear-gradient(125deg,#1b6258,#123e3c);color:white;padding:29px 30px;border-radius:17px;margin-bottom:20px}
+.char-hero h2{font:29px Georgia,serif;margin:0 0 9px}.char-hero p{color:#d3eae2;margin:0}.char-stat{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:20px 0}
+.char-stat>div{background:#fff;border:1px solid #e3e9e5;border-radius:12px;padding:18px}.char-stat strong{display:block;font-size:25px;color:#176a63}.char-stat span{color:#667878;font-size:12px}
+.char-filter{display:flex;flex-wrap:wrap;gap:12px;align-items:end;margin:16px 0}.char-filter label{display:grid;gap:6px;font-size:12px;font-weight:700;color:#667878}
+.char-filter select,.char-filter input{padding:11px;border-radius:10px;border:1px solid #d4e2dc;background:white;color:#20383b;min-width:150px}.char-filter input{width:190px}
+.char-panel{border:1px solid #e3e9e5;background:white;border-radius:15px;margin-top:18px;overflow:hidden}.char-panel h2{font:22px Georgia,serif;margin:0}.char-panel header{padding:20px 22px;border-bottom:1px solid #e3e9e5}.char-panel header p{margin:5px 0 0;color:#667878;font-size:13px}.char-panel .inner{padding:18px 22px}.char-table{width:100%;min-width:460px;border-collapse:collapse}.char-table th{background:#f7faf8;color:#637e72;font-size:11px;text-transform:uppercase}.char-table th,.char-table td{padding:11px 13px;text-align:left;border-bottom:1px solid #edf0ed;vertical-align:top}.char-table tr:last-child td{border-bottom:0}
+.char-scroll{overflow:auto}.char-callout{border-left:3px solid #b39145;background:#fcf6e9;color:#785621;padding:12px 15px;margin:13px 0;border-radius:6px;font-size:13px}
+.char-good{display:inline-block;background:#e7f5ee;color:#217356;padding:3px 8px;border-radius:999px;font-size:11px;font-weight:700}.char-soft{display:inline-block;background:#f8eedb;color:#9c6b20;padding:3px 8px;border-radius:999px;font-size:11px;font-weight:700}.char-muted{font-size:12px;color:#697f74}
+@media(max-width:920px){.char-stat{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.char-stat{grid-template-columns:repeat(2,1fr)}.char-hero{padding:22px}.char-panel .inner{padding:14px}.char-panel header{padding:16px}.char-filter label{width:100%}.char-filter select,.char-filter input{width:100%}}
