@@ -1,3 +1,9 @@
+## OWNER VFX RESPONSE OPTIONS & SCHOOL QA INTEGRITY — 2026-11-18
+
+At the end of **every meaningful school VFX milestone** (POISON/FIST/TALISMAN), provide **3–4 owner-selectable next-step options**, with **A = one recommended action** grounded in the real last gate, explicitly state source permanence, exact-SHA CI, G3.5/3.6/3.7/G5, owner and PvE status. Do not silently advance to a different skill or imply CI PASS is art approval. Read [multi-chat coordination §8](docs/operations/TMB_VFX_MULTI_CHAT_COORDINATION_AND_RECOVERY_20261118.md) for the detailed rule and current POI18/FIST14/PAF05 blocking facts. This changes report/choice behavior only, not the original V4 production or write-scope permissions.
+
+---
+
 ## VFX SHARED SKILL PACKET RUNNER — 2026-11-18 (COORDINATOR)
 
 All POISON/FIST/TALISMAN VFX chats: read [shared V4 packet→Godot runner](docs/operations/TMB_VFX_SHARED_SKILL_RUNNER_V1_20261118.md) **before creating another per-skill workflow/QA harness**. Reuse `tools/qa/run_vfx_shared_packet.py` and `.github/workflows/vfx-shared-skill.yml` where skill V4 packet/assets/scene/focused test already exist; only build skill-specific RGBA source, contract and genuine extra tests. Shared command passed Godot 4.7.2 native G3.5 V4 evidence on exact SHA `3fe327ec858404d2965235556c9a609549f82b9f`, [Actions #44230153048](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/44230153048). **DO NOT** call that individual technical test a skill-wide art approval or production PvE integration. Existing school workflows remain unchanged until school-specific generated-asset, G3.6/3.7 and semantic coverage parity is proven. Preserve first-party masters, no new Godot project per skill.
