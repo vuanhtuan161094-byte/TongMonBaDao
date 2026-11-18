@@ -1,3 +1,11 @@
+## OWNER DECISION 2026-11-18 — CODEX PRIMARY VFX IMPLEMENTER (supersedes earlier no-Codex)
+
+The owner explicitly ordered: **"thôi giao cho codex làm thôi"**. For new and authorized VFX technical work, **Codex is approved and becomes the intended primary producer**. No-Codex text elsewhere is superseded **only for scoped VFX production, Godot/GDScript/art asset staging and CI**. All no-rig, frozen approved/provisional sources, G3.5 human visual STOP, gameplay/PvE HOLD, no merge, and safe HEAD/branch write rules remain mandatory.
+
+Start with [Codex simplified FIST14 pilot handoff](docs/operations/TMB_CODEX_VFX_SIMPLE_HANDOFF_20261118.md) rather than mass production. Do not turn each skill into new infrastructure or call technical CI beauty proof. Other POISON/FIST/TALISMAN ChatGPT production chats should **pause new school writes after reading this new owner instruction** and act only as reviewers while Codex is actively handling a scope; absence of a live Codex task means this document is a prepared task, not a running agent. Codex Cloud starts by an explicit user action in the Codex UI, it is NOT launched by committing this file. The assigned initial school scope is FIST14 isolated pilot only; others read-only until later authorization.
+
+---
+
 ## OWNER VFX STYLE OVERRIDE — JX/KIẾM THẾ SIMPLIFIED (18/11/2026)
 
 The owner explicitly prioritizes **simpler, more identifiable JX/Kiếm Thế-Mobile-like VFX** for upcoming work: ONE strong silhouette, ONE action, ONE clear impact, and status only if the canonical contract requires it. **Do not require 16–40 poses for routine skills**; suggest 2–4 poses for simple, 4–6 for characteristic, 6–12 only for justified ultimate/iconic content. A high-quality source image plus modest Godot trail/particles is preferred over dozens of procedurally changed frames. Do not overwrite owner-approved/provisional versions or weaken G3.5 native 1× and owner visual gates. Codex **could** help with GDScript/QA if the owner separately authorizes it; current no-Codex school rule remains in force and it does NOT auto-solve art. Read [Style V1](docs/operations/TMB_VFX_JX_SIMPLE_STYLE_V1_20261118.md) and [multi-chat coordination](docs/operations/TMB_VFX_MULTI_CHAT_COORDINATION_AND_RECOVERY_20261118.md).
