@@ -84,8 +84,24 @@ def paint(name,curves):
          (402,137),(406,146),(399,155),(418,159),(428,170),(416,183),
          (435,190),(438,204),(426,216),(414,227),(382,246),(337,243),
          (253,241),(132,268),(71,267)])
-        ImageDraw.Draw(body).polygon(poly,fill=(226,50,105,105))
-        halo.alpha_composite(body.filter(ImageFilter.GaussianBlur(16)))
+        ImageDraw.Draw(body).polygon(poly,fill=(232,58,117,118))
+        # A luminous closed four-knuckle pressure crest, not a solid glove.
+        crest=Image.new("RGBA",(W,H))
+        dc=ImageDraw.Draw(crest)
+        cusp=[(305,176),(328,147),(355,134),(377,137),(392,146),
+              (391,159),(405,157),(420,168),(417,183),(428,191),
+              (421,205),(414,219),(392,231),(371,228),(350,216),(325,207)]
+        dc.polygon(cusp,fill=(252,94,127,112))
+        halo.alpha_composite(crest.filter(ImageFilter.GaussianBlur(13)))
+        body.alpha_composite(crest)
+        # Separate hot knuckle edges. Transparent crimson mass stays visible.
+        dk=ImageDraw.Draw(core)
+        for arc in [((362,133),(389,128),(403,140),(399,153)),
+                    ((383,157),(402,149),(420,162),(413,179)),
+                    ((387,184),(413,176),(426,191),(414,201)),
+                    ((386,209),(409,205),(419,218),(396,227))]:
+            dk.line(bezier(*arc),fill=(255,246,232,239),width=3)
+        halo.alpha_composite(body.filter(ImageFilter.GaussianBlur(12)))
     for i,seg in enumerate(curves):
         color=((245,58,107),(222,36,92),(255,103,142))[i%3]
         stroke(halo,seg,5.0,(*color,67))
@@ -93,9 +109,14 @@ def paint(name,curves):
         stroke(body,seg,1.22,(250,78,127,175))
         if i%3!=2:
             stroke(core,seg,0.35,(255,231,221,221))
+    if name in ("charge","compress"):
+        d=ImageDraw.Draw(core)
+        for radius,opacity in ((15,24),(8,66),(3,212)):
+            d.ellipse((297-radius,192-radius,297+radius,192+radius),
+                      fill=(255,244,225,opacity))
     if name=="impact":
         d=ImageDraw.Draw(core)
-        for r,alpha in ((25,24),(12,55),(5,160),(2,245)):
+        for r,alpha in ((30,50),(18,115),(10,205),(5,255)):
             d.ellipse((231-r,200-r,231+r,200+r),fill=(255,249,237,alpha))
     out=Image.new("RGBA",(W,H))
     for layer in (halo.filter(ImageFilter.GaussianBlur(10)),

@@ -163,6 +163,11 @@ func _draw() -> void:
 		var gather_pose := 0 if t < 0.29 else 1
 		_draw_pose(ATTACK_ATLAS, gather_pose, ATTACK_COLUMNS, caster_hand_at(t), 0.36, charge_alpha, SOURCE_SIZE[gather_pose], SOURCE_CELL_OFFSET[gather_pose], FOCUS_SOURCE[gather_pose])
 	_draw_target(target, t)
+	# Soft near-target overlay retains the luminous knuckle face while keeping
+	# the enemy actor and face perceptible; no second hit or gameplay receipt.
+	if t >= 0.65 and t < SIMULATED_CONTACT_TIME:
+		var tip_alpha := 0.35 * (1.0 - smoothstep(0.84, SIMULATED_CONTACT_TIME, t))
+		_draw_pose(ATTACK_ATLAS, 3, ATTACK_COLUMNS, anchor, 0.56, tip_alpha, SOURCE_SIZE[3], SOURCE_CELL_OFFSET[3], FOCUS_SOURCE[3])
 
 	if t >= SIMULATED_CONTACT_TIME and t < CONTACT_END:
 		var contact_alpha := 1.0 - smoothstep(SIMULATED_CONTACT_TIME + 0.06, CONTACT_END, t)
