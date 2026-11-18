@@ -1,0 +1,92 @@
+name: VFX Shared | reusable skill packet Godot 4.7.2
+on:
+  workflow_call:
+    inputs:
+      packet:
+        description: Canonical school V4 packet path
+        required: true
+        type: string
+      mode:
+        description: focused | g35 | full
+        required: false
+        default: g35
+        type: string
+      duration_seconds:
+        description: 0 auto to last G3.5 frame; supply longer for skill sustain/expiry
+        required: false
+        default: 0
+        type: number
+  workflow_dispatch:
+    inputs:
+      packet:
+        description: Existing school-specific V4 JSON packet
+        required: true
+        type: string
+        default: docs/operations/vfx_packets/POI19_R3_V4_PREFLIGHT.json
+      mode:
+        description: Proof level; never owner art approval
+        required: true
+        type: choice
+        default: g35
+        options:
+          - focused
+          - g35
+          - full
+      duration_seconds:
+        description: Use 0 for G3.5 auto. For full, set beyond sustain/expiry.
+        required: true
+        type: number
+        default: 0
+  push:
+    branches: [integration/pve-p0-playable-ui-20261103]
+    paths:
+      - 'tools/qa/run_vfx_shared_packet.py'
+      - '.github/workflows/vfx-shared-skill.yml'
+permissions:
+  contents: read
+concurrency:
+  group: vfx-shared-packet-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  skill-packet:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      GODOT_AUDIO_DRIVER: Dummy
+      GODOT_RENDERING_DRIVER: opengl3
+      PACKET_INPUT: ${{ inputs.packet || 'docs/operations/vfx_packets/POI19_R3_V4_PREFLIGHT.json' }}
+      MODE_INPUT: ${{ inputs.mode || 'g35' }}
+      DURATION_INPUT: ${{ inputs.duration_seconds || 0 }}
+    steps:
+      - name: Checkout exact SHA
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Install pinned Godot 4.7.2 and shared VFX tools
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq xvfb ffmpeg unzip python3-pil python3-numpy
+          curl --fail --location --retry 3 -o /tmp/godot472.zip 'https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip'
+          echo 'cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4  /tmp/godot472.zip' | sha256sum --check --strict
+          unzip -q /tmp/godot472.zip -d /tmp
+          sudo install -m0755 /tmp/Godot_v4.7.2-stable_linux.x86_64 /usr/local/bin/godot
+          godot --version
+      - name: One shared import, packet, focused contract, optional G3.5 native proof
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/tmb-vfx-skill"
+          python3 tools/qa/run_vfx_shared_packet.py \
+            --packet "$PACKET_INPUT" --mode "$MODE_INPUT" \
+            --seconds "$DURATION_INPUT" \
+            --out "$RUNNER_TEMP/tmb-vfx-skill" --sha "$GITHUB_SHA" \
+            | tee "$RUNNER_TEMP/tmb-vfx-skill/runner.log"
+      - name: Upload exact-SHA technical proof, not owner approval
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vfx-shared-skill-${{ github.sha }}-${{ github.run_id }}
+          path: ${{ runner.temp }}/tmb-vfx-skill/
+          if-no-files-found: warn
+          retention-days: 14
