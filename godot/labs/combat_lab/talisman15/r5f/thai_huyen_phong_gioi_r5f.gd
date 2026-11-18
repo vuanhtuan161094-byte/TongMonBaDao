@@ -23,25 +23,21 @@ func _draw_charge_r5(t: float) -> void:
 	if a <= .004:
 		return
 	# Replace R5E's three rotating procedural line glyphs with real painted
-	# moving wind strands and the contained calligraphy of the 12-pose source.
+	# moving wind strands and the one large readable 風 glyph of the 12-pose source.
 	# Hand remains the painterly convergence anchor; source is not UV-warped.
 	var phase: float = clampf((t - .04) / .82, 0.0, 1.0) * float(CHARGE_POSES - 1)
 	var lo: int = int(floor(phase))
 	var hi: int = mini(lo + 1, CHARGE_POSES - 1)
 	var blend: float = phase - float(lo)
-	var at: Rect2 = Rect2(HAND + Vector2(-46, -104), Vector2(196, 196))
+	var at: Rect2 = Rect2(HAND + Vector2(-61, -116), Vector2(216, 216))
 	var uv_lo: Rect2 = Rect2(float(lo % 4) * CHARGE_CELL, float(int(lo / 4)) * CHARGE_CELL, CHARGE_CELL, CHARGE_CELL)
 	var uv_hi: Rect2 = Rect2(float(hi % 4) * CHARGE_CELL, float(int(hi / 4)) * CHARGE_CELL, CHARGE_CELL, CHARGE_CELL)
 	var body: float = .92 * a
 	draw_texture_rect_region(CHARGE_TEX, at, uv_lo, Color(1, 1, 1, body * (1.0 - blend)))
 	if hi != lo and blend > .006:
 		draw_texture_rect_region(CHARGE_TEX, at, uv_hi, Color(1, 1, 1, body * blend))
-	# A separate 風 sigil condenses near the outward palm only after wind ink
-	# arrives. This is not a shield, second cast, extra hit or permanent status.
-	var seal: float = smoothstep(.29, .61, t) * (1.0 - smoothstep(.78, .96, t))
-	if seal > .003:
-		var k: int = clampi(int((t - .29) / .095), 0, 5)
-		_atlas(MARK_TEX, k, HAND + Vector2(24, -14), Vector2(53, 60), Color(1, 1, 1, .76 * seal))
+	# The single full-size gold 風 is already in the charge atlas. Do not
+	# superimpose R5E's smaller status-mark atlas during R5F charge.
 	# Small physically local hot core; no orbiting neon bars or HUD ring.
 	var compression: float = smoothstep(.18, .75, t)
 	var hot: Vector2 = Vector2(31, 31).lerp(Vector2(16, 16), compression)

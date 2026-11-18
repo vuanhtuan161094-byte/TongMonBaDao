@@ -6,7 +6,7 @@ Does not alter the R5/R5E painter source, atlas or 7-second status treatment.
 """
 from __future__ import annotations
 from pathlib import Path
-from PIL import Image, ImageDraw, ImageFilter
+from PIL import Image, ImageDraw, ImageFilter, ImageFont, ImageChops
 import hashlib
 import math
 import random
@@ -73,33 +73,60 @@ def ribbon(img, pts, width, tint, strength, seed, t, start=0.0, end=1.0):
     img.alpha_composite(color)
 
 def sigil(img, t):
-    # Abstract manually drawn wind-seal brushstrokes, NOT a pasted font/card.
-    paths=[
-        [(119,132),(119,111),(132,104),(181,108)],
-        [(180,108),(199,111),(205,134),(199,175)],
-        [(126,124),(122,158),(114,185),(104,197)],
-        [(199,176),(191,192),(184,201)],
-        [(142,136),(166,128),(187,135)],
-        [(147,146),(160,142),(178,147)],
-        [(160,143),(155,171),(148,183)],
-        [(173,153),(171,178),(181,182)],
-        [(145,175),(165,171),(187,181)],
-        [(164,132),(169,142),(175,155)],
-    ]
-    amount=min(1,max(0,(t-.06)/.88))
-    for i,path in enumerate(paths):
-        local=max(0,min(1,amount*1.55 - i*.082))
-        if local<.06: continue
-        seq=[]
-        for a,b in zip(path,path[1:]):
-            for k in range(18):
-                u=k/18
-                seq.append((a[0]*(1-u)+b[0]*u+math.sin(u*math.pi*2+i)*.65,
-                            a[1]*(1-u)+b[1]*u+math.cos(u*math.pi*2+i)*.45))
-        seq.append(path[-1]);stop=max(3,int((len(seq)-1)*local))
-        seq=[(158+(x-158)*1.28,156+(y-156)*1.28) for x,y in seq]
-        ribbon(img,seq, 3.6 if i>3 else 5.3, (242,181,84), 1 if i<4 else .93,
-               100+i,t,0,stop/(len(seq)-1))
+    """Readable traditional 風 at 1x: original layered gilding over OFL Noto CJK glyph.
+
+    Noto Serif CJK Bold is a freely-licensed typography stencil (SIL OFL), not
+    extracted JX/VL game artwork. The growing amber-gold, bloom and wind-silk
+    material are rendered in our own isolated transparent frames.
+    """
+    font_path = Path('/usr/share/fonts/opentype/noto/NotoSerifCJK-Bold.ttc')
+    if not font_path.is_file():
+        raise RuntimeError('PAF05 R5F source requires fonts-noto-cjk (OFL NotoSerifCJK-Bold.ttc)')
+    font = ImageFont.truetype(str(font_path), 150 * SCALE)
+    ink = Image.new('L', img.size, 0)
+    d = ImageDraw.Draw(ink)
+    # Real Traditional Chinese 風. A broad ~95px on-screen glyph at 216/320.
+    d.text((159 * SCALE, 153 * SCALE), '風', font=font, anchor='mm', fill=255)
+    assert ink.getbbox(), 'Missing the actual U+98A8 glyph'
+
+    # Stroke formation: independent key-pose reveal, not a pasted paper card
+    # or a spinning vector badge. By mid-charge the whole 風 is recognizable.
+    progress = max(0.0, min(1.0, (t - .045) / .31))
+    if progress <= 0.0:
+        return
+    reveal = Image.new('L', img.size, 0)
+    sweep = ImageDraw.Draw(reveal)
+    front = (91.0 + 166.0 * progress) * SCALE
+    sweep.polygon([(0, 0), (img.width, 0),
+                   (img.width, round(front - 5 * SCALE)),
+                   (round(200 * SCALE), round(front + 3 * SCALE)),
+                   (0, round(front - 2 * SCALE))], fill=255)
+    ink = ImageChops.multiply(ink, reveal)
+
+    def composite(rgb, alpha):
+        layer = Image.new('RGBA', img.size, (*rgb, 0))
+        layer.putalpha(alpha)
+        img.alpha_composite(layer)
+
+    # Dark bronze edge gives contrast on pale terrain; gold halo stays soft
+    # and localized rather than turning the entire charge into a UI icon.
+    halo = ink.filter(ImageFilter.GaussianBlur(13 * SCALE))
+    composite((236, 150, 54), halo.point(lambda a: round(a * .46)))
+    rim = ink.filter(ImageFilter.MaxFilter(11))
+    composite((89, 46, 19), rim.point(lambda a: round(a * .83)))
+
+    gild = Image.new('RGBA', img.size, (0, 0, 0, 0))
+    gd = ImageDraw.Draw(gild)
+    for yy in range(72 * SCALE, 245 * SCALE):
+        u = min(1.0, max(0.0, (yy / SCALE - 72) / 173))
+        gd.line((0, yy, img.width, yy),
+                fill=(255, round(228 - 51 * u + 13 * math.sin(u * math.pi)),
+                      round(156 - 80 * u), 255))
+    gild.putalpha(ink)
+    img.alpha_composite(gild)
+    core = ink.filter(ImageFilter.MinFilter(7))
+    composite((255, 250, 201), core.point(lambda a: round(a * .52)))
+
 
 def pose(i):
     t=i/(N-1)
