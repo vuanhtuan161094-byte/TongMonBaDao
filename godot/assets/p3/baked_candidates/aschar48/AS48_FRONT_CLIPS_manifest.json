@@ -1,0 +1,233 @@
+{
+  "schema": "tmb.aschar48.front_clips.candidate.v1",
+  "identity": "AS-CHAR-48 male sword cultivator",
+  "status": "CANDIDATE",
+  "art_source": "ImageGen generated one 4x4 full-body pose sheet from AS48_MASTER_CANDIDATE.png; frames sliced by row. Not Source A; owner art approval pending.",
+  "source_sheet_sha256": "799e0247cae668b4b066e9edeb190b6346ebc99208b8703711460b7b5f1beeb1",
+  "engine_canvas_px": [
+    384,
+    384
+  ],
+  "clips": {
+    "idle_front": {
+      "fps": 5,
+      "loop": true,
+      "row": 0,
+      "source_row": "dedicated 2x2 breathing loop"
+    },
+    "cast_front": {
+      "fps": 8,
+      "loop": false,
+      "row": 1
+    },
+    "hit_front": {
+      "fps": 10,
+      "loop": false,
+      "row": 2
+    },
+    "downed_front": {
+      "fps": 6,
+      "loop": false,
+      "row": 3
+    }
+  },
+  "frames": [
+    {
+      "clip": "idle_front",
+      "frame": 0,
+      "path": "frames/idle_front/AS48_idle_front_00.png",
+      "sha256": "deb34636fb58e9249f37df32c3db5b003c8b0c9128881635425460de755fd531",
+      "canvas_px": [
+        384,
+        384
+      ],
+      "foot_y_px": 360
+    },
+    {
+      "clip": "idle_front",
+      "frame": 1,
+      "path": "frames/idle_front/AS48_idle_front_01.png",
+      "sha256": "9ce938b105586347275b36a97e04336ecb861eb99e16bee8f7a70d3399ceb1c8",
+      "canvas_px": [
+        384,
+        384
+      ],
+      "foot_y_px": 360
+    },
+    {
+      "clip": "idle_front",
+      "frame": 2,
+      "path": "frames/idle_front/AS48_idle_front_02.png",
+      "sha256": "6b00943cb7c292a0a34b4a581ca1afa0165b54cf357193498fb351c544e4a362",
+      "canvas_px": [
+        384,
+        384
+      ],
+      "foot_y_px": 360
+    },
+    {
+      "clip": "idle_front",
+      "frame": 3,
+      "path": "frames/idle_front/AS48_idle_front_03.png",
+      "sha256": "a0a12aa22f679e66dfe14a7629916f0a93cb0f720b43d51e59115746e913a96d",
+      "canvas_px": [
+        384,
+        384
+      ],
+      "foot_y_px": 360
+    },
+    {
+      "clip": "cast_front",
+      "frame": 0,
+      "path": "frames/cast_front/AS48_cast_front_00.png",
+      "sha256": "d120d2122aeba64960d6567ec0dcc3046fb4ec116d1fa356ad0e1c0b6bf00442",
+      "canvas_px": [
+        384,
+        384
+      ],
+      "foot_y_px": 360
+    },
+    {
+      "clip": "cast_front",
+      "frame": 1,
+      "path": "frames/cast_front/AS48_cast_front_01.png",
+      "sha256": "361fe18592d0efd87996ce555bfa9ed10f7b8f95f4d00d4103c6cbedb8e06e22",
+      "canvas_px": [
+        384,
+        384
+      ],
+      "foot_y_px": 360
+    },
+    {
+      "clip": "cast_front",
+      "frame": 2,
+      "path": "frames/cast_front/AS48_cast_front_02.png",
+      "sha256": "124ff5a3a687421a67c884d6b7f38a0ab2f859eef36288735a89ae581c30465f",
+      "canvas_px": [
+        384,
+        384
+      ],
+      "foot_y_px": 360
+    },
+    {
+      "clip": "cast_front",
+      "frame": 3,
+      "path": "frames/cast_front/AS48_cast_front_03.png",
+      "sha256": "afc3fbd74f50d610aad545e07b3a152c52457189e486a8a4594eb98cd2961c8b",
+      "canvas_px": [
+        384,
+        384
+      ],
+      "foot_y_px": 360
+    },
+    {
+      "clip": "hit_front",
+      "frame": 0,
+      "path": "frames/hit_front/AS48_hit_front_00.png",
+      "sha256": "a74570d9c4acf53e93ffa14abbee5a9266170faba395c3339d38d2fc9c018927",
+      "canvas_px": [
+        384,
+        384
+      ],
+      "foot_y_px": 360
+    },
+    {
+      "clip": "hit_front",
+      "frame": 1,
+      "path": "frames/hit_front/AS48_hit_front_01.png",
+      "sha256": "632a972e51e12be52e8a0082b91c52d0ae14281d2d4f17471b59eb0f8aee72b5",
+      "canvas_px": [
+        384,
+        384
+      ],
+      "foot_y_px": 360
+    },
+    {
+      "clip": "hit_front",
+      "frame": 2,
+      "path": "frames/hit_front/AS48_hit_front_02.png",
+      "sha256": "0c532c1f91ec1ab8ee530cb6240ba8c1985842a785a5983a98d7e47c70412d0b",
+      "canvas_px": [
+        384,
+        384
+      ],
+      "foot_y_px": 360
+    },
+    {
+      "clip": "hit_front",
+      "frame": 3,
+      "path": "frames/hit_front/AS48_hit_front_03.png",
+      "sha256": "2e59398e77eb97be0eb9bb2cdc7b9e3f2a6d9be2f06adc670ab3a2681f2c53f1",
+      "canvas_px": [
+        384,
+        384
+      ],
+      "foot_y_px": 360
+    },
+    {
+      "clip": "downed_front",
+      "frame": 0,
+      "path": "frames/downed_front/AS48_downed_front_00.png",
+      "sha256": "787fd9466b742176826985c99b3190c0ff389916b1ad4b72edf520c1de322248",
+      "canvas_px": [
+        384,
+        384
+      ],
+      "foot_y_px": 360
+    },
+    {
+      "clip": "downed_front",
+      "frame": 1,
+      "path": "frames/downed_front/AS48_downed_front_01.png",
+      "sha256": "bd11088835830d70b099b776fd778e24bd1da6d74089ffed9d5ca0823244aa0f",
+      "canvas_px": [
+        384,
+        384
+      ],
+      "foot_y_px": 360
+    },
+    {
+      "clip": "downed_front",
+      "frame": 2,
+      "path": "frames/downed_front/AS48_downed_front_02.png",
+      "sha256": "ab23195099038275a619b4f80409b98653b290a1f01dfef918f3c98edee63d4a",
+      "canvas_px": [
+        384,
+        384
+      ],
+      "foot_y_px": 360
+    },
+    {
+      "clip": "downed_front",
+      "frame": 3,
+      "path": "frames/downed_front/AS48_downed_front_03.png",
+      "sha256": "f3a4c794475414f20bc89245fb3d983928fa1669c760e716185a06bac898e4fe",
+      "canvas_px": [
+        384,
+        384
+      ],
+      "foot_y_px": 360
+    }
+  ],
+  "weapon_socket_metadata_sha256": "9e2c6dd14876a2e46d5d15d0010d29771709fcee87776709cf4f4c68af1e31f5",
+  "weapon_socket_adjustment_note": "Grip points centered on visible closed main-hand positions; front draw uses a 44x44 crop of the same RGBA body cel to redraw the hand over the sword. Downed final two frames drop/hide the sword.",
+  "spriteframes_file": "AS48_V9_FRONT_CLIPS_CANDIDATE.tres",
+  "spriteframes_sha256": "1d6266f4d7c37ea5232ac2e4cd031e594b428463ad99741070f435bcebae5ede",
+  "candidate_scene_file": "AS48_BakedVisualCandidate.tscn",
+  "candidate_scene_sha256": "697688e72069681c2e69cdfcfa56cf77beee22904088897685e81bb675a39a00",
+  "atlas_file": "AS48_front_newclips_atlas.png",
+  "socket_metadata_file": "AS48_front_weapon_sockets_v9_3.json",
+  "socket_metadata_sha256": "40539cfc2c2411997bbfb91196fe17a09da8b71f3e6ef0194e903e0d8caa5810",
+  "evidence_video_sha256": "96ec07258fa33af61ad08aaf33e72a7a7988c4ebc09132f6e7a44822258f7988",
+  "idle_source_sheet_sha256": "3a9155316ab8880dce00831cb765dcf28de2e213dec60851af136873c040c27e",
+  "weapon_asset_sha256": "8c9869ba06e39799c5eb3b6b2e3060284c04197abc034993b1831f1572c60285",
+  "qa_project": "TMB_ASCHAR_V8_20261117_R1/godot/aschar_v9_batch1 (isolated existing review project; not a native PR checkout)",
+  "atlas_workspace_path": "02_Assets/Character_Animation/ASCHAR_V9_3_AS48_FRONT_NEWCLIPS_20261118/AS48_front_newclips_atlas.png",
+  "atlas_sha256": "7280fc45e24442cd28221ec64e169027a84235d2ba623ab4d1ecf0d4ccb3712d",
+  "atlas_publication": "LOCAL_E_HANDOFF_ONLY; SpriteFrames use individual RGBA frame PNGs",
+  "video_workspace_path": "03_QA_Logs/ASCHAR_V9_3_AS48_AS49_PLAYBACK_20261118/AS48_FrontClips_Godot472_1280x720_60fps.avi",
+  "evidence_video": "03_QA_Logs/ASCHAR_V9_3_AS48_AS49_PLAYBACK_20261118/AS48_FrontClips_Godot472_1280x720_60fps.avi",
+  "source_sheet_workspace_path": "02_Assets/Character_Animation/ASCHAR_V9_3_AS48_FRONT_NEWCLIPS_20261118/AS48_front_16pose_sheet_candidate.png",
+  "owner_art_approval": "PENDING",
+  "qa_status": "PASS: Godot 4.7.2 official imported candidate frame resources and rendered 439 frames at 60 fps. Isolated review project only; not tested as a PR native checkout or on the production map. Artwork remains candidate."
+}
