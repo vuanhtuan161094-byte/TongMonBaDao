@@ -24,9 +24,7 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+    # Player encyclopedia deploy is independent of the game release environment.
     steps:
       - name: Checkout source
         uses: actions/checkout@v4
