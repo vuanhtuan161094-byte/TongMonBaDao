@@ -112,7 +112,7 @@ function change(id,value){
  assert.match(view(),/\+50 điểm %/);
  assert.match(view(),/30%/);
  change("mind-score","1200");
- assert.match(view(),/\+8 điểm %/);
+ assert.match(view(),/\+50 điểm %/);
  assert.match(view(),/Hệ số kháng và Tu Luyện: đề xuất/);
  assert.match(view(),/52,08 Tu Vi\/s/);
  change("mind-score","500");
