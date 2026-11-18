@@ -36,10 +36,7 @@ func _ready() -> void:
 	if hand_mask == null:
 		hand_mask=Sprite2D.new(); hand_mask.name="HandMask"; hand_mask.centered=false; hand_mask.region_enabled=true; add_child(hand_mask)
 	_load_contract()
-	var frame_height := 384.0
-	var idle := sprite_frames.get_frame_texture(&"stand",0) if sprite_frames != null and sprite_frames.has_animation(&"stand") else null
-	if idle != null: frame_height=float(idle.get_height())
-	offset=Vector2(0.0,frame_height*0.5-baseline_y)
+	_sync_frame_geometry()
 	sword.centered=true
 	sword.show_behind_parent=true
 	sword.z_index=0
@@ -85,10 +82,27 @@ func play_game_action(action: StringName) -> bool:
 		"death","dead": action_clip="death_front"
 	return play_candidate_clip(StringName(action_clip)) if not action_clip.is_empty() else false
 
+# The old Walk/Attack sprites use 400x440 (foot row 429), while the
+# newer front poses use 384x384 (foot row 359). Match socket coordinates
+# to the real texture's canvas each frame, including its foot registration.
+func _sync_frame_geometry() -> void:
+	if sprite_frames == null or not sprite_frames.has_animation(animation): return
+	var tex: Texture2D = sprite_frames.get_frame_texture(animation,frame)
+	if tex == null: return
+	var size: Vector2 = tex.get_size()
+	var foot_y := 430.0 if size == Vector2(400.0,440.0) else baseline_y
+	canvas_px=size
+	body_origin=Vector2(-size.x*0.5,-foot_y)
+	offset=Vector2(0.0,size.y*0.5-foot_y)
+
 func _sync_weapon() -> void:
+	_sync_frame_geometry()
 	if hand_mask!=null: hand_mask.visible=false
 	if sword==null or sword.texture==null or resolver==null or sprite_frames==null: return
-	var key="%s:%d" % [str(animation),frame]
+	var clip_name := str(animation)
+	if clip_name == "stand": clip_name = "idle_front"
+	elif clip_name == "walk": clip_name = "walk_front"
+	var key="%s:%d" % [clip_name,frame]
 	if not socket_index.has(key): sword.visible=false; return
 	var frame_data: Dictionary=socket_index[key]
 	if not bool(frame_data.get("weapon_visible",false)): sword.visible=false; return
