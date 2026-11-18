@@ -1,0 +1,37 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 - Build 31.0.101.2125 - Compatibility - Using Device: Intel - Intel(R) Iris(R) Plus Graphics
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+Movie Maker mode enabled, recording movie in 1280×720 @ 60 FPS...
+WARNING: Current available space on disk is low (9.74 GiB). MovieWriter will fail during movie recording if the disk runs out of available space.
+   at: begin (servers/movie_writer/movie_writer.cpp:117)
+ASCHAR_V9_3_ROLE_SOCKET_CONTRACT=PASS family_contracts=11 two_hand_alignment_fixture=PASS multi_part_fixture=PASS runtime_weapon_family=jian_only
+ASCHAR_V9_3_REVIEW_START identity=AS48 clip=Attack_Front authored_fps=7 capture_fps=60 resolution=1280x720 debug_proxy=on
+ASCHAR_V9_3_BODY_HASHES=9631f1bdb6e600113aa0262ce33515d7508c6f1b9c77544d189c1eaf444bd887,fec6f6b6391c3488221b38eb8c727bc9f9d874c2efa64e21cab3f6484de213bf,fc4010b33fb56a25dd174a9b2e0e0b86e72c47bcc5d5d46cf685b9851bdeef75,e207a272021541f7fcf61853a56cf1478e7b86375c6b7a38ae7be8a962c1e2f6
+ASCHAR_V9_3_FRAME weapon=silver index=0 pose=WINDUP grip=[266.0, 336.0] angle=-95.0 order=WEAPON_BEHIND_BODY
+ASCHAR_V9_3_CAPTURE=E:\TongMonBaDaoWorkspace\03_QA_Logs\ASCHAR_V9_3_20261118\RUN14/AS48_ATTACK_FRONT_SOCKET_SILVER_FRAME00_1280x720.png size=1280x720 error=0
+ASCHAR_V9_3_FRAME weapon=silver index=1 pose=GUARD_RISE grip=[311.0, 221.0] angle=-150.0 order=WEAPON_BEHIND_BODY
+ASCHAR_V9_3_CAPTURE=E:\TongMonBaDaoWorkspace\03_QA_Logs\ASCHAR_V9_3_20261118\RUN14/AS48_ATTACK_FRONT_SOCKET_SILVER_FRAME01_1280x720.png size=1280x720 error=0
+ASCHAR_V9_3_FRAME weapon=silver index=2 pose=RELEASE grip=[290.0, 315.0] angle=-95.0 order=WEAPON_FRONT_WITH_HAND_MASK
+ASCHAR_V9_3_CAPTURE=E:\TongMonBaDaoWorkspace\03_QA_Logs\ASCHAR_V9_3_20261118\RUN14/AS48_ATTACK_FRONT_SOCKET_SILVER_FRAME02_1280x720.png size=1280x720 error=0
+ASCHAR_V9_3_FRAME weapon=silver index=3 pose=RECOVERY grip=[263.0, 263.0] angle=-30.0 order=WEAPON_BEHIND_BODY
+ASCHAR_V9_3_CAPTURE=E:\TongMonBaDaoWorkspace\03_QA_Logs\ASCHAR_V9_3_20261118\RUN14/AS48_ATTACK_FRONT_SOCKET_SILVER_FRAME03_1280x720.png size=1280x720 error=0
+ASCHAR_V9_3_FRAME weapon=phoenix_wing index=0 pose=WINDUP grip=[266.0, 336.0] angle=-95.0 order=WEAPON_BEHIND_BODY
+ASCHAR_V9_3_CAPTURE=E:\TongMonBaDaoWorkspace\03_QA_Logs\ASCHAR_V9_3_20261118\RUN14/AS48_ATTACK_FRONT_SOCKET_PHOENIX_WING_FRAME00_1280x720.png size=1280x720 error=0
+ASCHAR_V9_3_FRAME weapon=phoenix_wing index=1 pose=GUARD_RISE grip=[311.0, 221.0] angle=-150.0 order=WEAPON_BEHIND_BODY
+ASCHAR_V9_3_CAPTURE=E:\TongMonBaDaoWorkspace\03_QA_Logs\ASCHAR_V9_3_20261118\RUN14/AS48_ATTACK_FRONT_SOCKET_PHOENIX_WING_FRAME01_1280x720.png size=1280x720 error=0
+ASCHAR_V9_3_FRAME weapon=phoenix_wing index=2 pose=RELEASE grip=[290.0, 315.0] angle=-95.0 order=WEAPON_FRONT_WITH_HAND_MASK
+ASCHAR_V9_3_CAPTURE=E:\TongMonBaDaoWorkspace\03_QA_Logs\ASCHAR_V9_3_20261118\RUN14/AS48_ATTACK_FRONT_SOCKET_PHOENIX_WING_FRAME02_1280x720.png size=1280x720 error=0
+ASCHAR_V9_3_FRAME weapon=phoenix_wing index=3 pose=RECOVERY grip=[263.0, 263.0] angle=-30.0 order=WEAPON_BEHIND_BODY
+ASCHAR_V9_3_CAPTURE=E:\TongMonBaDaoWorkspace\03_QA_Logs\ASCHAR_V9_3_20261118\RUN14/AS48_ATTACK_FRONT_SOCKET_PHOENIX_WING_FRAME03_1280x720.png size=1280x720 error=0
+ASCHAR_V9_3_NON_LOOP=PASS authored_order=0,1,2,3 hold_last_pose=true
+ASCHAR_V9_3_WEAPON_SWAP=PASS same_body_frames=4 weapon_variants=2 family=jian proxy=debug_scene_only captures=8 physical_mouse=not_claimed
+ASCHAR_V9_3_RENDER_COMPLETE=PASS native_viewport=1280x720 capture_fps=60 authored_attack_fps=7
+--------------------------------------------------------------------------------
+Done recording movie at path: E:\TongMonBaDaoWorkspace\03_QA_Logs\ASCHAR_V9_3_20261118\RUN14\AS48_WEAPON_SOCKET_FAMILY_PROXY_AB_60FPS_1280x720.avi
+120 frames at 60 FPS (movie length: 00:00:02:00), recorded in 00:00:04 (50% of real-time speed).
+CPU render time: 0.05 seconds (average: 0.41 ms/frame)
+GPU render time: 0.10 seconds (average: 0.84 ms/frame)
+Encoding time: 1.11 seconds (average: 9.28 ms/frame)
+--------------------------------------------------------------------------------

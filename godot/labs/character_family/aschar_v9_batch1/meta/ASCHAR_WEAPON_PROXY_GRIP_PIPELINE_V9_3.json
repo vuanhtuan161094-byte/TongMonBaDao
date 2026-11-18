@@ -1,0 +1,174 @@
+{
+  "schema": "tmb.aschar.weapon_proxy_grip_pipeline.v9_3",
+  "version": "9.3",
+  "body_contract": {
+    "representation": "full_body_frame_by_frame_rgba",
+    "body_source_mutation_on_weapon_swap": false,
+    "rigging": false,
+    "production_proxy_visible": false,
+    "proxy_scene_scope": "character_family/aschar_v9_batch1/scenes/aschar_weapon_proxy_review.tscn"
+  },
+  "socket_contract": {
+    "metadata_granularity": "per_body_frame_per_grip_role",
+    "fields": [
+      "body_grip_px",
+      "rotation_deg",
+      "scale_multiplier",
+      "draw_order",
+      "hand_mask_rect_px"
+    ],
+    "weapon_fields": [
+      "asset_path",
+      "family",
+      "socket_points_px",
+      "asset_tip_px",
+      "asset_scale",
+      "alpha_bounds_gt128_px",
+      "sha256"
+    ],
+    "draw_orders": [
+      "WEAPON_BEHIND_BODY",
+      "WEAPON_FRONT_WITH_HAND_MASK"
+    ],
+    "hand_mask_rule": "crop from same monolithic full-body cel at runtime; never extracted as an independently animated body part",
+    "frame_role_schema": "body_frames[].grip_sockets[role]",
+    "asset_role_schema": "weapon.socket_points_px[role]",
+    "multi_part_schema": "weapon.parts[] may bind each independent sprite to one role; shared resolver applies per-part transform without changing body cels"
+  },
+  "family_conventions": {
+    "jian": {
+      "grip_roles": [
+        "main_hand"
+      ],
+      "proxy_shape": "single_grip_blade_axis_bounds",
+      "proxy_landmarks": ["grip", "tip", "alpha_bounds"],
+      "motion_profile": "one_hand_slash_and_thrust",
+      "separate_motion_contract": true,
+      "runtime_qa": "PASS_AS48_ATTACK_FRONT_TWO_CANDIDATE_SWORDS"
+    },
+    "dao": {
+      "grip_roles": [
+        "main_hand"
+      ],
+      "proxy_shape": "single_grip_asymmetric_blade_axis_bounds",
+      "proxy_landmarks": ["grip", "tip", "asymmetric_blade_edge", "alpha_bounds"],
+      "motion_profile": "weighted_arc_cut",
+      "separate_motion_contract": true,
+      "runtime_qa": "NOT_TESTED_NO_DAO_AS48_CLIP"
+    },
+    "dual_blades": {
+      "grip_roles": [
+        "main_hand",
+        "off_hand"
+      ],
+      "proxy_shape": "two_independent_hand_axes",
+      "proxy_landmarks": ["main_hand", "off_hand", "two_blade_axes"],
+      "motion_profile": "alternating_dual_cut",
+      "separate_motion_contract": true,
+      "runtime_qa": "NOT_TESTED_NO_DUAL_BLADE_CLIP"
+    },
+    "spear": {
+      "grip_roles": [
+        "front_hand",
+        "rear_hand"
+      ],
+      "proxy_shape": "two_grips_long_axis_tip",
+      "proxy_landmarks": ["front_hand", "rear_hand", "shaft_axis", "tip"],
+      "motion_profile": "two_hand_thrust_and_sweep",
+      "separate_motion_contract": true,
+      "runtime_qa": "NOT_TESTED_NO_SPEAR_CLIP"
+    },
+    "bow": {
+      "grip_roles": [
+        "bow_hand",
+        "draw_hand",
+        "nock"
+      ],
+      "proxy_shape": "bow_grip_string_nock",
+      "proxy_landmarks": ["bow_hand", "draw_hand", "nock", "string_line", "limb_arc"],
+      "motion_profile": "draw_hold_release",
+      "separate_motion_contract": true,
+      "runtime_qa": "NOT_TESTED_NO_BOW_CLIP"
+    },
+    "staff": {
+      "grip_roles": [
+        "front_hand",
+        "rear_hand"
+      ],
+      "proxy_shape": "two_grips_long_axis_tip",
+      "proxy_landmarks": ["front_hand", "rear_hand", "staff_axis", "tip"],
+      "motion_profile": "two_hand_staff_arc",
+      "separate_motion_contract": true,
+      "runtime_qa": "NOT_TESTED_NO_STAFF_CLIP"
+    },
+    "fan": {
+      "grip_roles": [
+        "main_hand",
+        "hinge"
+      ],
+      "proxy_shape": "hinge_and_fan_edge",
+      "proxy_landmarks": ["main_hand", "hinge", "fan_edge", "opening_arc"],
+      "motion_profile": "fan_open_close_sweep",
+      "separate_motion_contract": true,
+      "runtime_qa": "NOT_TESTED_NO_FAN_CLIP"
+    },
+    "talisman": {
+      "grip_roles": [
+        "palm_hold",
+        "paper_tip"
+      ],
+      "proxy_shape": "palm_plane_and_tip",
+      "proxy_landmarks": ["palm_hold", "paper_tip", "paper_plane"],
+      "motion_profile": "paper_seal_cast",
+      "separate_motion_contract": true,
+      "runtime_qa": "NOT_TESTED_NO_TALISMAN_CLIP"
+    },
+    "seal_focus": {
+      "grip_roles": [
+        "focus_center",
+        "support_hand"
+      ],
+      "proxy_shape": "focus_center_and_support_axis",
+      "proxy_landmarks": ["focus_center", "support_hand", "focus_axis"],
+      "motion_profile": "two_hand_focus_cast",
+      "separate_motion_contract": true,
+      "runtime_qa": "NOT_TESTED_NO_SEAL_FOCUS_CLIP"
+    },
+    "fist": {
+      "grip_roles": [
+        "main_hand",
+        "off_hand"
+      ],
+      "proxy_shape": "two_fist_contact_boxes",
+      "proxy_landmarks": ["main_hand", "off_hand", "contact_boxes"],
+      "motion_profile": "unarmed_punch_and_guard",
+      "separate_motion_contract": true,
+      "runtime_qa": "NOT_TESTED_NO_GAUNTLET_CLIP"
+    },
+    "flying_sword": {
+      "grip_roles": [
+        "focus_hand",
+        "floating_origin"
+      ],
+      "proxy_shape": "focus_ray_and_free_weapon_axis",
+      "proxy_landmarks": ["focus_hand", "floating_origin", "weapon_axis"],
+      "motion_profile": "telekinetic_follow",
+      "separate_motion_contract": true,
+      "runtime_qa": "NOT_TESTED_NO_FLYING_SWORD_CLIP"
+    }
+  },
+  "tested_scope": {
+    "identity": "AS-CHAR-48",
+    "clip": "Attack_Front",
+    "weapon_family": "jian",
+    "weapon_count": 2,
+    "requires_same_body_frames": true,
+    "owner_art_approval": "PENDING"
+  },
+  "proxy_contract": {
+    "aim": "grip-to-tip axis, transformed alpha bounds, optional family role landmarks",
+    "shapes_are_family_specific": true,
+    "debug_only": true,
+    "production_scene_reference_allowed": false
+  }
+}

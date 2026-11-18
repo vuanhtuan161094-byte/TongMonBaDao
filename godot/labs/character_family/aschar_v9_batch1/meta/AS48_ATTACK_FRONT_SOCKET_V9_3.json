@@ -1,0 +1,197 @@
+{
+  "schema": "tmb.aschar.frame_weapon_sockets.v9_3",
+  "identity": "AS-CHAR-48",
+  "clip": "Attack_Front",
+  "direction": "Front",
+  "fps": 7.0,
+  "loop": false,
+  "body_canvas_px": [
+    400,
+    440
+  ],
+  "body_mode": "MONOLITHIC_RGBA_CEL",
+  "weapon_family": "jian",
+  "proxy_visible_in_production": false,
+  "owner_art_approval": "PENDING",
+  "body_frames": [
+    {
+      "index": 0,
+      "path": "res://assets/frames/AS48/attack_front_consistency_v2/attack_front_00.png",
+      "sha256": "9631f1bdb6e600113aa0262ce33515d7508c6f1b9c77544d189c1eaf444bd887",
+      "pose": "WINDUP",
+      "grip_sockets": {
+        "main_hand": {
+          "hand_mask_rect_px": [
+            251,
+            324,
+            30,
+            25
+          ],
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAPON_BEHIND_BODY",
+          "rotation_deg": -95.0,
+          "body_grip_px": [
+            266,
+            336
+          ]
+        }
+      }
+    },
+    {
+      "index": 1,
+      "path": "res://assets/frames/AS48/attack_front_consistency_v2/attack_front_01.png",
+      "sha256": "fec6f6b6391c3488221b38eb8c727bc9f9d874c2efa64e21cab3f6484de213bf",
+      "pose": "GUARD_RISE",
+      "grip_sockets": {
+        "main_hand": {
+          "hand_mask_rect_px": [
+            296,
+            207,
+            30,
+            27
+          ],
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAPON_BEHIND_BODY",
+          "rotation_deg": -150.0,
+          "body_grip_px": [
+            311,
+            221
+          ]
+        }
+      }
+    },
+    {
+      "index": 2,
+      "path": "res://assets/frames/AS48/attack_front_consistency_v2/attack_front_02.png",
+      "sha256": "fc4010b33fb56a25dd174a9b2e0e0b86e72c47bcc5d5d46cf685b9851bdeef75",
+      "pose": "RELEASE",
+      "grip_sockets": {
+        "main_hand": {
+          "hand_mask_rect_px": [
+            279,
+            303,
+            25,
+            24
+          ],
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
+          "rotation_deg": -95.0,
+          "body_grip_px": [
+            290,
+            315
+          ]
+        }
+      }
+    },
+    {
+      "index": 3,
+      "path": "res://assets/frames/AS48/attack_front_consistency_v2/attack_front_03.png",
+      "sha256": "e207a272021541f7fcf61853a56cf1478e7b86375c6b7a38ae7be8a962c1e2f6",
+      "pose": "RECOVERY",
+      "grip_sockets": {
+        "main_hand": {
+          "hand_mask_rect_px": [
+            251,
+            251,
+            25,
+            24
+          ],
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAPON_BEHIND_BODY",
+          "rotation_deg": -30.0,
+          "body_grip_px": [
+            263,
+            263
+          ]
+        }
+      }
+    }
+  ],
+  "weapon_assets": {
+    "jian_silver_candidate": {
+      "family": "jian",
+      "path": "res://assets/weapons/AS48_KIEMTU_JIAN_CANDIDATE.png",
+      "sha256": "8c9869ba06e39799c5eb3b6b2e3060284c04197abc034993b1831f1572c60285",
+      "canvas_px": [
+        887,
+        1774
+      ],
+      "asset_grip_px": [
+        443,
+        360
+      ],
+      "asset_pivot_px": [
+        443,
+        360
+      ],
+      "asset_tip_px": [
+        443,
+        1748
+      ],
+      "alpha_bounds_gt128_px": [
+        251,
+        23,
+        385,
+        1725
+      ],
+      "asset_scale": 0.19,
+      "source_status": "CANDIDATE_SOURCE_ASSET",
+      "socket_points_px": {
+        "main_hand": [
+          443,
+          360
+        ]
+      }
+    },
+    "jian_phoenix_wing_candidate": {
+      "family": "jian",
+      "path": "res://assets/weapons/AS48_KIEMTU_PHOENIX_WING_CANDIDATE.png",
+      "sha256": "06a9f847b38fa064765c72718d5f4a6047bc99c257e625e68e7481bbacdc07f7",
+      "canvas_px": [
+        1024,
+        1536
+      ],
+      "asset_grip_px": [
+        512,
+        270
+      ],
+      "asset_pivot_px": [
+        512,
+        270
+      ],
+      "asset_tip_px": [
+        520,
+        1521
+      ],
+      "alpha_bounds_gt128_px": [
+        312,
+        4,
+        418,
+        1517
+      ],
+      "asset_scale": 0.19,
+      "source_status": "GENERATED_CANDIDATE_OWNER_ART_PENDING",
+      "socket_points_px": {
+        "main_hand": [
+          512,
+          270
+        ]
+      }
+    }
+  },
+  "qa_contract": {
+    "body_frame_count": 4,
+    "weapon_variants_required": 2,
+    "body_frame_hashes_must_not_change_on_weapon_swap": true,
+    "capture": {
+      "resolution": [
+        1280,
+        720
+      ],
+      "renderer": "gl_compatibility",
+      "engine": "Godot 4.7.2 official",
+      "capture_source": "get_viewport().get_texture().get_image()",
+      "physical_mouse": "NOT_REQUIRED_FOR_NATIVE_ANIMATION_REVIEW"
+    }
+  }
+}
