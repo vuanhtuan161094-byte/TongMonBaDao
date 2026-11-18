@@ -16,7 +16,11 @@
     "learningTechniques": 84,
     "legacyAlchemyRecipes": 2,
     "archiveEnabled": false,
-    "learningEnabled": false
+    "learningEnabled": false,
+    "sx07MaterialSlotsDesigned": 630,
+    "sx07MaterialIdsRegistered": 11,
+    "sx07MaterialsNotRegistered": 619,
+    "sx07SourceProfilesDesign": 270
   },
   "nativeResources": [
     {
@@ -10533,7 +10537,8 @@
     "Đồ bộ 24 dòng và trang bị V2 10 ô chưa nằm trong EquipmentSystem cũ 3 ô.",
     "154 vật phẩm Bí Kíp V6.3 thuộc archive catalog enabled:false, thiếu tỷ lệ rơi; không coi là loot live.",
     "84 công pháp V6.3 có catalog riêng enabled:false, không đồng nghĩa đã học được trong game.",
-    "34 tài nguyên nền được định nghĩa, từng tuyến tạo/rơi/chế tạo phải kiểm tra riêng."
+    "34 tài nguyên nền được định nghĩa, từng tuyến tạo/rơi/chế tạo phải kiểm tra riêng.",
+    "Thiết kế SX07B: 630 vật liệu, 270 nguồn. Runtime chỉ 11/630 mã đã đăng ký; 619 còn thiếu. Không tạo dữ liệu giả cho tên/địa điểm chưa có source."
   ],
   "sources": {
     "resource": "godot/src/simulation/resource/resource_registry.gd",
@@ -10543,5 +10548,23 @@
     "crop": "godot/src/simulation/building/spirit_crop_registry.gd",
     "learning": "godot/data/combat/v63_learning_catalog.json",
     "alchemy": "godot/src/simulation/building/alchemy_recipe_registry.gd"
+  },
+  "designMaterialSlots": {
+    "total": 630,
+    "registered": 11,
+    "missing": 619,
+    "preservedUnregistered": 112,
+    "unverifiedProposed": 507,
+    "sourceProfilesDesigned": 270,
+    "realProducerIdsAddedInSX07B": 5,
+    "source": "docs/qa/SX07B_PRESERVED_MATERIALS_SOURCE_GATE_20261109.md",
+    "runtimeState": "DESIGN_AND_PARTIAL_SOURCE_ONLY",
+    "note": "630 ô thiết kế không được tự động gán tên/ID và 270 profile không phải 270 địa điểm farm. 34 mã ResourceRegistry gồm 11 mã thuộc phạm vi 630 và các vật phẩm nền/khác."
+  },
+  "economy30Reference": {
+    "designEntries": 30,
+    "runtimeEnabled": false,
+    "source": "godot/data/economy/v55d_30_realm_reference.json",
+    "status": "APPROVED_DESIGN_ONLY_NOT_LIVE"
   }
 }
