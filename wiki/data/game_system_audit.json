@@ -1634,5 +1634,2340 @@
     "Các tính năng LAB/feature OFF phải gắn nhãn mặc định OFF, không trộn V63 với P0 live.",
     "Những mã vật phẩm có tên trong catalog không đồng nghĩa có recipe, tiêu hao, nguồn rơi hoặc NPC buôn bán.",
     "SX-07B có 630 vật liệu thiết kế (11 đăng ký, 619 chưa) và 270 tuyến nguồn ở mức design; không lấy 34 ResourceRegistry native resources để suy ra 630 đã thực hiện."
-  ]
+  ],
+  "sourceARecoveryAudit": {
+    "schemaVersion": 1,
+    "auditDate": "2026-11-19",
+    "sourceCommit": "264514ff760eaf22b339cb75ca29be53f9ab8351",
+    "sourceBranch": "integration/pve-p0-playable-ui-20261103",
+    "sourcePaths": [
+      {
+        "path": "godot/data/presentation/map25_source_a_verified.json",
+        "gitBlobSha": "234cfd75e3e5db19cc6f98ea610debda35363c6b"
+      },
+      {
+        "path": "godot/src/presentation/p3/sect_map25_source_art.gd",
+        "gitBlobSha": "f18651f9b224b558ef1512a13aaa589dfda117c4"
+      },
+      {
+        "path": "godot/src/presentation/p3/sect_isometric_world_v1.gd",
+        "gitBlobSha": "71ba03ad3a0c798631758171f6355c77f56a3ed2"
+      },
+      {
+        "path": "godot/assets/combat_v5_source_a/visual_manifest.json",
+        "gitBlobSha": "7a22975adc295f303b834497a8bae09b5cfb93c9"
+      },
+      {
+        "path": "godot/src/presentation/p3/combat_v5_source_a_atlas.gd",
+        "gitBlobSha": "0cd041b89ece515c13a8dd4b6ea91afaa0c9e3bd"
+      },
+      {
+        "path": "godot/src/presentation/p3/tmb_building_art_ab_v7.gd",
+        "gitBlobSha": "e94219e3a5524d9e55a23788995fb48f27a0467e"
+      },
+      {
+        "path": "godot/src/presentation/p3/tmb_handpaint_building_art_v6.gd",
+        "gitBlobSha": "ab17e50a8a5129fa76f19eeb30bb4d8337701fac"
+      },
+      {
+        "path": "godot/src/presentation/p3/tmb_original_building_art_v5.gd",
+        "gitBlobSha": "9849e07da4fdd5bb60e7acde92b23b47e3f90083"
+      },
+      {
+        "path": "docs/operations/TMB_VIS08_SOURCE_A_BUILDINGS_RETIREMENT_20261114.md",
+        "gitBlobSha": "8d37851a21e8437cecd2532b71e7720a9d919352"
+      },
+      {
+        "path": "docs/operations/TMB_VIS09_2D_HANDPAINT_ASSET_INTEGRATION_20261114.md",
+        "gitBlobSha": "16ad6e49981c011ab32ec98996877a6df09c02f3"
+      },
+      {
+        "path": "docs/operations/TMB_VIS11_EXACT_SHEET_AB_20261114.md",
+        "gitBlobSha": "e7be138d4645ff35e65d39b55660f93c6f490b18"
+      },
+      {
+        "path": "wiki/data/game_items_audit.json",
+        "gitBlobSha": "9d52c02094170313b1b888ef296d134a46c9aa11"
+      },
+      {
+        "path": "wiki/data/trait_effect_audit.json",
+        "gitBlobSha": "946f668bc19ebb7bc508ddf23e386b404f71882e"
+      },
+      {
+        "path": "godot/src/simulation/building/building_system.gd",
+        "gitBlobSha": "3d5a3b7d77fdf1f5b15e8d9fd6ca0f43a195e0d4"
+      },
+      {
+        "path": "docs/P3_7_BUILDING_TREE_SPEC.md",
+        "gitBlobSha": "bb92a834ea1cb7dedb366f027816cf38441819f3"
+      },
+      {
+        "path": "godot/src/simulation/equipment/equipment_system.gd",
+        "gitBlobSha": "aa223fee9ae04307659bfc7e6de64c03f7f09a03"
+      },
+      {
+        "path": "docs/WEAPON_EQUIPMENT_V2_SPEC.md",
+        "gitBlobSha": "ffe7838db4d48b830be4440d338456ad8e8a57a2"
+      },
+      {
+        "path": "docs/EQUIPMENT_SETS_V2_SPEC.md",
+        "gitBlobSha": "eb0ee4fedfd31eca61dab61c14f17299f34f4345"
+      },
+      {
+        "path": "docs/qa/SX07B_PRESERVED_MATERIALS_SOURCE_GATE_20261109.md",
+        "gitBlobSha": "f0e903bdcb1802f48c642e0508ac683953501b45"
+      },
+      {
+        "path": "godot/src/simulation/building/medicine_catalogue_v2.gd",
+        "gitBlobSha": "5397ddca831d85ea973acd58b6674074a231c4b7"
+      },
+      {
+        "path": "godot/data/combat/v63_blade_combat_catalog.json",
+        "gitBlobSha": "d9c2d7c2ad5eab5a08ce14988f238d72e4dd17d9"
+      },
+      {
+        "path": "godot/src/simulation/combat/v63_feature_gates.gd",
+        "gitBlobSha": "51ba629f375c866fd0cf9b051cd3c448a52d88bc"
+      },
+      {
+        "path": "godot/src/simulation/recruitment/disciple_birth_catalogue_v2.gd",
+        "gitBlobSha": "90f0dda44d40c6d1217188aca9117dd3aa47e7e3"
+      },
+      {
+        "path": "docs/DISCIPLE_V2_EFFECT_SOURCE_MATRIX.md",
+        "gitBlobSha": "1b3fdf596b6c7982f970f315f153b45be3ed0750"
+      },
+      {
+        "path": "godot/src/simulation/traits/trait_system.gd",
+        "gitBlobSha": "cb4f6808a99b936fdf7b6c6c827f025c02b9ed1e"
+      }
+    ],
+    "localInventory": {
+      "canonical": {
+        "branch": "integration/tri-facility-a-b-playable-20261102",
+        "head": "27ed01cd8f377994e5e50bac9ede84e78e8895bd",
+        "dirtyRows": 470,
+        "untrackedRows": 362,
+        "compareToPr": "PR #72 is 2410 commits ahead; canonical checkout is an ancestor, but dirty so no sync/promotion"
+      },
+      "prQa": {
+        "branch": "integration/pve-p0-playable-ui-20261103",
+        "head": "e888c010d6cfb09a97ce48af19d1a2f42a401240",
+        "dirtyRows": 233,
+        "untrackedRows": 151
+      },
+      "r0BackupManifestSha256": "EA753053E1DFBFD490E725C7FDD86B26FF565EA4BB10920805AA74571EDEF509",
+      "launchReadiness": "HOLD; MO_GAME.cmd not run because canonical checkout is stale/dirty and launcher enters New Game flow"
+    },
+    "sourceAMapManifest": {
+      "sourcePath": "godot/data/presentation/map25_source_a_verified.json",
+      "sourceGitBlobSha": "234cfd75e3e5db19cc6f98ea610debda35363c6b",
+      "schemaVersion": 1,
+      "status": "RUNTIME_SHA_GATED_OPTIONAL",
+      "sourceBinaryInRepo": false,
+      "summary": {
+        "mapManifestFiles": 34,
+        "sourceAEnvironmentFiles": 29,
+        "historicalSourceABuildingFiles": 5,
+        "ECanonicalMapHashesMatch": "34/34",
+        "EPr72QaMapHashesMatch": "34/34",
+        "EMapImportSidecarsAndCaches": "34/34 present in each checkout; not a current engine import pass",
+        "actorPackages": 7,
+        "actorDerivedFiles": 31,
+        "actorDerivedFilesPresent": "31/31 in each E checkout",
+        "actorDerivedFilesShaMatch": "21/31 in each E checkout",
+        "actorDerivedFilesShaMismatch": 10,
+        "actorManifestGitBlobsMatch": "7/7 in each E checkout",
+        "actorClipDeclarations": 24,
+        "actorFrameCountsMatch": 23,
+        "actorFrameCountMismatch": 1,
+        "runtimeVisualManifestRoles": 4,
+        "runtimeActorVisibleCapture": "NOT_CAPTURED",
+        "bossIdentity": "UNASSIGNED; slot candidate only",
+        "mainMapSourceAReplacement": "Buildings retired from current map texture selection; environment remains Source A"
+      },
+      "assets": [
+        {
+          "relativePath": "env01_assets/terrain/stone_courtyard.png",
+          "sourcePath": "godot/art/source_a_env02a/env01_assets/terrain/stone_courtyard.png",
+          "godotResPath": "res://art/source_a_env02a/env01_assets/terrain/stone_courtyard.png",
+          "sha256": "c157965bd15f2747a55b602d4320dc34ad70c9129f79cc17eb8b4b139897468a",
+          "category": "terrain",
+          "E_CANONICAL": {
+            "exists": true,
+            "sha256Match": true
+          },
+          "E_PR72_QA": {
+            "exists": true,
+            "sha256Match": true
+          },
+          "importSidecarPresent": {
+            "E_CANONICAL": true,
+            "E_PR72_QA": true
+          },
+          "importCachePresent": {
+            "E_CANONICAL": true,
+            "E_PR72_QA": true
+          },
+          "godotImportStatus": "SIDECAR_AND_CACHE_PRESENT; OFFICIAL_IMPORT_NOT_RUN_THIS_SESSION",
+          "runtimeCodeStatus": "RUNTIME_BOUND_CONDITIONALLY",
+          "visibleRenderStatus": "NOT_CAPTURED_AT_THIS_PR_HEAD",
+          "ownerArtApproval": "UNKNOWN"
+        },
+        {
+          "relativePath": "env01_assets/terrain/stone_variant.png",
+          "sourcePath": "godot/art/source_a_env02a/env01_assets/terrain/stone_variant.png",
+          "godotResPath": "res://art/source_a_env02a/env01_assets/terrain/stone_variant.png",
+          "sha256": "8580ac97906cfac6b5fea68a378482ce7d157194295310c6e6f64b5902b81368",
+          "category": "terrain",
+          "E_CANONICAL": {
+            "exists": true,
+            "sha256Match": true
+          },
+          "E_PR72_QA": {
+            "exists": true,
+            "sha256Match": true
+          },
+          "importSidecarPresent": {
+            "E_CANONICAL": true,
+            "E_PR72_QA": true
+          },
+          "importCachePresent": {
+            "E_CANONICAL": true,
+            "E_PR72_QA": true
+          },
+          "godotImportStatus": "SIDECAR_AND_CACHE_PRESENT; OFFICIAL_IMPORT_NOT_RUN_THIS_SESSION",
+          "runtimeCodeStatus": "RUNTIME_BOUND_CONDITIONALLY",
+          "visibleRenderStatus": "NOT_CAPTURED_AT_THIS_PR_HEAD",
+          "ownerArtApproval": "UNKNOWN"
+        },
+        {
+          "relativePath": "env01_assets/terrain/stone_border.png",
+          "sourcePath": "godot/art/source_a_env02a/env01_assets/terrain/stone_border.png",
+          "godotResPath": "res://art/source_a_env02a/env01_assets/terrain/stone_border.png",
+          "sha256": "4836980944a8c0701c492c66da59819b1d9dc7ca123fb4371488d6e515569c0f",
+          "category": "terrain",
+          "E_CANONICAL": {
+            "exists": true,
+            "sha256Match": true
+          },
+          "E_PR72_QA": {
+            "exists": true,
+            "sha256Match": true
+          },
+          "importSidecarPresent": {
+            "E_CANONICAL": true,
+            "E_PR72_QA": true
+          },
+          "importCachePresent": {
+            "E_CANONICAL": true,
+            "E_PR72_QA": true
+          },
+          "godotImportStatus": "SIDECAR_AND_CACHE_PRESENT; OFFICIAL_IMPORT_NOT_RUN_THIS_SESSION",
+          "runtimeCodeStatus": "RUNTIME_BOUND_CONDITIONALLY",
+          "visibleRenderStatus": "NOT_CAPTURED_AT_THIS_PR_HEAD",
+          "ownerArtApproval": "UNKNOWN"
+        },
+        {
+          "relativePath": "env01_assets/terrain/stone_runes.png",
+          "sourcePath": "godot/art/source_a_env02a/env01_assets/terrain/stone_runes.png",
+          "godotResPath": "res://art/source_a_env02a/env01_assets/terrain/stone_runes.png",
+          "sha256": "458cc4510a7f4cc8c3757a4c059837d24113f3d716ceba698decc553989c812e",
+          "category": "terrain",
+          "E_CANONICAL": {
+            "exists": true,
+            "sha256Match": true
+          },
+          "E_PR72_QA": {
+            "exists": true,
+            "sha256Match": true
+          },
+          "importSidecarPresent": {
+            "E_CANONICAL": true,
+            "E_PR72_QA": true
+          },
+          "importCachePresent": {
+            "E_CANONICAL": true,
+            "E_PR72_QA": true
+          },
+          "godotImportStatus": "SIDECAR_AND_CACHE_PRESENT; OFFICIAL_IMPORT_NOT_RUN_THIS_SESSION",
+          "runtimeCodeStatus": "RUNTIME_BOUND_CONDITIONALLY",
+          "visibleRenderStatus": "NOT_CAPTURED_AT_THIS_PR_HEAD",
+          "ownerArtApproval": "UNKNOWN"
+        },
+        {
+          "relativePath": "env01_assets/vegetation/570185.png",
+          "sourcePath": "godot/art/source_a_env02a/env01_assets/vegetation/570185.png",
+          "godotResPath": "res://art/source_a_env02a/env01_assets/vegetation/570185.png",
+          "sha256": "89fba324db3e3c6d850ed36ee2a3b0aea2021fa6a3d0712c569cae220fbe9655",
+          "category": "vegetation",
+          "E_CANONICAL": {
+            "exists": true,
+            "sha256Match": true
+          },
+          "E_PR72_QA": {
+            "exists": true,
+            "sha256Match": true
+          },
+          "importSidecarPresent": {
+            "E_CANONICAL": true,
+            "E_PR72_QA": true
+          },
+          "importCachePresent": {
+            "E_CANONICAL": true,
+            "E_PR72_QA": true
+          },
+          "godotImportStatus": "SIDECAR_AND_CACHE_PRESENT; OFFICIAL_IMPORT_NOT_RUN_THIS_SESSION",
+          "runtimeCodeStatus": "RUNTIME_BOUND_CONDITIONALLY",
+          "visibleRenderStatus": "NOT_CAPTURED_AT_THIS_PR_HEAD",
+          "ownerArtApproval": "UNKNOWN"
+        },
+        {
+          "relativePath": "env01_assets/vegetation/570183.png",
+          "sourcePath": "godot/art/source_a_env02a/env01_assets/vegetation/570183.png",
+          "godotResPath": "res://art/source_a_env02a/env01_assets/vegetation/570183.png",
+          "sha256": "08da71fd44121d8a65bb51883966117a770d8b3012e110c38e7cdff1a5de16c0",
+          "category": "vegetation",
+          "E_CANONICAL": {
+            "exists": true,
+            "sha256Match": true
+          },
+          "E_PR72_QA": {
+            "exists": true,
+            "sha256Match": true
+          },
+          "importSidecarPresent": {
+            "E_CANONICAL": true,
+            "E_PR72_QA": true
+          },
+          "importCachePresent": {
+            "E_CANONICAL": true,
+            "E_PR72_QA": true
+          },
+          "godotImportStatus": "SIDECAR_AND_CACHE_PRESENT; OFFICIAL_IMPORT_NOT_RUN_THIS_SESSION",
+          "runtimeCodeStatus": "RUNTIME_BOUND_CONDITIONALLY",
+          "visibleRenderStatus": "NOT_CAPTURED_AT_THIS_PR_HEAD",
+          "ownerArtApproval": "UNKNOWN"
+        },
+        {
+          "relativePath": "env01_assets/vegetation/570186.png",
+          "sourcePath": "godot/art/source_a_env02a/env01_assets/vegetation/570186.png",
+          "godotResPath": "res://art/source_a_env02a/env01_assets/vegetation/570186.png",
+          "sha256": "79a7d53cf813eef644c3d2fca320d3fda586f860b7be8117048287affb8c1573",
+          "category": "vegetation",
+          "E_CANONICAL": {
+            "exists": true,
+            "sha256Match": true
+          },
+          "E_PR72_QA": {
+            "exists": true,
+            "sha256Match": true
+          },
+          "importSidecarPresent": {
+            "E_CANONICAL": true,
+            "E_PR72_QA": true
+          },
+          "importCachePresent": {
+            "E_CANONICAL": true,
+            "E_PR72_QA": true
+          },
+          "godotImportStatus": "SIDECAR_AND_CACHE_PRESENT; OFFICIAL_IMPORT_NOT_RUN_THIS_SESSION",
+          "runtimeCodeStatus": "RUNTIME_BOUND_CONDITIONALLY",
+          "visibleRenderStatus": "NOT_CAPTURED_AT_THIS_PR_HEAD",
+          "ownerArtApproval": "UNKNOWN"
+        },
+        {
+          "relativePath": "env01_assets/vegetation/570171.png",
+          "sourcePath": "godot/art/source_a_env02a/env01_assets/vegetation/570171.png",
+          "godotResPath": "res://art/source_a_env02a/env01_assets/vegetation/570171.png",
+          "sha256": "604f46f555ef62d0e63daa9b3d47643f0345592569c8938f33de89949a4064b4",
+          "category": "vegetation",
+          "E_CANONICAL": {
+            "exists": true,
+            "sha256Match": true
+          },
+          "E_PR72_QA": {
+            "exists": true,
+            "sha256Match": true
+          },
+          "importSidecarPresent": {
+            "E_CANONICAL": true,
+            "E_PR72_QA": true
+          },
+          "importCachePresent": {
+            "E_CANONICAL": true,
+            "E_PR72_QA": true
+          },
+          "godotImportStatus": "SIDECAR_AND_CACHE_PRESENT; OFFICIAL_IMPORT_NOT_RUN_THIS_SESSION",
+          "runtimeCodeStatus": "RUNTIME_BOUND_CONDITIONALLY",
+          "visibleRenderStatus": "NOT_CAPTURED_AT_THIS_PR_HEAD",
+          "ownerArtApproval": "UNKNOWN"
+        },
+        {
+          "relativePath": "env01_assets/vegetation/570041.png",
+          "sourcePath": "godot/art/source_a_env02a/env01_assets/vegetation/570041.png",
+          "godotResPath": "res://art/source_a_env02a/env01_assets/vegetation/570041.png",
+          "sha256": "46af5ce8f7205b35bdd820db58be3071e6698ba789106e74095101b39b53abc2",
+          "category": "vegetation",
+          "E_CANONICAL": {
+            "exists": true,
+            "sha256Match": true
+          },
+          "E_PR72_QA": {
+            "exists": true,
+            "sha256Match": true
+          },
+          "importSidecarPresent": {
+            "E_CANONICAL": true,
+            "E_PR72_QA": true
+          },
+          "importCachePresent": {
+            "E_CANONICAL": true,
+            "E_PR72_QA": true
+          },
+          "godotImportStatus": "SIDECAR_AND_CACHE_PRESENT; OFFICIAL_IMPORT_NOT_RUN_THIS_SESSION",
+          "runtimeCodeStatus": "RUNTIME_BOUND_CONDITIONALLY",
+          "visibleRenderStatus": "NOT_CAPTURED_AT_THIS_PR_HEAD",
+          "ownerArtApproval": "UNKNOWN"
+        },
+        {
+          "relativePath": "env01_assets/vegetation/570399.png",
+          "sourcePath": "godot/art/source_a_env02a/env01_assets/vegetation/570399.png",
+          "godotResPath": "res://art/source_a_env02a/env01_assets/vegetation/570399.png",
+          "sha256": "bc718c88609f236aac9c381c0b93e6be57f13047b3cfc0b77e406189a9fb66f8",
+          "category": "vegetation",
+          "E_CANONICAL": {
+            "exists": true,
+            "sha256Match": true
+          },
+          "E_PR72_QA": {
+            "exists": true,
+            "sha256Match": true
+          },
+          "importSidecarPresent": {
+            "E_CANONICAL": true,
+            "E_PR72_QA": true
+          },
+          "importCachePresent": {
+            "E_CANONICAL": true,
+            "E_PR72_QA": true
+          },
+          "godotImportStatus": "SIDECAR_AND_CACHE_PRESENT; OFFICIAL_IMPORT_NOT_RUN_THIS_SESSION",
+          "runtimeCodeStatus": "RUNTIME_BOUND_CONDITIONALLY",
+          "visibleRenderStatus": "NOT_CAPTURED_AT_THIS_PR_HEAD",
+          "ownerArtApproval": "UNKNOWN"
+        },
+        {
+          "relativePath": "env01_assets/vegetation/570038.png",
+          "sourcePath": "godot/art/source_a_env02a/env01_assets/vegetation/570038.png",
+          "godotResPath": "res://art/source_a_env02a/env01_assets/vegetation/570038.png",
+          "sha256": "900ae63de14cbbe7aef006d448418af16095e8426c34b31be25f819ef638b220",
+          "category": "vegetation",
+          "E_CANONICAL": {
+            "exists": true,
+            "sha256Match": true
+          },
+          "E_PR72_QA": {
+            "exists": true,
+            "sha256Match": true
+          },
+          "importSidecarPresent": {
+            "E_CANONICAL": true,
+            "E_PR72_QA": true
+          },
+          "importCachePresent": {
+            "E_CANONICAL": true,
+            "E_PR72_QA": true
+          },
+          "godotImportStatus": "SIDECAR_AND_CACHE_PRESENT; OFFICIAL_IMPORT_NOT_RUN_THIS_SESSION",
+          "runtimeCodeStatus": "RUNTIME_BOUND_CONDITIONALLY",
+          "visibleRenderStatus": "NOT_CAPTURED_AT_THIS_PR_HEAD",
+          "ownerArtApproval": "UNKNOWN"
+        },
+        {
+          "relativePath": "env01_assets/vegetation/570073.png",
+          "sourcePath": "godot/art/source_a_env02a/env01_assets/vegetation/570073.png",
+          "godotResPath": "res://art/source_a_env02a/env01_assets/vegetation/570073.png",
+          "sha256": "7a78ada4290d3a6eb96acc8c9c46fd4a1b0ae5e95d4194ba59e75e600e2e657a",
+          "category": "vegetation",
+          "E_CANONICAL": {
+            "exists": true,
+            "sha256Match": true
+          },
+          "E_PR72_QA": {
+            "exists": true,
+            "sha256Match": true
+          },
+          "importSidecarPresent": {
+            "E_CANONICAL": true,
+            "E_PR72_QA": true
+          },
+          "importCachePresent": {
+            "E_CANONICAL": true,
+            "E_PR72_QA": true
+          },
+          "godotImportStatus": "SIDECAR_AND_CACHE_PRESENT; OFFICIAL_IMPORT_NOT_RUN_THIS_SESSION",
+          "runtimeCodeStatus": "RUNTIME_BOUND_CONDITIONALLY",
+          "visibleRenderStatus": "NOT_CAPTURED_AT_THIS_PR_HEAD",
+          "ownerArtApproval": "UNKNOWN"
+        },
+        {
+          "relativePath": "env01_assets/vegetation/570187.png",
+          "sourcePath": "godot/art/source_a_env02a/env01_assets/vegetation/570187.png",
+          "godotResPath": "res://art/source_a_env02a/env01_assets/vegetation/570187.png",
+          "sha256": "b3386ea6336fc59410afbaefe31012a54f72d59d14127b4da4e0a80ee1fe2fa8",
+          "category": "vegetation",
+          "E_CANONICAL": {
+            "exists": true,
+            "sha256Match": true
+          },
+          "E_PR72_QA": {
+            "exists": true,
+            "sha256Match": true
+          },
+          "importSidecarPresent": {
+            "E_CANONICAL": true,
+            "E_PR72_QA": true
+          },
+          "importCachePresent": {
+            "E_CANONICAL": true,
+            "E_PR72_QA": true
+          },
+          "godotImportStatus": "SIDECAR_AND_CACHE_PRESENT; OFFICIAL_IMPORT_NOT_RUN_THIS_SESSION",
+          "runtimeCodeStatus": "RUNTIME_BOUND_CONDITIONALLY",
+          "visibleRenderStatus": "NOT_CAPTURED_AT_THIS_PR_HEAD",
+          "ownerArtApproval": "UNKNOWN"
+        },
+        {
+          "relativePath": "env01_assets/vegetation/570397.png",
+          "sourcePath": "godot/art/source_a_env02a/env01_assets/vegetation/570397.png",
+          "godotResPath": "res://art/source_a_env02a/env01_assets/vegetation/570397.png",
+          "sha256": "b39916567876d173e7d51aec01ad8e5da7871589a0d4afc8e903a1c672717308",
+          "category": "vegetation",
+          "E_CANONICAL": {
+            "exists": true,
+            "sha256Match": true
+          },
+          "E_PR72_QA": {
+            "exists": true,
+            "sha256Match": true
+          },
+          "importSidecarPresent": {
+            "E_CANONICAL": true,
+            "E_PR72_QA": true
+          },
+          "importCachePresent": {
+            "E_CANONICAL": true,
+            "E_PR72_QA": true
+          },
+          "godotImportStatus": "SIDECAR_AND_CACHE_PRESENT; OFFICIAL_IMPORT_NOT_RUN_THIS_SESSION",
+          "runtimeCodeStatus": "RUNTIME_BOUND_CONDITIONALLY",
+          "visibleRenderStatus": "NOT_CAPTURED_AT_THIS_PR_HEAD",
+          "ownerArtApproval": "UNKNOWN"
+        },
+        {
+          "relativePath": "env01_assets/vegetation/570037.png",
+          "sourcePath": "godot/art/source_a_env02a/env01_assets/vegetation/570037.png",
+          "godotResPath": "res://art/source_a_env02a/env01_assets/vegetation/570037.png",
+          "sha256": "157aa21abd837691268d97afacbf9e0afda059dd9e1035f47eeff8302f6dd75e",
+          "category": "vegetation",
+          "E_CANONICAL": {
+            "exists": true,
+            "sha256Match": true
+          },
+          "E_PR72_QA": {
+            "exists": true,
+            "sha256Match": true
+          },
+          "importSidecarPresent": {
+            "E_CANONICAL": true,
+            "E_PR72_QA": true
+          },
+          "importCachePresent": {
+            "E_CANONICAL": true,
+            "E_PR72_QA": true
+          },
+          "godotImportStatus": "SIDECAR_AND_CACHE_PRESENT; OFFICIAL_IMPORT_NOT_RUN_THIS_SESSION",
+          "runtimeCodeStatus": "RUNTIME_BOUND_CONDITIONALLY",
+          "visibleRenderStatus": "NOT_CAPTURED_AT_THIS_PR_HEAD",
+          "ownerArtApproval": "UNKNOWN"
+        },
+        {
+          "relativePath": "env01_assets/vegetation/570181.png",
+          "sourcePath": "godot/art/source_a_env02a/env01_assets/vegetation/570181.png",
+          "godotResPath": "res://art/source_a_env02a/env01_assets/vegetation/570181.png",
+          "sha256": "53710bc51e9a9b1992658888a34042b2e9e0104e4aba1ebf04e112b2d1454918",
+          "category": "vegetation",
+          "E_CANONICAL": {
+            "exists": true,
+            "sha256Match": true
+          },
+          "E_PR72_QA": {
+            "exists": true,
+            "sha256Match": true
+          },
+          "importSidecarPresent": {
+            "E_CANONICAL": true,
+            "E_PR72_QA": true
+          },
+          "importCachePresent": {
+            "E_CANONICAL": true,
+            "E_PR72_QA": true
+          },
+          "godotImportStatus": "SIDECAR_AND_CACHE_PRESENT; OFFICIAL_IMPORT_NOT_RUN_THIS_SESSION",
+          "runtimeCodeStatus": "RUNTIME_BOUND_CONDITIONALLY",
+          "visibleRenderStatus": "NOT_CAPTURED_AT_THIS_PR_HEAD",
+          "ownerArtApproval": "UNKNOWN"
+        },
+        {
+          "relativePath": "env01_assets/vegetation/570173.png",
+          "sourcePath": "godot/art/source_a_env02a/env01_assets/vegetation/570173.png",
+          "godotResPath": "res://art/source_a_env02a/env01_assets/vegetation/570173.png",
+          "sha256": "cac13e6a3b92b4dc1300d859b607469191b4fca6d6261f14ffc20202818259c4",
+          "category": "vegetation",
+          "E_CANONICAL": {
+            "exists": true,
+            "sha256Match": true
+          },
+          "E_PR72_QA": {
+            "exists": true,
+            "sha256Match": true
+          },
+          "importSidecarPresent": {
+            "E_CANONICAL": true,
+            "E_PR72_QA": true
+          },
+          "importCachePresent": {
+            "E_CANONICAL": true,
+            "E_PR72_QA": true
+          },
+          "godotImportStatus": "SIDECAR_AND_CACHE_PRESENT; OFFICIAL_IMPORT_NOT_RUN_THIS_SESSION",
+          "runtimeCodeStatus": "RUNTIME_BOUND_CONDITIONALLY",
+          "visibleRenderStatus": "NOT_CAPTURED_AT_THIS_PR_HEAD",
+          "ownerArtApproval": "UNKNOWN"
+        },
+        {
+          "relativePath": "env01_assets/vegetation/570042.png",
+          "sourcePath": "godot/art/source_a_env02a/env01_assets/vegetation/570042.png",
+          "godotResPath": "res://art/source_a_env02a/env01_assets/vegetation/570042.png",
+          "sha256": "0e894b8ff4cbe1bf1e78ccdfc0f0c22316ac516b284b3faf08ffa61f8e6ddaa3",
+          "category": "vegetation",
+          "E_CANONICAL": {
+            "exists": true,
+            "sha256Match": true
+          },
+          "E_PR72_QA": {
+            "exists": true,
+            "sha256Match": true
+          },
+          "importSidecarPresent": {
+            "E_CANONICAL": true,
+            "E_PR72_QA": true
+          },
+          "importCachePresent": {
+            "E_CANONICAL": true,
+            "E_PR72_QA": true
+          },
+          "godotImportStatus": "SIDECAR_AND_CACHE_PRESENT; OFFICIAL_IMPORT_NOT_RUN_THIS_SESSION",
+          "runtimeCodeStatus": "RUNTIME_BOUND_CONDITIONALLY",
+          "visibleRenderStatus": "NOT_CAPTURED_AT_THIS_PR_HEAD",
+          "ownerArtApproval": "UNKNOWN"
+        },
+        {
+          "relativePath": "env01_assets/vegetation/570043.png",
+          "sourcePath": "godot/art/source_a_env02a/env01_assets/vegetation/570043.png",
+          "godotResPath": "res://art/source_a_env02a/env01_assets/vegetation/570043.png",
+          "sha256": "9d8023f8ff2093672de5940f7926c341b8b1b192b61ce44b2b6c6650328b26c6",
+          "category": "vegetation",
+          "E_CANONICAL": {
+            "exists": true,
+            "sha256Match": true
+          },
+          "E_PR72_QA": {
+            "exists": true,
+            "sha256Match": true
+          },
+          "importSidecarPresent": {
+            "E_CANONICAL": true,
+            "E_PR72_QA": true
+          },
+          "importCachePresent": {
+            "E_CANONICAL": true,
+            "E_PR72_QA": true
+          },
+          "godotImportStatus": "SIDECAR_AND_CACHE_PRESENT; OFFICIAL_IMPORT_NOT_RUN_THIS_SESSION",
+          "runtimeCodeStatus": "RUNTIME_BOUND_CONDITIONALLY",
+          "visibleRenderStatus": "NOT_CAPTURED_AT_THIS_PR_HEAD",
+          "ownerArtApproval": "UNKNOWN"
+        },
+        {
+          "relativePath": "env01_assets/vegetation/570036.png",
+          "sourcePath": "godot/art/source_a_env02a/env01_assets/vegetation/570036.png",
+          "godotResPath": "res://art/source_a_env02a/env01_assets/vegetation/570036.png",
+          "sha256": "c828e661e22c2c87b6b5c71ba5b309eb2df3f27c196659c2a0ddce035c1af32d",
+          "category": "vegetation",
+          "E_CANONICAL": {
+            "exists": true,
+            "sha256Match": true
+          },
+          "E_PR72_QA": {
+            "exists": true,
+            "sha256Match": true
+          },
+          "importSidecarPresent": {
+            "E_CANONICAL": true,
+            "E_PR72_QA": true
+          },
+          "importCachePresent": {
+            "E_CANONICAL": true,
+            "E_PR72_QA": true
+          },
+          "godotImportStatus": "SIDECAR_AND_CACHE_PRESENT; OFFICIAL_IMPORT_NOT_RUN_THIS_SESSION",
+          "runtimeCodeStatus": "RUNTIME_BOUND_CONDITIONALLY",
+          "visibleRenderStatus": "NOT_CAPTURED_AT_THIS_PR_HEAD",
+          "ownerArtApproval": "UNKNOWN"
+        },
+        {
+          "relativePath": "env01_assets/vegetation/570182.png",
+          "sourcePath": "godot/art/source_a_env02a/env01_assets/vegetation/570182.png",
+          "godotResPath": "res://art/source_a_env02a/env01_assets/vegetation/570182.png",
+          "sha256": "b277a7c0450ff487e33607df91d13bd367bc9b080d1a8bf664e268f060536272",
+          "category": "vegetation",
+          "E_CANONICAL": {
+            "exists": true,
+            "sha256Match": true
+          },
+          "E_PR72_QA": {
+            "exists": true,
+            "sha256Match": true
+          },
+          "importSidecarPresent": {
+            "E_CANONICAL": true,
+            "E_PR72_QA": true
+          },
+          "importCachePresent": {
+            "E_CANONICAL": true,
+            "E_PR72_QA": true
+          },
+          "godotImportStatus": "SIDECAR_AND_CACHE_PRESENT; OFFICIAL_IMPORT_NOT_RUN_THIS_SESSION",
+          "runtimeCodeStatus": "RUNTIME_BOUND_CONDITIONALLY",
+          "visibleRenderStatus": "NOT_CAPTURED_AT_THIS_PR_HEAD",
+          "ownerArtApproval": "UNKNOWN"
+        },
+        {
+          "relativePath": "env01_assets/vegetation/570144.png",
+          "sourcePath": "godot/art/source_a_env02a/env01_assets/vegetation/570144.png",
+          "godotResPath": "res://art/source_a_env02a/env01_assets/vegetation/570144.png",
+          "sha256": "8aedcc16baeb12427f956c235b923402000e16aee878c81bf6aa0061695dc7f5",
+          "category": "vegetation",
+          "E_CANONICAL": {
+            "exists": true,
+            "sha256Match": true
+          },
+          "E_PR72_QA": {
+            "exists": true,
+            "sha256Match": true
+          },
+          "importSidecarPresent": {
+            "E_CANONICAL": true,
+            "E_PR72_QA": true
+          },
+          "importCachePresent": {
+            "E_CANONICAL": true,
+            "E_PR72_QA": true
+          },
+          "godotImportStatus": "SIDECAR_AND_CACHE_PRESENT; OFFICIAL_IMPORT_NOT_RUN_THIS_SESSION",
+          "runtimeCodeStatus": "RUNTIME_BOUND_CONDITIONALLY",
+          "visibleRenderStatus": "NOT_CAPTURED_AT_THIS_PR_HEAD",
+          "ownerArtApproval": "UNKNOWN"
+        },
+        {
+          "relativePath": "env01_assets/vegetation/570172.png",
+          "sourcePath": "godot/art/source_a_env02a/env01_assets/vegetation/570172.png",
+          "godotResPath": "res://art/source_a_env02a/env01_assets/vegetation/570172.png",
+          "sha256": "625859e1a76cb6aaf9970fcdb7c8189a448e4356ed06b4340014f221d4c5c7b0",
+          "category": "vegetation",
+          "E_CANONICAL": {
+            "exists": true,
+            "sha256Match": true
+          },
+          "E_PR72_QA": {
+            "exists": true,
+            "sha256Match": true
+          },
+          "importSidecarPresent": {
+            "E_CANONICAL": true,
+            "E_PR72_QA": true
+          },
+          "importCachePresent": {
+            "E_CANONICAL": true,
+            "E_PR72_QA": true
+          },
+          "godotImportStatus": "SIDECAR_AND_CACHE_PRESENT; OFFICIAL_IMPORT_NOT_RUN_THIS_SESSION",
+          "runtimeCodeStatus": "RUNTIME_BOUND_CONDITIONALLY",
+          "visibleRenderStatus": "NOT_CAPTURED_AT_THIS_PR_HEAD",
+          "ownerArtApproval": "UNKNOWN"
+        },
+        {
+          "relativePath": "env01_assets/roads/stone_junction.png",
+          "sourcePath": "godot/art/source_a_env02a/env01_assets/roads/stone_junction.png",
+          "godotResPath": "res://art/source_a_env02a/env01_assets/roads/stone_junction.png",
+          "sha256": "9fd33912b3aa580bf49a60547f2749ac66f1ae971e9c22bd922ac6d38fa925f6",
+          "category": "road",
+          "E_CANONICAL": {
+            "exists": true,
+            "sha256Match": true
+          },
+          "E_PR72_QA": {
+            "exists": true,
+            "sha256Match": true
+          },
+          "importSidecarPresent": {
+            "E_CANONICAL": true,
+            "E_PR72_QA": true
+          },
+          "importCachePresent": {
+            "E_CANONICAL": true,
+            "E_PR72_QA": true
+          },
+          "godotImportStatus": "SIDECAR_AND_CACHE_PRESENT; OFFICIAL_IMPORT_NOT_RUN_THIS_SESSION",
+          "runtimeCodeStatus": "RUNTIME_BOUND_CONDITIONALLY",
+          "visibleRenderStatus": "NOT_CAPTURED_AT_THIS_PR_HEAD",
+          "ownerArtApproval": "UNKNOWN"
+        },
+        {
+          "relativePath": "env01_assets/roads/stone_axis_b.png",
+          "sourcePath": "godot/art/source_a_env02a/env01_assets/roads/stone_axis_b.png",
+          "godotResPath": "res://art/source_a_env02a/env01_assets/roads/stone_axis_b.png",
+          "sha256": "992fbc52d30ca012a43b0b7aab0f63c0c8c8bea0876b3067ba0bd641cb022646",
+          "category": "road",
+          "E_CANONICAL": {
+            "exists": true,
+            "sha256Match": true
+          },
+          "E_PR72_QA": {
+            "exists": true,
+            "sha256Match": true
+          },
+          "importSidecarPresent": {
+            "E_CANONICAL": true,
+            "E_PR72_QA": true
+          },
+          "importCachePresent": {
+            "E_CANONICAL": true,
+            "E_PR72_QA": true
+          },
+          "godotImportStatus": "SIDECAR_AND_CACHE_PRESENT; OFFICIAL_IMPORT_NOT_RUN_THIS_SESSION",
+          "runtimeCodeStatus": "RUNTIME_BOUND_CONDITIONALLY",
+          "visibleRenderStatus": "NOT_CAPTURED_AT_THIS_PR_HEAD",
+          "ownerArtApproval": "UNKNOWN"
+        },
+        {
+          "relativePath": "env01_assets/roads/stone_branch.png",
+          "sourcePath": "godot/art/source_a_env02a/env01_assets/roads/stone_branch.png",
+          "godotResPath": "res://art/source_a_env02a/env01_assets/roads/stone_branch.png",
+          "sha256": "1894d9047c73a6d9c80c8455b1a09209e49acb6eafed2922eb23446f190ab819",
+          "category": "road",
+          "E_CANONICAL": {
+            "exists": true,
+            "sha256Match": true
+          },
+          "E_PR72_QA": {
+            "exists": true,
+            "sha256Match": true
+          },
+          "importSidecarPresent": {
+            "E_CANONICAL": true,
+            "E_PR72_QA": true
+          },
+          "importCachePresent": {
+            "E_CANONICAL": true,
+            "E_PR72_QA": true
+          },
+          "godotImportStatus": "SIDECAR_AND_CACHE_PRESENT; OFFICIAL_IMPORT_NOT_RUN_THIS_SESSION",
+          "runtimeCodeStatus": "RUNTIME_BOUND_CONDITIONALLY",
+          "visibleRenderStatus": "NOT_CAPTURED_AT_THIS_PR_HEAD",
+          "ownerArtApproval": "UNKNOWN"
+        },
+        {
+          "relativePath": "env01_assets/roads/stone_axis_a.png",
+          "sourcePath": "godot/art/source_a_env02a/env01_assets/roads/stone_axis_a.png",
+          "godotResPath": "res://art/source_a_env02a/env01_assets/roads/stone_axis_a.png",
+          "sha256": "6e87057fd7753ee294405f90f78f44dc4641d841c3329711d92fcec5cb184520",
+          "category": "road",
+          "E_CANONICAL": {
+            "exists": true,
+            "sha256Match": true
+          },
+          "E_PR72_QA": {
+            "exists": true,
+            "sha256Match": true
+          },
+          "importSidecarPresent": {
+            "E_CANONICAL": true,
+            "E_PR72_QA": true
+          },
+          "importCachePresent": {
+            "E_CANONICAL": true,
+            "E_PR72_QA": true
+          },
+          "godotImportStatus": "SIDECAR_AND_CACHE_PRESENT; OFFICIAL_IMPORT_NOT_RUN_THIS_SESSION",
+          "runtimeCodeStatus": "RUNTIME_BOUND_CONDITIONALLY",
+          "visibleRenderStatus": "NOT_CAPTURED_AT_THIS_PR_HEAD",
+          "ownerArtApproval": "UNKNOWN"
+        },
+        {
+          "relativePath": "env01_assets/roads/stone_cross.png",
+          "sourcePath": "godot/art/source_a_env02a/env01_assets/roads/stone_cross.png",
+          "godotResPath": "res://art/source_a_env02a/env01_assets/roads/stone_cross.png",
+          "sha256": "cb87f596382cae2e539705f1bc081b04ee2de577dd46c09aa49bd7b9e6b8c127",
+          "category": "road",
+          "E_CANONICAL": {
+            "exists": true,
+            "sha256Match": true
+          },
+          "E_PR72_QA": {
+            "exists": true,
+            "sha256Match": true
+          },
+          "importSidecarPresent": {
+            "E_CANONICAL": true,
+            "E_PR72_QA": true
+          },
+          "importCachePresent": {
+            "E_CANONICAL": true,
+            "E_PR72_QA": true
+          },
+          "godotImportStatus": "SIDECAR_AND_CACHE_PRESENT; OFFICIAL_IMPORT_NOT_RUN_THIS_SESSION",
+          "runtimeCodeStatus": "RUNTIME_BOUND_CONDITIONALLY",
+          "visibleRenderStatus": "NOT_CAPTURED_AT_THIS_PR_HEAD",
+          "ownerArtApproval": "UNKNOWN"
+        },
+        {
+          "relativePath": "env01_assets/roads/stone_scatter.png",
+          "sourcePath": "godot/art/source_a_env02a/env01_assets/roads/stone_scatter.png",
+          "godotResPath": "res://art/source_a_env02a/env01_assets/roads/stone_scatter.png",
+          "sha256": "23cb40461b517c7cad3206986bf8d9c7c8b6769fe12cf6222bc1b8dec6fa9570",
+          "category": "road",
+          "E_CANONICAL": {
+            "exists": true,
+            "sha256Match": true
+          },
+          "E_PR72_QA": {
+            "exists": true,
+            "sha256Match": true
+          },
+          "importSidecarPresent": {
+            "E_CANONICAL": true,
+            "E_PR72_QA": true
+          },
+          "importCachePresent": {
+            "E_CANONICAL": true,
+            "E_PR72_QA": true
+          },
+          "godotImportStatus": "SIDECAR_AND_CACHE_PRESENT; OFFICIAL_IMPORT_NOT_RUN_THIS_SESSION",
+          "runtimeCodeStatus": "RUNTIME_BOUND_CONDITIONALLY",
+          "visibleRenderStatus": "NOT_CAPTURED_AT_THIS_PR_HEAD",
+          "ownerArtApproval": "UNKNOWN"
+        },
+        {
+          "relativePath": "pv01_assets/main_hall/510052.png",
+          "sourcePath": "godot/art/source_a_env02a/pv01_assets/main_hall/510052.png",
+          "godotResPath": "res://art/source_a_env02a/pv01_assets/main_hall/510052.png",
+          "sha256": "b6bf88c35e3edc33aba822124296af15a5c8491a05c28f6b5d7b342d20d5325c",
+          "category": "legacy_building",
+          "E_CANONICAL": {
+            "exists": true,
+            "sha256Match": true
+          },
+          "E_PR72_QA": {
+            "exists": true,
+            "sha256Match": true
+          },
+          "importSidecarPresent": {
+            "E_CANONICAL": true,
+            "E_PR72_QA": true
+          },
+          "importCachePresent": {
+            "E_CANONICAL": true,
+            "E_PR72_QA": true
+          },
+          "godotImportStatus": "SIDECAR_AND_CACHE_PRESENT; OFFICIAL_IMPORT_NOT_RUN_THIS_SESSION",
+          "runtimeCodeStatus": "FILE_PRESENT_NOT_SELECTED_BY_CURRENT_MAP_RENDERER",
+          "visibleRenderStatus": "NOT_CAPTURED_AT_THIS_PR_HEAD",
+          "ownerArtApproval": "UNKNOWN"
+        },
+        {
+          "relativePath": "pv01_assets/forge/520081.png",
+          "sourcePath": "godot/art/source_a_env02a/pv01_assets/forge/520081.png",
+          "godotResPath": "res://art/source_a_env02a/pv01_assets/forge/520081.png",
+          "sha256": "4225062d48c08f9562be76315f5b8984d4bea0a2311e5762dc844a23e7567458",
+          "category": "legacy_building",
+          "E_CANONICAL": {
+            "exists": true,
+            "sha256Match": true
+          },
+          "E_PR72_QA": {
+            "exists": true,
+            "sha256Match": true
+          },
+          "importSidecarPresent": {
+            "E_CANONICAL": true,
+            "E_PR72_QA": true
+          },
+          "importCachePresent": {
+            "E_CANONICAL": true,
+            "E_PR72_QA": true
+          },
+          "godotImportStatus": "SIDECAR_AND_CACHE_PRESENT; OFFICIAL_IMPORT_NOT_RUN_THIS_SESSION",
+          "runtimeCodeStatus": "FILE_PRESENT_NOT_SELECTED_BY_CURRENT_MAP_RENDERER",
+          "visibleRenderStatus": "NOT_CAPTURED_AT_THIS_PR_HEAD",
+          "ownerArtApproval": "UNKNOWN"
+        },
+        {
+          "relativePath": "pv01_assets/warehouse/510102.png",
+          "sourcePath": "godot/art/source_a_env02a/pv01_assets/warehouse/510102.png",
+          "godotResPath": "res://art/source_a_env02a/pv01_assets/warehouse/510102.png",
+          "sha256": "9bd8b5196ba8b7b79d6f7ef17da07a0d5289fa208ed03484ec1803fd765d9158",
+          "category": "legacy_building",
+          "E_CANONICAL": {
+            "exists": true,
+            "sha256Match": true
+          },
+          "E_PR72_QA": {
+            "exists": true,
+            "sha256Match": true
+          },
+          "importSidecarPresent": {
+            "E_CANONICAL": true,
+            "E_PR72_QA": true
+          },
+          "importCachePresent": {
+            "E_CANONICAL": true,
+            "E_PR72_QA": true
+          },
+          "godotImportStatus": "SIDECAR_AND_CACHE_PRESENT; OFFICIAL_IMPORT_NOT_RUN_THIS_SESSION",
+          "runtimeCodeStatus": "FILE_PRESENT_NOT_SELECTED_BY_CURRENT_MAP_RENDERER",
+          "visibleRenderStatus": "NOT_CAPTURED_AT_THIS_PR_HEAD",
+          "ownerArtApproval": "UNKNOWN"
+        },
+        {
+          "relativePath": "pv01_assets/residence/510076.png",
+          "sourcePath": "godot/art/source_a_env02a/pv01_assets/residence/510076.png",
+          "godotResPath": "res://art/source_a_env02a/pv01_assets/residence/510076.png",
+          "sha256": "f8e05d7376fc5ddc7b25f56673b6d5f444b10fd759da06a5929ec4f38a68d320",
+          "category": "legacy_building",
+          "E_CANONICAL": {
+            "exists": true,
+            "sha256Match": true
+          },
+          "E_PR72_QA": {
+            "exists": true,
+            "sha256Match": true
+          },
+          "importSidecarPresent": {
+            "E_CANONICAL": true,
+            "E_PR72_QA": true
+          },
+          "importCachePresent": {
+            "E_CANONICAL": true,
+            "E_PR72_QA": true
+          },
+          "godotImportStatus": "SIDECAR_AND_CACHE_PRESENT; OFFICIAL_IMPORT_NOT_RUN_THIS_SESSION",
+          "runtimeCodeStatus": "FILE_PRESENT_NOT_SELECTED_BY_CURRENT_MAP_RENDERER",
+          "visibleRenderStatus": "NOT_CAPTURED_AT_THIS_PR_HEAD",
+          "ownerArtApproval": "UNKNOWN"
+        },
+        {
+          "relativePath": "pv01_assets/guidance/510111.png",
+          "sourcePath": "godot/art/source_a_env02a/pv01_assets/guidance/510111.png",
+          "godotResPath": "res://art/source_a_env02a/pv01_assets/guidance/510111.png",
+          "sha256": "90b7c595f3b77788c99924ef2eb7ba4b8ede794ccffda1c6808263ba3c711762",
+          "category": "legacy_building",
+          "E_CANONICAL": {
+            "exists": true,
+            "sha256Match": true
+          },
+          "E_PR72_QA": {
+            "exists": true,
+            "sha256Match": true
+          },
+          "importSidecarPresent": {
+            "E_CANONICAL": true,
+            "E_PR72_QA": true
+          },
+          "importCachePresent": {
+            "E_CANONICAL": true,
+            "E_PR72_QA": true
+          },
+          "godotImportStatus": "SIDECAR_AND_CACHE_PRESENT; OFFICIAL_IMPORT_NOT_RUN_THIS_SESSION",
+          "runtimeCodeStatus": "FILE_PRESENT_NOT_SELECTED_BY_CURRENT_MAP_RENDERER",
+          "visibleRenderStatus": "NOT_CAPTURED_AT_THIS_PR_HEAD",
+          "ownerArtApproval": "UNKNOWN"
+        }
+      ]
+    },
+    "actorPackages": [
+      {
+        "assetId": "1113028_1",
+        "sourcePath": "godot/assets/actors/1113028_1/asset.json",
+        "assetJsonGitBlobSha": "30c630ee141dd697dd0016a6067eba4ac6af412e",
+        "sourceFingerprintSha256": "b417f324193b8f3f91141ca49bdfab54b1ae9d6ff39fa6e7a3498946a20a04ab",
+        "sourceFiles": [
+          {
+            "name": "1113028_1.skel_TextAsset_2464183327200521619.bin",
+            "sha256": "8c089d8837cf87bc573c63f39e37577af1b0062a9903a1acc2ecbd8ccedb00d8",
+            "bytes": 262819
+          },
+          {
+            "name": "1113028_1.atlas_TextAsset_4732095381105324012.bin",
+            "sha256": "01c4fa52a3e782fc2c08ad9dbdfb08ad025eca03334fb5b555d42ec74d22cc75",
+            "bytes": 3745
+          },
+          {
+            "name": "1113028_1_Texture2D_735480216125144147.png",
+            "sha256": "5d5019d01279254be3e2f3430da8955a685b35ab5e93ad1798c753be189582d1",
+            "bytes": 105725
+          }
+        ],
+        "classification": "SOURCE_RIG_IDENTITY_UNKNOWN",
+        "classificationNote": "Do not infer player identity or school from asset ID.",
+        "runtimeManifestRoles": [
+          {
+            "role": "disciple_female",
+            "slot": "base"
+          }
+        ],
+        "canvas": [
+          768,
+          768
+        ],
+        "footAnchor": [
+          384,
+          540
+        ],
+        "fps": 30,
+        "storedFrames": 72,
+        "atlasPages": [
+          {
+            "file": "atlas_000.webp",
+            "size": [
+              2044,
+              1940
+            ]
+          },
+          {
+            "file": "atlas_001.webp",
+            "size": [
+              584,
+              194
+            ]
+          }
+        ],
+        "derivedFileSha256": {
+          "actor.tscn": "5442a4442a31c9ae27027ef0bf16941e3a1afe0f85b94a17713be300578b2cf5",
+          "animations.tres": "e2864cfe778fac39b093fa30c76c76bfec40f1b03a8ed1f3af5ea72aa6eb6473",
+          "atlas_000.webp": "ce2bea0da04a8e461016de756546640afd4eda855f64ed3cd44e15bdc06c4197",
+          "atlas_001.webp": "8e1bffa36d2c5ff68ca54be3f56633006a94b42bf9b0abecd03ab50023024da6"
+        },
+        "clips": [
+          {
+            "name": "stand",
+            "duration_seconds": 1.60000002384186,
+            "frames": 48,
+            "stored_frames": 48,
+            "loop": true,
+            "frame_count_status": "MATCH",
+            "visual_acceptance": "NOT_ESTABLISHED_BY_MANIFEST"
+          },
+          {
+            "name": "walk",
+            "duration_seconds": 0.800000011920929,
+            "frames": 24,
+            "stored_frames": 24,
+            "loop": true,
+            "frame_count_status": "MATCH",
+            "visual_acceptance": "NOT_ESTABLISHED_BY_MANIFEST"
+          }
+        ],
+        "localValidation": {
+          "E_CANONICAL": {
+            "assetJsonGitBlobMatch": true,
+            "expectedFiles": 4,
+            "presentFiles": 4,
+            "exactShaFiles": 2,
+            "mismatchedFiles": [
+              {
+                "path": "actor.tscn",
+                "expectedSha256": "5442a4442a31c9ae27027ef0bf16941e3a1afe0f85b94a17713be300578b2cf5",
+                "actualSha256": "220c6e881a00aed28f8fda4be9d28600369eb0612cf5a0ebaf4640d3d561be18"
+              },
+              {
+                "path": "animations.tres",
+                "expectedSha256": "e2864cfe778fac39b093fa30c76c76bfec40f1b03a8ed1f3af5ea72aa6eb6473",
+                "actualSha256": "c9dad60452b525e2279dba6230eff54c05058c7deb48115c222fc2f8b4681c90"
+              }
+            ],
+            "missingFiles": 0
+          },
+          "E_PR72_QA": {
+            "assetJsonGitBlobMatch": true,
+            "expectedFiles": 4,
+            "presentFiles": 4,
+            "exactShaFiles": 2,
+            "mismatchedFiles": [
+              {
+                "path": "actor.tscn",
+                "expectedSha256": "5442a4442a31c9ae27027ef0bf16941e3a1afe0f85b94a17713be300578b2cf5",
+                "actualSha256": "220c6e881a00aed28f8fda4be9d28600369eb0612cf5a0ebaf4640d3d561be18"
+              },
+              {
+                "path": "animations.tres",
+                "expectedSha256": "e2864cfe778fac39b093fa30c76c76bfec40f1b03a8ed1f3af5ea72aa6eb6473",
+                "actualSha256": "c9dad60452b525e2279dba6230eff54c05058c7deb48115c222fc2f8b4681c90"
+              }
+            ],
+            "missingFiles": 0
+          }
+        },
+        "runtimeState": "CONSUMER_WIRED_CONDITIONALLY",
+        "visibleCapture": "NOT_CAPTURED_AT_THIS_PR_HEAD",
+        "ownerArtApproval": "UNKNOWN"
+      },
+      {
+        "assetId": "body_1110201",
+        "sourcePath": "godot/assets/actors/body_1110201/asset.json",
+        "assetJsonGitBlobSha": "dd0891665af47ec96e6907632690d35bc1287c18",
+        "sourceFingerprintSha256": "9ab4093ce696ece8864fb5e7d5c04749fdf0120f2742e8f4bd2d6f4e97a2ab61",
+        "sourceFiles": [
+          {
+            "name": "body_1110201.skel_TextAsset_-6433388427377235896.bin",
+            "sha256": "89048d6b4c385cdb70f5382637b28469e13ebbd423d53cb39112d4f442eff5f2",
+            "bytes": 187109
+          },
+          {
+            "name": "body_1110201.atlas_TextAsset_3407224732438477998.bin",
+            "sha256": "5536436440f1104dcd7c4ba1531323580b9bb2c5ed2652fb87f4101deef8e56c",
+            "bytes": 4755
+          },
+          {
+            "name": "body_1110201_Texture2D_181697431273634149.png",
+            "sha256": "13438d351fa83f0454b208b615954d32c069443e5e6c5ba6125708c28fbb7670",
+            "bytes": 83166
+          }
+        ],
+        "classification": "BODY_RIG_ROLE_UNKNOWN",
+        "classificationNote": "Body rig only; role and identity unverified.",
+        "runtimeManifestRoles": [],
+        "canvas": [
+          768,
+          768
+        ],
+        "footAnchor": [
+          384,
+          540
+        ],
+        "fps": 30,
+        "storedFrames": 72,
+        "atlasPages": [
+          {
+            "file": "atlas_000.webp",
+            "size": [
+              2016,
+              548
+            ]
+          }
+        ],
+        "derivedFileSha256": {
+          "actor.tscn": "72debc170ae0831b0631edd09d566913daf94d4daf202029b766a70d8a3207ae",
+          "animations.tres": "a78b83c5699c10dac5174bccfd5dcd08997baa33b2ff3ff466656be9e4ae92df",
+          "atlas_000.webp": "b0be4d26c4b21d8bae3fa3a74dd48c44949e449bb47623fbc2ab0ab601680e7e"
+        },
+        "clips": [
+          {
+            "name": "stand",
+            "duration_seconds": 1.60000002384186,
+            "frames": 48,
+            "stored_frames": 48,
+            "loop": true,
+            "frame_count_status": "MATCH",
+            "visual_acceptance": "NOT_ESTABLISHED_BY_MANIFEST"
+          },
+          {
+            "name": "walk",
+            "duration_seconds": 0.800000011920929,
+            "frames": 24,
+            "stored_frames": 24,
+            "loop": true,
+            "frame_count_status": "MATCH",
+            "visual_acceptance": "NOT_ESTABLISHED_BY_MANIFEST"
+          }
+        ],
+        "localValidation": {
+          "E_CANONICAL": {
+            "assetJsonGitBlobMatch": true,
+            "expectedFiles": 3,
+            "presentFiles": 3,
+            "exactShaFiles": 3,
+            "mismatchedFiles": [],
+            "missingFiles": 0
+          },
+          "E_PR72_QA": {
+            "assetJsonGitBlobMatch": true,
+            "expectedFiles": 3,
+            "presentFiles": 3,
+            "exactShaFiles": 3,
+            "mismatchedFiles": [],
+            "missingFiles": 0
+          }
+        },
+        "runtimeState": "NO_ROLE_BINDING_IN_V5_VISUAL_MANIFEST",
+        "visibleCapture": "NOT_CAPTURED_AT_THIS_PR_HEAD",
+        "ownerArtApproval": "UNKNOWN"
+      },
+      {
+        "assetId": "body_1120402",
+        "sourcePath": "godot/assets/actors/body_1120402/asset.json",
+        "assetJsonGitBlobSha": "2dbd0bcdff1caa783919ac575f42e91e6b9ac7c2",
+        "sourceFingerprintSha256": "a1d7354305056bfa6be625d4b9a64b00feff3aaf4cd2f2385ae13dc8474b0237",
+        "sourceFiles": [
+          {
+            "name": "body_1120402.skel_TextAsset_8454442484532860036.bin",
+            "sha256": "e9d6075c4673690a55d9029bf60ba210ea9610e369a3de13d890c26f90072a3d",
+            "bytes": 213545
+          },
+          {
+            "name": "body_1120402.atlas_TextAsset_4916636876815428352.bin",
+            "sha256": "73c83bce3828e3afd6dba522ce771368a06682d8d9256df2c7e8501edee0b2e4",
+            "bytes": 7227
+          },
+          {
+            "name": "body_1120402_Texture2D_907649722946377334.png",
+            "sha256": "1ed18ce80a4096c0cc1cd170db4dbd7c74dd0ca20296fcada87e744ffc5aefd4",
+            "bytes": 133372
+          }
+        ],
+        "classification": "BODY_RIG_ROLE_UNKNOWN",
+        "classificationNote": "Body rig only; role and identity unverified.",
+        "runtimeManifestRoles": [],
+        "canvas": [
+          768,
+          768
+        ],
+        "footAnchor": [
+          384,
+          540
+        ],
+        "fps": 30,
+        "storedFrames": 72,
+        "atlasPages": [
+          {
+            "file": "atlas_000.webp",
+            "size": [
+              1900,
+              1560
+            ]
+          }
+        ],
+        "derivedFileSha256": {
+          "actor.tscn": "a89795fb8df30f6aa6343ea8b064b9ead8a55cad215e707ae9430eee102117ae",
+          "animations.tres": "2cdeef3b53bbcbf546b3a41450f8390a5f86119d73fff760d2081700a67b25fd",
+          "atlas_000.webp": "bb6731403a09750109d7604ff4ab69ad984cdda5f4b638da3d4cf09e9c7c0248"
+        },
+        "clips": [
+          {
+            "name": "stand",
+            "duration_seconds": 1.60000002384186,
+            "frames": 48,
+            "stored_frames": 48,
+            "loop": true,
+            "frame_count_status": "MATCH",
+            "visual_acceptance": "NOT_ESTABLISHED_BY_MANIFEST"
+          },
+          {
+            "name": "walk",
+            "duration_seconds": 0.800000011920929,
+            "frames": 24,
+            "stored_frames": 24,
+            "loop": true,
+            "frame_count_status": "MATCH",
+            "visual_acceptance": "NOT_ESTABLISHED_BY_MANIFEST"
+          }
+        ],
+        "localValidation": {
+          "E_CANONICAL": {
+            "assetJsonGitBlobMatch": true,
+            "expectedFiles": 3,
+            "presentFiles": 3,
+            "exactShaFiles": 3,
+            "mismatchedFiles": [],
+            "missingFiles": 0
+          },
+          "E_PR72_QA": {
+            "assetJsonGitBlobMatch": true,
+            "expectedFiles": 3,
+            "presentFiles": 3,
+            "exactShaFiles": 3,
+            "mismatchedFiles": [],
+            "missingFiles": 0
+          }
+        },
+        "runtimeState": "NO_ROLE_BINDING_IN_V5_VISUAL_MANIFEST",
+        "visibleCapture": "NOT_CAPTURED_AT_THIS_PR_HEAD",
+        "ownerArtApproval": "UNKNOWN"
+      },
+      {
+        "assetId": "v5_sa_female_1113028_1",
+        "sourcePath": "godot/assets/actors/v5_sa_female_1113028_1/asset.json",
+        "assetJsonGitBlobSha": "df4f6028923691f8ebd5ffbeb74e3f9752debec0",
+        "sourceFingerprintSha256": "6d398e256a7734e121a4487abd0861a6c0fd681ccaa3089b556d3fd9440f1feb",
+        "sourceFiles": [
+          {
+            "name": "1113028_1.skel_TextAsset_2464183327200521619.bin",
+            "sha256": "8c089d8837cf87bc573c63f39e37577af1b0062a9903a1acc2ecbd8ccedb00d8",
+            "bytes": 262819
+          },
+          {
+            "name": "1113028_1.atlas_TextAsset_4732095381105324012.bin",
+            "sha256": "01c4fa52a3e782fc2c08ad9dbdfb08ad025eca03334fb5b555d42ec74d22cc75",
+            "bytes": 3745
+          },
+          {
+            "name": "1113028_1_Texture2D_735480216125144147.png",
+            "sha256": "5d5019d01279254be3e2f3430da8955a685b35ab5e93ad1798c753be189582d1",
+            "bytes": 105725
+          }
+        ],
+        "classification": "FEMALE_VISUAL_CANDIDATE",
+        "classificationNote": "Not the locked Nữ Độc Tu identity.",
+        "runtimeManifestRoles": [
+          {
+            "role": "disciple_female",
+            "slot": "combat"
+          }
+        ],
+        "canvas": [
+          768,
+          768
+        ],
+        "footAnchor": [
+          384,
+          540
+        ],
+        "fps": 30,
+        "storedFrames": 59,
+        "atlasPages": [
+          {
+            "file": "atlas_000.webp",
+            "size": [
+              1815,
+              1855
+            ]
+          },
+          {
+            "file": "atlas_001.webp",
+            "size": [
+              1815,
+              1325
+            ]
+          }
+        ],
+        "derivedFileSha256": {
+          "actor.tscn": "ed7318fa1aedf44ef94613efa0decf8a9d3d3bedc07a9d0552fb3e3759e2b2fb",
+          "animations.tres": "a203c73c1cae9ff938eee05403cb15eb8d066280783c0a5b84e92e398440159c",
+          "atlas_000.webp": "4832f3030438a5313665242eed87a8d721b45dc8ce579e1c7c7e4aa4ba0a9d88",
+          "atlas_001.webp": "0f5181c3397365433f09f9ec946db4b131a530b9468215c2ef36eb6beaf605ea"
+        },
+        "clips": [
+          {
+            "name": "attack1",
+            "duration_seconds": 0.966666638851166,
+            "frames": 29,
+            "stored_frames": 29,
+            "loop": false,
+            "frame_count_status": "MATCH",
+            "visual_acceptance": "NOT_ESTABLISHED_BY_MANIFEST"
+          },
+          {
+            "name": "hit",
+            "duration_seconds": 0.5,
+            "frames": 15,
+            "stored_frames": 15,
+            "loop": false,
+            "frame_count_status": "MATCH",
+            "visual_acceptance": "NOT_ESTABLISHED_BY_MANIFEST"
+          },
+          {
+            "name": "dead",
+            "duration_seconds": 0.5,
+            "frames": 15,
+            "stored_frames": 15,
+            "loop": false,
+            "frame_count_status": "MATCH",
+            "visual_acceptance": "NOT_ESTABLISHED_BY_MANIFEST"
+          }
+        ],
+        "localValidation": {
+          "E_CANONICAL": {
+            "assetJsonGitBlobMatch": true,
+            "expectedFiles": 4,
+            "presentFiles": 4,
+            "exactShaFiles": 2,
+            "mismatchedFiles": [
+              {
+                "path": "actor.tscn",
+                "expectedSha256": "ed7318fa1aedf44ef94613efa0decf8a9d3d3bedc07a9d0552fb3e3759e2b2fb",
+                "actualSha256": "92bae617c8891bf13b8975148bf7bea0ec073f1c47f0cfdaca32a7359f6bf091"
+              },
+              {
+                "path": "animations.tres",
+                "expectedSha256": "a203c73c1cae9ff938eee05403cb15eb8d066280783c0a5b84e92e398440159c",
+                "actualSha256": "c627f9168fd366ad19cc5c3eb5b1324f2b5d6a28bcdaaa607c30891c2b389e67"
+              }
+            ],
+            "missingFiles": 0
+          },
+          "E_PR72_QA": {
+            "assetJsonGitBlobMatch": true,
+            "expectedFiles": 4,
+            "presentFiles": 4,
+            "exactShaFiles": 2,
+            "mismatchedFiles": [
+              {
+                "path": "actor.tscn",
+                "expectedSha256": "ed7318fa1aedf44ef94613efa0decf8a9d3d3bedc07a9d0552fb3e3759e2b2fb",
+                "actualSha256": "92bae617c8891bf13b8975148bf7bea0ec073f1c47f0cfdaca32a7359f6bf091"
+              },
+              {
+                "path": "animations.tres",
+                "expectedSha256": "a203c73c1cae9ff938eee05403cb15eb8d066280783c0a5b84e92e398440159c",
+                "actualSha256": "c627f9168fd366ad19cc5c3eb5b1324f2b5d6a28bcdaaa607c30891c2b389e67"
+              }
+            ],
+            "missingFiles": 0
+          }
+        },
+        "runtimeState": "CONSUMER_WIRED_CONDITIONALLY",
+        "visibleCapture": "NOT_CAPTURED_AT_THIS_PR_HEAD",
+        "ownerArtApproval": "UNKNOWN"
+      },
+      {
+        "assetId": "v5_sa_male_body_1110201",
+        "sourcePath": "godot/assets/actors/v5_sa_male_body_1110201/asset.json",
+        "assetJsonGitBlobSha": "e68c6513d85609e3091edaf38d868aa57e807f69",
+        "sourceFingerprintSha256": "395a052e70278fe45bbbf02940d21f2214bc9c2b6288ebe927bffae88382c7c8",
+        "sourceFiles": [
+          {
+            "name": "body_1110201.skel_TextAsset_-6433388427377235896.bin",
+            "sha256": "89048d6b4c385cdb70f5382637b28469e13ebbd423d53cb39112d4f442eff5f2",
+            "bytes": 187109
+          },
+          {
+            "name": "body_1110201.atlas_TextAsset_3407224732438477998.bin",
+            "sha256": "5536436440f1104dcd7c4ba1531323580b9bb2c5ed2652fb87f4101deef8e56c",
+            "bytes": 4755
+          },
+          {
+            "name": "body_1110201_Texture2D_181697431273634149.png",
+            "sha256": "13438d351fa83f0454b208b615954d32c069443e5e6c5ba6125708c28fbb7670",
+            "bytes": 83166
+          }
+        ],
+        "classification": "DISCIPLE_MALE_PACKAGE",
+        "classificationNote": "Manifest mapping only; no new school identity asserted.",
+        "runtimeManifestRoles": [
+          {
+            "role": "disciple_male",
+            "slot": "base"
+          },
+          {
+            "role": "disciple_male",
+            "slot": "combat"
+          }
+        ],
+        "canvas": [
+          768,
+          768
+        ],
+        "footAnchor": [
+          384,
+          540
+        ],
+        "fps": 30,
+        "storedFrames": 131,
+        "atlasPages": [
+          {
+            "file": "atlas_000.webp",
+            "size": [
+              1855,
+              1820
+            ]
+          },
+          {
+            "file": "atlas_001.webp",
+            "size": [
+              1855,
+              1820
+            ]
+          },
+          {
+            "file": "atlas_002.webp",
+            "size": [
+              1855,
+              1300
+            ]
+          }
+        ],
+        "derivedFileSha256": {
+          "actor.tscn": "14be43bfe0a8d62fadb5fab0deae837eb38acf2b386ca26045dcbee3d0225071",
+          "animations.tres": "51fca9529933233c8fc97784060aa7b59de2ee4b96eb0ee6d7b3bd3e5916114f",
+          "atlas_000.webp": "fa13b3f6803ce3f5738f4dda3d3df262ef6f66328429e14422c3f71c22d6ab83",
+          "atlas_001.webp": "8c72f24d728c7f49a672a09843921e26e198986bc466b96951e8bdb24444fc97",
+          "atlas_002.webp": "5bbf5e1d5bfe9a4cc86333d91f2710bbc0f47bfee5e360e76beb4d357109dd60"
+        },
+        "clips": [
+          {
+            "name": "stand",
+            "duration_seconds": 1.60000002384186,
+            "frames": 48,
+            "stored_frames": 48,
+            "loop": true,
+            "frame_count_status": "MATCH",
+            "visual_acceptance": "NOT_ESTABLISHED_BY_MANIFEST"
+          },
+          {
+            "name": "walk",
+            "duration_seconds": 0.800000011920929,
+            "frames": 24,
+            "stored_frames": 24,
+            "loop": true,
+            "frame_count_status": "MATCH",
+            "visual_acceptance": "NOT_ESTABLISHED_BY_MANIFEST"
+          },
+          {
+            "name": "attack1",
+            "duration_seconds": 0.966666638851166,
+            "frames": 29,
+            "stored_frames": 29,
+            "loop": false,
+            "frame_count_status": "MATCH",
+            "visual_acceptance": "NOT_ESTABLISHED_BY_MANIFEST"
+          },
+          {
+            "name": "hit",
+            "duration_seconds": 0.5,
+            "frames": 15,
+            "stored_frames": 15,
+            "loop": false,
+            "frame_count_status": "MATCH",
+            "visual_acceptance": "NOT_ESTABLISHED_BY_MANIFEST"
+          },
+          {
+            "name": "dead",
+            "duration_seconds": 0.5,
+            "frames": 15,
+            "stored_frames": 15,
+            "loop": false,
+            "frame_count_status": "MATCH",
+            "visual_acceptance": "NOT_ESTABLISHED_BY_MANIFEST"
+          }
+        ],
+        "localValidation": {
+          "E_CANONICAL": {
+            "assetJsonGitBlobMatch": true,
+            "expectedFiles": 5,
+            "presentFiles": 5,
+            "exactShaFiles": 3,
+            "mismatchedFiles": [
+              {
+                "path": "actor.tscn",
+                "expectedSha256": "14be43bfe0a8d62fadb5fab0deae837eb38acf2b386ca26045dcbee3d0225071",
+                "actualSha256": "d2103827b592a372a7038a0e1697cd414c857a975483672fd6a054952f19cb7d"
+              },
+              {
+                "path": "animations.tres",
+                "expectedSha256": "51fca9529933233c8fc97784060aa7b59de2ee4b96eb0ee6d7b3bd3e5916114f",
+                "actualSha256": "cc96e872b8ea2df2f9e8354f191c99a35283f5263ae05fcd8723a1ad46f7e431"
+              }
+            ],
+            "missingFiles": 0
+          },
+          "E_PR72_QA": {
+            "assetJsonGitBlobMatch": true,
+            "expectedFiles": 5,
+            "presentFiles": 5,
+            "exactShaFiles": 3,
+            "mismatchedFiles": [
+              {
+                "path": "actor.tscn",
+                "expectedSha256": "14be43bfe0a8d62fadb5fab0deae837eb38acf2b386ca26045dcbee3d0225071",
+                "actualSha256": "d2103827b592a372a7038a0e1697cd414c857a975483672fd6a054952f19cb7d"
+              },
+              {
+                "path": "animations.tres",
+                "expectedSha256": "51fca9529933233c8fc97784060aa7b59de2ee4b96eb0ee6d7b3bd3e5916114f",
+                "actualSha256": "cc96e872b8ea2df2f9e8354f191c99a35283f5263ae05fcd8723a1ad46f7e431"
+              }
+            ],
+            "missingFiles": 0
+          }
+        },
+        "runtimeState": "CONSUMER_WIRED_CONDITIONALLY",
+        "visibleCapture": "NOT_CAPTURED_AT_THIS_PR_HEAD",
+        "ownerArtApproval": "UNKNOWN"
+      },
+      {
+        "assetId": "v5_sa_monster_1113031_1",
+        "sourcePath": "godot/assets/actors/v5_sa_monster_1113031_1/asset.json",
+        "assetJsonGitBlobSha": "e26cbf3cfa51bab0ca4f42230921014ef9b8d3d7",
+        "sourceFingerprintSha256": "d6b82908bf76b4260f5c85426fe1a0bca98c40b49ef591bdd1fd0aaa318f8ee3",
+        "sourceFiles": [
+          {
+            "name": "1113031_1.skel_TextAsset_-8702388810438111467.bin",
+            "sha256": "66dce4d7dd88dda48ee5fefa2ea70eca4af10913bf02b4e5d9635def76bdde4d",
+            "bytes": 180689
+          },
+          {
+            "name": "1113031_1.atlas_TextAsset_-8184681043018368557.bin",
+            "sha256": "c31282fb02fd9250fed3d6613a76f987d400a255c28053c5470a52e830b6023b",
+            "bytes": 2653
+          },
+          {
+            "name": "1113031_1_Texture2D_-844457151089194408.png",
+            "sha256": "0512faf8bd25c2382bc9fa0e58f2780603f04ba584ed9edc1ed79860fe20a591",
+            "bytes": 733216
+          }
+        ],
+        "classification": "MONSTER_PACKAGE",
+        "classificationNote": "Package key identifies a monster asset; gameplay encounter eligibility not proven here.",
+        "runtimeManifestRoles": [
+          {
+            "role": "monster_1113031_1",
+            "slot": "base"
+          },
+          {
+            "role": "monster_1113031_1",
+            "slot": "combat"
+          }
+        ],
+        "canvas": [
+          768,
+          768
+        ],
+        "footAnchor": [
+          384,
+          540
+        ],
+        "fps": 30,
+        "storedFrames": 145,
+        "atlasPages": [
+          {
+            "file": "atlas_000.webp",
+            "size": [
+              2016,
+              1940
+            ]
+          },
+          {
+            "file": "atlas_001.webp",
+            "size": [
+              2016,
+              1940
+            ]
+          },
+          {
+            "file": "atlas_002.webp",
+            "size": [
+              1440,
+              194
+            ]
+          }
+        ],
+        "derivedFileSha256": {
+          "actor.tscn": "14503f8f5ecaac6f1d434e736e51d29b2f125fbeeb24aea8bbec1204e3af1f93",
+          "animations.tres": "3a4a0ba82e5a657859dab8ef8e62907f789d4d200f0caba4701286d2fe7c1f4b",
+          "atlas_000.webp": "570a9528bb8d4c4f083cdd43ed7e56f06e4dea399d82fa2c8e2273339f3cfb0a",
+          "atlas_001.webp": "50539e94b305876b171d4e48938021e22bf4ba6fdb3187d434b32f6f4c59dade",
+          "atlas_002.webp": "3adfafdc10a61f9eea2ffeedd9fe2262d932362ca3d970bb23ee7c7f39da1bf5"
+        },
+        "clips": [
+          {
+            "name": "stand",
+            "duration_seconds": 2,
+            "frames": 60,
+            "stored_frames": 60,
+            "loop": true,
+            "frame_count_status": "MATCH",
+            "visual_acceptance": "NOT_ESTABLISHED_BY_MANIFEST"
+          },
+          {
+            "name": "walk",
+            "duration_seconds": 0.800000011920929,
+            "frames": 24,
+            "stored_frames": 24,
+            "loop": true,
+            "frame_count_status": "MATCH",
+            "visual_acceptance": "NOT_ESTABLISHED_BY_MANIFEST"
+          },
+          {
+            "name": "attack1",
+            "duration_seconds": 0.966666638851166,
+            "frames": 29,
+            "stored_frames": 29,
+            "loop": false,
+            "frame_count_status": "MATCH",
+            "visual_acceptance": "NOT_ESTABLISHED_BY_MANIFEST"
+          },
+          {
+            "name": "hit",
+            "duration_seconds": 0.333333343267441,
+            "frames": 10,
+            "stored_frames": 10,
+            "loop": false,
+            "frame_count_status": "MATCH",
+            "visual_acceptance": "NOT_ESTABLISHED_BY_MANIFEST"
+          },
+          {
+            "name": "dead",
+            "duration_seconds": 0.733333349227905,
+            "frames": 22,
+            "stored_frames": 22,
+            "loop": false,
+            "frame_count_status": "MATCH",
+            "visual_acceptance": "NOT_ESTABLISHED_BY_MANIFEST"
+          }
+        ],
+        "localValidation": {
+          "E_CANONICAL": {
+            "assetJsonGitBlobMatch": true,
+            "expectedFiles": 5,
+            "presentFiles": 5,
+            "exactShaFiles": 3,
+            "mismatchedFiles": [
+              {
+                "path": "actor.tscn",
+                "expectedSha256": "14503f8f5ecaac6f1d434e736e51d29b2f125fbeeb24aea8bbec1204e3af1f93",
+                "actualSha256": "4c3f8330be152eb4bf10864ba94db8ebad9a2cb53700678ca78fb3d62d2ebcf9"
+              },
+              {
+                "path": "animations.tres",
+                "expectedSha256": "3a4a0ba82e5a657859dab8ef8e62907f789d4d200f0caba4701286d2fe7c1f4b",
+                "actualSha256": "36d8accc3f2d5d58788a76f43666f7b1a01cc83d5cd511a47b35b062903f3ae8"
+              }
+            ],
+            "missingFiles": 0
+          },
+          "E_PR72_QA": {
+            "assetJsonGitBlobMatch": true,
+            "expectedFiles": 5,
+            "presentFiles": 5,
+            "exactShaFiles": 3,
+            "mismatchedFiles": [
+              {
+                "path": "actor.tscn",
+                "expectedSha256": "14503f8f5ecaac6f1d434e736e51d29b2f125fbeeb24aea8bbec1204e3af1f93",
+                "actualSha256": "4c3f8330be152eb4bf10864ba94db8ebad9a2cb53700678ca78fb3d62d2ebcf9"
+              },
+              {
+                "path": "animations.tres",
+                "expectedSha256": "3a4a0ba82e5a657859dab8ef8e62907f789d4d200f0caba4701286d2fe7c1f4b",
+                "actualSha256": "36d8accc3f2d5d58788a76f43666f7b1a01cc83d5cd511a47b35b062903f3ae8"
+              }
+            ],
+            "missingFiles": 0
+          }
+        },
+        "runtimeState": "CONSUMER_WIRED_CONDITIONALLY",
+        "visibleCapture": "NOT_CAPTURED_AT_THIS_PR_HEAD",
+        "ownerArtApproval": "UNKNOWN"
+      },
+      {
+        "assetId": "v5_sa_boss_410041_1",
+        "sourcePath": "godot/assets/actors/v5_sa_boss_410041_1/asset.json",
+        "assetJsonGitBlobSha": "3e5df38f4865ec2a793e2f1f0e755eb1c3a762b0",
+        "sourceFingerprintSha256": "e7edbe1e5200e490827c24ffc60200c7f801b5fcab256821688d1356670937b4",
+        "sourceFiles": [
+          {
+            "name": "410041_1.skel_TextAsset_2668375480182011948.bin",
+            "sha256": "61708133cb43e1d3e030b0334357ccda1f9accd565b45d91a6d6da04bbcfd45b",
+            "bytes": 99431
+          },
+          {
+            "name": "410041_1.atlas_TextAsset_7051791944699442066.bin",
+            "sha256": "0172b58e6697179afdba708e0529d51b54001a373857695fedda495478665cc0",
+            "bytes": 1519
+          },
+          {
+            "name": "410041_1_Texture2D_6896002294419970554.png",
+            "sha256": "12e4b3c6228934ede4ea1d6d20c199ecd5393bcb0883dbaf85f1d5bf5762a07f",
+            "bytes": 186849
+          }
+        ],
+        "classification": "BOSS_SLOT_CANDIDATE",
+        "classificationNote": "No Boss name or identity asserted.",
+        "runtimeManifestRoles": [
+          {
+            "role": "boss_slot_410041_1",
+            "slot": "base"
+          },
+          {
+            "role": "boss_slot_410041_1",
+            "slot": "combat"
+          }
+        ],
+        "canvas": [
+          768,
+          768
+        ],
+        "footAnchor": [
+          384,
+          540
+        ],
+        "fps": 30,
+        "storedFrames": 154,
+        "atlasPages": [
+          {
+            "file": "atlas_000.webp",
+            "size": [
+              1938,
+              1998
+            ]
+          },
+          {
+            "file": "atlas_001.webp",
+            "size": [
+              1938,
+              1998
+            ]
+          },
+          {
+            "file": "atlas_002.webp",
+            "size": [
+              1938,
+              1998
+            ]
+          },
+          {
+            "file": "atlas_003.webp",
+            "size": [
+              1938,
+              1998
+            ]
+          },
+          {
+            "file": "atlas_004.webp",
+            "size": [
+              1938,
+              666
+            ]
+          }
+        ],
+        "derivedFileSha256": {
+          "actor.tscn": "9f10cac6b212b6ec8c11e5bdef1bafc8bb5aa87b735e11c4112b38ec47ab9c37",
+          "animations.tres": "7b4637b0edd4d59de967f2fcb8165987de72969e0bf29df6cb54d886aa9b7782",
+          "atlas_000.webp": "cc746cb99e90bba4f2d7ef31c2b6dfa65955036b5aeac05af311d0cb7a89cccb",
+          "atlas_001.webp": "b0af4566f31966e66aeab42c83730e14dbf08c1caddbda55101e7c25677226b0",
+          "atlas_002.webp": "8f3dafe897f487da164e4681dbd29cb8b6d167f20a6081ea4a82dc598a6a6c1f",
+          "atlas_003.webp": "bf76fe49d1b9333d0360df720c11b450f137a9c4c168321dd1fb7bea6afa679c",
+          "atlas_004.webp": "7540a78f3d63d9b48328f8b3843cc07eabb6d19d668f627dfde6d3bf6287ae6c"
+        },
+        "clips": [
+          {
+            "name": "stand",
+            "duration_seconds": 2,
+            "frames": 60,
+            "stored_frames": 60,
+            "loop": true,
+            "frame_count_status": "MATCH",
+            "visual_acceptance": "NOT_ESTABLISHED_BY_MANIFEST"
+          },
+          {
+            "name": "run",
+            "duration_seconds": 0.933333337306976,
+            "frames": 28,
+            "stored_frames": 28,
+            "loop": true,
+            "frame_count_status": "MATCH",
+            "visual_acceptance": "NOT_ESTABLISHED_BY_MANIFEST"
+          },
+          {
+            "name": "attack1",
+            "duration_seconds": 1,
+            "frames": 30,
+            "stored_frames": 30,
+            "loop": false,
+            "frame_count_status": "MATCH",
+            "visual_acceptance": "NOT_ESTABLISHED_BY_MANIFEST"
+          },
+          {
+            "name": "hit",
+            "duration_seconds": 0.5,
+            "frames": 15,
+            "stored_frames": 15,
+            "loop": false,
+            "frame_count_status": "MATCH",
+            "visual_acceptance": "NOT_ESTABLISHED_BY_MANIFEST"
+          },
+          {
+            "name": "dead",
+            "duration_seconds": 1,
+            "frames": 30,
+            "stored_frames": 21,
+            "loop": false,
+            "frame_count_status": "MISMATCH",
+            "visual_acceptance": "NOT_ESTABLISHED_BY_MANIFEST"
+          }
+        ],
+        "localValidation": {
+          "E_CANONICAL": {
+            "assetJsonGitBlobMatch": true,
+            "expectedFiles": 7,
+            "presentFiles": 7,
+            "exactShaFiles": 5,
+            "mismatchedFiles": [
+              {
+                "path": "actor.tscn",
+                "expectedSha256": "9f10cac6b212b6ec8c11e5bdef1bafc8bb5aa87b735e11c4112b38ec47ab9c37",
+                "actualSha256": "51e0da19c62074ca3d15df5558bc3990e4d3dd7bfc62790996ac6e27f3d5414d"
+              },
+              {
+                "path": "animations.tres",
+                "expectedSha256": "7b4637b0edd4d59de967f2fcb8165987de72969e0bf29df6cb54d886aa9b7782",
+                "actualSha256": "88a2fdcca7160be299796942db39057a56979d633c16de085b24e113cc8ab194"
+              }
+            ],
+            "missingFiles": 0
+          },
+          "E_PR72_QA": {
+            "assetJsonGitBlobMatch": true,
+            "expectedFiles": 7,
+            "presentFiles": 7,
+            "exactShaFiles": 5,
+            "mismatchedFiles": [
+              {
+                "path": "actor.tscn",
+                "expectedSha256": "9f10cac6b212b6ec8c11e5bdef1bafc8bb5aa87b735e11c4112b38ec47ab9c37",
+                "actualSha256": "51e0da19c62074ca3d15df5558bc3990e4d3dd7bfc62790996ac6e27f3d5414d"
+              },
+              {
+                "path": "animations.tres",
+                "expectedSha256": "7b4637b0edd4d59de967f2fcb8165987de72969e0bf29df6cb54d886aa9b7782",
+                "actualSha256": "88a2fdcca7160be299796942db39057a56979d633c16de085b24e113cc8ab194"
+              }
+            ],
+            "missingFiles": 0
+          }
+        },
+        "runtimeState": "CONSUMER_WIRED_CONDITIONALLY",
+        "visibleCapture": "NOT_CAPTURED_AT_THIS_PR_HEAD",
+        "ownerArtApproval": "UNKNOWN"
+      }
+    ],
+    "visualManifest": {
+      "sourcePath": "godot/assets/combat_v5_source_a/visual_manifest.json",
+      "gitBlobSha": "7a22975adc295f303b834497a8bae09b5cfb93c9",
+      "actors": {
+        "disciple_female": {
+          "base_asset": "1113028_1",
+          "combat_asset": "v5_sa_female_1113028_1",
+          "base_scale": 0.34,
+          "combat_scale": 0.34,
+          "source_face_x": -1
+        },
+        "disciple_male": {
+          "base_asset": "v5_sa_male_body_1110201",
+          "combat_asset": "v5_sa_male_body_1110201",
+          "base_scale": 0.34,
+          "combat_scale": 0.42,
+          "source_face_x": -1
+        },
+        "monster_1113031_1": {
+          "base_asset": "v5_sa_monster_1113031_1",
+          "combat_asset": "v5_sa_monster_1113031_1",
+          "base_scale": 0.34,
+          "combat_scale": 0.42,
+          "source_face_x": -1
+        },
+        "boss_slot_410041_1": {
+          "base_asset": "v5_sa_boss_410041_1",
+          "combat_asset": "v5_sa_boss_410041_1",
+          "base_scale": 0.22,
+          "combat_scale": 0.3,
+          "source_face_x": -1
+        }
+      },
+      "runtimeAdapterPath": "godot/src/presentation/p3/combat_v5_source_a_atlas.gd",
+      "runtimeConsumerPath": "godot/src/presentation/p3/sect_isometric_world_v1.gd",
+      "binding": "Rows with source_a_visual_key and a matching atlas actor draw Source A; otherwise renderer falls back to a diamond. Conditional wiring, not proof every roster row has an asset."
+    },
+    "buildingBindings": [
+      {
+        "building": "main_hall",
+        "legacySourceAId": "510052",
+        "sourcePath": "godot/art/source_a_env02a/pv01_assets/main_hall/510052.png",
+        "sourceStatus": "PRESENT_IN_HASH_MANIFEST_NOT_SELECTED_AS_CURRENT_BUILDING_TEXTURE",
+        "currentDisplayedCandidate": "VIS11 A, fallback VIS08",
+        "bindingSourcePath": "godot/src/presentation/p3/sect_isometric_world_v1.gd",
+        "visualApproval": "VIS08_OWNER_REVIEW_PENDING; EXACT_CURRENT_GUI_NOT_CAPTURED"
+      },
+      {
+        "building": "residence",
+        "legacySourceAId": "510076",
+        "sourcePath": "godot/art/source_a_env02a/pv01_assets/residence/510076.png",
+        "sourceStatus": "PRESENT_IN_HASH_MANIFEST_NOT_SELECTED_AS_CURRENT_BUILDING_TEXTURE",
+        "currentDisplayedCandidate": "VIS11 A, fallback VIS08",
+        "bindingSourcePath": "godot/src/presentation/p3/sect_isometric_world_v1.gd",
+        "visualApproval": "VIS08_OWNER_REVIEW_PENDING; EXACT_CURRENT_GUI_NOT_CAPTURED"
+      },
+      {
+        "building": "warehouse",
+        "legacySourceAId": "510102",
+        "sourcePath": "godot/art/source_a_env02a/pv01_assets/warehouse/510102.png",
+        "sourceStatus": "PRESENT_IN_HASH_MANIFEST_NOT_SELECTED_AS_CURRENT_BUILDING_TEXTURE",
+        "currentDisplayedCandidate": "VIS11 A, fallback VIS08",
+        "bindingSourcePath": "godot/src/presentation/p3/sect_isometric_world_v1.gd",
+        "visualApproval": "VIS08_OWNER_REVIEW_PENDING; EXACT_CURRENT_GUI_NOT_CAPTURED"
+      },
+      {
+        "building": "forge",
+        "legacySourceAId": "520081",
+        "sourcePath": "godot/art/source_a_env02a/pv01_assets/forge/520081.png",
+        "sourceStatus": "PRESENT_IN_HASH_MANIFEST_NOT_SELECTED_AS_CURRENT_BUILDING_TEXTURE",
+        "currentDisplayedCandidate": "VIS11 A, fallback VIS08",
+        "bindingSourcePath": "godot/src/presentation/p3/sect_isometric_world_v1.gd",
+        "visualApproval": "VIS08_OWNER_REVIEW_PENDING; EXACT_CURRENT_GUI_NOT_CAPTURED"
+      },
+      {
+        "building": "guidance",
+        "legacySourceAId": "510111",
+        "sourcePath": "godot/art/source_a_env02a/pv01_assets/guidance/510111.png",
+        "sourceStatus": "PRESENT_IN_HASH_MANIFEST_NOT_SELECTED_AS_CURRENT_BUILDING_TEXTURE",
+        "currentDisplayedCandidate": "VIS11 A, fallback VIS08",
+        "bindingSourcePath": "godot/src/presentation/p3/sect_isometric_world_v1.gd",
+        "visualApproval": "VIS08_OWNER_REVIEW_PENDING; EXACT_CURRENT_GUI_NOT_CAPTURED"
+      },
+      {
+        "building": "mine",
+        "legacySourceAId": null,
+        "sourcePath": "godot/src/presentation/p3/sect_isometric_world_v1.gd",
+        "sourceStatus": "NO_MINE_ENTRY_IN_MAP25_LEGACY_BUILDING_SET",
+        "currentDisplayedCandidate": "VIS11 A, fallback VIS09",
+        "visualApproval": "SOURCE_SHEET_APPROVED; RENDERED_SPRITE_REVIEW_NOT_REVALIDATED"
+      },
+      {
+        "building": "VIS11 pack",
+        "legacySourceAId": null,
+        "sourcePath": "godot/art/tmb_buildings_ab_v7/",
+        "sourceStatus": "12 INDEPENDENT A/B PNGS; MAP HAS CODE TO SELECT A/B",
+        "currentDisplayedCandidate": "view_direction chooses A or B per visual instance; not full 360°",
+        "visualApproval": "OWNER_ACCEPTED_SOURCE_SHEET; CURRENT_NATIVE_VISUAL_REVIEW_PENDING"
+      },
+      {
+        "building": "VIS09 pack",
+        "legacySourceAId": null,
+        "sourcePath": "godot/art/tmb_handpaint_v6/",
+        "sourceStatus": "INDEPENDENT HANDPAINT CANDIDATE FOR HALL/MINE",
+        "currentDisplayedCandidate": "VIS09 fallback for mine; panels documented",
+        "visualApproval": "OWNER_VISUAL_REVIEW_PENDING"
+      },
+      {
+        "building": "VIS08 pack",
+        "legacySourceAId": null,
+        "sourcePath": "godot/art/tmb_original_buildings_v5/",
+        "sourceStatus": "5 INDEPENDENT BUILDING PNGS; SOURCE A PIXELS NOT USED",
+        "currentDisplayedCandidate": "fallback when VIS11 is unavailable; facility panels",
+        "visualApproval": "OWNER_VISUAL_REVIEW_PENDING"
+      },
+      {
+        "building": "environment",
+        "legacySourceAId": null,
+        "sourcePath": "godot/art/source_a_env02a/env01_assets/",
+        "sourceStatus": "TERRAIN/ROADS/VEGETATION STILL SOURCE A",
+        "currentDisplayedCandidate": "manifest-SHA-gated map textures",
+        "visualApproval": "UNKNOWN; NO CURRENT HEAD SCREENSHOT"
+      }
+    ],
+    "systemGaps": [
+      {
+        "id": "building-types",
+        "title": "Cây công trình",
+        "design": "26 loại trong thiết kế",
+        "runtime": "8 loại đăng ký",
+        "gap": "20 loại chưa đăng ký runtime",
+        "status": "DESIGN_RUNTIME_GAP",
+        "sourcePaths": [
+          "docs/P3_7_BUILDING_TREE_SPEC.md",
+          "godot/src/simulation/building/building_system.gd"
+        ],
+        "sourceCommit": "264514ff760eaf22b339cb75ca29be53f9ab8351",
+        "sourceFiles": [
+          {
+            "path": "docs/P3_7_BUILDING_TREE_SPEC.md",
+            "gitBlobSha": "bb92a834ea1cb7dedb366f027816cf38441819f3",
+            "sourceCommit": "264514ff760eaf22b339cb75ca29be53f9ab8351"
+          },
+          {
+            "path": "godot/src/simulation/building/building_system.gd",
+            "gitBlobSha": "3d5a3b7d77fdf1f5b15e8d9fd6ca0f43a195e0d4",
+            "sourceCommit": "264514ff760eaf22b339cb75ca29be53f9ab8351"
+          }
+        ]
+      },
+      {
+        "id": "equipment-slots",
+        "title": "Trang bị",
+        "design": "10 ô + 24 bộ theo spec",
+        "runtime": "3 ô trong EquipmentSystem",
+        "gap": "Chênh 3/10 cần Owner quyết định; không tự sửa",
+        "status": "OWNER_DECISION_REQUIRED",
+        "sourcePaths": [
+          "docs/WEAPON_EQUIPMENT_V2_SPEC.md",
+          "docs/EQUIPMENT_SETS_V2_SPEC.md",
+          "godot/src/simulation/equipment/equipment_system.gd"
+        ],
+        "sourceCommit": "264514ff760eaf22b339cb75ca29be53f9ab8351",
+        "sourceFiles": [
+          {
+            "path": "docs/WEAPON_EQUIPMENT_V2_SPEC.md",
+            "gitBlobSha": "ffe7838db4d48b830be4440d338456ad8e8a57a2",
+            "sourceCommit": "264514ff760eaf22b339cb75ca29be53f9ab8351"
+          },
+          {
+            "path": "docs/EQUIPMENT_SETS_V2_SPEC.md",
+            "gitBlobSha": "eb0ee4fedfd31eca61dab61c14f17299f34f4345",
+            "sourceCommit": "264514ff760eaf22b339cb75ca29be53f9ab8351"
+          },
+          {
+            "path": "godot/src/simulation/equipment/equipment_system.gd",
+            "gitBlobSha": "aa223fee9ae04307659bfc7e6de64c03f7f09a03",
+            "sourceCommit": "264514ff760eaf22b339cb75ca29be53f9ab8351"
+          }
+        ]
+      },
+      {
+        "id": "materials",
+        "title": "Nguyên liệu SX07",
+        "design": "630 slot; 270 hồ sơ nguồn thiết kế",
+        "runtime": "11 ID đã đăng ký",
+        "gap": "619 slot chưa đăng ký; hồ sơ thiết kế không phải điểm farm",
+        "status": "DESIGN_RUNTIME_GAP",
+        "sourcePaths": [
+          "docs/qa/SX07B_PRESERVED_MATERIALS_SOURCE_GATE_20261109.md"
+        ],
+        "sourceCommit": "264514ff760eaf22b339cb75ca29be53f9ab8351",
+        "sourceFiles": [
+          {
+            "path": "docs/qa/SX07B_PRESERVED_MATERIALS_SOURCE_GATE_20261109.md",
+            "gitBlobSha": "f0e903bdcb1802f48c642e0508ac683953501b45",
+            "sourceCommit": "264514ff760eaf22b339cb75ca29be53f9ab8351"
+          }
+        ]
+      },
+      {
+        "id": "medicine-recipes",
+        "title": "Đan dược và recipe",
+        "design": "476 mã đan; 119 ID recipe",
+        "runtime": "8 recipe body authored",
+        "gap": "444 mã đan chưa có recipe body theo audit hiện tại",
+        "status": "CATALOG_BODY_GAP",
+        "sourcePaths": [
+          "wiki/data/game_items_audit.json",
+          "godot/src/simulation/building/medicine_catalogue_v2.gd"
+        ],
+        "sourceCommit": "264514ff760eaf22b339cb75ca29be53f9ab8351",
+        "sourceFiles": [
+          {
+            "path": "wiki/data/game_items_audit.json",
+            "gitBlobSha": "9d52c02094170313b1b888ef296d134a46c9aa11",
+            "sourceCommit": "264514ff760eaf22b339cb75ca29be53f9ab8351"
+          },
+          {
+            "path": "godot/src/simulation/building/medicine_catalogue_v2.gd",
+            "gitBlobSha": "5397ddca831d85ea973acd58b6674074a231c4b7",
+            "sourceCommit": "264514ff760eaf22b339cb75ca29be53f9ab8351"
+          }
+        ]
+      },
+      {
+        "id": "traits",
+        "title": "Đặc chất V2",
+        "design": "101 trait; 41 mô tả hiệu ứng, 12 blocked, 48 chưa duyệt",
+        "runtime": "0 hiệu ứng V2 được xác minh trong audit",
+        "gap": "Tên/metadata không chứng minh consumer runtime",
+        "status": "EFFECT_RUNTIME_UNVERIFIED",
+        "sourcePaths": [
+          "wiki/data/trait_effect_audit.json",
+          "docs/DISCIPLE_V2_EFFECT_SOURCE_MATRIX.md",
+          "godot/src/simulation/recruitment/disciple_birth_catalogue_v2.gd",
+          "godot/src/simulation/traits/trait_system.gd"
+        ],
+        "sourceCommit": "264514ff760eaf22b339cb75ca29be53f9ab8351",
+        "sourceFiles": [
+          {
+            "path": "wiki/data/trait_effect_audit.json",
+            "gitBlobSha": "946f668bc19ebb7bc508ddf23e386b404f71882e",
+            "sourceCommit": "264514ff760eaf22b339cb75ca29be53f9ab8351"
+          },
+          {
+            "path": "docs/DISCIPLE_V2_EFFECT_SOURCE_MATRIX.md",
+            "gitBlobSha": "1b3fdf596b6c7982f970f315f153b45be3ed0750",
+            "sourceCommit": "264514ff760eaf22b339cb75ca29be53f9ab8351"
+          },
+          {
+            "path": "godot/src/simulation/recruitment/disciple_birth_catalogue_v2.gd",
+            "gitBlobSha": "90f0dda44d40c6d1217188aca9117dd3aa47e7e3",
+            "sourceCommit": "264514ff760eaf22b339cb75ca29be53f9ab8351"
+          },
+          {
+            "path": "godot/src/simulation/traits/trait_system.gd",
+            "gitBlobSha": "cb4f6808a99b936fdf7b6c6c827f025c02b9ed1e",
+            "sourceCommit": "264514ff760eaf22b339cb75ca29be53f9ab8351"
+          }
+        ]
+      },
+      {
+        "id": "v63-skills",
+        "title": "V6.3 skills",
+        "design": "2,196 candidate IDs / 420 family",
+        "runtime": "V6.3 release gate OFF",
+        "gap": "Candidate catalog không được tính là kỹ năng gameplay hoạt động",
+        "status": "GATED_OFF_EXPECTED",
+        "sourcePaths": [
+          "godot/data/combat/v63_blade_combat_catalog.json",
+          "godot/src/simulation/combat/v63_feature_gates.gd"
+        ],
+        "sourceCommit": "264514ff760eaf22b339cb75ca29be53f9ab8351",
+        "sourceFiles": [
+          {
+            "path": "godot/data/combat/v63_blade_combat_catalog.json",
+            "gitBlobSha": "d9c2d7c2ad5eab5a08ce14988f238d72e4dd17d9",
+            "sourceCommit": "264514ff760eaf22b339cb75ca29be53f9ab8351"
+          },
+          {
+            "path": "godot/src/simulation/combat/v63_feature_gates.gd",
+            "gitBlobSha": "51ba629f375c866fd0cf9b051cd3c448a52d88bc",
+            "sourceCommit": "264514ff760eaf22b339cb75ca29be53f9ab8351"
+          }
+        ]
+      }
+    ],
+    "qualityGates": {
+      "EInventory": "READ_ONLY_CAPTURED",
+      "mapHashValidation": "PASS_STATIC_HASH_34_OF_34_IN_TWO_E_CHECKOUTS",
+      "actorHashValidation": "WARNING_10_OF_31_EXPORTED_FILE_HASH_MISMATCH",
+      "actorManifestValidation": "PASS_STATIC_GIT_BLOB_7_OF_7",
+      "godotOfficialImport": "NOT_EXECUTED",
+      "godotGui1280x720": "NOT_EXECUTED",
+      "playerTest": "NOT_EXECUTED",
+      "ownerArtReview": "PENDING",
+      "saveAccess": "NONE",
+      "cleanupOrSync": "NONE"
+    },
+    "notes": [
+      "Source A asset file presence, import sidecar/cache presence, runtime binding, visible rendering, and Owner approval are separate states.",
+      "Manifest and cache presence do not constitute an official Godot import or a current-SHA visual pass.",
+      "The 10 actor.tscn/animations.tres SHA mismatches have no proven cause; line endings/provenance were not established. No source files or manifests were changed.",
+      "The current local E canonical checkout is stale and dirty. No sync or launch was attempted."
+    ]
+  }
 }
