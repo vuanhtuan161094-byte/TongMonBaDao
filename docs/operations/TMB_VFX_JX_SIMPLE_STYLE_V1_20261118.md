@@ -23,7 +23,7 @@
 - Optional **one** local `GPUParticles2D` instance with a small first-party texture for flight wisps or impact flecks; a trail/soft flash using `CanvasItemMaterial` ADD or a light `CanvasItem` shader only if visibly beneficial. **One hot core**, not multiple giant glow rings.
 - Target-relative contact only when the skill's contract permits it; a skill's sustained debuff goes through the shared **status/buff visual layer** rather than another complete skill-specific continuous VFX.
 - Prefer already-proven `tools/qa/run_vfx_shared_packet.py`, `.github/workflows/vfx-shared-skill.yml`; do not create a per-skill Godot project or duplicate 100-line workflow.
-- New Godot VFX may be composed by **Codex** for GDScript, particles, shaders, workflow and regression, but Codex is **not the visual director**. Author main sprite source deliberately, review real 1× Godot G3.5 and retain owner visual approval separate from CI success.
+- **If the owner explicitly authorizes Codex for a scoped task**, it can help with GDScript, particles, shaders, workflows and regression; the current school-chat 'NO CODEX' rule otherwise remains in force. Codex is **not the visual director**. Author main sprite source deliberately, review real 1× Godot G3.5 and retain owner visual approval separate from CI success.
 
 ## Fast feedback for production — no infinite revision loop
 1. **Choose a compelling single hero silhouette** with isolated, genuine transparent master. Examine it directly at the size it appears in gameplay; if it reads as a vague ribbon/flat font/clipart, rework source **before** creating dozens of frames or configuring CI.
