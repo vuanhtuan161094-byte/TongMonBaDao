@@ -71,8 +71,13 @@ func _draw() -> void:
         var gain:=smoothstep(CAST_END,RELEASE_AT+.05,t)
         _soft_trail(t)
         var p:=projectile_pos(t)
-        _glow(p,gain)
-        _gu(p,Vector2(262,205),flight_fraction(t)*15.,.96*gain)
+        # Emerge as a small articulated jade seed, clear of the caster face.
+        # Head still follows the original simulated projectile contract.
+        var unfolding:=smoothstep(RELEASE_AT,RELEASE_AT+.32,t)
+        var dim:=Vector2(262,205)*lerpf(.44,1.,unfolding)
+        var visible_head:=p+Vector2(22.*(1.-unfolding),-5.*(1.-unfolding))
+        _glow(visible_head,gain)
+        _gu(visible_head,dim,flight_fraction(t)*15.,.96*gain)
     if t>=CONTACT_AT and t<CONTACT_AT+R32_ENTRY_SECONDS:
         var q:=smoothstep(CONTACT_AT,CONTACT_AT+R32_ENTRY_SECONDS,t)
         var dim:=Vector2(262,205)*(1.-.76*q)
@@ -82,5 +87,11 @@ func _draw() -> void:
         _pose(burst_frames,target_foot(t)+Vector2(0,-81),Vector2(226,215),u*11.,.96*(1.-smoothstep(.78,1.,u)))
     if t>=CONTACT_AT and t<MARK_FADE_END:
         var m:=mark_gain(t)
-        _front_wrap(contact,t,m*.68)
+        _front_wrap(contact,t,m*.78)
+        if t<CONTACT_AT+.25:
+            # One clear localized penetrating pulse; not an extra damage event.
+            var pulse:=1.-smoothstep(CONTACT_AT,CONTACT_AT+.25,t)
+            _glow(contact,pulse*1.9)
+            draw_arc(contact,52.,PI*.06,PI*1.08,32,Color(.65,1.,.82,.62*pulse),2.7,true)
+            draw_arc(contact,46.,PI*1.03,PI*1.86,27,Color(1.,.86,.48,.51*pulse),2.1,true)
         _pose(seal_frames,target_foot(t)+Vector2(0,-89),Vector2(126,126),fposmod((t-CONTACT_AT)*6.,12.),.92*m)
