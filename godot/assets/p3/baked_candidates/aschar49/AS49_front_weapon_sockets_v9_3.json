@@ -133,23 +133,23 @@
     {
       "clip": "walk_front",
       "frame": 0,
-      "path": "res://labs/character_family/aschar_v9_batch1/assets/frames/AS49/walk_front_consistency_v2/walk_front_00.png",
-      "sha256": "17611af161e40725b9d2e8b4a91fc5c5ec5afb73357703461d8b47be04039303",
+      "path": "res://assets/p3/baked_candidates/aschar49/frames/walk_front/AS49_walk_front_00.png",
+      "sha256": "edd6506fa41b279f84202bcd14b2336c12f177714cc9dea355ba88c50d050e03",
       "weapon_visible": true,
       "grip_sockets": {
         "main_hand": {
           "body_grip_px": [
-            151,
-            300
+            149,
+            246
           ],
           "rotation_deg": 12,
           "scale_multiplier": 1.0,
           "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
           "hand_mask_rect_px": [
-            129,
-            278,
-            44,
-            44
+            130,
+            227,
+            38,
+            38
           ]
         }
       }
@@ -157,23 +157,23 @@
     {
       "clip": "walk_front",
       "frame": 1,
-      "path": "res://labs/character_family/aschar_v9_batch1/assets/frames/AS49/walk_front_consistency_v2/walk_front_01.png",
-      "sha256": "54ac7744df289e92c7a9d90a97a5e2cd5035ac5017475704398485f24bae8464",
+      "path": "res://assets/p3/baked_candidates/aschar49/frames/walk_front/AS49_walk_front_01.png",
+      "sha256": "c8853592ef879ca336fc05b3e4ca068e197dd698374d9f8d276feb0622110b9f",
       "weapon_visible": true,
       "grip_sockets": {
         "main_hand": {
           "body_grip_px": [
-            157,
-            299
+            154,
+            245
           ],
           "rotation_deg": 5,
           "scale_multiplier": 1.0,
           "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
           "hand_mask_rect_px": [
             135,
-            277,
-            44,
-            44
+            226,
+            38,
+            38
           ]
         }
       }
@@ -181,23 +181,23 @@
     {
       "clip": "walk_front",
       "frame": 2,
-      "path": "res://labs/character_family/aschar_v9_batch1/assets/frames/AS49/walk_front_consistency_v2/walk_front_02.png",
-      "sha256": "95727b88cc1745b71c6a48660309f954d074915689d6e58a09c6c61dbe2fe25e",
+      "path": "res://assets/p3/baked_candidates/aschar49/frames/walk_front/AS49_walk_front_02.png",
+      "sha256": "4a06c94e8c3679aac4f78cceb44fc7db08c28de2076a47d9a42cdff504fb88e6",
       "weapon_visible": true,
       "grip_sockets": {
         "main_hand": {
           "body_grip_px": [
-            151,
-            298
+            149,
+            244
           ],
           "rotation_deg": 8,
           "scale_multiplier": 1.0,
           "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
           "hand_mask_rect_px": [
-            129,
-            276,
-            44,
-            44
+            130,
+            225,
+            38,
+            38
           ]
         }
       }
@@ -205,23 +205,23 @@
     {
       "clip": "walk_front",
       "frame": 3,
-      "path": "res://labs/character_family/aschar_v9_batch1/assets/frames/AS49/walk_front_consistency_v2/walk_front_03.png",
-      "sha256": "a50e2ceadb75ebc12258aafe5227cad1bb424d210ece15ea87fb8bdb108ad534",
+      "path": "res://assets/p3/baked_candidates/aschar49/frames/walk_front/AS49_walk_front_03.png",
+      "sha256": "d19b3e94f4d5bf72614b78ab17afc1dc1b220fa3463a026da41d8e56bfb8bbaf",
       "weapon_visible": true,
       "grip_sockets": {
         "main_hand": {
           "body_grip_px": [
-            171,
-            301
+            166,
+            247
           ],
           "rotation_deg": -6,
           "scale_multiplier": 1.0,
           "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
           "hand_mask_rect_px": [
-            149,
-            279,
-            44,
-            44
+            147,
+            228,
+            38,
+            38
           ]
         }
       }
