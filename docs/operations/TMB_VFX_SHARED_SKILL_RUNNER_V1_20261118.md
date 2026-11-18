@@ -52,3 +52,10 @@ Godot 4.7.2, ffmpeg, xvfb, Python Pillow, original atlas files and Linux Bash mu
 
 ## Launch state
 This document and the reusable driver can be committed before CI finishes; **claim TECH PASS only after exact-SHA Actions run concludes SUCCESS**, not because the code exists. Previous B/D/E shared LAB pilot success `a6557607` does not certify this new V4 packet-runner code.
+
+## Verified pilot receipt on genuine Godot, 2026-11-18
+
+- [Actions run #44230153048](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/44230153048): **SUCCESS** on exact SHA `3fe327ec858404d2965235556c9a609549f82b9f`.
+- V4 packet validator `PACKET`, `ASSETS`, `EVIDENCE` = TECH PASS; Godot strict import and parse PASS; POI19 focused moving-target contract `POI19_NATIVE_FLOW_R3_RESULT=PASS failures=0`.
+- Real Godot 4.7.2 capture with **119 frames**, PNG charge/peak/contact and SHA256; [artifact #14393914591](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/44230153048/artifacts/14393914591). Source SHA `3fe327ec` is the proof baseline, not the latest head after coordinator documentation updates.
+- **Do not overread:** technical automation success is not 1× owner visual approval of a new revision, not 6.5-second mark expiry/full-motion G5, not live PvE and not physical Android performance. Pilot's short film intentionally uses G3.5 rather than 510-frame per-skill full-film on every iteration.

@@ -74,3 +74,11 @@ If the agent runs out of context abruptly **before** handing off: new chat reads
 - TALISMAN: `docs/operations/TMB_VFX_TALISMAN_PLAYBOOK_20261114.md`, `docs/operations/vfx_school_ledgers/02_talisman_183.csv`, `docs/handoffs/VFX_TALISMAN_TAL02_TAL03_NEXT_CHAT_20261114.md` (historical, confirm newest packet).
 
 **New chat must never infer progress from enumeration.** POI01–POI20 are production milestones, not 20 unique approved skills; 183 ledger rows per school are not 183 art-approved skills; technical PASS is not visual acceptance.
+
+## 7. Shared V4 Godot execution — no repeated school harnesses
+
+As of exact-SHA `3fe327ec858404d2965235556c9a609549f82b9f`, **Actions [#44230153048](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/44230153048) SUCCESS**: common school V4 packet runner `tools/qa/run_vfx_shared_packet.py` + reusable `.github/workflows/vfx-shared-skill.yml` ran POI19 R3 119-frame genuine Godot G3.5, original atlas, actual focused moving-target test, and V4 evidence TECH PASS. Artifact [#14393914591](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/44230153048/artifacts/14393914591) (14-day expiration). See [runner V1 instructions](TMB_VFX_SHARED_SKILL_RUNNER_V1_20261118.md).
+
+**Coordinator policy:** One canonical Godot project; do not create a new engine project or copy a 100-line CI recipe per skill. School supplies source sprite master, atlas, V4 JSON, unique Godot scene/script, focused target/motion tests; common runner supplies strict Godot, video, screenshot and manifest. G3.5 short movie early; G5 full only after actual art self-review. Legacy school workflows with custom generation/strict provenance remain until equivalent outputs and art safety are verified. It is a new reusable option, not automatic live integration and not a blanket PASS.
+
+Current school handoff files may still be BOOTSTRAP while agents are working; only committed checkpoints and code are visible to this coordinator. Do not infer a chat's progress or owner acceptance from absent handoff updates.
