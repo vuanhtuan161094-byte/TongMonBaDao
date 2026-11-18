@@ -56,7 +56,7 @@ function status(label,kind="pending"){return '<span class="ency-status '+esc(kin
 function auditSource(path,line=0){return path?'<a target="_blank" rel="noopener" href="'+ROOT+esc(path)+(line?'#L'+line:'')+'">Xem mã/thiết kế</a>':"";}
 function home(){
  const quick=[
- ["人","Đệ tử & đặc tính","Tư Chất, tính cách, 101 đặc tính","characters"],
+ ["人","Đệ tử & đặc tính","16 chỉ số chiến đấu, 10 kháng hệ, 101 đặc tính","characters"],
  ["☯","Tu luyện & đột phá","EXP mỗi tầng, cách lên cảnh giới","realms"],
  ["✦","Môn phái & kỹ năng","Tìm skill, xem sát thương %","skills"],
  ["⌂","Công trình & Linh Điền","Nâng cấp, cây trồng, công trình còn thiếu","buildings"],
@@ -376,7 +376,7 @@ function itemsUnified(){
 
 function designUnified(){
  const blocks=[
- ["D1","Đệ tử, Tâm Tính và 101 đặc tính","Đã đối chiếu 101 đặc tính thành ba nhóm: 41 có kênh tác động, 12 thiếu cơ chế phụ thuộc, 48 mới ở mức đề xuất. Có phương án tính Tâm Tính và tách Tâm Cảnh, chưa tự gán vào gameplay.","docs/design/D1_CHARACTER_EFFECT_DESIGN_CANDIDATE_20261118.md","Tâm Tính, 12 cơ chế thiếu và 48 đặc tính mới còn cần khóa hệ số"],
+ ["D1","Đệ tử, Tâm Tính, 101 đặc tính & Combat Stats","Giữ nguyên 16 chỉ số chiến đấu + 10 kháng hệ đã khóa. Đề xuất giảm Tâm Tính về một nguồn Kháng Hiệu Ứng có giới hạn thay vì thêm chỉ số mới hoặc chồng nhiều kháng tinh thần; 41/12/48 đặc tính được phân nhóm theo consumer.","docs/design/D1_CHARACTER_EFFECT_DESIGN_CANDIDATE_20261118.md","Chọn phương án Tâm Tính; khóa điều kiện của 12 Trait hai mặt; duyệt con số cho 48 Trait mở, tránh nhân đôi với Combat Stats"],
  ["D2/D3","28 công trình, nguyên liệu và đan","Đã xác định vai trò/đầu ra của 26 loại công trình dài hạn và 2 bổ sung; chuẩn hóa quy trình nâng cấp, 630 vật liệu, 270 tuyến nguồn, 476 mã đan.","docs/design/D2_D3_BUILDINGS_ITEMS_DESIGN_CANDIDATE_20261118.md","Hệ số Lv1–100, nguồn thật cho vật liệu, 444 công thức đan còn thiếu"],
  ["D4","Trang bị V2, rèn và đồ bộ","Đã soạn quy trình rèn đầy đủ và 9 loại hành động nâng cấp trang bị. Giữ chuẩn 10 ô, 12 phẩm và 24 bộ; bảng xác suất, cấp cường hóa là đề xuất, chưa duyệt.","docs/design/D4_FORGE_TRANSACTION_DESIGN_CANDIDATE_20261118.md","Phê duyệt xác suất rèn, mức cường hóa, nguồn đồ và các công thức"],
  ["D5","Tu Vi, Luyện Thể và đột phá","Giữ 30×10 mỗi hệ. Cần dùng đúng cân bằng cảnh giới trong nguồn gốc, không thêm Tâm Cảnh 300 tầng hay tự nâng tỷ lệ đột phá.","docs/REALM_LADDER_V2_SPEC.md","Đối chiếu thống nhất số EXP và các nguồn XP cấp cao"],
