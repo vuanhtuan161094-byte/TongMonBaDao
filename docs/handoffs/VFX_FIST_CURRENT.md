@@ -67,3 +67,14 @@ FIST14 R2 at `1fc4ad2811fa0fcaa572b89e0b34c676d46fa416`: [Actions #44112832093](
 - **Gate status at checkpoint:** `G0_VERIFIED`, `G3_SOURCE_AND_CANDIDATE_ATLASES_GITHUB_VERIFIED`, `G3_ART_SELF_PENDING`, `G3.5_NATIVE_RUNNING_NOT_VERIFIED`, `G3.6/3.7_NOT_EXECUTED`, `G4/G5/G7_NOT_EXECUTED`, `OWNER_VISUAL_PENDING`, `PVE_HOLD`, `ANDROID_QA_PENDING`. Historical R2 art self-fail and owner-provisional FIST12/FIST13/FIST08/FIST07 unchanged; no touching FIST09 until revision reconciliation.
 
 **One next action:** Retrieve actual G3.5 native Godot 1× charge/peak/contact images for exact run #44242444811; compare with R2 and apply ART STOP or focused R3 revision. Do not run G5 before visual G3.5 gate.
+
+---
+
+## FIST14 R3 G3.5 verified technical and manual 1× review — 18 Nov 2026
+
+**HEAD observed before handoff write:** `fb1fd66a5c2febb93ee6be4cb43ebe2101b54e9c`; PR #72 Draft/no merge. **Successful focused native G3.5 workflow:** [Actions #44245929756](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/44245929756) on exact source SHA `a17f7b258e96796fdaca63ef77d68570a0ed60a8`; artifact ID `14401218703` (`fist14-r3-g35-native-a17f7b258e96796fdaca63ef77d68570a0ed60a8`, 14-day expiry). Earlier [Actions #44242444811](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/44242444811) on `8f6635910b9478989076b911494fe6ab921d2ccc` also concluded success, but latest exact-SHA proof is run #44245929756.
+
+- **Verified native files from artifact ZIP:** real Godot 4.7.2 1280×720 MP4 `v4-fist14-r3-native.mp4` (1.8 s) and `v4-charge.png` 0.22s, `v4-peak.png` 0.65s, `v4-contact.png` 0.90s. Focused test log: `FIST14_R3_FOCUSED_RESULT=PASS failures=0`; `GATES.txt` explicitly says `G3.5_TECH_EVIDENCE_CAPTURED`, `G3.5_ART_MANUAL_STOP_PENDING`, `G3.6_NOT_EXECUTED`, `G3.7_NOT_EXECUTED`, `G5_FULL_NATIVE_NOT_EXECUTED`, `OWNER_PENDING`, `PVE_HOLD`.
+- **Manual 1× art self-review from genuine three frames:** **REWORK/STOP**. Charge and mid-flight are technically legible, but the same spectral fist reads as a drifting detached image instead of authored changing punches. The contact stays too close to the target's torso and has insufficient short white-hot local-impact separation. Current cast actor is a pre-existing non-Fist placeholder; no permitted rig/fake actor punching. Synthetic moving-target evidence does not prove Combat V2 receipt. Do not promote this to owner-ready art.
+- **Status:** `G0_PASS`; `G3_BINARY_SOURCE_ON_GITHUB`; `G3_KEYPOSE_ART_REWORK`; `G3.5_NATIVE_TECH_PASS_ART_SELF_FAIL`; `G3.6/G3.7_NOT_EXECUTED`; `G4/G5/G7_NOT_EXECUTED`; `OWNER_VISUAL_PENDING`; `PVE_HOLD`; `ANDROID_PHYSICAL_PENDING`. No PvE integration, merge, GIF, rig or edits to approved FIST source.
+- **One next action:** improve only independent source key poses for FIST14 R3 charge/flight/contact, clear silhouette and impact at Godot 1×, then rerun 3-frame native G3.5 against fresh exact SHA before full movie.
