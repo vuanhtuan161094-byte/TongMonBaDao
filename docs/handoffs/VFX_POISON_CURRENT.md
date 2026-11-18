@@ -1,26 +1,17 @@
-# ĐỘC TU — CURRENT VFX HANDOFF · PR #72
+# POISON current VFX handoff — 2026-11-18
+**Repository:** `vuanhtuan161094-byte/TongMonBaDao` · **branch:** `integration/pve-p0-playable-ui-20261103` · [Draft PR #72](https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/72). Exact HEAD is mutable with other school writers: fetch PR HEAD on resume and treat this R3 source commit as the version provenance, not an assumption about current tip.
 
-**Status:** BOOTSTRAP / OWNERSHIP ASSIGNED · 18/11/2026 · school chat has **not yet written its first checkpoint**.
-**Source baseline:** `0d4602c86eb2ad057fecbd5f83d60be1255defc6` (historic, NOT the live HEAD). Always re-fetch [Draft PR #72](https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/72) and branch `integration/pve-p0-playable-ui-20261103`.
-**Rules:** [multi-chat coordination](../operations/TMB_VFX_MULTI_CHAT_COORDINATION_AND_RECOVERY_20261118.md), `AGENTS.md`, Production System V4, cross-school Art Bible, A buff/status rules; no rig/GIF default/Codex/new branch/merge/gameplay/PvE writes.
+## Selection: POI18 R3 · Phụ Cốt Cổ · Tiên A (Liên Tâm)
+**Canonical:** `tmb.skill.poison.co_doc.active_01.immortal.a`, immortal lineage A, WOOD / MARK / single_target / cap1, range7.8, cast0.43s, cooldown9.6s, projectile_speed8.96 world units/s, duration6.5s, hit_count absent, radius0. Verified against `godot/data/combat/v63_immortal_combat_catalog.json` on 2026-11-18.
 
-## School sources
-- `docs/operations/TMB_VFX_AREA_PRODUCTION_REPORT_AND_HANDOFF_20261118.md`
-- `docs/operations/TMB_VFX_AREA_HANDOFF_INDEX_20261118.json`
-- `docs/operations/vfx_school_ledgers/01_poison_183.csv`
+**Frozen evidence:** R1B owner rejected as ugly/frightening. R2C ledger owner **PROVISIONAL**, real Godot G3.5 technical PASS at exact SHA `2313593cebf5aa9cff4f1cf03b1dfc7654620115`, [run #44055755958](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/44055755958), but flight art self **FAIL** (X/chevron), full G5 **NOT EXECUTED**. All `r2/**` originals are UNCHANGED. Human/other POI approved sources are untouched. Do not promote provisional to final.
 
-## CURRENT TASK — not yet selected
-**Canonical skill ID:** TBD by the dedicated school chat after verifying newest ledger and owner decisions. **Tier/revision:** TBD. **Allowed code paths:** only school-owned under the coordination file; shared files are read-only. Do not re-create an approved skill or promote provisional.
+**R3 new work:** only replace 16 original true-RGBA animated gu-flight poses, avoiding flat mirrored petals; inherit 8 gather + 12 contact burst + 12 mark poses unchanged from R2C. Original first-party source generator `tools/vfx/generate_poi18_phu_cot_co_tien_a_r3.py`; new school-only LAB scene/script `godot/labs/combat_lab/poison18_phu_cot_co_tien_a/r3/**`, reusable immutable R2C art references. Expected generated master `r3/assets/master/poi18_gu_master_rgba.png`, atlas `r3/assets/poi18_gu_16.png` (4×4, cell320×256). Generation/source integrity is NOT visual approval. First-party raster painting, no commercial JX pixel/rig/GIF/poster crop.
 
-## First checkpoint contract (school chat MUST replace this bootstrap)
-- `HEAD_BEFORE` / `COMMIT_AFTER` / exact school scope:
-- `SKILL_ID` / tier / effect, shape, target cap, 3 clocks:
-- `FROZEN_ASSETS` (approved/provisional phase + source sha):
-- `SOURCE_MASTER` (path, alpha, key poses, provenance, permanent source):
-- `G3.5` charge/peak/moving-contact 1280x720; `G3.6` contrast; `G3.7` semantic/no HUD:
-- `G4/5` move/decoy/expiry/native film + stable proof URI:
-- `G7` exact SHA, workflow run, PASS/FAIL/NOT_EXECUTED:
-- `OWNER_GATE` only explicit owner decision; `PVE_GATE=HOLD`; `ANDROID_PHYSICAL=PENDING`:
-- `REMAINING_DEBT` / **one next action** / write conflict notices:
+**Three clocks:** declared game authority cast .43s, mark duration6.5s, cooldown9.6s, speed8.96 world units/s. **RUNTIME_MAPPING_PENDING**, no real hit/mark receipt. Local LAB release .55, homing simulated .55–1.35, contact moving WALK selected target t1.35 (simulated), mark end7.85, fade8.10. Demo 8.5s loop; G3.5 first 108 native frames/1.8s @ encoded60, charge .21, peak .98, moving contact1.48. Encoded FPS != physical device FPS.
 
-**Bootstrap is not an art or technical PASS.** If ChatGPT hits limits before any write, the next chat reconstructs from the live GitHub school source and conservative PENDING statuses.
+**Current gates before R3 CI:** G3 source code **COMMITTED** only if GitHub write confirmed; native G3.5 charge/peak/moving-contact, G3.6 contrast, G3.7 no-HUD semantics = **NOT_EXECUTED_R3**. G4 target/decoy G5 long actual movie+expiry = **NOT_EXECUTED_R3**. G7 focused/exact-SHA CI = **NOT_VERIFIED_R3**; use `.github/workflows/vfx-poi18-phu-cot-co-tien-a-r3-native.yml`, packet `docs/operations/vfx_packets/POI18_R3_V4_PREFLIGHT.json`, dedicated focused test. No local Godot 4.7.2 installed, do not pretend offline art is real engine evidence. G6 ART_SELF_PENDING, OWNER_VISUAL_PENDING, PVE_HOLD, V6.3 OFF, Windows/Android physical PENDING.
+
+**One next action:** inspect exact-SHA R3 native G3.5 three screenshots and moving-target contact at 1×; record art STOP/REWORK before any full G5. Compare to frozen R2C; if new gu still lacks visual quality, revise only R3 isolated flight source. One writer for `poison*/**` and this handoff; do not change FIST/TALISMAN/shared renderer/status/AGENTS/Combat V2/SaveService or merge.
+
+[Coordination](../operations/TMB_VFX_MULTI_CHAT_COORDINATION_AND_RECOVERY_20261118.md) · [Area report](../operations/TMB_VFX_AREA_PRODUCTION_REPORT_AND_HANDOFF_20261118.md) · [R2C original](../operations/VFX_POI18_PHU_COT_CO_TIENA_R2_20261117.md)
