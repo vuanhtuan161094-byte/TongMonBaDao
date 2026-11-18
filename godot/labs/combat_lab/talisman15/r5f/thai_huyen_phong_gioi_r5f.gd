@@ -1,0 +1,48 @@
+extends "res://labs/combat_lab/talisman15/r5/thai_huyen_phong_gioi_r5.gd"
+## PAF05 R5F G3.5 candidate: charge-only revision; R5E remains untouched.
+## Original 12 authored RGBA charge poses are painted by paf05_paint_master.py.
+## Only this virtual charge renderer is replaced; circle, marks, status, timing
+## and moving-target contract stay inherited from R5E. No runtime receipt.
+const CHARGE_TEX: Texture2D = preload("res://labs/combat_lab/talisman15/assets/paf05_charge.webp")
+const CHARGE_POSES := 12
+const CHARGE_CELL := 320
+const REVISION := "PAF05_R5F_CHARGE_ONLY_G3_5_CANDIDATE"
+
+static func charge_frame_at(t: float) -> int:
+	return clampi(int(floor(clampf((t - .04) / .82, 0.0, 1.0) * float(CHARGE_POSES - 1))), 0, CHARGE_POSES - 1)
+
+static func charge_alpha_at(t: float) -> float:
+	return charge_envelope(t)
+
+func _ready() -> void:
+	super._ready()
+	print("VFX_PAF05_R5F_READY charge_only=true first_party_rgba=true unchanged_circle_mark=true moving_target=true owner_art=pending")
+
+func _draw_charge_r5(t: float) -> void:
+	var a: float = charge_alpha_at(t)
+	if a <= .004:
+		return
+	# Replace R5E's three rotating procedural line glyphs with real painted
+	# moving wind strands and the contained calligraphy of the 12-pose source.
+	# Hand remains the painterly convergence anchor; source is not UV-warped.
+	var phase: float = clampf((t - .04) / .82, 0.0, 1.0) * float(CHARGE_POSES - 1)
+	var lo: int = int(floor(phase))
+	var hi: int = mini(lo + 1, CHARGE_POSES - 1)
+	var blend: float = phase - float(lo)
+	var at: Rect2 = Rect2(HAND - Vector2(84, 87), Vector2(168, 168))
+	var uv_lo: Rect2 = Rect2(float(lo % 4) * CHARGE_CELL, float(int(lo / 4)) * CHARGE_CELL, CHARGE_CELL, CHARGE_CELL)
+	var uv_hi: Rect2 = Rect2(float(hi % 4) * CHARGE_CELL, float(int(hi / 4)) * CHARGE_CELL, CHARGE_CELL, CHARGE_CELL)
+	var body: float = .78 * a
+	draw_texture_rect_region(CHARGE_TEX, at, uv_lo, Color(1, 1, 1, body * (1.0 - blend)))
+	if hi != lo and blend > .006:
+		draw_texture_rect_region(CHARGE_TEX, at, uv_hi, Color(1, 1, 1, body * blend))
+	# A separate 風 sigil condenses near the outward palm only after wind ink
+	# arrives. This is not a shield, second cast, extra hit or permanent status.
+	var seal: float = smoothstep(.29, .61, t) * (1.0 - smoothstep(.78, .96, t))
+	if seal > .003:
+		var k: int = clampi(int((t - .29) / .095), 0, 5)
+		_atlas(MARK_TEX, k, HAND + Vector2(24, -14), Vector2(53, 60), Color(1, 1, 1, .76 * seal))
+	# Small physically local hot core; no orbiting neon bars or HUD ring.
+	var compression: float = smoothstep(.18, .75, t)
+	var hot: Vector2 = Vector2(31, 31).lerp(Vector2(16, 16), compression)
+	draw_texture_rect(glow, Rect2(HAND - hot, hot * 2.0), false, Color(.90, 1, .87, (.16 + .27 * compression) * a))
