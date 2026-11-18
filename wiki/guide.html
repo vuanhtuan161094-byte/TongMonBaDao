@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Bách khoa Tông Môn Bá Đạo · Tàng Kinh Các</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="./guide.css">
+  <script src="./guide.js" defer></script>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <a class="brand" href="#home"><span class="brand-mark">藏</span><span><strong>Tàng Kinh Các</strong><small>BÁCH KHOA TÔNG MÔN BÁ ĐẠO</small></span></a>
+    <div class="nav-heading">KHÁM PHÁ THẾ GIỚI</div>
+    <nav id="menu" class="menu" aria-label="Chuyên mục bách khoa">
+      <button data-tab="home" class="active">⌂ <span>Tổng quan</span></button>
+      <button data-tab="realms">☯ <span>Cảnh giới & tu luyện</span></button>
+      <button data-tab="skills">✦ <span>Kỹ năng & sát thương</span></button>
+      <button data-tab="buildings">⌂ <span>Công trình</span></button>
+      <button data-tab="fields">❧ <span>Linh Điền & cây trồng</span></button>
+      <button data-tab="medicine">丹 <span>Đan dược & đột phá</span></button>
+      <button data-tab="equipment">⚔ <span>Trang bị</span></button>
+      <button data-tab="schools">門 <span>Môn phái & tài nguyên</span></button>
+    </nav>
+    <div class="sidebar-bottom">
+      <p>Đây là bách khoa đọc số liệu thiết kế từ mã game. Những tính năng chưa kích hoạt được ghi rõ.</p>
+      <a class="studio-link" href="./index.html?studio=1">⚙ Mở khu quản trị kỹ thuật</a>
+    </div>
+  </aside>
+  <div class="workspace">
+    <header class="header">
+      <button class="menu-toggle" id="menu-toggle" aria-label="Mở danh mục">☰</button>
+      <div class="breadcrumb"><span>TÔNG MÔN BÁ ĐẠO</span><b id="breadcrumb">Tổng quan</b></div>
+      <label class="search"><span>⌕</span><input type="search" id="search" placeholder="Tìm kỹ năng, môn phái, cảnh giới…" autocomplete="off"></label>
+    </header>
+    <main id="content" class="content" aria-live="polite"><div class="loading">Đang mở bách khoa trò chơi…</div></main>
+    <footer class="footer">Tàng Kinh Các · Dữ liệu tham khảo từ mã nguồn game · <a href="./index.html?studio=1">Quản trị kỹ thuật</a></footer>
+  </div>
+</div>
+</body>
+</html>
