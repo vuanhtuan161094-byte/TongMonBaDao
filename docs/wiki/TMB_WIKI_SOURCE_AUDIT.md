@@ -45,3 +45,11 @@
 - `SPEC_ONLY` không được đổi thành `LIVE_VERIFIED`; `TECH_PASS` không được đổi thành `ART_APPROVED`.
 - Dashboard phân biệt dữ liệu thiết kế, mã/registry, feature gate, test source, kết quả test và phê duyệt owner.
 - Không có file save cá nhân hoặc dữ liệu người chơi được đưa vào catalog.
+
+## E recovery overlay — 2026-11-19 (PR #72 exact HEAD)
+
+- Recovery code snapshot: [`264514ff760eaf22b339cb75ca29be53f9ab8351`](https://github.com/vuanhtuan161094-byte/TongMonBaDao/commit/264514ff760eaf22b339cb75ca29be53f9ab8351); PR #72 còn Draft. Bốn lớp asset được theo dõi riêng: file, import, binding runtime, render nhìn thấy; phê duyệt mỹ thuật là cổng riêng.
+- Inventory read-only đã xuất tại `E:\\TongMonBaDaoWorkspace\\03_QA_Logs\\ONE_GAME_INVENTORY_20261119_002036`. E canonical đang dirty nên không đồng bộ hoặc chạy game. Chi tiết worktree/launcher nằm trong inventory ngoài repo.
+- Map manifest có 34 file: 29 texture môi trường Source A còn được renderer nạp có điều kiện theo SHA; 5 ảnh công trình Source A cũ vẫn có trong manifest nhưng không còn được chọn làm texture công trình hiện tại. Hai checkout E khớp SHA 34/34; sidecar/cache có nhưng đó không phải Godot import PASS.
+- Bảy gói actor có asset.json khớp Git blob 7/7; 31 file dẫn xuất có mặt mỗi checkout, nhưng chỉ 21/31 khớp SHA, 10 lệch chưa giải thích. 24 khai báo clip: 23 frame-count khớp, 1 lệch ở clip dead của Boss-slot candidate (khai 30, lưu 21). Chưa gán danh tính Boss; không có capture hiện hành để gọi chúng là nhìn thấy trong gameplay.
+- Cổng hiện tại: Godot 4.7.2 import/GUI, player test và capture ở exact HEAD đều **NOT_EXECUTED**; render/duyệt Owner **PENDING/UNKNOWN**. Không suy diễn từ `.import` cache hoặc code wiring.
