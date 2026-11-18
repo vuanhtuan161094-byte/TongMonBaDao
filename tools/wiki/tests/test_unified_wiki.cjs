@@ -14,8 +14,8 @@ const workflow=read(".github/workflows/wiki-player-pages.yml");
 assert.match(html,/script src="\.\/guide\.js"/);
 assert.match(html,/stylesheet" href="\.\/unified\.css"/);
 assert(!/href="\.\/(?:traits|audit|characters)\.html"/.test(html),"No links to old pages");
-const nav=(html.match(/data-tab="(?:home|characters|realms|skills|buildings|equipment|items|systems)"/g)||[]);
-assert(nav.length===9,"Expected eight sidebar entries plus brand");
+const nav=(html.match(/data-tab="(?:home|characters|realms|skills|buildings|equipment|items|systems|design)"/g)||[]);
+assert(nav.length===10,"Expected nine sidebar entries plus brand");
 assert(workflow.includes("cp wiki/unified.css _site/wiki/"),"Stylesheet must deploy");
 for(const [page,tab] of Object.entries({"characters.html":"characters","traits.html":"characters","audit.html":"systems"})){
  assert(read("wiki/"+page).includes("url=./guide.html#"+tab),"Old page redirect: "+page);
@@ -60,7 +60,7 @@ function change(id,value){
  for(const [tab,word] of [
   ["characters","101 đặc tính"],["realms","889.000"],
   ["skills","Kỹ năng"],["buildings","Linh Điền"],
-  ["equipment","Trang bị V2"],["items","444"],["systems","Toàn bộ chức năng"]
+  ["equipment","Trang bị V2"],["items","444"],["systems","Toàn bộ chức năng"],["design","Thiết kế trước"]
  ]){
   clickTab(tab);
   assert(view().includes(word),"Navigation "+tab+" missing "+word);
