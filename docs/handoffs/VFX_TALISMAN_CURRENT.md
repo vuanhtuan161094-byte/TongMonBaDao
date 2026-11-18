@@ -1,26 +1,64 @@
 # PHÙ TU (PAF/HF/TAL) — CURRENT VFX HANDOFF · PR #72
 
-**Status:** BOOTSTRAP / OWNERSHIP ASSIGNED · 18/11/2026 · school chat has **not yet written its first checkpoint**.
-**Source baseline:** `0d4602c86eb2ad057fecbd5f83d60be1255defc6` (historic, NOT the live HEAD). Always re-fetch [Draft PR #72](https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/72) and branch `integration/pve-p0-playable-ui-20261103`.
-**Rules:** [multi-chat coordination](../operations/TMB_VFX_MULTI_CHAT_COORDINATION_AND_RECOVERY_20261118.md), `AGENTS.md`, Production System V4, cross-school Art Bible, A buff/status rules; no rig/GIF default/Codex/new branch/merge/gameplay/PvE writes.
+**Updated:** 2026-11-18 (UTC+7). **Responsible production chat:** TALISMAN. **PR:** [#72 Draft](https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/72); **branch:** `integration/pve-p0-playable-ui-20261103`.
+**This handoff supersedes the 2026-11-18 bootstrap.** Read live HEAD on resume; work is concurrent with the POISON, FIST and coordination chats.
 
-## School sources
-- `docs/operations/TMB_VFX_TALISMAN_PLAYBOOK_20261114.md`
-- `docs/operations/vfx_school_ledgers/02_talisman_183.csv`
-- `docs/handoffs/VFX_TALISMAN_TAL02_TAL03_NEXT_CHAT_20261114.md`
+## Active single skill and decision
 
-## CURRENT TASK — not yet selected
-**Canonical skill ID:** TBD by the dedicated school chat after verifying newest ledger and owner decisions. **Tier/revision:** TBD. **Allowed code paths:** only school-owned under the coordination file; shared files are read-only. Do not re-create an approved skill or promote provisional.
+- **Active focus:** `tmb.skill.talisman.phong_an_phu.ultimate.human` — **PAF05 Thái Huyền Phong Giới Phù**, R5F **CHARGE-ONLY** self-review candidate. Existing R5E source and all its accepted-provisional phases are **FROZEN/UNMODIFIED**.
+- **Owner decision about baseline R5E:** “Ok. Tạm đ.c tụ lực xấu. Làm skill tiếp theo” (17/11/2026). This is **PROVISIONAL_USE_R5E**, with a clear **CHARGE_ART_DEBT**, *not* full art approval. [Exact decision record](../operations/vfx_packets/PAF05_R5E_OWNER_PROVISIONAL_CHARGE_DEBT_20261117.md).
+- **Why R5F:** Reuse the original first-party **12 independently authored charge poses** already baked for PAF05 by `tools/vfx/paf05_paint_master.py`, replacing only R5E's three rigid rotating GDScript lines. The painted converging strokes and small staged gold/jade `風` mark appear near the real caster palm. No extra ring, poster crop, rerig or extra charge on the 7s status. This is a **candidate**, not owner-approved art.
+- **Initial HEAD checked before first write:** `3137d78c5bc141358f23fd1157fb34c2ddb1d293`. **Scoped implementation commit:** [`3f25506216ed5493faf455916cc7f325109fd230`](https://github.com/vuanhtuan161094-byte/TongMonBaDao/commit/3f25506216ed5493faf455916cc7f325109fd230). Later concurrent HEADs are unrelated; always refresh before changing more files.
 
-## First checkpoint contract (school chat MUST replace this bootstrap)
-- `HEAD_BEFORE` / `COMMIT_AFTER` / exact school scope:
-- `SKILL_ID` / tier / effect, shape, target cap, 3 clocks:
-- `FROZEN_ASSETS` (approved/provisional phase + source sha):
-- `SOURCE_MASTER` (path, alpha, key poses, provenance, permanent source):
-- `G3.5` charge/peak/moving-contact 1280x720; `G3.6` contrast; `G3.7` semantic/no HUD:
-- `G4/5` move/decoy/expiry/native film + stable proof URI:
-- `G7` exact SHA, workflow run, PASS/FAIL/NOT_EXECUTED:
-- `OWNER_GATE` only explicit owner decision; `PVE_GATE=HOLD`; `ANDROID_PHYSICAL=PENDING`:
-- `REMAINING_DEBT` / **one next action** / write conflict notices:
+## Canonical G0 contract and three separate clocks
 
-**Bootstrap is not an art or technical PASS.** If ChatGPT hits limits before any write, the next chat reconstructs from the live GitHub school source and conservative PENDING statuses.
+- `effect=mark`, `element=wind`, `shape=circle`, `target_limit=3`, `radius=2.1`, `hit_count=1`, `cast_time=.9s`, `cooldown=23s`, `duration=7s`, `projectile_speed=0`. Source: existing `PAF05_V4_PREFLIGHT.json`, original catalogue and R5E focused tests. **Do not infer a damage hit or apply a mark to gameplay.**
+- **Combat-authority clock:** catalogue only, real hit/mark event mapping `RUNTIME_MAPPING_PENDING`. Only the Combat V2 real receipt may later authorize marks; V6.3 remains OFF.
+- **R5F LAB visual clock:** charge `.02–.98s` (12 original poses with crossfade), inherited formation `.60–2.52s`, simulated mark contact at `1.33s` with moving locked targets, mark duration `1.33–8.33s` under the original R5E LAB model. No R5F timing changes to parent.
+- **G3.5 mini-demo clock:** exactly 102 Godot 60fps *rendered* frames (`1.70s` video time), native 1280×720. Target checkpoints `charge=.28`, `peak=.76`, `moving-contact=1.49`. This is NOT a seven-second cast and NOT measured Android FPS.
+
+## Reproducible source, immutable phases and write scope
+
+| Type | Canonical path |
+|---|---|
+| **New R5F LAB** | `godot/labs/combat_lab/talisman15/r5f/thai_huyen_phong_gioi_r5f.gd` + `.tscn` |
+| **Source charge atlas** | `godot/labs/combat_lab/talisman15/assets/paf05_charge.webp` — 12 original transparent 320² keyposes, atlas 1280×960; generated in CI (not binary committed) |
+| **Permanent source + rights** | `tools/vfx/paf05_paint_master.py` + `tools/vfx/paf05_luminous_raster.py`, first-party code-painted RGBA, not copied JX/Võ Lâm pixels |
+| **Inherited locked assets** | R5E scene/script and R5 original 12-mark/11-contact poses, inherited R4 wind and moving LAB actors — **not modified** |
+| **Focused QA** | `godot/tests/labs/combat_lab/vfx_paf05_r5f_contract_test.gd` |
+| **Exact skill V4 packet** | `docs/operations/vfx_packets/PAF05_R5F_CHARGE_G35.json` |
+| **G3.5 native-only CI** | `.github/workflows/vfx-v4-paf05-r5f-charge-native.yml` |
+
+The original charge texture is currently regenerated by first-party source code and archived per Actions run; **binary alpha master permanence in Git is not established**. Its deterministic regeneration and source checksum are recorded by each exact-SHA run. No new source artwork is represented as an image-generation visual approval.
+
+## Gate table (do not promote from green CI)
+
+| Gate | Result at handoff checkpoint |
+|---|---|
+| G0 catalogue / baseline R5E | Verified, unchanged |
+| G1 source provenance | Existing original first-party source generator identified |
+| G2 story/motif | Replaces rigid procedural charge with the original painted 12-frame wind-convergence; **ART REVIEW REQUIRED** |
+| G3 original art/alpha | Existing generator/atlas; **exact source hash and alpha QA pending CI** |
+| **G3.5 true Godot native** | **RUNNING / NOT VERIFIED** at [Actions #44230081478](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/44230081478), exact source `3f255062…`. No screenshot has yet been visually accepted |
+| G3.6 contrast / G3.7 semantic 1× / occlusion | **NOT_EXECUTED manual review**. Specifically inspect charge overlapping caster face and palm x392,y423 on bright/dark terrain |
+| G4 moving-contact / cap3 | Inherited R5E contract; new R5F focused QA **RUNNING / NOT VERIFIED** |
+| G5 full continuous R5F film + ≥12 checkpoint visual inspection | **NOT_EXECUTED**; stop after G3.5 until 1× art review |
+| G7 exact-SHA validator | **RUNNING / NOT VERIFIED** |
+| OWNER | R5E **PROVISIONAL** only; R5F **OWNER_VISUAL_PENDING** |
+| G8 PVE / physical Windows+Android | **HOLD / PENDING** |
+
+A baseline PAF05 R5E independent native technical PASS exists at [Actions #44069358237](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/44069358237) on content `87afe14aa7888cf086409a34b4f65dccd9345d10`. That technical run does **not** automatically prove this R5F charge or owner art acceptance.
+
+## School-wide frozen and queued status
+
+- **PAF01 R3 wind + moving `風` mark/fade:** keep; R6 paper material remains owner-pending. **PAF04 R7 rejected; R8 G3 ART STOP**, do not turn it into a generic bubble. PAF05 R5E provisional (charge debt) preserved.
+- **PAF06 R5:** owner provisional, original R3 orbit kept; PAF07 R1 TECH_PASS/owner pending; PAF08 R1D TECH_PASS/ART_SELF_REWORK_SUGGESTED/owner pending. PAF09 etc **not started in this checkpoint**.
+- **HF02 R6 / HF03 R2:** explicit owner visual approval, preserve source; HF04 R3 and HF05 R7 provisional only. Other HF and TAL variants not promoted.
+- **TAL02 R6 and TAL03 R4 Human:** explicit owner visual approval, preserve exact revision. TAL04 R6 and TAL05 R7 remain owner-pending unless a newer school-specific decision is checked.
+- Ledger counts and historical run PASS do not substitute for an owner decision.
+
+## Next ONE action and recovery rule
+
+**NEXT:** read the final status/logs and actual native screenshots of [R5F G3.5 run #44230081478](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/44230081478) at `.28/.76/1.49s`, compare to R5E at 1×. If unacceptable, rework **only R5F** and retest native G3.5. If Godot cannot execute, record `NOT_EXECUTED` / `TECH_FAIL`, **STOP**; do not fabricate film or promote ART. Full movie/status and G7 decision only after visual G3.5. On next chat, recheck live HEAD and compare school-owned paths for concurrent edits.
+
+**Write ownership:** `godot/labs/combat_lab/talisman*/**`, PAF/HF/TAL-only test/source/packet/workflow and THIS handoff. Do not modify shared renderer/AGENTS/Combat V2/PvE/Poison/Fist, no Codex/rig/GIF by default/new branch/merge. Use non-force optimistic commit against live branch HEAD.
