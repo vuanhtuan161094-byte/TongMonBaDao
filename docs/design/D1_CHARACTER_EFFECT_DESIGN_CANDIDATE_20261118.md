@@ -174,3 +174,64 @@ Các con số trong cột “ý tưởng” là **giá trị đề xuất của 
 **Chưa gọi DESIGN LOCKED:** hệ số Tâm Tính, 12 dependency và 48 concept chưa được phê duyệt toàn bộ. Không sửa \`TRAITS_V2_SPEC.md\` để tự gán phê duyệt của người dùng.
 
 Nguồn: \`docs/DISCIPLE_V2_EFFECT_SOURCE_MATRIX.md\`, \`docs/DISCIPLE_V2_STAT_CAUSAL_CONTRACT.md\`, \`docs/TRAITS_V2_SPEC.md\`, \`wiki/data/trait_effect_audit.json\`.
+
+
+## 8. RÀ SOÁT D1-R2 — 16 CHỈ SỐ CHIẾN ĐẤU V2 VÀ ĐỀ XUẤT ĐIỀU CHỈNH (18/11/2026)
+
+**Phát hiện và sửa cách hiểu:**
+- **Đã thiết kế khóa:** 16 chỉ số chiến đấu chính + 10 kháng hệ, gồm cả Hút Máu/Giảm Hút Máu đã được owner duyệt 09/10/2026. Không phải một nhóm chỉ số còn cần phát minh.
+- **Đã có bộ tính:** \`godot/src/simulation/combat/combat_stats_v2.gd\` có \`derive()\` và resolver cho crit, DEF/xuyên phòng, status, hút máu, 10 kháng hệ. Test \`godot/tests/simulation/dv2_02_combat_stats_test.gd\` và bằng chứng Godot tập trung trong \`COMBAT_STATS_V2_SPEC.md\`. Không tự suy ra combat PvE chính đã dùng đầy đủ; \`combat_system.gd\` vẫn có các luồng đọc \`combat_power\` cũ.
+- **Chưa đồng bộ đầy đủ:** 101 Trait V2, Mệnh Cách, Thể Chất, Huyết Mạch, Linh Căn, đồ V2 và các nguồn có điều kiện chưa được chứng minh cấp modifier chính xác tới từng hành động đang diễn ra.
+
+### 8.1 Quyết định giữ nguyên — không mở lại cân bằng
+
+| Nội dung | Quyết định vốn đã khóa |
+|---|---|
+| HP / Công / Thủ | 300 tầng Realm và Body, growth 1.65/đại cảnh, 1.03/tiểu cảnh, core 100/20/12 + 90/3/7, Tiềm Lực 0.05%/điểm |
+| 16 Combat Stats | HP, Attack, Defense, Move, BasicSpeed, CastSpeed, Cooldown, CritChance, CritDamage, CritResistance, Penetration, EffectHit, EffectResistance, DamageReduction, Lifesteal, LifestealReduction |
+| Crit | 5% xác suất gốc; hệ số sát thương 1,50× gốc; Kháng Bạo trừ **điểm phần trăm** tỷ lệ crit, không giảm damage của đòn crit |
+| Sát thương trực tiếp | DEF có hiệu lực sau buff/debuff và xuyên phòng; K=2×ATK, hệ số K/(K+DEF); giảm sát thương/kháng hệ nhân trên phần còn lại |
+| Tốc độ | thời gian cơ bản ÷ (1 + bonus tỷ lệ) cho đánh thường/thi pháp/hồi chiêu |
+| Hút Máu | hồi dựa trên HP thật mục tiêu mất, trừ kháng hút máu theo điểm %, không hút overkill |
+| 10 kháng hệ | cộng các nguồn độc lập bằng phép nhân phần sát thương còn lại, không cộng thẳng |
+| Không tạo mới | generic Accuracy/Dodge, physical/magical duplicated ATK/DEF, Mana bar phổ quát, Damage Reduction riêng của Crit, CombatPower dùng làm damage V2 |
+
+**Chỉ số bối cảnh** (vs Boss, chủng tộc, liên kích, hồi máu thực hiện/nhận, shield, DoT) không được lén tăng số lượng 16 headline. Chúng chỉ xuất hiện ở breakdown khi có consumer và điều kiện đúng.
+
+### 8.2 Cần điều chỉnh bản đề xuất Tâm Tính trước khi chốt
+
+**Phương án D1-A đã ghi ở §1:** Tâm Tính cho +kháng riêng nhóm \`mental\` và rút ngắn thời lượng trúng mental. Phương án này có **hai điểm yếu**: kỹ năng có tag mental chưa được chứng minh đủ consumer đang chạy, và hai hiệu ứng cùng giảm rủi ro hiệu ứng tinh thần có thể trở thành nhân lợi ích hai lần.
+
+**Đề xuất mới D1-A2, khuyến nghị cân nhắc (CHƯA PHÊ DUYỆT):**
+- Không thêm một combat stat. Dùng kênh \`effect_resistance\` đã có.
+- Đóng góp tĩnh từ Tâm Tính: \`bonus_effect_resistance_pp = min(0.08, 0.0001 × max(0,TamTinh))\`. 100 điểm → **+1 điểm phần trăm**, 500 → **+5 điểm phần trăm**, từ 800 điểm → tối đa **+8 điểm phần trăm**.
+- Ở V2 áp đúng một nguồn toàn cục \`foundation_mind_nature\` vào \`effect_resistance\`, \`mode=percentage_points\` (nếu phép tính/consumer đã đủ điều kiện). Các Trait như *Tâm Thần Kiên Cố* +10 điểm % có source ID riêng và dùng luật cộng điểm %, không nhập lại chỉ số Tâm Tính vào dữ liệu gốc.
+- **Bỏ phần giảm thời lượng** của D1-A nếu chọn A2, tránh nhân lợi ích thứ hai và đỡ cần thêm duration-consumer chưa sẵn sàng.
+- Không tăng Tu Vi/s, Luyện Thể, học, Crit Chance, damage hoặc xác suất đột phá chỉ từ Tâm Tính.
+
+**Vì sao đề xuất A2:** có vai trò ngay với kiểm tra status chung, đọc số đơn giản, tránh thêm hệ Tâm Cảnh trước khi thiết kế đầy đủ. **Cần phê duyệt/balance riêng**, nhất là giao thoa với Tâm Thần Kiên Cố +10pp và trạng thái miễn nhiễm của Boss. §1 D1-A vẫn là phương án cũ để đối chiếu; nếu phê duyệt A2, sửa authority gốc bằng quyết định riêng, không bật song song A và A2.
+
+### 8.3 Cần điều chỉnh 101 Trait — không phải phát minh thêm chỉ số
+
+1. 41 Trait đã có kênh: phân nhóm theo **sáu resolver dùng chung** cho học/mastery, Tu Vi, công việc, chiến đấu, hồi phục, đạo lộ. Không thêm 41 công thức trùng stat authority.
+2. 12 Trait phụ thuộc: mỗi Trait hai mặt phải viết đủ lợi và hại, điều kiện, event, expiry, hiệu ứng khi thiếu consumer; không bật nửa có lợi trước.
+3. 48 Trait chỉ là proposal: ghi \`design_state=OPEN\` dù danh mục tên đã chốt. Tập trung đối chiếu các hệ **food/sleep/social/time-of-day/loot** trước khi chốt hệ số, không tự làm 48 hiệu ứng cho consumer chưa tồn tại.
+4. Các Trait đặc biệt như *Bản Năng Chiến Đấu* (+5pp Crit), *Tâm Thần Kiên Cố* (+10pp Effect Resistance), *Phá Giáp Cảm* (+5pp Xuyên Phòng theo kênh đã định nghĩa) phải dùng registry 16 chỉ số và kiểm tra case có/không có source.
+5. Giải quyết trùng và mâu thuẫn 9 Trait legacy trước khi kết luận có buff thật. *Cẩu Thả* cũ âm work speed, V2 vừa dương work speed vừa giảm chất lượng — cần consumer \`quality_check\` mới được bật phiên bản V2.
+6. Không lấy chất lượng nhân vật (Phàm Thường/Thiên Kiêu...) làm hệ số nhân Công/Thủ/HP. Phẩm chất là nhãn từ Lục Duy, còn kỹ năng/vũ khí/đạo lộ tạo hiệu quả từ đúng source.
+
+### 8.4 Giao diện D1 cần rõ ràng
+
+Trang “Đệ tử & đặc tính” trong **Tàng Kinh Các duy nhất** phải cho thấy: 7 chỉ số gốc → 16 Combat Stats → 10 kháng hệ → bộ thuộc tính bối cảnh → 101 đặc tính có/thiếu hiệu ứng. Hệ số crit luôn biểu diễn **1,50×**, khác với tỷ lệ crit **5%**. Điều kiện chí mạng và kháng chí mạng giải thích bằng ví dụ 40% − 15 điểm % = 25%.
+
+**Mức chứng cứ:** thiết kế 16 chỉ số **ĐÃ KHÓA**; bộ tính **ĐÃ CÓ MÃ và từng PASS focused Godot**; **combat live PvE chưa đồng bộ đầy đủ**; 101 Trait V2 **chưa thể gọi runtime hoàn thành**. Không được gom bốn tầng vào trạng thái “Đã code hết”.
+
+### 8.5 Các quyết định chờ owner ở lần D1 tiếp theo
+
+- **Ưu tiên A2 hay A:** Tâm Tính cho +0,01 điểm % Kháng Hiệu Ứng/điểm (tối đa +8pp), **hoặc** kháng mental +0,02 điểm %/điểm kèm rút ngắn thời lượng theo thiết kế cũ. Khuyến nghị **A2** vì dùng được stat V2 đã có và tránh double dip.
+- **Giữ Tâm Cảnh ở bản mở rộng**: không thêm tầng tu luyện khi các consumer tinh thần vẫn chưa hoàn thiện.
+- **Chốt luật 12 Trait phụ thuộc**, không thêm 101 stat mới.
+- **48 Trait concept** chỉ khóa số sau khi cơ chế sinh hoạt/nghề/chiến đấu/xã hội/viễn chinh có event authority.
+- **Kiểm thống nhất mô tả ở Wiki**: baseline 5% crit, 1,50× Crit Damage, 16 headline+10 keyed resistance; ghi rõ trạng thái runtime.
+
+Không có mã gameplay mới trong gói D1-R2; không thay đổi các luật người dùng đã khóa.
