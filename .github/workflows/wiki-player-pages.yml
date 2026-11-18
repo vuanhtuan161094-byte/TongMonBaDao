@@ -21,6 +21,7 @@ on:
       - 'wiki/data/game_items_audit.json'
       - 'wiki/data/trait_effect_audit.json'
       - 'tools/wiki/tests/test_trait_effect_audit.py'
+      - 'tools/wiki/tests/test_game_audit.py'
       - 'wiki/data/character_reference.json'
       - 'wiki/data/catalog.json'
       - '.github/workflows/wiki-player-pages.yml'
@@ -46,6 +47,7 @@ jobs:
         shell: bash
         run: |
           python3 tools/wiki/tests/test_trait_effect_audit.py
+          python3 tools/wiki/tests/test_game_audit.py
           node --check wiki/traits.js
           node --check wiki/audit.js
           node --check wiki/guide.js
