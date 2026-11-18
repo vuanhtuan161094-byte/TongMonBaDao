@@ -14,6 +14,11 @@ on:
       - 'wiki/traits.html'
       - 'wiki/traits.css'
       - 'wiki/traits.js'
+      - 'wiki/audit.html'
+      - 'wiki/audit.css'
+      - 'wiki/audit.js'
+      - 'wiki/data/game_system_audit.json'
+      - 'wiki/data/game_items_audit.json'
       - 'wiki/data/trait_effect_audit.json'
       - 'tools/wiki/tests/test_trait_effect_audit.py'
       - 'wiki/data/character_reference.json'
@@ -42,6 +47,7 @@ jobs:
         run: |
           python3 tools/wiki/tests/test_trait_effect_audit.py
           node --check wiki/traits.js
+          node --check wiki/audit.js
           node --check wiki/guide.js
           node --check wiki/characters.js
       - name: Assemble public player-only site
@@ -51,6 +57,8 @@ jobs:
           cp wiki/guide.html wiki/guide.css wiki/guide.js _site/wiki/
           cp wiki/characters.html wiki/characters.css wiki/characters.js _site/wiki/
           cp wiki/traits.html wiki/traits.css wiki/traits.js _site/wiki/
+          cp wiki/audit.html wiki/audit.css wiki/audit.js _site/wiki/
+          cp wiki/data/game_system_audit.json wiki/data/game_items_audit.json _site/wiki/data/
           cp wiki/data/trait_effect_audit.json _site/wiki/data/
           cp wiki/data/character_reference.json _site/wiki/data/
           cp wiki/data/catalog.json _site/wiki/data/
