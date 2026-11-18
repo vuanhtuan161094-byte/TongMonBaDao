@@ -49,8 +49,10 @@ def local_flash(target,center,phase,seed,size):
     target.alpha_composite(sm.filter(ImageFilter.GaussianBlur(11)))
     target.alpha_composite(sm)
     orb=new();o=ImageDraw.Draw(orb,'RGBA')
-    o.ellipse((x-8*phase,y-6*phase,x+8*phase,y+6*phase),fill=(255,244,218,round(225*phase)))
-    target.alpha_composite(orb.filter(ImageFilter.GaussianBlur(4)))
+    o.ellipse((x-15*phase,y-10*phase,x+15*phase,y+10*phase),fill=(255,252,239,round(255*phase)))
+    halo=orb.filter(ImageFilter.GaussianBlur(6))
+    target.alpha_composite(halo)
+    target.alpha_composite(orb)
 
 def source_layer(im,src_rect,width,opacity=1.,center=(330,315),shear=0.,stretch=1.,soft_matte=True):
     src=im.crop(src_rect)
@@ -76,7 +78,7 @@ def source_layer(im,src_rect,width,opacity=1.,center=(330,315),shear=0.,stretch=
 def mark(t):
     # An authored fist-imprint for a single MARK, not claw marks or a HUD ring.
     f=new();rng=random.Random(9901+int(t*100))
-    pulse=.78+.14*math.sin(t*math.tau)
+    pulse=.91+.08*math.sin(t*math.tau)
     vapor=new();dv=ImageDraw.Draw(vapor,'RGBA')
     for j in range(5):
         q=j/4
@@ -88,10 +90,10 @@ def mark(t):
     for j in range(4):
         x=292+j*19+(3 if j==2 else 0);y=316+(j-1)**2*2
         d.rounded_rectangle((x-8,y-11,x+8,y+4),radius=6,
-             fill=(186+13*j,24,63,int(150*pulse)),outline=(255,176,162,int(158*pulse)),width=2)
-        d.line(bez((x,y+6),(x+2,y+17),(327-12+j*7,347),(331,355)),fill=(240,68,104,int(128*pulse)),width=3)
-    d.arc((294,317,343,367),25,145,fill=(255,195,175,int(170*pulse)),width=5)
-    f.alpha_composite(layer.filter(ImageFilter.GaussianBlur(6)))
+             fill=(204+11*j,39,86,int(214*pulse)),outline=(255,229,203,int(245*pulse)),width=3)
+        d.line(bez((x,y+6),(x+2,y+17),(327-12+j*7,347),(331,355)),fill=(253,83,125,int(192*pulse)),width=4)
+    d.arc((294,317,343,367),25,145,fill=(255,234,211,int(226*pulse)),width=6)
+    f.alpha_composite(layer.filter(ImageFilter.GaussianBlur(9)))
     f.alpha_composite(layer)
     return f
 
@@ -111,28 +113,30 @@ def frame(im,kind,i,n):
         out.alpha_composite(src,dest=pos)
         if i>=5:local_flash(out,(416,316),.22+.35*t,101+i,size=13+14*t)
     elif kind=='flight':
-        # Three identifiable motion beats: release (compressed), acceleration
-        # (stream pulled backward), final tightening into the fist before contact.
+        # Three distinct hand-authored flowing blood-Qi currents, converging
+        # toward ONE fist. Avoid uniform side-by-side "three-claw" rails.
         accel=t*t*(3-2*t); wave=math.sin(math.pi*t)
-        length=140+int(114*accel)
-        for j in range(5):
-            offset=(j-2)*20
-            a=(84-int(31*accel),312+offset+int(12*math.sin(4*t+j)))
-            b=(185-int(length*.23),315+offset*.75-13*math.sin(j+t*5))
-            c=(273+int(12*t),320+offset*.24)
-            d=(418+int(11*t),325+offset*.08)
-            paint_stroke(out,bez(a,b,c,d),wide=7+(j%2)*2,alpha=round(140+75*wave),hot=j in (1,3))
-        src,pos=source_layer(im,(135,40,1725,838),width=350+int(70*wave),opacity=.72+.22*wave,center=(330+int(13*t),320),shear=8*math.sin(2*t*math.pi))
+        flows=[
+            ((112,258+20*math.sin(5*t)),(168,244-30*wave),(267,292+22*wave),(436,315)),
+            ((92,359+23*math.sin(4*t+1.5)),(134,399-27*wave),(296,344-13*wave),(431,326)),
+            ((128,311+34*math.sin(3.4*t+2.1)),(231,351-45*wave),(301,296+30*wave),(453,322)),
+        ]
+        for j,(a,b,c,d) in enumerate(flows):
+            pts=bez(a,b,c,d)
+            paint_stroke(out,pts,wide=[8,11,4][j],alpha=round([142,156,110][j]+50*wave),hot=j==1)
+        src,pos=source_layer(im,(135,40,1725,838),width=350+int(70*wave),opacity=.76+.22*wave,center=(330+int(13*t),320),shear=11*math.sin(2*t*math.pi))
         out.alpha_composite(src,dest=pos)
-        # Add a small transient knuckle halo, not an extra impact marker.
-        if i>6:local_flash(out,(495+int(16*t),316),.13+.25*(t-.4),201+i,17)
+        # One knuckle light stroke, not a fake additional impact/hit.
+        knuckle=bez((456,301-5*wave),(473,291-6*wave),(501,306+4*wave),(506,325))
+        paint_stroke(out,knuckle,wide=6,alpha=round(195+50*wave),hot=True)
+        if i>6:local_flash(out,(501+int(9*t),321),.18+.25*(t-.4),201+i,24)
     elif kind=='contact':
         # The sprite dissolves into a single impact; visually distinct poses
         # including sharp contact, spread, staggered closure and mark emergence.
         strength=math.sin(math.pi*(.10+.88*t))**.8
         src,pos=source_layer(im,(840,105,1745,826),width=330+int(70*strength),opacity=(1-t)**1.12,center=(309-int(18*t),316),stretch=1+.16*t)
         out.alpha_composite(src,dest=pos)
-        local_flash(out,(446+int(t*12),315),max(.08,1-t**.84),401+i,37+int(55*t))
+        local_flash(out,(446+int(t*12),315),max(.30,1-t**.65),401+i,37+int(74*t))
         for j in range(4):
             # unequal shock filaments deform and break apart, no false hit receipts
             off=j*math.pi/2
@@ -184,6 +188,6 @@ def main():
         display.alpha_composite(im2,(0,y));y+=im2.height
     display=display.crop((0,0,1280,y))
     display.save(ROOT/'review/atlas_static_not_godot.png',optimize=True)
-    print('FIST14_R3_REWORK_STATIC_OK frames=36 phases=4 original_master_sha='+SHA)
+    print('FIST14_R3B_REWORK_STATIC_OK frames=36 phases=4 original_master_sha='+SHA)
     print('G3.5_NOT_EXECUTED G3.7_NOT_APPROVED')
 if __name__=='__main__':main()

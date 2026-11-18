@@ -15,7 +15,7 @@ const PROJECTILE_SPEED := 0.0
 const HIT_COUNT_DECLARED := false
 const RELEASE_TIME := 0.45
 const CONTACT_TIME := 0.82
-const CONTACT_END := 1.13
+const CONTACT_END := 1.22
 const MARK_END := CONTACT_TIME + DECLARED_DURATION
 const FADE_END := 7.11
 const LOOP_END := 7.43
@@ -132,7 +132,7 @@ func _draw() -> void:
     var foe := foe_at(t)
     if t < 0.51:
         var gain := smoothstep(0.0, 0.12, t) * (1.0 - smoothstep(0.39, 0.51, t))
-        _flip(_textures[0], 8, 7.0 * t / CAST_TIME, caster + Vector2(55, -111), 0.82, gain)
+        _flip(_textures[0], 8, 7.0 * t / CAST_TIME, caster + Vector2(78, -69), 0.82, gain)
     if t >= CAST_TIME and t < CONTACT_TIME:
         var q := clampf((t - CAST_TIME) / (CONTACT_TIME - CAST_TIME), 0.0, 1.0)
         _flip(_textures[1], 12, 11.0 * q, fist_at(t), 1.04, smoothstep(0.0, 0.08, q) * (1.0 - smoothstep(0.90, 1.0, q)))
@@ -142,4 +142,4 @@ func _draw() -> void:
         var q := clampf((t - CONTACT_TIME) / (CONTACT_END - CONTACT_TIME), 0.0, 1.0)
         _flip(_textures[2], 8, 7.0 * q, contact_at(t), 0.62, impact_opacity(t))
     if mark_opacity(t) > 0.002:
-        _flip(_textures[3], 8, fposmod((t - CONTACT_TIME) * 5.2, 8.0), mark_at(0, t), 0.76, mark_opacity(t))
+        _flip(_textures[3], 8, fposmod((t - CONTACT_TIME) * 5.2, 8.0), mark_at(0, t), 1.04, mark_opacity(t))
