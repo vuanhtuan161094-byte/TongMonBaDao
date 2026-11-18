@@ -1,42 +1,18 @@
 {
-  "schema": 2,
+  "schema": 3,
   "asOf": "2026-11-18",
   "category": "foundation_D7",
-  "name": "Tâm Tính — Định Tâm Tu Vi và Kháng Hiệu Ứng",
+  "name": "Tâm Tính — Kháng Hiệu Ứng và Tu Luyện",
   "id": "mind_nature",
   "source": "godot/src/simulation/foundation/foundation_system.gd",
   "runtime": "DATA_PERSISTED_CONSUMER_NOT_IMPLEMENTED",
-  "approved": {
-    "status": "OWNER_APPROVED_DESIGN_ONLY",
-    "id": "D1-A2",
-    "channel": "effect_resistance",
-    "mode": "percentage_points",
-    "sourceId": "foundation_mind_nature",
-    "ppPerPoint": 0.01,
-    "maxBonusPp": 8,
-    "meaning": "Tâm Tính càng cao càng khó bị khống chế hoặc dính debuff có phép kiểm tra xác suất. Không chống bảo đảm trúng hoặc miễn nhiễm đặc biệt. Không giảm thời lượng hiệu ứng đã dính.",
-    "forbidden": [
-      "Không tăng Tu Vi/giây",
-      "Không tăng Luyện Thể/giây",
-      "Không tăng EXP học",
-      "Không tăng tỷ lệ đột phá",
-      "Không tăng Crit, Công, Thủ, HP",
-      "Không xóa Injury hoặc Trait",
-      "Không tạo miễn nhiễm tuyệt đối"
-    ],
-    "exampleStatus": {
-      "basePp": 45,
-      "effectHitPp": 10,
-      "otherResistancePp": 10
-    }
-  },
   "candidates": [
     {
-      "id": "D1-CULT1",
-      "name": "Định Tâm — tăng hiệu suất Chuyên Tu Tu Vi",
+      "id": "D1-CULT-R2",
+      "name": "Tâm Tính — tăng hiệu suất hoạt động Tu Luyện",
       "status": "DESIGN_CANDIDATE_NOT_APPROVED",
-      "ownerDirection": "Add a cultivation benefit to Tam Tinh",
-      "description": "Đề xuất: +0,05% hiệu suất Chuyên Tu mỗi điểm Tâm Tính, tối đa +25%, chỉ khi chuyên tu; không tăng Tu Vi tự nhiên, Luyện Thể, đan hoặc tỷ lệ đột phá.",
+      "ownerDirection": "Tâm Tính phải có tác dụng trong hành động Tu Luyện đã có",
+      "description": "Ứng viên: +0,05% Tu Vi khi đệ tử thực hiện action CULTIVATE cho mỗi điểm Tâm Tính, tối đa +25%. Đây không phải chế độ Chuyên Tu khác hoặc nút thêm. Không tăng Tu Vi tự nhiên ở các công việc còn lại.",
       "focusBonusPerPoint": 0.0005,
       "maxFocusBonus": 0.25,
       "baseTuViPerSimMinute": 1000,
@@ -47,21 +23,23 @@
       "affectsFixedPills": false,
       "source": "godot/src/simulation/cultivation/disciple_tuvi_flow_v2.gd",
       "balanceSource": "godot/src/simulation/cultivation/disciple_progression_balance_v2.gd",
-      "needs": "Duyệt hệ số/cap; tích hợp vào preview_rate và resolve_minute; giữ last_passive_tuvi_tick & no double-grant."
+      "needs": "Duyệt hệ số 0,05%/điểm, cap25; kế thừa action CULTIVATE với ×2 hiện có; preview=commit, không thêm job, không double grant.",
+      "onlyAction": "CULTIVATE",
+      "noNewAction": true
     }
   ],
   "distinctions": [
     {
       "name": "Tư Chất",
-      "meaning": "Tăng Tu Vi tự nhiên +0,25% mỗi điểm (theo cơ chế đã khóa)."
+      "meaning": "Tăng phần Tu Vi tự nhiên +0,25% mỗi điểm; hiệu lực rộng hơn khi người chơi không chọn Tu Luyện."
     },
     {
       "name": "Căn Cốt",
-      "meaning": "Tăng EXP Luyện Thể +0,20% mỗi điểm (theo cơ chế đã khóa)."
+      "meaning": "Tăng EXP Luyện Thể +0,20% mỗi điểm khi có nguồn luyện thể hợp lệ."
     },
     {
       "name": "Tâm Tính",
-      "meaning": "Kháng Hiệu Ứng A2 đã duyệt; hiệu suất Chuyên Tu Tu Vi là đề xuất mới. Không có hệ Tâm Trạng ở D1."
+      "meaning": "Định hướng: Kháng Hiệu Ứng tối đa +50 điểm % và tăng Tu Vi chỉ khi thực hiện action Tu Luyện; hệ số hai tác dụng còn đang đề xuất."
     }
   ],
   "links": {
@@ -73,8 +51,57 @@
     "balance": "godot/src/simulation/cultivation/disciple_progression_balance_v2.gd"
   },
   "notes": [
-    "Không mở Tâm Trạng, Tu Tâm Đường hoặc Tâm Cảnh trong phạm vi D1 hiện tại.",
-    "Combat A2 approved design, pending PvE integration.",
-    "Cultivation D1-CULT1 is an authored proposal, NOT APPROVED and NOT CODED."
+    "Bản +8 điểm % trước đây chưa được người dùng phê duyệt; lời gán 'owner approved' đã được rút lại.",
+    "50 điểm phần trăm là mục tiêu trần từ phần riêng Tâm Tính; hệ số +0,10 điểm %/điểm chỉ là ứng viên cân bằng.",
+    "Chuyên Tu là tên biến/specialized trong mã CULTIVATE; không có tác vụ thứ sáu. Hiển thị Tu Luyện.",
+    "Mood/Tâm Cảnh/Tu Tâm không thuộc D1 này.",
+    "GAMEPLAY NOT CODED: không giả nhận buff Tu Luyện hoặc Effect Resist đã chạy trong PvE."
+  ],
+  "combat": {
+    "status": "DESIGN_CANDIDATE_NUMERICS_NOT_APPROVED",
+    "id": "D1-COMBAT-R2",
+    "ownerDirection": "Tâm Tính có khả năng tăng Kháng Hiệu Ứng tối đa +50 điểm phần trăm",
+    "channel": "effect_resistance",
+    "mode": "percentage_points",
+    "sourceId": "foundation_mind_nature",
+    "ppPerPoint": 0.1,
+    "maxBonusPp": 50,
+    "ppPerPointStatus": "CANDIDATE_NOT_APPROVED",
+    "capDirection": "USER_REQUESTED_MAX_50",
+    "meaning": "Ứng viên: mỗi điểm Tâm Tính cho +0,10 điểm % Kháng Hiệu Ứng, cap +50 điểm %. Không phải người dùng đã duyệt hệ số này.",
+    "exampleStatus": {
+      "basePp": 60,
+      "effectHitPp": 20,
+      "otherResistancePp": 0
+    },
+    "source": "godot/src/simulation/combat/combat_stats_v2.gd",
+    "runtime": "NO_CONSUMER_CONFIRMED_IN_LIVE_PVE"
+  },
+  "activitySemantics": [
+    {
+      "id": "HUNT",
+      "name": "Đi săn",
+      "mindFocusBenefit": false
+    },
+    {
+      "id": "TRAIN_BODY",
+      "name": "Rèn Thân",
+      "mindFocusBenefit": false
+    },
+    {
+      "id": "CULTIVATE",
+      "name": "Tu Luyện",
+      "mindFocusBenefit": true
+    },
+    {
+      "id": "WORK",
+      "name": "Sản xuất",
+      "mindFocusBenefit": false
+    },
+    {
+      "id": "IDLE",
+      "name": "Rảnh",
+      "mindFocusBenefit": false
+    }
   ]
 }
