@@ -14,7 +14,8 @@ func _run() -> void:
 	verify(F.SKILL_ID == E.SKILL_ID and F.CAP == 3 and F.RADIUS == 2.1, "same canonical circle mark cap3")
 	verify(F.CAST == .9 and F.COOLDOWN == 23.0 and F.STATUS == 7.0, "unchanged clocks")
 	verify(F.RECEIPT == E.RECEIPT and F.FORM_START == E.FORM_START and F.FORM_END == E.FORM_END, "unchanged legal simulated contact")
-	verify(F.CHARGE_TEX.get_size() == Vector2(1280, 960), "12 original RGBA source poses")
+	verify(F.CHARGE_TEX.get_size() == Vector2(1280, 960), "12 distinct R5F isolated RGBA wind silk poses")
+	verify(F.CHARGE_TEX.resource_path.ends_with("/r5f/assets/paf05_r5f_charge.webp"), "R5F source separated from frozen R5E")
 	verify(F.charge_frame_at(.08) < F.charge_frame_at(.54) and F.charge_frame_at(.54) < F.charge_frame_at(.85), "distinct authored pose progression")
 	verify(F.charge_alpha_at(.42) > 0.0 and F.charge_alpha_at(1.1) == 0.0, "only charge window")
 	for k in range(3):

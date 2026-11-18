@@ -10,6 +10,7 @@ on:
       - 'docs/operations/vfx_packets/PAF05_R5F_CHARGE_G35.json'
       - 'tools/vfx/paf05_paint_master.py'
       - 'tools/vfx/paf05_luminous_raster.py'
+      - 'tools/vfx/paf05_r5f_charge_master.py'
 permissions:
   contents: read
 jobs:
@@ -37,26 +38,28 @@ jobs:
           unzip -q /tmp/godot472.zip -d /tmp
           sudo install -m0755 /tmp/Godot_v4.7.2-stable_linux.x86_64 /usr/local/bin/godot
           godot --version | tee "$d/godot-version.txt"
-      - name: Reproduce master and original 12-pose charge atlas
+      - name: Bake existing R5E sources plus isolated R5F wind-silk charge atlas
         shell: bash
         run: |
           set -euo pipefail
           d="$RUNNER_TEMP/paf05-r5f"
           /usr/bin/python3 tools/vfx/paf05_paint_master.py 2>&1 | tee "$d/source.log"
           grep -Fq PAF05_SOURCE_BAKE_PASS "$d/source.log"
+          /usr/bin/python3 tools/vfx/paf05_r5f_charge_master.py 2>&1 | tee "$d/r5f-wind-silk-source.log"
+          grep -Fq PAF05_R5F_WIND_SILK_SOURCE_PASS "$d/r5f-wind-silk-source.log"
           /usr/bin/python3 tools/vfx/paint_paf05_r5_mark.py 2>&1 | tee "$d/mark-source.log"
           grep -Fq PAF05_R5_ART_SOURCE_PASS "$d/mark-source.log"
           python3 tools/qa/validate_vfx_v4_packet.py --stage packet --packet "$PACKET" | tee "$d/packet.log"
           python3 tools/qa/validate_vfx_v4_packet.py --stage assets --packet "$PACKET" | tee "$d/assets.log"
           python3 - <<'PY'
           from PIL import Image
-          im=Image.open("godot/labs/combat_lab/talisman15/assets/paf05_charge.webp").convert("RGBA")
+          im=Image.open("godot/labs/combat_lab/talisman15/r5f/assets/paf05_r5f_charge.webp").convert("RGBA")
           assert im.size == (1280, 960)
           assert im.getextrema()[3][0] == 0
           assert im.getextrema()[3][1] > 180
-          print("PAF05_R5F_CHARGE_ALPHA_PASS 12_poses=original")
+          print("PAF05_R5F_CHARGE_ALPHA_PASS 12_poses=new_isolated_wind_silk")
           PY
-          sha256sum godot/labs/combat_lab/talisman15/assets/paf05_charge.webp > "$d/charge-source-sha256.txt"
+          sha256sum godot/labs/combat_lab/talisman15/r5f/assets/paf05_r5f_charge.webp > "$d/charge-source-sha256.txt"
       - name: Restore the unchanged caster assets required by the scene
         shell: bash
         run: |
@@ -115,5 +118,6 @@ jobs:
             ${{ runner.temp }}/paf05-r5f/*.png
             ${{ runner.temp }}/paf05-r5f/*.mp4
             godot/labs/combat_lab/talisman15/art_sources/*.png
-            godot/labs/combat_lab/talisman15/assets/paf05_charge.webp
+            godot/labs/combat_lab/talisman15/r5f/art_sources/*.png
+            godot/labs/combat_lab/talisman15/r5f/assets/paf05_r5f_charge.webp
             godot/labs/combat_lab/talisman15/r5/art_sources/*.png

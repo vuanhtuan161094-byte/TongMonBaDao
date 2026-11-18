@@ -1,9 +1,9 @@
 extends "res://labs/combat_lab/talisman15/r5/thai_huyen_phong_gioi_r5.gd"
 ## PAF05 R5F G3.5 candidate: charge-only revision; R5E remains untouched.
-## Original 12 authored RGBA charge poses are painted by paf05_paint_master.py.
+## New R5F-exclusive 12 true-RGBA poses: tools/vfx/paf05_r5f_charge_master.py; R5E unchanged.
 ## Only this virtual charge renderer is replaced; circle, marks, status, timing
 ## and moving-target contract stay inherited from R5E. No runtime receipt.
-const CHARGE_TEX: Texture2D = preload("res://labs/combat_lab/talisman15/assets/paf05_charge.webp")
+const CHARGE_TEX: Texture2D = preload("res://labs/combat_lab/talisman15/r5f/assets/paf05_r5f_charge.webp")
 const CHARGE_POSES := 12
 const CHARGE_CELL := 320
 const REVISION := "PAF05_R5F_CHARGE_ONLY_G3_5_CANDIDATE"
@@ -29,10 +29,10 @@ func _draw_charge_r5(t: float) -> void:
 	var lo: int = int(floor(phase))
 	var hi: int = mini(lo + 1, CHARGE_POSES - 1)
 	var blend: float = phase - float(lo)
-	var at: Rect2 = Rect2(HAND - Vector2(84, 87), Vector2(168, 168))
+	var at: Rect2 = Rect2(HAND + Vector2(-46, -104), Vector2(196, 196))
 	var uv_lo: Rect2 = Rect2(float(lo % 4) * CHARGE_CELL, float(int(lo / 4)) * CHARGE_CELL, CHARGE_CELL, CHARGE_CELL)
 	var uv_hi: Rect2 = Rect2(float(hi % 4) * CHARGE_CELL, float(int(hi / 4)) * CHARGE_CELL, CHARGE_CELL, CHARGE_CELL)
-	var body: float = .78 * a
+	var body: float = .92 * a
 	draw_texture_rect_region(CHARGE_TEX, at, uv_lo, Color(1, 1, 1, body * (1.0 - blend)))
 	if hi != lo and blend > .006:
 		draw_texture_rect_region(CHARGE_TEX, at, uv_hi, Color(1, 1, 1, body * blend))
