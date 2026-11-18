@@ -1,0 +1,62 @@
+/* One-page player encyclopedia. The catalog and audit evidence remain separate read-only data. */
+:root{--ok:#176e56;--pending:#a36c22;--missing:#a84a37}
+.menu button{width:100%;font-size:14px;padding:13px 12px}
+.menu button.active{background:#318077;box-shadow:inset 3px 0 #e9d59f}
+.sidebar-bottom{border-top:1px solid #386b64;padding-top:15px}
+.search:focus-within{border-color:#3e9d8d;box-shadow:0 0 0 3px #d2eee3}
+.content{max-width:1130px}
+.ency-title{display:flex;justify-content:space-between;gap:20px;align-items:flex-start;margin-bottom:16px}
+.ency-title .lead{margin-bottom:10px}
+.ency-tags{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0 16px}
+.ency-status{border-radius:999px;padding:5px 10px;display:inline-block;font-size:12px;font-weight:700;background:#f8edd7;color:#79531c}
+.ency-status.ok{background:#e1f3e8;color:#216849}
+.ency-status.danger{background:#f9e5df;color:#953d2a}
+.ency-status.idea{background:#efeafa;color:#65529c}
+.ency-status.muted{background:#edf1ef;color:#627569}
+.ency-mini{color:#66796e;font-size:12px}
+.ency-summary{font-size:15px;color:#456256;line-height:1.7}
+.ency-buttons{display:flex;flex-wrap:wrap;gap:9px;margin-top:16px}
+.ency-buttons button{background:#e4f2eb;color:#175d4c;border:0;padding:10px 14px;border-radius:9px;font-weight:700}
+.ency-buttons button:hover{background:#cfe9de}
+.ency-section{margin-top:24px}
+.ency-section h2{font:24px Georgia,serif;margin:0 0 8px}
+.ency-section>p{color:#61786b;font-size:14px}
+.ency-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;margin:15px 0}
+.ency-card{background:white;border:1px solid #dce8e1;border-radius:13px;padding:17px 19px}
+.ency-card h3{font:21px Georgia,serif;margin:0 0 6px}
+.ency-card p{color:#536b5e;font-size:13px;line-height:1.65}
+.ency-card .ency-mini{display:block;margin:5px 0}
+.ency-card details{margin-top:12px;padding-top:11px;border-top:1px solid #e5eee7}
+.ency-card summary{color:#206a5b;font-weight:700;font-size:13px;cursor:pointer}
+.ency-card details p{margin:8px 0 3px}
+.ency-card details a{overflow-wrap:anywhere}
+.ency-table-scroll{overflow:auto}
+.ency-table-scroll table{min-width:610px}
+.ency-controls{display:flex;flex-wrap:wrap;gap:12px;align-items:end;margin:15px 0}
+.ency-controls label{display:grid;gap:6px;font-size:12px;color:#677b6e;font-weight:700;flex:1 1 180px}
+.ency-controls input,.ency-controls select{border:1px solid #cbded3;border-radius:9px;background:white;color:#1e4439;padding:11px;width:100%;min-width:0}
+.ency-compact{font-size:12px;color:#678071;line-height:1.6}
+.ency-hero{background:linear-gradient(110deg,#164d46,#287367);border-radius:20px;color:white;padding:28px 30px;margin-bottom:19px}
+.ency-hero h1{font:clamp(28px,4vw,41px) Georgia,serif;margin:6px 0 10px}
+.ency-hero p{color:#d2e9de;max-width:680px;font-size:15px;margin:0}
+.ency-home-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;margin:18px 0}
+.ency-tile{text-align:left;border:1px solid #dae6df;background:white;border-radius:13px;padding:18px 20px;display:flex;gap:12px;align-items:center;color:#285849;min-height:88px}
+.ency-tile:hover{border-color:#7bb3a0;background:#f6fbf7}
+.ency-tile .sym{font-size:24px;width:34px}
+.ency-tile b{display:block;font-size:16px}
+.ency-tile small{display:block;color:#6e8276;margin-top:4px;font-size:12px}
+.ency-alert{background:#fdf7eb;border-left:3px solid #bd954a;padding:13px 16px;color:#785b2b;font-size:13px;border-radius:5px;line-height:1.65;margin:12px 0}
+.ency-alert.soft{background:#edf7f1;border-color:#2d8876;color:#285c4b}
+.ency-pager{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12px;color:#667c70;margin:14px 0}
+.ency-pager button{padding:9px 14px;background:#e4f2eb;border:0;border-radius:8px;color:#19614e;font-weight:700}
+.ency-pager button:disabled{opacity:.4}
+.ency-link{font-size:12px;line-height:1.7}
+.ency-topsearch{margin:16px 0}
+.ency-topsearch input{width:100%;padding:13px 15px;border-radius:10px;border:1px solid #d0e1d7;background:#fff;font-size:16px;color:#184f41}
+.ency-detail{margin-top:9px;font-size:13px;color:#557467}
+.ency-example{display:flex;gap:10px;flex-wrap:wrap}
+.ency-example>div{flex:1;min-width:145px;padding:15px;background:#eff7f2;border-radius:10px}
+.ency-example strong{display:block;font-size:22px;color:#186650}
+.ency-example small{font-size:12px;color:#617a6b}
+@media(max-width:840px){.ency-home-grid,.ency-cards{grid-template-columns:1fr}.header .breadcrumb span{display:none}.content{padding:20px 16px 45px}.ency-hero{padding:21px}.ency-title{display:block}}
+@media(max-width:590px){.search{width:100%;min-width:100px}.ency-tile{padding:15px}.ency-section h2{font-size:21px}.ency-pager{flex-wrap:wrap}.ency-cards{gap:9px}}
