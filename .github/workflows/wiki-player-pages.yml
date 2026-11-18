@@ -21,6 +21,7 @@ on:
       - 'wiki/data/game_system_audit.json'
       - 'wiki/data/game_items_audit.json'
       - 'wiki/data/combat_stats_reference.json'
+      - 'wiki/data/mind_nature_reference.json'
       - 'wiki/data/trait_effect_audit.json'
       - 'tools/wiki/tests/test_trait_effect_audit.py'
       - 'tools/wiki/tests/test_game_audit.py'
@@ -68,6 +69,7 @@ jobs:
           cp wiki/audit.html _site/wiki/
           cp wiki/data/game_system_audit.json wiki/data/game_items_audit.json _site/wiki/data/
           cp wiki/data/combat_stats_reference.json _site/wiki/data/
+          cp wiki/data/mind_nature_reference.json _site/wiki/data/
           cp wiki/data/trait_effect_audit.json _site/wiki/data/
           cp wiki/data/character_reference.json _site/wiki/data/
           cp wiki/data/catalog.json _site/wiki/data/
