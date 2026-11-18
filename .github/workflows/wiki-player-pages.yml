@@ -1,0 +1,48 @@
+name: Publish player encyclopedia (GitHub Pages)
+
+on:
+  push:
+    branches:
+      - integration/pve-p0-playable-ui-20261103
+    paths:
+      - 'wiki/guide.html'
+      - 'wiki/guide.css'
+      - 'wiki/guide.js'
+      - 'wiki/data/catalog.json'
+      - '.github/workflows/wiki-player-pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages-player-wiki"
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: \${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+      - name: Assemble public player-only site
+        shell: bash
+        run: |
+          mkdir -p _site/wiki/data
+          cp wiki/guide.html wiki/guide.css wiki/guide.js _site/wiki/
+          cp wiki/data/catalog.json _site/wiki/data/
+          printf '%s\n' '<!doctype html><html lang="vi"><head><meta charset="utf-8"><meta http-equiv="refresh" content="0;url=wiki/guide.html"><title>Tàng Kinh Các</title></head><body><a href="wiki/guide.html">Mở Bách khoa Tông Môn Bá Đạo</a></body></html>' > _site/index.html
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
