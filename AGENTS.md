@@ -1,3 +1,9 @@
+## OWNER VFX STYLE OVERRIDE — JX/KIẾM THẾ SIMPLIFIED (18/11/2026)
+
+The owner explicitly prioritizes **simpler, more identifiable JX/Kiếm Thế-Mobile-like VFX** for upcoming work: ONE strong silhouette, ONE action, ONE clear impact, and status only if the canonical contract requires it. **Do not require 16–40 poses for routine skills**; suggest 2–4 poses for simple, 4–6 for characteristic, 6–12 only for justified ultimate/iconic content. A high-quality source image plus modest Godot trail/particles is preferred over dozens of procedurally changed frames. Do not overwrite owner-approved/provisional versions or weaken G3.5 native 1× and owner visual gates. Codex may build GDScript/QA but does NOT auto-solve art. Read [Style V1](docs/operations/TMB_VFX_JX_SIMPLE_STYLE_V1_20261118.md) and [multi-chat coordination](docs/operations/TMB_VFX_MULTI_CHAT_COORDINATION_AND_RECOVERY_20261118.md).
+
+---
+
 ## VFX NATIVE ART DIRECTION REPAIR — 2026-11-18 (ALL SCHOOL CHATS)
 
 The coordinator inspected **genuine exact-SHA Godot native screenshots and videos** for POI18 R3.1 / FIST14 R3 / PAF05 R5F and found **semantic/source-material and 1× art failures despite technical CI PASS**. Before further source production, read the new [three-skill visual audit and official Godot 2D VFX guide](docs/operations/TMB_VFX_MULTI_CHAT_COORDINATION_AND_RECOVERY_20261118.md#9-2026-11-18-native-art-review--actual-godot-frames-not-just-ci). Preserve all approved/provisional art, stay within school-owned paths; owner feedback was a general objection to quality, NOT authorization to overwrite prior approved revisions. Do not fix ugly central sprites with extra CI, many duplicate poses, oversized glowing glyphs, generic line waves or proprietary JX imagery. Godot particle/animation/shader nodes are **supplements to first-party authored hero art**, not replacements. Current Art-First V4/G3.5 art STOP remains authoritative, not a new competing SOP.
