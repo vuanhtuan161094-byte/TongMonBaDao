@@ -15,6 +15,7 @@ on:
       - 'wiki/traits.css'
       - 'wiki/traits.js'
       - 'wiki/data/trait_effect_audit.json'
+      - 'tools/wiki/tests/test_trait_effect_audit.py'
       - 'wiki/data/character_reference.json'
       - 'wiki/data/catalog.json'
       - '.github/workflows/wiki-player-pages.yml'
@@ -36,6 +37,13 @@ jobs:
     steps:
       - name: Checkout source
         uses: actions/checkout@v4
+      - name: Validate 101 trait audit and browser scripts
+        shell: bash
+        run: |
+          python3 tools/wiki/tests/test_trait_effect_audit.py
+          node --check wiki/traits.js
+          node --check wiki/guide.js
+          node --check wiki/characters.js
       - name: Assemble public player-only site
         shell: bash
         run: |
