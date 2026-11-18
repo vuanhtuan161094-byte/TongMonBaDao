@@ -36,9 +36,13 @@ func _soft_trail(t: float) -> void:
     var path:=PackedVector2Array()
     for i in range(13):
         path.append(projectile_pos(lerpf(start,stop,float(i)/12.)))
-    draw_polyline(path,Color(.08,.71,.52,.10),10.,true)
-    draw_polyline(path,Color(.21,.92,.67,.13),5.,true)
-    draw_polyline(path,Color(.86,1.,.84,.20),1.4,true)
+    # Layered fading ribbon, oldest segments are dimmer and narrower.
+    # More natural motion energy, no additional projectile/strike.
+    for i in range(12):
+        var fade:=powf(float(i+1)/12.,1.45)
+        draw_line(path[i],path[i+1],Color(.07,.63,.48,.08*fade),lerpf(1.8,8.5,fade),true)
+        draw_line(path[i],path[i+1],Color(.25,.91,.66,.14*fade),lerpf(1.0,4.0,fade),true)
+        draw_line(path[i],path[i+1],Color(.88,1.,.83,.19*fade),lerpf(.5,1.45,fade),true)
     for i in range(7):
         var dt:=minf(stop,start+float(i)*.027)
         var p:=projectile_pos(dt)

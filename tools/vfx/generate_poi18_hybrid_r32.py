@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""POI18 R3.2 - independent first-party full-cel jade gu sprite source.
+"""POI18 R3.2B polished - independent first-party full-cel jade gu sprite source.
 16 painted key poses with explicit shapes, transparent RGBA. No rig or crops.
 Godot draws only supplemental trail/particles/wrap. R2C assets immutable.
 """
@@ -55,9 +55,20 @@ def render(index):
     paint(curve((-27,14),(-61,46),(-115,29),(-164,48),(-155,20),(-91,11),(-49,2)),(12,151,129,124),3.6)
     paint(curve((-37,11),(-82,28),(-126,27),(-147,37),(-122,17),(-74,9),(-36,4)),(98,245,205,79))
     # Thick central sculpted jade body, clear head-to-body physical continuity
-    paint(curve((-134,-4),(-107,-20),(-72,-22),(-53,-18),(-33,-23),(-12,-16),(0,0),(-24,20),(-62,22),(-89,12),(-108,10),(-125,2),(-134,-4)),(16,112,99,190),5)
-    paint(curve((-112,-10),(-79,-24),(-39,-25),(-6,-5),(-17,10),(-54,18),(-88,9),(-106,4),(-111,-1),(-112,-10)),(29,209,169,179))
-    paint(curve((-90,-10),(-66,-21),(-43,-19),(-22,-13),(-28,2),(-44,12),(-70,9),(-84,4),(-89,-4),(-90,-10)),(98,248,210,113))
+    # R3.2B tonal repair: three separate, partially translucent nephrite
+    # material planes. Do NOT replace the readable source with more bloom.
+    paint(curve((-134,-4),(-107,-20),(-72,-22),(-53,-18),(-33,-23),(-12,-16),(0,0),(-24,20),(-62,22),(-89,12),(-108,10),(-125,2),(-134,-4)),(9,91,89,166),4.2)
+    paint(curve((-112,-10),(-79,-24),(-39,-25),(-6,-5),(-17,10),(-54,18),(-88,9),(-106,4),(-111,-1),(-112,-10)),(18,202,163,157))
+    paint(curve((-90,-10),(-66,-21),(-43,-19),(-22,-13),(-28,2),(-44,12),(-70,9),(-84,4),(-89,-4),(-90,-10)),(93,239,200,106))
+    # Facet seams and asymmetrical illuminated ribs are part of original
+    # independently-authored full-cel art, not runtime repeated waves.
+    paint([warp(*p) for p in [(-104,-7),(-91,-18),(-69,-18),(-82,-8)]],(186,255,213,91))
+    paint([warp(*p) for p in [(-88,5),(-70,12),(-51,8),(-72,2)]],(2,73,76,89))
+    paint([warp(*p) for p in [(-73,-13),(-57,-20),(-39,-14),(-51,-7)]],(209,255,223,80))
+    paint([warp(*p) for p in [(-55,6),(-37,12),(-19,6),(-29,2)]],(0,79,78,90))
+    stroke([(-124,-5),(-105,-12),(-88,-18),(-71,-14)],(173,255,212,102),1.2)
+    stroke([(-102,5),(-87,11),(-59,14),(-37,6)],(12,80,82,119),1.25)
+    stroke([(-86,-15),(-58,-23),(-43,-20),(-25,-14)],(230,251,221,129),1.1,1.2)
     # Crystal bud/head, asymmetric gold filigree, no insect anatomy or eyes
     paint(curve((-66,-15),(-49,-22),(-29,-18),(-12,-11),(-5,-7),(-1,-2),(0,0),(-9,5),(-23,15),(-38,15),(-49,11),(-60,4),(-66,-15)),(42,186,155,209),3)
     paint(curve((-60,-15),(-36,-28),(-10,-16),(0,0),(-18,-5),(-33,-6),(-48,-2),(-48,-10),(-58,-13),(-60,-15)),(170,255,223,119))
@@ -65,6 +76,14 @@ def render(index):
     paint([warp(*x) for x in [(-42,-8),(-34,-15),(-25,-8),(-32,3)]],(73,232,208,207))
     paint([warp(*x) for x in [(-32,3),(-25,-8),(-18,-2),(-24,8)]],(158,255,215,198))
     paint([warp(*x) for x in [(-42,-8),(-32,3),(-39,7)]],(22,156,160,220))
+    # Pearly refractive cut in the little gu head. Off-centre facets read
+    # as a carved spirit seed at 1x instead of a featureless cyan blob.
+    paint([warp(*p) for p in [(-42,-9),(-37,-15),(-29,-12),(-35,-7)]],(233,255,219,129))
+    paint([warp(*p) for p in [(-29,-12),(-22,-9),(-19,-3),(-27,-1)]],(29,107,102,130))
+    paint([warp(*p) for p in [(-29,1),(-21,0),(-26,9),(-37,7)]],(120,250,189,109))
+    stroke([(-42,-8),(-36,-17),(-21,-12),(-16,-2)],(248,233,168,191),1.25,1.3)
+    stroke([(-16,-2),(-24,11),(-39,9),(-45,-8)],(238,248,207,123),1.0)
+    stroke([(-36,-16),(-31,-11),(-30,-4),(-25,4)],(255,255,229,169),.90,1.0)
     stroke([(-62,-16),(-49,-27),(-24,-22),(-4,-4)],(255,219,121,216),1.9,2)
     stroke([(-55,14),(-41,17),(-17,11),(-2,0)],(255,214,120,176),1.7,1.4)
     stroke([(-105,-12),(-78,-36),(-59,-25),(-41,-17)],(238,224,152,144),1.2,1)
@@ -73,6 +92,12 @@ def render(index):
     stroke([(-35,-11),(-93,-35),(-137,-45),(-180,-57)],(192,255,225,137),1.25,1.2)
     stroke([(-43,5),(-87,20),(-119,25),(-156,40)],(248,220,119,116),1,1)
     stroke([(-63,-13),(-92,-22),(-119,-18),(-152,-42)],(145,255,223,90),1)
+    # A few hand-shaped cut-tip highlights improve motion streaking without
+    # adding uniform fan lines or extra simulated projectiles/hits.
+    stroke([(-93,-21),(-113,-38),(-143,-48),(-171,-56)],(232,255,223,96),.9,1.1)
+    stroke([(-71,13),(-102,29),(-128,32),(-153,47)],(247,222,140,79),.85,.7)
+    stroke([(-58,-30),(-72,-42),(-86,-41),(-105,-51)],(123,237,197,93),1.0,.9)
+    stroke([(-41,18),(-55,30),(-76,32),(-91,29)],(255,216,134,76),1.,.9)
     for k in range(9):
         x=-56-12*k;y=-13+round(10*sin(k*.9+index*.27))-(15 if k%3==0 else 0)
         xx,yy=warp(x,y)
@@ -96,5 +121,5 @@ def main():
         p=render(i);atlas.alpha_composite(p,((i%4)*W,(i//4)*H))
         if i==7:p.save(ROOT/'master'/'poi18_gu_master_rgba.png',optimize=True)
     atlas.save(ROOT/'poi18_gu_16.png',optimize=True)
-    print('POI18_HYBRID_R32_SOURCE_PASS poses=16 atlas=1280x1024 alpha=RGBA independent_shapes=true')
+    print('POI18_HYBRID_R32_SOURCE_PASS poses=16 atlas=1280x1024 alpha=RGBA independent_shapes=true artisanal_facets=R32B')
 if __name__=='__main__':main()
