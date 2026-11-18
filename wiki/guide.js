@@ -31,6 +31,8 @@ const bodyRows=[["A",12,4],["A",18,5],["A",24,6],["B",12,1],["B",16,2],["B",24,3
 const state={data:null,tab:"home",realm:2,track:"cultivation",building:"spirit_field",buildingLevel:1,fieldLevel:1,school:"all",skill:null,limit:48,query:""};
 const names={home:"Tổng quan",realms:"Cảnh giới & tu luyện",skills:"Kỹ năng & sát thương",buildings:"Công trình",fields:"Linh Điền & cây trồng",medicine:"Đan dược & đột phá",equipment:"Trang bị",schools:"Môn phái & tài nguyên"};
 const content=document.getElementById("content"),search=document.getElementById("search");
+// Engineering Studio remains localhost-only and is intentionally excluded from Pages.
+if(location.hostname==="vuanhtuan161094-byte.github.io"){document.querySelectorAll(".studio-link,.footer a").forEach(el=>{el.style.display="none";});}
 const fmt=n=>Number(n).toLocaleString("vi-VN",{maximumFractionDigits:2});
 const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 function source(path){return '<p class="source-note">Nguồn trong game: <a target="_blank" rel="noopener" href="'+ROOT+esc(path)+'">'+esc(path.split("/").pop())+'</a>. Số liệu là thiết kế/mã nguồn hiện tại, không tự chứng minh tính năng đã phát hành.</p>';}
