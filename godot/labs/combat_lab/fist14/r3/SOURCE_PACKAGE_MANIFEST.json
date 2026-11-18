@@ -1,0 +1,89 @@
+{
+  "schema": "TMB_VFX_FIST14_R3_SOURCE_PACKAGE_STATUS_V1",
+  "date": "2026-11-18",
+  "branch": "integration/pve-p0-playable-ui-20261103",
+  "pr": 72,
+  "skill_id": "tmb.skill.fist.huyet_quyen.active_04.human",
+  "candidate_revision": "FIST14_R3_SOURCE_KEY_CANDIDATE",
+  "game_contract": {
+    "effect": "mark",
+    "element": "nether",
+    "shape": "single_target",
+    "target_limit": 1,
+    "range": 2.8,
+    "cast_time": 0.45,
+    "cooldown": 8,
+    "duration": 6,
+    "projectile_speed": 0,
+    "radius": 0,
+    "hit_count": null,
+    "receipt": "RUNTIME_MAPPING_PENDING"
+  },
+  "original_master": {
+    "source_kind": "FIRST_PARTY_IMAGEGEN_TRUE_RGBA",
+    "width": 1774,
+    "height": 887,
+    "source_sha256": "e0006ceb6208cb7cb037d2909f2ca9d27e10f63b7d71871f53b6b55f4903b7b5",
+    "intended_repository_path": "godot/labs/combat_lab/fist14/r3/source/fist14_r3_original_imagegen_rgba_1774x887.png",
+    "committed_binary_on_github": false
+  },
+  "recovery": {
+    "source_repository": "ChatGPT Library",
+    "library_path": "/TMB-VFX/FIST14_R3_MASTER_36KEY_CANDIDATE_20261118.zip",
+    "library_file_id": "libfile_1ce9e88f83c08191bee4c639531d80ea",
+    "zip_sha256": "6762348b570cad988247e522403c00008c6a898a9df56caacfdafb3cc37a6edd",
+    "note": "Exact original PNG and source+36 candidate PNG keys stored inside this versioned package; NOT yet transferred as GitHub binary blobs."
+  },
+  "keyframe_package": {
+    "local_candidate_count": 36,
+    "charge": 8,
+    "flight": 12,
+    "contact": 8,
+    "mark": 8,
+    "canvas_px": [
+      640,
+      640
+    ],
+    "atlas_cell_px": [
+      320,
+      320
+    ],
+    "atlas_columns": 4,
+    "atlases": [
+      {
+        "phase": "charge",
+        "sha256": "d988493f4050fe00fea81fcb85b1b04eb0077d46817a12a24eeb58bb39e43bab"
+      },
+      {
+        "phase": "flight",
+        "sha256": "e66aa4a90584e56236e3986cbf2ca0c94e01ef6a3db04d20bd1ad16198c98f45"
+      },
+      {
+        "phase": "contact",
+        "sha256": "d34b39c8432464fd918db4581190e104ad924672d239fb2f2d2622a00cd63dca"
+      },
+      {
+        "phase": "mark",
+        "sha256": "113babdf9fcd15bbe67330b526fc0e700c837b5f0e99f2eb4f9fb83735cc92cc"
+      }
+    ],
+    "method": "Composite source with phase-specific independently authored light overpaint. NOT 36 independently hand-painted anatomical fist poses.",
+    "static_alpha": "PASS_36_UNIQUE_NONEMPTY_RGBA",
+    "manual_art": "PENDING_1X_NATIVE_REVIEW"
+  },
+  "gates": {
+    "G0": "CONTRACT_VERIFIED",
+    "G3_local": "CANDIDATE_WITH_ORIGINAL",
+    "G3_repo": "SOURCE_TRANSFER_BLOCKED",
+    "G35": "NOT_EXECUTED",
+    "G36": "NOT_EXECUTED",
+    "G37": "NOT_EXECUTED",
+    "G4": "NOT_EXECUTED",
+    "G5": "NOT_EXECUTED",
+    "G7": "NOT_EXECUTED",
+    "owner": "PENDING",
+    "PVE": "HOLD",
+    "ANDROID": "PENDING"
+  },
+  "next_action": "Import the exact master and key atlas PNG binaries into FIST14-only r3 paths without touching R2, verify hashes, then implement separate native G3.5 Godot LAB and focused QA; stop if transport unavailable."
+}
