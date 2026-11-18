@@ -10,7 +10,7 @@
     "testGdFiles": 387,
     "designedBuildingTypes": 26,
     "registeredBuildingTypes": 8,
-    "designNotRegistered": 24,
+    "designNotRegistered": 20,
     "plannedSetFamilies": 24,
     "plannedSetTemplates": 96,
     "featureChecklist": 45
@@ -522,15 +522,15 @@
   ],
   "buildings": [
     {
-      "id": "planned_aiien",
+      "id": "main_hall",
       "name": "ĐẠI ĐIỆN",
       "designSource": "docs/P3_7_BUILDING_TREE_SPEC.md",
       "designLine": 282,
-      "runtimePath": null,
-      "codeStatus": "NOT_REGISTERED_AS_BUILDING",
-      "upgradeStatus": "NO_BUILDING_UPGRADE_CODE",
-      "upgradeNote": "Có thiết kế trong cây công trình dài hạn, chưa có loại tương ứng trong BuildingSystem.DEFINITIONS; các hệ độc lập nếu có không đồng nghĩa đã là công trình có thể nâng cấp.",
-      "summary": "Chưa có đường xây/nâng cấp công trình theo mã chính."
+      "runtimePath": "godot/src/simulation/building/building_system.gd",
+      "codeStatus": "REGISTERED_BUILDING",
+      "upgradeStatus": "CODE_PRESENT_UPGRADE",
+      "upgradeNote": "Có hàm nâng cấp, nhưng giá cũ được chú thích tạm; điều kiện và sản xuất cần QA.",
+      "summary": "Đã định nghĩa trong BuildingSystem; có đường nâng cấp có điều kiện. Chưa kiểm chứng thao tác GUI/thử trên thiết bị."
     },
     {
       "id": "planned_khotongmon",
@@ -544,26 +544,26 @@
       "summary": "Chưa có đường xây/nâng cấp công trình theo mã chính."
     },
     {
-      "id": "planned_etuxa",
+      "id": "residence",
       "name": "ĐỆ TỬ XÁ",
       "designSource": "docs/P3_7_BUILDING_TREE_SPEC.md",
       "designLine": 430,
-      "runtimePath": null,
-      "codeStatus": "NOT_REGISTERED_AS_BUILDING",
-      "upgradeStatus": "NO_BUILDING_UPGRADE_CODE",
-      "upgradeNote": "Có thiết kế trong cây công trình dài hạn, chưa có loại tương ứng trong BuildingSystem.DEFINITIONS; các hệ độc lập nếu có không đồng nghĩa đã là công trình có thể nâng cấp.",
-      "summary": "Chưa có đường xây/nâng cấp công trình theo mã chính."
+      "runtimePath": "godot/src/simulation/building/building_system.gd",
+      "codeStatus": "REGISTERED_BUILDING",
+      "upgradeStatus": "CODE_PRESENT_UPGRADE",
+      "upgradeNote": "Có hệ thống nâng cấp/nhà ở, nhưng GUI và end-to-end chưa nghiệm thu.",
+      "summary": "Đã định nghĩa trong BuildingSystem; có đường nâng cấp có điều kiện. Chưa kiểm chứng thao tác GUI/thử trên thiết bị."
     },
     {
-      "id": "planned_linhien",
+      "id": "spirit_field",
       "name": "LINH ĐIỀN",
       "designSource": "docs/P3_7_BUILDING_TREE_SPEC.md",
       "designLine": 479,
-      "runtimePath": null,
-      "codeStatus": "NOT_REGISTERED_AS_BUILDING",
-      "upgradeStatus": "NO_BUILDING_UPGRADE_CODE",
-      "upgradeNote": "Có thiết kế trong cây công trình dài hạn, chưa có loại tương ứng trong BuildingSystem.DEFINITIONS; các hệ độc lập nếu có không đồng nghĩa đã là công trình có thể nâng cấp.",
-      "summary": "Chưa có đường xây/nâng cấp công trình theo mã chính."
+      "runtimePath": "godot/src/simulation/building/building_system.gd",
+      "codeStatus": "REGISTERED_BUILDING",
+      "upgradeStatus": "CODE_PRESENT_UPGRADE",
+      "upgradeNote": "Có gieo/thu hoạch và nâng cấp, cây cấp cao cần mốc vật liệu; chưa có QA thiết bị.",
+      "summary": "Đã định nghĩa trong BuildingSystem; có đường nâng cấp có điều kiện. Chưa kiểm chứng thao tác GUI/thử trên thiết bị."
     },
     {
       "id": "mine",
@@ -621,15 +621,15 @@
       "summary": "Chưa có đường xây/nâng cấp công trình theo mã chính."
     },
     {
-      "id": "planned_luyenanien",
+      "id": "alchemy_hall",
       "name": "LUYỆN ĐAN ĐIỆN",
       "designSource": "docs/P3_7_BUILDING_TREE_SPEC.md",
       "designLine": 853,
-      "runtimePath": null,
-      "codeStatus": "NOT_REGISTERED_AS_BUILDING",
-      "upgradeStatus": "NO_BUILDING_UPGRADE_CODE",
-      "upgradeNote": "Có thiết kế trong cây công trình dài hạn, chưa có loại tương ứng trong BuildingSystem.DEFINITIONS; các hệ độc lập nếu có không đồng nghĩa đã là công trình có thể nâng cấp.",
-      "summary": "Chưa có đường xây/nâng cấp công trình theo mã chính."
+      "runtimePath": "godot/src/simulation/building/building_system.gd",
+      "codeStatus": "REGISTERED_BUILDING",
+      "upgradeStatus": "CODE_PRESENT_UPGRADE",
+      "upgradeNote": "Có chế tạo và nâng cấp, nhưng công thức cấp cao chưa đầy đủ.",
+      "summary": "Đã định nghĩa trong BuildingSystem; có đường nâng cấp có điều kiện. Chưa kiểm chứng thao tác GUI/thử trên thiết bị."
     },
     {
       "id": "planned_luyenkhiien",
@@ -806,50 +806,6 @@
       "upgradeStatus": "NO_BUILDING_UPGRADE_CODE",
       "upgradeNote": "Có thiết kế trong cây công trình dài hạn, chưa có loại tương ứng trong BuildingSystem.DEFINITIONS; các hệ độc lập nếu có không đồng nghĩa đã là công trình có thể nâng cấp.",
       "summary": "Chưa có đường xây/nâng cấp công trình theo mã chính."
-    },
-    {
-      "id": "main_hall",
-      "name": "Tông Môn Đại Điện",
-      "designSource": "godot/src/simulation/building/building_system.gd",
-      "designLine": 0,
-      "runtimePath": "godot/src/simulation/building/building_system.gd",
-      "codeStatus": "REGISTERED_BUILDING",
-      "upgradeStatus": "CODE_PRESENT_UPGRADE",
-      "upgradeNote": "Có hàm nâng cấp, nhưng giá cũ được chú thích tạm; mốc/tài nguyên cần kiểm tra gameplay.",
-      "summary": "Có thể nâng cấp theo mã điều kiện; chưa chứng minh GUI/exact-SHA hiện tại"
-    },
-    {
-      "id": "residence",
-      "name": "Đệ Tử Xá",
-      "designSource": "godot/src/simulation/building/building_system.gd",
-      "designLine": 0,
-      "runtimePath": "godot/src/simulation/building/building_system.gd",
-      "codeStatus": "REGISTERED_BUILDING",
-      "upgradeStatus": "CODE_PRESENT_UPGRADE",
-      "upgradeNote": "Có cấp/nâng cấp trong BuildingSystem; kiểm tra liên kết hạn mức cư trú thật.",
-      "summary": "Có thể nâng cấp theo mã; thực tế cư trú chưa xác nhận"
-    },
-    {
-      "id": "alchemy_hall",
-      "name": "Luyện Đan Điện",
-      "designSource": "godot/src/simulation/building/building_system.gd",
-      "designLine": 0,
-      "runtimePath": "godot/src/simulation/building/building_system.gd",
-      "codeStatus": "REGISTERED_BUILDING",
-      "upgradeStatus": "CODE_PRESENT_UPGRADE",
-      "upgradeNote": "Có job đan và nâng cấp, nhưng công thức nhiều cấp chưa có; chi phí/mốc nâng cấp dùng giá tạm.",
-      "summary": "Có nâng cấp; thiếu công thức cấp cao"
-    },
-    {
-      "id": "spirit_field",
-      "name": "Linh Điền",
-      "designSource": "godot/src/simulation/building/building_system.gd",
-      "designLine": 0,
-      "runtimePath": "godot/src/simulation/building/building_system.gd",
-      "codeStatus": "REGISTERED_BUILDING",
-      "upgradeStatus": "CODE_PRESENT_UPGRADE",
-      "upgradeNote": "Có plot, gieo, chăm, thu hoạch, chính sách cây, nâng cấp; chỉ 3 cây nền; giá sản lượng chưa nghiệm thu thiết bị.",
-      "summary": "Có nâng cấp, cần thành phần ở một số cấp mốc"
     },
     {
       "id": "ren_than_duong",
