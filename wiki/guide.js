@@ -217,39 +217,41 @@ function combatStatPanel(){
 function mindNaturePanel(){
  const d=state.mind;if(!d)return "";
  const n=Math.max(0,Math.min(999999,Number(state.mindValue)||0));
- const p=d.approved,bonus=Math.min(p.maxBonusPp,n*p.ppPerPoint);
- const check=p.exampleStatus;
- const chance=Math.max(0,Math.min(100,check.basePp+check.effectHitPp-check.otherResistancePp-bonus));
- const mood=d.candidates[0],rest=d.candidates[1],practice=d.candidates[2];
- const loss=Math.round(mood.exampleBaseMoodLoss*Math.max(mood.minFactor,1-Math.min(n,mood.maxPointsForMood)/mood.pointsDivisor)*100)/100;
- const gained=Math.min(rest.maxMoodBonus,Math.floor(n/rest.moodPerPoints));
- const hours=practice.exampleBaseHours*(1-Math.min(practice.maxTimeReduction,n/practice.timeReductionDivisor));
- const validOpts=[0,100,300,500,800,1200].map(x=>'<button data-mind-preset="'+x+'" type="button">'+x+'</button>').join(" ");
+ const aptitude=Math.max(0,Math.min(50000,Number(state.aptitude)||0));
+ const p=d.approved,c=d.candidates[0];
+ const resistance=Math.min(p.maxBonusPp,n*p.ppPerPoint);
+ const chance=Math.max(0,Math.min(100,p.exampleStatus.basePp+p.exampleStatus.effectHitPp-p.exampleStatus.otherResistancePp-resistance));
+ const focusBonus=Math.min(c.maxFocusBonus,n*c.focusBonusPerPoint);
+ const naturalGain=c.baseTuViPerSimMinute*(1+aptitude*c.aptitudeNaturalGainPerPoint);
+ const baseFocus=naturalGain*c.baseCultivateMultiplier;
+ const proposedFocus=baseFocus*(1+focusBonus);
+ const focusMultiplier=c.baseCultivateMultiplier*(1+focusBonus);
+ const presets=[0,100,300,500,800].map(x=>'<button data-mind-preset="'+x+'" type="button">'+x+'</button>').join(" ");
  return '<section class="ency-section" id="mind-nature">'+
- '<h2>Tâm Tính — Định lực của đệ tử</h2>'+
- '<p class="ency-summary">Tâm Tính là <b>chỉ số nền thứ ba trong Tam Căn D7</b>, không phải Tâm Trạng hay một cảnh giới thứ ba. Người có Tâm Tính cao bền bỉ hơn trước khống chế. Những ảnh hưởng tới tâm lý và tu tâm bên dưới là hướng phát triển đề xuất.</p>'+
- '<div class="ency-tags">'+status("A2: Đã duyệt thiết kế","ok")+status("Combat PvE: chưa tích hợp","danger")+status("M2–M4: mới đề xuất","idea")+'</div>'+
- panel("Đã chốt: Kháng Hiệu Ứng từ Tâm Tính","+0,01 điểm phần trăm mỗi điểm, tối đa +8 điểm %. Không tác động Crit, Công, HP hay tỷ lệ đột phá.",
- '<div class="ency-controls"><label>Điểm Tâm Tính giả lập<input id="mind-score" type="number" min="0" step="1" max="999999" value="'+n+'"></label></div>'+
- '<div class="ency-buttons" style="margin:0 0 15px">'+validOpts+'</div>'+
- '<div class="ency-example"><div><strong>+'+fmt(bonus)+' điểm %</strong><small>Kháng Hiệu Ứng do Tâm Tính (thiết kế đã duyệt)</small></div>'+
- '<div><strong>'+fmt(chance)+'%</strong><small>Ví dụ xác suất bị Choáng khi địch 45% gốc, +10 điểm % Chính Xác, mục tiêu có thêm +10 điểm % Kháng từ Trait</small></div>'+
- '<div><strong>'+fmt(Math.max(0,p.maxBonusPp-bonus))+' điểm %</strong><small>Khoảng tăng thêm đến giới hạn +8 điểm %</small></div></div>'+
- '<p class="ency-detail">Công thức: min(8; 0,01 × Tâm Tính) điểm %. Nếu địch có 45% gây Choáng và +10 điểm % Chính Xác, người phòng thủ có Trait +10 điểm % Kháng, xác suất cuối = 45 + 10 − 10 − kháng từ Tâm Tính. Các kỹ năng bảo đảm trúng/miễn nhiễm tuân theo luật riêng.</p>'+
- '<div class="ency-alert soft">800 điểm chỉ là <b>mốc bão hòa thưởng Kháng Hiệu Ứng</b>, không phải giới hạn Tâm Tính. Tâm Tính D7 đã có dữ liệu và lưu/tải; buff mới hiện là <b>quyết định thiết kế, chưa có đường áp dụng trong PvE chính</b>.</div>')+
- panel("Phát triển thêm: Tâm Tính tác động cuộc sống như thế nào?","Ba cơ chế có công thức và ví dụ, nhưng CHƯA phê duyệt hoặc chạy trong game.",
- '<div class="ency-cards">'+[
- ["Vững tâm sau thất bại","Khi đột phá trượt hoặc thua PvE, không sửa hình phạt gốc nhưng có thể giảm mất Tâm Trạng.","Ví dụ event gây −"+fmt(mood.exampleBaseMoodLoss)+" Tâm Trạng: với "+fmt(n)+" Tâm Tính, còn −"+fmt(loss)+" điểm.","D1-M2 · Cần Tâm Trạng 0–100 & sự kiện thật"],
- ["Tĩnh Tâm có lịch nghỉ","Đệ tử nghỉ có thời gian thật để hồi tâm trạng. Không hồi HP, EXP hay xóa Injury miễn phí.","Ví dụ hành động nghỉ hồi cơ bản +"+fmt(rest.exampleBaseRestGain)+" Tâm Trạng: với "+fmt(n)+" Tâm Tính có thể thêm +"+fmt(gained)+" điểm.","D1-M3 · Cần action rest_completed"],
- ["Tu Tâm để khắc phục đặc tính xấu","Khi có Tu Tâm Đường, rút ngắn thời gian một lần rèn luyện/khắc phục Trait hợp lệ. Không tự cho Trait hiếm.","Ví dụ job 10 giờ: với "+fmt(n)+" Tâm Tính còn "+fmt(hours)+" giờ; vẫn tiêu phí nguyên liệu và thời gian thật.","D1-M4 · Cần công trình, job, lịch và chi phí thật"]
- ].map(x=>'<article class="ency-card"><h3>'+x[0]+'</h3>'+status("ĐỀ XUẤT, chưa hoạt động","idea")+'<p>'+x[1]+'</p><p><b>'+x[2]+'</b></p><small class="ency-mini">'+x[3]+'</small></article>').join("")+'</div>'+
- '<div class="ency-alert">Những con số mood, nghỉ và Tu Tâm phía trên là <b>ví dụ của phương án đề xuất</b>, không phải hiệu ứng đã được duyệt hay phần thưởng hiện có trong Save. Tâm Cảnh vẫn là lựa chọn mở rộng sau, không tạo track Tu Vi mới.</div>')+
- panel("Không trùng chức năng","Tách chỉ số nền, cảm xúc nhất thời và mục tiêu tu tâm.",
- table(["Khái niệm","Nhiệm vụ"],d.distinctions.map(x=>['<b>'+esc(x.name)+'</b>',esc(x.meaning)]))+
- '<p class="ency-link">'+auditSource(d.links.design)+' · '+auditSource(d.links.foundation)+' · '+auditSource(d.links.combat)+'</p>')+
+ '<h2>Tâm Tính — Định lực & Chuyên Tu Tu Vi</h2>'+
+ '<p class="ency-summary">Tâm Tính là một chỉ số trong Tam Căn D7. Nó đã được chốt về <b>Kháng Hiệu Ứng</b>, và đang có đề xuất tăng hiệu quả <b>Chuyên Tu Tu Vi</b> khi đệ tử thực sự ngồi tu luyện. Không thêm Tâm Trạng, Tâm Cảnh hay một thanh tu luyện mới.</p>'+
+ '<div class="ency-tags">'+status("D7: dữ liệu có mã","ok")+status("Kháng Hiệu Ứng: thiết kế đã chốt","ok")+status("Chuyên Tu: chưa duyệt con số","idea")+status("Chưa tích hợp PvE & Tu Vi runtime","danger")+'</div>'+
+ panel("Tính thử Tâm Tính & hiệu suất tu luyện","Nhập Tâm Tính; Tư Chất được lấy từ bộ tính Tu Vi ở phần trên. Mọi giá trị dưới đây là minh họa thiết kế, không phải EXP thật trong Save.",
+ '<div class="ency-controls"><label>Điểm Tâm Tính<input id="mind-score" type="number" min="0" max="999999" step="1" value="'+n+'"></label></div>'+
+ '<div class="ency-buttons" style="margin:0 0 14px">'+presets+'</div>'+
+ '<div class="ency-example">'+
+ '<div><strong>+'+fmt(resistance)+' điểm %</strong><small>Kháng Hiệu Ứng — thiết kế đã duyệt</small></div>'+
+ '<div><strong>+'+fmt(focusBonus*100)+'%</strong><small>Hiệu suất Chuyên Tu — chỉ đề xuất</small></div>'+
+ '<div><strong>×'+fmt(focusMultiplier)+'</strong><small>Hệ số Chuyên Tu tổng với Tâm Tính</small></div></div>'+
+ '<div class="ency-example" style="margin-top:12px">'+
+ '<div><strong>'+fmt(naturalGain/60)+' Tu Vi/s</strong><small>Tu Vi tự nhiên (không thêm Tâm Tính)</small></div>'+
+ '<div><strong>'+fmt(baseFocus/60)+' Tu Vi/s</strong><small>Chuyên Tu hiện tại (chưa có thưởng mới)</small></div>'+
+ '<div><strong>'+fmt(proposedFocus/60)+' Tu Vi/s</strong><small>Chuyên Tu nếu duyệt D1-CULT1</small></div></div>'+
+ '<p class="ency-detail">Ví dụ này dùng Tư Chất '+fmt(aptitude)+', base 1.000 Tu Vi/phút mô phỏng và Chuyên Tu gốc ×2, chưa cộng nguồn buff khác. Công thức đề xuất: Tu Vi Chuyên Tu = Tu Vi tự nhiên × 2 × (1 + min(25%; 0,05% × Tâm Tính)).</p>'+
+ '<div class="ency-alert soft"><b>Không thưởng Tu Vi khi không Chuyên Tu.</b> Chuyên Tu chỉ được tính tại nhịp mô phỏng hợp lệ; không cộng hai lần, không tăng đan cố định, EXP Luyện Thể hay tỷ lệ đột phá. Trần +25% đạt ở 500 Tâm Tính chỉ áp cho Định Tâm, khác trần kháng hiệu ứng ở 800.</div>')+
+ panel("Chiến đấu: Kiên Định đã được chốt","Chỉ cần một kênh Kháng Hiệu Ứng trong Combat Stats V2, không tạo thêm loại kháng tinh thần.",
+ '<p>Trúng trạng thái thường được tính theo xác suất sau Chính Xác Hiệu Ứng và Kháng Hiệu Ứng. Với kẻ địch có 45% gây Choáng +10 điểm % Chính Xác, mục tiêu có thêm 10 điểm % Kháng từ Trait, Tâm Tính '+fmt(n)+' giúp xác suất còn <b>'+fmt(chance)+'%</b>.</p>'+
+ '<p class="ency-detail">+0,01 điểm % mỗi Tâm Tính, tối đa +8 điểm %. Đây là thiết kế đã duyệt nhưng chưa được nối đầy đủ vào combat PvE; không giảm thời gian trạng thái đã dính.</p>')+
+ panel("So sánh Tam Căn — không trùng nhau","Không cần thêm trạng thái tâm lý hoặc cảnh giới thứ ba.",
+ table(["Chỉ số nền","Vai trò"],d.distinctions.map(x=>['<b>'+esc(x.name)+'</b>',esc(x.meaning)]))+
+ '<p class="ency-link">Thiết kế D1: '+auditSource(d.links.design)+' · '+auditSource(d.links.cultivation)+' · '+auditSource(d.links.combat)+'</p>')+
  '</section>';
 }
-
 function characters(){
  const d=state.char,t=state.traits;
  if(!d||!t)return heading("ĐỆ TỬ","Đệ tử & đặc tính","Chưa tải được dữ liệu nhân vật.");
@@ -288,11 +290,11 @@ function characters(){
  metric('Huyết mạch','5 loại','Không đồng nghĩa đều có buff chạy thật')+'</div>'+
  panel('Tu Vi mỗi giây','Nhập Tư Chất để tính thử tốc độ theo cơ chế V2 (không phải số trong bản lưu).',
  '<div class="controls"><label>Điểm Tư Chất<input id="char-apt" type="number" min="0" max="50000" value="'+apt+'"></label>'+
- '<label>Trạng thái'+select("char-focus",[["natural","Tăng tự nhiên"],["focus","Chuyên tâm tu luyện ×2"]],state.focus)+'</label></div>'+
+ '<label>Trạng thái'+select("char-focus",[["natural","Tăng tự nhiên"],["focus","Chuyên tâm tu luyện gốc ×2"]],state.focus)+'</label></div>'+
  '<div class="ency-example"><div><strong>'+fmt(rate/60)+' EXP/s</strong><small>Tốc độ bình quân</small></div>'+
  '<div><strong>'+fmt(rate)+' EXP/phút</strong><small>Phút mô phỏng, chưa buff</small></div>'+
  '<div><strong>+'+fmt(apt*.25)+'%</strong><small>Thưởng Tư Chất</small></div></div>'+
- '<p class="ency-mini">Công thức: 1.000 × '+(focused?'2':'1')+' × (1 + 0,0025 × Tư Chất) ÷ 60. Cộng EXP theo nhịp game; còn phụ thuộc cờ bật hệ Tu Vi V2.</p>')+
+ '<p class="ency-mini">Công thức hiện có (chưa tính thưởng Tâm Tính đề xuất): 1.000 × '+(focused?'2':'1')+' × (1 + 0,0025 × Tư Chất) ÷ 60. Cộng EXP theo nhịp game; còn phụ thuộc cờ bật hệ Tu Vi V2.</p>')+
  panel('Bảy chỉ số nhân vật','Tâm Tính đã có thiết kế tác dụng Kháng Hiệu Ứng, nhưng hiệu ứng chưa chạy trong PvE chính.',table(['Chỉ số','Tác dụng hiện được xác nhận hoặc thiết kế'],attributes.map(x=>[esc(x[0]),esc(x[1])])))+
  combatStatPanel()+
  mindNaturePanel()+
@@ -413,7 +415,7 @@ function itemsUnified(){
 
 function designUnified(){
  const blocks=[
- ["D1","Đệ tử, Tâm Tính, 101 đặc tính & Combat Stats","Đã chốt D1-A2: Tâm Tính +0,01 điểm % Kháng Hiệu Ứng/điểm, tối đa +8 điểm %. Có thêm các đề xuất ảnh hưởng Tâm Trạng, Tĩnh Tâm và Tu Tâm; chưa code gameplay. 101 Trait vẫn chia 41/12/48.","docs/design/D1_MIND_NATURE_V2_EFFECT_CONTRACT_20261118.md","Phần Tâm Tính A2 đã duyệt; cân nhắc M2/M3/M4 về cảm xúc, nghỉ và khắc phục Trait; 12 Trait thiếu consumer và 48 Trait mở vẫn chờ chốt"],
+ ["D1","Đệ tử, Tâm Tính, 101 đặc tính & Combat Stats","Tâm Tính +0,01 điểm % Kháng Hiệu Ứng/điểm, tối đa +8 điểm % đã được chốt về thiết kế. Đề xuất D1-CULT1: Tâm Tính giúp hiệu suất Chuyên Tu Tu Vi +0,05%/điểm, cap +25%; không thêm Tâm Trạng, Tu Tâm hay Tâm Cảnh. Các Trait V2 vẫn chia 41/12/48.","docs/design/D1_MIND_NATURE_V2_EFFECT_CONTRACT_20261118.md","Duyệt hệ số D1-CULT1 và điều kiện Chuyên Tu, sau đó chốt 12 Trait thiếu consumer và 48 Trait chưa khóa"],
  ["D2/D3","28 công trình, nguyên liệu và đan","Đã xác định vai trò/đầu ra của 26 loại công trình dài hạn và 2 bổ sung; chuẩn hóa quy trình nâng cấp, 630 vật liệu, 270 tuyến nguồn, 476 mã đan.","docs/design/D2_D3_BUILDINGS_ITEMS_DESIGN_CANDIDATE_20261118.md","Hệ số Lv1–100, nguồn thật cho vật liệu, 444 công thức đan còn thiếu"],
  ["D4","Trang bị V2, rèn và đồ bộ","Đã soạn quy trình rèn đầy đủ và 9 loại hành động nâng cấp trang bị. Giữ chuẩn 10 ô, 12 phẩm và 24 bộ; bảng xác suất, cấp cường hóa là đề xuất, chưa duyệt.","docs/design/D4_FORGE_TRANSACTION_DESIGN_CANDIDATE_20261118.md","Phê duyệt xác suất rèn, mức cường hóa, nguồn đồ và các công thức"],
  ["D5","Tu Vi, Luyện Thể và đột phá","Giữ 30×10 mỗi hệ. Cần dùng đúng cân bằng cảnh giới trong nguồn gốc, không thêm Tâm Cảnh 300 tầng hay tự nâng tỷ lệ đột phá.","docs/REALM_LADDER_V2_SPEC.md","Đối chiếu thống nhất số EXP và các nguồn XP cấp cao"],
