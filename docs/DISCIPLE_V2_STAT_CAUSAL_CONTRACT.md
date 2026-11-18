@@ -56,7 +56,7 @@ Combat action/result      Job action/result  Progression event/result
 |---|---|---|---|
 | Tư Chất (Lục Duy) | birth snapshot + current permanent | `cultivation_gain` +0,25% / điểm cho Tu Vi tự nhiên | Không tăng fixed-value Tu Vi hay tất cả các XP |
 | Căn Cốt | birth + current | `body_training_gain` +0,20% / điểm | Không nhân work speed, không tăng Thể Lực viễn chinh chung |
-| **Tâm Tính (D7)** | birth + current permanent; FoundationSystem model D7 | **OWNER LOCKED 18/11/2026:** +0,01 **điểm phần trăm** Kháng Hiệu Ứng/điểm, tối đa +8 điểm %, qua nguồn `foundation_mind_nature` → `effect_resistance` V2 | Chưa có consumer runtime; không cộng EXP, đột phá, chống Crit hay giảm thời lượng; Tâm Trạng/mood, Tĩnh Tâm và Tu Tâm là ứng viên riêng |
+| **Tâm Tính (D7)** | birth + current permanent; FoundationSystem model D7 | **OWNER LOCKED 18/11/2026:** +0,01 **điểm phần trăm** Kháng Hiệu Ứng/điểm, tối đa +8 điểm %, qua nguồn `foundation_mind_nature` → `effect_resistance` V2 | Chưa có consumer runtime; không cộng EXP, đột phá, chống Crit hay giảm thời lượng; Tâm Trạng/mood, Tĩnh Tâm và Tu Tâm đã rút khỏi phạm vi D1 theo yêu cầu 18/11; Chuyên Tu tăng hiệu suất từ Tâm Tính là đề xuất riêng, chưa duyệt hệ số |
 | Thông Tuệ | birth + current | `learning/profession_xp` +0,15% / điểm | Không nhân yield hoặc success ngẫu nhiên |
 | Tiềm Lực | birth + current | `RealmBodyCore` HP/ATK/DEF +0,05% / điểm; retroactive | Không nhân thanh kiếm +100 ATK hay thưởng vật phẩm cố định |
 | Cơ Duyên | birth + current | `LuckScore = RNG(0..9999) + Cơ Duyên − Difficulty` theo check có ý nghĩa | Không buff generic % sản lượng/lucky tick |
@@ -70,7 +70,7 @@ Combat action/result      Job action/result  Progression event/result
 
 Birth snapshots không thay đổi sau khi cải tạo. `disciple_quality` là nhãn từ tổng Lục Duy permanent hiện tại; không phải nguồn buff.
 
-**Authority mới cho Tâm Tính D7:** `docs/design/D1_MIND_NATURE_V2_EFFECT_CONTRACT_20261118.md`. Chỉ phần D1-A2 Kháng Hiệu Ứng đã duyệt; D1-M2/M3/M4 là ý tưởng đang xét. Không được coi bản thiết kế đã duyệt là mã đã chạy.
+**Authority mới cho Tâm Tính D7:** `docs/design/D1_MIND_NATURE_V2_EFFECT_CONTRACT_20261118.md`. Chỉ D1-A2 Kháng Hiệu Ứng đã duyệt; D1-M2/M3/M4 mood không còn trong phạm vi. D1-CULT1 thưởng Chuyên Tu là ứng viên số học, chưa duyệt hoặc code. Không được coi bản thiết kế đã duyệt là mã đã chạy.
 
 ## 3. Tầng dẫn xuất CHIẾN ĐẤU — registry V2 bắt buộc
 
