@@ -400,11 +400,35 @@ function render(){
 document.addEventListener("click",e=>{
  const menu=e.target.closest("#menu-toggle");if(menu){document.getElementById("sidebar").classList.toggle("open");return;}
  const tab=e.target.closest("[data-tab]");if(tab){
- if(tab.dataset.setBuilding)state.building=tab.dataset.setBuilding;
- if(tab.dataset.setSchool)state.school=tab.dataset.setSchool;
- goto(tab.dataset.tab);return;}
+  if(tab.tagName==="A")e.preventDefault();
+  if(tab.dataset.setBuilding)state.building=tab.dataset.setBuilding;
+  if(tab.dataset.setSchool)state.school=tab.dataset.setSchool;
+  if(tab.dataset.findType){
+   const id=tab.dataset.findId,kind=tab.dataset.findType;
+   if(kind==="trait"){const found=state.traits?.traits?.find(x=>x.id===id);state.traitQuery=found?.name||"";state.traitGroup="all";state.traitPage=1;}
+   if(kind==="skill"){state.skill=id;state.school="all";}
+   if(kind==="building"){const x=state.audit?.buildings.find(z=>z.id===id);if(BUILDINGS.some(z=>z.id===id))state.building=id;state.buildStatus=x?.codeStatus==="REGISTERED_BUILDING"?"coded":"missing";}
+   if(kind==="item"){
+    for(const key of ["medicine","nativeResources","legacyEquipment","archiveItems","codices","techniques","crops"]){
+     const hit=state.items?.[key]?.find(x=>x.id===id);
+     if(hit){state.itemGroup=key;state.itemQuery=hit.name;state.itemPage=1;break;}
+    }
+   }
+   if(kind==="system"){
+    const feature=state.audit?.features.find(x=>x.id===id);
+    state.featureGroup=feature?.category||"all";state.featureStatus="all";state.featureLimit=99;
+   }
+   search.value="";state.query="";
+  }
+  goto(tab.dataset.tab);return;
+ }
  const skill=e.target.closest("[data-skill]");if(skill){state.skill=skill.dataset.skill;render();return;}
- if(e.target.id==="more-skills"){state.limit+=48;render();}
+ if(e.target.id==="more-skills"){state.limit+=48;render();return;}
+ if(e.target.id==="traits-prev"){state.traitPage=Math.max(1,state.traitPage-1);render();return;}
+ if(e.target.id==="traits-next"){state.traitPage++;render();return;}
+ if(e.target.id==="item-prev"){state.itemPage=Math.max(1,state.itemPage-1);render();return;}
+ if(e.target.id==="item-next"){state.itemPage++;render();return;}
+ if(e.target.id==="more-systems"){state.featureLimit+=16;render();return;}
 });
 document.addEventListener("change",e=>{
  const v=e.target.value,id=e.target.id;
@@ -414,11 +438,29 @@ document.addEventListener("change",e=>{
  if(id==="level-select"){state.buildingLevel=Number(v);render();}
  if(id==="field-select"){state.fieldLevel=Number(v);render();}
  if(id==="school-select"){state.school=v;state.skill=null;state.limit=48;render();}
+ if(id==="char-apt"){state.aptitude=Math.max(0,Math.min(50000,Number(v)||0));render();}
+ if(id==="char-focus"){state.focus=v;render();}
+ if(id==="char-source"){state.recruitSource=v;render();}
+ if(id==="trait-group"){state.traitGroup=v;state.traitPage=1;render();}
+ if(id==="build-status"){state.buildStatus=v;render();}
+ if(id==="item-group"){state.itemGroup=v;state.itemQuery="";state.itemPage=1;render();}
+ if(id==="system-status"){state.featureStatus=v;state.featureLimit=16;render();}
+ if(id==="system-group"){state.featureGroup=v;state.featureLimit=16;render();}
 });
 document.addEventListener("input",e=>{
- if(e.target.id==="skill-filter"){state.query=e.target.value;state.skill=null;state.limit=48;render();const box=document.getElementById("skill-filter");if(box){box.focus();box.setSelectionRange(state.query.length,state.query.length);} }
+ const id=e.target.id;
+ if(id==="skill-filter"){state.query=e.target.value;state.skill=null;state.limit=48;}
+ else if(id==="trait-search"){state.traitQuery=e.target.value;state.traitPage=1;}
+ else if(id==="item-search"){state.itemQuery=e.target.value;state.itemPage=1;}
+ else return;
+ const pos=e.target.selectionStart;
+ render();
+ const box=document.getElementById(id);if(box){box.focus();box.setSelectionRange(pos,pos);}
 });
-search.addEventListener("input",()=>{state.query=search.value;state.school="all";state.skill=null;state.limit=48;state.tab="skills";render();});
+search.addEventListener("input",()=>{
+ state.query=search.value;state.tab=state.query.trim()?"search":"home";
+ render();
+});
 if(!["localhost","127.0.0.1","::1","vuanhtuan161094-byte.github.io"].includes(location.hostname)){content.innerHTML='<div class="note">Chỉ mở trên GitHub Pages chính thức hoặc localhost.</div>';return;}
 Promise.all(["./data/catalog.json","./data/character_reference.json","./data/trait_effect_audit.json","./data/game_system_audit.json","./data/game_items_audit.json"].map(path=>fetch(path,{cache:"no-store"}).then(r=>{if(!r.ok)throw Error("HTTP "+r.status+" "+path);return r.json();}))).then(([data,ch,traits,audit,items])=>{state.data=data;state.char=ch;state.traits=traits;state.audit=audit;state.items=items;const target=location.hash.replace("#","");const aliases={traits:"characters",audit:"systems",fields:"buildings",medicine:"items",schools:"skills"};state.tab=names[aliases[target]||target]?aliases[target]||target:"home";render();}).catch(err=>{
  content.innerHTML='<div class="note">Không tải được dữ liệu bách khoa: '+esc(err.message)+'. Thử tải lại trang (Ctrl+F5).</div>';
