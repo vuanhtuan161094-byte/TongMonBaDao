@@ -1,0 +1,88 @@
+{
+  "schema": 1,
+  "asOf": "2026-11-18",
+  "category": "foundation_D7",
+  "name": "Tâm Tính",
+  "id": "mind_nature",
+  "source": "godot/src/simulation/foundation/foundation_system.gd",
+  "runtime": "DATA_PERSISTED_CONSUMER_NOT_IMPLEMENTED",
+  "approved": {
+    "status": "OWNER_APPROVED_DESIGN_ONLY",
+    "id": "D1-A2",
+    "channel": "effect_resistance",
+    "mode": "percentage_points",
+    "sourceId": "foundation_mind_nature",
+    "ppPerPoint": 0.01,
+    "maxBonusPp": 8,
+    "meaning": "Tâm Tính càng cao càng khó bị khống chế hoặc dính debuff có phép kiểm tra xác suất. Không chống bảo đảm trúng hoặc miễn nhiễm đặc biệt. Không giảm thời lượng hiệu ứng đã dính.",
+    "forbidden": [
+      "Không tăng Tu Vi/giây",
+      "Không tăng Luyện Thể/giây",
+      "Không tăng EXP học",
+      "Không tăng tỷ lệ đột phá",
+      "Không tăng Crit, Công, Thủ, HP",
+      "Không xóa Injury hoặc Trait",
+      "Không tạo miễn nhiễm tuyệt đối"
+    ],
+    "exampleStatus": {
+      "basePp": 45,
+      "effectHitPp": 10,
+      "otherResistancePp": 10
+    }
+  },
+  "candidates": [
+    {
+      "id": "D1-M2",
+      "name": "Vững tâm sau thất bại",
+      "status": "DESIGN_CANDIDATE",
+      "description": "Sự kiện thất bại, mất đồng môn, biến cố có thật chỉ giảm tác động lên Tâm Trạng; không giảm hình phạt đột phá hoặc Injury.",
+      "factorBase": 1,
+      "pointsDivisor": 2000,
+      "maxPointsForMood": 800,
+      "minFactor": 0.6,
+      "exampleBaseMoodLoss": 20,
+      "requires": "Cần mood 0–100, event emotional_shock và actor ID có thật."
+    },
+    {
+      "id": "D1-M3",
+      "name": "Tĩnh Tâm khi nghỉ",
+      "status": "DESIGN_CANDIDATE",
+      "description": "Sau một ca nghỉ hợp lệ, tăng thêm tối đa 4 điểm Tâm Trạng, không hồi tự động mỗi tick.",
+      "moodPerPoints": 200,
+      "maxMoodBonus": 4,
+      "exampleBaseRestGain": 10,
+      "exampleStartingMood": 40,
+      "requires": "Cần action rest_completed và lịch nghỉ đã được triển khai."
+    },
+    {
+      "id": "D1-M4",
+      "name": "Tu Tâm và khắc phục đặc tính xấu",
+      "status": "DESIGN_CANDIDATE",
+      "description": "Đệ tử có nền tảng tốt học cách khắc phục Trait bất lợi nhanh hơn trong một job Tu Tâm Đường có thời gian và linh thạch thực.",
+      "timeReductionDivisor": 6000,
+      "maxTimeReduction": 0.15,
+      "exampleBaseHours": 10,
+      "requires": "Cần Tu Tâm Đường/trait removal job, nguồn chi phí, Save/Reload, bảng điều kiện thật."
+    }
+  ],
+  "distinctions": [
+    {
+      "name": "Tâm Tính",
+      "meaning": "Điểm nền bền vững, dùng nguồn D7 và Kháng Hiệu Ứng được duyệt."
+    },
+    {
+      "name": "Tâm Trạng",
+      "meaning": "Trạng thái cảm xúc tạm thời 0–100, thiết kế đang chờ consumer."
+    },
+    {
+      "name": "Tâm Cảnh",
+      "meaning": "Hệ thành tựu tu tâm đề xuất; chưa được thêm thành đường tu luyện mới."
+    }
+  ],
+  "links": {
+    "design": "docs/design/D1_MIND_NATURE_V2_EFFECT_CONTRACT_20261118.md",
+    "cause": "docs/DISCIPLE_V2_STAT_CAUSAL_CONTRACT.md",
+    "foundation": "godot/src/simulation/foundation/foundation_system.gd",
+    "combat": "godot/src/simulation/combat/combat_stats_v2.gd"
+  }
+}
