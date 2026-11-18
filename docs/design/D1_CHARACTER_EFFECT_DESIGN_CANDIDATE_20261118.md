@@ -1,6 +1,6 @@
 # D1 — THIẾT KẾ NHÂN VẬT: TÂM TÍNH, TÂM CẢNH VÀ 101 ĐẶC TÍNH
 
-> CẬP NHẬT QUYẾT ĐỊNH CHỐT 18/11/2026: Chủ dự án đã chọn phương án D1-A2: Tâm Tính +0,01 điểm % Kháng Hiệu Ứng/điểm, tối đa +8 điểm %. Đây là DESIGN LOCK, chưa code hiệu ứng gameplay. Các đoạn cũ D1-A (§1) và A2 ở §8.2/8.5 chỉ còn là lịch sử đề xuất; **không còn là quyết định mở**. Xem authority mới: docs/design/D1_MIND_NATURE_V2_EFFECT_CONTRACT_20261118.md. Phần ổn định Tâm Trạng, Tĩnh Tâm và Tu Tâm là D1-M2/M3/M4 **chưa được duyệt**.
+> CẬP NHẬT QUYẾT ĐỊNH CHỐT 18/11/2026: Chủ dự án đã chọn phương án D1-A2: Tâm Tính +0,01 điểm % Kháng Hiệu Ứng/điểm, tối đa +8 điểm %. Đây là DESIGN LOCK, chưa code hiệu ứng gameplay. Các đoạn cũ D1-A (§1) và A2 ở §8.2/8.5 chỉ còn là lịch sử đề xuất; **không còn là quyết định mở**. Xem authority mới: docs/design/D1_MIND_NATURE_V2_EFFECT_CONTRACT_20261118.md. **Hiệu đính 18/11/2026:** Người dùng không yêu cầu Tâm Trạng; D1-M2/M3/M4 về mood đã RÚT khỏi phạm vi. D1-A2 Kháng Hiệu Ứng vẫn được chốt. Tác dụng Tu Vi mới D1-CULT1 (+0,05% hiệu suất Chuyên Tu/điểm, cap +25%) đang ở mức đề xuất chưa duyệt số; xem tài liệu D1_MIND_NATURE_V2_EFFECT_CONTRACT_20261118.md. Những đoạn mood/Tâm Cảnh phía dưới là lịch sử bản nháp, KHÔNG áp dụng.
 
 Ngày: 18/11/2026. Gói **D1 DESIGN CANDIDATE**. Tài liệu không khẳng định mã gameplay đã có, không sửa spec gốc hoặc sinh vật phẩm/hiệu ứng mới.
 
