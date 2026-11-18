@@ -35,6 +35,8 @@ Không cộng số lượng “ID vật phẩm đã khai báo” thành “vật
 
 ## C. Những vấn đề phải chốt trong D1 — Nhân vật
 
+**Khuyến cáo D1 mới nhất:** bản kháng +8 điểm % từng bị gọi nhầm là đã duyệt. Người dùng đã đề nghị trần 50 điểm % và tăng hiệu quả hoạt động Tu Luyện sẵn có; numeric slope chưa chốt. Tham chiếu `docs/design/D1_MIND_NATURE_V2_EFFECT_CONTRACT_20261118.md`.
+
 **Đã duyệt:** 7 chỉ số nền; Tư Chất +0,25% Tu Vi tự nhiên mỗi điểm; Căn Cốt +0,20% EXP Luyện Thể mỗi điểm; Thông Tuệ +0,15% XP học; Tiềm Lực +0,05% hệ số tiềm năng; các đặc tính V2 **không có cấp chung**; không tự sửa chỉ số nền bẩm sinh qua buff; 101 định danh đã có trọng số sinh, 9 đặc tính hệ cũ là bộ khác.
 
 **Cần đóng:** Tâm Tính hiện chưa có consumer gameplay; không vội tạo thêm hệ 300 tầng. **Đề xuất D1:** Tâm Tính chỉ quản lý ổn định tinh thần/gián đoạn/kháng hiệu ứng tinh thần **khi có sự kiện hợp lệ**. Tâm Cảnh 6 cấp chỉ là **đề xuất riêng**, không tự mặc định là hệ thứ ba hay được cộng EXP/s.
