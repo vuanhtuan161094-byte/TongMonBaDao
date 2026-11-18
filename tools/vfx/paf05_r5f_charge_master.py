@@ -113,19 +113,29 @@ def sigil(img, t):
     halo = ink.filter(ImageFilter.GaussianBlur(13 * SCALE))
     composite((236, 150, 54), halo.point(lambda a: round(a * .46)))
     rim = ink.filter(ImageFilter.MaxFilter(11))
-    composite((89, 46, 19), rim.point(lambda a: round(a * .83)))
+    composite((89, 46, 19), rim.point(lambda a: round(a * .65)))
 
     gild = Image.new('RGBA', img.size, (0, 0, 0, 0))
     gd = ImageDraw.Draw(gild)
     for yy in range(72 * SCALE, 245 * SCALE):
         u = min(1.0, max(0.0, (yy / SCALE - 72) / 173))
         gd.line((0, yy, img.width, yy),
-                fill=(255, round(228 - 51 * u + 13 * math.sin(u * math.pi)),
-                      round(156 - 80 * u), 255))
+                fill=(255, round(219 - 48 * u + 13 * math.sin(u * math.pi)),
+                      round(121 - 72 * u), 255))
     gild.putalpha(ink)
     img.alpha_composite(gild)
     core = ink.filter(ImageFilter.MinFilter(7))
-    composite((255, 250, 201), core.point(lambda a: round(a * .52)))
+    composite((255, 248, 175), core.point(lambda a: round(a * .34)))
+    # Small live specular packet moves over the ink; the character remains
+    # correctly legible, unlike a rotating/computer-UI glyph.
+    sheen = Image.new('L', img.size, 0)
+    shd = ImageDraw.Draw(sheen)
+    sx = (83 + 132 * t) * SCALE
+    shd.line((round(sx), 97 * SCALE, round(sx + 50 * SCALE),
+              241 * SCALE), fill=196, width=12 * SCALE)
+    sheen = ImageChops.multiply(ink, sheen.filter(ImageFilter.GaussianBlur(4 * SCALE)))
+    composite((255, 247, 187), sheen.point(lambda a: round(a * .78)))
+
 
 
 def pose(i):
@@ -157,6 +167,17 @@ def pose(i):
         ribbon(im,shifted,[13.3,7.8,4.2,3.4][k],
                [(34,185,151),(43,198,172),(90,226,186),(72,203,172)][k],
                [1,.96,.78,.65][k],k+7,t,start,end)
+    # Three sparse, unequal warm light fibers thread the jade silk into the
+    # 風 brush strokes. They grow toward the glyph; never a rotating ring.
+    for k, controls in enumerate((
+        ((49, 236), (89, 203), (105, 165), (128, 162)),
+        ((271, 103), (248, 102), (220, 116), (194, 136)),
+        ((230, 256), (218, 231), (204, 207), (185, 193)),
+    )):
+        strand = cubic(*controls, steps=76)
+        ribbon(im, strand, (2.4, 2.0, 1.6)[k], (237, 172, 71),
+               (.75, .71, .56)[k], 240 + k, t,
+               0.0, max(.04, min(1.0, (t - .035) * (1.85 - .18 * k))))
     sigil(im,t)
     motes=Image.new('RGBA',im.size)
     d=ImageDraw.Draw(motes)
