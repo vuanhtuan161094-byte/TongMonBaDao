@@ -39,7 +39,7 @@ func _soft_trail(t: float) -> void:
     # Layered fading ribbon, oldest segments are dimmer and narrower.
     # More natural motion energy, no additional projectile/strike.
     for i in range(12):
-        var fade:=powf(float(i+1)/12.,1.45)
+        var fade:=pow(float(i+1)/12.,1.45)
         draw_line(path[i],path[i+1],Color(.07,.63,.48,.08*fade),lerpf(1.8,8.5,fade),true)
         draw_line(path[i],path[i+1],Color(.25,.91,.66,.14*fade),lerpf(1.0,4.0,fade),true)
         draw_line(path[i],path[i+1],Color(.88,1.,.83,.19*fade),lerpf(.5,1.45,fade),true)
