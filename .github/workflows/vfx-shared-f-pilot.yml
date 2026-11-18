@@ -1,0 +1,51 @@
+name: VFX F | shared presentation policy and sprite-layer pilot
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - integration/pve-p0-playable-ui-20261103
+    paths:
+      - 'godot/labs/combat_lab/vfx_shared_f_pilot/**'
+      - 'godot/tests/labs/combat_lab/vfx_shared_f_policy_test.gd'
+      - 'docs/operations/TMB_VFX_B_D_E_PILOT_20261118.md'
+      - '.github/workflows/vfx-shared-f-pilot.yml'
+permissions:
+  contents: read
+jobs:
+  shared-policy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 22
+    env:
+      GODOT_AUDIO_DRIVER: Dummy
+      GODOT_RENDERING_DRIVER: opengl3
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Confirm exact SHA
+        run: |
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          echo "SOURCE_EXACT_SHA=$GITHUB_SHA"
+      - name: Install pinned Godot 4.7.2
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq unzip
+          curl --fail --location --retry 3 -o /tmp/godot472.zip 'https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip'
+          echo 'cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4  /tmp/godot472.zip' | sha256sum --check --strict
+          unzip -q /tmp/godot472.zip -d /tmp
+          sudo install -m0755 /tmp/Godot_v4.7.2-stable_linux.x86_64 /usr/local/bin/godot
+          godot --version
+      - name: Strict project import and shared policy contracts
+        run: |
+          set -euo pipefail
+          bash tools/qa/run_godot_strict.sh --headless --path godot --import
+          bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://labs/combat_lab/vfx_shared_f_pilot/vfx_presentation_policy.gd
+          bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://labs/combat_lab/vfx_shared_f_pilot/vfx_sprite_layer.gd
+          bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/labs/combat_lab/vfx_shared_f_policy_test.gd | tee /tmp/vfx-shared-f-test.log
+          grep -Fq 'VFX_F_POLICY_TEST_RESULT=PASS failures=0' /tmp/vfx-shared-f-test.log
+      - name: Record scope and exact SHA
+        if: always()
+        run: |
+          printf '%s\n' "HEAD=$GITHUB_SHA" "B_POLICY=LAB_ONLY" "D_WORKFLOW=SHARED_PILOT" "E_BUDGET=PROVISIONAL" "G3_5_VISUAL=NOT_EXECUTED" "OWNER_ART=PENDING" "PVE=HOLD" "ANDROID_PHYSICAL=PENDING" | tee /tmp/vfx-shared-f-manifest.txt
