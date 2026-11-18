@@ -1,0 +1,8 @@
+# FIST14 R6 · first source and Godot LAB candidate (NOT OWNER APPROVED)
+
+- **Source authoring:** original deterministic procedural raster light art, seven distinct geometry sets, 512×384 RGBA per frame. Generator `tools/vfx/generate_fist14_r6_light.py`. This is **not** an ImageGen-painted masterpiece and does not claim art quality. No commercial JX/Võ Lâm/KT pixels used. Rejected R4 and unapproved R5 sources kept intact.
+- **Actual visual design:** ruby-pink semi-transparent glow around white-hot thin energy core, 4 knuckle pressure ridges, impact burst and separate 3-cut mark. No rig/GIF. Unlike R5 the LAB moves caster closer to moving monster for short-range visual punch; this is not gameplay movement.
+- **Source art QA:** on coordinator self-inspection, early render still has **abstract neon-ribbon qualities**, so **G3 ART SELF FAIL / NOT OWNER READY**. Technical scene for reproducibility and genuine native inspection is isolated and does not override G3 STOP gate. Any Godot QA is TECH evidence only. Do not promote to owner final, merge or PvE.
+- **Source persistence:** code-paint source algorithm is committed; .png files and atlases are regenerated deterministically in the GitHub Actions job before import. Generated RGBA binaries are in the native artifact; **they are not yet committed individually as original painted masters**. This remains a production debt requiring better authored original source under Art-First V4.
+- **Contract:** mark/nether/single_target cap1/cast .45/CD8/mark6/range2.8/projectile_speed0; 0.90s LAB illustrative contact only, runtime receipt pending.
+- **QA intent:** existing workflow and V4 packet, exact SHA, native Godot 4.7.2 1280x720 1x at charge/peak/contact; no ART PASS from CI, PVE HOLD, owner pending.
