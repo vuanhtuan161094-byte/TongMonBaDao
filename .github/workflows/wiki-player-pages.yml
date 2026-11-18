@@ -33,7 +33,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: "pages-player-wiki"
+  group: "pages-player-wiki-audit-20261118"
   cancel-in-progress: true
 
 jobs:
