@@ -143,11 +143,13 @@ func _draw() -> void:
 	var caster := caster_feet_at(t)
 	var target := target_feet_at(t)
 	var anchor := target_anchor_at(0, t)
+	var charge_alpha := 0.0
 
-	# Original fist sprites are back-layered under the characters until contact.
+	# Keep the caster-hand charge art above the unchanged actor sprite. The
+	# illustrated fist's hand pivot sits at caster_hand_at(); drawing it behind
+	# the full-body actor hid the entire G3.5 charge silhouette at native scale.
 	if t >= 0.10 and t < CAST_TIME:
-		var charge_alpha := smoothstep(0.10, 0.17, t) * (1.0 - smoothstep(0.38, CAST_TIME, t))
-		_draw_pose(ATTACK_ATLAS, 0, ATTACK_COLUMNS, caster_hand_at(t), 0.09, charge_alpha, SOURCE_SIZE[0], SOURCE_CELL_OFFSET[0], FOCUS_SOURCE[0])
+		charge_alpha = smoothstep(0.10, 0.17, t) * (1.0 - smoothstep(0.38, CAST_TIME, t))
 	elif t >= CAST_TIME and t < SIMULATED_CONTACT_TIME:
 		if t < 0.62:
 			var release_alpha := smoothstep(CAST_TIME, 0.50, t) * (1.0 - smoothstep(0.57, 0.62, t))
@@ -157,6 +159,8 @@ func _draw() -> void:
 			_draw_pose(ATTACK_ATLAS, 2, ATTACK_COLUMNS, anchor, 0.10, peak_alpha, SOURCE_SIZE[2], SOURCE_CELL_OFFSET[2], FOCUS_SOURCE[2])
 
 	_draw_actor(caster)
+	if charge_alpha > 0.002:
+		_draw_pose(ATTACK_ATLAS, 0, ATTACK_COLUMNS, caster_hand_at(t), 0.09, charge_alpha, SOURCE_SIZE[0], SOURCE_CELL_OFFSET[0], FOCUS_SOURCE[0])
 	_draw_target(target, t)
 
 	if t >= SIMULATED_CONTACT_TIME and t < CONTACT_END:
