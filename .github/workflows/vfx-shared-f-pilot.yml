@@ -31,7 +31,7 @@ jobs:
         run: |
           set -euo pipefail
           sudo apt-get update -qq
-          sudo apt-get install -y -qq unzip
+          sudo apt-get install -y -qq unzip xvfb ffmpeg
           curl --fail --location --retry 3 -o /tmp/godot472.zip 'https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip'
           echo 'cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4  /tmp/godot472.zip' | sha256sum --check --strict
           unzip -q /tmp/godot472.zip -d /tmp
@@ -45,6 +45,38 @@ jobs:
           bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://labs/combat_lab/vfx_shared_f_pilot/vfx_sprite_layer.gd
           bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/labs/combat_lab/vfx_shared_f_policy_test.gd | tee /tmp/vfx-shared-f-test.log
           grep -Fq 'VFX_F_POLICY_TEST_RESULT=PASS failures=0' /tmp/vfx-shared-f-test.log
+      - name: 70 actor / 218 visual-cue deterministic stress
+        run: |
+          set -euo pipefail
+          bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/labs/combat_lab/vfx_shared_f_stress_test.gd | tee /tmp/vfx-f-stress.log
+          grep -Fq 'VFX_F_STRESS_RESULT=PASS failures=0' /tmp/vfx-f-stress.log
+      - name: Real Godot 1280x720 shared renderer showcase (NOT owner visual approval)
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/tmb-vfx-f
+          xvfb-run -a -s '-screen 0 1280x720x24' bash tools/qa/run_godot_strict.sh --path godot --resolution 1280x720 --fixed-fps 60 --write-movie /tmp/tmb-vfx-f/native.avi --quit-after 240 res://labs/combat_lab/vfx_shared_f_pilot/shared_showcase.tscn 2>&1 | tee /tmp/tmb-vfx-f/native.log
+          grep -Fq 'VFX_F_SHARED_SHOWCASE_READY' /tmp/tmb-vfx-f/native.log
+          ffmpeg -y -hide_banner -loglevel error -i /tmp/tmb-vfx-f/native.avi -pix_fmt yuv420p -c:v libx264 -crf 18 /tmp/tmb-vfx-f/shared-showcase.mp4
+          ffmpeg -y -hide_banner -loglevel error -ss 0.45 -i /tmp/tmb-vfx-f/shared-showcase.mp4 -frames:v 1 /tmp/tmb-vfx-f/charge.png
+          ffmpeg -y -hide_banner -loglevel error -ss 1.18 -i /tmp/tmb-vfx-f/shared-showcase.mp4 -frames:v 1 /tmp/tmb-vfx-f/peak.png
+          ffmpeg -y -hide_banner -loglevel error -ss 1.70 -i /tmp/tmb-vfx-f/shared-showcase.mp4 -frames:v 1 /tmp/tmb-vfx-f/contact.png
+          ffprobe -v error -show_entries stream=width,height,nb_frames -of default=noprint_wrappers=1 /tmp/tmb-vfx-f/shared-showcase.mp4 | tee /tmp/tmb-vfx-f/metadata.txt
+          sha256sum /tmp/tmb-vfx-f/shared-showcase.mp4 /tmp/tmb-vfx-f/*.png | tee /tmp/tmb-vfx-f/SHA256.txt
+      - name: Upload genuine Godot visual smoke and CPU policy evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tmb-vfx-f-shared-native-${{ github.sha }}
+          path: |
+            /tmp/tmb-vfx-f/shared-showcase.mp4
+            /tmp/tmb-vfx-f/charge.png
+            /tmp/tmb-vfx-f/peak.png
+            /tmp/tmb-vfx-f/contact.png
+            /tmp/tmb-vfx-f/metadata.txt
+            /tmp/tmb-vfx-f/SHA256.txt
+            /tmp/vfx-f-stress.log
+          if-no-files-found: warn
+          retention-days: 14
       - name: Record scope and exact SHA
         if: always()
         run: |

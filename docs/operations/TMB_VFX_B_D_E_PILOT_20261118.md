@@ -43,3 +43,9 @@
 ## Evidence and next gate
 - [A status rules](../../docs/design/TMB_VFX_STATUS_BUFF_OVERLAY_RULES_V1_20261118.md) · [C Art Bible](TMB_VFX_ART_BIBLE_C_QUALITY_V1_20261118.md) · [Existing SOP V4](TMB_VFX_ART_FIRST_SINGLE_SKILL_SOP_V3_20261114.md) · [V4 packet validator](vfx_packets/README.md).
 - **Fail-safe:** If Godot CI doesn't run or fails, report source committed but B/D TECH PASS **NOT VERIFIED**; do not substitute standalone Python or offline video for a genuine engine test.
+
+
+## B/E pilot proof extension — 3 original sprite sources and 70-actor stress
+- `shared_showcase.gd/.tscn` consumes **existing project RGBA atlases unchanged**, POI02 serpent-flight (6 poses), POI15 poison field (12 poses), PAF06 passive wind (1 isolated resident motif). Their original art is not copied, reskinned, or made part of a new skill. This test only proves shared canvas drawing, actor-layer order and moving target anchors, NOT exact per-skill animation/owner art approval. PAF06 is always-on, not a fake cast/guard receipt.
+- Focused Godot `vfx_shared_f_stress_test.gd` creates **70 synthetic actors (30+40 fixture)** with 350 status-family rows and 218 candidate visual cues, checking stable culling across Lite/Balanced/Full while **all 8 telegraph warnings remain drawn**. This is policy CPU work, **not** proof that a rendered 70-actor Android battlefield runs at 60fps.
+- New CI captures genuine Godot 4.7.2 1280×720 240-frame MP4 with charge/peak/contact screenshots, checksum and 14-day artifact. Native smoke evidence is **not** G3.5 per-skill acceptance. Exact-SHA results must be checked from the corresponding GitHub Actions run; if CI fails, no native-proof claim is made.
