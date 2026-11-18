@@ -1,8 +1,8 @@
 {
-  "schema": 1,
+  "schema": 2,
   "asOf": "2026-11-18",
   "category": "foundation_D7",
-  "name": "Tâm Tính",
+  "name": "Tâm Tính — Định Tâm Tu Vi và Kháng Hiệu Ứng",
   "id": "mind_nature",
   "source": "godot/src/simulation/foundation/foundation_system.gd",
   "runtime": "DATA_PERSISTED_CONSUMER_NOT_IMPLEMENTED",
@@ -32,57 +32,49 @@
   },
   "candidates": [
     {
-      "id": "D1-M2",
-      "name": "Vững tâm sau thất bại",
-      "status": "DESIGN_CANDIDATE",
-      "description": "Sự kiện thất bại, mất đồng môn, biến cố có thật chỉ giảm tác động lên Tâm Trạng; không giảm hình phạt đột phá hoặc Injury.",
-      "factorBase": 1,
-      "pointsDivisor": 2000,
-      "maxPointsForMood": 800,
-      "minFactor": 0.6,
-      "exampleBaseMoodLoss": 20,
-      "requires": "Cần mood 0–100, event emotional_shock và actor ID có thật."
-    },
-    {
-      "id": "D1-M3",
-      "name": "Tĩnh Tâm khi nghỉ",
-      "status": "DESIGN_CANDIDATE",
-      "description": "Sau một ca nghỉ hợp lệ, tăng thêm tối đa 4 điểm Tâm Trạng, không hồi tự động mỗi tick.",
-      "moodPerPoints": 200,
-      "maxMoodBonus": 4,
-      "exampleBaseRestGain": 10,
-      "exampleStartingMood": 40,
-      "requires": "Cần action rest_completed và lịch nghỉ đã được triển khai."
-    },
-    {
-      "id": "D1-M4",
-      "name": "Tu Tâm và khắc phục đặc tính xấu",
-      "status": "DESIGN_CANDIDATE",
-      "description": "Đệ tử có nền tảng tốt học cách khắc phục Trait bất lợi nhanh hơn trong một job Tu Tâm Đường có thời gian và linh thạch thực.",
-      "timeReductionDivisor": 6000,
-      "maxTimeReduction": 0.15,
-      "exampleBaseHours": 10,
-      "requires": "Cần Tu Tâm Đường/trait removal job, nguồn chi phí, Save/Reload, bảng điều kiện thật."
+      "id": "D1-CULT1",
+      "name": "Định Tâm — tăng hiệu suất Chuyên Tu Tu Vi",
+      "status": "DESIGN_CANDIDATE_NOT_APPROVED",
+      "ownerDirection": "Add a cultivation benefit to Tam Tinh",
+      "description": "Đề xuất: +0,05% hiệu suất Chuyên Tu mỗi điểm Tâm Tính, tối đa +25%, chỉ khi chuyên tu; không tăng Tu Vi tự nhiên, Luyện Thể, đan hoặc tỷ lệ đột phá.",
+      "focusBonusPerPoint": 0.0005,
+      "maxFocusBonus": 0.25,
+      "baseTuViPerSimMinute": 1000,
+      "baseCultivateMultiplier": 2,
+      "aptitudeNaturalGainPerPoint": 0.0025,
+      "secondsPerSimMinute": 60,
+      "onlySpecialized": true,
+      "affectsFixedPills": false,
+      "source": "godot/src/simulation/cultivation/disciple_tuvi_flow_v2.gd",
+      "balanceSource": "godot/src/simulation/cultivation/disciple_progression_balance_v2.gd",
+      "needs": "Duyệt hệ số/cap; tích hợp vào preview_rate và resolve_minute; giữ last_passive_tuvi_tick & no double-grant."
     }
   ],
   "distinctions": [
     {
+      "name": "Tư Chất",
+      "meaning": "Tăng Tu Vi tự nhiên +0,25% mỗi điểm (theo cơ chế đã khóa)."
+    },
+    {
+      "name": "Căn Cốt",
+      "meaning": "Tăng EXP Luyện Thể +0,20% mỗi điểm (theo cơ chế đã khóa)."
+    },
+    {
       "name": "Tâm Tính",
-      "meaning": "Điểm nền bền vững, dùng nguồn D7 và Kháng Hiệu Ứng được duyệt."
-    },
-    {
-      "name": "Tâm Trạng",
-      "meaning": "Trạng thái cảm xúc tạm thời 0–100, thiết kế đang chờ consumer."
-    },
-    {
-      "name": "Tâm Cảnh",
-      "meaning": "Hệ thành tựu tu tâm đề xuất; chưa được thêm thành đường tu luyện mới."
+      "meaning": "Kháng Hiệu Ứng A2 đã duyệt; hiệu suất Chuyên Tu Tu Vi là đề xuất mới. Không có hệ Tâm Trạng ở D1."
     }
   ],
   "links": {
     "design": "docs/design/D1_MIND_NATURE_V2_EFFECT_CONTRACT_20261118.md",
     "cause": "docs/DISCIPLE_V2_STAT_CAUSAL_CONTRACT.md",
     "foundation": "godot/src/simulation/foundation/foundation_system.gd",
-    "combat": "godot/src/simulation/combat/combat_stats_v2.gd"
-  }
+    "combat": "godot/src/simulation/combat/combat_stats_v2.gd",
+    "cultivation": "godot/src/simulation/cultivation/disciple_tuvi_flow_v2.gd",
+    "balance": "godot/src/simulation/cultivation/disciple_progression_balance_v2.gd"
+  },
+  "notes": [
+    "Không mở Tâm Trạng, Tu Tâm Đường hoặc Tâm Cảnh trong phạm vi D1 hiện tại.",
+    "Combat A2 approved design, pending PvE integration.",
+    "Cultivation D1-CULT1 is an authored proposal, NOT APPROVED and NOT CODED."
+  ]
 }
