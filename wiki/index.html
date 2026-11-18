@@ -5,6 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="dark">
   <title>Tàng Kinh Các — Tông Môn Bá Đạo</title>
+  <script>
+    // Player-facing handbook is the default; ?studio=1 preserves the existing
+    // local-only engineering dashboard, editor and Change Request Manager.
+    if (!new URLSearchParams(location.search).has('studio')) {
+      location.replace('./guide.html' + (location.hash || ''));
+    }
+  </script>
   <link rel="stylesheet" href="./styles.css">
   <link rel="icon" href="data:,">
 </head>
