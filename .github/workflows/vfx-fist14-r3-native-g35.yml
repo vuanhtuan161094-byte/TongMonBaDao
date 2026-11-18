@@ -23,8 +23,18 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq xvfb ffmpeg unzip python3-pil python3-numpy
+          # Standard Ubuntu Actions images already ship with ffmpeg, xvfb and unzip.
+          # Avoid apt-get update on every VFX proof when these are installed.
+          for tool in ffmpeg xvfb-run unzip; do
+            if ! command -v "$tool" >/dev/null 2>&1; then
+              sudo apt-get update -qq
+              sudo apt-get install -y -qq ffmpeg xvfb unzip
+              break
+            fi
+          done
+          python3 -m venv /tmp/fist14-r3-venv
+          /tmp/fist14-r3-venv/bin/python -m pip install --disable-pip-version-check --quiet 'pillow>=10' 'numpy>=1.26'
+          echo '/tmp/fist14-r3-venv/bin' >> "$GITHUB_PATH"
           curl --fail --location --retry 3 -o /tmp/godot472.zip 'https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip'
           echo 'cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4  /tmp/godot472.zip' | sha256sum --check --strict
           unzip -q /tmp/godot472.zip -d /tmp

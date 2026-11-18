@@ -153,6 +153,8 @@ def frame(im,kind,i,n):
     return out
 
 def main():
+    for directory in ('assets/frames', 'assets/atlases', 'qa', 'review'):
+        (ROOT/directory).mkdir(parents=True, exist_ok=True)
     if not SRC.exists() or hfile(SRC)!=SHA:raise SystemExit('FIST14_R3_FAIL_SOURCE_SHA')
     im=Image.open(SRC).convert('RGBA')
     assert im.size==(1774,887)
