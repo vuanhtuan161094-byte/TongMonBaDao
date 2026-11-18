@@ -106,7 +106,7 @@ function change(id,value){
  assert.match(view(),/Giảm Hút Máu/);
  assert.match(view(),/Tâm Tính — Định lực/);
  assert.match(view(),/Kháng Hiệu Ứng: thiết kế đã chốt/);
- assert.match(view(),/Chưa tích hợp PvE & Tu Vi runtime/);
+ assert.match(view(),/Chưa tích hợp PvE &amp; Tu Vi runtime/);
  assert.match(view(),/40%/);
  change("mind-score","800");
  assert.match(view(),/\+8 điểm %/);
