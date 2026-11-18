@@ -13,7 +13,11 @@
     "designNotRegistered": 20,
     "plannedSetFamilies": 24,
     "plannedSetTemplates": 96,
-    "featureChecklist": 45
+    "featureChecklist": 49,
+    "sx07MaterialSlotsDesigned": 630,
+    "sx07MaterialIdsRegistered": 11,
+    "sx07MaterialsNotRegistered": 619,
+    "sx07SourceProfilesDesign": 270
   },
   "modules": [
     {
@@ -1570,6 +1574,46 @@
       "codeSource": "godot/project.godot",
       "designSource": "CURRENT_CHECKPOINT.md",
       "verifiedGodotCurrentSha": false
+    },
+    {
+      "id": "sx07_material_gaps",
+      "name": "630 ô vật liệu thiết kế & 270 tuyến nguồn",
+      "category": "resource",
+      "status": "CODE_PRESENT_PARTIAL",
+      "finding": "SX-07B ghi 630 ô vật liệu đề xuất, 270 tuyến nguồn thiết kế; mới 11/630 được đăng ký trong runtime, còn 619 (112 preserved, 507 đề xuất) chưa có mã/tuyến sản xuất được xác minh. Không coi 270 profile là 270 mỏ/điền ngoài game.",
+      "codeSource": "godot/src/simulation/resource/resource_registry.gd",
+      "designSource": "docs/qa/SX07B_PRESERVED_MATERIALS_SOURCE_GATE_20261109.md",
+      "verifiedGodotCurrentSha": false
+    },
+    {
+      "id": "economy_v55d_30",
+      "name": "Kinh tế dài hạn 30 cảnh giới V5.5-D",
+      "category": "economy",
+      "status": "DESIGN_ONLY",
+      "finding": "Có bảng thiết kế 30 cảnh giới với LT2/W2/EXP theo cấp nhưng cờ runtime_activation=false. Không được đưa bảng giá hoặc chỉ tiêu thiết kế thành mức đang chạy.",
+      "codeSource": "godot/data/economy/v55d_30_realm_reference.json",
+      "designSource": "docs/P3_7_LONG_TERM_SECT_ECONOMY_HUNTING_SPEC.md",
+      "verifiedGodotCurrentSha": false
+    },
+    {
+      "id": "npc_market",
+      "name": "Chợ NPC, mua nguyên liệu & giá",
+      "category": "economy",
+      "status": "CODE_PRESENT_PARTIAL",
+      "finding": "Có catalog NPC market trong EconomySystem và đường tra cứu nguồn nguyên liệu, nhưng chưa chứng minh mua đủ mọi loại vật phẩm, 30 cảnh giới và giao diện giao dịch.",
+      "codeSource": "godot/src/simulation/economy/economy_system.gd",
+      "designSource": "docs/P3_7_LONG_TERM_SECT_ECONOMY_HUNTING_SPEC.md",
+      "verifiedGodotCurrentSha": false
+    },
+    {
+      "id": "material_source_provenance",
+      "name": "Nguồn farm/cây/mỏ/quái của từng vật liệu",
+      "category": "resource",
+      "status": "CODE_PRESENT_PARTIAL",
+      "finding": "Có bộ tìm nguồn theo nguyên liệu: Linh Điền, Mỏ, Linh Lâm, NPC, bản đồ instance và quái PVE; mới tra cứu được các vật liệu runtime hợp lệ, không tự tạo 270 tuyến nguồn thiết kế.",
+      "codeSource": "godot/src/simulation/building/medicine_resource_source_v1.gd",
+      "designSource": "docs/qa/SX07B_PRESERVED_MATERIALS_SOURCE_GATE_20261109.md",
+      "verifiedGodotCurrentSha": false
     }
   ],
   "sources": [
@@ -1579,13 +1623,16 @@
     "docs/WEAPON_EQUIPMENT_V2_SPEC.md",
     "docs/EQUIPMENT_SETS_V2_SPEC.md",
     "docs/EQUIPMENT_FORGING_UPGRADE_V2_ROADMAP.md",
-    "CURRENT_CHECKPOINT.md"
+    "CURRENT_CHECKPOINT.md",
+    "docs/qa/SX07B_PRESERVED_MATERIALS_SOURCE_GATE_20261109.md",
+    "godot/data/economy/v55d_30_realm_reference.json"
   ],
   "notes": [
     "Các trạng thái CODE_PRESENT* chỉ xác nhận mã/đường đi có tồn tại và còn điều kiện; không phải TEST_PASS, release-pass, Android-pass.",
     "Các thiết kế dài hạn chưa nằm trong BuildingSystem.DEFINITIONS không được gắn nút nâng cấp như công trình hoạt động.",
     "Kiểm toán nhóm theo mã hệ thống: 26 modules simulation; 170 file kiểm thử Godot trong test tree không chứng minh test xanh HEAD.",
     "Các tính năng LAB/feature OFF phải gắn nhãn mặc định OFF, không trộn V63 với P0 live.",
-    "Những mã vật phẩm có tên trong catalog không đồng nghĩa có recipe, tiêu hao, nguồn rơi hoặc NPC buôn bán."
+    "Những mã vật phẩm có tên trong catalog không đồng nghĩa có recipe, tiêu hao, nguồn rơi hoặc NPC buôn bán.",
+    "SX-07B có 630 vật liệu thiết kế (11 đăng ký, 619 chưa) và 270 tuyến nguồn ở mức design; không lấy 34 ResourceRegistry native resources để suy ra 630 đã thực hiện."
   ]
 }
