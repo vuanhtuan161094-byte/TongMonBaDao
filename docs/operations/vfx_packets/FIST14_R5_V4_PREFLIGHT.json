@@ -1,0 +1,89 @@
+{
+  "schema": "tmb-vfx-production-system-v4.1",
+  "packet_id": "FIST14_R5_HUYET_QUYEN_ORIGINAL_RGBA_KEYPOSES",
+  "skill_id": "tmb.skill.fist.huyet_quyen.active_04.human",
+  "school": "fist",
+  "revision": "FIST14_R5_ART_FIRST_INDEPENDENT_POSES",
+  "catalogue_path": "godot/data/combat/v63_human_combat_catalog.json",
+  "scene_path": "godot/labs/combat_lab/fist14/r5/liep_huyet_truy_da_r5.tscn",
+  "lab_script": "godot/labs/combat_lab/fist14/r5/liep_huyet_truy_da_r5.gd",
+  "focused_test": "godot/tests/labs/combat_lab/vfx_fist14_r5_contract_test.gd",
+  "declared_contract": {
+    "effect": "mark",
+    "element": "nether",
+    "shape": "single_target",
+    "target_limit": 1,
+    "hit_count": null,
+    "range": 2.8,
+    "radius": 0,
+    "cast_time": 0.45,
+    "cooldown": 8,
+    "projectile_speed": 0,
+    "duration": 6
+  },
+  "provenance": {
+    "source_class": "FIRST_PARTY_IMAGEGEN_ORIGINAL_RGBA_PAINTED_POSES",
+    "master_quality_status": "MANUAL_ART_REVIEW_REQUIRED",
+    "rights_note": "All six masters are original ImageGen artwork created for FIST14 R5 and retained unchanged. JX1, Source VL, JX/Kiem The screenshots and prior school references informed motion/readability only; no commercial source pixels were copied or imported. R2, R3, R4 and approved assets remain unchanged.",
+    "generators": [
+      "tools/vfx/generate_fist14_r5_atlases.py"
+    ],
+    "master_files": [
+      {"path": "godot/labs/combat_lab/fist14/r5/source/f14_r5_charge_coil.png", "encoding": "png", "role": "compact knuckle-and-wrist pressure gathering pose"},
+      {"path": "godot/labs/combat_lab/fist14/r5/source/f14_r5_release_lunge.png", "encoding": "png", "role": "separately generated extended release pose"},
+      {"path": "godot/labs/combat_lab/fist14/r5/source/f14_r5_peak_strike.png", "encoding": "png", "role": "full readable peak fist silhouette"},
+      {"path": "godot/labs/combat_lab/fist14/r5/source/f14_r5_contact_impact.png", "encoding": "png", "role": "compressed knuckle contact with asymmetric fracture accent"},
+      {"path": "godot/labs/combat_lab/fist14/r5/source/f14_r5_recoil.png", "encoding": "png", "role": "independent recoil pose with separated pressure strokes"},
+      {"path": "godot/labs/combat_lab/fist14/r5/source/f14_r5_meridian_mark.png", "encoding": "png", "role": "separate compact chest meridian mark"}
+    ]
+  },
+  "atlases": [
+    {"path": "godot/labs/combat_lab/fist14/r5/assets/f14_r5_attack_pose_atlas.png", "width": 4096, "height": 2048, "cell_width": 2048, "cell_height": 1024, "frames": 3, "columns": 2, "layer": "charge coil, release lunge, peak strike: three distinct original poses"},
+    {"path": "godot/labs/combat_lab/fist14/r5/assets/f14_r5_contact_recoil_atlas.png", "width": 4096, "height": 1024, "cell_width": 2048, "cell_height": 1024, "frames": 2, "columns": 2, "layer": "independent painted contact and recoil poses"},
+    {"path": "godot/labs/combat_lab/fist14/r5/assets/f14_r5_meridian_mark_atlas.png", "width": 2048, "height": 1024, "cell_width": 2048, "cell_height": 1024, "frames": 1, "columns": 1, "layer": "separate small chest mark, mixed over selected target"}
+  ],
+  "time_contract": {
+    "combat_clock": "CATALOGUE_GATED_NOT_LIVE",
+    "declared_cast_end_seconds": 0.45,
+    "declared_status_duration_seconds": 6,
+    "runtime_receipt_timestamp": "RUNTIME_MAPPING_PENDING",
+    "vfx_clock": "LAB_ONLY",
+    "simulated_hit_seconds": 0.90,
+    "visual_fade_end_seconds": 7.20,
+    "demo_loop_seconds": 8.0,
+    "demo_clock_warning": "LAB-only illustrative contact occurs at 0.90s after the declared 0.45s cast; it is not a Combat V2 receipt. projectile_speed is 0, so there is no caster-to-target flight, homing, or gameplay projectile. The six-second chest mark is a visual timing exercise based on declared duration, not proof of runtime attachment or expiry.",
+    "key_pose_budget_note": "Five independently generated hand-painted fist/contact/recoil RGBA poses plus one separately generated small mark source. Five hero pose sources are all distinct silhouettes; no old sprite is moved, rotated, resized or recolored to simulate frame changes. Godot uses genuine source-image poses with holds and fades only.",
+    "phases": [
+      {"id": "charge", "at_seconds": 0.20, "file": "v4-charge.png", "expected_phase": "original compact fist at caster hand during canonical cast window"},
+      {"id": "peak", "at_seconds": 0.62, "file": "v4-peak.png", "expected_phase": "original peak fist follows one moving target chest anchor"},
+      {"id": "contact", "at_seconds": 0.94, "file": "v4-contact.png", "expected_phase": "painted local contact at moving target with no gameplay hit claim"}
+    ]
+  },
+  "moving_target": {
+    "actor_animation": "Unchanged approved caster idle and one unchanged V5 WALK monster; the monster follows a deterministic LAB path from 0.20–0.94s. Original fist art appears locally at the moving target after cast; no projectile trajectory is shown.",
+    "locked_demo_target_index": 0,
+    "movement_from_seconds": 0.20,
+    "movement_to_seconds": 0.94,
+    "minimum_displacement_px": 55,
+    "contact_anchor": "selected target chest at target_feet(t) + (0,-70), local contact at chest+(0,18); small mark at target_feet(t)+(18,-67), never over head/face",
+    "tracking_rule": "Only target index 0 receives the simulated contact and six-second mark. Both follow its current deterministic moving anchor. LAB synthetic timing only; no damage, gameplay event, projectile, or additional hit is generated.",
+    "receipt_claim": "SIMULATED_VISUAL_ONLY"
+  },
+  "gate_status": {
+    "g3_5_capture": "NATIVE_1280X720_CHARGE_PEAK_MOVING_CONTACT_CAPTURE_PENDING",
+    "technical": "GODOT_4_7_2_EXACT_SHA_PENDING",
+    "art": "MANUAL_ART_REVIEW_REQUIRED",
+    "owner": "OWNER_VISUAL_PENDING",
+    "live": "PVE_INTEGRATION_HOLD",
+    "device": "PHYSICAL_QA_PENDING",
+    "g3_6": "NOT_EXECUTED",
+    "g3_7": "NOT_EXECUTED",
+    "g5": "NOT_EXECUTED"
+  },
+  "proof_contract": {
+    "focused_marker": "FIST14_R5_FOCUSED_RESULT=PASS failures=0",
+    "native_marker": "FIST14_R5_G35_NATIVE_READY",
+    "video_filename": "v4-fist14-r5-native.mp4",
+    "source": "Run by .github/workflows/vfx-shared-skill.yml on the exact Draft PR #72 SHA with Godot 4.7.2 stable. True native 1280x720 screenshots at charge, peak and moving-target contact plus source/atlas SHA evidence. Technical output never implies art or owner approval."
+  }
+}

@@ -1,0 +1,215 @@
+{
+  "revision": "FIST14_R5",
+  "cell_px": [
+    2048,
+    1024
+  ],
+  "source_art_unchanged": true,
+  "pose_generation": "independent RGBA image generations; no reused R2/R3/R4 sprite",
+  "atlases": [
+    {
+      "path": "godot/labs/combat_lab/fist14/r5/assets/f14_r5_attack_pose_atlas.png",
+      "width": 4096,
+      "height": 2048,
+      "cell_width": 2048,
+      "cell_height": 1024,
+      "columns": 2,
+      "frames": 3,
+      "sha256": "4336880d249c151f62dd248b1a963bbb5ed560740dd1a9cf3e7a84b346089f5e",
+      "poses": [
+        {
+          "index": 0,
+          "role": "charge_coil",
+          "source": "godot/labs/combat_lab/fist14/r5/source/f14_r5_charge_coil.png",
+          "source_sha256": "ef56796698fbb339c1fd84c1bef5051ecaf745cd603d93fe65fdcffa356b185b",
+          "source_px": [
+            1536,
+            1024
+          ],
+          "source_alpha_bbox": [
+            0,
+            19,
+            1528,
+            1006
+          ],
+          "cell_offset_px": [
+            256,
+            0
+          ],
+          "focal_point_source_px": [
+            1130,
+            570
+          ],
+          "focal_point_cell_px": [
+            1386,
+            570
+          ]
+        },
+        {
+          "index": 1,
+          "role": "release_lunge",
+          "source": "godot/labs/combat_lab/fist14/r5/source/f14_r5_release_lunge.png",
+          "source_sha256": "ab30e92e83d628fdb8ebc8a810379a185b2eacdad70dce713baa82ccb230eff9",
+          "source_px": [
+            1774,
+            887
+          ],
+          "source_alpha_bbox": [
+            13,
+            19,
+            1752,
+            857
+          ],
+          "cell_offset_px": [
+            137,
+            68
+          ],
+          "focal_point_source_px": [
+            1470,
+            590
+          ],
+          "focal_point_cell_px": [
+            1607,
+            658
+          ]
+        },
+        {
+          "index": 2,
+          "role": "peak_strike",
+          "source": "godot/labs/combat_lab/fist14/r5/source/f14_r5_peak_strike.png",
+          "source_sha256": "c601e0f6fe7c78850c3d53f7a152fde28d51d423100685062801b54136e9012b",
+          "source_px": [
+            1774,
+            887
+          ],
+          "source_alpha_bbox": [
+            0,
+            2,
+            1774,
+            887
+          ],
+          "cell_offset_px": [
+            137,
+            68
+          ],
+          "focal_point_source_px": [
+            1470,
+            500
+          ],
+          "focal_point_cell_px": [
+            1607,
+            568
+          ]
+        }
+      ]
+    },
+    {
+      "path": "godot/labs/combat_lab/fist14/r5/assets/f14_r5_contact_recoil_atlas.png",
+      "width": 4096,
+      "height": 1024,
+      "cell_width": 2048,
+      "cell_height": 1024,
+      "columns": 2,
+      "frames": 2,
+      "sha256": "c624501b98f8a6ad4d3ce6e4aeb40cf6aed0d453509f9b0e7ab617e935a77c91",
+      "poses": [
+        {
+          "index": 0,
+          "role": "contact_impact",
+          "source": "godot/labs/combat_lab/fist14/r5/source/f14_r5_contact_impact.png",
+          "source_sha256": "3965960bc2b4aebbaa259993aeb990f28d2574b923744183cfebc4a667863c2d",
+          "source_px": [
+            1774,
+            887
+          ],
+          "source_alpha_bbox": [
+            0,
+            21,
+            1774,
+            887
+          ],
+          "cell_offset_px": [
+            137,
+            68
+          ],
+          "focal_point_source_px": [
+            1460,
+            470
+          ],
+          "focal_point_cell_px": [
+            1597,
+            538
+          ]
+        },
+        {
+          "index": 1,
+          "role": "recoil",
+          "source": "godot/labs/combat_lab/fist14/r5/source/f14_r5_recoil.png",
+          "source_sha256": "695015456b29549376a84c8cd859698d05bc9d8c8f14aedccf6247df2058a680",
+          "source_px": [
+            1774,
+            887
+          ],
+          "source_alpha_bbox": [
+            33,
+            15,
+            1758,
+            887
+          ],
+          "cell_offset_px": [
+            137,
+            68
+          ],
+          "focal_point_source_px": [
+            1210,
+            530
+          ],
+          "focal_point_cell_px": [
+            1347,
+            598
+          ]
+        }
+      ]
+    },
+    {
+      "path": "godot/labs/combat_lab/fist14/r5/assets/f14_r5_meridian_mark_atlas.png",
+      "width": 2048,
+      "height": 1024,
+      "cell_width": 2048,
+      "cell_height": 1024,
+      "columns": 1,
+      "frames": 1,
+      "sha256": "51ab0f4e51c878443eb02fc4341574be60d4b713371187dcb2a2a7b22c53dc61",
+      "poses": [
+        {
+          "index": 0,
+          "role": "meridian_mark",
+          "source": "godot/labs/combat_lab/fist14/r5/source/f14_r5_meridian_mark.png",
+          "source_sha256": "ab76e496e913c819e0e08e876f2594b07b26662224e76672564294e28ad49a0b",
+          "source_px": [
+            1774,
+            887
+          ],
+          "source_alpha_bbox": [
+            0,
+            9,
+            1734,
+            887
+          ],
+          "cell_offset_px": [
+            137,
+            68
+          ],
+          "focal_point_source_px": [
+            885,
+            450
+          ],
+          "focal_point_cell_px": [
+            1022,
+            518
+          ]
+        }
+      ]
+    }
+  ]
+}
