@@ -1,0 +1,1635 @@
+{
+  "schema": 1,
+  "asOf": "2026-11-18",
+  "referenceBranch": "integration/pve-p0-playable-ui-20261103",
+  "auditType": "Static code-vs-design inventory. No Godot execution performed in audit.",
+  "summary": {
+    "sourceModules": 24,
+    "sourceSimulationGd": 134,
+    "allRepositoryFiles": 4047,
+    "testGdFiles": 387,
+    "designedBuildingTypes": 26,
+    "registeredBuildingTypes": 8,
+    "designNotRegistered": 24,
+    "plannedSetFamilies": 24,
+    "plannedSetTemplates": 96,
+    "featureChecklist": 45
+  },
+  "modules": [
+    {
+      "id": "ai",
+      "name": "AI hành vi",
+      "sourceFiles": 2,
+      "sources": [
+        "godot/src/simulation/ai/decision_system.gd",
+        "godot/src/simulation/ai/goal_system.gd"
+      ],
+      "testsByFilename": 20,
+      "testExamples": [
+        "godot/tests/dai_dien_dd06_integrity_test.gd",
+        "godot/tests/dai_dien_dd07_save_recovery_test.gd",
+        "godot/tests/dai_dien_dd092_door_plot_test.gd",
+        "godot/tests/dai_dien_housing_full_loop_test.gd",
+        "godot/tests/dai_dien_v1_smoke.gd",
+        "godot/tests/labs/combat_lab/poison_v4_aim_range_contract_test.gd",
+        "godot/tests/labs/combat_lab/vfx_poi16_van_linh_giai_ach_r1_contract_test.gd",
+        "godot/tests/presentation/b3_main_hunt_integration_test.gd"
+      ],
+      "spec": "docs/DISCIPLE_V2_ROADMAP.md",
+      "status": "CODE_PRESENT_QA_CURRENT_UNVERIFIED",
+      "caveat": "Có source file; chưa xác nhận bộ mã chạy trong nhánh phát hành, không có nghĩa mọi chức năng đã nối UI."
+    },
+    {
+      "id": "archive",
+      "name": "Kho lưu trữ/Bí kíp V6.3",
+      "sourceFiles": 1,
+      "sources": [
+        "godot/src/simulation/archive/v63_sect_archive_system.gd"
+      ],
+      "testsByFilename": 3,
+      "testExamples": [
+        "godot/tests/presentation/v63_d7_archive_entry_test.gd",
+        "godot/tests/simulation/v63_d2_sect_archive_test.gd",
+        "godot/tests/simulation/v63_d4b_archive_learning_test.gd"
+      ],
+      "spec": "docs/DISCIPLE_V2_ROADMAP.md",
+      "status": "CODE_PRESENT_QA_CURRENT_UNVERIFIED",
+      "caveat": "Có source file; chưa xác nhận bộ mã chạy trong nhánh phát hành, không có nghĩa mọi chức năng đã nối UI."
+    },
+    {
+      "id": "bloodline",
+      "name": "Huyết mạch",
+      "sourceFiles": 1,
+      "sources": [
+        "godot/src/simulation/bloodline/bloodline_system.gd"
+      ],
+      "testsByFilename": 1,
+      "testExamples": [
+        "godot/tests/simulation/p2_11_bloodline_test.gd"
+      ],
+      "spec": "docs/BLOODLINE_V2_SPEC.md",
+      "status": "CODE_PRESENT_QA_CURRENT_UNVERIFIED",
+      "caveat": "Có source file; chưa xác nhận bộ mã chạy trong nhánh phát hành, không có nghĩa mọi chức năng đã nối UI."
+    },
+    {
+      "id": "building",
+      "name": "Công trình & sản xuất",
+      "sourceFiles": 7,
+      "sources": [
+        "godot/src/simulation/building/alchemy_recipe_registry.gd",
+        "godot/src/simulation/building/building_system.gd",
+        "godot/src/simulation/building/medicine_allocation_v2.gd",
+        "godot/src/simulation/building/medicine_catalogue_v2.gd",
+        "godot/src/simulation/building/medicine_resource_source_v1.gd",
+        "godot/src/simulation/building/spirit_crop_registry.gd",
+        "godot/src/simulation/building/sx01_pill_policy.gd"
+      ],
+      "testsByFilename": 6,
+      "testExamples": [
+        "godot/tests/presentation/dv2_03_p3_body_training_building_ui_test.gd",
+        "godot/tests/presentation/p3_4a_building_operation_panel_test.gd",
+        "godot/tests/presentation/p3_4b_building_people_management_test.gd",
+        "godot/tests/presentation/p3_4c_building_system_actions_test.gd",
+        "godot/tests/presentation/vis08_original_buildings_test.gd",
+        "godot/tests/simulation/p3_7a1_building_authority_test.gd"
+      ],
+      "spec": "docs/P3_7_BUILDING_TREE_SPEC.md",
+      "status": "CODE_PRESENT_QA_CURRENT_UNVERIFIED",
+      "caveat": "Có source file; chưa xác nhận bộ mã chạy trong nhánh phát hành, không có nghĩa mọi chức năng đã nối UI."
+    },
+    {
+      "id": "combat",
+      "name": "Chiến đấu, quái, map PvE",
+      "sourceFiles": 43,
+      "sources": [
+        "godot/src/simulation/combat/b3_demo_setup.gd",
+        "godot/src/simulation/combat/b3_hunt_world.gd",
+        "godot/src/simulation/combat/b3_medical_autoplay_v1.gd",
+        "godot/src/simulation/combat/b3_pilot_content.gd",
+        "godot/src/simulation/combat/combat_context_effects_v2.gd",
+        "godot/src/simulation/combat/combat_skill_system.gd",
+        "godot/src/simulation/combat/combat_stats_v2.gd",
+        "godot/src/simulation/combat/combat_system.gd",
+        "godot/src/simulation/combat/disciple_combat_loadout_v2.gd",
+        "godot/src/simulation/combat/hunting_map_v2.gd",
+        "godot/src/simulation/combat/hunting_pve_run_v2.gd",
+        "godot/src/simulation/combat/map_battle_snapshot_v2.gd",
+        "godot/src/simulation/combat/map_battle_v2.gd",
+        "godot/src/simulation/combat/monster_catalogue_v2.gd",
+        "godot/src/simulation/combat/monster_encounter_v2.gd",
+        "godot/src/simulation/combat/pve_cluster_layout_v1.gd",
+        "godot/src/simulation/combat/pve_combat_auto_pill_v1.gd",
+        "godot/src/simulation/combat/pve_distributed_world_v1.gd",
+        "godot/src/simulation/combat/pve_injury_treatment_v1.gd",
+        "godot/src/simulation/combat/pve_multi_camp_population_v1.gd",
+        "godot/src/simulation/combat/pve_open_world_topology_v1.gd",
+        "godot/src/simulation/combat/pve_p0_commands_v1.gd",
+        "godot/src/simulation/combat/pve_per_kill_reward_v1.gd",
+        "godot/src/simulation/combat/pve_r12_balance_v1.gd",
+        "godot/src/simulation/combat/v63_blade_skill_combat_system.gd",
+        "godot/src/simulation/combat/v63_boss_read_model.gd",
+        "godot/src/simulation/combat/v63_content_registry.gd",
+        "godot/src/simulation/combat/v63_curse_skill_combat_system.gd",
+        "godot/src/simulation/combat/v63_divine_skill_combat_system.gd",
+        "godot/src/simulation/combat/v63_dual_blade_skill_combat_system.gd",
+        "godot/src/simulation/combat/v63_feature_gates.gd",
+        "godot/src/simulation/combat/v63_formation_skill_combat_system.gd",
+        "godot/src/simulation/combat/v63_human_skill_combat_system.gd",
+        "godot/src/simulation/combat/v63_immortal_skill_combat_system.gd",
+        "godot/src/simulation/combat/v63_palm_skill_combat_system.gd",
+        "godot/src/simulation/combat/v63_poison_evolution_v1.gd",
+        "godot/src/simulation/combat/v63_pve_mastery_receipts.gd",
+        "godot/src/simulation/combat/v63_spear_skill_combat_system.gd",
+        "godot/src/simulation/combat/v63_spiritual_root_evaluator.gd",
+        "godot/src/simulation/combat/v63_successor_graph.gd",
+        "godot/src/simulation/combat/v63_summon_skill_combat_system.gd",
+        "godot/src/simulation/combat/v63_sword_skill_combat_system.gd",
+        "godot/src/simulation/combat/v63_talisman_skill_combat_system.gd"
+      ],
+      "testsByFilename": 123,
+      "testExamples": [
+        "godot/tests/labs/combat_lab/combat_lab_focused_test.gd",
+        "godot/tests/labs/combat_lab/combat_lab_v2_visual_test.gd",
+        "godot/tests/labs/combat_lab/jx_vltk_reference_preview_r1_contract_test.gd",
+        "godot/tests/labs/combat_lab/poison_v3_video_capture.gd",
+        "godot/tests/labs/combat_lab/poison_v4_aim_range_contract_test.gd",
+        "godot/tests/labs/combat_lab/poison_v4_cinematic_contract_test.gd",
+        "godot/tests/labs/combat_lab/poison_v4_growth_reaction_test.gd",
+        "godot/tests/labs/combat_lab/poison_v4_lab_status_test.gd"
+      ],
+      "spec": "docs/COMBAT_SKILLS_V2_SPEC.md",
+      "status": "CODE_PRESENT_QA_CURRENT_UNVERIFIED",
+      "caveat": "Có source file; chưa xác nhận bộ mã chạy trong nhánh phát hành, không có nghĩa mọi chức năng đã nối UI."
+    },
+    {
+      "id": "content",
+      "name": "Nội dung khởi đầu",
+      "sourceFiles": 1,
+      "sources": [
+        "godot/src/simulation/content/p0_content.gd"
+      ],
+      "testsByFilename": 1,
+      "testExamples": [
+        "godot/tests/simulation/v63_d1_content_registry_test.gd"
+      ],
+      "spec": "docs/GAME_SYSTEM_ARCHITECTURE.md",
+      "status": "CODE_PRESENT_QA_CURRENT_UNVERIFIED",
+      "caveat": "Có source file; chưa xác nhận bộ mã chạy trong nhánh phát hành, không có nghĩa mọi chức năng đã nối UI."
+    },
+    {
+      "id": "core",
+      "name": "Lõi mô phỏng & thời gian",
+      "sourceFiles": 25,
+      "sources": [
+        "godot/src/simulation/core/game_rng.gd",
+        "godot/src/simulation/core/live_game_runtime_v2.gd",
+        "godot/src/simulation/core/p0_factory.gd",
+        "godot/src/simulation/core/p1_2_factory.gd",
+        "godot/src/simulation/core/p1_3_factory.gd",
+        "godot/src/simulation/core/p1_4_factory.gd",
+        "godot/src/simulation/core/p1_5_factory.gd",
+        "godot/src/simulation/core/p1_6_factory.gd",
+        "godot/src/simulation/core/p1_factory.gd",
+        "godot/src/simulation/core/p2_10_factory.gd",
+        "godot/src/simulation/core/p2_11_factory.gd",
+        "godot/src/simulation/core/p2_12_factory.gd",
+        "godot/src/simulation/core/p2_1_factory.gd",
+        "godot/src/simulation/core/p2_2_factory.gd",
+        "godot/src/simulation/core/p2_3_factory.gd",
+        "godot/src/simulation/core/p2_4_factory.gd",
+        "godot/src/simulation/core/p2_5_factory.gd",
+        "godot/src/simulation/core/p2_6_factory.gd",
+        "godot/src/simulation/core/p2_7_factory.gd",
+        "godot/src/simulation/core/p2_8_factory.gd",
+        "godot/src/simulation/core/p2_9_factory.gd",
+        "godot/src/simulation/core/p3_7_factory.gd",
+        "godot/src/simulation/core/simulation_runtime_clock_v2.gd",
+        "godot/src/simulation/core/simulation_runtime_owner_v2.gd",
+        "godot/src/simulation/core/simulation_scheduler.gd"
+      ],
+      "testsByFilename": 1,
+      "testExamples": [
+        "godot/tests/presentation/p3_5_living_cue_core_test.gd"
+      ],
+      "spec": "docs/GAME_SYSTEM_ARCHITECTURE.md",
+      "status": "CODE_PRESENT_QA_CURRENT_UNVERIFIED",
+      "caveat": "Có source file; chưa xác nhận bộ mã chạy trong nhánh phát hành, không có nghĩa mọi chức năng đã nối UI."
+    },
+    {
+      "id": "cultivation",
+      "name": "Tu vi, Luyện thể, Đột phá",
+      "sourceFiles": 17,
+      "sources": [
+        "godot/src/simulation/cultivation/b3_pill_satiety_v1.gd",
+        "godot/src/simulation/cultivation/cultivation_gate_v57.gd",
+        "godot/src/simulation/cultivation/cultivation_path_system.gd",
+        "godot/src/simulation/cultivation/cultivation_system.gd",
+        "godot/src/simulation/cultivation/disciple_body_gate_content_v2.gd",
+        "godot/src/simulation/cultivation/disciple_body_gate_transaction_v2.gd",
+        "godot/src/simulation/cultivation/disciple_body_training_facility_v2.gd",
+        "godot/src/simulation/cultivation/disciple_body_xp_source_v2.gd",
+        "godot/src/simulation/cultivation/disciple_breakthrough_balance_v2.gd",
+        "godot/src/simulation/cultivation/disciple_progression_balance_v2.gd",
+        "godot/src/simulation/cultivation/disciple_realm_progress_v2.gd",
+        "godot/src/simulation/cultivation/disciple_training_action_v2.gd",
+        "godot/src/simulation/cultivation/disciple_training_content_v2.gd",
+        "godot/src/simulation/cultivation/disciple_training_policy_v2.gd",
+        "godot/src/simulation/cultivation/disciple_tuvi_flow_v2.gd",
+        "godot/src/simulation/cultivation/root_refinement_system.gd",
+        "godot/src/simulation/cultivation/spiritual_root_system.gd"
+      ],
+      "testsByFilename": 3,
+      "testExamples": [
+        "godot/tests/presentation/gp_02a_v2_cultivation_panel_test.gd",
+        "godot/tests/simulation/p2_1_cultivation_test.gd",
+        "godot/tests/simulation/p2_4_cultivation_path_test.gd"
+      ],
+      "spec": "docs/REALM_LADDER_V2_SPEC.md",
+      "status": "CODE_PRESENT_QA_CURRENT_UNVERIFIED",
+      "caveat": "Có source file; chưa xác nhận bộ mã chạy trong nhánh phát hành, không có nghĩa mọi chức năng đã nối UI."
+    },
+    {
+      "id": "economy",
+      "name": "Kinh tế",
+      "sourceFiles": 3,
+      "sources": [
+        "godot/src/simulation/economy/eco01_origin_vein.gd",
+        "godot/src/simulation/economy/eco05_capacity_audit_v1.gd",
+        "godot/src/simulation/economy/economy_system.gd"
+      ],
+      "testsByFilename": 5,
+      "testExamples": [
+        "godot/tests/presentation/eco06_real_economy_ui_test.gd",
+        "godot/tests/presentation/economy_a_landscape_ui_test.gd",
+        "godot/tests/simulation/dv2_03_f5_low_tier_economy_audit_test.gd",
+        "godot/tests/simulation/economy_a_playable_test.gd",
+        "godot/tests/simulation/p0_economy_contract_test.gd"
+      ],
+      "spec": "docs/P3_7_LONG_TERM_SECT_ECONOMY_HUNTING_SPEC.md",
+      "status": "CODE_PRESENT_QA_CURRENT_UNVERIFIED",
+      "caveat": "Có source file; chưa xác nhận bộ mã chạy trong nhánh phát hành, không có nghĩa mọi chức năng đã nối UI."
+    },
+    {
+      "id": "equipment",
+      "name": "Trang bị hệ cũ",
+      "sourceFiles": 1,
+      "sources": [
+        "godot/src/simulation/equipment/equipment_system.gd"
+      ],
+      "testsByFilename": 2,
+      "testExamples": [
+        "godot/tests/simulation/p2_6_equipment_combat_effects_test.gd",
+        "godot/tests/simulation/p2_6_equipment_test.gd"
+      ],
+      "spec": "docs/WEAPON_EQUIPMENT_V2_SPEC.md",
+      "status": "CODE_PRESENT_QA_CURRENT_UNVERIFIED",
+      "caveat": "Có source file; chưa xác nhận bộ mã chạy trong nhánh phát hành, không có nghĩa mọi chức năng đã nối UI."
+    },
+    {
+      "id": "foundation",
+      "name": "Tam Căn/Tứ Tính",
+      "sourceFiles": 1,
+      "sources": [
+        "godot/src/simulation/foundation/foundation_system.gd"
+      ],
+      "testsByFilename": 2,
+      "testExamples": [
+        "godot/tests/simulation/d7_foundation_v3_migration_test.gd",
+        "godot/tests/simulation/p3_7c1_foundation_guidance_test.gd"
+      ],
+      "spec": "docs/DISCIPLE_CHARACTERISTICS_STAT_FRAMEWORK_V2.md",
+      "status": "CODE_PRESENT_QA_CURRENT_UNVERIFIED",
+      "caveat": "Có source file; chưa xác nhận bộ mã chạy trong nhánh phát hành, không có nghĩa mọi chức năng đã nối UI."
+    },
+    {
+      "id": "governance",
+      "name": "Đại Điện & cư trú",
+      "sourceFiles": 3,
+      "sources": [
+        "godot/src/simulation/governance/sect_hall_system_v1.gd",
+        "godot/src/simulation/governance/sect_residence_site_v1.gd",
+        "godot/src/simulation/governance/sect_residence_system_v1.gd"
+      ],
+      "testsByFilename": 0,
+      "testExamples": [],
+      "spec": "docs/P3_7_BUILDING_TREE_SPEC.md",
+      "status": "CODE_PRESENT_QA_CURRENT_UNVERIFIED",
+      "caveat": "Có source file; chưa xác nhận bộ mã chạy trong nhánh phát hành, không có nghĩa mọi chức năng đã nối UI."
+    },
+    {
+      "id": "memory",
+      "name": "Ký ức nhân vật",
+      "sourceFiles": 1,
+      "sources": [
+        "godot/src/simulation/memory/memory_system.gd"
+      ],
+      "testsByFilename": 1,
+      "testExamples": [
+        "godot/tests/simulation/p1_4_memory_test.gd"
+      ],
+      "spec": "docs/DISCIPLE_V2_ROADMAP.md",
+      "status": "CODE_PRESENT_QA_CURRENT_UNVERIFIED",
+      "caveat": "Có source file; chưa xác nhận bộ mã chạy trong nhánh phát hành, không có nghĩa mọi chức năng đã nối UI."
+    },
+    {
+      "id": "needs",
+      "name": "Nhu cầu sinh hoạt",
+      "sourceFiles": 1,
+      "sources": [
+        "godot/src/simulation/needs/needs_system.gd"
+      ],
+      "testsByFilename": 1,
+      "testExamples": [
+        "godot/tests/simulation/p1_6_needs_test.gd"
+      ],
+      "spec": "docs/DISCIPLE_V2_ROADMAP.md",
+      "status": "CODE_PRESENT_QA_CURRENT_UNVERIFIED",
+      "caveat": "Có source file; chưa xác nhận bộ mã chạy trong nhánh phát hành, không có nghĩa mọi chức năng đã nối UI."
+    },
+    {
+      "id": "organization",
+      "name": "Tổ chức tông môn",
+      "sourceFiles": 1,
+      "sources": [
+        "godot/src/simulation/organization/organization_system.gd"
+      ],
+      "testsByFilename": 1,
+      "testExamples": [
+        "godot/tests/simulation/p1_5_organization_test.gd"
+      ],
+      "spec": "docs/DISCIPLE_V2_ROADMAP.md",
+      "status": "CODE_PRESENT_QA_CURRENT_UNVERIFIED",
+      "caveat": "Có source file; chưa xác nhận bộ mã chạy trong nhánh phát hành, không có nghĩa mọi chức năng đã nối UI."
+    },
+    {
+      "id": "physique",
+      "name": "Thể chất",
+      "sourceFiles": 1,
+      "sources": [
+        "godot/src/simulation/physique/physique_system.gd"
+      ],
+      "testsByFilename": 1,
+      "testExamples": [
+        "godot/tests/simulation/p2_12_physique_test.gd"
+      ],
+      "spec": "docs/PHYSIQUE_V2_SPEC.md",
+      "status": "CODE_PRESENT_QA_CURRENT_UNVERIFIED",
+      "caveat": "Có source file; chưa xác nhận bộ mã chạy trong nhánh phát hành, không có nghĩa mọi chức năng đã nối UI."
+    },
+    {
+      "id": "recruitment",
+      "name": "Tuyển đệ tử & sinh nhân vật",
+      "sourceFiles": 6,
+      "sources": [
+        "godot/src/simulation/recruitment/disciple_birth_catalogue_v2.gd",
+        "godot/src/simulation/recruitment/disciple_birth_profile_v2.gd",
+        "godot/src/simulation/recruitment/disciple_birth_roll_v2.gd",
+        "godot/src/simulation/recruitment/disciple_generator_open_points.gd",
+        "godot/src/simulation/recruitment/disciple_generator_v2.gd",
+        "godot/src/simulation/recruitment/recruitment_system.gd"
+      ],
+      "testsByFilename": 2,
+      "testExamples": [
+        "godot/tests/presentation/p3_o2_recruitment_map_test.gd",
+        "godot/tests/simulation/p1_2_recruitment_test.gd"
+      ],
+      "spec": "docs/DISCIPLE_V2_ROADMAP.md",
+      "status": "CODE_PRESENT_QA_CURRENT_UNVERIFIED",
+      "caveat": "Có source file; chưa xác nhận bộ mã chạy trong nhánh phát hành, không có nghĩa mọi chức năng đã nối UI."
+    },
+    {
+      "id": "relationship",
+      "name": "Quan hệ đệ tử",
+      "sourceFiles": 1,
+      "sources": [
+        "godot/src/simulation/relationship/relationship_system.gd"
+      ],
+      "testsByFilename": 1,
+      "testExamples": [
+        "godot/tests/simulation/p1_3_relationship_test.gd"
+      ],
+      "spec": "docs/DISCIPLE_V2_ROADMAP.md",
+      "status": "CODE_PRESENT_QA_CURRENT_UNVERIFIED",
+      "caveat": "Có source file; chưa xác nhận bộ mã chạy trong nhánh phát hành, không có nghĩa mọi chức năng đã nối UI."
+    },
+    {
+      "id": "resource",
+      "name": "Vật phẩm & kho",
+      "sourceFiles": 2,
+      "sources": [
+        "godot/src/simulation/resource/resource_registry.gd",
+        "godot/src/simulation/resource/warehouse_system.gd"
+      ],
+      "testsByFilename": 0,
+      "testExamples": [],
+      "spec": "docs/P3_7_RESOURCE_STORAGE_GROWTH_DATA_MODEL_SPEC.md",
+      "status": "CODE_PRESENT_QA_CURRENT_UNVERIFIED",
+      "caveat": "Có source file; chưa xác nhận bộ mã chạy trong nhánh phát hành, không có nghĩa mọi chức năng đã nối UI."
+    },
+    {
+      "id": "save",
+      "name": "Lưu tải",
+      "sourceFiles": 1,
+      "sources": [
+        "godot/src/simulation/save/save_service.gd"
+      ],
+      "testsByFilename": 15,
+      "testExamples": [
+        "godot/tests/dai_dien_dd07_save_recovery_test.gd",
+        "godot/tests/simulation/one_game_r3_continuous_save_test.gd",
+        "godot/tests/simulation/p0_save_roundtrip_test.gd",
+        "godot/tests/simulation/pve_aux01_save_stage_differential_test.gd",
+        "godot/tests/simulation/pve_care03_combat_pill_save_test.gd",
+        "godot/tests/simulation/pve_open_world_save_identity_contract_test.gd",
+        "godot/tests/simulation/pve_r12_live_reward_save_test.gd",
+        "godot/tests/simulation/pve_save_return_reload_exactly_once_test.gd"
+      ],
+      "spec": "docs/GAME_SYSTEM_ARCHITECTURE.md",
+      "status": "CODE_PRESENT_QA_CURRENT_UNVERIFIED",
+      "caveat": "Có source file; chưa xác nhận bộ mã chạy trong nhánh phát hành, không có nghĩa mọi chức năng đã nối UI."
+    },
+    {
+      "id": "state",
+      "name": "Dữ liệu trạng thái game",
+      "sourceFiles": 9,
+      "sources": [
+        "godot/src/simulation/state/building_state.gd",
+        "godot/src/simulation/state/candidate_state.gd",
+        "godot/src/simulation/state/disciple_state.gd",
+        "godot/src/simulation/state/memory_state.gd",
+        "godot/src/simulation/state/region_state.gd",
+        "godot/src/simulation/state/relationship_state.gd",
+        "godot/src/simulation/state/sect_state.gd",
+        "godot/src/simulation/state/simulation_state.gd",
+        "godot/src/simulation/state/team_state.gd"
+      ],
+      "testsByFilename": 1,
+      "testExamples": [
+        "godot/tests/simulation/v63_d4a_state_roundtrip_test.gd"
+      ],
+      "spec": "docs/DISCIPLE_MASTER_SCHEMA.md",
+      "status": "CODE_PRESENT_QA_CURRENT_UNVERIFIED",
+      "caveat": "Có source file; chưa xác nhận bộ mã chạy trong nhánh phát hành, không có nghĩa mọi chức năng đã nối UI."
+    },
+    {
+      "id": "technique",
+      "name": "Công pháp & học kỹ năng",
+      "sourceFiles": 2,
+      "sources": [
+        "godot/src/simulation/technique/technique_system.gd",
+        "godot/src/simulation/technique/v63_learning_system.gd"
+      ],
+      "testsByFilename": 1,
+      "testExamples": [
+        "godot/tests/simulation/p2_3_technique_test.gd"
+      ],
+      "spec": "docs/TECHNIQUE_V2_SPEC.md",
+      "status": "CODE_PRESENT_QA_CURRENT_UNVERIFIED",
+      "caveat": "Có source file; chưa xác nhận bộ mã chạy trong nhánh phát hành, không có nghĩa mọi chức năng đã nối UI."
+    },
+    {
+      "id": "traits",
+      "name": "Đặc tính",
+      "sourceFiles": 1,
+      "sources": [
+        "godot/src/simulation/traits/trait_system.gd"
+      ],
+      "testsByFilename": 1,
+      "testExamples": [
+        "godot/tests/simulation/p2_9_traits_test.gd"
+      ],
+      "spec": "docs/TRAITS_V2_SPEC.md",
+      "status": "CODE_PRESENT_QA_CURRENT_UNVERIFIED",
+      "caveat": "Có source file; chưa xác nhận bộ mã chạy trong nhánh phát hành, không có nghĩa mọi chức năng đã nối UI."
+    },
+    {
+      "id": "workforce",
+      "name": "Nghề nghiệp & lao động",
+      "sourceFiles": 3,
+      "sources": [
+        "godot/src/simulation/workforce/character_modifier_system.gd",
+        "godot/src/simulation/workforce/profession_modifier_system.gd",
+        "godot/src/simulation/workforce/workforce_system.gd"
+      ],
+      "testsByFilename": 1,
+      "testExamples": [
+        "godot/tests/simulation/p2_7_workforce_test.gd"
+      ],
+      "spec": "docs/P3_7_PROFESSION_WORK_MODIFIER_SPEC.md",
+      "status": "CODE_PRESENT_QA_CURRENT_UNVERIFIED",
+      "caveat": "Có source file; chưa xác nhận bộ mã chạy trong nhánh phát hành, không có nghĩa mọi chức năng đã nối UI."
+    }
+  ],
+  "buildings": [
+    {
+      "id": "planned_aiien",
+      "name": "ĐẠI ĐIỆN",
+      "designSource": "docs/P3_7_BUILDING_TREE_SPEC.md",
+      "designLine": 282,
+      "runtimePath": null,
+      "codeStatus": "NOT_REGISTERED_AS_BUILDING",
+      "upgradeStatus": "NO_BUILDING_UPGRADE_CODE",
+      "upgradeNote": "Có thiết kế trong cây công trình dài hạn, chưa có loại tương ứng trong BuildingSystem.DEFINITIONS; các hệ độc lập nếu có không đồng nghĩa đã là công trình có thể nâng cấp.",
+      "summary": "Chưa có đường xây/nâng cấp công trình theo mã chính."
+    },
+    {
+      "id": "planned_khotongmon",
+      "name": "KHO TÔNG MÔN",
+      "designSource": "docs/P3_7_BUILDING_TREE_SPEC.md",
+      "designLine": 361,
+      "runtimePath": null,
+      "codeStatus": "NOT_REGISTERED_AS_BUILDING",
+      "upgradeStatus": "NO_BUILDING_UPGRADE_CODE",
+      "upgradeNote": "Có thiết kế trong cây công trình dài hạn, chưa có loại tương ứng trong BuildingSystem.DEFINITIONS; các hệ độc lập nếu có không đồng nghĩa đã là công trình có thể nâng cấp.",
+      "summary": "Chưa có đường xây/nâng cấp công trình theo mã chính."
+    },
+    {
+      "id": "planned_etuxa",
+      "name": "ĐỆ TỬ XÁ",
+      "designSource": "docs/P3_7_BUILDING_TREE_SPEC.md",
+      "designLine": 430,
+      "runtimePath": null,
+      "codeStatus": "NOT_REGISTERED_AS_BUILDING",
+      "upgradeStatus": "NO_BUILDING_UPGRADE_CODE",
+      "upgradeNote": "Có thiết kế trong cây công trình dài hạn, chưa có loại tương ứng trong BuildingSystem.DEFINITIONS; các hệ độc lập nếu có không đồng nghĩa đã là công trình có thể nâng cấp.",
+      "summary": "Chưa có đường xây/nâng cấp công trình theo mã chính."
+    },
+    {
+      "id": "planned_linhien",
+      "name": "LINH ĐIỀN",
+      "designSource": "docs/P3_7_BUILDING_TREE_SPEC.md",
+      "designLine": 479,
+      "runtimePath": null,
+      "codeStatus": "NOT_REGISTERED_AS_BUILDING",
+      "upgradeStatus": "NO_BUILDING_UPGRADE_CODE",
+      "upgradeNote": "Có thiết kế trong cây công trình dài hạn, chưa có loại tương ứng trong BuildingSystem.DEFINITIONS; các hệ độc lập nếu có không đồng nghĩa đã là công trình có thể nâng cấp.",
+      "summary": "Chưa có đường xây/nâng cấp công trình theo mã chính."
+    },
+    {
+      "id": "mine",
+      "name": "MỎ LINH KHOÁNG",
+      "designSource": "docs/P3_7_BUILDING_TREE_SPEC.md",
+      "designLine": 559,
+      "runtimePath": "godot/src/simulation/building/building_system.gd",
+      "codeStatus": "REGISTERED_BUILDING",
+      "upgradeStatus": "CODE_PRESENT_UPGRADE",
+      "upgradeNote": "Mỏ có nguồn quặng, vận chuyển, nhân công và chi phí tăng cấp; chứng minh nhánh nâng cấp + sản lượng.",
+      "summary": "Có nâng cấp có nguyên liệu"
+    },
+    {
+      "id": "linh_forest",
+      "name": "LINH LÂM",
+      "designSource": "docs/P3_7_BUILDING_TREE_SPEC.md",
+      "designLine": 621,
+      "runtimePath": "godot/src/simulation/building/building_system.gd",
+      "codeStatus": "REGISTERED_BUILDING",
+      "upgradeStatus": "CODE_PRESENT_UPGRADE",
+      "upgradeNote": "Có khai thác/tải về kho và nâng cấp; mức giá giữ theo đường cong mỏ tạm.",
+      "summary": "Có nâng cấp, giá tạm"
+    },
+    {
+      "id": "planned_tuluyenai",
+      "name": "TU LUYỆN ĐÀI",
+      "designSource": "docs/P3_7_BUILDING_TREE_SPEC.md",
+      "designLine": 674,
+      "runtimePath": null,
+      "codeStatus": "NOT_REGISTERED_AS_BUILDING",
+      "upgradeStatus": "NO_BUILDING_UPGRADE_CODE",
+      "upgradeNote": "Có thiết kế trong cây công trình dài hạn, chưa có loại tương ứng trong BuildingSystem.DEFINITIONS; các hệ độc lập nếu có không đồng nghĩa đã là công trình có thể nâng cấp.",
+      "summary": "Chưa có đường xây/nâng cấp công trình theo mã chính."
+    },
+    {
+      "id": "planned_matthat",
+      "name": "MẬT THẤT",
+      "designSource": "docs/P3_7_BUILDING_TREE_SPEC.md",
+      "designLine": 730,
+      "runtimePath": null,
+      "codeStatus": "NOT_REGISTERED_AS_BUILDING",
+      "upgradeStatus": "NO_BUILDING_UPGRADE_CODE",
+      "upgradeNote": "Có thiết kế trong cây công trình dài hạn, chưa có loại tương ứng trong BuildingSystem.DEFINITIONS; các hệ độc lập nếu có không đồng nghĩa đã là công trình có thể nâng cấp.",
+      "summary": "Chưa có đường xây/nâng cấp công trình theo mã chính."
+    },
+    {
+      "id": "planned_yquan",
+      "name": "Y QUÁN",
+      "designSource": "docs/P3_7_BUILDING_TREE_SPEC.md",
+      "designLine": 793,
+      "runtimePath": null,
+      "codeStatus": "NOT_REGISTERED_AS_BUILDING",
+      "upgradeStatus": "NO_BUILDING_UPGRADE_CODE",
+      "upgradeNote": "Có thiết kế trong cây công trình dài hạn, chưa có loại tương ứng trong BuildingSystem.DEFINITIONS; các hệ độc lập nếu có không đồng nghĩa đã là công trình có thể nâng cấp.",
+      "summary": "Chưa có đường xây/nâng cấp công trình theo mã chính."
+    },
+    {
+      "id": "planned_luyenanien",
+      "name": "LUYỆN ĐAN ĐIỆN",
+      "designSource": "docs/P3_7_BUILDING_TREE_SPEC.md",
+      "designLine": 853,
+      "runtimePath": null,
+      "codeStatus": "NOT_REGISTERED_AS_BUILDING",
+      "upgradeStatus": "NO_BUILDING_UPGRADE_CODE",
+      "upgradeNote": "Có thiết kế trong cây công trình dài hạn, chưa có loại tương ứng trong BuildingSystem.DEFINITIONS; các hệ độc lập nếu có không đồng nghĩa đã là công trình có thể nâng cấp.",
+      "summary": "Chưa có đường xây/nâng cấp công trình theo mã chính."
+    },
+    {
+      "id": "planned_luyenkhiien",
+      "name": "LUYỆN KHÍ ĐIỆN",
+      "designSource": "docs/P3_7_BUILDING_TREE_SPEC.md",
+      "designLine": 915,
+      "runtimePath": null,
+      "codeStatus": "NOT_REGISTERED_AS_BUILDING",
+      "upgradeStatus": "NO_BUILDING_UPGRADE_CODE",
+      "upgradeNote": "Có thiết kế trong cây công trình dài hạn, chưa có loại tương ứng trong BuildingSystem.DEFINITIONS; các hệ độc lập nếu có không đồng nghĩa đã là công trình có thể nâng cấp.",
+      "summary": "Chưa có đường xây/nâng cấp công trình theo mã chính."
+    },
+    {
+      "id": "planned_sanyeuien",
+      "name": "SĂN YÊU ĐIỆN",
+      "designSource": "docs/P3_7_BUILDING_TREE_SPEC.md",
+      "designLine": 973,
+      "runtimePath": null,
+      "codeStatus": "NOT_REGISTERED_AS_BUILDING",
+      "upgradeStatus": "NO_BUILDING_UPGRADE_CODE",
+      "upgradeNote": "Có thiết kế trong cây công trình dài hạn, chưa có loại tương ứng trong BuildingSystem.DEFINITIONS; các hệ độc lập nếu có không đồng nghĩa đã là công trình có thể nâng cấp.",
+      "summary": "Chưa có đường xây/nâng cấp công trình theo mã chính."
+    },
+    {
+      "id": "planned_haucanien",
+      "name": "HẬU CẦN ĐIỆN",
+      "designSource": "docs/P3_7_BUILDING_TREE_SPEC.md",
+      "designLine": 1036,
+      "runtimePath": null,
+      "codeStatus": "NOT_REGISTERED_AS_BUILDING",
+      "upgradeStatus": "NO_BUILDING_UPGRADE_CODE",
+      "upgradeNote": "Có thiết kế trong cây công trình dài hạn, chưa có loại tương ứng trong BuildingSystem.DEFINITIONS; các hệ độc lập nếu có không đồng nghĩa đã là công trình có thể nâng cấp.",
+      "summary": "Chưa có đường xây/nâng cấp công trình theo mã chính."
+    },
+    {
+      "id": "planned_congtongmon",
+      "name": "CỔNG TÔNG MÔN",
+      "designSource": "docs/P3_7_BUILDING_TREE_SPEC.md",
+      "designLine": 1096,
+      "runtimePath": null,
+      "codeStatus": "NOT_REGISTERED_AS_BUILDING",
+      "upgradeStatus": "NO_BUILDING_UPGRADE_CODE",
+      "upgradeNote": "Có thiết kế trong cây công trình dài hạn, chưa có loại tương ứng trong BuildingSystem.DEFINITIONS; các hệ độc lập nếu có không đồng nghĩa đã là công trình có thể nâng cấp.",
+      "summary": "Chưa có đường xây/nâng cấp công trình theo mã chính."
+    },
+    {
+      "id": "planned_phuongthi",
+      "name": "PHƯỜNG THỊ",
+      "designSource": "docs/P3_7_BUILDING_TREE_SPEC.md",
+      "designLine": 1147,
+      "runtimePath": null,
+      "codeStatus": "NOT_REGISTERED_AS_BUILDING",
+      "upgradeStatus": "NO_BUILDING_UPGRADE_CODE",
+      "upgradeNote": "Có thiết kế trong cây công trình dài hạn, chưa có loại tương ứng trong BuildingSystem.DEFINITIONS; các hệ độc lập nếu có không đồng nghĩa đã là công trình có thể nâng cấp.",
+      "summary": "Chưa có đường xây/nâng cấp công trình theo mã chính."
+    },
+    {
+      "id": "planned_phulucien",
+      "name": "PHÙ LỤC ĐIỆN",
+      "designSource": "docs/P3_7_BUILDING_TREE_SPEC.md",
+      "designLine": 1208,
+      "runtimePath": null,
+      "codeStatus": "NOT_REGISTERED_AS_BUILDING",
+      "upgradeStatus": "NO_BUILDING_UPGRADE_CODE",
+      "upgradeNote": "Có thiết kế trong cây công trình dài hạn, chưa có loại tương ứng trong BuildingSystem.DEFINITIONS; các hệ độc lập nếu có không đồng nghĩa đã là công trình có thể nâng cấp.",
+      "summary": "Chưa có đường xây/nâng cấp công trình theo mã chính."
+    },
+    {
+      "id": "planned_tranphapien",
+      "name": "TRẬN PHÁP ĐIỆN",
+      "designSource": "docs/P3_7_BUILDING_TREE_SPEC.md",
+      "designLine": 1253,
+      "runtimePath": null,
+      "codeStatus": "NOT_REGISTERED_AS_BUILDING",
+      "upgradeStatus": "NO_BUILDING_UPGRADE_CODE",
+      "upgradeNote": "Có thiết kế trong cây công trình dài hạn, chưa có loại tương ứng trong BuildingSystem.DEFINITIONS; các hệ độc lập nếu có không đồng nghĩa đã là công trình có thể nâng cấp.",
+      "summary": "Chưa có đường xây/nâng cấp công trình theo mã chính."
+    },
+    {
+      "id": "planned_nguthuvien",
+      "name": "NGỰ THÚ VIỆN",
+      "designSource": "docs/P3_7_BUILDING_TREE_SPEC.md",
+      "designLine": 1295,
+      "runtimePath": null,
+      "codeStatus": "NOT_REGISTERED_AS_BUILDING",
+      "upgradeStatus": "NO_BUILDING_UPGRADE_CODE",
+      "upgradeNote": "Có thiết kế trong cây công trình dài hạn, chưa có loại tương ứng trong BuildingSystem.DEFINITIONS; các hệ độc lập nếu có không đồng nghĩa đã là công trình có thể nâng cấp.",
+      "summary": "Chưa có đường xây/nâng cấp công trình theo mã chính."
+    },
+    {
+      "id": "planned_dienvotruong",
+      "name": "DIỄN VÕ TRƯỜNG",
+      "designSource": "docs/P3_7_BUILDING_TREE_SPEC.md",
+      "designLine": 1346,
+      "runtimePath": null,
+      "codeStatus": "NOT_REGISTERED_AS_BUILDING",
+      "upgradeStatus": "NO_BUILDING_UPGRADE_CODE",
+      "upgradeNote": "Có thiết kế trong cây công trình dài hạn, chưa có loại tương ứng trong BuildingSystem.DEFINITIONS; các hệ độc lập nếu có không đồng nghĩa đã là công trình có thể nâng cấp.",
+      "summary": "Chưa có đường xây/nâng cấp công trình theo mã chính."
+    },
+    {
+      "id": "planned_tangkinhcac",
+      "name": "TÀNG KINH CÁC",
+      "designSource": "docs/P3_7_BUILDING_TREE_SPEC.md",
+      "designLine": 1394,
+      "runtimePath": null,
+      "codeStatus": "NOT_REGISTERED_AS_BUILDING",
+      "upgradeStatus": "NO_BUILDING_UPGRADE_CODE",
+      "upgradeNote": "Có thiết kế trong cây công trình dài hạn, chưa có loại tương ứng trong BuildingSystem.DEFINITIONS; các hệ độc lập nếu có không đồng nghĩa đã là công trình có thể nâng cấp.",
+      "summary": "Chưa có đường xây/nâng cấp công trình theo mã chính."
+    },
+    {
+      "id": "planned_tuuphuong",
+      "name": "TỬU PHƯỜNG",
+      "designSource": "docs/P3_7_BUILDING_TREE_SPEC.md",
+      "designLine": 1449,
+      "runtimePath": null,
+      "codeStatus": "NOT_REGISTERED_AS_BUILDING",
+      "upgradeStatus": "NO_BUILDING_UPGRADE_CODE",
+      "upgradeNote": "Có thiết kế trong cây công trình dài hạn, chưa có loại tương ứng trong BuildingSystem.DEFINITIONS; các hệ độc lập nếu có không đồng nghĩa đã là công trình có thể nâng cấp.",
+      "summary": "Chưa có đường xây/nâng cấp công trình theo mã chính."
+    },
+    {
+      "id": "planned_linhtruphong",
+      "name": "LINH TRÙ PHÒNG",
+      "designSource": "docs/P3_7_BUILDING_TREE_SPEC.md",
+      "designLine": 1474,
+      "runtimePath": null,
+      "codeStatus": "NOT_REGISTERED_AS_BUILDING",
+      "upgradeStatus": "NO_BUILDING_UPGRADE_CODE",
+      "upgradeNote": "Có thiết kế trong cây công trình dài hạn, chưa có loại tương ứng trong BuildingSystem.DEFINITIONS; các hệ độc lập nếu có không đồng nghĩa đã là công trình có thể nâng cấp.",
+      "summary": "Chưa có đường xây/nâng cấp công trình theo mã chính."
+    },
+    {
+      "id": "planned_hoaphuong",
+      "name": "HOA PHƯỜNG",
+      "designSource": "docs/P3_7_BUILDING_TREE_SPEC.md",
+      "designLine": 1496,
+      "runtimePath": null,
+      "codeStatus": "NOT_REGISTERED_AS_BUILDING",
+      "upgradeStatus": "NO_BUILDING_UPGRADE_CODE",
+      "upgradeNote": "Có thiết kế trong cây công trình dài hạn, chưa có loại tương ứng trong BuildingSystem.DEFINITIONS; các hệ độc lập nếu có không đồng nghĩa đã là công trình có thể nâng cấp.",
+      "summary": "Chưa có đường xây/nâng cấp công trình theo mã chính."
+    },
+    {
+      "id": "planned_hongtranphuong",
+      "name": "HỒNG TRẦN PHƯỜNG",
+      "designSource": "docs/P3_7_BUILDING_TREE_SPEC.md",
+      "designLine": 1518,
+      "runtimePath": null,
+      "codeStatus": "NOT_REGISTERED_AS_BUILDING",
+      "upgradeStatus": "NO_BUILDING_UPGRADE_CODE",
+      "upgradeNote": "Có thiết kế trong cây công trình dài hạn, chưa có loại tương ứng trong BuildingSystem.DEFINITIONS; các hệ độc lập nếu có không đồng nghĩa đã là công trình có thể nâng cấp.",
+      "summary": "Chưa có đường xây/nâng cấp công trình theo mã chính."
+    },
+    {
+      "id": "planned_augiacac",
+      "name": "ĐẤU GIÁ CÁC",
+      "designSource": "docs/P3_7_BUILDING_TREE_SPEC.md",
+      "designLine": 1546,
+      "runtimePath": null,
+      "codeStatus": "NOT_REGISTERED_AS_BUILDING",
+      "upgradeStatus": "NO_BUILDING_UPGRADE_CODE",
+      "upgradeNote": "Có thiết kế trong cây công trình dài hạn, chưa có loại tương ứng trong BuildingSystem.DEFINITIONS; các hệ độc lập nếu có không đồng nghĩa đã là công trình có thể nâng cấp.",
+      "summary": "Chưa có đường xây/nâng cấp công trình theo mã chính."
+    },
+    {
+      "id": "planned_chibaotongmon",
+      "name": "CHÍ BẢO TÔNG MÔN",
+      "designSource": "docs/P3_7_BUILDING_TREE_SPEC.md",
+      "designLine": 1578,
+      "runtimePath": null,
+      "codeStatus": "NOT_REGISTERED_AS_BUILDING",
+      "upgradeStatus": "NO_BUILDING_UPGRADE_CODE",
+      "upgradeNote": "Có thiết kế trong cây công trình dài hạn, chưa có loại tương ứng trong BuildingSystem.DEFINITIONS; các hệ độc lập nếu có không đồng nghĩa đã là công trình có thể nâng cấp.",
+      "summary": "Chưa có đường xây/nâng cấp công trình theo mã chính."
+    },
+    {
+      "id": "main_hall",
+      "name": "Tông Môn Đại Điện",
+      "designSource": "godot/src/simulation/building/building_system.gd",
+      "designLine": 0,
+      "runtimePath": "godot/src/simulation/building/building_system.gd",
+      "codeStatus": "REGISTERED_BUILDING",
+      "upgradeStatus": "CODE_PRESENT_UPGRADE",
+      "upgradeNote": "Có hàm nâng cấp, nhưng giá cũ được chú thích tạm; mốc/tài nguyên cần kiểm tra gameplay.",
+      "summary": "Có thể nâng cấp theo mã điều kiện; chưa chứng minh GUI/exact-SHA hiện tại"
+    },
+    {
+      "id": "residence",
+      "name": "Đệ Tử Xá",
+      "designSource": "godot/src/simulation/building/building_system.gd",
+      "designLine": 0,
+      "runtimePath": "godot/src/simulation/building/building_system.gd",
+      "codeStatus": "REGISTERED_BUILDING",
+      "upgradeStatus": "CODE_PRESENT_UPGRADE",
+      "upgradeNote": "Có cấp/nâng cấp trong BuildingSystem; kiểm tra liên kết hạn mức cư trú thật.",
+      "summary": "Có thể nâng cấp theo mã; thực tế cư trú chưa xác nhận"
+    },
+    {
+      "id": "alchemy_hall",
+      "name": "Luyện Đan Điện",
+      "designSource": "godot/src/simulation/building/building_system.gd",
+      "designLine": 0,
+      "runtimePath": "godot/src/simulation/building/building_system.gd",
+      "codeStatus": "REGISTERED_BUILDING",
+      "upgradeStatus": "CODE_PRESENT_UPGRADE",
+      "upgradeNote": "Có job đan và nâng cấp, nhưng công thức nhiều cấp chưa có; chi phí/mốc nâng cấp dùng giá tạm.",
+      "summary": "Có nâng cấp; thiếu công thức cấp cao"
+    },
+    {
+      "id": "spirit_field",
+      "name": "Linh Điền",
+      "designSource": "godot/src/simulation/building/building_system.gd",
+      "designLine": 0,
+      "runtimePath": "godot/src/simulation/building/building_system.gd",
+      "codeStatus": "REGISTERED_BUILDING",
+      "upgradeStatus": "CODE_PRESENT_UPGRADE",
+      "upgradeNote": "Có plot, gieo, chăm, thu hoạch, chính sách cây, nâng cấp; chỉ 3 cây nền; giá sản lượng chưa nghiệm thu thiết bị.",
+      "summary": "Có nâng cấp, cần thành phần ở một số cấp mốc"
+    },
+    {
+      "id": "ren_than_duong",
+      "name": "Rèn Thân Đường",
+      "designSource": "godot/src/simulation/building/building_system.gd",
+      "designLine": 0,
+      "runtimePath": "godot/src/simulation/building/building_system.gd",
+      "codeStatus": "REGISTERED_BUILDING",
+      "upgradeStatus": "UPGRADE_BLOCKED",
+      "upgradeNote": "Hàm nâng cấp chặn thẳng body_training_upgrade_content_pending. Có cơ sở/đào tạo liên quan Luyện Thể.",
+      "summary": "Chưa được nâng cấp theo cơ chế hiện tại"
+    },
+    {
+      "id": "dan_tien_dai",
+      "name": "Dẫn Tiên Đài",
+      "designSource": "godot/src/simulation/building/building_system.gd",
+      "designLine": 0,
+      "runtimePath": "godot/src/simulation/building/building_system.gd",
+      "codeStatus": "REGISTERED_BUILDING",
+      "upgradeStatus": "UPGRADE_GATED_20",
+      "upgradeNote": "Hàm nâng cấp chặn thẳng khi target_level >20 vì thiếu điều kiện tiến trình tông môn.",
+      "summary": "Chỉ có đường nâng cấp tới cấp 20 được phép theo mã điều kiện"
+    }
+  ],
+  "setFamilies": [
+    {
+      "name": "Sát Tinh",
+      "group": "Bộ chiến đấu",
+      "parts": 4,
+      "thresholds": [
+        2,
+        3,
+        4
+      ],
+      "status": "DESIGN_ONLY_V2",
+      "source": "docs/EQUIPMENT_SETS_V2_SPEC.md"
+    },
+    {
+      "name": "Phá Cương",
+      "group": "Bộ chiến đấu",
+      "parts": 4,
+      "thresholds": [
+        2,
+        3,
+        4
+      ],
+      "status": "DESIGN_ONLY_V2",
+      "source": "docs/EQUIPMENT_SETS_V2_SPEC.md"
+    },
+    {
+      "name": "Huyết Chiến",
+      "group": "Bộ chiến đấu",
+      "parts": 4,
+      "thresholds": [
+        2,
+        3,
+        4
+      ],
+      "status": "DESIGN_ONLY_V2",
+      "source": "docs/EQUIPMENT_SETS_V2_SPEC.md"
+    },
+    {
+      "name": "Truy Phong",
+      "group": "Bộ chiến đấu",
+      "parts": 4,
+      "thresholds": [
+        2,
+        3,
+        4
+      ],
+      "status": "DESIGN_ONLY_V2",
+      "source": "docs/EQUIPMENT_SETS_V2_SPEC.md"
+    },
+    {
+      "name": "Thiên Kích",
+      "group": "Bộ chiến đấu",
+      "parts": 4,
+      "thresholds": [
+        2,
+        3,
+        4
+      ],
+      "status": "DESIGN_ONLY_V2",
+      "source": "docs/EQUIPMENT_SETS_V2_SPEC.md"
+    },
+    {
+      "name": "Trấn Yêu",
+      "group": "Bộ chiến đấu",
+      "parts": 4,
+      "thresholds": [
+        2,
+        3,
+        4
+      ],
+      "status": "DESIGN_ONLY_V2",
+      "source": "docs/EQUIPMENT_SETS_V2_SPEC.md"
+    },
+    {
+      "name": "Hộ Sơn",
+      "group": "Bộ chiến đấu",
+      "parts": 4,
+      "thresholds": [
+        2,
+        3,
+        4
+      ],
+      "status": "DESIGN_ONLY_V2",
+      "source": "docs/EQUIPMENT_SETS_V2_SPEC.md"
+    },
+    {
+      "name": "Tịnh Thần",
+      "group": "Bộ chiến đấu",
+      "parts": 4,
+      "thresholds": [
+        2,
+        3,
+        4
+      ],
+      "status": "DESIGN_ONLY_V2",
+      "source": "docs/EQUIPMENT_SETS_V2_SPEC.md"
+    },
+    {
+      "name": "Thiên Trận",
+      "group": "Bộ chiến đấu",
+      "parts": 4,
+      "thresholds": [
+        2,
+        3,
+        4
+      ],
+      "status": "DESIGN_ONLY_V2",
+      "source": "docs/EQUIPMENT_SETS_V2_SPEC.md"
+    },
+    {
+      "name": "Phản Kiếm",
+      "group": "Bộ chiến đấu",
+      "parts": 4,
+      "thresholds": [
+        2,
+        3,
+        4
+      ],
+      "status": "DESIGN_ONLY_V2",
+      "source": "docs/EQUIPMENT_SETS_V2_SPEC.md"
+    },
+    {
+      "name": "Huyết Liệp",
+      "group": "Bộ chiến đấu",
+      "parts": 4,
+      "thresholds": [
+        2,
+        3,
+        4
+      ],
+      "status": "DESIGN_ONLY_V2",
+      "source": "docs/EQUIPMENT_SETS_V2_SPEC.md"
+    },
+    {
+      "name": "Thanh Linh",
+      "group": "Bộ chiến đấu",
+      "parts": 4,
+      "thresholds": [
+        2,
+        3,
+        4
+      ],
+      "status": "DESIGN_ONLY_V2",
+      "source": "docs/EQUIPMENT_SETS_V2_SPEC.md"
+    },
+    {
+      "name": "Ngũ Hành",
+      "group": "Bộ chiến đấu",
+      "parts": 4,
+      "thresholds": [
+        2,
+        3,
+        4
+      ],
+      "status": "DESIGN_ONLY_V2",
+      "source": "docs/EQUIPMENT_SETS_V2_SPEC.md"
+    },
+    {
+      "name": "Hàn Vân",
+      "group": "Bộ chiến đấu",
+      "parts": 4,
+      "thresholds": [
+        2,
+        3,
+        4
+      ],
+      "status": "DESIGN_ONLY_V2",
+      "source": "docs/EQUIPMENT_SETS_V2_SPEC.md"
+    },
+    {
+      "name": "Cửu Lôi",
+      "group": "Bộ chiến đấu",
+      "parts": 4,
+      "thresholds": [
+        2,
+        3,
+        4
+      ],
+      "status": "DESIGN_ONLY_V2",
+      "source": "docs/EQUIPMENT_SETS_V2_SPEC.md"
+    },
+    {
+      "name": "Thực Cốt",
+      "group": "Bộ chiến đấu",
+      "parts": 4,
+      "thresholds": [
+        2,
+        3,
+        4
+      ],
+      "status": "DESIGN_ONLY_V2",
+      "source": "docs/EQUIPMENT_SETS_V2_SPEC.md"
+    },
+    {
+      "name": "Huyền Ấn",
+      "group": "Bộ chiến đấu",
+      "parts": 4,
+      "thresholds": [
+        2,
+        3,
+        4
+      ],
+      "status": "DESIGN_ONLY_V2",
+      "source": "docs/EQUIPMENT_SETS_V2_SPEC.md"
+    },
+    {
+      "name": "Hỗn Độn",
+      "group": "Bộ chiến đấu",
+      "parts": 4,
+      "thresholds": [
+        2,
+        3,
+        4
+      ],
+      "status": "DESIGN_ONLY_V2",
+      "source": "docs/EQUIPMENT_SETS_V2_SPEC.md"
+    },
+    {
+      "name": "Thiên Công",
+      "group": "Bộ nghề nghiệp",
+      "parts": 4,
+      "thresholds": [
+        2,
+        3,
+        4
+      ],
+      "status": "DESIGN_ONLY_V2",
+      "source": "docs/EQUIPMENT_SETS_V2_SPEC.md"
+    },
+    {
+      "name": "Đan Tâm",
+      "group": "Bộ nghề nghiệp",
+      "parts": 4,
+      "thresholds": [
+        2,
+        3,
+        4
+      ],
+      "status": "DESIGN_ONLY_V2",
+      "source": "docs/EQUIPMENT_SETS_V2_SPEC.md"
+    },
+    {
+      "name": "Mộc Linh",
+      "group": "Bộ nghề nghiệp",
+      "parts": 4,
+      "thresholds": [
+        2,
+        3,
+        4
+      ],
+      "status": "DESIGN_ONLY_V2",
+      "source": "docs/EQUIPMENT_SETS_V2_SPEC.md"
+    },
+    {
+      "name": "Địa Mạch",
+      "group": "Bộ nghề nghiệp",
+      "parts": 4,
+      "thresholds": [
+        2,
+        3,
+        4
+      ],
+      "status": "DESIGN_ONLY_V2",
+      "source": "docs/EQUIPMENT_SETS_V2_SPEC.md"
+    },
+    {
+      "name": "Phù Văn",
+      "group": "Bộ nghề nghiệp",
+      "parts": 4,
+      "thresholds": [
+        2,
+        3,
+        4
+      ],
+      "status": "DESIGN_ONLY_V2",
+      "source": "docs/EQUIPMENT_SETS_V2_SPEC.md"
+    },
+    {
+      "name": "Thiên Cơ",
+      "group": "Bộ nghề nghiệp",
+      "parts": 4,
+      "thresholds": [
+        2,
+        3,
+        4
+      ],
+      "status": "DESIGN_ONLY_V2",
+      "source": "docs/EQUIPMENT_SETS_V2_SPEC.md"
+    }
+  ],
+  "features": [
+    {
+      "id": "characters",
+      "name": "Nhân vật / sinh thuộc tính",
+      "category": "recruitment",
+      "status": "CODE_PRESENT_PARTIAL",
+      "finding": "Có sinh 7 chỉ số, tính cách, đặc tính; hiệu ứng 101 Trait V2 chưa có bằng chứng runtime",
+      "codeSource": "godot/src/simulation/recruitment/disciple_birth_roll_v2.gd",
+      "designSource": "docs/DISCIPLE_V2_ROADMAP.md",
+      "verifiedGodotCurrentSha": false
+    },
+    {
+      "id": "traits_v2",
+      "name": "101 đặc tính",
+      "category": "traits",
+      "status": "IDENTITY_ONLY",
+      "finding": "Có định danh/trọng số 101/101; các hiệu ứng V2 chưa xác minh",
+      "codeSource": "godot/src/simulation/recruitment/disciple_birth_catalogue_v2.gd",
+      "designSource": "docs/DISCIPLE_V2_EFFECT_SOURCE_MATRIX.md",
+      "verifiedGodotCurrentSha": false
+    },
+    {
+      "id": "trait_legacy",
+      "name": "9 đặc tính cũ",
+      "category": "traits",
+      "status": "CODE_PRESENT_PARTIAL",
+      "finding": "Có mã modifier/kiểm thử P2.9; có khác biệt nghiêm trọng với V2; phụ thuộc flag",
+      "codeSource": "godot/src/simulation/traits/trait_system.gd",
+      "designSource": "docs/TRAITS_V2_SPEC.md",
+      "verifiedGodotCurrentSha": false
+    },
+    {
+      "id": "mind_nature",
+      "name": "Tâm Tính",
+      "category": "foundation",
+      "status": "IDENTITY_ONLY",
+      "finding": "Có điểm và tính tổng phẩm chất; chưa có consumer gameplay riêng",
+      "codeSource": "godot/src/simulation/foundation/foundation_system.gd",
+      "designSource": "docs/DISCIPLE_CHARACTERISTICS_STAT_FRAMEWORK_V2.md",
+      "verifiedGodotCurrentSha": false
+    },
+    {
+      "id": "root",
+      "name": "Linh Căn & dị căn",
+      "category": "cultivation",
+      "status": "CODE_PRESENT_GATED",
+      "finding": "Có nguồn sinh/giao diện và evaluator; gate spiritual_root_v2 mặc định OFF",
+      "codeSource": "godot/src/simulation/cultivation/spiritual_root_system.gd",
+      "designSource": "docs/SPIRITUAL_ROOT_V2_SPEC.md",
+      "verifiedGodotCurrentSha": false
+    },
+    {
+      "id": "body",
+      "name": "Luyện Thể 30×10",
+      "category": "cultivation",
+      "status": "CODE_PRESENT_GATED",
+      "finding": "Có floor, material gate và facility; chỉ hoạt động nếu V2 training enabled",
+      "codeSource": "godot/src/simulation/cultivation/disciple_realm_progress_v2.gd",
+      "designSource": "docs/BODY_CULTIVATION_V2_SPEC.md",
+      "verifiedGodotCurrentSha": false
+    },
+    {
+      "id": "tuvi",
+      "name": "Tu Vi 30×10",
+      "category": "cultivation",
+      "status": "CODE_PRESENT_GATED",
+      "finding": "Có EXP, đột phá và tick; hiệu quả chỉ áp dụng khi cờ và cấu hình hợp lệ",
+      "codeSource": "godot/src/simulation/cultivation/disciple_tuvi_flow_v2.gd",
+      "designSource": "docs/REALM_LADDER_V2_SPEC.md",
+      "verifiedGodotCurrentSha": false
+    },
+    {
+      "id": "breakthrough",
+      "name": "Đột phá & Đột Phá Đan",
+      "category": "cultivation",
+      "status": "CODE_PRESENT_GATED",
+      "finding": "Có cơ chế cơ bản, fail/cộng dồn và đan theo cảnh giới; cần QA exact-SHA",
+      "codeSource": "godot/src/simulation/cultivation/cultivation_gate_v57.gd",
+      "designSource": "docs/CULTIVATION_BREAKTHROUGH_V2_SPEC.md",
+      "verifiedGodotCurrentSha": false
+    },
+    {
+      "id": "mind_realm",
+      "name": "Tâm Cảnh 6 cấp đề xuất",
+      "category": "foundation",
+      "status": "PROPOSED_NOT_APPROVED",
+      "finding": "Chỉ là đề xuất trong trò chuyện, chưa có thiết kế phê duyệt, không có mã gameplay",
+      "codeSource": "godot/src/simulation/foundation/foundation_system.gd",
+      "designSource": "docs/DISCIPLE_CHARACTERISTICS_STAT_FRAMEWORK_V2.md",
+      "verifiedGodotCurrentSha": false
+    },
+    {
+      "id": "destiny",
+      "name": "Mệnh Cách/Thiên Mệnh",
+      "category": "recruitment",
+      "status": "IDENTITY_ONLY",
+      "finding": "Có catalog và roll; chưa có bằng chứng hiệu ứng V2 thật từng mệnh",
+      "codeSource": "godot/src/simulation/recruitment/disciple_birth_catalogue_v2.gd",
+      "designSource": "docs/DESTINY_V2_SPEC.md",
+      "verifiedGodotCurrentSha": false
+    },
+    {
+      "id": "physique",
+      "name": "Thể Chất",
+      "category": "physique",
+      "status": "CODE_PRESENT_PARTIAL",
+      "finding": "Có sinh 14 loại hợp lệ (Kiếm Cốt bị loại) và hệ cũ; chưa đủ chứng cứ 14 hiệu ứng V2",
+      "codeSource": "godot/src/simulation/physique/physique_system.gd",
+      "designSource": "docs/PHYSIQUE_V2_SPEC.md",
+      "verifiedGodotCurrentSha": false
+    },
+    {
+      "id": "bloodline",
+      "name": "Huyết Mạch",
+      "category": "bloodline",
+      "status": "CODE_PRESENT_PARTIAL",
+      "finding": "Có hệ thống riêng, 5 loại; không suy ra mọi cơ chế thức tỉnh/chuyển hóa đã chạy",
+      "codeSource": "godot/src/simulation/bloodline/bloodline_system.gd",
+      "designSource": "docs/BLOODLINE_V2_SPEC.md",
+      "verifiedGodotCurrentSha": false
+    },
+    {
+      "id": "personality",
+      "name": "Tính cách và quyết định AI",
+      "category": "ai",
+      "status": "CODE_PRESENT_PARTIAL",
+      "finding": "6 archetype rủi ro/chi tiêu/sinh tồn; cần QA hành vi người chơi nhận thấy",
+      "codeSource": "godot/src/simulation/recruitment/disciple_generator_v2.gd",
+      "designSource": "docs/DISCIPLE_V2_ROADMAP.md",
+      "verifiedGodotCurrentSha": false
+    },
+    {
+      "id": "work",
+      "name": "Nghề & năng suất lao động",
+      "category": "workforce",
+      "status": "CODE_PRESENT_PARTIAL",
+      "finding": "Có work cycles/nghề & trait cũ; V2 trait effect chưa kết nối đồng bộ",
+      "codeSource": "godot/src/simulation/workforce/workforce_system.gd",
+      "designSource": "docs/P3_7_PROFESSION_WORK_MODIFIER_SPEC.md",
+      "verifiedGodotCurrentSha": false
+    },
+    {
+      "id": "buildings",
+      "name": "8 công trình trong code",
+      "category": "building",
+      "status": "CODE_PRESENT_PARTIAL",
+      "finding": "8 loại code; 26 loại trong cây thiết kế, chỉ 6 trùng trực tiếp; Rèn Thân và Dẫn Tiên có upgrade gate",
+      "codeSource": "godot/src/simulation/building/building_system.gd",
+      "designSource": "docs/P3_7_BUILDING_TREE_SPEC.md",
+      "verifiedGodotCurrentSha": false
+    },
+    {
+      "id": "field",
+      "name": "Linh Điền: 3 cây",
+      "category": "building",
+      "status": "CODE_PRESENT_PARTIAL",
+      "finding": "Có plot và thu hoạch; 3 cây; chi phí và thu hoạch phụ thuộc runtime/QA",
+      "codeSource": "godot/src/simulation/building/spirit_crop_registry.gd",
+      "designSource": "docs/P3_7_SPIRIT_FIELD_SPEC.md",
+      "verifiedGodotCurrentSha": false
+    },
+    {
+      "id": "mine",
+      "name": "Mỏ & mạch khoáng",
+      "category": "building",
+      "status": "CODE_PRESENT_PARTIAL",
+      "finding": "Có chọn quặng và chở về kho; kiểm tra level/gating/sản lượng khi chạy",
+      "codeSource": "godot/src/simulation/building/building_system.gd",
+      "designSource": "docs/P3_7_BUILDING_TREE_SPEC.md",
+      "verifiedGodotCurrentSha": false
+    },
+    {
+      "id": "forest",
+      "name": "Linh Lâm",
+      "category": "building",
+      "status": "CODE_PRESENT_PARTIAL",
+      "finding": "Có khai thác/worker/haul, chi phí upgrade tạm theo mỏ",
+      "codeSource": "godot/src/simulation/building/building_system.gd",
+      "designSource": "docs/P3_7_BUILDING_TREE_SPEC.md",
+      "verifiedGodotCurrentSha": false
+    },
+    {
+      "id": "alchemy",
+      "name": "Luyện Đan Điện & recipe jobs",
+      "category": "building",
+      "status": "CODE_PRESENT_PARTIAL",
+      "finding": "Có job có thời gian; 8 họ/cảnh giới có công thức; rất nhiều cấp cao chưa có",
+      "codeSource": "godot/src/simulation/building/building_system.gd",
+      "designSource": "docs/P3_7_BUILDING_TREE_SPEC.md",
+      "verifiedGodotCurrentSha": false
+    },
+    {
+      "id": "medicine",
+      "name": "476 đan: định danh khác công thức",
+      "category": "building",
+      "status": "CATALOG_PARTIAL",
+      "finding": "476 loại chỉ là mã theo bảng; 32 biến thể có họ/cảnh giới có công thức; 444 chưa có recipe_definition",
+      "codeSource": "godot/src/simulation/building/medicine_catalogue_v2.gd",
+      "designSource": "docs/P3_7_LONG_TERM_SECT_ECONOMY_HUNTING_SPEC.md",
+      "verifiedGodotCurrentSha": false
+    },
+    {
+      "id": "resources",
+      "name": "34 tài nguyên nền",
+      "category": "resource",
+      "status": "CODE_PRESENT_PARTIAL",
+      "finding": "Đã đăng ký, nhưng không coi mọi nguồn rơi/sản xuất đều có thật",
+      "codeSource": "godot/src/simulation/resource/resource_registry.gd",
+      "designSource": "docs/P3_7_RESOURCE_STORAGE_GROWTH_DATA_MODEL_SPEC.md",
+      "verifiedGodotCurrentSha": false
+    },
+    {
+      "id": "warehouse",
+      "name": "Kho vật phẩm/kho tông môn",
+      "category": "resource",
+      "status": "CODE_PRESENT_PARTIAL",
+      "finding": "Có WarehouseSystem (cộng/trừ/khóa/reserve); công trình Kho Tông Môn trong cây thiết kế chưa được đăng ký BuildingSystem",
+      "codeSource": "godot/src/simulation/resource/warehouse_system.gd",
+      "designSource": "docs/P3_7_BUILDING_TREE_SPEC.md",
+      "verifiedGodotCurrentSha": false
+    },
+    {
+      "id": "gear_legacy",
+      "name": "3 ô và 5 công thức trang bị cũ",
+      "category": "equipment",
+      "status": "CODE_PRESENT_PARTIAL",
+      "finding": "Có rèn/equip/unequip/auto, 3 phẩm; không phải hệ trang bị V2",
+      "codeSource": "godot/src/simulation/equipment/equipment_system.gd",
+      "designSource": "docs/WEAPON_EQUIPMENT_V2_SPEC.md",
+      "verifiedGodotCurrentSha": false
+    },
+    {
+      "id": "gear_v2",
+      "name": "Trang bị V2: 10 ô, 12 phẩm",
+      "category": "equipment",
+      "status": "DESIGN_ONLY",
+      "finding": "Thiết kế được duyệt; EquipmentSystem vẫn là 3 ô, 3 phẩm",
+      "codeSource": "godot/src/simulation/equipment/equipment_system.gd",
+      "designSource": "docs/WEAPON_EQUIPMENT_V2_SPEC.md",
+      "verifiedGodotCurrentSha": false
+    },
+    {
+      "id": "set_v2",
+      "name": "24 bộ trang bị V2",
+      "category": "equipment",
+      "status": "DESIGN_ONLY",
+      "finding": "24 bộ/96 mảnh vị trí trong spec, chưa có hệ set 2/3/4 trong EquipmentSystem",
+      "codeSource": "godot/src/simulation/equipment/equipment_system.gd",
+      "designSource": "docs/EQUIPMENT_SETS_V2_SPEC.md",
+      "verifiedGodotCurrentSha": false
+    },
+    {
+      "id": "forge_upgrades",
+      "name": "Cường hóa/tinh luyện/thăng phẩm/kế thừa",
+      "category": "equipment",
+      "status": "DESIGN_DEFERRED",
+      "finding": "9 gói roadmap chưa khóa công thức/chi phí và chưa triển khai trong V2",
+      "codeSource": "godot/src/simulation/equipment/equipment_system.gd",
+      "designSource": "docs/EQUIPMENT_FORGING_UPGRADE_V2_ROADMAP.md",
+      "verifiedGodotCurrentSha": false
+    },
+    {
+      "id": "pills_satiety",
+      "name": "Bão hòa Tu Vi Đan",
+      "category": "cultivation",
+      "status": "CODE_PRESENT_PARTIAL",
+      "finding": "Có controller dùng đan, cooldown và bão hòa; chưa chứng minh xuyên toàn bộ UI và save exact-SHA",
+      "codeSource": "godot/src/simulation/cultivation/b3_pill_satiety_v1.gd",
+      "designSource": "docs/P3_7_LONG_TERM_SECT_ECONOMY_HUNTING_SPEC.md",
+      "verifiedGodotCurrentSha": false
+    },
+    {
+      "id": "techniques_legacy",
+      "name": "Công Pháp hệ cũ",
+      "category": "technique",
+      "status": "CODE_PRESENT_PARTIAL",
+      "finding": "Có học/tăng cấp, 3 slot giới hạn, mastery và vật liệu nâng; chưa giống toàn bộ V2",
+      "codeSource": "godot/src/simulation/technique/technique_system.gd",
+      "designSource": "docs/TECHNIQUE_V2_SPEC.md",
+      "verifiedGodotCurrentSha": false
+    },
+    {
+      "id": "learning_v63",
+      "name": "84 công pháp học V6.3",
+      "category": "technique",
+      "status": "CODE_PRESENT_GATED",
+      "finding": "catalog enabled:false; consumer có opt-in, chưa mặc định online",
+      "codeSource": "godot/src/simulation/technique/v63_learning_system.gd",
+      "designSource": "docs/TECHNIQUE_V2_SPEC.md",
+      "verifiedGodotCurrentSha": false
+    },
+    {
+      "id": "codex_v63",
+      "name": "159 Bí Kíp archive V6.3",
+      "category": "archive",
+      "status": "CODE_PRESENT_GATED",
+      "finding": "159 bản ghi; 154 vật phẩm kho; catalog enabled:false và không có tỷ lệ rơi",
+      "codeSource": "godot/src/simulation/archive/v63_sect_archive_system.gd",
+      "designSource": "docs/TECHNIQUE_V2_SPEC.md",
+      "verifiedGodotCurrentSha": false
+    },
+    {
+      "id": "skills_v63",
+      "name": "Kỹ năng 12 phái/36 nhánh V6.3",
+      "category": "combat",
+      "status": "CODE_PRESENT_GATED",
+      "finding": "Catalog/labs có, các cờ V63FeatureGates đều false theo mặc định; không đồng nghĩa live PvE",
+      "codeSource": "godot/src/simulation/combat/v63_feature_gates.gd",
+      "designSource": "docs/COMBAT_SKILLS_V2_SPEC.md",
+      "verifiedGodotCurrentSha": false
+    },
+    {
+      "id": "monsters",
+      "name": "Quái & Boss",
+      "category": "combat",
+      "status": "CODE_PRESENT_PARTIAL",
+      "finding": "Có quái và hệ encounter; Boss V63 gate false mặc định",
+      "codeSource": "godot/src/simulation/combat/monster_catalogue_v2.gd",
+      "designSource": "docs/P3_7_LONG_TERM_SECT_ECONOMY_HUNTING_SPEC.md",
+      "verifiedGodotCurrentSha": false
+    },
+    {
+      "id": "hunting",
+      "name": "Săn quái PvE tự động",
+      "category": "combat",
+      "status": "CODE_PRESENT_QA_PENDING",
+      "finding": "Có run/multi-camp, reward, injury; cần Windows/Android gameplay verify",
+      "codeSource": "godot/src/simulation/combat/hunting_pve_run_v2.gd",
+      "designSource": "docs/P3_7_DISCIPLE_LOADOUT_HUNTING_PROGRESSION_SPEC.md",
+      "verifiedGodotCurrentSha": false
+    },
+    {
+      "id": "world",
+      "name": "Bản đồ & phân bố thế giới PvE",
+      "category": "combat",
+      "status": "CODE_PRESENT_QA_PENDING",
+      "finding": "Có topology map/cluster; QA thiết bị và từng vùng chơi chưa đóng",
+      "codeSource": "godot/src/simulation/combat/pve_open_world_topology_v1.gd",
+      "designSource": "docs/P3_7_LONG_TERM_SECT_ECONOMY_HUNTING_SPEC.md",
+      "verifiedGodotCurrentSha": false
+    },
+    {
+      "id": "loot",
+      "name": "Rơi tài nguyên, XP & phân phối loot",
+      "category": "combat",
+      "status": "CODE_PRESENT_PARTIAL",
+      "finding": "Có per-kill reward code; V6.3 archive reward chưa có drop rate đã chốt",
+      "codeSource": "godot/src/simulation/combat/pve_per_kill_reward_v1.gd",
+      "designSource": "docs/P3_7_LONG_TERM_SECT_ECONOMY_HUNTING_SPEC.md",
+      "verifiedGodotCurrentSha": false
+    },
+    {
+      "id": "injury",
+      "name": "Chấn thương & hồi phục",
+      "category": "combat",
+      "status": "CODE_PRESENT_PARTIAL",
+      "finding": "Có injury policy/heal; không suy ra mọi debuff/injury V2 đã chạy",
+      "codeSource": "godot/src/simulation/combat/pve_injury_treatment_v1.gd",
+      "designSource": "docs/BODY_CULTIVATION_V2_SPEC.md",
+      "verifiedGodotCurrentSha": false
+    },
+    {
+      "id": "economy",
+      "name": "Nền kinh tế/tài nguyên",
+      "category": "economy",
+      "status": "CODE_PRESENT_PARTIAL",
+      "finding": "Có economy/capacity/nguồn tài nguyên; cần chứng minh balance production/end-to-end",
+      "codeSource": "godot/src/simulation/economy/economy_system.gd",
+      "designSource": "docs/P3_7_LONG_TERM_SECT_ECONOMY_HUNTING_SPEC.md",
+      "verifiedGodotCurrentSha": false
+    },
+    {
+      "id": "recruit",
+      "name": "Triệu hồi/tuyển đệ tử",
+      "category": "recruitment",
+      "status": "CODE_PRESENT_PARTIAL",
+      "finding": "Có tạo candidate, lựa chọn và profile/save; QA toàn GUI chưa đóng",
+      "codeSource": "godot/src/simulation/recruitment/recruitment_system.gd",
+      "designSource": "docs/DISCIPLE_V2_ROADMAP.md",
+      "verifiedGodotCurrentSha": false
+    },
+    {
+      "id": "residence",
+      "name": "Đệ Tử Xá & nhà ở",
+      "category": "governance",
+      "status": "CODE_PRESENT_PARTIAL",
+      "finding": "Có quản lý residence/hall; cần phân biệt xây dựng thực với thông số design",
+      "codeSource": "godot/src/simulation/governance/sect_residence_system_v1.gd",
+      "designSource": "docs/P3_7_BUILDING_TREE_SPEC.md",
+      "verifiedGodotCurrentSha": false
+    },
+    {
+      "id": "relationships",
+      "name": "Quan hệ, mục tiêu, ký ức, nhu cầu",
+      "category": "relationship",
+      "status": "CODE_PRESENT_PARTIAL",
+      "finding": "Có hệ relationship/memory/needs, chưa đủ chứng cứ đặc tính xã hội V2 nhận consumer",
+      "codeSource": "godot/src/simulation/relationship/relationship_system.gd",
+      "designSource": "docs/DISCIPLE_V2_ROADMAP.md",
+      "verifiedGodotCurrentSha": false
+    },
+    {
+      "id": "save",
+      "name": "Lưu/tải dữ liệu SaveService",
+      "category": "save",
+      "status": "CODE_PRESENT_QA_PENDING",
+      "finding": "Có mã save, chưa chứng minh toàn bộ state mới đúng trên thiết bị thực",
+      "codeSource": "godot/src/simulation/save/save_service.gd",
+      "designSource": "docs/GAME_SYSTEM_ARCHITECTURE.md",
+      "verifiedGodotCurrentSha": false
+    },
+    {
+      "id": "ui",
+      "name": "Giao diện One Game Godot",
+      "category": "presentation",
+      "status": "CODE_PRESENT_QA_PENDING",
+      "finding": "Có scene/UI trong repo; QA Windows thật, Android và chủ dự án chưa đóng",
+      "codeSource": "godot/project.godot",
+      "designSource": "docs/P3_UX_FLOW_V3.md",
+      "verifiedGodotCurrentSha": false
+    },
+    {
+      "id": "sprites",
+      "name": "Sprite nhân vật & animation",
+      "category": "presentation",
+      "status": "ART_PARTIAL",
+      "finding": "Một số nguồn/clip/candidate còn đang nghiệm thu; không đánh đồng có file với art được duyệt",
+      "codeSource": "godot/project.godot",
+      "designSource": "docs/P3_ART_BIBLE.md",
+      "verifiedGodotCurrentSha": false
+    },
+    {
+      "id": "vfx",
+      "name": "VFX kỹ năng",
+      "category": "presentation",
+      "status": "ART_PARTIAL",
+      "finding": "Lab/source có nhưng ART_OWNER/Live PvE gates chưa đóng cho toàn bộ kỹ năng",
+      "codeSource": "godot/project.godot",
+      "designSource": "docs/COMBAT_SKILLS_V2_SPEC.md",
+      "verifiedGodotCurrentSha": false
+    },
+    {
+      "id": "qa",
+      "name": "QA Windows/Android/cấu hình thực",
+      "category": "presentation",
+      "status": "DEVICE_QA_PENDING",
+      "finding": "CI/test source không thay thế nghiệm thu máy Windows/Android thật",
+      "codeSource": "godot/project.godot",
+      "designSource": "CURRENT_CHECKPOINT.md",
+      "verifiedGodotCurrentSha": false
+    }
+  ],
+  "sources": [
+    "godot/src/simulation/building/building_system.gd",
+    "docs/P3_7_BUILDING_TREE_SPEC.md",
+    "godot/src/simulation/equipment/equipment_system.gd",
+    "docs/WEAPON_EQUIPMENT_V2_SPEC.md",
+    "docs/EQUIPMENT_SETS_V2_SPEC.md",
+    "docs/EQUIPMENT_FORGING_UPGRADE_V2_ROADMAP.md",
+    "CURRENT_CHECKPOINT.md"
+  ],
+  "notes": [
+    "Các trạng thái CODE_PRESENT* chỉ xác nhận mã/đường đi có tồn tại và còn điều kiện; không phải TEST_PASS, release-pass, Android-pass.",
+    "Các thiết kế dài hạn chưa nằm trong BuildingSystem.DEFINITIONS không được gắn nút nâng cấp như công trình hoạt động.",
+    "Kiểm toán nhóm theo mã hệ thống: 26 modules simulation; 170 file kiểm thử Godot trong test tree không chứng minh test xanh HEAD.",
+    "Các tính năng LAB/feature OFF phải gắn nhãn mặc định OFF, không trộn V63 với P0 live.",
+    "Những mã vật phẩm có tên trong catalog không đồng nghĩa có recipe, tiêu hao, nguồn rơi hoặc NPC buôn bán."
+  ]
+}
