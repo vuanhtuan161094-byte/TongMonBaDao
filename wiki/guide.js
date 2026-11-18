@@ -29,7 +29,7 @@ const EQUIP=[
 const bodyGroups={A:["Thanh Linh Thảo","Tinh Lang Bì"],B:["Tử Vân Thảo","Linh Tủy"],C:["Huyết Linh Sâm","Huyết Thú Tinh Huyết"],D:["Kim Cốt Thảo","Linh Thú Cốt Ngọc"],E:["Tiên Tủy Liên","Tiên Thú Chân Cốt"],F:["Bất Hoại Tủy Dịch","Đại La Kim Cốt"],G:["Thần Mạch Tinh","Thần Thú Cốt"],H:["Hỗn Độn Tủy Hoa","Bất Diệt Thần Cốt"]};
 const bodyRows=[["A",12,4],["A",18,5],["A",24,6],["B",12,1],["B",16,2],["B",24,3],["C",12,3],["C",16,4],["C",22,6],["C",32,8],["D",12,3],["D",16,4],["D",20,5],["D",24,6],["E",12,3],["E",16,4],["E",22,6],["F",14,4],["F",20,6],["F",30,9],["G",12,3],["G",16,4],["G",20,5],["G",24,6],["G",30,8],["H",12,3],["H",18,5],["H",24,7],["H",32,10]];
 const state={data:null,char:null,traits:null,audit:null,items:null,tab:"home",realm:2,track:"cultivation",building:"spirit_field",buildingLevel:1,fieldLevel:1,school:"all",skill:null,limit:48,query:"",traitQuery:"",traitGroup:"all",traitPage:1,aptitude:100,focus:"natural",recruitSource:"ordinary",buildStatus:"all",itemGroup:"medicine",itemQuery:"",itemPage:1,featureStatus:"all",featureGroup:"all",featureLimit:16};
-const names={home:"Trang chủ",characters:"Đệ tử & đặc tính",realms:"Tu luyện & đột phá",skills:"Môn phái & kỹ năng",buildings:"Công trình & Linh Điền",equipment:"Trang bị & đồ bộ",items:"Vật phẩm & đan dược",systems:"Toàn bộ chức năng",search:"Kết quả tìm kiếm"};
+const names={home:"Trang chủ",characters:"Đệ tử & đặc tính",realms:"Tu luyện & đột phá",skills:"Môn phái & kỹ năng",buildings:"Công trình & Linh Điền",equipment:"Trang bị & đồ bộ",items:"Vật phẩm & đan dược",systems:"Toàn bộ chức năng",design:"Thiết kế cần hoàn thiện",search:"Kết quả tìm kiếm"};
 const content=document.getElementById("content"),search=document.getElementById("search");
 // Engineering Studio remains localhost-only and is intentionally excluded from Pages.
 if(location.hostname==="vuanhtuan161094-byte.github.io"){document.querySelectorAll(".studio-link,.footer a").forEach(el=>{el.style.display="none";});}
@@ -62,7 +62,8 @@ function home(){
  ["⌂","Công trình & Linh Điền","Nâng cấp, cây trồng, công trình còn thiếu","buildings"],
  ["⚔","Trang bị & đồ bộ","5 công thức cũ; 10 ô, 24 bộ V2","equipment"],
  ["丹","Vật phẩm & đan dược","Tìm item, công thức, nguồn vật liệu","items"],
- ["◎","Toàn bộ chức năng","Đã viết mã, chưa chạy, chưa làm","systems"]
+ ["◎","Toàn bộ chức năng","Đã viết mã, chưa chạy, chưa làm","systems"],
+ ["◆","Thiết kế cần hoàn thiện","Ưu tiên hoàn tất bản vẽ trước khi viết thêm code","design"]
  ];
  const a=state.audit?.summary||{},i=state.items?.summary||{};
  return '<section class="ency-hero"><div class="eyebrow" style="color:#d9d0a5">BÁCH KHOA TÔNG MÔN BÁ ĐẠO</div><h1>Tìm mọi thứ trong một nơi</h1><p>Xem cách chơi, con số cụ thể và tình trạng đã làm/chưa làm ngay trong từng chuyên mục. Không cần mở trang báo cáo khác.</p></section>'+
@@ -337,6 +338,26 @@ function itemsUnified(){
  ['Đan dược cấp cao','444 mã thiếu công thức','Nguồn nguyên liệu + công thức đầy đủ']
  ].map(x=>x.map(esc))));
 }
+
+function designUnified(){
+ const blocks=[
+ ["D1","Đệ tử, Tâm Tính và 101 đặc tính","Đã đối chiếu 101 đặc tính thành ba nhóm: 41 có kênh tác động, 12 thiếu cơ chế phụ thuộc, 48 mới ở mức đề xuất. Có phương án tính Tâm Tính và tách Tâm Cảnh, chưa tự gán vào gameplay.","docs/design/D1_CHARACTER_EFFECT_DESIGN_CANDIDATE_20261118.md","Tâm Tính, 12 cơ chế thiếu và 48 đặc tính mới còn cần khóa hệ số"],
+ ["D2/D3","28 công trình, nguyên liệu và đan","Đã xác định vai trò/đầu ra của 26 loại công trình dài hạn và 2 bổ sung; chuẩn hóa quy trình nâng cấp, 630 vật liệu, 270 tuyến nguồn, 476 mã đan.","docs/design/D2_D3_BUILDINGS_ITEMS_DESIGN_CANDIDATE_20261118.md","Hệ số Lv1–100, nguồn thật cho vật liệu, 444 công thức đan còn thiếu"],
+ ["D4","Trang bị V2, rèn và đồ bộ","Đã soạn quy trình rèn đầy đủ và 9 loại hành động nâng cấp trang bị. Giữ chuẩn 10 ô, 12 phẩm và 24 bộ; bảng xác suất, cấp cường hóa là đề xuất, chưa duyệt.","docs/design/D4_FORGE_TRANSACTION_DESIGN_CANDIDATE_20261118.md","Phê duyệt xác suất rèn, mức cường hóa, nguồn đồ và các công thức"],
+ ["D5","Tu Vi, Luyện Thể và đột phá","Giữ 30×10 mỗi hệ. Cần dùng đúng cân bằng cảnh giới trong nguồn gốc, không thêm Tâm Cảnh 300 tầng hay tự nâng tỷ lệ đột phá.","docs/REALM_LADDER_V2_SPEC.md","Đối chiếu thống nhất số EXP và các nguồn XP cấp cao"],
+ ["D6","Môn phái, kỹ năng, chiến đấu, VFX","Thiết kế kỹ năng 36 nhánh với 2.196 ID; phân biệt nội dung thiết kế, cổng V6.3 đang tắt và mỹ thuật cần duyệt.","docs/COMBAT_SKILLS_V2_SPEC.md","Khóa những hiệu ứng còn trùng/chờ quyết định, không lẫn art QA với thiết kế"]
+ ];
+ return heading('HOÀN THIỆN THIẾT KẾ','Thiết kế trước — code sau','Đây là nơi xem những thiết kế đã có căn cứ và phần còn phải chốt. Không mở thêm vòng P0 hay gắn nhãn hoàn thành cho gameplay chưa chạy.')+
+ '<div class="ency-alert soft"><b>Định hướng đã đổi:</b> hoàn tất các gói thiết kế còn thiếu trước khi triển khai chức năng mới. Tài liệu D1–D4 là <b>ứng viên đã biên soạn</b>, không tự nhận các hệ số mới đã được phê duyệt. Những quy tắc người dùng đã chốt từ trước không bị sửa.</div>'+
+ panel('Bản thiết kế tổng thể','Thứ tự thiết kế và quyền ưu tiên nguồn, không phải lịch chạy test.',
+ '<p>'+auditSource('docs/design/TMB_DESIGN_COMPLETION_MASTER_20261118.md')+' — bản tập hợp các quyết định thiết kế còn thiếu của toàn game.</p>')+
+ '<div class="ency-cards">'+blocks.map(x=>'<article class="ency-card"><div class="ency-mini">'+esc(x[0])+' · Thiết kế theo hệ</div>'+
+ '<h3>'+esc(x[1])+'</h3><div class="ency-tags">'+status("Đã soạn phương án","ok")+status("Chờ duyệt phần mở","pending")+'</div>'+
+ '<p>'+esc(x[2])+'</p><details><summary>Còn phải chốt những gì?</summary><p>'+esc(x[4])+'</p>'+
+ '<p class="ency-link">'+auditSource(x[3])+'</p></details><p>'+auditSource(x[3])+'</p></article>').join("")+'</div>'+
+ '<div class="ency-alert">Số liệu *đang đề xuất* như tỷ lệ phẩm rèn hay hệ số Tâm Tính chưa được dùng làm giá trị chính thức. Khi bạn duyệt thiết kế, phần này mới chuyển từ “Chờ duyệt” sang “Đã khóa thiết kế”; trạng thái code/QA vẫn nằm ở chuyên mục Toàn bộ chức năng.</div>';
+}
+
 function systemsUnified(){
  const a=state.audit;if(!a)return heading('KIỂM TRA TOÀN GAME','Toàn bộ chức năng','Dữ liệu chưa tải xong.');
  const statuses=[["all","Tất cả trạng thái"],...Object.entries({
@@ -394,7 +415,7 @@ function searchUnified(){
 function render(){
  document.querySelectorAll("#menu [data-tab]").forEach(x=>x.classList.toggle("active",x.dataset.tab===state.tab));
  document.getElementById("breadcrumb").textContent=names[state.tab]||names.home;
- const handlers={home,characters,realms,skills,buildings:buildingsUnified,equipment:equipmentUnified,items:itemsUnified,systems:systemsUnified,search:searchUnified};
+ const handlers={home,characters,realms,skills,buildings:buildingsUnified,equipment:equipmentUnified,items:itemsUnified,systems:systemsUnified,design:designUnified,search:searchUnified};
  content.innerHTML=(handlers[state.tab]||home)();
 }
 document.addEventListener("click",e=>{
