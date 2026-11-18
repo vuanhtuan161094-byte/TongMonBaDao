@@ -10,6 +10,21 @@ const read=p=>fs.readFileSync(path.join(root,p),"utf8");
 const json=p=>JSON.parse(read(p));
 const html=read("wiki/guide.html");
 const workflow=read(".github/workflows/wiki-player-pages.yml");
+const combat=json("wiki/data/combat_stats_reference.json");
+assert.equal(combat.stats.length,16);
+assert.equal(combat.resistances.length,10);
+assert.equal(new Set(combat.stats.map(x=>x.id)).size,16);
+assert.equal(new Set(combat.resistances.map(x=>x.id)).size,10);
+const code=read("godot/src/simulation/combat/combat_stats_v2.gd");
+const statConst=code.match(/const PRIMARY_CHANNELS := \[([\s\S]*?)\]/);
+assert(statConst,"Missing Godot 16-stat registry");
+const registered=[...statConst[1].matchAll(/"([^"]+)"/g)].map(x=>x[1]);
+assert.deepEqual([...combat.stats.map(x=>x.id)].sort(),registered.sort(),"Wiki stats differ from Godot canonical registry");
+const elementConst=code.match(/const ELEMENTS := \[([^\]]+)\]/);
+assert(elementConst,"Missing element registry");
+const elements=[...elementConst[1].matchAll(/"([^"]+)"/g)].map(x=>x[1]);
+assert.deepEqual([...combat.resistances.map(x=>x.id)].sort(),elements.sort(),"Wiki resistance names differ");
+assert(workflow.includes("cp wiki/data/combat_stats_reference.json _site/wiki/data/"),"Combat glossary must deploy");
 
 assert.match(html,/script src="\.\/guide\.js"/);
 assert.match(html,/stylesheet" href="\.\/unified\.css"/);
@@ -67,6 +82,10 @@ function change(id,value){
  }
  clickTab("characters");
  assert.match(view(),/Ham Học/);
+ assert.match(view(),/16 chỉ số chiến đấu/);
+ assert.match(view(),/Kháng Bạo Kích/);
+ assert.match(view(),/1,50×/);
+ assert.match(view(),/Giảm Hút Máu/);
  assert.match(view(),/20,83 EXP\/s/);
  change("trait-group","DEPENDENCY_BLOCKED");
  assert.match(view(),/Thiếu cơ chế/);
@@ -88,5 +107,8 @@ function change(id,value){
  el("search").listeners.input();
  assert.match(view(),/Tìm: Ham Học/);
  assert.match(view(),/Ham Học/);
+ el("search").value="Crit";el("search").listeners.input();
+ assert.match(view(),/Chỉ số chiến đấu/);
+ assert.match(view(),/Crit/);
  console.log("PASS unified Wiki: one nav, redirects, seven categories, real JSON, 101 traits, upgrading, item filter, cross-search.");
 })().catch(err=>{console.error(err);process.exitCode=1;});
