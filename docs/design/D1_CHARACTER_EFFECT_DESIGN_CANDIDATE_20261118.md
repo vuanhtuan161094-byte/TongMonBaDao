@@ -1,5 +1,7 @@
 # D1 — THIẾT KẾ NHÂN VẬT: TÂM TÍNH, TÂM CẢNH VÀ 101 ĐẶC TÍNH
 
+> CẬP NHẬT QUYẾT ĐỊNH CHỐT 18/11/2026: Chủ dự án đã chọn phương án D1-A2: Tâm Tính +0,01 điểm % Kháng Hiệu Ứng/điểm, tối đa +8 điểm %. Đây là DESIGN LOCK, chưa code hiệu ứng gameplay. Các đoạn cũ D1-A (§1) và A2 ở §8.2/8.5 chỉ còn là lịch sử đề xuất; **không còn là quyết định mở**. Xem authority mới: docs/design/D1_MIND_NATURE_V2_EFFECT_CONTRACT_20261118.md. Phần ổn định Tâm Trạng, Tĩnh Tâm và Tu Tâm là D1-M2/M3/M4 **chưa được duyệt**.
+
 Ngày: 18/11/2026. Gói **D1 DESIGN CANDIDATE**. Tài liệu không khẳng định mã gameplay đã có, không sửa spec gốc hoặc sinh vật phẩm/hiệu ứng mới.
 
 **Mốc thiết kế đã duyệt giữ nguyên:**
@@ -8,7 +10,7 @@ Ngày: 18/11/2026. Gói **D1 DESIGN CANDIDATE**. Tài liệu không khẳng đ�
 - Effect phải tác động lên **kết quả hành động có thật**, không chỉnh điểm Lục Duy lưu vĩnh viễn, không cộng kết quả hai lần và không tạo vật phẩm/buff miễn phí.
 - 41 trường hợp có kênh thiết kế, 12 chờ consumer, 48 đề xuất mới chưa khóa. Tỷ lệ sinh thuộc authority riêng.
 
-## 1. Tâm Tính — bản thiết kế có thể chốt, không tạo hệ XP thứ ba
+## 1. Tâm Tính — D1-A2 ĐÃ CHỐT ở tài liệu riêng; các phương án dưới đây chỉ là lịch sử
 
 **Vấn đề:** Tâm Tính hiện tăng tổng điểm phẩm chất nhân vật nhưng không có chức năng game độc lập. Không để người chơi đầu tư điểm vô nghĩa.
 
@@ -198,7 +200,7 @@ Nguồn: \`docs/DISCIPLE_V2_EFFECT_SOURCE_MATRIX.md\`, \`docs/DISCIPLE_V2_STAT_C
 
 **Chỉ số bối cảnh** (vs Boss, chủng tộc, liên kích, hồi máu thực hiện/nhận, shield, DoT) không được lén tăng số lượng 16 headline. Chúng chỉ xuất hiện ở breakdown khi có consumer và điều kiện đúng.
 
-### 8.2 Cần điều chỉnh bản đề xuất Tâm Tính trước khi chốt
+### 8.2 Lịch sử so sánh D1-A và A2 (A2 đã được chọn, không phải đề xuất đang mở)
 
 **Phương án D1-A đã ghi ở §1:** Tâm Tính cho +kháng riêng nhóm \`mental\` và rút ngắn thời lượng trúng mental. Phương án này có **hai điểm yếu**: kỹ năng có tag mental chưa được chứng minh đủ consumer đang chạy, và hai hiệu ứng cùng giảm rủi ro hiệu ứng tinh thần có thể trở thành nhân lợi ích hai lần.
 
@@ -226,7 +228,7 @@ Trang “Đệ tử & đặc tính” trong **Tàng Kinh Các duy nhất** phả
 
 **Mức chứng cứ:** thiết kế 16 chỉ số **ĐÃ KHÓA**; bộ tính **ĐÃ CÓ MÃ và từng PASS focused Godot**; **combat live PvE chưa đồng bộ đầy đủ**; 101 Trait V2 **chưa thể gọi runtime hoàn thành**. Không được gom bốn tầng vào trạng thái “Đã code hết”.
 
-### 8.5 Các quyết định chờ owner ở lần D1 tiếp theo
+### 8.5 Các quyết định còn mở (A2 đã khóa, các vấn đề bên dưới chưa khóa)
 
 - **Ưu tiên A2 hay A:** Tâm Tính cho +0,01 điểm % Kháng Hiệu Ứng/điểm (tối đa +8pp), **hoặc** kháng mental +0,02 điểm %/điểm kèm rút ngắn thời lượng theo thiết kế cũ. Khuyến nghị **A2** vì dùng được stat V2 đã có và tránh double dip.
 - **Giữ Tâm Cảnh ở bản mở rộng**: không thêm tầng tu luyện khi các consumer tinh thần vẫn chưa hoàn thiện.
