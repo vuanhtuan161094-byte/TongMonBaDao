@@ -432,6 +432,38 @@ function designUnified(){
  '<div class="ency-alert">Số liệu *đang đề xuất* như tỷ lệ phẩm rèn hay hệ số Tâm Tính chưa được dùng làm giá trị chính thức. Khi bạn duyệt thiết kế, phần này mới chuyển từ “Chờ duyệt” sang “Đã khóa thiết kế”; trạng thái code/QA vẫn nằm ở chuyên mục Toàn bộ chức năng.</div>';
 }
 
+function sourceARecoveryPanel(data){
+ if(!data)return '';
+ const summary=data.sourceAMapManifest.summary||{};
+ const mapAssets=data.sourceAMapManifest.assets||[];
+ const actorPackages=data.actorPackages||[];
+ const buildingBindings=data.buildingBindings||[];
+ const gaps=data.systemGaps||[];
+ const mapRows=mapAssets.map(x=>'<tr><td>'+esc(x.category)+'</td><td><code>'+esc(x.relativePath)+'</code></td><td><code>'+esc(x.sha256)+'</code></td><td>'+((x.E_CANONICAL&&x.E_CANONICAL.sha256Match&&x.E_PR72_QA&&x.E_PR72_QA.sha256Match)?'SHA MATCH 2/2':'CHECK')+'</td><td>'+esc(x.runtimeCodeStatus)+'</td><td>'+esc(x.visibleRenderStatus)+'</td><td>'+esc(x.ownerArtApproval)+'</td></tr>').join('');
+ const actorRows=actorPackages.map(a=>{
+  const clips=(a.clips||[]).map(c=>esc(c.name)+' '+esc(c.stored_frames)+'/'+esc(c.frames)+(c.frame_count_status==='MISMATCH'?' <b>(MISMATCH)</b>':'')).join('<br>');
+  const local=a.localValidation||{},canonical=local.E_CANONICAL||{},qa=local.E_PR72_QA||{};
+  const mismatches=[...(canonical.mismatchedFiles||[]).map(f=>({root:'E canonical',...f})),...(qa.mismatchedFiles||[]).map(f=>({root:'PR72 QA',...f}))];
+  const mismatchHtml=mismatches.length?'<details><summary>'+mismatches.length+' mismatch rows across two copies</summary><ul>'+mismatches.map(f=>'<li>'+esc(f.root)+' · '+esc(f.path)+' · expected '+esc(f.expectedSha256)+' · found '+esc(f.actualSha256)+'</li>').join('')+'</ul></details>':'No local export SHA mismatch.';
+  return '<tr><td><code>'+esc(a.assetId)+'</code><br>'+esc(a.classification)+'<br><small>'+esc(a.classificationNote)+'</small></td><td><code>'+esc(a.sourceFingerprintSha256)+'</code><br>asset.json blob <code>'+esc(a.assetJsonGitBlobSha)+'</code></td><td>'+clips+'</td><td>'+esc(canonical.exactShaFiles)+'/'+esc(canonical.expectedFiles)+' exact; '+esc(canonical.mismatchedFiles.length)+' mismatches<br>'+esc(qa.exactShaFiles)+'/'+esc(qa.expectedFiles)+' exact in PR QA</td><td>'+mismatchHtml+'</td><td>'+esc(a.runtimeState)+'; capture '+esc(a.visibleCapture)+'</td><td>'+esc(a.ownerArtApproval)+'</td></tr>';
+ }).join('');
+ const buildingRows=buildingBindings.map(b=>'<tr><td>'+esc(b.building)+'</td><td>'+esc(b.legacySourceAId||'—')+'</td><td><code>'+esc(b.sourcePath)+'</code></td><td>'+esc(b.sourceStatus)+'</td><td>'+esc(b.currentDisplayedCandidate||'—')+'</td><td>'+esc(b.visualApproval)+'</td></tr>').join('');
+ const gapRows=gaps.map(g=>'<tr><td>'+esc(g.title)+'</td><td>'+esc(g.design)+'</td><td>'+esc(g.runtime)+'</td><td>'+esc(g.gap)+'</td><td>'+esc(g.status)+'<br>'+g.sourceFiles.map(f=>'<code>'+esc(f.path)+'</code> · blob <code>'+esc(f.gitBlobSha)+'</code>').join('<br>')+'<br>source commit <code>'+esc(g.sourceCommit)+'</code></td></tr>').join('');
+ const refRows=(data.sourcePaths||[]).map(s=>'<li><code>'+esc(s.path)+'</code> · Git blob <code>'+esc(s.gitBlobSha)+'</code></li>').join('');
+ return '<section class="ency-sourcea"><h2>Tình trạng Source A và khoảng cách thiết kế → runtime</h2>'+
+  '<p>Đối chiếu tĩnh trên PR #72 <code>'+esc(data.sourceCommit)+'</code>. Các trạng thái FILE_PRESENT, import-cache, RUNTIME_BOUND, VISIBLY_RENDERED và duyệt mỹ thuật được tách riêng; kiểm tra tĩnh không thay thế Godot hoặc nghiệm thu hình ảnh.</p>'+
+  '<div class="grid-3">'+metric('Map manifest',summary.mapManifestFiles,'29 môi trường + 5 ảnh công trình Source A cũ')+
+  metric('SHA trên hai checkout E','34/34 × 2','Sidecar/cache có mặt; chưa chạy lại import Godot')+
+  metric('Gói actor Source A','7 gói','21/31 file xuất khớp; 10 lệch SHA')+'</div>'+
+  '<div class="ency-alert">Godot 4.7.2 import và GUI tại HEAD hiện tại: <b>NOT_EXECUTED</b>. Ảnh render/Owner visual approval: <b>PENDING/UNKNOWN</b>. Không coi sidecar hoặc cache là bằng chứng nhìn thấy trong game.</div>'+
+  '<details><summary>Danh sách 34 ảnh map, đường dẫn và SHA-256</summary><div class="table-scroll"><table><thead><tr><th>Nhóm</th><th>Path</th><th>SHA-256</th><th>E copy</th><th>Binding</th><th>Render</th><th>Owner</th></tr></thead><tbody>'+mapRows+'</tbody></table></div></details>'+
+  '<details><summary>7 rig / gói actor, clip khai báo và hash</summary><div class="table-scroll"><table><thead><tr><th>Gói / phân loại</th><th>Fingerprint / manifest</th><th>Clip (stored / expected)</th><th>E canonical / PR QA</th><th>Lệch SHA</th><th>Runtime / capture</th><th>Owner</th></tr></thead><tbody>'+actorRows+'</tbody></table></div>'+
+  '<p>Boss gói <code>v5_sa_boss_410041_1</code> chỉ là ứng viên slot: clip dead khai báo 30 frame nhưng lưu 21. Không gán Boss identity và không đánh dấu COMBAT_READY. Bốn role trong visual manifest chỉ được vẽ khi roster row có source_a_visual_key; nếu không, map dùng hình thoi dự phòng.</p></details>'+
+  '<details><summary>Ảnh công trình cũ và hình đang được chọn</summary><div class="table-scroll"><table><thead><tr><th>Hạng mục</th><th>Source ID</th><th>Source path</th><th>Trạng thái Source A</th><th>Candidate đang bind</th><th>Duyệt / ảnh hiện tại</th></tr></thead><tbody>'+buildingRows+'</tbody></table></div>'+
+  '<p>Source A chưa được loại bỏ toàn bộ: terrain, roads và vegetation vẫn có đường tải runtime theo manifest SHA. VIS08/VIS09/VIS11 dùng ảnh độc lập; trạng thái ứng viên hoặc master được duyệt không tự chứng minh sprite hiện tại đã được Owner duyệt.</p></details>'+
+  '<details><summary>Gap thiết kế và consumer runtime</summary><div class="table-scroll"><table><thead><tr><th>Hệ</th><th>Thiết kế</th><th>Runtime</th><th>Gap</th><th>Source</th></tr></thead><tbody>'+gapRows+'</tbody></table></div></details>'+
+  '<details><summary>Nguồn kiểm toán (PR HEAD và blob)</summary><ul>'+refRows+'</ul></details></section>';
+}
 function systemsUnified(){
  const a=state.audit;if(!a)return heading('KIỂM TRA TOÀN GAME','Toàn bộ chức năng','Dữ liệu chưa tải xong.');
  const statuses=[["all","Tất cả trạng thái"],...Object.entries({
@@ -462,6 +494,7 @@ function systemsUnified(){
  '<p class="ency-link">'+auditSource(x.codeSource)+' · '+auditSource(x.designSource)+'</p></details></article>').join("")+'</div>'+
  (shown.length<matches.length?'<button class="more" id="more-systems">Xem thêm '+(matches.length-shown.length)+' mục</button>':'')+
  '<div class="ency-alert">Không tự coi trạng thái <b>có mã</b> là tính năng đã hoàn thành. Để đóng một mục cần kiểm thử Godot đúng commit, GUI thực tế và bằng chứng người chơi thao tác được.</div>'+
+ sourceARecoveryPanel(a.sourceARecoveryAudit)+
  source('docs/GAME_SYSTEM_ARCHITECTURE.md');
 }
 function searchUnified(){
