@@ -51,7 +51,7 @@ function draw(){
  ["Dị căn","Có dị linh căn bẩm sinh",fmt(d.rates.mutation)+"%"]
  ];
  content.innerHTML=
- '<div class="char-hero"><h2>Hồ sơ một đệ tử</h2><p>Mỗi người có tư chất, tính cách, linh căn và các đặc tính khác nhau. Xem tỷ lệ sinh, chọn chỉ số để tính thử tốc độ tu luyện.</p></div>'+
+ '<div class="char-hero"><h2>Hồ sơ một đệ tử</h2><p>Mỗi người có tư chất, tính cách, linh căn và các đặc tính khác nhau. Xem tỷ lệ sinh, chọn chỉ số để tính thử tốc độ tu luyện.</p><p style="margin-top:15px"><a class="more" href="./traits.html">Kiểm tra 101 đặc tính: đã code gì, còn thiếu gì →</a></p></div>'+
  '<div class="char-stat"><div><strong>101</strong><span>Đặc tính V2</span></div><div><strong>24</strong><span>Thiên mệnh</span></div><div><strong>14</strong><span>Thể chất</span></div><div><strong>5</strong><span>Huyết mạch</span></div></div>'+
  section("Tu vi mỗi giây của đệ tử","Tính thử từ Tư Chất và trạng thái tu luyện — không đọc bản lưu nhân vật.",
  '<div class="char-filter"><label>Điểm Tư Chất<input id="aptitude" type="number" min="0" max="50000" step="1" value="'+fmt(apt).replace(/\./g,"")+'"></label>'+
