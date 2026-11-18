@@ -1,0 +1,95 @@
+{
+  "schema": "tmb-vfx-production-system-v4.1",
+  "packet_id": "FIST14_R4_SIMPLE_EXISTING_SOURCE_NATIVE_G35",
+  "skill_id": "tmb.skill.fist.huyet_quyen.active_04.human",
+  "school": "fist",
+  "revision": "FIST14_R4_SIMPLE_SINGLE_SPRITE_SHORT_STRIKE",
+  "catalogue_path": "godot/data/combat/v63_human_combat_catalog.json",
+  "scene_path": "godot/labs/combat_lab/fist14/r4_simple/liep_huyet_truy_da_r4_simple.tscn",
+  "lab_script": "godot/labs/combat_lab/fist14/r4_simple/fist14_simple.gd",
+  "focused_test": "godot/tests/labs/combat_lab/vfx_fist14_r4_simple_contract_test.gd",
+  "declared_contract": {
+    "effect": "mark",
+    "element": "nether",
+    "shape": "single_target",
+    "target_limit": 1,
+    "hit_count": null,
+    "range": 2.8,
+    "radius": 0,
+    "cast_time": 0.45,
+    "cooldown": 8,
+    "projectile_speed": 0,
+    "duration": 6
+  },
+  "provenance": {
+    "source_class": "FIRST_PARTY_EXISTING_IMAGEGEN_MASTER_WITH_ISOLATED_CROP_DERIVATIVES",
+    "master_quality_status": "MANUAL_ART_REVIEW_REQUIRED",
+    "rights_note": "Uses the existing first-party FIST14 RGBA master, SHA256 e0006ceb6208cb7cb037d2909f2ca9d27e10f63b7d71871f53b6b55f4903b7b5. The new lab derives a fist crop, attached soft edge falloff and local contact crop without altering the master or any frozen R2/R3 art. One original fist image is used; there are no claimed newly painted poses, proprietary JX pixels, rigging or gameplay events. Native 1x art remains owner-review pending.",
+    "master_files": [
+      {
+        "path": "godot/labs/combat_lab/fist14/r3/source/fist14_original_rgba_1774x887.png",
+        "encoding": "png",
+        "role": "Immutable first-party existing FIST14 original RGBA master"
+      }
+    ],
+    "generators": ["godot/labs/combat_lab/fist14/r4_simple/build_assets.py"]
+  },
+  "atlases": [
+    {
+      "path": "godot/labs/combat_lab/fist14/r4_simple/assets/fist14_closed_fist.png",
+      "width": 455, "height": 535, "cell_width": 455, "cell_height": 535,
+      "frames": 1, "columns": 1, "layer": "one existing closed-fist sprite crop"
+    },
+    {
+      "path": "godot/labs/combat_lab/fist14/r4_simple/assets/fist14_edge_glow.png",
+      "width": 455, "height": 535, "cell_width": 455, "cell_height": 535,
+      "frames": 1, "columns": 1, "layer": "attached soft edge falloff derived from the same fist silhouette"
+    },
+    {
+      "path": "godot/labs/combat_lab/fist14/r4_simple/assets/fist14_local_contact.png",
+      "width": 365, "height": 340, "cell_width": 365, "cell_height": 340,
+      "frames": 1, "columns": 1, "layer": "one local white-hot contact crop from original source"
+    }
+  ],
+  "time_contract": {
+    "combat_clock": "CATALOGUE_GATED_NOT_LIVE",
+    "declared_cast_end_seconds": 0.45,
+    "declared_status_duration_seconds": 6.0,
+    "runtime_receipt_timestamp": "RUNTIME_MAPPING_PENDING",
+    "vfx_clock": "LAB_ONLY",
+    "simulated_hit_seconds": 0.90,
+    "visual_fade_end_seconds": 1.16,
+    "demo_loop_seconds": 1.65,
+    "demo_clock_warning": "LAB-only presentation: 0.45s declared cast and one visual contact at 0.90s; the native preview is cosmetic only and does not claim a gameplay hit, mark receipt, damage or homing.",
+    "key_pose_budget_note": "One existing first-party fist sprite crop animates along a short directed path with one restrained attached wake and one local contact flash. This is not a multi-pose flipbook. R2/R3 sources remain unchanged.",
+    "phases": [
+      {"id": "charge", "at_seconds": 0.22, "expected_phase": "windup", "file": "v4-charge.png"},
+      {"id": "peak", "at_seconds": 0.65, "expected_phase": "fist_travel", "file": "v4-peak.png"},
+      {"id": "contact", "at_seconds": 0.99, "expected_phase": "local_contact", "file": "v4-contact.png"}
+    ]
+  },
+  "moving_target": {
+    "actor_animation": "walk",
+    "locked_demo_target_index": 0,
+    "movement_from_seconds": 0.22,
+    "movement_to_seconds": 0.99,
+    "minimum_displacement_px": 12,
+    "contact_anchor": "Moving enemy forward shoulder, offset (-61,-82) from feet; the visual follows target index 0 only.",
+    "tracking_rule": "Short cosmetic fist motion toward the selected moving enemy; not a projectile, homing mechanic or gameplay receipt.",
+    "receipt_claim": "SIMULATED_VISUAL_ONLY"
+  },
+  "gate_status": {
+    "g3_5_capture": "NOT_EXECUTED_UNTIL_GODOT_EVIDENCE",
+    "technical": "NOT_EXECUTED_UNTIL_EXACT_SHA_GODOT_PROOF",
+    "art": "MANUAL_ART_REVIEW_REQUIRED",
+    "owner": "OWNER_VISUAL_PENDING",
+    "live": "PVE_INTEGRATION_HOLD",
+    "device": "PHYSICAL_QA_PENDING"
+  },
+  "proof_contract": {
+    "focused_marker": "FIST14_R4_SIMPLE_FOCUSED_RESULT=PASS failures=0",
+    "native_marker": "FIST14_R4_SIMPLE_NATIVE_READY",
+    "video_filename": "v4-fist14-r4-simple-native.mp4",
+    "source": "Isolated simple first-party one-sprite fist study: cast windup, short directed travel, one local flash; cosmetic LAB only."
+  }
+}
