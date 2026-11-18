@@ -46,7 +46,16 @@ def main():
     assert len([x for x in features["buildings"] if x["codeStatus"] == "NOT_REGISTERED_AS_BUILDING"]) == 20
     assert summary["designNotRegistered"] == 20
 
-    assert len(features["features"]) == 45 and summary["featureChecklist"] == 45
+    assert len(features["features"]) == 49 and summary["featureChecklist"] == 49
+    assert summary["sx07MaterialSlotsDesigned"] == 630
+    assert summary["sx07MaterialIdsRegistered"] == 11
+    assert summary["sx07MaterialsNotRegistered"] == 619
+    assert summary["sx07SourceProfilesDesign"] == 270
+    assert inv["sx07MaterialSlotsDesigned"] == 630
+    assert inv["sx07MaterialIdsRegistered"] == 11
+    assert inv["sx07MaterialsNotRegistered"] == 619
+    assert inv["sx07SourceProfilesDesign"] == 270
+    assert items["economy30Reference"]["runtimeEnabled"] is False
     for f in features["features"]:
         assert f["finding"] and f["status"] and f["name"]
         assert (ROOT / f["codeSource"]).is_file(), f["id"]
