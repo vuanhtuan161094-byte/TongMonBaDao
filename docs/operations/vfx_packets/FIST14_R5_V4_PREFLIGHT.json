@@ -65,7 +65,7 @@
     "movement_from_seconds": 0.20,
     "movement_to_seconds": 0.94,
     "minimum_displacement_px": 55,
-    "contact_anchor": "selected target chest at target_feet(t) + (0,-70), local contact at chest+(0,18); small mark at target_feet(t)+(18,-67), never over head/face",
+    "contact_anchor": "selected target upper torso at target_feet(t) + (0,-88), local contact at chest+(0,18); small mark at target_feet(t)+(18,-82), never over head/face",
     "tracking_rule": "Only target index 0 receives the simulated contact and six-second mark. Both follow its current deterministic moving anchor. LAB synthetic timing only; no damage, gameplay event, projectile, or additional hit is generated.",
     "receipt_claim": "SIMULATED_VISUAL_ONLY"
   },

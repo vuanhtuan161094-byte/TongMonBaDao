@@ -1,6 +1,6 @@
 # FIST14 R5 — Liệp Huyết Truy Đả
 
-**Status:** G0/G1/G2 complete; six independent original RGBA sources made; G3 packet, alpha and atlas checks passed. First native G3.5 technical capture passed on [run #44314540322](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/44314540322), exact SHA `22a3fadf3ab4d0488ba3e2afe6457246ad2366e1`. The 1× art review was **ART_SELF_REWORK**: initial cast fist floated away from the caster hand, and the peak/contact artwork overwhelmed the target. R5 returns to the G3.5 visual gate with smaller screen-space poses and corrected caster-hand alignment. No G5/full render has run. Owner visual approval pending. LAB only, PvE hold.
+**Status:** G0/G1/G2 complete; six independent original RGBA sources made; G3 packet, alpha and atlas checks passed. Native G3.5 technical captures passed on [run #44314540322](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/44314540322) and [run #44315336346](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/44315336346). The first 1× art review was **ART_SELF_REWORK**: initial cast fist floated away from the caster hand, and the peak/contact artwork overwhelmed the target. Scale/alignment rework preserved the face but moved contact too low onto the legs; the next G3.5 pass moves peak/contact/mark to the upper torso. G3.5 visual acceptance is still pending; no G5/full render has run. Owner visual approval pending. LAB only, PvE hold.
 
 ## G0 — canonical authority
 

@@ -64,7 +64,7 @@ static func target_feet_at(t: float) -> Vector2:
 	return Vector2(858.0 - 78.0 * approach + 18.0 * return_step, 548.0)
 
 static func target_chest_at(t: float) -> Vector2:
-	return target_feet_at(t) + Vector2(0.0, -70.0)
+	return target_feet_at(t) + Vector2(0.0, -88.0)
 
 static func caster_hand_at(t: float) -> Vector2:
 	return caster_feet_at(t) + Vector2(28.0, -62.0)
@@ -80,7 +80,7 @@ static func contact_anchor_at(t: float) -> Vector2:
 static func mark_anchor_at(target_index: int, t: float) -> Vector2:
 	if target_index != 0:
 		return Vector2(-9999.0, -9999.0)
-	return target_feet_at(t) + Vector2(18.0, -67.0)
+	return target_feet_at(t) + Vector2(18.0, -82.0)
 
 static func mark_opacity(t: float) -> float:
 	if t < SIMULATED_CONTACT_TIME or t >= FADE_END:
