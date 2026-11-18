@@ -123,6 +123,8 @@ A race/origin may provide explicit content modifiers later, but the identity its
 
 ## 3.2 Lục Duy — permanent foundation attributes
 
+**D7 addendum (18/11/2026):** đoạn sáu thuộc tính ở bên dưới mô tả bản Lục Duy lịch sử. Hệ Tam Căn/Tứ Tính **D7 đã có bảy chỉ số**, bổ sung `mind_nature` / **Tâm Tính** làm một trong ba Tam Căn theo `FoundationSystem.DIMENSIONS`. Người dùng đã duyệt Tâm Tính +0,01 điểm % Kháng Hiệu Ứng/điểm, tối đa +8 điểm %, tại `docs/design/D1_MIND_NATURE_V2_EFFECT_CONTRACT_20261118.md`. Đây là điều chỉnh **THIẾT KẾ**; mã nền đã lưu giá trị nhưng chưa được chứng minh có buff runtime. Tâm Trạng là trạng thái 0–100 khác với Tâm Tính, không phải chỉ số nền thứ tám.
+
 Already canonical and locked:
 
 - Tư Chất;
