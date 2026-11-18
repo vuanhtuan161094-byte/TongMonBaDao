@@ -1,0 +1,111 @@
+{
+  "schema_version": "tmb_vfx_area_handoff_v1",
+  "report_date": "2026-11-18",
+  "repo": "vuanhtuan161094-byte/TongMonBaDao",
+  "baseline_head": "0960c07f985c9f1a172d1975a6ecb02b26580b74",
+  "branch": "integration/pve-p0-playable-ui-20261103",
+  "pr_number": 72,
+  "scope": "POI01–POI20 work items; cannot count as 20 unique owner-approved skills",
+  "canonical_counts": {
+    "total_skills_mapped": 2196,
+    "families": 420,
+    "branches": 36,
+    "schools": 12,
+    "poison_ledger_ids": 183,
+    "cast_master_families": 204
+  },
+  "poison_ledger_owner_gate_counts": {
+    "OWNER_VISUAL_APPROVED": 6,
+    "OWNER_VISUAL_APPROVED_R1B": 1,
+    "OWNER_PROVISIONAL_ACCEPTED_NOT_FINAL": 5,
+    "OWNER_PROVISIONAL_ACCEPTED_R2C_G5_HOLD": 1,
+    "OWNER_PROVISIONAL_CONTINUE": 2,
+    "OWNER_PROVISIONAL_ACCEPTED_R2D_POLISH_BACKLOG": 1,
+    "OWNER_VISUAL_PENDING_R1_G37_SEMANTIC": 1,
+    "OWNER_VISUAL_PENDING": 166
+  },
+  "audited_technical_proofs": [
+    {
+      "tag": "POI17",
+      "skill_id": "tmb.skill.poison.mobility.human",
+      "revision": "R1",
+      "run_id": 44043401378,
+      "exact_sha": "e58733f2bd2c63c03c063e416a6fa3b0724a3670",
+      "poses": 40,
+      "atlases": 4,
+      "native_frames": 108,
+      "native_seconds": 1.8,
+      "technical": "PASS",
+      "owner": "LEDGER_PENDING_SEMANTIC_USER_TEMPORARY_FEEDBACK",
+      "pve": "HOLD"
+    },
+    {
+      "tag": "POI18",
+      "skill_id": "tmb.skill.poison.co_doc.active_01.immortal.a",
+      "revision": "R2C",
+      "run_id": 44055755958,
+      "exact_sha": "2313593cebf5aa9cff4f1cf03b1dfc7654620115",
+      "native_frames": 108,
+      "native_seconds": 1.8,
+      "technical": "G35_PASS",
+      "art_self": "FAIL",
+      "g5": "NOT_EXECUTED",
+      "owner": "LEDGER_PROVISIONAL_G5_HOLD",
+      "pve": "HOLD"
+    },
+    {
+      "tag": "POI19",
+      "skill_id": "tmb.skill.poison.co_doc.active_01.immortal.b",
+      "revision": "R3",
+      "run_id": 44105241617,
+      "exact_sha": "4a316afc28243f632e0c61b07ccb984dab2c310b",
+      "poses": 80,
+      "atlases": 6,
+      "native_frames": 510,
+      "native_seconds": 8.5,
+      "technical": "G35_G36_G5_PASS",
+      "owner": "PENDING",
+      "pve": "HOLD"
+    },
+    {
+      "tag": "POI20",
+      "skill_id": "tmb.skill.poison.co_doc.active_02.immortal.a",
+      "revision": "R1C",
+      "run_id": 44135139429,
+      "exact_sha": "26f759a629adac63bffe07fa33f24ea967bab537",
+      "poses": 60,
+      "atlases": 5,
+      "native_frames": 639,
+      "native_seconds": 10.65,
+      "technical": "G35_G36_G5_PASS",
+      "owner": "PENDING",
+      "pve": "HOLD"
+    }
+  ],
+  "conflicts": [
+    "POI06 R11 source document says owner accepted preview; 183 ledger still owner pending. Needs canonical decision reconciliation.",
+    "POI12 source notes owner permitted simpler projectile direction and provisional continue, but ledger owner pending and art self rework.",
+    "POI17 user feedback temporary accepted, while ledger still pending semantic G3.7."
+  ],
+  "source_paths": [
+    "AGENTS.md",
+    "docs/operations/TMB_VFX_ART_FIRST_SINGLE_SKILL_SOP_V3_20261114.md",
+    "docs/operations/TMB_VFX_SPRITE_LAYER_PIPELINE_20261114.md",
+    "docs/operations/vfx_packets/README.md",
+    "docs/operations/vfx_school_ledgers/01_poison_183.csv",
+    "docs/operations/JX_VLTK_VFX_IN_GAME_PREVIEW_R1_20261117.md",
+    "docs/operations/FIST12_R6_PROCESS_FAILURE_POSTMORTEM_20261117.md"
+  ],
+  "invariants": {
+    "no_rig": true,
+    "no_gif_by_default": true,
+    "no_gameplay_modifications": true,
+    "no_merge": true,
+    "pve": "HOLD",
+    "v63": "OFF",
+    "commercial_jx_asset_rights": "UNVERIFIED_RESEARCH_ONLY",
+    "owner_art_review": "SEPARATE_GATE",
+    "device_qa": "PENDING"
+  },
+  "how_to_use": "Read the Markdown report first; reconcile owner decision conflicts against primary source/ledger; do not promote exact-SHA lab proof into PvE approval."
+}
