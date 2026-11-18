@@ -70,15 +70,15 @@
     "receipt_claim": "SIMULATED_VISUAL_ONLY"
   },
   "gate_status": {
-    "g3_5_capture": "NATIVE_1280X720_CHARGE_PEAK_MOVING_CONTACT_CAPTURE_PENDING",
-    "technical": "GODOT_4_7_2_EXACT_SHA_PENDING",
+    "g3_5_capture": "NATIVE_1280X720_GODOT_4_7_2_ART_SELF_PASS",
+    "technical": "FINAL_EXACT_SHA_QA_PENDING_REPORT_AND_TEST_COMMIT",
     "art": "MANUAL_ART_REVIEW_REQUIRED",
     "owner": "OWNER_VISUAL_PENDING",
     "live": "PVE_INTEGRATION_HOLD",
     "device": "PHYSICAL_QA_PENDING",
-    "g3_6": "NOT_EXECUTED",
-    "g3_7": "NOT_EXECUTED",
-    "g5": "NOT_EXECUTED"
+    "g3_6": "NATIVE_DARK_BRIGHT_CONTRAST_SELF_PASS",
+    "g3_7": "NATIVE_UNLABELED_SEMANTIC_SELF_PASS",
+    "g5": "NATIVE_9_45S_16_CHECKPOINTS_SELF_PASS"
   },
   "proof_contract": {
     "focused_marker": "FIST14_R5_FOCUSED_RESULT=PASS failures=0",

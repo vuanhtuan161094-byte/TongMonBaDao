@@ -2,6 +2,21 @@
 
 # QUYỀN TU — CURRENT VFX HANDOFF · PR #72
 
+## CURRENT CHECKPOINT — FIST14 R5 ART-FIRST V4 REWORK · 18/11/2026
+
+This checkpoint supersedes the older R3 “chosen next skill” entries below. R2/R3/R4 remain frozen and unchanged; this candidate uses a new FIST14-only R5 source/scene. The newest checked PR #72 SHA before the handoff/test update was `e42447ee0c06f935a46b6da45b3bdf20a0944de4`, Draft/Open on `integration/pve-p0-playable-ui-20261103`.
+
+- **Contract:** `tmb.skill.fist.huyet_quyen.active_04.human`, MARK / nether / single_target cap 1 / range 2.8 / cast .45 / cooldown 8 / duration 6 / projectile speed 0 / undeclared hit_count. Runtime mark/hit receipt remains `RUNTIME_MAPPING_PENDING`; all contact and mark timing here are LAB visual only.
+- **G0–G3:** six separate original RGBA masters and five independently changing fist/contact/recoil poses retained permanently in `godot/labs/combat_lab/fist14/r5/source/`; no R2/R3/R4 image is reused or moved to fake frames. JX1 and Source VL clips were directly inspected for timing/material only; no commercial pixels were copied. Details and source hashes are in the R5 art brief.
+- **G3.5 self-pass:** native Godot 4.7.2, 1280×720, 1× charge/peak/contact on [run #44320413830](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/44320413830). Charge now sits visibly over the unchanged caster at the palm cue; peak/contact are readable on the moving target torso, face visible.
+- **G3.6/G3.7 self-pass:** dark/bright native contrast video and screenshots on [run #44322802727](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/44322802727), 9.45s. At 1×, fist is distinguishable without skill name/HUD; single-target mark/contact follows the selected moving target. Pixel probes are supporting visibility metrics only.
+- **G4:** focused contract checks stationary, left-moving and return motion; chest/contact/mark anchors follow target 0, and target 1 has no mark anchor. This is a visual alignment check, not a gameplay collision receipt.
+- **G5 / G6 self-pass:** full 9.45s native 1280×720 MP4 and 16 timed frame inspections on [run #44323702384](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/44323702384). The dark loop includes contact, mark sustain, fade and expiry; the next light-floor loop includes charge/peak/contact. Self-score: silhouette 4/5, material 4/5, choreography 4/5, composition/occlusion 4/5, contact 4/5, fade 4/5, fist identity 4/5, native 1× readability 4/5. Owner visual gate remains pending.
+- **G7:** strict import/parse/focused/native verification must be repeated on the test/report commit; exact final-SHA run is pending. Current focused test adds stationary and return-path assertions. CI is technical evidence only.
+- **G8 / release:** owner approval pending; PVE/V6.3 integration hold, Windows/Android and 6v8/30×40 performance not executed. No gameplay changes, no rig, no GIF, no merge. The pre-existing dirty `Verify-P3-6A-Playable-Slice.ps1` is untouched.
+
+Native artifact links above retain 14-day Actions artifacts; the original RGBA masters and generators are committed in R5 for durable review. No setup/environment changes were made.
+
 **Checkpoint:** 18/11/2026 · dedicated FIST school chat; G0 catalogue contract reconciled, G1 full frame-by-frame reference analysis NOT_EXECUTED, G2 semantic direction DRAFTED, **G3 illustrated RGBA SOURCE CANDIDATE LOCAL ONLY; not in repository**, no FIST skill deployed.  
 **HEAD_BEFORE:** `176aa0c456eaa1a5aa1db6790d87b43150f7d63f`; **PR:** [#72](https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/72), Draft; **branch:** `integration/pve-p0-playable-ui-20261103`. **FIRST_CHECKPOINT_COMMIT:** `a270195a22d3644f223ab63b07cee1d80a90d8cc`. **CURRENT_REVIEW_COMMIT:** see exact history of this file (cannot self-reference current commit inside itself).
 
