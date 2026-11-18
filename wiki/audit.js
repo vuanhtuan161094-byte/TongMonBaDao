@@ -48,6 +48,7 @@ function overview(){
  ["Đan dược","Có "+it.medicineItems+" mã nhưng chỉ "+it.medicineItemVariantsWithAuthoredFamilyRealm+" biến thể thuộc 8 họ/cảnh giới đã có công thức; phần còn lại thiếu.","items"],
  ["101 đặc tính","Có ID và trọng số sinh; chưa có xác minh hiệu ứng V2 thực tế theo từng đặc tính.","features"],
  ["V6.3","Catalog Bí Kíp/technique và cổng combat đang OFF mặc định, không phải tất cả đã live.","features"],
+ ["Vật liệu SX-07B","630 mã vật liệu dự kiến, mới 11 mã thuộc phạm vi đó đăng ký; 270 tuyến nguồn vẫn là thiết kế.","items"],
  ["QA thực tế","Bài kiểm thử source không thay thế chạy thử Godot đúng SHA và nghiệm thu Windows/Android.","coverage"]
  ];
  const blocks=critical.map(x=>'<button class="item-button" data-audit-tab="'+x[2]+'"><span><b>'+esc(x[0])+'</b><small>'+esc(x[1])+'</small></span><span class="tip">Mở →</span></button>').join("");
@@ -169,6 +170,7 @@ function itemList(){
  summary("Vật phẩm kho V6.3",d.summary.archiveItems,"Catalog chưa bật")+
  summary("Công pháp V6.3",d.summary.learningTechniques,"Catalog chưa bật")+'</div>'+
  alert('<b>Lưu ý:</b> 476 định danh đan có thể tính hiệu lực theo mã; chỉ 8 cặp <b>họ đan–cảnh giới</b> (32 biến thể phẩm) có định nghĩa công thức cấp 1–2. <b>444 mã còn lại không có recipe_definition.</b> Có mã ≠ chế được; có công thức ≠ bảo đảm đủ nguồn nguyên liệu, chọn đúng phẩm, hoặc nút UI hoạt động.')+
+ alert('<b>Lỗ hổng vật liệu V5.5-D/SX07B:</b> 630 ô vật liệu trong thiết kế, mới <b>11/630</b> thuộc phạm vi đó được đăng ký. <b>619</b> chưa đăng ký (112 ID được giữ từ tài liệu gốc, 507 mới đề xuất/chưa xác minh). <b>270 tuyến nguồn</b> vẫn ở dạng bảng thiết kế, không được coi là điểm farm live. '+link("docs/qa/SX07B_PRESERVED_MATERIALS_SOURCE_GATE_20261109.md","Nguồn SX-07B")+'.')+
  '<div class="ga-filters"><label>Danh mục'+selector("ga-item-group",itemGroups,state.itemsGroup)+'</label>'+
  '<label>Trạng thái'+selector("ga-item-mode",[["all","Tất cả"],["authored","Có công thức/nguồn viết mã"],["unavailable","Chưa có công thức hoặc gate OFF"]],state.itemMode)+'</label></div>'+
  pager+table(["Tên / định danh","Dữ liệu và trạng thái","Căn cứ"],results)+pager;
@@ -224,7 +226,7 @@ $("global-search").addEventListener("input",e=>{state.query=e.target.value;state
 const site=["localhost","127.0.0.1","::1","vuanhtuan161094-byte.github.io"];
 if(!site.includes(location.hostname)){$("audit-root").innerHTML=alert("Chỉ mở trang này qua GitHub Pages chính thức hoặc localhost hợp lệ.");return;}
 Promise.all(["./data/game_system_audit.json","./data/game_items_audit.json"].map(path=>fetch(path,{cache:"no-store"}).then(r=>{if(!r.ok)throw Error(path+" HTTP "+r.status);return r.json();}))).then(([s,i])=>{
- if(s.summary.sourceModules!==24||s.summary.featureChecklist!==45||s.buildings.length!==28||s.setFamilies.length!==24||i.summary.medicineItems!==476||i.summary.nativeResources!==34||i.summary.archiveItems!==154||i.summary.legacyEquipmentRecipes!==5)throw Error("Thiếu dữ liệu kiểm toán; vui lòng kiểm tra bản triển khai.");
+ if(s.summary.sourceModules!==24||s.summary.featureChecklist!==49||s.buildings.length!==28||s.setFamilies.length!==24||i.summary.medicineItems!==476||i.summary.nativeResources!==34||i.summary.archiveItems!==154||i.summary.legacyEquipmentRecipes!==5)throw Error("Thiếu dữ liệu kiểm toán; vui lòng kiểm tra bản triển khai.");
  state.s=s;state.i=i;const tab=location.hash.slice(1);if(["overview","features","buildings","equipment","items","coverage"].includes(tab))state.tab=tab;redraw();
 }).catch(e=>$("audit-root").innerHTML=alert("Không tải được bảng kiểm kê: "+esc(e.message)));
 })();
