@@ -11,6 +11,10 @@ on:
       - 'wiki/characters.html'
       - 'wiki/characters.css'
       - 'wiki/characters.js'
+      - 'wiki/traits.html'
+      - 'wiki/traits.css'
+      - 'wiki/traits.js'
+      - 'wiki/data/trait_effect_audit.json'
       - 'wiki/data/character_reference.json'
       - 'wiki/data/catalog.json'
       - '.github/workflows/wiki-player-pages.yml'
@@ -38,6 +42,8 @@ jobs:
           mkdir -p _site/wiki/data
           cp wiki/guide.html wiki/guide.css wiki/guide.js _site/wiki/
           cp wiki/characters.html wiki/characters.css wiki/characters.js _site/wiki/
+          cp wiki/traits.html wiki/traits.css wiki/traits.js _site/wiki/
+          cp wiki/data/trait_effect_audit.json _site/wiki/data/
           cp wiki/data/character_reference.json _site/wiki/data/
           cp wiki/data/catalog.json _site/wiki/data/
           printf '%s\n' '<!doctype html><html lang="vi"><head><meta charset="utf-8"><meta http-equiv="refresh" content="0;url=wiki/guide.html"><title>Tàng Kinh Các</title></head><body><a href="wiki/guide.html">Mở Bách khoa Tông Môn Bá Đạo</a></body></html>' > _site/index.html
