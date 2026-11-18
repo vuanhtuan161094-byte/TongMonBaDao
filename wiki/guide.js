@@ -28,8 +28,8 @@ const EQUIP=[
 ];
 const bodyGroups={A:["Thanh Linh Thảo","Tinh Lang Bì"],B:["Tử Vân Thảo","Linh Tủy"],C:["Huyết Linh Sâm","Huyết Thú Tinh Huyết"],D:["Kim Cốt Thảo","Linh Thú Cốt Ngọc"],E:["Tiên Tủy Liên","Tiên Thú Chân Cốt"],F:["Bất Hoại Tủy Dịch","Đại La Kim Cốt"],G:["Thần Mạch Tinh","Thần Thú Cốt"],H:["Hỗn Độn Tủy Hoa","Bất Diệt Thần Cốt"]};
 const bodyRows=[["A",12,4],["A",18,5],["A",24,6],["B",12,1],["B",16,2],["B",24,3],["C",12,3],["C",16,4],["C",22,6],["C",32,8],["D",12,3],["D",16,4],["D",20,5],["D",24,6],["E",12,3],["E",16,4],["E",22,6],["F",14,4],["F",20,6],["F",30,9],["G",12,3],["G",16,4],["G",20,5],["G",24,6],["G",30,8],["H",12,3],["H",18,5],["H",24,7],["H",32,10]];
-const state={data:null,tab:"home",realm:2,track:"cultivation",building:"spirit_field",buildingLevel:1,fieldLevel:1,school:"all",skill:null,limit:48,query:""};
-const names={home:"Tổng quan",realms:"Cảnh giới & tu luyện",skills:"Kỹ năng & sát thương",buildings:"Công trình",fields:"Linh Điền & cây trồng",medicine:"Đan dược & đột phá",equipment:"Trang bị",schools:"Môn phái & tài nguyên"};
+const state={data:null,char:null,traits:null,audit:null,items:null,tab:"home",realm:2,track:"cultivation",building:"spirit_field",buildingLevel:1,fieldLevel:1,school:"all",skill:null,limit:48,query:"",traitQuery:"",traitGroup:"all",traitPage:1,aptitude:100,focus:"natural",recruitSource:"ordinary",buildStatus:"all",itemGroup:"medicine",itemQuery:"",itemPage:1,featureStatus:"all",featureGroup:"all",featureLimit:16};
+const names={home:"Trang chủ",characters:"Đệ tử & đặc tính",realms:"Tu luyện & đột phá",skills:"Môn phái & kỹ năng",buildings:"Công trình & Linh Điền",equipment:"Trang bị & đồ bộ",items:"Vật phẩm & đan dược",systems:"Toàn bộ chức năng",search:"Kết quả tìm kiếm"};
 const content=document.getElementById("content"),search=document.getElementById("search");
 // Engineering Studio remains localhost-only and is intentionally excluded from Pages.
 if(location.hostname==="vuanhtuan161094-byte.github.io"){document.querySelectorAll(".studio-link,.footer a").forEach(el=>{el.style.display="none";});}
@@ -42,18 +42,40 @@ function metric(label,value,note){return '<div class="metric"><small>'+esc(label
 function table(head,rows){return '<div class="table-scroll"><table><thead><tr>'+head.map(h=>'<th>'+esc(h)+'</th>').join("")+'</tr></thead><tbody>'+rows.map(row=>'<tr>'+row.map(c=>'<td>'+c+'</td>').join("")+'</tr>').join("")+'</tbody></table></div>';}
 function select(id,opts,value){return '<select id="'+id+'">'+opts.map(o=>'<option value="'+esc(o[0])+'"'+(String(o[0])===String(value)?' selected':'')+'>'+esc(o[1])+'</option>').join("")+'</select>';}
 function floorCosts(realm){let total=TOTAL[realm-1],out=[],sum=0;for(let i=0;i<9;i++){let v=Math.round((total*WEIGHTS[i]/10000)/10)*10;out.push(v);sum+=v;}out.push(total-sum);return out;}
-function goto(tab){if(tab==="characters"){location.href="./characters.html";return;}if(tab==="traits"){location.href="./traits.html";return;}if(tab==="audit"){location.href="./audit.html";return;}state.tab=tab;state.limit=48;history.replaceState(null,"","#"+tab);document.getElementById("sidebar").classList.remove("open");render();}
+function goto(tab){
+ const aliases={traits:"characters",audit:"systems",fields:"buildings",medicine:"items",schools:"skills"};
+ const dest=aliases[tab]||tab;
+ state.tab=names[dest]?dest:"home";
+ state.limit=48;
+ history.replaceState(null,"","#"+state.tab);
+ document.getElementById("sidebar").classList.remove("open");
+ render();
+ window.scrollTo({top:0,behavior:"instant"});
+}
+function status(label,kind="pending"){return '<span class="ency-status '+esc(kind)+'">'+esc(label)+'</span>';}
+function auditSource(path,line=0){return path?'<a target="_blank" rel="noopener" href="'+ROOT+esc(path)+(line?'#L'+line:'')+'">Xem mã/thiết kế</a>':"";}
 function home(){
-  const quick=[["人","Đệ tử & tính cách","Tỷ lệ sinh, đặc tính và Tu Vi/giây","characters"],["✧","101 đặc tính","Đã code, chưa code và việc cần hoàn thiện","traits"],["◎","Kiểm toán toàn game","Công trình, trang bị, vật phẩm, tính năng","audit"],["☯","Cảnh giới","EXP 300 tầng & đột phá","realms"],["✦","Kỹ năng","Hệ số damage, hồi chiêu, tầm đánh","skills"],["⌂","Công trình","Cấp, giá nâng cấp, chức năng","buildings"],["❧","Linh Điền","Hạt giống, năng suất, thời gian","fields"],["丹","Đan dược","Hỗ trợ tăng tu vi & đột phá","medicine"],["⚔","Trang bị","Nguyên liệu rèn và chỉ số","equipment"],["門","Môn phái","12 môn phái, 36 nhánh","schools"]];
-  return '<section class="hero"><div class="eyebrow">Cẩm nang dành cho người chơi</div><h1 class="title">Tu luyện, xây dựng và xưng bá</h1><p>Tra cứu những gì cần để chơi: mỗi tầng tốn bao nhiêu EXP, đột phá cần gì, kỹ năng mạnh bao nhiêu, Linh Điền trồng được cây nào. Không cần biết thuật ngữ lập trình.</p><div class="hero-actions"><button data-tab="realms">Xem Luyện Khí →</button><button data-tab="fields" class="ghost">Xem Linh Điền →</button></div></section>'+
-  '<div class="quick-grid">'+quick.map(x=>'<button class="quick" data-tab="'+x[3]+'"><span class="q-icon">'+x[0]+'</span><b>'+x[1]+'</b><small>'+x[2]+'</small></button>').join("")+'</div>'+
-  panel("Bắt đầu từ đâu?","Một số câu hỏi thường gặp",'<div class="grid-2">'+[
-  ['Muốn lên Luyện Khí tầng 2?','Cần 889.000 EXP. Từng tầng có yêu cầu riêng; vượt đại cảnh giới cần đột phá.','realms'],
-  ['Muốn trồng Thanh Linh Thảo?','Linh Điền cấp 1 đã trồng được. Giá gieo 4 linh thạch/lượt.','fields'],
-  ['Kỹ năng ghi 108% nghĩa là gì?','Đó là hệ số kỹ năng trong thiết kế, không có nghĩa trừ 108% máu đối thủ.','skills'],
-  ['Nâng Linh Điền cần gì?','Chọn cấp đang có để xem số Linh Mộc, Thanh Thiết, linh thạch và vật liệu mốc.','buildings']
-  ].map(x=>'<button class="item-button" data-tab="'+x[2]+'"><span><b>'+x[0]+'</b><small>'+x[1]+'</small></span><span class="tip">Xem →</span></button>').join("")+'</div>')+
-  '<div class="note neutral">Chú ý: 2.196 kỹ năng của hệ V6.3 hiện là nội dung thiết kế <b>chưa kích hoạt</b>. Bách khoa hiển thị số liệu dự kiến nhưng không khẳng định chúng đã có thể sử dụng trong trận PvE.</div>';
+ const quick=[
+ ["人","Đệ tử & đặc tính","Tư Chất, tính cách, 101 đặc tính","characters"],
+ ["☯","Tu luyện & đột phá","EXP mỗi tầng, cách lên cảnh giới","realms"],
+ ["✦","Môn phái & kỹ năng","Tìm skill, xem sát thương %","skills"],
+ ["⌂","Công trình & Linh Điền","Nâng cấp, cây trồng, công trình còn thiếu","buildings"],
+ ["⚔","Trang bị & đồ bộ","5 công thức cũ; 10 ô, 24 bộ V2","equipment"],
+ ["丹","Vật phẩm & đan dược","Tìm item, công thức, nguồn vật liệu","items"],
+ ["◎","Toàn bộ chức năng","Đã viết mã, chưa chạy, chưa làm","systems"]
+ ];
+ const a=state.audit?.summary||{},i=state.items?.summary||{};
+ return '<section class="ency-hero"><div class="eyebrow" style="color:#d9d0a5">BÁCH KHOA TÔNG MÔN BÁ ĐẠO</div><h1>Tìm mọi thứ trong một nơi</h1><p>Xem cách chơi, con số cụ thể và tình trạng đã làm/chưa làm ngay trong từng chuyên mục. Không cần mở trang báo cáo khác.</p></section>'+
+ '<div class="ency-home-grid">'+quick.map(x=>'<button class="ency-tile" data-tab="'+x[3]+'"><span class="sym">'+x[0]+'</span><span><b>'+x[1]+'</b><small>'+x[2]+'</small></span></button>').join("")+'</div>'+
+ panel('Những phần còn thiếu nổi bật','Tóm tắt để biết những gì thực sự chưa triển khai',
+ '<div class="ency-cards">'+[
+ ["Đặc tính V2",status("Chưa xác minh chạy","danger"),"101 đặc tính sinh ra được, nhưng chưa có bằng chứng hiệu ứng gameplay đầy đủ.", "characters"],
+ ["Công trình",status("20 loại mới chỉ thiết kế","danger"),"26 loại trong thiết kế dài hạn; 8 loại đăng ký trong code, 6 loại trùng thiết kế.", "buildings"],
+ ["Trang bị V2",status("Chưa triển khai","danger"),"Bản V2 thiết kế 10 ô và 24 bộ; code cũ có 3 ô.", "equipment"],
+ ["Vật liệu & đan",status("Thiếu nguồn/công thức","danger"),"476 mã đan nhưng 444 chưa có công thức; 619/630 vật liệu dài hạn chưa đăng ký.", "items"]
+ ].map(x=>'<article class="ency-card"><h3>'+x[0]+'</h3>'+x[1]+'<p>'+x[2]+'</p><button class="more" data-tab="'+x[3]+'">Xem chi tiết</button></article>').join("")+'</div>'+
+ '<p class="ency-mini">Dữ liệu được kiểm tra từ mã nguồn. Chưa có kiểm thử Godot trên HEAD cho toàn bộ game. Không đồng nhất tên trong danh mục với tính năng đã chơi được.</p>')+
+ '<div class="ency-alert soft"><b>Cách dùng:</b> chọn một chuyên mục, xem thông số trước. Mỗi chức năng có dòng <b>Tình trạng</b> và phần <b>Còn thiếu gì?</b> nếu chưa hoàn thiện. Bấm ô tìm kiếm phía trên để tìm xuyên suốt toàn game.</div>';
 }
 function realms(){
   const realms=state.data?.realms||[];const r=state.realm,body=state.track==="body",row=realms[r-1]||{};const name=body?row.bodyName:row.cultivationName;const costs=floorCosts(r);
@@ -156,10 +178,223 @@ function schools(){
  panel('Danh sách tài nguyên','Nguồn trong ResourceRegistry.',table(['Tài nguyên','Loại','Cảnh giới'],resources.map(x=>[esc(x.name),esc(x.family),x.realmRank?fmt(x.realmRank):'—'])))+
  source('godot/src/simulation/resource/resource_registry.gd');
 }
+
+function characters(){
+ const d=state.char,t=state.traits;
+ if(!d||!t)return heading("ĐỆ TỬ","Đệ tử & đặc tính","Chưa tải được dữ liệu nhân vật.");
+ const apt=Math.max(0,Math.min(50000,Number(state.aptitude)||0));
+ const focused=state.focus==="focus";
+ const rate=d.tuvi.basePerSimMinute*(focused?d.tuvi.cultivateMultiplier:1)*(1+apt*d.tuvi.aptitudeBonusPerPoint);
+ const chances=d.rates.qualityBySource[state.recruitSource]||d.rates.qualityBySource.ordinary;
+ const qq=state.traitQuery.trim().toLowerCase();
+ const traits=t.traits.filter(x=>(state.traitGroup==="all"||x.designClass===state.traitGroup)&&(!qq||(x.name+" "+x.designEffectVi+" "+x.id+" "+x.group).toLowerCase().includes(qq)));
+ const pages=Math.max(1,Math.ceil(traits.length/16));state.traitPage=Math.min(state.traitPage,pages);
+ const visible=traits.slice((state.traitPage-1)*16,state.traitPage*16);
+ const personalities=[
+ ["Dũng cảm",80,50,35],["Thận trọng",20,32,86],["Cân bằng",50,50,55],
+ ["Thủ thành tiết kiệm",28,22,74],["Liều lĩnh",92,58,22],["Biết tính toán",42,62,82]
+ ];
+ const attributes=[
+ ["Tư Chất","+0,25% tốc độ Tu Vi tự nhiên mỗi điểm"],["Căn Cốt","+0,20% hệ số EXP Luyện Thể mỗi điểm"],
+ ["Tâm Tính","Có điểm, chưa có hiệu ứng gameplay độc lập được xác nhận"],
+ ["Tiềm Lực","+0,05% hệ số tiềm năng mỗi điểm"],["Thông Tuệ","+0,15% hệ số lĩnh hội mỗi điểm"],
+ ["Cơ Duyên","Ảnh hưởng phép kiểm tra may mắn cụ thể"],["Mị Lực","Ảnh hưởng phép kiểm tra xã giao cụ thể"]
+ ];
+ const badge=x=>x.designClass==="EFFECT_SPEC_PENDING"?status("Có thiết kế, chưa chạy","pending"):x.designClass==="DEPENDENCY_BLOCKED"?status("Thiếu cơ chế phụ thuộc","danger"):status("Chưa chốt thiết kế","idea");
+ const cards=visible.map(x=>'<article class="ency-card"><h3>'+esc(x.name)+'</h3>'+
+ '<div class="ency-mini">'+esc(x.group)+' · '+esc(x.nature==="H"?"Có lợi":x.nature==="S"?"Hai mặt":"Bất lợi")+' · Trọng số sinh: '+fmt(x.birthWeight)+'</div>'+
+ '<div class="ency-tags">'+status("Đã có trong dữ liệu sinh","ok")+badge(x)+(x.birthAvailable?"":status("Không sinh ngẫu nhiên","danger"))+'</div>'+
+ '<p><b>Tác dụng theo thiết kế:</b> '+esc(x.designEffectVi)+'</p>'+
+ '<details><summary>Còn thiếu gì? Xem nguồn</summary><p>Hiệu ứng V2 chưa được xác minh có nơi áp dụng và kiểm thử riêng. '+esc(x.remainingWorkVi)+'</p>'+
+ (x.legacyAnalogue?'<div class="ency-alert">Có hệ cũ khác: '+esc(x.legacyAnalogue.effectVi)+'. '+esc(x.legacyAnalogue.discrepancyVi)+'</div>':'')+
+ '<p class="ency-link">'+auditSource(x.evidence.matrixPath,x.evidence.matrixLine)+'</p></details></article>').join("");
+ const pager='<div class="ency-pager"><span>'+fmt(traits.length)+' / 101 đặc tính · Trang '+state.traitPage+'/'+pages+'</span><div>'+
+ '<button id="traits-prev"'+(state.traitPage===1?" disabled":"")+'>Trước</button> '+
+ '<button id="traits-next"'+(state.traitPage===pages?" disabled":"")+'>Sau</button></div></div>';
+ return heading('HỒ SƠ NHÂN VẬT','Đệ tử & đặc tính','Đọc chỉ số, tỷ lệ sinh và tác dụng từng đặc tính. Bên dưới mỗi đặc tính ghi rõ đã làm đến đâu.')+
+ '<div class="grid-3">'+metric('101 đặc tính','101','Có dữ liệu sinh; chưa xác minh hiệu ứng V2')+
+ metric('Thiên mệnh / Thể chất','24 / 14','Có tên và tỷ lệ sinh')+
+ metric('Huyết mạch','5 loại','Không đồng nghĩa đều có buff chạy thật')+'</div>'+
+ panel('Tu Vi mỗi giây','Nhập Tư Chất để tính thử tốc độ theo cơ chế V2 (không phải số trong bản lưu).',
+ '<div class="controls"><label>Điểm Tư Chất<input id="char-apt" type="number" min="0" max="50000" value="'+apt+'"></label>'+
+ '<label>Trạng thái'+select("char-focus",[["natural","Tăng tự nhiên"],["focus","Chuyên tâm tu luyện ×2"]],state.focus)+'</label></div>'+
+ '<div class="ency-example"><div><strong>'+fmt(rate/60)+' EXP/s</strong><small>Tốc độ bình quân</small></div>'+
+ '<div><strong>'+fmt(rate)+' EXP/phút</strong><small>Phút mô phỏng, chưa buff</small></div>'+
+ '<div><strong>+'+fmt(apt*.25)+'%</strong><small>Thưởng Tư Chất</small></div></div>'+
+ '<p class="ency-mini">Công thức: 1.000 × '+(focused?'2':'1')+' × (1 + 0,0025 × Tư Chất) ÷ 60. Cộng EXP theo nhịp game; còn phụ thuộc cờ bật hệ Tu Vi V2.</p>')+
+ panel('Bảy chỉ số nhân vật','Tâm Tính có giá trị sinh nhân vật nhưng chưa có tác dụng gameplay độc lập.',table(['Chỉ số','Tác dụng hiện được xác nhận hoặc thiết kế'],attributes.map(x=>[esc(x[0]),esc(x[1])])))+
+ panel('Tỷ lệ khi sinh đệ tử','Tỷ lệ từng bước; không cộng tất cả tỷ lệ thành 100%.',
+ '<div class="controls"><label>Kiểu chiêu mộ'+select("char-source",[["ordinary","Chiêu mộ thường"],["gacha","Triệu hồi"],["fate","Cơ duyên"]],state.recruitSource)+'</label></div>'+
+ table(['Phẩm chất','Tỷ lệ'],["Phàm Thường","Xuất Chúng","Thiên Kiêu","Tuyệt Luân","Nghịch Thiên"].map((x,i)=>[esc(x),'<b>'+fmt(chances[i])+'%</b>']))+
+ table(['Thuộc tính','Tỷ lệ sinh'],[
+ ["Linh căn 1/2/3/4/5 hệ",d.rates.rootsCount.map(x=>fmt(x)+"%").join(" / ")],
+ ["Có 1/2/3 đặc tính",d.rates.traitCount.map(x=>fmt(x)+"%").join(" / ")],
+ ["Đặc tính có lợi/hai mặt/bất lợi",d.rates.traitNature.map(x=>fmt(x)+"%").join(" / ")],
+ ["Đặc tính ẩn",fmt(d.rates.traitLatent)+"%"],["Huyết mạch",fmt(d.rates.bloodline)+"%"],
+ ["Thể chất",fmt(d.rates.physique)+"%"],["Thiên mệnh",fmt(d.rates.destiny)+"%"],["Dị căn",fmt(d.rates.mutation)+"%"]
+ ].map(x=>x.map(esc))))+
+ panel('Sáu loại tính cách','Điểm xu hướng trên thang 100, không phải tỷ lệ chiến thắng.',table(['Tính cách','Mạo hiểm','Chi tiêu','Sinh tồn'],personalities.map(x=>x.map((v,i)=>i?fmt(v)+'/100':esc(v)))))+
+ '<section class="ency-section"><h2>101 đặc tính — tác dụng và tình trạng</h2><p>'+status("41 có thiết kế, chưa chạy")+status("12 thiếu cơ chế","danger")+status("48 chưa chốt thiết kế","idea")+'</p>'+
+ '<div class="ency-controls"><label>Tìm đặc tính<input id="trait-search" type="search" placeholder="Ham Học, Cần Mẫn..." value="'+esc(state.traitQuery)+'"></label>'+
+ '<label>Lọc tình trạng'+select("trait-group",[["all","Tất cả 101"],["EFFECT_SPEC_PENDING","Có tác dụng thiết kế"],["DEPENDENCY_BLOCKED","Thiếu cơ chế phụ thuộc"],["CONCEPT_UNAPPROVED","Chưa chốt thiết kế"]],state.traitGroup)+'</label></div>'+
+ pager+'<div class="ency-cards">'+(cards||'<p>Không có kết quả phù hợp.</p>')+'</div>'+pager+
+ '<div class="ency-alert">9 đặc tính của hệ cũ có mã riêng nhưng không được tính là 101 hiệu ứng V2 đã hoàn thành. Ví dụ Cẩu Thả có cơ chế cũ trái với thiết kế mới.</div></section>'+
+ panel('Thiên mệnh, thể chất và huyết mạch','Có định danh sinh, chưa có bằng chứng tất cả hiệu ứng V2 đã hoạt động.',
+ '<div class="ency-cards">'+[
+ ["24 Thiên mệnh",d.fates.map(x=>x.name)],
+ ["14 Thể chất",d.physiques.map(x=>x.name)],
+ ["5 Huyết mạch",d.bloodlines.map(x=>x.name)]
+ ].map(x=>'<article class="ency-card"><h3>'+x[0]+'</h3><p>'+x[1].map(esc).join(' · ')+'</p></article>').join("")+'</div>')+
+ source('godot/src/simulation/recruitment/disciple_birth_catalogue_v2.gd');
+}
+function buildingExtras(){
+ const a=state.audit;
+ if(!a)return '';
+ const rows=a.buildings.filter(x=>state.buildStatus==="all"||
+ (state.buildStatus==="coded"&&x.codeStatus==="REGISTERED_BUILDING")||
+ (state.buildStatus==="missing"&&x.codeStatus!=="REGISTERED_BUILDING")||
+ (state.buildStatus==="blocked"&&["UPGRADE_BLOCKED","UPGRADE_GATED_20"].includes(x.upgradeStatus)));
+ return panel('Tình trạng xây dựng của 26 loại công trình','Có loại trong mã không đồng nghĩa mọi công dụng/mốc đã làm.',
+ '<div class="ency-alert">Cây thiết kế dài hạn có <b>26 loại</b>. Trong code có <b>8 loại</b> (6 trùng với cây và 2 bổ sung); <b>20 loại thiết kế chưa có loại BuildingSystem tương ứng</b>. Rèn Thân Đường chưa được nâng cấp, Dẫn Tiên Đài chặn trên cấp 20.</div>'+
+ '<div class="ency-controls"><label>Xem loại công trình'+select("build-status",[["all","Tất cả 28 trường hợp"],["coded","8 loại có trong code"],["missing","20 loại mới thiết kế"],["blocked","Các loại bị chặn nâng cấp"]],state.buildStatus)+'</label></div>'+
+ table(['Tên công trình','Tình trạng','Việc còn thiếu'],rows.map(x=>[
+ '<b>'+esc(x.name)+'</b>',x.codeStatus==="REGISTERED_BUILDING"?status("Có mã xây dựng","ok"):status("Chỉ có thiết kế","danger"),
+ esc(x.upgradeNote)+'<div class="ency-link">'+auditSource(x.designSource,x.designLine)+'</div>'
+ ])));
+}
+function fieldExtras(){
+ return panel('Linh Điền trồng được gì?','3 loại cây có mã gieo trồng; đã có plot, thu hoạch và chế độ làm việc.',
+ table(['Loại cây','Mở ở cấp','Giá gieo','Một vụ cơ bản'],CROPS.map(x=>[
+ '<b>'+esc(x.name)+'</b>','Cấp '+x.lv,fmt(x.stone)+' linh thạch',fmt(x.yield)+' đơn vị / '+x.ticks+' ticks'
+ ]))+
+ '<div class="ency-alert">Sản lượng thực tế cần đối chiếu buff, giờ mô phỏng, nhân công và kiểm thử trong game. Tử Vân Thảo cần Linh Điền cấp 10 cùng vật liệu mốc hợp lệ.</div>');
+}
+function buildingsUnified(){return buildings()+buildingExtras()+fieldExtras();}
+function equipmentUnified(){
+ const a=state.audit;
+ return equipment()+
+ panel('Trang bị V2 chưa triển khai','Thiết kế đã duyệt: 10 ô thường, 12 phẩm, 24 bộ (mốc 2/3/4).',
+ '<div class="grid-3">'+metric('Đang có mã hệ cũ','3 ô','Vũ khí, Giáp, Pháp bảo cũ')+
+ metric('Thiết kế V2','10 ô','Còn 3 ô Phù, 2 ô Pháp Bảo riêng')+
+ metric('Công thức rèn cũ','5','Chưa phải hệ rèn V2')+'</div>'+
+ '<p class="ency-summary">10 ô thường: Vũ khí, Mũ, Giáp, Phi phong, Hộ uyển, Thủ sáo, Đai lưng, Giày, Ngọc bội, Nhẫn.</p>'+
+ '<div class="ency-alert"><b>Còn thiếu:</b> chuyển dữ liệu cũ sang 10 ô; đồ bộ 2/3/4; 12 phẩm và chỉ số phụ; cường hóa, tẩy luyện, thăng phẩm, kế thừa; nguồn rơi và nguyên liệu có thật.</div>'+
+ source('docs/WEAPON_EQUIPMENT_V2_SPEC.md'))+
+ panel('24 bộ trang bị đã thiết kế','18 bộ chiến đấu, 6 bộ nghề nghiệp; chưa có hiệu ứng set V2 trong EquipmentSystem.',
+ table(['Tên bộ','Nhóm','Trạng thái'],(a?.setFamilies||[]).map(x=>[
+ '<b>'+esc(x.name)+'</b>',esc(x.group),status('Chưa lập trình V2','danger')
+ ]))+source('docs/EQUIPMENT_SETS_V2_SPEC.md'));
+}
+function itemDirectory(){
+ const items=state.items;if(!items)return '';
+ const options=[["medicine","Đan dược (476 mã)"],["nativeResources","Tài nguyên nền (34)"],
+ ["legacyEquipment","Trang bị hệ cũ (5 mẫu)"],["archiveItems","Bí kíp vật phẩm V6.3 (154)"],
+ ["codices","Bí kíp lưu trữ (159)"],["techniques","Công pháp V6.3 (84)"],["crops","Cây Linh Điền (3)"]];
+ const group=state.itemGroup;
+ const entries=items[group]||[];
+ const q=state.itemQuery.toLowerCase().trim();
+ const filtered=entries.filter(x=>!q||(x.name+" "+x.id+" "+(x.family||x.school||"")).toLowerCase().includes(q));
+ const pages=Math.max(1,Math.ceil(filtered.length/24));state.itemPage=Math.min(pages,state.itemPage);
+ const rows=filtered.slice((state.itemPage-1)*24,state.itemPage*24);
+ const describe=x=>{
+  if(group==="medicine")return (x.family==="break"?("Đột phá: +"+x.potency+" điểm %"):("Hiệu lực theo bảng: "+fmt(x.potency)))+" · "+(x.hasRecipe?"Có công thức cấp này":"Chưa có công thức cấp này");
+  if(group==="legacyEquipment")return "Có mã rèn hệ cũ · Nguyên liệu: "+Object.entries(x.materials||{}).map(([k,v])=>k+" ×"+v).join(", ");
+  if(group==="crops")return "Linh Điền cấp "+x.fieldLevel+", gieo "+x.plantCost+" linh thạch, thu "+x.baseYield+"/"+x.baseCycleTicks+" ticks";
+  if(group==="nativeResources")return "Thuộc nhóm "+x.family+" · Chưa xác minh mọi tuyến kiếm được";
+  return "Có trong danh mục V6.3 · Mặc định khóa, không thể suy ra nguồn farm";
+ };
+ const pagination='<div class="ency-pager"><span>'+fmt(filtered.length)+' mục · Trang '+state.itemPage+'/'+pages+'</span><div>'+
+ '<button id="item-prev"'+(state.itemPage===1?' disabled':'')+'>Trước</button> '+
+ '<button id="item-next"'+(state.itemPage===pages?' disabled':'')+'>Sau</button></div></div>';
+ return panel('Tra cứu mọi loại vật phẩm','Có tên trong danh mục không có nghĩa người chơi kiếm được hoặc chế tạo được.',
+ '<div class="ency-controls"><label>Loại vật phẩm'+select("item-group",options,state.itemGroup)+'</label>'+
+ '<label>Tìm vật phẩm<input id="item-search" type="search" value="'+esc(state.itemQuery)+'" placeholder="Tên đan, linh thảo, kiếm..."></label></div>'+
+ pagination+
+ table(['Vật phẩm','Hiệu lực hoặc nguồn','Tình trạng'],rows.map(x=>[
+ '<b>'+esc(x.name)+'</b><div class="ency-mini">'+esc(x.id)+'</div>',
+ esc(describe(x)),
+ group==="medicine"?(x.hasRecipe?status('Có công thức có điều kiện'):status('Chưa có công thức','danger')):
+ ["archiveItems","codices","techniques"].includes(group)?status('Chưa bật V6.3','danger'):status('Có mã nguồn','ok')
+ ]))+pagination);
+}
+function itemsUnified(){
+ const it=state.items?.summary||{};
+ return heading('KHO TÀNG TÔNG MÔN','Vật phẩm & đan dược','Tìm đồ, biết tác dụng và kiểm tra có thật sự kiếm được, chế tạo được hay chưa.')+
+ '<div class="grid-3">'+metric('Đan dược','476 mã','444 chưa có công thức theo cấp')+
+ metric('Tài nguyên nền',fmt(it.nativeResources||34),'Không đồng nghĩa 630 vật liệu dài hạn')+
+ metric('Công thức đan có nội dung','8 / 119','Cấp cảnh giới 1–2; cần đủ nguồn vật liệu')+'</div>'+
+ '<div class="ency-alert"><b>Điểm thiếu lớn:</b> 630 ô vật liệu dài hạn thiết kế nhưng mới <b>11 mã</b> trong phạm vi đó được đăng ký; <b>619 mã</b> còn thiếu. 270 tuyến nguồn mới là kế hoạch, không phải 270 nơi farm chạy thật.</div>'+
+ itemDirectory()+
+ panel('Đan dược & đột phá — cách dùng','Hệ số chất lượng và công thức do MedicineCatalogue quy định.',
+ '<p>Đột Phá Đan Q1–Q4 cộng lần lượt <b>5 / 6 / 7 / 8 điểm phần trăm</b> cơ hội đột phá. Tỷ lệ cơ bản của gate là 25% trước các bổ sung.</p>'+
+ '<div class="ency-alert">Không phải 476 mã đan đều có thể luyện. Có công thức trong mã vẫn cần đủ nguyên liệu, điều kiện Luyện Đan Điện và tuyến nhận nguyên liệu hợp lệ.</div>'+
+ source('godot/src/simulation/building/medicine_catalogue_v2.gd'))+
+ panel('Trang bị, vật phẩm, bí kíp còn thiếu đường sử dụng','Các danh mục bị gate mặc định khóa.',
+ table(['Nội dung','Đã có gì?','Chưa có gì?'],[
+ ['Vật phẩm Bí Kíp V6.3','154 mã','Nguồn rơi/cơ chế thưởng đã chốt và bật V6.3'],
+ ['Kho Bí Kíp V6.3','159 mã','Chưa bật hệ thống archive mặc định'],
+ ['Công pháp V6.3','84 mã','Chưa bật học/cường hóa mặc định'],
+ ['Đan dược cấp cao','444 mã thiếu công thức','Nguồn nguyên liệu + công thức đầy đủ']
+ ].map(x=>x.map(esc))));
+}
+function systemsUnified(){
+ const a=state.audit;if(!a)return heading('KIỂM TRA TOÀN GAME','Toàn bộ chức năng','Dữ liệu chưa tải xong.');
+ const statuses=[["all","Tất cả trạng thái"],...Object.entries({
+ "CODE_PRESENT_PARTIAL":"Có mã một phần","CODE_PRESENT_GATED":"Có mã nhưng đang khóa",
+ "IDENTITY_ONLY":"Mới có tên/dữ liệu","CODE_PRESENT_QA_PENDING":"Có mã, chưa đủ QA",
+ "DESIGN_ONLY":"Chỉ thiết kế","DESIGN_DEFERRED":"Hoãn làm","PROPOSED_NOT_APPROVED":"Đề xuất chưa duyệt",
+ "CATALOG_PARTIAL":"Có danh mục, thiếu chức năng","ART_PARTIAL":"Mỹ thuật đang làm",
+ "DEVICE_QA_PENDING":"Thiết bị chưa nghiệm thu"
+ })];
+ const groups=[["all","Tất cả hệ"]].concat([...new Set(a.features.map(x=>x.category))].sort().map(x=>[x,x]));
+ const matches=a.features.filter(x=>(state.featureStatus==="all"||x.status===state.featureStatus)&&
+ (state.featureGroup==="all"||x.category===state.featureGroup));
+ const shown=matches.slice(0,state.featureLimit);
+ const toStatus=s=>["DESIGN_ONLY","DESIGN_DEFERRED","PROPOSED_NOT_APPROVED"].includes(s)?status("Mới thiết kế","idea"):
+ ["IDENTITY_ONLY","CATALOG_PARTIAL"].includes(s)?status("Có dữ liệu, thiếu gameplay","danger"):
+ s==="CODE_PRESENT_GATED"?status("Có mã nhưng đang khóa","danger"):
+ s==="CODE_PRESENT_QA_PENDING"||s==="ART_PARTIAL"||s==="DEVICE_QA_PENDING"?status("Chưa nghiệm thu"):status("Có mã một phần");
+ return heading('TIẾN ĐỘ THẬT CỦA GAME','Toàn bộ chức năng','Tại đây kiểm tra mỗi chức năng có thiết kế gì, đã code gì và còn thiếu gì. Chỉ là kiểm toán nguồn, không phải QA đã nghiệm thu.')+
+ '<div class="grid-3">'+metric('Hạng mục',a.features.length,'Có mô tả và nguồn tham chiếu')+
+ metric('Nhóm code',a.summary.sourceModules,'Các nhóm mô phỏng')+
+ metric('Công trình chưa đăng ký',a.summary.designNotRegistered,'So với thiết kế dài hạn')+'</div>'+
+ '<div class="ency-controls"><label>Trạng thái'+select("system-status",statuses,state.featureStatus)+'</label>'+
+ '<label>Hệ thống'+select("system-group",groups,state.featureGroup)+'</label></div>'+
+ '<p class="ency-mini">'+matches.length+' hạng mục phù hợp. Bấm “Còn thiếu gì?” để xem chi tiết.</p>'+
+ '<div class="ency-cards">'+shown.map(x=>'<article class="ency-card"><h3>'+esc(x.name)+'</h3><div class="ency-tags">'+toStatus(x.status)+'</div>'+
+ '<p>'+esc(x.finding)+'</p><details><summary>Còn thiếu gì? Xem nguồn</summary>'+
+ '<p>Cần xác minh chức năng thực sự thay đổi trạng thái trong game, tương thích Save/Reload, đúng cờ bật và có kiểm thử end-to-end.</p>'+
+ '<p class="ency-link">'+auditSource(x.codeSource)+' · '+auditSource(x.designSource)+'</p></details></article>').join("")+'</div>'+
+ (shown.length<matches.length?'<button class="more" id="more-systems">Xem thêm '+(matches.length-shown.length)+' mục</button>':'')+
+ '<div class="ency-alert">Không tự coi trạng thái <b>có mã</b> là tính năng đã hoàn thành. Để đóng một mục cần kiểm thử Godot đúng commit, GUI thực tế và bằng chứng người chơi thao tác được.</div>'+
+ source('docs/GAME_SYSTEM_ARCHITECTURE.md');
+}
+function searchUnified(){
+ const q=state.query.trim(),needle=q.toLowerCase();
+ if(!q)return home();
+ const data=state.data||{},ch=state.char||{},audit=state.audit||{},items=state.items||{};
+ const find=(arr,makeName)=>arr.filter(x=>makeName(x).toLowerCase().includes(needle));
+ const skills=find(data.skills||[],x=>x.name+" "+x.schoolName+" "+x.id).slice(0,12);
+ const traits=find(state.traits?.traits||[],x=>x.name+" "+x.designEffectVi+" "+x.id).slice(0,12);
+ const buildings=find(audit.buildings||[],x=>x.name+" "+x.id).slice(0,12);
+ const features=find(audit.features||[],x=>x.name+" "+x.finding).slice(0,12);
+ const inv=find([...(items.medicine||[]),...(items.nativeResources||[]),...(items.legacyEquipment||[]),
+ ...(items.crops||[]),...(items.archiveItems||[]),...(items.codices||[]),...(items.techniques||[])],x=>x.name+" "+x.id).slice(0,12);
+ const list=(title,rows,tab,type)=>rows.length?panel(title,rows.length+' kết quả đầu tiên',rows.map(x=>{
+  const name=x.name||x.id;
+  return '<button class="item-button" data-tab="'+tab+'" data-find-type="'+type+'" data-find-id="'+esc(x.id||name)+'"><span><b>'+esc(name)+'</b><small>'+esc(x.designEffectVi||x.finding||x.schoolName||x.family||"Xem chi tiết và trạng thái")+'</small></span><span class="tip">Xem</span></button>';
+ }).join("")):"";
+ return heading('TRA CỨU TOÀN GAME','Tìm: '+q,'Một nơi tìm xuyên suốt nhân vật, đặc tính, công trình, kỹ năng và vật phẩm. Chọn kết quả để xem trong bách khoa.')+
+ (list('Kỹ năng',skills,'skills','skill')+list('Đặc tính',traits,'characters','trait')+
+ list('Công trình',buildings,'buildings','building')+
+ list('Vật phẩm & đan dược',inv,'items','item')+
+ list('Chức năng game',features,'systems','system')||'<div class="empty">Không tìm được mục phù hợp. Thử từ khóa khác.</div>');
+}
+
 function render(){
  document.querySelectorAll("#menu [data-tab]").forEach(x=>x.classList.toggle("active",x.dataset.tab===state.tab));
  document.getElementById("breadcrumb").textContent=names[state.tab]||names.home;
- const handlers={home,realms,skills,buildings,fields,medicine,equipment,schools};
+ const handlers={home,characters,realms,skills,buildings:buildingsUnified,equipment:equipmentUnified,items:itemsUnified,systems:systemsUnified,search:searchUnified};
  content.innerHTML=(handlers[state.tab]||home)();
 }
 document.addEventListener("click",e=>{
@@ -184,8 +419,8 @@ document.addEventListener("input",e=>{
  if(e.target.id==="skill-filter"){state.query=e.target.value;state.skill=null;state.limit=48;render();const box=document.getElementById("skill-filter");if(box){box.focus();box.setSelectionRange(state.query.length,state.query.length);} }
 });
 search.addEventListener("input",()=>{state.query=search.value;state.school="all";state.skill=null;state.limit=48;state.tab="skills";render();});
-if(!["localhost","127.0.0.1","::1","vuanhtuan161094-byte.github.io"].includes(location.hostname)){content.innerHTML='<div class="note">Bách khoa này chỉ được mở qua máy tính nội bộ (localhost). Hãy sử dụng OPEN_TANG_KINH_CAC.cmd.</div>';return;}
-fetch("./data/catalog.json",{cache:"no-store"}).then(r=>{if(!r.ok)throw Error("HTTP "+r.status);return r.json();}).then(data=>{state.data=data;const target=location.hash.replace("#","");state.tab=names[target]?target:"home";render();}).catch(err=>{
- content.innerHTML='<div class="note">Không đọc được dữ liệu catalog: '+esc(err.message)+'. Chạy file <b>tools/wiki/OPEN_TANG_KINH_CAC.cmd</b> trong bản checkout có đầy đủ source, rồi tải lại trang.</div>';
+if(!["localhost","127.0.0.1","::1","vuanhtuan161094-byte.github.io"].includes(location.hostname)){content.innerHTML='<div class="note">Chỉ mở trên GitHub Pages chính thức hoặc localhost.</div>';return;}
+Promise.all(["./data/catalog.json","./data/character_reference.json","./data/trait_effect_audit.json","./data/game_system_audit.json","./data/game_items_audit.json"].map(path=>fetch(path,{cache:"no-store"}).then(r=>{if(!r.ok)throw Error("HTTP "+r.status+" "+path);return r.json();}))).then(([data,ch,traits,audit,items])=>{state.data=data;state.char=ch;state.traits=traits;state.audit=audit;state.items=items;const target=location.hash.replace("#","");const aliases={traits:"characters",audit:"systems",fields:"buildings",medicine:"items",schools:"skills"};state.tab=names[aliases[target]||target]?aliases[target]||target:"home";render();}).catch(err=>{
+ content.innerHTML='<div class="note">Không tải được dữ liệu bách khoa: '+esc(err.message)+'. Thử tải lại trang (Ctrl+F5).</div>';
 });
 })();
