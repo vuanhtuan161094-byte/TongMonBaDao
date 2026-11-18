@@ -39,6 +39,8 @@ jobs:
           printf '%s\n' '<!doctype html><html lang="vi"><head><meta charset="utf-8"><meta http-equiv="refresh" content="0;url=wiki/guide.html"><title>Tàng Kinh Các</title></head><body><a href="wiki/guide.html">Mở Bách khoa Tông Môn Bá Đạo</a></body></html>' > _site/index.html
       - name: Configure Pages
         uses: actions/configure-pages@v5
+        with:
+          enablement: true
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
