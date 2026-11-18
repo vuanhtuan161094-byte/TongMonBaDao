@@ -1,0 +1,18 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="SpriteFrames" path="res://assets/p3/baked_candidates/aschar48/AS48_V9_4DIR_CLIPS_CANDIDATE.tres" id="1_frames"]
+[ext_resource type="Script" path="res://src/presentation/p3/baked_disciple_animation_adapter.gd" id="2_adapter"]
+
+[node name="AS48BakedVisual4DirCandidate" type="AnimatedSprite2D"]
+sprite_frames = ExtResource("1_frames")
+script = ExtResource("2_adapter")
+socket_metadata_path = "res://assets/p3/baked_candidates/aschar48/AS48_4dir_weapon_sockets_v9_3_candidate.json"
+sword_texture_path = "res://assets/p3/baked_candidates/aschar48/AS48_KIEMTU_JIAN_CANDIDATE.png"
+
+[node name="Sword" type="Sprite2D" parent="."]
+centered = true
+
+[node name="HandMask" type="Sprite2D" parent="."]
+centered = false
+region_enabled = true
+

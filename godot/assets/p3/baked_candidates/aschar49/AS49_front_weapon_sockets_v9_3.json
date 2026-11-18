@@ -238,7 +238,7 @@
             147,
             256
           ],
-          "rotation_deg": 20,
+          "rotation_deg": -160,
           "scale_multiplier": 1.0,
           "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
           "hand_mask_rect_px": [
@@ -262,7 +262,7 @@
             136,
             239
           ],
-          "rotation_deg": 4,
+          "rotation_deg": -176,
           "scale_multiplier": 1.0,
           "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
           "hand_mask_rect_px": [
@@ -310,7 +310,7 @@
             164,
             261
           ],
-          "rotation_deg": 18,
+          "rotation_deg": -162,
           "scale_multiplier": 1.0,
           "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
           "hand_mask_rect_px": [
@@ -334,7 +334,7 @@
             153,
             269
           ],
-          "rotation_deg": 18,
+          "rotation_deg": -162,
           "scale_multiplier": 1.0,
           "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
           "hand_mask_rect_px": [
@@ -358,7 +358,7 @@
             150,
             264
           ],
-          "rotation_deg": 20,
+          "rotation_deg": -160,
           "scale_multiplier": 1.0,
           "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
           "hand_mask_rect_px": [
@@ -382,7 +382,7 @@
             152,
             264
           ],
-          "rotation_deg": 20,
+          "rotation_deg": -160,
           "scale_multiplier": 1.0,
           "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
           "hand_mask_rect_px": [
@@ -406,7 +406,7 @@
             153,
             269
           ],
-          "rotation_deg": 18,
+          "rotation_deg": -162,
           "scale_multiplier": 1.0,
           "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
           "hand_mask_rect_px": [
@@ -430,7 +430,7 @@
             151,
             275
           ],
-          "rotation_deg": 10,
+          "rotation_deg": -170,
           "scale_multiplier": 1.0,
           "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
           "hand_mask_rect_px": [
@@ -454,7 +454,7 @@
             151,
             277
           ],
-          "rotation_deg": 0,
+          "rotation_deg": -180,
           "scale_multiplier": 1.0,
           "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
           "hand_mask_rect_px": [
@@ -478,7 +478,7 @@
             148,
             282
           ],
-          "rotation_deg": -8,
+          "rotation_deg": 172,
           "scale_multiplier": 1.0,
           "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
           "hand_mask_rect_px": [
@@ -502,7 +502,7 @@
             151,
             275
           ],
-          "rotation_deg": 8,
+          "rotation_deg": -172,
           "scale_multiplier": 1.0,
           "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
           "hand_mask_rect_px": [
@@ -526,7 +526,7 @@
             151,
             274
           ],
-          "rotation_deg": 5,
+          "rotation_deg": -175,
           "scale_multiplier": 1.0,
           "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
           "hand_mask_rect_px": [

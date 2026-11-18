@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://assets/p3/baked_candidates/aschar48/AS48_AS49_DirectionalShowcase.gd" id="1_showcase"]
+
+[node name="AS48AS49DirectionalShowcase" type="Control"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_showcase")

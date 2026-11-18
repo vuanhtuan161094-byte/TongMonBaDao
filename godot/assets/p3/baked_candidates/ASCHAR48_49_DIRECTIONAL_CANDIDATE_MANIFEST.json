@@ -1,0 +1,197 @@
+{
+  "schema": "tmb.aschar_directional_animation_candidate.v1",
+  "status": "CANDIDATE",
+  "owner_art_approval": "PENDING",
+  "body_mode": "MONOLITHIC_RGBA_FRAME_BY_FRAME",
+  "characters": {
+    "AS-CHAR-48": {
+      "reused_front_clips": 6,
+      "new_directions": [
+        "right",
+        "back",
+        "left"
+      ],
+      "new_direction_sheets": {
+        "right": {
+          "file": "AS48_right_6clips_4x6.png",
+          "sha256": "C9F2EC0A1FB7F22A9F4210545B4D8E6178E27CA7CDD3A8C165350A48E3F88459",
+          "bytes": 2912451
+        },
+        "back": {
+          "file": "AS48_back_6clips_4x6.png",
+          "sha256": "DBF6A422F9CFE29CCE1467ED69B3F189DC5F7299508204432F5B04617A5518AF",
+          "bytes": 2746807
+        },
+        "left": {
+          "file": "AS48_left_6clips_4x6.png",
+          "sha256": "526AE0CB988599825F3BFB7E7164DA7932521D48F873D43D89AB5E1CA6ED68AC",
+          "bytes": 2943915
+        }
+      },
+      "actions": [
+        "idle",
+        "walk",
+        "attack",
+        "cast",
+        "hit",
+        "downed"
+      ],
+      "directional_frames_per_action": 4,
+      "total_body_cels": 96,
+      "new_direction_body_cels": 72,
+      "front_assets": "Reused existing Front clips; no Front body redraw in this batch."
+    },
+    "AS-CHAR-49": {
+      "reused_front_clips": 6,
+      "new_directions": [
+        "right",
+        "back",
+        "left"
+      ],
+      "new_direction_sheets": {
+        "right": {
+          "file": "AS49_right_6clips_4x6.png",
+          "sha256": "6B3BEEA125B68105C27108988926C19D6C145C66D7A6783842C3F3B667F0DC97",
+          "bytes": 2957123
+        },
+        "back": {
+          "file": "AS49_back_6clips_4x6.png",
+          "sha256": "D74152DA8F465EB1CE834A6149E79B7C3AD2E5BBE926215F866C4C4DEED61EC1",
+          "bytes": 2743719
+        },
+        "left": {
+          "file": "AS49_left_6clips_4x6.png",
+          "sha256": "C4D777D238F8AC577DB2219D680C7418198D298B7264B98E5FDF06D8FDB536C9",
+          "bytes": 2821871
+        }
+      },
+      "actions": [
+        "idle",
+        "walk",
+        "attack",
+        "cast",
+        "hit",
+        "downed"
+      ],
+      "directional_frames_per_action": 4,
+      "total_body_cels": 96,
+      "new_direction_body_cels": 72,
+      "front_assets": "Reused existing Front clips; no Front body redraw in this batch."
+    }
+  },
+  "sheet_layout": {
+    "size_px": [
+      1024,
+      1536
+    ],
+    "columns": 4,
+    "rows": 6,
+    "cell_px": [
+      256,
+      256
+    ],
+    "clips": [
+      "idle",
+      "walk",
+      "attack",
+      "cast",
+      "hit",
+      "downed"
+    ],
+    "directions": [
+      "right",
+      "back",
+      "left"
+    ]
+  },
+  "provenance": {
+    "generation": "ImageGen: one full character-direction sheet per actor/direction, master-referenced; each cell is a monolithic full-body cel. New imagery is RECREATED, not Source A.",
+    "reused_assets": "Existing Front frames and the existing V9.3 sword overlay. No body rig, bone, IK, mirroring, Source A character substitution, or gameplay change.",
+    "map": "Source A P3.2 production map scene is used as the visual stage only; the two adapters are candidate overlays.",
+    "limitations": "Side/back/left action poses and art remain candidate pending owner art approval. This visual showcase does not claim production-roster/gameplay hookup."
+  },
+  "weapon_fix": {
+    "asset": "Existing AS48_KIEMTU_JIAN_CANDIDATE.png; separate weapon sprite, not redrawn in this batch.",
+    "socket_changes": {
+      "AS48": {
+        "cast_front": [
+          -156,
+          -156,
+          -156,
+          -156
+        ],
+        "hit_front": [
+          -180,
+          -165,
+          -145,
+          -180
+        ],
+        "downed_front": [
+          -180,
+          -160
+        ]
+      },
+      "AS49": {
+        "attack_front": [
+          -160,
+          -176,
+          -90,
+          -162
+        ],
+        "cast_front": [
+          -162,
+          -160,
+          -160,
+          -162
+        ],
+        "hit_front": [
+          -170,
+          -180,
+          172,
+          -172
+        ],
+        "downed_front": [
+          -175
+        ]
+      }
+    },
+    "body_redrawn": false
+  },
+  "assets": {
+    "alpha": "RGBA with transparent background/edges checked in the candidate sheets."
+  },
+  "qa": {
+    "status": "PASS_LOCAL_GODOT_VISUAL_RENDER",
+    "engine": "Godot 4.7.2.stable.official.ed1daf0bf",
+    "scene": "res://assets/p3/baked_candidates/aschar48/AS48_AS49_DirectionalShowcase.tscn",
+    "render": {
+      "width": 1280,
+      "height": 720,
+      "fps": 30,
+      "frames": 720,
+      "duration_seconds": 24,
+      "container": "AVI/MJPEG"
+    },
+    "video": {
+      "file": "AS48_AS49_P32_4DIR_6ACTION_20261118_final_fixed.avi",
+      "bytes": 91847438,
+      "sha256": "8F445B7BD2CBEA9456669D2B4AE2CF522B1B40FFFDF488E452C6B5E4654C10DB"
+    },
+    "exit_code": 0,
+    "loaded_per_character": {
+      "animations": 27,
+      "weapon_socket_frames": 96
+    },
+    "exercised_steps": 24,
+    "local_project_snapshot": {
+      "head": "27ed01cd8f377994e5e50bac9ede84e78e8895bd",
+      "branch": "integration/tri-facility-a-b-playable-20261102",
+      "working_tree": "dirty",
+      "exact_pr_sha_test": false
+    },
+    "pr_base_head": "f8898d526bcb7df3277fe0b5b1aa667b5d282cf1",
+    "console_log": "E:\\TongMonBaDaoWorkspace\\03_QA_Logs\\aschar48_49\\godot_final_fixed_console.log",
+    "exit_code_log": "E:\\TongMonBaDaoWorkspace\\03_QA_Logs\\aschar48_49\\godot_final_fixed.exitcode.txt",
+    "save_profile": "APPDATA isolated to E:\\TongMonBaDaoWorkspace\\03_QA_Logs\\aschar48_49\\appdata; default player save not used."
+  }
+}

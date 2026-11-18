@@ -14,6 +14,9 @@ var socket_index: Dictionary = {}
 var weapon_contract: Dictionary = {}
 var canvas_px := Vector2(384.0,384.0)
 var baseline_y := 360.0
+var facing_direction: StringName = &"front"
+var current_action: StringName = &"idle"
+var authored_scale := Vector2.ONE
 var body_origin := Vector2(-192.0,-360.0)
 @onready var sword: Sprite2D = get_node_or_null("Sword") as Sprite2D
 @onready var hand_mask: Sprite2D = get_node_or_null("HandMask") as Sprite2D
@@ -67,33 +70,82 @@ func _load_contract() -> void:
 	print("BAKED_DISCIPLE_ADAPTER_READY identity=%s clips=%d sockets=%d weapon=%s" % [str(data.get("identity","unknown")),sprite_frames.get_animation_names().size() if sprite_frames!=null else 0,socket_index.size(),path])
 
 func play_candidate_clip(clip_name: StringName) -> bool:
-	if sprite_frames==null or not sprite_frames.has_animation(clip_name): return false
-	play(clip_name); _sync_weapon(); return true
+	if sprite_frames == null or not sprite_frames.has_animation(clip_name):
+		return false
+	var parts := str(clip_name).split("_")
+	if parts.size() >= 2 and str(parts[parts.size() - 1]) in ["front", "right", "back", "left"]:
+		facing_direction = StringName(str(parts[parts.size() - 1]))
+		current_action = StringName("_".join(parts.slice(0, parts.size() - 1)))
+	elif str(clip_name) == "stand":
+		current_action = &"idle"
+		facing_direction = &"front"
+	elif str(clip_name) == "walk":
+		current_action = &"walk"
+		facing_direction = &"front"
+	play(clip_name)
+	_sync_weapon()
+	return true
 
-func play_game_action(action: StringName) -> bool:
-	var action_clip=""
+func set_facing_direction(direction: StringName) -> bool:
+	var value := str(direction).to_lower()
+	if value not in ["front", "right", "back", "left"]:
+		return false
+	facing_direction = StringName(value)
+	var clip := StringName(str(current_action) + "_" + value)
+	if sprite_frames != null and sprite_frames.has_animation(clip):
+		play(clip)
+		_sync_weapon()
+	return true
+
+func play_game_action(action: StringName, direction: StringName = &"") -> bool:
+	if not str(direction).is_empty():
+		var value := str(direction).to_lower()
+		if value not in ["front", "right", "back", "left"]:
+			return false
+		facing_direction = StringName(value)
+	var action_name := ""
 	match str(action).to_lower():
-		"idle","stand": action_clip="idle_front"
-		"walk","move": action_clip="walk_front"
-		"attack": action_clip="attack_front"
-		"cast","skill": action_clip="cast_front"
-		"hit","hurt": action_clip="hit_front"
-		"down","downed": action_clip="downed_front"
-		"death","dead": action_clip="death_front"
-	return play_candidate_clip(StringName(action_clip)) if not action_clip.is_empty() else false
+		"idle", "stand":
+			action_name = "idle"
+		"walk", "move":
+			action_name = "walk"
+		"attack":
+			action_name = "attack"
+		"cast", "skill":
+			action_name = "cast"
+		"hit", "hurt":
+			action_name = "hit"
+		"down", "downed", "death", "dead":
+			action_name = "downed"
+	if action_name.is_empty():
+		return false
+	current_action = StringName(action_name)
+	var clip := StringName(action_name + "_" + str(facing_direction))
+	if sprite_frames == null or not sprite_frames.has_animation(clip):
+		clip = StringName(action_name + "_front")
+	return play_candidate_clip(clip)
 
 # The old Walk/Attack sprites use 400x440 (foot row 429), while the
 # newer front poses use 384x384 (foot row 359). Match socket coordinates
 # to the real texture's canvas each frame, including its foot registration.
 func _sync_frame_geometry() -> void:
-	if sprite_frames == null or not sprite_frames.has_animation(animation): return
-	var tex: Texture2D = sprite_frames.get_frame_texture(animation,frame)
-	if tex == null: return
+	if sprite_frames == null or not sprite_frames.has_animation(animation):
+		return
+	var tex: Texture2D = sprite_frames.get_frame_texture(animation, frame)
+	if tex == null:
+		return
 	var size: Vector2 = tex.get_size()
-	var foot_y := 430.0 if size == Vector2(400.0,440.0) else baseline_y
-	canvas_px=size
-	body_origin=Vector2(-size.x*0.5,-foot_y)
-	offset=Vector2(0.0,size.y*0.5-foot_y)
+	var key := "%s:%d" % [str(animation), frame]
+	var frame_data: Dictionary = socket_index.get(key, {})
+	var default_foot_y := 430.0 if size == Vector2(400.0, 440.0) else baseline_y
+	var foot_y := float(frame_data.get("foot_baseline_y_px", default_foot_y))
+	canvas_px = size
+	body_origin = Vector2(-size.x * 0.5, -foot_y)
+	offset = Vector2(0.0, size.y * 0.5 - foot_y)
+	# Directional cels use 256px source cells but share the 384px body footprint.
+	# Front candidate frames retain their authored 384px / legacy 400x440 scale.
+	var registration_scale := 384.0 / size.y if size.y > 0.0 and size.y < 384.0 else 1.0
+	scale = authored_scale * registration_scale
 
 func _sync_weapon() -> void:
 	_sync_frame_geometry()
