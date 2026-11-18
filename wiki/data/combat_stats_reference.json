@@ -1,0 +1,334 @@
+{
+  "schema": 1,
+  "asOf": "2026-11-18",
+  "authority": "docs/COMBAT_STATS_V2_SPEC.md",
+  "executionContract": "docs/DV2_02_COMBAT_STAT_EXECUTION_CONTRACT.md",
+  "runtimeKernel": "godot/src/simulation/combat/combat_stats_v2.gd",
+  "mainCombat": "godot/src/simulation/combat/combat_system.gd",
+  "focusedTest": "godot/tests/simulation/dv2_02_combat_stats_test.gd",
+  "summary": {
+    "headlineCount": 16,
+    "elementalResistanceCount": 10,
+    "kernel": "CODED_AND_PREVIOUS_FOCUSED_GODOT_PASS",
+    "liveMainCombat": "PARTIAL_LEGACY_COMBAT_POWER_STILL_PRESENT",
+    "sourceConsumer": "TRAIT_AND_GEAR_V2_EFFECT_BINDINGS_NOT_PROVEN",
+    "noGeneralAccuracyOrDodge": true
+  },
+  "groups": [
+    {
+      "key": "core",
+      "name": "Sức mạnh & sinh tồn",
+      "desc": "Được tính từ Tu Vi, Luyện Thể, Tiềm Lực và các nguồn hợp lệ"
+    },
+    {
+      "key": "speed",
+      "name": "Tốc độ thời gian thực",
+      "desc": "Không có chỉ số Speed lượt chung"
+    },
+    {
+      "key": "crit",
+      "name": "Bạo kích",
+      "desc": "Xác suất khác với hệ số sát thương"
+    },
+    {
+      "key": "defense",
+      "name": "Xuyên phòng, trạng thái và bảo vệ",
+      "desc": "Điểm phần trăm khác với cộng % sát thương"
+    },
+    {
+      "key": "lifesteal",
+      "name": "Hút Máu",
+      "desc": "Chỉ tính từ HP mục tiêu thực mất"
+    }
+  ],
+  "stats": [
+    {
+      "id": "max_hp",
+      "name": "Sinh Mệnh tối đa",
+      "alias": "HP tối đa",
+      "group": "core",
+      "baseline": "190 tại Tu Vi 1.1 + Luyện Thể 1.1, Tiềm Lực 0",
+      "meaning": "Giới hạn HP, không tự hồi đầy khi tăng trần máu.",
+      "formula": "RealmHP + BodyHP, nhân Tiềm Lực trên Core rồi cộng trang bị và bonus.",
+      "runtime": "DERIVED_KERNEL_CODED_LIVE_INTEGRATION_PARTIAL",
+      "source": "docs/DV2_02_COMBAT_STAT_EXECUTION_CONTRACT.md"
+    },
+    {
+      "id": "attack",
+      "name": "Công Kích",
+      "alias": "ATK",
+      "group": "core",
+      "baseline": "23 tại Tu Vi 1.1 + Luyện Thể 1.1, Tiềm Lực 0",
+      "meaning": "Nguồn độ lớn cho đòn thường và kỹ năng có hệ số Công.",
+      "formula": "Công từ Core và trang bị; không phải Chiến Lực tổng.",
+      "runtime": "DERIVED_KERNEL_CODED_LIVE_INTEGRATION_PARTIAL",
+      "source": "docs/DV2_02_COMBAT_STAT_EXECUTION_CONTRACT.md"
+    },
+    {
+      "id": "defense",
+      "name": "Phòng Ngự",
+      "alias": "DEF",
+      "group": "core",
+      "baseline": "19 tại Tu Vi 1.1 + Luyện Thể 1.1, Tiềm Lực 0",
+      "meaning": "Giảm sát thương gói đòn chịu ảnh hưởng Phòng Ngự.",
+      "formula": "DEF sau buff/debuff, rồi mới tính Xuyên Phòng.",
+      "runtime": "DERIVED_KERNEL_CODED_LIVE_INTEGRATION_PARTIAL",
+      "source": "docs/DV2_02_COMBAT_STAT_EXECUTION_CONTRACT.md"
+    },
+    {
+      "id": "move_speed",
+      "name": "Tốc độ Di Chuyển",
+      "alias": "Di chuyển",
+      "group": "speed",
+      "baseline": "100% tốc độ gốc khi không có bonus",
+      "meaning": "Tốc độ di chuyển vật lý, không phải tăng tốc độ lao động mặc định.",
+      "formula": "vận tốc_gốc × (1 + bonus_di_chuyển)",
+      "runtime": "DERIVED_KERNEL_CODED_LIVE_INTEGRATION_PARTIAL",
+      "source": "docs/DV2_02_COMBAT_STAT_EXECUTION_CONTRACT.md"
+    },
+    {
+      "id": "attack_speed",
+      "name": "Tốc độ Đánh Thường",
+      "alias": "Tốc đánh",
+      "group": "speed",
+      "baseline": "+0% bonus ban đầu",
+      "meaning": "Giảm khoảng cách giữa các đòn thường.",
+      "formula": "khoảng_cách_gốc ÷ (1 + bonus_tốc_đánh)",
+      "runtime": "DERIVED_KERNEL_CODED_LIVE_INTEGRATION_PARTIAL",
+      "source": "docs/DV2_02_COMBAT_STAT_EXECUTION_CONTRACT.md"
+    },
+    {
+      "id": "cast_speed",
+      "name": "Tốc độ Thi Pháp",
+      "alias": "Thi pháp",
+      "group": "speed",
+      "baseline": "+0% bonus ban đầu",
+      "meaning": "Giảm thời gian thi triển kỹ năng.",
+      "formula": "thời_gian_niệm_gốc ÷ (1 + bonus_thi_pháp)",
+      "runtime": "DERIVED_KERNEL_CODED_LIVE_INTEGRATION_PARTIAL",
+      "source": "docs/DV2_02_COMBAT_STAT_EXECUTION_CONTRACT.md"
+    },
+    {
+      "id": "cooldown_recovery",
+      "name": "Tốc độ Hồi Chiêu",
+      "alias": "Hồi chiêu",
+      "group": "speed",
+      "baseline": "+0% bonus ban đầu",
+      "meaning": "Giảm thời gian chờ kỹ năng sau khi dùng.",
+      "formula": "hồi_chiêu_gốc ÷ (1 + bonus_hồi_chiêu), không phải trừ thẳng phần trăm",
+      "runtime": "DERIVED_KERNEL_CODED_LIVE_INTEGRATION_PARTIAL",
+      "source": "docs/DV2_02_COMBAT_STAT_EXECUTION_CONTRACT.md"
+    },
+    {
+      "id": "crit_chance",
+      "name": "Tỷ Lệ Bạo Kích",
+      "alias": "Chí mạng / Crit",
+      "group": "crit",
+      "baseline": "5% gốc",
+      "meaning": "Khả năng gây bạo kích trên đòn được cho phép.",
+      "formula": "clamp(Bạo Kích người đánh − Kháng Bạo mục tiêu, 0..100%)",
+      "runtime": "DERIVED_KERNEL_CODED_LIVE_INTEGRATION_PARTIAL",
+      "source": "docs/DV2_02_COMBAT_STAT_EXECUTION_CONTRACT.md"
+    },
+    {
+      "id": "crit_damage",
+      "name": "Sát Thương Bạo Kích",
+      "alias": "Crit Damage",
+      "group": "crit",
+      "baseline": "1,50× gốc",
+      "meaning": "Đòn bạo kích thường gây 150% sát thương trực tiếp đủ điều kiện trước các lớp giảm tiếp theo.",
+      "formula": "+50% Crit Damage → 1,50× thành 2,00×, không phải 1,50× × 1,50×",
+      "runtime": "DERIVED_KERNEL_CODED_LIVE_INTEGRATION_PARTIAL",
+      "source": "docs/DV2_02_COMBAT_STAT_EXECUTION_CONTRACT.md"
+    },
+    {
+      "id": "crit_resistance",
+      "name": "Kháng Bạo Kích",
+      "alias": "Kháng Crit",
+      "group": "crit",
+      "baseline": "0 điểm phần trăm gốc",
+      "meaning": "Giảm xác suất bị bạo kích của kẻ tấn công.",
+      "formula": "40% Crit đối thủ − 15 điểm % Kháng Bạo = 25% cơ hội bị Crit",
+      "runtime": "DERIVED_KERNEL_CODED_LIVE_INTEGRATION_PARTIAL",
+      "source": "docs/DV2_02_COMBAT_STAT_EXECUTION_CONTRACT.md"
+    },
+    {
+      "id": "defense_penetration",
+      "name": "Xuyên Phòng",
+      "alias": "Penetration",
+      "group": "defense",
+      "baseline": "0% gốc",
+      "meaning": "Bỏ qua một phần DEF còn lại của mục tiêu.",
+      "formula": "DEF hiệu lực = DEF đã buff/debuff × (1 − Xuyên Phòng)",
+      "runtime": "DERIVED_KERNEL_CODED_LIVE_INTEGRATION_PARTIAL",
+      "source": "docs/DV2_02_COMBAT_STAT_EXECUTION_CONTRACT.md"
+    },
+    {
+      "id": "effect_hit",
+      "name": "Chính Xác Hiệu Ứng",
+      "alias": "Effect Hit",
+      "group": "defense",
+      "baseline": "0 điểm phần trăm gốc",
+      "meaning": "Tăng khả năng áp hiệu ứng/khống chế hợp lệ; không tăng độ chính xác đòn thường.",
+      "formula": "P(trúng hiệu ứng) = clamp(P_cơ_bản + Chính Xác Hiệu Ứng − Kháng Hiệu Ứng)",
+      "runtime": "DERIVED_KERNEL_CODED_LIVE_INTEGRATION_PARTIAL",
+      "source": "docs/DV2_02_COMBAT_STAT_EXECUTION_CONTRACT.md"
+    },
+    {
+      "id": "effect_resistance",
+      "name": "Kháng Hiệu Ứng",
+      "alias": "Effect Resist",
+      "group": "defense",
+      "baseline": "0 điểm phần trăm gốc",
+      "meaning": "Giảm khả năng bị áp debuff/khống chế cần kiểm tra.",
+      "formula": "Không tự tạo miễn nhiễm trạng thái, không chống mọi hiệu ứng 'guaranteed'",
+      "runtime": "DERIVED_KERNEL_CODED_LIVE_INTEGRATION_PARTIAL",
+      "source": "docs/DV2_02_COMBAT_STAT_EXECUTION_CONTRACT.md"
+    },
+    {
+      "id": "damage_reduction",
+      "name": "Giảm Sát Thương",
+      "alias": "Damage Reduction",
+      "group": "defense",
+      "baseline": "0% gốc",
+      "meaning": "Giảm phần sát thương còn lại sau tầng phòng ngự/kháng hệ.",
+      "formula": "Hai nguồn 20% và 10% → tổng hiệu lực 28%, không cộng thành 30%",
+      "runtime": "DERIVED_KERNEL_CODED_LIVE_INTEGRATION_PARTIAL",
+      "source": "docs/DV2_02_COMBAT_STAT_EXECUTION_CONTRACT.md"
+    },
+    {
+      "id": "lifesteal",
+      "name": "Hút Máu",
+      "alias": "Lifesteal",
+      "group": "lifesteal",
+      "baseline": "0% gốc",
+      "meaning": "Hồi HP bằng % sát thương HP thực đã gây trên đòn hợp lệ.",
+      "formula": "tỷ_lệ_thực = max(0, Hút Máu − Giảm Hút Máu đối thủ)",
+      "runtime": "DERIVED_KERNEL_CODED_LIVE_INTEGRATION_PARTIAL",
+      "source": "docs/DV2_02_COMBAT_STAT_EXECUTION_CONTRACT.md"
+    },
+    {
+      "id": "lifesteal_reduction",
+      "name": "Giảm Hút Máu",
+      "alias": "Anti-lifesteal",
+      "group": "lifesteal",
+      "baseline": "0% gốc",
+      "meaning": "Trừ trực tiếp tỷ lệ Hút Máu của kẻ đánh.",
+      "formula": "20% hút máu − 5 điểm % Giảm Hút Máu = 15% thực; 1.000 HP thực mất → hồi 150",
+      "runtime": "DERIVED_KERNEL_CODED_LIVE_INTEGRATION_PARTIAL",
+      "source": "docs/DV2_02_COMBAT_STAT_EXECUTION_CONTRACT.md"
+    }
+  ],
+  "resistances": [
+    {
+      "id": "metal",
+      "name": "Kim",
+      "defaultValue": "0%",
+      "semantics": "Các nguồn riêng độc lập giảm phần sát thương còn lại; cộng dồn 30% và 20% cho kháng hiệu lực 44%, không phải 50%."
+    },
+    {
+      "id": "wood",
+      "name": "Mộc",
+      "defaultValue": "0%",
+      "semantics": "Các nguồn riêng độc lập giảm phần sát thương còn lại; cộng dồn 30% và 20% cho kháng hiệu lực 44%, không phải 50%."
+    },
+    {
+      "id": "water",
+      "name": "Thủy",
+      "defaultValue": "0%",
+      "semantics": "Các nguồn riêng độc lập giảm phần sát thương còn lại; cộng dồn 30% và 20% cho kháng hiệu lực 44%, không phải 50%."
+    },
+    {
+      "id": "fire",
+      "name": "Hỏa",
+      "defaultValue": "0%",
+      "semantics": "Các nguồn riêng độc lập giảm phần sát thương còn lại; cộng dồn 30% và 20% cho kháng hiệu lực 44%, không phải 50%."
+    },
+    {
+      "id": "earth",
+      "name": "Thổ",
+      "defaultValue": "0%",
+      "semantics": "Các nguồn riêng độc lập giảm phần sát thương còn lại; cộng dồn 30% và 20% cho kháng hiệu lực 44%, không phải 50%."
+    },
+    {
+      "id": "lightning",
+      "name": "Lôi",
+      "defaultValue": "0%",
+      "semantics": "Các nguồn riêng độc lập giảm phần sát thương còn lại; cộng dồn 30% và 20% cho kháng hiệu lực 44%, không phải 50%."
+    },
+    {
+      "id": "wind",
+      "name": "Phong",
+      "defaultValue": "0%",
+      "semantics": "Các nguồn riêng độc lập giảm phần sát thương còn lại; cộng dồn 30% và 20% cho kháng hiệu lực 44%, không phải 50%."
+    },
+    {
+      "id": "ice",
+      "name": "Băng",
+      "defaultValue": "0%",
+      "semantics": "Các nguồn riêng độc lập giảm phần sát thương còn lại; cộng dồn 30% và 20% cho kháng hiệu lực 44%, không phải 50%."
+    },
+    {
+      "id": "yang",
+      "name": "Dương",
+      "defaultValue": "0%",
+      "semantics": "Các nguồn riêng độc lập giảm phần sát thương còn lại; cộng dồn 30% và 20% cho kháng hiệu lực 44%, không phải 50%."
+    },
+    {
+      "id": "nether",
+      "name": "U Minh",
+      "defaultValue": "0%",
+      "semantics": "Các nguồn riêng độc lập giảm phần sát thương còn lại; cộng dồn 30% và 20% cho kháng hiệu lực 44%, không phải 50%."
+    }
+  ],
+  "examples": {
+    "crit": {
+      "attackerCrit": 40,
+      "targetCritResistance": 15,
+      "result": 25,
+      "formula": "40% − 15 điểm phần trăm = 25% xác suất bạo kích"
+    },
+    "damage": {
+      "attackerAttack": 100,
+      "targetDefense": 80,
+      "penetration": 20,
+      "skillRatio": 1,
+      "critMultiplier": 1.5,
+      "defenseAfterPen": 64,
+      "k": 200,
+      "defenseFactor": 0.7575757575757576,
+      "normalDamage": 75.75757575757575,
+      "criticalDamage": 113.63636363636364
+    },
+    "status": {
+      "base": 60,
+      "hit": 25,
+      "resistance": 15,
+      "result": 70
+    },
+    "damageReduction": {
+      "first": 20,
+      "second": 10,
+      "result": 28
+    },
+    "elementResistance": {
+      "fireFirst": 30,
+      "fireSecond": 20,
+      "result": 44
+    },
+    "lifesteal": {
+      "actualHpLost": 1000,
+      "lifesteal": 20,
+      "antiLifesteal": 5,
+      "net": 15,
+      "rawHealing": 150
+    }
+  },
+  "notes": [
+    "16 chỉ số là danh mục đã duyệt, không phải 16 chỉ số đã nối vào gameplay chính.",
+    "Bộ tính CombatStatsV2 có kiểm thử Godot tập trung trước đó; game live P0/P3.7 còn đọc combat_power ở nhiều đường đi.",
+    "Các chỉ số điều kiện: sát thương Boss/Elite/chủng tộc, liên kích cơ bản là kênh phụ, không phải thêm 5 chỉ số chính.",
+    "Không thêm Né tránh/Chính xác đòn thường/Mana chung/Phòng vật lý-pháp thuật/Crit Damage Reduction như chỉ số chính.",
+    "Giảm Sát Thương và kháng hệ nguồn độc lập nhân lên phần sát thương còn lại; không cộng thẳng cho tới miễn nhiễm."
+  ]
+}
