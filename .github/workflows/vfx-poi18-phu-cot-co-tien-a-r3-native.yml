@@ -77,7 +77,7 @@ jobs:
           set -euo pipefail
           d="$RUNNER_TEMP/poi18"
           xvfb-run -a -s '-screen 0 1280x720x24' bash tools/qa/run_godot_strict.sh --path godot --resolution 1280x720 --fixed-fps 60 --write-movie "$d/native.avi" --quit-after 108 res://labs/combat_lab/poison18_phu_cot_co_tien_a/r3/phu_cot_co_tien_a.tscn 2>&1 | tee "$d/godot-preflight.log"
-          grep -Fq 'POI18_PHU_COT_CO_TIENA_R3_READY' "$d/godot-preflight.log"
+          grep -Fq 'POI18_PHU_COT_CO_TIENA_R31_READY' "$d/godot-preflight.log"
           ffmpeg -y -hide_banner -loglevel error -i "$d/native.avi" -pix_fmt yuv420p -c:v libx264 -crf 16 -movflags +faststart "$d/v4-poi18-r3-native.mp4"
           ffmpeg -y -hide_banner -loglevel error -ss 0.21 -i "$d/v4-poi18-r3-native.mp4" -frames:v 1 "$d/v4-charge.png"
           ffmpeg -y -hide_banner -loglevel error -ss 0.98 -i "$d/v4-poi18-r3-native.mp4" -frames:v 1 "$d/v4-peak.png"
