@@ -182,7 +182,7 @@ document.addEventListener("input",e=>{
  if(e.target.id==="skill-filter"){state.query=e.target.value;state.skill=null;state.limit=48;render();const box=document.getElementById("skill-filter");if(box){box.focus();box.setSelectionRange(state.query.length,state.query.length);} }
 });
 search.addEventListener("input",()=>{state.query=search.value;state.school="all";state.skill=null;state.limit=48;state.tab="skills";render();});
-if(!["localhost","127.0.0.1","::1"].includes(location.hostname)){content.innerHTML='<div class="note">Bách khoa này chỉ được mở qua máy tính nội bộ (localhost). Hãy sử dụng OPEN_TANG_KINH_CAC.cmd.</div>';return;}
+if(!["localhost","127.0.0.1","::1","vuanhtuan161094-byte.github.io"].includes(location.hostname)){content.innerHTML='<div class="note">Bách khoa này chỉ được mở qua máy tính nội bộ (localhost). Hãy sử dụng OPEN_TANG_KINH_CAC.cmd.</div>';return;}
 fetch("./data/catalog.json",{cache:"no-store"}).then(r=>{if(!r.ok)throw Error("HTTP "+r.status);return r.json();}).then(data=>{state.data=data;const target=location.hash.replace("#","");state.tab=names[target]?target:"home";render();}).catch(err=>{
  content.innerHTML='<div class="note">Không đọc được dữ liệu catalog: '+esc(err.message)+'. Chạy file <b>tools/wiki/OPEN_TANG_KINH_CAC.cmd</b> trong bản checkout có đầy đủ source, rồi tải lại trang.</div>';
 });
