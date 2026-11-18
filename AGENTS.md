@@ -1,3 +1,9 @@
+## VFX NATIVE ART DIRECTION REPAIR — 2026-11-18 (ALL SCHOOL CHATS)
+
+The coordinator inspected **genuine exact-SHA Godot native screenshots and videos** for POI18 R3.1 / FIST14 R3 / PAF05 R5F and found **semantic/source-material and 1× art failures despite technical CI PASS**. Before further source production, read the new [three-skill visual audit and official Godot 2D VFX guide](docs/operations/TMB_VFX_MULTI_CHAT_COORDINATION_AND_RECOVERY_20261118.md#9-2026-11-18-native-art-review--actual-godot-frames-not-just-ci). Preserve all approved/provisional art, stay within school-owned paths; owner feedback was a general objection to quality, NOT authorization to overwrite prior approved revisions. Do not fix ugly central sprites with extra CI, many duplicate poses, oversized glowing glyphs, generic line waves or proprietary JX imagery. Godot particle/animation/shader nodes are **supplements to first-party authored hero art**, not replacements. Current Art-First V4/G3.5 art STOP remains authoritative, not a new competing SOP.
+
+---
+
 ## OWNER VFX RESPONSE OPTIONS & SCHOOL QA INTEGRITY — 2026-11-18
 
 At the end of **every meaningful school VFX milestone** (POISON/FIST/TALISMAN), provide **3–4 owner-selectable next-step options**, with **A = one recommended action** grounded in the real last gate, explicitly state source permanence, exact-SHA CI, G3.5/3.6/3.7/G5, owner and PvE status. Do not silently advance to a different skill or imply CI PASS is art approval. Read [multi-chat coordination §8](docs/operations/TMB_VFX_MULTI_CHAT_COORDINATION_AND_RECOVERY_20261118.md) for the detailed rule and current POI18/FIST14/PAF05 blocking facts. This changes report/choice behavior only, not the original V4 production or write-scope permissions.
