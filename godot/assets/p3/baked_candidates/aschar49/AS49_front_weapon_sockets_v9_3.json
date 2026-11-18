@@ -46,7 +46,7 @@
             153,
             267
           ],
-          "rotation_deg": 22,
+          "rotation_deg": -158,
           "scale_multiplier": 1.0,
           "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
           "hand_mask_rect_px": [
@@ -70,7 +70,7 @@
             154,
             267
           ],
-          "rotation_deg": 22,
+          "rotation_deg": -158,
           "scale_multiplier": 1.0,
           "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
           "hand_mask_rect_px": [
@@ -94,7 +94,7 @@
             153,
             268
           ],
-          "rotation_deg": 24,
+          "rotation_deg": -156,
           "scale_multiplier": 1.0,
           "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
           "hand_mask_rect_px": [
@@ -118,7 +118,7 @@
             153,
             267
           ],
-          "rotation_deg": 22,
+          "rotation_deg": -158,
           "scale_multiplier": 1.0,
           "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
           "hand_mask_rect_px": [
@@ -142,7 +142,7 @@
             149,
             246
           ],
-          "rotation_deg": 12,
+          "rotation_deg": -168,
           "scale_multiplier": 1.0,
           "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
           "hand_mask_rect_px": [
@@ -166,7 +166,7 @@
             154,
             245
           ],
-          "rotation_deg": 5,
+          "rotation_deg": -175,
           "scale_multiplier": 1.0,
           "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
           "hand_mask_rect_px": [
@@ -190,7 +190,7 @@
             149,
             244
           ],
-          "rotation_deg": 8,
+          "rotation_deg": -172,
           "scale_multiplier": 1.0,
           "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
           "hand_mask_rect_px": [
@@ -214,7 +214,7 @@
             166,
             247
           ],
-          "rotation_deg": -6,
+          "rotation_deg": 174,
           "scale_multiplier": 1.0,
           "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
           "hand_mask_rect_px": [
