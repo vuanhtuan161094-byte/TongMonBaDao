@@ -7,6 +7,7 @@ on:
     paths:
       - 'wiki/guide.html'
       - 'wiki/guide.css'
+      - 'wiki/unified.css'
       - 'wiki/guide.js'
       - 'wiki/characters.html'
       - 'wiki/characters.css'
@@ -22,6 +23,7 @@ on:
       - 'wiki/data/trait_effect_audit.json'
       - 'tools/wiki/tests/test_trait_effect_audit.py'
       - 'tools/wiki/tests/test_game_audit.py'
+      - 'tools/wiki/tests/test_unified_wiki.cjs'
       - 'wiki/data/character_reference.json'
       - 'wiki/data/catalog.json'
       - '.github/workflows/wiki-player-pages.yml'
@@ -51,15 +53,18 @@ jobs:
           node --check wiki/traits.js
           node --check wiki/audit.js
           node --check wiki/guide.js
+          node --check tools/wiki/tests/test_unified_wiki.cjs
+          node tools/wiki/tests/test_unified_wiki.cjs
           node --check wiki/characters.js
       - name: Assemble public player-only site
         shell: bash
         run: |
           mkdir -p _site/wiki/data
           cp wiki/guide.html wiki/guide.css wiki/guide.js _site/wiki/
-          cp wiki/characters.html wiki/characters.css wiki/characters.js _site/wiki/
-          cp wiki/traits.html wiki/traits.css wiki/traits.js _site/wiki/
-          cp wiki/audit.html wiki/audit.css wiki/audit.js _site/wiki/
+          cp wiki/unified.css _site/wiki/
+          cp wiki/characters.html _site/wiki/
+          cp wiki/traits.html _site/wiki/
+          cp wiki/audit.html _site/wiki/
           cp wiki/data/game_system_audit.json wiki/data/game_items_audit.json _site/wiki/data/
           cp wiki/data/trait_effect_audit.json _site/wiki/data/
           cp wiki/data/character_reference.json _site/wiki/data/
