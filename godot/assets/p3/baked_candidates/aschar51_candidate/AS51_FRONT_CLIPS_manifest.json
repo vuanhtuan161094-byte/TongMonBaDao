@@ -1,0 +1,257 @@
+{
+  "asset_id": "AS-CHAR-51",
+  "character": "Dao Tu female, unnamed",
+  "status": "CANDIDATE_OWNER_ART_APPROVAL_PENDING",
+  "provenance": "AI-generated from one fixed identity master; RECREATED, not Source A",
+  "rigging": "none; full-body RGBA cels only",
+  "canvas_px": [
+    384,
+    384
+  ],
+  "foot_baseline_y_px": 360,
+  "registered_master": {
+    "file": "AS51_MASTER_REGISTERED_384.png",
+    "sha256": "e81cc7c4947ee66a1612b0969c92b7aa64505eaab0d2d2a0bbf2fa2a15aeb290",
+    "canvas_px": [
+      384,
+      384
+    ]
+  },
+  "source_master": {
+    "file": "AS51_MASTER_RECREATED_CANDIDATE.png",
+    "sha256": "a3da8b4ac07fea0773305f0a21889e980791389710d61a240d819256998ab51f",
+    "dimensions_px": [
+      1254,
+      1254
+    ]
+  },
+  "source_contact_sheets": {
+    "idle_front": {
+      "file": "AS51_idle_front_source_contact_sheet.png",
+      "sha256": "4aecc8c370e03d8118b01a45dacc01fc0bd45b9fb65b304d1481a87c99941128"
+    },
+    "attack_front": {
+      "file": "AS51_attack_front_source_contact_sheet.png",
+      "sha256": "9ceea23f893b01b4f8eb75637517e74130747211362a01524fb933acb4d67421"
+    }
+  },
+  "registration": "same 2x2 cells, same scale=360/627, x=12,y=0, no interpolation",
+  "clips": {
+    "idle_front": {
+      "fps": 6,
+      "loop": true,
+      "frames": [
+        {
+          "index": 0,
+          "path": "frames/idle_front/AS51_idle_front_00.png",
+          "sha256": "877bee2152c7d1061678eb7c6ed0b7a26b76ea5690649179e8ace6d25ab9fd7a",
+          "canvas_px": [
+            384,
+            384
+          ],
+          "alpha_bbox_threshold_16": [
+            79,
+            4,
+            278,
+            341
+          ],
+          "translation_px": [
+            12,
+            0
+          ],
+          "body_full_cel": true
+        },
+        {
+          "index": 1,
+          "path": "frames/idle_front/AS51_idle_front_01.png",
+          "sha256": "b22d85713e45129120db1204bed61e17fa626e8cd5295eb68f8e2a55541c315e",
+          "canvas_px": [
+            384,
+            384
+          ],
+          "alpha_bbox_threshold_16": [
+            77,
+            4,
+            276,
+            341
+          ],
+          "translation_px": [
+            12,
+            0
+          ],
+          "body_full_cel": true
+        },
+        {
+          "index": 2,
+          "path": "frames/idle_front/AS51_idle_front_02.png",
+          "sha256": "7c757d6879d7fc98346e93fed4f76e8f7c38968fe05bc408f28083ccb9503f2f",
+          "canvas_px": [
+            384,
+            384
+          ],
+          "alpha_bbox_threshold_16": [
+            79,
+            4,
+            278,
+            341
+          ],
+          "translation_px": [
+            12,
+            0
+          ],
+          "body_full_cel": true
+        },
+        {
+          "index": 3,
+          "path": "frames/idle_front/AS51_idle_front_03.png",
+          "sha256": "5708ae966c60a6dbade1816d4c7a0a98ae492b6733b241dd7a6aef666d49048a",
+          "canvas_px": [
+            384,
+            384
+          ],
+          "alpha_bbox_threshold_16": [
+            80,
+            5,
+            279,
+            341
+          ],
+          "translation_px": [
+            12,
+            0
+          ],
+          "body_full_cel": true
+        }
+      ],
+      "atlas": {
+        "file": "AS51_idle_front_atlas_2x2.png",
+        "sha256": "ec155b522606d153974512b813e065d5e1c74c09caf25588954877d64f3f223e"
+      }
+    },
+    "attack_front": {
+      "fps": 8,
+      "loop": false,
+      "frames": [
+        {
+          "index": 0,
+          "path": "frames/attack_front/AS51_attack_front_00.png",
+          "sha256": "ed195adf8702a02774ca55745933fed043e9ec172e2d7487c7c209e72c7c96ab",
+          "canvas_px": [
+            384,
+            384
+          ],
+          "alpha_bbox_threshold_16": [
+            70,
+            3,
+            294,
+            353
+          ],
+          "translation_px": [
+            12,
+            0
+          ],
+          "body_full_cel": true
+        },
+        {
+          "index": 1,
+          "path": "frames/attack_front/AS51_attack_front_01.png",
+          "sha256": "ea2607386880675cafbf6867d3a35416cafe18f047dee357ec3d87b2454f84d3",
+          "canvas_px": [
+            384,
+            384
+          ],
+          "alpha_bbox_threshold_16": [
+            55,
+            9,
+            300,
+            352
+          ],
+          "translation_px": [
+            12,
+            0
+          ],
+          "body_full_cel": true
+        },
+        {
+          "index": 2,
+          "path": "frames/attack_front/AS51_attack_front_02.png",
+          "sha256": "7b75d1999fc2882dc3d76e6d2cf43fab90b063f6e3a2d6132a957a2d2b0d158b",
+          "canvas_px": [
+            384,
+            384
+          ],
+          "alpha_bbox_threshold_16": [
+            50,
+            15,
+            332,
+            352
+          ],
+          "translation_px": [
+            12,
+            0
+          ],
+          "body_full_cel": true
+        },
+        {
+          "index": 3,
+          "path": "frames/attack_front/AS51_attack_front_03.png",
+          "sha256": "72bb8c1dc73c436433622f972152621151d32e318972cc3ae21f587e5a00b065",
+          "canvas_px": [
+            384,
+            384
+          ],
+          "alpha_bbox_threshold_16": [
+            70,
+            3,
+            292,
+            353
+          ],
+          "translation_px": [
+            12,
+            0
+          ],
+          "body_full_cel": true
+        }
+      ],
+      "atlas": {
+        "file": "AS51_attack_front_atlas_2x2.png",
+        "sha256": "19f30c4f5a7bc8863735d28cb921102d2aa192d5ce9d29261b31cf8f7adbf140"
+      },
+      "weapon_overlay": "NOT_ATTACHED; body-only attack candidate"
+    }
+  },
+  "weapon_family": "dao",
+  "socket_metadata": "PENDING; no clean DAO overlay attached",
+  "qa": {
+    "source_rgba": "PASS: transparent corners on both source sheets",
+    "godot_import": "PENDING",
+    "godot_playback": "PENDING",
+    "production_map_actor": "PENDING: candidate preview scene only",
+    "owner_art_approval": "PENDING",
+    "official_godot": "4.7.2.stable.official.ed1daf0bf",
+    "local_game_project_head": "27ed01cd8f377994e5e50bac9ede84e78e8895bd",
+    "local_checkout_note": "E main checkout is dirty and stale relative to PR; no exact-PR source claim. Candidate files are new isolated paths.",
+    "import_exit_code": 0,
+    "playback_exit_code": 0,
+    "movie": "E:/TongMonBaDaoWorkspace/03_QA_Logs/ASCHAR_V9_3_AS51_DAO_TU_20261118/AS51_idle_attack_Godot472_1280x720_60fps.avi",
+    "movie_sha256": "1429d77aefda5071148fdc721bb3df5234464e4f31e87f4195b18318f8d4cf21",
+    "movie_frames": 150,
+    "movie_fps": 60,
+    "movie_resolution_px": [
+      1280,
+      720
+    ],
+    "weapon_overlay": "PENDING: separate clean dao sprite and frame socket positions not yet attached"
+  },
+  "github_delivery": {
+    "target_branch": "integration/pve-p0-playable-ui-20261103",
+    "draft_pr": 72,
+    "included_runtime_files": [
+      "AS51_MASTER_REGISTERED_384.png",
+      "AS51_FRONT_CLIPS_CANDIDATE.tres",
+      "AS51_FrontAnimationPreview.tscn",
+      "frames/idle_front/*.png",
+      "frames/attack_front/*.png"
+    ],
+    "source_master_contact_sheets_and_atlases": "retained in E 02_Assets; not included in runtime tree yet"
+  }
+}

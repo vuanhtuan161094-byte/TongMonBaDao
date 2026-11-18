@@ -1,0 +1,32 @@
+[gd_resource type="SpriteFrames" load_steps=9 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar51_candidate/frames/idle_front/AS51_idle_front_00.png" id="t_idle_front_00"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar51_candidate/frames/idle_front/AS51_idle_front_01.png" id="t_idle_front_01"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar51_candidate/frames/idle_front/AS51_idle_front_02.png" id="t_idle_front_02"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar51_candidate/frames/idle_front/AS51_idle_front_03.png" id="t_idle_front_03"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar51_candidate/frames/attack_front/AS51_attack_front_00.png" id="t_attack_front_00"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar51_candidate/frames/attack_front/AS51_attack_front_01.png" id="t_attack_front_01"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar51_candidate/frames/attack_front/AS51_attack_front_02.png" id="t_attack_front_02"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar51_candidate/frames/attack_front/AS51_attack_front_03.png" id="t_attack_front_03"]
+
+[resource]
+animations = [
+{
+"frames": [{"duration": 1.0, "texture": ExtResource("t_idle_front_00")} , {"duration": 1.0, "texture": ExtResource("t_idle_front_01")} , {"duration": 1.0, "texture": ExtResource("t_idle_front_02")} , {"duration": 1.0, "texture": ExtResource("t_idle_front_03")} ],
+"loop": true,
+"name": &"idle_front",
+"speed": 6
+},
+{
+"frames": [{"duration": 1.0, "texture": ExtResource("t_attack_front_00")} , {"duration": 1.0, "texture": ExtResource("t_attack_front_01")} , {"duration": 1.0, "texture": ExtResource("t_attack_front_02")} , {"duration": 1.0, "texture": ExtResource("t_attack_front_03")} ],
+"loop": false,
+"name": &"attack_front",
+"speed": 8
+},
+{
+"frames": [{"duration": 1.0, "texture": ExtResource("t_idle_front_00")} , {"duration": 1.0, "texture": ExtResource("t_idle_front_01")} , {"duration": 1.0, "texture": ExtResource("t_idle_front_02")} , {"duration": 1.0, "texture": ExtResource("t_idle_front_03")} , {"duration": 1.0, "texture": ExtResource("t_attack_front_00")} , {"duration": 1.0, "texture": ExtResource("t_attack_front_01")} , {"duration": 1.0, "texture": ExtResource("t_attack_front_02")} , {"duration": 1.0, "texture": ExtResource("t_attack_front_03")} , {"duration": 1.0, "texture": ExtResource("t_idle_front_00")} , {"duration": 1.0, "texture": ExtResource("t_idle_front_01")} , {"duration": 1.0, "texture": ExtResource("t_idle_front_02")} , {"duration": 1.0, "texture": ExtResource("t_idle_front_03")} ],
+"loop": false,
+"name": &"showcase",
+"speed": 8.0
+}
+]
