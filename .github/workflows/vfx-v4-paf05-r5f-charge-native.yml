@@ -86,7 +86,7 @@ jobs:
           grep -Fxq width=1280 "$d/ffprobe.txt"
           grep -Fxq height=720 "$d/ffprobe.txt"
           grep -Fxq nb_frames=102 "$d/ffprobe.txt"
-          for p in '0.28 charge' '0.76 peak' '1.49 contact'; do
+          for p in '0.28 charge' '1.16 peak' '1.49 contact'; do
             set -- $p
             ffmpeg -y -hide_banner -loglevel error -ss "$1" -i "$d/paf05-r5f-mini.mp4" -frames:v 1 "$d/v4-$2.png"
           done

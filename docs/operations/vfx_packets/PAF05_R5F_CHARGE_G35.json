@@ -125,8 +125,8 @@
       },
       {
         "id": "peak",
-        "at_seconds": 0.76,
-        "expected_phase": "12_pose_hand_seal_charge_peak",
+        "at_seconds": 1.16,
+        "expected_phase": "inherited_wind_seal_forming_after_cast",
         "file": "v4-peak.png"
       },
       {
@@ -140,7 +140,7 @@
   "moving_target": {
     "actor_animation": "walk",
     "locked_demo_target_index": 0,
-    "movement_from_seconds": 0.42,
+    "movement_from_seconds": 0.28,
     "movement_to_seconds": 1.49,
     "minimum_displacement_px": 8,
     "contact_anchor": "LAB.target_contact(0,t)",
@@ -152,8 +152,8 @@
     "g3_6_contrast": "PENDING_MANUAL_REVIEW",
     "g3_7_semantics": "PENDING_MANUAL_REVIEW",
     "technical": "NOT_EXECUTED_UNTIL_ACTION",
-    "art": "ART_SELF_PENDING",
-    "owner": "OWNER_R5F_VISUAL_PENDING_R5E_PROVISIONAL_ONLY",
+    "art": "MANUAL_ART_REVIEW_REQUIRED",
+    "owner": "OWNER_VISUAL_PENDING",
     "live": "PVE_INTEGRATION_HOLD",
     "device": "PHYSICAL_QA_PENDING"
   },
