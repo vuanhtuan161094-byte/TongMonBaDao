@@ -232,3 +232,18 @@ python3 tools/vfx/prepare_g3_source_review.py \
 
 **Đầu ra nghiệm thu hợp lệ:** `SOURCE_ART_G3_SELF_PASS/FAIL`, `G3.5_NATIVE_TECH_PASS/FAIL`, `G3.6/G3.7`, `OWNER_VISUAL_APPROVED/PENDING/REWORK`, `PVE_HOLD`. Các trạng thái **không suy ra nhau**. Năng lực mỹ thuật không tự tăng do thêm thư viện. Không thêm batch QA vô ích và không tự động mở G8.
 
+## 12. OWNER FINAL VFX LOCK — 19/11/2026 (ALL VFX CHATS)
+
+**ĐÃ CHỐT** trên PR #72: mọi chat Quyền Tu/Độc Tu/Phù Tu và VFX các môn phái khác dùng chung **Art-First Production System V4**. Không thay SOP bằng quy trình khác, không Codex Cloud, không rig/GIF mặc định, không sửa gameplay/Combat V2/SaveService, không merge.
+
+**Năm nhịp, giữ đầy đủ gate chính thức:**
+1. **G0–G2:** kiểm HEAD và chủ sở hữu file; skill ID/effect/shape/target/cast/3 clocks; nghiên cứu chuyển động *cùng loại kỹ năng* và quyền sử dụng; một hình tượng riêng có storyboard thật.
+2. **G3 — HARD STOP:** minh họa **master RGBA nguyên gốc** và nhiều pose biến hình/ánh sáng thực chất, lưu source+provenance trên GitHub. Tạo bản xem source-only trên nền sáng/tối, kích cỡ motif dự kiến 1× bằng `tools/vfx/prepare_g3_source_review.py`. Không bắt phải lập trình scene để biết tranh xấu. Nếu không rõ, giống icon, poster crop, khối Bézier/neon hoặc alpha mờ → `G3_ART_SOURCE_FAIL`, sửa nguồn **trước** QA. Code/shader chỉ tạo lớp phụ, không thay hero art.
+3. **G3.5–G3.7:** từ nguồn đã có chất lượng mới dựng mini LAB Godot 4.7.2, xuất 3 khung **native** 1280×720 (charge/peak/contact) trên địch đang di chuyển; so nền sáng/tối và xem ẩn HUD có hiểu đúng chiêu, không che mặt, thấy nguồn→tiếp xúc→hồi lực; thất bại quay G2/G3.
+4. **G4–G7:** animation frame-by-frame **không rig**, lớp MIX chủ thể/ADD ánh sáng mềm, reuse Godot renderer & QA shared; chỉ quay MP4 đủ diễn biến attack→fade **khi đã qua art source + 1×**, status dài test lifecycle riêng; kỹ thuật exact-SHA và chủ duyệt nghệ thuật **tách nhau**. Không quay full movie lặp đi lặp lại để cứu source FAIL.
+5. **Owner → G8:** duyệt theo **đúng revision và các phase**, không phá bản approved/provisional; PvE/device/Combat V2 receipt chỉ khi owner cấp phép riêng. Toàn bộ các chat khác phải áp dụng khóa này trước khi sửa và cập nhật school handoff theo đúng trạng thái.
+
+**Benchmark owner-approved:** **POI15 Hóa Độc Tán R1B**, phản hồi “ok đẹp t thích. tiếp tục skill tiếp theo” (17/11/2026), exact SHA `1b40811248fcaca9b33a5e4cbc35e8b03e2ca9b5`, [native Godot 7,5s Actions #43999563772](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/43999563772), [artifact #14292200693](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/43999563772/artifacts/14292200693), [owner decision](VFX_POI15_HOA_DOC_TAN_R1_20261117.md). Dùng làm chuẩn nhịp, độ trong, màu ánh sáng và kiểm mark/fade, **không sao chép mô-típ Độc Tu**. Bảo quản art R1B bất biến; artifact Actions hết hạn được tái xuất từ nguồn bền vững.
+
+**Nguồn học GitHub ở §11** hỗ trợ hit spark/trail/particle/QA; GDQuest art CC BY-NC-SA không phù hợp nhập vào game thương mại. Không đưa nguyên thư viện vào repo chỉ để làm một hiệu ứng; ưu tiên thư viện kỹ thuật dùng chung. Một người chỉnh shared files, các trường phái chỉnh đường dẫn sở hữu. Không thêm SOP hoặc biểu mẫu lớn. **Đây là quyết định quy trình, không phải kết quả art-pass của FIST14 R6.**
+
