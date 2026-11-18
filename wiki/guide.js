@@ -28,7 +28,7 @@ const EQUIP=[
 ];
 const bodyGroups={A:["Thanh Linh Thảo","Tinh Lang Bì"],B:["Tử Vân Thảo","Linh Tủy"],C:["Huyết Linh Sâm","Huyết Thú Tinh Huyết"],D:["Kim Cốt Thảo","Linh Thú Cốt Ngọc"],E:["Tiên Tủy Liên","Tiên Thú Chân Cốt"],F:["Bất Hoại Tủy Dịch","Đại La Kim Cốt"],G:["Thần Mạch Tinh","Thần Thú Cốt"],H:["Hỗn Độn Tủy Hoa","Bất Diệt Thần Cốt"]};
 const bodyRows=[["A",12,4],["A",18,5],["A",24,6],["B",12,1],["B",16,2],["B",24,3],["C",12,3],["C",16,4],["C",22,6],["C",32,8],["D",12,3],["D",16,4],["D",20,5],["D",24,6],["E",12,3],["E",16,4],["E",22,6],["F",14,4],["F",20,6],["F",30,9],["G",12,3],["G",16,4],["G",20,5],["G",24,6],["G",30,8],["H",12,3],["H",18,5],["H",24,7],["H",32,10]];
-const state={data:null,char:null,traits:null,audit:null,items:null,combatStats:null,tab:"home",realm:2,track:"cultivation",building:"spirit_field",buildingLevel:1,fieldLevel:1,school:"all",skill:null,limit:48,query:"",traitQuery:"",traitGroup:"all",traitPage:1,aptitude:100,focus:"natural",recruitSource:"ordinary",buildStatus:"all",itemGroup:"medicine",itemQuery:"",itemPage:1,featureStatus:"all",featureGroup:"all",featureLimit:16};
+const state={data:null,char:null,traits:null,audit:null,items:null,combatStats:null,mind:null,mindValue:500,tab:"home",realm:2,track:"cultivation",building:"spirit_field",buildingLevel:1,fieldLevel:1,school:"all",skill:null,limit:48,query:"",traitQuery:"",traitGroup:"all",traitPage:1,aptitude:100,focus:"natural",recruitSource:"ordinary",buildStatus:"all",itemGroup:"medicine",itemQuery:"",itemPage:1,featureStatus:"all",featureGroup:"all",featureLimit:16};
 const names={home:"Trang chủ",characters:"Đệ tử & đặc tính",realms:"Tu luyện & đột phá",skills:"Môn phái & kỹ năng",buildings:"Công trình & Linh Điền",equipment:"Trang bị & đồ bộ",items:"Vật phẩm & đan dược",systems:"Toàn bộ chức năng",design:"Thiết kế cần hoàn thiện",search:"Kết quả tìm kiếm"};
 const content=document.getElementById("content"),search=document.getElementById("search");
 // Engineering Studio remains localhost-only and is intentionally excluded from Pages.
@@ -214,6 +214,42 @@ function combatStatPanel(){
  '<p class="ency-link">Nguồn: '+auditSource(d.executionContract)+' · '+auditSource(d.runtimeKernel)+' · '+auditSource(d.mainCombat)+'</p></section>';
 }
 
+function mindNaturePanel(){
+ const d=state.mind;if(!d)return "";
+ const n=Math.max(0,Math.min(999999,Number(state.mindValue)||0));
+ const p=d.approved,bonus=Math.min(p.maxBonusPp,n*p.ppPerPoint);
+ const check=p.exampleStatus;
+ const chance=Math.max(0,Math.min(100,check.basePp+check.effectHitPp-check.otherResistancePp-bonus));
+ const mood=d.candidates[0],rest=d.candidates[1],practice=d.candidates[2];
+ const loss=Math.round(mood.exampleBaseMoodLoss*Math.max(mood.minFactor,1-Math.min(n,mood.maxPointsForMood)/mood.pointsDivisor)*100)/100;
+ const gained=Math.min(rest.maxMoodBonus,Math.floor(n/rest.moodPerPoints));
+ const hours=practice.exampleBaseHours*(1-Math.min(practice.maxTimeReduction,n/practice.timeReductionDivisor));
+ const validOpts=[0,100,300,500,800,1200].map(x=>'<button data-mind-preset="'+x+'" type="button">'+x+'</button>').join(" ");
+ return '<section class="ency-section" id="mind-nature">'+
+ '<h2>Tâm Tính — Định lực của đệ tử</h2>'+
+ '<p class="ency-summary">Tâm Tính là <b>chỉ số nền thứ ba trong Tam Căn D7</b>, không phải Tâm Trạng hay một cảnh giới thứ ba. Người có Tâm Tính cao bền bỉ hơn trước khống chế. Những ảnh hưởng tới tâm lý và tu tâm bên dưới là hướng phát triển đề xuất.</p>'+
+ '<div class="ency-tags">'+status("A2: Đã duyệt thiết kế","ok")+status("Combat PvE: chưa tích hợp","danger")+status("M2–M4: mới đề xuất","idea")+'</div>'+
+ panel("Đã chốt: Kháng Hiệu Ứng từ Tâm Tính","+0,01 điểm phần trăm mỗi điểm, tối đa +8 điểm %. Không tác động Crit, Công, HP hay tỷ lệ đột phá.",
+ '<div class="ency-controls"><label>Điểm Tâm Tính giả lập<input id="mind-score" type="number" min="0" step="1" max="999999" value="'+fmt(n)+'"></label></div>'+
+ '<div class="ency-buttons" style="margin:0 0 15px">'+validOpts+'</div>'+
+ '<div class="ency-example"><div><strong>+'+fmt(bonus)+' điểm %</strong><small>Kháng Hiệu Ứng do Tâm Tính (thiết kế đã duyệt)</small></div>'+
+ '<div><strong>'+fmt(chance)+'%</strong><small>Ví dụ xác suất bị Choáng khi địch 45% gốc, +10 điểm % Chính Xác, mục tiêu có thêm +10 điểm % Kháng từ Trait</small></div>'+
+ '<div><strong>'+fmt(Math.max(0,p.maxBonusPp-bonus))+' điểm %</strong><small>Khoảng tăng thêm đến giới hạn +8 điểm %</small></div></div>'+
+ '<p class="ency-detail">Công thức: min(8; 0,01 × Tâm Tính) điểm %. Nếu địch có 45% gây Choáng và +10 điểm % Chính Xác, người phòng thủ có Trait +10 điểm % Kháng, xác suất cuối = 45 + 10 − 10 − kháng từ Tâm Tính. Các kỹ năng bảo đảm trúng/miễn nhiễm tuân theo luật riêng.</p>'+
+ '<div class="ency-alert soft">800 điểm chỉ là <b>mốc bão hòa thưởng Kháng Hiệu Ứng</b>, không phải giới hạn Tâm Tính. Tâm Tính D7 đã có dữ liệu và lưu/tải; buff mới hiện là <b>quyết định thiết kế, chưa có đường áp dụng trong PvE chính</b>.</div>')+
+ panel("Phát triển thêm: Tâm Tính tác động cuộc sống như thế nào?","Ba cơ chế có công thức và ví dụ, nhưng CHƯA phê duyệt hoặc chạy trong game.",
+ '<div class="ency-cards">'+[
+ ["Vững tâm sau thất bại","Khi đột phá trượt hoặc thua PvE, không sửa hình phạt gốc nhưng có thể giảm mất Tâm Trạng.","Ví dụ event gây −"+fmt(mood.exampleBaseMoodLoss)+" Tâm Trạng: với "+fmt(n)+" Tâm Tính, còn −"+fmt(loss)+" điểm.","D1-M2 · Cần Tâm Trạng 0–100 & sự kiện thật"],
+ ["Tĩnh Tâm có lịch nghỉ","Đệ tử nghỉ có thời gian thật để hồi tâm trạng. Không hồi HP, EXP hay xóa Injury miễn phí.","Ví dụ hành động nghỉ hồi cơ bản +"+fmt(rest.exampleBaseRestGain)+" Tâm Trạng: với "+fmt(n)+" Tâm Tính có thể thêm +"+fmt(gained)+" điểm.","D1-M3 · Cần action rest_completed"],
+ ["Tu Tâm để khắc phục đặc tính xấu","Khi có Tu Tâm Đường, rút ngắn thời gian một lần rèn luyện/khắc phục Trait hợp lệ. Không tự cho Trait hiếm.","Ví dụ job 10 giờ: với "+fmt(n)+" Tâm Tính còn "+fmt(hours)+" giờ; vẫn tiêu phí nguyên liệu và thời gian thật.","D1-M4 · Cần công trình, job, lịch và chi phí thật"]
+ ].map(x=>'<article class="ency-card"><h3>'+x[0]+'</h3>'+status("ĐỀ XUẤT, chưa hoạt động","idea")+'<p>'+x[1]+'</p><p><b>'+x[2]+'</b></p><small class="ency-mini">'+x[3]+'</small></article>').join("")+'</div>'+
+ '<div class="ency-alert">Những con số mood, nghỉ và Tu Tâm phía trên là <b>ví dụ của phương án đề xuất</b>, không phải hiệu ứng đã được duyệt hay phần thưởng hiện có trong Save. Tâm Cảnh vẫn là lựa chọn mở rộng sau, không tạo track Tu Vi mới.</div>')+
+ panel("Không trùng chức năng","Tách chỉ số nền, cảm xúc nhất thời và mục tiêu tu tâm.",
+ table(["Khái niệm","Nhiệm vụ"],d.distinctions.map(x=>['<b>'+esc(x.name)+'</b>',esc(x.meaning)]))+
+ '<p class="ency-link">'+auditSource(d.links.design)+' · '+auditSource(d.links.foundation)+' · '+auditSource(d.links.combat)+'</p>')+
+ '</section>';
+}
+
 function characters(){
  const d=state.char,t=state.traits;
  if(!d||!t)return heading("ĐỆ TỬ","Đệ tử & đặc tính","Chưa tải được dữ liệu nhân vật.");
@@ -231,7 +267,7 @@ function characters(){
  ];
  const attributes=[
  ["Tư Chất","+0,25% tốc độ Tu Vi tự nhiên mỗi điểm"],["Căn Cốt","+0,20% hệ số EXP Luyện Thể mỗi điểm"],
- ["Tâm Tính","Có điểm, chưa có hiệu ứng gameplay độc lập được xác nhận"],
+ ["Tâm Tính","Đã chốt: +0,01 điểm % Kháng Hiệu Ứng/điểm, tối đa +8 điểm %. Đã có dữ liệu D7 nhưng chưa tích hợp vào PvE chính"],
  ["Tiềm Lực","+0,05% hệ số tiềm năng mỗi điểm"],["Thông Tuệ","+0,15% hệ số lĩnh hội mỗi điểm"],
  ["Cơ Duyên","Ảnh hưởng phép kiểm tra may mắn cụ thể"],["Mị Lực","Ảnh hưởng phép kiểm tra xã giao cụ thể"]
  ];
@@ -257,8 +293,9 @@ function characters(){
  '<div><strong>'+fmt(rate)+' EXP/phút</strong><small>Phút mô phỏng, chưa buff</small></div>'+
  '<div><strong>+'+fmt(apt*.25)+'%</strong><small>Thưởng Tư Chất</small></div></div>'+
  '<p class="ency-mini">Công thức: 1.000 × '+(focused?'2':'1')+' × (1 + 0,0025 × Tư Chất) ÷ 60. Cộng EXP theo nhịp game; còn phụ thuộc cờ bật hệ Tu Vi V2.</p>')+
- panel('Bảy chỉ số nhân vật','Tâm Tính có giá trị sinh nhân vật nhưng chưa có tác dụng gameplay độc lập.',table(['Chỉ số','Tác dụng hiện được xác nhận hoặc thiết kế'],attributes.map(x=>[esc(x[0]),esc(x[1])])))+
+ panel('Bảy chỉ số nhân vật','Tâm Tính đã có thiết kế tác dụng Kháng Hiệu Ứng, nhưng hiệu ứng chưa chạy trong PvE chính.',table(['Chỉ số','Tác dụng hiện được xác nhận hoặc thiết kế'],attributes.map(x=>[esc(x[0]),esc(x[1])])))+
  combatStatPanel()+
+ mindNaturePanel()+
  panel('Tỷ lệ khi sinh đệ tử','Tỷ lệ từng bước; không cộng tất cả tỷ lệ thành 100%.',
  '<div class="controls"><label>Kiểu chiêu mộ'+select("char-source",[["ordinary","Chiêu mộ thường"],["gacha","Triệu hồi"],["fate","Cơ duyên"]],state.recruitSource)+'</label></div>'+
  table(['Phẩm chất','Tỷ lệ'],["Phàm Thường","Xuất Chúng","Thiên Kiêu","Tuyệt Luân","Nghịch Thiên"].map((x,i)=>[esc(x),'<b>'+fmt(chances[i])+'%</b>']))+
@@ -376,7 +413,7 @@ function itemsUnified(){
 
 function designUnified(){
  const blocks=[
- ["D1","Đệ tử, Tâm Tính, 101 đặc tính & Combat Stats","Giữ nguyên 16 chỉ số chiến đấu + 10 kháng hệ đã khóa. Đề xuất giảm Tâm Tính về một nguồn Kháng Hiệu Ứng có giới hạn thay vì thêm chỉ số mới hoặc chồng nhiều kháng tinh thần; 41/12/48 đặc tính được phân nhóm theo consumer.","docs/design/D1_CHARACTER_EFFECT_DESIGN_CANDIDATE_20261118.md","Chọn phương án Tâm Tính; khóa điều kiện của 12 Trait hai mặt; duyệt con số cho 48 Trait mở, tránh nhân đôi với Combat Stats"],
+ ["D1","Đệ tử, Tâm Tính, 101 đặc tính & Combat Stats","Đã chốt D1-A2: Tâm Tính +0,01 điểm % Kháng Hiệu Ứng/điểm, tối đa +8 điểm %. Có thêm các đề xuất ảnh hưởng Tâm Trạng, Tĩnh Tâm và Tu Tâm; chưa code gameplay. 101 Trait vẫn chia 41/12/48.","docs/design/D1_MIND_NATURE_V2_EFFECT_CONTRACT_20261118.md","Phần Tâm Tính A2 đã duyệt; cân nhắc M2/M3/M4 về cảm xúc, nghỉ và khắc phục Trait; 12 Trait thiếu consumer và 48 Trait mở vẫn chờ chốt"],
  ["D2/D3","28 công trình, nguyên liệu và đan","Đã xác định vai trò/đầu ra của 26 loại công trình dài hạn và 2 bổ sung; chuẩn hóa quy trình nâng cấp, 630 vật liệu, 270 tuyến nguồn, 476 mã đan.","docs/design/D2_D3_BUILDINGS_ITEMS_DESIGN_CANDIDATE_20261118.md","Hệ số Lv1–100, nguồn thật cho vật liệu, 444 công thức đan còn thiếu"],
  ["D4","Trang bị V2, rèn và đồ bộ","Đã soạn quy trình rèn đầy đủ và 9 loại hành động nâng cấp trang bị. Giữ chuẩn 10 ô, 12 phẩm và 24 bộ; bảng xác suất, cấp cường hóa là đề xuất, chưa duyệt.","docs/design/D4_FORGE_TRANSACTION_DESIGN_CANDIDATE_20261118.md","Phê duyệt xác suất rèn, mức cường hóa, nguồn đồ và các công thức"],
  ["D5","Tu Vi, Luyện Thể và đột phá","Giữ 30×10 mỗi hệ. Cần dùng đúng cân bằng cảnh giới trong nguồn gốc, không thêm Tâm Cảnh 300 tầng hay tự nâng tỷ lệ đột phá.","docs/REALM_LADDER_V2_SPEC.md","Đối chiếu thống nhất số EXP và các nguồn XP cấp cao"],
@@ -493,6 +530,7 @@ document.addEventListener("click",e=>{
  if(e.target.id==="item-prev"){state.itemPage=Math.max(1,state.itemPage-1);render();return;}
  if(e.target.id==="item-next"){state.itemPage++;render();return;}
  if(e.target.id==="more-systems"){state.featureLimit+=16;render();return;}
+ const preset=e.target.closest("[data-mind-preset]");if(preset){state.mindValue=Number(preset.dataset.mindPreset);render();return;}
 });
 document.addEventListener("change",e=>{
  const v=e.target.value,id=e.target.id;
@@ -503,6 +541,7 @@ document.addEventListener("change",e=>{
  if(id==="field-select"){state.fieldLevel=Number(v);render();}
  if(id==="school-select"){state.school=v;state.skill=null;state.limit=48;render();}
  if(id==="char-apt"){state.aptitude=Math.max(0,Math.min(50000,Number(v)||0));render();}
+ if(id==="mind-score"){state.mindValue=Math.max(0,Math.min(999999,Number(v)||0));render();}
  if(id==="char-focus"){state.focus=v;render();}
  if(id==="char-source"){state.recruitSource=v;render();}
  if(id==="trait-group"){state.traitGroup=v;state.traitPage=1;render();}
@@ -526,7 +565,7 @@ search.addEventListener("input",()=>{
  render();
 });
 if(!["localhost","127.0.0.1","::1","vuanhtuan161094-byte.github.io"].includes(location.hostname)){content.innerHTML='<div class="note">Chỉ mở trên GitHub Pages chính thức hoặc localhost.</div>';return;}
-Promise.all(["./data/catalog.json","./data/character_reference.json","./data/trait_effect_audit.json","./data/game_system_audit.json","./data/game_items_audit.json","./data/combat_stats_reference.json"].map(path=>fetch(path,{cache:"no-store"}).then(r=>{if(!r.ok)throw Error("HTTP "+r.status+" "+path);return r.json();}))).then(([data,ch,traits,audit,items,combatStats])=>{if(combatStats.stats?.length!==16||combatStats.resistances?.length!==10)throw Error("Dữ liệu 16 chỉ số V2 hoặc 10 kháng hệ không đầy đủ");state.data=data;state.char=ch;state.traits=traits;state.audit=audit;state.items=items;state.combatStats=combatStats;const target=location.hash.replace("#","");const aliases={traits:"characters",audit:"systems",fields:"buildings",medicine:"items",schools:"skills"};state.tab=names[aliases[target]||target]?aliases[target]||target:"home";render();}).catch(err=>{
+Promise.all(["./data/catalog.json","./data/character_reference.json","./data/trait_effect_audit.json","./data/game_system_audit.json","./data/game_items_audit.json","./data/combat_stats_reference.json","./data/mind_nature_reference.json"].map(path=>fetch(path,{cache:"no-store"}).then(r=>{if(!r.ok)throw Error("HTTP "+r.status+" "+path);return r.json();}))).then(([data,ch,traits,audit,items,combatStats,mind])=>{if(combatStats.stats?.length!==16||combatStats.resistances?.length!==10||mind.approved?.ppPerPoint!==0.01||mind.approved?.maxBonusPp!==8)throw Error("Dữ liệu chiến đấu / Tâm Tính không hợp lệ");state.data=data;state.char=ch;state.traits=traits;state.audit=audit;state.items=items;state.combatStats=combatStats;state.mind=mind;const target=location.hash.replace("#","");const aliases={traits:"characters",audit:"systems",fields:"buildings",medicine:"items",schools:"skills"};state.tab=names[aliases[target]||target]?aliases[target]||target:"home";render();}).catch(err=>{
  content.innerHTML='<div class="note">Không tải được dữ liệu bách khoa: '+esc(err.message)+'. Thử tải lại trang (Ctrl+F5).</div>';
 });
 })();
