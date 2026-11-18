@@ -1,7 +1,7 @@
 # QUYỀN TU — CURRENT VFX HANDOFF · PR #72
 
-**Checkpoint:** 18/11/2026 · dedicated FIST school chat; G0/G1/G2 reconciled, **G3 illustrated RGBA SOURCE CANDIDATE LOCAL ONLY; not in repository**, no FIST skill deployed.  
-**HEAD_BEFORE:** `176aa0c456eaa1a5aa1db6790d87b43150f7d63f`; **PR:** [#72](https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/72), Draft; **branch:** `integration/pve-p0-playable-ui-20261103`. **COMMIT_AFTER:** this handoff's GitHub file-history commit (refer to file commit list; never substitute the baseline above).
+**Checkpoint:** 18/11/2026 · dedicated FIST school chat; G0 catalogue contract reconciled, G1 full frame-by-frame reference analysis NOT_EXECUTED, G2 semantic direction DRAFTED, **G3 illustrated RGBA SOURCE CANDIDATE LOCAL ONLY; not in repository**, no FIST skill deployed.  
+**HEAD_BEFORE:** `176aa0c456eaa1a5aa1db6790d87b43150f7d63f`; **PR:** [#72](https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/72), Draft; **branch:** `integration/pve-p0-playable-ui-20261103`. **FIRST_CHECKPOINT_COMMIT:** `a270195a22d3644f223ab63b07cee1d80a90d8cc`. **CURRENT_REVIEW_COMMIT:** see exact history of this file (cannot self-reference current commit inside itself).
 
 ## 1. Authority, exact status and frozen art
 
@@ -18,7 +18,7 @@ FIST14 R2 at `1fc4ad2811fa0fcaa572b89e0b34c676d46fa416`: [Actions #44112832093](
 
 **Three clocks, do not conflate:** (A) catalogue cast .45 / cooldown 8 / mark 6, true combat receipt unknown; (B) **R2 LAB ONLY reference** charge 0-.45, illustrative pursuit .45-.82, single cosmetic mark .82-6.82, fade 6.82-7.11; R3 scene/event timing **NOT YET EXECUTED**, not auto-adopted; (C) R2 QA loop 7.43s, unrelated to gameplay cast clock.
 
-**G2 semantic direction:** Caster accumulates concentrated organic ruby qi into a clearly **closed fist** with four compressed knuckles and curled thumb. One accelerating fist travels source→selected moving foe, ends in one white-hot short hit/contact, and leaves one restrained blood-palm mark on shoulder/torso (not face), fading after actual authoritative duration. No triple talon/letter V, poster, fake repeated damage, status replicated per skill. Reference Võ Lâm/JX is only art study; first-party art required.
+**G1 motion/reference:** school playbook and original/past native review records inspected; detailed licensed source movement breakdown **NOT_EXECUTED**, so independent reference acceptance remains pending.\n\n**G2 semantic direction (DRAFT):** Caster accumulates concentrated organic ruby qi into a clearly **closed fist** with four compressed knuckles and curled thumb. One accelerating fist travels source→selected moving foe, ends in one white-hot short hit/contact, and leaves one restrained blood-palm mark on shoulder/torso (not face), fading after actual authoritative duration. No triple talon/letter V, poster, fake repeated damage, status replicated per skill. Reference Võ Lâm/JX is only art study; first-party art required.
 
 ## 3. Actual executed output and gate truth
 
