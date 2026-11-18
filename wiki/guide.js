@@ -218,7 +218,7 @@ function mindNaturePanel(){
  const d=state.mind;if(!d)return "";
  const n=Math.max(0,Math.min(999999,Number(state.mindValue)||0));
  const aptitude=Math.max(0,Math.min(50000,Number(state.aptitude)||0));
- const p=d.approved,c=d.candidates[0];
+ const p=d.combat,c=d.candidates[0];
  const resistance=Math.min(p.maxBonusPp,n*p.ppPerPoint);
  const chance=Math.max(0,Math.min(100,p.exampleStatus.basePp+p.exampleStatus.effectHitPp-p.exampleStatus.otherResistancePp-resistance));
  const focusBonus=Math.min(c.maxFocusBonus,n*c.focusBonusPerPoint);
@@ -228,25 +228,25 @@ function mindNaturePanel(){
  const focusMultiplier=c.baseCultivateMultiplier*(1+focusBonus);
  const presets=[0,100,300,500,800].map(x=>'<button data-mind-preset="'+x+'" type="button">'+x+'</button>').join(" ");
  return '<section class="ency-section" id="mind-nature">'+
- '<h2>Tâm Tính — Định lực & Chuyên Tu Tu Vi</h2>'+
- '<p class="ency-summary">Tâm Tính là một chỉ số trong Tam Căn D7. Nó đã được chốt về <b>Kháng Hiệu Ứng</b>, và đang có đề xuất tăng hiệu quả <b>Chuyên Tu Tu Vi</b> khi đệ tử thực sự ngồi tu luyện. Không thêm Tâm Trạng, Tâm Cảnh hay một thanh tu luyện mới.</p>'+
- '<div class="ency-tags">'+status("D7: dữ liệu có mã","ok")+status("Kháng Hiệu Ứng: thiết kế đã chốt","ok")+status("Chuyên Tu: chưa duyệt con số","idea")+status("Chưa tích hợp PvE & Tu Vi runtime","danger")+'</div>'+
- panel("Tính thử Tâm Tính & hiệu suất tu luyện","Nhập Tâm Tính; Tư Chất được lấy từ bộ tính Tu Vi ở phần trên. Mọi giá trị dưới đây là minh họa thiết kế, không phải EXP thật trong Save.",
+ '<h2>Tâm Tính — Kháng Hiệu Ứng và Tu Luyện</h2>'+
+ '<p class="ency-summary">Tâm Tính là chỉ số nền trong Tam Căn D7. Bạn yêu cầu <b>trần Kháng Hiệu Ứng đạt +50 điểm %</b> và có tác dụng trong hoạt động <b>Tu Luyện</b> sẵn có. Hệ số theo từng điểm vẫn là đề xuất cân bằng; không tạo hoạt động thứ sáu.</p>'+
+ '<div class="ency-tags">'+status("D7: dữ liệu có mã","ok")+status("Kháng: mục tiêu trần +50 điểm %","ok")+status("Hệ số kháng và Tu Luyện: đề xuất","idea")+status("Chưa có hiệu ứng gameplay","danger")+'</div>'+
+ panel("Tính thử Tâm Tính & hoạt động Tu Luyện","Nhập Tâm Tính; Tư Chất được lấy từ bộ tính Tu Vi ở phần trên. Mọi giá trị dưới đây là minh họa thiết kế, không phải EXP thật trong Save.",
  '<div class="ency-controls"><label>Điểm Tâm Tính<input id="mind-score" type="number" min="0" max="999999" step="1" value="'+n+'"></label></div>'+
  '<div class="ency-buttons" style="margin:0 0 14px">'+presets+'</div>'+
  '<div class="ency-example">'+
- '<div><strong>+'+fmt(resistance)+' điểm %</strong><small>Kháng Hiệu Ứng — thiết kế đã duyệt</small></div>'+
- '<div><strong>+'+fmt(focusBonus*100)+'%</strong><small>Hiệu suất Chuyên Tu — chỉ đề xuất</small></div>'+
- '<div><strong>×'+fmt(focusMultiplier)+'</strong><small>Hệ số Chuyên Tu tổng với Tâm Tính</small></div></div>'+
+ '<div><strong>+'+fmt(resistance)+' điểm %</strong><small>Kháng Hiệu Ứng từ Tâm Tính — ứng viên +0,10 điểm %/điểm, trần 50</small></div>'+
+ '<div><strong>+'+fmt(focusBonus*100)+'%</strong><small>Hiệu suất Tu Luyện — ứng viên +0,05%/điểm</small></div>'+
+ '<div><strong>×'+fmt(focusMultiplier)+'</strong><small>Hệ số hoạt động Tu Luyện (gốc ×2)</small></div></div>'+
  '<div class="ency-example" style="margin-top:12px">'+
  '<div><strong>'+fmt(naturalGain/60)+' Tu Vi/s</strong><small>Tu Vi tự nhiên (không thêm Tâm Tính)</small></div>'+
- '<div><strong>'+fmt(baseFocus/60)+' Tu Vi/s</strong><small>Chuyên Tu hiện tại (chưa có thưởng mới)</small></div>'+
- '<div><strong>'+fmt(proposedFocus/60)+' Tu Vi/s</strong><small>Chuyên Tu nếu duyệt D1-CULT1</small></div></div>'+
- '<p class="ency-detail">Ví dụ này dùng Tư Chất '+fmt(aptitude)+', base 1.000 Tu Vi/phút mô phỏng và Chuyên Tu gốc ×2, chưa cộng nguồn buff khác. Công thức đề xuất: Tu Vi Chuyên Tu = Tu Vi tự nhiên × 2 × (1 + min(25%; 0,05% × Tâm Tính)).</p>'+
- '<div class="ency-alert soft"><b>Không thưởng Tu Vi khi không Chuyên Tu.</b> Chuyên Tu chỉ được tính tại nhịp mô phỏng hợp lệ; không cộng hai lần, không tăng đan cố định, EXP Luyện Thể hay tỷ lệ đột phá. Trần +25% đạt ở 500 Tâm Tính chỉ áp cho Định Tâm, khác trần kháng hiệu ứng ở 800.</div>')+
- panel("Chiến đấu: Kiên Định đã được chốt","Chỉ cần một kênh Kháng Hiệu Ứng trong Combat Stats V2, không tạo thêm loại kháng tinh thần.",
- '<p>Trúng trạng thái thường được tính theo xác suất sau Chính Xác Hiệu Ứng và Kháng Hiệu Ứng. Với kẻ địch có 45% gây Choáng +10 điểm % Chính Xác, mục tiêu có thêm 10 điểm % Kháng từ Trait, Tâm Tính '+fmt(n)+' giúp xác suất còn <b>'+fmt(chance)+'%</b>.</p>'+
- '<p class="ency-detail">+0,01 điểm % mỗi Tâm Tính, tối đa +8 điểm %. Đây là thiết kế đã duyệt nhưng chưa được nối đầy đủ vào combat PvE; không giảm thời gian trạng thái đã dính.</p>')+
+ '<div><strong>'+fmt(baseFocus/60)+' Tu Vi/s</strong><small>Tu Luyện gốc (chưa có thưởng Tâm Tính)</small></div>'+
+ '<div><strong>'+fmt(proposedFocus/60)+' Tu Vi/s</strong><small>Tu Luyện theo ứng viên D1-CULT-R2</small></div></div>'+
+ '<p class="ency-detail">Ví dụ này dùng Tư Chất '+fmt(aptitude)+', base 1.000 Tu Vi/phút mô phỏng và Tu Luyện gốc ×2, chưa cộng nguồn buff khác. Công thức đề xuất: Tu Vi khi chọn hành động Tu Luyện = Tu Vi tự nhiên × 2 × (1 + min(25%; 0,05% × Tâm Tính)).</p>'+
+ '<div class="ency-alert soft"><b>Không có chế độ Chuyên Tu riêng.</b> Khi đệ tử đang làm Tu Luyện (CULTIVATE), hệ số ×2 sẵn có sẽ được tăng theo ứng viên Tâm Tính. Rảnh, Đi Săn, Rèn Thân và Sản Xuất không nhận thưởng Tu Luyện này. Không cộng hai lần; trần kháng và Tu Luyện cùng đạt ở 500 điểm theo hai công thức đang đề xuất.</div>')+
+ panel("Chiến đấu: mục tiêu Kháng Hiệu Ứng tối đa +50 điểm %","Giữ kênh Kháng Hiệu Ứng trong Combat Stats V2. Trần +50 điểm % là mục tiêu từ Tâm Tính; mức +0,10 điểm %/điểm chưa được duyệt.",
+ '<p>Trúng trạng thái thường được tính theo xác suất sau Chính Xác Hiệu Ứng và Kháng Hiệu Ứng. Với kẻ địch có 60% gây Choáng +20 điểm % Chính Xác, mục tiêu không có kháng khác, Tâm Tính '+fmt(n)+' giúp xác suất còn <b>'+fmt(chance)+'%</b>.</p>'+
+ '<p class="ency-detail">Ứng viên: +0,10 điểm % mỗi Tâm Tính, tối đa +50 điểm %. Số này chưa được bạn duyệt và chưa được nối vào PvE; các hiệu ứng bảo đảm trúng, miễn nhiễm và kháng từ nguồn khác vẫn theo luật hiện có.</p>')+
  panel("So sánh Tam Căn — không trùng nhau","Không cần thêm trạng thái tâm lý hoặc cảnh giới thứ ba.",
  table(["Chỉ số nền","Vai trò"],d.distinctions.map(x=>['<b>'+esc(x.name)+'</b>',esc(x.meaning)]))+
  '<p class="ency-link">Thiết kế D1: '+auditSource(d.links.design)+' · '+auditSource(d.links.cultivation)+' · '+auditSource(d.links.combat)+'</p>')+
@@ -269,7 +269,7 @@ function characters(){
  ];
  const attributes=[
  ["Tư Chất","+0,25% tốc độ Tu Vi tự nhiên mỗi điểm"],["Căn Cốt","+0,20% hệ số EXP Luyện Thể mỗi điểm"],
- ["Tâm Tính","Đã chốt: +0,01 điểm % Kháng Hiệu Ứng/điểm, tối đa +8 điểm %. Đã có dữ liệu D7 nhưng chưa tích hợp vào PvE chính"],
+ ["Tâm Tính","Mục tiêu +50 điểm % Kháng Hiệu Ứng tối đa; hệ số theo điểm đang đề xuất. Tu Luyện có thưởng hiệu suất đề xuất. Chưa có consumer gameplay V2."],
  ["Tiềm Lực","+0,05% hệ số tiềm năng mỗi điểm"],["Thông Tuệ","+0,15% hệ số lĩnh hội mỗi điểm"],
  ["Cơ Duyên","Ảnh hưởng phép kiểm tra may mắn cụ thể"],["Mị Lực","Ảnh hưởng phép kiểm tra xã giao cụ thể"]
  ];
@@ -415,7 +415,7 @@ function itemsUnified(){
 
 function designUnified(){
  const blocks=[
- ["D1","Đệ tử, Tâm Tính, 101 đặc tính & Combat Stats","Tâm Tính +0,01 điểm % Kháng Hiệu Ứng/điểm, tối đa +8 điểm % đã được chốt về thiết kế. Đề xuất D1-CULT1: Tâm Tính giúp hiệu suất Chuyên Tu Tu Vi +0,05%/điểm, cap +25%; không thêm Tâm Trạng, Tu Tâm hay Tâm Cảnh. Các Trait V2 vẫn chia 41/12/48.","docs/design/D1_MIND_NATURE_V2_EFFECT_CONTRACT_20261118.md","Duyệt hệ số D1-CULT1 và điều kiện Chuyên Tu, sau đó chốt 12 Trait thiếu consumer và 48 Trait chưa khóa"],
+ ["D1","Đệ tử, Tâm Tính, 101 đặc tính & Combat Stats","Bỏ tuyên bố sai về +8 điểm % đã duyệt. Yêu cầu thiết kế mới: Tâm Tính có trần Kháng Hiệu Ứng +50 điểm %, có thưởng trong chính hoạt động Tu Luyện; không thêm hành động Chuyên Tu. Hệ số +0,10 điểm %/điểm và +0,05% hiệu quả Tu Luyện/điểm đang đề xuất. 101 Trait vẫn chia 41/12/48.","docs/design/D1_MIND_NATURE_V2_EFFECT_CONTRACT_20261118.md","Chốt hệ số kháng, hệ số Tu Luyện; sau đó giải quyết 12 Trait thiếu consumer và 48 Trait mở"],
  ["D2/D3","28 công trình, nguyên liệu và đan","Đã xác định vai trò/đầu ra của 26 loại công trình dài hạn và 2 bổ sung; chuẩn hóa quy trình nâng cấp, 630 vật liệu, 270 tuyến nguồn, 476 mã đan.","docs/design/D2_D3_BUILDINGS_ITEMS_DESIGN_CANDIDATE_20261118.md","Hệ số Lv1–100, nguồn thật cho vật liệu, 444 công thức đan còn thiếu"],
  ["D4","Trang bị V2, rèn và đồ bộ","Đã soạn quy trình rèn đầy đủ và 9 loại hành động nâng cấp trang bị. Giữ chuẩn 10 ô, 12 phẩm và 24 bộ; bảng xác suất, cấp cường hóa là đề xuất, chưa duyệt.","docs/design/D4_FORGE_TRANSACTION_DESIGN_CANDIDATE_20261118.md","Phê duyệt xác suất rèn, mức cường hóa, nguồn đồ và các công thức"],
  ["D5","Tu Vi, Luyện Thể và đột phá","Giữ 30×10 mỗi hệ. Cần dùng đúng cân bằng cảnh giới trong nguồn gốc, không thêm Tâm Cảnh 300 tầng hay tự nâng tỷ lệ đột phá.","docs/REALM_LADDER_V2_SPEC.md","Đối chiếu thống nhất số EXP và các nguồn XP cấp cao"],
@@ -567,7 +567,7 @@ search.addEventListener("input",()=>{
  render();
 });
 if(!["localhost","127.0.0.1","::1","vuanhtuan161094-byte.github.io"].includes(location.hostname)){content.innerHTML='<div class="note">Chỉ mở trên GitHub Pages chính thức hoặc localhost.</div>';return;}
-Promise.all(["./data/catalog.json","./data/character_reference.json","./data/trait_effect_audit.json","./data/game_system_audit.json","./data/game_items_audit.json","./data/combat_stats_reference.json","./data/mind_nature_reference.json"].map(path=>fetch(path,{cache:"no-store"}).then(r=>{if(!r.ok)throw Error("HTTP "+r.status+" "+path);return r.json();}))).then(([data,ch,traits,audit,items,combatStats,mind])=>{if(combatStats.stats?.length!==16||combatStats.resistances?.length!==10||mind.approved?.ppPerPoint!==0.01||mind.approved?.maxBonusPp!==8)throw Error("Dữ liệu chiến đấu / Tâm Tính không hợp lệ");state.data=data;state.char=ch;state.traits=traits;state.audit=audit;state.items=items;state.combatStats=combatStats;state.mind=mind;const target=location.hash.replace("#","");const aliases={traits:"characters",audit:"systems",fields:"buildings",medicine:"items",schools:"skills"};state.tab=names[aliases[target]||target]?aliases[target]||target:"home";render();}).catch(err=>{
+Promise.all(["./data/catalog.json","./data/character_reference.json","./data/trait_effect_audit.json","./data/game_system_audit.json","./data/game_items_audit.json","./data/combat_stats_reference.json","./data/mind_nature_reference.json"].map(path=>fetch(path,{cache:"no-store"}).then(r=>{if(!r.ok)throw Error("HTTP "+r.status+" "+path);return r.json();}))).then(([data,ch,traits,audit,items,combatStats,mind])=>{if(combatStats.stats?.length!==16||combatStats.resistances?.length!==10||mind.combat?.ppPerPoint!==0.1||mind.combat?.maxBonusPp!==50)throw Error("Dữ liệu chiến đấu / Tâm Tính không hợp lệ");state.data=data;state.char=ch;state.traits=traits;state.audit=audit;state.items=items;state.combatStats=combatStats;state.mind=mind;const target=location.hash.replace("#","");const aliases={traits:"characters",audit:"systems",fields:"buildings",medicine:"items",schools:"skills"};state.tab=names[aliases[target]||target]?aliases[target]||target:"home";render();}).catch(err=>{
  content.innerHTML='<div class="note">Không tải được dữ liệu bách khoa: '+esc(err.message)+'. Thử tải lại trang (Ctrl+F5).</div>';
 });
 })();
