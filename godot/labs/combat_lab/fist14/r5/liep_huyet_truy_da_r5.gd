@@ -67,7 +67,7 @@ static func target_chest_at(t: float) -> Vector2:
 	return target_feet_at(t) + Vector2(0.0, -70.0)
 
 static func caster_hand_at(t: float) -> Vector2:
-	return caster_feet_at(t) + Vector2(72.0, -88.0)
+	return caster_feet_at(t) + Vector2(28.0, -62.0)
 
 static func target_anchor_at(target_index: int, t: float) -> Vector2:
 	if target_index != 0:
@@ -147,24 +147,24 @@ func _draw() -> void:
 	# Original fist sprites are back-layered under the characters until contact.
 	if t >= 0.10 and t < CAST_TIME:
 		var charge_alpha := smoothstep(0.10, 0.17, t) * (1.0 - smoothstep(0.38, CAST_TIME, t))
-		_draw_pose(ATTACK_ATLAS, 0, ATTACK_COLUMNS, caster_hand_at(t), 0.13, charge_alpha, SOURCE_SIZE[0], SOURCE_CELL_OFFSET[0], FOCUS_SOURCE[0])
+		_draw_pose(ATTACK_ATLAS, 0, ATTACK_COLUMNS, caster_hand_at(t), 0.09, charge_alpha, SOURCE_SIZE[0], SOURCE_CELL_OFFSET[0], FOCUS_SOURCE[0])
 	elif t >= CAST_TIME and t < SIMULATED_CONTACT_TIME:
 		if t < 0.62:
 			var release_alpha := smoothstep(CAST_TIME, 0.50, t) * (1.0 - smoothstep(0.57, 0.62, t))
-			_draw_pose(ATTACK_ATLAS, 1, ATTACK_COLUMNS, anchor, 0.15, release_alpha, SOURCE_SIZE[1], SOURCE_CELL_OFFSET[1], FOCUS_SOURCE[1])
+			_draw_pose(ATTACK_ATLAS, 1, ATTACK_COLUMNS, anchor, 0.105, release_alpha, SOURCE_SIZE[1], SOURCE_CELL_OFFSET[1], FOCUS_SOURCE[1])
 		else:
 			var peak_alpha := 1.0 - smoothstep(0.84, SIMULATED_CONTACT_TIME, t)
-			_draw_pose(ATTACK_ATLAS, 2, ATTACK_COLUMNS, anchor, 0.15, peak_alpha, SOURCE_SIZE[2], SOURCE_CELL_OFFSET[2], FOCUS_SOURCE[2])
+			_draw_pose(ATTACK_ATLAS, 2, ATTACK_COLUMNS, anchor, 0.10, peak_alpha, SOURCE_SIZE[2], SOURCE_CELL_OFFSET[2], FOCUS_SOURCE[2])
 
 	_draw_actor(caster)
 	_draw_target(target, t)
 
 	if t >= SIMULATED_CONTACT_TIME and t < CONTACT_END:
 		var contact_alpha := 1.0 - smoothstep(SIMULATED_CONTACT_TIME + 0.06, CONTACT_END, t)
-		_draw_pose(CONTACT_ATLAS, 0, CONTACT_COLUMNS, contact_anchor_at(t), 0.105, contact_alpha, SOURCE_SIZE[3], SOURCE_CELL_OFFSET[3], FOCUS_SOURCE[3])
+		_draw_pose(CONTACT_ATLAS, 0, CONTACT_COLUMNS, contact_anchor_at(t), 0.075, contact_alpha, SOURCE_SIZE[3], SOURCE_CELL_OFFSET[3], FOCUS_SOURCE[3])
 	elif t >= CONTACT_END and t < RECOIL_END:
 		var recoil_alpha := 1.0 - smoothstep(CONTACT_END, RECOIL_END, t)
-		_draw_pose(CONTACT_ATLAS, 1, CONTACT_COLUMNS, contact_anchor_at(t), 0.115, recoil_alpha, SOURCE_SIZE[4], SOURCE_CELL_OFFSET[4], FOCUS_SOURCE[4])
+		_draw_pose(CONTACT_ATLAS, 1, CONTACT_COLUMNS, contact_anchor_at(t), 0.085, recoil_alpha, SOURCE_SIZE[4], SOURCE_CELL_OFFSET[4], FOCUS_SOURCE[4])
 
 	var mark_alpha := mark_opacity(t)
 	if mark_alpha > 0.002:
