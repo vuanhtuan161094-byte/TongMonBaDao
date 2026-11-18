@@ -189,3 +189,46 @@ Không thay ledger cũ bằng nhãn phẳng `PASS`. Nếu hai nguồn mâu thu�
 ---
 
 **BẤT BIẾN:** Draft PR #72, **không merge**, **không thay gameplay/Combat V2/SaveService/AI/economy**, **không bật V6.3/PvE**, **không rig**, **không GIF trừ khi được yêu cầu rõ**, **không sao chép tài sản JX/Võ Lâm chưa có phép phát hành**, **không sửa lén art/phase được chủ dự án chấp nhận**.
+
+## 11. 19/11/2026 — Bổ sung thực hành từ GitHub (KHÔNG thêm SOP mới)
+
+**Mục tiêu:** thực thi đúng Art-First V4 với chi phí thấp; học **kỹ thuật phụ trợ** từ repo open source, **không lấy particle/shader code làm hình tượng chiêu thức chính**. Nghiên cứu README, mã nguồn và LICENSE công khai của 7 repo; đây là đánh giá tương thích định hướng, **chưa cài add-on nào vào game**. Trên dự án vẫn khóa Godot 4.7.2, PR #72 Draft, PvE/Combat V2 HOLD; không dùng Codex Cloud.
+
+### Nguồn đáng tham khảo và mức độ áp dụng
+
+| Repository / phiên bản tham khảo | Có thể học/tái sử dụng | Giới hạn và giấy phép |
+|---|---|---|
+| [Godot official 2D Particles](https://github.com/godotengine/godot-demo-projects/tree/b761b4cd5718a7118f2c95eb55f181d0a5f004f1/2d/particles) | `GPUParticles2D` + `ParticleProcessMaterial`, birth/death, velocity/damping, lớp phụ | MIT. Demo Godot, kiểm Compatibility/Mobile thực tế; chỉ lớp tia/bụi/ánh sáng, KHÔNG thay master tranh |
+| [GDQuest Visual Effects](https://github.com/gdquest-demos/godot-visual-effects/tree/647a8f1bcecd0b8634f2abe045abb8433b3b3149) | Explosion, laser, ghost trail, tổ chức effect theo thư mục độc lập | **Code MIT, art CC BY-NC-SA 4.0**. Không nhập sprite/texture art cho game dự kiến thương mại. Demo cũ có thể không tương thích Godot 4.7.2, học mô hình, không copy plugin không kiểm tra |
+| [GDQuest Godot 4 VFX Assets](https://github.com/gdquest-demos/godot-4-VFX-assets/tree/f6034a88877f6ea144ae487694cc8fde82d4da7f) | Node/shader/material tổ chức VFX | Tách **code MIT** và **art CC BY-NC-SA 4.0**; reference-only với asset |
+| [REEBOO Stylized 2D VFX Lite](https://github.com/REEBO0/godot-stylized-2d-vfx-lite/tree/0fb078c21e463fe16e93ee25dbb8ca970196e2d3) | Hit spark, slash, mini explosion, auto-free, **`impact` signal** | MIT; Godot 4.4+ (README), thử Godot 4.7.2/Compatibility. Chỉ mượn kỹ thuật nổ điểm chạm, không thay central painted motif |
+| [REEBOO Sprite Juice Kit Lite](https://github.com/reeboolabs/sprite-juice-kit-lite/tree/d5ef9a0b4260d9fba505549339d924ff8cd70c3c) | White hit flash, camera trauma, hit-stop ngắn | MIT; **hit-stop phải gắn receipt thực** và QA gameplay/Android riêng. VFX LAB chỉ được xem mô phỏng, không sửa `Engine.time_scale` gameplay |
+| [Godot Effects Lab 4.7](https://github.com/PSCactux/godot-effects-lab/tree/6af3c856ad8745a655121d11d55a60a03201a145) | One-scene-per-effect, 2D hit/flash, GPU particles, shader, công cụ capture thật / headless smoke | MIT; 4.7+ gần phiên bản dự án, repo nhỏ/tham khảo. Source có code-drawn effects; **không coi hình học procedural là master art** |
+| [GODOT-VFX-LIBRARY](https://github.com/haowg/GODOT-VFX-LIBRARY/tree/6e8fc84ef426f82f747cd540823e1d5e1fdc563a) | Tham khảo kiến trúc thư viện 35+ particles, 17+ shaders và manager | MIT; 4.5+ (README); không import nguyên add-on và singleton nặng khi existing LAB/shared renderer đã có giải pháp |
+
+**Bản quyền:** Luôn xem LICENSE **từng loại file**, giữ copyright/attribution khi thực sự sao chép mã MIT. Không copy sprite Võ Lâm/Kiếm Thế, art GDQuest CC BY-NC-SA hoặc asset thương mại chưa có phép. Chỉ nghiên cứu kỹ thuật và tạo nguồn tranh nguyên gốc cho từng skill.
+
+### Cải tiến thực thi nhỏ, không tăng số gate
+
+1. **G0–G2:** contract đúng, đối chiếu clip *cùng loại chuyển động* (quyền dùng quyền, không suy timing từ Kiếm Tu). Đầu ra 1 câu semantic motif + 5–6 phase (hoặc theo loại skill), 1 source-rights note. Không poster, không slideshow.
+2. **G3 nhanh và cứng:** tạo trước **master RGBA tranh nguồn + pose biến đổi thật**; dùng **`tools/vfx/prepare_g3_source_review.py`** tạo contact sheet **SOURCE ONLY** tối/sáng ở **đúng bề rộng motif dự tính ở 1×** và SHA của nguồn. Nhìn trực tiếp silhouette/chất liệu/morphology/alpha. **Bị ART_SELF_FAIL → dừng ngay**, sửa chỉ source; không scene, Actions hoặc video. Script không chấm điểm đẹp và không thay native Godot G3.5.
+3. **G3.5 đúng lúc:** chỉ khi art preflight tự đánh giá phù hợp mới dựng LAB tối thiểu. Tái dùng shared renderer+packet+runner hiện tại, **3 khung native** charge/peak/contact, so tối/sáng với một phiên bản owner đã thích. Nếu xấu → sửa G2/G3, không shader-bù.
+4. **G3.6/G3.7/G4–G7:** chỉnh alpha/độ rõ, semantic không tên skill, actor thực sự ra quyền (sprite **frame-by-frame, không rig**), va chạm khớp 1 target/receipt, rồi G5 video **ngắn attack→fade**; sustain/expiry dài dùng mốc tĩnh hoặc test, trừ khi motion thực sự cần dài. Chỉ một full-video round khi source+native 3 khung đã ổn.
+5. **Tái sử dụng 2 tầng:** **(A) art riêng theo skill:** master, phase keyposes, viền năng lượng, dấu riêng. **(B) shared engineering:** Atlas pack, layered body MIX + small ADD, particles, impact spark, event/camera feedback **chỉ khi đã được ủy quyền**, renderer, QA. Không sao chép một khối sáng rồi chỉ đổi màu cho 36 nhánh.
+
+**Chặn lãng phí CI tại nguồn:** Đã bỏ các path `fist14/r6_luminous/**` khỏi **push-trigger** của `.github/workflows/vfx-shared-skill.yml`. Điều này chỉ ngăn workflow chung tự quay native cho **R6 đang ART_SELF_FAIL** sau mỗi sửa tranh; **`workflow_dispatch` với packet FIST14_R6 vẫn hoạt động** khi kiểm tranh đã đủ tốt, và bộ runner/tính năng capture không thay đổi. Thay đổi shared runner vẫn có CI theo path hiện hữu. Không tự động nâng owner art status.
+
+**Ví dụ lệnh source-only** (thay tên file, `--motif-width` bằng kích thước thật định dùng trong scene):
+
+```bash
+python3 tools/vfx/prepare_g3_source_review.py \
+  --source godot/labs/combat_lab/fist14/<revision>/source/charge.png \
+  --source godot/labs/combat_lab/fist14/<revision>/source/peak.png \
+  --source godot/labs/combat_lab/fist14/<revision>/source/contact.png \
+  --motif-width 155 --out /tmp/fist14_g3_source_review.png
+```
+
+**Ý nghĩa file:** Contact sheet là bản so nguồn *trước Godot*, không được ghi `G3.5_NATIVE_PASS`; cần nhìn kích thước motif trước khi cam kết 1× thực. File PNG/JSON và asset master là hai thứ khác nhau. Master art bản được chọn phải được commit độc lập và lưu provenance bền vững, không để GitHub Actions artifact là nguồn duy nhất.
+
+**Đầu ra nghiệm thu hợp lệ:** `SOURCE_ART_G3_SELF_PASS/FAIL`, `G3.5_NATIVE_TECH_PASS/FAIL`, `G3.6/G3.7`, `OWNER_VISUAL_APPROVED/PENDING/REWORK`, `PVE_HOLD`. Các trạng thái **không suy ra nhau**. Năng lực mỹ thuật không tự tăng do thêm thư viện. Không thêm batch QA vô ích và không tự động mở G8.
+

@@ -40,9 +40,6 @@ on:
   push:
     branches: [integration/pve-p0-playable-ui-20261103]
     paths:
-      - 'tools/vfx/generate_fist14_r6_light.py'
-      - 'godot/labs/combat_lab/fist14/r6_luminous/**'
-      - 'docs/operations/vfx_packets/FIST14_R6_V4_PREFLIGHT.json'
       - 'tools/qa/run_vfx_shared_packet.py'
       - '.github/workflows/vfx-shared-skill.yml'
 permissions:
@@ -57,7 +54,7 @@ jobs:
     env:
       GODOT_AUDIO_DRIVER: Dummy
       GODOT_RENDERING_DRIVER: opengl3
-      PACKET_INPUT: ${{ (github.event_name == 'push' && 'docs/operations/vfx_packets/FIST14_R6_V4_PREFLIGHT.json') || inputs.packet || 'docs/operations/vfx_packets/POI19_R3_V4_PREFLIGHT.json' }}
+      PACKET_INPUT: ${{ inputs.packet || 'docs/operations/vfx_packets/POI19_R3_V4_PREFLIGHT.json' }}
       MODE_INPUT: ${{ inputs.mode || 'g35' }}
       DURATION_INPUT: ${{ inputs.duration_seconds || 0 }}
     steps:
