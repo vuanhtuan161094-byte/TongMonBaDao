@@ -91,15 +91,15 @@ func _ready() -> void:
 	custom_minimum_size = Vector2(1280, 720)
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
-	if ATTACK_ATLAS.get_size() != Vector2i(4096, 2048):
+	if ATTACK_ATLAS.get_size() != Vector2(4096.0, 2048.0):
 		push_error("FIST14_R5_ATTACK_ATLAS_SIZE_FAIL")
 		get_tree().quit(4)
 		return
-	if CONTACT_ATLAS.get_size() != Vector2i(4096, 1024):
+	if CONTACT_ATLAS.get_size() != Vector2(4096.0, 1024.0):
 		push_error("FIST14_R5_CONTACT_ATLAS_SIZE_FAIL")
 		get_tree().quit(4)
 		return
-	if MARK_ATLAS.get_size() != Vector2i(2048, 1024):
+	if MARK_ATLAS.get_size() != Vector2(2048.0, 1024.0):
 		push_error("FIST14_R5_MARK_ATLAS_SIZE_FAIL")
 		get_tree().quit(4)
 		return
