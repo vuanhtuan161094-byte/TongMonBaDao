@@ -1,0 +1,1017 @@
+{
+  "schemaVersion": 1,
+  "generatedFrom": {
+    "catalogue": "godot/src/simulation/recruitment/disciple_birth_catalogue_v2.gd",
+    "roll": "godot/src/simulation/recruitment/disciple_birth_roll_v2.gd",
+    "generator": "godot/src/simulation/recruitment/disciple_generator_open_points.gd",
+    "flow": "godot/src/simulation/cultivation/disciple_tuvi_flow_v2.gd"
+  },
+  "notes": [
+    "Đặc tính V2 là định danh sinh nhân vật; active=false ở nguồn sinh, không suy luận cộng chỉ số khi chưa có consumer.",
+    "Trọng số đặc tính không phải xác suất sinh độc lập: còn chọn tính chất H/S/B, điều kiện loại trừ và không trùng.",
+    "Thiên mệnh bị chặn khi sinh được đánh dấu ngay trong danh mục."
+  ],
+  "traits": [
+    {
+      "id": "ham_hoc",
+      "name": "Ham Học",
+      "nature": "H",
+      "weight": 10,
+      "birthAvailable": true
+    },
+    {
+      "id": "nhat_tam",
+      "name": "Nhất Tâm",
+      "nature": "H",
+      "weight": 4,
+      "birthAvailable": true
+    },
+    {
+      "id": "tri_nho_sau",
+      "name": "Trí Nhớ Sâu",
+      "nature": "H",
+      "weight": 4,
+      "birthAvailable": true
+    },
+    {
+      "id": "suy_dien",
+      "name": "Suy Diễn",
+      "nature": "S",
+      "weight": 4,
+      "birthAvailable": true
+    },
+    {
+      "id": "hoc_nhanh_lam_au",
+      "name": "Học Nhanh Làm Ẩu",
+      "nature": "S",
+      "weight": 4,
+      "birthAvailable": true
+    },
+    {
+      "id": "cham_ma_chac",
+      "name": "Chậm Mà Chắc",
+      "nature": "S",
+      "weight": 4,
+      "birthAvailable": true
+    },
+    {
+      "id": "tap_niem",
+      "name": "Tạp Niệm",
+      "nature": "B",
+      "weight": 10,
+      "birthAvailable": true
+    },
+    {
+      "id": "kho_tiep_thu",
+      "name": "Khó Tiếp Thu",
+      "nature": "B",
+      "weight": 10,
+      "birthAvailable": true
+    },
+    {
+      "id": "kinh_mach_on_dinh",
+      "name": "Kinh Mạch Ổn Định",
+      "nature": "H",
+      "weight": 4,
+      "birthAvailable": true
+    },
+    {
+      "id": "kinh_mach_mong_manh",
+      "name": "Kinh Mạch Mong Manh",
+      "nature": "B",
+      "weight": 10,
+      "birthAvailable": true
+    },
+    {
+      "id": "ngo_tinh",
+      "name": "Ngộ Tĩnh",
+      "nature": "H",
+      "weight": 1,
+      "birthAvailable": true
+    },
+    {
+      "id": "tam_tinh_nhu_thuy",
+      "name": "Tâm Tĩnh Như Thủy",
+      "nature": "H",
+      "weight": 4,
+      "birthAvailable": true
+    },
+    {
+      "id": "nong_voi_cau_thanh",
+      "name": "Nóng Vội Cầu Thành",
+      "nature": "S",
+      "weight": 4,
+      "birthAvailable": true
+    },
+    {
+      "id": "can_man",
+      "name": "Cần Mẫn",
+      "nature": "H",
+      "weight": 10,
+      "birthAvailable": true
+    },
+    {
+      "id": "cuong_cong",
+      "name": "Cuồng Công",
+      "nature": "S",
+      "weight": 4,
+      "birthAvailable": true
+    },
+    {
+      "id": "luoi_nhac",
+      "name": "Lười Nhác",
+      "nature": "B",
+      "weight": 10,
+      "birthAvailable": true
+    },
+    {
+      "id": "cau_tha",
+      "name": "Cẩu Thả",
+      "nature": "S",
+      "weight": 10,
+      "birthAvailable": true
+    },
+    {
+      "id": "ti_mi",
+      "name": "Tỉ Mỉ",
+      "nature": "S",
+      "weight": 10,
+      "birthAvailable": true
+    },
+    {
+      "id": "tiet_lieu",
+      "name": "Tiết Liệu",
+      "nature": "H",
+      "weight": 4,
+      "birthAvailable": true
+    },
+    {
+      "id": "phung_phi",
+      "name": "Phung Phí",
+      "nature": "S",
+      "weight": 4,
+      "birthAvailable": true
+    },
+    {
+      "id": "da_nhiem",
+      "name": "Đa Nhiệm",
+      "nature": "H",
+      "weight": 4,
+      "birthAvailable": true
+    },
+    {
+      "id": "quen_tay",
+      "name": "Quen Tay",
+      "nature": "H",
+      "weight": 4,
+      "birthAvailable": true
+    },
+    {
+      "id": "doi_nghe_kho",
+      "name": "Đổi Nghề Khó",
+      "nature": "B",
+      "weight": 10,
+      "birthAvailable": true
+    },
+    {
+      "id": "ban_nang_chien_dau",
+      "name": "Bản Năng Chiến Đấu",
+      "nature": "H",
+      "weight": 1,
+      "birthAvailable": true
+    },
+    {
+      "id": "linh_giac_sac_ben",
+      "name": "Linh Giác Sắc Bén",
+      "nature": "H",
+      "weight": 4,
+      "birthAvailable": true
+    },
+    {
+      "id": "tam_than_kien_co",
+      "name": "Tâm Thần Kiên Cố",
+      "nature": "H",
+      "weight": 4,
+      "birthAvailable": true
+    },
+    {
+      "id": "pha_giap_cam",
+      "name": "Phá Giáp Cảm",
+      "nature": "H",
+      "weight": 4,
+      "birthAvailable": true
+    },
+    {
+      "id": "hap_tap",
+      "name": "Hấp Tấp",
+      "nature": "S",
+      "weight": 10,
+      "birthAvailable": true
+    },
+    {
+      "id": "huyet_chien",
+      "name": "Huyết Chiến",
+      "nature": "S",
+      "weight": 4,
+      "birthAvailable": true
+    },
+    {
+      "id": "bat_khuat",
+      "name": "Bất Khuất",
+      "nature": "H",
+      "weight": 4,
+      "birthAvailable": true
+    },
+    {
+      "id": "tam_than_bat_on",
+      "name": "Tâm Thần Bất Ổn",
+      "nature": "B",
+      "weight": 10,
+      "birthAvailable": true
+    },
+    {
+      "id": "tri_trong",
+      "name": "Trì Trọng",
+      "nature": "S",
+      "weight": 10,
+      "birthAvailable": true
+    },
+    {
+      "id": "than_phap_nhe_nhang",
+      "name": "Thân Pháp Nhẹ Nhàng",
+      "nature": "H",
+      "weight": 10,
+      "birthAvailable": true
+    },
+    {
+      "id": "phan_ung_nhanh",
+      "name": "Phản Ứng Nhanh",
+      "nature": "H",
+      "weight": 10,
+      "birthAvailable": true
+    },
+    {
+      "id": "lao_luyen",
+      "name": "Lão Luyện",
+      "nature": "H",
+      "weight": 10,
+      "birthAvailable": true
+    },
+    {
+      "id": "lieu_mang",
+      "name": "Liều Mạng",
+      "nature": "S",
+      "weight": 10,
+      "birthAvailable": true
+    },
+    {
+      "id": "thua_thang_truy_kich",
+      "name": "Thừa Thắng Truy Kích",
+      "nature": "H",
+      "weight": 1,
+      "birthAvailable": true
+    },
+    {
+      "id": "on_tran",
+      "name": "Ổn Trận",
+      "nature": "H",
+      "weight": 10,
+      "birthAvailable": true
+    },
+    {
+      "id": "duoc_tam",
+      "name": "Dược Tâm",
+      "nature": "H",
+      "weight": 4,
+      "birthAvailable": true
+    },
+    {
+      "id": "ho_tam",
+      "name": "Hộ Tâm",
+      "nature": "H",
+      "weight": 4,
+      "birthAvailable": true
+    },
+    {
+      "id": "hoi_nguyen",
+      "name": "Hồi Nguyên",
+      "nature": "H",
+      "weight": 4,
+      "birthAvailable": true
+    },
+    {
+      "id": "khi_huyet_kho_hop",
+      "name": "Khí Huyết Khó Hợp",
+      "nature": "B",
+      "weight": 10,
+      "birthAvailable": true
+    },
+    {
+      "id": "duoc_ly_thong_thao",
+      "name": "Dược Lý Thông Thạo",
+      "nature": "H",
+      "weight": 4,
+      "birthAvailable": true
+    },
+    {
+      "id": "thuong_binh_kinh_nghiem",
+      "name": "Thương Binh Kinh Nghiệm",
+      "nature": "H",
+      "weight": 4,
+      "birthAvailable": false
+    },
+    {
+      "id": "cung_dau",
+      "name": "Cứng Đầu",
+      "nature": "S",
+      "weight": 10,
+      "birthAvailable": true
+    },
+    {
+      "id": "ho_tri_ban_nang",
+      "name": "Hộ Trì Bản Năng",
+      "nature": "H",
+      "weight": 1,
+      "birthAvailable": true
+    },
+    {
+      "id": "kiem_cam",
+      "name": "Kiếm Cảm",
+      "nature": "H",
+      "weight": 1,
+      "birthAvailable": true
+    },
+    {
+      "id": "the_ngo",
+      "name": "Thể Ngộ",
+      "nature": "H",
+      "weight": 1,
+      "birthAvailable": true
+    },
+    {
+      "id": "phap_cam",
+      "name": "Pháp Cảm",
+      "nature": "H",
+      "weight": 1,
+      "birthAvailable": true
+    },
+    {
+      "id": "kiem_tam_on_dinh",
+      "name": "Kiếm Tâm Ổn Định",
+      "nature": "H",
+      "weight": 4,
+      "birthAvailable": true
+    },
+    {
+      "id": "can_chien_lao_thanh",
+      "name": "Cận Chiến Lão Thành",
+      "nature": "H",
+      "weight": 4,
+      "birthAvailable": true
+    },
+    {
+      "id": "phap_y_lien_mien",
+      "name": "Pháp Ý Liên Miên",
+      "nature": "H",
+      "weight": 4,
+      "birthAvailable": true
+    },
+    {
+      "id": "tap_tu",
+      "name": "Tạp Tu",
+      "nature": "S",
+      "weight": 10,
+      "birthAvailable": true
+    },
+    {
+      "id": "tham_an",
+      "name": "Tham Ăn",
+      "nature": "S",
+      "weight": 10,
+      "birthAvailable": true
+    },
+    {
+      "id": "ken_an",
+      "name": "Kén Ăn",
+      "nature": "S",
+      "weight": 10,
+      "birthAvailable": true
+    },
+    {
+      "id": "cu_dem",
+      "name": "Cú Đêm",
+      "nature": "S",
+      "weight": 10,
+      "birthAvailable": true
+    },
+    {
+      "id": "ngu_nuong",
+      "name": "Ngủ Nướng",
+      "nature": "S",
+      "weight": 10,
+      "birthAvailable": true
+    },
+    {
+      "id": "me_sach_se",
+      "name": "Mê Sạch Sẽ",
+      "nature": "S",
+      "weight": 10,
+      "birthAvailable": true
+    },
+    {
+      "id": "bay_bua",
+      "name": "Bày Bừa",
+      "nature": "S",
+      "weight": 10,
+      "birthAvailable": true
+    },
+    {
+      "id": "trom_an_vat",
+      "name": "Trộm Ăn Vặt",
+      "nature": "B",
+      "weight": 10,
+      "birthAvailable": true
+    },
+    {
+      "id": "me_ngu_trua",
+      "name": "Mê Ngủ Trưa",
+      "nature": "S",
+      "weight": 10,
+      "birthAvailable": true
+    },
+    {
+      "id": "mat_nhin_quang",
+      "name": "Mắt Nhìn Quặng",
+      "nature": "H",
+      "weight": 1,
+      "birthAvailable": true
+    },
+    {
+      "id": "khuu_giac_linh_thao",
+      "name": "Khứu Giác Linh Thảo",
+      "nature": "H",
+      "weight": 1,
+      "birthAvailable": true
+    },
+    {
+      "id": "thich_thu_nghiem",
+      "name": "Thích Thử Nghiệm",
+      "nature": "S",
+      "weight": 4,
+      "birthAvailable": true
+    },
+    {
+      "id": "dem_tung_dong",
+      "name": "Đếm Từng Đồng",
+      "nature": "S",
+      "weight": 10,
+      "birthAvailable": true
+    },
+    {
+      "id": "vua_lam_vua_hat",
+      "name": "Vừa Làm Vừa Hát",
+      "nature": "S",
+      "weight": 10,
+      "birthAvailable": true
+    },
+    {
+      "id": "doi_viec_nhu_thay_ao",
+      "name": "Đổi Việc Như Thay Áo",
+      "nature": "S",
+      "weight": 10,
+      "birthAvailable": true
+    },
+    {
+      "id": "hay_quen_dung_cu",
+      "name": "Hay Quên Dụng Cụ",
+      "nature": "B",
+      "weight": 10,
+      "birthAvailable": true
+    },
+    {
+      "id": "hoc_qua_thuc_hanh",
+      "name": "Học Qua Thực Hành",
+      "nature": "H",
+      "weight": 4,
+      "birthAvailable": true
+    },
+    {
+      "id": "ngo_dao_luc_quet_san",
+      "name": "Ngộ Đạo Lúc Quét Sân",
+      "nature": "H",
+      "weight": 1,
+      "birthAvailable": true
+    },
+    {
+      "id": "be_quan_quen_ngay",
+      "name": "Bế Quan Quên Ngày",
+      "nature": "S",
+      "weight": 4,
+      "birthAvailable": true
+    },
+    {
+      "id": "hoc_vet",
+      "name": "Học Vẹt",
+      "nature": "S",
+      "weight": 10,
+      "birthAvailable": true
+    },
+    {
+      "id": "tri_nho_ca_vang",
+      "name": "Trí Nhớ Cá Vàng",
+      "nature": "B",
+      "weight": 10,
+      "birthAvailable": true
+    },
+    {
+      "id": "me_suu_tam_cong_phap",
+      "name": "Mê Sưu Tầm Công Pháp",
+      "nature": "S",
+      "weight": 4,
+      "birthAvailable": true
+    },
+    {
+      "id": "nua_dem_tinh_ngo",
+      "name": "Nửa Đêm Tỉnh Ngộ",
+      "nature": "H",
+      "weight": 1,
+      "birthAvailable": true
+    },
+    {
+      "id": "so_dot_pha",
+      "name": "Sợ Đột Phá",
+      "nature": "B",
+      "weight": 10,
+      "birthAvailable": true
+    },
+    {
+      "id": "nghe_giang_la_buon_ngu",
+      "name": "Nghe Giảng Là Buồn Ngủ",
+      "nature": "S",
+      "weight": 4,
+      "birthAvailable": true
+    },
+    {
+      "id": "nhat_nhung_chay_nhanh",
+      "name": "Nhát Nhưng Chạy Nhanh",
+      "nature": "S",
+      "weight": 10,
+      "birthAvailable": true
+    },
+    {
+      "id": "thu_dai",
+      "name": "Thù Dai",
+      "nature": "H",
+      "weight": 4,
+      "birthAvailable": true
+    },
+    {
+      "id": "danh_hoi_dong",
+      "name": "Đánh Hội Đồng",
+      "nature": "S",
+      "weight": 4,
+      "birthAvailable": true
+    },
+    {
+      "id": "chuyen_danh_len",
+      "name": "Chuyên Đánh Lén",
+      "nature": "S",
+      "weight": 4,
+      "birthAvailable": true
+    },
+    {
+      "id": "ho_het_xung_phong",
+      "name": "Hò Hét Xung Phong",
+      "nature": "S",
+      "weight": 4,
+      "birthAvailable": true
+    },
+    {
+      "id": "gia_chet_tai_tinh",
+      "name": "Giả Chết Tài Tình",
+      "nature": "H",
+      "weight": 1,
+      "birthAvailable": true
+    },
+    {
+      "id": "tay_nhanh_hon_nao",
+      "name": "Tay Nhanh Hơn Não",
+      "nature": "S",
+      "weight": 10,
+      "birthAvailable": true
+    },
+    {
+      "id": "vap_nhung_khong_nga",
+      "name": "Vấp Nhưng Không Ngã",
+      "nature": "H",
+      "weight": 4,
+      "birthAvailable": true
+    },
+    {
+      "id": "lam_chuyen",
+      "name": "Lắm Chuyện",
+      "nature": "S",
+      "weight": 10,
+      "birthAvailable": true
+    },
+    {
+      "id": "hay_mach_leo",
+      "name": "Hay Mách Lẻo",
+      "nature": "S",
+      "weight": 10,
+      "birthAvailable": true
+    },
+    {
+      "id": "biet_tuot",
+      "name": "Biết Tuốt",
+      "nature": "S",
+      "weight": 10,
+      "birthAvailable": true
+    },
+    {
+      "id": "hay_gay_su",
+      "name": "Hay Gây Sự",
+      "nature": "S",
+      "weight": 10,
+      "birthAvailable": true
+    },
+    {
+      "id": "thich_khoe",
+      "name": "Thích Khoe",
+      "nature": "S",
+      "weight": 10,
+      "birthAvailable": true
+    },
+    {
+      "id": "tot_bung_qua_da",
+      "name": "Tốt Bụng Quá Đà",
+      "nature": "S",
+      "weight": 10,
+      "birthAvailable": true
+    },
+    {
+      "id": "me_lam_su_huynh",
+      "name": "Mê Làm Sư Huynh",
+      "nature": "S",
+      "weight": 10,
+      "birthAvailable": true
+    },
+    {
+      "id": "cai_chay_cai_coi",
+      "name": "Cãi Chày Cãi Cối",
+      "nature": "B",
+      "weight": 10,
+      "birthAvailable": true
+    },
+    {
+      "id": "lac_duong_co_duyen",
+      "name": "Lạc Đường Có Duyên",
+      "nature": "S",
+      "weight": 1,
+      "birthAvailable": true
+    },
+    {
+      "id": "nhat_gi_cung_mang",
+      "name": "Nhặt Gì Cũng Mang",
+      "nature": "S",
+      "weight": 4,
+      "birthAvailable": true
+    },
+    {
+      "id": "dung_gi_cung_mo",
+      "name": "Đụng Gì Cũng Mở",
+      "nature": "S",
+      "weight": 4,
+      "birthAvailable": true
+    },
+    {
+      "id": "thinh_tai",
+      "name": "Thính Tai",
+      "nature": "H",
+      "weight": 4,
+      "birthAvailable": true
+    },
+    {
+      "id": "xem_ban_do_nguoc",
+      "name": "Xem Bản Đồ Ngược",
+      "nature": "B",
+      "weight": 10,
+      "birthAvailable": true
+    },
+    {
+      "id": "di_dau_cung_danh_dau",
+      "name": "Đi Đâu Cũng Đánh Dấu",
+      "nature": "H",
+      "weight": 1,
+      "birthAvailable": true
+    },
+    {
+      "id": "so_ma",
+      "name": "Sợ Ma",
+      "nature": "B",
+      "weight": 10,
+      "birthAvailable": true
+    },
+    {
+      "id": "li_don_khi_lac_rung",
+      "name": "Lì Đòn Khi Lạc Rừng",
+      "nature": "H",
+      "weight": 4,
+      "birthAvailable": true
+    }
+  ],
+  "fates": [
+    {
+      "id": "dai_khi_van_thanh",
+      "name": "Đại Khí Vãn Thành",
+      "weight": 3,
+      "birthAvailable": true
+    },
+    {
+      "id": "hong_tran_luyen_tam",
+      "name": "Hồng Trần Luyện Tâm",
+      "weight": 3,
+      "birthAvailable": true
+    },
+    {
+      "id": "pha_quan",
+      "name": "Phá Quân",
+      "weight": 3,
+      "birthAvailable": true
+    },
+    {
+      "id": "that_sat",
+      "name": "Thất Sát",
+      "weight": 3,
+      "birthAvailable": true
+    },
+    {
+      "id": "tham_lang",
+      "name": "Tham Lang",
+      "weight": 2,
+      "birthAvailable": true
+    },
+    {
+      "id": "thien_sat_co_tinh",
+      "name": "Thiên Sát Cô Tinh",
+      "weight": 2,
+      "birthAvailable": true
+    },
+    {
+      "id": "gap_du_hoa_lanh",
+      "name": "Gặp Dữ Hóa Lành",
+      "weight": 3,
+      "birthAvailable": true
+    },
+    {
+      "id": "thien_quyen_hong_phuc",
+      "name": "Thiên Quyến Hồng Phúc",
+      "weight": 3,
+      "birthAvailable": true
+    },
+    {
+      "id": "thon_thien",
+      "name": "Thôn Thiên",
+      "weight": 1,
+      "birthAvailable": true
+    },
+    {
+      "id": "van_phap_quy_nhat",
+      "name": "Vạn Pháp Quy Nhất",
+      "weight": 2,
+      "birthAvailable": true
+    },
+    {
+      "id": "kiem_tien_chuyen_the",
+      "name": "Kiếm Tiên Chuyển Thế",
+      "weight": 1,
+      "birthAvailable": false
+    },
+    {
+      "id": "duoc_vuong_tai_the",
+      "name": "Dược Vương Tại Thế",
+      "weight": 2,
+      "birthAvailable": true
+    },
+    {
+      "id": "tai_tinh_nhap_menh",
+      "name": "Tài Tinh Nhập Mệnh",
+      "weight": 2,
+      "birthAvailable": true
+    },
+    {
+      "id": "bach_kiep_bat_diet",
+      "name": "Bách Kiếp Bất Diệt",
+      "weight": 2,
+      "birthAvailable": true
+    },
+    {
+      "id": "thien_do_anh_tai",
+      "name": "Thiên Đố Anh Tài",
+      "weight": 1,
+      "birthAvailable": true
+    },
+    {
+      "id": "tuc_tue_chuyen_the",
+      "name": "Túc Tuệ Chuyển Thế",
+      "weight": 1,
+      "birthAvailable": true
+    },
+    {
+      "id": "doat_menh",
+      "name": "Đoạt Mệnh",
+      "weight": 1,
+      "birthAvailable": true
+    },
+    {
+      "id": "hau_tich_bac_phat",
+      "name": "Hậu Tích Bạc Phát",
+      "weight": 2,
+      "birthAvailable": true
+    },
+    {
+      "id": "nhat_niem_sinh_van_phap",
+      "name": "Nhất Niệm Sinh Vạn Pháp",
+      "weight": 1,
+      "birthAvailable": true
+    },
+    {
+      "id": "tu_bao_menh",
+      "name": "Tụ Bảo Mệnh",
+      "weight": 2,
+      "birthAvailable": true
+    },
+    {
+      "id": "bach_nghe_quy_tong",
+      "name": "Bách Nghệ Quy Tông",
+      "weight": 2,
+      "birthAvailable": true
+    },
+    {
+      "id": "tu_vi_de_menh",
+      "name": "Tử Vi Đế Mệnh",
+      "weight": 2,
+      "birthAvailable": true
+    },
+    {
+      "id": "thien_co_kha_khuy",
+      "name": "Thiên Cơ Khả Khuy",
+      "weight": 1,
+      "birthAvailable": true
+    },
+    {
+      "id": "thien_cong_khai_vat",
+      "name": "Thiên Công Khai Vật",
+      "weight": 1,
+      "birthAvailable": true
+    }
+  ],
+  "physiques": [
+    {
+      "id": "kim_cuong_ba_the",
+      "weight": 12,
+      "name": "Kim Cương Bá Thể"
+    },
+    {
+      "id": "han_am_the",
+      "weight": 10,
+      "name": "Hàn Âm Thể"
+    },
+    {
+      "id": "hoa_linh_the",
+      "weight": 10,
+      "name": "Hỏa Linh Thể"
+    },
+    {
+      "id": "sinh_co_linh_the",
+      "weight": 8,
+      "name": "Sinh Cơ Linh Thể"
+    },
+    {
+      "id": "truong_sinh_the",
+      "weight": 8,
+      "name": "Trường Sinh Thể"
+    },
+    {
+      "id": "tu_la_chien_the",
+      "weight": 8,
+      "name": "Tu La Chiến Thể"
+    },
+    {
+      "id": "huyet_sat_chi_the",
+      "weight": 7,
+      "name": "Huyết Sát Chi Thể"
+    },
+    {
+      "id": "ngu_hanh_dao_the",
+      "weight": 6,
+      "name": "Ngũ Hành Đạo Thể"
+    },
+    {
+      "id": "van_doc_linh_the",
+      "weight": 5,
+      "name": "Vạn Độc Linh Thể"
+    },
+    {
+      "id": "huyen_nguyet_linh_the",
+      "weight": 4,
+      "name": "Huyền Nguyệt Linh Thể"
+    },
+    {
+      "id": "dau_chien_chi_the",
+      "weight": 3,
+      "name": "Đấu Chiến Chi Thể"
+    },
+    {
+      "id": "khong_linh_hu_the",
+      "weight": 3,
+      "name": "Không Linh Hư Thể"
+    },
+    {
+      "id": "van_phap_dao_the",
+      "weight": 2,
+      "name": "Vạn Pháp Đạo Thể"
+    },
+    {
+      "id": "vo_cau_dao_the",
+      "weight": 2,
+      "name": "Vô Cấu Đạo Thể"
+    }
+  ],
+  "bloodlines": [
+    {
+      "id": "chan_long_huyet",
+      "name": "Chân Long Huyết"
+    },
+    {
+      "id": "phuong_hoang_huyet",
+      "name": "Phượng Hoàng Huyết"
+    },
+    {
+      "id": "bach_ho_huyet",
+      "name": "Bạch Hổ Huyết"
+    },
+    {
+      "id": "huyen_vu_huyet",
+      "name": "Huyền Vũ Huyết"
+    },
+    {
+      "id": "thao_thiet_tan_huyet",
+      "name": "Thao Thiết Tàn Huyết"
+    }
+  ],
+  "rates": {
+    "qualityBySource": {
+      "ordinary": [
+        65,
+        25,
+        8,
+        1.8,
+        0.2
+      ],
+      "gacha": [
+        42,
+        30,
+        18,
+        8,
+        2
+      ],
+      "fate": [
+        50,
+        28,
+        14,
+        6,
+        2
+      ]
+    },
+    "traitCount": [
+      60,
+      32,
+      8
+    ],
+    "traitNature": [
+      50,
+      30,
+      20
+    ],
+    "traitLatent": 8,
+    "rootsCount": [
+      7,
+      18,
+      30,
+      28,
+      17
+    ],
+    "bloodline": 2,
+    "physique": 3,
+    "destiny": 0.5,
+    "mutation": 0.2,
+    "awakenedMutation": 0.01
+  },
+  "tuvi": {
+    "basePerSimMinute": 1000,
+    "cultivateMultiplier": 2,
+    "aptitudeBonusPerPoint": 0.0025,
+    "wallSecPerSimMinute": 60
+  }
+}
