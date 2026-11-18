@@ -28,7 +28,7 @@ const EQUIP=[
 ];
 const bodyGroups={A:["Thanh Linh Thảo","Tinh Lang Bì"],B:["Tử Vân Thảo","Linh Tủy"],C:["Huyết Linh Sâm","Huyết Thú Tinh Huyết"],D:["Kim Cốt Thảo","Linh Thú Cốt Ngọc"],E:["Tiên Tủy Liên","Tiên Thú Chân Cốt"],F:["Bất Hoại Tủy Dịch","Đại La Kim Cốt"],G:["Thần Mạch Tinh","Thần Thú Cốt"],H:["Hỗn Độn Tủy Hoa","Bất Diệt Thần Cốt"]};
 const bodyRows=[["A",12,4],["A",18,5],["A",24,6],["B",12,1],["B",16,2],["B",24,3],["C",12,3],["C",16,4],["C",22,6],["C",32,8],["D",12,3],["D",16,4],["D",20,5],["D",24,6],["E",12,3],["E",16,4],["E",22,6],["F",14,4],["F",20,6],["F",30,9],["G",12,3],["G",16,4],["G",20,5],["G",24,6],["G",30,8],["H",12,3],["H",18,5],["H",24,7],["H",32,10]];
-const state={data:null,char:null,traits:null,audit:null,items:null,tab:"home",realm:2,track:"cultivation",building:"spirit_field",buildingLevel:1,fieldLevel:1,school:"all",skill:null,limit:48,query:"",traitQuery:"",traitGroup:"all",traitPage:1,aptitude:100,focus:"natural",recruitSource:"ordinary",buildStatus:"all",itemGroup:"medicine",itemQuery:"",itemPage:1,featureStatus:"all",featureGroup:"all",featureLimit:16};
+const state={data:null,char:null,traits:null,audit:null,items:null,combatStats:null,tab:"home",realm:2,track:"cultivation",building:"spirit_field",buildingLevel:1,fieldLevel:1,school:"all",skill:null,limit:48,query:"",traitQuery:"",traitGroup:"all",traitPage:1,aptitude:100,focus:"natural",recruitSource:"ordinary",buildStatus:"all",itemGroup:"medicine",itemQuery:"",itemPage:1,featureStatus:"all",featureGroup:"all",featureLimit:16};
 const names={home:"Trang chủ",characters:"Đệ tử & đặc tính",realms:"Tu luyện & đột phá",skills:"Môn phái & kỹ năng",buildings:"Công trình & Linh Điền",equipment:"Trang bị & đồ bộ",items:"Vật phẩm & đan dược",systems:"Toàn bộ chức năng",design:"Thiết kế cần hoàn thiện",search:"Kết quả tìm kiếm"};
 const content=document.getElementById("content"),search=document.getElementById("search");
 // Engineering Studio remains localhost-only and is intentionally excluded from Pages.
@@ -180,6 +180,40 @@ function schools(){
  source('godot/src/simulation/resource/resource_registry.gd');
 }
 
+
+function combatStatPanel(){
+ const d=state.combatStats;
+ if(!d)return panel("Chỉ số chiến đấu","Đang tải bảng thuộc tính chiến đấu V2.","");
+ const groups=d.groups.map(group=>{
+  const rows=d.stats.filter(x=>x.group===group.key).map(x=>[
+   '<b>'+esc(x.name)+'</b><div class="ency-mini">'+esc(x.alias)+' · '+esc(x.id)+'</div>',
+   esc(x.baseline),
+   esc(x.meaning)+'<details><summary>Xem công thức & ví dụ</summary><p>'+esc(x.formula)+'</p></details>'
+  ]);
+  return '<section class="ency-section" id="stat-group-'+esc(group.key)+'"><h3>'+esc(group.name)+'</h3>'+
+   '<p class="ency-mini">'+esc(group.desc)+'</p>'+
+   table(["Chỉ số","Giá trị cơ bản","Tác dụng trong game"],rows)+'</section>';
+ }).join("");
+ const names=d.resistances.map(x=>'<span class="ency-status muted">'+esc(x.name)+'</span>').join(" ");
+ return '<section class="ency-section" id="combat-stats"><h2>16 chỉ số chiến đấu & 10 kháng hệ</h2>'+
+ '<p class="ency-summary">Tại đây phân biệt Chí mạng, Sát thương chí mạng, Kháng bạo, Xuyên phòng, hiệu ứng và các hệ kháng. Bộ tính <b>CombatStatsV2</b> đã có mã và từng PASS bài test Godot tập trung; <b>PvE chính vẫn còn đường dùng Chiến Lực cũ</b>. Vì vậy không đánh dấu 16 chỉ số là đã tích hợp toàn bộ trận đánh.</p>'+
+ '<div class="ency-tags">'+status("16 chỉ số V2 có bộ tính","ok")+status("10 kháng hệ có bộ tính","ok")+status("Chưa chuyển hết PvE sang V2","danger")+'</div>'+
+ groups+
+ panel("Kháng 10 nguyên tố","Chống sát thương đúng hệ; giảm phần còn lại, không cộng thẳng các nguồn.",
+ '<div class="ency-tags">'+names+'</div>'+
+ '<div class="ency-alert soft"><b>Ví dụ kháng Hỏa:</b> nguồn A 30% và nguồn B 20% cho tổng kháng hiệu lực 44%, không phải 50%. Hệ khắc Kim–Mộc–Thủy–Hỏa–Thổ được xử lý riêng qua Linh Căn.</div>')+
+ panel("Ba phép tính cần nhớ","Ví dụ minh họa theo công thức đã duyệt; không phải chỉ số của một đệ tử trong Save.",
+ '<div class="ency-cards">'+[
+ ["Bạo kích (Crit)","40% Bạo Kích − 15 điểm % Kháng Bạo = <b>25%</b> cơ hội chí mạng. Mức 1,50× là hệ số sát thương khi đã chí mạng, không phải xác suất."],
+ ["Phòng Ngự / Xuyên Phòng","Công 100, Thủ địch 80, Xuyên Phòng 20% → Thủ hiệu lực 64. Hệ số qua Thủ = 200/(200+64) ≈ <b>75,76%</b> sát thương đủ điều kiện."],
+ ["Hút Máu","Hút Máu 20%, đối thủ Giảm Hút Máu 5 điểm % → hút thực 15%. Nếu đòn khiến mục tiêu <b>mất 1.000 HP thực</b>, hồi tối đa 150 HP, không vượt phần HP bản thân còn thiếu."]
+ ].map(x=>'<article class="ency-card"><h3>'+x[0]+'</h3><p>'+x[1]+'</p></article>').join("")+'</div>')+
+ panel("Các kênh phụ không phải chỉ số chính","Để nhân vật có nhiều lối chơi nhưng không thêm 20 thanh chỉ số mới.",
+ '<p>Hiệu quả kỹ năng, sát thương Boss/Tinh Anh/chủng tộc, hiệu quả DoT, trị liệu thực hiện/nhận, hộ thuẫn, thời gian khống chế, liên kích thường... chỉ hiện khi có nguồn tác động và consumer hợp lệ.</p>'+
+ '<div class="ency-alert">Thiết kế V2 <b>không có</b> Né Tránh/Chính Xác Đánh Thường ngẫu nhiên, Mana chung, Công/Thủ Vật Lý–Pháp Thuật riêng, Kháng Sát Thương Crit riêng hoặc một chỉ số Speed lượt.</div>')+
+ '<p class="ency-link">Nguồn: '+auditSource(d.executionContract)+' · '+auditSource(d.runtimeKernel)+' · '+auditSource(d.mainCombat)+'</p></section>';
+}
+
 function characters(){
  const d=state.char,t=state.traits;
  if(!d||!t)return heading("ĐỆ TỬ","Đệ tử & đặc tính","Chưa tải được dữ liệu nhân vật.");
@@ -224,6 +258,7 @@ function characters(){
  '<div><strong>+'+fmt(apt*.25)+'%</strong><small>Thưởng Tư Chất</small></div></div>'+
  '<p class="ency-mini">Công thức: 1.000 × '+(focused?'2':'1')+' × (1 + 0,0025 × Tư Chất) ÷ 60. Cộng EXP theo nhịp game; còn phụ thuộc cờ bật hệ Tu Vi V2.</p>')+
  panel('Bảy chỉ số nhân vật','Tâm Tính có giá trị sinh nhân vật nhưng chưa có tác dụng gameplay độc lập.',table(['Chỉ số','Tác dụng hiện được xác nhận hoặc thiết kế'],attributes.map(x=>[esc(x[0]),esc(x[1])])))+
+ combatStatPanel()+
  panel('Tỷ lệ khi sinh đệ tử','Tỷ lệ từng bước; không cộng tất cả tỷ lệ thành 100%.',
  '<div class="controls"><label>Kiểu chiêu mộ'+select("char-source",[["ordinary","Chiêu mộ thường"],["gacha","Triệu hồi"],["fate","Cơ duyên"]],state.recruitSource)+'</label></div>'+
  table(['Phẩm chất','Tỷ lệ'],["Phàm Thường","Xuất Chúng","Thiên Kiêu","Tuyệt Luân","Nghịch Thiên"].map((x,i)=>[esc(x),'<b>'+fmt(chances[i])+'%</b>']))+
@@ -393,10 +428,11 @@ function systemsUnified(){
 function searchUnified(){
  const q=state.query.trim(),needle=q.toLowerCase();
  if(!q)return home();
- const data=state.data||{},ch=state.char||{},audit=state.audit||{},items=state.items||{};
+ const data=state.data||{},ch=state.char||{},audit=state.audit||{},items=state.items||{},combat=state.combatStats||{};
  const find=(arr,makeName)=>arr.filter(x=>makeName(x).toLowerCase().includes(needle));
  const skills=find(data.skills||[],x=>x.name+" "+x.schoolName+" "+x.id).slice(0,12);
  const traits=find(state.traits?.traits||[],x=>x.name+" "+x.designEffectVi+" "+x.id).slice(0,12);
+ const combatFound=find(combat.stats||[],x=>x.name+" "+x.alias+" "+x.id+" "+x.meaning+" "+x.formula).slice(0,16);
  const buildings=find(audit.buildings||[],x=>x.name+" "+x.id).slice(0,12);
  const features=find(audit.features||[],x=>x.name+" "+x.finding).slice(0,12);
  const inv=find([...(items.medicine||[]),...(items.nativeResources||[]),...(items.legacyEquipment||[]),
@@ -406,7 +442,7 @@ function searchUnified(){
   return '<button class="item-button" data-tab="'+tab+'" data-find-type="'+type+'" data-find-id="'+esc(x.id||name)+'"><span><b>'+esc(name)+'</b><small>'+esc(x.designEffectVi||x.finding||x.schoolName||x.family||"Xem chi tiết và trạng thái")+'</small></span><span class="tip">Xem</span></button>';
  }).join("")):"";
  return heading('TRA CỨU TOÀN GAME','Tìm: '+q,'Một nơi tìm xuyên suốt nhân vật, đặc tính, công trình, kỹ năng và vật phẩm. Chọn kết quả để xem trong bách khoa.')+
- (list('Kỹ năng',skills,'skills','skill')+list('Đặc tính',traits,'characters','trait')+
+ (list('Kỹ năng',skills,'skills','skill')+list('Chỉ số chiến đấu',combatFound,'characters','stat')+list('Đặc tính',traits,'characters','trait')+
  list('Công trình',buildings,'buildings','building')+
  list('Vật phẩm & đan dược',inv,'items','item')+
  list('Chức năng game',features,'systems','system')||'<div class="empty">Không tìm được mục phù hợp. Thử từ khóa khác.</div>');
@@ -427,6 +463,7 @@ document.addEventListener("click",e=>{
   if(tab.dataset.findType){
    const id=tab.dataset.findId,kind=tab.dataset.findType;
    if(kind==="trait"){const found=state.traits?.traits?.find(x=>x.id===id);state.traitQuery=found?.name||"";state.traitGroup="all";state.traitPage=1;}
+   if(kind==="stat"){state.statScrollId=id;}
    if(kind==="skill"){state.skill=id;state.school="all";}
    if(kind==="building"){const x=state.audit?.buildings.find(z=>z.id===id);if(BUILDINGS.some(z=>z.id===id))state.building=id;state.buildStatus=x?.codeStatus==="REGISTERED_BUILDING"?"coded":"missing";}
    if(kind==="item"){
@@ -441,7 +478,13 @@ document.addEventListener("click",e=>{
    }
    search.value="";state.query="";
   }
-  goto(tab.dataset.tab);return;
+  goto(tab.dataset.tab);
+  if(tab.dataset.findType==="stat" && state.statScrollId){
+    const selected=state.combatStats?.stats?.find(x=>x.id===state.statScrollId);
+    document.getElementById("stat-group-"+(selected?.group||"core"))?.scrollIntoView({block:"start"});
+    state.statScrollId=null;
+  }
+  return;
  }
  const skill=e.target.closest("[data-skill]");if(skill){state.skill=skill.dataset.skill;render();return;}
  if(e.target.id==="more-skills"){state.limit+=48;render();return;}
@@ -483,7 +526,7 @@ search.addEventListener("input",()=>{
  render();
 });
 if(!["localhost","127.0.0.1","::1","vuanhtuan161094-byte.github.io"].includes(location.hostname)){content.innerHTML='<div class="note">Chỉ mở trên GitHub Pages chính thức hoặc localhost.</div>';return;}
-Promise.all(["./data/catalog.json","./data/character_reference.json","./data/trait_effect_audit.json","./data/game_system_audit.json","./data/game_items_audit.json"].map(path=>fetch(path,{cache:"no-store"}).then(r=>{if(!r.ok)throw Error("HTTP "+r.status+" "+path);return r.json();}))).then(([data,ch,traits,audit,items])=>{state.data=data;state.char=ch;state.traits=traits;state.audit=audit;state.items=items;const target=location.hash.replace("#","");const aliases={traits:"characters",audit:"systems",fields:"buildings",medicine:"items",schools:"skills"};state.tab=names[aliases[target]||target]?aliases[target]||target:"home";render();}).catch(err=>{
+Promise.all(["./data/catalog.json","./data/character_reference.json","./data/trait_effect_audit.json","./data/game_system_audit.json","./data/game_items_audit.json","./data/combat_stats_reference.json"].map(path=>fetch(path,{cache:"no-store"}).then(r=>{if(!r.ok)throw Error("HTTP "+r.status+" "+path);return r.json();}))).then(([data,ch,traits,audit,items,combatStats])=>{if(combatStats.stats?.length!==16||combatStats.resistances?.length!==10)throw Error("Dữ liệu 16 chỉ số V2 hoặc 10 kháng hệ không đầy đủ");state.data=data;state.char=ch;state.traits=traits;state.audit=audit;state.items=items;state.combatStats=combatStats;const target=location.hash.replace("#","");const aliases={traits:"characters",audit:"systems",fields:"buildings",medicine:"items",schools:"skills"};state.tab=names[aliases[target]||target]?aliases[target]||target:"home";render();}).catch(err=>{
  content.innerHTML='<div class="note">Không tải được dữ liệu bách khoa: '+esc(err.message)+'. Thử tải lại trang (Ctrl+F5).</div>';
 });
 })();
