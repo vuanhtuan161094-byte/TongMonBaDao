@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """POI18 Phụ Cốt Cổ · Tiên A (Liên Tâm) — original first-party RGBA sources.
 
-R3 targeted new living spirit-silk flight only: NO beetle/claws/creepy anatomy.
-New gu flight only; R2C gather, burst and mark remain immutable.
+R3.1 Ngoc To Linh Co — genuinely authored phase-changing jade spirit-silk flight: NO beetle/claws/creepy anatomy.
+16 gu key poses in four morphological stages; R2C gather, burst and mark immutable.
 LAB only; no gameplay damage/status receipts. No GIF, rig or skeletal motion.
 """
 from pathlib import Path
@@ -99,41 +99,98 @@ def render(name,t,cell):
         # Seed has soft upward light, not a dark egg or scary head.
         ink("ivory",gauss(x,y,0,-30+12*t,3.1,11)*.26*q)
     elif name=="gu":
-        # Rework only the R2C synthetic X/chevron; preserve other R2C phases.
-        # Two ASYMMETRIC independent living silk trails, no bug anatomy.
+        # POI18 R3.1: Ngoc To Linh Co — four morphologically distinct beats.
+        # A seed-sized jade spirit enclosed in non-insect jade filigree, with
+        # one mother-silk and one subordinate unbalanced silk. NO skeleton,
+        # no commercial pixels, NO mirror-X/water-wave static silhouettes.
+        # Head stays at LOCAL (80,-8) across 16 poses for exact Godot anchoring.
         phase=2*pi*t
-        u=np.linspace(0,1,41)
-        upper=[(-121+201*float(v),23-47*np.sin(pi*v)+14*np.sin(2*pi*v+phase)*np.sin(pi*v)) for v in u]
-        lower=[(-118+142*float(v),71-51*float(v)+13*np.sin(2*pi*v+phase+1.3)*np.sin(pi*v)) for v in u]
-        for j,pts in enumerate((upper,lower)):
-            fall=np.clip((x+135)/27,0,1)
-            fall*=np.clip(((101 if j==0 else 30)-x)/38,0,1)
-            broad=filament(x,y,pts,17 if j==0 else 11)*fall
-            mid=filament(x,y,pts,8.2 if j==0 else 5.2)*fall
-            core=filament(x,y,pts,1.8 if j==0 else 1.15)*fall
-            ink("shadow",broad*.17)
-            ink("jade",broad*(.46 if j==0 else .31)*noise)
-            ink("mint",mid*(.53 if j==0 else .36))
-            ink("ivory",core*(.68 if j==0 else .33))
-            for q in (7,16,27,36):
-                if j==1 and q==36: continue
-                sx,sy=pts[q]
-                drag=-(12+7*np.sin(phase+q*.7))
-                curl=7*np.sin(phase*.7+q*.3+j)
-                wisp=[(sx,sy),(sx+drag*.65,sy+curl*.5),(sx+drag*1.5,sy+curl+(1 if j else -1)*7)]
-                ink("jade",filament(x,y,wisp,3)*.16)
-                ink("mint",filament(x,y,wisp,1.05)*.24)
-        hx=79+2*np.sin(phase)
-        hy=23+3*np.sin(phase)
-        ink("jade",gauss(x,y,hx,hy,19,15)*.28)
-        ink("mint",gauss(x,y,hx,hy,11,9)*.56)
-        ink("gold",gauss(x,y,hx+2,hy-1,7,6)*.66)
-        ink("ivory",gauss(x,y,hx+3,hy-1,3.5,3.3)*.88)
-        for q in range(13):
-            m=float(q)/13
-            px=-115+160*m+4*np.sin(phase+q*1.8)
-            py=30-30*np.sin(pi*m)+23*np.sin(q*2.2+phase*.6)
-            ink("mint",gauss(x,y,px,py,1.35,1.4)*(.21+.07*(q%3)))
+        unfurl=np.clip(t/.20,0,1)
+        drawout=np.clip((t-.13)/.25,0,1)
+        condense=np.clip((t-.64)/.22,0,1)
+        entering=np.clip((t-.84)/.16,0,1)
+        head_x=80.
+        head_y=-8.
+        # Longitudinal shape develops from a compact seed through a full
+        # unequal silk-fan, then contracts into the glowing gu head.
+        tail_x=-18.-113.*drawout+47.*condense+38.*entering
+        length=head_x-tail_x
+        q=np.clip((x-tail_x)/length,0,1)
+        s=np.sin(pi*q)
+        envelope=np.clip((x-tail_x+6.)/15.,0,1)*np.clip((head_x+9.-x)/15.,0,1)
+        # Main body arches toward the head without the symmetrical R2 chevron.
+        drift=17.*(1.-q)+27.*s*np.cos(phase*.64+.65)
+        spine=head_y+drift-25.*s+9.*np.sin(2*pi*q+phase*.86)*s*s
+        breadth=(4.+16.*s**.85)*(0.70+.30*unfurl)*(1.-.35*entering)
+        uneven=1.+.16*np.sin(9.*q+2.4*t)+.07*np.cos(21.*q-4.6*t)
+        a=np.abs((y-spine)/(breadth*uneven+1e-5))
+        broad=np.exp(-a**2.15)*envelope
+        mid=np.exp(-(a*1.85)**2.25)*envelope
+        seam=np.exp(-((y-spine)/(1.3+1.6*s))**2)*envelope
+        progress=np.clip((t-.04)/.16,0,1)
+        ink("shadow",broad*.18*progress)
+        ink("deep",broad*.16*progress)
+        ink("jade",broad*.45*progress*noise)
+        ink("emerald",broad*.22*progress)
+        ink("mint",mid*.42*progress)
+        ink("ivory",seam*.32*progress)
+        # Side-lit silk pleats, asymmetric sparse gold threads.
+        for k,(loc,width,ampl) in enumerate(((.26,13.,.26),(.54,10.,.20),(.78,8.,.24))):
+            cx=tail_x+length*loc
+            cy=head_y+17.*(1.-loc)-25.*np.sin(pi*loc)+27.*np.sin(pi*loc)*np.cos(phase*.64+.65)+9.*np.sin(2*pi*loc+phase*.86)*np.sin(pi*loc)**2
+            fold=np.exp(-(((x-cx)/(width+4.*s))**2+((y-cy-(8. if k==1 else -5.))/(7.+3.*unfurl))**2)*1.4)
+            ink("mint",fold*ampl*unfurl*(1.-entering*.35))
+            ink("gold",fold*.09*unfurl)
+        # The child silk is shorter and diverges from the mother: not parallel.
+        side_tail=tail_x+20.
+        side_end=head_x-31.+24.*entering
+        q2=np.clip((x-side_tail)/max(20.,side_end-side_tail),0,1)
+        s2=np.sin(pi*q2)
+        secondary_y=head_y+35.*(1.-q2)+14.*s2*np.sin(phase*.82+1.35)-10.*s2**2
+        second_gate=np.clip((x-side_tail+3.)/13.,0,1)*np.clip((side_end+7.-x)/12.,0,1)
+        w2=(2.5+10.*s2**1.0)*(1.-.58*entering)
+        b2=np.exp(-(np.abs((y-secondary_y)/(w2+1e-5))**2.25))*second_gate*drawout*(1.-entering*.34)
+        ink("deep",b2*.12)
+        ink("jade",b2*.36*noise)
+        ink("mint",np.exp(-((y-secondary_y)/(w2*.52+1e-5))**2)*b2*.22)
+        ink("gold",np.exp(-((y-secondary_y)/(1.3+1.1*s2))**2)*second_gate*.20*drawout)
+        # Detached silk fraying, spaced unevenly, no identical spark rows.
+        for k in range(5):
+            u0=.18+k*.147
+            fx=tail_x+length*u0
+            fs=np.sin(pi*u0)
+            fy=head_y+17.*(1.-u0)+27.*fs*np.cos(phase*.64+.65)-25.*fs+9.*np.sin(2*pi*u0+phase*.86)*fs*fs
+            side=(-1 if k%3==0 else 1)
+            px=fx-(10.+5.*k)*unfurl
+            py=fy+side*(11.+4.*np.sin(phase+1.7*k))
+            gl=gauss(x,y,px,py,7.+(k%2)*3,2.3+(.8*k))
+            ink("jade",gl*(.11+.04*(k%3))*drawout*(1.-entering))
+            ink("gold",gauss(x,y,px+1.5,py-.8,2.4,1.7)*.16*drawout*(1.-entering))
+        # Fringed, translucent jade-petal cradle; no eyes/legs/mandibles.
+        # This part is a material object and MUST not read like a neon dot.
+        seed_outer=oval(x,y,68.,-10.,25.+2.*unfurl,14.5,angle=-.10,edge=1.75)
+        upper_lobe=oval(x,y,63.,-19.,20.,7.7,angle=-.48,edge=1.9)
+        lower_lobe=oval(x,y,63.,2.,22.,7.4,angle=.39,edge=1.9)
+        ink("deep",seed_outer*.23)
+        ink("jade",seed_outer*(.47+.15*condense))
+        ink("mint",upper_lobe*.39)
+        ink("emerald",lower_lobe*.36)
+        # Curved ivory-gold carved edge, only at the actual gu head.
+        curved=[(56.,-19.),(64.,-20.5),(74.,-16.),(82.,-9.),(78.,0.8),(68.,5.)]
+        ink("gold",filament(x,y,curved,2.)*(.28+.15*condense))
+        ink("ivory",filament(x,y,curved,0.85)*.29)
+        # Pearlescent nephrite heart, compact white-hot light with
+        # warm gold fleck and soft falloff. Head LOCAL (80,-8).
+        seed=gauss(x,y,80.,-8.,16.8,11.)
+        luminous=gauss(x,y,80.,-8.,10.1,6.5)
+        ink("jade",seed*.37)
+        ink("mint",luminous*.58)
+        ink("gold",gauss(x,y,79.,-9.,5.5,4.5)*(.26+.24*condense))
+        ink("ivory",gauss(x,y,80.,-8.,3.4+1.2*entering,3.0+entering)*(.75+.14*condense))
+        ink("ivory",gauss(x,y,87.,-12.,1.6,1.8)*.45)
+        # A tiny asymmetric gold/white spill on the leading side.
+        ink("gold",gauss(x,y,89.,-5.,5.0,2.5)*.25)
+        ink("mint",gauss(x,y,87.,-8.,23.,16.)*.07)
     elif name=="burst":
         # Soft local nectar bloom and three unequal silk petals at TARGET ONLY.
         q=max(.11,np.sin(pi*min(1,t+.07)))
@@ -213,6 +270,6 @@ def main():
         atlas.save(target,optimize=True)
         raw+=atlas.width*atlas.height*4
         print("POI18_ORIGINAL_MARK_RGBA",name,count,atlas.size,target.stat().st_size)
-    print("POI18_PHU_COT_CO_TIENA_R3_SOURCE_PASS poses=16 atlases=1 no_gif_no_rig=true raw_rgba_bytes=",raw)
+    print("POI18_PHU_COT_CO_TIENA_R31_SOURCE_PASS poses=16 atlases=1 no_gif_no_rig=true raw_rgba_bytes=",raw)
 
 if __name__=="__main__":main()

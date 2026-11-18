@@ -29,6 +29,9 @@ func _test() -> void:
     check(LAB.target_foot(1.45).distance_to(LAB.decoy_foot(1.45))>120,"unaffected second enemy present")
     check(not LAB.has_gameplay_receipt(1.45) and not LAB.has_gameplay_receipt(4.5),"no forged Combat V2 hits/status")
     check(LAB.MONSTER_FRAMES.has_animation("walk"),"moving actual monster frames")
+    check(LAB.R31_HEAD_LOCAL==Vector2(80,-8),"R3.1 original gu head local anchor")
+    check(LAB.head_offset(Vector2(230,180)).distance_to(Vector2(57.5,-5.625))<.01,"tip-aligned 1x gu-flight pivot")
+    check(LAB.R31_IMPLODE_SECONDS>0.1 and LAB.R31_IMPLODE_SECONDS<.2,"short LAB-only contact bridge")
     var src:=FileAccess.get_file_as_string("res://labs/combat_lab/poison18_phu_cot_co_tien_a/r3/phu_cot_co_tien_a.gd")
     for forbidden in ["SaveService.","CombatV2.","apply_damage","apply_poison","apply_status","set_health","teleport_actor","spawn_projectile"]:
         check(not src.contains(forbidden),"VFX must not claim live gameplay "+forbidden)
