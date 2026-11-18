@@ -7,8 +7,10 @@ on:
     paths:
       - 'godot/labs/combat_lab/vfx_shared_f_pilot/**'
       - 'godot/tests/labs/combat_lab/vfx_shared_f_policy_test.gd'
-      - 'docs/operations/TMB_VFX_B_D_E_PILOT_20261118.md'
       - '.github/workflows/vfx-shared-f-pilot.yml'
+concurrency:
+  group: vfx-f-shared-${{ github.ref }}
+  cancel-in-progress: true
 permissions:
   contents: read
 jobs:
