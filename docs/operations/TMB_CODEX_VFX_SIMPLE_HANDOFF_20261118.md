@@ -1,5 +1,27 @@
 # CODEX TASK — Tông Môn Bá Đạo VFX: simple JX/Kiếm Thế style, one pilot then reuse
 
+## UPDATE — Codex Cloud first attempt: UNBLOCK with existing GitHub Actions runner (18 Nov 2026)
+
+**Owner direction is to simplify and ship a prototype**, NOT make the first task impossible without 2–4 brand-new painted poses or a local Cloud desktop server. Codex's first attempt verified HEAD, V4 focused checks and Godot 4.7.2, but stopped on source-art scarcity and Cloud's missing `xvfb-run` (system apt read-only, direct headless movie crash). This update **supersedes Task 1 steps 2, 3 and 5 to the extent they categorically require new poses and rendering locally**, but does not weaken the owner ART gate, contract V4, approved-source freeze or no-merge/no-PvE rules.
+
+### A. Loosen the original-art constraint sensibly
+- **ONE recognizable original existing first-party RGBA master is enough for an initial compact VFX pilot**. A 2–4 distinct-pose flipbook is optional, not a release prerequisite. Prefer improving the *silhouette, cropping, first-party paint treatment, material and framing* of the existing independently licensed FIST14 source in **a completely isolated new candidate directory**; old source frozen.
+- Godot can animate position, scale, rotation, opacity, quick trail and impact on **one sprite**, **not** create fake "2–4 individually drawn key poses" from geometric transforms. Label exact source honestly; never falsely claim true distinct authored poses.
+- If the 1× silhouette is still poor, **continue to an isolated technical G3.5 prototype** for owner A/B compare, mark `ART_SELF_FAIL/OWNER_PENDING`; do not certify it as production-ready. Only stop if there is **no original source at all** or code violates frozen assets/contract. Avoid spinning on `ART_SOURCE_BLOCKED` solely for lack of new independently drawn poses.
+- Target unmistakable compact JX-style **red fist hit**, no "flying detached image" illusion, **no added projectile or homing** (canonical speed 0). Keep it as a fast near-target pressure/hit visual anchored on correct actor/selected moving target; this is a VFX demo, not a new damage event. Mark only where canonical state exists.
+
+### B. Video capture must be delegated to pre-existing GitHub Actions
+- **Never apt-install Xvfb in Codex Cloud** (read-only root) and **never run native capture through pure Godot `--headless --write-movie`** there (first attempt exit 134). Cloud's job: code, create/commit original source, packet, Godot headless import/parse and focused contract tests; no local desktop capture requirement.
+- Existing `[.github/workflows/vfx-shared-skill.yml](../../.github/workflows/vfx-shared-skill.yml)` already runs on `ubuntu-24.04`, installs `xvfb ffmpeg Godot 4.7.2`, and `tools/qa/run_vfx_shared_packet.py` generates exact-SHA **native MP4 + phase PNG** via a real virtual display. **Do not write new runner or GitHub installation scripts**. A previously successful shared proof exists at Actions run **44230153048** (POI19), and dedicated FIST14 native proof at **44245929756** demonstrates a Godot-native capture path can function with xvfb.
+- Create an isolated FIST14 candidate V4 packet that is strictly valid and points at committed, deterministic new assets; packet-driven runner must see all assets present (it does **not** implicitly paint/assemble missing atlas). Push the smallest safe candidate to PR #72 branch after preflight HEAD and check no concurrent school edits. Then run the **existing shared workflow** manually (`workflow_dispatch` with `packet=<new file>`, `mode=g35`, `duration_seconds=0`), or call the workflow through the authenticated GitHub API/CLI if permitted; ensure the exact source SHA matches intended candidate. Report separately if workflow-dispatch permissions unavailable.
+- Owner receives the GitHub Actions artifact link and actually inspected phase frames at **1280×720, 1×** before final art decision. **Do not claim a completed G3.5 just from Cloud headless import or a past unrelated run.**
+- Respect the five preexisting dirty worktree files (including `tools/godot/Verify-P3-6A-Playable-Slice.ps1`): **never revert, stash-drop, or commit unrelated changes**. Use `git status` and path-scoped staging. GitHub SHA may move concurrently; no force pushing.
+
+**Task scope stays 1 FIST14 simple candidate.** If the first iteration looks obviously bad, deliver technical result + explicit art debt/owner comparison, propose a cheaper new silhouette, don't launch another 15 micro-revisions. No merge/PvE, no game feature edits, no rig, no imported proprietary JX art.
+
+---
+
+
 **OWNER AUTHORIZED CODEX** on **18 Nov 2026**, replacing previous blanket "no Codex" rule **for scoped VFX production/coding only**. Repository `vuanhtuan161094-byte/TongMonBaDao`. ONLY open Draft PR #72 branch `integration/pve-p0-playable-ui-20261103`. At time of task creation coordinator checked HEAD `a6cbf3e669673d4197a401f5d8fe3d5795a5d8b5`; **it is a snapshot, fetch fresh origin and check branch before writing/pushing**. If Codex Cloud requires a separate working branch, **do not merge** and **do not modify main**; prepare a clean patch or ask for branch-protection direction, preserving PR #72 as the sole integration target. Never force-push. The owner wants Codex to carry VFX technical execution rather than ChatGPT writing many slow separate iterations.
 
 ## Why: failure of previous pipeline
