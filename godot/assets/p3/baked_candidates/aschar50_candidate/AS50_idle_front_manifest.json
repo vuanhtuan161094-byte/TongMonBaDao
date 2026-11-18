@@ -1,0 +1,413 @@
+{
+  "asset_id": "AS-CHAR-50",
+  "character": "Dao Tu male, unnamed candidate",
+  "status": "CANDIDATE_OWNER_ART_APPROVAL_PENDING",
+  "provenance": "AI-generated from a single identity master; RECREATED, not Source A",
+  "rigging": "none; every cell is one complete RGBA body cel",
+  "clip": "idle_front",
+  "fps": 6,
+  "loop": true,
+  "canvas_px": [
+    384,
+    384
+  ],
+  "body_origin_px": [
+    192,
+    360
+  ],
+  "foot_baseline_y_px": 360,
+  "source_master": {
+    "file": "AS50_MASTER_RECREATED_CANDIDATE.png",
+    "sha256": "f1a6c51499868755830421cb345a080328ba3908af437bfcc7b4de713c98a849",
+    "dimensions_px": [
+      1254,
+      1254
+    ]
+  },
+  "source_contact_sheet": {
+    "file": "AS50_idle_front_source_contact_sheet.png",
+    "sha256": "d3ff0937409013110893ade3616465ced6c27cfe8fa9a6751136baa6b934d8b7",
+    "dimensions_px": [
+      1254,
+      1254
+    ]
+  },
+  "frame_registration": "2x2 source grid; identical scale=360/627; fixed x=12,y=0; no interpolation between poses",
+  "frames": [
+    {
+      "index": 0,
+      "path": "frames/idle_front/AS50_idle_front_00.png",
+      "sha256": "b5ed276a91d8395e2a13626fbe67f9a3f11d2018fdbba4fb577e2b32f6d69bc8",
+      "canvas_px": [
+        384,
+        384
+      ],
+      "alpha_bbox_threshold_16": [
+        92,
+        1,
+        269,
+        352
+      ],
+      "fixed_translation_px": [
+        12,
+        0
+      ],
+      "source_cell": [
+        0,
+        0
+      ]
+    },
+    {
+      "index": 1,
+      "path": "frames/idle_front/AS50_idle_front_01.png",
+      "sha256": "5810bbbd0769c9bec4e2c1459fbbf0ddb5c9dfb5cf02a5785be8efeee65886d1",
+      "canvas_px": [
+        384,
+        384
+      ],
+      "alpha_bbox_threshold_16": [
+        85,
+        0,
+        271,
+        352
+      ],
+      "fixed_translation_px": [
+        12,
+        0
+      ],
+      "source_cell": [
+        1,
+        0
+      ]
+    },
+    {
+      "index": 2,
+      "path": "frames/idle_front/AS50_idle_front_02.png",
+      "sha256": "55fb4b67f8ae9c94994f0419a155777c66fbc6f09bbbee8c6fb8eb515c8b77b5",
+      "canvas_px": [
+        384,
+        384
+      ],
+      "alpha_bbox_threshold_16": [
+        83,
+        1,
+        272,
+        353
+      ],
+      "fixed_translation_px": [
+        12,
+        0
+      ],
+      "source_cell": [
+        0,
+        1
+      ]
+    },
+    {
+      "index": 3,
+      "path": "frames/idle_front/AS50_idle_front_03.png",
+      "sha256": "267fed635cdc6cab3c082618ae405d09f6c463672a72fd2bd1d6a78c5e250612",
+      "canvas_px": [
+        384,
+        384
+      ],
+      "alpha_bbox_threshold_16": [
+        88,
+        3,
+        270,
+        353
+      ],
+      "fixed_translation_px": [
+        12,
+        0
+      ],
+      "source_cell": [
+        1,
+        1
+      ]
+    }
+  ],
+  "atlas": {
+    "file": "AS50_idle_front_atlas_2x2.png",
+    "sha256": "05cb86e43a93e00ef3596528280e8868ef4b4f5cd702988d253c3776cd885733",
+    "dimensions_px": [
+      768,
+      768
+    ]
+  },
+  "qa": {
+    "source_png_rgba": "PASS: idle and attack source sheets have alpha transparency at all corners; 8 unique 384x384 body cels, no pose interpolation",
+    "official_godot": "Godot v4.7.2.stable.official.ed1daf0bf",
+    "project_checked": "E:\\TongMonBaDaoWorkspace\\01_Game\\TongMonBaDao\\godot at local HEAD 27ed01cd8f377994e5e50bac9ede84e78e8895bd (stale/dirty local checkout; not PR exact-SHA evidence)",
+    "import_exit_code": 0,
+    "playback_exit_code": 0,
+    "movie": "03_QA_Logs/ASCHAR_V9_3_AS50_DAO_TU_20261118/AS50_idle_attack_Godot472_1280x720_60fps.avi",
+    "movie_sha256": "3a49b95a5bb774499a3f7a9149483e8de7edf4327f48498910a7eb2394c35759",
+    "movie_frames": 150,
+    "movie_fps": 60,
+    "movie_resolution_px": [
+      1280,
+      720
+    ],
+    "physical_mouse": "not applicable; automatic native playback only",
+    "production_map_actor": "PENDING; preview scene runs inside game project but is not attached to the production map actor",
+    "weapon_overlay": "PENDING; body clips are weapon-free and the separately generated saber has background haze, so it was not attached",
+    "owner_art_approval": "PENDING"
+  },
+  "source_attack_contact_sheet": {
+    "file": "AS50_attack_front_source_contact_sheet.png",
+    "sha256": "38b2468b694f85c545cf7a957ecdf6625c6317df614e669002d0e4202b3d1e8d",
+    "dimensions_px": [
+      1254,
+      1254
+    ]
+  },
+  "clips": {
+    "idle_front": {
+      "fps": 6,
+      "loop": true,
+      "motion": "small breathing/sash changes; one blink; no frame interpolation",
+      "frames": [
+        {
+          "index": 0,
+          "path": "frames/idle_front/AS50_idle_front_00.png",
+          "sha256": "b5ed276a91d8395e2a13626fbe67f9a3f11d2018fdbba4fb577e2b32f6d69bc8",
+          "canvas_px": [
+            384,
+            384
+          ],
+          "alpha_bbox_threshold_16": [
+            92,
+            1,
+            269,
+            352
+          ],
+          "fixed_translation_px": [
+            12,
+            0
+          ],
+          "source_cell": [
+            0,
+            0
+          ]
+        },
+        {
+          "index": 1,
+          "path": "frames/idle_front/AS50_idle_front_01.png",
+          "sha256": "5810bbbd0769c9bec4e2c1459fbbf0ddb5c9dfb5cf02a5785be8efeee65886d1",
+          "canvas_px": [
+            384,
+            384
+          ],
+          "alpha_bbox_threshold_16": [
+            85,
+            0,
+            271,
+            352
+          ],
+          "fixed_translation_px": [
+            12,
+            0
+          ],
+          "source_cell": [
+            1,
+            0
+          ]
+        },
+        {
+          "index": 2,
+          "path": "frames/idle_front/AS50_idle_front_02.png",
+          "sha256": "55fb4b67f8ae9c94994f0419a155777c66fbc6f09bbbee8c6fb8eb515c8b77b5",
+          "canvas_px": [
+            384,
+            384
+          ],
+          "alpha_bbox_threshold_16": [
+            83,
+            1,
+            272,
+            353
+          ],
+          "fixed_translation_px": [
+            12,
+            0
+          ],
+          "source_cell": [
+            0,
+            1
+          ]
+        },
+        {
+          "index": 3,
+          "path": "frames/idle_front/AS50_idle_front_03.png",
+          "sha256": "267fed635cdc6cab3c082618ae405d09f6c463672a72fd2bd1d6a78c5e250612",
+          "canvas_px": [
+            384,
+            384
+          ],
+          "alpha_bbox_threshold_16": [
+            88,
+            3,
+            270,
+            353
+          ],
+          "fixed_translation_px": [
+            12,
+            0
+          ],
+          "source_cell": [
+            1,
+            1
+          ]
+        }
+      ],
+      "atlas": {
+        "file": "AS50_idle_front_atlas_2x2.png",
+        "sha256": "05cb86e43a93e00ef3596528280e8868ef4b4f5cd702988d253c3776cd885733",
+        "dimensions_px": [
+          768,
+          768
+        ]
+      }
+    },
+    "attack_front": {
+      "fps": 8,
+      "loop": false,
+      "motion": "ready → torso wind-up → committed forward swing body pose → recovery; body-only; weapon overlay pending",
+      "frames": [
+        {
+          "index": 0,
+          "path": "frames/attack_front/AS50_attack_front_00.png",
+          "sha256": "cda2d203cce710b5aff820ba0eb82433fb709a9137b66564f620fe49634080fa",
+          "canvas_px": [
+            384,
+            384
+          ],
+          "alpha_bbox_threshold_16": [
+            99,
+            4,
+            284,
+            353
+          ],
+          "fixed_translation_px": [
+            12,
+            0
+          ],
+          "source_cell": [
+            0,
+            0
+          ]
+        },
+        {
+          "index": 1,
+          "path": "frames/attack_front/AS50_attack_front_01.png",
+          "sha256": "1dfbec2d9271325acd32528c9332bfad796c3515b30ac6bb3f5288ef299baa61",
+          "canvas_px": [
+            384,
+            384
+          ],
+          "alpha_bbox_threshold_16": [
+            85,
+            4,
+            297,
+            352
+          ],
+          "fixed_translation_px": [
+            12,
+            0
+          ],
+          "source_cell": [
+            1,
+            0
+          ]
+        },
+        {
+          "index": 2,
+          "path": "frames/attack_front/AS50_attack_front_02.png",
+          "sha256": "0afaa3e703e7662ae5c6877d08e4059700f59672d303eaab8fbddba2e7650b9b",
+          "canvas_px": [
+            384,
+            384
+          ],
+          "alpha_bbox_threshold_16": [
+            72,
+            15,
+            308,
+            352
+          ],
+          "fixed_translation_px": [
+            12,
+            0
+          ],
+          "source_cell": [
+            0,
+            1
+          ]
+        },
+        {
+          "index": 3,
+          "path": "frames/attack_front/AS50_attack_front_03.png",
+          "sha256": "6eb4f8bcf85ec1a62734497174b17dd21a6499f79737d98acb1f9f7a727d4e20",
+          "canvas_px": [
+            384,
+            384
+          ],
+          "alpha_bbox_threshold_16": [
+            95,
+            3,
+            290,
+            352
+          ],
+          "fixed_translation_px": [
+            12,
+            0
+          ],
+          "source_cell": [
+            1,
+            1
+          ]
+        }
+      ],
+      "atlas": {
+        "file": "AS50_attack_front_atlas_2x2.png",
+        "sha256": "9248bb33188b0b3fd7760937226bdcdb52c45241818dd142c1c3fa83b909c50c",
+        "dimensions_px": [
+          768,
+          768
+        ]
+      },
+      "weapon_overlay": "NOT_ATTACHED; this candidate contains body-only attack cels. The saber concepts are not clean production overlays; frame socket metadata will be authored only with a verified transparent asset."
+    }
+  },
+  "registered_master": {
+    "file": "AS50_MASTER_REGISTERED_384.png",
+    "sha256": "2ccbc8e24c60de099467604679acb893eb781bd945b30f85d88065f14402e881",
+    "canvas_px": [
+      384,
+      384
+    ],
+    "alpha_bbox_threshold_16": [
+      96,
+      10,
+      288,
+      360
+    ],
+    "body_origin_px": [
+      192,
+      360
+    ]
+  },
+  "github_delivery": {
+    "target_branch": "integration/pve-p0-playable-ui-20261103",
+    "draft_pr": 72,
+    "art_files": [
+      "AS50_MASTER_REGISTERED_384.png",
+      "AS50_FRONT_CLIPS_CANDIDATE.tres",
+      "AS50_FrontAnimationPreview.tscn",
+      "frames/idle_front/*.png",
+      "frames/attack_front/*.png"
+    ],
+    "source_master_and_contact_sheets": "retained in E: 02_Assets; not included in runtime tree yet",
+    "owner_art_approval": "PENDING"
+  }
+}
