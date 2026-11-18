@@ -1,3 +1,5 @@
+> **TASK #81 ABORTED BY OWNER — 18/11/2026.** FIST14 R4 Simple TECH PASS / ART SELF FAIL is **OWNER_REJECTED**. Do not continue, polish, or promote the original one-sprite prototype; any policy relaxing authored independent G3 art/keyposes or asking for an ugly technical candidate as the handoff is revoked. [Original Art-First V4 is mandatory](TMB_VFX_ART_FIRST_SINGLE_SKILL_SOP_V3_20261114.md); [read formal restoration](docs/operations/TMB_VFX_REINSTATE_ART_FIRST_V4_AND_FIST14_R4_REJECTION_20261118.md). Codex still may code but only after the real G1/G2/G3 quality source and posing; it cannot waive artist-authored motion. The rest of this document is RETAINED FOR HISTORICAL CONTEXT ONLY, NOT a runnable current task. Issue #81 should remain closed/rejected.
+
 # CODEX TASK — Tông Môn Bá Đạo VFX: simple JX/Kiếm Thế style, one pilot then reuse
 
 ## UPDATE — Codex Cloud first attempt: UNBLOCK with existing GitHub Actions runner (18 Nov 2026)

@@ -1,3 +1,11 @@
+## OWNER OVERRIDE 18/11/2026 — RETURN TO ORIGINAL VFX ART-FIRST V4 (HIGHEST CURRENT VFX AUTHORITY)
+
+**The owner explicitly rejected FIST14 R4 Simple and ordered `quay trở về quy trình cũ`.** Restore [original Art-First V3 + Production System V4](docs/operations/TMB_VFX_ART_FIRST_SINGLE_SKILL_SOP_V3_20261114.md) and [Sprite Layer Pipeline](docs/operations/TMB_VFX_SPRITE_LAYER_PIPELINE_20261114.md) IN FULL. **Prior "JX simplified" numeric 2–4 pose targets, one old sprite + Godot effects, and "deliver ugly technical candidate" shortcuts are REVOKED.** Preserve study of JX/Kiếm Thế Mobile as visual reference, not as license to bypass first-party illustrated alpha master and **genuinely distinct authored key poses**. G0 contract → G1 licensed movement reference → G2 semantic silhouette/storyboard → **G3 high-quality original master + real changing frames; visual STOP before coding** → G3.5 native 1280×720 1× moving-contact → G3.6 brightness / G3.7 recognizability → G4/G5 motion only after art preflight → G7 technical exact-SHA → G8 separate owner approval/PvE HOLD.
+
+FIST14 R4 `70cfd81c...` (TECH PASS) / `2e9b9d7b...` (handoff) **ART_SELF_FAIL and OWNER_REJECTED**, NOT production source, NOT accepted. Keep commits/assets archived, **do not delete/reset/force-push/merge**. Codex may remain technical implementer because owner authorized it, but **may not weaken V4 quality gates** or move a single rejected red bitmap as if that were new source art. Refer to [formal V4 reinstatement + R4 rejection](docs/operations/TMB_VFX_REINSTATE_ART_FIRST_V4_AND_FIST14_R4_REJECTION_20261118.md). Previous contradictory instructions below are historical and superseded wherever conflicting. No rig, no default GIF, no gameplay/SaveService/economy changes, no PvE integration and no merge.
+
+---
+
 ## OWNER DECISION 2026-11-18 — CODEX PRIMARY VFX IMPLEMENTER (supersedes earlier no-Codex)
 
 The owner explicitly ordered: **"thôi giao cho codex làm thôi"**. For new and authorized VFX technical work, **Codex is approved and becomes the intended primary producer**. No-Codex text elsewhere is superseded **only for scoped VFX production, Godot/GDScript/art asset staging and CI**. All no-rig, frozen approved/provisional sources, G3.5 human visual STOP, gameplay/PvE HOLD, no merge, and safe HEAD/branch write rules remain mandatory.

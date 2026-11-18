@@ -1,3 +1,5 @@
+> **OWNER OVERRIDE 18/11/2026 — ORIGINAL ART-FIRST V4 RESTORED.** After FIST14 R4 Simple failed its art gate, owner revoked **one static sprite + simple Godot motion as adequate source**, numeric reduced pose budgets, and the "ship ART_FAIL tech candidate" fallback. [Read binding restoration](docs/operations/TMB_VFX_REINSTATE_ART_FIRST_V4_AND_FIST14_R4_REJECTION_20261118.md) and [original V4 SOP](TMB_VFX_ART_FIRST_SINGLE_SKILL_SOP_V3_20261114.md) **before every VFX action**. Earlier sections §10–11 remain as chronology only where they contradict this. Codex is allowed as tool, not as an excuse to bypass illustrated source G2/G3. FIST14 R4 OWNER_REJECTED; preserve its failed history, no merge/PvE, freeze owner-accepted assets.
+
 # TMB VFX — Multi-chat coordinator, work ownership and limit-safe recovery
 
 **Established:** 18 Nov 2026 (UTC+7) · **Repository:** `vuanhtuan161094-byte/TongMonBaDao` · **Branch:** `integration/pve-p0-playable-ui-20261103` · **PR:** #72 Draft.

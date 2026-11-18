@@ -1,0 +1,35 @@
+# OWNER CORRECTION — restore Art-First Production System V4 and reject FIST14 R4 shortcut
+
+**Decision date:** 2026-11-18 · **Repo:** `vuanhtuan161094-byte/TongMonBaDao` · Draft PR #72 · branch `integration/pve-p0-playable-ui-20261103`
+
+## Reason
+Owner explicitly rejected FIST14 R4 Simple after Codex produced a 1.5 s native Godot technical PASS but the visually central fist was an older single master moved/cropped into a floating red orb, not an original coherent martial strike. Prior coordinator directions relaxing original G2/G3 illustrated source and key-pose requirements were **a mistake**, and are hereby **REVOKED**. This is **not** an instruction to rewrite or erase commits. Keep R4 as reproducible failed prototype and as negative test case, never as reusable art standard.
+
+Historical evidence:
+- [R4 candidate commit 70cfd81c](https://github.com/vuanhtuan161094-byte/TongMonBaDao/commit/70cfd81c4055feb18297fe99b18fea5bc95be0ae)
+- [R4 handoff commit 2e9b9d7b](https://github.com/vuanhtuan161094-byte/TongMonBaDao/commit/2e9b9d7bcb9c8e0e8b072310bdd4cd459f248b23)
+- [Native G3.5 run #44294750342](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/44294750342) on `70cfd81c...`; TECH PASS/ART SELF FAIL; artifact #14424016501. **OWNER REJECTED.** No G5 or PvE approval.
+- [Original mandatory VFX Art-First SOP V3 + Production System V4](TMB_VFX_ART_FIRST_SINGLE_SKILL_SOP_V3_20261114.md), [Sprite Layer Pipeline](TMB_VFX_SPRITE_LAYER_PIPELINE_20261114.md), [Art Director skill](../../.agents/skills/tmb-vfx-art-director/SKILL.md), [Cross-school lessons](TMB_VFX_CROSS_SCHOOL_LESSONS_AND_EFFICIENT_WORKFLOW_20261118.md).
+
+## Binding process for ALL school VFX: FULL V4, NO SKIPPED ART GATES
+1. **G0 / authority:** check latest PR #72 HEAD before writes, exact school skill ID/Combat V2 event and timing clocks, caster/target anchors; no invented mechanics.
+2. **G1 / reference:** study real JX, Võ Lâm, Kiếm Thế Mobile and prior owner-liked examples for motion cadence, material, silhouette, hit feedback, occlusion. Respect provenance, license, independent creation. Write a grounded breakdown of **visual behavior**, not copied pixels.
+3. **G2 / semantic silhouette and storyboard:** choose the exact skill identity. Show source → release → movement/force → impact → result in 5–6 motivated phases where applicable. Prepare **artistic keypose plan and 1× intended scale** and get internal/owner visual direction approval where required. "Easy to recognize" is an art requirement, not permission to turn every ability into an interchangeable ball.
+4. **G3 / art source FIRST:** create/preserve original first-party *clean RGBA illustrated master artwork* with recognizable anatomy or energy-shape, independent **genuinely changing authored key poses** matched to phase/timing for animation, not merely moving/resizing/rotating a poor single static bitmap. Reuse rights-cleared source only where visually and semantically appropriate. **Inspect actual master and individual distinct frames before coding a full scene**. A poster, tiny crop, repeated static image, procedural ribbon, flat glow ball, or clipped inherited sprite **does not pass G3**. Frame count is determined by animation and V4, **not by arbitrary simplification quotas**; original SOP examples are guidance, Production System V4 motion-derived frames are authoritative.
+5. **Godot layering + early G3.5:** only after the master/keyposes are art-credible, layer illustrated body (MIX), restrained glow/particle ADD, trail/back/front occlusion, target-relative meaningful contact. Run genuine Godot 4.7.2 native **1280×720 at 1×** with charge/peak/**moving-target contact** three frames, stop on source fidelity and art failure **before G5**. Linux GitHub Actions virtual display is permitted for capture; Cloud headless import is only technical proof.
+6. **G3.6 contrast and G3.7 semantic readability:** test bright/dark scenes, semantic silhouette **without HUD/skill name**, real moving target/decoy, no fake hit, no glyph-label substitute, distinct school characteristics. No PASS from metric alone.
+7. **G4/G5 motion:** after G3.5/3.6/3.7 art preflight passes, only then longer continuous native video, contact/fade/mark expiry, timing and 1× motion review. Do not make a full polished movie to hide G3 art failure.
+8. **G7 technical:** V4 exact-SHA focused packet tests, source provenance and reproducibility, native captures and evidence. G8 owner **VISUAL** approval and separately authorized real PvE integration. **TECH PASS is NEVER ART PASS.**
+
+**Codex authorization remains scoped to implementation:** owner previously granted Codex permission to do VFX, but it is **not empowered to waive G1–G3 or substitute programmer-made particles for strong original art**. If Codex cannot generate/get quality independent illustrated source, stop at **G3 ART SOURCE BLOCKED** with an honest 1× master/keypose visual critique and source requirement; do not invent a "TECH PASS but ugly" fallback as a deliverable or iterate a known failed R4. Reuse existing approved source material where appropriate, but not by borrowing a rejected pose and moving it through a scene.
+
+**Aesthetic direction:** JX/Kiếm Thế Mobile-inspired **readability, restrained glow and martial weight** remain desired; "simple visual language" **never means a simple art-production shortcut**.
+
+## Immediate disposition and safe write rules
+- **FIST14 R4 Simple:** `TECH_G3.5_PASS`; `ART_SELF_FAIL`; **`OWNER_REJECTED`**; `G3/G3.6/G3.7_NOT_PASSED`; `G5_NOT_EXECUTED`; `PVE_HOLD`; `NO_MERGE`. Frozen for history and negative QA. **Do not continue R4** or silently elevate its art.
+- **Issue #81** is superseded by owner rejection of its simplified art acceptance rules. Leave its comments and historical links accessible. Any future rework must be a separately scoped **Art-First V4** task starting from G1/G2/G3 and new illustrated source, not a quick R4 shader fix.
+- Keep FIST14 R2/R3, FIST12 R10C, FIST13 R7, POI18 R2C/R3.2, PAF05 R5E and all other owner-accepted/provisional assets untouched. Check HEAD before every write; one-writer per school-owned path; commit only authorized files, non-force fast-forward, PR #72 Draft, V6.3 OFF, no rig, no GIF by default, no imported commercial JX art, no Combat V2/SaveService/economy/AI/PvE changes.
+- Do not run automatic large batches until at least **one** truly illustrated **owner-accepted VFX** demonstrates the restored workflow. In the future, library reuse is for renderer, QA, trail and hit plumbing, **not replacing each skill's identity**.
+
+## Reversion scope
+This is a **process rollback**, NOT a git reset. The following superseded documents are retained only for audit: `TMB_VFX_JX_SIMPLE_STYLE_V1_20261118.md` (numeric pose budgets and one-sprite policy suspended) and `TMB_CODEX_VFX_SIMPLE_HANDOFF_20261118.md` (one-master shortcut and mandatory ugly-tech-fallback revoked). Read this document above those historical amendments. No existing source binaries deleted and no owners' art approval changed.

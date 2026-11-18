@@ -1,3 +1,5 @@
+> **OWNER RESTORATION (18/11/2026):** Original first-party illustrated master + **genuinely changing authored animation poses** are once again mandatory for animated VFX under Production System V4; the subsequent one-sprite FIST14 R4 quick-candidate allowance was revoked after owner rejected its art. **Art/source G3 STOP before implementing a full Godot scene**; native exact-SHA G3.5 and later CI cannot redeem inadequate source artwork. JX/Kiếm Thế readability is desired, but visual simplicity is **not** a waiver of original source quality or G2/G3. See [reinstatement](docs/operations/TMB_VFX_REINSTATE_ART_FIRST_V4_AND_FIST14_R4_REJECTION_20261118.md).
+
 ## LATEST OWNER RULE 2026-11-16: NO GIF
 
 Do not auto-create GIF concepts or video exports and do not require them as a G2/G5 step. GIF-first V4.2 is revoked by owner. Deliver **Godot-native animated VFX (MP4)** from original true-alpha sprite layers, plus screenshots and exact-SHA acceptance. For Poison basic tiers, fix wobbling trails and make Human/Immortal/Divine art visibly evolve beyond recolors. Explicit user request is the only GIF exception. Older GIF mentions below are historical and subordinate.
