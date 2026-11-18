@@ -23,7 +23,7 @@
   },
   "provenance": {
     "source_class": "FIRST_PARTY_TRUE_RGBA_R3_GU_ONLY",
-    "master_quality_status": "ART_NOT_YET_NATIVE_REVIEWED",
+    "master_quality_status": "MANUAL_ART_REVIEW_REQUIRED",
     "rights_note": "R1B owner REJECTED; R2C accepted provisional with G3.5 self-art FAIL and G5 hold. R3 only changes 16 flight gu poses, preserves untouched R2C gather/burst/seal original sources. No third-party pixels, no poster crop, rig, GIF, gameplay or PvE.",
     "generators": [
       "tools/vfx/generate_poi18_phu_cot_co_tien_a_r3.py"
@@ -138,7 +138,7 @@
   "gate_status": {
     "g3_5_capture": "NOT_EXECUTED_R3",
     "technical": "NOT_EXECUTED_R3",
-    "art": "R3_MANUAL_G35_REVIEW_PENDING",
+    "art": "MANUAL_ART_REVIEW_REQUIRED",
     "owner": "OWNER_VISUAL_PENDING",
     "live": "PVE_INTEGRATION_HOLD",
     "device": "PHYSICAL_QA_PENDING",
