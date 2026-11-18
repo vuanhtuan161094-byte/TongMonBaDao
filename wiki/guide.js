@@ -230,7 +230,7 @@ function mindNaturePanel(){
  '<p class="ency-summary">Tâm Tính là <b>chỉ số nền thứ ba trong Tam Căn D7</b>, không phải Tâm Trạng hay một cảnh giới thứ ba. Người có Tâm Tính cao bền bỉ hơn trước khống chế. Những ảnh hưởng tới tâm lý và tu tâm bên dưới là hướng phát triển đề xuất.</p>'+
  '<div class="ency-tags">'+status("A2: Đã duyệt thiết kế","ok")+status("Combat PvE: chưa tích hợp","danger")+status("M2–M4: mới đề xuất","idea")+'</div>'+
  panel("Đã chốt: Kháng Hiệu Ứng từ Tâm Tính","+0,01 điểm phần trăm mỗi điểm, tối đa +8 điểm %. Không tác động Crit, Công, HP hay tỷ lệ đột phá.",
- '<div class="ency-controls"><label>Điểm Tâm Tính giả lập<input id="mind-score" type="number" min="0" step="1" max="999999" value="'+fmt(n)+'"></label></div>'+
+ '<div class="ency-controls"><label>Điểm Tâm Tính giả lập<input id="mind-score" type="number" min="0" step="1" max="999999" value="'+n+'"></label></div>'+
  '<div class="ency-buttons" style="margin:0 0 15px">'+validOpts+'</div>'+
  '<div class="ency-example"><div><strong>+'+fmt(bonus)+' điểm %</strong><small>Kháng Hiệu Ứng do Tâm Tính (thiết kế đã duyệt)</small></div>'+
  '<div><strong>'+fmt(chance)+'%</strong><small>Ví dụ xác suất bị Choáng khi địch 45% gốc, +10 điểm % Chính Xác, mục tiêu có thêm +10 điểm % Kháng từ Trait</small></div>'+
