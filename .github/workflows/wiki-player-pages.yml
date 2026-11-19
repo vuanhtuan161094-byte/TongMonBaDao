@@ -67,8 +67,10 @@ jobs:
         id: godot-template-cache
         uses: actions/cache@v4
         with:
-          path: ~/.local/share/godot/export_templates/4.7.2.stable/web_nothreads_release.zip
-          key: tmb-godot-4.7.2-web-nothreads-f298490b
+          path: |
+            ~/.local/share/godot/export_templates/4.7.2.stable/web_nothreads_release.zip
+            ~/.local/share/godot/export_templates/4.7.2.stable/web_nothreads_debug.zip
+          key: tmb-godot-4.7.2-web-nothreads-release-debug-f298490b-v2
 
       - name: Download verified official Godot 4.7.2 Linux editor
         shell: bash
@@ -82,7 +84,7 @@ jobs:
           chmod +x "$RUNNER_TEMP/tmb-godot/Godot_v4.7.2-stable_linux.x86_64"
           "$RUNNER_TEMP/tmb-godot/Godot_v4.7.2-stable_linux.x86_64" --headless --version
 
-      - name: Download verified official 4.7.2 export template when not cached
+      - name: Download verified official 4.7.2 release and debug Web templates when not cached
         if: steps.godot-template-cache.outputs.cache-hit != 'true'
         shell: bash
         run: |
@@ -91,9 +93,20 @@ jobs:
             "https://github.com/godotengine/godot-builds/releases/download/4.7.2-stable/Godot_v4.7.2-stable_export_templates.tpz"
           echo "f298490b8d44d934be425a5a65a51bf15f422428b229a06a6e11d9ffea248011  $RUNNER_TEMP/tmb-godot/templates.tpz" | sha256sum -c -
           mkdir -p "$HOME/.local/share/godot/export_templates/4.7.2.stable"
-          unzip -p "$RUNNER_TEMP/tmb-godot/templates.tpz" templates/web_nothreads_release.zip > "$HOME/.local/share/godot/export_templates/4.7.2.stable/web_nothreads_release.zip"
-          test -s "$HOME/.local/share/godot/export_templates/4.7.2.stable/web_nothreads_release.zip"
-          unzip -tq "$HOME/.local/share/godot/export_templates/4.7.2.stable/web_nothreads_release.zip" | tail -n 1
+          for variant in release debug; do
+            template="$HOME/.local/share/godot/export_templates/4.7.2.stable/web_nothreads_${variant}.zip"
+            unzip -p "$RUNNER_TEMP/tmb-godot/templates.tpz" "templates/web_nothreads_${variant}.zip" > "$template"
+            test -s "$template"
+            unzip -tq "$template" | tail -n 1
+          done
+
+      - name: Verify both Godot Web templates before export (including cache hit)
+        shell: bash
+        run: |
+          set -euo pipefail
+          for variant in release debug; do
+            test -s "$HOME/.local/share/godot/export_templates/4.7.2.stable/web_nothreads_${variant}.zip"
+          done
 
       - name: Import and export the CURRENT Godot main game to Web
         shell: bash
