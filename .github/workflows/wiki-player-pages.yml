@@ -191,9 +191,9 @@ jobs:
             VFX_REVIEW_URL="http://127.0.0.1:8679/vfx/" \
             VFX_BROWSER_PROOF="$RUNNER_TEMP/vfx-web-browser-proof" \
             node tools/vfx/check_web_visual.cjs
-          grep -Fq '"verdict": "BROWSER_CANVAS_PIXELS_PASS"' \
+          grep -Fq '"verdict": "BROWSER_CANVAS_AND_VFX_PHASES_PASS"' \
             "$RUNNER_TEMP/vfx-web-browser-proof/result.json"
-          echo "VFX_WEB_PIXEL_VISUAL_GATE=PASS"
+          echo "VFX_WEB_3_PHASE_VISUAL_GATE=PASS"
 
       - name: Upload minimal VFX browser screenshot proof
         if: always()

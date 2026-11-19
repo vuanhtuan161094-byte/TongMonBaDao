@@ -15,6 +15,8 @@ const SOURCE_R1 := preload("res://labs/combat_lab/sword_human_phi_kiem_truy_anh/
 const FOOT := Vector2(200, 429)
 const MAP_SCALE := 0.17
 const POSE_FPS := 7.0
+const LOOP_END := 1.80
+const SUCCESS_MARK := 1.32
 var _reader
 var _sockets: Dictionary
 var _bindings: Dictionary
@@ -297,7 +299,7 @@ func _process(delta: float) -> void:
         _flash.position = _monster.position + Vector2(0, -54) - _flash.size * 0.5
         _flash_mat.set_shader_parameter("event_age", clampf((_clock - 0.72) / 0.73, 0.0, 1.0))
         _flash_mat.set_shader_parameter("power", 0.74)
-    if not _done and _clock >= 2.8:
+    if not _done and _clock >= SUCCESS_MARK:
         _done = true
         if _cast and _hit and (not _moving or _monster.position.distance_to(_monster_home) > 1.0):
             if _moving:
@@ -307,6 +309,11 @@ func _process(delta: float) -> void:
             print("BRIDGE_AS48_END=PASS front_only=true G3=SOURCE_PENDING native_movie_is_not_device_fps=true")
         else:
             push_error("BRIDGE_AS48_END=FAIL")
+    # The previous R1 ran once for 1.18 seconds and left an empty canvas.
+    # Loop the LAB display automatically. Each cycle gets a fresh LAB-only
+    # encounter scope; never write synthetic hits to Combat V2.
+    if _clock >= LOOP_END:
+        _replay()
     queue_redraw()
 
 
@@ -314,6 +321,40 @@ func _process(delta: float) -> void:
 func review_replay() -> void:
     if _good:
         _replay()
+        _redraw_source_vfx()
+
+func _redraw_source_vfx() -> void:
+    if has_node("OriginalSwordHumanR1RGBA"):
+        get_node("OriginalSwordHumanR1RGBA").queue_redraw()
+
+func review_seek_phase(phase: String) -> void:
+    # An owner/Chromium review may hold the painted VFX at an exact frame.
+    # These are SYNTHETIC LAB_ONLY visual events, never Combat authority.
+    if not _good:
+        return
+    var at := -1.0
+    if phase == "charge":
+        at = 0.16
+    elif phase == "projectile":
+        at = 0.51
+    elif phase == "contact":
+        at = 0.87
+    if at < 0.0:
+        return
+    _replay()
+    _clock = at
+    var pose := mini(3, int(_clock * POSE_FPS))
+    _pose(pose)
+    if _moving:
+        _monster.position = _monster_home + Vector2(64.0 * sin(_clock * 1.27), 9.0 * sin(_clock * 1.62))
+    if phase != "charge":
+        _cast = _send("skill_cast", "cast_1", 2)
+    if phase == "contact" and _cast:
+        _hit = _send("hit", "hit_1", 3)
+    review_set_paused(true)
+    queue_redraw()
+    _redraw_source_vfx()
+    print("VFX_SWORD_R1_PHASE_HELD=", phase, " clock=", _clock)
 
 func review_set_paused(value: bool) -> void:
     _review_paused = value
@@ -328,6 +369,7 @@ func review_set_fx(value: bool) -> void:
     if not value:
         _glow.visible = false
         _flash.visible = false
+    _redraw_source_vfx()
 
 func review_set_bright(value: bool) -> void:
     _review_bright = value
@@ -353,6 +395,12 @@ func _unhandled_key_input(event: InputEvent) -> void:
         _replay()
     elif key.keycode == KEY_M:
         _moving = not _moving
+    elif key.keycode == KEY_1:
+        review_seek_phase("charge")
+    elif key.keycode == KEY_2:
+        review_seek_phase("projectile")
+    elif key.keycode == KEY_3:
+        review_seek_phase("contact")
 
 func _draw_original_actor_and_monster() -> void:
     if not _good or _body == null or _sword == null or _monster == null:
@@ -405,7 +453,7 @@ func _draw() -> void:
         HORIZONTAL_ALIGNMENT_LEFT, -1, 20, Color("163247") if _review_bright else Color("e7f3fa"))
     draw_string(font, Vector2(24, 68), "REAL AS48 + SEPARATE JIAN + THREE VFX PHASES - CODE-PAINTED CANDIDATE",
         HORIZONTAL_ALIGNMENT_LEFT, -1, 15, Color("643d17") if _review_bright else Color("f4cf90"))
-    draw_string(font, Vector2(24, 94), "SYNTHETIC LAB EVENTS - NO HP/STATUS - SPACE REPLAY - M MOVE",
+    draw_string(font, Vector2(24, 94), "AUTO LOOP ON - 1: CHARGE  2: FLIGHT  3: IMPACT - SPACE: REPLAY",
         HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Color("304d63") if _review_bright else Color("bed2e0"))
     draw_string(font, Vector2(24, 682), "G3 ART REVIEW PENDING - OTHER DIRECTIONS PENDING - OWNER ART PENDING - PVE HOLD",
         HORIZONTAL_ALIGNMENT_LEFT, -1, 15, Color("68472c") if _review_bright else Color("f0d7b9"))

@@ -36,6 +36,22 @@ function pixelCount(png, bounds) {
   return count;
 }
 
+function phaseChangedPixels(onBuffer, offBuffer, bounds) {
+  const on = PNG.sync.read(onBuffer), off = PNG.sync.read(offBuffer);
+  if (on.width !== off.width || on.height !== off.height) throw Error('canvas dimensions changed during VFX phase');
+  let different = 0, channelSum = 0;
+  for (let y=bounds[1]; y<bounds[3]; y+=2) {
+    for (let x=bounds[0]; x<bounds[2]; x+=2) {
+      const i=4*(y*on.width+x);
+      const diff=Math.abs(on.data[i]-off.data[i])+
+        Math.abs(on.data[i+1]-off.data[i+1])+
+        Math.abs(on.data[i+2]-off.data[i+2]);
+      if (diff > 48) { different++; channelSum+=diff; }
+    }
+  }
+  return {different_pixels:different, total_rgb_change:channelSum};
+}
+
 (async () => {
   const chrome = process.env.CHROME_EXECUTABLE;
   if (!chrome) throw Error('CHROME_EXECUTABLE missing (do not skip browser QA)');
@@ -64,18 +80,47 @@ function pixelCount(png, bounds) {
       if (actor >= ACTOR_PIXEL_MIN && monster >= MONSTER_PIXEL_MIN) break;
     }
     fs.writeFileSync(path.join(output, 'vfx-real-canvas.png'), screenshot);
+    // Confirm actual VFX painted pixels, not just actor/monster pixels.
+    // Capture three paused phases and compare the SAME held frame with
+    // VFX toggled off. This catches the old "ran once, nothing to see" issue.
+    const phaseSamples = [];
+    const bounds = {
+      charge: [280, 440, 485, 650],
+      projectile: [410, 430, 810, 610],
+      contact: [795, 415, 990, 615]
+    };
+    for (const phase of [{name:'charge',key:'1'}, {name:'projectile',key:'2'}, {name:'contact',key:'3'}]) {
+      await canvas.click({ position:{x:620,y:245} });
+      await page.keyboard.press(phase.key);
+      await page.waitForTimeout(180);
+      const visible = await canvas.screenshot();
+      fs.writeFileSync(path.join(output, 'vfx-'+phase.name+'-on.png'), visible);
+      // Canonical review HUD's VFX toggle is fixed at x~1130, y~330.
+      await canvas.click({position:{x:1133,y:330}});
+      await page.waitForTimeout(140);
+      const hidden = await canvas.screenshot();
+      await canvas.click({position:{x:1133,y:330}});
+      await page.waitForTimeout(100);
+      const result = phaseChangedPixels(visible, hidden, bounds[phase.name]);
+      const pass = result.different_pixels >= 18;
+      phaseSamples.push({phase:phase.name, ...result, passed:pass});
+      if(!pass) console.error('VFX_PHASE_NOT_PAINTED '+JSON.stringify({phase:phase.name, ...result}));
+    }
     const record = {
       url, actor_pixels: actor, monster_pixels: monster,
       actor_pixel_min: ACTOR_PIXEL_MIN, monster_pixel_min: MONSTER_PIXEL_MIN,
       actor_visible: actor>=ACTOR_PIXEL_MIN, monster_visible: monster>=MONSTER_PIXEL_MIN,
       browser_console_errors: faults.slice(0, 8),
-      verdict: actor>=ACTOR_PIXEL_MIN && monster>=MONSTER_PIXEL_MIN ? 'BROWSER_CANVAS_PIXELS_PASS' : 'BROWSER_CANVAS_PIXELS_FAIL',
+      phase_samples: phaseSamples,
+      verdict: actor>=ACTOR_PIXEL_MIN && monster>=MONSTER_PIXEL_MIN && phaseSamples.every(p=>p.passed) ?
+        'BROWSER_CANVAS_AND_VFX_PHASES_PASS' : 'BROWSER_CANVAS_OR_VFX_PHASES_FAIL',
       vfx_g3_art: 'SOURCE_PENDING', owner_art: 'PENDING', pve: 'HOLD'
     };
     fs.writeFileSync(path.join(output, 'result.json'), JSON.stringify(record, null, 2));
     console.log(JSON.stringify(record));
     if (actor < ACTOR_PIXEL_MIN || monster < MONSTER_PIXEL_MIN) throw Error('EMPTY_ACTOR_OR_MONSTER: render regression (screenshot saved)');
-    console.log('VFX_WEB_BROWSER_RENDER_PASS actual_AS48_and_moving_monster_pixels=true');
+    if (phaseSamples.some(p=>!p.passed)) throw Error('VFX_SOURCE_INVISIBLE_IN_BROWSER: on/off pixel delta (screenshots saved)');
+    console.log('VFX_WEB_BROWSER_RENDER_PASS actual_AS48_monster_three_vfx_phases=true');
   } finally {
     await browser.close();
   }

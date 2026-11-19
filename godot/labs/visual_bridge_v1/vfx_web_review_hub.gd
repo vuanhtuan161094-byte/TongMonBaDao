@@ -85,6 +85,15 @@ func _ready() -> void:
     slider.custom_minimum_size = Vector2(205, 23)
     slider.value_changed.connect(_on_speed)
     vbox.add_child(slider)
+    var phases := HBoxContainer.new()
+    phases.add_theme_constant_override("separation", 3)
+    vbox.add_child(phases)
+    for cfg in [["Tụ lực", "charge"], ["Phi kiếm", "projectile"], ["Va chạm", "contact"]]:
+        var btn := Button.new()
+        btn.text = str(cfg[0])
+        btn.custom_minimum_size = Vector2(69, 31)
+        btn.pressed.connect(_seek_phase.bind(str(cfg[1])))
+        phases.add_child(btn)
     _provenance = Label.new()
     _provenance.add_theme_font_size_override("font_size", 12)
     _provenance.add_theme_color_override("font_color", Color("f2c978"))
@@ -131,7 +140,7 @@ func _change_skill(index: int) -> void:
         if i > 0:
             direction_text += ", "
         direction_text += str(directions[i])
-    _provenance.text = "Hướng thật: " + direction_text + "\n" + \
+    _provenance.text = "TỰ LẶP • 3 pha bấm để xem\nHướng thật: " + direction_text + "\n" + \
         str(info.get("vfx_status", "")) + " | G3: " + str(info.get("g3_art", "")) + \
         "\nOWNER: " + str(info.get("owner_art", "")) + "\nKhông combat · PVE HOLD"
     _paused = false
@@ -157,6 +166,13 @@ func _apply() -> void:
     _lab.call("review_set_bright", _bright)
     _lab.call("review_set_map_zoom", _zoomed)
     _lab.call("review_set_speed", _speed)
+
+func _seek_phase(phase: String) -> void:
+    if _lab == null:
+        return
+    _paused = true
+    _lab.call("review_seek_phase", phase)
+    _pause_button.text = "Tiếp tục"
 
 func _replay() -> void:
     if _lab == null: return

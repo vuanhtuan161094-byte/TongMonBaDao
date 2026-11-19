@@ -101,7 +101,7 @@ func _draw() -> void:
             return
         var p: Vector2 = origin["world_position"]
         var cell := mini(3, int(t / RELEASE * 4.0))
-        _frame(0, cell, p, .56 + .10 * (t / RELEASE), -0.24, 0.88)
+        _frame(0, cell, p, .84 + .19 * (t / RELEASE), -0.24, 0.94)
         return
     if bool(parent.get("_cast")) and t < CONTACT:
         var source: Variant = parent.get("_release_point")
@@ -116,10 +116,10 @@ func _draw() -> void:
         point.y -= 15.0 * sin(PI * u)
         var rot := (end - start).angle()
         var cel := mini(3, int(u * 4.0))
-        _frame(1, cel, point, .88 + .18 * sin(PI * u), rot, .96)
+        _frame(1, cel, point, 1.16 + .22 * sin(PI * u), rot, 1.0)
         return
     if bool(parent.get("_hit")) and t < CONTACT_END:
         var contact := _monster_center()
         var age := clampf((t - CONTACT) / (CONTACT_END - CONTACT), 0.0, 1.0)
         var cel := mini(3, int(age * 4.0))
-        _frame(2, cel, contact, .83 + .39 * age, 0.0, 1.0 - .78 * age)
+        _frame(2, cel, contact, 1.12 + .38 * age, 0.0, 1.0 - .70 * age)
