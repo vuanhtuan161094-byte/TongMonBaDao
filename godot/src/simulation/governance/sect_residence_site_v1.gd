@@ -26,15 +26,19 @@ const LEGACY_MAP_ANCHORS := {
     "spirit_field":Vector2i(103,93), "guidance":Vector2i(78,84),
     "gate":Vector2i(96,102)
 }
+# Fixed Sect Master districts for the currently released New Game (layout V2).
+# Source of truth for map art, map-hit origins and the protected roads graph.
+# The Main Hall, founding Residence and Sect Gate retain their original sites.
 const NEW_GAME_MAP_ANCHORS := {
-    "main_hall":Vector2i(81,89), "warehouse":Vector2i(98,88),
-    "forge":Vector2i(107,87), "residence":Vector2i(76,97),
-    "cultivation":Vector2i(89,80), "ren_than_duong":Vector2i(77,82),
-    "medicine":Vector2i(74,105), "alchemy_hall":Vector2i(106,84),
-    "mine":Vector2i(74,82), "linh_forest":Vector2i(74,90),
-    "spirit_field":Vector2i(108,96), "guidance":Vector2i(100,104),
+    "main_hall":Vector2i(81,89), "warehouse":Vector2i(93,90),
+    "forge":Vector2i(99,91), "residence":Vector2i(76,97),
+    "cultivation":Vector2i(86,78), "ren_than_duong":Vector2i(91,81),
+    "medicine":Vector2i(74,105), "alchemy_hall":Vector2i(101,84),
+    "mine":Vector2i(107,89), "linh_forest":Vector2i(108,94),
+    "spirit_field":Vector2i(100,99), "guidance":Vector2i(80,104),
     "gate":Vector2i(96,102)
 }
+
 const MAP_FOOTPRINT_SIZES := {
     "main_hall":Vector2i(7,5), "warehouse":Vector2i(3,2),
     "forge":Vector2i(3,3), "cultivation":Vector2i(2,2),
@@ -59,6 +63,16 @@ const ANNEX_SITES := [
     Vector2i(86,108),Vector2i(92,108),Vector2i(98,108),Vector2i(104,108),
     Vector2i(110,108),Vector2i(116,108),Vector2i(86,114),Vector2i(92,114),
     Vector2i(98,114),Vector2i(104,114),Vector2i(110,114),Vector2i(116,114)
+]
+
+# Visible masterplan expansion sites. UI selects the first valid site only;
+# older user-chosen House origins and the original placement transaction are
+# preserved for backward-compatible Save loading and existing construction.
+const MASTERPLAN_ANNEX_SITES := [
+    Vector2i(84,105),Vector2i(89,109),Vector2i(94,112),
+    Vector2i(86,108),Vector2i(92,108),Vector2i(98,108),
+    Vector2i(104,108),Vector2i(110,108),Vector2i(86,114),
+    Vector2i(92,114),Vector2i(98,114),Vector2i(104,114)
 ]
 
 static func map_anchors(world_layout_version: int) -> Dictionary:

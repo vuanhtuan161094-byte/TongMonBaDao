@@ -15,7 +15,7 @@ const SCENIC_ACCENTS := [
 ]
 
 
-static func ground_color(cell: Vector2i, starter: Rect2i, roads: Dictionary) -> Color:
+static func ground_color(cell: Vector2i, starter: Rect2i, roads: Dictionary, layout_version: int = 0) -> Color:
     var within := starter.has_point(cell)
     # Broad coherent landforms, rather than independently alternating
     # green tiles (the prior renderer's highly visible checkerboard).
@@ -26,9 +26,20 @@ static func ground_color(cell: Vector2i, starter: Rect2i, roads: Dictionary) -> 
     if not within:
         return ground.darkened(0.07)
     ground = Color(0.37+tint,0.49+tint,0.38+tint*0.75)
-    # A subdued natural forest shoulder and warmer service/work district;
-    # these are world *visuals*, not a district-unlock or terrain authority.
-    if cell.x < 84 and cell.y >= 100:
+    # District colors are understated ground material, never fake buildings.
+    # Legacy layouts keep their old palette and saved house locations.
+    if layout_version >= 2:
+        if cell.x < 85 and cell.y >= 94:
+            ground = ground.blend(Color(0.37,0.52,0.41,0.33)) # inner residence
+        elif cell.x < 95 and cell.y < 88:
+            ground = ground.blend(Color(0.30,0.49,0.53,0.30)) # cultivation ridge
+        elif cell.x >= 95 and cell.y < 101:
+            ground = ground.blend(Color(0.54,0.47,0.34,0.30)) # producer quarter
+        elif cell.y >= 101:
+            ground = ground.blend(Color(0.43,0.48,0.42,0.24)) # exit approach
+        else:
+            ground = ground.blend(Color(0.48,0.52,0.40,0.20)) # civic court
+    elif cell.x < 84 and cell.y >= 100:
         ground = ground.blend(Color(0.31,0.47,0.36,0.44))
     elif cell.x >= 94 and cell.y >= 88:
         ground = ground.blend(Color(0.49,0.48,0.37,0.26))

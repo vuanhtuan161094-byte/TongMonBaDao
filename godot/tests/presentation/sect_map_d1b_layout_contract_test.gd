@@ -38,6 +38,35 @@ func _run() -> void:
 		_fail("layout test did not mount P3.2's canonical runtime and map")
 		return
 	var initial_state := state.to_dict().duplicate(true)
+	# V2 has one authored map, unique area anchors and predefined annex sites.
+	if int(state.sect.world_layout_version) == 2:
+		var plan := SectResidenceSiteV1.NEW_GAME_MAP_ANCHORS
+		if iso.anchors_for_layout(2) != plan or plan.size() != 13:
+			_fail("live map did not load the fixed Sect Master masterplan")
+			return
+		if plan["main_hall"] != Vector2i(81,89) or plan["gate"] != Vector2i(96,102):
+			_fail("the preserved Hall/Gate spine was moved")
+			return
+		var seen: Dictionary = {}
+		for raw_dest in plan.keys():
+			var site: Vector2i = plan[raw_dest]
+			if not iso.STARTER.has_point(site) or seen.has(site):
+				_fail("fixed plan has overlapping or external landmark %s" % str(raw_dest))
+				return
+			seen[site] = true
+		var planned_plot_available := false
+		for raw_site in SectResidenceSiteV1.MASTERPLAN_ANNEX_SITES:
+			var site: Vector2i = raw_site
+			if bool(SectResidenceSiteV1.check(state,site).get("ok",false)):
+				planned_plot_available = true
+				break
+		if not planned_plot_available:
+			_fail("new game has no accessible predefined Residence expansion lot")
+			return
+		for district_key in ["main_hall","residence","cultivation","forge","gate"]:
+			if scene.find_child("MasterplanDistrict_"+district_key,true,false) == null:
+				_fail("Sect Master district navigation is missing "+district_key)
+				return
 	if iso.GRID != Vector2i(192,192) or iso.CHUNK != 16 or iso.STARTER != Rect2i(72,72,48,48):
 		_fail("fixed 192/16/48 map bounds changed")
 		return

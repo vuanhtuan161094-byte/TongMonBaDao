@@ -145,6 +145,16 @@ const COURTYARD_RECT := Rect2i(85,93,8,6)
 const COURTYARD_RUNE_CELLS := [Vector2i(89,95),Vector2i(89,97)]
 const PRODUCTION_APRON_RECT := Rect2i(94,92,5,6)
 const PVE_JX_VFX_ADAPTER_SCRIPT := preload("res://src/presentation/p3/pve_jx_sword_vfx_adapter_v1.gd")
+
+# Signs are presentation wayfinding, not constructed buildings, loot nodes or
+# fake facilities. Coordinates follow the fixed V2 masterplan in SectResidenceSiteV1.
+const MASTERPLAN_DISTRICT_SIGNS := [
+    {"label":"TRUNG TÂM · ĐẠI ĐIỆN","cell":Vector2i(86,96),"tone":Color(0.92,0.75,0.42)},
+    {"label":"NỘI VIỆN · ĐỆ TỬ","cell":Vector2i(74,94),"tone":Color(0.67,0.86,0.70)},
+    {"label":"KHU TU LUYỆN","cell":Vector2i(87,76),"tone":Color(0.55,0.83,0.91)},
+    {"label":"KHU SẢN XUẤT","cell":Vector2i(103,86),"tone":Color(0.91,0.74,0.50)},
+    {"label":"CỔNG XUẤT CHINH","cell":Vector2i(92,104),"tone":Color(0.76,0.84,0.72)}
+]
 const PRODUCER_ROUTE_APPROACH := {
     "mine":Vector2i(0,1),
     "linh_forest":Vector2i(1,0),
@@ -1124,7 +1134,7 @@ func _ground_mesh_for_chunk(chunk_id: Vector2i) -> ArrayMesh:
             var center := project(Vector2(cell))
             # Slow coherent terrain variation and district palettes replace
             # the old repeated checkerboard; this remains VIEW ONLY.
-            var tone := _pve_ground_color(cell) if pve_landscape else SectMapD2Landscape.ground_color(cell,STARTER,preview_roads)
+            var tone := _pve_ground_color(cell) if pve_landscape else SectMapD2Landscape.ground_color(cell,STARTER,preview_roads,map_layout_version)
             var base := vertices.size()
             vertices.append_array(PackedVector2Array([
                 center+Vector2(0,-HALF_H),center+Vector2(HALF_W,0),
@@ -1158,6 +1168,25 @@ func _pve_ground_color(cell: Vector2i) -> Color:
         ground = ground.blend(Color("365d57",0.50))
     return ground
 
+# Small diegetic district labels, on the real isometric surface. They never
+# intercept a tap, block the verified artwork, or affect the AStar road graph.
+func _draw_masterplan_district_signs() -> void:
+    if map_layout_version != 2 or pve_landscape:
+        return
+    var font := ThemeDB.fallback_font
+    if font == null:
+        return
+    for row in MASTERPLAN_DISTRICT_SIGNS:
+        var ground := project(Vector2(row["cell"]))
+        if not _visible_world(ground):
+            continue
+        var plaque := Rect2(ground-Vector2(86.0,36.0),Vector2(172.0,28.0))
+        var accent: Color = row["tone"]
+        draw_rect(plaque,Color(0.035,0.13,0.14,0.92),true)
+        draw_rect(plaque,Color(accent.r,accent.g,accent.b,0.80),false,1.4)
+        draw_string(font,plaque.position+Vector2(6.0,19.0),str(row["label"]),
+            HORIZONTAL_ALIGNMENT_CENTER,plaque.size.x-12.0,13,accent)
+
 func _draw() -> void:
     # Ground layer first: cached meshes remain valid for all camera positions.
     # Visibility still uses the original active_chunks and the existing camera.
@@ -1185,6 +1214,7 @@ func _draw() -> void:
         _ensure_pve_static_draw_queue()
         _draw_pve_actor_depth_merge()
         return
+    _draw_masterplan_district_signs()
     # Sort all decorations with building art by actual projected ground depth.
     # One draw surface and one depth queue prevent large roofs from showing
     # behind trees which should occlude them.

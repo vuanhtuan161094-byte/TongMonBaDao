@@ -480,3 +480,154 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "T�
 func _vis_toggle_profile_reduced(disciple_id: StringName, tab_name: String) -> void:
     VIS_QUALITY.cycle_mode()
     _open_disciple_deep_screen(disciple_id, tab_name, true)
+
+
+# MASTERPLAN-01: only map/UI policy, no new world-placement Save field.
+# The existing paid ResidenceSystem is preserved. New UI offers a preplanned
+# lot rather than exposing player placement or relocation on the map.
+const MASTERPLAN_DISTRICT_TABS := [
+    {"name":"ĐẠI ĐIỆN","key":"main_hall","hint":"Trung tâm quyền lực và chính sách"},
+    {"name":"NỘI VIỆN","key":"residence","hint":"Đệ Tử Xá, Dẫn Tiên và chăm sóc"},
+    {"name":"TU LUYỆN","key":"cultivation","hint":"Tu luyện và rèn thân"},
+    {"name":"SẢN XUẤT","key":"forge","hint":"Kho, luyện khí, luyện đan và tài nguyên"},
+    {"name":"XUẤT CHINH","key":"gate","hint":"Cổng tông môn và đường ra thế giới"}
+]
+
+func _build_construction_ui() -> void:
+    super._build_construction_ui()
+    if state == null or int(state.sect.world_layout_version) != 2:
+        return
+    if build_mode_button != null:
+        build_mode_button.text = "QUY HOẠCH"
+        build_mode_button.position = Vector2(20,90)
+        build_mode_button.size = Vector2(167,45)
+        build_mode_button.tooltip_text = "Mở rộng nhà theo lô đã quy hoạch; không kéo-thả công trình."
+    if build_mode_panel != null:
+        build_mode_panel.size = Vector2(392,450)
+        build_mode_panel.add_theme_stylebox_override("panel",
+            _art05_style(Color(0.026,0.10,0.12,0.99),ART05_GOLD,2,13))
+        for child in build_mode_panel.get_children():
+            if child is Label:
+                var label := child as Label
+                if label.text == "KIẾN THIẾT TÔNG MÔN":
+                    label.text = "QUY HOẠCH TÔNG MÔN"
+                    label.add_theme_color_override("font_color",ART05_GOLD)
+                elif label.text == "ĐẶT TRÊN BẢN ĐỒ":
+                    label.text = "KHU NỘI VIỆN · ĐỆ TỬ XÁ"
+                    label.add_theme_color_override("font_color",ART05_MUTE)
+                elif label.text.begins_with("Đệ Tử Xá: có giao dịch"):
+                    label.text = "Vị trí được chọn sẵn theo quy hoạch.\nGiữ nguyên chi phí xây và điều kiện Đại Điện."
+                    label.add_theme_color_override("font_color",ART05_WHITE)
+                elif label.text == "DI DỜI NHÀ PHỤ ĐỦ ĐIỀU KIỆN":
+                    label.visible = false
+        var moves := build_mode_panel.get_node_or_null("RelocatableResidenceList") as Control
+        if moves != null:
+            moves.visible = false
+        var open_hall := build_mode_panel.get_node_or_null("BuildModeOpenHall") as Button
+        if open_hall != null:
+            open_hall.position = Vector2(18,247)
+            open_hall.text = "ĐẠI ĐIỆN · XEM ĐIỀU KIỆN MỞ RỘNG"
+        if build_mode_feedback != null:
+            build_mode_feedback.position = Vector2(18,291)
+        if build_mode_site_label != null:
+            build_mode_site_label.position = Vector2(18,337)
+        if build_mode_confirm != null:
+            build_mode_confirm.position = Vector2(18,393)
+        var cancel := build_mode_panel.get_node_or_null("CancelMapConstruction") as Button
+        if cancel != null:
+            cancel.position = Vector2(198,393)
+    # District tabs operate on the same camera as building hitboxes.
+    for index in range(MASTERPLAN_DISTRICT_TABS.size()):
+        var row: Dictionary = MASTERPLAN_DISTRICT_TABS[index]
+        var key := str(row["key"])
+        var nav := Button.new()
+        nav.name = "MasterplanDistrict_"+key
+        nav.text = str(row["name"])
+        nav.tooltip_text = str(row["hint"])
+        nav.position = Vector2(205+index*196,90)
+        nav.size = Vector2(185,45)
+        nav.z_index = 28
+        nav.add_theme_font_size_override("font_size",13)
+        nav.add_theme_color_override("font_color",ART05_WHITE)
+        nav.add_theme_color_override("font_hover_color",ART05_GOLD)
+        nav.add_theme_stylebox_override("normal",_art05_style(
+            Color(0.035,0.15,0.16,0.95),Color(0.54,0.68,0.60,0.7),1,9))
+        nav.add_theme_stylebox_override("hover",_art05_style(
+            Color(0.11,0.25,0.25,0.99),ART05_GOLD,2,9))
+        nav.add_theme_stylebox_override("pressed",_art05_style(
+            Color(0.18,0.25,0.19,0.99),ART05_GOLD,2,9))
+        nav.pressed.connect(Callable(self,"_art05_focus_masterplan_district").bind(key))
+        add_child(nav)
+
+func _art05_focus_masterplan_district(destination: String) -> void:
+    if iso_world == null or state == null:
+        return
+    _leave_build_mode(true)
+    _close_building_operation_panel(true)
+    _close_disciple_summary(true)
+    var anchors := SectResidenceSiteV1.map_anchors(int(state.sect.world_layout_version))
+    var cell: Vector2i = anchors.get(destination,Vector2i(89,96))
+    var world_point := SectIsometricWorldV1.LEGACY_ANCHOR \
+        + SectIsometricWorldV1.project(Vector2(cell)) \
+        - SectIsometricWorldV1.project(SectIsometricWorldV1.CENTER_CELL)
+    var transform := SectMapCamera.focus_transform(world_point,0.88)
+    _apply_camera(float(transform["zoom"]),transform["position"],true)
+
+func _focus_buildable_residence_area() -> void:
+    if state == null or int(state.sect.world_layout_version) != 2:
+        super._focus_buildable_residence_area()
+        return
+    _art05_focus_masterplan_district("residence")
+
+func _begin_residence_construction() -> void:
+    super._begin_residence_construction()
+    if state == null or int(state.sect.world_layout_version) != 2:
+        return
+    var chosen := SectResidenceSiteV1.UNSELECTED
+    for raw_site in SectResidenceSiteV1.MASTERPLAN_ANNEX_SITES:
+        var site: Vector2i = raw_site
+        if not bool(SectResidenceSiteV1.check(state,site).get("ok",false)):
+            continue
+        if not _residence_site_actor_conflict_reason(site).is_empty():
+            continue
+        chosen = site
+        break
+    if chosen == SectResidenceSiteV1.UNSELECTED:
+        build_mode_kind = ""
+        if build_mode_feedback != null:
+            build_mode_feedback.text = "Các lô đã quy hoạch hiện chưa đủ điều kiện. Hãy nâng cấp Đại Điện hoặc chờ lô trống."
+        _refresh_build_mode_panel()
+        return
+    # Use the existing real build quote and click-confirm transaction.
+    super._select_build_mode_site(chosen)
+
+func _select_build_mode_site(site: Vector2i) -> void:
+    if state != null and int(state.sect.world_layout_version) == 2 and build_mode_active:
+        # The user cannot override the planned plot by tapping arbitrary terrain.
+        return
+    super._select_build_mode_site(site)
+
+func _begin_residence_relocation(house_id: StringName) -> void:
+    if state != null and int(state.sect.world_layout_version) == 2:
+        if build_mode_feedback != null:
+            build_mode_feedback.text = "Chế độ quy hoạch cố định chưa hỗ trợ di dời nhà."
+        return
+    super._begin_residence_relocation(house_id)
+
+func _refresh_build_mode_panel(last_check: Dictionary = {}) -> void:
+    super._refresh_build_mode_panel(last_check)
+    if state == null or int(state.sect.world_layout_version) != 2 or build_mode_panel == null:
+        return
+    var build_house := build_mode_panel.get_node_or_null("BuildCatalogResidence") as Button
+    if build_house != null:
+        build_house.text = "MỞ RỘNG ĐỆ TỬ XÁ · LÔ CỐ ĐỊNH"
+    if build_mode_site_label != null:
+        if build_mode_site == SectResidenceSiteV1.UNSELECTED:
+            build_mode_site_label.text = "Chọn Mở rộng Đệ Tử Xá. Tông môn tự xác định lô hợp lệ; không cần bấm đất."
+        else:
+            build_mode_site_label.text = "Lô đã quy hoạch (%d, %d) · Xác nhận để khởi công." % [
+                build_mode_site.x,build_mode_site.y]
+    if build_mode_kind == "relocate":
+        build_mode_kind = ""
+        if build_mode_confirm != null:
+            build_mode_confirm.disabled = true
