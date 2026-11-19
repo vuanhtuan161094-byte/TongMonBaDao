@@ -4,7 +4,7 @@
   "entries": [
     {
       "id": "tmb.skill.sword.ngu_kiem.active_01.human",
-      "name_vi": "Phi Kiếm Truy Ảnh",
+      "name_vi": "Phi Kiếm Truy Ảnh — R1 kỹ thuật, mỹ thuật loại",
       "school_vi": "Kiếm Tu",
       "branch_vi": "Ngự Kiếm",
       "tier": "human",
@@ -12,16 +12,17 @@
       "directions": [
         "front"
       ],
-      "vfx_status": "CANDIDATE_G3",
-      "g3_art": "OWNER_REVIEW_PENDING",
-      "owner_art": "PENDING",
+      "vfx_status": "TECH_CUE_ONLY",
+      "g3_art": "G3_SOURCE_FAIL",
+      "owner_art": "OWNER_REWORK",
       "source_paths": [
         "labs/combat_lab/sword_human_phi_kiem_truy_anh/r1/sword_human_r1_vfx_layer.gd",
         "labs/combat_lab/sword_human_phi_kiem_truy_anh/r1/source/phi_kiem_human_r1_candidate_atlas.png",
         "labs/combat_lab/sword_human_phi_kiem_truy_anh/r1/source/manifest.json",
         "labs/combat_lab/sword_human_phi_kiem_truy_anh/r1/source/README.md"
       ],
-      "art_source": "CODE_PAINTED_RGBA_NON_ILLUSTRATED"
+      "art_source": "CODE_PAINTED_RGBA_NON_ILLUSTRATED",
+      "review_note": "19/11/2026 owner rejected code-painted visuals. Only AS48 event-anchor+Web QA preserved. Do not use as art benchmark."
     }
   ]
 }

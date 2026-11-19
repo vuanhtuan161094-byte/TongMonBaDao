@@ -7,7 +7,7 @@
   "branch": "ngu_kiem",
   "tier": "human",
   "source_vfx": "res://labs/combat_lab/sword_human_phi_kiem_truy_anh/r1/source/phi_kiem_human_r1_candidate_atlas.png",
-  "visual_probe": "FIRST_PARTY_RGBA_12_FRAME_CODE_PAINTED_ART_REVIEW_PENDING",
+  "visual_probe": "TECHNICAL_ONLY_R1_OWNER_REJECTED_G3_SOURCE_FAIL",
   "effect_declared": "damage",
   "shape_declared": "single_target",
   "target_limit_declared": 1,
@@ -28,7 +28,7 @@
     }
   ],
   "source_meta": {
-    "art_status": "CODE_PAINTED_CANDIDATE",
+    "art_status": "G3_SOURCE_FAIL",
     "frame_count": 12,
     "phases": [
       "charge",
@@ -36,6 +36,6 @@
       "contact"
     ],
     "art_source": "code-raster, not an AI hand-illustrated master",
-    "owner_approval": "PENDING"
+    "owner_approval": "OWNER_REWORK"
   }
 }

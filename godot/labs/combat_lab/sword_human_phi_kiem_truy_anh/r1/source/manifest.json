@@ -5,9 +5,9 @@
   "school": "sword",
   "branch": "ngu_kiem",
   "tier": "human",
-  "status": "CODE_PAINTED_CANDIDATE",
-  "g3_art": "OWNER_REVIEW_PENDING",
-  "owner_art": "PENDING",
+  "status": "G3_SOURCE_FAIL_CODE_PAINT",
+  "g3_art": "G3_SOURCE_FAIL",
+  "owner_art": "OWNER_REWORK",
   "pve": "HOLD",
   "art_source": "procedural raster via V8 code; NOT AI illustration",
   "frame_width": 160,
@@ -21,5 +21,6 @@
     "contact"
   ],
   "alpha": true,
-  "asset_path": "res://labs/combat_lab/sword_human_phi_kiem_truy_anh/r1/source/phi_kiem_human_r1_candidate_atlas.png"
+  "asset_path": "res://labs/combat_lab/sword_human_phi_kiem_truy_anh/r1/source/phi_kiem_human_r1_candidate_atlas.png",
+  "rejection_reason": "Owner 19/11/2026: code-painted R1 flat/neon and poor aesthetics vs Poison POI06 R11 / POI19 R3; technical source retained only, not approved for VFX production."
 }
