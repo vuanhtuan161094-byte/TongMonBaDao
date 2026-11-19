@@ -1444,11 +1444,20 @@ func _draw_pve_actor(data: Dictionary) -> void:
     if facing.length_squared() < 0.001:
         facing = Vector2.RIGHT if side == "disciple" else Vector2.LEFT
     var row: Dictionary = pve_view_rows.get(id,{})
-    var actor_key := str(row.get("source_a_visual_key",""))
-    var drawn := not actor_key.is_empty() and pve_source_atlas.has_actor(actor_key)
-    if drawn:
-        drawn = pve_source_atlas.draw_actor(self,actor_key,action,foot,facing,
-            maxf(0.0,pve_clock-float(visual.get("started",pve_clock))),pve_actor_draw_scale())
+    var age := maxf(0.0,pve_clock-float(visual.get("started",pve_clock)))
+    # Real PvE now prioritizes the saved 12-school/24-sex AS-CHAR identity.
+    # This is a visual adapter only; all battle events still come from MapBattleV2.
+    var drawn := false
+    if side == "disciple" and row.has("aschar_school"):
+        drawn = PveASCharFrameRendererV1.draw_actor(self,
+            str(row.get("aschar_school","")),str(row.get("aschar_sex","male")),
+            action,foot,facing,age,0.22)
+    if not drawn:
+        var actor_key := str(row.get("source_a_visual_key",""))
+        drawn = not actor_key.is_empty() and pve_source_atlas.has_actor(actor_key)
+        if drawn:
+            drawn = pve_source_atlas.draw_actor(self,actor_key,action,foot,facing,
+                age,pve_actor_draw_scale())
     if not drawn:
         var shade := Color("73d6ad") if side == "disciple" else Color("dc9370")
         draw_colored_polygon(PackedVector2Array([foot+Vector2(0,-10),foot+Vector2(8,0),foot+Vector2(0,7),foot+Vector2(-8,0)]),shade)
