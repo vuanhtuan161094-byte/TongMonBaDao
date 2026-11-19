@@ -48,14 +48,27 @@ const SOURCE_PATHS := {
 const SOCKET_ROOT := "res://assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets"
 const SPRITE_SCRIPT := preload("res://src/presentation/p3/sect_aschar_candidate_sprite_v1.gd")
 static var _scene_cache: Dictionary = {}
+static var _branch_school_cache: Dictionary = {}
 
 static func school_for_branch(branch_id: String) -> String:
     if branch_id.is_empty():
         return ""
-    for school in SCHOOL_IDS:
-        if branch_id.begins_with("tmb.path."+school+"."):
-            return school
-    return ""
+    # Combat V6.3 stores the catalogue's bare branch ID (e.g. ngu_kiem),
+    # not its presentation-only path_id (tmb.path.sword.ngu_kiem).
+    # Cache the authoritative crosswalk; this is only a visual lookup.
+    if _branch_school_cache.is_empty():
+        var definitions := V63HumanSkillCombatSystem.branch_definitions()
+        for key in definitions.keys():
+            var row: Dictionary = definitions.get(key,{})
+            if row.is_empty():
+                continue
+            var school := str(row.get("school",""))
+            if SCHOOL_IDS.has(school):
+                _branch_school_cache[str(key)] = school
+                var full_id := str(row.get("path_id",""))
+                if not full_id.is_empty():
+                    _branch_school_cache[full_id] = school
+    return str(_branch_school_cache.get(branch_id,""))
 
 static func school_for_disciple(disciple: DiscipleState) -> String:
     return school_for_branch(str(disciple.v63_combat_branch_id)) if disciple != null else ""
@@ -133,15 +146,19 @@ static func branches_for(school: String) -> Array[Dictionary]:
     var result: Array[Dictionary] = []
     if not SCHOOL_IDS.has(school):
         return result
-    for row in V63HumanSkillCombatSystem.branch_definitions().values():
-        if not (row is Dictionary) or str(row.get("school","")) != school:
+    var definitions := V63HumanSkillCombatSystem.branch_definitions()
+    for key in definitions.keys():
+        var branch: Dictionary = definitions.get(key,{})
+        if str(branch.get("school","")) != school:
             continue
-        var branch: Dictionary = row
-        var canonical_id := str(branch.get("path_id",""))
+        var canonical_id := str(key)
         if canonical_id.is_empty():
-            canonical_id = "tmb.path."+school+"."+str(branch.get("id",""))
-        if canonical_id.begins_with("tmb.path."+school+"."):
-            result.append({"id":canonical_id,"name":str(branch.get("name",canonical_id))})
+            continue
+        result.append({
+            "id":canonical_id,
+            "name":str(branch.get("name",canonical_id)),
+            "path_id":str(branch.get("path_id",""))
+        })
     result.sort_custom(func(a: Dictionary,b: Dictionary) -> bool:
         return str(a["id"]) < str(b["id"]))
     return result
@@ -159,7 +176,7 @@ static func assign_branch(state: SimulationState,disciple: DiscipleState,branch_
     if school.is_empty():
         return {"ok":false,"reason":"unknown_school"}
     for branch in branches_for(school):
-        if str(branch["id"]) == branch_id:
+        if str(branch["id"]) == branch_id and V63HumanSkillCombatSystem.branch_definitions().has(branch_id):
             disciple.v63_combat_branch_id = StringName(branch_id)
             return {"ok":true,"school":school,"branch":branch_id,"name":str(branch["name"])}
     return {"ok":false,"reason":"unknown_branch"}

@@ -79,6 +79,16 @@ func _run() -> void:
     if bool(SectASCharCandidateBridgeV1.assign_branch(state,disciple,str(branches[1]["id"])).get("ok",false)):
         _fail("branch can be switched without a respec authority")
         return
+    if not V63HumanSkillCombatSystem.branch_definitions().has(branch_id):
+        _fail("chosen school did not match canonical V63 combat branch ID")
+        return
+    if SectASCharCandidateBridgeV1.school_for_branch(branch_id) != candidate_school:
+        _fail("school visual crosswalk cannot resolve combat branch")
+        return
+    var combat_errors := V63HumanSkillCombatSystem.validate_state(state)
+    if not combat_errors.is_empty():
+        _fail("V63 combat state rejects school assignment: "+str(combat_errors))
+        return
     if str(DiscipleState.from_dict(disciple.to_dict()).v63_combat_branch_id) != branch_id:
         _fail("canonical Save roundtrip lost school branch")
         return
