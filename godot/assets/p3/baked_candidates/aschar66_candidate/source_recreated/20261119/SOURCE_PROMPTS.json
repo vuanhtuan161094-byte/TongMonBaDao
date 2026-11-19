@@ -1,0 +1,48 @@
+{
+  "actor_id": "AS66",
+  "school": "Chú Tu",
+  "gender": "male",
+  "status": "CANDIDATE / OWNER ART REVIEW PENDING",
+  "tool": "built-in image_gen",
+  "identity_master": {
+    "path": "assets/p3/baked_candidates/aschar66_candidate/source_recreated/20261119/AS66_CURSE_MALE_MASTER_CANDIDATE.png",
+    "sha256": "3dbf922cd316a84ccb55c4ad07eedc7fd069743b9ae28e017ef47fd94f989884",
+    "prompt_summary": "Fixed AS66/67 candidate masters; owner review pending."
+  },
+  "animation_sheet_rules": "4 columns × 6 rows; rows Idle, Walk, Attack, Cast, Hit, Downed; four visibly distinct adjacent full-body body-only cels; exact identity master; genuinely redrawn directions; no rig, no mirroring, no baked VFX.",
+  "sheet_sources": {
+    "front": {
+      "path": "assets/p3/baked_candidates/aschar66_candidate/source_recreated/20261119/AS66_FRONT_ACTIONS_4x6.png",
+      "sha256": "710b5c31e7a0f344ad1617fb9ec8c09ccfba9e709689a0c084e5c86a317dd81b",
+      "direction": "front",
+      "selected_variant": "CONNECTED_BACKGROUND_REMOVAL",
+      "original_source_path": "assets/p3/baked_candidates/aschar66_candidate/source_recreated/20261119/AS66_FRONT_ACTIONS_4x6_SOURCE_BG.png",
+      "prompt_summary": "Fixed AS66 master; 24 distinct body-only action cels facing front; no mirrored view, no VFX; owner review pending."
+    },
+    "right": {
+      "path": "assets/p3/baked_candidates/aschar66_candidate/source_recreated/20261119/AS66_RIGHT_ACTIONS_4x6.png",
+      "sha256": "33b0cc1ca388c2314161f7332afafd81e74919f42abef053cc2d9d151bf3e152",
+      "direction": "right",
+      "selected_variant": "CONNECTED_BACKGROUND_REMOVAL",
+      "original_source_path": "assets/p3/baked_candidates/aschar66_candidate/source_recreated/20261119/AS66_RIGHT_ACTIONS_4x6_SOURCE_BG.png",
+      "prompt_summary": "Fixed AS66 master; 24 distinct body-only action cels facing right; no mirrored view, no VFX; owner review pending."
+    },
+    "back": {
+      "path": "assets/p3/baked_candidates/aschar66_candidate/source_recreated/20261119/AS66_BACK_ACTIONS_4x6.png",
+      "sha256": "e24d3128502d4e97ecac89a92d7ab1349966e629c7a0ffb71d0afecd6efa9b2d",
+      "direction": "back",
+      "selected_variant": "CONNECTED_BACKGROUND_REMOVAL",
+      "original_source_path": "assets/p3/baked_candidates/aschar66_candidate/source_recreated/20261119/AS66_BACK_ACTIONS_4x6_SOURCE_BG.png",
+      "prompt_summary": "Fixed AS66 master; 24 distinct body-only action cels facing back; no mirrored view, no VFX; owner review pending."
+    },
+    "left": {
+      "path": "assets/p3/baked_candidates/aschar66_candidate/source_recreated/20261119/AS66_LEFT_ACTIONS_4x6.png",
+      "sha256": "17ca5eb9ccc6b62b61d7071a184709ce8bf9b6319f19ba224eee2fd404fd9847",
+      "direction": "left",
+      "selected_variant": "BASE",
+      "original_source_path": "assets/p3/baked_candidates/aschar66_candidate/source_recreated/20261119/AS66_LEFT_ACTIONS_4x6_SOURCE_BG.png",
+      "prompt_summary": "Fixed AS66 master; 24 distinct body-only action cels facing left; no mirrored view, no VFX; owner review pending."
+    }
+  },
+  "limitation": "No manual neighboring-frame cleanup/onion-skin has been performed. These are art candidates only, not owner-approved or integrated into gameplay."
+}

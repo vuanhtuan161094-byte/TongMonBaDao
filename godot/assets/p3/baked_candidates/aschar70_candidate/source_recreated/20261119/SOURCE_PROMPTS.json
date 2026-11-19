@@ -1,0 +1,48 @@
+{
+  "actor_id": "AS70",
+  "school": "Triệu Hoán Tu (Summoning)",
+  "gender": "male",
+  "status": "CANDIDATE / OWNER ART REVIEW PENDING",
+  "tool": "built-in image_gen",
+  "identity_master": {
+    "path": "assets/p3/baked_candidates/aschar70_candidate/source_recreated/20261119/AS70_SUMMONING_MALE_MASTER_CANDIDATE.png",
+    "sha256": "3b5702c6e696d0805a34d1143494cfca0e7b9c8157ead31f6f5cb6715f5446e8",
+    "prompt_summary": "Ash-violet/jade summoner identities with open-palm negative space; owner review pending."
+  },
+  "animation_sheet_rules": "4 columns × 6 rows; rows Idle, Walk, Attack, Cast, Hit, Downed; four visibly distinct adjacent full-body body-only cels; exact identity master; genuinely redrawn directions; no rig, no mirroring, no baked VFX.",
+  "sheet_sources": {
+    "front": {
+      "path": "assets/p3/baked_candidates/aschar70_candidate/source_recreated/20261119/AS70_FRONT_ACTIONS_4x6.png",
+      "sha256": "f1673fe6b2e98ba191bfae0d9b87b67d2c57395f0650ecf77fa3b1b39a08e493",
+      "direction": "front",
+      "selected_variant": "CONNECTED_BACKGROUND_REMOVAL",
+      "original_source_path": "assets/p3/baked_candidates/aschar70_candidate/source_recreated/20261119/AS70_FRONT_ACTIONS_4x6_SOURCE_BG.png",
+      "prompt_summary": "Fixed AS70 master; 24 distinct body-only action cels facing front; no mirrored view, no VFX; owner review pending."
+    },
+    "right": {
+      "path": "assets/p3/baked_candidates/aschar70_candidate/source_recreated/20261119/AS70_RIGHT_ACTIONS_4x6.png",
+      "sha256": "80c6ae3009e02eea5451c4917592ea068d241fe466e625d54e58fbccb7a53035",
+      "direction": "right",
+      "selected_variant": "CONNECTED_BACKGROUND_REMOVAL",
+      "original_source_path": "assets/p3/baked_candidates/aschar70_candidate/source_recreated/20261119/AS70_RIGHT_ACTIONS_4x6_SOURCE_BG.png",
+      "prompt_summary": "Fixed AS70 master; 24 distinct body-only action cels facing right; no mirrored view, no VFX; owner review pending."
+    },
+    "back": {
+      "path": "assets/p3/baked_candidates/aschar70_candidate/source_recreated/20261119/AS70_BACK_ACTIONS_4x6.png",
+      "sha256": "187dfd9942e41ef8c6e0bd169c5d0d13e2fa98bae65a8ed9d8ae8b06f06ba510",
+      "direction": "back",
+      "selected_variant": "CONNECTED_BACKGROUND_REMOVAL",
+      "original_source_path": "assets/p3/baked_candidates/aschar70_candidate/source_recreated/20261119/AS70_BACK_ACTIONS_4x6_SOURCE_BG.png",
+      "prompt_summary": "Fixed AS70 master; 24 distinct body-only action cels facing back; no mirrored view, no VFX; owner review pending."
+    },
+    "left": {
+      "path": "assets/p3/baked_candidates/aschar70_candidate/source_recreated/20261119/AS70_LEFT_ACTIONS_4x6.png",
+      "sha256": "731d0a5a45ccc724ed203d761b480c6d0a2438c099aa248fbaf62212a3bdd42f",
+      "direction": "left",
+      "selected_variant": "CONNECTED_BACKGROUND_REMOVAL",
+      "original_source_path": "assets/p3/baked_candidates/aschar70_candidate/source_recreated/20261119/AS70_LEFT_ACTIONS_4x6_SOURCE_BG.png",
+      "prompt_summary": "Fixed AS70 master; 24 distinct body-only action cels facing left; no mirrored view, no VFX; owner review pending."
+    }
+  },
+  "limitation": "No manual neighboring-frame cleanup/onion-skin has been performed. These are art candidates only, not owner-approved or integrated into gameplay."
+}

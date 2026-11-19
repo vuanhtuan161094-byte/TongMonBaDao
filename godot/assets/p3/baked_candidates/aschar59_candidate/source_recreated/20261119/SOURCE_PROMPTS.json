@@ -1,0 +1,44 @@
+{
+  "actor_id": "AS59",
+  "school": "Quyền Tu",
+  "gender": "female",
+  "status": "CANDIDATE / OWNER ART REVIEW PENDING",
+  "tool": "built-in image_gen",
+  "identity_master": {
+    "path": "assets/p3/baked_candidates/aschar59_candidate/source_recreated/20261119/AS59_FIST_FEMALE_MASTER_CANDIDATE.png",
+    "sha256": "9f673f88360cdaeb3e33ff82f6ab65cfb047683df4735e51d1db8d4386f89d71",
+    "prompt_summary": "AS59 female Quyền Tu master V2: braided chestnut bun, warm hazel eyes, fully covered charcoal wrap tunic with copper-red sash and forearm wraps; unarmed guard pose, transparent background. AS59 V1 retained separately as NOT SELECTED."
+  },
+  "animation_sheet_rules": "4 columns x 6 rows; each row is Idle, Walk, Attack, Cast, Hit, Downed; four visibly distinct adjacent full-body pose cels; direction genuinely redrawn, no flip; no held weapons or VFX; transparent background; fixed master identity.",
+  "sheet_sources": {
+    "front": {
+      "path": "assets/p3/baked_candidates/aschar59_candidate/source_recreated/20261119/AS59_FRONT_ACTIONS_4x6.png",
+      "sha256": "87278fc7f212fea59183a32dba7c79392e614b67d15dd4f5d30186067ac0985e",
+      "direction": "front",
+      "prompt_summary": "Use the exact identity master; create 24 full-body body-only cels in a 4x6 grid, facing front; preserve unique asymmetric design and continuity, no mirror, no rig, no held weapons or VFX.",
+      "postprocessing": "Selected V2 regenerated source after V1 edge-touch review; source remains original RGBA, alpha<96 threshold used only in frame export."
+    },
+    "right": {
+      "path": "assets/p3/baked_candidates/aschar59_candidate/source_recreated/20261119/AS59_RIGHT_ACTIONS_4x6.png",
+      "sha256": "9e407d1533116b5938687be7e109388aae5ed7e91207bb6b14e3c41fb60957da",
+      "direction": "right",
+      "prompt_summary": "Use the exact identity master; create 24 full-body body-only cels in a 4x6 grid, facing right; preserve unique asymmetric design and continuity, no mirror, no rig, no held weapons or VFX.",
+      "postprocessing": "Selected crop-safe variant and/or alpha cleanup are recorded in the clip manifest."
+    },
+    "back": {
+      "path": "assets/p3/baked_candidates/aschar59_candidate/source_recreated/20261119/AS59_BACK_ACTIONS_4x6.png",
+      "sha256": "00068ddc1fe6a72506191dc4129c858724f9dca06182312b94bc718a238a9dfb",
+      "direction": "back",
+      "prompt_summary": "Use the exact identity master; create 24 full-body body-only cels in a 4x6 grid, facing back; preserve unique asymmetric design and continuity, no mirror, no rig, no held weapons or VFX.",
+      "postprocessing": "Selected V2 regenerated source after V1 edge-touch review; source remains original RGBA, alpha<96 threshold used only in frame export."
+    },
+    "left": {
+      "path": "assets/p3/baked_candidates/aschar59_candidate/source_recreated/20261119/AS59_LEFT_ACTIONS_4x6.png",
+      "sha256": "12343507d3d554443e8271462713e445cdb4b8bd12bef836d81d6335205dc14c",
+      "direction": "left",
+      "prompt_summary": "Use the exact identity master; create 24 full-body body-only cels in a 4x6 grid, facing left; preserve unique asymmetric design and continuity, no mirror, no rig, no held weapons or VFX.",
+      "postprocessing": "Selected V2 regenerated source after V1 edge-touch review; source remains original RGBA, alpha<96 threshold used only in frame export."
+    }
+  },
+  "limitation": "Original generated sheets kept unchanged; four low-margin source sheets were retained as V1 edge-touch records and replaced with separately generated safe-margin V2 sheets. Manual neighbor-frame cleanup and owner art review remain pending; no runtime integration."
+}

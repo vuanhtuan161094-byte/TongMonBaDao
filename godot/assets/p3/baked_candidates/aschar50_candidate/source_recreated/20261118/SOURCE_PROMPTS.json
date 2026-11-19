@@ -1,0 +1,53 @@
+{
+  "AS50_GRID": {
+    "prompt": "Use case: stylized-concept game animation source sheet. Asset type: candidate full-body 2D cel sheet for existing TMB Dao Tu AS50. Image 1 is the frozen identity: preserve exact face, large dark eyes, swept tied black hair, red-black-gold outfit, jade clasp, proportions, silhouette and costume seams. 4-column × 4-row transparent sheet, equal square cells, no labels/dividers, one centered full-body character at matching scale and baseline. Rows top-to-bottom: Walk_Front left contact/passing/right contact/passing; Cast_Front settle/gather/release without energy or VFX/recovery; Hit_Front anticipation/impact/recoil/recovery; Downed_Front stumble/knee/fall/settled down. Genuine distinct drawings. Dark-xianxia chibi matching master. No weapon, VFX, blur, extra character, text or watermark; keep body inside cells.",
+    "input_master_path": "godot/assets/p3/baked_candidates/aschar50_candidate/AS50_MASTER_REGISTERED_384.png",
+    "input_master_sha256": "2ccbc8e24c60de099467604679acb893eb781bd945b30f85d88065f14402e881",
+    "output_sheet": "godot/assets/p3/baked_candidates/aschar50_candidate/source_recreated/20261118/AS50_FRONT_ACTIONS_4x4.png",
+    "output_sheet_sha256": "87d9e40d78e2bb811438f45b64638988d5e4d2fb179bd8cc171aa575c7028b9a",
+    "tool": "built-in image_gen",
+    "status": "RECREATED"
+  },
+  "AS50_WALK": {
+    "prompt": "Use case: stylized-concept game animation source sheet. Asset type: four genuine full-body Walk_Front cels for frozen AS50 male Dao Tu. Preserve exact master identity, face, hair, red-black-gold costume, jade clasp and proportions. Exact 2×2 transparent sheet, equal square cells, at least 12% transparent margin around every full body; read order left contact, passing, right contact, passing. Front view, clear alternating foot/weight motion, subtle coat/hair motion, stable scale/baseline. No weapon, VFX, glow, background, text or watermark.",
+    "input_master_path": "godot/assets/p3/baked_candidates/aschar50_candidate/AS50_MASTER_REGISTERED_384.png",
+    "input_master_sha256": "2ccbc8e24c60de099467604679acb893eb781bd945b30f85d88065f14402e881",
+    "output_sheet": "godot/assets/p3/baked_candidates/aschar50_candidate/source_recreated/20261118/AS50_WALK_FRONT_2x2.png",
+    "output_sheet_sha256": "a922a78c9f9d0c707340fa65d818944fe101b4465465b8549707a21691dfb357",
+    "tool": "built-in image_gen",
+    "status": "RECREATED"
+  },
+  "AS50_RIGHT": {
+    "input_master_path": "assets/p3/baked_candidates/aschar50_candidate/AS50_MASTER_REGISTERED_384.png",
+    "input_master_sha256": "2ccbc8e24c60de099467604679acb893eb781bd945b30f85d88065f14402e881",
+    "output_sheet": "assets/p3/baked_candidates/aschar50_candidate/source_recreated/20261118/AS50_RIGHT_ACTIONS_4x6.png",
+    "output_sheet_sha256": "d408b875ee29396c488cdbae9976850590241b233d4c36cce9ac7f1c3006d3ff",
+    "direction": "Right",
+    "tool": "built-in image_gen",
+    "status": "RECREATED_CANDIDATE",
+    "method": "4x6 transparent full-body pose sheet generated with frozen identity master reference; direction authored as a view, not mirrored. Rows Idle/Walk/Attack/Cast/Hit/Downed, four distinct cels per action; body-only, no weapon/VFX; candidate pending frame-continuity and owner art review.",
+    "limitations": "Generated pose sheet is not neighboring-frame inpainting. Extracted cels have distinct poses, but temporal consistency, silhouette details, alpha edge and weapon socket remain candidate/pending."
+  },
+  "AS50_BACK": {
+    "input_master_path": "assets/p3/baked_candidates/aschar50_candidate/AS50_MASTER_REGISTERED_384.png",
+    "input_master_sha256": "2ccbc8e24c60de099467604679acb893eb781bd945b30f85d88065f14402e881",
+    "output_sheet": "assets/p3/baked_candidates/aschar50_candidate/source_recreated/20261118/AS50_BACK_ACTIONS_4x6.png",
+    "output_sheet_sha256": "ab67fb0c4dec2a05a19e0e84fb6ae2913b7225e40fb80ac54aa87dba0fadf868",
+    "direction": "Back",
+    "tool": "built-in image_gen",
+    "status": "RECREATED_CANDIDATE",
+    "method": "4x6 transparent full-body pose sheet generated with frozen identity master reference; direction authored as a view, not mirrored. Rows Idle/Walk/Attack/Cast/Hit/Downed, four distinct cels per action; body-only, no weapon/VFX; candidate pending frame-continuity and owner art review.",
+    "limitations": "Generated pose sheet is not neighboring-frame inpainting. Extracted cels have distinct poses, but temporal consistency, silhouette details, alpha edge and weapon socket remain candidate/pending."
+  },
+  "AS50_LEFT": {
+    "input_master_path": "assets/p3/baked_candidates/aschar50_candidate/AS50_MASTER_REGISTERED_384.png",
+    "input_master_sha256": "2ccbc8e24c60de099467604679acb893eb781bd945b30f85d88065f14402e881",
+    "output_sheet": "assets/p3/baked_candidates/aschar50_candidate/source_recreated/20261118/AS50_LEFT_ACTIONS_4x6.png",
+    "output_sheet_sha256": "0b82904059e968f945462cb34ed40930f69794c37233d38ab6655246f8ccfa8f",
+    "direction": "Left",
+    "tool": "built-in image_gen",
+    "status": "RECREATED_CANDIDATE",
+    "method": "4x6 transparent full-body pose sheet generated with frozen identity master reference; direction authored as a view, not mirrored. Rows Idle/Walk/Attack/Cast/Hit/Downed, four distinct cels per action; body-only, no weapon/VFX; candidate pending frame-continuity and owner art review.",
+    "limitations": "Generated pose sheet is not neighboring-frame inpainting. Extracted cels have distinct poses, but temporal consistency, silhouette details, alpha edge and weapon socket remain candidate/pending."
+  }
+}

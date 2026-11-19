@@ -1,0 +1,48 @@
+{
+  "actor_id": "AS60",
+  "school": "Chưởng Tu",
+  "gender": "male",
+  "status": "CANDIDATE / OWNER ART REVIEW PENDING",
+  "tool": "built-in image_gen",
+  "identity_master": {
+    "path": "assets/p3/baked_candidates/aschar60_candidate/source_recreated/20261119/AS60_PALM_MALE_MASTER_CANDIDATE.png",
+    "sha256": "03a4f50b7689b6b071a1fa69c7f0ea9b272604380c9d2d1f1d4e6ac6377efba5",
+    "prompt_summary": "Original Chưởng Tu identity in jade-green and charcoal martial robes, open-hand technique, unique male and female masters."
+  },
+  "animation_sheet_rules": "4 columns × 6 rows; rows Idle, Walk, Attack, Cast, Hit, Downed; four visibly distinct adjacent full-body body-only cels; exact identity master; genuinely redrawn directions; no rig, no mirroring, no baked VFX.",
+  "sheet_sources": {
+    "front": {
+      "path": "assets/p3/baked_candidates/aschar60_candidate/source_recreated/20261119/AS60_FRONT_ACTIONS_4x6.png",
+      "sha256": "2a040049a851094a7b306baf71c4e706643b19b493da3a13c474370ce4dd889d",
+      "direction": "front",
+      "selected_variant": "BASE",
+      "original_source_path": "assets/p3/baked_candidates/aschar60_candidate/source_recreated/20261119/AS60_FRONT_ACTIONS_4x6_SOURCE_GRAY_BG.png",
+      "prompt_summary": "Fixed AS60 master; 24 distinct body-only action cels facing front; no mirrored view, no VFX; owner review pending."
+    },
+    "right": {
+      "path": "assets/p3/baked_candidates/aschar60_candidate/source_recreated/20261119/AS60_RIGHT_ACTIONS_4x6.png",
+      "sha256": "d0a6e5b20ed83fe6ab39a21755f6ca6910f8e3a7c6187eafac00ac87f5fdf01e",
+      "direction": "right",
+      "selected_variant": "BASE",
+      "original_source_path": "assets/p3/baked_candidates/aschar60_candidate/source_recreated/20261119/AS60_RIGHT_ACTIONS_4x6_SOURCE_GRAY_BG.png",
+      "prompt_summary": "Fixed AS60 master; 24 distinct body-only action cels facing right; no mirrored view, no VFX; owner review pending."
+    },
+    "back": {
+      "path": "assets/p3/baked_candidates/aschar60_candidate/source_recreated/20261119/AS60_BACK_ACTIONS_4x6.png",
+      "sha256": "3140c8405ae022e0916651e1d82b8822f549cfb714cc12ef2e6727f21d8f3d97",
+      "direction": "back",
+      "selected_variant": "BASE",
+      "original_source_path": "assets/p3/baked_candidates/aschar60_candidate/source_recreated/20261119/AS60_BACK_ACTIONS_4x6_SOURCE_GRAY_BG.png",
+      "prompt_summary": "Fixed AS60 master; 24 distinct body-only action cels facing back; no mirrored view, no VFX; owner review pending."
+    },
+    "left": {
+      "path": "assets/p3/baked_candidates/aschar60_candidate/source_recreated/20261119/AS60_LEFT_ACTIONS_4x6.png",
+      "sha256": "8ffc15b4614682a7dc4f898a34fcc144173edbfe1e1e3187874040823d10f950",
+      "direction": "left",
+      "selected_variant": "BASE",
+      "original_source_path": "assets/p3/baked_candidates/aschar60_candidate/source_recreated/20261119/AS60_LEFT_ACTIONS_4x6_SOURCE_GRAY_BG.png",
+      "prompt_summary": "Fixed AS60 master; 24 distinct body-only action cels facing left; no mirrored view, no VFX; owner review pending."
+    }
+  },
+  "limitation": "No manual neighboring-frame cleanup/onion-skin has been performed. These are art candidates only, not owner-approved or integrated into gameplay."
+}

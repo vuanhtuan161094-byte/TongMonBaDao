@@ -1,0 +1,48 @@
+{
+  "actor_id": "AS65",
+  "school": "Phù Tu",
+  "gender": "female",
+  "status": "CANDIDATE / OWNER ART REVIEW PENDING",
+  "tool": "built-in image_gen",
+  "identity_master": {
+    "path": "assets/p3/baked_candidates/aschar65_candidate/source_recreated/20261119/AS65_TALISMAN_FEMALE_MASTER_CANDIDATE.png",
+    "sha256": "fe9946d1f9dae09334902248a791797b4ec049b3e0b7b37eaece0ac6145455c9",
+    "prompt_summary": "Fixed AS64/65 candidate masters; owner review pending."
+  },
+  "animation_sheet_rules": "4 columns × 6 rows; rows Idle, Walk, Attack, Cast, Hit, Downed; four visibly distinct adjacent full-body body-only cels; exact identity master; genuinely redrawn directions; no rig, no mirroring, no baked VFX.",
+  "sheet_sources": {
+    "front": {
+      "path": "assets/p3/baked_candidates/aschar65_candidate/source_recreated/20261119/AS65_FRONT_ACTIONS_4x6.png",
+      "sha256": "d025611f8506ce0e97dd89a7ee496e8470b3abab78e200772ff2862a8748bc93",
+      "direction": "front",
+      "selected_variant": "BASE",
+      "original_source_path": "assets/p3/baked_candidates/aschar65_candidate/source_recreated/20261119/AS65_FRONT_ACTIONS_4x6_SOURCE_BG.png",
+      "prompt_summary": "Fixed AS65 master; 24 distinct body-only action cels facing front; no mirrored view, no VFX; owner review pending."
+    },
+    "right": {
+      "path": "assets/p3/baked_candidates/aschar65_candidate/source_recreated/20261119/AS65_RIGHT_ACTIONS_4x6.png",
+      "sha256": "b1f573901be186613778927e512dff8bc96231c043543f64f0bda7d288a4427f",
+      "direction": "right",
+      "selected_variant": "BASE",
+      "original_source_path": "assets/p3/baked_candidates/aschar65_candidate/source_recreated/20261119/AS65_RIGHT_ACTIONS_4x6_SOURCE_BG.png",
+      "prompt_summary": "Fixed AS65 master; 24 distinct body-only action cels facing right; no mirrored view, no VFX; owner review pending."
+    },
+    "back": {
+      "path": "assets/p3/baked_candidates/aschar65_candidate/source_recreated/20261119/AS65_BACK_ACTIONS_4x6.png",
+      "sha256": "e4f336fd5083b31ee3ea18243bb76ff192a68779657028dcab64c15d486f7ebd",
+      "direction": "back",
+      "selected_variant": "CONNECTED_BACKGROUND_REMOVAL",
+      "original_source_path": "assets/p3/baked_candidates/aschar65_candidate/source_recreated/20261119/AS65_BACK_ACTIONS_4x6_SOURCE_BG.png",
+      "prompt_summary": "Fixed AS65 master; 24 distinct body-only action cels facing back; no mirrored view, no VFX; owner review pending."
+    },
+    "left": {
+      "path": "assets/p3/baked_candidates/aschar65_candidate/source_recreated/20261119/AS65_LEFT_ACTIONS_4x6.png",
+      "sha256": "3fcdce7e8700f144ba86c6d0b3aea80317a65ef98e20e557a62d9736d8af7ff4",
+      "direction": "left",
+      "selected_variant": "CONNECTED_BACKGROUND_REMOVAL",
+      "original_source_path": "assets/p3/baked_candidates/aschar65_candidate/source_recreated/20261119/AS65_LEFT_ACTIONS_4x6_SOURCE_BG.png",
+      "prompt_summary": "Fixed AS65 master; 24 distinct body-only action cels facing left; no mirrored view, no VFX; owner review pending."
+    }
+  },
+  "limitation": "No manual neighboring-frame cleanup/onion-skin has been performed. These are art candidates only, not owner-approved or integrated into gameplay."
+}

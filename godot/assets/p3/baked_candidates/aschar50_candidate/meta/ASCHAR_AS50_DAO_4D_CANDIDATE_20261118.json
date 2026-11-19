@@ -1,0 +1,2652 @@
+{
+  "actor_id": "AS50",
+  "school": "Dao Tu",
+  "gender": "male",
+  "identity_master": {
+    "path": "assets/p3/baked_candidates/aschar50_candidate/AS50_MASTER_REGISTERED_384.png",
+    "sha256": "2ccbc8e24c60de099467604679acb893eb781bd945b30f85d88065f14402e881",
+    "preserved": true
+  },
+  "status": "CANDIDATE",
+  "directions": [
+    "Front",
+    "Right",
+    "Back",
+    "Left"
+  ],
+  "actions": [
+    "Idle",
+    "Walk",
+    "Attack",
+    "Cast",
+    "Hit",
+    "Downed"
+  ],
+  "clip_count": 24,
+  "frame_count_new": 72,
+  "frame_px": [
+    384,
+    384
+  ],
+  "pivot_px": [
+    192,
+    360
+  ],
+  "body_mode": "one monolithic full-body RGBA per cel",
+  "mirroring": false,
+  "rigging": false,
+  "weapon_and_vfx": "No weapon or VFX baked into new body sheets; weapon overlay remains separate/pending.",
+  "front_source": "Existing front clips retained; prior front batch manifest records their provenance.",
+  "directions_source": {
+    "right": {
+      "source_sheet": "assets/p3/baked_candidates/aschar50_candidate/source_recreated/20261118/AS50_RIGHT_ACTIONS_4x6.png",
+      "source_sheet_sha256": "d408b875ee29396c488cdbae9976850590241b233d4c36cce9ac7f1c3006d3ff",
+      "sheet_px": [
+        1024,
+        1536
+      ],
+      "source_tool": "built-in image_gen",
+      "source_status": "RECREATED_CANDIDATE",
+      "frame_cels": {
+        "idle": [
+          {
+            "path": "assets/p3/baked_candidates/aschar50_candidate/frames/idle_right/AS50_idle_right_00.png",
+            "sha256": "1be92f60fc8d5befc48c83c782bd38f734516a9e1b60ac9358b94e47968503eb",
+            "canvas_px": [
+              384,
+              384
+            ],
+            "pivot_px": [
+              192,
+              360
+            ],
+            "alpha_bbox_threshold_16": [
+              108,
+              34,
+              276,
+              360
+            ],
+            "source_cell_px": [
+              0,
+              0,
+              256,
+              256
+            ],
+            "source_crop_px": [
+              61,
+              7,
+              191,
+              253
+            ],
+            "scale": 1.365854,
+            "index": 0
+          },
+          {
+            "path": "assets/p3/baked_candidates/aschar50_candidate/frames/idle_right/AS50_idle_right_01.png",
+            "sha256": "131099560adb1fbc054c80e7ca948d64f84637cbbeb6ac09668f1329e57b1991",
+            "canvas_px": [
+              384,
+              384
+            ],
+            "pivot_px": [
+              192,
+              360
+            ],
+            "alpha_bbox_threshold_16": [
+              105,
+              34,
+              279,
+              360
+            ],
+            "source_cell_px": [
+              256,
+              0,
+              512,
+              256
+            ],
+            "source_crop_px": [
+              60,
+              7,
+              194,
+              253
+            ],
+            "scale": 1.365854,
+            "index": 1
+          },
+          {
+            "path": "assets/p3/baked_candidates/aschar50_candidate/frames/idle_right/AS50_idle_right_02.png",
+            "sha256": "e73afb0f77b2611a31f8599405d45b8d6d680557892221bc0f022dd79c58124e",
+            "canvas_px": [
+              384,
+              384
+            ],
+            "pivot_px": [
+              192,
+              360
+            ],
+            "alpha_bbox_threshold_16": [
+              112,
+              37,
+              272,
+              360
+            ],
+            "source_cell_px": [
+              512,
+              0,
+              768,
+              256
+            ],
+            "source_crop_px": [
+              63,
+              9,
+              187,
+              253
+            ],
+            "scale": 1.365854,
+            "index": 2
+          },
+          {
+            "path": "assets/p3/baked_candidates/aschar50_candidate/frames/idle_right/AS50_idle_right_03.png",
+            "sha256": "215f8dee88908998a3da1fd771ce7aed08d4e501553dac107c2c8cd05764b7fb",
+            "canvas_px": [
+              384,
+              384
+            ],
+            "pivot_px": [
+              192,
+              360
+            ],
+            "alpha_bbox_threshold_16": [
+              107,
+              34,
+              277,
+              360
+            ],
+            "source_cell_px": [
+              768,
+              0,
+              1024,
+              256
+            ],
+            "source_crop_px": [
+              67,
+              7,
+              198,
+              253
+            ],
+            "scale": 1.365854,
+            "index": 3
+          }
+        ],
+        "walk": [
+          {
+            "path": "assets/p3/baked_candidates/aschar50_candidate/frames/walk_right/AS50_walk_right_00.png",
+            "sha256": "b5fb380ba505067665aa856ea608d3e2b520cc6d7d03061d527b7998274c4d63",
+            "canvas_px": [
+              384,
+              384
+            ],
+            "pivot_px": [
+              192,
+              360
+            ],
+            "alpha_bbox_threshold_16": [
+              104,
+              34,
+              280,
+              360
+            ],
+            "source_cell_px": [
+              0,
+              256,
+              256,
+              512
+            ],
+            "source_crop_px": [
+              61,
+              5,
+              197,
+              251
+            ],
+            "scale": 1.365854,
+            "index": 0
+          },
+          {
+            "path": "assets/p3/baked_candidates/aschar50_candidate/frames/walk_right/AS50_walk_right_01.png",
+            "sha256": "e44001984719d11e35f0996289e3d344aa7cec409edee9aef435baa6ea0dddca",
+            "canvas_px": [
+              384,
+              384
+            ],
+            "pivot_px": [
+              192,
+              360
+            ],
+            "alpha_bbox_threshold_16": [
+              118,
+              32,
+              267,
+              360
+            ],
+            "source_cell_px": [
+              256,
+              256,
+              512,
+              512
+            ],
+            "source_crop_px": [
+              68,
+              5,
+              184,
+              251
+            ],
+            "scale": 1.365854,
+            "index": 1
+          },
+          {
+            "path": "assets/p3/baked_candidates/aschar50_candidate/frames/walk_right/AS50_walk_right_02.png",
+            "sha256": "b460e15f877c6ff04a1be01f61b66574da8e669b81972d0e2f8f9c69dd0a5805",
+            "canvas_px": [
+              384,
+              384
+            ],
+            "pivot_px": [
+              192,
+              360
+            ],
+            "alpha_bbox_threshold_16": [
+              108,
+              33,
+              277,
+              360
+            ],
+            "source_cell_px": [
+              512,
+              256,
+              768,
+              512
+            ],
+            "source_crop_px": [
+              66,
+              5,
+              196,
+              252
+            ],
+            "scale": 1.365854,
+            "index": 2
+          },
+          {
+            "path": "assets/p3/baked_candidates/aschar50_candidate/frames/walk_right/AS50_walk_right_03.png",
+            "sha256": "d069e0e3edc0daa33db0ed6902ae1b4609d711363bb72aa7cbc6a3f8eb2859de",
+            "canvas_px": [
+              384,
+              384
+            ],
+            "pivot_px": [
+              192,
+              360
+            ],
+            "alpha_bbox_threshold_16": [
+              111,
+              34,
+              274,
+              360
+            ],
+            "source_cell_px": [
+              768,
+              256,
+              1024,
+              512
+            ],
+            "source_crop_px": [
+              64,
+              6,
+              190,
+              252
+            ],
+            "scale": 1.365854,
+            "index": 3
+          }
+        ],
+        "attack": [
+          {
+            "path": "assets/p3/baked_candidates/aschar50_candidate/frames/attack_right/AS50_attack_right_00.png",
+            "sha256": "cff22ed8178460e2485cba86cea6d85cf844353bc457b8c5a54a91349a588cc9",
+            "canvas_px": [
+              384,
+              384
+            ],
+            "pivot_px": [
+              192,
+              360
+            ],
+            "alpha_bbox_threshold_16": [
+              97,
+              34,
+              286,
+              360
+            ],
+            "source_cell_px": [
+              0,
+              512,
+              256,
+              768
+            ],
+            "source_crop_px": [
+              48,
+              4,
+              194,
+              252
+            ],
+            "scale": 1.354839,
+            "index": 0
+          },
+          {
+            "path": "assets/p3/baked_candidates/aschar50_candidate/frames/attack_right/AS50_attack_right_01.png",
+            "sha256": "f0c495735d100744590d0a44c2bbfd0516e08f1cc92f4986eabe3fc1270604f6",
+            "canvas_px": [
+              384,
+              384
+            ],
+            "pivot_px": [
+              192,
+              360
+            ],
+            "alpha_bbox_threshold_16": [
+              88,
+              34,
+              296,
+              360
+            ],
+            "source_cell_px": [
+              256,
+              512,
+              512,
+              768
+            ],
+            "source_crop_px": [
+              50,
+              4,
+              211,
+              252
+            ],
+            "scale": 1.354839,
+            "index": 1
+          },
+          {
+            "path": "assets/p3/baked_candidates/aschar50_candidate/frames/attack_right/AS50_attack_right_02.png",
+            "sha256": "2c9572284353e10518fe27a6b5d021bbd3da1c62d8378cdc3be245d200e49ae7",
+            "canvas_px": [
+              384,
+              384
+            ],
+            "pivot_px": [
+              192,
+              360
+            ],
+            "alpha_bbox_threshold_16": [
+              69,
+              56,
+              314,
+              360
+            ],
+            "source_cell_px": [
+              512,
+              512,
+              768,
+              768
+            ],
+            "source_crop_px": [
+              32,
+              20,
+              220,
+              250
+            ],
+            "scale": 1.354839,
+            "index": 2
+          },
+          {
+            "path": "assets/p3/baked_candidates/aschar50_candidate/frames/attack_right/AS50_attack_right_03.png",
+            "sha256": "0f2a2d5675c5d0963a495e7e7efc8e67e1e509bd394259aa9353bb43a9120330",
+            "canvas_px": [
+              384,
+              384
+            ],
+            "pivot_px": [
+              192,
+              360
+            ],
+            "alpha_bbox_threshold_16": [
+              90,
+              39,
+              293,
+              360
+            ],
+            "source_cell_px": [
+              768,
+              512,
+              1024,
+              768
+            ],
+            "source_crop_px": [
+              42,
+              8,
+              198,
+              252
+            ],
+            "scale": 1.354839,
+            "index": 3
+          }
+        ],
+        "cast": [
+          {
+            "path": "assets/p3/baked_candidates/aschar50_candidate/frames/cast_right/AS50_cast_right_00.png",
+            "sha256": "39066ba210b984c31968ec11d1255701a91cd27c72fc1dac31cfe3c317bbf4b2",
+            "canvas_px": [
+              384,
+              384
+            ],
+            "pivot_px": [
+              192,
+              360
+            ],
+            "alpha_bbox_threshold_16": [
+              107,
+              33,
+              278,
+              360
+            ],
+            "source_cell_px": [
+              0,
+              768,
+              256,
+              1024
+            ],
+            "source_crop_px": [
+              62,
+              7,
+              194,
+              253
+            ],
+            "scale": 1.365854,
+            "index": 0
+          },
+          {
+            "path": "assets/p3/baked_candidates/aschar50_candidate/frames/cast_right/AS50_cast_right_01.png",
+            "sha256": "6abe04bb14e9f1e380153c2741450d032ebdfcd6b1209593b11decad16644386",
+            "canvas_px": [
+              384,
+              384
+            ],
+            "pivot_px": [
+              192,
+              360
+            ],
+            "alpha_bbox_threshold_16": [
+              101,
+              33,
+              282,
+              360
+            ],
+            "source_cell_px": [
+              256,
+              768,
+              512,
+              1024
+            ],
+            "source_crop_px": [
+              55,
+              7,
+              195,
+              253
+            ],
+            "scale": 1.365854,
+            "index": 1
+          },
+          {
+            "path": "assets/p3/baked_candidates/aschar50_candidate/frames/cast_right/AS50_cast_right_02.png",
+            "sha256": "f0a6bff8acbe8cdcf6e05b2fc9ad96ad05abf84566216e538cd0a737f7f0809b",
+            "canvas_px": [
+              384,
+              384
+            ],
+            "pivot_px": [
+              192,
+              360
+            ],
+            "alpha_bbox_threshold_16": [
+              81,
+              35,
+              304,
+              360
+            ],
+            "source_cell_px": [
+              512,
+              768,
+              768,
+              1024
+            ],
+            "source_crop_px": [
+              54,
+              8,
+              224,
+              253
+            ],
+            "scale": 1.365854,
+            "index": 2
+          },
+          {
+            "path": "assets/p3/baked_candidates/aschar50_candidate/frames/cast_right/AS50_cast_right_03.png",
+            "sha256": "a7d06d33ce618f9aeb4793025de9d3603f56800f8aaba392ee5131a27f4890e3",
+            "canvas_px": [
+              384,
+              384
+            ],
+            "pivot_px": [
+              192,
+              360
+            ],
+            "alpha_bbox_threshold_16": [
+              102,
+              33,
+              282,
+              360
+            ],
+            "source_cell_px": [
+              768,
+              768,
+              1024,
+              1024
+            ],
+            "source_crop_px": [
+              64,
+              7,
+              203,
+              253
+            ],
+            "scale": 1.365854,
+            "index": 3
+          }
+        ],
+        "hit": [
+          {
+            "path": "assets/p3/baked_candidates/aschar50_candidate/frames/hit_right/AS50_hit_right_00.png",
+            "sha256": "2cd4b7777d6b8122e586f1c8d85d82392dfe46086dc20bf753e7a6062a7d63ca",
+            "canvas_px": [
+              384,
+              384
+            ],
+            "pivot_px": [
+              192,
+              360
+            ],
+            "alpha_bbox_threshold_16": [
+              93,
+              33,
+              290,
+              360
+            ],
+            "source_cell_px": [
+              0,
+              1024,
+              256,
+              1280
+            ],
+            "source_crop_px": [
+              59,
+              7,
+              208,
+              249
+            ],
+            "scale": 1.38843,
+            "index": 0
+          },
+          {
+            "path": "assets/p3/baked_candidates/aschar50_candidate/frames/hit_right/AS50_hit_right_01.png",
+            "sha256": "3fa58924602b7c906f4b93afe9b0f6ece603704c57b59a8d2a46da0aa8c09d82",
+            "canvas_px": [
+              384,
+              384
+            ],
+            "pivot_px": [
+              192,
+              360
+            ],
+            "alpha_bbox_threshold_16": [
+              79,
+              47,
+              306,
+              360
+            ],
+            "source_cell_px": [
+              256,
+              1024,
+              512,
+              1280
+            ],
+            "source_crop_px": [
+              43,
+              19,
+              213,
+              250
+            ],
+            "scale": 1.38843,
+            "index": 1
+          },
+          {
+            "path": "assets/p3/baked_candidates/aschar50_candidate/frames/hit_right/AS50_hit_right_02.png",
+            "sha256": "a4d9007ac81d834d428afdfd510306f704c72ca79aea9da2a90ad9bfa66fb1d2",
+            "canvas_px": [
+              384,
+              384
+            ],
+            "pivot_px": [
+              192,
+              360
+            ],
+            "alpha_bbox_threshold_16": [
+              78,
+              61,
+              306,
+              360
+            ],
+            "source_cell_px": [
+              512,
+              1024,
+              768,
+              1280
+            ],
+            "source_crop_px": [
+              28,
+              27,
+              199,
+              249
+            ],
+            "scale": 1.38843,
+            "index": 2
+          },
+          {
+            "path": "assets/p3/baked_candidates/aschar50_candidate/frames/hit_right/AS50_hit_right_03.png",
+            "sha256": "6598a35029366b60b262a419fb2a1636331ba27495817bef192ac4eccba4ed3e",
+            "canvas_px": [
+              384,
+              384
+            ],
+            "pivot_px": [
+              192,
+              360
+            ],
+            "alpha_bbox_threshold_16": [
+              97,
+              70,
+              290,
+              360
+            ],
+            "source_cell_px": [
+              768,
+              1024,
+              1024,
+              1280
+            ],
+            "source_crop_px": [
+              46,
+              34,
+              190,
+              249
+            ],
+            "scale": 1.38843,
+            "index": 3
+          }
+        ],
+        "downed": [
+          {
+            "path": "assets/p3/baked_candidates/aschar50_candidate/frames/downed_right/AS50_downed_right_00.png",
+            "sha256": "67c858cb3dbeac01361b5d182337a2b5d5effd99bc94ef72d996410b75fb943b",
+            "canvas_px": [
+              384,
+              384
+            ],
+            "pivot_px": [
+              192,
+              360
+            ],
+            "alpha_bbox_threshold_16": [
+              87,
+              34,
+              296,
+              360
+            ],
+            "source_cell_px": [
+              0,
+              1280,
+              256,
+              1536
+            ],
+            "source_crop_px": [
+              44,
+              14,
+              196,
+              247
+            ],
+            "scale": 1.44206,
+            "index": 0
+          },
+          {
+            "path": "assets/p3/baked_candidates/aschar50_candidate/frames/downed_right/AS50_downed_right_01.png",
+            "sha256": "d72d070012a07beb62810b9acad5c55587f0fc344dd5a0d572f14f245a28093a",
+            "canvas_px": [
+              384,
+              384
+            ],
+            "pivot_px": [
+              192,
+              360
+            ],
+            "alpha_bbox_threshold_16": [
+              71,
+              102,
+              313,
+              360
+            ],
+            "source_cell_px": [
+              256,
+              1280,
+              512,
+              1536
+            ],
+            "source_crop_px": [
+              30,
+              62,
+              204,
+              247
+            ],
+            "scale": 1.44206,
+            "index": 1
+          },
+          {
+            "path": "assets/p3/baked_candidates/aschar50_candidate/frames/downed_right/AS50_downed_right_02.png",
+            "sha256": "9735c9fee8e740f0dca85d71c0e4fa82b1a3a758e38f13e4968b4d6f99e46528",
+            "canvas_px": [
+              384,
+              384
+            ],
+            "pivot_px": [
+              192,
+              360
+            ],
+            "alpha_bbox_threshold_16": [
+              18,
+              178,
+              369,
+              360
+            ],
+            "source_cell_px": [
+              512,
+              1280,
+              768,
+              1536
+            ],
+            "source_crop_px": [
+              10,
+              113,
+              256,
+              246
+            ],
+            "scale": 1.44206,
+            "index": 2
+          },
+          {
+            "path": "assets/p3/baked_candidates/aschar50_candidate/frames/downed_right/AS50_downed_right_03.png",
+            "sha256": "71fbeee20d8571501e4107a301376b2a4e5ace8002d1d9da9511fa6735b5ba67",
+            "canvas_px": [
+              384,
+              384
+            ],
+            "pivot_px": [
+              192,
+              360
+            ],
+            "alpha_bbox_threshold_16": [
+              12,
+              236,
+              368,
+              360
+            ],
+            "source_cell_px": [
+              768,
+              1280,
+              1024,
+              1536
+            ],
+            "source_crop_px": [
+              0,
+              155,
+              250,
+              247
+            ],
+            "scale": 1.44206,
+            "index": 3
+          }
+        ]
+      },
+      "atlas": {
+        "path": "assets/p3/baked_candidates/aschar50_candidate/atlases/ASCHAR_AS50_RIGHT_ACTIONS_4x6.png",
+        "sha256": "f3a37b0527fcb4da80bddc6312e818cb16d763f33bc3078a8acf11daf0bceb51",
+        "dimensions_px": [
+          1536,
+          2304
+        ],
+        "cell_px": [
+          384,
+          384
+        ],
+        "rows": [
+          "idle",
+          "walk",
+          "attack",
+          "cast",
+          "hit",
+          "downed"
+        ],
+        "columns": [
+          "00",
+          "01",
+          "02",
+          "03"
+        ]
+      }
+    },
+    "back": {
+      "source_sheet": "assets/p3/baked_candidates/aschar50_candidate/source_recreated/20261118/AS50_BACK_ACTIONS_4x6.png",
+      "source_sheet_sha256": "ab67fb0c4dec2a05a19e0e84fb6ae2913b7225e40fb80ac54aa87dba0fadf868",
+      "sheet_px": [
+        1024,
+        1536
+      ],
+      "source_tool": "built-in image_gen",
+      "source_status": "RECREATED_CANDIDATE",
+      "frame_cels": {
+        "idle": [
+          {
+            "path": "assets/p3/baked_candidates/aschar50_candidate/frames/idle_back/AS50_idle_back_00.png",
+            "sha256": "378cb430fad3c8a76e6dc97b6c9df04628cbe487db65c2ff5a116fa759ff8f04",
+            "canvas_px": [
+              384,
+              384
+            ],
+            "pivot_px": [
+              192,
+              360
+            ],
+            "alpha_bbox_threshold_16": [
+              120,
+              28,
+              265,
+              360
+            ],
+            "source_cell_px": [
+              0,
+              0,
+              256,
+              256
+            ],
+            "source_crop_px": [
+              82,
+              8,
+              195,
+              256
+            ],
+            "scale": 1.354839,
+            "index": 0
+          },
+          {
+            "path": "assets/p3/baked_candidates/aschar50_candidate/frames/idle_back/AS50_idle_back_01.png",
+            "sha256": "f754e068a776e824a186c432c62374527cd0527829f66e904299b513f41e9817",
+            "canvas_px": [
+              384,
+              384
+            ],
+            "pivot_px": [
+              192,
+              360
+            ],
+            "alpha_bbox_threshold_16": [
+              116,
+              25,
+              268,
+              360
+            ],
+            "source_cell_px": [
+              256,
+              0,
+              512,
+              256
+            ],
+            "source_crop_px": [
+              78,
+              6,
+              196,
+              256
+            ],
+            "scale": 1.354839,
+            "index": 1
+          },
+          {
+            "path": "assets/p3/baked_candidates/aschar50_candidate/frames/idle_back/AS50_idle_back_02.png",
+            "sha256": "4f69cbd886f1f38083b6ba95083edaf3d24c2334b7da4e19d2fd2b6e20e62cd0",
+            "canvas_px": [
+              384,
+              384
+            ],
+            "pivot_px": [
+              192,
+              360
+            ],
+            "alpha_bbox_threshold_16": [
+              117,
+              31,
+              267,
+              360
+            ],
+            "source_cell_px": [
+              512,
+              0,
+              768,
+              256
+            ],
+            "source_crop_px": [
+              78,
+              10,
+              195,
+              256
+            ],
+            "scale": 1.354839,
+            "index": 2
+          },
+          {
+            "path": "assets/p3/baked_candidates/aschar50_candidate/frames/idle_back/AS50_idle_back_03.png",
+            "sha256": "09767274f9af41876428de79fea99625a63437bb5519074a7def0c3cbc61388e",
+            "canvas_px": [
+              384,
+              384
+            ],
+            "pivot_px": [
+              192,
+              360
+            ],
+            "alpha_bbox_threshold_16": [
+              121,
+              32,
+              264,
+              360
+            ],
+            "source_cell_px": [
+              768,
+              0,
+              1024,
+              256
+            ],
+            "source_crop_px": [
+              81,
+              8,
+              194,
+              256
+            ],
+            "scale": 1.354839,
+            "index": 3
+          }
+        ],
+        "walk": [
+          {
+            "path": "assets/p3/baked_candidates/aschar50_candidate/frames/walk_back/AS50_walk_back_00.png",
+            "sha256": "bb7446b7b54d69265ee6f1dae68ec096aa56007538e185c3eff4be1254f78492",
+            "canvas_px": [
+              384,
+              384
+            ],
+            "pivot_px": [
+              192,
+              360
+            ],
+            "alpha_bbox_threshold_16": [
+              112,
+              28,
+              275,
+              360
+            ],
+            "source_cell_px": [
+              0,
+              256,
+              256,
+              512
+            ],
+            "source_crop_px": [
+              75,
+              8,
+              196,
+              252
+            ],
+            "scale": 1.377049,
+            "index": 0
+          },
+          {
+            "path": "assets/p3/baked_candidates/aschar50_candidate/frames/walk_back/AS50_walk_back_01.png",
+            "sha256": "2220a62194b14193d2066a86783b984138f56874b4722fc70095cc142059955a",
+            "canvas_px": [
+              384,
+              384
+            ],
+            "pivot_px": [
+              192,
+              360
+            ],
+            "alpha_bbox_threshold_16": [
+              110,
+              7,
+              274,
+              360
+            ],
+            "source_cell_px": [
+              256,
+              256,
+              512,
+              512
+            ],
+            "source_crop_px": [
+              79,
+              0,
+              198,
+              256
+            ],
+            "scale": 1.377049,
+            "index": 1
+          },
+          {
+            "path": "assets/p3/baked_candidates/aschar50_candidate/frames/walk_back/AS50_walk_back_02.png",
+            "sha256": "5d0cb863e96d71cab24dafefa69dc936e4cadbb6d09f71f3a99336d00e3697c4",
+            "canvas_px": [
+              384,
+              384
+            ],
+            "pivot_px": [
+              192,
+              360
+            ],
+            "alpha_bbox_threshold_16": [
+              110,
+              18,
+              274,
+              360
+            ],
+            "source_cell_px": [
+              512,
+              256,
+              768,
+              512
+            ],
+            "source_crop_px": [
+              75,
+              7,
+              194,
+              256
+            ],
+            "scale": 1.377049,
+            "index": 2
+          },
+          {
+            "path": "assets/p3/baked_candidates/aschar50_candidate/frames/walk_back/AS50_walk_back_03.png",
+            "sha256": "9190e2b63fc506c65245c76fb4e4df5a69dc6fcdaf9e0fdeea56222b5d10205c",
+            "canvas_px": [
+              384,
+              384
+            ],
+            "pivot_px": [
+              192,
+              360
+            ],
+            "alpha_bbox_threshold_16": [
+              117,
+              27,
+              271,
+              360
+            ],
+            "source_cell_px": [
+              768,
+              256,
+              1024,
+              512
+            ],
+            "source_crop_px": [
+              79,
+              7,
+              194,
+              252
+            ],
+            "scale": 1.377049,
+            "index": 3
+          }
+        ],
+        "attack": [
+          {
+            "path": "assets/p3/baked_candidates/aschar50_candidate/frames/attack_back/AS50_attack_back_00.png",
+            "sha256": "1c45a302ebfc9772e3ac38c57e1644a843bc08c1a314b878e69f4ada90d53a7c",
+            "canvas_px": [
+              384,
+              384
+            ],
+            "pivot_px": [
+              192,
+              360
+            ],
+            "alpha_bbox_threshold_16": [
+              88,
+              24,
+              299,
+              360
+            ],
+            "source_cell_px": [
+              0,
+              512,
+              256,
+              768
+            ],
+            "source_crop_px": [
+              64,
+              6,
+              220,
+              250
+            ],
+            "scale": 1.377049,
+            "index": 0
+          },
+          {
+            "path": "assets/p3/baked_candidates/aschar50_candidate/frames/attack_back/AS50_attack_back_01.png",
+            "sha256": "a6cae6fc7ecd2783fdeb273483fb10a2e083fc715f5fca6eae23059dc99bbc45",
+            "canvas_px": [
+              384,
+              384
+            ],
+            "pivot_px": [
+              192,
+              360
+            ],
+            "alpha_bbox_threshold_16": [
+              76,
+              7,
+              307,
+              360
+            ],
+            "source_cell_px": [
+              256,
+              512,
+              512,
+              768
+            ],
+            "source_crop_px": [
+              59,
+              0,
+              227,
+              256
+            ],
+            "scale": 1.377049,
+            "index": 1
+          },
+          {
+            "path": "assets/p3/baked_candidates/aschar50_candidate/frames/attack_back/AS50_attack_back_02.png",
+            "sha256": "ff11301163c8e91303ee0d0b9a42d34cee06db585eb3ab7bd0acceaf643ca935",
+            "canvas_px": [
+              384,
+              384
+            ],
+            "pivot_px": [
+              192,
+              360
+            ],
+            "alpha_bbox_threshold_16": [
+              66,
+              7,
+              318,
+              360
+            ],
+            "source_cell_px": [
+              512,
+              512,
+              768,
+              768
+            ],
+            "source_crop_px": [
+              60,
+              0,
+              243,
+              256
+            ],
+            "scale": 1.377049,
+            "index": 2
+          },
+          {
+            "path": "assets/p3/baked_candidates/aschar50_candidate/frames/attack_back/AS50_attack_back_03.png",
+            "sha256": "2ae88c6deaaef653320bc3626243596a2183bdfb3f2f48ca06d8a29adf4a271b",
+            "canvas_px": [
+              384,
+              384
+            ],
+            "pivot_px": [
+              192,
+              360
+            ],
+            "alpha_bbox_threshold_16": [
+              90,
+              28,
+              294,
+              360
+            ],
+            "source_cell_px": [
+              768,
+              512,
+              1024,
+              768
+            ],
+            "source_crop_px": [
+              59,
+              7,
+              207,
+              248
+            ],
+            "scale": 1.377049,
+            "index": 3
+          }
+        ],
+        "cast": [
+          {
+            "path": "assets/p3/baked_candidates/aschar50_candidate/frames/cast_back/AS50_cast_back_00.png",
+            "sha256": "29b01d3800a81a60d46a6d4f59eb530785c1b5ef599484bcf69b7c00159af84f",
+            "canvas_px": [
+              384,
+              384
+            ],
+            "pivot_px": [
+              192,
+              360
+            ],
+            "alpha_bbox_threshold_16": [
+              78,
+              24,
+              309,
+              360
+            ],
+            "source_cell_px": [
+              0,
+              768,
+              256,
+              1024
+            ],
+            "source_crop_px": [
+              77,
+              0,
+              256,
+              256
+            ],
+            "scale": 1.3125,
+            "index": 0
+          },
+          {
+            "path": "assets/p3/baked_candidates/aschar50_candidate/frames/cast_back/AS50_cast_back_01.png",
+            "sha256": "1195e4fb5234254b3c3360f4f48ab376fb3641b748363faeb96bdb8da9157aa2",
+            "canvas_px": [
+              384,
+              384
+            ],
+            "pivot_px": [
+              192,
+              360
+            ],
+            "alpha_bbox_threshold_16": [
+              41,
+              24,
+              343,
+              360
+            ],
+            "source_cell_px": [
+              256,
+              768,
+              512,
+              1024
+            ],
+            "source_crop_px": [
+              0,
+              0,
+              230,
+              256
+            ],
+            "scale": 1.3125,
+            "index": 1
+          },
+          {
+            "path": "assets/p3/baked_candidates/aschar50_candidate/frames/cast_back/AS50_cast_back_02.png",
+            "sha256": "ed41acf7d888cff69c5e49dd66d36f34c82430f74c50ed59c8b7151cd8f3cefd",
+            "canvas_px": [
+              384,
+              384
+            ],
+            "pivot_px": [
+              192,
+              360
+            ],
+            "alpha_bbox_threshold_16": [
+              78,
+              24,
+              305,
+              360
+            ],
+            "source_cell_px": [
+              512,
+              768,
+              768,
+              1024
+            ],
+            "source_crop_px": [
+              55,
+              0,
+              228,
+              256
+            ],
+            "scale": 1.3125,
+            "index": 2
+          },
+          {
+            "path": "assets/p3/baked_candidates/aschar50_candidate/frames/cast_back/AS50_cast_back_03.png",
+            "sha256": "39cb0e75d6af6917c2f44169c378106f813ef6e5ffd90db8bf80cd1aab3d61f8",
+            "canvas_px": [
+              384,
+              384
+            ],
+            "pivot_px": [
+              192,
+              360
+            ],
+            "alpha_bbox_threshold_16": [
+              104,
+              28,
+              281,
+              360
+            ],
+            "source_cell_px": [
+              768,
+              768,
+              1024,
+              1024
+            ],
+            "source_crop_px": [
+              72,
+              3,
+              207,
+              256
+            ],
+            "scale": 1.3125,
+            "index": 3
+          }
+        ],
+        "hit": [
+          {
+            "path": "assets/p3/baked_candidates/aschar50_candidate/frames/hit_back/AS50_hit_back_00.png",
+            "sha256": "b7bea205418437c53888afc189a896b97155bfae13050a66484841a18162cda6",
+            "canvas_px": [
+              384,
+              384
+            ],
+            "pivot_px": [
+              192,
+              360
+            ],
+            "alpha_bbox_threshold_16": [
+              71,
+              24,
+              314,
+              360
+            ],
+            "source_cell_px": [
+              0,
+              1024,
+              256,
+              1280
+            ],
+            "source_crop_px": [
+              73,
+              0,
+              256,
+              252
+            ],
+            "scale": 1.333333,
+            "index": 0
+          },
+          {
+            "path": "assets/p3/baked_candidates/aschar50_candidate/frames/hit_back/AS50_hit_back_01.png",
+            "sha256": "f0fd3f050b5a176fd87adb7e0766a03b8bc0b2581ccc1d4a695c10dcfcd7ecef",
+            "canvas_px": [
+              384,
+              384
+            ],
+            "pivot_px": [
+              192,
+              360
+            ],
+            "alpha_bbox_threshold_16": [
+              52,
+              19,
+              331,
+              360
+            ],
+            "source_cell_px": [
+              256,
+              1024,
+              512,
+              1280
+            ],
+            "source_crop_px": [
+              47,
+              0,
+              256,
+              256
+            ],
+            "scale": 1.333333,
+            "index": 1
+          },
+          {
+            "path": "assets/p3/baked_candidates/aschar50_candidate/frames/hit_back/AS50_hit_back_02.png",
+            "sha256": "1e35b583663d620e50ac1b6523ebd5dfa65964091da8e21cf838b57c4c37e1e9",
+            "canvas_px": [
+              384,
+              384
+            ],
+            "pivot_px": [
+              192,
+              360
+            ],
+            "alpha_bbox_threshold_16": [
+              48,
+              19,
+              337,
+              360
+            ],
+            "source_cell_px": [
+              512,
+              1024,
+              768,
+              1280
+            ],
+            "source_crop_px": [
+              0,
+              0,
+              217,
+              256
+            ],
+            "scale": 1.333333,
+            "index": 2
+          },
+          {
+            "path": "assets/p3/baked_candidates/aschar50_candidate/frames/hit_back/AS50_hit_back_03.png",
+            "sha256": "cec1636e1e6c6d5099972387d2f6107490e13b317da232d2362f49755c1ced50",
+            "canvas_px": [
+              384,
+              384
+            ],
+            "pivot_px": [
+              192,
+              360
+            ],
+            "alpha_bbox_threshold_16": [
+              102,
+              25,
+              283,
+              360
+            ],
+            "source_cell_px": [
+              768,
+              1024,
+              1024,
+              1280
+            ],
+            "source_crop_px": [
+              76,
+              0,
+              212,
+              251
+            ],
+            "scale": 1.333333,
+            "index": 3
+          }
+        ],
+        "downed": [
+          {
+            "path": "assets/p3/baked_candidates/aschar50_candidate/frames/downed_back/AS50_downed_back_00.png",
+            "sha256": "cbc275b49fbdee43bdda004d0c766b5dcf4017227d6e33b0196954b134409665",
+            "canvas_px": [
+              384,
+              384
+            ],
+            "pivot_px": [
+              192,
+              360
+            ],
+            "alpha_bbox_threshold_16": [
+              55,
+              46,
+              333,
+              360
+            ],
+            "source_cell_px": [
+              0,
+              1280,
+              256,
+              1536
+            ],
+            "source_crop_px": [
+              61,
+              28,
+              256,
+              245
+            ],
+            "scale": 1.445312,
+            "index": 0
+          },
+          {
+            "path": "assets/p3/baked_candidates/aschar50_candidate/frames/downed_back/AS50_downed_back_01.png",
+            "sha256": "8f172e2554717ee918b2dccd7e251f9565ebd9a5fc32047834bfc8446f587eaf",
+            "canvas_px": [
+              384,
+              384
+            ],
+            "pivot_px": [
+              192,
+              360
+            ],
+            "alpha_bbox_threshold_16": [
+              7,
+              0,
+              377,
+              360
+            ],
+            "source_cell_px": [
+              256,
+              1280,
+              512,
+              1536
+            ],
+            "source_crop_px": [
+              0,
+              0,
+              256,
+              249
+            ],
+            "scale": 1.445312,
+            "index": 1
+          },
+          {
+            "path": "assets/p3/baked_candidates/aschar50_candidate/frames/downed_back/AS50_downed_back_02.png",
+            "sha256": "15815ded3f87d15ce9853317e3c8b8c0f80d938e1176190846048ba93ffd72f9",
+            "canvas_px": [
+              384,
+              384
+            ],
+            "pivot_px": [
+              192,
+              360
+            ],
+            "alpha_bbox_threshold_16": [
+              36,
+              4,
+              348,
+              360
+            ],
+            "source_cell_px": [
+              512,
+              1280,
+              768,
+              1536
+            ],
+            "source_crop_px": [
+              25,
+              0,
+              241,
+              246
+            ],
+            "scale": 1.445312,
+            "index": 2
+          },
+          {
+            "path": "assets/p3/baked_candidates/aschar50_candidate/frames/downed_back/AS50_downed_back_03.png",
+            "sha256": "1e10bc0a517c5cec9dfeb52e5ba0451618c24a5590f6d7e95b85eba0d2d94827",
+            "canvas_px": [
+              384,
+              384
+            ],
+            "pivot_px": [
+              192,
+              360
+            ],
+            "alpha_bbox_threshold_16": [
+              23,
+              184,
+              361,
+              360
+            ],
+            "source_cell_px": [
+              768,
+              1280,
+              1024,
+              1536
+            ],
+            "source_crop_px": [
+              19,
+              126,
+              253,
+              248
+            ],
+            "scale": 1.445312,
+            "index": 3
+          }
+        ]
+      },
+      "atlas": {
+        "path": "assets/p3/baked_candidates/aschar50_candidate/atlases/ASCHAR_AS50_BACK_ACTIONS_4x6.png",
+        "sha256": "e65cb3abdae3673cc655fce0ae252d9595f73ab024ce5cb9eb6f39fab20e86c6",
+        "dimensions_px": [
+          1536,
+          2304
+        ],
+        "cell_px": [
+          384,
+          384
+        ],
+        "rows": [
+          "idle",
+          "walk",
+          "attack",
+          "cast",
+          "hit",
+          "downed"
+        ],
+        "columns": [
+          "00",
+          "01",
+          "02",
+          "03"
+        ]
+      }
+    },
+    "left": {
+      "source_sheet": "assets/p3/baked_candidates/aschar50_candidate/source_recreated/20261118/AS50_LEFT_ACTIONS_4x6.png",
+      "source_sheet_sha256": "0b82904059e968f945462cb34ed40930f69794c37233d38ab6655246f8ccfa8f",
+      "sheet_px": [
+        1024,
+        1536
+      ],
+      "source_tool": "built-in image_gen",
+      "source_status": "RECREATED_CANDIDATE",
+      "frame_cels": {
+        "idle": [
+          {
+            "path": "assets/p3/baked_candidates/aschar50_candidate/frames/idle_left/AS50_idle_left_00.png",
+            "sha256": "2a068853b6993e0080b63a4601fc14b1d67d12f6525b106abad9090f830cde77",
+            "canvas_px": [
+              384,
+              384
+            ],
+            "pivot_px": [
+              192,
+              360
+            ],
+            "alpha_bbox_threshold_16": [
+              103,
+              34,
+              280,
+              360
+            ],
+            "source_cell_px": [
+              0,
+              0,
+              256,
+              256
+            ],
+            "source_crop_px": [
+              67,
+              6,
+              203,
+              252
+            ],
+            "scale": 1.365854,
+            "index": 0
+          },
+          {
+            "path": "assets/p3/baked_candidates/aschar50_candidate/frames/idle_left/AS50_idle_left_01.png",
+            "sha256": "9ab3c5beb78f605abf7da82fe4a4c0bb0e164ef822768a5760383ac364ac5a00",
+            "canvas_px": [
+              384,
+              384
+            ],
+            "pivot_px": [
+              192,
+              360
+            ],
+            "alpha_bbox_threshold_16": [
+              106,
+              35,
+              277,
+              360
+            ],
+            "source_cell_px": [
+              256,
+              0,
+              512,
+              256
+            ],
+            "source_crop_px": [
+              76,
+              7,
+              207,
+              252
+            ],
+            "scale": 1.365854,
+            "index": 1
+          },
+          {
+            "path": "assets/p3/baked_candidates/aschar50_candidate/frames/idle_left/AS50_idle_left_02.png",
+            "sha256": "5df2d07922322855a4ecf3eb1b8984ee0b1820ad0192ceecb57c4ae1dc328362",
+            "canvas_px": [
+              384,
+              384
+            ],
+            "pivot_px": [
+              192,
+              360
+            ],
+            "alpha_bbox_threshold_16": [
+              107,
+              37,
+              277,
+              360
+            ],
+            "source_cell_px": [
+              512,
+              0,
+              768,
+              256
+            ],
+            "source_crop_px": [
+              71,
+              8,
+              201,
+              252
+            ],
+            "scale": 1.365854,
+            "index": 2
+          },
+          {
+            "path": "assets/p3/baked_candidates/aschar50_candidate/frames/idle_left/AS50_idle_left_03.png",
+            "sha256": "ebfff5fc432c7460d1b1a0ff07ef6d8eb6a2c838d857debcd135eff5dbf1c0a0",
+            "canvas_px": [
+              384,
+              384
+            ],
+            "pivot_px": [
+              192,
+              360
+            ],
+            "alpha_bbox_threshold_16": [
+              111,
+              37,
+              274,
+              360
+            ],
+            "source_cell_px": [
+              768,
+              0,
+              1024,
+              256
+            ],
+            "source_crop_px": [
+              77,
+              8,
+              204,
+              252
+            ],
+            "scale": 1.365854,
+            "index": 3
+          }
+        ],
+        "walk": [
+          {
+            "path": "assets/p3/baked_candidates/aschar50_candidate/frames/walk_left/AS50_walk_left_00.png",
+            "sha256": "4cf3be0c46149f8c74c5aef98ed6d0747e7f4d127151e7e81bfce214f4389532",
+            "canvas_px": [
+              384,
+              384
+            ],
+            "pivot_px": [
+              192,
+              360
+            ],
+            "alpha_bbox_threshold_16": [
+              101,
+              34,
+              282,
+              360
+            ],
+            "source_cell_px": [
+              0,
+              256,
+              256,
+              512
+            ],
+            "source_crop_px": [
+              75,
+              8,
+              208,
+              244
+            ],
+            "scale": 1.423729,
+            "index": 0
+          },
+          {
+            "path": "assets/p3/baked_candidates/aschar50_candidate/frames/walk_left/AS50_walk_left_01.png",
+            "sha256": "ae80b1355d5f9a9f1a34f14cf527b0424ab876a16fd0463174b530ddddbc4e2c",
+            "canvas_px": [
+              384,
+              384
+            ],
+            "pivot_px": [
+              192,
+              360
+            ],
+            "alpha_bbox_threshold_16": [
+              94,
+              33,
+              290,
+              360
+            ],
+            "source_cell_px": [
+              256,
+              256,
+              512,
+              512
+            ],
+            "source_crop_px": [
+              61,
+              9,
+              206,
+              245
+            ],
+            "scale": 1.423729,
+            "index": 1
+          },
+          {
+            "path": "assets/p3/baked_candidates/aschar50_candidate/frames/walk_left/AS50_walk_left_02.png",
+            "sha256": "a7b93e504ae0d236edf49860d03a23d9771b3ad84f17f3e2f9d48d93589df8ac",
+            "canvas_px": [
+              384,
+              384
+            ],
+            "pivot_px": [
+              192,
+              360
+            ],
+            "alpha_bbox_threshold_16": [
+              96,
+              30,
+              287,
+              360
+            ],
+            "source_cell_px": [
+              512,
+              256,
+              768,
+              512
+            ],
+            "source_crop_px": [
+              71,
+              9,
+              211,
+              247
+            ],
+            "scale": 1.423729,
+            "index": 2
+          },
+          {
+            "path": "assets/p3/baked_candidates/aschar50_candidate/frames/walk_left/AS50_walk_left_03.png",
+            "sha256": "2aa726d2572d0817b685078ea1bbf1a8a9cd5736acdf6ec6daff7fdb0f3a608e",
+            "canvas_px": [
+              384,
+              384
+            ],
+            "pivot_px": [
+              192,
+              360
+            ],
+            "alpha_bbox_threshold_16": [
+              99,
+              34,
+              285,
+              360
+            ],
+            "source_cell_px": [
+              768,
+              256,
+              1024,
+              512
+            ],
+            "source_crop_px": [
+              71,
+              9,
+              208,
+              245
+            ],
+            "scale": 1.423729,
+            "index": 3
+          }
+        ],
+        "attack": [
+          {
+            "path": "assets/p3/baked_candidates/aschar50_candidate/frames/attack_left/AS50_attack_left_00.png",
+            "sha256": "1fb7d43f311de69eae310b38fa95de7e2974d7d61e67447af17f22c4c76cb836",
+            "canvas_px": [
+              384,
+              384
+            ],
+            "pivot_px": [
+              192,
+              360
+            ],
+            "alpha_bbox_threshold_16": [
+              71,
+              34,
+              315,
+              360
+            ],
+            "source_cell_px": [
+              0,
+              512,
+              256,
+              768
+            ],
+            "source_crop_px": [
+              30,
+              12,
+              210,
+              251
+            ],
+            "scale": 1.405858,
+            "index": 0
+          },
+          {
+            "path": "assets/p3/baked_candidates/aschar50_candidate/frames/attack_left/AS50_attack_left_01.png",
+            "sha256": "a4dc26c6472bbf5627e42854871d0b86bee754f25a042a25b93ddcf519691e29",
+            "canvas_px": [
+              384,
+              384
+            ],
+            "pivot_px": [
+              192,
+              360
+            ],
+            "alpha_bbox_threshold_16": [
+              63,
+              27,
+              322,
+              360
+            ],
+            "source_cell_px": [
+              256,
+              512,
+              512,
+              768
+            ],
+            "source_crop_px": [
+              21,
+              8,
+              212,
+              251
+            ],
+            "scale": 1.405858,
+            "index": 1
+          },
+          {
+            "path": "assets/p3/baked_candidates/aschar50_candidate/frames/attack_left/AS50_attack_left_02.png",
+            "sha256": "27b47f1c03264054b38d47331e35b767cb3cb3d4de914abe424d03ef8ebde000",
+            "canvas_px": [
+              384,
+              384
+            ],
+            "pivot_px": [
+              192,
+              360
+            ],
+            "alpha_bbox_threshold_16": [
+              37,
+              59,
+              349,
+              360
+            ],
+            "source_cell_px": [
+              512,
+              512,
+              768,
+              768
+            ],
+            "source_crop_px": [
+              15,
+              27,
+              243,
+              247
+            ],
+            "scale": 1.405858,
+            "index": 2
+          },
+          {
+            "path": "assets/p3/baked_candidates/aschar50_candidate/frames/attack_left/AS50_attack_left_03.png",
+            "sha256": "014ea295aad3afe37f6d0b41ffde570ab597d4ab7e6b322f17439dfdd637725a",
+            "canvas_px": [
+              384,
+              384
+            ],
+            "pivot_px": [
+              192,
+              360
+            ],
+            "alpha_bbox_threshold_16": [
+              49,
+              44,
+              336,
+              360
+            ],
+            "source_cell_px": [
+              768,
+              512,
+              1024,
+              768
+            ],
+            "source_crop_px": [
+              14,
+              19,
+              225,
+              251
+            ],
+            "scale": 1.405858,
+            "index": 3
+          }
+        ],
+        "cast": [
+          {
+            "path": "assets/p3/baked_candidates/aschar50_candidate/frames/cast_left/AS50_cast_left_00.png",
+            "sha256": "7a8e19aa824bbad82d4a9965350989ea5f5bbefd09a1ad8039d5c5a431831ab9",
+            "canvas_px": [
+              384,
+              384
+            ],
+            "pivot_px": [
+              192,
+              360
+            ],
+            "alpha_bbox_threshold_16": [
+              89,
+              33,
+              295,
+              360
+            ],
+            "source_cell_px": [
+              0,
+              768,
+              256,
+              1024
+            ],
+            "source_crop_px": [
+              47,
+              7,
+              202,
+              250
+            ],
+            "scale": 1.382716,
+            "index": 0
+          },
+          {
+            "path": "assets/p3/baked_candidates/aschar50_candidate/frames/cast_left/AS50_cast_left_01.png",
+            "sha256": "b878850ff43b1200bab26fcee94b17338bce753c1bac8e54da26c64398ce5be8",
+            "canvas_px": [
+              384,
+              384
+            ],
+            "pivot_px": [
+              192,
+              360
+            ],
+            "alpha_bbox_threshold_16": [
+              90,
+              33,
+              294,
+              360
+            ],
+            "source_cell_px": [
+              256,
+              768,
+              512,
+              1024
+            ],
+            "source_crop_px": [
+              53,
+              8,
+              207,
+              250
+            ],
+            "scale": 1.382716,
+            "index": 1
+          },
+          {
+            "path": "assets/p3/baked_candidates/aschar50_candidate/frames/cast_left/AS50_cast_left_02.png",
+            "sha256": "f621ea958663bdf36ff625d3dab2dfed67bc0981e901df98668ccbda878a678f",
+            "canvas_px": [
+              384,
+              384
+            ],
+            "pivot_px": [
+              192,
+              360
+            ],
+            "alpha_bbox_threshold_16": [
+              94,
+              33,
+              290,
+              360
+            ],
+            "source_cell_px": [
+              512,
+              768,
+              768,
+              1024
+            ],
+            "source_crop_px": [
+              57,
+              7,
+              206,
+              251
+            ],
+            "scale": 1.382716,
+            "index": 2
+          },
+          {
+            "path": "assets/p3/baked_candidates/aschar50_candidate/frames/cast_left/AS50_cast_left_03.png",
+            "sha256": "0da1bd743d7f54ea506222b2653639218d5c0b113518d96a5fbdbfcdc280028d",
+            "canvas_px": [
+              384,
+              384
+            ],
+            "pivot_px": [
+              192,
+              360
+            ],
+            "alpha_bbox_threshold_16": [
+              87,
+              33,
+              298,
+              360
+            ],
+            "source_cell_px": [
+              768,
+              768,
+              1024,
+              1024
+            ],
+            "source_crop_px": [
+              48,
+              7,
+              208,
+              250
+            ],
+            "scale": 1.382716,
+            "index": 3
+          }
+        ],
+        "hit": [
+          {
+            "path": "assets/p3/baked_candidates/aschar50_candidate/frames/hit_left/AS50_hit_left_00.png",
+            "sha256": "cd9c77df26a357301bd5fc04a1c5adbf0d9d587472e167e84d62121ffe3fe777",
+            "canvas_px": [
+              384,
+              384
+            ],
+            "pivot_px": [
+              192,
+              360
+            ],
+            "alpha_bbox_threshold_16": [
+              90,
+              33,
+              294,
+              360
+            ],
+            "source_cell_px": [
+              0,
+              1024,
+              256,
+              1280
+            ],
+            "source_crop_px": [
+              52,
+              6,
+              205,
+              248
+            ],
+            "scale": 1.38843,
+            "index": 0
+          },
+          {
+            "path": "assets/p3/baked_candidates/aschar50_candidate/frames/hit_left/AS50_hit_left_01.png",
+            "sha256": "22cc2497a6a2f799fdc2dec1d281097c8e2a65f957f925a723c72a875c80e078",
+            "canvas_px": [
+              384,
+              384
+            ],
+            "pivot_px": [
+              192,
+              360
+            ],
+            "alpha_bbox_threshold_16": [
+              66,
+              42,
+              317,
+              360
+            ],
+            "source_cell_px": [
+              256,
+              1024,
+              512,
+              1280
+            ],
+            "source_crop_px": [
+              33,
+              13,
+              220,
+              249
+            ],
+            "scale": 1.38843,
+            "index": 1
+          },
+          {
+            "path": "assets/p3/baked_candidates/aschar50_candidate/frames/hit_left/AS50_hit_left_02.png",
+            "sha256": "c15bee6a71bd8e82142b4d871ba84ba6aab4470af8251a53c35d60902d08bcab",
+            "canvas_px": [
+              384,
+              384
+            ],
+            "pivot_px": [
+              192,
+              360
+            ],
+            "alpha_bbox_threshold_16": [
+              85,
+              62,
+              299,
+              360
+            ],
+            "source_cell_px": [
+              512,
+              1024,
+              768,
+              1280
+            ],
+            "source_crop_px": [
+              57,
+              27,
+              217,
+              248
+            ],
+            "scale": 1.38843,
+            "index": 2
+          },
+          {
+            "path": "assets/p3/baked_candidates/aschar50_candidate/frames/hit_left/AS50_hit_left_03.png",
+            "sha256": "f334bd3b148dffc56df1a7878b668d9c21b7f31807480d338124439d54384db7",
+            "canvas_px": [
+              384,
+              384
+            ],
+            "pivot_px": [
+              192,
+              360
+            ],
+            "alpha_bbox_threshold_16": [
+              95,
+              40,
+              290,
+              360
+            ],
+            "source_cell_px": [
+              768,
+              1024,
+              1024,
+              1280
+            ],
+            "source_crop_px": [
+              62,
+              10,
+              210,
+              248
+            ],
+            "scale": 1.38843,
+            "index": 3
+          }
+        ],
+        "downed": [
+          {
+            "path": "assets/p3/baked_candidates/aschar50_candidate/frames/downed_left/AS50_downed_left_00.png",
+            "sha256": "c7b236a884863849384a1b1161918a756b6ff16def00e62dc743b53c62d24f63",
+            "canvas_px": [
+              384,
+              384
+            ],
+            "pivot_px": [
+              192,
+              360
+            ],
+            "alpha_bbox_threshold_16": [
+              68,
+              34,
+              314,
+              360
+            ],
+            "source_cell_px": [
+              0,
+              1280,
+              256,
+              1536
+            ],
+            "source_crop_px": [
+              42,
+              23,
+              211,
+              246
+            ],
+            "scale": 1.506726,
+            "index": 0
+          },
+          {
+            "path": "assets/p3/baked_candidates/aschar50_candidate/frames/downed_left/AS50_downed_left_01.png",
+            "sha256": "1b5c4d64fb0d55023049537ff5b660d433ecbb4755e496e8c0de07d739f24bef",
+            "canvas_px": [
+              384,
+              384
+            ],
+            "pivot_px": [
+              192,
+              360
+            ],
+            "alpha_bbox_threshold_16": [
+              68,
+              87,
+              315,
+              360
+            ],
+            "source_cell_px": [
+              256,
+              1280,
+              512,
+              1536
+            ],
+            "source_crop_px": [
+              45,
+              60,
+              214,
+              247
+            ],
+            "scale": 1.506726,
+            "index": 1
+          },
+          {
+            "path": "assets/p3/baked_candidates/aschar50_candidate/frames/downed_left/AS50_downed_left_02.png",
+            "sha256": "7112fc1592fbd27e35d8e501fd87f841f9760dca08a6b1b7da1e784b6d4ba6ee",
+            "canvas_px": [
+              384,
+              384
+            ],
+            "pivot_px": [
+              192,
+              360
+            ],
+            "alpha_bbox_threshold_16": [
+              35,
+              158,
+              349,
+              360
+            ],
+            "source_cell_px": [
+              512,
+              1280,
+              768,
+              1536
+            ],
+            "source_crop_px": [
+              15,
+              107,
+              230,
+              247
+            ],
+            "scale": 1.506726,
+            "index": 2
+          },
+          {
+            "path": "assets/p3/baked_candidates/aschar50_candidate/frames/downed_left/AS50_downed_left_03.png",
+            "sha256": "b4c44695c9a4d9dd049a31e89aeb3a782fc6282162f2b5ec096d841b5c6a868d",
+            "canvas_px": [
+              384,
+              384
+            ],
+            "pivot_px": [
+              192,
+              360
+            ],
+            "alpha_bbox_threshold_16": [
+              21,
+              217,
+              363,
+              360
+            ],
+            "source_cell_px": [
+              768,
+              1280,
+              1024,
+              1536
+            ],
+            "source_crop_px": [
+              9,
+              146,
+              244,
+              247
+            ],
+            "scale": 1.506726,
+            "index": 3
+          }
+        ]
+      },
+      "atlas": {
+        "path": "assets/p3/baked_candidates/aschar50_candidate/atlases/ASCHAR_AS50_LEFT_ACTIONS_4x6.png",
+        "sha256": "b065e9af489bbdb2fb5eb917ec257d482e51fedd21b3717d76496f33e363798d",
+        "dimensions_px": [
+          1536,
+          2304
+        ],
+        "cell_px": [
+          384,
+          384
+        ],
+        "rows": [
+          "idle",
+          "walk",
+          "attack",
+          "cast",
+          "hit",
+          "downed"
+        ],
+        "columns": [
+          "00",
+          "01",
+          "02",
+          "03"
+        ]
+      }
+    }
+  },
+  "clip_files": {
+    "idle_front": [
+      "assets/p3/baked_candidates/aschar50_candidate/frames/idle_front/AS50_idle_front_00.png",
+      "assets/p3/baked_candidates/aschar50_candidate/frames/idle_front/AS50_idle_front_01.png",
+      "assets/p3/baked_candidates/aschar50_candidate/frames/idle_front/AS50_idle_front_02.png",
+      "assets/p3/baked_candidates/aschar50_candidate/frames/idle_front/AS50_idle_front_03.png"
+    ],
+    "walk_front": [
+      "assets/p3/baked_candidates/aschar50_candidate/frames/walk_front/AS50_walk_front_00.png",
+      "assets/p3/baked_candidates/aschar50_candidate/frames/walk_front/AS50_walk_front_01.png",
+      "assets/p3/baked_candidates/aschar50_candidate/frames/walk_front/AS50_walk_front_02.png",
+      "assets/p3/baked_candidates/aschar50_candidate/frames/walk_front/AS50_walk_front_03.png"
+    ],
+    "attack_front": [
+      "assets/p3/baked_candidates/aschar50_candidate/frames/attack_front/AS50_attack_front_00.png",
+      "assets/p3/baked_candidates/aschar50_candidate/frames/attack_front/AS50_attack_front_01.png",
+      "assets/p3/baked_candidates/aschar50_candidate/frames/attack_front/AS50_attack_front_02.png",
+      "assets/p3/baked_candidates/aschar50_candidate/frames/attack_front/AS50_attack_front_03.png"
+    ],
+    "cast_front": [
+      "assets/p3/baked_candidates/aschar50_candidate/frames/cast_front/AS50_cast_front_00.png",
+      "assets/p3/baked_candidates/aschar50_candidate/frames/cast_front/AS50_cast_front_01.png",
+      "assets/p3/baked_candidates/aschar50_candidate/frames/cast_front/AS50_cast_front_02.png",
+      "assets/p3/baked_candidates/aschar50_candidate/frames/cast_front/AS50_cast_front_03.png"
+    ],
+    "hit_front": [
+      "assets/p3/baked_candidates/aschar50_candidate/frames/hit_front/AS50_hit_front_00.png",
+      "assets/p3/baked_candidates/aschar50_candidate/frames/hit_front/AS50_hit_front_01.png",
+      "assets/p3/baked_candidates/aschar50_candidate/frames/hit_front/AS50_hit_front_02.png",
+      "assets/p3/baked_candidates/aschar50_candidate/frames/hit_front/AS50_hit_front_03.png"
+    ],
+    "downed_front": [
+      "assets/p3/baked_candidates/aschar50_candidate/frames/downed_front/AS50_downed_front_00.png",
+      "assets/p3/baked_candidates/aschar50_candidate/frames/downed_front/AS50_downed_front_01.png",
+      "assets/p3/baked_candidates/aschar50_candidate/frames/downed_front/AS50_downed_front_02.png",
+      "assets/p3/baked_candidates/aschar50_candidate/frames/downed_front/AS50_downed_front_03.png"
+    ],
+    "idle_right": [
+      "assets/p3/baked_candidates/aschar50_candidate/frames/idle_right/AS50_idle_right_00.png",
+      "assets/p3/baked_candidates/aschar50_candidate/frames/idle_right/AS50_idle_right_01.png",
+      "assets/p3/baked_candidates/aschar50_candidate/frames/idle_right/AS50_idle_right_02.png",
+      "assets/p3/baked_candidates/aschar50_candidate/frames/idle_right/AS50_idle_right_03.png"
+    ],
+    "walk_right": [
+      "assets/p3/baked_candidates/aschar50_candidate/frames/walk_right/AS50_walk_right_00.png",
+      "assets/p3/baked_candidates/aschar50_candidate/frames/walk_right/AS50_walk_right_01.png",
+      "assets/p3/baked_candidates/aschar50_candidate/frames/walk_right/AS50_walk_right_02.png",
+      "assets/p3/baked_candidates/aschar50_candidate/frames/walk_right/AS50_walk_right_03.png"
+    ],
+    "attack_right": [
+      "assets/p3/baked_candidates/aschar50_candidate/frames/attack_right/AS50_attack_right_00.png",
+      "assets/p3/baked_candidates/aschar50_candidate/frames/attack_right/AS50_attack_right_01.png",
+      "assets/p3/baked_candidates/aschar50_candidate/frames/attack_right/AS50_attack_right_02.png",
+      "assets/p3/baked_candidates/aschar50_candidate/frames/attack_right/AS50_attack_right_03.png"
+    ],
+    "cast_right": [
+      "assets/p3/baked_candidates/aschar50_candidate/frames/cast_right/AS50_cast_right_00.png",
+      "assets/p3/baked_candidates/aschar50_candidate/frames/cast_right/AS50_cast_right_01.png",
+      "assets/p3/baked_candidates/aschar50_candidate/frames/cast_right/AS50_cast_right_02.png",
+      "assets/p3/baked_candidates/aschar50_candidate/frames/cast_right/AS50_cast_right_03.png"
+    ],
+    "hit_right": [
+      "assets/p3/baked_candidates/aschar50_candidate/frames/hit_right/AS50_hit_right_00.png",
+      "assets/p3/baked_candidates/aschar50_candidate/frames/hit_right/AS50_hit_right_01.png",
+      "assets/p3/baked_candidates/aschar50_candidate/frames/hit_right/AS50_hit_right_02.png",
+      "assets/p3/baked_candidates/aschar50_candidate/frames/hit_right/AS50_hit_right_03.png"
+    ],
+    "downed_right": [
+      "assets/p3/baked_candidates/aschar50_candidate/frames/downed_right/AS50_downed_right_00.png",
+      "assets/p3/baked_candidates/aschar50_candidate/frames/downed_right/AS50_downed_right_01.png",
+      "assets/p3/baked_candidates/aschar50_candidate/frames/downed_right/AS50_downed_right_02.png",
+      "assets/p3/baked_candidates/aschar50_candidate/frames/downed_right/AS50_downed_right_03.png"
+    ],
+    "idle_back": [
+      "assets/p3/baked_candidates/aschar50_candidate/frames/idle_back/AS50_idle_back_00.png",
+      "assets/p3/baked_candidates/aschar50_candidate/frames/idle_back/AS50_idle_back_01.png",
+      "assets/p3/baked_candidates/aschar50_candidate/frames/idle_back/AS50_idle_back_02.png",
+      "assets/p3/baked_candidates/aschar50_candidate/frames/idle_back/AS50_idle_back_03.png"
+    ],
+    "walk_back": [
+      "assets/p3/baked_candidates/aschar50_candidate/frames/walk_back/AS50_walk_back_00.png",
+      "assets/p3/baked_candidates/aschar50_candidate/frames/walk_back/AS50_walk_back_01.png",
+      "assets/p3/baked_candidates/aschar50_candidate/frames/walk_back/AS50_walk_back_02.png",
+      "assets/p3/baked_candidates/aschar50_candidate/frames/walk_back/AS50_walk_back_03.png"
+    ],
+    "attack_back": [
+      "assets/p3/baked_candidates/aschar50_candidate/frames/attack_back/AS50_attack_back_00.png",
+      "assets/p3/baked_candidates/aschar50_candidate/frames/attack_back/AS50_attack_back_01.png",
+      "assets/p3/baked_candidates/aschar50_candidate/frames/attack_back/AS50_attack_back_02.png",
+      "assets/p3/baked_candidates/aschar50_candidate/frames/attack_back/AS50_attack_back_03.png"
+    ],
+    "cast_back": [
+      "assets/p3/baked_candidates/aschar50_candidate/frames/cast_back/AS50_cast_back_00.png",
+      "assets/p3/baked_candidates/aschar50_candidate/frames/cast_back/AS50_cast_back_01.png",
+      "assets/p3/baked_candidates/aschar50_candidate/frames/cast_back/AS50_cast_back_02.png",
+      "assets/p3/baked_candidates/aschar50_candidate/frames/cast_back/AS50_cast_back_03.png"
+    ],
+    "hit_back": [
+      "assets/p3/baked_candidates/aschar50_candidate/frames/hit_back/AS50_hit_back_00.png",
+      "assets/p3/baked_candidates/aschar50_candidate/frames/hit_back/AS50_hit_back_01.png",
+      "assets/p3/baked_candidates/aschar50_candidate/frames/hit_back/AS50_hit_back_02.png",
+      "assets/p3/baked_candidates/aschar50_candidate/frames/hit_back/AS50_hit_back_03.png"
+    ],
+    "downed_back": [
+      "assets/p3/baked_candidates/aschar50_candidate/frames/downed_back/AS50_downed_back_00.png",
+      "assets/p3/baked_candidates/aschar50_candidate/frames/downed_back/AS50_downed_back_01.png",
+      "assets/p3/baked_candidates/aschar50_candidate/frames/downed_back/AS50_downed_back_02.png",
+      "assets/p3/baked_candidates/aschar50_candidate/frames/downed_back/AS50_downed_back_03.png"
+    ],
+    "idle_left": [
+      "assets/p3/baked_candidates/aschar50_candidate/frames/idle_left/AS50_idle_left_00.png",
+      "assets/p3/baked_candidates/aschar50_candidate/frames/idle_left/AS50_idle_left_01.png",
+      "assets/p3/baked_candidates/aschar50_candidate/frames/idle_left/AS50_idle_left_02.png",
+      "assets/p3/baked_candidates/aschar50_candidate/frames/idle_left/AS50_idle_left_03.png"
+    ],
+    "walk_left": [
+      "assets/p3/baked_candidates/aschar50_candidate/frames/walk_left/AS50_walk_left_00.png",
+      "assets/p3/baked_candidates/aschar50_candidate/frames/walk_left/AS50_walk_left_01.png",
+      "assets/p3/baked_candidates/aschar50_candidate/frames/walk_left/AS50_walk_left_02.png",
+      "assets/p3/baked_candidates/aschar50_candidate/frames/walk_left/AS50_walk_left_03.png"
+    ],
+    "attack_left": [
+      "assets/p3/baked_candidates/aschar50_candidate/frames/attack_left/AS50_attack_left_00.png",
+      "assets/p3/baked_candidates/aschar50_candidate/frames/attack_left/AS50_attack_left_01.png",
+      "assets/p3/baked_candidates/aschar50_candidate/frames/attack_left/AS50_attack_left_02.png",
+      "assets/p3/baked_candidates/aschar50_candidate/frames/attack_left/AS50_attack_left_03.png"
+    ],
+    "cast_left": [
+      "assets/p3/baked_candidates/aschar50_candidate/frames/cast_left/AS50_cast_left_00.png",
+      "assets/p3/baked_candidates/aschar50_candidate/frames/cast_left/AS50_cast_left_01.png",
+      "assets/p3/baked_candidates/aschar50_candidate/frames/cast_left/AS50_cast_left_02.png",
+      "assets/p3/baked_candidates/aschar50_candidate/frames/cast_left/AS50_cast_left_03.png"
+    ],
+    "hit_left": [
+      "assets/p3/baked_candidates/aschar50_candidate/frames/hit_left/AS50_hit_left_00.png",
+      "assets/p3/baked_candidates/aschar50_candidate/frames/hit_left/AS50_hit_left_01.png",
+      "assets/p3/baked_candidates/aschar50_candidate/frames/hit_left/AS50_hit_left_02.png",
+      "assets/p3/baked_candidates/aschar50_candidate/frames/hit_left/AS50_hit_left_03.png"
+    ],
+    "downed_left": [
+      "assets/p3/baked_candidates/aschar50_candidate/frames/downed_left/AS50_downed_left_00.png",
+      "assets/p3/baked_candidates/aschar50_candidate/frames/downed_left/AS50_downed_left_01.png",
+      "assets/p3/baked_candidates/aschar50_candidate/frames/downed_left/AS50_downed_left_02.png",
+      "assets/p3/baked_candidates/aschar50_candidate/frames/downed_left/AS50_downed_left_03.png"
+    ]
+  },
+  "qa": {
+    "png_rgba": "PASS",
+    "unique_pose_hashes_per_new_clip": "PASS",
+    "pivot_and_baseline": "PASS: 384x384 RGBA, pivot (192,360), alpha baseline 360",
+    "godot_official_import": "PASS: exit 0; 4.7.2.stable.official.ed1daf0bf",
+    "native_viewer": "PASS: 1280x720, 8 FPS, 96 frames; see dao_4d_batch_godot_8fps.avi",
+    "owner_art_approval": "PENDING",
+    "weapon_socket_and_overlay": "PENDING",
+    "limits": "AI-generated directional pose sheets were extracted; no neighboring-frame inpainting or temporal continuity correction; candidate only."
+  }
+}

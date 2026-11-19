@@ -1,0 +1,48 @@
+{
+  "actor_id": "AS67",
+  "school": "Chú Tu",
+  "gender": "female",
+  "status": "CANDIDATE / OWNER ART REVIEW PENDING",
+  "tool": "built-in image_gen",
+  "identity_master": {
+    "path": "assets/p3/baked_candidates/aschar67_candidate/source_recreated/20261119/AS67_CURSE_FEMALE_MASTER_CANDIDATE.png",
+    "sha256": "f40b73e4a9b4996c59d9362098898fb999d1b9157f37f60a56b98fac8680201a",
+    "prompt_summary": "Fixed AS66/67 candidate masters; owner review pending."
+  },
+  "animation_sheet_rules": "4 columns × 6 rows; rows Idle, Walk, Attack, Cast, Hit, Downed; four visibly distinct adjacent full-body body-only cels; exact identity master; genuinely redrawn directions; no rig, no mirroring, no baked VFX.",
+  "sheet_sources": {
+    "front": {
+      "path": "assets/p3/baked_candidates/aschar67_candidate/source_recreated/20261119/AS67_FRONT_ACTIONS_4x6.png",
+      "sha256": "a005d3514e47187b3f6bf2dcda09c9bd91c9bdd2c279bab97e926f4a179a3200",
+      "direction": "front",
+      "selected_variant": "BASE",
+      "original_source_path": "assets/p3/baked_candidates/aschar67_candidate/source_recreated/20261119/AS67_FRONT_ACTIONS_4x6_SOURCE_BG.png",
+      "prompt_summary": "Fixed AS67 master; 24 distinct body-only action cels facing front; no mirrored view, no VFX; owner review pending."
+    },
+    "right": {
+      "path": "assets/p3/baked_candidates/aschar67_candidate/source_recreated/20261119/AS67_RIGHT_ACTIONS_4x6.png",
+      "sha256": "d7e41f8ada51da63f65d7026fb436a5cc587314d93c5ba5653a787d226dc33db",
+      "direction": "right",
+      "selected_variant": "CONNECTED_BACKGROUND_REMOVAL",
+      "original_source_path": "assets/p3/baked_candidates/aschar67_candidate/source_recreated/20261119/AS67_RIGHT_ACTIONS_4x6_SOURCE_BG.png",
+      "prompt_summary": "Fixed AS67 master; 24 distinct body-only action cels facing right; no mirrored view, no VFX; owner review pending."
+    },
+    "back": {
+      "path": "assets/p3/baked_candidates/aschar67_candidate/source_recreated/20261119/AS67_BACK_ACTIONS_4x6.png",
+      "sha256": "eaabaf7682dc6986b4d5f067d71fb66a308cb7dcba340e6923824ba3bd3a260a",
+      "direction": "back",
+      "selected_variant": "CONNECTED_BACKGROUND_REMOVAL",
+      "original_source_path": "assets/p3/baked_candidates/aschar67_candidate/source_recreated/20261119/AS67_BACK_ACTIONS_4x6_SOURCE_BG.png",
+      "prompt_summary": "Fixed AS67 master; 24 distinct body-only action cels facing back; no mirrored view, no VFX; owner review pending."
+    },
+    "left": {
+      "path": "assets/p3/baked_candidates/aschar67_candidate/source_recreated/20261119/AS67_LEFT_ACTIONS_4x6.png",
+      "sha256": "7f6899d4ab6748c01d459c51bc8a69d17c47492fac129df55457b88e6d8669eb",
+      "direction": "left",
+      "selected_variant": "CONNECTED_BACKGROUND_REMOVAL",
+      "original_source_path": "assets/p3/baked_candidates/aschar67_candidate/source_recreated/20261119/AS67_LEFT_ACTIONS_4x6_SOURCE_BG.png",
+      "prompt_summary": "Fixed AS67 master; 24 distinct body-only action cels facing left; no mirrored view, no VFX; owner review pending."
+    }
+  },
+  "limitation": "No manual neighboring-frame cleanup/onion-skin has been performed. These are art candidates only, not owner-approved or integrated into gameplay."
+}

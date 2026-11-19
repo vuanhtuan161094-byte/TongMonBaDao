@@ -1,0 +1,48 @@
+{
+  "actor_id": "AS62",
+  "school": "Độc Tu",
+  "gender": "male",
+  "status": "CANDIDATE / OWNER ART REVIEW PENDING",
+  "tool": "built-in image_gen",
+  "identity_master": {
+    "path": "assets/p3/baked_candidates/aschar62_candidate/source_recreated/20261119/AS62_POISON_MALE_MASTER_CANDIDATE.png",
+    "sha256": "b03052974bc3df5c705180b2cf5442a4f180224d4bcca586eefd8fb7b884b58d",
+    "prompt_summary": "Fixed AS62/63 candidate masters; owner review pending."
+  },
+  "animation_sheet_rules": "4 columns × 6 rows; rows Idle, Walk, Attack, Cast, Hit, Downed; four visibly distinct adjacent full-body body-only cels; exact identity master; genuinely redrawn directions; no rig, no mirroring, no baked VFX.",
+  "sheet_sources": {
+    "front": {
+      "path": "assets/p3/baked_candidates/aschar62_candidate/source_recreated/20261119/AS62_FRONT_ACTIONS_4x6.png",
+      "sha256": "5567c41f8087b11d28f37584b3d1e85b58933a62528cf8b87be73884b7858174",
+      "direction": "front",
+      "selected_variant": "BASE",
+      "original_source_path": "assets/p3/baked_candidates/aschar62_candidate/source_recreated/20261119/AS62_FRONT_ACTIONS_4x6_SOURCE_BG.png",
+      "prompt_summary": "Fixed AS62 master; 24 distinct body-only action cels facing front; no mirrored view, no VFX; owner review pending."
+    },
+    "right": {
+      "path": "assets/p3/baked_candidates/aschar62_candidate/source_recreated/20261119/AS62_RIGHT_ACTIONS_4x6.png",
+      "sha256": "7e901fb945bce5c28d0f626f6514da561d7117fab71de085d43520f2f3323d48",
+      "direction": "right",
+      "selected_variant": "CONNECTED_BACKGROUND_REMOVAL",
+      "original_source_path": "assets/p3/baked_candidates/aschar62_candidate/source_recreated/20261119/AS62_RIGHT_ACTIONS_4x6_SOURCE_BG.png",
+      "prompt_summary": "Fixed AS62 master; 24 distinct body-only action cels facing right; no mirrored view, no VFX; owner review pending."
+    },
+    "back": {
+      "path": "assets/p3/baked_candidates/aschar62_candidate/source_recreated/20261119/AS62_BACK_ACTIONS_4x6.png",
+      "sha256": "10043838ad933a863a54f458219c3cc5f740b0195ff483d8591ac38ce90ce148",
+      "direction": "back",
+      "selected_variant": "BASE",
+      "original_source_path": "assets/p3/baked_candidates/aschar62_candidate/source_recreated/20261119/AS62_BACK_ACTIONS_4x6_SOURCE_BG.png",
+      "prompt_summary": "Fixed AS62 master; 24 distinct body-only action cels facing back; no mirrored view, no VFX; owner review pending."
+    },
+    "left": {
+      "path": "assets/p3/baked_candidates/aschar62_candidate/source_recreated/20261119/AS62_LEFT_ACTIONS_4x6.png",
+      "sha256": "48df5291128249001c5bb7a8b9d86dd794b29b532e40d36c37c2a5d87ed91c12",
+      "direction": "left",
+      "selected_variant": "V2_SAFE_MARGIN",
+      "original_source_path": "assets/p3/baked_candidates/aschar62_candidate/source_recreated/20261119/AS62_LEFT_ACTIONS_4x6_SOURCE_BG.png",
+      "prompt_summary": "Fixed AS62 master; 24 distinct body-only action cels facing left; no mirrored view, no VFX; owner review pending."
+    }
+  },
+  "limitation": "No manual neighboring-frame cleanup/onion-skin has been performed. These are art candidates only, not owner-approved or integrated into gameplay."
+}

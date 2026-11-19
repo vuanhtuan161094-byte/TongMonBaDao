@@ -1,0 +1,44 @@
+{
+  "actor_id": "AS58",
+  "school": "Quyền Tu",
+  "gender": "male",
+  "status": "CANDIDATE / OWNER ART REVIEW PENDING",
+  "tool": "built-in image_gen",
+  "identity_master": {
+    "path": "assets/p3/baked_candidates/aschar58_candidate/source_recreated/20261119/AS58_FIST_MALE_MASTER_CANDIDATE.png",
+    "sha256": "90c892774e64efe8f103d26e90243be3389d3c42030fdb8efd0dd56f6ce194ea",
+    "prompt_summary": "AS58 male Quyền Tu master: short black hair tied at nape, warm brown eyes, basalt-charcoal martial tunic with restrained copper trim and wrapped forearms; unarmed guard pose, transparent background."
+  },
+  "animation_sheet_rules": "4 columns x 6 rows; each row is Idle, Walk, Attack, Cast, Hit, Downed; four visibly distinct adjacent full-body pose cels; direction genuinely redrawn, no flip; no held weapons or VFX; transparent background; fixed master identity.",
+  "sheet_sources": {
+    "front": {
+      "path": "assets/p3/baked_candidates/aschar58_candidate/source_recreated/20261119/AS58_FRONT_ACTIONS_4x6.png",
+      "sha256": "db1dc7d56c4205da21653521dc1630bf399e34d7b1140288a98ddda84a7d7552",
+      "direction": "front",
+      "prompt_summary": "Use the exact identity master; create 24 full-body body-only cels in a 4x6 grid, facing front; preserve unique asymmetric design and continuity, no mirror, no rig, no held weapons or VFX.",
+      "postprocessing": "Selected crop-safe variant and/or alpha cleanup are recorded in the clip manifest."
+    },
+    "right": {
+      "path": "assets/p3/baked_candidates/aschar58_candidate/source_recreated/20261119/AS58_RIGHT_ACTIONS_4x6.png",
+      "sha256": "c4cae0b7d6f00d02ff383729e1b4a9a65563cbb73dbc22b2e73c1fbf22f7b844",
+      "direction": "right",
+      "prompt_summary": "Use the exact identity master; create 24 full-body body-only cels in a 4x6 grid, facing right; preserve unique asymmetric design and continuity, no mirror, no rig, no held weapons or VFX.",
+      "postprocessing": "Selected crop-safe variant and/or alpha cleanup are recorded in the clip manifest."
+    },
+    "back": {
+      "path": "assets/p3/baked_candidates/aschar58_candidate/source_recreated/20261119/AS58_BACK_ACTIONS_4x6.png",
+      "sha256": "d53b1c8680a49ce8f94f9915cf329b9f305cc47eef4ec3757557bd761ab33738",
+      "direction": "back",
+      "prompt_summary": "Use the exact identity master; create 24 full-body body-only cels in a 4x6 grid, facing back; preserve unique asymmetric design and continuity, no mirror, no rig, no held weapons or VFX.",
+      "postprocessing": "Selected crop-safe variant and/or alpha cleanup are recorded in the clip manifest."
+    },
+    "left": {
+      "path": "assets/p3/baked_candidates/aschar58_candidate/source_recreated/20261119/AS58_LEFT_ACTIONS_4x6.png",
+      "sha256": "8d4217d8b676a4d4fb1d478390e95a527091df0f6a2de24629f2035bc6a3f3fd",
+      "direction": "left",
+      "prompt_summary": "Use the exact identity master; create 24 full-body body-only cels in a 4x6 grid, facing left; preserve unique asymmetric design and continuity, no mirror, no rig, no held weapons or VFX.",
+      "postprocessing": "Selected V2 regenerated source after V1 edge-touch review; source remains original RGBA, alpha<96 threshold used only in frame export."
+    }
+  },
+  "limitation": "Original generated sheets kept unchanged; four low-margin source sheets were retained as V1 edge-touch records and replaced with separately generated safe-margin V2 sheets. Manual neighbor-frame cleanup and owner art review remain pending; no runtime integration."
+}

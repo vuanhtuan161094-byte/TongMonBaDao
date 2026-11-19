@@ -1,0 +1,62 @@
+{
+  "AS51_GRID": {
+    "prompt": "Use case: stylized-concept game animation source sheet. Asset type: candidate full-body 2D cel sheet for existing TMB female Dao Tu AS51. Preserve exact master face, large amber eyes, black high ponytail/red ribbon, jade ornament, red-black-gold outfit, proportions, silhouette and seams. 4×4 transparent sheet; four square columns and rows; no labels/dividers. Rows: Walk_Front cycle; Cast_Front settle/gather/release with no effect/recovery; Hit_Front anticipation/impact/recoil/recovery; Downed_Front stumble/knee/fall/settled. Every frame genuinely different. Front-facing, stable identity and full-body. No weapon, VFX, blur, extra character, text, watermark or background.",
+    "input_master_path": "godot/assets/p3/baked_candidates/aschar51_candidate/AS51_MASTER_REGISTERED_384.png",
+    "input_master_sha256": "e81cc7c4947ee66a1612b0969c92b7aa64505eaab0d2d2a0bbf2fa2a15aeb290",
+    "output_sheet": "godot/assets/p3/baked_candidates/aschar51_candidate/source_recreated/20261118/AS51_FRONT_ACTIONS_4x4.png",
+    "output_sheet_sha256": "8e3f7dd6c6b8a5d9336c2dd5b346f36f2c3991b1a2dd44d5f8d2ddb16e6bce72",
+    "tool": "built-in image_gen",
+    "status": "RECREATED"
+  },
+  "AS51_WALK": {
+    "prompt": "Use case: stylized-concept game animation source sheet. Asset type: four genuine full-body Walk_Front cels for frozen AS51 female Dao Tu. Preserve exact master identity, large amber eyes, long black high ponytail with red ribbon and jade ornament, red-black-gold costume and proportions. Exact 2×2 transparent cells, minimum 12% margin, left contact/passing/right contact/passing; front view, visible alternating leg/weight motion, subtle hair/skirt motion, stable scale/baseline. No weapon, VFX, glow, blur, extra character, text, watermark or background.",
+    "input_master_path": "godot/assets/p3/baked_candidates/aschar51_candidate/AS51_MASTER_REGISTERED_384.png",
+    "input_master_sha256": "e81cc7c4947ee66a1612b0969c92b7aa64505eaab0d2d2a0bbf2fa2a15aeb290",
+    "output_sheet": "godot/assets/p3/baked_candidates/aschar51_candidate/source_recreated/20261118/AS51_WALK_FRONT_2x2.png",
+    "output_sheet_sha256": "a4b53d0cc15aa9db42520b56f73caf71ad045c53ab1d62ba2c94f8d4b0efcbb8",
+    "tool": "built-in image_gen",
+    "status": "RECREATED"
+  },
+  "AS51_DOWNED": {
+    "prompt": "Use case: stylized-concept game animation source sheet. Asset type: four Downed_Front cels for frozen AS51 female Dao Tu. Preserve exact master identity, eyes, ponytail/red ribbon, jade ornament, red-black-gold outfit and proportions. Exact 2×2 transparent grid with ample cell margins. Read order: stumble, drop to knee and brace, collapse onto side, settled downed pose with eyes closed. Consecutive distinct front-facing full-body poses, same scale and material treatment. No weapon, VFX, blood, glow/outline, text, watermark, extra character or background.",
+    "input_master_path": "godot/assets/p3/baked_candidates/aschar51_candidate/AS51_MASTER_REGISTERED_384.png",
+    "input_master_sha256": "e81cc7c4947ee66a1612b0969c92b7aa64505eaab0d2d2a0bbf2fa2a15aeb290",
+    "output_sheet": "godot/assets/p3/baked_candidates/aschar51_candidate/source_recreated/20261118/AS51_DOWNED_FRONT_2x2.png",
+    "output_sheet_sha256": "1ba10615e36f85e98e80479689b4961c26848584f52a4f450e17c50fe31b8728",
+    "tool": "built-in image_gen",
+    "status": "RECREATED"
+  },
+  "AS51_RIGHT": {
+    "input_master_path": "assets/p3/baked_candidates/aschar51_candidate/AS51_MASTER_REGISTERED_384.png",
+    "input_master_sha256": "e81cc7c4947ee66a1612b0969c92b7aa64505eaab0d2d2a0bbf2fa2a15aeb290",
+    "output_sheet": "assets/p3/baked_candidates/aschar51_candidate/source_recreated/20261118/AS51_RIGHT_ACTIONS_4x6.png",
+    "output_sheet_sha256": "26ce6e9e8f3aa615186237754d154cf58a64aa03144bab8eb24d19709c3cee4a",
+    "direction": "Right",
+    "tool": "built-in image_gen",
+    "status": "RECREATED_CANDIDATE",
+    "method": "4x6 transparent full-body pose sheet generated with frozen identity master reference; direction authored as a view, not mirrored. Rows Idle/Walk/Attack/Cast/Hit/Downed, four distinct cels per action; body-only, no weapon/VFX; candidate pending frame-continuity and owner art review.",
+    "limitations": "Generated pose sheet is not neighboring-frame inpainting. Extracted cels have distinct poses, but temporal consistency, silhouette details, alpha edge and weapon socket remain candidate/pending."
+  },
+  "AS51_BACK": {
+    "input_master_path": "assets/p3/baked_candidates/aschar51_candidate/AS51_MASTER_REGISTERED_384.png",
+    "input_master_sha256": "e81cc7c4947ee66a1612b0969c92b7aa64505eaab0d2d2a0bbf2fa2a15aeb290",
+    "output_sheet": "assets/p3/baked_candidates/aschar51_candidate/source_recreated/20261118/AS51_BACK_ACTIONS_4x6.png",
+    "output_sheet_sha256": "884e2d94ef7feaf661e18dede1e21c89e6ab0e65e2b9e1e11f0ceda551196293",
+    "direction": "Back",
+    "tool": "built-in image_gen",
+    "status": "RECREATED_CANDIDATE",
+    "method": "4x6 transparent full-body pose sheet generated with frozen identity master reference; direction authored as a view, not mirrored. Rows Idle/Walk/Attack/Cast/Hit/Downed, four distinct cels per action; body-only, no weapon/VFX; candidate pending frame-continuity and owner art review.",
+    "limitations": "Generated pose sheet is not neighboring-frame inpainting. Extracted cels have distinct poses, but temporal consistency, silhouette details, alpha edge and weapon socket remain candidate/pending."
+  },
+  "AS51_LEFT": {
+    "input_master_path": "assets/p3/baked_candidates/aschar51_candidate/AS51_MASTER_REGISTERED_384.png",
+    "input_master_sha256": "e81cc7c4947ee66a1612b0969c92b7aa64505eaab0d2d2a0bbf2fa2a15aeb290",
+    "output_sheet": "assets/p3/baked_candidates/aschar51_candidate/source_recreated/20261118/AS51_LEFT_ACTIONS_4x6.png",
+    "output_sheet_sha256": "329a2231449eb731a4edd5b81afd494e22a3ef77ab70011ce484f334ec0f73fd",
+    "direction": "Left",
+    "tool": "built-in image_gen",
+    "status": "RECREATED_CANDIDATE",
+    "method": "4x6 transparent full-body pose sheet generated with frozen identity master reference; direction authored as a view, not mirrored. Rows Idle/Walk/Attack/Cast/Hit/Downed, four distinct cels per action; body-only, no weapon/VFX; candidate pending frame-continuity and owner art review.",
+    "limitations": "Generated pose sheet is not neighboring-frame inpainting. Extracted cels have distinct poses, but temporal consistency, silhouette details, alpha edge and weapon socket remain candidate/pending."
+  }
+}

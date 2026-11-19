@@ -1,0 +1,258 @@
+[gd_resource type="SpriteFrames" load_steps="25" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/idle_front/AS50_idle_front_00.png" id="t_idle_front_00"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/idle_front/AS50_idle_front_01.png" id="t_idle_front_01"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/idle_front/AS50_idle_front_02.png" id="t_idle_front_02"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/idle_front/AS50_idle_front_03.png" id="t_idle_front_03"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/walk_front/AS50_walk_front_00.png" id="t_walk_front_00"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/walk_front/AS50_walk_front_01.png" id="t_walk_front_01"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/walk_front/AS50_walk_front_02.png" id="t_walk_front_02"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/walk_front/AS50_walk_front_03.png" id="t_walk_front_03"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/cast_front/AS50_cast_front_00.png" id="t_cast_front_00"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/cast_front/AS50_cast_front_01.png" id="t_cast_front_01"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/cast_front/AS50_cast_front_02.png" id="t_cast_front_02"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/cast_front/AS50_cast_front_03.png" id="t_cast_front_03"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/attack_front/AS50_attack_front_00.png" id="t_attack_front_00"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/attack_front/AS50_attack_front_01.png" id="t_attack_front_01"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/attack_front/AS50_attack_front_02.png" id="t_attack_front_02"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/attack_front/AS50_attack_front_03.png" id="t_attack_front_03"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/hit_front/AS50_hit_front_00.png" id="t_hit_front_00"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/hit_front/AS50_hit_front_01.png" id="t_hit_front_01"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/hit_front/AS50_hit_front_02.png" id="t_hit_front_02"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/hit_front/AS50_hit_front_03.png" id="t_hit_front_03"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/downed_front/AS50_downed_front_00.png" id="t_downed_front_00"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/downed_front/AS50_downed_front_01.png" id="t_downed_front_01"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/downed_front/AS50_downed_front_02.png" id="t_downed_front_02"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/downed_front/AS50_downed_front_03.png" id="t_downed_front_03"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/idle_right/AS50_idle_right_00.png" id="t_idle_right_00"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/idle_right/AS50_idle_right_01.png" id="t_idle_right_01"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/idle_right/AS50_idle_right_02.png" id="t_idle_right_02"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/idle_right/AS50_idle_right_03.png" id="t_idle_right_03"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/walk_right/AS50_walk_right_00.png" id="t_walk_right_00"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/walk_right/AS50_walk_right_01.png" id="t_walk_right_01"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/walk_right/AS50_walk_right_02.png" id="t_walk_right_02"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/walk_right/AS50_walk_right_03.png" id="t_walk_right_03"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/attack_right/AS50_attack_right_00.png" id="t_attack_right_00"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/attack_right/AS50_attack_right_01.png" id="t_attack_right_01"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/attack_right/AS50_attack_right_02.png" id="t_attack_right_02"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/attack_right/AS50_attack_right_03.png" id="t_attack_right_03"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/cast_right/AS50_cast_right_00.png" id="t_cast_right_00"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/cast_right/AS50_cast_right_01.png" id="t_cast_right_01"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/cast_right/AS50_cast_right_02.png" id="t_cast_right_02"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/cast_right/AS50_cast_right_03.png" id="t_cast_right_03"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/hit_right/AS50_hit_right_00.png" id="t_hit_right_00"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/hit_right/AS50_hit_right_01.png" id="t_hit_right_01"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/hit_right/AS50_hit_right_02.png" id="t_hit_right_02"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/hit_right/AS50_hit_right_03.png" id="t_hit_right_03"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/downed_right/AS50_downed_right_00.png" id="t_downed_right_00"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/downed_right/AS50_downed_right_01.png" id="t_downed_right_01"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/downed_right/AS50_downed_right_02.png" id="t_downed_right_02"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/downed_right/AS50_downed_right_03.png" id="t_downed_right_03"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/idle_back/AS50_idle_back_00.png" id="t_idle_back_00"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/idle_back/AS50_idle_back_01.png" id="t_idle_back_01"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/idle_back/AS50_idle_back_02.png" id="t_idle_back_02"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/idle_back/AS50_idle_back_03.png" id="t_idle_back_03"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/walk_back/AS50_walk_back_00.png" id="t_walk_back_00"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/walk_back/AS50_walk_back_01.png" id="t_walk_back_01"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/walk_back/AS50_walk_back_02.png" id="t_walk_back_02"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/walk_back/AS50_walk_back_03.png" id="t_walk_back_03"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/attack_back/AS50_attack_back_00.png" id="t_attack_back_00"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/attack_back/AS50_attack_back_01.png" id="t_attack_back_01"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/attack_back/AS50_attack_back_02.png" id="t_attack_back_02"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/attack_back/AS50_attack_back_03.png" id="t_attack_back_03"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/cast_back/AS50_cast_back_00.png" id="t_cast_back_00"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/cast_back/AS50_cast_back_01.png" id="t_cast_back_01"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/cast_back/AS50_cast_back_02.png" id="t_cast_back_02"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/cast_back/AS50_cast_back_03.png" id="t_cast_back_03"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/hit_back/AS50_hit_back_00.png" id="t_hit_back_00"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/hit_back/AS50_hit_back_01.png" id="t_hit_back_01"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/hit_back/AS50_hit_back_02.png" id="t_hit_back_02"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/hit_back/AS50_hit_back_03.png" id="t_hit_back_03"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/downed_back/AS50_downed_back_00.png" id="t_downed_back_00"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/downed_back/AS50_downed_back_01.png" id="t_downed_back_01"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/downed_back/AS50_downed_back_02.png" id="t_downed_back_02"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/downed_back/AS50_downed_back_03.png" id="t_downed_back_03"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/idle_left/AS50_idle_left_00.png" id="t_idle_left_00"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/idle_left/AS50_idle_left_01.png" id="t_idle_left_01"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/idle_left/AS50_idle_left_02.png" id="t_idle_left_02"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/idle_left/AS50_idle_left_03.png" id="t_idle_left_03"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/walk_left/AS50_walk_left_00.png" id="t_walk_left_00"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/walk_left/AS50_walk_left_01.png" id="t_walk_left_01"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/walk_left/AS50_walk_left_02.png" id="t_walk_left_02"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/walk_left/AS50_walk_left_03.png" id="t_walk_left_03"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/attack_left/AS50_attack_left_00.png" id="t_attack_left_00"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/attack_left/AS50_attack_left_01.png" id="t_attack_left_01"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/attack_left/AS50_attack_left_02.png" id="t_attack_left_02"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/attack_left/AS50_attack_left_03.png" id="t_attack_left_03"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/cast_left/AS50_cast_left_00.png" id="t_cast_left_00"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/cast_left/AS50_cast_left_01.png" id="t_cast_left_01"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/cast_left/AS50_cast_left_02.png" id="t_cast_left_02"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/cast_left/AS50_cast_left_03.png" id="t_cast_left_03"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/hit_left/AS50_hit_left_00.png" id="t_hit_left_00"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/hit_left/AS50_hit_left_01.png" id="t_hit_left_01"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/hit_left/AS50_hit_left_02.png" id="t_hit_left_02"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/hit_left/AS50_hit_left_03.png" id="t_hit_left_03"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/downed_left/AS50_downed_left_00.png" id="t_downed_left_00"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/downed_left/AS50_downed_left_01.png" id="t_downed_left_01"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/downed_left/AS50_downed_left_02.png" id="t_downed_left_02"]
+[ext_resource type="Texture2D" path="res://assets/p3/baked_candidates/aschar50_candidate/frames/downed_left/AS50_downed_left_03.png" id="t_downed_left_03"]
+
+[resource]
+animations = [
+{
+"frames": [{"duration": 1.0, "texture": ExtResource("t_idle_front_00")} , {"duration": 1.0, "texture": ExtResource("t_idle_front_01")} , {"duration": 1.0, "texture": ExtResource("t_idle_front_02")} , {"duration": 1.0, "texture": ExtResource("t_idle_front_03")}],
+"loop": true,
+"name": &"idle_front",
+"speed": 6
+},
+{
+"frames": [{"duration": 1.0, "texture": ExtResource("t_walk_front_00")} , {"duration": 1.0, "texture": ExtResource("t_walk_front_01")} , {"duration": 1.0, "texture": ExtResource("t_walk_front_02")} , {"duration": 1.0, "texture": ExtResource("t_walk_front_03")}],
+"loop": true,
+"name": &"walk_front",
+"speed": 8
+},
+{
+"frames": [{"duration": 1.0, "texture": ExtResource("t_cast_front_00")} , {"duration": 1.0, "texture": ExtResource("t_cast_front_01")} , {"duration": 1.0, "texture": ExtResource("t_cast_front_02")} , {"duration": 1.0, "texture": ExtResource("t_cast_front_03")}],
+"loop": false,
+"name": &"cast_front",
+"speed": 8
+},
+{
+"frames": [{"duration": 1.0, "texture": ExtResource("t_attack_front_00")} , {"duration": 1.0, "texture": ExtResource("t_attack_front_01")} , {"duration": 1.0, "texture": ExtResource("t_attack_front_02")} , {"duration": 1.0, "texture": ExtResource("t_attack_front_03")}],
+"loop": false,
+"name": &"attack_front",
+"speed": 8
+},
+{
+"frames": [{"duration": 1.0, "texture": ExtResource("t_hit_front_00")} , {"duration": 1.0, "texture": ExtResource("t_hit_front_01")} , {"duration": 1.0, "texture": ExtResource("t_hit_front_02")} , {"duration": 1.0, "texture": ExtResource("t_hit_front_03")}],
+"loop": false,
+"name": &"hit_front",
+"speed": 8
+},
+{
+"frames": [{"duration": 1.0, "texture": ExtResource("t_downed_front_00")} , {"duration": 1.0, "texture": ExtResource("t_downed_front_01")} , {"duration": 1.0, "texture": ExtResource("t_downed_front_02")} , {"duration": 1.0, "texture": ExtResource("t_downed_front_03")}],
+"loop": false,
+"name": &"downed_front",
+"speed": 6
+},
+{
+"frames": [{"duration": 1.0, "texture": ExtResource("t_idle_front_00")} , {"duration": 1.0, "texture": ExtResource("t_idle_front_01")} , {"duration": 1.0, "texture": ExtResource("t_idle_front_02")} , {"duration": 1.0, "texture": ExtResource("t_idle_front_03")} , {"duration": 1.0, "texture": ExtResource("t_walk_front_00")} , {"duration": 1.0, "texture": ExtResource("t_walk_front_01")} , {"duration": 1.0, "texture": ExtResource("t_walk_front_02")} , {"duration": 1.0, "texture": ExtResource("t_walk_front_03")} , {"duration": 1.0, "texture": ExtResource("t_cast_front_00")} , {"duration": 1.0, "texture": ExtResource("t_cast_front_01")} , {"duration": 1.0, "texture": ExtResource("t_cast_front_02")} , {"duration": 1.0, "texture": ExtResource("t_cast_front_03")} , {"duration": 1.0, "texture": ExtResource("t_attack_front_00")} , {"duration": 1.0, "texture": ExtResource("t_attack_front_01")} , {"duration": 1.0, "texture": ExtResource("t_attack_front_02")} , {"duration": 1.0, "texture": ExtResource("t_attack_front_03")} , {"duration": 1.0, "texture": ExtResource("t_hit_front_00")} , {"duration": 1.0, "texture": ExtResource("t_hit_front_01")} , {"duration": 1.0, "texture": ExtResource("t_hit_front_02")} , {"duration": 1.0, "texture": ExtResource("t_hit_front_03")} , {"duration": 1.0, "texture": ExtResource("t_downed_front_00")} , {"duration": 1.0, "texture": ExtResource("t_downed_front_01")} , {"duration": 1.0, "texture": ExtResource("t_downed_front_02")} , {"duration": 1.0, "texture": ExtResource("t_downed_front_03")} , {"duration": 1.0, "texture": ExtResource("t_idle_front_00")} , {"duration": 1.0, "texture": ExtResource("t_idle_front_01")} , {"duration": 1.0, "texture": ExtResource("t_idle_front_02")} , {"duration": 1.0, "texture": ExtResource("t_idle_front_03")}],
+"loop": false,
+"name": &"showcase",
+"speed": 8.0
+},
+{
+"frames": [{"duration": 1.0, "texture": ExtResource("t_idle_right_00")} , {"duration": 1.0, "texture": ExtResource("t_idle_right_01")} , {"duration": 1.0, "texture": ExtResource("t_idle_right_02")} , {"duration": 1.0, "texture": ExtResource("t_idle_right_03")}],
+"loop": true,
+"name": &"idle_right",
+"speed": 6
+},
+{
+"frames": [{"duration": 1.0, "texture": ExtResource("t_walk_right_00")} , {"duration": 1.0, "texture": ExtResource("t_walk_right_01")} , {"duration": 1.0, "texture": ExtResource("t_walk_right_02")} , {"duration": 1.0, "texture": ExtResource("t_walk_right_03")}],
+"loop": true,
+"name": &"walk_right",
+"speed": 8
+},
+{
+"frames": [{"duration": 1.0, "texture": ExtResource("t_attack_right_00")} , {"duration": 1.0, "texture": ExtResource("t_attack_right_01")} , {"duration": 1.0, "texture": ExtResource("t_attack_right_02")} , {"duration": 1.0, "texture": ExtResource("t_attack_right_03")}],
+"loop": false,
+"name": &"attack_right",
+"speed": 8
+},
+{
+"frames": [{"duration": 1.0, "texture": ExtResource("t_cast_right_00")} , {"duration": 1.0, "texture": ExtResource("t_cast_right_01")} , {"duration": 1.0, "texture": ExtResource("t_cast_right_02")} , {"duration": 1.0, "texture": ExtResource("t_cast_right_03")}],
+"loop": false,
+"name": &"cast_right",
+"speed": 8
+},
+{
+"frames": [{"duration": 1.0, "texture": ExtResource("t_hit_right_00")} , {"duration": 1.0, "texture": ExtResource("t_hit_right_01")} , {"duration": 1.0, "texture": ExtResource("t_hit_right_02")} , {"duration": 1.0, "texture": ExtResource("t_hit_right_03")}],
+"loop": false,
+"name": &"hit_right",
+"speed": 8
+},
+{
+"frames": [{"duration": 1.0, "texture": ExtResource("t_downed_right_00")} , {"duration": 1.0, "texture": ExtResource("t_downed_right_01")} , {"duration": 1.0, "texture": ExtResource("t_downed_right_02")} , {"duration": 1.0, "texture": ExtResource("t_downed_right_03")}],
+"loop": false,
+"name": &"downed_right",
+"speed": 6
+},
+{
+"frames": [{"duration": 1.0, "texture": ExtResource("t_idle_back_00")} , {"duration": 1.0, "texture": ExtResource("t_idle_back_01")} , {"duration": 1.0, "texture": ExtResource("t_idle_back_02")} , {"duration": 1.0, "texture": ExtResource("t_idle_back_03")}],
+"loop": true,
+"name": &"idle_back",
+"speed": 6
+},
+{
+"frames": [{"duration": 1.0, "texture": ExtResource("t_walk_back_00")} , {"duration": 1.0, "texture": ExtResource("t_walk_back_01")} , {"duration": 1.0, "texture": ExtResource("t_walk_back_02")} , {"duration": 1.0, "texture": ExtResource("t_walk_back_03")}],
+"loop": true,
+"name": &"walk_back",
+"speed": 8
+},
+{
+"frames": [{"duration": 1.0, "texture": ExtResource("t_attack_back_00")} , {"duration": 1.0, "texture": ExtResource("t_attack_back_01")} , {"duration": 1.0, "texture": ExtResource("t_attack_back_02")} , {"duration": 1.0, "texture": ExtResource("t_attack_back_03")}],
+"loop": false,
+"name": &"attack_back",
+"speed": 8
+},
+{
+"frames": [{"duration": 1.0, "texture": ExtResource("t_cast_back_00")} , {"duration": 1.0, "texture": ExtResource("t_cast_back_01")} , {"duration": 1.0, "texture": ExtResource("t_cast_back_02")} , {"duration": 1.0, "texture": ExtResource("t_cast_back_03")}],
+"loop": false,
+"name": &"cast_back",
+"speed": 8
+},
+{
+"frames": [{"duration": 1.0, "texture": ExtResource("t_hit_back_00")} , {"duration": 1.0, "texture": ExtResource("t_hit_back_01")} , {"duration": 1.0, "texture": ExtResource("t_hit_back_02")} , {"duration": 1.0, "texture": ExtResource("t_hit_back_03")}],
+"loop": false,
+"name": &"hit_back",
+"speed": 8
+},
+{
+"frames": [{"duration": 1.0, "texture": ExtResource("t_downed_back_00")} , {"duration": 1.0, "texture": ExtResource("t_downed_back_01")} , {"duration": 1.0, "texture": ExtResource("t_downed_back_02")} , {"duration": 1.0, "texture": ExtResource("t_downed_back_03")}],
+"loop": false,
+"name": &"downed_back",
+"speed": 6
+},
+{
+"frames": [{"duration": 1.0, "texture": ExtResource("t_idle_left_00")} , {"duration": 1.0, "texture": ExtResource("t_idle_left_01")} , {"duration": 1.0, "texture": ExtResource("t_idle_left_02")} , {"duration": 1.0, "texture": ExtResource("t_idle_left_03")}],
+"loop": true,
+"name": &"idle_left",
+"speed": 6
+},
+{
+"frames": [{"duration": 1.0, "texture": ExtResource("t_walk_left_00")} , {"duration": 1.0, "texture": ExtResource("t_walk_left_01")} , {"duration": 1.0, "texture": ExtResource("t_walk_left_02")} , {"duration": 1.0, "texture": ExtResource("t_walk_left_03")}],
+"loop": true,
+"name": &"walk_left",
+"speed": 8
+},
+{
+"frames": [{"duration": 1.0, "texture": ExtResource("t_attack_left_00")} , {"duration": 1.0, "texture": ExtResource("t_attack_left_01")} , {"duration": 1.0, "texture": ExtResource("t_attack_left_02")} , {"duration": 1.0, "texture": ExtResource("t_attack_left_03")}],
+"loop": false,
+"name": &"attack_left",
+"speed": 8
+},
+{
+"frames": [{"duration": 1.0, "texture": ExtResource("t_cast_left_00")} , {"duration": 1.0, "texture": ExtResource("t_cast_left_01")} , {"duration": 1.0, "texture": ExtResource("t_cast_left_02")} , {"duration": 1.0, "texture": ExtResource("t_cast_left_03")}],
+"loop": false,
+"name": &"cast_left",
+"speed": 8
+},
+{
+"frames": [{"duration": 1.0, "texture": ExtResource("t_hit_left_00")} , {"duration": 1.0, "texture": ExtResource("t_hit_left_01")} , {"duration": 1.0, "texture": ExtResource("t_hit_left_02")} , {"duration": 1.0, "texture": ExtResource("t_hit_left_03")}],
+"loop": false,
+"name": &"hit_left",
+"speed": 8
+},
+{
+"frames": [{"duration": 1.0, "texture": ExtResource("t_downed_left_00")} , {"duration": 1.0, "texture": ExtResource("t_downed_left_01")} , {"duration": 1.0, "texture": ExtResource("t_downed_left_02")} , {"duration": 1.0, "texture": ExtResource("t_downed_left_03")}],
+"loop": false,
+"name": &"downed_left",
+"speed": 6
+},
+{
+"frames": [{"duration": 1.0, "texture": ExtResource("t_idle_front_00")} , {"duration": 1.0, "texture": ExtResource("t_idle_front_01")} , {"duration": 1.0, "texture": ExtResource("t_idle_front_02")} , {"duration": 1.0, "texture": ExtResource("t_idle_front_03")} , {"duration": 1.0, "texture": ExtResource("t_walk_front_00")} , {"duration": 1.0, "texture": ExtResource("t_walk_front_01")} , {"duration": 1.0, "texture": ExtResource("t_walk_front_02")} , {"duration": 1.0, "texture": ExtResource("t_walk_front_03")} , {"duration": 1.0, "texture": ExtResource("t_attack_front_00")} , {"duration": 1.0, "texture": ExtResource("t_attack_front_01")} , {"duration": 1.0, "texture": ExtResource("t_attack_front_02")} , {"duration": 1.0, "texture": ExtResource("t_attack_front_03")} , {"duration": 1.0, "texture": ExtResource("t_cast_front_00")} , {"duration": 1.0, "texture": ExtResource("t_cast_front_01")} , {"duration": 1.0, "texture": ExtResource("t_cast_front_02")} , {"duration": 1.0, "texture": ExtResource("t_cast_front_03")} , {"duration": 1.0, "texture": ExtResource("t_hit_front_00")} , {"duration": 1.0, "texture": ExtResource("t_hit_front_01")} , {"duration": 1.0, "texture": ExtResource("t_hit_front_02")} , {"duration": 1.0, "texture": ExtResource("t_hit_front_03")} , {"duration": 1.0, "texture": ExtResource("t_downed_front_00")} , {"duration": 1.0, "texture": ExtResource("t_downed_front_01")} , {"duration": 1.0, "texture": ExtResource("t_downed_front_02")} , {"duration": 1.0, "texture": ExtResource("t_downed_front_03")} , {"duration": 1.0, "texture": ExtResource("t_idle_right_00")} , {"duration": 1.0, "texture": ExtResource("t_idle_right_01")} , {"duration": 1.0, "texture": ExtResource("t_idle_right_02")} , {"duration": 1.0, "texture": ExtResource("t_idle_right_03")} , {"duration": 1.0, "texture": ExtResource("t_walk_right_00")} , {"duration": 1.0, "texture": ExtResource("t_walk_right_01")} , {"duration": 1.0, "texture": ExtResource("t_walk_right_02")} , {"duration": 1.0, "texture": ExtResource("t_walk_right_03")} , {"duration": 1.0, "texture": ExtResource("t_attack_right_00")} , {"duration": 1.0, "texture": ExtResource("t_attack_right_01")} , {"duration": 1.0, "texture": ExtResource("t_attack_right_02")} , {"duration": 1.0, "texture": ExtResource("t_attack_right_03")} , {"duration": 1.0, "texture": ExtResource("t_cast_right_00")} , {"duration": 1.0, "texture": ExtResource("t_cast_right_01")} , {"duration": 1.0, "texture": ExtResource("t_cast_right_02")} , {"duration": 1.0, "texture": ExtResource("t_cast_right_03")} , {"duration": 1.0, "texture": ExtResource("t_hit_right_00")} , {"duration": 1.0, "texture": ExtResource("t_hit_right_01")} , {"duration": 1.0, "texture": ExtResource("t_hit_right_02")} , {"duration": 1.0, "texture": ExtResource("t_hit_right_03")} , {"duration": 1.0, "texture": ExtResource("t_downed_right_00")} , {"duration": 1.0, "texture": ExtResource("t_downed_right_01")} , {"duration": 1.0, "texture": ExtResource("t_downed_right_02")} , {"duration": 1.0, "texture": ExtResource("t_downed_right_03")} , {"duration": 1.0, "texture": ExtResource("t_idle_back_00")} , {"duration": 1.0, "texture": ExtResource("t_idle_back_01")} , {"duration": 1.0, "texture": ExtResource("t_idle_back_02")} , {"duration": 1.0, "texture": ExtResource("t_idle_back_03")} , {"duration": 1.0, "texture": ExtResource("t_walk_back_00")} , {"duration": 1.0, "texture": ExtResource("t_walk_back_01")} , {"duration": 1.0, "texture": ExtResource("t_walk_back_02")} , {"duration": 1.0, "texture": ExtResource("t_walk_back_03")} , {"duration": 1.0, "texture": ExtResource("t_attack_back_00")} , {"duration": 1.0, "texture": ExtResource("t_attack_back_01")} , {"duration": 1.0, "texture": ExtResource("t_attack_back_02")} , {"duration": 1.0, "texture": ExtResource("t_attack_back_03")} , {"duration": 1.0, "texture": ExtResource("t_cast_back_00")} , {"duration": 1.0, "texture": ExtResource("t_cast_back_01")} , {"duration": 1.0, "texture": ExtResource("t_cast_back_02")} , {"duration": 1.0, "texture": ExtResource("t_cast_back_03")} , {"duration": 1.0, "texture": ExtResource("t_hit_back_00")} , {"duration": 1.0, "texture": ExtResource("t_hit_back_01")} , {"duration": 1.0, "texture": ExtResource("t_hit_back_02")} , {"duration": 1.0, "texture": ExtResource("t_hit_back_03")} , {"duration": 1.0, "texture": ExtResource("t_downed_back_00")} , {"duration": 1.0, "texture": ExtResource("t_downed_back_01")} , {"duration": 1.0, "texture": ExtResource("t_downed_back_02")} , {"duration": 1.0, "texture": ExtResource("t_downed_back_03")} , {"duration": 1.0, "texture": ExtResource("t_idle_left_00")} , {"duration": 1.0, "texture": ExtResource("t_idle_left_01")} , {"duration": 1.0, "texture": ExtResource("t_idle_left_02")} , {"duration": 1.0, "texture": ExtResource("t_idle_left_03")} , {"duration": 1.0, "texture": ExtResource("t_walk_left_00")} , {"duration": 1.0, "texture": ExtResource("t_walk_left_01")} , {"duration": 1.0, "texture": ExtResource("t_walk_left_02")} , {"duration": 1.0, "texture": ExtResource("t_walk_left_03")} , {"duration": 1.0, "texture": ExtResource("t_attack_left_00")} , {"duration": 1.0, "texture": ExtResource("t_attack_left_01")} , {"duration": 1.0, "texture": ExtResource("t_attack_left_02")} , {"duration": 1.0, "texture": ExtResource("t_attack_left_03")} , {"duration": 1.0, "texture": ExtResource("t_cast_left_00")} , {"duration": 1.0, "texture": ExtResource("t_cast_left_01")} , {"duration": 1.0, "texture": ExtResource("t_cast_left_02")} , {"duration": 1.0, "texture": ExtResource("t_cast_left_03")} , {"duration": 1.0, "texture": ExtResource("t_hit_left_00")} , {"duration": 1.0, "texture": ExtResource("t_hit_left_01")} , {"duration": 1.0, "texture": ExtResource("t_hit_left_02")} , {"duration": 1.0, "texture": ExtResource("t_hit_left_03")} , {"duration": 1.0, "texture": ExtResource("t_downed_left_00")} , {"duration": 1.0, "texture": ExtResource("t_downed_left_01")} , {"duration": 1.0, "texture": ExtResource("t_downed_left_02")} , {"duration": 1.0, "texture": ExtResource("t_downed_left_03")}],
+"loop": false,
+"name": &"full_direction_showcase",
+"speed": 8.0
+}
+]

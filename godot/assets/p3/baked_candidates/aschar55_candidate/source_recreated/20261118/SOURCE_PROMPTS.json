@@ -1,0 +1,84 @@
+{
+  "actor_id": "AS55",
+  "school": "Song Đao",
+  "gender": "female",
+  "status": "CANDIDATE / OWNER ART REVIEW PENDING",
+  "tool": "built-in image_gen",
+  "identity_master": {
+    "path": "assets/p3/baked_candidates/aschar55_candidate/source_recreated/20261118/AS55_SPEAR_FEMALE_MASTER_CANDIDATE.png",
+    "sha256": "fa1a56e7edcc7668985db174e2b60850b375754f973420b5bb008ea7b0eeacca",
+    "prompt_summary": "Original super-deformed chibi Thương Tu master with steel-blue/antique-gold combat hanfu, asymmetrical hair ornament and two-hand spear stance with no weapon rendered; single character, transparent background."
+  },
+  "animation_sheet_rules": "4 columns x 6 rows; each row is Idle, Walk, Attack, Cast, Hit, Downed; four visibly distinct adjacent full-body pose cels; direction genuinely redrawn, no flip; no held weapons or VFX; transparent background; fixed master identity.",
+  "sheet_sources": {
+    "front": {
+      "path": "assets/p3/baked_candidates/aschar55_candidate/source_recreated/20261118/AS55_FRONT_ACTIONS_4x6.png",
+      "sha256": "aec239039b8e1893a5323e8512f0dd48a70c1038ce69243232ed02e9f0c334f4",
+      "direction": "front",
+      "prompt_summary": "Use the exact identity master; create 24 full-body body-only cels in a 4x6 grid, facing front; preserve unique asymmetric design and continuity, no mirror, no rig, no held weapons or VFX.",
+      "postprocessing": "Selected crop-safe variant and/or alpha cleanup are recorded in the clip manifest."
+    },
+    "right": {
+      "path": "assets/p3/baked_candidates/aschar55_candidate/source_recreated/20261118/AS55_RIGHT_ACTIONS_4x6.png",
+      "sha256": "d3d5a208502fbbb12eaa150839321379c5bd3d1eb84331cef9e302d4f7214d80",
+      "direction": "right",
+      "prompt_summary": "Use the exact identity master; create 24 full-body body-only cels in a 4x6 grid, facing right; preserve unique asymmetric design and continuity, no mirror, no rig, no held weapons or VFX.",
+      "postprocessing": "Selected crop-safe variant and/or alpha cleanup are recorded in the clip manifest.",
+      "selected_variant": "CROPSAFE"
+    },
+    "back": {
+      "path": "assets/p3/baked_candidates/aschar55_candidate/source_recreated/20261118/AS55_BACK_ACTIONS_4x6.png",
+      "sha256": "210d7a5e0a59fcad971ff7ddf45a6309232a1d06426f87cd120076e72256dbe9",
+      "direction": "back",
+      "selected_variant": "IMAGEGEN_BACK_RGBA",
+      "source_tool": "built-in image_gen; identity master and clean back-view reference, then background-removal pass",
+      "source_status": "RECREATED_CANDIDATE",
+      "prompt_summary": "Six rows of actions × four distinct back-facing poses; no face/eyes; 4x6 RGBA sheet; candidate only.",
+      "raw_rgb_source": "assets/p3/baked_candidates/aschar55_candidate/source_recreated/20261119/AS55_BACK_ACTIONS_4x6_RGB_SOURCE_CANDIDATE.png",
+      "raw_rgb_sha256": "be6d38e8ca684583cca9c968f7802b5f4bca646eee58095cccffd7a2fd5a61bb",
+      "background_removed_rgba_source": "assets/p3/baked_candidates/aschar55_candidate/source_recreated/20261119/AS55_BACK_ACTIONS_4x6_RGBA_SOURCE_CANDIDATE.png",
+      "background_removed_rgba_sha256": "210d7a5e0a59fcad971ff7ddf45a6309232a1d06426f87cd120076e72256dbe9",
+      "replaced_prior_variant": "assets/p3/baked_candidates/aschar55_candidate/source_recreated/20261118/AS55_BACK_ACTIONS_4x6_PRE_ASSET_REPAIR.png",
+      "manual_onion_skin": "NOT DONE; owner review pending"
+    },
+    "left": {
+      "path": "assets/p3/baked_candidates/aschar55_candidate/source_recreated/20261118/AS55_LEFT_ACTIONS_4x6.png",
+      "sha256": "b2b22aeafe3ef3817ae949c7d0164558954b92d7fe295b23e1ea82c77583c818",
+      "direction": "left",
+      "prompt_summary": "Use the exact identity master; create 24 full-body body-only cels in a 4x6 grid, facing left; preserve unique asymmetric design and continuity, no mirror, no rig, no held weapons or VFX.",
+      "postprocessing": "Selected crop-safe variant and/or alpha cleanup are recorded in the clip manifest."
+    }
+  },
+  "limitation": "The candidate AI sheets were not corrected by neighboring-frame inpainting/onion-skin. No owner approval is implied. Weapon overlay/grip metadata is separate and remains pending.",
+  "front_source_repair": {
+    "selected_variant": "CROPSAFE",
+    "path": "assets/p3/baked_candidates/aschar55_candidate/source_recreated/20261118/AS55_FRONT_ACTIONS_4x6.png",
+    "sha256": "e5f5ac4669340aff738bf38f592c1194a7eaed552d2e1e18b65bf49236bd3a18",
+    "status": "CANDIDATE",
+    "note": "Restored un-eroded source after visual review found holes in hair/face."
+  },
+  "right_source_repair": {
+    "selected_variant": "CROPSAFE",
+    "path": "assets/p3/baked_candidates/aschar55_candidate/source_recreated/20261118/AS55_RIGHT_ACTIONS_4x6.png",
+    "sha256": "d3d5a208502fbbb12eaa150839321379c5bd3d1eb84331cef9e302d4f7214d80",
+    "prior_variant_backup": "assets/p3/baked_candidates/aschar55_candidate/source_recreated/20261118/AS55_RIGHT_ACTIONS_4x6_PRE_CROPSAFE_REPAIR.png",
+    "note": "Restored intact silhouette after alpha erosion found in the previous selected sheet."
+  },
+  "right_downed_repair": {
+    "source_path": "assets/p3/baked_candidates/aschar55_candidate/source_recreated/20261119/AS55_DOWNED_RIGHT_2x2_ALPHA_SOURCE_CANDIDATE.png",
+    "sha256": "1724f14fd11f26e00ef52725ffb68c65be4802b76690cb5e365435940ff96313",
+    "tool": "built-in image_gen background removal from AS55 master and existing Right source reference",
+    "layout": "2x2; four sequential full-body cels: crouch, knee down, hands down, prone",
+    "alpha_policy": "alpha<64 zeroed in exported frame cels",
+    "status": "CANDIDATE; owner art approval pending"
+  },
+  "right_downed_repair_v2": {
+    "path": "assets/p3/baked_candidates/aschar55_candidate/source_recreated/20261119/AS55_DOWNED_RIGHT_2x2_ALPHA_SOURCE_CANDIDATE_V2.png",
+    "sha256": "aa6910e0457ec547fbbb3f487a063eff3086ca45f08d21e146d9cfc5663742f5",
+    "tool": "built-in image_gen; identity master + prior pose sequence; clean transparent RGBA output",
+    "layout": "2x2; crouch → knee → hands brace → prone; all frames have interior alpha bbox",
+    "alpha_threshold": 96,
+    "status": "CANDIDATE; owner approval pending",
+    "supersedes": "AS55_DOWNED_RIGHT_2x2_ALPHA_SOURCE_CANDIDATE.png (rejected: last pose touched sheet boundary)"
+  }
+}

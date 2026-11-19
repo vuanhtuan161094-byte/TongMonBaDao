@@ -1,0 +1,3468 @@
+{
+  "actor_id": "AS63",
+  "school": "Độc Tu",
+  "gender": "female",
+  "identity_master": {
+    "path": "assets/p3/baked_candidates/aschar63_candidate/source_recreated/20261119/AS63_POISON_FEMALE_MASTER_CANDIDATE.png",
+    "sha256": "5105480d12a601360ea76d276c0c274cf14eb9fed505d606d56e069359520661",
+    "status": "RECREATED_CANDIDATE"
+  },
+  "status": "CANDIDATE",
+  "directions": [
+    "Front",
+    "Right",
+    "Back",
+    "Left"
+  ],
+  "actions": [
+    "Idle",
+    "Walk",
+    "Attack",
+    "Cast",
+    "Hit",
+    "Downed"
+  ],
+  "clip_count": 24,
+  "frame_count": 96,
+  "pair_clip_count": 48,
+  "frame_px": [
+    384,
+    384
+  ],
+  "pivot_px": [
+    192,
+    360
+  ],
+  "body_mode": "one monolithic full-body RGBA cel, no rig",
+  "mirroring": false,
+  "weapon_and_vfx": "Body-only; props stay separate; no VFX.",
+  "source_tool": "built-in image_gen",
+  "source_status": "RECREATED_CANDIDATE",
+  "limitations": [
+    "AI-generated pose sheets have not had neighboring-frame manual onion-skin cleanup.",
+    "Owner art approval pending; all outputs remain CANDIDATE.",
+    "No gameplay or production actor integration in this batch."
+  ],
+  "frame_sources": {
+    "front": {
+      "source_sheet": "assets/p3/baked_candidates/aschar63_candidate/source_recreated/20261119/AS63_FRONT_ACTIONS_4x6.png",
+      "source_sheet_sha256": "c16da04ada6f750d07169764784ad6fc87ee3b2956b0576440fe833086765f6b",
+      "sheet_px": [
+        1024,
+        1536
+      ],
+      "source_tool": "built-in image_gen",
+      "source_status": "RECREATED_CANDIDATE",
+      "postprocessing": "RGBA alpha normalized: alpha<96 set to 0.",
+      "clips": {
+        "idle": {
+          "frames": [
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/idle_front/AS63_idle_front_00.png",
+              "sha256": "1d1b33c099f1dc5e6444d3b2e95d1911954f3f77ecec44efaa21f2defefb8631",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                102,
+                34,
+                282,
+                360
+              ],
+              "source_cell_px": [
+                0,
+                0,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                75,
+                8,
+                209,
+                251
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.341564,
+              "index": 0
+            },
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/idle_front/AS63_idle_front_01.png",
+              "sha256": "c1000a88c6976bb596e5a8d798e3f4338eb4376fffd473009722b2b6c1af672c",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                102,
+                34,
+                282,
+                360
+              ],
+              "source_cell_px": [
+                256,
+                0,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                74,
+                9,
+                207,
+                250
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.352697,
+              "index": 1
+            },
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/idle_front/AS63_idle_front_02.png",
+              "sha256": "7b1628b12632ba950613a9c5d8f6fcaeeef4aaac9c0dcde6a4e588a51337086c",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                107,
+                34,
+                276,
+                360
+              ],
+              "source_cell_px": [
+                512,
+                0,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                68,
+                9,
+                194,
+                252
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.341564,
+              "index": 2
+            },
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/idle_front/AS63_idle_front_03.png",
+              "sha256": "7cdcbcc27ca941a0cbf90e68a7e7bed9cdbf51519741558cda4da859a37a40f0",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                110,
+                34,
+                274,
+                360
+              ],
+              "source_cell_px": [
+                768,
+                0,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                64,
+                9,
+                186,
+                252
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.341564,
+              "index": 3
+            }
+          ],
+          "unique_frame_hashes": 4,
+          "unique_pose_check": "PASS",
+          "source_cell_edge_touch_count": 0
+        },
+        "walk": {
+          "frames": [
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/walk_front/AS63_walk_front_00.png",
+              "sha256": "4525a6461767a52d1bebc8620c86d542166db0199eb9dc1efd392f15ab14440f",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                113,
+                34,
+                271,
+                360
+              ],
+              "source_cell_px": [
+                0,
+                256,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                76,
+                5,
+                195,
+                250
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.330612,
+              "index": 0
+            },
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/walk_front/AS63_walk_front_01.png",
+              "sha256": "f6de55eb73164afc67d5617389b06151abc72f288b6e6ce24cb98d2803b0a43a",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                97,
+                34,
+                286,
+                360
+              ],
+              "source_cell_px": [
+                256,
+                256,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                62,
+                5,
+                204,
+                250
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.330612,
+              "index": 1
+            },
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/walk_front/AS63_walk_front_02.png",
+              "sha256": "ab63fb74eaee3e50a749d25830bf39eb43b8a298762df5a497f9f21df8c7d406",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                99,
+                34,
+                284,
+                360
+              ],
+              "source_cell_px": [
+                512,
+                256,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                59,
+                5,
+                198,
+                250
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.330612,
+              "index": 2
+            },
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/walk_front/AS63_walk_front_03.png",
+              "sha256": "0069078a1dd68bf3bd1715164663c8f0ee43ae8ebe1f0f3ce9d525f927b9d036",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                109,
+                34,
+                275,
+                360
+              ],
+              "source_cell_px": [
+                768,
+                256,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                65,
+                5,
+                190,
+                250
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.330612,
+              "index": 3
+            }
+          ],
+          "unique_frame_hashes": 4,
+          "unique_pose_check": "PASS",
+          "source_cell_edge_touch_count": 0
+        },
+        "attack": {
+          "frames": [
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/attack_front/AS63_attack_front_00.png",
+              "sha256": "a3106c5fc4136bd6ea9bf90831fb31211257d1f27aa8cd6186e88efd782f90a9",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                112,
+                34,
+                272,
+                360
+              ],
+              "source_cell_px": [
+                0,
+                512,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                75,
+                5,
+                194,
+                248
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.341564,
+              "index": 0
+            },
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/attack_front/AS63_attack_front_01.png",
+              "sha256": "1eedd5beb7bd8cbf20cd94b95f3d188545e5d1b3716081ef7996edaf13beeece",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                100,
+                34,
+                284,
+                360
+              ],
+              "source_cell_px": [
+                256,
+                512,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                70,
+                5,
+                208,
+                250
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.330612,
+              "index": 1
+            },
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/attack_front/AS63_attack_front_02.png",
+              "sha256": "59d9df930932b5b81b52c3340f44dc802c7b9a129ae613ffb6dcf56d2d0d5ff2",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                98,
+                34,
+                286,
+                360
+              ],
+              "source_cell_px": [
+                512,
+                512,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                60,
+                5,
+                202,
+                251
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.325203,
+              "index": 2
+            },
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/attack_front/AS63_attack_front_03.png",
+              "sha256": "e88e78349c5475c0d5e790f9cb794051db451b3a39be02215ce3b19189c92d40",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                111,
+                34,
+                272,
+                360
+              ],
+              "source_cell_px": [
+                768,
+                512,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                62,
+                5,
+                183,
+                250
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.330612,
+              "index": 3
+            }
+          ],
+          "unique_frame_hashes": 4,
+          "unique_pose_check": "PASS",
+          "source_cell_edge_touch_count": 0
+        },
+        "cast": {
+          "frames": [
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/cast_front/AS63_cast_front_00.png",
+              "sha256": "dcbfd9f7711f6a199061497b10b5f2d547467c3678acc611acd8dd4f2a9ec1a9",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                118,
+                34,
+                266,
+                360
+              ],
+              "source_cell_px": [
+                0,
+                768,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                76,
+                5,
+                187,
+                249
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.336066,
+              "index": 0
+            },
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/cast_front/AS63_cast_front_01.png",
+              "sha256": "7f28eafb0139a0fca178393ea9d90ede9a8d454de0eb096b7ef96c3fe964a8e4",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                112,
+                34,
+                271,
+                360
+              ],
+              "source_cell_px": [
+                256,
+                768,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                67,
+                5,
+                186,
+                249
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.336066,
+              "index": 1
+            },
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/cast_front/AS63_cast_front_02.png",
+              "sha256": "444630411d19a0fab05f5be6506a271cbda1469db8a3af2e3e8a97a6222d3ef6",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                101,
+                34,
+                283,
+                360
+              ],
+              "source_cell_px": [
+                512,
+                768,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                65,
+                7,
+                200,
+                249
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.347107,
+              "index": 2
+            },
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/cast_front/AS63_cast_front_03.png",
+              "sha256": "026a9ad2dd6b90a71189aa2b0f63803daee9c9d08e66e06d6bfb8fc346adfba0",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                112,
+                34,
+                272,
+                360
+              ],
+              "source_cell_px": [
+                768,
+                768,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                63,
+                5,
+                183,
+                249
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.336066,
+              "index": 3
+            }
+          ],
+          "unique_frame_hashes": 4,
+          "unique_pose_check": "PASS",
+          "source_cell_edge_touch_count": 0
+        },
+        "hit": {
+          "frames": [
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/hit_front/AS63_hit_front_00.png",
+              "sha256": "952e3b50817bb00f315f6bf2975102f66bded3d3d19de25682050c5692edd2f6",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                104,
+                34,
+                280,
+                360
+              ],
+              "source_cell_px": [
+                0,
+                1024,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                67,
+                3,
+                197,
+                244
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.352697,
+              "index": 0
+            },
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/hit_front/AS63_hit_front_01.png",
+              "sha256": "522cb0a0b815ed65475a3c3f07d58f7639aea0353a43f993d96ea40010224700",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                86,
+                34,
+                298,
+                360
+              ],
+              "source_cell_px": [
+                256,
+                1024,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                60,
+                16,
+                209,
+                245
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.423581,
+              "index": 1
+            },
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/hit_front/AS63_hit_front_02.png",
+              "sha256": "0252fd2cbf556e05ee63280671b41fbded9d3c5c4b5dca698cefaaf617d2daab",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                105,
+                34,
+                278,
+                360
+              ],
+              "source_cell_px": [
+                512,
+                1024,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                59,
+                13,
+                183,
+                247
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.393162,
+              "index": 2
+            },
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/hit_front/AS63_hit_front_03.png",
+              "sha256": "8e07a696c3d670f4f51e817b7de99cad47521b61953756a24b4fb408d1439265",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                110,
+                34,
+                273,
+                360
+              ],
+              "source_cell_px": [
+                768,
+                1024,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                61,
+                5,
+                182,
+                247
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.347107,
+              "index": 3
+            }
+          ],
+          "unique_frame_hashes": 4,
+          "unique_pose_check": "PASS",
+          "source_cell_edge_touch_count": 0
+        },
+        "downed": {
+          "frames": [
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/downed_front/AS63_downed_front_00.png",
+              "sha256": "9b95621c03112cadd8ed0826f677c44f063b9548a1a219fccd1cb12b9cd4d976",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                89,
+                34,
+                294,
+                360
+              ],
+              "source_cell_px": [
+                0,
+                1280,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                64,
+                13,
+                208,
+                242
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.423581,
+              "index": 0
+            },
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/downed_front/AS63_downed_front_01.png",
+              "sha256": "37430787e5694a83099b793a755aceb6292193aee18972b8060862d3ed373b30",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                28,
+                34,
+                356,
+                360
+              ],
+              "source_cell_px": [
+                256,
+                1280,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                50,
+                50,
+                221,
+                220
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.917647,
+              "index": 1
+            },
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/downed_front/AS63_downed_front_02.png",
+              "sha256": "5566ea7a81e629acb97b39b21029f8f27f42de4b89a9953f5b61b3150bd6b300",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                8,
+                136,
+                376,
+                360
+              ],
+              "source_cell_px": [
+                512,
+                1280,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                22,
+                86,
+                231,
+                213
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.760766,
+              "index": 2
+            },
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/downed_front/AS63_downed_front_03.png",
+              "sha256": "d2b0105415fcac76ead885ef5ca7c79da1f45f640ca0b6064846fa4e27f94e36",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                8,
+                205,
+                376,
+                360
+              ],
+              "source_cell_px": [
+                768,
+                1280,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                1,
+                112,
+                239,
+                212
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.546218,
+              "index": 3
+            }
+          ],
+          "unique_frame_hashes": 4,
+          "unique_pose_check": "PASS",
+          "source_cell_edge_touch_count": 0
+        }
+      },
+      "atlas": {
+        "path": "assets/p3/baked_candidates/aschar63_candidate/atlases/ASCHAR_AS63_FRONT_ACTIONS_4x6.png",
+        "sha256": "3ac1492ed872ba0c179ff80fbf749a7728c4b8a775206449e40bfb653cbd0723",
+        "size": [
+          1536,
+          2304
+        ]
+      }
+    },
+    "right": {
+      "source_sheet": "assets/p3/baked_candidates/aschar63_candidate/source_recreated/20261119/AS63_RIGHT_ACTIONS_4x6.png",
+      "source_sheet_sha256": "d57483658b34f97b03082d2434e6e4fac7d1cd5c84a589ba8b27e77f31622d79",
+      "sheet_px": [
+        1024,
+        1536
+      ],
+      "source_tool": "built-in image_gen",
+      "source_status": "RECREATED_CANDIDATE",
+      "postprocessing": "RGBA alpha normalized: alpha<96 set to 0.",
+      "clips": {
+        "idle": {
+          "frames": [
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/idle_right/AS63_idle_right_00.png",
+              "sha256": "d4bcf04ebbcf1d4d1b174f45f5bc9a9e74e570c9cb83bc22fcc65843d0a2b2e9",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                100,
+                34,
+                283,
+                360
+              ],
+              "source_cell_px": [
+                0,
+                0,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                80,
+                8,
+                215,
+                249
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.352697,
+              "index": 0
+            },
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/idle_right/AS63_idle_right_01.png",
+              "sha256": "2e65aa5c13198a4d423c328603add40d1e148a77e4f093ea75b3eaebf1582791",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                96,
+                34,
+                288,
+                360
+              ],
+              "source_cell_px": [
+                256,
+                0,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                73,
+                8,
+                215,
+                249
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.352697,
+              "index": 1
+            },
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/idle_right/AS63_idle_right_02.png",
+              "sha256": "72d6d260d632561049c8305a6ccd962471aa61dc7a203c82e67e5cff58b26da9",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                95,
+                34,
+                288,
+                360
+              ],
+              "source_cell_px": [
+                512,
+                0,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                69,
+                8,
+                212,
+                249
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.352697,
+              "index": 2
+            },
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/idle_right/AS63_idle_right_03.png",
+              "sha256": "27534b17d18abbc42b9ed753046a55d37b5b1e62a34577319f775f509bdef387",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                107,
+                34,
+                277,
+                360
+              ],
+              "source_cell_px": [
+                768,
+                0,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                77,
+                8,
+                203,
+                249
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.352697,
+              "index": 3
+            }
+          ],
+          "unique_frame_hashes": 4,
+          "unique_pose_check": "PASS",
+          "source_cell_edge_touch_count": 0
+        },
+        "walk": {
+          "frames": [
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/walk_right/AS63_walk_right_00.png",
+              "sha256": "473f5b9a4713a4f6ea252180706df921e17c8844e0fbe3426aff24368327e542",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                100,
+                34,
+                284,
+                360
+              ],
+              "source_cell_px": [
+                0,
+                256,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                69,
+                6,
+                205,
+                247
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.352697,
+              "index": 0
+            },
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/walk_right/AS63_walk_right_01.png",
+              "sha256": "4f8e406acefe1ed325cd2ba46f5e770223e6b9f73f4fa1d7fd15167a34ac2544",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                97,
+                34,
+                287,
+                360
+              ],
+              "source_cell_px": [
+                256,
+                256,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                62,
+                6,
+                203,
+                248
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.347107,
+              "index": 1
+            },
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/walk_right/AS63_walk_right_02.png",
+              "sha256": "a2e13f93ed9b0997945392e93a136d8111ae64c38be77d93821495700ad31e92",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                97,
+                34,
+                287,
+                360
+              ],
+              "source_cell_px": [
+                512,
+                256,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                63,
+                7,
+                204,
+                249
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.347107,
+              "index": 2
+            },
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/walk_right/AS63_walk_right_03.png",
+              "sha256": "3e3692cba91b1e4beda8d2838e60b9608cbbb5e7816d870f1aa989265df65893",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                99,
+                34,
+                284,
+                360
+              ],
+              "source_cell_px": [
+                768,
+                256,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                72,
+                6,
+                209,
+                248
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.347107,
+              "index": 3
+            }
+          ],
+          "unique_frame_hashes": 4,
+          "unique_pose_check": "PASS",
+          "source_cell_edge_touch_count": 0
+        },
+        "attack": {
+          "frames": [
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/attack_right/AS63_attack_right_00.png",
+              "sha256": "87ddd38b89930bf97587d68f3406ac59c66d40443cee5edc811f0d447c3f827e",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                103,
+                34,
+                281,
+                360
+              ],
+              "source_cell_px": [
+                0,
+                512,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                57,
+                12,
+                185,
+                247
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.387234,
+              "index": 0
+            },
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/attack_right/AS63_attack_right_01.png",
+              "sha256": "3f149cde8cb0f099a7ed75078309334310b28825a0bc42fde58e421860adbbdc",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                64,
+                34,
+                320,
+                360
+              ],
+              "source_cell_px": [
+                256,
+                512,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                43,
+                11,
+                228,
+                247
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.381356,
+              "index": 1
+            },
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/attack_right/AS63_attack_right_02.png",
+              "sha256": "b50f40b65c0506405553e6615f20dead1337c75611891f57ca0d666668ae7b9c",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                58,
+                34,
+                325,
+                360
+              ],
+              "source_cell_px": [
+                512,
+                512,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                50,
+                11,
+                243,
+                247
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.381356,
+              "index": 2
+            },
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/attack_right/AS63_attack_right_03.png",
+              "sha256": "e13b9a4e45b0113a80cd9a6d0d8472dbd11125b26f820f551ad5a5be1ad1bd24",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                100,
+                34,
+                284,
+                360
+              ],
+              "source_cell_px": [
+                768,
+                512,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                70,
+                10,
+                204,
+                247
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.375527,
+              "index": 3
+            }
+          ],
+          "unique_frame_hashes": 4,
+          "unique_pose_check": "PASS",
+          "source_cell_edge_touch_count": 0
+        },
+        "cast": {
+          "frames": [
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/cast_right/AS63_cast_right_00.png",
+              "sha256": "6b4b3def73f8ee5347e8c4f89d0b526c7212bc37821d157aa0d380e7e0763b9a",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                118,
+                34,
+                266,
+                360
+              ],
+              "source_cell_px": [
+                0,
+                768,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                78,
+                9,
+                187,
+                249
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.358333,
+              "index": 0
+            },
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/cast_right/AS63_cast_right_01.png",
+              "sha256": "b18ba9459ecc3cf2f2473fd7db5894d73023262db00b4eff65fa1a87fb4ee43b",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                120,
+                34,
+                263,
+                360
+              ],
+              "source_cell_px": [
+                256,
+                768,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                79,
+                10,
+                184,
+                249
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.364017,
+              "index": 1
+            },
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/cast_right/AS63_cast_right_02.png",
+              "sha256": "e5dcf92a29459da49667f8cd80a65a4433b24557a64fbf24da2c596031cba765",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                107,
+                34,
+                277,
+                360
+              ],
+              "source_cell_px": [
+                512,
+                768,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                79,
+                9,
+                204,
+                249
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.358333,
+              "index": 2
+            },
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/cast_right/AS63_cast_right_03.png",
+              "sha256": "6fdb74f80bda57d6fec074de8b404cbf9f22a79371a57e89a21c7972b36e0ef7",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                97,
+                34,
+                286,
+                360
+              ],
+              "source_cell_px": [
+                768,
+                768,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                75,
+                8,
+                215,
+                249
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.352697,
+              "index": 3
+            }
+          ],
+          "unique_frame_hashes": 4,
+          "unique_pose_check": "PASS",
+          "source_cell_edge_touch_count": 0
+        },
+        "hit": {
+          "frames": [
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/hit_right/AS63_hit_right_00.png",
+              "sha256": "f08b23c4f67fe541de42518653a745149debd3d8cc965e74771e11929095bda9",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                111,
+                34,
+                273,
+                360
+              ],
+              "source_cell_px": [
+                0,
+                1024,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                72,
+                7,
+                191,
+                246
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.364017,
+              "index": 0
+            },
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/hit_right/AS63_hit_right_01.png",
+              "sha256": "ed18f15c13ae014004b6030a5fe46f68bb125f542810df44f54bb01b74d845ef",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                75,
+                34,
+                309,
+                360
+              ],
+              "source_cell_px": [
+                256,
+                1024,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                36,
+                11,
+                205,
+                246
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.387234,
+              "index": 1
+            },
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/hit_right/AS63_hit_right_02.png",
+              "sha256": "8faa2ae55070039fc87e65c75f79c2b14b417391c0883685498a14a0e51565b5",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                109,
+                34,
+                275,
+                360
+              ],
+              "source_cell_px": [
+                512,
+                1024,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                72,
+                11,
+                191,
+                244
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.399142,
+              "index": 2
+            },
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/hit_right/AS63_hit_right_03.png",
+              "sha256": "aab952984c8bd72b52df3cc8b772b19d0c07b150c9027e1e1104a3306f393ad5",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                103,
+                34,
+                281,
+                360
+              ],
+              "source_cell_px": [
+                768,
+                1024,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                77,
+                7,
+                208,
+                247
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.358333,
+              "index": 3
+            }
+          ],
+          "unique_frame_hashes": 4,
+          "unique_pose_check": "PASS",
+          "source_cell_edge_touch_count": 0
+        },
+        "downed": {
+          "frames": [
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/downed_right/AS63_downed_right_00.png",
+              "sha256": "73d636d50c53abc55ad102d10a989050638f8f07f6357c13fa146b39a362521f",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                65,
+                34,
+                319,
+                360
+              ],
+              "source_cell_px": [
+                0,
+                1280,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                40,
+                20,
+                208,
+                236
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.509259,
+              "index": 0
+            },
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/downed_right/AS63_downed_right_01.png",
+              "sha256": "6e8f054f9f6bd5b7b9cb18c0864a9b91a4e4a5035054c52f9a33021cd7d8ed94",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                10,
+                34,
+                373,
+                360
+              ],
+              "source_cell_px": [
+                256,
+                1280,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                22,
+                51,
+                208,
+                218
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.952096,
+              "index": 1
+            },
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/downed_right/AS63_downed_right_02.png",
+              "sha256": "b03223d0f76e6ec275a4d81e8f61a43d75a740f3eec78ab229e7a27ef18db5e9",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                8,
+                115,
+                376,
+                360
+              ],
+              "source_cell_px": [
+                512,
+                1280,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                16,
+                84,
+                216,
+                217
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.84,
+              "index": 2
+            },
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/downed_right/AS63_downed_right_03.png",
+              "sha256": "044e66097b0327bb9fc2a014f9b0a5c4f11afa3b97c31b3b11a1ef6f7ee63a3f",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                8,
+                187,
+                376,
+                360
+              ],
+              "source_cell_px": [
+                768,
+                1280,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                18,
+                112,
+                239,
+                216
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.665158,
+              "index": 3
+            }
+          ],
+          "unique_frame_hashes": 4,
+          "unique_pose_check": "PASS",
+          "source_cell_edge_touch_count": 0
+        }
+      },
+      "atlas": {
+        "path": "assets/p3/baked_candidates/aschar63_candidate/atlases/ASCHAR_AS63_RIGHT_ACTIONS_4x6.png",
+        "sha256": "37a3a82479158b4a849ac0cf3595686b26ae77874dd3a39de7d49c9f54397cae",
+        "size": [
+          1536,
+          2304
+        ]
+      }
+    },
+    "back": {
+      "source_sheet": "assets/p3/baked_candidates/aschar63_candidate/source_recreated/20261119/AS63_BACK_ACTIONS_4x6.png",
+      "source_sheet_sha256": "ee9e4c8a6e8a1ff0223de00213d925f6121fae9f7e1a36c25bcc949ef3c37c43",
+      "sheet_px": [
+        1024,
+        1536
+      ],
+      "source_tool": "built-in image_gen",
+      "source_status": "RECREATED_CANDIDATE",
+      "postprocessing": "RGBA alpha normalized: alpha<96 set to 0.",
+      "clips": {
+        "idle": {
+          "frames": [
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/idle_back/AS63_idle_back_00.png",
+              "sha256": "fbf17752a7a055b7d1be11cad00ced7417a3a1df9b7c7ed70cc6efe38b580d7f",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                104,
+                34,
+                279,
+                360
+              ],
+              "source_cell_px": [
+                0,
+                0,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                73,
+                9,
+                201,
+                247
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.369748,
+              "index": 0
+            },
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/idle_back/AS63_idle_back_01.png",
+              "sha256": "33ee128ada128330f326b70331ecd1dcbd188444130fb0d08c7cd121a8dc7da0",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                102,
+                34,
+                281,
+                360
+              ],
+              "source_cell_px": [
+                256,
+                0,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                66,
+                9,
+                196,
+                246
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.375527,
+              "index": 1
+            },
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/idle_back/AS63_idle_back_02.png",
+              "sha256": "494778926adacb5f953a1fcaed847112d973be8ecea3771f07f68bae85ee3932",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                99,
+                34,
+                285,
+                360
+              ],
+              "source_cell_px": [
+                512,
+                0,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                66,
+                9,
+                201,
+                246
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.375527,
+              "index": 2
+            },
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/idle_back/AS63_idle_back_03.png",
+              "sha256": "d4ed2990d08f6ae94db5c562d727bd7ab302e7446a29d6764d8a0f7003eb3d9c",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                107,
+                34,
+                276,
+                360
+              ],
+              "source_cell_px": [
+                768,
+                0,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                63,
+                10,
+                185,
+                246
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.381356,
+              "index": 3
+            }
+          ],
+          "unique_frame_hashes": 4,
+          "unique_pose_check": "PASS",
+          "source_cell_edge_touch_count": 0
+        },
+        "walk": {
+          "frames": [
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/walk_back/AS63_walk_back_00.png",
+              "sha256": "a730b23fa0d31cea512b0cac8b92746d88ebef6b22a2d023fd08fd68b264aa44",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                107,
+                34,
+                277,
+                360
+              ],
+              "source_cell_px": [
+                0,
+                256,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                76,
+                7,
+                200,
+                245
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.369748,
+              "index": 0
+            },
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/walk_back/AS63_walk_back_01.png",
+              "sha256": "e16ca3795ef30f6e054ebbc3dba415457eb71aa846f5c94d20dc741aef2112cb",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                105,
+                34,
+                278,
+                360
+              ],
+              "source_cell_px": [
+                256,
+                256,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                67,
+                5,
+                195,
+                246
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.352697,
+              "index": 1
+            },
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/walk_back/AS63_walk_back_02.png",
+              "sha256": "52ebd7b9fc05ec11cf40e20187c70aa168134e044fb8aa7dc5dbd59a13f4bc8c",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                112,
+                34,
+                271,
+                360
+              ],
+              "source_cell_px": [
+                512,
+                256,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                70,
+                6,
+                187,
+                246
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.358333,
+              "index": 2
+            },
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/walk_back/AS63_walk_back_03.png",
+              "sha256": "a70f4174bd9660ca946ce9fad9625473efea8e2aa4944ed5cd62c68534d150f9",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                108,
+                34,
+                276,
+                360
+              ],
+              "source_cell_px": [
+                768,
+                256,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                63,
+                7,
+                187,
+                247
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.358333,
+              "index": 3
+            }
+          ],
+          "unique_frame_hashes": 4,
+          "unique_pose_check": "PASS",
+          "source_cell_edge_touch_count": 0
+        },
+        "attack": {
+          "frames": [
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/attack_back/AS63_attack_back_00.png",
+              "sha256": "24606acd34c31e1bd1c138250767fac9d312f0c0028bbef8cb8d77ec3dc86eec",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                109,
+                34,
+                275,
+                360
+              ],
+              "source_cell_px": [
+                0,
+                512,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                78,
+                7,
+                198,
+                243
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.381356,
+              "index": 0
+            },
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/attack_back/AS63_attack_back_01.png",
+              "sha256": "e48351868b5ad136a42fccda4aeff41e48f4ca1f403e8be480a91ca8ec1cb689",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                93,
+                34,
+                291,
+                360
+              ],
+              "source_cell_px": [
+                256,
+                512,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                59,
+                6,
+                203,
+                243
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.375527,
+              "index": 1
+            },
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/attack_back/AS63_attack_back_02.png",
+              "sha256": "6b4bf305892493942872c5577bac290e948051afe85e7e17626be71910c8d62d",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                68,
+                34,
+                316,
+                360
+              ],
+              "source_cell_px": [
+                512,
+                512,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                43,
+                6,
+                225,
+                245
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.364017,
+              "index": 2
+            },
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/attack_back/AS63_attack_back_03.png",
+              "sha256": "a822713f07b8b8ffd79691584227d8c680aa0ea2f319dd2ecb8d551b50d8855c",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                107,
+                34,
+                276,
+                360
+              ],
+              "source_cell_px": [
+                768,
+                512,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                61,
+                6,
+                185,
+                245
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.364017,
+              "index": 3
+            }
+          ],
+          "unique_frame_hashes": 4,
+          "unique_pose_check": "PASS",
+          "source_cell_edge_touch_count": 0
+        },
+        "cast": {
+          "frames": [
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/cast_back/AS63_cast_back_00.png",
+              "sha256": "5fc5d9b17841ab2deb57edb08e16a940622d23d73138057db66e76575da3591a",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                111,
+                34,
+                272,
+                360
+              ],
+              "source_cell_px": [
+                0,
+                768,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                80,
+                4,
+                198,
+                243
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.364017,
+              "index": 0
+            },
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/cast_back/AS63_cast_back_01.png",
+              "sha256": "e00cafbce5843a86651c368263c615959c2aa2342510a51d495e1fa16c571d5c",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                111,
+                34,
+                272,
+                360
+              ],
+              "source_cell_px": [
+                256,
+                768,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                77,
+                4,
+                195,
+                243
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.364017,
+              "index": 1
+            },
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/cast_back/AS63_cast_back_02.png",
+              "sha256": "916e155a72f8ebd3c177284d8f8d3eef425d7b80e2399bd830d584f8201cf814",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                89,
+                34,
+                295,
+                360
+              ],
+              "source_cell_px": [
+                512,
+                768,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                76,
+                5,
+                226,
+                242
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.375527,
+              "index": 2
+            },
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/cast_back/AS63_cast_back_03.png",
+              "sha256": "2add9ff71912f7addf23d5d84283383e2ef5bee6b90056c12b62dca6eefcdabc",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                121,
+                34,
+                263,
+                360
+              ],
+              "source_cell_px": [
+                768,
+                768,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                77,
+                5,
+                181,
+                243
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.369748,
+              "index": 3
+            }
+          ],
+          "unique_frame_hashes": 4,
+          "unique_pose_check": "PASS",
+          "source_cell_edge_touch_count": 0
+        },
+        "hit": {
+          "frames": [
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/hit_back/AS63_hit_back_00.png",
+              "sha256": "92f0bc90aa0ac77f9fc14f14be3f58171864a52d0b5cfd561ff39e03cb6b3845",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                96,
+                34,
+                288,
+                360
+              ],
+              "source_cell_px": [
+                0,
+                1024,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                74,
+                12,
+                208,
+                240
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.429825,
+              "index": 0
+            },
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/hit_back/AS63_hit_back_01.png",
+              "sha256": "8df95d823329fdf006e63238b80211834e793e7c52ce0ca9cb7f1d093b835231",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                79,
+                34,
+                305,
+                360
+              ],
+              "source_cell_px": [
+                256,
+                1024,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                51,
+                11,
+                211,
+                242
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.411255,
+              "index": 1
+            },
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/hit_back/AS63_hit_back_02.png",
+              "sha256": "9912a8b516250ee06531e2786a6817df261d602443eb3a7eedd232e6d9112cdb",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                100,
+                34,
+                283,
+                360
+              ],
+              "source_cell_px": [
+                512,
+                1024,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                70,
+                10,
+                201,
+                244
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.393162,
+              "index": 2
+            },
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/hit_back/AS63_hit_back_03.png",
+              "sha256": "9b3087b60fa9ebcb929b2e52e5270d9464b9762a6abdc35ad10e43636d835fad",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                109,
+                34,
+                275,
+                360
+              ],
+              "source_cell_px": [
+                768,
+                1024,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                66,
+                7,
+                187,
+                244
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.375527,
+              "index": 3
+            }
+          ],
+          "unique_frame_hashes": 4,
+          "unique_pose_check": "PASS",
+          "source_cell_edge_touch_count": 0
+        },
+        "downed": {
+          "frames": [
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/downed_back/AS63_downed_back_00.png",
+              "sha256": "958bc2d9a95125e59b7f5443e5a62b6338850f96094451d3935b9558878bc0a8",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                60,
+                34,
+                324,
+                360
+              ],
+              "source_cell_px": [
+                0,
+                1280,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                43,
+                20,
+                214,
+                231
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.545024,
+              "index": 0
+            },
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/downed_back/AS63_downed_back_01.png",
+              "sha256": "673377765fab65cc925b6e7a5d27b3cbf023256178554d9031b27570ce9f4874",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                16,
+                34,
+                367,
+                360
+              ],
+              "source_cell_px": [
+                256,
+                1280,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                37,
+                60,
+                217,
+                227
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.952096,
+              "index": 1
+            },
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/downed_back/AS63_downed_back_02.png",
+              "sha256": "cf747e21cf88d246fb8d0c0503e441740ee485c69c00c9bad5e2f0861979f435",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                8,
+                131,
+                376,
+                360
+              ],
+              "source_cell_px": [
+                512,
+                1280,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                13,
+                88,
+                232,
+                224
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.680365,
+              "index": 2
+            },
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/downed_back/AS63_downed_back_03.png",
+              "sha256": "2bfa7984bd41cc5d2f3c80a5b4a58c44558d5332251256d7f9c52ca3bdc5b113",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                8,
+                179,
+                376,
+                360
+              ],
+              "source_cell_px": [
+                768,
+                1280,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                7,
+                114,
+                233,
+                225
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.628319,
+              "index": 3
+            }
+          ],
+          "unique_frame_hashes": 4,
+          "unique_pose_check": "PASS",
+          "source_cell_edge_touch_count": 0
+        }
+      },
+      "atlas": {
+        "path": "assets/p3/baked_candidates/aschar63_candidate/atlases/ASCHAR_AS63_BACK_ACTIONS_4x6.png",
+        "sha256": "ee61fcdd4a34dff9a858484bbeb7a53463a6ac6da9ff8cb8db74bfd9fe6e445b",
+        "size": [
+          1536,
+          2304
+        ]
+      }
+    },
+    "left": {
+      "source_sheet": "assets/p3/baked_candidates/aschar63_candidate/source_recreated/20261119/AS63_LEFT_ACTIONS_4x6.png",
+      "source_sheet_sha256": "5c51b0b8e6821cd834f801aeac320a5dd1900ede0dc73028187a2c4e0545b4ec",
+      "sheet_px": [
+        1024,
+        1536
+      ],
+      "source_tool": "built-in image_gen",
+      "source_status": "RECREATED_CANDIDATE",
+      "postprocessing": "Selected connected per-cell background-removal sheet; original background source retained separately. RGBA alpha normalized: alpha<96 set to 0. Original sheet retained at AS63_LEFT_ACTIONS_4x6_SOURCE_BG.png.",
+      "clips": {
+        "idle": {
+          "frames": [
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/idle_left/AS63_idle_left_00.png",
+              "sha256": "b40379c4e8805eb00745ae5e5f697ea1518bc7d2dd9d4611408169b04461c6f8",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                101,
+                34,
+                282,
+                360
+              ],
+              "source_cell_px": [
+                0,
+                0,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                75,
+                20,
+                199,
+                243
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.461883,
+              "index": 0
+            },
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/idle_left/AS63_idle_left_01.png",
+              "sha256": "985c7275664ca5ca210f4d3a2bade4cdf6ec113282bebe8132b18e5cac6b818a",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                106,
+                34,
+                278,
+                360
+              ],
+              "source_cell_px": [
+                256,
+                0,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                78,
+                21,
+                195,
+                243
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.468468,
+              "index": 1
+            },
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/idle_left/AS63_idle_left_02.png",
+              "sha256": "a44b32a61c74727bae4cefe0fbb1ee599eb6ffc4371f6143f5dab7528a6dd82d",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                107,
+                34,
+                276,
+                360
+              ],
+              "source_cell_px": [
+                512,
+                0,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                79,
+                21,
+                194,
+                243
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.468468,
+              "index": 2
+            },
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/idle_left/AS63_idle_left_03.png",
+              "sha256": "56b77a71fdc426b73980805ce7a90f7648e919114e2ebf30b3fafb701109e6da",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                107,
+                34,
+                277,
+                360
+              ],
+              "source_cell_px": [
+                768,
+                0,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                78,
+                21,
+                194,
+                243
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.468468,
+              "index": 3
+            }
+          ],
+          "unique_frame_hashes": 4,
+          "unique_pose_check": "PASS",
+          "source_cell_edge_touch_count": 0
+        },
+        "walk": {
+          "frames": [
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/walk_left/AS63_walk_left_00.png",
+              "sha256": "493ebff17a639aaf67b0a3185c7af76babbdc27af204d340be94fd30ea296ce8",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                102,
+                34,
+                282,
+                360
+              ],
+              "source_cell_px": [
+                0,
+                256,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                71,
+                23,
+                191,
+                240
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.502304,
+              "index": 0
+            },
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/walk_left/AS63_walk_left_01.png",
+              "sha256": "37268c5e36197d3d9ff716e05b09e4254792b7a2a9138ac33cc4f494f1921913",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                99,
+                34,
+                284,
+                360
+              ],
+              "source_cell_px": [
+                256,
+                256,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                72,
+                23,
+                196,
+                241
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.495413,
+              "index": 1
+            },
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/walk_left/AS63_walk_left_02.png",
+              "sha256": "1cedc736f8783c5c76da0ad58786b3ddb99c8d474bfb1198d8dcb3fb4e191e1d",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                96,
+                34,
+                288,
+                360
+              ],
+              "source_cell_px": [
+                512,
+                256,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                71,
+                23,
+                199,
+                240
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.502304,
+              "index": 2
+            },
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/walk_left/AS63_walk_left_03.png",
+              "sha256": "5e54c44bdc15607f855984fc551bb88df328276d582cb0e1a1dfcdd37b40b64e",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                95,
+                34,
+                288,
+                360
+              ],
+              "source_cell_px": [
+                768,
+                256,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                72,
+                23,
+                200,
+                239
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.509259,
+              "index": 3
+            }
+          ],
+          "unique_frame_hashes": 4,
+          "unique_pose_check": "PASS",
+          "source_cell_edge_touch_count": 0
+        },
+        "attack": {
+          "frames": [
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/attack_left/AS63_attack_left_00.png",
+              "sha256": "82862fe5f7f17a8e119e301bdf4b7f50bbbf7efc1885f8f206353fb206871bfa",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                103,
+                34,
+                281,
+                360
+              ],
+              "source_cell_px": [
+                0,
+                512,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                73,
+                22,
+                192,
+                240
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.495413,
+              "index": 0
+            },
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/attack_left/AS63_attack_left_01.png",
+              "sha256": "b979768e51eb9be65c68742946b533e6f0361602b439858c24ede7c4dbea7d28",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                75,
+                34,
+                309,
+                360
+              ],
+              "source_cell_px": [
+                256,
+                512,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                57,
+                26,
+                210,
+                239
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.530516,
+              "index": 1
+            },
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/attack_left/AS63_attack_left_02.png",
+              "sha256": "17d018a91147383995f0e0b45756c60678c2b0a1aeb06ed5c9a272011f5a400c",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                52,
+                34,
+                331,
+                360
+              ],
+              "source_cell_px": [
+                512,
+                512,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                34,
+                25,
+                216,
+                238
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.530516,
+              "index": 2
+            },
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/attack_left/AS63_attack_left_03.png",
+              "sha256": "9f0a4a66d3d17211cb4adaa95f2c4e0b64b9331c1658f642598cd9426ddd157b",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                87,
+                34,
+                297,
+                360
+              ],
+              "source_cell_px": [
+                768,
+                512,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                66,
+                26,
+                203,
+                239
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.530516,
+              "index": 3
+            }
+          ],
+          "unique_frame_hashes": 4,
+          "unique_pose_check": "PASS",
+          "source_cell_edge_touch_count": 0
+        },
+        "cast": {
+          "frames": [
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/cast_left/AS63_cast_left_00.png",
+              "sha256": "acaf0d0c5b2a8afb35fabbfae8456f4ddb7a790a24124341cdcc2a5c34a24fdc",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                112,
+                34,
+                271,
+                360
+              ],
+              "source_cell_px": [
+                0,
+                768,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                74,
+                21,
+                181,
+                241
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.481818,
+              "index": 0
+            },
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/cast_left/AS63_cast_left_01.png",
+              "sha256": "12b7c61e9ade1d0dfb84ec188a36cb7410db6747bd69dd9634fa60d56a651746",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                114,
+                34,
+                270,
+                360
+              ],
+              "source_cell_px": [
+                256,
+                768,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                75,
+                22,
+                180,
+                242
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.481818,
+              "index": 1
+            },
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/cast_left/AS63_cast_left_02.png",
+              "sha256": "1c71060cc266097dc47561e395aea3d4d45bf318d97882eb9f6ed65d47211489",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                99,
+                34,
+                284,
+                360
+              ],
+              "source_cell_px": [
+                512,
+                768,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                61,
+                24,
+                184,
+                241
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.502304,
+              "index": 2
+            },
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/cast_left/AS63_cast_left_03.png",
+              "sha256": "e86e7fbf2cc895d1c02f0de29d4141ce42cc4bef77ccca7da067d3ad68f84435",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                92,
+                34,
+                291,
+                360
+              ],
+              "source_cell_px": [
+                768,
+                768,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                49,
+                24,
+                182,
+                242
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.495413,
+              "index": 3
+            }
+          ],
+          "unique_frame_hashes": 4,
+          "unique_pose_check": "PASS",
+          "source_cell_edge_touch_count": 0
+        },
+        "hit": {
+          "frames": [
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/hit_left/AS63_hit_left_00.png",
+              "sha256": "bb0766bcf84e1eef6f6bdeca3398fd61f386497cd4468e1aa731dea53ecb18d8",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                105,
+                34,
+                278,
+                360
+              ],
+              "source_cell_px": [
+                0,
+                1024,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                74,
+                23,
+                189,
+                240
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.502304,
+              "index": 0
+            },
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/hit_left/AS63_hit_left_01.png",
+              "sha256": "5b1c95f481754ee7c3a9c996493cd0cbd4ca87875d38f572802d6e5b04c8e8cf",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                85,
+                34,
+                298,
+                360
+              ],
+              "source_cell_px": [
+                256,
+                1024,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                59,
+                24,
+                201,
+                241
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.502304,
+              "index": 1
+            },
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/hit_left/AS63_hit_left_02.png",
+              "sha256": "1f0650dcb8de0e73a3f9f7cf47ee751c2d1660f0891bf56b73b7874756db39d7",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                94,
+                34,
+                290,
+                360
+              ],
+              "source_cell_px": [
+                512,
+                1024,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                62,
+                24,
+                190,
+                237
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.530516,
+              "index": 2
+            },
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/hit_left/AS63_hit_left_03.png",
+              "sha256": "1bd5bd3f3cd7371e05a1c9dc6084ce7342e73dbff1508ceae4ac716eece057eb",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                102,
+                34,
+                282,
+                360
+              ],
+              "source_cell_px": [
+                768,
+                1024,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                67,
+                25,
+                186,
+                240
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.516279,
+              "index": 3
+            }
+          ],
+          "unique_frame_hashes": 4,
+          "unique_pose_check": "PASS",
+          "source_cell_edge_touch_count": 0
+        },
+        "downed": {
+          "frames": [
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/downed_left/AS63_downed_left_00.png",
+              "sha256": "4215cb34e0be9bb18c839ddaf2e7b9fca4e9cb103d88eab448bb75891bfa69bc",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                51,
+                34,
+                333,
+                360
+              ],
+              "source_cell_px": [
+                0,
+                1280,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                55,
+                38,
+                204,
+                210
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 1.895349,
+              "index": 0
+            },
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/downed_left/AS63_downed_left_01.png",
+              "sha256": "1bd10ec63fc355e842a089078b2a3e274f7eaef6d1d3c3ec14fbe8d62d43cbef",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                8,
+                74,
+                376,
+                360
+              ],
+              "source_cell_px": [
+                256,
+                1280,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                44,
+                63,
+                211,
+                193
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 2.203593,
+              "index": 1
+            },
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/downed_left/AS63_downed_left_02.png",
+              "sha256": "40f9c572de6422f244f4f3e4706167534c64066105121ae7903f9c90dacd7f90",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                8,
+                149,
+                376,
+                360
+              ],
+              "source_cell_px": [
+                512,
+                1280,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                32,
+                88,
+                213,
+                192
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 2.033149,
+              "index": 2
+            },
+            {
+              "path": "assets/p3/baked_candidates/aschar63_candidate/frames/downed_left/AS63_downed_left_03.png",
+              "sha256": "4f4ac75dd67ae56a8386f9bfa41aabbc47e351c7c7a0a8e77ce430033da97410",
+              "canvas_px": [
+                384,
+                384
+              ],
+              "pivot_px": [
+                192,
+                360
+              ],
+              "alpha_bbox_threshold_16": [
+                8,
+                183,
+                376,
+                360
+              ],
+              "source_cell_px": [
+                768,
+                1280,
+                256,
+                256
+              ],
+              "source_crop_px": [
+                35,
+                98,
+                214,
+                184
+              ],
+              "source_bbox_touches_cell_edge": false,
+              "scale": 2.055866,
+              "index": 3
+            }
+          ],
+          "unique_frame_hashes": 4,
+          "unique_pose_check": "PASS",
+          "source_cell_edge_touch_count": 0
+        }
+      },
+      "atlas": {
+        "path": "assets/p3/baked_candidates/aschar63_candidate/atlases/ASCHAR_AS63_LEFT_ACTIONS_4x6.png",
+        "sha256": "a2e597baa461d17adf4f10a839636c8eb41a2496cfe56738622cf56c9a187b72",
+        "size": [
+          1536,
+          2304
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,531 @@
+{
+  "schema": "tmb.aschar49.front_clips.candidate.v2",
+  "identity": "AS-CHAR-49 female sword cultivator",
+  "status": "CANDIDATE",
+  "source_route": "Built-in image generation using AS49 master as identity reference; body remains monolithic RGBA per frame. No Source A claims.",
+  "master_sha256": "f7a3c10db4bda54c9d0dab05e34554020debd3bb2a05706e1faa1636267fa596",
+  "initial_pose_sheet_sha256": "baa189f40a88636449de0d487722b98424faa3aed94be8a5da2a5d512ffa6e27",
+  "new_attack_sheet_sha256": "89ec6c16249db30670aa5ebdb9adaca9ee4d407d621e15bbeb8d0d011dbe02ab",
+  "new_attack_sheet_dimensions_px": [
+    1774,
+    887
+  ],
+  "canvas_px": [
+    384,
+    384
+  ],
+  "foot_baseline_y_px": 360,
+  "weapon_family": "jian",
+  "weapon_asset_reused": "AS48 existing V9.3 jian candidate; not a new weapon design",
+  "clips": {
+    "idle_front": {
+      "fps": 5,
+      "loop": true,
+      "source": "AS49 initial master-derived pose sheet"
+    },
+    "walk_front": {
+      "fps": 8,
+      "loop": true,
+      "source": "existing V9 consistency-v2 frames copied unchanged"
+    },
+    "attack_front": {
+      "fps": 7,
+      "loop": false,
+      "source": "new 2x2 gripped attack sheet derived from AS49 master"
+    },
+    "cast_front": {
+      "fps": 8,
+      "loop": false,
+      "source": "AS49 initial master-derived pose sheet"
+    },
+    "hit_front": {
+      "fps": 10,
+      "loop": false,
+      "source": "AS49 initial master-derived pose sheet"
+    },
+    "downed_front": {
+      "fps": 6,
+      "loop": false,
+      "source": "AS49 initial master-derived pose sheet"
+    }
+  },
+  "frames": [
+    {
+      "clip": "idle_front",
+      "frame": 0,
+      "path": "frames/idle_front/AS49_idle_front_00.png",
+      "sha256": "54ed52c0ff3e765625274977cb9dcf8c85d1ad78fea55de1a8b34d22f01cf3d1",
+      "canvas_px": [
+        384,
+        384
+      ],
+      "alpha_bbox": [
+        74,
+        22,
+        309,
+        360
+      ],
+      "foot_baseline_y_px": 360,
+      "source_route": "RECREATED"
+    },
+    {
+      "clip": "idle_front",
+      "frame": 1,
+      "path": "frames/idle_front/AS49_idle_front_01.png",
+      "sha256": "f6c104c258bf4e0e63887328cd8b6d5dcb0256c786e3dfa1b0d9e1a755c384d7",
+      "canvas_px": [
+        384,
+        384
+      ],
+      "alpha_bbox": [
+        73,
+        24,
+        310,
+        360
+      ],
+      "foot_baseline_y_px": 360,
+      "source_route": "RECREATED"
+    },
+    {
+      "clip": "idle_front",
+      "frame": 2,
+      "path": "frames/idle_front/AS49_idle_front_02.png",
+      "sha256": "c5fe9b3e105115115c82a5fc7314b1d72686f3554c588ebe7de51dc33cc53fdd",
+      "canvas_px": [
+        384,
+        384
+      ],
+      "alpha_bbox": [
+        64,
+        22,
+        321,
+        360
+      ],
+      "foot_baseline_y_px": 360,
+      "source_route": "RECREATED"
+    },
+    {
+      "clip": "idle_front",
+      "frame": 3,
+      "path": "frames/idle_front/AS49_idle_front_03.png",
+      "sha256": "c8813c0a258960889539ef064d35683c6e5e8a4d641207c3aacb03c9420a7b78",
+      "canvas_px": [
+        384,
+        384
+      ],
+      "alpha_bbox": [
+        76,
+        24,
+        308,
+        360
+      ],
+      "foot_baseline_y_px": 360,
+      "source_route": "RECREATED"
+    },
+    {
+      "clip": "walk_front",
+      "frame": 0,
+      "path": "frames/walk_front/AS49_walk_front_00.png",
+      "sha256": "edd6506fa41b279f84202bcd14b2336c12f177714cc9dea355ba88c50d050e03",
+      "canvas_px": [
+        384,
+        384
+      ],
+      "alpha_bbox": [
+        78,
+        27,
+        285,
+        360
+      ],
+      "foot_baseline_y_px": 360,
+      "source_route": "REUSED_NORMALIZED",
+      "source_path": "godot/labs/character_family/aschar_v9_batch1/assets/frames/AS49/walk_front_consistency_v2/walk_front_00.png",
+      "source_sha256": "17611af161e40725b9d2e8b4a91fc5c5ec5afb73357703461d8b47be04039303"
+    },
+    {
+      "clip": "walk_front",
+      "frame": 1,
+      "path": "frames/walk_front/AS49_walk_front_01.png",
+      "sha256": "c8853592ef879ca336fc05b3e4ca068e197dd698374d9f8d276feb0622110b9f",
+      "canvas_px": [
+        384,
+        384
+      ],
+      "alpha_bbox": [
+        76,
+        21,
+        292,
+        360
+      ],
+      "foot_baseline_y_px": 360,
+      "source_route": "REUSED_NORMALIZED",
+      "source_path": "godot/labs/character_family/aschar_v9_batch1/assets/frames/AS49/walk_front_consistency_v2/walk_front_01.png",
+      "source_sha256": "54ac7744df289e92c7a9d90a97a5e2cd5035ac5017475704398485f24bae8464"
+    },
+    {
+      "clip": "walk_front",
+      "frame": 2,
+      "path": "frames/walk_front/AS49_walk_front_02.png",
+      "sha256": "4a06c94e8c3679aac4f78cceb44fc7db08c28de2076a47d9a42cdff504fb88e6",
+      "canvas_px": [
+        384,
+        384
+      ],
+      "alpha_bbox": [
+        66,
+        10,
+        300,
+        359
+      ],
+      "foot_baseline_y_px": 360,
+      "source_route": "REUSED_NORMALIZED",
+      "source_path": "godot/labs/character_family/aschar_v9_batch1/assets/frames/AS49/walk_front_consistency_v2/walk_front_02.png",
+      "source_sha256": "95727b88cc1745b71c6a48660309f954d074915689d6e58a09c6c61dbe2fe25e"
+    },
+    {
+      "clip": "walk_front",
+      "frame": 3,
+      "path": "frames/walk_front/AS49_walk_front_03.png",
+      "sha256": "d19b3e94f4d5bf72614b78ab17afc1dc1b220fa3463a026da41d8e56bfb8bbaf",
+      "canvas_px": [
+        384,
+        384
+      ],
+      "alpha_bbox": [
+        64,
+        10,
+        317,
+        360
+      ],
+      "foot_baseline_y_px": 360,
+      "source_route": "REUSED_NORMALIZED",
+      "source_path": "godot/labs/character_family/aschar_v9_batch1/assets/frames/AS49/walk_front_consistency_v2/walk_front_03.png",
+      "source_sha256": "a50e2ceadb75ebc12258aafe5227cad1bb424d210ece15ea87fb8bdb108ad534"
+    },
+    {
+      "clip": "attack_front",
+      "frame": 0,
+      "path": "frames/attack_front/AS49_attack_front_00.png",
+      "sha256": "3e6197b4ef3ad39107aae2e79099cf84951a96184855da96bb0fefa1bdcccd6e",
+      "canvas_px": [
+        384,
+        384
+      ],
+      "alpha_bbox": [
+        78,
+        30,
+        305,
+        360
+      ],
+      "foot_baseline_y_px": 360,
+      "source_route": "RECREATED"
+    },
+    {
+      "clip": "attack_front",
+      "frame": 1,
+      "path": "frames/attack_front/AS49_attack_front_01.png",
+      "sha256": "91c8bbf5a0e773d49cfc7d66a6374c2ac2a3aa3e4143c03ae8da1da21ba4f606",
+      "canvas_px": [
+        384,
+        384
+      ],
+      "alpha_bbox": [
+        62,
+        30,
+        322,
+        360
+      ],
+      "foot_baseline_y_px": 360,
+      "source_route": "RECREATED"
+    },
+    {
+      "clip": "attack_front",
+      "frame": 2,
+      "path": "frames/attack_front/AS49_attack_front_02.png",
+      "sha256": "ee50505c6105988c5355ab60bfc16dab1331b6cb40082ef104efcb82288c46c5",
+      "canvas_px": [
+        384,
+        384
+      ],
+      "alpha_bbox": [
+        42,
+        41,
+        342,
+        360
+      ],
+      "foot_baseline_y_px": 360,
+      "source_route": "RECREATED"
+    },
+    {
+      "clip": "attack_front",
+      "frame": 3,
+      "path": "frames/attack_front/AS49_attack_front_03.png",
+      "sha256": "bf242f943b3ee3f83e6cc6723723438fd2a2488b3605a5cc898ca68e5d192825",
+      "canvas_px": [
+        384,
+        384
+      ],
+      "alpha_bbox": [
+        67,
+        30,
+        316,
+        360
+      ],
+      "foot_baseline_y_px": 360,
+      "source_route": "RECREATED"
+    },
+    {
+      "clip": "cast_front",
+      "frame": 0,
+      "path": "frames/cast_front/AS49_cast_front_00.png",
+      "sha256": "03489451292418a83f3013624c6902129b961d193e72b2318eea43671f008392",
+      "canvas_px": [
+        384,
+        384
+      ],
+      "alpha_bbox": [
+        74,
+        23,
+        310,
+        360
+      ],
+      "foot_baseline_y_px": 360,
+      "source_route": "RECREATED"
+    },
+    {
+      "clip": "cast_front",
+      "frame": 1,
+      "path": "frames/cast_front/AS49_cast_front_01.png",
+      "sha256": "b8218ecf50c9347c2e96a1d853944393c6aa88f801fe97312477beb1f6d39a54",
+      "canvas_px": [
+        384,
+        384
+      ],
+      "alpha_bbox": [
+        65,
+        23,
+        318,
+        360
+      ],
+      "foot_baseline_y_px": 360,
+      "source_route": "RECREATED"
+    },
+    {
+      "clip": "cast_front",
+      "frame": 2,
+      "path": "frames/cast_front/AS49_cast_front_02.png",
+      "sha256": "4d87d1fa7525fd0c890e578b3d86a8f675f7c8499e727cb29ab560a40db463d8",
+      "canvas_px": [
+        384,
+        384
+      ],
+      "alpha_bbox": [
+        39,
+        24,
+        344,
+        360
+      ],
+      "foot_baseline_y_px": 360,
+      "source_route": "RECREATED"
+    },
+    {
+      "clip": "cast_front",
+      "frame": 3,
+      "path": "frames/cast_front/AS49_cast_front_03.png",
+      "sha256": "a5b144e72509ac881c248f022fcdf03ffa4983a2a5cbc91742d5940a99e102a9",
+      "canvas_px": [
+        384,
+        384
+      ],
+      "alpha_bbox": [
+        75,
+        23,
+        308,
+        360
+      ],
+      "foot_baseline_y_px": 360,
+      "source_route": "RECREATED"
+    },
+    {
+      "clip": "hit_front",
+      "frame": 0,
+      "path": "frames/hit_front/AS49_hit_front_00.png",
+      "sha256": "f63aec0afc31fff4aa9db3fdbd79417b72ab58bd5d99d3c4aa5c83d626207142",
+      "canvas_px": [
+        384,
+        384
+      ],
+      "alpha_bbox": [
+        72,
+        26,
+        313,
+        360
+      ],
+      "foot_baseline_y_px": 360,
+      "source_route": "RECREATED"
+    },
+    {
+      "clip": "hit_front",
+      "frame": 1,
+      "path": "frames/hit_front/AS49_hit_front_01.png",
+      "sha256": "7051e88c447286ccf75eafaf15773f73cb2447f0db2dcf06367c6dbb43f50368",
+      "canvas_px": [
+        384,
+        384
+      ],
+      "alpha_bbox": [
+        57,
+        24,
+        327,
+        360
+      ],
+      "foot_baseline_y_px": 360,
+      "source_route": "RECREATED"
+    },
+    {
+      "clip": "hit_front",
+      "frame": 2,
+      "path": "frames/hit_front/AS49_hit_front_02.png",
+      "sha256": "786eb2e6203efb3ddd58b85df6ce69c1359117eab68ad596af4a39d3275d6d2e",
+      "canvas_px": [
+        384,
+        384
+      ],
+      "alpha_bbox": [
+        66,
+        23,
+        317,
+        360
+      ],
+      "foot_baseline_y_px": 360,
+      "source_route": "RECREATED"
+    },
+    {
+      "clip": "hit_front",
+      "frame": 3,
+      "path": "frames/hit_front/AS49_hit_front_03.png",
+      "sha256": "39a78745bf6556fca7a74216d4106a17263231e2a2a4bdc51471a9ff1826e833",
+      "canvas_px": [
+        384,
+        384
+      ],
+      "alpha_bbox": [
+        76,
+        23,
+        309,
+        360
+      ],
+      "foot_baseline_y_px": 360,
+      "source_route": "RECREATED"
+    },
+    {
+      "clip": "downed_front",
+      "frame": 0,
+      "path": "frames/downed_front/AS49_downed_front_00.png",
+      "sha256": "7efc3e7700da6e51be8a1df590333d19b3d782c0b25d497e8f93bcf3a0e410eb",
+      "canvas_px": [
+        384,
+        384
+      ],
+      "alpha_bbox": [
+        69,
+        25,
+        314,
+        360
+      ],
+      "foot_baseline_y_px": 360,
+      "source_route": "RECREATED"
+    },
+    {
+      "clip": "downed_front",
+      "frame": 1,
+      "path": "frames/downed_front/AS49_downed_front_01.png",
+      "sha256": "0090a45eb9f803d6ef44ea30a02663524065393f9e0ee7ba484c2213eb6e9c2e",
+      "canvas_px": [
+        384,
+        384
+      ],
+      "alpha_bbox": [
+        51,
+        62,
+        332,
+        360
+      ],
+      "foot_baseline_y_px": 360,
+      "source_route": "RECREATED"
+    },
+    {
+      "clip": "downed_front",
+      "frame": 2,
+      "path": "frames/downed_front/AS49_downed_front_02.png",
+      "sha256": "fc9a723584d39c5e7ddb548c256be117a897bfcb162a8b29cfb3a26276edc580",
+      "canvas_px": [
+        384,
+        384
+      ],
+      "alpha_bbox": [
+        47,
+        97,
+        337,
+        360
+      ],
+      "foot_baseline_y_px": 360,
+      "source_route": "RECREATED"
+    },
+    {
+      "clip": "downed_front",
+      "frame": 3,
+      "path": "frames/downed_front/AS49_downed_front_03.png",
+      "sha256": "23fb45817c9620b52be24fc5f3749941481d02a4ae9b50198f2eeae269432f1d",
+      "canvas_px": [
+        384,
+        384
+      ],
+      "alpha_bbox": [
+        18,
+        195,
+        366,
+        360
+      ],
+      "foot_baseline_y_px": 360,
+      "source_route": "RECREATED"
+    }
+  ],
+  "spriteframes_file": "AS49_V9_FRONT_CLIPS_CANDIDATE.tres",
+  "spriteframes_sha256": "e75f775accacca0323ee92bd99231c270887022ec786725077890ff9a7314149",
+  "candidate_scene_file": "AS49_BakedVisualCandidate.tscn",
+  "candidate_scene_sha256": "07ec03a2fbd9562d1acf3711aa4cc4f01ad8638469c468512226ed52d5ca7760",
+  "atlas_file": "AS49_front_clips_atlas.png",
+  "socket_metadata_file": "AS49_front_weapon_sockets_v9_3.json",
+  "socket_metadata_sha256": "c4e433d06bbdc06b644fcd9f62576bf21cae789365a9c3e679fd5239ec37a9ec",
+  "evidence_video_sha256": "55296a7fff00ee1857afbfabbd3b418e95177cf582474b469ca03b503bf9fbdd",
+  "qa_project": "TMB_ASCHAR_V8_20261117_R1/godot/aschar_v9_batch1 (isolated existing review project; not a native PR checkout)",
+  "atlas_workspace_path": "02_Assets/Character_Animation/ASCHAR_V9_3_AS49_FRONT_NEWCLIPS_20261118/AS49_front_clips_atlas.png",
+  "atlas_sha256": "654d2c1afdf3c0a763c40534297a33cd78eb42c45d99c9d6c7528b94bc1d26b0",
+  "atlas_publication": "LOCAL_E_HANDOFF_ONLY; SpriteFrames use individual RGBA frame PNGs",
+  "video_workspace_path": "03_QA_Logs/ASCHAR_V9_3_AS49_WALK_BASELINE_FIX_20261118/final/AS49_FrontClips_WalkPivotFix_Godot472_1280x720_60fps.avi",
+  "evidence_video": "03_QA_Logs/ASCHAR_V9_3_AS49_WALK_BASELINE_FIX_20261118/final/AS49_FrontClips_WalkPivotFix_Godot472_1280x720_60fps.avi",
+  "source_sheet_workspace_path": "02_Assets/Character_Animation/ASCHAR_V9_3_AS49_FRONT_NEWCLIPS_20261118/AS49_front_16pose_sheet_candidate.png",
+  "owner_art_approval": "PENDING",
+  "qa_status": "PASS: Godot 4.7.2 official import exit 0; final AS49 playback exit 0, 439 frames @ 60 fps; Walk pivot normalized, screenshot confirms foot baseline; isolated review project only; art pending owner approval and production-map binding not tested.",
+  "preserved_clips": {
+    "walk_front": {
+      "source_path": "godot/labs/character_family/aschar_v9_batch1/assets/frames/AS49/walk_front_consistency_v2/",
+      "status": "source poses reused; candidate copies normalized from 400x440 to 384x384 at foot baseline y=360; originals unchanged"
+    }
+  },
+  "walk_registration_fix": {
+    "source_canvas_px": [
+      400,
+      440
+    ],
+    "candidate_canvas_px": [
+      384,
+      384
+    ],
+    "candidate_foot_baseline_y_px": 360,
+    "source_poses": "Reused from existing V9 consistency-v2 frames; only candidate copies were resampled and re-registered",
+    "original_files_changed": false,
+    "resample_scale": 0.8737864077669902
+  }
+}

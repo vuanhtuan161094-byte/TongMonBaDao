@@ -1,0 +1,44 @@
+{
+  "actor_id": "AS57",
+  "school": "Cung Tu",
+  "gender": "female",
+  "status": "CANDIDATE / OWNER ART REVIEW PENDING",
+  "tool": "built-in image_gen",
+  "identity_master": {
+    "path": "assets/p3/baked_candidates/aschar57_candidate/source_recreated/20261119/AS57_BOW_FEMALE_MASTER_CANDIDATE.png",
+    "sha256": "92ef042bd6b6b2a3295f874ac05dbda0c0ba64b8a7fc056b5314ebf128f031ab",
+    "prompt_summary": "Master candidate nữ Cung Tu, mắt tím xám, tóc lam đậm tết lệch, pháp bào bạc trăng xanh mực, tạo bằng built-in image_gen, nền alpha, cung chỉ hiện ở concept master; không tuyên bố owner-approved."
+  },
+  "animation_sheet_rules": "4 columns x 6 rows; each row is Idle, Walk, Attack, Cast, Hit, Downed; four visibly distinct adjacent full-body pose cels; direction genuinely redrawn, no flip; no held weapons or VFX; transparent background; fixed master identity.",
+  "sheet_sources": {
+    "front": {
+      "path": "assets/p3/baked_candidates/aschar57_candidate/source_recreated/20261119/AS57_FRONT_ACTIONS_4x6.png",
+      "sha256": "6b5d49f0e38688da61bc6ae2839e6caa05c648c04029a3b88268056accf796b8",
+      "direction": "front",
+      "prompt_summary": "Use the exact identity master; create 24 full-body body-only cels in a 4x6 grid, facing front; preserve unique asymmetric design and continuity, no mirror, no rig, no held weapons or VFX.",
+      "postprocessing": "Selected crop-safe variant and/or alpha cleanup are recorded in the clip manifest."
+    },
+    "right": {
+      "path": "assets/p3/baked_candidates/aschar57_candidate/source_recreated/20261119/AS57_RIGHT_ACTIONS_4x6.png",
+      "sha256": "8309d86a2c159619824a993b96cb5200b222be6fc99a313c2951a14fea516e7c",
+      "direction": "right",
+      "prompt_summary": "Use the exact identity master; create 24 full-body body-only cels in a 4x6 grid, facing right; preserve unique asymmetric design and continuity, no mirror, no rig, no held weapons or VFX.",
+      "postprocessing": "Selected crop-safe variant and/or alpha cleanup are recorded in the clip manifest."
+    },
+    "back": {
+      "path": "assets/p3/baked_candidates/aschar57_candidate/source_recreated/20261119/AS57_BACK_ACTIONS_4x6.png",
+      "sha256": "c462363fe0e687d2cff787cdfcf3b767d6d25f88eeb749fbeea4b104b9f41a4a",
+      "direction": "back",
+      "prompt_summary": "Use the exact identity master; create 24 full-body body-only cels in a 4x6 grid, facing back; preserve unique asymmetric design and continuity, no mirror, no rig, no held weapons or VFX.",
+      "postprocessing": "Selected crop-safe variant and/or alpha cleanup are recorded in the clip manifest."
+    },
+    "left": {
+      "path": "assets/p3/baked_candidates/aschar57_candidate/source_recreated/20261119/AS57_LEFT_ACTIONS_4x6.png",
+      "sha256": "1df29e431338301cc9698bc1cc768fb6abb5aa8276e848f4c66d9fd90246ace8",
+      "direction": "left",
+      "prompt_summary": "Use the exact identity master; create 24 full-body body-only cels in a 4x6 grid, facing left; preserve unique asymmetric design and continuity, no mirror, no rig, no held weapons or VFX.",
+      "postprocessing": "Selected crop-safe variant and/or alpha cleanup are recorded in the clip manifest."
+    }
+  },
+  "limitation": "The candidate AI sheets were not corrected by neighboring-frame inpainting/onion-skin. No owner approval is implied. Weapon overlay/grip metadata is separate and remains pending."
+}

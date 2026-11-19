@@ -1,0 +1,629 @@
+{
+  "actor_id": "AS51",
+  "school": "Dao Tu",
+  "gender": "female",
+  "identity_master": {
+    "path": "godot/assets/p3/baked_candidates/aschar51_candidate/AS51_MASTER_REGISTERED_384.png",
+    "sha256": "e81cc7c4947ee66a1612b0969c92b7aa64505eaab0d2d2a0bbf2fa2a15aeb290",
+    "preserved": true
+  },
+  "status": "CANDIDATE",
+  "new_clips": [
+    "walk_front",
+    "cast_front",
+    "hit_front",
+    "downed_front"
+  ],
+  "frame_px": [
+    384,
+    384
+  ],
+  "pivot_px": [
+    192,
+    360
+  ],
+  "body_mode": "one monolithic full-body RGBA per cel",
+  "directions": [
+    "Front"
+  ],
+  "no_mirror": true,
+  "weapon_overlay_status": "New clips are non-attack body cels; existing attack_front remains body-only and its weapon overlay remains pending; no VFX.",
+  "provenance": {
+    "tool": "built-in image_gen",
+    "status": "RECREATED",
+    "prompts_file": "godot/assets/p3/baked_candidates/aschar51_candidate/source_recreated/20261118/SOURCE_PROMPTS.json",
+    "method": "Frozen-master referenced pose sheets; extracted four different cels per action, alpha-cropped and registered to fixed canvas. No rig/Bones/IK/mirroring/interpolation/displacement. Action sheets were generated as key-pose sheets rather than neighboring-frame inpainting; continuity remains CANDIDATE.",
+    "source_sheets": {
+      "AS51_GRID": {
+        "path": "godot/assets/p3/baked_candidates/aschar51_candidate/source_recreated/20261118/AS51_FRONT_ACTIONS_4x4.png",
+        "sha256": "8e3f7dd6c6b8a5d9336c2dd5b346f36f2c3991b1a2dd44d5f8d2ddb16e6bce72"
+      },
+      "AS51_WALK": {
+        "path": "godot/assets/p3/baked_candidates/aschar51_candidate/source_recreated/20261118/AS51_WALK_FRONT_2x2.png",
+        "sha256": "a4b53d0cc15aa9db42520b56f73caf71ad045c53ab1d62ba2c94f8d4b0efcbb8"
+      },
+      "AS51_DOWNED": {
+        "path": "godot/assets/p3/baked_candidates/aschar51_candidate/source_recreated/20261118/AS51_DOWNED_FRONT_2x2.png",
+        "sha256": "1ba10615e36f85e98e80479689b4961c26848584f52a4f450e17c50fe31b8728"
+      }
+    }
+  },
+  "atlas": {
+    "path": "godot/assets/p3/baked_candidates/aschar51_candidate/atlases/ASCHAR_AS51_FRONT_ACTIONS_RECREATED_4x4.png",
+    "sha256": "e5d964c60bcbba7dc27cb224c77f59b1d8e3439975b5cfd0df8f4d2905161a97",
+    "dimensions_px": [
+      1536,
+      1536
+    ],
+    "cell_px": [
+      384,
+      384
+    ],
+    "rows": [
+      "walk",
+      "cast",
+      "hit",
+      "downed"
+    ],
+    "columns": [
+      "00",
+      "01",
+      "02",
+      "03"
+    ]
+  },
+  "actions": {
+    "walk": {
+      "fps": 8,
+      "loop": true,
+      "frames": [
+        {
+          "sha256": "2ceed949935b540295674f4b797627a0b984dfdc233c504a4cf2ed4761694a45",
+          "canvas_px": [
+            384,
+            384
+          ],
+          "pivot_px": [
+            192,
+            360
+          ],
+          "alpha_bbox_threshold_16": [
+            93,
+            30,
+            291,
+            360
+          ],
+          "source_crop_px": [
+            145,
+            19,
+            469,
+            560
+          ],
+          "scale": 0.609982,
+          "index": 0,
+          "path": "godot/assets/p3/baked_candidates/aschar51_candidate/frames/walk_front/AS51_walk_front_00.png",
+          "source_sheet": "godot/assets/p3/baked_candidates/aschar51_candidate/source_recreated/20261118/AS51_WALK_FRONT_2x2.png",
+          "source_cell_px": [
+            0,
+            0,
+            636,
+            618
+          ]
+        },
+        {
+          "sha256": "e55908217ca0ce7dd2832313ae32bc74d418f30ecb2e2b471a5a9b410b8db7fb",
+          "canvas_px": [
+            384,
+            384
+          ],
+          "pivot_px": [
+            192,
+            360
+          ],
+          "alpha_bbox_threshold_16": [
+            91,
+            36,
+            293,
+            360
+          ],
+          "source_crop_px": [
+            109,
+            19,
+            440,
+            550
+          ],
+          "scale": 0.609982,
+          "index": 1,
+          "path": "godot/assets/p3/baked_candidates/aschar51_candidate/frames/walk_front/AS51_walk_front_01.png",
+          "source_sheet": "godot/assets/p3/baked_candidates/aschar51_candidate/source_recreated/20261118/AS51_WALK_FRONT_2x2.png",
+          "source_cell_px": [
+            636,
+            0,
+            1271,
+            618
+          ]
+        },
+        {
+          "sha256": "e6afb7ca1b10fcf80c9ec91c6083b8551d31f5e17273d80d12feaf2a51d5bdf2",
+          "canvas_px": [
+            384,
+            384
+          ],
+          "pivot_px": [
+            192,
+            360
+          ],
+          "alpha_bbox_threshold_16": [
+            89,
+            24,
+            295,
+            360
+          ],
+          "source_crop_px": [
+            135,
+            17,
+            473,
+            568
+          ],
+          "scale": 0.609982,
+          "index": 2,
+          "path": "godot/assets/p3/baked_candidates/aschar51_candidate/frames/walk_front/AS51_walk_front_02.png",
+          "source_sheet": "godot/assets/p3/baked_candidates/aschar51_candidate/source_recreated/20261118/AS51_WALK_FRONT_2x2.png",
+          "source_cell_px": [
+            0,
+            618,
+            636,
+            1237
+          ]
+        },
+        {
+          "sha256": "4c7953d8a25f5f2e5146dfab9572c3ab6bc0f56b5aebedb4931909aa2fed9550",
+          "canvas_px": [
+            384,
+            384
+          ],
+          "pivot_px": [
+            192,
+            360
+          ],
+          "alpha_bbox_threshold_16": [
+            94,
+            30,
+            290,
+            360
+          ],
+          "source_crop_px": [
+            119,
+            20,
+            440,
+            561
+          ],
+          "scale": 0.609982,
+          "index": 3,
+          "path": "godot/assets/p3/baked_candidates/aschar51_candidate/frames/walk_front/AS51_walk_front_03.png",
+          "source_sheet": "godot/assets/p3/baked_candidates/aschar51_candidate/source_recreated/20261118/AS51_WALK_FRONT_2x2.png",
+          "source_cell_px": [
+            636,
+            618,
+            1271,
+            1237
+          ]
+        }
+      ]
+    },
+    "cast": {
+      "fps": 8,
+      "loop": false,
+      "frames": [
+        {
+          "sha256": "8c67b04c685c6f9be7b4416113c3314a08a8a40ea70e091b166d445374c72159",
+          "canvas_px": [
+            384,
+            384
+          ],
+          "pivot_px": [
+            192,
+            360
+          ],
+          "alpha_bbox_threshold_16": [
+            86,
+            30,
+            298,
+            360
+          ],
+          "source_crop_px": [
+            65,
+            6,
+            258,
+            307
+          ],
+          "scale": 1.096346,
+          "index": 0,
+          "path": "godot/assets/p3/baked_candidates/aschar51_candidate/frames/cast_front/AS51_cast_front_00.png",
+          "source_sheet": "godot/assets/p3/baked_candidates/aschar51_candidate/source_recreated/20261118/AS51_FRONT_ACTIONS_4x4.png",
+          "source_cell_px": [
+            0,
+            316,
+            311,
+            632
+          ]
+        },
+        {
+          "sha256": "bc04a20d94edb09216c38aaec7a322a95a69b273efad1c3c0b227de90f5bb01e",
+          "canvas_px": [
+            384,
+            384
+          ],
+          "pivot_px": [
+            192,
+            360
+          ],
+          "alpha_bbox_threshold_16": [
+            96,
+            30,
+            288,
+            360
+          ],
+          "source_crop_px": [
+            61,
+            6,
+            236,
+            307
+          ],
+          "scale": 1.096346,
+          "index": 1,
+          "path": "godot/assets/p3/baked_candidates/aschar51_candidate/frames/cast_front/AS51_cast_front_01.png",
+          "source_sheet": "godot/assets/p3/baked_candidates/aschar51_candidate/source_recreated/20261118/AS51_FRONT_ACTIONS_4x4.png",
+          "source_cell_px": [
+            311,
+            316,
+            622,
+            632
+          ]
+        },
+        {
+          "sha256": "27afe64fa67cc7aa7bc44bd21bcf33a6e355cd09280b5cc33798ed9e0c28a29e",
+          "canvas_px": [
+            384,
+            384
+          ],
+          "pivot_px": [
+            192,
+            360
+          ],
+          "alpha_bbox_threshold_16": [
+            60,
+            31,
+            325,
+            360
+          ],
+          "source_crop_px": [
+            39,
+            7,
+            281,
+            307
+          ],
+          "scale": 1.096346,
+          "index": 2,
+          "path": "godot/assets/p3/baked_candidates/aschar51_candidate/frames/cast_front/AS51_cast_front_02.png",
+          "source_sheet": "godot/assets/p3/baked_candidates/aschar51_candidate/source_recreated/20261118/AS51_FRONT_ACTIONS_4x4.png",
+          "source_cell_px": [
+            622,
+            316,
+            934,
+            632
+          ]
+        },
+        {
+          "sha256": "8a1cdfd3b721f18be49a286367e325c2fc4cf995ca85245ac2bcb8f3aa51be30",
+          "canvas_px": [
+            384,
+            384
+          ],
+          "pivot_px": [
+            192,
+            360
+          ],
+          "alpha_bbox_threshold_16": [
+            90,
+            30,
+            294,
+            360
+          ],
+          "source_crop_px": [
+            39,
+            6,
+            225,
+            307
+          ],
+          "scale": 1.096346,
+          "index": 3,
+          "path": "godot/assets/p3/baked_candidates/aschar51_candidate/frames/cast_front/AS51_cast_front_03.png",
+          "source_sheet": "godot/assets/p3/baked_candidates/aschar51_candidate/source_recreated/20261118/AS51_FRONT_ACTIONS_4x4.png",
+          "source_cell_px": [
+            934,
+            316,
+            1245,
+            632
+          ]
+        }
+      ]
+    },
+    "hit": {
+      "fps": 8,
+      "loop": false,
+      "frames": [
+        {
+          "sha256": "eb8bb2ba854fce9c8b60f575f98bcbdeb2d244ec8ee78a1ed81dc4ae093a1e80",
+          "canvas_px": [
+            384,
+            384
+          ],
+          "pivot_px": [
+            192,
+            360
+          ],
+          "alpha_bbox_threshold_16": [
+            79,
+            29,
+            305,
+            360
+          ],
+          "source_crop_px": [
+            66,
+            4,
+            272,
+            306
+          ],
+          "scale": 1.096346,
+          "index": 0,
+          "path": "godot/assets/p3/baked_candidates/aschar51_candidate/frames/hit_front/AS51_hit_front_00.png",
+          "source_sheet": "godot/assets/p3/baked_candidates/aschar51_candidate/source_recreated/20261118/AS51_FRONT_ACTIONS_4x4.png",
+          "source_cell_px": [
+            0,
+            632,
+            311,
+            947
+          ]
+        },
+        {
+          "sha256": "2141d7743145bb428499ee53662f57d0d05848653b1ceb9b488da39f4279adea",
+          "canvas_px": [
+            384,
+            384
+          ],
+          "pivot_px": [
+            192,
+            360
+          ],
+          "alpha_bbox_threshold_16": [
+            65,
+            33,
+            319,
+            360
+          ],
+          "source_crop_px": [
+            39,
+            8,
+            272,
+            306
+          ],
+          "scale": 1.096346,
+          "index": 1,
+          "path": "godot/assets/p3/baked_candidates/aschar51_candidate/frames/hit_front/AS51_hit_front_01.png",
+          "source_sheet": "godot/assets/p3/baked_candidates/aschar51_candidate/source_recreated/20261118/AS51_FRONT_ACTIONS_4x4.png",
+          "source_cell_px": [
+            311,
+            632,
+            622,
+            947
+          ]
+        },
+        {
+          "sha256": "c18ae13d3231e5c0ee5978a607de4dc817c2901a5fc849189ddb2837a0e4c082",
+          "canvas_px": [
+            384,
+            384
+          ],
+          "pivot_px": [
+            192,
+            360
+          ],
+          "alpha_bbox_threshold_16": [
+            66,
+            37,
+            317,
+            360
+          ],
+          "source_crop_px": [
+            30,
+            11,
+            259,
+            306
+          ],
+          "scale": 1.096346,
+          "index": 2,
+          "path": "godot/assets/p3/baked_candidates/aschar51_candidate/frames/hit_front/AS51_hit_front_02.png",
+          "source_sheet": "godot/assets/p3/baked_candidates/aschar51_candidate/source_recreated/20261118/AS51_FRONT_ACTIONS_4x4.png",
+          "source_cell_px": [
+            622,
+            632,
+            934,
+            947
+          ]
+        },
+        {
+          "sha256": "b99a609f9ead7a9ea66acaf104471aa208760730e6c536bd6fdad296c4b49d14",
+          "canvas_px": [
+            384,
+            384
+          ],
+          "pivot_px": [
+            192,
+            360
+          ],
+          "alpha_bbox_threshold_16": [
+            86,
+            29,
+            299,
+            360
+          ],
+          "source_crop_px": [
+            29,
+            3,
+            223,
+            306
+          ],
+          "scale": 1.096346,
+          "index": 3,
+          "path": "godot/assets/p3/baked_candidates/aschar51_candidate/frames/hit_front/AS51_hit_front_03.png",
+          "source_sheet": "godot/assets/p3/baked_candidates/aschar51_candidate/source_recreated/20261118/AS51_FRONT_ACTIONS_4x4.png",
+          "source_cell_px": [
+            934,
+            632,
+            1245,
+            947
+          ]
+        }
+      ]
+    },
+    "downed": {
+      "fps": 6,
+      "loop": false,
+      "frames": [
+        {
+          "sha256": "bef0f2350ad36bb173166bd5b928e1dcf5578f22d8061a20373b018f35bc90f6",
+          "canvas_px": [
+            384,
+            384
+          ],
+          "pivot_px": [
+            192,
+            360
+          ],
+          "alpha_bbox_threshold_16": [
+            61,
+            20,
+            323,
+            360
+          ],
+          "source_crop_px": [
+            112,
+            33,
+            561,
+            616
+          ],
+          "scale": 0.58319,
+          "index": 0,
+          "path": "godot/assets/p3/baked_candidates/aschar51_candidate/frames/downed_front/AS51_downed_front_00.png",
+          "source_sheet": "godot/assets/p3/baked_candidates/aschar51_candidate/source_recreated/20261118/AS51_DOWNED_FRONT_2x2.png",
+          "source_cell_px": [
+            0,
+            0,
+            630,
+            624
+          ]
+        },
+        {
+          "sha256": "25088252fda7ded3cd782ee7bcf397bac47f1d3e3f9ec5e6c0a4b49829653724",
+          "canvas_px": [
+            384,
+            384
+          ],
+          "pivot_px": [
+            192,
+            360
+          ],
+          "alpha_bbox_threshold_16": [
+            70,
+            77,
+            315,
+            360
+          ],
+          "source_crop_px": [
+            71,
+            131,
+            491,
+            616
+          ],
+          "scale": 0.58319,
+          "index": 1,
+          "path": "godot/assets/p3/baked_candidates/aschar51_candidate/frames/downed_front/AS51_downed_front_01.png",
+          "source_sheet": "godot/assets/p3/baked_candidates/aschar51_candidate/source_recreated/20261118/AS51_DOWNED_FRONT_2x2.png",
+          "source_cell_px": [
+            630,
+            0,
+            1261,
+            624
+          ]
+        },
+        {
+          "sha256": "a2c16000d67ffe55f4b00d857196e08293b3aceb3dfed7231c941d5def63abd6",
+          "canvas_px": [
+            384,
+            384
+          ],
+          "pivot_px": [
+            192,
+            360
+          ],
+          "alpha_bbox_threshold_16": [
+            23,
+            189,
+            361,
+            360
+          ],
+          "source_crop_px": [
+            24,
+            178,
+            604,
+            471
+          ],
+          "scale": 0.58319,
+          "index": 2,
+          "path": "godot/assets/p3/baked_candidates/aschar51_candidate/frames/downed_front/AS51_downed_front_02.png",
+          "source_sheet": "godot/assets/p3/baked_candidates/aschar51_candidate/source_recreated/20261118/AS51_DOWNED_FRONT_2x2.png",
+          "source_cell_px": [
+            0,
+            624,
+            630,
+            1247
+          ]
+        },
+        {
+          "sha256": "62b76e9817247f5230409db29941d3db418baa430153870d901176dca0f65c2e",
+          "canvas_px": [
+            384,
+            384
+          ],
+          "pivot_px": [
+            192,
+            360
+          ],
+          "alpha_bbox_threshold_16": [
+            18,
+            212,
+            367,
+            360
+          ],
+          "source_crop_px": [
+            4,
+            221,
+            602,
+            474
+          ],
+          "scale": 0.58319,
+          "index": 3,
+          "path": "godot/assets/p3/baked_candidates/aschar51_candidate/frames/downed_front/AS51_downed_front_03.png",
+          "source_sheet": "godot/assets/p3/baked_candidates/aschar51_candidate/source_recreated/20261118/AS51_DOWNED_FRONT_2x2.png",
+          "source_cell_px": [
+            630,
+            624,
+            1261,
+            1247
+          ]
+        }
+      ]
+    }
+  }
+}

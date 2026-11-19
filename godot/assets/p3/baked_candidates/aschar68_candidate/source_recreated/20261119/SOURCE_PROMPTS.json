@@ -1,0 +1,48 @@
+{
+  "actor_id": "AS68",
+  "school": "Trận Tu (Formation)",
+  "gender": "male",
+  "status": "CANDIDATE / OWNER ART REVIEW PENDING",
+  "tool": "built-in image_gen",
+  "identity_master": {
+    "path": "assets/p3/baked_candidates/aschar68_candidate/source_recreated/20261119/AS68_FORMATION_MALE_MASTER_CANDIDATE.png",
+    "sha256": "78f16c020e8026b7bb4f97b0e0ecad6f68b1a3a5fbad7d0fc582b0f45d6bc932",
+    "prompt_summary": "Distinct strategic identities in indigo/stone robes with bronze compass details; no readable symbols."
+  },
+  "animation_sheet_rules": "4 columns × 6 rows; rows Idle, Walk, Attack, Cast, Hit, Downed; four visibly distinct adjacent full-body body-only cels; exact identity master; genuinely redrawn directions; no rig, no mirroring, no baked VFX.",
+  "sheet_sources": {
+    "front": {
+      "path": "assets/p3/baked_candidates/aschar68_candidate/source_recreated/20261119/AS68_FRONT_ACTIONS_4x6.png",
+      "sha256": "c978f574f73b19d52d98ec6fa485cc14fa044227d98606367624912ffb2a6242",
+      "direction": "front",
+      "selected_variant": "CONNECTED_BACKGROUND_REMOVAL",
+      "original_source_path": "assets/p3/baked_candidates/aschar68_candidate/source_recreated/20261119/AS68_FRONT_ACTIONS_4x6_SOURCE_BG.png",
+      "prompt_summary": "Fixed AS68 master; 24 distinct body-only action cels facing front; no mirrored view, no VFX; owner review pending."
+    },
+    "right": {
+      "path": "assets/p3/baked_candidates/aschar68_candidate/source_recreated/20261119/AS68_RIGHT_ACTIONS_4x6.png",
+      "sha256": "3023990235cae98f9fbf31d808ca4b1ad141b5f660c14e15013132bd0c0dac40",
+      "direction": "right",
+      "selected_variant": "CONNECTED_BACKGROUND_REMOVAL",
+      "original_source_path": "assets/p3/baked_candidates/aschar68_candidate/source_recreated/20261119/AS68_RIGHT_ACTIONS_4x6_SOURCE_BG.png",
+      "prompt_summary": "Fixed AS68 master; 24 distinct body-only action cels facing right; no mirrored view, no VFX; owner review pending."
+    },
+    "back": {
+      "path": "assets/p3/baked_candidates/aschar68_candidate/source_recreated/20261119/AS68_BACK_ACTIONS_4x6.png",
+      "sha256": "95e4fe2041cdf8e20b7e291923af31d7fd00e98aef3b9b465a58cb9c98ae0ab9",
+      "direction": "back",
+      "selected_variant": "CONNECTED_BACKGROUND_REMOVAL",
+      "original_source_path": "assets/p3/baked_candidates/aschar68_candidate/source_recreated/20261119/AS68_BACK_ACTIONS_4x6_SOURCE_BG.png",
+      "prompt_summary": "Fixed AS68 master; 24 distinct body-only action cels facing back; no mirrored view, no VFX; owner review pending."
+    },
+    "left": {
+      "path": "assets/p3/baked_candidates/aschar68_candidate/source_recreated/20261119/AS68_LEFT_ACTIONS_4x6.png",
+      "sha256": "0f452f2257e48aa68a61376b31d609f91cb4c2eac542f6f4ae95079c69eb67ee",
+      "direction": "left",
+      "selected_variant": "CONNECTED_BACKGROUND_REMOVAL",
+      "original_source_path": "assets/p3/baked_candidates/aschar68_candidate/source_recreated/20261119/AS68_LEFT_ACTIONS_4x6_SOURCE_BG.png",
+      "prompt_summary": "Fixed AS68 master; 24 distinct body-only action cels facing left; no mirrored view, no VFX; owner review pending."
+    }
+  },
+  "limitation": "No manual neighboring-frame cleanup/onion-skin has been performed. These are art candidates only, not owner-approved or integrated into gameplay."
+}
