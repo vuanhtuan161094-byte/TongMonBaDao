@@ -1,0 +1,21 @@
+{
+  "schema": "tmb.vfx_web_review_catalog.v1",
+  "review_only": true,
+  "entries": [
+    {
+      "id": "tmb.skill.sword.ngu_kiem.active_01.human",
+      "name_vi": "Phi Kiếm Truy Ảnh",
+      "school_vi": "Kiếm Tu",
+      "branch_vi": "Ngự Kiếm",
+      "tier": "human",
+      "scene": "res://labs/visual_bridge_v1/as48_sword_anchor_lab.tscn",
+      "directions": [
+        "front"
+      ],
+      "vfx_status": "TECH_CUE_ONLY",
+      "g3_art": "SOURCE_PENDING",
+      "owner_art": "PENDING",
+      "source_paths": []
+    }
+  ]
+}

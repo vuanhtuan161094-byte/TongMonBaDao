@@ -9,6 +9,8 @@ on:
       - 'wiki/**'
       - 'tools/wiki/tests/**'
       - 'tools/vfx/stage_vfx_web_review.py'
+      - 'tools/vfx/check_web_visual.cjs'
+      - 'docs/operations/vfx_web_catalog_v1.json'
       - 'tools/qa/check_as48_sword_bridge_sources.py'
       - '.github/workflows/wiki-player-pages.yml'
   workflow_dispatch:
@@ -161,6 +163,40 @@ jobs:
             "$GITHUB_SHA" > "$GITHUB_WORKSPACE/_site/vfx/build-info.txt"
           du -h "$GITHUB_WORKSPACE"/_site/vfx/index.*
           echo "VFX_WEB_REVIEW_EXPORT_PASS exact_sha=$GITHUB_SHA"
+
+      - name: Browser visual smoke — actual AS48 + monster pixels, never just UI
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/vfx-web-browser-proof"
+          npm install --silent --no-fund --no-audit \
+            --prefix "$RUNNER_TEMP/vfx-browser-deps" \
+            playwright-core@1.56.1 pngjs@7.0.0
+          CHROME_EXECUTABLE="$(command -v google-chrome || command -v chromium || true)"
+          test -n "$CHROME_EXECUTABLE" || { echo "CHROMIUM_MISSING_FAIL_CLOSED"; exit 1; }
+          python3 -m http.server 8679 --bind 127.0.0.1 \
+            --directory "$GITHUB_WORKSPACE/_site" \
+            > "$RUNNER_TEMP/vfx-web-browser-proof/server.log" 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          sleep 2
+          NODE_PATH="$RUNNER_TEMP/vfx-browser-deps/node_modules" \
+            CHROME_EXECUTABLE="$CHROME_EXECUTABLE" \
+            VFX_REVIEW_URL="http://127.0.0.1:8679/vfx/" \
+            VFX_BROWSER_PROOF="$RUNNER_TEMP/vfx-web-browser-proof" \
+            node tools/vfx/check_web_visual.cjs
+          grep -Fq '"verdict": "BROWSER_CANVAS_PIXELS_PASS"' \
+            "$RUNNER_TEMP/vfx-web-browser-proof/result.json"
+          echo "VFX_WEB_PIXEL_VISUAL_GATE=PASS"
+
+      - name: Upload minimal VFX browser screenshot proof
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vfx-web-browser-${{ github.sha }}
+          retention-days: 7
+          if-no-files-found: ignore
+          path: ${{ runner.temp }}/vfx-web-browser-proof/
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5

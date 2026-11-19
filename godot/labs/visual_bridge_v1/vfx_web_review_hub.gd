@@ -1,9 +1,6 @@
 extends Node2D
-# VFX REVIEW HUB — WEB ONLY, same canonical Godot project sources, not another game.
-# Character and VFX art remain independent. A scenario is listed ONLY if genuine
-# available assets and visual event bindings exist. No combat authority or save.
-const AS48_SCENE := preload("res://labs/visual_bridge_v1/as48_sword_anchor_lab.tscn")
-
+const CATALOG := "res://labs/visual_bridge_v1/vfx_web_catalog_v1.json"
+var _entries: Array[Dictionary] = []
 var _lab: Node2D
 var _paused := false
 var _moving := true
@@ -11,44 +8,66 @@ var _fx := true
 var _bright := false
 var _zoomed := false
 var _speed := 1.0
-var _state: Label
+var _picker: OptionButton
+var _identity: Label
+var _provenance: Label
 var _pause_button: Button
 var _moving_button: Button
 var _fx_button: Button
 var _bg_button: Button
 var _zoom_button: Button
 
+func _read_catalog() -> void:
+    if not FileAccess.file_exists(CATALOG):
+        push_error("WEB_VFX_CATALOG_MISSING")
+        return
+    var data: Variant = JSON.parse_string(FileAccess.get_file_as_string(CATALOG))
+    if not (data is Dictionary) or str(data.get("schema", "")) != "tmb.vfx_web_review_catalog.v1":
+        push_error("WEB_VFX_CATALOG_INVALID")
+        return
+    var entries: Array = data.get("entries", [])
+    for row in entries:
+        if not (row is Dictionary):
+            continue
+        var entry: Dictionary = row
+        var scene_path := str(entry.get("scene", ""))
+        if not scene_path.begins_with("res://labs/") or not scene_path.ends_with(".tscn"):
+            continue
+        if str(entry.get("id", "")).is_empty() or not ResourceLoader.exists(scene_path):
+            continue
+        _entries.append(entry)
+
 func _ready() -> void:
     get_window().size = Vector2i(1280, 720)
-    _lab = AS48_SCENE.instantiate() as Node2D
-    if _lab == null:
-        push_error("VFX_WEB_REVIEW_REAL_LAB_MISSING")
+    _read_catalog()
+    if _entries.is_empty():
+        push_error("WEB_VFX_NO_VERIFIED_SOURCE_SCENES")
         return
-    add_child(_lab)
     var canvas := CanvasLayer.new()
     canvas.layer = 15
     add_child(canvas)
     var panel := PanelContainer.new()
     panel.name = "WebReviewControls"
-    panel.position = Vector2(1036, 114)
-    panel.custom_minimum_size = Vector2(226, 0)
-    panel.size = Vector2(226, 486)
+    panel.position = Vector2(1022, 111)
+    panel.size = Vector2(238, 498)
     canvas.add_child(panel)
     var vbox := VBoxContainer.new()
-    vbox.add_theme_constant_override("separation", 7)
+    vbox.add_theme_constant_override("separation", 5)
     panel.add_child(vbox)
-    var title := Label.new()
-    title.text = "VFX REVIEW / GODOT WEB"
-    title.add_theme_font_size_override("font_size", 16)
-    vbox.add_child(title)
-    var label := Label.new()
-    label.text = "Kiếm Tu · Ngự Kiếm\nPhi Kiếm Truy Ảnh · NHÂN"
-    label.add_theme_font_size_override("font_size", 14)
-    vbox.add_child(label)
-    var badge := Label.new()
-    badge.text = "AS48 · CANDIDATE · FRONT"
-    badge.add_theme_color_override("font_color", Color("f3c772"))
-    vbox.add_child(badge)
+    var header := Label.new()
+    header.text = "VFX REVIEW / GODOT WEB"
+    header.add_theme_font_size_override("font_size", 15)
+    vbox.add_child(header)
+    _picker = OptionButton.new()
+    _picker.custom_minimum_size = Vector2(216, 36)
+    for i in range(_entries.size()):
+        var e: Dictionary = _entries[i]
+        _picker.add_item(str(e.get("school_vi", "")) + " · " + str(e.get("name_vi", "")), i)
+    _picker.item_selected.connect(_change_skill)
+    vbox.add_child(_picker)
+    _identity = Label.new()
+    _identity.add_theme_font_size_override("font_size", 13)
+    vbox.add_child(_identity)
     _button(vbox, "Thử lại chiêu", _replay)
     _pause_button = _button(vbox, "Tạm dừng", _toggle_pause)
     _moving_button = _button(vbox, "Quái di chuyển: BẬT", _toggle_moving)
@@ -58,36 +77,80 @@ func _ready() -> void:
     var speed_label := Label.new()
     speed_label.text = "Tốc độ 0.25× — 2×"
     vbox.add_child(speed_label)
-    var speed_slider := HSlider.new()
-    speed_slider.min_value = 0.25
-    speed_slider.max_value = 2.0
-    speed_slider.step = 0.25
-    speed_slider.value = 1.0
-    speed_slider.custom_minimum_size = Vector2(190, 24)
-    speed_slider.value_changed.connect(_on_speed)
-    vbox.add_child(speed_slider)
-    var help := Label.new()
-    help.text = "Chỉ có hướng FRONT thật.\nCác hướng khác: chờ Asset."
-    help.add_theme_font_size_override("font_size", 12)
-    help.add_theme_color_override("font_color", Color("f3c772"))
-    vbox.add_child(help)
-    _state = Label.new()
-    _state.text = "VFX kỹ thuật tạm\nG3 Art-First: CHƯA ĐẠT\nKhông Combat, không PvE"
-    _state.add_theme_font_size_override("font_size", 12)
-    vbox.add_child(_state)
-    _apply()
+    var slider := HSlider.new()
+    slider.min_value = 0.25
+    slider.max_value = 2.0
+    slider.step = 0.25
+    slider.value = 1.0
+    slider.custom_minimum_size = Vector2(205, 23)
+    slider.value_changed.connect(_on_speed)
+    vbox.add_child(slider)
+    _provenance = Label.new()
+    _provenance.add_theme_font_size_override("font_size", 12)
+    _provenance.add_theme_color_override("font_color", Color("f2c978"))
+    vbox.add_child(_provenance)
+    _change_skill(0)
 
-func _button(parent: BoxContainer, title: String, action: Callable) -> Button:
-    var button := Button.new()
-    button.text = title
-    button.custom_minimum_size = Vector2(192, 34)
-    button.pressed.connect(action)
-    parent.add_child(button)
-    return button
+func _button(parent: BoxContainer, title: String, callback: Callable) -> Button:
+    var control := Button.new()
+    control.text = title
+    control.custom_minimum_size = Vector2(215, 32)
+    control.pressed.connect(callback)
+    parent.add_child(control)
+    return control
+
+func _change_skill(index: int) -> void:
+    if index < 0 or index >= _entries.size():
+        return
+    var info: Dictionary = _entries[index]
+    var scene := load(str(info["scene"])) as PackedScene
+    if scene == null:
+        push_error("WEB_VFX_SCENE_NOT_FOUND " + str(info["scene"]))
+        return
+    var candidate := scene.instantiate() as Node2D
+    if candidate == null:
+        push_error("WEB_VFX_SCENE_NOT_NODE2D")
+        return
+    var needed := ["review_replay", "review_set_paused", "review_set_moving",
+        "review_set_fx", "review_set_bright", "review_set_map_zoom", "review_set_speed"]
+    for method in needed:
+        if not candidate.has_method(str(method)):
+            push_error("WEB_VFX_SCENE_MISSING_REVIEW_CONTRACT " + str(method))
+            candidate.free()
+            return
+    if _lab != null:
+        remove_child(_lab)
+        _lab.queue_free()
+    _lab = candidate
+    _lab.name = "SelectedVfxLab"
+    add_child(_lab)
+    _identity.text = str(info.get("branch_vi", "")) + " · " + str(info.get("tier", "")).to_upper()
+    var directions: Array = info.get("directions", [])
+    var direction_text := ""
+    for i in range(directions.size()):
+        if i > 0:
+            direction_text += ", "
+        direction_text += str(directions[i])
+    _provenance.text = "Hướng thật: " + direction_text + "\n" + \
+        str(info.get("vfx_status", "")) + " | G3: " + str(info.get("g3_art", "")) + \
+        "\nOWNER: " + str(info.get("owner_art", "")) + "\nKhông combat · PVE HOLD"
+    _paused = false
+    _moving = true
+    _fx = true
+    _bright = false
+    _zoomed = false
+    _speed = 1.0
+    _pause_button.text = "Tạm dừng"
+    _moving_button.text = "Quái di chuyển: BẬT"
+    _fx_button.text = "Hiện VFX: BẬT"
+    _bg_button.text = "Nền: TỐI"
+    _zoom_button.text = "Actor: 1×"
+    _apply()
+    print("WEB_VFX_SCENE_LOADED id=", str(info.get("id", "")),
+        " status=", str(info.get("vfx_status", "")))
 
 func _apply() -> void:
-    if _lab == null:
-        return
+    if _lab == null: return
     _lab.call("review_set_paused", _paused)
     _lab.call("review_set_moving", _moving)
     _lab.call("review_set_fx", _fx)
@@ -96,6 +159,7 @@ func _apply() -> void:
     _lab.call("review_set_speed", _speed)
 
 func _replay() -> void:
+    if _lab == null: return
     _paused = false
     _lab.call("review_replay")
     _pause_button.text = "Tạm dừng"

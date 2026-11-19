@@ -99,8 +99,42 @@ def main():
     if dest.exists():
         shutil.rmtree(dest)
     dest.mkdir(parents=True)
+    catalog_path = root.parent / "docs/operations/vfx_web_catalog_v1.json"
+    if not catalog_path.is_file():
+        raise SystemExit("VFX_WEB_CATALOG_MISSING")
+    catalog = json.loads(catalog_path.read_text(encoding="utf-8"))
+    if catalog.get("schema") != "tmb.vfx_web_review_catalog.v1":
+        raise SystemExit("VFX_WEB_CATALOG_BAD_SCHEMA")
+    entries = catalog.get("entries")
+    if not isinstance(entries, list) or not entries:
+        raise SystemExit("VFX_WEB_CATALOG_NO_ACTUAL_SCENES")
+    files = set(SOURCE_FILES)
+    seen_ids = set()
+    for entry in entries:
+        if not isinstance(entry, dict):
+            raise SystemExit("VFX_WEB_CATALOG_INVALID_ENTRY")
+        skill_id = entry.get("id")
+        scene = entry.get("scene")
+        directions = entry.get("directions")
+        if not isinstance(skill_id, str) or not skill_id.startswith("tmb.skill.") or skill_id in seen_ids:
+            raise SystemExit("VFX_WEB_CATALOG_BAD_SKILL_ID")
+        seen_ids.add(skill_id)
+        if not isinstance(scene, str) or not scene.startswith("res://labs/") or not scene.endswith(".tscn"):
+            raise SystemExit("VFX_WEB_CATALOG_BAD_SCENE")
+        files.add(scene.removeprefix("res://"))
+        if not isinstance(directions, list) or not directions or not set(directions).issubset({"front","back","left","right"}):
+            raise SystemExit("VFX_WEB_CATALOG_UNVERIFIED_DIRECTION")
+        if entry.get("vfx_status") not in {"TECH_CUE_ONLY","CANDIDATE_G3","OWNER_APPROVED"}:
+            raise SystemExit("VFX_WEB_CATALOG_UNVERIFIED_ART_STATUS")
+        sources = entry.get("source_paths", [])
+        if not isinstance(sources, list):
+            raise SystemExit("VFX_WEB_CATALOG_BAD_SOURCES")
+        for relative in sources:
+            if not isinstance(relative, str) or relative.startswith("/") or ".." in Path(relative).parts or "\\" in relative:
+                raise SystemExit("VFX_WEB_CATALOG_UNSAFE_SOURCE_PATH")
+            files.add(relative)
     manifest = {}
-    for relative in SOURCE_FILES:
+    for relative in sorted(files):
         old, new = root / relative, dest / relative
         if not old.is_file():
             raise SystemExit(f"Missing required REAL source: {old}")
@@ -109,14 +143,17 @@ def main():
         if old.read_bytes() != new.read_bytes():
             raise SystemExit(f"Nonidentical staging copy: {relative}")
         manifest[relative] = {"sha256": digest(old), "bytes": old.stat().st_size}
+    catalog_target = dest / "labs/visual_bridge_v1/vfx_web_catalog_v1.json"
+    catalog_target.parent.mkdir(parents=True, exist_ok=True)
+    catalog_target.write_text(json.dumps(catalog, ensure_ascii=False, indent=2), encoding="utf-8")
     (dest / "project.godot").write_text(PROJECT, encoding="utf-8")
     (dest / "export_presets.cfg").write_text(EXPORT, encoding="utf-8")
     (dest / "source-manifest.json").write_text(json.dumps({
         "stage": "WEB_REVIEW_ONLY", "owner_art": "PENDING",
         "vfx_g3": "SOURCE_PENDING", "event_source": "LAB_ONLY_SYNTHETIC",
-        "source_count": len(SOURCE_FILES), "source_files": manifest,
+        "source_count": len(files), "scenarios": len(entries), "source_files": manifest,
     }, indent=2), encoding="utf-8")
-    print(f"VFX_WEB_STAGE_PASS source_files={len(SOURCE_FILES)} site=ONE_CANONICAL_SITE")
+    print(f"VFX_WEB_STAGE_PASS source_files={len(files)} scenarios={len(entries)} site=ONE_CANONICAL_SITE")
     print("VFX_WEB_HOLDS art=SOURCE_PENDING directions=FRONT_ONLY PvE=HOLD")
 
 if __name__ == "__main__":
