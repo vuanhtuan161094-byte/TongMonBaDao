@@ -9,6 +9,10 @@ on:
       - 'godot/src/simulation/combat/**'
       - 'godot/src/simulation/core/simulation_runtime_clock_v2.gd'
       - 'godot/src/presentation/p3/pve_sect_world_view_v1.gd'
+      - 'godot/src/presentation/p3/sect_isometric_world_v1.gd'
+      - 'godot/src/presentation/p3/pve_aschar_frame_renderer_v1.gd'
+      - 'godot/tests/presentation/aschar_pve_renderer_test.gd'
+      - 'godot/tests/presentation/aschar_game_school_selection_test.gd'
       - 'godot/src/presentation/p3_2_landscape_sect.gd'
       - 'godot/tests/presentation/pve_p0_ui_player_entry_test.gd'
       - 'godot/tests/presentation/pve_aux02_world_input_contract_test.gd'
@@ -81,6 +85,21 @@ jobs:
 
       - name: Import project with official Godot 4.7.2
         run: godot --headless --path godot --import
+
+      - name: ASCHAR PvE — parse current renderer and exact 24-candidate sources
+        shell: bash
+        run: |
+          set -euo pipefail
+          for script in \
+            res://src/presentation/p3/pve_aschar_frame_renderer_v1.gd \
+            res://src/presentation/p3/sect_isometric_world_v1.gd \
+            res://src/presentation/p3/pve_sect_world_view_v1.gd \
+            res://tests/presentation/aschar_pve_renderer_test.gd \
+            res://tests/presentation/aschar_game_school_selection_test.gd; do
+            godot --headless --path godot --check-only --script "$script"
+          done
+          godot --headless --path godot -s res://tests/presentation/aschar_pve_renderer_test.gd
+          godot --headless --path godot -s res://tests/presentation/aschar_game_school_selection_test.gd
 
       - name: Parse P0 production code and tests
         shell: bash
