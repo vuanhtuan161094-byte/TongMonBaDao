@@ -57,8 +57,12 @@ func _json(path: String) -> Dictionary:
 # by the outer Godot project. Decode original repository bytes directly, with
 # no new PNG/asset export, crop, copy, or changes to owner/character sources.
 func _raw_png_texture(path: String) -> Texture2D:
-    # Read packaged raw source bytes (works in native filesystem AND Web .pck).
-    # The CI Web preset includes explicit *.png without converting original art.
+    # Web PCK contains Godot-imported .ctex + .import remap, NOT original PNG.
+    # Native standalone candidate may not have import; fall back to raw bytes.
+    if ResourceLoader.exists(path):
+        var exported := ResourceLoader.load(path) as Texture2D
+        if exported != null:
+            return exported
     var source := FileAccess.open(path, FileAccess.READ)
     if source == null:
         push_error("AS48_RAW_PNG_OPEN_FAIL " + path)
@@ -73,6 +77,11 @@ func _raw_png_texture(path: String) -> Texture2D:
     return ImageTexture.create_from_image(source_image)
 
 func _raw_webp_texture(path: String) -> Texture2D:
+    # Same rule for monster WebP: export uses imported atlas texture.
+    if ResourceLoader.exists(path):
+        var exported := ResourceLoader.load(path) as Texture2D
+        if exported != null:
+            return exported
     var source := FileAccess.open(path, FileAccess.READ)
     if source == null:
         push_error("VFX_REVIEW_RAW_MONSTER_ATLAS_MISSING " + path)
