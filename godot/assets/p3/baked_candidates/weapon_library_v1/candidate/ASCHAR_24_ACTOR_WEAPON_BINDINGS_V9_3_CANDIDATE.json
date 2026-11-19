@@ -1,0 +1,884 @@
+{
+  "schema": "tmb.aschar.weapon_family_review.v1",
+  "status": "CANDIDATE",
+  "owner_art_approval": "PENDING",
+  "asset_vfx_separation": "BODY_AND_HELD_PROPS_SEPARATE; VFX NOT INCLUDED",
+  "weapon_library_path": "res://assets/p3/baked_candidates/weapon_library_v1/candidate",
+  "actor_families": [
+    {
+      "identity": "AS-CHAR-48",
+      "actor_id": 48,
+      "school": "Kiếm Tu",
+      "gender": "male",
+      "weapon_family": "jian",
+      "main_hand_side": "character_right",
+      "socket_manifest": "res://assets/p3/baked_candidates/aschar48/AS48_4dir_weapon_sockets_v9_3_candidate.json"
+    },
+    {
+      "identity": "AS-CHAR-49",
+      "actor_id": 49,
+      "school": "Kiếm Tu",
+      "gender": "female",
+      "weapon_family": "jian",
+      "main_hand_side": "character_right",
+      "socket_manifest": "res://assets/p3/baked_candidates/aschar49/AS49_4dir_weapon_sockets_v9_3_candidate.json"
+    },
+    {
+      "identity": "AS-CHAR-50",
+      "actor_id": 50,
+      "school": "Đao Tu",
+      "gender": "male",
+      "weapon_family": "dao",
+      "main_hand_side": "character_right",
+      "socket_manifest": "res://assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS50_weapon_sockets_v9_3_candidate.json"
+    },
+    {
+      "identity": "AS-CHAR-51",
+      "actor_id": 51,
+      "school": "Đao Tu",
+      "gender": "female",
+      "weapon_family": "dao",
+      "main_hand_side": "character_right",
+      "socket_manifest": "res://assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS51_weapon_sockets_v9_3_candidate.json"
+    },
+    {
+      "identity": "AS-CHAR-52",
+      "actor_id": 52,
+      "school": "Song Đao",
+      "gender": "male",
+      "weapon_family": "dual_dao",
+      "main_hand_side": "character_right",
+      "socket_manifest": "res://assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS52_weapon_sockets_v9_3_candidate.json"
+    },
+    {
+      "identity": "AS-CHAR-53",
+      "actor_id": 53,
+      "school": "Song Đao",
+      "gender": "female",
+      "weapon_family": "dual_dao",
+      "main_hand_side": "character_right",
+      "socket_manifest": "res://assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS53_weapon_sockets_v9_3_candidate.json"
+    },
+    {
+      "identity": "AS-CHAR-54",
+      "actor_id": 54,
+      "school": "Thương Tu",
+      "gender": "male",
+      "weapon_family": "spear",
+      "main_hand_side": "character_right",
+      "socket_manifest": "res://assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS54_weapon_sockets_v9_3_candidate.json"
+    },
+    {
+      "identity": "AS-CHAR-55",
+      "actor_id": 55,
+      "school": "Thương Tu",
+      "gender": "female",
+      "weapon_family": "spear",
+      "main_hand_side": "character_right",
+      "socket_manifest": "res://assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS55_weapon_sockets_v9_3_candidate.json"
+    },
+    {
+      "identity": "AS-CHAR-56",
+      "actor_id": 56,
+      "school": "Cung Tu",
+      "gender": "male",
+      "weapon_family": "bow",
+      "main_hand_side": "character_right",
+      "socket_manifest": "res://assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS56_weapon_sockets_v9_3_candidate.json"
+    },
+    {
+      "identity": "AS-CHAR-57",
+      "actor_id": 57,
+      "school": "Cung Tu",
+      "gender": "female",
+      "weapon_family": "bow",
+      "main_hand_side": "character_right",
+      "socket_manifest": "res://assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS57_weapon_sockets_v9_3_candidate.json"
+    },
+    {
+      "identity": "AS-CHAR-58",
+      "actor_id": 58,
+      "school": "Quyền Tu",
+      "gender": "male",
+      "weapon_family": "fist",
+      "main_hand_side": "character_right",
+      "socket_manifest": "res://assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS58_weapon_sockets_v9_3_candidate.json"
+    },
+    {
+      "identity": "AS-CHAR-59",
+      "actor_id": 59,
+      "school": "Quyền Tu",
+      "gender": "female",
+      "weapon_family": "fist",
+      "main_hand_side": "character_right",
+      "socket_manifest": "res://assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS59_weapon_sockets_v9_3_candidate.json"
+    },
+    {
+      "identity": "AS-CHAR-60",
+      "actor_id": 60,
+      "school": "Chưởng Tu",
+      "gender": "male",
+      "weapon_family": "palm",
+      "main_hand_side": "character_right",
+      "socket_manifest": "res://assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS60_weapon_sockets_v9_3_candidate.json"
+    },
+    {
+      "identity": "AS-CHAR-61",
+      "actor_id": 61,
+      "school": "Chưởng Tu",
+      "gender": "female",
+      "weapon_family": "palm",
+      "main_hand_side": "character_right",
+      "socket_manifest": "res://assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS61_weapon_sockets_v9_3_candidate.json"
+    },
+    {
+      "identity": "AS-CHAR-62",
+      "actor_id": 62,
+      "school": "Độc Tu",
+      "gender": "male",
+      "weapon_family": "poison",
+      "main_hand_side": "character_left",
+      "socket_manifest": "res://assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS62_weapon_sockets_v9_3_candidate.json"
+    },
+    {
+      "identity": "AS-CHAR-63",
+      "actor_id": 63,
+      "school": "Độc Tu",
+      "gender": "female",
+      "weapon_family": "poison",
+      "main_hand_side": "character_left",
+      "socket_manifest": "res://assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS63_weapon_sockets_v9_3_candidate.json"
+    },
+    {
+      "identity": "AS-CHAR-64",
+      "actor_id": 64,
+      "school": "Phù Tu",
+      "gender": "male",
+      "weapon_family": "talisman",
+      "main_hand_side": "character_right",
+      "socket_manifest": "res://assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS64_weapon_sockets_v9_3_candidate.json"
+    },
+    {
+      "identity": "AS-CHAR-65",
+      "actor_id": 65,
+      "school": "Phù Tu",
+      "gender": "female",
+      "weapon_family": "talisman",
+      "main_hand_side": "character_right",
+      "socket_manifest": "res://assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS65_weapon_sockets_v9_3_candidate.json"
+    },
+    {
+      "identity": "AS-CHAR-66",
+      "actor_id": 66,
+      "school": "Chú Tu",
+      "gender": "male",
+      "weapon_family": "curse",
+      "main_hand_side": "character_right",
+      "socket_manifest": "res://assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS66_weapon_sockets_v9_3_candidate.json"
+    },
+    {
+      "identity": "AS-CHAR-67",
+      "actor_id": 67,
+      "school": "Chú Tu",
+      "gender": "female",
+      "weapon_family": "curse",
+      "main_hand_side": "character_right",
+      "socket_manifest": "res://assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS67_weapon_sockets_v9_3_candidate.json"
+    },
+    {
+      "identity": "AS-CHAR-68",
+      "actor_id": 68,
+      "school": "Trận Tu",
+      "gender": "male",
+      "weapon_family": "formation",
+      "main_hand_side": "character_right",
+      "socket_manifest": "res://assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS68_weapon_sockets_v9_3_candidate.json"
+    },
+    {
+      "identity": "AS-CHAR-69",
+      "actor_id": 69,
+      "school": "Trận Tu",
+      "gender": "female",
+      "weapon_family": "formation",
+      "main_hand_side": "character_right",
+      "socket_manifest": "res://assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS69_weapon_sockets_v9_3_candidate.json"
+    },
+    {
+      "identity": "AS-CHAR-70",
+      "actor_id": 70,
+      "school": "Triệu Hồi",
+      "gender": "male",
+      "weapon_family": "summoning",
+      "main_hand_side": "character_left",
+      "socket_manifest": "res://assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS70_weapon_sockets_v9_3_candidate.json"
+    },
+    {
+      "identity": "AS-CHAR-71",
+      "actor_id": 71,
+      "school": "Triệu Hồi",
+      "gender": "female",
+      "weapon_family": "summoning",
+      "main_hand_side": "character_right",
+      "socket_manifest": "res://assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS71_weapon_sockets_v9_3_candidate.json"
+    }
+  ],
+  "family_attachments": {
+    "jian": [
+      {
+        "asset_id": "owner_liked_jian_existing",
+        "slot": "main_hand",
+        "kind": "held_weapon"
+      }
+    ],
+    "dao": [
+      {
+        "asset_id": "curved_dao",
+        "slot": "main_hand",
+        "kind": "held_weapon"
+      }
+    ],
+    "dual_dao": [
+      {
+        "asset_id": "dual_dao_left",
+        "slot": "main_hand",
+        "kind": "held_weapon"
+      },
+      {
+        "asset_id": "dual_dao_right",
+        "slot": "off_hand",
+        "kind": "held_weapon"
+      }
+    ],
+    "spear": [
+      {
+        "asset_id": "spear",
+        "slot": "main_hand",
+        "kind": "two_hand_weapon",
+        "support_grip_slot": "off_hand",
+        "support_contact": "shaft"
+      }
+    ],
+    "bow": [
+      {
+        "asset_id": "bow",
+        "slot": "main_hand",
+        "kind": "bow",
+        "support_grip_slot": "off_hand",
+        "support_contact": "bow_grip"
+      },
+      {
+        "asset_id": "arrow",
+        "slot": "off_hand",
+        "kind": "arrow"
+      }
+    ],
+    "fist": [
+      {
+        "asset_id": "fist_wraps_left",
+        "slot": "hand_l",
+        "kind": "worn_wrist_wrap",
+        "weapon": false
+      },
+      {
+        "asset_id": "fist_wraps_right",
+        "slot": "hand_r",
+        "kind": "worn_wrist_wrap",
+        "weapon": false
+      }
+    ],
+    "palm": [
+      {
+        "asset_id": "palm_bracer_left",
+        "slot": "hand_l",
+        "kind": "worn_wrist_guard",
+        "weapon": false
+      },
+      {
+        "asset_id": "palm_bracer_right",
+        "slot": "hand_r",
+        "kind": "worn_wrist_guard",
+        "weapon": false
+      }
+    ],
+    "poison": [
+      {
+        "asset_id": "poison_needles",
+        "slot": "main_hand",
+        "kind": "held_tool"
+      },
+      {
+        "asset_id": "poison_gourd",
+        "slot": "off_hand",
+        "kind": "held_tool"
+      }
+    ],
+    "talisman": [
+      {
+        "asset_id": "talisman_brush",
+        "slot": "main_hand",
+        "kind": "held_tool"
+      },
+      {
+        "asset_id": "talisman_paper",
+        "slot": "off_hand",
+        "kind": "held_tool"
+      }
+    ],
+    "curse": [
+      {
+        "asset_id": "curse_beads",
+        "slot": "main_hand",
+        "kind": "held_focus"
+      }
+    ],
+    "formation": [
+      {
+        "asset_id": "formation_compass",
+        "slot": "main_hand",
+        "kind": "held_focus"
+      },
+      {
+        "asset_id": "formation_pointer",
+        "slot": "off_hand",
+        "kind": "held_tool"
+      }
+    ],
+    "summoning": [
+      {
+        "asset_id": "summon_contract",
+        "slot": "main_hand",
+        "kind": "held_focus"
+      },
+      {
+        "asset_id": "summon_seal",
+        "slot": "off_hand",
+        "kind": "held_focus"
+      }
+    ]
+  },
+  "asset_library": {
+    "curved_dao": {
+      "asset_id": "curved_dao",
+      "path": "res://assets/p3/baked_candidates/weapon_library_v1/candidate/weapons/curved_dao.png",
+      "source_cell_crop": [
+        111,
+        13,
+        256,
+        309
+      ],
+      "dimensions_px": [
+        165,
+        316
+      ],
+      "grip_px": [
+        82,
+        300
+      ],
+      "tip_px": [
+        82,
+        14
+      ],
+      "sha256": "fa58188cdca1c3d84bee16e3d076796e20b838ad048d6cffe43c2292e53fe9f0",
+      "status": "RECREATED",
+      "owner_art_approval": "PENDING",
+      "source_route": "image_gen RGBA atlas, cropped to isolated cell"
+    },
+    "dual_dao_left": {
+      "asset_id": "dual_dao_left",
+      "path": "res://assets/p3/baked_candidates/weapon_library_v1/candidate/weapons/dual_dao_left.png",
+      "source_cell_crop": [
+        79,
+        34,
+        156,
+        302
+      ],
+      "dimensions_px": [
+        97,
+        288
+      ],
+      "grip_px": [
+        48,
+        272
+      ],
+      "tip_px": [
+        48,
+        14
+      ],
+      "sha256": "f7f2c09c6d535529664ca323db32f664aaf94e9d5ceee10cd34a460e367ee82f",
+      "status": "RECREATED",
+      "owner_art_approval": "PENDING",
+      "source_route": "image_gen RGBA atlas, cropped to isolated cell",
+      "pair_side": "left"
+    },
+    "dual_dao_right": {
+      "asset_id": "dual_dao_right",
+      "path": "res://assets/p3/baked_candidates/weapon_library_v1/candidate/weapons/dual_dao_right.png",
+      "source_cell_crop": [
+        0,
+        37,
+        87,
+        305
+      ],
+      "dimensions_px": [
+        107,
+        288
+      ],
+      "grip_px": [
+        53,
+        272
+      ],
+      "tip_px": [
+        53,
+        14
+      ],
+      "sha256": "b6bd428416f1f3d73d46e8a8373ff4815b3b01aca495ca12e9e662a41ab6cd68",
+      "status": "RECREATED",
+      "owner_art_approval": "PENDING",
+      "source_route": "image_gen RGBA atlas, cropped to isolated cell",
+      "pair_side": "right"
+    },
+    "spear": {
+      "asset_id": "spear",
+      "path": "res://assets/p3/baked_candidates/weapon_library_v1/candidate/weapons/spear.png",
+      "source_cell_crop": [
+        89,
+        9,
+        193,
+        314
+      ],
+      "dimensions_px": [
+        124,
+        325
+      ],
+      "grip_px": [
+        62,
+        309
+      ],
+      "tip_px": [
+        62,
+        14
+      ],
+      "sha256": "9de94cb11245c966d66c0a92998f02e00631f017278196e01b8d95ac57d61c52",
+      "status": "RECREATED",
+      "owner_art_approval": "PENDING",
+      "source_route": "image_gen RGBA atlas, cropped to isolated cell"
+    },
+    "bow": {
+      "asset_id": "bow",
+      "path": "res://assets/p3/baked_candidates/weapon_library_v1/candidate/weapons/bow.png",
+      "source_cell_crop": [
+        59,
+        14,
+        239,
+        307
+      ],
+      "dimensions_px": [
+        200,
+        313
+      ],
+      "grip_px": [
+        100,
+        163
+      ],
+      "tip_px": [
+        148,
+        38
+      ],
+      "sha256": "69f7f5f3f919547a691549902e1a4b3d240d75392713d91a001b608396444385",
+      "status": "RECREATED",
+      "owner_art_approval": "PENDING",
+      "source_route": "image_gen RGBA atlas, cropped to isolated cell"
+    },
+    "arrow": {
+      "asset_id": "arrow",
+      "path": "res://assets/p3/baked_candidates/weapon_library_v1/candidate/weapons/arrow.png",
+      "source_cell_crop": [
+        132,
+        15,
+        195,
+        306
+      ],
+      "dimensions_px": [
+        83,
+        311
+      ],
+      "grip_px": [
+        41,
+        297
+      ],
+      "tip_px": [
+        41,
+        14
+      ],
+      "sha256": "54523a236f8aa0c0987c98180d4aa06782eaa7e259f6d69bbddf0451430321a7",
+      "status": "RECREATED",
+      "owner_art_approval": "PENDING",
+      "source_route": "image_gen RGBA atlas, cropped to isolated cell"
+    },
+    "fist_wraps_left": {
+      "asset_id": "fist_wraps_left",
+      "path": "res://assets/p3/baked_candidates/weapon_library_v1/candidate/weapons/fist_wraps_left.png",
+      "source_cell_crop": [
+        31,
+        67,
+        152,
+        268
+      ],
+      "dimensions_px": [
+        141,
+        221
+      ],
+      "grip_px": [
+        70,
+        110
+      ],
+      "tip_px": [
+        70,
+        110
+      ],
+      "sha256": "fb94a3014545d033da4cb9b003ca07584fb45ee9a84fc90e823ce597abd84caa",
+      "status": "RECREATED",
+      "owner_art_approval": "PENDING",
+      "source_route": "image_gen RGBA atlas, cropped to isolated cell",
+      "pair_side": "left"
+    },
+    "fist_wraps_right": {
+      "asset_id": "fist_wraps_right",
+      "path": "res://assets/p3/baked_candidates/weapon_library_v1/candidate/weapons/fist_wraps_right.png",
+      "source_cell_crop": [
+        9,
+        69,
+        124,
+        263
+      ],
+      "dimensions_px": [
+        135,
+        214
+      ],
+      "grip_px": [
+        67,
+        107
+      ],
+      "tip_px": [
+        67,
+        107
+      ],
+      "sha256": "4011f4743074600361b01402665408f8b64cef85700d851e45793251288c24c6",
+      "status": "RECREATED",
+      "owner_art_approval": "PENDING",
+      "source_route": "image_gen RGBA atlas, cropped to isolated cell",
+      "pair_side": "right"
+    },
+    "palm_bracer_left": {
+      "asset_id": "palm_bracer_left",
+      "path": "res://assets/p3/baked_candidates/weapon_library_v1/candidate/weapons/palm_bracer_left.png",
+      "source_cell_crop": [
+        32,
+        67,
+        148,
+        264
+      ],
+      "dimensions_px": [
+        136,
+        217
+      ],
+      "grip_px": [
+        68,
+        108
+      ],
+      "tip_px": [
+        68,
+        108
+      ],
+      "sha256": "56d6ffd1d64d719ed716b27ae26c27ff53582c7bd716b18217995bcac9aea5c6",
+      "status": "RECREATED",
+      "owner_art_approval": "PENDING",
+      "source_route": "image_gen RGBA atlas, cropped to isolated cell",
+      "pair_side": "left"
+    },
+    "palm_bracer_right": {
+      "asset_id": "palm_bracer_right",
+      "path": "res://assets/p3/baked_candidates/weapon_library_v1/candidate/weapons/palm_bracer_right.png",
+      "source_cell_crop": [
+        9,
+        67,
+        125,
+        264
+      ],
+      "dimensions_px": [
+        136,
+        217
+      ],
+      "grip_px": [
+        68,
+        108
+      ],
+      "tip_px": [
+        68,
+        108
+      ],
+      "sha256": "0accfcd2fedb1c4a1e4587233b6b73f2cd00751371aa1e76848d396fb890a264",
+      "status": "RECREATED",
+      "owner_art_approval": "PENDING",
+      "source_route": "image_gen RGBA atlas, cropped to isolated cell",
+      "pair_side": "right"
+    },
+    "poison_needles": {
+      "asset_id": "poison_needles",
+      "path": "res://assets/p3/baked_candidates/weapon_library_v1/candidate/weapons/poison_needles.png",
+      "source_cell_crop": [
+        81,
+        33,
+        253,
+        290
+      ],
+      "dimensions_px": [
+        192,
+        277
+      ],
+      "grip_px": [
+        96,
+        263
+      ],
+      "tip_px": [
+        96,
+        14
+      ],
+      "sha256": "8d6fe7b75d06a6d594b21283199b1236a699acdc7e86a92e0cb00a37c38ef4f7",
+      "status": "RECREATED",
+      "owner_art_approval": "PENDING",
+      "source_route": "image_gen RGBA atlas, cropped to isolated cell"
+    },
+    "poison_gourd": {
+      "asset_id": "poison_gourd",
+      "path": "res://assets/p3/baked_candidates/weapon_library_v1/candidate/weapons/poison_gourd.png",
+      "source_cell_crop": [
+        67,
+        16,
+        275,
+        293
+      ],
+      "dimensions_px": [
+        228,
+        297
+      ],
+      "grip_px": [
+        114,
+        20
+      ],
+      "tip_px": [
+        114,
+        285
+      ],
+      "sha256": "1bf26081437704498bec38be1c93c37867bb5fd09bb7da4475168109a3579bb2",
+      "status": "RECREATED",
+      "owner_art_approval": "PENDING",
+      "source_route": "image_gen RGBA atlas, cropped to isolated cell"
+    },
+    "talisman_paper": {
+      "asset_id": "talisman_paper",
+      "path": "res://assets/p3/baked_candidates/weapon_library_v1/candidate/weapons/talisman_paper.png",
+      "source_cell_crop": [
+        66,
+        23,
+        229,
+        281
+      ],
+      "dimensions_px": [
+        183,
+        278
+      ],
+      "grip_px": [
+        91,
+        264
+      ],
+      "tip_px": [
+        91,
+        14
+      ],
+      "sha256": "25da67006404ca90280b161a650f63b9a50c5b9711709bf94bf6fe9893eb6b79",
+      "status": "RECREATED",
+      "owner_art_approval": "PENDING",
+      "source_route": "image_gen RGBA atlas, cropped to isolated cell"
+    },
+    "talisman_brush": {
+      "asset_id": "talisman_brush",
+      "path": "res://assets/p3/baked_candidates/weapon_library_v1/candidate/weapons/talisman_brush.png",
+      "source_cell_crop": [
+        99,
+        7,
+        220,
+        298
+      ],
+      "dimensions_px": [
+        141,
+        311
+      ],
+      "grip_px": [
+        70,
+        297
+      ],
+      "tip_px": [
+        70,
+        14
+      ],
+      "sha256": "a053eb6a29f4ae4337b5e3736fbde2bee7c1c9f20941d898a5471e47d90687f2",
+      "status": "RECREATED",
+      "owner_art_approval": "PENDING",
+      "source_route": "image_gen RGBA atlas, cropped to isolated cell"
+    },
+    "curse_beads": {
+      "asset_id": "curse_beads",
+      "path": "res://assets/p3/baked_candidates/weapon_library_v1/candidate/weapons/curse_beads.png",
+      "source_cell_crop": [
+        51,
+        10,
+        254,
+        292
+      ],
+      "dimensions_px": [
+        223,
+        302
+      ],
+      "grip_px": [
+        111,
+        190
+      ],
+      "tip_px": [
+        111,
+        60
+      ],
+      "sha256": "e370b7d1ee0d4249ef9521d953ac250e6eae34e9fd0d6694cb395d7154b5bb68",
+      "status": "RECREATED",
+      "owner_art_approval": "PENDING",
+      "source_route": "image_gen RGBA atlas, cropped to isolated cell"
+    },
+    "formation_compass": {
+      "asset_id": "formation_compass",
+      "path": "res://assets/p3/baked_candidates/weapon_library_v1/candidate/weapons/formation_compass.png",
+      "source_cell_crop": [
+        22,
+        15,
+        294,
+        288
+      ],
+      "dimensions_px": [
+        292,
+        293
+      ],
+      "grip_px": [
+        146,
+        277
+      ],
+      "tip_px": [
+        146,
+        12
+      ],
+      "sha256": "8c71dbe5efe068783d86d4cab4b2a1a24c44fe4ee07168088251349a33be7efd",
+      "status": "RECREATED",
+      "owner_art_approval": "PENDING",
+      "source_route": "image_gen RGBA atlas, cropped to isolated cell"
+    },
+    "formation_pointer": {
+      "asset_id": "formation_pointer",
+      "path": "res://assets/p3/baked_candidates/weapon_library_v1/candidate/weapons/formation_pointer.png",
+      "source_cell_crop": [
+        123,
+        1,
+        183,
+        302
+      ],
+      "dimensions_px": [
+        80,
+        321
+      ],
+      "grip_px": [
+        40,
+        307
+      ],
+      "tip_px": [
+        40,
+        14
+      ],
+      "sha256": "efaeeac2a328ca7671cbccf786a161372021f52a1cd54ac728bfa998df71cfea",
+      "status": "RECREATED",
+      "owner_art_approval": "PENDING",
+      "source_route": "image_gen RGBA atlas, cropped to isolated cell"
+    },
+    "summon_contract": {
+      "asset_id": "summon_contract",
+      "path": "res://assets/p3/baked_candidates/weapon_library_v1/candidate/weapons/summon_contract.png",
+      "source_cell_crop": [
+        64,
+        26,
+        224,
+        282
+      ],
+      "dimensions_px": [
+        180,
+        276
+      ],
+      "grip_px": [
+        90,
+        262
+      ],
+      "tip_px": [
+        90,
+        14
+      ],
+      "sha256": "7e6b1340d4b4a8d396a140d78734b0d2e2eafc099c8329a6b11348da91b55ff6",
+      "status": "RECREATED",
+      "owner_art_approval": "PENDING",
+      "source_route": "image_gen RGBA atlas, cropped to isolated cell"
+    },
+    "summon_seal": {
+      "asset_id": "summon_seal",
+      "path": "res://assets/p3/baked_candidates/weapon_library_v1/candidate/weapons/summon_seal.png",
+      "source_cell_crop": [
+        58,
+        29,
+        274,
+        269
+      ],
+      "dimensions_px": [
+        236,
+        260
+      ],
+      "grip_px": [
+        118,
+        244
+      ],
+      "tip_px": [
+        118,
+        10
+      ],
+      "sha256": "166a541f807baebc1b6ad44e4f0e0193536f1f07729630339bcab2115bf704ad",
+      "status": "RECREATED",
+      "owner_art_approval": "PENDING",
+      "source_route": "image_gen RGBA atlas, cropped to isolated cell"
+    },
+    "owner_liked_jian_existing": {
+      "asset_id": "owner_liked_jian_existing",
+      "path": "res://assets/p3/baked_candidates/aschar48/AS48_KIEMTU_JIAN_CANDIDATE.png",
+      "dimensions_px": [
+        887,
+        1774
+      ],
+      "asset_scale": 0.19,
+      "grip_px": [
+        443,
+        360
+      ],
+      "tip_px": [
+        443,
+        1748
+      ],
+      "sha256": "8c9869ba06e39799c5eb3b6b2e3060284c04197abc034993b1831f1572c60285",
+      "status": "EXISTING_CANDIDATE_PRESERVED",
+      "owner_art_approval": "PENDING",
+      "source_route": "existing V9.3 Kiếm Tu family asset; immutable"
+    }
+  },
+  "socket_fallbacks_used": 74,
+  "notes": "Fist and Palm remain unarmed. Downed hides held props. V9.3 socket coordinates are per real source frame; automatic skin-region candidate anchors remain owner-review candidates. Main-hand side overrides: AS62, AS63, AS70 use the visible character-left hand in the front body reference."
+}

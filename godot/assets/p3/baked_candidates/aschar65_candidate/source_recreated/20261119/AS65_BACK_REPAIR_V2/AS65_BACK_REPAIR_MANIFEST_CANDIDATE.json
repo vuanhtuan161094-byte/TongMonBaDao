@@ -1,0 +1,688 @@
+{
+  "schema": "tmb.aschar.repair_manifest.v1",
+  "identity": "AS-CHAR-65",
+  "school": "Phù Tu",
+  "gender": "female",
+  "repair": "true_back_direction_and_alpha_holes",
+  "status": "CANDIDATE",
+  "owner_art_approval": "PENDING",
+  "source_route": "image_gen edit/generation using existing AS65 front and defective back as identity references",
+  "source_sheet_sha256": "3239237200b61e064d5cd83c3d068b19daf9a8fd617cb8ea29ac4d0a8abe94c4",
+  "original_clip_resource": "res://assets/p3/baked_candidates/aschar65_candidate/AS65_TALISMAN_CLIPS_CANDIDATE.tres",
+  "repaired_clip_resource": "res://assets/p3/baked_candidates/aschar65_candidate/AS65_TALISMAN_CLIPS_BACK_REPAIRED_CANDIDATE.tres",
+  "frames": [
+    {
+      "clip": "idle_back",
+      "frame": 0,
+      "original_path": "res://assets/p3/baked_candidates/aschar65_candidate/frames/idle_back/AS65_idle_back_00.png",
+      "source_sha256": "ef5eacf95f33637dc98ae7b8941b4f40a8b6b9a53d2525576be33491babce4b3",
+      "path": "res://assets/p3/baked_candidates/aschar65_candidate/source_recreated/20261119/AS65_BACK_REPAIR_V2/frames/idle_back/AS65_idle_back_repaired_00.png",
+      "sha256": "2f8b3c2f909db8be680b8d53939da80728085e9807ed513488a9f49e04db6b22",
+      "transform": {
+        "source_bbox": [
+          75,
+          14,
+          224,
+          246
+        ],
+        "source_size": [
+          256,
+          256
+        ],
+        "scale": 1.37069,
+        "placed_rect": [
+          90,
+          42,
+          294,
+          360
+        ]
+      },
+      "facing": "rear_only"
+    },
+    {
+      "clip": "idle_back",
+      "frame": 1,
+      "original_path": "res://assets/p3/baked_candidates/aschar65_candidate/frames/idle_back/AS65_idle_back_01.png",
+      "source_sha256": "4f53edfb7243b94b8f04a5b22c2abe36754b2b8f9a15e8040581fc5173430312",
+      "path": "res://assets/p3/baked_candidates/aschar65_candidate/source_recreated/20261119/AS65_BACK_REPAIR_V2/frames/idle_back/AS65_idle_back_repaired_01.png",
+      "sha256": "564668edbec8fe275e527edce641265cfceed66301a7deaaa21f9f5150c26c0d",
+      "transform": {
+        "source_bbox": [
+          76,
+          11,
+          223,
+          246
+        ],
+        "source_size": [
+          256,
+          256
+        ],
+        "scale": 1.353191,
+        "placed_rect": [
+          92,
+          42,
+          291,
+          360
+        ]
+      },
+      "facing": "rear_only"
+    },
+    {
+      "clip": "idle_back",
+      "frame": 2,
+      "original_path": "res://assets/p3/baked_candidates/aschar65_candidate/frames/idle_back/AS65_idle_back_02.png",
+      "source_sha256": "f2380f1a2fc432161d827b6cf094867602e46d2d001f3c8079e7ab5e9e09c7e8",
+      "path": "res://assets/p3/baked_candidates/aschar65_candidate/source_recreated/20261119/AS65_BACK_REPAIR_V2/frames/idle_back/AS65_idle_back_repaired_02.png",
+      "sha256": "be7e3b7645573824330bb63070ea0355f1cebced442f5719f6d7160b386669db",
+      "transform": {
+        "source_bbox": [
+          75,
+          11,
+          224,
+          246
+        ],
+        "source_size": [
+          256,
+          256
+        ],
+        "scale": 1.353191,
+        "placed_rect": [
+          91,
+          42,
+          293,
+          360
+        ]
+      },
+      "facing": "rear_only"
+    },
+    {
+      "clip": "idle_back",
+      "frame": 3,
+      "original_path": "res://assets/p3/baked_candidates/aschar65_candidate/frames/idle_back/AS65_idle_back_03.png",
+      "source_sha256": "ca1c3c6c5dbfc8a9a54f8527ce16f6c308d2faff82c002c7c3e00edca07f2f2f",
+      "path": "res://assets/p3/baked_candidates/aschar65_candidate/source_recreated/20261119/AS65_BACK_REPAIR_V2/frames/idle_back/AS65_idle_back_repaired_03.png",
+      "sha256": "6636a4e125319fab4c8a40495374b75c28a3e4d35a5e85e71c4118745adee05a",
+      "transform": {
+        "source_bbox": [
+          76,
+          14,
+          216,
+          246
+        ],
+        "source_size": [
+          256,
+          256
+        ],
+        "scale": 1.37069,
+        "placed_rect": [
+          96,
+          42,
+          288,
+          360
+        ]
+      },
+      "facing": "rear_only"
+    },
+    {
+      "clip": "walk_back",
+      "frame": 0,
+      "original_path": "res://assets/p3/baked_candidates/aschar65_candidate/frames/walk_back/AS65_walk_back_00.png",
+      "source_sha256": "666f64b6350f2b62cd5f0be965c4a492faebcd93d8daf165f89eb6d45912a6e5",
+      "path": "res://assets/p3/baked_candidates/aschar65_candidate/source_recreated/20261119/AS65_BACK_REPAIR_V2/frames/walk_back/AS65_walk_back_repaired_00.png",
+      "sha256": "63c84aac8c45a7448d6ea87b9da54835fc8c9b6107f3fed813550bfd290d3051",
+      "transform": {
+        "source_bbox": [
+          90,
+          15,
+          217,
+          247
+        ],
+        "source_size": [
+          256,
+          256
+        ],
+        "scale": 1.37069,
+        "placed_rect": [
+          105,
+          42,
+          279,
+          360
+        ]
+      },
+      "facing": "rear_only"
+    },
+    {
+      "clip": "walk_back",
+      "frame": 1,
+      "original_path": "res://assets/p3/baked_candidates/aschar65_candidate/frames/walk_back/AS65_walk_back_01.png",
+      "source_sha256": "646850c0103db56441a0fb1ad28215bfac695fa7f8f87563cf00b528cc7bb4e5",
+      "path": "res://assets/p3/baked_candidates/aschar65_candidate/source_recreated/20261119/AS65_BACK_REPAIR_V2/frames/walk_back/AS65_walk_back_repaired_01.png",
+      "sha256": "07932d7b2677ac86bacb43d40315db401fbe162d0db59a3785f3357b3ebfaece",
+      "transform": {
+        "source_bbox": [
+          88,
+          15,
+          222,
+          247
+        ],
+        "source_size": [
+          256,
+          256
+        ],
+        "scale": 1.37069,
+        "placed_rect": [
+          100,
+          42,
+          284,
+          360
+        ]
+      },
+      "facing": "rear_only"
+    },
+    {
+      "clip": "walk_back",
+      "frame": 2,
+      "original_path": "res://assets/p3/baked_candidates/aschar65_candidate/frames/walk_back/AS65_walk_back_02.png",
+      "source_sha256": "8131872f663942727f89ba91d86d1b38dfd4551fb42af0c4b226429b17bb73ba",
+      "path": "res://assets/p3/baked_candidates/aschar65_candidate/source_recreated/20261119/AS65_BACK_REPAIR_V2/frames/walk_back/AS65_walk_back_repaired_02.png",
+      "sha256": "34a89317fd9ebae96ad24dfd9137f375c71b4b748e562310106c2537d36e8535",
+      "transform": {
+        "source_bbox": [
+          86,
+          14,
+          224,
+          246
+        ],
+        "source_size": [
+          256,
+          256
+        ],
+        "scale": 1.37069,
+        "placed_rect": [
+          98,
+          42,
+          287,
+          360
+        ]
+      },
+      "facing": "rear_only"
+    },
+    {
+      "clip": "walk_back",
+      "frame": 3,
+      "original_path": "res://assets/p3/baked_candidates/aschar65_candidate/frames/walk_back/AS65_walk_back_03.png",
+      "source_sha256": "39de19d4d393a6b414d3e5ed3faeb51551524ef34a5458d85a76ac928ac9b34e",
+      "path": "res://assets/p3/baked_candidates/aschar65_candidate/source_recreated/20261119/AS65_BACK_REPAIR_V2/frames/walk_back/AS65_walk_back_repaired_03.png",
+      "sha256": "c9c6bb7b94e4e8d1845b82d571604d867f281f6b2258e74673850f3219ec8c7c",
+      "transform": {
+        "source_bbox": [
+          91,
+          17,
+          220,
+          248
+        ],
+        "source_size": [
+          256,
+          256
+        ],
+        "scale": 1.376623,
+        "placed_rect": [
+          103,
+          42,
+          281,
+          360
+        ]
+      },
+      "facing": "rear_only"
+    },
+    {
+      "clip": "attack_back",
+      "frame": 0,
+      "original_path": "res://assets/p3/baked_candidates/aschar65_candidate/frames/attack_back/AS65_attack_back_00.png",
+      "source_sha256": "2c5af3731592e3ca359384956063ee455959d62da0421f9c3e176787860d0951",
+      "path": "res://assets/p3/baked_candidates/aschar65_candidate/source_recreated/20261119/AS65_BACK_REPAIR_V2/frames/attack_back/AS65_attack_back_repaired_00.png",
+      "sha256": "a55efb4535ffe0e8e28aaa6000f0a133db1d9809e450c8d905fa6b9d16caa34a",
+      "transform": {
+        "source_bbox": [
+          80,
+          18,
+          227,
+          246
+        ],
+        "source_size": [
+          256,
+          256
+        ],
+        "scale": 1.394737,
+        "placed_rect": [
+          90,
+          42,
+          295,
+          360
+        ]
+      },
+      "facing": "rear_only"
+    },
+    {
+      "clip": "attack_back",
+      "frame": 1,
+      "original_path": "res://assets/p3/baked_candidates/aschar65_candidate/frames/attack_back/AS65_attack_back_01.png",
+      "source_sha256": "9e2b00f702f75353b2c9bedc43202a96ee3da61ee0a2957bc198f291788f37bd",
+      "path": "res://assets/p3/baked_candidates/aschar65_candidate/source_recreated/20261119/AS65_BACK_REPAIR_V2/frames/attack_back/AS65_attack_back_repaired_01.png",
+      "sha256": "a0e32f2334044aad57ab9eac1284c8f81057bb3ef6606f62a18b28d1bbc1c3c1",
+      "transform": {
+        "source_bbox": [
+          87,
+          17,
+          219,
+          245
+        ],
+        "source_size": [
+          256,
+          256
+        ],
+        "scale": 1.394737,
+        "placed_rect": [
+          100,
+          42,
+          284,
+          360
+        ]
+      },
+      "facing": "rear_only"
+    },
+    {
+      "clip": "attack_back",
+      "frame": 2,
+      "original_path": "res://assets/p3/baked_candidates/aschar65_candidate/frames/attack_back/AS65_attack_back_02.png",
+      "source_sha256": "f9cc401830be2a591852225b04d0260112afb0cf778d8f4f407684df284836ad",
+      "path": "res://assets/p3/baked_candidates/aschar65_candidate/source_recreated/20261119/AS65_BACK_REPAIR_V2/frames/attack_back/AS65_attack_back_repaired_02.png",
+      "sha256": "b1f329d562ce79edd1eac18b4c8bda6c5e5a3595b7ee494482744ca6f1c5eea0",
+      "transform": {
+        "source_bbox": [
+          71,
+          17,
+          229,
+          245
+        ],
+        "source_size": [
+          256,
+          256
+        ],
+        "scale": 1.394737,
+        "placed_rect": [
+          82,
+          42,
+          302,
+          360
+        ]
+      },
+      "facing": "rear_only"
+    },
+    {
+      "clip": "attack_back",
+      "frame": 3,
+      "original_path": "res://assets/p3/baked_candidates/aschar65_candidate/frames/attack_back/AS65_attack_back_03.png",
+      "source_sha256": "2fc8fbb7574eb634f8af61f3ae27f73fe2318fd579c2ffc9aaf097ee38d136b4",
+      "path": "res://assets/p3/baked_candidates/aschar65_candidate/source_recreated/20261119/AS65_BACK_REPAIR_V2/frames/attack_back/AS65_attack_back_repaired_03.png",
+      "sha256": "e5082d97d1a6ad5b952c43df28141dfaee9200ce23ae1d92efc914fc905ad7a7",
+      "transform": {
+        "source_bbox": [
+          73,
+          18,
+          223,
+          245
+        ],
+        "source_size": [
+          256,
+          256
+        ],
+        "scale": 1.400881,
+        "placed_rect": [
+          87,
+          42,
+          297,
+          360
+        ]
+      },
+      "facing": "rear_only"
+    },
+    {
+      "clip": "cast_back",
+      "frame": 0,
+      "original_path": "res://assets/p3/baked_candidates/aschar65_candidate/frames/cast_back/AS65_cast_back_00.png",
+      "source_sha256": "67638f01fcdb0be138fb40d61df5a7d7002bb19f109a2191c169d686034fd861",
+      "path": "res://assets/p3/baked_candidates/aschar65_candidate/source_recreated/20261119/AS65_BACK_REPAIR_V2/frames/cast_back/AS65_cast_back_repaired_00.png",
+      "sha256": "0b7c82267fa00c4b37a5826a1c83c616b8788674141210f5321e041fe59162f6",
+      "transform": {
+        "source_bbox": [
+          82,
+          17,
+          215,
+          245
+        ],
+        "source_size": [
+          256,
+          256
+        ],
+        "scale": 1.394737,
+        "placed_rect": [
+          99,
+          42,
+          285,
+          360
+        ]
+      },
+      "facing": "rear_only"
+    },
+    {
+      "clip": "cast_back",
+      "frame": 1,
+      "original_path": "res://assets/p3/baked_candidates/aschar65_candidate/frames/cast_back/AS65_cast_back_01.png",
+      "source_sha256": "7f819c96afc3cdccc5bb029366ece00d3d8a7549ed282cfb39191ebe50d8fe6b",
+      "path": "res://assets/p3/baked_candidates/aschar65_candidate/source_recreated/20261119/AS65_BACK_REPAIR_V2/frames/cast_back/AS65_cast_back_repaired_01.png",
+      "sha256": "9cf935deeef170c6957a380a2fab42a0a24ca60c4168fcd184cabf53011b0c14",
+      "transform": {
+        "source_bbox": [
+          80,
+          16,
+          222,
+          246
+        ],
+        "source_size": [
+          256,
+          256
+        ],
+        "scale": 1.382609,
+        "placed_rect": [
+          94,
+          42,
+          290,
+          360
+        ]
+      },
+      "facing": "rear_only"
+    },
+    {
+      "clip": "cast_back",
+      "frame": 2,
+      "original_path": "res://assets/p3/baked_candidates/aschar65_candidate/frames/cast_back/AS65_cast_back_02.png",
+      "source_sha256": "bb1142bee79e936a81348731fa5512bd47e5264267500e3f1181851d8d34274f",
+      "path": "res://assets/p3/baked_candidates/aschar65_candidate/source_recreated/20261119/AS65_BACK_REPAIR_V2/frames/cast_back/AS65_cast_back_repaired_02.png",
+      "sha256": "b00d590914adbe2820a926ae918a7b98eecb210283a74cf9f5ede6e687f6e3d2",
+      "transform": {
+        "source_bbox": [
+          70,
+          16,
+          225,
+          246
+        ],
+        "source_size": [
+          256,
+          256
+        ],
+        "scale": 1.382609,
+        "placed_rect": [
+          85,
+          42,
+          299,
+          360
+        ]
+      },
+      "facing": "rear_only"
+    },
+    {
+      "clip": "cast_back",
+      "frame": 3,
+      "original_path": "res://assets/p3/baked_candidates/aschar65_candidate/frames/cast_back/AS65_cast_back_03.png",
+      "source_sha256": "778d49b2cdcc94d0a640446e83cbd2c96835d3feb6cc232e4f147fc5ca45ca23",
+      "path": "res://assets/p3/baked_candidates/aschar65_candidate/source_recreated/20261119/AS65_BACK_REPAIR_V2/frames/cast_back/AS65_cast_back_repaired_03.png",
+      "sha256": "2785ecbc1ed6cefea7b1d8db65016310f6936ad7454d2e0892e4eb46f26bca8c",
+      "transform": {
+        "source_bbox": [
+          72,
+          16,
+          225,
+          246
+        ],
+        "source_size": [
+          256,
+          256
+        ],
+        "scale": 1.382609,
+        "placed_rect": [
+          86,
+          42,
+          298,
+          360
+        ]
+      },
+      "facing": "rear_only"
+    },
+    {
+      "clip": "hit_back",
+      "frame": 0,
+      "original_path": "res://assets/p3/baked_candidates/aschar65_candidate/frames/hit_back/AS65_hit_back_00.png",
+      "source_sha256": "8e95947f494c03c7b74062dd573b4907d12f66ee51f08f2d2649a81a7032a4a1",
+      "path": "res://assets/p3/baked_candidates/aschar65_candidate/source_recreated/20261119/AS65_BACK_REPAIR_V2/frames/hit_back/AS65_hit_back_repaired_00.png",
+      "sha256": "c16b2fd30970708c58a290f76d83b7a08b35cca29b6af8a22aefa6c0640815ed",
+      "transform": {
+        "source_bbox": [
+          80,
+          17,
+          218,
+          244
+        ],
+        "source_size": [
+          256,
+          256
+        ],
+        "scale": 1.400881,
+        "placed_rect": [
+          96,
+          42,
+          289,
+          360
+        ]
+      },
+      "facing": "rear_only"
+    },
+    {
+      "clip": "hit_back",
+      "frame": 1,
+      "original_path": "res://assets/p3/baked_candidates/aschar65_candidate/frames/hit_back/AS65_hit_back_01.png",
+      "source_sha256": "e1b0d105ea664a41a2b1679cff91978404080edac45dafd4e3b8d069f641d04b",
+      "path": "res://assets/p3/baked_candidates/aschar65_candidate/source_recreated/20261119/AS65_BACK_REPAIR_V2/frames/hit_back/AS65_hit_back_repaired_01.png",
+      "sha256": "d23fa937f5d5da96393c11b8a877f9b5c4a0cc3dcc275d2048e7beb4dc03c353",
+      "transform": {
+        "source_bbox": [
+          71,
+          17,
+          224,
+          243
+        ],
+        "source_size": [
+          256,
+          256
+        ],
+        "scale": 1.40708,
+        "placed_rect": [
+          84,
+          42,
+          299,
+          360
+        ]
+      },
+      "facing": "rear_only"
+    },
+    {
+      "clip": "hit_back",
+      "frame": 2,
+      "original_path": "res://assets/p3/baked_candidates/aschar65_candidate/frames/hit_back/AS65_hit_back_02.png",
+      "source_sha256": "d7a4ae1bf93251ea57132c058daf6c55c815b1dfeef258aef047c651309a930c",
+      "path": "res://assets/p3/baked_candidates/aschar65_candidate/source_recreated/20261119/AS65_BACK_REPAIR_V2/frames/hit_back/AS65_hit_back_repaired_02.png",
+      "sha256": "fdc1f13e4f38501ea4766d248ab215040f4019c86b75c5504749a9af5399cc71",
+      "transform": {
+        "source_bbox": [
+          58,
+          19,
+          227,
+          244
+        ],
+        "source_size": [
+          256,
+          256
+        ],
+        "scale": 1.413333,
+        "placed_rect": [
+          72,
+          42,
+          311,
+          360
+        ]
+      },
+      "facing": "rear_only"
+    },
+    {
+      "clip": "hit_back",
+      "frame": 3,
+      "original_path": "res://assets/p3/baked_candidates/aschar65_candidate/frames/hit_back/AS65_hit_back_03.png",
+      "source_sha256": "cdb800454bd44d27bf981df6f34cae08a4479fa1ad7113c0eb466d860845a522",
+      "path": "res://assets/p3/baked_candidates/aschar65_candidate/source_recreated/20261119/AS65_BACK_REPAIR_V2/frames/hit_back/AS65_hit_back_repaired_03.png",
+      "sha256": "ca5a1fb4a63e02b12caeae38bad3deb45531a67c0f7f15db0a5ebc4ddf952007",
+      "transform": {
+        "source_bbox": [
+          73,
+          20,
+          219,
+          244
+        ],
+        "source_size": [
+          256,
+          256
+        ],
+        "scale": 1.419643,
+        "placed_rect": [
+          88,
+          42,
+          295,
+          360
+        ]
+      },
+      "facing": "rear_only"
+    },
+    {
+      "clip": "downed_back",
+      "frame": 0,
+      "original_path": "res://assets/p3/baked_candidates/aschar65_candidate/frames/downed_back/AS65_downed_back_00.png",
+      "source_sha256": "f0d866d44b94b85b50c62f98d9a87be98b32b97114270d41f96cfc1a512dd93f",
+      "path": "res://assets/p3/baked_candidates/aschar65_candidate/source_recreated/20261119/AS65_BACK_REPAIR_V2/frames/downed_back/AS65_downed_back_repaired_00.png",
+      "sha256": "812722d41d8c7500bec58aed2e683c873af6380ad5ceaad399dae3757dc1b1f8",
+      "transform": {
+        "source_bbox": [
+          74,
+          20,
+          225,
+          239
+        ],
+        "source_size": [
+          256,
+          256
+        ],
+        "scale": 1.452055,
+        "placed_rect": [
+          82,
+          42,
+          301,
+          360
+        ]
+      },
+      "facing": "rear_only"
+    },
+    {
+      "clip": "downed_back",
+      "frame": 1,
+      "original_path": "res://assets/p3/baked_candidates/aschar65_candidate/frames/downed_back/AS65_downed_back_01.png",
+      "source_sha256": "d523b1377718b8eaa28d8d24c4a3a3478a5ee43752935811cf9541d4dd0f5b54",
+      "path": "res://assets/p3/baked_candidates/aschar65_candidate/source_recreated/20261119/AS65_BACK_REPAIR_V2/frames/downed_back/AS65_downed_back_repaired_01.png",
+      "sha256": "7f22fbc38110108c76e191367fde6ddd5b91217e5ab76b2f65bf2e9cbc160b61",
+      "transform": {
+        "source_bbox": [
+          77,
+          39,
+          226,
+          241
+        ],
+        "source_size": [
+          256,
+          256
+        ],
+        "scale": 1.574257,
+        "placed_rect": [
+          74,
+          42,
+          309,
+          360
+        ]
+      },
+      "facing": "rear_only"
+    },
+    {
+      "clip": "downed_back",
+      "frame": 2,
+      "original_path": "res://assets/p3/baked_candidates/aschar65_candidate/frames/downed_back/AS65_downed_back_02.png",
+      "source_sha256": "a3b449b70635fbeec5e402e90ddb4c138a5ba98319daeaac9299f213b0110569",
+      "path": "res://assets/p3/baked_candidates/aschar65_candidate/source_recreated/20261119/AS65_BACK_REPAIR_V2/frames/downed_back/AS65_downed_back_repaired_02.png",
+      "sha256": "7134e0b55c0e366e2a1ac8a214d915d65d785cebbe62f6da3c7b4d162e46724f",
+      "transform": {
+        "source_bbox": [
+          66,
+          68,
+          227,
+          239
+        ],
+        "source_size": [
+          256,
+          256
+        ],
+        "scale": 1.859649,
+        "placed_rect": [
+          42,
+          42,
+          341,
+          360
+        ]
+      },
+      "facing": "rear_only"
+    },
+    {
+      "clip": "downed_back",
+      "frame": 3,
+      "original_path": "res://assets/p3/baked_candidates/aschar65_candidate/frames/downed_back/AS65_downed_back_03.png",
+      "source_sha256": "cac494e85844974f71014f12c6016d9106b58fb284ee998f7d7963f5e0e34e9f",
+      "path": "res://assets/p3/baked_candidates/aschar65_candidate/source_recreated/20261119/AS65_BACK_REPAIR_V2/frames/downed_back/AS65_downed_back_repaired_03.png",
+      "sha256": "fbc541fdd03c540c6d90b6039e4a711aaa62b3d21dc8f21a7e48c32eecf22a44",
+      "transform": {
+        "source_bbox": [
+          59,
+          100,
+          235,
+          239
+        ],
+        "source_size": [
+          256,
+          256
+        ],
+        "scale": 1.806818,
+        "placed_rect": [
+          33,
+          109,
+          351,
+          360
+        ]
+      },
+      "facing": "rear_only"
+    }
+  ],
+  "notes": "24 384x384 full-body RGBA rear-facing candidates replace only the six Back clips in the alternate SpriteFrames resource; original files and resource are preserved."
+}

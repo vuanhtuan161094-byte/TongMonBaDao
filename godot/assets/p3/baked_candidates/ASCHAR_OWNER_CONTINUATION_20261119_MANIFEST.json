@@ -1,0 +1,687 @@
+{
+  "schema": "tmb.aschar.owner_continuation_assets.v1",
+  "created": "2026-11-19",
+  "status": "CANDIDATE",
+  "owner_art_approval": "PENDING",
+  "source_root": "E:/TongMonBaDaoWorkspace/03_QA_Logs/ASCHAR_V9_BULK_PR72_20261118/godot/assets/p3/baked_candidates",
+  "source_clip_count_claim": "24 actors / 576 source clip candidates preserved; no original source frames overwritten.",
+  "repair_counts": {
+    "AS65_phutu_back_frames": 24,
+    "AS54_spear_downed_frames": 16,
+    "AS55_spear_downed_frames": 16
+  },
+  "weapon_prop_count": 19,
+  "weapon_asset_count_including_preserved_jian": 20,
+  "socket_manifests_created": 22,
+  "socket_anchor_fallbacks": 74,
+  "preview": {
+    "path": "weapon_library_v1/candidate/review/ASCHAR_24_actor_weapon_review_1280x720.gif",
+    "width": 1280,
+    "height": 720,
+    "fps_approx": 6.25,
+    "frames": 8,
+    "type": "offline Pillow composite from real candidate body frames and independent weapon prop PNGs; 72px body map-scale; not Godot runtime or gameplay"
+  },
+  "files": [
+    {
+      "path": "godot/assets/p3/baked_candidates/aschar54_candidate/AS54_SPEAR_DOWNED_SAFE_SCALE_CANDIDATE.tres",
+      "bytes": 25842,
+      "sha256": "0f62c93316f9962a4a2b6920c65d6588b2497fb1417a6170bb7b1ba1cb49cf4f",
+      "status": "CANDIDATE_REPAIR"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/aschar54_candidate/source_recreated/20261119/AS54_DOWNED_SAFE_SCALE_V1/AS54_DOWNED_SAFE_SCALE_MANIFEST_CANDIDATE.json",
+      "bytes": 12446,
+      "sha256": "37925d5fdb9f498bf36e1c5cdd6a9795171f4f60a595803d775dcfa9dcb1cdf5",
+      "status": "CANDIDATE_REPAIR"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/aschar54_candidate/source_recreated/20261119/AS54_DOWNED_SAFE_SCALE_V1/frames/downed_back/AS54_downed_back_repaired_00.png",
+      "bytes": 112483,
+      "sha256": "4452957813c66c623f02e28aef56431fcc22ce24809ed5f22f357c0da620c0e6",
+      "status": "CANDIDATE_REPAIR"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/aschar54_candidate/source_recreated/20261119/AS54_DOWNED_SAFE_SCALE_V1/frames/downed_back/AS54_downed_back_repaired_01.png",
+      "bytes": 133115,
+      "sha256": "da144de373edd5cc0d1f6d51bca75ba9920cd352b1eead5c3e0309a1c28e2a4a",
+      "status": "CANDIDATE_REPAIR"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/aschar54_candidate/source_recreated/20261119/AS54_DOWNED_SAFE_SCALE_V1/frames/downed_back/AS54_downed_back_repaired_02.png",
+      "bytes": 136548,
+      "sha256": "3fb5b463cb1a9bfaac0323ebab776f111f9478be773216b12fa5f5069e87aac9",
+      "status": "CANDIDATE_REPAIR"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/aschar54_candidate/source_recreated/20261119/AS54_DOWNED_SAFE_SCALE_V1/frames/downed_back/AS54_downed_back_repaired_03.png",
+      "bytes": 147663,
+      "sha256": "bf1953d88b91578d4b1b5c94fb6e7d20e13afd5c06c1b420ac59bf7c47dcd09b",
+      "status": "CANDIDATE_REPAIR"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/aschar54_candidate/source_recreated/20261119/AS54_DOWNED_SAFE_SCALE_V1/frames/downed_front/AS54_downed_front_repaired_00.png",
+      "bytes": 127664,
+      "sha256": "2b54cf16b78dbeb3bfca7821e9b0fa65dc33861cf67a8762345aaee88a1fa179",
+      "status": "CANDIDATE_REPAIR"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/aschar54_candidate/source_recreated/20261119/AS54_DOWNED_SAFE_SCALE_V1/frames/downed_front/AS54_downed_front_repaired_01.png",
+      "bytes": 138625,
+      "sha256": "48c011604cec6eb9e0d6e11f0f5eccada2b8e1e7ae0fd2a813429d772cb8af8c",
+      "status": "CANDIDATE_REPAIR"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/aschar54_candidate/source_recreated/20261119/AS54_DOWNED_SAFE_SCALE_V1/frames/downed_front/AS54_downed_front_repaired_02.png",
+      "bytes": 145868,
+      "sha256": "0fa8723095faf760b43e0d377a11a841af76ad601438f779c626608b4f0988db",
+      "status": "CANDIDATE_REPAIR"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/aschar54_candidate/source_recreated/20261119/AS54_DOWNED_SAFE_SCALE_V1/frames/downed_front/AS54_downed_front_repaired_03.png",
+      "bytes": 150085,
+      "sha256": "b200b618d283b8d208d754e4556983474dfcbf22ee3501202e5dc67cc026f883",
+      "status": "CANDIDATE_REPAIR"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/aschar54_candidate/source_recreated/20261119/AS54_DOWNED_SAFE_SCALE_V1/frames/downed_left/AS54_downed_left_repaired_00.png",
+      "bytes": 127276,
+      "sha256": "88ce113f69c416d3a7113b5456aedd1c76658eef162d328b587499b52b1ad343",
+      "status": "CANDIDATE_REPAIR"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/aschar54_candidate/source_recreated/20261119/AS54_DOWNED_SAFE_SCALE_V1/frames/downed_left/AS54_downed_left_repaired_01.png",
+      "bytes": 152347,
+      "sha256": "efe607f58514183661f43890c3291eb71f92b4c77fe40033d160d362042b994a",
+      "status": "CANDIDATE_REPAIR"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/aschar54_candidate/source_recreated/20261119/AS54_DOWNED_SAFE_SCALE_V1/frames/downed_left/AS54_downed_left_repaired_02.png",
+      "bytes": 144152,
+      "sha256": "30c523a718fa93242c6ac83ffaed8089cf9de99a5db179d33ec0441d611d18ef",
+      "status": "CANDIDATE_REPAIR"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/aschar54_candidate/source_recreated/20261119/AS54_DOWNED_SAFE_SCALE_V1/frames/downed_left/AS54_downed_left_repaired_03.png",
+      "bytes": 132675,
+      "sha256": "d243b0a3b52b2f85650d8eaf0a9912d8fa37f62fbe720e0a9c6f67f1223162fc",
+      "status": "CANDIDATE_REPAIR"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/aschar54_candidate/source_recreated/20261119/AS54_DOWNED_SAFE_SCALE_V1/frames/downed_right/AS54_downed_right_repaired_00.png",
+      "bytes": 152294,
+      "sha256": "5dfc1a7109c9a23b10f43da6c984eeb1c784495c2867522c4b401b78e0e52660",
+      "status": "CANDIDATE_REPAIR"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/aschar54_candidate/source_recreated/20261119/AS54_DOWNED_SAFE_SCALE_V1/frames/downed_right/AS54_downed_right_repaired_01.png",
+      "bytes": 168153,
+      "sha256": "2dc0f6294449f64adc50818c646abfc8ce295a6c2dcc7a7728cef3bac9a0febb",
+      "status": "CANDIDATE_REPAIR"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/aschar54_candidate/source_recreated/20261119/AS54_DOWNED_SAFE_SCALE_V1/frames/downed_right/AS54_downed_right_repaired_02.png",
+      "bytes": 163134,
+      "sha256": "62686d5cff57d010e0993eaa7318562e8eae882f7edeab777cd1ec65d7276c3e",
+      "status": "CANDIDATE_REPAIR"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/aschar54_candidate/source_recreated/20261119/AS54_DOWNED_SAFE_SCALE_V1/frames/downed_right/AS54_downed_right_repaired_03.png",
+      "bytes": 152494,
+      "sha256": "6fc7bd1ac8fb55cef65f2d72d9d8f53bd998406dbb8cdc065a7c6c09cb90c291",
+      "status": "CANDIDATE_REPAIR"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/aschar55_candidate/AS55_SPEAR_DOWNED_SAFE_SCALE_CANDIDATE.tres",
+      "bytes": 25842,
+      "sha256": "9202c0a60e3d4ac30839cc50f1570e3e13be87147931feb0ba676c4956195add",
+      "status": "CANDIDATE_REPAIR"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/aschar55_candidate/source_recreated/20261119/AS55_DOWNED_SAFE_SCALE_V1/AS55_DOWNED_SAFE_SCALE_MANIFEST_CANDIDATE.json",
+      "bytes": 12471,
+      "sha256": "fe9bde155e44c4d978ef3504c463b64efc80e7764f52a846f7b85b15455ec3a2",
+      "status": "CANDIDATE_REPAIR"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/aschar55_candidate/source_recreated/20261119/AS55_DOWNED_SAFE_SCALE_V1/frames/downed_back/AS55_downed_back_repaired_00.png",
+      "bytes": 122380,
+      "sha256": "5897c517c6d1c021307afff497e5ddd920d897c2cc6d6819e07ddb4daac7a297",
+      "status": "CANDIDATE_REPAIR"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/aschar55_candidate/source_recreated/20261119/AS55_DOWNED_SAFE_SCALE_V1/frames/downed_back/AS55_downed_back_repaired_01.png",
+      "bytes": 146286,
+      "sha256": "2e5af0a5e13202d27103986c23cbd843730cad644918fcff9f37ab5703eb8dc1",
+      "status": "CANDIDATE_REPAIR"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/aschar55_candidate/source_recreated/20261119/AS55_DOWNED_SAFE_SCALE_V1/frames/downed_back/AS55_downed_back_repaired_02.png",
+      "bytes": 100992,
+      "sha256": "25a6a2d436ab2828c422c25171ca5f759f27cddbc3eda539665fef44d59f0022",
+      "status": "CANDIDATE_REPAIR"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/aschar55_candidate/source_recreated/20261119/AS55_DOWNED_SAFE_SCALE_V1/frames/downed_back/AS55_downed_back_repaired_03.png",
+      "bytes": 84776,
+      "sha256": "97d1b01cd0bde8231b824e9114eed3958595695c03f250149861f5251a91b859",
+      "status": "CANDIDATE_REPAIR"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/aschar55_candidate/source_recreated/20261119/AS55_DOWNED_SAFE_SCALE_V1/frames/downed_front/AS55_downed_front_repaired_00.png",
+      "bytes": 148394,
+      "sha256": "429ed26e150065572d2e9a5b4d99e9145e970e2898ff0cedac6c7597d7d63278",
+      "status": "CANDIDATE_REPAIR"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/aschar55_candidate/source_recreated/20261119/AS55_DOWNED_SAFE_SCALE_V1/frames/downed_front/AS55_downed_front_repaired_01.png",
+      "bytes": 165992,
+      "sha256": "29d9ec45ae419aa81c33a9230724128b67b394e20631fddab16097ec670af249",
+      "status": "CANDIDATE_REPAIR"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/aschar55_candidate/source_recreated/20261119/AS55_DOWNED_SAFE_SCALE_V1/frames/downed_front/AS55_downed_front_repaired_02.png",
+      "bytes": 134902,
+      "sha256": "cc11db628451c15f8b01341012a67a42a4122b6529e7b0d2b8c477b117d745a6",
+      "status": "CANDIDATE_REPAIR"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/aschar55_candidate/source_recreated/20261119/AS55_DOWNED_SAFE_SCALE_V1/frames/downed_front/AS55_downed_front_repaired_03.png",
+      "bytes": 95494,
+      "sha256": "fd90bad1c8838f6b55bce96fd4e95d91de7eb7f310724a651873d433d71cb811",
+      "status": "CANDIDATE_REPAIR"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/aschar55_candidate/source_recreated/20261119/AS55_DOWNED_SAFE_SCALE_V1/frames/downed_left/AS55_downed_left_repaired_00.png",
+      "bytes": 147955,
+      "sha256": "ad8e45a136f39aca0f890e3c3b307d2cdcc2504a9e5e2c103ca90a11838099da",
+      "status": "CANDIDATE_REPAIR"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/aschar55_candidate/source_recreated/20261119/AS55_DOWNED_SAFE_SCALE_V1/frames/downed_left/AS55_downed_left_repaired_01.png",
+      "bytes": 168022,
+      "sha256": "82306e147c9e3d776f30b959630a9285f21ab542020bda87e8eab9af9f923b02",
+      "status": "CANDIDATE_REPAIR"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/aschar55_candidate/source_recreated/20261119/AS55_DOWNED_SAFE_SCALE_V1/frames/downed_left/AS55_downed_left_repaired_02.png",
+      "bytes": 173450,
+      "sha256": "94113582e08fe3cbc3ca7a4a035ded43016a718dc670e8cb037fb21f8630523f",
+      "status": "CANDIDATE_REPAIR"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/aschar55_candidate/source_recreated/20261119/AS55_DOWNED_SAFE_SCALE_V1/frames/downed_left/AS55_downed_left_repaired_03.png",
+      "bytes": 174169,
+      "sha256": "acaa6a4bcec9a00d273278bfaa36c40cb3b8865e4556035159f5c4aa5960a1c6",
+      "status": "CANDIDATE_REPAIR"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/aschar55_candidate/source_recreated/20261119/AS55_DOWNED_SAFE_SCALE_V1/frames/downed_right/AS55_downed_right_repaired_00.png",
+      "bytes": 146280,
+      "sha256": "a8a7a5573cbbfc7621382a487abf581088541aeadf8499566fff545760757aa5",
+      "status": "CANDIDATE_REPAIR"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/aschar55_candidate/source_recreated/20261119/AS55_DOWNED_SAFE_SCALE_V1/frames/downed_right/AS55_downed_right_repaired_01.png",
+      "bytes": 177072,
+      "sha256": "79d30f63813069d74370367fff116a4f1517198c5d9a2cd7800e288ab945a056",
+      "status": "CANDIDATE_REPAIR"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/aschar55_candidate/source_recreated/20261119/AS55_DOWNED_SAFE_SCALE_V1/frames/downed_right/AS55_downed_right_repaired_02.png",
+      "bytes": 128169,
+      "sha256": "588cf93ede9cdf9758ffc43e7349f659dc5419cd4d93f1d31bc43f78fd9a7570",
+      "status": "CANDIDATE_REPAIR"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/aschar55_candidate/source_recreated/20261119/AS55_DOWNED_SAFE_SCALE_V1/frames/downed_right/AS55_downed_right_repaired_03.png",
+      "bytes": 90477,
+      "sha256": "87086a749e66d0a53e9ef127a806db6d88b3e950ae94ce1e92f4d409218ba31e",
+      "status": "CANDIDATE_REPAIR"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/aschar65_candidate/AS65_TALISMAN_CLIPS_BACK_REPAIRED_CANDIDATE.tres",
+      "bytes": 26186,
+      "sha256": "0cf121a6c8d549935aeadfa8defb9e324e17ba02aa3a4190879f73d7e5080342",
+      "status": "CANDIDATE_REPAIR"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/aschar65_candidate/source_recreated/20261119/AS65_BACK_REPAIR_V2/AS65_BACK_ACTIONS_REPAIRED_4x6_CANDIDATE.png",
+      "bytes": 2477686,
+      "sha256": "83b44df69b7aa47865e5eef2085300767750d2dd256b603525b208ddf8e9b983",
+      "status": "RECREATED"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/aschar65_candidate/source_recreated/20261119/AS65_BACK_REPAIR_V2/AS65_BACK_REPAIR_MANIFEST_CANDIDATE.json",
+      "bytes": 21986,
+      "sha256": "586faf7ab854bc5d341f9407b0222a988f03f98d7fc2e4b2d1110cb9a5afcf9e",
+      "status": "RECREATED"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/aschar65_candidate/source_recreated/20261119/AS65_BACK_REPAIR_V2/frames/attack_back/AS65_attack_back_repaired_00.png",
+      "bytes": 104381,
+      "sha256": "a55efb4535ffe0e8e28aaa6000f0a133db1d9809e450c8d905fa6b9d16caa34a",
+      "status": "RECREATED"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/aschar65_candidate/source_recreated/20261119/AS65_BACK_REPAIR_V2/frames/attack_back/AS65_attack_back_repaired_01.png",
+      "bytes": 101468,
+      "sha256": "a0e32f2334044aad57ab9eac1284c8f81057bb3ef6606f62a18b28d1bbc1c3c1",
+      "status": "RECREATED"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/aschar65_candidate/source_recreated/20261119/AS65_BACK_REPAIR_V2/frames/attack_back/AS65_attack_back_repaired_02.png",
+      "bytes": 105903,
+      "sha256": "b1f329d562ce79edd1eac18b4c8bda6c5e5a3595b7ee494482744ca6f1c5eea0",
+      "status": "RECREATED"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/aschar65_candidate/source_recreated/20261119/AS65_BACK_REPAIR_V2/frames/attack_back/AS65_attack_back_repaired_03.png",
+      "bytes": 103883,
+      "sha256": "e5082d97d1a6ad5b952c43df28141dfaee9200ce23ae1d92efc914fc905ad7a7",
+      "status": "RECREATED"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/aschar65_candidate/source_recreated/20261119/AS65_BACK_REPAIR_V2/frames/cast_back/AS65_cast_back_repaired_00.png",
+      "bytes": 100573,
+      "sha256": "0b7c82267fa00c4b37a5826a1c83c616b8788674141210f5321e041fe59162f6",
+      "status": "RECREATED"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/aschar65_candidate/source_recreated/20261119/AS65_BACK_REPAIR_V2/frames/cast_back/AS65_cast_back_repaired_01.png",
+      "bytes": 102803,
+      "sha256": "9cf935deeef170c6957a380a2fab42a0a24ca60c4168fcd184cabf53011b0c14",
+      "status": "RECREATED"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/aschar65_candidate/source_recreated/20261119/AS65_BACK_REPAIR_V2/frames/cast_back/AS65_cast_back_repaired_02.png",
+      "bytes": 102114,
+      "sha256": "b00d590914adbe2820a926ae918a7b98eecb210283a74cf9f5ede6e687f6e3d2",
+      "status": "RECREATED"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/aschar65_candidate/source_recreated/20261119/AS65_BACK_REPAIR_V2/frames/cast_back/AS65_cast_back_repaired_03.png",
+      "bytes": 101870,
+      "sha256": "2785ecbc1ed6cefea7b1d8db65016310f6936ad7454d2e0892e4eb46f26bca8c",
+      "status": "RECREATED"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/aschar65_candidate/source_recreated/20261119/AS65_BACK_REPAIR_V2/frames/downed_back/AS65_downed_back_repaired_00.png",
+      "bytes": 103997,
+      "sha256": "812722d41d8c7500bec58aed2e683c873af6380ad5ceaad399dae3757dc1b1f8",
+      "status": "RECREATED"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/aschar65_candidate/source_recreated/20261119/AS65_BACK_REPAIR_V2/frames/downed_back/AS65_downed_back_repaired_01.png",
+      "bytes": 112592,
+      "sha256": "7f22fbc38110108c76e191367fde6ddd5b91217e5ab76b2f65bf2e9cbc160b61",
+      "status": "RECREATED"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/aschar65_candidate/source_recreated/20261119/AS65_BACK_REPAIR_V2/frames/downed_back/AS65_downed_back_repaired_02.png",
+      "bytes": 131604,
+      "sha256": "7134e0b55c0e366e2a1ac8a214d915d65d785cebbe62f6da3c7b4d162e46724f",
+      "status": "RECREATED"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/aschar65_candidate/source_recreated/20261119/AS65_BACK_REPAIR_V2/frames/downed_back/AS65_downed_back_repaired_03.png",
+      "bytes": 112461,
+      "sha256": "fbc541fdd03c540c6d90b6039e4a711aaa62b3d21dc8f21a7e48c32eecf22a44",
+      "status": "RECREATED"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/aschar65_candidate/source_recreated/20261119/AS65_BACK_REPAIR_V2/frames/hit_back/AS65_hit_back_repaired_00.png",
+      "bytes": 100454,
+      "sha256": "c16b2fd30970708c58a290f76d83b7a08b35cca29b6af8a22aefa6c0640815ed",
+      "status": "RECREATED"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/aschar65_candidate/source_recreated/20261119/AS65_BACK_REPAIR_V2/frames/hit_back/AS65_hit_back_repaired_01.png",
+      "bytes": 105384,
+      "sha256": "d23fa937f5d5da96393c11b8a877f9b5c4a0cc3dcc275d2048e7beb4dc03c353",
+      "status": "RECREATED"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/aschar65_candidate/source_recreated/20261119/AS65_BACK_REPAIR_V2/frames/hit_back/AS65_hit_back_repaired_02.png",
+      "bytes": 112180,
+      "sha256": "fdc1f13e4f38501ea4766d248ab215040f4019c86b75c5504749a9af5399cc71",
+      "status": "RECREATED"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/aschar65_candidate/source_recreated/20261119/AS65_BACK_REPAIR_V2/frames/hit_back/AS65_hit_back_repaired_03.png",
+      "bytes": 104060,
+      "sha256": "ca5a1fb4a63e02b12caeae38bad3deb45531a67c0f7f15db0a5ebc4ddf952007",
+      "status": "RECREATED"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/aschar65_candidate/source_recreated/20261119/AS65_BACK_REPAIR_V2/frames/idle_back/AS65_idle_back_repaired_00.png",
+      "bytes": 102518,
+      "sha256": "2f8b3c2f909db8be680b8d53939da80728085e9807ed513488a9f49e04db6b22",
+      "status": "RECREATED"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/aschar65_candidate/source_recreated/20261119/AS65_BACK_REPAIR_V2/frames/idle_back/AS65_idle_back_repaired_01.png",
+      "bytes": 100101,
+      "sha256": "564668edbec8fe275e527edce641265cfceed66301a7deaaa21f9f5150c26c0d",
+      "status": "RECREATED"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/aschar65_candidate/source_recreated/20261119/AS65_BACK_REPAIR_V2/frames/idle_back/AS65_idle_back_repaired_02.png",
+      "bytes": 102980,
+      "sha256": "be7e3b7645573824330bb63070ea0355f1cebced442f5719f6d7160b386669db",
+      "status": "RECREATED"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/aschar65_candidate/source_recreated/20261119/AS65_BACK_REPAIR_V2/frames/idle_back/AS65_idle_back_repaired_03.png",
+      "bytes": 101049,
+      "sha256": "6636a4e125319fab4c8a40495374b75c28a3e4d35a5e85e71c4118745adee05a",
+      "status": "RECREATED"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/aschar65_candidate/source_recreated/20261119/AS65_BACK_REPAIR_V2/frames/walk_back/AS65_walk_back_repaired_00.png",
+      "bytes": 97460,
+      "sha256": "63c84aac8c45a7448d6ea87b9da54835fc8c9b6107f3fed813550bfd290d3051",
+      "status": "RECREATED"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/aschar65_candidate/source_recreated/20261119/AS65_BACK_REPAIR_V2/frames/walk_back/AS65_walk_back_repaired_01.png",
+      "bytes": 95673,
+      "sha256": "07932d7b2677ac86bacb43d40315db401fbe162d0db59a3785f3357b3ebfaece",
+      "status": "RECREATED"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/aschar65_candidate/source_recreated/20261119/AS65_BACK_REPAIR_V2/frames/walk_back/AS65_walk_back_repaired_02.png",
+      "bytes": 96933,
+      "sha256": "34a89317fd9ebae96ad24dfd9137f375c71b4b748e562310106c2537d36e8535",
+      "status": "RECREATED"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/aschar65_candidate/source_recreated/20261119/AS65_BACK_REPAIR_V2/frames/walk_back/AS65_walk_back_repaired_03.png",
+      "bytes": 94635,
+      "sha256": "c9c6bb7b94e4e8d1845b82d571604d867f281f6b2258e74673850f3219ec8c7c",
+      "status": "RECREATED"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS50_weapon_sockets_v9_3_candidate.json",
+      "bytes": 176901,
+      "sha256": "620b62901faf7842126f696fdf8bda28fd4b8502d233d75f397216eb0ecb3d70",
+      "status": "RECREATED"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS51_weapon_sockets_v9_3_candidate.json",
+      "bytes": 176901,
+      "sha256": "b92aeae1867b82cd5e1612105ccd6d2696244b93506e329e23f62ef83a58613f",
+      "status": "RECREATED"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS52_weapon_sockets_v9_3_candidate.json",
+      "bytes": 177019,
+      "sha256": "511d664207f9d11cec27e8d4611887a188cbd865ac1e803e105a304b3ff2c8c3",
+      "status": "RECREATED"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS53_weapon_sockets_v9_3_candidate.json",
+      "bytes": 177019,
+      "sha256": "c5c1da5d3095035d20752974d933d4bcac6a6f53104184f4a2b76671cbad7d1f",
+      "status": "RECREATED"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS54_weapon_sockets_v9_3_candidate.json",
+      "bytes": 176929,
+      "sha256": "625dea0f66d2bb258c816d815a6a166b3136a88516f1358677e8eeb122269e47",
+      "status": "RECREATED"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS55_weapon_sockets_v9_3_candidate.json",
+      "bytes": 176931,
+      "sha256": "586502c33fc61783db3fe81be061cb4c3c8f82926f3b666ab15d36c8c667c590",
+      "status": "RECREATED"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS56_weapon_sockets_v9_3_candidate.json",
+      "bytes": 177203,
+      "sha256": "483ca3d963105a934c7a4c7b53e4b1a3c7dd91e41cec473637ef179107a7493c",
+      "status": "RECREATED"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS57_weapon_sockets_v9_3_candidate.json",
+      "bytes": 177207,
+      "sha256": "cd331c22b5df965fd00824e1c97349a864c70df54b8bd92836f7c3cb01381ad1",
+      "status": "RECREATED"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS58_weapon_sockets_v9_3_candidate.json",
+      "bytes": 176901,
+      "sha256": "dccf52b8257a78de29bd2e87ba6dd4456d2fc60c77d48baf9bb6afad55fc3f6b",
+      "status": "RECREATED"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS59_weapon_sockets_v9_3_candidate.json",
+      "bytes": 176856,
+      "sha256": "48f5723a44314647286df4a02f313ffe6ff3fc7ab92a54d3f40d41bae5679252",
+      "status": "RECREATED"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS60_weapon_sockets_v9_3_candidate.json",
+      "bytes": 176856,
+      "sha256": "472bfba7c6e5a45549c9d44fa8f566064cca74cd08d2f317bf959de714af44e1",
+      "status": "RECREATED"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS61_weapon_sockets_v9_3_candidate.json",
+      "bytes": 176862,
+      "sha256": "e9fab1906fc8fa50c495190b510b17d245830eec3a0968b9a5437713646978c7",
+      "status": "RECREATED"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS62_weapon_sockets_v9_3_candidate.json",
+      "bytes": 177445,
+      "sha256": "e11e4203ce3efcbe8b2f5122f67fa446cf9cc071bdda47b6b773b2c368f9e00a",
+      "status": "RECREATED"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS63_weapon_sockets_v9_3_candidate.json",
+      "bytes": 177064,
+      "sha256": "cc5326af0078f196372dd730d41d187ee317e810d6764de40ca751907255f2d8",
+      "status": "RECREATED"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS64_weapon_sockets_v9_3_candidate.json",
+      "bytes": 176776,
+      "sha256": "0b4ad524e04a3a87d96c89db32bbe02656c71d184ed04b3d27a39b242ffa50ec",
+      "status": "RECREATED"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS65_weapon_sockets_v9_3_candidate.json",
+      "bytes": 176776,
+      "sha256": "112c128db3be7e2e14cbfad2257fb31e45ed52c8a5747cfada1152a647af5ef7",
+      "status": "RECREATED"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS66_weapon_sockets_v9_3_candidate.json",
+      "bytes": 176949,
+      "sha256": "235e8546b25057fc250dd9b8a19c97f38929747f093f93ecdd373888ead485f4",
+      "status": "RECREATED"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS67_weapon_sockets_v9_3_candidate.json",
+      "bytes": 176951,
+      "sha256": "39d33f395dbd0dbb9c64ceae0b77cd39acd15ac946dad07c07d939106508e8f1",
+      "status": "RECREATED"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS68_weapon_sockets_v9_3_candidate.json",
+      "bytes": 176688,
+      "sha256": "95efb2428a2fd8baed7223d58e8a7be56ec48ceec70b96fa5d92cebbb0fabafd",
+      "status": "RECREATED"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS69_weapon_sockets_v9_3_candidate.json",
+      "bytes": 176903,
+      "sha256": "2b884c359fd850c9395fe85259291a11523fdebd201fe85c0a5eb64e16bfcf69",
+      "status": "RECREATED"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS70_weapon_sockets_v9_3_candidate.json",
+      "bytes": 177089,
+      "sha256": "a52f2e9f8fe4cfd2118252505b02d2006bbbc6e2439e241491b300ea8cd38629",
+      "status": "RECREATED"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS71_weapon_sockets_v9_3_candidate.json",
+      "bytes": 177230,
+      "sha256": "bd99bf56f7f3388054c4a1ec1263f39b01bde46d6f9bc5eee78eb00195a98aba",
+      "status": "RECREATED"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/weapon_library_v1/candidate/ASCHAR_24_ACTOR_WEAPON_BINDINGS_V9_3_CANDIDATE.json",
+      "bytes": 25308,
+      "sha256": "e358300f4c9c704209eb8f866a9c25955d2597a5860843f5962be21b2c80a5b2",
+      "status": "RECREATED"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/weapon_library_v1/candidate/review/ASCHAR_24_actor_weapon_review_1280x720.gif",
+      "bytes": 782863,
+      "sha256": "b94c985bffe474c47e2b21d455ff324f43f00eb2d12383d1f96aafd77a2bf1e8",
+      "status": "RECREATED"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/weapon_library_v1/candidate/review/ASCHAR_known_repairs_before_after.png",
+      "bytes": 258642,
+      "sha256": "bc83e670d26488750c8c8d844465b8e6ed7cbf1d88e1a4588a024d784d073694",
+      "status": "RECREATED"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/weapon_library_v1/candidate/review/ASCHAR_weapon_library_contact.png",
+      "bytes": 220723,
+      "sha256": "5de6b439d07b8b9695338be63d3ac0735dc6e1a58d20ab0008c3b875231b79c6",
+      "status": "RECREATED"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/weapon_library_v1/candidate/source_recreated/AS65_PHU_TU_BACK_4x6_RECREATED_SOURCE.png",
+      "bytes": 2359781,
+      "sha256": "3239237200b61e064d5cd83c3d068b19daf9a8fd617cb8ea29ac4d0a8abe94c4",
+      "status": "RECREATED"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/weapon_library_v1/candidate/source_recreated/ASCHAR_WEAPON_IMPLEMENT_ATLAS_4x4_RECREATED_SOURCE.png",
+      "bytes": 1547334,
+      "sha256": "b91b5c10c9acdb66fd27d9efe604bb26271492e62dbd8611c3e0106af47aa984",
+      "status": "RECREATED"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/weapon_library_v1/candidate/weapons/arrow.png",
+      "bytes": 24813,
+      "sha256": "54523a236f8aa0c0987c98180d4aa06782eaa7e259f6d69bbddf0451430321a7",
+      "status": "RECREATED"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/weapon_library_v1/candidate/weapons/bow.png",
+      "bytes": 46234,
+      "sha256": "69f7f5f3f919547a691549902e1a4b3d240d75392713d91a001b608396444385",
+      "status": "RECREATED"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/weapon_library_v1/candidate/weapons/curse_beads.png",
+      "bytes": 78638,
+      "sha256": "e370b7d1ee0d4249ef9521d953ac250e6eae34e9fd0d6694cb395d7154b5bb68",
+      "status": "RECREATED"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/weapon_library_v1/candidate/weapons/curved_dao.png",
+      "bytes": 42453,
+      "sha256": "fa58188cdca1c3d84bee16e3d076796e20b838ad048d6cffe43c2292e53fe9f0",
+      "status": "RECREATED"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/weapon_library_v1/candidate/weapons/dual_dao_left.png",
+      "bytes": 28482,
+      "sha256": "f7f2c09c6d535529664ca323db32f664aaf94e9d5ceee10cd34a460e367ee82f",
+      "status": "RECREATED"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/weapon_library_v1/candidate/weapons/dual_dao_right.png",
+      "bytes": 29731,
+      "sha256": "b6bd428416f1f3d73d46e8a8373ff4815b3b01aca495ca12e9e662a41ab6cd68",
+      "status": "RECREATED"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/weapon_library_v1/candidate/weapons/fist_wraps_left.png",
+      "bytes": 47652,
+      "sha256": "fb94a3014545d033da4cb9b003ca07584fb45ee9a84fc90e823ce597abd84caa",
+      "status": "RECREATED"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/weapon_library_v1/candidate/weapons/fist_wraps_right.png",
+      "bytes": 44214,
+      "sha256": "4011f4743074600361b01402665408f8b64cef85700d851e45793251288c24c6",
+      "status": "RECREATED"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/weapon_library_v1/candidate/weapons/formation_compass.png",
+      "bytes": 140822,
+      "sha256": "8c71dbe5efe068783d86d4cab4b2a1a24c44fe4ee07168088251349a33be7efd",
+      "status": "RECREATED"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/weapon_library_v1/candidate/weapons/formation_pointer.png",
+      "bytes": 20890,
+      "sha256": "efaeeac2a328ca7671cbccf786a161372021f52a1cd54ac728bfa998df71cfea",
+      "status": "RECREATED"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/weapon_library_v1/candidate/weapons/palm_bracer_left.png",
+      "bytes": 47777,
+      "sha256": "56d6ffd1d64d719ed716b27ae26c27ff53582c7bd716b18217995bcac9aea5c6",
+      "status": "RECREATED"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/weapon_library_v1/candidate/weapons/palm_bracer_right.png",
+      "bytes": 47867,
+      "sha256": "0accfcd2fedb1c4a1e4587233b6b73f2cd00751371aa1e76848d396fb890a264",
+      "status": "RECREATED"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/weapon_library_v1/candidate/weapons/poison_gourd.png",
+      "bytes": 95614,
+      "sha256": "1bf26081437704498bec38be1c93c37867bb5fd09bb7da4475168109a3579bb2",
+      "status": "RECREATED"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/weapon_library_v1/candidate/weapons/poison_needles.png",
+      "bytes": 47060,
+      "sha256": "8d6fe7b75d06a6d594b21283199b1236a699acdc7e86a92e0cb00a37c38ef4f7",
+      "status": "RECREATED"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/weapon_library_v1/candidate/weapons/spear.png",
+      "bytes": 32335,
+      "sha256": "9de94cb11245c966d66c0a92998f02e00631f017278196e01b8d95ac57d61c52",
+      "status": "RECREATED"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/weapon_library_v1/candidate/weapons/summon_contract.png",
+      "bytes": 78632,
+      "sha256": "7e6b1340d4b4a8d396a140d78734b0d2e2eafc099c8329a6b11348da91b55ff6",
+      "status": "RECREATED"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/weapon_library_v1/candidate/weapons/summon_seal.png",
+      "bytes": 85911,
+      "sha256": "166a541f807baebc1b6ad44e4f0e0193536f1f07729630339bcab2115bf704ad",
+      "status": "RECREATED"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/weapon_library_v1/candidate/weapons/talisman_brush.png",
+      "bytes": 39157,
+      "sha256": "a053eb6a29f4ae4337b5e3736fbde2bee7c1c9f20941d898a5471e47d90687f2",
+      "status": "RECREATED"
+    },
+    {
+      "path": "godot/assets/p3/baked_candidates/weapon_library_v1/candidate/weapons/talisman_paper.png",
+      "bytes": 71668,
+      "sha256": "25da67006404ca90280b161a650f63b9a50c5b9711709bf94bf6fe9893eb6b79",
+      "status": "RECREATED"
+    }
+  ]
+}
