@@ -42,7 +42,11 @@ func _run() -> void:
         return
     world.camera.position = original
     world._update_chunks()
-    var before_toggle := scene.state.to_dict().duplicate(true)
+    var state := scene.get("state") as SimulationState
+    if state == null:
+        _fail("canonical state missing after scene startup")
+        return
+    var before_toggle := state.to_dict().duplicate(true)
     hud.toggle()
     if not bool(hud.get("_enabled")) or not (hud.get("_hud") as Control).visible:
         _fail("F8-style toggle did not activate on-device profiler")
@@ -57,7 +61,7 @@ func _run() -> void:
     if bool(hud.get("_enabled")) or (hud.get("_hud") as Control).visible:
         _fail("F8 did not disable sampler")
         return
-    if scene.state.to_dict() != before_toggle:
+    if state.to_dict() != before_toggle:
         _fail("read-only telemetry changed simulation or Save state")
         return
     print("SECT RUNTIME PERF PASS static redraw camera threshold + F8 live HUD no gameplay mutation")
