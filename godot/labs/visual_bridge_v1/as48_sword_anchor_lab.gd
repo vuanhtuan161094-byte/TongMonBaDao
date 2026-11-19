@@ -34,6 +34,11 @@ var _hit := false
 var _done := false
 var _moving := true
 var _good := false
+var _review_paused := false
+var _review_speed := 1.0
+var _review_fx_visible := true
+var _review_bright := false
+var _review_zoomed := false
 var _release_point := Vector2.ZERO
 var _monster_home := Vector2(875, 573)
 
@@ -51,12 +56,20 @@ func _json(path: String) -> Dictionary:
 # by the outer Godot project. Decode original repository bytes directly, with
 # no new PNG/asset export, crop, copy, or changes to owner/character sources.
 func _raw_png_texture(path: String) -> Texture2D:
-    var image := Image.new()
-    var status := image.load(ProjectSettings.globalize_path(path))
-    if status != OK or image.is_empty():
-        push_error("AS48_RAW_PNG_READ_FAIL " + path + " error=" + str(status))
+    # Read packaged raw source bytes (works in native filesystem AND Web .pck).
+    # The CI Web preset includes explicit *.png without converting original art.
+    var source := FileAccess.open(path, FileAccess.READ)
+    if source == null:
+        push_error("AS48_RAW_PNG_OPEN_FAIL " + path)
         return null
-    return ImageTexture.create_from_image(image)
+    var data := source.get_buffer(source.get_length())
+    source.close()
+    var source_image := Image.new()
+    var status := source_image.load_png_from_buffer(data)
+    if status != OK or source_image.is_empty():
+        push_error("AS48_RAW_PNG_DECODE_FAIL " + path + " error=" + str(status))
+        return null
+    return ImageTexture.create_from_image(source_image)
 
 func _ready() -> void:
     _sockets = _json(SOCKETS)
@@ -212,9 +225,9 @@ func _send(type_name: String, nonce: String, frame: int) -> bool:
     return true
 
 func _process(delta: float) -> void:
-    if not _good:
+    if not _good or _review_paused:
         return
-    _clock += minf(delta, 0.06)
+    _clock += minf(delta, 0.06) * _review_speed
     var frame := mini(3, int(_clock * POSE_FPS))
     _pose(frame)
     if _moving:
@@ -223,7 +236,7 @@ func _process(delta: float) -> void:
         _cast = _send("skill_cast", "cast_1", 2)
     if not _hit and _clock >= 0.72:
         _hit = _send("hit", "hit_1", 3)
-    _glow.visible = _cast and _clock < 0.76
+    _glow.visible = _review_fx_visible and _cast and _clock < 0.76
     if _glow.visible:
         var p: Dictionary = BRIDGE.resolve_frame_anchor(
             _character, "attack", "front", frame, "weapon_tip", _actor.global_transform)
@@ -232,7 +245,7 @@ func _process(delta: float) -> void:
         _glow.position = _release_point - _glow.size * 0.5
         _glow_mat.set_shader_parameter("event_age", clampf((_clock - 0.29) / 0.5, 0.0, 1.0))
         _glow_mat.set_shader_parameter("power", 0.48)
-    _flash.visible = _hit and _clock < 1.45
+    _flash.visible = _review_fx_visible and _hit and _clock < 1.45
     if _flash.visible:
         # LAB estimated monster chest target from actual moving art, NOT canonical gameplay geometry.
         _flash.position = _monster.position + Vector2(0, -54) - _flash.size * 0.5
@@ -240,12 +253,49 @@ func _process(delta: float) -> void:
         _flash_mat.set_shader_parameter("power", 0.74)
     if not _done and _clock >= 2.8:
         _done = true
-        if _cast and _hit and _monster.position.distance_to(_monster_home) > 1.0:
-            print("BRIDGE_AS48_TARGET_MOVING=PASS")
+        if _cast and _hit and (not _moving or _monster.position.distance_to(_monster_home) > 1.0):
+            if _moving:
+                print("BRIDGE_AS48_TARGET_MOVING=PASS")
+            else:
+                print("BRIDGE_AS48_TARGET_STATIONARY=PASS")
             print("BRIDGE_AS48_END=PASS front_only=true G3=SOURCE_PENDING native_movie_is_not_device_fps=true")
         else:
             push_error("BRIDGE_AS48_END=FAIL")
     queue_redraw()
+
+
+# Browser/manual VFX review surface: no scene replication or gameplay writes.
+func review_replay() -> void:
+    if _good:
+        _replay()
+
+func review_set_paused(value: bool) -> void:
+    _review_paused = value
+    if _monster != null:
+        _monster.speed_scale = 0.0 if value else _review_speed
+
+func review_set_moving(value: bool) -> void:
+    _moving = value
+
+func review_set_fx(value: bool) -> void:
+    _review_fx_visible = value
+    if not value:
+        _glow.visible = false
+        _flash.visible = false
+
+func review_set_bright(value: bool) -> void:
+    _review_bright = value
+    queue_redraw()
+
+func review_set_map_zoom(value: bool) -> void:
+    _review_zoomed = value
+    if _actor != null:
+        _actor.scale = Vector2.ONE * (MAP_SCALE * 2.0 if value else MAP_SCALE)
+
+func review_set_speed(value: float) -> void:
+    _review_speed = clampf(value, 0.25, 2.0)
+    if _monster != null:
+        _monster.speed_scale = 0.0 if _review_paused else _review_speed
 
 func _unhandled_key_input(event: InputEvent) -> void:
     if not (event is InputEventKey):
@@ -259,16 +309,16 @@ func _unhandled_key_input(event: InputEvent) -> void:
         _moving = not _moving
 
 func _draw() -> void:
-    draw_rect(Rect2(0, 0, 1280, 720), Color("17212b"))
-    draw_rect(Rect2(0, 420, 1280, 300), Color("383e3c"))
-    draw_rect(Rect2(0, 496, 1280, 6), Color("59665b"))
+    draw_rect(Rect2(0, 0, 1280, 720), Color("d9e6ed") if _review_bright else Color("17212b"))
+    draw_rect(Rect2(0, 420, 1280, 300), Color("b2baae") if _review_bright else Color("383e3c"))
+    draw_rect(Rect2(0, 496, 1280, 6), Color("869b8d") if _review_bright else Color("59665b"))
     draw_line(Vector2(80, 604), Vector2(1200, 604), Color("737f75"), 1.0)
     var font := ThemeDB.fallback_font
     draw_string(font, Vector2(24, 42), "AS48 KIEM TU HUMAN - PHI KIEM TRUY ANH - VISUAL EVENT BRIDGE LAB",
-        HORIZONTAL_ALIGNMENT_LEFT, -1, 20, Color("e7f3fa"))
+        HORIZONTAL_ALIGNMENT_LEFT, -1, 20, Color("163247") if _review_bright else Color("e7f3fa"))
     draw_string(font, Vector2(24, 68), "FOUR REAL FRONT POSES + SEPARATE JIAN - MAP SIZE 1X - VFX TECH CUE ONLY",
-        HORIZONTAL_ALIGNMENT_LEFT, -1, 15, Color("f4cf90"))
+        HORIZONTAL_ALIGNMENT_LEFT, -1, 15, Color("643d17") if _review_bright else Color("f4cf90"))
     draw_string(font, Vector2(24, 94), "SYNTHETIC LAB EVENTS - NO HP/STATUS - SPACE REPLAY - M MOVE",
-        HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Color("bed2e0"))
+        HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Color("304d63") if _review_bright else Color("bed2e0"))
     draw_string(font, Vector2(24, 682), "G3 SOURCE PENDING - OTHER THREE DIRECTIONS PENDING - OWNER ART PENDING - PVE HOLD",
-        HORIZONTAL_ALIGNMENT_LEFT, -1, 15, Color("f0d7b9"))
+        HORIZONTAL_ALIGNMENT_LEFT, -1, 15, Color("68472c") if _review_bright else Color("f0d7b9"))
