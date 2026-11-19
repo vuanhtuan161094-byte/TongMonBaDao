@@ -1,0 +1,30 @@
+{
+  "schema": "tmb.vfx_bindings.v1",
+  "source_kind": "VFX_ONLY",
+  "source_status": "SOURCE_PENDING",
+  "skill_id": "tmb.skill.sword.ngu_kiem.active_01.human",
+  "school": "sword",
+  "branch": "ngu_kiem",
+  "tier": "human",
+  "source_vfx": "NONE_APPROVED_FOR_PHI_KIEM_TRUY_ANH",
+  "visual_probe": "LAB_ONLY_TECHNICAL_CUE_V16_SHADER_NOT_FINAL_ART",
+  "effect_declared": "damage",
+  "shape_declared": "single_target",
+  "target_limit_declared": 1,
+  "bindings": [
+    {
+      "event_type": "skill_cast",
+      "visual_phase": "release",
+      "actor_clip": "attack",
+      "caster_slot": "weapon_tip",
+      "target_slot": "body_center"
+    },
+    {
+      "event_type": "hit",
+      "visual_phase": "contact",
+      "actor_clip": "attack",
+      "caster_slot": "weapon_tip",
+      "target_slot": "body_center"
+    }
+  ]
+}

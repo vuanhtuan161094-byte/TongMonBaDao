@@ -1,0 +1,85 @@
+name: VFX Sword AS48 | native anchor event proof, Lab only
+on:
+  push:
+    branches: [integration/pve-p0-playable-ui-20261103]
+    paths:
+      - 'godot/labs/visual_bridge_v1/**'
+      - 'tools/qa/check_as48_sword_bridge_sources.py'
+      - '.github/workflows/vfx-sword-as48-anchor-native.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  native-proof:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    env:
+      GODOT_AUDIO_DRIVER: Dummy
+      GODOT_RENDERING_DRIVER: opengl3
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Verify real AS48 source, independent sword, and source-only binding
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          python3 tools/qa/check_as48_sword_bridge_sources.py
+          python3 -m unittest discover -s tools/qa -p 'test_asset_vfx_bridge_v1.py' -v
+          python3 tools/qa/validate_asset_vfx_bridge_v1.py docs/operations/visual_bridge_v1/fixture_character.json docs/operations/visual_bridge_v1/fixture_vfx.json
+      - name: Install SHA256-pinned official Godot 4.7.2 and video tools
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq xvfb ffmpeg unzip
+          curl --fail --location --retry 3 -o /tmp/godot472.zip 'https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip'
+          echo 'cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4  /tmp/godot472.zip' | sha256sum --check --strict
+          unzip -q /tmp/godot472.zip -d /tmp
+          sudo install -m0755 /tmp/Godot_v4.7.2-stable_linux.x86_64 /usr/local/bin/godot
+          mkdir -p "$RUNNER_TEMP/vfx-sword-as48"
+          godot --version | tee "$RUNNER_TEMP/vfx-sword-as48/godot-version.txt"
+      - name: Strict import and GDScript parser
+        shell: bash
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/vfx-sword-as48"
+          bash tools/qa/run_godot_strict.sh --headless --path godot --import 2>&1 | tee "$d/import.log"
+          bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://labs/visual_bridge_v1/asset_vfx_readonly_bridge_v1.gd 2>&1 | tee "$d/bridge-parse.log"
+          bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://labs/visual_bridge_v1/as48_sword_anchor_lab.gd 2>&1 | tee "$d/lab-parse.log"
+      - name: Godot native 1280x720 actor/sword/moving monster with lab event cue
+        shell: bash
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/vfx-sword-as48"
+          xvfb-run -a -s '-screen 0 1280x720x24' \
+            bash tools/qa/run_godot_strict.sh --path godot --resolution 1280x720 \
+            --fixed-fps 60 --write-movie "$d/AS48-Human-Sword-Anchor-Native.avi" \
+            --quit-after 216 res://labs/visual_bridge_v1/as48_sword_anchor_lab.tscn \
+            2>&1 | tee "$d/movie.log"
+          grep -Fq 'BRIDGE_AS48_READY actor=AS48' "$d/movie.log"
+          grep -Fq 'BRIDGE_AS48_ANCHOR_CAST=PASS' "$d/movie.log"
+          grep -Fq 'BRIDGE_AS48_ANCHOR_CONTACT=PASS' "$d/movie.log"
+          grep -Fq 'BRIDGE_AS48_DUPLICATE_DROPPED=PASS' "$d/movie.log"
+          grep -Fq 'BRIDGE_AS48_TARGET_MOVING=PASS' "$d/movie.log"
+          grep -Fq 'BRIDGE_AS48_END=PASS' "$d/movie.log"
+          test -s "$d/AS48-Human-Sword-Anchor-Native.avi"
+          ffmpeg -y -hide_banner -loglevel error -i "$d/AS48-Human-Sword-Anchor-Native.avi" -pix_fmt yuv420p -c:v libx264 -crf 17 "$d/AS48-Human-Sword-Anchor-Native.mp4"
+          ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of default=noprint_wrappers=1 "$d/AS48-Human-Sword-Anchor-Native.mp4" | tee "$d/dimensions.txt"
+          grep -Fxq 'width=1280' "$d/dimensions.txt"
+          grep -Fxq 'height=720' "$d/dimensions.txt"
+          for at in 0.30 0.40 0.76 1.05 1.40 2.80; do
+            ffmpeg -y -hide_banner -loglevel error -ss "$at" -i "$d/AS48-Human-Sword-Anchor-Native.mp4" -frames:v 1 "$d/native-$at.png"
+          done
+          sha256sum "$d/"*.mp4 "$d/"*.png > "$d/SHA256SUMS.txt"
+          printf 'EXACT_SHA=%s\nFRONT_ONLY=YES\nEVENT_SOURCE=LAB_ONLY\nVFX_G3=SOURCE_PENDING\nOWNER_ART=PENDING\nPVE=HOLD\n' "$GITHUB_SHA" > "$d/provenance.txt"
+          rm -f "$d/AS48-Human-Sword-Anchor-Native.avi"
+      - name: Upload native proof (never owner or G3 art approval)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vfx-sword-as48-anchor-${{ github.sha }}
+          retention-days: 14
+          if-no-files-found: warn
+          path: ${{ runner.temp }}/vfx-sword-as48/
