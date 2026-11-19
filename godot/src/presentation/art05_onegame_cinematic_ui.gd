@@ -559,12 +559,13 @@ func _build_construction_ui() -> void:
         nav.pressed.connect(Callable(self,"_art05_focus_masterplan_district").bind(key))
         add_child(nav)
 
-func _art05_focus_masterplan_district(destination: String) -> void:
+func _art05_focus_masterplan_district(destination: String, close_panels: bool = true) -> void:
     if iso_world == null or state == null:
         return
-    _leave_build_mode(true)
-    _close_building_operation_panel(true)
-    _close_disciple_summary(true)
+    if close_panels:
+        _leave_build_mode(true)
+        _close_building_operation_panel(true)
+        _close_disciple_summary(true)
     var anchors := SectResidenceSiteV1.map_anchors(int(state.sect.world_layout_version))
     var cell: Vector2i = anchors.get(destination,Vector2i(89,96))
     var world_point := SectIsometricWorldV1.LEGACY_ANCHOR \
@@ -577,7 +578,7 @@ func _focus_buildable_residence_area() -> void:
     if state == null or int(state.sect.world_layout_version) != 2:
         super._focus_buildable_residence_area()
         return
-    _art05_focus_masterplan_district("residence")
+    _art05_focus_masterplan_district("residence",false)
 
 func _begin_residence_construction() -> void:
     super._begin_residence_construction()
