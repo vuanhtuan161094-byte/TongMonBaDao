@@ -13,18 +13,25 @@ var compact := false
 var model_version := 0
 var dimension_values: Array[float] = []
 var chart_ceiling := 1.0
+# Founding/legacy disciples have six known foundation values. Keep the same
+# seven-axis form, but mark Tâm Tính unavailable instead of inventing a score.
+var mind_nature_available := true
 
 func apply_snapshot(snapshot: Dictionary) -> bool:
 	if not bool(snapshot.get("ok", false)):
 		return false
 	var foundations: Dictionary = snapshot.get("foundations", {})
 	var next_model_version := int(foundations.get("model_version", 0))
-	if next_model_version < FoundationSystem.MODEL_D7:
-		return false
+	var legacy_profile := next_model_version < FoundationSystem.MODEL_D7
 	var current: Dictionary = foundations.get("current", {})
 	var next_values: Array[float] = []
 	var maximum := 0.0
 	for key in D7_KEYS:
+		if legacy_profile and key == "mind_nature":
+			# Geometry placeholder only. This value is never presented as a
+			# genuine stat, used in quality calculations, or written to Save.
+			next_values.append(0.0)
+			continue
 		if not current.has(key):
 			return false
 		var value := float(current[key])
@@ -33,9 +40,12 @@ func apply_snapshot(snapshot: Dictionary) -> bool:
 		next_values.append(value)
 		maximum = maxf(maximum, value)
 	model_version = next_model_version
+	mind_nature_available = not legacy_profile
 	dimension_values = next_values
 	chart_ceiling = _drawing_ceiling(maximum)
-	tooltip_text = "D7 · Tam Căn (3) / Tứ Tính (4) · đọc theo hồ sơ, không sửa chỉ số"
+	tooltip_text = ("D7 · Tam Căn (3) / Tứ Tính (4) · đọc theo hồ sơ, không sửa chỉ số"
+		if mind_nature_available else
+		"Hồ sơ cũ · cùng bố cục Tam Căn (3) / Tứ Tính (4) · Tâm Tính chưa có dữ liệu; không tự gán giá trị")
 	queue_redraw()
 	return true
 
@@ -71,12 +81,27 @@ func _draw() -> void:
 		polygon.append(point)
 		var label_point := center + direction * (radius + 14.0)
 		draw_string(font, Vector2(label_point.x - label_width * 0.5, label_point.y + 3.0), D7_NAMES[index], HORIZONTAL_ALIGNMENT_CENTER, label_width, label_size, JADE)
-		draw_string(font, Vector2(label_point.x - 28.0, label_point.y + label_size + 3.0), "%.0f" % value, HORIZONTAL_ALIGNMENT_CENTER, 56.0, label_size, INK)
-	draw_colored_polygon(polygon, Color(0.22, 0.57, 0.42, 0.22))
-	var closed := polygon.duplicate()
-	closed.append(polygon[0])
-	draw_polyline(closed, JADE, 2.0, true)
-	for point in polygon:
-		draw_circle(point, 3.0, JADE)
-	draw_string(font, Vector2(0.0, size.y - 4.0), "TAM CĂN (3)  ·  TỨ TÍNH (4)  ·  thang %.0f" % chart_ceiling,
+		var readout := "—" if index == 2 and not mind_nature_available else "%.0f" % value
+		draw_string(font, Vector2(label_point.x - 28.0, label_point.y + label_size + 3.0), readout, HORIZONTAL_ALIGNMENT_CENTER, 56.0, label_size, INK)
+	if mind_nature_available:
+		draw_colored_polygon(polygon, Color(0.22, 0.57, 0.42, 0.22))
+		var closed := polygon.duplicate()
+		closed.append(polygon[0])
+		draw_polyline(closed, JADE, 2.0, true)
+	else:
+		# A deliberate gap around the unavailable Tâm Tính axis: no fake zero
+		# corner, no closed polygon and no misleading filled foundation score.
+		for index in range(D7_KEYS.size() - 1):
+			if index == 1 or index == 2:
+				continue
+			draw_line(polygon[index], polygon[index + 1], JADE, 2.0, true)
+		draw_line(polygon[D7_KEYS.size() - 1], polygon[0], JADE, 2.0, true)
+	for index in range(polygon.size()):
+		if index == 2 and not mind_nature_available:
+			continue
+		draw_circle(polygon[index], 3.0, JADE)
+	var footer := ("TAM CĂN (3)  ·  TỨ TÍNH (4)  ·  thang %.0f" % chart_ceiling
+		if mind_nature_available else
+		"TAM CĂN / TỨ TÍNH · Tâm Tính: chưa có dữ liệu")
+	draw_string(font, Vector2(0.0, size.y - 4.0), footer,
 		HORIZONTAL_ALIGNMENT_CENTER, size.x, 9 if compact else 10, INK)
