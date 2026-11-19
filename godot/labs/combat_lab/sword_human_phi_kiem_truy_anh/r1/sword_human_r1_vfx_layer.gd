@@ -30,6 +30,21 @@ func _ready() -> void:
         return
     if image.get_format() != Image.FORMAT_RGBA8:
         image.convert(Image.FORMAT_RGBA8)
+    # Validate original atlas actually contains painted alpha in each row.
+    var row_alpha_counts: Array[int] = []
+    for row in range(3):
+        var count := 0
+        for y in range(row * HEIGHT, (row + 1) * HEIGHT, 2):
+            for x in range(0, 640, 2):
+                if image.get_pixel(x, y).a > 0.02:
+                    count += 1
+        row_alpha_counts.append(count)
+    print("VFX_SWORD_R1_ALPHA_PIXELS_CHARGE=", row_alpha_counts[0],
+        " FLIGHT=", row_alpha_counts[1],
+        " CONTACT=", row_alpha_counts[2])
+    if row_alpha_counts[0] < 10 or row_alpha_counts[1] < 10 or row_alpha_counts[2] < 10:
+        push_error("VFX_SWORD_R1_EMPTY_SOURCE_ROW")
+        return
     _source_texture = ImageTexture.create_from_image(image)
     _source_ok = _source_texture != null
     if _source_ok:
@@ -116,7 +131,12 @@ func _draw() -> void:
         point.y -= 15.0 * sin(PI * u)
         var rot := (end - start).angle()
         var cel := mini(3, int(u * 4.0))
-        _frame(1, cel, point, 1.16 + .22 * sin(PI * u), rot, 1.0)
+        # R1 blade source is thin; overlap genuine authored RGBA poses for
+        # legibility in a 1280x720 Web canvas. No generated vector substitute.
+        # Slight subpixel offsets give a white-hot core + blue translucent halo.
+        for pass_index in range(4):
+            var offset := Vector2(0.0, (float(pass_index) - 1.5) * 0.75)
+            _frame(1, cel, point + offset, 1.80 + .26 * sin(PI * u), rot, 1.0)
         return
     if bool(parent.get("_hit")) and t < CONTACT_END:
         var contact := _monster_center()
