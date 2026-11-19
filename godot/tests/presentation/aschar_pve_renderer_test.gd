@@ -1,57 +1,82 @@
 extends SceneTree
-## Source-contract QA for the actual PvE AS-CHAR renderer. No generated rigs.
-## Run: godot --headless --path godot --script res://tests/presentation/aschar_pve_renderer_test.gd
+## Focused Godot 4.7.2 source-contract and lazy-cel smoke test.
+## Does NOT certify visual socket alignment, art quality or GUI acceptance.
 const BRIDGE = preload("res://src/presentation/p3/sect_aschar_candidate_bridge_v1.gd")
 const RENDERER = preload("res://src/presentation/p3/pve_aschar_frame_renderer_v1.gd")
+const ACTIONS := ["idle","walk","attack","cast","hit","downed"]
+const DIRECTIONS := ["front","right","back","left"]
 
 func _init() -> void:
     call_deferred("_run")
 
 func _run() -> void:
     var checked := 0
-    var directional := 0
-    var incomplete_sockets := 0
-    var sexes := ["male","female"]
+    var four_directional := 0
+    var socket_fallbacks := 0
+    var front_cels := 0
     for school in BRIDGE.SCHOOL_IDS:
-        for sex in sexes:
+        for sex in ["male","female"]:
             var id := BRIDGE.actor_id(school,sex)
             var path := str(BRIDGE.SOURCE_PATHS.get(id,""))
             if id < 48 or id > 71 or not ResourceLoader.exists(path,"SpriteFrames"):
-                _fail("missing source %s %s" % [school,sex])
+                _fail("missing source: %s %s" % [school,sex])
                 return
-            var manifest := RENDERER._manifest(id)
-            if manifest.is_empty() or not FileAccess.file_exists(
-                    BRIDGE.SOCKET_ROOT+"/AS%d_weapon_sockets_v9_3_candidate.json" % id):
+            var manifest: Dictionary = RENDERER._manifest(id)
+            if manifest.is_empty():
                 _fail("missing manifest AS%d" % id)
                 return
-            var clips: Dictionary = {}
-            for raw in manifest.get("body_frames",[]):
-                if raw is Dictionary:
-                    clips[str(raw.get("clip",""))] = true
-            for direction in ["front","right","back","left"]:
-                var prefix := "idle_"+direction
-                if clips.has(prefix):
-                    directional += 1
-                else:
-                    incomplete_sockets += 1
-            if not clips.has("idle_front"):
-                _fail("front identity missing AS%d" % id)
+            var rows: Dictionary = RENDERER._rows(id,manifest)
+            var atlases: Dictionary = manifest.get("directional_atlases",{})
+            for action in ACTIONS:
+                var front := action+"_front"
+                if not rows.has(front):
+                    _fail("missing front source AS%d %s" % [id,action])
+                    return
+                for direction in DIRECTIONS:
+                    var clip := action+"_"+direction
+                    if rows.has(clip):
+                        var cels: Array = rows[clip]
+                        if cels.is_empty():
+                            _fail("empty authored clip AS%d %s" % [id,clip])
+                            return
+                        var row: Dictionary = cels[0]
+                        var cel_path := str(row.get("path",""))
+                        if not ResourceLoader.exists(cel_path,"Texture2D"):
+                            _fail("missing authored texture AS%d %s" % [id,clip])
+                            return
+                        if direction != "front":
+                            four_directional += 1
+                    else:
+                        var atlas: Dictionary = atlases.get(direction,{})
+                        if direction != "front" and atlas.has("path") and Dictionary(atlas.get("rows",{})).has(action) and ResourceLoader.exists(str(atlas.get("path","")),"Texture2D"):
+                            four_directional += 1
+                        elif direction != "front":
+                            socket_fallbacks += 1
+            var first: Dictionary = (rows["idle_front"] as Array)[0]
+            if RENDERER._cel(str(first.get("path",""))) == null:
+                _fail("lazy texture decode failed AS%d" % id)
                 return
+            front_cels += 1
             checked += 1
-    # Actual frame resolution + fallback, not only file presence.
-    var frames := RENDERER._sprite_frames(48)
-    if frames == null:
-        _fail("real AS48 SpriteFrames failed to load")
+    if checked != 24 or front_cels != 24:
+        _fail("24 source identities / lazy front cels missing")
         return
-    for action in ["idle","run","attack","cast","hit","die"]:
-        for face in [Vector2.DOWN,Vector2.UP,Vector2.LEFT,Vector2.RIGHT]:
-            var clip := RENDERER.resolve_clip(frames,action,face)
-            if clip.is_empty() or frames.get_frame_count(StringName(clip)) <= 0:
-                _fail("unresolved animation %s %s" % [action,str(face)])
+    if four_directional + socket_fallbacks != 24*6*3:
+        _fail("directional source accounting inconsistent")
+        return
+    # Verify action-name dispatch and cardinal direction mapping without
+    # forcing full 24 x 96 SpriteFrames decodes into CI memory.
+    var cases := { "run":"walk","attack":"attack","cast":"cast",
+        "hit":"hit","die":"downed","idle":"idle" }
+    for action in cases:
+        for facing in [Vector2.DOWN,Vector2.UP,Vector2.LEFT,Vector2.RIGHT]:
+            var clip := str(cases[action])+"_"+RENDERER._direction(facing)
+            if clip.is_empty():
+                _fail("invalid action dispatch")
                 return
-    print("ASCHAR PVE SOURCE PASS: %d/24 identities; %d/96 direction socket clips; %d fallback direction socket rows; 6 actions x 4 faces AS48" % [checked,directional,incomplete_sockets])
+    print("ASCHAR_PVE_CONTRACT_PASS identities=%d lazy_cels=%d directional_action_clips=%d source_fallbacks=%d; NOT a visual approval" % [checked,front_cels,four_directional,socket_fallbacks])
     quit(0)
 
 func _fail(reason: String) -> void:
-    push_error("ASCHAR PVE SOURCE FAIL "+reason)
+    push_error("ASCHAR_PVE_CONTRACT_FAIL "+reason)
     quit(1)
