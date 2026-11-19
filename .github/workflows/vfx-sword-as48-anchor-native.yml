@@ -1,11 +1,6 @@
 name: VFX Sword AS48 | native anchor event proof, Lab only
 on:
-  push:
-    branches: [integration/pve-p0-playable-ui-20261103]
-    paths:
-      - 'godot/labs/visual_bridge_v1/**'
-      - 'tools/qa/check_as48_sword_bridge_sources.py'
-      - '.github/workflows/vfx-sword-as48-anchor-native.yml'
+  # Web review is the everyday default; explicit dispatch retains native G3.5 validation.
   workflow_dispatch:
 permissions:
   contents: read

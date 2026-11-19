@@ -8,6 +8,8 @@ on:
       - 'godot/**'
       - 'wiki/**'
       - 'tools/wiki/tests/**'
+      - 'tools/vfx/stage_vfx_web_review.py'
+      - 'tools/qa/check_as48_sword_bridge_sources.py'
       - '.github/workflows/wiki-player-pages.yml'
   workflow_dispatch:
 
@@ -126,6 +128,39 @@ jobs:
           printf '%s\n' "Godot 4.7.2 / WebGL2 / single-thread" >> _site/play/build-info.txt
           du -h _site/play/index.*
           find _site/play -maxdepth 1 -type f | sort
+
+      - name: Export isolated VFX Web review into SAME canonical Pages site
+        shell: bash
+        run: |
+          set -euo pipefail
+          # Review is a small ephemeral build-only Godot staging project.
+          # It does NOT create a second game, branch or published site.
+          python3 tools/qa/check_as48_sword_bridge_sources.py
+          python3 tools/vfx/stage_vfx_web_review.py \
+            --source godot --destination "$RUNNER_TEMP/tmb-vfx-web-stage"
+          GODOT="$RUNNER_TEMP/tmb-godot/Godot_v4.7.2-stable_linux.x86_64"
+          STAGE="$RUNNER_TEMP/tmb-vfx-web-stage"
+          "$GODOT" --headless --path "$STAGE" --editor --import
+          "$GODOT" --headless --path "$STAGE" --check-only \
+            --script res://labs/visual_bridge_v1/as48_sword_anchor_lab.gd
+          "$GODOT" --headless --path "$STAGE" --check-only \
+            --script res://labs/visual_bridge_v1/vfx_web_review_hub.gd
+          # This short isolated logic check does not render a new MP4.
+          "$GODOT" --headless --path "$STAGE" --fixed-fps 60 \
+            --quit-after 216 res://labs/visual_bridge_v1/vfx_web_review_hub.tscn \
+            2>&1 | tee "$RUNNER_TEMP/vfx-web-logic-smoke.log"
+          grep -Fq 'BRIDGE_AS48_READY actor=AS48' "$RUNNER_TEMP/vfx-web-logic-smoke.log"
+          grep -Fq 'BRIDGE_AS48_END=PASS' "$RUNNER_TEMP/vfx-web-logic-smoke.log"
+          mkdir -p "$GITHUB_WORKSPACE/_site/vfx"
+          "$GODOT" --headless --path "$STAGE" \
+            --export-release "Web" "$GITHUB_WORKSPACE/_site/vfx/index.html"
+          for ext in html js wasm pck; do
+            test -s "$GITHUB_WORKSPACE/_site/vfx/index.$ext"
+          done
+          printf 'SOURCE_SHA=%s\nWEB_REVIEW_ONLY=true\nLAB_EVENT_SOURCE=SYNTHETIC\nFRONT_ONLY=true\nG3_SOURCE=PENDING\nOWNER_ART=PENDING\nPVE=HOLD\n' \
+            "$GITHUB_SHA" > "$GITHUB_WORKSPACE/_site/vfx/build-info.txt"
+          du -h "$GITHUB_WORKSPACE"/_site/vfx/index.*
+          echo "VFX_WEB_REVIEW_EXPORT_PASS exact_sha=$GITHUB_SHA"
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
