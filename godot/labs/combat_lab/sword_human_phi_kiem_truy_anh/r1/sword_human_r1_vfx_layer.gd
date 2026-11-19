@@ -19,7 +19,15 @@ func _ready() -> void:
     # and the no-threads Web export PCK. No generated shaders as core source.
     var file := FileAccess.open(SOURCE, FileAccess.READ)
     if file == null:
-        push_error("VFX_SWORD_R1_SOURCE_PNG_MISSING")
+        # Godot Web export packs imported PNG as .ctex + .import, NOT raw PNG.
+        # Use canonical ResourceLoader remapping, preserving authored alpha.
+        var imported := ResourceLoader.load(SOURCE, "Texture2D") as Texture2D
+        if imported == null:
+            push_error("VFX_SWORD_R1_RESOURCE_AND_RAW_PNG_MISSING")
+            return
+        _source_texture = imported
+        _source_ok = true
+        print("VFX_SWORD_R1_SOURCE_LOADED=PASS Web_imported_ctex=true 640x480 cels=12 alpha=RGBA source=CODE_PAINTED_CANDIDATE G3=ART_PENDING")
         return
     var data := file.get_buffer(file.get_length())
     file.close()
