@@ -230,6 +230,8 @@ var pve_view_rows: Dictionary = {}
 var pve_render_positions: Dictionary = {}
 var pve_target_positions: Dictionary = {}
 var pve_actor_actions: Dictionary = {}
+# Transient rendering direction: maintain facing after movement or a cast/hit.
+var pve_actor_facings: Dictionary = {}
 var pve_clock := 0.0
 var _pve_last_visual_encounter_id := ""
 var pve_source_atlas := CombatV5SourceAAtlas.new()
@@ -884,6 +886,7 @@ func set_pve_snapshot(snapshot: MapBattleV2, view_rows: Dictionary,
         pve_target_positions.clear()
         pve_render_positions.clear()
         pve_actor_actions.clear()
+        pve_actor_facings.clear()
         pve_jx_sword_vfx.observe_snapshot(null)
         queue_redraw()
         return
@@ -894,6 +897,7 @@ func set_pve_snapshot(snapshot: MapBattleV2, view_rows: Dictionary,
         pve_target_positions.clear()
         pve_render_positions.clear()
         pve_actor_actions.clear()
+        pve_actor_facings.clear()
     var new_visual_events := pve_jx_sword_vfx.observe_snapshot(snapshot)
     var present: Dictionary = {}
     for raw_id in snapshot.actors:
@@ -919,6 +923,7 @@ func set_pve_snapshot(snapshot: MapBattleV2, view_rows: Dictionary,
             pve_render_positions.erase(id)
             pve_target_positions.erase(id)
             pve_actor_actions.erase(id)
+            pve_actor_facings.erase(id)
     _apply_pve_actor_events(new_visual_events,snapshot)
     if not pve_camera_initialized and camera != null:
         for raw_id in snapshot.actors:
@@ -960,8 +965,12 @@ func _process(delta: float) -> void:
         var id := str(raw_id)
         if pve_target_positions.has(id):
             var actor: Dictionary = pve_battle.actors.get(id,{})
-            pve_render_positions[id] = (pve_render_positions[id] as Vector2).move_toward(
-                pve_target_positions[id],maxf(0.1,float(actor.get("move_speed",3.0)))*delta)
+            var current: Vector2 = pve_render_positions[id]
+            var destination: Vector2 = pve_target_positions[id]
+            if destination.distance_squared_to(current) > 0.001:
+                pve_actor_facings[id] = destination-current
+            pve_render_positions[id] = current.move_toward(
+                destination,maxf(0.1,float(actor.get("move_speed",3.0)))*delta)
     for raw_id in pve_actor_actions.keys():
         var id := str(raw_id)
         var actor: Dictionary = pve_battle.actors.get(id,{})
@@ -997,6 +1006,10 @@ func _apply_pve_actor_events(events: Array[Dictionary],snapshot: MapBattleV2) ->
         var kind := str(event.get("type",""))
         var source_id := str(event.get("actor_id",event.get("attacker",event.get("caster",""))))
         var target_id := str(event.get("target",event.get("target_id","")))
+        if snapshot.actors.has(source_id) and snapshot.actors.has(target_id) and kind in ["skill_cast","hit","skill_hit","basic_hit"]:
+            var to_target: Vector2 = Vector2(snapshot.actors[target_id].get("position",Vector2.ZERO))-Vector2(snapshot.actors[source_id].get("position",Vector2.ZERO))
+            if to_target.length_squared() > 0.001:
+                pve_actor_facings[source_id] = to_target
         if kind == "move" and snapshot.actors.has(source_id):
             pve_actor_actions[source_id] = {"action":"run","started":pve_clock,"until":pve_clock+0.3}
         elif kind == "skill_cast" and snapshot.actors.has(source_id):
@@ -1438,9 +1451,12 @@ func _draw_pve_actor(data: Dictionary) -> void:
         action = "run" if (pve_render_positions.get(id,cell) as Vector2).distance_to(cell) > 0.035 else "idle"
     if action == "cast" and pve_jx_sword_vfx.comparison_style == "jx1":
         action = "idle"
-    var facing := Vector2.RIGHT
+    var facing: Vector2 = pve_actor_facings.get(id,
+        Vector2.RIGHT if side == "disciple" else Vector2.LEFT)
     if pve_target_positions.has(id) and pve_render_positions.has(id):
-        facing = (pve_target_positions[id] as Vector2)-(pve_render_positions[id] as Vector2)
+        var movement: Vector2 = (pve_target_positions[id] as Vector2)-(pve_render_positions[id] as Vector2)
+        if movement.length_squared() > 0.001:
+            facing = movement
     if facing.length_squared() < 0.001:
         facing = Vector2.RIGHT if side == "disciple" else Vector2.LEFT
     var row: Dictionary = pve_view_rows.get(id,{})
