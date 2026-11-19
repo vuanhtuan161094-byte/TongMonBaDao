@@ -1121,7 +1121,12 @@ func _aschar_skill_action(disciple_id: StringName,skill_id: String,action: Strin
         return
     var disciple: DiscipleState = state.disciples[disciple_id]
     var result: Dictionary = {}
-    if action == "learn":
+    if action == "learn_basic":
+        var basic := CombatSkillSystem.new()
+        var learned := basic.learn_skill(state,disciple,StringName(skill_id))
+        result = {"ok":learned,"skill_id":skill_id,
+            "reason":"" if learned else "not_eligible_or_already_learned"}
+    elif action == "learn":
         result = V63HumanSkillCombatSystem.learn_skill(state,disciple,skill_id)
     elif action == "equip":
         result = V63HumanSkillCombatSystem.equip_skill(state,disciple,skill_id)

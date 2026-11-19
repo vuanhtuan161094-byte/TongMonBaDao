@@ -11,6 +11,8 @@ var _state: SimulationState
 var _disciple_id: StringName
 var _school := "sword"
 var _feedback := ""
+var _skill_page := "basic"
+var _v63_defs_cache: Dictionary = {}
 const JADE := Color(0.032,0.143,0.146)
 const GOLD := Color(0.94,0.76,0.43)
 const IVORY := Color(0.96,0.94,0.85)
@@ -69,6 +71,10 @@ func show_feedback(message: String) -> void:
 
 func _choose_school(school: String) -> void:
     _school = school
+    refresh()
+
+func _choose_skill_page(page: String) -> void:
+    _skill_page = page
     refresh()
 
 func _ask_branch(branch: String) -> void:
@@ -155,14 +161,23 @@ func refresh() -> void:
     right.size = Vector2(508,432)
     right.add_theme_stylebox_override("panel",_style(JADE,Color(0.37,0.63,0.60)))
     add_child(right)
-    _label(right,"KỸ NĂNG · NHÂN GIAI",Vector2(15,12),Vector2(475,30),17,GOLD)
-    var live := V63HumanSkillCombatSystem.is_enabled(_state)
-    _label(right,"Học / trang bị theo quyền mở khóa thật" if live
-        else "V6.3 hiện KHÓA · xem trước, không cộng sức mạnh",
-        Vector2(15,43),Vector2(477,32),12,SOFT)
+    _label(right,"KỸ NĂNG CỦA ĐỆ TỬ",Vector2(15,12),Vector2(475,30),17,GOLD)
+    var v63_live := V63HumanSkillCombatSystem.is_enabled(_state)
+    _label(right,"Kỹ năng P2 đang chơi dùng được trong PvE" if _skill_page == "basic"
+        else ("Học và trang bị theo quyền V6.3" if v63_live
+            else "V6.3 hiện KHÓA · xem trước, không cộng sức mạnh"),
+        Vector2(15,43),Vector2(477,27),12,SOFT)
+    var basic_tab := _button(right,"ĐANG CHƠI · P2",Vector2(12,77),
+        Vector2(226,38),_skill_page == "basic")
+    basic_tab.name = "SchoolBasicSkillTab"
+    basic_tab.pressed.connect(Callable(self,"_choose_skill_page").bind("basic"))
+    var advanced_tab := _button(right,"36 NHÁNH · V6.3",Vector2(246,77),
+        Vector2(246,38),_skill_page == "v63")
+    advanced_tab.name = "SchoolV63SkillTab"
+    advanced_tab.pressed.connect(Callable(self,"_choose_skill_page").bind("v63"))
     var scroll := ScrollContainer.new()
-    scroll.position = Vector2(12,79)
-    scroll.size = Vector2(480,337)
+    scroll.position = Vector2(12,121)
+    scroll.size = Vector2(480,295)
     scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
     right.add_child(scroll)
     var stack := VBoxContainer.new()
@@ -170,52 +185,87 @@ func refresh() -> void:
     stack.custom_minimum_size.x = 454
     stack.add_theme_constant_override("separation",5)
     scroll.add_child(stack)
-    var defs := V63HumanSkillCombatSystem.skill_definitions()
-    var ids: Array[String] = []
-    for raw_id in defs.keys():
-        var info: Dictionary = defs[raw_id]
-        if str(info.get("school","")) != _school:
-            continue
-        if str(info.get("tier",info.get("generation",""))) != "human":
-            continue
-        var branch := str(info.get("branch",""))
-        if not branch.is_empty() and branch != assigned and branch != _selected_preview_branch(branches):
-            continue
-        ids.append(str(raw_id))
-    ids.sort()
     var displayed := 0
-    for id in ids:
-        if displayed >= 10:
-            break
-        var definition: Dictionary = defs[id]
-        var row := HBoxContainer.new()
-        row.add_theme_constant_override("separation",5)
-        stack.add_child(row)
-        var text := Label.new()
-        text.custom_minimum_size = Vector2(326,48)
-        var label := str(definition.get("name",id))
-        var slot := str(definition.get("slot",""))
-        text.text = label+"\n"+slot+" · CD "+str(definition.get("cooldown",0))+"s"
-        text.add_theme_font_size_override("font_size",12)
-        text.add_theme_color_override("font_color",IVORY)
-        text.tooltip_text = id+"\n"+str(definition.get("effect",""))+" · "
-        text.tooltip_text += str(definition.get("damage_ratio",1.0))+"× sát thương"
-        row.add_child(text)
-        var known := d.v63_learned_skill_nodes.has(id)
-        var equipped := d.v63_equipped_skill_ids.has(id)
-        var action := Button.new()
-        action.name = "SchoolSkillAction_"+str(displayed)
-        action.custom_minimum_size = Vector2(118,42)
-        action.text = "ĐÃ DÙNG" if equipped else ("TRANG BỊ" if known else "HỌC")
-        action.disabled = not live or assigned.is_empty() or equipped
-        action.tooltip_text = "Chưa mở kỹ năng V6.3" if not live else id
-        action.pressed.connect(Callable(self,"_ask_skill").bind(id,
-            "equip" if known else "learn"))
-        row.add_child(action)
-        displayed += 1
+    if _skill_page == "basic":
+        # Actual nine P2.5 combat skills; teach through the existing backend,
+        # whose stage/feature gates and combat loadout already drive real PvE.
+        var basic_system := CombatSkillSystem.new()
+        var basic_ids: Array = CombatSkillSystem.SKILLS.keys()
+        basic_ids.sort()
+        for raw_id in basic_ids:
+            var id := str(raw_id)
+            var def: Dictionary = CombatSkillSystem.SKILLS[id]
+            var known := bool(d.learned_combat_skills.get(id,false))
+            var can_learn := basic_system.can_learn_skill(_state,d,StringName(id))
+            var row := HBoxContainer.new()
+            row.add_theme_constant_override("separation",5)
+            stack.add_child(row)
+            var text := Label.new()
+            text.custom_minimum_size = Vector2(326,48)
+            text.text = str(def.get("name",id))+"\n"+str(def.get("path",""))+" · CD "+str(def.get("cooldown",0))+"s"
+            text.add_theme_font_size_override("font_size",12)
+            text.add_theme_color_override("font_color",IVORY)
+            text.tooltip_text = id+" · "+str(def.get("effect",""))+" · Cần cảnh giới "+str(def.get("min_stage",0))
+            row.add_child(text)
+            var action := Button.new()
+            action.name = "BasicSkillLearn_"+id
+            action.custom_minimum_size = Vector2(118,42)
+            action.text = "ĐÃ HỌC" if known else ("HỌC" if can_learn else "CHƯA ĐỦ")
+            action.disabled = known or not can_learn
+            action.tooltip_text = "Đã có trong chiến đấu" if known else (
+                "Không đủ điều kiện học" if not can_learn else "Học bằng CombatSkillSystem thật")
+            action.pressed.connect(Callable(self,"_ask_skill").bind(id,"learn_basic"))
+            row.add_child(action)
+            displayed += 1
+    else:
+        if _v63_defs_cache.is_empty():
+            _v63_defs_cache = V63HumanSkillCombatSystem.skill_definitions()
+        var defs := _v63_defs_cache
+        var ids: Array[String] = []
+        for raw_id in defs.keys():
+            var info: Dictionary = defs[raw_id]
+            if str(info.get("school","")) != _school:
+                continue
+            if str(info.get("tier",info.get("generation",""))) != "human":
+                continue
+            var branch := str(info.get("branch",""))
+            if not branch.is_empty() and branch != assigned and branch != _selected_preview_branch(branches):
+                continue
+            ids.append(str(raw_id))
+        ids.sort()
+        for id in ids:
+            if displayed >= 10:
+                break
+            var definition: Dictionary = defs[id]
+            var row := HBoxContainer.new()
+            row.add_theme_constant_override("separation",5)
+            stack.add_child(row)
+            var text := Label.new()
+            text.custom_minimum_size = Vector2(326,48)
+            text.text = str(definition.get("name",id))+"\n"+str(definition.get("slot",""))
+            text.text += " · CD "+str(definition.get("cooldown",0))+"s"
+            text.add_theme_font_size_override("font_size",12)
+            text.add_theme_color_override("font_color",IVORY)
+            text.tooltip_text = id+"\n"+str(definition.get("effect",""))
+            text.tooltip_text += " · "+str(definition.get("damage_ratio",1.0))+"× sát thương"
+            row.add_child(text)
+            var known := d.v63_learned_skill_nodes.has(id)
+            var equipped := d.v63_equipped_skill_ids.has(id)
+            var action := Button.new()
+            action.name = "SchoolSkillAction_"+str(displayed)
+            action.custom_minimum_size = Vector2(118,42)
+            action.text = "ĐÃ DÙNG" if equipped else ("TRANG BỊ" if known else "HỌC")
+            action.disabled = not v63_live or assigned.is_empty() or equipped
+            action.tooltip_text = "V6.3 chưa được phép phát hành" if not v63_live else id
+            action.pressed.connect(Callable(self,"_ask_skill").bind(id,
+                "equip" if known else "learn"))
+            row.add_child(action)
+            displayed += 1
     if displayed == 0:
-        _label(stack,"Chưa có chiêu thức ở nhánh này.",
-            Vector2.ZERO,Vector2(444,55),14,SOFT)
+        var empty := Label.new()
+        empty.text = "Chưa có kỹ năng sẵn sàng."
+        empty.add_theme_color_override("font_color",SOFT)
+        stack.add_child(empty)
     _label(self,_feedback,Vector2(25,516),Vector2(1110,29),13,GOLD)
 
 func _selected_preview_branch(branches: Array[Dictionary]) -> String:

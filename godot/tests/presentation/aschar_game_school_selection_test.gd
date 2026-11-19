@@ -94,6 +94,19 @@ func _run() -> void:
     if disciple.v63_learned_skill_nodes != before:
         _fail("view-only school selection silently granted skills")
         return
+    # P2 skills are the already-active combat system. Learning them through
+    # the profile must use the actual CombatSkillSystem authority.
+    var basic_skill := &"thanh_phong_tram"
+    var can_basic := CombatSkillSystem.new().can_learn_skill(state,disciple,basic_skill)
+    var prev_known := disciple.learned_combat_skills.duplicate(true)
+    game.call("_aschar_skill_action",disciple_id,str(basic_skill),"learn_basic")
+    var basic_learned := bool(disciple.learned_combat_skills.get(str(basic_skill),false))
+    if can_basic and not basic_learned:
+        _fail("P2 combat skill did not learn through real profile action")
+        return
+    if not can_basic and disciple.learned_combat_skills != prev_known:
+        _fail("P2 stage/feature gate bypassed")
+        return
     print("ASCHAR GAME PASS %d candidate sex+school actors, 36 branches, real profile, one-time choice, Save, locked skills" % count)
     quit(0)
 
