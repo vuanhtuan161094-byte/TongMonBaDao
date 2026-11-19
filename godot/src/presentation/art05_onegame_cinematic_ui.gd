@@ -132,6 +132,10 @@ func _art05_style_global_hud() -> void:
             button.add_theme_color_override("font_hover_color",ART05_WHITE)
             button.add_theme_color_override("font_pressed_color",ART05_WHITE)
             button.tooltip_text = button.text
+            if hunting:
+                # Keep the destination in the tooltip; long subtitles used to
+                # collide with the actual left-side navigation glyph at 1×.
+                button.text = "Săn quái"
             button.add_theme_stylebox_override("normal",_art05_style(
                 Color(0.27,0.155,0.065,0.99) if hunting else Color(0.05,0.19,0.21,0.98),
                 ART05_GOLD if hunting else Color(0.49,0.67,0.57,0.75),2 if hunting else 1,10))
