@@ -2396,6 +2396,7 @@ func _sync_actor_positions() -> void:
                 var direction := DiscipleActorVisualCatalog.direction_for_delta(delta, modular.facing)
                 if (
                     modular.rig_id == DiscipleActorVisualCatalog.RIG_FEMALE_NORMAL_V1
+                    and not modular.baked_visual_active()
                     and _stage_a_live_assets_ready()
                     and direction != modular.facing
                 ):
