@@ -2746,11 +2746,17 @@ func _materialize_modular_actor(key: String) -> void:
     actor.reset_for_reuse()
     actor.configure(disciple)
     actor.set_animation_library(female_motion_library)
-    if actor.rig_id == DiscipleActorVisualCatalog.RIG_FEMALE_NORMAL_V1 and _stage_a_live_assets_ready():
-        FemaleStageAAssetLoader.apply_public_direction(actor,&"down")
-    var source_a_scene := DiscipleSourceAVisualPool.scene_for_disciple(disciple)
-    if source_a_scene != null and not actor.production_body_active():
-        actor.set_baked_visual(source_a_scene)
+    # ASCHAR-GAME-01: a disciple who has chosen a canonical school receives
+    # the existing frame-by-frame candidate actor and per-frame held props.
+    # Unassigned beginners retain their original Source A appearance. No rig.
+    var candidate_scene := SectASCharCandidateBridgeV1.scene_for_disciple(disciple)
+    var candidate_mounted := candidate_scene != null and actor.set_baked_visual(candidate_scene)
+    if not candidate_mounted:
+        if actor.rig_id == DiscipleActorVisualCatalog.RIG_FEMALE_NORMAL_V1 and _stage_a_live_assets_ready():
+            FemaleStageAAssetLoader.apply_public_direction(actor,&"down")
+        var source_a_scene := DiscipleSourceAVisualPool.scene_for_disciple(disciple)
+        if source_a_scene != null and not actor.production_body_active():
+            actor.set_baked_visual(source_a_scene)
     actor.sync_action(disciple.current_action)
     var target: Vector2 = actor_virtual_positions[key]
     var spawn_position := target

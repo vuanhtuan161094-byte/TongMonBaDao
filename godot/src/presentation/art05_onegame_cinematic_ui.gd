@@ -10,6 +10,7 @@ const ART05_JADE := Color(0.08,0.205,0.216)
 const ART05_FRAME = preload("res://src/presentation/uiux/sect_premium_panel_v1.gd")
 const ART06_WORLD = preload("res://src/presentation/uiux/sect_world_atmosphere_v1.gd")
 const SECT_RUNTIME_PERF_HUD = preload("res://src/presentation/p3/sect_runtime_perf_hud.gd")
+const SCHOOL_SKILLS_SCREEN = preload("res://src/presentation/p3/sect_school_skills_screen_v1.gd")
 const ART05_BUILDING_VARIANT = preload("res://src/presentation/uiux/sect_building_art_variant_v3.gd")
 const VIS07_APPROVED = preload("res://src/presentation/p3/tmb_approved_building_art_v4.gd")
 const VIS08_ORIGINAL_BUILDINGS = preload("res://src/presentation/p3/tmb_original_building_art_v5.gd")
@@ -489,6 +490,17 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "T�
     toggle.add_theme_stylebox_override("normal", _art05_style(ART05_JADE, ART05_GOLD, 1, 9))
     toggle.pressed.connect(Callable(self, "_vis_toggle_profile_reduced").bind(disciple_id, tab_name))
     panel.add_child(toggle)
+    var school_button := Button.new()
+    school_button.name = "DeepSchoolSkillsButton"
+    school_button.text = "MÔN PHÁI / KỸ NĂNG"
+    school_button.tooltip_text = "Bái môn sau tuyển dụng; xem 36 nhánh và các chiêu thức thật."
+    school_button.position = Vector2(290,15)
+    school_button.size = Vector2(211,38)
+    school_button.add_theme_font_size_override("font_size",13)
+    school_button.add_theme_color_override("font_color",ART05_WHITE)
+    school_button.add_theme_stylebox_override("normal",_art05_style(ART05_JADE,ART05_GOLD,1,9))
+    school_button.pressed.connect(Callable(self,"_aschar_open_school_skills").bind(disciple_id))
+    panel.add_child(school_button)
     if tab_name == "Trang bị":
         VIS_EQUIPMENT.apply_profile(panel, state.disciples[disciple_id] as DiscipleState, state)
 
@@ -1057,3 +1069,68 @@ func _art02_show_warehouse_items() -> void:
     else:
         body.tooltip_text = "%d loại có tồn · hiện %d; xem chi tiết phía trái." % [
             total_nonzero,displayed]
+
+
+# ASCHAR-GAME-01: real 12-school/36-branch onboarding from the disciple profile.
+# School choice uses existing serialized v63_combat_branch_id, never a new Save
+# schema or fake combat unlock; every learning/equipping request is delegated to
+# the canonical V63 combat authority and respects its release gate.
+var _aschar_school_screen: SectSchoolSkillsScreenV1
+
+func _aschar_open_school_skills(disciple_id: StringName) -> void:
+    if state == null or not state.disciples.has(disciple_id):
+        return
+    _clear_popup()
+    _add_dim()
+    var screen: SectSchoolSkillsScreenV1 = SCHOOL_SKILLS_SCREEN.new()
+    screen.name = "SectSchoolSkillsScreenV1"
+    screen.position = Vector2(48,81)
+    screen.size = Vector2(1184,549)
+    screen.attach(state,disciple_id)
+    screen.branch_requested.connect(_aschar_assign_branch)
+    screen.skill_action_requested.connect(_aschar_skill_action)
+    screen.close_requested.connect(Callable(self,"_aschar_close_school_skills").bind(disciple_id))
+    popup_layer.add_child(screen)
+    _aschar_school_screen = screen
+
+func _aschar_close_school_skills(disciple_id: StringName) -> void:
+    _aschar_school_screen = null
+    _open_disciple_deep_screen(disciple_id,"Công Pháp")
+
+func _aschar_assign_branch(disciple_id: StringName, branch_id: String) -> void:
+    if state == null or not state.disciples.has(disciple_id):
+        return
+    var disciple: DiscipleState = state.disciples[disciple_id]
+    var result := SectASCharCandidateBridgeV1.assign_branch(state,disciple,branch_id)
+    if bool(result.get("ok",false)):
+        # Recreate only this presentation actor, keeping its live simulation ID,
+        # route, job, inventory and position completely intact.
+        _recycle_modular_actor(str(disciple_id))
+        _refresh_world_actor_visibility()
+        _autosave_runtime()
+        if _aschar_school_screen != null and is_instance_valid(_aschar_school_screen):
+            _aschar_school_screen.show_feedback("Đã bái môn: %s. Ngoại hình đổi theo môn phái." % str(result.get("name","")))
+    else:
+        if _aschar_school_screen != null and is_instance_valid(_aschar_school_screen):
+            _aschar_school_screen.show_feedback("Không thể bái môn: "+str(result.get("reason","")))
+    if _aschar_school_screen != null and is_instance_valid(_aschar_school_screen):
+        _aschar_school_screen.refresh()
+
+func _aschar_skill_action(disciple_id: StringName,skill_id: String,action: String) -> void:
+    if state == null or not state.disciples.has(disciple_id):
+        return
+    var disciple: DiscipleState = state.disciples[disciple_id]
+    var result: Dictionary = {}
+    if action == "learn":
+        result = V63HumanSkillCombatSystem.learn_skill(state,disciple,skill_id)
+    elif action == "equip":
+        result = V63HumanSkillCombatSystem.equip_skill(state,disciple,skill_id)
+    else:
+        result = {"ok":false,"reason":"unknown_action"}
+    if bool(result.get("ok",false)):
+        _autosave_runtime()
+    if _aschar_school_screen != null and is_instance_valid(_aschar_school_screen):
+        _aschar_school_screen.show_feedback(
+            ("Đã cập nhật kỹ năng: " if bool(result.get("ok",false)) else "Chưa thể thao tác: ")
+            + (skill_id if bool(result.get("ok",false)) else str(result.get("reason",""))))
+        _aschar_school_screen.refresh()
