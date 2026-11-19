@@ -722,6 +722,25 @@ func _art05_install_mockup_shell() -> void:
     resource_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
     resource_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
     _refresh_top_bar()
+    # The first-minute card should guide without masking a full district.
+    if gp1_guide_panel != null:
+        gp1_guide_panel.position = Vector2(18,144)
+        gp1_guide_panel.size = Vector2(308,136)
+        if gp1_guide_title != null:
+            gp1_guide_title.position = Vector2(12,9)
+            gp1_guide_title.size = Vector2(271,27)
+            gp1_guide_title.add_theme_font_size_override("font_size",15)
+        if gp1_guide_description != null:
+            gp1_guide_description.position = Vector2(12,39)
+            gp1_guide_description.size = Vector2(280,49)
+        if gp1_guide_button != null:
+            gp1_guide_button.position = Vector2(12,94)
+            gp1_guide_button.size = Vector2(284,34)
+            gp1_guide_button.add_theme_font_size_override("font_size",13)
+        var guide_close := gp1_guide_panel.get_node_or_null("Gp1GuideDismiss") as Button
+        if guide_close != null:
+            guide_close.position = Vector2(272,5)
+            guide_close.size = Vector2(30,29)
 
     var bottom := get_node_or_null("PlayerBottomBar") as Panel
     if bottom != null:
@@ -894,6 +913,10 @@ func _open_building(destination: StringName, instance_id: StringName = &"") -> v
     _art05_dock_destination = destination
     _art05_dock_collapsed = false
     super._open_building(destination,instance_id)
+    # Hide onboarding immediately, not only after the next simulation refresh:
+    # it must never compete with a newly opened management panel.
+    if gp1_guide_panel != null:
+        gp1_guide_panel.visible = false
     _art05_refresh_sect_master_dock()
 
 func _art05_refresh_sect_master_dock() -> void:
@@ -906,8 +929,14 @@ func _art05_refresh_sect_master_dock() -> void:
     if not _art05_dock_panel.visible:
         return
     var dest := str(_art05_dock_destination)
-    var title := _building_name(_art05_dock_destination) if dest != "gate" else "CỔNG TÔNG MÔN"
-    _art05_dock_heading.text = title.to_upper()
+    var short_names := {
+        "main_hall":"ĐẠI ĐIỆN","residence":"ĐỆ TỬ XÁ",
+        "guidance":"DẪN TIÊN ĐÀI","cultivation":"TU LUYỆN",
+        "forge":"LUYỆN KHÍ","warehouse":"KHO TÔNG MÔN",
+        "mine":"MỎ KHOÁNG","linh_forest":"LINH LÂM",
+        "spirit_field":"LINH ĐIỀN","gate":"CỔNG TÔNG MÔN"
+    }
+    _art05_dock_heading.text = str(short_names.get(dest,_building_name(_art05_dock_destination)))
     var live: BuildingState = null
     if _art05_dock_destination == SectMapPresentation.DEST_MAIN_HALL:
         live = SectHallSystemV1.hall(state)
