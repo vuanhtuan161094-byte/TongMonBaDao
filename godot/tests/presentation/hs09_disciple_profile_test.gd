@@ -46,6 +46,30 @@ func _run() -> void:
     if radar.dimension_values != saved_values:
         _fail("rejected snapshot modified the previously valid canonical chart")
         return
+
+    # Founding legacy disciples must share the seven-axis layout without
+    # inventing a saved Tâm Tính value or silently displaying it as zero.
+    var legacy_snapshot := {"ok":true,"foundations":{"model_version":1,"current":{
+        "aptitude":11.0,"constitution":22.0,"potential":33.0,
+        "comprehension":44.0,"fortune":55.0,"charisma":66.0
+    }}}
+    if not radar.apply_snapshot(legacy_snapshot):
+        _fail("legacy six-value disciple was rejected instead of using the shared seven-axis layout")
+        return
+    if radar.mind_nature_available or radar.dimension_values.size() != 7 \
+        or radar.dimension_values[2] != 0.0 or radar.dimension_values[6] != 66.0:
+        _fail("legacy Tâm Tính must be explicitly unavailable, not fabricated")
+        return
+    if not radar.tooltip_text.contains("Tâm Tính chưa có dữ liệu"):
+        _fail("legacy profile must explain its unavailable seventh axis")
+        return
+    if radar.apply_snapshot({"ok":true,"foundations":{"model_version":1,"current":{"aptitude":9.0}}}):
+        _fail("incomplete six-value legacy foundations must not pass validation")
+        return
+    if not radar.apply_snapshot(synthetic) or not radar.mind_nature_available \
+        or radar.dimension_values != saved_values:
+        _fail("switching back to D7 lost genuine seven-axis values")
+        return
     radar.free()
 
     var packed := load("res://scenes/p3/p3_2_landscape_sect.tscn") as PackedScene
