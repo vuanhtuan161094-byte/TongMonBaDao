@@ -23,6 +23,7 @@ var _actor: Node2D
 var _body: Sprite2D
 var _sword: Sprite2D
 var _monster: AnimatedSprite2D
+var _raw_monster_atlases: Dictionary = {}
 var _glow: ColorRect
 var _flash: ColorRect
 var _glow_mat: ShaderMaterial
@@ -70,6 +71,20 @@ func _raw_png_texture(path: String) -> Texture2D:
         push_error("AS48_RAW_PNG_DECODE_FAIL " + path + " error=" + str(status))
         return null
     return ImageTexture.create_from_image(source_image)
+
+func _raw_webp_texture(path: String) -> Texture2D:
+    var source := FileAccess.open(path, FileAccess.READ)
+    if source == null:
+        push_error("VFX_REVIEW_RAW_MONSTER_ATLAS_MISSING " + path)
+        return null
+    var bytes := source.get_buffer(source.get_length())
+    source.close()
+    var image := Image.new()
+    var status := image.load_webp_from_buffer(bytes)
+    if status != OK or image.is_empty():
+        push_error("VFX_REVIEW_RAW_MONSTER_ATLAS_DECODE_FAIL " + path + " " + str(status))
+        return null
+    return ImageTexture.create_from_image(image)
 
 func _ready() -> void:
     _sockets = _json(SOCKETS)
@@ -149,6 +164,21 @@ func _ready() -> void:
     _monster.z_index = 4
     add_child(_monster)
     _monster.play(&"walk")
+    # Use the original monster .webp source bytes for the Web canvas too.
+    # Built by the Asset pipeline; never modified or replaced here.
+    for idx in range(3):
+        var path := "res://assets/actors/v5_sa_monster_1113031_1/atlas_%03d.webp" % idx
+        var texture := _raw_webp_texture(path)
+        if texture == null:
+            push_error("VFX_REVIEW_MONSTER_SOURCE_REQUIRED")
+            return
+        _raw_monster_atlases[path] = texture
+    # The review canvas draws original pixels explicitly after its background.
+    # This avoids the blank actor+monster seen in the owner's web screenshot,
+    # without using a surrogate character or duplicating any art file.
+    _body.visible = false
+    _sword.visible = false
+    _monster.visible = false
     _glow_mat = ShaderMaterial.new()
     _glow_mat.shader = shader
     _flash_mat = ShaderMaterial.new()
@@ -308,11 +338,52 @@ func _unhandled_key_input(event: InputEvent) -> void:
     elif key.keycode == KEY_M:
         _moving = not _moving
 
+func _draw_original_actor_and_monster() -> void:
+    if not _good or _body == null or _sword == null or _monster == null:
+        return
+    # Overlay order: physical jian BEHIND AS48 authored cel; VFX in z=8.
+    var map_scale := _actor.scale.x
+    draw_set_transform(_actor.position + _sword.position * map_scale,
+        _sword.rotation, Vector2.ONE * map_scale * _sword.scale.x)
+    draw_texture(_sword.texture, _sword.offset)
+    draw_set_transform(_actor.position, 0.0, _actor.scale)
+    var pose := mini(3, int(_clock * POSE_FPS))
+    var cel: AtlasTexture = _cels[pose]
+    draw_texture_rect_region(cel.atlas,
+        Rect2(-FOOT, Vector2(400, 440)), cel.region)
+    draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+
+    # Same monster SpriteFrames frame/UVs, but decode the genuine original WebP
+    # bytes from PCK explicitly (Web export may omit imported atlas textures).
+    var frames: SpriteFrames = _monster.sprite_frames
+    var count := frames.get_frame_count(&"walk")
+    if count <= 0:
+        return
+    var fps := frames.get_animation_speed(&"walk")
+    var index := int(floor(_clock * fps)) % count
+    var tex: Texture2D = frames.get_frame_texture(&"walk", index)
+    var atlas := tex as AtlasTexture
+    if atlas == null:
+        draw_set_transform(_monster.position, 0.0, _monster.scale)
+        draw_texture(tex, -tex.get_size() * 0.5 + _monster.offset)
+        draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+        return
+    var original_atlas := atlas.atlas
+    var raw_path := original_atlas.resource_path
+    if _raw_monster_atlases.has(raw_path):
+        original_atlas = _raw_monster_atlases[raw_path]
+    var size := atlas.region.size
+    draw_set_transform(_monster.position, 0.0, _monster.scale)
+    draw_texture_rect_region(original_atlas,
+        Rect2(-size * 0.5 + _monster.offset, size), atlas.region)
+    draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+
 func _draw() -> void:
     draw_rect(Rect2(0, 0, 1280, 720), Color("d9e6ed") if _review_bright else Color("17212b"))
     draw_rect(Rect2(0, 420, 1280, 300), Color("b2baae") if _review_bright else Color("383e3c"))
     draw_rect(Rect2(0, 496, 1280, 6), Color("869b8d") if _review_bright else Color("59665b"))
     draw_line(Vector2(80, 604), Vector2(1200, 604), Color("737f75"), 1.0)
+    _draw_original_actor_and_monster()
     var font := ThemeDB.fallback_font
     draw_string(font, Vector2(24, 42), "AS48 KIEM TU HUMAN - PHI KIEM TRUY ANH - VISUAL EVENT BRIDGE LAB",
         HORIZONTAL_ALIGNMENT_LEFT, -1, 20, Color("163247") if _review_bright else Color("e7f3fa"))
