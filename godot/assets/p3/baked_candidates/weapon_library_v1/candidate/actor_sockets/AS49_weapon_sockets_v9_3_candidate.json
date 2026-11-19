@@ -1,0 +1,1871 @@
+{
+  "schema": "tmb.aschar.frame_weapon_sockets.v9_3",
+  "version": "9.3",
+  "identity": "AS-CHAR-49",
+  "direction": "FourDirection",
+  "status": "CANDIDATE",
+  "owner_art_approval": "PENDING",
+  "body_mode": "MONOLITHIC_RGBA_CEL",
+  "body_canvas_px": [
+    384,
+    384
+  ],
+  "foot_baseline_y_px": 360,
+  "weapon_family": "jian",
+  "proxy_visible_in_production": false,
+  "weapon_asset": {
+    "family": "jian",
+    "path": "res://assets/p3/baked_candidates/aschar48/AS48_KIEMTU_JIAN_CANDIDATE.png",
+    "asset_scale": 0.14,
+    "asset_grip_px": [
+      443,
+      360
+    ],
+    "asset_tip_px": [
+      443,
+      1748
+    ],
+    "socket_points_px": {
+      "main_hand": [
+        443,
+        360
+      ]
+    },
+    "source_status": "EXISTING_V9_3_CANDIDATE_ASSET_REUSED_AS_JIAN_FAMILY"
+  },
+  "body_frames": [
+    {
+      "clip": "idle_front",
+      "frame": 0,
+      "path": "res://assets/p3/baked_candidates/aschar49/frames/idle_front/AS49_idle_front_00.png",
+      "sha256": "54ed52c0ff3e765625274977cb9dcf8c85d1ad78fea55de1a8b34d22f01cf3d1",
+      "weapon_visible": true,
+      "grip_sockets": {
+        "main_hand": {
+          "body_grip_px": [
+            155,
+            255
+          ],
+          "rotation_deg": -225.0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
+          "hand_mask_rect_px": [
+            141,
+            241,
+            28,
+            28
+          ]
+        },
+        "off_hand": {
+          "body_grip_px": [
+            238,
+            254
+          ],
+          "rotation_deg": -225.0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
+          "hand_mask_rect_px": [
+            224,
+            240,
+            28,
+            28
+          ]
+        },
+        "hand_l": {
+          "body_grip_px": [
+            238,
+            254
+          ],
+          "rotation_deg": 0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAR_OVER_BODY",
+          "hand_mask_rect_px": [
+            224,
+            240,
+            28,
+            28
+          ]
+        },
+        "hand_r": {
+          "body_grip_px": [
+            155,
+            255
+          ],
+          "rotation_deg": 0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAR_OVER_BODY",
+          "hand_mask_rect_px": [
+            141,
+            241,
+            28,
+            28
+          ]
+        }
+      },
+      "anchor_detection": "frame-specific lower-hand skin component; alpha source pixels",
+      "anchor_fallback": true,
+      "anchor_fallback_sockets": [
+        "off_hand"
+      ]
+    },
+    {
+      "clip": "idle_front",
+      "frame": 1,
+      "path": "res://assets/p3/baked_candidates/aschar49/frames/idle_front/AS49_idle_front_01.png",
+      "sha256": "f6c104c258bf4e0e63887328cd8b6d5dcb0256c786e3dfa1b0d9e1a755c384d7",
+      "weapon_visible": true,
+      "grip_sockets": {
+        "main_hand": {
+          "body_grip_px": [
+            153,
+            259
+          ],
+          "rotation_deg": -225.0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
+          "hand_mask_rect_px": [
+            139,
+            245,
+            28,
+            28
+          ]
+        },
+        "off_hand": {
+          "body_grip_px": [
+            238,
+            254
+          ],
+          "rotation_deg": -225.0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
+          "hand_mask_rect_px": [
+            224,
+            240,
+            28,
+            28
+          ]
+        },
+        "hand_l": {
+          "body_grip_px": [
+            238,
+            254
+          ],
+          "rotation_deg": 0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAR_OVER_BODY",
+          "hand_mask_rect_px": [
+            224,
+            240,
+            28,
+            28
+          ]
+        },
+        "hand_r": {
+          "body_grip_px": [
+            153,
+            259
+          ],
+          "rotation_deg": 0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAR_OVER_BODY",
+          "hand_mask_rect_px": [
+            139,
+            245,
+            28,
+            28
+          ]
+        }
+      },
+      "anchor_detection": "frame-specific lower-hand skin component; alpha source pixels",
+      "anchor_fallback": true,
+      "anchor_fallback_sockets": [
+        "off_hand"
+      ]
+    },
+    {
+      "clip": "idle_front",
+      "frame": 2,
+      "path": "res://assets/p3/baked_candidates/aschar49/frames/idle_front/AS49_idle_front_02.png",
+      "sha256": "c5fe9b3e105115115c82a5fc7314b1d72686f3554c588ebe7de51dc33cc53fdd",
+      "weapon_visible": true,
+      "grip_sockets": {
+        "main_hand": {
+          "body_grip_px": [
+            159,
+            252
+          ],
+          "rotation_deg": -225.0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
+          "hand_mask_rect_px": [
+            145,
+            238,
+            28,
+            28
+          ]
+        },
+        "off_hand": {
+          "body_grip_px": [
+            263,
+            250
+          ],
+          "rotation_deg": -225.0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
+          "hand_mask_rect_px": [
+            249,
+            236,
+            28,
+            28
+          ]
+        },
+        "hand_l": {
+          "body_grip_px": [
+            263,
+            250
+          ],
+          "rotation_deg": 0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAR_OVER_BODY",
+          "hand_mask_rect_px": [
+            249,
+            236,
+            28,
+            28
+          ]
+        },
+        "hand_r": {
+          "body_grip_px": [
+            159,
+            252
+          ],
+          "rotation_deg": 0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAR_OVER_BODY",
+          "hand_mask_rect_px": [
+            145,
+            238,
+            28,
+            28
+          ]
+        }
+      },
+      "anchor_detection": "frame-specific lower-hand skin component; alpha source pixels",
+      "anchor_fallback": false,
+      "anchor_fallback_sockets": []
+    },
+    {
+      "clip": "idle_front",
+      "frame": 3,
+      "path": "res://assets/p3/baked_candidates/aschar49/frames/idle_front/AS49_idle_front_03.png",
+      "sha256": "c8813c0a258960889539ef064d35683c6e5e8a4d641207c3aacb03c9420a7b78",
+      "weapon_visible": true,
+      "grip_sockets": {
+        "main_hand": {
+          "body_grip_px": [
+            152,
+            258
+          ],
+          "rotation_deg": -225.0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
+          "hand_mask_rect_px": [
+            138,
+            244,
+            28,
+            28
+          ]
+        },
+        "off_hand": {
+          "body_grip_px": [
+            238,
+            254
+          ],
+          "rotation_deg": -225.0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
+          "hand_mask_rect_px": [
+            224,
+            240,
+            28,
+            28
+          ]
+        },
+        "hand_l": {
+          "body_grip_px": [
+            238,
+            254
+          ],
+          "rotation_deg": 0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAR_OVER_BODY",
+          "hand_mask_rect_px": [
+            224,
+            240,
+            28,
+            28
+          ]
+        },
+        "hand_r": {
+          "body_grip_px": [
+            152,
+            258
+          ],
+          "rotation_deg": 0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAR_OVER_BODY",
+          "hand_mask_rect_px": [
+            138,
+            244,
+            28,
+            28
+          ]
+        }
+      },
+      "anchor_detection": "frame-specific lower-hand skin component; alpha source pixels",
+      "anchor_fallback": true,
+      "anchor_fallback_sockets": [
+        "off_hand"
+      ]
+    },
+    {
+      "clip": "walk_front",
+      "frame": 0,
+      "path": "res://assets/p3/baked_candidates/aschar49/frames/walk_front/AS49_walk_front_00.png",
+      "sha256": "edd6506fa41b279f84202bcd14b2336c12f177714cc9dea355ba88c50d050e03",
+      "weapon_visible": true,
+      "grip_sockets": {
+        "main_hand": {
+          "body_grip_px": [
+            154,
+            231
+          ],
+          "rotation_deg": -225.0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
+          "hand_mask_rect_px": [
+            140,
+            217,
+            28,
+            28
+          ]
+        },
+        "off_hand": {
+          "body_grip_px": [
+            240,
+            244
+          ],
+          "rotation_deg": -225.0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
+          "hand_mask_rect_px": [
+            226,
+            230,
+            28,
+            28
+          ]
+        },
+        "hand_l": {
+          "body_grip_px": [
+            240,
+            244
+          ],
+          "rotation_deg": 0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAR_OVER_BODY",
+          "hand_mask_rect_px": [
+            226,
+            230,
+            28,
+            28
+          ]
+        },
+        "hand_r": {
+          "body_grip_px": [
+            154,
+            231
+          ],
+          "rotation_deg": 0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAR_OVER_BODY",
+          "hand_mask_rect_px": [
+            140,
+            217,
+            28,
+            28
+          ]
+        }
+      },
+      "anchor_detection": "frame-specific lower-hand skin component; alpha source pixels",
+      "anchor_fallback": false,
+      "anchor_fallback_sockets": []
+    },
+    {
+      "clip": "walk_front",
+      "frame": 1,
+      "path": "res://assets/p3/baked_candidates/aschar49/frames/walk_front/AS49_walk_front_01.png",
+      "sha256": "c8853592ef879ca336fc05b3e4ca068e197dd698374d9f8d276feb0622110b9f",
+      "weapon_visible": true,
+      "grip_sockets": {
+        "main_hand": {
+          "body_grip_px": [
+            136,
+            240
+          ],
+          "rotation_deg": -225.0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
+          "hand_mask_rect_px": [
+            122,
+            226,
+            28,
+            28
+          ]
+        },
+        "off_hand": {
+          "body_grip_px": [
+            231,
+            223
+          ],
+          "rotation_deg": -225.0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
+          "hand_mask_rect_px": [
+            217,
+            209,
+            28,
+            28
+          ]
+        },
+        "hand_l": {
+          "body_grip_px": [
+            231,
+            223
+          ],
+          "rotation_deg": 0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAR_OVER_BODY",
+          "hand_mask_rect_px": [
+            217,
+            209,
+            28,
+            28
+          ]
+        },
+        "hand_r": {
+          "body_grip_px": [
+            136,
+            240
+          ],
+          "rotation_deg": 0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAR_OVER_BODY",
+          "hand_mask_rect_px": [
+            122,
+            226,
+            28,
+            28
+          ]
+        }
+      },
+      "anchor_detection": "frame-specific lower-hand skin component; alpha source pixels",
+      "anchor_fallback": false,
+      "anchor_fallback_sockets": []
+    },
+    {
+      "clip": "walk_front",
+      "frame": 2,
+      "path": "res://assets/p3/baked_candidates/aschar49/frames/walk_front/AS49_walk_front_02.png",
+      "sha256": "4a06c94e8c3679aac4f78cceb44fc7db08c28de2076a47d9a42cdff504fb88e6",
+      "weapon_visible": true,
+      "grip_sockets": {
+        "main_hand": {
+          "body_grip_px": [
+            146,
+            226
+          ],
+          "rotation_deg": -225.0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
+          "hand_mask_rect_px": [
+            132,
+            212,
+            28,
+            28
+          ]
+        },
+        "off_hand": {
+          "body_grip_px": [
+            238,
+            254
+          ],
+          "rotation_deg": -225.0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
+          "hand_mask_rect_px": [
+            224,
+            240,
+            28,
+            28
+          ]
+        },
+        "hand_l": {
+          "body_grip_px": [
+            238,
+            254
+          ],
+          "rotation_deg": 0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAR_OVER_BODY",
+          "hand_mask_rect_px": [
+            224,
+            240,
+            28,
+            28
+          ]
+        },
+        "hand_r": {
+          "body_grip_px": [
+            146,
+            226
+          ],
+          "rotation_deg": 0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAR_OVER_BODY",
+          "hand_mask_rect_px": [
+            132,
+            212,
+            28,
+            28
+          ]
+        }
+      },
+      "anchor_detection": "frame-specific lower-hand skin component; alpha source pixels",
+      "anchor_fallback": true,
+      "anchor_fallback_sockets": [
+        "off_hand"
+      ]
+    },
+    {
+      "clip": "walk_front",
+      "frame": 3,
+      "path": "res://assets/p3/baked_candidates/aschar49/frames/walk_front/AS49_walk_front_03.png",
+      "sha256": "d19b3e94f4d5bf72614b78ab17afc1dc1b220fa3463a026da41d8e56bfb8bbaf",
+      "weapon_visible": true,
+      "grip_sockets": {
+        "main_hand": {
+          "body_grip_px": [
+            150,
+            254
+          ],
+          "rotation_deg": -225.0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
+          "hand_mask_rect_px": [
+            136,
+            240,
+            28,
+            28
+          ]
+        },
+        "off_hand": {
+          "body_grip_px": [
+            248,
+            230
+          ],
+          "rotation_deg": -225.0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
+          "hand_mask_rect_px": [
+            234,
+            216,
+            28,
+            28
+          ]
+        },
+        "hand_l": {
+          "body_grip_px": [
+            248,
+            230
+          ],
+          "rotation_deg": 0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAR_OVER_BODY",
+          "hand_mask_rect_px": [
+            234,
+            216,
+            28,
+            28
+          ]
+        },
+        "hand_r": {
+          "body_grip_px": [
+            150,
+            254
+          ],
+          "rotation_deg": 0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAR_OVER_BODY",
+          "hand_mask_rect_px": [
+            136,
+            240,
+            28,
+            28
+          ]
+        }
+      },
+      "anchor_detection": "frame-specific lower-hand skin component; alpha source pixels",
+      "anchor_fallback": true,
+      "anchor_fallback_sockets": [
+        "main_hand"
+      ]
+    },
+    {
+      "clip": "attack_front",
+      "frame": 0,
+      "path": "res://assets/p3/baked_candidates/aschar49/frames/attack_front/AS49_attack_front_00.png",
+      "sha256": "3e6197b4ef3ad39107aae2e79099cf84951a96184855da96bb0fefa1bdcccd6e",
+      "weapon_visible": true,
+      "grip_sockets": {
+        "main_hand": {
+          "body_grip_px": [
+            144,
+            255
+          ],
+          "rotation_deg": 90.0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
+          "hand_mask_rect_px": [
+            130,
+            241,
+            28,
+            28
+          ]
+        },
+        "off_hand": {
+          "body_grip_px": [
+            238,
+            254
+          ],
+          "rotation_deg": 90.0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
+          "hand_mask_rect_px": [
+            224,
+            240,
+            28,
+            28
+          ]
+        },
+        "hand_l": {
+          "body_grip_px": [
+            238,
+            254
+          ],
+          "rotation_deg": 0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAR_OVER_BODY",
+          "hand_mask_rect_px": [
+            224,
+            240,
+            28,
+            28
+          ]
+        },
+        "hand_r": {
+          "body_grip_px": [
+            144,
+            255
+          ],
+          "rotation_deg": 0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAR_OVER_BODY",
+          "hand_mask_rect_px": [
+            130,
+            241,
+            28,
+            28
+          ]
+        }
+      },
+      "anchor_detection": "frame-specific lower-hand skin component; alpha source pixels",
+      "anchor_fallback": true,
+      "anchor_fallback_sockets": [
+        "off_hand"
+      ]
+    },
+    {
+      "clip": "attack_front",
+      "frame": 1,
+      "path": "res://assets/p3/baked_candidates/aschar49/frames/attack_front/AS49_attack_front_01.png",
+      "sha256": "91c8bbf5a0e773d49cfc7d66a6374c2ac2a3aa3e4143c03ae8da1da21ba4f606",
+      "weapon_visible": true,
+      "grip_sockets": {
+        "main_hand": {
+          "body_grip_px": [
+            135,
+            228
+          ],
+          "rotation_deg": 90.0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
+          "hand_mask_rect_px": [
+            121,
+            214,
+            28,
+            28
+          ]
+        },
+        "off_hand": {
+          "body_grip_px": [
+            276,
+            238
+          ],
+          "rotation_deg": 90.0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
+          "hand_mask_rect_px": [
+            262,
+            224,
+            28,
+            28
+          ]
+        },
+        "hand_l": {
+          "body_grip_px": [
+            276,
+            238
+          ],
+          "rotation_deg": 0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAR_OVER_BODY",
+          "hand_mask_rect_px": [
+            262,
+            224,
+            28,
+            28
+          ]
+        },
+        "hand_r": {
+          "body_grip_px": [
+            135,
+            228
+          ],
+          "rotation_deg": 0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAR_OVER_BODY",
+          "hand_mask_rect_px": [
+            121,
+            214,
+            28,
+            28
+          ]
+        }
+      },
+      "anchor_detection": "frame-specific lower-hand skin component; alpha source pixels",
+      "anchor_fallback": false,
+      "anchor_fallback_sockets": []
+    },
+    {
+      "clip": "attack_front",
+      "frame": 2,
+      "path": "res://assets/p3/baked_candidates/aschar49/frames/attack_front/AS49_attack_front_02.png",
+      "sha256": "ee50505c6105988c5355ab60bfc16dab1331b6cb40082ef104efcb82288c46c5",
+      "weapon_visible": true,
+      "grip_sockets": {
+        "main_hand": {
+          "body_grip_px": [
+            150,
+            254
+          ],
+          "rotation_deg": 90.0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
+          "hand_mask_rect_px": [
+            136,
+            240,
+            28,
+            28
+          ]
+        },
+        "off_hand": {
+          "body_grip_px": [
+            293,
+            246
+          ],
+          "rotation_deg": 90.0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
+          "hand_mask_rect_px": [
+            279,
+            232,
+            28,
+            28
+          ]
+        },
+        "hand_l": {
+          "body_grip_px": [
+            293,
+            246
+          ],
+          "rotation_deg": 0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAR_OVER_BODY",
+          "hand_mask_rect_px": [
+            279,
+            232,
+            28,
+            28
+          ]
+        },
+        "hand_r": {
+          "body_grip_px": [
+            150,
+            254
+          ],
+          "rotation_deg": 0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAR_OVER_BODY",
+          "hand_mask_rect_px": [
+            136,
+            240,
+            28,
+            28
+          ]
+        }
+      },
+      "anchor_detection": "frame-specific lower-hand skin component; alpha source pixels",
+      "anchor_fallback": true,
+      "anchor_fallback_sockets": [
+        "main_hand"
+      ]
+    },
+    {
+      "clip": "attack_front",
+      "frame": 3,
+      "path": "res://assets/p3/baked_candidates/aschar49/frames/attack_front/AS49_attack_front_03.png",
+      "sha256": "bf242f943b3ee3f83e6cc6723723438fd2a2488b3605a5cc898ca68e5d192825",
+      "weapon_visible": true,
+      "grip_sockets": {
+        "main_hand": {
+          "body_grip_px": [
+            139,
+            248
+          ],
+          "rotation_deg": 90.0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
+          "hand_mask_rect_px": [
+            125,
+            234,
+            28,
+            28
+          ]
+        },
+        "off_hand": {
+          "body_grip_px": [
+            238,
+            254
+          ],
+          "rotation_deg": 90.0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
+          "hand_mask_rect_px": [
+            224,
+            240,
+            28,
+            28
+          ]
+        },
+        "hand_l": {
+          "body_grip_px": [
+            238,
+            254
+          ],
+          "rotation_deg": 0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAR_OVER_BODY",
+          "hand_mask_rect_px": [
+            224,
+            240,
+            28,
+            28
+          ]
+        },
+        "hand_r": {
+          "body_grip_px": [
+            139,
+            248
+          ],
+          "rotation_deg": 0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAR_OVER_BODY",
+          "hand_mask_rect_px": [
+            125,
+            234,
+            28,
+            28
+          ]
+        }
+      },
+      "anchor_detection": "frame-specific lower-hand skin component; alpha source pixels",
+      "anchor_fallback": true,
+      "anchor_fallback_sockets": [
+        "off_hand"
+      ]
+    },
+    {
+      "clip": "cast_front",
+      "frame": 0,
+      "path": "res://assets/p3/baked_candidates/aschar49/frames/cast_front/AS49_cast_front_00.png",
+      "sha256": "03489451292418a83f3013624c6902129b961d193e72b2318eea43671f008392",
+      "weapon_visible": true,
+      "grip_sockets": {
+        "main_hand": {
+          "body_grip_px": [
+            156,
+            255
+          ],
+          "rotation_deg": -225.0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
+          "hand_mask_rect_px": [
+            142,
+            241,
+            28,
+            28
+          ]
+        },
+        "off_hand": {
+          "body_grip_px": [
+            238,
+            254
+          ],
+          "rotation_deg": -225.0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
+          "hand_mask_rect_px": [
+            224,
+            240,
+            28,
+            28
+          ]
+        },
+        "hand_l": {
+          "body_grip_px": [
+            238,
+            254
+          ],
+          "rotation_deg": 0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAR_OVER_BODY",
+          "hand_mask_rect_px": [
+            224,
+            240,
+            28,
+            28
+          ]
+        },
+        "hand_r": {
+          "body_grip_px": [
+            156,
+            255
+          ],
+          "rotation_deg": 0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAR_OVER_BODY",
+          "hand_mask_rect_px": [
+            142,
+            241,
+            28,
+            28
+          ]
+        }
+      },
+      "anchor_detection": "frame-specific lower-hand skin component; alpha source pixels",
+      "anchor_fallback": true,
+      "anchor_fallback_sockets": [
+        "off_hand"
+      ]
+    },
+    {
+      "clip": "cast_front",
+      "frame": 1,
+      "path": "res://assets/p3/baked_candidates/aschar49/frames/cast_front/AS49_cast_front_01.png",
+      "sha256": "b8218ecf50c9347c2e96a1d853944393c6aa88f801fe97312477beb1f6d39a54",
+      "weapon_visible": true,
+      "grip_sockets": {
+        "main_hand": {
+          "body_grip_px": [
+            153,
+            256
+          ],
+          "rotation_deg": -225.0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
+          "hand_mask_rect_px": [
+            139,
+            242,
+            28,
+            28
+          ]
+        },
+        "off_hand": {
+          "body_grip_px": [
+            191,
+            237
+          ],
+          "rotation_deg": -225.0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
+          "hand_mask_rect_px": [
+            177,
+            223,
+            28,
+            28
+          ]
+        },
+        "hand_l": {
+          "body_grip_px": [
+            191,
+            237
+          ],
+          "rotation_deg": 0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAR_OVER_BODY",
+          "hand_mask_rect_px": [
+            177,
+            223,
+            28,
+            28
+          ]
+        },
+        "hand_r": {
+          "body_grip_px": [
+            153,
+            256
+          ],
+          "rotation_deg": 0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAR_OVER_BODY",
+          "hand_mask_rect_px": [
+            139,
+            242,
+            28,
+            28
+          ]
+        }
+      },
+      "anchor_detection": "frame-specific lower-hand skin component; alpha source pixels",
+      "anchor_fallback": false,
+      "anchor_fallback_sockets": []
+    },
+    {
+      "clip": "cast_front",
+      "frame": 2,
+      "path": "res://assets/p3/baked_candidates/aschar49/frames/cast_front/AS49_cast_front_02.png",
+      "sha256": "4d87d1fa7525fd0c890e578b3d86a8f675f7c8499e727cb29ab560a40db463d8",
+      "weapon_visible": true,
+      "grip_sockets": {
+        "main_hand": {
+          "body_grip_px": [
+            150,
+            254
+          ],
+          "rotation_deg": -225.0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
+          "hand_mask_rect_px": [
+            136,
+            240,
+            28,
+            28
+          ]
+        },
+        "off_hand": {
+          "body_grip_px": [
+            238,
+            254
+          ],
+          "rotation_deg": -225.0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
+          "hand_mask_rect_px": [
+            224,
+            240,
+            28,
+            28
+          ]
+        },
+        "hand_l": {
+          "body_grip_px": [
+            238,
+            254
+          ],
+          "rotation_deg": 0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAR_OVER_BODY",
+          "hand_mask_rect_px": [
+            224,
+            240,
+            28,
+            28
+          ]
+        },
+        "hand_r": {
+          "body_grip_px": [
+            150,
+            254
+          ],
+          "rotation_deg": 0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAR_OVER_BODY",
+          "hand_mask_rect_px": [
+            136,
+            240,
+            28,
+            28
+          ]
+        }
+      },
+      "anchor_detection": "frame-specific lower-hand skin component; alpha source pixels",
+      "anchor_fallback": true,
+      "anchor_fallback_sockets": [
+        "off_hand"
+      ]
+    },
+    {
+      "clip": "cast_front",
+      "frame": 3,
+      "path": "res://assets/p3/baked_candidates/aschar49/frames/cast_front/AS49_cast_front_03.png",
+      "sha256": "a5b144e72509ac881c248f022fcdf03ffa4983a2a5cbc91742d5940a99e102a9",
+      "weapon_visible": true,
+      "grip_sockets": {
+        "main_hand": {
+          "body_grip_px": [
+            154,
+            256
+          ],
+          "rotation_deg": -225.0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
+          "hand_mask_rect_px": [
+            140,
+            242,
+            28,
+            28
+          ]
+        },
+        "off_hand": {
+          "body_grip_px": [
+            238,
+            254
+          ],
+          "rotation_deg": -225.0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
+          "hand_mask_rect_px": [
+            224,
+            240,
+            28,
+            28
+          ]
+        },
+        "hand_l": {
+          "body_grip_px": [
+            238,
+            254
+          ],
+          "rotation_deg": 0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAR_OVER_BODY",
+          "hand_mask_rect_px": [
+            224,
+            240,
+            28,
+            28
+          ]
+        },
+        "hand_r": {
+          "body_grip_px": [
+            154,
+            256
+          ],
+          "rotation_deg": 0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAR_OVER_BODY",
+          "hand_mask_rect_px": [
+            140,
+            242,
+            28,
+            28
+          ]
+        }
+      },
+      "anchor_detection": "frame-specific lower-hand skin component; alpha source pixels",
+      "anchor_fallback": true,
+      "anchor_fallback_sockets": [
+        "off_hand"
+      ]
+    },
+    {
+      "clip": "hit_front",
+      "frame": 0,
+      "path": "res://assets/p3/baked_candidates/aschar49/frames/hit_front/AS49_hit_front_00.png",
+      "sha256": "f63aec0afc31fff4aa9db3fdbd79417b72ab58bd5d99d3c4aa5c83d626207142",
+      "weapon_visible": true,
+      "grip_sockets": {
+        "main_hand": {
+          "body_grip_px": [
+            167,
+            261
+          ],
+          "rotation_deg": -225.0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
+          "hand_mask_rect_px": [
+            153,
+            247,
+            28,
+            28
+          ]
+        },
+        "off_hand": {
+          "body_grip_px": [
+            238,
+            254
+          ],
+          "rotation_deg": -225.0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
+          "hand_mask_rect_px": [
+            224,
+            240,
+            28,
+            28
+          ]
+        },
+        "hand_l": {
+          "body_grip_px": [
+            238,
+            254
+          ],
+          "rotation_deg": 0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAR_OVER_BODY",
+          "hand_mask_rect_px": [
+            224,
+            240,
+            28,
+            28
+          ]
+        },
+        "hand_r": {
+          "body_grip_px": [
+            167,
+            261
+          ],
+          "rotation_deg": 0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAR_OVER_BODY",
+          "hand_mask_rect_px": [
+            153,
+            247,
+            28,
+            28
+          ]
+        }
+      },
+      "anchor_detection": "frame-specific lower-hand skin component; alpha source pixels",
+      "anchor_fallback": true,
+      "anchor_fallback_sockets": [
+        "off_hand"
+      ]
+    },
+    {
+      "clip": "hit_front",
+      "frame": 1,
+      "path": "res://assets/p3/baked_candidates/aschar49/frames/hit_front/AS49_hit_front_01.png",
+      "sha256": "7051e88c447286ccf75eafaf15773f73cb2447f0db2dcf06367c6dbb43f50368",
+      "weapon_visible": true,
+      "grip_sockets": {
+        "main_hand": {
+          "body_grip_px": [
+            155,
+            256
+          ],
+          "rotation_deg": -225.0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
+          "hand_mask_rect_px": [
+            141,
+            242,
+            28,
+            28
+          ]
+        },
+        "off_hand": {
+          "body_grip_px": [
+            238,
+            254
+          ],
+          "rotation_deg": -225.0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
+          "hand_mask_rect_px": [
+            224,
+            240,
+            28,
+            28
+          ]
+        },
+        "hand_l": {
+          "body_grip_px": [
+            238,
+            254
+          ],
+          "rotation_deg": 0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAR_OVER_BODY",
+          "hand_mask_rect_px": [
+            224,
+            240,
+            28,
+            28
+          ]
+        },
+        "hand_r": {
+          "body_grip_px": [
+            155,
+            256
+          ],
+          "rotation_deg": 0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAR_OVER_BODY",
+          "hand_mask_rect_px": [
+            141,
+            242,
+            28,
+            28
+          ]
+        }
+      },
+      "anchor_detection": "frame-specific lower-hand skin component; alpha source pixels",
+      "anchor_fallback": true,
+      "anchor_fallback_sockets": [
+        "off_hand"
+      ]
+    },
+    {
+      "clip": "hit_front",
+      "frame": 2,
+      "path": "res://assets/p3/baked_candidates/aschar49/frames/hit_front/AS49_hit_front_02.png",
+      "sha256": "786eb2e6203efb3ddd58b85df6ce69c1359117eab68ad596af4a39d3275d6d2e",
+      "weapon_visible": true,
+      "grip_sockets": {
+        "main_hand": {
+          "body_grip_px": [
+            159,
+            260
+          ],
+          "rotation_deg": -225.0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
+          "hand_mask_rect_px": [
+            145,
+            246,
+            28,
+            28
+          ]
+        },
+        "off_hand": {
+          "body_grip_px": [
+            258,
+            237
+          ],
+          "rotation_deg": -225.0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
+          "hand_mask_rect_px": [
+            244,
+            223,
+            28,
+            28
+          ]
+        },
+        "hand_l": {
+          "body_grip_px": [
+            258,
+            237
+          ],
+          "rotation_deg": 0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAR_OVER_BODY",
+          "hand_mask_rect_px": [
+            244,
+            223,
+            28,
+            28
+          ]
+        },
+        "hand_r": {
+          "body_grip_px": [
+            159,
+            260
+          ],
+          "rotation_deg": 0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAR_OVER_BODY",
+          "hand_mask_rect_px": [
+            145,
+            246,
+            28,
+            28
+          ]
+        }
+      },
+      "anchor_detection": "frame-specific lower-hand skin component; alpha source pixels",
+      "anchor_fallback": false,
+      "anchor_fallback_sockets": []
+    },
+    {
+      "clip": "hit_front",
+      "frame": 3,
+      "path": "res://assets/p3/baked_candidates/aschar49/frames/hit_front/AS49_hit_front_03.png",
+      "sha256": "39a78745bf6556fca7a74216d4106a17263231e2a2a4bdc51471a9ff1826e833",
+      "weapon_visible": true,
+      "grip_sockets": {
+        "main_hand": {
+          "body_grip_px": [
+            158,
+            254
+          ],
+          "rotation_deg": -225.0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
+          "hand_mask_rect_px": [
+            144,
+            240,
+            28,
+            28
+          ]
+        },
+        "off_hand": {
+          "body_grip_px": [
+            238,
+            254
+          ],
+          "rotation_deg": -225.0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
+          "hand_mask_rect_px": [
+            224,
+            240,
+            28,
+            28
+          ]
+        },
+        "hand_l": {
+          "body_grip_px": [
+            238,
+            254
+          ],
+          "rotation_deg": 0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAR_OVER_BODY",
+          "hand_mask_rect_px": [
+            224,
+            240,
+            28,
+            28
+          ]
+        },
+        "hand_r": {
+          "body_grip_px": [
+            158,
+            254
+          ],
+          "rotation_deg": 0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAR_OVER_BODY",
+          "hand_mask_rect_px": [
+            144,
+            240,
+            28,
+            28
+          ]
+        }
+      },
+      "anchor_detection": "frame-specific lower-hand skin component; alpha source pixels",
+      "anchor_fallback": true,
+      "anchor_fallback_sockets": [
+        "off_hand"
+      ]
+    },
+    {
+      "clip": "downed_front",
+      "frame": 0,
+      "path": "res://assets/p3/baked_candidates/aschar49/frames/downed_front/AS49_downed_front_00.png",
+      "sha256": "7efc3e7700da6e51be8a1df590333d19b3d782c0b25d497e8f93bcf3a0e410eb",
+      "weapon_visible": false,
+      "grip_sockets": {
+        "main_hand": {
+          "body_grip_px": [
+            160,
+            262
+          ],
+          "rotation_deg": -225.0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
+          "hand_mask_rect_px": [
+            146,
+            248,
+            28,
+            28
+          ]
+        },
+        "off_hand": {
+          "body_grip_px": [
+            170,
+            228
+          ],
+          "rotation_deg": -225.0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
+          "hand_mask_rect_px": [
+            156,
+            214,
+            28,
+            28
+          ]
+        },
+        "hand_l": {
+          "body_grip_px": [
+            170,
+            228
+          ],
+          "rotation_deg": 0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAR_OVER_BODY",
+          "hand_mask_rect_px": [
+            156,
+            214,
+            28,
+            28
+          ]
+        },
+        "hand_r": {
+          "body_grip_px": [
+            160,
+            262
+          ],
+          "rotation_deg": 0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAR_OVER_BODY",
+          "hand_mask_rect_px": [
+            146,
+            248,
+            28,
+            28
+          ]
+        }
+      },
+      "anchor_detection": "frame-specific lower-hand skin component; alpha source pixels",
+      "anchor_fallback": false,
+      "anchor_fallback_sockets": []
+    },
+    {
+      "clip": "downed_front",
+      "frame": 1,
+      "path": "res://assets/p3/baked_candidates/aschar49/frames/downed_front/AS49_downed_front_01.png",
+      "sha256": "0090a45eb9f803d6ef44ea30a02663524065393f9e0ee7ba484c2213eb6e9c2e",
+      "weapon_visible": false,
+      "grip_sockets": {
+        "main_hand": {
+          "body_grip_px": [
+            175,
+            279
+          ],
+          "rotation_deg": -225.0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
+          "hand_mask_rect_px": [
+            161,
+            265,
+            28,
+            28
+          ]
+        },
+        "off_hand": {
+          "body_grip_px": [
+            242,
+            257
+          ],
+          "rotation_deg": -225.0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
+          "hand_mask_rect_px": [
+            228,
+            243,
+            28,
+            28
+          ]
+        },
+        "hand_l": {
+          "body_grip_px": [
+            242,
+            257
+          ],
+          "rotation_deg": 0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAR_OVER_BODY",
+          "hand_mask_rect_px": [
+            228,
+            243,
+            28,
+            28
+          ]
+        },
+        "hand_r": {
+          "body_grip_px": [
+            175,
+            279
+          ],
+          "rotation_deg": 0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAR_OVER_BODY",
+          "hand_mask_rect_px": [
+            161,
+            265,
+            28,
+            28
+          ]
+        }
+      },
+      "anchor_detection": "frame-specific lower-hand skin component; alpha source pixels",
+      "anchor_fallback": false,
+      "anchor_fallback_sockets": []
+    },
+    {
+      "clip": "downed_front",
+      "frame": 2,
+      "path": "res://assets/p3/baked_candidates/aschar49/frames/downed_front/AS49_downed_front_02.png",
+      "sha256": "fc9a723584d39c5e7ddb548c256be117a897bfcb162a8b29cfb3a26276edc580",
+      "weapon_visible": false,
+      "grip_sockets": {
+        "main_hand": {
+          "body_grip_px": [
+            200,
+            262
+          ],
+          "rotation_deg": -135.0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
+          "hand_mask_rect_px": [
+            186,
+            248,
+            28,
+            28
+          ]
+        },
+        "off_hand": {
+          "body_grip_px": [
+            245,
+            266
+          ],
+          "rotation_deg": -135.0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
+          "hand_mask_rect_px": [
+            231,
+            252,
+            28,
+            28
+          ]
+        },
+        "hand_l": {
+          "body_grip_px": [
+            245,
+            266
+          ],
+          "rotation_deg": 0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAR_OVER_BODY",
+          "hand_mask_rect_px": [
+            231,
+            252,
+            28,
+            28
+          ]
+        },
+        "hand_r": {
+          "body_grip_px": [
+            200,
+            262
+          ],
+          "rotation_deg": 0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAR_OVER_BODY",
+          "hand_mask_rect_px": [
+            186,
+            248,
+            28,
+            28
+          ]
+        }
+      },
+      "anchor_detection": "frame-specific lower-hand skin component; alpha source pixels",
+      "anchor_fallback": false,
+      "anchor_fallback_sockets": []
+    },
+    {
+      "clip": "downed_front",
+      "frame": 3,
+      "path": "res://assets/p3/baked_candidates/aschar49/frames/downed_front/AS49_downed_front_03.png",
+      "sha256": "23fb45817c9620b52be24fc5f3749941481d02a4ae9b50198f2eeae269432f1d",
+      "weapon_visible": false,
+      "grip_sockets": {
+        "main_hand": {
+          "body_grip_px": [
+            186,
+            300
+          ],
+          "rotation_deg": -225.0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
+          "hand_mask_rect_px": [
+            172,
+            286,
+            28,
+            28
+          ]
+        },
+        "off_hand": {
+          "body_grip_px": [
+            238,
+            254
+          ],
+          "rotation_deg": -225.0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
+          "hand_mask_rect_px": [
+            224,
+            240,
+            28,
+            28
+          ]
+        },
+        "hand_l": {
+          "body_grip_px": [
+            238,
+            254
+          ],
+          "rotation_deg": 0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAR_OVER_BODY",
+          "hand_mask_rect_px": [
+            224,
+            240,
+            28,
+            28
+          ]
+        },
+        "hand_r": {
+          "body_grip_px": [
+            186,
+            300
+          ],
+          "rotation_deg": 0,
+          "scale_multiplier": 1.0,
+          "draw_order": "WEAR_OVER_BODY",
+          "hand_mask_rect_px": [
+            172,
+            286,
+            28,
+            28
+          ]
+        }
+      },
+      "anchor_detection": "frame-specific lower-hand skin component; alpha source pixels",
+      "anchor_fallback": true,
+      "anchor_fallback_sockets": [
+        "off_hand"
+      ]
+    }
+  ],
+  "source_note": "Idle/Cast/Hit/Downed use the registered AS49 candidate sheet; Attack_Front uses a new four-cel gripped sequence based on AS49 master; Walk_Front remains the original V9 consistency-v2 sequence. Previous Attack cels are preserved separately in the handoff. No body rig, no body part layers. Directional set generated as independent master-derived 4x6 atlases (Right/Back/Left); no image flipping; monolithic body cells; sword remains existing V9.3 overlay. Candidate only, owner art approval pending.",
+  "directional_atlases": {
+    "right": {
+      "path": "res://assets/p3/baked_candidates/aschar49/directional_sheets/AS49_right_6clips_4x6.png",
+      "sha256": "6B3BEEA125B68105C27108988926C19D6C145C66D7A6783842C3F3B667F0DC97",
+      "dimensions_px": [
+        1024,
+        1536
+      ],
+      "cell_px": [
+        256,
+        256
+      ],
+      "grid_columns": 4,
+      "grid_rows": 6,
+      "rows": {
+        "idle": 0,
+        "walk": 1,
+        "attack": 2,
+        "cast": 3,
+        "hit": 4,
+        "downed": 5
+      },
+      "facing_mode": "independently_drawn"
+    },
+    "back": {
+      "path": "res://assets/p3/baked_candidates/aschar49/directional_sheets/AS49_back_6clips_4x6.png",
+      "sha256": "D74152DA8F465EB1CE834A6149E79B7C3AD2E5BBE926215F866C4C4DEED61EC1",
+      "dimensions_px": [
+        1024,
+        1536
+      ],
+      "cell_px": [
+        256,
+        256
+      ],
+      "grid_columns": 4,
+      "grid_rows": 6,
+      "rows": {
+        "idle": 0,
+        "walk": 1,
+        "attack": 2,
+        "cast": 3,
+        "hit": 4,
+        "downed": 5
+      },
+      "facing_mode": "independently_drawn"
+    },
+    "left": {
+      "path": "res://assets/p3/baked_candidates/aschar49/directional_sheets/AS49_left_6clips_4x6.png",
+      "sha256": "C4D777D238F8AC577DB2219D680C7418198D298B7264B98E5FDF06D8FDB536C9",
+      "dimensions_px": [
+        1024,
+        1536
+      ],
+      "cell_px": [
+        256,
+        256
+      ],
+      "grid_columns": 4,
+      "grid_rows": 6,
+      "rows": {
+        "idle": 0,
+        "walk": 1,
+        "attack": 2,
+        "cast": 3,
+        "hit": 4,
+        "downed": 5
+      },
+      "facing_mode": "independently_drawn_profile"
+    }
+  },
+  "source_frame_count": 24,
+  "anchor_method": "per-frame lower-hand skin region with explicit fallback markers",
+  "asset_scale_correction": "map-scale prop transforms; source RGBA pixels unchanged"
+}

@@ -12,7 +12,7 @@
       "gender": "male",
       "weapon_family": "jian",
       "main_hand_side": "character_right",
-      "socket_manifest": "res://assets/p3/baked_candidates/aschar48/AS48_4dir_weapon_sockets_v9_3_candidate.json"
+      "socket_manifest": "res://assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS48_weapon_sockets_v9_3_candidate.json"
     },
     {
       "identity": "AS-CHAR-49",
@@ -21,7 +21,7 @@
       "gender": "female",
       "weapon_family": "jian",
       "main_hand_side": "character_right",
-      "socket_manifest": "res://assets/p3/baked_candidates/aschar49/AS49_4dir_weapon_sockets_v9_3_candidate.json"
+      "socket_manifest": "res://assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS49_weapon_sockets_v9_3_candidate.json"
     },
     {
       "identity": "AS-CHAR-50",
@@ -83,7 +83,7 @@
       "school": "Cung Tu",
       "gender": "male",
       "weapon_family": "bow",
-      "main_hand_side": "character_right",
+      "main_hand_side": "character_left",
       "socket_manifest": "res://assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS56_weapon_sockets_v9_3_candidate.json"
     },
     {
@@ -92,7 +92,7 @@
       "school": "Cung Tu",
       "gender": "female",
       "weapon_family": "bow",
-      "main_hand_side": "character_right",
+      "main_hand_side": "character_left",
       "socket_manifest": "res://assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS57_weapon_sockets_v9_3_candidate.json"
     },
     {
@@ -381,7 +381,8 @@
       "sha256": "fa58188cdca1c3d84bee16e3d076796e20b838ad048d6cffe43c2292e53fe9f0",
       "status": "RECREATED",
       "owner_art_approval": "PENDING",
-      "source_route": "image_gen RGBA atlas, cropped to isolated cell"
+      "source_route": "image_gen RGBA atlas, cropped to isolated cell",
+      "review_scale_multiplier": 0.42
     },
     "dual_dao_left": {
       "asset_id": "dual_dao_left",
@@ -408,7 +409,8 @@
       "status": "RECREATED",
       "owner_art_approval": "PENDING",
       "source_route": "image_gen RGBA atlas, cropped to isolated cell",
-      "pair_side": "left"
+      "pair_side": "left",
+      "review_scale_multiplier": 0.34
     },
     "dual_dao_right": {
       "asset_id": "dual_dao_right",
@@ -435,7 +437,8 @@
       "status": "RECREATED",
       "owner_art_approval": "PENDING",
       "source_route": "image_gen RGBA atlas, cropped to isolated cell",
-      "pair_side": "right"
+      "pair_side": "right",
+      "review_scale_multiplier": 0.34
     },
     "spear": {
       "asset_id": "spear",
@@ -461,7 +464,8 @@
       "sha256": "9de94cb11245c966d66c0a92998f02e00631f017278196e01b8d95ac57d61c52",
       "status": "RECREATED",
       "owner_art_approval": "PENDING",
-      "source_route": "image_gen RGBA atlas, cropped to isolated cell"
+      "source_route": "image_gen RGBA atlas, cropped to isolated cell",
+      "review_scale_multiplier": 0.62
     },
     "bow": {
       "asset_id": "bow",
@@ -487,7 +491,8 @@
       "sha256": "69f7f5f3f919547a691549902e1a4b3d240d75392713d91a001b608396444385",
       "status": "RECREATED",
       "owner_art_approval": "PENDING",
-      "source_route": "image_gen RGBA atlas, cropped to isolated cell"
+      "source_route": "image_gen RGBA atlas, cropped to isolated cell",
+      "review_scale_multiplier": 0.43
     },
     "arrow": {
       "asset_id": "arrow",
@@ -513,7 +518,8 @@
       "sha256": "54523a236f8aa0c0987c98180d4aa06782eaa7e259f6d69bbddf0451430321a7",
       "status": "RECREATED",
       "owner_art_approval": "PENDING",
-      "source_route": "image_gen RGBA atlas, cropped to isolated cell"
+      "source_route": "image_gen RGBA atlas, cropped to isolated cell",
+      "review_scale_multiplier": 0.24
     },
     "fist_wraps_left": {
       "asset_id": "fist_wraps_left",
@@ -540,7 +546,8 @@
       "status": "RECREATED",
       "owner_art_approval": "PENDING",
       "source_route": "image_gen RGBA atlas, cropped to isolated cell",
-      "pair_side": "left"
+      "pair_side": "left",
+      "review_scale_multiplier": 0.34
     },
     "fist_wraps_right": {
       "asset_id": "fist_wraps_right",
@@ -567,7 +574,8 @@
       "status": "RECREATED",
       "owner_art_approval": "PENDING",
       "source_route": "image_gen RGBA atlas, cropped to isolated cell",
-      "pair_side": "right"
+      "pair_side": "right",
+      "review_scale_multiplier": 0.34
     },
     "palm_bracer_left": {
       "asset_id": "palm_bracer_left",
@@ -594,7 +602,8 @@
       "status": "RECREATED",
       "owner_art_approval": "PENDING",
       "source_route": "image_gen RGBA atlas, cropped to isolated cell",
-      "pair_side": "left"
+      "pair_side": "left",
+      "review_scale_multiplier": 0.34
     },
     "palm_bracer_right": {
       "asset_id": "palm_bracer_right",
@@ -621,7 +630,8 @@
       "status": "RECREATED",
       "owner_art_approval": "PENDING",
       "source_route": "image_gen RGBA atlas, cropped to isolated cell",
-      "pair_side": "right"
+      "pair_side": "right",
+      "review_scale_multiplier": 0.34
     },
     "poison_needles": {
       "asset_id": "poison_needles",
@@ -647,7 +657,8 @@
       "sha256": "8d6fe7b75d06a6d594b21283199b1236a699acdc7e86a92e0cb00a37c38ef4f7",
       "status": "RECREATED",
       "owner_art_approval": "PENDING",
-      "source_route": "image_gen RGBA atlas, cropped to isolated cell"
+      "source_route": "image_gen RGBA atlas, cropped to isolated cell",
+      "review_scale_multiplier": 0.31
     },
     "poison_gourd": {
       "asset_id": "poison_gourd",
@@ -673,7 +684,8 @@
       "sha256": "1bf26081437704498bec38be1c93c37867bb5fd09bb7da4475168109a3579bb2",
       "status": "RECREATED",
       "owner_art_approval": "PENDING",
-      "source_route": "image_gen RGBA atlas, cropped to isolated cell"
+      "source_route": "image_gen RGBA atlas, cropped to isolated cell",
+      "review_scale_multiplier": 0.22
     },
     "talisman_paper": {
       "asset_id": "talisman_paper",
@@ -699,7 +711,8 @@
       "sha256": "25da67006404ca90280b161a650f63b9a50c5b9711709bf94bf6fe9893eb6b79",
       "status": "RECREATED",
       "owner_art_approval": "PENDING",
-      "source_route": "image_gen RGBA atlas, cropped to isolated cell"
+      "source_route": "image_gen RGBA atlas, cropped to isolated cell",
+      "review_scale_multiplier": 0.2
     },
     "talisman_brush": {
       "asset_id": "talisman_brush",
@@ -725,7 +738,8 @@
       "sha256": "a053eb6a29f4ae4337b5e3736fbde2bee7c1c9f20941d898a5471e47d90687f2",
       "status": "RECREATED",
       "owner_art_approval": "PENDING",
-      "source_route": "image_gen RGBA atlas, cropped to isolated cell"
+      "source_route": "image_gen RGBA atlas, cropped to isolated cell",
+      "review_scale_multiplier": 0.28
     },
     "curse_beads": {
       "asset_id": "curse_beads",
@@ -751,7 +765,8 @@
       "sha256": "e370b7d1ee0d4249ef9521d953ac250e6eae34e9fd0d6694cb395d7154b5bb68",
       "status": "RECREATED",
       "owner_art_approval": "PENDING",
-      "source_route": "image_gen RGBA atlas, cropped to isolated cell"
+      "source_route": "image_gen RGBA atlas, cropped to isolated cell",
+      "review_scale_multiplier": 0.23
     },
     "formation_compass": {
       "asset_id": "formation_compass",
@@ -777,7 +792,8 @@
       "sha256": "8c71dbe5efe068783d86d4cab4b2a1a24c44fe4ee07168088251349a33be7efd",
       "status": "RECREATED",
       "owner_art_approval": "PENDING",
-      "source_route": "image_gen RGBA atlas, cropped to isolated cell"
+      "source_route": "image_gen RGBA atlas, cropped to isolated cell",
+      "review_scale_multiplier": 0.25
     },
     "formation_pointer": {
       "asset_id": "formation_pointer",
@@ -803,7 +819,8 @@
       "sha256": "efaeeac2a328ca7671cbccf786a161372021f52a1cd54ac728bfa998df71cfea",
       "status": "RECREATED",
       "owner_art_approval": "PENDING",
-      "source_route": "image_gen RGBA atlas, cropped to isolated cell"
+      "source_route": "image_gen RGBA atlas, cropped to isolated cell",
+      "review_scale_multiplier": 0.24
     },
     "summon_contract": {
       "asset_id": "summon_contract",
@@ -829,7 +846,8 @@
       "sha256": "7e6b1340d4b4a8d396a140d78734b0d2e2eafc099c8329a6b11348da91b55ff6",
       "status": "RECREATED",
       "owner_art_approval": "PENDING",
-      "source_route": "image_gen RGBA atlas, cropped to isolated cell"
+      "source_route": "image_gen RGBA atlas, cropped to isolated cell",
+      "review_scale_multiplier": 0.25
     },
     "summon_seal": {
       "asset_id": "summon_seal",
@@ -855,7 +873,8 @@
       "sha256": "166a541f807baebc1b6ad44e4f0e0193536f1f07729630339bcab2115bf704ad",
       "status": "RECREATED",
       "owner_art_approval": "PENDING",
-      "source_route": "image_gen RGBA atlas, cropped to isolated cell"
+      "source_route": "image_gen RGBA atlas, cropped to isolated cell",
+      "review_scale_multiplier": 0.22
     },
     "owner_liked_jian_existing": {
       "asset_id": "owner_liked_jian_existing",
@@ -876,9 +895,38 @@
       "sha256": "8c9869ba06e39799c5eb3b6b2e3060284c04197abc034993b1831f1572c60285",
       "status": "EXISTING_CANDIDATE_PRESERVED",
       "owner_art_approval": "PENDING",
-      "source_route": "existing V9.3 Kiếm Tu family asset; immutable"
+      "source_route": "existing V9.3 Kiếm Tu family asset; immutable",
+      "review_scale_multiplier": 1.0
     }
   },
   "socket_fallbacks_used": 74,
-  "notes": "Fist and Palm remain unarmed. Downed hides held props. V9.3 socket coordinates are per real source frame; automatic skin-region candidate anchors remain owner-review candidates. Main-hand side overrides: AS62, AS63, AS70 use the visible character-left hand in the front body reference."
+  "notes": "CANDIDATE frame sockets use hand-region detection/fallback markers; separate RGBA props; two-hand spear aligned to both contacts; hand masks restored above props; back props behind body; Fist/Palm remain unarmed.",
+  "socket_anchor_fallbacks": 282,
+  "socket_manifest_count": 24,
+  "socket_coverage_by_actor": {
+    "48": 24,
+    "49": 24,
+    "50": 96,
+    "51": 96,
+    "52": 96,
+    "53": 96,
+    "54": 96,
+    "55": 96,
+    "56": 96,
+    "57": 96,
+    "58": 96,
+    "59": 96,
+    "60": 96,
+    "61": 96,
+    "62": 96,
+    "63": 96,
+    "64": 96,
+    "65": 96,
+    "66": 96,
+    "67": 96,
+    "68": 96,
+    "69": 96,
+    "70": 96,
+    "71": 96
+  }
 }
