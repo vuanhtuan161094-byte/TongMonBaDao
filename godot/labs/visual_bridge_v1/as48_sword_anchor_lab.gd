@@ -47,6 +47,17 @@ func _json(path: String) -> Dictionary:
     push_error("AS48_INVALID_JSON " + path)
     return {}
 
+# Existing AS48 candidate PNGs are not all registered as imported Texture2D
+# by the outer Godot project. Decode original repository bytes directly, with
+# no new PNG/asset export, crop, copy, or changes to owner/character sources.
+func _raw_png_texture(path: String) -> Texture2D:
+    var image := Image.new()
+    var status := image.load(ProjectSettings.globalize_path(path))
+    if status != OK or image.is_empty():
+        push_error("AS48_RAW_PNG_READ_FAIL " + path + " error=" + str(status))
+        return null
+    return ImageTexture.create_from_image(image)
+
 func _ready() -> void:
     _sockets = _json(SOCKETS)
     _bindings = _json(BINDINGS)
@@ -84,8 +95,8 @@ func _ready() -> void:
         "canvas_px": [400, 440], "foot_px": [FOOT.x, FOOT.y],
         "clips": {"attack": {"front": anchors}}}
     # NO fabricated left/right/back clips. These remain unavailable in PR #72.
-    var body_atlas := load(ATLAS) as Texture2D
-    var weapon_tex := load(WEAPON) as Texture2D
+    var body_atlas := _raw_png_texture(ATLAS)
+    var weapon_tex := _raw_png_texture(WEAPON)
     var monsters := load(MONSTER) as SpriteFrames
     var shader := load(TECH_SHADER) as Shader
     if body_atlas == null or weapon_tex == null or monsters == null or shader == null:
