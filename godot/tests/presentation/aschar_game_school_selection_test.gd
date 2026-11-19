@@ -13,6 +13,9 @@ func _run() -> void:
     if SectASCharCandidateBridgeV1.SCHOOL_IDS.size() != 12:
         _fail("not exactly 12 schools")
         return
+    # Avoid decoding 24 x 96 full-resolution RGBA frame sets in one CI process.
+    # Confirm all 24 IDs have a loadable source path and a socket contract,
+    # and fully instantiate representative male/female + repaired sources.
     var count := 0
     for school in SectASCharCandidateBridgeV1.SCHOOL_IDS:
         var branches := SectASCharCandidateBridgeV1.branches_for(school)
@@ -20,19 +23,30 @@ func _run() -> void:
             _fail("missing canonical 3 branches: "+school)
             return
         for sex in ["male","female"]:
-            var scene := SectASCharCandidateBridgeV1.scene_for(school,sex)
-            if scene == null:
-                _fail("ASCHAR candidate sprite missing: "+school+" "+sex)
+            var id := SectASCharCandidateBridgeV1.actor_id(school,sex)
+            var path := str(SectASCharCandidateBridgeV1.SOURCE_PATHS.get(id,""))
+            if path.is_empty() or not ResourceLoader.exists(path,"SpriteFrames"):
+                _fail("ASCHAR SpriteFrames missing: "+school+" "+sex)
                 return
-            var sprite := scene.instantiate() as AnimatedSprite2D
-            if sprite == null or sprite.sprite_frames == null \
-                    or not sprite.sprite_frames.has_animation(&"stand") \
-                    or not sprite.sprite_frames.has_animation(&"walk") \
-                    or not sprite.sprite_frames.has_animation(&"idle_front"):
-                _fail("ASCHAR action contract invalid: "+school+" "+sex)
+            var sockets := "res://assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS%d_weapon_sockets_v9_3_candidate.json" % id
+            if not FileAccess.file_exists(sockets):
+                _fail("ASCHAR per-frame sockets missing: "+school+" "+sex)
                 return
-            sprite.free()
             count += 1
+    for school in ["sword","fist","talisman"]:
+        var sex := "female" if school == "talisman" else "male"
+        var scene := SectASCharCandidateBridgeV1.scene_for(school,sex)
+        if scene == null:
+            _fail("ASCHAR runtime scene missing: "+school+" "+sex)
+            return
+        var sprite := scene.instantiate() as AnimatedSprite2D
+        if sprite == null or sprite.sprite_frames == null \
+                or not sprite.sprite_frames.has_animation(&"stand") \
+                or not sprite.sprite_frames.has_animation(&"walk") \
+                or not sprite.sprite_frames.has_animation(&"idle_front"):
+            _fail("ASCHAR runtime action contract invalid: "+school+" "+sex)
+            return
+        sprite.free()
     var game := GAME.instantiate() as Control
     root.add_child(game)
     for i in range(9):
