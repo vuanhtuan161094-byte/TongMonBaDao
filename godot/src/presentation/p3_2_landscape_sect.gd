@@ -7591,14 +7591,19 @@ func _process(_delta: float) -> void:
             # Actor culling/materialization is throttled below; do not scan a
             # large roster on every camera tween/pan frame.
     _refresh_living_cue_positions()
+    # Keep culling responsive while dragging/tweening; when the map is idle,
+    # sync from the canonical tick already refreshes actors immediately.
+    # Avoid rebuilding/sorting the visible actor pool eight times per second
+    # when neither input nor the camera has moved.
+    var camera_moving := mouse_panning or not touch_points.is_empty()
+    if camera_tween != null and camera_tween.is_running():
+        camera_moving = true
     actor_visibility_refresh_elapsed += _delta
-    if actor_visibility_refresh_elapsed >= 0.12:
+    var actor_visibility_interval := 0.12 if camera_moving else 0.40
+    if actor_visibility_refresh_elapsed >= actor_visibility_interval:
         actor_visibility_refresh_elapsed = 0.0
         _refresh_world_actor_visibility()
     if map_worksite_cues_dirty:
-        var camera_moving := mouse_panning or not touch_points.is_empty()
-        if camera_tween != null and camera_tween.is_running():
-            camera_moving = true
         if camera_moving:
             map_worksite_refresh_elapsed = 0.0
         else:
@@ -7607,10 +7612,8 @@ func _process(_delta: float) -> void:
                 map_worksite_refresh_elapsed = 0.0
                 map_worksite_cues_dirty = false
                 _refresh_map_worksite_cues()
-    b3_hunt_refresh_elapsed += _delta
-    if b3_hunt_refresh_elapsed >= B3_HUNT_REFRESH_SECONDS:
-        b3_hunt_refresh_elapsed = fmod(b3_hunt_refresh_elapsed,B3_HUNT_REFRESH_SECONDS)
-        _refresh_b3_hunt_panel()
+    # The full-screen hunt path above already owns its one-second refresh.
+    # Hidden B3 modals should not poll and rebuild presentation in production.
 
 func _open_raw_frame_log() -> void:
     var path := OS.get_environment(RAW_FRAME_LOG_ENV)

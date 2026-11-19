@@ -9,6 +9,7 @@ const ART05_DEEP := Color(0.025,0.09,0.108)
 const ART05_JADE := Color(0.08,0.205,0.216)
 const ART05_FRAME = preload("res://src/presentation/uiux/sect_premium_panel_v1.gd")
 const ART06_WORLD = preload("res://src/presentation/uiux/sect_world_atmosphere_v1.gd")
+const SECT_RUNTIME_PERF_HUD = preload("res://src/presentation/p3/sect_runtime_perf_hud.gd")
 const ART05_BUILDING_VARIANT = preload("res://src/presentation/uiux/sect_building_art_variant_v3.gd")
 const VIS07_APPROVED = preload("res://src/presentation/p3/tmb_approved_building_art_v4.gd")
 const VIS08_ORIGINAL_BUILDINGS = preload("res://src/presentation/p3/tmb_original_building_art_v5.gd")
@@ -30,6 +31,11 @@ func _ready() -> void:
     aura.mouse_filter = Control.MOUSE_FILTER_IGNORE
     aura.z_index = 4
     add_child(aura)
+    # Opt-in performance telemetry works in the same Web Godot build. F8
+    # toggles it; when hidden it has no per-frame sampling or UI updates.
+    var perf_hud := SECT_RUNTIME_PERF_HUD.new()
+    perf_hud.name = "SectRuntimePerfHud"
+    add_child(perf_hud)
 
 func _refresh_building_operation_art() -> void:
     super._refresh_building_operation_art()

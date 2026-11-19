@@ -6,6 +6,9 @@ on:
       - 'godot/scenes/p3/p3_2_landscape_sect.tscn'
       - 'godot/src/presentation/art05_onegame_cinematic_ui.gd'
       - 'godot/src/presentation/p3/sect_isometric_world_v1.gd'
+      - 'godot/src/presentation/p3_2_landscape_sect.gd'
+      - 'godot/src/presentation/p3/sect_runtime_perf_hud.gd'
+      - 'godot/tests/presentation/sect_runtime_performance_contract_test.gd'
       - 'godot/src/presentation/p3/sect_map_d2_landscape.gd'
       - 'godot/src/simulation/governance/sect_residence_site_v1.gd'
       - 'godot/tests/presentation/sect_map_d1b_layout_contract_test.gd'
@@ -97,6 +100,8 @@ jobs:
 
       - name: AS-BUILD-01 genuine Godot alchemy asset import and Source A provenance contract
         run: bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/presentation/as_build01_alchemy_visual_import_test.gd
+      - name: Runtime camera redraw culling and opt-in Web FPS telemetry
+        run: bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/presentation/sect_runtime_performance_contract_test.gd
       - name: ART05 strict real OneGame layout and input navigation test
         run: bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/presentation/art05_real_gui_layout_test.gd
       - name: Sect Master mockup shell, true inventory and contextual map dock

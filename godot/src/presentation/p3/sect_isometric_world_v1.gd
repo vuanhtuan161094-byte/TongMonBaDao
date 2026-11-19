@@ -167,6 +167,16 @@ var display_instances: Array[Dictionary] = []
 var selected_visual_site_id := ""
 var tiles: Dictionary = {}
 var active_chunks: Array[Vector2i] = []
+# PERF-WEB-01: keep static sect draw commands while camera moves within the
+# pre-existing 170x175 world-visibility buffer. Camera2D still pans every
+# frame, and picking uses the exact camera transform; only expensive reauthoring
+# of ground/roads/depth-sorted decorations/buildings is rate-limited.
+# PvE is deliberately excluded: its VFX and battle state redraw independently.
+const SECT_REDRAW_WORLD_DISTANCE := 56.0
+const SECT_REDRAW_ZOOM_DELTA := 0.025
+var sect_draw_view_initialized := false
+var sect_draw_view_position := Vector2.ZERO
+var sect_draw_view_zoom := 1.0
 # Chunk-local immutable ArrayMesh, cached in memory; purely visual, no save data.
 var ground_chunk_meshes: Dictionary = {}
 # View overlays are static once road topology and verified art are loaded.
@@ -1031,6 +1041,27 @@ func _update_chunks() -> void:
         for cy in range(clampi(floori(float(low.y)/CHUNK),0,11),clampi(floori(float(high.y)/CHUNK),0,11)+1):
             chunks.append(Vector2i(cx,cy))
     var chunks_changed := chunks != active_chunks
+    if not pve_landscape:
+        # _draw() culls static sect decorations with a 170px/175px buffer.
+        # Reusing CanvasItem commands over short camera travel is safe within
+        # that cushion; chunk transitions and significant zoom redraw at once.
+        var sect_view_changed := not sect_draw_view_initialized
+        if sect_draw_view_initialized:
+            sect_view_changed = camera.position.distance_squared_to(
+                sect_draw_view_position) >= SECT_REDRAW_WORLD_DISTANCE * SECT_REDRAW_WORLD_DISTANCE
+            sect_view_changed = sect_view_changed or absf(
+                camera.zoom.x-sect_draw_view_zoom) >= SECT_REDRAW_ZOOM_DELTA
+        if not chunks_changed and not sect_view_changed:
+            return
+        if chunks_changed:
+            active_chunks = chunks
+        sect_draw_view_initialized = true
+        sect_draw_view_position = camera.position
+        sect_draw_view_zoom = camera.zoom.x
+        draw_revision += 1
+        queue_redraw()
+        return
+    # Battle world retains exact per-frame camera-dependent culling/VFX.
     var camera_changed := not pve_static_queue_has_view or not pve_static_queue_camera_position.is_equal_approx(camera.position) or not is_equal_approx(pve_static_queue_zoom,camera.zoom.x)
     if not chunks_changed and not camera_changed and not pve_static_queue_dirty:
         return
