@@ -64,7 +64,12 @@ function phaseChangedPixels(onBuffer, offBuffer, bounds) {
   try {
     const page = await browser.newPage({ viewport: { width: 1280, height: 720 }, deviceScaleFactor: 1 });
     const faults = [];
+    const engineLogs = [];
     page.on('pageerror', error => faults.push(String(error)));
+    page.on('console', msg => {
+      const line = msg.text();
+      if (/VFX_SWORD_R1_PHASE_HELD|BRIDGE_AS48_EVENT_FAIL|VFX_SWORD_R1_SOURCE|VFX_SWORD_R1_ALPHA/.test(line)) engineLogs.push(line);
+    });
     await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60000 });
     const canvas = page.locator('canvas').first();
     await canvas.waitFor({ state: 'visible', timeout: 60000 });
@@ -89,10 +94,16 @@ function phaseChangedPixels(onBuffer, offBuffer, bounds) {
       projectile: [410, 430, 810, 610],
       contact: [795, 415, 990, 615]
     };
-    for (const phase of [{name:'charge',key:'1'}, {name:'projectile',key:'2'}, {name:'contact',key:'3'}]) {
-      await canvas.click({ position:{x:620,y:245} });
-      await page.keyboard.press(phase.key);
-      await page.waitForTimeout(180);
+    // Hit the actual on-canvas phase buttons. Godot Web controls can consume
+    // keyboard shortcuts, so pressing 1/2/3 did NOT prove a held phase.
+    // The screenshot must now show the paused state and the selected source.
+    for (const phase of [
+      {name:'charge', buttonX:1058},
+      {name:'projectile', buttonX:1132},
+      {name:'contact', buttonX:1204}
+    ]) {
+      await canvas.click({position:{x:phase.buttonX,y:495}});
+      await page.waitForTimeout(250);
       const visible = await canvas.screenshot();
       fs.writeFileSync(path.join(output, 'vfx-'+phase.name+'-on.png'), visible);
       // Canonical review HUD's VFX toggle is fixed at x~1130, y~330.
@@ -112,6 +123,7 @@ function phaseChangedPixels(onBuffer, offBuffer, bounds) {
       actor_visible: actor>=ACTOR_PIXEL_MIN, monster_visible: monster>=MONSTER_PIXEL_MIN,
       browser_console_errors: faults.slice(0, 8),
       phase_samples: phaseSamples,
+      engine_logs: engineLogs.slice(-30),
       verdict: actor>=ACTOR_PIXEL_MIN && monster>=MONSTER_PIXEL_MIN && phaseSamples.every(p=>p.passed) ?
         'BROWSER_CANVAS_AND_VFX_PHASES_PASS' : 'BROWSER_CANVAS_OR_VFX_PHASES_FAIL',
       vfx_g3_art: 'SOURCE_PENDING', owner_art: 'PENDING', pve: 'HOLD'
