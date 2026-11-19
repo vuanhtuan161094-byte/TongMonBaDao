@@ -79,6 +79,23 @@ func _run() -> void:
         return
     scene.call("_close_building_operation_panel",true)
     await process_frame
+    # Entering the actual warehouse must show category groups and only
+    # source-backed quantities; it may never alter the saved state.
+    scene.call("_open_building",SectMapPresentation.DEST_WAREHOUSE)
+    await process_frame
+    var grouped := scene.find_child("SectWarehouseCategoryGroups",true,false) as VBoxContainer
+    if grouped == null:
+        _fail("warehouse has no categorized stock gallery")
+        return
+    var warehouse := WarehouseSystem.new()
+    for id in [&"thanh_thiet",&"yeu_dan",&"linh_tuy"]:
+        if warehouse.quantity(state,id) > 0:
+            var card_name := "Art02Item_"+str(id)
+            if grouped.find_child(card_name,true,false) == null:
+                _fail("real inventory item missing from warehouse grouping: "+str(id))
+                return
+    scene.call("_close_building_operation_panel",true)
+    await process_frame
     if state.to_dict() != previous:
         _fail("read-only mockup shell changed canonical game state")
         return

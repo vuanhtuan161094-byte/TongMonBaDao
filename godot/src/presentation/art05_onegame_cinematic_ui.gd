@@ -936,3 +936,89 @@ func _art05_refresh_sect_master_dock() -> void:
         if source == null:
             source = VIS08_ORIGINAL_BUILDINGS.texture_for(_art05_dock_destination)
         _art05_dock_portrait.texture = source
+
+
+# UI-MOCKUP-02: categorized inventory in the existing real Warehouse modal.
+# Read-only; the actual stock, reservations and item rules remain in WarehouseSystem.
+func _art02_show_warehouse_items() -> void:
+    if state == null or building_operation_live_content == null:
+        return
+    var warehouse := WarehouseSystem.new()
+    var registry := ResourceRegistry.new()
+    var ids: Array[StringName] = warehouse_display_resource_ids
+    if ids.is_empty():
+        ids = registry.all_resource_ids()
+    var groups := {
+        "KHOÁNG · LINH MỘC":[],
+        "YÊU ĐAN · LINH TỦY · LINH DƯỢC":[],
+        "CÔNG PHÁP · PHỤ KIỆN":[],
+        "VẬT PHẨM KHÁC":[]
+    }
+    # These three genuine resource IDs were previously overexposed in the
+    # universal top bar. Pin them in the appropriate Warehouse categories.
+    var ordered: Array[StringName] = [
+        &"thanh_thiet",&"yeu_dan",&"linh_tuy"
+    ]
+    for resource_id in ids:
+        if resource_id not in ordered:
+            ordered.append(resource_id)
+    for resource_id in ordered:
+        var amount := warehouse.quantity(state,resource_id)
+        if amount <= 0:
+            continue
+        var family := str(registry.family(resource_id))
+        var group := "VẬT PHẨM KHÁC"
+        if family in ["mineral","wood","building_component"]:
+            group = "KHOÁNG · LINH MỘC"
+        elif family in ["monster_core","essence","herb","alchemy_material","medicine","pill"]:
+            group = "YÊU ĐAN · LINH TỦY · LINH DƯỢC"
+        elif family.begins_with("v63_codex") or family in ["manual","fragment","technique_material"]:
+            group = "CÔNG PHÁP · PHỤ KIỆN"
+        (groups[group] as Array).append(resource_id)
+    var body := VBoxContainer.new()
+    body.name = "SectWarehouseCategoryGroups"
+    body.add_theme_constant_override("separation",9)
+    building_operation_live_content.add_child(body)
+    building_operation_live_content.move_child(body,1)
+    var displayed := 0
+    var total_nonzero := 0
+    for rows in groups.values():
+        total_nonzero += (rows as Array).size()
+    var group_order := ["KHOÁNG · LINH MỘC",
+        "YÊU ĐAN · LINH TỦY · LINH DƯỢC",
+        "CÔNG PHÁP · PHỤ KIỆN","VẬT PHẨM KHÁC"]
+    for group in group_order:
+        var records := groups[group] as Array
+        if records.is_empty() or displayed >= 24:
+            continue
+        var heading := Label.new()
+        heading.name = "WarehouseGroupLabel_%d" % displayed
+        heading.text = "%s   ·   %d loại" % [group,records.size()]
+        heading.add_theme_font_size_override("font_size",13)
+        heading.add_theme_color_override("font_color",ART05_GOLD)
+        body.add_child(heading)
+        var grid := GridContainer.new()
+        grid.name = "Art02WarehouseStockGallery" if displayed == 0 else "WarehouseGrid_%d" % displayed
+        grid.columns = 2
+        grid.add_theme_constant_override("h_separation",6)
+        grid.add_theme_constant_override("v_separation",6)
+        body.add_child(grid)
+        for id in records:
+            if displayed >= 24:
+                break
+            var quantity := warehouse.quantity(state,id)
+            var usable := warehouse.available_quantity(state,id)
+            var card := _art02_item_card(id,registry.display_name(id),
+                "Có %d  ·  Dùng %d" % [quantity,usable],ART05_GOLD)
+            card.custom_minimum_size.x = 174
+            grid.add_child(card)
+            displayed += 1
+    if displayed == 0:
+        var empty := Label.new()
+        empty.name = "SectWarehouseEmpty"
+        empty.text = "Kho hiện chưa có vật tư có thể hiển thị."
+        empty.add_theme_color_override("font_color",ART05_MUTE)
+        body.add_child(empty)
+    else:
+        body.tooltip_text = "%d loại có tồn · hiện %d; xem chi tiết phía trái." % [
+            total_nonzero,displayed]
