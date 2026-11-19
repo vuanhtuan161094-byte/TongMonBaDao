@@ -8,6 +8,10 @@ static var _frames: Dictionary = {}
 static var _sockets: Dictionary = {}
 static var _weapons: Dictionary = {}
 static var _library: Dictionary = {}
+static var _clip_rows: Dictionary = {}
+static var _cel_cache: Dictionary = {}
+static var _cel_order: Array[String] = []
+const MAX_CACHED_CELS := 160
 
 static func _manifest(actor_id: int) -> Dictionary:
     if _sockets.has(actor_id):
@@ -21,7 +25,9 @@ static func _sprite_frames(actor_id: int) -> SpriteFrames:
     if _frames.has(actor_id):
         return _frames[actor_id]
     var path := str(BRIDGE.SOURCE_PATHS.get(actor_id,""))
-    var frames := ResourceLoader.load(path,"SpriteFrames") as SpriteFrames if ResourceLoader.exists(path,"SpriteFrames") else null
+    var frames: SpriteFrames = null
+    if ResourceLoader.exists(path,"SpriteFrames"):
+        frames = ResourceLoader.load(path,"SpriteFrames") as SpriteFrames
     _frames[actor_id] = frames
     return frames
 
@@ -52,37 +58,92 @@ static func _weapon_info(manifest: Dictionary,asset_id: String) -> Dictionary:
         return Dictionary(manifest.get("weapon_asset",{}))
     return Dictionary(_library.get(asset_id,{}))
 
+static func _cel(path: String) -> Texture2D:
+    if _cel_cache.has(path):
+        return _cel_cache[path]
+    if not ResourceLoader.exists(path,"Texture2D"):
+        return null
+    var tex := ResourceLoader.load(path,"Texture2D",ResourceLoader.CACHE_MODE_IGNORE) as Texture2D
+    if tex != null:
+        _cel_cache[path] = tex
+        _cel_order.append(path)
+        if _cel_order.size() > MAX_CACHED_CELS:
+            _cel_cache.erase(_cel_order.pop_front())
+    return tex
+
+static func _rows(actor_id: int,manifest: Dictionary) -> Dictionary:
+    if _clip_rows.has(actor_id):
+        return _clip_rows[actor_id]
+    var rows: Dictionary = {}
+    for raw in manifest.get("body_frames",[]):
+        if raw is Dictionary:
+            var clip := str(raw.get("clip",""))
+            if not rows.has(clip):
+                rows[clip] = []
+            rows[clip].append(raw)
+    _clip_rows[actor_id] = rows
+    return rows
+
 static func draw_actor(canvas: CanvasItem,school: String,sex: String,action: String,
         foot: Vector2,facing: Vector2,age: float,scale: float) -> bool:
     var actor_id := BRIDGE.actor_id(school,sex)
     if actor_id < 0:
         return false
-    var frames := _sprite_frames(actor_id)
-    if frames == null:
+    var manifest := _manifest(actor_id)
+    if manifest.is_empty():
         return false
-    var clip := resolve_clip(frames,action,facing)
-    if clip.is_empty():
+    var verb := "idle"
+    match action:
+        "run","walk": verb = "walk"
+        "attack": verb = "attack"
+        "cast": verb = "cast"
+        "hit": verb = "hit"
+        "die","death": verb = "downed"
+    var direction := _direction(facing)
+    var frames := _rows(actor_id,manifest)
+    var clip := verb+"_"+direction
+    var atlas: Dictionary = {}
+    if not frames.has(clip):
+        # AS48/49 carry 4-direction source atlases; sockets are front-only.
+        atlas = Dictionary(manifest.get("directional_atlases",{})).get(direction,{})
+        if atlas.is_empty() or not Dictionary(atlas.get("rows",{})).has(verb):
+            clip = verb+"_front"
+            atlas = {}
+    if not frames.has(clip) and atlas.is_empty():
+        clip = "idle_"+direction
+    if not frames.has(clip) and atlas.is_empty():
+        clip = "idle_front"
+    var fps := 8.0
+    var index := int(maxf(age,0.0)*fps)
+    if not atlas.is_empty():
+        var columns := maxi(1,int(atlas.get("grid_columns",4)))
+        index = mini(index,columns-1) if action in ["die","death"] else index % columns
+        var sheet := _cel(str(atlas.get("path","")))
+        if sheet == null:
+            return false
+        var size_data: Array = atlas.get("cell_px",[256,256])
+        var cell := Vector2(float(size_data[0]),float(size_data[1]))
+        var row_index := int(Dictionary(atlas.get("rows",{})).get(verb,0))
+        var src := Rect2(Vector2(index*cell.x,row_index*cell.y),cell)
+        var baseline := float(cell.y)*0.935
+        canvas.draw_texture_rect_region(sheet,Rect2(foot-Vector2(cell.x*0.5,baseline)*scale,
+            cell*scale),src)
+        # Do not invent side-facing grip positions absent from the manifest.
+        return true
+    if not frames.has(clip):
         return false
-    var count := frames.get_frame_count(StringName(clip))
-    var fps := maxf(1.0,frames.get_animation_speed(StringName(clip)))
-    var index := mini(int(maxf(0.0,age)*fps),count-1)
-    if action not in ["die","death"]:
-        index = int(maxf(0.0,age)*fps) % count
-    var texture := frames.get_frame_texture(StringName(clip),index)
+    var items: Array = frames[clip]
+    if items.is_empty():
+        return false
+    index = mini(index,items.size()-1) if action in ["die","death"] else index % items.size()
+    var row: Dictionary = items[index]
+    var texture := _cel(str(row.get("path","")))
     if texture == null:
         return false
-    var manifest := _manifest(actor_id)
-    var row: Dictionary = {}
-    for raw in manifest.get("body_frames",[]):
-        if raw is Dictionary and str(raw.get("clip","")) == clip and int(raw.get("frame",-1)) == index:
-            row = raw
-            break
     var baseline := float(row.get("source_foot_baseline_y_px",manifest.get("foot_baseline_y_px",359.0)))
     var center := Vector2(texture.get_width()*0.5,baseline)
-    # Authoritative feet remain at the existing PvE world coordinates.
-    var origin := foot-center*scale
     _draw_props(canvas,manifest,row,foot,center,scale,true)
-    canvas.draw_texture_rect(texture,Rect2(origin,texture.get_size()*scale),false)
+    canvas.draw_texture_rect(texture,Rect2(foot-center*scale,texture.get_size()*scale),false)
     _draw_props(canvas,manifest,row,foot,center,scale,false)
     return true
 
