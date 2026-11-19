@@ -118,7 +118,7 @@ func _run() -> void:
 	for producer: String in ["mine","linh_forest","spirit_field"]:
 		var route_id: String = "courtyard_to_"+producer
 		var offset: Vector2i = iso.PRODUCER_ROUTE_APPROACH[producer]
-		var expected_end: Vector2i = iso.TYPE_ANCHORS[producer]+offset
+		var expected_end: Vector2i = iso.anchors_for_layout()[producer]+offset
 		if iso.preview_routes[route_id][-1] != expected_end or not iso.STARTER.has_point(expected_end):
 			_fail("%s route does not reach its accessible approach cell %s" % [producer,str(expected_end)])
 			return
