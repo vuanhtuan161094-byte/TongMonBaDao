@@ -319,6 +319,20 @@ func show_authority_snapshot(snapshot: MapBattleV2, world_population: Dictionary
 	camp_index = clampi(current_camp_index,0,PveMultiCampPopulationV1.CAMP_COUNT-1)
 	_disciples = disciples.duplicate(false)
 	_view_rows = view_rows.duplicate(true)
+	# Visual identity comes from the canonical disciple Save state, never from
+	# the temporary battle actor or V6.3 skill unlock state.
+	for raw_id in disciples:
+		var disciple: Variant = disciples[raw_id]
+		if not (disciple is DiscipleState):
+			continue
+		var school := SectASCharCandidateBridgeV1.school_for_disciple(disciple)
+		if school.is_empty():
+			continue
+		var id := str(raw_id)
+		var row: Dictionary = _view_rows.get(id,{})
+		row["aschar_school"] = school
+		row["aschar_sex"] = str(DiscipleActorVisualCatalog.visual_sex_for_disciple(disciple))
+		_view_rows[id] = row
 	if battle == null:
 		selected_actor_ids.clear()
 		refresh_hunt_controls()
