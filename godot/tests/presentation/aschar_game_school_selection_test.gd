@@ -2,7 +2,7 @@ extends SceneTree
 const GAME := preload("res://scenes/p3/p3_2_landscape_sect.tscn")
 const SAVE := "user://aschar_game_schools_qa.json"
 
-func _initialize() -> void:
+func _init() -> void:
     call_deferred("_run")
 
 func _run() -> void:

@@ -43,7 +43,6 @@ func _ready() -> void:
         prop.name = "ASCHARHeld_"+asset_id
         prop.texture = texture
         prop.centered = false
-        prop.mouse_filter = CanvasItem.MOUSE_FILTER_IGNORE if false else Control.MOUSE_FILTER_IGNORE
         add_child(prop)
         _props[str(attach.get("slot",""))] = {
             "node":prop,"asset":info,"slot":str(attach.get("slot",""))}

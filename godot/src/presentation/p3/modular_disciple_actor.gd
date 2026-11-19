@@ -352,7 +352,7 @@ func _play_shared_animation() -> void:
             art_dir = "front"
         elif art_dir == "up":
             art_dir = "back"
-        var has_independent_left := baked_sprite.sprite_frames.has_animation(&"stand_left")
+        var has_independent_left := baked_sprite.sprite_frames.has_animation(&"stand_left") or baked_sprite.sprite_frames.has_animation(&"idle_left")
         baked_sprite.flip_h = facing == DiscipleActorVisualCatalog.DIR_LEFT and mirror_left and not has_independent_left
         var requested_direction := StringName("%s_%s" % [str(current_clip), art_dir])
         var standing_direction := StringName("stand_%s" % art_dir)
