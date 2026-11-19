@@ -1,0 +1,25 @@
+{
+  "schema": "tmb.vfx_rgba_candidate.v1",
+  "skill_id": "tmb.skill.sword.ngu_kiem.active_01.human",
+  "name": "Phi Kiếm Truy Ảnh",
+  "school": "sword",
+  "branch": "ngu_kiem",
+  "tier": "human",
+  "status": "CODE_PAINTED_CANDIDATE",
+  "g3_art": "OWNER_REVIEW_PENDING",
+  "owner_art": "PENDING",
+  "pve": "HOLD",
+  "art_source": "procedural raster via V8 code; NOT AI illustration",
+  "frame_width": 160,
+  "frame_height": 160,
+  "columns": 4,
+  "rows": 3,
+  "total_cels": 12,
+  "phases": [
+    "charge",
+    "projectile",
+    "contact"
+  ],
+  "alpha": true,
+  "asset_path": "res://labs/combat_lab/sword_human_phi_kiem_truy_anh/r1/source/phi_kiem_human_r1_candidate_atlas.png"
+}
