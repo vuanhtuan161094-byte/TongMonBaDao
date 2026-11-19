@@ -1,0 +1,22 @@
+# CHUYỂN GIAO CHAT MỚI — VFX TOÀN BỘ 12 MÔN PHÁI · 19/11/2026
+
+**Đây là handoff trực tiếp, không tạo một SOP mới.** Đọc [KHÓA SẢN XUẤT LIÊN MÔN](../operations/TMB_VFX_12_SCHOOL_BATCH_PRODUCTION_LOCK_20261119.md) và `AGENTS.md` để tiếp tục đúng thiết lập cuối cùng mà người dùng đã chốt.
+
+**Repository** `vuanhtuan161094-byte/TongMonBaDao`, Draft PR #72, branch `integration/pve-p0-playable-ui-20261103`, Godot 4.7.2 1280×720, no merge. **ĐỌC FRESH HEAD**; mọi SHA trong báo cáo chỉ là bằng chứng lịch sử, không phải HEAD cố định. **KHÔNG CODEX CLOUD**, làm bằng ChatGPT trực tiếp; không rig, GIF mặc định, không gameplay/Combat V2/SaveService/AI/economy/V6.3/PvE G8 hoặc thiết bị Android khi chưa có owner authorization.
+
+## Owner's latest decisions preserved
+
+- **POI06 Vạn Cổ Phệ Giới R11 = favourite / main art quality benchmark**, native [run #43605803380](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/43605803380) `dcc28af5`. Owner had accepted R11 preview, explicitly recognized it now. Frozen art, no overwrite.
+- **POI19 Phụ Cốt Cổ Tiên B R3 = another “ok” positive reference**, native [run #44105241617](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/44105241617) `4a316afc`, real continuous additive light tied to moving target. **Provisional preference not a false final owner approval**. Keep art debt truth and source frozen.
+- **POI15 Hóa Độc Tán R1B** explicitly owner approved “ok đẹp t thích”, [run #43999563772](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/43999563772) `1b408112`. Other school/phase approved records retain their exact owners' status; don't auto upgrade.
+- **FIST14 R6** remains **G3_SOURCE_FAIL** even though native TECH PASS: Bézier/Pillow line art didn't produce convincing luminous force; no shader patching, **paint full original luminous source first**.
+- **Art identity**: translucent *light-energy* material, small near-white core, clear colored body, soft halo, unique symbolic shape per skill/branch, actual caster–target–contact–fade continuity. POI06 standard quality, POI19 dynamic light, POI15 readable 3-target status; other schools must not visually become Poison Tu.
+- **All 12 schools**: shared V4 G0–G8; original high-quality isolated RGBA master and changing frame-by-frame poses FIRST, G3 art HARD STOP before Godot; native Godot three frames moving target once source visually good, then full short motion and exact SHA. Owner art separate from TECH and PVE. No blanket reuse of master across tiers; 204 Human cast families + conditional passive/events, not 2,196 movie clips.
+- **Production mode**: prepare contract/storyboard/rights in parallel across schools; **one G3 art candidate per school at a time** and one-writer-per-path; approved source is immutable; do not trigger CI for ART_FAIL. Prefer small actual native files and G3 contact sheets over posters/repeated 30-minute technical QA rounds.
+- **12-school Wave 1** matrix and exact names/IDs: [main production lock §D](../operations/TMB_VFX_12_SCHOOL_BATCH_PRODUCTION_LOCK_20261119.md#d-wave-1--hàng-chờ-12-hệ-dựa-trên-ledger-183-nguồnhệ-đã-đối-chiếu-1911). Each entry QUEUED, not produced. **First task for new chat:** check HEAD/branch, protect approved revisions, reconcile school status; pick one unapproved work package under an available writer; produce its real source art through G3, not a process report alone.
+
+## Working chat startup text
+
+> Tiếp quản sản xuất VFX cho Tông Môn Bá Đạo trên PR #72 Draft. Kiểm tra HEAD và đọc AGENTS.md, `docs/operations/TMB_VFX_12_SCHOOL_BATCH_PRODUCTION_LOCK_20261119.md`, `docs/handoffs/TMB_VFX_ALL_SCHOOLS_NEXT_CHAT_20261119.md`, Art-First V4, Art Director Skill, Sprite Layer và school ledger/handoff. POI06 R11 = benchmark chủ; POI19 R3 = benchmark ánh sáng động và owner “cũng ok”; POI15 R1B = explicitly owner-approved. KHÔNG dùng Codex Cloud. Giữ nguyên toàn bộ asset/revision đã duyệt. Làm VFX thật trong Godot 4.7.2 với nguồn RGBA nguyên bản, keyframe biến đổi, ưu tiên 1× đẹp; G3 fail dừng trước code/CI; không rig/GIF mặc định, không gameplay, không PvE, không merge. Chọn đúng school-owned path; triển khai lần lượt theo Wave 1 của batch lock, cập nhật exact-SHA và handoff trên GitHub. Đừng tạo poster hay chỉ làm báo cáo.
+
+**Trạng thái thực tế tại thời điểm handoff:** process/queue/handoff đã thiết lập, **không có 12 VFX mới được dựng** vì user mới chốt bắt đầu sản xuất hàng loạt. Không gọi QUEUED là sản phẩm hoàn thành; user art sign-off on every candidate is separate.
