@@ -1,33 +1,13 @@
-name: Publish player encyclopedia (GitHub Pages)
+name: Publish canonical One Game and Tàng Kinh Các (GitHub Pages)
 
 on:
   push:
     branches:
       - integration/pve-p0-playable-ui-20261103
     paths:
-      - 'wiki/guide.html'
-      - 'wiki/guide.css'
-      - 'wiki/unified.css'
-      - 'wiki/guide.js'
-      - 'wiki/characters.html'
-      - 'wiki/characters.css'
-      - 'wiki/characters.js'
-      - 'wiki/traits.html'
-      - 'wiki/traits.css'
-      - 'wiki/traits.js'
-      - 'wiki/audit.html'
-      - 'wiki/audit.css'
-      - 'wiki/audit.js'
-      - 'wiki/data/game_system_audit.json'
-      - 'wiki/data/game_items_audit.json'
-      - 'wiki/data/combat_stats_reference.json'
-      - 'wiki/data/mind_nature_reference.json'
-      - 'wiki/data/trait_effect_audit.json'
-      - 'tools/wiki/tests/test_trait_effect_audit.py'
-      - 'tools/wiki/tests/test_game_audit.py'
-      - 'tools/wiki/tests/test_unified_wiki.cjs'
-      - 'wiki/data/character_reference.json'
-      - 'wiki/data/catalog.json'
+      - 'godot/**'
+      - 'wiki/**'
+      - 'tools/wiki/tests/**'
       - '.github/workflows/wiki-player-pages.yml'
   workflow_dispatch:
 
@@ -36,32 +16,38 @@ permissions:
   pages: write
   id-token: write
 
+# Always replace the SAME Pages deployment. Never create a separate preview branch.
 concurrency:
-  group: "pages-player-wiki-audit-20261118"
+  group: "pages-one-canonical-tongmonbadao"
   cancel-in-progress: true
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
-    # Player encyclopedia deploy is independent of the game release environment.
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
     steps:
-      - name: Checkout source
+      - name: Checkout PR #72 canonical source
         uses: actions/checkout@v4
-      - name: Validate 101 trait audit and browser scripts
+        with:
+          persist-credentials: false
+
+      - name: Validate current player encyclopedia
         shell: bash
         run: |
+          set -euo pipefail
           python3 tools/wiki/tests/test_trait_effect_audit.py
           python3 tools/wiki/tests/test_game_audit.py
           node --check wiki/traits.js
           node --check wiki/audit.js
           node --check wiki/guide.js
-          node --check tools/wiki/tests/test_unified_wiki.cjs
           node tools/wiki/tests/test_unified_wiki.cjs
           node --check wiki/characters.js
-      - name: Assemble public player-only site
+
+      - name: Assemble ONE Pages site (game + existing Wiki)
         shell: bash
         run: |
-          mkdir -p _site/wiki/data
+          set -euo pipefail
+          mkdir -p _site/wiki/data _site/play
           cp wiki/guide.html wiki/guide.css wiki/guide.js _site/wiki/
           cp wiki/unified.css _site/wiki/
           cp wiki/characters.html _site/wiki/
@@ -73,15 +59,73 @@ jobs:
           cp wiki/data/trait_effect_audit.json _site/wiki/data/
           cp wiki/data/character_reference.json _site/wiki/data/
           cp wiki/data/catalog.json _site/wiki/data/
-          printf '%s\n' '<!doctype html><html lang="vi"><head><meta charset="utf-8"><meta http-equiv="refresh" content="0;url=wiki/guide.html"><title>Tàng Kinh Các</title></head><body><a href="wiki/guide.html">Mở Bách khoa Tông Môn Bá Đạo</a></body></html>' > _site/index.html
-      - name: Configure Pages
+          # ONE public play entry point; Wiki remains at its existing stable URL.
+          printf '%s\n' '<!doctype html><html lang="vi"><head><meta charset="utf-8"><meta http-equiv="refresh" content="0;url=play/"><title>Tông Môn Bá Đạo — Chơi Game</title></head><body><a href="play/">Chơi Tông Môn Bá Đạo</a></body></html>' > _site/index.html
+          touch _site/.nojekyll
+
+      - name: Cache verified Godot 4.7.2 Web no-threads template
+        id: godot-template-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.local/share/godot/export_templates/4.7.2.stable/web_nothreads_release.zip
+          key: tmb-godot-4.7.2-web-nothreads-f298490b
+
+      - name: Download verified official Godot 4.7.2 Linux editor
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/tmb-godot"
+          curl -fL --retry 3 --connect-timeout 30 -o "$RUNNER_TEMP/tmb-godot/godot.zip" \
+            "https://github.com/godotengine/godot-builds/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip"
+          echo "cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4  $RUNNER_TEMP/tmb-godot/godot.zip" | sha256sum -c -
+          unzip -oq "$RUNNER_TEMP/tmb-godot/godot.zip" -d "$RUNNER_TEMP/tmb-godot"
+          chmod +x "$RUNNER_TEMP/tmb-godot/Godot_v4.7.2-stable_linux.x86_64"
+          "$RUNNER_TEMP/tmb-godot/Godot_v4.7.2-stable_linux.x86_64" --headless --version
+
+      - name: Download verified official 4.7.2 export template when not cached
+        if: steps.godot-template-cache.outputs.cache-hit != 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -fL --retry 3 --connect-timeout 30 -o "$RUNNER_TEMP/tmb-godot/templates.tpz" \
+            "https://github.com/godotengine/godot-builds/releases/download/4.7.2-stable/Godot_v4.7.2-stable_export_templates.tpz"
+          echo "f298490b8d44d934be425a5a65a51bf15f422428b229a06a6e11d9ffea248011  $RUNNER_TEMP/tmb-godot/templates.tpz" | sha256sum -c -
+          mkdir -p "$HOME/.local/share/godot/export_templates/4.7.2.stable"
+          unzip -p "$RUNNER_TEMP/tmb-godot/templates.tpz" templates/web_nothreads_release.zip > "$HOME/.local/share/godot/export_templates/4.7.2.stable/web_nothreads_release.zip"
+          test -s "$HOME/.local/share/godot/export_templates/4.7.2.stable/web_nothreads_release.zip"
+          unzip -tq "$HOME/.local/share/godot/export_templates/4.7.2.stable/web_nothreads_release.zip" | tail -n 1
+
+      - name: Import and export the CURRENT Godot main game to Web
+        shell: bash
+        run: |
+          set -euo pipefail
+          GODOT="$RUNNER_TEMP/tmb-godot/Godot_v4.7.2-stable_linux.x86_64"
+          test -s godot/export_presets.cfg
+          test -s godot/scenes/p3/p3_2_landscape_sect.tscn
+          "$GODOT" --headless --path godot --editor --import
+          "$GODOT" --headless --path godot --export-release "Web" "$GITHUB_WORKSPACE/_site/play/index.html"
+          test -s _site/play/index.html
+          test -s _site/play/index.js
+          test -s _site/play/index.wasm
+          test -s _site/play/index.pck
+          # Keep the exported Godot files together, not as copy-by-commit releases.
+          printf '%s\n' "Source PR #72 HEAD: $GITHUB_SHA" > _site/play/build-info.txt
+          printf '%s\n' "Godot 4.7.2 / WebGL2 / single-thread" >> _site/play/build-info.txt
+          du -h _site/play/index.*
+          find _site/play -maxdepth 1 -type f | sort
+
+      - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
         with:
           enablement: true
-      - name: Upload Pages artifact
+
+      - name: Upload ONE combined Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: _site
-      - name: Deploy to GitHub Pages
+
+      - name: Deploy ONE canonical Web game + Wiki
         id: deployment
         uses: actions/deploy-pages@v4
+        with:
+          timeout: 600000
