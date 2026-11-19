@@ -12,10 +12,16 @@
       "directions": [
         "front"
       ],
-      "vfx_status": "TECH_CUE_ONLY",
-      "g3_art": "SOURCE_PENDING",
+      "vfx_status": "CANDIDATE_G3",
+      "g3_art": "OWNER_REVIEW_PENDING",
       "owner_art": "PENDING",
-      "source_paths": []
+      "source_paths": [
+        "labs/combat_lab/sword_human_phi_kiem_truy_anh/r1/sword_human_r1_vfx_layer.gd",
+        "labs/combat_lab/sword_human_phi_kiem_truy_anh/r1/source/phi_kiem_human_r1_candidate_atlas.png",
+        "labs/combat_lab/sword_human_phi_kiem_truy_anh/r1/source/manifest.json",
+        "labs/combat_lab/sword_human_phi_kiem_truy_anh/r1/source/README.md"
+      ],
+      "art_source": "CODE_PAINTED_RGBA_NON_ILLUSTRATED"
     }
   ]
 }

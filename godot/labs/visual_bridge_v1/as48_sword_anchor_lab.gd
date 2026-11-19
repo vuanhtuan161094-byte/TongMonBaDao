@@ -11,6 +11,7 @@ const SOCKETS := BASE + "meta/AS48_ATTACK_FRONT_SOCKET_V9_3.json"
 const BINDINGS := "res://labs/visual_bridge_v1/as48_sword_vfx_binding_lab.json"
 const MONSTER := "res://assets/actors/v5_sa_monster_1113031_1/animations.tres"
 const TECH_SHADER := "res://labs/combat_lab/combat_lab_v16_impact_glow.gdshader"
+const SOURCE_R1 := preload("res://labs/combat_lab/sword_human_phi_kiem_truy_anh/r1/sword_human_r1_vfx_layer.gd")
 const FOOT := Vector2(200, 429)
 const MAP_SCALE := 0.17
 const POSE_FPS := 7.0
@@ -197,6 +198,12 @@ func _ready() -> void:
     _reader = BRIDGE.new()
     _replay()
     _good = true
+    # Real source RGBA, separate from AS48 actor and independent sword texture.
+    # Do not mutate Combat V2, Save, or any owner-approved art.
+    var source_layer := Node2D.new()
+    source_layer.name = "OriginalSwordHumanR1RGBA"
+    source_layer.set_script(SOURCE_R1)
+    add_child(source_layer)
     print("BRIDGE_AS48_READY actor=AS48 true_pose_count=4 direction=FRONT_ONLY original_vfx=SOURCE_PENDING tech_cue_only=true")
     queue_redraw()
 
@@ -275,7 +282,7 @@ func _process(delta: float) -> void:
         _cast = _send("skill_cast", "cast_1", 2)
     if not _hit and _clock >= 0.72:
         _hit = _send("hit", "hit_1", 3)
-    _glow.visible = _review_fx_visible and _cast and _clock < 0.76
+    _glow.visible = false # legacy engineering glow replaced by R1 RGBA source
     if _glow.visible:
         var p: Dictionary = BRIDGE.resolve_frame_anchor(
             _character, "attack", "front", frame, "weapon_tip", _actor.global_transform)
@@ -284,7 +291,7 @@ func _process(delta: float) -> void:
         _glow.position = _release_point - _glow.size * 0.5
         _glow_mat.set_shader_parameter("event_age", clampf((_clock - 0.29) / 0.5, 0.0, 1.0))
         _glow_mat.set_shader_parameter("power", 0.48)
-    _flash.visible = _review_fx_visible and _hit and _clock < 1.45
+    _flash.visible = false # legacy engineering contact replaced by R1 RGBA source
     if _flash.visible:
         # LAB estimated monster chest target from actual moving art, NOT canonical gameplay geometry.
         _flash.position = _monster.position + Vector2(0, -54) - _flash.size * 0.5
@@ -394,11 +401,11 @@ func _draw() -> void:
     draw_line(Vector2(80, 604), Vector2(1200, 604), Color("737f75"), 1.0)
     _draw_original_actor_and_monster()
     var font := ThemeDB.fallback_font
-    draw_string(font, Vector2(24, 42), "AS48 KIEM TU HUMAN - PHI KIEM TRUY ANH - VISUAL EVENT BRIDGE LAB",
+    draw_string(font, Vector2(24, 42), "KIEM TU NHAN - PHI KIEM TRUY ANH R1 - 12 RGBA SOURCE FRAMES",
         HORIZONTAL_ALIGNMENT_LEFT, -1, 20, Color("163247") if _review_bright else Color("e7f3fa"))
-    draw_string(font, Vector2(24, 68), "FOUR REAL FRONT POSES + SEPARATE JIAN - MAP SIZE 1X - VFX TECH CUE ONLY",
+    draw_string(font, Vector2(24, 68), "REAL AS48 + SEPARATE JIAN + THREE VFX PHASES - CODE-PAINTED CANDIDATE",
         HORIZONTAL_ALIGNMENT_LEFT, -1, 15, Color("643d17") if _review_bright else Color("f4cf90"))
     draw_string(font, Vector2(24, 94), "SYNTHETIC LAB EVENTS - NO HP/STATUS - SPACE REPLAY - M MOVE",
         HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Color("304d63") if _review_bright else Color("bed2e0"))
-    draw_string(font, Vector2(24, 682), "G3 SOURCE PENDING - OTHER THREE DIRECTIONS PENDING - OWNER ART PENDING - PVE HOLD",
+    draw_string(font, Vector2(24, 682), "G3 ART REVIEW PENDING - OTHER DIRECTIONS PENDING - OWNER ART PENDING - PVE HOLD",
         HORIZONTAL_ALIGNMENT_LEFT, -1, 15, Color("68472c") if _review_bright else Color("f0d7b9"))

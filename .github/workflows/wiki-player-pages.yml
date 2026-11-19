@@ -147,12 +147,18 @@ jobs:
             --script res://labs/visual_bridge_v1/as48_sword_anchor_lab.gd
           "$GODOT" --headless --path "$STAGE" --check-only \
             --script res://labs/visual_bridge_v1/vfx_web_review_hub.gd
+          "$GODOT" --headless --path "$STAGE" --check-only \
+            --script res://labs/combat_lab/sword_human_phi_kiem_truy_anh/r1/sword_human_r1_vfx_layer.gd
           # This short isolated logic check does not render a new MP4.
           "$GODOT" --headless --path "$STAGE" --fixed-fps 60 \
             --quit-after 216 res://labs/visual_bridge_v1/vfx_web_review_hub.tscn \
             2>&1 | tee "$RUNNER_TEMP/vfx-web-logic-smoke.log"
           grep -Fq 'BRIDGE_AS48_READY actor=AS48' "$RUNNER_TEMP/vfx-web-logic-smoke.log"
           grep -Fq 'BRIDGE_AS48_END=PASS' "$RUNNER_TEMP/vfx-web-logic-smoke.log"
+          grep -Fq 'VFX_SWORD_R1_SOURCE_LOADED=PASS' "$RUNNER_TEMP/vfx-web-logic-smoke.log"
+          for phase in CHARGE PROJECTILE CONTACT; do
+            grep -Fq "VFX_SWORD_R1_PHASE_${phase}=PASS" "$RUNNER_TEMP/vfx-web-logic-smoke.log"
+          done
           mkdir -p "$GITHUB_WORKSPACE/_site/vfx"
           "$GODOT" --headless --path "$STAGE" \
             --export-release "Web" "$GITHUB_WORKSPACE/_site/vfx/index.html"
