@@ -125,9 +125,14 @@ static func draw_actor(canvas: CanvasItem,school: String,sex: String,action: Str
         var cell := Vector2(float(size_data[0]),float(size_data[1]))
         var row_index := int(Dictionary(atlas.get("rows",{})).get(verb,0))
         var src := Rect2(Vector2(index*cell.x,row_index*cell.y),cell)
-        var baseline := float(cell.y)*0.935
-        canvas.draw_texture_rect_region(sheet,Rect2(foot-Vector2(cell.x*0.5,baseline)*scale,
-            cell*scale),src)
+        # Side atlas cells can be 256px while authored front frames are
+        # 384px. Match body-canvas height and foot baseline at the same PvE zoom.
+        var canvas_size: Array = manifest.get("body_canvas_px",[384,384])
+        var authored_height := maxf(1.0,float(canvas_size[1]))
+        var atlas_scale := scale*authored_height/maxf(1.0,cell.y)
+        var baseline := float(manifest.get("foot_baseline_y_px",359.0))*cell.y/authored_height
+        canvas.draw_texture_rect_region(sheet,Rect2(foot-Vector2(cell.x*0.5,baseline)*atlas_scale,
+            cell*atlas_scale),src)
         # Do not invent side-facing grip positions absent from the manifest.
         return true
     if not frames.has(clip):
