@@ -35,6 +35,9 @@ func _run() -> void:
             count += 1
     for school in ["sword","fist","talisman"]:
         var sex := "female" if school == "talisman" else "male"
+        if SectASCharCandidateBridgeV1.preview_texture(school,sex) == null:
+            _fail("school choice portrait did not load authored idle source")
+            return
         var scene := SectASCharCandidateBridgeV1.scene_for(school,sex)
         if scene == null:
             _fail("ASCHAR runtime scene missing: "+school+" "+sex)

@@ -48,6 +48,7 @@ const SOURCE_PATHS := {
 const SOCKET_ROOT := "res://assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets"
 const SPRITE_SCRIPT := preload("res://src/presentation/p3/sect_aschar_candidate_sprite_v1.gd")
 static var _scene_cache: Dictionary = {}
+static var _portrait_cache: Dictionary = {}
 static var _branch_school_cache: Dictionary = {}
 
 static func school_for_branch(branch_id: String) -> String:
@@ -134,13 +135,33 @@ static func scene_for(school: String,sex: String) -> PackedScene:
     return scene
 
 static func preview_texture(school: String,sex: String) -> Texture2D:
-    var path := str(SOURCE_PATHS.get(actor_id(school,sex),""))
-    if path.is_empty() or not ResourceLoader.exists(path,"SpriteFrames"):
+    var id := actor_id(school,sex)
+    if id < 0:
         return null
-    var source := ResourceLoader.load(path,"SpriteFrames") as SpriteFrames
-    if source == null or not source.has_animation(&"idle_front"):
+    if _portrait_cache.has(id):
+        return _portrait_cache[id]
+    # The school chooser needs ONE representative cel, not 96 full-resolution
+    # frames and separate weapons. Resolve the real first idle frame directly
+    # from the same ASCHAR socket JSON used by the in-game actor.
+    var manifest_path := SOCKET_ROOT+"/AS%d_weapon_sockets_v9_3_candidate.json" % id
+    if not FileAccess.file_exists(manifest_path):
         return null
-    return source.get_frame_texture(&"idle_front",0)
+    var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(manifest_path))
+    if not (parsed is Dictionary):
+        return null
+    for raw in parsed.get("body_frames",[]):
+        if not (raw is Dictionary):
+            continue
+        if str(raw.get("clip","")) != "idle_front" or int(raw.get("frame",-1)) != 0:
+            continue
+        var path := str(raw.get("path",""))
+        if not ResourceLoader.exists(path,"Texture2D"):
+            return null
+        var tex := ResourceLoader.load(path,"Texture2D") as Texture2D
+        if tex != null:
+            _portrait_cache[id] = tex
+        return tex
+    return null
 
 static func branches_for(school: String) -> Array[Dictionary]:
     var result: Array[Dictionary] = []
