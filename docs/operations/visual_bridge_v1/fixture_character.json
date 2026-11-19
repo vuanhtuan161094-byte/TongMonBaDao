@@ -1,0 +1,22 @@
+{
+  "schema": "tmb.character_anchors.v1",
+  "source_kind": "CHARACTER_ONLY",
+  "source_status": "SYNTHETIC_FIXTURE",
+  "asset_id": "__fixture_rigless_human_sword__",
+  "canvas_px": [128, 128],
+  "foot_px": [64, 104],
+  "clips": {
+    "cast": {
+      "front": [{"frame": 0, "anchors": {"hand_r": [76, 60], "weapon_tip": [91, 39]}}],
+      "right": [{"frame": 0, "anchors": {"hand_r": [81, 58], "weapon_tip": [103, 50]}}],
+      "back": [{"frame": 0, "anchors": {"hand_r": [75, 59], "weapon_tip": [90, 42]}}],
+      "left": [{"frame": 0, "anchors": {"hand_r": [49, 58], "weapon_tip": [25, 50]}}]
+    },
+    "attack": {
+      "front": [{"frame": 0, "anchors": {"hand_r": [76, 60], "weapon_tip": [91, 39]}}],
+      "right": [{"frame": 0, "anchors": {"hand_r": [81, 58], "weapon_tip": [103, 50]}}],
+      "back": [{"frame": 0, "anchors": {"hand_r": [75, 59], "weapon_tip": [90, 42]}}],
+      "left": [{"frame": 0, "anchors": {"hand_r": [49, 58], "weapon_tip": [25, 50]}}]
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "schema": "tmb.vfx_bindings.v1",
+  "source_kind": "VFX_ONLY",
+  "source_status": "SYNTHETIC_FIXTURE",
+  "skill_id": "tmb.skill.sword.ngu_kiem.active_01.human",
+  "school": "sword",
+  "tier": "human",
+  "bindings": [
+    {"event_type": "skill_cast", "visual_phase": "charge", "actor_clip": "cast", "caster_slot": "hand_r", "target_slot": "body_center"},
+    {"event_type": "hit", "visual_phase": "contact", "actor_clip": "attack", "caster_slot": "weapon_tip", "target_slot": "body_center"}
+  ]
+}
