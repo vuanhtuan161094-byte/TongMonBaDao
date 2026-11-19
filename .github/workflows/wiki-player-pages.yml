@@ -50,9 +50,9 @@ jobs:
           mkdir -p _site/wiki/data _site/play
           cp wiki/guide.html wiki/guide.css wiki/guide.js _site/wiki/
           cp wiki/unified.css _site/wiki/
-          cp wiki/characters.html _site/wiki/
-          cp wiki/traits.html _site/wiki/
-          cp wiki/audit.html _site/wiki/
+          cp wiki/characters.html wiki/characters.css wiki/characters.js _site/wiki/
+          cp wiki/traits.html wiki/traits.css wiki/traits.js _site/wiki/
+          cp wiki/audit.html wiki/audit.css wiki/audit.js _site/wiki/
           cp wiki/data/game_system_audit.json wiki/data/game_items_audit.json _site/wiki/data/
           cp wiki/data/combat_stats_reference.json _site/wiki/data/
           cp wiki/data/mind_nature_reference.json _site/wiki/data/
