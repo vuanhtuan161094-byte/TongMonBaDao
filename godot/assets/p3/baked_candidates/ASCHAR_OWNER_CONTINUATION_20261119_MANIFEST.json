@@ -13,14 +13,14 @@
   "weapon_prop_count": 19,
   "weapon_asset_count_including_preserved_jian": 20,
   "socket_manifests_created": 24,
-  "socket_anchor_fallbacks": 282,
+  "socket_anchor_fallbacks": 382,
   "preview": {
     "path": "weapon_library_v1/candidate/review/ASCHAR_24_actor_weapon_review_1280x720.gif",
     "width": 1280,
     "height": 720,
-    "fps_approx": 6.25,
-    "frames": 8,
-    "type": "offline Pillow composite from real body frames and separate RGBA props, 72px map-scale; 4 idle + 4 attack frames; not Godot runtime or gameplay"
+    "fps_approx": 5.33,
+    "frames": 24,
+    "type": "offline Pillow composite from original body frames, separate candidate RGBA props, and per-frame V9.3 sockets; six front actions, not Godot runtime/gameplay"
   },
   "files": [
     {
@@ -403,146 +403,146 @@
     },
     {
       "path": "godot/assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS48_weapon_sockets_v9_3_candidate.json",
-      "bytes": 47911,
-      "sha256": "170df4989baadb3c6f8962ac877b32e5664f0c2e13c3543b2e03d7220f6192e5",
+      "bytes": 55063,
+      "sha256": "c297e3e717098a14bb3fd15454e5c7626d963f24282955967aa47e9ddff7073a",
       "status": "CANDIDATE_METADATA"
     },
     {
       "path": "godot/assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS49_weapon_sockets_v9_3_candidate.json",
-      "bytes": 48449,
-      "sha256": "85fc4e1bb60d1579e4baea172b9d3deb7fc195209dbd8566778255e3d38ae3ea",
+      "bytes": 56497,
+      "sha256": "52049d2f3dda2a93865fe8d775fc5c75db46973497458fd3731a94844c75984e",
       "status": "CANDIDATE_METADATA"
     },
     {
       "path": "godot/assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS50_weapon_sockets_v9_3_candidate.json",
-      "bytes": 180083,
-      "sha256": "79c05e56a1fa1b9206de500fecf3be96978b820e36774d10adcc9df89ac4f29c",
+      "bytes": 189039,
+      "sha256": "f08abd2b75aae9e9970d1b38f991379fba30568708648155f86a697261ac321b",
       "status": "RECREATED"
     },
     {
       "path": "godot/assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS51_weapon_sockets_v9_3_candidate.json",
-      "bytes": 180079,
-      "sha256": "6d8f4348a2f9d66927294c240699addf13b81b16aba9e7de30d5ed66c822143a",
+      "bytes": 186937,
+      "sha256": "472a8f759f98aa59dd40b0f921aafa97ef1f466f6de6858e44459d5d66c1ca00",
       "status": "RECREATED"
     },
     {
       "path": "godot/assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS52_weapon_sockets_v9_3_candidate.json",
-      "bytes": 180197,
-      "sha256": "4f890a1aa7e782815816afe4b4f6256d1e742180f3ad2d4023c1a3682cf1b09c",
+      "bytes": 189625,
+      "sha256": "5691b6fce30479e28b2e4433f27316dbb899714ea760314457d56aef733650d8",
       "status": "RECREATED"
     },
     {
       "path": "godot/assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS53_weapon_sockets_v9_3_candidate.json",
-      "bytes": 180199,
-      "sha256": "fad93bdbe9b7dbbfd0f506d23868cfc20232679054c4fc85574c08fe2ff1e17b",
+      "bytes": 189393,
+      "sha256": "3e22b9f366c62151aa0d03e18f42f32a46dbf0ebbd3158a8b72d3c4a15bef32a",
       "status": "RECREATED"
     },
     {
       "path": "godot/assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS54_weapon_sockets_v9_3_candidate.json",
-      "bytes": 180376,
-      "sha256": "1ffa3785b899bbf1da891eaebb63362ea5804588b762c35fbdeb96373eea41c0",
+      "bytes": 189523,
+      "sha256": "8749e0ab88916d1c6bafcb38150fd2874ed51b320b4279598f98e464ea9e973a",
       "status": "RECREATED"
     },
     {
       "path": "godot/assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS55_weapon_sockets_v9_3_candidate.json",
-      "bytes": 180412,
-      "sha256": "c8d02d4a6ff9432f0f5f29009a9cb889c22c485b4787d8a6720ab422a4967121",
+      "bytes": 189570,
+      "sha256": "481a72d90c80dc836c454ab182a02b512754de92302a3a17f63c28a755da7208",
       "status": "RECREATED"
     },
     {
       "path": "godot/assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS56_weapon_sockets_v9_3_candidate.json",
-      "bytes": 180890,
-      "sha256": "562c2941e5482fc9eae1a947326255e037837d2749850e6dd9199d98dc0b814e",
+      "bytes": 186500,
+      "sha256": "318a749cbbea0de4da348a809e45ca5fbfab75491162b99758461bae7d3879e3",
       "status": "RECREATED"
     },
     {
       "path": "godot/assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS57_weapon_sockets_v9_3_candidate.json",
-      "bytes": 180971,
-      "sha256": "24d917cb8d8b5e4a08695c56e9831246f89af5193f4726058de9020db2a358c4",
+      "bytes": 187595,
+      "sha256": "1117e414e7f14513bd94f6c24f6787ab47266007111f9cecbe850a342c411277",
       "status": "RECREATED"
     },
     {
       "path": "godot/assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS58_weapon_sockets_v9_3_candidate.json",
-      "bytes": 180143,
-      "sha256": "e3da71a38f6278da9251b11a647780ef91787a5ed1e004ef0f354a5fd67003b3",
+      "bytes": 189050,
+      "sha256": "7463ef69223abbfabb4ad1e98e71491bbb51d30017b40056527265e177a8c91b",
       "status": "RECREATED"
     },
     {
       "path": "godot/assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS59_weapon_sockets_v9_3_candidate.json",
-      "bytes": 180042,
-      "sha256": "8476a5f8bb72f15f52aecba63b00e92a216e46e0050e40f6e0f289937804058b",
+      "bytes": 188068,
+      "sha256": "f63223cdd9de085413b1488b28770417e1a3e9950c983743c9877d48a6d975f5",
       "status": "RECREATED"
     },
     {
       "path": "godot/assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS60_weapon_sockets_v9_3_candidate.json",
-      "bytes": 180495,
-      "sha256": "bf4bfee31457a7a7ebf9ead5cf892c81b3fb30adb7cdf5423e79cad967d8586c",
+      "bytes": 189454,
+      "sha256": "5c115081cb44961789d8c64813d87f5d52c727581e3e754dfe76566f44859817",
       "status": "RECREATED"
     },
     {
       "path": "godot/assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS61_weapon_sockets_v9_3_candidate.json",
-      "bytes": 180044,
-      "sha256": "7de08311d9a92420c8318a6cff4728dd9c5694d7b1525d8f8bd3ef249a934a9b",
+      "bytes": 187832,
+      "sha256": "872695bb52541de62e179382f61f60bab9dfa6853e056446692df8c73f0c71c0",
       "status": "RECREATED"
     },
     {
       "path": "godot/assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS62_weapon_sockets_v9_3_candidate.json",
-      "bytes": 181981,
-      "sha256": "1059749f0cb8a20e0231405751aa958da5caabac059eefb651766db593f249f9",
+      "bytes": 186374,
+      "sha256": "d8bb1186c7b9d2e3e4459b7cb5a92aebe03306c978063580970bba91533f3304",
       "status": "RECREATED"
     },
     {
       "path": "godot/assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS63_weapon_sockets_v9_3_candidate.json",
-      "bytes": 180681,
-      "sha256": "0a888e42cbe70e57e35642b616a868e2881d9f8592dbbe2a5d79154ea481941d",
+      "bytes": 188206,
+      "sha256": "ee87f87b9bbeec53bc5a9d52696ef9afd8311e1050d042cf422e2ab507ff1e63",
       "status": "RECREATED"
     },
     {
       "path": "godot/assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS64_weapon_sockets_v9_3_candidate.json",
-      "bytes": 179911,
-      "sha256": "1883a86bc32ee5f4d254e42a823329535116baa6769528b136d709d176d308bd",
+      "bytes": 184429,
+      "sha256": "6cc0461b45f7dc3c001b45ea6d765b01bcf2f829d5abe1bfb8c5edf39233da78",
       "status": "RECREATED"
     },
     {
       "path": "godot/assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS65_weapon_sockets_v9_3_candidate.json",
-      "bytes": 179888,
-      "sha256": "067924678dbab67d8979e90c736db126862b24bcbe78ce18ea0673c9d416df1a",
+      "bytes": 183704,
+      "sha256": "5b2b19565980009a1a5aec61478ce996ab9431584431e07072e611420d99d5ec",
       "status": "RECREATED"
     },
     {
       "path": "godot/assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS66_weapon_sockets_v9_3_candidate.json",
-      "bytes": 180179,
-      "sha256": "86cf2680515e9fd62cd56ba83c45a1451e02ab53cd632fd771819479d36ea9d4",
+      "bytes": 188909,
+      "sha256": "de0aa8c36355f4da352261e0d7e83905d8da335458b33491c7d2e441e4c20327",
       "status": "RECREATED"
     },
     {
       "path": "godot/assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS67_weapon_sockets_v9_3_candidate.json",
-      "bytes": 180181,
-      "sha256": "c572c39f58db3b29af3ac83b7a3888024231b4faac871d1336ff90be7676ceae",
+      "bytes": 187507,
+      "sha256": "237a430dfc6a028516084404f821e7eab4ebdf39f39950487f7c7ce21596c318",
       "status": "RECREATED"
     },
     {
       "path": "godot/assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS68_weapon_sockets_v9_3_candidate.json",
-      "bytes": 179916,
-      "sha256": "edc3da54760365c9b034dadc47283b918953a2d8825fc1c0411729294ff16c92",
+      "bytes": 188410,
+      "sha256": "0ffe5a0897d7a696bd78019b2a8009eef6f554abc37590d46efd8cb0f09c0c98",
       "status": "RECREATED"
     },
     {
       "path": "godot/assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS69_weapon_sockets_v9_3_candidate.json",
-      "bytes": 180509,
-      "sha256": "cd2c69fb98fb84256d97d90230d1ba953d3ad9da9b211145c0f8055d82d6ffe6",
+      "bytes": 186214,
+      "sha256": "1cb337eb6711586f77feed8d60d85420476540c606a4d62259703654c183de31",
       "status": "RECREATED"
     },
     {
       "path": "godot/assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS70_weapon_sockets_v9_3_candidate.json",
-      "bytes": 180827,
-      "sha256": "10f7b8e4d9f7c2e01f311867d83ca1e63d9be575255adc8a927046d992699828",
+      "bytes": 189557,
+      "sha256": "a325e78be28f39196c0c742919fb27996218499e686384fa1ad2e6313350b311",
       "status": "RECREATED"
     },
     {
       "path": "godot/assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS71_weapon_sockets_v9_3_candidate.json",
-      "bytes": 181087,
-      "sha256": "8d407067edf73dffbe41eecaa1241308b22178f8e88ae02a5793ef88f701efa2",
+      "bytes": 184988,
+      "sha256": "56a27e0bbdcf62eba165f07a807b13354433a1c4bcb5b2f317626cd5d7bbc11f",
       "status": "RECREATED"
     },
     {
@@ -553,8 +553,8 @@
     },
     {
       "path": "godot/assets/p3/baked_candidates/weapon_library_v1/candidate/review/ASCHAR_24_actor_weapon_review_1280x720.gif",
-      "bytes": 773495,
-      "sha256": "aa0a700e893ca4ed1e4af8d13f409e58961af55e778eeea47959e09c3dd5b454",
+      "bytes": 2602740,
+      "sha256": "fda13a2bc2fe1d79a419aac712c432d8d032e95f8d9dd679d136fbde6baf1d06",
       "status": "RECREATED"
     },
     {
@@ -696,7 +696,7 @@
       "status": "RECREATED"
     }
   ],
-  "build_revision": "V3_CORRECTED_MAP_SCALE_FRAME_SOCKETS",
+  "build_revision": "front-grip-fitted-all-6-actions-20261119-candidate",
   "socket_coverage_by_actor": {
     "48": 24,
     "49": 24,

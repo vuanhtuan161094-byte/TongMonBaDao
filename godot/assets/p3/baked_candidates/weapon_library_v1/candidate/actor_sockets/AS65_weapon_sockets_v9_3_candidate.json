@@ -10,7 +10,7 @@
     384,
     384
   ],
-  "foot_baseline_y_px": 360,
+  "foot_baseline_y_px": 359,
   "weapon_family": "talisman",
   "main_hand_side": "character_right",
   "proxy_visible_in_production": false,
@@ -95,9 +95,17 @@
           ]
         }
       },
-      "anchor_detection": "frame-specific lower-hand skin component; alpha source pixels",
-      "anchor_fallback": false,
-      "anchor_fallback_sockets": []
+      "anchor_detection": "skin_component_not_confident; previous candidate socket retained",
+      "anchor_fallback": true,
+      "anchor_fallback_sockets": [
+        "main_hand",
+        "off_hand"
+      ],
+      "source_canvas_px": [
+        384,
+        384
+      ],
+      "source_foot_baseline_y_px": 359
     },
     {
       "clip": "idle_front",
@@ -167,9 +175,17 @@
           ]
         }
       },
-      "anchor_detection": "frame-specific lower-hand skin component; alpha source pixels",
-      "anchor_fallback": false,
-      "anchor_fallback_sockets": []
+      "anchor_detection": "skin_component_not_confident; previous candidate socket retained",
+      "anchor_fallback": true,
+      "anchor_fallback_sockets": [
+        "main_hand",
+        "off_hand"
+      ],
+      "source_canvas_px": [
+        384,
+        384
+      ],
+      "source_foot_baseline_y_px": 359
     },
     {
       "clip": "idle_front",
@@ -239,9 +255,17 @@
           ]
         }
       },
-      "anchor_detection": "frame-specific lower-hand skin component; alpha source pixels",
-      "anchor_fallback": false,
-      "anchor_fallback_sockets": []
+      "anchor_detection": "skin_component_not_confident; previous candidate socket retained",
+      "anchor_fallback": true,
+      "anchor_fallback_sockets": [
+        "main_hand",
+        "off_hand"
+      ],
+      "source_canvas_px": [
+        384,
+        384
+      ],
+      "source_foot_baseline_y_px": 359
     },
     {
       "clip": "idle_front",
@@ -311,9 +335,17 @@
           ]
         }
       },
-      "anchor_detection": "frame-specific lower-hand skin component; alpha source pixels",
-      "anchor_fallback": false,
-      "anchor_fallback_sockets": []
+      "anchor_detection": "skin_component_not_confident; previous candidate socket retained",
+      "anchor_fallback": true,
+      "anchor_fallback_sockets": [
+        "main_hand",
+        "off_hand"
+      ],
+      "source_canvas_px": [
+        384,
+        384
+      ],
+      "source_foot_baseline_y_px": 359
     },
     {
       "clip": "walk_front",
@@ -383,9 +415,17 @@
           ]
         }
       },
-      "anchor_detection": "frame-specific lower-hand skin component; alpha source pixels",
-      "anchor_fallback": false,
-      "anchor_fallback_sockets": []
+      "anchor_detection": "skin_component_not_confident; previous candidate socket retained",
+      "anchor_fallback": true,
+      "anchor_fallback_sockets": [
+        "main_hand",
+        "off_hand"
+      ],
+      "source_canvas_px": [
+        384,
+        384
+      ],
+      "source_foot_baseline_y_px": 359
     },
     {
       "clip": "walk_front",
@@ -455,9 +495,17 @@
           ]
         }
       },
-      "anchor_detection": "frame-specific lower-hand skin component; alpha source pixels",
-      "anchor_fallback": false,
-      "anchor_fallback_sockets": []
+      "anchor_detection": "skin_component_not_confident; previous candidate socket retained",
+      "anchor_fallback": true,
+      "anchor_fallback_sockets": [
+        "main_hand",
+        "off_hand"
+      ],
+      "source_canvas_px": [
+        384,
+        384
+      ],
+      "source_foot_baseline_y_px": 359
     },
     {
       "clip": "walk_front",
@@ -527,9 +575,17 @@
           ]
         }
       },
-      "anchor_detection": "frame-specific lower-hand skin component; alpha source pixels",
-      "anchor_fallback": false,
-      "anchor_fallback_sockets": []
+      "anchor_detection": "skin_component_not_confident; previous candidate socket retained",
+      "anchor_fallback": true,
+      "anchor_fallback_sockets": [
+        "main_hand",
+        "off_hand"
+      ],
+      "source_canvas_px": [
+        384,
+        384
+      ],
+      "source_foot_baseline_y_px": 359
     },
     {
       "clip": "walk_front",
@@ -599,9 +655,17 @@
           ]
         }
       },
-      "anchor_detection": "frame-specific lower-hand skin component; alpha source pixels",
-      "anchor_fallback": false,
-      "anchor_fallback_sockets": []
+      "anchor_detection": "skin_component_not_confident; previous candidate socket retained",
+      "anchor_fallback": true,
+      "anchor_fallback_sockets": [
+        "main_hand",
+        "off_hand"
+      ],
+      "source_canvas_px": [
+        384,
+        384
+      ],
+      "source_foot_baseline_y_px": 359
     },
     {
       "clip": "attack_front",
@@ -671,9 +735,17 @@
           ]
         }
       },
-      "anchor_detection": "frame-specific lower-hand skin component; alpha source pixels",
-      "anchor_fallback": false,
-      "anchor_fallback_sockets": []
+      "anchor_detection": "skin_component_not_confident; previous candidate socket retained",
+      "anchor_fallback": true,
+      "anchor_fallback_sockets": [
+        "main_hand",
+        "off_hand"
+      ],
+      "source_canvas_px": [
+        384,
+        384
+      ],
+      "source_foot_baseline_y_px": 359
     },
     {
       "clip": "attack_front",
@@ -743,9 +815,17 @@
           ]
         }
       },
-      "anchor_detection": "frame-specific lower-hand skin component; alpha source pixels",
-      "anchor_fallback": false,
-      "anchor_fallback_sockets": []
+      "anchor_detection": "skin_component_not_confident; previous candidate socket retained",
+      "anchor_fallback": true,
+      "anchor_fallback_sockets": [
+        "main_hand",
+        "off_hand"
+      ],
+      "source_canvas_px": [
+        384,
+        384
+      ],
+      "source_foot_baseline_y_px": 359
     },
     {
       "clip": "attack_front",
@@ -815,9 +895,17 @@
           ]
         }
       },
-      "anchor_detection": "frame-specific lower-hand skin component; alpha source pixels",
-      "anchor_fallback": false,
-      "anchor_fallback_sockets": []
+      "anchor_detection": "skin_component_not_confident; previous candidate socket retained",
+      "anchor_fallback": true,
+      "anchor_fallback_sockets": [
+        "main_hand",
+        "off_hand"
+      ],
+      "source_canvas_px": [
+        384,
+        384
+      ],
+      "source_foot_baseline_y_px": 359
     },
     {
       "clip": "attack_front",
@@ -887,9 +975,17 @@
           ]
         }
       },
-      "anchor_detection": "frame-specific lower-hand skin component; alpha source pixels",
-      "anchor_fallback": false,
-      "anchor_fallback_sockets": []
+      "anchor_detection": "skin_component_not_confident; previous candidate socket retained",
+      "anchor_fallback": true,
+      "anchor_fallback_sockets": [
+        "main_hand",
+        "off_hand"
+      ],
+      "source_canvas_px": [
+        384,
+        384
+      ],
+      "source_foot_baseline_y_px": 359
     },
     {
       "clip": "cast_front",
@@ -959,9 +1055,17 @@
           ]
         }
       },
-      "anchor_detection": "frame-specific lower-hand skin component; alpha source pixels",
-      "anchor_fallback": false,
-      "anchor_fallback_sockets": []
+      "anchor_detection": "skin_component_not_confident; previous candidate socket retained",
+      "anchor_fallback": true,
+      "anchor_fallback_sockets": [
+        "main_hand",
+        "off_hand"
+      ],
+      "source_canvas_px": [
+        384,
+        384
+      ],
+      "source_foot_baseline_y_px": 359
     },
     {
       "clip": "cast_front",
@@ -1031,9 +1135,17 @@
           ]
         }
       },
-      "anchor_detection": "frame-specific lower-hand skin component; alpha source pixels",
-      "anchor_fallback": false,
-      "anchor_fallback_sockets": []
+      "anchor_detection": "skin_component_not_confident; previous candidate socket retained",
+      "anchor_fallback": true,
+      "anchor_fallback_sockets": [
+        "main_hand",
+        "off_hand"
+      ],
+      "source_canvas_px": [
+        384,
+        384
+      ],
+      "source_foot_baseline_y_px": 359
     },
     {
       "clip": "cast_front",
@@ -1103,9 +1215,17 @@
           ]
         }
       },
-      "anchor_detection": "frame-specific lower-hand skin component; alpha source pixels",
-      "anchor_fallback": false,
-      "anchor_fallback_sockets": []
+      "anchor_detection": "skin_component_not_confident; previous candidate socket retained",
+      "anchor_fallback": true,
+      "anchor_fallback_sockets": [
+        "main_hand",
+        "off_hand"
+      ],
+      "source_canvas_px": [
+        384,
+        384
+      ],
+      "source_foot_baseline_y_px": 359
     },
     {
       "clip": "cast_front",
@@ -1175,9 +1295,17 @@
           ]
         }
       },
-      "anchor_detection": "frame-specific lower-hand skin component; alpha source pixels",
-      "anchor_fallback": false,
-      "anchor_fallback_sockets": []
+      "anchor_detection": "skin_component_not_confident; previous candidate socket retained",
+      "anchor_fallback": true,
+      "anchor_fallback_sockets": [
+        "main_hand",
+        "off_hand"
+      ],
+      "source_canvas_px": [
+        384,
+        384
+      ],
+      "source_foot_baseline_y_px": 359
     },
     {
       "clip": "hit_front",
@@ -1247,9 +1375,17 @@
           ]
         }
       },
-      "anchor_detection": "frame-specific lower-hand skin component; alpha source pixels",
-      "anchor_fallback": false,
-      "anchor_fallback_sockets": []
+      "anchor_detection": "skin_component_not_confident; previous candidate socket retained",
+      "anchor_fallback": true,
+      "anchor_fallback_sockets": [
+        "main_hand",
+        "off_hand"
+      ],
+      "source_canvas_px": [
+        384,
+        384
+      ],
+      "source_foot_baseline_y_px": 359
     },
     {
       "clip": "hit_front",
@@ -1319,9 +1455,17 @@
           ]
         }
       },
-      "anchor_detection": "frame-specific lower-hand skin component; alpha source pixels",
-      "anchor_fallback": false,
-      "anchor_fallback_sockets": []
+      "anchor_detection": "skin_component_not_confident; previous candidate socket retained",
+      "anchor_fallback": true,
+      "anchor_fallback_sockets": [
+        "main_hand",
+        "off_hand"
+      ],
+      "source_canvas_px": [
+        384,
+        384
+      ],
+      "source_foot_baseline_y_px": 359
     },
     {
       "clip": "hit_front",
@@ -1391,9 +1535,17 @@
           ]
         }
       },
-      "anchor_detection": "frame-specific lower-hand skin component; alpha source pixels",
-      "anchor_fallback": false,
-      "anchor_fallback_sockets": []
+      "anchor_detection": "skin_component_not_confident; previous candidate socket retained",
+      "anchor_fallback": true,
+      "anchor_fallback_sockets": [
+        "main_hand",
+        "off_hand"
+      ],
+      "source_canvas_px": [
+        384,
+        384
+      ],
+      "source_foot_baseline_y_px": 359
     },
     {
       "clip": "hit_front",
@@ -1463,9 +1615,17 @@
           ]
         }
       },
-      "anchor_detection": "frame-specific lower-hand skin component; alpha source pixels",
-      "anchor_fallback": false,
-      "anchor_fallback_sockets": []
+      "anchor_detection": "skin_component_not_confident; previous candidate socket retained",
+      "anchor_fallback": true,
+      "anchor_fallback_sockets": [
+        "main_hand",
+        "off_hand"
+      ],
+      "source_canvas_px": [
+        384,
+        384
+      ],
+      "source_foot_baseline_y_px": 359
     },
     {
       "clip": "downed_front",
@@ -1535,9 +1695,17 @@
           ]
         }
       },
-      "anchor_detection": "frame-specific lower-hand skin component; alpha source pixels",
-      "anchor_fallback": false,
-      "anchor_fallback_sockets": []
+      "anchor_detection": "skin_component_not_confident; previous candidate socket retained",
+      "anchor_fallback": true,
+      "anchor_fallback_sockets": [
+        "main_hand",
+        "off_hand"
+      ],
+      "source_canvas_px": [
+        384,
+        384
+      ],
+      "source_foot_baseline_y_px": 359
     },
     {
       "clip": "downed_front",
@@ -1607,9 +1775,17 @@
           ]
         }
       },
-      "anchor_detection": "frame-specific lower-hand skin component; alpha source pixels",
-      "anchor_fallback": false,
-      "anchor_fallback_sockets": []
+      "anchor_detection": "skin_component_not_confident; previous candidate socket retained",
+      "anchor_fallback": true,
+      "anchor_fallback_sockets": [
+        "main_hand",
+        "off_hand"
+      ],
+      "source_canvas_px": [
+        384,
+        384
+      ],
+      "source_foot_baseline_y_px": 359
     },
     {
       "clip": "downed_front",
@@ -1679,9 +1855,17 @@
           ]
         }
       },
-      "anchor_detection": "frame-specific lower-hand skin component; alpha source pixels",
-      "anchor_fallback": false,
-      "anchor_fallback_sockets": []
+      "anchor_detection": "skin_component_not_confident; previous candidate socket retained",
+      "anchor_fallback": true,
+      "anchor_fallback_sockets": [
+        "main_hand",
+        "off_hand"
+      ],
+      "source_canvas_px": [
+        384,
+        384
+      ],
+      "source_foot_baseline_y_px": 359
     },
     {
       "clip": "downed_front",
@@ -1751,9 +1935,17 @@
           ]
         }
       },
-      "anchor_detection": "frame-specific lower-hand skin component; alpha source pixels",
-      "anchor_fallback": false,
-      "anchor_fallback_sockets": []
+      "anchor_detection": "skin_component_not_confident; previous candidate socket retained",
+      "anchor_fallback": true,
+      "anchor_fallback_sockets": [
+        "main_hand",
+        "off_hand"
+      ],
+      "source_canvas_px": [
+        384,
+        384
+      ],
+      "source_foot_baseline_y_px": 359
     },
     {
       "clip": "idle_right",

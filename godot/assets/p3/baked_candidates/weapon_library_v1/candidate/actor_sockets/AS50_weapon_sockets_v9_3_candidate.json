@@ -10,7 +10,7 @@
     384,
     384
   ],
-  "foot_baseline_y_px": 360,
+  "foot_baseline_y_px": 359,
   "weapon_family": "dao",
   "main_hand_side": "character_right",
   "proxy_visible_in_production": false,
@@ -31,68 +31,77 @@
       "grip_sockets": {
         "main_hand": {
           "body_grip_px": [
-            180,
-            252
+            146,
+            199
           ],
           "rotation_deg": -45.0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
           "hand_mask_rect_px": [
-            166,
-            238,
-            28,
-            28
-          ]
+            135,
+            188,
+            22,
+            22
+          ],
+          "anchor_detection": "front skin-component center candidate"
         },
         "off_hand": {
           "body_grip_px": [
-            236,
-            248
+            225,
+            258
           ],
           "rotation_deg": -45.0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
           "hand_mask_rect_px": [
-            222,
-            234,
-            28,
-            28
-          ]
+            214,
+            247,
+            22,
+            22
+          ],
+          "anchor_detection": "front skin-component center candidate"
         },
         "hand_l": {
           "body_grip_px": [
-            236,
-            248
+            225,
+            258
           ],
           "rotation_deg": 0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAR_OVER_BODY",
           "hand_mask_rect_px": [
-            222,
-            234,
-            28,
-            28
-          ]
+            215,
+            248,
+            20,
+            20
+          ],
+          "anchor_detection": "front skin-component center candidate"
         },
         "hand_r": {
           "body_grip_px": [
-            180,
-            252
+            146,
+            199
           ],
           "rotation_deg": 0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAR_OVER_BODY",
           "hand_mask_rect_px": [
-            166,
-            238,
-            28,
-            28
-          ]
+            136,
+            189,
+            20,
+            20
+          ],
+          "anchor_detection": "front skin-component center candidate"
         }
       },
-      "anchor_detection": "frame-specific lower-hand skin component; alpha source pixels",
+      "anchor_detection": "front skin-component candidate; owner visual review pending",
       "anchor_fallback": false,
-      "anchor_fallback_sockets": []
+      "anchor_fallback_sockets": [],
+      "source_canvas_px": [
+        384,
+        384
+      ],
+      "source_foot_baseline_y_px": 359
     },
     {
       "clip": "idle_front",
@@ -103,68 +112,77 @@
       "grip_sockets": {
         "main_hand": {
           "body_grip_px": [
-            154,
-            253
+            144,
+            194
           ],
           "rotation_deg": -45.0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
           "hand_mask_rect_px": [
-            140,
-            239,
-            28,
-            28
-          ]
+            133,
+            183,
+            22,
+            22
+          ],
+          "anchor_detection": "front skin-component center candidate"
         },
         "off_hand": {
           "body_grip_px": [
-            240,
-            246
+            227,
+            258
           ],
           "rotation_deg": -45.0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
           "hand_mask_rect_px": [
-            226,
-            232,
-            28,
-            28
-          ]
+            216,
+            247,
+            22,
+            22
+          ],
+          "anchor_detection": "front skin-component center candidate"
         },
         "hand_l": {
           "body_grip_px": [
-            240,
-            246
+            227,
+            258
           ],
           "rotation_deg": 0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAR_OVER_BODY",
           "hand_mask_rect_px": [
-            226,
-            232,
-            28,
-            28
-          ]
+            217,
+            248,
+            20,
+            20
+          ],
+          "anchor_detection": "front skin-component center candidate"
         },
         "hand_r": {
           "body_grip_px": [
-            154,
-            253
+            144,
+            194
           ],
           "rotation_deg": 0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAR_OVER_BODY",
           "hand_mask_rect_px": [
-            140,
-            239,
-            28,
-            28
-          ]
+            134,
+            184,
+            20,
+            20
+          ],
+          "anchor_detection": "front skin-component center candidate"
         }
       },
-      "anchor_detection": "frame-specific lower-hand skin component; alpha source pixels",
+      "anchor_detection": "front skin-component candidate; owner visual review pending",
       "anchor_fallback": false,
-      "anchor_fallback_sockets": []
+      "anchor_fallback_sockets": [],
+      "source_canvas_px": [
+        384,
+        384
+      ],
+      "source_foot_baseline_y_px": 359
     },
     {
       "clip": "idle_front",
@@ -175,68 +193,77 @@
       "grip_sockets": {
         "main_hand": {
           "body_grip_px": [
-            154,
-            251
+            146,
+            196
           ],
           "rotation_deg": -45.0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
           "hand_mask_rect_px": [
-            140,
-            237,
-            28,
-            28
-          ]
+            135,
+            185,
+            22,
+            22
+          ],
+          "anchor_detection": "front skin-component center candidate"
         },
         "off_hand": {
           "body_grip_px": [
-            238,
-            252
+            230,
+            255
           ],
           "rotation_deg": -45.0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
           "hand_mask_rect_px": [
-            224,
-            238,
-            28,
-            28
-          ]
+            219,
+            244,
+            22,
+            22
+          ],
+          "anchor_detection": "front skin-component center candidate"
         },
         "hand_l": {
           "body_grip_px": [
-            238,
-            252
+            230,
+            255
           ],
           "rotation_deg": 0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAR_OVER_BODY",
           "hand_mask_rect_px": [
-            224,
-            238,
-            28,
-            28
-          ]
+            220,
+            245,
+            20,
+            20
+          ],
+          "anchor_detection": "front skin-component center candidate"
         },
         "hand_r": {
           "body_grip_px": [
-            154,
-            251
+            146,
+            196
           ],
           "rotation_deg": 0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAR_OVER_BODY",
           "hand_mask_rect_px": [
-            140,
-            237,
-            28,
-            28
-          ]
+            136,
+            186,
+            20,
+            20
+          ],
+          "anchor_detection": "front skin-component center candidate"
         }
       },
-      "anchor_detection": "frame-specific lower-hand skin component; alpha source pixels",
+      "anchor_detection": "front skin-component candidate; owner visual review pending",
       "anchor_fallback": false,
-      "anchor_fallback_sockets": []
+      "anchor_fallback_sockets": [],
+      "source_canvas_px": [
+        384,
+        384
+      ],
+      "source_foot_baseline_y_px": 359
     },
     {
       "clip": "idle_front",
@@ -247,68 +274,77 @@
       "grip_sockets": {
         "main_hand": {
           "body_grip_px": [
-            186,
-            248
+            147,
+            200
           ],
           "rotation_deg": -45.0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
           "hand_mask_rect_px": [
-            172,
-            234,
-            28,
-            28
-          ]
+            136,
+            189,
+            22,
+            22
+          ],
+          "anchor_detection": "front skin-component center candidate"
         },
         "off_hand": {
           "body_grip_px": [
-            235,
-            263
+            225,
+            259
           ],
           "rotation_deg": -45.0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
           "hand_mask_rect_px": [
-            221,
-            249,
-            28,
-            28
-          ]
+            214,
+            248,
+            22,
+            22
+          ],
+          "anchor_detection": "front skin-component center candidate"
         },
         "hand_l": {
           "body_grip_px": [
-            235,
-            263
+            225,
+            259
           ],
           "rotation_deg": 0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAR_OVER_BODY",
           "hand_mask_rect_px": [
-            221,
+            215,
             249,
-            28,
-            28
-          ]
+            20,
+            20
+          ],
+          "anchor_detection": "front skin-component center candidate"
         },
         "hand_r": {
           "body_grip_px": [
-            186,
-            248
+            147,
+            200
           ],
           "rotation_deg": 0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAR_OVER_BODY",
           "hand_mask_rect_px": [
-            172,
-            234,
-            28,
-            28
-          ]
+            137,
+            190,
+            20,
+            20
+          ],
+          "anchor_detection": "front skin-component center candidate"
         }
       },
-      "anchor_detection": "frame-specific lower-hand skin component; alpha source pixels",
+      "anchor_detection": "front skin-component candidate; owner visual review pending",
       "anchor_fallback": false,
-      "anchor_fallback_sockets": []
+      "anchor_fallback_sockets": [],
+      "source_canvas_px": [
+        384,
+        384
+      ],
+      "source_foot_baseline_y_px": 359
     },
     {
       "clip": "walk_front",
@@ -319,68 +355,77 @@
       "grip_sockets": {
         "main_hand": {
           "body_grip_px": [
-            131,
-            257
+            133,
+            256
           ],
           "rotation_deg": -45.0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
           "hand_mask_rect_px": [
-            117,
-            243,
-            28,
-            28
-          ]
+            122,
+            245,
+            22,
+            22
+          ],
+          "anchor_detection": "front skin-component center candidate"
         },
         "off_hand": {
           "body_grip_px": [
-            237,
-            256
+            230,
+            253
           ],
           "rotation_deg": -45.0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
           "hand_mask_rect_px": [
-            223,
+            219,
             242,
-            28,
-            28
-          ]
+            22,
+            22
+          ],
+          "anchor_detection": "front skin-component center candidate"
         },
         "hand_l": {
           "body_grip_px": [
-            237,
+            230,
+            253
+          ],
+          "rotation_deg": 0,
+          "scale_multiplier": 0.42,
+          "draw_order": "WEAR_OVER_BODY",
+          "hand_mask_rect_px": [
+            220,
+            243,
+            20,
+            20
+          ],
+          "anchor_detection": "front skin-component center candidate"
+        },
+        "hand_r": {
+          "body_grip_px": [
+            133,
             256
           ],
           "rotation_deg": 0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAR_OVER_BODY",
           "hand_mask_rect_px": [
-            223,
-            242,
-            28,
-            28
-          ]
-        },
-        "hand_r": {
-          "body_grip_px": [
-            131,
-            257
+            123,
+            246,
+            20,
+            20
           ],
-          "rotation_deg": 0,
-          "scale_multiplier": 0.42,
-          "draw_order": "WEAR_OVER_BODY",
-          "hand_mask_rect_px": [
-            117,
-            243,
-            28,
-            28
-          ]
+          "anchor_detection": "front skin-component center candidate"
         }
       },
-      "anchor_detection": "frame-specific lower-hand skin component; alpha source pixels",
+      "anchor_detection": "front skin-component candidate; owner visual review pending",
       "anchor_fallback": false,
-      "anchor_fallback_sockets": []
+      "anchor_fallback_sockets": [],
+      "source_canvas_px": [
+        384,
+        384
+      ],
+      "source_foot_baseline_y_px": 359
     },
     {
       "clip": "walk_front",
@@ -391,68 +436,77 @@
       "grip_sockets": {
         "main_hand": {
           "body_grip_px": [
-            179,
-            252
+            146,
+            221
           ],
           "rotation_deg": -45.0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
           "hand_mask_rect_px": [
-            165,
-            238,
-            28,
-            28
-          ]
+            135,
+            210,
+            22,
+            22
+          ],
+          "anchor_detection": "front skin-component center candidate"
         },
         "off_hand": {
           "body_grip_px": [
-            240,
+            230,
             263
           ],
           "rotation_deg": -45.0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
           "hand_mask_rect_px": [
-            226,
-            249,
-            28,
-            28
-          ]
+            219,
+            252,
+            22,
+            22
+          ],
+          "anchor_detection": "front skin-component center candidate"
         },
         "hand_l": {
           "body_grip_px": [
-            240,
+            230,
             263
           ],
           "rotation_deg": 0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAR_OVER_BODY",
           "hand_mask_rect_px": [
-            226,
-            249,
-            28,
-            28
-          ]
+            220,
+            253,
+            20,
+            20
+          ],
+          "anchor_detection": "front skin-component center candidate"
         },
         "hand_r": {
           "body_grip_px": [
-            179,
-            252
+            146,
+            221
           ],
           "rotation_deg": 0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAR_OVER_BODY",
           "hand_mask_rect_px": [
-            165,
-            238,
-            28,
-            28
-          ]
+            136,
+            211,
+            20,
+            20
+          ],
+          "anchor_detection": "front skin-component center candidate"
         }
       },
-      "anchor_detection": "frame-specific lower-hand skin component; alpha source pixels",
+      "anchor_detection": "front skin-component candidate; owner visual review pending",
       "anchor_fallback": false,
-      "anchor_fallback_sockets": []
+      "anchor_fallback_sockets": [],
+      "source_canvas_px": [
+        384,
+        384
+      ],
+      "source_foot_baseline_y_px": 359
     },
     {
       "clip": "walk_front",
@@ -463,68 +517,77 @@
       "grip_sockets": {
         "main_hand": {
           "body_grip_px": [
-            129,
-            251
+            139,
+            218
           ],
           "rotation_deg": -45.0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
           "hand_mask_rect_px": [
-            115,
-            237,
-            28,
-            28
-          ]
+            128,
+            207,
+            22,
+            22
+          ],
+          "anchor_detection": "front skin-component center candidate"
         },
         "off_hand": {
           "body_grip_px": [
-            239,
-            264
+            230,
+            261
           ],
           "rotation_deg": -45.0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
           "hand_mask_rect_px": [
-            225,
+            219,
             250,
-            28,
-            28
-          ]
+            22,
+            22
+          ],
+          "anchor_detection": "front skin-component center candidate"
         },
         "hand_l": {
           "body_grip_px": [
-            239,
-            264
+            230,
+            261
           ],
           "rotation_deg": 0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAR_OVER_BODY",
           "hand_mask_rect_px": [
-            225,
-            250,
-            28,
-            28
-          ]
+            220,
+            251,
+            20,
+            20
+          ],
+          "anchor_detection": "front skin-component center candidate"
         },
         "hand_r": {
           "body_grip_px": [
-            129,
-            251
+            139,
+            218
           ],
           "rotation_deg": 0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAR_OVER_BODY",
           "hand_mask_rect_px": [
-            115,
-            237,
-            28,
-            28
-          ]
+            129,
+            208,
+            20,
+            20
+          ],
+          "anchor_detection": "front skin-component center candidate"
         }
       },
-      "anchor_detection": "frame-specific lower-hand skin component; alpha source pixels",
+      "anchor_detection": "front skin-component candidate; owner visual review pending",
       "anchor_fallback": false,
-      "anchor_fallback_sockets": []
+      "anchor_fallback_sockets": [],
+      "source_canvas_px": [
+        384,
+        384
+      ],
+      "source_foot_baseline_y_px": 359
     },
     {
       "clip": "walk_front",
@@ -535,68 +598,77 @@
       "grip_sockets": {
         "main_hand": {
           "body_grip_px": [
-            131,
-            264
+            160,
+            208
           ],
           "rotation_deg": -45.0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
           "hand_mask_rect_px": [
-            117,
-            250,
-            28,
-            28
-          ]
+            149,
+            197,
+            22,
+            22
+          ],
+          "anchor_detection": "front skin-component center candidate"
         },
         "off_hand": {
           "body_grip_px": [
-            231,
-            254
+            222,
+            260
           ],
           "rotation_deg": -45.0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
           "hand_mask_rect_px": [
-            217,
-            240,
-            28,
-            28
-          ]
+            211,
+            249,
+            22,
+            22
+          ],
+          "anchor_detection": "front skin-component center candidate"
         },
         "hand_l": {
           "body_grip_px": [
-            231,
-            254
+            222,
+            260
           ],
           "rotation_deg": 0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAR_OVER_BODY",
           "hand_mask_rect_px": [
-            217,
-            240,
-            28,
-            28
-          ]
+            212,
+            250,
+            20,
+            20
+          ],
+          "anchor_detection": "front skin-component center candidate"
         },
         "hand_r": {
           "body_grip_px": [
-            131,
-            264
+            160,
+            208
           ],
           "rotation_deg": 0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAR_OVER_BODY",
           "hand_mask_rect_px": [
-            117,
-            250,
-            28,
-            28
-          ]
+            150,
+            198,
+            20,
+            20
+          ],
+          "anchor_detection": "front skin-component center candidate"
         }
       },
-      "anchor_detection": "frame-specific lower-hand skin component; alpha source pixels",
+      "anchor_detection": "front skin-component candidate; owner visual review pending",
       "anchor_fallback": false,
-      "anchor_fallback_sockets": []
+      "anchor_fallback_sockets": [],
+      "source_canvas_px": [
+        384,
+        384
+      ],
+      "source_foot_baseline_y_px": 359
     },
     {
       "clip": "attack_front",
@@ -607,68 +679,77 @@
       "grip_sockets": {
         "main_hand": {
           "body_grip_px": [
-            120,
-            253
+            156,
+            196
           ],
           "rotation_deg": 270.0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
           "hand_mask_rect_px": [
-            106,
-            239,
-            28,
-            28
-          ]
+            145,
+            185,
+            22,
+            22
+          ],
+          "anchor_detection": "front skin-component center candidate"
         },
         "off_hand": {
           "body_grip_px": [
-            247,
-            260
+            273,
+            215
           ],
           "rotation_deg": 270.0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
           "hand_mask_rect_px": [
-            233,
-            246,
-            28,
-            28
-          ]
+            262,
+            204,
+            22,
+            22
+          ],
+          "anchor_detection": "front skin-component center candidate"
         },
         "hand_l": {
           "body_grip_px": [
-            247,
-            260
+            273,
+            215
           ],
           "rotation_deg": 0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAR_OVER_BODY",
           "hand_mask_rect_px": [
-            233,
-            246,
-            28,
-            28
-          ]
+            263,
+            205,
+            20,
+            20
+          ],
+          "anchor_detection": "front skin-component center candidate"
         },
         "hand_r": {
           "body_grip_px": [
-            120,
-            253
+            156,
+            196
           ],
           "rotation_deg": 0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAR_OVER_BODY",
           "hand_mask_rect_px": [
-            106,
-            239,
-            28,
-            28
-          ]
+            146,
+            186,
+            20,
+            20
+          ],
+          "anchor_detection": "front skin-component center candidate"
         }
       },
-      "anchor_detection": "frame-specific lower-hand skin component; alpha source pixels",
+      "anchor_detection": "front skin-component candidate; owner visual review pending",
       "anchor_fallback": false,
-      "anchor_fallback_sockets": []
+      "anchor_fallback_sockets": [],
+      "source_canvas_px": [
+        384,
+        384
+      ],
+      "source_foot_baseline_y_px": 359
     },
     {
       "clip": "attack_front",
@@ -679,68 +760,77 @@
       "grip_sockets": {
         "main_hand": {
           "body_grip_px": [
-            186,
-            249
+            108,
+            234
           ],
           "rotation_deg": 270.0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
           "hand_mask_rect_px": [
-            172,
-            235,
-            28,
-            28
-          ]
+            97,
+            223,
+            22,
+            22
+          ],
+          "anchor_detection": "front skin-component center candidate"
         },
         "off_hand": {
           "body_grip_px": [
-            246,
-            253
+            280,
+            205
           ],
           "rotation_deg": 270.0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
           "hand_mask_rect_px": [
-            232,
-            239,
-            28,
-            28
-          ]
+            269,
+            194,
+            22,
+            22
+          ],
+          "anchor_detection": "front skin-component center candidate"
         },
         "hand_l": {
           "body_grip_px": [
-            246,
-            253
+            280,
+            205
           ],
           "rotation_deg": 0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAR_OVER_BODY",
           "hand_mask_rect_px": [
-            232,
-            239,
-            28,
-            28
-          ]
+            270,
+            195,
+            20,
+            20
+          ],
+          "anchor_detection": "front skin-component center candidate"
         },
         "hand_r": {
           "body_grip_px": [
-            186,
-            249
+            108,
+            234
           ],
           "rotation_deg": 0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAR_OVER_BODY",
           "hand_mask_rect_px": [
-            172,
-            235,
-            28,
-            28
-          ]
+            98,
+            224,
+            20,
+            20
+          ],
+          "anchor_detection": "front skin-component center candidate"
         }
       },
-      "anchor_detection": "frame-specific lower-hand skin component; alpha source pixels",
+      "anchor_detection": "front skin-component candidate; owner visual review pending",
       "anchor_fallback": false,
-      "anchor_fallback_sockets": []
+      "anchor_fallback_sockets": [],
+      "source_canvas_px": [
+        384,
+        384
+      ],
+      "source_foot_baseline_y_px": 358
     },
     {
       "clip": "attack_front",
@@ -751,68 +841,77 @@
       "grip_sockets": {
         "main_hand": {
           "body_grip_px": [
-            146,
-            234
+            133,
+            193
           ],
           "rotation_deg": 270.0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
           "hand_mask_rect_px": [
-            132,
-            220,
-            28,
-            28
-          ]
+            122,
+            182,
+            22,
+            22
+          ],
+          "anchor_detection": "front skin-component center candidate"
         },
         "off_hand": {
           "body_grip_px": [
-            258,
-            254
+            275,
+            211
           ],
           "rotation_deg": 270.0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
           "hand_mask_rect_px": [
-            244,
-            240,
-            28,
-            28
-          ]
+            264,
+            200,
+            22,
+            22
+          ],
+          "anchor_detection": "front skin-component center candidate"
         },
         "hand_l": {
           "body_grip_px": [
-            258,
-            254
+            275,
+            211
           ],
           "rotation_deg": 0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAR_OVER_BODY",
           "hand_mask_rect_px": [
-            244,
-            240,
-            28,
-            28
-          ]
+            265,
+            201,
+            20,
+            20
+          ],
+          "anchor_detection": "front skin-component center candidate"
         },
         "hand_r": {
           "body_grip_px": [
-            146,
-            234
+            133,
+            193
           ],
           "rotation_deg": 0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAR_OVER_BODY",
           "hand_mask_rect_px": [
-            132,
-            220,
-            28,
-            28
-          ]
+            123,
+            183,
+            20,
+            20
+          ],
+          "anchor_detection": "front skin-component center candidate"
         }
       },
-      "anchor_detection": "frame-specific lower-hand skin component; alpha source pixels",
+      "anchor_detection": "front skin-component candidate; owner visual review pending",
       "anchor_fallback": false,
-      "anchor_fallback_sockets": []
+      "anchor_fallback_sockets": [],
+      "source_canvas_px": [
+        384,
+        384
+      ],
+      "source_foot_baseline_y_px": 359
     },
     {
       "clip": "attack_front",
@@ -823,68 +922,77 @@
       "grip_sockets": {
         "main_hand": {
           "body_grip_px": [
-            117,
-            255
+            160,
+            190
           ],
           "rotation_deg": 270.0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
           "hand_mask_rect_px": [
-            103,
-            241,
-            28,
-            28
-          ]
+            149,
+            179,
+            22,
+            22
+          ],
+          "anchor_detection": "front skin-component center candidate"
         },
         "off_hand": {
           "body_grip_px": [
-            249,
-            262
+            278,
+            216
           ],
           "rotation_deg": 270.0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
           "hand_mask_rect_px": [
-            235,
-            248,
-            28,
-            28
-          ]
+            267,
+            205,
+            22,
+            22
+          ],
+          "anchor_detection": "front skin-component center candidate"
         },
         "hand_l": {
           "body_grip_px": [
-            249,
-            262
+            278,
+            216
           ],
           "rotation_deg": 0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAR_OVER_BODY",
           "hand_mask_rect_px": [
-            235,
-            248,
-            28,
-            28
-          ]
+            268,
+            206,
+            20,
+            20
+          ],
+          "anchor_detection": "front skin-component center candidate"
         },
         "hand_r": {
           "body_grip_px": [
-            117,
-            255
+            160,
+            190
           ],
           "rotation_deg": 0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAR_OVER_BODY",
           "hand_mask_rect_px": [
-            103,
-            241,
-            28,
-            28
-          ]
+            150,
+            180,
+            20,
+            20
+          ],
+          "anchor_detection": "front skin-component center candidate"
         }
       },
-      "anchor_detection": "frame-specific lower-hand skin component; alpha source pixels",
+      "anchor_detection": "front skin-component candidate; owner visual review pending",
       "anchor_fallback": false,
-      "anchor_fallback_sockets": []
+      "anchor_fallback_sockets": [],
+      "source_canvas_px": [
+        384,
+        384
+      ],
+      "source_foot_baseline_y_px": 359
     },
     {
       "clip": "cast_front",
@@ -895,68 +1003,77 @@
       "grip_sockets": {
         "main_hand": {
           "body_grip_px": [
-            124,
-            273
+            154,
+            220
           ],
           "rotation_deg": -45.0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
           "hand_mask_rect_px": [
-            110,
-            259,
-            28,
-            28
-          ]
+            143,
+            209,
+            22,
+            22
+          ],
+          "anchor_detection": "front skin-component center candidate"
         },
         "off_hand": {
           "body_grip_px": [
-            239,
-            233
+            263,
+            229
           ],
           "rotation_deg": -45.0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
           "hand_mask_rect_px": [
-            225,
-            219,
-            28,
-            28
-          ]
+            252,
+            218,
+            22,
+            22
+          ],
+          "anchor_detection": "front skin-component center candidate"
         },
         "hand_l": {
           "body_grip_px": [
-            239,
-            233
+            263,
+            229
           ],
           "rotation_deg": 0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAR_OVER_BODY",
           "hand_mask_rect_px": [
-            225,
+            253,
             219,
-            28,
-            28
-          ]
+            20,
+            20
+          ],
+          "anchor_detection": "front skin-component center candidate"
         },
         "hand_r": {
           "body_grip_px": [
-            124,
-            273
+            154,
+            220
           ],
           "rotation_deg": 0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAR_OVER_BODY",
           "hand_mask_rect_px": [
-            110,
-            259,
-            28,
-            28
-          ]
+            144,
+            210,
+            20,
+            20
+          ],
+          "anchor_detection": "front skin-component center candidate"
         }
       },
-      "anchor_detection": "frame-specific lower-hand skin component; alpha source pixels",
+      "anchor_detection": "front skin-component candidate; owner visual review pending",
       "anchor_fallback": false,
-      "anchor_fallback_sockets": []
+      "anchor_fallback_sockets": [],
+      "source_canvas_px": [
+        384,
+        384
+      ],
+      "source_foot_baseline_y_px": 359
     },
     {
       "clip": "cast_front",
@@ -967,68 +1084,77 @@
       "grip_sockets": {
         "main_hand": {
           "body_grip_px": [
-            176,
-            267
+            120,
+            269
           ],
           "rotation_deg": -45.0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
           "hand_mask_rect_px": [
-            162,
-            253,
-            28,
-            28
-          ]
+            109,
+            258,
+            22,
+            22
+          ],
+          "anchor_detection": "front skin-component center candidate"
         },
         "off_hand": {
           "body_grip_px": [
-            240,
-            257
+            233,
+            223
           ],
           "rotation_deg": -45.0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
           "hand_mask_rect_px": [
-            226,
-            243,
-            28,
-            28
-          ]
+            222,
+            212,
+            22,
+            22
+          ],
+          "anchor_detection": "front skin-component center candidate"
         },
         "hand_l": {
           "body_grip_px": [
-            240,
-            257
+            233,
+            223
           ],
           "rotation_deg": 0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAR_OVER_BODY",
           "hand_mask_rect_px": [
-            226,
-            243,
-            28,
-            28
-          ]
+            223,
+            213,
+            20,
+            20
+          ],
+          "anchor_detection": "front skin-component center candidate"
         },
         "hand_r": {
           "body_grip_px": [
-            176,
-            267
+            120,
+            269
           ],
           "rotation_deg": 0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAR_OVER_BODY",
           "hand_mask_rect_px": [
-            162,
-            253,
-            28,
-            28
-          ]
+            110,
+            259,
+            20,
+            20
+          ],
+          "anchor_detection": "front skin-component center candidate"
         }
       },
-      "anchor_detection": "frame-specific lower-hand skin component; alpha source pixels",
+      "anchor_detection": "front skin-component candidate; owner visual review pending",
       "anchor_fallback": false,
-      "anchor_fallback_sockets": []
+      "anchor_fallback_sockets": [],
+      "source_canvas_px": [
+        384,
+        384
+      ],
+      "source_foot_baseline_y_px": 360
     },
     {
       "clip": "cast_front",
@@ -1039,68 +1165,77 @@
       "grip_sockets": {
         "main_hand": {
           "body_grip_px": [
-            173,
-            267
+            98,
+            263
           ],
           "rotation_deg": -45.0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
           "hand_mask_rect_px": [
-            159,
-            253,
-            28,
-            28
-          ]
+            87,
+            252,
+            22,
+            22
+          ],
+          "anchor_detection": "front skin-component center candidate"
         },
         "off_hand": {
           "body_grip_px": [
-            230,
-            232
+            228,
+            225
           ],
           "rotation_deg": -45.0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
           "hand_mask_rect_px": [
-            216,
-            218,
-            28,
-            28
-          ]
+            217,
+            214,
+            22,
+            22
+          ],
+          "anchor_detection": "front skin-component center candidate"
         },
         "hand_l": {
           "body_grip_px": [
-            230,
-            232
+            228,
+            225
           ],
           "rotation_deg": 0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAR_OVER_BODY",
           "hand_mask_rect_px": [
-            216,
             218,
-            28,
-            28
-          ]
+            215,
+            20,
+            20
+          ],
+          "anchor_detection": "front skin-component center candidate"
         },
         "hand_r": {
           "body_grip_px": [
-            173,
-            267
+            98,
+            263
           ],
           "rotation_deg": 0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAR_OVER_BODY",
           "hand_mask_rect_px": [
-            159,
+            88,
             253,
-            28,
-            28
-          ]
+            20,
+            20
+          ],
+          "anchor_detection": "front skin-component center candidate"
         }
       },
-      "anchor_detection": "frame-specific lower-hand skin component; alpha source pixels",
+      "anchor_detection": "front skin-component candidate; owner visual review pending",
       "anchor_fallback": false,
-      "anchor_fallback_sockets": []
+      "anchor_fallback_sockets": [],
+      "source_canvas_px": [
+        384,
+        384
+      ],
+      "source_foot_baseline_y_px": 359
     },
     {
       "clip": "cast_front",
@@ -1112,67 +1247,76 @@
         "main_hand": {
           "body_grip_px": [
             139,
-            223
+            221
           ],
           "rotation_deg": -45.0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
           "hand_mask_rect_px": [
-            125,
-            209,
-            28,
-            28
-          ]
+            128,
+            210,
+            22,
+            22
+          ],
+          "anchor_detection": "front skin-component center candidate"
         },
         "off_hand": {
           "body_grip_px": [
-            235,
-            233
+            264,
+            231
           ],
           "rotation_deg": -45.0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
           "hand_mask_rect_px": [
-            221,
-            219,
-            28,
-            28
-          ]
+            253,
+            220,
+            22,
+            22
+          ],
+          "anchor_detection": "front skin-component center candidate"
         },
         "hand_l": {
           "body_grip_px": [
-            235,
-            233
+            264,
+            231
           ],
           "rotation_deg": 0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAR_OVER_BODY",
           "hand_mask_rect_px": [
+            254,
             221,
-            219,
-            28,
-            28
-          ]
+            20,
+            20
+          ],
+          "anchor_detection": "front skin-component center candidate"
         },
         "hand_r": {
           "body_grip_px": [
             139,
-            223
+            221
           ],
           "rotation_deg": 0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAR_OVER_BODY",
           "hand_mask_rect_px": [
-            125,
-            209,
-            28,
-            28
-          ]
+            129,
+            211,
+            20,
+            20
+          ],
+          "anchor_detection": "front skin-component center candidate"
         }
       },
-      "anchor_detection": "frame-specific lower-hand skin component; alpha source pixels",
+      "anchor_detection": "front skin-component candidate; owner visual review pending",
       "anchor_fallback": false,
-      "anchor_fallback_sockets": []
+      "anchor_fallback_sockets": [],
+      "source_canvas_px": [
+        384,
+        384
+      ],
+      "source_foot_baseline_y_px": 359
     },
     {
       "clip": "hit_front",
@@ -1190,41 +1334,44 @@
           "scale_multiplier": 0.42,
           "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
           "hand_mask_rect_px": [
-            138,
-            218,
-            28,
-            28
-          ]
+            141,
+            221,
+            22,
+            22
+          ],
+          "anchor_detection": "front skin-component center candidate"
         },
         "off_hand": {
           "body_grip_px": [
-            245,
-            260
+            272,
+            226
           ],
           "rotation_deg": -45.0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
           "hand_mask_rect_px": [
-            231,
-            246,
-            28,
-            28
-          ]
+            261,
+            215,
+            22,
+            22
+          ],
+          "anchor_detection": "front skin-component center candidate"
         },
         "hand_l": {
           "body_grip_px": [
-            245,
-            260
+            272,
+            226
           ],
           "rotation_deg": 0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAR_OVER_BODY",
           "hand_mask_rect_px": [
-            231,
-            246,
-            28,
-            28
-          ]
+            262,
+            216,
+            20,
+            20
+          ],
+          "anchor_detection": "front skin-component center candidate"
         },
         "hand_r": {
           "body_grip_px": [
@@ -1235,16 +1382,22 @@
           "scale_multiplier": 0.42,
           "draw_order": "WEAR_OVER_BODY",
           "hand_mask_rect_px": [
-            138,
-            218,
-            28,
-            28
-          ]
+            142,
+            222,
+            20,
+            20
+          ],
+          "anchor_detection": "front skin-component center candidate"
         }
       },
-      "anchor_detection": "frame-specific lower-hand skin component; alpha source pixels",
+      "anchor_detection": "front skin-component candidate; owner visual review pending",
       "anchor_fallback": false,
-      "anchor_fallback_sockets": []
+      "anchor_fallback_sockets": [],
+      "source_canvas_px": [
+        384,
+        384
+      ],
+      "source_foot_baseline_y_px": 359
     },
     {
       "clip": "hit_front",
@@ -1255,68 +1408,77 @@
       "grip_sockets": {
         "main_hand": {
           "body_grip_px": [
-            173,
-            250
+            118,
+            220
           ],
           "rotation_deg": -45.0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
           "hand_mask_rect_px": [
-            159,
-            236,
-            28,
-            28
-          ]
+            107,
+            209,
+            22,
+            22
+          ],
+          "anchor_detection": "front skin-component center candidate"
         },
         "off_hand": {
           "body_grip_px": [
-            244,
-            241
+            234,
+            251
           ],
           "rotation_deg": -45.0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
           "hand_mask_rect_px": [
-            230,
-            227,
-            28,
-            28
-          ]
+            223,
+            240,
+            22,
+            22
+          ],
+          "anchor_detection": "front skin-component center candidate"
         },
         "hand_l": {
           "body_grip_px": [
-            244,
-            241
+            234,
+            251
           ],
           "rotation_deg": 0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAR_OVER_BODY",
           "hand_mask_rect_px": [
-            230,
-            227,
-            28,
-            28
-          ]
+            224,
+            241,
+            20,
+            20
+          ],
+          "anchor_detection": "front skin-component center candidate"
         },
         "hand_r": {
           "body_grip_px": [
-            173,
-            250
+            118,
+            220
           ],
           "rotation_deg": 0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAR_OVER_BODY",
           "hand_mask_rect_px": [
-            159,
-            236,
-            28,
-            28
-          ]
+            108,
+            210,
+            20,
+            20
+          ],
+          "anchor_detection": "front skin-component center candidate"
         }
       },
-      "anchor_detection": "frame-specific lower-hand skin component; alpha source pixels",
+      "anchor_detection": "front skin-component candidate; owner visual review pending",
       "anchor_fallback": false,
-      "anchor_fallback_sockets": []
+      "anchor_fallback_sockets": [],
+      "source_canvas_px": [
+        384,
+        384
+      ],
+      "source_foot_baseline_y_px": 359
     },
     {
       "clip": "hit_front",
@@ -1327,68 +1489,77 @@
       "grip_sockets": {
         "main_hand": {
           "body_grip_px": [
-            150,
-            251
+            108,
+            253
           ],
           "rotation_deg": -45.0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
           "hand_mask_rect_px": [
-            136,
-            237,
-            28,
-            28
-          ]
+            97,
+            242,
+            22,
+            22
+          ],
+          "anchor_detection": "front skin-component center candidate"
         },
         "off_hand": {
           "body_grip_px": [
-            254,
-            268
+            237,
+            266
           ],
           "rotation_deg": -45.0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
           "hand_mask_rect_px": [
-            240,
-            254,
-            28,
-            28
-          ]
+            226,
+            255,
+            22,
+            22
+          ],
+          "anchor_detection": "front skin-component center candidate"
         },
         "hand_l": {
           "body_grip_px": [
-            254,
-            268
+            237,
+            266
           ],
           "rotation_deg": 0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAR_OVER_BODY",
           "hand_mask_rect_px": [
-            240,
-            254,
-            28,
-            28
-          ]
+            227,
+            256,
+            20,
+            20
+          ],
+          "anchor_detection": "front skin-component center candidate"
         },
         "hand_r": {
           "body_grip_px": [
-            150,
-            251
+            108,
+            253
           ],
           "rotation_deg": 0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAR_OVER_BODY",
           "hand_mask_rect_px": [
-            136,
-            237,
-            28,
-            28
-          ]
+            98,
+            243,
+            20,
+            20
+          ],
+          "anchor_detection": "front skin-component center candidate"
         }
       },
-      "anchor_detection": "frame-specific lower-hand skin component; alpha source pixels",
+      "anchor_detection": "front skin-component candidate; owner visual review pending",
       "anchor_fallback": false,
-      "anchor_fallback_sockets": []
+      "anchor_fallback_sockets": [],
+      "source_canvas_px": [
+        384,
+        384
+      ],
+      "source_foot_baseline_y_px": 359
     },
     {
       "clip": "hit_front",
@@ -1399,68 +1570,77 @@
       "grip_sockets": {
         "main_hand": {
           "body_grip_px": [
-            170,
-            248
+            151,
+            212
           ],
           "rotation_deg": -45.0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
           "hand_mask_rect_px": [
-            156,
-            234,
-            28,
-            28
-          ]
+            140,
+            201,
+            22,
+            22
+          ],
+          "anchor_detection": "front skin-component center candidate"
         },
         "off_hand": {
           "body_grip_px": [
-            229,
-            229
+            257,
+            237
           ],
           "rotation_deg": -45.0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
           "hand_mask_rect_px": [
-            215,
-            215,
-            28,
-            28
-          ]
+            246,
+            226,
+            22,
+            22
+          ],
+          "anchor_detection": "front skin-component center candidate"
         },
         "hand_l": {
           "body_grip_px": [
-            229,
-            229
+            257,
+            237
           ],
           "rotation_deg": 0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAR_OVER_BODY",
           "hand_mask_rect_px": [
-            215,
-            215,
-            28,
-            28
-          ]
+            247,
+            227,
+            20,
+            20
+          ],
+          "anchor_detection": "front skin-component center candidate"
         },
         "hand_r": {
           "body_grip_px": [
-            170,
-            248
+            151,
+            212
           ],
           "rotation_deg": 0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAR_OVER_BODY",
           "hand_mask_rect_px": [
-            156,
-            234,
-            28,
-            28
-          ]
+            141,
+            202,
+            20,
+            20
+          ],
+          "anchor_detection": "front skin-component center candidate"
         }
       },
-      "anchor_detection": "frame-specific lower-hand skin component; alpha source pixels",
+      "anchor_detection": "front skin-component candidate; owner visual review pending",
       "anchor_fallback": false,
-      "anchor_fallback_sockets": []
+      "anchor_fallback_sockets": [],
+      "source_canvas_px": [
+        384,
+        384
+      ],
+      "source_foot_baseline_y_px": 359
     },
     {
       "clip": "downed_front",
@@ -1471,68 +1651,77 @@
       "grip_sockets": {
         "main_hand": {
           "body_grip_px": [
-            156,
-            265
+            154,
+            234
           ],
           "rotation_deg": -45.0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
           "hand_mask_rect_px": [
-            142,
-            251,
-            28,
-            28
-          ]
+            143,
+            223,
+            22,
+            22
+          ],
+          "anchor_detection": "front skin-component center candidate"
         },
         "off_hand": {
           "body_grip_px": [
-            219,
-            254
+            221,
+            248
           ],
           "rotation_deg": -45.0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
           "hand_mask_rect_px": [
-            205,
-            240,
-            28,
-            28
-          ]
+            210,
+            237,
+            22,
+            22
+          ],
+          "anchor_detection": "front skin-component center candidate"
         },
         "hand_l": {
           "body_grip_px": [
-            219,
-            254
+            221,
+            248
           ],
           "rotation_deg": 0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAR_OVER_BODY",
           "hand_mask_rect_px": [
-            205,
-            240,
-            28,
-            28
-          ]
+            211,
+            238,
+            20,
+            20
+          ],
+          "anchor_detection": "front skin-component center candidate"
         },
         "hand_r": {
           "body_grip_px": [
-            156,
-            265
+            154,
+            234
           ],
           "rotation_deg": 0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAR_OVER_BODY",
           "hand_mask_rect_px": [
-            142,
-            251,
-            28,
-            28
-          ]
+            144,
+            224,
+            20,
+            20
+          ],
+          "anchor_detection": "front skin-component center candidate"
         }
       },
-      "anchor_detection": "frame-specific lower-hand skin component; alpha source pixels",
+      "anchor_detection": "front skin-component candidate; owner visual review pending",
       "anchor_fallback": false,
-      "anchor_fallback_sockets": []
+      "anchor_fallback_sockets": [],
+      "source_canvas_px": [
+        384,
+        384
+      ],
+      "source_foot_baseline_y_px": 359
     },
     {
       "clip": "downed_front",
@@ -1602,9 +1791,17 @@
           ]
         }
       },
-      "anchor_detection": "frame-specific lower-hand skin component; alpha source pixels",
-      "anchor_fallback": false,
-      "anchor_fallback_sockets": []
+      "anchor_detection": "skin_component_not_confident; previous candidate socket retained",
+      "anchor_fallback": true,
+      "anchor_fallback_sockets": [
+        "main_hand",
+        "off_hand"
+      ],
+      "source_canvas_px": [
+        384,
+        384
+      ],
+      "source_foot_baseline_y_px": 359
     },
     {
       "clip": "downed_front",
@@ -1615,18 +1812,19 @@
       "grip_sockets": {
         "main_hand": {
           "body_grip_px": [
-            145,
-            258
+            134,
+            265
           ],
           "rotation_deg": -45.0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
           "hand_mask_rect_px": [
-            131,
-            244,
-            28,
-            28
-          ]
+            123,
+            254,
+            22,
+            22
+          ],
+          "anchor_detection": "front skin-component center candidate"
         },
         "off_hand": {
           "body_grip_px": [
@@ -1637,11 +1835,12 @@
           "scale_multiplier": 0.42,
           "draw_order": "WEAPON_FRONT_WITH_HAND_MASK",
           "hand_mask_rect_px": [
-            232,
-            236,
-            28,
-            28
-          ]
+            235,
+            239,
+            22,
+            22
+          ],
+          "anchor_detection": "front skin-component center candidate"
         },
         "hand_l": {
           "body_grip_px": [
@@ -1652,31 +1851,38 @@
           "scale_multiplier": 0.42,
           "draw_order": "WEAR_OVER_BODY",
           "hand_mask_rect_px": [
-            232,
             236,
-            28,
-            28
-          ]
+            240,
+            20,
+            20
+          ],
+          "anchor_detection": "front skin-component center candidate"
         },
         "hand_r": {
           "body_grip_px": [
-            145,
-            258
+            134,
+            265
           ],
           "rotation_deg": 0,
           "scale_multiplier": 0.42,
           "draw_order": "WEAR_OVER_BODY",
           "hand_mask_rect_px": [
-            131,
-            244,
-            28,
-            28
-          ]
+            124,
+            255,
+            20,
+            20
+          ],
+          "anchor_detection": "front skin-component center candidate"
         }
       },
-      "anchor_detection": "frame-specific lower-hand skin component; alpha source pixels",
+      "anchor_detection": "front skin-component candidate; owner visual review pending",
       "anchor_fallback": false,
-      "anchor_fallback_sockets": []
+      "anchor_fallback_sockets": [],
+      "source_canvas_px": [
+        384,
+        384
+      ],
+      "source_foot_baseline_y_px": 359
     },
     {
       "clip": "downed_front",
@@ -1746,9 +1952,17 @@
           ]
         }
       },
-      "anchor_detection": "frame-specific lower-hand skin component; alpha source pixels",
-      "anchor_fallback": false,
-      "anchor_fallback_sockets": []
+      "anchor_detection": "skin_component_not_confident; previous candidate socket retained",
+      "anchor_fallback": true,
+      "anchor_fallback_sockets": [
+        "main_hand",
+        "off_hand"
+      ],
+      "source_canvas_px": [
+        384,
+        384
+      ],
+      "source_foot_baseline_y_px": 359
     },
     {
       "clip": "idle_right",
