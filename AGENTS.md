@@ -1,3 +1,9 @@
+## OWNER LOCK VFX LIÊN MÔN 19/11/2026 — POI06 + POI19 BENCHMARK, SẢN XUẤT WAVE 1
+
+**BẮT BUỘC CHO MỌI CHAT VFX TRƯỚC KHI SỬA:** [Batch production lock V5.0](docs/operations/TMB_VFX_12_SCHOOL_BATCH_PRODUCTION_LOCK_20261119.md) và [All-schools next-chat handoff](docs/handoffs/TMB_VFX_ALL_SCHOOLS_NEXT_CHAT_20261119.md). Bản này **không thay thế** SOP Art-First V4; chỉ đóng băng các owner preference mới nhất và queue sản xuất 12 môn phái. **POI06 R11** chủ dự án chọn làm benchmark chính ([native run #43605803380](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/43605803380)); **POI19 R3** cũng “ok”, benchmark flow light động ([native run #44105241617](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/44105241617)); **POI15 R1B** owner-approved từ trước ([native run #43999563772](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/43999563772)). Không suy POI19 thành final owner approval hoặc PvE. Lệnh cũ cho Codex Cloud không còn hiệu lực. **Một wave nhiều môn được nghiên cứu song song**, nhưng **mọi G3 nguồn art phải đạt trước Godot/CI**, mỗi writer chỉ sửa phần mình; không tự tái tạo bản đã được duyệt. Không rig, không GIF mặc định, không merge, G8/PvE HOLD.
+
+---
+
 ## CHỐT QUY TRÌNH VFX TOÀN DỰ ÁN — OWNER LOCK 19/11/2026
 
 **ÁP DỤNG BẮT BUỘC cho TẤT CẢ chat VFX (POISON/FIST/TALISMAN và 12 môn phái/36 nhánh).** Quy trình duy nhất: **Art-First Production System V4** (SOP V3 và addendum V4/V4.3), Art Director Skill, Sprite Layer Pipeline; bản thao tác nhanh **§12** trong [cross-school workflow](docs/operations/TMB_VFX_CROSS_SCHOOL_LESSONS_AND_EFFICIENT_WORKFLOW_20261118.md). Không tạo SOP cạnh tranh; school playbook chỉ chuyên biệt hóa hình tượng/hợp đồng, không được giảm gate.

@@ -1,3 +1,5 @@
+> **LATEST OWNER WAVE 1 PRIORITIES (19/11/2026):** See [12-school batch production lock](TMB_VFX_12_SCHOOL_BATCH_PRODUCTION_LOCK_20261119.md) for exact 12-school queue and immutable benchmark status: POI06 R11 main, POI19 R3 supplementary (positive, not final approval), POI15 R1B explicit approved. Existing V4 §12 stays unchanged. [New-chat handoff](../handoffs/TMB_VFX_ALL_SCHOOLS_NEXT_CHAT_20261119.md).
+
 # TÔNG MÔN BÁ ĐẠO — TỔNG HỢP VFX LIÊN MÔN PHÁI & QUY TRÌNH SẢN XUẤT HIỆU QUẢ
 
 **Phiên bản:** CROSS-SCHOOL-VFX-LESSONS-V1 — 18/11/2026 (UTC+7)  
