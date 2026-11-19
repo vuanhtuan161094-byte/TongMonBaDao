@@ -28,12 +28,12 @@ func _run() -> void:
             var rows: Dictionary = RENDERER._rows(id,manifest)
             var atlases: Dictionary = manifest.get("directional_atlases",{})
             for action in ACTIONS:
-                var front := action+"_front"
+                var front: String = str(action)+"_front"
                 if not rows.has(front):
                     _fail("missing front source AS%d %s" % [id,action])
                     return
                 for direction in DIRECTIONS:
-                    var clip := action+"_"+direction
+                    var clip: String = str(action)+"_"+str(direction)
                     if rows.has(clip):
                         var cels: Array = rows[clip]
                         if cels.is_empty():
