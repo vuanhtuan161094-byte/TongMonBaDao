@@ -190,7 +190,9 @@ func _run() -> void:
 			live_ids[str(building.id)] = str(building.building_type)
 	var shown_ids: Dictionary = {}
 	for row in iso.display_instances:
-		if bool(row["managed"]):
+		# The mixed main map also contains managed Hall and Residence rows.
+		# This check measures the three canonical producer kinds only.
+		if bool(row["managed"]) and str(row["destination"]) in ["mine","linh_forest","spirit_field"]:
 			var id := str(row["building_id"])
 			if not live_ids.has(id) or live_ids[id] != str(row["destination"]) or shown_ids.has(id):
 				_fail("managed map marker lost a canonical producer id: %s" % id)
