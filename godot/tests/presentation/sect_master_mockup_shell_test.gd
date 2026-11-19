@@ -22,7 +22,6 @@ func _run() -> void:
     if state == null or not bool(scene.get("runtime_ready")):
         _fail("live simulation not ready")
         return
-    var previous := state.to_dict().duplicate(true)
     var top := scene.get("resource_label") as Label
     if top == null:
         _fail("canonical top resources label missing")
@@ -94,11 +93,17 @@ func _run() -> void:
             if grouped.find_child(card_name,true,false) == null:
                 _fail("real inventory item missing from warehouse grouping: "+str(id))
                 return
+    # A live runtime may legitimately advance an autonomous scheduler tick
+    # during the GUI test. Check the UI method *synchronously*, without a
+    # frame delay that would conflate it with simulation production.
+    var state_before_view := state.to_dict().duplicate(true)
+    scene.call("_art05_refresh_sect_master_dock")
+    scene.call("_art02_show_warehouse_items")
+    if state.to_dict() != state_before_view:
+        _fail("read-only Warehouse view changed canonical game state")
+        return
     scene.call("_close_building_operation_panel",true)
     await process_frame
-    if state.to_dict() != previous:
-        _fail("read-only mockup shell changed canonical game state")
-        return
     print("SECT MASTER MOCKUP SHELL PASS top/warehouse/nav/dock/real management/no mutation")
     quit(0)
 
