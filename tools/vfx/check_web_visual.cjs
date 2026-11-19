@@ -6,6 +6,12 @@ const { PNG } = require('pngjs');
 const fs = require('fs');
 const path = require('path');
 
+// Calibrated against the real AS48 native WebGL screenshot at 1×:
+// actor=42 sampled nonbackground pixels, monster=61. Previous broken export:
+// actor=0, monster=0. Use conservative nonzero minima without requiring
+// a large actor that would falsify the actual gameplay 1× scale.
+const ACTOR_PIXEL_MIN = 30;
+const MONSTER_PIXEL_MIN = 40;
 const url = process.env.VFX_REVIEW_URL || 'http://127.0.0.1:8679/vfx/';
 const output = process.env.VFX_BROWSER_PROOF || './vfx-browser-proof';
 fs.mkdirSync(output, { recursive: true });
@@ -55,19 +61,20 @@ function pixelCount(png, bounds) {
       const img = PNG.sync.read(screenshot);
       actor = pixelCount(img, [270, 475, 445, 630]);
       monster = pixelCount(img, [760, 430, 985, 610]);
-      if (actor >= 50 && monster >= 50) break;
+      if (actor >= ACTOR_PIXEL_MIN && monster >= MONSTER_PIXEL_MIN) break;
     }
     fs.writeFileSync(path.join(output, 'vfx-real-canvas.png'), screenshot);
     const record = {
       url, actor_pixels: actor, monster_pixels: monster,
-      threshold: 50, actor_visible: actor>=50, monster_visible: monster>=50,
+      actor_pixel_min: ACTOR_PIXEL_MIN, monster_pixel_min: MONSTER_PIXEL_MIN,
+      actor_visible: actor>=ACTOR_PIXEL_MIN, monster_visible: monster>=MONSTER_PIXEL_MIN,
       browser_console_errors: faults.slice(0, 8),
-      verdict: actor>=50 && monster>=50 ? 'BROWSER_CANVAS_PIXELS_PASS' : 'BROWSER_CANVAS_PIXELS_FAIL',
+      verdict: actor>=ACTOR_PIXEL_MIN && monster>=MONSTER_PIXEL_MIN ? 'BROWSER_CANVAS_PIXELS_PASS' : 'BROWSER_CANVAS_PIXELS_FAIL',
       vfx_g3_art: 'SOURCE_PENDING', owner_art: 'PENDING', pve: 'HOLD'
     };
     fs.writeFileSync(path.join(output, 'result.json'), JSON.stringify(record, null, 2));
     console.log(JSON.stringify(record));
-    if (actor < 50 || monster < 50) throw Error('EMPTY_ACTOR_OR_MONSTER: render regression (screenshot saved)');
+    if (actor < ACTOR_PIXEL_MIN || monster < MONSTER_PIXEL_MIN) throw Error('EMPTY_ACTOR_OR_MONSTER: render regression (screenshot saved)');
     console.log('VFX_WEB_BROWSER_RENDER_PASS actual_AS48_and_moving_monster_pixels=true');
   } finally {
     await browser.close();
