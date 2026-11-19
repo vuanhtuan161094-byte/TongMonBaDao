@@ -90,6 +90,34 @@ func _art05_style_global_hud() -> void:
     if bottom != null:
         bottom.add_theme_stylebox_override("panel",_art05_style(
             Color(0.022,0.094,0.110,0.99),ART05_GOLD,2,0))
+        # A readable, quiet sect signature occupies the unused left margin.
+        # It is strictly presentation-only and never obscures navigation.
+        var signature := Panel.new()
+        signature.name = "Art05SectSignature"
+        signature.position = Vector2(12,11)
+        signature.size = Vector2(106,55)
+        signature.mouse_filter = Control.MOUSE_FILTER_IGNORE
+        signature.add_theme_stylebox_override("panel",_art05_style(
+            Color(0.048,0.157,0.163,0.98),Color(ART05_GOLD.r,ART05_GOLD.g,ART05_GOLD.b,0.68),1,9))
+        bottom.add_child(signature)
+        var signature_top := Label.new()
+        signature_top.text = "TÔNG MÔN"
+        signature_top.position = Vector2(7,7)
+        signature_top.size = Vector2(92,20)
+        signature_top.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+        signature_top.add_theme_font_size_override("font_size",12)
+        signature_top.add_theme_color_override("font_color",ART05_MUTE)
+        signature_top.mouse_filter = Control.MOUSE_FILTER_IGNORE
+        signature.add_child(signature_top)
+        var signature_name := Label.new()
+        signature_name.text = "BÁ ĐẠO"
+        signature_name.position = Vector2(7,25)
+        signature_name.size = Vector2(92,23)
+        signature_name.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+        signature_name.add_theme_font_size_override("font_size",18)
+        signature_name.add_theme_color_override("font_color",ART05_GOLD)
+        signature_name.mouse_filter = Control.MOUSE_FILTER_IGNORE
+        signature.add_child(signature_name)
         var buttons: Array[Button] = []
         for node in bottom.get_children():
             if node is Button:
@@ -97,17 +125,23 @@ func _art05_style_global_hud() -> void:
         for idx in range(buttons.size()):
             var button := buttons[idx]
             var hunting := button.name == "PveHuntQuickEntry"
-            button.position = Vector2(950 if hunting else 126+idx*203,11)
-            button.size = Vector2(275 if hunting else 185,54)
-            button.add_theme_font_size_override("font_size",15)
-            button.add_theme_color_override("font_color",ART05_WHITE)
-            button.add_theme_color_override("font_hover_color",ART05_GOLD)
+            button.position = Vector2(950 if hunting else 132+idx*202,11)
+            button.size = Vector2(275 if hunting else 186,54)
+            button.add_theme_font_size_override("font_size",16 if hunting else 15)
+            button.add_theme_color_override("font_color",ART05_GOLD if hunting else ART05_WHITE)
+            button.add_theme_color_override("font_hover_color",ART05_WHITE)
+            button.add_theme_color_override("font_pressed_color",ART05_WHITE)
+            button.tooltip_text = button.text
             button.add_theme_stylebox_override("normal",_art05_style(
-                Color(0.05,0.19,0.21,0.98),Color(0.59,0.68,0.53,0.9),1,10))
+                Color(0.27,0.155,0.065,0.99) if hunting else Color(0.05,0.19,0.21,0.98),
+                ART05_GOLD if hunting else Color(0.49,0.67,0.57,0.75),2 if hunting else 1,10))
             button.add_theme_stylebox_override("hover",_art05_style(
-                Color(0.11,0.28,0.29,0.99),ART05_GOLD,2,10))
+                Color(0.36,0.21,0.08,0.99) if hunting else Color(0.11,0.28,0.29,0.99),
+                ART05_GOLD,2,10))
             button.add_theme_stylebox_override("pressed",_art05_style(
                 Color(0.23,0.28,0.21,0.98),ART05_GOLD,2,10))
+            button.add_theme_stylebox_override("focus",_art05_style(
+                Color(0.05,0.19,0.21,0.03),ART05_GOLD,2,10))
             var icon := SECT_UI_ICON.new()
             icon.name = "Art05NavigationGlyph"
             icon.kind = "gate" if hunting else ["hall","person","resource","map"][mini(idx,3)]
@@ -119,8 +153,29 @@ func _art05_style_global_hud() -> void:
     # Replace the incompatible beige onboarding card's palette, never hide its instructions.
     if gp1_guide_panel != null:
         gp1_guide_panel.add_theme_stylebox_override("panel",_art05_style(
-            Color(0.035,0.13,0.15,0.98),ART05_GOLD,1,10))
+            Color(0.035,0.13,0.15,0.985),ART05_GOLD,2,12))
         _art05_tint_onboarding(gp1_guide_panel)
+        if gp1_guide_title != null:
+            gp1_guide_title.add_theme_color_override("font_color",ART05_GOLD)
+            gp1_guide_title.add_theme_font_size_override("font_size",17)
+        if gp1_guide_description != null:
+            gp1_guide_description.add_theme_color_override("font_color",ART05_WHITE)
+            gp1_guide_description.add_theme_font_size_override("font_size",13)
+        if gp1_guide_button != null:
+            gp1_guide_button.add_theme_color_override("font_color",ART05_DEEP)
+            gp1_guide_button.add_theme_color_override("font_hover_color",ART05_DEEP)
+            gp1_guide_button.add_theme_stylebox_override("normal",_art05_style(
+                ART05_GOLD,Color(0.98,0.87,0.59),1,8))
+            gp1_guide_button.add_theme_stylebox_override("hover",_art05_style(
+                Color(1.0,0.87,0.57),ART05_WHITE,2,8))
+        var dismiss := gp1_guide_panel.get_node_or_null("Gp1GuideDismiss") as Button
+        if dismiss != null:
+            dismiss.add_theme_color_override("font_color",ART05_MUTE)
+            dismiss.add_theme_color_override("font_hover_color",ART05_WHITE)
+            dismiss.add_theme_stylebox_override("normal",_art05_style(
+                Color(0.08,0.18,0.20,0.9),ART05_MUTE,1,8))
+            dismiss.add_theme_stylebox_override("hover",_art05_style(
+                ART05_JADE,ART05_GOLD,1,8))
 
 func _art05_tint_onboarding(root: Node) -> void:
     for child in root.get_children():
