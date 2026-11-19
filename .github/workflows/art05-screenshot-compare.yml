@@ -98,6 +98,8 @@ jobs:
         run: bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/presentation/as_build01_alchemy_visual_import_test.gd
       - name: ART05 strict real OneGame layout and input navigation test
         run: bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/presentation/art05_real_gui_layout_test.gd
+      - name: Sect Master mockup shell, true inventory and contextual map dock
+        run: bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/presentation/sect_master_mockup_shell_test.gd
       - name: MASTERPLAN fixed district layout, routes, paid building IDs and input
         run: bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/presentation/sect_map_d1b_layout_contract_test.gd
       - name: AS-BUILD-V3 all twelve real source-backed site sprite imports and job rules

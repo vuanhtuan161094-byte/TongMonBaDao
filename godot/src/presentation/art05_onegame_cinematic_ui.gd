@@ -17,7 +17,12 @@ const VIS11_AB = preload("res://src/presentation/p3/tmb_building_art_ab_v7.gd")
 
 func _ready() -> void:
     super._ready()
+    if not runtime_ready:
+        return
     _art05_style_global_hud()
+    _art05_install_mockup_shell()
+    _art05_build_sect_master_dock()
+    _art05_refresh_sect_master_dock()
     var aura := ART06_WORLD.new()
     aura.name = "Art06WorldAtmosphere"
     aura.position = Vector2(0,72)
@@ -570,6 +575,9 @@ func _art05_focus_masterplan_district(destination: String, close_panels: bool = 
         _leave_build_mode(true)
         _close_building_operation_panel(true)
         _close_disciple_summary(true)
+    _art05_dock_destination = StringName(destination)
+    _art05_dock_collapsed = false
+    _art05_refresh_sect_master_dock()
     var anchors := SectResidenceSiteV1.map_anchors(int(state.sect.world_layout_version))
     var cell: Vector2i = anchors.get(destination,Vector2i(89,96))
     var world_point := SectIsometricWorldV1.LEGACY_ANCHOR \
@@ -636,3 +644,295 @@ func _refresh_build_mode_panel(last_check: Dictionary = {}) -> void:
         build_mode_kind = ""
         if build_mode_confirm != null:
             build_mode_confirm.disabled = true
+
+
+# UI-MOCKUP-01: one real Godot screen, one resource authority, no fabricated
+# inventory, combat state, construction progress, map pixels or saved settings.
+var _art05_dock_panel: Panel
+var _art05_dock_heading: Label
+var _art05_dock_status: Label
+var _art05_dock_body: Label
+var _art05_dock_portrait: TextureRect
+var _art05_dock_manage: Button
+var _art05_dock_destination: StringName = &"main_hall"
+var _art05_dock_collapsed := false
+var _art05_active_nav := "home"
+
+const ART05_SECT_DESCRIPTIONS := {
+    "main_hall":"Điều hành tông môn, mở giới hạn và ban chính sách.",
+    "residence":"Theo dõi sức chứa, sinh hoạt và quản lý đệ tử.",
+    "cultivation":"Điều phối tu luyện, tu vi và rèn thân.",
+    "forge":"Luyện khí, chế tác và kiểm soát sản xuất.",
+    "warehouse":"Quản lý vật tư, đan dược, nguyên liệu và trang bị.",
+    "guidance":"Chiêu mộ ứng viên và đánh giá Tam Căn / Tứ Tính.",
+    "mine":"Khai thác khoáng vật và phân công đệ tử.",
+    "linh_forest":"Thu hoạch linh mộc theo chu kỳ sản xuất.",
+    "spirit_field":"Canh tác linh điền, thu hoạch và nhập Kho.",
+    "gate":"Chuyển đến Thế Giới để thám hiểm hoặc xuất chinh."
+}
+
+# The top header owns ONLY currency and disciples. All raw materials,
+# elixirs and marrow stay in the existing real Warehouse inventory.
+func _refresh_top_bar() -> void:
+    if state == null or resource_label == null or time_label == null:
+        return
+    time_label.text = "Năm đầu · Nhịp vận hành %d" % state.tick
+    resource_label.text = "Tiền %s   ◆  Linh thạch %s\nĐệ tử %d/%d" % [
+        _compact_number(state.sect.treasury),
+        _compact_number(state.sect.spirit_stones),
+        state.disciples.size(),
+        state.sect.disciple_capacity
+    ]
+
+func _refresh_all() -> void:
+    super._refresh_all()
+    if _art05_dock_panel != null:
+        _art05_refresh_sect_master_dock()
+
+# Reuse the canonical buttons, actual map camera and existing actions.
+# This is not a standalone HTML shell and introduces no duplicate controls.
+func _art05_install_mockup_shell() -> void:
+    if resource_label == null:
+        return
+    var top := resource_label.get_parent() as Panel
+    if top != null:
+        top.add_theme_stylebox_override("panel",_art05_style(
+            Color(0.021,0.115,0.111,0.99),ART05_GOLD,1,0))
+        for child in top.get_children():
+            if not (child is Label):
+                continue
+            var label := child as Label
+            if label.text == "TÔNG MÔN BÁ ĐẠO":
+                label.position = Vector2(21,9)
+                label.size = Vector2(420,34)
+                label.add_theme_font_size_override("font_size",24)
+                label.add_theme_color_override("font_color",ART05_GOLD)
+            elif label.text == "TÔNG SƯ":
+                label.position = Vector2(490,12)
+                label.size = Vector2(300,45)
+                label.add_theme_font_size_override("font_size",25)
+                label.add_theme_color_override("font_color",ART05_GOLD)
+        time_label.position = Vector2(23,43)
+        time_label.size = Vector2(435,22)
+        time_label.add_theme_color_override("font_color",ART05_MUTE)
+    resource_label.position = Vector2(840,10)
+    resource_label.size = Vector2(414,57)
+    resource_label.add_theme_font_size_override("font_size",15)
+    resource_label.add_theme_color_override("font_color",ART05_WHITE)
+    resource_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+    resource_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+    _refresh_top_bar()
+
+    var bottom := get_node_or_null("PlayerBottomBar") as Panel
+    if bottom != null:
+        bottom.add_theme_stylebox_override("panel",_art05_style(
+            Color(0.017,0.092,0.101,0.99),ART05_GOLD,1,0))
+        var old_mark := bottom.get_node_or_null("Art05SectSignature") as Control
+        if old_mark != null:
+            old_mark.visible = false
+        var ordered: Array[Button] = []
+        for child in bottom.get_children():
+            if child is Button:
+                ordered.append(child as Button)
+        if ordered.size() == 5:
+            for i in range(ordered.size()):
+                var button := ordered[i]
+                var active := i == 0
+                button.position = Vector2(43+i*245,10)
+                button.size = Vector2(214,56)
+                button.text = ["Tông Môn","Đệ Tử","Kho","Thế Giới","Săn Quái"][i]
+                button.tooltip_text = (
+                    "Chọn đội và vào bãi săn Thanh Trúc Lâm"
+                    if i == 4 else button.text)
+                button.add_theme_font_size_override("font_size",17)
+                button.add_theme_color_override("font_color",ART05_DEEP if active else ART05_WHITE)
+                button.add_theme_color_override("font_hover_color",ART05_GOLD)
+                button.add_theme_color_override("font_pressed_color",ART05_DEEP)
+                button.add_theme_stylebox_override("normal",_art05_style(
+                    Color(0.97,0.87,0.65,1.0) if active else Color(0.045,0.17,0.17,0.99),
+                    ART05_GOLD if active else Color(0.58,0.67,0.53,0.75),2 if active else 1,12))
+                button.add_theme_stylebox_override("hover",_art05_style(
+                    Color(0.12,0.27,0.26,0.99),ART05_GOLD,2,12))
+                button.add_theme_stylebox_override("pressed",_art05_style(
+                    Color(0.90,0.76,0.50,0.99),ART05_GOLD,2,12))
+                button.add_theme_stylebox_override("focus",_art05_style(
+                    Color(0.02,0.15,0.16,0.05),ART05_GOLD,2,12))
+                var glyph := button.get_node_or_null("Art05NavigationGlyph") as Control
+                if glyph != null:
+                    glyph.position = Vector2(14,13)
+                    glyph.size = Vector2(29,29)
+                    glyph.set("tint",ART05_DEEP if active else ART05_GOLD)
+                    glyph.queue_redraw()
+                button.pressed.connect(Callable(self,"_art05_activate_nav").bind(i))
+    # All five district shortcuts stay inside the unobstructed map area.
+    for i in range(MASTERPLAN_DISTRICT_TABS.size()):
+        var key := str(MASTERPLAN_DISTRICT_TABS[i]["key"])
+        var tab := get_node_or_null("MasterplanDistrict_"+key) as Button
+        if tab != null:
+            tab.position = Vector2(188+i*159,92)
+            tab.size = Vector2(148,44)
+            tab.add_theme_font_size_override("font_size",12)
+            tab.clip_text = true
+    if camera_controls_panel != null:
+        camera_controls_panel.position = Vector2(924,323)
+        camera_controls_panel.size = Vector2(58,252)
+        camera_controls_panel.add_theme_stylebox_override("panel",_art05_style(
+            Color(0.032,0.15,0.16,0.96),ART05_GOLD,1,12))
+        for c in camera_controls_panel.get_children():
+            if c is Button:
+                var camera_button := c as Button
+                camera_button.add_theme_color_override("font_color",ART05_WHITE)
+                camera_button.add_theme_stylebox_override("normal",_art05_style(
+                    Color(0.06,0.20,0.19,0.99),ART05_GOLD,1,8))
+            elif c is Label:
+                (c as Label).add_theme_color_override("font_color",ART05_WHITE)
+    var camera_help := get_node_or_null("CameraHintBackground") as Control
+    if camera_help != null:
+        camera_help.position = Vector2(482,602)
+        camera_help.size = Vector2(440,31)
+    if camera_hint != null:
+        camera_hint.position = Vector2(493,606)
+        camera_hint.size = Vector2(422,24)
+
+func _art05_activate_nav(index: int) -> void:
+    _art05_active_nav = ["home","disciples","warehouse","world","hunt"][clampi(index,0,4)]
+    var bottom := get_node_or_null("PlayerBottomBar") as Panel
+    if bottom == null:
+        return
+    var i := 0
+    for child in bottom.get_children():
+        if not (child is Button):
+            continue
+        var active := i == index
+        var button := child as Button
+        button.add_theme_color_override("font_color",ART05_DEEP if active else ART05_WHITE)
+        button.add_theme_stylebox_override("normal",_art05_style(
+            Color(0.97,0.87,0.65,1) if active else Color(0.045,0.17,0.17,0.99),
+            ART05_GOLD if active else Color(0.58,0.67,0.53,0.75),2 if active else 1,12))
+        var glyph := button.get_node_or_null("Art05NavigationGlyph") as Control
+        if glyph != null:
+            glyph.set("tint",ART05_DEEP if active else ART05_GOLD)
+            glyph.queue_redraw()
+        i += 1
+
+func _art05_dock_label(parent: Control, content: String, at: Vector2,
+        size_px: Vector2, font_size: int, color: Color) -> Label:
+    var label := Label.new()
+    label.text = content
+    label.position = at
+    label.size = size_px
+    label.add_theme_font_size_override("font_size",font_size)
+    label.add_theme_color_override("font_color",color)
+    label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+    label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    parent.add_child(label)
+    return label
+
+func _art05_build_sect_master_dock() -> void:
+    _art05_dock_panel = Panel.new()
+    _art05_dock_panel.name = "SectMasterOverviewDock"
+    _art05_dock_panel.position = Vector2(992,144)
+    _art05_dock_panel.size = Vector2(274,481)
+    _art05_dock_panel.z_index = 31
+    _art05_dock_panel.mouse_filter = Control.MOUSE_FILTER_STOP
+    _art05_dock_panel.add_theme_stylebox_override("panel",_art05_style(
+        Color(0.022,0.115,0.119,0.965),ART05_GOLD,2,15))
+    add_child(_art05_dock_panel)
+    _art05_dock_portrait = TextureRect.new()
+    _art05_dock_portrait.name = "SectMasterBuildingPortrait"
+    _art05_dock_portrait.position = Vector2(11,12)
+    _art05_dock_portrait.size = Vector2(94,85)
+    _art05_dock_portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+    _art05_dock_portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+    _art05_dock_portrait.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    _art05_dock_panel.add_child(_art05_dock_portrait)
+    _art05_dock_heading = _art05_dock_label(_art05_dock_panel,"ĐẠI ĐIỆN",
+        Vector2(108,15),Vector2(158,51),21,ART05_GOLD)
+    _art05_dock_status = _art05_dock_label(_art05_dock_panel,"",
+        Vector2(14,112),Vector2(246,72),15,ART05_WHITE)
+    var section1 := _art05_dock_label(_art05_dock_panel,"CHỨC NĂNG",
+        Vector2(14,214),Vector2(248,25),16,ART05_GOLD)
+    section1.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+    _art05_dock_body = _art05_dock_label(_art05_dock_panel,"",
+        Vector2(14,247),Vector2(248,113),14,ART05_WHITE)
+    _art05_dock_manage = Button.new()
+    _art05_dock_manage.name = "SectMasterManage"
+    _art05_dock_manage.text = "QUẢN LÝ"
+    _art05_dock_manage.position = Vector2(30,399)
+    _art05_dock_manage.size = Vector2(212,53)
+    _art05_dock_manage.add_theme_font_size_override("font_size",18)
+    _art05_dock_manage.add_theme_color_override("font_color",ART05_DEEP)
+    _art05_dock_manage.add_theme_stylebox_override("normal",_art05_style(
+        ART05_GOLD,Color(1.0,0.87,0.57,1.0),2,12))
+    _art05_dock_manage.add_theme_stylebox_override("hover",_art05_style(
+        Color(1.0,0.89,0.64),ART05_WHITE,2,12))
+    _art05_dock_manage.pressed.connect(_art05_manage_selected_district)
+    _art05_dock_panel.add_child(_art05_dock_manage)
+    var close := Button.new()
+    close.name = "SectMasterDockClose"
+    close.text = "×"
+    close.position = Vector2(234,7)
+    close.size = Vector2(31,30)
+    close.tooltip_text = "Ẩn thẻ thông tin. Chọn một khu để mở lại."
+    close.add_theme_font_size_override("font_size",18)
+    close.add_theme_color_override("font_color",ART05_GOLD)
+    close.pressed.connect(_art05_collapse_dock)
+    _art05_dock_panel.add_child(close)
+
+func _art05_collapse_dock() -> void:
+    _art05_dock_collapsed = true
+    _art05_refresh_sect_master_dock()
+
+func _art05_manage_selected_district() -> void:
+    if _art05_dock_destination == SectMapPresentation.DEST_GATE:
+        _bottom_action("world")
+        _art05_activate_nav(3)
+        return
+    _open_building(_art05_dock_destination)
+
+func _open_building(destination: StringName, instance_id: StringName = &"") -> void:
+    _art05_dock_destination = destination
+    _art05_dock_collapsed = false
+    super._open_building(destination,instance_id)
+    _art05_refresh_sect_master_dock()
+
+func _art05_refresh_sect_master_dock() -> void:
+    if _art05_dock_panel == null or state == null:
+        return
+    _art05_dock_panel.visible = not _art05_dock_collapsed \
+        and not _building_operation_is_open() and not _popup_is_open() \
+        and not (build_mode_panel != null and build_mode_panel.visible) \
+        and not _disciple_summary_is_open()
+    if not _art05_dock_panel.visible:
+        return
+    var dest := str(_art05_dock_destination)
+    var title := _building_name(_art05_dock_destination) if dest != "gate" else "CỔNG TÔNG MÔN"
+    _art05_dock_heading.text = title.to_upper()
+    var live: BuildingState = null
+    if _art05_dock_destination == SectMapPresentation.DEST_MAIN_HALL:
+        live = SectHallSystemV1.hall(state)
+    elif _art05_dock_destination == SectMapPresentation.DEST_RESIDENCE:
+        var houses := SectResidenceSystemV1.all_houses(state)
+        if not houses.is_empty():
+            live = houses[0]
+    else:
+        for raw in state.buildings.values():
+            if raw is BuildingState and str(raw.building_type) == dest:
+                live = raw as BuildingState
+                break
+    var level := "Lv%d" % live.level if live != null else "Điểm điều phối"
+    _art05_dock_status.text = "CẤP / KHU VỰC    %s\nĐỆ TỬ                 %d / %d" % [
+        level,state.disciples.size(),state.sect.disciple_capacity]
+    var description := str(ART05_SECT_DESCRIPTIONS.get(dest,
+        "Chọn Quản lý để xem số liệu và điều phối thực tế."))
+    if dest == "main_hall":
+        description += "\n\nChiêu mộ lệnh: %d" % state.sect.disciple_recruitment_tokens
+    elif dest == "residence":
+        description += "\n\nĐệ Tử Xá: %d nhà" % SectResidenceSystemV1.all_houses(state).size()
+    _art05_dock_body.text = description
+    _art05_dock_manage.text = "THẾ GIỚI" if dest == "gate" else "QUẢN LÝ"
+    if _art05_dock_portrait != null:
+        var source: Texture2D = VIS11_AB.texture_for(_art05_dock_destination,&"A")
+        if source == null:
+            source = VIS08_ORIGINAL_BUILDINGS.texture_for(_art05_dock_destination)
+        _art05_dock_portrait.texture = source
