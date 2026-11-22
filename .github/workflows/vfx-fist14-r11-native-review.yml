@@ -27,5 +27,7 @@ jobs:
     uses: ./.github/workflows/vfx-shared-skill.yml
     with:
       packet: docs/operations/vfx_packets/FIST14_R11_V4_PREFLIGHT.json
-      mode: g35
-      duration_seconds: 0
+      # Full LAB pass: keep the six-second mark and end after dissolve,
+      # before the automatic loop at 7.58s; no PvE/runtime receipt claim.
+      mode: full
+      duration_seconds: 7.5
