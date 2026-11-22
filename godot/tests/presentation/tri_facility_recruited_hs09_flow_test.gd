@@ -551,7 +551,16 @@ func _send_map_click(screen_point: Vector2) -> void:
 	down.pressed = true
 	var mapped_before := Vector2i(game.call("_cell_at_map_screen",screen_point))
 	var selected_before := Vector2i(game.get("build_mode_site"))
+	print("TRI03_POINTER_GUARDS active=%s kind=%s popup=%s building=%s panel_hit=%s summary=%s panning=%s dragged=%s" % [
+		str(game.get("build_mode_active")),str(game.get("build_mode_kind")),
+		str(game.call("_popup_is_open")),str(game.call("_building_operation_is_open")),
+		str(game.call("_point_over_build_mode_panel",screen_point)),
+		str(game.call("_disciple_summary_is_open")),str(game.get("mouse_panning")),
+		str(game.get("mouse_pointer_dragged"))])
 	game.call("_input",down)
+	print("TRI03_POINTER_DOWN panning=%s dragged=%s selected=%s" % [
+		str(game.get("mouse_panning")),str(game.get("mouse_pointer_dragged")),
+		str(game.get("build_mode_site"))])
 	var mapped_after_down := Vector2i(game.call("_cell_at_map_screen",screen_point))
 	var up := InputEventMouseButton.new()
 	up.button_index = MOUSE_BUTTON_LEFT
