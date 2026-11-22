@@ -1,0 +1,91 @@
+name: TRI03 Focused Residence Art + Recruit HS09 Save
+# Independent early-failure diagnostic for the owner-approved One Game route.
+# Uses the identical official Godot setup as P3 O2. No extra game or art fork.
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - integration/pve-p0-playable-ui-20261103
+    paths:
+      - 'godot/tests/presentation/tri_facility_recruited_hs09_flow_test.gd'
+      - 'godot/tests/presentation/tri_facility_recruited_hs09_reload_verify.gd'
+      - 'godot/src/presentation/uiux/sect_facility_art_v2.gd'
+      - 'godot/src/presentation/p3/tmb_building_art_ab_v7.gd'
+      - 'godot/src/presentation/p3_2_landscape_sect.gd'
+      - '.github/workflows/tri03-recruitment-save-focused.yml'
+permissions:
+  contents: read
+jobs:
+  tri03:
+    name: TRI03 VIS11 pixel / Recruit HS09 / cold Save
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      TMB_TRI03_FLOW_SAVE_PATH: user://tri03_recruited_hs09_flow_${{ github.run_id }}_${{ github.run_attempt }}.json
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install official Godot 4.7.2 binary
+        shell: bash
+        run: |
+          set -euo pipefail
+          GODOT_URL="https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip"
+          GODOT_SHA256="cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4"
+          curl --fail --location --retry 3 --output /tmp/godot.zip "$GODOT_URL"
+          echo "$GODOT_SHA256  /tmp/godot.zip" | sha256sum --check --strict
+          unzip -q /tmp/godot.zip -d /tmp
+          sudo install -m 0755 /tmp/Godot_v4.7.2-stable_linux.x86_64 /usr/local/bin/godot
+
+      - name: Confirm official version
+        run: godot --version
+
+      - name: Restore canonical female Stage A runtime pack
+        shell: bash
+        run: |
+          set -euo pipefail
+          PACK="/tmp/female_normal_v1_stageA_runtime_pack_v2_quant.zip"
+          cat             .github/assets/p3/female_stage_a/part01.b64             .github/assets/p3/female_stage_a/part02.b64             .github/assets/p3/female_stage_a/part03.b64             .github/assets/p3/female_stage_a/part04.b64             .github/assets/p3/female_stage_a/part05.b64             .github/assets/p3/female_stage_a/part06.b64             .github/assets/p3/female_stage_a/part07.b64             .github/assets/p3/female_stage_a/part08.b64             .github/assets/p3/female_stage_a/part09.b64             .github/assets/p3/female_stage_a/part10.b64             .github/assets/p3/female_stage_a/part11.b64             .github/assets/p3/female_stage_a/part12.b64             .github/assets/p3/female_stage_a/part13.b64             .github/assets/p3/female_stage_a/part14.b64             .github/assets/p3/female_stage_a/part15a.b64             .github/assets/p3/female_stage_a/part15b.b64             .github/assets/p3/female_stage_a/part16.b64             .github/assets/p3/female_stage_a/part17.b64             .github/assets/p3/female_stage_a/part18.b64             .github/assets/p3/female_stage_a/part19.b64             .github/assets/p3/female_stage_a/part20.b64             | tr -d '\r\n\t ' | base64 --decode > "$PACK"
+          test "$(stat -c%s "$PACK")" -eq 44838
+          echo "6a4213b9129ffb3f438c21cbb5326672ddf8915323836bf80cb33b8e5fabfdca  $PACK" | sha256sum --check --strict
+          unzip -q "$PACK" -d .
+
+      - name: Import project scripts and resources
+        run: godot --headless --path godot --import
+
+
+      - name: Parse TRI03 real GUI flow and cold Save scripts
+        run: |
+          godot --headless --path godot --check-only --script res://tests/presentation/tri_facility_recruited_hs09_flow_test.gd
+          godot --headless --path godot --check-only --script res://tests/presentation/tri_facility_recruited_hs09_reload_verify.gd
+      - name: TRI03 real 1280x720 Residence pixels, recruit, HS09 and paid assignment
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p godot/outputs/tri03_focused
+          timeout --signal=TERM --kill-after=10s 180s xvfb-run -a -s "-screen 0 1280x720x24" \
+            godot --path godot --resolution 1280x720 --rendering-method gl_compatibility \
+            --script res://tests/presentation/tri_facility_recruited_hs09_flow_test.gd \
+            -- "$PWD/godot/outputs/tri03_focused" \
+            2>&1 | tee "$RUNNER_TEMP/tri03_recruit.log"
+          grep -Fq 'TRI03_VIS11_RESIDENCE_NATIVE_PIXEL_PASS' "$RUNNER_TEMP/tri03_recruit.log"
+          grep -Fq 'TRI03_RECRUIT_HS09_ASSIGN_SAVE_PREPARED' "$RUNNER_TEMP/tri03_recruit.log"
+      - name: Independent second Godot process Save/Reload
+        shell: bash
+        run: |
+          set -euo pipefail
+          godot --headless --path godot \
+            -s res://tests/presentation/tri_facility_recruited_hs09_reload_verify.gd \
+            2>&1 | tee "$RUNNER_TEMP/tri03_reload.log"
+          grep -Fq 'TRI03_RECRUIT_HS09_CROSS_PROCESS_RELOAD_PASS' "$RUNNER_TEMP/tri03_reload.log"
+      - name: Upload real GUI pixels and diagnostic logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tri03-focused-${{ github.sha }}
+          retention-days: 7
+          if-no-files-found: ignore
+          path: |
+            godot/outputs/tri03_focused/
+            ${{ runner.temp }}/tri03_recruit.log
+            ${{ runner.temp }}/tri03_reload.log
