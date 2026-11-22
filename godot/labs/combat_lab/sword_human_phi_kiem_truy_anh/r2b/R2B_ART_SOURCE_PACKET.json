@@ -79,7 +79,7 @@
     "G36_CONTRAST": "SOURCE_ONLY_PREVIEW_NO_NATIVE",
     "G37_SEMANTIC": "SELF_FAIL_LANCE_NOT_SWORD",
     "G4_G7": "NOT_EXECUTED",
-    "OWNER_ART": "PENDING",
+    "OWNER_ART": "PROVISIONAL_VISUAL_DIRECTION_ONLY_NOT_FINAL_ART_APPROVAL",
     "WEB_REVIEW": "NOT_PUBLISHED",
     "TIER_FALLBACK": "VISUAL_SOURCE_PENDING",
     "PVE": "HOLD"
@@ -91,5 +91,17 @@
     "no_pve": true,
     "no_gameplay_changes": true,
     "no_visual_alias_until_human_art_usable": true
-  }
+  },
+  "owner_feedback_20261122": {
+    "quote": "t thấy skill tạm đc r",
+    "classification": "OWNER_PROVISIONAL_VISUAL_DIRECTION",
+    "scope": "Phi Kiếm Truy Ảnh Human visual preview/direction; exact source R2B frame/atlas G3 final approval NOT established",
+    "requires_repainting_now": false,
+    "can_start_preparing_native_lab": true,
+    "may_label_human_art_final_approved": false,
+    "may_label_godot_or_web_pass": false,
+    "may_integrate_pve": false,
+    "warning": "Generated UI infographics and captions are NOT native Godot screenshots, source-art proof, workflow runs, or a deployed web review. Owner's tạm được must not relabel these as actual evidence."
+  },
+  "next_action": "Preserve original transparent R2B source on PR #72 first (currently Library-only), review frame quality at 1× with actual AS48 and WALK target; then G3.5 true Godot native if actual source self preflight passes; keep R1 rejected and G8 HOLD."
 }
