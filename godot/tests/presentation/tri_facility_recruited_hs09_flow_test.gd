@@ -1,6 +1,9 @@
 extends SceneTree
 ## Real New Game -> paid map construction -> B1 Dẫn Tiên -> recruit -> HS-09
 ## assignment -> Save/Reload. UI events run in Godot; this is not physical mouse QA.
+# Real source: the map/build catalogue uses VIS-11 residence_A, not retired
+# Source A model 510076. Validate source identity and native composited pixels.
+const VIS11_ART = preload("res://src/presentation/p3/tmb_building_art_ab_v7.gd")
 const SAVE_PREFIX := "user://tri03_recruited_hs09_flow_"
 
 var game: Control
@@ -208,6 +211,54 @@ func _run() -> void:
 	_close_game()
 	quit(0)
 
+func _verify_vis11_residence_catalog_art(art: Control) -> bool:
+	if not _require(art != null and art.is_visible_in_tree()
+		and str(art.get("facility_kind")) == "residence",
+		"visible build catalogue does not contain the actual Residence art control"):
+		return false
+	var expected_art: Texture2D = VIS11_ART.texture_for(&"residence",&"A")
+	var mounted_art: Texture2D = art.get("_art") as Texture2D
+	if not _require(expected_art != null and mounted_art == expected_art
+		and expected_art.get_width() == VIS11_ART.size_for(&"residence").x
+		and expected_art.get_height() == VIS11_ART.size_for(&"residence").y,
+		"build catalogue does not mount the actual VIS-11 residence_A.png texture"):
+		return false
+	var rect := art.get_global_rect()
+	var left := maxi(0,int(floor(rect.position.x)))
+	var top := maxi(0,int(floor(rect.position.y)))
+	var right := mini(1280,int(ceil(rect.position.x+rect.size.x)))
+	var bottom := mini(720,int(ceil(rect.position.y+rect.size.y)))
+	if not _require(right-left >= 20 and bottom-top >= 20,
+		"VIS-11 Residence control is clipped/offscreen in the native 1280x720 viewport"):
+		return false
+	# Compare the same viewport rectangle with only the art control hidden.
+	# A loaded resource and a successful export are not proof that its pixels
+	# actually reached the player. All other controls remain unchanged.
+	await RenderingServer.frame_post_draw
+	var shown := root.get_texture().get_image()
+	art.hide()
+	await RenderingServer.frame_post_draw
+	var hidden := root.get_texture().get_image()
+	art.show()
+	await RenderingServer.frame_post_draw
+	if not _require(shown != null and hidden != null
+		and shown.get_size() == Vector2i(1280,720)
+		and hidden.get_size() == Vector2i(1280,720),
+		"cannot obtain paired native screenshots for Residence art pixel proof"):
+		return false
+	var changed_pixels := 0
+	for y in range(top,bottom):
+		for x in range(left,right):
+			var a := shown.get_pixel(x,y)
+			var b := hidden.get_pixel(x,y)
+			if absf(a.r-b.r)+absf(a.g-b.g)+absf(a.b-b.b) > 0.15:
+				changed_pixels += 1
+	if not _require(changed_pixels >= 35,
+		"VIS-11 Residence art did not paint actual native build-catalogue pixels (delta=%d)" % changed_pixels):
+		return false
+	print("TRI03_VIS11_RESIDENCE_NATIVE_PIXEL_PASS texture=residence_A.png delta=%d rect=%s" % [changed_pixels,str(rect)])
+	return true
+
 func _verify_natural_new_game_build_gate() -> bool:
 	var hall := SectHallSystemV1.hall(state)
 	var houses := SectResidenceSystemV1.all_houses(state)
@@ -237,10 +288,9 @@ func _verify_natural_new_game_build_gate() -> bool:
 	var description := game.get("build_mode_description") as Label
 	if not await _capture_frame("01_new_game_build_catalog_ready.png"):
 		return false
-	if not _require(catalog_art != null
-		and bool(catalog_art.get("_original_source"))
-		and str(catalog_art.get("_source_model_id")) == "510076",
-		"player build catalog did not render the SHA-gated Source A Residence model 510076"):
+	# VIS-11 replaced historical Source A 510076. Validate the actual A
+	# texture and a real 1280x720 on/off pixel delta, not legacy metadata.
+	if not await _verify_vis11_residence_catalog_art(catalog_art):
 		return false
 	if not _require(catalog != null and not catalog.disabled
 		and catalog.tooltip_text.contains("Đủ điều kiện")
