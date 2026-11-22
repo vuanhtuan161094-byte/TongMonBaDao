@@ -72,8 +72,8 @@ def main() -> int:
         print("VFX_SHARED_SOURCE_EXACT_SHA=" + head + " mode=" + args.mode + " school=" +
               packet["school"] + " skill=" + packet["skill_id"], flush=True)
         (out/"SOURCE_EXACT_SHA.txt").write_text(
-            "SOURCE_SHA=" + head + "\\nSKILL=" + packet["skill_id"] +
-            "\\nART=MANUAL_PENDING\\nOWNER=PENDING\\nPVE=HOLD\\nANDROID=NOT_EXECUTED\\n",
+            "SOURCE_SHA=" + head + "\nSKILL=" + packet["skill_id"] +
+            "\nART=MANUAL_PENDING\nOWNER=PENDING\nPVE=HOLD\nANDROID=NOT_EXECUTED\n",
             encoding="utf-8")
 
         validate = [sys.executable, "tools/qa/validate_vfx_v4_packet.py", "--packet", args.packet]
@@ -119,7 +119,7 @@ def main() -> int:
         signatures = []
         for item in [movie,*[out/p["file"] for p in phases]]:
             signatures.append(hashlib.sha256(item.read_bytes()).hexdigest() + "  " + item.name)
-        (out/"SHA256.txt").write_text("\\n".join(signatures)+"\\n",encoding="utf-8")
+        (out/"SHA256.txt").write_text("\n".join(signatures)+"\n",encoding="utf-8")
         print("VFX_SHARED_NATIVE_TECH_PASS SOURCE_EXACT_SHA=" + head +
               " frames=" + str(frames) + " stage=" + args.mode +
               " OWNER_ART=PENDING PVE=HOLD ANDROID=NOT_EXECUTED",flush=True)
