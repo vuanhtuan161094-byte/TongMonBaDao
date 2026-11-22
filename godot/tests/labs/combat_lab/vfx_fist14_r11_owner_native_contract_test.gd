@@ -28,8 +28,9 @@ func _run() -> void:
     _must(lab._phase_progress(0.2) < lab._phase_progress(0.70), "charge-to-release")
     _must(lab._phase_progress(0.70) < lab._phase_progress(1.10), "release-to-impact")
     _must(ResourceLoader.exists(ATLAS) and ResourceLoader.exists(ACTOR) and ResourceLoader.exists(MONSTER), "all-real-source-assets")
-    var image := Image.load_from_file(ATLAS)
-    _must(image != null and image.get_width() == 1236 and image.get_height() == 1236, "atlas-size")
+    # Load through the Godot resource importer; Image.load_from_file() warns on Web export.
+    var atlas_texture := load(ATLAS) as Texture2D
+    _must(atlas_texture != null and atlas_texture.get_width() == 1236 and atlas_texture.get_height() == 1236, "atlas-size")
     var frames := load(MONSTER) as SpriteFrames
     _must(frames != null and frames.has_animation(&"walk") and frames.get_frame_count(&"walk") > 0, "real-WALK-monster")
     var code := FileAccess.get_file_as_string("res://labs/combat_lab/fist14/r11_owner_review/fist14_r11_owner_review.gd")
