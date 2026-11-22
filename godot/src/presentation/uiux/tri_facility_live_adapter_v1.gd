@@ -122,18 +122,15 @@ func _hall_model() -> Dictionary:
         if not holder_id.is_empty() and _state.disciples.has(StringName(holder_id)):
             var actor: DiscipleState = _state.disciples[StringName(holder_id)]
             name_value = actor.display_name
-            if _host != null and _host.has_method("_source_a_portrait"):
-                var portrait_control: Variant = _host.call("_source_a_portrait",actor)
-                if portrait_control is Control:
-                    var portrait_texture := _source_a_texture_from_control(portrait_control as Control,"HallSourceAPortrait")
-                    if portrait_texture != null:
-                        offices.append({
-                            "id":role_id, "role_label":SectHallSystemV1.label(role_id),
-                            "disciple_name":name_value,
-                            "office_rank":"Tinh Thông Lv%d/10" % int(SectHallSystemV1.mastery(_state,role_id,holder_id).get("level",1)),
-                            "portrait":portrait_texture, "can_dismiss":true
-                        })
-                    portrait_control.free()
+            # Reuse the canonical portrait instead of a hidden Source A host.
+            var portrait_texture := SectASCharCandidateBridgeV1.preview_texture_for_disciple(actor)
+            if portrait_texture != null:
+                offices.append({
+                    "id":role_id, "role_label":SectHallSystemV1.label(role_id),
+                    "disciple_name":name_value,
+                    "office_rank":"Tinh Thông Lv%d/10" % int(SectHallSystemV1.mastery(_state,role_id,holder_id).get("level",1)),
+                    "portrait":portrait_texture, "can_dismiss":true
+                })
             var record: Dictionary = SectHallSystemV1.mastery(_state, role_id, holder_id)
             mastery_value = "Tinh Thông Lv%d/10" % int(record.get("level", 1))
         var has_office_row := false
@@ -360,17 +357,10 @@ func _guidance_model() -> Dictionary:
             continue
         var valid_birth := not _state.sect.disciple_v2_birth_enabled or DiscipleBirthProfileV2.valid_complete_birth(candidate.v2_birth_profile)
         var quality := str(quality_names.get(str(candidate.disciple_quality), str(candidate.disciple_quality)))
-        var preview_texture: Texture2D = null
-        var portrait_verified := false
-        if _host != null and _host.has_method("_source_a_preview"):
-            var preview_value: Variant = _host.call("_source_a_preview",candidate)
-            if preview_value is Control:
-                var preview_control := preview_value as Control
-                preview_texture = _source_a_texture_from_control(preview_control,"CandidateSourceAPortrait")
-                var preview_disciple: DiscipleState = candidate.to_disciple()
-                var approved_scene_path := DiscipleSourceAVisualPool.scene_path_for_disciple(preview_disciple)
-                portrait_verified = preview_texture != null and not approved_scene_path.is_empty()
-                preview_control.free()
+        var preview_disciple: DiscipleState = candidate.to_disciple()
+        var preview_texture: Texture2D = SectASCharCandidateBridgeV1.preview_texture_for_disciple(preview_disciple)
+        # Resource present is not an owner-approved artwork state.
+        var portrait_verified := preview_texture != null
         var source := _ui_name(str(candidate.recruitment_source), UI_SOURCE_NAMES) if not str(candidate.recruitment_source).is_empty() else "Nguồn chưa xác định"
         var profession := _ui_profession_traits(candidate.profession_traits)
         var base_disciple: DiscipleState = candidate.to_disciple()
@@ -401,7 +391,7 @@ func _guidance_model() -> Dictionary:
             ],
             "can_accept":can_roster_accept and valid_birth and available_if_guidance_enabled(),
             "accept_reason":"" if can_roster_accept and valid_birth else ("Chỗ ở đã đủ; hãy mở rộng Đệ Tử Xá." if not can_roster_accept else "Hồ sơ sinh chưa hợp lệ; không thể nhận."),
-            "can_reject":true, "source_art_approved":portrait_verified
+            "can_reject":true, "source_art_approved":false
         })
     var platform: BuildingState = BuildingSystem.new().primary_building(_state, BuildingSystem.TYPE_GUIDANCE_PLATFORM)
     var available := _state.p1_recruitment_enabled and _state.sect.disciple_generation_v2_enabled \
@@ -463,15 +453,6 @@ func available_if_guidance_enabled() -> bool:
     return _state.p1_recruitment_enabled and _state.sect.disciple_generation_v2_enabled \
         and _state.sect.guidance_recruitment_enabled and _state.p3_7_buildings_enabled
 
-func _source_a_texture_from_control(node: Node, texture_node_name: String) -> Texture2D:
-    if node is TextureRect and node.name == texture_node_name:
-        return (node as TextureRect).texture
-    for child in node.get_children():
-        var texture := _source_a_texture_from_control(child,texture_node_name)
-        if texture != null:
-            return texture
-    return null
-
 func _candidate_root_values(candidate: CandidateState) -> String:
     var layers: Dictionary = candidate.v2_birth_profile.get("layers",{})
     var root: Dictionary = layers.get("spiritual_root",{})
@@ -514,12 +495,7 @@ func _recruited_disciple_model() -> Dictionary:
     var disciple: DiscipleState = _state.disciples.get(StringName(_last_recruited_disciple_id))
     if disciple == null:
         return {}
-    var texture: Texture2D = null
-    var world := _host.get_parent() if _host != null else null
-    if world != null and world.has_method("_disciple_source_a_portrait_texture"):
-        var preview: Variant = world.call("_disciple_source_a_portrait_texture",disciple)
-        if preview is Texture2D:
-            texture = preview as Texture2D
+    var texture: Texture2D = SectASCharCandidateBridgeV1.preview_texture_for_disciple(disciple)
     return {
         "id":str(disciple.id), "name":disciple.display_name,
         "quality":str(DiscipleGeneratorV2.QUALITY_NAMES.get(str(disciple.disciple_quality),str(disciple.disciple_quality))),

@@ -18,3 +18,10 @@ Focused regression: `godot/tests/presentation/aschar_game_school_selection_test.
 - The JX alternate PvE viewer now derives every disciple's `aschar_school` and `aschar_sex` from canonical disciple state; historical `source_a_visual_key` cannot restore a retired disciple actor. Monster/Boss Source A remains unaffected.
 - Updated P3.2 live-map regression to assert the AS-CHAR baked sprite, instead of the retired Stage A visual requirement; expanded real-game AS-CHAR screen smoke assertions.
 - This is a presentation/test repair only. No changes to candidate birth generation, combat, economy, Save schema, VFX, animation rigging, or PR merge policy. Godot/CI outcomes remain exact-SHA gated.
+
+### B1 adapter final retirement audit — 22/11/2026
+
+- Scanned all 97 GDScript files under `godot/src/presentation`; B1 adapter was the remaining runtime caller of removed `DiscipleSourceAVisualPool`.
+- Hall, recruitment candidate and recently recruited disciple B1 data now resolve from the same AS-CHAR bridge and canonical `DiscipleState`.
+- B1 recruitment displays available candidate frames, labels them awaiting owner art approval and does not set `source_art_approved=true` merely because a texture loads.
+- Legacy Source A use by monster/Boss and environment is retained. No Save, combat, economics or art asset rewrite.

@@ -81,6 +81,19 @@ func _run() -> void:
         return
     hall_preview.free()
     hall.free()
+    # B1 must display valid candidate frames without claiming art approval.
+    var b1_script := preload("res://src/presentation/uiux/dan_tien_screen_b1_v1.gd")
+    var b1 := b1_script.new() as Control
+    var b1_block := b1.call("_candidate_portrait",{
+        "name":disciple.display_name, "quality":"common",
+        "portrait":novice_portrait, "portrait_verified":true,
+        "source_art_approved":false
+    }) as Control
+    if b1_block == null or b1_block.find_child("ASCharCandidatePreview",true,false) == null:
+        _fail("B1 recruitment hid a valid AS-CHAR candidate portrait")
+        return
+    b1_block.free()
+    b1.free()
     # Dẫn Tiên uses the same bridge for the candidate before acceptance.
     if not state.recruitment_candidates.is_empty():
         var first_candidate: CandidateState = state.recruitment_candidates.values()[0]

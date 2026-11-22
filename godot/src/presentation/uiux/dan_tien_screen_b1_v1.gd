@@ -372,17 +372,17 @@ func _candidate_info_row(icon_kind: String, value: String, accent: Color) -> Con
 
 func _candidate_portrait(candidate: Dictionary) -> Control:
 	var texture_value: Variant = candidate.get("portrait")
-	var verified := bool(candidate.get("source_art_approved", false)) and texture_value is Texture2D
-	var portrait := UI.portrait_slot(str(candidate.get("name", "")), texture_value if verified else null, Vector2(156, 188))
-	portrait.name = "VerifiedSourceACandidatePreview" if verified else "CandidateUnverifiedPortrait"
+	var available := bool(candidate.get("portrait_verified",false)) and texture_value is Texture2D
+	var portrait := UI.portrait_slot(str(candidate.get("name","")),texture_value if available else null,Vector2(156,188))
+	portrait.name = "ASCharCandidatePreview" if available else "CandidateUnverifiedPortrait"
 	var stack := VBoxContainer.new()
 	stack.name = "CandidatePortraitBlock"
-	stack.custom_minimum_size = Vector2(156, 210)
+	stack.custom_minimum_size = Vector2(156,210)
 	stack.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	stack.add_child(VIS_QUALITY.wrap_portrait(portrait, Vector2(156, 188), VIS_QUALITY.id_from_name(str(candidate.get("quality", "")))))
-	var caption := UI.label("ẢNH SOURCE A" if verified else "CHƯA CÓ ẢNH ĐÃ DUYỆT", 9, UI.GOLD if verified else UI.MUTED, true)
+	stack.add_child(VIS_QUALITY.wrap_portrait(portrait,Vector2(156,188),VIS_QUALITY.id_from_name(str(candidate.get("quality","")))))
+	var caption := UI.label("AS-CHAR · CHỜ DUYỆT MỸ THUẬT" if available else "CHƯA CÓ ẢNH AS-CHAR",9,UI.GOLD if available else UI.MUTED,true)
 	caption.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	caption.tooltip_text = "Chân dung lấy từ actor Source A đã qua cổng xác thực." if verified else "Không có chân dung Source A đã xác thực cho ứng viên này; dùng biểu tượng trung tính."
+	caption.tooltip_text = "Ảnh ứng viên AS-CHAR thật; chưa phải artwork được duyệt." if available else "Chưa tìm được frame AS-CHAR của ứng viên; đang dùng hình trung tính."
 	stack.add_child(caption)
 	return stack
 
