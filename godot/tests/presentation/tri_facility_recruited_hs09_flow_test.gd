@@ -399,6 +399,12 @@ func _verify_natural_new_game_build_gate() -> bool:
 		and state.sect.spirit_stones == stones_before
 	print("TRI03_COLLISION_UI_SNAPSHOT selected=%s expected=%s disabled=%s guard=%s unchanged=%s label=%s" % [
 		str(selected_site),str(actor_plot),str(button_disabled),guard,str(unchanged),hint])
+	if selected_site != actor_plot:
+		# Diagnostic only. Even if direct semantic picking succeeds the player
+		# pointer route MUST still fail, so CI cannot be falsely green.
+		var direct_pick := bool(game.call("_try_iso_map_pick",actor_plot_point))
+		print("TRI03_POINTER_DIRECT_DIAGNOSTIC invoked=%s now_selected=%s" % [
+			str(direct_pick),str(game.get("build_mode_site"))])
 	if not _require(selected_site == actor_plot and button_disabled
 		and hint.contains("đang đứng") and guard == "house_plot_actor_occupied"
 		and unchanged,
@@ -568,9 +574,10 @@ func _send_map_click(screen_point: Vector2) -> void:
 	up.pressed = false
 	game.call("_input",up)
 	var mapped_after_up := Vector2i(game.call("_cell_at_map_screen",screen_point))
-	print("TRI03_POINTER_TRACE screen=%s selected_before=%s mapped_before=%s mapped_down=%s mapped_up=%s selected_after=%s" % [
+	print("TRI03_POINTER_TRACE screen=%s selected_before=%s mapped_before=%s mapped_down=%s mapped_up=%s selected_after=%s up_pressed=%s up_button=%s panning_after=%s dragged_after=%s" % [
 		str(screen_point),str(selected_before),str(mapped_before),str(mapped_after_down),
-		str(mapped_after_up),str(game.get("build_mode_site"))])
+		str(mapped_after_up),str(game.get("build_mode_site")),str(up.pressed),
+		str(up.button_index),str(game.get("mouse_panning")),str(game.get("mouse_pointer_dragged"))])
 
 func _accept_visible_candidate() -> StringName:
 	var ids: Array = state.recruitment_candidates.keys()
