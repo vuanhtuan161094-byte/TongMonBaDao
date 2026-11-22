@@ -1,3 +1,9 @@
+## OWNER LOCK 22/11/2026 — VFX NHÂN TRƯỚC, TIÊN/THẦN TẠM DÙNG HÌNH NHÂN
+
+**Quyết định mới nhất áp dụng toàn bộ 12 phái/36 nhánh:** chỉ ưu tiên **sản xuất VFX bậc Nhân (human)** trước; bậc **Tiên (immortal)** và **Thần (divine)** tạm dùng lại **hình ảnh VFX Nhân tương ứng** dưới dạng **visual fallback**, chưa tính là artwork riêng đã duyệt. **Không** dùng fallback để thay đổi skill ID, game mechanics, target/cast/hit/status, gameplay hay Save; nếu semantic khác đến mức hình Nhân không thể hiện đúng, đánh `FALLBACK_INCOMPATIBLE` và HOLD. Quy trình **Art-First V4 G0–G8, một /vfx/, GitHub Actions Godot và gate owner** giữ nguyên; không Codex Cloud, rig, PvE hoặc merge. Đọc khóa quyết định: [Human-first visual fallback 22/11](docs/operations/TMB_VFX_HUMAN_FIRST_TIER_VISUAL_FALLBACK_LOCK_20261122.md). **FIST14 R11** native LAB [Actions #44980449471](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/44980449471) TECH PASS; owner **“tạm được”** không phải PvE/actor-final approval.
+
+---
+
 ## OWNER LOCK 19/11/2026 — REVIEW VFX QUA WEB: MỘT QUY TRÌNH CỐ ĐỊNH
 
 Áp dụng cho **tất cả chat chuyên trách VFX, 12 phái/36 nhánh**: dùng [Web VFX Review fixed workflow](docs/operations/TMB_VFX_WEB_REVIEW_FIXED_WORKFLOW_V1_20261119.md) và **một** trang `/vfx/` trên GitHub Pages canonical, không tạo nhiều viewer/preview site hoặc bắt buộc xuất MP4 mỗi lần sửa. Skill có **nguồn RGBA G3 thật** và scene read-only mới được khai báo như source candidate trong [review catalog](docs/operations/vfx_web_catalog_v1.json). Kiểm **pixel nhân vật + quái trên Chromium** trước khi deploy (lỗi ảnh owner: chỉ có giao diện và nền, không có actor/monster); export/parse PASS không phải visual PASS. **Art-First V4 G3/G3.5/owner gate giữ nguyên**, approved art bất biến; không rig, Codex Cloud VFX, PvE hoặc merge. Kiểm native chọn lọc khi thực sự cần; chủ dự án duyệt trực tiếp trên web.
