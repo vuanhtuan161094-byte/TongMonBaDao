@@ -148,16 +148,18 @@ jobs:
           "$GODOT" --headless --path "$STAGE" --check-only \
             --script res://labs/visual_bridge_v1/vfx_web_review_hub.gd
           "$GODOT" --headless --path "$STAGE" --check-only \
-            --script res://labs/combat_lab/sword_human_phi_kiem_truy_anh/r1/sword_human_r1_vfx_layer.gd
+            --script res://labs/combat_lab/sword_human_phi_kiem_truy_anh/r2b/phi_kiem_r2b_lab.gd
+          "$GODOT" --headless --path "$STAGE" --check-only \
+            --script res://godot/labs/combat_lab/sword_human_phi_kiem_truy_anh/r2b/phi_kiem_r2b_vfx_layer.gd
           # This short isolated logic check does not render a new MP4.
           "$GODOT" --headless --path "$STAGE" --fixed-fps 60 \
             --quit-after 216 res://labs/visual_bridge_v1/vfx_web_review_hub.tscn \
             2>&1 | tee "$RUNNER_TEMP/vfx-web-logic-smoke.log"
           grep -Fq 'BRIDGE_AS48_READY actor=AS48' "$RUNNER_TEMP/vfx-web-logic-smoke.log"
           grep -Fq 'BRIDGE_AS48_END=PASS' "$RUNNER_TEMP/vfx-web-logic-smoke.log"
-          grep -Fq 'VFX_SWORD_R1_SOURCE_LOADED=PASS' "$RUNNER_TEMP/vfx-web-logic-smoke.log"
+          grep -Fq 'VFX_SWORD_R2B_SOURCE_LOADED=PASS' "$RUNNER_TEMP/vfx-web-logic-smoke.log"
           for phase in CHARGE PROJECTILE CONTACT; do
-            grep -Fq "VFX_SWORD_R1_PHASE_${phase}=PASS" "$RUNNER_TEMP/vfx-web-logic-smoke.log"
+            grep -Fq "VFX_SWORD_R2B_PHASE_${phase}=PASS" "$RUNNER_TEMP/vfx-web-logic-smoke.log"
           done
           mkdir -p "$GITHUB_WORKSPACE/_site/vfx"
           "$GODOT" --headless --path "$STAGE" \
@@ -165,7 +167,7 @@ jobs:
           for ext in html js wasm pck; do
             test -s "$GITHUB_WORKSPACE/_site/vfx/index.$ext"
           done
-          printf 'SOURCE_SHA=%s\nWEB_REVIEW_ONLY=true\nLAB_EVENT_SOURCE=SYNTHETIC\nFRONT_ONLY=true\nG3_SOURCE=PENDING\nOWNER_ART=PENDING\nPVE=HOLD\n' \
+          printf 'SOURCE_SHA=%s\nWEB_REVIEW_ONLY=true\nLAB_EVENT_SOURCE=SYNTHETIC\nFRONT_ONLY=true\nG3_SOURCE=ORIGINAL_RGBA_OWNER_PROVISIONAL\nOWNER_ART=PROVISIONAL_NOT_FINAL\nPVE=HOLD\n' \
             "$GITHUB_SHA" > "$GITHUB_WORKSPACE/_site/vfx/build-info.txt"
           du -h "$GITHUB_WORKSPACE"/_site/vfx/index.*
           echo "VFX_WEB_REVIEW_EXPORT_PASS exact_sha=$GITHUB_SHA"

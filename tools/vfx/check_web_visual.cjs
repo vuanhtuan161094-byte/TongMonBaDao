@@ -68,7 +68,7 @@ function phaseChangedPixels(onBuffer, offBuffer, bounds) {
     page.on('pageerror', error => faults.push(String(error)));
     page.on('console', msg => {
       const line = msg.text();
-      if (/VFX_SWORD_R1_PHASE_HELD|BRIDGE_AS48_EVENT_FAIL|VFX_SWORD_R1_SOURCE|VFX_SWORD_R1_ALPHA/.test(line)) engineLogs.push(line);
+      if (/VFX_SWORD_R2B_PHASE_HELD|BRIDGE_AS48_EVENT_FAIL|VFX_SWORD_R2B_SOURCE|VFX_SWORD_R2B_ALPHA/.test(line)) engineLogs.push(line);
     });
     await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60000 });
     const canvas = page.locator('canvas').first();
@@ -126,7 +126,7 @@ function phaseChangedPixels(onBuffer, offBuffer, bounds) {
       engine_logs: engineLogs.slice(-30),
       verdict: actor>=ACTOR_PIXEL_MIN && monster>=MONSTER_PIXEL_MIN && phaseSamples.every(p=>p.passed) ?
         'BROWSER_CANVAS_AND_VFX_PHASES_PASS' : 'BROWSER_CANVAS_OR_VFX_PHASES_FAIL',
-      vfx_g3_art: 'SOURCE_PENDING', owner_art: 'PENDING', pve: 'HOLD'
+      vfx_g3_art: 'ORIGINAL_RGBA_OWNER_PROVISIONAL', owner_art: 'PROVISIONAL_NOT_FINAL', pve: 'HOLD'
     };
     fs.writeFileSync(path.join(output, 'result.json'), JSON.stringify(record, null, 2));
     console.log(JSON.stringify(record));

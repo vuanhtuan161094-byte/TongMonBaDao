@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://labs/combat_lab/sword_human_phi_kiem_truy_anh/r2b/phi_kiem_r2b_lab.gd" id="1"]
+
+[node name="PhiKiemTruyAnhHumanR2B" type="Node2D"]
+script = ExtResource("1")

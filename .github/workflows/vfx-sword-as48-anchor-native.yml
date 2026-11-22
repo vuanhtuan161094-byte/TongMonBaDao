@@ -1,6 +1,12 @@
-name: VFX Sword AS48 | native anchor event proof, Lab only
+name: VFX Sword Human R2B | AS48 illustrated RGBA native proof
 on:
-  # Web review is the everyday default; explicit dispatch retains native G3.5 validation.
+  push:
+    branches:
+      - integration/pve-p0-playable-ui-20261103
+    paths:
+      - 'godot/labs/combat_lab/sword_human_phi_kiem_truy_anh/r2b/**'
+      - 'godot/tests/labs/combat_lab/vfx_sword_r2b_contract_test.gd'
+      - '.github/workflows/vfx-sword-as48-anchor-native.yml'
   workflow_dispatch:
 permissions:
   contents: read
@@ -43,6 +49,13 @@ jobs:
           bash tools/qa/run_godot_strict.sh --headless --path godot --import 2>&1 | tee "$d/import.log"
           bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://labs/visual_bridge_v1/asset_vfx_readonly_bridge_v1.gd 2>&1 | tee "$d/bridge-parse.log"
           bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://labs/visual_bridge_v1/as48_sword_anchor_lab.gd 2>&1 | tee "$d/lab-parse.log"
+          bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script \
+            res://labs/combat_lab/sword_human_phi_kiem_truy_anh/r2b/phi_kiem_r2b_lab.gd 2>&1 | tee "$d/r2b-lab-parse.log"
+          bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script \
+            res://labs/combat_lab/sword_human_phi_kiem_truy_anh/r2b/phi_kiem_r2b_vfx_layer.gd 2>&1 | tee "$d/r2b-vfx-parse.log"
+          bash tools/qa/run_godot_strict.sh --headless --path godot --script \
+            res://tests/labs/combat_lab/vfx_sword_r2b_contract_test.gd 2>&1 | tee "$d/r2b-focused.log"
+          grep -Fq 'SWORD_R2B_FOCUSED_RESULT=PASS failures=0' "$d/r2b-focused.log"
       - name: Godot native 1280x720 actor/sword/moving monster with lab event cue
         shell: bash
         run: |
@@ -51,9 +64,12 @@ jobs:
           xvfb-run -a -s '-screen 0 1280x720x24' \
             bash tools/qa/run_godot_strict.sh --path godot --resolution 1280x720 \
             --fixed-fps 60 --write-movie "$d/AS48-Human-Sword-Anchor-Native.avi" \
-            --quit-after 216 res://labs/visual_bridge_v1/as48_sword_anchor_lab.tscn \
+            --quit-after 216 res://labs/combat_lab/sword_human_phi_kiem_truy_anh/r2b/phi_kiem_r2b_lab.tscn \
             2>&1 | tee "$d/movie.log"
           grep -Fq 'BRIDGE_AS48_READY actor=AS48' "$d/movie.log"
+          grep -Fq 'VFX_SWORD_R2B_LAB_READY=PASS' "$d/movie.log"
+          grep -Fq 'VFX_SWORD_R2B_SOURCE_LOADED=PASS' "$d/movie.log"
+          for phase in CHARGE PROJECTILE CONTACT; do grep -Fq "VFX_SWORD_R2B_PHASE_${phase}=PASS" "$d/movie.log"; done
           grep -Fq 'BRIDGE_AS48_ANCHOR_CAST=PASS' "$d/movie.log"
           grep -Fq 'BRIDGE_AS48_ANCHOR_CONTACT=PASS' "$d/movie.log"
           grep -Fq 'BRIDGE_AS48_DUPLICATE_DROPPED=PASS' "$d/movie.log"
@@ -68,7 +84,7 @@ jobs:
             ffmpeg -y -hide_banner -loglevel error -ss "$at" -i "$d/AS48-Human-Sword-Anchor-Native.mp4" -frames:v 1 "$d/native-$at.png"
           done
           sha256sum "$d/"*.mp4 "$d/"*.png > "$d/SHA256SUMS.txt"
-          printf 'EXACT_SHA=%s\nFRONT_ONLY=YES\nEVENT_SOURCE=LAB_ONLY\nVFX_G3=SOURCE_PENDING\nOWNER_ART=PENDING\nPVE=HOLD\n' "$GITHUB_SHA" > "$d/provenance.txt"
+          printf 'EXACT_SHA=%s\nFRONT_ONLY=YES\nEVENT_SOURCE=LAB_ONLY\nVFX_G3=OWNER_PROVISIONAL_SOURCE_COMMITTED\nOWNER_ART=PROVISIONAL_NOT_FINAL\nPVE=HOLD\n' "$GITHUB_SHA" > "$d/provenance.txt"
           rm -f "$d/AS48-Human-Sword-Anchor-Native.avi"
       - name: Upload native proof (never owner or G3 art approval)
         if: always()
