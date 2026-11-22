@@ -370,6 +370,18 @@ func _verify_natural_new_game_build_gate() -> bool:
 		and str(game.call("_residence_site_actor_conflict_reason",actor_plot)) == "house_plot_actor_occupied",
 		"no real live disciple can exercise the canonical Residence collision guard"):
 		return false
+	# Placement preview uses the live camera after the QA-only actor has
+	# moved. The former screen point was computed before that relocation.
+	actor_plot_point = _visible_residence_plot_screen_point(actor_plot,camera,game)
+	if not _require(actor_plot_point.x >= 0.0,
+		"occupied Residence plot is no longer visible after positioning live QA actor"):
+		return false
+	var projected_cell := Vector2i(game.call("_cell_at_map_screen",actor_plot_point))
+	print("TRI03_MAP_CLICK_BEFORE requested=%s mapped=%s screen=%s camera=%s zoom=%.3f" % [
+		str(actor_plot),str(projected_cell),str(actor_plot_point),str(camera.position),camera.zoom.x])
+	if not _require(projected_cell == actor_plot,
+		"live camera and Residence map click transform disagree BEFORE pointer event"):
+		return false
 	_send_map_click(actor_plot_point)
 	# The real _input() route updates the disabled build button synchronously.
 	# Inspect the same frame; an idle-map refresh on the next frame may move the
@@ -519,7 +531,9 @@ func _visible_residence_plot_screen_point(site: Vector2i, camera: Camera2D,
 	var screen_point := local_view+SectIsometricWorldV1.MAP_SCREEN_OFFSET
 	if not SectMapCamera.is_map_screen_point(screen_point):
 		return Vector2(-1,-1)
-	if Rect2(Vector2(18,144),Vector2(392,510)).has_point(screen_point):
+	# Use the real panel extent (392x558) instead of the stale 510px
+	# test-only exclusion. Do not send map taps behind an interactive panel.
+	if bool(map_game.call("_point_over_build_mode_panel",screen_point)):
 		return Vector2(-1,-1)
 	if Vector2i(map_game.call("_cell_at_map_screen",screen_point)) != site:
 		return Vector2(-1,-1)
