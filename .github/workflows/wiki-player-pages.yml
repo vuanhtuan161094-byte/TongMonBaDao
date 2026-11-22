@@ -20,10 +20,14 @@ permissions:
   pages: write
   id-token: write
 
-# Always replace the SAME Pages deployment. Never create a separate preview branch.
+# Always deploy to the SAME canonical Pages site, never a second preview.
+# Other PR #72 writers commit while the 4.7.2 Web export / VFX Chromium check
+# is running. Do NOT cancel a running exact-SHA visual gate on every push.
+# GitHub concurrency retains one active and the latest pending run; the pending
+# run catches up to newest HEAD after the active run finishes.
 concurrency:
   group: "pages-one-canonical-tongmonbadao"
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   deploy:
