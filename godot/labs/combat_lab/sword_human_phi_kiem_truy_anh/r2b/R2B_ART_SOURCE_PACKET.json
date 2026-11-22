@@ -1,0 +1,95 @@
+{
+  "schema": "tmb.vfx.art_source_gate.v1",
+  "skill_id": "tmb.skill.sword.ngu_kiem.active_01.human",
+  "skill_vi": "Phi Kiếm Truy Ảnh",
+  "school": "sword",
+  "branch": "ngu_kiem",
+  "tier": "human",
+  "revision": "R2B",
+  "canonical": {
+    "catalogue_path": "godot/data/combat/v63_sword_combat_catalog.json",
+    "effect": "damage",
+    "element": "metal",
+    "shape": "single_target",
+    "target_limit": 1,
+    "cast_time_seconds": 0.28,
+    "cooldown_seconds": 8,
+    "projectile_speed_world_units": 10,
+    "damage_ratio": 1.35,
+    "feature_enabled": false,
+    "runtime_hit_receipt": "RUNTIME_MAPPING_PENDING"
+  },
+  "source": {
+    "kind": "first_party_imagegen_master_cleaned_into_distinct_source_poses",
+    "original_master_sha256": "2ba61b613d9351379069bf1b3faac630d98db323e74128006e76fa7975d70ce0",
+    "original_master_px": [
+      1774,
+      887
+    ],
+    "pose_count": 8,
+    "pose_px": [
+      512,
+      512
+    ],
+    "atlas_px": [
+      2048,
+      1024
+    ],
+    "atlas_sha256": "fe7ff0cf27c8f75ee601d5899683fe28ccfc01de3c2b8244cf66bfe9fc010732",
+    "recovery_library_path": "/TMB-VFX/SWORD/TMB_SWORD_PHI_KIEM_HUMAN_R2B_SOURCE_ONLY.zip",
+    "recovery_library_id": "libfile_fd8ce620efb0819186e1d9bb9deb0bdd",
+    "recovery_zip_sha256": "32f821e2499d7517b5f2b0e148de5a05eddcb85fff5d84afc652002238b5524f",
+    "binary_committed_to_github": false,
+    "source_only_review": true,
+    "transform_notes": "Preserves original 8 ImageGen-authored poses; repack/crop, refine original alpha and blue luminosity, compress existing flight-pose envelope. No synthetic actor or damage visual."
+  },
+  "phases": [
+    "charge",
+    "growth",
+    "release",
+    "flight_A",
+    "flight_B",
+    "single_contact",
+    "fragment",
+    "fade"
+  ],
+  "preflight": {
+    "pixel_technical": "LOCAL_8_OF_8_UNIQUE_ALPHA_NONEMPTY_PASS",
+    "preview": "LOCAL_ONLY_1X_DARK_BRIGHT",
+    "self_art": "G3_ART_SELF_REWORK_REQUIRED",
+    "known_defects": [
+      "Projectile still resembles an energy lance instead of an unmistakable flying sword",
+      "Source was not tested composited on actual AS48 actor and moving WALK monster",
+      "No clean independent untouched margin across original ImageGen source cells",
+      "No owner review of revision R2B"
+    ],
+    "note": "Hash and alpha integrity checks are NOT proof of owner-quality painted sword art"
+  },
+  "clocks": {
+    "combat": "canonical",
+    "visual_local": "DESIGN_PROPOSAL_NO_RUNTIME_TIMING",
+    "showcase": "NOT_EXECUTED"
+  },
+  "gates": {
+    "G0": "CHECKED",
+    "G1": "STILL_REFERENCES_ONLY",
+    "G2": "DRAFT",
+    "G3": "ART_SELF_FAIL_REWORK_REQUIRED",
+    "G35_NATIVE": "NOT_EXECUTED",
+    "G36_CONTRAST": "SOURCE_ONLY_PREVIEW_NO_NATIVE",
+    "G37_SEMANTIC": "SELF_FAIL_LANCE_NOT_SWORD",
+    "G4_G7": "NOT_EXECUTED",
+    "OWNER_ART": "PENDING",
+    "WEB_REVIEW": "NOT_PUBLISHED",
+    "TIER_FALLBACK": "VISUAL_SOURCE_PENDING",
+    "PVE": "HOLD"
+  },
+  "release_safety": {
+    "no_codex_cloud": true,
+    "no_rig": true,
+    "no_merge": true,
+    "no_pve": true,
+    "no_gameplay_changes": true,
+    "no_visual_alias_until_human_art_usable": true
+  }
+}
