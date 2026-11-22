@@ -93,11 +93,20 @@ func _run() -> void:
     # Actors are materialized only for the focused/visible world viewport.
     # Select through the real disciple route before asserting the map node.
     ui.call("_open_disciple", first_id)
-    for _frame in range(18):
-        await process_frame
+    # The real focus camera tweens for 0.22s; 18 headless frames can elapse
+    # faster than the tween's wall-clock duration. Wait bounded real time for
+    # the existing 0.12s viewport actor visibility refresh, without forcing
+    # a private materialization call or allocating an offscreen duplicate.
+    await create_timer(0.55).timeout
     var actors: Dictionary = ui.get("actor_nodes")
     if not actors.has(str(first_id)):
-        _fail("O2 accepted disciple did not materialize as a live map actor.")
+        var virtuals: Dictionary = ui.get("actor_virtual_positions")
+        var focused := ui.get("focused_id")
+        var recruit: DiscipleState = state.disciples[first_id]
+        _fail("O2 accepted disciple did not materialize after focus tween: id=%s selected=%s focused=%s virtual=%s region=%s action=%s pve=%s" % [
+            str(first_id),str(ui.get("selected_id")),str(focused),
+            str(virtuals.get(str(first_id),"<missing>")),str(recruit.region_id),
+            str(recruit.current_action),str(recruit.active_pve_encounter_id)])
         return
     var recruited_actor := actors[str(first_id)] as Control
     if recruited_actor == null or not is_instance_valid(recruited_actor) or not (recruited_actor is ModularDiscipleActor):
@@ -143,8 +152,11 @@ func _run() -> void:
         _fail("O2 workforce assignment did not persist with the recruited disciple.")
         return
     ui.call("_open_disciple", first_id)
-    for _frame in range(18):
-        await process_frame
+    # The real focus camera tweens for 0.22s; 18 headless frames can elapse
+    # faster than the tween's wall-clock duration. Wait bounded real time for
+    # the existing 0.12s viewport actor visibility refresh, without forcing
+    # a private materialization call or allocating an offscreen duplicate.
+    await create_timer(0.55).timeout
     actors = ui.get("actor_nodes")
     if not actors.has(str(first_id)) or ui.find_children("ModularDisciple_%s" % str(first_id), "", true, false).size() != 1:
         _fail("O2 reload did not restore exactly one live actor for the recruit.")

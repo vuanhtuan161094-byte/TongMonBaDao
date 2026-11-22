@@ -2303,6 +2303,11 @@ func _open_disciple(disciple_id: StringName) -> void:
     _refresh_tasks()
     _clear_popup()
 
+    # Recruitment adds authoritative disciples between normal runtime ticks.
+    # Resolve their canonical virtual map locations BEFORE focusing the camera:
+    # otherwise _disciple_map_point() falls back to the courtyard, and the
+    # viewport-bounded actor pool never sees the newly selected recruit.
+    _reconcile_live_actors()
     var disciple: DiscipleState = state.disciples[disciple_id]
     _set_focus_target(_disciple_map_point(disciple_id), &"disciple", disciple_id, disciple.display_name, true)
 
