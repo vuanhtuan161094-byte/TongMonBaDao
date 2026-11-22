@@ -39,9 +39,16 @@
     "recovery_library_path": "/TMB-VFX/SWORD/TMB_SWORD_PHI_KIEM_HUMAN_R2B_SOURCE_ONLY.zip",
     "recovery_library_id": "libfile_fd8ce620efb0819186e1d9bb9deb0bdd",
     "recovery_zip_sha256": "32f821e2499d7517b5f2b0e148de5a05eddcb85fff5d84afc652002238b5524f",
-    "binary_committed_to_github": false,
+    "binary_committed_to_github": true,
     "source_only_review": true,
-    "transform_notes": "Preserves original 8 ImageGen-authored poses; repack/crop, refine original alpha and blue luminosity, compress existing flight-pose envelope. No synthetic actor or damage visual."
+    "transform_notes": "Preserves original 8 ImageGen-authored poses; repack/crop, refine original alpha and blue luminosity, compress existing flight-pose envelope. No synthetic actor or damage visual.",
+    "original_master_repo_path": "res://labs/combat_lab/sword_human_phi_kiem_truy_anh/r2b/source/original_master_imagegen_1774x887.png",
+    "atlas_repo_path": "res://labs/combat_lab/sword_human_phi_kiem_truy_anh/r2b/source/phi_kiem_human_r2b_atlas_rgba.png",
+    "github_git_blob_shas": {
+      "original_master": "d6d5432101ebb1ddc936d66e3d1fe29da28f5bc6",
+      "atlas": "655f1e7c30eae77cbbea483105b02dfebf5e9fc3"
+    },
+    "recovery_note": "Original bytes are now committed as Git blob PNGs and remain in Library archive for redundancy."
   },
   "phases": [
     "charge",
@@ -74,8 +81,8 @@
     "G0": "CHECKED",
     "G1": "STILL_REFERENCES_ONLY",
     "G2": "DRAFT",
-    "G3": "ART_SELF_FAIL_REWORK_REQUIRED",
-    "G35_NATIVE": "NOT_EXECUTED",
+    "G3": "SOURCE_BINARY_DURABLY_COMMITTED_OWNER_PROVISIONAL_BUT_FINAL_ART_NOT_APPROVED",
+    "G35_NATIVE": "NOT_EXECUTED_ON_THIS_SHA",
     "G36_CONTRAST": "SOURCE_ONLY_PREVIEW_NO_NATIVE",
     "G37_SEMANTIC": "SELF_FAIL_LANCE_NOT_SWORD",
     "G4_G7": "NOT_EXECUTED",
