@@ -531,6 +531,11 @@ func _visible_residence_plot_screen_point(site: Vector2i, camera: Camera2D,
 	var screen_point := local_view+SectIsometricWorldV1.MAP_SCREEN_OFFSET
 	if not SectMapCamera.is_map_screen_point(screen_point):
 		return Vector2(-1,-1)
+	# The outer 1280x570 viewport intersects tabs, right zoom/target controls
+	# and trim margins. Pick a genuinely clickable interior map surface for
+	# BOTH blocked and legal sites, not a tile on the top 10px border.
+	if not Rect2(Vector2(435,160),Vector2(450,420)).has_point(screen_point):
+		return Vector2(-1,-1)
 	# Use the real panel extent (392x558) instead of the stale 510px
 	# test-only exclusion. Do not send map taps behind an interactive panel.
 	if bool(map_game.call("_point_over_build_mode_panel",screen_point)):
@@ -544,12 +549,19 @@ func _send_map_click(screen_point: Vector2) -> void:
 	down.button_index = MOUSE_BUTTON_LEFT
 	down.position = screen_point
 	down.pressed = true
+	var mapped_before := Vector2i(game.call("_cell_at_map_screen",screen_point))
+	var selected_before := Vector2i(game.get("build_mode_site"))
 	game.call("_input",down)
+	var mapped_after_down := Vector2i(game.call("_cell_at_map_screen",screen_point))
 	var up := InputEventMouseButton.new()
 	up.button_index = MOUSE_BUTTON_LEFT
 	up.position = screen_point
 	up.pressed = false
 	game.call("_input",up)
+	var mapped_after_up := Vector2i(game.call("_cell_at_map_screen",screen_point))
+	print("TRI03_POINTER_TRACE screen=%s selected_before=%s mapped_before=%s mapped_down=%s mapped_up=%s selected_after=%s" % [
+		str(screen_point),str(selected_before),str(mapped_before),str(mapped_after_down),
+		str(mapped_after_up),str(game.get("build_mode_site"))])
 
 func _accept_visible_candidate() -> StringName:
 	var ids: Array = state.recruitment_candidates.keys()
