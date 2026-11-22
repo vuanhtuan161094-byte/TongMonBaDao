@@ -102,7 +102,21 @@ jobs:
           godot --headless --path godot --check-only --script res://tests/presentation/tri_facility_recruited_hs09_reload_verify.gd
 
       - name: Run O2 recruitment to live actor persistence
-        run: godot --headless --path godot -s res://tests/presentation/p3_o2_recruitment_map_test.gd
+        shell: bash
+        run: |
+          set -euo pipefail
+          godot --headless --path godot -s res://tests/presentation/p3_o2_recruitment_map_test.gd \
+            2>&1 | tee "$RUNNER_TEMP/o2_recruitment_map.log"
+          grep -Fq 'P3 O2 RECRUITMENT MAP TEST PASS' "$RUNNER_TEMP/o2_recruitment_map.log"
+
+      - name: Upload exact-SHA O2 recruitment test log even after failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: o2-recruitment-trace-${{ github.sha }}
+          retention-days: 7
+          if-no-files-found: ignore
+          path: ${{ runner.temp }}/o2_recruitment_map.log
 
       - name: Run Dẫn Tiên backend regression
         run: godot --headless --path godot -s res://tests/simulation/p3_7c1_foundation_guidance_test.gd
