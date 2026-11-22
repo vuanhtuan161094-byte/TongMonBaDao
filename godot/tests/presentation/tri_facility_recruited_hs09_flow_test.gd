@@ -371,18 +371,27 @@ func _verify_natural_new_game_build_gate() -> bool:
 		"no real live disciple can exercise the canonical Residence collision guard"):
 		return false
 	_send_map_click(actor_plot_point)
-	await process_frame
+	# The real _input() route updates the disabled build button synchronously.
+	# Inspect the same frame; an idle-map refresh on the next frame may move the
+	# temporary QA actor back to its canonical destination.
 	var blocked_confirm := _find_button(game,"ConfirmMapConstruction")
 	var blocked_label := game.get("build_mode_site_label") as Label
-	if not _require(Vector2i(game.get("build_mode_site")) == actor_plot
-		and blocked_confirm != null and blocked_confirm.disabled
-		and blocked_label != null and blocked_label.text.contains("đang đứng")
-		and state.buildings.size() == buildings_before
-		and state.building_event_count == event_count_before
-		and warehouse.available_quantity(state,StringName(BuildingSystem.MATERIAL_WOOD)) == wood_before
-		and warehouse.available_quantity(state,StringName(BuildingSystem.MATERIAL_ORE)) == ore_before
-		and state.sect.spirit_stones == stones_before,
-		"live disciple collision did not block placement without charging or mutating state"):
+	var selected_site := Vector2i(game.get("build_mode_site"))
+	var button_disabled := blocked_confirm != null and blocked_confirm.disabled
+	var hint := blocked_label.text if blocked_label != null else "<missing>"
+	var guard := str(game.call("_residence_site_actor_conflict_reason",actor_plot))
+	var unchanged := state.buildings.size() == buildings_before \
+		and state.building_event_count == event_count_before \
+		and warehouse.available_quantity(state,StringName(BuildingSystem.MATERIAL_WOOD)) == wood_before \
+		and warehouse.available_quantity(state,StringName(BuildingSystem.MATERIAL_ORE)) == ore_before \
+		and state.sect.spirit_stones == stones_before
+	print("TRI03_COLLISION_UI_SNAPSHOT selected=%s expected=%s disabled=%s guard=%s unchanged=%s label=%s" % [
+		str(selected_site),str(actor_plot),str(button_disabled),guard,str(unchanged),hint])
+	if not _require(selected_site == actor_plot and button_disabled
+		and hint.contains("đang đứng") and guard == "house_plot_actor_occupied"
+		and unchanged,
+		"live actor collision UI/input mismatch: selected=%s expected=%s disabled=%s guard=%s unchanged=%s label=%s" % [
+			str(selected_site),str(actor_plot),str(button_disabled),guard,str(unchanged),hint]):
 		return false
 	if not await _capture_frame("02a_actor_occupied_plot_rejected.png"):
 		return false
