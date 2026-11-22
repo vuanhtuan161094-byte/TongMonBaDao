@@ -1468,7 +1468,8 @@ func _draw_pve_actor(data: Dictionary) -> void:
         drawn = PveASCharFrameRendererV1.draw_actor(self,
             str(row.get("aschar_school","")),str(row.get("aschar_sex","male")),
             action,foot,facing,age,0.22)
-    if not drawn:
+    # Source A remains available for monsters/Bosses, never for disciples.
+    if not drawn and side != "disciple":
         var actor_key := str(row.get("source_a_visual_key",""))
         drawn = not actor_key.is_empty() and pve_source_atlas.has_actor(actor_key)
         if drawn:

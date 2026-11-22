@@ -115,12 +115,20 @@ func _run() -> void:
 	if not expected_rows.has(disciple_actor_id) or monster_actor_id.is_empty() or not expected_rows.has(monster_actor_id):
 		_fail("CARE actor ids did not resolve to real disciple / pilot-monster presentation rows")
 		return
-	var disciple_key := str(expected_rows[disciple_actor_id].get("source_a_visual_key",""))
+	var disciple_key := str(expected_rows[disciple_actor_id].get("aschar_school",""))
+	var disciple_sex := str(expected_rows[disciple_actor_id].get("aschar_sex",""))
 	var monster_key := str(expected_rows[monster_actor_id].get("source_a_visual_key",""))
-	if disciple_key not in ["disciple_male","disciple_female"] or monster_key != "monster_1113031_1":
-		_fail("presentation mapping used an unverified actor key: %s / %s" % [disciple_key,monster_key])
+	if disciple_key != SectASCharCandidateBridgeV1.visual_school_for_disciple(disciple) or monster_key != "monster_1113031_1":
+		_fail("AS-CHAR novice / Source A monster view routing failed")
 		return
-	for visual_key in [disciple_key,monster_key]:
+	var aschar_id := SectASCharCandidateBridgeV1.actor_id(disciple_key,disciple_sex)
+	if aschar_id < 48 or aschar_id > 71 or PveASCharFrameRendererV1._manifest(aschar_id).is_empty():
+		_fail("CARE disciple has no authored AS-CHAR portrait/frame source")
+		return
+	if presenter._source_atlas.has_actor("disciple_male") or presenter._source_atlas.has_actor("disciple_female"):
+		_fail("retired Source A disciples leaked into live combat atlas")
+		return
+	for visual_key in [monster_key]:
 		if not presenter._source_atlas.has_actor(visual_key):
 			_fail("V5 manifest actor did not import: " + visual_key)
 			return
@@ -181,7 +189,7 @@ func _run() -> void:
 	if presenter._event_cursor != initial_cursor + 96:
 		_fail("adapter replayed an already-rendered event from the CARE ring")
 		return
-	print("B3 CARE → COMBAT V5 SOURCE A VIEW-ONLY PRESENTATION: PASS")
+	print("B3 CARE → AS-CHAR DISCIPLE / SOURCE A MONSTER PRESENTATION: PASS")
 	print("disciple=%s key=%s monster=%s key=%s tick=%d real_clip_routes=idle,walk,attack,hit,die boss_asset_verified=true boss_event_mapped=false" % [
 		str(disciple.id),disciple_key,monster_actor_id,monster_key,tick_before
 	])

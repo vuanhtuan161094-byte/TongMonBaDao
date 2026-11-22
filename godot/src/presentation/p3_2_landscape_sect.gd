@@ -195,7 +195,6 @@ var npc_motion_elapsed := 0.0
 var npc_ambient_elapsed := 0.0
 var npc_ambient_delay := 6.0
 var npc_ambient_cursor := 0
-var source_a_portrait_textures: Dictionary = {}
 
 var gp1_guide_panel: Panel
 var gp1_guide_title: Label
@@ -1367,28 +1366,10 @@ func _ensure_disabled_controls_readable(root_node: Node) -> void:
             button.add_theme_stylebox_override("disabled",_style(Color(0.84,0.83,0.75),Color(0.46,0.44,0.37),1,8))
         _ensure_disabled_controls_readable(child)
 
-func _disciple_source_a_portrait_texture(disciple: DiscipleState) -> Texture2D:
-    if disciple == null:
-        return null
-    var scene_path := DiscipleSourceAVisualPool.scene_path_for_disciple(disciple)
-    if scene_path.is_empty():
-        return null
-    if source_a_portrait_textures.has(scene_path):
-        return source_a_portrait_textures[scene_path] as Texture2D
-    var packed := DiscipleSourceAVisualPool.scene_for_disciple(disciple)
-    if packed == null:
-        return null
-    var preview := packed.instantiate() as AnimatedSprite2D
-    if preview == null:
-        return null
-    var texture: Texture2D = null
-    var frames := preview.sprite_frames
-    if frames != null and frames.has_animation(&"stand") and frames.get_frame_count(&"stand") > 0:
-        texture = frames.get_frame_texture(&"stand",0)
-    preview.free()
-    if texture != null:
-        source_a_portrait_textures[scene_path] = texture
-    return texture
+# All profile, worker and roster portraits share the same AS-CHAR identity
+# as the live map/PvE actor. One cached idle frame, never a Source A atlas.
+func _disciple_visual_portrait_texture(disciple: DiscipleState) -> Texture2D:
+    return SectASCharCandidateBridgeV1.preview_texture_for_disciple(disciple)
 
 func _disciple_avatar_button(disciple: DiscipleState, edge: float) -> Button:
     var avatar := Button.new()
@@ -1397,10 +1378,10 @@ func _disciple_avatar_button(disciple: DiscipleState, edge: float) -> Button:
     avatar.add_theme_color_override("font_color",INK)
     avatar.add_theme_stylebox_override("normal",_style(Color(0.86,0.91,0.77),JADE_DARK,1,8))
     var actor := actor_nodes.get(str(disciple.id)) as ModularDiscipleActor
-    var baked_texture: Texture2D = _disciple_source_a_portrait_texture(disciple) if actor == null or not actor.production_body_active() else null
+    var baked_texture: Texture2D = _disciple_visual_portrait_texture(disciple) if actor == null or not actor.production_body_active() else null
     if baked_texture != null:
         var portrait := TextureRect.new()
-        portrait.name = "VerifiedSourceAPortrait"
+        portrait.name = "ASCharPortrait"
         portrait.texture = baked_texture
         portrait.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
         portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
@@ -2747,17 +2728,12 @@ func _materialize_modular_actor(key: String) -> void:
     actor.reset_for_reuse()
     actor.configure(disciple)
     actor.set_animation_library(female_motion_library)
-    # ASCHAR-GAME-01: a disciple who has chosen a canonical school receives
-    # the existing frame-by-frame candidate actor and per-frame held props.
-    # Unassigned beginners retain their original Source A appearance. No rig.
+    # One authored frame-by-frame AS-CHAR identity in every lifecycle state:
+    # seeded novice until first branch choice; then sex+selected school.
+    # Fail closed to existing modular body if an AS-CHAR pack is unavailable.
     var candidate_scene := SectASCharCandidateBridgeV1.scene_for_disciple(disciple)
-    var candidate_mounted := candidate_scene != null and actor.set_baked_visual(candidate_scene)
-    if not candidate_mounted:
-        if actor.rig_id == DiscipleActorVisualCatalog.RIG_FEMALE_NORMAL_V1 and _stage_a_live_assets_ready():
-            FemaleStageAAssetLoader.apply_public_direction(actor,&"down")
-        var source_a_scene := DiscipleSourceAVisualPool.scene_for_disciple(disciple)
-        if source_a_scene != null and not actor.production_body_active():
-            actor.set_baked_visual(source_a_scene)
+    if candidate_scene != null:
+        actor.set_baked_visual(candidate_scene)
     actor.sync_action(disciple.current_action)
     var target: Vector2 = actor_virtual_positions[key]
     var spawn_position := target
@@ -4079,7 +4055,7 @@ func _add_live_worker_card(display_name: String, status: String, disciple: Disci
     var row := HBoxContainer.new()
     row.add_theme_constant_override("separation", 8)
     row.mouse_filter = Control.MOUSE_FILTER_PASS
-    var portrait_texture := _disciple_source_a_portrait_texture(disciple) if disciple != null else null
+    var portrait_texture := _disciple_visual_portrait_texture(disciple) if disciple != null else null
     if portrait_texture != null:
         var portrait := TextureRect.new()
         portrait.name = "WorkerPortrait"
@@ -4930,7 +4906,7 @@ func _build_guidance_recruitment_controls() -> void:
 
     var queue_label := Label.new()
     queue_label.name = "DanTienQueueSummary"
-    queue_label.text = "Ứng viên: %d/%d · Lệnh: %d · Đệ tử: %d/%d\nXem hồ sơ Tam Căn / Tứ Tính, Linh Căn, thiên hướng nghề và chân dung Source A phù hợp." % [
+    queue_label.text = "Ứng viên: %d/%d · Lệnh: %d · Đệ tử: %d/%d\nXem hồ sơ Tam Căn / Tứ Tính, Linh Căn, thiên hướng nghề và ngoại hình AS-CHAR ổn định." % [
         state.recruitment_candidates.size(), RecruitmentSystem.C2_QUEUE_CAP,
         state.sect.disciple_recruitment_tokens,
         state.disciples.size(), state.sect.disciple_capacity
@@ -6099,7 +6075,7 @@ func _new_management_row(disciple: DiscipleState) -> HBoxContainer:
     name.add_theme_color_override("font_color", INK)
     row.add_child(name)
 
-    var portrait_texture := _disciple_source_a_portrait_texture(disciple)
+    var portrait_texture := _disciple_visual_portrait_texture(disciple)
     if portrait_texture != null:
         var portrait := TextureRect.new()
         portrait.name = "WorkforcePortrait"
@@ -9449,10 +9425,10 @@ func _b3_hunt_visual_rows(battle: MapBattleV2) -> Dictionary:
                 continue
             var disciple: DiscipleState = state.disciples[disciple_id]
             var sex := str(DiscipleActorVisualCatalog.visual_sex_for_disciple(disciple))
-            visual_key = "disciple_female" if sex == "female" else "disciple_male"
             rows[actor_id] = {
                 "display_name":disciple.display_name,
-                "source_a_visual_key":visual_key
+                "aschar_school":SectASCharCandidateBridgeV1.visual_school_for_disciple(disciple),
+                "aschar_sex":sex
             }
         elif str(actor.get("species_id","")) == "thanh_lang":
             # Existing low-confidence monster-category Source A pilot. Keep the
@@ -9769,6 +9745,60 @@ func _open_selected_disciple_detail() -> void:
     deep_restore_summary = true
     _open_disciple_deep_screen(selected_id, "Tổng Quan")
 
+# This is the existing 12-school/36-branch screen, not a separate game.
+func _open_aschar_school_screen(disciple_id: StringName) -> void:
+    if state == null or not state.disciples.has(disciple_id) or popup_layer == null:
+        return
+    var old_screen := popup_layer.find_child("SectSchoolSkillsScreenV1",true,false)
+    if old_screen != null:
+        old_screen.queue_free()
+    var screen := SectSchoolSkillsScreenV1.new()
+    screen.name = "SectSchoolSkillsScreenV1"
+    screen.position = Vector2(48,82)
+    screen.size = Vector2(1184,548)
+    screen.z_index = 30
+    screen.attach(state,disciple_id)
+    screen.branch_requested.connect(Callable(self,"_aschar_choose_branch"))
+    screen.skill_action_requested.connect(Callable(self,"_aschar_skill_action"))
+    screen.close_requested.connect(Callable(self,"_open_disciple_deep_screen").bind(disciple_id))
+    popup_layer.add_child(screen)
+
+func _aschar_choose_branch(disciple_id: StringName, branch_id: String) -> void:
+    var disciple: DiscipleState = state.disciples.get(disciple_id) if state != null else null
+    if disciple == null:
+        return
+    var result := SectASCharCandidateBridgeV1.assign_branch(state,disciple,branch_id)
+    var screen := popup_layer.find_child("SectSchoolSkillsScreenV1",true,false) as SectSchoolSkillsScreenV1
+    if bool(result.get("ok",false)):
+        # Immediately refresh the mounted map actor; no reroll or PvE restart.
+        var actor := actor_nodes.get(str(disciple_id)) as ModularDiscipleActor
+        if actor != null and is_instance_valid(actor):
+            var scene := SectASCharCandidateBridgeV1.scene_for_disciple(disciple)
+            if scene != null:
+                actor.set_baked_visual(scene)
+                actor.sync_action(disciple.current_action)
+    if screen != null:
+        screen.show_feedback("Đã bái môn: "+str(result.get("name",branch_id))
+            if bool(result.get("ok",false)) else "Không thể chọn nhánh: "+str(result.get("reason","")))
+        screen.refresh()
+
+func _aschar_skill_action(disciple_id: StringName, skill_id: String, action: String) -> void:
+    var disciple: DiscipleState = state.disciples.get(disciple_id) if state != null else null
+    if disciple == null:
+        return
+    var ok := false
+    var reason := "không đủ điều kiện"
+    if action == "learn_basic":
+        ok = CombatSkillSystem.new().learn_skill(state,disciple,StringName(skill_id))
+    elif action in ["learn","equip"] and V63HumanSkillCombatSystem.is_enabled(state):
+        var result := V63HumanSkillCombatSystem.learn_skill(state,disciple,skill_id) if action == "learn" else V63HumanSkillCombatSystem.equip_skill(state,disciple,skill_id)
+        ok = bool(result.get("ok",false))
+        reason = str(result.get("reason","không đủ điều kiện"))
+    var screen := popup_layer.find_child("SectSchoolSkillsScreenV1",true,false) as SectSchoolSkillsScreenV1
+    if screen != null:
+        screen.show_feedback("Đã cập nhật kỹ năng" if ok else "Không thể thực hiện: "+reason)
+        screen.refresh()
+
 func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "Tổng Quan", preserve_feedback: bool = false) -> void:
     if not state.disciples.has(disciple_id):
         return
@@ -9810,6 +9840,17 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "T�
     quick_assign.add_theme_stylebox_override("normal",_style(JADE_DARK,INK,1,8))
     quick_assign.pressed.connect(Callable(self,"_open_disciple_quick_assignment").bind(disciple_id))
     panel.add_child(quick_assign)
+
+    var school_button := Button.new()
+    school_button.name = "DeepSchoolSkillsButton"
+    school_button.text = "Môn phái / Nhánh"
+    school_button.position = Vector2(541, 12)
+    school_button.size = Vector2(196, 44)
+    school_button.add_theme_font_size_override("font_size",14)
+    school_button.add_theme_color_override("font_color",PAPER_LIGHT)
+    school_button.add_theme_stylebox_override("normal",_style(JADE_DARK,INK,1,8))
+    school_button.pressed.connect(Callable(self,"_open_aschar_school_screen").bind(disciple_id))
+    panel.add_child(school_button)
 
     var back := Button.new()
     back.name = "BackToMapContext"
@@ -9938,7 +9979,7 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "T�
             entry.add_theme_color_override("font_color", PAPER_LIGHT)
             entry.add_theme_color_override("font_hover_color", Color(1.0, 0.94, 0.76, 1.0))
             entry.alignment = HORIZONTAL_ALIGNMENT_LEFT
-            var roster_portrait := _disciple_source_a_portrait_texture(roster_disciple)
+            var roster_portrait := _disciple_visual_portrait_texture(roster_disciple)
             if roster_portrait != null:
                 # The entry remains a Button for keyboard/mouse semantics and existing contracts.
                 # Preserve the canonical name on the Button for search/accessibility,
@@ -9947,7 +9988,7 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "T�
                 entry.add_theme_color_override("font_color", Color(0, 0, 0, 0))
                 entry.add_theme_color_override("font_hover_color", Color(0, 0, 0, 0))
                 var portrait_row := HBoxContainer.new()
-                portrait_row.name = "VerifiedSourceARosterCard"
+                portrait_row.name = "ASCharRosterCard"
                 portrait_row.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
                 portrait_row.offset_left = 8
                 portrait_row.offset_top = 5
@@ -9956,7 +9997,7 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "T�
                 portrait_row.add_theme_constant_override("separation", 8)
                 portrait_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
                 var portrait_frame := TextureRect.new()
-                portrait_frame.name = "VerifiedSourceARosterPortrait"
+                portrait_frame.name = "ASCharRosterPortrait"
                 portrait_frame.texture = roster_portrait
                 portrait_frame.custom_minimum_size = Vector2(44, 64)
                 portrait_frame.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
@@ -10011,10 +10052,10 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "T�
     panel.add_child(showcase)
 
     # Reuse verified character visuals for legacy saves without fabricating V2 XP.
-    var portrait_texture := _disciple_source_a_portrait_texture(disciple)
+    var portrait_texture := _disciple_visual_portrait_texture(disciple)
     if portrait_texture != null:
         var portrait := TextureRect.new()
-        portrait.name = "SourceAProfilePortrait"
+        portrait.name = "ASCharProfilePortrait"
         portrait.texture = portrait_texture
         portrait.position = Vector2(24, 12)
         portrait.size = Vector2(252, 206)

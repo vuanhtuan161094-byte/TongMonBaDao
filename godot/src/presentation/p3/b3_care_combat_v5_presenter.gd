@@ -1329,14 +1329,25 @@ func _draw() -> void:
                 art_key = source_a_key
         var art_used := false
         var hp_y := -radius-10.0
-        if jxqy2.active and (side != "disciple" or str(actor.get("visual_weapon_path","")) == "sword"):
+        var visual_row: Dictionary = _actor_view_metadata.get(str(id),{})
+        if side == "disciple" and visual_row.has("aschar_school"):
+            var authored_clip := _actor_clip(str(id),alive)
+            art_used = PveASCharFrameRendererV1.draw_actor(self,
+                str(visual_row.get("aschar_school","")),
+                str(visual_row.get("aschar_sex","male")),
+                str(authored_clip.get("name","idle")),at,
+                _facing.get(str(id),Vector2.RIGHT),
+                float(authored_clip.get("age",0.0)),0.22*spectator_zoom())
+            if art_used:
+                hp_y = -72.0*spectator_zoom()
+        if not art_used and jxqy2.active and (side != "disciple" or str(actor.get("visual_weapon_path","")) == "sword"):
             var clip := _actor_clip(str(id),alive)
             var world_position: Vector2 = visual_position(str(id),actor["position"])
             var facing: Vector2 = _facing.get(str(id),Vector2.RIGHT)
             var pixel_facing := jxqy2.project(world_position+facing)-jxqy2.project(world_position)
             hp_y = jxqy2.draw_actor(self,actor,clip,pixel_facing,at,spectator_zoom())
             art_used = true
-        elif enable_source_vl_art and not jxqy2.active and not art_key.is_empty():
+        elif not art_used and side != "disciple" and enable_source_vl_art and not jxqy2.active and not art_key.is_empty():
             var clip := _actor_clip(str(id),alive)
             var art_scale := (1.85 if tier == "boss" else (1.12 if art_key == "wolf" else 1.0))*spectator_zoom()
             var source_a_selected := str(id) == source_a_selected_actor_id

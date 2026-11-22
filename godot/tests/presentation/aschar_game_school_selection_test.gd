@@ -60,6 +60,18 @@ func _run() -> void:
         return
     var disciple_id := StringName(state.disciples.keys()[0])
     var disciple: DiscipleState = state.disciples[disciple_id]
+    if not SectASCharCandidateBridgeV1.school_for_disciple(disciple).is_empty():
+        _fail("new novice was assigned a school without player selection")
+        return
+    var novice_actor_id := SectASCharCandidateBridgeV1.actor_id_for_disciple(disciple)
+    var novice_portrait := SectASCharCandidateBridgeV1.preview_texture_for_disciple(disciple)
+    if novice_actor_id < 48 or novice_actor_id > 71 or novice_portrait == null:
+        _fail("novice missing deterministic source-backed starter visual")
+        return
+    if novice_actor_id != SectASCharCandidateBridgeV1.actor_id_for_disciple(
+            DiscipleState.from_dict(disciple.to_dict())):
+        _fail("novice visual rerolled through Save serialization")
+        return
     game.call("_open_disciple_deep_screen",disciple_id)
     await process_frame
     var button := game.find_child("DeepSchoolSkillsButton",true,false) as Button
@@ -87,6 +99,9 @@ func _run() -> void:
         return
     if SectASCharCandidateBridgeV1.school_for_branch(branch_id) != candidate_school:
         _fail("school visual crosswalk cannot resolve combat branch")
+        return
+    if SectASCharCandidateBridgeV1.visual_school_for_disciple(disciple) != candidate_school:
+        _fail("confirmed branch did not switch from novice art to school art")
         return
     var combat_errors := V63HumanSkillCombatSystem.validate_state(state)
     if not combat_errors.is_empty():

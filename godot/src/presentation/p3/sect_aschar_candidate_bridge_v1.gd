@@ -2,7 +2,7 @@ class_name SectASCharCandidateBridgeV1
 extends RefCounted
 ## Reuse existing AS48..AS71 candidate SpriteFrames. Real 24 sex+school
 ## identities, no regenerated art, skeleton animation, extra game or source
-## overwrite. An unassigned disciple keeps the regular starter artwork.
+## overwrite. Unassigned disciples use a deterministic starter from these authored assets.
 const SCHOOL_IDS := [
     "sword","blade","dual_blade","spear","bow","fist","palm",
     "poison","talisman","curse","formation","summon"
@@ -80,12 +80,36 @@ static func actor_id(school: String,sex: String) -> int:
     var pair: Array = ASSET_IDS[school]
     return int(pair[1]) if sex == "female" else int(pair[0])
 
+# Before first branch selection, reuse one of the 12 authored AS-CHAR looks
+# from the disciple's immutable birth seed. No random reroll on UI redraw,
+# Save/Reload or PvE; this is a visual-only selection, NOT a school assignment.
+static func starter_school_for_disciple(disciple: DiscipleState) -> String:
+    if disciple == null:
+        return ""
+    var seed := DiscipleActorVisualCatalog.visual_seed_for_disciple(disciple)
+    return str(SCHOOL_IDS[absi(seed) % SCHOOL_IDS.size()])
+
+static func visual_school_for_disciple(disciple: DiscipleState) -> String:
+    var chosen := school_for_disciple(disciple)
+    return chosen if not chosen.is_empty() else starter_school_for_disciple(disciple)
+
+static func actor_id_for_disciple(disciple: DiscipleState) -> int:
+    if disciple == null:
+        return -1
+    return actor_id(visual_school_for_disciple(disciple),
+        str(DiscipleActorVisualCatalog.visual_sex_for_disciple(disciple)))
+
 static func scene_for_disciple(disciple: DiscipleState) -> PackedScene:
-    var school := school_for_disciple(disciple)
-    if school.is_empty():
+    if disciple == null:
         return null
-    var sex := str(DiscipleActorVisualCatalog.visual_sex_for_disciple(disciple))
-    return scene_for(school,sex)
+    return scene_for(visual_school_for_disciple(disciple),
+        str(DiscipleActorVisualCatalog.visual_sex_for_disciple(disciple)))
+
+static func preview_texture_for_disciple(disciple: DiscipleState) -> Texture2D:
+    if disciple == null:
+        return null
+    return preview_texture(visual_school_for_disciple(disciple),
+        str(DiscipleActorVisualCatalog.visual_sex_for_disciple(disciple)))
 
 static func _make_frames(source: SpriteFrames) -> SpriteFrames:
     var frames := source.duplicate(true) as SpriteFrames

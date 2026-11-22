@@ -325,7 +325,7 @@ func show_authority_snapshot(snapshot: MapBattleV2, world_population: Dictionary
 		var disciple: Variant = disciples[raw_id]
 		if not (disciple is DiscipleState):
 			continue
-		var school := SectASCharCandidateBridgeV1.school_for_disciple(disciple)
+		var school := SectASCharCandidateBridgeV1.visual_school_for_disciple(disciple)
 		if school.is_empty():
 			continue
 		var id := str(raw_id)
