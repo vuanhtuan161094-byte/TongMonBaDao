@@ -94,28 +94,33 @@ function phaseChangedPixels(onBuffer, offBuffer, bounds) {
       projectile: [410, 430, 810, 610],
       contact: [795, 415, 990, 615]
     };
-    // Hit the actual on-canvas phase buttons. Godot Web controls can consume
-    // keyboard shortcuts, so pressing 1/2/3 did NOT prove a held phase.
-    // The screenshot must now show the paused state and the selected source.
+    // Click the CENTRE of actual on-canvas Godot controls, not their edge.
+    // The 2026-11-22 compact HUD moved phase buttons from y~495 to y~480
+    // and the VFX toggle from y~330 to y~312. The earlier edge clicks failed
+    // to emit PHASE_HELD, falsely reporting a missing projectile effect.
+    // Keep the console receipt mandatory so future HUD changes fail honestly.
     for (const phase of [
       {name:'charge', buttonX:1058},
       {name:'projectile', buttonX:1132},
       {name:'contact', buttonX:1204}
     ]) {
-      await canvas.click({position:{x:phase.buttonX,y:495}});
-      await page.waitForTimeout(250);
+      const marker = 'VFX_SWORD_R2B_PHASE_HELD=' + phase.name;
+      const priorReceipts = engineLogs.filter(line => line.includes(marker)).length;
+      await canvas.click({position:{x:phase.buttonX,y:480}});
+      await page.waitForTimeout(300);
+      const phaseHeld = engineLogs.filter(line => line.includes(marker)).length > priorReceipts;
       const visible = await canvas.screenshot();
       fs.writeFileSync(path.join(output, 'vfx-'+phase.name+'-on.png'), visible);
-      // Canonical review HUD's VFX toggle is fixed at x~1130, y~330.
-      await canvas.click({position:{x:1133,y:330}});
-      await page.waitForTimeout(140);
+      // Central hitbox of "Hiện VFX" at y~312 in the compact 1280×720 HUD.
+      await canvas.click({position:{x:1133,y:311}});
+      await page.waitForTimeout(160);
       const hidden = await canvas.screenshot();
-      await canvas.click({position:{x:1133,y:330}});
-      await page.waitForTimeout(100);
+      await canvas.click({position:{x:1133,y:311}});
+      await page.waitForTimeout(120);
       const result = phaseChangedPixels(visible, hidden, bounds[phase.name]);
-      const pass = result.different_pixels >= 18;
-      phaseSamples.push({phase:phase.name, ...result, passed:pass});
-      if(!pass) console.error('VFX_PHASE_NOT_PAINTED '+JSON.stringify({phase:phase.name, ...result}));
+      const pass = phaseHeld && result.different_pixels >= 18;
+      phaseSamples.push({phase:phase.name, phase_held_receipt:phaseHeld, ...result, passed:pass});
+      if(!pass) console.error('VFX_PHASE_CONTROL_OR_PAINT_FAIL '+JSON.stringify({phase:phase.name, phaseHeld, ...result}));
     }
     const record = {
       url, actor_pixels: actor, monster_pixels: monster,
