@@ -326,8 +326,49 @@ func _verify_natural_new_game_build_gate() -> bool:
 		actor_plot = candidate
 		actor_plot_point = candidate_point
 		break
-	if not _require(actor_plot != SectResidenceSiteV1.UNSELECTED,
-		"fresh map has no visible legal plot occupied by a real disciple actor for collision QA"):
+	# Fixed New Game districts normally keep disciples clear of legal house
+	# plots. Do not require a natural collision that no longer exists. In the
+	# isolated QA scene, temporarily position ONE real materialized disciple
+	# over a legal visible site, exercise actual UI collision, then restore.
+	# Only the presentation position changes; never SimulationState or Save.
+	var fixture_key := ""
+	var fixture_original_virtual := Vector2.ZERO
+	var fixture_original_actor_position := Vector2.ZERO
+	if actor_plot == SectResidenceSiteV1.UNSELECTED:
+		var live_nodes: Dictionary = game.get("actor_nodes")
+		var positions: Dictionary = game.get("actor_virtual_positions")
+		var live_keys: Array = live_nodes.keys()
+		live_keys.sort()
+		for raw_key in live_keys:
+			var key := str(raw_key)
+			var live_actor := live_nodes[raw_key] as Control
+			if live_actor == null or not state.disciples.has(StringName(key)) or not positions.has(key):
+				continue
+			for site in SectResidenceSiteV1.available_plots(state):
+				var screen := _visible_residence_plot_screen_point(site,camera,game)
+				if screen.x < 0.0:
+					continue
+				fixture_key = key
+				fixture_original_virtual = Vector2(positions[key])
+				fixture_original_actor_position = live_actor.position
+				var new_foot := SectIsometricWorldV1.LEGACY_ANCHOR \
+					+ SectIsometricWorldV1.project(Vector2(site)) \
+					- SectIsometricWorldV1.project(Vector2(SectIsometricWorldV1.CENTER_CELL))
+				var new_top_left := new_foot-DiscipleActorVisualCatalog.ACTOR_FOOT_POINT
+				positions[key] = new_top_left
+				game.set("actor_virtual_positions",positions)
+				live_actor.position = new_top_left
+				actor_plot = site
+				actor_plot_point = screen
+				actor_cells = _actor_ground_cells()
+				print("TRI03_LIVE_ACTOR_COLLISION_FIXTURE id=%s site=%s presentation_only=true" % [key,str(site)])
+				break
+			if not fixture_key.is_empty():
+				break
+	if not _require(actor_plot != SectResidenceSiteV1.UNSELECTED
+		and _plot_overlaps_actor_cell(actor_plot,actor_cells)
+		and str(game.call("_residence_site_actor_conflict_reason",actor_plot)) == "house_plot_actor_occupied",
+		"no real live disciple can exercise the canonical Residence collision guard"):
 		return false
 	_send_map_click(actor_plot_point)
 	await process_frame
@@ -345,6 +386,20 @@ func _verify_natural_new_game_build_gate() -> bool:
 		return false
 	if not await _capture_frame("02a_actor_occupied_plot_rejected.png"):
 		return false
+	# Restore the QA-only presentation fixture BEFORE choosing the actual paid
+	# site and independently saving. A collision test must never contaminate Save.
+	if not fixture_key.is_empty():
+		var restored_positions: Dictionary = game.get("actor_virtual_positions")
+		restored_positions[fixture_key] = fixture_original_virtual
+		game.set("actor_virtual_positions",restored_positions)
+		var restored_nodes: Dictionary = game.get("actor_nodes")
+		var restored_actor := restored_nodes.get(fixture_key) as Control
+		if restored_actor != null:
+			restored_actor.position = fixture_original_actor_position
+		actor_cells = _actor_ground_cells()
+		if not _require(not _plot_overlaps_actor_cell(actor_plot,actor_cells),
+			"collision-only actor position leaked into normal map placement"):
+			return false
 	var target := SectResidenceSiteV1.UNSELECTED
 	var screen_point := Vector2.ZERO
 	for candidate in SectResidenceSiteV1.available_plots(state):
