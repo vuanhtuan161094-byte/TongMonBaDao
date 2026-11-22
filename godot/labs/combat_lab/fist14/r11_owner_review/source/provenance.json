@@ -1,0 +1,49 @@
+{
+  "schema": "tmb.fist14.owner_review_source.v1",
+  "skill_id": "tmb.skill.fist.huyet_quyen.active_04.human",
+  "revision": "R11",
+  "owner_approved_scope": "GIF_VISUAL_ONLY",
+  "approval_notes": "Owner replied: ok ddungs r đấy, chốt (21 November 2026)",
+  "master_gif": "source/FIST14_R11_ORIGINAL_OWNER_GIF.gif",
+  "master_sha256": "49ca2af9db90803a071fe629481be476cd15539b9a033eb3df3cfd6eb29b12dc",
+  "master_frame_count": 16,
+  "master_size": [
+    309,
+    309
+  ],
+  "derived_rgba_atlas": "assets/fist14_r11_rgba_atlas_4x4.png",
+  "atlas_sha256": "253e185ed948184141ce84da77ddac3e55c08a4fe058d1da39c17f6e298e4ebf",
+  "atlas_size": [
+    1236,
+    1236
+  ],
+  "matte_removal": "Near-black-matte RGB to RGBA approximation; source GIF immutable",
+  "frame_durations_ms": [
+    90,
+    90,
+    90,
+    90,
+    90,
+    90,
+    90,
+    90,
+    90,
+    90,
+    90,
+    90,
+    90,
+    90,
+    90,
+    90
+  ],
+  "qa": {
+    "source_preserved": true,
+    "frames_distinct": true,
+    "g3_dark_light_review": "source_composite_only",
+    "godot_native": "NOT_RUN",
+    "chrome": "NOT_RUN",
+    "android": "NOT_RUN",
+    "owner_native": "PENDING",
+    "pve": "HOLD"
+  }
+}
