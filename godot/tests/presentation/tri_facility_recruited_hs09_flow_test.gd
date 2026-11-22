@@ -100,7 +100,7 @@ func _run() -> void:
 	]
 	if not _require(disciple_model.get("stats","") == expected_stats
 		and disciple_model.get("portrait") is Texture2D,
-		"recruit reveal does not expose this real disciple's six canonical stats and Source A portrait"):
+		"recruit reveal does not expose this real disciple's six canonical stats and AS-CHAR portrait"):
 		return
 	if not await _capture_frame("04_recruitment_success_reveal.png"):
 		return
@@ -309,147 +309,97 @@ func _verify_natural_new_game_build_gate() -> bool:
 	if not _require(str(game.get("build_mode_kind")) == "construct",
 		"Residence catalog did not enter the canonical map placement mode"):
 		return false
-	var iso := game.get("iso_world") as SectIsometricWorldV1
-	var camera := iso.get("camera") as Camera2D if iso != null else null
-	if not _require(iso != null and camera != null,
-		"P3.2 map camera is unavailable during real construction"):
+	# The actual P3.2 scene is ART-05 (world layout V2): the Build Catalogue
+	# auto-selects a canonical MASTERPLAN lot. Player terrain clicks are
+	# deliberately ignored. A free-placement assertion is a stale QA contract.
+	var target := Vector2i(game.get("build_mode_site"))
+	var confirm := _find_button(game,"ConfirmMapConstruction")
+	if not _require(int(state.sect.world_layout_version) == 2
+		and SectResidenceSiteV1.MASTERPLAN_ANNEX_SITES.has(target)
+		and bool(SectResidenceSiteV1.check(state,target).get("ok",false))
+		and str(game.call("_residence_site_actor_conflict_reason",target)).is_empty()
+		and confirm != null and not confirm.disabled,
+		"ART-05 Build Catalogue did not auto-select one safe canonical MASTERPLAN annex lot: %s" % str(target)):
 		return false
-	var actor_cells := _actor_ground_cells()
-	var actor_plot := SectResidenceSiteV1.UNSELECTED
-	var actor_plot_point := Vector2.ZERO
+	# The same real runtime forbids free-placement in the fixed districts.
+	# Verify the override cannot mutate the chosen planned lot.
+	var unplanned_attempt := SectResidenceSiteV1.UNSELECTED
 	for candidate in SectResidenceSiteV1.available_plots(state):
-		if not _plot_overlaps_actor_cell(candidate,actor_cells):
-			continue
-		var candidate_point := _visible_residence_plot_screen_point(candidate,camera,game)
-		if candidate_point.x < 0.0:
-			continue
-		actor_plot = candidate
-		actor_plot_point = candidate_point
-		break
-	# Fixed New Game districts normally keep disciples clear of legal house
-	# plots. Do not require a natural collision that no longer exists. In the
-	# isolated QA scene, temporarily position ONE real materialized disciple
-	# over a legal visible site, exercise actual UI collision, then restore.
-	# Only the presentation position changes; never SimulationState or Save.
+		if candidate != target:
+			unplanned_attempt = candidate
+			break
+	if not _require(unplanned_attempt != SectResidenceSiteV1.UNSELECTED,
+		"no alternate legal Residence site available for fixed-plan lock regression"):
+		return false
+	game.call("_select_build_mode_site",unplanned_attempt)
+	if not _require(Vector2i(game.get("build_mode_site")) == target and not confirm.disabled,
+		"ART-05 masterplan let arbitrary terrain override the selected building lot"):
+		return false
+	# Put one actual loaded disciple over the SELECTED planned lot in QA
+	# presentation ONLY. The real collision guard must disable paid confirmation
+	# and explain why. No SimulationState/building/warehouse mutation is allowed.
+	var live_nodes: Dictionary = game.get("actor_nodes")
+	var positions: Dictionary = game.get("actor_virtual_positions")
+	var live_keys: Array = live_nodes.keys()
+	live_keys.sort()
 	var fixture_key := ""
 	var fixture_original_virtual := Vector2.ZERO
 	var fixture_original_actor_position := Vector2.ZERO
-	if actor_plot == SectResidenceSiteV1.UNSELECTED:
-		var live_nodes: Dictionary = game.get("actor_nodes")
-		var positions: Dictionary = game.get("actor_virtual_positions")
-		var live_keys: Array = live_nodes.keys()
-		live_keys.sort()
-		for raw_key in live_keys:
-			var key := str(raw_key)
-			var live_actor := live_nodes[raw_key] as Control
-			if live_actor == null or not state.disciples.has(StringName(key)) or not positions.has(key):
-				continue
-			for site in SectResidenceSiteV1.available_plots(state):
-				var screen := _visible_residence_plot_screen_point(site,camera,game)
-				if screen.x < 0.0:
-					continue
-				fixture_key = key
-				fixture_original_virtual = Vector2(positions[key])
-				fixture_original_actor_position = live_actor.position
-				var new_foot := SectIsometricWorldV1.LEGACY_ANCHOR \
-					+ SectIsometricWorldV1.project(Vector2(site)) \
-					- SectIsometricWorldV1.project(Vector2(SectIsometricWorldV1.CENTER_CELL))
-				var new_top_left := new_foot-DiscipleActorVisualCatalog.ACTOR_FOOT_POINT
-				positions[key] = new_top_left
-				game.set("actor_virtual_positions",positions)
-				live_actor.position = new_top_left
-				actor_plot = site
-				actor_plot_point = screen
-				actor_cells = _actor_ground_cells()
-				print("TRI03_LIVE_ACTOR_COLLISION_FIXTURE id=%s site=%s presentation_only=true" % [key,str(site)])
-				break
-			if not fixture_key.is_empty():
-				break
-	if not _require(actor_plot != SectResidenceSiteV1.UNSELECTED
-		and _plot_overlaps_actor_cell(actor_plot,actor_cells)
-		and str(game.call("_residence_site_actor_conflict_reason",actor_plot)) == "house_plot_actor_occupied",
-		"no real live disciple can exercise the canonical Residence collision guard"):
+	for raw_key in live_keys:
+		var key := str(raw_key)
+		var live_actor := live_nodes[raw_key] as Control
+		if live_actor == null or not is_instance_valid(live_actor) \
+			or not state.disciples.has(StringName(key)) or not positions.has(key):
+			continue
+		fixture_key = key
+		fixture_original_virtual = Vector2(positions[key])
+		fixture_original_actor_position = live_actor.position
+		var target_foot := SectIsometricWorldV1.LEGACY_ANCHOR \
+			+ SectIsometricWorldV1.project(Vector2(target)) \
+			- SectIsometricWorldV1.project(Vector2(SectIsometricWorldV1.CENTER_CELL))
+		var target_top_left := target_foot-DiscipleActorVisualCatalog.ACTOR_FOOT_POINT
+		positions[key] = target_top_left
+		game.set("actor_virtual_positions",positions)
+		live_actor.position = target_top_left
+		break
+	if not _require(not fixture_key.is_empty()
+		and _plot_overlaps_actor_cell(target,_actor_ground_cells())
+		and str(game.call("_residence_site_actor_conflict_reason",target)) == "house_plot_actor_occupied",
+		"real actor could not exercise occupied MASTERPLAN Residence collision"):
 		return false
-	# Placement preview uses the live camera after the QA-only actor has
-	# moved. The former screen point was computed before that relocation.
-	actor_plot_point = _visible_residence_plot_screen_point(actor_plot,camera,game)
-	if not _require(actor_plot_point.x >= 0.0,
-		"occupied Residence plot is no longer visible after positioning live QA actor"):
-		return false
-	var projected_cell := Vector2i(game.call("_cell_at_map_screen",actor_plot_point))
-	print("TRI03_MAP_CLICK_BEFORE requested=%s mapped=%s screen=%s camera=%s zoom=%.3f" % [
-		str(actor_plot),str(projected_cell),str(actor_plot_point),str(camera.position),camera.zoom.x])
-	if not _require(projected_cell == actor_plot,
-		"live camera and Residence map click transform disagree BEFORE pointer event"):
-		return false
-	_send_map_click(actor_plot_point)
-	# The real _input() route updates the disabled build button synchronously.
-	# Inspect the same frame; an idle-map refresh on the next frame may move the
-	# temporary QA actor back to its canonical destination.
-	var blocked_confirm := _find_button(game,"ConfirmMapConstruction")
+	game.call("_refresh_build_mode_panel")
 	var blocked_label := game.get("build_mode_site_label") as Label
-	var selected_site := Vector2i(game.get("build_mode_site"))
-	var button_disabled := blocked_confirm != null and blocked_confirm.disabled
-	var hint := blocked_label.text if blocked_label != null else "<missing>"
-	var guard := str(game.call("_residence_site_actor_conflict_reason",actor_plot))
+	var blocked_text := blocked_label.text if blocked_label != null else "<missing>"
 	var unchanged := state.buildings.size() == buildings_before \
 		and state.building_event_count == event_count_before \
 		and warehouse.available_quantity(state,StringName(BuildingSystem.MATERIAL_WOOD)) == wood_before \
 		and warehouse.available_quantity(state,StringName(BuildingSystem.MATERIAL_ORE)) == ore_before \
 		and state.sect.spirit_stones == stones_before
-	print("TRI03_COLLISION_UI_SNAPSHOT selected=%s expected=%s disabled=%s guard=%s unchanged=%s label=%s" % [
-		str(selected_site),str(actor_plot),str(button_disabled),guard,str(unchanged),hint])
-	if selected_site != actor_plot:
-		# Diagnostic only. Even if direct semantic picking succeeds the player
-		# pointer route MUST still fail, so CI cannot be falsely green.
-		var direct_pick := bool(game.call("_try_iso_map_pick",actor_plot_point))
-		print("TRI03_POINTER_DIRECT_DIAGNOSTIC invoked=%s now_selected=%s" % [
-			str(direct_pick),str(game.get("build_mode_site"))])
-	if not _require(selected_site == actor_plot and button_disabled
-		and hint.contains("đang đứng") and guard == "house_plot_actor_occupied"
-		and unchanged,
-		"live actor collision UI/input mismatch: selected=%s expected=%s disabled=%s guard=%s unchanged=%s label=%s" % [
-			str(selected_site),str(actor_plot),str(button_disabled),guard,str(unchanged),hint]):
+	if not _require(confirm.disabled and blocked_text.contains("đang đứng") and unchanged
+		and Vector2i(game.get("build_mode_site")) == target,
+		"occupied fixed Residence plot did not disable paid build and explain actor collision: %s" % blocked_text):
 		return false
+	print("TRI03_MASTERPLAN_ACTOR_COLLISION_PASS site=%s actor=%s no_charge=true disabled=true" % [
+		str(target),fixture_key])
 	if not await _capture_frame("02a_actor_occupied_plot_rejected.png"):
 		return false
-	# Restore the QA-only presentation fixture BEFORE choosing the actual paid
-	# site and independently saving. A collision test must never contaminate Save.
-	if not fixture_key.is_empty():
-		var restored_positions: Dictionary = game.get("actor_virtual_positions")
-		restored_positions[fixture_key] = fixture_original_virtual
-		game.set("actor_virtual_positions",restored_positions)
-		var restored_nodes: Dictionary = game.get("actor_nodes")
-		var restored_actor := restored_nodes.get(fixture_key) as Control
-		if restored_actor != null:
-			restored_actor.position = fixture_original_actor_position
-		actor_cells = _actor_ground_cells()
-		if not _require(not _plot_overlaps_actor_cell(actor_plot,actor_cells),
-			"collision-only actor position leaked into normal map placement"):
-			return false
-	var target := SectResidenceSiteV1.UNSELECTED
-	var screen_point := Vector2.ZERO
-	for candidate in SectResidenceSiteV1.available_plots(state):
-		if _plot_overlaps_actor_cell(candidate,actor_cells):
-			continue
-		var candidate_screen := _visible_residence_plot_screen_point(candidate,camera,game)
-		if candidate_screen.x < 0.0:
-			continue
-		target = candidate
-		screen_point = candidate_screen
-		break
-	if not _require(target != SectResidenceSiteV1.UNSELECTED,
-		"could not find a legal, visible New Game plot for the actual P3.2 input path"):
+	# Restore ALL transient actor placement before any real paid transaction or
+	# Save/Reload. The same planned site must become valid and enabled again.
+	var restored_positions: Dictionary = game.get("actor_virtual_positions")
+	restored_positions[fixture_key] = fixture_original_virtual
+	game.set("actor_virtual_positions",restored_positions)
+	var restored_actor := (game.get("actor_nodes") as Dictionary).get(fixture_key) as Control
+	if restored_actor != null:
+		restored_actor.position = fixture_original_actor_position
+	game.call("_refresh_build_mode_panel")
+	if not _require(not confirm.disabled
+		and Vector2i(game.get("build_mode_site")) == target
+		and str(game.call("_residence_site_actor_conflict_reason",target)).is_empty()
+		and not _plot_overlaps_actor_cell(target,_actor_ground_cells()),
+		"QA actor collision fixture contaminated the real planned lot"):
 		return false
-	_send_map_click(screen_point)
-	await process_frame
-	if not _require(Vector2i(game.get("build_mode_site")) == target,
-		"map pointer event did not choose the visible legal plot"):
-		return false
-	var confirm := _find_button(game,"ConfirmMapConstruction")
-	if not _require(confirm != null and not confirm.disabled,
-		"a real valid New Game plot did not enable the paid construction button"):
-		return false
+	print("TRI03_G1_MASTERPLAN_VIS11_PASS planned=%s ignored_manual=%s actor_collision=true" % [
+		str(target),str(unplanned_attempt)])
 	if not await _capture_frame("02_new_game_residence_valid_placement.png"):
 		return false
 	g1_build_request_id = "map-house:%d:%d:%d:new" % [state.tick,target.x,target.y]

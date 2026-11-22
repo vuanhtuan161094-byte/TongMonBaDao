@@ -655,6 +655,15 @@ func _refresh_build_mode_panel(last_check: Dictionary = {}) -> void:
     if build_mode_site_label != null:
         if build_mode_site == SectResidenceSiteV1.UNSELECTED:
             build_mode_site_label.text = "Chọn Mở rộng Đệ Tử Xá. Tông môn tự xác định lô hợp lệ; không cần bấm đất."
+        elif build_mode_confirm != null and build_mode_confirm.disabled:
+            # Keep the canonical rejection reason instead of telling players to
+            # confirm a blocked transaction. The fixed plan has no free pick.
+            var conflict := _residence_site_actor_conflict_reason(build_mode_site)
+            if conflict == "house_plot_actor_occupied":
+                build_mode_site_label.text = "Lô quy hoạch (%d, %d): Đệ tử đang đứng trên lô/lối ra. Chờ di chuyển rồi thử lại." % [
+                    build_mode_site.x,build_mode_site.y]
+            # Other failed cost/site/Hall gates retain the base human-readable
+            # reason authored by P3.2.
         else:
             build_mode_site_label.text = "Lô đã quy hoạch (%d, %d) · Xác nhận để khởi công." % [
                 build_mode_site.x,build_mode_site.y]
