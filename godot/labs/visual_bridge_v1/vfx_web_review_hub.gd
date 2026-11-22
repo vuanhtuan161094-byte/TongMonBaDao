@@ -60,6 +60,8 @@ func _ready() -> void:
     vbox.add_child(header)
     _picker = OptionButton.new()
     _picker.custom_minimum_size = Vector2(216, 36)
+    _picker.fit_to_longest_item = false
+    _picker.clip_text = true
     for i in range(_entries.size()):
         var e: Dictionary = _entries[i]
         _picker.add_item(str(e.get("school_vi", "")) + " · " + str(e.get("name_vi", "")), i)
@@ -67,6 +69,9 @@ func _ready() -> void:
     vbox.add_child(_picker)
     _identity = Label.new()
     _identity.add_theme_font_size_override("font_size", 13)
+    _identity.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+    _identity.clip_text = true
+    _identity.custom_minimum_size = Vector2(205, 0)
     vbox.add_child(_identity)
     _button(vbox, "Thử lại chiêu", _replay)
     _pause_button = _button(vbox, "Tạm dừng", _toggle_pause)
@@ -96,6 +101,9 @@ func _ready() -> void:
         phases.add_child(btn)
     _provenance = Label.new()
     _provenance.add_theme_font_size_override("font_size", 12)
+    _provenance.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+    _provenance.clip_text = true
+    _provenance.custom_minimum_size = Vector2(205, 0)
     _provenance.add_theme_color_override("font_color", Color("f2c978"))
     vbox.add_child(_provenance)
     _change_skill(0)
@@ -141,8 +149,8 @@ func _change_skill(index: int) -> void:
             direction_text += ", "
         direction_text += str(directions[i])
     _provenance.text = "TỰ LẶP • 3 pha bấm để xem\nHướng thật: " + direction_text + "\n" + \
-        str(info.get("vfx_status", "")) + " | G3: " + str(info.get("g3_art", "")) + \
-        "\nOWNER: " + str(info.get("owner_art", "")) + "\nKhông combat · PVE HOLD"
+        str(info.get("vfx_status", "")).replace("_", " ") + " | G3: " + str(info.get("g3_art", "")).replace("_", " ") + \
+        "\nOWNER: " + str(info.get("owner_art", "")).replace("_", " ") + "\nKhông combat · PVE HOLD"
     _paused = false
     _moving = true
     _fx = true

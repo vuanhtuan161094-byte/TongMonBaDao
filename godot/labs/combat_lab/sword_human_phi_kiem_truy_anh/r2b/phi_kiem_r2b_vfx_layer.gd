@@ -104,7 +104,8 @@ func _draw() -> void:
         var to_target: Vector2 = _monster_center() - source
         var facing := to_target.angle()
         var cell := mini(1, int(t / RELEASE * 2.0))
-        _paint_cel(cell, source, facing, 0.43 + (t / RELEASE) * 0.10, 0.9)
+        _paint_cel(cell, source + to_target.normalized() * 42.0, facing,
+            0.32 + (t / RELEASE) * 0.07, 0.86)
         return
     if bool(parent.get("_cast")) and t < CONTACT:
         var start: Vector2 = parent.get("_release_point")
@@ -115,12 +116,15 @@ func _draw() -> void:
         var eased := u * u * (3.0 - 2.0 * u)
         var center: Vector2 = start.lerp(dest, eased)
         center.y -= 11.0 * sin(PI * u)
+        # Keep AS48 head/body clear at release: early flight hero art unfolds
+        # ahead of the original weapon-tip anchor; no gameplay travel edit.
+        center += (dest - start).normalized() * (75.0 * pow(1.0 - u, 3.0))
         var facing: float = (dest - start).angle()
         var pose := 2 + mini(2, int(u * 3.0))
-        _paint_cel(pose, center, facing, 0.64, 0.96)
+        _paint_cel(pose, center, facing, 0.44 + 0.20 * u, 0.94)
         _paint_real_jian(center, facing, 1.0)
         return
     if bool(parent.get("_hit")) and t < FADE_END:
         var age := clampf((t - CONTACT) / (FADE_END - CONTACT), 0.0, 1.0)
         var pose := 5 + mini(2, int(age * 3.0))
-        _paint_cel(pose, _monster_center(), 0.0, 0.52 + 0.10 * age, 1.0 - 0.72 * age)
+        _paint_cel(pose, _monster_center(), 0.0, 0.40 + 0.08 * age, 0.82 - 0.64 * age)
