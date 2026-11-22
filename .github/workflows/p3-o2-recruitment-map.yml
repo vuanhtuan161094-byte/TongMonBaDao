@@ -126,6 +126,9 @@ jobs:
           godot --headless --path godot -s res://tests/presentation/tri_facility_b1_live_reload_verify.gd
 
       - name: TRI-03 new-game recruitment -> HS-09 -> assignment -> isolated cross-process Save/Reload
+        # Independent end-to-end QA must not be suppressed by an earlier O2
+        # regression. Keep the overall job red if either contract fails.
+        if: always()
         shell: bash
         env:
           TMB_TRI03_FLOW_SAVE_PATH: user://tri03_recruited_hs09_flow_${{ github.run_id }}_${{ github.run_attempt }}.json

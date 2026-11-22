@@ -10,6 +10,9 @@ on:
       - 'godot/src/presentation/p3/sect_aschar_candidate_sprite_v1.gd'
       - 'godot/src/presentation/p3/sect_school_skills_screen_v1.gd'
       - 'godot/tests/presentation/aschar_game_school_selection_test.gd'
+      # The paid Residence build-catalogue is part of the real OneGame GUI.
+      - 'godot/tests/presentation/tri_facility_recruited_hs09_flow_test.gd'
+      - 'godot/tests/presentation/tri_facility_recruited_hs09_reload_verify.gd'
       - 'godot/src/presentation/p3/sect_isometric_world_v1.gd'
       - 'godot/src/presentation/p3_2_landscape_sect.gd'
       - 'godot/src/presentation/p3/sect_runtime_perf_hud.gd'

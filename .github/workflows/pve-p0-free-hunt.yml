@@ -14,6 +14,10 @@ on:
       - 'godot/tests/presentation/aschar_pve_renderer_test.gd'
       - 'godot/tests/presentation/aschar_pve_cold_save_reload_test.gd'
       - 'godot/tests/presentation/aschar_game_school_selection_test.gd'
+      # Recruiting into the same canonical One Game state affects PvE
+      # population, map presentation and cold Save/Reload identity.
+      - 'godot/tests/presentation/tri_facility_recruited_hs09_flow_test.gd'
+      - 'godot/tests/presentation/tri_facility_recruited_hs09_reload_verify.gd'
       - 'godot/src/presentation/p3_2_landscape_sect.gd'
       - 'godot/tests/presentation/pve_p0_ui_player_entry_test.gd'
       - 'godot/tests/presentation/pve_aux02_world_input_contract_test.gd'
