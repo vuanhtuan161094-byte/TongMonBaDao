@@ -51,6 +51,16 @@ A **local-only, NOT REPOSITORY-COMMITTED** 8-pose extraction was prepared as 204
 
 Do **NOT** treat atlas-extracted frame-count/alpha/hashes as art acceptance. Do not attach R2 to `/vfx/`, alias Tiên/Thần to R2, build native Godot or run G4–G7 until the **actual illustrated RGBA source has been repaired, committed and visually self-passed**.
 
+
+### Recoverable exact bytes (not GitHub asset upload)
+
+To avoid losing the original first-party RGBA when this chat closes, the exact 1774×887 image, extracted eight 512² pose PNGs, 2048×1024 atlas, dark/light diagnostic preview, local Python extraction code, and SHA manifest have been uploaded by ChatGPT to **ChatGPT Library**:
+
+- Library path: `/TMB-VFX/SWORD/TMB_SWORD_PHI_KIEM_HUMAN_R2_SOURCE_CANDIDATE_FULL.zip`
+- Library ID: `libfile_cbcb5e52a74c8191b68dc45ad2504e71`
+- Exact archive SHA-256: `0b0ece797ff2219882a077ec9ab81cd03688e6ce03d810db8559939028e358b8`.
+- **This is a recoverable Library source, not binary content committed into GitHub**. The Art-G3 hard STOP remains in effect. Only move an edited, visually improved final art source into the repository after fresh HEAD and one-writer check.
+
 ## 5. Tier fallback semantic check (proposal only)
 
 This Human family has four descendant IDs in the same catalogue: `immortal.a`, `immortal.b`, `divine.a`, `divine.b`. All are `damage / single_target / target_limit=1 / element=metal`, but differ in cast/cooldown/projectile speed/range/damage ratio. A future **read-only visual-only alias** may be semantically possible if the new Human art is approved as a valid source and tier-specific timing follows actual receipts. **No alias is created now**; `VISUAL_SOURCE_PENDING` for every descendant. Neither artwork nor PvE is approved.
