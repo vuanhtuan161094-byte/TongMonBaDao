@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://labs/combat_lab/fist14/r11_owner_review/fist14_r11_owner_review.gd" id="1"]
+
+[node name="Fist14R11OwnerReviewLab" type="Node2D"]
+script = ExtResource("1")
