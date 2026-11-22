@@ -76,6 +76,13 @@ jobs:
       - name: Bake source RGBA for FIST14 R6 packet only
         if: ${{ env.PACKET_INPUT == 'docs/operations/vfx_packets/FIST14_R6_V4_PREFLIGHT.json' }}
         run: python3 tools/vfx/generate_fist14_r6_light.py
+      - name: Restore approved FIST14 R11 GIF and bake source atlases
+        if: ${{ env.PACKET_INPUT == 'docs/operations/vfx_packets/FIST14_R11_V4_PREFLIGHT.json' }}
+        run: |
+          set -euo pipefail
+          python3 tools/vfx/build_fist14_r11_alpha_source.py
+          python3 tools/qa/test_fist14_r11_owner_source.py
+          python3 tools/qa/test_fist14_r11_native_packet_source.py
       - name: One shared import, packet, focused contract, optional G3.5 native proof
         run: |
           set -euo pipefail
