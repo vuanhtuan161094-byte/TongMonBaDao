@@ -150,7 +150,7 @@ jobs:
           "$GODOT" --headless --path "$STAGE" --check-only \
             --script res://labs/combat_lab/sword_human_phi_kiem_truy_anh/r2b/phi_kiem_r2b_lab.gd
           "$GODOT" --headless --path "$STAGE" --check-only \
-            --script res://godot/labs/combat_lab/sword_human_phi_kiem_truy_anh/r2b/phi_kiem_r2b_vfx_layer.gd
+            --script res://labs/combat_lab/sword_human_phi_kiem_truy_anh/r2b/phi_kiem_r2b_vfx_layer.gd
           # This short isolated logic check does not render a new MP4.
           "$GODOT" --headless --path "$STAGE" --fixed-fps 60 \
             --quit-after 216 res://labs/visual_bridge_v1/vfx_web_review_hub.tscn \
