@@ -7,12 +7,8 @@ func _init() -> void:
     call_deferred("_run")
 
 func _run() -> void:
-    if not (
-        FemaleStageAAssetLoader.assets_available(&"down")
-        and FemaleStageAAssetLoader.assets_available(&"right")
-        and FemaleStageAAssetLoader.assets_available(&"up")
-    ):
-        _fail("Female Stage A asset pack must be installed before live-map integration test.")
+    if SectASCharCandidateBridgeV1.preview_texture("sword","female") == null:
+        _fail("AS-CHAR female source must be available before live-map integration test.")
         return
 
     var packed_scene := load("res://scenes/p3/p3_2_landscape_sect.tscn") as PackedScene
@@ -138,8 +134,14 @@ func _run() -> void:
         _fail("Female disciple was not upgraded to ModularDiscipleActor on the live map.")
         return
 
-    if not modular.production_body_active():
-        _fail("Live modular actor did not attach the real Stage A production body.")
+    if not modular.baked_visual_active() or modular.baked_sprite == null:
+        _fail("Live modular actor did not attach the real AS-CHAR baked sprite.")
+        return
+    if modular.production_body_active():
+        _fail("Legacy modular Stage A body took precedence over AS-CHAR.")
+        return
+    if modular.baked_sprite.sprite_frames == null or not modular.baked_sprite.sprite_frames.has_animation(&"stand"):
+        _fail("Live AS-CHAR actor has no authored idle frame.")
         return
     if modular.animation_player == null:
         _fail("Live modular actor has no shared AnimationPlayer.")
@@ -180,7 +182,7 @@ func _run() -> void:
         _fail("Live modular actor status is not showing its canonical action or active destination: %s (canonical %s)." % [modular.status_label.text,canonical_status])
         return
 
-    print("P3.2 LIVE MODULAR FEMALE MAP INTEGRATION TEST PASS")
+    print("P3.2 LIVE ASCHAR FEMALE MAP INTEGRATION TEST PASS")
     ui.queue_free()
     await process_frame
     quit(0)

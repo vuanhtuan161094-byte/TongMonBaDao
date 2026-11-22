@@ -9,7 +9,6 @@ const MAP_INSET := Rect2(Vector2(10.0,26.0),Vector2(1.0,1.0))
 const MINIMAP_MARGIN := 12.0
 
 var source: Jxqy2SourceSliceV1
-var source_a_atlas := CombatV5SourceAAtlas.new()
 var topology: Dictionary = {}
 var source_root := ""
 var source_error := ""
@@ -72,7 +71,15 @@ func show_authority_snapshot(snapshot: MapBattleV2, world_population: Dictionary
     for raw_id in disciples:
         var disciple: Variant = disciples[raw_id]
         if disciple is DiscipleState:
-            _disciple_names[str(raw_id)] = str(disciple.display_name)
+            var canonical: DiscipleState = disciple
+            _disciple_names[str(raw_id)] = canonical.display_name
+            # JX alternate world follows the same view-only identity as CARE.
+            # Do not trust historical Source A keys in saved view rows.
+            var visual_row: Dictionary = _actor_view_rows.get(str(raw_id),{})
+            visual_row["aschar_school"] = SectASCharCandidateBridgeV1.visual_school_for_disciple(canonical)
+            visual_row["aschar_sex"] = str(DiscipleActorVisualCatalog.visual_sex_for_disciple(canonical))
+            visual_row.erase("source_a_visual_key")
+            _actor_view_rows[str(raw_id)] = visual_row
     if battle == null:
         _target_positions.clear()
         _render_positions.clear()
@@ -379,11 +386,12 @@ func _draw_actor_layer(minimap: bool) -> void:
                 direction = Vector2.RIGHT if side == "disciple" else Vector2.LEFT
         var clip := {"name":action,"age":maxf(0.0,_clock-float(visual.get("started",_clock)))}
         var visual_row: Dictionary = _actor_view_rows.get(id,{})
-        var source_a_key := str(visual_row.get("source_a_visual_key",""))
-        var source_a_drawn := side == "disciple" and not source_a_key.is_empty() and source_a_atlas.has_actor(source_a_key)
-        if source_a_drawn:
-            source_a_drawn = source_a_atlas.draw_actor(self,source_a_key,action,foot,direction,float(clip["age"]),camera_zoom*1.10)
-        if not source_a_drawn:
+        var aschar_drawn := false
+        if side == "disciple" and visual_row.has("aschar_school"):
+            aschar_drawn = PveASCharFrameRendererV1.draw_actor(self,
+                str(visual_row.get("aschar_school","")),str(visual_row.get("aschar_sex","male")),
+                action,foot,direction,float(clip["age"]),camera_zoom*0.25)
+        if not aschar_drawn:
             source.draw_actor(self,actor,clip,direction,foot,camera_zoom)
         if side == "disciple" and selected_actor_ids.has(id):
             draw_arc(foot+Vector2(0,3),14.0*camera_zoom,0.0,TAU,24,Color("ffe08a"),1.6,true)

@@ -23,7 +23,6 @@ var _tabs: HBoxContainer
 var _candidate_ids: Array[StringName] = []
 var _selected_index := 0
 var _candidate_selection_office := ""
-var _source_a_portraits: Dictionary = {}
 # One compact selector pair, not one node per disciple (safe at 480 roster).
 var _room_disciple_ids: Array[StringName] = []
 var _room_house_ids: Array[StringName] = []
@@ -51,35 +50,21 @@ func _style(bg: Color, edge: Color = Color.TRANSPARENT) -> StyleBoxFlat:
     style.set_corner_radius_all(10)
     return style
 
-func _source_a_portrait(disciple: DiscipleState) -> Control:
+func _aschar_portrait(disciple: DiscipleState) -> Control:
     var frame := PanelContainer.new()
     frame.custom_minimum_size = Vector2(90, 92)
     frame.add_theme_stylebox_override("panel", _style(SURFACE, GOLD))
-    var texture: Texture2D = null
-    if disciple != null:
-        var path := DiscipleSourceAVisualPool.scene_path_for_disciple(disciple)
-        if not path.is_empty():
-            if _source_a_portraits.has(path):
-                texture = _source_a_portraits[path] as Texture2D
-            else:
-                var packed := DiscipleSourceAVisualPool.scene_for_disciple(disciple)
-                if packed != null:
-                    var actor := packed.instantiate() as AnimatedSprite2D
-                    if actor != null:
-                        var frames := actor.sprite_frames
-                        if frames != null and frames.has_animation(&"stand") and frames.get_frame_count(&"stand") > 0:
-                            texture = frames.get_frame_texture(&"stand", 0)
-                        actor.free()
-                _source_a_portraits[path] = texture
+    # Same seeded novice/selected-branch art as One Game and PvE.
+    var texture: Texture2D = SectASCharCandidateBridgeV1.preview_texture_for_disciple(disciple)
     if texture != null:
         var portrait := TextureRect.new()
-        portrait.name = "HallSourceAPortrait"
+        portrait.name = "HallASCharPortrait"
         portrait.texture = texture
         portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
         portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
         frame.add_child(portrait)
     else:
-        var placeholder := _label("PNG\nchưa có", 12, MUTED)
+        var placeholder := _label("AS-CHAR\nchưa có ảnh", 12, MUTED)
         placeholder.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
         placeholder.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
         frame.add_child(placeholder)
@@ -265,7 +250,7 @@ func _offices() -> void:
     identity.add_theme_constant_override("separation", 12)
     _content.add_child(identity)
     if not id.is_empty() and game_state.disciples.has(StringName(id)):
-        identity.add_child(_source_a_portrait(game_state.disciples[StringName(id)]))
+        identity.add_child(_aschar_portrait(game_state.disciples[StringName(id)]))
     var incumbent_label := _label("Đương nhiệm: " + name_text, 17, GOLD)
     incumbent_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     identity.add_child(incumbent_label)

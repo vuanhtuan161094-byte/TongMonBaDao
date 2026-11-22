@@ -72,6 +72,27 @@ func _run() -> void:
             DiscipleState.from_dict(disciple.to_dict())):
         _fail("novice visual rerolled through Save serialization")
         return
+    # The Hall must display the same authoritative visual as map/PvE.
+    var hall := DaiDienScreenV1.new()
+    var hall_preview := hall._aschar_portrait(disciple)
+    var hall_image := hall_preview.find_child("HallASCharPortrait",true,false) as TextureRect
+    if hall_image == null or hall_image.texture != novice_portrait:
+        _fail("Hall portrait differs from the novice AS-CHAR Save identity")
+        return
+    hall_preview.free()
+    hall.free()
+    # Dẫn Tiên uses the same bridge for the candidate before acceptance.
+    if not state.recruitment_candidates.is_empty():
+        var first_candidate: CandidateState = state.recruitment_candidates.values()[0]
+        var dan := DanTienScreenV2.new()
+        var candidate_preview := dan._aschar_preview(first_candidate)
+        var candidate_image := candidate_preview.find_child("CandidateASCharPortrait",true,false) as TextureRect
+        if SectASCharCandidateBridgeV1.preview_texture_for_disciple(first_candidate.to_disciple()) != null \
+                and (candidate_image == null or candidate_image.texture == null):
+            _fail("recruitment preview does not display the candidate AS-CHAR")
+            return
+        candidate_preview.free()
+        dan.free()
     game.call("_open_disciple_deep_screen",disciple_id)
     await process_frame
     var button := game.find_child("DeepSchoolSkillsButton",true,false) as Button

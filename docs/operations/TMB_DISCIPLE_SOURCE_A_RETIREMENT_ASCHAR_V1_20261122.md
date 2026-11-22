@@ -11,3 +11,10 @@
 - **Visual approval:** AS-CHAR art remains candidate/owner review as recorded; technical/contract tests do not imply physical Windows/Android approval. No rig, no Codex Cloud, no automatic PR merge.
 
 Focused regression: `godot/tests/presentation/aschar_game_school_selection_test.gd`, `aschar_pve_renderer_test.gd`, `aschar_pve_cold_save_reload_test.gd`, `b3_care_combat_v5_presenter_test.gd`, P3.2 live modular map and live save tests.
+
+## CI repair follow-up — 22/11/2026
+
+- Removed the last runtime calls to deleted `DiscipleSourceAVisualPool` in **DaiDienScreenV1** and **DanTienScreenV2**, and use `SectASCharCandidateBridgeV1.preview_texture_for_disciple` for official Hall and recruitment portraits.
+- The JX alternate PvE viewer now derives every disciple's `aschar_school` and `aschar_sex` from canonical disciple state; historical `source_a_visual_key` cannot restore a retired disciple actor. Monster/Boss Source A remains unaffected.
+- Updated P3.2 live-map regression to assert the AS-CHAR baked sprite, instead of the retired Stage A visual requirement; expanded real-game AS-CHAR screen smoke assertions.
+- This is a presentation/test repair only. No changes to candidate birth generation, combat, economy, Save schema, VFX, animation rigging, or PR merge policy. Godot/CI outcomes remain exact-SHA gated.

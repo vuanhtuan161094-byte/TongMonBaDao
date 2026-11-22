@@ -2,8 +2,8 @@ class_name DanTienScreenV2
 extends Control
 
 # C2 live recruitment screen. Reads ONE SimulationState; all mutations go through
-# RecruitmentSystem (no private roster/inventory/gacha state). Source A is optional:
-# an actual verified scene is used if registered; no substitute is claimed as Source A.
+# RecruitmentSystem (no private roster/inventory/gacha state).
+# Candidate portraits share the same seeded AS-CHAR identity as accepted disciples.
 signal closed
 signal state_changed
 
@@ -39,7 +39,6 @@ var _assistant_select: OptionButton
 var _guide_hint: Label
 var _main_options: Array[StringName] = []
 var _assistant_options: Array[StringName] = []
-var _source_a_frame_cache: Dictionary = {}
 
 func attach_state(authoritative_state: SimulationState, authority: RecruitmentSystem) -> void:
     game_state = authoritative_state
@@ -260,7 +259,7 @@ func _close_screen() -> void:
 
 func _set_b1_surface_active(active: bool) -> void:
     # The B1 screen is the only visible surface; this screen remains the
-    # canonical candidate-state and Source A preview host behind it.
+    # canonical candidate-state and AS-CHAR preview host behind it.
     for child in get_children():
         child.visible = not active
 
@@ -382,7 +381,7 @@ func _refresh_detail() -> void:
     var visual_row := HBoxContainer.new()
     visual_row.add_theme_constant_override("separation", 6)
     _detail_list.add_child(visual_row)
-    var portrait := _source_a_preview(candidate)
+    var portrait := _aschar_preview(candidate)
     visual_row.add_child(portrait)
     var radar := DanTienD7Radar.new()
     radar.name = "DanTienD7Radar"
@@ -512,33 +511,23 @@ func _recruitable(candidate: CandidateState) -> bool:
         or DiscipleBirthProfileV2.valid_complete_birth(candidate.v2_birth_profile)
     )
 
-func _source_a_preview(candidate: CandidateState) -> Control:
+func _aschar_preview(candidate: CandidateState) -> Control:
     var holder := PanelContainer.new()
     holder.custom_minimum_size = Vector2(142, 174)
     holder.add_theme_stylebox_override("panel", _style(Color("#30474b"), Color("#a28c67"), 1, 8))
     var render := TextureRect.new()
-    render.name = "CandidateSourceAPortrait"
+    render.name = "CandidateASCharPortrait"
     render.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
     render.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
     render.custom_minimum_size = Vector2(140, 170)
-    var preview_disciple := candidate.to_disciple()
-    var scene_path := DiscipleSourceAVisualPool.scene_path_for_disciple(preview_disciple)
-    if not scene_path.is_empty() and _source_a_frame_cache.has(scene_path):
-        render.texture = _source_a_frame_cache[scene_path] as Texture2D
-    elif not scene_path.is_empty():
-        var source_scene := DiscipleSourceAVisualPool.scene_for_disciple(preview_disciple)
-        if source_scene != null:
-            var sprite := source_scene.instantiate() as AnimatedSprite2D
-            if sprite != null:
-                var frames := sprite.sprite_frames
-                if frames != null and frames.has_animation(&"stand") and frames.get_frame_count(&"stand") > 0:
-                    render.texture = frames.get_frame_texture(&"stand", 0)
-                    _source_a_frame_cache[scene_path] = render.texture
-                sprite.free()
+    # Candidate.to_disciple() preserves the birth identity/seed: accepting the
+    # candidate must not reroll the face or silently choose a school.
+    var preview_disciple := candidate.to_disciple() if candidate != null else null
+    render.texture = SectASCharCandidateBridgeV1.preview_texture_for_disciple(preview_disciple)
     if render.texture != null:
         holder.add_child(render)
     else:
-        var fallback := _label("CHƯA CÓ\nẢNH SOURCE A\nPHÙ HỢP", 11, MUTED)
+        var fallback := _label("AS-CHAR\nCHƯA CÓ ẢNH", 11, MUTED)
         fallback.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
         fallback.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
         fallback.custom_minimum_size = Vector2(140, 170)
