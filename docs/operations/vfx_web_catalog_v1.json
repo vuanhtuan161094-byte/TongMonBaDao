@@ -8,7 +8,7 @@
       "school_vi": "Kiếm Tu",
       "branch_vi": "Ngự Kiếm",
       "tier": "human",
-      "scene": "res://godot/labs/combat_lab/sword_human_phi_kiem_truy_anh/r2b/phi_kiem_r2b_lab.tscn",
+      "scene": "res://labs/combat_lab/sword_human_phi_kiem_truy_anh/r2b/phi_kiem_r2b_lab.tscn",
       "directions": [
         "front"
       ],
@@ -16,12 +16,12 @@
       "g3_art": "ORIGINAL_RGBA_SOURCE_GITHUB_OWNER_PROVISIONAL",
       "owner_art": "OWNER_PROVISIONAL_NOT_FINAL",
       "source_paths": [
-        "godot/labs/combat_lab/sword_human_phi_kiem_truy_anh/r2b/phi_kiem_r2b_lab.gd",
-        "godot/labs/combat_lab/sword_human_phi_kiem_truy_anh/r2b/phi_kiem_r2b_lab.tscn",
-        "godot/labs/combat_lab/sword_human_phi_kiem_truy_anh/r2b/phi_kiem_r2b_vfx_layer.gd",
-        "godot/labs/combat_lab/sword_human_phi_kiem_truy_anh/r2b/source/phi_kiem_human_r2b_atlas_rgba.png",
-        "godot/labs/combat_lab/sword_human_phi_kiem_truy_anh/r2b/source/original_master_imagegen_1774x887.png",
-        "godot/labs/combat_lab/sword_human_phi_kiem_truy_anh/r2b/source/README.md",
+        "labs/combat_lab/sword_human_phi_kiem_truy_anh/r2b/phi_kiem_r2b_lab.gd",
+        "labs/combat_lab/sword_human_phi_kiem_truy_anh/r2b/phi_kiem_r2b_lab.tscn",
+        "labs/combat_lab/sword_human_phi_kiem_truy_anh/r2b/phi_kiem_r2b_vfx_layer.gd",
+        "labs/combat_lab/sword_human_phi_kiem_truy_anh/r2b/source/phi_kiem_human_r2b_atlas_rgba.png",
+        "labs/combat_lab/sword_human_phi_kiem_truy_anh/r2b/source/original_master_imagegen_1774x887.png",
+        "labs/combat_lab/sword_human_phi_kiem_truy_anh/r2b/source/README.md",
         "labs/combat_lab/sword_human_phi_kiem_truy_anh/r1/sword_human_r1_vfx_layer.gd",
         "labs/combat_lab/sword_human_phi_kiem_truy_anh/r1/source/phi_kiem_human_r1_candidate_atlas.png"
       ],

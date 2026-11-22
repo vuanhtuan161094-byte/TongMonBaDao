@@ -107,15 +107,15 @@ func _draw() -> void:
         _paint_cel(cell, source, facing, 0.43 + (t / RELEASE) * 0.10, 0.9)
         return
     if bool(parent.get("_cast")) and t < CONTACT:
-        var start: Variant = parent.get("_release_point")
-        if not (start is Vector2):
+        var start: Vector2 = parent.get("_release_point")
+        if start == Vector2.ZERO:
             return
         var dest := _monster_center()
         var u := clampf((t - RELEASE) / (CONTACT - RELEASE), 0.0, 1.0)
         var eased := u * u * (3.0 - 2.0 * u)
         var center: Vector2 = start.lerp(dest, eased)
         center.y -= 11.0 * sin(PI * u)
-        var facing := (dest - start).angle()
+        var facing: float = (dest - start).angle()
         var pose := 2 + mini(2, int(u * 3.0))
         _paint_cel(pose, center, facing, 0.64, 0.96)
         _paint_real_jian(center, facing, 1.0)
