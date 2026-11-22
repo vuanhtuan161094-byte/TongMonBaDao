@@ -1,0 +1,31 @@
+# FIST14 R11 — isolated GIF-approved native Godot review.
+# Existing shared VFX runner restores the exact GIF and builds derived RGBA.
+# Source is LAB_ONLY; no gameplay, SaveService, PvE, merge or rig.
+name: VFX FIST14 R11 | Godot native review
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - integration/pve-p0-playable-ui-20261103
+    paths:
+      - '.github/workflows/vfx-fist14-r11-native-review.yml'
+      - 'docs/operations/vfx_packets/FIST14_R11_V4_PREFLIGHT.json'
+      - 'godot/labs/combat_lab/fist14/r11_owner_review/**'
+      - 'godot/tests/labs/combat_lab/vfx_fist14_r11_owner_native_contract_test.gd'
+      - 'tools/vfx/build_fist14_r11_alpha_source.py'
+      - 'tools/qa/test_fist14_r11_*'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: vfx-fist14-r11-native-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  native-g35:
+    uses: ./.github/workflows/vfx-shared-skill.yml
+    with:
+      packet: docs/operations/vfx_packets/FIST14_R11_V4_PREFLIGHT.json
+      mode: g35
+      duration_seconds: 0
