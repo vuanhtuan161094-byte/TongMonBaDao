@@ -186,13 +186,17 @@
   ],
   "all_pose_distinct": true,
   "files": {
+    "G3_R1C_to_R1CA_comparison_1x.png": {
+      "sha256": "1d88d37c7f804ca5edfb7d7f64737e4244c5db43a9c0abfef523fb44bd493a0b",
+      "bytes": 614929
+    },
     "G3_preflight_1x_dark_light.png": {
       "sha256": "87f6baecafb7545ba9dfa55923dd95aa6bd33116bbfe58f09948df55ca05e7a4",
       "bytes": 424700
     },
     "G3_preflight_R1C_baseline_1x.png": {
-      "sha256": "0c0205245fa5840701d0ec41a21f99f28e5cbb40c378054ee86ce908f4518e28",
-      "bytes": 231602
+      "sha256": "87f6baecafb7545ba9dfa55923dd95aa6bd33116bbfe58f09948df55ca05e7a4",
+      "bytes": 424700
     },
     "kiem_vu_hoi_phong_r1c_atlas_rgba.png": {
       "sha256": "4409e67ab62c4a053ff8483014eb2f32b2af63ac64bfe15ea649e87aca4eb950",
