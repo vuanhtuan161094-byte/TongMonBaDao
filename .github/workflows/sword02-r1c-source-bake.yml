@@ -34,7 +34,9 @@ jobs:
         run: |
           set -euo pipefail
           source_dir=godot/labs/combat_lab/sword_human_kiem_vu_hoi_phong/r1c/source
-          cp "$source_dir/G3_preflight_1x_dark_light.png" "$source_dir/G3_preflight_R1C_baseline_1x.png"
+          if [[ ! -f "$source_dir/G3_preflight_R1C_baseline_1x.png" ]]; then
+            cp "$source_dir/G3_preflight_1x_dark_light.png" "$source_dir/G3_preflight_R1C_baseline_1x.png"
+          fi
           base64 -d "$source_dir/enhance_r1c_artfirst_v4.py.gz.b64" | gzip -d > "$source_dir/enhance_r1c_artfirst_v4.py"
           python "$source_dir/generate_kiem_vu_hoi_phong_r1c.py"
       - name: Bake side-by-side G3 1x comparison and source-only animated review
