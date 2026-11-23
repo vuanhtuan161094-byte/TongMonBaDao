@@ -16,3 +16,6 @@ New isolated G3.5 candidate:
 - Add non-aesthetic Godot contract tests for continuous travel, no contact teleport, seek-frame hit tint and zoom correctness.
 - The underlying 12 R1E source PNGs/atlas remain byte-identical. **Previous Chromium PASS was technical only; owner explicitly rejects the runtime look.** Do not promote G3.5 to visual PASS until real exact-SHA screenshots/GIF are reviewed.
 - No Codex Cloud, rig, gameplay receipts, SaveService, PvE or merge.
+
+## Sprite-first runtime luminosity pass (2026-11-24)
+VFX was visually too faint on the arena because the approved R1E artwork had only a single normal-alpha display pass. Add one **additive Sprite2D using the same AtlasTexture and frame as the source**, behind the normal sprite at 1.06× with moderate alpha (dark map 0.28, pale map 0.18; temporarily 0.48/0.30 on contact). It follows the exact same per-frame position and VFX toggle; it is not a new or generated art layer. Tested through Godot scene QA for atlas linkage, additive mode and synchronized position. This is a visual **candidate pending owner/browser 1× review**, NOT ART PASS or gameplay integration; R1E PNGs unchanged.

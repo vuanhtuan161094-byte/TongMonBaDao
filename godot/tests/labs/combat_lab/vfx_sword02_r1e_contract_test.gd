@@ -25,6 +25,11 @@ func _verify() -> void:
     _check(fx!=null and fx.texture!=null,"REAL_RGBA_VFX_NOT_LOADED")
     if fx != null and fx.texture != null:
         _check(fx.texture.get_width()==512,"VFX_FRAME_REGION_NOT_512")
+    var source_glow: Sprite2D = lab.get("_fx_glow")
+    _check(source_glow != null and source_glow.texture == fx.texture,"GLOW_MUST_FOLLOW_R1E_SOURCE")
+    if source_glow != null:
+        var additive: CanvasItemMaterial = source_glow.material as CanvasItemMaterial
+        _check(additive != null and additive.blend_mode == CanvasItemMaterial.BLEND_MODE_ADD,"GLOW_NOT_ADDITIVE")
     for phase in ["charge","projectile","contact"]:
         lab.review_seek_phase(phase)
         await process_frame
@@ -32,8 +37,11 @@ func _verify() -> void:
         _check(int(lab.get("_frame"))>=0 and int(lab.get("_frame"))<=11,"FRAME_BAD_"+phase)
         lab.review_set_fx(false)
         _check(not fx.visible,"VFX_TOGGLE_FAIL_"+phase)
+        _check(not source_glow.visible,"GLOW_TOGGLE_FAIL_"+phase)
         lab.review_set_fx(true)
         _check(fx.visible,"VFX_RESTORE_FAIL_"+phase)
+        _check(source_glow.visible,"GLOW_RESTORE_FAIL_"+phase)
+        _check(fx.position.distance_to(source_glow.position)<0.01,"GLOW_DETACHED_"+phase)
     # Art-direction regression: R1E must travel as a blade-attached gyre,
     # not teleport from a hard-coded mid-map point to the monsters.
     lab.review_set_paused(true)

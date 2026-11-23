@@ -22,6 +22,7 @@ var _actor: Node2D
 var _body: Sprite2D
 var _sword: Sprite2D
 var _fx: Sprite2D
+var _fx_glow: Sprite2D
 var _fx_cell: AtlasTexture
 var _as48_texture: Texture2D
 var _weapon_texture: Texture2D
@@ -126,6 +127,18 @@ func _ready() -> void:
     _fx.scale = Vector2.ONE * FX_1X
     _fx.z_index = 16
     add_child(_fx)
+    # Sprite-first accent: a restrained additive pass from the EXACT SAME R1E atlas.
+    # No drawn geometry, procedural particles, or new weapon/actor graphics.
+    _fx_glow = Sprite2D.new()
+    _fx_glow.name = "R1E_Atlas_Additive_Glow_Only"
+    _fx_glow.texture = _fx_cell
+    _fx_glow.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+    var glow_material := CanvasItemMaterial.new()
+    glow_material.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
+    _fx_glow.material = glow_material
+    _fx_glow.modulate = Color(0.55,0.86,1.0,0.28)
+    _fx_glow.z_index = 15
+    add_child(_fx_glow)
     _ready_ok = true
     _set_frame(0)
     _update_positions()
@@ -196,6 +209,12 @@ func _update_positions() -> void:
     else:
         # End exactly on the enemy group, without frame-9 location jump.
         _fx.position = _impact_origin()
+    # Glow follows the source sprite 1:1 and must NEVER become a separate effect.
+    _fx_glow.visible = _fx_enabled
+    _fx_glow.position = _fx.position
+    _fx_glow.scale = _fx.scale * 1.06
+    var hit := _frame >= 9 and _frame <= 10
+    _fx_glow.modulate = Color(0.55,0.86,1.0, (0.30 if hit else 0.18) if _bright else (0.48 if hit else 0.28))
     _update_hit_tint()
 
 func _process(delta: float) -> void:
@@ -255,6 +274,7 @@ func review_set_moving(value: bool) -> void:
 func review_set_fx(value: bool) -> void:
     _fx_enabled=value
     if _fx!=null: _fx.visible=value
+    if _fx_glow!=null: _fx_glow.visible=value
 func review_set_bright(value: bool) -> void:
     _bright=value
     queue_redraw()
