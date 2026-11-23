@@ -220,6 +220,7 @@ var build_mode_site_label: Label
 var build_mode_confirm: Button
 var build_mode_move_list: VBoxContainer
 var build_mode_active := false
+var build_mode_actor_conflict_last := ""
 var build_mode_kind := ""
 var build_mode_house_id: StringName = &""
 var build_mode_site := SectResidenceSiteV1.UNSELECTED
@@ -2850,7 +2851,7 @@ func _build_construction_ui() -> void:
     build_art.custom_minimum_size = Vector2(42,42)
     build_art.mouse_filter = Control.MOUSE_FILTER_IGNORE
     build_art.set("facility_kind","residence")
-    build_art.tooltip_text = "Đệ Tử Xá · Model Source A 510076 khi SHA hợp lệ; fallback được ghi rõ."
+    build_art.tooltip_text = "Đệ Tử Xá · ảnh VIS-11 A (residence_A.png)."
     build_mode_panel.add_child(build_art)
 
     var fixed_hint := _label(build_mode_panel,"",Vector2(18,202),Vector2(354,58),10)
@@ -3090,12 +3091,16 @@ func _refresh_build_mode_panel(last_check: Dictionary = {}) -> void:
         check = SectResidenceSystemV1.can_construct(state,build_mode_site)
     elif check.is_empty() and build_mode_kind == "relocate" and build_mode_site != SectResidenceSiteV1.UNSELECTED:
         check = SectResidenceSystemV1.can_move_house(state,build_mode_house_id,build_mode_site)
+    # Cache the currently displayed occupancy reason, including a clear lot.
+    # The production actor poll refreshes the construction UI only if this
+    # reason changes; confirming always revalidates at transaction time.
     if build_mode_kind in ["construct","relocate"] \
-            and build_mode_site != SectResidenceSiteV1.UNSELECTED \
-            and bool(check.get("ok",false)):
-        var actor_conflict := _residence_site_actor_conflict_reason(build_mode_site)
-        if not actor_conflict.is_empty():
-            check = {"ok":false,"reason":actor_conflict}
+            and build_mode_site != SectResidenceSiteV1.UNSELECTED:
+        build_mode_actor_conflict_last = _residence_site_actor_conflict_reason(build_mode_site)
+        if bool(check.get("ok",false)) and not build_mode_actor_conflict_last.is_empty():
+            check = {"ok":false,"reason":build_mode_actor_conflict_last}
+    else:
+        build_mode_actor_conflict_last = ""
     if build_mode_site_label != null:
         if build_mode_site == SectResidenceSiteV1.UNSELECTED:
             build_mode_site_label.text = "Chọn công trình hoặc nhà trống, rồi chạm một khoảng đất trống.\nBóng nhà và lối ra sẽ cho biết vị trí hợp lệ."
@@ -7591,6 +7596,15 @@ func _process(_delta: float) -> void:
     if actor_visibility_refresh_elapsed >= actor_visibility_interval:
         actor_visibility_refresh_elapsed = 0.0
         _refresh_world_actor_visibility()
+        # The actor's projected ground tile can change while a planned
+        # Residence lot is selected. Keep the displayed button/label aligned
+        # with the transaction guard without rebuilding UI every frame.
+        if build_mode_active and build_mode_panel != null and build_mode_panel.visible \
+                and build_mode_kind in ["construct","relocate"] \
+                and build_mode_site != SectResidenceSiteV1.UNSELECTED:
+            var current_conflict := _residence_site_actor_conflict_reason(build_mode_site)
+            if current_conflict != build_mode_actor_conflict_last:
+                _refresh_build_mode_panel()
     if map_worksite_cues_dirty:
         if camera_moving:
             map_worksite_refresh_elapsed = 0.0
