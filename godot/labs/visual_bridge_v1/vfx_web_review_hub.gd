@@ -109,7 +109,7 @@ func _ready() -> void:
     _change_skill(0)
     # Direct link /vfx/?skill=r1e selects the same canonical Godot Web review,
     # never creates a second build, site, or independent game.
-    if OS.has_feature("web") and JavaScriptBridge.is_supported() and _entries.size() > 1:
+    if OS.has_feature("web") and _entries.size() > 1:
         var query_text: Variant = JavaScriptBridge.eval("window.location.search", true)
         if str(query_text).contains("skill=r1e"):
             _picker.select(1)
