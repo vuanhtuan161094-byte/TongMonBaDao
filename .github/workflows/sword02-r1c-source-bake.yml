@@ -10,6 +10,8 @@ on:
       - godot/labs/combat_lab/sword_human_kiem_vu_hoi_phong/r1c/source/generate_kiem_vu_hoi_phong_r1c.py
 permissions:
   contents: write
+env:
+  PYTHONDONTWRITEBYTECODE: "1"
 concurrency:
   group: sword02-r1c-source-${{ github.ref }}
   cancel-in-progress: false
