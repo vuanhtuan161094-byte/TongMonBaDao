@@ -116,9 +116,9 @@ jobs:
               log="$reload_log"
             fi
             if [[ -f "$log" ]] && grep -Fq "$marker" "$log"; then
-              receipts+="PASS \\`$marker\\`"$'\\n'
+              receipts+="PASS $marker"$'\n'
             else
-              receipts+="MISSING \\`$marker\\`"$'\\n'
+              receipts+="MISSING $marker"$'\n'
               missing=$((missing+1))
             fi
           done
@@ -135,9 +135,9 @@ jobs:
             echo "Run: $run_url"
             echo "Commit: ${GITHUB_SHA}"
             echo "Job state: $TRI03_JOB_STATUS | Gate: $outcome"
-            printf '%s\\n' "$receipts"
+            printf '%s\n' "$receipts"
           } >> "$GITHUB_STEP_SUMMARY"
-          body="$(printf 'TRI03 focused exact-SHA CI receipt (automated, no merge)\\n\\n- Commit: \\`%s\\`\\n- [Run / logs](%s)\\n- Job: \\`%s\\` | Gate: **%s**\\n\\n%s\\nThis comment is a CI receipt only; no owner approval or PvE unlock.\\n' "${GITHUB_SHA}" "$run_url" "$TRI03_JOB_STATUS" "$outcome" "$receipts")"
+          body="$(printf 'TRI03 focused exact-SHA CI receipt (automated, no merge)\n\n- Commit: %s\n- [Run / logs](%s)\n- Job: %s | Gate: **%s**\n\n%s\nThis comment is a CI receipt only; no owner approval or PvE unlock.\n' "${GITHUB_SHA}" "$run_url" "$TRI03_JOB_STATUS" "$outcome" "$receipts")"
           gh api -X POST "repos/${GITHUB_REPOSITORY}/issues/72/comments" -f body="$body" --silent || {
             echo "::warning::Could not post TRI03 receipt to PR; run logs and job summary remain authoritative."
           }
