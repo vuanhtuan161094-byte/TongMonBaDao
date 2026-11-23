@@ -171,7 +171,7 @@ func _process(delta: float) -> void:
         _set_frame(index)
     if _moving:
         for i in range(_monsters.size()):
-            var p := MOB_HOMES[i]
+            var p: Vector2 = MOB_HOMES[i]
             _monsters[i].position = p + Vector2(38*sin(_time*(1.3+float(i)*0.22)+float(i)), 13*sin(_time*(1.1+float(i)*0.14)+float(i)))
     if not _contact_shown and index>=9:
         _contact_shown = true

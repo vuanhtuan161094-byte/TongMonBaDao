@@ -10,6 +10,7 @@ on:
       - 'tools/wiki/tests/**'
       - 'tools/vfx/stage_vfx_web_review.py'
       - 'tools/vfx/check_web_visual.cjs'
+      - 'tools/vfx/check_web_sword02_r1e.cjs'
       - 'docs/operations/vfx_web_catalog_v1.json'
       - 'tools/qa/check_as48_sword_bridge_sources.py'
       - '.github/workflows/wiki-player-pages.yml'
@@ -197,6 +198,15 @@ jobs:
             VFX_REVIEW_URL="http://127.0.0.1:8679/vfx/" \
             VFX_BROWSER_PROOF="$RUNNER_TEMP/vfx-web-browser-proof" \
             node tools/vfx/check_web_visual.cjs
+          # R1E is a second selector entry, not a new site. Test its own URL
+          # and actual screenshot phase deltas before deploying the same /vfx/.
+          NODE_PATH="$RUNNER_TEMP/vfx-browser-deps/node_modules" \
+            CHROME_EXECUTABLE="$CHROME_EXECUTABLE" \
+            VFX_REVIEW_URL="http://127.0.0.1:8679/vfx/" \
+            VFX_BROWSER_PROOF="$RUNNER_TEMP/vfx-web-browser-proof" \
+            node tools/vfx/check_web_sword02_r1e.cjs
+          grep -Fq '"verdict": "R1E_BROWSER_REAL_AS48_VFX_PASS"' \
+            "$RUNNER_TEMP/vfx-web-browser-proof/R1E-browser-result.json"
           grep -Fq '"verdict": "BROWSER_CANVAS_AND_VFX_PHASES_PASS"' \
             "$RUNNER_TEMP/vfx-web-browser-proof/result.json"
           echo "VFX_WEB_3_PHASE_VISUAL_GATE=PASS"
