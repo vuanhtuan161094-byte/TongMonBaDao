@@ -1,0 +1,59 @@
+name: Sword02 R1C source bake (G3 before Godot)
+on:
+  push:
+    branches:
+      - integration/pve-p0-playable-ui-20261103
+    paths:
+      - .github/workflows/sword02-r1c-source-bake.yml
+      - godot/labs/combat_lab/sword_human_kiem_vu_hoi_phong/r1c/source/r1c_source.py.gz.b64
+permissions:
+  contents: write
+concurrency:
+  group: sword02-r1c-source-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout source-only slice
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+          sparse-checkout: |
+            godot/labs/combat_lab/sword_human_kiem_vu_hoi_phong/r1c
+          sparse-checkout-cone-mode: false
+      - name: Install source-art raster dependency only
+        run: python -m pip install --disable-pip-version-check Pillow==12.3.0
+      - name: Expand independently reproducible R1C art script
+        shell: bash
+        run: |
+          set -euo pipefail
+          source_dir=godot/labs/combat_lab/sword_human_kiem_vu_hoi_phong/r1c/source
+          base64 -d "$source_dir/r1c_source.py.gz.b64" | gzip -d > "$source_dir/generate_kiem_vu_hoi_phong_r1c.py"
+          python "$source_dir/generate_kiem_vu_hoi_phong_r1c.py"
+      - name: G3 preflight technical guard (NOT visual approval)
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json, pathlib, hashlib
+          p=pathlib.Path('godot/labs/combat_lab/sword_human_kiem_vu_hoi_phong/r1c/source')
+          m=json.loads((p/'R1C_SOURCE_MANIFEST.json').read_text())
+          assert m['pose_count']==12 and m['all_pose_distinct']
+          assert all(x['alpha_nonzero_pixels']>0 and x['safe_8px_border'] for x in m['checks'])
+          assert m['canonical']['target_limit']==3 and m['canonical']['shape']=='circle'
+          assert m['gates']['pve']=='HOLD'
+          print('SOURCE_TECH_PASS 12/12 alpha, 12/12 distinct, 12/12 border, canon HOLD')
+          print('ATLAS_SHA256', hashlib.sha256((p/'kiem_vu_hoi_phong_r1c_atlas_rgba.png').read_bytes()).hexdigest())
+          PY
+      - name: Commit generated RGBA and source 1x review without runtime integration
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add godot/labs/combat_lab/sword_human_kiem_vu_hoi_phong/r1c/source/
+          if ! git diff --cached --quiet; then
+            git commit -m "art(vfx-sword02): bake R1C source RGBA 12 poses and G3 1x previews"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
