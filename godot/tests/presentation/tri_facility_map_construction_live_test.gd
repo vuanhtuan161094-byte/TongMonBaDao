@@ -1,5 +1,5 @@
 extends SceneTree
-## Real P3.2 route test for paid residence placement. The Hall/resource changes here are an in-memory QA fixture only.
+## ART-05 V2 fixed-MASTERPLAN paid Residence route; Hall/resource additions are isolated in-memory QA fixtures.
 const GAME = preload("res://scenes/p3/p3_2_landscape_sect.tscn")
 const RUNTIME_PATH := "user://tri03_map_build_runtime_isolated.json"
 const ROUNDTRIP_PATH := "user://tri03_map_build_roundtrip.json"
@@ -69,90 +69,66 @@ func _run() -> void:
     await process_frame
     print("TRI_MAP_BUILD_QA_FIXTURE hall_level=11 warehouse_seed=isolated_in_memory_only")
 
-    game.call("_open_building",SectMapPresentation.DEST_RESIDENCE)
+    # ART-05 world layout V2 is owner-approved fixed MASTERPLAN. The older
+    # free terrain-click placement and relocation contract is not playable.
+    # Use the real build catalog + paid confirmation, never fake a build.
+    game.call("_enter_build_mode")
     await process_frame
-    await process_frame
-    var open_management := _find_button(game,"OpenResidenceManagementV1")
-    if open_management == null or open_management.disabled:
-        _fail("P3.2 residence operation panel did not expose its real management route.")
+    var catalog := _find_button(game,"BuildCatalogResidence")
+    if catalog == null or catalog.disabled:
+        _fail("ART-05 real build catalog unavailable with canonical QA stock.")
         return
-    open_management.pressed.emit()
+    catalog.pressed.emit()
     await process_frame
     await process_frame
-    var adapter := game.get_node_or_null("DaiDienScreenV1/TriFacilityB1LiveAdapterV1")
-    var build_button := _find_button(adapter,"BuildResidenceOnMap") if adapter != null else null
-    if build_button == null or build_button.disabled:
-        var model: Dictionary = adapter.call("_house_model") if adapter != null else {}
-        _fail("B1 map construction control is absent/disabled despite QA prerequisites: %s" % str(model))
+    if not bool(game.get("build_mode_active")) or str(game.get("build_mode_kind")) != "construct":
+        _fail("ART-05 catalog did not enter the actual construction flow.")
         return
-    build_button.pressed.emit()
-    await process_frame
-    await process_frame
-    if not bool(game.get("build_mode_active")):
-        _fail("B1 construction intent did not enter real P3.2 map build mode.")
+    var target := Vector2i(game.get("build_mode_site"))
+    var confirm := _find_button(game,"ConfirmMapConstruction")
+    if not SectResidenceSiteV1.MASTERPLAN_ANNEX_SITES.has(target) \
+            or not bool(SectResidenceSiteV1.check(state,target).get("ok",false)) \
+            or not str(game.call("_residence_site_actor_conflict_reason",target)).is_empty() \
+            or confirm == null or confirm.disabled:
+        _fail("ART-05 did not select an unoccupied paid MASTERPLAN annex lot: %s" % str(target))
+        return
+
+    # Arbitrary map placement must not override the one assigned lot.
+    var alternate := SectResidenceSiteV1.UNSELECTED
+    for candidate in SectResidenceSiteV1.available_plots(state):
+        if candidate != target:
+            alternate = candidate
+            break
+    if alternate == SectResidenceSiteV1.UNSELECTED:
+        _fail("No alternate lot available for ART-05 free-placement denial.")
+        return
+    game.call("_select_build_mode_site",alternate)
+    if Vector2i(game.get("build_mode_site")) != target or confirm.disabled:
+        _fail("ART-05 allowed manual terrain to replace the fixed planned lot.")
         return
 
     var iso := game.get("iso_world") as SectIsometricWorldV1
     if iso == null:
-        _fail("P3.2 has no isometric world for map placement.")
+        _fail("P3.2 lacks the real isometric world.")
         return
     var camera := iso.get("camera") as Camera2D
     if camera == null:
         _fail("P3.2 map camera is unavailable.")
         return
-    var target := SectResidenceSiteV1.UNSELECTED
-    var screen_point := Vector2.ZERO
-    for candidate in SectResidenceSiteV1.available_plots(state):
-        var gate: Dictionary = SectResidenceSystemV1.can_construct(state,candidate)
-        if not bool(gate.get("ok",false)):
-            continue
-        if not str(game.call("_residence_site_actor_conflict_reason",candidate)).is_empty():
-            continue
-        var world_point := SectIsometricWorldV1.project(Vector2(candidate))
-        var local_view := SectIsometricWorldV1.VIEW_SIZE*0.5 + (world_point-camera.position)*camera.zoom.x
-        var candidate_screen := local_view+SectIsometricWorldV1.MAP_SCREEN_OFFSET
-        if not SectMapCamera.is_map_screen_point(candidate_screen):
-            continue
-        if Rect2(Vector2(18,144),Vector2(392,510)).has_point(candidate_screen):
-            continue
-        if Vector2i(game.call("_cell_at_map_screen",candidate_screen)) != candidate:
-            continue
-        target = candidate
-        screen_point = candidate_screen
-        break
-    if target == SectResidenceSiteV1.UNSELECTED:
-        _fail("Could not find a visible legal lot for real map input.")
-        return
-
-    # Feed real mouse down/up events through P3.2._input; this runs the same
-    # screen-to-cell path used by player clicks, without a desktop mouse driver.
-    var down := InputEventMouseButton.new()
-    down.button_index = MOUSE_BUTTON_LEFT
-    down.position = screen_point
-    down.pressed = true
-    game.call("_input",down)
-    var up := InputEventMouseButton.new()
-    up.button_index = MOUSE_BUTTON_LEFT
-    up.position = screen_point
-    up.pressed = false
-    game.call("_input",up)
-    await process_frame
-    if Vector2i(game.get("build_mode_site")) != target:
-        _fail("Map click did not select the expected legal lot.")
-        return
-    var confirm := _find_button(game,"ConfirmMapConstruction")
-    if confirm == null or confirm.disabled:
-        _fail("Valid map placement did not enable the canonical construction confirmation.")
-        return
+    var world_point := SectIsometricWorldV1.project(Vector2(target))
+    var screen_point := SectIsometricWorldV1.VIEW_SIZE*0.5 \
+        + (world_point-camera.position)*camera.zoom.x \
+        + SectIsometricWorldV1.MAP_SCREEN_OFFSET
     await RenderingServer.frame_post_draw
     var frame := root.get_texture().get_image()
     if frame == null or frame.get_size() != Vector2i(1280,720):
-        _fail("No 1280x720 native Godot placement frame was rendered.")
+        _fail("No 1280x720 native Godot fixed-plan frame was rendered.")
         return
     if frame.save_png(out_dir.path_join("05_map_residence_valid_placement_qa_fixture.png")) != OK:
-        _fail("Could not save the map placement frame.")
+        _fail("Could not save the ART-05 fixed-plan screenshot.")
         return
-    print("TRI_MAP_BUILD_PLACEMENT_PASS plot=%d,%d screen=%.1f,%.1f" % [target.x,target.y,screen_point.x,screen_point.y])
+    print("TRI_MAP_BUILD_FIXED_MASTERPLAN_PASS plot=%d,%d screen=%.1f,%.1f ignored=%s" % [
+        target.x,target.y,screen_point.x,screen_point.y,str(alternate)])
 
     var request_id := "map-house:%d:%d:%d:new" % [state.tick,target.x,target.y]
     var pre_build_count := SectResidenceSystemV1.all_houses(state).size()
@@ -211,130 +187,59 @@ func _run() -> void:
     expected_file.close()
     print("TRI_MAP_BUILD_TRANSACTION_PASS building=%s site=%d,%d cost=%s receipt=%d save=1" % [building_id,target.x,target.y,str(cost),receipts.size()])
 
-    var starter_move := SectResidenceSystemV1.can_move_house(state,&"residence_001",target)
-    if starter_move.get("reason","") != "starter_house_fixed":
-        _fail("The unique starter residence must stay fixed on the map.")
-        return
+    # ART-05 V2 keeps annex plots fixed. The old Source A relocation/drag
+    # UI has been retired; verify it is not reachable rather than inventing
+    # a relocation transaction to satisfy an obsolete test.
     var construction_finish := int(house.production_state.get("construction_finish_tick",-1))
     state.tick = construction_finish
     if not SectResidenceSystemV1.complete_due_construction(state,house):
-        _fail("Canonical residence construction did not complete at its saved finish tick.")
+        _fail("Canonical residence did not complete on its saved finish tick.")
         return
     game.call("_refresh_all")
+    await process_frame
     game.call("_enter_build_mode")
     await process_frame
-    await process_frame
-    var move_button := _find_button(game,"MoveResidence_02")
-    if move_button == null or move_button.disabled:
-        _fail("Completed, empty annex must expose the real map relocation action.")
+    var moves := game.find_child("RelocatableResidenceList",true,false) as Control
+    if moves != null and moves.visible:
+        _fail("ART-05 fixed districts exposed the retired relocation UI.")
         return
-    move_button.pressed.emit()
-    await process_frame
-    var move_target := SectResidenceSiteV1.UNSELECTED
-    var move_screen := Vector2.ZERO
-    camera = iso.get("camera") as Camera2D
-    for candidate in SectResidenceSiteV1.available_plots(state):
-        var gate: Dictionary = SectResidenceSystemV1.can_move_house(state,StringName(building_id),candidate)
-        if not bool(gate.get("ok",false)):
-            continue
-        var world_point := SectIsometricWorldV1.project(Vector2(candidate))
-        var local_view := SectIsometricWorldV1.VIEW_SIZE*0.5 + (world_point-camera.position)*camera.zoom.x
-        var candidate_screen := local_view+SectIsometricWorldV1.MAP_SCREEN_OFFSET
-        if not SectMapCamera.is_map_screen_point(candidate_screen):
-            continue
-        if Rect2(Vector2(18,144),Vector2(392,510)).has_point(candidate_screen):
-            continue
-        if Vector2i(game.call("_cell_at_map_screen",candidate_screen)) != candidate:
-            continue
-        move_target = candidate
-        move_screen = candidate_screen
-        break
-    if move_target == SectResidenceSiteV1.UNSELECTED:
-        _fail("Could not find a visible safe destination for a completed empty annex.")
+    game.call("_begin_residence_relocation",StringName(building_id))
+    if str(game.get("build_mode_kind")) == "relocate" \
+            or SectResidenceSiteV1.origin_of(house) != target:
+        _fail("ART-05 accepted a forbidden relocation or moved the planned House.")
         return
-    var move_down := InputEventMouseButton.new()
-    move_down.button_index = MOUSE_BUTTON_LEFT
-    move_down.position = move_screen
-    move_down.pressed = true
-    game.call("_input",move_down)
-    var move_up := InputEventMouseButton.new()
-    move_up.button_index = MOUSE_BUTTON_LEFT
-    move_up.position = move_screen
-    move_up.pressed = false
-    game.call("_input",move_up)
-    await process_frame
-    if Vector2i(game.get("build_mode_site")) != move_target:
-        _fail("Map input did not select the valid relocation destination.")
+
+    # Replay must not charge or place the same house a second time.
+    var wood_after := warehouse.available_quantity(state,BuildingSystem.MATERIAL_WOOD)
+    var ore_after := warehouse.available_quantity(state,BuildingSystem.MATERIAL_ORE)
+    var stones_after := state.sect.spirit_stones
+    var house_count_after := SectResidenceSystemV1.all_houses(state).size()
+    var replay := SectResidenceSystemV1.construct(state,request_id,target)
+    if not bool(replay.get("ok",false)) or not bool(replay.get("already_settled",false)) \
+            or str(replay.get("building_id","")) != building_id \
+            or warehouse.available_quantity(state,BuildingSystem.MATERIAL_WOOD) != wood_after \
+            or warehouse.available_quantity(state,BuildingSystem.MATERIAL_ORE) != ore_after \
+            or state.sect.spirit_stones != stones_after \
+            or SectResidenceSystemV1.all_houses(state).size() != house_count_after:
+        _fail("ART-05 receipt replay charged resources or duplicated the House.")
         return
-    var move_confirm := _find_button(game,"ConfirmMapConstruction")
-    if move_confirm == null or move_confirm.disabled or move_confirm.text != "DỜI NHÀ":
-        _fail("The map relocation confirmation is not valid for this legal site.")
-        return
-    var move_request_id := "map-house:%d:%d:%d:%s" % [state.tick,move_target.x,move_target.y,building_id]
-    var wood_before_move := warehouse.available_quantity(state,BuildingSystem.MATERIAL_WOOD)
-    var ore_before_move := warehouse.available_quantity(state,BuildingSystem.MATERIAL_ORE)
-    var stones_before_move := state.sect.spirit_stones
-    var houses_before_move := SectResidenceSystemV1.all_houses(state).size()
-    move_confirm.pressed.emit()
-    await process_frame
-    await process_frame
-    if SectResidenceSiteV1.origin_of(house) != move_target or house.status != BuildingSystem.STATUS_ACTIVE:
-        _fail("Canonical map relocation did not move the annex to the selected site.")
-        return
-    var move_receipts: Dictionary = state.sect.hall_governance.get("residence_move_receipts",{})
-    if move_receipts.size() != 1 or not move_receipts.has(move_request_id):
-        _fail("Relocation must persist exactly one canonical move receipt.")
-        return
-    var move_replay := SectResidenceSystemV1.move_house(state,move_request_id,house.id,move_target)
-    if not bool(move_replay.get("ok",false)) or not bool(move_replay.get("already_settled",false)) \
-            or warehouse.available_quantity(state,BuildingSystem.MATERIAL_WOOD) != wood_before_move \
-            or warehouse.available_quantity(state,BuildingSystem.MATERIAL_ORE) != ore_before_move \
-            or state.sect.spirit_stones != stones_before_move \
-            or SectResidenceSystemV1.all_houses(state).size() != houses_before_move:
-        _fail("Replaying the same move receipt must not relocate or charge twice.")
-        return
-    var assignments: Dictionary = state.sect.hall_governance.get("residence_assignments",{}).duplicate(true)
-    var disciple_ids: Array = state.disciples.keys()
-    disciple_ids.sort()
-    if not disciple_ids.is_empty():
-        state.sect.hall_governance["residence_assignments"][str(disciple_ids[0])] = building_id
-        var blocked_move := SectResidenceSystemV1.can_move_house(state,house.id,target)
-        state.sect.hall_governance["residence_assignments"] = assignments
-        if bool(blocked_move.get("ok",false)) or blocked_move.get("reason","") != "house_occupied":
-            _fail("An occupied residence must not be relocated.")
-            return
-    await RenderingServer.frame_post_draw
-    var moved_frame := root.get_texture().get_image()
-    if moved_frame == null or moved_frame.get_size() != Vector2i(1280,720) \
-            or moved_frame.save_png(out_dir.path_join("07_map_residence_relocated_qa_fixture.png")) != OK:
-        _fail("Could not save the 1280x720 relocated-house map frame.")
-        return
-    var build_replay := SectResidenceSystemV1.construct(state,request_id,target)
-    if not bool(build_replay.get("ok",false)) or not bool(build_replay.get("already_settled",false)) \
-            or str(build_replay.get("building_id","")) != building_id \
-            or warehouse.available_quantity(state,BuildingSystem.MATERIAL_WOOD) != pre_wood-int(cost[BuildingSystem.MATERIAL_WOOD]) \
-            or warehouse.available_quantity(state,BuildingSystem.MATERIAL_ORE) != pre_ore-int(cost[BuildingSystem.MATERIAL_ORE]) \
-            or state.sect.spirit_stones != pre_stones-int(cost["spirit_stones"]):
-        _fail("Replaying the original build after relocation must remain exactly-once.")
-        return
+
     if saver.save_to_path(state,save_path) != OK:
-        _fail("SaveService failed to persist the relocated house and receipt.")
+        _fail("SaveService failed to persist completed MASTERPLAN residence.")
         return
-    expected["original_site_x"] = target.x
-    expected["original_site_y"] = target.y
-    expected["site_x"] = move_target.x
-    expected["site_y"] = move_target.y
-    expected["move_request_id"] = move_request_id
-    expected["move_receipt_count"] = move_receipts.size()
+    expected["site_x"] = target.x
+    expected["site_y"] = target.y
     expected["house_status"] = "active"
+    expected["fixed_masterplan"] = true
+    expected["move_receipt_count"] = 0
     expected_file = FileAccess.open(expected_path,FileAccess.WRITE)
     if expected_file == null:
-        _fail("Could not update the isolated expected relocation manifest.")
+        _fail("Could not update isolated completed-house manifest.")
         return
     expected_file.store_string(JSON.stringify(expected))
     expected_file.close()
-    print("TRI_MAP_RELOCATION_TRANSACTION_PASS building=%s old=%d,%d new=%d,%d receipt=%d exact_once=1 occupied_guard=1 save=1" % [
-        building_id,target.x,target.y,move_target.x,move_target.y,move_receipts.size()])
+    print("TRI_MAP_FIXED_MASTERPLAN_TRANSACTION_PASS building=%s site=%d,%d receipt=1 exact_once=1 relocation_blocked=1 save=1" % [
+        building_id,target.x,target.y])
     game.set("runtime_ready",false)
     game.queue_free()
     await process_frame
