@@ -31,7 +31,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-24.04
     timeout-minutes: 60
     steps:
@@ -230,6 +230,19 @@ jobs:
         with:
           path: _site
 
+  deploy:
+    name: Deploy ONE canonical Pages site after uploaded artifact is finalized
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    needs: build
+    permissions:
+      pages: write
+      id-token: write
+      contents: read
+    steps:
+      - name: Allow artifact metadata to become available across jobs
+        shell: bash
+        run: sleep 20
       - name: Deploy ONE canonical Web game + Wiki
         id: deployment
         uses: actions/deploy-pages@v4
