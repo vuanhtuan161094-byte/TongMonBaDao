@@ -345,6 +345,7 @@ func _verify_natural_new_game_build_gate() -> bool:
 	var fixture_key := ""
 	var fixture_original_virtual := Vector2.ZERO
 	var fixture_original_actor_position := Vector2.ZERO
+	var fixture_target_top_left := Vector2.ZERO
 	for raw_key in live_keys:
 		var key := str(raw_key)
 		var live_actor := live_nodes[raw_key] as Control
@@ -357,19 +358,38 @@ func _verify_natural_new_game_build_gate() -> bool:
 		var target_foot := SectIsometricWorldV1.LEGACY_ANCHOR \
 			+ SectIsometricWorldV1.project(Vector2(target)) \
 			- SectIsometricWorldV1.project(Vector2(SectIsometricWorldV1.CENTER_CELL))
-		var target_top_left := target_foot-DiscipleActorVisualCatalog.ACTOR_FOOT_POINT
-		positions[key] = target_top_left
+		fixture_target_top_left = target_foot-DiscipleActorVisualCatalog.ACTOR_FOOT_POINT
+		positions[key] = fixture_target_top_left
 		game.set("actor_virtual_positions",positions)
-		live_actor.position = target_top_left
+		live_actor.position = fixture_target_top_left
 		break
 	if not _require(not fixture_key.is_empty()
 		and _plot_overlaps_actor_cell(target,_actor_ground_cells())
 		and str(game.call("_residence_site_actor_conflict_reason",target)) == "house_plot_actor_occupied",
 		"real actor could not exercise occupied MASTERPLAN Residence collision"):
 		return false
-	# Do not force a UI refresh in QA: real production actor polling must
-	# observe occupancy and disable the live button on its own.
-	await create_timer(0.65).timeout
+	# Keep the QA-only actor over the selected lot long enough for the genuine
+	# 0.40s production poll to observe it. The 1Hz runtime sync may otherwise
+	# move this temporary presentation fixture away before that poll. Do not
+	# call the production UI refresh or change SimulationState/SaveService.
+	var occupancy_observed := false
+	var fixture_reanchors := 0
+	for _attempt in range(20):
+		var current_positions: Dictionary = game.get("actor_virtual_positions")
+		if Vector2(current_positions.get(fixture_key,Vector2.ZERO)) != fixture_target_top_left:
+			current_positions[fixture_key] = fixture_target_top_left
+			game.set("actor_virtual_positions",current_positions)
+			fixture_reanchors += 1
+		var current_actor := (game.get("actor_nodes") as Dictionary).get(fixture_key) as Control
+		if current_actor != null and is_instance_valid(current_actor):
+			current_actor.position = fixture_target_top_left
+		await create_timer(0.10).timeout
+		var current_label := game.get("build_mode_site_label") as Label
+		if confirm.disabled and current_label != null \
+			and current_label.text.contains("đang đứng") \
+			and str(game.call("_residence_site_actor_conflict_reason",target)) == "house_plot_actor_occupied":
+			occupancy_observed = true
+			break
 	var blocked_label := game.get("build_mode_site_label") as Label
 	var blocked_text := blocked_label.text if blocked_label != null else "<missing>"
 	var unchanged := state.buildings.size() == buildings_before \
@@ -377,9 +397,11 @@ func _verify_natural_new_game_build_gate() -> bool:
 		and warehouse.available_quantity(state,StringName(BuildingSystem.MATERIAL_WOOD)) == wood_before \
 		and warehouse.available_quantity(state,StringName(BuildingSystem.MATERIAL_ORE)) == ore_before \
 		and state.sect.spirit_stones == stones_before
-	if not _require(confirm.disabled and blocked_text.contains("đang đứng") and unchanged
+	if not _require(occupancy_observed and confirm.disabled and blocked_text.contains("đang đứng") and unchanged
 		and Vector2i(game.get("build_mode_site")) == target,
-		"occupied fixed Residence plot did not disable paid build and explain actor collision: %s" % blocked_text):
+		"occupied Residence plot UI poll failed: %s; reanchors=%d cached=%s live=%s" % [
+			blocked_text,fixture_reanchors,str(game.get("build_mode_actor_conflict_last")),
+			str(game.call("_residence_site_actor_conflict_reason",target))]):
 		return false
 	print("TRI03_MASTERPLAN_ACTOR_COLLISION_PASS site=%s actor=%s no_charge=true disabled=true" % [
 		str(target),fixture_key])
