@@ -1,0 +1,260 @@
+{
+  "schema": "tmb.vfx.r1c.source.v1",
+  "revision": "R1C",
+  "canonical": {
+    "skill_id": "tmb.skill.sword.ngu_kiem.active_02.human",
+    "element": "metal",
+    "effect": "damage",
+    "shape": "circle",
+    "radius": 1.4,
+    "target_limit": 3,
+    "cast_time": 0.36,
+    "cooldown": 10,
+    "projectile_speed": 8,
+    "damage_ratio": 0.82
+  },
+  "source": "first-party independently composed digital-raster candidate; procedural/illustrative study, NOT ImageGen master, NOT owner approved",
+  "pose_count": 12,
+  "cell_px": [
+    512,
+    512
+  ],
+  "atlas_px": [
+    2048,
+    1536
+  ],
+  "1x_scale_px": 174,
+  "phases": [
+    "charge_01",
+    "charge_02",
+    "charge_03",
+    "release",
+    "gyre_01",
+    "gyre_02",
+    "gyre_03",
+    "gyre_04",
+    "contact",
+    "shock",
+    "fade_01",
+    "fade_02"
+  ],
+  "checks": [
+    {
+      "frame": 1,
+      "phase": "charge_01",
+      "alpha_nonzero_pixels": 9919,
+      "bbox": [
+        167,
+        168,
+        345,
+        348
+      ],
+      "safe_8px_border": true
+    },
+    {
+      "frame": 2,
+      "phase": "charge_02",
+      "alpha_nonzero_pixels": 17325,
+      "bbox": [
+        148,
+        144,
+        373,
+        363
+      ],
+      "safe_8px_border": true
+    },
+    {
+      "frame": 3,
+      "phase": "charge_03",
+      "alpha_nonzero_pixels": 27833,
+      "bbox": [
+        117,
+        121,
+        395,
+        374
+      ],
+      "safe_8px_border": true
+    },
+    {
+      "frame": 4,
+      "phase": "release",
+      "alpha_nonzero_pixels": 25807,
+      "bbox": [
+        33,
+        167,
+        393,
+        420
+      ],
+      "safe_8px_border": true
+    },
+    {
+      "frame": 5,
+      "phase": "gyre_01",
+      "alpha_nonzero_pixels": 33174,
+      "bbox": [
+        55,
+        130,
+        406,
+        417
+      ],
+      "safe_8px_border": true
+    },
+    {
+      "frame": 6,
+      "phase": "gyre_02",
+      "alpha_nonzero_pixels": 31783,
+      "bbox": [
+        38,
+        127,
+        415,
+        406
+      ],
+      "safe_8px_border": true
+    },
+    {
+      "frame": 7,
+      "phase": "gyre_03",
+      "alpha_nonzero_pixels": 48196,
+      "bbox": [
+        48,
+        122,
+        444,
+        362
+      ],
+      "safe_8px_border": true
+    },
+    {
+      "frame": 8,
+      "phase": "gyre_04",
+      "alpha_nonzero_pixels": 53991,
+      "bbox": [
+        56,
+        109,
+        494,
+        364
+      ],
+      "safe_8px_border": true
+    },
+    {
+      "frame": 9,
+      "phase": "contact",
+      "alpha_nonzero_pixels": 50771,
+      "bbox": [
+        54,
+        109,
+        453,
+        373
+      ],
+      "safe_8px_border": true
+    },
+    {
+      "frame": 10,
+      "phase": "shock",
+      "alpha_nonzero_pixels": 69149,
+      "bbox": [
+        49,
+        128,
+        487,
+        416
+      ],
+      "safe_8px_border": true
+    },
+    {
+      "frame": 11,
+      "phase": "fade_01",
+      "alpha_nonzero_pixels": 21323,
+      "bbox": [
+        155,
+        119,
+        453,
+        342
+      ],
+      "safe_8px_border": true
+    },
+    {
+      "frame": 12,
+      "phase": "fade_02",
+      "alpha_nonzero_pixels": 7714,
+      "bbox": [
+        192,
+        163,
+        468,
+        324
+      ],
+      "safe_8px_border": true
+    }
+  ],
+  "all_pose_distinct": true,
+  "files": {
+    "G3_preflight_1x_dark_light.png": {
+      "sha256": "0c0205245fa5840701d0ec41a21f99f28e5cbb40c378054ee86ce908f4518e28",
+      "bytes": 231602
+    },
+    "kiem_vu_hoi_phong_r1c_atlas_rgba.png": {
+      "sha256": "9aae01f40be2a9f85e17071dd8c6596e1cf66455b7a587eb819271ab98266418",
+      "bytes": 742291
+    },
+    "kiem_vu_hoi_phong_r1c_pose_01_charge_01.png": {
+      "sha256": "1301f1e3557ccd9ac6398e4cd568247e27a00a9b718e6af9fb3287fe4feebfcc",
+      "bytes": 28737
+    },
+    "kiem_vu_hoi_phong_r1c_pose_02_charge_02.png": {
+      "sha256": "4367162cef0114234d6d7dbae8f2aada0a5d6458e82c850fef98a3c7940f6e4d",
+      "bytes": 43882
+    },
+    "kiem_vu_hoi_phong_r1c_pose_03_charge_03.png": {
+      "sha256": "eb3328dd67b7b1291d0586f94db7fce9d60757182c34e6bff005db52a2e438f9",
+      "bytes": 62885
+    },
+    "kiem_vu_hoi_phong_r1c_pose_04_release.png": {
+      "sha256": "ee9c2fe62253e1036814aa322767ebda6c7a35367ca613bb6bf852c2886c79f7",
+      "bytes": 43381
+    },
+    "kiem_vu_hoi_phong_r1c_pose_05_gyre_01.png": {
+      "sha256": "29acdf89db2c916c5a84e16059db74e97515c479e0ac356fb8bf3e4952d16775",
+      "bytes": 63374
+    },
+    "kiem_vu_hoi_phong_r1c_pose_06_gyre_02.png": {
+      "sha256": "ab5881a023f4b009d2f0d81d6ce85eb9997adaf8fbd3bb04c538d89e047e21e0",
+      "bytes": 60430
+    },
+    "kiem_vu_hoi_phong_r1c_pose_07_gyre_03.png": {
+      "sha256": "8bf62672c6a93ce9d38f7370feae5900d9eebd9810c0e0785be6091397f90dd5",
+      "bytes": 78770
+    },
+    "kiem_vu_hoi_phong_r1c_pose_08_gyre_04.png": {
+      "sha256": "09c298f732bde80f7b5442935a75da4e0d094cb06435acae90d06364ca87cb98",
+      "bytes": 89440
+    },
+    "kiem_vu_hoi_phong_r1c_pose_09_contact.png": {
+      "sha256": "2bbb86beac6225d426602e1e3af8fafe2e4edfa60f0b2e4dac52eed4f51a24e2",
+      "bytes": 89371
+    },
+    "kiem_vu_hoi_phong_r1c_pose_10_shock.png": {
+      "sha256": "449d2871c569d9da3d5352bcfe7adb84149fa89bca4e37c1423f05f7683c84d3",
+      "bytes": 110489
+    },
+    "kiem_vu_hoi_phong_r1c_pose_11_fade_01.png": {
+      "sha256": "8f7707d303580bc42553ab6b9c0b9524235715252f3c172847af32ab3cf3f65c",
+      "bytes": 40118
+    },
+    "kiem_vu_hoi_phong_r1c_pose_12_fade_02.png": {
+      "sha256": "68be3671f8ffad4d460439effb33ff6977bea532e519ad2a8aea01000e2e2dfe",
+      "bytes": 22929
+    }
+  },
+  "gates": {
+    "G0": "CANONICAL_CONFIRMED",
+    "G3": "ART_VISUAL_REVIEW_PENDING",
+    "G35_G7": "NOT_EXECUTED",
+    "owner": "PENDING",
+    "pve": "HOLD"
+  },
+  "scope": {
+    "no_rig": true,
+    "no_codex_cloud": true,
+    "no_merge": true,
+    "no_pve": true,
+    "no_gameplay_writes": true
+  }
+}
