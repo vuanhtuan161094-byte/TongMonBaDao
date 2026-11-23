@@ -101,7 +101,7 @@ func _run() -> void:
     var actors: Dictionary = ui.get("actor_nodes")
     if not actors.has(str(first_id)):
         var virtuals: Dictionary = ui.get("actor_virtual_positions")
-        var focused := ui.get("focused_id")
+        var focused: Variant = ui.get("focused_id")
         var recruit: DiscipleState = state.disciples[first_id]
         _fail("O2 accepted disciple did not materialize after focus tween: id=%s selected=%s focused=%s virtual=%s region=%s action=%s pve=%s" % [
             str(first_id),str(ui.get("selected_id")),str(focused),
