@@ -13,7 +13,7 @@
     "projectile_speed": 8,
     "damage_ratio": 0.82
   },
-  "source": "first-party independently composed digital-raster candidate; procedural/illustrative study, NOT ImageGen master, NOT owner approved",
+  "source": "first-party procedural source-art R1C-A with deterministic painterly volume postprocess, NOT ImageGen master, NOT owner approved",
   "pose_count": 12,
   "cell_px": [
     512,
@@ -42,95 +42,95 @@
     {
       "frame": 1,
       "phase": "charge_01",
-      "alpha_nonzero_pixels": 9919,
+      "alpha_nonzero_pixels": 70055,
       "bbox": [
-        167,
-        168,
-        345,
-        348
+        28,
+        126,
+        480,
+        440
       ],
       "safe_8px_border": true
     },
     {
       "frame": 2,
       "phase": "charge_02",
-      "alpha_nonzero_pixels": 17325,
+      "alpha_nonzero_pixels": 84468,
       "bbox": [
-        148,
-        144,
-        373,
-        363
+        20,
+        90,
+        495,
+        448
       ],
       "safe_8px_border": true
     },
     {
       "frame": 3,
       "phase": "charge_03",
-      "alpha_nonzero_pixels": 27833,
+      "alpha_nonzero_pixels": 99082,
       "bbox": [
-        117,
-        121,
-        395,
-        374
+        14,
+        57,
+        480,
+        464
       ],
       "safe_8px_border": true
     },
     {
       "frame": 4,
       "phase": "release",
-      "alpha_nonzero_pixels": 25807,
+      "alpha_nonzero_pixels": 34533,
       "bbox": [
-        33,
+        27,
         167,
-        393,
-        420
+        398,
+        439
       ],
       "safe_8px_border": true
     },
     {
       "frame": 5,
       "phase": "gyre_01",
-      "alpha_nonzero_pixels": 33174,
+      "alpha_nonzero_pixels": 44226,
       "bbox": [
-        55,
+        11,
         130,
         406,
-        417
+        434
       ],
       "safe_8px_border": true
     },
     {
       "frame": 6,
       "phase": "gyre_02",
-      "alpha_nonzero_pixels": 31783,
+      "alpha_nonzero_pixels": 45858,
       "bbox": [
-        38,
-        127,
+        11,
+        116,
         415,
-        406
+        421
       ],
       "safe_8px_border": true
     },
     {
       "frame": 7,
       "phase": "gyre_03",
-      "alpha_nonzero_pixels": 48196,
+      "alpha_nonzero_pixels": 61474,
       "bbox": [
-        48,
-        122,
+        12,
+        88,
         444,
-        362
+        375
       ],
       "safe_8px_border": true
     },
     {
       "frame": 8,
       "phase": "gyre_04",
-      "alpha_nonzero_pixels": 53991,
+      "alpha_nonzero_pixels": 68491,
       "bbox": [
-        56,
-        109,
-        494,
+        11,
+        85,
+        491,
         364
       ],
       "safe_8px_border": true
@@ -138,35 +138,35 @@
     {
       "frame": 9,
       "phase": "contact",
-      "alpha_nonzero_pixels": 50771,
+      "alpha_nonzero_pixels": 154987,
       "bbox": [
-        54,
-        109,
-        453,
-        373
+        10,
+        21,
+        502,
+        490
       ],
       "safe_8px_border": true
     },
     {
       "frame": 10,
       "phase": "shock",
-      "alpha_nonzero_pixels": 69149,
+      "alpha_nonzero_pixels": 159801,
       "bbox": [
-        49,
-        128,
-        487,
-        416
+        22,
+        17,
+        502,
+        491
       ],
       "safe_8px_border": true
     },
     {
       "frame": 11,
       "phase": "fade_01",
-      "alpha_nonzero_pixels": 21323,
+      "alpha_nonzero_pixels": 33346,
       "bbox": [
-        155,
-        119,
-        453,
+        149,
+        107,
+        499,
         342
       ],
       "safe_8px_border": true
@@ -174,11 +174,11 @@
     {
       "frame": 12,
       "phase": "fade_02",
-      "alpha_nonzero_pixels": 7714,
+      "alpha_nonzero_pixels": 18076,
       "bbox": [
         192,
-        163,
-        468,
+        156,
+        499,
         324
       ],
       "safe_8px_border": true
@@ -187,60 +187,64 @@
   "all_pose_distinct": true,
   "files": {
     "G3_preflight_1x_dark_light.png": {
+      "sha256": "87f6baecafb7545ba9dfa55923dd95aa6bd33116bbfe58f09948df55ca05e7a4",
+      "bytes": 424700
+    },
+    "G3_preflight_R1C_baseline_1x.png": {
       "sha256": "0c0205245fa5840701d0ec41a21f99f28e5cbb40c378054ee86ce908f4518e28",
       "bytes": 231602
     },
     "kiem_vu_hoi_phong_r1c_atlas_rgba.png": {
-      "sha256": "9aae01f40be2a9f85e17071dd8c6596e1cf66455b7a587eb819271ab98266418",
-      "bytes": 742291
+      "sha256": "4409e67ab62c4a053ff8483014eb2f32b2af63ac64bfe15ea649e87aca4eb950",
+      "bytes": 1583547
     },
     "kiem_vu_hoi_phong_r1c_pose_01_charge_01.png": {
-      "sha256": "1301f1e3557ccd9ac6398e4cd568247e27a00a9b718e6af9fb3287fe4feebfcc",
-      "bytes": 28737
+      "sha256": "deb369be8c95e11f76be9a3d3a4cebe5b6fbb844464fb2dc7792ad9cf60af185",
+      "bytes": 123127
     },
     "kiem_vu_hoi_phong_r1c_pose_02_charge_02.png": {
-      "sha256": "4367162cef0114234d6d7dbae8f2aada0a5d6458e82c850fef98a3c7940f6e4d",
-      "bytes": 43882
+      "sha256": "301f44874cd3fb6aad6976793b43094e8a7d66d1294378c4e4997f28906984cc",
+      "bytes": 145159
     },
     "kiem_vu_hoi_phong_r1c_pose_03_charge_03.png": {
-      "sha256": "eb3328dd67b7b1291d0586f94db7fce9d60757182c34e6bff005db52a2e438f9",
-      "bytes": 62885
+      "sha256": "5288eb4b924362d869332f3a179123144406a0aa78f123be98819fa3b154934d",
+      "bytes": 170117
     },
     "kiem_vu_hoi_phong_r1c_pose_04_release.png": {
-      "sha256": "ee9c2fe62253e1036814aa322767ebda6c7a35367ca613bb6bf852c2886c79f7",
-      "bytes": 43381
+      "sha256": "f1eb1cc998be70f164f19e70aa7a300a0c0cbdeccabd3bd8af0d139e72f20bc1",
+      "bytes": 72670
     },
     "kiem_vu_hoi_phong_r1c_pose_05_gyre_01.png": {
-      "sha256": "29acdf89db2c916c5a84e16059db74e97515c479e0ac356fb8bf3e4952d16775",
-      "bytes": 63374
+      "sha256": "529a63c4b10ac145c4e4597dba7e56365c2afa91c76c1865f7939ac99d27b020",
+      "bytes": 92494
     },
     "kiem_vu_hoi_phong_r1c_pose_06_gyre_02.png": {
-      "sha256": "ab5881a023f4b009d2f0d81d6ce85eb9997adaf8fbd3bb04c538d89e047e21e0",
-      "bytes": 60430
+      "sha256": "fe07d219a8a33b385dc57be7a1e3306e8568b47d4c70c42fd22adf5c038fba45",
+      "bytes": 91424
     },
     "kiem_vu_hoi_phong_r1c_pose_07_gyre_03.png": {
-      "sha256": "8bf62672c6a93ce9d38f7370feae5900d9eebd9810c0e0785be6091397f90dd5",
-      "bytes": 78770
+      "sha256": "a8769450aade6e2e85569cc87617ae2361681c678dfd8ef7dd76f372fd52a6e4",
+      "bytes": 116961
     },
     "kiem_vu_hoi_phong_r1c_pose_08_gyre_04.png": {
-      "sha256": "09c298f732bde80f7b5442935a75da4e0d094cb06435acae90d06364ca87cb98",
-      "bytes": 89440
+      "sha256": "94cedcc834f34bac3b1651ed78a600cb40f3c288522e0b39f0cfc3ac0655a555",
+      "bytes": 128324
     },
     "kiem_vu_hoi_phong_r1c_pose_09_contact.png": {
-      "sha256": "2bbb86beac6225d426602e1e3af8fafe2e4edfa60f0b2e4dac52eed4f51a24e2",
-      "bytes": 89371
+      "sha256": "4432bd9531bf2d42c30c1eb41dd8c62be3732059f0a91382a6fadb09543bb85c",
+      "bytes": 264538
     },
     "kiem_vu_hoi_phong_r1c_pose_10_shock.png": {
-      "sha256": "449d2871c569d9da3d5352bcfe7adb84149fa89bca4e37c1423f05f7683c84d3",
-      "bytes": 110489
+      "sha256": "f68c893130537d53a86dda19b416a269a46f558582398525fe27c1cd805c1516",
+      "bytes": 268015
     },
     "kiem_vu_hoi_phong_r1c_pose_11_fade_01.png": {
-      "sha256": "8f7707d303580bc42553ab6b9c0b9524235715252f3c172847af32ab3cf3f65c",
-      "bytes": 40118
+      "sha256": "da7bc523f62cdec368503560f672f3cb0c1132ba476da127e13ed46e7818cc96",
+      "bytes": 64718
     },
     "kiem_vu_hoi_phong_r1c_pose_12_fade_02.png": {
-      "sha256": "68be3671f8ffad4d460439effb33ff6977bea532e519ad2a8aea01000e2e2dfe",
-      "bytes": 22929
+      "sha256": "1703959a866a910e3ce1cc7303ce05fed5cdd15f1a5da75af9c3e29382eae791",
+      "bytes": 39681
     }
   },
   "gates": {
