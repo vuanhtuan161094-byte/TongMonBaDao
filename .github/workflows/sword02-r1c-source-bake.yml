@@ -92,3 +92,5 @@ jobs:
             git commit -m "art(vfx-sword02): bake R1C source RGBA 12 poses and G3 1x previews"
             git push origin "HEAD:${GITHUB_REF_NAME}"
           fi
+
+# R1C-A: the original baseline contact sheet is immutable across source-only reruns.
