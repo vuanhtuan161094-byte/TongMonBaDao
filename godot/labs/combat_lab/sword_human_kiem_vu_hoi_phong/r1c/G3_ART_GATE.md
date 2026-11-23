@@ -55,3 +55,14 @@ Source names remain R1C so downstream Godot integration paths are unchanged; new
 - Generated RGBA source commit: `9bf82fafd57d71f2e69125b00bd5ab57d79282da`.
 - [R1C-A G3 source-only Actions run 45126278520](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/45126278520): **SUCCESS**. The job verified 12/12 nonempty alpha, 12 distinct poses, 12/12 safe 8px borders and shape=circle/target_limit=3 in the manifest. Generated atlas recorded SHA256: `4409e67ab62c4a053ff8483014eb2f32b2af63ac64bfe15ea649e87aca4eb950`.
 - The CI proof is SOURCE_TECH_PASS only. **G3 ART: IMPROVED / REVIEW REQUIRED**, G3.5+ not run, Owner=PENDING, PvE=HOLD. No Game runtime proof.
+
+## R1C-B — owner feedback: sword sprite simplicity (2026-11-23)
+The owner reports the R1C-A blade is *too detailed and ugly at 1×*: reduce unnecessary ornament and keep the weapon **a genuinely good readable sprite** instead of increasing polygon count or drawing finely engraved decorations.
+
+Changes limited to VFX source `facets` painter:
+- Remove 7 engraved zigzag veins, 5 grip-wrap ticks, ornamental highlights and excessive blade mini-facets.
+- Use one clean dark outline, a flat silver upper blade, cyan lower plane, one crisp cutting edge, a short wing guard and minimal pommel.
+- Preserve tangent direction, dimensions, charge timing, circular gyre and area-impact phases; export an isolated transparent `kiem_vu_hoi_phong_sword_clean_master_rgba.png` to judge actual sprite clarity.
+- Save the previous R1C-A 174px source preview immutably as `G3_preflight_R1CA_before_sword_1x.png` and generate `G3_sword_R1CA_vs_R1CB_1x.png` + `R1CB_G3_source_1x_review.gif` on dark/light ground.
+
+Local art-only preflight: 12 frames nonempty, distinct, safe eight-pixel borders; the non-weapon shock/fade frames 10–12 are byte-identical in pixel content before vs after. Source aesthetic is **candidate for owner review, not approved**. Technical source QA and Godot runtime are separate gates. **G3 ART=REVIEW PENDING; PvE HOLD; no Codex Cloud, rig or merge.**

@@ -64,34 +64,35 @@ def paint_wind(img,end,span,opacity,seed):
         ribbon(img,path(a,(a[0]+nx*19,a[1]+ny*19),(c[0]-dx*.8,c[1]-dy*.8),c,32),rnd.uniform(1,3.5),C['ice']+(round(75*opacity),),seed+j*29)
 
 def facets(img,center,angle,scale):
-    """Physical silver jian with beveled steel, fuller, blue facets, visible guard and pommel."""
+    """R1C-B: restrained, 1x-first jian sprite; silhouette over engraving.
+
+    No etched veins, grip wrapping loops, gem clusters, stacked facet noise, or
+    metallic micro-lines. Two blade planes + one cutting edge + clean guard.
+    Position and tangent stay unchanged for the existing 12-phase VFX.
+    """
     ox,oy=center;ca=math.cos(angle);sa=math.sin(angle)
     def tx(u,v):return (round(ox+scale*(u*ca-v*sa)),round(oy+scale*(u*sa+v*ca)))
-    def poly(coords,color):ImageDraw.Draw(img).polygon([tx(*p) for p in coords],fill=color)
-    def line(coords,color,w=1):ImageDraw.Draw(img).line([tx(*p) for p in coords],fill=color,width=max(1,round(w*scale)),joint='curve')
-    # Under-weapon backlight is narrow; sword remains metal rather than an abstract streak.
-    broad=blank();d=ImageDraw.Draw(broad)
-    d.line([tx(-78,0),tx(136,0)],fill=(35,167,249,170),width=max(2,round(20*scale)))
-    img.alpha_composite(broad.filter(ImageFilter.GaussianBlur(10)))
-    poly([(-68,-6),(-56,-7),(-56,7),(-68,6)],(23,74,120,255))
-    poly([(-62,-9),(-83,-9),(-95,0),(-83,9),(-62,9)],(83,174,224,255))
-    poly([(-89,-6),(-95,0),(-89,6)],(229,251,255,255))
-    for k in range(5):
-        x=-72+k*4.5;line([(x,-7),(x+5,7)],(181,240,255,230),1.5)
-    # Guard quillons shape silver, with two cyan gems.
-    poly([(-53,-32),(-43,-26),(-39,-11),(-36,-4),(-36,4),(-43,26),(-53,32),(-48,8),(-50,0)],(19,86,161,255))
-    line([(-53,-29),(-45,-20),(-39,-3),(-45,20),(-53,29)],(203,249,255,245),2)
-    poly([(-43,-8),(-35,-4),(-35,4),(-43,8)],(233,254,255,250))
-    # blade (175 source px), engraved bevels with one white cutting edge and deep outline
-    poly([(-35,-12),(102,-7),(143,0),(102,7),(-35,12)],(8,48,110,240))
-    poly([(-33,-10),(102,-5),(143,0),(-31,0)],(173,226,251,255))
-    poly([(-31,0),(143,0),(102,6),(-33,10)],(38,145,229,252))
-    poly([(-31,-8),(114,-3),(143,0),(-32,-1)],(246,254,255,250))
-    line([(-20,2),(83,2),(122,0)],(201,248,255,240),2)
-    line([(-25,6),(70,4),(105,2)],(23,83,155,245),2)
-    for j in range(7):
-        u=-5+j*15
-        line([(u,3),(u+5,4.5*math.sin(j*.8)+3),(u+9,3)],(8,68,134,155),1)
+    def poly(points,color):ImageDraw.Draw(img).polygon([tx(*p) for p in points],fill=color)
+    def line(points,color,w=1.5):ImageDraw.Draw(img).line([tx(*p) for p in points],fill=color,width=max(1,round(w*scale)),joint='curve')
+    # Minimal diffused halo: clean silhouette remains dominant at 174 px.
+    back=blank()
+    ImageDraw.Draw(back).line([tx(-38,0),tx(135,0)],fill=(46,154,233,94),width=max(2,round(14*scale)))
+    img.alpha_composite(back.filter(ImageFilter.GaussianBlur(7)))
+
+    # Handle: one dark blue grip + simple silver pommel, with no micro-pattern.
+    poly([(-39,-5),(-69,-5),(-77,0),(-69,5),(-39,5)],(31,87,149,252))
+    poly([(-72,-7),(-83,0),(-72,7)],(146,220,246,250))
+    poly([(-73,-3),(-79,0),(-73,3)],(245,255,255,246))
+
+    # Guard: distinctive short curved wings with one upper highlight.
+    poly([(-42,-22),(-35,-18),(-31,-5),(-30,5),(-35,18),(-42,22),(-39,8),(-39,-8)],(20,80,145,255))
+    line([(-41,-19),(-35,-12),(-33,0),(-35,12),(-41,19)],(186,235,251,235),2)
+
+    # Jian blade: broad silver top, cyan-blue lower plane, ONE white edge.
+    poly([(-33,-12),(101,-7),(144,0),(101,7),(-33,12)],(12,55,120,248))
+    poly([(-31,-9),(100,-5),(141,0),(-31,0)],(202,237,250,254))
+    poly([(-31,0),(141,0),(100,5),(-31,9)],(66,157,221,248))
+    line([(-29,-7),(105,-4),(138,0)],(251,255,255,247),2.2)
 
 def mote(img,rng,center,n,spread,al):
     d=ImageDraw.Draw(img);x0,y0=center
@@ -171,6 +172,10 @@ def render(i):
 from enhance_r1c_artfirst_v4 import enhance
 frames=[enhance(render(i), i) for i in range(12)]
 for i,im in enumerate(frames):im.save(OUT/f'kiem_vu_hoi_phong_r1c_pose_{i+1:02}_{PHASE[i]}.png')
+# Isolated transparent sample of simplified sword, no gameplay equipment authority.
+sword_only=blank()
+facets(sword_only,(256,256),-.18,1.05)
+sword_only.save(OUT/'kiem_vu_hoi_phong_sword_clean_master_rgba.png')
 atlas=Image.new('RGBA',(S*4,S*3))
 for i,im in enumerate(frames):atlas.alpha_composite(im,(S*(i%4),S*(i//4)))
 atlas.save(OUT/'kiem_vu_hoi_phong_r1c_atlas_rgba.png')

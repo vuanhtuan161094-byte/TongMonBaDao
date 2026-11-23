@@ -37,6 +37,9 @@ jobs:
           if [[ ! -f "$source_dir/G3_preflight_R1C_baseline_1x.png" ]]; then
             cp "$source_dir/G3_preflight_1x_dark_light.png" "$source_dir/G3_preflight_R1C_baseline_1x.png"
           fi
+          if [[ ! -f "$source_dir/G3_preflight_R1CA_before_sword_1x.png" ]]; then
+            cp "$source_dir/G3_preflight_1x_dark_light.png" "$source_dir/G3_preflight_R1CA_before_sword_1x.png"
+          fi
           base64 -d "$source_dir/enhance_r1c_artfirst_v4.py.gz.b64" | gzip -d > "$source_dir/enhance_r1c_artfirst_v4.py"
           python "$source_dir/generate_kiem_vu_hoi_phong_r1c.py"
       - name: Bake side-by-side G3 1x comparison and source-only animated review
@@ -46,14 +49,14 @@ jobs:
           import pathlib
           from PIL import Image, ImageDraw
           p=pathlib.Path('godot/labs/combat_lab/sword_human_kiem_vu_hoi_phong/r1c/source')
-          a=Image.open(p/'G3_preflight_R1C_baseline_1x.png').convert('RGB')
+          a=Image.open(p/'G3_preflight_R1CA_before_sword_1x.png').convert('RGB')
           b=Image.open(p/'G3_preflight_1x_dark_light.png').convert('RGB')
           assert a.size==b.size
           out=Image.new('RGB',(a.width*2+12,a.height+30),(15,25,39))
           out.paste(a,(0,30));out.paste(b,(a.width+12,30))
-          d=ImageDraw.Draw(out);d.text((12,10),'R1C BASELINE 1x',fill='white')
-          d.text((a.width+24,10),'R1C-A REWORK 1x - SOURCE ONLY',fill=(172,238,255))
-          out.save(p/'G3_R1C_to_R1CA_comparison_1x.png')
+          d=ImageDraw.Draw(out);d.text((12,10),'R1C-A ORIGINAL SWORD (1x)',fill='white')
+          d.text((a.width+24,10),'R1C-B CLEAN SWORD (1x) - SOURCE ONLY',fill=(172,238,255))
+          out.save(p/'G3_sword_R1CA_vs_R1CB_1x.png')
           phases=['charge_01','charge_02','charge_03','release','gyre_01','gyre_02','gyre_03','gyre_04','contact','shock','fade_01','fade_02']
           frames=[]
           for i,phase in enumerate(phases):
@@ -62,10 +65,10 @@ jobs:
               for j,bg in enumerate([(24,34,49),(219,223,214)]):
                   tile=Image.new('RGBA',(174,174),bg+(255,));tile.alpha_composite(sprite)
                   f.paste(tile.convert('RGB'),(10+j*184,21))
-              dd.text((8,4),f'R1C-A SOURCE 1x - {i+1:02d} {phase}',fill=(237,245,255))
+              dd.text((8,4),f'R1C-B SOURCE 1x - {i+1:02d} {phase}',fill=(237,245,255))
               dd.text((12,199),'DARK',fill=(175,218,253));dd.text((197,199),'LIGHT',fill=(175,218,253))
               frames.append(f)
-          frames[0].save(p/'R1CA_G3_source_1x_review.gif',save_all=True,append_images=frames[1:],duration=[120]*8+[170,140,150,280],loop=0,optimize=False)
+          frames[0].save(p/'R1CB_G3_source_1x_review.gif',save_all=True,append_images=frames[1:],duration=[120]*8+[170,140,150,280],loop=0,optimize=False)
           PY
       - name: G3 preflight technical guard (NOT visual approval)
         shell: bash
@@ -78,7 +81,10 @@ jobs:
           assert all(x['alpha_nonzero_pixels']>0 and x['safe_8px_border'] for x in m['checks'])
           assert m['canonical']['target_limit']==3 and m['canonical']['shape']=='circle'
           assert m['gates']['pve']=='HOLD'
-          print('SOURCE_TECH_PASS 12/12 alpha, 12/12 distinct, 12/12 border, canon HOLD')
+          from PIL import Image
+          sword=Image.open(p/'kiem_vu_hoi_phong_sword_clean_master_rgba.png').convert('RGBA')
+          assert sword.size==(512,512) and sword.getchannel('A').getbbox() is not None
+          print('SOURCE_TECH_PASS 12/12 alpha, 12/12 distinct, 12/12 border, clean-sword RGBA 512, canon HOLD')
           print('ATLAS_SHA256', hashlib.sha256((p/'kiem_vu_hoi_phong_r1c_atlas_rgba.png').read_bytes()).hexdigest())
           PY
       - name: Commit generated RGBA and source 1x review without runtime integration
