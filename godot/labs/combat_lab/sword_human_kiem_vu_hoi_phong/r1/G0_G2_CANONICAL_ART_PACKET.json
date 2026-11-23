@@ -56,7 +56,7 @@
   },
   "G0": {
     "canonical_status": "VERIFIED_FROM_LIVE_CATALOGUE",
-    "reviewed_ref": "f1bdfa0ae68dfe1e571b8b2d1f0cf06595d94b44",
+    "reviewed_ref": "1bb0ff8640f2b8044b74565998eb7e2be94bb26c",
     "character_asset": "AS48 existing sword candidate FRONT attack four true cels only; this packet does not add any missing direction",
     "monster_walk": "existing repository sprite candidate; no new monster/source actor generated",
     "skill_01_owner": "Phi Kiếm Truy Ảnh R2B owner satisfied; FROZEN outside this skill"
@@ -192,20 +192,36 @@
     "G0": "CANONICAL_CHECKED",
     "G1": "INTERNAL_REFERENCES_ONLY_EXTERNAL_MOTION_PENDING",
     "G2": "STORYBOARD_AUTHORED_NOT_OWNER_REVIEWED",
-    "G3": "SOURCE_NOT_CREATED_HARD_STOP",
-    "G35_G37_NATIVE": "NOT_EXECUTED_BY_ART_GATE",
-    "G4_G7": "NOT_EXECUTED",
+    "G3": "SOURCE_CANDIDATE_DURABLE_ART_SELF_REWORK_REQUIRED",
+    "G35_G37_NATIVE": "NOT_EXECUTED_G3_ART_HARD_STOP",
+    "G4_G7": "NOT_EXECUTED_G3_ART_HARD_STOP",
     "WEB": "NOT_PUBLISHED",
     "OWNER": "PENDING",
     "PVE": "HOLD"
   },
   "source_attempts": {
-    "image_generation_rejections": 3,
-    "reason": "Output files were fully rendered info/dashboard posters with invented names, SHAs, QA/PASS and game screenshots, not clean independent transparent sprite frames. Do not use, crop, or call them art sources.",
-    "original_source_repo_path": null,
-    "atlas_repo_path": null,
-    "source_sha256": null,
-    "visual_review": "UNAVAILABLE"
+    "image_generation_rejections": 4,
+    "reason": "Four image-generation attempts produced presentation infographics with wrong skill names and fake CI/QA PASS. All disqualified. Instead independently generated original 12-cel RGBA raster painted candidate, but native-scale self art FAIL.",
+    "original_source_repo_path": "godot/labs/combat_lab/sword_human_kiem_vu_hoi_phong/r1/source/generate_r1_candidate.py",
+    "atlas_repo_path": "godot/labs/combat_lab/sword_human_kiem_vu_hoi_phong/r1/source/sword02_human_r1_candidate_atlas.png",
+    "source_sha256": "ba3b11f702b03618ebecaad8c4af58bcc30139e9a559bd01269535ecc7f28fbe",
+    "visual_review": "G3_SELF_FAIL_REAL_1X_DARK_LIGHT_RENDER",
+    "art_source_kind": "first-party original Pillow/Python layered RGBA raster painted poses; frame-by-frame distinct morphology; source script and exact bytes durable on GitHub",
+    "sprite_count": 12,
+    "sprite_px": [
+      512,
+      512
+    ],
+    "atlas_px": [
+      2048,
+      1536
+    ],
+    "tech_qa": "SOURCE_12_OF_12_NONEMPTY_UNIQUE_ALPHA_EDGE_CLEAN_REGENERATED_HASH_EXACT_PASS",
+    "art_defects": [
+      "Insufficient 1× weight, sword wind still looks thin/flat relative to owner POI06 benchmark",
+      "Bright-background charge and dissipate not sufficiently legible",
+      "No native AS48/WALK G3.5 compositing permitted until source is reworked"
+    ]
   },
   "release_guardrails": [
     "NO_NEW_WEB_SITE",
@@ -216,5 +232,6 @@
     "NO_GAMEPLAY_CHANGE",
     "NO_CATALOGUE_MUTATION",
     "NO_FALSE_ART_OR_TECH_PASS"
-  ]
+  ],
+  "next_action": "Repaint source hero wind-blade material/volume, close-range semantic silhouette, bright-ground contrast in new school-only revision R1B; inspect 1× G3 before any Godot/Actions. Do not touch skill01 R2B."
 }
