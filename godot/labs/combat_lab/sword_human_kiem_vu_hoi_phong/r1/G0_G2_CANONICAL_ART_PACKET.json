@@ -1,0 +1,220 @@
+{
+  "schema": "tmb.vfx.art_first_v4.school_source_preproduction.v1",
+  "revision": "SWORD02_HUMAN_R1",
+  "date": "2026-11-23",
+  "skill": {
+    "id": "tmb.skill.sword.ngu_kiem.active_02.human",
+    "name": "Kiếm Vũ Hồi Phong",
+    "school": "sword",
+    "branch": "ngu_kiem",
+    "tier": "human",
+    "slot": "active_02",
+    "family_id": "tmb.skill.sword.ngu_kiem.active_02",
+    "canonical_catalogue_path": "godot/data/combat/v63_sword_combat_catalog.json",
+    "canonical_school_ledger_path": "docs/operations/vfx_school_ledgers/03_sword_183.csv",
+    "animation_key": "v63_sword_ngu_kiem_active_02_human_base",
+    "vfx_key": "v63_sword_original_ngu_kiem_active_02",
+    "effect": "damage",
+    "element": "metal",
+    "shape": "circle",
+    "radius_world": 1.4,
+    "target_limit": 3,
+    "range_world": 7,
+    "cast_seconds": 0.36,
+    "cooldown_seconds": 10,
+    "projectile_speed_world_units": 8,
+    "damage_ratio": 0.82,
+    "duration_seconds": 0,
+    "candidate_status": "CANDIDATE_GATED_SOURCE_PENDING"
+  },
+  "three_clocks": {
+    "canonical_combat": {
+      "cast_seconds": 0.36,
+      "cooldown_seconds": 10,
+      "projectile_speed_world_units": 8,
+      "hit_count": "NOT_DECLARED",
+      "target_limit": 3,
+      "radius_world": 1.4
+    },
+    "combat_runtime_receipts": {
+      "cast_event": "RUNTIME_MAPPING_PENDING",
+      "contact_event": "RUNTIME_MAPPING_PENDING",
+      "target_list": "RUNTIME_MAPPING_PENDING",
+      "no_fabricated_damage_or_hits": true
+    },
+    "visual_lab_only": {
+      "source_pose_count_plan": 12,
+      "cue": "one coherent sword-quang gyre across real circle-area targets, not three independent strikes",
+      "visual_phase_timings": "STORYBOARD_ONLY_NOT_COMBAT_AUTHORITY",
+      "runtime_time_mapping": "NOT_EXECUTED"
+    },
+    "showcase_clock": {
+      "native_movie": "NOT_EXECUTED",
+      "web_review": "NOT_EXECUTED",
+      "fps_measurement": "NOT_EXECUTED"
+    }
+  },
+  "G0": {
+    "canonical_status": "VERIFIED_FROM_LIVE_CATALOGUE",
+    "reviewed_ref": "f1bdfa0ae68dfe1e571b8b2d1f0cf06595d94b44",
+    "character_asset": "AS48 existing sword candidate FRONT attack four true cels only; this packet does not add any missing direction",
+    "monster_walk": "existing repository sprite candidate; no new monster/source actor generated",
+    "skill_01_owner": "Phi Kiếm Truy Ảnh R2B owner satisfied; FROZEN outside this skill"
+  },
+  "G1": {
+    "reference_status": "INTERNAL_BENCHMARK_DOCUMENTS_REVIEWED_EXTERNAL_MOTION_CLIP_PENDING",
+    "positive_references": [
+      "POI06 R11 organic translucent body, not pixels",
+      "POI19 R3 living afterlight, not pixels",
+      "POI15 R1B readable localized contact, not pixels",
+      "Kiếm Tu skill01 R2B original visible sword silhouette, not reusable core art"
+    ],
+    "copyright": "NO_JX_COMMERCIAL_PIXELS_OR_REVERSED_ASSETS"
+  },
+  "G2": {
+    "design_status": "SCHOOL_ORIGINAL_STORYBOARD_PREPARED_OWNER_NOT_YET_REVIEWED",
+    "motif": "One cluster of silver-blue flying sword qi weaving a smooth returning spiral, clearly recognizable slim sword blade/hilt/facets and wind-carved shearing contour. It sweeps the target AREA as one coherent presentation, does not impersonate three independent attacks or guaranteed hits.",
+    "visual_reading_vi": "Người chơi thấy kiếm ý tụ tại chuôi → đường kiếm bạc xanh xoáy nhẹ qua một vùng trước mục tiêu → ánh lóe chỉ tại mục tiêu thực được receipt chọn → tàn quang trả lại/tiêu tán; hiểu kỹ năng đánh phạm vi chứ không phải một phi kiếm đơn mục tiêu.",
+    "unique_from_skill01": "Skill01 is a straight single-target traveling sword; skill02 is a crescent-shaped returning area gyre, not a cloned straight missile or recolor.",
+    "layers": {
+      "back": "translucent flowing wind-silk thin 15–35% alpha trail BEHIND actor/targets",
+      "body": "illustrated metal blade-shaped silver/cyan ribbon with 45–75% irregular alpha, sharpened leading edge",
+      "core": "compact near-white moving hard highlight at leading tip/hilt, never a full opaque circle",
+      "contact": "localized blue-silver intersecting sword-light at actual selected targets, never full-area false damage",
+      "fade": "asymmetric smaller fading sword flecks, no persistent mark/status"
+    },
+    "planned_independent_cels": [
+      {
+        "n": 1,
+        "phase": "charge",
+        "visual": "small irregular wind-ribbons gather around actual AS48 grip, weapon remains legible"
+      },
+      {
+        "n": 2,
+        "phase": "charge",
+        "visual": "narrow silver-white sword-spine emerges from blue cloud, asymmetry increases"
+      },
+      {
+        "n": 3,
+        "phase": "charge",
+        "visual": "metallic blade facets converge, compact core grows without a giant circle"
+      },
+      {
+        "n": 4,
+        "phase": "release",
+        "visual": "one clear sword-line tears away from the weapon-tip, curling into a crescent"
+      },
+      {
+        "n": 5,
+        "phase": "travel",
+        "visual": "blade-like crescent opens over target circle, no independent added target"
+      },
+      {
+        "n": 6,
+        "phase": "travel",
+        "visual": "sword blade and trailing thin silk swap inner/outer curvature"
+      },
+      {
+        "n": 7,
+        "phase": "travel",
+        "visual": "visible metallic edge at the wide arc peak, changing luminous silhouette"
+      },
+      {
+        "n": 8,
+        "phase": "travel",
+        "visual": "second arc angle is return motion of SAME visual sweep, not second damage receipt"
+      },
+      {
+        "n": 9,
+        "phase": "contact",
+        "visual": "one concentrated local white-blue spark at the actual hit contact, no invented multi-hit"
+      },
+      {
+        "n": 10,
+        "phase": "contact",
+        "visual": "small diagonal splinters follow only selected target contacts"
+      },
+      {
+        "n": 11,
+        "phase": "fade",
+        "visual": "clearly weaker asymmetric curved residual fragments, no mark"
+      },
+      {
+        "n": 12,
+        "phase": "fade",
+        "visual": "last small warm silver/cyan flecks decay into transparent alpha"
+      }
+    ],
+    "composition_rules": {
+      "frame_count_plan": 12,
+      "illustration_source": "first-party original truly independent RGBA changing keyposes",
+      "source_size": "pending original painting; do not invent geometry until art authored",
+      "atlas_layout_suggestion": "4x3, final exact cell width/height after actual source; alpha0 corners",
+      "game_1x": "must show blade and curved area semantics on light and dark floors alongside true actor and WALK monster",
+      "moving_target_semantics": "target focus follows runtime target selection, avoids auto hitting a decoy",
+      "direction_scope": "AS48 Front only until genuine other authored clips verified",
+      "no_rig": true
+    }
+  },
+  "visual_fallback_check": {
+    "source_for_alias": "VISUAL_SOURCE_PENDING",
+    "tier_semantics_compatible_in_principle": true,
+    "tiers": [
+      {
+        "id": "tmb.skill.sword.ngu_kiem.active_02.immortal.a",
+        "shape": "circle",
+        "target_limit": 3,
+        "radius_world": 1.512
+      },
+      {
+        "id": "tmb.skill.sword.ngu_kiem.active_02.immortal.b",
+        "shape": "circle",
+        "target_limit": 3,
+        "radius_world": 1.512
+      },
+      {
+        "id": "tmb.skill.sword.ngu_kiem.active_02.divine.a",
+        "shape": "circle",
+        "target_limit": 3,
+        "radius_world": 1.624
+      },
+      {
+        "id": "tmb.skill.sword.ngu_kiem.active_02.divine.b",
+        "shape": "circle",
+        "target_limit": 3,
+        "radius_world": 1.624
+      }
+    ],
+    "alias_created": false,
+    "condition": "Only when Human G3 actually has a usable painted source and per-tier timing/real target selection remain canonical. No tier's independent art approved."
+  },
+  "gate_status": {
+    "G0": "CANONICAL_CHECKED",
+    "G1": "INTERNAL_REFERENCES_ONLY_EXTERNAL_MOTION_PENDING",
+    "G2": "STORYBOARD_AUTHORED_NOT_OWNER_REVIEWED",
+    "G3": "SOURCE_NOT_CREATED_HARD_STOP",
+    "G35_G37_NATIVE": "NOT_EXECUTED_BY_ART_GATE",
+    "G4_G7": "NOT_EXECUTED",
+    "WEB": "NOT_PUBLISHED",
+    "OWNER": "PENDING",
+    "PVE": "HOLD"
+  },
+  "source_attempts": {
+    "image_generation_rejections": 3,
+    "reason": "Output files were fully rendered info/dashboard posters with invented names, SHAs, QA/PASS and game screenshots, not clean independent transparent sprite frames. Do not use, crop, or call them art sources.",
+    "original_source_repo_path": null,
+    "atlas_repo_path": null,
+    "source_sha256": null,
+    "visual_review": "UNAVAILABLE"
+  },
+  "release_guardrails": [
+    "NO_NEW_WEB_SITE",
+    "NO_CODEX_CLOUD",
+    "NO_SKELETAL_RIG",
+    "NO_MERGE",
+    "NO_PVE",
+    "NO_GAMEPLAY_CHANGE",
+    "NO_CATALOGUE_MUTATION",
+    "NO_FALSE_ART_OR_TECH_PASS"
+  ]
+}
