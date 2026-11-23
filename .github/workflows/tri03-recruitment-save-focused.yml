@@ -12,6 +12,7 @@ on:
       - 'godot/src/presentation/uiux/sect_facility_art_v2.gd'
       - 'godot/src/presentation/p3/tmb_building_art_ab_v7.gd'
       - 'godot/src/presentation/p3_2_landscape_sect.gd'
+      - 'godot/src/presentation/art05_onegame_cinematic_ui.gd'
       - '.github/workflows/tri03-recruitment-save-focused.yml'
 permissions:
   contents: read
