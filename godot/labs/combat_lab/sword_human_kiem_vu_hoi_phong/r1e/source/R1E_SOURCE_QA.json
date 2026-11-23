@@ -1,0 +1,192 @@
+{
+  "name": "Kiếm Vũ Hồi Phong Nhân | R1E VFX-ONLY candidate",
+  "source_type": "AI-drawn 12-panel VFX-only sprite sheet, NOT cut from poster, NOT player character",
+  "source_image": "a_high_quality_game_vfx_sprite_sheet_animation_a.png",
+  "source_px": [
+    1774,
+    887
+  ],
+  "number_markers": "AI sheet had numbered corner tags which were excluded in direct sprite-sheet cell extraction",
+  "alpha": "AI RGB black matte converted by emissive unmatting to transparent RGBA, frame-number corner chips removed; source alpha retained as upper bound",
+  "pose_count": 12,
+  "atlas_px": [
+    2048,
+    1536
+  ],
+  "frame_px": [
+    512,
+    512
+  ],
+  "preview_scale_px": 174,
+  "technical_pass": true,
+  "gates": {
+    "G3": "ART_OWNER_REVIEW_REQUIRED",
+    "godot": "NOT_EXECUTED",
+    "pve": "HOLD",
+    "pr72": "UNCHANGED"
+  },
+  "frames": [
+    {
+      "frame": 1,
+      "name": "charge_01",
+      "bbox": [
+        89,
+        240,
+        401,
+        385
+      ],
+      "nonzero_alpha_pixels": 14199,
+      "border_8px_clear": true,
+      "sha256": "65d9467d8a8d4600cee75a23777478734b8ae590f7f8ff37bbfde805ec39741c"
+    },
+    {
+      "frame": 2,
+      "name": "charge_02",
+      "bbox": [
+        75,
+        176,
+        411,
+        397
+      ],
+      "nonzero_alpha_pixels": 32921,
+      "border_8px_clear": true,
+      "sha256": "8bda378b14b31b72b6b221547c7ffa85462c2165cfce907e15c3563fe0222627"
+    },
+    {
+      "frame": 3,
+      "name": "charge_03",
+      "bbox": [
+        65,
+        145,
+        430,
+        407
+      ],
+      "nonzero_alpha_pixels": 52323,
+      "border_8px_clear": true,
+      "sha256": "915f1cce81b581601216aa48f73c605dc02052ba8185ff66477d0f404e91d0c4"
+    },
+    {
+      "frame": 4,
+      "name": "release",
+      "bbox": [
+        57,
+        100,
+        447,
+        408
+      ],
+      "nonzero_alpha_pixels": 67540,
+      "border_8px_clear": true,
+      "sha256": "1b328f686ea9260c95bc8abb981b4af004dbaeba9c5b108b900cbad514b183d9"
+    },
+    {
+      "frame": 5,
+      "name": "gyre_01",
+      "bbox": [
+        45,
+        104,
+        454,
+        400
+      ],
+      "nonzero_alpha_pixels": 60575,
+      "border_8px_clear": true,
+      "sha256": "93cf3c87fdbeb553523a02277e8c53b115020d3873b3d61423cd9a22e4d4df23"
+    },
+    {
+      "frame": 6,
+      "name": "gyre_02",
+      "bbox": [
+        37,
+        113,
+        472,
+        405
+      ],
+      "nonzero_alpha_pixels": 58414,
+      "border_8px_clear": true,
+      "sha256": "029bf7cae8025f9b42b7668e4e391f90344f14877154a40c8b23870d7e69b853"
+    },
+    {
+      "frame": 7,
+      "name": "gyre_03",
+      "bbox": [
+        31,
+        109,
+        496,
+        415
+      ],
+      "nonzero_alpha_pixels": 69429,
+      "border_8px_clear": true,
+      "sha256": "c94175c91ce65a3e10ec7af22ad538ac99d69ba60bce4a847dddeb75b5d0a4c1"
+    },
+    {
+      "frame": 8,
+      "name": "gyre_04",
+      "bbox": [
+        16,
+        121,
+        496,
+        410
+      ],
+      "nonzero_alpha_pixels": 86735,
+      "border_8px_clear": true,
+      "sha256": "85c0dc23a79c418d7e77ab6a04c46c70351a434f41e3a82bdcccec9a71c670f4"
+    },
+    {
+      "frame": 9,
+      "name": "contact",
+      "bbox": [
+        37,
+        111,
+        496,
+        416
+      ],
+      "nonzero_alpha_pixels": 91446,
+      "border_8px_clear": true,
+      "sha256": "0765fff9e58b4ca35c7a16019e6538f5472688908e163fd72577116f79ba9bea"
+    },
+    {
+      "frame": 10,
+      "name": "shock",
+      "bbox": [
+        47,
+        137,
+        471,
+        409
+      ],
+      "nonzero_alpha_pixels": 51025,
+      "border_8px_clear": true,
+      "sha256": "44c9c8ea346c419532b2143887923098802e3f76c6de739d0e95101a714a7a95"
+    },
+    {
+      "frame": 11,
+      "name": "fade_01",
+      "bbox": [
+        66,
+        147,
+        441,
+        397
+      ],
+      "nonzero_alpha_pixels": 23964,
+      "border_8px_clear": true,
+      "sha256": "ba1bb23fcc04df9d32627fa0203476f73c3b3e78b95886a8a2d148aba47beeb2"
+    },
+    {
+      "frame": 12,
+      "name": "fade_02",
+      "bbox": [
+        107,
+        180,
+        425,
+        375
+      ],
+      "nonzero_alpha_pixels": 2586,
+      "border_8px_clear": true,
+      "sha256": "8b538e38ab46eeaf24dbff6df13ef563d3c9763652053a9386088521621d8c77"
+    }
+  ],
+  "limitations": [
+    "AI-generated image requires owner art approval and consistency inspection",
+    "No in-engine actor/socket/contact proof",
+    "Source sheet already had graphic frame-number tags; those were masked from the individual sprites",
+    "GIF timing is illustrative only, not canonical cast or cooldown"
+  ]
+}
