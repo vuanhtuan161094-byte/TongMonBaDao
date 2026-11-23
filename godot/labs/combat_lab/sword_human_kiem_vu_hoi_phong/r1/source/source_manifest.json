@@ -1,0 +1,216 @@
+{
+  "art_status": "G3_ART_SELF_REWORK_REQUIRED",
+  "method": "original layered Pillow raster painting, independent phase-specific silhouettes; NOT ImageGen poster crop",
+  "atlas": {
+    "px": [
+      2048,
+      1536
+    ],
+    "frame_px": [
+      512,
+      512
+    ],
+    "columns": 4,
+    "rows": 3,
+    "sha256": "ba3b11f702b03618ebecaad8c4af58bcc30139e9a559bd01269535ecc7f28fbe"
+  },
+  "frames": [
+    {
+      "n": 1,
+      "sha256": "3499fb72b8993a720a38420fa5111474e9f2e031e2d0a022e8d59c1711b37377",
+      "alpha_minmax": [
+        0,
+        255
+      ],
+      "visible_bbox": [
+        140,
+        191,
+        357,
+        333
+      ]
+    },
+    {
+      "n": 2,
+      "sha256": "c6bf3181f311cc94f93270fd038f0f397277aea3d3f9e846565b0245f2ce9636",
+      "alpha_minmax": [
+        0,
+        255
+      ],
+      "visible_bbox": [
+        145,
+        176,
+        378,
+        350
+      ]
+    },
+    {
+      "n": 3,
+      "sha256": "1fdaafee0dfb1e1b9d91a191b93fa97dcfe92e3200822e19a6fcfb21cbe48912",
+      "alpha_minmax": [
+        0,
+        255
+      ],
+      "visible_bbox": [
+        123,
+        155,
+        393,
+        370
+      ]
+    },
+    {
+      "n": 4,
+      "sha256": "b2b15cea6a4e917fa8a17158e4c43dbb9512cb98ff8b7be1a8c9d9327313712a",
+      "alpha_minmax": [
+        0,
+        255
+      ],
+      "visible_bbox": [
+        107,
+        127,
+        387,
+        336
+      ]
+    },
+    {
+      "n": 5,
+      "sha256": "e303a032a7f395577188862d38d5f62a7679dbe910567a7af6b76fd14887d5bc",
+      "alpha_minmax": [
+        0,
+        255
+      ],
+      "visible_bbox": [
+        114,
+        154,
+        474,
+        339
+      ]
+    },
+    {
+      "n": 6,
+      "sha256": "e8838522c67c720b235051ef90bcc284e95a2dfbcda900b0276ce32990bb2ed0",
+      "alpha_minmax": [
+        0,
+        255
+      ],
+      "visible_bbox": [
+        106,
+        157,
+        432,
+        346
+      ]
+    },
+    {
+      "n": 7,
+      "sha256": "3025ec6c9a83f65a5cc38cc9dd79c7aeb02fd2d6da7723bf5d7ca35b09dd832c",
+      "alpha_minmax": [
+        0,
+        255
+      ],
+      "visible_bbox": [
+        113,
+        160,
+        436,
+        374
+      ]
+    },
+    {
+      "n": 8,
+      "sha256": "6e3277552cdbf9475625057d7f0d9526e32c2eeee1bd4eba7281710ea1f998c1",
+      "alpha_minmax": [
+        0,
+        255
+      ],
+      "visible_bbox": [
+        57,
+        178,
+        435,
+        390
+      ]
+    },
+    {
+      "n": 9,
+      "sha256": "fb898e05f4a8343c9ead840e4bba0eca76c2af7dc7a3337f6c673c18f3e0f2ef",
+      "alpha_minmax": [
+        0,
+        255
+      ],
+      "visible_bbox": [
+        129,
+        172,
+        406,
+        327
+      ]
+    },
+    {
+      "n": 10,
+      "sha256": "639cf86064020edfc6a99afb1ae1735469e0d0c4808f574ae7074ac2a745ca59",
+      "alpha_minmax": [
+        0,
+        248
+      ],
+      "visible_bbox": [
+        145,
+        187,
+        407,
+        328
+      ]
+    },
+    {
+      "n": 11,
+      "sha256": "46ea7528b56ceefbb80494f19c7832ec4bd5b037dc302fd4409c175a4a97d6e0",
+      "alpha_minmax": [
+        0,
+        246
+      ],
+      "visible_bbox": [
+        136,
+        177,
+        389,
+        335
+      ]
+    },
+    {
+      "n": 12,
+      "sha256": "bf20c75172cb143775c109706315c7aa57bc9cf5e696134994ed6ef9d2b9cd93",
+      "alpha_minmax": [
+        0,
+        156
+      ],
+      "visible_bbox": [
+        161,
+        188,
+        389,
+        309
+      ]
+    }
+  ],
+  "g35": "NOT_EXECUTED_G3_ART_HARD_STOP",
+  "owner": "PENDING",
+  "pve": "HOLD",
+  "provenance": {
+    "authoring": "Original first-party programmatic raster painting via Pillow/Numpy, not imported JX pixels or ImageGen infographic",
+    "generator": "godot/labs/combat_lab/sword_human_kiem_vu_hoi_phong/r1/source/generate_r1_candidate.py",
+    "content_license": "first-party source",
+    "status": "CANDIDATE_ONLY_NO_OWNER_ART"
+  },
+  "technical_preflight": {
+    "result": "PASS",
+    "cel_count": 12,
+    "unique_cel_pixels": 12,
+    "alpha_background_valid_count": 12,
+    "edge_bleeding_cels": 0,
+    "regenerated_atlas_sha256_exact_match": true
+  },
+  "art_preflight_1x": {
+    "result": "SELF_FAIL",
+    "reason": [
+      "Blade/wind body still reads too thin and flat at approximate 1x; lacks illustrated depth and metal material",
+      "Charge and fading phases are under-emphasized at 1x, may be invisible against light terrain",
+      "Actual actor AS48 and moving WALK enemy compositing not evaluated, no native screenshots"
+    ],
+    "source_only": true,
+    "not_godot": true
+  },
+  "web": "NOT_EXECUTED",
+  "tier_visual_alias": "NOT_CREATED"
+}
