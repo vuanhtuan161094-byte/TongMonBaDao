@@ -1,0 +1,81 @@
+name: Sword02 R1E isolated Godot 4.7.2 native QA
+on:
+  push:
+    branches: [integration/pve-p0-playable-ui-20261103]
+    paths:
+      - 'godot/labs/combat_lab/sword_human_kiem_vu_hoi_phong/r1e/**'
+      - 'godot/tests/labs/combat_lab/vfx_sword02_r1e_contract_test.gd'
+      - 'docs/operations/vfx_web_catalog_v1.json'
+      - 'tools/qa/check_sword02_r1e_source.py'
+      - '.github/workflows/sword02-r1e-native.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  native:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install renderer and check original source hashes
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq xvfb ffmpeg unzip
+          python -m pip install Pillow==12.3.0
+          python tools/qa/check_sword02_r1e_source.py
+      - name: Stage existing canonical Web Lab sources (never a second game)
+        shell: bash
+        run: |
+          set -euo pipefail
+          python tools/vfx/stage_vfx_web_review.py --source godot --destination "$RUNNER_TEMP/r1e-stage"
+      - name: Download pinned official Godot 4.7.2
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -fL --retry 3 -o "$RUNNER_TEMP/godot.zip" \
+            https://github.com/godotengine/godot-builds/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip
+          echo "cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4  $RUNNER_TEMP/godot.zip" | sha256sum -c -
+          unzip -oq "$RUNNER_TEMP/godot.zip" -d "$RUNNER_TEMP"
+          chmod +x "$RUNNER_TEMP/Godot_v4.7.2-stable_linux.x86_64"
+          "$RUNNER_TEMP/Godot_v4.7.2-stable_linux.x86_64" --headless --version
+      - name: Strict import + focused native scene contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          GODOT="$RUNNER_TEMP/Godot_v4.7.2-stable_linux.x86_64"
+          STAGE="$RUNNER_TEMP/r1e-stage"
+          "$GODOT" --headless --path "$STAGE" --editor --import 2>&1 | tee "$RUNNER_TEMP/r1e-import.log"
+          "$GODOT" --headless --path "$STAGE" --check-only --script res://labs/combat_lab/sword_human_kiem_vu_hoi_phong/r1e/r1e_lab.gd 2>&1 | tee "$RUNNER_TEMP/r1e-parse.log"
+          "$GODOT" --headless --path "$STAGE" -s res://tests/labs/combat_lab/vfx_sword02_r1e_contract_test.gd 2>&1 | tee "$RUNNER_TEMP/r1e-focus.log"
+          grep -Fq 'R1E_GODOT_472_FOCUSED_RESULT=PASS failures=0' "$RUNNER_TEMP/r1e-focus.log"
+      - name: Native 1280x720 review recording (LAB only, no PvE)
+        shell: bash
+        run: |
+          set -euo pipefail
+          GODOT="$RUNNER_TEMP/Godot_v4.7.2-stable_linux.x86_64"
+          STAGE="$RUNNER_TEMP/r1e-stage"
+          mkdir -p "$RUNNER_TEMP/r1e-proof"
+          xvfb-run -a -s '-screen 0 1280x720x24' "$GODOT" --path "$STAGE" --resolution 1280x720 --fixed-fps 60 \
+            --write-movie "$RUNNER_TEMP/r1e-proof/native.avi" --quit-after 180 \
+            res://labs/combat_lab/sword_human_kiem_vu_hoi_phong/r1e/r1e_lab.tscn \
+            2>&1 | tee "$RUNNER_TEMP/r1e-proof/native.log"
+          grep -Fq 'R1E_COMBAT_LAB_READY=PASS' "$RUNNER_TEMP/r1e-proof/native.log"
+          ffmpeg -y -hide_banner -loglevel error -i "$RUNNER_TEMP/r1e-proof/native.avi" -c:v libx264 -crf 18 -pix_fmt yuv420p "$RUNNER_TEMP/r1e-proof/R1E_native_lab_1280x720.mp4"
+          ffmpeg -y -hide_banner -loglevel error -ss 0.65 -i "$RUNNER_TEMP/r1e-proof/R1E_native_lab_1280x720.mp4" -frames:v 1 "$RUNNER_TEMP/r1e-proof/gyre_1x.png"
+          ffmpeg -y -hide_banner -loglevel error -ss 1.02 -i "$RUNNER_TEMP/r1e-proof/R1E_native_lab_1280x720.mp4" -frames:v 1 "$RUNNER_TEMP/r1e-proof/contact_1x.png"
+          rm "$RUNNER_TEMP/r1e-proof/native.avi"
+          printf 'SOURCE_SHA=%s\nG3_SOURCE=OWNER_ACCEPTED\nG3_NATIVE=LAB_VISUAL_ONLY\nPVE=HOLD\n' "$GITHUB_SHA" > "$RUNNER_TEMP/r1e-proof/source_shainfo.txt"
+      - name: Upload exact-SHA native evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sword02-r1e-native-${{ github.sha }}
+          retention-days: 14
+          if-no-files-found: warn
+          path: |
+            ${{ runner.temp }}/r1e-proof/*
+            ${{ runner.temp }}/r1e-import.log
+            ${{ runner.temp }}/r1e-parse.log
+            ${{ runner.temp }}/r1e-focus.log

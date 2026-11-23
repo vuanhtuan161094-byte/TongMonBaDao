@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://labs/combat_lab/sword_human_kiem_vu_hoi_phong/r1e/r1e_lab.gd" id="1_r1e"]
+
+[node name="SwordHumanR1E_VFXOnly_Review_Lab" type="Node2D"]
+script = ExtResource("1_r1e")

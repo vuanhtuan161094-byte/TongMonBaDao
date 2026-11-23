@@ -27,6 +27,29 @@
       ],
       "art_source": "FIRST_PARTY_IMAGEGEN_ORIGINAL_RGBA_8_POSES_PLUS_REAL_AS48_JIAN",
       "review_note": "Human R2B original source committed, owner tạm được visual preference, isolated LAB synthetic one-target event; AS48 Front only; does not imply G3.5 native or CI success until exact-SHA run. PvE HOLD."
+    },
+    {
+      "id": "tmb.skill.sword.ngu_kiem.active_02.human",
+      "name_vi": "Kiếm Vũ Hồi Phong — R1E VFX-only đã duyệt nguồn",
+      "school_vi": "Kiếm Tu",
+      "branch_vi": "Ngự Kiếm",
+      "tier": "human",
+      "scene": "res://labs/combat_lab/sword_human_kiem_vu_hoi_phong/r1e/r1e_lab.tscn",
+      "directions": [
+        "front"
+      ],
+      "vfx_status": "OWNER_APPROVED",
+      "g3_art": "AI_DRAWN_VFX_ONLY_SOURCE_OWNER_ACCEPTED_NATIVE_PENDING",
+      "owner_art": "OWNER_ACCEPTED_SOURCE_20261123",
+      "source_paths": [
+        "labs/combat_lab/sword_human_kiem_vu_hoi_phong/r1e/r1e_lab.gd",
+        "labs/combat_lab/sword_human_kiem_vu_hoi_phong/r1e/r1e_lab.tscn",
+        "labs/combat_lab/sword_human_kiem_vu_hoi_phong/r1e/source/KVHP_R1E_VFX_only_atlas_4x3_RGBA.png",
+        "labs/combat_lab/sword_human_kiem_vu_hoi_phong/r1e/source/R1E_SOURCE_QA.json",
+        "tests/labs/combat_lab/vfx_sword02_r1e_contract_test.gd"
+      ],
+      "art_source": "FIRST_PARTY_AI_DRAWN_VFX_ONLY_12_POSES_ALPHA_POSTPROCESSED",
+      "review_note": "Owner accepted 2026-11-23. Independent R1E VFX source; original AS48 front character, independent sword, three original moving monsters. 1.54s lab clock not gameplay. Godot G3.5 / browser exact-SHA pending, PvE HOLD."
     }
   ]
 }

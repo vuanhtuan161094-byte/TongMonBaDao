@@ -1,0 +1,9 @@
+# Kiếm Vũ Hồi Phong — Nhân R1E / PR #72 isolated Combat Lab
+
+**Owner source-art accepted 2026-11-23** (user: “Ok đạt r. Bc tiewps”). This is the first-party AI-drawn 12-frame **VFX-only** source, **not extracted from a promotional poster** and **not AI character replacement**. The source frame labels were removed and alpha recovered from a dark matte; see original README and source QA for provenance.
+
+- Source archive SHA-256: `bede0519b1026f3245f636f56991dcf09c5737913bc66b2c741838dc5534bd87`; exact original archive imported via GitHub Actions, 12× 512×512 RGBA poses and 2048×1536 atlas.
+- Canonical skill: `tmb.skill.sword.ngu_kiem.active_02.human`; metal damage, circle radius 1.4, max 3 targets, cast 0.36 s, cooldown 10 s, damage ratio 0.82, projectile speed 8. The LAB **does not implement, infer or award** those gameplay receipts.
+- Lab scene `r1e_lab.tscn`: **existing AS48 front attack** 4 frame sprites, real independent AS48 weapon/socket metadata, 3 existing monster sprites moving, overlaid **R1E-only** image atlas. No rig, no procedural substitute VFX, no gameplay state writes, no PvE integration.
+- Web: add to existing **one** canonical `/vfx/` GitHub Pages selector. `review_seek_phase` controls charge/projectile/contact; toggles bright/dark, pause, moving monsters, zoom and VFX. Visual 12-frame review clock 1.54s is not canonical gameplay timing. No validated 4-direction AS48 runtime: **FRONT ONLY**.
+- G3 source art: **OWNER ACCEPTED**. G3.5+ Godot / browser gates require exact-SHA CI evidence; source QA alone is not proof of runtime visibility. PR remains Draft. No merge, Codex Cloud, rig or PvE.
