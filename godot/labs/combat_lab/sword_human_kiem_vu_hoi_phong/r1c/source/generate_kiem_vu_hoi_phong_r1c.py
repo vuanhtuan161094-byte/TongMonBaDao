@@ -168,7 +168,8 @@ def render(i):
         mote(im,rng,(297,248),22,(126,79),65)
     return im
 
-frames=[render(i) for i in range(12)]
+from enhance_r1c_artfirst_v4 import enhance
+frames=[enhance(render(i), i) for i in range(12)]
 for i,im in enumerate(frames):im.save(OUT/f'kiem_vu_hoi_phong_r1c_pose_{i+1:02}_{PHASE[i]}.png')
 atlas=Image.new('RGBA',(S*4,S*3))
 for i,im in enumerate(frames):atlas.alpha_composite(im,(S*(i%4),S*(i//4)))
@@ -196,6 +197,6 @@ for i,im in enumerate(frames):
     else:safe=False
     checks.append({'frame':i+1,'phase':PHASE[i],'alpha_nonzero_pixels':sum(v>8 for v in arr),'bbox':bb,'safe_8px_border':safe})
 sha_list=[files[f'kiem_vu_hoi_phong_r1c_pose_{i+1:02}_{PHASE[i]}.png']['sha256'] for i in range(12)]
-metadata={'schema':'tmb.vfx.r1c.source.v1','revision':'R1C','canonical':{'skill_id':'tmb.skill.sword.ngu_kiem.active_02.human','element':'metal','effect':'damage','shape':'circle','radius':1.4,'target_limit':3,'cast_time':0.36,'cooldown':10,'projectile_speed':8,'damage_ratio':0.82},'source':'first-party independently composed digital-raster candidate; procedural/illustrative study, NOT ImageGen master, NOT owner approved','pose_count':12,'cell_px':[512,512],'atlas_px':[2048,1536],'1x_scale_px':174,'phases':PHASE,'checks':checks,'all_pose_distinct':len(set(sha_list))==12,'files':files,'gates':{'G0':'CANONICAL_CONFIRMED','G3':'ART_VISUAL_REVIEW_PENDING','G35_G7':'NOT_EXECUTED','owner':'PENDING','pve':'HOLD'},'scope':{'no_rig':True,'no_codex_cloud':True,'no_merge':True,'no_pve':True,'no_gameplay_writes':True}}
+metadata={'schema':'tmb.vfx.r1c.source.v1','revision':'R1C','canonical':{'skill_id':'tmb.skill.sword.ngu_kiem.active_02.human','element':'metal','effect':'damage','shape':'circle','radius':1.4,'target_limit':3,'cast_time':0.36,'cooldown':10,'projectile_speed':8,'damage_ratio':0.82},'source':'first-party procedural source-art R1C-A with deterministic painterly volume postprocess, NOT ImageGen master, NOT owner approved','pose_count':12,'cell_px':[512,512],'atlas_px':[2048,1536],'1x_scale_px':174,'phases':PHASE,'checks':checks,'all_pose_distinct':len(set(sha_list))==12,'files':files,'gates':{'G0':'CANONICAL_CONFIRMED','G3':'ART_VISUAL_REVIEW_PENDING','G35_G7':'NOT_EXECUTED','owner':'PENDING','pve':'HOLD'},'scope':{'no_rig':True,'no_codex_cloud':True,'no_merge':True,'no_pve':True,'no_gameplay_writes':True}}
 (OUT/'R1C_SOURCE_MANIFEST.json').write_text(json.dumps(metadata,ensure_ascii=False,indent=2)+'\n')
 print(json.dumps({'pose_count':12,'unique':metadata['all_pose_distinct'],'alpha':all(x['alpha_nonzero_pixels']>0 for x in checks),'border':all(x['safe_8px_border'] for x in checks),'total_kb':sum(v['bytes'] for v in files.values())//1024,'checks':checks},ensure_ascii=False))

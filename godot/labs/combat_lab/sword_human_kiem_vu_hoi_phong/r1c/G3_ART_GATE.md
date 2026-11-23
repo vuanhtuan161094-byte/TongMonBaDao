@@ -37,3 +37,15 @@ The first-party, independently generated 512px RGBA cels / 2048×1536 atlas / 17
 - **Do not infer** native performance, clean import, gameplay compatibility or a passed G3 gate from PNG hashes, the contact sheet or an illustrative concept image.
 
 **Next permitted step:** rework the 12 transparent source poses and re-review *actual* 174px previews against dark/light terrain; only then seek G3 art approval. Preserve R1B, Sword01, gameplay, rig-free animation, and PR Draft (no merge, no Codex Cloud, no PvE).
+
+## R1C-A · painterly source-art revision (2026-11-23) — G3 recheck
+
+New source-only improvement over the independently observed R1C at 174px:
+- Charge 01–03: enlarged layered wind accumulation around the upright physical blade; cyan/deep-blue/ice internal separation and directional in-flow.
+- Release/gyre 04–08: irregular translucent gas volume and fragmented off-axis feathers following **one** returning sword, not 3 independent homing weapons.
+- Contact 09–10: visible central hit energy + radial fracture field and expanding single-area shock; source-only, real target collision and radius NOT verified.
+- Fade 11–12: residual wind mass with a safe transparent taper, visibly stronger on pale maps than R1C baseline.
+
+Source names remain R1C so downstream Godot integration paths are unchanged; new reversible enhancer is `source/enhance_r1c_artfirst_v4.py`, with a deterministic compressed transport copy. The original baseline comparison is `source/G3_preflight_R1C_baseline_1x.png`. Review `source/G3_R1C_to_R1CA_comparison_1x.png` and `source/R1CA_G3_source_1x_review.gif`. **GIF timing is an art-review clock, not 0.36s gameplay cast timing.**
+
+**Local source-only preflight before GitHub push:** 12/12 nonempty alpha, 12/12 distinct frame hashes, all safe 8px transparent borders, 2048×1536 atlas and dark/light 174px review. G3 still **VISUAL / OWNER REVIEW PENDING**, not automatic PASS; in-engine 3-target contact, AS-CHAR, renderer glow and runtime not tested. No Godot, no PvE, no rig, no merge. Existing R1B and Sword01 unchanged. QA results for the GitHub-generated exact SHA must be read from the R1C-A source-bake workflow separately.
