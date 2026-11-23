@@ -1,0 +1,62 @@
+name: Sword02 R1E V2 Art-First 24-sample RGBA bake
+on:
+  push:
+    branches: [integration/pve-p0-playable-ui-20261103]
+    paths:
+      - '.github/workflows/sword02-r1e-v2-bake.yml'
+      - 'tools/vfx/build_r1e_v2_24.py'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: r1e-v2-art-bake-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  bake:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            tools/vfx/build_r1e_v2_24.py
+            godot/labs/combat_lab/sword_human_kiem_vu_hoi_phong/r1e/source
+            godot/labs/combat_lab/sword_human_kiem_vu_hoi_phong/r1e/v2_source
+      - name: Install deterministic image review dependencies
+        run: python -m pip install --disable-pip-version-check Pillow==12.3.0 numpy==2.3.5 opencv-python-headless==4.13.0.92
+      - name: Build VFX-only motion inbetweens from R1E approved cels, no poster
+        run: python tools/vfx/build_r1e_v2_24.py
+      - name: Fail-closed source verification
+        shell: bash
+        run: |
+          python - <<'PY'
+          import pathlib,json,hashlib
+          from PIL import Image
+          r=pathlib.Path('godot/labs/combat_lab/sword_human_kiem_vu_hoi_phong/r1e/v2_source')
+          m=json.loads((r/'R1E_V2_SOURCE_MANIFEST.json').read_text())
+          assert len(m['frames'])==24 and m['original_art_frames']==12
+          assert m['derived_transition_frames']==12 and m['no_poster_extraction']
+          assert m['owner_v2_art']=='REVIEW_PENDING' and m['pve']=='HOLD'
+          atlas=Image.open(r/'R1E_V2_24_atlas_4x6_RGBA.png').convert('RGBA')
+          assert atlas.size==(2048,3072)
+          for i,f in enumerate(m['frames']):
+              p=r/f['file']; im=Image.open(p).convert('RGBA')
+              assert f['border_clear_8px'] and im.size==(512,512)
+              assert im.tobytes()==atlas.crop(((i%4)*512,(i//4)*512,((i%4)+1)*512,((i//4)+1)*512)).tobytes()
+              assert hashlib.sha256(p.read_bytes()).hexdigest()==f['sha256']
+          print('R1E_V2_EXACT_SOURCE_PASS original12 + interpolated12 atlas24 preview1x')
+          PY
+      - name: Commit source-only 24 RGBA samples to same PR branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add godot/labs/combat_lab/sword_human_kiem_vu_hoi_phong/r1e/v2_source/
+          if ! git diff --cached --quiet; then
+            git commit -m "art(vfx-sword02): bake R1E V2 24 source motion samples for G3 review"
+            git pull --rebase origin "$GITHUB_REF_NAME"
+            git push origin "HEAD:$GITHUB_REF_NAME"
+          fi
