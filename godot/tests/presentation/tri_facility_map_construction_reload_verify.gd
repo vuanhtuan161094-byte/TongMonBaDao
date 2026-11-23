@@ -1,5 +1,5 @@
 extends SceneTree
-## Separate Godot process verifies the saved paid map-build transaction and replay.
+## Separate Godot process verifies ART-05 fixed MASTERPLAN paid build and exactly-once replay.
 const ROUNDTRIP_PATH := "user://tri03_map_build_roundtrip.json"
 const EXPECTED_PATH := "user://tri03_map_build_expected.json"
 
@@ -35,27 +35,22 @@ func _run() -> void:
         return
     var building_id := str(expected.get("building_id",""))
     var house := state.buildings.get(building_id) as BuildingState
-    var original_site := Vector2i(int(expected.get("original_site_x",-1)),int(expected.get("original_site_y",-1)))
     var expected_site := Vector2i(int(expected.get("site_x",-1)),int(expected.get("site_y",-1)))
     if not _check(house != null and house.status == BuildingSystem.STATUS_ACTIVE
             and SectResidenceSiteV1.origin_of(house) == expected_site,
-            "saved completed house identity, state or relocated map site changed"):
+            "saved completed house identity, state or fixed planned site changed"):
         return
     var receipts: Dictionary = state.sect.hall_governance.get("residence_build_receipts",{})
     if not _check(receipts.get(str(expected.get("request_id","")),"") == building_id
             and receipts.size() == int(expected.get("receipt_count",-1)),
             "saved exactly-once build receipt changed"):
         return
-    var move_request_id := str(expected.get("move_request_id",""))
     var move_receipts: Dictionary = state.sect.hall_governance.get("residence_move_receipts",{})
-    var move_receipt: Dictionary = move_receipts.get(move_request_id,{})
-    if not _check(not move_request_id.is_empty() and move_receipts.size() == int(expected.get("move_receipt_count",-1))
-            and str(move_receipt.get("house_id","")) == building_id
-            and int(move_receipt.get("previous_x",-1)) == original_site.x
-            and int(move_receipt.get("previous_y",-1)) == original_site.y
-            and int(move_receipt.get("site_x",-1)) == expected_site.x
-            and int(move_receipt.get("site_y",-1)) == expected_site.y,
-            "Save/Reload changed the canonical relocation receipt"):
+    if not _check(bool(expected.get("fixed_masterplan",false))
+            and SectResidenceSiteV1.MASTERPLAN_ANNEX_SITES.has(expected_site)
+            and move_receipts.size() == int(expected.get("move_receipt_count",-1))
+            and move_receipts.is_empty(),
+            "fixed MASTERPLAN Save/Reload allowed retired relocation receipts"):
         return
     var warehouse := WarehouseSystem.new()
     if not _check(warehouse.available_quantity(state,BuildingSystem.MATERIAL_WOOD) == int(expected.get("wood",-1))
@@ -68,20 +63,18 @@ func _run() -> void:
     var before_ore := warehouse.available_quantity(state,BuildingSystem.MATERIAL_ORE)
     var before_stones := state.sect.spirit_stones
     var before_count := SectResidenceSystemV1.all_houses(state).size()
-    var replay_build := SectResidenceSystemV1.construct(state,str(expected.get("request_id","")),original_site)
-    var replay_move := SectResidenceSystemV1.move_house(state,move_request_id,house.id,expected_site)
+    var replay_build := SectResidenceSystemV1.construct(state,str(expected.get("request_id","")),expected_site)
     if not _check(bool(replay_build.get("ok",false)) and bool(replay_build.get("already_settled",false))
             and str(replay_build.get("building_id","")) == building_id
-            and bool(replay_move.get("ok",false)) and bool(replay_move.get("already_settled",false))
             and warehouse.available_quantity(state,BuildingSystem.MATERIAL_WOOD) == before_wood
             and warehouse.available_quantity(state,BuildingSystem.MATERIAL_ORE) == before_ore
             and state.sect.spirit_stones == before_stones
             and SectResidenceSystemV1.all_houses(state).size() == before_count,
-            "build/move replay after independent reload duplicated state or payment"):
+            "fixed planned residence replay after independent reload duplicated state or payment"):
         return
     print("TRI_MAP_BUILD_CROSS_PROCESS_RELOAD_PASS building=%s site=%d,%d exact_once=1 costs=preserved" % [building_id,expected_site.x,expected_site.y])
-    print("TRI_MAP_RELOCATION_CROSS_PROCESS_PASS building=%s old=%d,%d new=%d,%d exact_once=1" % [
-        building_id,original_site.x,original_site.y,expected_site.x,expected_site.y])
+    print("TRI_MAP_FIXED_MASTERPLAN_CROSS_PROCESS_PASS building=%s site=%d,%d fixed=1 relocation=0" % [
+        building_id,expected_site.x,expected_site.y])
     _clean(ROUNDTRIP_PATH)
     _clean(EXPECTED_PATH)
     _clean(RUNTIME_PATH)
