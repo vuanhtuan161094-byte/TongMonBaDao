@@ -1,0 +1,81 @@
+name: Sword02 R1E exact-source import (one-time)
+on:
+  push:
+    branches: [integration/pve-p0-playable-ui-20261103]
+    paths:
+      - '.github/workflows/sword02-r1e-import.yml'
+permissions:
+  contents: write
+concurrency:
+  group: sword02-r1e-exact-source-import
+  cancel-in-progress: false
+jobs:
+  import-exact-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout only the source-transfer slice and target R1E folder
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+          sparse-checkout: |
+            .github/assets/sword02_r1e_transfer
+            godot/labs/combat_lab/sword_human_kiem_vu_hoi_phong/r1e
+          sparse-checkout-cone-mode: false
+      - name: Reconstruct byte-for-byte owner-approved R1E archive
+        shell: bash
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          parts=(.github/assets/sword02_r1e_transfer/part_*.bin)
+          test "${#parts[@]}" -eq 31
+          cat "${parts[@]}" > "$RUNNER_TEMP/approved_r1e.zip"
+          echo 'bede0519b1026f3245f636f56991dcf09c5737913bc66b2c741838dc5534bd87  '"$RUNNER_TEMP/approved_r1e.zip" | sha256sum -c -
+          test "$(stat -c '%s' "$RUNNER_TEMP/approved_r1e.zip")" -eq 5892835
+          echo 'R1E_SOURCE_EXACT_ZIP_SHA256=PASS'
+      - name: Extract first-party AI VFX source and prove source pixel hashes
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check Pillow==12.3.0
+          python - <<'PY'
+          import hashlib,json,os,pathlib,zipfile
+          from PIL import Image
+          from io import BytesIO
+          archive=pathlib.Path(os.environ['RUNNER_TEMP'])/'approved_r1e.zip'
+          dst=pathlib.Path('godot/labs/combat_lab/sword_human_kiem_vu_hoi_phong/r1e/source')
+          dst.mkdir(parents=True,exist_ok=True)
+          with zipfile.ZipFile(archive) as z:
+              names=z.namelist()
+              assert len(names)==21 and len(set(names))==21
+              assert all('/' not in n and '\\' not in n and n not in ('.','..') for n in names)
+              for n in names:(dst/n).write_bytes(z.read(n))
+          m=json.loads((dst/'R1E_SOURCE_QA.json').read_text())
+          assert m['pose_count']==12 and m['technical_pass']
+          assert m['atlas_px']==[2048,1536]
+          pose_names=sorted(dst.glob('kvhp_r1e_[0-9][0-9]_*.png'))
+          assert len(pose_names)==12
+          assert len({hashlib.sha256(p.read_bytes()).digest() for p in pose_names})==12
+          atlas=Image.open(dst/'KVHP_R1E_VFX_only_atlas_4x3_RGBA.png')
+          assert atlas.size==(2048,1536) and atlas.mode=='RGBA'
+          for i,(file,row) in enumerate(zip(pose_names,m['frames'])):
+              assert int(row['frame'])==i+1 and file.stem.endswith(row['name'])
+              assert hashlib.sha256(file.read_bytes()).hexdigest()==row['sha256']
+              im=Image.open(file);assert im.mode=='RGBA' and im.size==(512,512)
+              assert im.getchannel('A').getbbox() is not None and row['border_8px_clear']
+              tile=atlas.crop(((i%4)*512,(i//4)*512,(i%4+1)*512,(i//4+1)*512))
+              assert im.tobytes()==tile.tobytes(),'ATLAS_FRAME_PIXEL_MISMATCH'
+          (dst/'SOURCE_IMPORT_SHA256.txt').write_text('ZIP_SHA256=bede0519b1026f3245f636f56991dcf09c5737913bc66b2c741838dc5534bd87\nPOSES=12\nORIGINAL_SOURCE_UNMODIFIED=true\n')
+          print('R1E_SOURCE_IMPORT_PASS 12 RGBA 512 4x3 atlas exact_pixels=true source_zip_sha256=bede0519...')
+          PY
+      - name: Commit source only; leave R1C-B and gameplay unchanged
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add godot/labs/combat_lab/sword_human_kiem_vu_hoi_phong/r1e/source
+          git rm -r .github/assets/sword02_r1e_transfer
+          git diff --cached --check
+          git commit -m 'art(vfx-sword02): import owner-accepted R1E VFX-only exact source SHA256'
+          git push origin 'HEAD:integration/pve-p0-playable-ui-20261103'
