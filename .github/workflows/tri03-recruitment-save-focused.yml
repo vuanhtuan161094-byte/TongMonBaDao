@@ -16,6 +16,7 @@ on:
       - '.github/workflows/tri03-recruitment-save-focused.yml'
 permissions:
   contents: read
+  issues: write # focused CI posts exact-SHA run receipt to existing Draft PR #72
 jobs:
   tri03:
     name: TRI03 VIS11 pixel / Recruit HS09 / cold Save
@@ -90,3 +91,53 @@ jobs:
             godot/outputs/tri03_focused/
             ${{ runner.temp }}/tri03_recruit.log
             ${{ runner.temp }}/tri03_reload.log
+      - name: Publish exact-SHA TRI03 run receipt to Draft PR 72
+        if: always()
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TRI03_JOB_STATUS: ${{ job.status }}
+        run: |
+          set -euo pipefail
+          flow_log="${RUNNER_TEMP}/tri03_recruit.log"
+          reload_log="${RUNNER_TEMP}/tri03_reload.log"
+          markers=(
+            TRI03_VIS11_RESIDENCE_NATIVE_PIXEL_PASS
+            TRI03_MASTERPLAN_ACTOR_COLLISION_PASS
+            TRI03_G1_NEW_GAME_BUILD_PASS
+            TRI03_RECRUIT_HS09_ASSIGN_SAVE_PREPARED
+            TRI03_RECRUIT_HS09_CROSS_PROCESS_RELOAD_PASS
+          )
+          receipts=""
+          missing=0
+          for marker in "${markers[@]}"; do
+            log="$flow_log"
+            if [[ "$marker" == TRI03_RECRUIT_HS09_CROSS_PROCESS_RELOAD_PASS ]]; then
+              log="$reload_log"
+            fi
+            if [[ -f "$log" ]] && grep -Fq "$marker" "$log"; then
+              receipts+="PASS \\`$marker\\`"$'\\n'
+            else
+              receipts+="MISSING \\`$marker\\`"$'\\n'
+              missing=$((missing+1))
+            fi
+          done
+          outcome="NOT_VERIFIED"
+          if [[ "$TRI03_JOB_STATUS" == "success" && "$missing" -eq 0 ]]; then
+            outcome="PASS"
+          elif [[ "$TRI03_JOB_STATUS" == "failure" || "$missing" -gt 0 ]]; then
+            outcome="FAIL"
+          fi
+          run_url="https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+          {
+            echo "### TRI03 focused exact-SHA report"
+            echo ""
+            echo "Run: $run_url"
+            echo "Commit: ${GITHUB_SHA}"
+            echo "Job state: $TRI03_JOB_STATUS | Gate: $outcome"
+            printf '%s\\n' "$receipts"
+          } >> "$GITHUB_STEP_SUMMARY"
+          body="$(printf 'TRI03 focused exact-SHA CI receipt (automated, no merge)\\n\\n- Commit: \\`%s\\`\\n- [Run / logs](%s)\\n- Job: \\`%s\\` | Gate: **%s**\\n\\n%s\\nThis comment is a CI receipt only; no owner approval or PvE unlock.\\n' "${GITHUB_SHA}" "$run_url" "$TRI03_JOB_STATUS" "$outcome" "$receipts")"
+          gh api -X POST "repos/${GITHUB_REPOSITORY}/issues/72/comments" -f body="$body" --silent || {
+            echo "::warning::Could not post TRI03 receipt to PR; run logs and job summary remain authoritative."
+          }
