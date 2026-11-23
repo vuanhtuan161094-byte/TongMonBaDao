@@ -367,7 +367,9 @@ func _verify_natural_new_game_build_gate() -> bool:
 		and str(game.call("_residence_site_actor_conflict_reason",target)) == "house_plot_actor_occupied",
 		"real actor could not exercise occupied MASTERPLAN Residence collision"):
 		return false
-	game.call("_refresh_build_mode_panel")
+	# Do not force a UI refresh in QA: real production actor polling must
+	# observe occupancy and disable the live button on its own.
+	await create_timer(0.65).timeout
 	var blocked_label := game.get("build_mode_site_label") as Label
 	var blocked_text := blocked_label.text if blocked_label != null else "<missing>"
 	var unchanged := state.buildings.size() == buildings_before \
@@ -391,7 +393,8 @@ func _verify_natural_new_game_build_gate() -> bool:
 	var restored_actor := (game.get("actor_nodes") as Dictionary).get(fixture_key) as Control
 	if restored_actor != null:
 		restored_actor.position = fixture_original_actor_position
-	game.call("_refresh_build_mode_panel")
+	# Moving away must also re-enable the existing planned-lot confirmation.
+	await create_timer(0.65).timeout
 	if not _require(not confirm.disabled
 		and Vector2i(game.get("build_mode_site")) == target
 		and str(game.call("_residence_site_actor_conflict_reason",target)).is_empty()
