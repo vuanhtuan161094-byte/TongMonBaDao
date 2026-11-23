@@ -66,3 +66,11 @@ Changes limited to VFX source `facets` painter:
 - Save the previous R1C-A 174px source preview immutably as `G3_preflight_R1CA_before_sword_1x.png` and generate `G3_sword_R1CA_vs_R1CB_1x.png` + `R1CB_G3_source_1x_review.gif` on dark/light ground.
 
 Local art-only preflight: 12 frames nonempty, distinct, safe eight-pixel borders; the non-weapon shock/fade frames 10–12 are byte-identical in pixel content before vs after. Source aesthetic is **candidate for owner review, not approved**. Technical source QA and Godot runtime are separate gates. **G3 ART=REVIEW PENDING; PvE HOLD; no Codex Cloud, rig or merge.**
+
+## Owner checkpoint — 2026-11-23: R1C-B provisional visual acceptance
+
+Owner feedback: **"Ok. Tạm đc. Chốt vậy."** Freeze **R1C-B clean sword sprite** as the current chosen visual baseline, not R1C-A's ornate sword. The sword must remain **simple, attractive and readable as a sprite at gameplay 1×**; never add engraving or micro-details merely for complexity.
+
+**Approval scope:** provisional art-direction acceptance of the R1C-B *source preview*, not an unconditional G3 native/runtime PASS. Preserve the 12 RGBA frames, the current atlas and exported review assets with the confirmed source SHA `c6b8b7ed18271bf6722c2e5942d3d7164f4324ea`. No additional VFX embellishment unless owner requests it.
+
+**Gate:** OWNER_VISUAL=PROVISIONAL_ACCEPT_R1CB; G3=SOURCE_ART_BASELINE_FROZEN / runtime verification NOT EXECUTED; G3.5–G7=NOT EXECUTED; PvE=HOLD; PR #72=DRAFT. Do not merge, use rig, Codex Cloud, change gameplay or activate PvE. The source manifest's `owner=PENDING` is an older generated technical-manifest label; this dated owner checkpoint governs visual choice pending any later automated manifest update.
