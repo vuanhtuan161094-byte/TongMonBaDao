@@ -13,6 +13,9 @@ const SKILL_ID := "tmb.skill.sword.ngu_kiem.active_02.human"
 const FOOT := Vector2(200, 429)
 const FRAME_STARTS := [0.00, 0.12, 0.24, 0.36, 0.45, 0.54, 0.63, 0.72, 0.82, 0.96, 1.12, 1.30]
 const REVIEW_DURATION := 1.54
+const RELEASE_START := 0.36
+const CONTACT_START := 0.96
+const FX_1X := 174.0 / 512.0
 const MOB_HOMES := [Vector2(766, 563), Vector2(873, 552), Vector2(970, 580)]
 
 var _actor: Node2D
@@ -24,6 +27,7 @@ var _as48_texture: Texture2D
 var _weapon_texture: Texture2D
 var _socket_rows: Array = []
 var _weapon_grip := Vector2.ZERO
+var _weapon_tip_px := Vector2.ZERO
 var _monsters: Array[AnimatedSprite2D] = []
 var _time := 0.0
 var _frame := -1
@@ -71,10 +75,12 @@ func _ready() -> void:
     _socket_rows = metadata.get("body_frames", [])
     var jian: Dictionary = metadata.get("weapon_assets", {}).get("jian_silver_candidate", {})
     var grip: Array = jian.get("asset_grip_px", [])
-    if _socket_rows.size() != 4 or grip.size() != 2:
+    var tip: Array = jian.get("asset_tip_px", [])
+    if _socket_rows.size() != 4 or grip.size() != 2 or tip.size() != 2:
         push_error("R1E_FRONT_SOCKETS_MISSING")
         return
     _weapon_grip = Vector2(float(grip[0]), float(grip[1]))
+    _weapon_tip_px = Vector2(float(tip[0]),float(tip[1]))
     var monster_frames := load(MOB) as SpriteFrames
     if monster_frames == null or not monster_frames.has_animation(&"walk"):
         push_error("R1E_REAL_MONSTER_MISSING")
@@ -117,7 +123,7 @@ func _ready() -> void:
     _fx.name = "R1E_ApprovedVFXOnly_OneCircularAOE"
     _fx.texture = _fx_cell
     _fx.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
-    _fx.scale = Vector2.ONE * (174.0/512.0)
+    _fx.scale = Vector2.ONE * FX_1X
     _fx.z_index = 16
     add_child(_fx)
     _ready_ok = true
@@ -145,17 +151,52 @@ func _set_frame(idx: int) -> void:
     if idx in [0,3,9]:
         print("R1E_PHASE_FRAME=%d visual_only=true no_hp=true" % idx)
 
+func _weapon_tip_world() -> Vector2:
+    # Read true AS48 independent weapon tip (grip/rotation/scale), NEVER a rig.
+    # Sprite2D.offset displaces pixel coordinates before node transforms.
+    return _sword.to_global(_weapon_tip_px + _sword.offset)
+
+func _impact_origin() -> Vector2:
+    # Visual AoE center follows the three actual moving monsters.
+    var sum_pos := Vector2.ZERO
+    for mob in _monsters:
+        sum_pos += mob.position
+    return sum_pos / float(maxi(1,_monsters.size())) + Vector2(8,-86)
+
+func _update_hit_tint() -> void:
+    # Freeze/seek must show the hit reaction as well as regular playback.
+    var hit := _frame >= 9 and _frame <= 10
+    for mob in _monsters:
+        mob.modulate = Color("b9ebff") if hit else Color.WHITE
+
 func _update_positions() -> void:
     if _fx == null:
         return
     _fx.visible = _fx_enabled
-    _fx.scale = Vector2.ONE * (174.0/512.0) * (2.0 if _zoom else 1.0)
+    var factor := 2.0 if _zoom else 1.0
+    _fx.scale = Vector2.ONE * FX_1X * factor
+    # The 2x preview must magnify the actor and monsters, not just the VFX.
+    _actor.scale = Vector2.ONE * 0.17 * factor
+    for mob in _monsters:
+        mob.scale = Vector2.ONE * 0.38 * factor
     if _frame < 3:
-        _fx.position = _actor.position + Vector2(40,-74)
+        # Keep the source charging ring close to the actor's feet.
+        # Interpolate towards the actual blade tip as the attack prepares.
+        var q := clampf(_time / RELEASE_START,0.0,1.0)
+        var foot_ring := _actor.position + Vector2(28,-35)
+        _fx.position = foot_ring.lerp(_weapon_tip_world(),q*0.70)
     elif _frame < 9:
-        _fx.position = Vector2(585,474)
+        # The source R1E gyre is carried continuously FROM the blade tip TO
+        # the moving enemy centroid, instead of teleporting to (585,474).
+        var p := clampf((_time-RELEASE_START)/(CONTACT_START-RELEASE_START),0.0,1.0)
+        var smooth := p*p*(3.0-2.0*p)
+        var from_tip := _weapon_tip_world()
+        var target := _impact_origin()
+        _fx.position = from_tip.lerp(target,smooth) + Vector2(0,-24*sin(PI*smooth))
     else:
-        _fx.position = _monsters[1].position + Vector2(0,-75)
+        # End exactly on the enemy group, without frame-9 location jump.
+        _fx.position = _impact_origin()
+    _update_hit_tint()
 
 func _process(delta: float) -> void:
     if not _ready_ok or _paused:
@@ -179,9 +220,8 @@ func _process(delta: float) -> void:
         for mob in _monsters:
             mob.modulate = Color("b8efff")
         print("R1E_LAB_VISUAL_AOE_PULSE=1 max_targets=3 ONLY_VISUAL no_combat_receipts=true")
-    if index>=11:
-        for mob in _monsters:
-            mob.modulate = Color.WHITE
+    # Tint is now derived from the current phase in _update_positions(),
+    # including during paused screenshot reviews.
     _update_positions()
     queue_redraw()
 
@@ -193,7 +233,7 @@ func _draw() -> void:
         var yy := 280.0+float(k)*40.0
         draw_line(Vector2(58,yy),Vector2(1210,yy+9),Color(0.05,0.19,0.26,0.15) if _bright else Color(0.8,0.9,1.0,0.055),1.0)
     draw_rect(Rect2(0,0,1280,108),Color("182538") if _bright else Color("0e1827"))
-    draw_string(ThemeDB.fallback_font,Vector2(30,35),"KIEM VU HOI PHONG · HUMAN · R1E / G3 OWNER ACCEPTED",HORIZONTAL_ALIGNMENT_LEFT,-1,20,Color("eaf6ff"))
+    draw_string(ThemeDB.fallback_font,Vector2(30,35),"KIEM VU HOI PHONG · R1E SOURCE APPROVED / RUNTIME ART UNDER REVIEW",HORIZONTAL_ALIGNMENT_LEFT,-1,20,Color("eaf6ff"))
     draw_string(ThemeDB.fallback_font,Vector2(30,65),"AS48 FRONT ORIGINAL | 3 MOVING REAL MONSTERS | LAB ONLY | NO PVE / NO HP",HORIZONTAL_ALIGNMENT_LEFT,-1,16,Color("a9d0e7"))
     draw_rect(Rect2(0,660,1280,60),Color("101828"))
     draw_string(ThemeDB.fallback_font,Vector2(27,696),"SOURCE FRAMES 12 RGBA | TIMING REVIEW ONLY | FRONT DIRECTION VERIFIED",HORIZONTAL_ALIGNMENT_LEFT,-1,15,Color("d6e2f6"))

@@ -34,6 +34,35 @@ func _verify() -> void:
         _check(not fx.visible,"VFX_TOGGLE_FAIL_"+phase)
         lab.review_set_fx(true)
         _check(fx.visible,"VFX_RESTORE_FAIL_"+phase)
+    # Art-direction regression: R1E must travel as a blade-attached gyre,
+    # not teleport from a hard-coded mid-map point to the monsters.
+    lab.review_set_paused(true)
+    lab.set("_time",0.54)
+    lab.call("_set_frame",5)
+    lab.call("_update_positions")
+    var start_gyre: Vector2 = fx.position
+    lab.set("_time",0.72)
+    lab.call("_set_frame",7)
+    lab.call("_update_positions")
+    var later_gyre: Vector2 = fx.position
+    _check(later_gyre.x > start_gyre.x + 35.0,"GYRE_NOT_ADVANCING_WITH_SWORD")
+    lab.set("_time",0.94)
+    lab.call("_set_frame",8)
+    lab.call("_update_positions")
+    var pre_contact: Vector2 = fx.position
+    lab.set("_time",0.96)
+    lab.call("_set_frame",9)
+    lab.call("_update_positions")
+    var contact_pos: Vector2 = fx.position
+    _check(pre_contact.distance_to(contact_pos)<110.0,"CONTACT_TELEPORTS")
+    _check(fx.visible,"VFX_HIDDEN_DURING_CONTACT")
+    for mob in mobs:
+        _check(mob.modulate != Color.WHITE,"CONTACT_REACTION_NOT_VISIBLE")
+    lab.review_set_map_zoom(true)
+    _check(actors.scale.x > 0.25,"ZOOM_MISLABELLED_VFX_ONLY")
+    lab.review_set_map_zoom(false)
+    _check(absf(actors.scale.x-0.17)<0.01,"ZOOM_NOT_RESTORED")
+    print("R1E_CONTINUOUS_BLADE_TIP_TO_CONTACT=PASS movement/impact/zoom SOURCE_ART_UNCHANGED")
     lab.review_replay()
     lab.review_set_paused(false)
     await process_frame
