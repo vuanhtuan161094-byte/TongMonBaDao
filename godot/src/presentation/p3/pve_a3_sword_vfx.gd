@@ -10,6 +10,14 @@ const BINDINGS := {
     "tmb.skill.sword.sat_kiem.active_02.human":{"tag":"07","shape":"line","limit":3},
     "tmb.skill.sword.sat_kiem.active_03.human":{"tag":"08","shape":"single_target","limit":1}
 }
+const PRESENTATION := {
+    "03":{"extent":190.0,"arc":-12.0,"rotate":true},
+    "04":{"extent":184.0,"arc":-24.0,"rotate":true},
+    "05":{"extent":218.0,"arc":0.0,"rotate":false},
+    "06":{"extent":174.0,"arc":-5.0,"rotate":true},
+    "07":{"extent":202.0,"arc":10.0,"rotate":true},
+    "08":{"extent":192.0,"arc":-17.0,"rotate":true}
+}
 const MAX_CASTS := 12
 const MAX_HITS := 36
 var _encounter := ""
@@ -83,6 +91,8 @@ func observe(events: Array[Dictionary], battle: MapBattleV2, enabled: bool) -> v
             if str(binding["shape"]) == "single_target" and target != cue["target"]:
                 continue
             seen[target] = true
+            if not cue.has("first_contact"):
+                cue["first_contact"] = _clock
             _hits.append({"id":skill_id,"caster":caster,"target":target,"at":victim.get("position",Vector2.ZERO),"started":_clock})
         _casts[cast_id] = cue
 
@@ -108,6 +118,10 @@ func cues() -> Array[Dictionary]:
             var flight := _clock-float(cue.get("release_clock",_clock))
             if flight < 0.32:
                 result.append({"id":cue["id"],"phase":"release","caster":cue["caster"],"target":cue["target"],"frame":6+mini(10,int(flight/0.32*11.0)),"progress":clampf(flight/0.32,0.0,0.9)})
+        elif str(BINDINGS[str(cue["id"])]["tag"]) == "04" and cue.has("first_contact"):
+            var back := _clock-float(cue["first_contact"])-0.12
+            if back >= 0.0 and back < 0.24:
+                result.append({"id":cue["id"],"phase":"return","caster":cue["caster"],"target":cue["target"],"frame":16-mini(10,int(back/0.24*11.0)),"progress":clampf(back/0.24,0.0,1.0)})
     for hit in _hits:
         result.append({"id":hit["id"],"phase":"contact","caster":hit["caster"],"target":hit["target"],"at":hit["at"],"frame":17+mini(6,int((_clock-float(hit["started"]))*25.0))})
     return result
@@ -139,14 +153,37 @@ func draw_on(canvas: CanvasItem, positions: Dictionary, projection: Callable, sc
             continue
         var at: Vector2 = projection.call(positions.get(target,cue.get("at",Vector2.ZERO)))
         at += Vector2(0,-42)*scale_amount
-        if phase != "contact":
+        var profile: Dictionary = PRESENTATION[str(BINDINGS[str(cue["id"])]["tag"])]
+        var heading := 0.0
+        if positions.has(caster):
             var from: Vector2 = projection.call(positions[caster])
             from += Vector2(0,-42)*scale_amount
-            at = from if phase == "charge" else from.lerp(at,float(cue["progress"]))
+            if phase != "contact":
+                var destination := at
+                if phase == "charge":
+                    at = from
+                else:
+                    var progress := float(cue["progress"])
+                    if phase == "return":
+                        at = destination.lerp(from,progress)
+                        heading = (from-destination).angle()
+                    else:
+                        at = from.lerp(destination,progress)
+                        heading = (destination-from).angle()
+                    at.y += float(profile["arc"])*sin(PI*progress)*scale_amount
         var texture := texture_for(str(cue["id"]))
         if texture == null:
             continue
         var frame := int(cue["frame"])
         var region := Rect2(Vector2(frame%4,floori(float(frame)/4.0))*512.0,Vector2(512,512))
-        var extent := Vector2.ONE*176.0*scale_amount
-        canvas.draw_texture_rect_region(texture,Rect2(at-extent*0.5,extent),region)
+        var extent := Vector2.ONE*float(profile["extent"])*scale_amount
+        if phase == "charge":
+            extent *= lerpf(0.58,0.88,float(frame)/5.0)
+        elif phase == "contact":
+            # Contact cels are attached to the actual authoritative hit target, not an averaged point.
+            extent *= 0.78
+        if not bool(profile["rotate"]):
+            heading = 0.0
+        canvas.draw_set_transform(at,heading)
+        canvas.draw_texture_rect_region(texture,Rect2(-extent*0.5,extent),region,Color(1.08,1.08,1.08,1.0))
+        canvas.draw_set_transform(Vector2.ZERO)

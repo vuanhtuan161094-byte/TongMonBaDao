@@ -19,7 +19,12 @@ const CYCLE := 0.96
 const RELEASE := 0.24
 const CONTACT := 0.68
 const FOOT := Vector2(200,429)
-const MONSTER_HOME := [Vector2(762,550),Vector2(866,550),Vector2(966,564)]
+const MONSTER_HOME := [Vector2(736,535),Vector2(826,559),Vector2(916,583)]
+# Per-skill presentation only; immutable source atlas and 24 source frames.
+const FX_SCALES := [0.76,0.70,0.88,0.72,0.80,0.74]
+const CONTACT_SCALE := 0.28
+const ACTOR_SCALE := 0.23
+const MOB_SCALE := 0.41
 const SKILLS := [
     {"tag":"03","name":"Tu Phuong Phi Nhan","targets":3,"id":"tmb.skill.sword.ngu_kiem.active_03.human","shape":"line"},
     {"tag":"04","name":"Kiem Quang Hoi Chu","targets":1,"id":"tmb.skill.sword.ngu_kiem.active_04.human","shape":"single_target"},
@@ -40,6 +45,7 @@ var _rows: Array
 var _grip := Vector2.ZERO
 var _tip := Vector2.ZERO
 var _mobs: Array[AnimatedSprite2D] = []
+var _contacts: Array[Sprite2D] = []
 var _clock := 0.0
 var _frame := -1
 var _ready_ok := false
@@ -104,7 +110,7 @@ func _ready() -> void:
     _actor = Node2D.new()
     _actor.name = "OriginalAS48_NoRig"
     _actor.position = Vector2(322,557)
-    _actor.scale = Vector2.ONE * 0.20
+    _actor.scale = Vector2.ONE * ACTOR_SCALE
     _actor.z_index=6
     add_child(_actor)
     _sword=Sprite2D.new()
@@ -127,7 +133,7 @@ func _ready() -> void:
         mob.sprite_frames=monster_frames
         mob.offset=Vector2(0,-135)
         mob.position=MONSTER_HOME[i]
-        mob.scale=Vector2.ONE * 0.38
+        mob.scale=Vector2.ONE * MOB_SCALE
         mob.z_index=4
         mob.texture_filter=CanvasItem.TEXTURE_FILTER_LINEAR
         mob.play(&"walk")
@@ -150,6 +156,16 @@ func _ready() -> void:
     mat.blend_mode=CanvasItemMaterial.BLEND_MODE_ADD
     _glow.material=mat
     add_child(_glow)
+    for i in range(3):
+        var accent := Sprite2D.new()
+        accent.name = "SourceContactAccent%02d" % (i+1)
+        accent.texture = _atlas
+        accent.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+        accent.material = mat
+        accent.z_index = 17
+        accent.visible = false
+        add_child(accent)
+        _contacts.append(accent)
     _ready_ok=true
     _set_frame(0)
     _move_effect()
@@ -190,10 +206,10 @@ func _move_effect() -> void:
     if not _ready_ok:
         return
     var zoom_factor := 1.35 if _zoom else 1.0
-    _actor.scale=Vector2.ONE*0.20*zoom_factor
+    _actor.scale=Vector2.ONE*ACTOR_SCALE*zoom_factor
     for mob in _mobs:
-        mob.scale=Vector2.ONE*0.38*zoom_factor
-    var scale_amount := (0.67 if skill_slot != 2 else 0.79)*zoom_factor
+        mob.scale=Vector2.ONE*MOB_SCALE*zoom_factor
+    var scale_amount := float(FX_SCALES[skill_slot])*zoom_factor
     _fx.scale=Vector2.ONE*scale_amount
     _fx.visible=_fx_enabled
     var from_tip:=_sword_tip_world()
@@ -201,7 +217,8 @@ func _move_effect() -> void:
     var position := from_tip
     if _clock < RELEASE:
         var charge:=clampf(_clock/RELEASE,0.0,1.0)
-        position=_actor.position.lerp(from_tip,0.35+0.60*charge)+Vector2(10,-35)
+        position=_actor.position.lerp(from_tip,0.62+0.38*charge)+Vector2(0,-18)
+        _fx.scale *= lerpf(0.58,0.92,charge)
     elif _clock < CONTACT:
         var t:=clampf((_clock-RELEASE)/(CONTACT-RELEASE),0.0,1.0)
         var smooth:=t*t*(3.0-2.0*t)
@@ -219,14 +236,27 @@ func _move_effect() -> void:
             var back:=clampf((_clock-0.76)/(CYCLE-0.76),0.0,1.0)
             position=target.lerp(from_tip,back*back*(3.0-2.0*back))
     _fx.position=position
+    # Preserve the painted core; only a restrained additive duplicate provides light.
+    _fx.modulate=Color(1.08,1.08,1.08,1.0)
+    var heading := (target-from_tip).angle() if skill_slot != 2 else 0.0
+    if skill_slot == 1 and _clock>0.76:
+        heading = (from_tip-target).angle()
+    _fx.rotation=heading if (_clock>=RELEASE and _clock<CONTACT) or (skill_slot==1 and _clock>0.76) else 0.0
+    _glow.rotation=_fx.rotation
     _glow.position=_fx.position
-    _glow.scale=_fx.scale*1.04
+    _glow.scale=_fx.scale*1.06
     _glow.visible=_fx_enabled
-    var hit:=_frame>=17 and _frame<=20
-    _glow.modulate=Color(0.55,0.84,1.0,(0.28 if hit else 0.17) if not _bright else (0.18 if hit else 0.10))
+    var hit:=_frame>=17 and _frame<=21
+    var energy := 0.24 if _clock<RELEASE else (0.30 if hit else 0.14)
+    _glow.modulate=Color(0.76,0.91,1.0,energy*(0.58 if _bright else 1.0))
     for i in range(_mobs.size()):
         var active:= i<int(SKILLS[skill_slot]["targets"])
-        _mobs[i].modulate=Color("b9efff") if hit and active else Color.WHITE
+        var accent := _contacts[i]
+        accent.visible=_fx_enabled and hit and active
+        accent.position=_mobs[i].position+Vector2(0,-68)*zoom_factor
+        accent.scale=Vector2.ONE*CONTACT_SCALE*zoom_factor
+        accent.modulate=Color(0.84,0.95,1.0,0.55*(1.0-float(_frame-17)/6.0))
+        _mobs[i].modulate=Color(1.15,1.11,1.03,1.0) if _fx_enabled and hit and active else Color.WHITE
 
 func _process(delta: float) -> void:
     if not _ready_ok or _paused:
@@ -255,6 +285,14 @@ func _draw() -> void:
     for i in range(9):
         var y:=270.0+float(i)*42.0
         draw_line(Vector2(20,y),Vector2(1260,y+7),Color(0.05,0.2,0.2,0.10) if _bright else Color(0.8,0.9,1,0.04),1)
+    # Ground shadows make actors and impact anchors readable at 1x without painting VFX.
+    if _ready_ok:
+        for mob in _mobs:
+            draw_set_transform(mob.position,0.0,Vector2(1.0,0.34))
+            draw_circle(Vector2.ZERO,28.0,Color(0.0,0.0,0.0,0.24))
+        draw_set_transform(_actor.position,0.0,Vector2(1.0,0.34))
+        draw_circle(Vector2.ZERO,24.0,Color(0.0,0.0,0.0,0.24))
+        draw_set_transform(Vector2.ZERO)
     draw_rect(Rect2(0,0,1280,86),Color("192d38") if _bright else Color("0e1821"))
     draw_string(ThemeDB.fallback_font,Vector2(24,34),str(SKILLS[skill_slot]["name"])+"  |  24F 25FPS  |  REAL AS48 + 3 MOB",HORIZONTAL_ALIGNMENT_LEFT,-1,18,Color("e4f4ff"))
     draw_string(ThemeDB.fallback_font,Vector2(24,62),"SWORD03-08 OWNER SOURCE | FRONT VIEW | LAB ONLY | PVE HOLD",HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("b5d0e7"))
@@ -276,6 +314,7 @@ func review_set_fx(value: bool) -> void:
         _fx.visible=value
     if _glow!=null:
         _glow.visible=value
+    _move_effect()
 func review_set_bright(value: bool) -> void:
     _bright=value
     queue_redraw()

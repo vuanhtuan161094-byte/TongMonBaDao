@@ -8,6 +8,7 @@ on:
       - 'godot/labs/visual_bridge_v1/vfx_web_review_hub.gd'
       - 'tools/vfx/stage_vfx_web_review.py'
       - '.github/workflows/sword-batch6-native.yml'
+      - 'godot/src/presentation/p3/pve_a3_sword_vfx.gd'
   workflow_dispatch:
 permissions:
   contents: read
@@ -54,6 +55,7 @@ jobs:
             "$GODOT" --headless --path "$STAGE" --fixed-fps 60 --quit-after 125 "res://labs/combat_lab/sword_batch6_20261124/sword_${tag}_lab.tscn" 2>&1 | tee "$RUNNER_TEMP/sword_${tag}.log"
             grep -Fq "BATCH6_REAL_GODOT_LAB_READY" "$RUNNER_TEMP/sword_${tag}.log"
             grep -Fq "BATCH6_VISUAL_CONTACT" "$RUNNER_TEMP/sword_${tag}.log"
+            if grep -Eiq 'SCRIPT ERROR|Parse Error|Failed to load resource' "$RUNNER_TEMP/sword_${tag}.log"; then exit 1; fi
           done
           echo "BATCH6_GODOT_REAL_AS48_MOBS_6_SKILLS_PASS"
       - name: Capture six actual Godot 4.7.2 native 1x review videos and frames
@@ -75,8 +77,11 @@ jobs:
             grep -Fq 'BATCH6_REAL_GODOT_LAB_READY' "$RUNNER_TEMP/sword6-visual/${tag}.log"
             ffmpeg -y -hide_banner -loglevel error -i "$RUNNER_TEMP/sword6-visual/${tag}.avi" \
               -c:v libx264 -crf 23 -pix_fmt yuv420p "$RUNNER_TEMP/sword6-visual/SWORD_${tag}_native.mp4"
-            ffmpeg -y -hide_banner -loglevel error -ss 0.67 -i "$RUNNER_TEMP/sword6-visual/SWORD_${tag}_native.mp4" \
-              -frames:v 1 "$RUNNER_TEMP/sword6-visual/SWORD_${tag}_contact.png"
+            for phase in charge:0.16 release:0.44 contact:0.72; do
+              ffmpeg -y -hide_banner -loglevel error -ss "${phase#*:}" -i "$RUNNER_TEMP/sword6-visual/SWORD_${tag}_native.mp4" \
+                -frames:v 1 "$RUNNER_TEMP/sword6-visual/SWORD_${tag}_${phase%:*}.png"
+            done
+            if grep -Eiq 'SCRIPT ERROR|Parse Error|Failed to load resource' "$RUNNER_TEMP/sword6-visual/${tag}.log"; then exit 1; fi
             rm "$RUNNER_TEMP/sword6-visual/${tag}.avi"
           done
           printf 'SOURCE_SHA=%s\nGODOT=4.7.2\nAS48=REAL\nMONSTERS=REAL\nPVE=HOLD\n' "$GITHUB_SHA" > "$RUNNER_TEMP/sword6-visual/receipt.txt"
