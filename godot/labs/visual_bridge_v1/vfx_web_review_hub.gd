@@ -120,11 +120,25 @@ func _ready() -> void:
     # Direct link /vfx/?skill=r1e selects the same canonical Godot Web review,
     # never creates a second build, site, or independent game.
     if OS.has_feature("web") and _entries.size() > 1:
-        var query_text: Variant = JavaScriptBridge.eval("window.location.search", true)
-        if str(query_text).contains("skill=r1e"):
-            _picker.select(1)
-            _change_skill(1)
-            print("VFX_R1E_DEEPLINK=PASS")
+        var query_text: Variant = JavaScriptBridge.eval("new URLSearchParams(window.location.search).get('skill')", true)
+        var key := str(query_text).strip_edges().to_lower()
+        var selected_id := ""
+        if key == "r1e":
+            selected_id = "tmb.skill.sword.ngu_kiem.active_02.human"
+        elif key in ["s03","s04","s05","s06","s07","s08"]:
+            for entry in _entries:
+                if str(entry.get("preview_key","")) == key:
+                    selected_id = str(entry.get("id",""))
+                    break
+        for i in range(_entries.size()):
+            if str(_entries[i].get("id","")) == selected_id:
+                _picker.select(i)
+                _change_skill(i)
+                if key == "r1e":
+                    print("VFX_R1E_DEEPLINK=PASS")
+                else:
+                    print("BATCH6_WEB_DEEPLINK=PASS key=",key," id=",selected_id)
+                break
 
 func _button(parent: BoxContainer, title: String, callback: Callable) -> Button:
     var control := Button.new()

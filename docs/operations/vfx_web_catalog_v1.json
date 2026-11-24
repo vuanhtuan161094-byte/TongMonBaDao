@@ -52,6 +52,144 @@
       ],
       "art_source": "FIRST_PARTY_AI_DRAWN_VFX_ONLY_12_POSES_ALPHA_POSTPROCESSED",
       "review_note": "V2 source owner approved 2026-11-24; 12 original R1E RGBA + 11 derived motion inbetweens + final alpha-fade, 25fps / 0.96s review only; runtime and Front direction require exact SHA Chromium evidence. Toggle V2/R1E side by side in same existing Web hub. PvE HOLD."
+    },
+    {
+      "id": "tmb.skill.sword.ngu_kiem.active_03.human",
+      "name_vi": "Tứ Phương Phi Nhận — 24f AS48 Combat Lab",
+      "school_vi": "Kiếm Tu",
+      "branch_vi": "Ngự Kiếm",
+      "tier": "human",
+      "scene": "res://labs/combat_lab/sword_batch6_20261124/sword_03_lab.tscn",
+      "directions": [
+        "front"
+      ],
+      "vfx_status": "OWNER_APPROVED",
+      "g3_art": "SOURCE_BATCH_OWNER_APPROVED_RUNTIME_REVIEW_PENDING",
+      "owner_art": "OWNER_APPROVED_BATCH_20261124",
+      "preview_key": "s03",
+      "source_paths": [
+        "labs/combat_lab/sword_batch6_20261124/sword_batch6_lab.gd",
+        "labs/combat_lab/sword_batch6_20261124/sword_03_lab.tscn",
+        "labs/combat_lab/sword_batch6_20261124/source/sword_03_24f.png",
+        "labs/combat_lab/sword_batch6_20261124/source/batch6_atlas_manifest.json"
+      ],
+      "art_source": "FIRST_PARTY_APPROVED_AI_VFX_DERIVED_24_RGBA_FRAMES",
+      "review_note": "Existing canonical One Game /vfx/ lab, real AS48 Front + independent socket weapon and 3 moving monster sprites. Owner approved source batch only. Runtime visual QA pending; no actual PvE, no merge."
+    },
+    {
+      "id": "tmb.skill.sword.ngu_kiem.active_04.human",
+      "name_vi": "Kiếm Quang Hồi Chủ — 24f AS48 Combat Lab",
+      "school_vi": "Kiếm Tu",
+      "branch_vi": "Ngự Kiếm",
+      "tier": "human",
+      "scene": "res://labs/combat_lab/sword_batch6_20261124/sword_04_lab.tscn",
+      "directions": [
+        "front"
+      ],
+      "vfx_status": "OWNER_APPROVED",
+      "g3_art": "SOURCE_BATCH_OWNER_APPROVED_RUNTIME_REVIEW_PENDING",
+      "owner_art": "OWNER_APPROVED_BATCH_20261124",
+      "preview_key": "s04",
+      "source_paths": [
+        "labs/combat_lab/sword_batch6_20261124/sword_batch6_lab.gd",
+        "labs/combat_lab/sword_batch6_20261124/sword_04_lab.tscn",
+        "labs/combat_lab/sword_batch6_20261124/source/sword_04_24f.png",
+        "labs/combat_lab/sword_batch6_20261124/source/batch6_atlas_manifest.json"
+      ],
+      "art_source": "FIRST_PARTY_APPROVED_AI_VFX_DERIVED_24_RGBA_FRAMES",
+      "review_note": "Existing canonical One Game /vfx/ lab, real AS48 Front + independent socket weapon and 3 moving monster sprites. Owner approved source batch only. Runtime visual QA pending; no actual PvE, no merge."
+    },
+    {
+      "id": "tmb.skill.sword.ngu_kiem.ultimate.human",
+      "name_vi": "Vạn Kiếm Quy Tông — 24f AS48 Combat Lab",
+      "school_vi": "Kiếm Tu",
+      "branch_vi": "Ngự Kiếm",
+      "tier": "human",
+      "scene": "res://labs/combat_lab/sword_batch6_20261124/sword_05_lab.tscn",
+      "directions": [
+        "front"
+      ],
+      "vfx_status": "OWNER_APPROVED",
+      "g3_art": "SOURCE_BATCH_OWNER_APPROVED_RUNTIME_REVIEW_PENDING",
+      "owner_art": "OWNER_APPROVED_BATCH_20261124",
+      "preview_key": "s05",
+      "source_paths": [
+        "labs/combat_lab/sword_batch6_20261124/sword_batch6_lab.gd",
+        "labs/combat_lab/sword_batch6_20261124/sword_05_lab.tscn",
+        "labs/combat_lab/sword_batch6_20261124/source/sword_05_24f.png",
+        "labs/combat_lab/sword_batch6_20261124/source/batch6_atlas_manifest.json"
+      ],
+      "art_source": "FIRST_PARTY_APPROVED_AI_VFX_DERIVED_24_RGBA_FRAMES",
+      "review_note": "Existing canonical One Game /vfx/ lab, real AS48 Front + independent socket weapon and 3 moving monster sprites. Owner approved source batch only. Runtime visual QA pending; no actual PvE, no merge."
+    },
+    {
+      "id": "tmb.skill.sword.sat_kiem.active_01.human",
+      "name_vi": "Trảm Ảnh Nhất Tuyến — 24f AS48 Combat Lab",
+      "school_vi": "Kiếm Tu",
+      "branch_vi": "Sát Kiếm",
+      "tier": "human",
+      "scene": "res://labs/combat_lab/sword_batch6_20261124/sword_06_lab.tscn",
+      "directions": [
+        "front"
+      ],
+      "vfx_status": "OWNER_APPROVED",
+      "g3_art": "SOURCE_BATCH_OWNER_APPROVED_RUNTIME_REVIEW_PENDING",
+      "owner_art": "OWNER_APPROVED_BATCH_20261124",
+      "preview_key": "s06",
+      "source_paths": [
+        "labs/combat_lab/sword_batch6_20261124/sword_batch6_lab.gd",
+        "labs/combat_lab/sword_batch6_20261124/sword_06_lab.tscn",
+        "labs/combat_lab/sword_batch6_20261124/source/sword_06_24f.png",
+        "labs/combat_lab/sword_batch6_20261124/source/batch6_atlas_manifest.json"
+      ],
+      "art_source": "FIRST_PARTY_APPROVED_AI_VFX_DERIVED_24_RGBA_FRAMES",
+      "review_note": "Existing canonical One Game /vfx/ lab, real AS48 Front + independent socket weapon and 3 moving monster sprites. Owner approved source batch only. Runtime visual QA pending; no actual PvE, no merge."
+    },
+    {
+      "id": "tmb.skill.sword.sat_kiem.active_02.human",
+      "name_vi": "Phá Vân Trực Trảm — 24f AS48 Combat Lab",
+      "school_vi": "Kiếm Tu",
+      "branch_vi": "Sát Kiếm",
+      "tier": "human",
+      "scene": "res://labs/combat_lab/sword_batch6_20261124/sword_07_lab.tscn",
+      "directions": [
+        "front"
+      ],
+      "vfx_status": "OWNER_APPROVED",
+      "g3_art": "SOURCE_BATCH_OWNER_APPROVED_RUNTIME_REVIEW_PENDING",
+      "owner_art": "OWNER_APPROVED_BATCH_20261124",
+      "preview_key": "s07",
+      "source_paths": [
+        "labs/combat_lab/sword_batch6_20261124/sword_batch6_lab.gd",
+        "labs/combat_lab/sword_batch6_20261124/sword_07_lab.tscn",
+        "labs/combat_lab/sword_batch6_20261124/source/sword_07_24f.png",
+        "labs/combat_lab/sword_batch6_20261124/source/batch6_atlas_manifest.json"
+      ],
+      "art_source": "FIRST_PARTY_APPROVED_AI_VFX_DERIVED_24_RGBA_FRAMES",
+      "review_note": "Existing canonical One Game /vfx/ lab, real AS48 Front + independent socket weapon and 3 moving monster sprites. Owner approved source batch only. Runtime visual QA pending; no actual PvE, no merge."
+    },
+    {
+      "id": "tmb.skill.sword.sat_kiem.active_03.human",
+      "name_vi": "Đoạn Thủy Kiếm Mang — 24f AS48 Combat Lab",
+      "school_vi": "Kiếm Tu",
+      "branch_vi": "Sát Kiếm",
+      "tier": "human",
+      "scene": "res://labs/combat_lab/sword_batch6_20261124/sword_08_lab.tscn",
+      "directions": [
+        "front"
+      ],
+      "vfx_status": "OWNER_APPROVED",
+      "g3_art": "SOURCE_BATCH_OWNER_APPROVED_RUNTIME_REVIEW_PENDING",
+      "owner_art": "OWNER_APPROVED_BATCH_20261124",
+      "preview_key": "s08",
+      "source_paths": [
+        "labs/combat_lab/sword_batch6_20261124/sword_batch6_lab.gd",
+        "labs/combat_lab/sword_batch6_20261124/sword_08_lab.tscn",
+        "labs/combat_lab/sword_batch6_20261124/source/sword_08_24f.png",
+        "labs/combat_lab/sword_batch6_20261124/source/batch6_atlas_manifest.json"
+      ],
+      "art_source": "FIRST_PARTY_APPROVED_AI_VFX_DERIVED_24_RGBA_FRAMES",
+      "review_note": "Existing canonical One Game /vfx/ lab, real AS48 Front + independent socket weapon and 3 moving monster sprites. Owner approved source batch only. Runtime visual QA pending; no actual PvE, no merge."
     }
   ]
 }

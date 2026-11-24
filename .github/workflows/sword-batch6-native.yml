@@ -1,0 +1,66 @@
+name: Sword03-08 six Godot 4.7.2 Combat Lab runtime QA
+on:
+  push:
+    branches: [integration/pve-p0-playable-ui-20261103]
+    paths:
+      - 'godot/labs/combat_lab/sword_batch6_20261124/**'
+      - 'docs/operations/vfx_web_catalog_v1.json'
+      - 'godot/labs/visual_bridge_v1/vfx_web_review_hub.gd'
+      - 'tools/vfx/stage_vfx_web_review.py'
+      - '.github/workflows/sword-batch6-native.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  native:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - name: Exact-SHA 6 owner-approved atlas audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json,hashlib,pathlib
+          root=pathlib.Path('godot/labs/combat_lab/sword_batch6_20261124/source')
+          m=json.loads((root/'batch6_atlas_manifest.json').read_text())
+          assert len(m['files'])==6 and m['pve']=='HOLD'
+          for f in m['files']:
+            p=root/f['file']
+            assert p.is_file(),f['file']
+            assert hashlib.sha256(p.read_bytes()).hexdigest()==f['sha256'],f['tag']
+          print("BATCH6_GITHUB_EXACT_ATLAS_SHA_PASS=6/6")
+          PY
+      - name: Build one canonical Web Lab staging from real Godot sources
+        run: python tools/vfx/stage_vfx_web_review.py --source godot --destination "$RUNNER_TEMP/batch6-stage"
+      - name: Install pinned Godot 4.7.2 editor
+        shell: bash
+        run: |
+          curl -fL --retry 3 -o "$RUNNER_TEMP/godot.zip" "https://github.com/godotengine/godot-builds/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip"
+          echo "cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4  $RUNNER_TEMP/godot.zip" | sha256sum -c -
+          unzip -oq "$RUNNER_TEMP/godot.zip" -d "$RUNNER_TEMP"
+          chmod +x "$RUNNER_TEMP/Godot_v4.7.2-stable_linux.x86_64"
+      - name: Strict import and 6 real AS48 + three mob scene executions
+        shell: bash
+        run: |
+          set -euo pipefail
+          GODOT="$RUNNER_TEMP/Godot_v4.7.2-stable_linux.x86_64"
+          STAGE="$RUNNER_TEMP/batch6-stage"
+          "$GODOT" --headless --path "$STAGE" --editor --import 2>&1 | tee "$RUNNER_TEMP/batch6-import.log"
+          if grep -Eiq 'SCRIPT ERROR|Parse Error|Failed to load script|Failed to load resource' "$RUNNER_TEMP/batch6-import.log"; then exit 1; fi
+          "$GODOT" --headless --path "$STAGE" --check-only --script res://labs/combat_lab/sword_batch6_20261124/sword_batch6_lab.gd
+          for tag in 03 04 05 06 07 08; do
+            "$GODOT" --headless --path "$STAGE" --fixed-fps 60 --quit-after 125 "res://labs/combat_lab/sword_batch6_20261124/sword_${tag}_lab.tscn" 2>&1 | tee "$RUNNER_TEMP/sword_${tag}.log"
+            grep -Fq "BATCH6_REAL_GODOT_LAB_READY" "$RUNNER_TEMP/sword_${tag}.log"
+            grep -Fq "BATCH6_VISUAL_CONTACT" "$RUNNER_TEMP/sword_${tag}.log"
+          done
+          echo "BATCH6_GODOT_REAL_AS48_MOBS_6_SKILLS_PASS"
+      - name: Upload exact-SHA runtime test receipts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sword-batch6-godot-${{ github.sha }}
+          path: ${{ runner.temp }}/sword_*.log
+          retention-days: 10
+          if-no-files-found: ignore
