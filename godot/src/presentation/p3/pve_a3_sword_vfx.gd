@@ -113,7 +113,14 @@ func cues() -> Array[Dictionary]:
         var elapsed := _clock-float(cue["started"])
         if not bool(cue["released"]):
             if elapsed <= float(cue["windup"]):
-                result.append({"id":cue["id"],"phase":"charge","caster":cue["caster"],"target":cue["target"],"frame":mini(5,int(elapsed/float(cue["windup"])*6.0))})
+                var fraction := clampf(elapsed/float(cue["windup"]),0.0,1.0)
+                # Visual anticipation only: projectile-speed skills travel during the authoritative cast deadline.
+                var tag := str(BINDINGS[str(cue["id"])]["tag"])
+                if tag in ["03","04","05"] and fraction>=0.60:
+                    var progress := (fraction-0.60)/0.40
+                    result.append({"id":cue["id"],"phase":"release","caster":cue["caster"],"target":cue["target"],"frame":6+mini(10,int(progress*11.0)),"progress":progress})
+                else:
+                    result.append({"id":cue["id"],"phase":"charge","caster":cue["caster"],"target":cue["target"],"frame":mini(5,int(fraction/0.60*6.0))})
         elif Dictionary(cue["seen"]).is_empty():
             var flight := _clock-float(cue.get("release_clock",_clock))
             if flight < 0.32:
@@ -151,7 +158,7 @@ func draw_on(canvas: CanvasItem, positions: Dictionary, projection: Callable, sc
             continue
         if phase == "contact" and not positions.has(target) and not cue.has("at"):
             continue
-        var at: Vector2 = projection.call(positions.get(target,cue.get("at",Vector2.ZERO)))
+        var at: Vector2 = projection.call(cue.get("at",positions.get(target,Vector2.ZERO)) if phase=="contact" else positions.get(target,Vector2.ZERO))
         at += Vector2(0,-42)*scale_amount
         var profile: Dictionary = PRESENTATION[str(BINDINGS[str(cue["id"])]["tag"])]
         var heading := 0.0
@@ -171,10 +178,16 @@ func draw_on(canvas: CanvasItem, positions: Dictionary, projection: Callable, sc
                         at = from.lerp(destination,progress)
                         heading = (destination-from).angle()
                     at.y += float(profile["arc"])*sin(PI*progress)*scale_amount
+        var tag := str(BINDINGS[str(cue["id"])]["tag"])
         var texture := texture_for(str(cue["id"]))
+        var frame := int(cue["frame"])
+        if tag=="04" and phase in ["release","return"]:
+            frame=18
+        if tag in ["04","06"] and phase=="contact":
+            texture=texture_for("tmb.skill.sword.ngu_kiem.ultimate.human")
+            frame=clampi(frame,17,21)
         if texture == null:
             continue
-        var frame := int(cue["frame"])
         var region := Rect2(Vector2(frame%4,floori(float(frame)/4.0))*512.0,Vector2(512,512))
         var extent := Vector2.ONE*float(profile["extent"])*scale_amount
         if phase == "charge":

@@ -39,6 +39,9 @@ var _sword: Sprite2D
 var _fx: Sprite2D
 var _glow: Sprite2D
 var _atlas: AtlasTexture
+var _contact_atlas: AtlasTexture
+var _source_texture: Texture2D
+var _burst_texture: Texture2D
 var _body_sheet: Texture2D
 var _sword_sheet: Texture2D
 var _rows: Array
@@ -139,8 +142,14 @@ func _ready() -> void:
         mob.play(&"walk")
         add_child(mob)
         _mobs.append(mob)
+    _source_texture=texture
+    _burst_texture=_raw_png(ROOT+"source/sword_05_24f.png")
+    if _burst_texture == null:
+        return
     _atlas=AtlasTexture.new()
     _atlas.atlas=texture
+    _contact_atlas=AtlasTexture.new()
+    _contact_atlas.atlas=_burst_texture
     _fx=Sprite2D.new()
     _fx.name="OwnerApprovedVFXAtlas24f"
     _fx.texture=_atlas
@@ -159,7 +168,7 @@ func _ready() -> void:
     for i in range(3):
         var accent := Sprite2D.new()
         accent.name = "SourceContactAccent%02d" % (i+1)
-        accent.texture = _atlas
+        accent.texture = _contact_atlas
         accent.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
         accent.material = mat
         accent.z_index = 17
@@ -175,7 +184,13 @@ func _ready() -> void:
 
 func _set_frame(index: int) -> void:
     _frame=clampi(index,0,COUNT-1)
-    _atlas.region=Rect2(float(_frame%4)*CEL,float(int(float(_frame)/4.0))*CEL,CEL,CEL)
+    var sample := _frame
+    # R2 footage: 04 frame 11 was a burst, not a travelling sword. Reuse its actual sword pose.
+    if skill_slot==1 and ((_frame>=6 and _frame<17) or _frame>=20):
+        sample=18
+    _atlas.region=Rect2(float(sample%4)*CEL,float(int(float(sample)/4.0))*CEL,CEL,CEL)
+    var contact_sample := clampi(17+(_frame-17),17,21)
+    _contact_atlas.region=Rect2(float(contact_sample%4)*CEL,float(int(float(contact_sample)/4.0))*CEL,CEL,CEL)
     var pose := 0
     if _frame >= 18:
         pose=3
@@ -211,6 +226,8 @@ func _move_effect() -> void:
         mob.scale=Vector2.ONE*MOB_SCALE*zoom_factor
     var scale_amount := float(FX_SCALES[skill_slot])*zoom_factor
     _fx.scale=Vector2.ONE*scale_amount
+    if skill_slot in [3,5] and _clock>=CONTACT:
+        _fx.scale *= 0.66
     _fx.visible=_fx_enabled
     var from_tip:=_sword_tip_world()
     var target:=_impact_origin()
@@ -238,6 +255,8 @@ func _move_effect() -> void:
     _fx.position=position
     # Preserve the painted core; only a restrained additive duplicate provides light.
     _fx.modulate=Color(1.08,1.08,1.08,1.0)
+    if skill_slot==1 and _clock>=CONTACT and _clock<=0.76:
+        _fx.modulate.a=0.0
     var heading := (target-from_tip).angle() if skill_slot != 2 else 0.0
     if skill_slot == 1 and _clock>0.76:
         heading = (from_tip-target).angle()
@@ -254,8 +273,9 @@ func _move_effect() -> void:
         var accent := _contacts[i]
         accent.visible=_fx_enabled and hit and active
         accent.position=_mobs[i].position+Vector2(0,-68)*zoom_factor
-        accent.scale=Vector2.ONE*CONTACT_SCALE*zoom_factor
-        accent.modulate=Color(0.84,0.95,1.0,0.55*(1.0-float(_frame-17)/6.0))
+        var contact_size := 0.32 if skill_slot in [1,3] else 0.23
+        accent.scale=Vector2.ONE*contact_size*zoom_factor
+        accent.modulate=Color(0.84,0.95,1.0,(0.85 if skill_slot in [1,3] else 0.50)*(1.0-float(_frame-17)/6.0))
         _mobs[i].modulate=Color(1.15,1.11,1.03,1.0) if _fx_enabled and hit and active else Color.WHITE
 
 func _process(delta: float) -> void:

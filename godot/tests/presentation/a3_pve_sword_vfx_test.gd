@@ -13,7 +13,7 @@ func _actor(id: String,side: String,position: Vector2) -> Dictionary:
         resistances[element] = 0.0
     return {"id":id,"side":side,"role":"melee","position":position,"hp":2000.0,"max_hp":2000.0,"range":1.8,"move_speed":2.0,
         "stats":{"attack":40.0,"defense":0.0,"damage_reduction":0.0,"crit_chance":0.0,"crit_damage":1.5,"crit_resistance":0.0,"defense_penetration":0.0,"lifesteal":0.0,"lifesteal_reduction":0.0},
-        "resistances":resistances,"status_effects":{},"context_sources":[],"v63_combat_enabled":true,"v63_sword_combat_enabled":true,"v63_skill_ready":{},"v63_skill_loadout":[],"v63_passive_ids":[],"v63_combat_clock":-1.0,"next_skill":0.0}
+        "resistances":resistances,"tier":"normal","race_id":"yeu_thu","status_effects":{},"context_sources":[],"v63_combat_enabled":true,"v63_sword_combat_enabled":true,"v63_skill_ready":{},"v63_skill_loadout":[],"v63_passive_ids":[],"v63_combat_clock":-1.0,"next_skill":0.0}
 
 func _fail(reason: String) -> void:
     push_error("A3_PVE_FAIL "+reason)
@@ -66,7 +66,7 @@ func _run() -> void:
             if str(cue["phase"]) == "contact":
                 contact_count += 1
         if hp >= 2000.0 or contact_count != 1:
-            _fail("real confirmed hit "+str(id))
+            _fail("real confirmed hit "+str(id)+" hp="+str(hp)+" contacts="+str(contact_count)+" events="+str(events))
             return
         fx.observe(events,battle,true)
         if fx.cues().size() != 1 or target["hp"] != hp or battle.events != snapshot:

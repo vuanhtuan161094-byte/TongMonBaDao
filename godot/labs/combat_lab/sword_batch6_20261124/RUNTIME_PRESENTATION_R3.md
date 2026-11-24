@@ -1,0 +1,3 @@
+# R3 batch review — 2026-11-24
+
+R2 native exact-SHA run 45412760844 and Pages 45412761029 PASS; inspected 18 actual Godot frames (charge/release/contact, six skills). 03/05 readable; 04 wrong burst in flight, 06 weak contact, 08 excessive single-target spread. R3 remaps 04 flight to its real sword cel, uses a small existing 05 sprite accent at confirmed contact, shrinks 06/08 contact spread, uses authoritative impact anchor, and shows projectile anticipation within the existing cast deadline. Source atlas bytes unchanged. PvE test 45412760867 failed because fixture lacks canonical tier/race_id required by CombatContextEffectsV2; add valid test data, not a damage bypass. New exact-SHA CI required. No art approval or PvE gate opening.
