@@ -1,0 +1,27 @@
+name: Sword VFX Batch6 G0 metadata only (NOT source art QA)
+on:
+  push:
+    branches:
+      - integration/pve-p0-playable-ui-20261103
+    paths:
+      - '.github/workflows/sword-batch6-g0-metadata.yml'
+      - 'godot/labs/combat_lab/production_batch_20261124/**'
+      - 'tools/vfx/check_sword_batch6_metadata.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  metadata:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            godot/data/combat/v63_sword_combat_catalog.json
+            godot/labs/combat_lab/production_batch_20261124
+            tools/vfx/check_sword_batch6_metadata.py
+      - name: Check 6 skill canonical IDs and explicit source-not-staged / HOLD gates
+        shell: bash
+        run: python tools/vfx/check_sword_batch6_metadata.py
