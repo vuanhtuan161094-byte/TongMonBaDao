@@ -188,6 +188,7 @@ var fallback_art_count := 0
 var lab_geometry: SectIsoMapModelV1
 var map_layout_version := 0
 var placement_preview: Dictionary = {}
+var masterplan_plots_visible := false
 var preview_roads: Dictionary = {}
 var static_preview_roads: Dictionary = {}
 var residence_layout_signature := ""
@@ -266,6 +267,10 @@ func anchor_for(destination: StringName, version: int = -1) -> Vector2i:
 
 func set_placement_preview(preview: Dictionary) -> void:
     placement_preview = preview.duplicate(true)
+    queue_redraw()
+
+func set_masterplan_plots_visible(enabled: bool) -> void:
+    masterplan_plots_visible = enabled
     queue_redraw()
 
 func clear_placement_preview() -> void:
@@ -1214,6 +1219,32 @@ func _pve_ground_color(cell: Vector2i) -> Color:
 
 # Small diegetic district labels, on the real isometric surface. They never
 # intercept a tap, block the verified artwork, or affect the AStar road graph.
+func _draw_masterplan_lots() -> void:
+    if not masterplan_plots_visible or map_layout_version != 2 or pve_landscape:
+        return
+    var font := ThemeDB.fallback_font
+    var lots := SectResidenceSiteV1.MASTERPLAN_ANNEX_SITES
+    for index in range(lots.size()):
+        var origin: Vector2i = lots[index]
+        if origin == Vector2i(placement_preview.get("site",SectResidenceSiteV1.UNSELECTED)):
+            continue
+        var occupied := false
+        for y in range(SectResidenceSiteV1.HOUSE_FOOTPRINT.y):
+            for x in range(SectResidenceSiteV1.HOUSE_FOOTPRINT.x):
+                occupied = occupied or house_reserved_tiles.has(origin+Vector2i(x,y))
+        if occupied:
+            continue
+        var center := project(Vector2(origin)+Vector2(1,1))
+        if not _visible_world(center):
+            continue
+        var points := PackedVector2Array([center+Vector2(0,-HALF_H*3),center+Vector2(HALF_W*3,0),center+Vector2(0,HALF_H*3),center+Vector2(-HALF_W*3,0)])
+        draw_colored_polygon(points,Color(0.85,0.72,0.39,0.12))
+        var closed := points.duplicate()
+        closed.append(points[0])
+        draw_polyline(closed,Color(0.96,0.81,0.52,0.78),2.0,true)
+        if font != null:
+            draw_string(font,center+Vector2(-30,4),"LÔ %02d" % (index+1),HORIZONTAL_ALIGNMENT_CENTER,60,12,Color(1.0,0.91,0.68))
+
 func _draw_masterplan_district_signs() -> void:
     if map_layout_version != 2 or pve_landscape:
         return
@@ -1224,12 +1255,14 @@ func _draw_masterplan_district_signs() -> void:
         var ground := project(Vector2(row["cell"]))
         if not _visible_world(ground):
             continue
-        var plaque := Rect2(ground-Vector2(86.0,36.0),Vector2(172.0,28.0))
+        var plaque := Rect2(ground-Vector2(94.0,42.0),Vector2(188.0,32.0))
         var accent: Color = row["tone"]
-        draw_rect(plaque,Color(0.035,0.13,0.14,0.92),true)
-        draw_rect(plaque,Color(accent.r,accent.g,accent.b,0.80),false,1.4)
-        draw_string(font,plaque.position+Vector2(6.0,19.0),str(row["label"]),
-            HORIZONTAL_ALIGNMENT_CENTER,plaque.size.x-12.0,13,accent)
+        draw_rect(Rect2(plaque.position+Vector2(2,3),plaque.size),Color(0.02,0.06,0.06,0.52),true)
+        draw_rect(plaque,Color(0.035,0.13,0.14,0.94),true)
+        draw_rect(plaque,Color(accent.r,accent.g,accent.b,0.90),false,1.6)
+        draw_rect(Rect2(plaque.position+Vector2(4,4),Vector2(3,24)),accent,true)
+        draw_string(font,plaque.position+Vector2(9.0,22.0),str(row["label"]),
+            HORIZONTAL_ALIGNMENT_CENTER,plaque.size.x-16.0,14,accent)
 
 func _draw() -> void:
     # Ground layer first: cached meshes remain valid for all camera positions.
@@ -1258,6 +1291,7 @@ func _draw() -> void:
         _ensure_pve_static_draw_queue()
         _draw_pve_actor_depth_merge()
         return
+    _draw_masterplan_lots()
     _draw_masterplan_district_signs()
     # Sort all decorations with building art by actual projected ground depth.
     # One draw surface and one depth queue prevent large roofs from showing

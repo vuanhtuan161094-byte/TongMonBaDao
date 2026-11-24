@@ -1,5 +1,6 @@
 class_name HS09DualFoundationRadar
 extends Control
+const A2_RADAR = preload("res://src/presentation/p3/sect_six_axis_view.gd")
 
 ## Read-only D7 profile chart; values are presentation data, never normalized in state.
 ## Tâm Tính belongs to Tam Căn and contributes to D7 quality, with no direct runtime modifier.
@@ -43,9 +44,9 @@ func apply_snapshot(snapshot: Dictionary) -> bool:
 	mind_nature_available = not legacy_profile
 	dimension_values = next_values
 	chart_ceiling = _drawing_ceiling(maximum)
-	tooltip_text = ("D7 · Tam Căn (3) / Tứ Tính (4) · đọc theo hồ sơ, không sửa chỉ số"
+	tooltip_text = ("Lục Duy · Tâm Tính riêng trong hồ sơ D7 · không sửa chỉ số"
 		if mind_nature_available else
-		"Hồ sơ cũ · cùng bố cục Tam Căn (3) / Tứ Tính (4) · Tâm Tính chưa có dữ liệu; không tự gán giá trị")
+		"Lục Duy · Hồ sơ cũ: Tâm Tính chưa có dữ liệu; không tự gán giá trị")
 	queue_redraw()
 	return true
 
@@ -56,52 +57,4 @@ static func _drawing_ceiling(maximum: float) -> float:
 	return maxf(ceil(maximum / step) * step, maximum)
 
 func _draw() -> void:
-	if dimension_values.size() != D7_KEYS.size():
-		return
-	var center := Vector2(size.x * 0.5, size.y * 0.43)
-	var radius := minf(size.x * (0.28 if compact else 0.29), size.y * (0.235 if compact else 0.25))
-	var font := get_theme_default_font()
-	if font == null:
-		return
-	var polygon := PackedVector2Array()
-	var label_width := 76.0 if compact else 82.0
-	var label_size := 9 if compact else 10
-	for ring in [0.25, 0.5, 0.75, 1.0]:
-		var outline := PackedVector2Array()
-		for index in range(D7_KEYS.size() + 1):
-			var angle := -PI * 0.5 + TAU * float(index % D7_KEYS.size()) / float(D7_KEYS.size())
-			outline.append(center + Vector2(cos(angle), sin(angle)) * radius * ring)
-		draw_polyline(outline, GRID, 1.0, true)
-	for index in range(D7_KEYS.size()):
-		var angle := -PI * 0.5 + TAU * float(index) / float(D7_KEYS.size())
-		var direction := Vector2(cos(angle), sin(angle))
-		draw_line(center, center + direction * radius, GRID, 1.0, true)
-		var value := dimension_values[index]
-		var point := center + direction * radius * clampf(value / maxf(chart_ceiling, 1.0), 0.0, 1.0)
-		polygon.append(point)
-		var label_point := center + direction * (radius + 14.0)
-		draw_string(font, Vector2(label_point.x - label_width * 0.5, label_point.y + 3.0), D7_NAMES[index], HORIZONTAL_ALIGNMENT_CENTER, label_width, label_size, JADE)
-		var readout := "—" if index == 2 and not mind_nature_available else "%.0f" % value
-		draw_string(font, Vector2(label_point.x - 28.0, label_point.y + label_size + 3.0), readout, HORIZONTAL_ALIGNMENT_CENTER, 56.0, label_size, INK)
-	if mind_nature_available:
-		draw_colored_polygon(polygon, Color(0.22, 0.57, 0.42, 0.22))
-		var closed := polygon.duplicate()
-		closed.append(polygon[0])
-		draw_polyline(closed, JADE, 2.0, true)
-	else:
-		# A deliberate gap around the unavailable Tâm Tính axis: no fake zero
-		# corner, no closed polygon and no misleading filled foundation score.
-		for index in range(D7_KEYS.size() - 1):
-			if index == 1 or index == 2:
-				continue
-			draw_line(polygon[index], polygon[index + 1], JADE, 2.0, true)
-		draw_line(polygon[D7_KEYS.size() - 1], polygon[0], JADE, 2.0, true)
-	for index in range(polygon.size()):
-		if index == 2 and not mind_nature_available:
-			continue
-		draw_circle(polygon[index], 3.0, JADE)
-	var footer := ("TAM CĂN (3)  ·  TỨ TÍNH (4)  ·  thang %.0f" % chart_ceiling
-		if mind_nature_available else
-		"TAM CĂN / TỨ TÍNH · Tâm Tính: chưa có dữ liệu")
-	draw_string(font, Vector2(0.0, size.y - 4.0), footer,
-		HORIZONTAL_ALIGNMENT_CENTER, size.x, 9 if compact else 10, INK)
+	A2_RADAR.draw_chart(self,dimension_values,mind_nature_available,INK,JADE,GRID,model_version < 2)

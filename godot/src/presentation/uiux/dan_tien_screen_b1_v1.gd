@@ -82,7 +82,7 @@ func _make_shell() -> MarginContainer:
 	var stack := VBoxContainer.new()
 	stack.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	stack.add_child(UI.label("DẪN TIÊN ĐÀI", 25, UI.PAPER, true))
-	stack.add_child(UI.label("Ứng viên • Tam Căn / Tứ Tính • tiếp dẫn", 12, UI.MUTED, false))
+	stack.add_child(UI.label("Ứng viên • Lục Duy • tiếp dẫn", 12, UI.MUTED, false))
 	header.add_child(stack)
 	var reduce := UI.button("VFX: %s" % VIS_QUALITY.mode_label(), false, UI.JADE)
 	reduce.name = "VISReducedMotionGuidance"
@@ -524,7 +524,7 @@ func _build_radar_panel() -> Control:
 	var content := VBoxContainer.new()
 	content.add_theme_constant_override("separation", 7)
 	card.add_child(content)
-	content.add_child(UI.section_heading("Tam Căn / Tứ Tính • Căn cơ", "root", UI.JADE))
+	content.add_child(UI.section_heading("Lục Duy • Sáu chỉ số chính", "root", UI.JADE))
 	var radar: Control
 	var radar_factory: Variant = _vm.get("radar_factory")
 	if radar_factory is Callable and radar_factory.is_valid():
@@ -541,6 +541,8 @@ func _build_radar_panel() -> Control:
 	content.add_child(radar)
 	if radar.has_method("set_values"):
 		radar.call("set_values", candidate.get("tam_values", []), candidate.get("tu_values", []))
+	if radar.has_method("set_mind_nature_available"):
+		radar.call("set_mind_nature_available",int(candidate.get("foundation_model_version",0)) >= FoundationSystem.MODEL_D7)
 	var tam_note := str(candidate.get("tam_note", "")).strip_edges()
 	if not tam_note.is_empty():
 		var foundation_note := UI.label(tam_note, 10, UI.MUTED, false)

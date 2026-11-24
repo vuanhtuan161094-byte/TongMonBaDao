@@ -604,6 +604,18 @@ func _art05_focus_masterplan_district(destination: String, close_panels: bool = 
     var transform := SectMapCamera.focus_transform(world_point,0.88)
     _apply_camera(float(transform["zoom"]),transform["position"],true)
 
+func _enter_build_mode() -> void:
+    super._enter_build_mode()
+    if iso_world != null and state != null and int(state.sect.world_layout_version) == 2:
+        iso_world.set_masterplan_plots_visible(true)
+        if iso_viewport != null:
+            iso_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
+
+func _leave_build_mode(clear_selection: bool = true) -> void:
+    if iso_world != null:
+        iso_world.set_masterplan_plots_visible(false)
+    super._leave_build_mode(clear_selection)
+
 func _focus_buildable_residence_area() -> void:
     if state == null or int(state.sect.world_layout_version) != 2:
         super._focus_buildable_residence_area()
@@ -654,7 +666,7 @@ func _refresh_build_mode_panel(last_check: Dictionary = {}) -> void:
         build_house.text = "MỞ RỘNG ĐỆ TỬ XÁ · LÔ CỐ ĐỊNH"
     if build_mode_site_label != null:
         if build_mode_site == SectResidenceSiteV1.UNSELECTED:
-            build_mode_site_label.text = "Chọn Mở rộng Đệ Tử Xá. Tông môn tự xác định lô hợp lệ; không cần bấm đất."
+            build_mode_site_label.text = "Lô vàng: vị trí dự kiến. Chọn Mở rộng để tự tìm lô hợp lệ; không cần bấm đất."
         elif build_mode_confirm != null and build_mode_confirm.disabled:
             # Keep the canonical rejection reason instead of telling players to
             # confirm a blocked transaction. The fixed plan has no free pick.
@@ -681,6 +693,14 @@ var _art05_dock_status: Label
 var _art05_dock_body: Label
 var _art05_dock_portrait: TextureRect
 var _art05_dock_manage: Button
+var _art05_district_links: Array[Button] = []
+const A2_DISTRICT_LINKS := [
+    [["main_hall","Đại Điện"]],
+    [["residence","Đệ Tử Xá"],["guidance","Dẫn Tiên"],["medicine","Dược Phòng"]],
+    [["cultivation","Tu Luyện"],["ren_than_duong","Rèn Thân"]],
+    [["forge","Luyện Khí"],["warehouse","Kho"],["alchemy_hall","Luyện Đan"],["mine","Mỏ Khoáng"],["linh_forest","Linh Lâm"],["spirit_field","Linh Điền"]],
+    [["gate","Xuất Chinh"]]
+]
 var _art05_dock_destination: StringName = &"main_hall"
 var _art05_dock_collapsed := false
 var _art05_active_nav := "home"
@@ -691,7 +711,7 @@ const ART05_SECT_DESCRIPTIONS := {
     "cultivation":"Điều phối tu luyện, tu vi và rèn thân.",
     "forge":"Luyện khí, chế tác và kiểm soát sản xuất.",
     "warehouse":"Quản lý vật tư, đan dược, nguyên liệu và trang bị.",
-    "guidance":"Chiêu mộ ứng viên và đánh giá Tam Căn / Tứ Tính.",
+    "guidance":"Chiêu mộ ứng viên, xem Lục Duy và phẩm chất.",
     "mine":"Khai thác khoáng vật và phân công đệ tử.",
     "linh_forest":"Thu hoạch linh mộc theo chu kỳ sản xuất.",
     "spirit_field":"Canh tác linh điền, thu hoạch và nhập Kho.",
@@ -897,10 +917,23 @@ func _art05_build_sect_master_dock() -> void:
     _art05_dock_status = _art05_dock_label(_art05_dock_panel,"",
         Vector2(14,112),Vector2(246,72),15,ART05_WHITE)
     var section1 := _art05_dock_label(_art05_dock_panel,"CHỨC NĂNG",
-        Vector2(14,214),Vector2(248,25),16,ART05_GOLD)
+        Vector2(14,190),Vector2(248,24),15,ART05_GOLD)
     section1.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
     _art05_dock_body = _art05_dock_label(_art05_dock_panel,"",
-        Vector2(14,247),Vector2(248,113),14,ART05_WHITE)
+        Vector2(14,216),Vector2(248,68),13,ART05_WHITE)
+    for index in range(6):
+        var shortcut := Button.new()
+        shortcut.name = "A2DistrictLink%d" % index
+        shortcut.position = Vector2(14+(index%2)*126,287+floori(float(index)/2.0)*34)
+        shortcut.size = Vector2(120,30)
+        shortcut.add_theme_font_size_override("font_size",12)
+        shortcut.add_theme_color_override("font_color",ART05_WHITE)
+        shortcut.add_theme_stylebox_override("normal",_art05_style(Color(0.055,0.20,0.19,0.99),ART05_MUTE,1,7))
+        shortcut.add_theme_stylebox_override("hover",_art05_style(Color(0.12,0.27,0.24,0.99),ART05_GOLD,1,7))
+        shortcut.pressed.connect(_art05_open_district_link.bind(index))
+        shortcut.visible = false
+        _art05_dock_panel.add_child(shortcut)
+        _art05_district_links.append(shortcut)
     _art05_dock_manage = Button.new()
     _art05_dock_manage.name = "SectMasterManage"
     _art05_dock_manage.text = "QUẢN LÝ"
@@ -924,6 +957,33 @@ func _art05_build_sect_master_dock() -> void:
     close.add_theme_color_override("font_color",ART05_GOLD)
     close.pressed.connect(_art05_collapse_dock)
     _art05_dock_panel.add_child(close)
+
+func _art05_open_district_link(index: int) -> void:
+    if index < 0 or index >= _art05_district_links.size():
+        return
+    var destination := str(_art05_district_links[index].get_meta("destination",""))
+    if destination.is_empty():
+        return
+    _art05_dock_destination = StringName(destination)
+    _art05_manage_selected_district()
+
+func _art05_refresh_district_links(destination: String) -> void:
+    var links: Array = []
+    for district in A2_DISTRICT_LINKS:
+        for entry in district:
+            if str(entry[0]) == destination:
+                links = district
+                break
+        if not links.is_empty():
+            break
+    for index in range(_art05_district_links.size()):
+        var shortcut := _art05_district_links[index]
+        shortcut.visible = index < links.size()
+        if shortcut.visible:
+            var entry: Array = links[index]
+            shortcut.text = str(entry[1])
+            shortcut.set_meta("destination",str(entry[0]))
+            shortcut.disabled = str(entry[0]) == destination
 
 func _art05_collapse_dock() -> void:
     _art05_dock_collapsed = true
@@ -982,10 +1042,11 @@ func _art05_refresh_sect_master_dock() -> void:
     var description := str(ART05_SECT_DESCRIPTIONS.get(dest,
         "Chọn Quản lý để xem số liệu và điều phối thực tế."))
     if dest == "main_hall":
-        description += "\n\nChiêu mộ lệnh: %d" % state.sect.disciple_recruitment_tokens
+        description += "\nChiêu mộ lệnh: %d" % state.sect.disciple_recruitment_tokens
     elif dest == "residence":
-        description += "\n\nĐệ Tử Xá: %d nhà" % SectResidenceSystemV1.all_houses(state).size()
+        description += "\nĐệ Tử Xá: %d nhà" % SectResidenceSystemV1.all_houses(state).size()
     _art05_dock_body.text = description
+    _art05_refresh_district_links(dest)
     _art05_dock_manage.text = "THẾ GIỚI" if dest == "gate" else "QUẢN LÝ"
     if _art05_dock_portrait != null:
         var source: Texture2D = VIS11_AB.texture_for(_art05_dock_destination,&"A")

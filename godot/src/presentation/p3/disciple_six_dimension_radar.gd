@@ -1,5 +1,6 @@
 class_name DiscipleSixDimensionRadar
 extends Control
+const A2_RADAR = preload("res://src/presentation/p3/sect_six_axis_view.gd")
 
 # Presentation-only: never normalizes, caps or modifies canonical foundation data.
 const KEYS := ["aptitude","constitution","fortune","comprehension","charisma","potential"]
@@ -52,33 +53,4 @@ func _axis_point(index: int, distance: float, center: Vector2) -> Vector2:
     return center + Vector2(cos(radians),sin(radians))*distance
 
 func _draw() -> void:
-    var count := dimension_values.size()
-    if count != 6 and count != 7:
-        return
-    var center := Vector2(size.x*0.5,size.y*0.48)
-    var radius := minf(size.x*0.32,size.y*0.29)
-    var font := get_theme_default_font()
-    var polygon := PackedVector2Array()
-    for ring in [0.25,0.5,0.75,1.0]:
-        var outline := PackedVector2Array()
-        for index in range(count+1):
-            outline.append(_axis_point(index%count,radius*ring,center))
-        draw_polyline(outline,GRID,1.0,true)
-    for index in range(count):
-        draw_line(center,_axis_point(index,radius,center),GRID,1.0,true)
-        var value := dimension_values[index]
-        polygon.append(_axis_point(index,radius*clampf(value/chart_ceiling,0.0,1.0),center))
-        if font != null:
-            var point := _axis_point(index,radius+21.0,center)
-            draw_string(font,Vector2(point.x-35.0,point.y),dimension_names[index],HORIZONTAL_ALIGNMENT_CENTER,70.0,12,INK)
-            var text_value := "%.0f" % value if model_version >= 2 else "%.2f" % value
-            draw_string(font,Vector2(point.x-35.0,point.y+13.0),text_value,HORIZONTAL_ALIGNMENT_CENTER,70.0,12,JADE)
-    draw_colored_polygon(polygon,Color(0.22,0.57,0.42,0.30))
-    var closed := polygon.duplicate()
-    closed.append(polygon[0])
-    draw_polyline(closed,JADE,2.0,true)
-    for point in polygon:
-        draw_circle(point,3.0,JADE)
-    if font != null:
-        var ceiling_text := "%.0f" % chart_ceiling if model_version >= 2 else "%.2f" % chart_ceiling
-        draw_string(font,Vector2(0.0,size.y-9.0),"Thang: "+ceiling_text+" · không phải giới hạn",HORIZONTAL_ALIGNMENT_CENTER,size.x,11,INK)
+    A2_RADAR.draw_chart(self,dimension_values,model_version >= FoundationSystem.MODEL_D7,INK,JADE,GRID,model_version < 2)

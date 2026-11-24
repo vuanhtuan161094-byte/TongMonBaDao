@@ -30,15 +30,15 @@ static func ground_color(cell: Vector2i, starter: Rect2i, roads: Dictionary, lay
     # Legacy layouts keep their old palette and saved house locations.
     if layout_version >= 2:
         if cell.x < 85 and cell.y >= 94:
-            ground = ground.blend(Color(0.37,0.52,0.41,0.33)) # inner residence
+            ground = ground.blend(Color(0.29,0.57,0.39,0.57)) # inner residence
         elif cell.x < 95 and cell.y < 88:
-            ground = ground.blend(Color(0.30,0.49,0.53,0.30)) # cultivation ridge
+            ground = ground.blend(Color(0.27,0.47,0.57,0.53)) # cultivation ridge
         elif cell.x >= 95 and cell.y < 101:
-            ground = ground.blend(Color(0.54,0.47,0.34,0.30)) # producer quarter
+            ground = ground.blend(Color(0.63,0.51,0.32,0.49)) # producer quarter
         elif cell.y >= 101:
-            ground = ground.blend(Color(0.43,0.48,0.42,0.24)) # exit approach
+            ground = ground.blend(Color(0.42,0.52,0.39,0.36)) # exit approach
         else:
-            ground = ground.blend(Color(0.48,0.52,0.40,0.20)) # civic court
+            ground = ground.blend(Color(0.57,0.58,0.42,0.40)) # civic court
     elif cell.x < 84 and cell.y >= 100:
         ground = ground.blend(Color(0.31,0.47,0.36,0.44))
     elif cell.x >= 94 and cell.y >= 88:
