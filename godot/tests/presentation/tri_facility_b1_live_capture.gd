@@ -136,8 +136,12 @@ func _capture() -> void:
     var recruited_state: DiscipleState = state_after_open.disciples.get(StringName(recruited_id))
     var recruited_portrait: Texture2D = SectASCharCandidateBridgeV1.preview_texture_for_disciple(recruited_state) \
         if recruited_state != null else null
-    var adapter := guidance.get_node_or_null("TriFacilityB1LiveAdapterV1") if guidance != null else null
-    var reveal := guidance.find_child("RecruitmentReveal",true,false) if guidance != null else null
+    var guidance := game.get_node_or_null("DanTienScreenV2")
+    if guidance == null:
+        _fail("B1 recruitment reveal screen disappeared before capture.")
+        return
+    var adapter: Control = guidance.get_node_or_null("TriFacilityB1LiveAdapterV1") as Control
+    var reveal: Node = guidance.find_child("RecruitmentReveal",true,false)
     if recruited_id.is_empty() or adapter == null or str(adapter.get("_last_recruited_disciple_id")) != recruited_id or reveal == null:
         _fail("Successful recruitment must show the newly added canonical disciple in the B1 reveal.")
         return
