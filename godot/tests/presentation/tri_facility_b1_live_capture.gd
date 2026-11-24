@@ -113,52 +113,36 @@ func _capture() -> void:
     if state_after_open == null:
         _fail("Recruitment reveal QA lost the canonical P3.2 state.")
         return
+    # Recruit through the real B1 Chiêu Mộ Lệnh, not an obsolete
+    # pre-V2 waiting candidate. This mirrors the owner PASS TRI03 route.
     var roster_before := state_after_open.disciples.size()
-    var ids_before: Dictionary = {}
-    for raw_id in state_after_open.disciples.keys():
-        ids_before[str(raw_id)] = true
-    game.call("_open_building",SectMapPresentation.DEST_GUIDANCE)
-    await process_frame
-    await process_frame
-    var guidance_route := _find_button(game,"OpenDanTienScreenV2")
-    if guidance_route == null or guidance_route.disabled:
-        _fail("Cannot reopen the live Dẫn Tiên Đài from the P3.2 map for recruitment.")
+    var token_before := state_after_open.sect.disciple_recruitment_tokens
+    var order := _find_button(game,"UseRecruitmentOrder")
+    if order == null or order.disabled or token_before < 1:
+        _fail("B1 Guidance has no enabled canonical recruitment order.")
         return
-    guidance_route.pressed.emit()
+    order.pressed.emit()
     await process_frame
-    await process_frame
-    var guidance := game.get_node_or_null("DanTienScreenV2")
-    var accept := _find_button(guidance,"AcceptCandidate") if guidance != null else null
-    if accept == null or accept.disabled:
-        _fail("New Game must expose at least one genuinely eligible candidate with spare canonical capacity.")
+    if state_after_open.sect.disciple_recruitment_tokens != token_before - 1:
+        _fail("B1 order failed to consume exactly one genuine recruitment token.")
         return
-    accept.pressed.emit()
-    await process_frame
-    accept = _find_button(guidance,"AcceptCandidate")
-    if accept == null or not accept.text.contains("XÁC NHẬN"):
-        _fail("Candidate acceptance must show the existing second-confirmation state.")
+    var recruited_id: String = await _accept_authentic_b1_candidate(state_after_open)
+    if recruited_id.is_empty():
         return
-    accept.pressed.emit()
-    await process_frame
-    await process_frame
-    if state_after_open.disciples.size() != roster_before + 1:
-        _fail("Confirmed candidate did not enter the single canonical disciple roster exactly once.")
+    if state_after_open.disciples.size() != roster_before + 1 \
+            or not state_after_open.disciples.has(StringName(recruited_id)):
+        _fail("B1 recruitment did not add exactly one authentic V2 disciple.")
         return
-    var recruited_id := ""
-    for raw_id in state_after_open.disciples.keys():
-        if not ids_before.has(str(raw_id)):
-            recruited_id = str(raw_id)
-            break
     var recruited_state: DiscipleState = state_after_open.disciples.get(StringName(recruited_id))
-    var recruited_scene_path := DiscipleSourceAVisualPool.scene_path_for_disciple(recruited_state) if recruited_state != null else ""
-    var recruited_portrait: Variant = game.call("_disciple_source_a_portrait_texture",recruited_state) if recruited_state != null else null
+    var recruited_portrait: Texture2D = SectASCharCandidateBridgeV1.preview_texture_for_disciple(recruited_state) \
+        if recruited_state != null else null
     var adapter := guidance.get_node_or_null("TriFacilityB1LiveAdapterV1") if guidance != null else null
     var reveal := guidance.find_child("RecruitmentReveal",true,false) if guidance != null else null
     if recruited_id.is_empty() or adapter == null or str(adapter.get("_last_recruited_disciple_id")) != recruited_id or reveal == null:
         _fail("Successful recruitment must show the newly added canonical disciple in the B1 reveal.")
         return
-    if recruited_scene_path.is_empty() or not (recruited_portrait is Texture2D):
-        _fail("Newly recruited disciple did not resolve a real mapped Source A portrait for the success reveal.")
+    if recruited_portrait == null:
+        _fail("Newly recruited disciple did not resolve a real mapped AS-CHAR portrait for the success reveal.")
         return
     for action_name in ["RecruitedDiscipleProfile","RecruitedDiscipleAssignment","RecruitedDiscipleWorld"]:
         var action := _find_button(reveal,action_name)
@@ -175,7 +159,7 @@ func _capture() -> void:
     if reloaded == null or not reloaded.disciples.has(StringName(recruited_id)) or reloaded.disciples.size() != state_after_open.disciples.size():
         _fail("Save/Reload did not preserve the newly recruited disciple identity and roster count.")
         return
-    print("TRI03_RECRUITMENT_REVEAL_CAPTURE_PASS disciple=%s roster=%d source_a_portrait=1 save_reload=1" % [recruited_id,reloaded.disciples.size()])
+    print("TRI03_RECRUITMENT_REVEAL_CAPTURE_PASS disciple=%s roster=%d as_char_portrait=1 save_reload=1" % [recruited_id,reloaded.disciples.size()])
 
     game.set("runtime_ready",false)
     game.queue_free()
@@ -184,6 +168,51 @@ func _capture() -> void:
     _remove_test_save()
     print("TRI02_P32_CONTEXT_CAPTURE_PASS map=1 hall=1 residence=1 guidance=1 size=1280x720")
     quit(0)
+
+# Drive the same visible candidate picker and double-confirm action as a
+# player. Skip incomplete legacy births; no direct RecruitmentSystem mutation.
+func _accept_authentic_b1_candidate(runtime_state: SimulationState) -> String:
+    var ids: Array = runtime_state.recruitment_candidates.keys()
+    ids.sort()
+    for raw_id in ids:
+        var candidate_id := StringName(str(raw_id))
+        var candidate: CandidateState = runtime_state.recruitment_candidates.get(candidate_id)
+        if candidate == null or (runtime_state.sect.disciple_v2_birth_enabled \
+                and not DiscipleBirthProfileV2.valid_complete_birth(candidate.v2_birth_profile)):
+            continue
+        var pick := _find_button(game,"CandidatePick_%s" % str(candidate_id))
+        if pick == null:
+            var search := game.find_child("CandidateSearch",true,false) as LineEdit
+            if search == null:
+                continue
+            search.text = candidate.display_name
+            search.text_submitted.emit(search.text)
+            await process_frame
+            pick = _find_button(game,"CandidatePick_%s" % str(candidate_id))
+        if pick == null:
+            continue
+        if not pick.disabled:
+            pick.pressed.emit()
+            await process_frame
+        else:
+            var screen := game.get_node_or_null("DanTienScreenV2")
+            if screen == null or StringName(screen.get("selected_candidate_id")) != candidate_id:
+                continue
+        var accept := _find_button(game,"AcceptCandidate")
+        if accept == null or accept.disabled:
+            continue
+        accept.pressed.emit()
+        await process_frame
+        accept = _find_button(game,"AcceptCandidate")
+        if accept == null or not accept.text.contains("XÁC NHẬN"):
+            _fail("B1 candidate never entered the player-facing second confirmation.")
+            return ""
+        accept.pressed.emit()
+        await process_frame
+        if runtime_state.disciples.has(candidate_id):
+            return str(candidate_id)
+    _fail("B1 Guidance has no authentic selectable candidate for real acceptance.")
+    return ""
 
 func _verify_source_alpha(relative: String, kind: String) -> bool:
     var source_path := ProjectSettings.globalize_path("res://art/source_a_env02a/" + relative)
