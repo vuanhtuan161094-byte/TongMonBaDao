@@ -2,6 +2,7 @@ extends SceneTree
 ## Capture the genuine P3.2 main scene and open each B1 screen via its live management button.
 ## A dedicated user:// QA save path is used; no default player save is read or written.
 const GAME = preload("res://scenes/p3/p3_2_landscape_sect.tscn")
+const VIS11_AB = preload("res://src/presentation/p3/tmb_building_art_ab_v7.gd")
 const SAVE_PATH := "user://tri02_live_ui_capture_isolated.json"
 const CAPTURE_FILES := {
     "hall":"01_hall_live_state.png",
@@ -99,11 +100,11 @@ func _capture() -> void:
         return
     game.call("_leave_build_mode",true)
     await process_frame
-    if not await _open_from_map("hall","510052",SectMapPresentation.DEST_MAIN_HALL,"OpenDaiDienScreenV1",out_dir,CAPTURE_FILES["hall"]):
+    if not await _open_from_map("hall",SectMapPresentation.DEST_MAIN_HALL,"OpenDaiDienScreenV1",out_dir,CAPTURE_FILES["hall"]):
         return
-    if not await _open_from_map("residence","510076",SectMapPresentation.DEST_RESIDENCE,"OpenResidenceManagementV1",out_dir,CAPTURE_FILES["residence"]):
+    if not await _open_from_map("residence",SectMapPresentation.DEST_RESIDENCE,"OpenResidenceManagementV1",out_dir,CAPTURE_FILES["residence"]):
         return
-    if not await _open_from_map("guidance","510111",SectMapPresentation.DEST_GUIDANCE,"OpenDanTienScreenV2",out_dir,CAPTURE_FILES["guidance"]):
+    if not await _open_from_map("guidance",SectMapPresentation.DEST_GUIDANCE,"OpenDanTienScreenV2",out_dir,CAPTURE_FILES["guidance"]):
         return
 
     # Continue the real New Game journey through the B1 controls: the map opens
@@ -248,7 +249,7 @@ func _verify_source_alpha(relative: String, kind: String) -> bool:
     print("TRI02_SOURCE_ALPHA_PASS model=%s clear=1 opaque=1 antialias=1" % kind)
     return true
 
-func _open_from_map(kind: String, model_id: String, destination: StringName, button_name: String, out_dir: String, filename: String) -> bool:
+func _open_from_map(kind: String, destination: StringName, button_name: String, out_dir: String, filename: String) -> bool:
     print("TRI02_CAPTURE_STAGE=open_%s" % kind)
     game.call("_open_building",destination)
     await process_frame
@@ -269,17 +270,25 @@ func _open_from_map(kind: String, model_id: String, destination: StringName, but
     if screen == null:
         _fail("Live P3.2 route did not create the expected B1 screen: %s." % screen_name)
         return false
+    # The isometric map retains SHA-gated Source A building sprites, but
+    # these B1 screen panels switched to genuine VIS-11 A-angle RGBA art.
+    # Check the live visible control's exact texture path/dimensions instead
+    # of the obsolete _original_source / Source A 5100xx metadata.
     var facility_art := _find_facility_art(screen,kind)
-    if facility_art == null or not bool(facility_art.get("_original_source")):
-        _fail("Live B1 %s screen did not resolve its verified Source A art." % kind)
+    if facility_art == null or not facility_art.is_visible_in_tree() \
+            or facility_art.get_global_rect().size.x < 2.0 \
+            or facility_art.get_global_rect().size.y < 2.0:
+        _fail("Live B1 %s has no visible facility art control." % kind)
         return false
-    if str(facility_art.get("_source_model_id")) != model_id:
-        _fail("Live B1 %s screen resolved a different Source A model." % kind)
+    var ui_texture: Texture2D = facility_art.get("_art") as Texture2D
+    var approved_source: Texture2D = VIS11_AB.texture_for(StringName(kind),&"A")
+    if ui_texture == null or approved_source == null \
+            or ui_texture.resource_path != approved_source.resource_path \
+            or ui_texture.get_size() != approved_source.get_size():
+        _fail("Live B1 %s did not bind the actual VIS-11 A texture in its visible panel." % kind)
         return false
-    var ui_texture: Variant = facility_art.get("_art")
-    if not (ui_texture is Texture2D):
-        _fail("Live B1 %s screen has no rendered Source A texture." % kind)
-        return false
+    print("TRI02_B1_VIS11_TEXTURE_PASS kind=%s path=%s size=%s" % [
+        kind,ui_texture.resource_path,str(ui_texture.get_size())])
     if kind == "guidance":
         var has_approved_portrait := screen.find_child("VerifiedSourceACandidatePreview",true,false) != null
         var explicit_neutral_portrait := screen.find_child("CandidateUnverifiedPortrait",true,false) != null
