@@ -3,7 +3,7 @@
   "date": "2026-11-24",
   "pr": 72,
   "parent_sha": "26e7f704414662754f043f66b08f537d09e56c98",
-  "scope": "6 HUMAN sword skills, source-only batch candidate, not a PvE/gameplay implementation",
+  "scope": "6 HUMAN sword VFX source-only skills OWNER APPROVED as current art baseline; no in-game or PvE approval",
   "candidate_frames_total": 144,
   "cel_px": [
     512,
@@ -16,10 +16,14 @@
   "preview_fps": 25,
   "preview_seconds": 0.96,
   "delivery": {
-    "conversation_zip": "TMB_BATCH_6_VFX_NHAN_SOURCE_20261124.zip",
+    "conversation_zip": "TMB_BATCH_6_VFX_NHAN_APPROVED_SOURCE_20261124.zip",
     "github_binary_source": "NOT_STAGED",
     "github_manifest": "METADATA_ONLY",
-    "reason": "binary source available as conversation artifact; requires verified transfer before exact-SHA GitHub asset CI"
+    "reason": "binary source available as conversation artifact; requires verified transfer before exact-SHA GitHub asset CI",
+    "original_zip": "TMB_BATCH_6_VFX_NHAN_SOURCE_20261124.zip",
+    "original_zip_sha256": "ef7e5842bb69853404f23fc3284134a14ba2431b84e925694f739eb9f03cbda6",
+    "approved_zip_sha256": "6efe7d6938dc383582b308dc0b14715564724af0f6cd7aad1661002f5effa2e9",
+    "binary_check": "PASS_LOCAL_BYTE_EXACT_144_6_ATLAS_6_GIF"
   },
   "restrictions": {
     "codex_cloud": false,
@@ -32,10 +36,10 @@
   "gates": {
     "g0_canon": "PASS_REPO_CATALOG",
     "g3_source_qa": "PASS_LOCAL_ONLY",
-    "g3_visual": "OWNER_REVIEW_PENDING",
+    "g3_visual": "OWNER_APPROVED_BATCH_SOURCE_2026_11_24",
     "g35_native": "NOT_EXECUTED",
     "g4_chromium": "NOT_EXECUTED",
-    "batch_acceptance": "NOT_APPROVED"
+    "batch_acceptance": "OWNER_APPROVED_SOURCE_ONLY"
   },
   "provenance_notice": "These are 144 rendered animation cels derived from existing AI-painted VFX-only sources, NOT 144 newly AI-painted original frames; do not claim otherwise.",
   "skills": [
@@ -49,8 +53,10 @@
       "frames": 24,
       "frame_sha_manifest": "IN_CONVERSATION_ZIP",
       "atlas_sha256": "7f88e652d84e31ce3e746a366fd564e4fcf45dbba16e228a24f66e2ce3306175",
-      "g3_art": "REVIEW_PENDING",
-      "pve": "HOLD"
+      "g3_art": "OWNER_APPROVED_SOURCE_ONLY_20261124",
+      "pve": "HOLD",
+      "source_qa": "PASS_LOCAL_EXACT_SHA",
+      "owner_approval_date": "2026-11-24"
     },
     {
       "id": "tmb.skill.sword.ngu_kiem.active_04.human",
@@ -62,8 +68,10 @@
       "frames": 24,
       "frame_sha_manifest": "IN_CONVERSATION_ZIP",
       "atlas_sha256": "86f07ed5789370dc5aacbb9d201fc1d39bbd9b3ceeb73307f1d6ee252b33e42d",
-      "g3_art": "REVIEW_PENDING",
-      "pve": "HOLD"
+      "g3_art": "OWNER_APPROVED_SOURCE_ONLY_20261124",
+      "pve": "HOLD",
+      "source_qa": "PASS_LOCAL_EXACT_SHA",
+      "owner_approval_date": "2026-11-24"
     },
     {
       "id": "tmb.skill.sword.ngu_kiem.ultimate.human",
@@ -75,8 +83,10 @@
       "frames": 24,
       "frame_sha_manifest": "IN_CONVERSATION_ZIP",
       "atlas_sha256": "23a5906585fdc973b35c740c4a1aa2feb339ebdb19ce871cf2d131885024ff35",
-      "g3_art": "REVIEW_PENDING",
-      "pve": "HOLD"
+      "g3_art": "OWNER_APPROVED_SOURCE_ONLY_20261124",
+      "pve": "HOLD",
+      "source_qa": "PASS_LOCAL_EXACT_SHA",
+      "owner_approval_date": "2026-11-24"
     },
     {
       "id": "tmb.skill.sword.sat_kiem.active_01.human",
@@ -88,8 +98,10 @@
       "frames": 24,
       "frame_sha_manifest": "IN_CONVERSATION_ZIP",
       "atlas_sha256": "52cab7a39f446614eb1b297bc3a2c980905dc0c302a053214f3c424009c509f8",
-      "g3_art": "REVIEW_PENDING",
-      "pve": "HOLD"
+      "g3_art": "OWNER_APPROVED_SOURCE_ONLY_20261124",
+      "pve": "HOLD",
+      "source_qa": "PASS_LOCAL_EXACT_SHA",
+      "owner_approval_date": "2026-11-24"
     },
     {
       "id": "tmb.skill.sword.sat_kiem.active_02.human",
@@ -101,8 +113,10 @@
       "frames": 24,
       "frame_sha_manifest": "IN_CONVERSATION_ZIP",
       "atlas_sha256": "5401e9a93d2b32e910f07bd4afc5b4703c408e251e756343e2a283b6b8d672bc",
-      "g3_art": "REVIEW_PENDING",
-      "pve": "HOLD"
+      "g3_art": "OWNER_APPROVED_SOURCE_ONLY_20261124",
+      "pve": "HOLD",
+      "source_qa": "PASS_LOCAL_EXACT_SHA",
+      "owner_approval_date": "2026-11-24"
     },
     {
       "id": "tmb.skill.sword.sat_kiem.active_03.human",
@@ -114,8 +128,21 @@
       "frames": 24,
       "frame_sha_manifest": "IN_CONVERSATION_ZIP",
       "atlas_sha256": "61eeecd743ca07de7d866fe9316fb0237115951ca9e08b746951ed4a6f25bb4a",
-      "g3_art": "REVIEW_PENDING",
-      "pve": "HOLD"
+      "g3_art": "OWNER_APPROVED_SOURCE_ONLY_20261124",
+      "pve": "HOLD",
+      "source_qa": "PASS_LOCAL_EXACT_SHA",
+      "owner_approval_date": "2026-11-24"
     }
-  ]
+  ],
+  "approval": {
+    "date": "2026-11-24",
+    "owner_decision": "Ok. Chốt đi",
+    "scope": "SIX_SKILLS_SOURCE_ART_ONLY",
+    "approved_skills": 6,
+    "approved_frames": 144,
+    "approved_atlas": 6,
+    "source_originals_unchanged": true,
+    "manifest": "OWNER_APPROVAL_RECORD.json (in approved ZIP)",
+    "review_status": "APPROVED_AS_CURRENT_VISUAL_BASELINE"
+  }
 }
