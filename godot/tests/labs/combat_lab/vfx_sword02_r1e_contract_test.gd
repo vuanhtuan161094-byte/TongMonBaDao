@@ -32,7 +32,7 @@ func _verify() -> void:
         _check(additive != null and additive.blend_mode == CanvasItemMaterial.BLEND_MODE_ADD,"GLOW_NOT_ADDITIVE")
     _check(bool(lab.get("_version_v2")),"V2_NOT_DEFAULT")
     var atlas: Texture2D = lab.get("_v2_vfx_texture")
-    _check(atlas != null and atlas.get_size()==Vector2i(2048,3072),"V2_ATLAS_NOT_2048x3072")
+    _check(atlas != null and atlas.get_size()==Vector2(2048,3072),"V2_ATLAS_NOT_2048x3072")
     for phase in ["charge","projectile","contact"]:
         lab.review_seek_phase(phase)
         await process_frame
@@ -76,12 +76,12 @@ func _verify() -> void:
     print("R1E_CONTINUOUS_BLADE_TIP_TO_CONTACT=PASS movement/impact/zoom SOURCE_ART_UNCHANGED")
     lab.review_set_version("r1e")
     _check(not bool(lab.get("_version_v2")),"LEGACY_TOGGLE_FAILED")
-    _check(lab.get("_fx_cell").atlas.get_size()==Vector2i(2048,1536),"LEGACY_ATLAS_BAD")
+    _check(lab.get("_fx_cell").atlas.get_size()==Vector2(2048,1536),"LEGACY_ATLAS_BAD")
     lab.review_seek_phase("contact")
     _check(int(lab.get("_frame"))==9,"LEGACY_CONTACT_FRAME_BAD")
     lab.review_set_version("v2")
     _check(bool(lab.get("_version_v2")),"V2_RESTORE_FAILED")
-    _check(lab.get("_fx_cell").atlas.get_size()==Vector2i(2048,3072),"V2_ATLAS_RESTORE_FAILED")
+    _check(lab.get("_fx_cell").atlas.get_size()==Vector2(2048,3072),"V2_ATLAS_RESTORE_FAILED")
     print("R1E_V2_GODOT_REVIEW=PASS frames=24 fps=25 compare_legacy=true no_pve=true")
     lab.review_replay()
     lab.review_set_paused(false)

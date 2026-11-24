@@ -74,10 +74,10 @@ func _ready() -> void:
     _v2_vfx_texture = _raw_png_texture(V2_VFX)
     if _as48_texture == null or _weapon_texture == null or _legacy_vfx_texture == null or _v2_vfx_texture == null:
         return
-    if _legacy_vfx_texture.get_size() != Vector2i(2048,1536):
+    if _legacy_vfx_texture.get_size() != Vector2(2048,1536):
         push_error("R1E_ATLAS_INVALID_SIZE")
         return
-    if _v2_vfx_texture.get_size() != Vector2i(2048,3072):
+    if _v2_vfx_texture.get_size() != Vector2(2048,3072):
         push_error("R1E_V2_ATLAS_INVALID_SIZE")
         return
     if not FileAccess.file_exists(V2_MANIFEST):
