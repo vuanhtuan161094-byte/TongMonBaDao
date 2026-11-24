@@ -30,7 +30,10 @@ jobs:
             # Checkout at a pinned SHA can contain unrelated modifications from
             # concurrent PR writers. Preserve them while rebasing the source import.
             git status --short
-            git -c rebase.autoStash=true pull --rebase origin "$GITHUB_REF_NAME"
+            # Runner checkout can inherit stale line-ending changes in unrelated
+            # tracked files. Discard ONLY this ephemeral runner's unstaged edits.
+            git reset --hard HEAD
+            git pull --rebase origin "$GITHUB_REF_NAME"
             git push origin "HEAD:$GITHUB_REF_NAME"
           fi
       - name: Verify staged working-tree source SHA
