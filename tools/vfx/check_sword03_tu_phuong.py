@@ -56,25 +56,27 @@ def main():
         require(a.getbbox() is not None,"EMPTY_FRAME_"+name)
         edges=[a.crop((0,0,512,8)),a.crop((0,504,512,512)),a.crop((0,0,8,512)),a.crop((504,0,512,512))]
         require(all(z.getbbox() is None for z in edges),"FRAME_BORDER_"+name)
-        # Native RGBA alone is insufficient: AI may bake a translucent rectangular
-        # white/grey matte into every cel. Reject that artifact, even if a later
-        # 8px-padding pass makes the outermost frame border transparent.
-        # A true isolated sword-energy sprite should preserve generous empty
-        # space through the frame interior, not paint a semiopaque rectangle.
-        inner=a.crop((56,56,456,456))
-        hist=inner.histogram()
-        opaque_area=sum(hist[17:]) / float(400*400)
-        require(opaque_area < 0.75,"DIRTY_TRANSLUCENT_MATTE_"+name)
-        corner_boxes=[
-            (48,96,96,144),(416,96,464,144),
-            (48,368,96,416),(416,368,464,416),
+        # Alpha must be empty around the *actual painted content*.
+        # Padding a semiopaque rectangular source should not fool the gate.
+        # We measure the alpha bounding box rather than an arbitrary center crop.
+        bx0,by0,bx1,by1=a.getbbox()
+        bw,bh=bx1-bx0,by1-by0
+        sample=a.crop((bx0,by0,bx1,by1))
+        hh=sample.histogram()
+        dense=sum(hh[17:]) / float(bw*bh)
+        require(dense < 0.85,"RECTANGULAR_ALPHA_MATTE_"+name)
+        size=max(8,min(bw,bh)//6)
+        corners=[
+            (bx0,by0,bx0+size,by0+size),
+            (bx1-size,by0,bx1,by0+size),
+            (bx0,by1-size,bx0+size,by1),
+            (bx1-size,by1-size,bx1,by1),
         ]
-        empty_corners=0
-        for rect in corner_boxes:
-            hh=a.crop(rect).histogram()
-            if sum(hh[17:]) < (48*48*0.20):
-                empty_corners+=1
-        require(empty_corners>=2,"RECTANGULAR_ALPHA_HAZE_"+name)
+        blank_corners=sum(
+            sum(a.crop(rect).histogram()[17:]) < size*size*0.2
+            for rect in corners
+        )
+        require(blank_corners>=2,"OPAQUE_ALPHA_CORNERS_"+name)
         images.append(im)
     require(len(set(hashes))==24,"DUPLICATE_FRAME")
     atlas=Image.open(src/"TPF_NHAN_24_atlas_RGBA.png")
