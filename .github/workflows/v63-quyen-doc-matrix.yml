@@ -230,7 +230,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install --yes --no-install-recommends xvfb libgl1-mesa-dri
-      - name: V63 S9 Triệu Hồi: bounded Combat V2 actor, AI, event-linked Godot VFX render and snapshot regression
+      - name: "V63 S9 Triệu Hồi: bounded Combat V2 actor, AI, event-linked Godot VFX render and snapshot regression"
         shell: bash
         run: |
           set -o pipefail
