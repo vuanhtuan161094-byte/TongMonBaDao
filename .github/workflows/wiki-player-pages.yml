@@ -6,6 +6,9 @@ on:
       - integration/pve-p0-playable-ui-20261103
     paths:
       - 'godot/**'
+      # QA-only changes do not modify the exported game or canonical Web.
+      - '!godot/tests/**'
+      - '!godot/outputs/**'
       - 'wiki/**'
       - 'tools/wiki/tests/**'
       - 'tools/vfx/stage_vfx_web_review.py'
