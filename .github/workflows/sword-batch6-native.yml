@@ -56,6 +56,39 @@ jobs:
             grep -Fq "BATCH6_VISUAL_CONTACT" "$RUNNER_TEMP/sword_${tag}.log"
           done
           echo "BATCH6_GODOT_REAL_AS48_MOBS_6_SKILLS_PASS"
+      - name: Capture six actual Godot 4.7.2 native 1x review videos and frames
+        shell: bash
+        run: |
+          set -euo pipefail
+          if ! command -v xvfb-run >/dev/null 2>&1 || ! command -v ffmpeg >/dev/null 2>&1; then
+            sudo apt-get update -qq
+            sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends xvfb ffmpeg
+          fi
+          mkdir -p "$RUNNER_TEMP/sword6-visual"
+          GODOT="$RUNNER_TEMP/Godot_v4.7.2-stable_linux.x86_64"
+          STAGE="$RUNNER_TEMP/batch6-stage"
+          for tag in 03 04 05 06 07 08; do
+            xvfb-run -a -s '-screen 0 1280x720x24' "$GODOT" --path "$STAGE" --resolution 1280x720 --fixed-fps 60 \
+              --write-movie "$RUNNER_TEMP/sword6-visual/${tag}.avi" --quit-after 90 \
+              "res://labs/combat_lab/sword_batch6_20261124/sword_${tag}_lab.tscn" \
+              > "$RUNNER_TEMP/sword6-visual/${tag}.log" 2>&1
+            grep -Fq 'BATCH6_REAL_GODOT_LAB_READY' "$RUNNER_TEMP/sword6-visual/${tag}.log"
+            ffmpeg -y -hide_banner -loglevel error -i "$RUNNER_TEMP/sword6-visual/${tag}.avi" \
+              -c:v libx264 -crf 23 -pix_fmt yuv420p "$RUNNER_TEMP/sword6-visual/SWORD_${tag}_native.mp4"
+            ffmpeg -y -hide_banner -loglevel error -ss 0.67 -i "$RUNNER_TEMP/sword6-visual/SWORD_${tag}_native.mp4" \
+              -frames:v 1 "$RUNNER_TEMP/sword6-visual/SWORD_${tag}_contact.png"
+            rm "$RUNNER_TEMP/sword6-visual/${tag}.avi"
+          done
+          printf 'SOURCE_SHA=%s\nGODOT=4.7.2\nAS48=REAL\nMONSTERS=REAL\nPVE=HOLD\n' "$GITHUB_SHA" > "$RUNNER_TEMP/sword6-visual/receipt.txt"
+          echo "BATCH6_REAL_NATIVE_VISUAL_CAPTURE_PASS=6/6"
+      - name: Upload actual Godot native VFX comparison artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sword-batch6-native-visual-${{ github.sha }}
+          retention-days: 14
+          if-no-files-found: warn
+          path: ${{ runner.temp }}/sword6-visual/
       - name: Upload exact-SHA runtime test receipts
         if: always()
         uses: actions/upload-artifact@v4
