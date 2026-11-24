@@ -4,6 +4,13 @@ extends Node2D
 ## Original AS48 Front attack cels and socket metadata; no puppet or rig.
 const ROOT := "res://labs/combat_lab/sword_human_kiem_vu_hoi_phong/r1e/source/"
 const VFX := ROOT + "KVHP_R1E_VFX_only_atlas_4x3_RGBA.png"
+const V2_VFX := "res://labs/combat_lab/sword_human_kiem_vu_hoi_phong/r1e/v2_source/R1E_V2_24_atlas_4x6_RGBA.png"
+const V2_MANIFEST := "res://labs/combat_lab/sword_human_kiem_vu_hoi_phong/r1e/v2_source/R1E_V2_SOURCE_MANIFEST.json"
+const V2_FPS := 25.0
+const V2_COUNT := 24
+const V2_DURATION := 0.96
+const V2_RELEASE := 0.24
+const V2_CONTACT := 0.72
 const AS48 := "res://labs/character_family/aschar_v9_batch1/"
 const ACTOR_SHEET := AS48 + "assets/atlases/AS48_attack_front_consistency_v2_atlas.png"
 const JIAN := AS48 + "assets/weapons/AS48_KIEMTU_JIAN_CANDIDATE.png"
@@ -24,6 +31,9 @@ var _sword: Sprite2D
 var _fx: Sprite2D
 var _fx_glow: Sprite2D
 var _fx_cell: AtlasTexture
+var _legacy_vfx_texture: Texture2D
+var _v2_vfx_texture: Texture2D
+var _version_v2 := true
 var _as48_texture: Texture2D
 var _weapon_texture: Texture2D
 var _socket_rows: Array = []
@@ -60,11 +70,22 @@ func _raw_png_texture(location: String) -> Texture2D:
 func _ready() -> void:
     _as48_texture = _raw_png_texture(ACTOR_SHEET)
     _weapon_texture = _raw_png_texture(JIAN)
-    var vfx_texture := _raw_png_texture(VFX)
-    if _as48_texture == null or _weapon_texture == null or vfx_texture == null:
+    _legacy_vfx_texture = _raw_png_texture(VFX)
+    _v2_vfx_texture = _raw_png_texture(V2_VFX)
+    if _as48_texture == null or _weapon_texture == null or _legacy_vfx_texture == null or _v2_vfx_texture == null:
         return
-    if vfx_texture.get_width() != 2048 or vfx_texture.get_height() != 1536:
+    if _legacy_vfx_texture.get_size() != Vector2i(2048,1536):
         push_error("R1E_ATLAS_INVALID_SIZE")
+        return
+    if _v2_vfx_texture.get_size() != Vector2i(2048,3072):
+        push_error("R1E_V2_ATLAS_INVALID_SIZE")
+        return
+    if not FileAccess.file_exists(V2_MANIFEST):
+        push_error("R1E_V2_MANIFEST_MISSING")
+        return
+    var v2_meta: Variant = JSON.parse_string(FileAccess.get_file_as_string(V2_MANIFEST))
+    if not (v2_meta is Dictionary) or int(v2_meta.get("total_preview_samples",0)) != V2_COUNT:
+        push_error("R1E_V2_MANIFEST_INVALID")
         return
     if not FileAccess.file_exists(SOCKETS):
         push_error("R1E_SOCKETS_MISSING")
@@ -119,7 +140,7 @@ func _ready() -> void:
         add_child(mob)
         _monsters.append(mob)
     _fx_cell = AtlasTexture.new()
-    _fx_cell.atlas = vfx_texture
+    _fx_cell.atlas = _v2_vfx_texture
     _fx = Sprite2D.new()
     _fx.name = "R1E_ApprovedVFXOnly_OneCircularAOE"
     _fx.texture = _fx_cell
@@ -143,14 +164,16 @@ func _ready() -> void:
     _set_frame(0)
     _update_positions()
     print("R1E_COMBAT_LAB_READY=PASS source=R1E_RGBA actor=ORIGINAL_AS48_FRONT moving_monsters=3 no_rig=true no_gameplay=true PvE=HOLD")
+    print("R1E_V2_SELECTED=PASS frames=24 fps=25 runtime_lab_only=true old_version_available=true")
     set_process(true)
     queue_redraw()
 
 func _set_frame(idx: int) -> void:
-    idx = clampi(idx,0,11)
+    idx = clampi(idx,0,(V2_COUNT-1 if _version_v2 else 11))
     _frame = idx
     _fx_cell.region = Rect2(float(idx%4)*512.0, float(int(idx/4))*512.0,512.0,512.0)
-    var pose := mini(3, int(float(idx)/3.0))
+    var original_index := int(idx/2.0) if _version_v2 else idx
+    var pose := mini(3, int(float(original_index)/3.0))
     var art := AtlasTexture.new()
     art.atlas = _as48_texture
     art.region = Rect2(float(pose)*400.0,0,400,440)
@@ -178,7 +201,7 @@ func _impact_origin() -> Vector2:
 
 func _update_hit_tint() -> void:
     # Freeze/seek must show the hit reaction as well as regular playback.
-    var hit := _frame >= 9 and _frame <= 10
+    var hit := (_frame >= 18 and _frame <= 21) if _version_v2 else (_frame >= 9 and _frame <= 10)
     for mob in _monsters:
         mob.modulate = Color("b9ebff") if hit else Color.WHITE
 
@@ -192,16 +215,20 @@ func _update_positions() -> void:
     _actor.scale = Vector2.ONE * 0.17 * factor
     for mob in _monsters:
         mob.scale = Vector2.ONE * 0.38 * factor
-    if _frame < 3:
+    var charge_end := 6 if _version_v2 else 3
+    var contact_frame := 18 if _version_v2 else 9
+    var release_time := V2_RELEASE if _version_v2 else RELEASE_START
+    var contact_time := V2_CONTACT if _version_v2 else CONTACT_START
+    if _frame < charge_end:
         # Keep the source charging ring close to the actor's feet.
         # Interpolate towards the actual blade tip as the attack prepares.
-        var q := clampf(_time / RELEASE_START,0.0,1.0)
+        var q := clampf(_time / release_time,0.0,1.0)
         var foot_ring := _actor.position + Vector2(28,-35)
         _fx.position = foot_ring.lerp(_weapon_tip_world(),q*0.70)
-    elif _frame < 9:
+    elif _frame < contact_frame:
         # The source R1E gyre is carried continuously FROM the blade tip TO
         # the moving enemy centroid, instead of teleporting to (585,474).
-        var p := clampf((_time-RELEASE_START)/(CONTACT_START-RELEASE_START),0.0,1.0)
+        var p := clampf((_time-release_time)/(contact_time-release_time),0.0,1.0)
         var smooth := p*p*(3.0-2.0*p)
         var from_tip := _weapon_tip_world()
         var target := _impact_origin()
@@ -213,7 +240,7 @@ func _update_positions() -> void:
     _fx_glow.visible = _fx_enabled
     _fx_glow.position = _fx.position
     _fx_glow.scale = _fx.scale * 1.06
-    var hit := _frame >= 9 and _frame <= 10
+    var hit := (_frame >= 18 and _frame <= 21) if _version_v2 else (_frame >= 9 and _frame <= 10)
     _fx_glow.modulate = Color(0.55,0.86,1.0, (0.30 if hit else 0.18) if _bright else (0.48 if hit else 0.28))
     _update_hit_tint()
 
@@ -221,19 +248,23 @@ func _process(delta: float) -> void:
     if not _ready_ok or _paused:
         return
     _time += minf(delta,0.06)*_speed
-    if _time >= REVIEW_DURATION:
+    var duration := V2_DURATION if _version_v2 else REVIEW_DURATION
+    if _time >= duration:
         review_replay()
     var index := 0
-    for i in range(12):
-        if _time >= float(FRAME_STARTS[i]):
-            index = i
+    if _version_v2:
+        index = clampi(int(floor(_time*V2_FPS)),0,V2_COUNT-1)
+    else:
+        for i in range(12):
+            if _time >= float(FRAME_STARTS[i]):
+                index = i
     if index != _frame:
         _set_frame(index)
     if _moving:
         for i in range(_monsters.size()):
             var p: Vector2 = MOB_HOMES[i]
             _monsters[i].position = p + Vector2(38*sin(_time*(1.3+float(i)*0.22)+float(i)), 13*sin(_time*(1.1+float(i)*0.14)+float(i)))
-    if not _contact_shown and index>=9:
+    if not _contact_shown and index >= (18 if _version_v2 else 9):
         _contact_shown = true
         _visual_contacts += 1
         for mob in _monsters:
@@ -255,7 +286,8 @@ func _draw() -> void:
     draw_string(ThemeDB.fallback_font,Vector2(30,35),"KIEM VU HOI PHONG · R1E SOURCE APPROVED / RUNTIME ART UNDER REVIEW",HORIZONTAL_ALIGNMENT_LEFT,-1,20,Color("eaf6ff"))
     draw_string(ThemeDB.fallback_font,Vector2(30,65),"AS48 FRONT ORIGINAL | 3 MOVING REAL MONSTERS | LAB ONLY | NO PVE / NO HP",HORIZONTAL_ALIGNMENT_LEFT,-1,16,Color("a9d0e7"))
     draw_rect(Rect2(0,660,1280,60),Color("101828"))
-    draw_string(ThemeDB.fallback_font,Vector2(27,696),"SOURCE FRAMES 12 RGBA | TIMING REVIEW ONLY | FRONT DIRECTION VERIFIED",HORIZONTAL_ALIGNMENT_LEFT,-1,15,Color("d6e2f6"))
+    var source_note := "R1E V2: 24 FRAME @25 FPS | SOURCE G3 APPROVED | FRONT ONLY | PVE HOLD" if _version_v2 else "R1E LEGACY: 12 FRAME | REFERENCE ONLY | FRONT ONLY | PVE HOLD"
+    draw_string(ThemeDB.fallback_font,Vector2(27,696),source_note,HORIZONTAL_ALIGNMENT_LEFT,-1,15,Color("d6e2f6"))
 
 func review_replay() -> void:
     _time=0.0
@@ -266,6 +298,16 @@ func review_replay() -> void:
     _set_frame(0)
     _update_positions()
     print("R1E_REPLAY=PASS")
+
+func review_set_version(version: String) -> void:
+    var is_v2 := version.to_lower()=="v2"
+    if _version_v2 == is_v2:
+        return
+    _version_v2 = is_v2
+    _fx_cell.atlas = _v2_vfx_texture if _version_v2 else _legacy_vfx_texture
+    review_replay()
+    queue_redraw()
+    print("R1E_REVIEW_VERSION="+("V2_24_FRAMES" if _version_v2 else "R1E_12_FRAMES"))
 
 func review_set_paused(value: bool) -> void:
     _paused=value
@@ -285,14 +327,17 @@ func review_set_speed(value: float) -> void:
     _speed=clampf(value,0.25,2.0)
 func review_seek_phase(phase: String) -> void:
     match phase:
-        "charge": _time=0.24
-        "projectile": _time=0.68
-        "contact": _time=1.02
+        "charge": _time=0.16 if _version_v2 else 0.24
+        "projectile": _time=0.48 if _version_v2 else 0.68
+        "contact": _time=0.76 if _version_v2 else 1.02
         _: return
     _paused=true
     var index := 0
-    for i in range(12):
-        if _time >= float(FRAME_STARTS[i]): index=i
+    if _version_v2:
+        index = clampi(int(floor(_time*V2_FPS)),0,V2_COUNT-1)
+    else:
+        for i in range(12):
+            if _time >= float(FRAME_STARTS[i]): index=i
     _set_frame(index)
     _update_positions()
     print("R1E_SWORD02_PHASE_HELD="+phase+" frame="+str(index))

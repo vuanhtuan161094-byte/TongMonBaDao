@@ -33,6 +33,24 @@ def main():
         seen.add(digest(p))
         assert im.tobytes()==atlas.crop(((i%4)*512,(i//4)*512,(i%4+1)*512,(i//4+1)*512)).tobytes()
     assert len(seen)==12
+    v2dir=SOURCE.parent/'v2_source'
+    v2=json.loads((v2dir/'R1E_V2_SOURCE_MANIFEST.json').read_text())
+    assert (v2['original_art_frames'],v2['derived_transition_frames'],v2['total_preview_samples'])==(12,12,24)
+    assert v2['no_poster_extraction'] and v2['pve']=='HOLD'
+    assert len(v2['original_sha256'])==12
+    assert v2['original_sha256']==[digest(f) for f in files]
+    v2atlas=Image.open(v2dir/'R1E_V2_24_atlas_4x6_RGBA.png')
+    assert v2atlas.mode=='RGBA' and v2atlas.size==(2048,3072)
+    assert digest(v2dir/'R1E_V2_24_atlas_4x6_RGBA.png')==v2['atlas_sha256']
+    for i,f in enumerate(v2['frames']):
+        frame=v2dir/f['file']
+        assert digest(frame)==f['sha256']
+        im=Image.open(frame)
+        assert f['border_clear_8px'] and im.mode=='RGBA' and im.size==(512,512)
+        assert im.tobytes()==v2atlas.crop(((i%4)*512,(i//4)*512,(i%4+1)*512,(i//4+1)*512)).tobytes()
+        if i%2==0:
+            assert im.tobytes()==Image.open(files[i//2]).convert('RGBA').tobytes()
+    print('R1E_V2_SOURCE_EXACT_PASS 24_frames original12 unchanged derived12 atlas=2048x3072')
     print('R1E_SOURCE_EXACT_PASS archive=bede0519 12_rgba=PASS 512x512=PASS 2048x1536=PASS no_pve=true')
 
 if __name__=='__main__':main()

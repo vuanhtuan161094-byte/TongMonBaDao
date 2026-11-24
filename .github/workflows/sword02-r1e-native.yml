@@ -86,6 +86,9 @@ jobs:
             2>&1 | tee "$RUNNER_TEMP/r1e-proof/native.log"
           grep -Fq 'R1E_COMBAT_LAB_READY=PASS' "$RUNNER_TEMP/r1e-proof/native.log"
           ffmpeg -y -hide_banner -loglevel error -i "$RUNNER_TEMP/r1e-proof/native.avi" -c:v libx264 -crf 18 -pix_fmt yuv420p "$RUNNER_TEMP/r1e-proof/R1E_native_lab_1280x720.mp4"
+          ffmpeg -y -hide_banner -loglevel error -i "$RUNNER_TEMP/r1e-proof/R1E_native_lab_1280x720.mp4" \
+            -vf "fps=25,scale=800:-1:flags=lanczos,split[s0][s1];[s0]palettegen=stats_mode=diff[p];[s1][p]paletteuse=dither=bayer:bayer_scale=5" \
+            -loop 0 "$RUNNER_TEMP/r1e-proof/R1E_V2_NATIVE_runtime_25fps.gif"
           ffmpeg -y -hide_banner -loglevel error -ss 0.65 -i "$RUNNER_TEMP/r1e-proof/R1E_native_lab_1280x720.mp4" -frames:v 1 "$RUNNER_TEMP/r1e-proof/gyre_1x.png"
           ffmpeg -y -hide_banner -loglevel error -ss 1.02 -i "$RUNNER_TEMP/r1e-proof/R1E_native_lab_1280x720.mp4" -frames:v 1 "$RUNNER_TEMP/r1e-proof/contact_1x.png"
           rm "$RUNNER_TEMP/r1e-proof/native.avi"

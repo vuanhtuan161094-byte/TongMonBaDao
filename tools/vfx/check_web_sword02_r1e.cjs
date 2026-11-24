@@ -50,6 +50,7 @@ function nonGround(png,rect){
     const initial=await canvas.screenshot();
     fs.writeFileSync(path.join(out,'R1E-selection.png'),initial);
     if(!selected) throw Error('R1E_NOT_SELECTED_ON_SINGLE_CANONICAL_VFX_SITE');
+    if(!logs.some(x=>x.includes('R1E_V2_SELECTED=PASS'))) throw Error('R1E_V2_NOT_DEFAULT_ON_WEB');
     const actor=nonGround(initial,[260,475,425,632]);
     const monsters=nonGround(initial,[730,412,1008,632]);
     const samples=[];
@@ -70,8 +71,17 @@ function nonGround(png,rect){
       const pixels=pixelDelta(visible,hidden,item.bounds);
       samples.push({phase:item.phase,receipt:held,vfx_delta_pixels:pixels,passed:held&&pixels>=20});
     }
-    const verdict=selected&&actor>=30&&monsters>=40&&samples.every(x=>x.passed)&&faults.length===0?'R1E_BROWSER_REAL_AS48_VFX_PASS':'R1E_BROWSER_FAIL';
-    const result={verdict,selected,actor_pixels:actor,monsters_pixels:monsters,phase_samples:samples,page_errors:faults.slice(0,8),source:'R1E_OWNER_ACCEPTED_VFX_ONLY',front_only:true,pve:'HOLD',logs:logs.filter(x=>/R1E_|WEB_VFX_SCENE_LOADED/.test(x)).slice(-20)};
+    // The mode toggle is an actual Godot Button below the unchanged phase controls.
+    await canvas.click({position:{x:1120,y:629}});
+    await page.waitForTimeout(250);
+    const legacy=logs.some(x=>x.includes('R1E_REVIEW_VERSION=R1E_12_FRAMES'));
+    fs.writeFileSync(path.join(out,'R1E-legacy-12-frame.png'),await canvas.screenshot());
+    await canvas.click({position:{x:1120,y:629}});
+    await page.waitForTimeout(250);
+    const restored=logs.some(x=>x.includes('R1E_REVIEW_VERSION=V2_24_FRAMES'));
+    fs.writeFileSync(path.join(out,'R1E-V2-24-frame.png'),await canvas.screenshot());
+    const verdict=selected&&legacy&&restored&&actor>=30&&monsters>=40&&samples.every(x=>x.passed)&&faults.length===0?'R1E_BROWSER_REAL_AS48_VFX_PASS':'R1E_BROWSER_FAIL';
+    const result={verdict,selected,version_default:'V2_24',legacy_toggle:legacy,v2_restore:restored,actor_pixels:actor,monsters_pixels:monsters,phase_samples:samples,page_errors:faults.slice(0,8),source:'R1E_OWNER_ACCEPTED_VFX_ONLY',front_only:true,pve:'HOLD',logs:logs.filter(x=>/R1E_|WEB_VFX_SCENE_LOADED/.test(x)).slice(-20)};
     fs.writeFileSync(path.join(out,'R1E-browser-result.json'),JSON.stringify(result,null,2));
     console.log(JSON.stringify(result));
     if(verdict!=='R1E_BROWSER_REAL_AS48_VFX_PASS')throw Error(verdict);

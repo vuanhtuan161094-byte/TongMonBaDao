@@ -16,6 +16,8 @@ var _moving_button: Button
 var _fx_button: Button
 var _bg_button: Button
 var _zoom_button: Button
+var _version_button: Button
+var _version_v2 := true
 
 func _read_catalog() -> void:
     if not FileAccess.file_exists(CATALOG):
@@ -51,6 +53,14 @@ func _ready() -> void:
     panel.position = Vector2(1022, 111)
     panel.size = Vector2(238, 498)
     canvas.add_child(panel)
+    _version_button = Button.new()
+    _version_button.name = "R1EVersionCompare"
+    _version_button.position = Vector2(1022,614)
+    _version_button.size = Vector2(238,35)
+    _version_button.text = "R1E V2 24f  ↔  cũ 12f"
+    _version_button.visible = false
+    _version_button.pressed.connect(_toggle_version)
+    canvas.add_child(_version_button)
     var vbox := VBoxContainer.new()
     vbox.add_theme_constant_override("separation", 5)
     panel.add_child(vbox)
@@ -149,6 +159,11 @@ func _change_skill(index: int) -> void:
     _lab = candidate
     _lab.name = "SelectedVfxLab"
     add_child(_lab)
+    _version_v2 = true
+    _version_button.visible = _lab.has_method("review_set_version")
+    if _version_button.visible:
+        _lab.call("review_set_version","v2")
+    _version_button.text = "V2 24f (đang xem) | Chạm: R1E 12f"
     _identity.text = str(info.get("branch_vi", "")) + " · " + str(info.get("tier", "")).to_upper()
     var directions: Array = info.get("directions", [])
     var direction_text := ""
@@ -194,6 +209,16 @@ func _replay() -> void:
     if _lab == null: return
     _paused = false
     _lab.call("review_replay")
+    _pause_button.text = "Tạm dừng"
+    _apply()
+
+func _toggle_version() -> void:
+    if _lab == null or not _lab.has_method("review_set_version"):
+        return
+    _version_v2 = not _version_v2
+    _lab.call("review_set_version","v2" if _version_v2 else "r1e")
+    _version_button.text = "V2 24f (đang xem) | Chạm: R1E 12f" if _version_v2 else "R1E 12f (đang xem) | Chạm: V2 24f"
+    _paused = false
     _pause_button.text = "Tạm dừng"
     _apply()
 
