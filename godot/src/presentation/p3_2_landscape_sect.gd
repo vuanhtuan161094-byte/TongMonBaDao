@@ -10998,7 +10998,7 @@ func _v2_foundation_values_text(foundation_snapshot: Dictionary) -> String:
             format_row.call("aptitude"),format_row.call("constitution"),format_row.call("fortune"),
             format_row.call("comprehension"),format_row.call("charisma"),format_row.call("potential")
         ])
-        var quality_mind := format_row.call("mind_nature")
+        var quality_mind: String = str(format_row.call("mind_nature"))
         var quality_line := ""
         if foundation_snapshot.has("quality_birth_total") and foundation_snapshot.has("quality_current_total"):
             var generator := DiscipleGeneratorV2.new()
