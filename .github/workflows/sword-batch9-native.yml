@@ -1,0 +1,64 @@
+name: Sword09-17 derived candidate native batch
+on:
+  push:
+    branches: [integration/pve-p0-playable-ui-20261103]
+    paths:
+      - 'godot/labs/combat_lab/sword_batch9_20261124/**'
+      - 'tools/vfx/build_sword_batch9.py'
+      - '.github/workflows/sword-batch9-native.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  native:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Stage existing Godot source and generate transparent candidate atlases
+        run: |
+          python -m pip install Pillow==11.3.0
+          python tools/vfx/stage_vfx_web_review.py --source godot --destination "$RUNNER_TEMP/batch9-stage"
+          mkdir -p "$RUNNER_TEMP/batch9-stage/labs/combat_lab/sword_batch9_20261124"
+          cp godot/labs/combat_lab/sword_batch9_20261124/* "$RUNNER_TEMP/batch9-stage/labs/combat_lab/sword_batch9_20261124/"
+          python tools/vfx/build_sword_batch9.py --godot godot --output "$RUNNER_TEMP/batch9-stage/labs/combat_lab/sword_batch9_20261124/generated"
+      - name: Install official Godot
+        run: |
+          curl -fL --retry 3 -o "$RUNNER_TEMP/godot.zip" "https://github.com/godotengine/godot-builds/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip"
+          echo "cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4  $RUNNER_TEMP/godot.zip" | sha256sum -c -
+          unzip -oq "$RUNNER_TEMP/godot.zip" -d "$RUNNER_TEMP"
+          chmod +x "$RUNNER_TEMP/Godot_v4.7.2-stable_linux.x86_64"
+      - name: Import, execute and record all nine native candidate scenes
+        shell: bash
+        run: |
+          set -euo pipefail
+          G="$RUNNER_TEMP/Godot_v4.7.2-stable_linux.x86_64"
+          S="$RUNNER_TEMP/batch9-stage"
+          O="$RUNNER_TEMP/batch9-review"
+          mkdir -p "$O"
+          "$G" --headless --path "$S" --editor --import > "$O/import.log" 2>&1
+          if grep -Eiq 'SCRIPT ERROR|Parse Error|Failed to load script' "$O/import.log"; then cat "$O/import.log"; exit 1; fi
+          if ! command -v xvfb-run >/dev/null || ! command -v ffmpeg >/dev/null; then
+            sudo apt-get update -qq
+            sudo apt-get install -y --no-install-recommends xvfb ffmpeg
+          fi
+          for tag in 09 10 11 12 13 14 15 16 17; do
+            xvfb-run -a -s '-screen 0 1280x720x24' "$G" --path "$S" --resolution 1280x720 --fixed-fps 60 --write-movie "$O/$tag.avi" --quit-after 96 "res://labs/combat_lab/sword_batch9_20261124/sword_${tag}_lab.tscn" > "$O/$tag.log" 2>&1
+            grep -Fq "BATCH9_LAB_READY" "$O/$tag.log"
+            grep -Fq "BATCH9_LAB_PHASE" "$O/$tag.log"
+            if grep -Eiq 'SCRIPT ERROR|Parse Error|Failed to load resource' "$O/$tag.log"; then cat "$O/$tag.log"; exit 1; fi
+            ffmpeg -y -hide_banner -loglevel error -i "$O/$tag.avi" -c:v libx264 -crf 23 -pix_fmt yuv420p "$O/SWORD_${tag}.mp4"
+            rm "$O/$tag.avi"
+          done
+          echo "SOURCE_SHA=$GITHUB_SHA" > "$O/receipt.txt"
+          echo "BATCH9_NATIVE_CAPTURE_PASS=9/9 source=DERIVED_CANDIDATE PvE=HOLD"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sword09-17-candidate-source-${{ github.sha }}
+          path: ${{ runner.temp }}/batch9-stage/labs/combat_lab/sword_batch9_20261124/generated/
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sword09-17-native-review-${{ github.sha }}
+          path: ${{ runner.temp }}/batch9-review/
