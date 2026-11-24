@@ -1,0 +1,34 @@
+name: Sword Batch6 Transfer exact-SHA approved atlas bytes (source only)
+on:
+  push:
+    branches: [integration/pve-p0-playable-ui-20261103]
+    paths:
+      - '.github/workflows/sword-batch6-import-atlases.yml'
+      - '.vfx_transfer/batch6_20261124/**'
+      - 'tools/vfx/import_batch6_atlases.py'
+permissions:
+  contents: write
+jobs:
+  import:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Reassemble and verify owner-approved source atlases
+        run: python tools/vfx/import_batch6_atlases.py
+      - name: Commit exact PNG atlases into PR 72 branch without merge
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add godot/labs/combat_lab/sword_batch6_20261124/source
+          if ! git diff --cached --quiet; then
+            git commit -m "asset(vfx-batch6): import six owner-approved RGBA atlases exact SHA"
+            git pull --rebase origin "$GITHUB_REF_NAME"
+            git push origin "HEAD:$GITHUB_REF_NAME"
+          fi
+      - name: Verify staged working-tree source SHA
+        run: python tools/vfx/import_batch6_atlases.py
