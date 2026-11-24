@@ -77,9 +77,13 @@ jobs:
           STAGE="$RUNNER_TEMP/r1e-stage"
           mkdir -p "$RUNNER_TEMP/r1e-proof"
           if ! command -v xvfb-run >/dev/null 2>&1 || ! command -v ffmpeg >/dev/null 2>&1; then
-            echo 'NATIVE_GUI_CAPTURE=NOT_EXECUTED_MISSING_RENDER_TOOLS (headless contract remains independent)' > "$RUNNER_TEMP/r1e-proof/native_capture_status.txt"
-            exit 0
+            echo 'INSTALLING_NATIVE_CAPTURE_TOOLS=Xvfb_ffmpeg'
+            sudo apt-get update -qq
+            sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends xvfb ffmpeg
           fi
+          command -v xvfb-run
+          command -v ffmpeg
+          echo 'NATIVE_GUI_CAPTURE=REQUIRED_FOR_V2_PROOF'
           xvfb-run -a -s '-screen 0 1280x720x24' "$GODOT" --path "$STAGE" --resolution 1280x720 --fixed-fps 60 \
             --write-movie "$RUNNER_TEMP/r1e-proof/native.avi" --quit-after 180 \
             res://labs/combat_lab/sword_human_kiem_vu_hoi_phong/r1e/r1e_lab.tscn \
