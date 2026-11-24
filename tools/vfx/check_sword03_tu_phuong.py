@@ -54,7 +54,7 @@ def selftest_alpha():
     except SystemExit as e:
         require(str(e).startswith("SWORD03_FAIL BACKGROUND_NOT_TRANSPARENT"),"WRONG_MATTE_FAIL_REASON")
     padded=Image.new("RGBA",(512,512))
-    ImageDraw.Draw(padded).rectangle((12,12,499,499),fill=(180,198,219,185))
+    ImageDraw.Draw(padded).rectangle((32,32,479,479),fill=(180,198,219,185))
     try:
         alpha_integrity(padded,"PADDED_MATTE_FIXTURE")
         raise AssertionError("PADDED_BAD_MATTE_WAS_ACCEPTED")
