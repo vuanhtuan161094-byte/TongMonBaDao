@@ -4916,7 +4916,7 @@ func _build_guidance_recruitment_controls() -> void:
 
     var queue_label := Label.new()
     queue_label.name = "DanTienQueueSummary"
-    queue_label.text = "Ứng viên: %d/%d · Lệnh: %d · Đệ tử: %d/%d\nXem hồ sơ Tam Căn / Tứ Tính, Linh Căn, thiên hướng nghề và ngoại hình AS-CHAR ổn định." % [
+    queue_label.text = "Ứng viên: %d/%d · Lệnh: %d · Đệ tử: %d/%d\nXem Lục Duy, phẩm chất, Linh Căn, thiên hướng nghề và ngoại hình AS-CHAR ổn định." % [
         state.recruitment_candidates.size(), RecruitmentSystem.C2_QUEUE_CAP,
         state.sect.disciple_recruitment_tokens,
         state.disciples.size(), state.sect.disciple_capacity
@@ -10994,13 +10994,11 @@ func _v2_foundation_values_text(foundation_snapshot: Dictionary) -> String:
                 str(labels.get(key,key)),_foundation_exact_number(value),
                 _foundation_exact_number(born),sign,_foundation_exact_number(absf(change))
             ]
-        var tam_can_rows := "\n  ".join([
-            format_row.call("aptitude"),format_row.call("constitution"),format_row.call("mind_nature")
+        var primary_rows := "\n  ".join([
+            format_row.call("aptitude"),format_row.call("constitution"),format_row.call("fortune"),
+            format_row.call("comprehension"),format_row.call("charisma"),format_row.call("potential")
         ])
-        var tu_tinh_rows := "\n  ".join([
-            format_row.call("potential"),format_row.call("comprehension"),
-            format_row.call("fortune"),format_row.call("charisma")
-        ])
+        var quality_mind := format_row.call("mind_nature")
         var quality_line := ""
         if foundation_snapshot.has("quality_birth_total") and foundation_snapshot.has("quality_current_total"):
             var generator := DiscipleGeneratorV2.new()
@@ -11010,7 +11008,7 @@ func _v2_foundation_values_text(foundation_snapshot: Dictionary) -> String:
                 birth_name,float(foundation_snapshot["quality_birth_total"]),
                 current_name,float(foundation_snapshot["quality_current_total"])
             ]
-        return "Tam Căn / Tứ Tính · sinh / hiện tại / thay đổi\nTam Căn:\n  %s\nTứ Tính:\n  %s%s" % [tam_can_rows,tu_tinh_rows,quality_line]
+        return "Lục Duy · sinh / hiện tại / thay đổi\n  %s\nPhẩm chất D7 · Tam Căn / Tứ Tính:\n  %s%s" % [primary_rows,quality_mind,quality_line]
     return "Nền tảng kế thừa · Tư Chất %s · Căn Cốt %s · Cơ Duyên %s\nThông Tuệ %s · Mị Lực %s · Tiềm Lực %s" % [
         _v2_foundation_score(float(current.get("aptitude",0.0)),version),
         _v2_foundation_score(float(current.get("constitution",0.0)),version),
