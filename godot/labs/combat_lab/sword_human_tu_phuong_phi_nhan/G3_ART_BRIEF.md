@@ -26,3 +26,17 @@ Design target for isolated review: 24 output frames @25 fps / 0.96 s (NOT 0.44 s
 New AI attempts produced 24 VFX-only poses without text or characters, but the source had **RGBA alpha values of 161–251 across the sheet background**, i.e. an opaque-looking pale rectangular matte persists around the art. Cropping a genuine sprite sheet is distinguishable from cropping a poster, but is still **not sufficient** to make this usable as a game sprite. On dark 1× review maps this becomes 24 visible gray squares.
 
 The unapproved source test was kept outside GitHub; **no candidate frames committed, no G3 art approval**. The fail-closed gate now also rejects semiopaque interior sheets (not just the outer 8px border), ensuring transparency is really present around the painted VFX. Never 'solve' this by chroma-key/threshold removal, or by hiding the error on a pale-only review. Native-alpha source frames must be clean on both bright and dark backgrounds before entering the repo. R1E V2 remains the accepted reference; SWORD03 source remains PENDING.
+
+
+## 2026-11-24 — R2A direct RGBA artwork review, local-only candidate
+
+Created a NEW **unlabelled, actor-free, direct AI-produced sprite sheet**, 6×4 source at 1536×1024, each painted cell 256px. This is **not** a promotional poster and is not a screenshot of the game.
+
+Production of review candidate from the 24 painted cel positions was limited to original alpha-preserving sheet slicing, LANCZOS scale to 440px, transparent 36px padding to 512px, and regrouping into a 4×6 2048×3072 atlas. Crucially there was **no** alpha color key / thresholding, black-background removal, Python geometry painting, rigging or character cutout. This does not make each cel a separately generated master; all 24 belong to one original sprite-sheet master.
+
+- Original RGBA master SHA-256: `5959932d662b478d954c18dc9d2b6329d576d928e8047d45f7b0165a3a6f6333`.
+- Prepared atlas SHA-256: `fdc7ce0538d1d9134ed2b55c31d802cf28d870bf6f0da22b8813d076fa363920`.
+- Local technical review: **24/24 frames** 512px RGBA, 24 unique SHA-256, safe transparent 8px borders, 4×6 atlas pixel-exact; interior alpha content density max 0.5262 (does not have the earlier solid rectangular matte). GIF preview: 174px dark/light @25fps / 0.96s, SOURCE ONLY.
+- Visual limitations: in the flight and impact phases some blades overlap and fewer than four are clearly distinct; a dark smoke trail on pale maps remains noticeable. The G3 owner must review at 1× before declaring art accepted.
+
+**SOURCE DELIVERY / GATE STATUS:** R2A is a local ChatGPT-conversation review ZIP/GIF, NOT yet uploaded to the repository. Therefore `ART_CONTRACT.json` accurately stays `SOURCE_PENDING` and the GitHub G3 workflow only proves G0/canonical checks, **not** source asset acceptance. After owner review the exact-SHA manifest + RGBA master/24 PNG/atlas/GIF can be staged. No Godot, Chromium, PvE, rig, Codex Cloud, SaveService or merge.
