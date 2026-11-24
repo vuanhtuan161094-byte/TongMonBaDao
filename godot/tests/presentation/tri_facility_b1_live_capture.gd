@@ -9,11 +9,7 @@ const CAPTURE_FILES := {
     "residence":"02_residence_live_state.png",
     "guidance":"03_guidance_live_state.png"
 }
-const REQUIRED_MAP_ART := {
-    "main_hall": "pv01_assets/main_hall/510052.png",
-    "residence": "pv01_assets/residence/510076.png",
-    "guidance": "pv01_assets/guidance/510111.png"
-}
+const REQUIRED_MAP_ART := ["main_hall","residence","guidance"]
 
 var game: Control
 
@@ -69,21 +65,26 @@ func _capture() -> void:
     var size_map: Dictionary = constants.get("HOUSE_SIZES",{})
     print("TRI02_CAPTURE_STAGE=verify_map_art")
     for kind in REQUIRED_MAP_ART:
-        var relative: String = REQUIRED_MAP_ART[kind]
-        if str(texture_map.get(kind,"")) != relative or not loaded_art.has(relative):
-            _fail("P3.2 map did not bind its SHA-gated Source A %s sprite." % kind)
-            return
-        var texture: Texture2D = loaded_art[relative] as Texture2D
+        # Legacy dictionary keys are locators, not the rendered asset identity.
+        var relative: String = str(texture_map.get(kind,""))
+        var texture: Texture2D = loaded_art.get(relative) as Texture2D
+        var expected: Texture2D = VIS11_AB.texture_for(StringName(kind),&"A")
         var target_size: Vector2 = size_map.get(kind,Vector2.ZERO)
-        if texture == null or target_size.x <= 0.0 or target_size.y <= 0.0:
+        if relative.is_empty() or texture == null or expected == null \
+                or texture.resource_path != expected.resource_path \
+                or texture.get_size() != expected.get_size():
+            _fail("P3.2 map did not bind the actual VIS-11 A texture for %s." % kind)
+            return
+        if target_size.x <= 0.0 or target_size.y <= 0.0:
             _fail("P3.2 map has no renderable texture/size for %s." % kind)
             return
         var source_ratio := float(texture.get_width())/float(texture.get_height())
         if absf(source_ratio-target_size.x/target_size.y) > 0.01:
-            _fail("P3.2 map would distort Source A %s." % kind)
+            _fail("P3.2 map would distort VIS-11 %s." % kind)
             return
-        if not _verify_source_alpha(relative,kind):
+        if not _verify_rendered_alpha(texture,kind):
             return
+        print("TRI02_MAP_VIS11_TEXTURE_PASS kind=%s path=%s" % [kind,texture.resource_path])
 
     print("TRI02_CAPTURE_STAGE=map_art_verified")
     if not await _save_frame(out_dir,"00_p3_2_map_context.png"):
@@ -219,11 +220,13 @@ func _accept_authentic_b1_candidate(runtime_state: SimulationState) -> String:
     _fail("B1 Guidance has no authentic selectable candidate for real acceptance.")
     return ""
 
-func _verify_source_alpha(relative: String, kind: String) -> bool:
-    var source_path := ProjectSettings.globalize_path("res://art/source_a_env02a/" + relative)
-    var source_image := Image.new()
-    if source_image.load(source_path) != OK or source_image.is_empty() or not source_image.detect_alpha() != Image.ALPHA_NONE:
-        _fail("Source A %s original PNG did not preserve its alpha channel." % kind)
+func _verify_rendered_alpha(texture: Texture2D, kind: String) -> bool:
+    var source_image: Image = texture.get_image()
+    if source_image == null or source_image.is_empty():
+        _fail("VIS-11 %s texture has no readable pixels." % kind)
+        return false
+    if source_image.is_compressed() and source_image.decompress() != OK:
+        _fail("VIS-11 %s texture could not be decompressed for pixel verification." % kind)
         return false
     source_image.convert(Image.FORMAT_RGBA8)
     var rgba: PackedByteArray = source_image.get_data()
@@ -232,8 +235,8 @@ func _verify_source_alpha(relative: String, kind: String) -> bool:
     var has_clear := false
     var has_opaque := false
     var has_semitransparent := false
-    for y in range(0,source_image.get_height(),8):
-        for x in range(0,image_width,8):
+    for y in range(source_image.get_height()):
+        for x in range(image_width):
             var alpha_byte: int = rgba[(y*image_width+x)*4+3]
             var alpha: float = float(alpha_byte)/255.0
             has_clear = has_clear or alpha_byte <= 0
@@ -244,7 +247,7 @@ func _verify_source_alpha(relative: String, kind: String) -> bool:
         if has_clear and has_opaque and has_semitransparent:
             break
     if not has_clear or not has_opaque or not has_semitransparent:
-        _fail("Source A %s must retain transparent, opaque and antialiased pixels." % kind)
+        _fail("VIS-11 %s must retain transparent, opaque and antialiased pixels." % kind)
         return false
     print("TRI02_SOURCE_ALPHA_PASS model=%s clear=1 opaque=1 antialias=1" % kind)
     return true
@@ -270,10 +273,8 @@ func _open_from_map(kind: String, destination: StringName, button_name: String, 
     if screen == null:
         _fail("Live P3.2 route did not create the expected B1 screen: %s." % screen_name)
         return false
-    # The isometric map retains SHA-gated Source A building sprites, but
-    # these B1 screen panels switched to genuine VIS-11 A-angle RGBA art.
-    # Check the live visible control's exact texture path/dimensions instead
-    # of the obsolete _original_source / Source A 5100xx metadata.
+    # Both the map and B1 panels now use VIS-11. Validate the live visible
+    # control, not obsolete Source A metadata.
     var facility_art := _find_facility_art(screen,kind)
     if facility_art == null or not facility_art.is_visible_in_tree() \
             or facility_art.get_global_rect().size.x < 2.0 \
@@ -290,10 +291,10 @@ func _open_from_map(kind: String, destination: StringName, button_name: String, 
     print("TRI02_B1_VIS11_TEXTURE_PASS kind=%s path=%s size=%s" % [
         kind,ui_texture.resource_path,str(ui_texture.get_size())])
     if kind == "guidance":
-        var has_approved_portrait := screen.find_child("VerifiedSourceACandidatePreview",true,false) != null
+        var has_approved_portrait := screen.find_child("ASCharCandidatePreview",true,false) != null
         var explicit_neutral_portrait := screen.find_child("CandidateUnverifiedPortrait",true,false) != null
         if not has_approved_portrait and not explicit_neutral_portrait:
-            _fail("Guidance must show a verified mapped Source A portrait or explicitly mark the portrait unavailable.")
+            _fail("Guidance must show a mapped AS-CHAR portrait or explicitly mark the portrait unavailable.")
             return false
     if not await _save_frame(out_dir,filename):
         return false
@@ -311,10 +312,12 @@ func _open_from_map(kind: String, destination: StringName, button_name: String, 
         print("TRI02_B1_MAP_PLAN_ROUTE_PASS route=real_p3_2_build_mode")
         game.call("_leave_build_mode",true)
         await process_frame
-    var route_screen := game.get_node_or_null(screen_name)
-    if route_screen != null:
-        route_screen.queue_free()
-    await process_frame
+    # Keep the live guidance screen open for the subsequent recruitment.
+    if kind != "guidance":
+        var route_screen := game.get_node_or_null(screen_name)
+        if route_screen != null:
+            route_screen.queue_free()
+        await process_frame
     return true
 
 func _find_facility_art(node: Node, kind: String) -> Control:
