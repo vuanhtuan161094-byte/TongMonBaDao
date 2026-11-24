@@ -173,7 +173,7 @@ jobs:
 
       - name: Run GP-01, GP-02A, O5 and O6 owner P0 regressions on this exact source
         shell: bash
-        if: always()
+        # Only run slow owner regressions after focused ART-05/HS-09 and capture checks pass.
         run: |
           set +e
           mkdir -p godot/outputs/tri03_owner_regressions
