@@ -1,0 +1,121 @@
+{
+  "schema": "tmb.vfx.production.batch_candidates.v1",
+  "date": "2026-11-24",
+  "pr": 72,
+  "parent_sha": "26e7f704414662754f043f66b08f537d09e56c98",
+  "scope": "6 HUMAN sword skills, source-only batch candidate, not a PvE/gameplay implementation",
+  "candidate_frames_total": 144,
+  "cel_px": [
+    512,
+    512
+  ],
+  "atlas_px": [
+    2048,
+    3072
+  ],
+  "preview_fps": 25,
+  "preview_seconds": 0.96,
+  "delivery": {
+    "conversation_zip": "TMB_BATCH_6_VFX_NHAN_SOURCE_20261124.zip",
+    "github_binary_source": "NOT_STAGED",
+    "github_manifest": "METADATA_ONLY",
+    "reason": "binary source available as conversation artifact; requires verified transfer before exact-SHA GitHub asset CI"
+  },
+  "restrictions": {
+    "codex_cloud": false,
+    "rig": false,
+    "merge": false,
+    "pve": "HOLD",
+    "godot": "NOT_EXECUTED",
+    "chromium": "NOT_EXECUTED"
+  },
+  "gates": {
+    "g0_canon": "PASS_REPO_CATALOG",
+    "g3_source_qa": "PASS_LOCAL_ONLY",
+    "g3_visual": "OWNER_REVIEW_PENDING",
+    "g35_native": "NOT_EXECUTED",
+    "g4_chromium": "NOT_EXECUTED",
+    "batch_acceptance": "NOT_APPROVED"
+  },
+  "provenance_notice": "These are 144 rendered animation cels derived from existing AI-painted VFX-only sources, NOT 144 newly AI-painted original frames; do not claim otherwise.",
+  "skills": [
+    {
+      "id": "tmb.skill.sword.ngu_kiem.active_03.human",
+      "name": "Tứ Phương Phi Nhận",
+      "shape": "line",
+      "limit": 3,
+      "atlas": "7f88e652d84e31ce3e746a366fd564e4fcf45dbba16e228a24f66e2ce3306175",
+      "origin": "two direct AI VFX-only source masters combined with transform-derived cels",
+      "frames": 24,
+      "frame_sha_manifest": "IN_CONVERSATION_ZIP",
+      "atlas_sha256": "7f88e652d84e31ce3e746a366fd564e4fcf45dbba16e228a24f66e2ce3306175",
+      "g3_art": "REVIEW_PENDING",
+      "pve": "HOLD"
+    },
+    {
+      "id": "tmb.skill.sword.ngu_kiem.active_04.human",
+      "name": "Kiếm Quang Hồi Chủ",
+      "shape": "single_target",
+      "limit": 1,
+      "atlas": "86f07ed5789370dc5aacbb9d201fc1d39bbd9b3ceeb73307f1d6ee252b33e42d",
+      "origin": "derived from previously AI-painted isolated sword/wind VFX layers",
+      "frames": 24,
+      "frame_sha_manifest": "IN_CONVERSATION_ZIP",
+      "atlas_sha256": "86f07ed5789370dc5aacbb9d201fc1d39bbd9b3ceeb73307f1d6ee252b33e42d",
+      "g3_art": "REVIEW_PENDING",
+      "pve": "HOLD"
+    },
+    {
+      "id": "tmb.skill.sword.ngu_kiem.ultimate.human",
+      "name": "Vạn Kiếm Quy Tông",
+      "shape": "circle",
+      "limit": 3,
+      "atlas": "23a5906585fdc973b35c740c4a1aa2feb339ebdb19ce871cf2d131885024ff35",
+      "origin": "derived repeated AI-painted sword VFX sprites with distinct radial choreography",
+      "frames": 24,
+      "frame_sha_manifest": "IN_CONVERSATION_ZIP",
+      "atlas_sha256": "23a5906585fdc973b35c740c4a1aa2feb339ebdb19ce871cf2d131885024ff35",
+      "g3_art": "REVIEW_PENDING",
+      "pve": "HOLD"
+    },
+    {
+      "id": "tmb.skill.sword.sat_kiem.active_01.human",
+      "name": "Trảm Ảnh Nhất Tuyến",
+      "shape": "single_target",
+      "limit": 1,
+      "atlas": "52cab7a39f446614eb1b297bc3a2c980905dc0c302a053214f3c424009c509f8",
+      "origin": "derived one AI-painted sword sprite with linear dash and native wind-contact frames",
+      "frames": 24,
+      "frame_sha_manifest": "IN_CONVERSATION_ZIP",
+      "atlas_sha256": "52cab7a39f446614eb1b297bc3a2c980905dc0c302a053214f3c424009c509f8",
+      "g3_art": "REVIEW_PENDING",
+      "pve": "HOLD"
+    },
+    {
+      "id": "tmb.skill.sword.sat_kiem.active_02.human",
+      "name": "Phá Vân Trực Trảm",
+      "shape": "line",
+      "limit": 3,
+      "atlas": "5401e9a93d2b32e910f07bd4afc5b4703c408e251e756343e2a283b6b8d672bc",
+      "origin": "derived layered AI-painted sword sprites staggered along 3 visual lanes",
+      "frames": 24,
+      "frame_sha_manifest": "IN_CONVERSATION_ZIP",
+      "atlas_sha256": "5401e9a93d2b32e910f07bd4afc5b4703c408e251e756343e2a283b6b8d672bc",
+      "g3_art": "REVIEW_PENDING",
+      "pve": "HOLD"
+    },
+    {
+      "id": "tmb.skill.sword.sat_kiem.active_03.human",
+      "name": "Đoạn Thủy Kiếm Mang",
+      "shape": "single_target",
+      "limit": 1,
+      "atlas": "61eeecd743ca07de7d866fe9316fb0237115951ca9e08b746951ed4a6f25bb4a",
+      "origin": "derived AI-painted sword and translucent wind crescent layers",
+      "frames": 24,
+      "frame_sha_manifest": "IN_CONVERSATION_ZIP",
+      "atlas_sha256": "61eeecd743ca07de7d866fe9316fb0237115951ca9e08b746951ed4a6f25bb4a",
+      "g3_art": "REVIEW_PENDING",
+      "pve": "HOLD"
+    }
+  ]
+}
