@@ -56,6 +56,25 @@ def main():
         require(a.getbbox() is not None,"EMPTY_FRAME_"+name)
         edges=[a.crop((0,0,512,8)),a.crop((0,504,512,512)),a.crop((0,0,8,512)),a.crop((504,0,512,512))]
         require(all(z.getbbox() is None for z in edges),"FRAME_BORDER_"+name)
+        # Native RGBA alone is insufficient: AI may bake a translucent rectangular
+        # white/grey matte into every cel. Reject that artifact, even if a later
+        # 8px-padding pass makes the outermost frame border transparent.
+        # A true isolated sword-energy sprite should preserve generous empty
+        # space through the frame interior, not paint a semiopaque rectangle.
+        inner=a.crop((56,56,456,456))
+        hist=inner.histogram()
+        opaque_area=sum(hist[17:]) / float(400*400)
+        require(opaque_area < 0.75,"DIRTY_TRANSLUCENT_MATTE_"+name)
+        corner_boxes=[
+            (48,96,96,144),(416,96,464,144),
+            (48,368,96,416),(416,368,464,416),
+        ]
+        empty_corners=0
+        for rect in corner_boxes:
+            hh=a.crop(rect).histogram()
+            if sum(hh[17:]) < (48*48*0.20):
+                empty_corners+=1
+        require(empty_corners>=2,"RECTANGULAR_ALPHA_HAZE_"+name)
         images.append(im)
     require(len(set(hashes))==24,"DUPLICATE_FRAME")
     atlas=Image.open(src/"TPF_NHAN_24_atlas_RGBA.png")

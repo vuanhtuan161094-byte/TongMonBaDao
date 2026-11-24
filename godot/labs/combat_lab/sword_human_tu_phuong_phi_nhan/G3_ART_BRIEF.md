@@ -21,3 +21,8 @@ Design target for isolated review: 24 output frames @25 fps / 0.96 s (NOT 0.44 s
 4. Only then bridge Front AS48 to isolated Combat Lab; exact-SHA native/Chromium/GIF; stay PvE HOLD until separate permission.
 
 **Current result:** AI generation attempts were promotional grids/posters with labels and even the wrong name. They were rejected; **zero** frames from these were cropped, extracted or committed. The asset source is intentionally unpopulated. **Do not report G3 PASS** or attach a false GIF. R1E V2 approved reference remains untouched. PR #72 DRAFT; no Codex Cloud, rig, merge, SaveService/gameplay modification or PvE.
+
+## 2026-11-24 — G3 correction: reject semi-opaque matte inside 'RGBA'
+New AI attempts produced 24 VFX-only poses without text or characters, but the source had **RGBA alpha values of 161–251 across the sheet background**, i.e. an opaque-looking pale rectangular matte persists around the art. Cropping a genuine sprite sheet is distinguishable from cropping a poster, but is still **not sufficient** to make this usable as a game sprite. On dark 1× review maps this becomes 24 visible gray squares.
+
+The unapproved source test was kept outside GitHub; **no candidate frames committed, no G3 art approval**. The fail-closed gate now also rejects semiopaque interior sheets (not just the outer 8px border), ensuring transparency is really present around the painted VFX. Never 'solve' this by chroma-key/threshold removal, or by hiding the error on a pale-only review. Native-alpha source frames must be clean on both bright and dark backgrounds before entering the repo. R1E V2 remains the accepted reference; SWORD03 source remains PENDING.
