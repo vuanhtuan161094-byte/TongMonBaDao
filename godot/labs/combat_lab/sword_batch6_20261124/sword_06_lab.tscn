@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://labs/combat_lab/sword_batch6_20261124/sword_batch6_lab.gd" id="1_batch"]
+
+[node name="SwordBatch6_06_AS48_ReviewOnly" type="Node2D"]
+script = ExtResource("1_batch")
+skill_slot = 3
