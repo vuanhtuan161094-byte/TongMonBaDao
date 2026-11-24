@@ -1,0 +1,85 @@
+{
+  "schema": "tmb.vfx.sword03.art_contract.v1",
+  "skill_id": "tmb.skill.sword.ngu_kiem.active_03.human",
+  "skill_name": "Tứ Phương Phi Nhận",
+  "school": "sword",
+  "branch": "ngu_kiem",
+  "tier": "human",
+  "canon": {
+    "element": "metal",
+    "effect": "damage",
+    "shape": "line",
+    "damage_ratio": 1,
+    "range": 8,
+    "radius": 6,
+    "target_limit": 3,
+    "cast_time": 0.44,
+    "cooldown": 11,
+    "projectile_speed": 9
+  },
+  "vfx_design": {
+    "projectile_blades_visual": 4,
+    "actual_damage_events": "RUNTIME_AUTHORITATIVE_NOT_VISUAL",
+    "real_hit_limit": 3,
+    "art_only": true,
+    "directions": [
+      "front"
+    ],
+    "source_cels_target": 24,
+    "cel_size": [
+      512,
+      512
+    ],
+    "atlas_layout": [
+      4,
+      6
+    ],
+    "fps_review": 25,
+    "review_seconds": 0.96,
+    "phases": [
+      {
+        "name": "charge",
+        "first": 1,
+        "last": 6
+      },
+      {
+        "name": "release_and_flight",
+        "first": 7,
+        "last": 15
+      },
+      {
+        "name": "impact",
+        "first": 16,
+        "last": 20
+      },
+      {
+        "name": "fade",
+        "first": 21,
+        "last": 24
+      }
+    ]
+  },
+  "source": {
+    "status": "SOURCE_PENDING",
+    "require_independent_png_rgba": true,
+    "require_real_alpha": true,
+    "prohibited": [
+      "PROMOTIONAL_POSTER_CROP",
+      "BLACK_BACKGROUND_REMOVAL",
+      "CHARACTER_COMPOSITE",
+      "VIDEO_SCREENSHOT_AS_MASTER",
+      "CODE_ONLY_BEZIER_MASTER"
+    ],
+    "manifest_file": "source/SOURCE_MANIFEST.json"
+  },
+  "gates": {
+    "g0": "CANON_VERIFIED",
+    "g3": "ART_SOURCE_PENDING",
+    "g35": "NOT_EXECUTED",
+    "godot": "NOT_EXECUTED",
+    "chromium": "NOT_EXECUTED",
+    "owner": "PENDING",
+    "pve": "HOLD",
+    "merge": "NO"
+  }
+}
