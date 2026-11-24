@@ -81,5 +81,21 @@
     "owner": "PENDING",
     "pve": "HOLD",
     "merge": "NO"
+  },
+  "production_pipeline": {
+    "version": "v2_single_seed_first",
+    "mode": "SINGLE_TRANSPARENT_SPRITE_FIRST",
+    "output_origin": "DIRECT_AI_SPRITE_VFX_ONLY",
+    "background_control": "TRANSPARENT_EXPLICIT",
+    "format": "PNG_RGBA",
+    "seed_required_before_animation": true,
+    "seed_approval_gate": "G3_SINGLE_CEL_APPROVED",
+    "followup_animation": "COHERENT_SHORT_STRIPS_WITH_SEED_EDIT",
+    "no_poster_extraction": true,
+    "no_chroma_key_background_removal": true,
+    "no_actor_overlay": true,
+    "no_painterly_Python_source": true,
+    "asset_payload_status": "NOT_STAGED",
+    "source_delivery": "REVIEW_ONLY_G3_HOLD"
   }
 }

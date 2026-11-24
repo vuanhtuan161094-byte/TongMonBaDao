@@ -40,3 +40,8 @@ Production of review candidate from the 24 painted cel positions was limited to 
 - Visual limitations: in the flight and impact phases some blades overlap and fewer than four are clearly distinct; a dark smoke trail on pale maps remains noticeable. The G3 owner must review at 1× before declaring art accepted.
 
 **SOURCE DELIVERY / GATE STATUS:** R2A is a local ChatGPT-conversation review ZIP/GIF, NOT yet uploaded to the repository. Therefore `ART_CONTRACT.json` accurately stays `SOURCE_PENDING` and the GitHub G3 workflow only proves G0/canonical checks, **not** source asset acceptance. After owner review the exact-SHA manifest + RGBA master/24 PNG/atlas/GIF can be staged. No Godot, Chromium, PvE, rig, Codex Cloud, SaveService or merge.
+
+
+## 2026-11-24 — Root cause and generation fix
+
+See `G3_GENERATION_FIX_V2.md` for prompt contamination, 24-frame overload, actual PNG alpha measurements, isolated transparent control experiment, and the corrected single-seed-to-short-strip production flow. G3 remains pending. Auto checks cannot prove no UI or aesthetic success; human 1× review is mandatory.
