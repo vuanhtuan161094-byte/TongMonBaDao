@@ -145,6 +145,7 @@ const COURTYARD_RECT := Rect2i(85,93,8,6)
 const COURTYARD_RUNE_CELLS := [Vector2i(89,95),Vector2i(89,97)]
 const PRODUCTION_APRON_RECT := Rect2i(94,92,5,6)
 const PVE_JX_VFX_ADAPTER_SCRIPT := preload("res://src/presentation/p3/pve_jx_sword_vfx_adapter_v1.gd")
+const A3_SWORD_VFX = preload("res://src/presentation/p3/pve_a3_sword_vfx.gd")
 
 # Signs are presentation wayfinding, not constructed buildings, loot nodes or
 # fake facilities. Coordinates follow the fixed V2 masterplan in SectResidenceSiteV1.
@@ -237,6 +238,7 @@ var pve_clock := 0.0
 var _pve_last_visual_encounter_id := ""
 var pve_source_atlas := CombatV5SourceAAtlas.new()
 var pve_jx_sword_vfx = PVE_JX_VFX_ADAPTER_SCRIPT.new()
+var pve_a3_sword_vfx = A3_SWORD_VFX.new()
 var pve_selected_actor_ids: Array[String] = []
 var pve_mini_texture: Texture2D
 var pve_camera_initialized := false
@@ -893,6 +895,7 @@ func set_pve_snapshot(snapshot: MapBattleV2, view_rows: Dictionary,
         pve_actor_actions.clear()
         pve_actor_facings.clear()
         pve_jx_sword_vfx.observe_snapshot(null)
+        pve_a3_sword_vfx.reset()
         queue_redraw()
         return
     if _pve_last_visual_encounter_id != snapshot.encounter_id:
@@ -904,6 +907,7 @@ func set_pve_snapshot(snapshot: MapBattleV2, view_rows: Dictionary,
         pve_actor_actions.clear()
         pve_actor_facings.clear()
     var new_visual_events := pve_jx_sword_vfx.observe_snapshot(snapshot)
+    pve_a3_sword_vfx.observe(new_visual_events,snapshot,bool(ProjectSettings.get_setting(A3_SWORD_VFX.PREVIEW_SETTING,false)))
     var present: Dictionary = {}
     for raw_id in snapshot.actors:
         var id := str(raw_id)
@@ -961,6 +965,7 @@ func _process(delta: float) -> void:
     pve_clock += maxf(0.0,delta)
     var vfx_advance_started_usec := Time.get_ticks_usec() if pve_performance_logging_enabled else 0
     pve_jx_sword_vfx.advance(delta)
+    pve_a3_sword_vfx.advance(delta)
     if pve_performance_logging_enabled:
         var vfx_advance_elapsed_usec := Time.get_ticks_usec()-vfx_advance_started_usec
         pve_vfx_advance_count += 1
@@ -1290,6 +1295,7 @@ func _draw() -> void:
     if pve_landscape:
         _ensure_pve_static_draw_queue()
         _draw_pve_actor_depth_merge()
+        pve_a3_sword_vfx.draw_on(self,pve_render_positions,Callable(self,"_a3_project"),1.0)
         return
     _draw_masterplan_lots()
     _draw_masterplan_district_signs()
@@ -1472,6 +1478,9 @@ func pve_actor_draw_scale() -> float:
     # and selection rings remain separated.
     return minf(camera.zoom.x*0.82,0.82)
 
+func _a3_project(cell: Vector2) -> Vector2:
+    return project(cell)
+
 func _draw_pve_actor(data: Dictionary) -> void:
     var id := str(data.get("id",""))
     var actor: Dictionary = data.get("actor",{})
@@ -1482,7 +1491,7 @@ func _draw_pve_actor(data: Dictionary) -> void:
     var visual: Dictionary = pve_actor_actions.get(id,{"action":"idle","started":pve_clock})
     var action := "die" if not alive else str(visual.get("action","idle"))
     if alive and pve_clock > float(visual.get("until",-1.0)):
-        action = "run" if (pve_render_positions.get(id,cell) as Vector2).distance_to(cell) > 0.035 else "idle"
+        action = "run" if (pve_target_positions.get(id,cell) as Vector2).distance_to(cell) > 0.035 else "idle"
     if action == "cast" and pve_jx_sword_vfx.comparison_style == "jx1":
         action = "idle"
     var facing: Vector2 = pve_actor_facings.get(id,
@@ -1501,7 +1510,7 @@ func _draw_pve_actor(data: Dictionary) -> void:
     if side == "disciple" and row.has("aschar_school"):
         drawn = PveASCharFrameRendererV1.draw_actor(self,
             str(row.get("aschar_school","")),str(row.get("aschar_sex","male")),
-            action,foot,facing,age,0.22)
+            action,foot,project(facing),age,0.22,maxf(0.0,float(visual.get("until",pve_clock))-float(visual.get("started",pve_clock))))
     # Source A remains available for monsters/Bosses, never for disciples.
     if not drawn and side != "disciple":
         var actor_key := str(row.get("source_a_visual_key",""))

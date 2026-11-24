@@ -390,8 +390,8 @@ func _draw_actor_layer(minimap: bool) -> void:
         if side == "disciple" and visual_row.has("aschar_school"):
             aschar_drawn = PveASCharFrameRendererV1.draw_actor(self,
                 str(visual_row.get("aschar_school","")),str(visual_row.get("aschar_sex","male")),
-                action,foot,direction,float(clip["age"]),camera_zoom*0.25)
-        if not aschar_drawn:
+                action,foot,source.project(direction)-source.project(Vector2.ZERO),float(clip["age"]),camera_zoom*0.25)
+        if not aschar_drawn and side != "disciple":
             source.draw_actor(self,actor,clip,direction,foot,camera_zoom)
         if side == "disciple" and selected_actor_ids.has(id):
             draw_arc(foot+Vector2(0,3),14.0*camera_zoom,0.0,TAU,24,Color("ffe08a"),1.6,true)

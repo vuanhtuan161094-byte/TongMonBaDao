@@ -85,7 +85,7 @@ static func _rows(actor_id: int,manifest: Dictionary) -> Dictionary:
     return rows
 
 static func draw_actor(canvas: CanvasItem,school: String,sex: String,action: String,
-        foot: Vector2,facing: Vector2,age: float,scale: float) -> bool:
+        foot: Vector2,facing: Vector2,age: float,scale: float,action_seconds: float = 0.0) -> bool:
     var actor_id := BRIDGE.actor_id(school,sex)
     if actor_id < 0:
         return false
@@ -113,11 +113,10 @@ static func draw_actor(canvas: CanvasItem,school: String,sex: String,action: Str
         clip = "idle_"+direction
     if not frames.has(clip) and atlas.is_empty():
         clip = "idle_front"
-    var fps := 8.0
-    var index := int(maxf(age,0.0)*fps)
+    var index := 0
     if not atlas.is_empty():
         var columns := maxi(1,int(atlas.get("grid_columns",4)))
-        index = mini(index,columns-1) if action in ["die","death"] else index % columns
+        index = frame_index(action,age,columns,action_seconds)
         var sheet := _cel(str(atlas.get("path","")))
         if sheet == null:
             return false
@@ -140,7 +139,7 @@ static func draw_actor(canvas: CanvasItem,school: String,sex: String,action: Str
     var items: Array = frames[clip]
     if items.is_empty():
         return false
-    index = mini(index,items.size()-1) if action in ["die","death"] else index % items.size()
+    index = frame_index(action,age,items.size(),action_seconds)
     var row: Dictionary = items[index]
     var texture := _cel(str(row.get("path","")))
     if texture == null:
@@ -152,6 +151,14 @@ static func draw_actor(canvas: CanvasItem,school: String,sex: String,action: Str
     _draw_props(canvas,manifest,row,foot,center,scale,false)
     return true
 
+static func frame_index(action: String,age: float,count: int,action_seconds: float = 0.0) -> int:
+    if count <= 1:
+        return 0
+    var index := int(maxf(age,0.0)*8.0)
+    if action in ["attack","cast","hit"] and action_seconds > 0.0:
+        index = int(clampf(age/action_seconds,0.0,1.0)*float(count))
+    return index % count if action in ["idle","run","walk"] else mini(index,count-1)
+
 static func _draw_props(canvas: CanvasItem,manifest: Dictionary,row: Dictionary,
         foot: Vector2,center: Vector2,scale: float,behind: bool) -> void:
     var grips: Dictionary = row.get("grip_sockets",{})
@@ -160,8 +167,6 @@ static func _draw_props(canvas: CanvasItem,manifest: Dictionary,row: Dictionary,
             continue
         var slot := str(attachment.get("slot",""))
         var grip: Dictionary = grips.get(slot,{})
-        if grip.is_empty() and slot != "main_hand":
-            grip = grips.get("main_hand",{})
         if grip.is_empty():
             continue
         if not bool(row.get("weapon_visible",true)) and not slot.begins_with("hand_"):

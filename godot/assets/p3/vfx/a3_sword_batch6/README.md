@@ -1,0 +1,1 @@
+A3 runtime candidate: identical Git blobs to labs/combat_lab/sword_batch6_20261124/source (03–08). Owner approved source only; no G8 approval. Preview setting runtime/a3_sword_vfx_preview defaults false. Existing V6.3 flags, skill mechanics and Save unchanged. Actual directional/contact/visual QA pending. Other sources and tier aliases HOLD until exact semantic/anchor review.
