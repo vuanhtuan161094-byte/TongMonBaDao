@@ -6,6 +6,10 @@ on:
       - '.github/workflows/sword02-r1e-web-chromium.yml'
       - 'godot/labs/combat_lab/sword_human_kiem_vu_hoi_phong/r1e/**'
       - 'godot/labs/visual_bridge_v1/vfx_web_review_hub.gd'
+      - 'godot/labs/combat_lab/sword_batch6_20261124/**'
+      - 'godot/labs/combat_lab/sword_batch9_20261124/**'
+      - 'tools/vfx/build_sword_batch9.py'
+      - 'tools/vfx/stage_vfx_web_review.py'
       - 'tools/vfx/check_web_sword02_r1e.cjs'
       - 'docs/operations/vfx_web_catalog_v1.json'
   workflow_dispatch:
@@ -25,11 +29,14 @@ jobs:
             godot/labs/visual_bridge_v1
             godot/labs/combat_lab/sword_human_phi_kiem_truy_anh
             godot/labs/combat_lab/sword_human_kiem_vu_hoi_phong/r1e
+            godot/labs/combat_lab/sword_batch6_20261124
+            godot/labs/combat_lab/sword_batch9_20261124
             godot/labs/combat_lab/combat_lab_v16_impact_glow.gdshader
             godot/labs/character_family/aschar_v9_batch1
             godot/assets/actors/v5_sa_monster_1113031_1
             godot/tests/labs/combat_lab/vfx_sword02_r1e_contract_test.gd
             tools/vfx/stage_vfx_web_review.py
+            tools/vfx/build_sword_batch9.py
             tools/vfx/check_web_sword02_r1e.cjs
             tools/vfx/check_web_visual.cjs
             tools/qa/check_sword02_r1e_source.py
