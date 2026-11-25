@@ -1,0 +1,53 @@
+{
+  "type": "G3_SOURCE_ONLY_NO_GODOT_NO_ART_APPROVAL",
+  "motif_width_px_at_intended_1x": 96,
+  "warning": "Preview scale MUST match intended Godot scale. Human reviews art/motion.",
+  "sources": [
+    {
+      "source": "godot/labs/combat_lab/bow01/xuyen_tam_tien_r1/source/xuyen_tam_tien_charge.png",
+      "sha256": "88781ed3ed4621ac4e5b6242c83ba77f8dcf0259d3fbb2fb0dac28e4d74ccb27",
+      "source_px": [
+        2172,
+        724
+      ],
+      "visible_alpha_bbox": [
+        762,
+        178,
+        1388,
+        501
+      ],
+      "alpha_range": [
+        0,
+        254
+      ],
+      "display_factor": 0.15335463258785942,
+      "preview_image_px": [
+        333,
+        111
+      ]
+    },
+    {
+      "source": "godot/labs/combat_lab/bow01/xuyen_tam_tien_r1/source/xuyen_tam_tien_flight.png",
+      "sha256": "0ed954b63a4cefb75a2d5c334f975d8a0c6f4e798e309d30af2d4761af09c1e7",
+      "source_px": [
+        2172,
+        724
+      ],
+      "visible_alpha_bbox": [
+        107,
+        265,
+        2061,
+        454
+      ],
+      "alpha_range": [
+        0,
+        254
+      ],
+      "display_factor": 0.04912998976458546,
+      "preview_image_px": [
+        107,
+        36
+      ]
+    }
+  ]
+}

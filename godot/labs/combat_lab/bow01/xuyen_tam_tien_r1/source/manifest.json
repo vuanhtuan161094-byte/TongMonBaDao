@@ -1,0 +1,86 @@
+{
+  "schema": "tmb.vfx_source_bundle.v1",
+  "skill_id": "tmb.skill.bow.liep_anh.active_01.human",
+  "skill_name_vi": "Xuyên Tâm Tiễn",
+  "revision": "R1",
+  "contract": {
+    "effect": "damage",
+    "shape": "single_target",
+    "target_limit": 1,
+    "element": "metal",
+    "visual_axis": "horizontal arrow flight to the right in the reviewed pose"
+  },
+  "source_review": {
+    "status": "G3_SOURCE_SELF_PASS",
+    "reviewed_on": "2026-11-25",
+    "scale_previews": [
+      {
+        "path": "../review/G3_SOURCE_REVIEW_96PX_NOT_APPROVAL.png",
+        "manifest": "../review/G3_SOURCE_REVIEW_96PX_NOT_APPROVAL.json",
+        "display_width_px": 96,
+        "phases": ["charge", "flight"],
+        "backgrounds": ["dark", "light"]
+      },
+      {
+        "path": "../review/G3_CONTACT_REVIEW_40PX_NOT_APPROVAL.png",
+        "manifest": "../review/G3_CONTACT_REVIEW_40PX_NOT_APPROVAL.json",
+        "display_width_px": 40,
+        "phases": ["contact_glint"],
+        "backgrounds": ["dark", "light"]
+      }
+    ],
+    "owner_art_approval": "PENDING",
+    "godot_native_review": "BLOCKED_MISSING_ANIMATED_ARCHER_WEAPON_LAYER"
+  },
+  "files": [
+    {
+      "role": "charge",
+      "path": "xuyen_tam_tien_charge.png",
+      "sha256": "88781ed3ed4621ac4e5b6242c83ba77f8dcf0259d3fbb2fb0dac28e4d74ccb27",
+      "source_px": [2172, 724],
+      "alpha_range": [0, 254],
+      "display_width_px": 96,
+      "generation_output_id": "exec-d5307612-43db-426c-942a-2bb3dc044a91",
+      "generation_route": "image_gen.imagegen",
+      "reference_sha256": "46e03b86a84519bbe0cd1ac85f413373518477dfc8434b47d90ee78e5e3ce50f",
+      "prompt": "Create a separate pre-release CHARGE source pose for a first-party 2D fantasy game VFX. Use the reference only for its blue-white luminous metal and silver-feather material language. Show a compact arrow forming at the archer's bowstring: a small pointed silver-blue arrowhead facing right, a short bright shaft segment, and two tiny luminous feather wisps behind it. It must be visibly smaller and more compressed than the full flight arrow in the reference, around one third its width. Tight white-hot core, translucent cyan body, restrained soft glow, crisp hand-painted edges. This is a single isolated sprite on truly transparent RGBA; no archer, bow, hand, scenery, canvas color, shadows, frame, text, circle, emblem, huge blade-like broadhead, or full-length arrow. Keep most canvas pixels fully transparent."
+    },
+    {
+      "role": "flight",
+      "path": "xuyen_tam_tien_flight.png",
+      "sha256": "0ed954b63a4cefb75a2d5c334f975d8a0c6f4e798e309d30af2d4761af09c1e7",
+      "source_px": [2172, 724],
+      "alpha_range": [0, 254],
+      "display_width_px": 96,
+      "generation_output_id": "exec-1219cdf2-ec2c-4a1c-9304-1410dae7b9a3",
+      "generation_route": "image_gen.imagegen",
+      "reference_sha256": "46e03b86a84519bbe0cd1ac85f413373518477dfc8434b47d90ee78e5e3ce50f",
+      "prompt": "Create the standalone flight-pose VFX source for a first-party 2D fantasy game skill named Xuyên Tâm Tiễn. It is one straight, horizontally aligned, luminous single-target arrow moving to the right. Draw a long slender white-hot cyan shaft with a crisp silver-blue pointed arrowhead, two small silver feather fletches at the tail, and only a narrow restrained motion glow. Keep the silhouette unmistakably an arrow with an elegant metal-and-light material; a thin bright core and translucent blue body. Full arrow isolated on truly transparent RGBA. No bow, archer, hand, enemy, scenery, ground, background color, ring, glyph, text, extra arrows, broad sword blade, poster, or frame. Keep the arrow large and centered in the wide canvas; pixels outside it fully transparent."
+    },
+    {
+      "role": "contact_glint",
+      "path": "xuyen_tam_tien_contact_glint.png",
+      "sha256": "9445b78c724754b609d7175c1bf16d63bd86a04a6ad2ba0205ba30e6e757f3ea",
+      "source_px": [1983, 793],
+      "alpha_range": [0, 254],
+      "display_width_px": 40,
+      "generation_output_id": "exec-52ca3a29-f58b-4d8a-b15d-a3205689a4f0",
+      "generation_route": "image_gen.imagegen",
+      "reference_sha256": "46e03b86a84519bbe0cd1ac85f413373518477dfc8434b47d90ee78e5e3ce50f",
+      "activation_rule": "show only after a confirmed single-target hit receipt; never trigger a hit",
+      "prompt": "Paint a distinct terminal hit FLASH sprite for the blue-white fantasy arrow VFX shown in the reference. The real arrow remains the projectile; this separate effect is shown only at confirmed target contact. At native game size it must read as roughly 40px wide: one white-hot diamond core, three clearly separated short blue-cyan silver feather streaks that fan backward, plus a very restrained translucent glow. Directional, sharp, precise, elegant, hand-painted luminous material that matches the reference. Isolated transparent RGBA with most pixels fully transparent. No full arrow, no target or body, no character, no bow, no scenery, no background, no circle, no ring, no rune, no text, no giant explosion, no generic 8-point star."
+    },
+    {
+      "role": "provenance_reference_only",
+      "path": "reference_only/xuyen_tam_tien_r4_design_reference.png",
+      "sha256": "46e03b86a84519bbe0cd1ac85f413373518477dfc8434b47d90ee78e5e3ce50f",
+      "source_px": [2172, 724],
+      "generation_output_id": "exec-93ebebf6-863f-4f6b-b945-cf6ebf6d4ce3",
+      "generation_route": "image_gen.imagegen",
+      "production_phase_art": false,
+      "prompt_record": "The original prompt was not retained in the persisted work record; this file is preserved as the actual reference input to the R1 phase generations."
+    }
+  ],
+  "rights_and_input_note": "Selected phase sources were generated with image_gen.imagegen. The R1 prompts reference only the preserved generated design reference in this bundle; no proprietary JX, Source A, or third-party game pixels were used as image-generation inputs.",
+  "pve": "HOLD_V63_OFF"
+}

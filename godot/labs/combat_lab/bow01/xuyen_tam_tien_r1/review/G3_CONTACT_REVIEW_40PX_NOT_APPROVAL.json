@@ -1,0 +1,30 @@
+{
+  "type": "G3_SOURCE_ONLY_NO_GODOT_NO_ART_APPROVAL",
+  "motif_width_px_at_intended_1x": 40,
+  "warning": "Preview scale MUST match intended Godot scale. Human reviews art/motion.",
+  "sources": [
+    {
+      "source": "godot/labs/combat_lab/bow01/xuyen_tam_tien_r1/source/xuyen_tam_tien_contact_glint.png",
+      "sha256": "9445b78c724754b609d7175c1bf16d63bd86a04a6ad2ba0205ba30e6e757f3ea",
+      "source_px": [
+        1983,
+        793
+      ],
+      "visible_alpha_bbox": [
+        684,
+        218,
+        1318,
+        534
+      ],
+      "alpha_range": [
+        0,
+        254
+      ],
+      "display_factor": 0.06309148264984227,
+      "preview_image_px": [
+        125,
+        50
+      ]
+    }
+  ]
+}
