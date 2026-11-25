@@ -1633,10 +1633,12 @@
         "labs/combat_lab/poison_basic_human_v2/doc_cham_thuong_thuc.gd",
         "labs/combat_lab/poison_basic_human_v2/assets/atlas/poison_basic_charge_06_rgba.png",
         "labs/combat_lab/poison_basic_human_v2/assets/atlas/poison_basic_flight_08_rgba.png",
-        "labs/combat_lab/poison_basic_human_v2/assets/atlas/poison_basic_contact_08_rgba.png"
+        "labs/combat_lab/poison_basic_human_v2/assets/atlas/poison_basic_contact_08_rgba.png",
+        "labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_capture_index.json",
+        "labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_contact_sheet_1280x720.png"
       ],
       "art_source": "REUSED_EXISTING_SKILL_SOURCE_poison_basic_human_v2_NO_RECOLOR_OR_NEW_ART",
-      "review_note": "Shared receipt-gated Factory scene. This catalog row does not transfer the source LAB or owner gate to its new adapter. Native capture uses real MapBattle V2 fixtures; contact/status remains hidden until the matching receipt. PvE HOLD."
+      "review_note": "Shared receipt-gated Factory scene. This catalog row does not transfer the source LAB or owner gate to its new adapter. Native capture uses real MapBattle V2 fixtures; contact/status remains hidden until the matching receipt. PvE HOLD. Native candidate-event capture: 16 skills / 80 accepted MapBattle events / 20 separate fixture setup receipts / zero synthetic events; full H.264 decode PASS. Owner review pending; PvE HOLD."
     },
     {
       "id": "tmb.skill.poison.co_doc.active_01.human",
@@ -1662,10 +1664,12 @@
         "labs/combat_lab/poison03/fu_cot_co.tscn",
         "labs/combat_lab/poison03/fu_cot_co.gd",
         "labs/combat_lab/poison03/assets/fu_cot_bone_seal.svg",
-        "labs/combat_lab/poison03/assets/fu_cot_gu_master.svg"
+        "labs/combat_lab/poison03/assets/fu_cot_gu_master.svg",
+        "labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_capture_index.json",
+        "labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_contact_sheet_1280x720.png"
       ],
       "art_source": "REUSED_EXISTING_SKILL_SOURCE_poison03/fu_cot_co_NO_RECOLOR_OR_NEW_ART",
-      "review_note": "Shared receipt-gated Factory scene. This catalog row does not transfer the source LAB or owner gate to its new adapter. Native capture uses real MapBattle V2 fixtures; contact/status remains hidden until the matching receipt. PvE HOLD."
+      "review_note": "Shared receipt-gated Factory scene. This catalog row does not transfer the source LAB or owner gate to its new adapter. Native capture uses real MapBattle V2 fixtures; contact/status remains hidden until the matching receipt. PvE HOLD. Native candidate-event capture: 16 skills / 80 accepted MapBattle events / 20 separate fixture setup receipts / zero synthetic events; full H.264 decode PASS. Owner review pending; PvE HOLD."
     },
     {
       "id": "tmb.skill.poison.co_doc.active_02.human",
@@ -1693,10 +1697,12 @@
         "labs/combat_lab/poison02/assets/serpent-bind-back-4pose.webp",
         "labs/combat_lab/poison02/assets/serpent-flight-atlas.webp",
         "labs/combat_lab/poison02/assets/serpent-bind-front-4pose.webp",
-        "labs/combat_lab/poison02/assets/serpent-head.webp"
+        "labs/combat_lab/poison02/assets/serpent-head.webp",
+        "labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_capture_index.json",
+        "labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_contact_sheet_1280x720.png"
       ],
       "art_source": "REUSED_EXISTING_SKILL_SOURCE_poison02/xa_anh_source_vl_remake_NO_RECOLOR_OR_NEW_ART",
-      "review_note": "Shared receipt-gated Factory scene. This catalog row does not transfer the source LAB or owner gate to its new adapter. Native capture uses real MapBattle V2 fixtures; contact/status remains hidden until the matching receipt. PvE HOLD."
+      "review_note": "Shared receipt-gated Factory scene. This catalog row does not transfer the source LAB or owner gate to its new adapter. Native capture uses real MapBattle V2 fixtures; contact/status remains hidden until the matching receipt. PvE HOLD. Native candidate-event capture: 16 skills / 80 accepted MapBattle events / 20 separate fixture setup receipts / zero synthetic events; full H.264 decode PASS. Owner review pending; PvE HOLD."
     },
     {
       "id": "tmb.skill.poison.co_doc.active_03.human",
@@ -1723,10 +1729,12 @@
         "labs/combat_lab/poison04/co_vu_me_tung.gd",
         "labs/combat_lab/poison04/assets/co_vu_smoke_tendril.svg",
         "labs/combat_lab/poison04/assets/co_vu_painted_cloud.svg",
-        "labs/combat_lab/poison04/assets/co_vu_gu_moth.svg"
+        "labs/combat_lab/poison04/assets/co_vu_gu_moth.svg",
+        "labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_capture_index.json",
+        "labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_contact_sheet_1280x720.png"
       ],
       "art_source": "REUSED_EXISTING_SKILL_SOURCE_poison04/co_vu_me_tung_NO_RECOLOR_OR_NEW_ART",
-      "review_note": "Shared receipt-gated Factory scene. This catalog row does not transfer the source LAB or owner gate to its new adapter. Native capture uses real MapBattle V2 fixtures; contact/status remains hidden until the matching receipt. PvE HOLD."
+      "review_note": "Shared receipt-gated Factory scene. This catalog row does not transfer the source LAB or owner gate to its new adapter. Native capture uses real MapBattle V2 fixtures; contact/status remains hidden until the matching receipt. PvE HOLD. Native candidate-event capture: 16 skills / 80 accepted MapBattle events / 20 separate fixture setup receipts / zero synthetic events; full H.264 decode PASS. Owner review pending; PvE HOLD."
     },
     {
       "id": "tmb.skill.poison.co_doc.active_04.human",
@@ -1783,10 +1791,12 @@
         "labs/combat_lab/poison05/remake_r6/assets/gu_09.svg",
         "labs/combat_lab/poison05/remake_r6/assets/gu_10.svg",
         "labs/combat_lab/poison05/remake_r6/assets/gu_11.svg",
-        "labs/combat_lab/poison05/remake_r6/assets/immortal_valley.svg"
+        "labs/combat_lab/poison05/remake_r6/assets/immortal_valley.svg",
+        "labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_capture_index.json",
+        "labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_contact_sheet_1280x720.png"
       ],
       "art_source": "REUSED_EXISTING_SKILL_SOURCE_poison05/remake_r6_NO_RECOLOR_OR_NEW_ART",
-      "review_note": "Shared receipt-gated Factory scene. This catalog row does not transfer the source LAB or owner gate to its new adapter. Native capture uses real MapBattle V2 fixtures; contact/status remains hidden until the matching receipt. PvE HOLD."
+      "review_note": "Shared receipt-gated Factory scene. This catalog row does not transfer the source LAB or owner gate to its new adapter. Native capture uses real MapBattle V2 fixtures; contact/status remains hidden until the matching receipt. PvE HOLD. Native candidate-event capture: 16 skills / 80 accepted MapBattle events / 20 separate fixture setup receipts / zero synthetic events; full H.264 decode PASS. Owner review pending; PvE HOLD."
     },
     {
       "id": "tmb.skill.poison.co_doc.ultimate.human",
@@ -1825,10 +1835,12 @@
         "labs/combat_lab/poison06/assets/abyss_gu_4.svg",
         "labs/combat_lab/poison06/assets/abyss_gu_5.svg",
         "labs/combat_lab/poison06/assets/abyss_gu_6.svg",
-        "labs/combat_lab/poison06/assets/abyss_gu_7.svg"
+        "labs/combat_lab/poison06/assets/abyss_gu_7.svg",
+        "labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_capture_index.json",
+        "labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_contact_sheet_1280x720.png"
       ],
       "art_source": "REUSED_EXISTING_SKILL_SOURCE_poison06/r11_candidate_NO_RECOLOR_OR_NEW_ART",
-      "review_note": "Shared receipt-gated Factory scene. This catalog row does not transfer the source LAB or owner gate to its new adapter. Native capture uses real MapBattle V2 fixtures; contact/status remains hidden until the matching receipt. PvE HOLD."
+      "review_note": "Shared receipt-gated Factory scene. This catalog row does not transfer the source LAB or owner gate to its new adapter. Native capture uses real MapBattle V2 fixtures; contact/status remains hidden until the matching receipt. PvE HOLD. Native candidate-event capture: 16 skills / 80 accepted MapBattle events / 20 separate fixture setup receipts / zero synthetic events; full H.264 decode PASS. Owner review pending; PvE HOLD."
     },
     {
       "id": "tmb.skill.poison.doc_cham.active_01.human",
@@ -1858,10 +1870,12 @@
         "labs/combat_lab/poison07/r7_painted/assets/painted_puncture_r7_12.png",
         "labs/combat_lab/poison07/r7_painted/assets/master/needle_painted_source.webp",
         "labs/combat_lab/poison07/r7_painted/assets/master/palm_painted_source.webp",
-        "labs/combat_lab/poison07/r7_painted/assets/master/puncture_painted_source.webp"
+        "labs/combat_lab/poison07/r7_painted/assets/master/puncture_painted_source.webp",
+        "labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_capture_index.json",
+        "labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_contact_sheet_1280x720.png"
       ],
       "art_source": "REUSED_EXISTING_SKILL_SOURCE_poison07/r7_painted_NO_RECOLOR_OR_NEW_ART",
-      "review_note": "Shared receipt-gated Factory scene. This catalog row does not transfer the source LAB or owner gate to its new adapter. Native capture uses real MapBattle V2 fixtures; contact/status remains hidden until the matching receipt. PvE HOLD."
+      "review_note": "Shared receipt-gated Factory scene. This catalog row does not transfer the source LAB or owner gate to its new adapter. Native capture uses real MapBattle V2 fixtures; contact/status remains hidden until the matching receipt. PvE HOLD. Native candidate-event capture: 16 skills / 80 accepted MapBattle events / 20 separate fixture setup receipts / zero synthetic events; full H.264 decode PASS. Owner review pending; PvE HOLD."
     },
     {
       "id": "tmb.skill.poison.doc_cham.active_02.human",
@@ -1890,10 +1904,12 @@
         "labs/combat_lab/poison08/r4_painted/assets/living_barb_r4_12.png",
         "labs/combat_lab/poison08/r4_painted/assets/bite_contact_r4_08.png",
         "labs/combat_lab/poison08/r4_painted/assets/vein_mark_r4_12.png",
-        "labs/combat_lab/poison08/r4_painted/assets/master/toxin_barb_painted.webp"
+        "labs/combat_lab/poison08/r4_painted/assets/master/toxin_barb_painted.webp",
+        "labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_capture_index.json",
+        "labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_contact_sheet_1280x720.png"
       ],
       "art_source": "REUSED_EXISTING_SKILL_SOURCE_poison08/r4_painted_NO_RECOLOR_OR_NEW_ART",
-      "review_note": "Shared receipt-gated Factory scene. This catalog row does not transfer the source LAB or owner gate to its new adapter. Native capture uses real MapBattle V2 fixtures; contact/status remains hidden until the matching receipt. PvE HOLD."
+      "review_note": "Shared receipt-gated Factory scene. This catalog row does not transfer the source LAB or owner gate to its new adapter. Native capture uses real MapBattle V2 fixtures; contact/status remains hidden until the matching receipt. PvE HOLD. Native candidate-event capture: 16 skills / 80 accepted MapBattle events / 20 separate fixture setup receipts / zero synthetic events; full H.264 decode PASS. Owner review pending; PvE HOLD."
     },
     {
       "id": "tmb.skill.poison.doc_cham.active_03.human",
@@ -1925,10 +1941,12 @@
         "labs/combat_lab/poison09/r1_painted/assets/master/burst_contact_master.webp",
         "labs/combat_lab/poison09/r1_painted/assets/master/fanlotus_charge_master.webp",
         "labs/combat_lab/poison09/r1_painted/assets/master/poison_needle_master.webp",
-        "labs/combat_lab/poison09/r1_painted/assets/master/sixsecond_toxin_master.webp"
+        "labs/combat_lab/poison09/r1_painted/assets/master/sixsecond_toxin_master.webp",
+        "labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_capture_index.json",
+        "labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_contact_sheet_1280x720.png"
       ],
       "art_source": "REUSED_EXISTING_SKILL_SOURCE_poison09/r1_painted_NO_RECOLOR_OR_NEW_ART",
-      "review_note": "Shared receipt-gated Factory scene. This catalog row does not transfer the source LAB or owner gate to its new adapter. Native capture uses real MapBattle V2 fixtures; contact/status remains hidden until the matching receipt. PvE HOLD."
+      "review_note": "Shared receipt-gated Factory scene. This catalog row does not transfer the source LAB or owner gate to its new adapter. Native capture uses real MapBattle V2 fixtures; contact/status remains hidden until the matching receipt. PvE HOLD. Native candidate-event capture: 16 skills / 80 accepted MapBattle events / 20 separate fixture setup receipts / zero synthetic events; full H.264 decode PASS. Owner review pending; PvE HOLD."
     },
     {
       "id": "tmb.skill.poison.doc_cham.active_04.human",
@@ -1958,10 +1976,12 @@
         "labs/combat_lab/poison10/r2_remake/assets/poison10_r2_contact_08.png",
         "labs/combat_lab/poison10/r2_remake/assets/master/poi10_bloom_master.webp",
         "labs/combat_lab/poison10/r2_remake/assets/master/poi10_charge_master.webp",
-        "labs/combat_lab/poison10/r2_remake/assets/master/poi10_contact_master.webp"
+        "labs/combat_lab/poison10/r2_remake/assets/master/poi10_contact_master.webp",
+        "labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_capture_index.json",
+        "labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_contact_sheet_1280x720.png"
       ],
       "art_source": "REUSED_EXISTING_SKILL_SOURCE_poison10/r2_remake_NO_RECOLOR_OR_NEW_ART",
-      "review_note": "Shared receipt-gated Factory scene. This catalog row does not transfer the source LAB or owner gate to its new adapter. Native capture uses real MapBattle V2 fixtures; contact/status remains hidden until the matching receipt. PvE HOLD."
+      "review_note": "Shared receipt-gated Factory scene. This catalog row does not transfer the source LAB or owner gate to its new adapter. Native capture uses real MapBattle V2 fixtures; contact/status remains hidden until the matching receipt. PvE HOLD. Native candidate-event capture: 16 skills / 80 accepted MapBattle events / 20 separate fixture setup receipts / zero synthetic events; full H.264 decode PASS. Owner review pending; PvE HOLD."
     },
     {
       "id": "tmb.skill.poison.doc_cham.ultimate.human",
@@ -1993,10 +2013,12 @@
         "labs/combat_lab/poison11/r1_original/assets/master/heart_piercer_source.webp",
         "labs/combat_lab/poison11/r1_original/assets/master/heart_rupture_source.webp",
         "labs/combat_lab/poison11/r1_original/assets/master/heart_vortex_source.webp",
-        "labs/combat_lab/poison11/r1_original/assets/master/needle_crown_source.webp"
+        "labs/combat_lab/poison11/r1_original/assets/master/needle_crown_source.webp",
+        "labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_capture_index.json",
+        "labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_contact_sheet_1280x720.png"
       ],
       "art_source": "REUSED_EXISTING_SKILL_SOURCE_poison11/r1_original_NO_RECOLOR_OR_NEW_ART",
-      "review_note": "Shared receipt-gated Factory scene. This catalog row does not transfer the source LAB or owner gate to its new adapter. Native capture uses real MapBattle V2 fixtures; contact/status remains hidden until the matching receipt. PvE HOLD."
+      "review_note": "Shared receipt-gated Factory scene. This catalog row does not transfer the source LAB or owner gate to its new adapter. Native capture uses real MapBattle V2 fixtures; contact/status remains hidden until the matching receipt. PvE HOLD. Native candidate-event capture: 16 skills / 80 accepted MapBattle events / 20 separate fixture setup receipts / zero synthetic events; full H.264 decode PASS. Owner review pending; PvE HOLD."
     },
     {
       "id": "tmb.skill.poison.duoc_doc.active_02.human",
@@ -2026,10 +2048,12 @@
         "labs/combat_lab/poison13_heal_heart/r2/assets/poi13_r2_aura_12.png",
         "labs/combat_lab/poison13_heal_heart/r2/assets/master/poi13_r2_aura_source_rgba.png",
         "labs/combat_lab/poison13_heal_heart/r2/assets/master/poi13_r2_charge_source_rgba.png",
-        "labs/combat_lab/poison13_heal_heart/r2/assets/master/poi13_r2_release_source_rgba.png"
+        "labs/combat_lab/poison13_heal_heart/r2/assets/master/poi13_r2_release_source_rgba.png",
+        "labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_capture_index.json",
+        "labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_contact_sheet_1280x720.png"
       ],
       "art_source": "REUSED_EXISTING_SKILL_SOURCE_poison13_heal_heart/r2_NO_RECOLOR_OR_NEW_ART",
-      "review_note": "Shared receipt-gated Factory scene. This catalog row does not transfer the source LAB or owner gate to its new adapter. Native capture uses real MapBattle V2 fixtures; contact/status remains hidden until the matching receipt. PvE HOLD."
+      "review_note": "Shared receipt-gated Factory scene. This catalog row does not transfer the source LAB or owner gate to its new adapter. Native capture uses real MapBattle V2 fixtures; contact/status remains hidden until the matching receipt. PvE HOLD. Native candidate-event capture: 16 skills / 80 accepted MapBattle events / 20 separate fixture setup receipts / zero synthetic events; full H.264 decode PASS. Owner review pending; PvE HOLD."
     },
     {
       "id": "tmb.skill.poison.duoc_doc.active_03.human",
@@ -2059,10 +2083,12 @@
         "labs/combat_lab/poison14_cleanse/r1/assets/poi14_purge_10.png",
         "labs/combat_lab/poison14_cleanse/r1/assets/master/poi14_charge_source_rgba.png",
         "labs/combat_lab/poison14_cleanse/r1/assets/master/poi14_purge_source_rgba.png",
-        "labs/combat_lab/poison14_cleanse/r1/assets/master/poi14_sever_source_rgba.png"
+        "labs/combat_lab/poison14_cleanse/r1/assets/master/poi14_sever_source_rgba.png",
+        "labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_capture_index.json",
+        "labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_contact_sheet_1280x720.png"
       ],
       "art_source": "REUSED_EXISTING_SKILL_SOURCE_poison14_cleanse/r1_NO_RECOLOR_OR_NEW_ART",
-      "review_note": "Shared receipt-gated Factory scene. This catalog row does not transfer the source LAB or owner gate to its new adapter. Native capture uses real MapBattle V2 fixtures; contact/status remains hidden until the matching receipt. PvE HOLD."
+      "review_note": "Shared receipt-gated Factory scene. This catalog row does not transfer the source LAB or owner gate to its new adapter. Native capture uses real MapBattle V2 fixtures; contact/status remains hidden until the matching receipt. PvE HOLD. Native candidate-event capture: 16 skills / 80 accepted MapBattle events / 20 separate fixture setup receipts / zero synthetic events; full H.264 decode PASS. Owner review pending; PvE HOLD."
     },
     {
       "id": "tmb.skill.poison.duoc_doc.active_04.human",
@@ -2092,10 +2118,12 @@
         "labs/combat_lab/poison15_hoa_doc_tan/r1/assets/poi15_mark_08.png",
         "labs/combat_lab/poison15_hoa_doc_tan/r1/assets/master/poi15_charge_master_rgba.png",
         "labs/combat_lab/poison15_hoa_doc_tan/r1/assets/master/poi15_field_master_rgba.png",
-        "labs/combat_lab/poison15_hoa_doc_tan/r1/assets/master/poi15_mark_master_rgba.png"
+        "labs/combat_lab/poison15_hoa_doc_tan/r1/assets/master/poi15_mark_master_rgba.png",
+        "labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_capture_index.json",
+        "labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_contact_sheet_1280x720.png"
       ],
       "art_source": "REUSED_EXISTING_SKILL_SOURCE_poison15_hoa_doc_tan/r1_NO_RECOLOR_OR_NEW_ART",
-      "review_note": "Shared receipt-gated Factory scene. This catalog row does not transfer the source LAB or owner gate to its new adapter. Native capture uses real MapBattle V2 fixtures; contact/status remains hidden until the matching receipt. PvE HOLD."
+      "review_note": "Shared receipt-gated Factory scene. This catalog row does not transfer the source LAB or owner gate to its new adapter. Native capture uses real MapBattle V2 fixtures; contact/status remains hidden until the matching receipt. PvE HOLD. Native candidate-event capture: 16 skills / 80 accepted MapBattle events / 20 separate fixture setup receipts / zero synthetic events; full H.264 decode PASS. Owner review pending; PvE HOLD."
     },
     {
       "id": "tmb.skill.poison.duoc_doc.ultimate.human",
@@ -2129,10 +2157,12 @@
         "labs/combat_lab/poison16_van_linh_giai_ach/r2/assets/master/poi16_r2_herb_master_rgba.png",
         "labs/combat_lab/poison16_van_linh_giai_ach/r2/assets/master/poi16_r2_seal_master_rgba.png",
         "labs/combat_lab/poison16_van_linh_giai_ach/r2/assets/master/poi16_r2_seed_master_rgba.png",
-        "labs/combat_lab/poison16_van_linh_giai_ach/r2/assets/master/poi16_r2_stream_master_rgba.png"
+        "labs/combat_lab/poison16_van_linh_giai_ach/r2/assets/master/poi16_r2_stream_master_rgba.png",
+        "labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_capture_index.json",
+        "labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_contact_sheet_1280x720.png"
       ],
       "art_source": "REUSED_EXISTING_SKILL_SOURCE_poison16_van_linh_giai_ach/r2_NO_RECOLOR_OR_NEW_ART",
-      "review_note": "Shared receipt-gated Factory scene. This catalog row does not transfer the source LAB or owner gate to its new adapter. Native capture uses real MapBattle V2 fixtures; contact/status remains hidden until the matching receipt. PvE HOLD."
+      "review_note": "Shared receipt-gated Factory scene. This catalog row does not transfer the source LAB or owner gate to its new adapter. Native capture uses real MapBattle V2 fixtures; contact/status remains hidden until the matching receipt. PvE HOLD. Native candidate-event capture: 16 skills / 80 accepted MapBattle events / 20 separate fixture setup receipts / zero synthetic events; full H.264 decode PASS. Owner review pending; PvE HOLD."
     },
     {
       "id": "tmb.skill.poison.mobility.human",
@@ -2164,10 +2194,12 @@
         "labs/combat_lab/poison17_yem_anh_bo/r1/assets/master/poi17_footprint_master_rgba.png",
         "labs/combat_lab/poison17_yem_anh_bo/r1/assets/master/poi17_gather_master_rgba.png",
         "labs/combat_lab/poison17_yem_anh_bo/r1/assets/master/poi17_landing_master_rgba.png",
-        "labs/combat_lab/poison17_yem_anh_bo/r1/assets/master/poi17_stride_master_rgba.png"
+        "labs/combat_lab/poison17_yem_anh_bo/r1/assets/master/poi17_stride_master_rgba.png",
+        "labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_capture_index.json",
+        "labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_contact_sheet_1280x720.png"
       ],
       "art_source": "REUSED_EXISTING_SKILL_SOURCE_poison17_yem_anh_bo/r1_NO_RECOLOR_OR_NEW_ART",
-      "review_note": "Shared receipt-gated Factory scene. This catalog row does not transfer the source LAB or owner gate to its new adapter. Native capture uses real MapBattle V2 fixtures; contact/status remains hidden until the matching receipt. PvE HOLD."
+      "review_note": "Shared receipt-gated Factory scene. This catalog row does not transfer the source LAB or owner gate to its new adapter. Native capture uses real MapBattle V2 fixtures; contact/status remains hidden until the matching receipt. PvE HOLD. Native candidate-event capture: 16 skills / 80 accepted MapBattle events / 20 separate fixture setup receipts / zero synthetic events; full H.264 decode PASS. Owner review pending; PvE HOLD."
     }
   ],
   "updated_at": "2026-11-25"

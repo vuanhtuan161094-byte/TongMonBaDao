@@ -10293,9 +10293,9 @@
       "source_revision": "poison_basic_human_v2",
       "source_lab_visual_status": "GODOT_V4_TECH_PASS_V3_1_PROVISIONAL_USE_POLISH_BACKLOG",
       "source_owner_gate": "OWNER_PROVISIONAL_ACCEPTED_NOT_FINAL",
-      "native_status": "NATIVE_PENDING",
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
       "native_ready": false,
-      "owner_status": "OWNER_VISUAL_PENDING_FACTORY_ADAPTER",
+      "owner_status": "OWNER_VISUAL_PENDING",
       "motion_status": "SOURCE_FRAME_SEQUENCE_IN_SHARED_RENDERER; CONTINUOUS_STYLE_REVIEW_PENDING",
       "source_batch_manifest": "res://labs/combat_lab/poison_factory_batch1_20261125/manifest.json",
       "receipt_manifest": {
@@ -10312,7 +10312,7 @@
         ]
       },
       "native_batch": "poison",
-      "review_note": "Factory candidate reuses poison_basic_human_v2 byte-for-byte; original LAB/owner state is preserved in source metadata. AS62 and the canonical Human catalog supply scale and mechanic data. Contact and poison state require the exact MapBattle receipt; only captured actor status-stack expiry is used for poison duration. Factory adapter owner review and native capture are pending; PvE HOLD.",
+      "review_note": "Factory candidate reuses poison_basic_human_v2 byte-for-byte; original LAB/owner state is preserved in source metadata. AS62 and the canonical Human catalog supply scale and mechanic data. Contact and poison state require the exact MapBattle receipt; only captured actor status-stack expiry is used for poison duration. Factory adapter native capture passed; owner visual review pending; PvE HOLD. Native 1280x720/20 FPS H.264 capture passed full decode; 1 real candidate event(s) accepted, with no synthetic events. Native phase samples and receipt trace are linked in the batch index/contact sheet. Owner review remains pending; PvE HOLD.",
       "source_paths": [
         "data/combat/v63_human_combat_catalog.json",
         "labs/combat_lab/vfx_factory/registry.json",
@@ -10325,8 +10325,13 @@
         "labs/combat_lab/poison_basic_human_v2/doc_cham_thuong_thuc.gd",
         "labs/combat_lab/poison_basic_human_v2/assets/atlas/poison_basic_charge_06_rgba.png",
         "labs/combat_lab/poison_basic_human_v2/assets/atlas/poison_basic_flight_08_rgba.png",
-        "labs/combat_lab/poison_basic_human_v2/assets/atlas/poison_basic_contact_08_rgba.png"
-      ]
+        "labs/combat_lab/poison_basic_human_v2/assets/atlas/poison_basic_contact_08_rgba.png",
+        "labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_capture_index.json",
+        "labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_contact_sheet_1280x720.png"
+      ],
+      "native_event_status": "REAL_MAPBATTLE_V2_FIXTURE; ACCEPTED=1; SYNTHETIC=0; EVENTS=hit",
+      "native_index": "res://labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_capture_index.json",
+      "native_contact_sheet": "res://labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_contact_sheet_1280x720.png"
     },
     {
       "skill_id": "tmb.skill.poison.co_doc.active_01.human",
@@ -10498,9 +10503,9 @@
       "source_revision": "poison03/fu_cot_co",
       "source_lab_visual_status": "LAB_APPROVED_VISUAL_BASELINE",
       "source_owner_gate": "OWNER_VISUAL_APPROVED",
-      "native_status": "NATIVE_PENDING",
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
       "native_ready": false,
-      "owner_status": "OWNER_VISUAL_PENDING_FACTORY_ADAPTER",
+      "owner_status": "OWNER_VISUAL_PENDING",
       "motion_status": "SOURCE_FRAME_SEQUENCE_IN_SHARED_RENDERER; CONTINUOUS_STYLE_REVIEW_PENDING",
       "source_batch_manifest": "res://labs/combat_lab/poison_factory_batch1_20261125/manifest.json",
       "receipt_manifest": {
@@ -10538,7 +10543,7 @@
         ]
       },
       "native_batch": "poison",
-      "review_note": "Factory candidate reuses poison03/fu_cot_co byte-for-byte; original LAB/owner state is preserved in source metadata. AS62 and the canonical Human catalog supply scale and mechanic data. Contact and poison state require the exact MapBattle receipt; only captured actor status-stack expiry is used for poison duration. Factory adapter owner review and native capture are pending; PvE HOLD.",
+      "review_note": "Factory candidate reuses poison03/fu_cot_co byte-for-byte; original LAB/owner state is preserved in source metadata. AS62 and the canonical Human catalog supply scale and mechanic data. Contact and poison state require the exact MapBattle receipt; only captured actor status-stack expiry is used for poison duration. Factory adapter native capture passed; owner visual review pending; PvE HOLD. Native 1280x720/20 FPS H.264 capture passed full decode; 4 real candidate event(s) accepted, with no synthetic events. Native phase samples and receipt trace are linked in the batch index/contact sheet. Owner review remains pending; PvE HOLD.",
       "source_paths": [
         "data/combat/v63_human_combat_catalog.json",
         "labs/combat_lab/vfx_factory/registry.json",
@@ -10550,8 +10555,13 @@
         "labs/combat_lab/poison03/fu_cot_co.tscn",
         "labs/combat_lab/poison03/fu_cot_co.gd",
         "labs/combat_lab/poison03/assets/fu_cot_bone_seal.svg",
-        "labs/combat_lab/poison03/assets/fu_cot_gu_master.svg"
-      ]
+        "labs/combat_lab/poison03/assets/fu_cot_gu_master.svg",
+        "labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_capture_index.json",
+        "labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_contact_sheet_1280x720.png"
+      ],
+      "native_event_status": "REAL_MAPBATTLE_V2_FIXTURE; ACCEPTED=4; SYNTHETIC=0; EVENTS=skill_cast,skill_release,status_applied,v63_skill_hit",
+      "native_index": "res://labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_capture_index.json",
+      "native_contact_sheet": "res://labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_contact_sheet_1280x720.png"
     },
     {
       "skill_id": "tmb.skill.poison.co_doc.active_02.human",
@@ -10940,9 +10950,9 @@
       "source_revision": "poison02/xa_anh_source_vl_remake",
       "source_lab_visual_status": "LAB_APPROVED_CHARGE_POLISH_PENDING",
       "source_owner_gate": "OWNER_VISUAL_APPROVED",
-      "native_status": "NATIVE_PENDING",
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
       "native_ready": false,
-      "owner_status": "OWNER_VISUAL_PENDING_FACTORY_ADAPTER",
+      "owner_status": "OWNER_VISUAL_PENDING",
       "motion_status": "SOURCE_FRAME_SEQUENCE_IN_SHARED_RENDERER; CONTINUOUS_STYLE_REVIEW_PENDING",
       "source_batch_manifest": "res://labs/combat_lab/poison_factory_batch1_20261125/manifest.json",
       "receipt_manifest": {
@@ -10980,7 +10990,7 @@
         ]
       },
       "native_batch": "poison",
-      "review_note": "Factory candidate reuses poison02/xa_anh_source_vl_remake byte-for-byte; original LAB/owner state is preserved in source metadata. AS62 and the canonical Human catalog supply scale and mechanic data. Contact and poison state require the exact MapBattle receipt; only captured actor status-stack expiry is used for poison duration. Factory adapter owner review and native capture are pending; PvE HOLD.",
+      "review_note": "Factory candidate reuses poison02/xa_anh_source_vl_remake byte-for-byte; original LAB/owner state is preserved in source metadata. AS62 and the canonical Human catalog supply scale and mechanic data. Contact and poison state require the exact MapBattle receipt; only captured actor status-stack expiry is used for poison duration. Factory adapter native capture passed; owner visual review pending; PvE HOLD. Native 1280x720/20 FPS H.264 capture passed full decode; 4 real candidate event(s) accepted, with no synthetic events. Native phase samples and receipt trace are linked in the batch index/contact sheet. Owner review remains pending; PvE HOLD.",
       "source_paths": [
         "data/combat/v63_human_combat_catalog.json",
         "labs/combat_lab/vfx_factory/registry.json",
@@ -10994,8 +11004,13 @@
         "labs/combat_lab/poison02/assets/serpent-bind-back-4pose.webp",
         "labs/combat_lab/poison02/assets/serpent-flight-atlas.webp",
         "labs/combat_lab/poison02/assets/serpent-bind-front-4pose.webp",
-        "labs/combat_lab/poison02/assets/serpent-head.webp"
-      ]
+        "labs/combat_lab/poison02/assets/serpent-head.webp",
+        "labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_capture_index.json",
+        "labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_contact_sheet_1280x720.png"
+      ],
+      "native_event_status": "REAL_MAPBATTLE_V2_FIXTURE; ACCEPTED=4; SYNTHETIC=0; EVENTS=skill_cast,skill_release,status_applied,v63_skill_hit",
+      "native_index": "res://labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_capture_index.json",
+      "native_contact_sheet": "res://labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_contact_sheet_1280x720.png"
     },
     {
       "skill_id": "tmb.skill.poison.co_doc.active_03.human",
@@ -11200,9 +11215,9 @@
       "source_revision": "poison04/co_vu_me_tung",
       "source_lab_visual_status": "LAB_APPROVED_VISUAL_BASELINE",
       "source_owner_gate": "OWNER_VISUAL_APPROVED",
-      "native_status": "NATIVE_PENDING",
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
       "native_ready": false,
-      "owner_status": "OWNER_VISUAL_PENDING_FACTORY_ADAPTER",
+      "owner_status": "OWNER_VISUAL_PENDING",
       "motion_status": "SOURCE_FRAME_SEQUENCE_IN_SHARED_RENDERER; CONTINUOUS_STYLE_REVIEW_PENDING",
       "source_batch_manifest": "res://labs/combat_lab/poison_factory_batch1_20261125/manifest.json",
       "receipt_manifest": {
@@ -11240,7 +11255,7 @@
         ]
       },
       "native_batch": "poison",
-      "review_note": "Factory candidate reuses poison04/co_vu_me_tung byte-for-byte; original LAB/owner state is preserved in source metadata. AS62 and the canonical Human catalog supply scale and mechanic data. Contact and poison state require the exact MapBattle receipt; only captured actor status-stack expiry is used for poison duration. Factory adapter owner review and native capture are pending; PvE HOLD.",
+      "review_note": "Factory candidate reuses poison04/co_vu_me_tung byte-for-byte; original LAB/owner state is preserved in source metadata. AS62 and the canonical Human catalog supply scale and mechanic data. Contact and poison state require the exact MapBattle receipt; only captured actor status-stack expiry is used for poison duration. Factory adapter native capture passed; owner visual review pending; PvE HOLD. Native 1280x720/20 FPS H.264 capture passed full decode; 8 real candidate event(s) accepted, with no synthetic events. Native phase samples and receipt trace are linked in the batch index/contact sheet. Owner review remains pending; PvE HOLD.",
       "source_paths": [
         "data/combat/v63_human_combat_catalog.json",
         "labs/combat_lab/vfx_factory/registry.json",
@@ -11253,8 +11268,13 @@
         "labs/combat_lab/poison04/co_vu_me_tung.gd",
         "labs/combat_lab/poison04/assets/co_vu_smoke_tendril.svg",
         "labs/combat_lab/poison04/assets/co_vu_painted_cloud.svg",
-        "labs/combat_lab/poison04/assets/co_vu_gu_moth.svg"
-      ]
+        "labs/combat_lab/poison04/assets/co_vu_gu_moth.svg",
+        "labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_capture_index.json",
+        "labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_contact_sheet_1280x720.png"
+      ],
+      "native_event_status": "REAL_MAPBATTLE_V2_FIXTURE; ACCEPTED=8; SYNTHETIC=0; EVENTS=skill_cast,skill_release,status_applied,v63_skill_hit",
+      "native_index": "res://labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_capture_index.json",
+      "native_contact_sheet": "res://labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_contact_sheet_1280x720.png"
     },
     {
       "skill_id": "tmb.skill.poison.co_doc.active_04.human",
@@ -11573,9 +11593,9 @@
       "source_revision": "poison05/remake_r6",
       "source_lab_visual_status": "GODOT_LAB_PASS_ART_PENDING",
       "source_owner_gate": "OWNER_VISUAL_PENDING",
-      "native_status": "NATIVE_PENDING",
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
       "native_ready": false,
-      "owner_status": "OWNER_VISUAL_PENDING_FACTORY_ADAPTER",
+      "owner_status": "OWNER_VISUAL_PENDING",
       "motion_status": "SOURCE_FRAME_SEQUENCE_IN_SHARED_RENDERER; CONTINUOUS_STYLE_REVIEW_PENDING",
       "source_batch_manifest": "res://labs/combat_lab/poison_factory_batch1_20261125/manifest.json",
       "receipt_manifest": {
@@ -11613,7 +11633,7 @@
         ]
       },
       "native_batch": "poison",
-      "review_note": "Factory candidate reuses poison05/remake_r6 byte-for-byte; original LAB/owner state is preserved in source metadata. AS62 and the canonical Human catalog supply scale and mechanic data. Contact and poison state require the exact MapBattle receipt; only captured actor status-stack expiry is used for poison duration. Factory adapter owner review and native capture are pending; PvE HOLD.",
+      "review_note": "Factory candidate reuses poison05/remake_r6 byte-for-byte; original LAB/owner state is preserved in source metadata. AS62 and the canonical Human catalog supply scale and mechanic data. Contact and poison state require the exact MapBattle receipt; only captured actor status-stack expiry is used for poison duration. Factory adapter native capture passed; owner visual review pending; PvE HOLD. Native 1280x720/20 FPS H.264 capture passed full decode; 8 real candidate event(s) accepted, with no synthetic events. Native phase samples and receipt trace are linked in the batch index/contact sheet. Owner review remains pending; PvE HOLD.",
       "source_paths": [
         "data/combat/v63_human_combat_catalog.json",
         "labs/combat_lab/vfx_factory/registry.json",
@@ -11656,8 +11676,13 @@
         "labs/combat_lab/poison05/remake_r6/assets/gu_09.svg",
         "labs/combat_lab/poison05/remake_r6/assets/gu_10.svg",
         "labs/combat_lab/poison05/remake_r6/assets/gu_11.svg",
-        "labs/combat_lab/poison05/remake_r6/assets/immortal_valley.svg"
-      ]
+        "labs/combat_lab/poison05/remake_r6/assets/immortal_valley.svg",
+        "labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_capture_index.json",
+        "labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_contact_sheet_1280x720.png"
+      ],
+      "native_event_status": "REAL_MAPBATTLE_V2_FIXTURE; ACCEPTED=8; SYNTHETIC=0; EVENTS=skill_cast,skill_release,status_applied,v63_skill_hit",
+      "native_index": "res://labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_capture_index.json",
+      "native_contact_sheet": "res://labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_contact_sheet_1280x720.png"
     },
     {
       "skill_id": "tmb.skill.poison.co_doc.ultimate.human",
@@ -12438,9 +12463,9 @@
       "source_revision": "poison06/r11_candidate",
       "source_lab_visual_status": "GODOT_LAB_PASS_ART_PENDING",
       "source_owner_gate": "OWNER_VISUAL_PENDING",
-      "native_status": "NATIVE_PENDING",
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
       "native_ready": false,
-      "owner_status": "OWNER_VISUAL_PENDING_FACTORY_ADAPTER",
+      "owner_status": "OWNER_VISUAL_PENDING",
       "motion_status": "SOURCE_FRAME_SEQUENCE_IN_SHARED_RENDERER; CONTINUOUS_STYLE_REVIEW_PENDING",
       "source_batch_manifest": "res://labs/combat_lab/poison_factory_batch1_20261125/manifest.json",
       "receipt_manifest": {
@@ -12478,7 +12503,7 @@
         ]
       },
       "native_batch": "poison",
-      "review_note": "Factory candidate reuses poison06/r11_candidate byte-for-byte; original LAB/owner state is preserved in source metadata. AS62 and the canonical Human catalog supply scale and mechanic data. Contact and poison state require the exact MapBattle receipt; only captured actor status-stack expiry is used for poison duration. Factory adapter owner review and native capture are pending; PvE HOLD.",
+      "review_note": "Factory candidate reuses poison06/r11_candidate byte-for-byte; original LAB/owner state is preserved in source metadata. AS62 and the canonical Human catalog supply scale and mechanic data. Contact and poison state require the exact MapBattle receipt; only captured actor status-stack expiry is used for poison duration. Factory adapter native capture passed; owner visual review pending; PvE HOLD. Native 1280x720/20 FPS H.264 capture passed full decode; 8 real candidate event(s) accepted, with no synthetic events. Native phase samples and receipt trace are linked in the batch index/contact sheet. Owner review remains pending; PvE HOLD.",
       "source_paths": [
         "data/combat/v63_human_combat_catalog.json",
         "labs/combat_lab/vfx_factory/registry.json",
@@ -12503,8 +12528,13 @@
         "labs/combat_lab/poison06/assets/abyss_gu_4.svg",
         "labs/combat_lab/poison06/assets/abyss_gu_5.svg",
         "labs/combat_lab/poison06/assets/abyss_gu_6.svg",
-        "labs/combat_lab/poison06/assets/abyss_gu_7.svg"
-      ]
+        "labs/combat_lab/poison06/assets/abyss_gu_7.svg",
+        "labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_capture_index.json",
+        "labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_contact_sheet_1280x720.png"
+      ],
+      "native_event_status": "REAL_MAPBATTLE_V2_FIXTURE; ACCEPTED=8; SYNTHETIC=0; EVENTS=skill_cast,skill_release,status_applied,v63_skill_hit",
+      "native_index": "res://labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_capture_index.json",
+      "native_contact_sheet": "res://labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_contact_sheet_1280x720.png"
     },
     {
       "skill_id": "tmb.skill.poison.doc_cham.active_01.human",
@@ -12515,9 +12545,9 @@
       "effect": "damage",
       "shape": "single_target",
       "target_limit": 1,
-      "mechanic_template": "damage",
+      "mechanic_template": "projectile",
       "mechanic_templates": [
-        "damage"
+        "projectile"
       ],
       "target_mode": "single_target",
       "preview_target_kind": "monster",
@@ -12965,9 +12995,9 @@
       "source_revision": "poison07/r7_painted",
       "source_lab_visual_status": "OWNER_VISUAL_APPROVED_R7",
       "source_owner_gate": "OWNER_VISUAL_APPROVED",
-      "native_status": "NATIVE_PENDING",
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
       "native_ready": false,
-      "owner_status": "OWNER_VISUAL_PENDING_FACTORY_ADAPTER",
+      "owner_status": "OWNER_VISUAL_PENDING",
       "motion_status": "SOURCE_FRAME_SEQUENCE_IN_SHARED_RENDERER; CONTINUOUS_STYLE_REVIEW_PENDING",
       "source_batch_manifest": "res://labs/combat_lab/poison_factory_batch1_20261125/manifest.json",
       "receipt_manifest": {
@@ -12998,7 +13028,7 @@
         ]
       },
       "native_batch": "poison",
-      "review_note": "Factory candidate reuses poison07/r7_painted byte-for-byte; original LAB/owner state is preserved in source metadata. AS62 and the canonical Human catalog supply scale and mechanic data. Contact and poison state require the exact MapBattle receipt; only captured actor status-stack expiry is used for poison duration. Factory adapter owner review and native capture are pending; PvE HOLD.",
+      "review_note": "Factory candidate reuses poison07/r7_painted byte-for-byte; original LAB/owner state is preserved in source metadata. AS62 and the canonical Human catalog supply scale and mechanic data. Contact and poison state require the exact MapBattle receipt; only captured actor status-stack expiry is used for poison duration. Factory adapter native capture passed; owner visual review pending; PvE HOLD. Native 1280x720/20 FPS H.264 capture passed full decode; 3 real candidate event(s) accepted, with no synthetic events. Native phase samples and receipt trace are linked in the batch index/contact sheet. Owner review remains pending; PvE HOLD.",
       "source_paths": [
         "data/combat/v63_human_combat_catalog.json",
         "labs/combat_lab/vfx_factory/registry.json",
@@ -13014,8 +13044,13 @@
         "labs/combat_lab/poison07/r7_painted/assets/painted_puncture_r7_12.png",
         "labs/combat_lab/poison07/r7_painted/assets/master/needle_painted_source.webp",
         "labs/combat_lab/poison07/r7_painted/assets/master/palm_painted_source.webp",
-        "labs/combat_lab/poison07/r7_painted/assets/master/puncture_painted_source.webp"
-      ]
+        "labs/combat_lab/poison07/r7_painted/assets/master/puncture_painted_source.webp",
+        "labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_capture_index.json",
+        "labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_contact_sheet_1280x720.png"
+      ],
+      "native_event_status": "REAL_MAPBATTLE_V2_FIXTURE; ACCEPTED=3; SYNTHETIC=0; EVENTS=skill_cast,skill_release,v63_skill_hit",
+      "native_index": "res://labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_capture_index.json",
+      "native_contact_sheet": "res://labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_contact_sheet_1280x720.png"
     },
     {
       "skill_id": "tmb.skill.poison.doc_cham.active_02.human",
@@ -13683,9 +13718,9 @@
       "source_revision": "poison08/r4_painted",
       "source_lab_visual_status": "OWNER_PROVISIONAL_R4_POLISH_BACKLOG",
       "source_owner_gate": "OWNER_PROVISIONAL_CONTINUE",
-      "native_status": "NATIVE_PENDING",
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
       "native_ready": false,
-      "owner_status": "OWNER_VISUAL_PENDING_FACTORY_ADAPTER",
+      "owner_status": "OWNER_VISUAL_PENDING",
       "motion_status": "SOURCE_FRAME_SEQUENCE_IN_SHARED_RENDERER; CONTINUOUS_STYLE_REVIEW_PENDING",
       "source_batch_manifest": "res://labs/combat_lab/poison_factory_batch1_20261125/manifest.json",
       "receipt_manifest": {
@@ -13723,7 +13758,7 @@
         ]
       },
       "native_batch": "poison",
-      "review_note": "Factory candidate reuses poison08/r4_painted byte-for-byte; original LAB/owner state is preserved in source metadata. AS62 and the canonical Human catalog supply scale and mechanic data. Contact and poison state require the exact MapBattle receipt; only captured actor status-stack expiry is used for poison duration. Factory adapter owner review and native capture are pending; PvE HOLD.",
+      "review_note": "Factory candidate reuses poison08/r4_painted byte-for-byte; original LAB/owner state is preserved in source metadata. AS62 and the canonical Human catalog supply scale and mechanic data. Contact and poison state require the exact MapBattle receipt; only captured actor status-stack expiry is used for poison duration. Factory adapter native capture passed; owner visual review pending; PvE HOLD. Native 1280x720/20 FPS H.264 capture passed full decode; 4 real candidate event(s) accepted, with no synthetic events. Native phase samples and receipt trace are linked in the batch index/contact sheet. Owner review remains pending; PvE HOLD.",
       "source_paths": [
         "data/combat/v63_human_combat_catalog.json",
         "labs/combat_lab/vfx_factory/registry.json",
@@ -13738,8 +13773,13 @@
         "labs/combat_lab/poison08/r4_painted/assets/living_barb_r4_12.png",
         "labs/combat_lab/poison08/r4_painted/assets/bite_contact_r4_08.png",
         "labs/combat_lab/poison08/r4_painted/assets/vein_mark_r4_12.png",
-        "labs/combat_lab/poison08/r4_painted/assets/master/toxin_barb_painted.webp"
-      ]
+        "labs/combat_lab/poison08/r4_painted/assets/master/toxin_barb_painted.webp",
+        "labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_capture_index.json",
+        "labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_contact_sheet_1280x720.png"
+      ],
+      "native_event_status": "REAL_MAPBATTLE_V2_FIXTURE; ACCEPTED=4; SYNTHETIC=0; EVENTS=skill_cast,skill_release,status_applied,v63_skill_hit",
+      "native_index": "res://labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_capture_index.json",
+      "native_contact_sheet": "res://labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_contact_sheet_1280x720.png"
     },
     {
       "skill_id": "tmb.skill.poison.doc_cham.active_03.human",
@@ -14443,9 +14483,9 @@
       "source_revision": "poison09/r1_painted",
       "source_lab_visual_status": "OWNER_VISUAL_APPROVED_R1",
       "source_owner_gate": "OWNER_VISUAL_APPROVED",
-      "native_status": "NATIVE_PENDING",
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
       "native_ready": false,
-      "owner_status": "OWNER_VISUAL_PENDING_FACTORY_ADAPTER",
+      "owner_status": "OWNER_VISUAL_PENDING",
       "motion_status": "SOURCE_FRAME_SEQUENCE_IN_SHARED_RENDERER; CONTINUOUS_STYLE_REVIEW_PENDING",
       "source_batch_manifest": "res://labs/combat_lab/poison_factory_batch1_20261125/manifest.json",
       "receipt_manifest": {
@@ -14483,7 +14523,7 @@
         ]
       },
       "native_batch": "poison",
-      "review_note": "Factory candidate reuses poison09/r1_painted byte-for-byte; original LAB/owner state is preserved in source metadata. AS62 and the canonical Human catalog supply scale and mechanic data. Contact and poison state require the exact MapBattle receipt; only captured actor status-stack expiry is used for poison duration. Factory adapter owner review and native capture are pending; PvE HOLD.",
+      "review_note": "Factory candidate reuses poison09/r1_painted byte-for-byte; original LAB/owner state is preserved in source metadata. AS62 and the canonical Human catalog supply scale and mechanic data. Contact and poison state require the exact MapBattle receipt; only captured actor status-stack expiry is used for poison duration. Factory adapter native capture passed; owner visual review pending; PvE HOLD. Native 1280x720/20 FPS H.264 capture passed full decode; 4 real candidate event(s) accepted, with no synthetic events. Native phase samples and receipt trace are linked in the batch index/contact sheet. Owner review remains pending; PvE HOLD.",
       "source_paths": [
         "data/combat/v63_human_combat_catalog.json",
         "labs/combat_lab/vfx_factory/registry.json",
@@ -14501,8 +14541,13 @@
         "labs/combat_lab/poison09/r1_painted/assets/master/burst_contact_master.webp",
         "labs/combat_lab/poison09/r1_painted/assets/master/fanlotus_charge_master.webp",
         "labs/combat_lab/poison09/r1_painted/assets/master/poison_needle_master.webp",
-        "labs/combat_lab/poison09/r1_painted/assets/master/sixsecond_toxin_master.webp"
-      ]
+        "labs/combat_lab/poison09/r1_painted/assets/master/sixsecond_toxin_master.webp",
+        "labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_capture_index.json",
+        "labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_contact_sheet_1280x720.png"
+      ],
+      "native_event_status": "REAL_MAPBATTLE_V2_FIXTURE; ACCEPTED=4; SYNTHETIC=0; EVENTS=skill_cast,skill_release,status_applied,v63_skill_hit",
+      "native_index": "res://labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_capture_index.json",
+      "native_contact_sheet": "res://labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_contact_sheet_1280x720.png"
     },
     {
       "skill_id": "tmb.skill.poison.doc_cham.active_04.human",
@@ -15157,9 +15202,9 @@
       "source_revision": "poison10/r2_remake",
       "source_lab_visual_status": "OWNER_PROVISIONAL_R2_CONTINUE",
       "source_owner_gate": "OWNER_PROVISIONAL_CONTINUE",
-      "native_status": "NATIVE_PENDING",
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
       "native_ready": false,
-      "owner_status": "OWNER_VISUAL_PENDING_FACTORY_ADAPTER",
+      "owner_status": "OWNER_VISUAL_PENDING",
       "motion_status": "SOURCE_FRAME_SEQUENCE_IN_SHARED_RENDERER; CONTINUOUS_STYLE_REVIEW_PENDING",
       "source_batch_manifest": "res://labs/combat_lab/poison_factory_batch1_20261125/manifest.json",
       "receipt_manifest": {
@@ -15197,7 +15242,7 @@
         ]
       },
       "native_batch": "poison",
-      "review_note": "Factory candidate reuses poison10/r2_remake byte-for-byte; original LAB/owner state is preserved in source metadata. AS62 and the canonical Human catalog supply scale and mechanic data. Contact and poison state require the exact MapBattle receipt; only captured actor status-stack expiry is used for poison duration. Factory adapter owner review and native capture are pending; PvE HOLD.",
+      "review_note": "Factory candidate reuses poison10/r2_remake byte-for-byte; original LAB/owner state is preserved in source metadata. AS62 and the canonical Human catalog supply scale and mechanic data. Contact and poison state require the exact MapBattle receipt; only captured actor status-stack expiry is used for poison duration. Factory adapter native capture passed; owner visual review pending; PvE HOLD. Native 1280x720/20 FPS H.264 capture passed full decode; 8 real candidate event(s) accepted, with no synthetic events. Native phase samples and receipt trace are linked in the batch index/contact sheet. Owner review remains pending; PvE HOLD.",
       "source_paths": [
         "data/combat/v63_human_combat_catalog.json",
         "labs/combat_lab/vfx_factory/registry.json",
@@ -15213,8 +15258,13 @@
         "labs/combat_lab/poison10/r2_remake/assets/poison10_r2_contact_08.png",
         "labs/combat_lab/poison10/r2_remake/assets/master/poi10_bloom_master.webp",
         "labs/combat_lab/poison10/r2_remake/assets/master/poi10_charge_master.webp",
-        "labs/combat_lab/poison10/r2_remake/assets/master/poi10_contact_master.webp"
-      ]
+        "labs/combat_lab/poison10/r2_remake/assets/master/poi10_contact_master.webp",
+        "labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_capture_index.json",
+        "labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_contact_sheet_1280x720.png"
+      ],
+      "native_event_status": "REAL_MAPBATTLE_V2_FIXTURE; ACCEPTED=8; SYNTHETIC=0; EVENTS=skill_cast,skill_release,status_applied,v63_skill_hit",
+      "native_index": "res://labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_capture_index.json",
+      "native_contact_sheet": "res://labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_contact_sheet_1280x720.png"
     },
     {
       "skill_id": "tmb.skill.poison.doc_cham.ultimate.human",
@@ -15931,9 +15981,9 @@
       "source_revision": "poison11/r1_original",
       "source_lab_visual_status": "OWNER_VISUAL_APPROVED_R9",
       "source_owner_gate": "OWNER_VISUAL_APPROVED",
-      "native_status": "NATIVE_PENDING",
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
       "native_ready": false,
-      "owner_status": "OWNER_VISUAL_PENDING_FACTORY_ADAPTER",
+      "owner_status": "OWNER_VISUAL_PENDING",
       "motion_status": "SOURCE_FRAME_SEQUENCE_IN_SHARED_RENDERER; CONTINUOUS_STYLE_REVIEW_PENDING",
       "source_batch_manifest": "res://labs/combat_lab/poison_factory_batch1_20261125/manifest.json",
       "receipt_manifest": {
@@ -15971,7 +16021,7 @@
         ]
       },
       "native_batch": "poison",
-      "review_note": "Factory candidate reuses poison11/r1_original byte-for-byte; original LAB/owner state is preserved in source metadata. AS62 and the canonical Human catalog supply scale and mechanic data. Contact and poison state require the exact MapBattle receipt; only captured actor status-stack expiry is used for poison duration. Factory adapter owner review and native capture are pending; PvE HOLD.",
+      "review_note": "Factory candidate reuses poison11/r1_original byte-for-byte; original LAB/owner state is preserved in source metadata. AS62 and the canonical Human catalog supply scale and mechanic data. Contact and poison state require the exact MapBattle receipt; only captured actor status-stack expiry is used for poison duration. Factory adapter native capture passed; owner visual review pending; PvE HOLD. Native 1280x720/20 FPS H.264 capture passed full decode; 8 real candidate event(s) accepted, with no synthetic events. Native phase samples and receipt trace are linked in the batch index/contact sheet. Owner review remains pending; PvE HOLD.",
       "source_paths": [
         "data/combat/v63_human_combat_catalog.json",
         "labs/combat_lab/vfx_factory/registry.json",
@@ -15989,8 +16039,13 @@
         "labs/combat_lab/poison11/r1_original/assets/master/heart_piercer_source.webp",
         "labs/combat_lab/poison11/r1_original/assets/master/heart_rupture_source.webp",
         "labs/combat_lab/poison11/r1_original/assets/master/heart_vortex_source.webp",
-        "labs/combat_lab/poison11/r1_original/assets/master/needle_crown_source.webp"
-      ]
+        "labs/combat_lab/poison11/r1_original/assets/master/needle_crown_source.webp",
+        "labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_capture_index.json",
+        "labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_contact_sheet_1280x720.png"
+      ],
+      "native_event_status": "REAL_MAPBATTLE_V2_FIXTURE; ACCEPTED=8; SYNTHETIC=0; EVENTS=skill_cast,skill_release,status_applied,v63_skill_hit",
+      "native_index": "res://labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_capture_index.json",
+      "native_contact_sheet": "res://labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_contact_sheet_1280x720.png"
     },
     {
       "skill_id": "tmb.skill.poison.duoc_doc.active_02.human",
@@ -16415,9 +16470,9 @@
       "source_revision": "poison13_heal_heart/r2",
       "source_lab_visual_status": "GODOT_V4_G35_TECH_PASS_R2_PROVISIONAL_KEEP",
       "source_owner_gate": "OWNER_PROVISIONAL_ACCEPTED_NOT_FINAL",
-      "native_status": "NATIVE_PENDING",
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
       "native_ready": false,
-      "owner_status": "OWNER_VISUAL_PENDING_FACTORY_ADAPTER",
+      "owner_status": "OWNER_VISUAL_PENDING",
       "motion_status": "SOURCE_FRAME_SEQUENCE_IN_SHARED_RENDERER; CONTINUOUS_STYLE_REVIEW_PENDING",
       "source_batch_manifest": "res://labs/combat_lab/poison_factory_batch1_20261125/manifest.json",
       "receipt_manifest": {
@@ -16448,7 +16503,7 @@
         ]
       },
       "native_batch": "poison",
-      "review_note": "Factory candidate reuses poison13_heal_heart/r2 byte-for-byte; original LAB/owner state is preserved in source metadata. AS62 and the canonical Human catalog supply scale and mechanic data. Contact and poison state require the exact MapBattle receipt; only captured actor status-stack expiry is used for poison duration. Factory adapter owner review and native capture are pending; PvE HOLD.",
+      "review_note": "Factory candidate reuses poison13_heal_heart/r2 byte-for-byte; original LAB/owner state is preserved in source metadata. AS62 and the canonical Human catalog supply scale and mechanic data. Contact and poison state require the exact MapBattle receipt; only captured actor status-stack expiry is used for poison duration. Factory adapter native capture passed; owner visual review pending; PvE HOLD. Native 1280x720/20 FPS H.264 capture passed full decode; 3 real candidate event(s) accepted, with no synthetic events. Native phase samples and receipt trace are linked in the batch index/contact sheet. Owner review remains pending; PvE HOLD.",
       "source_paths": [
         "data/combat/v63_human_combat_catalog.json",
         "labs/combat_lab/vfx_factory/registry.json",
@@ -16464,14 +16519,19 @@
         "labs/combat_lab/poison13_heal_heart/r2/assets/poi13_r2_aura_12.png",
         "labs/combat_lab/poison13_heal_heart/r2/assets/master/poi13_r2_aura_source_rgba.png",
         "labs/combat_lab/poison13_heal_heart/r2/assets/master/poi13_r2_charge_source_rgba.png",
-        "labs/combat_lab/poison13_heal_heart/r2/assets/master/poi13_r2_release_source_rgba.png"
+        "labs/combat_lab/poison13_heal_heart/r2/assets/master/poi13_r2_release_source_rgba.png",
+        "labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_capture_index.json",
+        "labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_contact_sheet_1280x720.png"
       ],
       "fixture_setup": {
         "skill_id": "tmb.skill.poison.doc_cham.active_02.human",
         "targets": [
           "ally_11"
         ]
-      }
+      },
+      "native_event_status": "REAL_MAPBATTLE_V2_FIXTURE; ACCEPTED=3; SYNTHETIC=0; EVENTS=skill_cast,skill_release,heal",
+      "native_index": "res://labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_capture_index.json",
+      "native_contact_sheet": "res://labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_contact_sheet_1280x720.png"
     },
     {
       "skill_id": "tmb.skill.poison.duoc_doc.active_03.human",
@@ -16897,9 +16957,9 @@
       "source_revision": "poison14_cleanse/r1",
       "source_lab_visual_status": "GODOT_V4_TECH_PASS_R1B_PROVISIONAL_KEEP",
       "source_owner_gate": "OWNER_PROVISIONAL_ACCEPTED_NOT_FINAL",
-      "native_status": "NATIVE_PENDING",
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
       "native_ready": false,
-      "owner_status": "OWNER_VISUAL_PENDING_FACTORY_ADAPTER",
+      "owner_status": "OWNER_VISUAL_PENDING",
       "motion_status": "SOURCE_FRAME_SEQUENCE_IN_SHARED_RENDERER; CONTINUOUS_STYLE_REVIEW_PENDING",
       "source_batch_manifest": "res://labs/combat_lab/poison_factory_batch1_20261125/manifest.json",
       "receipt_manifest": {
@@ -16930,7 +16990,7 @@
         ]
       },
       "native_batch": "poison",
-      "review_note": "Factory candidate reuses poison14_cleanse/r1 byte-for-byte; original LAB/owner state is preserved in source metadata. AS62 and the canonical Human catalog supply scale and mechanic data. Contact and poison state require the exact MapBattle receipt; only captured actor status-stack expiry is used for poison duration. Factory adapter owner review and native capture are pending; PvE HOLD.",
+      "review_note": "Factory candidate reuses poison14_cleanse/r1 byte-for-byte; original LAB/owner state is preserved in source metadata. AS62 and the canonical Human catalog supply scale and mechanic data. Contact and poison state require the exact MapBattle receipt; only captured actor status-stack expiry is used for poison duration. Factory adapter native capture passed; owner visual review pending; PvE HOLD. Native 1280x720/20 FPS H.264 capture passed full decode; 3 real candidate event(s) accepted, with no synthetic events. Native phase samples and receipt trace are linked in the batch index/contact sheet. Owner review remains pending; PvE HOLD.",
       "source_paths": [
         "data/combat/v63_human_combat_catalog.json",
         "labs/combat_lab/vfx_factory/registry.json",
@@ -16946,14 +17006,19 @@
         "labs/combat_lab/poison14_cleanse/r1/assets/poi14_purge_10.png",
         "labs/combat_lab/poison14_cleanse/r1/assets/master/poi14_charge_source_rgba.png",
         "labs/combat_lab/poison14_cleanse/r1/assets/master/poi14_purge_source_rgba.png",
-        "labs/combat_lab/poison14_cleanse/r1/assets/master/poi14_sever_source_rgba.png"
+        "labs/combat_lab/poison14_cleanse/r1/assets/master/poi14_sever_source_rgba.png",
+        "labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_capture_index.json",
+        "labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_contact_sheet_1280x720.png"
       ],
       "fixture_setup": {
         "skill_id": "tmb.skill.poison.doc_cham.active_02.human",
         "targets": [
           "ally_12"
         ]
-      }
+      },
+      "native_event_status": "REAL_MAPBATTLE_V2_FIXTURE; ACCEPTED=3; SYNTHETIC=0; EVENTS=skill_cast,skill_release,cleanse",
+      "native_index": "res://labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_capture_index.json",
+      "native_contact_sheet": "res://labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_contact_sheet_1280x720.png"
     },
     {
       "skill_id": "tmb.skill.poison.duoc_doc.active_04.human",
@@ -17554,9 +17619,9 @@
       "source_revision": "poison15_hoa_doc_tan/r1",
       "source_lab_visual_status": "GODOT_V4_G35_TECH_PASS_R1B_OWNER_ART_APPROVED",
       "source_owner_gate": "OWNER_VISUAL_APPROVED_R1B",
-      "native_status": "NATIVE_PENDING",
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
       "native_ready": false,
-      "owner_status": "OWNER_VISUAL_PENDING_FACTORY_ADAPTER",
+      "owner_status": "OWNER_VISUAL_PENDING",
       "motion_status": "SOURCE_FRAME_SEQUENCE_IN_SHARED_RENDERER; CONTINUOUS_STYLE_REVIEW_PENDING",
       "source_batch_manifest": "res://labs/combat_lab/poison_factory_batch1_20261125/manifest.json",
       "receipt_manifest": {
@@ -17594,7 +17659,7 @@
         ]
       },
       "native_batch": "poison",
-      "review_note": "Factory candidate reuses poison15_hoa_doc_tan/r1 byte-for-byte; original LAB/owner state is preserved in source metadata. AS62 and the canonical Human catalog supply scale and mechanic data. Contact and poison state require the exact MapBattle receipt; only captured actor status-stack expiry is used for poison duration. Factory adapter owner review and native capture are pending; PvE HOLD.",
+      "review_note": "Factory candidate reuses poison15_hoa_doc_tan/r1 byte-for-byte; original LAB/owner state is preserved in source metadata. AS62 and the canonical Human catalog supply scale and mechanic data. Contact and poison state require the exact MapBattle receipt; only captured actor status-stack expiry is used for poison duration. Factory adapter native capture passed; owner visual review pending; PvE HOLD. Native 1280x720/20 FPS H.264 capture passed full decode; 8 real candidate event(s) accepted, with no synthetic events. Native phase samples and receipt trace are linked in the batch index/contact sheet. Owner review remains pending; PvE HOLD.",
       "source_paths": [
         "data/combat/v63_human_combat_catalog.json",
         "labs/combat_lab/vfx_factory/registry.json",
@@ -17610,8 +17675,13 @@
         "labs/combat_lab/poison15_hoa_doc_tan/r1/assets/poi15_mark_08.png",
         "labs/combat_lab/poison15_hoa_doc_tan/r1/assets/master/poi15_charge_master_rgba.png",
         "labs/combat_lab/poison15_hoa_doc_tan/r1/assets/master/poi15_field_master_rgba.png",
-        "labs/combat_lab/poison15_hoa_doc_tan/r1/assets/master/poi15_mark_master_rgba.png"
-      ]
+        "labs/combat_lab/poison15_hoa_doc_tan/r1/assets/master/poi15_mark_master_rgba.png",
+        "labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_capture_index.json",
+        "labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_contact_sheet_1280x720.png"
+      ],
+      "native_event_status": "REAL_MAPBATTLE_V2_FIXTURE; ACCEPTED=8; SYNTHETIC=0; EVENTS=skill_cast,skill_release,status_applied,v63_skill_hit",
+      "native_index": "res://labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_capture_index.json",
+      "native_contact_sheet": "res://labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_contact_sheet_1280x720.png"
     },
     {
       "skill_id": "tmb.skill.poison.duoc_doc.ultimate.human",
@@ -18124,9 +18194,9 @@
       "source_revision": "poison16_van_linh_giai_ach/r2",
       "source_lab_visual_status": "GODOT_V4_G35_G36_TECH_PASS_R2D_PROVISIONAL_KEEP",
       "source_owner_gate": "OWNER_PROVISIONAL_ACCEPTED_R2D_POLISH_BACKLOG",
-      "native_status": "NATIVE_PENDING",
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
       "native_ready": false,
-      "owner_status": "OWNER_VISUAL_PENDING_FACTORY_ADAPTER",
+      "owner_status": "OWNER_VISUAL_PENDING",
       "motion_status": "SOURCE_FRAME_SEQUENCE_IN_SHARED_RENDERER; CONTINUOUS_STYLE_REVIEW_PENDING",
       "source_batch_manifest": "res://labs/combat_lab/poison_factory_batch1_20261125/manifest.json",
       "receipt_manifest": {
@@ -18157,7 +18227,7 @@
         ]
       },
       "native_batch": "poison",
-      "review_note": "Factory candidate reuses poison16_van_linh_giai_ach/r2 byte-for-byte; original LAB/owner state is preserved in source metadata. AS62 and the canonical Human catalog supply scale and mechanic data. Contact and poison state require the exact MapBattle receipt; only captured actor status-stack expiry is used for poison duration. Factory adapter owner review and native capture are pending; PvE HOLD.",
+      "review_note": "Factory candidate reuses poison16_van_linh_giai_ach/r2 byte-for-byte; original LAB/owner state is preserved in source metadata. AS62 and the canonical Human catalog supply scale and mechanic data. Contact and poison state require the exact MapBattle receipt; only captured actor status-stack expiry is used for poison duration. Factory adapter native capture passed; owner visual review pending; PvE HOLD. Native 1280x720/20 FPS H.264 capture passed full decode; 5 real candidate event(s) accepted, with no synthetic events. Native phase samples and receipt trace are linked in the batch index/contact sheet. Owner review remains pending; PvE HOLD.",
       "source_paths": [
         "data/combat/v63_human_combat_catalog.json",
         "labs/combat_lab/vfx_factory/registry.json",
@@ -18177,7 +18247,9 @@
         "labs/combat_lab/poison16_van_linh_giai_ach/r2/assets/master/poi16_r2_herb_master_rgba.png",
         "labs/combat_lab/poison16_van_linh_giai_ach/r2/assets/master/poi16_r2_seal_master_rgba.png",
         "labs/combat_lab/poison16_van_linh_giai_ach/r2/assets/master/poi16_r2_seed_master_rgba.png",
-        "labs/combat_lab/poison16_van_linh_giai_ach/r2/assets/master/poi16_r2_stream_master_rgba.png"
+        "labs/combat_lab/poison16_van_linh_giai_ach/r2/assets/master/poi16_r2_stream_master_rgba.png",
+        "labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_capture_index.json",
+        "labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_contact_sheet_1280x720.png"
       ],
       "fixture_setup": {
         "skill_id": "tmb.skill.poison.doc_cham.active_02.human",
@@ -18186,7 +18258,10 @@
           "poison_factory_ally_15_02",
           "poison_factory_ally_15_03"
         ]
-      }
+      },
+      "native_event_status": "REAL_MAPBATTLE_V2_FIXTURE; ACCEPTED=5; SYNTHETIC=0; EVENTS=skill_cast,skill_release,heal",
+      "native_index": "res://labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_capture_index.json",
+      "native_contact_sheet": "res://labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_contact_sheet_1280x720.png"
     },
     {
       "skill_id": "tmb.skill.poison.mobility.human",
@@ -18879,9 +18954,9 @@
       "source_revision": "poison17_yem_anh_bo/r1",
       "source_lab_visual_status": "GODOT_V4_G35_G36_TECH_PASS_POI17_R1_MOVING_SHADOW_STEP",
       "source_owner_gate": "OWNER_VISUAL_PENDING_R1_G37_SEMANTIC",
-      "native_status": "NATIVE_PENDING",
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
       "native_ready": false,
-      "owner_status": "OWNER_VISUAL_PENDING_FACTORY_ADAPTER",
+      "owner_status": "OWNER_VISUAL_PENDING",
       "motion_status": "SOURCE_FRAME_SEQUENCE_IN_SHARED_RENDERER; CONTINUOUS_STYLE_REVIEW_PENDING",
       "source_batch_manifest": "res://labs/combat_lab/poison_factory_batch1_20261125/manifest.json",
       "receipt_manifest": {
@@ -18912,7 +18987,7 @@
         ]
       },
       "native_batch": "poison",
-      "review_note": "Factory candidate reuses poison17_yem_anh_bo/r1 byte-for-byte; original LAB/owner state is preserved in source metadata. AS62 and the canonical Human catalog supply scale and mechanic data. Contact and poison state require the exact MapBattle receipt; only captured actor status-stack expiry is used for poison duration. Factory adapter owner review and native capture are pending; PvE HOLD.",
+      "review_note": "Factory candidate reuses poison17_yem_anh_bo/r1 byte-for-byte; original LAB/owner state is preserved in source metadata. AS62 and the canonical Human catalog supply scale and mechanic data. Contact and poison state require the exact MapBattle receipt; only captured actor status-stack expiry is used for poison duration. Factory adapter native capture passed; owner visual review pending; PvE HOLD. Native 1280x720/20 FPS H.264 capture passed full decode; 1 real candidate event(s) accepted, with no synthetic events. Native phase samples and receipt trace are linked in the batch index/contact sheet. Owner review remains pending; PvE HOLD.",
       "source_paths": [
         "data/combat/v63_human_combat_catalog.json",
         "labs/combat_lab/vfx_factory/registry.json",
@@ -18930,8 +19005,13 @@
         "labs/combat_lab/poison17_yem_anh_bo/r1/assets/master/poi17_footprint_master_rgba.png",
         "labs/combat_lab/poison17_yem_anh_bo/r1/assets/master/poi17_gather_master_rgba.png",
         "labs/combat_lab/poison17_yem_anh_bo/r1/assets/master/poi17_landing_master_rgba.png",
-        "labs/combat_lab/poison17_yem_anh_bo/r1/assets/master/poi17_stride_master_rgba.png"
-      ]
+        "labs/combat_lab/poison17_yem_anh_bo/r1/assets/master/poi17_stride_master_rgba.png",
+        "labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_capture_index.json",
+        "labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_contact_sheet_1280x720.png"
+      ],
+      "native_event_status": "REAL_MAPBATTLE_V2_FIXTURE; ACCEPTED=1; SYNTHETIC=0; EVENTS=v63_mobility",
+      "native_index": "res://labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_capture_index.json",
+      "native_contact_sheet": "res://labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_contact_sheet_1280x720.png"
     }
   ],
   "batch_status": {
@@ -18957,7 +19037,7 @@
       "source_status": "REUSED_COMMITTED_SOURCE_REVISIONS; FACTORY_ADAPTER_CANDIDATE",
       "source_eligible_skill_count": 16,
       "excluded_art_rework": "tmb.skill.poison.duoc_doc.active_01.human",
-      "native_import_capture": "NATIVE_PENDING",
+      "native_import_capture": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE; SKILLS=16; ACCEPTED_EVENTS=80; SETUP_RECEIPTS=20_SEPARATE; SYNTHETIC=0; OWNER=PENDING; PVE=HOLD",
       "owner_approval": "PENDING_FACTORY_ADAPTER_REVIEW",
       "pve": "HOLD"
     }
@@ -19043,12 +19123,12 @@
     },
     "poison": {
       "expected_count": 16,
-      "technical_status": "NATIVE_PENDING",
+      "technical_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
       "last_capture_index": "res://labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_capture_index.json",
       "video": "res://labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_native_1280x720.mp4",
       "contact_sheet": "res://labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_contact_sheet_1280x720.png",
-      "receipt_status": "PENDING_REAL_MAPBATTLE_V2_FIXTURE_CAPTURE; NO_SYNTHETIC_EVENTS",
-      "visual_review_status": "PENDING_1X_SPOT_CHECK",
+      "receipt_status": "REAL_MAPBATTLE_V2_FIXTURE_CAPTURE; SKILLS=16; ACCEPTED_EVENTS=80; SETUP_RECEIPTS=20_SEPARATE; SYNTHETIC=0; POISON_EXPIRY_FROM_ACTOR_STATUS_STACK",
+      "visual_review_status": "RECEIPT_TIMED_CHARGE_RELEASE_CONTACT_STATE_START_SUSTAIN_END_SAMPLES_CAPTURED; SELF_REVIEW_PENDING",
       "owner_approval": "PENDING_FACTORY_ADAPTER_REVIEW",
       "pve": "HOLD"
     }

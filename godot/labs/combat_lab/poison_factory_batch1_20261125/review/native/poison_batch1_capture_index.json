@@ -1,0 +1,2481 @@
+{
+  "owner_approval": "PENDING",
+  "pve": "HOLD",
+  "receipts": "REAL_MAPBATTLE_V2_TEST_FIXTURE_EVENTS_ONLY",
+  "renderer": "Godot 4.7.2 shared VFX Factory + existing AS-CHAR and Source A",
+  "schema": "tmb.vfx_factory_native_batch_capture.v1",
+  "school": "poison",
+  "skills": [
+    {
+      "accepted_event_count": 1,
+      "configured_event_types": [
+        "hit"
+      ],
+      "contact_frame_seconds": 0.02,
+      "encounter_id": "vfx_factory_poison_capture_00",
+      "event_count": 1,
+      "event_trace": [
+        {
+          "accepted": true,
+          "capture_frame_seconds": 0.0,
+          "caster_id": "caster_00",
+          "contact_receipt_target_count": 1,
+          "event_id": "vfx_factory_poison_capture_00/event/2",
+          "event_type": "hit",
+          "reason": "BASIC_HIT_BOUND_FROM_REAL_MAPBATTLE_AND_ACTOR_LOADOUT",
+          "simulation_event_time_seconds": 0.25,
+          "skill_id": "",
+          "target_ids": [
+            "poison_factory_target_01_01"
+          ],
+          "visual_phase": "contact"
+        }
+      ],
+      "event_types": [
+        "hit"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "fixture_setup_receipts": [],
+      "name_vi": "Độc Châm Thường Thức",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "release_frame_seconds": -1.0,
+      "skill_id": "tmb.skill.poison.basic.human",
+      "synthetic_events": 0,
+      "video_duration_seconds": 1.4,
+      "video_start_seconds": 0.0,
+      "phase_samples": {
+        "contact": {
+          "time_seconds": 0.04,
+          "receipt_type": "hit",
+          "basis": "REAL_MAPBATTLE_CONTACT_RECEIPT",
+          "frame_index": 1
+        },
+        "state_end": {
+          "time_seconds": 0.32,
+          "receipt_type": "hit",
+          "basis": "POST_CONTACT_FADE_WINDOW",
+          "frame_index": 6
+        }
+      }
+    },
+    {
+      "accepted_event_count": 4,
+      "configured_event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_skill_hit",
+        "status_applied"
+      ],
+      "contact_frame_seconds": 2.4,
+      "encounter_id": "vfx_factory_poison_capture_01",
+      "event_count": 4,
+      "event_trace": [
+        {
+          "accepted": true,
+          "capture_frame_seconds": 1.45,
+          "caster_id": "caster_01",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_poison_capture_01/caster_01/1/skill_cast",
+          "event_type": "skill_cast",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.0,
+          "skill_id": "tmb.skill.poison.co_doc.active_01.human",
+          "target_ids": [
+            "poison_factory_target_02_01"
+          ],
+          "visual_phase": "charge"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 2.25,
+          "caster_id": "caster_01",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_poison_capture_01/caster_01/1/skill_release",
+          "event_type": "skill_release",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.825,
+          "skill_id": "tmb.skill.poison.co_doc.active_01.human",
+          "target_ids": [
+            "poison_factory_target_02_01"
+          ],
+          "visual_phase": "release"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 2.3,
+          "caster_id": "caster_01",
+          "contact_receipt_target_count": 0,
+          "event_expiry_seconds": 6.825,
+          "event_id": "vfx_factory_poison_capture_01/caster_01/1/status_applied/poison_factory_target_02_01/mark",
+          "event_state_duration_seconds": 6.0,
+          "event_type": "status_applied",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.825,
+          "skill_id": "tmb.skill.poison.co_doc.active_01.human",
+          "target_ids": [
+            "poison_factory_target_02_01"
+          ],
+          "visual_phase": "start"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 2.35,
+          "caster_id": "caster_01",
+          "contact_receipt_target_count": 1,
+          "event_id": "vfx_factory_poison_capture_01/caster_01/1/v63_skill_hit/poison_factory_target_02_01",
+          "event_type": "v63_skill_hit",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.825,
+          "skill_id": "tmb.skill.poison.co_doc.active_01.human",
+          "target_ids": [
+            "poison_factory_target_02_01"
+          ],
+          "visual_phase": "contact"
+        }
+      ],
+      "event_types": [
+        "skill_cast",
+        "skill_release",
+        "status_applied",
+        "v63_skill_hit"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "fixture_setup_receipts": [],
+      "name_vi": "Phụ Cốt Cổ",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "release_frame_seconds": 2.25,
+      "skill_id": "tmb.skill.poison.co_doc.active_01.human",
+      "synthetic_events": 0,
+      "video_duration_seconds": 7.305,
+      "video_start_seconds": 1.4,
+      "phase_samples": {
+        "charge": {
+          "time_seconds": 1.53,
+          "receipt_type": "skill_cast",
+          "basis": "REAL_MAPBATTLE_SKILL_CAST",
+          "frame_index": 31
+        },
+        "release": {
+          "time_seconds": 2.31,
+          "receipt_type": "skill_release",
+          "basis": "REAL_MAPBATTLE_SKILL_RELEASE",
+          "frame_index": 46
+        },
+        "contact": {
+          "time_seconds": 2.39,
+          "receipt_type": "v63_skill_hit",
+          "basis": "REAL_MAPBATTLE_CONTACT_RECEIPT",
+          "frame_index": 48
+        },
+        "state_start": {
+          "time_seconds": 2.4,
+          "receipt_type": "status_applied",
+          "basis": "REAL_MAPBATTLE_STATE_RECEIPT",
+          "frame_index": 48
+        },
+        "state_sustain": {
+          "time_seconds": 5.3,
+          "receipt_type": "status_applied",
+          "basis": "MIDDLE_OF_RECEIPT_DURATION",
+          "frame_index": 106
+        },
+        "state_end": {
+          "time_seconds": 8.360000000000001,
+          "receipt_type": "status_applied",
+          "basis": "REAL_EVENT_EXPIRY",
+          "frame_index": 167
+        }
+      }
+    },
+    {
+      "accepted_event_count": 4,
+      "configured_event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_skill_hit",
+        "status_applied"
+      ],
+      "contact_frame_seconds": 9.75,
+      "encounter_id": "vfx_factory_poison_capture_02",
+      "event_count": 4,
+      "event_trace": [
+        {
+          "accepted": true,
+          "capture_frame_seconds": 8.79999999999999,
+          "caster_id": "caster_02",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_poison_capture_02/caster_02/1/skill_cast",
+          "event_type": "skill_cast",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.0,
+          "skill_id": "tmb.skill.poison.co_doc.active_02.human",
+          "target_ids": [
+            "poison_factory_target_03_01"
+          ],
+          "visual_phase": "charge"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 9.6,
+          "caster_id": "caster_02",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_poison_capture_02/caster_02/1/skill_release",
+          "event_type": "skill_release",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.825,
+          "skill_id": "tmb.skill.poison.co_doc.active_02.human",
+          "target_ids": [
+            "poison_factory_target_03_01"
+          ],
+          "visual_phase": "release"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 9.65,
+          "caster_id": "caster_02",
+          "contact_receipt_target_count": 0,
+          "event_expiry_seconds": 8.825,
+          "event_id": "vfx_factory_poison_capture_02/event/4",
+          "event_state_duration_seconds": 8.0,
+          "event_type": "status_applied",
+          "expiry_source": "MAPBATTLE_ACTOR_STATUS_STACK",
+          "observed_status_expiry_seconds": 8.825,
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.825,
+          "skill_id": "tmb.skill.poison.co_doc.active_02.human",
+          "target_ids": [
+            "poison_factory_target_03_01"
+          ],
+          "visual_phase": "start"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 9.7,
+          "caster_id": "caster_02",
+          "contact_receipt_target_count": 1,
+          "event_id": "vfx_factory_poison_capture_02/caster_02/1/v63_skill_hit/poison_factory_target_03_01",
+          "event_type": "v63_skill_hit",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.825,
+          "skill_id": "tmb.skill.poison.co_doc.active_02.human",
+          "target_ids": [
+            "poison_factory_target_03_01"
+          ],
+          "visual_phase": "contact"
+        }
+      ],
+      "event_types": [
+        "skill_cast",
+        "skill_release",
+        "status_applied",
+        "v63_skill_hit"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "fixture_setup_receipts": [],
+      "name_vi": "Xà Ảnh Quấn Mạch",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "release_frame_seconds": 9.6,
+      "skill_id": "tmb.skill.poison.co_doc.active_02.human",
+      "synthetic_events": 0,
+      "video_duration_seconds": 9.305,
+      "video_start_seconds": 8.74999999999999,
+      "phase_samples": {
+        "charge": {
+          "time_seconds": 8.87999999999999,
+          "receipt_type": "skill_cast",
+          "basis": "REAL_MAPBATTLE_SKILL_CAST",
+          "frame_index": 178
+        },
+        "release": {
+          "time_seconds": 9.66,
+          "receipt_type": "skill_release",
+          "basis": "REAL_MAPBATTLE_SKILL_RELEASE",
+          "frame_index": 193
+        },
+        "contact": {
+          "time_seconds": 9.739999999999998,
+          "receipt_type": "v63_skill_hit",
+          "basis": "REAL_MAPBATTLE_CONTACT_RECEIPT",
+          "frame_index": 195
+        },
+        "state_start": {
+          "time_seconds": 9.75,
+          "receipt_type": "status_applied",
+          "basis": "REAL_MAPBATTLE_STATE_RECEIPT",
+          "frame_index": 195
+        },
+        "state_sustain": {
+          "time_seconds": 13.65,
+          "receipt_type": "status_applied",
+          "basis": "MIDDLE_OF_RECEIPT_DURATION",
+          "frame_index": 273
+        },
+        "state_end": {
+          "time_seconds": 17.709999999999997,
+          "receipt_type": "status_applied",
+          "basis": "MAPBATTLE_ACTOR_STATUS_STACK",
+          "frame_index": 354
+        }
+      }
+    },
+    {
+      "accepted_event_count": 8,
+      "configured_event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_skill_hit",
+        "status_applied"
+      ],
+      "contact_frame_seconds": 19.3000000000001,
+      "encounter_id": "vfx_factory_poison_capture_03",
+      "event_count": 8,
+      "event_trace": [
+        {
+          "accepted": true,
+          "capture_frame_seconds": 18.1500000000001,
+          "caster_id": "caster_03",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_poison_capture_03/caster_03/1/skill_cast",
+          "event_type": "skill_cast",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.0,
+          "skill_id": "tmb.skill.poison.co_doc.active_03.human",
+          "target_ids": [
+            "poison_factory_target_04_01"
+          ],
+          "visual_phase": "charge"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 19.1500000000001,
+          "caster_id": "caster_03",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_poison_capture_03/caster_03/1/skill_release",
+          "event_type": "skill_release",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 1.025,
+          "skill_id": "tmb.skill.poison.co_doc.active_03.human",
+          "target_ids": [
+            "poison_factory_target_04_01"
+          ],
+          "visual_phase": "release"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 19.2000000000001,
+          "caster_id": "caster_03",
+          "contact_receipt_target_count": 0,
+          "event_expiry_seconds": 8.025,
+          "event_id": "vfx_factory_poison_capture_03/event/4",
+          "event_state_duration_seconds": 7.0,
+          "event_type": "status_applied",
+          "expiry_source": "MAPBATTLE_ACTOR_STATUS_STACK",
+          "observed_status_expiry_seconds": 8.025,
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 1.025,
+          "skill_id": "tmb.skill.poison.co_doc.active_03.human",
+          "target_ids": [
+            "poison_factory_target_04_01"
+          ],
+          "visual_phase": "start"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 19.2500000000001,
+          "caster_id": "caster_03",
+          "contact_receipt_target_count": 1,
+          "event_id": "vfx_factory_poison_capture_03/caster_03/1/v63_skill_hit/poison_factory_target_04_01",
+          "event_type": "v63_skill_hit",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 1.025,
+          "skill_id": "tmb.skill.poison.co_doc.active_03.human",
+          "target_ids": [
+            "poison_factory_target_04_01"
+          ],
+          "visual_phase": "contact"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 19.3000000000001,
+          "caster_id": "caster_03",
+          "contact_receipt_target_count": 1,
+          "event_expiry_seconds": 8.025,
+          "event_id": "vfx_factory_poison_capture_03/event/7",
+          "event_state_duration_seconds": 7.0,
+          "event_type": "status_applied",
+          "expiry_source": "MAPBATTLE_ACTOR_STATUS_STACK",
+          "observed_status_expiry_seconds": 8.025,
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 1.025,
+          "skill_id": "tmb.skill.poison.co_doc.active_03.human",
+          "target_ids": [
+            "poison_factory_target_04_02"
+          ],
+          "visual_phase": "start"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 19.3500000000001,
+          "caster_id": "caster_03",
+          "contact_receipt_target_count": 2,
+          "event_id": "vfx_factory_poison_capture_03/caster_03/1/v63_skill_hit/poison_factory_target_04_02",
+          "event_type": "v63_skill_hit",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 1.025,
+          "skill_id": "tmb.skill.poison.co_doc.active_03.human",
+          "target_ids": [
+            "poison_factory_target_04_02"
+          ],
+          "visual_phase": "contact"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 19.4000000000001,
+          "caster_id": "caster_03",
+          "contact_receipt_target_count": 2,
+          "event_expiry_seconds": 8.025,
+          "event_id": "vfx_factory_poison_capture_03/event/10",
+          "event_state_duration_seconds": 7.0,
+          "event_type": "status_applied",
+          "expiry_source": "MAPBATTLE_ACTOR_STATUS_STACK",
+          "observed_status_expiry_seconds": 8.025,
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 1.025,
+          "skill_id": "tmb.skill.poison.co_doc.active_03.human",
+          "target_ids": [
+            "poison_factory_target_04_03"
+          ],
+          "visual_phase": "start"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 19.4500000000001,
+          "caster_id": "caster_03",
+          "contact_receipt_target_count": 3,
+          "event_id": "vfx_factory_poison_capture_03/caster_03/1/v63_skill_hit/poison_factory_target_04_03",
+          "event_type": "v63_skill_hit",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 1.025,
+          "skill_id": "tmb.skill.poison.co_doc.active_03.human",
+          "target_ids": [
+            "poison_factory_target_04_03"
+          ],
+          "visual_phase": "contact"
+        }
+      ],
+      "event_types": [
+        "skill_cast",
+        "skill_release",
+        "status_applied",
+        "v63_skill_hit"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "fixture_setup_receipts": [],
+      "name_vi": "Cổ Vụ Mê Tung",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "release_frame_seconds": 19.1500000000001,
+      "skill_id": "tmb.skill.poison.co_doc.active_03.human",
+      "synthetic_events": 0,
+      "video_duration_seconds": 8.505,
+      "video_start_seconds": 18.1000000000001,
+      "phase_samples": {
+        "charge": {
+          "time_seconds": 18.2300000000001,
+          "receipt_type": "skill_cast",
+          "basis": "REAL_MAPBATTLE_SKILL_CAST",
+          "frame_index": 365
+        },
+        "release": {
+          "time_seconds": 19.2100000000001,
+          "receipt_type": "skill_release",
+          "basis": "REAL_MAPBATTLE_SKILL_RELEASE",
+          "frame_index": 384
+        },
+        "contact": {
+          "time_seconds": 19.2900000000001,
+          "receipt_type": "v63_skill_hit",
+          "basis": "REAL_MAPBATTLE_CONTACT_RECEIPT",
+          "frame_index": 386
+        },
+        "state_start": {
+          "time_seconds": 19.3000000000001,
+          "receipt_type": "status_applied",
+          "basis": "REAL_MAPBATTLE_STATE_RECEIPT",
+          "frame_index": 386
+        },
+        "state_sustain": {
+          "time_seconds": 22.7000000000001,
+          "receipt_type": "status_applied",
+          "basis": "MIDDLE_OF_RECEIPT_DURATION",
+          "frame_index": 454
+        },
+        "state_end": {
+          "time_seconds": 26.260000000000097,
+          "receipt_type": "status_applied",
+          "basis": "MAPBATTLE_ACTOR_STATUS_STACK",
+          "frame_index": 525
+        }
+      }
+    },
+    {
+      "accepted_event_count": 8,
+      "configured_event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_skill_hit",
+        "status_applied"
+      ],
+      "contact_frame_seconds": 27.7500000000003,
+      "encounter_id": "vfx_factory_poison_capture_04",
+      "event_count": 8,
+      "event_trace": [
+        {
+          "accepted": true,
+          "capture_frame_seconds": 26.7000000000002,
+          "caster_id": "caster_04",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_poison_capture_04/caster_04/1/skill_cast",
+          "event_type": "skill_cast",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.0,
+          "skill_id": "tmb.skill.poison.co_doc.active_04.human",
+          "target_ids": [
+            "poison_factory_target_05_01"
+          ],
+          "visual_phase": "charge"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 27.6000000000003,
+          "caster_id": "caster_04",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_poison_capture_04/caster_04/1/skill_release",
+          "event_type": "skill_release",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.925,
+          "skill_id": "tmb.skill.poison.co_doc.active_04.human",
+          "target_ids": [
+            "poison_factory_target_05_01"
+          ],
+          "visual_phase": "release"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 27.6500000000003,
+          "caster_id": "caster_04",
+          "contact_receipt_target_count": 0,
+          "event_expiry_seconds": 7.925,
+          "event_id": "vfx_factory_poison_capture_04/event/4",
+          "event_state_duration_seconds": 7.0,
+          "event_type": "status_applied",
+          "expiry_source": "MAPBATTLE_ACTOR_STATUS_STACK",
+          "observed_status_expiry_seconds": 7.925,
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.925,
+          "skill_id": "tmb.skill.poison.co_doc.active_04.human",
+          "target_ids": [
+            "poison_factory_target_05_01"
+          ],
+          "visual_phase": "start"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 27.7000000000003,
+          "caster_id": "caster_04",
+          "contact_receipt_target_count": 1,
+          "event_id": "vfx_factory_poison_capture_04/caster_04/1/v63_skill_hit/poison_factory_target_05_01",
+          "event_type": "v63_skill_hit",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.925,
+          "skill_id": "tmb.skill.poison.co_doc.active_04.human",
+          "target_ids": [
+            "poison_factory_target_05_01"
+          ],
+          "visual_phase": "contact"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 27.7500000000003,
+          "caster_id": "caster_04",
+          "contact_receipt_target_count": 1,
+          "event_expiry_seconds": 7.925,
+          "event_id": "vfx_factory_poison_capture_04/event/7",
+          "event_state_duration_seconds": 7.0,
+          "event_type": "status_applied",
+          "expiry_source": "MAPBATTLE_ACTOR_STATUS_STACK",
+          "observed_status_expiry_seconds": 7.925,
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.925,
+          "skill_id": "tmb.skill.poison.co_doc.active_04.human",
+          "target_ids": [
+            "poison_factory_target_05_02"
+          ],
+          "visual_phase": "start"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 27.8000000000003,
+          "caster_id": "caster_04",
+          "contact_receipt_target_count": 2,
+          "event_id": "vfx_factory_poison_capture_04/caster_04/1/v63_skill_hit/poison_factory_target_05_02",
+          "event_type": "v63_skill_hit",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.925,
+          "skill_id": "tmb.skill.poison.co_doc.active_04.human",
+          "target_ids": [
+            "poison_factory_target_05_02"
+          ],
+          "visual_phase": "contact"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 27.8500000000003,
+          "caster_id": "caster_04",
+          "contact_receipt_target_count": 2,
+          "event_expiry_seconds": 7.925,
+          "event_id": "vfx_factory_poison_capture_04/event/10",
+          "event_state_duration_seconds": 7.0,
+          "event_type": "status_applied",
+          "expiry_source": "MAPBATTLE_ACTOR_STATUS_STACK",
+          "observed_status_expiry_seconds": 7.925,
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.925,
+          "skill_id": "tmb.skill.poison.co_doc.active_04.human",
+          "target_ids": [
+            "poison_factory_target_05_03"
+          ],
+          "visual_phase": "start"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 27.9000000000003,
+          "caster_id": "caster_04",
+          "contact_receipt_target_count": 3,
+          "event_id": "vfx_factory_poison_capture_04/caster_04/1/v63_skill_hit/poison_factory_target_05_03",
+          "event_type": "v63_skill_hit",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.925,
+          "skill_id": "tmb.skill.poison.co_doc.active_04.human",
+          "target_ids": [
+            "poison_factory_target_05_03"
+          ],
+          "visual_phase": "contact"
+        }
+      ],
+      "event_types": [
+        "skill_cast",
+        "skill_release",
+        "status_applied",
+        "v63_skill_hit"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "fixture_setup_receipts": [],
+      "name_vi": "Tán Cổ Diễn Nhiễm",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "release_frame_seconds": 27.6000000000003,
+      "skill_id": "tmb.skill.poison.co_doc.active_04.human",
+      "synthetic_events": 0,
+      "video_duration_seconds": 8.405,
+      "video_start_seconds": 26.6500000000002,
+      "phase_samples": {
+        "charge": {
+          "time_seconds": 26.780000000000197,
+          "receipt_type": "skill_cast",
+          "basis": "REAL_MAPBATTLE_SKILL_CAST",
+          "frame_index": 536
+        },
+        "release": {
+          "time_seconds": 27.6600000000003,
+          "receipt_type": "skill_release",
+          "basis": "REAL_MAPBATTLE_SKILL_RELEASE",
+          "frame_index": 553
+        },
+        "contact": {
+          "time_seconds": 27.7400000000003,
+          "receipt_type": "v63_skill_hit",
+          "basis": "REAL_MAPBATTLE_CONTACT_RECEIPT",
+          "frame_index": 555
+        },
+        "state_start": {
+          "time_seconds": 27.750000000000302,
+          "receipt_type": "status_applied",
+          "basis": "REAL_MAPBATTLE_STATE_RECEIPT",
+          "frame_index": 555
+        },
+        "state_sustain": {
+          "time_seconds": 31.1500000000003,
+          "receipt_type": "status_applied",
+          "basis": "MIDDLE_OF_RECEIPT_DURATION",
+          "frame_index": 623
+        },
+        "state_end": {
+          "time_seconds": 34.710000000000306,
+          "receipt_type": "status_applied",
+          "basis": "MAPBATTLE_ACTOR_STATUS_STACK",
+          "frame_index": 694
+        }
+      }
+    },
+    {
+      "accepted_event_count": 8,
+      "configured_event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_skill_hit",
+        "status_applied"
+      ],
+      "contact_frame_seconds": 36.7500000000001,
+      "encounter_id": "vfx_factory_poison_capture_05",
+      "event_count": 8,
+      "event_trace": [
+        {
+          "accepted": true,
+          "capture_frame_seconds": 35.1500000000001,
+          "caster_id": "caster_05",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_poison_capture_05/caster_05/1/skill_cast",
+          "event_type": "skill_cast",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.0,
+          "skill_id": "tmb.skill.poison.co_doc.ultimate.human",
+          "target_ids": [
+            "poison_factory_target_06_01"
+          ],
+          "visual_phase": "charge"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 36.6000000000001,
+          "caster_id": "caster_05",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_poison_capture_05/caster_05/1/skill_release",
+          "event_type": "skill_release",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 1.475,
+          "skill_id": "tmb.skill.poison.co_doc.ultimate.human",
+          "target_ids": [
+            "poison_factory_target_06_01"
+          ],
+          "visual_phase": "release"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 36.6500000000001,
+          "caster_id": "caster_05",
+          "contact_receipt_target_count": 0,
+          "event_expiry_seconds": 9.475,
+          "event_id": "vfx_factory_poison_capture_05/event/4",
+          "event_state_duration_seconds": 8.0,
+          "event_type": "status_applied",
+          "expiry_source": "MAPBATTLE_ACTOR_STATUS_STACK",
+          "observed_status_expiry_seconds": 9.475,
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 1.475,
+          "skill_id": "tmb.skill.poison.co_doc.ultimate.human",
+          "target_ids": [
+            "poison_factory_target_06_01"
+          ],
+          "visual_phase": "start"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 36.7000000000001,
+          "caster_id": "caster_05",
+          "contact_receipt_target_count": 1,
+          "event_id": "vfx_factory_poison_capture_05/caster_05/1/v63_skill_hit/poison_factory_target_06_01",
+          "event_type": "v63_skill_hit",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 1.475,
+          "skill_id": "tmb.skill.poison.co_doc.ultimate.human",
+          "target_ids": [
+            "poison_factory_target_06_01"
+          ],
+          "visual_phase": "contact"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 36.75,
+          "caster_id": "caster_05",
+          "contact_receipt_target_count": 1,
+          "event_expiry_seconds": 9.475,
+          "event_id": "vfx_factory_poison_capture_05/event/7",
+          "event_state_duration_seconds": 8.0,
+          "event_type": "status_applied",
+          "expiry_source": "MAPBATTLE_ACTOR_STATUS_STACK",
+          "observed_status_expiry_seconds": 9.475,
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 1.475,
+          "skill_id": "tmb.skill.poison.co_doc.ultimate.human",
+          "target_ids": [
+            "poison_factory_target_06_02"
+          ],
+          "visual_phase": "start"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 36.8,
+          "caster_id": "caster_05",
+          "contact_receipt_target_count": 2,
+          "event_id": "vfx_factory_poison_capture_05/caster_05/1/v63_skill_hit/poison_factory_target_06_02",
+          "event_type": "v63_skill_hit",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 1.475,
+          "skill_id": "tmb.skill.poison.co_doc.ultimate.human",
+          "target_ids": [
+            "poison_factory_target_06_02"
+          ],
+          "visual_phase": "contact"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 36.85,
+          "caster_id": "caster_05",
+          "contact_receipt_target_count": 2,
+          "event_expiry_seconds": 9.475,
+          "event_id": "vfx_factory_poison_capture_05/event/10",
+          "event_state_duration_seconds": 8.0,
+          "event_type": "status_applied",
+          "expiry_source": "MAPBATTLE_ACTOR_STATUS_STACK",
+          "observed_status_expiry_seconds": 9.475,
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 1.475,
+          "skill_id": "tmb.skill.poison.co_doc.ultimate.human",
+          "target_ids": [
+            "poison_factory_target_06_03"
+          ],
+          "visual_phase": "start"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 36.9,
+          "caster_id": "caster_05",
+          "contact_receipt_target_count": 3,
+          "event_id": "vfx_factory_poison_capture_05/caster_05/1/v63_skill_hit/poison_factory_target_06_03",
+          "event_type": "v63_skill_hit",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 1.475,
+          "skill_id": "tmb.skill.poison.co_doc.ultimate.human",
+          "target_ids": [
+            "poison_factory_target_06_03"
+          ],
+          "visual_phase": "contact"
+        }
+      ],
+      "event_types": [
+        "skill_cast",
+        "skill_release",
+        "status_applied",
+        "v63_skill_hit"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "fixture_setup_receipts": [],
+      "name_vi": "Vạn Cổ Phệ Giới",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "release_frame_seconds": 36.6000000000001,
+      "skill_id": "tmb.skill.poison.co_doc.ultimate.human",
+      "synthetic_events": 0,
+      "video_duration_seconds": 9.955,
+      "video_start_seconds": 35.1000000000001,
+      "phase_samples": {
+        "charge": {
+          "time_seconds": 35.230000000000096,
+          "receipt_type": "skill_cast",
+          "basis": "REAL_MAPBATTLE_SKILL_CAST",
+          "frame_index": 705
+        },
+        "release": {
+          "time_seconds": 36.6600000000001,
+          "receipt_type": "skill_release",
+          "basis": "REAL_MAPBATTLE_SKILL_RELEASE",
+          "frame_index": 733
+        },
+        "contact": {
+          "time_seconds": 36.7400000000001,
+          "receipt_type": "v63_skill_hit",
+          "basis": "REAL_MAPBATTLE_CONTACT_RECEIPT",
+          "frame_index": 735
+        },
+        "state_start": {
+          "time_seconds": 36.7500000000001,
+          "receipt_type": "status_applied",
+          "basis": "REAL_MAPBATTLE_STATE_RECEIPT",
+          "frame_index": 735
+        },
+        "state_sustain": {
+          "time_seconds": 40.6500000000001,
+          "receipt_type": "status_applied",
+          "basis": "MIDDLE_OF_RECEIPT_DURATION",
+          "frame_index": 813
+        },
+        "state_end": {
+          "time_seconds": 44.7100000000001,
+          "receipt_type": "status_applied",
+          "basis": "MAPBATTLE_ACTOR_STATUS_STACK",
+          "frame_index": 894
+        }
+      }
+    },
+    {
+      "accepted_event_count": 3,
+      "configured_event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_skill_hit"
+      ],
+      "contact_frame_seconds": 46.0199999999995,
+      "encounter_id": "vfx_factory_poison_capture_06",
+      "event_count": 3,
+      "event_trace": [
+        {
+          "accepted": true,
+          "capture_frame_seconds": 45.1499999999996,
+          "caster_id": "caster_06",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_poison_capture_06/caster_06/1/skill_cast",
+          "event_type": "skill_cast",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.0,
+          "skill_id": "tmb.skill.poison.doc_cham.active_01.human",
+          "target_ids": [
+            "poison_factory_target_07_01"
+          ],
+          "visual_phase": "charge"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 45.9499999999995,
+          "caster_id": "caster_06",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_poison_capture_06/caster_06/1/skill_release",
+          "event_type": "skill_release",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.825,
+          "skill_id": "tmb.skill.poison.doc_cham.active_01.human",
+          "target_ids": [
+            "poison_factory_target_07_01"
+          ],
+          "visual_phase": "release"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 45.9999999999995,
+          "caster_id": "caster_06",
+          "contact_receipt_target_count": 1,
+          "event_id": "vfx_factory_poison_capture_06/caster_06/1/v63_skill_hit/poison_factory_target_07_01",
+          "event_type": "v63_skill_hit",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.825,
+          "skill_id": "tmb.skill.poison.doc_cham.active_01.human",
+          "target_ids": [
+            "poison_factory_target_07_01"
+          ],
+          "visual_phase": "contact"
+        }
+      ],
+      "event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_skill_hit"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "fixture_setup_receipts": [],
+      "name_vi": "Xuyên Cốt Độc Châm",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "release_frame_seconds": 45.9499999999995,
+      "skill_id": "tmb.skill.poison.doc_cham.active_01.human",
+      "synthetic_events": 0,
+      "video_duration_seconds": 1.4,
+      "video_start_seconds": 45.0999999999996,
+      "phase_samples": {
+        "charge": {
+          "time_seconds": 45.2299999999996,
+          "receipt_type": "skill_cast",
+          "basis": "REAL_MAPBATTLE_SKILL_CAST",
+          "frame_index": 905
+        },
+        "release": {
+          "time_seconds": 46.0099999999995,
+          "receipt_type": "skill_release",
+          "basis": "REAL_MAPBATTLE_SKILL_RELEASE",
+          "frame_index": 920
+        },
+        "contact": {
+          "time_seconds": 46.0399999999995,
+          "receipt_type": "v63_skill_hit",
+          "basis": "REAL_MAPBATTLE_CONTACT_RECEIPT",
+          "frame_index": 921
+        },
+        "state_end": {
+          "time_seconds": 46.3199999999995,
+          "receipt_type": "v63_skill_hit",
+          "basis": "POST_CONTACT_FADE_WINDOW",
+          "frame_index": 926
+        }
+      }
+    },
+    {
+      "accepted_event_count": 4,
+      "configured_event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_skill_hit",
+        "status_applied"
+      ],
+      "contact_frame_seconds": 47.4999999999994,
+      "encounter_id": "vfx_factory_poison_capture_07",
+      "event_count": 4,
+      "event_trace": [
+        {
+          "accepted": true,
+          "capture_frame_seconds": 46.5499999999995,
+          "caster_id": "caster_07",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_poison_capture_07/caster_07/1/skill_cast",
+          "event_type": "skill_cast",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.0,
+          "skill_id": "tmb.skill.poison.doc_cham.active_02.human",
+          "target_ids": [
+            "poison_factory_target_08_01"
+          ],
+          "visual_phase": "charge"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 47.3499999999994,
+          "caster_id": "caster_07",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_poison_capture_07/caster_07/1/skill_release",
+          "event_type": "skill_release",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.825,
+          "skill_id": "tmb.skill.poison.doc_cham.active_02.human",
+          "target_ids": [
+            "poison_factory_target_08_01"
+          ],
+          "visual_phase": "release"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 47.3999999999994,
+          "caster_id": "caster_07",
+          "contact_receipt_target_count": 0,
+          "event_expiry_seconds": 8.825,
+          "event_id": "vfx_factory_poison_capture_07/event/4",
+          "event_state_duration_seconds": 8.0,
+          "event_type": "status_applied",
+          "expiry_source": "MAPBATTLE_ACTOR_STATUS_STACK",
+          "observed_status_expiry_seconds": 8.825,
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.825,
+          "skill_id": "tmb.skill.poison.doc_cham.active_02.human",
+          "target_ids": [
+            "poison_factory_target_08_01"
+          ],
+          "visual_phase": "start"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 47.4499999999994,
+          "caster_id": "caster_07",
+          "contact_receipt_target_count": 1,
+          "event_id": "vfx_factory_poison_capture_07/caster_07/1/v63_skill_hit/poison_factory_target_08_01",
+          "event_type": "v63_skill_hit",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.825,
+          "skill_id": "tmb.skill.poison.doc_cham.active_02.human",
+          "target_ids": [
+            "poison_factory_target_08_01"
+          ],
+          "visual_phase": "contact"
+        }
+      ],
+      "event_types": [
+        "skill_cast",
+        "skill_release",
+        "status_applied",
+        "v63_skill_hit"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "fixture_setup_receipts": [],
+      "name_vi": "Phệ Mạch Độc Thích",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "release_frame_seconds": 47.3499999999994,
+      "skill_id": "tmb.skill.poison.doc_cham.active_02.human",
+      "synthetic_events": 0,
+      "video_duration_seconds": 9.305,
+      "video_start_seconds": 46.4999999999995,
+      "phase_samples": {
+        "charge": {
+          "time_seconds": 46.6299999999995,
+          "receipt_type": "skill_cast",
+          "basis": "REAL_MAPBATTLE_SKILL_CAST",
+          "frame_index": 933
+        },
+        "release": {
+          "time_seconds": 47.4099999999994,
+          "receipt_type": "skill_release",
+          "basis": "REAL_MAPBATTLE_SKILL_RELEASE",
+          "frame_index": 948
+        },
+        "contact": {
+          "time_seconds": 47.4899999999994,
+          "receipt_type": "v63_skill_hit",
+          "basis": "REAL_MAPBATTLE_CONTACT_RECEIPT",
+          "frame_index": 950
+        },
+        "state_start": {
+          "time_seconds": 47.4999999999994,
+          "receipt_type": "status_applied",
+          "basis": "REAL_MAPBATTLE_STATE_RECEIPT",
+          "frame_index": 950
+        },
+        "state_sustain": {
+          "time_seconds": 51.3999999999994,
+          "receipt_type": "status_applied",
+          "basis": "MIDDLE_OF_RECEIPT_DURATION",
+          "frame_index": 1028
+        },
+        "state_end": {
+          "time_seconds": 55.459999999999404,
+          "receipt_type": "status_applied",
+          "basis": "MAPBATTLE_ACTOR_STATUS_STACK",
+          "frame_index": 1109
+        }
+      }
+    },
+    {
+      "accepted_event_count": 4,
+      "configured_event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_skill_hit",
+        "status_applied"
+      ],
+      "contact_frame_seconds": 56.9999999999989,
+      "encounter_id": "vfx_factory_poison_capture_08",
+      "event_count": 4,
+      "event_trace": [
+        {
+          "accepted": true,
+          "capture_frame_seconds": 55.899999999999,
+          "caster_id": "caster_08",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_poison_capture_08/caster_08/1/skill_cast",
+          "event_type": "skill_cast",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.0,
+          "skill_id": "tmb.skill.poison.doc_cham.active_03.human",
+          "target_ids": [
+            "poison_factory_target_09_01"
+          ],
+          "visual_phase": "charge"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 56.8499999999989,
+          "caster_id": "caster_08",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_poison_capture_08/caster_08/1/skill_release",
+          "event_type": "skill_release",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.975,
+          "skill_id": "tmb.skill.poison.doc_cham.active_03.human",
+          "target_ids": [
+            "poison_factory_target_09_01"
+          ],
+          "visual_phase": "release"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 56.8999999999989,
+          "caster_id": "caster_08",
+          "contact_receipt_target_count": 0,
+          "event_expiry_seconds": 6.975,
+          "event_id": "vfx_factory_poison_capture_08/event/4",
+          "event_state_duration_seconds": 6.0,
+          "event_type": "status_applied",
+          "expiry_source": "MAPBATTLE_ACTOR_STATUS_STACK",
+          "observed_status_expiry_seconds": 6.975,
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.975,
+          "skill_id": "tmb.skill.poison.doc_cham.active_03.human",
+          "target_ids": [
+            "poison_factory_target_09_01"
+          ],
+          "visual_phase": "start"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 56.9499999999989,
+          "caster_id": "caster_08",
+          "contact_receipt_target_count": 1,
+          "event_id": "vfx_factory_poison_capture_08/caster_08/1/v63_skill_hit/poison_factory_target_09_01",
+          "event_type": "v63_skill_hit",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.975,
+          "skill_id": "tmb.skill.poison.doc_cham.active_03.human",
+          "target_ids": [
+            "poison_factory_target_09_01"
+          ],
+          "visual_phase": "contact"
+        }
+      ],
+      "event_types": [
+        "skill_cast",
+        "skill_release",
+        "status_applied",
+        "v63_skill_hit"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "fixture_setup_receipts": [],
+      "name_vi": "Bách Độc Tán Châm",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "release_frame_seconds": 56.8499999999989,
+      "skill_id": "tmb.skill.poison.doc_cham.active_03.human",
+      "synthetic_events": 0,
+      "video_duration_seconds": 7.455,
+      "video_start_seconds": 55.849999999999,
+      "phase_samples": {
+        "charge": {
+          "time_seconds": 55.979999999998995,
+          "receipt_type": "skill_cast",
+          "basis": "REAL_MAPBATTLE_SKILL_CAST",
+          "frame_index": 1120
+        },
+        "release": {
+          "time_seconds": 56.9099999999989,
+          "receipt_type": "skill_release",
+          "basis": "REAL_MAPBATTLE_SKILL_RELEASE",
+          "frame_index": 1138
+        },
+        "contact": {
+          "time_seconds": 56.9899999999989,
+          "receipt_type": "v63_skill_hit",
+          "basis": "REAL_MAPBATTLE_CONTACT_RECEIPT",
+          "frame_index": 1140
+        },
+        "state_start": {
+          "time_seconds": 56.9999999999989,
+          "receipt_type": "status_applied",
+          "basis": "REAL_MAPBATTLE_STATE_RECEIPT",
+          "frame_index": 1140
+        },
+        "state_sustain": {
+          "time_seconds": 59.8999999999989,
+          "receipt_type": "status_applied",
+          "basis": "MIDDLE_OF_RECEIPT_DURATION",
+          "frame_index": 1198
+        },
+        "state_end": {
+          "time_seconds": 62.9599999999989,
+          "receipt_type": "status_applied",
+          "basis": "MAPBATTLE_ACTOR_STATUS_STACK",
+          "frame_index": 1259
+        }
+      }
+    },
+    {
+      "accepted_event_count": 8,
+      "configured_event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_skill_hit",
+        "status_applied"
+      ],
+      "contact_frame_seconds": 64.5499999999985,
+      "encounter_id": "vfx_factory_poison_capture_09",
+      "event_count": 8,
+      "event_trace": [
+        {
+          "accepted": true,
+          "capture_frame_seconds": 63.3999999999985,
+          "caster_id": "caster_09",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_poison_capture_09/caster_09/1/skill_cast",
+          "event_type": "skill_cast",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.0,
+          "skill_id": "tmb.skill.poison.doc_cham.active_04.human",
+          "target_ids": [
+            "poison_factory_target_10_01"
+          ],
+          "visual_phase": "charge"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 64.3999999999985,
+          "caster_id": "caster_09",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_poison_capture_09/caster_09/1/skill_release",
+          "event_type": "skill_release",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 1.025,
+          "skill_id": "tmb.skill.poison.doc_cham.active_04.human",
+          "target_ids": [
+            "poison_factory_target_10_01"
+          ],
+          "visual_phase": "release"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 64.4499999999985,
+          "caster_id": "caster_09",
+          "contact_receipt_target_count": 0,
+          "event_expiry_seconds": 7.025,
+          "event_id": "vfx_factory_poison_capture_09/event/4",
+          "event_state_duration_seconds": 6.0,
+          "event_type": "status_applied",
+          "expiry_source": "MAPBATTLE_ACTOR_STATUS_STACK",
+          "observed_status_expiry_seconds": 7.025,
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 1.025,
+          "skill_id": "tmb.skill.poison.doc_cham.active_04.human",
+          "target_ids": [
+            "poison_factory_target_10_01"
+          ],
+          "visual_phase": "start"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 64.4999999999985,
+          "caster_id": "caster_09",
+          "contact_receipt_target_count": 1,
+          "event_id": "vfx_factory_poison_capture_09/caster_09/1/v63_skill_hit/poison_factory_target_10_01",
+          "event_type": "v63_skill_hit",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 1.025,
+          "skill_id": "tmb.skill.poison.doc_cham.active_04.human",
+          "target_ids": [
+            "poison_factory_target_10_01"
+          ],
+          "visual_phase": "contact"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 64.5499999999985,
+          "caster_id": "caster_09",
+          "contact_receipt_target_count": 1,
+          "event_expiry_seconds": 7.025,
+          "event_id": "vfx_factory_poison_capture_09/event/7",
+          "event_state_duration_seconds": 6.0,
+          "event_type": "status_applied",
+          "expiry_source": "MAPBATTLE_ACTOR_STATUS_STACK",
+          "observed_status_expiry_seconds": 7.025,
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 1.025,
+          "skill_id": "tmb.skill.poison.doc_cham.active_04.human",
+          "target_ids": [
+            "poison_factory_target_10_02"
+          ],
+          "visual_phase": "start"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 64.5999999999985,
+          "caster_id": "caster_09",
+          "contact_receipt_target_count": 2,
+          "event_id": "vfx_factory_poison_capture_09/caster_09/1/v63_skill_hit/poison_factory_target_10_02",
+          "event_type": "v63_skill_hit",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 1.025,
+          "skill_id": "tmb.skill.poison.doc_cham.active_04.human",
+          "target_ids": [
+            "poison_factory_target_10_02"
+          ],
+          "visual_phase": "contact"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 64.6499999999985,
+          "caster_id": "caster_09",
+          "contact_receipt_target_count": 2,
+          "event_expiry_seconds": 7.025,
+          "event_id": "vfx_factory_poison_capture_09/event/10",
+          "event_state_duration_seconds": 6.0,
+          "event_type": "status_applied",
+          "expiry_source": "MAPBATTLE_ACTOR_STATUS_STACK",
+          "observed_status_expiry_seconds": 7.025,
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 1.025,
+          "skill_id": "tmb.skill.poison.doc_cham.active_04.human",
+          "target_ids": [
+            "poison_factory_target_10_03"
+          ],
+          "visual_phase": "start"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 64.6999999999985,
+          "caster_id": "caster_09",
+          "contact_receipt_target_count": 3,
+          "event_id": "vfx_factory_poison_capture_09/caster_09/1/v63_skill_hit/poison_factory_target_10_03",
+          "event_type": "v63_skill_hit",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 1.025,
+          "skill_id": "tmb.skill.poison.doc_cham.active_04.human",
+          "target_ids": [
+            "poison_factory_target_10_03"
+          ],
+          "visual_phase": "contact"
+        }
+      ],
+      "event_types": [
+        "skill_cast",
+        "skill_release",
+        "status_applied",
+        "v63_skill_hit"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "fixture_setup_receipts": [],
+      "name_vi": "Độc Khí Phệ Tâm",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "release_frame_seconds": 64.3999999999985,
+      "skill_id": "tmb.skill.poison.doc_cham.active_04.human",
+      "synthetic_events": 0,
+      "video_duration_seconds": 7.505,
+      "video_start_seconds": 63.3499999999985,
+      "phase_samples": {
+        "charge": {
+          "time_seconds": 63.4799999999985,
+          "receipt_type": "skill_cast",
+          "basis": "REAL_MAPBATTLE_SKILL_CAST",
+          "frame_index": 1270
+        },
+        "release": {
+          "time_seconds": 64.4599999999985,
+          "receipt_type": "skill_release",
+          "basis": "REAL_MAPBATTLE_SKILL_RELEASE",
+          "frame_index": 1289
+        },
+        "contact": {
+          "time_seconds": 64.5399999999985,
+          "receipt_type": "v63_skill_hit",
+          "basis": "REAL_MAPBATTLE_CONTACT_RECEIPT",
+          "frame_index": 1291
+        },
+        "state_start": {
+          "time_seconds": 64.54999999999849,
+          "receipt_type": "status_applied",
+          "basis": "REAL_MAPBATTLE_STATE_RECEIPT",
+          "frame_index": 1291
+        },
+        "state_sustain": {
+          "time_seconds": 67.4499999999985,
+          "receipt_type": "status_applied",
+          "basis": "MIDDLE_OF_RECEIPT_DURATION",
+          "frame_index": 1349
+        },
+        "state_end": {
+          "time_seconds": 70.5099999999985,
+          "receipt_type": "status_applied",
+          "basis": "MAPBATTLE_ACTOR_STATUS_STACK",
+          "frame_index": 1410
+        }
+      }
+    },
+    {
+      "accepted_event_count": 8,
+      "configured_event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_skill_hit",
+        "status_applied"
+      ],
+      "contact_frame_seconds": 72.599999999998,
+      "encounter_id": "vfx_factory_poison_capture_10",
+      "event_count": 8,
+      "event_trace": [
+        {
+          "accepted": true,
+          "capture_frame_seconds": 70.9499999999981,
+          "caster_id": "caster_10",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_poison_capture_10/caster_10/1/skill_cast",
+          "event_type": "skill_cast",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.0,
+          "skill_id": "tmb.skill.poison.doc_cham.ultimate.human",
+          "target_ids": [
+            "poison_factory_target_11_01"
+          ],
+          "visual_phase": "charge"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 72.449999999998,
+          "caster_id": "caster_10",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_poison_capture_10/caster_10/1/skill_release",
+          "event_type": "skill_release",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 1.525,
+          "skill_id": "tmb.skill.poison.doc_cham.ultimate.human",
+          "target_ids": [
+            "poison_factory_target_11_01"
+          ],
+          "visual_phase": "release"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 72.499999999998,
+          "caster_id": "caster_10",
+          "contact_receipt_target_count": 0,
+          "event_expiry_seconds": 9.525,
+          "event_id": "vfx_factory_poison_capture_10/event/4",
+          "event_state_duration_seconds": 8.0,
+          "event_type": "status_applied",
+          "expiry_source": "MAPBATTLE_ACTOR_STATUS_STACK",
+          "observed_status_expiry_seconds": 9.525,
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 1.525,
+          "skill_id": "tmb.skill.poison.doc_cham.ultimate.human",
+          "target_ids": [
+            "poison_factory_target_11_01"
+          ],
+          "visual_phase": "start"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 72.549999999998,
+          "caster_id": "caster_10",
+          "contact_receipt_target_count": 1,
+          "event_id": "vfx_factory_poison_capture_10/caster_10/1/v63_skill_hit/poison_factory_target_11_01",
+          "event_type": "v63_skill_hit",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 1.525,
+          "skill_id": "tmb.skill.poison.doc_cham.ultimate.human",
+          "target_ids": [
+            "poison_factory_target_11_01"
+          ],
+          "visual_phase": "contact"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 72.599999999998,
+          "caster_id": "caster_10",
+          "contact_receipt_target_count": 1,
+          "event_expiry_seconds": 9.525,
+          "event_id": "vfx_factory_poison_capture_10/event/7",
+          "event_state_duration_seconds": 8.0,
+          "event_type": "status_applied",
+          "expiry_source": "MAPBATTLE_ACTOR_STATUS_STACK",
+          "observed_status_expiry_seconds": 9.525,
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 1.525,
+          "skill_id": "tmb.skill.poison.doc_cham.ultimate.human",
+          "target_ids": [
+            "poison_factory_target_11_02"
+          ],
+          "visual_phase": "start"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 72.649999999998,
+          "caster_id": "caster_10",
+          "contact_receipt_target_count": 2,
+          "event_id": "vfx_factory_poison_capture_10/caster_10/1/v63_skill_hit/poison_factory_target_11_02",
+          "event_type": "v63_skill_hit",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 1.525,
+          "skill_id": "tmb.skill.poison.doc_cham.ultimate.human",
+          "target_ids": [
+            "poison_factory_target_11_02"
+          ],
+          "visual_phase": "contact"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 72.699999999998,
+          "caster_id": "caster_10",
+          "contact_receipt_target_count": 2,
+          "event_expiry_seconds": 9.525,
+          "event_id": "vfx_factory_poison_capture_10/event/10",
+          "event_state_duration_seconds": 8.0,
+          "event_type": "status_applied",
+          "expiry_source": "MAPBATTLE_ACTOR_STATUS_STACK",
+          "observed_status_expiry_seconds": 9.525,
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 1.525,
+          "skill_id": "tmb.skill.poison.doc_cham.ultimate.human",
+          "target_ids": [
+            "poison_factory_target_11_03"
+          ],
+          "visual_phase": "start"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 72.749999999998,
+          "caster_id": "caster_10",
+          "contact_receipt_target_count": 3,
+          "event_id": "vfx_factory_poison_capture_10/caster_10/1/v63_skill_hit/poison_factory_target_11_03",
+          "event_type": "v63_skill_hit",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 1.525,
+          "skill_id": "tmb.skill.poison.doc_cham.ultimate.human",
+          "target_ids": [
+            "poison_factory_target_11_03"
+          ],
+          "visual_phase": "contact"
+        }
+      ],
+      "event_types": [
+        "skill_cast",
+        "skill_release",
+        "status_applied",
+        "v63_skill_hit"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "fixture_setup_receipts": [],
+      "name_vi": "Vạn Độc Xuyên Tâm",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "release_frame_seconds": 72.449999999998,
+      "skill_id": "tmb.skill.poison.doc_cham.ultimate.human",
+      "synthetic_events": 0,
+      "video_duration_seconds": 10.005,
+      "video_start_seconds": 70.8999999999981,
+      "phase_samples": {
+        "charge": {
+          "time_seconds": 71.0299999999981,
+          "receipt_type": "skill_cast",
+          "basis": "REAL_MAPBATTLE_SKILL_CAST",
+          "frame_index": 1421
+        },
+        "release": {
+          "time_seconds": 72.509999999998,
+          "receipt_type": "skill_release",
+          "basis": "REAL_MAPBATTLE_SKILL_RELEASE",
+          "frame_index": 1450
+        },
+        "contact": {
+          "time_seconds": 72.589999999998,
+          "receipt_type": "v63_skill_hit",
+          "basis": "REAL_MAPBATTLE_CONTACT_RECEIPT",
+          "frame_index": 1452
+        },
+        "state_start": {
+          "time_seconds": 72.59999999999799,
+          "receipt_type": "status_applied",
+          "basis": "REAL_MAPBATTLE_STATE_RECEIPT",
+          "frame_index": 1452
+        },
+        "state_sustain": {
+          "time_seconds": 76.499999999998,
+          "receipt_type": "status_applied",
+          "basis": "MIDDLE_OF_RECEIPT_DURATION",
+          "frame_index": 1530
+        },
+        "state_end": {
+          "time_seconds": 80.559999999998,
+          "receipt_type": "status_applied",
+          "basis": "MAPBATTLE_ACTOR_STATUS_STACK",
+          "frame_index": 1611
+        }
+      }
+    },
+    {
+      "accepted_event_count": 3,
+      "configured_event_types": [
+        "skill_cast",
+        "skill_release",
+        "heal"
+      ],
+      "contact_frame_seconds": 81.6199999999975,
+      "encounter_id": "vfx_factory_poison_capture_11",
+      "event_count": 3,
+      "event_trace": [
+        {
+          "accepted": true,
+          "capture_frame_seconds": 80.9999999999975,
+          "caster_id": "caster_11",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_poison_capture_11/caster_11/1/skill_cast",
+          "event_type": "skill_cast",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.575,
+          "skill_id": "tmb.skill.poison.duoc_doc.active_02.human",
+          "target_ids": [
+            "ally_11"
+          ],
+          "visual_phase": "charge"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 81.5499999999975,
+          "caster_id": "caster_11",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_poison_capture_11/caster_11/1/skill_release",
+          "event_type": "skill_release",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 1.125,
+          "skill_id": "tmb.skill.poison.duoc_doc.active_02.human",
+          "target_ids": [
+            "ally_11"
+          ],
+          "visual_phase": "release"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 81.5999999999975,
+          "caster_id": "caster_11",
+          "contact_receipt_target_count": 1,
+          "event_id": "vfx_factory_poison_capture_11/caster_11/1/heal/ally_11",
+          "event_type": "heal",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 1.125,
+          "skill_id": "tmb.skill.poison.duoc_doc.active_02.human",
+          "target_ids": [
+            "ally_11"
+          ],
+          "visual_phase": "contact"
+        }
+      ],
+      "event_types": [
+        "skill_cast",
+        "skill_release",
+        "heal"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "fixture_setup_receipts": [
+        {
+          "bound_to_candidate_visual": false,
+          "caster_id": "factory_setup_poisoner_11_00",
+          "event_id": "vfx_factory_poison_capture_11/factory_setup_poisoner_11_00/1/skill_cast",
+          "event_type": "skill_cast",
+          "real_mapbattle_event": true,
+          "skill_id": "tmb.skill.poison.doc_cham.active_02.human",
+          "target_id": "ally_11"
+        },
+        {
+          "bound_to_candidate_visual": false,
+          "caster_id": "factory_setup_poisoner_11_00",
+          "event_id": "vfx_factory_poison_capture_11/factory_setup_poisoner_11_00/1/skill_release",
+          "event_type": "skill_release",
+          "real_mapbattle_event": true,
+          "skill_id": "tmb.skill.poison.doc_cham.active_02.human",
+          "target_id": "ally_11"
+        },
+        {
+          "bound_to_candidate_visual": false,
+          "caster_id": "factory_setup_poisoner_11_00",
+          "event_id": "vfx_factory_poison_capture_11/event/4",
+          "event_type": "status_applied",
+          "real_mapbattle_event": true,
+          "skill_id": "tmb.skill.poison.doc_cham.active_02.human",
+          "target_id": "ally_11"
+        },
+        {
+          "bound_to_candidate_visual": false,
+          "caster_id": "factory_setup_poisoner_11_00",
+          "event_id": "vfx_factory_poison_capture_11/factory_setup_poisoner_11_00/1/v63_skill_hit/ally_11",
+          "event_type": "v63_skill_hit",
+          "real_mapbattle_event": true,
+          "skill_id": "tmb.skill.poison.doc_cham.active_02.human",
+          "target_id": "ally_11"
+        }
+      ],
+      "name_vi": "Giải Độc Hộ Tâm",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "release_frame_seconds": 81.5499999999975,
+      "skill_id": "tmb.skill.poison.duoc_doc.active_02.human",
+      "synthetic_events": 0,
+      "video_duration_seconds": 1.4,
+      "video_start_seconds": 80.9499999999975,
+      "phase_samples": {
+        "charge": {
+          "time_seconds": 81.0799999999975,
+          "receipt_type": "skill_cast",
+          "basis": "REAL_MAPBATTLE_SKILL_CAST",
+          "frame_index": 1622
+        },
+        "release": {
+          "time_seconds": 81.6099999999975,
+          "receipt_type": "skill_release",
+          "basis": "REAL_MAPBATTLE_SKILL_RELEASE",
+          "frame_index": 1632
+        },
+        "contact": {
+          "time_seconds": 81.6399999999975,
+          "receipt_type": "heal",
+          "basis": "REAL_MAPBATTLE_CONTACT_RECEIPT",
+          "frame_index": 1633
+        },
+        "state_end": {
+          "time_seconds": 81.91999999999749,
+          "receipt_type": "heal",
+          "basis": "POST_CONTACT_FADE_WINDOW",
+          "frame_index": 1638
+        }
+      }
+    },
+    {
+      "accepted_event_count": 3,
+      "configured_event_types": [
+        "skill_cast",
+        "skill_release",
+        "cleanse"
+      ],
+      "contact_frame_seconds": 83.0199999999974,
+      "encounter_id": "vfx_factory_poison_capture_12",
+      "event_count": 3,
+      "event_trace": [
+        {
+          "accepted": true,
+          "capture_frame_seconds": 82.3999999999974,
+          "caster_id": "caster_12",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_poison_capture_12/caster_12/1/skill_cast",
+          "event_type": "skill_cast",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.575,
+          "skill_id": "tmb.skill.poison.duoc_doc.active_03.human",
+          "target_ids": [
+            "ally_12"
+          ],
+          "visual_phase": "charge"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 82.9499999999974,
+          "caster_id": "caster_12",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_poison_capture_12/caster_12/1/skill_release",
+          "event_type": "skill_release",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 1.125,
+          "skill_id": "tmb.skill.poison.duoc_doc.active_03.human",
+          "target_ids": [
+            "ally_12"
+          ],
+          "visual_phase": "release"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 82.9999999999974,
+          "caster_id": "caster_12",
+          "contact_receipt_target_count": 1,
+          "event_id": "vfx_factory_poison_capture_12/caster_12/1/cleanse/ally_12",
+          "event_type": "cleanse",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 1.125,
+          "skill_id": "tmb.skill.poison.duoc_doc.active_03.human",
+          "target_ids": [
+            "ally_12"
+          ],
+          "visual_phase": "contact"
+        }
+      ],
+      "event_types": [
+        "skill_cast",
+        "skill_release",
+        "cleanse"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "fixture_setup_receipts": [
+        {
+          "bound_to_candidate_visual": false,
+          "caster_id": "factory_setup_poisoner_12_00",
+          "event_id": "vfx_factory_poison_capture_12/factory_setup_poisoner_12_00/1/skill_cast",
+          "event_type": "skill_cast",
+          "real_mapbattle_event": true,
+          "skill_id": "tmb.skill.poison.doc_cham.active_02.human",
+          "target_id": "ally_12"
+        },
+        {
+          "bound_to_candidate_visual": false,
+          "caster_id": "factory_setup_poisoner_12_00",
+          "event_id": "vfx_factory_poison_capture_12/factory_setup_poisoner_12_00/1/skill_release",
+          "event_type": "skill_release",
+          "real_mapbattle_event": true,
+          "skill_id": "tmb.skill.poison.doc_cham.active_02.human",
+          "target_id": "ally_12"
+        },
+        {
+          "bound_to_candidate_visual": false,
+          "caster_id": "factory_setup_poisoner_12_00",
+          "event_id": "vfx_factory_poison_capture_12/event/4",
+          "event_type": "status_applied",
+          "real_mapbattle_event": true,
+          "skill_id": "tmb.skill.poison.doc_cham.active_02.human",
+          "target_id": "ally_12"
+        },
+        {
+          "bound_to_candidate_visual": false,
+          "caster_id": "factory_setup_poisoner_12_00",
+          "event_id": "vfx_factory_poison_capture_12/factory_setup_poisoner_12_00/1/v63_skill_hit/ally_12",
+          "event_type": "v63_skill_hit",
+          "real_mapbattle_event": true,
+          "skill_id": "tmb.skill.poison.doc_cham.active_02.human",
+          "target_id": "ally_12"
+        }
+      ],
+      "name_vi": "Nghịch Độc Phản Chế",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "release_frame_seconds": 82.9499999999974,
+      "skill_id": "tmb.skill.poison.duoc_doc.active_03.human",
+      "synthetic_events": 0,
+      "video_duration_seconds": 1.4,
+      "video_start_seconds": 82.3499999999975,
+      "phase_samples": {
+        "charge": {
+          "time_seconds": 82.4799999999974,
+          "receipt_type": "skill_cast",
+          "basis": "REAL_MAPBATTLE_SKILL_CAST",
+          "frame_index": 1650
+        },
+        "release": {
+          "time_seconds": 83.0099999999974,
+          "receipt_type": "skill_release",
+          "basis": "REAL_MAPBATTLE_SKILL_RELEASE",
+          "frame_index": 1660
+        },
+        "contact": {
+          "time_seconds": 83.0399999999974,
+          "receipt_type": "cleanse",
+          "basis": "REAL_MAPBATTLE_CONTACT_RECEIPT",
+          "frame_index": 1661
+        },
+        "state_end": {
+          "time_seconds": 83.31999999999739,
+          "receipt_type": "cleanse",
+          "basis": "POST_CONTACT_FADE_WINDOW",
+          "frame_index": 1666
+        }
+      }
+    },
+    {
+      "accepted_event_count": 8,
+      "configured_event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_skill_hit",
+        "status_applied"
+      ],
+      "contact_frame_seconds": 84.4999999999973,
+      "encounter_id": "vfx_factory_poison_capture_13",
+      "event_count": 8,
+      "event_trace": [
+        {
+          "accepted": true,
+          "capture_frame_seconds": 83.7999999999974,
+          "caster_id": "caster_13",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_poison_capture_13/caster_13/1/skill_cast",
+          "event_type": "skill_cast",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.0,
+          "skill_id": "tmb.skill.poison.duoc_doc.active_04.human",
+          "target_ids": [
+            "poison_factory_target_14_01"
+          ],
+          "visual_phase": "charge"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 84.3499999999973,
+          "caster_id": "caster_13",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_poison_capture_13/caster_13/1/skill_release",
+          "event_type": "skill_release",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.6,
+          "skill_id": "tmb.skill.poison.duoc_doc.active_04.human",
+          "target_ids": [
+            "poison_factory_target_14_01"
+          ],
+          "visual_phase": "release"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 84.3999999999973,
+          "caster_id": "caster_13",
+          "contact_receipt_target_count": 0,
+          "event_expiry_seconds": 6.6,
+          "event_id": "vfx_factory_poison_capture_13/event/4",
+          "event_state_duration_seconds": 6.0,
+          "event_type": "status_applied",
+          "expiry_source": "MAPBATTLE_ACTOR_STATUS_STACK",
+          "observed_status_expiry_seconds": 6.6,
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.6,
+          "skill_id": "tmb.skill.poison.duoc_doc.active_04.human",
+          "target_ids": [
+            "poison_factory_target_14_01"
+          ],
+          "visual_phase": "start"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 84.4499999999973,
+          "caster_id": "caster_13",
+          "contact_receipt_target_count": 1,
+          "event_id": "vfx_factory_poison_capture_13/caster_13/1/v63_skill_hit/poison_factory_target_14_01",
+          "event_type": "v63_skill_hit",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.6,
+          "skill_id": "tmb.skill.poison.duoc_doc.active_04.human",
+          "target_ids": [
+            "poison_factory_target_14_01"
+          ],
+          "visual_phase": "contact"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 84.4999999999973,
+          "caster_id": "caster_13",
+          "contact_receipt_target_count": 1,
+          "event_expiry_seconds": 6.6,
+          "event_id": "vfx_factory_poison_capture_13/event/7",
+          "event_state_duration_seconds": 6.0,
+          "event_type": "status_applied",
+          "expiry_source": "MAPBATTLE_ACTOR_STATUS_STACK",
+          "observed_status_expiry_seconds": 6.6,
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.6,
+          "skill_id": "tmb.skill.poison.duoc_doc.active_04.human",
+          "target_ids": [
+            "poison_factory_target_14_02"
+          ],
+          "visual_phase": "start"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 84.5499999999973,
+          "caster_id": "caster_13",
+          "contact_receipt_target_count": 2,
+          "event_id": "vfx_factory_poison_capture_13/caster_13/1/v63_skill_hit/poison_factory_target_14_02",
+          "event_type": "v63_skill_hit",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.6,
+          "skill_id": "tmb.skill.poison.duoc_doc.active_04.human",
+          "target_ids": [
+            "poison_factory_target_14_02"
+          ],
+          "visual_phase": "contact"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 84.5999999999973,
+          "caster_id": "caster_13",
+          "contact_receipt_target_count": 2,
+          "event_expiry_seconds": 6.6,
+          "event_id": "vfx_factory_poison_capture_13/event/10",
+          "event_state_duration_seconds": 6.0,
+          "event_type": "status_applied",
+          "expiry_source": "MAPBATTLE_ACTOR_STATUS_STACK",
+          "observed_status_expiry_seconds": 6.6,
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.6,
+          "skill_id": "tmb.skill.poison.duoc_doc.active_04.human",
+          "target_ids": [
+            "poison_factory_target_14_03"
+          ],
+          "visual_phase": "start"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 84.6499999999973,
+          "caster_id": "caster_13",
+          "contact_receipt_target_count": 3,
+          "event_id": "vfx_factory_poison_capture_13/caster_13/1/v63_skill_hit/poison_factory_target_14_03",
+          "event_type": "v63_skill_hit",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.6,
+          "skill_id": "tmb.skill.poison.duoc_doc.active_04.human",
+          "target_ids": [
+            "poison_factory_target_14_03"
+          ],
+          "visual_phase": "contact"
+        }
+      ],
+      "event_types": [
+        "skill_cast",
+        "skill_release",
+        "status_applied",
+        "v63_skill_hit"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "fixture_setup_receipts": [],
+      "name_vi": "Hóa Độc Tán",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "release_frame_seconds": 84.3499999999973,
+      "skill_id": "tmb.skill.poison.duoc_doc.active_04.human",
+      "synthetic_events": 0,
+      "video_duration_seconds": 7.08,
+      "video_start_seconds": 83.7499999999974,
+      "phase_samples": {
+        "charge": {
+          "time_seconds": 83.8799999999974,
+          "receipt_type": "skill_cast",
+          "basis": "REAL_MAPBATTLE_SKILL_CAST",
+          "frame_index": 1678
+        },
+        "release": {
+          "time_seconds": 84.4099999999973,
+          "receipt_type": "skill_release",
+          "basis": "REAL_MAPBATTLE_SKILL_RELEASE",
+          "frame_index": 1688
+        },
+        "contact": {
+          "time_seconds": 84.48999999999731,
+          "receipt_type": "v63_skill_hit",
+          "basis": "REAL_MAPBATTLE_CONTACT_RECEIPT",
+          "frame_index": 1690
+        },
+        "state_start": {
+          "time_seconds": 84.4999999999973,
+          "receipt_type": "status_applied",
+          "basis": "REAL_MAPBATTLE_STATE_RECEIPT",
+          "frame_index": 1690
+        },
+        "state_sustain": {
+          "time_seconds": 87.3999999999973,
+          "receipt_type": "status_applied",
+          "basis": "MIDDLE_OF_RECEIPT_DURATION",
+          "frame_index": 1748
+        },
+        "state_end": {
+          "time_seconds": 90.45999999999731,
+          "receipt_type": "status_applied",
+          "basis": "MAPBATTLE_ACTOR_STATUS_STACK",
+          "frame_index": 1809
+        }
+      }
+    },
+    {
+      "accepted_event_count": 5,
+      "configured_event_types": [
+        "skill_cast",
+        "skill_release",
+        "heal"
+      ],
+      "contact_frame_seconds": 92.1199999999969,
+      "encounter_id": "vfx_factory_poison_capture_14",
+      "event_count": 5,
+      "event_trace": [
+        {
+          "accepted": true,
+          "capture_frame_seconds": 90.899999999997,
+          "caster_id": "caster_14",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_poison_capture_14/caster_14/1/skill_cast",
+          "event_type": "skill_cast",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 1.725,
+          "skill_id": "tmb.skill.poison.duoc_doc.ultimate.human",
+          "target_ids": [
+            "ally_14"
+          ],
+          "visual_phase": "charge"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 92.0499999999969,
+          "caster_id": "caster_14",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_poison_capture_14/caster_14/1/skill_release",
+          "event_type": "skill_release",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 2.925,
+          "skill_id": "tmb.skill.poison.duoc_doc.ultimate.human",
+          "target_ids": [
+            "ally_14"
+          ],
+          "visual_phase": "release"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 92.0999999999969,
+          "caster_id": "caster_14",
+          "contact_receipt_target_count": 1,
+          "event_id": "vfx_factory_poison_capture_14/caster_14/1/heal/ally_14",
+          "event_type": "heal",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 2.925,
+          "skill_id": "tmb.skill.poison.duoc_doc.ultimate.human",
+          "target_ids": [
+            "ally_14"
+          ],
+          "visual_phase": "contact"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 92.1499999999969,
+          "caster_id": "caster_14",
+          "contact_receipt_target_count": 2,
+          "event_id": "vfx_factory_poison_capture_14/caster_14/1/heal/poison_factory_ally_15_02",
+          "event_type": "heal",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 2.925,
+          "skill_id": "tmb.skill.poison.duoc_doc.ultimate.human",
+          "target_ids": [
+            "poison_factory_ally_15_02"
+          ],
+          "visual_phase": "contact"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 92.1999999999969,
+          "caster_id": "caster_14",
+          "contact_receipt_target_count": 3,
+          "event_id": "vfx_factory_poison_capture_14/caster_14/1/heal/poison_factory_ally_15_03",
+          "event_type": "heal",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 2.925,
+          "skill_id": "tmb.skill.poison.duoc_doc.ultimate.human",
+          "target_ids": [
+            "poison_factory_ally_15_03"
+          ],
+          "visual_phase": "contact"
+        }
+      ],
+      "event_types": [
+        "skill_cast",
+        "skill_release",
+        "heal"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "fixture_setup_receipts": [
+        {
+          "bound_to_candidate_visual": false,
+          "caster_id": "factory_setup_poisoner_14_00",
+          "event_id": "vfx_factory_poison_capture_14/factory_setup_poisoner_14_00/1/skill_cast",
+          "event_type": "skill_cast",
+          "real_mapbattle_event": true,
+          "skill_id": "tmb.skill.poison.doc_cham.active_02.human",
+          "target_id": "ally_14"
+        },
+        {
+          "bound_to_candidate_visual": false,
+          "caster_id": "factory_setup_poisoner_14_00",
+          "event_id": "vfx_factory_poison_capture_14/factory_setup_poisoner_14_00/1/skill_release",
+          "event_type": "skill_release",
+          "real_mapbattle_event": true,
+          "skill_id": "tmb.skill.poison.doc_cham.active_02.human",
+          "target_id": "ally_14"
+        },
+        {
+          "bound_to_candidate_visual": false,
+          "caster_id": "factory_setup_poisoner_14_00",
+          "event_id": "vfx_factory_poison_capture_14/event/4",
+          "event_type": "status_applied",
+          "real_mapbattle_event": true,
+          "skill_id": "tmb.skill.poison.doc_cham.active_02.human",
+          "target_id": "ally_14"
+        },
+        {
+          "bound_to_candidate_visual": false,
+          "caster_id": "factory_setup_poisoner_14_00",
+          "event_id": "vfx_factory_poison_capture_14/factory_setup_poisoner_14_00/1/v63_skill_hit/ally_14",
+          "event_type": "v63_skill_hit",
+          "real_mapbattle_event": true,
+          "skill_id": "tmb.skill.poison.doc_cham.active_02.human",
+          "target_id": "ally_14"
+        },
+        {
+          "bound_to_candidate_visual": false,
+          "caster_id": "factory_setup_poisoner_14_01",
+          "event_id": "vfx_factory_poison_capture_14/factory_setup_poisoner_14_01/1/skill_cast",
+          "event_type": "skill_cast",
+          "real_mapbattle_event": true,
+          "skill_id": "tmb.skill.poison.doc_cham.active_02.human",
+          "target_id": "poison_factory_ally_15_02"
+        },
+        {
+          "bound_to_candidate_visual": false,
+          "caster_id": "factory_setup_poisoner_14_01",
+          "event_id": "vfx_factory_poison_capture_14/factory_setup_poisoner_14_01/1/skill_release",
+          "event_type": "skill_release",
+          "real_mapbattle_event": true,
+          "skill_id": "tmb.skill.poison.doc_cham.active_02.human",
+          "target_id": "poison_factory_ally_15_02"
+        },
+        {
+          "bound_to_candidate_visual": false,
+          "caster_id": "factory_setup_poisoner_14_01",
+          "event_id": "vfx_factory_poison_capture_14/event/9",
+          "event_type": "status_applied",
+          "real_mapbattle_event": true,
+          "skill_id": "tmb.skill.poison.doc_cham.active_02.human",
+          "target_id": "poison_factory_ally_15_02"
+        },
+        {
+          "bound_to_candidate_visual": false,
+          "caster_id": "factory_setup_poisoner_14_01",
+          "event_id": "vfx_factory_poison_capture_14/factory_setup_poisoner_14_01/1/v63_skill_hit/poison_factory_ally_15_02",
+          "event_type": "v63_skill_hit",
+          "real_mapbattle_event": true,
+          "skill_id": "tmb.skill.poison.doc_cham.active_02.human",
+          "target_id": "poison_factory_ally_15_02"
+        },
+        {
+          "bound_to_candidate_visual": false,
+          "caster_id": "factory_setup_poisoner_14_02",
+          "event_id": "vfx_factory_poison_capture_14/factory_setup_poisoner_14_02/1/skill_cast",
+          "event_type": "skill_cast",
+          "real_mapbattle_event": true,
+          "skill_id": "tmb.skill.poison.doc_cham.active_02.human",
+          "target_id": "poison_factory_ally_15_03"
+        },
+        {
+          "bound_to_candidate_visual": false,
+          "caster_id": "factory_setup_poisoner_14_02",
+          "event_id": "vfx_factory_poison_capture_14/factory_setup_poisoner_14_02/1/skill_release",
+          "event_type": "skill_release",
+          "real_mapbattle_event": true,
+          "skill_id": "tmb.skill.poison.doc_cham.active_02.human",
+          "target_id": "poison_factory_ally_15_03"
+        },
+        {
+          "bound_to_candidate_visual": false,
+          "caster_id": "factory_setup_poisoner_14_02",
+          "event_id": "vfx_factory_poison_capture_14/event/14",
+          "event_type": "status_applied",
+          "real_mapbattle_event": true,
+          "skill_id": "tmb.skill.poison.doc_cham.active_02.human",
+          "target_id": "poison_factory_ally_15_03"
+        },
+        {
+          "bound_to_candidate_visual": false,
+          "caster_id": "factory_setup_poisoner_14_02",
+          "event_id": "vfx_factory_poison_capture_14/factory_setup_poisoner_14_02/1/v63_skill_hit/poison_factory_ally_15_03",
+          "event_type": "v63_skill_hit",
+          "real_mapbattle_event": true,
+          "skill_id": "tmb.skill.poison.doc_cham.active_02.human",
+          "target_id": "poison_factory_ally_15_03"
+        }
+      ],
+      "name_vi": "Vạn Linh Giải Ách",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "release_frame_seconds": 92.0499999999969,
+      "skill_id": "tmb.skill.poison.duoc_doc.ultimate.human",
+      "synthetic_events": 0,
+      "video_duration_seconds": 1.7,
+      "video_start_seconds": 90.849999999997,
+      "phase_samples": {
+        "charge": {
+          "time_seconds": 90.97999999999699,
+          "receipt_type": "skill_cast",
+          "basis": "REAL_MAPBATTLE_SKILL_CAST",
+          "frame_index": 1820
+        },
+        "release": {
+          "time_seconds": 92.1099999999969,
+          "receipt_type": "skill_release",
+          "basis": "REAL_MAPBATTLE_SKILL_RELEASE",
+          "frame_index": 1842
+        },
+        "contact": {
+          "time_seconds": 92.1399999999969,
+          "receipt_type": "heal",
+          "basis": "REAL_MAPBATTLE_CONTACT_RECEIPT",
+          "frame_index": 1843
+        },
+        "state_end": {
+          "time_seconds": 92.41999999999689,
+          "receipt_type": "heal",
+          "basis": "POST_CONTACT_FADE_WINDOW",
+          "frame_index": 1848
+        }
+      }
+    },
+    {
+      "accepted_event_count": 1,
+      "configured_event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_mobility"
+      ],
+      "contact_frame_seconds": -1.0,
+      "encounter_id": "vfx_factory_poison_capture_15",
+      "event_count": 1,
+      "event_trace": [
+        {
+          "accepted": true,
+          "capture_frame_seconds": 92.5999999999969,
+          "caster_id": "caster_15",
+          "contact_receipt_target_count": 0,
+          "event_expiry_seconds": 1.0,
+          "event_id": "vfx_factory_poison_capture_15/event/1",
+          "event_state_duration_seconds": 1.0,
+          "event_type": "v63_mobility",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.0,
+          "skill_id": "tmb.skill.poison.mobility.human",
+          "target_ids": [],
+          "visual_phase": "start"
+        }
+      ],
+      "event_types": [
+        "v63_mobility"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "fixture_setup_receipts": [],
+      "mobility_frame_seconds": 92.6199999999969,
+      "name_vi": "Yểm Ảnh Bộ",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "release_frame_seconds": -1.0,
+      "skill_id": "tmb.skill.poison.mobility.human",
+      "start_frame_seconds": 92.6199999999969,
+      "synthetic_events": 0,
+      "video_duration_seconds": 1.48,
+      "video_start_seconds": 92.5499999999969,
+      "phase_samples": {
+        "state_start": {
+          "time_seconds": 92.69999999999689,
+          "receipt_type": "v63_mobility",
+          "basis": "REAL_MAPBATTLE_STATE_RECEIPT",
+          "frame_index": 1854
+        },
+        "state_sustain": {
+          "time_seconds": 93.0999999999969,
+          "receipt_type": "v63_mobility",
+          "basis": "MIDDLE_OF_RECEIPT_DURATION",
+          "frame_index": 1862
+        },
+        "state_end": {
+          "time_seconds": 93.6599999999969,
+          "receipt_type": "v63_mobility",
+          "basis": "REAL_EVENT_EXPIRY",
+          "frame_index": 1873
+        }
+      }
+    }
+  ],
+  "technical_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
+  "viewport_px": [
+    1280,
+    720
+  ],
+  "receipt_summary": {
+    "candidate_events": 80,
+    "accepted_candidate_events": 80,
+    "synthetic_candidate_events": 0,
+    "fixture_setup_receipts": 20,
+    "poison_expiry_source": "MAPBATTLE_ACTOR_STATUS_STACK",
+    "healing_and_cleanse_setup_receipts_excluded_from_candidate_count": true
+  },
+  "movie": {
+    "path": "res://labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_native_1280x720.mp4",
+    "codec": "h264",
+    "viewport_px": [
+      1280,
+      720
+    ],
+    "fps": 20,
+    "duration_seconds": 94.1,
+    "full_decode": "PASS"
+  },
+  "contact_sheet": {
+    "path": "res://labs/combat_lab/poison_factory_batch1_20261125/review/native/poison_batch1_contact_sheet_1280x720.png",
+    "columns": [
+      "CHARGE",
+      "RELEASE",
+      "CONTACT",
+      "STATE START",
+      "SUSTAIN",
+      "STATE END / FADE"
+    ],
+    "phase_samples": "RECEIPT_TIMED; ACTUAL_MAPBATTLE_EVENTS_ONLY"
+  }
+}

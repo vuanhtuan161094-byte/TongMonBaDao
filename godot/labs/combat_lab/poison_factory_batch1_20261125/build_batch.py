@@ -411,6 +411,8 @@ def main() -> None:
         target_mode = "ally" if is_ally else ("circle" if is_circle else "single_target")
         if spec["mechanic_template_override"]:
             mechanic = spec["mechanic_template_override"]
+        elif effect == "damage":
+            mechanic = "projectile"
         elif effect == "poison":
             mechanic = "circle_aoe" if is_circle else "projectile"
         else:
@@ -512,7 +514,7 @@ def main() -> None:
             "source_owner_gate": owner_row["owner_gate"],
             "native_status": "NATIVE_PENDING",
             "native_ready": False,
-            "owner_status": "OWNER_VISUAL_PENDING_FACTORY_ADAPTER",
+            "owner_status": "OWNER_VISUAL_PENDING",
             "motion_status": "SOURCE_FRAME_SEQUENCE_IN_SHARED_RENDERER; CONTINUOUS_STYLE_REVIEW_PENDING",
             "source_batch_manifest": f"{BATCH_RES}/manifest.json",
             "receipt_manifest": {"schema": "tmb.vfx_bindings.v1", "skill_id": sid, "bindings": bindings},

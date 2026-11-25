@@ -11,9 +11,11 @@ const CURSE_CATALOG_PATH := "res://data/combat/v63_curse_combat_catalog.json"
 const PALM_CATALOG_PATH := "res://data/combat/v63_palm_combat_catalog.json"
 const SPEAR_CATALOG_PATH := "res://data/combat/v63_spear_combat_catalog.json"
 const BLADE_CATALOG_PATH := "res://data/combat/v63_blade_combat_catalog.json"
+const HUMAN_CATALOG_PATH := "res://data/combat/v63_human_combat_catalog.json"
 
 var failures := 0
 var checked := 0
+var skill_count := 0
 
 func _initialize() -> void:
 	call_deferred("_run")
@@ -33,11 +35,14 @@ func _run() -> void:
 	var palm_catalog: Variant = JSON.parse_string(FileAccess.get_file_as_string(PALM_CATALOG_PATH))
 	var spear_catalog: Variant = JSON.parse_string(FileAccess.get_file_as_string(SPEAR_CATALOG_PATH))
 	var blade_catalog: Variant = JSON.parse_string(FileAccess.get_file_as_string(BLADE_CATALOG_PATH))
+	var human_catalog: Variant = JSON.parse_string(FileAccess.get_file_as_string(HUMAN_CATALOG_PATH))
 	_check(registry is Dictionary and manifest is Dictionary and catalog is Dictionary and talisman_catalog is Dictionary
-		and curse_catalog is Dictionary and palm_catalog is Dictionary and spear_catalog is Dictionary and blade_catalog is Dictionary,
+		and curse_catalog is Dictionary and palm_catalog is Dictionary and spear_catalog is Dictionary and blade_catalog is Dictionary
+		and human_catalog is Dictionary,
 		"all source registries parse")
 	if not (registry is Dictionary and manifest is Dictionary and catalog is Dictionary and talisman_catalog is Dictionary
-		and curse_catalog is Dictionary and palm_catalog is Dictionary and spear_catalog is Dictionary and blade_catalog is Dictionary):
+		and curse_catalog is Dictionary and palm_catalog is Dictionary and spear_catalog is Dictionary and blade_catalog is Dictionary
+		and human_catalog is Dictionary):
 		_finish()
 		return
 	var formation_by_id: Dictionary = {}
@@ -56,8 +61,11 @@ func _run() -> void:
 		canonical_by_id[str(row.get("id", ""))] = row
 	for row in blade_catalog.get("skills", []):
 		canonical_by_id[str(row.get("id", ""))] = row
+	for row in human_catalog.get("skills", []):
+		canonical_by_id[str(row.get("id", ""))] = row
 	var cases: Array = registry.get("entries", [])
-	_check(cases.size() == 38, "shared registry retains existing cues, 17 Formation, 15 Talisman, Curse, Blade, Palm and Spear candidates")
+	skill_count = cases.size()
+	_check(cases.size() == 54, "shared registry retains the existing cues plus 17 Formation, 15 Talisman, 16 Poison and other school candidates")
 	var ground_scale := FACTORY_SCRIPT.phase_texture_scale(Vector2(512.0, 512.0),
 		{"display_width_px":488.0,"display_height_px":238.0})
 	_check(absf(ground_scale.x - 488.0 / 512.0) < 0.0001
@@ -73,6 +81,7 @@ func _run() -> void:
 		var is_blade := skill_id == "tmb.skill.blade.cuong_dao.active_01.human"
 		var is_palm := skill_id == "tmb.skill.palm.han_ngoc_chuong.active_01.human"
 		var is_spear := skill_id == "tmb.skill.spear.long_thuong.active_01.human"
+		var is_poison := skill_id.begins_with("tmb.skill.poison.")
 		var lab := FACTORY_SCENE.instantiate() as Node2D
 		lab.call("review_set_skill_id", skill_id)
 		root.add_child(lab)
@@ -330,6 +339,54 @@ func _run() -> void:
 			_check(str(contact_wait.get("receipt_state", "")) == "WAITING_FOR_REAL_RECEIPT"
 				and int(contact_wait.get("contact_receipt_target_count", -1)) == 0,
 				"contact remains hidden until the native runner supplies a real skill hit " + skill_id)
+		elif is_poison:
+			var canonical: Dictionary = canonical_by_id.get(skill_id, {})
+			_check(not canonical.is_empty(), "Poison Human catalogue joins " + skill_id)
+			_check(str(state.get("canonical_effect", "")) == str(canonical.get("effect", ""))
+				and str(state.get("canonical_shape", "")) == str(canonical.get("shape", ""))
+				and int(state.get("canonical_target_limit", 0)) == int(canonical.get("target_limit", 0)),
+				"Poison effect, shape and target cap remain canonical-data-owned " + skill_id)
+			_check(int(state.get("actor_asset_id", -1)) == 62,
+				"Poison uses the existing AS62 actor through the shared bridge " + skill_id)
+			var phase_rows: Dictionary = entry.get("phase_sources", {})
+			var expected_frames := 0
+			for phase_name in phase_rows:
+				expected_frames += phase_rows[phase_name].get("frames", []).size()
+			_check(int(state.get("phase_sources_loaded", 0)) == phase_rows.size()
+				and int(state.get("frame_count", 0)) == expected_frames and expected_frames > 0,
+				"Poison source frame sequences load through the shared renderer " + skill_id)
+			_check(str(entry.get("owner_status", "")) == "OWNER_VISUAL_PENDING"
+				and not str(entry.get("source_owner_gate", "")).is_empty()
+				and not bool(entry.get("native_ready", true)),
+				"Factory approval stays pending while the original source gate is preserved " + skill_id)
+			var poison_bindings: Array[String] = []
+			for binding in entry.get("receipt_manifest", {}).get("bindings", []):
+				poison_bindings.append(str(binding.get("event_type", "")))
+			var effect := str(canonical.get("effect", ""))
+			if str(canonical.get("slot", "")) == "basic":
+				_check(poison_bindings.has("hit") and not poison_bindings.has("v63_skill_hit"),
+					"Poison basic contact uses the exact MapBattle basic receipt " + skill_id)
+			elif effect in ["damage", "poison", "mark"]:
+				_check(poison_bindings.has("skill_cast") and poison_bindings.has("skill_release")
+					and poison_bindings.has("v63_skill_hit"),
+					"Poison cast and contact use real exact-skill events " + skill_id)
+				if effect in ["poison", "mark"]:
+					_check(poison_bindings.has("status_applied"),
+						"Poison or mark state needs its exact status receipt " + skill_id)
+			elif effect == "heal":
+				_check(poison_bindings.has("heal") and entry.has("fixture_setup"),
+					"Poison heal is receipt-bound after separately recorded fixture setup " + skill_id)
+			elif effect == "cleanse":
+				_check(poison_bindings.has("cleanse") and entry.has("fixture_setup"),
+					"Poison cleanse is receipt-bound after separately recorded fixture setup " + skill_id)
+			elif effect == "mobility":
+				_check(poison_bindings.has("v63_mobility"),
+					"Poison mobility uses the authoritative movement receipt " + skill_id)
+			lab.call("review_seek_phase", "contact")
+			var poison_contact_wait: Dictionary = lab.call("review_state")
+			_check(str(poison_contact_wait.get("receipt_state", "")) == "WAITING_FOR_REAL_RECEIPT"
+				and int(poison_contact_wait.get("contact_receipt_target_count", -1)) == 0,
+				"Poison contact remains hidden without a real receipt " + skill_id)
 		else:
 			_check(str(state.get("canonical_effect", "")) == "damage",
 				"existing candidate canonical effect preserved " + skill_id)
@@ -341,6 +398,6 @@ func _run() -> void:
 
 func _finish() -> void:
 	print("VFX_FACTORY_REVIEW_RESULT=" + ("PASS" if failures == 0 else "FAIL")
-		+ " cases=" + str(checked) + " skills=" + str(38)
-		+ " formation=17 talisman=15 AS64=resolved curse=AS66_storyboard blade=AS50 receipt palm=AS60 spear=AS54 failures=" + str(failures))
+		+ " cases=" + str(checked) + " skills=" + str(skill_count)
+		+ " formation=17 talisman=15 poison=16 AS62=resolved curse=AS66_storyboard blade=AS50 receipt palm=AS60 spear=AS54 failures=" + str(failures))
 	quit(0 if failures == 0 else 1)
