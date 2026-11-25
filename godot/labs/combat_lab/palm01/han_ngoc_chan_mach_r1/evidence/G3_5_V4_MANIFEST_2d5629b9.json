@@ -1,0 +1,142 @@
+{
+  "atlas_integrity": {
+    "godot/labs/combat_lab/palm01/han_ngoc_chan_mach_r1/source/charge_r2.png": {
+      "byte_unique_only_not_motion_approved": true,
+      "frames": 1,
+      "sha256_file": "61bf937a56ff7cbcefe25b220ef831e12252b5ed8e25692a02964213edc43112",
+      "size_px": [
+        1536,
+        1024
+      ]
+    },
+    "godot/labs/combat_lab/palm01/han_ngoc_chan_mach_r1/source/contact_r1.png": {
+      "byte_unique_only_not_motion_approved": true,
+      "frames": 1,
+      "sha256_file": "daa82923a4ecf45b8fdd6ef749c9ec0cdddced94128559a191bd080e749c01f6",
+      "size_px": [
+        1774,
+        887
+      ]
+    },
+    "godot/labs/combat_lab/palm01/han_ngoc_chan_mach_r1/source/peak_r2.png": {
+      "byte_unique_only_not_motion_approved": true,
+      "frames": 1,
+      "sha256_file": "d42a2dba5c654d0a8633054fdf69b8c71f4c11bb940d121762b0e12e8c81ae3c",
+      "size_px": [
+        1774,
+        887
+      ]
+    }
+  },
+  "canonical_skill": "tmb.skill.palm.han_ngoc_chuong.active_01.human",
+  "native_visual_evidence": {
+    "actual_moving_target_checked_by_focused_Godot_contract": true,
+    "focused_test": "godot-focused.log",
+    "frames": {
+      "charge": {
+        "at_seconds": 0.05,
+        "file": "v4-charge.png",
+        "sha256": "ac83bab8eab89503c41ab490d44f92d114d97477c6b851e4bfc6e7eb7ff204d8",
+        "size_px": [
+          1280,
+          720
+        ]
+      },
+      "contact": {
+        "at_seconds": 0.82,
+        "file": "v4-contact.png",
+        "sha256": "bdd4fcc4d4390749f497abf8ad7c677665aeb6c80cc72450b63cf24dd76736a9",
+        "size_px": [
+          1280,
+          720
+        ]
+      },
+      "peak": {
+        "at_seconds": 0.62,
+        "file": "v4-peak.png",
+        "sha256": "eff3aba39b1d88579f46046e709114460b27a5eb9150587a2ecc29bef63d3557",
+        "size_px": [
+          1280,
+          720
+        ]
+      }
+    },
+    "human_art_review": "REQUIRED_NOT_AUTOMATED",
+    "motion_pixel_difference_only_not_art_approval": true,
+    "native_log": "godot-preflight.log",
+    "native_video": {
+      "duration": 1.066667,
+      "file": "han-ngoc-chan-mach-r1-g35.mp4",
+      "height": 720,
+      "sha256": "4322bd4d0c1477197243f30786796fb3e91db0f25815cb3e6eae47fb53725611",
+      "width": 1280
+    }
+  },
+  "no_runtime_receipt": true,
+  "packet_file_sha256": "090568079a639058a9b605e5d1f307ae17f5ca45e5b8764fa9918bbc1dd706c0",
+  "source_commit_sha": "2d5629b9011f216de1d169133632d7040636ae16",
+  "source_masters": {
+    "godot/labs/combat_lab/palm01/han_ngoc_chan_mach_r1/source/charge_r2.png": {
+      "sha256_decoded": "61bf937a56ff7cbcefe25b220ef831e12252b5ed8e25692a02964213edc43112",
+      "size_px": [
+        1536,
+        1024
+      ]
+    },
+    "godot/labs/combat_lab/palm01/han_ngoc_chan_mach_r1/source/contact_r1.png": {
+      "sha256_decoded": "daa82923a4ecf45b8fdd6ef749c9ec0cdddced94128559a191bd080e749c01f6",
+      "size_px": [
+        1774,
+        887
+      ]
+    },
+    "godot/labs/combat_lab/palm01/han_ngoc_chan_mach_r1/source/peak_r2.png": {
+      "sha256_decoded": "d42a2dba5c654d0a8633054fdf69b8c71f4c11bb940d121762b0e12e8c81ae3c",
+      "size_px": [
+        1774,
+        887
+      ]
+    }
+  },
+  "status": {
+    "human_art_review": "NOT_APPROVED_BY_AUTOMATION",
+    "owner_visual": "OWNER_VISUAL_PENDING",
+    "physical_device": "PENDING",
+    "pve_integration": "HOLD",
+    "runtime_hit_receipt": "RUNTIME_MAPPING_PENDING",
+    "source_fidelity": "MANUAL_ART_REVIEW_REQUIRED",
+    "v4_preflight_technical": "PASS"
+  },
+  "timing": {
+    "combat_clock": "CATALOGUE_GATED_NOT_LIVE",
+    "declared_cast_end_seconds": 0.55,
+    "declared_status_duration_seconds": 0.0,
+    "demo_clock_warning": "This isolated candidate preview calls the existing Human skill and MapBattleV2 release path on an in-memory fixture while V6.3/PvE remain OFF. The contact accent is enabled only after one positive v63_skill_hit. This is not live gameplay integration, SaveService use, or physical device QA.",
+    "demo_loop_seconds": 1.5,
+    "key_pose_budget_note": "Three independent transparent phase masters; transitions are preview choreography, not additional hits.",
+    "phases": [
+      {
+        "at_seconds": 0.05,
+        "expected_phase": "compact cold-pressure seed at AS60 candidate palm",
+        "file": "v4-charge.png",
+        "id": "charge"
+      },
+      {
+        "at_seconds": 0.62,
+        "expected_phase": "broad open-palm wave after the cast receipt",
+        "file": "v4-peak.png",
+        "id": "peak"
+      },
+      {
+        "at_seconds": 0.82,
+        "expected_phase": "one compact target-center glint after a positive hit receipt",
+        "file": "v4-contact.png",
+        "id": "contact"
+      }
+    ],
+    "runtime_receipt_timestamp": "RUNTIME_MAPPING_PENDING",
+    "simulated_hit_seconds": 0.55,
+    "vfx_clock": "LAB_ONLY",
+    "visual_fade_end_seconds": 1.4
+  }
+}

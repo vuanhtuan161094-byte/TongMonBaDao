@@ -109,5 +109,40 @@
   "visual_rule": "contact glint only after this positive v63_skill_hit receipt",
   "preview_only": true,
   "save_service_used": false,
-  "pve": "OFF"
+  "pve": "OFF",
+  "native_rendered_proof": {
+    "status": "G35_NATIVE_TECH_PASS_OWNER_ART_PENDING",
+    "source_commit_sha": "2d5629b9011f216de1d169133632d7040636ae16",
+    "workflow_run_id": 45570479105,
+    "workflow_url": "https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/45570479105",
+    "video": {
+      "path": "godot/labs/combat_lab/palm01/han_ngoc_chan_mach_r1/evidence/G3_5_NATIVE_R1_2d5629b9.mp4",
+      "sha256": "4322bd4d0c1477197243f30786796fb3e91db0f25815cb3e6eae47fb53725611"
+    },
+    "frames": {
+      "charge": {
+        "path": "godot/labs/combat_lab/palm01/han_ngoc_chan_mach_r1/evidence/G3_5_NATIVE_CHARGE_2d5629b9.png",
+        "at_seconds": 0.05,
+        "sha256": "ac83bab8eab89503c41ab490d44f92d114d97477c6b851e4bfc6e7eb7ff204d8"
+      },
+      "peak": {
+        "path": "godot/labs/combat_lab/palm01/han_ngoc_chan_mach_r1/evidence/G3_5_NATIVE_PEAK_2d5629b9.png",
+        "at_seconds": 0.62,
+        "sha256": "eff3aba39b1d88579f46046e709114460b27a5eb9150587a2ecc29bef63d3557"
+      },
+      "contact": {
+        "path": "godot/labs/combat_lab/palm01/han_ngoc_chan_mach_r1/evidence/G3_5_NATIVE_CONTACT_2d5629b9.png",
+        "at_seconds": 0.82,
+        "sha256": "bdd4fcc4d4390749f497abf8ad7c677665aeb6c80cc72450b63cf24dd76736a9"
+      }
+    },
+    "markers": [
+      "PALM01_RECEIPT_TEST_RESULT PASS",
+      "PALM_G35_RECEIPT_PASS",
+      "VFX_V4_EVIDENCE_TECHNICAL_PASS"
+    ],
+    "owner_art": "PENDING",
+    "pve": "HOLD_V63_OFF",
+    "android_device_qa": "NOT_EXECUTED"
+  }
 }
