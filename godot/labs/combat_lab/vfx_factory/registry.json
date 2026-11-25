@@ -2776,134 +2776,186 @@
         "end": "fade"
       },
       "draw_layer": "BEHIND",
-      "source_g3": "ART_SEMANTIC_REVIEW_REQUIRED_DAMAGE_VS_SHIELD_READ",
-      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720",
+      "source_g3": "ART_SOURCE_SELF_REVIEWED_R2_ATTACK_MORPHOLOGY; LIGHT_TERRAIN_AND_NATIVE_MOTION_REVIEW_PENDING",
+      "native_status": "NATIVE_CAPTURE_PENDING",
       "owner_status": "OWNER_VISUAL_PENDING",
       "native_ready": false,
-      "motion_status": "FOUR_PHASE_POSES_NOT_FRAME_BY_FRAME",
+      "motion_status": "16_CODE_PAINTED_RGBA_POSES; 4_PER_PHASE; NATIVE_CADENCE_REVIEW_PENDING",
       "showcase_moving_target": true,
       "delivery_phase": "release",
       "phase_sources": {
         "charge": {
-          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set3_transparent_rgba.png",
-          "region": [
-            0,
-            940,
-            314,
-            314
-          ],
-          "pivot_px": [
-            157.0,
-            157.0
-          ],
+          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/rework_tinh_ban_r2/tinh_ban_ho_tam_r2_16pose_rgba.png",
           "display_width_px": 166,
-          "fps": 1.0,
+          "fps": 16,
           "loop": false,
           "frames": [
             {
-              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set3_transparent_rgba.png",
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/rework_tinh_ban_r2/tinh_ban_ho_tam_r2_16pose_rgba.png",
               "region": [
                 0,
-                940,
-                314,
-                314
-              ],
-              "pivot_px": [
-                157.0,
-                157.0
+                0,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/rework_tinh_ban_r2/tinh_ban_ho_tam_r2_16pose_rgba.png",
+              "region": [
+                256,
+                0,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/rework_tinh_ban_r2/tinh_ban_ho_tam_r2_16pose_rgba.png",
+              "region": [
+                512,
+                0,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/rework_tinh_ban_r2/tinh_ban_ho_tam_r2_16pose_rgba.png",
+              "region": [
+                768,
+                0,
+                256,
+                256
               ]
             }
           ]
         },
         "release": {
-          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set3_transparent_rgba.png",
-          "region": [
-            314,
-            940,
-            313,
-            314
-          ],
-          "pivot_px": [
-            156.5,
-            157.0
-          ],
+          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/rework_tinh_ban_r2/tinh_ban_ho_tam_r2_16pose_rgba.png",
           "display_width_px": 166,
-          "fps": 1.0,
+          "fps": 16,
           "loop": false,
           "frames": [
             {
-              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set3_transparent_rgba.png",
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/rework_tinh_ban_r2/tinh_ban_ho_tam_r2_16pose_rgba.png",
               "region": [
-                314,
-                940,
-                313,
-                314
-              ],
-              "pivot_px": [
-                156.5,
-                157.0
+                0,
+                256,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/rework_tinh_ban_r2/tinh_ban_ho_tam_r2_16pose_rgba.png",
+              "region": [
+                256,
+                256,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/rework_tinh_ban_r2/tinh_ban_ho_tam_r2_16pose_rgba.png",
+              "region": [
+                512,
+                256,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/rework_tinh_ban_r2/tinh_ban_ho_tam_r2_16pose_rgba.png",
+              "region": [
+                768,
+                256,
+                256,
+                256
               ]
             }
           ]
         },
         "contact": {
-          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set3_transparent_rgba.png",
-          "region": [
-            627,
-            940,
-            313,
-            314
-          ],
-          "pivot_px": [
-            156.5,
-            157.0
-          ],
+          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/rework_tinh_ban_r2/tinh_ban_ho_tam_r2_16pose_rgba.png",
           "display_width_px": 166,
-          "fps": 1.0,
+          "fps": 16,
           "loop": false,
           "frames": [
             {
-              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set3_transparent_rgba.png",
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/rework_tinh_ban_r2/tinh_ban_ho_tam_r2_16pose_rgba.png",
               "region": [
-                627,
-                940,
-                313,
-                314
-              ],
-              "pivot_px": [
-                156.5,
-                157.0
+                0,
+                512,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/rework_tinh_ban_r2/tinh_ban_ho_tam_r2_16pose_rgba.png",
+              "region": [
+                256,
+                512,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/rework_tinh_ban_r2/tinh_ban_ho_tam_r2_16pose_rgba.png",
+              "region": [
+                512,
+                512,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/rework_tinh_ban_r2/tinh_ban_ho_tam_r2_16pose_rgba.png",
+              "region": [
+                768,
+                512,
+                256,
+                256
               ]
             }
           ]
         },
         "fade": {
-          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set3_transparent_rgba.png",
-          "region": [
-            940,
-            940,
-            314,
-            314
-          ],
-          "pivot_px": [
-            157.0,
-            157.0
-          ],
+          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/rework_tinh_ban_r2/tinh_ban_ho_tam_r2_16pose_rgba.png",
           "display_width_px": 166,
-          "fps": 1.0,
+          "fps": 16,
           "loop": false,
           "frames": [
             {
-              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set3_transparent_rgba.png",
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/rework_tinh_ban_r2/tinh_ban_ho_tam_r2_16pose_rgba.png",
               "region": [
-                940,
-                940,
-                314,
-                314
-              ],
-              "pivot_px": [
-                157.0,
-                157.0
+                0,
+                768,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/rework_tinh_ban_r2/tinh_ban_ho_tam_r2_16pose_rgba.png",
+              "region": [
+                256,
+                768,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/rework_tinh_ban_r2/tinh_ban_ho_tam_r2_16pose_rgba.png",
+              "region": [
+                512,
+                768,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/rework_tinh_ban_r2/tinh_ban_ho_tam_r2_16pose_rgba.png",
+              "region": [
+                768,
+                768,
+                256,
+                256
               ]
             }
           ]
@@ -2920,7 +2972,7 @@
         "start_window_seconds": 0.18,
         "end_window_seconds": 0.2,
         "actor_action_seconds": 0.35,
-        "clock": "REVIEW_STORYBOARD_ONLY",
+        "clock": "REAL_MAPBATTLE_RECEIPT_EVENTS",
         "charge_window_seconds": 0.45,
         "release_window_seconds": 0.18
       },
@@ -2953,13 +3005,14 @@
       },
       "source_batch_manifest": "res://labs/combat_lab/formation01/factory_batch1_20261125/manifest.json",
       "contact_sheet_path": "res://labs/combat_lab/formation01/factory_batch1_20261125/review/formation_batch1_contact_sheet_1x.png",
-      "contact_source_note": "Contact phase is source art only; render only after matching real MapBattleV2 receipt.",
-      "review_note": "Canonical effect is damage. Current phase art visually reads as a protective shield and is flagged for art rework; do not label as guard. Candidate stays visible for review while other skills proceed. Native and owner review pending; PVE HOLD.",
+      "contact_source_note": "R2 contact art is visible only after the exact-skill real v63_skill_hit receipt. No synthetic damage or status is created.",
+      "review_note": "R2 isolates this skill from the preserved 17-skill RGBA masters. Four source frames per phase replace the former shield-reading contact with a sharp constellation strike. Source semantics self-reviewed; native 1x light-terrain/motion and owner review pending. Contact remains bound to an exact real hit; PvE HOLD.",
       "phase_layers": {
         "contact": "FRONT"
       },
-      "phase_layer_rationale": "Keep the direct contact pose visible for semantic review; damage-versus-shield read remains flagged.",
-      "native_batch": "formation"
+      "phase_layer_rationale": "Damage contact is kept visible above the target for native semantic review; charge and release remain behind the AS68 actor.",
+      "native_batch": "formation",
+      "source_revision_manifest": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/rework_tinh_ban_r2/manifest.json"
     },
     {
       "skill_id": "tmb.skill.formation.basic.human",

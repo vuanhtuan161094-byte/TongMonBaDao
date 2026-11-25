@@ -62,6 +62,7 @@ func _run() -> void:
 	for entry in cases:
 		var skill_id := str(entry.get("skill_id", ""))
 		var is_formation := skill_id.begins_with("tmb.skill.formation.")
+		var is_tinh_ban_r2 := skill_id == "tmb.skill.formation.tu_linh_tran.active_02.human"
 		var is_talisman := skill_id.begins_with("tmb.skill.talisman.")
 		var is_curse := skill_id == "tmb.skill.curse.basic.human"
 		var is_blade := skill_id == "tmb.skill.blade.cuong_dao.active_01.human"
@@ -96,14 +97,35 @@ func _run() -> void:
 				"canonical shape remains data-owned " + skill_id)
 			_check(int(state.get("canonical_target_limit", 0)) == int(canonical.get("target_limit", 0)),
 				"canonical target limit remains data-owned " + skill_id)
-			_check(int(state.get("phase_sources_loaded", 0)) == 4 and int(state.get("frame_count", 0)) == 4,
-				"four distinct phase poses load from the RGBA atlas " + skill_id)
+			if is_tinh_ban_r2:
+				_check(int(state.get("phase_sources_loaded", 0)) == 4 and int(state.get("frame_count", 0)) == 16,
+					"R2 loads four authored RGBA poses for each of four phases " + skill_id)
+				var r2_path := "res://labs/combat_lab/formation01/factory_batch1_20261125/source/rework_tinh_ban_r2/tinh_ban_ho_tam_r2_16pose_rgba.png"
+				for phase in ["charge", "release", "contact", "fade"]:
+					var phase_source: Dictionary = entry.get("phase_sources", {}).get(phase, {})
+					_check(str(phase_source.get("path", "")) == r2_path
+						and phase_source.get("frames", []).size() == 4
+						and float(phase_source.get("fps", 0.0)) == 16.0,
+						"R2 phase uses four source-backed animated poses " + phase)
+			else:
+				_check(int(state.get("phase_sources_loaded", 0)) == 4 and int(state.get("frame_count", 0)) == 4,
+					"four distinct phase poses load from the original RGBA atlas " + skill_id)
 			_check(int(state.get("actor_asset_id", -1)) == 68,
 				"Formation preview resolves existing male AS68 source " + skill_id)
-			_check(str(state.get("motion_status", "")) == "FOUR_PHASE_POSES_NOT_FRAME_BY_FRAME",
-				"pose sequence is not misreported as continuous animation " + skill_id)
-			_check(str(state.get("native_status", "")) == "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720",
-				"native batch technical result is explicit and separate from owner review " + skill_id)
+			if is_tinh_ban_r2:
+				_check(str(state.get("motion_status", "")).begins_with("16_CODE_PAINTED_RGBA_POSES; 4_PER_PHASE;"),
+					"R2 source count is explicit without overstating continuous animation " + skill_id)
+				_check(str(state.get("source_g3", "")).begins_with("ART_SOURCE_SELF_REVIEWED_R2_ATTACK_MORPHOLOGY;"),
+					"damage morphology self-review stays separate from native art review " + skill_id)
+				var native_state := str(state.get("native_status", ""))
+				_check(native_state == "NATIVE_CAPTURE_PENDING"
+					or native_state == "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720",
+					"R2 native technical state is pending or recorded accurately " + skill_id)
+			else:
+				_check(str(state.get("motion_status", "")) == "FOUR_PHASE_POSES_NOT_FRAME_BY_FRAME",
+					"pose sequence is not misreported as continuous animation " + skill_id)
+				_check(str(state.get("native_status", "")) == "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720",
+					"native batch technical result is explicit and separate from owner review " + skill_id)
 			_check(str(state.get("owner_status", "")) == "OWNER_VISUAL_PENDING",
 				"owner approval remains separate " + skill_id)
 			_check(str(entry.get("draw_layer", "")) == "BEHIND"
@@ -111,10 +133,7 @@ func _run() -> void:
 				"ground formation art is behind AS68 and has no invented weapon " + skill_id)
 			_check(FACTORY_SCRIPT.phase_draws_front(entry, "contact") == entry.has("phase_layers"),
 				"receipt contact uses its configured front/ground layer " + skill_id)
-			if skill_id == "tmb.skill.formation.tu_linh_tran.active_02.human":
-				_check(str(state.get("source_g3", "")).begins_with("ART_SEMANTIC_REVIEW_REQUIRED"),
-					"damage-versus-shield visual mismatch remains flagged")
-			else:
+			if not is_tinh_ban_r2:
 				_check(str(state.get("source_g3", "")) == "SOURCE_ALPHA_AND_CONTACT_SHEET_SELF_PASS",
 					"source alpha and both contrast sheets are self-reviewed " + skill_id)
 		elif is_talisman:

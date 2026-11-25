@@ -812,7 +812,7 @@
     },
     {
       "id": "tmb.skill.formation.tu_linh_tran.active_02.human",
-      "name_vi": "Tinh Bàn Hộ Tâm — candidate 4 pose",
+      "name_vi": "Tinh Bàn Hộ Tâm — R2 16-pose damage candidate",
       "school_vi": "Trận Tu",
       "branch_vi": "Tụ Linh Trận",
       "tier": "human",
@@ -820,11 +820,11 @@
       "directions": [
         "front"
       ],
-      "vfx_status": "TECH_CUE_ONLY",
-      "g3_art": "ART_SEMANTIC_REVIEW_REQUIRED_DAMAGE_VS_SHIELD_READ",
+      "vfx_status": "CANDIDATE_G3",
+      "g3_art": "R2_CODE_PAINTED_DAMAGE_MORPHOLOGY; NATIVE_1X_ART_REVIEW_PENDING",
       "owner_art": "OWNER_VISUAL_PENDING",
-      "art_source": "FIRST_PARTY_CODEX_IMAGEGEN_RGBA_FOUR_PHASE_POSES",
-      "review_stages": "4 phase poses · contact receipt-bound · Native Godot 4.7.2 1280x720 capture and full H.264 decode PASS · exact MapBattleV2 fixture receipts accepted 17/17 · owner approval pending · PvE HOLD",
+      "art_source": "FIRST_PARTY_PIL_CODE_PAINTED_RGBA_16_POSES",
+      "review_stages": "16 RGBA poses · four per charge/release/contact/fade · exact real hit gates contact · native 1280x720 recapture pending · owner approval pending · PvE HOLD",
       "source_paths": [
         "labs/combat_lab/vfx_factory/vfx_factory_review.gd",
         "labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
@@ -840,9 +840,14 @@
         "tests/presentation/pve_aschar_frame_renderer_anchor_test.gd",
         "labs/combat_lab/formation01/factory_batch1_20261125/review/native/formation_batch1_capture_index.json",
         "labs/combat_lab/formation01/factory_batch1_20261125/review/native/formation_batch1_contact_sheet_1280x720.png",
-        "labs/combat_lab/formation01/factory_batch1_20261125/review/native/formation_batch1_native_1280x720.mp4"
+        "labs/combat_lab/formation01/factory_batch1_20261125/review/native/formation_batch1_native_1280x720.mp4",
+        "labs/combat_lab/formation01/factory_batch1_20261125/source/rework_tinh_ban_r2/manifest.json",
+        "labs/combat_lab/formation01/factory_batch1_20261125/source/rework_tinh_ban_r2/tinh_ban_ho_tam_r2_16pose_rgba.png",
+        "labs/combat_lab/formation01/factory_batch1_20261125/source/rework_tinh_ban_r2/tinh_ban_ho_tam_r2_contact_sheet_1x_dark.png",
+        "labs/combat_lab/formation01/factory_batch1_20261125/source/rework_tinh_ban_r2/tinh_ban_ho_tam_r2_contact_sheet_1x_light.png",
+        "tools/vfx/formation_tinh_ban_rework_r2.py"
       ],
-      "review_note": "ART REWORK: mỹ thuật hiện đọc như khiên, trong khi catalog thật quy định DAMAGE. Candidate bị gắn cờ; owner approval pending; PVE HOLD. Native batch technical capture and H.264 decode PASS at 1280x720/20fps; 17/17 exact fixture receipt bindings accepted, zero synthetic events. Four authored phase poses remain storyboard timing, not continuous frame-by-frame animation. Owner approval pending; PvE HOLD."
+      "review_note": "R2 code-painted attack candidate replaces the shield-reading contact while preserving the original 17-skill RGBA atlases. Four authored frames per phase are not claimed as full continuous animation. Native 1x art review and owner approval pending. Real exact-skill v63_skill_hit alone gates contact. PvE HOLD."
     },
     {
       "id": "tmb.skill.formation.basic.human",
