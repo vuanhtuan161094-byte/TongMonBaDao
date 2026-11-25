@@ -1,0 +1,1041 @@
+{
+  "owner_approval": "PENDING",
+  "pve": "HOLD",
+  "receipts": "REAL_MAPBATTLE_V2_TEST_FIXTURE_EVENTS_ONLY",
+  "renderer": "Godot 4.7.2 shared VFX Factory + existing AS-CHAR and Source A",
+  "schema": "tmb.vfx_factory_native_batch_capture.v1",
+  "school": "talisman",
+  "skills": [
+    {
+      "accepted_event_count": 2,
+      "configured_event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_talisman_hit"
+      ],
+      "contact_frame_seconds": -1.0,
+      "encounter_id": "vfx_factory_talisman_capture_00",
+      "event_count": 2,
+      "event_trace": [
+        {
+          "accepted": true,
+          "capture_frame_seconds": 0.0,
+          "caster_id": "caster_00",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_talisman_capture_00/caster_00/1/skill_cast",
+          "event_type": "skill_cast",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.0,
+          "skill_id": "tmb.skill.talisman.loi_phu.active_02.human",
+          "target_ids": [
+            "foe_00"
+          ]
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 0.6,
+          "caster_id": "caster_00",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_talisman_capture_00/caster_00/1/skill_release",
+          "event_type": "skill_release",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.62,
+          "skill_id": "tmb.skill.talisman.loi_phu.active_02.human",
+          "target_ids": [
+            "foe_00"
+          ]
+        }
+      ],
+      "event_types": [
+        "skill_cast",
+        "skill_release"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "name_vi": "Thiên Lôi Dẫn Nét",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "release_frame_seconds": 0.6,
+      "skill_id": "tmb.skill.talisman.loi_phu.active_02.human",
+      "synthetic_events": 0,
+      "video_duration_seconds": 1.8,
+      "video_start_seconds": 0.0
+    },
+    {
+      "accepted_event_count": 3,
+      "configured_event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_talisman_mark_applied"
+      ],
+      "contact_frame_seconds": 2.5,
+      "encounter_id": "vfx_factory_talisman_capture_01",
+      "event_count": 3,
+      "event_trace": [
+        {
+          "accepted": true,
+          "capture_frame_seconds": 1.85,
+          "caster_id": "caster_01",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_talisman_capture_01/caster_01/1/skill_cast",
+          "event_type": "skill_cast",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.0,
+          "skill_id": "tmb.skill.talisman.loi_phu.active_03.human",
+          "target_ids": [
+            "foe_01"
+          ]
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 2.35,
+          "caster_id": "caster_01",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_talisman_capture_01/caster_01/1/skill_release",
+          "event_type": "skill_release",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.5,
+          "skill_id": "tmb.skill.talisman.loi_phu.active_03.human",
+          "target_ids": [
+            "foe_01"
+          ]
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 2.4,
+          "caster_id": "caster_01",
+          "contact_receipt_target_count": 0,
+          "event_expiry_seconds": 6.5,
+          "event_id": "vfx_factory_talisman_capture_01/caster_01/1/v63_talisman_mark_applied/foe_01",
+          "event_state_duration_seconds": 6.0,
+          "event_type": "v63_talisman_mark_applied",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.5,
+          "skill_id": "tmb.skill.talisman.loi_phu.active_03.human",
+          "target_ids": [
+            "foe_01"
+          ]
+        }
+      ],
+      "event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_talisman_mark_applied"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "name_vi": "Lôi Văn Truy Ấn",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "release_frame_seconds": 2.35,
+      "skill_id": "tmb.skill.talisman.loi_phu.active_03.human",
+      "synthetic_events": 0,
+      "video_duration_seconds": 6.98,
+      "video_start_seconds": 1.8
+    },
+    {
+      "accepted_event_count": 2,
+      "configured_event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_talisman_hit"
+      ],
+      "contact_frame_seconds": -1.0,
+      "encounter_id": "vfx_factory_talisman_capture_02",
+      "event_count": 2,
+      "event_trace": [
+        {
+          "accepted": true,
+          "capture_frame_seconds": 8.84999999999999,
+          "caster_id": "caster_02",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_talisman_capture_02/caster_02/1/skill_cast",
+          "event_type": "skill_cast",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.0,
+          "skill_id": "tmb.skill.talisman.loi_phu.active_04.human",
+          "target_ids": [
+            "foe_02"
+          ]
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 9.35,
+          "caster_id": "caster_02",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_talisman_capture_02/caster_02/1/skill_release",
+          "event_type": "skill_release",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.5,
+          "skill_id": "tmb.skill.talisman.loi_phu.active_04.human",
+          "target_ids": [
+            "foe_02"
+          ]
+        }
+      ],
+      "event_types": [
+        "skill_cast",
+        "skill_release"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "name_vi": "Cửu Tiêu Phá Vân",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "release_frame_seconds": 9.35,
+      "skill_id": "tmb.skill.talisman.loi_phu.active_04.human",
+      "synthetic_events": 0,
+      "video_duration_seconds": 1.68,
+      "video_start_seconds": 8.79999999999999
+    },
+    {
+      "accepted_event_count": 2,
+      "configured_event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_talisman_hit"
+      ],
+      "contact_frame_seconds": -1.0,
+      "encounter_id": "vfx_factory_talisman_capture_03",
+      "event_count": 2,
+      "event_trace": [
+        {
+          "accepted": true,
+          "capture_frame_seconds": 10.55,
+          "caster_id": "caster_03",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_talisman_capture_03/caster_03/1/skill_cast",
+          "event_type": "skill_cast",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.0,
+          "skill_id": "tmb.skill.talisman.loi_phu.ultimate.human",
+          "target_ids": [
+            "foe_03"
+          ]
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 11.55,
+          "caster_id": "caster_03",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_talisman_capture_03/caster_03/1/skill_release",
+          "event_type": "skill_release",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 1.05,
+          "skill_id": "tmb.skill.talisman.loi_phu.ultimate.human",
+          "target_ids": [
+            "foe_03"
+          ]
+        }
+      ],
+      "event_types": [
+        "skill_cast",
+        "skill_release"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "name_vi": "Cửu Thiên Vạn Lôi Phù",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "release_frame_seconds": 11.55,
+      "skill_id": "tmb.skill.talisman.loi_phu.ultimate.human",
+      "synthetic_events": 0,
+      "video_duration_seconds": 2.23,
+      "video_start_seconds": 10.5
+    },
+    {
+      "accepted_event_count": 5,
+      "configured_event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_talisman_hit"
+      ],
+      "contact_frame_seconds": 13.4700000000001,
+      "encounter_id": "vfx_factory_talisman_capture_04",
+      "event_count": 5,
+      "event_trace": [
+        {
+          "accepted": true,
+          "capture_frame_seconds": 12.8,
+          "caster_id": "caster_04",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_talisman_capture_04/caster_04/1/skill_cast",
+          "event_type": "skill_cast",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.0,
+          "skill_id": "tmb.skill.talisman.hoa_phu.active_02.human",
+          "target_ids": [
+            "foe_04"
+          ]
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 13.4000000000001,
+          "caster_id": "caster_04",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_talisman_capture_04/caster_04/1/skill_release",
+          "event_type": "skill_release",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.62,
+          "skill_id": "tmb.skill.talisman.hoa_phu.active_02.human",
+          "target_ids": [
+            "foe_04"
+          ]
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 13.4500000000001,
+          "caster_id": "caster_04",
+          "contact_receipt_target_count": 1,
+          "event_id": "vfx_factory_talisman_capture_04/caster_04/1/v63_talisman_hit/foe_04",
+          "event_type": "v63_talisman_hit",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.62,
+          "skill_id": "tmb.skill.talisman.hoa_phu.active_02.human",
+          "target_ids": [
+            "foe_04"
+          ]
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 13.5000000000001,
+          "caster_id": "caster_04",
+          "contact_receipt_target_count": 2,
+          "event_id": "vfx_factory_talisman_capture_04/caster_04/1/v63_talisman_hit/foe_04_01",
+          "event_type": "v63_talisman_hit",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.62,
+          "skill_id": "tmb.skill.talisman.hoa_phu.active_02.human",
+          "target_ids": [
+            "foe_04_01"
+          ]
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 13.5500000000001,
+          "caster_id": "caster_04",
+          "contact_receipt_target_count": 3,
+          "event_id": "vfx_factory_talisman_capture_04/caster_04/1/v63_talisman_hit/foe_04_02",
+          "event_type": "v63_talisman_hit",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.62,
+          "skill_id": "tmb.skill.talisman.hoa_phu.active_02.human",
+          "target_ids": [
+            "foe_04_02"
+          ]
+        }
+      ],
+      "event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_talisman_hit"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "name_vi": "Liên Diệm Phần Giới",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "release_frame_seconds": 13.4000000000001,
+      "skill_id": "tmb.skill.talisman.hoa_phu.active_02.human",
+      "synthetic_events": 0,
+      "video_duration_seconds": 1.4,
+      "video_start_seconds": 12.75
+    },
+    {
+      "accepted_event_count": 3,
+      "configured_event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_talisman_hit"
+      ],
+      "contact_frame_seconds": 15.0700000000001,
+      "encounter_id": "vfx_factory_talisman_capture_05",
+      "event_count": 3,
+      "event_trace": [
+        {
+          "accepted": true,
+          "capture_frame_seconds": 14.2000000000001,
+          "caster_id": "caster_05",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_talisman_capture_05/caster_05/1/skill_cast",
+          "event_type": "skill_cast",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.0,
+          "skill_id": "tmb.skill.talisman.hoa_phu.active_03.human",
+          "target_ids": [
+            "foe_05"
+          ]
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 15.0000000000001,
+          "caster_id": "caster_05",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_talisman_capture_05/caster_05/1/skill_release",
+          "event_type": "skill_release",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.833333333333333,
+          "skill_id": "tmb.skill.talisman.hoa_phu.active_03.human",
+          "target_ids": [
+            "foe_05"
+          ]
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 15.0500000000001,
+          "caster_id": "caster_05",
+          "contact_receipt_target_count": 1,
+          "event_id": "vfx_factory_talisman_capture_05/caster_05/1/v63_talisman_hit/foe_05",
+          "event_type": "v63_talisman_hit",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.833333333333333,
+          "skill_id": "tmb.skill.talisman.hoa_phu.active_03.human",
+          "target_ids": [
+            "foe_05"
+          ]
+        }
+      ],
+      "event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_talisman_hit"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "name_vi": "Hỏa Tâm Ngưng Phù",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "release_frame_seconds": 15.0000000000001,
+      "skill_id": "tmb.skill.talisman.hoa_phu.active_03.human",
+      "synthetic_events": 0,
+      "video_duration_seconds": 1.93333333333333,
+      "video_start_seconds": 14.1500000000001
+    },
+    {
+      "accepted_event_count": 5,
+      "configured_event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_talisman_hit"
+      ],
+      "contact_frame_seconds": 16.7200000000001,
+      "encounter_id": "vfx_factory_talisman_capture_06",
+      "event_count": 5,
+      "event_trace": [
+        {
+          "accepted": true,
+          "capture_frame_seconds": 16.1500000000001,
+          "caster_id": "caster_06",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_talisman_capture_06/caster_06/1/skill_cast",
+          "event_type": "skill_cast",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.0,
+          "skill_id": "tmb.skill.talisman.hoa_phu.active_04.human",
+          "target_ids": [
+            "foe_06"
+          ]
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 16.6500000000001,
+          "caster_id": "caster_06",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_talisman_capture_06/caster_06/1/skill_release",
+          "event_type": "skill_release",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.5,
+          "skill_id": "tmb.skill.talisman.hoa_phu.active_04.human",
+          "target_ids": [
+            "foe_06"
+          ]
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 16.7000000000001,
+          "caster_id": "caster_06",
+          "contact_receipt_target_count": 1,
+          "event_id": "vfx_factory_talisman_capture_06/caster_06/1/v63_talisman_hit/foe_06",
+          "event_type": "v63_talisman_hit",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.5,
+          "skill_id": "tmb.skill.talisman.hoa_phu.active_04.human",
+          "target_ids": [
+            "foe_06"
+          ]
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 16.7500000000001,
+          "caster_id": "caster_06",
+          "contact_receipt_target_count": 2,
+          "event_id": "vfx_factory_talisman_capture_06/caster_06/1/v63_talisman_hit/foe_06_01",
+          "event_type": "v63_talisman_hit",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.5,
+          "skill_id": "tmb.skill.talisman.hoa_phu.active_04.human",
+          "target_ids": [
+            "foe_06_01"
+          ]
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 16.8000000000001,
+          "caster_id": "caster_06",
+          "contact_receipt_target_count": 3,
+          "event_id": "vfx_factory_talisman_capture_06/caster_06/1/v63_talisman_hit/foe_06_02",
+          "event_type": "v63_talisman_hit",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.5,
+          "skill_id": "tmb.skill.talisman.hoa_phu.active_04.human",
+          "target_ids": [
+            "foe_06_02"
+          ]
+        }
+      ],
+      "event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_talisman_hit"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "name_vi": "Chu Tước Hồi Hoàn",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "release_frame_seconds": 16.6500000000001,
+      "skill_id": "tmb.skill.talisman.hoa_phu.active_04.human",
+      "synthetic_events": 0,
+      "video_duration_seconds": 1.4,
+      "video_start_seconds": 16.1000000000001
+    },
+    {
+      "accepted_event_count": 5,
+      "configured_event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_talisman_hit"
+      ],
+      "contact_frame_seconds": 18.6200000000001,
+      "encounter_id": "vfx_factory_talisman_capture_07",
+      "event_count": 5,
+      "event_trace": [
+        {
+          "accepted": true,
+          "capture_frame_seconds": 17.5500000000001,
+          "caster_id": "caster_07",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_talisman_capture_07/caster_07/1/skill_cast",
+          "event_type": "skill_cast",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.0,
+          "skill_id": "tmb.skill.talisman.hoa_phu.ultimate.human",
+          "target_ids": [
+            "foe_07"
+          ]
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 18.5500000000001,
+          "caster_id": "caster_07",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_talisman_capture_07/caster_07/1/skill_release",
+          "event_type": "skill_release",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 1.05,
+          "skill_id": "tmb.skill.talisman.hoa_phu.ultimate.human",
+          "target_ids": [
+            "foe_07"
+          ]
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 18.6000000000001,
+          "caster_id": "caster_07",
+          "contact_receipt_target_count": 1,
+          "event_id": "vfx_factory_talisman_capture_07/caster_07/1/v63_talisman_hit/foe_07",
+          "event_type": "v63_talisman_hit",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 1.05,
+          "skill_id": "tmb.skill.talisman.hoa_phu.ultimate.human",
+          "target_ids": [
+            "foe_07"
+          ]
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 18.6500000000001,
+          "caster_id": "caster_07",
+          "contact_receipt_target_count": 2,
+          "event_id": "vfx_factory_talisman_capture_07/caster_07/1/v63_talisman_hit/foe_07_01",
+          "event_type": "v63_talisman_hit",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 1.05,
+          "skill_id": "tmb.skill.talisman.hoa_phu.ultimate.human",
+          "target_ids": [
+            "foe_07_01"
+          ]
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 18.7000000000001,
+          "caster_id": "caster_07",
+          "contact_receipt_target_count": 3,
+          "event_id": "vfx_factory_talisman_capture_07/caster_07/1/v63_talisman_hit/foe_07_02",
+          "event_type": "v63_talisman_hit",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 1.05,
+          "skill_id": "tmb.skill.talisman.hoa_phu.ultimate.human",
+          "target_ids": [
+            "foe_07_02"
+          ]
+        }
+      ],
+      "event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_talisman_hit"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "name_vi": "Vạn Phù Phần Thiên",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "release_frame_seconds": 18.5500000000001,
+      "skill_id": "tmb.skill.talisman.hoa_phu.ultimate.human",
+      "synthetic_events": 0,
+      "video_duration_seconds": 1.67,
+      "video_start_seconds": 17.5000000000001
+    },
+    {
+      "accepted_event_count": 1,
+      "configured_event_types": [
+        "hit"
+      ],
+      "contact_frame_seconds": 19.2700000000001,
+      "encounter_id": "vfx_factory_talisman_capture_08",
+      "event_count": 1,
+      "event_trace": [
+        {
+          "accepted": true,
+          "capture_frame_seconds": 19.2500000000001,
+          "caster_id": "caster_08",
+          "contact_receipt_target_count": 1,
+          "event_id": "vfx_factory_talisman_capture_08/event/2",
+          "event_type": "hit",
+          "reason": "BASIC_HIT_BOUND_FROM_REAL_MAPBATTLE_AND_ACTOR_LOADOUT",
+          "simulation_event_time_seconds": 0.25,
+          "skill_id": "",
+          "target_ids": [
+            "foe_08"
+          ]
+        }
+      ],
+      "event_types": [
+        "hit"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "name_vi": "Phù Tâm Dẫn Khí",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "release_frame_seconds": -1.0,
+      "skill_id": "tmb.skill.talisman.basic.human",
+      "synthetic_events": 0,
+      "video_duration_seconds": 1.4,
+      "video_start_seconds": 19.2000000000001
+    },
+    {
+      "accepted_event_count": 1,
+      "configured_event_types": [
+        "v63_mobility"
+      ],
+      "contact_frame_seconds": -1.0,
+      "encounter_id": "vfx_factory_talisman_capture_09",
+      "event_count": 1,
+      "event_trace": [
+        {
+          "accepted": true,
+          "capture_frame_seconds": 20.6500000000002,
+          "caster_id": "caster_09",
+          "contact_receipt_target_count": 0,
+          "event_expiry_seconds": 0.25,
+          "event_id": "vfx_factory_talisman_capture_09/event/1",
+          "event_state_duration_seconds": 0.25,
+          "event_type": "v63_mobility",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.0,
+          "skill_id": "tmb.skill.talisman.mobility.human",
+          "target_ids": []
+        }
+      ],
+      "event_types": [
+        "v63_mobility"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "mobility_frame_seconds": 20.6700000000002,
+      "name_vi": "Phi Phù Hoán Vị",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "release_frame_seconds": -1.0,
+      "skill_id": "tmb.skill.talisman.mobility.human",
+      "start_frame_seconds": 20.6700000000002,
+      "synthetic_events": 0,
+      "video_duration_seconds": 1.4,
+      "video_start_seconds": 20.6000000000002
+    },
+    {
+      "accepted_event_count": 3,
+      "configured_event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_talisman_hit"
+      ],
+      "contact_frame_seconds": 22.8700000000002,
+      "encounter_id": "vfx_factory_talisman_capture_10",
+      "event_count": 3,
+      "event_trace": [
+        {
+          "accepted": true,
+          "capture_frame_seconds": 22.0500000000002,
+          "caster_id": "caster_10",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_talisman_capture_10/caster_10/1/skill_cast",
+          "event_type": "skill_cast",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.0,
+          "skill_id": "tmb.skill.talisman.loi_phu.active_01.human",
+          "target_ids": [
+            "talisman_factory_target_active_01_01"
+          ]
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 22.8000000000002,
+          "caster_id": "caster_10",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_talisman_capture_10/caster_10/1/skill_release",
+          "event_type": "skill_release",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.8,
+          "skill_id": "tmb.skill.talisman.loi_phu.active_01.human",
+          "target_ids": [
+            "talisman_factory_target_active_01_01"
+          ]
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 22.8500000000002,
+          "caster_id": "caster_10",
+          "contact_receipt_target_count": 1,
+          "event_id": "vfx_factory_talisman_capture_10/caster_10/1/v63_talisman_hit/talisman_factory_target_active_01_01",
+          "event_type": "v63_talisman_hit",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.8,
+          "skill_id": "tmb.skill.talisman.loi_phu.active_01.human",
+          "target_ids": [
+            "talisman_factory_target_active_01_01"
+          ]
+        }
+      ],
+      "event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_talisman_hit"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "name_vi": "Điện Quang Khai Phù",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "release_frame_seconds": 22.8000000000002,
+      "skill_id": "tmb.skill.talisman.loi_phu.active_01.human",
+      "synthetic_events": 0,
+      "video_duration_seconds": 1.4,
+      "video_start_seconds": 22.0000000000002
+    },
+    {
+      "accepted_event_count": 3,
+      "configured_event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_talisman_hit"
+      ],
+      "contact_frame_seconds": 24.3700000000002,
+      "encounter_id": "vfx_factory_talisman_capture_11",
+      "event_count": 3,
+      "event_trace": [
+        {
+          "accepted": true,
+          "capture_frame_seconds": 23.4500000000002,
+          "caster_id": "caster_11",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_talisman_capture_11/caster_11/1/skill_cast",
+          "event_type": "skill_cast",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.0,
+          "skill_id": "tmb.skill.talisman.hoa_phu.active_01.human",
+          "target_ids": [
+            "talisman_factory_target_active_01_01"
+          ]
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 24.3000000000002,
+          "caster_id": "caster_11",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_talisman_capture_11/caster_11/1/skill_release",
+          "event_type": "skill_release",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.852941176470588,
+          "skill_id": "tmb.skill.talisman.hoa_phu.active_01.human",
+          "target_ids": [
+            "talisman_factory_target_active_01_01"
+          ]
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 24.3500000000002,
+          "caster_id": "caster_11",
+          "contact_receipt_target_count": 1,
+          "event_id": "vfx_factory_talisman_capture_11/caster_11/1/v63_talisman_hit/talisman_factory_target_active_01_01",
+          "event_type": "v63_talisman_hit",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.852941176470588,
+          "skill_id": "tmb.skill.talisman.hoa_phu.active_01.human",
+          "target_ids": [
+            "talisman_factory_target_active_01_01"
+          ]
+        }
+      ],
+      "event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_talisman_hit"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "name_vi": "Xích Diệm Khai Văn",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "release_frame_seconds": 24.3000000000002,
+      "skill_id": "tmb.skill.talisman.hoa_phu.active_01.human",
+      "synthetic_events": 0,
+      "video_duration_seconds": 1.4,
+      "video_start_seconds": 23.4000000000002
+    },
+    {
+      "accepted_event_count": 2,
+      "configured_event_types": [
+        "skill_cast",
+        "v63_talisman_mark_applied"
+      ],
+      "contact_frame_seconds": 25.4500000000002,
+      "encounter_id": "vfx_factory_talisman_capture_12",
+      "event_count": 2,
+      "event_trace": [
+        {
+          "accepted": true,
+          "capture_frame_seconds": 24.8500000000002,
+          "caster_id": "caster_12",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_talisman_capture_12/caster_12/1/skill_cast",
+          "event_type": "skill_cast",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.0,
+          "skill_id": "tmb.skill.talisman.phong_an_phu.active_01.human",
+          "target_ids": [
+            "talisman_factory_target_active_01_01"
+          ]
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 25.3500000000002,
+          "caster_id": "caster_12",
+          "contact_receipt_target_count": 0,
+          "event_expiry_seconds": 6.5,
+          "event_id": "vfx_factory_talisman_capture_12/caster_12/1/v63_talisman_mark_applied/talisman_factory_target_active_01_01",
+          "event_state_duration_seconds": 6.0,
+          "event_type": "v63_talisman_mark_applied",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.5,
+          "skill_id": "tmb.skill.talisman.phong_an_phu.active_01.human",
+          "target_ids": [
+            "talisman_factory_target_active_01_01"
+          ]
+        }
+      ],
+      "event_types": [
+        "skill_cast",
+        "v63_talisman_mark_applied"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "name_vi": "Phong Giới Truy Dấu",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "release_frame_seconds": -1.0,
+      "skill_id": "tmb.skill.talisman.phong_an_phu.active_01.human",
+      "synthetic_events": 0,
+      "video_duration_seconds": 6.98,
+      "video_start_seconds": 24.8000000000002
+    },
+    {
+      "accepted_event_count": 2,
+      "configured_event_types": [
+        "skill_cast",
+        "skill_release"
+      ],
+      "contact_frame_seconds": -1.0,
+      "encounter_id": "vfx_factory_talisman_capture_13",
+      "event_count": 2,
+      "event_trace": [
+        {
+          "accepted": true,
+          "capture_frame_seconds": 31.8500000000003,
+          "caster_id": "caster_13",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_talisman_capture_13/caster_13/1/skill_cast",
+          "event_type": "skill_cast",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.0,
+          "skill_id": "tmb.skill.talisman.phong_an_phu.active_02.human",
+          "target_ids": [
+            "talisman_factory_target_active_02_01"
+          ]
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 32.3500000000003,
+          "caster_id": "caster_13",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_talisman_capture_13/caster_13/1/skill_release",
+          "event_type": "skill_release",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.5,
+          "skill_id": "tmb.skill.talisman.phong_an_phu.active_02.human",
+          "target_ids": [
+            "talisman_factory_target_active_02_01"
+          ]
+        }
+      ],
+      "event_types": [
+        "skill_cast",
+        "skill_release"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "name_vi": "Thái Huyền Khép Ấn",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "release_frame_seconds": 32.3500000000003,
+      "skill_id": "tmb.skill.talisman.phong_an_phu.active_02.human",
+      "synthetic_events": 0,
+      "video_duration_seconds": 1.4,
+      "video_start_seconds": 31.8000000000003
+    },
+    {
+      "accepted_event_count": 5,
+      "configured_event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_talisman_mark_applied"
+      ],
+      "contact_frame_seconds": 34.2500000000002,
+      "encounter_id": "vfx_factory_talisman_capture_14",
+      "event_count": 5,
+      "event_trace": [
+        {
+          "accepted": true,
+          "capture_frame_seconds": 33.2500000000002,
+          "caster_id": "caster_14",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_talisman_capture_14/caster_14/1/skill_cast",
+          "event_type": "skill_cast",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.0,
+          "skill_id": "tmb.skill.talisman.phong_an_phu.ultimate.human",
+          "target_ids": [
+            "paf05_factory_target_01"
+          ]
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 34.1000000000002,
+          "caster_id": "caster_14",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_talisman_capture_14/caster_14/1/skill_release",
+          "event_type": "skill_release",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.9,
+          "skill_id": "tmb.skill.talisman.phong_an_phu.ultimate.human",
+          "target_ids": [
+            "paf05_factory_target_01"
+          ]
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 34.1500000000002,
+          "caster_id": "caster_14",
+          "contact_receipt_target_count": 0,
+          "event_expiry_seconds": 7.9,
+          "event_id": "vfx_factory_talisman_capture_14/caster_14/1/v63_talisman_mark_applied/paf05_factory_target_01",
+          "event_state_duration_seconds": 7.0,
+          "event_type": "v63_talisman_mark_applied",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.9,
+          "skill_id": "tmb.skill.talisman.phong_an_phu.ultimate.human",
+          "target_ids": [
+            "paf05_factory_target_01"
+          ]
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 34.2000000000002,
+          "caster_id": "caster_14",
+          "contact_receipt_target_count": 0,
+          "event_expiry_seconds": 7.9,
+          "event_id": "vfx_factory_talisman_capture_14/caster_14/1/v63_talisman_mark_applied/paf05_factory_target_02",
+          "event_state_duration_seconds": 7.0,
+          "event_type": "v63_talisman_mark_applied",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.9,
+          "skill_id": "tmb.skill.talisman.phong_an_phu.ultimate.human",
+          "target_ids": [
+            "paf05_factory_target_02"
+          ]
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 34.2500000000002,
+          "caster_id": "caster_14",
+          "contact_receipt_target_count": 0,
+          "event_expiry_seconds": 7.9,
+          "event_id": "vfx_factory_talisman_capture_14/caster_14/1/v63_talisman_mark_applied/paf05_factory_target_03",
+          "event_state_duration_seconds": 7.0,
+          "event_type": "v63_talisman_mark_applied",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.9,
+          "skill_id": "tmb.skill.talisman.phong_an_phu.ultimate.human",
+          "target_ids": [
+            "paf05_factory_target_03"
+          ]
+        }
+      ],
+      "event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_talisman_mark_applied"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "name_vi": "Thái Huyền Phong Giới Phù",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "release_frame_seconds": 34.1000000000002,
+      "skill_id": "tmb.skill.talisman.phong_an_phu.ultimate.human",
+      "synthetic_events": 0,
+      "video_duration_seconds": 8.38,
+      "video_start_seconds": 33.2000000000003
+    }
+  ],
+  "technical_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
+  "viewport_px": [
+    1280,
+    720
+  ],
+  "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
+  "capture_fps": 20,
+  "encoded_frames": 833,
+  "video_duration_seconds": 41.65,
+  "source_commit": "9c766b3b52d197b8de512f39ee097c89038a0ce5",
+  "video": "res://labs/combat_lab/talisman_factory_batch5_20261125/review/native/talisman_factory_batch5_native_1280x720.mp4",
+  "video_sha256": "7046cabd8287c96cc67ccd9933ce40c48d131c83df058e3b8366ef4f36553dc5",
+  "contact_sheet": "res://labs/combat_lab/talisman_factory_batch5_20261125/review/native/talisman_factory_batch5_contact_sheet_1280x720.png",
+  "contact_sheet_sha256": "10312887cac3effab7074011ab40969928481aef889094b46b17bfe169141ee8",
+  "capture_index": "res://labs/combat_lab/talisman_factory_batch5_20261125/review/native/talisman_batch5_capture_index.json",
+  "movie_validation": "H264_1280x720_20FPS; ALL_FRAMES_DECODED",
+  "bound_receipt_skills": 15,
+  "accepted_event_count": 44,
+  "synthetic_event_count": 0,
+  "receipt_event_types": [
+    "hit",
+    "skill_cast",
+    "skill_release",
+    "v63_mobility",
+    "v63_talisman_hit",
+    "v63_talisman_mark_applied"
+  ],
+  "visual_review_status": "NATIVE_1X_CAST_RELEASE_CONTACT_STATE_AND_END_SAMPLES_CAPTURED; SPOT_CHECKED; CONTINUOUS_MOTION_AND_OWNER_REVIEW_PENDING"
+}

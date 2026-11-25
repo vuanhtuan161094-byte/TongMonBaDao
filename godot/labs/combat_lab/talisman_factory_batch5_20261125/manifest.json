@@ -65,11 +65,19 @@
     "PAF04": "Existing art stop retained; not regenerated or integrated."
   },
   "native_capture": {
-    "status": "PENDING",
+    "status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
     "expected_entries": 15,
+    "bound_receipt_skills": 15,
+    "accepted_event_count": 44,
+    "synthetic_event_count": 0,
+    "capture_source_commit": "9c766b3b52d197b8de512f39ee097c89038a0ce5",
     "video": "review/native/talisman_factory_batch5_native_1280x720.mp4",
     "contact_sheet": "review/native/talisman_factory_batch5_contact_sheet_1280x720.png",
-    "capture_index": "review/native/talisman_batch5_capture_index.json"
+    "capture_index": "review/native/talisman_batch5_capture_index.json",
+    "video_sha256": "7046cabd8287c96cc67ccd9933ce40c48d131c83df058e3b8366ef4f36553dc5",
+    "contact_sheet_sha256": "10312887cac3effab7074011ab40969928481aef889094b46b17bfe169141ee8",
+    "movie_validation": "H264_1280x720_20FPS; 833_FRAMES; 41.65S; ALL_FRAMES_DECODED",
+    "visual_review": "Phase samples captured and PAF05 cast, release, three real mark targets, sustained status, and end/fade spot checked; continuous motion and owner review pending."
   },
   "owner_approval": "PENDING_R5F; R5E_OWNER_PROVISIONAL",
   "pve": "HOLD"

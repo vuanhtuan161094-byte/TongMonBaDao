@@ -9316,7 +9316,7 @@
       "draw_layer": "BEHIND",
       "phase_aliases": {},
       "source_g3": "PAF05_R5E_OWNER_PROVISIONAL_FROZEN; R5F_CHARGE_ONLY_CANDIDATE; 1X_SOURCE_REVIEWED; CONTINUOUS_MOTION_AND_OWNER_REVIEW_PENDING",
-      "native_status": "NATIVE_CAPTURE_PENDING",
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
       "owner_status": "OWNER_PROVISIONAL_R5E_BASE; R5F_CANDIDATE_VISUAL_REVIEW_PENDING",
       "native_ready": false,
       "motion_status": "R5F_12_CHARGE_POSES; R5E_16_ZONE_12_CONTACT_8_BADGE_8_RESIDUE_POSES; CONTINUOUS_MOTION_REVIEW_PENDING",
@@ -9917,7 +9917,7 @@
       "native_batch": "talisman",
       "source_batch_manifest": "res://labs/combat_lab/talisman_factory_batch5_20261125/manifest.json",
       "contact_source_note": "Start/sustain/end follow the exact owner-scoped v63_talisman_mark_applied receipt and its until timestamp. R5E R5F renderer has no v63_talisman_hit binding and creates no damage, mark, cast, or status.",
-      "review_note": "R5E owner-provisional binary source is restored byte-for-byte from Actions #44069358237 and left unchanged. The isolated R5F 12-pose RGBA replaces charge only. Zone art is anchored at the real selected target ground with data-driven 488x238 projection; target mark/contact and seven-second badge appear only after the exact real v63_talisman_mark_applied event. No v63_talisman_hit/damage cue is fabricated. Native capture, continuous motion/style, owner review pending; PvE HOLD.",
+      "review_note": "R5E owner-provisional binary source is restored byte-for-byte from Actions #44069358237 and left unchanged. The isolated R5F 12-pose RGBA replaces charge only. Zone art is anchored at the real selected target ground with data-driven 488x238 projection; target mark/contact and seven-second badge appear only after the exact real v63_talisman_mark_applied event. Native batch5 capture TECH PASS: 15 skills, 44 accepted fixture events, 0 synthetic; all three target mark receipts record the seven-second expiry. No v63_talisman_hit/damage cue is bound. Phase samples captured; continuous motion/style and owner review pending; PvE HOLD.",
       "source_paths": [
         "data/combat/v63_talisman_combat_catalog.json",
         "labs/combat_lab/vfx_factory/registry.json",
@@ -9940,7 +9940,7 @@
         "labs/combat_lab/talisman_factory_batch5_20261125/review/native/talisman_factory_batch5_contact_sheet_1280x720.png",
         "labs/combat_lab/talisman_factory_batch5_20261125/review/native/talisman_factory_batch5_native_1280x720.mp4"
       ],
-      "native_event_status": "PENDING_EXACT_MAPBATTLE_FIXTURE_CAPTURE; ALLOWED_TYPES=skill_cast,skill_release,v63_talisman_mark_applied; v63_talisman_hit deliberately unbound"
+      "native_event_status": "NATIVE_CAPTURE_TECH_PASS; ALLOWED_TYPES=skill_cast,skill_release,v63_talisman_mark_applied; ACCEPTED_EVENTS=44; SYNTHETIC=0; THREE_MARK_TARGETS_WITH_7S_EXPIRY; v63_talisman_hit deliberately unbound"
     }
   ],
   "batch_status": {
@@ -9958,7 +9958,7 @@
       "integrated_talisman_entries": 15,
       "paf03_source": "ART_REWORK_REQUIRED_NOT_IN_FACTORY",
       "paf04_source": "ART_STOP_NOT_IN_FACTORY",
-      "native_import_capture": "PENDING",
+      "native_import_capture": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE; BATCH5=15_SKILLS_44_EVENTS_0_SYNTHETIC",
       "owner_approval": "R5E_PROVISIONAL_ONLY; R5F_PENDING",
       "pve": "HOLD"
     }
@@ -9977,12 +9977,12 @@
     },
     "talisman": {
       "expected_count": 15,
-      "technical_status": "BATCH5_NATIVE_CAPTURE_PENDING; BATCH4_LAST_TECH_PASS",
-      "last_capture_index": "res://labs/combat_lab/talisman_factory_batch4_20261125/review/native/talisman_batch4_capture_index.json",
-      "video": "res://labs/combat_lab/talisman_factory_batch4_20261125/review/native/talisman_factory_batch4_native_1280x720.mp4",
-      "contact_sheet": "res://labs/combat_lab/talisman_factory_batch4_20261125/review/native/talisman_factory_batch4_contact_sheet_1x.png",
-      "receipt_status": "REAL_MAPBATTLE_V2_FIXTURES_14_SKILLS; CONFIGURED_EVENT_COUNTS_IN_CAPTURE_INDEX; PAF02_CAST_RELEASE_ONLY_NO_MARK; SYNTHETIC=0",
-      "visual_review_status": "NATIVE_1X_CHARGE_RELEASE_CONTACT_OR_STATE_SAMPLES_REVIEWED; CONTINUOUS_MOTION_AND_OWNER_REVIEW_PENDING",
+      "technical_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
+      "last_capture_index": "res://labs/combat_lab/talisman_factory_batch5_20261125/review/native/talisman_batch5_capture_index.json",
+      "video": "res://labs/combat_lab/talisman_factory_batch5_20261125/review/native/talisman_factory_batch5_native_1280x720.mp4",
+      "contact_sheet": "res://labs/combat_lab/talisman_factory_batch5_20261125/review/native/talisman_factory_batch5_contact_sheet_1280x720.png",
+      "receipt_status": "REAL_MAPBATTLE_V2_FIXTURE_CAPTURE; SKILLS=15; ACCEPTED_EVENTS=44; SYNTHETIC=0; PAF05_MARK_APPLIED=3_TARGETS; STATUS_UNTIL=7S; NO_HIT_BINDING",
+      "visual_review_status": "NATIVE_1X_CAST_RELEASE_CONTACT_STATE_SUSTAIN_END_SAMPLES_CAPTURED; SPOT_CHECKED; CONTINUOUS_MOTION_AND_OWNER_REVIEW_PENDING",
       "owner_approval": "PENDING",
       "pve": "HOLD",
       "pending_candidate": "tmb.skill.talisman.phong_an_phu.ultimate.human; PAF05_R5F_CHARGE_ONLY_CANDIDATE",

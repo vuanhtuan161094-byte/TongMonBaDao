@@ -1605,8 +1605,8 @@
         "labs/combat_lab/talisman_factory_batch5_20261125/review/native/talisman_factory_batch5_contact_sheet_1280x720.png",
         "labs/combat_lab/talisman_factory_batch5_20261125/review/native/talisman_factory_batch5_native_1280x720.mp4"
       ],
-      "review_note": "R5E owner-provisional binary source is restored byte-for-byte from Actions #44069358237 and left unchanged. The isolated R5F 12-pose RGBA replaces charge only. Zone art is anchored at the real selected target ground with data-driven 488x238 projection; target mark/contact and seven-second badge appear only after the exact real v63_talisman_mark_applied event. No v63_talisman_hit/damage cue is fabricated. Native capture, continuous motion/style, owner review pending; PvE HOLD.",
-      "review_stages": "CANDIDATE ONLY · R5E provisional bytes frozen · R5F replaces charge only · Factory maps charge/release and real mark receipt · no fake hit/damage/status · native capture pending · owner review pending · PvE HOLD"
+      "review_note": "R5E owner-provisional binary source is restored byte-for-byte from Actions #44069358237 and left unchanged. The isolated R5F 12-pose RGBA replaces charge only. Zone art is anchored at the real selected target ground with data-driven 488x238 projection; target mark/contact and seven-second badge appear only after the exact real v63_talisman_mark_applied event. Native batch5 capture TECH PASS: 15 skills, 44 accepted fixture events, 0 synthetic; three target mark receipts carry a seven-second expiry. No v63_talisman_hit/damage cue is bound. Phase samples spot checked; continuous motion/style and owner review pending; PvE HOLD.",
+      "review_stages": "CANDIDATE ONLY · R5E provisional bytes frozen · R5F replaces charge only · Factory maps charge/release and exact mark receipt · native 1280×720/20 fps H.264 TECH PASS · 15 skills, 44 real fixture events, 0 synthetic · seven-second mark sustain/end samples captured · continuous motion and owner review pending · PvE HOLD"
     }
   ],
   "updated_at": "2026-11-25"
