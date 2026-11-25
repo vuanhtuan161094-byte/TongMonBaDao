@@ -2,7 +2,7 @@
 
 **Current gate:** source G3 self-review pass / formal owner G3 pending · local focused runtime 29 checks pass · local headless LAB receipt pass · exact-SHA native 1280×720 capture pending · owner pending · PvE HOLD.
 
-The preview reuses the existing male Blade disciple AS50, its candidate frame-by-frame main-hand sockets and hand masks, and the existing `curved_dao` candidate image. A preview-only scale and direction override keep the actor near 85 px at 720p and align the DAO tip toward the target. No new disciple art, shared socket edits, rig, catalog or gameplay change was made.
+The preview reuses the existing male Blade disciple AS50, its candidate frame-by-frame main-hand sockets and hand masks, and the existing `curved_dao` candidate image. A preview-only scale and direction override keep the actor near 68 px at 720p and align the DAO tip toward the target. No new disciple art, shared socket edits, rig, catalog or gameplay change was made.
 
 Contact and fade appear only after the isolated `MapBattleV2` cast produces the exact `v63_skill_hit` receipt. The focus test confirms the 0.28 s cast plus 4.0 / 10.0 projectile travel, one target and one hit; the scene moves the runtime monster during flight. The production `blade_skill_combat` gate remains OFF.
 

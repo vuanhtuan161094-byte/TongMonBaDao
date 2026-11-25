@@ -17,7 +17,7 @@ const CASTER_START := Vector2(2.0, 2.0)
 const TARGET_START := Vector2(6.0, 2.0)
 const TARGET_END := Vector2(5.6, 1.8)
 const OUTSIDE_POSITION := Vector2(6.2, 3.5)
-const ASCHAR_DISPLAY_SCALE := 0.25
+const ASCHAR_DISPLAY_SCALE := 0.20
 const DAO_DISPLAY_SCALE := 0.68
 
 var checks := 0
@@ -93,8 +93,8 @@ func _run() -> void:
 			usable_mainhand_rows += 1
 	_expect(attack_rows.size() == 4 and usable_mainhand_rows == 4 and unique_body_frames.size() == 4,
 		"each animated AS50 attack frame has its own existing hand anchor and mask")
-	_expect(is_equal_approx(338.0 * ASCHAR_DISPLAY_SCALE, 84.5),
-		"existing disciple renders at an approximately 85 px visible height in 720p LAB")
+	_expect(is_equal_approx(338.0 * ASCHAR_DISPLAY_SCALE, 67.6),
+		"existing disciple renders at an approximately 68 px visible height in 720p LAB")
 
 	var parsed_library: Variant = JSON.parse_string(FileAccess.get_file_as_string(WEAPON_LIBRARY_PATH))
 	var library: Dictionary = Dictionary(parsed_library.get("asset_library", {})) if parsed_library is Dictionary else {}

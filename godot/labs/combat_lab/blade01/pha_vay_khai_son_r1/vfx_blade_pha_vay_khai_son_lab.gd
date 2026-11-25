@@ -18,7 +18,7 @@ const PROJECTILE_SPEED := 10.0
 const EXPECTED_RUNTIME_SECONDS := 0.68 # 0.28 s cast + 4.0 world-unit flight / 10.
 const MOVEMENT_START_SECONDS := 0.12
 const ATTACK_ACTION_SECONDS := 0.28
-const ASCHAR_DISPLAY_SCALE := 0.25 # ~84.5 px visible body height from the authored 338 px.
+const ASCHAR_DISPLAY_SCALE := 0.20 # ~67.6 px visible body height from the authored 338 px.
 const DAO_DISPLAY_SCALE := 0.68
 const CHARGE_DISPLAY_FACTOR := 0.10083036773428232
 const FLIGHT_DISPLAY_FACTOR := 0.11070110701107011
@@ -293,8 +293,8 @@ func _draw() -> void:
 	aschar_draw_success = ASCHAR.draw_actor(self, "blade", "male", "attack",
 		caster_foot, direction, caster_action_age, ASCHAR_DISPLAY_SCALE,
 		ATTACK_ACTION_SECONDS, attachment_override)
-	_draw_target(TARGET_ID, "TARGET · SOURCE A PLACEHOLDER", target_foot)
-	_draw_target(OUTSIDE_ID, "OUTSIDE TARGET · HP UNCHANGED", _world_to_screen(_target_position(OUTSIDE_ID)))
+	_draw_target(TARGET_ID, "TARGET 01 · MOVING MONSTER", target_foot)
+	_draw_target(OUTSIDE_ID, "OUTSIDE · HP UNCHANGED", _world_to_screen(_target_position(OUTSIDE_ID)))
 	_draw_skill_art(caster_foot, target_foot, direction)
 	_draw_runtime_status()
 

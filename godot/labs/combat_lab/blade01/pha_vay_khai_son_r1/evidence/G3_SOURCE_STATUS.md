@@ -16,7 +16,7 @@
 
 - Reuse the existing `AS50_FRONT_CLIPS_CANDIDATE.tres` four-frame attack clip selected by the ASCHAR bridge for male Blade disciples.
 - Reuse AS50's candidate per-frame main-hand anchor and hand mask, plus the existing `curved_dao.png` library asset. The LAB supplies a preview-only direction/scale override so the tip points toward the target. Shared attachment/socket data and the game actor are not modified.
-- Actor scale is `0.25` in 1280×720, about 84.5 px visible body height from the authored 338 px. Weapon is scaled relative to that hand socket.
+- Actor scale is `0.20` in 1280×720, about 67.6 px visible body height from the authored 338 px. Weapon is scaled relative to that hand socket.
 - AS50/socket/weapon remain candidates. Their geometry has not been owner-approved or promoted to production.
 
 ## Focused runtime and native status
