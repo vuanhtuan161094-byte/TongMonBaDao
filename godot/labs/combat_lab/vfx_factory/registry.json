@@ -6886,14 +6886,21 @@
       "source_status": "SOURCE_CHECKPOINTED",
       "atlas_count": 5,
       "skill_count": 17,
-      "native_import_capture": "PENDING",
+      "native_import_capture": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_FULL_DECODE; MAPBATTLE_RECEIPTS_17_OF_17; OWNER=PENDING; PVE=HOLD",
       "owner_approval": "PENDING",
       "pve": "HOLD"
     }
   },
   "native_batches": {
     "formation": {
-      "expected_count": 17
+      "expected_count": 17,
+      "technical_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_FULL_DECODE",
+      "last_capture_index": "res://labs/combat_lab/formation01/factory_batch1_20261125/review/native/formation_batch1_capture_index.json",
+      "video": "res://labs/combat_lab/formation01/factory_batch1_20261125/review/native/formation_batch1_native_1280x720.mp4",
+      "contact_sheet": "res://labs/combat_lab/formation01/factory_batch1_20261125/review/native/formation_batch1_contact_sheet_1280x720.png",
+      "receipt_status": "REAL_MAPBATTLE_V2_FIXTURE_RECEIPTS_17_OF_17; SYNTHETIC_EVENTS=0",
+      "owner_approval": "PENDING",
+      "pve": "HOLD"
     },
     "talisman": {
       "expected_count": 8,

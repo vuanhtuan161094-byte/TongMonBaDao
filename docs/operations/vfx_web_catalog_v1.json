@@ -446,7 +446,7 @@
       "g3_art": "SOURCE_ALPHA_AND_CONTACT_SHEET_SELF_PASS",
       "owner_art": "OWNER_VISUAL_PENDING",
       "art_source": "FIRST_PARTY_CODEX_IMAGEGEN_RGBA_FOUR_PHASE_POSES",
-      "review_stages": "4 phase poses · contact receipt-bound",
+      "review_stages": "4 phase poses · contact receipt-bound · Native Godot 4.7.2 1280x720 capture and full H.264 decode PASS · exact MapBattleV2 fixture receipts accepted 17/17 · owner approval pending · PvE HOLD",
       "source_paths": [
         "labs/combat_lab/vfx_factory/vfx_factory_review.gd",
         "labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
@@ -459,9 +459,12 @@
         "labs/combat_lab/vfx_factory/vfx_factory_formation_batch_capture.tscn",
         "tests/labs/combat_lab/vfx_factory_review_test.gd",
         "tests/labs/combat_lab/vfx_factory_formation_receipt_integration_test.gd",
-        "tests/presentation/pve_aschar_frame_renderer_anchor_test.gd"
+        "tests/presentation/pve_aschar_frame_renderer_anchor_test.gd",
+        "labs/combat_lab/formation01/factory_batch1_20261125/review/native/formation_batch1_capture_index.json",
+        "labs/combat_lab/formation01/factory_batch1_20261125/review/native/formation_batch1_contact_sheet_1280x720.png",
+        "labs/combat_lab/formation01/factory_batch1_20261125/review/native/formation_batch1_native_1280x720.mp4"
       ],
-      "review_note": "17-kỹ-năng Trận Tu · 4 pose theo pha; AS68 1× · va chạm/chuyển trạng thái chỉ từ MapBattle receipt thật. Native import/capture và duyệt chủ dự án đang chờ; PVE HOLD."
+      "review_note": "17-kỹ-năng Trận Tu · 4 pose theo pha; AS68 1× · va chạm/chuyển trạng thái chỉ từ MapBattle receipt thật. Native import/capture và duyệt chủ dự án đang chờ; PVE HOLD. Native batch technical capture and H.264 decode PASS at 1280x720/20fps; 17/17 exact fixture receipt bindings accepted, zero synthetic events. Four authored phase poses remain storyboard timing, not continuous frame-by-frame animation. Owner approval pending; PvE HOLD."
     },
     {
       "id": "tmb.skill.formation.phong_toa_tran.active_02.human",
@@ -477,7 +480,7 @@
       "g3_art": "SOURCE_ALPHA_AND_CONTACT_SHEET_SELF_PASS",
       "owner_art": "OWNER_VISUAL_PENDING",
       "art_source": "FIRST_PARTY_CODEX_IMAGEGEN_RGBA_FOUR_PHASE_POSES",
-      "review_stages": "4 phase poses · contact receipt-bound",
+      "review_stages": "4 phase poses · contact receipt-bound · Native Godot 4.7.2 1280x720 capture and full H.264 decode PASS · exact MapBattleV2 fixture receipts accepted 17/17 · owner approval pending · PvE HOLD",
       "source_paths": [
         "labs/combat_lab/vfx_factory/vfx_factory_review.gd",
         "labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
@@ -490,9 +493,12 @@
         "labs/combat_lab/vfx_factory/vfx_factory_formation_batch_capture.tscn",
         "tests/labs/combat_lab/vfx_factory_review_test.gd",
         "tests/labs/combat_lab/vfx_factory_formation_receipt_integration_test.gd",
-        "tests/presentation/pve_aschar_frame_renderer_anchor_test.gd"
+        "tests/presentation/pve_aschar_frame_renderer_anchor_test.gd",
+        "labs/combat_lab/formation01/factory_batch1_20261125/review/native/formation_batch1_capture_index.json",
+        "labs/combat_lab/formation01/factory_batch1_20261125/review/native/formation_batch1_contact_sheet_1280x720.png",
+        "labs/combat_lab/formation01/factory_batch1_20261125/review/native/formation_batch1_native_1280x720.mp4"
       ],
-      "review_note": "17-kỹ-năng Trận Tu · 4 pose theo pha; AS68 1× · va chạm/chuyển trạng thái chỉ từ MapBattle receipt thật. Native import/capture và duyệt chủ dự án đang chờ; PVE HOLD."
+      "review_note": "17-kỹ-năng Trận Tu · 4 pose theo pha; AS68 1× · va chạm/chuyển trạng thái chỉ từ MapBattle receipt thật. Native import/capture và duyệt chủ dự án đang chờ; PVE HOLD. Native batch technical capture and H.264 decode PASS at 1280x720/20fps; 17/17 exact fixture receipt bindings accepted, zero synthetic events. Four authored phase poses remain storyboard timing, not continuous frame-by-frame animation. Owner approval pending; PvE HOLD."
     },
     {
       "id": "tmb.skill.formation.phong_toa_tran.active_03.human",
@@ -508,7 +514,7 @@
       "g3_art": "SOURCE_ALPHA_AND_CONTACT_SHEET_SELF_PASS",
       "owner_art": "OWNER_VISUAL_PENDING",
       "art_source": "FIRST_PARTY_CODEX_IMAGEGEN_RGBA_FOUR_PHASE_POSES",
-      "review_stages": "4 phase poses · contact receipt-bound",
+      "review_stages": "4 phase poses · contact receipt-bound · Native Godot 4.7.2 1280x720 capture and full H.264 decode PASS · exact MapBattleV2 fixture receipts accepted 17/17 · owner approval pending · PvE HOLD",
       "source_paths": [
         "labs/combat_lab/vfx_factory/vfx_factory_review.gd",
         "labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
@@ -521,9 +527,12 @@
         "labs/combat_lab/vfx_factory/vfx_factory_formation_batch_capture.tscn",
         "tests/labs/combat_lab/vfx_factory_review_test.gd",
         "tests/labs/combat_lab/vfx_factory_formation_receipt_integration_test.gd",
-        "tests/presentation/pve_aschar_frame_renderer_anchor_test.gd"
+        "tests/presentation/pve_aschar_frame_renderer_anchor_test.gd",
+        "labs/combat_lab/formation01/factory_batch1_20261125/review/native/formation_batch1_capture_index.json",
+        "labs/combat_lab/formation01/factory_batch1_20261125/review/native/formation_batch1_contact_sheet_1280x720.png",
+        "labs/combat_lab/formation01/factory_batch1_20261125/review/native/formation_batch1_native_1280x720.mp4"
       ],
-      "review_note": "17-kỹ-năng Trận Tu · 4 pose theo pha; AS68 1× · va chạm/chuyển trạng thái chỉ từ MapBattle receipt thật. Native import/capture và duyệt chủ dự án đang chờ; PVE HOLD."
+      "review_note": "17-kỹ-năng Trận Tu · 4 pose theo pha; AS68 1× · va chạm/chuyển trạng thái chỉ từ MapBattle receipt thật. Native import/capture và duyệt chủ dự án đang chờ; PVE HOLD. Native batch technical capture and H.264 decode PASS at 1280x720/20fps; 17/17 exact fixture receipt bindings accepted, zero synthetic events. Four authored phase poses remain storyboard timing, not continuous frame-by-frame animation. Owner approval pending; PvE HOLD."
     },
     {
       "id": "tmb.skill.formation.phong_toa_tran.active_04.human",
@@ -539,7 +548,7 @@
       "g3_art": "SOURCE_ALPHA_AND_CONTACT_SHEET_SELF_PASS",
       "owner_art": "OWNER_VISUAL_PENDING",
       "art_source": "FIRST_PARTY_CODEX_IMAGEGEN_RGBA_FOUR_PHASE_POSES",
-      "review_stages": "4 phase poses · contact receipt-bound",
+      "review_stages": "4 phase poses · contact receipt-bound · Native Godot 4.7.2 1280x720 capture and full H.264 decode PASS · exact MapBattleV2 fixture receipts accepted 17/17 · owner approval pending · PvE HOLD",
       "source_paths": [
         "labs/combat_lab/vfx_factory/vfx_factory_review.gd",
         "labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
@@ -552,9 +561,12 @@
         "labs/combat_lab/vfx_factory/vfx_factory_formation_batch_capture.tscn",
         "tests/labs/combat_lab/vfx_factory_review_test.gd",
         "tests/labs/combat_lab/vfx_factory_formation_receipt_integration_test.gd",
-        "tests/presentation/pve_aschar_frame_renderer_anchor_test.gd"
+        "tests/presentation/pve_aschar_frame_renderer_anchor_test.gd",
+        "labs/combat_lab/formation01/factory_batch1_20261125/review/native/formation_batch1_capture_index.json",
+        "labs/combat_lab/formation01/factory_batch1_20261125/review/native/formation_batch1_contact_sheet_1280x720.png",
+        "labs/combat_lab/formation01/factory_batch1_20261125/review/native/formation_batch1_native_1280x720.mp4"
       ],
-      "review_note": "17-kỹ-năng Trận Tu · 4 pose theo pha; AS68 1× · va chạm/chuyển trạng thái chỉ từ MapBattle receipt thật. Native import/capture và duyệt chủ dự án đang chờ; PVE HOLD."
+      "review_note": "17-kỹ-năng Trận Tu · 4 pose theo pha; AS68 1× · va chạm/chuyển trạng thái chỉ từ MapBattle receipt thật. Native import/capture và duyệt chủ dự án đang chờ; PVE HOLD. Native batch technical capture and H.264 decode PASS at 1280x720/20fps; 17/17 exact fixture receipt bindings accepted, zero synthetic events. Four authored phase poses remain storyboard timing, not continuous frame-by-frame animation. Owner approval pending; PvE HOLD."
     },
     {
       "id": "tmb.skill.formation.phong_toa_tran.ultimate.human",
@@ -570,7 +582,7 @@
       "g3_art": "SOURCE_ALPHA_AND_CONTACT_SHEET_SELF_PASS",
       "owner_art": "OWNER_VISUAL_PENDING",
       "art_source": "FIRST_PARTY_CODEX_IMAGEGEN_RGBA_FOUR_PHASE_POSES",
-      "review_stages": "4 phase poses · contact receipt-bound",
+      "review_stages": "4 phase poses · contact receipt-bound · Native Godot 4.7.2 1280x720 capture and full H.264 decode PASS · exact MapBattleV2 fixture receipts accepted 17/17 · owner approval pending · PvE HOLD",
       "source_paths": [
         "labs/combat_lab/vfx_factory/vfx_factory_review.gd",
         "labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
@@ -583,9 +595,12 @@
         "labs/combat_lab/vfx_factory/vfx_factory_formation_batch_capture.tscn",
         "tests/labs/combat_lab/vfx_factory_review_test.gd",
         "tests/labs/combat_lab/vfx_factory_formation_receipt_integration_test.gd",
-        "tests/presentation/pve_aschar_frame_renderer_anchor_test.gd"
+        "tests/presentation/pve_aschar_frame_renderer_anchor_test.gd",
+        "labs/combat_lab/formation01/factory_batch1_20261125/review/native/formation_batch1_capture_index.json",
+        "labs/combat_lab/formation01/factory_batch1_20261125/review/native/formation_batch1_contact_sheet_1280x720.png",
+        "labs/combat_lab/formation01/factory_batch1_20261125/review/native/formation_batch1_native_1280x720.mp4"
       ],
-      "review_note": "17-kỹ-năng Trận Tu · 4 pose theo pha; AS68 1× · va chạm/chuyển trạng thái chỉ từ MapBattle receipt thật. Native import/capture và duyệt chủ dự án đang chờ; PVE HOLD."
+      "review_note": "17-kỹ-năng Trận Tu · 4 pose theo pha; AS68 1× · va chạm/chuyển trạng thái chỉ từ MapBattle receipt thật. Native import/capture và duyệt chủ dự án đang chờ; PVE HOLD. Native batch technical capture and H.264 decode PASS at 1280x720/20fps; 17/17 exact fixture receipt bindings accepted, zero synthetic events. Four authored phase poses remain storyboard timing, not continuous frame-by-frame animation. Owner approval pending; PvE HOLD."
     },
     {
       "id": "tmb.skill.formation.sat_phat_tran.active_01.human",
@@ -601,7 +616,7 @@
       "g3_art": "SOURCE_ALPHA_AND_CONTACT_SHEET_SELF_PASS",
       "owner_art": "OWNER_VISUAL_PENDING",
       "art_source": "FIRST_PARTY_CODEX_IMAGEGEN_RGBA_FOUR_PHASE_POSES",
-      "review_stages": "4 phase poses · contact receipt-bound",
+      "review_stages": "4 phase poses · contact receipt-bound · Native Godot 4.7.2 1280x720 capture and full H.264 decode PASS · exact MapBattleV2 fixture receipts accepted 17/17 · owner approval pending · PvE HOLD",
       "source_paths": [
         "labs/combat_lab/vfx_factory/vfx_factory_review.gd",
         "labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
@@ -618,9 +633,12 @@
         "labs/combat_lab/vfx_factory/vfx_factory_formation_batch_capture.tscn",
         "tests/labs/combat_lab/vfx_factory_review_test.gd",
         "tests/labs/combat_lab/vfx_factory_formation_receipt_integration_test.gd",
-        "tests/presentation/pve_aschar_frame_renderer_anchor_test.gd"
+        "tests/presentation/pve_aschar_frame_renderer_anchor_test.gd",
+        "labs/combat_lab/formation01/factory_batch1_20261125/review/native/formation_batch1_capture_index.json",
+        "labs/combat_lab/formation01/factory_batch1_20261125/review/native/formation_batch1_contact_sheet_1280x720.png",
+        "labs/combat_lab/formation01/factory_batch1_20261125/review/native/formation_batch1_native_1280x720.mp4"
       ],
-      "review_note": "R1–R3 được giữ nguyên ở trạng thái G3 ART REWORK REQUIRED; atlas mới là candidate cải thiện. Không thăng hạng revision cũ. Native/owner pending; PVE HOLD."
+      "review_note": "R1–R3 được giữ nguyên ở trạng thái G3 ART REWORK REQUIRED; atlas mới là candidate cải thiện. Không thăng hạng revision cũ. Native/owner pending; PVE HOLD. Native batch technical capture and H.264 decode PASS at 1280x720/20fps; 17/17 exact fixture receipt bindings accepted, zero synthetic events. Four authored phase poses remain storyboard timing, not continuous frame-by-frame animation. Owner approval pending; PvE HOLD."
     },
     {
       "id": "tmb.skill.formation.sat_phat_tran.active_02.human",
@@ -636,7 +654,7 @@
       "g3_art": "SOURCE_ALPHA_AND_CONTACT_SHEET_SELF_PASS",
       "owner_art": "OWNER_VISUAL_PENDING",
       "art_source": "FIRST_PARTY_CODEX_IMAGEGEN_RGBA_FOUR_PHASE_POSES",
-      "review_stages": "4 phase poses · contact receipt-bound",
+      "review_stages": "4 phase poses · contact receipt-bound · Native Godot 4.7.2 1280x720 capture and full H.264 decode PASS · exact MapBattleV2 fixture receipts accepted 17/17 · owner approval pending · PvE HOLD",
       "source_paths": [
         "labs/combat_lab/vfx_factory/vfx_factory_review.gd",
         "labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
@@ -649,9 +667,12 @@
         "labs/combat_lab/vfx_factory/vfx_factory_formation_batch_capture.tscn",
         "tests/labs/combat_lab/vfx_factory_review_test.gd",
         "tests/labs/combat_lab/vfx_factory_formation_receipt_integration_test.gd",
-        "tests/presentation/pve_aschar_frame_renderer_anchor_test.gd"
+        "tests/presentation/pve_aschar_frame_renderer_anchor_test.gd",
+        "labs/combat_lab/formation01/factory_batch1_20261125/review/native/formation_batch1_capture_index.json",
+        "labs/combat_lab/formation01/factory_batch1_20261125/review/native/formation_batch1_contact_sheet_1280x720.png",
+        "labs/combat_lab/formation01/factory_batch1_20261125/review/native/formation_batch1_native_1280x720.mp4"
       ],
-      "review_note": "17-kỹ-năng Trận Tu · 4 pose theo pha; AS68 1× · va chạm/chuyển trạng thái chỉ từ MapBattle receipt thật. Native import/capture và duyệt chủ dự án đang chờ; PVE HOLD."
+      "review_note": "17-kỹ-năng Trận Tu · 4 pose theo pha; AS68 1× · va chạm/chuyển trạng thái chỉ từ MapBattle receipt thật. Native import/capture và duyệt chủ dự án đang chờ; PVE HOLD. Native batch technical capture and H.264 decode PASS at 1280x720/20fps; 17/17 exact fixture receipt bindings accepted, zero synthetic events. Four authored phase poses remain storyboard timing, not continuous frame-by-frame animation. Owner approval pending; PvE HOLD."
     },
     {
       "id": "tmb.skill.formation.sat_phat_tran.active_03.human",
@@ -667,7 +688,7 @@
       "g3_art": "SOURCE_ALPHA_AND_CONTACT_SHEET_SELF_PASS",
       "owner_art": "OWNER_VISUAL_PENDING",
       "art_source": "FIRST_PARTY_CODEX_IMAGEGEN_RGBA_FOUR_PHASE_POSES",
-      "review_stages": "4 phase poses · contact receipt-bound",
+      "review_stages": "4 phase poses · contact receipt-bound · Native Godot 4.7.2 1280x720 capture and full H.264 decode PASS · exact MapBattleV2 fixture receipts accepted 17/17 · owner approval pending · PvE HOLD",
       "source_paths": [
         "labs/combat_lab/vfx_factory/vfx_factory_review.gd",
         "labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
@@ -680,9 +701,12 @@
         "labs/combat_lab/vfx_factory/vfx_factory_formation_batch_capture.tscn",
         "tests/labs/combat_lab/vfx_factory_review_test.gd",
         "tests/labs/combat_lab/vfx_factory_formation_receipt_integration_test.gd",
-        "tests/presentation/pve_aschar_frame_renderer_anchor_test.gd"
+        "tests/presentation/pve_aschar_frame_renderer_anchor_test.gd",
+        "labs/combat_lab/formation01/factory_batch1_20261125/review/native/formation_batch1_capture_index.json",
+        "labs/combat_lab/formation01/factory_batch1_20261125/review/native/formation_batch1_contact_sheet_1280x720.png",
+        "labs/combat_lab/formation01/factory_batch1_20261125/review/native/formation_batch1_native_1280x720.mp4"
       ],
-      "review_note": "17-kỹ-năng Trận Tu · 4 pose theo pha; AS68 1× · va chạm/chuyển trạng thái chỉ từ MapBattle receipt thật. Native import/capture và duyệt chủ dự án đang chờ; PVE HOLD."
+      "review_note": "17-kỹ-năng Trận Tu · 4 pose theo pha; AS68 1× · va chạm/chuyển trạng thái chỉ từ MapBattle receipt thật. Native import/capture và duyệt chủ dự án đang chờ; PVE HOLD. Native batch technical capture and H.264 decode PASS at 1280x720/20fps; 17/17 exact fixture receipt bindings accepted, zero synthetic events. Four authored phase poses remain storyboard timing, not continuous frame-by-frame animation. Owner approval pending; PvE HOLD."
     },
     {
       "id": "tmb.skill.formation.sat_phat_tran.active_04.human",
@@ -698,7 +722,7 @@
       "g3_art": "SOURCE_ALPHA_AND_CONTACT_SHEET_SELF_PASS",
       "owner_art": "OWNER_VISUAL_PENDING",
       "art_source": "FIRST_PARTY_CODEX_IMAGEGEN_RGBA_FOUR_PHASE_POSES",
-      "review_stages": "4 phase poses · contact receipt-bound",
+      "review_stages": "4 phase poses · contact receipt-bound · Native Godot 4.7.2 1280x720 capture and full H.264 decode PASS · exact MapBattleV2 fixture receipts accepted 17/17 · owner approval pending · PvE HOLD",
       "source_paths": [
         "labs/combat_lab/vfx_factory/vfx_factory_review.gd",
         "labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
@@ -711,9 +735,12 @@
         "labs/combat_lab/vfx_factory/vfx_factory_formation_batch_capture.tscn",
         "tests/labs/combat_lab/vfx_factory_review_test.gd",
         "tests/labs/combat_lab/vfx_factory_formation_receipt_integration_test.gd",
-        "tests/presentation/pve_aschar_frame_renderer_anchor_test.gd"
+        "tests/presentation/pve_aschar_frame_renderer_anchor_test.gd",
+        "labs/combat_lab/formation01/factory_batch1_20261125/review/native/formation_batch1_capture_index.json",
+        "labs/combat_lab/formation01/factory_batch1_20261125/review/native/formation_batch1_contact_sheet_1280x720.png",
+        "labs/combat_lab/formation01/factory_batch1_20261125/review/native/formation_batch1_native_1280x720.mp4"
       ],
-      "review_note": "17-kỹ-năng Trận Tu · 4 pose theo pha; AS68 1× · va chạm/chuyển trạng thái chỉ từ MapBattle receipt thật. Native import/capture và duyệt chủ dự án đang chờ; PVE HOLD."
+      "review_note": "17-kỹ-năng Trận Tu · 4 pose theo pha; AS68 1× · va chạm/chuyển trạng thái chỉ từ MapBattle receipt thật. Native import/capture và duyệt chủ dự án đang chờ; PVE HOLD. Native batch technical capture and H.264 decode PASS at 1280x720/20fps; 17/17 exact fixture receipt bindings accepted, zero synthetic events. Four authored phase poses remain storyboard timing, not continuous frame-by-frame animation. Owner approval pending; PvE HOLD."
     },
     {
       "id": "tmb.skill.formation.sat_phat_tran.ultimate.human",
@@ -729,7 +756,7 @@
       "g3_art": "SOURCE_ALPHA_AND_CONTACT_SHEET_SELF_PASS",
       "owner_art": "OWNER_VISUAL_PENDING",
       "art_source": "FIRST_PARTY_CODEX_IMAGEGEN_RGBA_FOUR_PHASE_POSES",
-      "review_stages": "4 phase poses · contact receipt-bound",
+      "review_stages": "4 phase poses · contact receipt-bound · Native Godot 4.7.2 1280x720 capture and full H.264 decode PASS · exact MapBattleV2 fixture receipts accepted 17/17 · owner approval pending · PvE HOLD",
       "source_paths": [
         "labs/combat_lab/vfx_factory/vfx_factory_review.gd",
         "labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
@@ -742,9 +769,12 @@
         "labs/combat_lab/vfx_factory/vfx_factory_formation_batch_capture.tscn",
         "tests/labs/combat_lab/vfx_factory_review_test.gd",
         "tests/labs/combat_lab/vfx_factory_formation_receipt_integration_test.gd",
-        "tests/presentation/pve_aschar_frame_renderer_anchor_test.gd"
+        "tests/presentation/pve_aschar_frame_renderer_anchor_test.gd",
+        "labs/combat_lab/formation01/factory_batch1_20261125/review/native/formation_batch1_capture_index.json",
+        "labs/combat_lab/formation01/factory_batch1_20261125/review/native/formation_batch1_contact_sheet_1280x720.png",
+        "labs/combat_lab/formation01/factory_batch1_20261125/review/native/formation_batch1_native_1280x720.mp4"
       ],
-      "review_note": "17-kỹ-năng Trận Tu · 4 pose theo pha; AS68 1× · va chạm/chuyển trạng thái chỉ từ MapBattle receipt thật. Native import/capture và duyệt chủ dự án đang chờ; PVE HOLD."
+      "review_note": "17-kỹ-năng Trận Tu · 4 pose theo pha; AS68 1× · va chạm/chuyển trạng thái chỉ từ MapBattle receipt thật. Native import/capture và duyệt chủ dự án đang chờ; PVE HOLD. Native batch technical capture and H.264 decode PASS at 1280x720/20fps; 17/17 exact fixture receipt bindings accepted, zero synthetic events. Four authored phase poses remain storyboard timing, not continuous frame-by-frame animation. Owner approval pending; PvE HOLD."
     },
     {
       "id": "tmb.skill.formation.tu_linh_tran.active_01.human",
@@ -760,7 +790,7 @@
       "g3_art": "SOURCE_ALPHA_AND_CONTACT_SHEET_SELF_PASS",
       "owner_art": "OWNER_VISUAL_PENDING",
       "art_source": "FIRST_PARTY_CODEX_IMAGEGEN_RGBA_FOUR_PHASE_POSES",
-      "review_stages": "4 phase poses · contact receipt-bound",
+      "review_stages": "4 phase poses · contact receipt-bound · Native Godot 4.7.2 1280x720 capture and full H.264 decode PASS · exact MapBattleV2 fixture receipts accepted 17/17 · owner approval pending · PvE HOLD",
       "source_paths": [
         "labs/combat_lab/vfx_factory/vfx_factory_review.gd",
         "labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
@@ -773,9 +803,12 @@
         "labs/combat_lab/vfx_factory/vfx_factory_formation_batch_capture.tscn",
         "tests/labs/combat_lab/vfx_factory_review_test.gd",
         "tests/labs/combat_lab/vfx_factory_formation_receipt_integration_test.gd",
-        "tests/presentation/pve_aschar_frame_renderer_anchor_test.gd"
+        "tests/presentation/pve_aschar_frame_renderer_anchor_test.gd",
+        "labs/combat_lab/formation01/factory_batch1_20261125/review/native/formation_batch1_capture_index.json",
+        "labs/combat_lab/formation01/factory_batch1_20261125/review/native/formation_batch1_contact_sheet_1280x720.png",
+        "labs/combat_lab/formation01/factory_batch1_20261125/review/native/formation_batch1_native_1280x720.mp4"
       ],
-      "review_note": "17-kỹ-năng Trận Tu · 4 pose theo pha; AS68 1× · va chạm/chuyển trạng thái chỉ từ MapBattle receipt thật. Native import/capture và duyệt chủ dự án đang chờ; PVE HOLD."
+      "review_note": "17-kỹ-năng Trận Tu · 4 pose theo pha; AS68 1× · va chạm/chuyển trạng thái chỉ từ MapBattle receipt thật. Native import/capture và duyệt chủ dự án đang chờ; PVE HOLD. Native batch technical capture and H.264 decode PASS at 1280x720/20fps; 17/17 exact fixture receipt bindings accepted, zero synthetic events. Four authored phase poses remain storyboard timing, not continuous frame-by-frame animation. Owner approval pending; PvE HOLD."
     },
     {
       "id": "tmb.skill.formation.tu_linh_tran.active_02.human",
@@ -791,7 +824,7 @@
       "g3_art": "ART_SEMANTIC_REVIEW_REQUIRED_DAMAGE_VS_SHIELD_READ",
       "owner_art": "OWNER_VISUAL_PENDING",
       "art_source": "FIRST_PARTY_CODEX_IMAGEGEN_RGBA_FOUR_PHASE_POSES",
-      "review_stages": "4 phase poses · contact receipt-bound",
+      "review_stages": "4 phase poses · contact receipt-bound · Native Godot 4.7.2 1280x720 capture and full H.264 decode PASS · exact MapBattleV2 fixture receipts accepted 17/17 · owner approval pending · PvE HOLD",
       "source_paths": [
         "labs/combat_lab/vfx_factory/vfx_factory_review.gd",
         "labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
@@ -804,9 +837,12 @@
         "labs/combat_lab/vfx_factory/vfx_factory_formation_batch_capture.tscn",
         "tests/labs/combat_lab/vfx_factory_review_test.gd",
         "tests/labs/combat_lab/vfx_factory_formation_receipt_integration_test.gd",
-        "tests/presentation/pve_aschar_frame_renderer_anchor_test.gd"
+        "tests/presentation/pve_aschar_frame_renderer_anchor_test.gd",
+        "labs/combat_lab/formation01/factory_batch1_20261125/review/native/formation_batch1_capture_index.json",
+        "labs/combat_lab/formation01/factory_batch1_20261125/review/native/formation_batch1_contact_sheet_1280x720.png",
+        "labs/combat_lab/formation01/factory_batch1_20261125/review/native/formation_batch1_native_1280x720.mp4"
       ],
-      "review_note": "ART REWORK: mỹ thuật hiện đọc như khiên, trong khi catalog thật quy định DAMAGE. Candidate bị gắn cờ; owner approval pending; PVE HOLD."
+      "review_note": "ART REWORK: mỹ thuật hiện đọc như khiên, trong khi catalog thật quy định DAMAGE. Candidate bị gắn cờ; owner approval pending; PVE HOLD. Native batch technical capture and H.264 decode PASS at 1280x720/20fps; 17/17 exact fixture receipt bindings accepted, zero synthetic events. Four authored phase poses remain storyboard timing, not continuous frame-by-frame animation. Owner approval pending; PvE HOLD."
     },
     {
       "id": "tmb.skill.formation.basic.human",
@@ -822,7 +858,7 @@
       "g3_art": "SOURCE_ALPHA_AND_CONTACT_SHEET_SELF_PASS",
       "owner_art": "OWNER_VISUAL_PENDING",
       "art_source": "FIRST_PARTY_CODEX_IMAGEGEN_RGBA_FOUR_PHASE_POSES",
-      "review_stages": "4 phase poses · contact receipt-bound",
+      "review_stages": "4 phase poses · contact receipt-bound · Native Godot 4.7.2 1280x720 capture and full H.264 decode PASS · exact MapBattleV2 fixture receipts accepted 17/17 · owner approval pending · PvE HOLD",
       "source_paths": [
         "labs/combat_lab/vfx_factory/vfx_factory_review.gd",
         "labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
@@ -835,9 +871,12 @@
         "labs/combat_lab/vfx_factory/vfx_factory_formation_batch_capture.tscn",
         "tests/labs/combat_lab/vfx_factory_review_test.gd",
         "tests/labs/combat_lab/vfx_factory_formation_receipt_integration_test.gd",
-        "tests/presentation/pve_aschar_frame_renderer_anchor_test.gd"
+        "tests/presentation/pve_aschar_frame_renderer_anchor_test.gd",
+        "labs/combat_lab/formation01/factory_batch1_20261125/review/native/formation_batch1_capture_index.json",
+        "labs/combat_lab/formation01/factory_batch1_20261125/review/native/formation_batch1_contact_sheet_1280x720.png",
+        "labs/combat_lab/formation01/factory_batch1_20261125/review/native/formation_batch1_native_1280x720.mp4"
       ],
-      "review_note": "Đòn cơ bản được kiểm tra bằng hit kind=basic thật từ MapBattleV2 và v63_basic_skill_id đang gắn trên actor; cầu nối VFX chỉ gắn nhãn receipt, không tạo cast/hit/damage. Candidate; owner pending; PVE HOLD."
+      "review_note": "Đòn cơ bản được kiểm tra bằng hit kind=basic thật từ MapBattleV2 và v63_basic_skill_id đang gắn trên actor; cầu nối VFX chỉ gắn nhãn receipt, không tạo cast/hit/damage. Candidate; owner pending; PVE HOLD. Native batch technical capture and H.264 decode PASS at 1280x720/20fps; 17/17 exact fixture receipt bindings accepted, zero synthetic events. Four authored phase poses remain storyboard timing, not continuous frame-by-frame animation. Owner approval pending; PvE HOLD."
     },
     {
       "id": "tmb.skill.formation.mobility.human",
@@ -853,7 +892,7 @@
       "g3_art": "SOURCE_ALPHA_AND_CONTACT_SHEET_SELF_PASS",
       "owner_art": "OWNER_VISUAL_PENDING",
       "art_source": "FIRST_PARTY_CODEX_IMAGEGEN_RGBA_FOUR_PHASE_POSES",
-      "review_stages": "4 phase poses · contact receipt-bound",
+      "review_stages": "4 phase poses · contact receipt-bound · Native Godot 4.7.2 1280x720 capture and full H.264 decode PASS · exact MapBattleV2 fixture receipts accepted 17/17 · owner approval pending · PvE HOLD",
       "source_paths": [
         "labs/combat_lab/vfx_factory/vfx_factory_review.gd",
         "labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
@@ -866,9 +905,12 @@
         "labs/combat_lab/vfx_factory/vfx_factory_formation_batch_capture.tscn",
         "tests/labs/combat_lab/vfx_factory_review_test.gd",
         "tests/labs/combat_lab/vfx_factory_formation_receipt_integration_test.gd",
-        "tests/presentation/pve_aschar_frame_renderer_anchor_test.gd"
+        "tests/presentation/pve_aschar_frame_renderer_anchor_test.gd",
+        "labs/combat_lab/formation01/factory_batch1_20261125/review/native/formation_batch1_capture_index.json",
+        "labs/combat_lab/formation01/factory_batch1_20261125/review/native/formation_batch1_contact_sheet_1280x720.png",
+        "labs/combat_lab/formation01/factory_batch1_20261125/review/native/formation_batch1_native_1280x720.mp4"
       ],
-      "review_note": "17-kỹ-năng Trận Tu · 4 pose theo pha; AS68 1× · va chạm/chuyển trạng thái chỉ từ MapBattle receipt thật. Native import/capture và duyệt chủ dự án đang chờ; PVE HOLD."
+      "review_note": "17-kỹ-năng Trận Tu · 4 pose theo pha; AS68 1× · va chạm/chuyển trạng thái chỉ từ MapBattle receipt thật. Native import/capture và duyệt chủ dự án đang chờ; PVE HOLD. Native batch technical capture and H.264 decode PASS at 1280x720/20fps; 17/17 exact fixture receipt bindings accepted, zero synthetic events. Four authored phase poses remain storyboard timing, not continuous frame-by-frame animation. Owner approval pending; PvE HOLD."
     },
     {
       "id": "tmb.skill.formation.tu_linh_tran.active_03.human",
@@ -884,7 +926,7 @@
       "g3_art": "SOURCE_ALPHA_AND_CONTACT_SHEET_SELF_PASS",
       "owner_art": "OWNER_VISUAL_PENDING",
       "art_source": "FIRST_PARTY_CODEX_IMAGEGEN_RGBA_FOUR_PHASE_POSES",
-      "review_stages": "4 phase poses · contact receipt-bound",
+      "review_stages": "4 phase poses · contact receipt-bound · Native Godot 4.7.2 1280x720 capture and full H.264 decode PASS · exact MapBattleV2 fixture receipts accepted 17/17 · owner approval pending · PvE HOLD",
       "source_paths": [
         "labs/combat_lab/vfx_factory/vfx_factory_review.gd",
         "labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
@@ -897,9 +939,12 @@
         "labs/combat_lab/vfx_factory/vfx_factory_formation_batch_capture.tscn",
         "tests/labs/combat_lab/vfx_factory_review_test.gd",
         "tests/labs/combat_lab/vfx_factory_formation_receipt_integration_test.gd",
-        "tests/presentation/pve_aschar_frame_renderer_anchor_test.gd"
+        "tests/presentation/pve_aschar_frame_renderer_anchor_test.gd",
+        "labs/combat_lab/formation01/factory_batch1_20261125/review/native/formation_batch1_capture_index.json",
+        "labs/combat_lab/formation01/factory_batch1_20261125/review/native/formation_batch1_contact_sheet_1280x720.png",
+        "labs/combat_lab/formation01/factory_batch1_20261125/review/native/formation_batch1_native_1280x720.mp4"
       ],
-      "review_note": "17-kỹ-năng Trận Tu · 4 pose theo pha; AS68 1× · va chạm/chuyển trạng thái chỉ từ MapBattle receipt thật. Native import/capture và duyệt chủ dự án đang chờ; PVE HOLD."
+      "review_note": "17-kỹ-năng Trận Tu · 4 pose theo pha; AS68 1× · va chạm/chuyển trạng thái chỉ từ MapBattle receipt thật. Native import/capture và duyệt chủ dự án đang chờ; PVE HOLD. Native batch technical capture and H.264 decode PASS at 1280x720/20fps; 17/17 exact fixture receipt bindings accepted, zero synthetic events. Four authored phase poses remain storyboard timing, not continuous frame-by-frame animation. Owner approval pending; PvE HOLD."
     },
     {
       "id": "tmb.skill.formation.tu_linh_tran.active_04.human",
@@ -915,7 +960,7 @@
       "g3_art": "SOURCE_ALPHA_AND_CONTACT_SHEET_SELF_PASS",
       "owner_art": "OWNER_VISUAL_PENDING",
       "art_source": "FIRST_PARTY_CODEX_IMAGEGEN_RGBA_FOUR_PHASE_POSES",
-      "review_stages": "4 phase poses · contact receipt-bound",
+      "review_stages": "4 phase poses · contact receipt-bound · Native Godot 4.7.2 1280x720 capture and full H.264 decode PASS · exact MapBattleV2 fixture receipts accepted 17/17 · owner approval pending · PvE HOLD",
       "source_paths": [
         "labs/combat_lab/vfx_factory/vfx_factory_review.gd",
         "labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
@@ -928,9 +973,12 @@
         "labs/combat_lab/vfx_factory/vfx_factory_formation_batch_capture.tscn",
         "tests/labs/combat_lab/vfx_factory_review_test.gd",
         "tests/labs/combat_lab/vfx_factory_formation_receipt_integration_test.gd",
-        "tests/presentation/pve_aschar_frame_renderer_anchor_test.gd"
+        "tests/presentation/pve_aschar_frame_renderer_anchor_test.gd",
+        "labs/combat_lab/formation01/factory_batch1_20261125/review/native/formation_batch1_capture_index.json",
+        "labs/combat_lab/formation01/factory_batch1_20261125/review/native/formation_batch1_contact_sheet_1280x720.png",
+        "labs/combat_lab/formation01/factory_batch1_20261125/review/native/formation_batch1_native_1280x720.mp4"
       ],
-      "review_note": "17-kỹ-năng Trận Tu · 4 pose theo pha; AS68 1× · va chạm/chuyển trạng thái chỉ từ MapBattle receipt thật. Native import/capture và duyệt chủ dự án đang chờ; PVE HOLD."
+      "review_note": "17-kỹ-năng Trận Tu · 4 pose theo pha; AS68 1× · va chạm/chuyển trạng thái chỉ từ MapBattle receipt thật. Native import/capture và duyệt chủ dự án đang chờ; PVE HOLD. Native batch technical capture and H.264 decode PASS at 1280x720/20fps; 17/17 exact fixture receipt bindings accepted, zero synthetic events. Four authored phase poses remain storyboard timing, not continuous frame-by-frame animation. Owner approval pending; PvE HOLD."
     },
     {
       "id": "tmb.skill.formation.tu_linh_tran.ultimate.human",
@@ -946,7 +994,7 @@
       "g3_art": "SOURCE_ALPHA_AND_CONTACT_SHEET_SELF_PASS",
       "owner_art": "OWNER_VISUAL_PENDING",
       "art_source": "FIRST_PARTY_CODEX_IMAGEGEN_RGBA_FOUR_PHASE_POSES",
-      "review_stages": "4 phase poses · contact receipt-bound",
+      "review_stages": "4 phase poses · contact receipt-bound · Native Godot 4.7.2 1280x720 capture and full H.264 decode PASS · exact MapBattleV2 fixture receipts accepted 17/17 · owner approval pending · PvE HOLD",
       "source_paths": [
         "labs/combat_lab/vfx_factory/vfx_factory_review.gd",
         "labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
@@ -959,9 +1007,12 @@
         "labs/combat_lab/vfx_factory/vfx_factory_formation_batch_capture.tscn",
         "tests/labs/combat_lab/vfx_factory_review_test.gd",
         "tests/labs/combat_lab/vfx_factory_formation_receipt_integration_test.gd",
-        "tests/presentation/pve_aschar_frame_renderer_anchor_test.gd"
+        "tests/presentation/pve_aschar_frame_renderer_anchor_test.gd",
+        "labs/combat_lab/formation01/factory_batch1_20261125/review/native/formation_batch1_capture_index.json",
+        "labs/combat_lab/formation01/factory_batch1_20261125/review/native/formation_batch1_contact_sheet_1280x720.png",
+        "labs/combat_lab/formation01/factory_batch1_20261125/review/native/formation_batch1_native_1280x720.mp4"
       ],
-      "review_note": "17-kỹ-năng Trận Tu · 4 pose theo pha; AS68 1× · va chạm/chuyển trạng thái chỉ từ MapBattle receipt thật. Native import/capture và duyệt chủ dự án đang chờ; PVE HOLD."
+      "review_note": "17-kỹ-năng Trận Tu · 4 pose theo pha; AS68 1× · va chạm/chuyển trạng thái chỉ từ MapBattle receipt thật. Native import/capture và duyệt chủ dự án đang chờ; PVE HOLD. Native batch technical capture and H.264 decode PASS at 1280x720/20fps; 17/17 exact fixture receipt bindings accepted, zero synthetic events. Four authored phase poses remain storyboard timing, not continuous frame-by-frame animation. Owner approval pending; PvE HOLD."
     },
     {
       "id": "tmb.skill.talisman.loi_phu.active_02.human",

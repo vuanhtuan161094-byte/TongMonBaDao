@@ -1455,11 +1455,14 @@
     "fps": 20,
     "duration_seconds": 59.45,
     "codec": "h264",
-    "receipt_count": "17/17 MapBattleV2 fixture receipts accepted",
+    "receipt_count": "17/17 MapBattleV2 fixture receipts accepted; synthetic_events=0",
     "synthetic_events": 0,
     "video": "review/native/formation_batch1_native_1280x720.mp4",
     "contact_sheet": "review/native/formation_batch1_contact_sheet_1280x720.png",
     "index": "review/native/formation_batch1_capture_index.json",
-    "art_review": "Contact readability only; Tinh Bàn Hộ Tâm damage-vs-shield semantic rework required; phase sequence is four authored poses, not frame-by-frame animation."
+    "art_review": "Contact readability only; Tinh Bàn Hộ Tâm damage-vs-shield semantic rework required; phase sequence is four authored poses, not frame-by-frame animation.",
+    "status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_FULL_DECODE",
+    "frame_count": 1189,
+    "external_movie_validation": "FFMPEG_FULL_DECODE_PASS; ffprobe H.264 1280x720 20fps 1189 frames 59.45 seconds"
   }
 }

@@ -324,7 +324,7 @@
       "full_motion_status": "PENDING_FRAME_BY_FRAME_ANIMATION_REVIEW"
     }
   ],
-  "technical_status": "TECH_PASS_GODOT_4.7.2_NATIVE_MOVIE_1280x720",
+  "technical_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_FULL_DECODE",
   "viewport_px": [
     1280,
     720
@@ -346,5 +346,6 @@
     "full_motion": "PENDING; four authored phase poses are not continuous frame-by-frame animation",
     "owner_approval": "PENDING",
     "pve": "HOLD"
-  }
+  },
+  "external_movie_validation": "FFMPEG_FULL_DECODE_PASS; ffprobe H.264 1280x720 20fps 1189 frames 59.45 seconds"
 }
