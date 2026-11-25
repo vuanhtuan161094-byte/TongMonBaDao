@@ -1,0 +1,155 @@
+{
+  "schema": "tmb-vfx-production-system-v4.1",
+  "packet_id": "BLADE01_PHA_VAY_KHAI_SON_R1_EXISTING_ASCHAR_NATIVE",
+  "skill_id": "tmb.skill.blade.cuong_dao.active_01.human",
+  "school": "blade",
+  "revision": "BLADE01_R1_G3_SOURCE_SELF_PASS_G35_NATIVE_RECEIPT_CANDIDATE_OWNER_PENDING",
+  "catalogue_path": "godot/data/combat/v63_blade_combat_catalog.json",
+  "scene_path": "godot/labs/combat_lab/blade01/pha_vay_khai_son_r1/pha_vay_khai_son_preview.tscn",
+  "lab_script": "godot/labs/combat_lab/blade01/pha_vay_khai_son_r1/vfx_blade_pha_vay_khai_son_lab.gd",
+  "focused_test": "godot/labs/combat_lab/blade01/pha_vay_khai_son_r1/vfx_blade_pha_vay_khai_son_receipt_test.gd",
+  "declared_contract": {
+    "effect": "damage",
+    "element": "metal",
+    "shape": "single_target",
+    "target_limit": 1,
+    "hit_count": 1,
+    "range": 8,
+    "radius": 0,
+    "cast_time": 0.28,
+    "cooldown": 8,
+    "projectile_speed": 10,
+    "duration": 0
+  },
+  "provenance": {
+    "source_class": "FIRST_PARTY_IMAGEGEN_ORIGINAL_RGBA",
+    "master_quality_status": "MANUAL_ART_REVIEW_REQUIRED",
+    "rights_note": "Charge, forward crescent flight, compact contact glint, and fade masters are preserved original ImageGen RGBA outputs with prompts, output IDs, source hashes, crops, and 1x dark/light reviews in the skill source package. The LAB reuses existing AS50 disciple frames, the existing curved dao candidate, and a generic Source A monster clip; none of those candidate assets receive owner approval from this packet.",
+    "generators": [
+      "tools/vfx/prepare_g3_source_review.py"
+    ],
+    "master_files": [
+      {
+        "path": "godot/labs/combat_lab/blade01/pha_vay_khai_son_r1/source/production/pha_vay_khai_son_charge_r1.png",
+        "encoding": "png",
+        "role": "compact red-bronze charge at the existing dao tip"
+      },
+      {
+        "path": "godot/labs/combat_lab/blade01/pha_vay_khai_son_r1/source/production/pha_vay_khai_son_flight_r1.png",
+        "encoding": "png",
+        "role": "single broad forward crescent following the canonical projectile travel"
+      },
+      {
+        "path": "godot/labs/combat_lab/blade01/pha_vay_khai_son_r1/source/production/pha_vay_khai_son_contact_r1.png",
+        "encoding": "png",
+        "role": "compact contact glint after one actual isolated MapBattleV2 hit receipt"
+      },
+      {
+        "path": "godot/labs/combat_lab/blade01/pha_vay_khai_son_r1/source/production/pha_vay_khai_son_fade_r1.png",
+        "encoding": "png",
+        "role": "two restrained fragments fading after the confirmed single hit"
+      }
+    ]
+  },
+  "atlases": [
+    {
+      "path": "godot/labs/combat_lab/blade01/pha_vay_khai_son_r1/source/production/pha_vay_khai_son_charge_r1.png",
+      "width": 856,
+      "height": 415,
+      "cell_width": 856,
+      "cell_height": 415,
+      "frames": 1,
+      "columns": 1,
+      "layer": "one authored charge pose rendered at its reviewed 85px motif width"
+    },
+    {
+      "path": "godot/labs/combat_lab/blade01/pha_vay_khai_son_r1/source/production/pha_vay_khai_son_flight_r1.png",
+      "width": 1685,
+      "height": 539,
+      "cell_width": 1685,
+      "cell_height": 539,
+      "frames": 1,
+      "columns": 1,
+      "layer": "one authored forward crescent rendered at its reviewed 180px motif width"
+    },
+    {
+      "path": "godot/labs/combat_lab/blade01/pha_vay_khai_son_r1/source/production/pha_vay_khai_son_contact_r1.png",
+      "width": 533,
+      "height": 402,
+      "cell_width": 533,
+      "cell_height": 402,
+      "frames": 1,
+      "columns": 1,
+      "layer": "one authored impact pose rendered at its reviewed 50px motif width"
+    },
+    {
+      "path": "godot/labs/combat_lab/blade01/pha_vay_khai_son_r1/source/production/pha_vay_khai_son_fade_r1.png",
+      "width": 284,
+      "height": 110,
+      "cell_width": 284,
+      "cell_height": 110,
+      "frames": 1,
+      "columns": 1,
+      "layer": "one authored separated-fragment fade rendered at its reviewed 80px motif width"
+    }
+  ],
+  "time_contract": {
+    "combat_clock": "CATALOGUE_GATED_NOT_LIVE",
+    "declared_cast_end_seconds": 0.28,
+    "declared_status_duration_seconds": 0,
+    "runtime_receipt_timestamp": "RUNTIME_MAPPING_PENDING",
+    "vfx_clock": "LAB_ONLY",
+    "simulated_hit_seconds": 0.68,
+    "visual_fade_end_seconds": 1.14,
+    "demo_loop_seconds": 1.3,
+    "demo_clock_warning": "This LAB enables the candidate Blade branch only on an isolated fixture actor while the persisted production feature gate remains OFF. MapBattleV2 schedules the exact 0.28s cast plus 4.0 world units / 10.0 speed travel, then applies one real V63 single-target hit to the target's current moved position. This is not live PvE or device proof.",
+    "key_pose_budget_note": "Four independent original RGBA phase masters; one canonical hit and one target only. The broad crescent follows the existing projectile travel interval and never produces a second hit.",
+    "phases": [
+      {
+        "id": "charge",
+        "at_seconds": 0.12,
+        "file": "v4-charge.png",
+        "expected_phase": "compact charge lights at the tip of the reused AS50 main-hand curved dao"
+      },
+      {
+        "id": "peak",
+        "at_seconds": 0.4,
+        "file": "v4-peak.png",
+        "expected_phase": "one broad red-bronze crescent travels toward the actual moving target after cast completion"
+      },
+      {
+        "id": "contact",
+        "at_seconds": 0.75,
+        "file": "v4-contact.png",
+        "expected_phase": "one compact contact glint follows the actual MapBattleV2 V63 hit receipt"
+      }
+    ]
+  },
+  "moving_target": {
+    "actor_animation": "Existing Source A placeholder monster_1113031_1 WALK/HIT clips; species-to-art mapping remains unverified.",
+    "locked_demo_target_index": 0,
+    "movement_from_seconds": 0.12,
+    "movement_to_seconds": 0.75,
+    "minimum_displacement_px": 40,
+    "contact_anchor": "One visual contact glint on the current position of the one monster named by the actual v63_skill_hit receipt.",
+    "tracking_rule": "The runtime monster moves from world (6.0, 2.0) to (5.6, 1.8) during projectile travel. Its current position receives one canonical damage hit; a second runtime monster outside the preview target receives none.",
+    "receipt_claim": "SIMULATED_VISUAL_ONLY"
+  },
+  "gate_status": {
+    "g3_5_capture": "NATIVE_CAPTURE_PENDING",
+    "technical": "FOCUSED_RUNTIME_RECEIPT_PENDING",
+    "art": "MANUAL_ART_REVIEW_REQUIRED",
+    "owner": "OWNER_VISUAL_PENDING",
+    "live": "PVE_INTEGRATION_HOLD",
+    "device": "PHYSICAL_QA_PENDING",
+    "g3_6": "NOT_EXECUTED",
+    "g3_7": "NOT_EXECUTED",
+    "g5": "NOT_EXECUTED"
+  },
+  "proof_contract": {
+    "focused_marker": "BLADE_PHA_VAY_KHAI_SON_RECEIPT_RESULT PASS checks=29",
+    "native_marker": "BLADE_PHA_VAY_KHAI_SON_LAB_RUNTIME PASS",
+    "video_filename": "pha-vay-khai-son-r1-g35.mp4",
+    "source": "The thin Blade trigger calls the shared vfx-shared-skill.yml runner on the exact Draft PR SHA. G3.5 proves native visibility and isolated MapBattleV2 receipt mapping only. Candidate actor/weapon artwork, owner visual approval, live PvE and device QA remain separate gates."
+  }
+}

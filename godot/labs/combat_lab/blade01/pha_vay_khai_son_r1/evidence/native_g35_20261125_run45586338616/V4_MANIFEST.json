@@ -1,0 +1,158 @@
+{
+  "atlas_integrity": {
+    "godot/labs/combat_lab/blade01/pha_vay_khai_son_r1/source/production/pha_vay_khai_son_charge_r1.png": {
+      "byte_unique_only_not_motion_approved": true,
+      "frames": 1,
+      "sha256_file": "7f237c7c51d9ea4dc6d79c883cb028478f2603b643e9d89833e4c1d7b734d03f",
+      "size_px": [
+        856,
+        415
+      ]
+    },
+    "godot/labs/combat_lab/blade01/pha_vay_khai_son_r1/source/production/pha_vay_khai_son_contact_r1.png": {
+      "byte_unique_only_not_motion_approved": true,
+      "frames": 1,
+      "sha256_file": "e42596325f74561c2419c9891672e2a4d58558bbed90d2abc2a1dd0f248b2525",
+      "size_px": [
+        533,
+        402
+      ]
+    },
+    "godot/labs/combat_lab/blade01/pha_vay_khai_son_r1/source/production/pha_vay_khai_son_fade_r1.png": {
+      "byte_unique_only_not_motion_approved": true,
+      "frames": 1,
+      "sha256_file": "11b58b97c7583f26232a680c4be799fcd767314b02b48cdee0c34948eb9f2e0b",
+      "size_px": [
+        284,
+        110
+      ]
+    },
+    "godot/labs/combat_lab/blade01/pha_vay_khai_son_r1/source/production/pha_vay_khai_son_flight_r1.png": {
+      "byte_unique_only_not_motion_approved": true,
+      "frames": 1,
+      "sha256_file": "1d0d653bb3be20ea2f6dae4b6cca01f055365e473f4660ddae6ea53b13d15a9a",
+      "size_px": [
+        1685,
+        539
+      ]
+    }
+  },
+  "canonical_skill": "tmb.skill.blade.cuong_dao.active_01.human",
+  "native_visual_evidence": {
+    "actual_moving_target_checked_by_focused_Godot_contract": true,
+    "focused_test": "godot-focused.log",
+    "frames": {
+      "charge": {
+        "at_seconds": 0.12,
+        "file": "v4-charge.png",
+        "sha256": "cdf365f5814402e5185b33a037c484fb13351e1973d0b5922a5d9b9c43db3aa0",
+        "size_px": [
+          1280,
+          720
+        ]
+      },
+      "contact": {
+        "at_seconds": 0.75,
+        "file": "v4-contact.png",
+        "sha256": "5d3477d5da81034a12e392c10bc001b3e75f56e6668efc023025c7a2e6087e70",
+        "size_px": [
+          1280,
+          720
+        ]
+      },
+      "peak": {
+        "at_seconds": 0.4,
+        "file": "v4-peak.png",
+        "sha256": "06f2cac428acb31b77671f3cf9190342b1f8ef89a0e3ecee0b5f2e008b13b9f3",
+        "size_px": [
+          1280,
+          720
+        ]
+      }
+    },
+    "human_art_review": "REQUIRED_NOT_AUTOMATED",
+    "motion_pixel_difference_only_not_art_approval": true,
+    "native_log": "godot-preflight.log",
+    "native_video": {
+      "duration": 1.25,
+      "file": "pha-vay-khai-son-r1-g35.mp4",
+      "height": 720,
+      "sha256": "94be6fb92695f5a0d95a36acd8b6de6b96f3bb6eb183443455e6816e1672f12a",
+      "width": 1280
+    }
+  },
+  "no_runtime_receipt": true,
+  "packet_file_sha256": "94e5e1cce13c0a1f3df33dc63c1406c6dba9d5f2fd6c6f5f7b48fdd5b5aeab80",
+  "source_commit_sha": "105b48ee77174c99974912208031c9bd263b0c74",
+  "source_masters": {
+    "godot/labs/combat_lab/blade01/pha_vay_khai_son_r1/source/production/pha_vay_khai_son_charge_r1.png": {
+      "sha256_decoded": "7f237c7c51d9ea4dc6d79c883cb028478f2603b643e9d89833e4c1d7b734d03f",
+      "size_px": [
+        856,
+        415
+      ]
+    },
+    "godot/labs/combat_lab/blade01/pha_vay_khai_son_r1/source/production/pha_vay_khai_son_contact_r1.png": {
+      "sha256_decoded": "e42596325f74561c2419c9891672e2a4d58558bbed90d2abc2a1dd0f248b2525",
+      "size_px": [
+        533,
+        402
+      ]
+    },
+    "godot/labs/combat_lab/blade01/pha_vay_khai_son_r1/source/production/pha_vay_khai_son_fade_r1.png": {
+      "sha256_decoded": "11b58b97c7583f26232a680c4be799fcd767314b02b48cdee0c34948eb9f2e0b",
+      "size_px": [
+        284,
+        110
+      ]
+    },
+    "godot/labs/combat_lab/blade01/pha_vay_khai_son_r1/source/production/pha_vay_khai_son_flight_r1.png": {
+      "sha256_decoded": "1d0d653bb3be20ea2f6dae4b6cca01f055365e473f4660ddae6ea53b13d15a9a",
+      "size_px": [
+        1685,
+        539
+      ]
+    }
+  },
+  "status": {
+    "human_art_review": "NOT_APPROVED_BY_AUTOMATION",
+    "owner_visual": "OWNER_VISUAL_PENDING",
+    "physical_device": "PENDING",
+    "pve_integration": "HOLD",
+    "runtime_hit_receipt": "RUNTIME_MAPPING_PENDING",
+    "source_fidelity": "MANUAL_ART_REVIEW_REQUIRED",
+    "v4_preflight_technical": "PASS"
+  },
+  "timing": {
+    "combat_clock": "CATALOGUE_GATED_NOT_LIVE",
+    "declared_cast_end_seconds": 0.28,
+    "declared_status_duration_seconds": 0,
+    "demo_clock_warning": "This LAB enables the candidate Blade branch only on an isolated fixture actor while the persisted production feature gate remains OFF. MapBattleV2 schedules the exact 0.28s cast plus 4.0 world units / 10.0 speed travel, then applies one real V63 single-target hit to the target's current moved position. This is not live PvE or device proof.",
+    "demo_loop_seconds": 1.3,
+    "key_pose_budget_note": "Four independent original RGBA phase masters; one canonical hit and one target only. The broad crescent follows the existing projectile travel interval and never produces a second hit.",
+    "phases": [
+      {
+        "at_seconds": 0.12,
+        "expected_phase": "compact charge lights at the tip of the reused AS50 main-hand curved dao",
+        "file": "v4-charge.png",
+        "id": "charge"
+      },
+      {
+        "at_seconds": 0.4,
+        "expected_phase": "one broad red-bronze crescent travels toward the actual moving target after cast completion",
+        "file": "v4-peak.png",
+        "id": "peak"
+      },
+      {
+        "at_seconds": 0.75,
+        "expected_phase": "one compact contact glint follows the actual MapBattleV2 V63 hit receipt",
+        "file": "v4-contact.png",
+        "id": "contact"
+      }
+    ],
+    "runtime_receipt_timestamp": "RUNTIME_MAPPING_PENDING",
+    "simulated_hit_seconds": 0.68,
+    "vfx_clock": "LAB_ONLY",
+    "visual_fade_end_seconds": 1.14
+  }
+}

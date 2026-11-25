@@ -24,9 +24,9 @@
 - Local Godot 4.7.2 strict import and script parse pass.
 - Focused contract passes `checks=29`: exact skill metadata, existing AS50/DAO binding and socket masks, rightward tip alignment, unchanged production feature gate, and one real `MapBattleV2` V63 hit after the runtime monster moves. A second outside target remains unchanged.
 - Local headless LAB runtime passes and prints the actual receipt marker. Headless runtime does not produce native framebuffer evidence.
-- `G3.5_NATIVE = EXACT-SHA Xvfb/FFmpeg CAPTURE PENDING`. The shared V4 runner is the next gate; review charge, flight and receipt-bound contact frames and MP4 before recording G3.5 visual self-review.
+- `G3.5_NATIVE = PASS / visual self-review PASS` on exact SHA `105b48ee77174c99974912208031c9bd263b0c74`, native run [#45586338616](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/45586338616). The 1280×720 charge, peak, receipt-bound contact, fade frame and MP4 are archived under `evidence/native_g35_20261125_run45586338616/`; review notes are in `NATIVE_VISUAL_SELF_REVIEW.md`. The V4 manifest still leaves receipt timestamp mapping pending, so runtime receipt timing is evidenced by focused/native runner logs and the captured LAB state rather than the manifest alone.
 
-`PvE = HOLD_V63_OFF`. Owner visual approval, production actor/weapon approval, physical-device QA, G3.6/G3.7 and full G5 motion review remain pending.
+`PvE = HOLD_V63_OFF`. Formal owner visual approval, production actor/weapon approval, bright-terrain G3.6, no-HUD semantic G3.7, full G5 motion review and physical-device QA remain pending.
 
 ## Earlier blocker correction
 
