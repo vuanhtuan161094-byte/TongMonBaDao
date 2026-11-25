@@ -113,12 +113,21 @@ func _exercise(skill_id: String, config: Dictionary, fixture_index: int) -> bool
 		_check(int(state.get("contact_receipt_target_count", 0)) == 0,
 			"mark art is not relabelled as damage contact " + skill_id)
 	else:
-		var actual_hit_count := 0
+		var actual_hit_targets: Array[String] = []
 		for event in battle.events:
 			if str(event.get("type", "")) == "v63_talisman_hit" and str(event.get("skill_id", "")) == skill_id:
-				actual_hit_count += 1
-		_check(int(state.get("contact_receipt_target_count", 0)) == actual_hit_count,
-			"damage contact count equals exact real hit receipts, with no fabricated contacts " + skill_id)
+				var raw_target_ids: Variant = event.get("target_ids", [])
+				if raw_target_ids is Array and not raw_target_ids.is_empty():
+					for raw_target_id in raw_target_ids:
+						var target_id := str(raw_target_id)
+						if not target_id.is_empty() and not actual_hit_targets.has(target_id):
+							actual_hit_targets.append(target_id)
+				else:
+					var target_id := str(event.get("target_id", event.get("target", "")))
+					if not target_id.is_empty() and not actual_hit_targets.has(target_id):
+						actual_hit_targets.append(target_id)
+		_check(int(state.get("contact_receipt_target_count", 0)) == actual_hit_targets.size(),
+			"damage contact count equals unique targets in exact real hit receipts, with no fabricated contacts " + skill_id)
 	lab.queue_free()
 	await process_frame
 	return opened and accepted >= 2

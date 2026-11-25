@@ -29,10 +29,12 @@ var _receipt_local_time := -1.0
 var _receipt_duration := 0.0
 var _persistent_event: Dictionary = {}
 var _persistent_target_ids: Array[String] = []
+var _persistent_cast_id := ""
 var _persistent_local_time := -1.0
 var _persistent_duration := 0.0
 var _contact_event: Dictionary = {}
 var _contact_target_ids: Array[String] = []
+var _contact_cast_id := ""
 var _contact_local_time := -1.0
 var _timeline_event_phase := ""
 var _timeline_event_local_time := -1.0
@@ -154,10 +156,12 @@ func _clear_receipts() -> void:
 	_receipt_duration = 0.0
 	_persistent_event.clear()
 	_persistent_target_ids.clear()
+	_persistent_cast_id = ""
 	_persistent_local_time = -1.0
 	_persistent_duration = 0.0
 	_contact_event.clear()
 	_contact_target_ids.clear()
+	_contact_cast_id = ""
 	_contact_local_time = -1.0
 	_timeline_event_phase = ""
 	_timeline_event_local_time = -1.0
@@ -284,19 +288,31 @@ func review_feed_authoritative_event(raw_event: Dictionary) -> Dictionary:
 		if (event_end is float or event_end is int) and (event_start is float or event_start is int):
 			_receipt_duration = maxf(0.0, float(event_end) - float(event_start))
 		var visual_phase := str(_receipt_event.get("visual_phase", ""))
+		var cast_id := str(event.get("cast_id", ""))
 		if visual_phase in ["charge", "release"]:
 			_timeline_event_phase = visual_phase
 			_timeline_event_local_time = _elapsed
 			_authoritative_clock_started = true
 		elif visual_phase in ["start", "sustain", "end"]:
+			if _persistent_event.is_empty() or (not cast_id.is_empty() and cast_id != _persistent_cast_id) \
+					or (cast_id.is_empty() and visual_phase == "start"):
+				_persistent_target_ids.clear()
+			for target_id in target_ids:
+				if not _persistent_target_ids.has(target_id):
+					_persistent_target_ids.append(target_id)
 			_persistent_event = _receipt_event.duplicate(true)
-			_persistent_target_ids = target_ids.duplicate()
+			_persistent_cast_id = cast_id
 			_persistent_local_time = _elapsed
 			_persistent_duration = _receipt_duration
 			_authoritative_clock_started = true
 		elif visual_phase == "contact":
+			if _contact_event.is_empty() or (not cast_id.is_empty() and cast_id != _contact_cast_id):
+				_contact_target_ids.clear()
+			for target_id in target_ids:
+				if not _contact_target_ids.has(target_id):
+					_contact_target_ids.append(target_id)
 			_contact_event = _receipt_event.duplicate(true)
-			_contact_target_ids = target_ids.duplicate()
+			_contact_cast_id = cast_id
 			_contact_local_time = _elapsed
 			_authoritative_clock_started = true
 	_last_receipt_result = "RECEIPT_BOUND" if admitted else "EVENT_UNBOUND"
