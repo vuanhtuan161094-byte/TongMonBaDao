@@ -352,6 +352,14 @@ func _run() -> void:
 				and str(state.get("canonical_shape", "")) == str(canonical.get("shape", ""))
 				and int(state.get("canonical_target_limit", 0)) == int(canonical.get("target_limit", 0)),
 				"Fist effect, shape and target cap remain canonical-data-owned " + skill_id)
+			var fixture_target_position: Array = entry.get("fixture_target_position", [])
+			var fixture_distance := INF
+			if fixture_target_position.size() == 2:
+				fixture_distance = Vector2(2.0, 3.0).distance_to(
+					Vector2(float(fixture_target_position[0]), float(fixture_target_position[1])))
+			_check(fixture_target_position.size() == 2 and fixture_distance > 0.0
+				and fixture_distance < float(canonical.get("range", 0.0)),
+				"Fist fixture target stays inside the canonical skill range " + skill_id)
 			_check(int(state.get("actor_asset_id", -1)) == 58,
 				"Fist resolves the existing AS58 actor through the school bridge " + skill_id)
 			var phase_rows: Dictionary = entry.get("phase_sources", {})
@@ -364,7 +372,8 @@ func _run() -> void:
 			_check(str(entry.get("source_lab_visual_status", "")) == "NOT_ART_APPROVED"
 				and str(entry.get("source_owner_gate", "")) == "OWNER_VISUAL_PENDING"
 				and str(entry.get("owner_status", "")) == "OWNER_VISUAL_PENDING"
-				and str(entry.get("native_status", "")) == "NATIVE_PENDING"
+				and (str(entry.get("native_status", "")) == "NATIVE_PENDING"
+					or str(entry.get("native_status", "")).begins_with("NATIVE_TECH_PASS_"))
 				and not bool(entry.get("native_ready", true)),
 				"source and owner gates stay separate from Factory candidates " + skill_id)
 			var fist_bindings: Array[String] = []

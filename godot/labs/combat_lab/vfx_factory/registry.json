@@ -19032,6 +19032,10 @@
       "outside_actor_id": "fist_factory_outside",
       "preview_targets": [],
       "preview_outside": {},
+      "fixture_target_position": [
+        4.24,
+        3.0
+      ],
       "actor_sex": "male",
       "actor_action": "cast",
       "facing_vector": [
@@ -19301,6 +19305,10 @@
       "outside_actor_id": "fist_factory_outside",
       "preview_targets": [],
       "preview_outside": {},
+      "fixture_target_position": [
+        6.4,
+        3.0
+      ],
       "actor_sex": "male",
       "actor_action": "cast",
       "facing_vector": [
@@ -19509,6 +19517,10 @@
           5.4
         ]
       },
+      "fixture_target_position": [
+        6.0,
+        3.0
+      ],
       "actor_sex": "male",
       "actor_action": "cast",
       "facing_vector": [
@@ -19728,6 +19740,10 @@
           5.4
         ]
       },
+      "fixture_target_position": [
+        5.2,
+        3.0
+      ],
       "actor_sex": "male",
       "actor_action": "cast",
       "facing_vector": [
@@ -19947,6 +19963,10 @@
           5.4
         ]
       },
+      "fixture_target_position": [
+        5.2,
+        3.0
+      ],
       "actor_sex": "male",
       "actor_action": "cast",
       "facing_vector": [
@@ -20108,6 +20128,10 @@
       "outside_actor_id": "fist_factory_outside",
       "preview_targets": [],
       "preview_outside": {},
+      "fixture_target_position": [
+        6.4,
+        3.0
+      ],
       "actor_sex": "male",
       "actor_action": "cast",
       "facing_vector": [
@@ -20258,6 +20282,10 @@
       "outside_actor_id": "fist_factory_outside",
       "preview_targets": [],
       "preview_outside": {},
+      "fixture_target_position": [
+        6.4,
+        3.0
+      ],
       "actor_sex": "male",
       "actor_action": "cast",
       "facing_vector": [
@@ -20408,6 +20436,10 @@
       "outside_actor_id": "fist_factory_outside",
       "preview_targets": [],
       "preview_outside": {},
+      "fixture_target_position": [
+        6.4,
+        3.0
+      ],
       "actor_sex": "male",
       "actor_action": "cast",
       "facing_vector": [
@@ -20556,6 +20588,10 @@
       "outside_actor_id": "fist_factory_outside",
       "preview_targets": [],
       "preview_outside": {},
+      "fixture_target_position": [
+        4.24,
+        3.0
+      ],
       "actor_sex": "male",
       "actor_action": "cast",
       "facing_vector": [
@@ -20717,6 +20753,10 @@
       "outside_actor_id": "fist_factory_outside",
       "preview_targets": [],
       "preview_outside": {},
+      "fixture_target_position": [
+        4.24,
+        3.0
+      ],
       "actor_sex": "male",
       "actor_action": "cast",
       "facing_vector": [
@@ -21198,6 +21238,10 @@
       "outside_actor_id": "fist_factory_outside",
       "preview_targets": [],
       "preview_outside": {},
+      "fixture_target_position": [
+        4.24,
+        3.0
+      ],
       "actor_sex": "male",
       "actor_action": "cast",
       "facing_vector": [

@@ -171,6 +171,8 @@ def main() -> None:
         duration = float(skill.get("duration", 0.0))
         projectile_speed = float(skill.get("projectile_speed", 0.0))
         travel_time = float(skill.get("range", 0.0)) / projectile_speed if projectile_speed > 0.0 else 0.0
+        fixture_target_distance = max(0.8, min(5.0, float(skill.get("range", 0.0)) * 0.8))
+        fixture_target_position = [2.0 + fixture_target_distance, 3.0]
         timeline = {
             "release_at": cast_time,
             "flight_at": cast_time,
@@ -214,6 +216,7 @@ def main() -> None:
             "target_mode": str(skill.get("shape", "single_target")), "preview_target_kind": "monster",
             "target_actor_id": target_actor_id, "outside_actor_id": str(preview_outside.get("id", "fist_factory_outside")),
             "preview_targets": preview_targets, "preview_outside": preview_outside,
+            "fixture_target_position": fixture_target_position,
             "actor_sex": "male", "actor_action": "cast", "facing_vector": [1.0, 0.0],
             "preview_attachment_override": {"suppress_attachments": True}, "source_anchor": "body_center",
             "phase_anchors": {"charge": "body_center", "release": "body_center", "flight": "body_center",
@@ -249,6 +252,7 @@ def main() -> None:
         built.append({"skill_id": skill_id, "name_vi": entry["name_vi"], "source_revision": entry["source_revision"],
                       "lab_scene": source_row["lab_scene"], "effect": effect, "shape": entry["shape"],
                       "target_limit": entry["target_limit"], "source_paths": entry["source_paths"],
+                      "fixture_target_position": fixture_target_position,
                       "phase_count": phase_count, "configured_frames": frame_total,
                       "native_status": "NATIVE_PENDING", "owner_status": "OWNER_VISUAL_PENDING", "pve": "HOLD"})
 

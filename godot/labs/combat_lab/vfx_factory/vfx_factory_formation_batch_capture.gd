@@ -452,7 +452,7 @@ func _make_battle_fixture(skill_id: String, fixture_index: int) -> Dictionary:
 		if not line_targets.is_empty():
 			foe = line_targets[0]
 	else:
-		foe = _actor("foe_%02d" % fixture_index, "monster", Vector2(5.0, 3.0))
+		foe = _actor("foe_%02d" % fixture_index, "monster", _configured_foe_position(entry))
 		if _school == "formation" and skill_id == "tmb.skill.formation.mobility.human":
 			foe["position"] = Vector2(9.0, 3.0)
 		elif _school == "formation" and skill_id == "tmb.skill.formation.basic.human":
@@ -464,7 +464,7 @@ func _make_battle_fixture(skill_id: String, fixture_index: int) -> Dictionary:
 				Vector2(5.0 + float(target_index), 3.0))
 			line_targets.append(line_foe)
 	if foe.is_empty():
-		foe = _actor("foe_%02d" % fixture_index, "monster", Vector2(5.0, 3.0))
+		foe = _actor("foe_%02d" % fixture_index, "monster", _configured_foe_position(entry))
 		line_targets.append(foe)
 	for actor in [caster, ally]:
 		battle.actors[str(actor.get("id", ""))] = actor
@@ -574,6 +574,12 @@ func _make_battle_fixture(skill_id: String, fixture_index: int) -> Dictionary:
 		target_id = str(caster.id)
 	return {"battle":battle,"caster_id":str(caster.id),"target_id":target_id,"ally_id":str(ally.id),
 		"caster_start_position":caster_origin_position,"fixture_setup_receipts":fixture_setup_receipts}
+
+func _configured_foe_position(entry: Dictionary) -> Vector2:
+	var raw_position: Array = entry.get("fixture_target_position", [])
+	if raw_position.size() == 2:
+		return Vector2(float(raw_position[0]), float(raw_position[1]))
+	return Vector2(5.0, 3.0)
 
 func _actor(actor_id: String, side: String, position: Vector2) -> Dictionary:
 	var resistances := {"metal":0.0,"wood":0.0,"water":0.0,"fire":0.0,"earth":0.0,

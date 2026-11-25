@@ -129,6 +129,10 @@
         "labs/combat_lab/fist_factory_batch1_20261125/README.md",
         "labs/combat_lab/fist_factory_batch1_20261125/batch_config.json"
       ],
+      "fixture_target_position": [
+        4.24,
+        3.0
+      ],
       "phase_count": 4,
       "configured_frames": 32,
       "native_status": "NATIVE_PENDING",
@@ -150,6 +154,10 @@
         "labs/combat_lab/fist02/phi_than_lien_cuoc.tscn",
         "labs/combat_lab/fist_factory_batch1_20261125/README.md",
         "labs/combat_lab/fist_factory_batch1_20261125/batch_config.json"
+      ],
+      "fixture_target_position": [
+        6.4,
+        3.0
       ],
       "phase_count": 4,
       "configured_frames": 4,
@@ -174,6 +182,10 @@
         "labs/combat_lab/fist_factory_batch1_20261125/README.md",
         "labs/combat_lab/fist_factory_batch1_20261125/batch_config.json"
       ],
+      "fixture_target_position": [
+        6.0,
+        3.0
+      ],
       "phase_count": 5,
       "configured_frames": 5,
       "native_status": "NATIVE_PENDING",
@@ -196,6 +208,10 @@
         "labs/combat_lab/fist04/lei_dinh_chan_quyen.tscn",
         "labs/combat_lab/fist_factory_batch1_20261125/README.md",
         "labs/combat_lab/fist_factory_batch1_20261125/batch_config.json"
+      ],
+      "fixture_target_position": [
+        5.2,
+        3.0
       ],
       "phase_count": 5,
       "configured_frames": 5,
@@ -221,6 +237,10 @@
         "labs/combat_lab/fist_factory_batch1_20261125/README.md",
         "labs/combat_lab/fist_factory_batch1_20261125/batch_config.json"
       ],
+      "fixture_target_position": [
+        5.2,
+        3.0
+      ],
       "phase_count": 5,
       "configured_frames": 5,
       "native_status": "NATIVE_PENDING",
@@ -243,6 +263,10 @@
         "labs/combat_lab/fist_factory_batch1_20261125/README.md",
         "labs/combat_lab/fist_factory_batch1_20261125/batch_config.json",
         "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist07_kim_cang_guardian_r5.webp"
+      ],
+      "fixture_target_position": [
+        6.4,
+        3.0
       ],
       "phase_count": 4,
       "configured_frames": 4,
@@ -267,6 +291,10 @@
         "labs/combat_lab/fist_factory_batch1_20261125/batch_config.json",
         "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist08_counterforce_master.png"
       ],
+      "fixture_target_position": [
+        6.4,
+        3.0
+      ],
       "phase_count": 4,
       "configured_frames": 4,
       "native_status": "NATIVE_PENDING",
@@ -289,6 +317,10 @@
         "labs/combat_lab/fist_factory_batch1_20261125/README.md",
         "labs/combat_lab/fist_factory_batch1_20261125/batch_config.json",
         "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist10_r2_illustrated_bell.webp"
+      ],
+      "fixture_target_position": [
+        6.4,
+        3.0
       ],
       "phase_count": 4,
       "configured_frames": 4,
@@ -313,6 +345,10 @@
         "labs/combat_lab/fist11/huyet_liet_quyen.tscn",
         "labs/combat_lab/fist_factory_batch1_20261125/README.md",
         "labs/combat_lab/fist_factory_batch1_20261125/batch_config.json"
+      ],
+      "fixture_target_position": [
+        4.24,
+        3.0
       ],
       "phase_count": 5,
       "configured_frames": 5,
@@ -347,6 +383,10 @@
         "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist12_r9_punch2.webp",
         "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist12_r9_punch3.webp"
       ],
+      "fixture_target_position": [
+        4.24,
+        3.0
+      ],
       "phase_count": 8,
       "configured_frames": 32,
       "native_status": "NATIVE_PENDING",
@@ -374,6 +414,10 @@
         "labs/combat_lab/fist14/r5/source/f14_r5_release_lunge.png",
         "labs/combat_lab/fist_factory_batch1_20261125/README.md",
         "labs/combat_lab/fist_factory_batch1_20261125/batch_config.json"
+      ],
+      "fixture_target_position": [
+        4.24,
+        3.0
       ],
       "phase_count": 7,
       "configured_frames": 7,
