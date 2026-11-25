@@ -420,6 +420,11 @@ func _make_battle_fixture(skill_id: String, fixture_index: int) -> Dictionary:
 			caster["v63_blade_combat_enabled"] = true
 			caster["v63_combat_branch_id"] = "cuong_dao"
 			caster["v63_combat_lineage"] = "base"
+		"fist":
+			# Fixture identity only: the canonical Human catalogue resolves the
+			# exact Fist skill; no combat-authority code or runtime state changes.
+			caster["v63_combat_branch_id"] = str(entry.get("branch", ""))
+			caster["v63_combat_lineage"] = "base"
 		"palm": caster["v63_palm_combat_enabled"] = true
 		"spear": caster["v63_spear_combat_enabled"] = true
 	var ally := _actor("ally_%02d" % fixture_index, "disciple", Vector2(4.0, 3.0))

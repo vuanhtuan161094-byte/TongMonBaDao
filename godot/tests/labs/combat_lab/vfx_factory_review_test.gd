@@ -12,6 +12,7 @@ const PALM_CATALOG_PATH := "res://data/combat/v63_palm_combat_catalog.json"
 const SPEAR_CATALOG_PATH := "res://data/combat/v63_spear_combat_catalog.json"
 const BLADE_CATALOG_PATH := "res://data/combat/v63_blade_combat_catalog.json"
 const HUMAN_CATALOG_PATH := "res://data/combat/v63_human_combat_catalog.json"
+const FIST_BATCH_MANIFEST_PATH := "res://labs/combat_lab/fist_factory_batch1_20261125/manifest.json"
 
 var failures := 0
 var checked := 0
@@ -36,13 +37,14 @@ func _run() -> void:
 	var spear_catalog: Variant = JSON.parse_string(FileAccess.get_file_as_string(SPEAR_CATALOG_PATH))
 	var blade_catalog: Variant = JSON.parse_string(FileAccess.get_file_as_string(BLADE_CATALOG_PATH))
 	var human_catalog: Variant = JSON.parse_string(FileAccess.get_file_as_string(HUMAN_CATALOG_PATH))
+	var fist_manifest: Variant = JSON.parse_string(FileAccess.get_file_as_string(FIST_BATCH_MANIFEST_PATH))
 	_check(registry is Dictionary and manifest is Dictionary and catalog is Dictionary and talisman_catalog is Dictionary
 		and curse_catalog is Dictionary and palm_catalog is Dictionary and spear_catalog is Dictionary and blade_catalog is Dictionary
-		and human_catalog is Dictionary,
+		and human_catalog is Dictionary and fist_manifest is Dictionary,
 		"all source registries parse")
 	if not (registry is Dictionary and manifest is Dictionary and catalog is Dictionary and talisman_catalog is Dictionary
 		and curse_catalog is Dictionary and palm_catalog is Dictionary and spear_catalog is Dictionary and blade_catalog is Dictionary
-		and human_catalog is Dictionary):
+		and human_catalog is Dictionary and fist_manifest is Dictionary):
 		_finish()
 		return
 	var formation_by_id: Dictionary = {}
@@ -65,7 +67,10 @@ func _run() -> void:
 		canonical_by_id[str(row.get("id", ""))] = row
 	var cases: Array = registry.get("entries", [])
 	skill_count = cases.size()
-	_check(cases.size() == 54, "shared registry retains the existing cues plus 17 Formation, 15 Talisman, 16 Poison and other school candidates")
+	_check(cases.size() == 65, "shared registry retains existing cues plus 17 Formation, 15 Talisman, 16 Poison, 11 source-backed Fist and other school candidates")
+	_check(fist_manifest.get("skills", []).size() == 11
+		and fist_manifest.get("status", "").begins_with("CANDIDATE; NATIVE_PENDING"),
+		"Fist source adapters remain candidate-only until native capture and owner review")
 	var ground_scale := FACTORY_SCRIPT.phase_texture_scale(Vector2(512.0, 512.0),
 		{"display_width_px":488.0,"display_height_px":238.0})
 	_check(absf(ground_scale.x - 488.0 / 512.0) < 0.0001
@@ -82,6 +87,7 @@ func _run() -> void:
 		var is_palm := skill_id == "tmb.skill.palm.han_ngoc_chuong.active_01.human"
 		var is_spear := skill_id == "tmb.skill.spear.long_thuong.active_01.human"
 		var is_poison := skill_id.begins_with("tmb.skill.poison.")
+		var is_fist: bool = skill_id.begins_with("tmb.skill.fist.") and entry.get("native_batch", "") == "fist"
 		var lab := FACTORY_SCENE.instantiate() as Node2D
 		lab.call("review_set_skill_id", skill_id)
 		root.add_child(lab)
@@ -339,6 +345,51 @@ func _run() -> void:
 			_check(str(contact_wait.get("receipt_state", "")) == "WAITING_FOR_REAL_RECEIPT"
 				and int(contact_wait.get("contact_receipt_target_count", -1)) == 0,
 				"contact remains hidden until the native runner supplies a real skill hit " + skill_id)
+		elif is_fist:
+			var canonical: Dictionary = canonical_by_id.get(skill_id, {})
+			_check(not canonical.is_empty(), "Fist Human catalogue joins " + skill_id)
+			_check(str(state.get("canonical_effect", "")) == str(canonical.get("effect", ""))
+				and str(state.get("canonical_shape", "")) == str(canonical.get("shape", ""))
+				and int(state.get("canonical_target_limit", 0)) == int(canonical.get("target_limit", 0)),
+				"Fist effect, shape and target cap remain canonical-data-owned " + skill_id)
+			_check(int(state.get("actor_asset_id", -1)) == 58,
+				"Fist resolves the existing AS58 actor through the school bridge " + skill_id)
+			var phase_rows: Dictionary = entry.get("phase_sources", {})
+			var expected_frames := 0
+			for phase_name in phase_rows:
+				expected_frames += phase_rows[phase_name].get("frames", []).size()
+			_check(int(state.get("phase_sources_loaded", 0)) == phase_rows.size()
+				and int(state.get("frame_count", 0)) == expected_frames and expected_frames > 0,
+				"Fist source frames load through the shared renderer " + skill_id)
+			_check(str(entry.get("source_lab_visual_status", "")) == "NOT_ART_APPROVED"
+				and str(entry.get("source_owner_gate", "")) == "OWNER_VISUAL_PENDING"
+				and str(entry.get("owner_status", "")) == "OWNER_VISUAL_PENDING"
+				and str(entry.get("native_status", "")) == "NATIVE_PENDING"
+				and not bool(entry.get("native_ready", true)),
+				"source and owner gates stay separate from Factory candidates " + skill_id)
+			var fist_bindings: Array[String] = []
+			for binding in entry.get("receipt_manifest", {}).get("bindings", []):
+				fist_bindings.append(str(binding.get("event_type", "")))
+			if str(canonical.get("effect", "")) == "guard":
+				_check(fist_bindings.has("status_applied") and not fist_bindings.has("v63_skill_hit"),
+					"Fist guard shows only its real status receipt " + skill_id)
+			else:
+				_check(fist_bindings.has("skill_cast") and fist_bindings.has("skill_release")
+					and fist_bindings.has("v63_skill_hit"),
+					"Fist contact is bound to its exact MapBattle skill hit " + skill_id)
+			if str(canonical.get("effect", "")) == "mark":
+				_check(fist_bindings.has("status_applied"),
+					"Fist mark sustain uses its exact status receipt " + skill_id)
+			if skill_id == "tmb.skill.fist.huyet_quyen.active_04.human":
+				_check(str(entry.get("source_revision", "")).begins_with("FIST14_R5")
+					and not str(entry.get("source_paths", [])).contains("r7_luminous")
+					and not str(entry.get("source_paths", [])).contains("r8_pressure_knot"),
+					"Fist14 reuses only the R5 candidate and preserves the R7/R8 G3 failures")
+			lab.call("review_seek_phase", "contact")
+			var fist_contact_wait: Dictionary = lab.call("review_state")
+			_check(str(fist_contact_wait.get("receipt_state", "")) == "WAITING_FOR_REAL_RECEIPT"
+				and int(fist_contact_wait.get("contact_receipt_target_count", -1)) == 0,
+				"Fist contact remains hidden without a real receipt " + skill_id)
 		elif is_poison:
 			var canonical: Dictionary = canonical_by_id.get(skill_id, {})
 			_check(not canonical.is_empty(), "Poison Human catalogue joins " + skill_id)
@@ -399,5 +450,5 @@ func _run() -> void:
 func _finish() -> void:
 	print("VFX_FACTORY_REVIEW_RESULT=" + ("PASS" if failures == 0 else "FAIL")
 		+ " cases=" + str(checked) + " skills=" + str(skill_count)
-		+ " formation=17 talisman=15 poison=16 AS62=resolved curse=AS66_storyboard blade=AS50 receipt palm=AS60 spear=AS54 failures=" + str(failures))
+		+ " formation=17 talisman=15 poison=16 fist=11 AS58=resolved AS62=resolved curse=AS66_storyboard blade=AS50 receipt palm=AS60 spear=AS54 failures=" + str(failures))
 	quit(0 if failures == 0 else 1)

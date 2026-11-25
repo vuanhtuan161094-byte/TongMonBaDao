@@ -2200,6 +2200,306 @@
       ],
       "art_source": "REUSED_EXISTING_SKILL_SOURCE_poison17_yem_anh_bo/r1_NO_RECOLOR_OR_NEW_ART",
       "review_note": "Shared receipt-gated Factory scene. This catalog row does not transfer the source LAB or owner gate to its new adapter. Native capture uses real MapBattle V2 fixtures; contact/status remains hidden until the matching receipt. PvE HOLD. Native candidate-event capture: 16 skills / 80 accepted MapBattle events / 20 separate fixture setup receipts / zero synthetic events; full H.264 decode PASS. Owner review pending; PvE HOLD."
+    },
+    {
+      "id": "tmb.skill.fist.ba_quyen.active_01.human",
+      "scene": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+      "preview_key": "fist_batch1_ba_quyen_active_01",
+      "directions": [
+        "front"
+      ],
+      "vfx_status": "TECH_CUE_ONLY",
+      "family_id": "tmb.skill.fist.ba_quyen.active_01",
+      "school": "fist",
+      "branch": "ba_quyen",
+      "name_vi": "Khai Sơn Trọng Quyền",
+      "source_paths": [
+        "data/combat/v63_human_combat_catalog.json",
+        "labs/combat_lab/fist01/assets/PROVENANCE.md",
+        "labs/combat_lab/fist01/assets/qi_charge_00.svg",
+        "labs/combat_lab/fist01/assets/qi_charge_01.svg",
+        "labs/combat_lab/fist01/assets/qi_charge_02.svg",
+        "labs/combat_lab/fist01/assets/qi_charge_03.svg",
+        "labs/combat_lab/fist01/assets/qi_charge_04.svg",
+        "labs/combat_lab/fist01/assets/qi_charge_05.svg",
+        "labs/combat_lab/fist01/assets/qi_charge_06.svg",
+        "labs/combat_lab/fist01/assets/qi_charge_07.svg",
+        "labs/combat_lab/fist01/assets/qi_flight_00.svg",
+        "labs/combat_lab/fist01/assets/qi_flight_01.svg",
+        "labs/combat_lab/fist01/assets/qi_flight_02.svg",
+        "labs/combat_lab/fist01/assets/qi_flight_03.svg",
+        "labs/combat_lab/fist01/assets/qi_flight_04.svg",
+        "labs/combat_lab/fist01/assets/qi_flight_05.svg",
+        "labs/combat_lab/fist01/assets/qi_flight_06.svg",
+        "labs/combat_lab/fist01/assets/qi_flight_07.svg",
+        "labs/combat_lab/fist01/assets/qi_ground_00.svg",
+        "labs/combat_lab/fist01/assets/qi_ground_01.svg",
+        "labs/combat_lab/fist01/assets/qi_ground_02.svg",
+        "labs/combat_lab/fist01/assets/qi_ground_03.svg",
+        "labs/combat_lab/fist01/assets/qi_ground_04.svg",
+        "labs/combat_lab/fist01/assets/qi_ground_05.svg",
+        "labs/combat_lab/fist01/assets/qi_ground_06.svg",
+        "labs/combat_lab/fist01/assets/qi_ground_07.svg",
+        "labs/combat_lab/fist01/assets/qi_impact_00.svg",
+        "labs/combat_lab/fist01/assets/qi_impact_01.svg",
+        "labs/combat_lab/fist01/assets/qi_impact_02.svg",
+        "labs/combat_lab/fist01/assets/qi_impact_03.svg",
+        "labs/combat_lab/fist01/assets/qi_impact_04.svg",
+        "labs/combat_lab/fist01/assets/qi_impact_05.svg",
+        "labs/combat_lab/fist01/assets/qi_impact_06.svg",
+        "labs/combat_lab/fist01/assets/qi_impact_07.svg",
+        "labs/combat_lab/fist01/khai_son_trong_quyen.gd",
+        "labs/combat_lab/fist01/khai_son_trong_quyen.tscn",
+        "labs/combat_lab/fist_factory_batch1_20261125/README.md",
+        "labs/combat_lab/fist_factory_batch1_20261125/batch_config.json"
+      ],
+      "review_note": "Factory candidate reuses the existing Human Fist LAB source without changing the source gate. Source gate is preserved and owner approval remains pending. Factory contact/state is receipt-bound; native capture pending; PvE HOLD."
+    },
+    {
+      "id": "tmb.skill.fist.ba_quyen.active_02.human",
+      "scene": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+      "preview_key": "fist_batch1_ba_quyen_active_02",
+      "directions": [
+        "front"
+      ],
+      "vfx_status": "TECH_CUE_ONLY",
+      "family_id": "tmb.skill.fist.ba_quyen.active_02",
+      "school": "fist",
+      "branch": "ba_quyen",
+      "name_vi": "Phi Thân Liên Cước",
+      "source_paths": [
+        "data/combat/v63_human_combat_catalog.json",
+        "labs/combat_lab/fist02/assets/v4/guardian_spirit_master.webp",
+        "labs/combat_lab/fist02/phi_than_lien_cuoc.gd",
+        "labs/combat_lab/fist02/phi_than_lien_cuoc.tscn",
+        "labs/combat_lab/fist_factory_batch1_20261125/README.md",
+        "labs/combat_lab/fist_factory_batch1_20261125/batch_config.json"
+      ],
+      "review_note": "Factory candidate reuses the existing Human Fist LAB source without changing the source gate. Source gate is preserved and owner approval remains pending. Factory contact/state is receipt-bound; native capture pending; PvE HOLD."
+    },
+    {
+      "id": "tmb.skill.fist.ba_quyen.ultimate.human",
+      "scene": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+      "preview_key": "fist_batch1_ba_quyen_ultimate",
+      "directions": [
+        "front"
+      ],
+      "vfx_status": "TECH_CUE_ONLY",
+      "family_id": "tmb.skill.fist.ba_quyen.ultimate",
+      "school": "fist",
+      "branch": "ba_quyen",
+      "name_vi": "Sơn Hà Chấn Thiên",
+      "source_paths": [
+        "data/combat/v63_human_combat_catalog.json",
+        "labs/combat_lab/fist03/assets/godfist_master.webp",
+        "labs/combat_lab/fist03/assets/impact_master.webp",
+        "labs/combat_lab/fist03/than_quyen.gd",
+        "labs/combat_lab/fist03/than_quyen.tscn",
+        "labs/combat_lab/fist_factory_batch1_20261125/README.md",
+        "labs/combat_lab/fist_factory_batch1_20261125/batch_config.json"
+      ],
+      "review_note": "Factory candidate reuses the existing Human Fist LAB source without changing the source gate. Source gate is preserved and owner approval remains pending. Factory contact/state is receipt-bound; native capture pending; PvE HOLD."
+    },
+    {
+      "id": "tmb.skill.fist.ba_quyen.active_03.human",
+      "scene": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+      "preview_key": "fist_batch1_ba_quyen_active_03",
+      "directions": [
+        "front"
+      ],
+      "vfx_status": "TECH_CUE_ONLY",
+      "family_id": "tmb.skill.fist.ba_quyen.active_03",
+      "school": "fist",
+      "branch": "ba_quyen",
+      "name_vi": "Lôi Đình Chấn Quyền",
+      "source_paths": [
+        "data/combat/v63_human_combat_catalog.json",
+        "labs/combat_lab/fist04/assets/threefold_impact_master.webp",
+        "labs/combat_lab/fist04/assets/thunder_ghost_master.webp",
+        "labs/combat_lab/fist04/lei_dinh_chan_quyen.gd",
+        "labs/combat_lab/fist04/lei_dinh_chan_quyen.tscn",
+        "labs/combat_lab/fist_factory_batch1_20261125/README.md",
+        "labs/combat_lab/fist_factory_batch1_20261125/batch_config.json"
+      ],
+      "review_note": "Factory candidate reuses the existing Human Fist LAB source without changing the source gate. Source gate is preserved and owner approval remains pending. Factory contact/state is receipt-bound; native capture pending; PvE HOLD."
+    },
+    {
+      "id": "tmb.skill.fist.ba_quyen.active_04.human",
+      "scene": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+      "preview_key": "fist_batch1_ba_quyen_active_04",
+      "directions": [
+        "front"
+      ],
+      "vfx_status": "TECH_CUE_ONLY",
+      "family_id": "tmb.skill.fist.ba_quyen.active_04",
+      "school": "fist",
+      "branch": "ba_quyen",
+      "name_vi": "Địa Mạch Liên Chấn",
+      "source_paths": [
+        "data/combat/v63_human_combat_catalog.json",
+        "labs/combat_lab/fist05/assets/molten_shard_master.webp",
+        "labs/combat_lab/fist05/assets/seismic_ground_master.webp",
+        "labs/combat_lab/fist05/assets/spires_master.webp",
+        "labs/combat_lab/fist05/dia_mach_lien_chan.gd",
+        "labs/combat_lab/fist05/dia_mach_lien_chan.tscn",
+        "labs/combat_lab/fist_factory_batch1_20261125/README.md",
+        "labs/combat_lab/fist_factory_batch1_20261125/batch_config.json"
+      ],
+      "review_note": "Factory candidate reuses the existing Human Fist LAB source without changing the source gate. Source gate is preserved and owner approval remains pending. Factory contact/state is receipt-bound; native capture pending; PvE HOLD."
+    },
+    {
+      "id": "tmb.skill.fist.kim_cang.active_02.human",
+      "scene": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+      "preview_key": "fist_batch1_kim_cang_active_02",
+      "directions": [
+        "front"
+      ],
+      "vfx_status": "TECH_CUE_ONLY",
+      "family_id": "tmb.skill.fist.kim_cang.active_02",
+      "school": "fist",
+      "branch": "kim_cang",
+      "name_vi": "Kim Cang Hộ Thể",
+      "source_paths": [
+        "data/combat/v63_human_combat_catalog.json",
+        "labs/combat_lab/fist07/assets/source/kim_cang_guardian_master_r5.webp.b64",
+        "labs/combat_lab/fist07/kim_cang_ho_the.gd",
+        "labs/combat_lab/fist07/kim_cang_ho_the.tscn",
+        "labs/combat_lab/fist_factory_batch1_20261125/README.md",
+        "labs/combat_lab/fist_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist07_kim_cang_guardian_r5.webp"
+      ],
+      "review_note": "Factory candidate reuses the existing Human Fist LAB source without changing the source gate. Source gate is preserved and owner approval remains pending. Factory contact/state is receipt-bound; native capture pending; PvE HOLD."
+    },
+    {
+      "id": "tmb.skill.fist.kim_cang.active_03.human",
+      "scene": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+      "preview_key": "fist_batch1_kim_cang_active_03",
+      "directions": [
+        "front"
+      ],
+      "vfx_status": "TECH_CUE_ONLY",
+      "family_id": "tmb.skill.fist.kim_cang.active_03",
+      "school": "fist",
+      "branch": "kim_cang",
+      "name_vi": "Phản Chấn Quyền",
+      "source_paths": [
+        "data/combat/v63_human_combat_catalog.json",
+        "labs/combat_lab/fist08/assets/source/counterforce_master.png.b64",
+        "labs/combat_lab/fist08/phan_chan_quyen.gd",
+        "labs/combat_lab/fist08/phan_chan_quyen.tscn",
+        "labs/combat_lab/fist_factory_batch1_20261125/README.md",
+        "labs/combat_lab/fist_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist08_counterforce_master.png"
+      ],
+      "review_note": "Factory candidate reuses the existing Human Fist LAB source without changing the source gate. Source gate is preserved and owner approval remains pending. Factory contact/state is receipt-bound; native capture pending; PvE HOLD."
+    },
+    {
+      "id": "tmb.skill.fist.kim_cang.ultimate.human",
+      "scene": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+      "preview_key": "fist_batch1_kim_cang_ultimate",
+      "directions": [
+        "front"
+      ],
+      "vfx_status": "TECH_CUE_ONLY",
+      "family_id": "tmb.skill.fist.kim_cang.ultimate",
+      "school": "fist",
+      "branch": "kim_cang",
+      "name_vi": "Bất Động Kim Chung",
+      "source_paths": [
+        "data/combat/v63_human_combat_catalog.json",
+        "labs/combat_lab/fist10/assets/source/r2_illustrated_bell_640.webp.b64",
+        "labs/combat_lab/fist10/bat_dong_kim_chung.gd",
+        "labs/combat_lab/fist10/bat_dong_kim_chung.tscn",
+        "labs/combat_lab/fist_factory_batch1_20261125/README.md",
+        "labs/combat_lab/fist_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist10_r2_illustrated_bell.webp"
+      ],
+      "review_note": "Factory candidate reuses the existing Human Fist LAB source without changing the source gate. Source gate is preserved and owner approval remains pending. Factory contact/state is receipt-bound; native capture pending; PvE HOLD."
+    },
+    {
+      "id": "tmb.skill.fist.huyet_quyen.active_01.human",
+      "scene": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+      "preview_key": "fist_batch1_huyet_quyen_active_01",
+      "directions": [
+        "front"
+      ],
+      "vfx_status": "TECH_CUE_ONLY",
+      "family_id": "tmb.skill.fist.huyet_quyen.active_01",
+      "school": "fist",
+      "branch": "huyet_quyen",
+      "name_vi": "Huyết Liệt Quyền",
+      "source_paths": [
+        "data/combat/v63_human_combat_catalog.json",
+        "labs/combat_lab/fist11/assets/source/f11_charge_master.webp",
+        "labs/combat_lab/fist11/assets/source/f11_contact_master.webp",
+        "labs/combat_lab/fist11/assets/source/f11_fist_master.webp",
+        "labs/combat_lab/fist11/huyet_liet_quyen.gd",
+        "labs/combat_lab/fist11/huyet_liet_quyen.tscn",
+        "labs/combat_lab/fist_factory_batch1_20261125/README.md",
+        "labs/combat_lab/fist_factory_batch1_20261125/batch_config.json"
+      ],
+      "review_note": "Factory candidate reuses the existing Human Fist LAB source without changing the source gate. Source gate is preserved and owner approval remains pending. Factory contact/state is receipt-bound; native capture pending; PvE HOLD."
+    },
+    {
+      "id": "tmb.skill.fist.huyet_quyen.active_02.human",
+      "scene": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+      "preview_key": "fist_batch1_huyet_quyen_active_02",
+      "directions": [
+        "front"
+      ],
+      "vfx_status": "TECH_CUE_ONLY",
+      "family_id": "tmb.skill.fist.huyet_quyen.active_02",
+      "school": "fist",
+      "branch": "huyet_quyen",
+      "name_vi": "Đoạn Mạch Liên Quyền",
+      "source_paths": [
+        "data/combat/v63_human_combat_catalog.json",
+        "labs/combat_lab/fist12/assets/r9_sources/f12_r9_charge_master.webp.b64",
+        "labs/combat_lab/fist12/assets/r9_sources/f12_r9_contact_master.webp.b64",
+        "labs/combat_lab/fist12/assets/r9_sources/f12_r9_mark_master.webp.b64",
+        "labs/combat_lab/fist12/assets/r9_sources/f12_r9_punch1_master.webp.b64",
+        "labs/combat_lab/fist12/assets/r9_sources/f12_r9_punch2_master.webp.b64",
+        "labs/combat_lab/fist12/assets/r9_sources/f12_r9_punch3_master.webp.b64",
+        "labs/combat_lab/fist12/doan_mach_lien_quyen.gd",
+        "labs/combat_lab/fist12/doan_mach_lien_quyen.tscn",
+        "labs/combat_lab/fist_factory_batch1_20261125/README.md",
+        "labs/combat_lab/fist_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist12_r9_charge.webp",
+        "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist12_r9_contact.webp",
+        "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist12_r9_mark.webp",
+        "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist12_r9_punch1.webp",
+        "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist12_r9_punch2.webp",
+        "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist12_r9_punch3.webp"
+      ],
+      "review_note": "Factory candidate reuses the existing Human Fist LAB source without changing the source gate. Source gate is preserved and owner approval remains pending. Factory contact/state is receipt-bound; native capture pending; PvE HOLD."
+    },
+    {
+      "id": "tmb.skill.fist.huyet_quyen.active_04.human",
+      "scene": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+      "preview_key": "fist_batch1_huyet_quyen_active_04",
+      "directions": [
+        "front"
+      ],
+      "vfx_status": "TECH_CUE_ONLY",
+      "family_id": "tmb.skill.fist.huyet_quyen.active_04",
+      "school": "fist",
+      "branch": "huyet_quyen",
+      "name_vi": "Liệp Huyết Truy Đả",
+      "source_paths": [
+        "data/combat/v63_human_combat_catalog.json",
+        "labs/combat_lab/fist14/liep_huyet_truy_da.gd",
+        "labs/combat_lab/fist14/liep_huyet_truy_da.tscn",
+        "labs/combat_lab/fist14/r5/ART_BRIEF_AND_PROVENANCE.md",
+        "labs/combat_lab/fist14/r5/assets/atlas_manifest.json",
+        "labs/combat_lab/fist14/r5/source/f14_r5_charge_coil.png",
+        "labs/combat_lab/fist14/r5/source/f14_r5_contact_impact.png",
+        "labs/combat_lab/fist14/r5/source/f14_r5_meridian_mark.png",
+        "labs/combat_lab/fist14/r5/source/f14_r5_recoil.png",
+        "labs/combat_lab/fist14/r5/source/f14_r5_release_lunge.png",
+        "labs/combat_lab/fist_factory_batch1_20261125/README.md",
+        "labs/combat_lab/fist_factory_batch1_20261125/batch_config.json"
+      ],
+      "review_note": "Factory candidate reuses the existing Fist14 R5 package with its owner rework status preserved; the R7 and R8 G3-failed lanes remain excluded. Source gate is preserved and owner approval remains pending. Factory contact/state is receipt-bound; native capture pending; PvE HOLD."
     }
   ],
   "updated_at": "2026-11-25"
