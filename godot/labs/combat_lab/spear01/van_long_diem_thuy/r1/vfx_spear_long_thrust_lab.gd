@@ -10,10 +10,10 @@ const SOCKET_PATH := "res://assets/p3/baked_candidates/weapon_library_v1/candida
 const WEAPON_LIBRARY_PATH := "res://assets/p3/baked_candidates/weapon_library_v1/candidate/ASCHAR_24_ACTOR_WEAPON_BINDINGS_V9_3_CANDIDATE.json"
 const PREVIEW_ATTACHMENT_OVERRIDE := {
 	"asset_id":"spear", "anchor_slot":"off_hand", "align_tip_to_slot":"main_hand",
-	"restore_hand_slots":["off_hand","main_hand"]
+	"asset_scale":0.82, "restore_hand_slots":["off_hand","main_hand"]
 }
 const ASCHAR_DISPLAY_SCALE := 0.25
-const CHARGE_DISPLAY_SIZE := Vector2(68.0,46.0)
+const CHARGE_DISPLAY_SIZE := Vector2(52.0,36.0)
 const CHARGE_PATH := "res://labs/combat_lab/spear01/van_long_diem_thuy/r1/assets/source/charge_r1.png"
 const PEAK_PATH := "res://labs/combat_lab/spear01/van_long_diem_thuy/r1/assets/source/peak_r2.png"
 const CONTACT_PATH := "res://labs/combat_lab/spear01/van_long_diem_thuy/r1/assets/source/contact_r1.png"
@@ -244,7 +244,8 @@ func _draw_target(actor_id: String, title: String, foot: Vector2) -> void:
 	var ratio := clampf(float(actor.get("hp",0.0))/maxf(1.0,float(actor.get("max_hp",1.0))),0.0,1.0)
 	draw_rect(Rect2(bar_left,bar_top,94*ratio,7),Color("8cae9a") if not hit else Color("c2b17b"))
 	var label_color := Color("eee1c5") if hit else Color("b0beb2")
-	draw_string(_font,Vector2(foot.x-89,bar_top-12),title,HORIZONTAL_ALIGNMENT_CENTER,178,12,label_color)
+	var label_y := bar_top-12.0 if actor_id != "spear_lab_outside" else bar_top+24.0
+	draw_string(_font,Vector2(foot.x-89,label_y),title,HORIZONTAL_ALIGNMENT_CENTER,178,12,label_color)
 
 func _draw_receipt_fx() -> void:
 	if run_state == "WINDUP_MOVING_TARGETS":
@@ -322,6 +323,7 @@ func _candidate_spear_tip_screen(action: String,age: float) -> Vector2:
 	var weapon_scale := float(spear_weapon_info.get("asset_scale",0.0))
 	if weapon_scale <= 0.0:
 		weapon_scale = float(anchor_grip.get("scale_multiplier",0.30))
+	weapon_scale = float(PREVIEW_ATTACHMENT_OVERRIDE.get("asset_scale",weapon_scale))
 	return anchor_screen+asset_axis.rotated(rotation)*(weapon_scale*ASCHAR_DISPLAY_SCALE)
 
 func _draw_spear_beam(from: Vector2,to: Vector2,alpha: float) -> void:

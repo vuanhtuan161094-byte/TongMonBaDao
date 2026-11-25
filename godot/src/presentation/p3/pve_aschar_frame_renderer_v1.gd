@@ -210,6 +210,8 @@ static func _draw_props(canvas: CanvasItem,manifest: Dictionary,row: Dictionary,
         var weapon_scale := float(info.get("asset_scale",0.0))
         if weapon_scale <= 0.0:
             weapon_scale = float(grip.get("scale_multiplier",0.30))
+        if asset_id == str(preview_attachment_override.get("asset_id","")):
+            weapon_scale = float(preview_attachment_override.get("asset_scale",weapon_scale))
         var at := foot+(Vector2(float(anchor[0]),float(anchor[1]))-center)*scale
         var rotation_deg := float(grip.get("rotation_deg",0.0))
         if asset_id == str(preview_attachment_override.get("asset_id","")):
