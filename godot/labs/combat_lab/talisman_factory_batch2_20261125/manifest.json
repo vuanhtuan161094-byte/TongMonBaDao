@@ -1,0 +1,101 @@
+{
+  "schema": "tmb.vfx_factory_source_batch.v1",
+  "batch": "talisman_factory_batch2_20261125",
+  "status": "SOURCE_BAKE_PASS_NATIVE_CAPTURE_PENDING",
+  "scope": "Talisman Hỏa Phù cast masters TAL07–TAL10; candidate only",
+  "production_route": "Existing first-party RGBA painting recipes committed in tools/vfx; deterministic atlases baked from documented TMB-owned source artwork; no commercial JX/Source A pixels",
+  "owner_approval": "PENDING",
+  "pve": "HOLD",
+  "assets": [
+    {
+      "skill_id": "tmb.skill.talisman.hoa_phu.active_02.human",
+      "path": "res://labs/combat_lab/talisman07/assets/tal07_lotus_flipbook.webp",
+      "bytes": 1134222,
+      "sha256": "cd56cc415959236171ff7e4251b3cd854c3fb26e3dd70985cf2df4a1df112d42",
+      "recipe": "tools/vfx/paint_tal07_lien_diem.py"
+    },
+    {
+      "skill_id": "tmb.skill.talisman.hoa_phu.active_02.human",
+      "path": "res://labs/combat_lab/talisman07/assets/tal07_seal_flipbook.webp",
+      "bytes": 94582,
+      "sha256": "a5c2d2d0b8d067439951f324cc3a1c609f2108d538594b09dae8ba810e4bd15e",
+      "recipe": "tools/vfx/paint_tal07_lien_diem.py"
+    },
+    {
+      "skill_id": "tmb.skill.talisman.hoa_phu.active_02.human",
+      "path": "res://labs/combat_lab/talisman07/assets/tal07_ground_flipbook.webp",
+      "bytes": 712912,
+      "sha256": "b11d6eb964cc05f252fe391b43dee03814318ae2b7e79d90b11bff78ad8922b9",
+      "recipe": "tools/vfx/paint_tal07_lien_diem.py"
+    },
+    {
+      "skill_id": "tmb.skill.talisman.hoa_phu.active_02.human",
+      "path": "res://labs/combat_lab/talisman07/assets/tal07_contact_flipbook.webp",
+      "bytes": 133706,
+      "sha256": "2ed7a48ed0c8160179994920cbed49f5f65df5d1ba00890ac76d7916f3ba7729",
+      "recipe": "tools/vfx/paint_tal07_lien_diem.py"
+    },
+    {
+      "skill_id": "tmb.skill.talisman.hoa_phu.active_03.human",
+      "path": "res://labs/combat_lab/talisman08/assets/tal08_r1_charge.webp",
+      "bytes": 265222,
+      "sha256": "24af8e34058a71761c99fedaf86d1c6a26c707b6889d842d5dd812176a33f60a",
+      "recipe": "tools/vfx/hf03_r1_fire_heart.py"
+    },
+    {
+      "skill_id": "tmb.skill.talisman.hoa_phu.active_03.human",
+      "path": "res://labs/combat_lab/talisman08/assets/tal08_r1_projectile.webp",
+      "bytes": 416982,
+      "sha256": "0fa0c38ebd586fd75fed00b57c2f4f419c310eca7427f054fa3e32a8eb41d6ee",
+      "recipe": "tools/vfx/hf03_r1_fire_heart.py"
+    },
+    {
+      "skill_id": "tmb.skill.talisman.hoa_phu.active_03.human",
+      "path": "res://labs/combat_lab/talisman08/assets/tal08_r1_contact.webp",
+      "bytes": 315600,
+      "sha256": "73b17af4dadaa20a66e538d70f07829e2bd6fa6b527d8dc2d2d2ce172f98b8ab",
+      "recipe": "tools/vfx/hf03_r1_fire_heart.py"
+    },
+    {
+      "skill_id": "tmb.skill.talisman.hoa_phu.active_04.human",
+      "path": "res://labs/combat_lab/talisman09/assets/tal09_r1_charge.webp",
+      "bytes": 266372,
+      "sha256": "f10dfc6e2f3d2ab9c8e6bbe3efd83ddd0341b18970326ea048f76a2e0361e375",
+      "recipe": "tools/vfx/hf04_r1_que_tuoc.py"
+    },
+    {
+      "skill_id": "tmb.skill.talisman.hoa_phu.active_04.human",
+      "path": "res://labs/combat_lab/talisman09/assets/tal09_r1_phoenix.webp",
+      "bytes": 1233146,
+      "sha256": "97fb084d4f2678280302c38640571052f45b2995c3a9019df98f31e67c5244d7",
+      "recipe": "tools/vfx/hf04_r1_que_tuoc.py"
+    },
+    {
+      "skill_id": "tmb.skill.talisman.hoa_phu.active_04.human",
+      "path": "res://labs/combat_lab/talisman09/assets/tal09_r1_orbit.webp",
+      "bytes": 399990,
+      "sha256": "c79d1271e9956d5747810844e5ae8ee98ec96ab10c31f35bd95f362b36a21d00",
+      "recipe": "tools/vfx/hf04_r1_que_tuoc.py"
+    },
+    {
+      "skill_id": "tmb.skill.talisman.hoa_phu.active_04.human",
+      "path": "res://labs/combat_lab/talisman09/assets/tal09_r1_contact.webp",
+      "bytes": 189616,
+      "sha256": "7a64b3549465157baf7954b542b721f60629e517338a0ab953781396b5640ec1",
+      "recipe": "tools/vfx/hf04_r1_que_tuoc.py"
+    },
+    {
+      "skill_id": "tmb.skill.talisman.hoa_phu.ultimate.human",
+      "path": "res://labs/combat_lab/talisman10/assets/tal10_r7_solar_pillar.webp",
+      "bytes": 1635526,
+      "sha256": "dbfe0d234c96d6158595bce227bb7a64f0a1dc8da1068b30bdbe8086b296bbfb",
+      "recipe": "tools/vfx/hf05_r7_solar_pillar.py"
+    }
+  ],
+  "self_review": {
+    "alpha_and_unique_frame_gates": "PASS from source recipes",
+    "contact_sheet": "source/source_review_sheet.png",
+    "native_1280x720": "PENDING",
+    "frame_motion_and_contact_review": "PENDING"
+  }
+}
