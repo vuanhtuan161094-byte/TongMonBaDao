@@ -1,7 +1,7 @@
 {
   "schema": "tmb.vfx_factory_source_batch.v1",
   "batch": "talisman_factory_batch2_20261125",
-  "status": "SOURCE_BAKE_PASS_NATIVE_CAPTURE_PENDING",
+  "status": "SOURCE_BAKE_PASS_NATIVE_TECH_PASS_ART_SAMPLE_REVIEWED_OWNER_PENDING",
   "scope": "Talisman Hỏa Phù cast masters TAL07–TAL10; candidate only",
   "production_route": "Existing first-party RGBA painting recipes committed in tools/vfx; deterministic atlases baked from documented TMB-owned source artwork; no commercial JX/Source A pixels",
   "owner_approval": "PENDING",
@@ -95,7 +95,110 @@
   "self_review": {
     "alpha_and_unique_frame_gates": "PASS from source recipes",
     "contact_sheet": "source/source_review_sheet.png",
-    "native_1280x720": "PENDING",
-    "frame_motion_and_contact_review": "PENDING"
-  }
+    "native_1280x720": "PASS: Godot 4.7.2 native capture, H.264 external decode, five-phase sheet reviewed",
+    "frame_motion_and_contact_review": "Native contact samples TAL07-TAL10 readability PASS; full frame-by-frame motion review PENDING; all contact remains exact MapBattleV2 receipt-gated",
+    "owner_visual_approval": "PENDING"
+  },
+  "native_capture": {
+    "status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_FULL_DECODE",
+    "viewport_px": [
+      1280,
+      720
+    ],
+    "renderer": "Godot 4.7.2 GL Compatibility / Mesa llvmpipe; shared VFX Factory and AS64 existing actor",
+    "frame_rate_fps": 20,
+    "frame_count": 385,
+    "duration_seconds": 19.25,
+    "receipt_source": "REAL_MAPBATTLE_V2_TEST_FIXTURE_EVENTS_ONLY",
+    "video": {
+      "path": "godot/labs/combat_lab/talisman_factory_batch2_20261125/review/native/talisman_factory_native_1280x720.mp4",
+      "sha256": "07f7a39ee1878efc850e860fbb0697664ad89630f1d69f6c847fff2b57baa87b",
+      "bytes": 1512886
+    },
+    "contact_sheet": {
+      "path": "godot/labs/combat_lab/talisman_factory_batch2_20261125/review/native/talisman_factory_contact_sheet_1280x720.png",
+      "sha256": "15cef0c863291ee0e99f5643c164cb1ce2e9946386e1ba777646616e14556432",
+      "bytes": 298724
+    },
+    "capture_index": {
+      "path": "godot/labs/combat_lab/talisman_factory_batch2_20261125/review/native/talisman_batch2_capture_index.json",
+      "sha256": "dd2f32992df4f55cf3b18bc57e52e17a859028ad2a3490236ee23cab6c0e0e0c",
+      "bytes": 8600
+    },
+    "external_movie_validation": "FFMPEG_FULL_DECODE_PASS; ffprobe H.264 1280x720 20fps 385 frames 19.25 seconds",
+    "phase_review": "Five-phase native contact sheet reviewed for all eight entries; 1x native contact samples spot-checked for TAL07-TAL10. Full continuous frame-by-frame motion review remains pending.",
+    "full_frame_by_frame_motion_review": "PENDING",
+    "owner_approval": "PENDING",
+    "pve": "HOLD"
+  },
+  "skills": [
+    {
+      "skill_id": "tmb.skill.talisman.hoa_phu.active_02.human",
+      "name_vi": "Liên Diệm Phần Giới",
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720",
+      "event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_talisman_hit"
+      ],
+      "accepted_event_count": 5,
+      "actual_hit_event_count": 3,
+      "native_event_status": "REAL_MAPBATTLE_HIT_RECEIPTS_3_TARGETS",
+      "contact_status": "REAL_V63_TALISMAN_HIT_RECEIPT",
+      "art_self_review_status": "ART_SELF_REVIEW_NATIVE_CONTACT_SAMPLE_READABILITY_PASS_FULL_FRAME_BY_FRAME_REVIEW_PENDING",
+      "owner_approval": "PENDING",
+      "pve": "HOLD"
+    },
+    {
+      "skill_id": "tmb.skill.talisman.hoa_phu.active_03.human",
+      "name_vi": "Hỏa Tâm Ngưng Phù",
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720",
+      "event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_talisman_hit"
+      ],
+      "accepted_event_count": 3,
+      "actual_hit_event_count": 1,
+      "native_event_status": "REAL_MAPBATTLE_HIT_RECEIPTS_1_TARGETS",
+      "contact_status": "REAL_V63_TALISMAN_HIT_RECEIPT",
+      "art_self_review_status": "ART_SELF_REVIEW_NATIVE_CONTACT_SAMPLE_READABILITY_PASS_FULL_FRAME_BY_FRAME_REVIEW_PENDING",
+      "owner_approval": "PENDING",
+      "pve": "HOLD"
+    },
+    {
+      "skill_id": "tmb.skill.talisman.hoa_phu.active_04.human",
+      "name_vi": "Chu Tước Hồi Hoàn",
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720",
+      "event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_talisman_hit"
+      ],
+      "accepted_event_count": 5,
+      "actual_hit_event_count": 3,
+      "native_event_status": "REAL_MAPBATTLE_HIT_RECEIPTS_3_TARGETS",
+      "contact_status": "REAL_V63_TALISMAN_HIT_RECEIPT",
+      "art_self_review_status": "ART_SELF_REVIEW_NATIVE_CONTACT_SAMPLE_READABILITY_PASS_FULL_FRAME_BY_FRAME_REVIEW_PENDING",
+      "owner_approval": "PENDING",
+      "pve": "HOLD"
+    },
+    {
+      "skill_id": "tmb.skill.talisman.hoa_phu.ultimate.human",
+      "name_vi": "Vạn Phù Phần Thiên",
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720",
+      "event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_talisman_hit"
+      ],
+      "accepted_event_count": 5,
+      "actual_hit_event_count": 3,
+      "native_event_status": "REAL_MAPBATTLE_HIT_RECEIPTS_3_TARGETS",
+      "contact_status": "REAL_V63_TALISMAN_HIT_RECEIPT",
+      "art_self_review_status": "ART_SELF_REVIEW_NATIVE_CONTACT_SAMPLE_READABILITY_PASS_FULL_FRAME_BY_FRAME_REVIEW_PENDING",
+      "owner_approval": "PENDING",
+      "pve": "HOLD"
+    }
+  ]
 }

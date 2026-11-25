@@ -1101,10 +1101,10 @@
         "front"
       ],
       "vfx_status": "CANDIDATE_G3",
-      "g3_art": "SOURCE_ALPHA_UNIQUE_POSES_PASS_NATIVE_ART_SELF_REVIEW_PENDING",
+      "g3_art": "SOURCE_ALPHA_UNIQUE_POSES_PASS_NATIVE_CONTACT_SAMPLE_READABILITY_PASS_FULL_FRAME_BY_FRAME_REVIEW_PENDING",
       "owner_art": "OWNER_VISUAL_PENDING",
       "art_source": "TMB_FIRST_PARTY_RGBA_PAINTED_ATLASES_EXISTING_RECIPE",
-      "review_stages": "Source alpha/unique-pose bake and 1x source sheet PASS · native phase/contact review pending · owner approval pending · PvE HOLD",
+      "review_stages": "Source alpha/unique-pose bake PASS · native Godot 4.7.2 capture and H.264 decode PASS at 1280x720/20fps · five-phase sheet reviewed and native contact sample checked · full continuous-frame motion review pending · owner approval pending · PvE HOLD",
       "source_paths": [
         "data/combat/v63_talisman_combat_catalog.json",
         "labs/combat_lab/talisman07/assets/tal07_seal_flipbook.webp",
@@ -1120,9 +1120,12 @@
         "labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
         "labs/visual_bridge_v1/asset_vfx_readonly_bridge_v1.gd",
         "tests/labs/combat_lab/vfx_factory_review_test.gd",
-        "tests/labs/combat_lab/vfx_factory_talisman_receipt_integration_test.gd"
+        "tests/labs/combat_lab/vfx_factory_talisman_receipt_integration_test.gd",
+        "labs/combat_lab/talisman_factory_batch2_20261125/review/native/talisman_batch2_capture_index.json",
+        "labs/combat_lab/talisman_factory_batch2_20261125/review/native/talisman_factory_contact_sheet_1280x720.png",
+        "labs/combat_lab/talisman_factory_batch2_20261125/review/native/talisman_factory_native_1280x720.mp4"
       ],
-      "review_note": "Liên Diệm Phần Giới: first-party painted RGBA source atlases with unique frame checks; one 1x source-sheet review. circle/3 canonical damage only. Contact is gated by an exact-skill MapBattleV2 v63_talisman_hit; no synthetic damage, status, or hit. Full native phase review and owner visual approval pending; PvE HOLD."
+      "review_note": "Liên Diệm Phần Giới: first-party painted RGBA source atlases with unique frame checks; one 1x source-sheet review. circle/3 canonical damage only. Contact is gated by an exact-skill MapBattleV2 v63_talisman_hit; no synthetic damage, status, or hit. Full native phase review and owner visual approval pending; PvE HOLD. Native capture and H.264 decode PASS at 1280x720/20fps; 3 exact-skill real v63_talisman_hit event(s); no synthetic contact. Native contact sample readability self-review PASS; full continuous-motion review pending. Owner visual approval pending; PvE HOLD."
     },
     {
       "id": "tmb.skill.talisman.hoa_phu.active_03.human",
@@ -1135,10 +1138,10 @@
         "front"
       ],
       "vfx_status": "CANDIDATE_G3",
-      "g3_art": "SOURCE_ALPHA_UNIQUE_POSES_PASS_NATIVE_ART_SELF_REVIEW_PENDING",
+      "g3_art": "SOURCE_ALPHA_UNIQUE_POSES_PASS_NATIVE_CONTACT_SAMPLE_READABILITY_PASS_FULL_FRAME_BY_FRAME_REVIEW_PENDING",
       "owner_art": "OWNER_VISUAL_PENDING",
       "art_source": "TMB_FIRST_PARTY_RGBA_PAINTED_ATLASES_EXISTING_RECIPE",
-      "review_stages": "Source alpha/unique-pose bake and 1x source sheet PASS · native phase/contact review pending · owner approval pending · PvE HOLD",
+      "review_stages": "Source alpha/unique-pose bake PASS · native Godot 4.7.2 capture and H.264 decode PASS at 1280x720/20fps · five-phase sheet reviewed and native contact sample checked · full continuous-frame motion review pending · owner approval pending · PvE HOLD",
       "source_paths": [
         "data/combat/v63_talisman_combat_catalog.json",
         "labs/combat_lab/talisman08/assets/tal08_r1_charge.webp",
@@ -1153,9 +1156,12 @@
         "labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
         "labs/visual_bridge_v1/asset_vfx_readonly_bridge_v1.gd",
         "tests/labs/combat_lab/vfx_factory_review_test.gd",
-        "tests/labs/combat_lab/vfx_factory_talisman_receipt_integration_test.gd"
+        "tests/labs/combat_lab/vfx_factory_talisman_receipt_integration_test.gd",
+        "labs/combat_lab/talisman_factory_batch2_20261125/review/native/talisman_batch2_capture_index.json",
+        "labs/combat_lab/talisman_factory_batch2_20261125/review/native/talisman_factory_contact_sheet_1280x720.png",
+        "labs/combat_lab/talisman_factory_batch2_20261125/review/native/talisman_factory_native_1280x720.mp4"
       ],
-      "review_note": "Hỏa Tâm Ngưng Phù: first-party painted RGBA source atlases with unique frame checks; one 1x source-sheet review. single_target/1 canonical damage only. Contact is gated by an exact-skill MapBattleV2 v63_talisman_hit; no synthetic damage, status, or hit. Full native phase review and owner visual approval pending; PvE HOLD."
+      "review_note": "Hỏa Tâm Ngưng Phù: first-party painted RGBA source atlases with unique frame checks; one 1x source-sheet review. single_target/1 canonical damage only. Contact is gated by an exact-skill MapBattleV2 v63_talisman_hit; no synthetic damage, status, or hit. Full native phase review and owner visual approval pending; PvE HOLD. Native capture and H.264 decode PASS at 1280x720/20fps; 1 exact-skill real v63_talisman_hit event(s); no synthetic contact. Native contact sample readability self-review PASS; full continuous-motion review pending. Owner visual approval pending; PvE HOLD."
     },
     {
       "id": "tmb.skill.talisman.hoa_phu.active_04.human",
@@ -1168,10 +1174,10 @@
         "front"
       ],
       "vfx_status": "CANDIDATE_G3",
-      "g3_art": "SOURCE_ALPHA_UNIQUE_POSES_PASS_NATIVE_ART_SELF_REVIEW_PENDING",
+      "g3_art": "SOURCE_ALPHA_UNIQUE_POSES_PASS_NATIVE_CONTACT_SAMPLE_READABILITY_PASS_FULL_FRAME_BY_FRAME_REVIEW_PENDING",
       "owner_art": "OWNER_VISUAL_PENDING",
       "art_source": "TMB_FIRST_PARTY_RGBA_PAINTED_ATLASES_EXISTING_RECIPE",
-      "review_stages": "Source alpha/unique-pose bake and 1x source sheet PASS · native phase/contact review pending · owner approval pending · PvE HOLD",
+      "review_stages": "Source alpha/unique-pose bake PASS · native Godot 4.7.2 capture and H.264 decode PASS at 1280x720/20fps · five-phase sheet reviewed and native contact sample checked · full continuous-frame motion review pending · owner approval pending · PvE HOLD",
       "source_paths": [
         "data/combat/v63_talisman_combat_catalog.json",
         "labs/combat_lab/talisman09/assets/tal09_r1_charge.webp",
@@ -1187,9 +1193,12 @@
         "labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
         "labs/visual_bridge_v1/asset_vfx_readonly_bridge_v1.gd",
         "tests/labs/combat_lab/vfx_factory_review_test.gd",
-        "tests/labs/combat_lab/vfx_factory_talisman_receipt_integration_test.gd"
+        "tests/labs/combat_lab/vfx_factory_talisman_receipt_integration_test.gd",
+        "labs/combat_lab/talisman_factory_batch2_20261125/review/native/talisman_batch2_capture_index.json",
+        "labs/combat_lab/talisman_factory_batch2_20261125/review/native/talisman_factory_contact_sheet_1280x720.png",
+        "labs/combat_lab/talisman_factory_batch2_20261125/review/native/talisman_factory_native_1280x720.mp4"
       ],
-      "review_note": "Chu Tước Hồi Hoàn: first-party painted RGBA source atlases with unique frame checks; one 1x source-sheet review. circle/3 canonical damage only. Contact is gated by an exact-skill MapBattleV2 v63_talisman_hit; no synthetic damage, status, or hit. Full native phase review and owner visual approval pending; PvE HOLD."
+      "review_note": "Chu Tước Hồi Hoàn: first-party painted RGBA source atlases with unique frame checks; one 1x source-sheet review. circle/3 canonical damage only. Contact is gated by an exact-skill MapBattleV2 v63_talisman_hit; no synthetic damage, status, or hit. Full native phase review and owner visual approval pending; PvE HOLD. Native capture and H.264 decode PASS at 1280x720/20fps; 3 exact-skill real v63_talisman_hit event(s); no synthetic contact. Native contact sample readability self-review PASS; full continuous-motion review pending. Owner visual approval pending; PvE HOLD."
     },
     {
       "id": "tmb.skill.talisman.hoa_phu.ultimate.human",
@@ -1202,10 +1211,10 @@
         "front"
       ],
       "vfx_status": "CANDIDATE_G3",
-      "g3_art": "SOURCE_ALPHA_UNIQUE_POSES_PASS_NATIVE_ART_SELF_REVIEW_PENDING",
+      "g3_art": "SOURCE_ALPHA_UNIQUE_POSES_PASS_NATIVE_CONTACT_SAMPLE_READABILITY_PASS_FULL_FRAME_BY_FRAME_REVIEW_PENDING",
       "owner_art": "OWNER_VISUAL_PENDING",
       "art_source": "TMB_FIRST_PARTY_RGBA_PAINTED_ATLASES_EXISTING_RECIPE",
-      "review_stages": "Source alpha/unique-pose bake and 1x source sheet PASS · native phase/contact review pending · owner approval pending · PvE HOLD",
+      "review_stages": "Source alpha/unique-pose bake PASS · native Godot 4.7.2 capture and H.264 decode PASS at 1280x720/20fps · five-phase sheet reviewed and native contact sample checked · full continuous-frame motion review pending · owner approval pending · PvE HOLD",
       "source_paths": [
         "data/combat/v63_talisman_combat_catalog.json",
         "labs/combat_lab/talisman10/assets/tal10_r7_solar_pillar.webp",
@@ -1218,9 +1227,12 @@
         "labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
         "labs/visual_bridge_v1/asset_vfx_readonly_bridge_v1.gd",
         "tests/labs/combat_lab/vfx_factory_review_test.gd",
-        "tests/labs/combat_lab/vfx_factory_talisman_receipt_integration_test.gd"
+        "tests/labs/combat_lab/vfx_factory_talisman_receipt_integration_test.gd",
+        "labs/combat_lab/talisman_factory_batch2_20261125/review/native/talisman_batch2_capture_index.json",
+        "labs/combat_lab/talisman_factory_batch2_20261125/review/native/talisman_factory_contact_sheet_1280x720.png",
+        "labs/combat_lab/talisman_factory_batch2_20261125/review/native/talisman_factory_native_1280x720.mp4"
       ],
-      "review_note": "Vạn Phù Phần Thiên: first-party painted RGBA source atlases with unique frame checks; one 1x source-sheet review. circle/3 canonical damage only. Contact is gated by an exact-skill MapBattleV2 v63_talisman_hit; no synthetic damage, status, or hit. Full native phase review and owner visual approval pending; PvE HOLD."
+      "review_note": "Vạn Phù Phần Thiên: first-party painted RGBA source atlases with unique frame checks; one 1x source-sheet review. circle/3 canonical damage only. Contact is gated by an exact-skill MapBattleV2 v63_talisman_hit; no synthetic damage, status, or hit. Full native phase review and owner visual approval pending; PvE HOLD. Native capture and H.264 decode PASS at 1280x720/20fps; 3 exact-skill real v63_talisman_hit event(s); no synthetic contact. Native contact sample readability self-review PASS; full continuous-motion review pending. Owner visual approval pending; PvE HOLD."
     }
   ],
   "updated_at": "2026-11-25"

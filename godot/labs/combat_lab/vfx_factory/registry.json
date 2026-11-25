@@ -5109,11 +5109,11 @@
         "contact": "BEHIND",
         "fade": "BEHIND"
       },
-      "source_g3": "SOURCE_ALPHA_UNIQUE_POSES_PASS_NATIVE_ART_SELF_REVIEW_PENDING",
-      "native_status": "NATIVE_CAPTURE_PENDING",
+      "source_g3": "SOURCE_ALPHA_UNIQUE_POSES_PASS_NATIVE_CONTACT_SAMPLE_READABILITY_PASS_FULL_FRAME_BY_FRAME_REVIEW_PENDING",
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720",
       "owner_status": "OWNER_VISUAL_PENDING",
       "native_ready": false,
-      "motion_status": "FRAME_BY_FRAME_SOURCE_ATLASES_NATIVE_REVIEW_PENDING",
+      "motion_status": "NATIVE_PHASE_CAPTURED_CONTACT_SAMPLES_REVIEWED_FULL_CONTINUOUS_MOTION_REVIEW_PENDING",
       "showcase_moving_target": true,
       "delivery_phase": "release",
       "phase_sources": {
@@ -5519,7 +5519,8 @@
         ]
       },
       "native_batch": "talisman",
-      "review_note": "Liên Diệm Phần Giới: first-party painted RGBA source atlases with unique frame checks; one 1x source-sheet review. circle/3 canonical damage only. Contact is gated by an exact-skill MapBattleV2 v63_talisman_hit; no synthetic damage, status, or hit. Full native phase review and owner visual approval pending; PvE HOLD."
+      "review_note": "Liên Diệm Phần Giới: first-party painted RGBA source atlases with unique frame checks; one 1x source-sheet review. circle/3 canonical damage only. Contact is gated by an exact-skill MapBattleV2 v63_talisman_hit; no synthetic damage, status, or hit. Full native phase review and owner visual approval pending; PvE HOLD. Native Godot 4.7.2 capture and full H.264 decode pass at 1280x720/20fps. Five-phase contact sheet reviewed; native contact samples visually spot-checked. Full continuous motion review pending. Contact shown only for accepted exact-skill real MapBattleV2 v63_talisman_hit receipts; no synthetic hits. Owner visual review pending; PvE HOLD.",
+      "native_event_status": "REAL_MAPBATTLE_HIT_RECEIPTS_3_TARGETS"
     },
     {
       "skill_id": "tmb.skill.talisman.hoa_phu.active_03.human",
@@ -5559,11 +5560,11 @@
         "contact": "BEHIND",
         "fade": "BEHIND"
       },
-      "source_g3": "SOURCE_ALPHA_UNIQUE_POSES_PASS_NATIVE_ART_SELF_REVIEW_PENDING",
-      "native_status": "NATIVE_CAPTURE_PENDING",
+      "source_g3": "SOURCE_ALPHA_UNIQUE_POSES_PASS_NATIVE_CONTACT_SAMPLE_READABILITY_PASS_FULL_FRAME_BY_FRAME_REVIEW_PENDING",
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720",
       "owner_status": "OWNER_VISUAL_PENDING",
       "native_ready": false,
-      "motion_status": "FRAME_BY_FRAME_SOURCE_ATLASES_NATIVE_REVIEW_PENDING",
+      "motion_status": "NATIVE_PHASE_CAPTURED_CONTACT_SAMPLES_REVIEWED_FULL_CONTINUOUS_MOTION_REVIEW_PENDING",
       "showcase_moving_target": true,
       "delivery_phase": "release",
       "phase_sources": {
@@ -5987,10 +5988,11 @@
         ]
       },
       "native_batch": "talisman",
-      "review_note": "Hỏa Tâm Ngưng Phù: first-party painted RGBA source atlases with unique frame checks; one 1x source-sheet review. single_target/1 canonical damage only. Contact is gated by an exact-skill MapBattleV2 v63_talisman_hit; no synthetic damage, status, or hit. Full native phase review and owner visual approval pending; PvE HOLD.",
+      "review_note": "Hỏa Tâm Ngưng Phù: first-party painted RGBA source atlases with unique frame checks; one 1x source-sheet review. single_target/1 canonical damage only. Contact is gated by an exact-skill MapBattleV2 v63_talisman_hit; no synthetic damage, status, or hit. Full native phase review and owner visual approval pending; PvE HOLD. Native Godot 4.7.2 capture and full H.264 decode pass at 1280x720/20fps. Five-phase contact sheet reviewed; native contact samples visually spot-checked. Full continuous motion review pending. Contact shown only for accepted exact-skill real MapBattleV2 v63_talisman_hit receipts; no synthetic hits. Owner visual review pending; PvE HOLD.",
       "phase_aliases": {
         "release": "flight"
-      }
+      },
+      "native_event_status": "REAL_MAPBATTLE_HIT_RECEIPTS_1_TARGETS"
     },
     {
       "skill_id": "tmb.skill.talisman.hoa_phu.active_04.human",
@@ -6031,11 +6033,11 @@
         "contact": "BEHIND",
         "fade": "BEHIND"
       },
-      "source_g3": "SOURCE_ALPHA_UNIQUE_POSES_PASS_NATIVE_ART_SELF_REVIEW_PENDING",
-      "native_status": "NATIVE_CAPTURE_PENDING",
+      "source_g3": "SOURCE_ALPHA_UNIQUE_POSES_PASS_NATIVE_CONTACT_SAMPLE_READABILITY_PASS_FULL_FRAME_BY_FRAME_REVIEW_PENDING",
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720",
       "owner_status": "OWNER_VISUAL_PENDING",
       "native_ready": false,
-      "motion_status": "FRAME_BY_FRAME_SOURCE_ATLASES_NATIVE_REVIEW_PENDING",
+      "motion_status": "NATIVE_PHASE_CAPTURED_CONTACT_SAMPLES_REVIEWED_FULL_CONTINUOUS_MOTION_REVIEW_PENDING",
       "showcase_moving_target": true,
       "delivery_phase": "release",
       "phase_sources": {
@@ -6459,7 +6461,8 @@
         ]
       },
       "native_batch": "talisman",
-      "review_note": "Chu Tước Hồi Hoàn: first-party painted RGBA source atlases with unique frame checks; one 1x source-sheet review. circle/3 canonical damage only. Contact is gated by an exact-skill MapBattleV2 v63_talisman_hit; no synthetic damage, status, or hit. Full native phase review and owner visual approval pending; PvE HOLD."
+      "review_note": "Chu Tước Hồi Hoàn: first-party painted RGBA source atlases with unique frame checks; one 1x source-sheet review. circle/3 canonical damage only. Contact is gated by an exact-skill MapBattleV2 v63_talisman_hit; no synthetic damage, status, or hit. Full native phase review and owner visual approval pending; PvE HOLD. Native Godot 4.7.2 capture and full H.264 decode pass at 1280x720/20fps. Five-phase contact sheet reviewed; native contact samples visually spot-checked. Full continuous motion review pending. Contact shown only for accepted exact-skill real MapBattleV2 v63_talisman_hit receipts; no synthetic hits. Owner visual review pending; PvE HOLD.",
+      "native_event_status": "REAL_MAPBATTLE_HIT_RECEIPTS_3_TARGETS"
     },
     {
       "skill_id": "tmb.skill.talisman.hoa_phu.ultimate.human",
@@ -6500,11 +6503,11 @@
         "contact": "BEHIND",
         "fade": "BEHIND"
       },
-      "source_g3": "SOURCE_ALPHA_UNIQUE_POSES_PASS_NATIVE_ART_SELF_REVIEW_PENDING",
-      "native_status": "NATIVE_CAPTURE_PENDING",
+      "source_g3": "SOURCE_ALPHA_UNIQUE_POSES_PASS_NATIVE_CONTACT_SAMPLE_READABILITY_PASS_FULL_FRAME_BY_FRAME_REVIEW_PENDING",
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720",
       "owner_status": "OWNER_VISUAL_PENDING",
       "native_ready": false,
-      "motion_status": "FRAME_BY_FRAME_SOURCE_ATLASES_NATIVE_REVIEW_PENDING",
+      "motion_status": "NATIVE_PHASE_CAPTURED_CONTACT_SAMPLES_REVIEWED_FULL_CONTINUOUS_MOTION_REVIEW_PENDING",
       "showcase_moving_target": true,
       "delivery_phase": "release",
       "phase_sources": {
@@ -6874,7 +6877,8 @@
         ]
       },
       "native_batch": "talisman",
-      "review_note": "Vạn Phù Phần Thiên: first-party painted RGBA source atlases with unique frame checks; one 1x source-sheet review. circle/3 canonical damage only. Contact is gated by an exact-skill MapBattleV2 v63_talisman_hit; no synthetic damage, status, or hit. Full native phase review and owner visual approval pending; PvE HOLD."
+      "review_note": "Vạn Phù Phần Thiên: first-party painted RGBA source atlases with unique frame checks; one 1x source-sheet review. circle/3 canonical damage only. Contact is gated by an exact-skill MapBattleV2 v63_talisman_hit; no synthetic damage, status, or hit. Full native phase review and owner visual approval pending; PvE HOLD. Native Godot 4.7.2 capture and full H.264 decode pass at 1280x720/20fps. Five-phase contact sheet reviewed; native contact samples visually spot-checked. Full continuous motion review pending. Contact shown only for accepted exact-skill real MapBattleV2 v63_talisman_hit receipts; no synthetic hits. Owner visual review pending; PvE HOLD.",
+      "native_event_status": "REAL_MAPBATTLE_HIT_RECEIPTS_3_TARGETS"
     }
   ],
   "batch_status": {
