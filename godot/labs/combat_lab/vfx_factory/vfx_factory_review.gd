@@ -507,8 +507,12 @@ func _draw_phase_art(anchors: Dictionary, actor_foot: Vector2,
 	var contact_phase := _contact_phase_at_time(timeline)
 	if not contact_phase.is_empty():
 		if phase_draws_front(_config, contact_phase) == front_layer:
-			_draw_bound_phase(contact_phase, _contact_target_ids,
-				maxf(0.0, _elapsed - _contact_local_time), 0.0, front_layer)
+			var contact_age := maxf(0.0, _elapsed - _contact_local_time)
+			var phase_age := contact_age
+			if contact_phase == "fade":
+				phase_age = maxf(0.0, contact_age - maxf(0.01,
+					float(timeline.get("contact_window_seconds", 0.18))))
+			_draw_bound_phase(contact_phase, _contact_target_ids, phase_age, 0.0, front_layer)
 	if not persistent_phase.is_empty() or not contact_phase.is_empty():
 		return
 	var phase := _phase_at_time(timeline)

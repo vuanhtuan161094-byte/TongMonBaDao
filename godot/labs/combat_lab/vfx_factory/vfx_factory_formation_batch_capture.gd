@@ -22,6 +22,7 @@ var _event_origin_time := 0.0
 var _segment_elapsed := 0.0
 var _segment_duration := 1.4
 var _global_elapsed := 0.0
+var _movie_time_offset := -1.0
 var _segment_start := 0.0
 var _records: Array[Dictionary] = []
 var _index_output_path := ""
@@ -146,7 +147,7 @@ func _activate_skill(next_index: int) -> void:
 	_segment_elapsed = 0.0
 	_event_origin_time = float(_events[0].get("time", 0.0)) if not _events.is_empty() else 0.0
 	_segment_duration = _capture_duration(_events, _event_origin_time)
-	_segment_start = _global_elapsed
+	_segment_start = _movie_seconds()
 	var recorded_event_types: Array[String] = []
 	for event in _events:
 		var event_type := str(event.get("type", ""))
@@ -158,10 +159,13 @@ func _activate_skill(next_index: int) -> void:
 		"encounter_id":encounter_id,
 		"fixture":"REAL_MAPBATTLE_VFX_TEST_FIXTURE",
 		"event_count":_events.size(),
+		"synthetic_events":0,
 		"event_types":recorded_event_types,
 		"configured_event_types":allowed_types.duplicate(),
+		"event_trace":[],
 		"accepted_event_count":0,
 		"video_start_seconds":_segment_start,
+		"release_frame_seconds":-1.0,
 		"contact_frame_seconds":-1.0,
 		"video_duration_seconds":_segment_duration,
 		"receipt_feed":"PENDING"
@@ -190,7 +194,7 @@ func _activate_storyboard_skill(entry: Dictionary, skill_id: String) -> void:
 	_segment_elapsed = 0.0
 	_event_origin_time = 0.0
 	_segment_duration = maxf(1.2, float(entry.get("review_timeline", {}).get("loop_seconds", 1.4)))
-	_segment_start = _global_elapsed
+	_segment_start = _movie_seconds()
 	_records.append({
 		"skill_id":skill_id,
 		"name_vi":str(entry.get("name_vi", "")),
@@ -230,6 +234,8 @@ func _process(delta: float) -> void:
 	if _finished:
 		return
 	var step := maxf(0.0, delta)
+	if _movie_time_offset < 0.0 and step > 0.0:
+		_movie_time_offset = step
 	_segment_elapsed += step
 	_global_elapsed += step
 	while _event_index < _events.size():
@@ -297,12 +303,32 @@ func _feed_receipt(event: Dictionary) -> void:
 	else:
 		result = _lab.call("review_feed_authoritative_event", event)
 	var record_index := _records.size() - 1
+	var review_state: Dictionary = _lab.call("review_state")
+	var raw_trace_target_ids: Variant = event.get("target_ids", [])
+	var trace_target_ids: Array = raw_trace_target_ids.duplicate(true) if raw_trace_target_ids is Array else []
+	var trace_target_id := str(event.get("target_id", event.get("target", "")))
+	if not trace_target_id.is_empty() and not trace_target_ids.has(trace_target_id):
+		trace_target_ids.append(trace_target_id)
+	var event_trace: Array = _records[record_index].get("event_trace", [])
+	event_trace.append({
+		"event_type":str(event.get("type", "")),
+		"event_id":str(event.get("event_id", "")),
+		"capture_frame_seconds":_movie_seconds(),
+		"simulation_event_time_seconds":float(event.get("time", -1.0)),
+		"skill_id":str(event.get("skill_id", "")),
+		"caster_id":actor_id,
+		"target_ids":trace_target_ids,
+		"accepted":bool(result.get("ok", false)),
+		"reason":str(result.get("reason", "")),
+		"contact_receipt_target_count":int(review_state.get("contact_receipt_target_count", 0))
+	})
+	_records[record_index]["event_trace"] = event_trace
 	if bool(result.get("ok", false)):
 		_records[record_index]["receipt_feed"] = "REAL_MAPBATTLE_RECEIPT_ACCEPTED"
 		_records[record_index]["accepted_event_count"] = int(_records[record_index].get("accepted_event_count", 0)) + 1
 		if str(event.get("type", "")) == "v63_mobility":
-			_records[record_index]["mobility_frame_seconds"] = _global_elapsed + 0.02
-			_records[record_index]["start_frame_seconds"] = _global_elapsed + 0.02
+			_records[record_index]["mobility_frame_seconds"] = _movie_seconds() + 0.02
+			_records[record_index]["start_frame_seconds"] = _movie_seconds() + 0.02
 		elif str(event.get("type", "")) in ["v63_skill_hit", "v63_talisman_hit", "v63_talisman_mark_applied", "skill_hit", "v63_formation_slow_applied", "v63_formation_zone_tick", "status_applied"] or is_basic_hit:
 			if float(_records[record_index].get("contact_frame_seconds", -1.0)) < 0.0:
 				# Keep the contact sheet close to the first receipt frame so the
@@ -312,11 +338,12 @@ func _feed_receipt(event: Dictionary) -> void:
 					if str(binding.get("event_type", "")) == str(event.get("type", "")):
 						visual_phase = str(binding.get("visual_phase", ""))
 						break
-				_records[record_index]["contact_frame_seconds"] = _global_elapsed + (0.10 if visual_phase == "start" else 0.02)
+				_records[record_index]["contact_frame_seconds"] = _movie_seconds() + (0.10 if visual_phase == "start" else 0.02)
 		elif str(event.get("type", "")) == "skill_release" \
 				and float(_records[record_index].get("release_frame_seconds", -1.0)) < 0.0:
-			var release_window := maxf(0.08, float(_entries[_index].get("review_timeline", {}).get("release_window_seconds", 0.18)))
-			_records[record_index]["release_frame_seconds"] = _global_elapsed + minf(0.45, release_window * 0.5)
+			# Sample the frame rendered immediately after this receipt. Delaying by
+			# half the release window can land on a same-tick contact and hide the peak.
+			_records[record_index]["release_frame_seconds"] = _movie_seconds()
 	else:
 		push_error("VFX_FACTORY_BATCH_EVENT_REJECTED skill=" + skill_id + " event=" + str(event.get("type", "")) + " reason=" + str(result.get("reason", "")))
 
@@ -325,6 +352,9 @@ func _world_to_screen(world_position: Vector2) -> Vector2:
 		clampf(CAST_FOOT.x + (world_position.x - 2.0) * 130.0, 90.0, 1190.0),
 		clampf(CAST_FOOT.y + (world_position.y - 3.0) * 48.0, 440.0, 620.0)
 	)
+
+func _movie_seconds() -> float:
+	return maxf(0.0, _global_elapsed - maxf(0.0, _movie_time_offset))
 
 func _make_battle_fixture(skill_id: String, fixture_index: int) -> Dictionary:
 	var battle: MapBattleV2 = MAP_BATTLE.new(88200 + fixture_index)

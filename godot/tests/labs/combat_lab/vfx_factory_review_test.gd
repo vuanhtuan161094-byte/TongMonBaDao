@@ -198,6 +198,10 @@ func _run() -> void:
 				"RGBA phase masters load through the shared renderer " + skill_id)
 			_check(str(entry.get("native_batch", "")) == ("palm" if is_palm else "spear"),
 				"batch capture uses the shared school runner " + skill_id)
+			_check(str(entry.get("native_status", "")).begins_with(
+				"NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_H264_FULL_DECODE")
+				and not bool(entry.get("native_ready", true)),
+				"native decode pass stays separate from runtime readiness " + skill_id)
 			var binding_types: Array[String] = []
 			for binding in entry.get("receipt_manifest", {}).get("bindings", []):
 				binding_types.append(str(binding.get("event_type", "")))

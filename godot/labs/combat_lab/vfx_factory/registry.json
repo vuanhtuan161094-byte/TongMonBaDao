@@ -7693,9 +7693,9 @@
         "fade": "FRONT"
       },
       "draw_layer": "FRONT",
-      "source_g3": "G3_SOURCE_SELF_PASS; THREE_DISTINCT_RGBA_PHASE_MASTERS; FACTORY_NATIVE_CAPTURE_PENDING",
+      "source_g3": "G3_SOURCE_SELF_PASS; THREE_DISTINCT_RGBA_PHASE_MASTERS; EXISTING_AS60_HAND_R_SOCKET",
       "art_self_status": "ART_SELF_REVIEW_PARTIAL_CONTINUOUS_MOTION_PENDING",
-      "native_status": "FACTORY_NATIVE_CAPTURE_PENDING; REAL_V63_SKILL_HIT_RECEIPT_REQUIRED",
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_H264_FULL_DECODE; REAL_V63_SKILL_HIT_RECEIPT=1; ART_MOTION_REVIEW_PENDING",
       "owner_status": "OWNER_VISUAL_PENDING",
       "native_ready": false,
       "motion_status": "THREE_DISTINCT_PHASE_MASTERS; STATIC_PHASES_NOT_CONTINUOUS_SPRITE_ANIMATION",
@@ -7774,8 +7774,9 @@
       "native_batch": "palm",
       "source_batch_manifest": "res://labs/combat_lab/palm01/han_ngoc_chan_mach_r1/source/manifest.json",
       "contact_source_note": "Canonical Palm catalog is direct single-target damage with projectile_speed=0. The open-palm pressure source is displayed at the authored hand socket on release; contact and fade glints are emitted only after the exact v63_skill_hit receipt. No slow/status or extra target is shown.",
-      "review_note": "First-party RGBA phase masters come from the existing Palm R1 source manifest with G3 self-pass. The shared Factory uses the existing AS60 cast source and receipt-bound V63 preview fixture; target/status authority remains unchanged. Factory native motion review is partial; owner visual approval pending; PvE HOLD.",
-      "native_event_status": "REAL_V63_SKILL_HIT_RECEIPT_REQUIRED"
+      "review_note": "Shared Factory native H.264 capture decoded at 1280x720/20fps. Real fixture emitted cast, release and one positive exact-skill hit; no status event and no synthetic event. Existing R1 source G3 self-pass is preserved; contact is visible at the one moving target. Continuous frame animation and owner visual approval remain pending; PvE HOLD.",
+      "native_event_status": "REAL_MAPBATTLE_V63_SKILL_CAST_RELEASE_AND_ONE_POSITIVE_SKILL_HIT; STATUS_EVENTS=0; SYNTHETIC=0; OUTSIDE_UNCHANGED=SOURCE_RECEIPT_TEST_PASS",
+      "contact_sheet_path": "res://labs/combat_lab/palm01/factory_capture/native/palm_factory_batch1_contact_sheet_1280x720.png"
     },
     {
       "skill_id": "tmb.skill.spear.long_thuong.active_01.human",
@@ -7880,7 +7881,7 @@
       "draw_layer": "FRONT",
       "source_g3": "G3_SOURCE_SELF_PASS; FOUR_DISTINCT_RGBA_PHASE_MASTERS; AS54_WEAPON_TIP_SOCKET_CANDIDATE",
       "art_self_status": "ART_SELF_REVIEW_PARTIAL_CONTINUOUS_MOTION_PENDING; SOCKET_OWNER_REVIEW_PENDING",
-      "native_status": "FACTORY_NATIVE_CAPTURE_PENDING; REAL_V63_SPEAR_LINE_RECEIPTS_REQUIRED",
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_H264_FULL_DECODE; REAL_V63_LINE_HIT_RECEIPTS=2; TARGET_LIMIT=2; ART_SOCKET_REVIEW_PENDING",
       "owner_status": "OWNER_VISUAL_PENDING",
       "native_ready": false,
       "motion_status": "FOUR_PHASE_RGBA_MASTERS; REAL_LINE_CONTACTS_ONLY; CONTINUOUS_MOTION_PENDING",
@@ -7959,8 +7960,9 @@
       "native_batch": "spear",
       "source_batch_manifest": "res://labs/combat_lab/spear01/van_long_diem_thuy/r1/assets/source/manifest.json",
       "contact_source_note": "Canonical Spear catalog is direct line damage with target_limit=2 and projectile_speed=0. The release streak spans from the actual AS54 weapon-tip socket to the second preview target; the two contact/fade accents are drawn only for exact v63_skill_hit receipts. No free-flight projectile or extra hit is generated.",
-      "review_note": "First-party RGBA phase masters come from the existing Spear R1 source manifest with G3 self-pass. The shared Factory uses the actual AS54 attack clip and candidate Weapon Library socket metadata; two real line hit receipts are captured through the V63 test fixture, while the outside actor must remain unchanged. Actor/socket visual review remains pending; PvE HOLD.",
-      "native_event_status": "REAL_V63_SPEAR_LINE_SKILL_HIT_RECEIPTS_REQUIRED"
+      "review_note": "Shared Factory native H.264 capture decoded at 1280x720/20fps. Existing AS54 candidate weapon_tip socket anchors the thrust to the second target; two exact-skill line hit receipts are visible and no synthetic event is emitted. Existing R1 source G3 self-pass is preserved; socket/continuous motion review and owner approval remain pending; PvE HOLD.",
+      "native_event_status": "REAL_MAPBATTLE_V63_SKILL_CAST_RELEASE_AND_TWO_LINE_HITS; TARGET_LIMIT=2; SYNTHETIC=0; OUTSIDE_UNCHANGED=SOURCE_RECEIPT_TEST_PASS",
+      "contact_sheet_path": "res://labs/combat_lab/spear01/factory_capture/native/spear_factory_batch1_contact_sheet_1280x720.png"
     }
   ],
   "batch_status": {
@@ -8008,23 +8010,25 @@
     },
     "palm": {
       "expected_count": 1,
-      "technical_status": "FACTORY_NATIVE_CAPTURE_PENDING",
+      "technical_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
       "last_capture_index": "res://labs/combat_lab/palm01/factory_capture/native/palm_factory_capture_index.json",
-      "video": "",
-      "contact_sheet": "",
-      "receipt_status": "V63_SKILL_HIT_RECEIPT_REQUIRED",
+      "video": "res://labs/combat_lab/palm01/factory_capture/native/palm_factory_batch1_native_1280x720.mp4",
+      "contact_sheet": "res://labs/combat_lab/palm01/factory_capture/native/palm_factory_batch1_contact_sheet_1280x720.png",
+      "receipt_status": "REAL_MAPBATTLE_V63_SKILL_CAST_RELEASE_AND_ONE_POSITIVE_SKILL_HIT; STATUS_EVENTS=0; SYNTHETIC=0; OUTSIDE_UNCHANGED=SOURCE_RECEIPT_TEST_PASS",
       "owner_approval": "PENDING",
-      "pve": "HOLD"
+      "pve": "HOLD",
+      "visual_review_status": "NATIVE_1X_PHASE_SAMPLES_REVIEWED; CONTINUOUS_MOTION_AND_OWNER_REVIEW_PENDING"
     },
     "spear": {
       "expected_count": 1,
-      "technical_status": "FACTORY_NATIVE_CAPTURE_PENDING",
+      "technical_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
       "last_capture_index": "res://labs/combat_lab/spear01/factory_capture/native/spear_factory_capture_index.json",
-      "video": "",
-      "contact_sheet": "",
-      "receipt_status": "V63_SKILL_HIT_LINE_RECEIPTS_REQUIRED; TARGET_LIMIT=2",
+      "video": "res://labs/combat_lab/spear01/factory_capture/native/spear_factory_batch1_native_1280x720.mp4",
+      "contact_sheet": "res://labs/combat_lab/spear01/factory_capture/native/spear_factory_batch1_contact_sheet_1280x720.png",
+      "receipt_status": "REAL_MAPBATTLE_V63_SKILL_CAST_RELEASE_AND_TWO_LINE_HITS; TARGET_LIMIT=2; SYNTHETIC=0; OUTSIDE_UNCHANGED=SOURCE_RECEIPT_TEST_PASS",
       "owner_approval": "PENDING",
-      "pve": "HOLD"
+      "pve": "HOLD",
+      "visual_review_status": "NATIVE_1X_PHASE_SAMPLES_REVIEWED; CONTINUOUS_MOTION_AND_OWNER_REVIEW_PENDING"
     }
   }
 }

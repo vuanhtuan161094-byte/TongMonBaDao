@@ -1,0 +1,95 @@
+{
+  "owner_approval": "PENDING",
+  "pve": "HOLD",
+  "receipts": "REAL_MAPBATTLE_V2_TEST_FIXTURE_EVENTS_ONLY",
+  "renderer": "Godot 4.7.2 shared VFX Factory + existing AS-CHAR and Source A",
+  "schema": "tmb.vfx_factory_native_batch_capture.v1",
+  "school": "palm",
+  "skills": [
+    {
+      "accepted_event_count": 3,
+      "configured_event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_skill_hit"
+      ],
+      "contact_frame_seconds": 0.62,
+      "encounter_id": "vfx_factory_palm_capture_00",
+      "event_count": 3,
+      "event_trace": [
+        {
+          "accepted": true,
+          "capture_frame_seconds": 0.0,
+          "caster_id": "caster_00",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_palm_capture_00/caster_00/1/skill_cast",
+          "event_type": "skill_cast",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.0,
+          "skill_id": "tmb.skill.palm.han_ngoc_chuong.active_01.human",
+          "target_ids": [
+            "factory_palm_target_01"
+          ]
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 0.55,
+          "caster_id": "caster_00",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_palm_capture_00/caster_00/1/skill_release",
+          "event_type": "skill_release",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.55,
+          "skill_id": "tmb.skill.palm.han_ngoc_chuong.active_01.human",
+          "target_ids": [
+            "factory_palm_target_01"
+          ]
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 0.6,
+          "caster_id": "caster_00",
+          "contact_receipt_target_count": 1,
+          "event_id": "vfx_factory_palm_capture_00/caster_00/1/v63_skill_hit/factory_palm_target_01",
+          "event_type": "v63_skill_hit",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.55,
+          "skill_id": "tmb.skill.palm.han_ngoc_chuong.active_01.human",
+          "target_ids": [
+            "factory_palm_target_01"
+          ]
+        }
+      ],
+      "event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_skill_hit"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "name_vi": "Hàn Ngọc Chấn Mạch",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "release_frame_seconds": 0.55,
+      "skill_id": "tmb.skill.palm.han_ngoc_chuong.active_01.human",
+      "synthetic_events": 0,
+      "video_duration_seconds": 1.4,
+      "video_start_seconds": 0.0,
+      "native_capture_mode": "REAL_MAPBATTLE_V2_TEST_FIXTURE",
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_H264_FULL_DECODE; REAL_V63_SKILL_HIT_RECEIPT=1; ART_MOTION_REVIEW_PENDING",
+      "native_decode_status": "H264_FULL_DECODE_PASS_1280X720_20FPS",
+      "real_hit_receipt_count": 1,
+      "outside_target_status": "OUTSIDE_UNCHANGED_VERIFIED_BY_PALM01_RECEIPT_TEST",
+      "receipt_summary": "REAL_MAPBATTLE_V63_SKILL_HIT=1; POSITIVE_DAMAGE_SOURCE_TEST=PASS; STATUS_EVENTS=0; SYNTHETIC=0"
+    }
+  ],
+  "technical_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
+  "viewport_px": [
+    1280,
+    720
+  ],
+  "video": "res://labs/combat_lab/palm01/factory_capture/native/palm_factory_batch1_native_1280x720.mp4",
+  "contact_sheet": "res://labs/combat_lab/palm01/factory_capture/native/palm_factory_batch1_contact_sheet_1280x720.png",
+  "codec": "H.264",
+  "frame_rate_fps": 20,
+  "duration_seconds": 1.45,
+  "visual_review_status": "NATIVE_1X_CHARGE_RELEASE_CONTACT_FADE_SAMPLES_REVIEWED; CONTINUOUS_MOTION_AND_OWNER_REVIEW_PENDING"
+}
