@@ -20,11 +20,25 @@
     "path": "tinh_ban_ho_tam_r2_16pose_rgba.png",
     "encoding": "PNG RGBA8",
     "sha256": "8b903fe04c646f6e806cb3e80150de618850285658cbecd87e380e8bee84522e",
-    "dimensions_px": [1024, 1024],
-    "cell_px": [256, 256],
-    "grid": [4, 4],
+    "dimensions_px": [
+      1024,
+      1024
+    ],
+    "cell_px": [
+      256,
+      256
+    ],
+    "grid": [
+      4,
+      4
+    ],
     "poses": 16,
-    "phase_order": ["charge", "release", "contact", "fade"],
+    "phase_order": [
+      "charge",
+      "release",
+      "contact",
+      "fade"
+    ],
     "poses_per_phase": 4
   },
   "source_review": {
@@ -45,8 +59,8 @@
     }
   ],
   "gates": {
-    "native_tech": "PENDING",
-    "native_art_self_review": "PENDING",
+    "native_tech": "PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
+    "native_art_self_review": "DAMAGE_BURST_READS_AS_ATTACK_AT_1X; LIGHT_TERRAIN_AND_CONTINUOUS_MOTION_REVIEW_PENDING",
     "owner_approval": "PENDING",
     "pve": "HOLD"
   },
@@ -55,5 +69,22 @@
     "damage_or_status_simulated": false,
     "rigged": false,
     "old_rgba_sources_modified": false
+  },
+  "native_capture": {
+    "source_sha": "a42b19662937b004560e8587ce2fb6b5141b9fc7",
+    "video_path": "review/native/formation_batch1_r2_native_1280x720.mp4",
+    "video_sha256": "4c96909f7fb3925cef3d7514d7544e4b87f318b076beae8c27d1c1ea99215824",
+    "contact_sheet_path": "review/native/formation_batch1_r2_contact_sheet_1280x720.png",
+    "contact_sheet_sha256": "99207f3e5608957b95d79c9c3df1b3d996ec6759ef7bc97f47351bb004eaaa58",
+    "capture_index_path": "review/native/formation_batch1_r2_capture_index.json",
+    "viewport_px": [
+      1280,
+      720
+    ],
+    "fps": 20,
+    "frames": 1189,
+    "duration_seconds": 59.45,
+    "real_receipts": "17/17 skills, 61/61 configured events accepted, synthetic_events=0",
+    "decode": "ffmpeg full-decode pass; ffprobe H.264 1280x720 20fps"
   }
 }

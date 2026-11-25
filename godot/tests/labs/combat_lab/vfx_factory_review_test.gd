@@ -119,7 +119,7 @@ func _run() -> void:
 					"damage morphology self-review stays separate from native art review " + skill_id)
 				var native_state := str(state.get("native_status", ""))
 				_check(native_state == "NATIVE_CAPTURE_PENDING"
-					or native_state == "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720",
+					or native_state.begins_with("NATIVE_TECH_PASS_GODOT_4.7.2_1280x720"),
 					"R2 native technical state is pending or recorded accurately " + skill_id)
 			else:
 				_check(str(state.get("motion_status", "")) == "FOUR_PHASE_POSES_NOT_FRAME_BY_FRAME",

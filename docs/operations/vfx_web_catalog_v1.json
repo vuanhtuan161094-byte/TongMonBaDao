@@ -824,7 +824,7 @@
       "g3_art": "R2_CODE_PAINTED_DAMAGE_MORPHOLOGY; NATIVE_1X_ART_REVIEW_PENDING",
       "owner_art": "OWNER_VISUAL_PENDING",
       "art_source": "FIRST_PARTY_PIL_CODE_PAINTED_RGBA_16_POSES",
-      "review_stages": "16 RGBA poses · four per charge/release/contact/fade · exact real hit gates contact · native 1280x720 recapture pending · owner approval pending · PvE HOLD",
+      "review_stages": "16 RGBA poses · four per charge/release/contact/fade · native Godot 4.7.2 1280x720 H.264 capture PASS · exact MapBattle fixture hit gates contact · light-terrain, continuous-motion, owner approval pending · PvE HOLD",
       "source_paths": [
         "labs/combat_lab/vfx_factory/vfx_factory_review.gd",
         "labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
@@ -845,9 +845,11 @@
         "labs/combat_lab/formation01/factory_batch1_20261125/source/rework_tinh_ban_r2/tinh_ban_ho_tam_r2_16pose_rgba.png",
         "labs/combat_lab/formation01/factory_batch1_20261125/source/rework_tinh_ban_r2/tinh_ban_ho_tam_r2_contact_sheet_1x_dark.png",
         "labs/combat_lab/formation01/factory_batch1_20261125/source/rework_tinh_ban_r2/tinh_ban_ho_tam_r2_contact_sheet_1x_light.png",
-        "tools/vfx/formation_tinh_ban_rework_r2.py"
+        "labs/combat_lab/formation01/factory_batch1_20261125/review/native/formation_batch1_r2_capture_index.json",
+        "labs/combat_lab/formation01/factory_batch1_20261125/review/native/formation_batch1_r2_contact_sheet_1280x720.png",
+        "labs/combat_lab/formation01/factory_batch1_20261125/review/native/formation_batch1_r2_native_1280x720.mp4"
       ],
-      "review_note": "R2 code-painted attack candidate replaces the shield-reading contact while preserving the original 17-skill RGBA atlases. Four authored frames per phase are not claimed as full continuous animation. Native 1x art review and owner approval pending. Real exact-skill v63_skill_hit alone gates contact. PvE HOLD."
+      "review_note": "R2 code-painted attack candidate replaces the shield-reading contact while preserving the original 17-skill RGBA atlases. Native Godot 4.7.2 capture at 1280x720/H.264 passes; 61/61 real MapBattle fixture events were accepted, with zero synthetic events. Four authored frames per phase are not claimed as full continuous animation. Light-terrain contrast, art style, and owner approval pending. Exact real v63_skill_hit alone gates contact. PvE HOLD."
     },
     {
       "id": "tmb.skill.formation.basic.human",
