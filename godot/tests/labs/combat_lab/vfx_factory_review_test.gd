@@ -75,8 +75,8 @@ func _run() -> void:
 				"Formation preview resolves existing male AS68 source " + skill_id)
 			_check(str(state.get("motion_status", "")) == "FOUR_PHASE_POSES_NOT_FRAME_BY_FRAME",
 				"pose sequence is not misreported as continuous animation " + skill_id)
-			_check(str(state.get("native_status", "")) == "NATIVE_IMPORT_CAPTURE_PENDING",
-				"native result remains pending until shared batch capture " + skill_id)
+			_check(str(state.get("native_status", "")) == "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720",
+				"native batch technical result is explicit and separate from owner review " + skill_id)
 			_check(str(state.get("owner_status", "")) == "OWNER_VISUAL_PENDING",
 				"owner approval remains separate " + skill_id)
 			_check(str(entry.get("draw_layer", "")) == "BEHIND"
