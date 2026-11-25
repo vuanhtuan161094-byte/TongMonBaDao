@@ -13,6 +13,15 @@ static var _cel_cache: Dictionary = {}
 static var _cel_order: Array[String] = []
 const MAX_CACHED_CELS := 160
 
+# The actual PvE world presenter uses 0.22 for its 1x AS-CHAR drawing baseline
+# (with camera/spectator zoom applied separately). Keep this shared and actor-
+# agnostic; frame dimensions, baselines, sockets, weapon scale and pivots remain
+# asset metadata owned by the renderer and its manifests.
+const GAME_VIEW_SCALE_1X := 0.22
+
+static func game_view_scale(spectator_zoom: float = 1.0) -> float:
+    return GAME_VIEW_SCALE_1X * maxf(0.0, spectator_zoom)
+
 static func _manifest(actor_id: int) -> Dictionary:
     if _sockets.has(actor_id):
         return _sockets[actor_id]
@@ -155,6 +164,219 @@ static func draw_actor(canvas: CanvasItem,school: String,sex: String,action: Str
             preview_attachment_override.get("restore_hand_slots",[]))
     return true
 
+## Resolve a display-space anchor from the same frame and metadata used by
+## draw_actor(). Supported slots: foot, body_center, hand_r, hand_l, main_hand,
+## off_hand, weapon_grip and weapon_tip. A result has `ok`, `position`, `slot`,
+## `actor_id`, `clip`, `frame_index`, `scale`; weapon anchors also include
+## `asset_id`, `weapon_scale`, `rotation_deg`, and `draw_order`. Missing authored
+## socket/weapon metadata returns `{ok:false, reason:...}` instead of guessing.
+static func resolve_preview_anchor(school: String,sex: String,action: String,
+        facing: Vector2,age: float,foot: Vector2,scale: float,slot: String,
+        action_seconds: float = 0.0,preview_attachment_override: Dictionary = {}) -> Dictionary:
+    var actor_id := BRIDGE.actor_id(school,sex)
+    if actor_id < 0:
+        return {"ok":false,"reason":"unknown_actor_school","slot":slot}
+    if slot == "foot":
+        return {"ok":true,"position":foot,"slot":slot,"actor_id":actor_id,"clip":"foot","frame_index":0,"scale":scale}
+    var manifest := _manifest(actor_id)
+    if manifest.is_empty():
+        return {"ok":false,"reason":"actor_socket_manifest_missing","slot":slot,"actor_id":actor_id}
+    var verb := "idle"
+    match action:
+        "run","walk": verb = "walk"
+        "attack": verb = "attack"
+        "cast": verb = "cast"
+        "hit": verb = "hit"
+        "die","death": verb = "downed"
+    var direction := _direction(facing)
+    var frame_rows := _rows(actor_id,manifest)
+    var clip := verb+"_"+direction
+    var atlas: Dictionary = {}
+    if not frame_rows.has(clip):
+        # Match draw_actor()'s four-direction atlas fallback. Those atlases have
+        # no hand sockets, so only their pixel-derived body center can be resolved.
+        atlas = Dictionary(manifest.get("directional_atlases",{})).get(direction,{})
+        if atlas.is_empty() or not Dictionary(atlas.get("rows",{})).has(verb):
+            clip = verb+"_front"
+            atlas = {}
+    if not frame_rows.has(clip) and atlas.is_empty():
+        clip = "idle_"+direction
+    if not frame_rows.has(clip) and atlas.is_empty():
+        clip = "idle_front"
+    if not atlas.is_empty():
+        if slot != "body_center":
+            return {"ok":false,"reason":"directional_atlas_has_no_authored_socket","slot":slot,"actor_id":actor_id,"clip":clip}
+        var columns := maxi(1,int(atlas.get("grid_columns",4)))
+        var index := frame_index(action,age,columns,action_seconds)
+        var sheet := _cel(str(atlas.get("path","")))
+        if sheet == null:
+            return {"ok":false,"reason":"directional_atlas_missing","slot":slot,"actor_id":actor_id,"clip":clip}
+        var cell_data: Array = atlas.get("cell_px",[256,256])
+        var cell := Vector2(float(cell_data[0]),float(cell_data[1]))
+        var canvas_data: Array = manifest.get("body_canvas_px",[384,384])
+        var authored_height := maxf(1.0,float(canvas_data[1]))
+        var atlas_scale := scale*authored_height/maxf(1.0,cell.y)
+        var baseline := float(manifest.get("foot_baseline_y_px",359.0))*cell.y/authored_height
+        var body_center := foot+(Vector2(index*cell.x+cell.x*0.5,cell.y*0.5)-Vector2(index*cell.x+cell.x*0.5,baseline))*atlas_scale
+        return {"ok":true,"position":body_center,"slot":slot,"actor_id":actor_id,"clip":clip,"frame_index":index,"scale":atlas_scale,"source_px":cell*0.5}
+    if not frame_rows.has(clip):
+        return {"ok":false,"reason":"actor_clip_missing","slot":slot,"actor_id":actor_id,"clip":clip}
+    var items: Array = frame_rows[clip]
+    if items.is_empty():
+        return {"ok":false,"reason":"actor_clip_empty","slot":slot,"actor_id":actor_id,"clip":clip}
+    var index := frame_index(action,age,items.size(),action_seconds)
+    var row: Dictionary = items[index]
+    var texture := _cel(str(row.get("path","")))
+    if texture == null:
+        return {"ok":false,"reason":"actor_frame_missing","slot":slot,"actor_id":actor_id,"clip":clip,"frame_index":index}
+    var baseline := float(row.get("source_foot_baseline_y_px",manifest.get("foot_baseline_y_px",359.0)))
+    var body_center_px := Vector2(texture.get_width()*0.5,texture.get_height()*0.5)
+    var result := {"ok":true,"slot":slot,"actor_id":actor_id,"clip":clip,"frame_index":index,"scale":scale}
+    if slot == "body_center":
+        result["position"] = foot+(body_center_px-Vector2(texture.get_width()*0.5,baseline))*scale
+        result["source_px"] = body_center_px
+        return result
+    var socket_slot := slot
+    var attachment: Dictionary = {}
+    var attachment_asset := str(preview_attachment_override.get("asset_id",""))
+    if slot in ["weapon_grip","weapon_tip"]:
+        if attachment_asset.is_empty():
+            for raw_attachment in manifest.get("attachments",[]):
+                if raw_attachment is Dictionary:
+                    attachment = raw_attachment
+                    attachment_asset = str(attachment.get("asset_id",""))
+                    break
+        else:
+            for raw_attachment in manifest.get("attachments",[]):
+                if raw_attachment is Dictionary and str(raw_attachment.get("asset_id","")) == attachment_asset:
+                    attachment = raw_attachment
+                    break
+        if not attachment_asset.is_empty():
+            socket_slot = str(preview_attachment_override.get("anchor_slot",attachment.get("slot","main_hand")))
+    var grips: Dictionary = row.get("grip_sockets",{})
+    var grip: Dictionary = grips.get(socket_slot,{})
+    if grip.is_empty():
+        return {"ok":false,"reason":"authored_grip_socket_missing","slot":slot,"actor_id":actor_id,"clip":clip,"frame_index":index,"socket_slot":socket_slot}
+    var body_grip: Array = grip.get("body_grip_px",[])
+    if body_grip.size() != 2:
+        return {"ok":false,"reason":"authored_grip_position_missing","slot":slot,"actor_id":actor_id,"clip":clip,"frame_index":index,"socket_slot":socket_slot}
+    if slot in ["weapon_grip","weapon_tip"] and bool(preview_attachment_override.get("suppress_attachments",false)):
+        return {"ok":false,"reason":"attachments_suppressed","slot":slot,"actor_id":actor_id,"clip":clip,"frame_index":index,"socket_slot":socket_slot}
+    var hand_position := foot+(Vector2(float(body_grip[0]),float(body_grip[1]))-Vector2(texture.get_width()*0.5,baseline))*scale
+    if slot not in ["weapon_grip","weapon_tip"]:
+        result["position"] = hand_position
+        result["source_px"] = Vector2(float(body_grip[0]),float(body_grip[1]))
+        result["socket_slot"] = socket_slot
+        result["socket_scale"] = float(grip.get("scale_multiplier",0.0))
+        result["rotation_deg"] = float(grip.get("rotation_deg",0.0))
+        result["draw_order"] = str(grip.get("draw_order",""))
+        return result
+    if attachment_asset.is_empty():
+        return {"ok":false,"reason":"weapon_attachment_missing","slot":slot,"actor_id":actor_id,"clip":clip,"frame_index":index,"socket_slot":socket_slot}
+    var weapon_info := _weapon_info(manifest,attachment_asset)
+    var weapon_path := str(weapon_info.get("path",""))
+    var weapon_texture := _cel(weapon_path)
+    if weapon_info.is_empty() or weapon_texture == null:
+        return {"ok":false,"reason":"weapon_asset_missing","slot":slot,"actor_id":actor_id,"clip":clip,"frame_index":index,"asset_id":attachment_asset}
+    var weapon_grip: Array = weapon_info.get("grip_px",weapon_info.get("asset_grip_px",[weapon_texture.get_width()*0.5,weapon_texture.get_height()*0.5]))
+    var weapon_tip: Array = weapon_info.get("tip_px",[])
+    if weapon_grip.size() != 2 or weapon_tip.size() != 2:
+        return {"ok":false,"reason":"weapon_tip_or_grip_missing","slot":slot,"actor_id":actor_id,"clip":clip,"frame_index":index,"asset_id":attachment_asset}
+    var weapon_scale := float(weapon_info.get("asset_scale",0.0))
+    if weapon_scale <= 0.0:
+        weapon_scale = float(grip.get("scale_multiplier",0.30))
+    if attachment_asset == str(preview_attachment_override.get("asset_id","")):
+        weapon_scale = float(preview_attachment_override.get("asset_scale",weapon_scale))
+    var rotation_deg := float(grip.get("rotation_deg",0.0))
+    if attachment_asset == str(preview_attachment_override.get("asset_id","")):
+        var rotation_offset := float(preview_attachment_override.get("rotation_offset_deg",0.0))
+        var direction_value: Variant = preview_attachment_override.get("align_tip_to_direction",[])
+        var world_direction := Vector2.ZERO
+        if direction_value is Vector2:
+            world_direction = direction_value
+        elif direction_value is Array and direction_value.size() == 2:
+            world_direction = Vector2(float(direction_value[0]),float(direction_value[1]))
+        if world_direction.length_squared() > 0.001:
+            rotation_deg = aligned_weapon_rotation_deg([0.0,0.0],[world_direction.x,world_direction.y],weapon_grip,weapon_tip,rotation_deg,rotation_offset)
+        else:
+            var direction_slot := str(preview_attachment_override.get("align_tip_to_slot",""))
+            var direction_grip: Dictionary = grips.get(direction_slot,{})
+            var direction_anchor: Array = direction_grip.get("body_grip_px",[])
+            rotation_deg = aligned_weapon_rotation_deg(body_grip,direction_anchor,weapon_grip,weapon_tip,rotation_deg,rotation_offset)
+    var tip_px := Vector2(float(weapon_tip[0]),float(weapon_tip[1]))
+    var grip_px := Vector2(float(weapon_grip[0]),float(weapon_grip[1]))
+    var weapon_position := hand_position
+    if slot == "weapon_tip":
+        weapon_position += (tip_px-grip_px).rotated(deg_to_rad(rotation_deg))*scale*maxf(weapon_scale,0.01)
+    result["position"] = weapon_position
+    result["source_px"] = tip_px if slot == "weapon_tip" else Vector2(float(body_grip[0]),float(body_grip[1]))
+    result["socket_slot"] = socket_slot
+    result["asset_id"] = attachment_asset
+    result["weapon_scale"] = weapon_scale
+    result["metadata_scale"] = weapon_scale
+    result["rotation_deg"] = rotation_deg
+    result["draw_order"] = str(grip.get("draw_order",""))
+    return result
+
+## Resolve all anchors for a displayed AS-CHAR frame in one pass. Top-level
+## `foot` and `body_center` are screen-space Vector2 values; authored hand and
+## weapon entries appear in `slots` and as top-level aliases. Each slot entry
+## includes screen-space `position`/`grip_position`, `draw_order`, rotation and
+## metadata scale; weapon entries also include their selected asset and a
+## `tip_position` when the weapon library supplies tip metadata. Unsupported
+## anchors are omitted so callers can use a different authored anchor safely.
+static func resolve_preview_anchors(school: String,sex: String,action: String,
+        facing: Vector2,age: float,foot: Vector2,scale: float,
+        action_seconds: float = 0.0,preview_attachment_override: Dictionary = {}) -> Dictionary:
+    var center := resolve_preview_anchor(school,sex,action,facing,age,foot,scale,
+        "body_center",action_seconds,preview_attachment_override)
+    if not bool(center.get("ok",false)):
+        return {"ok":false,"reason":str(center.get("reason","body_center_unavailable")),"foot":foot}
+    var actor_id := int(center.get("actor_id",-1))
+    var result := {
+        "ok":true,
+        "actor_id":actor_id,
+        "clip":str(center.get("clip","")),
+        "frame_index":int(center.get("frame_index",0)),
+        "scale":scale,
+        "foot":foot,
+        "body_center":center.get("position",foot),
+        "attachments_suppressed":bool(preview_attachment_override.get("suppress_attachments",false)),
+        "slots":{}
+    }
+    var slot_names := ["hand_r","hand_l","main_hand","off_hand"]
+    for slot_name in slot_names:
+        var anchor := resolve_preview_anchor(school,sex,action,facing,age,foot,scale,
+            str(slot_name),action_seconds,preview_attachment_override)
+        if not bool(anchor.get("ok",false)):
+            continue
+        var slot_result := anchor.duplicate(true)
+        slot_result["grip_position"] = anchor.get("position",foot)
+        slot_result["metadata_scale"] = float(anchor.get("socket_scale",0.0))
+        result["slots"][slot_name] = slot_result
+        result[slot_name] = slot_result
+    var weapon_grip := resolve_preview_anchor(school,sex,action,facing,age,foot,scale,
+        "weapon_grip",action_seconds,preview_attachment_override)
+    var weapon_tip := resolve_preview_anchor(school,sex,action,facing,age,foot,scale,
+        "weapon_tip",action_seconds,preview_attachment_override)
+    if bool(weapon_grip.get("ok",false)):
+        var weapon_result := weapon_grip.duplicate(true)
+        weapon_result["grip_position"] = weapon_grip.get("position",foot)
+        weapon_result["metadata_scale"] = float(weapon_grip.get("weapon_scale",0.0))
+        if bool(weapon_tip.get("ok",false)):
+            weapon_result["tip_position"] = weapon_tip.get("position",foot)
+        weapon_result["position"] = weapon_result["grip_position"]
+        result["slots"]["weapon_grip"] = weapon_result
+        result["weapon_grip"] = weapon_result
+        if bool(weapon_tip.get("ok",false)):
+            var tip_result := weapon_tip.duplicate(true)
+            tip_result["grip_position"] = weapon_grip.get("position",foot)
+            tip_result["tip_position"] = weapon_tip.get("position",foot)
+            tip_result["metadata_scale"] = float(weapon_tip.get("weapon_scale",0.0))
+            result["slots"]["weapon_tip"] = tip_result
+            result["weapon_tip"] = tip_result
+    return result
+
 static func frame_index(action: String,age: float,count: int,action_seconds: float = 0.0) -> int:
     if count <= 1:
         return 0
@@ -179,6 +401,8 @@ static func aligned_weapon_rotation_deg(body_anchor_px: Array,body_direction_px:
 static func _draw_props(canvas: CanvasItem,manifest: Dictionary,row: Dictionary,
         foot: Vector2,center: Vector2,scale: float,behind: bool,
         preview_attachment_override: Dictionary = {}) -> void:
+    if bool(preview_attachment_override.get("suppress_attachments",false)):
+        return
     var grips: Dictionary = row.get("grip_sockets",{})
     for attachment in manifest.get("attachments",[]):
         if not (attachment is Dictionary):

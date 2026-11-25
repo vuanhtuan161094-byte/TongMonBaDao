@@ -3,7 +3,18 @@ extends RefCounted
 
 # Isolated read-only presentation contract. NOT attached to PvE or runtime.
 # Asset sprite coordinates and VFX art remain independent; no rig or gameplay.
-const EVENT_TYPES := ["skill_cast", "hit", "v63_skill_hit", "status_applied", "status_removed", "downed"]
+const EVENT_TYPES := [
+    "skill_cast", "skill_release", "hit", "skill_hit", "v63_skill_hit", "downed",
+    "status_applied", "status_removed", "status_tick", "heal", "cleanse",
+    "v63_mobility", "v63_blade_swing_hit", "v63_blade_guard_reflect",
+    "v63_sword_guard_reflect", "v63_spear_line_hit", "v63_dual_blade_hit",
+    "v63_dual_blade_hp_trade", "v63_palm_slow_applied", "v63_curse_hit", "v63_curse_mark_applied",
+    "v63_curse_cleanse_applied", "v63_curse_heal_applied", "v63_curse_guard_applied",
+    "v63_curse_slow_applied", "v63_formation_slow_applied",
+    "v63_talisman_hit", "v63_talisman_mark_applied", "v63_summon_created",
+    "v63_summon_attack", "v63_summon_expired", "v63_formation_zone_created",
+    "v63_formation_zone_tick", "v63_formation_zone_expired"
+]
 const SOURCE_SLOTS := ["foot", "hand_r", "hand_l", "weapon_grip", "weapon_tip", "chest", "head", "body_center", "ground"]
 const TARGET_SLOTS := ["foot", "chest", "head", "body_center", "ground"]
 const DIRECTIONS := ["front", "right", "back", "left"]
@@ -35,8 +46,24 @@ func route_authoritative_event(raw: Dictionary, vfx_manifest: Dictionary) -> Dic
         return {"ok": false, "reason": "skill_mismatch"}
     if _seen.has(event_id):
         return {"ok": false, "reason": "duplicate_event_id"}
-    var actor_id := str(raw.get("actor_id", raw.get("caster", "")))
-    var target_id := str(raw.get("target_id", raw.get("target", "")))
+    var actor_id := str(raw.get("actor_id", raw.get("caster", raw.get("owner_id", raw.get("source_actor_id", "")))))
+    var target_ids: Array[String] = []
+    var raw_target_ids: Variant = raw.get("target_ids", [])
+    if raw_target_ids is Array:
+        for raw_target_id in raw_target_ids:
+            var target_id := str(raw_target_id)
+            if not target_id.is_empty() and not target_ids.has(target_id):
+                target_ids.append(target_id)
+    if target_ids.is_empty():
+        var direct_target := str(raw.get("target_id", raw.get("target", "")))
+        if direct_target.is_empty() and event_type == "v63_mobility":
+            direct_target = actor_id
+        elif direct_target.is_empty() and event_type.begins_with("v63_summon_"):
+            direct_target = str(raw.get("summon_id", ""))
+        elif direct_target.is_empty() and event_type.begins_with("v63_formation_zone_"):
+            direct_target = str(raw.get("zone_id", ""))
+        if not direct_target.is_empty():
+            target_ids.append(direct_target)
     if actor_id.is_empty():
         return {"ok": false, "reason": "missing_caster"}
     var bindings: Variant = vfx_manifest.get("bindings", [])
@@ -55,20 +82,21 @@ func route_authoritative_event(raw: Dictionary, vfx_manifest: Dictionary) -> Dic
         var visual_phase := str(binding.get("visual_phase", ""))
         if not SOURCE_SLOTS.has(caster_slot) or not TARGET_SLOTS.has(target_slot) or actor_clip.is_empty() or visual_phase.is_empty():
             return {"ok": false, "reason": "invalid_anchor_or_phase"}
-        if target_id.is_empty():
+        if target_ids.is_empty():
             return {"ok": false, "reason": "missing_target_for_anchor"}
-        emissions.append({
-            "event_id": event_id,
-            "encounter_id": encounter,
-            "skill_id": skill_id,
-            "event_type": event_type,
-            "visual_phase": visual_phase,
-            "actor_clip": actor_clip,
-            "caster_id": actor_id,
-            "target_id": target_id,
-            "caster_slot": caster_slot,
-            "target_slot": target_slot
-        })
+        for target_id in target_ids:
+            emissions.append({
+                "event_id": event_id,
+                "encounter_id": encounter,
+                "skill_id": skill_id,
+                "event_type": event_type,
+                "visual_phase": visual_phase,
+                "actor_clip": actor_clip,
+                "caster_id": actor_id,
+                "target_id": target_id,
+                "caster_slot": caster_slot,
+                "target_slot": target_slot
+            })
     if emissions.is_empty():
         return {"ok": false, "reason": "event_unbound"}
     # Deduplication is visual-only, per instance and per encounter. No HP/event write.

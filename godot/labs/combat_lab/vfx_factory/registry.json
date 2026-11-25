@@ -1,0 +1,4062 @@
+{
+  "schema": "tmb.vfx_factory_registry.v1",
+  "review_only": true,
+  "initial_base_sha": "fbb8c41269d52c3a04f8fb3f7d8700d1a099c3d7",
+  "entries": [
+    {
+      "skill_id": "tmb.skill.bow.liep_anh.active_01.human",
+      "school": "bow",
+      "branch": "liep_anh",
+      "name_vi": "Xuyên Tâm Tiễn",
+      "catalog_path": "res://data/combat/v63_human_combat_catalog.json",
+      "effect": "damage",
+      "shape": "single_target",
+      "target_limit": 1,
+      "mechanic_template": "projectile",
+      "target_mode": "single_target",
+      "actor_sex": "male",
+      "actor_action": "cast",
+      "preview_attachment_override": {
+        "suppress_attachments": true
+      },
+      "source_anchor": "review_stage",
+      "draw_layer": "FRONT",
+      "source_g3": "G3_SOURCE_SELF_PASS",
+      "native_status": "BLOCKED_MISSING_ANIMATED_ARCHER_WEAPON_LAYER",
+      "owner_status": "OWNER_VISUAL_PENDING",
+      "native_ready": false,
+      "motion_status": "PHASE_STILLS_NOT_FRAME_BY_FRAME",
+      "showcase_moving_target": true,
+      "delivery_phase": "flight",
+      "phase_sources": {
+        "charge": {
+          "path": "res://labs/combat_lab/bow01/xuyen_tam_tien_r1/source/xuyen_tam_tien_charge.png",
+          "display_width_px": 96
+        },
+        "flight": {
+          "path": "res://labs/combat_lab/bow01/xuyen_tam_tien_r1/source/xuyen_tam_tien_flight.png",
+          "display_width_px": 132
+        },
+        "contact": {
+          "path": "res://labs/combat_lab/bow01/xuyen_tam_tien_r1/source/xuyen_tam_tien_contact_glint.png",
+          "display_width_px": 40
+        }
+      },
+      "review_timeline": {
+        "release_at": 0.2,
+        "flight_at": 0.2,
+        "contact_at": 0.84,
+        "fade_at": 1.05,
+        "loop_seconds": 1.55,
+        "clock": "REVIEW_STORYBOARD_ONLY"
+      },
+      "receipt_manifest": {
+        "schema": "tmb.vfx_bindings.v1",
+        "skill_id": "tmb.skill.bow.liep_anh.active_01.human",
+        "bindings": [
+          {
+            "event_type": "v63_skill_hit",
+            "caster_slot": "weapon_tip",
+            "target_slot": "chest",
+            "actor_clip": "cast",
+            "visual_phase": "contact"
+          }
+        ]
+      },
+      "review_note": "G3 source gate applies to its three original RGBA phase stills only; not frame-by-frame completion. AS56 bow draw/release/socket is unverified, so attachments are suppressed and artwork is a detached storyboard cue. Contact stays hidden without a bound MapBattleV2 receipt."
+    },
+    {
+      "skill_id": "tmb.skill.dual_blade.anh_nhan.active_02.human",
+      "school": "dual_blade",
+      "branch": "anh_nhan",
+      "name_vi": "Song Nhận Đoạt Ảnh",
+      "catalog_path": "res://data/combat/v63_dual_blade_combat_catalog.json",
+      "effect": "damage",
+      "shape": "single_target",
+      "target_limit": 1,
+      "mechanic_template": "melee",
+      "target_mode": "single_target",
+      "actor_sex": "male",
+      "actor_action": "attack",
+      "preview_attachment_override": {
+        "suppress_attachments": true
+      },
+      "source_anchor": "review_stage",
+      "draw_layer": "FRONT",
+      "source_g3": "G3_SOURCE_SELF_PASS",
+      "native_status": "BLOCKED_UNVERIFIED_TWIN_WEAPON_GRIPS",
+      "owner_status": "OWNER_VISUAL_PENDING",
+      "native_ready": false,
+      "motion_status": "PHASE_STILLS_NOT_FRAME_BY_FRAME",
+      "showcase_moving_target": true,
+      "delivery_phase": "release",
+      "phase_sources": {
+        "charge": {
+          "path": "res://labs/combat_lab/dual_blade01/song_nhan_doat_anh_r1/source/charge_r3.png",
+          "display_width_px": 64
+        },
+        "release": {
+          "path": "res://labs/combat_lab/dual_blade01/song_nhan_doat_anh_r1/source/release_r1.png",
+          "display_width_px": 120
+        },
+        "contact": {
+          "path": "res://labs/combat_lab/dual_blade01/song_nhan_doat_anh_r1/source/contact_r1.png",
+          "display_width_px": 40
+        }
+      },
+      "review_timeline": {
+        "release_at": 0.2,
+        "flight_at": 0.2,
+        "contact_at": 0.65,
+        "fade_at": 0.88,
+        "loop_seconds": 1.3,
+        "clock": "REVIEW_STORYBOARD_ONLY"
+      },
+      "receipt_manifest": {
+        "schema": "tmb.vfx_bindings.v1",
+        "skill_id": "tmb.skill.dual_blade.anh_nhan.active_02.human",
+        "bindings": [
+          {
+            "event_type": "v63_dual_blade_hit",
+            "caster_slot": "weapon_tip",
+            "target_slot": "chest",
+            "actor_clip": "attack",
+            "visual_phase": "contact"
+          }
+        ]
+      },
+      "review_note": "G3 source gate applies to its three original RGBA phase stills only; not frame-by-frame completion. AS52/53 paired grips are unverified, so attachments are suppressed and the effect remains a storyboard cue. Contact stays hidden without a bound MapBattleV2 receipt."
+    },
+    {
+      "skill_id": "tmb.skill.formation.phong_toa_tran.active_01.human",
+      "school": "formation",
+      "branch": "phong_toa_tran",
+      "name_vi": "Cửu Cung Tỏa Lộ",
+      "catalog_path": "res://data/combat/v63_formation_combat_catalog.json",
+      "effect": "slow",
+      "shape": "circle",
+      "target_limit": 3,
+      "mechanic_template": "circle_aoe",
+      "mechanic_templates": [
+        "debuff",
+        "circle_aoe",
+        "multi_target",
+        "status"
+      ],
+      "target_mode": "circle",
+      "preview_target_kind": "monster",
+      "target_actor_id": "review_target",
+      "outside_actor_id": "review_outside",
+      "actor_sex": "male",
+      "actor_asset_id": 68,
+      "actor_action": "cast",
+      "facing_vector": [
+        0.0,
+        1.0
+      ],
+      "preview_attachment_override": {
+        "suppress_attachments": true
+      },
+      "source_anchor": "ground",
+      "phase_anchors": {
+        "charge": "ground",
+        "release": "target_foot",
+        "contact": "target_foot",
+        "fade": "target_foot",
+        "start": "target_foot",
+        "sustain": "target_foot",
+        "end": "target_foot"
+      },
+      "phase_aliases": {
+        "start": "release",
+        "sustain": "release",
+        "end": "fade"
+      },
+      "draw_layer": "BEHIND",
+      "source_g3": "SOURCE_ALPHA_AND_CONTACT_SHEET_SELF_PASS",
+      "native_status": "NATIVE_IMPORT_CAPTURE_PENDING",
+      "owner_status": "OWNER_VISUAL_PENDING",
+      "native_ready": false,
+      "motion_status": "FOUR_PHASE_POSES_NOT_FRAME_BY_FRAME",
+      "showcase_moving_target": true,
+      "delivery_phase": "release",
+      "phase_sources": {
+        "charge": {
+          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set1_transparent_rgba.png",
+          "region": [
+            0,
+            0,
+            314,
+            314
+          ],
+          "pivot_px": [
+            157.0,
+            157.0
+          ],
+          "display_width_px": 166,
+          "fps": 1.0,
+          "loop": false,
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set1_transparent_rgba.png",
+              "region": [
+                0,
+                0,
+                314,
+                314
+              ],
+              "pivot_px": [
+                157.0,
+                157.0
+              ]
+            }
+          ]
+        },
+        "release": {
+          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set1_transparent_rgba.png",
+          "region": [
+            314,
+            0,
+            313,
+            314
+          ],
+          "pivot_px": [
+            156.5,
+            157.0
+          ],
+          "display_width_px": 166,
+          "fps": 1.0,
+          "loop": false,
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set1_transparent_rgba.png",
+              "region": [
+                314,
+                0,
+                313,
+                314
+              ],
+              "pivot_px": [
+                156.5,
+                157.0
+              ]
+            }
+          ]
+        },
+        "contact": {
+          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set1_transparent_rgba.png",
+          "region": [
+            627,
+            0,
+            313,
+            314
+          ],
+          "pivot_px": [
+            156.5,
+            157.0
+          ],
+          "display_width_px": 166,
+          "fps": 1.0,
+          "loop": false,
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set1_transparent_rgba.png",
+              "region": [
+                627,
+                0,
+                313,
+                314
+              ],
+              "pivot_px": [
+                156.5,
+                157.0
+              ]
+            }
+          ]
+        },
+        "fade": {
+          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set1_transparent_rgba.png",
+          "region": [
+            940,
+            0,
+            314,
+            314
+          ],
+          "pivot_px": [
+            157.0,
+            157.0
+          ],
+          "display_width_px": 166,
+          "fps": 1.0,
+          "loop": false,
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set1_transparent_rgba.png",
+              "region": [
+                940,
+                0,
+                314,
+                314
+              ],
+              "pivot_px": [
+                157.0,
+                157.0
+              ]
+            }
+          ]
+        }
+      },
+      "review_timeline": {
+        "release_at": 0.5,
+        "flight_at": 0.5,
+        "contact_at": 0.92,
+        "fade_at": 1.12,
+        "loop_seconds": 1.8,
+        "contact_window_seconds": 0.2,
+        "fade_window_seconds": 0.26,
+        "start_window_seconds": 0.18,
+        "end_window_seconds": 0.2,
+        "actor_action_seconds": 0.35,
+        "clock": "REVIEW_STORYBOARD_ONLY",
+        "charge_window_seconds": 0.5,
+        "release_window_seconds": 0.18
+      },
+      "receipt_manifest": {
+        "schema": "tmb.vfx_bindings.v1",
+        "skill_id": "tmb.skill.formation.phong_toa_tran.active_01.human",
+        "bindings": [
+          {
+            "event_type": "skill_cast",
+            "caster_slot": "ground",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "charge"
+          },
+          {
+            "event_type": "skill_release",
+            "caster_slot": "ground",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "release"
+          },
+          {
+            "event_type": "v63_skill_hit",
+            "caster_slot": "ground",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "contact"
+          },
+          {
+            "event_type": "v63_formation_slow_applied",
+            "caster_slot": "ground",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "start"
+          }
+        ]
+      },
+      "source_batch_manifest": "res://labs/combat_lab/formation01/factory_batch1_20261125/manifest.json",
+      "contact_sheet_path": "res://labs/combat_lab/formation01/factory_batch1_20261125/review/formation_batch1_contact_sheet_1x.png",
+      "contact_source_note": "Contact phase is source art only; render only after matching real MapBattleV2 receipt.",
+      "review_note": "Four distinct phase poses from first-party RGBA atlases, shown at shared AS68 1x game scale with real Source A moving target. Contact and status art require matching MapBattleV2 event receipts; no fake combat effects. Frame-by-frame motion, integrated native QA, owner approval, and PvE remain pending/held."
+    },
+    {
+      "skill_id": "tmb.skill.formation.phong_toa_tran.active_02.human",
+      "school": "formation",
+      "branch": "phong_toa_tran",
+      "name_vi": "Bát Môn Phong Hành",
+      "catalog_path": "res://data/combat/v63_formation_combat_catalog.json",
+      "effect": "slow",
+      "shape": "circle",
+      "target_limit": 3,
+      "mechanic_template": "circle_aoe",
+      "mechanic_templates": [
+        "debuff",
+        "circle_aoe",
+        "multi_target",
+        "status"
+      ],
+      "target_mode": "circle",
+      "preview_target_kind": "monster",
+      "target_actor_id": "review_target",
+      "outside_actor_id": "review_outside",
+      "actor_sex": "male",
+      "actor_asset_id": 68,
+      "actor_action": "cast",
+      "facing_vector": [
+        0.0,
+        1.0
+      ],
+      "preview_attachment_override": {
+        "suppress_attachments": true
+      },
+      "source_anchor": "ground",
+      "phase_anchors": {
+        "charge": "ground",
+        "release": "target_foot",
+        "contact": "target_foot",
+        "fade": "target_foot",
+        "start": "target_foot",
+        "sustain": "target_foot",
+        "end": "target_foot"
+      },
+      "phase_aliases": {
+        "start": "release",
+        "sustain": "release",
+        "end": "fade"
+      },
+      "draw_layer": "BEHIND",
+      "source_g3": "SOURCE_ALPHA_AND_CONTACT_SHEET_SELF_PASS",
+      "native_status": "NATIVE_IMPORT_CAPTURE_PENDING",
+      "owner_status": "OWNER_VISUAL_PENDING",
+      "native_ready": false,
+      "motion_status": "FOUR_PHASE_POSES_NOT_FRAME_BY_FRAME",
+      "showcase_moving_target": true,
+      "delivery_phase": "release",
+      "phase_sources": {
+        "charge": {
+          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set1_transparent_rgba.png",
+          "region": [
+            0,
+            314,
+            314,
+            313
+          ],
+          "pivot_px": [
+            157.0,
+            156.5
+          ],
+          "display_width_px": 195,
+          "fps": 1.0,
+          "loop": false,
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set1_transparent_rgba.png",
+              "region": [
+                0,
+                314,
+                314,
+                313
+              ],
+              "pivot_px": [
+                157.0,
+                156.5
+              ]
+            }
+          ]
+        },
+        "release": {
+          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set1_transparent_rgba.png",
+          "region": [
+            314,
+            314,
+            313,
+            313
+          ],
+          "pivot_px": [
+            156.5,
+            156.5
+          ],
+          "display_width_px": 195,
+          "fps": 1.0,
+          "loop": false,
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set1_transparent_rgba.png",
+              "region": [
+                314,
+                314,
+                313,
+                313
+              ],
+              "pivot_px": [
+                156.5,
+                156.5
+              ]
+            }
+          ]
+        },
+        "contact": {
+          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set1_transparent_rgba.png",
+          "region": [
+            627,
+            314,
+            313,
+            313
+          ],
+          "pivot_px": [
+            156.5,
+            156.5
+          ],
+          "display_width_px": 195,
+          "fps": 1.0,
+          "loop": false,
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set1_transparent_rgba.png",
+              "region": [
+                627,
+                314,
+                313,
+                313
+              ],
+              "pivot_px": [
+                156.5,
+                156.5
+              ]
+            }
+          ]
+        },
+        "fade": {
+          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set1_transparent_rgba.png",
+          "region": [
+            940,
+            314,
+            314,
+            313
+          ],
+          "pivot_px": [
+            157.0,
+            156.5
+          ],
+          "display_width_px": 195,
+          "fps": 1.0,
+          "loop": false,
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set1_transparent_rgba.png",
+              "region": [
+                940,
+                314,
+                314,
+                313
+              ],
+              "pivot_px": [
+                157.0,
+                156.5
+              ]
+            }
+          ]
+        }
+      },
+      "review_timeline": {
+        "release_at": 0.65,
+        "flight_at": 0.65,
+        "contact_at": 1.07,
+        "fade_at": 1.27,
+        "loop_seconds": 1.8,
+        "contact_window_seconds": 0.2,
+        "fade_window_seconds": 0.26,
+        "start_window_seconds": 0.18,
+        "end_window_seconds": 0.2,
+        "actor_action_seconds": 0.35,
+        "clock": "REVIEW_STORYBOARD_ONLY",
+        "charge_window_seconds": 0.65,
+        "release_window_seconds": 0.18
+      },
+      "receipt_manifest": {
+        "schema": "tmb.vfx_bindings.v1",
+        "skill_id": "tmb.skill.formation.phong_toa_tran.active_02.human",
+        "bindings": [
+          {
+            "event_type": "skill_cast",
+            "caster_slot": "ground",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "charge"
+          },
+          {
+            "event_type": "skill_release",
+            "caster_slot": "ground",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "release"
+          },
+          {
+            "event_type": "v63_skill_hit",
+            "caster_slot": "ground",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "contact"
+          },
+          {
+            "event_type": "v63_formation_slow_applied",
+            "caster_slot": "ground",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "start"
+          }
+        ]
+      },
+      "source_batch_manifest": "res://labs/combat_lab/formation01/factory_batch1_20261125/manifest.json",
+      "contact_sheet_path": "res://labs/combat_lab/formation01/factory_batch1_20261125/review/formation_batch1_contact_sheet_1x.png",
+      "contact_source_note": "Contact phase is source art only; render only after matching real MapBattleV2 receipt.",
+      "review_note": "Four distinct phase poses from first-party RGBA atlases, shown at shared AS68 1x game scale with real Source A moving target. Contact and status art require matching MapBattleV2 event receipts; no fake combat effects. Frame-by-frame motion, integrated native QA, owner approval, and PvE remain pending/held."
+    },
+    {
+      "skill_id": "tmb.skill.formation.phong_toa_tran.active_03.human",
+      "school": "formation",
+      "branch": "phong_toa_tran",
+      "name_vi": "Huyền Thạch Trấn Vị",
+      "catalog_path": "res://data/combat/v63_formation_combat_catalog.json",
+      "effect": "slow",
+      "shape": "single_target",
+      "target_limit": 1,
+      "mechanic_template": "debuff",
+      "mechanic_templates": [
+        "debuff",
+        "status"
+      ],
+      "target_mode": "single_target",
+      "preview_target_kind": "monster",
+      "target_actor_id": "review_target",
+      "outside_actor_id": "review_outside",
+      "actor_sex": "male",
+      "actor_asset_id": 68,
+      "actor_action": "cast",
+      "facing_vector": [
+        0.0,
+        1.0
+      ],
+      "preview_attachment_override": {
+        "suppress_attachments": true
+      },
+      "source_anchor": "ground",
+      "phase_anchors": {
+        "charge": "ground",
+        "release": "target_foot",
+        "contact": "target_foot",
+        "fade": "target_foot",
+        "start": "target_foot",
+        "sustain": "target_foot",
+        "end": "target_foot"
+      },
+      "phase_aliases": {
+        "start": "release",
+        "sustain": "release",
+        "end": "fade"
+      },
+      "draw_layer": "BEHIND",
+      "source_g3": "SOURCE_ALPHA_AND_CONTACT_SHEET_SELF_PASS",
+      "native_status": "NATIVE_IMPORT_CAPTURE_PENDING",
+      "owner_status": "OWNER_VISUAL_PENDING",
+      "native_ready": false,
+      "motion_status": "FOUR_PHASE_POSES_NOT_FRAME_BY_FRAME",
+      "showcase_moving_target": true,
+      "delivery_phase": "release",
+      "phase_sources": {
+        "charge": {
+          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set1_transparent_rgba.png",
+          "region": [
+            0,
+            627,
+            314,
+            313
+          ],
+          "pivot_px": [
+            157.0,
+            156.5
+          ],
+          "display_width_px": 108,
+          "fps": 1.0,
+          "loop": false,
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set1_transparent_rgba.png",
+              "region": [
+                0,
+                627,
+                314,
+                313
+              ],
+              "pivot_px": [
+                157.0,
+                156.5
+              ]
+            }
+          ]
+        },
+        "release": {
+          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set1_transparent_rgba.png",
+          "region": [
+            314,
+            627,
+            313,
+            313
+          ],
+          "pivot_px": [
+            156.5,
+            156.5
+          ],
+          "display_width_px": 108,
+          "fps": 1.0,
+          "loop": false,
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set1_transparent_rgba.png",
+              "region": [
+                314,
+                627,
+                313,
+                313
+              ],
+              "pivot_px": [
+                156.5,
+                156.5
+              ]
+            }
+          ]
+        },
+        "contact": {
+          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set1_transparent_rgba.png",
+          "region": [
+            627,
+            627,
+            313,
+            313
+          ],
+          "pivot_px": [
+            156.5,
+            156.5
+          ],
+          "display_width_px": 108,
+          "fps": 1.0,
+          "loop": false,
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set1_transparent_rgba.png",
+              "region": [
+                627,
+                627,
+                313,
+                313
+              ],
+              "pivot_px": [
+                156.5,
+                156.5
+              ]
+            }
+          ]
+        },
+        "fade": {
+          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set1_transparent_rgba.png",
+          "region": [
+            940,
+            627,
+            314,
+            313
+          ],
+          "pivot_px": [
+            157.0,
+            156.5
+          ],
+          "display_width_px": 108,
+          "fps": 1.0,
+          "loop": false,
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set1_transparent_rgba.png",
+              "region": [
+                940,
+                627,
+                314,
+                313
+              ],
+              "pivot_px": [
+                157.0,
+                156.5
+              ]
+            }
+          ]
+        }
+      },
+      "review_timeline": {
+        "release_at": 0.55,
+        "flight_at": 0.55,
+        "contact_at": 0.97,
+        "fade_at": 1.17,
+        "loop_seconds": 1.8,
+        "contact_window_seconds": 0.2,
+        "fade_window_seconds": 0.26,
+        "start_window_seconds": 0.18,
+        "end_window_seconds": 0.2,
+        "actor_action_seconds": 0.35,
+        "clock": "REVIEW_STORYBOARD_ONLY",
+        "charge_window_seconds": 0.55,
+        "release_window_seconds": 0.18
+      },
+      "receipt_manifest": {
+        "schema": "tmb.vfx_bindings.v1",
+        "skill_id": "tmb.skill.formation.phong_toa_tran.active_03.human",
+        "bindings": [
+          {
+            "event_type": "skill_cast",
+            "caster_slot": "ground",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "charge"
+          },
+          {
+            "event_type": "skill_release",
+            "caster_slot": "ground",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "release"
+          },
+          {
+            "event_type": "v63_skill_hit",
+            "caster_slot": "ground",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "contact"
+          },
+          {
+            "event_type": "v63_formation_slow_applied",
+            "caster_slot": "ground",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "start"
+          }
+        ]
+      },
+      "source_batch_manifest": "res://labs/combat_lab/formation01/factory_batch1_20261125/manifest.json",
+      "contact_sheet_path": "res://labs/combat_lab/formation01/factory_batch1_20261125/review/formation_batch1_contact_sheet_1x.png",
+      "contact_source_note": "Contact phase is source art only; render only after matching real MapBattleV2 receipt.",
+      "review_note": "Four distinct phase poses from first-party RGBA atlases, shown at shared AS68 1x game scale with real Source A moving target. Contact and status art require matching MapBattleV2 event receipts; no fake combat effects. Frame-by-frame motion, integrated native QA, owner approval, and PvE remain pending/held."
+    },
+    {
+      "skill_id": "tmb.skill.formation.phong_toa_tran.active_04.human",
+      "school": "formation",
+      "branch": "phong_toa_tran",
+      "name_vi": "Tứ Tượng Hãm Trận",
+      "catalog_path": "res://data/combat/v63_formation_combat_catalog.json",
+      "effect": "slow",
+      "shape": "circle",
+      "target_limit": 3,
+      "mechanic_template": "circle_aoe",
+      "mechanic_templates": [
+        "debuff",
+        "circle_aoe",
+        "multi_target",
+        "status"
+      ],
+      "target_mode": "circle",
+      "preview_target_kind": "monster",
+      "target_actor_id": "review_target",
+      "outside_actor_id": "review_outside",
+      "actor_sex": "male",
+      "actor_asset_id": 68,
+      "actor_action": "cast",
+      "facing_vector": [
+        0.0,
+        1.0
+      ],
+      "preview_attachment_override": {
+        "suppress_attachments": true
+      },
+      "source_anchor": "ground",
+      "phase_anchors": {
+        "charge": "ground",
+        "release": "target_foot",
+        "contact": "target_foot",
+        "fade": "target_foot",
+        "start": "target_foot",
+        "sustain": "target_foot",
+        "end": "target_foot"
+      },
+      "phase_aliases": {
+        "start": "release",
+        "sustain": "release",
+        "end": "fade"
+      },
+      "draw_layer": "BEHIND",
+      "source_g3": "SOURCE_ALPHA_AND_CONTACT_SHEET_SELF_PASS",
+      "native_status": "NATIVE_IMPORT_CAPTURE_PENDING",
+      "owner_status": "OWNER_VISUAL_PENDING",
+      "native_ready": false,
+      "motion_status": "FOUR_PHASE_POSES_NOT_FRAME_BY_FRAME",
+      "showcase_moving_target": true,
+      "delivery_phase": "release",
+      "phase_sources": {
+        "charge": {
+          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set1_transparent_rgba.png",
+          "region": [
+            0,
+            940,
+            314,
+            314
+          ],
+          "pivot_px": [
+            157.0,
+            157.0
+          ],
+          "display_width_px": 181,
+          "fps": 1.0,
+          "loop": false,
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set1_transparent_rgba.png",
+              "region": [
+                0,
+                940,
+                314,
+                314
+              ],
+              "pivot_px": [
+                157.0,
+                157.0
+              ]
+            }
+          ]
+        },
+        "release": {
+          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set1_transparent_rgba.png",
+          "region": [
+            314,
+            940,
+            313,
+            314
+          ],
+          "pivot_px": [
+            156.5,
+            157.0
+          ],
+          "display_width_px": 181,
+          "fps": 1.0,
+          "loop": false,
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set1_transparent_rgba.png",
+              "region": [
+                314,
+                940,
+                313,
+                314
+              ],
+              "pivot_px": [
+                156.5,
+                157.0
+              ]
+            }
+          ]
+        },
+        "contact": {
+          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set1_transparent_rgba.png",
+          "region": [
+            627,
+            940,
+            313,
+            314
+          ],
+          "pivot_px": [
+            156.5,
+            157.0
+          ],
+          "display_width_px": 181,
+          "fps": 1.0,
+          "loop": false,
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set1_transparent_rgba.png",
+              "region": [
+                627,
+                940,
+                313,
+                314
+              ],
+              "pivot_px": [
+                156.5,
+                157.0
+              ]
+            }
+          ]
+        },
+        "fade": {
+          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set1_transparent_rgba.png",
+          "region": [
+            940,
+            940,
+            314,
+            314
+          ],
+          "pivot_px": [
+            157.0,
+            157.0
+          ],
+          "display_width_px": 181,
+          "fps": 1.0,
+          "loop": false,
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set1_transparent_rgba.png",
+              "region": [
+                940,
+                940,
+                314,
+                314
+              ],
+              "pivot_px": [
+                157.0,
+                157.0
+              ]
+            }
+          ]
+        }
+      },
+      "review_timeline": {
+        "release_at": 0.75,
+        "flight_at": 0.75,
+        "contact_at": 1.17,
+        "fade_at": 1.37,
+        "loop_seconds": 1.8,
+        "contact_window_seconds": 0.2,
+        "fade_window_seconds": 0.26,
+        "start_window_seconds": 0.18,
+        "end_window_seconds": 0.2,
+        "actor_action_seconds": 0.35,
+        "clock": "REVIEW_STORYBOARD_ONLY",
+        "charge_window_seconds": 0.75,
+        "release_window_seconds": 0.18
+      },
+      "receipt_manifest": {
+        "schema": "tmb.vfx_bindings.v1",
+        "skill_id": "tmb.skill.formation.phong_toa_tran.active_04.human",
+        "bindings": [
+          {
+            "event_type": "skill_cast",
+            "caster_slot": "ground",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "charge"
+          },
+          {
+            "event_type": "skill_release",
+            "caster_slot": "ground",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "release"
+          },
+          {
+            "event_type": "v63_skill_hit",
+            "caster_slot": "ground",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "contact"
+          },
+          {
+            "event_type": "v63_formation_slow_applied",
+            "caster_slot": "ground",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "start"
+          }
+        ]
+      },
+      "source_batch_manifest": "res://labs/combat_lab/formation01/factory_batch1_20261125/manifest.json",
+      "contact_sheet_path": "res://labs/combat_lab/formation01/factory_batch1_20261125/review/formation_batch1_contact_sheet_1x.png",
+      "contact_source_note": "Contact phase is source art only; render only after matching real MapBattleV2 receipt.",
+      "review_note": "Four distinct phase poses from first-party RGBA atlases, shown at shared AS68 1x game scale with real Source A moving target. Contact and status art require matching MapBattleV2 event receipts; no fake combat effects. Frame-by-frame motion, integrated native QA, owner approval, and PvE remain pending/held."
+    },
+    {
+      "skill_id": "tmb.skill.formation.phong_toa_tran.ultimate.human",
+      "school": "formation",
+      "branch": "phong_toa_tran",
+      "name_vi": "Cửu Cung Phong Tuyệt Trận",
+      "catalog_path": "res://data/combat/v63_formation_combat_catalog.json",
+      "effect": "slow",
+      "shape": "circle",
+      "target_limit": 3,
+      "mechanic_template": "circle_aoe",
+      "mechanic_templates": [
+        "debuff",
+        "circle_aoe",
+        "multi_target",
+        "status"
+      ],
+      "target_mode": "circle",
+      "preview_target_kind": "monster",
+      "target_actor_id": "review_target",
+      "outside_actor_id": "review_outside",
+      "actor_sex": "male",
+      "actor_asset_id": 68,
+      "actor_action": "cast",
+      "facing_vector": [
+        0.0,
+        1.0
+      ],
+      "preview_attachment_override": {
+        "suppress_attachments": true
+      },
+      "source_anchor": "ground",
+      "phase_anchors": {
+        "charge": "ground",
+        "release": "target_foot",
+        "contact": "target_foot",
+        "fade": "target_foot",
+        "start": "target_foot",
+        "sustain": "target_foot",
+        "end": "target_foot"
+      },
+      "phase_aliases": {
+        "start": "release",
+        "sustain": "release",
+        "end": "fade"
+      },
+      "draw_layer": "BEHIND",
+      "source_g3": "SOURCE_ALPHA_AND_CONTACT_SHEET_SELF_PASS",
+      "native_status": "NATIVE_IMPORT_CAPTURE_PENDING",
+      "owner_status": "OWNER_VISUAL_PENDING",
+      "native_ready": false,
+      "motion_status": "FOUR_PHASE_POSES_NOT_FRAME_BY_FRAME",
+      "showcase_moving_target": true,
+      "delivery_phase": "release",
+      "phase_sources": {
+        "charge": {
+          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set2_transparent_rgba.png",
+          "region": [
+            0,
+            0,
+            314,
+            314
+          ],
+          "pivot_px": [
+            157.0,
+            157.0
+          ],
+          "display_width_px": 224,
+          "fps": 1.0,
+          "loop": false,
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set2_transparent_rgba.png",
+              "region": [
+                0,
+                0,
+                314,
+                314
+              ],
+              "pivot_px": [
+                157.0,
+                157.0
+              ]
+            }
+          ]
+        },
+        "release": {
+          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set2_transparent_rgba.png",
+          "region": [
+            314,
+            0,
+            313,
+            314
+          ],
+          "pivot_px": [
+            156.5,
+            157.0
+          ],
+          "display_width_px": 224,
+          "fps": 1.0,
+          "loop": false,
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set2_transparent_rgba.png",
+              "region": [
+                314,
+                0,
+                313,
+                314
+              ],
+              "pivot_px": [
+                156.5,
+                157.0
+              ]
+            }
+          ]
+        },
+        "contact": {
+          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set2_transparent_rgba.png",
+          "region": [
+            627,
+            0,
+            313,
+            314
+          ],
+          "pivot_px": [
+            156.5,
+            157.0
+          ],
+          "display_width_px": 224,
+          "fps": 1.0,
+          "loop": false,
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set2_transparent_rgba.png",
+              "region": [
+                627,
+                0,
+                313,
+                314
+              ],
+              "pivot_px": [
+                156.5,
+                157.0
+              ]
+            }
+          ]
+        },
+        "fade": {
+          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set2_transparent_rgba.png",
+          "region": [
+            940,
+            0,
+            314,
+            314
+          ],
+          "pivot_px": [
+            157.0,
+            157.0
+          ],
+          "display_width_px": 224,
+          "fps": 1.0,
+          "loop": false,
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set2_transparent_rgba.png",
+              "region": [
+                940,
+                0,
+                314,
+                314
+              ],
+              "pivot_px": [
+                157.0,
+                157.0
+              ]
+            }
+          ]
+        }
+      },
+      "review_timeline": {
+        "release_at": 1.1,
+        "flight_at": 1.1,
+        "contact_at": 1.52,
+        "fade_at": 1.72,
+        "loop_seconds": 2.0,
+        "contact_window_seconds": 0.2,
+        "fade_window_seconds": 0.26,
+        "start_window_seconds": 0.18,
+        "end_window_seconds": 0.2,
+        "actor_action_seconds": 0.35,
+        "clock": "REVIEW_STORYBOARD_ONLY",
+        "charge_window_seconds": 1.1,
+        "release_window_seconds": 0.18
+      },
+      "receipt_manifest": {
+        "schema": "tmb.vfx_bindings.v1",
+        "skill_id": "tmb.skill.formation.phong_toa_tran.ultimate.human",
+        "bindings": [
+          {
+            "event_type": "skill_cast",
+            "caster_slot": "ground",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "charge"
+          },
+          {
+            "event_type": "skill_release",
+            "caster_slot": "ground",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "release"
+          },
+          {
+            "event_type": "v63_skill_hit",
+            "caster_slot": "ground",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "contact"
+          },
+          {
+            "event_type": "v63_formation_slow_applied",
+            "caster_slot": "ground",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "start"
+          }
+        ]
+      },
+      "source_batch_manifest": "res://labs/combat_lab/formation01/factory_batch1_20261125/manifest.json",
+      "contact_sheet_path": "res://labs/combat_lab/formation01/factory_batch1_20261125/review/formation_batch1_contact_sheet_1x.png",
+      "contact_source_note": "Contact phase is source art only; render only after matching real MapBattleV2 receipt.",
+      "review_note": "Four distinct phase poses from first-party RGBA atlases, shown at shared AS68 1x game scale with real Source A moving target. Contact and status art require matching MapBattleV2 event receipts; no fake combat effects. Frame-by-frame motion, integrated native QA, owner approval, and PvE remain pending/held."
+    },
+    {
+      "skill_id": "tmb.skill.formation.sat_phat_tran.active_01.human",
+      "school": "formation",
+      "branch": "sat_phat_tran",
+      "name_vi": "Liệt Địa Sát Văn",
+      "catalog_path": "res://data/combat/v63_formation_combat_catalog.json",
+      "effect": "formation_zone",
+      "shape": "circle",
+      "target_limit": 3,
+      "mechanic_template": "formation",
+      "mechanic_templates": [
+        "formation",
+        "circle_aoe",
+        "multi_target"
+      ],
+      "target_mode": "circle",
+      "preview_target_kind": "monster",
+      "target_actor_id": "review_target",
+      "outside_actor_id": "review_outside",
+      "actor_sex": "male",
+      "actor_asset_id": 68,
+      "actor_action": "cast",
+      "facing_vector": [
+        0.0,
+        1.0
+      ],
+      "preview_attachment_override": {
+        "suppress_attachments": true
+      },
+      "source_anchor": "ground",
+      "phase_anchors": {
+        "charge": "ground",
+        "release": "target_foot",
+        "contact": "target_foot",
+        "fade": "target_foot",
+        "start": "target_foot",
+        "sustain": "target_foot",
+        "end": "target_foot"
+      },
+      "phase_aliases": {
+        "start": "release",
+        "sustain": "release",
+        "end": "fade"
+      },
+      "draw_layer": "BEHIND",
+      "source_g3": "SOURCE_ALPHA_AND_CONTACT_SHEET_SELF_PASS",
+      "native_status": "NATIVE_IMPORT_CAPTURE_PENDING",
+      "owner_status": "OWNER_VISUAL_PENDING",
+      "native_ready": false,
+      "motion_status": "FOUR_PHASE_POSES_NOT_FRAME_BY_FRAME",
+      "showcase_moving_target": true,
+      "delivery_phase": "release",
+      "phase_sources": {
+        "charge": {
+          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set2_transparent_rgba.png",
+          "region": [
+            0,
+            314,
+            314,
+            313
+          ],
+          "pivot_px": [
+            157.0,
+            156.5
+          ],
+          "display_width_px": 159,
+          "fps": 1.0,
+          "loop": false,
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set2_transparent_rgba.png",
+              "region": [
+                0,
+                314,
+                314,
+                313
+              ],
+              "pivot_px": [
+                157.0,
+                156.5
+              ]
+            }
+          ]
+        },
+        "release": {
+          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set2_transparent_rgba.png",
+          "region": [
+            314,
+            314,
+            313,
+            313
+          ],
+          "pivot_px": [
+            156.5,
+            156.5
+          ],
+          "display_width_px": 159,
+          "fps": 1.0,
+          "loop": false,
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set2_transparent_rgba.png",
+              "region": [
+                314,
+                314,
+                313,
+                313
+              ],
+              "pivot_px": [
+                156.5,
+                156.5
+              ]
+            }
+          ]
+        },
+        "contact": {
+          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set2_transparent_rgba.png",
+          "region": [
+            627,
+            314,
+            313,
+            313
+          ],
+          "pivot_px": [
+            156.5,
+            156.5
+          ],
+          "display_width_px": 159,
+          "fps": 1.0,
+          "loop": false,
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set2_transparent_rgba.png",
+              "region": [
+                627,
+                314,
+                313,
+                313
+              ],
+              "pivot_px": [
+                156.5,
+                156.5
+              ]
+            }
+          ]
+        },
+        "fade": {
+          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set2_transparent_rgba.png",
+          "region": [
+            940,
+            314,
+            314,
+            313
+          ],
+          "pivot_px": [
+            157.0,
+            156.5
+          ],
+          "display_width_px": 159,
+          "fps": 1.0,
+          "loop": false,
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set2_transparent_rgba.png",
+              "region": [
+                940,
+                314,
+                314,
+                313
+              ],
+              "pivot_px": [
+                157.0,
+                156.5
+              ]
+            }
+          ]
+        }
+      },
+      "review_timeline": {
+        "release_at": 0.6,
+        "flight_at": 0.6,
+        "contact_at": 1.02,
+        "fade_at": 1.22,
+        "loop_seconds": 1.8,
+        "contact_window_seconds": 0.2,
+        "fade_window_seconds": 0.26,
+        "start_window_seconds": 0.18,
+        "end_window_seconds": 0.2,
+        "actor_action_seconds": 0.35,
+        "clock": "REVIEW_STORYBOARD_ONLY",
+        "charge_window_seconds": 0.6,
+        "release_window_seconds": 0.18
+      },
+      "receipt_manifest": {
+        "schema": "tmb.vfx_bindings.v1",
+        "skill_id": "tmb.skill.formation.sat_phat_tran.active_01.human",
+        "bindings": [
+          {
+            "event_type": "skill_cast",
+            "caster_slot": "ground",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "charge"
+          },
+          {
+            "event_type": "skill_release",
+            "caster_slot": "ground",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "release"
+          },
+          {
+            "event_type": "v63_formation_zone_created",
+            "caster_slot": "ground",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "start"
+          },
+          {
+            "event_type": "v63_formation_zone_tick",
+            "caster_slot": "ground",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "contact"
+          },
+          {
+            "event_type": "v63_formation_zone_expired",
+            "caster_slot": "ground",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "end"
+          }
+        ]
+      },
+      "source_batch_manifest": "res://labs/combat_lab/formation01/factory_batch1_20261125/manifest.json",
+      "contact_sheet_path": "res://labs/combat_lab/formation01/factory_batch1_20261125/review/formation_batch1_contact_sheet_1x.png",
+      "contact_source_note": "Contact phase is source art only; render only after matching real MapBattleV2 receipt.",
+      "prior_source_reviews": [
+        {
+          "revision": "R1",
+          "source": "res://labs/combat_lab/formation01_liet_dia_sat_van_r1/source/formation_zone_active_master.png",
+          "status": "G3_ART_REWORK_REQUIRED"
+        },
+        {
+          "revision": "R2",
+          "source": "res://labs/combat_lab/formation01_liet_dia_sat_van_r1/r2/source/formation_zone_active_master.png",
+          "status": "G3_ART_REWORK_REQUIRED"
+        },
+        {
+          "revision": "R3",
+          "source": "res://labs/combat_lab/formation01_liet_dia_sat_van_r1/r3/source/formation_zone_active_candidate.png",
+          "status": "G3_ART_REWORK_REQUIRED"
+        }
+      ],
+      "review_note": "Candidate source uses the preserved stronger RGBA atlas. R1–R3 remain archived and are not promoted; their existing default-camera review required rework. Native integrated review and owner approval pending; PVE HOLD."
+    },
+    {
+      "skill_id": "tmb.skill.formation.sat_phat_tran.active_02.human",
+      "school": "formation",
+      "branch": "sat_phat_tran",
+      "name_vi": "Thiên La Địa Võng",
+      "catalog_path": "res://data/combat/v63_formation_combat_catalog.json",
+      "effect": "formation_zone",
+      "shape": "circle",
+      "target_limit": 3,
+      "mechanic_template": "formation",
+      "mechanic_templates": [
+        "formation",
+        "circle_aoe",
+        "multi_target"
+      ],
+      "target_mode": "circle",
+      "preview_target_kind": "monster",
+      "target_actor_id": "review_target",
+      "outside_actor_id": "review_outside",
+      "actor_sex": "male",
+      "actor_asset_id": 68,
+      "actor_action": "cast",
+      "facing_vector": [
+        0.0,
+        1.0
+      ],
+      "preview_attachment_override": {
+        "suppress_attachments": true
+      },
+      "source_anchor": "ground",
+      "phase_anchors": {
+        "charge": "ground",
+        "release": "target_foot",
+        "contact": "target_foot",
+        "fade": "target_foot",
+        "start": "target_foot",
+        "sustain": "target_foot",
+        "end": "target_foot"
+      },
+      "phase_aliases": {
+        "start": "release",
+        "sustain": "release",
+        "end": "fade"
+      },
+      "draw_layer": "BEHIND",
+      "source_g3": "SOURCE_ALPHA_AND_CONTACT_SHEET_SELF_PASS",
+      "native_status": "NATIVE_IMPORT_CAPTURE_PENDING",
+      "owner_status": "OWNER_VISUAL_PENDING",
+      "native_ready": false,
+      "motion_status": "FOUR_PHASE_POSES_NOT_FRAME_BY_FRAME",
+      "showcase_moving_target": true,
+      "delivery_phase": "release",
+      "phase_sources": {
+        "charge": {
+          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set2_transparent_rgba.png",
+          "region": [
+            0,
+            627,
+            314,
+            313
+          ],
+          "pivot_px": [
+            157.0,
+            156.5
+          ],
+          "display_width_px": 188,
+          "fps": 1.0,
+          "loop": false,
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set2_transparent_rgba.png",
+              "region": [
+                0,
+                627,
+                314,
+                313
+              ],
+              "pivot_px": [
+                157.0,
+                156.5
+              ]
+            }
+          ]
+        },
+        "release": {
+          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set2_transparent_rgba.png",
+          "region": [
+            314,
+            627,
+            313,
+            313
+          ],
+          "pivot_px": [
+            156.5,
+            156.5
+          ],
+          "display_width_px": 188,
+          "fps": 1.0,
+          "loop": false,
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set2_transparent_rgba.png",
+              "region": [
+                314,
+                627,
+                313,
+                313
+              ],
+              "pivot_px": [
+                156.5,
+                156.5
+              ]
+            }
+          ]
+        },
+        "contact": {
+          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set2_transparent_rgba.png",
+          "region": [
+            627,
+            627,
+            313,
+            313
+          ],
+          "pivot_px": [
+            156.5,
+            156.5
+          ],
+          "display_width_px": 188,
+          "fps": 1.0,
+          "loop": false,
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set2_transparent_rgba.png",
+              "region": [
+                627,
+                627,
+                313,
+                313
+              ],
+              "pivot_px": [
+                156.5,
+                156.5
+              ]
+            }
+          ]
+        },
+        "fade": {
+          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set2_transparent_rgba.png",
+          "region": [
+            940,
+            627,
+            314,
+            313
+          ],
+          "pivot_px": [
+            157.0,
+            156.5
+          ],
+          "display_width_px": 188,
+          "fps": 1.0,
+          "loop": false,
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set2_transparent_rgba.png",
+              "region": [
+                940,
+                627,
+                314,
+                313
+              ],
+              "pivot_px": [
+                157.0,
+                156.5
+              ]
+            }
+          ]
+        }
+      },
+      "review_timeline": {
+        "release_at": 0.8,
+        "flight_at": 0.8,
+        "contact_at": 1.22,
+        "fade_at": 1.42,
+        "loop_seconds": 1.8,
+        "contact_window_seconds": 0.2,
+        "fade_window_seconds": 0.26,
+        "start_window_seconds": 0.18,
+        "end_window_seconds": 0.2,
+        "actor_action_seconds": 0.35,
+        "clock": "REVIEW_STORYBOARD_ONLY",
+        "charge_window_seconds": 0.8,
+        "release_window_seconds": 0.18
+      },
+      "receipt_manifest": {
+        "schema": "tmb.vfx_bindings.v1",
+        "skill_id": "tmb.skill.formation.sat_phat_tran.active_02.human",
+        "bindings": [
+          {
+            "event_type": "skill_cast",
+            "caster_slot": "ground",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "charge"
+          },
+          {
+            "event_type": "skill_release",
+            "caster_slot": "ground",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "release"
+          },
+          {
+            "event_type": "v63_formation_zone_created",
+            "caster_slot": "ground",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "start"
+          },
+          {
+            "event_type": "v63_formation_zone_tick",
+            "caster_slot": "ground",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "contact"
+          },
+          {
+            "event_type": "v63_formation_zone_expired",
+            "caster_slot": "ground",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "end"
+          }
+        ]
+      },
+      "source_batch_manifest": "res://labs/combat_lab/formation01/factory_batch1_20261125/manifest.json",
+      "contact_sheet_path": "res://labs/combat_lab/formation01/factory_batch1_20261125/review/formation_batch1_contact_sheet_1x.png",
+      "contact_source_note": "Contact phase is source art only; render only after matching real MapBattleV2 receipt.",
+      "review_note": "Four distinct phase poses from first-party RGBA atlases, shown at shared AS68 1x game scale with real Source A moving target. Contact and status art require matching MapBattleV2 event receipts; no fake combat effects. Frame-by-frame motion, integrated native QA, owner approval, and PvE remain pending/held."
+    },
+    {
+      "skill_id": "tmb.skill.formation.sat_phat_tran.active_03.human",
+      "school": "formation",
+      "branch": "sat_phat_tran",
+      "name_vi": "Thất Tinh Đoạt Mạch",
+      "catalog_path": "res://data/combat/v63_formation_combat_catalog.json",
+      "effect": "damage",
+      "shape": "circle",
+      "target_limit": 3,
+      "mechanic_template": "circle_aoe",
+      "mechanic_templates": [
+        "circle_aoe",
+        "multi_target"
+      ],
+      "target_mode": "circle",
+      "preview_target_kind": "monster",
+      "target_actor_id": "review_target",
+      "outside_actor_id": "review_outside",
+      "actor_sex": "male",
+      "actor_asset_id": 68,
+      "actor_action": "cast",
+      "facing_vector": [
+        0.0,
+        1.0
+      ],
+      "preview_attachment_override": {
+        "suppress_attachments": true
+      },
+      "source_anchor": "ground",
+      "phase_anchors": {
+        "charge": "ground",
+        "release": "target_foot",
+        "contact": "target_foot",
+        "fade": "target_foot",
+        "start": "target_foot",
+        "sustain": "target_foot",
+        "end": "target_foot"
+      },
+      "phase_aliases": {
+        "start": "release",
+        "sustain": "release",
+        "end": "fade"
+      },
+      "draw_layer": "BEHIND",
+      "source_g3": "SOURCE_ALPHA_AND_CONTACT_SHEET_SELF_PASS",
+      "native_status": "NATIVE_IMPORT_CAPTURE_PENDING",
+      "owner_status": "OWNER_VISUAL_PENDING",
+      "native_ready": false,
+      "motion_status": "FOUR_PHASE_POSES_NOT_FRAME_BY_FRAME",
+      "showcase_moving_target": true,
+      "delivery_phase": "release",
+      "phase_sources": {
+        "charge": {
+          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set2_transparent_rgba.png",
+          "region": [
+            0,
+            940,
+            314,
+            314
+          ],
+          "pivot_px": [
+            157.0,
+            157.0
+          ],
+          "display_width_px": 159,
+          "fps": 1.0,
+          "loop": false,
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set2_transparent_rgba.png",
+              "region": [
+                0,
+                940,
+                314,
+                314
+              ],
+              "pivot_px": [
+                157.0,
+                157.0
+              ]
+            }
+          ]
+        },
+        "release": {
+          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set2_transparent_rgba.png",
+          "region": [
+            314,
+            940,
+            313,
+            314
+          ],
+          "pivot_px": [
+            156.5,
+            157.0
+          ],
+          "display_width_px": 159,
+          "fps": 1.0,
+          "loop": false,
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set2_transparent_rgba.png",
+              "region": [
+                314,
+                940,
+                313,
+                314
+              ],
+              "pivot_px": [
+                156.5,
+                157.0
+              ]
+            }
+          ]
+        },
+        "contact": {
+          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set2_transparent_rgba.png",
+          "region": [
+            627,
+            940,
+            313,
+            314
+          ],
+          "pivot_px": [
+            156.5,
+            157.0
+          ],
+          "display_width_px": 159,
+          "fps": 1.0,
+          "loop": false,
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set2_transparent_rgba.png",
+              "region": [
+                627,
+                940,
+                313,
+                314
+              ],
+              "pivot_px": [
+                156.5,
+                157.0
+              ]
+            }
+          ]
+        },
+        "fade": {
+          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set2_transparent_rgba.png",
+          "region": [
+            940,
+            940,
+            314,
+            314
+          ],
+          "pivot_px": [
+            157.0,
+            157.0
+          ],
+          "display_width_px": 159,
+          "fps": 1.0,
+          "loop": false,
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set2_transparent_rgba.png",
+              "region": [
+                940,
+                940,
+                314,
+                314
+              ],
+              "pivot_px": [
+                157.0,
+                157.0
+              ]
+            }
+          ]
+        }
+      },
+      "review_timeline": {
+        "release_at": 0.5,
+        "flight_at": 0.5,
+        "contact_at": 0.92,
+        "fade_at": 1.12,
+        "loop_seconds": 1.8,
+        "contact_window_seconds": 0.2,
+        "fade_window_seconds": 0.26,
+        "start_window_seconds": 0.18,
+        "end_window_seconds": 0.2,
+        "actor_action_seconds": 0.35,
+        "clock": "REVIEW_STORYBOARD_ONLY",
+        "charge_window_seconds": 0.5,
+        "release_window_seconds": 0.18
+      },
+      "receipt_manifest": {
+        "schema": "tmb.vfx_bindings.v1",
+        "skill_id": "tmb.skill.formation.sat_phat_tran.active_03.human",
+        "bindings": [
+          {
+            "event_type": "skill_cast",
+            "caster_slot": "ground",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "charge"
+          },
+          {
+            "event_type": "skill_release",
+            "caster_slot": "ground",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "release"
+          },
+          {
+            "event_type": "v63_skill_hit",
+            "caster_slot": "ground",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "contact"
+          }
+        ]
+      },
+      "source_batch_manifest": "res://labs/combat_lab/formation01/factory_batch1_20261125/manifest.json",
+      "contact_sheet_path": "res://labs/combat_lab/formation01/factory_batch1_20261125/review/formation_batch1_contact_sheet_1x.png",
+      "contact_source_note": "Contact phase is source art only; render only after matching real MapBattleV2 receipt.",
+      "review_note": "Four distinct phase poses from first-party RGBA atlases, shown at shared AS68 1x game scale with real Source A moving target. Contact and status art require matching MapBattleV2 event receipts; no fake combat effects. Frame-by-frame motion, integrated native QA, owner approval, and PvE remain pending/held."
+    },
+    {
+      "skill_id": "tmb.skill.formation.sat_phat_tran.active_04.human",
+      "school": "formation",
+      "branch": "sat_phat_tran",
+      "name_vi": "Địa Hỏa Phục Sát",
+      "catalog_path": "res://data/combat/v63_formation_combat_catalog.json",
+      "effect": "formation_zone",
+      "shape": "circle",
+      "target_limit": 3,
+      "mechanic_template": "formation",
+      "mechanic_templates": [
+        "formation",
+        "circle_aoe",
+        "multi_target"
+      ],
+      "target_mode": "circle",
+      "preview_target_kind": "monster",
+      "target_actor_id": "review_target",
+      "outside_actor_id": "review_outside",
+      "actor_sex": "male",
+      "actor_asset_id": 68,
+      "actor_action": "cast",
+      "facing_vector": [
+        0.0,
+        1.0
+      ],
+      "preview_attachment_override": {
+        "suppress_attachments": true
+      },
+      "source_anchor": "ground",
+      "phase_anchors": {
+        "charge": "ground",
+        "release": "target_foot",
+        "contact": "target_foot",
+        "fade": "target_foot",
+        "start": "target_foot",
+        "sustain": "target_foot",
+        "end": "target_foot"
+      },
+      "phase_aliases": {
+        "start": "release",
+        "sustain": "release",
+        "end": "fade"
+      },
+      "draw_layer": "BEHIND",
+      "source_g3": "SOURCE_ALPHA_AND_CONTACT_SHEET_SELF_PASS",
+      "native_status": "NATIVE_IMPORT_CAPTURE_PENDING",
+      "owner_status": "OWNER_VISUAL_PENDING",
+      "native_ready": false,
+      "motion_status": "FOUR_PHASE_POSES_NOT_FRAME_BY_FRAME",
+      "showcase_moving_target": true,
+      "delivery_phase": "release",
+      "phase_sources": {
+        "charge": {
+          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set3_transparent_rgba.png",
+          "region": [
+            0,
+            0,
+            314,
+            314
+          ],
+          "pivot_px": [
+            157.0,
+            157.0
+          ],
+          "display_width_px": 170,
+          "fps": 1.0,
+          "loop": false,
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set3_transparent_rgba.png",
+              "region": [
+                0,
+                0,
+                314,
+                314
+              ],
+              "pivot_px": [
+                157.0,
+                157.0
+              ]
+            }
+          ]
+        },
+        "release": {
+          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set3_transparent_rgba.png",
+          "region": [
+            314,
+            0,
+            313,
+            314
+          ],
+          "pivot_px": [
+            156.5,
+            157.0
+          ],
+          "display_width_px": 170,
+          "fps": 1.0,
+          "loop": false,
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set3_transparent_rgba.png",
+              "region": [
+                314,
+                0,
+                313,
+                314
+              ],
+              "pivot_px": [
+                156.5,
+                157.0
+              ]
+            }
+          ]
+        },
+        "contact": {
+          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set3_transparent_rgba.png",
+          "region": [
+            627,
+            0,
+            313,
+            314
+          ],
+          "pivot_px": [
+            156.5,
+            157.0
+          ],
+          "display_width_px": 170,
+          "fps": 1.0,
+          "loop": false,
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set3_transparent_rgba.png",
+              "region": [
+                627,
+                0,
+                313,
+                314
+              ],
+              "pivot_px": [
+                156.5,
+                157.0
+              ]
+            }
+          ]
+        },
+        "fade": {
+          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set3_transparent_rgba.png",
+          "region": [
+            940,
+            0,
+            314,
+            314
+          ],
+          "pivot_px": [
+            157.0,
+            157.0
+          ],
+          "display_width_px": 170,
+          "fps": 1.0,
+          "loop": false,
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set3_transparent_rgba.png",
+              "region": [
+                940,
+                0,
+                314,
+                314
+              ],
+              "pivot_px": [
+                157.0,
+                157.0
+              ]
+            }
+          ]
+        }
+      },
+      "review_timeline": {
+        "release_at": 0.9,
+        "flight_at": 0.9,
+        "contact_at": 1.32,
+        "fade_at": 1.52,
+        "loop_seconds": 1.8,
+        "contact_window_seconds": 0.2,
+        "fade_window_seconds": 0.26,
+        "start_window_seconds": 0.18,
+        "end_window_seconds": 0.2,
+        "actor_action_seconds": 0.35,
+        "clock": "REVIEW_STORYBOARD_ONLY",
+        "charge_window_seconds": 0.9,
+        "release_window_seconds": 0.18
+      },
+      "receipt_manifest": {
+        "schema": "tmb.vfx_bindings.v1",
+        "skill_id": "tmb.skill.formation.sat_phat_tran.active_04.human",
+        "bindings": [
+          {
+            "event_type": "skill_cast",
+            "caster_slot": "ground",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "charge"
+          },
+          {
+            "event_type": "skill_release",
+            "caster_slot": "ground",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "release"
+          },
+          {
+            "event_type": "v63_formation_zone_created",
+            "caster_slot": "ground",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "start"
+          },
+          {
+            "event_type": "v63_formation_zone_tick",
+            "caster_slot": "ground",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "contact"
+          },
+          {
+            "event_type": "v63_formation_zone_expired",
+            "caster_slot": "ground",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "end"
+          }
+        ]
+      },
+      "source_batch_manifest": "res://labs/combat_lab/formation01/factory_batch1_20261125/manifest.json",
+      "contact_sheet_path": "res://labs/combat_lab/formation01/factory_batch1_20261125/review/formation_batch1_contact_sheet_1x.png",
+      "contact_source_note": "Contact phase is source art only; render only after matching real MapBattleV2 receipt.",
+      "review_note": "Four distinct phase poses from first-party RGBA atlases, shown at shared AS68 1x game scale with real Source A moving target. Contact and status art require matching MapBattleV2 event receipts; no fake combat effects. Frame-by-frame motion, integrated native QA, owner approval, and PvE remain pending/held."
+    },
+    {
+      "skill_id": "tmb.skill.formation.sat_phat_tran.ultimate.human",
+      "school": "formation",
+      "branch": "sat_phat_tran",
+      "name_vi": "Vạn Tượng Tru Tiên Trận",
+      "catalog_path": "res://data/combat/v63_formation_combat_catalog.json",
+      "effect": "formation_zone",
+      "shape": "circle",
+      "target_limit": 3,
+      "mechanic_template": "formation",
+      "mechanic_templates": [
+        "formation",
+        "circle_aoe",
+        "multi_target"
+      ],
+      "target_mode": "circle",
+      "preview_target_kind": "monster",
+      "target_actor_id": "review_target",
+      "outside_actor_id": "review_outside",
+      "actor_sex": "male",
+      "actor_asset_id": 68,
+      "actor_action": "cast",
+      "facing_vector": [
+        0.0,
+        1.0
+      ],
+      "preview_attachment_override": {
+        "suppress_attachments": true
+      },
+      "source_anchor": "ground",
+      "phase_anchors": {
+        "charge": "ground",
+        "release": "target_foot",
+        "contact": "target_foot",
+        "fade": "target_foot",
+        "start": "target_foot",
+        "sustain": "target_foot",
+        "end": "target_foot"
+      },
+      "phase_aliases": {
+        "start": "release",
+        "sustain": "release",
+        "end": "fade"
+      },
+      "draw_layer": "BEHIND",
+      "source_g3": "SOURCE_ALPHA_AND_CONTACT_SHEET_SELF_PASS",
+      "native_status": "NATIVE_IMPORT_CAPTURE_PENDING",
+      "owner_status": "OWNER_VISUAL_PENDING",
+      "native_ready": false,
+      "motion_status": "FOUR_PHASE_POSES_NOT_FRAME_BY_FRAME",
+      "showcase_moving_target": true,
+      "delivery_phase": "release",
+      "phase_sources": {
+        "charge": {
+          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set3_transparent_rgba.png",
+          "region": [
+            0,
+            314,
+            314,
+            313
+          ],
+          "pivot_px": [
+            157.0,
+            156.5
+          ],
+          "display_width_px": 217,
+          "fps": 1.0,
+          "loop": false,
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set3_transparent_rgba.png",
+              "region": [
+                0,
+                314,
+                314,
+                313
+              ],
+              "pivot_px": [
+                157.0,
+                156.5
+              ]
+            }
+          ]
+        },
+        "release": {
+          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set3_transparent_rgba.png",
+          "region": [
+            314,
+            314,
+            313,
+            313
+          ],
+          "pivot_px": [
+            156.5,
+            156.5
+          ],
+          "display_width_px": 217,
+          "fps": 1.0,
+          "loop": false,
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set3_transparent_rgba.png",
+              "region": [
+                314,
+                314,
+                313,
+                313
+              ],
+              "pivot_px": [
+                156.5,
+                156.5
+              ]
+            }
+          ]
+        },
+        "contact": {
+          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set3_transparent_rgba.png",
+          "region": [
+            627,
+            314,
+            313,
+            313
+          ],
+          "pivot_px": [
+            156.5,
+            156.5
+          ],
+          "display_width_px": 217,
+          "fps": 1.0,
+          "loop": false,
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set3_transparent_rgba.png",
+              "region": [
+                627,
+                314,
+                313,
+                313
+              ],
+              "pivot_px": [
+                156.5,
+                156.5
+              ]
+            }
+          ]
+        },
+        "fade": {
+          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set3_transparent_rgba.png",
+          "region": [
+            940,
+            314,
+            314,
+            313
+          ],
+          "pivot_px": [
+            157.0,
+            156.5
+          ],
+          "display_width_px": 217,
+          "fps": 1.0,
+          "loop": false,
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set3_transparent_rgba.png",
+              "region": [
+                940,
+                314,
+                314,
+                313
+              ],
+              "pivot_px": [
+                157.0,
+                156.5
+              ]
+            }
+          ]
+        }
+      },
+      "review_timeline": {
+        "release_at": 1.2,
+        "flight_at": 1.2,
+        "contact_at": 1.62,
+        "fade_at": 1.82,
+        "loop_seconds": 2.1,
+        "contact_window_seconds": 0.2,
+        "fade_window_seconds": 0.26,
+        "start_window_seconds": 0.18,
+        "end_window_seconds": 0.2,
+        "actor_action_seconds": 0.35,
+        "clock": "REVIEW_STORYBOARD_ONLY",
+        "charge_window_seconds": 1.2,
+        "release_window_seconds": 0.18
+      },
+      "receipt_manifest": {
+        "schema": "tmb.vfx_bindings.v1",
+        "skill_id": "tmb.skill.formation.sat_phat_tran.ultimate.human",
+        "bindings": [
+          {
+            "event_type": "skill_cast",
+            "caster_slot": "ground",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "charge"
+          },
+          {
+            "event_type": "skill_release",
+            "caster_slot": "ground",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "release"
+          },
+          {
+            "event_type": "v63_formation_zone_created",
+            "caster_slot": "ground",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "start"
+          },
+          {
+            "event_type": "v63_formation_zone_tick",
+            "caster_slot": "ground",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "contact"
+          },
+          {
+            "event_type": "v63_formation_zone_expired",
+            "caster_slot": "ground",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "end"
+          }
+        ]
+      },
+      "source_batch_manifest": "res://labs/combat_lab/formation01/factory_batch1_20261125/manifest.json",
+      "contact_sheet_path": "res://labs/combat_lab/formation01/factory_batch1_20261125/review/formation_batch1_contact_sheet_1x.png",
+      "contact_source_note": "Contact phase is source art only; render only after matching real MapBattleV2 receipt.",
+      "review_note": "Four distinct phase poses from first-party RGBA atlases, shown at shared AS68 1x game scale with real Source A moving target. Contact and status art require matching MapBattleV2 event receipts; no fake combat effects. Frame-by-frame motion, integrated native QA, owner approval, and PvE remain pending/held."
+    },
+    {
+      "skill_id": "tmb.skill.formation.tu_linh_tran.active_01.human",
+      "school": "formation",
+      "branch": "tu_linh_tran",
+      "name_vi": "Thổ Mạch Dẫn Khí",
+      "catalog_path": "res://data/combat/v63_formation_combat_catalog.json",
+      "effect": "guard",
+      "shape": "circle",
+      "target_limit": 3,
+      "mechanic_template": "shield",
+      "mechanic_templates": [
+        "shield",
+        "buff",
+        "formation",
+        "status"
+      ],
+      "target_mode": "circle",
+      "preview_target_kind": "ally",
+      "target_actor_id": "review_target",
+      "outside_actor_id": "review_outside",
+      "actor_sex": "male",
+      "actor_asset_id": 68,
+      "actor_action": "cast",
+      "facing_vector": [
+        0.0,
+        1.0
+      ],
+      "preview_attachment_override": {
+        "suppress_attachments": true
+      },
+      "source_anchor": "ground",
+      "phase_anchors": {
+        "charge": "ground",
+        "release": "target_foot",
+        "contact": "target_foot",
+        "fade": "target_foot",
+        "start": "target_foot",
+        "sustain": "target_foot",
+        "end": "target_foot"
+      },
+      "phase_aliases": {
+        "start": "release",
+        "sustain": "release",
+        "end": "fade"
+      },
+      "draw_layer": "BEHIND",
+      "source_g3": "SOURCE_ALPHA_AND_CONTACT_SHEET_SELF_PASS",
+      "native_status": "NATIVE_IMPORT_CAPTURE_PENDING",
+      "owner_status": "OWNER_VISUAL_PENDING",
+      "native_ready": false,
+      "motion_status": "FOUR_PHASE_POSES_NOT_FRAME_BY_FRAME",
+      "showcase_moving_target": true,
+      "delivery_phase": "release",
+      "phase_sources": {
+        "charge": {
+          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set3_transparent_rgba.png",
+          "region": [
+            0,
+            627,
+            314,
+            313
+          ],
+          "pivot_px": [
+            157.0,
+            156.5
+          ],
+          "display_width_px": 195,
+          "fps": 1.0,
+          "loop": false,
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set3_transparent_rgba.png",
+              "region": [
+                0,
+                627,
+                314,
+                313
+              ],
+              "pivot_px": [
+                157.0,
+                156.5
+              ]
+            }
+          ]
+        },
+        "release": {
+          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set3_transparent_rgba.png",
+          "region": [
+            314,
+            627,
+            313,
+            313
+          ],
+          "pivot_px": [
+            156.5,
+            156.5
+          ],
+          "display_width_px": 195,
+          "fps": 1.0,
+          "loop": false,
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set3_transparent_rgba.png",
+              "region": [
+                314,
+                627,
+                313,
+                313
+              ],
+              "pivot_px": [
+                156.5,
+                156.5
+              ]
+            }
+          ]
+        },
+        "contact": {
+          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set3_transparent_rgba.png",
+          "region": [
+            627,
+            627,
+            313,
+            313
+          ],
+          "pivot_px": [
+            156.5,
+            156.5
+          ],
+          "display_width_px": 195,
+          "fps": 1.0,
+          "loop": false,
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set3_transparent_rgba.png",
+              "region": [
+                627,
+                627,
+                313,
+                313
+              ],
+              "pivot_px": [
+                156.5,
+                156.5
+              ]
+            }
+          ]
+        },
+        "fade": {
+          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set3_transparent_rgba.png",
+          "region": [
+            940,
+            627,
+            314,
+            313
+          ],
+          "pivot_px": [
+            157.0,
+            156.5
+          ],
+          "display_width_px": 195,
+          "fps": 1.0,
+          "loop": false,
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set3_transparent_rgba.png",
+              "region": [
+                940,
+                627,
+                314,
+                313
+              ],
+              "pivot_px": [
+                157.0,
+                156.5
+              ]
+            }
+          ]
+        }
+      },
+      "review_timeline": {
+        "release_at": 0.45,
+        "flight_at": 0.45,
+        "contact_at": 0.87,
+        "fade_at": 1.07,
+        "loop_seconds": 1.8,
+        "contact_window_seconds": 0.2,
+        "fade_window_seconds": 0.26,
+        "start_window_seconds": 0.18,
+        "end_window_seconds": 0.2,
+        "actor_action_seconds": 0.35,
+        "clock": "REVIEW_STORYBOARD_ONLY",
+        "charge_window_seconds": 0.45,
+        "release_window_seconds": 0.18
+      },
+      "receipt_manifest": {
+        "schema": "tmb.vfx_bindings.v1",
+        "skill_id": "tmb.skill.formation.tu_linh_tran.active_01.human",
+        "bindings": [
+          {
+            "event_type": "skill_cast",
+            "caster_slot": "ground",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "charge"
+          },
+          {
+            "event_type": "skill_release",
+            "caster_slot": "ground",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "release"
+          },
+          {
+            "event_type": "status_applied",
+            "caster_slot": "ground",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "start"
+          }
+        ]
+      },
+      "source_batch_manifest": "res://labs/combat_lab/formation01/factory_batch1_20261125/manifest.json",
+      "contact_sheet_path": "res://labs/combat_lab/formation01/factory_batch1_20261125/review/formation_batch1_contact_sheet_1x.png",
+      "contact_source_note": "Contact phase is source art only; render only after matching real MapBattleV2 receipt.",
+      "review_note": "Four distinct phase poses from first-party RGBA atlases, shown at shared AS68 1x game scale with real Source A moving target. Contact and status art require matching MapBattleV2 event receipts; no fake combat effects. Frame-by-frame motion, integrated native QA, owner approval, and PvE remain pending/held."
+    },
+    {
+      "skill_id": "tmb.skill.formation.tu_linh_tran.active_02.human",
+      "school": "formation",
+      "branch": "tu_linh_tran",
+      "name_vi": "Tinh Bàn Hộ Tâm",
+      "catalog_path": "res://data/combat/v63_formation_combat_catalog.json",
+      "effect": "damage",
+      "shape": "circle",
+      "target_limit": 3,
+      "mechanic_template": "circle_aoe",
+      "mechanic_templates": [
+        "circle_aoe",
+        "multi_target"
+      ],
+      "target_mode": "circle",
+      "preview_target_kind": "monster",
+      "target_actor_id": "review_target",
+      "outside_actor_id": "review_outside",
+      "actor_sex": "male",
+      "actor_asset_id": 68,
+      "actor_action": "cast",
+      "facing_vector": [
+        0.0,
+        1.0
+      ],
+      "preview_attachment_override": {
+        "suppress_attachments": true
+      },
+      "source_anchor": "ground",
+      "phase_anchors": {
+        "charge": "ground",
+        "release": "target_foot",
+        "contact": "target_foot",
+        "fade": "target_foot",
+        "start": "target_foot",
+        "sustain": "target_foot",
+        "end": "target_foot"
+      },
+      "phase_aliases": {
+        "start": "release",
+        "sustain": "release",
+        "end": "fade"
+      },
+      "draw_layer": "BEHIND",
+      "source_g3": "ART_SEMANTIC_REVIEW_REQUIRED_DAMAGE_VS_SHIELD_READ",
+      "native_status": "NATIVE_IMPORT_CAPTURE_PENDING",
+      "owner_status": "OWNER_VISUAL_PENDING",
+      "native_ready": false,
+      "motion_status": "FOUR_PHASE_POSES_NOT_FRAME_BY_FRAME",
+      "showcase_moving_target": true,
+      "delivery_phase": "release",
+      "phase_sources": {
+        "charge": {
+          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set3_transparent_rgba.png",
+          "region": [
+            0,
+            940,
+            314,
+            314
+          ],
+          "pivot_px": [
+            157.0,
+            157.0
+          ],
+          "display_width_px": 166,
+          "fps": 1.0,
+          "loop": false,
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set3_transparent_rgba.png",
+              "region": [
+                0,
+                940,
+                314,
+                314
+              ],
+              "pivot_px": [
+                157.0,
+                157.0
+              ]
+            }
+          ]
+        },
+        "release": {
+          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set3_transparent_rgba.png",
+          "region": [
+            314,
+            940,
+            313,
+            314
+          ],
+          "pivot_px": [
+            156.5,
+            157.0
+          ],
+          "display_width_px": 166,
+          "fps": 1.0,
+          "loop": false,
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set3_transparent_rgba.png",
+              "region": [
+                314,
+                940,
+                313,
+                314
+              ],
+              "pivot_px": [
+                156.5,
+                157.0
+              ]
+            }
+          ]
+        },
+        "contact": {
+          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set3_transparent_rgba.png",
+          "region": [
+            627,
+            940,
+            313,
+            314
+          ],
+          "pivot_px": [
+            156.5,
+            157.0
+          ],
+          "display_width_px": 166,
+          "fps": 1.0,
+          "loop": false,
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set3_transparent_rgba.png",
+              "region": [
+                627,
+                940,
+                313,
+                314
+              ],
+              "pivot_px": [
+                156.5,
+                157.0
+              ]
+            }
+          ]
+        },
+        "fade": {
+          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set3_transparent_rgba.png",
+          "region": [
+            940,
+            940,
+            314,
+            314
+          ],
+          "pivot_px": [
+            157.0,
+            157.0
+          ],
+          "display_width_px": 166,
+          "fps": 1.0,
+          "loop": false,
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set3_transparent_rgba.png",
+              "region": [
+                940,
+                940,
+                314,
+                314
+              ],
+              "pivot_px": [
+                157.0,
+                157.0
+              ]
+            }
+          ]
+        }
+      },
+      "review_timeline": {
+        "release_at": 0.45,
+        "flight_at": 0.45,
+        "contact_at": 0.87,
+        "fade_at": 1.07,
+        "loop_seconds": 1.8,
+        "contact_window_seconds": 0.2,
+        "fade_window_seconds": 0.26,
+        "start_window_seconds": 0.18,
+        "end_window_seconds": 0.2,
+        "actor_action_seconds": 0.35,
+        "clock": "REVIEW_STORYBOARD_ONLY",
+        "charge_window_seconds": 0.45,
+        "release_window_seconds": 0.18
+      },
+      "receipt_manifest": {
+        "schema": "tmb.vfx_bindings.v1",
+        "skill_id": "tmb.skill.formation.tu_linh_tran.active_02.human",
+        "bindings": [
+          {
+            "event_type": "skill_cast",
+            "caster_slot": "ground",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "charge"
+          },
+          {
+            "event_type": "skill_release",
+            "caster_slot": "ground",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "release"
+          },
+          {
+            "event_type": "v63_skill_hit",
+            "caster_slot": "ground",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "contact"
+          }
+        ]
+      },
+      "source_batch_manifest": "res://labs/combat_lab/formation01/factory_batch1_20261125/manifest.json",
+      "contact_sheet_path": "res://labs/combat_lab/formation01/factory_batch1_20261125/review/formation_batch1_contact_sheet_1x.png",
+      "contact_source_note": "Contact phase is source art only; render only after matching real MapBattleV2 receipt.",
+      "review_note": "Canonical effect is damage. Current phase art visually reads as a protective shield and is flagged for art rework; do not label as guard. Candidate stays visible for review while other skills proceed. Native and owner review pending; PVE HOLD."
+    },
+    {
+      "skill_id": "tmb.skill.formation.basic.human",
+      "school": "formation",
+      "branch": "",
+      "name_vi": "Định Tinh Hạ Trận",
+      "catalog_path": "res://data/combat/v63_formation_combat_catalog.json",
+      "effect": "damage",
+      "shape": "single_target",
+      "target_limit": 1,
+      "mechanic_template": "melee",
+      "mechanic_templates": [
+        "melee",
+        "formation"
+      ],
+      "target_mode": "single_target",
+      "preview_target_kind": "monster",
+      "target_actor_id": "review_target",
+      "outside_actor_id": "review_outside",
+      "actor_sex": "male",
+      "actor_asset_id": 68,
+      "actor_action": "attack",
+      "facing_vector": [
+        0.0,
+        1.0
+      ],
+      "preview_attachment_override": {
+        "suppress_attachments": true
+      },
+      "source_anchor": "ground",
+      "phase_anchors": {
+        "charge": "ground",
+        "release": "target_foot",
+        "contact": "target_foot",
+        "fade": "target_foot",
+        "start": "target_foot",
+        "sustain": "target_foot",
+        "end": "target_foot"
+      },
+      "phase_aliases": {
+        "start": "release",
+        "sustain": "release",
+        "end": "fade"
+      },
+      "draw_layer": "BEHIND",
+      "source_g3": "SOURCE_ALPHA_AND_CONTACT_SHEET_SELF_PASS",
+      "native_status": "NATIVE_IMPORT_CAPTURE_PENDING",
+      "owner_status": "OWNER_VISUAL_PENDING",
+      "native_ready": false,
+      "motion_status": "FOUR_PHASE_POSES_NOT_FRAME_BY_FRAME",
+      "showcase_moving_target": true,
+      "delivery_phase": "release",
+      "phase_sources": {
+        "charge": {
+          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set4_transparent_rgba.png",
+          "region": [
+            0,
+            0,
+            314,
+            314
+          ],
+          "pivot_px": [
+            157.0,
+            157.0
+          ],
+          "display_width_px": 108,
+          "fps": 1.0,
+          "loop": false,
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set4_transparent_rgba.png",
+              "region": [
+                0,
+                0,
+                314,
+                314
+              ],
+              "pivot_px": [
+                157.0,
+                157.0
+              ]
+            }
+          ]
+        },
+        "release": {
+          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set4_transparent_rgba.png",
+          "region": [
+            314,
+            0,
+            313,
+            314
+          ],
+          "pivot_px": [
+            156.5,
+            157.0
+          ],
+          "display_width_px": 108,
+          "fps": 1.0,
+          "loop": false,
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set4_transparent_rgba.png",
+              "region": [
+                314,
+                0,
+                313,
+                314
+              ],
+              "pivot_px": [
+                156.5,
+                157.0
+              ]
+            }
+          ]
+        },
+        "contact": {
+          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set4_transparent_rgba.png",
+          "region": [
+            627,
+            0,
+            313,
+            314
+          ],
+          "pivot_px": [
+            156.5,
+            157.0
+          ],
+          "display_width_px": 108,
+          "fps": 1.0,
+          "loop": false,
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set4_transparent_rgba.png",
+              "region": [
+                627,
+                0,
+                313,
+                314
+              ],
+              "pivot_px": [
+                156.5,
+                157.0
+              ]
+            }
+          ]
+        },
+        "fade": {
+          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set4_transparent_rgba.png",
+          "region": [
+            940,
+            0,
+            314,
+            314
+          ],
+          "pivot_px": [
+            157.0,
+            157.0
+          ],
+          "display_width_px": 108,
+          "fps": 1.0,
+          "loop": false,
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set4_transparent_rgba.png",
+              "region": [
+                940,
+                0,
+                314,
+                314
+              ],
+              "pivot_px": [
+                157.0,
+                157.0
+              ]
+            }
+          ]
+        }
+      },
+      "review_timeline": {
+        "release_at": 0.12,
+        "flight_at": 0.12,
+        "contact_at": 0.54,
+        "fade_at": 0.74,
+        "loop_seconds": 1.8,
+        "contact_window_seconds": 0.2,
+        "fade_window_seconds": 0.26,
+        "start_window_seconds": 0.18,
+        "end_window_seconds": 0.2,
+        "actor_action_seconds": 0.35,
+        "clock": "REVIEW_STORYBOARD_ONLY",
+        "charge_window_seconds": 0.18,
+        "release_window_seconds": 0.18
+      },
+      "receipt_manifest": {
+        "schema": "tmb.vfx_bindings.v1",
+        "skill_id": "tmb.skill.formation.basic.human",
+        "bindings": [
+          {
+            "event_type": "hit",
+            "caster_slot": "ground",
+            "target_slot": "ground",
+            "actor_clip": "attack",
+            "visual_phase": "contact"
+          }
+        ]
+      },
+      "source_batch_manifest": "res://labs/combat_lab/formation01/factory_batch1_20261125/manifest.json",
+      "contact_sheet_path": "res://labs/combat_lab/formation01/factory_batch1_20261125/review/formation_batch1_contact_sheet_1x.png",
+      "contact_source_note": "Contact phase is source art only; render only after matching real MapBattleV2 receipt.",
+      "review_note": "Basic contact uses an actual MapBattleV2 hit with kind=basic and the attacker actor’s exact v63_basic_skill_id; the read-only bridge labels that receipt only. No cast or hit is generated by VFX. Source and integrated capture remain candidate; owner pending; PVE HOLD.",
+      "basic_hit_receipt_contract": "REAL_MAPBATTLE_HIT_KIND_BASIC_PLUS_EXACT_ACTOR_V63_BASIC_SKILL_ID"
+    },
+    {
+      "skill_id": "tmb.skill.formation.mobility.human",
+      "school": "formation",
+      "branch": "",
+      "name_vi": "Cửu Cung Du Bộ",
+      "catalog_path": "res://data/combat/v63_formation_combat_catalog.json",
+      "effect": "mobility",
+      "shape": "single_target",
+      "target_limit": 1,
+      "mechanic_template": "mobility",
+      "mechanic_templates": [
+        "mobility",
+        "formation"
+      ],
+      "target_mode": "single_target",
+      "preview_target_kind": "monster",
+      "target_actor_id": "review_target",
+      "outside_actor_id": "review_outside",
+      "actor_sex": "male",
+      "actor_asset_id": 68,
+      "actor_action": "cast",
+      "facing_vector": [
+        0.0,
+        1.0
+      ],
+      "preview_attachment_override": {
+        "suppress_attachments": true
+      },
+      "source_anchor": "ground",
+      "phase_anchors": {
+        "charge": "ground",
+        "release": "target_foot",
+        "contact": "target_foot",
+        "fade": "target_foot",
+        "start": "target_foot",
+        "sustain": "target_foot",
+        "end": "target_foot"
+      },
+      "phase_aliases": {
+        "start": "release",
+        "sustain": "release",
+        "end": "fade"
+      },
+      "draw_layer": "BEHIND",
+      "source_g3": "SOURCE_ALPHA_AND_CONTACT_SHEET_SELF_PASS",
+      "native_status": "NATIVE_IMPORT_CAPTURE_PENDING",
+      "owner_status": "OWNER_VISUAL_PENDING",
+      "native_ready": false,
+      "motion_status": "FOUR_PHASE_POSES_NOT_FRAME_BY_FRAME",
+      "showcase_moving_target": true,
+      "delivery_phase": "release",
+      "phase_sources": {
+        "charge": {
+          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set4_transparent_rgba.png",
+          "region": [
+            0,
+            314,
+            314,
+            313
+          ],
+          "pivot_px": [
+            157.0,
+            156.5
+          ],
+          "display_width_px": 108,
+          "fps": 1.0,
+          "loop": false,
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set4_transparent_rgba.png",
+              "region": [
+                0,
+                314,
+                314,
+                313
+              ],
+              "pivot_px": [
+                157.0,
+                156.5
+              ]
+            }
+          ]
+        },
+        "release": {
+          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set4_transparent_rgba.png",
+          "region": [
+            314,
+            314,
+            313,
+            313
+          ],
+          "pivot_px": [
+            156.5,
+            156.5
+          ],
+          "display_width_px": 108,
+          "fps": 1.0,
+          "loop": false,
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set4_transparent_rgba.png",
+              "region": [
+                314,
+                314,
+                313,
+                313
+              ],
+              "pivot_px": [
+                156.5,
+                156.5
+              ]
+            }
+          ]
+        },
+        "contact": {
+          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set4_transparent_rgba.png",
+          "region": [
+            627,
+            314,
+            313,
+            313
+          ],
+          "pivot_px": [
+            156.5,
+            156.5
+          ],
+          "display_width_px": 108,
+          "fps": 1.0,
+          "loop": false,
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set4_transparent_rgba.png",
+              "region": [
+                627,
+                314,
+                313,
+                313
+              ],
+              "pivot_px": [
+                156.5,
+                156.5
+              ]
+            }
+          ]
+        },
+        "fade": {
+          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set4_transparent_rgba.png",
+          "region": [
+            940,
+            314,
+            314,
+            313
+          ],
+          "pivot_px": [
+            157.0,
+            156.5
+          ],
+          "display_width_px": 108,
+          "fps": 1.0,
+          "loop": false,
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set4_transparent_rgba.png",
+              "region": [
+                940,
+                314,
+                314,
+                313
+              ],
+              "pivot_px": [
+                157.0,
+                156.5
+              ]
+            }
+          ]
+        }
+      },
+      "review_timeline": {
+        "release_at": 0.3,
+        "flight_at": 0.3,
+        "contact_at": 0.72,
+        "fade_at": 0.92,
+        "loop_seconds": 1.8,
+        "contact_window_seconds": 0.2,
+        "fade_window_seconds": 0.26,
+        "start_window_seconds": 0.18,
+        "end_window_seconds": 0.2,
+        "actor_action_seconds": 0.35,
+        "clock": "REVIEW_STORYBOARD_ONLY",
+        "charge_window_seconds": 0.3,
+        "release_window_seconds": 0.18
+      },
+      "receipt_manifest": {
+        "schema": "tmb.vfx_bindings.v1",
+        "skill_id": "tmb.skill.formation.mobility.human",
+        "bindings": [
+          {
+            "event_type": "skill_cast",
+            "caster_slot": "ground",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "charge"
+          },
+          {
+            "event_type": "skill_release",
+            "caster_slot": "ground",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "release"
+          },
+          {
+            "event_type": "v63_mobility",
+            "caster_slot": "ground",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "contact"
+          }
+        ]
+      },
+      "source_batch_manifest": "res://labs/combat_lab/formation01/factory_batch1_20261125/manifest.json",
+      "contact_sheet_path": "res://labs/combat_lab/formation01/factory_batch1_20261125/review/formation_batch1_contact_sheet_1x.png",
+      "contact_source_note": "Contact phase is source art only; render only after matching real MapBattleV2 receipt.",
+      "review_note": "Four distinct phase poses from first-party RGBA atlases, shown at shared AS68 1x game scale with real Source A moving target. Contact and status art require matching MapBattleV2 event receipts; no fake combat effects. Frame-by-frame motion, integrated native QA, owner approval, and PvE remain pending/held."
+    },
+    {
+      "skill_id": "tmb.skill.formation.tu_linh_tran.active_03.human",
+      "school": "formation",
+      "branch": "tu_linh_tran",
+      "name_vi": "Địa Tàng Liên Trận",
+      "catalog_path": "res://data/combat/v63_formation_combat_catalog.json",
+      "effect": "guard",
+      "shape": "circle",
+      "target_limit": 3,
+      "mechanic_template": "shield",
+      "mechanic_templates": [
+        "shield",
+        "buff",
+        "formation",
+        "status"
+      ],
+      "target_mode": "circle",
+      "preview_target_kind": "ally",
+      "target_actor_id": "review_target",
+      "outside_actor_id": "review_outside",
+      "actor_sex": "male",
+      "actor_asset_id": 68,
+      "actor_action": "cast",
+      "facing_vector": [
+        0.0,
+        1.0
+      ],
+      "preview_attachment_override": {
+        "suppress_attachments": true
+      },
+      "source_anchor": "ground",
+      "phase_anchors": {
+        "charge": "ground",
+        "release": "target_foot",
+        "contact": "target_foot",
+        "fade": "target_foot",
+        "start": "target_foot",
+        "sustain": "target_foot",
+        "end": "target_foot"
+      },
+      "phase_aliases": {
+        "start": "release",
+        "sustain": "release",
+        "end": "fade"
+      },
+      "draw_layer": "BEHIND",
+      "source_g3": "SOURCE_ALPHA_AND_CONTACT_SHEET_SELF_PASS",
+      "native_status": "NATIVE_IMPORT_CAPTURE_PENDING",
+      "owner_status": "OWNER_VISUAL_PENDING",
+      "native_ready": false,
+      "motion_status": "FOUR_PHASE_POSES_NOT_FRAME_BY_FRAME",
+      "showcase_moving_target": true,
+      "delivery_phase": "release",
+      "phase_sources": {
+        "charge": {
+          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set4_transparent_rgba.png",
+          "region": [
+            0,
+            627,
+            314,
+            313
+          ],
+          "pivot_px": [
+            157.0,
+            156.5
+          ],
+          "display_width_px": 217,
+          "fps": 1.0,
+          "loop": false,
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set4_transparent_rgba.png",
+              "region": [
+                0,
+                627,
+                314,
+                313
+              ],
+              "pivot_px": [
+                157.0,
+                156.5
+              ]
+            }
+          ]
+        },
+        "release": {
+          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set4_transparent_rgba.png",
+          "region": [
+            314,
+            627,
+            313,
+            313
+          ],
+          "pivot_px": [
+            156.5,
+            156.5
+          ],
+          "display_width_px": 217,
+          "fps": 1.0,
+          "loop": false,
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set4_transparent_rgba.png",
+              "region": [
+                314,
+                627,
+                313,
+                313
+              ],
+              "pivot_px": [
+                156.5,
+                156.5
+              ]
+            }
+          ]
+        },
+        "contact": {
+          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set4_transparent_rgba.png",
+          "region": [
+            627,
+            627,
+            313,
+            313
+          ],
+          "pivot_px": [
+            156.5,
+            156.5
+          ],
+          "display_width_px": 217,
+          "fps": 1.0,
+          "loop": false,
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set4_transparent_rgba.png",
+              "region": [
+                627,
+                627,
+                313,
+                313
+              ],
+              "pivot_px": [
+                156.5,
+                156.5
+              ]
+            }
+          ]
+        },
+        "fade": {
+          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set4_transparent_rgba.png",
+          "region": [
+            940,
+            627,
+            314,
+            313
+          ],
+          "pivot_px": [
+            157.0,
+            156.5
+          ],
+          "display_width_px": 217,
+          "fps": 1.0,
+          "loop": false,
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set4_transparent_rgba.png",
+              "region": [
+                940,
+                627,
+                314,
+                313
+              ],
+              "pivot_px": [
+                157.0,
+                156.5
+              ]
+            }
+          ]
+        }
+      },
+      "review_timeline": {
+        "release_at": 0.55,
+        "flight_at": 0.55,
+        "contact_at": 0.97,
+        "fade_at": 1.17,
+        "loop_seconds": 1.8,
+        "contact_window_seconds": 0.2,
+        "fade_window_seconds": 0.26,
+        "start_window_seconds": 0.18,
+        "end_window_seconds": 0.2,
+        "actor_action_seconds": 0.35,
+        "clock": "REVIEW_STORYBOARD_ONLY",
+        "charge_window_seconds": 0.55,
+        "release_window_seconds": 0.18
+      },
+      "receipt_manifest": {
+        "schema": "tmb.vfx_bindings.v1",
+        "skill_id": "tmb.skill.formation.tu_linh_tran.active_03.human",
+        "bindings": [
+          {
+            "event_type": "skill_cast",
+            "caster_slot": "ground",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "charge"
+          },
+          {
+            "event_type": "skill_release",
+            "caster_slot": "ground",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "release"
+          },
+          {
+            "event_type": "status_applied",
+            "caster_slot": "ground",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "start"
+          }
+        ]
+      },
+      "source_batch_manifest": "res://labs/combat_lab/formation01/factory_batch1_20261125/manifest.json",
+      "contact_sheet_path": "res://labs/combat_lab/formation01/factory_batch1_20261125/review/formation_batch1_contact_sheet_1x.png",
+      "contact_source_note": "Contact phase is source art only; render only after matching real MapBattleV2 receipt.",
+      "review_note": "Four distinct phase poses from first-party RGBA atlases, shown at shared AS68 1x game scale with real Source A moving target. Contact and status art require matching MapBattleV2 event receipts; no fake combat effects. Frame-by-frame motion, integrated native QA, owner approval, and PvE remain pending/held."
+    },
+    {
+      "skill_id": "tmb.skill.formation.tu_linh_tran.active_04.human",
+      "school": "formation",
+      "branch": "tu_linh_tran",
+      "name_vi": "Thái Sơ Tĩnh Vực",
+      "catalog_path": "res://data/combat/v63_formation_combat_catalog.json",
+      "effect": "damage",
+      "shape": "circle",
+      "target_limit": 3,
+      "mechanic_template": "circle_aoe",
+      "mechanic_templates": [
+        "circle_aoe",
+        "multi_target"
+      ],
+      "target_mode": "circle",
+      "preview_target_kind": "monster",
+      "target_actor_id": "review_target",
+      "outside_actor_id": "review_outside",
+      "actor_sex": "male",
+      "actor_asset_id": 68,
+      "actor_action": "cast",
+      "facing_vector": [
+        0.0,
+        1.0
+      ],
+      "preview_attachment_override": {
+        "suppress_attachments": true
+      },
+      "source_anchor": "ground",
+      "phase_anchors": {
+        "charge": "ground",
+        "release": "target_foot",
+        "contact": "target_foot",
+        "fade": "target_foot",
+        "start": "target_foot",
+        "sustain": "target_foot",
+        "end": "target_foot"
+      },
+      "phase_aliases": {
+        "start": "release",
+        "sustain": "release",
+        "end": "fade"
+      },
+      "draw_layer": "BEHIND",
+      "source_g3": "SOURCE_ALPHA_AND_CONTACT_SHEET_SELF_PASS",
+      "native_status": "NATIVE_IMPORT_CAPTURE_PENDING",
+      "owner_status": "OWNER_VISUAL_PENDING",
+      "native_ready": false,
+      "motion_status": "FOUR_PHASE_POSES_NOT_FRAME_BY_FRAME",
+      "showcase_moving_target": true,
+      "delivery_phase": "release",
+      "phase_sources": {
+        "charge": {
+          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set4_transparent_rgba.png",
+          "region": [
+            0,
+            940,
+            314,
+            314
+          ],
+          "pivot_px": [
+            157.0,
+            157.0
+          ],
+          "display_width_px": 188,
+          "fps": 1.0,
+          "loop": false,
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set4_transparent_rgba.png",
+              "region": [
+                0,
+                940,
+                314,
+                314
+              ],
+              "pivot_px": [
+                157.0,
+                157.0
+              ]
+            }
+          ]
+        },
+        "release": {
+          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set4_transparent_rgba.png",
+          "region": [
+            314,
+            940,
+            313,
+            314
+          ],
+          "pivot_px": [
+            156.5,
+            157.0
+          ],
+          "display_width_px": 188,
+          "fps": 1.0,
+          "loop": false,
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set4_transparent_rgba.png",
+              "region": [
+                314,
+                940,
+                313,
+                314
+              ],
+              "pivot_px": [
+                156.5,
+                157.0
+              ]
+            }
+          ]
+        },
+        "contact": {
+          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set4_transparent_rgba.png",
+          "region": [
+            627,
+            940,
+            313,
+            314
+          ],
+          "pivot_px": [
+            156.5,
+            157.0
+          ],
+          "display_width_px": 188,
+          "fps": 1.0,
+          "loop": false,
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set4_transparent_rgba.png",
+              "region": [
+                627,
+                940,
+                313,
+                314
+              ],
+              "pivot_px": [
+                156.5,
+                157.0
+              ]
+            }
+          ]
+        },
+        "fade": {
+          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set4_transparent_rgba.png",
+          "region": [
+            940,
+            940,
+            314,
+            314
+          ],
+          "pivot_px": [
+            157.0,
+            157.0
+          ],
+          "display_width_px": 188,
+          "fps": 1.0,
+          "loop": false,
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set4_transparent_rgba.png",
+              "region": [
+                940,
+                940,
+                314,
+                314
+              ],
+              "pivot_px": [
+                157.0,
+                157.0
+              ]
+            }
+          ]
+        }
+      },
+      "review_timeline": {
+        "release_at": 0.7,
+        "flight_at": 0.7,
+        "contact_at": 1.12,
+        "fade_at": 1.32,
+        "loop_seconds": 1.8,
+        "contact_window_seconds": 0.2,
+        "fade_window_seconds": 0.26,
+        "start_window_seconds": 0.18,
+        "end_window_seconds": 0.2,
+        "actor_action_seconds": 0.35,
+        "clock": "REVIEW_STORYBOARD_ONLY",
+        "charge_window_seconds": 0.7,
+        "release_window_seconds": 0.18
+      },
+      "receipt_manifest": {
+        "schema": "tmb.vfx_bindings.v1",
+        "skill_id": "tmb.skill.formation.tu_linh_tran.active_04.human",
+        "bindings": [
+          {
+            "event_type": "skill_cast",
+            "caster_slot": "ground",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "charge"
+          },
+          {
+            "event_type": "skill_release",
+            "caster_slot": "ground",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "release"
+          },
+          {
+            "event_type": "v63_skill_hit",
+            "caster_slot": "ground",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "contact"
+          }
+        ]
+      },
+      "source_batch_manifest": "res://labs/combat_lab/formation01/factory_batch1_20261125/manifest.json",
+      "contact_sheet_path": "res://labs/combat_lab/formation01/factory_batch1_20261125/review/formation_batch1_contact_sheet_1x.png",
+      "contact_source_note": "Contact phase is source art only; render only after matching real MapBattleV2 receipt.",
+      "review_note": "Four distinct phase poses from first-party RGBA atlases, shown at shared AS68 1x game scale with real Source A moving target. Contact and status art require matching MapBattleV2 event receipts; no fake combat effects. Frame-by-frame motion, integrated native QA, owner approval, and PvE remain pending/held."
+    },
+    {
+      "skill_id": "tmb.skill.formation.tu_linh_tran.ultimate.human",
+      "school": "formation",
+      "branch": "tu_linh_tran",
+      "name_vi": "Thái Sơ Vạn Linh Trận",
+      "catalog_path": "res://data/combat/v63_formation_combat_catalog.json",
+      "effect": "guard",
+      "shape": "circle",
+      "target_limit": 3,
+      "mechanic_template": "shield",
+      "mechanic_templates": [
+        "shield",
+        "buff",
+        "formation",
+        "status"
+      ],
+      "target_mode": "circle",
+      "preview_target_kind": "ally",
+      "target_actor_id": "review_target",
+      "outside_actor_id": "review_outside",
+      "actor_sex": "male",
+      "actor_asset_id": 68,
+      "actor_action": "cast",
+      "facing_vector": [
+        0.0,
+        1.0
+      ],
+      "preview_attachment_override": {
+        "suppress_attachments": true
+      },
+      "source_anchor": "ground",
+      "phase_anchors": {
+        "charge": "ground",
+        "release": "target_foot",
+        "contact": "target_foot",
+        "fade": "target_foot",
+        "start": "target_foot",
+        "sustain": "target_foot",
+        "end": "target_foot"
+      },
+      "phase_aliases": {
+        "start": "release",
+        "sustain": "release",
+        "end": "fade"
+      },
+      "draw_layer": "BEHIND",
+      "source_g3": "SOURCE_ALPHA_AND_CONTACT_SHEET_SELF_PASS",
+      "native_status": "NATIVE_IMPORT_CAPTURE_PENDING",
+      "owner_status": "OWNER_VISUAL_PENDING",
+      "native_ready": false,
+      "motion_status": "FOUR_PHASE_POSES_NOT_FRAME_BY_FRAME",
+      "showcase_moving_target": true,
+      "delivery_phase": "release",
+      "phase_sources": {
+        "charge": {
+          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set5_transparent_rgba.png",
+          "region": [
+            0,
+            0,
+            543,
+            724
+          ],
+          "pivot_px": [
+            271.5,
+            362.0
+          ],
+          "display_width_px": 238,
+          "fps": 1.0,
+          "loop": false,
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set5_transparent_rgba.png",
+              "region": [
+                0,
+                0,
+                543,
+                724
+              ],
+              "pivot_px": [
+                271.5,
+                362.0
+              ]
+            }
+          ]
+        },
+        "release": {
+          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set5_transparent_rgba.png",
+          "region": [
+            543,
+            0,
+            543,
+            724
+          ],
+          "pivot_px": [
+            271.5,
+            362.0
+          ],
+          "display_width_px": 238,
+          "fps": 1.0,
+          "loop": false,
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set5_transparent_rgba.png",
+              "region": [
+                543,
+                0,
+                543,
+                724
+              ],
+              "pivot_px": [
+                271.5,
+                362.0
+              ]
+            }
+          ]
+        },
+        "contact": {
+          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set5_transparent_rgba.png",
+          "region": [
+            1086,
+            0,
+            543,
+            724
+          ],
+          "pivot_px": [
+            271.5,
+            362.0
+          ],
+          "display_width_px": 238,
+          "fps": 1.0,
+          "loop": false,
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set5_transparent_rgba.png",
+              "region": [
+                1086,
+                0,
+                543,
+                724
+              ],
+              "pivot_px": [
+                271.5,
+                362.0
+              ]
+            }
+          ]
+        },
+        "fade": {
+          "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set5_transparent_rgba.png",
+          "region": [
+            1629,
+            0,
+            543,
+            724
+          ],
+          "pivot_px": [
+            271.5,
+            362.0
+          ],
+          "display_width_px": 238,
+          "fps": 1.0,
+          "loop": false,
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set5_transparent_rgba.png",
+              "region": [
+                1629,
+                0,
+                543,
+                724
+              ],
+              "pivot_px": [
+                271.5,
+                362.0
+              ]
+            }
+          ]
+        }
+      },
+      "review_timeline": {
+        "release_at": 1.0,
+        "flight_at": 1.0,
+        "contact_at": 1.42,
+        "fade_at": 1.62,
+        "loop_seconds": 1.9,
+        "contact_window_seconds": 0.2,
+        "fade_window_seconds": 0.26,
+        "start_window_seconds": 0.18,
+        "end_window_seconds": 0.2,
+        "actor_action_seconds": 0.35,
+        "clock": "REVIEW_STORYBOARD_ONLY",
+        "charge_window_seconds": 1.0,
+        "release_window_seconds": 0.18
+      },
+      "receipt_manifest": {
+        "schema": "tmb.vfx_bindings.v1",
+        "skill_id": "tmb.skill.formation.tu_linh_tran.ultimate.human",
+        "bindings": [
+          {
+            "event_type": "skill_cast",
+            "caster_slot": "ground",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "charge"
+          },
+          {
+            "event_type": "skill_release",
+            "caster_slot": "ground",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "release"
+          },
+          {
+            "event_type": "status_applied",
+            "caster_slot": "ground",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "start"
+          }
+        ]
+      },
+      "source_batch_manifest": "res://labs/combat_lab/formation01/factory_batch1_20261125/manifest.json",
+      "contact_sheet_path": "res://labs/combat_lab/formation01/factory_batch1_20261125/review/formation_batch1_contact_sheet_1x.png",
+      "contact_source_note": "Contact phase is source art only; render only after matching real MapBattleV2 receipt.",
+      "review_note": "Four distinct phase poses from first-party RGBA atlases, shown at shared AS68 1x game scale with real Source A moving target. Contact and status art require matching MapBattleV2 event receipts; no fake combat effects. Frame-by-frame motion, integrated native QA, owner approval, and PvE remain pending/held."
+    }
+  ],
+  "batch_status": {
+    "formation_human_cast_batch1_20261125": {
+      "source_status": "SOURCE_CHECKPOINTED",
+      "atlas_count": 5,
+      "skill_count": 17,
+      "native_import_capture": "PENDING",
+      "owner_approval": "PENDING",
+      "pve": "HOLD"
+    }
+  }
+}

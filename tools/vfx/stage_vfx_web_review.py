@@ -9,6 +9,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import re
 import shutil
 import subprocess
 import sys
@@ -21,7 +22,19 @@ SOURCE_FILES = (
     "labs/visual_bridge_v1/as48_sword_vfx_binding_lab.json",
     "labs/visual_bridge_v1/vfx_web_review_hub.gd",
     "labs/visual_bridge_v1/vfx_web_review_hub.tscn",
+    "labs/combat_lab/vfx_factory/vfx_factory_review.gd",
+    "labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+    "labs/combat_lab/vfx_factory/registry.json",
     "labs/combat_lab/combat_lab_v16_impact_glow.gdshader",
+    # Shared factory runtime. These are presentation/resource readers only;
+    # the canonical skill JSON is staged per catalog entry below.
+    "src/presentation/p3/pve_aschar_frame_renderer_v1.gd",
+    "src/presentation/p3/sect_aschar_candidate_bridge_v1.gd",
+    "src/presentation/p3/sect_aschar_candidate_sprite_v1.gd",
+    "src/presentation/p3/combat_v5_source_a_atlas.gd",
+    "src/presentation/p3/combat_v4_sprite_atlas.gd",
+    "assets/p3/baked_candidates/weapon_library_v1/candidate/ASCHAR_24_ACTOR_WEAPON_BINDINGS_V9_3_CANDIDATE.json",
+    "assets/combat_v5_source_a/visual_manifest.json",
     "labs/character_family/aschar_v9_batch1/assets/atlases/AS48_attack_front_consistency_v2_atlas.png",
     "labs/character_family/aschar_v9_batch1/assets/weapons/AS48_KIEMTU_JIAN_CANDIDATE.png",
     "labs/character_family/aschar_v9_batch1/meta/AS48_ATTACK_FRONT_SOCKET_V9_3.json",
@@ -29,6 +42,22 @@ SOURCE_FILES = (
     "assets/actors/v5_sa_monster_1113031_1/atlas_000.webp",
     "assets/actors/v5_sa_monster_1113031_1/atlas_001.webp",
     "assets/actors/v5_sa_monster_1113031_1/atlas_002.webp",
+)
+
+ASCHAR_FACTORY_ACTOR_IDS = (52, 56, 68)  # AS52 Dual Blade, AS56 Bow, AS68 Formation
+ASCHAR_BRIDGE = "src/presentation/p3/sect_aschar_candidate_bridge_v1.gd"
+SOURCE_A_MANIFEST = "assets/combat_v5_source_a/visual_manifest.json"
+FACTORY_MONSTER_KEY = "monster_1113031_1"
+RES_PATH_RE = re.compile(r'path="res://([^"\s]+)"')
+FACTORY_RUNTIME_FILES = (
+    "labs/visual_bridge_v1/asset_vfx_readonly_bridge_v1.gd",
+    "src/presentation/p3/pve_aschar_frame_renderer_v1.gd",
+    ASCHAR_BRIDGE,
+    "src/presentation/p3/sect_aschar_candidate_sprite_v1.gd",
+    "src/presentation/p3/combat_v5_source_a_atlas.gd",
+    "src/presentation/p3/combat_v4_sprite_atlas.gd",
+    "assets/p3/baked_candidates/weapon_library_v1/candidate/ASCHAR_24_ACTOR_WEAPON_BINDINGS_V9_3_CANDIDATE.json",
+    SOURCE_A_MANIFEST,
 )
 
 PROJECT = '''config_version=5
@@ -90,6 +119,78 @@ progressive_web_app/ensure_cross_origin_isolation_headers=false
 def digest(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
+def _require_source(root: Path, relative: str, context: str) -> Path:
+    path = Path(relative)
+    if path.is_absolute() or ".." in path.parts or "\\" in relative:
+        raise SystemExit(f"Unsafe {context} path: {relative}")
+    source = root / path
+    if not source.is_file():
+        raise SystemExit(f"Missing {context}: {source}")
+    return source
+
+def _collect_tres_resources(root: Path, relative: str, files: set[str], context: str) -> None:
+    source = _require_source(root, relative, context)
+    files.add(relative)
+    for raw in RES_PATH_RE.findall(source.read_text(encoding="utf-8")):
+        _require_source(root, raw, f"{context} dependency")
+        files.add(raw)
+
+def _res_paths(value):
+    if isinstance(value, dict):
+        for child in value.values():
+            yield from _res_paths(child)
+    elif isinstance(value, list):
+        for child in value:
+            yield from _res_paths(child)
+    elif isinstance(value, str) and value.startswith("res://"):
+        yield value.removeprefix("res://")
+
+def factory_runtime_dependencies(root: Path) -> set[str]:
+    """Resolve only factory-selected ASCHAR actors and the moving Source A monster."""
+    files = set(SOURCE_FILES)
+    for relative in FACTORY_RUNTIME_FILES:
+        _require_source(root, relative, "factory runtime source")
+        files.add(relative)
+
+    bridge_path = _require_source(root, ASCHAR_BRIDGE, "ASCHAR bridge")
+    bridge_text = bridge_path.read_text(encoding="utf-8")
+    socket_match = re.search(r'const SOCKET_ROOT := "res://([^"\s]+)"', bridge_text)
+    if not socket_match:
+        raise SystemExit("ASCHAR bridge has no readable SOCKET_ROOT")
+    socket_root = socket_match.group(1).rstrip("/")
+
+    for actor_id in ASCHAR_FACTORY_ACTOR_IDS:
+        source_match = re.search(
+            rf'(?m)^\s*{actor_id}:"res://([^"\s]+)"', bridge_text)
+        if not source_match:
+            raise SystemExit(f"ASCHAR bridge has no SOURCE_PATHS entry for AS{actor_id}")
+        tres_path = source_match.group(1)
+        _collect_tres_resources(root, tres_path, files, f"AS{actor_id} SpriteFrames")
+
+        socket_path = f"{socket_root}/AS{actor_id}_weapon_sockets_v9_3_candidate.json"
+        socket_file = _require_source(root, socket_path, f"AS{actor_id} socket manifest")
+        files.add(socket_path)
+        socket_data = json.loads(socket_file.read_text(encoding="utf-8"))
+        for dependency in _res_paths(socket_data):
+            _require_source(root, dependency, f"AS{actor_id} socket resource")
+            files.add(dependency)
+
+    source_a_file = _require_source(root, SOURCE_A_MANIFEST, "Source A visual manifest")
+    source_a = json.loads(source_a_file.read_text(encoding="utf-8"))
+    monster = source_a.get("actors", {}).get(FACTORY_MONSTER_KEY)
+    if not isinstance(monster, dict):
+        raise SystemExit(f"Source A manifest has no moving factory target {FACTORY_MONSTER_KEY}")
+    for key in ("base_asset", "combat_asset"):
+        asset_id = str(monster.get(key, ""))
+        if not asset_id or "/" in asset_id or "\\" in asset_id or ".." in asset_id:
+            raise SystemExit(f"Invalid Source A {key} for {FACTORY_MONSTER_KEY}")
+        asset_root = f"assets/actors/{asset_id}"
+        _require_source(root, f"{asset_root}/asset.json", f"Source A {key} metadata")
+        files.add(f"{asset_root}/asset.json")
+        _collect_tres_resources(root, f"{asset_root}/animations.tres", files,
+                                f"Source A {key} SpriteFrames")
+    return files
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--source", type=Path, default=Path("godot"))
@@ -110,7 +211,7 @@ def main():
     entries = catalog.get("entries")
     if not isinstance(entries, list) or not entries:
         raise SystemExit("VFX_WEB_CATALOG_NO_ACTUAL_SCENES")
-    files = set(SOURCE_FILES)
+    files = factory_runtime_dependencies(root)
     seen_ids = set()
     for entry in entries:
         if not isinstance(entry, dict):

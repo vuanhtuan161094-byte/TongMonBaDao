@@ -379,6 +379,590 @@
       ],
       "art_source": "DERIVED_EXISTING_PAINTED_RGBA",
       "review_note": "Candidate only; generated exact source during staged export. Guard friendly only; mobility no damage. PvE HOLD."
+    },
+    {
+      "id": "tmb.skill.bow.liep_anh.active_01.human",
+      "name_vi": "Xuyên Tâm Tiễn — VFX Factory, 3 phase stills",
+      "school_vi": "Cung Tu",
+      "branch_vi": "Liệp Ảnh",
+      "tier": "human",
+      "scene": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+      "directions": [
+        "front"
+      ],
+      "vfx_status": "CANDIDATE_G3",
+      "g3_art": "G3_SOURCE_SELF_PASS_PHASE_STILLS_ONLY",
+      "owner_art": "OWNER_VISUAL_PENDING",
+      "art_source": "FIRST_PARTY_ORIGINAL_RGBA_PHASE_STILLS",
+      "source_paths": [
+        "labs/combat_lab/vfx_factory/vfx_factory_review.gd",
+        "labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+        "labs/combat_lab/vfx_factory/registry.json",
+        "labs/combat_lab/bow01/xuyen_tam_tien_r1/source/manifest.json",
+        "labs/combat_lab/bow01/xuyen_tam_tien_r1/source/xuyen_tam_tien_charge.png",
+        "labs/combat_lab/bow01/xuyen_tam_tien_r1/source/xuyen_tam_tien_flight.png",
+        "labs/combat_lab/bow01/xuyen_tam_tien_r1/source/xuyen_tam_tien_contact_glint.png",
+        "data/combat/v63_human_combat_catalog.json"
+      ],
+      "review_note": "G3 source gate covers the three original RGBA phase stills only. Frame-by-frame completion is open. AS56 bow draw/release/socket remains unverified; attachments are suppressed. Source cues are a detached storyboard preview, with contact hidden until an exact MapBattleV2 receipt is bound. Owner pending; PVE HOLD."
+    },
+    {
+      "id": "tmb.skill.dual_blade.anh_nhan.active_02.human",
+      "name_vi": "Song Nhận Đoạt Ảnh — VFX Factory, 3 phase stills",
+      "school_vi": "Song Đao",
+      "branch_vi": "Ảnh Nhẫn",
+      "tier": "human",
+      "scene": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+      "directions": [
+        "front"
+      ],
+      "vfx_status": "CANDIDATE_G3",
+      "g3_art": "G3_SOURCE_SELF_PASS_PHASE_STILLS_ONLY",
+      "owner_art": "OWNER_VISUAL_PENDING",
+      "art_source": "FIRST_PARTY_ORIGINAL_RGBA_PHASE_STILLS",
+      "source_paths": [
+        "labs/combat_lab/vfx_factory/vfx_factory_review.gd",
+        "labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+        "labs/combat_lab/vfx_factory/registry.json",
+        "labs/combat_lab/dual_blade01/song_nhan_doat_anh_r1/G3_SOURCE_STATUS.md",
+        "labs/combat_lab/dual_blade01/song_nhan_doat_anh_r1/source/charge_r3.png",
+        "labs/combat_lab/dual_blade01/song_nhan_doat_anh_r1/source/release_r1.png",
+        "labs/combat_lab/dual_blade01/song_nhan_doat_anh_r1/source/contact_r1.png",
+        "data/combat/v63_dual_blade_combat_catalog.json"
+      ],
+      "review_note": "G3 source gate covers the three original RGBA phase stills only. Frame-by-frame completion is open. AS52/53 paired grips remain unverified; attachments are suppressed. Source cues are a detached storyboard preview, with contact hidden until an exact MapBattleV2 receipt is bound. Owner pending; PVE HOLD."
+    },
+    {
+      "id": "tmb.skill.formation.phong_toa_tran.active_01.human",
+      "name_vi": "Cửu Cung Tỏa Lộ — candidate 4 pose",
+      "school_vi": "Trận Tu",
+      "branch_vi": "Phong Tỏa Trận",
+      "tier": "human",
+      "scene": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+      "directions": [
+        "front"
+      ],
+      "vfx_status": "TECH_CUE_ONLY",
+      "g3_art": "SOURCE_ALPHA_AND_CONTACT_SHEET_SELF_PASS",
+      "owner_art": "OWNER_VISUAL_PENDING",
+      "art_source": "FIRST_PARTY_CODEX_IMAGEGEN_RGBA_FOUR_PHASE_POSES",
+      "review_stages": "4 phase poses · contact receipt-bound",
+      "source_paths": [
+        "labs/combat_lab/vfx_factory/vfx_factory_review.gd",
+        "labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+        "labs/combat_lab/vfx_factory/registry.json",
+        "labs/combat_lab/formation01/factory_batch1_20261125/manifest.json",
+        "labs/combat_lab/formation01/factory_batch1_20261125/review/formation_batch1_contact_sheet_1x.png",
+        "labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set1_transparent_rgba.png",
+        "data/combat/v63_formation_combat_catalog.json",
+        "labs/combat_lab/vfx_factory/vfx_factory_formation_batch_capture.gd",
+        "labs/combat_lab/vfx_factory/vfx_factory_formation_batch_capture.tscn",
+        "tests/labs/combat_lab/vfx_factory_review_test.gd",
+        "tests/labs/combat_lab/vfx_factory_formation_receipt_integration_test.gd",
+        "tests/presentation/pve_aschar_frame_renderer_anchor_test.gd"
+      ],
+      "review_note": "17-kỹ-năng Trận Tu · 4 pose theo pha; AS68 1× · va chạm/chuyển trạng thái chỉ từ MapBattle receipt thật. Native import/capture và duyệt chủ dự án đang chờ; PVE HOLD."
+    },
+    {
+      "id": "tmb.skill.formation.phong_toa_tran.active_02.human",
+      "name_vi": "Bát Môn Phong Hành — candidate 4 pose",
+      "school_vi": "Trận Tu",
+      "branch_vi": "Phong Tỏa Trận",
+      "tier": "human",
+      "scene": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+      "directions": [
+        "front"
+      ],
+      "vfx_status": "TECH_CUE_ONLY",
+      "g3_art": "SOURCE_ALPHA_AND_CONTACT_SHEET_SELF_PASS",
+      "owner_art": "OWNER_VISUAL_PENDING",
+      "art_source": "FIRST_PARTY_CODEX_IMAGEGEN_RGBA_FOUR_PHASE_POSES",
+      "review_stages": "4 phase poses · contact receipt-bound",
+      "source_paths": [
+        "labs/combat_lab/vfx_factory/vfx_factory_review.gd",
+        "labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+        "labs/combat_lab/vfx_factory/registry.json",
+        "labs/combat_lab/formation01/factory_batch1_20261125/manifest.json",
+        "labs/combat_lab/formation01/factory_batch1_20261125/review/formation_batch1_contact_sheet_1x.png",
+        "labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set1_transparent_rgba.png",
+        "data/combat/v63_formation_combat_catalog.json",
+        "labs/combat_lab/vfx_factory/vfx_factory_formation_batch_capture.gd",
+        "labs/combat_lab/vfx_factory/vfx_factory_formation_batch_capture.tscn",
+        "tests/labs/combat_lab/vfx_factory_review_test.gd",
+        "tests/labs/combat_lab/vfx_factory_formation_receipt_integration_test.gd",
+        "tests/presentation/pve_aschar_frame_renderer_anchor_test.gd"
+      ],
+      "review_note": "17-kỹ-năng Trận Tu · 4 pose theo pha; AS68 1× · va chạm/chuyển trạng thái chỉ từ MapBattle receipt thật. Native import/capture và duyệt chủ dự án đang chờ; PVE HOLD."
+    },
+    {
+      "id": "tmb.skill.formation.phong_toa_tran.active_03.human",
+      "name_vi": "Huyền Thạch Trấn Vị — candidate 4 pose",
+      "school_vi": "Trận Tu",
+      "branch_vi": "Phong Tỏa Trận",
+      "tier": "human",
+      "scene": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+      "directions": [
+        "front"
+      ],
+      "vfx_status": "TECH_CUE_ONLY",
+      "g3_art": "SOURCE_ALPHA_AND_CONTACT_SHEET_SELF_PASS",
+      "owner_art": "OWNER_VISUAL_PENDING",
+      "art_source": "FIRST_PARTY_CODEX_IMAGEGEN_RGBA_FOUR_PHASE_POSES",
+      "review_stages": "4 phase poses · contact receipt-bound",
+      "source_paths": [
+        "labs/combat_lab/vfx_factory/vfx_factory_review.gd",
+        "labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+        "labs/combat_lab/vfx_factory/registry.json",
+        "labs/combat_lab/formation01/factory_batch1_20261125/manifest.json",
+        "labs/combat_lab/formation01/factory_batch1_20261125/review/formation_batch1_contact_sheet_1x.png",
+        "labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set1_transparent_rgba.png",
+        "data/combat/v63_formation_combat_catalog.json",
+        "labs/combat_lab/vfx_factory/vfx_factory_formation_batch_capture.gd",
+        "labs/combat_lab/vfx_factory/vfx_factory_formation_batch_capture.tscn",
+        "tests/labs/combat_lab/vfx_factory_review_test.gd",
+        "tests/labs/combat_lab/vfx_factory_formation_receipt_integration_test.gd",
+        "tests/presentation/pve_aschar_frame_renderer_anchor_test.gd"
+      ],
+      "review_note": "17-kỹ-năng Trận Tu · 4 pose theo pha; AS68 1× · va chạm/chuyển trạng thái chỉ từ MapBattle receipt thật. Native import/capture và duyệt chủ dự án đang chờ; PVE HOLD."
+    },
+    {
+      "id": "tmb.skill.formation.phong_toa_tran.active_04.human",
+      "name_vi": "Tứ Tượng Hãm Trận — candidate 4 pose",
+      "school_vi": "Trận Tu",
+      "branch_vi": "Phong Tỏa Trận",
+      "tier": "human",
+      "scene": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+      "directions": [
+        "front"
+      ],
+      "vfx_status": "TECH_CUE_ONLY",
+      "g3_art": "SOURCE_ALPHA_AND_CONTACT_SHEET_SELF_PASS",
+      "owner_art": "OWNER_VISUAL_PENDING",
+      "art_source": "FIRST_PARTY_CODEX_IMAGEGEN_RGBA_FOUR_PHASE_POSES",
+      "review_stages": "4 phase poses · contact receipt-bound",
+      "source_paths": [
+        "labs/combat_lab/vfx_factory/vfx_factory_review.gd",
+        "labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+        "labs/combat_lab/vfx_factory/registry.json",
+        "labs/combat_lab/formation01/factory_batch1_20261125/manifest.json",
+        "labs/combat_lab/formation01/factory_batch1_20261125/review/formation_batch1_contact_sheet_1x.png",
+        "labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set1_transparent_rgba.png",
+        "data/combat/v63_formation_combat_catalog.json",
+        "labs/combat_lab/vfx_factory/vfx_factory_formation_batch_capture.gd",
+        "labs/combat_lab/vfx_factory/vfx_factory_formation_batch_capture.tscn",
+        "tests/labs/combat_lab/vfx_factory_review_test.gd",
+        "tests/labs/combat_lab/vfx_factory_formation_receipt_integration_test.gd",
+        "tests/presentation/pve_aschar_frame_renderer_anchor_test.gd"
+      ],
+      "review_note": "17-kỹ-năng Trận Tu · 4 pose theo pha; AS68 1× · va chạm/chuyển trạng thái chỉ từ MapBattle receipt thật. Native import/capture và duyệt chủ dự án đang chờ; PVE HOLD."
+    },
+    {
+      "id": "tmb.skill.formation.phong_toa_tran.ultimate.human",
+      "name_vi": "Cửu Cung Phong Tuyệt Trận — candidate 4 pose",
+      "school_vi": "Trận Tu",
+      "branch_vi": "Phong Tỏa Trận",
+      "tier": "human",
+      "scene": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+      "directions": [
+        "front"
+      ],
+      "vfx_status": "TECH_CUE_ONLY",
+      "g3_art": "SOURCE_ALPHA_AND_CONTACT_SHEET_SELF_PASS",
+      "owner_art": "OWNER_VISUAL_PENDING",
+      "art_source": "FIRST_PARTY_CODEX_IMAGEGEN_RGBA_FOUR_PHASE_POSES",
+      "review_stages": "4 phase poses · contact receipt-bound",
+      "source_paths": [
+        "labs/combat_lab/vfx_factory/vfx_factory_review.gd",
+        "labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+        "labs/combat_lab/vfx_factory/registry.json",
+        "labs/combat_lab/formation01/factory_batch1_20261125/manifest.json",
+        "labs/combat_lab/formation01/factory_batch1_20261125/review/formation_batch1_contact_sheet_1x.png",
+        "labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set2_transparent_rgba.png",
+        "data/combat/v63_formation_combat_catalog.json",
+        "labs/combat_lab/vfx_factory/vfx_factory_formation_batch_capture.gd",
+        "labs/combat_lab/vfx_factory/vfx_factory_formation_batch_capture.tscn",
+        "tests/labs/combat_lab/vfx_factory_review_test.gd",
+        "tests/labs/combat_lab/vfx_factory_formation_receipt_integration_test.gd",
+        "tests/presentation/pve_aschar_frame_renderer_anchor_test.gd"
+      ],
+      "review_note": "17-kỹ-năng Trận Tu · 4 pose theo pha; AS68 1× · va chạm/chuyển trạng thái chỉ từ MapBattle receipt thật. Native import/capture và duyệt chủ dự án đang chờ; PVE HOLD."
+    },
+    {
+      "id": "tmb.skill.formation.sat_phat_tran.active_01.human",
+      "name_vi": "Liệt Địa Sát Văn — candidate 4 pose",
+      "school_vi": "Trận Tu",
+      "branch_vi": "Sát Phạt Trận",
+      "tier": "human",
+      "scene": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+      "directions": [
+        "front"
+      ],
+      "vfx_status": "TECH_CUE_ONLY",
+      "g3_art": "SOURCE_ALPHA_AND_CONTACT_SHEET_SELF_PASS",
+      "owner_art": "OWNER_VISUAL_PENDING",
+      "art_source": "FIRST_PARTY_CODEX_IMAGEGEN_RGBA_FOUR_PHASE_POSES",
+      "review_stages": "4 phase poses · contact receipt-bound",
+      "source_paths": [
+        "labs/combat_lab/vfx_factory/vfx_factory_review.gd",
+        "labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+        "labs/combat_lab/vfx_factory/registry.json",
+        "labs/combat_lab/formation01/factory_batch1_20261125/manifest.json",
+        "labs/combat_lab/formation01/factory_batch1_20261125/review/formation_batch1_contact_sheet_1x.png",
+        "labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set2_transparent_rgba.png",
+        "data/combat/v63_formation_combat_catalog.json",
+        "labs/combat_lab/formation01_liet_dia_sat_van_r1/G3_SOURCE_STATUS.md",
+        "labs/combat_lab/formation01_liet_dia_sat_van_r1/r3/provenance/g3_active_default_manifest.json",
+        "labs/combat_lab/formation01_liet_dia_sat_van_r1/r3/source/formation_zone_active_candidate.png",
+        "labs/combat_lab/formation01_liet_dia_sat_van_r1/r3/review/g3_active_default_1x.png",
+        "labs/combat_lab/vfx_factory/vfx_factory_formation_batch_capture.gd",
+        "labs/combat_lab/vfx_factory/vfx_factory_formation_batch_capture.tscn",
+        "tests/labs/combat_lab/vfx_factory_review_test.gd",
+        "tests/labs/combat_lab/vfx_factory_formation_receipt_integration_test.gd",
+        "tests/presentation/pve_aschar_frame_renderer_anchor_test.gd"
+      ],
+      "review_note": "R1–R3 được giữ nguyên ở trạng thái G3 ART REWORK REQUIRED; atlas mới là candidate cải thiện. Không thăng hạng revision cũ. Native/owner pending; PVE HOLD."
+    },
+    {
+      "id": "tmb.skill.formation.sat_phat_tran.active_02.human",
+      "name_vi": "Thiên La Địa Võng — candidate 4 pose",
+      "school_vi": "Trận Tu",
+      "branch_vi": "Sát Phạt Trận",
+      "tier": "human",
+      "scene": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+      "directions": [
+        "front"
+      ],
+      "vfx_status": "TECH_CUE_ONLY",
+      "g3_art": "SOURCE_ALPHA_AND_CONTACT_SHEET_SELF_PASS",
+      "owner_art": "OWNER_VISUAL_PENDING",
+      "art_source": "FIRST_PARTY_CODEX_IMAGEGEN_RGBA_FOUR_PHASE_POSES",
+      "review_stages": "4 phase poses · contact receipt-bound",
+      "source_paths": [
+        "labs/combat_lab/vfx_factory/vfx_factory_review.gd",
+        "labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+        "labs/combat_lab/vfx_factory/registry.json",
+        "labs/combat_lab/formation01/factory_batch1_20261125/manifest.json",
+        "labs/combat_lab/formation01/factory_batch1_20261125/review/formation_batch1_contact_sheet_1x.png",
+        "labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set2_transparent_rgba.png",
+        "data/combat/v63_formation_combat_catalog.json",
+        "labs/combat_lab/vfx_factory/vfx_factory_formation_batch_capture.gd",
+        "labs/combat_lab/vfx_factory/vfx_factory_formation_batch_capture.tscn",
+        "tests/labs/combat_lab/vfx_factory_review_test.gd",
+        "tests/labs/combat_lab/vfx_factory_formation_receipt_integration_test.gd",
+        "tests/presentation/pve_aschar_frame_renderer_anchor_test.gd"
+      ],
+      "review_note": "17-kỹ-năng Trận Tu · 4 pose theo pha; AS68 1× · va chạm/chuyển trạng thái chỉ từ MapBattle receipt thật. Native import/capture và duyệt chủ dự án đang chờ; PVE HOLD."
+    },
+    {
+      "id": "tmb.skill.formation.sat_phat_tran.active_03.human",
+      "name_vi": "Thất Tinh Đoạt Mạch — candidate 4 pose",
+      "school_vi": "Trận Tu",
+      "branch_vi": "Sát Phạt Trận",
+      "tier": "human",
+      "scene": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+      "directions": [
+        "front"
+      ],
+      "vfx_status": "TECH_CUE_ONLY",
+      "g3_art": "SOURCE_ALPHA_AND_CONTACT_SHEET_SELF_PASS",
+      "owner_art": "OWNER_VISUAL_PENDING",
+      "art_source": "FIRST_PARTY_CODEX_IMAGEGEN_RGBA_FOUR_PHASE_POSES",
+      "review_stages": "4 phase poses · contact receipt-bound",
+      "source_paths": [
+        "labs/combat_lab/vfx_factory/vfx_factory_review.gd",
+        "labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+        "labs/combat_lab/vfx_factory/registry.json",
+        "labs/combat_lab/formation01/factory_batch1_20261125/manifest.json",
+        "labs/combat_lab/formation01/factory_batch1_20261125/review/formation_batch1_contact_sheet_1x.png",
+        "labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set2_transparent_rgba.png",
+        "data/combat/v63_formation_combat_catalog.json",
+        "labs/combat_lab/vfx_factory/vfx_factory_formation_batch_capture.gd",
+        "labs/combat_lab/vfx_factory/vfx_factory_formation_batch_capture.tscn",
+        "tests/labs/combat_lab/vfx_factory_review_test.gd",
+        "tests/labs/combat_lab/vfx_factory_formation_receipt_integration_test.gd",
+        "tests/presentation/pve_aschar_frame_renderer_anchor_test.gd"
+      ],
+      "review_note": "17-kỹ-năng Trận Tu · 4 pose theo pha; AS68 1× · va chạm/chuyển trạng thái chỉ từ MapBattle receipt thật. Native import/capture và duyệt chủ dự án đang chờ; PVE HOLD."
+    },
+    {
+      "id": "tmb.skill.formation.sat_phat_tran.active_04.human",
+      "name_vi": "Địa Hỏa Phục Sát — candidate 4 pose",
+      "school_vi": "Trận Tu",
+      "branch_vi": "Sát Phạt Trận",
+      "tier": "human",
+      "scene": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+      "directions": [
+        "front"
+      ],
+      "vfx_status": "TECH_CUE_ONLY",
+      "g3_art": "SOURCE_ALPHA_AND_CONTACT_SHEET_SELF_PASS",
+      "owner_art": "OWNER_VISUAL_PENDING",
+      "art_source": "FIRST_PARTY_CODEX_IMAGEGEN_RGBA_FOUR_PHASE_POSES",
+      "review_stages": "4 phase poses · contact receipt-bound",
+      "source_paths": [
+        "labs/combat_lab/vfx_factory/vfx_factory_review.gd",
+        "labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+        "labs/combat_lab/vfx_factory/registry.json",
+        "labs/combat_lab/formation01/factory_batch1_20261125/manifest.json",
+        "labs/combat_lab/formation01/factory_batch1_20261125/review/formation_batch1_contact_sheet_1x.png",
+        "labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set3_transparent_rgba.png",
+        "data/combat/v63_formation_combat_catalog.json",
+        "labs/combat_lab/vfx_factory/vfx_factory_formation_batch_capture.gd",
+        "labs/combat_lab/vfx_factory/vfx_factory_formation_batch_capture.tscn",
+        "tests/labs/combat_lab/vfx_factory_review_test.gd",
+        "tests/labs/combat_lab/vfx_factory_formation_receipt_integration_test.gd",
+        "tests/presentation/pve_aschar_frame_renderer_anchor_test.gd"
+      ],
+      "review_note": "17-kỹ-năng Trận Tu · 4 pose theo pha; AS68 1× · va chạm/chuyển trạng thái chỉ từ MapBattle receipt thật. Native import/capture và duyệt chủ dự án đang chờ; PVE HOLD."
+    },
+    {
+      "id": "tmb.skill.formation.sat_phat_tran.ultimate.human",
+      "name_vi": "Vạn Tượng Tru Tiên Trận — candidate 4 pose",
+      "school_vi": "Trận Tu",
+      "branch_vi": "Sát Phạt Trận",
+      "tier": "human",
+      "scene": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+      "directions": [
+        "front"
+      ],
+      "vfx_status": "TECH_CUE_ONLY",
+      "g3_art": "SOURCE_ALPHA_AND_CONTACT_SHEET_SELF_PASS",
+      "owner_art": "OWNER_VISUAL_PENDING",
+      "art_source": "FIRST_PARTY_CODEX_IMAGEGEN_RGBA_FOUR_PHASE_POSES",
+      "review_stages": "4 phase poses · contact receipt-bound",
+      "source_paths": [
+        "labs/combat_lab/vfx_factory/vfx_factory_review.gd",
+        "labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+        "labs/combat_lab/vfx_factory/registry.json",
+        "labs/combat_lab/formation01/factory_batch1_20261125/manifest.json",
+        "labs/combat_lab/formation01/factory_batch1_20261125/review/formation_batch1_contact_sheet_1x.png",
+        "labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set3_transparent_rgba.png",
+        "data/combat/v63_formation_combat_catalog.json",
+        "labs/combat_lab/vfx_factory/vfx_factory_formation_batch_capture.gd",
+        "labs/combat_lab/vfx_factory/vfx_factory_formation_batch_capture.tscn",
+        "tests/labs/combat_lab/vfx_factory_review_test.gd",
+        "tests/labs/combat_lab/vfx_factory_formation_receipt_integration_test.gd",
+        "tests/presentation/pve_aschar_frame_renderer_anchor_test.gd"
+      ],
+      "review_note": "17-kỹ-năng Trận Tu · 4 pose theo pha; AS68 1× · va chạm/chuyển trạng thái chỉ từ MapBattle receipt thật. Native import/capture và duyệt chủ dự án đang chờ; PVE HOLD."
+    },
+    {
+      "id": "tmb.skill.formation.tu_linh_tran.active_01.human",
+      "name_vi": "Thổ Mạch Dẫn Khí — candidate 4 pose",
+      "school_vi": "Trận Tu",
+      "branch_vi": "Tụ Linh Trận",
+      "tier": "human",
+      "scene": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+      "directions": [
+        "front"
+      ],
+      "vfx_status": "TECH_CUE_ONLY",
+      "g3_art": "SOURCE_ALPHA_AND_CONTACT_SHEET_SELF_PASS",
+      "owner_art": "OWNER_VISUAL_PENDING",
+      "art_source": "FIRST_PARTY_CODEX_IMAGEGEN_RGBA_FOUR_PHASE_POSES",
+      "review_stages": "4 phase poses · contact receipt-bound",
+      "source_paths": [
+        "labs/combat_lab/vfx_factory/vfx_factory_review.gd",
+        "labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+        "labs/combat_lab/vfx_factory/registry.json",
+        "labs/combat_lab/formation01/factory_batch1_20261125/manifest.json",
+        "labs/combat_lab/formation01/factory_batch1_20261125/review/formation_batch1_contact_sheet_1x.png",
+        "labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set3_transparent_rgba.png",
+        "data/combat/v63_formation_combat_catalog.json",
+        "labs/combat_lab/vfx_factory/vfx_factory_formation_batch_capture.gd",
+        "labs/combat_lab/vfx_factory/vfx_factory_formation_batch_capture.tscn",
+        "tests/labs/combat_lab/vfx_factory_review_test.gd",
+        "tests/labs/combat_lab/vfx_factory_formation_receipt_integration_test.gd",
+        "tests/presentation/pve_aschar_frame_renderer_anchor_test.gd"
+      ],
+      "review_note": "17-kỹ-năng Trận Tu · 4 pose theo pha; AS68 1× · va chạm/chuyển trạng thái chỉ từ MapBattle receipt thật. Native import/capture và duyệt chủ dự án đang chờ; PVE HOLD."
+    },
+    {
+      "id": "tmb.skill.formation.tu_linh_tran.active_02.human",
+      "name_vi": "Tinh Bàn Hộ Tâm — candidate 4 pose",
+      "school_vi": "Trận Tu",
+      "branch_vi": "Tụ Linh Trận",
+      "tier": "human",
+      "scene": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+      "directions": [
+        "front"
+      ],
+      "vfx_status": "TECH_CUE_ONLY",
+      "g3_art": "ART_SEMANTIC_REVIEW_REQUIRED_DAMAGE_VS_SHIELD_READ",
+      "owner_art": "OWNER_VISUAL_PENDING",
+      "art_source": "FIRST_PARTY_CODEX_IMAGEGEN_RGBA_FOUR_PHASE_POSES",
+      "review_stages": "4 phase poses · contact receipt-bound",
+      "source_paths": [
+        "labs/combat_lab/vfx_factory/vfx_factory_review.gd",
+        "labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+        "labs/combat_lab/vfx_factory/registry.json",
+        "labs/combat_lab/formation01/factory_batch1_20261125/manifest.json",
+        "labs/combat_lab/formation01/factory_batch1_20261125/review/formation_batch1_contact_sheet_1x.png",
+        "labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set3_transparent_rgba.png",
+        "data/combat/v63_formation_combat_catalog.json",
+        "labs/combat_lab/vfx_factory/vfx_factory_formation_batch_capture.gd",
+        "labs/combat_lab/vfx_factory/vfx_factory_formation_batch_capture.tscn",
+        "tests/labs/combat_lab/vfx_factory_review_test.gd",
+        "tests/labs/combat_lab/vfx_factory_formation_receipt_integration_test.gd",
+        "tests/presentation/pve_aschar_frame_renderer_anchor_test.gd"
+      ],
+      "review_note": "ART REWORK: mỹ thuật hiện đọc như khiên, trong khi catalog thật quy định DAMAGE. Candidate bị gắn cờ; owner approval pending; PVE HOLD."
+    },
+    {
+      "id": "tmb.skill.formation.basic.human",
+      "name_vi": "Định Tinh Hạ Trận — candidate 4 pose",
+      "school_vi": "Trận Tu",
+      "branch_vi": "Trận cơ bản",
+      "tier": "human",
+      "scene": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+      "directions": [
+        "front"
+      ],
+      "vfx_status": "TECH_CUE_ONLY",
+      "g3_art": "SOURCE_ALPHA_AND_CONTACT_SHEET_SELF_PASS",
+      "owner_art": "OWNER_VISUAL_PENDING",
+      "art_source": "FIRST_PARTY_CODEX_IMAGEGEN_RGBA_FOUR_PHASE_POSES",
+      "review_stages": "4 phase poses · contact receipt-bound",
+      "source_paths": [
+        "labs/combat_lab/vfx_factory/vfx_factory_review.gd",
+        "labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+        "labs/combat_lab/vfx_factory/registry.json",
+        "labs/combat_lab/formation01/factory_batch1_20261125/manifest.json",
+        "labs/combat_lab/formation01/factory_batch1_20261125/review/formation_batch1_contact_sheet_1x.png",
+        "labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set4_transparent_rgba.png",
+        "data/combat/v63_formation_combat_catalog.json",
+        "labs/combat_lab/vfx_factory/vfx_factory_formation_batch_capture.gd",
+        "labs/combat_lab/vfx_factory/vfx_factory_formation_batch_capture.tscn",
+        "tests/labs/combat_lab/vfx_factory_review_test.gd",
+        "tests/labs/combat_lab/vfx_factory_formation_receipt_integration_test.gd",
+        "tests/presentation/pve_aschar_frame_renderer_anchor_test.gd"
+      ],
+      "review_note": "Đòn cơ bản được kiểm tra bằng hit kind=basic thật từ MapBattleV2 và v63_basic_skill_id đang gắn trên actor; cầu nối VFX chỉ gắn nhãn receipt, không tạo cast/hit/damage. Candidate; owner pending; PVE HOLD."
+    },
+    {
+      "id": "tmb.skill.formation.mobility.human",
+      "name_vi": "Cửu Cung Du Bộ — candidate 4 pose",
+      "school_vi": "Trận Tu",
+      "branch_vi": "Trận cơ bản",
+      "tier": "human",
+      "scene": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+      "directions": [
+        "front"
+      ],
+      "vfx_status": "TECH_CUE_ONLY",
+      "g3_art": "SOURCE_ALPHA_AND_CONTACT_SHEET_SELF_PASS",
+      "owner_art": "OWNER_VISUAL_PENDING",
+      "art_source": "FIRST_PARTY_CODEX_IMAGEGEN_RGBA_FOUR_PHASE_POSES",
+      "review_stages": "4 phase poses · contact receipt-bound",
+      "source_paths": [
+        "labs/combat_lab/vfx_factory/vfx_factory_review.gd",
+        "labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+        "labs/combat_lab/vfx_factory/registry.json",
+        "labs/combat_lab/formation01/factory_batch1_20261125/manifest.json",
+        "labs/combat_lab/formation01/factory_batch1_20261125/review/formation_batch1_contact_sheet_1x.png",
+        "labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set4_transparent_rgba.png",
+        "data/combat/v63_formation_combat_catalog.json",
+        "labs/combat_lab/vfx_factory/vfx_factory_formation_batch_capture.gd",
+        "labs/combat_lab/vfx_factory/vfx_factory_formation_batch_capture.tscn",
+        "tests/labs/combat_lab/vfx_factory_review_test.gd",
+        "tests/labs/combat_lab/vfx_factory_formation_receipt_integration_test.gd",
+        "tests/presentation/pve_aschar_frame_renderer_anchor_test.gd"
+      ],
+      "review_note": "17-kỹ-năng Trận Tu · 4 pose theo pha; AS68 1× · va chạm/chuyển trạng thái chỉ từ MapBattle receipt thật. Native import/capture và duyệt chủ dự án đang chờ; PVE HOLD."
+    },
+    {
+      "id": "tmb.skill.formation.tu_linh_tran.active_03.human",
+      "name_vi": "Địa Tàng Liên Trận — candidate 4 pose",
+      "school_vi": "Trận Tu",
+      "branch_vi": "Tụ Linh Trận",
+      "tier": "human",
+      "scene": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+      "directions": [
+        "front"
+      ],
+      "vfx_status": "TECH_CUE_ONLY",
+      "g3_art": "SOURCE_ALPHA_AND_CONTACT_SHEET_SELF_PASS",
+      "owner_art": "OWNER_VISUAL_PENDING",
+      "art_source": "FIRST_PARTY_CODEX_IMAGEGEN_RGBA_FOUR_PHASE_POSES",
+      "review_stages": "4 phase poses · contact receipt-bound",
+      "source_paths": [
+        "labs/combat_lab/vfx_factory/vfx_factory_review.gd",
+        "labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+        "labs/combat_lab/vfx_factory/registry.json",
+        "labs/combat_lab/formation01/factory_batch1_20261125/manifest.json",
+        "labs/combat_lab/formation01/factory_batch1_20261125/review/formation_batch1_contact_sheet_1x.png",
+        "labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set4_transparent_rgba.png",
+        "data/combat/v63_formation_combat_catalog.json",
+        "labs/combat_lab/vfx_factory/vfx_factory_formation_batch_capture.gd",
+        "labs/combat_lab/vfx_factory/vfx_factory_formation_batch_capture.tscn",
+        "tests/labs/combat_lab/vfx_factory_review_test.gd",
+        "tests/labs/combat_lab/vfx_factory_formation_receipt_integration_test.gd",
+        "tests/presentation/pve_aschar_frame_renderer_anchor_test.gd"
+      ],
+      "review_note": "17-kỹ-năng Trận Tu · 4 pose theo pha; AS68 1× · va chạm/chuyển trạng thái chỉ từ MapBattle receipt thật. Native import/capture và duyệt chủ dự án đang chờ; PVE HOLD."
+    },
+    {
+      "id": "tmb.skill.formation.tu_linh_tran.active_04.human",
+      "name_vi": "Thái Sơ Tĩnh Vực — candidate 4 pose",
+      "school_vi": "Trận Tu",
+      "branch_vi": "Tụ Linh Trận",
+      "tier": "human",
+      "scene": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+      "directions": [
+        "front"
+      ],
+      "vfx_status": "TECH_CUE_ONLY",
+      "g3_art": "SOURCE_ALPHA_AND_CONTACT_SHEET_SELF_PASS",
+      "owner_art": "OWNER_VISUAL_PENDING",
+      "art_source": "FIRST_PARTY_CODEX_IMAGEGEN_RGBA_FOUR_PHASE_POSES",
+      "review_stages": "4 phase poses · contact receipt-bound",
+      "source_paths": [
+        "labs/combat_lab/vfx_factory/vfx_factory_review.gd",
+        "labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+        "labs/combat_lab/vfx_factory/registry.json",
+        "labs/combat_lab/formation01/factory_batch1_20261125/manifest.json",
+        "labs/combat_lab/formation01/factory_batch1_20261125/review/formation_batch1_contact_sheet_1x.png",
+        "labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set4_transparent_rgba.png",
+        "data/combat/v63_formation_combat_catalog.json",
+        "labs/combat_lab/vfx_factory/vfx_factory_formation_batch_capture.gd",
+        "labs/combat_lab/vfx_factory/vfx_factory_formation_batch_capture.tscn",
+        "tests/labs/combat_lab/vfx_factory_review_test.gd",
+        "tests/labs/combat_lab/vfx_factory_formation_receipt_integration_test.gd",
+        "tests/presentation/pve_aschar_frame_renderer_anchor_test.gd"
+      ],
+      "review_note": "17-kỹ-năng Trận Tu · 4 pose theo pha; AS68 1× · va chạm/chuyển trạng thái chỉ từ MapBattle receipt thật. Native import/capture và duyệt chủ dự án đang chờ; PVE HOLD."
+    },
+    {
+      "id": "tmb.skill.formation.tu_linh_tran.ultimate.human",
+      "name_vi": "Thái Sơ Vạn Linh Trận — candidate 4 pose",
+      "school_vi": "Trận Tu",
+      "branch_vi": "Tụ Linh Trận",
+      "tier": "human",
+      "scene": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+      "directions": [
+        "front"
+      ],
+      "vfx_status": "TECH_CUE_ONLY",
+      "g3_art": "SOURCE_ALPHA_AND_CONTACT_SHEET_SELF_PASS",
+      "owner_art": "OWNER_VISUAL_PENDING",
+      "art_source": "FIRST_PARTY_CODEX_IMAGEGEN_RGBA_FOUR_PHASE_POSES",
+      "review_stages": "4 phase poses · contact receipt-bound",
+      "source_paths": [
+        "labs/combat_lab/vfx_factory/vfx_factory_review.gd",
+        "labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+        "labs/combat_lab/vfx_factory/registry.json",
+        "labs/combat_lab/formation01/factory_batch1_20261125/manifest.json",
+        "labs/combat_lab/formation01/factory_batch1_20261125/review/formation_batch1_contact_sheet_1x.png",
+        "labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set5_transparent_rgba.png",
+        "data/combat/v63_formation_combat_catalog.json",
+        "labs/combat_lab/vfx_factory/vfx_factory_formation_batch_capture.gd",
+        "labs/combat_lab/vfx_factory/vfx_factory_formation_batch_capture.tscn",
+        "tests/labs/combat_lab/vfx_factory_review_test.gd",
+        "tests/labs/combat_lab/vfx_factory_formation_receipt_integration_test.gd",
+        "tests/presentation/pve_aschar_frame_renderer_anchor_test.gd"
+      ],
+      "review_note": "17-kỹ-năng Trận Tu · 4 pose theo pha; AS68 1× · va chạm/chuyển trạng thái chỉ từ MapBattle receipt thật. Native import/capture và duyệt chủ dự án đang chờ; PVE HOLD."
     }
-  ]
+  ],
+  "updated_at": "2026-11-25"
 }

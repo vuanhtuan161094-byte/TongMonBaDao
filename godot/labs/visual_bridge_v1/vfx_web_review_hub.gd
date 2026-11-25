@@ -103,7 +103,7 @@ func _ready() -> void:
     var phases := HBoxContainer.new()
     phases.add_theme_constant_override("separation", 3)
     vbox.add_child(phases)
-    for cfg in [["Tụ lực", "charge"], ["Phi kiếm", "projectile"], ["Va chạm", "contact"]]:
+    for cfg in [["Tụ lực", "charge"], ["Thi triển", "release"], ["Tiếp xúc", "contact"]]:
         var btn := Button.new()
         btn.text = str(cfg[0])
         btn.custom_minimum_size = Vector2(69, 31)
@@ -167,6 +167,11 @@ func _change_skill(index: int) -> void:
             push_error("WEB_VFX_SCENE_MISSING_REVIEW_CONTRACT " + str(method))
             candidate.free()
             return
+    # Data-driven school factory scenes may host multiple skills. Set the
+    # selected catalog identity before _ready runs when the scene is attached.
+    # Existing standalone review scenes keep their original behavior.
+    if candidate.has_method("review_set_skill_id"):
+        candidate.call("review_set_skill_id", str(info.get("id", "")))
     if _lab != null:
         remove_child(_lab)
         _lab.queue_free()
@@ -185,7 +190,7 @@ func _change_skill(index: int) -> void:
         if i > 0:
             direction_text += ", "
         direction_text += str(directions[i])
-    _provenance.text = "TỰ LẶP • 3 pha bấm để xem\nHướng thật: " + direction_text + "\n" + \
+    _provenance.text = "TỰ LẶP • " + str(info.get("review_stages", "3 phase cues")) + "\nHướng thật: " + direction_text + "\n" + \
         str(info.get("vfx_status", "")).replace("_", " ") + " | G3: " + str(info.get("g3_art", "")).replace("_", " ") + \
         "\nOWNER: " + str(info.get("owner_art", "")).replace("_", " ") + "\nKhông combat · PVE HOLD"
     _paused = false
