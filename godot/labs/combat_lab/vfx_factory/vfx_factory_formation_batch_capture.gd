@@ -187,6 +187,7 @@ func _feed_receipt(event: Dictionary) -> void:
 				actor_targets.append(target_id)
 	if actor_targets.is_empty() and str(event.get("type", "")) == "v63_mobility" and not actor_id.is_empty():
 		actor_targets.append(actor_id)
+	var screen_position := TARGET_FOOT
 	for target_id in actor_targets:
 		var target_data: Dictionary = _battle.actors.get(target_id, {})
 		var target_position: Vector2
@@ -196,10 +197,10 @@ func _feed_receipt(event: Dictionary) -> void:
 			target_position = event.get("center")
 		else:
 			target_position = _battle.actors.get(str(event.get("target", "")), {}).get("position", Vector2(5.0, 3.0))
-		var screen_position := _world_to_screen(target_position)
+		screen_position = _world_to_screen(target_position)
 		_lab.call("review_record_actor_screen_position", target_id, screen_position)
 	if str(event.get("type", "")) in ["skill_cast", "v63_skill_hit", "v63_talisman_hit", "v63_talisman_mark_applied", "skill_hit", "status_applied", "v63_formation_slow_applied", "v63_mobility"]:
-			_lab.call("review_set_target_screen_position", screen_position)
+		_lab.call("review_set_target_screen_position", screen_position)
 	var skill_id := str(_entries[_index].get("skill_id", ""))
 	var result: Dictionary
 	if is_basic_hit and actor_id == _caster_id:
