@@ -461,6 +461,10 @@ func _draw_phase_art(anchors: Dictionary, actor_foot: Vector2,
 		var progress := clampf((_elapsed - float(timeline.get("flight_at", timeline.get("release_at", 0.25)))) /
 			maxf(0.01, float(timeline.get("contact_at", 0.90)) - float(timeline.get("flight_at", timeline.get("release_at", 0.25)))), 0.0, 1.0)
 		center = start.lerp(target_foot + Vector2(0.0, -36.0), progress)
+	var phase_offsets: Dictionary = _config.get("phase_offsets", {})
+	var offset_data: Array = phase_offsets.get(phase, [0.0, 0.0])
+	if offset_data.size() == 2:
+		center += Vector2(float(offset_data[0]), float(offset_data[1]))
 	var source_key := _phase_source_name(phase)
 	if phase == "travel":
 		source_key = "flight" if _config.get("phase_sources", {}).has("flight") else "release"

@@ -1,0 +1,134 @@
+{
+  "owner_approval": "PENDING",
+  "pve": "HOLD",
+  "receipts": "REAL_MAPBATTLE_V2_TEST_FIXTURE_EVENTS_ONLY",
+  "renderer": "Godot 4.7.2 GL Compatibility / Mesa llvmpipe; shared VFX Factory and AS64 existing actor",
+  "schema": "tmb.vfx_factory_native_batch_capture.v1",
+  "school": "talisman",
+  "skills": [
+    {
+      "accepted_event_count": 2,
+      "configured_event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_talisman_hit"
+      ],
+      "contact_frame_seconds": -1.0,
+      "encounter_id": "vfx_factory_talisman_capture_00",
+      "event_count": 2,
+      "event_types": [
+        "skill_cast",
+        "skill_release"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "name_vi": "Thiên Lôi Dẫn Nét",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "release_frame_seconds": 1.07166666666667,
+      "skill_id": "tmb.skill.talisman.loi_phu.active_02.human",
+      "video_duration_seconds": 1.8,
+      "video_start_seconds": 0.0,
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720",
+      "native_event_status": "CAST_RELEASE_ONLY_NO_HIT_RECEIPT",
+      "art_self_review_status": "ART_SELF_REVIEW_RELEASE_READABILITY_ONLY_FULL_MOTION_AND_CONTACT_PENDING",
+      "owner_approval": "PENDING",
+      "pve": "HOLD",
+      "contact_status": "NOT_EMITTED_BY_REAL_FIXTURE; NO_SYNTHETIC_CONTACT"
+    },
+    {
+      "accepted_event_count": 3,
+      "configured_event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_talisman_mark_applied"
+      ],
+      "contact_frame_seconds": 2.49166666666667,
+      "encounter_id": "vfx_factory_talisman_capture_01",
+      "event_count": 3,
+      "event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_talisman_mark_applied"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "name_vi": "Lôi Văn Truy Ấn",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "release_frame_seconds": 2.48166666666667,
+      "skill_id": "tmb.skill.talisman.loi_phu.active_03.human",
+      "video_duration_seconds": 6.98,
+      "video_start_seconds": 1.84166666666667,
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720",
+      "native_event_status": "OWNER_SCOPED_MARK_RECEIPT_DURATION_6S",
+      "art_self_review_status": "ART_SELF_REVIEW_MARK_START_READABILITY_ONLY_FULL_SUSTAIN_PENDING",
+      "owner_approval": "PENDING",
+      "pve": "HOLD",
+      "contact_status": "REAL_V63_TALISMAN_MARK_APPLIED_RECEIPT"
+    },
+    {
+      "accepted_event_count": 2,
+      "configured_event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_talisman_hit"
+      ],
+      "contact_frame_seconds": -1.0,
+      "encounter_id": "vfx_factory_talisman_capture_02",
+      "event_count": 2,
+      "event_types": [
+        "skill_cast",
+        "skill_release"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "name_vi": "Cửu Tiêu Phá Vân",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "release_frame_seconds": 9.82166666666667,
+      "skill_id": "tmb.skill.talisman.loi_phu.active_04.human",
+      "video_duration_seconds": 1.68,
+      "video_start_seconds": 8.84166666666666,
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720",
+      "native_event_status": "CAST_RELEASE_ONLY_NO_HIT_RECEIPT",
+      "art_self_review_status": "ART_SELF_REVIEW_CLOUD_RELEASE_READABILITY_ONLY_FULL_MOTION_PENDING",
+      "owner_approval": "PENDING",
+      "pve": "HOLD",
+      "contact_status": "NOT_EMITTED_BY_REAL_FIXTURE; NO_SYNTHETIC_CONTACT"
+    },
+    {
+      "accepted_event_count": 2,
+      "configured_event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_talisman_hit"
+      ],
+      "contact_frame_seconds": -1.0,
+      "encounter_id": "vfx_factory_talisman_capture_03",
+      "event_count": 2,
+      "event_types": [
+        "skill_cast",
+        "skill_release"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "name_vi": "Cửu Thiên Vạn Lôi Phù",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "release_frame_seconds": 12.0216666666667,
+      "skill_id": "tmb.skill.talisman.loi_phu.ultimate.human",
+      "video_duration_seconds": 2.23,
+      "video_start_seconds": 10.5416666666667,
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720",
+      "native_event_status": "CAST_RELEASE_ONLY_NO_HIT_RECEIPT",
+      "art_self_review_status": "ART_SELF_REVIEW_VERTICAL_BOLT_RELEASE_READABILITY_ONLY_CONTACT_PENDING",
+      "owner_approval": "PENDING",
+      "pve": "HOLD",
+      "contact_status": "NOT_EMITTED_BY_REAL_FIXTURE; NO_SYNTHETIC_CONTACT"
+    }
+  ],
+  "technical_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_FULL_DECODE",
+  "viewport_px": [
+    1280,
+    720
+  ],
+  "frame_rate_fps": 20,
+  "frame_count": 256,
+  "duration_seconds": 12.8,
+  "video_path": "godot/labs/combat_lab/talisman_factory_batch1_20261125/review/native/talisman_batch1_native_1280x720.mp4",
+  "contact_sheet_path": "godot/labs/combat_lab/talisman_factory_batch1_20261125/review/native/talisman_batch1_contact_sheet_1280x720.png",
+  "external_movie_validation": "FFMPEG_FULL_DECODE_PASS; ffprobe H.264 1280x720 20fps 256 frames 12.8 seconds"
+}

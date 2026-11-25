@@ -10,15 +10,36 @@
   "native_runner": "res://labs/combat_lab/vfx_factory/vfx_factory_formation_batch_capture.tscn",
   "fixture_policy": "Only actual MapBattleV2 cast, release, hit and owner-scoped mark receipts are routed. Renderer produces no combat events.",
   "approval_policy": "Historical approved TAL02/TAL03 source revisions remain in Git history unchanged. Current atlas hashes and new Factory adapters are separate review candidates; owner approval does not transfer.",
-  "review_status": "CANDIDATE_TECH_PENDING",
+  "review_status": "CANDIDATE_NATIVE_TECH_PASS_ART_REVIEW_LIMITED_OWNER_PENDING",
   "native_capture": {
-    "status": "PENDING",
+    "status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_FULL_DECODE",
     "viewport_px": [
       1280,
       720
     ],
-    "contact_sheet": "PENDING",
-    "video": "PENDING"
+    "renderer": "Godot 4.7.2 GL Compatibility / Mesa llvmpipe",
+    "frame_rate_fps": 20,
+    "frame_count": 256,
+    "duration_seconds": 12.8,
+    "receipt_source": "REAL_MAPBATTLE_V2_TEST_FIXTURE_EVENTS_ONLY",
+    "video": {
+      "path": "godot/labs/combat_lab/talisman_factory_batch1_20261125/review/native/talisman_batch1_native_1280x720.mp4",
+      "sha256": "c21a2eaac98a3a80614eb5c8025d177ebb6b8f14ab4160cc8181156f0b66226a",
+      "bytes": 812544
+    },
+    "contact_sheet": {
+      "path": "godot/labs/combat_lab/talisman_factory_batch1_20261125/review/native/talisman_batch1_contact_sheet_1280x720.png",
+      "sha256": "2574725b11bec0af5b60fba52f65457eec0747de86ab039bfbf808d1ce17e927",
+      "bytes": 211874
+    },
+    "capture_index": {
+      "path": "godot/labs/combat_lab/talisman_factory_batch1_20261125/review/native/talisman_batch1_capture_index.json",
+      "sha256": "1348a8c61545c90ebd53ffb10554030d7498b18ddf9c4e998c8319be08814396",
+      "bytes": 5215
+    },
+    "phase_review": "One 1× sample per skill; full frame-by-frame animation review remains pending.",
+    "owner_approval": "PENDING",
+    "pve": "HOLD"
   },
   "owner_approval": "PENDING",
   "pve": "HOLD",
@@ -52,8 +73,18 @@
         }
       ],
       "factory_adapter_status": "CANDIDATE_NOT_OWNER_APPROVED",
-      "native_status": "NATIVE_CAPTURE_PENDING",
-      "pve_status": "HOLD"
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720",
+      "pve_status": "HOLD",
+      "native_event_status": "CAST_RELEASE_ONLY_NO_HIT_RECEIPT",
+      "art_self_review_status": "ART_SELF_REVIEW_RELEASE_READABILITY_ONLY_FULL_MOTION_AND_CONTACT_PENDING",
+      "actual_event_types": [
+        "skill_cast",
+        "skill_release"
+      ],
+      "accepted_event_count": 2,
+      "contact_status": "NOT_EMITTED_BY_REAL_FIXTURE; NO_SYNTHETIC_CONTACT",
+      "owner_approval": "PENDING",
+      "pve": "HOLD"
     },
     {
       "skill_id": "tmb.skill.talisman.loi_phu.active_03.human",
@@ -74,8 +105,19 @@
         }
       ],
       "factory_adapter_status": "CANDIDATE_NOT_OWNER_APPROVED",
-      "native_status": "NATIVE_CAPTURE_PENDING",
-      "pve_status": "HOLD"
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720",
+      "pve_status": "HOLD",
+      "native_event_status": "OWNER_SCOPED_MARK_RECEIPT_DURATION_6S",
+      "art_self_review_status": "ART_SELF_REVIEW_MARK_START_READABILITY_ONLY_FULL_SUSTAIN_PENDING",
+      "actual_event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_talisman_mark_applied"
+      ],
+      "accepted_event_count": 3,
+      "contact_status": "REAL_V63_TALISMAN_MARK_APPLIED_RECEIPT",
+      "owner_approval": "PENDING",
+      "pve": "HOLD"
     },
     {
       "skill_id": "tmb.skill.talisman.loi_phu.active_04.human",
@@ -101,8 +143,18 @@
         }
       ],
       "factory_adapter_status": "CANDIDATE_NOT_OWNER_APPROVED",
-      "native_status": "NATIVE_CAPTURE_PENDING",
-      "pve_status": "HOLD"
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720",
+      "pve_status": "HOLD",
+      "native_event_status": "CAST_RELEASE_ONLY_NO_HIT_RECEIPT",
+      "art_self_review_status": "ART_SELF_REVIEW_CLOUD_RELEASE_READABILITY_ONLY_FULL_MOTION_PENDING",
+      "actual_event_types": [
+        "skill_cast",
+        "skill_release"
+      ],
+      "accepted_event_count": 2,
+      "contact_status": "NOT_EMITTED_BY_REAL_FIXTURE; NO_SYNTHETIC_CONTACT",
+      "owner_approval": "PENDING",
+      "pve": "HOLD"
     },
     {
       "skill_id": "tmb.skill.talisman.loi_phu.ultimate.human",
@@ -128,8 +180,18 @@
         }
       ],
       "factory_adapter_status": "CANDIDATE_NOT_OWNER_APPROVED",
-      "native_status": "NATIVE_CAPTURE_PENDING",
-      "pve_status": "HOLD"
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720",
+      "pve_status": "HOLD",
+      "native_event_status": "CAST_RELEASE_ONLY_NO_HIT_RECEIPT",
+      "art_self_review_status": "ART_SELF_REVIEW_VERTICAL_BOLT_RELEASE_READABILITY_ONLY_CONTACT_PENDING",
+      "actual_event_types": [
+        "skill_cast",
+        "skill_release"
+      ],
+      "accepted_event_count": 2,
+      "contact_status": "NOT_EMITTED_BY_REAL_FIXTURE; NO_SYNTHETIC_CONTACT",
+      "owner_approval": "PENDING",
+      "pve": "HOLD"
     }
   ]
 }

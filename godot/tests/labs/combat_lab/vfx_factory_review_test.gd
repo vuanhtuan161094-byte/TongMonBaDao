@@ -108,8 +108,8 @@ func _run() -> void:
 				and int(state.get("frame_count", 0)) >= 8,
 				"distinct existing RGBA atlas phases load in shared Factory " + skill_id)
 			_check(str(entry.get("native_batch", "")) == "talisman"
-				and str(entry.get("native_status", "")) == "NATIVE_CAPTURE_PENDING",
-				"Talisman is routed through the shared school batch runner " + skill_id)
+				and str(entry.get("native_status", "")).begins_with("NATIVE_TECH_PASS_GODOT_4.7.2_1280x720"),
+				"Talisman native technical capture is recorded separately from art review " + skill_id)
 			var binding_types: Array[String] = []
 			for binding in entry.get("receipt_manifest", {}).get("bindings", []):
 				binding_types.append(str(binding.get("event_type", "")))

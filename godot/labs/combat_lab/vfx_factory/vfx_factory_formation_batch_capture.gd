@@ -124,13 +124,20 @@ func _activate_skill(next_index: int) -> void:
 	_event_origin_time = float(_events[0].get("time", 0.0)) if not _events.is_empty() else 0.0
 	_segment_duration = _capture_duration(_events, _event_origin_time)
 	_segment_start = _global_elapsed
+	var recorded_event_types: Array[String] = []
+	for event in _events:
+		var event_type := str(event.get("type", ""))
+		if not recorded_event_types.has(event_type):
+			recorded_event_types.append(event_type)
 	_records.append({
 		"skill_id":skill_id,
 		"name_vi":str(entry.get("name_vi", "")),
 		"encounter_id":encounter_id,
 		"fixture":"REAL_MAPBATTLE_VFX_TEST_FIXTURE",
 		"event_count":_events.size(),
-		"event_types":allowed_types.duplicate(),
+		"event_types":recorded_event_types,
+		"configured_event_types":allowed_types.duplicate(),
+		"accepted_event_count":0,
 		"video_start_seconds":_segment_start,
 		"contact_frame_seconds":-1.0,
 		"video_duration_seconds":_segment_duration,
@@ -139,13 +146,19 @@ func _activate_skill(next_index: int) -> void:
 
 func _capture_duration(events: Array[Dictionary], origin_time: float) -> float:
 	var last_time := 0.0
+	var release_time := 0.0
 	for event in events:
-		last_time = maxf(last_time, float(event.get("time", origin_time)) - origin_time)
+		var event_age := float(event.get("time", origin_time)) - origin_time
+		last_time = maxf(last_time, event_age)
+		if str(event.get("type", "")) == "skill_release":
+			release_time = maxf(release_time, event_age)
 		for end_key in ["until", "expires_at", "evasion_until"]:
 			var end_value: Variant = event.get(end_key, null)
 			if end_value is float or end_value is int:
 				last_time = maxf(last_time, float(end_value) - origin_time)
-	return maxf(1.4, last_time + 0.48)
+	var release_window := maxf(0.08, float(_entries[_index].get("review_timeline", {}).get("release_window_seconds", 0.18)))
+	var release_tail := release_time + release_window + 0.32 if release_time > 0.0 else 0.0
+	return maxf(maxf(1.4, last_time + 0.48), release_tail)
 
 func _process(delta: float) -> void:
 	if _finished:
@@ -211,14 +224,21 @@ func _feed_receipt(event: Dictionary) -> void:
 	var record_index := _records.size() - 1
 	if bool(result.get("ok", false)):
 		_records[record_index]["receipt_feed"] = "REAL_MAPBATTLE_RECEIPT_ACCEPTED"
+		_records[record_index]["accepted_event_count"] = int(_records[record_index].get("accepted_event_count", 0)) + 1
 		if str(event.get("type", "")) in ["v63_skill_hit", "v63_talisman_hit", "v63_talisman_mark_applied", "skill_hit", "v63_formation_slow_applied", "v63_formation_zone_tick", "status_applied", "v63_mobility"] or is_basic_hit:
 			if float(_records[record_index].get("contact_frame_seconds", -1.0)) < 0.0:
 				# Keep the contact sheet close to the first receipt frame so the
 				# phase's authored peak is not captured halfway through its fade.
-				_records[record_index]["contact_frame_seconds"] = _global_elapsed + 0.02
+				var visual_phase := ""
+				for binding in _entries[_index].get("receipt_manifest", {}).get("bindings", []):
+					if str(binding.get("event_type", "")) == str(event.get("type", "")):
+						visual_phase = str(binding.get("visual_phase", ""))
+						break
+				_records[record_index]["contact_frame_seconds"] = _global_elapsed + (0.10 if visual_phase == "start" else 0.02)
 		elif str(event.get("type", "")) == "skill_release" \
 				and float(_records[record_index].get("release_frame_seconds", -1.0)) < 0.0:
-			_records[record_index]["release_frame_seconds"] = _global_elapsed + 0.02
+			var release_window := maxf(0.08, float(_entries[_index].get("review_timeline", {}).get("release_window_seconds", 0.18)))
+			_records[record_index]["release_frame_seconds"] = _global_elapsed + minf(0.45, release_window * 0.5)
 	else:
 		push_error("VFX_FACTORY_BATCH_EVENT_REJECTED skill=" + skill_id + " event=" + str(event.get("type", "")) + " reason=" + str(result.get("reason", "")))
 
@@ -325,7 +345,7 @@ func _finish() -> void:
 			file.store_string(JSON.stringify(capture_index, "\t") + "\n")
 	print("VFX_FACTORY_" + _school.to_upper() + "_CAPTURE_COMPLETE skills=" + str(_records.size())
 		+ " duration=" + str(snappedf(_global_elapsed, 0.01))
-		+ " receipts=" + str(_accepted_receipt_count())
+		+ " skills_with_bound_receipts=" + str(_accepted_receipt_count())
 		+ " OWNER=PENDING PVE=HOLD")
 	get_tree().quit(0)
 

@@ -974,10 +974,10 @@
         "front"
       ],
       "vfx_status": "CANDIDATE_G3",
-      "g3_art": "CURRENT_R6_SOURCE_OWNER_GATE_CONFLICT_APPROVAL_REVISION_PRESERVED_ADAPTER_PENDING",
+      "g3_art": "ART_SELF_REVIEW_RELEASE_READABILITY_ONLY_FULL_MOTION_AND_CONTACT_PENDING",
       "owner_art": "OWNER_VISUAL_PENDING_CURRENT_SOURCE_REVISION_APPROVED_REVISION_PRESERVED",
       "art_source": "EXISTING_FIRST_PARTY_TALISMAN_RGBA_ATLAS_NO_REBAKE",
-      "review_stages": "shared AS64 Factory · actual cast/release receipts · contact receipt gated · full animation and owner review pending",
+      "review_stages": "Godot native TECH PASS · actual cast/release receipt · one 1× phase sample only · frame-by-frame and owner review pending · PvE HOLD",
       "source_paths": [
         "data/combat/v63_talisman_combat_catalog.json",
         "labs/combat_lab/talisman02/assets/tal02_fracture_impact.webp",
@@ -993,7 +993,7 @@
         "tests/labs/combat_lab/vfx_factory_review_test.gd",
         "tests/labs/combat_lab/vfx_factory_talisman_receipt_integration_test.gd"
       ],
-      "review_note": "Uses the current TAL02 painted ink-lightning atlas and underfoot array byte-for-byte. The older owner-approved source revision is preserved in Git history; current atlas revision and this Factory adapter remain owner-review pending. Canonical effect=damage, shape=line, cap=3; PvE HOLD."
+      "review_note": "Uses the current TAL02 painted ink-lightning atlas and underfoot array byte-for-byte. The older owner-approved source revision is preserved in Git history; current atlas revision and this Factory adapter remain owner-review pending. Canonical effect=damage, shape=line, cap=3; PvE HOLD. Native TECH PASS at 1280×720. CAST_RELEASE_ONLY_NO_HIT_RECEIPT. Art self-review is limited to one sampled phase; full animation, contact (when no hit receipt exists), owner approval and PvE remain pending/held."
     },
     {
       "id": "tmb.skill.talisman.loi_phu.active_03.human",
@@ -1006,10 +1006,10 @@
         "front"
       ],
       "vfx_status": "CANDIDATE_G3",
-      "g3_art": "CURRENT_MARK_ATLAS_OWNER_GATE_CONFLICT_APPROVAL_REVISION_PRESERVED_ADAPTER_PENDING",
+      "g3_art": "ART_SELF_REVIEW_MARK_START_READABILITY_ONLY_FULL_SUSTAIN_PENDING",
       "owner_art": "OWNER_VISUAL_PENDING_CURRENT_SOURCE_REVISION_APPROVED_REVISION_PRESERVED",
       "art_source": "EXISTING_FIRST_PARTY_TALISMAN_RGBA_ATLAS_NO_REBAKE",
-      "review_stages": "shared AS64 Factory · actual cast/release receipts · contact receipt gated · full animation and owner review pending",
+      "review_stages": "Godot native TECH PASS · actual cast/release receipt · one 1× phase sample only · frame-by-frame and owner review pending · PvE HOLD",
       "source_paths": [
         "data/combat/v63_talisman_combat_catalog.json",
         "labs/combat_lab/talisman02/assets/talisman_foot_array.webp",
@@ -1024,7 +1024,7 @@
         "tests/labs/combat_lab/vfx_factory_review_test.gd",
         "tests/labs/combat_lab/vfx_factory_talisman_receipt_integration_test.gd"
       ],
-      "review_note": "The renderer uses the existing distinct 8-pose painted seal; the previous approved revision is preserved unchanged in Git history. This current atlas adapter does not inherit that revision’s owner approval. Canonical effect=mark, shape=single_target, cap=1; PvE HOLD."
+      "review_note": "The renderer uses the existing distinct 8-pose painted seal; the previous approved revision is preserved unchanged in Git history. This current atlas adapter does not inherit that revision’s owner approval. Canonical effect=mark, shape=single_target, cap=1; PvE HOLD. Native TECH PASS at 1280×720. OWNER_SCOPED_MARK_RECEIPT_DURATION_6S. Art self-review is limited to one sampled phase; full animation, contact (when no hit receipt exists), owner approval and PvE remain pending/held."
     },
     {
       "id": "tmb.skill.talisman.loi_phu.active_04.human",
@@ -1037,10 +1037,10 @@
         "front"
       ],
       "vfx_status": "CANDIDATE_G3",
-      "g3_art": "SOURCE_HAS_PRIOR_REWORK_HISTORY_CURRENT_ADAPTER_ART_REVIEW_PENDING",
+      "g3_art": "ART_SELF_REVIEW_CLOUD_RELEASE_READABILITY_ONLY_FULL_MOTION_PENDING",
       "owner_art": "OWNER_VISUAL_PENDING",
       "art_source": "EXISTING_FIRST_PARTY_TALISMAN_RGBA_ATLAS_NO_REBAKE",
-      "review_stages": "shared AS64 Factory · actual cast/release receipts · contact receipt gated · full animation and owner review pending",
+      "review_stages": "Godot native TECH PASS · actual cast/release receipt · one 1× phase sample only · frame-by-frame and owner review pending · PvE HOLD",
       "source_paths": [
         "data/combat/v63_talisman_combat_catalog.json",
         "labs/combat_lab/talisman02/assets/talisman_foot_array.webp",
@@ -1056,7 +1056,7 @@
         "tests/labs/combat_lab/vfx_factory_review_test.gd",
         "tests/labs/combat_lab/vfx_factory_talisman_receipt_integration_test.gd"
       ],
-      "review_note": "The current existing cloud-fissure and local fracture sources are reused without rebaking. Earlier TAL04 art rework history is retained; new shared adapter remains a candidate. Canonical effect=damage, shape=line, cap=2; PvE HOLD."
+      "review_note": "The current existing cloud-fissure and local fracture sources are reused without rebaking. Earlier TAL04 art rework history is retained; new shared adapter remains a candidate. Canonical effect=damage, shape=line, cap=2; PvE HOLD. Native TECH PASS at 1280×720. CAST_RELEASE_ONLY_NO_HIT_RECEIPT. Art self-review is limited to one sampled phase; full animation, contact (when no hit receipt exists), owner approval and PvE remain pending/held."
     },
     {
       "id": "tmb.skill.talisman.loi_phu.ultimate.human",
@@ -1069,10 +1069,10 @@
         "front"
       ],
       "vfx_status": "CANDIDATE_G3",
-      "g3_art": "R7_CURRENT_SOURCE_FACTORY_ADAPTER_ART_REVIEW_PENDING",
+      "g3_art": "ART_SELF_REVIEW_VERTICAL_BOLT_RELEASE_READABILITY_ONLY_CONTACT_PENDING",
       "owner_art": "OWNER_VISUAL_PENDING",
       "art_source": "EXISTING_FIRST_PARTY_TALISMAN_RGBA_ATLAS_NO_REBAKE",
-      "review_stages": "shared AS64 Factory · actual cast/release receipts · contact receipt gated · full animation and owner review pending",
+      "review_stages": "Godot native TECH PASS · actual cast/release receipt · one 1× phase sample only · frame-by-frame and owner review pending · PvE HOLD",
       "source_paths": [
         "data/combat/v63_talisman_combat_catalog.json",
         "labs/combat_lab/talisman05/assets/tal05_r3_bolt_flipbook.webp",
@@ -1088,7 +1088,7 @@
         "tests/labs/combat_lab/vfx_factory_review_test.gd",
         "tests/labs/combat_lab/vfx_factory_talisman_receipt_integration_test.gd"
       ],
-      "review_note": "Reuses the existing painted heavenly gate, vertical lightning atlas, and local impact. Only a confirmed MapBattleV2 contact can display impact; no horizontal laser or synthetic AoE is added. Canonical effect=damage, shape=line, cap=3; PvE HOLD."
+      "review_note": "Reuses the existing painted heavenly gate, vertical lightning atlas, and local impact. Only a confirmed MapBattleV2 contact can display impact; no horizontal laser or synthetic AoE is added. Canonical effect=damage, shape=line, cap=3; PvE HOLD. Native TECH PASS at 1280×720. CAST_RELEASE_ONLY_NO_HIT_RECEIPT. Art self-review is limited to one sampled phase; full animation, contact (when no hit receipt exists), owner approval and PvE remain pending/held."
     }
   ],
   "updated_at": "2026-11-25"

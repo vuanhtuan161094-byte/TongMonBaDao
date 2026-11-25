@@ -16,7 +16,7 @@ Scene presence, source approval, technical status, owner review, and live integr
 | School | IDs | Families | Human cast | Human families with scene | Cast families with scene | All scene revisions | Cast scene revisions | Owner approved | Provisional | Pending | Ledger/effective status conflicts | Tier fallback pending | Tier fallback incompatible | Passive/event receipt gated |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | poison | 183 | 35 | 17 | 17 | 17 | 28 | 28 | 7 | 6 | 4 | 0 | 51 | 19 | 96 |
-| talisman | 183 | 35 | 17 | 18 | 15 | 22 | 16 | 2 | 0 | 15 | 0 | 53 | 17 | 96 |
+| talisman | 183 | 35 | 17 | 18 | 15 | 23 | 17 | 2 | 0 | 15 | 0 | 53 | 17 | 96 |
 | sword | 183 | 35 | 17 | 17 | 17 | 17 | 17 | 0 | 17 | 0 | 17 | 70 | 0 | 96 |
 | bow | 183 | 35 | 17 | 1 | 1 | 1 | 1 | 0 | 0 | 17 | 0 | 49 | 21 | 96 |
 | fist | 183 | 35 | 17 | 15 | 15 | 22 | 22 | 0 | 0 | 17 | 0 | 31 | 39 | 96 |
@@ -56,10 +56,10 @@ Scene presence, source approval, technical status, owner review, and live integr
 | talisman | hoa_phu | `tmb.skill.talisman.hoa_phu.active_04.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | godot/labs/combat_lab/talisman09/chu_tuoc_hoi_hoan.tscn |
 | talisman | hoa_phu | `tmb.skill.talisman.hoa_phu.ultimate.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | godot/labs/combat_lab/talisman10/van_phu_phan_thien.tscn |
 | talisman | loi_phu | `tmb.skill.talisman.loi_phu.active_01.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | godot/labs/combat_lab/talisman01/dien_quang_khai_phu.tscn |
-| talisman | loi_phu | `tmb.skill.talisman.loi_phu.active_02.human` | OWNER_VISUAL_APPROVED | OWNER_VISUAL_APPROVED | OWNER_VISUAL_APPROVED | LEDGER_OWNER_GATE | ART_APPROVED | godot/labs/combat_lab/talisman02/thien_loi_dan_net.tscn |
-| talisman | loi_phu | `tmb.skill.talisman.loi_phu.active_03.human` | OWNER_VISUAL_APPROVED | OWNER_VISUAL_APPROVED | OWNER_VISUAL_APPROVED | LEDGER_OWNER_GATE | ART_APPROVED | godot/labs/combat_lab/talisman03/loi_van_truy_an.tscn |
-| talisman | loi_phu | `tmb.skill.talisman.loi_phu.active_04.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | godot/labs/combat_lab/talisman04/cuu_tieu_pha_van.tscn |
-| talisman | loi_phu | `tmb.skill.talisman.loi_phu.ultimate.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | godot/labs/combat_lab/talisman05/cuu_thien_van_loi_phu.tscn |
+| talisman | loi_phu | `tmb.skill.talisman.loi_phu.active_02.human` | OWNER_VISUAL_APPROVED | OWNER_VISUAL_APPROVED | OWNER_VISUAL_APPROVED | LEDGER_OWNER_GATE | ART_APPROVED | godot/labs/combat_lab/talisman02/thien_loi_dan_net.tscn; godot/labs/combat_lab/vfx_factory/vfx_factory_review.tscn |
+| talisman | loi_phu | `tmb.skill.talisman.loi_phu.active_03.human` | OWNER_VISUAL_APPROVED | OWNER_VISUAL_APPROVED | OWNER_VISUAL_APPROVED | LEDGER_OWNER_GATE | ART_APPROVED | godot/labs/combat_lab/talisman03/loi_van_truy_an.tscn; godot/labs/combat_lab/vfx_factory/vfx_factory_review.tscn |
+| talisman | loi_phu | `tmb.skill.talisman.loi_phu.active_04.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | godot/labs/combat_lab/talisman04/cuu_tieu_pha_van.tscn; godot/labs/combat_lab/vfx_factory/vfx_factory_review.tscn |
+| talisman | loi_phu | `tmb.skill.talisman.loi_phu.ultimate.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | godot/labs/combat_lab/talisman05/cuu_thien_van_loi_phu.tscn; godot/labs/combat_lab/vfx_factory/vfx_factory_review.tscn |
 | talisman | shared | `tmb.skill.talisman.mobility.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | — |
 | talisman | phong_an_phu | `tmb.skill.talisman.phong_an_phu.active_01.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | godot/labs/combat_lab/talisman11/phong_gioi_truy_dau.tscn |
 | talisman | phong_an_phu | `tmb.skill.talisman.phong_an_phu.active_02.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | godot/labs/combat_lab/talisman12/thai_huyen_khep_an.tscn |
