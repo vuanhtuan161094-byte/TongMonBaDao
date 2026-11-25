@@ -10,6 +10,7 @@ const TALISMAN_CATALOG_PATH := "res://data/combat/v63_talisman_combat_catalog.js
 const CURSE_CATALOG_PATH := "res://data/combat/v63_curse_combat_catalog.json"
 const PALM_CATALOG_PATH := "res://data/combat/v63_palm_combat_catalog.json"
 const SPEAR_CATALOG_PATH := "res://data/combat/v63_spear_combat_catalog.json"
+const BLADE_CATALOG_PATH := "res://data/combat/v63_blade_combat_catalog.json"
 
 var failures := 0
 var checked := 0
@@ -31,11 +32,12 @@ func _run() -> void:
 	var curse_catalog: Variant = JSON.parse_string(FileAccess.get_file_as_string(CURSE_CATALOG_PATH))
 	var palm_catalog: Variant = JSON.parse_string(FileAccess.get_file_as_string(PALM_CATALOG_PATH))
 	var spear_catalog: Variant = JSON.parse_string(FileAccess.get_file_as_string(SPEAR_CATALOG_PATH))
+	var blade_catalog: Variant = JSON.parse_string(FileAccess.get_file_as_string(BLADE_CATALOG_PATH))
 	_check(registry is Dictionary and manifest is Dictionary and catalog is Dictionary and talisman_catalog is Dictionary
-		and curse_catalog is Dictionary and palm_catalog is Dictionary and spear_catalog is Dictionary,
+		and curse_catalog is Dictionary and palm_catalog is Dictionary and spear_catalog is Dictionary and blade_catalog is Dictionary,
 		"all source registries parse")
 	if not (registry is Dictionary and manifest is Dictionary and catalog is Dictionary and talisman_catalog is Dictionary
-		and curse_catalog is Dictionary and palm_catalog is Dictionary and spear_catalog is Dictionary):
+		and curse_catalog is Dictionary and palm_catalog is Dictionary and spear_catalog is Dictionary and blade_catalog is Dictionary):
 		_finish()
 		return
 	var formation_by_id: Dictionary = {}
@@ -52,14 +54,17 @@ func _run() -> void:
 		canonical_by_id[str(row.get("id", ""))] = row
 	for row in spear_catalog.get("skills", []):
 		canonical_by_id[str(row.get("id", ""))] = row
+	for row in blade_catalog.get("skills", []):
+		canonical_by_id[str(row.get("id", ""))] = row
 	var cases: Array = registry.get("entries", [])
-	_check(cases.size() == 32, "shared registry retains existing cues, 17 Formation, 10 Talisman, Curse, Palm and Spear candidates")
+	_check(cases.size() == 33, "shared registry retains existing cues, 17 Formation, 10 Talisman, Curse, Blade, Palm and Spear candidates")
 	_check(formation_by_id.size() == 17, "all 17 source atlas records remain available")
 	for entry in cases:
 		var skill_id := str(entry.get("skill_id", ""))
 		var is_formation := skill_id.begins_with("tmb.skill.formation.")
 		var is_talisman := skill_id.begins_with("tmb.skill.talisman.")
 		var is_curse := skill_id == "tmb.skill.curse.basic.human"
+		var is_blade := skill_id == "tmb.skill.blade.cuong_dao.active_01.human"
 		var is_palm := skill_id == "tmb.skill.palm.han_ngoc_chuong.active_01.human"
 		var is_spear := skill_id == "tmb.skill.spear.long_thuong.active_01.human"
 		var lab := FACTORY_SCENE.instantiate() as Node2D
@@ -180,6 +185,43 @@ func _run() -> void:
 			_check(str(contact_wait.get("receipt_state", "")) == "WAITING_FOR_REAL_RECEIPT"
 				and int(contact_wait.get("contact_receipt_target_count", -1)) == 0,
 				"contact stays hidden without a real Curse receipt " + skill_id)
+		elif is_blade:
+			var canonical: Dictionary = canonical_by_id.get(skill_id, {})
+			_check(not canonical.is_empty(), "Blade canonical runtime catalogue joins " + skill_id)
+			_check(str(state.get("canonical_effect", "")) == "damage"
+				and str(state.get("canonical_shape", "")) == "single_target"
+				and int(state.get("canonical_target_limit", 0)) == 1
+				and float(canonical.get("projectile_speed", 0.0)) == 10.0,
+				"Blade projectile effect, shape, speed and target cap stay canonical-data-owned " + skill_id)
+			_check(int(state.get("actor_asset_id", -1)) == 50,
+				"Blade uses the existing AS50 disciple at shared 1x scale " + skill_id)
+			_check(int(state.get("phase_sources_loaded", 0)) == 4 and int(state.get("frame_count", 0)) == 4,
+				"all four original RGBA Blade phases load through the shared renderer " + skill_id)
+			_check(str(entry.get("native_batch", "")) == "blade"
+				and str(entry.get("native_capture_mode", "")) != "REVIEW_STORYBOARD_ONLY",
+				"Blade native capture is bound to a real receipt fixture " + skill_id)
+			var blade_bindings: Array[String] = []
+			for binding in entry.get("receipt_manifest", {}).get("bindings", []):
+				blade_bindings.append(str(binding.get("event_type", "")))
+			_check(blade_bindings.has("skill_cast") and blade_bindings.has("v63_skill_hit"),
+				"Blade charge and contact are tied to real MapBattleV2 events " + skill_id)
+			var blade_anchors: Dictionary = ASCHAR.resolve_preview_anchors("blade", "male", "attack",
+				Vector2.RIGHT, 0.2, Vector2(300.0, 492.0), ASCHAR.game_view_scale(), 0.28,
+				entry.get("preview_attachment_override", {}))
+			_check(blade_anchors.get("slots", {}).has("weapon_tip")
+				and str(blade_anchors["weapon_tip"].get("asset_id", "")) == "curved_dao",
+				"Blade charge uses the existing AS50 main-hand DAO tip socket " + skill_id)
+			_check(str(entry.get("phase_anchors", {}).get("contact", "")) == "target_chest"
+				and str(entry.get("phase_anchors", {}).get("fade", "")) == "target_chest",
+				"Blade contact and fade sit on the target torso, matching its native lab " + skill_id)
+			_check(str(entry.get("owner_status", "")) == "OWNER_VISUAL_PENDING"
+				and not bool(entry.get("native_ready", true)),
+				"Blade remains a candidate with owner and production gates pending " + skill_id)
+			lab.call("review_seek_phase", "contact")
+			var contact_wait: Dictionary = lab.call("review_state")
+			_check(str(contact_wait.get("receipt_state", "")) == "WAITING_FOR_REAL_RECEIPT"
+				and int(contact_wait.get("contact_receipt_target_count", -1)) == 0,
+				"Blade contact stays hidden before a real skill hit receipt " + skill_id)
 		elif is_palm or is_spear:
 			var canonical: Dictionary = canonical_by_id.get(skill_id, {})
 			_check(not canonical.is_empty(), "Palm/Spear canonical runtime catalogue join " + skill_id)
@@ -241,6 +283,6 @@ func _run() -> void:
 
 func _finish() -> void:
 	print("VFX_FACTORY_REVIEW_RESULT=" + ("PASS" if failures == 0 else "FAIL")
-		+ " cases=" + str(checked) + " skills=" + str(32)
-		+ " formation=17 AS68=resolved curse=AS66_storyboard palm=AS60 spear=AS54 contact_fixture=NONE failures=" + str(failures))
+		+ " cases=" + str(checked) + " skills=" + str(33)
+		+ " formation=17 AS68=resolved curse=AS66_storyboard blade=AS50 receipt palm=AS60 spear=AS54 failures=" + str(failures))
 	quit(0 if failures == 0 else 1)

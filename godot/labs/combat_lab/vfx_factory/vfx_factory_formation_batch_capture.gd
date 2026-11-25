@@ -370,6 +370,10 @@ func _make_battle_fixture(skill_id: String, fixture_index: int) -> Dictionary:
 	match _school:
 		"formation": caster["v63_formation_combat_enabled"] = true
 		"talisman": caster["v63_talisman_combat_enabled"] = true
+		"blade":
+			caster["v63_blade_combat_enabled"] = true
+			caster["v63_combat_branch_id"] = "cuong_dao"
+			caster["v63_combat_lineage"] = "base"
 		"palm": caster["v63_palm_combat_enabled"] = true
 		"spear": caster["v63_spear_combat_enabled"] = true
 	var ally := _actor("ally_%02d" % fixture_index, "disciple", Vector2(4.0, 3.0))
@@ -461,7 +465,7 @@ func _actor(actor_id: String, side: String, position: Vector2) -> Dictionary:
 		"stats":{"max_hp":200.0,"attack":40.0,"defense":0.0,"damage_reduction":0.0,"crit_chance":0.0,
 			"crit_damage":1.5,"crit_resistance":0.0,"defense_penetration":0.0,"lifesteal":0.0,"lifesteal_reduction":0.0},
 		"resistances":resistances,"status_effects":{},"context_sources":[],"v63_combat_enabled":true,
-		"v63_formation_combat_enabled":false,"v63_talisman_combat_enabled":false,
+		"v63_formation_combat_enabled":false,"v63_talisman_combat_enabled":false,"v63_blade_combat_enabled":false,
 		"v63_palm_combat_enabled":false,"v63_spear_combat_enabled":false,
 		"v63_skill_ready":{},"v63_skill_loadout":[],"v63_passive_ids":[],
 		"v63_combat_clock":-1.0,"next_skill":0.0,"next_basic":0.0,

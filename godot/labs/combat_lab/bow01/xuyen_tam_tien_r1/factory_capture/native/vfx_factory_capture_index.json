@@ -1,0 +1,65 @@
+{
+  "owner_approval": "PENDING",
+  "pve": "HOLD",
+  "receipts": "STORYBOARD_ONLY_NO_COMBAT_EVENTS",
+  "renderer": "Godot 4.7.2 shared VFX Factory + existing AS-CHAR and Source A",
+  "schema": "tmb.vfx_factory_native_batch_capture.v1",
+  "school": "bow",
+  "skills": [
+    {
+      "accepted_event_count": 0,
+      "configured_event_types": [],
+      "contact_frame_seconds": -1.0,
+      "contact_status": "HIDDEN_WAITING_FOR_REAL_RECEIPT",
+      "encounter_id": "vfx_factory_bow_storyboard_00",
+      "event_count": 0,
+      "event_types": [],
+      "fixture": "PRESENTATION_ONLY_STORYBOARD_NO_BATTLE_EVENTS",
+      "name_vi": "Xuyên Tâm Tiễn",
+      "native_capture_mode": "REVIEW_STORYBOARD_ONLY",
+      "receipt_feed": "NO_GAMEPLAY_RECEIPT_CONFIGURED",
+      "release_frame_seconds": 0.28,
+      "skill_id": "tmb.skill.bow.liep_anh.active_01.human",
+      "synthetic_events": 0,
+      "video_duration_seconds": 1.55,
+      "video_start_seconds": 0.0,
+      "native_status": "NATIVE_STORYBOARD_TECH_PASS_GODOT_4.7.2_1280x720_H264_FULL_DECODE; NO_GAMEPLAY_RECEIPT; CONTACT_HIDDEN",
+      "native_phase_samples": [
+        {
+          "phase": "Charge",
+          "video_time_seconds": 0.1,
+          "event_truth": "STORYBOARD_ONLY"
+        },
+        {
+          "phase": "Flight",
+          "video_time_seconds": 0.48,
+          "event_truth": "UNBOUND_PRESENTATION_MOTION"
+        },
+        {
+          "phase": "Contact window · hidden",
+          "video_time_seconds": 0.92,
+          "event_truth": "NO_GAMEPLAY_RECEIPT"
+        },
+        {
+          "phase": "Post-contact · hidden",
+          "video_time_seconds": 1.2,
+          "event_truth": "CONTACT_REMAINS_HIDDEN"
+        }
+      ]
+    }
+  ],
+  "technical_status": "NATIVE_STORYBOARD_TECH_PASS_GODOT_4.7.2_1280x720_H264_FULL_DECODE",
+  "viewport_px": [
+    1280,
+    720
+  ],
+  "fps": 60.0,
+  "frame_count": 94,
+  "duration_seconds": 1.566667,
+  "video": "res://godot/labs/combat_lab/bow01/xuyen_tam_tien_r1/factory_capture/native/vfx_factory_bow_native_1280x720.mp4",
+  "video_sha256": "4ab566a9300a60773306e7dc5e740d9830288b3c17e5b159a3d515286ca0c44e",
+  "video_validation": "FFPROBE_1280X720_60FPS; FULL_H264_DECODE_PASS",
+  "contact_sheet": "res://godot/labs/combat_lab/bow01/xuyen_tam_tien_r1/factory_capture/native/vfx_factory_bow_contact_sheet_1280x720.png",
+  "contact_sheet_sha256": "14aaac73655fb59406c085f88f103206350d01a3e6d6946570406c158c106471",
+  "visual_review_status": "NATIVE_STORYBOARD_PHASES_REVIEWED; CONTACT_HIDDEN_WITHOUT_RECEIPT; FORMAL_ART_REVIEW_PENDING"
+}

@@ -1438,6 +1438,34 @@
       ],
       "art_source": "EXISTING_FIRST_PARTY_RGBA_PHASE_MASTERS_REUSED_WITH_AS54_WEAPON_LIBRARY",
       "review_note": "Shared VFX Factory scene; existing AS54 attack clip and candidate Weapon Library weapon_tip socket. Canonical direct line damage caps at two targets with projectile_speed=0. Release streak is anchored at the weapon tip; contact accents require exact v63_skill_hit receipts. G3 source self-pass is inherited from R1 only; Factory native H.264 capture is decoded at 1280×720/20fps; socket/continuous motion and owner visual review remain pending. PvE HOLD."
+    },
+    {
+      "id": "tmb.skill.blade.cuong_dao.active_01.human",
+      "name_vi": "Phá Vây Khai Sơn — VFX Factory, 4 RGBA phases",
+      "school_vi": "Đao Tu",
+      "branch_vi": "Cuồng Đao",
+      "tier": "human",
+      "scene": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+      "directions": [
+        "front"
+      ],
+      "vfx_status": "CANDIDATE_G3",
+      "g3_art": "G3_SOURCE_SELF_PASS_FOUR_PHASES; MOTION_STILLS",
+      "owner_art": "OWNER_VISUAL_PENDING",
+      "art_source": "FIRST_PARTY_ORIGINAL_RGBA_PHASES; EXISTING_AS50_AND_CURVED_DAO_CANDIDATES",
+      "source_paths": [
+        "labs/combat_lab/vfx_factory/vfx_factory_review.gd",
+        "labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+        "labs/combat_lab/vfx_factory/registry.json",
+        "labs/combat_lab/blade01/pha_vay_khai_son_r1/evidence/G3_5_STATUS.md",
+        "labs/combat_lab/blade01/pha_vay_khai_son_r1/source/PROMPTS_AND_PROVENANCE.json",
+        "labs/combat_lab/blade01/pha_vay_khai_son_r1/source/production/pha_vay_khai_son_charge_r1.png",
+        "labs/combat_lab/blade01/pha_vay_khai_son_r1/source/production/pha_vay_khai_son_flight_r1.png",
+        "labs/combat_lab/blade01/pha_vay_khai_son_r1/source/production/pha_vay_khai_son_contact_r1.png",
+        "labs/combat_lab/blade01/pha_vay_khai_son_r1/source/production/pha_vay_khai_son_fade_r1.png",
+        "data/combat/v63_blade_combat_catalog.json"
+      ],
+      "review_note": "Shared Factory candidate using the existing AS50 candidate and curved DAO socket metadata. The projectile flight follows the real cast receipt deadline; contact and fade use the target chest anchor and contact requires the exact positive MapBattleV2 skill hit. Four RGBA stills are not frame-by-frame completion. Owner pending; production gate OFF; PVE HOLD."
     }
   ],
   "updated_at": "2026-11-25"

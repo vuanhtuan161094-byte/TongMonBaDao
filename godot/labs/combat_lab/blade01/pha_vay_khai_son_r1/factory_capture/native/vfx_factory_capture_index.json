@@ -1,0 +1,105 @@
+{
+  "owner_approval": "PENDING",
+  "pve": "HOLD",
+  "receipts": "REAL_MAPBATTLE_V2_TEST_FIXTURE_EVENTS_ONLY",
+  "renderer": "Godot 4.7.2 shared VFX Factory + existing AS-CHAR and Source A",
+  "schema": "tmb.vfx_factory_native_batch_capture.v1",
+  "school": "blade",
+  "skills": [
+    {
+      "accepted_event_count": 2,
+      "configured_event_types": [
+        "skill_cast",
+        "v63_skill_hit"
+      ],
+      "contact_frame_seconds": 0.686666666666667,
+      "encounter_id": "vfx_factory_blade_capture_00",
+      "event_count": 2,
+      "event_trace": [
+        {
+          "accepted": true,
+          "capture_frame_seconds": 0.0,
+          "caster_id": "caster_00",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_blade_capture_00/caster_00/1/skill_cast",
+          "event_type": "skill_cast",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.0,
+          "skill_id": "tmb.skill.blade.cuong_dao.active_01.human",
+          "target_ids": [
+            "factory_blade_target_01"
+          ]
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 0.666666666666667,
+          "caster_id": "caster_00",
+          "contact_receipt_target_count": 1,
+          "event_id": "vfx_factory_blade_capture_00/caster_00/1/v63_skill_hit/factory_blade_target_01",
+          "event_type": "v63_skill_hit",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.68,
+          "skill_id": "tmb.skill.blade.cuong_dao.active_01.human",
+          "target_ids": [
+            "factory_blade_target_01"
+          ]
+        }
+      ],
+      "event_types": [
+        "skill_cast",
+        "v63_skill_hit"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "name_vi": "Phá Vây Khai Sơn · Nhân Giai",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "release_frame_seconds": -1.0,
+      "skill_id": "tmb.skill.blade.cuong_dao.active_01.human",
+      "synthetic_events": 0,
+      "video_duration_seconds": 1.4,
+      "video_start_seconds": 0.0,
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_H264_FULL_DECODE; REAL_MAPBATTLE_V63_CAST_AND_EXACT_SKILL_HIT=PASS; SYNTHETIC=0",
+      "native_decode_status": "H264_FULL_DECODE_PASS_1280X720_60FPS",
+      "real_hit_receipt_count": 1,
+      "outside_target_status": "OUTSIDE_UNCHANGED_VERIFIED_BY_BLADE_RECEIPT_TEST",
+      "receipt_summary": "REAL_MAPBATTLE_SKILL_CAST=1; EXACT_V63_SKILL_HIT=1; POSITIVE_DAMAGE_AND_MOVED_TARGET_SOURCE_TEST=PASS; SYNTHETIC=0",
+      "visual_self_review_status": "ART_SELF_PASS_PHASE_READABILITY; FOUR_SOURCE_PHASES_REMAIN_STILLS; OWNER_PENDING",
+      "native_phase_samples": [
+        {
+          "phase": "Charge",
+          "video_time_seconds": 0.08,
+          "event_truth": "REAL_SKILL_CAST_RECEIPT"
+        },
+        {
+          "phase": "Flight",
+          "video_time_seconds": 0.46,
+          "event_truth": "PROJECTILE_INTERPOLATION_TO_CANONICAL_DEADLINE"
+        },
+        {
+          "phase": "Contact",
+          "video_time_seconds": 0.7,
+          "event_truth": "EXACT_POSITIVE_SKILL_HIT_RECEIPT"
+        },
+        {
+          "phase": "Fade",
+          "video_time_seconds": 0.9,
+          "event_truth": "ART_FADE_WITHOUT_EXTRA_GAMEPLAY_EVENT"
+        }
+      ]
+    }
+  ],
+  "technical_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_H264_FULL_DECODE",
+  "viewport_px": [
+    1280,
+    720
+  ],
+  "fps": 60.0,
+  "frame_count": 84,
+  "duration_seconds": 1.4,
+  "video": "res://godot/labs/combat_lab/blade01/pha_vay_khai_son_r1/factory_capture/native/vfx_factory_blade_native_1280x720.mp4",
+  "video_sha256": "ff9b5b6abb0975771d61ffed9ddac5b5915b69560ae2eb1b015e5c0c3dccd5c8",
+  "video_validation": "FFPROBE_1280X720_60FPS; FULL_H264_DECODE_PASS",
+  "contact_sheet": "res://godot/labs/combat_lab/blade01/pha_vay_khai_son_r1/factory_capture/native/vfx_factory_blade_contact_sheet_1280x720.png",
+  "contact_sheet_sha256": "6dca098477cdeae5203c83c9cc4555d30324d396af5ce5de65fbd1ba23d52ece",
+  "receipt_validation": "1_SKILL_CAST_AND_1_EXACT_POSITIVE_SKILL_HIT; ALL_CONFIGURED_EVENTS_ACCEPTED; SYNTHETIC=0; OUTSIDE_UNCHANGED_SOURCE_TEST_PASS",
+  "visual_self_review": "CHARGE_FLIGHT_CONTACT_FADE_READABLE_AT_GAME_SCALE; FLIGHT_STARTS_AT_EXISTING_AS50_DAO_TIP_AND_TRAVELS_TO_TARGET; CONTACT_AND_FADE_ON_TARGET_CHEST; NO_EXTRA_HIT_OR_STATUS; SOURCE_IS_FOUR_STILLS_NOT_FRAME_BY_FRAME"
+}

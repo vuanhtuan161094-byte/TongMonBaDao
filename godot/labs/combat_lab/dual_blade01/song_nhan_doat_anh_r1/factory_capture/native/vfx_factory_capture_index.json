@@ -1,0 +1,65 @@
+{
+  "owner_approval": "PENDING",
+  "pve": "HOLD",
+  "receipts": "STORYBOARD_ONLY_NO_COMBAT_EVENTS",
+  "renderer": "Godot 4.7.2 shared VFX Factory + existing AS-CHAR and Source A",
+  "schema": "tmb.vfx_factory_native_batch_capture.v1",
+  "school": "dual_blade",
+  "skills": [
+    {
+      "accepted_event_count": 0,
+      "configured_event_types": [],
+      "contact_frame_seconds": -1.0,
+      "contact_status": "HIDDEN_WAITING_FOR_REAL_RECEIPT",
+      "encounter_id": "vfx_factory_dual_blade_storyboard_00",
+      "event_count": 0,
+      "event_types": [],
+      "fixture": "PRESENTATION_ONLY_STORYBOARD_NO_BATTLE_EVENTS",
+      "name_vi": "Song Nhận Đoạt Ảnh",
+      "native_capture_mode": "REVIEW_STORYBOARD_ONLY",
+      "receipt_feed": "NO_GAMEPLAY_RECEIPT_CONFIGURED",
+      "release_frame_seconds": 0.28,
+      "skill_id": "tmb.skill.dual_blade.anh_nhan.active_02.human",
+      "synthetic_events": 0,
+      "video_duration_seconds": 1.3,
+      "video_start_seconds": 0.0,
+      "native_status": "NATIVE_STORYBOARD_TECH_PASS_GODOT_4.7.2_1280x720_H264_FULL_DECODE; NO_GAMEPLAY_RECEIPT; CONTACT_HIDDEN",
+      "native_phase_samples": [
+        {
+          "phase": "Charge",
+          "video_time_seconds": 0.1,
+          "event_truth": "STORYBOARD_ONLY"
+        },
+        {
+          "phase": "Release",
+          "video_time_seconds": 0.32,
+          "event_truth": "STORYBOARD_ONLY"
+        },
+        {
+          "phase": "Contact window · hidden",
+          "video_time_seconds": 0.72,
+          "event_truth": "NO_GAMEPLAY_RECEIPT"
+        },
+        {
+          "phase": "Fade · hidden",
+          "video_time_seconds": 1.02,
+          "event_truth": "CONTACT_REMAINS_HIDDEN"
+        }
+      ]
+    }
+  ],
+  "technical_status": "NATIVE_STORYBOARD_TECH_PASS_GODOT_4.7.2_1280x720_H264_FULL_DECODE",
+  "viewport_px": [
+    1280,
+    720
+  ],
+  "fps": 60.0,
+  "frame_count": 78,
+  "duration_seconds": 1.3,
+  "video": "res://godot/labs/combat_lab/dual_blade01/song_nhan_doat_anh_r1/factory_capture/native/vfx_factory_dual_blade_native_1280x720.mp4",
+  "video_sha256": "dba09d8080a8d496d8c33dc6d3b48ff8ad2cbe5f4b89f34cf484e120f70ff6b3",
+  "video_validation": "FFPROBE_1280X720_60FPS; FULL_H264_DECODE_PASS",
+  "contact_sheet": "res://godot/labs/combat_lab/dual_blade01/song_nhan_doat_anh_r1/factory_capture/native/vfx_factory_dual_blade_contact_sheet_1280x720.png",
+  "contact_sheet_sha256": "f338f94c411e513d3d24cc1093dfa786bc755dcf2b02099ede221f570e5f66e0",
+  "visual_review_status": "NATIVE_STORYBOARD_PHASES_REVIEWED; CONTACT_HIDDEN_WITHOUT_RECEIPT; FORMAL_ART_REVIEW_PENDING"
+}

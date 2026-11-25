@@ -22,7 +22,7 @@
       "source_anchor": "review_stage",
       "draw_layer": "FRONT",
       "source_g3": "G3_SOURCE_SELF_PASS",
-      "native_status": "BLOCKED_MISSING_ANIMATED_ARCHER_WEAPON_LAYER",
+      "native_status": "NATIVE_STORYBOARD_TECH_PASS_GODOT_4.7.2_1280x720_H264_FULL_DECODE; NO_GAMEPLAY_RECEIPT; CONTACT_HIDDEN",
       "owner_status": "OWNER_VISUAL_PENDING",
       "native_ready": false,
       "motion_status": "PHASE_STILLS_NOT_FRAME_BY_FRAME",
@@ -63,7 +63,9 @@
           }
         ]
       },
-      "review_note": "G3 source gate applies to its three original RGBA phase stills only; not frame-by-frame completion. AS56 bow draw/release/socket is unverified, so attachments are suppressed and artwork is a detached storyboard cue. Contact stays hidden without a bound MapBattleV2 receipt."
+      "review_note": "G3 source gate applies to its three original RGBA phase stills only; not frame-by-frame completion. AS56 bow draw/release/socket is unverified, so attachments are suppressed and artwork is a detached storyboard cue. Contact stays hidden without a bound MapBattleV2 receipt.",
+      "native_batch": "bow",
+      "native_capture_mode": "REVIEW_STORYBOARD_ONLY"
     },
     {
       "skill_id": "tmb.skill.dual_blade.anh_nhan.active_02.human",
@@ -84,7 +86,7 @@
       "source_anchor": "review_stage",
       "draw_layer": "FRONT",
       "source_g3": "G3_SOURCE_SELF_PASS",
-      "native_status": "BLOCKED_UNVERIFIED_TWIN_WEAPON_GRIPS",
+      "native_status": "NATIVE_STORYBOARD_TECH_PASS_GODOT_4.7.2_1280x720_H264_FULL_DECODE; NO_GAMEPLAY_RECEIPT; CONTACT_HIDDEN",
       "owner_status": "OWNER_VISUAL_PENDING",
       "native_ready": false,
       "motion_status": "PHASE_STILLS_NOT_FRAME_BY_FRAME",
@@ -125,7 +127,9 @@
           }
         ]
       },
-      "review_note": "G3 source gate applies to its three original RGBA phase stills only; not frame-by-frame completion. AS52/53 paired grips are unverified, so attachments are suppressed and the effect remains a storyboard cue. Contact stays hidden without a bound MapBattleV2 receipt."
+      "review_note": "G3 source gate applies to its three original RGBA phase stills only; not frame-by-frame completion. AS52/53 paired grips are unverified, so attachments are suppressed and the effect remains a storyboard cue. Contact stays hidden without a bound MapBattleV2 receipt.",
+      "native_batch": "dual_blade",
+      "native_capture_mode": "REVIEW_STORYBOARD_ONLY"
     },
     {
       "skill_id": "tmb.skill.formation.phong_toa_tran.active_01.human",
@@ -7963,6 +7967,143 @@
       "review_note": "Shared Factory native H.264 capture decoded at 1280x720/20fps. Existing AS54 candidate weapon_tip socket anchors the thrust to the second target; two exact-skill line hit receipts are visible and no synthetic event is emitted. Existing R1 source G3 self-pass is preserved; socket/continuous motion review and owner approval remain pending; PvE HOLD.",
       "native_event_status": "REAL_MAPBATTLE_V63_SKILL_CAST_RELEASE_AND_TWO_LINE_HITS; TARGET_LIMIT=2; SYNTHETIC=0; OUTSIDE_UNCHANGED=SOURCE_RECEIPT_TEST_PASS",
       "contact_sheet_path": "res://labs/combat_lab/spear01/factory_capture/native/spear_factory_batch1_contact_sheet_1280x720.png"
+    },
+    {
+      "skill_id": "tmb.skill.blade.cuong_dao.active_01.human",
+      "school": "blade",
+      "branch": "cuong_dao",
+      "name_vi": "Phá Vây Khai Sơn · Nhân Giai",
+      "catalog_path": "res://data/combat/v63_blade_combat_catalog.json",
+      "effect": "damage",
+      "shape": "single_target",
+      "target_limit": 1,
+      "mechanic_template": "projectile",
+      "target_mode": "single_target",
+      "preview_target_kind": "monster",
+      "target_actor_id": "factory_blade_target_01",
+      "outside_actor_id": "factory_blade_outside",
+      "preview_targets": [
+        {
+          "id": "factory_blade_target_01",
+          "label": "BLADE MOVING TARGET 01",
+          "screen_position": [
+            690.0,
+            492.0
+          ],
+          "fixture_position": [
+            6.0,
+            3.0
+          ],
+          "fixture_motion_delta": [
+            -0.4,
+            -0.2
+          ]
+        }
+      ],
+      "preview_outside": {
+        "id": "factory_blade_outside",
+        "label": "OUTSIDE TARGET · UNCHANGED",
+        "screen_position": [
+          844.0,
+          598.0
+        ],
+        "fixture_position": [
+          6.2,
+          5.2
+        ]
+      },
+      "actor_asset_id": 50,
+      "actor_sex": "male",
+      "actor_action": "attack",
+      "facing_vector": [
+        1.0,
+        0.0
+      ],
+      "preview_attachment_override": {
+        "asset_id": "curved_dao",
+        "anchor_slot": "main_hand",
+        "asset_scale": 0.68,
+        "align_tip_to_direction": [
+          1.0,
+          0.0
+        ]
+      },
+      "source_anchor": "weapon_tip",
+      "phase_anchors": {
+        "charge": "weapon_tip",
+        "flight": "weapon_tip",
+        "contact": "target_chest",
+        "fade": "target_chest"
+      },
+      "draw_layer": "FRONT",
+      "source_g3": "G3_SOURCE_SELF_PASS; FOUR_DISTINCT_RGBA_PHASE_MASTERS; EXISTING_AS50_CURVED_DAO_SOCKET",
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_H264_FULL_DECODE; REAL_MAPBATTLE_V63_CAST_AND_EXACT_SKILL_HIT=PASS; SYNTHETIC=0",
+      "owner_status": "OWNER_VISUAL_PENDING",
+      "native_ready": false,
+      "motion_status": "FOUR_PHASE_STILLS_NOT_FRAME_BY_FRAME",
+      "showcase_moving_target": true,
+      "delivery_phase": "flight",
+      "native_batch": "blade",
+      "phase_sources": {
+        "charge": {
+          "path": "res://labs/combat_lab/blade01/pha_vay_khai_son_r1/source/production/pha_vay_khai_son_charge_r1.png",
+          "display_width_px": 85,
+          "fps": 1.0,
+          "loop": false
+        },
+        "flight": {
+          "path": "res://labs/combat_lab/blade01/pha_vay_khai_son_r1/source/production/pha_vay_khai_son_flight_r1.png",
+          "display_width_px": 180,
+          "fps": 1.0,
+          "loop": false
+        },
+        "contact": {
+          "path": "res://labs/combat_lab/blade01/pha_vay_khai_son_r1/source/production/pha_vay_khai_son_contact_r1.png",
+          "display_width_px": 50,
+          "fps": 1.0,
+          "loop": false
+        },
+        "fade": {
+          "path": "res://labs/combat_lab/blade01/pha_vay_khai_son_r1/source/production/pha_vay_khai_son_fade_r1.png",
+          "display_width_px": 80,
+          "fps": 1.0,
+          "loop": false
+        }
+      },
+      "review_timeline": {
+        "release_at": 0.28,
+        "flight_at": 0.28,
+        "contact_at": 0.68,
+        "fade_at": 0.82,
+        "loop_seconds": 1.25,
+        "charge_window_seconds": 0.28,
+        "release_window_seconds": 0.12,
+        "contact_window_seconds": 0.14,
+        "fade_window_seconds": 0.18,
+        "actor_action_seconds": 0.28,
+        "clock": "REAL_MAPBATTLE_CAST_TO_CANONICAL_RELEASE_DEADLINE"
+      },
+      "receipt_manifest": {
+        "schema": "tmb.vfx_bindings.v1",
+        "skill_id": "tmb.skill.blade.cuong_dao.active_01.human",
+        "bindings": [
+          {
+            "event_type": "skill_cast",
+            "caster_slot": "weapon_tip",
+            "target_slot": "foot",
+            "actor_clip": "attack",
+            "visual_phase": "charge"
+          },
+          {
+            "event_type": "v63_skill_hit",
+            "caster_slot": "weapon_tip",
+            "target_slot": "foot",
+            "actor_clip": "attack",
+            "visual_phase": "contact"
+          }
+        ]
+      },
+      "review_note": "Existing first-party R1 four-phase RGBA source integrated through the shared renderer. Reuses the existing AS50 candidate, its frame hand masks/socket manifest, and Weapon Library curved DAO; socket tip points right toward the target. The flight sprite interpolates only across the real MapBattleV2 skill_cast receipt deadline and contact art remains hidden until this exact skill emits a positive v63_skill_hit. G3 source self-pass; frame-by-frame motion, formal owner approval and the disabled production blade gate remain pending."
     }
   ],
   "batch_status": {
@@ -8029,6 +8170,27 @@
       "owner_approval": "PENDING",
       "pve": "HOLD",
       "visual_review_status": "NATIVE_1X_PHASE_SAMPLES_REVIEWED; CONTINUOUS_MOTION_AND_OWNER_REVIEW_PENDING"
+    },
+    "bow": {
+      "expected_count": 1,
+      "technical_status": "NATIVE_STORYBOARD_TECH_PASS_GODOT_4.7.2_1280x720_H264_FULL_DECODE",
+      "owner_approval": "PENDING",
+      "pve": "HOLD",
+      "receipt_status": "NO_GAMEPLAY_RECEIPT_CONFIGURED; STORYBOARD_ONLY; CONTACT_HIDDEN"
+    },
+    "dual_blade": {
+      "expected_count": 1,
+      "technical_status": "NATIVE_STORYBOARD_TECH_PASS_GODOT_4.7.2_1280x720_H264_FULL_DECODE",
+      "owner_approval": "PENDING",
+      "pve": "HOLD",
+      "receipt_status": "NO_GAMEPLAY_RECEIPT_CONFIGURED; STORYBOARD_ONLY; CONTACT_HIDDEN"
+    },
+    "blade": {
+      "expected_count": 1,
+      "technical_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_H264_FULL_DECODE",
+      "receipt_status": "REAL_MAPBATTLE_V63_SKILL_CAST_AND_EXACT_SKILL_HIT_ACCEPTED; SYNTHETIC=0",
+      "owner_approval": "PENDING",
+      "pve": "HOLD"
     }
   }
 }

@@ -20,7 +20,7 @@ Scene presence, source approval, technical status, owner review, and live integr
 | sword | 183 | 35 | 17 | 17 | 17 | 17 | 17 | 0 | 17 | 0 | 17 | 70 | 0 | 96 |
 | bow | 183 | 35 | 17 | 1 | 1 | 1 | 1 | 0 | 0 | 17 | 0 | 49 | 21 | 96 |
 | fist | 183 | 35 | 17 | 15 | 15 | 22 | 22 | 0 | 0 | 17 | 0 | 31 | 39 | 96 |
-| blade | 183 | 35 | 17 | 1 | 1 | 1 | 1 | 0 | 0 | 17 | 0 | 68 | 2 | 96 |
+| blade | 183 | 35 | 17 | 1 | 1 | 2 | 2 | 0 | 0 | 17 | 0 | 68 | 2 | 96 |
 | dual_blade | 183 | 35 | 17 | 1 | 1 | 1 | 1 | 0 | 0 | 17 | 0 | 70 | 0 | 96 |
 | spear | 183 | 35 | 17 | 1 | 1 | 2 | 2 | 0 | 0 | 17 | 0 | 70 | 0 | 96 |
 | palm | 183 | 35 | 17 | 1 | 1 | 2 | 2 | 0 | 0 | 17 | 0 | 55 | 15 | 96 |
@@ -118,7 +118,7 @@ Scene presence, source approval, technical status, owner review, and live integr
 | fist | kim_cang | `tmb.skill.fist.kim_cang.ultimate.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | godot/labs/combat_lab/fist10/bat_dong_kim_chung.tscn |
 | fist | shared | `tmb.skill.fist.mobility.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | — |
 | blade | shared | `tmb.skill.blade.basic.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | — |
-| blade | cuong_dao | `tmb.skill.blade.cuong_dao.active_01.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | godot/labs/combat_lab/blade01/pha_vay_khai_son_r1/pha_vay_khai_son_preview.tscn |
+| blade | cuong_dao | `tmb.skill.blade.cuong_dao.active_01.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | godot/labs/combat_lab/blade01/pha_vay_khai_son_r1/pha_vay_khai_son_preview.tscn; godot/labs/combat_lab/vfx_factory/vfx_factory_review.tscn |
 | blade | cuong_dao | `tmb.skill.blade.cuong_dao.active_02.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | — |
 | blade | cuong_dao | `tmb.skill.blade.cuong_dao.active_03.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | — |
 | blade | cuong_dao | `tmb.skill.blade.cuong_dao.active_04.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | — |

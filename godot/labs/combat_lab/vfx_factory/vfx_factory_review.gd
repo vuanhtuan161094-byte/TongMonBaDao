@@ -39,6 +39,8 @@ var _contact_local_time := -1.0
 var _timeline_event_phase := ""
 var _timeline_event_local_time := -1.0
 var _authoritative_clock_started := false
+var _cast_local_time := -1.0
+var _cast_total_duration := 0.0
 var _screen_positions: Dictionary = {}
 var _last_actor_asset_id := -1
 var _source_atlas: CombatV5SourceAAtlas
@@ -132,6 +134,7 @@ func _load_entry() -> void:
 		_config["canonical_shape"] = str(definition.get("shape", ""))
 		_config["canonical_target_limit"] = int(definition.get("target_limit", 0))
 		_config["canonical_cast_time"] = float(definition.get("cast_time", 0.0))
+		_config["canonical_projectile_speed"] = float(definition.get("projectile_speed", 0.0))
 		_config["canonical_duration"] = float(definition.get("duration", 0.0))
 		_config["canonical_radius"] = float(definition.get("radius", 0.0))
 	else:
@@ -166,6 +169,8 @@ func _clear_receipts() -> void:
 	_timeline_event_phase = ""
 	_timeline_event_local_time = -1.0
 	_authoritative_clock_started = false
+	_cast_local_time = -1.0
+	_cast_total_duration = 0.0
 
 func _process(delta: float) -> void:
 	if not _paused:
@@ -293,6 +298,12 @@ func review_feed_authoritative_event(raw_event: Dictionary) -> Dictionary:
 			_timeline_event_phase = visual_phase
 			_timeline_event_local_time = _elapsed
 			_authoritative_clock_started = true
+			if visual_phase == "charge" and float(_config.get("canonical_projectile_speed", 0.0)) > 0.0:
+				_cast_local_time = _elapsed
+				var release_at: Variant = event.get("release_at", null)
+				var event_time: Variant = event.get("time", null)
+				if (release_at is float or release_at is int) and (event_time is float or event_time is int):
+					_cast_total_duration = maxf(0.0, float(release_at) - float(event_time))
 		elif visual_phase in ["start", "sustain", "end"]:
 			if _persistent_event.is_empty() or (not cast_id.is_empty() and cast_id != _persistent_cast_id) \
 					or (cast_id.is_empty() and visual_phase == "start"):
@@ -529,8 +540,15 @@ func _draw_phase_art(anchors: Dictionary, actor_foot: Vector2,
 	var center := start
 	var source_key := _phase_source_name(phase)
 	if phase in ["flight", "travel"] or (phase == "release" and source_key == "flight"):
-		var progress := clampf((_elapsed - float(timeline.get("flight_at", timeline.get("release_at", 0.25)))) /
-			maxf(0.01, float(timeline.get("contact_at", 0.90)) - float(timeline.get("flight_at", timeline.get("release_at", 0.25)))), 0.0, 1.0)
+		var progress := 0.0
+		if _cast_local_time >= 0.0 and _cast_total_duration > 0.0:
+			var flight_start := _cast_local_time + minf(float(_config.get("canonical_cast_time", 0.0)), _cast_total_duration)
+			var flight_end := _cast_local_time + _cast_total_duration
+			progress = clampf((_elapsed - flight_start) / maxf(0.01, flight_end - flight_start), 0.0, 1.0)
+		else:
+			var flight_start := float(timeline.get("flight_at", timeline.get("release_at", 0.25)))
+			progress = clampf((_elapsed - flight_start) /
+				maxf(0.01, float(timeline.get("contact_at", 0.90)) - flight_start), 0.0, 1.0)
 		center = start.lerp(target_foot + Vector2(0.0, -36.0), progress)
 	var phase_offsets: Dictionary = _config.get("phase_offsets", {})
 	var offset_data: Array = phase_offsets.get(phase, [0.0, 0.0])
@@ -667,6 +685,20 @@ func _phase_at_time(timeline: Dictionary) -> String:
 	var contact_phase := _contact_phase_at_time(timeline)
 	if not contact_phase.is_empty():
 		return contact_phase
+	# A real skill_cast receipt carries the simulation's release deadline. For
+	# projectile skills, let the configured flight sprite travel during that
+	# interval and stop at the exact later hit receipt. This is presentation-only:
+	# it creates no cast, projectile, collision, damage, or status event.
+	if _cast_local_time >= 0.0 and _cast_total_duration > 0.0 \
+			and _phase_frames.has("flight") \
+			and str(_config.get("canonical_effect", "")) == "damage":
+		var cast_age := _elapsed - _cast_local_time
+		var cast_time := minf(maxf(0.0, float(_config.get("canonical_cast_time", 0.0))), _cast_total_duration)
+		if cast_age < cast_time:
+			return "charge" if _phase_frames.has("charge") else "waiting"
+		if cast_age < _cast_total_duration:
+			return "flight"
+		return "waiting"
 	if not _timeline_event_phase.is_empty() and _timeline_event_local_time >= 0.0:
 		var event_age := _elapsed - _timeline_event_local_time
 		var event_window := float(timeline.get("charge_window_seconds", 0.18)) if _timeline_event_phase == "charge" else float(timeline.get("release_window_seconds", 0.12))
