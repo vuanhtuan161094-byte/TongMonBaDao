@@ -23,6 +23,12 @@ var clock := 0.0
 var last_frame := -1
 var ready_ok := false
 var phase_logged := false
+var paused := false
+var moving := true
+var fx_enabled := true
+var bright := false
+var zoom := false
+var speed := 1.0
 
 func _png(path: String) -> Texture2D:
     if ResourceLoader.exists(path):
@@ -84,7 +90,8 @@ func _ready() -> void:
         add_child(mob)
         mob.play(&"walk")
         mobs.append(mob)
-    for i in range(int(spec["target_limit"])):
+    var visual_count := 1 if str(spec["style"])=="line_guard" else int(spec["target_limit"])
+    for i in range(visual_count):
         var sprite:=Sprite2D.new()
         var atlas:=AtlasTexture.new()
         atlas.atlas=sheet
@@ -95,6 +102,7 @@ func _ready() -> void:
         add_child(sprite)
         fx.append(sprite)
     ready_ok=true
+    _render_frame()
     print("BATCH9_LAB_READY tag=",spec["tag"]," effect=",spec["effect"]," source=DERIVED_CANDIDATE PvE=HOLD")
 
 func _pose(index: int) -> void:
@@ -108,57 +116,135 @@ func _pose(index: int) -> void:
     weapon.rotation_degrees=float(s.get("rotation_deg",0.0))
     weapon.scale=Vector2.ONE*.19
 
+func _cycle() -> float:
+    if str(spec.get("effect",""))=="guard":
+        return maxf(1.44,float(spec.get("duration",0.0))+.65)
+    if str(spec.get("style",""))=="heavy":
+        return 2.10
+    return 1.44
+
 func _process(delta: float) -> void:
+    if not ready_ok or paused:
+        return
+    clock=fmod(clock+minf(delta,.06)*speed,_cycle())
+    _render_frame()
+
+func _render_frame() -> void:
     if not ready_ok:
         return
-    clock=fmod(clock+minf(delta,.06),1.44)
-    var f:=clampi(int(clock*25.0),0,23)
-    var progress:=clampf((clock-.24)/.44,0.0,1.0)
     var kind:=str(spec["effect"])
     var style:=str(spec["style"])
-    var active:=clock<.96
+    var local_time:=clock
+    if style=="heavy":
+        local_time=clock*.60
+    var f:=clampi(int(local_time*25.0),0,23)
+    if kind=="guard" and clock>=.24:
+        f=6+floori(fmod((clock-.24)*25.0,12.0))
+    var progress:=clampf((local_time-.24)/.44,0.0,1.0)
+    var active:=local_time<.96
+    if kind=="guard":
+        active=clock<float(spec["duration"])
+    var zoom_factor:=1.35 if zoom else 1.0
+    actor.scale=Vector2.ONE*.23*zoom_factor
+    for ally in allies:
+        ally.scale=actor.scale
     if clock<.05:
         phase_logged=false
     if f!=last_frame:
-        _pose(mini(3,floori(float(f)/6.0)))
+        _pose(0 if kind=="guard" else mini(3,floori(float(f)/6.0)))
         last_frame=f
     for i in range(mobs.size()):
         var home: Vector2=MOB_POS[i]
-        mobs[i].position=home+Vector2(16*sin(clock*2.0+float(i)),5*sin(clock*2.0))
+        if moving:
+            mobs[i].position=home+Vector2(16*sin(clock*2.0+float(i)),5*sin(clock*2.0))
+        mobs[i].scale=Vector2.ONE*.41*zoom_factor
         mobs[i].modulate=Color.WHITE
     actor.position=HOME
     if kind=="mobility":
-        actor.position=HOME.lerp(TARGET-Vector2(100,0),progress)
+        var travel:=clampf((clock-.16)/.44,0.0,1.0)
+        actor.position=HOME.lerp(TARGET-Vector2(100,0),travel*travel*(3.0-2.0*travel))
     elif style in ["heavy","counter","basic","line_guard"]:
-        actor.position=HOME.lerp(TARGET-Vector2(100,0),clampf(clock/.24,0.0,1.0))
+        # Approach before attacking, not a teleport at the first frame.
+        actor.position=HOME.lerp(TARGET-Vector2(100,0),clampf(local_time/.30,0.0,1.0))
     for i in range(fx.size()):
         var s:=fx[i]
         var a:=s.texture as AtlasTexture
         a.region=Rect2(float(f%4)*512.0,float(floori(float(f)/4.0))*512.0,512,512)
-        s.visible=active
+        s.visible=active and fx_enabled
         s.rotation=0.0
         s.modulate=Color.WHITE
+        s.z_index=10
         if kind=="guard":
             var foot: Vector2=actor.position if i==0 else allies[i-1].position
-            s.position=foot+Vector2(0,-48)
-            s.scale=Vector2.ONE*(.52 if style!="realm" else .75)
+            s.position=foot+Vector2(0,-42)*zoom_factor
+            s.scale=Vector2.ONE*(.43 if style!="realm" else .53)*zoom_factor
+            s.z_index=3
+            var fade:=clampf((float(spec["duration"])-clock)/.25,0.0,1.0)
+            s.modulate=Color(1.0,1.0,1.0,fade*(.82 if bright else 1.0))
         elif kind=="mobility":
-            s.position=actor.position+Vector2(-50,-45)
-            s.scale=Vector2.ONE*.62
+            s.position=actor.position+Vector2(-62,-43)*zoom_factor
+            s.scale=Vector2.ONE*.74*zoom_factor
         else:
-            var to: Vector2=mobs[i].position+Vector2(0,-68)
-            s.position=(actor.position+Vector2(0,-45)).lerp(to,progress)
-            s.scale=Vector2.ONE*(.85 if style=="heavy" else .57)
-            if clock>=.68 and clock<.86:
-                mobs[i].modulate=Color(1.15,1.12,1.06,1.0)
-    if clock>=.68 and not phase_logged:
+            var to: Vector2=mobs[i].position+Vector2(0,-68)*zoom_factor
+            if style=="line_guard":
+                to=(mobs[0].position+mobs[1].position)*.5+Vector2(0,-68)*zoom_factor
+            s.position=(actor.position+Vector2(0,-45)*zoom_factor).lerp(to,progress)
+            s.scale=Vector2.ONE*(.70 if style=="heavy" else (.47 if style=="basic" else .57))*zoom_factor
+            if fx_enabled and local_time>=.68 and local_time<.86:
+                for j in range(int(spec["target_limit"])):
+                    mobs[j].modulate=Color(1.15,1.12,1.06,1.0)
+    if local_time>=.68 and not phase_logged:
         phase_logged=true
         print("BATCH9_LAB_PHASE tag=",spec["tag"]," kind=",kind," target_limit=",spec["target_limit"]," visual_only=true")
     queue_redraw()
 
+func review_replay() -> void:
+    clock=0.0
+    last_frame=-1
+    phase_logged=false
+    paused=false
+    _render_frame()
+
+func review_set_paused(value: bool) -> void:
+    paused=value
+
+func review_set_moving(value: bool) -> void:
+    moving=value
+    for mob in mobs:
+        if value:
+            mob.play(&"walk")
+        else:
+            mob.pause()
+
+func review_set_fx(value: bool) -> void:
+    fx_enabled=value
+    _render_frame()
+
+func review_set_bright(value: bool) -> void:
+    bright=value
+    _render_frame()
+
+func review_set_map_zoom(value: bool) -> void:
+    zoom=value
+    _render_frame()
+
+func review_set_speed(value: float) -> void:
+    speed=clampf(value,.25,2.0)
+
+func review_seek_phase(phase: String) -> void:
+    var factor:=1.0/.60 if str(spec.get("style",""))=="heavy" else 1.0
+    match phase:
+        "charge": clock=.16*factor
+        "projectile": clock=.44*factor
+        "contact": clock=.72*factor
+        _: return
+    paused=true
+    _render_frame()
+    print("BATCH9_PHASE_HELD tag=",spec["tag"]," phase=",phase)
+
 func _draw() -> void:
-    draw_rect(Rect2(0,0,1280,720),Color("16242c"))
-    draw_rect(Rect2(12,220,1256,460),Color("293b3d"))
+    draw_rect(Rect2(0,0,1280,720),Color("d3ded6") if bright else Color("16242c"))
+    draw_rect(Rect2(12,220,1256,460),Color("889e95") if bright else Color("293b3d"))
     if not ready_ok:
         return
     for mob in mobs:
@@ -168,5 +254,5 @@ func _draw() -> void:
         draw_set_transform(unit.position,0.0,Vector2(1.0,.32))
         draw_circle(Vector2.ZERO,24.0,Color(0,0,0,.25))
     draw_set_transform(Vector2.ZERO)
-    draw_string(ThemeDB.fallback_font,Vector2(26,38),str(spec["tag"])+"  "+str(spec["name"]),HORIZONTAL_ALIGNMENT_LEFT,-1,22,Color.WHITE)
-    draw_string(ThemeDB.fallback_font,Vector2(26,68),"DERIVED SOURCE CANDIDATE  |  "+str(spec["effect"])+"  |  PVE HOLD",HORIZONTAL_ALIGNMENT_LEFT,-1,15,Color("b5d0e7"))
+    draw_string(ThemeDB.fallback_font,Vector2(26,38),str(spec["tag"])+"  "+str(spec["name"]),HORIZONTAL_ALIGNMENT_LEFT,-1,22,Color("182c38") if bright else Color.WHITE)
+    draw_string(ThemeDB.fallback_font,Vector2(26,68),"DERIVED SOURCE CANDIDATE  |  "+str(spec["effect"])+"  |  PVE HOLD",HORIZONTAL_ALIGNMENT_LEFT,-1,15,Color("182c38") if bright else Color("b5d0e7"))

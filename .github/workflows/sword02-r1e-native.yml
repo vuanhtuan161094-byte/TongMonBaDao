@@ -43,6 +43,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          python -m pip install Pillow==11.3.0
           python tools/vfx/stage_vfx_web_review.py --source godot --destination "$RUNNER_TEMP/r1e-stage"
       - name: Download pinned official Godot 4.7.2
         shell: bash

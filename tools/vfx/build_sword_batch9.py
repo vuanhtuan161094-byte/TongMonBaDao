@@ -44,30 +44,34 @@ def main():
             t=n/23; envelope=math.sin(math.pi*(n+1)/25)
             if style in ('dash','travel'):
                 # Draw existing painted sword/wind source, not a damage burst.
+                tint=(1.14,.94,.68) if style=='dash' else (.80,1.15,1.12)
+                # Broad translucent wind trail plus narrow sword core, no enemy impact.
+                layer(f,cel('08',11+n%3),.65,-12,(-45,12),tint,envelope*.65)
                 for j in range(3 if style=='dash' else 2):
-                    layer(f,cel('06',9+j),0.60-j*.13,-8+2*j,(-j*48,12*j), (1.05,.86,.65) if style=='dash' else (.72,1.12,1.05),envelope*(1-j*.23))
+                    layer(f,cel('06',9+j),.95-j*.16,-4,(-j*44,9*j),tint,min(1.,envelope*1.4)*(1-j*.18))
             elif style=='heavy':
                 if n<7: layer(f,cel('05',min(n,5)),.80,0,(0,10),(1.14,.92,.64),.90)
                 elif n<17:
                     layer(f,cel('08',min(15,n)),1.04, -25,(0,0),(1.18,.90,.62),1.)
                     layer(f,cel('06',11),.85,-65,(0,-42),(1.18,.96,.68),.85)
-                else: layer(f,cel('05',min(21,n)),1.02,0,(0,0),(1.20,.91,.66),1.)
+                else: layer(f,cel('05',min(21,n)),.72,0,(0,0),(1.20,.91,.66),.95)
             elif style in ('self_shield','ally_shield','realm'):
                 # Existing transparent crescent sprites form a protective orbit, no enemy-contact flash.
-                count={'self_shield':2,'ally_shield':3,'realm':4}[style]
+                count={'self_shield':3,'ally_shield':3,'realm':4}[style]
+                radius=104 if style=='self_shield' else (112 if style=='ally_shield' else 126)
+                tint=(.70,1.14,1.08) if style!='realm' else (1.16,1.05,.72)
+                # Keep the torso readable: put smaller painted arcs at the perimeter, never a central burst.
                 for j in range(count):
-                    ang=360*j/count+t*100
-                    radius=28 if style=='self_shield' else (48 if style=='ally_shield' else 65)
-                    layer(f,cel('08',11+j%3),.49 if style!='realm' else .62,ang,(radius*math.cos(math.radians(ang)),radius*.54*math.sin(math.radians(ang))),(.78,1.15,1.04) if style!='realm' else (1.18,1.02,.66),envelope*.85)
-                if style=='realm': layer(f,cel('05',12),.75,0,(0,0),(1.12,1.03,.77),envelope*.55)
+                    ang=360*j/count+t*75
+                    rad=math.radians(ang)
+                    layer(f,cel('08',11+j%3),.34 if style!='realm' else .37,ang+90,(radius*math.cos(rad),radius*.67*math.sin(rad)),tint,.52+.22*envelope)
             elif style=='counter':
                 layer(f,cel('08',n),.76,18 if n<12 else -18,(0,0),(.93,1.10,.95),1.)
                 if 17<=n<=21: layer(f,cel('05',n),.32,0,(15,0),(.90,1.10,1.0),.75)
             elif style=='line_guard':
-                for j in range(2):
-                    layer(f,cel('03',n),.58,0,(j*74-37,j*22-11),(1.10,1.06,.71),.90)
+                layer(f,cel('03',n),.85,0,(0,0),(1.10,1.06,.71),.94)
             else:
-                layer(f,cel('08',n),.55,-15,(0,0),(.95,1.03,1.04),.95)
+                layer(f,cel('08',n),.43,-15,(0,0),(.95,1.03,1.04),.90)
             assert f.getchannel('A').getbbox(),(tag,n)
             frames.append(hashlib.sha256(f.tobytes()).hexdigest())
             atlas.alpha_composite(f,(n%4*512,n//4*512))

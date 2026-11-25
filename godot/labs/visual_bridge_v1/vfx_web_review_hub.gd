@@ -125,7 +125,7 @@ func _ready() -> void:
         var selected_id := ""
         if key == "r1e":
             selected_id = "tmb.skill.sword.ngu_kiem.active_02.human"
-        elif key in ["s03","s04","s05","s06","s07","s08"]:
+        elif key.begins_with("s"):
             for entry in _entries:
                 if str(entry.get("preview_key","")) == key:
                     selected_id = str(entry.get("id",""))

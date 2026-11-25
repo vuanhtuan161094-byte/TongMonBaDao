@@ -19,9 +19,6 @@ jobs:
         run: |
           python -m pip install Pillow==11.3.0
           python tools/vfx/stage_vfx_web_review.py --source godot --destination "$RUNNER_TEMP/batch9-stage"
-          mkdir -p "$RUNNER_TEMP/batch9-stage/labs/combat_lab/sword_batch9_20261124"
-          cp godot/labs/combat_lab/sword_batch9_20261124/* "$RUNNER_TEMP/batch9-stage/labs/combat_lab/sword_batch9_20261124/"
-          python tools/vfx/build_sword_batch9.py --godot godot --output "$RUNNER_TEMP/batch9-stage/labs/combat_lab/sword_batch9_20261124/generated"
       - name: Install official Godot
         run: |
           curl -fL --retry 3 -o "$RUNNER_TEMP/godot.zip" "https://github.com/godotengine/godot-builds/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip"
@@ -43,7 +40,9 @@ jobs:
             sudo apt-get install -y --no-install-recommends xvfb ffmpeg
           fi
           for tag in 09 10 11 12 13 14 15 16 17; do
-            xvfb-run -a -s '-screen 0 1280x720x24' "$G" --path "$S" --resolution 1280x720 --fixed-fps 60 --write-movie "$O/$tag.avi" --quit-after 96 "res://labs/combat_lab/sword_batch9_20261124/sword_${tag}_lab.tscn" > "$O/$tag.log" 2>&1
+            frames=100
+            case "$tag" in 10) frames=145;; 11) frames=220;; 13) frames=200;; 15) frames=340;; esac
+            xvfb-run -a -s '-screen 0 1280x720x24' "$G" --path "$S" --resolution 1280x720 --fixed-fps 60 --write-movie "$O/$tag.avi" --quit-after "$frames" "res://labs/combat_lab/sword_batch9_20261124/sword_${tag}_lab.tscn" > "$O/$tag.log" 2>&1
             grep -Fq "BATCH9_LAB_READY" "$O/$tag.log"
             grep -Fq "BATCH9_LAB_PHASE" "$O/$tag.log"
             if grep -Eiq 'SCRIPT ERROR|Parse Error|Failed to load resource' "$O/$tag.log"; then cat "$O/$tag.log"; exit 1; fi

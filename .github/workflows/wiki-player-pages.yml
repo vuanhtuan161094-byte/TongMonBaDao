@@ -12,6 +12,7 @@ on:
       - 'wiki/**'
       - 'tools/wiki/tests/**'
       - 'tools/vfx/stage_vfx_web_review.py'
+      - 'tools/vfx/build_sword_batch9.py'
       - 'tools/vfx/check_web_visual.cjs'
       - 'tools/vfx/check_web_sword02_r1e.cjs'
       - 'docs/operations/vfx_web_catalog_v1.json'
@@ -146,6 +147,7 @@ jobs:
           # Review is a small ephemeral build-only Godot staging project.
           # It does NOT create a second game, branch or published site.
           python3 tools/qa/check_as48_sword_bridge_sources.py
+          python3 -m pip install Pillow==11.3.0
           python3 tools/vfx/stage_vfx_web_review.py \
             --source godot --destination "$RUNNER_TEMP/tmb-vfx-web-stage"
           GODOT="$RUNNER_TEMP/tmb-godot/Godot_v4.7.2-stable_linux.x86_64"

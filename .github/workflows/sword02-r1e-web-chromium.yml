@@ -38,7 +38,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          python3 -m pip install --quiet Pillow==12.3.0
+          python3 -m pip install --quiet Pillow==11.3.0
           python3 tools/qa/check_sword02_r1e_source.py
           python3 tools/vfx/stage_vfx_web_review.py --source godot --destination "$RUNNER_TEMP/r1e-web-stage"
       - name: Cache verified official Godot 4.7.2 Web no-threads templates

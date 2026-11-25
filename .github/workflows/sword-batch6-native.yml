@@ -34,7 +34,9 @@ jobs:
           print("BATCH6_GITHUB_EXACT_ATLAS_SHA_PASS=6/6")
           PY
       - name: Build one canonical Web Lab staging from real Godot sources
-        run: python tools/vfx/stage_vfx_web_review.py --source godot --destination "$RUNNER_TEMP/batch6-stage"
+        run: |
+          python -m pip install Pillow==11.3.0
+          python tools/vfx/stage_vfx_web_review.py --source godot --destination "$RUNNER_TEMP/batch6-stage"
       - name: Install pinned Godot 4.7.2 editor
         shell: bash
         run: |

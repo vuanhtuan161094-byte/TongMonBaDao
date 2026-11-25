@@ -10,6 +10,8 @@ import argparse
 import hashlib
 import json
 import shutil
+import subprocess
+import sys
 from pathlib import Path
 
 SOURCE_FILES = (
@@ -143,6 +145,13 @@ def main():
         if old.read_bytes() != new.read_bytes():
             raise SystemExit(f"Nonidentical staging copy: {relative}")
         manifest[relative] = {"sha256": digest(old), "bytes": old.stat().st_size}
+    # Reproducible candidates, generated only inside disposable staging; no source-tree mutations.
+    if any(str(e.get("preview_key","")) in {f"s{i:02d}" for i in range(9,18)} for e in entries):
+        generated = dest / "labs/combat_lab/sword_batch9_20261124/generated"
+        subprocess.run([sys.executable,str(root.parent / "tools/vfx/build_sword_batch9.py"),"--godot",str(root),"--output",str(generated)],check=True)
+        for p in sorted(generated.iterdir()):
+            if p.is_file():
+                manifest[str(p.relative_to(dest))] = {"sha256":digest(p),"bytes":p.stat().st_size,"derived":True}
     catalog_target = dest / "labs/visual_bridge_v1/vfx_web_catalog_v1.json"
     catalog_target.parent.mkdir(parents=True, exist_ok=True)
     catalog_target.write_text(json.dumps(catalog, ensure_ascii=False, indent=2), encoding="utf-8")

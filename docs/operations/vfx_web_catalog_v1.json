@@ -190,6 +190,195 @@
       ],
       "art_source": "FIRST_PARTY_APPROVED_AI_VFX_DERIVED_24_RGBA_FRAMES",
       "review_note": "Existing canonical One Game /vfx/ lab, real AS48 Front + independent socket weapon and 3 moving monster sprites. Owner approved source batch only. Runtime visual QA pending; no actual PvE, no merge."
+    },
+    {
+      "id": "tmb.skill.sword.sat_kiem.active_04.human",
+      "name_vi": "Tàng Phong Đột Thứ — ứng viên R2",
+      "school_vi": "Kiếm Tu",
+      "branch_vi": "Sát Kiếm",
+      "tier": "human",
+      "scene": "res://labs/combat_lab/sword_batch9_20261124/sword_09_lab.tscn",
+      "directions": [
+        "front"
+      ],
+      "vfx_status": "CANDIDATE_G3",
+      "g3_art": "DERIVED_SOURCE_R2_REVIEW_PENDING",
+      "owner_art": "PENDING",
+      "preview_key": "s09",
+      "source_paths": [
+        "labs/combat_lab/sword_batch9_20261124/sword_batch9_lab.gd",
+        "labs/combat_lab/sword_batch9_20261124/manifest.json"
+      ],
+      "art_source": "DERIVED_EXISTING_PAINTED_RGBA",
+      "review_note": "Candidate only; generated exact source during staged export. Guard friendly only; mobility no damage. PvE HOLD."
+    },
+    {
+      "id": "tmb.skill.sword.sat_kiem.ultimate.human",
+      "name_vi": "Nhất Kiếm Đoạn Thiên — ứng viên R2",
+      "school_vi": "Kiếm Tu",
+      "branch_vi": "Sát Kiếm",
+      "tier": "human",
+      "scene": "res://labs/combat_lab/sword_batch9_20261124/sword_10_lab.tscn",
+      "directions": [
+        "front"
+      ],
+      "vfx_status": "CANDIDATE_G3",
+      "g3_art": "DERIVED_SOURCE_R2_REVIEW_PENDING",
+      "owner_art": "PENDING",
+      "preview_key": "s10",
+      "source_paths": [
+        "labs/combat_lab/sword_batch9_20261124/sword_batch9_lab.gd",
+        "labs/combat_lab/sword_batch9_20261124/manifest.json"
+      ],
+      "art_source": "DERIVED_EXISTING_PAINTED_RGBA",
+      "review_note": "Candidate only; generated exact source during staged export. Guard friendly only; mobility no damage. PvE HOLD."
+    },
+    {
+      "id": "tmb.skill.sword.ho_kiem.active_01.human",
+      "name_vi": "Kiếm Bích Hộ Thân — ứng viên R2",
+      "school_vi": "Kiếm Tu",
+      "branch_vi": "Hộ Kiếm",
+      "tier": "human",
+      "scene": "res://labs/combat_lab/sword_batch9_20261124/sword_11_lab.tscn",
+      "directions": [
+        "front"
+      ],
+      "vfx_status": "CANDIDATE_G3",
+      "g3_art": "DERIVED_SOURCE_R2_REVIEW_PENDING",
+      "owner_art": "PENDING",
+      "preview_key": "s11",
+      "source_paths": [
+        "labs/combat_lab/sword_batch9_20261124/sword_batch9_lab.gd",
+        "labs/combat_lab/sword_batch9_20261124/manifest.json"
+      ],
+      "art_source": "DERIVED_EXISTING_PAINTED_RGBA",
+      "review_note": "Candidate only; generated exact source during staged export. Guard friendly only; mobility no damage. PvE HOLD."
+    },
+    {
+      "id": "tmb.skill.sword.ho_kiem.active_02.human",
+      "name_vi": "Hồi Kiếm Phản Thế — ứng viên R2",
+      "school_vi": "Kiếm Tu",
+      "branch_vi": "Hộ Kiếm",
+      "tier": "human",
+      "scene": "res://labs/combat_lab/sword_batch9_20261124/sword_12_lab.tscn",
+      "directions": [
+        "front"
+      ],
+      "vfx_status": "CANDIDATE_G3",
+      "g3_art": "DERIVED_SOURCE_R2_REVIEW_PENDING",
+      "owner_art": "PENDING",
+      "preview_key": "s12",
+      "source_paths": [
+        "labs/combat_lab/sword_batch9_20261124/sword_batch9_lab.gd",
+        "labs/combat_lab/sword_batch9_20261124/manifest.json"
+      ],
+      "art_source": "DERIVED_EXISTING_PAINTED_RGBA",
+      "review_note": "Candidate only; generated exact source during staged export. Guard friendly only; mobility no damage. PvE HOLD."
+    },
+    {
+      "id": "tmb.skill.sword.ho_kiem.active_03.human",
+      "name_vi": "Liên Tâm Kiếm Thuẫn — ứng viên R2",
+      "school_vi": "Kiếm Tu",
+      "branch_vi": "Hộ Kiếm",
+      "tier": "human",
+      "scene": "res://labs/combat_lab/sword_batch9_20261124/sword_13_lab.tscn",
+      "directions": [
+        "front"
+      ],
+      "vfx_status": "CANDIDATE_G3",
+      "g3_art": "DERIVED_SOURCE_R2_REVIEW_PENDING",
+      "owner_art": "PENDING",
+      "preview_key": "s13",
+      "source_paths": [
+        "labs/combat_lab/sword_batch9_20261124/sword_batch9_lab.gd",
+        "labs/combat_lab/sword_batch9_20261124/manifest.json"
+      ],
+      "art_source": "DERIVED_EXISTING_PAINTED_RGBA",
+      "review_note": "Candidate only; generated exact source during staged export. Guard friendly only; mobility no damage. PvE HOLD."
+    },
+    {
+      "id": "tmb.skill.sword.ho_kiem.active_04.human",
+      "name_vi": "Thiên Cương Hộ Mệnh — ứng viên R2",
+      "school_vi": "Kiếm Tu",
+      "branch_vi": "Hộ Kiếm",
+      "tier": "human",
+      "scene": "res://labs/combat_lab/sword_batch9_20261124/sword_14_lab.tscn",
+      "directions": [
+        "front"
+      ],
+      "vfx_status": "CANDIDATE_G3",
+      "g3_art": "DERIVED_SOURCE_R2_REVIEW_PENDING",
+      "owner_art": "PENDING",
+      "preview_key": "s14",
+      "source_paths": [
+        "labs/combat_lab/sword_batch9_20261124/sword_batch9_lab.gd",
+        "labs/combat_lab/sword_batch9_20261124/manifest.json"
+      ],
+      "art_source": "DERIVED_EXISTING_PAINTED_RGBA",
+      "review_note": "Candidate only; generated exact source during staged export. Guard friendly only; mobility no damage. PvE HOLD."
+    },
+    {
+      "id": "tmb.skill.sword.ho_kiem.ultimate.human",
+      "name_vi": "Thiên Cương Kiếm Giới — ứng viên R2",
+      "school_vi": "Kiếm Tu",
+      "branch_vi": "Hộ Kiếm",
+      "tier": "human",
+      "scene": "res://labs/combat_lab/sword_batch9_20261124/sword_15_lab.tscn",
+      "directions": [
+        "front"
+      ],
+      "vfx_status": "CANDIDATE_G3",
+      "g3_art": "DERIVED_SOURCE_R2_REVIEW_PENDING",
+      "owner_art": "PENDING",
+      "preview_key": "s15",
+      "source_paths": [
+        "labs/combat_lab/sword_batch9_20261124/sword_batch9_lab.gd",
+        "labs/combat_lab/sword_batch9_20261124/manifest.json"
+      ],
+      "art_source": "DERIVED_EXISTING_PAINTED_RGBA",
+      "review_note": "Candidate only; generated exact source during staged export. Guard friendly only; mobility no damage. PvE HOLD."
+    },
+    {
+      "id": "tmb.skill.sword.basic.human",
+      "name_vi": "Tâm Kiếm Nhập Môn — ứng viên R2",
+      "school_vi": "Kiếm Tu",
+      "branch_vi": "Kỹ năng chung",
+      "tier": "human",
+      "scene": "res://labs/combat_lab/sword_batch9_20261124/sword_16_lab.tscn",
+      "directions": [
+        "front"
+      ],
+      "vfx_status": "CANDIDATE_G3",
+      "g3_art": "DERIVED_SOURCE_R2_REVIEW_PENDING",
+      "owner_art": "PENDING",
+      "preview_key": "s16",
+      "source_paths": [
+        "labs/combat_lab/sword_batch9_20261124/sword_batch9_lab.gd",
+        "labs/combat_lab/sword_batch9_20261124/manifest.json"
+      ],
+      "art_source": "DERIVED_EXISTING_PAINTED_RGBA",
+      "review_note": "Candidate only; generated exact source during staged export. Guard friendly only; mobility no damage. PvE HOLD."
+    },
+    {
+      "id": "tmb.skill.sword.mobility.human",
+      "name_vi": "Đạp Kiếm Tầm Phong — ứng viên R2",
+      "school_vi": "Kiếm Tu",
+      "branch_vi": "Kỹ năng chung",
+      "tier": "human",
+      "scene": "res://labs/combat_lab/sword_batch9_20261124/sword_17_lab.tscn",
+      "directions": [
+        "front"
+      ],
+      "vfx_status": "CANDIDATE_G3",
+      "g3_art": "DERIVED_SOURCE_R2_REVIEW_PENDING",
+      "owner_art": "PENDING",
+      "preview_key": "s17",
+      "source_paths": [
+        "labs/combat_lab/sword_batch9_20261124/sword_batch9_lab.gd",
+        "labs/combat_lab/sword_batch9_20261124/manifest.json"
+      ],
+      "art_source": "DERIVED_EXISTING_PAINTED_RGBA",
+      "review_note": "Candidate only; generated exact source during staged export. Guard friendly only; mobility no damage. PvE HOLD."
     }
   ]
 }

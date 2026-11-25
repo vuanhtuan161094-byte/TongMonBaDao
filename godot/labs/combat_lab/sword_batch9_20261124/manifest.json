@@ -125,5 +125,7 @@
       "source_status": "DERIVED_CANDIDATE",
       "pve": "HOLD"
     }
-  ]
+  ],
+  "revision": "R2",
+  "review_scope": "Front, existing painted RGBA derived, no owner approval"
 }
