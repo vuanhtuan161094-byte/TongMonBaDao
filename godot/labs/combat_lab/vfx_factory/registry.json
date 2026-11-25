@@ -5069,6 +5069,1812 @@
       "contact_source_note": "The sky seal and bolt play on the real cast and release receipts; the local contact scar is hidden without a confirmed exact-skill hit.",
       "review_note": "Reuses the existing painted heavenly gate, vertical lightning atlas, and local impact. Only a confirmed MapBattleV2 contact can display impact; no horizontal laser or synthetic AoE is added. Native TECH_PASS at 1280x720. CAST_RELEASE_ONLY_NO_HIT_RECEIPT. ART_SELF_REVIEW_VERTICAL_BOLT_RELEASE_READABILITY_ONLY_CONTACT_PENDING. Full frame-by-frame art review and owner approval pending; PvE HOLD.",
       "native_event_status": "CAST_RELEASE_ONLY_NO_HIT_RECEIPT"
+    },
+    {
+      "skill_id": "tmb.skill.talisman.hoa_phu.active_02.human",
+      "school": "talisman",
+      "branch": "hoa_phu",
+      "name_vi": "Liên Diệm Phần Giới",
+      "catalog_path": "res://data/combat/v63_talisman_combat_catalog.json",
+      "effect": "damage",
+      "shape": "circle",
+      "target_limit": 3,
+      "mechanic_template": "circle_aoe",
+      "mechanic_templates": [
+        "circle_aoe",
+        "multi_target"
+      ],
+      "target_mode": "circle",
+      "actor_sex": "male",
+      "actor_asset_id": 64,
+      "actor_action": "cast",
+      "facing_vector": [
+        1.0,
+        0.0
+      ],
+      "preview_attachment_override": {
+        "suppress_attachments": true
+      },
+      "source_anchor": "hand_r",
+      "phase_anchors": {
+        "charge": "hand_r",
+        "release": "target_foot",
+        "contact": "target_foot",
+        "fade": "target_foot"
+      },
+      "draw_layer": "BEHIND",
+      "phase_layers": {
+        "charge": "BEHIND",
+        "release": "BEHIND",
+        "contact": "BEHIND",
+        "fade": "BEHIND"
+      },
+      "source_g3": "SOURCE_ALPHA_UNIQUE_POSES_PASS_NATIVE_ART_SELF_REVIEW_PENDING",
+      "native_status": "NATIVE_CAPTURE_PENDING",
+      "owner_status": "OWNER_VISUAL_PENDING",
+      "native_ready": false,
+      "motion_status": "FRAME_BY_FRAME_SOURCE_ATLASES_NATIVE_REVIEW_PENDING",
+      "showcase_moving_target": true,
+      "delivery_phase": "release",
+      "phase_sources": {
+        "charge": {
+          "path": "res://labs/combat_lab/talisman07/assets/tal07_seal_flipbook.webp",
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/talisman07/assets/tal07_seal_flipbook.webp",
+              "region": [
+                0,
+                0,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman07/assets/tal07_seal_flipbook.webp",
+              "region": [
+                256,
+                0,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman07/assets/tal07_seal_flipbook.webp",
+              "region": [
+                512,
+                0,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman07/assets/tal07_seal_flipbook.webp",
+              "region": [
+                768,
+                0,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman07/assets/tal07_seal_flipbook.webp",
+              "region": [
+                0,
+                256,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman07/assets/tal07_seal_flipbook.webp",
+              "region": [
+                256,
+                256,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman07/assets/tal07_seal_flipbook.webp",
+              "region": [
+                512,
+                256,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman07/assets/tal07_seal_flipbook.webp",
+              "region": [
+                768,
+                256,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman07/assets/tal07_seal_flipbook.webp",
+              "region": [
+                0,
+                512,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman07/assets/tal07_seal_flipbook.webp",
+              "region": [
+                256,
+                512,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman07/assets/tal07_seal_flipbook.webp",
+              "region": [
+                512,
+                512,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman07/assets/tal07_seal_flipbook.webp",
+              "region": [
+                768,
+                512,
+                256,
+                256
+              ]
+            }
+          ],
+          "display_width_px": 112,
+          "fps": 14,
+          "loop": false,
+          "fade_seconds": 0.22
+        },
+        "release": {
+          "path": "res://labs/combat_lab/talisman07/assets/tal07_lotus_flipbook.webp",
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/talisman07/assets/tal07_lotus_flipbook.webp",
+              "region": [
+                0,
+                0,
+                512,
+                384
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman07/assets/tal07_lotus_flipbook.webp",
+              "region": [
+                512,
+                0,
+                512,
+                384
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman07/assets/tal07_lotus_flipbook.webp",
+              "region": [
+                1024,
+                0,
+                512,
+                384
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman07/assets/tal07_lotus_flipbook.webp",
+              "region": [
+                1536,
+                0,
+                512,
+                384
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman07/assets/tal07_lotus_flipbook.webp",
+              "region": [
+                0,
+                384,
+                512,
+                384
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman07/assets/tal07_lotus_flipbook.webp",
+              "region": [
+                512,
+                384,
+                512,
+                384
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman07/assets/tal07_lotus_flipbook.webp",
+              "region": [
+                1024,
+                384,
+                512,
+                384
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman07/assets/tal07_lotus_flipbook.webp",
+              "region": [
+                1536,
+                384,
+                512,
+                384
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman07/assets/tal07_lotus_flipbook.webp",
+              "region": [
+                0,
+                768,
+                512,
+                384
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman07/assets/tal07_lotus_flipbook.webp",
+              "region": [
+                512,
+                768,
+                512,
+                384
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman07/assets/tal07_lotus_flipbook.webp",
+              "region": [
+                1024,
+                768,
+                512,
+                384
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman07/assets/tal07_lotus_flipbook.webp",
+              "region": [
+                1536,
+                768,
+                512,
+                384
+              ]
+            }
+          ],
+          "display_width_px": 260,
+          "fps": 14,
+          "loop": false,
+          "fade_seconds": 0.22
+        },
+        "contact": {
+          "path": "res://labs/combat_lab/talisman07/assets/tal07_contact_flipbook.webp",
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/talisman07/assets/tal07_contact_flipbook.webp",
+              "region": [
+                0,
+                0,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman07/assets/tal07_contact_flipbook.webp",
+              "region": [
+                256,
+                0,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman07/assets/tal07_contact_flipbook.webp",
+              "region": [
+                512,
+                0,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman07/assets/tal07_contact_flipbook.webp",
+              "region": [
+                768,
+                0,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman07/assets/tal07_contact_flipbook.webp",
+              "region": [
+                0,
+                256,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman07/assets/tal07_contact_flipbook.webp",
+              "region": [
+                256,
+                256,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman07/assets/tal07_contact_flipbook.webp",
+              "region": [
+                512,
+                256,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman07/assets/tal07_contact_flipbook.webp",
+              "region": [
+                768,
+                256,
+                256,
+                256
+              ]
+            }
+          ],
+          "display_width_px": 142,
+          "fps": 20,
+          "loop": false,
+          "fade_seconds": 0.22
+        },
+        "fade": {
+          "path": "res://labs/combat_lab/talisman07/assets/tal07_ground_flipbook.webp",
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/talisman07/assets/tal07_ground_flipbook.webp",
+              "region": [
+                0,
+                256,
+                512,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman07/assets/tal07_ground_flipbook.webp",
+              "region": [
+                512,
+                256,
+                512,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman07/assets/tal07_ground_flipbook.webp",
+              "region": [
+                1024,
+                256,
+                512,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman07/assets/tal07_ground_flipbook.webp",
+              "region": [
+                1536,
+                256,
+                512,
+                256
+              ]
+            }
+          ],
+          "display_width_px": 250,
+          "fps": 12,
+          "loop": false,
+          "fade_seconds": 0.22
+        }
+      },
+      "review_timeline": {
+        "release_at": 0.62,
+        "flight_at": 0.62,
+        "contact_at": 0.82,
+        "fade_at": 1.1,
+        "loop_seconds": 1.55,
+        "contact_window_seconds": 0.24,
+        "fade_window_seconds": 0.24,
+        "actor_action_seconds": 0.62,
+        "clock": "REAL_MAPBATTLE_RECEIPT_EVENTS",
+        "charge_window_seconds": 0.62,
+        "release_window_seconds": 0.24
+      },
+      "receipt_manifest": {
+        "schema": "tmb.vfx_bindings.v1",
+        "skill_id": "tmb.skill.talisman.hoa_phu.active_02.human",
+        "bindings": [
+          {
+            "event_type": "skill_cast",
+            "caster_slot": "hand_r",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "charge"
+          },
+          {
+            "event_type": "skill_release",
+            "caster_slot": "hand_r",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "release"
+          },
+          {
+            "event_type": "v63_talisman_hit",
+            "caster_slot": "hand_r",
+            "target_slot": "foot",
+            "actor_clip": "cast",
+            "visual_phase": "contact"
+          }
+        ]
+      },
+      "native_batch": "talisman",
+      "review_note": "Liên Diệm Phần Giới: first-party painted RGBA source atlases with unique frame checks; one 1x source-sheet review. circle/3 canonical damage only. Contact is gated by an exact-skill MapBattleV2 v63_talisman_hit; no synthetic damage, status, or hit. Full native phase review and owner visual approval pending; PvE HOLD."
+    },
+    {
+      "skill_id": "tmb.skill.talisman.hoa_phu.active_03.human",
+      "school": "talisman",
+      "branch": "hoa_phu",
+      "name_vi": "Hỏa Tâm Ngưng Phù",
+      "catalog_path": "res://data/combat/v63_talisman_combat_catalog.json",
+      "effect": "damage",
+      "shape": "single_target",
+      "target_limit": 1,
+      "mechanic_template": "projectile",
+      "mechanic_templates": [
+        "projectile"
+      ],
+      "target_mode": "single_target",
+      "actor_sex": "male",
+      "actor_asset_id": 64,
+      "actor_action": "cast",
+      "facing_vector": [
+        1.0,
+        0.0
+      ],
+      "preview_attachment_override": {
+        "suppress_attachments": true
+      },
+      "source_anchor": "hand_r",
+      "phase_anchors": {
+        "charge": "hand_r",
+        "release": "hand_r",
+        "contact": "target_chest",
+        "fade": "target_chest"
+      },
+      "draw_layer": "BEHIND",
+      "phase_layers": {
+        "charge": "BEHIND",
+        "release": "BEHIND",
+        "contact": "BEHIND",
+        "fade": "BEHIND"
+      },
+      "source_g3": "SOURCE_ALPHA_UNIQUE_POSES_PASS_NATIVE_ART_SELF_REVIEW_PENDING",
+      "native_status": "NATIVE_CAPTURE_PENDING",
+      "owner_status": "OWNER_VISUAL_PENDING",
+      "native_ready": false,
+      "motion_status": "FRAME_BY_FRAME_SOURCE_ATLASES_NATIVE_REVIEW_PENDING",
+      "showcase_moving_target": true,
+      "delivery_phase": "release",
+      "phase_sources": {
+        "charge": {
+          "path": "res://labs/combat_lab/talisman08/assets/tal08_r1_charge.webp",
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/talisman08/assets/tal08_r1_charge.webp",
+              "region": [
+                0,
+                0,
+                320,
+                320
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman08/assets/tal08_r1_charge.webp",
+              "region": [
+                320,
+                0,
+                320,
+                320
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman08/assets/tal08_r1_charge.webp",
+              "region": [
+                640,
+                0,
+                320,
+                320
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman08/assets/tal08_r1_charge.webp",
+              "region": [
+                960,
+                0,
+                320,
+                320
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman08/assets/tal08_r1_charge.webp",
+              "region": [
+                0,
+                320,
+                320,
+                320
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman08/assets/tal08_r1_charge.webp",
+              "region": [
+                320,
+                320,
+                320,
+                320
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman08/assets/tal08_r1_charge.webp",
+              "region": [
+                640,
+                320,
+                320,
+                320
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman08/assets/tal08_r1_charge.webp",
+              "region": [
+                960,
+                320,
+                320,
+                320
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman08/assets/tal08_r1_charge.webp",
+              "region": [
+                0,
+                640,
+                320,
+                320
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman08/assets/tal08_r1_charge.webp",
+              "region": [
+                320,
+                640,
+                320,
+                320
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman08/assets/tal08_r1_charge.webp",
+              "region": [
+                640,
+                640,
+                320,
+                320
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman08/assets/tal08_r1_charge.webp",
+              "region": [
+                960,
+                640,
+                320,
+                320
+              ]
+            }
+          ],
+          "display_width_px": 148,
+          "fps": 14,
+          "loop": false,
+          "fade_seconds": 0.22
+        },
+        "flight": {
+          "path": "res://labs/combat_lab/talisman08/assets/tal08_r1_projectile.webp",
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/talisman08/assets/tal08_r1_projectile.webp",
+              "region": [
+                0,
+                0,
+                320,
+                192
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman08/assets/tal08_r1_projectile.webp",
+              "region": [
+                320,
+                0,
+                320,
+                192
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman08/assets/tal08_r1_projectile.webp",
+              "region": [
+                640,
+                0,
+                320,
+                192
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman08/assets/tal08_r1_projectile.webp",
+              "region": [
+                960,
+                0,
+                320,
+                192
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman08/assets/tal08_r1_projectile.webp",
+              "region": [
+                0,
+                192,
+                320,
+                192
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman08/assets/tal08_r1_projectile.webp",
+              "region": [
+                320,
+                192,
+                320,
+                192
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman08/assets/tal08_r1_projectile.webp",
+              "region": [
+                640,
+                192,
+                320,
+                192
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman08/assets/tal08_r1_projectile.webp",
+              "region": [
+                960,
+                192,
+                320,
+                192
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman08/assets/tal08_r1_projectile.webp",
+              "region": [
+                0,
+                384,
+                320,
+                192
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman08/assets/tal08_r1_projectile.webp",
+              "region": [
+                320,
+                384,
+                320,
+                192
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman08/assets/tal08_r1_projectile.webp",
+              "region": [
+                640,
+                384,
+                320,
+                192
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman08/assets/tal08_r1_projectile.webp",
+              "region": [
+                960,
+                384,
+                320,
+                192
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman08/assets/tal08_r1_projectile.webp",
+              "region": [
+                0,
+                576,
+                320,
+                192
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman08/assets/tal08_r1_projectile.webp",
+              "region": [
+                320,
+                576,
+                320,
+                192
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman08/assets/tal08_r1_projectile.webp",
+              "region": [
+                640,
+                576,
+                320,
+                192
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman08/assets/tal08_r1_projectile.webp",
+              "region": [
+                960,
+                576,
+                320,
+                192
+              ]
+            }
+          ],
+          "display_width_px": 258,
+          "fps": 18,
+          "loop": false,
+          "fade_seconds": 0.22
+        },
+        "contact": {
+          "path": "res://labs/combat_lab/talisman08/assets/tal08_r1_contact.webp",
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/talisman08/assets/tal08_r1_contact.webp",
+              "region": [
+                0,
+                0,
+                320,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman08/assets/tal08_r1_contact.webp",
+              "region": [
+                320,
+                0,
+                320,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman08/assets/tal08_r1_contact.webp",
+              "region": [
+                640,
+                0,
+                320,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman08/assets/tal08_r1_contact.webp",
+              "region": [
+                960,
+                0,
+                320,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman08/assets/tal08_r1_contact.webp",
+              "region": [
+                0,
+                256,
+                320,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman08/assets/tal08_r1_contact.webp",
+              "region": [
+                320,
+                256,
+                320,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman08/assets/tal08_r1_contact.webp",
+              "region": [
+                640,
+                256,
+                320,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman08/assets/tal08_r1_contact.webp",
+              "region": [
+                960,
+                256,
+                320,
+                256
+              ]
+            }
+          ],
+          "display_width_px": 148,
+          "fps": 20,
+          "loop": false,
+          "fade_seconds": 0.22
+        },
+        "fade": {
+          "path": "res://labs/combat_lab/talisman08/assets/tal08_r1_contact.webp",
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/talisman08/assets/tal08_r1_contact.webp",
+              "region": [
+                0,
+                512,
+                320,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman08/assets/tal08_r1_contact.webp",
+              "region": [
+                320,
+                512,
+                320,
+                256
+              ]
+            }
+          ],
+          "display_width_px": 120,
+          "fps": 8,
+          "loop": false,
+          "fade_seconds": 0.22
+        }
+      },
+      "review_timeline": {
+        "release_at": 0.5,
+        "flight_at": 0.5,
+        "contact_at": 1.28,
+        "fade_at": 1.5,
+        "loop_seconds": 1.8,
+        "contact_window_seconds": 0.18,
+        "fade_window_seconds": 0.25,
+        "actor_action_seconds": 0.5,
+        "clock": "REAL_MAPBATTLE_RECEIPT_EVENTS",
+        "charge_window_seconds": 0.5,
+        "release_window_seconds": 0.78
+      },
+      "receipt_manifest": {
+        "schema": "tmb.vfx_bindings.v1",
+        "skill_id": "tmb.skill.talisman.hoa_phu.active_03.human",
+        "bindings": [
+          {
+            "event_type": "skill_cast",
+            "caster_slot": "hand_r",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "charge"
+          },
+          {
+            "event_type": "skill_release",
+            "caster_slot": "hand_r",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "release"
+          },
+          {
+            "event_type": "v63_talisman_hit",
+            "caster_slot": "hand_r",
+            "target_slot": "foot",
+            "actor_clip": "cast",
+            "visual_phase": "contact"
+          }
+        ]
+      },
+      "native_batch": "talisman",
+      "review_note": "Hỏa Tâm Ngưng Phù: first-party painted RGBA source atlases with unique frame checks; one 1x source-sheet review. single_target/1 canonical damage only. Contact is gated by an exact-skill MapBattleV2 v63_talisman_hit; no synthetic damage, status, or hit. Full native phase review and owner visual approval pending; PvE HOLD.",
+      "phase_aliases": {
+        "release": "flight"
+      }
+    },
+    {
+      "skill_id": "tmb.skill.talisman.hoa_phu.active_04.human",
+      "school": "talisman",
+      "branch": "hoa_phu",
+      "name_vi": "Chu Tước Hồi Hoàn",
+      "catalog_path": "res://data/combat/v63_talisman_combat_catalog.json",
+      "effect": "damage",
+      "shape": "circle",
+      "target_limit": 3,
+      "mechanic_template": "circle_aoe",
+      "mechanic_templates": [
+        "circle_aoe",
+        "multi_target"
+      ],
+      "target_mode": "circle",
+      "actor_sex": "male",
+      "actor_asset_id": 64,
+      "actor_action": "cast",
+      "facing_vector": [
+        1.0,
+        0.0
+      ],
+      "preview_attachment_override": {
+        "suppress_attachments": true
+      },
+      "source_anchor": "hand_r",
+      "phase_anchors": {
+        "charge": "hand_r",
+        "release": "target_foot",
+        "contact": "target_foot",
+        "fade": "target_foot"
+      },
+      "draw_layer": "BEHIND",
+      "phase_layers": {
+        "charge": "BEHIND",
+        "release": "BEHIND",
+        "contact": "BEHIND",
+        "fade": "BEHIND"
+      },
+      "source_g3": "SOURCE_ALPHA_UNIQUE_POSES_PASS_NATIVE_ART_SELF_REVIEW_PENDING",
+      "native_status": "NATIVE_CAPTURE_PENDING",
+      "owner_status": "OWNER_VISUAL_PENDING",
+      "native_ready": false,
+      "motion_status": "FRAME_BY_FRAME_SOURCE_ATLASES_NATIVE_REVIEW_PENDING",
+      "showcase_moving_target": true,
+      "delivery_phase": "release",
+      "phase_sources": {
+        "charge": {
+          "path": "res://labs/combat_lab/talisman09/assets/tal09_r1_charge.webp",
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/talisman09/assets/tal09_r1_charge.webp",
+              "region": [
+                0,
+                0,
+                320,
+                320
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman09/assets/tal09_r1_charge.webp",
+              "region": [
+                320,
+                0,
+                320,
+                320
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman09/assets/tal09_r1_charge.webp",
+              "region": [
+                640,
+                0,
+                320,
+                320
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman09/assets/tal09_r1_charge.webp",
+              "region": [
+                960,
+                0,
+                320,
+                320
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman09/assets/tal09_r1_charge.webp",
+              "region": [
+                0,
+                320,
+                320,
+                320
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman09/assets/tal09_r1_charge.webp",
+              "region": [
+                320,
+                320,
+                320,
+                320
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman09/assets/tal09_r1_charge.webp",
+              "region": [
+                640,
+                320,
+                320,
+                320
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman09/assets/tal09_r1_charge.webp",
+              "region": [
+                960,
+                320,
+                320,
+                320
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman09/assets/tal09_r1_charge.webp",
+              "region": [
+                0,
+                640,
+                320,
+                320
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman09/assets/tal09_r1_charge.webp",
+              "region": [
+                320,
+                640,
+                320,
+                320
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman09/assets/tal09_r1_charge.webp",
+              "region": [
+                640,
+                640,
+                320,
+                320
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman09/assets/tal09_r1_charge.webp",
+              "region": [
+                960,
+                640,
+                320,
+                320
+              ]
+            }
+          ],
+          "display_width_px": 124,
+          "fps": 14,
+          "loop": false,
+          "fade_seconds": 0.22
+        },
+        "release": {
+          "path": "res://labs/combat_lab/talisman09/assets/tal09_r1_phoenix.webp",
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/talisman09/assets/tal09_r1_phoenix.webp",
+              "region": [
+                0,
+                0,
+                512,
+                320
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman09/assets/tal09_r1_phoenix.webp",
+              "region": [
+                512,
+                0,
+                512,
+                320
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman09/assets/tal09_r1_phoenix.webp",
+              "region": [
+                1024,
+                0,
+                512,
+                320
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman09/assets/tal09_r1_phoenix.webp",
+              "region": [
+                1536,
+                0,
+                512,
+                320
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman09/assets/tal09_r1_phoenix.webp",
+              "region": [
+                0,
+                320,
+                512,
+                320
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman09/assets/tal09_r1_phoenix.webp",
+              "region": [
+                512,
+                320,
+                512,
+                320
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman09/assets/tal09_r1_phoenix.webp",
+              "region": [
+                1024,
+                320,
+                512,
+                320
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman09/assets/tal09_r1_phoenix.webp",
+              "region": [
+                1536,
+                320,
+                512,
+                320
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman09/assets/tal09_r1_phoenix.webp",
+              "region": [
+                0,
+                640,
+                512,
+                320
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman09/assets/tal09_r1_phoenix.webp",
+              "region": [
+                512,
+                640,
+                512,
+                320
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman09/assets/tal09_r1_phoenix.webp",
+              "region": [
+                1024,
+                640,
+                512,
+                320
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman09/assets/tal09_r1_phoenix.webp",
+              "region": [
+                1536,
+                640,
+                512,
+                320
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman09/assets/tal09_r1_phoenix.webp",
+              "region": [
+                0,
+                960,
+                512,
+                320
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman09/assets/tal09_r1_phoenix.webp",
+              "region": [
+                512,
+                960,
+                512,
+                320
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman09/assets/tal09_r1_phoenix.webp",
+              "region": [
+                1024,
+                960,
+                512,
+                320
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman09/assets/tal09_r1_phoenix.webp",
+              "region": [
+                1536,
+                960,
+                512,
+                320
+              ]
+            }
+          ],
+          "display_width_px": 300,
+          "fps": 14,
+          "loop": false,
+          "fade_seconds": 0.22
+        },
+        "contact": {
+          "path": "res://labs/combat_lab/talisman09/assets/tal09_r1_contact.webp",
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/talisman09/assets/tal09_r1_contact.webp",
+              "region": [
+                0,
+                0,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman09/assets/tal09_r1_contact.webp",
+              "region": [
+                256,
+                0,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman09/assets/tal09_r1_contact.webp",
+              "region": [
+                512,
+                0,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman09/assets/tal09_r1_contact.webp",
+              "region": [
+                768,
+                0,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman09/assets/tal09_r1_contact.webp",
+              "region": [
+                0,
+                256,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman09/assets/tal09_r1_contact.webp",
+              "region": [
+                256,
+                256,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman09/assets/tal09_r1_contact.webp",
+              "region": [
+                512,
+                256,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman09/assets/tal09_r1_contact.webp",
+              "region": [
+                768,
+                256,
+                256,
+                256
+              ]
+            }
+          ],
+          "display_width_px": 142,
+          "fps": 20,
+          "loop": false,
+          "fade_seconds": 0.22
+        },
+        "fade": {
+          "path": "res://labs/combat_lab/talisman09/assets/tal09_r1_contact.webp",
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/talisman09/assets/tal09_r1_contact.webp",
+              "region": [
+                0,
+                512,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman09/assets/tal09_r1_contact.webp",
+              "region": [
+                256,
+                512,
+                256,
+                256
+              ]
+            }
+          ],
+          "display_width_px": 118,
+          "fps": 8,
+          "loop": false,
+          "fade_seconds": 0.22
+        }
+      },
+      "review_timeline": {
+        "release_at": 0.5,
+        "flight_at": 0.5,
+        "contact_at": 0.76,
+        "fade_at": 1.0,
+        "loop_seconds": 1.45,
+        "contact_window_seconds": 0.24,
+        "fade_window_seconds": 0.25,
+        "actor_action_seconds": 0.5,
+        "clock": "REAL_MAPBATTLE_RECEIPT_EVENTS",
+        "charge_window_seconds": 0.5,
+        "release_window_seconds": 0.24
+      },
+      "receipt_manifest": {
+        "schema": "tmb.vfx_bindings.v1",
+        "skill_id": "tmb.skill.talisman.hoa_phu.active_04.human",
+        "bindings": [
+          {
+            "event_type": "skill_cast",
+            "caster_slot": "hand_r",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "charge"
+          },
+          {
+            "event_type": "skill_release",
+            "caster_slot": "hand_r",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "release"
+          },
+          {
+            "event_type": "v63_talisman_hit",
+            "caster_slot": "hand_r",
+            "target_slot": "foot",
+            "actor_clip": "cast",
+            "visual_phase": "contact"
+          }
+        ]
+      },
+      "native_batch": "talisman",
+      "review_note": "Chu Tước Hồi Hoàn: first-party painted RGBA source atlases with unique frame checks; one 1x source-sheet review. circle/3 canonical damage only. Contact is gated by an exact-skill MapBattleV2 v63_talisman_hit; no synthetic damage, status, or hit. Full native phase review and owner visual approval pending; PvE HOLD."
+    },
+    {
+      "skill_id": "tmb.skill.talisman.hoa_phu.ultimate.human",
+      "school": "talisman",
+      "branch": "hoa_phu",
+      "name_vi": "Vạn Phù Phần Thiên",
+      "catalog_path": "res://data/combat/v63_talisman_combat_catalog.json",
+      "effect": "damage",
+      "shape": "circle",
+      "target_limit": 3,
+      "mechanic_template": "circle_aoe",
+      "mechanic_templates": [
+        "circle_aoe",
+        "multi_target"
+      ],
+      "target_mode": "circle",
+      "actor_sex": "male",
+      "actor_asset_id": 64,
+      "actor_action": "cast",
+      "facing_vector": [
+        1.0,
+        0.0
+      ],
+      "preview_attachment_override": {
+        "suppress_attachments": true
+      },
+      "source_anchor": "hand_r",
+      "phase_anchors": {
+        "charge": "hand_r",
+        "release": "target_foot",
+        "contact": "target_foot",
+        "fade": "target_foot"
+      },
+      "draw_layer": "BEHIND",
+      "phase_layers": {
+        "charge": "BEHIND",
+        "release": "BEHIND",
+        "contact": "BEHIND",
+        "fade": "BEHIND"
+      },
+      "source_g3": "SOURCE_ALPHA_UNIQUE_POSES_PASS_NATIVE_ART_SELF_REVIEW_PENDING",
+      "native_status": "NATIVE_CAPTURE_PENDING",
+      "owner_status": "OWNER_VISUAL_PENDING",
+      "native_ready": false,
+      "motion_status": "FRAME_BY_FRAME_SOURCE_ATLASES_NATIVE_REVIEW_PENDING",
+      "showcase_moving_target": true,
+      "delivery_phase": "release",
+      "phase_sources": {
+        "charge": {
+          "path": "res://labs/combat_lab/talisman07/assets/tal07_seal_flipbook.webp",
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/talisman07/assets/tal07_seal_flipbook.webp",
+              "region": [
+                0,
+                0,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman07/assets/tal07_seal_flipbook.webp",
+              "region": [
+                256,
+                0,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman07/assets/tal07_seal_flipbook.webp",
+              "region": [
+                512,
+                0,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman07/assets/tal07_seal_flipbook.webp",
+              "region": [
+                768,
+                0,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman07/assets/tal07_seal_flipbook.webp",
+              "region": [
+                0,
+                256,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman07/assets/tal07_seal_flipbook.webp",
+              "region": [
+                256,
+                256,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman07/assets/tal07_seal_flipbook.webp",
+              "region": [
+                512,
+                256,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman07/assets/tal07_seal_flipbook.webp",
+              "region": [
+                768,
+                256,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman07/assets/tal07_seal_flipbook.webp",
+              "region": [
+                0,
+                512,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman07/assets/tal07_seal_flipbook.webp",
+              "region": [
+                256,
+                512,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman07/assets/tal07_seal_flipbook.webp",
+              "region": [
+                512,
+                512,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman07/assets/tal07_seal_flipbook.webp",
+              "region": [
+                768,
+                512,
+                256,
+                256
+              ]
+            }
+          ],
+          "display_width_px": 156,
+          "fps": 14,
+          "loop": false,
+          "fade_seconds": 0.22
+        },
+        "release": {
+          "path": "res://labs/combat_lab/talisman10/assets/tal10_r7_solar_pillar.webp",
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/talisman10/assets/tal10_r7_solar_pillar.webp",
+              "region": [
+                0,
+                0,
+                640,
+                400
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman10/assets/tal10_r7_solar_pillar.webp",
+              "region": [
+                640,
+                0,
+                640,
+                400
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman10/assets/tal10_r7_solar_pillar.webp",
+              "region": [
+                1280,
+                0,
+                640,
+                400
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman10/assets/tal10_r7_solar_pillar.webp",
+              "region": [
+                1920,
+                0,
+                640,
+                400
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman10/assets/tal10_r7_solar_pillar.webp",
+              "region": [
+                0,
+                400,
+                640,
+                400
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman10/assets/tal10_r7_solar_pillar.webp",
+              "region": [
+                640,
+                400,
+                640,
+                400
+              ]
+            }
+          ],
+          "display_width_px": 280,
+          "fps": 14,
+          "loop": false,
+          "fade_seconds": 0.22
+        },
+        "contact": {
+          "path": "res://labs/combat_lab/talisman10/assets/tal10_r7_solar_pillar.webp",
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/talisman10/assets/tal10_r7_solar_pillar.webp",
+              "region": [
+                1280,
+                400,
+                640,
+                400
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman10/assets/tal10_r7_solar_pillar.webp",
+              "region": [
+                1920,
+                400,
+                640,
+                400
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman10/assets/tal10_r7_solar_pillar.webp",
+              "region": [
+                0,
+                800,
+                640,
+                400
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman10/assets/tal10_r7_solar_pillar.webp",
+              "region": [
+                640,
+                800,
+                640,
+                400
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman10/assets/tal10_r7_solar_pillar.webp",
+              "region": [
+                1280,
+                800,
+                640,
+                400
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman10/assets/tal10_r7_solar_pillar.webp",
+              "region": [
+                1920,
+                800,
+                640,
+                400
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman10/assets/tal10_r7_solar_pillar.webp",
+              "region": [
+                0,
+                1200,
+                640,
+                400
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman10/assets/tal10_r7_solar_pillar.webp",
+              "region": [
+                640,
+                1200,
+                640,
+                400
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman10/assets/tal10_r7_solar_pillar.webp",
+              "region": [
+                1280,
+                1200,
+                640,
+                400
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman10/assets/tal10_r7_solar_pillar.webp",
+              "region": [
+                1920,
+                1200,
+                640,
+                400
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman10/assets/tal10_r7_solar_pillar.webp",
+              "region": [
+                0,
+                1600,
+                640,
+                400
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman10/assets/tal10_r7_solar_pillar.webp",
+              "region": [
+                640,
+                1600,
+                640,
+                400
+              ]
+            }
+          ],
+          "display_width_px": 360,
+          "fps": 16,
+          "loop": false,
+          "fade_seconds": 0.22
+        },
+        "fade": {
+          "path": "res://labs/combat_lab/talisman10/assets/tal10_r7_solar_pillar.webp",
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/talisman10/assets/tal10_r7_solar_pillar.webp",
+              "region": [
+                1280,
+                1600,
+                640,
+                400
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman10/assets/tal10_r7_solar_pillar.webp",
+              "region": [
+                1920,
+                1600,
+                640,
+                400
+              ]
+            }
+          ],
+          "display_width_px": 240,
+          "fps": 10,
+          "loop": false,
+          "fade_seconds": 0.22
+        }
+      },
+      "review_timeline": {
+        "release_at": 1.05,
+        "flight_at": 1.05,
+        "contact_at": 1.36,
+        "fade_at": 1.62,
+        "loop_seconds": 2.1,
+        "contact_window_seconds": 0.26,
+        "fade_window_seconds": 0.28,
+        "actor_action_seconds": 0.85,
+        "clock": "REAL_MAPBATTLE_RECEIPT_EVENTS",
+        "charge_window_seconds": 1.05,
+        "release_window_seconds": 0.3
+      },
+      "receipt_manifest": {
+        "schema": "tmb.vfx_bindings.v1",
+        "skill_id": "tmb.skill.talisman.hoa_phu.ultimate.human",
+        "bindings": [
+          {
+            "event_type": "skill_cast",
+            "caster_slot": "hand_r",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "charge"
+          },
+          {
+            "event_type": "skill_release",
+            "caster_slot": "hand_r",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "release"
+          },
+          {
+            "event_type": "v63_talisman_hit",
+            "caster_slot": "hand_r",
+            "target_slot": "foot",
+            "actor_clip": "cast",
+            "visual_phase": "contact"
+          }
+        ]
+      },
+      "native_batch": "talisman",
+      "review_note": "Vạn Phù Phần Thiên: first-party painted RGBA source atlases with unique frame checks; one 1x source-sheet review. circle/3 canonical damage only. Contact is gated by an exact-skill MapBattleV2 v63_talisman_hit; no synthetic damage, status, or hit. Full native phase review and owner visual approval pending; PvE HOLD."
     }
   ],
   "batch_status": {
@@ -5086,7 +6892,7 @@
       "expected_count": 17
     },
     "talisman": {
-      "expected_count": 4,
+      "expected_count": 8,
       "technical_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_FULL_DECODE",
       "last_capture_index": "res://labs/combat_lab/talisman_factory_batch1_20261125/review/native/talisman_batch1_capture_index.json",
       "video": "res://labs/combat_lab/talisman_factory_batch1_20261125/review/native/talisman_batch1_native_1280x720.mp4",

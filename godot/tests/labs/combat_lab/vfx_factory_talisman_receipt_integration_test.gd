@@ -10,7 +10,11 @@ const SKILL_IDS := [
 	"tmb.skill.talisman.loi_phu.active_02.human",
 	"tmb.skill.talisman.loi_phu.active_03.human",
 	"tmb.skill.talisman.loi_phu.active_04.human",
-	"tmb.skill.talisman.loi_phu.ultimate.human"
+	"tmb.skill.talisman.loi_phu.ultimate.human",
+	"tmb.skill.talisman.hoa_phu.active_02.human",
+	"tmb.skill.talisman.hoa_phu.active_03.human",
+	"tmb.skill.talisman.hoa_phu.active_04.human",
+	"tmb.skill.talisman.hoa_phu.ultimate.human"
 ]
 const CAST_FOOT := Vector2(300.0, 492.0)
 const TARGET_FOOT := Vector2(690.0, 492.0)
@@ -133,5 +137,5 @@ func _actor(actor_id: String, side: String, position: Vector2) -> Dictionary:
 
 func _finish() -> void:
 	print("VFX_FACTORY_TALISMAN_RECEIPT_RESULT=" + ("PASS" if _failures == 0 else "FAIL")
-		+ " skills=4 checks=" + str(_checks) + " synthetic_events=0 failures=" + str(_failures))
+		+ " skills=8 checks=" + str(_checks) + " synthetic_events=0 failures=" + str(_failures))
 	quit(0 if _failures == 0 else 1)

@@ -1089,6 +1089,138 @@
         "tests/labs/combat_lab/vfx_factory_talisman_receipt_integration_test.gd"
       ],
       "review_note": "Reuses the existing painted heavenly gate, vertical lightning atlas, and local impact. Only a confirmed MapBattleV2 contact can display impact; no horizontal laser or synthetic AoE is added. Canonical effect=damage, shape=line, cap=3; PvE HOLD. Native TECH PASS at 1280×720. CAST_RELEASE_ONLY_NO_HIT_RECEIPT. Art self-review is limited to one sampled phase; full animation, contact (when no hit receipt exists), owner approval and PvE remain pending/held."
+    },
+    {
+      "id": "tmb.skill.talisman.hoa_phu.active_02.human",
+      "name_vi": "Liên Diệm Phần Giới",
+      "school_vi": "Phù Tu",
+      "branch_vi": "Hỏa Phù · Liên Diệm Phần Giới",
+      "tier": "human",
+      "scene": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+      "directions": [
+        "front"
+      ],
+      "vfx_status": "CANDIDATE_G3",
+      "g3_art": "SOURCE_ALPHA_UNIQUE_POSES_PASS_NATIVE_ART_SELF_REVIEW_PENDING",
+      "owner_art": "OWNER_VISUAL_PENDING",
+      "art_source": "TMB_FIRST_PARTY_RGBA_PAINTED_ATLASES_EXISTING_RECIPE",
+      "review_stages": "Source alpha/unique-pose bake and 1x source sheet PASS · native phase/contact review pending · owner approval pending · PvE HOLD",
+      "source_paths": [
+        "data/combat/v63_talisman_combat_catalog.json",
+        "labs/combat_lab/talisman07/assets/tal07_seal_flipbook.webp",
+        "labs/combat_lab/talisman07/assets/tal07_lotus_flipbook.webp",
+        "labs/combat_lab/talisman07/assets/tal07_ground_flipbook.webp",
+        "labs/combat_lab/talisman07/assets/tal07_contact_flipbook.webp",
+        "labs/combat_lab/talisman_factory_batch2_20261125/manifest.json",
+        "labs/combat_lab/talisman_factory_batch2_20261125/source/source_review_sheet.png",
+        "labs/combat_lab/vfx_factory/registry.json",
+        "labs/combat_lab/vfx_factory/vfx_factory_formation_batch_capture.gd",
+        "labs/combat_lab/vfx_factory/vfx_factory_formation_batch_capture.tscn",
+        "labs/combat_lab/vfx_factory/vfx_factory_review.gd",
+        "labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+        "labs/visual_bridge_v1/asset_vfx_readonly_bridge_v1.gd",
+        "tests/labs/combat_lab/vfx_factory_review_test.gd",
+        "tests/labs/combat_lab/vfx_factory_talisman_receipt_integration_test.gd"
+      ],
+      "review_note": "Liên Diệm Phần Giới: first-party painted RGBA source atlases with unique frame checks; one 1x source-sheet review. circle/3 canonical damage only. Contact is gated by an exact-skill MapBattleV2 v63_talisman_hit; no synthetic damage, status, or hit. Full native phase review and owner visual approval pending; PvE HOLD."
+    },
+    {
+      "id": "tmb.skill.talisman.hoa_phu.active_03.human",
+      "name_vi": "Hỏa Tâm Ngưng Phù",
+      "school_vi": "Phù Tu",
+      "branch_vi": "Hỏa Phù · Hỏa Tâm Ngưng Phù",
+      "tier": "human",
+      "scene": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+      "directions": [
+        "front"
+      ],
+      "vfx_status": "CANDIDATE_G3",
+      "g3_art": "SOURCE_ALPHA_UNIQUE_POSES_PASS_NATIVE_ART_SELF_REVIEW_PENDING",
+      "owner_art": "OWNER_VISUAL_PENDING",
+      "art_source": "TMB_FIRST_PARTY_RGBA_PAINTED_ATLASES_EXISTING_RECIPE",
+      "review_stages": "Source alpha/unique-pose bake and 1x source sheet PASS · native phase/contact review pending · owner approval pending · PvE HOLD",
+      "source_paths": [
+        "data/combat/v63_talisman_combat_catalog.json",
+        "labs/combat_lab/talisman08/assets/tal08_r1_charge.webp",
+        "labs/combat_lab/talisman08/assets/tal08_r1_projectile.webp",
+        "labs/combat_lab/talisman08/assets/tal08_r1_contact.webp",
+        "labs/combat_lab/talisman_factory_batch2_20261125/manifest.json",
+        "labs/combat_lab/talisman_factory_batch2_20261125/source/source_review_sheet.png",
+        "labs/combat_lab/vfx_factory/registry.json",
+        "labs/combat_lab/vfx_factory/vfx_factory_formation_batch_capture.gd",
+        "labs/combat_lab/vfx_factory/vfx_factory_formation_batch_capture.tscn",
+        "labs/combat_lab/vfx_factory/vfx_factory_review.gd",
+        "labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+        "labs/visual_bridge_v1/asset_vfx_readonly_bridge_v1.gd",
+        "tests/labs/combat_lab/vfx_factory_review_test.gd",
+        "tests/labs/combat_lab/vfx_factory_talisman_receipt_integration_test.gd"
+      ],
+      "review_note": "Hỏa Tâm Ngưng Phù: first-party painted RGBA source atlases with unique frame checks; one 1x source-sheet review. single_target/1 canonical damage only. Contact is gated by an exact-skill MapBattleV2 v63_talisman_hit; no synthetic damage, status, or hit. Full native phase review and owner visual approval pending; PvE HOLD."
+    },
+    {
+      "id": "tmb.skill.talisman.hoa_phu.active_04.human",
+      "name_vi": "Chu Tước Hồi Hoàn",
+      "school_vi": "Phù Tu",
+      "branch_vi": "Hỏa Phù · Chu Tước Hồi Hoàn",
+      "tier": "human",
+      "scene": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+      "directions": [
+        "front"
+      ],
+      "vfx_status": "CANDIDATE_G3",
+      "g3_art": "SOURCE_ALPHA_UNIQUE_POSES_PASS_NATIVE_ART_SELF_REVIEW_PENDING",
+      "owner_art": "OWNER_VISUAL_PENDING",
+      "art_source": "TMB_FIRST_PARTY_RGBA_PAINTED_ATLASES_EXISTING_RECIPE",
+      "review_stages": "Source alpha/unique-pose bake and 1x source sheet PASS · native phase/contact review pending · owner approval pending · PvE HOLD",
+      "source_paths": [
+        "data/combat/v63_talisman_combat_catalog.json",
+        "labs/combat_lab/talisman09/assets/tal09_r1_charge.webp",
+        "labs/combat_lab/talisman09/assets/tal09_r1_phoenix.webp",
+        "labs/combat_lab/talisman09/assets/tal09_r1_orbit.webp",
+        "labs/combat_lab/talisman09/assets/tal09_r1_contact.webp",
+        "labs/combat_lab/talisman_factory_batch2_20261125/manifest.json",
+        "labs/combat_lab/talisman_factory_batch2_20261125/source/source_review_sheet.png",
+        "labs/combat_lab/vfx_factory/registry.json",
+        "labs/combat_lab/vfx_factory/vfx_factory_formation_batch_capture.gd",
+        "labs/combat_lab/vfx_factory/vfx_factory_formation_batch_capture.tscn",
+        "labs/combat_lab/vfx_factory/vfx_factory_review.gd",
+        "labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+        "labs/visual_bridge_v1/asset_vfx_readonly_bridge_v1.gd",
+        "tests/labs/combat_lab/vfx_factory_review_test.gd",
+        "tests/labs/combat_lab/vfx_factory_talisman_receipt_integration_test.gd"
+      ],
+      "review_note": "Chu Tước Hồi Hoàn: first-party painted RGBA source atlases with unique frame checks; one 1x source-sheet review. circle/3 canonical damage only. Contact is gated by an exact-skill MapBattleV2 v63_talisman_hit; no synthetic damage, status, or hit. Full native phase review and owner visual approval pending; PvE HOLD."
+    },
+    {
+      "id": "tmb.skill.talisman.hoa_phu.ultimate.human",
+      "name_vi": "Vạn Phù Phần Thiên",
+      "school_vi": "Phù Tu",
+      "branch_vi": "Hỏa Phù · Vạn Phù Phần Thiên",
+      "tier": "human",
+      "scene": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+      "directions": [
+        "front"
+      ],
+      "vfx_status": "CANDIDATE_G3",
+      "g3_art": "SOURCE_ALPHA_UNIQUE_POSES_PASS_NATIVE_ART_SELF_REVIEW_PENDING",
+      "owner_art": "OWNER_VISUAL_PENDING",
+      "art_source": "TMB_FIRST_PARTY_RGBA_PAINTED_ATLASES_EXISTING_RECIPE",
+      "review_stages": "Source alpha/unique-pose bake and 1x source sheet PASS · native phase/contact review pending · owner approval pending · PvE HOLD",
+      "source_paths": [
+        "data/combat/v63_talisman_combat_catalog.json",
+        "labs/combat_lab/talisman10/assets/tal10_r7_solar_pillar.webp",
+        "labs/combat_lab/talisman_factory_batch2_20261125/manifest.json",
+        "labs/combat_lab/talisman_factory_batch2_20261125/source/source_review_sheet.png",
+        "labs/combat_lab/vfx_factory/registry.json",
+        "labs/combat_lab/vfx_factory/vfx_factory_formation_batch_capture.gd",
+        "labs/combat_lab/vfx_factory/vfx_factory_formation_batch_capture.tscn",
+        "labs/combat_lab/vfx_factory/vfx_factory_review.gd",
+        "labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+        "labs/visual_bridge_v1/asset_vfx_readonly_bridge_v1.gd",
+        "tests/labs/combat_lab/vfx_factory_review_test.gd",
+        "tests/labs/combat_lab/vfx_factory_talisman_receipt_integration_test.gd"
+      ],
+      "review_note": "Vạn Phù Phần Thiên: first-party painted RGBA source atlases with unique frame checks; one 1x source-sheet review. circle/3 canonical damage only. Contact is gated by an exact-skill MapBattleV2 v63_talisman_hit; no synthetic damage, status, or hit. Full native phase review and owner visual approval pending; PvE HOLD."
     }
   ],
   "updated_at": "2026-11-25"
