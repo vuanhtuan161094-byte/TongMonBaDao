@@ -4,6 +4,7 @@ extends SceneTree
 const Spear := preload("res://src/simulation/combat/v63_spear_skill_combat_system.gd")
 const HSC := preload("res://src/simulation/combat/v63_human_skill_combat_system.gd")
 const Gates := preload("res://src/simulation/combat/v63_feature_gates.gd")
+const ASCHAR := preload("res://src/presentation/p3/pve_aschar_frame_renderer_v1.gd")
 const SKILL_ID := "tmb.skill.spear.long_thuong.active_01.human"
 const CHARGE_PATH := "res://labs/combat_lab/spear01/van_long_diem_thuy/r1/assets/source/charge_r1.png"
 const EXPECTED_TARGETS := ["spear_line_target_01","spear_line_target_02"]
@@ -95,6 +96,41 @@ func _run() -> void:
 	_expect(socket_data is Dictionary and str(socket_data.get("status","")) == "CANDIDATE"
 		and str(socket_data.get("owner_art_approval","")) == "PENDING",
 		"candidate body and two-hand spear sockets remain explicitly provisional")
+	var weapon_path := "res://assets/p3/baked_candidates/weapon_library_v1/candidate/ASCHAR_24_ACTOR_WEAPON_BINDINGS_V9_3_CANDIDATE.json"
+	var weapon_data: Variant = JSON.parse_string(FileAccess.get_file_as_string(weapon_path))
+	var library: Dictionary = Dictionary(weapon_data.get("asset_library",{})) if weapon_data is Dictionary else {}
+	var spear_info: Dictionary = library.get("spear",{})
+	var attachments: Array = socket_data.get("attachments",[]) if socket_data is Dictionary else []
+	var has_two_hand_spear := false
+	for raw_attachment in attachments:
+		if raw_attachment is Dictionary and str(raw_attachment.get("asset_id","")) == "spear" and str(raw_attachment.get("support_grip_slot","")) == "off_hand":
+			has_two_hand_spear = true
+	var attack_right_rows: Array = []
+	if socket_data is Dictionary:
+		for raw_row in socket_data.get("body_frames",[]):
+			if raw_row is Dictionary and str(raw_row.get("clip","")) == "attack_right":
+				attack_right_rows.append(raw_row)
+	var alignment_ok := false
+	var spear_grip: Array = spear_info.get("grip_px",[])
+	var spear_tip: Array = spear_info.get("tip_px",[])
+	if not attack_right_rows.is_empty() and spear_grip.size() == 2 and spear_tip.size() == 2:
+		var grips: Dictionary = Dictionary(attack_right_rows[0].get("grip_sockets",{}))
+		var off_hand: Dictionary = Dictionary(grips.get("off_hand",{}))
+		var main_hand: Dictionary = Dictionary(grips.get("main_hand",{}))
+		var off_px: Array = off_hand.get("body_grip_px",[])
+		var main_px: Array = main_hand.get("body_grip_px",[])
+		var rotation_deg := ASCHAR.aligned_weapon_rotation_deg(
+			off_px,main_px,
+			spear_grip,spear_tip)
+		var asset_axis := Vector2(float(spear_tip[0])-float(spear_grip[0]),float(spear_tip[1])-float(spear_grip[1]))
+		var aligned_axis := asset_axis.rotated(deg_to_rad(rotation_deg))
+		var hand_axis := Vector2(float(main_px[0])-float(off_px[0]),float(main_px[1])-float(off_px[1]))
+		var off_mask: Array = off_hand.get("hand_mask_rect_px",[])
+		var main_mask: Array = main_hand.get("hand_mask_rect_px",[])
+		alignment_ok = aligned_axis.normalized().dot(hand_axis.normalized()) > 0.9999 and off_mask.size() == 4 and main_mask.size() == 4
+	_expect(has_two_hand_spear and str(spear_info.get("path","")) == "res://assets/p3/baked_candidates/weapon_library_v1/candidate/weapons/spear.png"
+		and attack_right_rows.size() == 4 and alignment_ok,
+		"the existing spear prop anchors at AS54 off-hand, points toward its main-hand socket, and restores both hands")
 	var source_atlas := CombatV5SourceAAtlas.new()
 	_expect(source_atlas.has_actor("monster_1113031_1"), "supported Source A placeholder actor pack loads")
 	var frame := source_atlas.frame_region("monster_1113031_1","walk",Vector2.LEFT,0.12)

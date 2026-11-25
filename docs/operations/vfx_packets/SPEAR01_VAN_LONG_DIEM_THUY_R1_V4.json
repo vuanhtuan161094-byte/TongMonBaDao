@@ -147,7 +147,7 @@
     "g5": "NOT_EXECUTED"
   },
   "proof_contract": {
-    "focused_marker": "SPEAR_LONG_THRUST_RECEIPT_RESULT PASS checks=19",
+    "focused_marker": "SPEAR_LONG_THRUST_RECEIPT_RESULT PASS checks=20",
     "native_marker": "SPEAR_LONG_THRUST_LAB_RUNTIME PASS",
     "video_filename": "van-long-diem-thuy-r1-g35.mp4",
     "source": "Use the existing .github/workflows/vfx-shared-skill.yml on the exact Draft PR SHA. It runs Godot 4.7.2 Xvfb/ffmpeg; inspect native frames to decide G3.5. Owner art and PvE gates remain pending/off."

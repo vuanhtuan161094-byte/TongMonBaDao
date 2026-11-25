@@ -85,7 +85,8 @@ static func _rows(actor_id: int,manifest: Dictionary) -> Dictionary:
     return rows
 
 static func draw_actor(canvas: CanvasItem,school: String,sex: String,action: String,
-        foot: Vector2,facing: Vector2,age: float,scale: float,action_seconds: float = 0.0) -> bool:
+        foot: Vector2,facing: Vector2,age: float,scale: float,action_seconds: float = 0.0,
+        preview_attachment_override: Dictionary = {}) -> bool:
     var actor_id := BRIDGE.actor_id(school,sex)
     if actor_id < 0:
         return false
@@ -146,9 +147,12 @@ static func draw_actor(canvas: CanvasItem,school: String,sex: String,action: Str
         return false
     var baseline := float(row.get("source_foot_baseline_y_px",manifest.get("foot_baseline_y_px",359.0)))
     var center := Vector2(texture.get_width()*0.5,baseline)
-    _draw_props(canvas,manifest,row,foot,center,scale,true)
+    _draw_props(canvas,manifest,row,foot,center,scale,true,preview_attachment_override)
     canvas.draw_texture_rect(texture,Rect2(foot-center*scale,texture.get_size()*scale),false)
-    _draw_props(canvas,manifest,row,foot,center,scale,false)
+    _draw_props(canvas,manifest,row,foot,center,scale,false,preview_attachment_override)
+    if not preview_attachment_override.is_empty():
+        _restore_preview_hands(canvas,row,texture,foot,center,scale,
+            preview_attachment_override.get("restore_hand_slots",[]))
     return true
 
 static func frame_index(action: String,age: float,count: int,action_seconds: float = 0.0) -> int:
@@ -159,14 +163,32 @@ static func frame_index(action: String,age: float,count: int,action_seconds: flo
         index = int(clampf(age/action_seconds,0.0,1.0)*float(count))
     return index % count if action in ["idle","run","walk"] else mini(index,count-1)
 
+static func aligned_weapon_rotation_deg(body_anchor_px: Array,body_direction_px: Array,
+        weapon_grip_px: Array,weapon_tip_px: Array,fallback_deg: float = 0.0,
+        offset_deg: float = 0.0) -> float:
+    if body_anchor_px.size() != 2 or body_direction_px.size() != 2 or weapon_grip_px.size() != 2 or weapon_tip_px.size() != 2:
+        return fallback_deg+offset_deg
+    var hand_axis := Vector2(float(body_direction_px[0])-float(body_anchor_px[0]),
+        float(body_direction_px[1])-float(body_anchor_px[1]))
+    var asset_axis := Vector2(float(weapon_tip_px[0])-float(weapon_grip_px[0]),
+        float(weapon_tip_px[1])-float(weapon_grip_px[1]))
+    if hand_axis.length_squared() <= 0.001 or asset_axis.length_squared() <= 0.001:
+        return fallback_deg+offset_deg
+    return rad_to_deg(hand_axis.angle()-asset_axis.angle())+offset_deg
+
 static func _draw_props(canvas: CanvasItem,manifest: Dictionary,row: Dictionary,
-        foot: Vector2,center: Vector2,scale: float,behind: bool) -> void:
+        foot: Vector2,center: Vector2,scale: float,behind: bool,
+        preview_attachment_override: Dictionary = {}) -> void:
     var grips: Dictionary = row.get("grip_sockets",{})
     for attachment in manifest.get("attachments",[]):
         if not (attachment is Dictionary):
             continue
         var slot := str(attachment.get("slot",""))
-        var grip: Dictionary = grips.get(slot,{})
+        var asset_id := str(attachment.get("asset_id",""))
+        var anchor_slot := slot
+        if asset_id == str(preview_attachment_override.get("asset_id","")):
+            anchor_slot = str(preview_attachment_override.get("anchor_slot",slot))
+        var grip: Dictionary = grips.get(anchor_slot,{})
         if grip.is_empty():
             continue
         if not bool(row.get("weapon_visible",true)) and not slot.begins_with("hand_"):
@@ -174,7 +196,6 @@ static func _draw_props(canvas: CanvasItem,manifest: Dictionary,row: Dictionary,
         var back := str(grip.get("draw_order","")).contains("BEHIND")
         if back != behind:
             continue
-        var asset_id := str(attachment.get("asset_id",""))
         var info := _weapon_info(manifest,asset_id)
         var path := str(info.get("path",""))
         if not ResourceLoader.exists(path,"Texture2D"):
@@ -190,7 +211,27 @@ static func _draw_props(canvas: CanvasItem,manifest: Dictionary,row: Dictionary,
         if weapon_scale <= 0.0:
             weapon_scale = float(grip.get("scale_multiplier",0.30))
         var at := foot+(Vector2(float(anchor[0]),float(anchor[1]))-center)*scale
-        canvas.draw_set_transform(at,deg_to_rad(float(grip.get("rotation_deg",0.0))),
+        var rotation_deg := float(grip.get("rotation_deg",0.0))
+        if asset_id == str(preview_attachment_override.get("asset_id","")):
+            var direction_slot := str(preview_attachment_override.get("align_tip_to_slot",""))
+            var direction_grip: Dictionary = grips.get(direction_slot,{})
+            var direction_anchor: Array = direction_grip.get("body_grip_px",[])
+            var asset_tip: Array = info.get("tip_px",[])
+            rotation_deg = aligned_weapon_rotation_deg(anchor,direction_anchor,weapon_grip,asset_tip,
+                rotation_deg,float(preview_attachment_override.get("rotation_offset_deg",0.0)))
+        canvas.draw_set_transform(at,deg_to_rad(rotation_deg),
             Vector2.ONE*scale*maxf(weapon_scale,0.01))
         canvas.draw_texture(tex,-Vector2(float(weapon_grip[0]),float(weapon_grip[1])))
         canvas.draw_set_transform(Vector2.ZERO)
+
+static func _restore_preview_hands(canvas: CanvasItem,row: Dictionary,texture: Texture2D,
+        foot: Vector2,center: Vector2,scale: float,slots: Array) -> void:
+    var grips: Dictionary = row.get("grip_sockets",{})
+    for raw_slot in slots:
+        var grip: Dictionary = grips.get(str(raw_slot),{})
+        var mask: Array = grip.get("hand_mask_rect_px",[])
+        if mask.size() != 4:
+            continue
+        var source_rect := Rect2(Vector2(float(mask[0]),float(mask[1])),Vector2(float(mask[2]),float(mask[3])))
+        var destination_rect := Rect2(foot+(source_rect.position-center)*scale,source_rect.size*scale)
+        canvas.draw_texture_rect_region(texture,destination_rect,source_rect)

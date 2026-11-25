@@ -6,6 +6,14 @@ const HSC := preload("res://src/simulation/combat/v63_human_skill_combat_system.
 const ASCHAR := preload("res://src/presentation/p3/pve_aschar_frame_renderer_v1.gd")
 const SOURCE_ATLAS := preload("res://src/presentation/p3/combat_v5_source_a_atlas.gd")
 const SKILL_ID := "tmb.skill.spear.long_thuong.active_01.human"
+const SOCKET_PATH := "res://assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS54_weapon_sockets_v9_3_candidate.json"
+const WEAPON_LIBRARY_PATH := "res://assets/p3/baked_candidates/weapon_library_v1/candidate/ASCHAR_24_ACTOR_WEAPON_BINDINGS_V9_3_CANDIDATE.json"
+const PREVIEW_ATTACHMENT_OVERRIDE := {
+	"asset_id":"spear", "anchor_slot":"off_hand", "align_tip_to_slot":"main_hand",
+	"restore_hand_slots":["off_hand","main_hand"]
+}
+const ASCHAR_DISPLAY_SCALE := 0.25
+const CHARGE_DISPLAY_SIZE := Vector2(68.0,46.0)
 const CHARGE_PATH := "res://labs/combat_lab/spear01/van_long_diem_thuy/r1/assets/source/charge_r1.png"
 const PEAK_PATH := "res://labs/combat_lab/spear01/van_long_diem_thuy/r1/assets/source/peak_r2.png"
 const CONTACT_PATH := "res://labs/combat_lab/spear01/van_long_diem_thuy/r1/assets/source/contact_r1.png"
@@ -23,6 +31,8 @@ var end_positions := {
 }
 var before_hp: Dictionary = {}
 var receipts: Array[Dictionary] = []
+var actor_socket_manifest: Dictionary = {}
+var spear_weapon_info: Dictionary = {}
 var run_state := "BLOCKED"
 var run_error := ""
 var cast_elapsed := 0.0
@@ -52,6 +62,16 @@ func _ready() -> void:
 func _prepare_preview() -> void:
 	if charge_texture == null or peak_texture == null or contact_texture == null or fade_texture == null:
 		_block("G3_SOURCE_FAIL: one or more authored RGBA masters did not load in Godot")
+		return
+	var parsed_socket: Variant = JSON.parse_string(FileAccess.get_file_as_string(SOCKET_PATH))
+	var parsed_library: Variant = JSON.parse_string(FileAccess.get_file_as_string(WEAPON_LIBRARY_PATH))
+	if not (parsed_socket is Dictionary) or not (parsed_library is Dictionary):
+		_block("ART_SOURCE_BLOCKED: existing AS54 socket or weapon library JSON is unavailable")
+		return
+	actor_socket_manifest = parsed_socket
+	spear_weapon_info = Dictionary(parsed_library.get("asset_library",{})).get("spear",{})
+	if spear_weapon_info.is_empty() or str(spear_weapon_info.get("owner_art_approval","")) != "PENDING":
+		_block("ART_SOURCE_BLOCKED: existing spear prop is not the expected pending candidate")
 		return
 	source_atlas = SOURCE_ATLAS.new()
 	if not source_atlas.has_actor("monster_1113031_1"):
@@ -93,6 +113,9 @@ func _prepare_preview() -> void:
 	var pending: Dictionary = caster.get("v63_pending_cast",{})
 	if str(pending.get("v63_skill_id","")) != SKILL_ID or str(pending.get("shape","")) != "line":
 		_block("ART_SOURCE_BLOCKED: runtime pending cast does not match canonical line skill")
+		return
+	if _socket_rows("cast",0.0).is_empty() or _socket_rows("attack",WINDUP_SECONDS).is_empty():
+		_block("ART_SOURCE_BLOCKED: existing AS54 candidate lacks cast-right or attack-right grip rows")
 		return
 	run_state = "WINDUP_MOVING_TARGETS"
 	cast_elapsed = 0.0
@@ -201,7 +224,8 @@ func _draw() -> void:
 	var caster_action := "attack" if run_state == "CONFIRMED_TWO_TARGET_RELEASE" else "cast"
 	var caster_age := 0.0 if _cast_started_msec == 0 else float(Time.get_ticks_msec()-_cast_started_msec)/1000.0
 	aschar_draw_success = ASCHAR.draw_actor(self,"spear","male",caster_action,
-		_world_to_screen(Vector2(2,2)),Vector2.RIGHT,caster_age,0.90,WINDUP_SECONDS)
+		_world_to_screen(Vector2(2,2)),Vector2.RIGHT,caster_age,ASCHAR_DISPLAY_SCALE,WINDUP_SECONDS,
+		PREVIEW_ATTACHMENT_OVERRIDE)
 	_draw_receipt_fx()
 	_draw_actor_status()
 
@@ -224,14 +248,15 @@ func _draw_target(actor_id: String, title: String, foot: Vector2) -> void:
 
 func _draw_receipt_fx() -> void:
 	if run_state == "WINDUP_MOVING_TARGETS":
-		# Show the original compact charge pose at the candidate spear tip while
-		# the canonical 0.38 s cast is pending. It never implies a hit or receipt.
+		# Anchor the existing charge master to the candidate weapon tip resolved
+		# from the same two frame sockets used by the local preview override.
 		if charge_texture != null:
 			var progress := clampf(cast_elapsed / WINDUP_SECONDS, 0.0, 1.0)
 			var alpha := 0.58 + 0.30 * sin(progress * PI)
-			var tip := _world_to_screen(Vector2(2,2)) + Vector2(105.0,-62.0)
+			var tip := _candidate_spear_tip_screen("cast",cast_elapsed)
+			var charge_center := tip-Vector2(CHARGE_DISPLAY_SIZE.x*0.26,0.0)
 			draw_texture_rect(charge_texture,
-				Rect2(tip-Vector2(52.5,35.0),Vector2(105.0,70.0)),false,
+				Rect2(charge_center-CHARGE_DISPLAY_SIZE*0.5,CHARGE_DISPLAY_SIZE),false,
 				Color(1.0,1.0,1.0,alpha))
 		return
 	if run_state != "CONFIRMED_TWO_TARGET_RELEASE" or receipts.is_empty():
@@ -241,7 +266,10 @@ func _draw_receipt_fx() -> void:
 	if age < 0.62:
 		var peak_alpha := minf(1.0,alpha*1.2)
 		if peak_texture != null:
-			draw_texture_rect(peak_texture,Rect2(Vector2(294,350),Vector2(275,92)),false,Color(1,1,1,peak_alpha))
+			var action_age := 0.0 if _cast_started_msec == 0 else float(Time.get_ticks_msec()-_cast_started_msec)/1000.0
+			var tip := _candidate_spear_tip_screen("attack",action_age)
+			var line_end := _world_to_screen(_target_position("spear_lab_target_02"))-Vector2(0,74)
+			_draw_spear_beam(tip,line_end,peak_alpha)
 	elif age < 1.15:
 		if fade_texture != null:
 			draw_texture_rect(fade_texture,Rect2(Vector2(405,362),Vector2(88,45)),false,Color(1,1,1,alpha))
@@ -252,6 +280,60 @@ func _draw_receipt_fx() -> void:
 		var texture: Texture2D = contact_texture if age < 0.62 else fade_texture
 		if texture != null:
 			draw_texture_rect(texture,Rect2(center-size_px*0.5,size_px),false,Color(1,1,1,alpha))
+
+func _socket_rows(action: String,age: float) -> Array:
+	var verb := "attack" if action == "attack" else "cast"
+	var clip := verb+"_right"
+	var found: Array = []
+	for raw in actor_socket_manifest.get("body_frames",[]):
+		if raw is Dictionary and str(raw.get("clip","")) == clip:
+			found.append(raw)
+	if found.is_empty():
+		return []
+	var frame_index := ASCHAR.frame_index(action,age,found.size(),WINDUP_SECONDS)
+	return [found[frame_index]]
+
+func _candidate_spear_tip_screen(action: String,age: float) -> Vector2:
+	var rows := _socket_rows(action,age)
+	if rows.is_empty() or spear_weapon_info.is_empty():
+		return _world_to_screen(Vector2(2,2))+Vector2(105,-62)
+	var row: Dictionary = rows[0]
+	var grips: Dictionary = row.get("grip_sockets",{})
+	var anchor_slot := str(PREVIEW_ATTACHMENT_OVERRIDE["anchor_slot"])
+	var direction_slot := str(PREVIEW_ATTACHMENT_OVERRIDE["align_tip_to_slot"])
+	var anchor_grip: Dictionary = grips.get(anchor_slot,{})
+	var direction_grip: Dictionary = grips.get(direction_slot,{})
+	var anchor_px: Array = anchor_grip.get("body_grip_px",[])
+	var direction_px: Array = direction_grip.get("body_grip_px",[])
+	var asset_grip: Array = spear_weapon_info.get("grip_px",[])
+	var asset_tip: Array = spear_weapon_info.get("tip_px",[])
+	if anchor_px.size() != 2 or direction_px.size() != 2 or asset_grip.size() != 2 or asset_tip.size() != 2:
+		return _world_to_screen(Vector2(2,2))+Vector2(105,-62)
+	var hand_axis := Vector2(float(direction_px[0])-float(anchor_px[0]),float(direction_px[1])-float(anchor_px[1]))
+	var asset_axis := Vector2(float(asset_tip[0])-float(asset_grip[0]),float(asset_tip[1])-float(asset_grip[1]))
+	if hand_axis.length_squared() < 0.001 or asset_axis.length_squared() < 0.001:
+		return _world_to_screen(Vector2(2,2))+Vector2(105,-62)
+	var rotation := hand_axis.angle()-asset_axis.angle()+deg_to_rad(float(PREVIEW_ATTACHMENT_OVERRIDE.get("rotation_offset_deg",0.0)))
+	var canvas_size: Array = actor_socket_manifest.get("body_canvas_px",[384,384])
+	var baseline := float(actor_socket_manifest.get("foot_baseline_y_px",359.0))
+	var body_center := Vector2(float(canvas_size[0])*0.5,baseline)
+	var actor_foot := _world_to_screen(Vector2(2,2))
+	var anchor_screen := actor_foot+(Vector2(float(anchor_px[0]),float(anchor_px[1]))-body_center)*ASCHAR_DISPLAY_SCALE
+	var weapon_scale := float(spear_weapon_info.get("asset_scale",0.0))
+	if weapon_scale <= 0.0:
+		weapon_scale = float(anchor_grip.get("scale_multiplier",0.30))
+	return anchor_screen+asset_axis.rotated(rotation)*(weapon_scale*ASCHAR_DISPLAY_SCALE)
+
+func _draw_spear_beam(from: Vector2,to: Vector2,alpha: float) -> void:
+	var axis := to-from
+	if axis.length() < 1.0:
+		return
+	var width := axis.length()+36.0
+	var height := width*724.0/2172.0
+	draw_set_transform((from+to)*0.5,axis.angle(),Vector2.ONE)
+	draw_texture_rect(peak_texture,Rect2(Vector2(-width*0.5,-height*0.5),Vector2(width,height)),
+		false,Color(1,1,1,alpha))
+	draw_set_transform(Vector2.ZERO)
 
 func _draw_actor_status() -> void:
 	var line := ""
