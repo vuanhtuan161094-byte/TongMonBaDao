@@ -8,9 +8,10 @@
     "source_alpha": "SELF_PASS",
     "1x_contact_sheet_light": "SELF_PASS",
     "1x_contact_sheet_dark": "SELF_PASS",
-    "native_import_and_capture": "PENDING",
+    "native_import_and_capture": "TECH_PASS_GODOT_4.7.2_1280x720_17_OF_17_REAL_MAPBATTLE_RECEIPTS",
     "owner_approval": "PENDING",
-    "pve_gate": "HOLD"
+    "pve_gate": "HOLD",
+    "native_art_self_review": "ART_REWORK_REQUIRED_1_OF_17; 16 contact frames passed 1x readability review only; full frame-by-frame motion and owner gate pending"
   },
   "motion_status": "FOUR_FRAME_PHASE_SEQUENCE_SOURCE",
   "phase_order": [
@@ -173,7 +174,9 @@
         "school": "formation",
         "branch": "phong_toa_tran",
         "slot": "active"
-      }
+      },
+      "native_contact_art_status": "ART_SELF_PASS_CONTACT_READABILITY_ONLY",
+      "full_motion_status": "PENDING_FRAME_BY_FRAME_ANIMATION_REVIEW"
     },
     {
       "skill_id": "tmb.skill.formation.phong_toa_tran.active_02.human",
@@ -250,7 +253,9 @@
         "school": "formation",
         "branch": "phong_toa_tran",
         "slot": "active"
-      }
+      },
+      "native_contact_art_status": "ART_SELF_PASS_CONTACT_READABILITY_ONLY",
+      "full_motion_status": "PENDING_FRAME_BY_FRAME_ANIMATION_REVIEW"
     },
     {
       "skill_id": "tmb.skill.formation.phong_toa_tran.active_03.human",
@@ -327,7 +332,9 @@
         "school": "formation",
         "branch": "phong_toa_tran",
         "slot": "active"
-      }
+      },
+      "native_contact_art_status": "ART_SELF_PASS_CONTACT_READABILITY_ONLY",
+      "full_motion_status": "PENDING_FRAME_BY_FRAME_ANIMATION_REVIEW"
     },
     {
       "skill_id": "tmb.skill.formation.phong_toa_tran.active_04.human",
@@ -404,7 +411,9 @@
         "school": "formation",
         "branch": "phong_toa_tran",
         "slot": "active"
-      }
+      },
+      "native_contact_art_status": "ART_SELF_PASS_CONTACT_READABILITY_ONLY",
+      "full_motion_status": "PENDING_FRAME_BY_FRAME_ANIMATION_REVIEW"
     },
     {
       "skill_id": "tmb.skill.formation.phong_toa_tran.ultimate.human",
@@ -481,7 +490,9 @@
         "school": "formation",
         "branch": "phong_toa_tran",
         "slot": "ultimate"
-      }
+      },
+      "native_contact_art_status": "ART_SELF_PASS_CONTACT_READABILITY_ONLY",
+      "full_motion_status": "PENDING_FRAME_BY_FRAME_ANIMATION_REVIEW"
     },
     {
       "skill_id": "tmb.skill.formation.sat_phat_tran.active_01.human",
@@ -558,7 +569,9 @@
         "school": "formation",
         "branch": "sat_phat_tran",
         "slot": "active"
-      }
+      },
+      "native_contact_art_status": "ART_SELF_PASS_CONTACT_READABILITY_ONLY",
+      "full_motion_status": "PENDING_FRAME_BY_FRAME_ANIMATION_REVIEW"
     },
     {
       "skill_id": "tmb.skill.formation.sat_phat_tran.active_02.human",
@@ -635,7 +648,9 @@
         "school": "formation",
         "branch": "sat_phat_tran",
         "slot": "active"
-      }
+      },
+      "native_contact_art_status": "ART_SELF_PASS_CONTACT_READABILITY_ONLY",
+      "full_motion_status": "PENDING_FRAME_BY_FRAME_ANIMATION_REVIEW"
     },
     {
       "skill_id": "tmb.skill.formation.sat_phat_tran.active_03.human",
@@ -712,7 +727,9 @@
         "school": "formation",
         "branch": "sat_phat_tran",
         "slot": "active"
-      }
+      },
+      "native_contact_art_status": "ART_SELF_PASS_CONTACT_READABILITY_ONLY",
+      "full_motion_status": "PENDING_FRAME_BY_FRAME_ANIMATION_REVIEW"
     },
     {
       "skill_id": "tmb.skill.formation.sat_phat_tran.active_04.human",
@@ -789,7 +806,9 @@
         "school": "formation",
         "branch": "sat_phat_tran",
         "slot": "active"
-      }
+      },
+      "native_contact_art_status": "ART_SELF_PASS_CONTACT_READABILITY_ONLY",
+      "full_motion_status": "PENDING_FRAME_BY_FRAME_ANIMATION_REVIEW"
     },
     {
       "skill_id": "tmb.skill.formation.sat_phat_tran.ultimate.human",
@@ -866,7 +885,9 @@
         "school": "formation",
         "branch": "sat_phat_tran",
         "slot": "ultimate"
-      }
+      },
+      "native_contact_art_status": "ART_SELF_PASS_CONTACT_READABILITY_ONLY",
+      "full_motion_status": "PENDING_FRAME_BY_FRAME_ANIMATION_REVIEW"
     },
     {
       "skill_id": "tmb.skill.formation.tu_linh_tran.active_01.human",
@@ -943,7 +964,9 @@
         "school": "formation",
         "branch": "tu_linh_tran",
         "slot": "active"
-      }
+      },
+      "native_contact_art_status": "ART_SELF_PASS_CONTACT_READABILITY_ONLY",
+      "full_motion_status": "PENDING_FRAME_BY_FRAME_ANIMATION_REVIEW"
     },
     {
       "skill_id": "tmb.skill.formation.tu_linh_tran.active_02.human",
@@ -1020,7 +1043,9 @@
         "school": "formation",
         "branch": "tu_linh_tran",
         "slot": "active"
-      }
+      },
+      "native_contact_art_status": "ART_REWORK_REQUIRED_DAMAGE_VS_SHIELD_READ",
+      "full_motion_status": "PENDING_FRAME_BY_FRAME_ANIMATION_REVIEW"
     },
     {
       "skill_id": "tmb.skill.formation.basic.human",
@@ -1097,7 +1122,9 @@
         "school": "formation",
         "branch": "",
         "slot": "basic"
-      }
+      },
+      "native_contact_art_status": "ART_SELF_PASS_CONTACT_READABILITY_ONLY",
+      "full_motion_status": "PENDING_FRAME_BY_FRAME_ANIMATION_REVIEW"
     },
     {
       "skill_id": "tmb.skill.formation.mobility.human",
@@ -1174,7 +1201,9 @@
         "school": "formation",
         "branch": "",
         "slot": "mobility"
-      }
+      },
+      "native_contact_art_status": "ART_SELF_PASS_CONTACT_READABILITY_ONLY",
+      "full_motion_status": "PENDING_FRAME_BY_FRAME_ANIMATION_REVIEW"
     },
     {
       "skill_id": "tmb.skill.formation.tu_linh_tran.active_03.human",
@@ -1251,7 +1280,9 @@
         "school": "formation",
         "branch": "tu_linh_tran",
         "slot": "active"
-      }
+      },
+      "native_contact_art_status": "ART_SELF_PASS_CONTACT_READABILITY_ONLY",
+      "full_motion_status": "PENDING_FRAME_BY_FRAME_ANIMATION_REVIEW"
     },
     {
       "skill_id": "tmb.skill.formation.tu_linh_tran.active_04.human",
@@ -1328,7 +1359,9 @@
         "school": "formation",
         "branch": "tu_linh_tran",
         "slot": "active"
-      }
+      },
+      "native_contact_art_status": "ART_SELF_PASS_CONTACT_READABILITY_ONLY",
+      "full_motion_status": "PENDING_FRAME_BY_FRAME_ANIMATION_REVIEW"
     },
     {
       "skill_id": "tmb.skill.formation.tu_linh_tran.ultimate.human",
@@ -1405,7 +1438,28 @@
         "school": "formation",
         "branch": "tu_linh_tran",
         "slot": "ultimate"
-      }
+      },
+      "native_contact_art_status": "ART_SELF_PASS_CONTACT_READABILITY_ONLY",
+      "full_motion_status": "PENDING_FRAME_BY_FRAME_ANIMATION_REVIEW"
     }
-  ]
+  ],
+  "native_capture": {
+    "runner": "res://labs/combat_lab/vfx_factory/vfx_factory_formation_batch_capture.tscn",
+    "source_sha": "eb9d8d1395cc5b3358dd0852c055111f5dfe0b2c",
+    "godot": "4.7.2",
+    "renderer": "GL Compatibility / Mesa llvmpipe",
+    "viewport_px": [
+      1280,
+      720
+    ],
+    "fps": 20,
+    "duration_seconds": 59.45,
+    "codec": "h264",
+    "receipt_count": "17/17 MapBattleV2 fixture receipts accepted",
+    "synthetic_events": 0,
+    "video": "review/native/formation_batch1_native_1280x720.mp4",
+    "contact_sheet": "review/native/formation_batch1_contact_sheet_1280x720.png",
+    "index": "review/native/formation_batch1_capture_index.json",
+    "art_review": "Contact readability only; Tinh Bàn Hộ Tâm damage-vs-shield semantic rework required; phase sequence is four authored poses, not frame-by-frame animation."
+  }
 }

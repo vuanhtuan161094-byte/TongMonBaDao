@@ -1,0 +1,350 @@
+{
+  "owner_approval": "PENDING",
+  "pve": "HOLD",
+  "receipts": "REAL_MAPBATTLE_V2_TEST_FIXTURE_EVENTS_ONLY",
+  "renderer": "Godot 4.7.2 shared VFX Factory + existing AS-CHAR and Source A",
+  "schema": "tmb.vfx_factory_native_batch_capture.v1",
+  "school": "formation",
+  "skills": [
+    {
+      "contact_frame_seconds": 0.561666666666667,
+      "encounter_id": "vfx_factory_formation_capture_00",
+      "event_count": 4,
+      "event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_skill_hit",
+        "v63_formation_slow_applied"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "name_vi": "Cửu Cung Tỏa Lộ",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "skill_id": "tmb.skill.formation.phong_toa_tran.active_01.human",
+      "video_duration_seconds": 3.48,
+      "video_start_seconds": 0.0,
+      "native_contact_art_status": "ART_SELF_PASS_CONTACT_READABILITY_ONLY",
+      "full_motion_status": "PENDING_FRAME_BY_FRAME_ANIMATION_REVIEW"
+    },
+    {
+      "contact_frame_seconds": 4.16166666666666,
+      "encounter_id": "vfx_factory_formation_capture_01",
+      "event_count": 4,
+      "event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_skill_hit",
+        "v63_formation_slow_applied"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "name_vi": "Bát Môn Phong Hành",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "skill_id": "tmb.skill.formation.phong_toa_tran.active_02.human",
+      "video_duration_seconds": 3.23,
+      "video_start_seconds": 3.49166666666666,
+      "native_contact_art_status": "ART_SELF_PASS_CONTACT_READABILITY_ONLY",
+      "full_motion_status": "PENDING_FRAME_BY_FRAME_ANIMATION_REVIEW"
+    },
+    {
+      "contact_frame_seconds": 7.36166666666665,
+      "encounter_id": "vfx_factory_formation_capture_02",
+      "event_count": 4,
+      "event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_skill_hit",
+        "v63_formation_slow_applied"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "name_vi": "Huyền Thạch Trấn Vị",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "skill_id": "tmb.skill.formation.phong_toa_tran.active_03.human",
+      "video_duration_seconds": 3.83,
+      "video_start_seconds": 6.74166666666665,
+      "native_contact_art_status": "ART_SELF_PASS_CONTACT_READABILITY_ONLY",
+      "full_motion_status": "PENDING_FRAME_BY_FRAME_ANIMATION_REVIEW"
+    },
+    {
+      "contact_frame_seconds": 11.3616666666667,
+      "encounter_id": "vfx_factory_formation_capture_03",
+      "event_count": 4,
+      "event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_skill_hit",
+        "v63_formation_slow_applied"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "name_vi": "Tứ Tượng Hãm Trận",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "skill_id": "tmb.skill.formation.phong_toa_tran.active_04.human",
+      "video_duration_seconds": 3.63,
+      "video_start_seconds": 10.5916666666667,
+      "native_contact_art_status": "ART_SELF_PASS_CONTACT_READABILITY_ONLY",
+      "full_motion_status": "PENDING_FRAME_BY_FRAME_ANIMATION_REVIEW"
+    },
+    {
+      "contact_frame_seconds": 15.3616666666667,
+      "encounter_id": "vfx_factory_formation_capture_04",
+      "event_count": 4,
+      "event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_skill_hit",
+        "v63_formation_slow_applied"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "name_vi": "Cửu Cung Phong Tuyệt Trận",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "skill_id": "tmb.skill.formation.phong_toa_tran.ultimate.human",
+      "video_duration_seconds": 4.78,
+      "video_start_seconds": 14.2416666666667,
+      "native_contact_art_status": "ART_SELF_PASS_CONTACT_READABILITY_ONLY",
+      "full_motion_status": "PENDING_FRAME_BY_FRAME_ANIMATION_REVIEW"
+    },
+    {
+      "contact_frame_seconds": 20.6616666666668,
+      "encounter_id": "vfx_factory_formation_capture_05",
+      "event_count": 5,
+      "event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_formation_zone_created",
+        "v63_formation_zone_tick",
+        "v63_formation_zone_expired"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "name_vi": "Liệt Địa Sát Văn",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "skill_id": "tmb.skill.formation.sat_phat_tran.active_01.human",
+      "video_duration_seconds": 4.28,
+      "video_start_seconds": 19.0416666666668,
+      "native_contact_art_status": "ART_SELF_PASS_CONTACT_READABILITY_ONLY",
+      "full_motion_status": "PENDING_FRAME_BY_FRAME_ANIMATION_REVIEW"
+    },
+    {
+      "contact_frame_seconds": 25.1616666666669,
+      "encounter_id": "vfx_factory_formation_capture_06",
+      "event_count": 5,
+      "event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_formation_zone_created",
+        "v63_formation_zone_tick",
+        "v63_formation_zone_expired"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "name_vi": "Thiên La Địa Võng",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "skill_id": "tmb.skill.formation.sat_phat_tran.active_02.human",
+      "video_duration_seconds": 5.48,
+      "video_start_seconds": 23.3416666666669,
+      "native_contact_art_status": "ART_SELF_PASS_CONTACT_READABILITY_ONLY",
+      "full_motion_status": "PENDING_FRAME_BY_FRAME_ANIMATION_REVIEW"
+    },
+    {
+      "contact_frame_seconds": 29.4116666666669,
+      "encounter_id": "vfx_factory_formation_capture_07",
+      "event_count": 3,
+      "event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_skill_hit"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "name_vi": "Thất Tinh Đoạt Mạch",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "skill_id": "tmb.skill.formation.sat_phat_tran.active_03.human",
+      "video_duration_seconds": 1.4,
+      "video_start_seconds": 28.8416666666669,
+      "native_contact_art_status": "ART_SELF_PASS_CONTACT_READABILITY_ONLY",
+      "full_motion_status": "PENDING_FRAME_BY_FRAME_ANIMATION_REVIEW"
+    },
+    {
+      "contact_frame_seconds": 32.161666666667,
+      "encounter_id": "vfx_factory_formation_capture_08",
+      "event_count": 5,
+      "event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_formation_zone_created",
+        "v63_formation_zone_tick",
+        "v63_formation_zone_expired"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "name_vi": "Địa Hỏa Phục Sát",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "skill_id": "tmb.skill.formation.sat_phat_tran.active_04.human",
+      "video_duration_seconds": 4.38,
+      "video_start_seconds": 30.241666666667,
+      "native_contact_art_status": "ART_SELF_PASS_CONTACT_READABILITY_ONLY",
+      "full_motion_status": "PENDING_FRAME_BY_FRAME_ANIMATION_REVIEW"
+    },
+    {
+      "contact_frame_seconds": 36.8616666666667,
+      "encounter_id": "vfx_factory_formation_capture_09",
+      "event_count": 5,
+      "event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_formation_zone_created",
+        "v63_formation_zone_tick",
+        "v63_formation_zone_expired"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "name_vi": "Vạn Tượng Tru Tiên Trận",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "skill_id": "tmb.skill.formation.sat_phat_tran.ultimate.human",
+      "video_duration_seconds": 5.88,
+      "video_start_seconds": 34.6416666666668,
+      "native_contact_art_status": "ART_SELF_PASS_CONTACT_READABILITY_ONLY",
+      "full_motion_status": "PENDING_FRAME_BY_FRAME_ANIMATION_REVIEW"
+    },
+    {
+      "contact_frame_seconds": 41.0616666666665,
+      "encounter_id": "vfx_factory_formation_capture_10",
+      "event_count": 3,
+      "event_types": [
+        "skill_cast",
+        "skill_release",
+        "status_applied"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "name_vi": "Thổ Mạch Dẫn Khí",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "skill_id": "tmb.skill.formation.tu_linh_tran.active_01.human",
+      "video_duration_seconds": 3.93,
+      "video_start_seconds": 40.5416666666665,
+      "native_contact_art_status": "ART_SELF_PASS_CONTACT_READABILITY_ONLY",
+      "full_motion_status": "PENDING_FRAME_BY_FRAME_ANIMATION_REVIEW"
+    },
+    {
+      "contact_frame_seconds": 45.0116666666663,
+      "encounter_id": "vfx_factory_formation_capture_11",
+      "event_count": 3,
+      "event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_skill_hit"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "name_vi": "Tinh Bàn Hộ Tâm",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "skill_id": "tmb.skill.formation.tu_linh_tran.active_02.human",
+      "video_duration_seconds": 1.4,
+      "video_start_seconds": 44.4916666666663,
+      "native_contact_art_status": "ART_REWORK_REQUIRED_DAMAGE_VS_SHIELD_READ",
+      "full_motion_status": "PENDING_FRAME_BY_FRAME_ANIMATION_REVIEW"
+    },
+    {
+      "contact_frame_seconds": 45.9616666666662,
+      "encounter_id": "vfx_factory_formation_capture_12",
+      "event_count": 1,
+      "event_types": [
+        "hit"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "name_vi": "Định Tinh Hạ Trận",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "skill_id": "tmb.skill.formation.basic.human",
+      "video_duration_seconds": 1.4,
+      "video_start_seconds": 45.8916666666662,
+      "native_contact_art_status": "ART_SELF_PASS_CONTACT_READABILITY_ONLY",
+      "full_motion_status": "PENDING_FRAME_BY_FRAME_ANIMATION_REVIEW"
+    },
+    {
+      "contact_frame_seconds": 47.3616666666661,
+      "encounter_id": "vfx_factory_formation_capture_13",
+      "event_count": 1,
+      "event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_mobility"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "name_vi": "Cửu Cung Du Bộ",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "skill_id": "tmb.skill.formation.mobility.human",
+      "video_duration_seconds": 1.4,
+      "video_start_seconds": 47.2916666666661,
+      "native_contact_art_status": "ART_SELF_PASS_CONTACT_READABILITY_ONLY",
+      "full_motion_status": "PENDING_FRAME_BY_FRAME_ANIMATION_REVIEW"
+    },
+    {
+      "contact_frame_seconds": 49.311666666666,
+      "encounter_id": "vfx_factory_formation_capture_14",
+      "event_count": 3,
+      "event_types": [
+        "skill_cast",
+        "skill_release",
+        "status_applied"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "name_vi": "Địa Tàng Liên Trận",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "skill_id": "tmb.skill.formation.tu_linh_tran.active_03.human",
+      "video_duration_seconds": 3.63,
+      "video_start_seconds": 48.691666666666,
+      "native_contact_art_status": "ART_SELF_PASS_CONTACT_READABILITY_ONLY",
+      "full_motion_status": "PENDING_FRAME_BY_FRAME_ANIMATION_REVIEW"
+    },
+    {
+      "contact_frame_seconds": 53.0616666666658,
+      "encounter_id": "vfx_factory_formation_capture_15",
+      "event_count": 3,
+      "event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_skill_hit"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "name_vi": "Thái Sơ Tĩnh Vực",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "skill_id": "tmb.skill.formation.tu_linh_tran.active_04.human",
+      "video_duration_seconds": 1.4,
+      "video_start_seconds": 52.3416666666658,
+      "native_contact_art_status": "ART_SELF_PASS_CONTACT_READABILITY_ONLY",
+      "full_motion_status": "PENDING_FRAME_BY_FRAME_ANIMATION_REVIEW"
+    },
+    {
+      "contact_frame_seconds": 54.7616666666657,
+      "encounter_id": "vfx_factory_formation_capture_16",
+      "event_count": 4,
+      "event_types": [
+        "skill_cast",
+        "skill_release",
+        "status_applied"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "name_vi": "Thái Sơ Vạn Linh Trận",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "skill_id": "tmb.skill.formation.tu_linh_tran.ultimate.human",
+      "video_duration_seconds": 5.68,
+      "video_start_seconds": 53.7416666666658,
+      "native_contact_art_status": "ART_SELF_PASS_CONTACT_READABILITY_ONLY",
+      "full_motion_status": "PENDING_FRAME_BY_FRAME_ANIMATION_REVIEW"
+    }
+  ],
+  "technical_status": "TECH_PASS_GODOT_4.7.2_NATIVE_MOVIE_1280x720",
+  "viewport_px": [
+    1280,
+    720
+  ],
+  "source_sha": "eb9d8d1395cc5b3358dd0852c055111f5dfe0b2c",
+  "movie_source": "Godot Movie Maker; Godot 4.7.2; GL Compatibility; Mesa llvmpipe",
+  "movie_dimensions_px": [
+    1280,
+    720
+  ],
+  "movie_fps": 20,
+  "movie_duration_seconds": 59.45,
+  "receipt_validation": "17/17 MapBattleV2 fixture receipts accepted; no synthetic events",
+  "contact_frame_sampling": "20 ms after first eligible real receipt, sampled at the authored contact peak",
+  "movie_file_size_bytes": 3775726,
+  "decode_validation": "PASS_FFMPEG_FULL_FILE_DECODE",
+  "art_self_review": {
+    "contact_readability": "16/17 self-pass at 1x; Tinh Bàn Hộ Tâm rework required due damage-vs-shield read",
+    "full_motion": "PENDING; four authored phase poses are not continuous frame-by-frame animation",
+    "owner_approval": "PENDING",
+    "pve": "HOLD"
+  }
+}
