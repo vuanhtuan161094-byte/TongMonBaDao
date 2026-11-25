@@ -1,0 +1,66 @@
+{
+  "schema": "tmb.vfx_source_candidate.v1",
+  "skill_id": "tmb.skill.talisman.phong_an_phu.ultimate.human",
+  "revision": "PAF05_R5F_CHARGE_ONLY_CANDIDATE",
+  "status": "SOURCE_CHECKPOINTED_ART_REVIEW_PENDING",
+  "source_commit": "a42b19662937b004560e8587ce2fb6b5141b9fc7",
+  "provenance": {
+    "generator": "tools/vfx/paf05_r5f_charge_master.py",
+    "generator_sha256": "ef82ebd1e4209ab7d40543af070d9b6e75f35d1739677135b21f9282afb08780",
+    "art_source": "First-party 2D code-painted raster; seeded strand/mote shapes and localized 風 glyph, not copied game pixels.",
+    "typography": "Noto Serif CJK Bold (SIL Open Font License) used as a glyph stencil; palette, brush, material, key pose and animation are first-party."
+  },
+  "change_scope": "12-pose charge atlas only; inherited R5E ward/hero/contact/residue/status art, cast, mark radius, cap, duration and gameplay contract are unchanged. R5E remains frozen.",
+  "canonical_mechanic": {
+    "effect": "mark",
+    "shape": "circle",
+    "target_limit": 3,
+    "radius": 2.1,
+    "duration_seconds": 7.0,
+    "cast_time_seconds": 0.9
+  },
+  "source_artifacts": [
+    {
+      "kind": "source",
+      "path": "art_sources/paf05_r5f_wind_silk_master.png",
+      "sha256": "4c084acbd2fd5a311f9010272847c4aa74dc2efc31ed4386d9242dad546d8c5d",
+      "bytes": 468198,
+      "dimensions_px": [
+        960,
+        960
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "kind": "atlas",
+      "path": "assets/paf05_r5f_charge.webp",
+      "sha256": "b3f092c8aed466a74b5d393a5d8c226a300c795a05ace8b9ac5d4dd72f5dc2e6",
+      "bytes": 415646,
+      "dimensions_px": [
+        1280,
+        960
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    }
+  ],
+  "review": {
+    "source_contact_sheet": "review/source_contact_sheet_1x.png",
+    "art_self_review": "CANDIDATE_SOURCE_READABLE_AT_1X; BRIGHT_TERRAIN_AND_CONTINUOUS_MOTION_REVIEW_PENDING",
+    "owner": "PENDING",
+    "pve": "HOLD"
+  },
+  "gates": {
+    "native_g35": "PENDING",
+    "focused_contract": "PENDING",
+    "owner": "PENDING",
+    "pve": "HOLD"
+  }
+}

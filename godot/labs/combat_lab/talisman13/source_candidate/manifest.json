@@ -1,0 +1,158 @@
+{
+  "schema": "tmb.vfx_source_candidate.v1",
+  "skill_id": "tmb.skill.talisman.phong_an_phu.active_03.human",
+  "revision": "PAF03_SOURCE_CANDIDATE_20261125",
+  "status": "ART_REWORK_REQUIRED_DO_NOT_INTEGRATE",
+  "source_commit": "87afe14aa7888cf086409a34b4f65dccd9345d10",
+  "provenance": {
+    "generator": "tools/vfx/paf03_cleansing_assets.py",
+    "generator_sha256": "56824597387083790ffc31d068cf93cc5c5ee1a6c1fc9191c307918777110efe",
+    "inputs": [
+      {
+        "path": "tools/vfx/paf03_cleansing_assets.py",
+        "sha256": "56824597387083790ffc31d068cf93cc5c5ee1a6c1fc9191c307918777110efe"
+      },
+      {
+        "path": "tools/vfx/paf03_r2_illustrated_paper.py",
+        "sha256": "5eda6428d8d2e17fb6accd7c9b600a231c35fa4025d74e07a4633e937f91aa03"
+      },
+      {
+        "path": "godot/labs/combat_lab/talisman12/art_sources/paf02_r2_line_paint.webp",
+        "sha256": "f10f39b8b381129779ad01313202203ed47871430d271c45d669a40e7ce4f936"
+      },
+      {
+        "path": "godot/labs/combat_lab/talisman12/art_sources/paf02_r2_impact_paint.webp",
+        "sha256": "5418d6508e7f8fd4f5a075a0ba5fdf0c315eaa0109f41618837e0ae4793a005a"
+      }
+    ],
+    "art_source": "First-party code-painted RGBA masters; selected wind/impact textures are existing first-party PAF02 assets explicitly reused as material. No commercial JX/Source A pixels."
+  },
+  "canonical_mechanic": {
+    "effect": "cleanse",
+    "target": "one ally",
+    "cast_time_seconds": 0.5,
+    "duration_seconds": 0.0,
+    "projectile_speed": 0.0
+  },
+  "source_artifacts": [
+    {
+      "kind": "source",
+      "path": "../art_sources/paf03_cleansing_lotus_master.png",
+      "sha256": "2850fd37bfbfc4b6a8ab2d542e24d87a65551dc3bf1b8873c5e64464f3e9d96f",
+      "bytes": 169560,
+      "dimensions_px": [
+        640,
+        640
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        245
+      ]
+    },
+    {
+      "kind": "source",
+      "path": "../art_sources/paf03_cleansing_silk_master.png",
+      "sha256": "dc31da47042fc2589f883479cd41fe26694df345d8899bf4c748f46aba990aa3",
+      "bytes": 210113,
+      "dimensions_px": [
+        640,
+        640
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "kind": "atlas",
+      "path": "../assets/paf03_charge.webp",
+      "sha256": "a4246f56775979d66e60fa913748f2173be34f32b8ffe642bfbe4528b1537b1d",
+      "bytes": 315312,
+      "dimensions_px": [
+        1280,
+        960
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "kind": "atlas",
+      "path": "../assets/paf03_transfer.webp",
+      "sha256": "6f32ef0181c08dcf12b5bb4b922b20fe27df4239642a4546294f51ae27fd4d00",
+      "bytes": 725788,
+      "dimensions_px": [
+        2048,
+        1024
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        254
+      ]
+    },
+    {
+      "kind": "atlas",
+      "path": "../assets/paf03_curse.webp",
+      "sha256": "3711d27097c5bc152df43abfb632e04e2a143a0a1a53a8b228e7a6013f341887",
+      "bytes": 33306,
+      "dimensions_px": [
+        512,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        200
+      ]
+    },
+    {
+      "kind": "atlas",
+      "path": "../assets/paf03_cleanse.webp",
+      "sha256": "64672767b523a727f9ef702769577ebe71df4e4deaf1350bd5e0e3937e252e96",
+      "bytes": 388362,
+      "dimensions_px": [
+        1280,
+        1280
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "kind": "atlas",
+      "path": "../assets/paf03_residue.webp",
+      "sha256": "18b7b261593621f679ed43a8faa5bafd0142c06494c3099f3d7dbfa7dfeb800d",
+      "bytes": 91330,
+      "dimensions_px": [
+        1024,
+        512
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        187
+      ]
+    }
+  ],
+  "review": {
+    "source_contact_sheet": "review/source_contact_sheet_1x.png",
+    "art_self_review": "ART_REWORK_REQUIRED: charge poses change too little; curse motif reads as sparse dark threads; residue reads as sparse particles; phase set lacks a coherent polished cleanse identity at 1×.",
+    "native_g35": "NOT_RUN_AFTER_SOURCE_SELF_REVIEW_FAIL",
+    "cleanse_receipt": "NO_FACTORY_BINDING; isolated lab receipt at t=0.85 is simulated and must not be used as runtime/capture evidence.",
+    "owner": "PENDING",
+    "pve": "HOLD"
+  },
+  "gates": {
+    "web_review": "NOT_STAGED",
+    "native": "NOT_RUN",
+    "owner": "PENDING",
+    "pve": "HOLD"
+  }
+}
