@@ -568,6 +568,16 @@ static func phase_draws_front(configuration: Dictionary, phase: String) -> bool:
 	var layer := str(phase_layers.get(phase, configuration.get("draw_layer", "FRONT"))).to_upper()
 	return layer == "FRONT"
 
+static func phase_texture_scale(source_size: Vector2, phase_row: Dictionary,
+		span_length: float = -1.0) -> Vector2:
+	if source_size.x <= 0.0 or source_size.y <= 0.0:
+		return Vector2.ONE
+	var desired_width := maxf(1.0, float(phase_row.get("display_width_px", 80.0)))
+	var scale_x := span_length / source_size.x if span_length > 0.0 else desired_width / source_size.x
+	var desired_height := float(phase_row.get("display_height_px", 0.0))
+	var scale_y := desired_height / source_size.y if desired_height > 0.0 else scale_x
+	return Vector2(scale_x, scale_y)
+
 func _draw_bound_phase(phase: String, target_ids: Array[String], phase_age: float,
 		duration: float, front_layer: bool) -> void:
 	var source_key := _phase_source_name(phase)
@@ -618,8 +628,7 @@ func _draw_texture_phase(phase: String, center: Vector2, _front_layer: bool,
 	if texture == null:
 		return
 	var source: Rect2 = frame.get("region", Rect2(Vector2.ZERO, texture.get_size()))
-	var desired_width := _source_display_width(phase_row)
-	var scale_factor := desired_width / maxf(1.0, float(source.size.x))
+	var scale := phase_texture_scale(source.size, phase_row)
 	var alpha := 1.0
 	var timeline: Dictionary = _config.get("review_timeline", {})
 	var fade_seconds := maxf(0.08, float(phase_row.get("fade_seconds", timeline.get("fade_window_seconds", 0.22))))
@@ -630,7 +639,7 @@ func _draw_texture_phase(phase: String, center: Vector2, _front_layer: bool,
 		alpha = 1.0 - smoothstep(contact_window, contact_window + fade_seconds, maxf(0.0, phase_age))
 	elif phase == "sustain" and receipt_duration > 0.0 and phase_age > receipt_duration:
 		alpha = 1.0 - smoothstep(receipt_duration, receipt_duration + fade_seconds, phase_age)
-	draw_set_transform(center, float(phase_row.get("angle_radians", 0.0)), Vector2.ONE * scale_factor)
+	draw_set_transform(center, float(phase_row.get("angle_radians", 0.0)), scale)
 	draw_texture_rect_region(texture, Rect2(-source.size * 0.5, source.size), source,
 		Color(1.0, 1.0, 1.0, clampf(alpha, 0.0, 1.0)))
 	draw_set_transform(Vector2.ZERO)
@@ -656,9 +665,9 @@ func _draw_spanned_texture_phase(phase: String, start: Vector2, endpoint: Vector
 	var delta := endpoint - start
 	if delta.length() < 1.0:
 		return
-	var scale := delta.length() / source.size.x
+	var scale := phase_texture_scale(source.size, phase_row, delta.length())
 	var center := (start + endpoint) * 0.5
-	draw_set_transform(center, delta.angle() + angle_offset, Vector2.ONE * scale)
+	draw_set_transform(center, delta.angle() + angle_offset, scale)
 	draw_texture_rect_region(texture, Rect2(-source.size * 0.5, source.size), source, Color.WHITE)
 	draw_set_transform(Vector2.ZERO)
 

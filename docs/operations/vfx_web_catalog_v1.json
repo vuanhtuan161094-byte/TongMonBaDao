@@ -1568,6 +1568,45 @@
       ],
       "review_note": "The shared renderer spans the existing PAF02 jade wind-line art from hand socket to the selected third target during real MapBattleV2 cast/release. Current fixture emits no v63_talisman_mark_applied event, so no mark contact or sustain is shown. Canonical line shape and three-target cap remain data-owned; status/power are not fabricated. Static source art and owner review pending; PvE HOLD.",
       "review_stages": "Native 1280×720/20 fps H.264 TECH PASS · real cast/release only · no owner mark receipt; contact/sustain hidden · owner pending · PvE HOLD"
+    },
+    {
+      "id": "tmb.skill.talisman.phong_an_phu.ultimate.human",
+      "name_vi": "Thái Huyền Phong Giới Phù — VFX Factory candidate",
+      "school_vi": "Phù Tu",
+      "branch_vi": "phong_an_phu",
+      "tier": "human",
+      "scene": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+      "directions": [
+        "front"
+      ],
+      "vfx_status": "CANDIDATE_G3",
+      "g3_art": "R5E_FROZEN_OWNER_PROVISIONAL; R5F_NEW_CHARGE_ONLY_SOURCE; ART_STYLE_AND_CONTINUOUS_MOTION_REVIEW_PENDING",
+      "owner_art": "OWNER_PROVISIONAL_R5E_ONLY; OWNER_REVIEW_PENDING_R5F_FACTORY_ADAPTER",
+      "art_source": "R5E_FIRST_PARTY_RGBA_ARTIFACT_EXACT_SHA; R5F_FIRST_PARTY_RGBA_12POSE_CHARGE; NO_COMMERCIAL_PIXELS",
+      "source_paths": [
+        "data/combat/v63_talisman_combat_catalog.json",
+        "labs/combat_lab/vfx_factory/registry.json",
+        "labs/combat_lab/talisman15/r5e/manifest.json",
+        "labs/combat_lab/talisman15/r5e/review/source_contact_sheet_1x.png",
+        "labs/combat_lab/talisman15/art_sources/paf05_animated_mark_master.png",
+        "labs/combat_lab/talisman15/art_sources/paf05_wind_crest_hero_master.png",
+        "labs/combat_lab/talisman15/assets/paf05_charge.webp",
+        "labs/combat_lab/talisman15/assets/paf05_ward.webp",
+        "labs/combat_lab/talisman15/assets/paf05_hero.webp",
+        "labs/combat_lab/talisman15/assets/paf05_contact.webp",
+        "labs/combat_lab/talisman15/assets/paf05_residue.webp",
+        "labs/combat_lab/talisman15/assets/paf05_badge.webp",
+        "labs/combat_lab/talisman15/r5f/manifest.json",
+        "labs/combat_lab/talisman15/r5f/review/source_contact_sheet_1x.png",
+        "labs/combat_lab/talisman15/r5f/art_sources/paf05_r5f_wind_silk_master.png",
+        "labs/combat_lab/talisman15/r5f/assets/paf05_r5f_charge.webp",
+        "labs/combat_lab/talisman_factory_batch5_20261125/manifest.json",
+        "labs/combat_lab/talisman_factory_batch5_20261125/review/native/talisman_batch5_capture_index.json",
+        "labs/combat_lab/talisman_factory_batch5_20261125/review/native/talisman_factory_batch5_contact_sheet_1280x720.png",
+        "labs/combat_lab/talisman_factory_batch5_20261125/review/native/talisman_factory_batch5_native_1280x720.mp4"
+      ],
+      "review_note": "R5E owner-provisional binary source is restored byte-for-byte from Actions #44069358237 and left unchanged. The isolated R5F 12-pose RGBA replaces charge only. Zone art is anchored at the real selected target ground with data-driven 488x238 projection; target mark/contact and seven-second badge appear only after the exact real v63_talisman_mark_applied event. No v63_talisman_hit/damage cue is fabricated. Native capture, continuous motion/style, owner review pending; PvE HOLD.",
+      "review_stages": "CANDIDATE ONLY · R5E provisional bytes frozen · R5F replaces charge only · Factory maps charge/release and real mark receipt · no fake hit/damage/status · native capture pending · owner review pending · PvE HOLD"
     }
   ],
   "updated_at": "2026-11-25"

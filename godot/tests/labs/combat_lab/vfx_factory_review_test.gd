@@ -57,7 +57,12 @@ func _run() -> void:
 	for row in blade_catalog.get("skills", []):
 		canonical_by_id[str(row.get("id", ""))] = row
 	var cases: Array = registry.get("entries", [])
-	_check(cases.size() == 37, "shared registry retains existing cues, 17 Formation, 14 Talisman, Curse, Blade, Palm and Spear candidates")
+	_check(cases.size() == 38, "shared registry retains existing cues, 17 Formation, 15 Talisman, Curse, Blade, Palm and Spear candidates")
+	var ground_scale := FACTORY_SCRIPT.phase_texture_scale(Vector2(512.0, 512.0),
+		{"display_width_px":488.0,"display_height_px":238.0})
+	_check(absf(ground_scale.x - 488.0 / 512.0) < 0.0001
+		and absf(ground_scale.y - 238.0 / 512.0) < 0.0001,
+		"shared texture phases accept data-driven ground-plane perspective scale")
 	_check(formation_by_id.size() == 17, "all 17 source atlas records remain available")
 	for entry in cases:
 		var skill_id := str(entry.get("skill_id", ""))
@@ -150,6 +155,9 @@ func _run() -> void:
 			if skill_id in ["tmb.skill.talisman.phong_an_phu.active_01.human",
 				"tmb.skill.talisman.phong_an_phu.active_02.human"]:
 				minimum_frame_count = 4
+			if skill_id == "tmb.skill.talisman.phong_an_phu.ultimate.human":
+				expected_phase_source_count = 5
+				minimum_frame_count = 56
 			if skill_id == "tmb.skill.talisman.phong_an_phu.active_02.human":
 				expected_phase_source_count = 5
 				minimum_frame_count = 5
@@ -177,6 +185,14 @@ func _run() -> void:
 				_check(binding_types.has("skill_cast") and binding_types.has("skill_release")
 					and not binding_types.has("v63_talisman_mark_applied"),
 					"PAF02 preview accepts cast/release only while its real mark receipt is absent " + skill_id)
+			elif skill_id == "tmb.skill.talisman.phong_an_phu.ultimate.human":
+				_check(binding_types.has("skill_cast") and binding_types.has("skill_release")
+					and binding_types.has("v63_talisman_mark_applied")
+					and not binding_types.has("v63_talisman_hit"),
+					"PAF05 contact and seven-second status use only the real mark receipt " + skill_id)
+				_check(str(entry.get("source_g3", "")).contains("R5E_OWNER_PROVISIONAL")
+					and str(entry.get("source_g3", "")).contains("R5F_CHARGE_ONLY_CANDIDATE"),
+					"PAF05 preserves R5E while isolating the R5F charge candidate " + skill_id)
 			elif str(canonical.get("effect", "")) == "mark":
 				_check(binding_types.has("v63_talisman_mark_applied")
 					and not binding_types.has("v63_talisman_hit"),
@@ -325,6 +341,6 @@ func _run() -> void:
 
 func _finish() -> void:
 	print("VFX_FACTORY_REVIEW_RESULT=" + ("PASS" if failures == 0 else "FAIL")
-		+ " cases=" + str(checked) + " skills=" + str(37)
-		+ " formation=17 talisman=14 AS64=resolved curse=AS66_storyboard blade=AS50 receipt palm=AS60 spear=AS54 failures=" + str(failures))
+		+ " cases=" + str(checked) + " skills=" + str(38)
+		+ " formation=17 talisman=15 AS64=resolved curse=AS66_storyboard blade=AS50 receipt palm=AS60 spear=AS54 failures=" + str(failures))
 	quit(0 if failures == 0 else 1)

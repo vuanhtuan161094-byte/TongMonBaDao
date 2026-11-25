@@ -9205,6 +9205,742 @@
         }
       },
       "native_event_status": "REAL_MAPBATTLE_SKILL_CAST_AND_RELEASE; NO_V63_TALISMAN_MARK_APPLIED_EVENT; MARK_CONTACT_AND_SUSTAIN_HIDDEN; SYNTHETIC=0"
+    },
+    {
+      "skill_id": "tmb.skill.talisman.phong_an_phu.ultimate.human",
+      "school": "talisman",
+      "branch": "phong_an_phu",
+      "name_vi": "Thái Huyền Phong Giới Phù",
+      "catalog_path": "res://data/combat/v63_talisman_combat_catalog.json",
+      "effect": "mark",
+      "shape": "circle",
+      "target_limit": 3,
+      "mechanic_template": "circle_aoe",
+      "mechanic_templates": [
+        "circle_aoe",
+        "multi_target",
+        "debuff",
+        "status"
+      ],
+      "target_mode": "circle",
+      "preview_target_kind": "monster",
+      "target_actor_id": "paf05_factory_target_01",
+      "outside_actor_id": "paf05_factory_outside",
+      "preview_targets": [
+        {
+          "id": "paf05_factory_target_01",
+          "label": "PAF05 TARGET 01 · MOVING",
+          "screen_position": [
+            690.0,
+            492.0
+          ],
+          "fixture_position": [
+            5.0,
+            3.0
+          ],
+          "fixture_motion_delta": [
+            0.0,
+            -0.04
+          ]
+        },
+        {
+          "id": "paf05_factory_target_02",
+          "label": "PAF05 TARGET 02 · MOVING",
+          "screen_position": [
+            820.0,
+            492.0
+          ],
+          "fixture_position": [
+            6.0,
+            3.0
+          ],
+          "fixture_motion_delta": [
+            0.0,
+            -0.04
+          ]
+        },
+        {
+          "id": "paf05_factory_target_03",
+          "label": "PAF05 TARGET 03 · MOVING",
+          "screen_position": [
+            950.0,
+            492.0
+          ],
+          "fixture_position": [
+            7.0,
+            3.0
+          ],
+          "fixture_motion_delta": [
+            0.0,
+            -0.04
+          ]
+        }
+      ],
+      "preview_outside": {
+        "id": "paf05_factory_outside",
+        "label": "OUTSIDE CIRCLE · UNCHANGED",
+        "screen_position": [
+          855.0,
+          590.0
+        ],
+        "fixture_position": [
+          6.3,
+          5.1
+        ]
+      },
+      "actor_sex": "male",
+      "actor_asset_id": 64,
+      "actor_action": "cast",
+      "facing_vector": [
+        1.0,
+        0.0
+      ],
+      "preview_attachment_override": {
+        "suppress_attachments": true
+      },
+      "source_anchor": "hand_r",
+      "phase_anchors": {
+        "charge": "hand_r",
+        "release": "target_foot",
+        "start": "target_chest",
+        "sustain": "target_chest",
+        "end": "target_foot"
+      },
+      "phase_layers": {
+        "charge": "BEHIND",
+        "release": "BEHIND",
+        "start": "FRONT",
+        "sustain": "FRONT",
+        "end": "BEHIND"
+      },
+      "draw_layer": "BEHIND",
+      "phase_aliases": {},
+      "source_g3": "PAF05_R5E_OWNER_PROVISIONAL_FROZEN; R5F_CHARGE_ONLY_CANDIDATE; 1X_SOURCE_REVIEWED; CONTINUOUS_MOTION_AND_OWNER_REVIEW_PENDING",
+      "native_status": "NATIVE_CAPTURE_PENDING",
+      "owner_status": "OWNER_PROVISIONAL_R5E_BASE; R5F_CANDIDATE_VISUAL_REVIEW_PENDING",
+      "native_ready": false,
+      "motion_status": "R5F_12_CHARGE_POSES; R5E_16_ZONE_12_CONTACT_8_BADGE_8_RESIDUE_POSES; CONTINUOUS_MOTION_REVIEW_PENDING",
+      "showcase_moving_target": true,
+      "delivery_phase": "release",
+      "phase_sources": {
+        "charge": {
+          "path": "res://labs/combat_lab/talisman15/r5f/assets/paf05_r5f_charge.webp",
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/talisman15/r5f/assets/paf05_r5f_charge.webp",
+              "region": [
+                0,
+                0,
+                320,
+                320
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman15/r5f/assets/paf05_r5f_charge.webp",
+              "region": [
+                320,
+                0,
+                320,
+                320
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman15/r5f/assets/paf05_r5f_charge.webp",
+              "region": [
+                640,
+                0,
+                320,
+                320
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman15/r5f/assets/paf05_r5f_charge.webp",
+              "region": [
+                960,
+                0,
+                320,
+                320
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman15/r5f/assets/paf05_r5f_charge.webp",
+              "region": [
+                0,
+                320,
+                320,
+                320
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman15/r5f/assets/paf05_r5f_charge.webp",
+              "region": [
+                320,
+                320,
+                320,
+                320
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman15/r5f/assets/paf05_r5f_charge.webp",
+              "region": [
+                640,
+                320,
+                320,
+                320
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman15/r5f/assets/paf05_r5f_charge.webp",
+              "region": [
+                960,
+                320,
+                320,
+                320
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman15/r5f/assets/paf05_r5f_charge.webp",
+              "region": [
+                0,
+                640,
+                320,
+                320
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman15/r5f/assets/paf05_r5f_charge.webp",
+              "region": [
+                320,
+                640,
+                320,
+                320
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman15/r5f/assets/paf05_r5f_charge.webp",
+              "region": [
+                640,
+                640,
+                320,
+                320
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman15/r5f/assets/paf05_r5f_charge.webp",
+              "region": [
+                960,
+                640,
+                320,
+                320
+              ]
+            }
+          ],
+          "display_width_px": 216,
+          "fps": 12,
+          "loop": false
+        },
+        "release": {
+          "path": "res://labs/combat_lab/talisman15/assets/paf05_ward.webp",
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/talisman15/assets/paf05_ward.webp",
+              "region": [
+                0,
+                0,
+                512,
+                512
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman15/assets/paf05_ward.webp",
+              "region": [
+                512,
+                0,
+                512,
+                512
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman15/assets/paf05_ward.webp",
+              "region": [
+                1024,
+                0,
+                512,
+                512
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman15/assets/paf05_ward.webp",
+              "region": [
+                1536,
+                0,
+                512,
+                512
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman15/assets/paf05_ward.webp",
+              "region": [
+                0,
+                512,
+                512,
+                512
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman15/assets/paf05_ward.webp",
+              "region": [
+                512,
+                512,
+                512,
+                512
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman15/assets/paf05_ward.webp",
+              "region": [
+                1024,
+                512,
+                512,
+                512
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman15/assets/paf05_ward.webp",
+              "region": [
+                1536,
+                512,
+                512,
+                512
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman15/assets/paf05_ward.webp",
+              "region": [
+                0,
+                1024,
+                512,
+                512
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman15/assets/paf05_ward.webp",
+              "region": [
+                512,
+                1024,
+                512,
+                512
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman15/assets/paf05_ward.webp",
+              "region": [
+                1024,
+                1024,
+                512,
+                512
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman15/assets/paf05_ward.webp",
+              "region": [
+                1536,
+                1024,
+                512,
+                512
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman15/assets/paf05_ward.webp",
+              "region": [
+                0,
+                1536,
+                512,
+                512
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman15/assets/paf05_ward.webp",
+              "region": [
+                512,
+                1536,
+                512,
+                512
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman15/assets/paf05_ward.webp",
+              "region": [
+                1024,
+                1536,
+                512,
+                512
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman15/assets/paf05_ward.webp",
+              "region": [
+                1536,
+                1536,
+                512,
+                512
+              ]
+            }
+          ],
+          "display_width_px": 488,
+          "display_height_px": 238,
+          "fps": 12,
+          "loop": false
+        },
+        "start": {
+          "path": "res://labs/combat_lab/talisman15/assets/paf05_contact.webp",
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/talisman15/assets/paf05_contact.webp",
+              "region": [
+                0,
+                0,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman15/assets/paf05_contact.webp",
+              "region": [
+                256,
+                0,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman15/assets/paf05_contact.webp",
+              "region": [
+                512,
+                0,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman15/assets/paf05_contact.webp",
+              "region": [
+                768,
+                0,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman15/assets/paf05_contact.webp",
+              "region": [
+                0,
+                256,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman15/assets/paf05_contact.webp",
+              "region": [
+                256,
+                256,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman15/assets/paf05_contact.webp",
+              "region": [
+                512,
+                256,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman15/assets/paf05_contact.webp",
+              "region": [
+                768,
+                256,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman15/assets/paf05_contact.webp",
+              "region": [
+                0,
+                512,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman15/assets/paf05_contact.webp",
+              "region": [
+                256,
+                512,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman15/assets/paf05_contact.webp",
+              "region": [
+                512,
+                512,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman15/assets/paf05_contact.webp",
+              "region": [
+                768,
+                512,
+                256,
+                256
+              ]
+            }
+          ],
+          "display_width_px": 112,
+          "display_height_px": 120,
+          "fps": 18,
+          "loop": false
+        },
+        "sustain": {
+          "path": "res://labs/combat_lab/talisman15/assets/paf05_badge.webp",
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/talisman15/assets/paf05_badge.webp",
+              "region": [
+                0,
+                0,
+                128,
+                128
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman15/assets/paf05_badge.webp",
+              "region": [
+                128,
+                0,
+                128,
+                128
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman15/assets/paf05_badge.webp",
+              "region": [
+                256,
+                0,
+                128,
+                128
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman15/assets/paf05_badge.webp",
+              "region": [
+                384,
+                0,
+                128,
+                128
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman15/assets/paf05_badge.webp",
+              "region": [
+                0,
+                128,
+                128,
+                128
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman15/assets/paf05_badge.webp",
+              "region": [
+                128,
+                128,
+                128,
+                128
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman15/assets/paf05_badge.webp",
+              "region": [
+                256,
+                128,
+                128,
+                128
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman15/assets/paf05_badge.webp",
+              "region": [
+                384,
+                128,
+                128,
+                128
+              ]
+            }
+          ],
+          "display_width_px": 38,
+          "display_height_px": 42,
+          "fps": 5,
+          "loop": true
+        },
+        "end": {
+          "path": "res://labs/combat_lab/talisman15/assets/paf05_residue.webp",
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/talisman15/assets/paf05_residue.webp",
+              "region": [
+                0,
+                0,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman15/assets/paf05_residue.webp",
+              "region": [
+                256,
+                0,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman15/assets/paf05_residue.webp",
+              "region": [
+                512,
+                0,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman15/assets/paf05_residue.webp",
+              "region": [
+                768,
+                0,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman15/assets/paf05_residue.webp",
+              "region": [
+                0,
+                256,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman15/assets/paf05_residue.webp",
+              "region": [
+                256,
+                256,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman15/assets/paf05_residue.webp",
+              "region": [
+                512,
+                256,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman15/assets/paf05_residue.webp",
+              "region": [
+                768,
+                256,
+                256,
+                256
+              ]
+            }
+          ],
+          "display_width_px": 116,
+          "display_height_px": 62,
+          "fps": 10,
+          "loop": false
+        }
+      },
+      "review_timeline": {
+        "release_at": 0.9,
+        "flight_at": 0.9,
+        "contact_at": 0.94,
+        "fade_at": 7.95,
+        "loop_seconds": 8.45,
+        "contact_window_seconds": 0.22,
+        "fade_window_seconds": 0.3,
+        "charge_window_seconds": 0.9,
+        "release_window_seconds": 0.22,
+        "start_window_seconds": 0.38,
+        "end_window_seconds": 0.34,
+        "actor_action_seconds": 0.9,
+        "clock": "REAL_MAPBATTLE_CAST_RELEASE_AND_OWNER_SCOPED_MARK_UNTIL"
+      },
+      "receipt_manifest": {
+        "schema": "tmb.vfx_bindings.v1",
+        "skill_id": "tmb.skill.talisman.phong_an_phu.ultimate.human",
+        "bindings": [
+          {
+            "event_type": "skill_cast",
+            "caster_slot": "hand_r",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "charge"
+          },
+          {
+            "event_type": "skill_release",
+            "caster_slot": "hand_r",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "release"
+          },
+          {
+            "event_type": "v63_talisman_mark_applied",
+            "caster_slot": "hand_r",
+            "target_slot": "chest",
+            "actor_clip": "cast",
+            "visual_phase": "start"
+          }
+        ]
+      },
+      "native_batch": "talisman",
+      "source_batch_manifest": "res://labs/combat_lab/talisman_factory_batch5_20261125/manifest.json",
+      "contact_source_note": "Start/sustain/end follow the exact owner-scoped v63_talisman_mark_applied receipt and its until timestamp. R5E R5F renderer has no v63_talisman_hit binding and creates no damage, mark, cast, or status.",
+      "review_note": "R5E owner-provisional binary source is restored byte-for-byte from Actions #44069358237 and left unchanged. The isolated R5F 12-pose RGBA replaces charge only. Zone art is anchored at the real selected target ground with data-driven 488x238 projection; target mark/contact and seven-second badge appear only after the exact real v63_talisman_mark_applied event. No v63_talisman_hit/damage cue is fabricated. Native capture, continuous motion/style, owner review pending; PvE HOLD.",
+      "source_paths": [
+        "data/combat/v63_talisman_combat_catalog.json",
+        "labs/combat_lab/vfx_factory/registry.json",
+        "labs/combat_lab/talisman15/r5e/manifest.json",
+        "labs/combat_lab/talisman15/r5e/review/source_contact_sheet_1x.png",
+        "labs/combat_lab/talisman15/art_sources/paf05_animated_mark_master.png",
+        "labs/combat_lab/talisman15/art_sources/paf05_wind_crest_hero_master.png",
+        "labs/combat_lab/talisman15/assets/paf05_charge.webp",
+        "labs/combat_lab/talisman15/assets/paf05_ward.webp",
+        "labs/combat_lab/talisman15/assets/paf05_hero.webp",
+        "labs/combat_lab/talisman15/assets/paf05_contact.webp",
+        "labs/combat_lab/talisman15/assets/paf05_residue.webp",
+        "labs/combat_lab/talisman15/assets/paf05_badge.webp",
+        "labs/combat_lab/talisman15/r5f/manifest.json",
+        "labs/combat_lab/talisman15/r5f/review/source_contact_sheet_1x.png",
+        "labs/combat_lab/talisman15/r5f/art_sources/paf05_r5f_wind_silk_master.png",
+        "labs/combat_lab/talisman15/r5f/assets/paf05_r5f_charge.webp",
+        "labs/combat_lab/talisman_factory_batch5_20261125/manifest.json",
+        "labs/combat_lab/talisman_factory_batch5_20261125/review/native/talisman_batch5_capture_index.json",
+        "labs/combat_lab/talisman_factory_batch5_20261125/review/native/talisman_factory_batch5_contact_sheet_1280x720.png",
+        "labs/combat_lab/talisman_factory_batch5_20261125/review/native/talisman_factory_batch5_native_1280x720.mp4"
+      ],
+      "native_event_status": "PENDING_EXACT_MAPBATTLE_FIXTURE_CAPTURE; ALLOWED_TYPES=skill_cast,skill_release,v63_talisman_mark_applied; v63_talisman_hit deliberately unbound"
     }
   ],
   "batch_status": {
@@ -9214,6 +9950,16 @@
       "skill_count": 17,
       "native_import_capture": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_R2_RECAPTURE; REAL_MAPBATTLE_FIXTURE_EVENTS_17_SKILLS_61_ACCEPTED; SYNTHETIC=0; OWNER=PENDING; PVE=HOLD",
       "owner_approval": "PENDING",
+      "pve": "HOLD"
+    },
+    "talisman_human_cast_batch5_20261125": {
+      "source_status": "SOURCE_CHECKPOINTED; R5E_EXACT_ARTIFACT_RESTORED; R5F_CHARGE_CANDIDATE",
+      "batch_skill_count": 1,
+      "integrated_talisman_entries": 15,
+      "paf03_source": "ART_REWORK_REQUIRED_NOT_IN_FACTORY",
+      "paf04_source": "ART_STOP_NOT_IN_FACTORY",
+      "native_import_capture": "PENDING",
+      "owner_approval": "R5E_PROVISIONAL_ONLY; R5F_PENDING",
       "pve": "HOLD"
     }
   },
@@ -9230,15 +9976,17 @@
       "visual_review_status": "R2_TINH_BAN_DAMAGE_BURST_READABLE_AT_1X; LIGHT_TERRAIN_AND_CONTINUOUS_MOTION_REVIEW_PENDING"
     },
     "talisman": {
-      "expected_count": 14,
-      "technical_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
+      "expected_count": 15,
+      "technical_status": "BATCH5_NATIVE_CAPTURE_PENDING; BATCH4_LAST_TECH_PASS",
       "last_capture_index": "res://labs/combat_lab/talisman_factory_batch4_20261125/review/native/talisman_batch4_capture_index.json",
       "video": "res://labs/combat_lab/talisman_factory_batch4_20261125/review/native/talisman_factory_batch4_native_1280x720.mp4",
       "contact_sheet": "res://labs/combat_lab/talisman_factory_batch4_20261125/review/native/talisman_factory_batch4_contact_sheet_1x.png",
       "receipt_status": "REAL_MAPBATTLE_V2_FIXTURES_14_SKILLS; CONFIGURED_EVENT_COUNTS_IN_CAPTURE_INDEX; PAF02_CAST_RELEASE_ONLY_NO_MARK; SYNTHETIC=0",
       "visual_review_status": "NATIVE_1X_CHARGE_RELEASE_CONTACT_OR_STATE_SAMPLES_REVIEWED; CONTINUOUS_MOTION_AND_OWNER_REVIEW_PENDING",
       "owner_approval": "PENDING",
-      "pve": "HOLD"
+      "pve": "HOLD",
+      "pending_candidate": "tmb.skill.talisman.phong_an_phu.ultimate.human; PAF05_R5F_CHARGE_ONLY_CANDIDATE",
+      "pending_manifest": "res://labs/combat_lab/talisman_factory_batch5_20261125/manifest.json"
     },
     "curse": {
       "expected_count": 1,

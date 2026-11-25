@@ -1,0 +1,76 @@
+{
+  "schema": "tmb.vfx_factory_school_batch.v1",
+  "batch_id": "talisman_factory_batch5_20261125",
+  "school": "talisman",
+  "branch": "phong_an_phu",
+  "source_commit_before_factory": "a4922af026cfe2cc7d54d4e2a2da068f8093d4e2",
+  "baseline_integrated_entries": 14,
+  "integrated_entries_after_batch": 15,
+  "batch_candidate_count": 1,
+  "candidate_skill_id": "tmb.skill.talisman.phong_an_phu.ultimate.human",
+  "canonical_contract": {
+    "effect": "mark",
+    "shape": "circle",
+    "radius": 2.1,
+    "target_limit": 3,
+    "duration_seconds": 7.0,
+    "cast_time_seconds": 0.9,
+    "damage_ratio_not_rendered": 0.56
+  },
+  "revision_policy": {
+    "r5e": "Exact source and atlas bytes restored from Actions run #44069358237; owner provisional only; immutable.",
+    "r5f": "Isolated 12-pose charge-only art candidate; no status or gameplay change."
+  },
+  "assets": [
+    {
+      "path": "godot/labs/combat_lab/talisman15/r5f/assets/paf05_r5f_charge.webp",
+      "sha256": "b3f092c8aed466a74b5d393a5d8c226a300c795a05ace8b9ac5d4dd72f5dc2e6"
+    },
+    {
+      "path": "godot/labs/combat_lab/talisman15/assets/paf05_ward.webp",
+      "sha256": "b7398f0e4256b0035be1d43f8053118659fc214cdee68bd4d109abcb50b81e6d"
+    },
+    {
+      "path": "godot/labs/combat_lab/talisman15/assets/paf05_contact.webp",
+      "sha256": "462975ef433d363a528925c9c34a04fcf53af80fd8afa464f4131f11f18f93da"
+    },
+    {
+      "path": "godot/labs/combat_lab/talisman15/assets/paf05_badge.webp",
+      "sha256": "dfc901f6daafbc518a788b3b96159b452e2262068d6f4afddc7f254e76013919"
+    },
+    {
+      "path": "godot/labs/combat_lab/talisman15/assets/paf05_residue.webp",
+      "sha256": "17b4e7241cd00de4adfad0ed6898185c0ac51c31d023c57b1e91de27ca941eb8"
+    }
+  ],
+  "receipt_policy": {
+    "allowed": [
+      "skill_cast",
+      "skill_release",
+      "v63_talisman_mark_applied"
+    ],
+    "unbound": [
+      "v63_talisman_hit"
+    ],
+    "synthetic_events": 0,
+    "mark_and_sustain": "Only exact skill receipt and until value."
+  },
+  "art_gate": {
+    "source_review": "R5F 1× source sheet inspected; candidate pending continuous-motion/light terrain review.",
+    "owner": "R5E provisional; R5F pending.",
+    "pve": "HOLD"
+  },
+  "other_school_gate": {
+    "PAF03": "Source package retained as ART_REWORK_REQUIRED; not in Factory/Web Review; isolated fake cleanse receipt not reused.",
+    "PAF04": "Existing art stop retained; not regenerated or integrated."
+  },
+  "native_capture": {
+    "status": "PENDING",
+    "expected_entries": 15,
+    "video": "review/native/talisman_factory_batch5_native_1280x720.mp4",
+    "contact_sheet": "review/native/talisman_factory_batch5_contact_sheet_1280x720.png",
+    "capture_index": "review/native/talisman_batch5_capture_index.json"
+  },
+  "owner_approval": "PENDING_R5F; R5E_OWNER_PROVISIONAL",
+  "pve": "HOLD"
+}
