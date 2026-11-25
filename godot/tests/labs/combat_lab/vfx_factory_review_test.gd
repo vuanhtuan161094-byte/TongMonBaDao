@@ -68,9 +68,15 @@ func _run() -> void:
 	var cases: Array = registry.get("entries", [])
 	skill_count = cases.size()
 	_check(cases.size() == 65, "shared registry retains existing cues plus 17 Formation, 15 Talisman, 16 Poison, 11 source-backed Fist and other school candidates")
+	var fist_capture: Dictionary = fist_manifest.get("native_capture", {})
+	var fist_batch_status := str(fist_manifest.get("status", ""))
+	var fist_native_status := str(fist_capture.get("technical_status", ""))
 	_check(fist_manifest.get("skills", []).size() == 11
-		and fist_manifest.get("status", "").begins_with("CANDIDATE; NATIVE_PENDING"),
-		"Fist source adapters remain candidate-only until native capture and owner review")
+		and (fist_batch_status.begins_with("CANDIDATE; NATIVE_PENDING")
+			or fist_native_status.begins_with("NATIVE_TECH_PASS_GODOT_4.7.2_1280x720"))
+		and str(fist_capture.get("owner_approval", "")) == "PENDING"
+		and str(fist_capture.get("pve", "")) == "HOLD",
+		"Fist source/native technical state remains separate from owner approval and PvE")
 	var ground_scale := FACTORY_SCRIPT.phase_texture_scale(Vector2(512.0, 512.0),
 		{"display_width_px":488.0,"display_height_px":238.0})
 	_check(absf(ground_scale.x - 488.0 / 512.0) < 0.0001

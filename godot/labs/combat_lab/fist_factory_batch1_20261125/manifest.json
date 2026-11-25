@@ -3,7 +3,7 @@
   "batch": "fist_human_cast_batch1_20261125",
   "school": "fist",
   "human_cast_masters": 11,
-  "status": "CANDIDATE; NATIVE_PENDING; OWNER_PENDING; PVE_HOLD",
+  "status": "NATIVE_TECH_PASS; OWNER_PENDING; PVE_HOLD; SIX_OTHER_MASTER_IDS_SOURCE_BLOCKED",
   "source_gate_ledger": "docs/operations/vfx_school_ledgers/05_fist_183.csv",
   "source_policy": "Reuse existing source masters byte-for-byte; embedded .b64 masters are base64-decoded without pixel edits.",
   "derived_assets": [
@@ -135,9 +135,12 @@
       ],
       "phase_count": 4,
       "configured_frames": 32,
-      "native_status": "NATIVE_PENDING",
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
       "owner_status": "OWNER_VISUAL_PENDING",
-      "pve": "HOLD"
+      "pve": "HOLD",
+      "native_event_count": 3,
+      "native_accepted_event_count": 3,
+      "native_synthetic_event_count": 0
     },
     {
       "skill_id": "tmb.skill.fist.ba_quyen.active_02.human",
@@ -161,9 +164,12 @@
       ],
       "phase_count": 4,
       "configured_frames": 4,
-      "native_status": "NATIVE_PENDING",
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
       "owner_status": "OWNER_VISUAL_PENDING",
-      "pve": "HOLD"
+      "pve": "HOLD",
+      "native_event_count": 3,
+      "native_accepted_event_count": 3,
+      "native_synthetic_event_count": 0
     },
     {
       "skill_id": "tmb.skill.fist.ba_quyen.ultimate.human",
@@ -188,9 +194,12 @@
       ],
       "phase_count": 5,
       "configured_frames": 5,
-      "native_status": "NATIVE_PENDING",
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
       "owner_status": "OWNER_VISUAL_PENDING",
-      "pve": "HOLD"
+      "pve": "HOLD",
+      "native_event_count": 5,
+      "native_accepted_event_count": 5,
+      "native_synthetic_event_count": 0
     },
     {
       "skill_id": "tmb.skill.fist.ba_quyen.active_03.human",
@@ -215,9 +224,12 @@
       ],
       "phase_count": 5,
       "configured_frames": 5,
-      "native_status": "NATIVE_PENDING",
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
       "owner_status": "OWNER_VISUAL_PENDING",
-      "pve": "HOLD"
+      "pve": "HOLD",
+      "native_event_count": 5,
+      "native_accepted_event_count": 5,
+      "native_synthetic_event_count": 0
     },
     {
       "skill_id": "tmb.skill.fist.ba_quyen.active_04.human",
@@ -243,9 +255,12 @@
       ],
       "phase_count": 5,
       "configured_frames": 5,
-      "native_status": "NATIVE_PENDING",
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
       "owner_status": "OWNER_VISUAL_PENDING",
-      "pve": "HOLD"
+      "pve": "HOLD",
+      "native_event_count": 5,
+      "native_accepted_event_count": 5,
+      "native_synthetic_event_count": 0
     },
     {
       "skill_id": "tmb.skill.fist.kim_cang.active_02.human",
@@ -270,9 +285,12 @@
       ],
       "phase_count": 4,
       "configured_frames": 4,
-      "native_status": "NATIVE_PENDING",
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
       "owner_status": "OWNER_VISUAL_PENDING",
-      "pve": "HOLD"
+      "pve": "HOLD",
+      "native_event_count": 3,
+      "native_accepted_event_count": 3,
+      "native_synthetic_event_count": 0
     },
     {
       "skill_id": "tmb.skill.fist.kim_cang.active_03.human",
@@ -297,9 +315,12 @@
       ],
       "phase_count": 4,
       "configured_frames": 4,
-      "native_status": "NATIVE_PENDING",
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
       "owner_status": "OWNER_VISUAL_PENDING",
-      "pve": "HOLD"
+      "pve": "HOLD",
+      "native_event_count": 3,
+      "native_accepted_event_count": 3,
+      "native_synthetic_event_count": 0
     },
     {
       "skill_id": "tmb.skill.fist.kim_cang.ultimate.human",
@@ -324,9 +345,12 @@
       ],
       "phase_count": 4,
       "configured_frames": 4,
-      "native_status": "NATIVE_PENDING",
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
       "owner_status": "OWNER_VISUAL_PENDING",
-      "pve": "HOLD"
+      "pve": "HOLD",
+      "native_event_count": 3,
+      "native_accepted_event_count": 3,
+      "native_synthetic_event_count": 0
     },
     {
       "skill_id": "tmb.skill.fist.huyet_quyen.active_01.human",
@@ -352,9 +376,12 @@
       ],
       "phase_count": 5,
       "configured_frames": 5,
-      "native_status": "NATIVE_PENDING",
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
       "owner_status": "OWNER_VISUAL_PENDING",
-      "pve": "HOLD"
+      "pve": "HOLD",
+      "native_event_count": 3,
+      "native_accepted_event_count": 3,
+      "native_synthetic_event_count": 0
     },
     {
       "skill_id": "tmb.skill.fist.huyet_quyen.active_02.human",
@@ -389,9 +416,12 @@
       ],
       "phase_count": 8,
       "configured_frames": 32,
-      "native_status": "NATIVE_PENDING",
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
       "owner_status": "OWNER_VISUAL_PENDING",
-      "pve": "HOLD"
+      "pve": "HOLD",
+      "native_event_count": 4,
+      "native_accepted_event_count": 4,
+      "native_synthetic_event_count": 0
     },
     {
       "skill_id": "tmb.skill.fist.huyet_quyen.active_04.human",
@@ -421,9 +451,12 @@
       ],
       "phase_count": 7,
       "configured_frames": 7,
-      "native_status": "NATIVE_PENDING",
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
       "owner_status": "OWNER_VISUAL_PENDING",
-      "pve": "HOLD"
+      "pve": "HOLD",
+      "native_event_count": 4,
+      "native_accepted_event_count": 4,
+      "native_synthetic_event_count": 0
     }
   ],
   "blocked_skills": [
@@ -458,5 +491,28 @@
     "mark": 39
   },
   "owner_approval": "PENDING",
-  "pve": "HOLD"
+  "pve": "HOLD",
+  "native_capture": {
+    "technical_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
+    "skills": 11,
+    "candidate_events": 41,
+    "accepted_candidate_events": 41,
+    "fixture_setup_receipts": 0,
+    "synthetic_candidate_events": 0,
+    "viewport_px": [
+      1280,
+      720
+    ],
+    "fps": 20,
+    "duration_seconds": 42.1,
+    "frame_count": 842,
+    "video": "review/native/fist_batch1_native_1280x720.mp4",
+    "video_sha256": "7b71d80b2da7d7d7d337c00da810ed80cc38db6f55243333a12e524d565be698",
+    "contact_sheet": "review/native/fist_batch1_contact_sheet_1280x720.png",
+    "contact_sheet_sha256": "24ce8909642a098a3a80caaf507f335895d4297a725237c8f3755e9c2386bdf7",
+    "index": "review/native/fist_batch1_capture_index.json",
+    "index_sha256": "7029709063a54078d1476bd3ac55680221169573cd30aaec5a31bc185a783aaa",
+    "owner_approval": "PENDING",
+    "pve": "HOLD"
+  }
 }
