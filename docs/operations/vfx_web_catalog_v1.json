@@ -962,6 +962,133 @@
         "tests/presentation/pve_aschar_frame_renderer_anchor_test.gd"
       ],
       "review_note": "17-kỹ-năng Trận Tu · 4 pose theo pha; AS68 1× · va chạm/chuyển trạng thái chỉ từ MapBattle receipt thật. Native import/capture và duyệt chủ dự án đang chờ; PVE HOLD."
+    },
+    {
+      "id": "tmb.skill.talisman.loi_phu.active_02.human",
+      "name_vi": "Thiên Lôi Dẫn Nét",
+      "school_vi": "Phù Tu",
+      "branch_vi": "Lôi Phù · Thiên Lôi Dẫn Nét",
+      "tier": "human",
+      "scene": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+      "directions": [
+        "front"
+      ],
+      "vfx_status": "CANDIDATE_G3",
+      "g3_art": "CURRENT_R6_SOURCE_OWNER_GATE_CONFLICT_APPROVAL_REVISION_PRESERVED_ADAPTER_PENDING",
+      "owner_art": "OWNER_VISUAL_PENDING_CURRENT_SOURCE_REVISION_APPROVED_REVISION_PRESERVED",
+      "art_source": "EXISTING_FIRST_PARTY_TALISMAN_RGBA_ATLAS_NO_REBAKE",
+      "review_stages": "shared AS64 Factory · actual cast/release receipts · contact receipt gated · full animation and owner review pending",
+      "source_paths": [
+        "data/combat/v63_talisman_combat_catalog.json",
+        "labs/combat_lab/talisman02/assets/tal02_fracture_impact.webp",
+        "labs/combat_lab/talisman02/assets/tal02_thunder_flipbook.webp",
+        "labs/combat_lab/talisman02/assets/talisman_foot_array.webp",
+        "labs/combat_lab/talisman_factory_batch1_20261125/manifest.json",
+        "labs/combat_lab/vfx_factory/registry.json",
+        "labs/combat_lab/vfx_factory/vfx_factory_formation_batch_capture.gd",
+        "labs/combat_lab/vfx_factory/vfx_factory_formation_batch_capture.tscn",
+        "labs/combat_lab/vfx_factory/vfx_factory_review.gd",
+        "labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+        "labs/visual_bridge_v1/asset_vfx_readonly_bridge_v1.gd",
+        "tests/labs/combat_lab/vfx_factory_review_test.gd",
+        "tests/labs/combat_lab/vfx_factory_talisman_receipt_integration_test.gd"
+      ],
+      "review_note": "Uses the current TAL02 painted ink-lightning atlas and underfoot array byte-for-byte. The older owner-approved source revision is preserved in Git history; current atlas revision and this Factory adapter remain owner-review pending. Canonical effect=damage, shape=line, cap=3; PvE HOLD."
+    },
+    {
+      "id": "tmb.skill.talisman.loi_phu.active_03.human",
+      "name_vi": "Lôi Văn Truy Ấn",
+      "school_vi": "Phù Tu",
+      "branch_vi": "Lôi Phù · Lôi Văn Truy Ấn",
+      "tier": "human",
+      "scene": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+      "directions": [
+        "front"
+      ],
+      "vfx_status": "CANDIDATE_G3",
+      "g3_art": "CURRENT_MARK_ATLAS_OWNER_GATE_CONFLICT_APPROVAL_REVISION_PRESERVED_ADAPTER_PENDING",
+      "owner_art": "OWNER_VISUAL_PENDING_CURRENT_SOURCE_REVISION_APPROVED_REVISION_PRESERVED",
+      "art_source": "EXISTING_FIRST_PARTY_TALISMAN_RGBA_ATLAS_NO_REBAKE",
+      "review_stages": "shared AS64 Factory · actual cast/release receipts · contact receipt gated · full animation and owner review pending",
+      "source_paths": [
+        "data/combat/v63_talisman_combat_catalog.json",
+        "labs/combat_lab/talisman02/assets/talisman_foot_array.webp",
+        "labs/combat_lab/talisman03/assets/tal03_mark_flipbook.webp",
+        "labs/combat_lab/talisman_factory_batch1_20261125/manifest.json",
+        "labs/combat_lab/vfx_factory/registry.json",
+        "labs/combat_lab/vfx_factory/vfx_factory_formation_batch_capture.gd",
+        "labs/combat_lab/vfx_factory/vfx_factory_formation_batch_capture.tscn",
+        "labs/combat_lab/vfx_factory/vfx_factory_review.gd",
+        "labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+        "labs/visual_bridge_v1/asset_vfx_readonly_bridge_v1.gd",
+        "tests/labs/combat_lab/vfx_factory_review_test.gd",
+        "tests/labs/combat_lab/vfx_factory_talisman_receipt_integration_test.gd"
+      ],
+      "review_note": "The renderer uses the existing distinct 8-pose painted seal; the previous approved revision is preserved unchanged in Git history. This current atlas adapter does not inherit that revision’s owner approval. Canonical effect=mark, shape=single_target, cap=1; PvE HOLD."
+    },
+    {
+      "id": "tmb.skill.talisman.loi_phu.active_04.human",
+      "name_vi": "Cửu Tiêu Phá Vân",
+      "school_vi": "Phù Tu",
+      "branch_vi": "Lôi Phù · Cửu Tiêu Phá Vân",
+      "tier": "human",
+      "scene": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+      "directions": [
+        "front"
+      ],
+      "vfx_status": "CANDIDATE_G3",
+      "g3_art": "SOURCE_HAS_PRIOR_REWORK_HISTORY_CURRENT_ADAPTER_ART_REVIEW_PENDING",
+      "owner_art": "OWNER_VISUAL_PENDING",
+      "art_source": "EXISTING_FIRST_PARTY_TALISMAN_RGBA_ATLAS_NO_REBAKE",
+      "review_stages": "shared AS64 Factory · actual cast/release receipts · contact receipt gated · full animation and owner review pending",
+      "source_paths": [
+        "data/combat/v63_talisman_combat_catalog.json",
+        "labs/combat_lab/talisman02/assets/talisman_foot_array.webp",
+        "labs/combat_lab/talisman04/assets/tal04_r3_cloud_flipbook.webp",
+        "labs/combat_lab/talisman04/assets/tal04_r3_local_fracture.webp",
+        "labs/combat_lab/talisman_factory_batch1_20261125/manifest.json",
+        "labs/combat_lab/vfx_factory/registry.json",
+        "labs/combat_lab/vfx_factory/vfx_factory_formation_batch_capture.gd",
+        "labs/combat_lab/vfx_factory/vfx_factory_formation_batch_capture.tscn",
+        "labs/combat_lab/vfx_factory/vfx_factory_review.gd",
+        "labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+        "labs/visual_bridge_v1/asset_vfx_readonly_bridge_v1.gd",
+        "tests/labs/combat_lab/vfx_factory_review_test.gd",
+        "tests/labs/combat_lab/vfx_factory_talisman_receipt_integration_test.gd"
+      ],
+      "review_note": "The current existing cloud-fissure and local fracture sources are reused without rebaking. Earlier TAL04 art rework history is retained; new shared adapter remains a candidate. Canonical effect=damage, shape=line, cap=2; PvE HOLD."
+    },
+    {
+      "id": "tmb.skill.talisman.loi_phu.ultimate.human",
+      "name_vi": "Cửu Thiên Vạn Lôi Phù",
+      "school_vi": "Phù Tu",
+      "branch_vi": "Lôi Phù · Cửu Thiên Vạn Lôi Phù",
+      "tier": "human",
+      "scene": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+      "directions": [
+        "front"
+      ],
+      "vfx_status": "CANDIDATE_G3",
+      "g3_art": "R7_CURRENT_SOURCE_FACTORY_ADAPTER_ART_REVIEW_PENDING",
+      "owner_art": "OWNER_VISUAL_PENDING",
+      "art_source": "EXISTING_FIRST_PARTY_TALISMAN_RGBA_ATLAS_NO_REBAKE",
+      "review_stages": "shared AS64 Factory · actual cast/release receipts · contact receipt gated · full animation and owner review pending",
+      "source_paths": [
+        "data/combat/v63_talisman_combat_catalog.json",
+        "labs/combat_lab/talisman05/assets/tal05_r3_bolt_flipbook.webp",
+        "labs/combat_lab/talisman05/assets/tal05_r3_impact.webp",
+        "labs/combat_lab/talisman05/assets/tal05_r3_sky_flipbook.webp",
+        "labs/combat_lab/talisman_factory_batch1_20261125/manifest.json",
+        "labs/combat_lab/vfx_factory/registry.json",
+        "labs/combat_lab/vfx_factory/vfx_factory_formation_batch_capture.gd",
+        "labs/combat_lab/vfx_factory/vfx_factory_formation_batch_capture.tscn",
+        "labs/combat_lab/vfx_factory/vfx_factory_review.gd",
+        "labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+        "labs/visual_bridge_v1/asset_vfx_readonly_bridge_v1.gd",
+        "tests/labs/combat_lab/vfx_factory_review_test.gd",
+        "tests/labs/combat_lab/vfx_factory_talisman_receipt_integration_test.gd"
+      ],
+      "review_note": "Reuses the existing painted heavenly gate, vertical lightning atlas, and local impact. Only a confirmed MapBattleV2 contact can display impact; no horizontal laser or synthetic AoE is added. Canonical effect=damage, shape=line, cap=3; PvE HOLD."
     }
   ],
   "updated_at": "2026-11-25"

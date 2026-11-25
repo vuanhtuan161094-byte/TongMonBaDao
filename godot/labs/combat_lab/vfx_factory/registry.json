@@ -358,7 +358,8 @@
       "source_batch_manifest": "res://labs/combat_lab/formation01/factory_batch1_20261125/manifest.json",
       "contact_sheet_path": "res://labs/combat_lab/formation01/factory_batch1_20261125/review/formation_batch1_contact_sheet_1x.png",
       "contact_source_note": "Contact phase is source art only; render only after matching real MapBattleV2 receipt.",
-      "review_note": "Four distinct phase poses from first-party RGBA atlases, shown at shared AS68 1x game scale with real Source A moving target. Contact and status art require matching MapBattleV2 event receipts; no fake combat effects. Frame-by-frame motion, integrated native QA, owner approval, and PvE remain pending/held."
+      "review_note": "Four distinct phase poses from first-party RGBA atlases, shown at shared AS68 1x game scale with real Source A moving target. Contact and status art require matching MapBattleV2 event receipts; no fake combat effects. Frame-by-frame motion, integrated native QA, owner approval, and PvE remain pending/held.",
+      "native_batch": "formation"
     },
     {
       "skill_id": "tmb.skill.formation.phong_toa_tran.active_02.human",
@@ -591,7 +592,8 @@
       "source_batch_manifest": "res://labs/combat_lab/formation01/factory_batch1_20261125/manifest.json",
       "contact_sheet_path": "res://labs/combat_lab/formation01/factory_batch1_20261125/review/formation_batch1_contact_sheet_1x.png",
       "contact_source_note": "Contact phase is source art only; render only after matching real MapBattleV2 receipt.",
-      "review_note": "Four distinct phase poses from first-party RGBA atlases, shown at shared AS68 1x game scale with real Source A moving target. Contact and status art require matching MapBattleV2 event receipts; no fake combat effects. Frame-by-frame motion, integrated native QA, owner approval, and PvE remain pending/held."
+      "review_note": "Four distinct phase poses from first-party RGBA atlases, shown at shared AS68 1x game scale with real Source A moving target. Contact and status art require matching MapBattleV2 event receipts; no fake combat effects. Frame-by-frame motion, integrated native QA, owner approval, and PvE remain pending/held.",
+      "native_batch": "formation"
     },
     {
       "skill_id": "tmb.skill.formation.phong_toa_tran.active_03.human",
@@ -822,7 +824,8 @@
       "source_batch_manifest": "res://labs/combat_lab/formation01/factory_batch1_20261125/manifest.json",
       "contact_sheet_path": "res://labs/combat_lab/formation01/factory_batch1_20261125/review/formation_batch1_contact_sheet_1x.png",
       "contact_source_note": "Contact phase is source art only; render only after matching real MapBattleV2 receipt.",
-      "review_note": "Four distinct phase poses from first-party RGBA atlases, shown at shared AS68 1x game scale with real Source A moving target. Contact and status art require matching MapBattleV2 event receipts; no fake combat effects. Frame-by-frame motion, integrated native QA, owner approval, and PvE remain pending/held."
+      "review_note": "Four distinct phase poses from first-party RGBA atlases, shown at shared AS68 1x game scale with real Source A moving target. Contact and status art require matching MapBattleV2 event receipts; no fake combat effects. Frame-by-frame motion, integrated native QA, owner approval, and PvE remain pending/held.",
+      "native_batch": "formation"
     },
     {
       "skill_id": "tmb.skill.formation.phong_toa_tran.active_04.human",
@@ -1055,7 +1058,8 @@
       "source_batch_manifest": "res://labs/combat_lab/formation01/factory_batch1_20261125/manifest.json",
       "contact_sheet_path": "res://labs/combat_lab/formation01/factory_batch1_20261125/review/formation_batch1_contact_sheet_1x.png",
       "contact_source_note": "Contact phase is source art only; render only after matching real MapBattleV2 receipt.",
-      "review_note": "Four distinct phase poses from first-party RGBA atlases, shown at shared AS68 1x game scale with real Source A moving target. Contact and status art require matching MapBattleV2 event receipts; no fake combat effects. Frame-by-frame motion, integrated native QA, owner approval, and PvE remain pending/held."
+      "review_note": "Four distinct phase poses from first-party RGBA atlases, shown at shared AS68 1x game scale with real Source A moving target. Contact and status art require matching MapBattleV2 event receipts; no fake combat effects. Frame-by-frame motion, integrated native QA, owner approval, and PvE remain pending/held.",
+      "native_batch": "formation"
     },
     {
       "skill_id": "tmb.skill.formation.phong_toa_tran.ultimate.human",
@@ -1288,7 +1292,8 @@
       "source_batch_manifest": "res://labs/combat_lab/formation01/factory_batch1_20261125/manifest.json",
       "contact_sheet_path": "res://labs/combat_lab/formation01/factory_batch1_20261125/review/formation_batch1_contact_sheet_1x.png",
       "contact_source_note": "Contact phase is source art only; render only after matching real MapBattleV2 receipt.",
-      "review_note": "Four distinct phase poses from first-party RGBA atlases, shown at shared AS68 1x game scale with real Source A moving target. Contact and status art require matching MapBattleV2 event receipts; no fake combat effects. Frame-by-frame motion, integrated native QA, owner approval, and PvE remain pending/held."
+      "review_note": "Four distinct phase poses from first-party RGBA atlases, shown at shared AS68 1x game scale with real Source A moving target. Contact and status art require matching MapBattleV2 event receipts; no fake combat effects. Frame-by-frame motion, integrated native QA, owner approval, and PvE remain pending/held.",
+      "native_batch": "formation"
     },
     {
       "skill_id": "tmb.skill.formation.sat_phat_tran.active_01.human",
@@ -1544,7 +1549,8 @@
           "status": "G3_ART_REWORK_REQUIRED"
         }
       ],
-      "review_note": "Candidate source uses the preserved stronger RGBA atlas. R1–R3 remain archived and are not promoted; their existing default-camera review required rework. Native integrated review and owner approval pending; PVE HOLD."
+      "review_note": "Candidate source uses the preserved stronger RGBA atlas. R1–R3 remain archived and are not promoted; their existing default-camera review required rework. Native integrated review and owner approval pending; PVE HOLD.",
+      "native_batch": "formation"
     },
     {
       "skill_id": "tmb.skill.formation.sat_phat_tran.active_02.human",
@@ -1783,7 +1789,8 @@
       "source_batch_manifest": "res://labs/combat_lab/formation01/factory_batch1_20261125/manifest.json",
       "contact_sheet_path": "res://labs/combat_lab/formation01/factory_batch1_20261125/review/formation_batch1_contact_sheet_1x.png",
       "contact_source_note": "Contact phase is source art only; render only after matching real MapBattleV2 receipt.",
-      "review_note": "Four distinct phase poses from first-party RGBA atlases, shown at shared AS68 1x game scale with real Source A moving target. Contact and status art require matching MapBattleV2 event receipts; no fake combat effects. Frame-by-frame motion, integrated native QA, owner approval, and PvE remain pending/held."
+      "review_note": "Four distinct phase poses from first-party RGBA atlases, shown at shared AS68 1x game scale with real Source A moving target. Contact and status art require matching MapBattleV2 event receipts; no fake combat effects. Frame-by-frame motion, integrated native QA, owner approval, and PvE remain pending/held.",
+      "native_batch": "formation"
     },
     {
       "skill_id": "tmb.skill.formation.sat_phat_tran.active_03.human",
@@ -2011,7 +2018,8 @@
       "phase_layers": {
         "contact": "FRONT"
       },
-      "phase_layer_rationale": "Target impact is a direct seven-star strike; let its authored contact pose read over the moving target."
+      "phase_layer_rationale": "Target impact is a direct seven-star strike; let its authored contact pose read over the moving target.",
+      "native_batch": "formation"
     },
     {
       "skill_id": "tmb.skill.formation.sat_phat_tran.active_04.human",
@@ -2250,7 +2258,8 @@
       "source_batch_manifest": "res://labs/combat_lab/formation01/factory_batch1_20261125/manifest.json",
       "contact_sheet_path": "res://labs/combat_lab/formation01/factory_batch1_20261125/review/formation_batch1_contact_sheet_1x.png",
       "contact_source_note": "Contact phase is source art only; render only after matching real MapBattleV2 receipt.",
-      "review_note": "Four distinct phase poses from first-party RGBA atlases, shown at shared AS68 1x game scale with real Source A moving target. Contact and status art require matching MapBattleV2 event receipts; no fake combat effects. Frame-by-frame motion, integrated native QA, owner approval, and PvE remain pending/held."
+      "review_note": "Four distinct phase poses from first-party RGBA atlases, shown at shared AS68 1x game scale with real Source A moving target. Contact and status art require matching MapBattleV2 event receipts; no fake combat effects. Frame-by-frame motion, integrated native QA, owner approval, and PvE remain pending/held.",
+      "native_batch": "formation"
     },
     {
       "skill_id": "tmb.skill.formation.sat_phat_tran.ultimate.human",
@@ -2489,7 +2498,8 @@
       "source_batch_manifest": "res://labs/combat_lab/formation01/factory_batch1_20261125/manifest.json",
       "contact_sheet_path": "res://labs/combat_lab/formation01/factory_batch1_20261125/review/formation_batch1_contact_sheet_1x.png",
       "contact_source_note": "Contact phase is source art only; render only after matching real MapBattleV2 receipt.",
-      "review_note": "Four distinct phase poses from first-party RGBA atlases, shown at shared AS68 1x game scale with real Source A moving target. Contact and status art require matching MapBattleV2 event receipts; no fake combat effects. Frame-by-frame motion, integrated native QA, owner approval, and PvE remain pending/held."
+      "review_note": "Four distinct phase poses from first-party RGBA atlases, shown at shared AS68 1x game scale with real Source A moving target. Contact and status art require matching MapBattleV2 event receipts; no fake combat effects. Frame-by-frame motion, integrated native QA, owner approval, and PvE remain pending/held.",
+      "native_batch": "formation"
     },
     {
       "skill_id": "tmb.skill.formation.tu_linh_tran.active_01.human",
@@ -2715,7 +2725,8 @@
       "source_batch_manifest": "res://labs/combat_lab/formation01/factory_batch1_20261125/manifest.json",
       "contact_sheet_path": "res://labs/combat_lab/formation01/factory_batch1_20261125/review/formation_batch1_contact_sheet_1x.png",
       "contact_source_note": "Contact phase is source art only; render only after matching real MapBattleV2 receipt.",
-      "review_note": "Four distinct phase poses from first-party RGBA atlases, shown at shared AS68 1x game scale with real Source A moving target. Contact and status art require matching MapBattleV2 event receipts; no fake combat effects. Frame-by-frame motion, integrated native QA, owner approval, and PvE remain pending/held."
+      "review_note": "Four distinct phase poses from first-party RGBA atlases, shown at shared AS68 1x game scale with real Source A moving target. Contact and status art require matching MapBattleV2 event receipts; no fake combat effects. Frame-by-frame motion, integrated native QA, owner approval, and PvE remain pending/held.",
+      "native_batch": "formation"
     },
     {
       "skill_id": "tmb.skill.formation.tu_linh_tran.active_02.human",
@@ -2943,7 +2954,8 @@
       "phase_layers": {
         "contact": "FRONT"
       },
-      "phase_layer_rationale": "Keep the direct contact pose visible for semantic review; damage-versus-shield read remains flagged."
+      "phase_layer_rationale": "Keep the direct contact pose visible for semantic review; damage-versus-shield read remains flagged.",
+      "native_batch": "formation"
     },
     {
       "skill_id": "tmb.skill.formation.basic.human",
@@ -3158,7 +3170,8 @@
       "phase_layers": {
         "contact": "FRONT"
       },
-      "phase_layer_rationale": "Show the authored contact cue only after the real MapBattle basic hit receipt."
+      "phase_layer_rationale": "Show the authored contact cue only after the real MapBattle basic hit receipt.",
+      "native_batch": "formation"
     },
     {
       "skill_id": "tmb.skill.formation.mobility.human",
@@ -3386,7 +3399,8 @@
       "phase_layers": {
         "contact": "FRONT"
       },
-      "phase_layer_rationale": "Show the authored arrival cue over the caster only after the real mobility receipt."
+      "phase_layer_rationale": "Show the authored arrival cue over the caster only after the real mobility receipt.",
+      "native_batch": "formation"
     },
     {
       "skill_id": "tmb.skill.formation.tu_linh_tran.active_03.human",
@@ -3612,7 +3626,8 @@
       "source_batch_manifest": "res://labs/combat_lab/formation01/factory_batch1_20261125/manifest.json",
       "contact_sheet_path": "res://labs/combat_lab/formation01/factory_batch1_20261125/review/formation_batch1_contact_sheet_1x.png",
       "contact_source_note": "Contact phase is source art only; render only after matching real MapBattleV2 receipt.",
-      "review_note": "Four distinct phase poses from first-party RGBA atlases, shown at shared AS68 1x game scale with real Source A moving target. Contact and status art require matching MapBattleV2 event receipts; no fake combat effects. Frame-by-frame motion, integrated native QA, owner approval, and PvE remain pending/held."
+      "review_note": "Four distinct phase poses from first-party RGBA atlases, shown at shared AS68 1x game scale with real Source A moving target. Contact and status art require matching MapBattleV2 event receipts; no fake combat effects. Frame-by-frame motion, integrated native QA, owner approval, and PvE remain pending/held.",
+      "native_batch": "formation"
     },
     {
       "skill_id": "tmb.skill.formation.tu_linh_tran.active_04.human",
@@ -3836,7 +3851,8 @@
       "source_batch_manifest": "res://labs/combat_lab/formation01/factory_batch1_20261125/manifest.json",
       "contact_sheet_path": "res://labs/combat_lab/formation01/factory_batch1_20261125/review/formation_batch1_contact_sheet_1x.png",
       "contact_source_note": "Contact phase is source art only; render only after matching real MapBattleV2 receipt.",
-      "review_note": "Four distinct phase poses from first-party RGBA atlases, shown at shared AS68 1x game scale with real Source A moving target. Contact and status art require matching MapBattleV2 event receipts; no fake combat effects. Frame-by-frame motion, integrated native QA, owner approval, and PvE remain pending/held."
+      "review_note": "Four distinct phase poses from first-party RGBA atlases, shown at shared AS68 1x game scale with real Source A moving target. Contact and status art require matching MapBattleV2 event receipts; no fake combat effects. Frame-by-frame motion, integrated native QA, owner approval, and PvE remain pending/held.",
+      "native_batch": "formation"
     },
     {
       "skill_id": "tmb.skill.formation.tu_linh_tran.ultimate.human",
@@ -4062,7 +4078,981 @@
       "source_batch_manifest": "res://labs/combat_lab/formation01/factory_batch1_20261125/manifest.json",
       "contact_sheet_path": "res://labs/combat_lab/formation01/factory_batch1_20261125/review/formation_batch1_contact_sheet_1x.png",
       "contact_source_note": "Contact phase is source art only; render only after matching real MapBattleV2 receipt.",
-      "review_note": "Four distinct phase poses from first-party RGBA atlases, shown at shared AS68 1x game scale with real Source A moving target. Contact and status art require matching MapBattleV2 event receipts; no fake combat effects. Frame-by-frame motion, integrated native QA, owner approval, and PvE remain pending/held."
+      "review_note": "Four distinct phase poses from first-party RGBA atlases, shown at shared AS68 1x game scale with real Source A moving target. Contact and status art require matching MapBattleV2 event receipts; no fake combat effects. Frame-by-frame motion, integrated native QA, owner approval, and PvE remain pending/held.",
+      "native_batch": "formation"
+    },
+    {
+      "skill_id": "tmb.skill.talisman.loi_phu.active_02.human",
+      "school": "talisman",
+      "branch": "loi_phu",
+      "name_vi": "Thiên Lôi Dẫn Nét",
+      "catalog_path": "res://data/combat/v63_talisman_combat_catalog.json",
+      "effect": "damage",
+      "shape": "line",
+      "target_limit": 3,
+      "mechanic_template": "line",
+      "mechanic_templates": [
+        "line",
+        "multi_target"
+      ],
+      "target_mode": "line",
+      "preview_target_kind": "monster",
+      "target_actor_id": "review_target",
+      "outside_actor_id": "review_outside",
+      "actor_sex": "male",
+      "actor_asset_id": 64,
+      "actor_action": "cast",
+      "preview_attachment_override": {
+        "suppress_attachments": true
+      },
+      "source_anchor": "review_stage",
+      "phase_anchors": {
+        "charge": "ground",
+        "release": "review_stage",
+        "contact": "target_foot",
+        "fade": "target_foot"
+      },
+      "phase_layers": {
+        "charge": "BEHIND",
+        "release": "BEHIND",
+        "contact": "BEHIND",
+        "fade": "BEHIND"
+      },
+      "draw_layer": "FRONT",
+      "source_g3": "CURRENT_R6_SOURCE_OWNER_GATE_CONFLICT_APPROVAL_REVISION_PRESERVED_ADAPTER_PENDING",
+      "native_status": "NATIVE_CAPTURE_PENDING",
+      "owner_status": "OWNER_VISUAL_REVIEW_PENDING_CURRENT_SOURCE_REVISION",
+      "native_ready": false,
+      "motion_status": "10_PAINTED_ATLAS_FRAMES_SHARED_FACTORY_ADAPTER_PENDING",
+      "showcase_moving_target": true,
+      "delivery_phase": "release",
+      "phase_sources": {
+        "charge": {
+          "path": "res://labs/combat_lab/talisman02/assets/talisman_foot_array.webp",
+          "display_width_px": 124,
+          "fps": 1.0,
+          "loop": false
+        },
+        "release": {
+          "path": "res://labs/combat_lab/talisman02/assets/tal02_thunder_flipbook.webp",
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/talisman02/assets/tal02_thunder_flipbook.webp",
+              "region": [
+                0,
+                0,
+                1024,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman02/assets/tal02_thunder_flipbook.webp",
+              "region": [
+                1024,
+                0,
+                1024,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman02/assets/tal02_thunder_flipbook.webp",
+              "region": [
+                2048,
+                0,
+                1024,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman02/assets/tal02_thunder_flipbook.webp",
+              "region": [
+                3072,
+                0,
+                1024,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman02/assets/tal02_thunder_flipbook.webp",
+              "region": [
+                0,
+                256,
+                1024,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman02/assets/tal02_thunder_flipbook.webp",
+              "region": [
+                1024,
+                256,
+                1024,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman02/assets/tal02_thunder_flipbook.webp",
+              "region": [
+                2048,
+                256,
+                1024,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman02/assets/tal02_thunder_flipbook.webp",
+              "region": [
+                3072,
+                256,
+                1024,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman02/assets/tal02_thunder_flipbook.webp",
+              "region": [
+                0,
+                512,
+                1024,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman02/assets/tal02_thunder_flipbook.webp",
+              "region": [
+                1024,
+                512,
+                1024,
+                256
+              ]
+            }
+          ],
+          "display_width_px": 540,
+          "fps": 12,
+          "loop": false
+        },
+        "contact": {
+          "path": "res://labs/combat_lab/talisman02/assets/tal02_fracture_impact.webp",
+          "display_width_px": 88,
+          "fps": 1.0,
+          "loop": false
+        },
+        "fade": {
+          "path": "res://labs/combat_lab/talisman02/assets/tal02_thunder_flipbook.webp",
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/talisman02/assets/tal02_thunder_flipbook.webp",
+              "region": [
+                0,
+                512,
+                1024,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman02/assets/tal02_thunder_flipbook.webp",
+              "region": [
+                1024,
+                512,
+                1024,
+                256
+              ]
+            }
+          ],
+          "display_width_px": 330,
+          "fps": 8,
+          "loop": false
+        }
+      },
+      "review_timeline": {
+        "release_at": 0.62,
+        "flight_at": 0.62,
+        "contact_at": 0.8,
+        "fade_at": 1.02,
+        "loop_seconds": 1.8,
+        "contact_window_seconds": 0.2,
+        "fade_window_seconds": 0.24,
+        "actor_action_seconds": 0.6,
+        "clock": "REAL_MAPBATTLE_RECEIPT_EVENTS",
+        "charge_window_seconds": 0.62,
+        "release_window_seconds": 0.86
+      },
+      "receipt_manifest": {
+        "schema": "tmb.vfx_bindings.v1",
+        "skill_id": "tmb.skill.talisman.loi_phu.active_02.human",
+        "bindings": [
+          {
+            "event_type": "skill_cast",
+            "caster_slot": "ground",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "charge"
+          },
+          {
+            "event_type": "skill_release",
+            "caster_slot": "ground",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "release"
+          },
+          {
+            "event_type": "v63_talisman_hit",
+            "caster_slot": "ground",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "contact"
+          }
+        ]
+      },
+      "native_batch": "talisman",
+      "source_batch_manifest": "res://labs/combat_lab/talisman_factory_batch1_20261125/manifest.json",
+      "contact_source_note": "Contact is shown only after an exact MapBattleV2 v63_talisman_hit for this skill. Current Human line cast may emit release without a hit; no hit is synthesized.",
+      "review_note": "Uses the current TAL02 painted ink-lightning atlas and underfoot array byte-for-byte. The older owner-approved source revision is preserved in Git history; current atlas revision and this Factory adapter remain owner-review pending."
+    },
+    {
+      "skill_id": "tmb.skill.talisman.loi_phu.active_03.human",
+      "school": "talisman",
+      "branch": "loi_phu",
+      "name_vi": "Lôi Văn Truy Ấn",
+      "catalog_path": "res://data/combat/v63_talisman_combat_catalog.json",
+      "effect": "mark",
+      "shape": "single_target",
+      "target_limit": 1,
+      "mechanic_template": "debuff",
+      "mechanic_templates": [
+        "debuff",
+        "status"
+      ],
+      "target_mode": "single_target",
+      "preview_target_kind": "monster",
+      "target_actor_id": "review_target",
+      "outside_actor_id": "review_outside",
+      "actor_sex": "male",
+      "actor_asset_id": 64,
+      "actor_action": "cast",
+      "preview_attachment_override": {
+        "suppress_attachments": true
+      },
+      "source_anchor": "ground",
+      "phase_anchors": {
+        "charge": "ground",
+        "start": "target_chest",
+        "sustain": "target_chest",
+        "end": "target_chest"
+      },
+      "phase_layers": {
+        "charge": "BEHIND",
+        "start": "BEHIND",
+        "sustain": "BEHIND",
+        "end": "BEHIND"
+      },
+      "draw_layer": "FRONT",
+      "phase_aliases": {},
+      "source_g3": "CURRENT_MARK_ATLAS_OWNER_GATE_CONFLICT_APPROVAL_REVISION_PRESERVED_ADAPTER_PENDING",
+      "native_status": "NATIVE_CAPTURE_PENDING",
+      "owner_status": "OWNER_VISUAL_REVIEW_PENDING_CURRENT_SOURCE_REVISION",
+      "native_ready": false,
+      "motion_status": "8_PAINTED_MARK_POSES_SHARED_FACTORY_ADAPTER_PENDING",
+      "showcase_moving_target": true,
+      "delivery_phase": "start",
+      "phase_sources": {
+        "charge": {
+          "path": "res://labs/combat_lab/talisman02/assets/talisman_foot_array.webp",
+          "display_width_px": 104,
+          "fps": 1.0,
+          "loop": false
+        },
+        "start": {
+          "path": "res://labs/combat_lab/talisman03/assets/tal03_mark_flipbook.webp",
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/talisman03/assets/tal03_mark_flipbook.webp",
+              "region": [
+                0,
+                0,
+                320,
+                320
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman03/assets/tal03_mark_flipbook.webp",
+              "region": [
+                320,
+                0,
+                320,
+                320
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman03/assets/tal03_mark_flipbook.webp",
+              "region": [
+                640,
+                0,
+                320,
+                320
+              ]
+            }
+          ],
+          "display_width_px": 86,
+          "fps": 14,
+          "loop": false
+        },
+        "sustain": {
+          "path": "res://labs/combat_lab/talisman03/assets/tal03_mark_flipbook.webp",
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/talisman03/assets/tal03_mark_flipbook.webp",
+              "region": [
+                960,
+                0,
+                320,
+                320
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman03/assets/tal03_mark_flipbook.webp",
+              "region": [
+                0,
+                320,
+                320,
+                320
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman03/assets/tal03_mark_flipbook.webp",
+              "region": [
+                320,
+                320,
+                320,
+                320
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman03/assets/tal03_mark_flipbook.webp",
+              "region": [
+                640,
+                320,
+                320,
+                320
+              ]
+            }
+          ],
+          "display_width_px": 86,
+          "fps": 5,
+          "loop": true
+        },
+        "end": {
+          "path": "res://labs/combat_lab/talisman03/assets/tal03_mark_flipbook.webp",
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/talisman03/assets/tal03_mark_flipbook.webp",
+              "region": [
+                960,
+                320,
+                320,
+                320
+              ]
+            }
+          ],
+          "display_width_px": 86,
+          "fps": 1,
+          "loop": false
+        }
+      },
+      "review_timeline": {
+        "release_at": 0.5,
+        "flight_at": 0.5,
+        "contact_at": 0.68,
+        "fade_at": 6.7,
+        "loop_seconds": 7.0,
+        "contact_window_seconds": 0.18,
+        "fade_window_seconds": 0.24,
+        "start_window_seconds": 0.2,
+        "end_window_seconds": 0.24,
+        "actor_action_seconds": 0.5,
+        "clock": "REAL_MAPBATTLE_MARK_UNTIL",
+        "charge_window_seconds": 0.5,
+        "release_window_seconds": 0.18
+      },
+      "receipt_manifest": {
+        "schema": "tmb.vfx_bindings.v1",
+        "skill_id": "tmb.skill.talisman.loi_phu.active_03.human",
+        "bindings": [
+          {
+            "event_type": "skill_cast",
+            "caster_slot": "ground",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "charge"
+          },
+          {
+            "event_type": "skill_release",
+            "caster_slot": "ground",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "release"
+          },
+          {
+            "event_type": "v63_talisman_mark_applied",
+            "caster_slot": "ground",
+            "target_slot": "chest",
+            "actor_clip": "cast",
+            "visual_phase": "start"
+          }
+        ]
+      },
+      "native_batch": "talisman",
+      "source_batch_manifest": "res://labs/combat_lab/talisman_factory_batch1_20261125/manifest.json",
+      "contact_source_note": "Start, sustain, and end use the exact owner-scoped mark receipt and its until time. No damage cue, DoT, or mark is created by the renderer.",
+      "review_note": "The renderer uses the existing distinct 8-pose painted seal; the previous approved revision is preserved unchanged in Git history. This current atlas adapter does not inherit that revision’s owner approval."
+    },
+    {
+      "skill_id": "tmb.skill.talisman.loi_phu.active_04.human",
+      "school": "talisman",
+      "branch": "loi_phu",
+      "name_vi": "Cửu Tiêu Phá Vân",
+      "catalog_path": "res://data/combat/v63_talisman_combat_catalog.json",
+      "effect": "damage",
+      "shape": "line",
+      "target_limit": 2,
+      "mechanic_template": "line",
+      "mechanic_templates": [
+        "line",
+        "multi_target"
+      ],
+      "target_mode": "line",
+      "preview_target_kind": "monster",
+      "target_actor_id": "review_target",
+      "outside_actor_id": "review_outside",
+      "actor_sex": "male",
+      "actor_asset_id": 64,
+      "actor_action": "cast",
+      "preview_attachment_override": {
+        "suppress_attachments": true
+      },
+      "source_anchor": "review_stage",
+      "phase_anchors": {
+        "charge": "ground",
+        "release": "review_stage",
+        "contact": "target_foot",
+        "fade": "target_foot"
+      },
+      "phase_layers": {
+        "charge": "BEHIND",
+        "release": "BEHIND",
+        "contact": "BEHIND",
+        "fade": "BEHIND"
+      },
+      "draw_layer": "FRONT",
+      "source_g3": "SOURCE_HAS_PRIOR_REWORK_HISTORY_CURRENT_ADAPTER_ART_REVIEW_PENDING",
+      "native_status": "NATIVE_CAPTURE_PENDING",
+      "owner_status": "OWNER_VISUAL_PENDING",
+      "native_ready": false,
+      "motion_status": "10_PAINTED_ATLAS_FRAMES_SHARED_FACTORY_ADAPTER_PENDING",
+      "showcase_moving_target": true,
+      "delivery_phase": "release",
+      "phase_sources": {
+        "charge": {
+          "path": "res://labs/combat_lab/talisman02/assets/talisman_foot_array.webp",
+          "display_width_px": 112,
+          "fps": 1.0,
+          "loop": false
+        },
+        "release": {
+          "path": "res://labs/combat_lab/talisman04/assets/tal04_r3_cloud_flipbook.webp",
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/talisman04/assets/tal04_r3_cloud_flipbook.webp",
+              "region": [
+                0,
+                0,
+                1024,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman04/assets/tal04_r3_cloud_flipbook.webp",
+              "region": [
+                1024,
+                0,
+                1024,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman04/assets/tal04_r3_cloud_flipbook.webp",
+              "region": [
+                2048,
+                0,
+                1024,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman04/assets/tal04_r3_cloud_flipbook.webp",
+              "region": [
+                3072,
+                0,
+                1024,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman04/assets/tal04_r3_cloud_flipbook.webp",
+              "region": [
+                0,
+                256,
+                1024,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman04/assets/tal04_r3_cloud_flipbook.webp",
+              "region": [
+                1024,
+                256,
+                1024,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman04/assets/tal04_r3_cloud_flipbook.webp",
+              "region": [
+                2048,
+                256,
+                1024,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman04/assets/tal04_r3_cloud_flipbook.webp",
+              "region": [
+                3072,
+                256,
+                1024,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman04/assets/tal04_r3_cloud_flipbook.webp",
+              "region": [
+                0,
+                512,
+                1024,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman04/assets/tal04_r3_cloud_flipbook.webp",
+              "region": [
+                1024,
+                512,
+                1024,
+                256
+              ]
+            }
+          ],
+          "display_width_px": 540,
+          "fps": 12,
+          "loop": false
+        },
+        "contact": {
+          "path": "res://labs/combat_lab/talisman04/assets/tal04_r3_local_fracture.webp",
+          "display_width_px": 88,
+          "fps": 1.0,
+          "loop": false
+        },
+        "fade": {
+          "path": "res://labs/combat_lab/talisman04/assets/tal04_r3_cloud_flipbook.webp",
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/talisman04/assets/tal04_r3_cloud_flipbook.webp",
+              "region": [
+                0,
+                512,
+                1024,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman04/assets/tal04_r3_cloud_flipbook.webp",
+              "region": [
+                1024,
+                512,
+                1024,
+                256
+              ]
+            }
+          ],
+          "display_width_px": 340,
+          "fps": 8,
+          "loop": false
+        }
+      },
+      "review_timeline": {
+        "release_at": 0.5,
+        "flight_at": 0.5,
+        "contact_at": 0.68,
+        "fade_at": 0.9,
+        "loop_seconds": 1.5,
+        "contact_window_seconds": 0.2,
+        "fade_window_seconds": 0.24,
+        "actor_action_seconds": 0.5,
+        "clock": "REAL_MAPBATTLE_RECEIPT_EVENTS",
+        "charge_window_seconds": 0.5,
+        "release_window_seconds": 0.86
+      },
+      "receipt_manifest": {
+        "schema": "tmb.vfx_bindings.v1",
+        "skill_id": "tmb.skill.talisman.loi_phu.active_04.human",
+        "bindings": [
+          {
+            "event_type": "skill_cast",
+            "caster_slot": "ground",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "charge"
+          },
+          {
+            "event_type": "skill_release",
+            "caster_slot": "ground",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "release"
+          },
+          {
+            "event_type": "v63_talisman_hit",
+            "caster_slot": "ground",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "contact"
+          }
+        ]
+      },
+      "native_batch": "talisman",
+      "source_batch_manifest": "res://labs/combat_lab/talisman_factory_batch1_20261125/manifest.json",
+      "contact_source_note": "Two-contact art is gated to exact v63_talisman_hit receipts; if the current Human line authority emits none, no contact will be drawn.",
+      "review_note": "The current existing cloud-fissure and local fracture sources are reused without rebaking. Earlier TAL04 art rework history is retained; new shared adapter remains a candidate."
+    },
+    {
+      "skill_id": "tmb.skill.talisman.loi_phu.ultimate.human",
+      "school": "talisman",
+      "branch": "loi_phu",
+      "name_vi": "Cửu Thiên Vạn Lôi Phù",
+      "catalog_path": "res://data/combat/v63_talisman_combat_catalog.json",
+      "effect": "damage",
+      "shape": "line",
+      "target_limit": 3,
+      "mechanic_template": "line",
+      "mechanic_templates": [
+        "line",
+        "multi_target"
+      ],
+      "target_mode": "line",
+      "preview_target_kind": "monster",
+      "target_actor_id": "review_target",
+      "outside_actor_id": "review_outside",
+      "actor_sex": "male",
+      "actor_asset_id": 64,
+      "actor_action": "cast",
+      "preview_attachment_override": {
+        "suppress_attachments": true
+      },
+      "source_anchor": "ground",
+      "phase_anchors": {
+        "charge": "ground",
+        "release": "target_chest",
+        "contact": "target_foot",
+        "fade": "target_foot"
+      },
+      "phase_layers": {
+        "charge": "BEHIND",
+        "release": "BEHIND",
+        "contact": "BEHIND",
+        "fade": "BEHIND"
+      },
+      "draw_layer": "FRONT",
+      "source_g3": "R7_CURRENT_SOURCE_FACTORY_ADAPTER_ART_REVIEW_PENDING",
+      "native_status": "NATIVE_CAPTURE_PENDING",
+      "owner_status": "OWNER_VISUAL_PENDING",
+      "native_ready": false,
+      "motion_status": "10_SKY_AND_10_BOLT_PAINTED_ATLAS_FRAMES_SHARED_ADAPTER_PENDING",
+      "showcase_moving_target": true,
+      "delivery_phase": "release",
+      "phase_sources": {
+        "charge": {
+          "path": "res://labs/combat_lab/talisman05/assets/tal05_r3_sky_flipbook.webp",
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/talisman05/assets/tal05_r3_sky_flipbook.webp",
+              "region": [
+                0,
+                0,
+                512,
+                512
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman05/assets/tal05_r3_sky_flipbook.webp",
+              "region": [
+                512,
+                0,
+                512,
+                512
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman05/assets/tal05_r3_sky_flipbook.webp",
+              "region": [
+                1024,
+                0,
+                512,
+                512
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman05/assets/tal05_r3_sky_flipbook.webp",
+              "region": [
+                1536,
+                0,
+                512,
+                512
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman05/assets/tal05_r3_sky_flipbook.webp",
+              "region": [
+                0,
+                512,
+                512,
+                512
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman05/assets/tal05_r3_sky_flipbook.webp",
+              "region": [
+                512,
+                512,
+                512,
+                512
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman05/assets/tal05_r3_sky_flipbook.webp",
+              "region": [
+                1024,
+                512,
+                512,
+                512
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman05/assets/tal05_r3_sky_flipbook.webp",
+              "region": [
+                1536,
+                512,
+                512,
+                512
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman05/assets/tal05_r3_sky_flipbook.webp",
+              "region": [
+                0,
+                1024,
+                512,
+                512
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman05/assets/tal05_r3_sky_flipbook.webp",
+              "region": [
+                512,
+                1024,
+                512,
+                512
+              ]
+            }
+          ],
+          "display_width_px": 134,
+          "fps": 10,
+          "loop": false
+        },
+        "release": {
+          "path": "res://labs/combat_lab/talisman05/assets/tal05_r3_bolt_flipbook.webp",
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/talisman05/assets/tal05_r3_bolt_flipbook.webp",
+              "region": [
+                0,
+                0,
+                384,
+                512
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman05/assets/tal05_r3_bolt_flipbook.webp",
+              "region": [
+                384,
+                0,
+                384,
+                512
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman05/assets/tal05_r3_bolt_flipbook.webp",
+              "region": [
+                768,
+                0,
+                384,
+                512
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman05/assets/tal05_r3_bolt_flipbook.webp",
+              "region": [
+                1152,
+                0,
+                384,
+                512
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman05/assets/tal05_r3_bolt_flipbook.webp",
+              "region": [
+                0,
+                512,
+                384,
+                512
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman05/assets/tal05_r3_bolt_flipbook.webp",
+              "region": [
+                384,
+                512,
+                384,
+                512
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman05/assets/tal05_r3_bolt_flipbook.webp",
+              "region": [
+                768,
+                512,
+                384,
+                512
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman05/assets/tal05_r3_bolt_flipbook.webp",
+              "region": [
+                1152,
+                512,
+                384,
+                512
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman05/assets/tal05_r3_bolt_flipbook.webp",
+              "region": [
+                0,
+                1024,
+                384,
+                512
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman05/assets/tal05_r3_bolt_flipbook.webp",
+              "region": [
+                384,
+                1024,
+                384,
+                512
+              ]
+            }
+          ],
+          "display_width_px": 104,
+          "fps": 12,
+          "loop": false
+        },
+        "contact": {
+          "path": "res://labs/combat_lab/talisman05/assets/tal05_r3_impact.webp",
+          "display_width_px": 88,
+          "fps": 1.0,
+          "loop": false
+        },
+        "fade": {
+          "path": "res://labs/combat_lab/talisman05/assets/tal05_r3_sky_flipbook.webp",
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/talisman05/assets/tal05_r3_sky_flipbook.webp",
+              "region": [
+                0,
+                1024,
+                512,
+                512
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman05/assets/tal05_r3_sky_flipbook.webp",
+              "region": [
+                512,
+                1024,
+                512,
+                512
+              ]
+            }
+          ],
+          "display_width_px": 112,
+          "fps": 8,
+          "loop": false
+        }
+      },
+      "review_timeline": {
+        "release_at": 1.05,
+        "flight_at": 1.05,
+        "contact_at": 1.24,
+        "fade_at": 1.48,
+        "loop_seconds": 2.1,
+        "contact_window_seconds": 0.2,
+        "fade_window_seconds": 0.24,
+        "actor_action_seconds": 0.85,
+        "clock": "REAL_MAPBATTLE_RECEIPT_EVENTS",
+        "charge_window_seconds": 1.05,
+        "release_window_seconds": 0.86
+      },
+      "receipt_manifest": {
+        "schema": "tmb.vfx_bindings.v1",
+        "skill_id": "tmb.skill.talisman.loi_phu.ultimate.human",
+        "bindings": [
+          {
+            "event_type": "skill_cast",
+            "caster_slot": "ground",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "charge"
+          },
+          {
+            "event_type": "skill_release",
+            "caster_slot": "ground",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "release"
+          },
+          {
+            "event_type": "v63_talisman_hit",
+            "caster_slot": "ground",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "contact"
+          }
+        ]
+      },
+      "native_batch": "talisman",
+      "source_batch_manifest": "res://labs/combat_lab/talisman_factory_batch1_20261125/manifest.json",
+      "contact_source_note": "The sky seal and bolt play on the real cast and release receipts; the local contact scar is hidden without a confirmed exact-skill hit.",
+      "review_note": "Reuses the existing painted heavenly gate, vertical lightning atlas, and local impact. Only a confirmed MapBattleV2 contact can display impact; no horizontal laser or synthetic AoE is added."
     }
   ],
   "batch_status": {
@@ -4073,6 +5063,14 @@
       "native_import_capture": "PENDING",
       "owner_approval": "PENDING",
       "pve": "HOLD"
+    }
+  },
+  "native_batches": {
+    "formation": {
+      "expected_count": 17
+    },
+    "talisman": {
+      "expected_count": 4
     }
   }
 }

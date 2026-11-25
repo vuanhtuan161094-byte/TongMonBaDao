@@ -6,6 +6,7 @@ const ASCHAR := preload("res://src/presentation/p3/pve_aschar_frame_renderer_v1.
 const REGISTRY_PATH := "res://labs/combat_lab/vfx_factory/registry.json"
 const FORMATION_MANIFEST_PATH := "res://labs/combat_lab/formation01/factory_batch1_20261125/manifest.json"
 const FORMATION_CATALOG_PATH := "res://data/combat/v63_formation_combat_catalog.json"
+const TALISMAN_CATALOG_PATH := "res://data/combat/v63_talisman_combat_catalog.json"
 
 var failures := 0
 var checked := 0
@@ -23,9 +24,10 @@ func _run() -> void:
 	var registry: Variant = JSON.parse_string(FileAccess.get_file_as_string(REGISTRY_PATH))
 	var manifest: Variant = JSON.parse_string(FileAccess.get_file_as_string(FORMATION_MANIFEST_PATH))
 	var catalog: Variant = JSON.parse_string(FileAccess.get_file_as_string(FORMATION_CATALOG_PATH))
-	_check(registry is Dictionary and manifest is Dictionary and catalog is Dictionary,
+	var talisman_catalog: Variant = JSON.parse_string(FileAccess.get_file_as_string(TALISMAN_CATALOG_PATH))
+	_check(registry is Dictionary and manifest is Dictionary and catalog is Dictionary and talisman_catalog is Dictionary,
 		"all source registries parse")
-	if not (registry is Dictionary and manifest is Dictionary and catalog is Dictionary):
+	if not (registry is Dictionary and manifest is Dictionary and catalog is Dictionary and talisman_catalog is Dictionary):
 		_finish()
 		return
 	var formation_by_id: Dictionary = {}
@@ -34,12 +36,15 @@ func _run() -> void:
 	var canonical_by_id: Dictionary = {}
 	for row in catalog.get("skills", []):
 		canonical_by_id[str(row.get("id", ""))] = row
+	for row in talisman_catalog.get("skills", []):
+		canonical_by_id[str(row.get("id", ""))] = row
 	var cases: Array = registry.get("entries", [])
-	_check(cases.size() == 19, "shared registry retains 2 existing cues and adds 17 Formation candidates")
+	_check(cases.size() == 23, "shared registry retains 2 existing cues, 17 Formation and 4 Talisman candidates")
 	_check(formation_by_id.size() == 17, "all 17 source atlas records remain available")
 	for entry in cases:
 		var skill_id := str(entry.get("skill_id", ""))
 		var is_formation := skill_id.begins_with("tmb.skill.formation.")
+		var is_talisman := skill_id.begins_with("tmb.skill.talisman.")
 		var lab := FACTORY_SCENE.instantiate() as Node2D
 		lab.call("review_set_skill_id", skill_id)
 		root.add_child(lab)
@@ -90,6 +95,33 @@ func _run() -> void:
 			else:
 				_check(str(state.get("source_g3", "")) == "SOURCE_ALPHA_AND_CONTACT_SHEET_SELF_PASS",
 					"source alpha and both contrast sheets are self-reviewed " + skill_id)
+		elif is_talisman:
+			var canonical: Dictionary = canonical_by_id.get(skill_id, {})
+			_check(not canonical.is_empty(), "Talisman runtime catalogue join " + skill_id)
+			_check(str(state.get("canonical_effect", "")) == str(canonical.get("effect", ""))
+				and str(state.get("canonical_shape", "")) == str(canonical.get("shape", ""))
+				and int(state.get("canonical_target_limit", 0)) == int(canonical.get("target_limit", 0)),
+				"Talisman canonical effect, shape and cap remain data-owned " + skill_id)
+			_check(int(state.get("actor_asset_id", -1)) == 64,
+				"Talisman preview resolves existing AS64 source " + skill_id)
+			_check(int(state.get("phase_sources_loaded", 0)) == 4
+				and int(state.get("frame_count", 0)) >= 8,
+				"distinct existing RGBA atlas phases load in shared Factory " + skill_id)
+			_check(str(entry.get("native_batch", "")) == "talisman"
+				and str(entry.get("native_status", "")) == "NATIVE_CAPTURE_PENDING",
+				"Talisman is routed through the shared school batch runner " + skill_id)
+			var binding_types: Array[String] = []
+			for binding in entry.get("receipt_manifest", {}).get("bindings", []):
+				binding_types.append(str(binding.get("event_type", "")))
+			if str(canonical.get("effect", "")) == "mark":
+				_check(binding_types.has("v63_talisman_mark_applied")
+					and not binding_types.has("v63_talisman_hit"),
+					"mark only appears after the authoritative owner-scoped mark receipt " + skill_id)
+			else:
+				_check(binding_types.has("v63_talisman_hit"),
+					"damage contact remains bound to a real exact-skill hit " + skill_id)
+			_check(not str(entry.get("owner_status", "")).contains("OWNER_VISUAL_APPROVED"),
+				"current Factory adapter does not inherit historical source approval " + skill_id)
 		else:
 			_check(str(state.get("canonical_effect", "")) == "damage",
 				"existing candidate canonical effect preserved " + skill_id)
@@ -101,6 +133,6 @@ func _run() -> void:
 
 func _finish() -> void:
 	print("VFX_FACTORY_REVIEW_RESULT=" + ("PASS" if failures == 0 else "FAIL")
-		+ " cases=" + str(checked) + " skills=" + str(19)
+		+ " cases=" + str(checked) + " skills=" + str(23)
 		+ " formation=17 AS68=resolved contact_fixture=NONE failures=" + str(failures))
 	quit(0 if failures == 0 else 1)

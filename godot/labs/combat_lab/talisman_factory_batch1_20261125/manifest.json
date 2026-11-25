@@ -1,0 +1,135 @@
+{
+  "schema": "tmb.vfx_factory_school_batch.v1",
+  "batch_id": "talisman_factory_batch1_20261125",
+  "school": "talisman",
+  "branch": "loi_phu",
+  "source_policy": "Existing first-party RGBA atlas bytes are read-only and reused by the shared data-driven Factory; no art rebake or gameplay mutation.",
+  "canonical_source": "res://data/combat/v63_talisman_combat_catalog.json",
+  "actor_source": "AS64 existing talisman actor metadata and SpriteFrames",
+  "shared_renderer": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+  "native_runner": "res://labs/combat_lab/vfx_factory/vfx_factory_formation_batch_capture.tscn",
+  "fixture_policy": "Only actual MapBattleV2 cast, release, hit and owner-scoped mark receipts are routed. Renderer produces no combat events.",
+  "approval_policy": "Historical approved TAL02/TAL03 source revisions remain in Git history unchanged. Current atlas hashes and new Factory adapters are separate review candidates; owner approval does not transfer.",
+  "review_status": "CANDIDATE_TECH_PENDING",
+  "native_capture": {
+    "status": "PENDING",
+    "viewport_px": [
+      1280,
+      720
+    ],
+    "contact_sheet": "PENDING",
+    "video": "PENDING"
+  },
+  "owner_approval": "PENDING",
+  "pve": "HOLD",
+  "skills": [
+    {
+      "skill_id": "tmb.skill.talisman.loi_phu.active_02.human",
+      "name_vi": "Thiên Lôi Dẫn Nét",
+      "owner_status": "OWNER_VISUAL_PENDING_CURRENT_SOURCE_REVISION",
+      "historical_owner_approved_commit": "26a0e80fa1bdb8c8aec00bf3ed90ad48dd18ca99",
+      "visual_identity": "painted calligraphic lightning stroke with local fracture",
+      "art_sources": [
+        {
+          "path": "godot/labs/combat_lab/talisman02/assets/tal02_thunder_flipbook.webp",
+          "sha256": "ec85a47ed0615912ddfa2885687a81f0825ac18436b96e27070b7898b1bccc53",
+          "bytes": 318190
+        },
+        {
+          "path": "godot/labs/combat_lab/talisman02/assets/tal02_thunder_master.webp",
+          "sha256": "16fdb0fe6825ac01e221e21da6149696aa3a0f91ad9e36a32fece041fe982b3b",
+          "bytes": 30764
+        },
+        {
+          "path": "godot/labs/combat_lab/talisman02/assets/talisman_foot_array.webp",
+          "sha256": "8ff80bbf3bc0c1a72e415b4eff9884fbe0f27fcaab204e717720aa2daeeaefac",
+          "bytes": 43238
+        },
+        {
+          "path": "godot/labs/combat_lab/talisman02/assets/tal02_fracture_impact.webp",
+          "sha256": "4f22ee47afcab9f6ff09712e5c56f17bb8b50a34942337c56fc53eb3d57403d0",
+          "bytes": 46816
+        }
+      ],
+      "factory_adapter_status": "CANDIDATE_NOT_OWNER_APPROVED",
+      "native_status": "NATIVE_CAPTURE_PENDING",
+      "pve_status": "HOLD"
+    },
+    {
+      "skill_id": "tmb.skill.talisman.loi_phu.active_03.human",
+      "name_vi": "Lôi Văn Truy Ấn",
+      "owner_status": "OWNER_VISUAL_PENDING_CURRENT_SOURCE_REVISION",
+      "historical_owner_approved_commit": "095541f957b80add4fd4abee355d7ad8fda03081",
+      "visual_identity": "single evolving painted purple-gold mark; mark receipt only",
+      "art_sources": [
+        {
+          "path": "godot/labs/combat_lab/talisman03/assets/tal03_mark_flipbook.webp",
+          "sha256": "e8fc4dfbc08d35a25dd72d8f750d1b98b91a6e182a014c3baeb49502d2378d39",
+          "bytes": 330608
+        },
+        {
+          "path": "godot/labs/combat_lab/talisman03/assets/tal03_mark_master.webp",
+          "sha256": "b35c9d8d6f262e983c1edf97ba723a97ec406cff4a3412530c8fbb06d2c3454c",
+          "bytes": 62098
+        }
+      ],
+      "factory_adapter_status": "CANDIDATE_NOT_OWNER_APPROVED",
+      "native_status": "NATIVE_CAPTURE_PENDING",
+      "pve_status": "HOLD"
+    },
+    {
+      "skill_id": "tmb.skill.talisman.loi_phu.active_04.human",
+      "name_vi": "Cửu Tiêu Phá Vân",
+      "owner_status": "OWNER_VISUAL_PENDING",
+      "historical_owner_approved_commit": "",
+      "visual_identity": "cloud fissure with local ground fracture",
+      "art_sources": [
+        {
+          "path": "godot/labs/combat_lab/talisman04/assets/tal04_r3_cloud_flipbook.webp",
+          "sha256": "20796673bbb7c6cfc7a3c3112b43a62d589bb65a1a4ecf543014fed450df9e10",
+          "bytes": 780226
+        },
+        {
+          "path": "godot/labs/combat_lab/talisman04/assets/tal04_r3_cloud_master.webp",
+          "sha256": "59fd75786c5f0f86a0805343e9f0dc351081f3e2225f63c252149f8cfb32c3a1",
+          "bytes": 119654
+        },
+        {
+          "path": "godot/labs/combat_lab/talisman04/assets/tal04_r3_local_fracture.webp",
+          "sha256": "e32cb3c24b8dc66daa8eff6567628a24cc68b9e0f3fece8090360ada63864012",
+          "bytes": 15590
+        }
+      ],
+      "factory_adapter_status": "CANDIDATE_NOT_OWNER_APPROVED",
+      "native_status": "NATIVE_CAPTURE_PENDING",
+      "pve_status": "HOLD"
+    },
+    {
+      "skill_id": "tmb.skill.talisman.loi_phu.ultimate.human",
+      "name_vi": "Cửu Thiên Vạn Lôi Phù",
+      "owner_status": "OWNER_VISUAL_PENDING",
+      "historical_owner_approved_commit": "",
+      "visual_identity": "heavenly seal, vertical bolt, local impact",
+      "art_sources": [
+        {
+          "path": "godot/labs/combat_lab/talisman05/assets/tal05_r3_sky_flipbook.webp",
+          "sha256": "5e85e9151f3f6761cf6a2faf09cf5981231503261bdfce848684ca8b9beb9858",
+          "bytes": 988352
+        },
+        {
+          "path": "godot/labs/combat_lab/talisman05/assets/tal05_r3_bolt_flipbook.webp",
+          "sha256": "9f3c76b0b4f298865666e6aaadf640f73885db0d5ab5461826d9897884217a42",
+          "bytes": 232330
+        },
+        {
+          "path": "godot/labs/combat_lab/talisman05/assets/tal05_r3_impact.webp",
+          "sha256": "a7165ef92a4398597dd4ff132077880d70569be1a0fb68fefe48dfdfc55bfb1a",
+          "bytes": 17968
+        }
+      ],
+      "factory_adapter_status": "CANDIDATE_NOT_OWNER_APPROVED",
+      "native_status": "NATIVE_CAPTURE_PENDING",
+      "pve_status": "HOLD"
+    }
+  ]
+}
