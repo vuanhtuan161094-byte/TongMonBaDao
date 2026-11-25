@@ -1,0 +1,483 @@
+{
+  "schema": "tmb.vfx_factory_source_batch.v1",
+  "batch_id": "poison_human_cast_batch1_20261125",
+  "source_status": "REUSED_EXISTING_SOURCE; FACTORY_ADAPTER_CANDIDATE; NATIVE_PENDING",
+  "factory_scene": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+  "native_capture_scene": "res://labs/combat_lab/vfx_factory/vfx_factory_formation_batch_capture.tscn",
+  "skill_count": 16,
+  "excluded": [
+    {
+      "skill_id": "tmb.skill.poison.duoc_doc.active_01.human",
+      "reason": "GODOT_G35_TECH_PASS_ART_REWORK_REQUIRED_R2",
+      "owner_gate": "OWNER_VISUAL_PENDING"
+    }
+  ],
+  "shared_actor": {
+    "school": "poison",
+    "sex": "male",
+    "aschar_id": 62,
+    "scale_source": "ASCHAR_FACTORY_BRIDGE_AND_GAME_VIEW_SCALE"
+  },
+  "source_art_policy": "Existing revision files are read-only; no synthesized, recolored, or copied art.",
+  "combat_contract": "Canonical Human catalog + exact MapBattle V2 receipt; no synthetic hit or status.",
+  "owner_approval": "PENDING_FACTORY_ADAPTER_REVIEW",
+  "pve": "HOLD",
+  "skills": [
+    {
+      "skill_id": "tmb.skill.poison.basic.human",
+      "name_vi": "Độc Châm Thường Thức",
+      "branch": "shared",
+      "source_revision": "poison_basic_human_v2",
+      "source_scene": "labs/combat_lab/poison_basic_human_v2/doc_cham_thuong_thuc.tscn",
+      "source_script": "labs/combat_lab/poison_basic_human_v2/doc_cham_thuong_thuc.gd",
+      "source_lab_visual_status": "GODOT_V4_TECH_PASS_V3_1_PROVISIONAL_USE_POLISH_BACKLOG",
+      "source_owner_gate": "OWNER_PROVISIONAL_ACCEPTED_NOT_FINAL",
+      "new_factory_adapter": "CANDIDATE_OWNER_REVIEW_PENDING",
+      "phase_art_sha256": {
+        "labs/combat_lab/poison_basic_human_v2/assets/atlas/poison_basic_charge_06_rgba.png": "2f831fd558c0cc278f8ad317d38e0645672a041dac16e64b78136c11999754c4",
+        "labs/combat_lab/poison_basic_human_v2/assets/atlas/poison_basic_flight_08_rgba.png": "dd454c6f9b67e2770af5612b13b4535ca2f088a4837a99f83df3641b0a25ed87",
+        "labs/combat_lab/poison_basic_human_v2/assets/atlas/poison_basic_contact_08_rgba.png": "24abc5d16a835f3010fabf843218cda5f0a89aada6bb8b1f0012bb61e801fd58"
+      },
+      "phase_count": {
+        "charge": 6,
+        "flight": 8,
+        "contact": 8,
+        "fade": 2
+      }
+    },
+    {
+      "skill_id": "tmb.skill.poison.co_doc.active_01.human",
+      "name_vi": "Phụ Cốt Cổ",
+      "branch": "co_doc",
+      "source_revision": "poison03/fu_cot_co",
+      "source_scene": "labs/combat_lab/poison03/fu_cot_co.tscn",
+      "source_script": "labs/combat_lab/poison03/fu_cot_co.gd",
+      "source_lab_visual_status": "LAB_APPROVED_VISUAL_BASELINE",
+      "source_owner_gate": "OWNER_VISUAL_APPROVED",
+      "new_factory_adapter": "CANDIDATE_OWNER_REVIEW_PENDING",
+      "phase_art_sha256": {
+        "labs/combat_lab/poison03/assets/fu_cot_bone_seal.svg": "2593c4246f1ba74a0fd30e74bd184c0ffd6a14f58e85fb3c0e0d6a171c769247",
+        "labs/combat_lab/poison03/assets/fu_cot_gu_master.svg": "d599a1a3ea8f53bcb112a85344222b8b5a7acd161e10aa0613b38fd6842db8d8"
+      },
+      "phase_count": {
+        "charge": 1,
+        "release": 1,
+        "contact": 1,
+        "start": 1,
+        "sustain": 1,
+        "end": 1
+      }
+    },
+    {
+      "skill_id": "tmb.skill.poison.co_doc.active_02.human",
+      "name_vi": "Xà Ảnh Quấn Mạch",
+      "branch": "co_doc",
+      "source_revision": "poison02/xa_anh_source_vl_remake",
+      "source_scene": "labs/combat_lab/poison02/xa_anh_source_vl_remake.tscn",
+      "source_script": "labs/combat_lab/poison02/xa_anh_source_vl_remake.gd",
+      "source_lab_visual_status": "LAB_APPROVED_CHARGE_POLISH_PENDING",
+      "source_owner_gate": "OWNER_VISUAL_APPROVED",
+      "new_factory_adapter": "CANDIDATE_OWNER_REVIEW_PENDING",
+      "phase_art_sha256": {
+        "labs/combat_lab/poison02/assets/serpent-bind-back-4pose.webp": "af6fa319123ae86a82ef9f033884a9a5084220a842b8c0cbbf6e8ab687eea0ef",
+        "labs/combat_lab/poison02/assets/serpent-flight-atlas.webp": "0d8c2e44d7d29eb1abf254eab1de35107f9c0cd67d8928d1a77baf1df3229371",
+        "labs/combat_lab/poison02/assets/serpent-bind-front-4pose.webp": "e5bd9c35594215fc04450890d9039ed1f4999b4d492842802ea4fb35248f44bf",
+        "labs/combat_lab/poison02/assets/serpent-head.webp": "290548b09142d3ceb5f60aa1cfef70c8a2016bae26893b46d6b5a937244ebefc"
+      },
+      "phase_count": {
+        "charge": 4,
+        "flight": 6,
+        "contact": 4,
+        "start": 4,
+        "sustain": 4,
+        "end": 4
+      }
+    },
+    {
+      "skill_id": "tmb.skill.poison.co_doc.active_03.human",
+      "name_vi": "Cổ Vụ Mê Tung",
+      "branch": "co_doc",
+      "source_revision": "poison04/co_vu_me_tung",
+      "source_scene": "labs/combat_lab/poison04/co_vu_me_tung.tscn",
+      "source_script": "labs/combat_lab/poison04/co_vu_me_tung.gd",
+      "source_lab_visual_status": "LAB_APPROVED_VISUAL_BASELINE",
+      "source_owner_gate": "OWNER_VISUAL_APPROVED",
+      "new_factory_adapter": "CANDIDATE_OWNER_REVIEW_PENDING",
+      "phase_art_sha256": {
+        "labs/combat_lab/poison04/assets/co_vu_smoke_tendril.svg": "311ac71f29ec1a3f098aecb1ed16c7a09ac6811e7ebf3a39a59fce772edb01a7",
+        "labs/combat_lab/poison04/assets/co_vu_painted_cloud.svg": "6542a6fec165b23c38410880eb3db826b7d22fcabd42171dedddf8732b791d59",
+        "labs/combat_lab/poison04/assets/co_vu_gu_moth.svg": "8ce486cdc87fd1e7a7e0f6d8f5e72a2c4b0cdfef9525fdbd70e40b202eaa8e09"
+      },
+      "phase_count": {
+        "charge": 1,
+        "release": 1,
+        "contact": 1,
+        "start": 1,
+        "sustain": 1,
+        "end": 1
+      }
+    },
+    {
+      "skill_id": "tmb.skill.poison.co_doc.active_04.human",
+      "name_vi": "Tán Cổ Diễn Nhiễm",
+      "branch": "co_doc",
+      "source_revision": "poison05/remake_r6",
+      "source_scene": "labs/combat_lab/poison05/remake_r6/tan_co_dien_nhiem_r6.tscn",
+      "source_script": "labs/combat_lab/poison05/remake_r6/tan_co_dien_nhiem_r6.gd",
+      "source_lab_visual_status": "GODOT_LAB_PASS_ART_PENDING",
+      "source_owner_gate": "OWNER_VISUAL_PENDING",
+      "new_factory_adapter": "CANDIDATE_OWNER_REVIEW_PENDING",
+      "phase_art_sha256": {
+        "labs/combat_lab/poison05/remake_r6/assets/seed_0.svg": "71e279905ced34f1d898a29a6d1cc9940421ced295c73c5780f6a8e115179d69",
+        "labs/combat_lab/poison05/remake_r6/assets/seed_1.svg": "d189b39022355255f64d8c2fc253b5918f6d1d67a1c3ba959d5631897e7a2365",
+        "labs/combat_lab/poison05/remake_r6/assets/seed_2.svg": "395e90de7665bc08891f4026d3a402731cf50ca551d1e9545d9d1b362b10907d",
+        "labs/combat_lab/poison05/remake_r6/assets/seed_3.svg": "ff0de27d9ee0be2f11f23b678bb79eda69ab981bcfa93151ae4d46bea445e603",
+        "labs/combat_lab/poison05/remake_r6/assets/seed_4.svg": "f5a8547e12aed857e0a7a8a4377eaf0502b2b4bb636c02b13d637e77bc9c1589",
+        "labs/combat_lab/poison05/remake_r6/assets/seed_5.svg": "b7b4dc01edcca64a76d57c1d7acdfb9a191adafafd64d005ff72b79c62fa8f0e",
+        "labs/combat_lab/poison05/remake_r6/assets/gu_swarm_0.svg": "15ba5a9b2e8f1266fa99067759317adb305be203c67614219d97cb2ce0c8f052",
+        "labs/combat_lab/poison05/remake_r6/assets/gu_swarm_1.svg": "0ab5b02fc15ba75326a2b6d557befc8084bacafdf680425b961591882069ffb8",
+        "labs/combat_lab/poison05/remake_r6/assets/gu_swarm_2.svg": "904a93bbc0d3ab3d2dc1044835b944d9d7e92a3341540f40ab39bb50cac78219",
+        "labs/combat_lab/poison05/remake_r6/assets/gu_swarm_3.svg": "b5785709d246eaac9602fd8e532692901fc44a5228252eceb856c591ef518c15",
+        "labs/combat_lab/poison05/remake_r6/assets/gu_swarm_4.svg": "2c2e00e971f8bc7ad0b02b6f7d3d717bedce719b514e76b509a8e9451f426053",
+        "labs/combat_lab/poison05/remake_r6/assets/gu_swarm_5.svg": "67e8c2cfd49b8419215a51b0f3cd5732b3342dd2f88df09d1545942f11a791d8",
+        "labs/combat_lab/poison05/remake_r6/assets/gu_swarm_6.svg": "39a12f9894627c1a9833552d28440f8044365be1c02ada0a7cb6d62ce5969560",
+        "labs/combat_lab/poison05/remake_r6/assets/gu_swarm_7.svg": "2a560c33892146ccc1a641733fdee5dc97d9d5510c279be458a72471c6e44c32",
+        "labs/combat_lab/poison05/remake_r6/assets/mark_0.svg": "784a77c599a5ab2d3fdfc4bed0cf7d48ca3f10e255926f63f75cb84d33abcd0f",
+        "labs/combat_lab/poison05/remake_r6/assets/mark_1.svg": "1e467bb90b507e81b87f36cce60e6cd62cc7e99cf2a72c2badfe27410f55a2bb",
+        "labs/combat_lab/poison05/remake_r6/assets/mark_2.svg": "96c3b48cd0dc61ef5fed77641352544f1a597ff82abbbbbbc161fd6b246ac371",
+        "labs/combat_lab/poison05/remake_r6/assets/mark_3.svg": "72e2c6b42042ddc6095573afe1f5237eece0255234333f2e8c040cb504ca7991",
+        "labs/combat_lab/poison05/remake_r6/assets/mark_4.svg": "df1a4cbc959e9b05858237215e5ad172ac64a947243836652a50f4de8837c13c",
+        "labs/combat_lab/poison05/remake_r6/assets/mark_5.svg": "6127b0613a34eff616de7442f51a7538c5035385112d28a26de82964a5dfd94d",
+        "labs/combat_lab/poison05/remake_r6/assets/gu_00.svg": "d223249215e3b9891d5d2bbab501d255283650fb71fa701cc055a2f8c571fc2c",
+        "labs/combat_lab/poison05/remake_r6/assets/gu_01.svg": "7df957c7b0b2d5a0317c81d881cf13aac5446c06c6413d29ae8e0e650ac2a74d",
+        "labs/combat_lab/poison05/remake_r6/assets/gu_02.svg": "d0de48f188996bd2e7c91929c2a73c46dd9e318df669e1872a34333b72ea2331",
+        "labs/combat_lab/poison05/remake_r6/assets/gu_03.svg": "d1a2ef4deb15ef73d4ff5e71873c9a83d17adc867ed8a8734cdaabb67c42029b",
+        "labs/combat_lab/poison05/remake_r6/assets/gu_04.svg": "7fc6ae5f43ec869b87cf543efda40098bf2b0e435a55949560c953cea01c3824",
+        "labs/combat_lab/poison05/remake_r6/assets/gu_05.svg": "5afa539b3213981be072e77414d3914766fa2f884fd45e6c83df7bcbad440dab",
+        "labs/combat_lab/poison05/remake_r6/assets/gu_06.svg": "f6f0adfef0c60482c0922f3348fb4c285c426e271d01b11688848224d0340c14",
+        "labs/combat_lab/poison05/remake_r6/assets/gu_07.svg": "0f4972c40fe8f6466a12a4ba9886d2a654e9516417f9b2f1d9dbcf7797deeaec",
+        "labs/combat_lab/poison05/remake_r6/assets/gu_08.svg": "8bd74ea495d43e3b07816fcaa7d2f382a265c9cae6a5de39c54fac62826ac4b4",
+        "labs/combat_lab/poison05/remake_r6/assets/gu_09.svg": "2db1cb54fea3d1ec1dae87f27a10bdc879bee35ef843eb3d023c2e884015753f",
+        "labs/combat_lab/poison05/remake_r6/assets/gu_10.svg": "716d8123ec4f306b981cf7a013dd9dc16c8e642e50e028b288b1ad90f5e28b73",
+        "labs/combat_lab/poison05/remake_r6/assets/gu_11.svg": "820416d1894b4b9981d4b2ce19364892eb66df9349efaab1ad15673b0c923523",
+        "labs/combat_lab/poison05/remake_r6/assets/immortal_valley.svg": "aa9ca3f8ebc1c7b54e4bf346fdad27944a0bed20748034a2534288b91bc3c5e4"
+      },
+      "phase_count": {
+        "charge": 6,
+        "release": 8,
+        "contact": 6,
+        "start": 6,
+        "sustain": 12,
+        "end": 6
+      }
+    },
+    {
+      "skill_id": "tmb.skill.poison.co_doc.ultimate.human",
+      "name_vi": "Vạn Cổ Phệ Giới",
+      "branch": "co_doc",
+      "source_revision": "poison06/r11_candidate",
+      "source_scene": "labs/combat_lab/poison06/r11_candidate/van_co_phe_gioi_r11.tscn",
+      "source_script": "labs/combat_lab/poison06/r11_candidate/van_co_phe_gioi_r11.gd",
+      "source_lab_visual_status": "GODOT_LAB_PASS_ART_PENDING",
+      "source_owner_gate": "OWNER_VISUAL_PENDING",
+      "new_factory_adapter": "CANDIDATE_OWNER_REVIEW_PENDING",
+      "phase_art_sha256": {
+        "labs/combat_lab/poison06/r11_candidate/assets/realm_vortex_r11_48.png": "1d3c8adbee16e48973998a66f3692f12366dd64e8b9582ecf090ccfcb00299f8",
+        "labs/combat_lab/poison06/assets/abyss_brand_0.svg": "7b9d466011f8910a89feac4f2553323b3c8813f0828b80929e42ac32843d9b1d",
+        "labs/combat_lab/poison06/assets/abyss_brand_1.svg": "fc9d37df9d8c5cb988f99e5a5666a0612f9e00443ca12fe40d5edd97269eac78",
+        "labs/combat_lab/poison06/assets/abyss_brand_2.svg": "fc9d37df9d8c5cb988f99e5a5666a0612f9e00443ca12fe40d5edd97269eac78",
+        "labs/combat_lab/poison06/assets/abyss_brand_3.svg": "7b9d466011f8910a89feac4f2553323b3c8813f0828b80929e42ac32843d9b1d",
+        "labs/combat_lab/poison06/assets/abyss_brand_4.svg": "9494d759b399051f2e126f232916abebfdd65bafd94fbe71afdb7c0d51428f98",
+        "labs/combat_lab/poison06/assets/abyss_brand_5.svg": "30a205523745418a5db832a8c4b8ba857c58c3d473a6f1a0434524f576a3aeb5",
+        "labs/combat_lab/poison06/assets/abyss_gu_0.svg": "55cb66c595a6fca7a52e7c97a4df04dd39c664fd3b0b1d51915caad75f4ee18f",
+        "labs/combat_lab/poison06/assets/abyss_gu_1.svg": "a9d69fad1e38c13365130698262a9ab9b8db8e61df38fd88252316e46fe882ae",
+        "labs/combat_lab/poison06/assets/abyss_gu_2.svg": "acec70151fc5578f83d938dcd8c38ee0ade49f5a313044f7667595be0e90285a",
+        "labs/combat_lab/poison06/assets/abyss_gu_3.svg": "d18525823a8eeac16e26e64136d03461e7ad52d512e324f37aea666eeb5d572c",
+        "labs/combat_lab/poison06/assets/abyss_gu_4.svg": "4acbe370ce4d169bac9be3d35ef853bb7317610df49809a1ecc3283112ec2606",
+        "labs/combat_lab/poison06/assets/abyss_gu_5.svg": "d8ed40e4838c9240926447cc1523b7f3e59481a170600a8cc8a0ebb2e7045841",
+        "labs/combat_lab/poison06/assets/abyss_gu_6.svg": "f728210539d71e2dc46d8c0ba2d2862fd20724e384d1bb60af21c3e871a2a420",
+        "labs/combat_lab/poison06/assets/abyss_gu_7.svg": "639f4fe6f126db97f04ee987fb6581301cc4cc95c7bc6b16e2a25233c25c1589"
+      },
+      "phase_count": {
+        "charge": 8,
+        "release": 14,
+        "contact": 14,
+        "start": 8,
+        "sustain": 16,
+        "end": 6
+      }
+    },
+    {
+      "skill_id": "tmb.skill.poison.doc_cham.active_01.human",
+      "name_vi": "Xuyên Cốt Độc Châm",
+      "branch": "doc_cham",
+      "source_revision": "poison07/r7_painted",
+      "source_scene": "labs/combat_lab/poison07/r7_painted/xuyen_cot_doc_cham_r7.tscn",
+      "source_script": "labs/combat_lab/poison07/r7_painted/xuyen_cot_doc_cham_r7.gd",
+      "source_lab_visual_status": "OWNER_VISUAL_APPROVED_R7",
+      "source_owner_gate": "OWNER_VISUAL_APPROVED",
+      "new_factory_adapter": "CANDIDATE_OWNER_REVIEW_PENDING",
+      "phase_art_sha256": {
+        "labs/combat_lab/poison07/r7_painted/assets/painted_charge_r7_10.png": "d48560838ecadbf3bad91a71d57830095392eca7c898e9965711fdf8cce403fa",
+        "labs/combat_lab/poison07/r7_painted/assets/painted_needle_r7_12.png": "169a396129fcb3be44e233c921da0d9b921c3922cdf8eb2c8839ad04b16cf5ae",
+        "labs/combat_lab/poison07/r7_painted/assets/painted_puncture_r7_12.png": "9a57545ea2295e6ee76a6e7824e984abcaf428cb1dee86a9c414aa8c12c0abba",
+        "labs/combat_lab/poison07/r7_painted/assets/master/needle_painted_source.webp": "2b7a41c2719eb7441b3ca552ecf46bd4c0788fb5a9351f9f5ebb7da87611cf1f",
+        "labs/combat_lab/poison07/r7_painted/assets/master/palm_painted_source.webp": "357fcbe0ff458b1396da37a3668011728e0b51843c13becb9bcfc60138bfe19c",
+        "labs/combat_lab/poison07/r7_painted/assets/master/puncture_painted_source.webp": "d116a6f73f240ed93316aa78ec021460d42a84912120e2caf3f727f44279391e"
+      },
+      "phase_count": {
+        "charge": 10,
+        "flight": 12,
+        "contact": 12,
+        "fade": 2
+      }
+    },
+    {
+      "skill_id": "tmb.skill.poison.doc_cham.active_02.human",
+      "name_vi": "Phệ Mạch Độc Thích",
+      "branch": "doc_cham",
+      "source_revision": "poison08/r4_painted",
+      "source_scene": "labs/combat_lab/poison08/r4_painted/phe_mach_doc_thich_r4.tscn",
+      "source_script": "labs/combat_lab/poison08/r4_painted/phe_mach_doc_thich_r4.gd",
+      "source_lab_visual_status": "OWNER_PROVISIONAL_R4_POLISH_BACKLOG",
+      "source_owner_gate": "OWNER_PROVISIONAL_CONTINUE",
+      "new_factory_adapter": "CANDIDATE_OWNER_REVIEW_PENDING",
+      "phase_art_sha256": {
+        "labs/combat_lab/poison08/r4_painted/assets/thorn_seed_r4_10.png": "39d7f0600a2ae125f81d4e67bd3e4f065d50f69d75f2c97a4e302aca9036b48f",
+        "labs/combat_lab/poison08/r4_painted/assets/living_barb_r4_12.png": "1c55205f4e679af5b90b9f2ddf33a17f551f46af30a5d5c064650f4326810842",
+        "labs/combat_lab/poison08/r4_painted/assets/bite_contact_r4_08.png": "a5b3ee2b93b309c84bb05e34b4872ba053a6bd650a3982b204c3ed1351fa4e00",
+        "labs/combat_lab/poison08/r4_painted/assets/vein_mark_r4_12.png": "e461dab9f8362cad3e2fa9c15b4869e9b0f7526d22ec8ff22403a6c5c336001c",
+        "labs/combat_lab/poison08/r4_painted/assets/master/toxin_barb_painted.webp": "2fd6203d900b6e0f3cf3d15929cdf2790d01544244a12fefe2d181f88f2d60dd"
+      },
+      "phase_count": {
+        "charge": 10,
+        "flight": 12,
+        "contact": 8,
+        "start": 12,
+        "sustain": 12,
+        "end": 3
+      }
+    },
+    {
+      "skill_id": "tmb.skill.poison.doc_cham.active_03.human",
+      "name_vi": "Bách Độc Tán Châm",
+      "branch": "doc_cham",
+      "source_revision": "poison09/r1_painted",
+      "source_scene": "labs/combat_lab/poison09/r1_painted/bach_doc_tan_cham_r1.tscn",
+      "source_script": "labs/combat_lab/poison09/r1_painted/bach_doc_tan_cham_r1.gd",
+      "source_lab_visual_status": "OWNER_VISUAL_APPROVED_R1",
+      "source_owner_gate": "OWNER_VISUAL_APPROVED",
+      "new_factory_adapter": "CANDIDATE_OWNER_REVIEW_PENDING",
+      "phase_art_sha256": {
+        "labs/combat_lab/poison09/r1_painted/assets/poison_fan_charge_r1_12.png": "970cdc56bd059fe959b5b82aaa898ce37562b74f4a39b71d6423a34703c287af",
+        "labs/combat_lab/poison09/r1_painted/assets/poison_fan_needle_r1_12.png": "46e073f2f87b1307e19000f4ca72862f09cdda53ae0cb9256a4463d2c43dec00",
+        "labs/combat_lab/poison09/r1_painted/assets/poison_fan_contact_r1_10.png": "6b7fe670bc4d89c9eefd734e436fe1594bb03427f9ce5041f00901bfaceea66a",
+        "labs/combat_lab/poison09/r1_painted/assets/poison_fan_mark_r1_12.png": "3f787250f2ccaaebd47ffefd600c55d86d0093f5fe14452f4963a32d2e422245",
+        "labs/combat_lab/poison09/r1_painted/assets/master/burst_contact_master.webp": "93f0db91a26e222cc5666cd55b79dcd5a8d7d1297a20aae4aab60a97c5c69ba9",
+        "labs/combat_lab/poison09/r1_painted/assets/master/fanlotus_charge_master.webp": "258f150f6732660be1380a574a7f366e3b79bff87ae965b36ba1c2c47e169e05",
+        "labs/combat_lab/poison09/r1_painted/assets/master/poison_needle_master.webp": "6ce6947ff83cef4c3627c7fbaac7b72981232c489ff558420377223cfb207331",
+        "labs/combat_lab/poison09/r1_painted/assets/master/sixsecond_toxin_master.webp": "00d98d29da8b3afc37f5d8cb6cc7ede356f70f1cde64872c492a16515647a752"
+      },
+      "phase_count": {
+        "charge": 12,
+        "release": 12,
+        "contact": 10,
+        "start": 12,
+        "sustain": 12,
+        "end": 3
+      }
+    },
+    {
+      "skill_id": "tmb.skill.poison.doc_cham.active_04.human",
+      "name_vi": "Độc Khí Phệ Tâm",
+      "branch": "doc_cham",
+      "source_revision": "poison10/r2_remake",
+      "source_scene": "labs/combat_lab/poison10/r2_remake/doc_khi_phe_tam_r2.tscn",
+      "source_script": "labs/combat_lab/poison10/r2_remake/doc_khi_phe_tam_r2.gd",
+      "source_lab_visual_status": "OWNER_PROVISIONAL_R2_CONTINUE",
+      "source_owner_gate": "OWNER_PROVISIONAL_CONTINUE",
+      "new_factory_adapter": "CANDIDATE_OWNER_REVIEW_PENDING",
+      "phase_art_sha256": {
+        "labs/combat_lab/poison10/r2_remake/assets/poison10_r2_charge_10.png": "b235e7258ec551931edb46e905bbc9af60a662c86763816fa498b9116bef33b2",
+        "labs/combat_lab/poison10/r2_remake/assets/poison10_r2_bloom_12.png": "4ebbbbd24542466679608faf01fde9a4a73fe34f65dfb414db2203d6d328f002",
+        "labs/combat_lab/poison10/r2_remake/assets/poison10_r2_contact_08.png": "2e6435ee4fdcd6da00daece51ee84051d5f13ac101ba44bd26e2c38c375b296a",
+        "labs/combat_lab/poison10/r2_remake/assets/master/poi10_bloom_master.webp": "7c0e17d520d5f24d030dd4c2917543513f2db2c6b874fb3ccd3e5ce26f1ab53b",
+        "labs/combat_lab/poison10/r2_remake/assets/master/poi10_charge_master.webp": "f10915428c92640d7784fdbc5ac77d995f9e39f1dd5b922316adb6ee9818a3f8",
+        "labs/combat_lab/poison10/r2_remake/assets/master/poi10_contact_master.webp": "330354da1c2c4cb1072b0644423e52e9392a218c669a73de485144af828385f0"
+      },
+      "phase_count": {
+        "charge": 10,
+        "release": 12,
+        "contact": 8,
+        "start": 8,
+        "sustain": 12,
+        "end": 2
+      }
+    },
+    {
+      "skill_id": "tmb.skill.poison.doc_cham.ultimate.human",
+      "name_vi": "Vạn Độc Xuyên Tâm",
+      "branch": "doc_cham",
+      "source_revision": "poison11/r1_original",
+      "source_scene": "labs/combat_lab/poison11/r1_original/van_doc_xuyen_tam_r1.tscn",
+      "source_script": "labs/combat_lab/poison11/r1_original/van_doc_xuyen_tam_r1.gd",
+      "source_lab_visual_status": "OWNER_VISUAL_APPROVED_R9",
+      "source_owner_gate": "OWNER_VISUAL_APPROVED",
+      "new_factory_adapter": "CANDIDATE_OWNER_REVIEW_PENDING",
+      "phase_art_sha256": {
+        "labs/combat_lab/poison11/r1_original/assets/poison11_charge_10.png": "3d58e46930954b28f3927420763d356d89b333b25b9bd255a64c8003276fdadf",
+        "labs/combat_lab/poison11/r1_original/assets/poison11_flight_10.png": "a1107323555371ecc1c176cbbbbcf407185b12a4a1117b8bd0462077a3dfabee",
+        "labs/combat_lab/poison11/r1_original/assets/poison11_crown_10_r9.png": "f2c83a63cdeebb40a5b1474896fa256e1aabba203206d269429302d8628e6046",
+        "labs/combat_lab/poison11/r1_original/assets/poison11_contact_08.png": "886c5ac39e867875b5e382a11562508386e3a053b9c0c32bac892d6cb46634df",
+        "labs/combat_lab/poison11/r1_original/assets/master/heart_piercer_source.webp": "c5fa583cc5e1b986f991e110e1f84e34763aac2582323a2d1874e4e44f7026a6",
+        "labs/combat_lab/poison11/r1_original/assets/master/heart_rupture_source.webp": "a4f3cfc7131812eaa1fe6050a69b8c8277503636dc3ca52ca199026c540421ea",
+        "labs/combat_lab/poison11/r1_original/assets/master/heart_vortex_source.webp": "f75d5e1501e793afe47eaae1972b8ad1686cbf774ad0fee42ff2c5050a7ea242",
+        "labs/combat_lab/poison11/r1_original/assets/master/needle_crown_source.webp": "2b6a736d226a63d3ec293428aae4e858c46c4a94689ce41eedae4fe902fe1564"
+      },
+      "phase_count": {
+        "charge": 10,
+        "flight": 10,
+        "release": 10,
+        "contact": 8,
+        "start": 8,
+        "sustain": 10,
+        "end": 2
+      }
+    },
+    {
+      "skill_id": "tmb.skill.poison.duoc_doc.active_02.human",
+      "name_vi": "Giải Độc Hộ Tâm",
+      "branch": "duoc_doc",
+      "source_revision": "poison13_heal_heart/r2",
+      "source_scene": "labs/combat_lab/poison13_heal_heart/r2/giai_doc_ho_tam_energy.tscn",
+      "source_script": "labs/combat_lab/poison13_heal_heart/r2/giai_doc_ho_tam_energy.gd",
+      "source_lab_visual_status": "GODOT_V4_G35_TECH_PASS_R2_PROVISIONAL_KEEP",
+      "source_owner_gate": "OWNER_PROVISIONAL_ACCEPTED_NOT_FINAL",
+      "new_factory_adapter": "CANDIDATE_OWNER_REVIEW_PENDING",
+      "phase_art_sha256": {
+        "labs/combat_lab/poison13_heal_heart/r2/assets/poi13_r2_charge_08.png": "fa5f91a166a64d0ec0eacd7cfb5e2d60c71697598a8bac3e7e603b54ca87762b",
+        "labs/combat_lab/poison13_heal_heart/r2/assets/poi13_r2_release_10.png": "d47b644d2a4b9b9c2560fc5a1afc60a209e4807658eb29463949923140892774",
+        "labs/combat_lab/poison13_heal_heart/r2/assets/poi13_r2_aura_12.png": "bb54d4bd8c1d3dbfaad5aa16fa55f6890ccf3dd60d0d31bbfe82817ba09987cc",
+        "labs/combat_lab/poison13_heal_heart/r2/assets/master/poi13_r2_aura_source_rgba.png": "ec60af12226c5921775e6e8abf2dd4461903da9ae143230c792a8d7740375eec",
+        "labs/combat_lab/poison13_heal_heart/r2/assets/master/poi13_r2_charge_source_rgba.png": "5bda40714b3092918ff41655a89a8a80545066e42f2df8471f3ccd4bfb823a12",
+        "labs/combat_lab/poison13_heal_heart/r2/assets/master/poi13_r2_release_source_rgba.png": "a1de56af6b54a3f0ea755855478902bc842c5f8c6b2b32b7b9dc0fc2ff4f69a2"
+      },
+      "phase_count": {
+        "charge": 8,
+        "release": 10,
+        "contact": 12,
+        "fade": 2
+      }
+    },
+    {
+      "skill_id": "tmb.skill.poison.duoc_doc.active_03.human",
+      "name_vi": "Nghịch Độc Phản Chế",
+      "branch": "duoc_doc",
+      "source_revision": "poison14_cleanse/r1",
+      "source_scene": "labs/combat_lab/poison14_cleanse/r1/nghich_doc_phan_che.tscn",
+      "source_script": "labs/combat_lab/poison14_cleanse/r1/nghich_doc_phan_che.gd",
+      "source_lab_visual_status": "GODOT_V4_TECH_PASS_R1B_PROVISIONAL_KEEP",
+      "source_owner_gate": "OWNER_PROVISIONAL_ACCEPTED_NOT_FINAL",
+      "new_factory_adapter": "CANDIDATE_OWNER_REVIEW_PENDING",
+      "phase_art_sha256": {
+        "labs/combat_lab/poison14_cleanse/r1/assets/poi14_charge_08.png": "3b3e970770bed28a8304c3b45a3fbd60e706ad60c72e482861a871bc38d88fad",
+        "labs/combat_lab/poison14_cleanse/r1/assets/poi14_sever_12.png": "48a621eb7ff9f258645d29e571e3d125cbefba7308eabda7685301ccd5b6be3b",
+        "labs/combat_lab/poison14_cleanse/r1/assets/poi14_purge_10.png": "ad150c93be5f43f2d485e814bcf6badd531a1e3e0569377a0c0d5772f4c053b8",
+        "labs/combat_lab/poison14_cleanse/r1/assets/master/poi14_charge_source_rgba.png": "8fb753f9ff2b4fd3af69ef0fd8ce7c5b86f2e08cc3767227328cc810adbaf1a0",
+        "labs/combat_lab/poison14_cleanse/r1/assets/master/poi14_purge_source_rgba.png": "8496746b675bbd7f671e1af372df655c6d6a95915f945782d01ff52178c54af2",
+        "labs/combat_lab/poison14_cleanse/r1/assets/master/poi14_sever_source_rgba.png": "6a1a9e2873e49972a2996d5c61c54ed17d074b3caaff6d1d3462facc4f22403f"
+      },
+      "phase_count": {
+        "charge": 8,
+        "release": 12,
+        "contact": 10,
+        "fade": 2
+      }
+    },
+    {
+      "skill_id": "tmb.skill.poison.duoc_doc.active_04.human",
+      "name_vi": "Hóa Độc Tán",
+      "branch": "duoc_doc",
+      "source_revision": "poison15_hoa_doc_tan/r1",
+      "source_scene": "labs/combat_lab/poison15_hoa_doc_tan/r1/hoa_doc_tan.tscn",
+      "source_script": "labs/combat_lab/poison15_hoa_doc_tan/r1/hoa_doc_tan.gd",
+      "source_lab_visual_status": "GODOT_V4_G35_TECH_PASS_R1B_OWNER_ART_APPROVED",
+      "source_owner_gate": "OWNER_VISUAL_APPROVED_R1B",
+      "new_factory_adapter": "CANDIDATE_OWNER_REVIEW_PENDING",
+      "phase_art_sha256": {
+        "labs/combat_lab/poison15_hoa_doc_tan/r1/assets/poi15_charge_08.png": "c6e27cffb1e04a6385569539268358000dc3efe28b55c0cc263c79f6617b648b",
+        "labs/combat_lab/poison15_hoa_doc_tan/r1/assets/poi15_field_12.png": "9b78a3c24d6d55d44b7962de22ea55a55e12255fe61cee30afe889ca74e26d8c",
+        "labs/combat_lab/poison15_hoa_doc_tan/r1/assets/poi15_mark_08.png": "9aff88ca69216b55b5641494af894822b0a9d223225b8c454414591d8d3eced0",
+        "labs/combat_lab/poison15_hoa_doc_tan/r1/assets/master/poi15_charge_master_rgba.png": "c1bb21912fcc019dc8939262187398cd8d72aefd8a9ea58a176970743aee486d",
+        "labs/combat_lab/poison15_hoa_doc_tan/r1/assets/master/poi15_field_master_rgba.png": "8e894f5fd1a2b1369e9ba7f060ff70de52ef46319c4272dacd655485853d6165",
+        "labs/combat_lab/poison15_hoa_doc_tan/r1/assets/master/poi15_mark_master_rgba.png": "803079ff7615af4da86b4b84ea7363091cbeb2043eaf0192d0b3c4ff1d6676af"
+      },
+      "phase_count": {
+        "charge": 8,
+        "release": 12,
+        "contact": 8,
+        "start": 8,
+        "sustain": 8,
+        "end": 2
+      }
+    },
+    {
+      "skill_id": "tmb.skill.poison.duoc_doc.ultimate.human",
+      "name_vi": "Vạn Linh Giải Ách",
+      "branch": "duoc_doc",
+      "source_revision": "poison16_van_linh_giai_ach/r2",
+      "source_scene": "labs/combat_lab/poison16_van_linh_giai_ach/r2/van_linh_giai_ach_semantic.tscn",
+      "source_script": "labs/combat_lab/poison16_van_linh_giai_ach/r2/van_linh_giai_ach_semantic.gd",
+      "source_lab_visual_status": "GODOT_V4_G35_G36_TECH_PASS_R2D_PROVISIONAL_KEEP",
+      "source_owner_gate": "OWNER_PROVISIONAL_ACCEPTED_R2D_POLISH_BACKLOG",
+      "new_factory_adapter": "CANDIDATE_OWNER_REVIEW_PENDING",
+      "phase_art_sha256": {
+        "labs/combat_lab/poison16_van_linh_giai_ach/r2/assets/poi16_r2_seed_08.png": "e4a20352d762f7e08008fd0c199703b39939f1e769af559bd841332eb013c0cc",
+        "labs/combat_lab/poison16_van_linh_giai_ach/r2/assets/poi16_r2_stream_10.png": "f72cedf3a1ed716c3d24f0f034b180165e2b585c60bdffd4efcf121b42d22502",
+        "labs/combat_lab/poison16_van_linh_giai_ach/r2/assets/poi16_r2_herb_12.png": "fe7928bdba058820b08c1e9ed1deb04563702d4cf9850ee5d581e402c8cd555f",
+        "labs/combat_lab/poison16_van_linh_giai_ach/r2/assets/poi16_r2_fade_08.png": "81e958854113771a969b32166f7fd37c80cf42a534d8bc844ec9a5698056c00c",
+        "labs/combat_lab/poison16_van_linh_giai_ach/r2/assets/poi16_r2_seal_10.png": "78de093de09313c5d1ee5398ec08b4d6dbf905f96c48066b063e8966e6e99a85",
+        "labs/combat_lab/poison16_van_linh_giai_ach/r2/assets/master/poi16_r2_fade_master_rgba.png": "c764505fa06d2a86e790c6e22126e85b6814395c37092529894fdaf63d51b01b",
+        "labs/combat_lab/poison16_van_linh_giai_ach/r2/assets/master/poi16_r2_herb_master_rgba.png": "98f1d10c1e09095e7057db4307a998be855876575d12259e985772a21ff8083f",
+        "labs/combat_lab/poison16_van_linh_giai_ach/r2/assets/master/poi16_r2_seal_master_rgba.png": "97cc1b61c288bd74635d030113c40bc20542266ae1967033e53b0dc55bfd331a",
+        "labs/combat_lab/poison16_van_linh_giai_ach/r2/assets/master/poi16_r2_seed_master_rgba.png": "d19b1e99c998f2a45433bd2ffc8a872ccad483d89411e803f7266abdc75634c5",
+        "labs/combat_lab/poison16_van_linh_giai_ach/r2/assets/master/poi16_r2_stream_master_rgba.png": "ba680f7316251da42e1d7e2eb80d8dae5009e8a9c7ab058f9b38e94cc03f589b"
+      },
+      "phase_count": {
+        "charge": 8,
+        "release": 10,
+        "contact": 12,
+        "fade": 8
+      }
+    },
+    {
+      "skill_id": "tmb.skill.poison.mobility.human",
+      "name_vi": "Yểm Ảnh Bộ",
+      "branch": "shared",
+      "source_revision": "poison17_yem_anh_bo/r1",
+      "source_scene": "labs/combat_lab/poison17_yem_anh_bo/r1/yem_anh_bo.tscn",
+      "source_script": "labs/combat_lab/poison17_yem_anh_bo/r1/yem_anh_bo.gd",
+      "source_lab_visual_status": "GODOT_V4_G35_G36_TECH_PASS_POI17_R1_MOVING_SHADOW_STEP",
+      "source_owner_gate": "OWNER_VISUAL_PENDING_R1_G37_SEMANTIC",
+      "new_factory_adapter": "CANDIDATE_OWNER_REVIEW_PENDING",
+      "phase_art_sha256": {
+        "labs/combat_lab/poison17_yem_anh_bo/r1/assets/poi17_gather_08.png": "0a044277832aafd9bf7aa51a52d8cedf9e394d2e86ca4dbc92fbbfd515cf69f3",
+        "labs/combat_lab/poison17_yem_anh_bo/r1/assets/poi17_stride_12.png": "dca3e354a5a3e5257e660e3165e7e9f52a2a08125653e922b077029029a1a0f7",
+        "labs/combat_lab/poison17_yem_anh_bo/r1/assets/poi17_landing_08.png": "32c22a782ef3147ed5068e4638ff03bc933a6ac7d6bf6b50f529b96f7b2d3151",
+        "labs/combat_lab/poison17_yem_anh_bo/r1/assets/poi17_footprint_12.png": "36a8adbab21e2806a3a6f04437771ad20e249d810502fb9ac06cc55a2e3c5464",
+        "labs/combat_lab/poison17_yem_anh_bo/r1/assets/master/poi17_footprint_master_rgba.png": "4b4724a13026db6ac9ccde7c392dfba2c81edf6e499721fe473245451732c975",
+        "labs/combat_lab/poison17_yem_anh_bo/r1/assets/master/poi17_gather_master_rgba.png": "b8cacf594610c39fea628649bde2b50a846e4a2f43f7fb0d20cbc09c7de25975",
+        "labs/combat_lab/poison17_yem_anh_bo/r1/assets/master/poi17_landing_master_rgba.png": "8214f0f8479144cdb4a9276d5ee0fe41dbb0849d7f9b0e15044e61cd44527018",
+        "labs/combat_lab/poison17_yem_anh_bo/r1/assets/master/poi17_stride_master_rgba.png": "33f48ad6a198797585aec6a103b077a5e0172d3745b93f0647150e361e806130"
+      },
+      "phase_count": {
+        "charge": 8,
+        "release": 12,
+        "contact": 8,
+        "start": 12,
+        "sustain": 12,
+        "end": 8
+      }
+    }
+  ]
+}

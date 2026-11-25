@@ -477,8 +477,17 @@ func _draw() -> void:
 		facing, actor_age, actor_scale, action_seconds, attachment_override)
 	var preview_target_kind := str(_config.get("preview_target_kind", "monster"))
 	if preview_target_kind == "ally":
-		ASCHAR.draw_actor(self, school, sex, "idle", target_foot, Vector2.DOWN,
-			_elapsed, actor_scale, action_seconds, attachment_override)
+		var ally_targets: Array = _config.get("preview_targets", [])
+		if ally_targets.is_empty():
+			ASCHAR.draw_actor(self, school, sex, "idle", target_foot, Vector2.DOWN,
+				_elapsed, actor_scale, action_seconds, attachment_override)
+		else:
+			for ally_index in range(ally_targets.size()):
+				var ally_row: Dictionary = ally_targets[ally_index]
+				ASCHAR.draw_actor(self, school, sex, "idle",
+					_preview_target_position(ally_row, ally_index), Vector2.DOWN,
+					_elapsed + float(ally_index) * 0.19, actor_scale,
+					action_seconds, attachment_override)
 		if _source_atlas != null and _source_atlas.has_actor(MONSTER_ID):
 			_source_atlas.draw_actor(self, MONSTER_ID, "walk", _moving_monster_foot(),
 				Vector2.LEFT, _elapsed, 1.0)
@@ -700,7 +709,7 @@ func _phase_at_time(timeline: Dictionary) -> String:
 	# it creates no cast, projectile, collision, damage, or status event.
 	if _cast_local_time >= 0.0 and _cast_total_duration > 0.0 \
 			and _phase_frames.has("flight") \
-			and str(_config.get("canonical_effect", "")) == "damage":
+			and str(_config.get("canonical_effect", "")) in ["damage", "poison", "mark"]:
 		var cast_age := _elapsed - _cast_local_time
 		var cast_time := minf(maxf(0.0, float(_config.get("canonical_cast_time", 0.0))), _cast_total_duration)
 		if cast_age < cast_time:
@@ -773,10 +782,18 @@ func _draw_overlay(actor_ok: bool, school: String, target_foot: Vector2) -> void
 	draw_string(_font, Vector2(35.0, 43.0), "VFX FACTORY · DATA REVIEW · 1× GAME SCALE", HORIZONTAL_ALIGNMENT_LEFT, 940.0, 22, fg)
 	draw_string(_font, Vector2(36.0, 72.0), id_line, HORIZONTAL_ALIGNMENT_LEFT, 930.0, 14, secondary)
 	draw_string(_font, Vector2(35.0, 116.0), "CASTER · " + school.to_upper() + " · " + str(_config.get("actor_action", "idle")).to_upper(), HORIZONTAL_ALIGNMENT_LEFT, 350.0, 12, secondary)
-	if str(_config.get("preview_target_kind", "monster")) == "ally":
-		draw_string(_font, Vector2(target_foot.x - 110.0, target_foot.y - 95.0), "ALLY TARGET 01", HORIZONTAL_ALIGNMENT_CENTER, 220.0, 12, secondary)
+	var preview_target_kind := str(_config.get("preview_target_kind", "monster"))
+	var configured_targets: Array = _config.get("preview_targets", [])
+	if preview_target_kind == "ally":
+		if configured_targets.is_empty():
+			draw_string(_font, Vector2(target_foot.x - 110.0, target_foot.y - 95.0), "ALLY TARGET 01", HORIZONTAL_ALIGNMENT_CENTER, 220.0, 12, secondary)
+		else:
+			for target_index in range(configured_targets.size()):
+				var target_row: Dictionary = configured_targets[target_index]
+				var position := _preview_target_position(target_row, target_index)
+				var target_label := str(target_row.get("label", "ALLY %02d" % (target_index + 1)))
+				draw_string(_font, Vector2(position.x - 72.0, position.y - 82.0), target_label, HORIZONTAL_ALIGNMENT_CENTER, 144.0, 12, secondary)
 	else:
-		var configured_targets: Array = _config.get("preview_targets", [])
 		if configured_targets.is_empty():
 			draw_string(_font, Vector2(target_foot.x - 110.0, target_foot.y - 95.0), "MONSTER TARGET 01 · MOVING", HORIZONTAL_ALIGNMENT_CENTER, 220.0, 12, secondary)
 		else:

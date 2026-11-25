@@ -44,7 +44,7 @@ SOURCE_FILES = (
     "assets/actors/v5_sa_monster_1113031_1/atlas_002.webp",
 )
 
-ASCHAR_FACTORY_ACTOR_IDS = (50, 52, 54, 56, 60, 64, 66, 68)  # Existing shared Factory actor sources.
+ASCHAR_FACTORY_ACTOR_IDS = (50, 52, 54, 56, 60, 62, 64, 66, 68)  # Existing shared Factory actor sources.
 ASCHAR_BRIDGE = "src/presentation/p3/sect_aschar_candidate_bridge_v1.gd"
 SOURCE_A_MANIFEST = "assets/combat_v5_source_a/visual_manifest.json"
 FACTORY_MONSTER_KEY = "monster_1113031_1"

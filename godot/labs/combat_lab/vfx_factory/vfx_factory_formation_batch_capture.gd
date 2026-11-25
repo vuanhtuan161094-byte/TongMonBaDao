@@ -135,7 +135,7 @@ func _activate_skill(next_index: int) -> void:
 		if not (raw_event is Dictionary):
 			continue
 		var event: Dictionary = raw_event
-		var is_factory_basic_skill := skill_id in ["tmb.skill.formation.basic.human", "tmb.skill.talisman.basic.human"]
+		var is_factory_basic_skill := skill_id in ["tmb.skill.formation.basic.human", "tmb.skill.talisman.basic.human", "tmb.skill.poison.basic.human"]
 		var is_basic_hit := is_factory_basic_skill \
 			and str(event.get("type", "")) == "hit" and str(event.get("kind", "")) == "basic" \
 			and str(event.get("attacker", "")) == _caster_id \
@@ -168,7 +168,8 @@ func _activate_skill(next_index: int) -> void:
 		"release_frame_seconds":-1.0,
 		"contact_frame_seconds":-1.0,
 		"video_duration_seconds":_segment_duration,
-		"receipt_feed":"PENDING"
+		"receipt_feed":"PENDING",
+		"fixture_setup_receipts":Array(fixture.get("fixture_setup_receipts", [])).duplicate(true)
 	})
 
 func _activate_storyboard_skill(entry: Dictionary, skill_id: String) -> void:
@@ -226,6 +227,9 @@ func _capture_duration(events: Array[Dictionary], origin_time: float) -> float:
 			var end_value: Variant = event.get(end_key, null)
 			if end_value is float or end_value is int:
 				last_time = maxf(last_time, float(end_value) - origin_time)
+		var observed_poison_expiry := _poison_expiry_for_event(event)
+		if observed_poison_expiry >= 0.0:
+			last_time = maxf(last_time, observed_poison_expiry - origin_time)
 	var release_window := maxf(0.08, float(_entries[_index].get("review_timeline", {}).get("release_window_seconds", 0.18)))
 	var release_tail := release_time + release_window + 0.32 if release_time > 0.0 else 0.0
 	return maxf(maxf(1.4, last_time + 0.48), release_tail)
@@ -257,7 +261,7 @@ func _process(delta: float) -> void:
 
 func _feed_receipt(event: Dictionary) -> void:
 	var skill_id := str(_entries[_index].get("skill_id", ""))
-	var is_factory_basic_skill := skill_id in ["tmb.skill.formation.basic.human", "tmb.skill.talisman.basic.human"]
+	var is_factory_basic_skill := skill_id in ["tmb.skill.formation.basic.human", "tmb.skill.talisman.basic.human", "tmb.skill.poison.basic.human"]
 	var is_basic_hit := is_factory_basic_skill and str(event.get("type", "")) == "hit" \
 		and str(event.get("kind", "")) == "basic"
 	var actor_id := str(event.get("actor_id", event.get("caster", event.get("owner_id",
@@ -294,14 +298,21 @@ func _feed_receipt(event: Dictionary) -> void:
 			target_position = _battle.actors.get(str(event.get("target", "")), {}).get("position", Vector2(5.0, 3.0))
 		screen_position = _world_to_screen(target_position)
 		_lab.call("review_record_actor_screen_position", target_id, screen_position)
-	if str(event.get("type", "")) in ["skill_cast", "v63_skill_hit", "v63_talisman_hit", "v63_talisman_mark_applied", "skill_hit", "status_applied", "v63_formation_slow_applied", "v63_mobility"]:
+	if str(event.get("type", "")) in ["skill_cast", "v63_skill_hit", "v63_talisman_hit", "v63_talisman_mark_applied", "skill_hit", "status_applied", "v63_formation_slow_applied", "v63_mobility", "heal", "cleanse"]:
 		_lab.call("review_set_target_screen_position", screen_position)
+	var render_event := event.duplicate(true)
+	var observed_poison_expiry := _poison_expiry_for_event(event)
+	if observed_poison_expiry >= 0.0 and str(event.get("type", "")) == "status_applied" \
+			and str(event.get("status", "")) == "poison":
+		# The real event omits expiry. Read the exact MapBattle stack so the
+		# renderer can end with the real status clock; do not create an event.
+		render_event["until"] = observed_poison_expiry
 	var result: Dictionary
 	if is_basic_hit and actor_id == _caster_id:
 		result = _lab.call("review_feed_authoritative_basic_hit", event,
 			str(_battle.actors.get(_caster_id, {}).get("v63_basic_skill_id", "")), actor_id)
 	else:
-		result = _lab.call("review_feed_authoritative_event", event)
+		result = _lab.call("review_feed_authoritative_event", render_event)
 	var record_index := _records.size() - 1
 	var review_state: Dictionary = _lab.call("review_state")
 	var raw_trace_target_ids: Variant = event.get("target_ids", [])
@@ -328,6 +339,11 @@ func _feed_receipt(event: Dictionary) -> void:
 			trace_row["event_expiry_seconds"] = float(end_value)
 			trace_row["event_state_duration_seconds"] = maxf(0.0, float(end_value) - event_time)
 			break
+	if observed_poison_expiry >= 0.0 and str(event.get("status", "")) == "poison":
+		trace_row["observed_status_expiry_seconds"] = observed_poison_expiry
+		trace_row["event_expiry_seconds"] = observed_poison_expiry
+		trace_row["event_state_duration_seconds"] = maxf(0.0, observed_poison_expiry - float(event.get("time", observed_poison_expiry)))
+		trace_row["expiry_source"] = "MAPBATTLE_ACTOR_STATUS_STACK"
 	var event_trace: Array = _records[record_index].get("event_trace", [])
 	event_trace.append(trace_row)
 	_records[record_index]["event_trace"] = event_trace
@@ -337,7 +353,7 @@ func _feed_receipt(event: Dictionary) -> void:
 		if str(event.get("type", "")) == "v63_mobility":
 			_records[record_index]["mobility_frame_seconds"] = _movie_seconds() + 0.02
 			_records[record_index]["start_frame_seconds"] = _movie_seconds() + 0.02
-		elif str(event.get("type", "")) in ["v63_skill_hit", "v63_talisman_hit", "v63_talisman_mark_applied", "skill_hit", "v63_formation_slow_applied", "v63_formation_zone_tick", "status_applied"] or is_basic_hit:
+		elif str(event.get("type", "")) in ["v63_skill_hit", "v63_talisman_hit", "v63_talisman_mark_applied", "skill_hit", "v63_formation_slow_applied", "v63_formation_zone_tick", "status_applied", "heal", "cleanse"] or is_basic_hit:
 			if float(_records[record_index].get("contact_frame_seconds", -1.0)) < 0.0:
 				# Keep the contact sheet close to the first receipt frame so the
 				# phase's authored peak is not captured halfway through its fade.
@@ -360,6 +376,28 @@ func _world_to_screen(world_position: Vector2) -> Vector2:
 		clampf(CAST_FOOT.x + (world_position.x - 2.0) * 130.0, 90.0, 1190.0),
 		clampf(CAST_FOOT.y + (world_position.y - 3.0) * 48.0, 440.0, 620.0)
 	)
+
+func _poison_expiry_for_event(event: Dictionary) -> float:
+	if str(event.get("type", "")) != "status_applied" or str(event.get("status", "")) != "poison":
+		return -1.0
+	if _battle == null:
+		return -1.0
+	var target_id := str(event.get("target", event.get("target_id", "")))
+	var target: Dictionary = _battle.actors.get(target_id, {})
+	var stacks: Array = target.get("status_effects", {}).get("v63_poison", [])
+	var skill_id := str(event.get("skill_id", ""))
+	var caster_id := str(event.get("caster", event.get("actor_id", "")))
+	var latest_expiry := -1.0
+	for raw_stack in stacks:
+		if not (raw_stack is Dictionary):
+			continue
+		if str(raw_stack.get("source_skill_id", "")) != skill_id \
+				or str(raw_stack.get("owner_id", "")) != caster_id:
+			continue
+		var expiry: Variant = raw_stack.get("expires_at", null)
+		if expiry is float or expiry is int:
+			latest_expiry = maxf(latest_expiry, float(expiry))
+	return latest_expiry
 
 func _movie_seconds() -> float:
 	return maxf(0.0, _global_elapsed - maxf(0.0, _movie_time_offset))
@@ -386,6 +424,7 @@ func _make_battle_fixture(skill_id: String, fixture_index: int) -> Dictionary:
 		"spear": caster["v63_spear_combat_enabled"] = true
 	var ally := _actor("ally_%02d" % fixture_index, "disciple", Vector2(4.0, 3.0))
 	ally["party_id"] = "vfx_factory_%s_party" % _school
+	var ally_targets: Array[Dictionary] = []
 	var line_targets: Array[Dictionary] = []
 	var preview_target_rows: Array = entry.get("preview_targets", [])
 	var foe: Dictionary
@@ -394,9 +433,17 @@ func _make_battle_fixture(skill_id: String, fixture_index: int) -> Dictionary:
 			if not (raw_target_row is Dictionary):
 				continue
 			var row_position: Array = raw_target_row.get("fixture_position", [5.0, 3.0])
-			var monster := _actor(str(raw_target_row.get("id", "factory_target")), "monster",
+			var target_side := "disciple" if str(entry.get("preview_target_kind", "monster")) == "ally" else "monster"
+			var target_actor := _actor(str(raw_target_row.get("id", "factory_target")), target_side,
 				Vector2(float(row_position[0]), float(row_position[1])) if row_position.size() == 2 else Vector2(5.0, 3.0))
-			line_targets.append(monster)
+			if str(target_actor.get("id", "")) == str(ally.get("id", "")):
+				ally["position"] = target_actor.get("position", ally.get("position", Vector2.ZERO))
+				target_actor = ally
+			if target_side == "monster":
+				line_targets.append(target_actor)
+			else:
+				target_actor["party_id"] = "vfx_factory_%s_party" % _school
+				ally_targets.append(target_actor)
 		if not line_targets.is_empty():
 			foe = line_targets[0]
 	else:
@@ -411,8 +458,13 @@ func _make_battle_fixture(skill_id: String, fixture_index: int) -> Dictionary:
 			var line_foe := _actor("foe_%02d_%02d" % [fixture_index, target_index], "monster",
 				Vector2(5.0 + float(target_index), 3.0))
 			line_targets.append(line_foe)
+	if foe.is_empty():
+		foe = _actor("foe_%02d" % fixture_index, "monster", Vector2(5.0, 3.0))
+		line_targets.append(foe)
 	for actor in [caster, ally]:
 		battle.actors[str(actor.get("id", ""))] = actor
+	for ally_target in ally_targets:
+		battle.actors[str(ally_target.get("id", ""))] = ally_target
 	for line_foe in line_targets:
 		battle.actors[str(line_foe.get("id", ""))] = line_foe
 	var outside_row: Dictionary = entry.get("preview_outside", {})
@@ -421,8 +473,55 @@ func _make_battle_fixture(skill_id: String, fixture_index: int) -> Dictionary:
 		var outside_actor := _actor(str(outside_row.get("id", "factory_outside")), "monster",
 			Vector2(float(outside_position[0]), float(outside_position[1])) if outside_position.size() == 2 else Vector2(6.0, 5.2))
 		battle.actors[str(outside_actor.get("id", ""))] = outside_actor
+	var fixture_setup_receipts: Array[Dictionary] = []
+	var setup_definition: Dictionary = entry.get("fixture_setup", {})
+	if not setup_definition.is_empty():
+		var setup_skill_id := str(setup_definition.get("skill_id", ""))
+		var setup_targets: Array = setup_definition.get("targets", [])
+		for setup_index in range(setup_targets.size()):
+			var setup_target: Dictionary = battle.actors.get(str(setup_targets[setup_index]), {})
+			if setup_target.is_empty():
+				continue
+			var setup_position: Vector2 = setup_target.get("position", Vector2(5.0, 3.0))
+			var poisoner := _actor("factory_setup_poisoner_%02d_%02d" % [fixture_index, setup_index],
+				"monster", setup_position + Vector2(1.0, 0.0))
+			poisoner["v63_combat_enabled"] = true
+			poisoner["v63_skill_loadout"] = [setup_skill_id]
+			poisoner["v63_combat_branch_id"] = "doc_cham"
+			poisoner["v63_combat_lineage"] = "base"
+			battle.actors[str(poisoner.get("id", ""))] = poisoner
+			var setup_event_start := battle.events.size()
+			if not HSC.try_cast(battle, poisoner, setup_target):
+				return {"battle":null,"caster_id":str(caster.id),"target_id":str(foe.id),"ally_id":str(ally.id)}
+			var setup_pending: Dictionary = poisoner.get("v63_pending_cast", {})
+			if not setup_pending.is_empty():
+				battle.now = float(setup_pending.get("ready", battle.now))
+				battle._release_casts()
+			for setup_event_index in range(setup_event_start, battle.events.size()):
+				var setup_event: Dictionary = battle.events[setup_event_index]
+				if str(setup_event.get("skill_id", "")) != setup_skill_id:
+					continue
+				if str(setup_event.get("type", "")) not in ["skill_cast", "skill_release", "v63_skill_hit", "status_applied"]:
+					continue
+				var setup_receipt := {
+					"event_type":str(setup_event.get("type", "")),
+					"event_id":str(setup_event.get("event_id", "")),
+					"skill_id":setup_skill_id,
+					"caster_id":str(setup_event.get("caster", "")),
+					"target_id":str(setup_event.get("target", setup_event.get("target_id", ""))),
+					"real_mapbattle_event":true,
+					"bound_to_candidate_visual":false
+				}
+				var setup_expiry := _poison_expiry_for_event(setup_event)
+				if setup_expiry >= 0.0:
+					setup_receipt["observed_status_expiry_seconds"] = setup_expiry
+				fixture_setup_receipts.append(setup_receipt)
+	var candidate_effect := str(HSC.skill_definition(skill_id).get("effect", ""))
+	var cast_target: Dictionary = foe
+	if candidate_effect in ["guard", "heal", "cleanse"]:
+		cast_target = ally_targets[0] if not ally_targets.is_empty() else ally
 	var started := false
-	if skill_id in ["tmb.skill.formation.basic.human", "tmb.skill.talisman.basic.human"]:
+	if skill_id in ["tmb.skill.formation.basic.human", "tmb.skill.talisman.basic.human", "tmb.skill.poison.basic.human"]:
 		var basic_definition: Dictionary = HSC.skill_definition(skill_id)
 		caster["v63_basic_skill_id"] = skill_id
 		caster["basic_ratio"] = float(basic_definition.get("damage_ratio", 0.0))
@@ -432,11 +531,12 @@ func _make_battle_fixture(skill_id: String, fixture_index: int) -> Dictionary:
 		battle.step()
 		started = true
 	else:
-		started = HSC.try_cast(battle, caster, foe)
+		started = HSC.try_cast(battle, caster, cast_target)
 	if not started:
 		return {"battle":null,"caster_id":str(caster.id),"target_id":str(foe.id),"ally_id":str(ally.id)}
 	var immediate_factory_skill := skill_id in ["tmb.skill.formation.mobility.human", "tmb.skill.formation.basic.human",
-		"tmb.skill.talisman.basic.human", "tmb.skill.talisman.mobility.human"]
+		"tmb.skill.talisman.basic.human", "tmb.skill.talisman.mobility.human", "tmb.skill.poison.basic.human",
+		"tmb.skill.poison.mobility.human"]
 	if not immediate_factory_skill:
 		var pending: Dictionary = caster.get("v63_pending_cast", {})
 		if pending.is_empty():
@@ -461,9 +561,14 @@ func _make_battle_fixture(skill_id: String, fixture_index: int) -> Dictionary:
 			FORMATION.process_zones(battle)
 			battle.now = float(zones[0].get("expires_at", battle.now + 2.0))
 			FORMATION.process_zones(battle)
-	var target_id := str(ally.id) if str(HSC.skill_definition(skill_id).get("effect", "")) == "guard" else str(foe.id)
+	var effect := str(HSC.skill_definition(skill_id).get("effect", ""))
+	var target_id := str(ally.id) if effect in ["guard", "heal", "cleanse"] else str(foe.id)
+	if effect in ["heal", "cleanse"] and not ally_targets.is_empty():
+		target_id = str(ally_targets[0].get("id", ally.id))
+	elif effect == "mobility":
+		target_id = str(caster.id)
 	return {"battle":battle,"caster_id":str(caster.id),"target_id":target_id,"ally_id":str(ally.id),
-		"caster_start_position":caster_origin_position}
+		"caster_start_position":caster_origin_position,"fixture_setup_receipts":fixture_setup_receipts}
 
 func _actor(actor_id: String, side: String, position: Vector2) -> Dictionary:
 	var resistances := {"metal":0.0,"wood":0.0,"water":0.0,"fire":0.0,"earth":0.0,
