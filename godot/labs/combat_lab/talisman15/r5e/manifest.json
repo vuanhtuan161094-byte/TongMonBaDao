@@ -1,0 +1,127 @@
+{
+  "schema": "tmb.vfx_source_candidate.v1",
+  "skill_id": "tmb.skill.talisman.phong_an_phu.ultimate.human",
+  "revision": "PAF05_R5E_OWNER_PROVISIONAL_FROZEN",
+  "status": "SOURCE_RESTORED_FROM_EXACT_GITHUB_ACTIONS_ARTIFACT",
+  "source_commit": "87afe14aa7888cf086409a34b4f65dccd9345d10",
+  "actions_run": {
+    "id": 44069358237,
+    "url": "https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/44069358237",
+    "artifact": "vfx-paf05-r5-native-87afe14aa7888cf086409a34b4f65dccd9345d10"
+  },
+  "provenance": {
+    "generator": "tools/vfx/paf05_paint_master.py",
+    "generator_sha256": "3b447e6b0b7317d0ad222f62e764a5fbba0686007730d99b2b1b7a05ddd66689",
+    "raster_dependency": "Pillow and NumPy; deterministic version-sensitive output; artifact bytes restored instead of regenerated",
+    "art_source": "first-party raster painter and locally authored luminosity/ink-silk paths; no JX/Source A pixels"
+  },
+  "canonical_mechanic": {
+    "effect": "mark",
+    "shape": "circle",
+    "target_limit": 3,
+    "radius": 2.1,
+    "duration_seconds": 7.0,
+    "cast_time_seconds": 0.9
+  },
+  "source_artifacts": [
+    {
+      "kind": "source",
+      "path": "../art_sources/paf05_animated_mark_master.png",
+      "sha256": "76d936a3ed863bf1ffa3476871736c056fb60ea96a97b4db7890651b09ca1281",
+      "bytes": 499066,
+      "dimensions_px": [
+        768,
+        768
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "kind": "source",
+      "path": "../art_sources/paf05_wind_crest_hero_master.png",
+      "sha256": "26b46c3020535afc416af82423ea83710fc9a4dc91b66d7a0021552fd7bb3962",
+      "bytes": 659309,
+      "dimensions_px": [
+        960,
+        960
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "kind": "atlas",
+      "path": "../assets/paf05_charge.webp",
+      "sha256": "87d1a71626cd91abac9afff0720898ea3390b392b78c838048fd53a181fd67e8",
+      "bytes": 349886,
+      "dimensions_px": [
+        1280,
+        960
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "kind": "atlas",
+      "path": "../assets/paf05_ward.webp",
+      "sha256": "b7398f0e4256b0035be1d43f8053118659fc214cdee68bd4d109abcb50b81e6d",
+      "bytes": 894480,
+      "dimensions_px": [
+        2048,
+        2048
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "kind": "atlas",
+      "path": "../assets/paf05_hero.webp",
+      "sha256": "7e5c9a73517c859673d2d97d91e90a5289fa3c5f4f2f42b6fd254ced1ddbab1b",
+      "bytes": 1602682,
+      "dimensions_px": [
+        1920,
+        2400
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "kind": "atlas",
+      "path": "../assets/paf05_contact.webp",
+      "sha256": "462975ef433d363a528925c9c34a04fcf53af80fd8afa464f4131f11f18f93da",
+      "bytes": 380184,
+      "dimensions_px": [
+        1024,
+        768
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "kind": "atlas",
+      "path": "../assets/paf05_residue.webp",
+      "sha256": "17b4e7241cd00de4adfad0ed6898185c0ac51c31d023c57b1e91de27ca941eb8",
+      "bytes": 36086,
+      "dimensions_px": [
+        1024,
+        512
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "kind": "atlas",
+      "path": "../assets/paf05_badge.webp",
+      "sha256": "dfc901f6daafbc518a788b3b96159b452e2262068d6f4afddc7f254e76013919",
+      "bytes": 47256,
+      "dimensions_px": [
+        512,
+        256
+      ],
+      "mode": "RGBA"
+    }
+  ],
+  "review": {
+    "source_contact_sheet": "review/source_contact_sheet_1x.png",
+    "art_self_review": "OWNER_PROVISIONAL; CAST/CHARGE ART DEBT RETAINED; DO NOT PROMOTE",
+    "known_debt": "Original owner feedback accepts this revision provisionally but explicitly calls charge tụ lực weak; leave R5E frozen and use separate R5F candidate for any rework."
+  },
+  "gates": {
+    "native_technical": "PASS_RECORDED_ON_EXACT_SOURCE_SHA_87afe14",
+    "owner": "OWNER_PROVISIONAL_R5E_ONLY",
+    "pve": "HOLD",
+    "physical_windows_android": "PENDING"
+  }
+}
