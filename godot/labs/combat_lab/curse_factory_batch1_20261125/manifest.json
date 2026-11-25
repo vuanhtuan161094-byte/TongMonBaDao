@@ -1,7 +1,7 @@
 {
   "schema": "tmb.vfx_factory_source_batch.v1",
   "batch": "curse_factory_batch1_20261125",
-  "status": "SOURCE_CANDIDATE_MECHANIC_REVIEWED_NATIVE_QA_PENDING",
+  "status": "SOURCE_CANDIDATE_NATIVE_STORYBOARD_TECH_PASS_ART_SELF_REVIEW_PARTIAL",
   "scope": "One source-backed candidate for the Curse basic; remaining 16 Human cast masters still need mapped art sources.",
   "production_route": "OpenAI ImageGen first-party original RGBA atlas. Original output preserved at /workspace/generated_images/exec-6cc21469-82be-4e1c-9e0c-7b402332f4fc.png.",
   "assets": [
@@ -55,9 +55,29 @@
       8,
       9
     ],
-    "review_status": "Source atlas alpha and 16/16 unique frame signatures pass. The current Factory mapping is a partial candidate: travel frames are excluded to match projectile_speed=0, no contact receipt is configured, and owner approval is pending.",
+    "review_status": "Source alpha and 16/16 unique frame signatures PASS; 9 nontravel frames configured. Godot 4.7.2 native storyboard capture H.264 1280x720 full decode PASS; charge/release keyframes reviewed at 1x. No gameplay receipt, contact remains hidden, continuous-motion art review pending, owner approval pending.",
     "prompt_mechanic_note": "The original image prompt describes a travel projectile. Canonical curse catalog has projectile_speed=0, so the travel poses are explicitly excluded from the Factory candidate and no projectile path is rendered."
   },
   "owner_approval": "PENDING",
-  "pve": "HOLD"
+  "pve": "HOLD",
+  "native_review": {
+    "technical_status": "NATIVE_STORYBOARD_TECH_PASS_GODOT_4.7.2_1280x720_H264_FULL_DECODE",
+    "viewport_px": [
+      1280,
+      720
+    ],
+    "frame_rate_fps": 20,
+    "frame_count": 30,
+    "duration_seconds": 1.5,
+    "codec": "H.264",
+    "full_decode": "PASS",
+    "video": "res://labs/combat_lab/curse_factory_batch1_20261125/review/native/curse_batch1_native_1280x720.mp4",
+    "contact_sheet": "res://labs/combat_lab/curse_factory_batch1_20261125/review/native/curse_batch1_native_contact_sheet.png",
+    "capture_index": "res://labs/combat_lab/curse_factory_batch1_20261125/review/native/curse_batch1_capture_index.json",
+    "receipt_scope": "STORYBOARD_ONLY_NO_COMBAT_EVENTS",
+    "contact_status": "HIDDEN_WAITING_FOR_REAL_RECEIPT",
+    "art_review_status": "PARTIAL; CONTINUOUS_MOTION_PENDING",
+    "owner_approval": "PENDING",
+    "pve": "HOLD"
+  }
 }

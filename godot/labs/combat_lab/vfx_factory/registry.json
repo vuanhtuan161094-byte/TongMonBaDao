@@ -7419,6 +7419,198 @@
       "review_note": "Native Godot capture and 1x phase samples reviewed. Start/sustain/end follow only the exact v63_mobility destination and evasion_until; no hit/status contact is invented. Continuous motion review and owner approval pending. PvE HOLD.",
       "native_event_status": "REAL_V63_MOBILITY_RECEIPT_PASS_NO_HIT",
       "art_self_status": "ART_SELF_REVIEW_PARTIAL_CONTINUOUS_MOTION_PENDING"
+    },
+    {
+      "skill_id": "tmb.skill.curse.basic.human",
+      "school": "curse",
+      "branch": "shared",
+      "name_vi": "Chú Âm Phá Vọng",
+      "catalog_path": "res://data/combat/v63_curse_combat_catalog.json",
+      "effect": "damage",
+      "shape": "single_target",
+      "target_limit": 1,
+      "mechanic_template": "line",
+      "mechanic_templates": [
+        "line"
+      ],
+      "target_mode": "single_target",
+      "preview_target_kind": "monster",
+      "target_actor_id": "review_target",
+      "outside_actor_id": "review_outside",
+      "actor_sex": "male",
+      "actor_asset_id": 66,
+      "actor_action": "cast",
+      "facing_vector": [
+        1.0,
+        0.0
+      ],
+      "preview_attachment_override": {
+        "suppress_attachments": true
+      },
+      "source_anchor": "hand_r",
+      "phase_anchors": {
+        "charge": "hand_r",
+        "release": "hand_r",
+        "contact": "target_foot",
+        "fade": "target_foot"
+      },
+      "phase_layers": {
+        "charge": "FRONT",
+        "release": "FRONT",
+        "contact": "FRONT",
+        "fade": "FRONT"
+      },
+      "draw_layer": "FRONT",
+      "source_g3": "SOURCE_ALPHA_16_UNIQUE; NONTRAVEL_POSES_SELECTED; ART_SELF_REVIEW_PARTIAL",
+      "art_self_status": "ART_SELF_REVIEW_PARTIAL; IMAGEGEN_TRAVEL_POSES_EXCLUDED_BY_CANONICAL_PROJECTILE_SPEED_ZERO",
+      "native_status": "NATIVE_STORYBOARD_TECH_PASS_GODOT_4.7.2_1280x720_H264_FULL_DECODE; NO_GAMEPLAY_RECEIPT",
+      "owner_status": "OWNER_VISUAL_PENDING",
+      "native_ready": false,
+      "motion_status": "SOURCE_ATLAS_16_POSES; 9_SELECTED_FRAMES; CONTACT_NOT_SHOWN_WITHOUT_REAL_RECEIPT",
+      "showcase_moving_target": true,
+      "delivery_phase": "release",
+      "phase_sources": {
+        "charge": {
+          "path": "res://labs/combat_lab/curse_factory_batch1_20261125/source/curse_basic_echo_dart_4x4.png",
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/curse_factory_batch1_20261125/source/curse_basic_echo_dart_4x4.png",
+              "region": [
+                0,
+                0,
+                315,
+                312
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/curse_factory_batch1_20261125/source/curse_basic_echo_dart_4x4.png",
+              "region": [
+                315,
+                0,
+                315,
+                312
+              ]
+            }
+          ],
+          "display_width_px": 96,
+          "fps": 10,
+          "loop": false,
+          "fade_seconds": 0.12
+        },
+        "release": {
+          "path": "res://labs/combat_lab/curse_factory_batch1_20261125/source/curse_basic_echo_dart_4x4.png",
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/curse_factory_batch1_20261125/source/curse_basic_echo_dart_4x4.png",
+              "region": [
+                630,
+                0,
+                316,
+                312
+              ]
+            }
+          ],
+          "display_width_px": 84,
+          "fps": 1,
+          "loop": false,
+          "fade_seconds": 0.12
+        },
+        "contact": {
+          "path": "res://labs/combat_lab/curse_factory_batch1_20261125/source/curse_basic_echo_dart_4x4.png",
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/curse_factory_batch1_20261125/source/curse_basic_echo_dart_4x4.png",
+              "region": [
+                630,
+                624,
+                316,
+                311
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/curse_factory_batch1_20261125/source/curse_basic_echo_dart_4x4.png",
+              "region": [
+                946,
+                624,
+                315,
+                311
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/curse_factory_batch1_20261125/source/curse_basic_echo_dart_4x4.png",
+              "region": [
+                0,
+                935,
+                315,
+                312
+              ]
+            }
+          ],
+          "display_width_px": 104,
+          "fps": 14,
+          "loop": false,
+          "fade_seconds": 0.12
+        },
+        "fade": {
+          "path": "res://labs/combat_lab/curse_factory_batch1_20261125/source/curse_basic_echo_dart_4x4.png",
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/curse_factory_batch1_20261125/source/curse_basic_echo_dart_4x4.png",
+              "region": [
+                315,
+                935,
+                315,
+                312
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/curse_factory_batch1_20261125/source/curse_basic_echo_dart_4x4.png",
+              "region": [
+                630,
+                935,
+                316,
+                312
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/curse_factory_batch1_20261125/source/curse_basic_echo_dart_4x4.png",
+              "region": [
+                946,
+                935,
+                315,
+                312
+              ]
+            }
+          ],
+          "display_width_px": 92,
+          "fps": 12,
+          "loop": false,
+          "fade_seconds": 0.18
+        }
+      },
+      "review_timeline": {
+        "release_at": 0.12,
+        "flight_at": 0.12,
+        "contact_at": 0.36,
+        "fade_at": 0.54,
+        "loop_seconds": 1.45,
+        "contact_window_seconds": 0.14,
+        "fade_window_seconds": 0.18,
+        "actor_action_seconds": 0.32,
+        "clock": "REVIEW_STORYBOARD_ONLY",
+        "charge_window_seconds": 0.12,
+        "release_window_seconds": 0.12
+      },
+      "receipt_manifest": {
+        "schema": "tmb.vfx_bindings.v1",
+        "skill_id": "tmb.skill.curse.basic.human",
+        "bindings": []
+      },
+      "native_capture_mode": "REVIEW_STORYBOARD_ONLY",
+      "native_batch": "curse",
+      "source_batch_manifest": "res://labs/combat_lab/curse_factory_batch1_20261125/manifest.json",
+      "contact_source_note": "Curse combat catalog says projectile_speed=0 and one direct single-target hit. The storyboard uses no projectile travel and binds no contact; contact/fade source frames stay hidden unless a future real receipt is provided.",
+      "review_note": "First-party RGBA ImageGen atlas candidate. Only nontravel seal gather/release frames are visible; source travel frames 3-9 are excluded, and target contact art stays receipt-gated. AS66 Curse cast source is read from the existing AS-CHAR bridge. Native 1x storyboard H.264 capture is technically decoded; no gameplay event, damage, hit or status was created. Motion/art review remains partial. Owner approval pending; PvE HOLD."
     }
   ],
   "batch_status": {
@@ -7450,6 +7642,17 @@
       "contact_sheet": "res://labs/combat_lab/talisman_factory_batch3_20261125/review/native/talisman_factory_batch3_contact_sheet_1280x720.png",
       "receipt_status": "REAL_MAPBATTLE_V2_FIXTURE_RECEIPTS_10_OF_10; SYNTHETIC_EVENTS=0",
       "visual_review_status": "NATIVE_1X_PHASE_SAMPLES_REVIEWED; CONTINUOUS_MOTION_REVIEW_PENDING",
+      "owner_approval": "PENDING",
+      "pve": "HOLD"
+    },
+    "curse": {
+      "expected_count": 1,
+      "technical_status": "NATIVE_STORYBOARD_TECH_PASS_GODOT_4.7.2_1280x720_H264_FULL_DECODE",
+      "last_capture_index": "res://labs/combat_lab/curse_factory_batch1_20261125/review/native/curse_batch1_capture_index.json",
+      "video": "res://labs/combat_lab/curse_factory_batch1_20261125/review/native/curse_batch1_native_1280x720.mp4",
+      "contact_sheet": "res://labs/combat_lab/curse_factory_batch1_20261125/review/native/curse_batch1_native_contact_sheet.png",
+      "receipt_status": "NO_GAMEPLAY_RECEIPT_CONFIGURED; STORYBOARD_ONLY",
+      "visual_review_status": "NATIVE_1X_KEYFRAMES_REVIEWED; CONTACT_HIDDEN_WITHOUT_REAL_RECEIPT; CONTINUOUS_MOTION_AND_ART_REVIEW_PENDING",
       "owner_approval": "PENDING",
       "pve": "HOLD"
     }

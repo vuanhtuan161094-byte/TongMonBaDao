@@ -69,6 +69,9 @@ func _activate_skill(next_index: int) -> void:
 		return
 	var entry: Dictionary = _entries[_index]
 	var skill_id := str(entry.get("skill_id", ""))
+	if str(entry.get("native_capture_mode", "")) == "REVIEW_STORYBOARD_ONLY":
+		_activate_storyboard_skill(entry, skill_id)
+		return
 	var fixture := _make_battle_fixture(skill_id, _index)
 	_battle = fixture.get("battle") as MapBattleV2
 	_caster_id = str(fixture.get("caster_id", ""))
@@ -144,6 +147,49 @@ func _activate_skill(next_index: int) -> void:
 		"contact_frame_seconds":-1.0,
 		"video_duration_seconds":_segment_duration,
 		"receipt_feed":"PENDING"
+	})
+
+func _activate_storyboard_skill(entry: Dictionary, skill_id: String) -> void:
+	# Presentation-only capture for candidates whose gameplay gate is off or
+	# whose real receipt contract is not available. No battle or synthetic event
+	# is created, and the renderer keeps receipt-bound contact art hidden.
+	_battle = null
+	_caster_id = "storyboard_caster_%02d" % _index
+	_lab = FACTORY_SCENE.instantiate() as Node2D
+	_lab.call("review_set_skill_id", skill_id)
+	_lab.call("review_set_batch_capture_mode", true)
+	_lab.call("review_set_moving", true)
+	add_child(_lab)
+	_lab.call("review_set_caster_screen_position", CAST_FOOT)
+	_lab.call("review_set_target_screen_position", TARGET_FOOT)
+	_lab.call("review_record_actor_screen_position", _caster_id, CAST_FOOT)
+	_lab.call("review_record_actor_screen_position", "review_target", TARGET_FOOT)
+	var encounter_id := "vfx_factory_%s_storyboard_%02d" % [_school, _index]
+	if not bool(_lab.call("review_begin_encounter", encounter_id)):
+		push_error("VFX_FACTORY_STORYBOARD_ENCOUNTER_BIND_FAILED " + skill_id)
+	_events.clear()
+	_event_index = 0
+	_segment_elapsed = 0.0
+	_event_origin_time = 0.0
+	_segment_duration = maxf(1.2, float(entry.get("review_timeline", {}).get("loop_seconds", 1.4)))
+	_segment_start = _global_elapsed
+	_records.append({
+		"skill_id":skill_id,
+		"name_vi":str(entry.get("name_vi", "")),
+		"encounter_id":encounter_id,
+		"fixture":"PRESENTATION_ONLY_STORYBOARD_NO_BATTLE_EVENTS",
+		"event_count":0,
+		"event_types":[],
+		"configured_event_types":[],
+		"accepted_event_count":0,
+		"synthetic_events":0,
+		"video_start_seconds":_segment_start,
+		"release_frame_seconds":_segment_start + float(entry.get("review_timeline", {}).get("release_at", 0.12)) + 0.08,
+		"contact_frame_seconds":-1.0,
+		"video_duration_seconds":_segment_duration,
+		"receipt_feed":"NO_GAMEPLAY_RECEIPT_CONFIGURED",
+		"native_capture_mode":"REVIEW_STORYBOARD_ONLY",
+		"contact_status":"HIDDEN_WAITING_FOR_REAL_RECEIPT"
 	})
 
 func _capture_duration(events: Array[Dictionary], origin_time: float) -> float:
@@ -338,12 +384,24 @@ func _finish() -> void:
 	if _finished:
 		return
 	_finished = true
+	var has_storyboard := false
+	var has_real_fixture := false
+	for row in _records:
+		if str(row.get("native_capture_mode", "")) == "REVIEW_STORYBOARD_ONLY":
+			has_storyboard = true
+		else:
+			has_real_fixture = true
+	var receipt_scope := "REAL_MAPBATTLE_V2_TEST_FIXTURE_EVENTS_ONLY"
+	if has_storyboard and not has_real_fixture:
+		receipt_scope = "STORYBOARD_ONLY_NO_COMBAT_EVENTS"
+	elif has_storyboard:
+		receipt_scope = "MIXED_REAL_FIXTURE_AND_STORYBOARD; NO_SYNTHETIC_EVENTS"
 	var capture_index := {
 		"schema":"tmb.vfx_factory_native_batch_capture.v1",
 	"school":_school,
 		"viewport_px":[1280,720],
 		"renderer":"Godot 4.7.2 shared VFX Factory + existing AS-CHAR and Source A",
-		"receipts":"REAL_MAPBATTLE_V2_TEST_FIXTURE_EVENTS_ONLY",
+		"receipts":receipt_scope,
 		"technical_status":"CAPTURE_PENDING_EXTERNAL_MOVIE_VALIDATION",
 		"owner_approval":"PENDING",
 		"pve":"HOLD",

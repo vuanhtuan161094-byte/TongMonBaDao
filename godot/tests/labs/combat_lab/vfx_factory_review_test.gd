@@ -7,6 +7,7 @@ const REGISTRY_PATH := "res://labs/combat_lab/vfx_factory/registry.json"
 const FORMATION_MANIFEST_PATH := "res://labs/combat_lab/formation01/factory_batch1_20261125/manifest.json"
 const FORMATION_CATALOG_PATH := "res://data/combat/v63_formation_combat_catalog.json"
 const TALISMAN_CATALOG_PATH := "res://data/combat/v63_talisman_combat_catalog.json"
+const CURSE_CATALOG_PATH := "res://data/combat/v63_curse_combat_catalog.json"
 
 var failures := 0
 var checked := 0
@@ -25,9 +26,10 @@ func _run() -> void:
 	var manifest: Variant = JSON.parse_string(FileAccess.get_file_as_string(FORMATION_MANIFEST_PATH))
 	var catalog: Variant = JSON.parse_string(FileAccess.get_file_as_string(FORMATION_CATALOG_PATH))
 	var talisman_catalog: Variant = JSON.parse_string(FileAccess.get_file_as_string(TALISMAN_CATALOG_PATH))
-	_check(registry is Dictionary and manifest is Dictionary and catalog is Dictionary and talisman_catalog is Dictionary,
+	var curse_catalog: Variant = JSON.parse_string(FileAccess.get_file_as_string(CURSE_CATALOG_PATH))
+	_check(registry is Dictionary and manifest is Dictionary and catalog is Dictionary and talisman_catalog is Dictionary and curse_catalog is Dictionary,
 		"all source registries parse")
-	if not (registry is Dictionary and manifest is Dictionary and catalog is Dictionary and talisman_catalog is Dictionary):
+	if not (registry is Dictionary and manifest is Dictionary and catalog is Dictionary and talisman_catalog is Dictionary and curse_catalog is Dictionary):
 		_finish()
 		return
 	var formation_by_id: Dictionary = {}
@@ -38,13 +40,16 @@ func _run() -> void:
 		canonical_by_id[str(row.get("id", ""))] = row
 	for row in talisman_catalog.get("skills", []):
 		canonical_by_id[str(row.get("id", ""))] = row
+	for row in curse_catalog.get("skills", []):
+		canonical_by_id[str(row.get("id", ""))] = row
 	var cases: Array = registry.get("entries", [])
-	_check(cases.size() == 29, "shared registry retains 2 existing cues, 17 Formation and 10 Talisman candidates")
+	_check(cases.size() == 30, "shared registry retains existing cues, 17 Formation, 10 Talisman and one Curse storyboard candidate")
 	_check(formation_by_id.size() == 17, "all 17 source atlas records remain available")
 	for entry in cases:
 		var skill_id := str(entry.get("skill_id", ""))
 		var is_formation := skill_id.begins_with("tmb.skill.formation.")
 		var is_talisman := skill_id.begins_with("tmb.skill.talisman.")
+		var is_curse := skill_id == "tmb.skill.curse.basic.human"
 		var lab := FACTORY_SCENE.instantiate() as Node2D
 		lab.call("review_set_skill_id", skill_id)
 		root.add_child(lab)
@@ -130,6 +135,39 @@ func _run() -> void:
 					"damage contact remains bound to a real exact-skill hit " + skill_id)
 			_check(not str(entry.get("owner_status", "")).contains("OWNER_VISUAL_APPROVED"),
 				"current Factory adapter does not inherit historical source approval " + skill_id)
+		elif is_curse:
+			var canonical: Dictionary = canonical_by_id.get(skill_id, {})
+			_check(not canonical.is_empty(), "Curse canonical skill contract joins " + skill_id)
+			_check(str(state.get("canonical_effect", "")) == "damage"
+				and str(state.get("canonical_shape", "")) == "single_target"
+				and int(state.get("canonical_target_limit", 0)) == 1,
+				"Curse effect, shape and target cap remain canonical-data-owned " + skill_id)
+			_check(float(canonical.get("projectile_speed", -1.0)) == 0.0,
+				"direct Curse basic has no projectile travel " + skill_id)
+			_check(int(state.get("actor_asset_id", -1)) == 66,
+				"Curse uses the existing AS66 actor resolved by the shared bridge " + skill_id)
+			var curse_anchors: Dictionary = ASCHAR.resolve_preview_anchors("curse", "male", "cast",
+				Vector2.RIGHT, 0.2, Vector2(300.0, 492.0), ASCHAR.game_view_scale(), 0.32,
+				{"suppress_attachments":true})
+			_check(curse_anchors.get("slots", {}).has("hand_r"),
+				"Curse charge anchor resolves the existing authored right-hand socket " + skill_id)
+			_check(int(state.get("phase_sources_loaded", 0)) == 4 and int(state.get("frame_count", 0)) == 9,
+				"selected nontravel RGBA frames load across four shared Factory phases " + skill_id)
+			_check(str(entry.get("native_capture_mode", "")) == "REVIEW_STORYBOARD_ONLY"
+				and str(entry.get("review_timeline", {}).get("clock", "")) == "REVIEW_STORYBOARD_ONLY"
+				and str(entry.get("native_status", "")).begins_with("NATIVE_STORYBOARD_TECH_PASS_GODOT_4.7.2_1280x720"),
+				"native preview is a storyboard and creates no gameplay receipt " + skill_id)
+			_check(entry.get("receipt_manifest", {}).get("bindings", []).is_empty()
+				and str(entry.get("native_batch", "")) == "curse",
+				"no Curse hit/status binding is fabricated while its release gate is off " + skill_id)
+			_check(str(entry.get("owner_status", "")) == "OWNER_VISUAL_PENDING"
+				and not bool(entry.get("native_ready", true)),
+				"candidate remains owner-pending and not runtime-ready " + skill_id)
+			lab.call("review_seek_phase", "contact")
+			var contact_wait: Dictionary = lab.call("review_state")
+			_check(str(contact_wait.get("receipt_state", "")) == "WAITING_FOR_REAL_RECEIPT"
+				and int(contact_wait.get("contact_receipt_target_count", -1)) == 0,
+				"contact stays hidden without a real Curse receipt " + skill_id)
 		else:
 			_check(str(state.get("canonical_effect", "")) == "damage",
 				"existing candidate canonical effect preserved " + skill_id)
@@ -141,6 +179,6 @@ func _run() -> void:
 
 func _finish() -> void:
 	print("VFX_FACTORY_REVIEW_RESULT=" + ("PASS" if failures == 0 else "FAIL")
-		+ " cases=" + str(checked) + " skills=" + str(29)
-		+ " formation=17 AS68=resolved contact_fixture=NONE failures=" + str(failures))
+		+ " cases=" + str(checked) + " skills=" + str(30)
+		+ " formation=17 AS68=resolved curse=AS66_storyboard contact_fixture=NONE failures=" + str(failures))
 	quit(0 if failures == 0 else 1)

@@ -44,7 +44,7 @@ SOURCE_FILES = (
     "assets/actors/v5_sa_monster_1113031_1/atlas_002.webp",
 )
 
-ASCHAR_FACTORY_ACTOR_IDS = (52, 56, 64, 68)  # AS52 Dual Blade, AS56 Bow, AS64 Talisman, AS68 Formation
+ASCHAR_FACTORY_ACTOR_IDS = (52, 56, 64, 66, 68)  # AS66 Curse is now used by the shared review scene.
 ASCHAR_BRIDGE = "src/presentation/p3/sect_aschar_candidate_bridge_v1.gd"
 SOURCE_A_MANIFEST = "assets/combat_v5_source_a/visual_manifest.json"
 FACTORY_MONSTER_KEY = "monster_1113031_1"

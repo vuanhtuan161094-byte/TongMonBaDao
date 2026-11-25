@@ -6,8 +6,8 @@ Scene presence, source approval, technical status, owner review, and live integr
 - Skill IDs: **2196 unique**
 - Skill families: **420**
 - Human cast masters: **204**
-- Human families with at least one bound LAB scene: **91**
-- Human cast families with at least one bound LAB scene: **88**
+- Human families with at least one bound LAB scene: **92**
+- Human cast families with at least one bound LAB scene: **89**
 - Distinct Human LAB scene revisions: **93**
 - Every ledger row retains its declared `live_integration` value. PvE status is not inferred from scenes.
 
@@ -24,7 +24,7 @@ Scene presence, source approval, technical status, owner review, and live integr
 | dual_blade | 183 | 35 | 17 | 1 | 1 | 1 | 1 | 0 | 0 | 17 | 0 | 70 | 0 | 96 |
 | spear | 183 | 35 | 17 | 1 | 1 | 1 | 1 | 0 | 0 | 17 | 0 | 70 | 0 | 96 |
 | palm | 183 | 35 | 17 | 1 | 1 | 1 | 1 | 0 | 0 | 17 | 0 | 55 | 15 | 96 |
-| curse | 183 | 35 | 17 | 0 | 0 | 0 | 0 | 0 | 0 | 17 | 0 | 70 | 0 | 96 |
+| curse | 183 | 35 | 17 | 1 | 1 | 1 | 1 | 0 | 0 | 17 | 0 | 70 | 0 | 96 |
 | formation | 183 | 35 | 17 | 17 | 17 | 1 | 1 | 0 | 0 | 17 | 0 | 70 | 0 | 96 |
 | summon | 183 | 35 | 17 | 0 | 0 | 0 | 0 | 0 | 0 | 17 | 0 | 70 | 0 | 96 |
 
@@ -185,7 +185,7 @@ Scene presence, source approval, technical status, owner review, and live integr
 | palm | liet_duong_chuong | `tmb.skill.palm.liet_duong_chuong.active_04.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | — |
 | palm | liet_duong_chuong | `tmb.skill.palm.liet_duong_chuong.ultimate.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | — |
 | palm | shared | `tmb.skill.palm.mobility.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | — |
-| curse | shared | `tmb.skill.curse.basic.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | — |
+| curse | shared | `tmb.skill.curse.basic.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | godot/labs/combat_lab/vfx_factory/vfx_factory_review.tscn |
 | curse | ho_menh_chu | `tmb.skill.curse.ho_menh_chu.active_01.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | — |
 | curse | ho_menh_chu | `tmb.skill.curse.ho_menh_chu.active_02.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | — |
 | curse | ho_menh_chu | `tmb.skill.curse.ho_menh_chu.active_03.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | — |

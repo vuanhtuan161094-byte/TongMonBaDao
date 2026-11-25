@@ -1356,6 +1356,41 @@
       "native_contact_sheet": "labs/combat_lab/talisman_factory_batch3_20261125/review/native/talisman_factory_batch3_contact_sheet_1280x720.png",
       "native_capture_index": "labs/combat_lab/talisman_factory_batch3_20261125/review/native/talisman_batch3_capture_index.json",
       "art_self_review": "PARTIAL_NATIVE_1X_PHASE_SAMPLES_REVIEWED_CONTINUOUS_MOTION_PENDING"
+    },
+    {
+      "id": "tmb.skill.curse.basic.human",
+      "name_vi": "Chú Âm Phá Vọng",
+      "school_vi": "Chú Tu",
+      "branch_vi": "Chú Âm Phá Vọng",
+      "tier": "human",
+      "scene": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+      "directions": [
+        "front"
+      ],
+      "vfx_status": "CANDIDATE_G3",
+      "g3_art": "SOURCE_RGBA_ALPHA_16_UNIQUE_FRAMES; NONTRAVEL_FRAMES_SELECTED; ART_SELF_REVIEW_PARTIAL",
+      "art_self_review": "PARTIAL_SOURCE_ATLAS_REVIEWED; NATIVE_STORYBOARD_REVIEW_PENDING",
+      "owner_art": "OWNER_VISUAL_PENDING",
+      "art_source": "OPENAI_IMAGEGEN_FIRST_PARTY_RGBA_ATLAS",
+      "review_stages": "Source alpha and 16 distinct atlas frames PASS · selected nontravel cast poses · Godot 4.7.2 native 1280×720 H.264 storyboard TECH PASS · 1× keyframes reviewed · target contact remains hidden without a real receipt · continuous motion/art review partial · owner approval pending · PvE HOLD",
+      "source_paths": [
+        "data/combat/v63_curse_combat_catalog.json",
+        "labs/combat_lab/vfx_factory/registry.json",
+        "labs/combat_lab/vfx_factory/vfx_factory_review.gd",
+        "labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+        "labs/combat_lab/curse_factory_batch1_20261125/manifest.json",
+        "labs/combat_lab/curse_factory_batch1_20261125/source/curse_basic_echo_dart_4x4.png",
+        "labs/combat_lab/curse_factory_batch1_20261125/source/curse_basic_echo_dart_source_contact_sheet.png",
+        "labs/combat_lab/curse_factory_batch1_20261125/review/native/curse_batch1_native_1280x720.mp4",
+        "labs/combat_lab/curse_factory_batch1_20261125/review/native/curse_batch1_native_contact_sheet.png",
+        "labs/combat_lab/curse_factory_batch1_20261125/review/native/curse_batch1_capture_index.json",
+        "assets/p3/baked_candidates/aschar66_candidate/AS66_CURSE_CLIPS_CANDIDATE.tres",
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS66_weapon_sockets_v9_3_candidate.json"
+      ],
+      "review_note": "Mechanic checked against v63_curse_combat_catalog: direct single-target damage, projectile_speed=0, no status. Storyboard excludes travel frames and contains no bound hit/contact; actor uses existing AS66 Curse source. Owner visual pending; PvE HOLD.",
+      "native_video": "labs/combat_lab/curse_factory_batch1_20261125/review/native/curse_batch1_native_1280x720.mp4",
+      "native_contact_sheet": "labs/combat_lab/curse_factory_batch1_20261125/review/native/curse_batch1_native_contact_sheet.png",
+      "native_capture_index": "labs/combat_lab/curse_factory_batch1_20261125/review/native/curse_batch1_capture_index.json"
     }
   ],
   "updated_at": "2026-11-25"
