@@ -127,10 +127,14 @@ func _run() -> void:
 			_check(int(state.get("actor_asset_id", -1)) == 64,
 				"Talisman preview resolves existing AS64 source " + skill_id)
 			var minimum_frame_count := 8
+			var expected_phase_source_count := 4
 			if skill_id in ["tmb.skill.talisman.phong_an_phu.active_01.human",
 				"tmb.skill.talisman.phong_an_phu.active_02.human"]:
 				minimum_frame_count = 4
-			_check(int(state.get("phase_sources_loaded", 0)) == 4
+			if skill_id == "tmb.skill.talisman.phong_an_phu.active_02.human":
+				expected_phase_source_count = 5
+				minimum_frame_count = 5
+			_check(int(state.get("phase_sources_loaded", 0)) == expected_phase_source_count
 				and int(state.get("frame_count", 0)) >= minimum_frame_count,
 				"source-backed Factory phases load with explicit still-frame limits " + skill_id)
 			if skill_id in ["tmb.skill.talisman.phong_an_phu.active_01.human",
@@ -150,7 +154,11 @@ func _run() -> void:
 			var binding_types: Array[String] = []
 			for binding in entry.get("receipt_manifest", {}).get("bindings", []):
 				binding_types.append(str(binding.get("event_type", "")))
-			if str(canonical.get("effect", "")) == "mark":
+			if skill_id == "tmb.skill.talisman.phong_an_phu.active_02.human":
+				_check(binding_types.has("skill_cast") and binding_types.has("skill_release")
+					and not binding_types.has("v63_talisman_mark_applied"),
+					"PAF02 preview accepts cast/release only while its real mark receipt is absent " + skill_id)
+			elif str(canonical.get("effect", "")) == "mark":
 				_check(binding_types.has("v63_talisman_mark_applied")
 					and not binding_types.has("v63_talisman_hit"),
 					"mark only appears after the authoritative owner-scoped mark receipt " + skill_id)

@@ -1556,7 +1556,8 @@
         "labs/combat_lab/talisman12/art_sources/paf02_r2_line_paint.webp",
         "labs/combat_lab/talisman12/art_sources/paf02_r2_impact_paint.webp"
       ],
-      "review_note": "Factory uses the existing jade wind-line and local impact paintings. Three-target line shape and 5.5-second owner mark duration remain canonical. The current adapter has two unique source stills; mark start/sustain/end are bound only to the actual owner-scoped receipt. Continuous motion and owner review pending; PvE HOLD."
+      "review_note": "The shared renderer spans the existing PAF02 jade wind-line art from hand socket to the selected third target during real MapBattleV2 cast/release. Current fixture emits no v63_talisman_mark_applied event, so no mark contact or sustain is shown. Canonical line shape and three-target cap remain data-owned; status/power are not fabricated. Static source art and owner review pending; PvE HOLD.",
+      "review_stages": "Godot Factory cast/release native capture · no owner mark receipt was emitted · contact and sustain remain hidden · owner review pending · PvE HOLD"
     }
   ],
   "updated_at": "2026-11-25"

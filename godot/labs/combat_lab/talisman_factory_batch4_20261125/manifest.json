@@ -58,7 +58,7 @@
       "shape": "line",
       "target_limit": 3,
       "source_g3": "EXISTING_FIRST_PARTY_PAF02_R2_LINE_AND_IMPACT_PAINT; TWO_STATIC_PHASE_STILLS",
-      "motion_status": "TWO_SOURCE_STILLS; MARK_START_SUSTAIN_END_RECEIPT_GATED",
+      "motion_status": "TWO_SOURCE_STILLS; CURRENT_FIXTURE_EMITTED_CAST_RELEASE_ONLY; MARK_SUSTAIN_REVIEW_BLOCKED",
       "source_paths": [
         "docs/operations/vfx_packets/PAF02_R1_NATIVE_20261116.md",
         "godot/labs/combat_lab/talisman12/art_sources/paf02_r2_line_paint.webp",
@@ -66,8 +66,8 @@
       ]
     }
   ],
-  "receipt_policy": "Only actual MapBattleV2 skill_cast, skill_release, v63_talisman_hit and owner-scoped v63_talisman_mark_applied events are bound. Contact/mark art has no preview fallback receipt.",
-  "source_limits": "PAF01 uses one existing 180x216 crop; PAF02 uses two existing stills. They remain static-source candidates. No replacement source was generated for missing TAL13–15 art.",
+  "receipt_policy": "Only actual MapBattleV2 skill_cast, skill_release, v63_talisman_hit and owner-scoped v63_talisman_mark_applied events are bound. No mark/contact fallback is rendered.",
+  "source_limits": "PAF01 uses one existing 180x216 crop; PAF02 uses two existing stills. The PAF02 MapBattleV2 fixture emits cast/release but no owner mark receipt, so contact and sustain remain hidden. No replacement source was generated for missing TAL13–15 art.",
   "native_capture": {
     "status": "PENDING",
     "expected_school_batch_count": 14,

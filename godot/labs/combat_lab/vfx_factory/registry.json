@@ -9050,13 +9050,15 @@
         "charge": "hand_r",
         "start": "target_chest",
         "sustain": "target_chest",
-        "end": "target_chest"
+        "end": "target_chest",
+        "release": "hand_r"
       },
       "phase_layers": {
         "charge": "BEHIND",
         "start": "BEHIND",
         "sustain": "BEHIND",
-        "end": "BEHIND"
+        "end": "BEHIND",
+        "release": "BEHIND"
       },
       "draw_layer": "BEHIND",
       "phase_aliases": {},
@@ -9091,6 +9093,12 @@
           "display_width_px": 72,
           "fps": 1,
           "loop": false
+        },
+        "release": {
+          "path": "res://labs/combat_lab/talisman12/art_sources/paf02_r2_line_paint.webp",
+          "display_width_px": 408,
+          "fps": 1.0,
+          "loop": false
         }
       },
       "review_timeline": {
@@ -9103,7 +9111,8 @@
         "release_window_seconds": 0.12,
         "start_window_seconds": 0.2,
         "end_window_seconds": 0.26,
-        "actor_action_seconds": 0.5
+        "actor_action_seconds": 0.5,
+        "clock": "REAL_MAPBATTLE_SKILL_CAST_AND_RELEASE; MARK_RECEIPT_NOT_EMITTED_BY_CURRENT_FIXTURE"
       },
       "receipt_manifest": {
         "schema": "tmb.vfx_bindings.v1",
@@ -9117,11 +9126,11 @@
             "visual_phase": "charge"
           },
           {
-            "event_type": "v63_talisman_mark_applied",
+            "event_type": "skill_release",
             "caster_slot": "hand_r",
-            "target_slot": "chest",
+            "target_slot": "ground",
             "actor_clip": "cast",
-            "visual_phase": "start"
+            "visual_phase": "release"
           }
         ]
       },
@@ -9132,7 +9141,13 @@
         "godot/labs/combat_lab/talisman12/art_sources/paf02_r2_impact_paint.webp"
       ],
       "source_batch_manifest": "res://labs/combat_lab/talisman_factory_batch4_20261125/manifest.json",
-      "review_note": "Factory uses the existing jade wind-line and local impact paintings. Three-target line shape and 5.5-second owner mark duration remain canonical. The current adapter has two unique source stills; mark start/sustain/end are bound only to the actual owner-scoped receipt. Continuous motion and owner review pending; PvE HOLD."
+      "review_note": "Factory shows the existing jade wind-line art only across the real MapBattleV2 cast and release. The capture fixture emitted no v63_talisman_mark_applied receipt for this skill, so mark contact and sustain remain hidden. No status or gameplay event is fabricated. Source motion and owner review pending; PvE HOLD.",
+      "phase_spans": {
+        "release": {
+          "to_actor_id": "talisman_factory_target_active_02_03",
+          "angle_offset_radians": 0.0
+        }
+      }
     }
   ],
   "batch_status": {
