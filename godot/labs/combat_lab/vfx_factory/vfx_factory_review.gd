@@ -355,6 +355,7 @@ func review_state() -> Dictionary:
 		"canonical_effect": str(_config.get("canonical_effect", "")),
 		"canonical_shape": str(_config.get("canonical_shape", "")),
 		"canonical_target_limit": int(_config.get("canonical_target_limit", 0)),
+		"preview_target_count": _config.get("preview_targets", []).size(),
 		"receipt_state": _last_receipt_result,
 		"phase_sources_loaded": _phase_frames.size(),
 		"frame_count": _phase_frame_count(),
@@ -383,6 +384,39 @@ func _target_foot() -> Vector2:
 	if _moving and bool(_config.get("showcase_moving_target", true)):
 		foot += Vector2(sin(_elapsed * 1.4) * 45.0, sin(_elapsed * 0.85) * 12.0)
 	return foot
+
+func _preview_target_position(row: Dictionary, index: int) -> Vector2:
+	var raw_position: Array = row.get("screen_position", [TARGET_BASE.x, TARGET_BASE.y])
+	var position := Vector2(float(raw_position[0]), float(raw_position[1])) if raw_position.size() == 2 else TARGET_BASE
+	var actor_id := str(row.get("id", ""))
+	if _screen_positions.has(actor_id):
+		position = _screen_positions[actor_id]
+	if _moving and bool(_config.get("showcase_moving_target", true)) and not _contact_target_ids.has(actor_id):
+		position += Vector2(sin(_elapsed * 1.2 + float(index) * 0.37) * 24.0,
+			sin(_elapsed * 0.8 + float(index) * 0.29) * 8.0)
+	return position
+
+func _preview_actor_position(actor_id: String) -> Vector2:
+	if _screen_positions.has(actor_id):
+		return _screen_positions[actor_id]
+	for raw_row in _config.get("preview_targets", []):
+		if raw_row is Dictionary and str(raw_row.get("id", "")) == actor_id:
+			var position: Array = raw_row.get("screen_position", [TARGET_BASE.x, TARGET_BASE.y])
+			return Vector2(float(position[0]), float(position[1])) if position.size() == 2 else TARGET_BASE
+	var outside: Dictionary = _config.get("preview_outside", {})
+	if str(outside.get("id", "")) == actor_id:
+		var position: Array = outside.get("screen_position", [OUTSIDE_BASE.x, OUTSIDE_BASE.y])
+		return Vector2(float(position[0]), float(position[1])) if position.size() == 2 else OUTSIDE_BASE
+	return OUTSIDE_BASE
+
+func _preview_outside_position() -> Vector2:
+	var outside: Dictionary = _config.get("preview_outside", {})
+	var position: Array = outside.get("screen_position", [OUTSIDE_BASE.x, OUTSIDE_BASE.y])
+	var result := Vector2(float(position[0]), float(position[1])) if position.size() == 2 else OUTSIDE_BASE
+	var actor_id := str(outside.get("id", _config.get("outside_actor_id", "review_outside")))
+	if _screen_positions.has(actor_id):
+		result = _screen_positions[actor_id]
+	return result
 
 func _moving_monster_foot() -> Vector2:
 	var foot := Vector2(980.0, 492.0)
@@ -419,7 +453,10 @@ func _draw() -> void:
 	if not _screen_positions.has(target_actor_id):
 		_screen_positions[target_actor_id] = target_foot
 	if not _screen_positions.has(outside_actor_id):
-		_screen_positions[outside_actor_id] = OUTSIDE_BASE
+		var outside_preview: Dictionary = _config.get("preview_outside", {})
+		var outside_position: Array = outside_preview.get("screen_position", [OUTSIDE_BASE.x, OUTSIDE_BASE.y])
+		_screen_positions[outside_actor_id] = Vector2(float(outside_position[0]), float(outside_position[1])) \
+			if outside_position.size() == 2 else OUTSIDE_BASE
 	var anchors: Dictionary = ASCHAR.resolve_preview_anchors(school, sex, action,
 		facing, actor_age, actor_foot, actor_scale, action_seconds, attachment_override)
 	_last_actor_asset_id = int(anchors.get("actor_id", -1))
@@ -438,9 +475,22 @@ func _draw() -> void:
 				Vector2.LEFT, _elapsed + 0.23, 1.0)
 	else:
 		if _source_atlas != null and _source_atlas.has_actor(MONSTER_ID):
-			_source_atlas.draw_actor(self, MONSTER_ID, "walk", target_foot,
-				Vector2.LEFT, _elapsed, 1.0)
-			_source_atlas.draw_actor(self, MONSTER_ID, "walk", OUTSIDE_BASE,
+			var configured_targets: Array = _config.get("preview_targets", [])
+			if configured_targets.is_empty():
+				_source_atlas.draw_actor(self, MONSTER_ID, "walk", target_foot,
+					Vector2.LEFT, _elapsed, 1.0)
+			else:
+				for target_index in range(configured_targets.size()):
+					var target_row: Dictionary = configured_targets[target_index]
+					var target_id := str(target_row.get("id", ""))
+					if not _screen_positions.has(target_id):
+						var initial_position: Array = target_row.get("screen_position", [target_foot.x, target_foot.y])
+						if initial_position.size() == 2:
+							_screen_positions[target_id] = Vector2(float(initial_position[0]), float(initial_position[1]))
+					_source_atlas.draw_actor(self, MONSTER_ID, "walk",
+						_preview_target_position(target_row, target_index), Vector2.LEFT,
+						_elapsed + float(target_index) * 0.23, 1.0)
+			_source_atlas.draw_actor(self, MONSTER_ID, "walk", _preview_outside_position(),
 				Vector2.LEFT, _elapsed + 0.23, 1.0)
 	if _show_vfx:
 		_draw_phase_art(anchors, actor_foot, target_foot, true)
@@ -484,7 +534,12 @@ func _draw_phase_art(anchors: Dictionary, actor_foot: Vector2,
 		center += Vector2(float(offset_data[0]), float(offset_data[1]))
 	if phase == "travel":
 		source_key = "flight" if _config.get("phase_sources", {}).has("flight") else "release"
-	_draw_texture_phase(source_key, center, front_layer)
+	var span: Dictionary = _config.get("phase_spans", {}).get(phase, {})
+	if not span.is_empty():
+		var endpoint := _preview_actor_position(str(span.get("to_actor_id", "")))
+		_draw_spanned_texture_phase(source_key, start, endpoint, float(span.get("angle_offset_radians", 0.0)))
+	else:
+		_draw_texture_phase(source_key, center, front_layer)
 
 static func phase_draws_front(configuration: Dictionary, phase: String) -> bool:
 	var phase_layers: Dictionary = configuration.get("phase_layers", {})
@@ -556,6 +611,33 @@ func _draw_texture_phase(phase: String, center: Vector2, _front_layer: bool,
 	draw_set_transform(center, float(phase_row.get("angle_radians", 0.0)), Vector2.ONE * scale_factor)
 	draw_texture_rect_region(texture, Rect2(-source.size * 0.5, source.size), source,
 		Color(1.0, 1.0, 1.0, clampf(alpha, 0.0, 1.0)))
+	draw_set_transform(Vector2.ZERO)
+
+func _draw_spanned_texture_phase(phase: String, start: Vector2, endpoint: Vector2,
+		angle_offset: float = 0.0) -> void:
+	var frames: Array = _phase_frames.get(phase, [])
+	if frames.is_empty():
+		return
+	var phase_row: Dictionary = _config.get("phase_sources", {}).get(phase, {})
+	var phase_time := _phase_elapsed(phase)
+	var fps := maxf(1.0, float(phase_row.get("fps", 12.0)))
+	var frame_index := mini(int(floor(phase_time * fps)), frames.size() - 1)
+	if bool(phase_row.get("loop", false)):
+		frame_index = posmod(int(floor(phase_time * fps)), frames.size())
+	var frame: Dictionary = frames[frame_index]
+	var texture := frame.get("texture") as Texture2D
+	if texture == null:
+		return
+	var source: Rect2 = frame.get("region", Rect2(Vector2.ZERO, texture.get_size()))
+	if source.size.x <= 0.0 or source.size.y <= 0.0:
+		return
+	var delta := endpoint - start
+	if delta.length() < 1.0:
+		return
+	var scale := delta.length() / source.size.x
+	var center := (start + endpoint) * 0.5
+	draw_set_transform(center, delta.angle() + angle_offset, Vector2.ONE * scale)
+	draw_texture_rect_region(texture, Rect2(-source.size * 0.5, source.size), source, Color.WHITE)
 	draw_set_transform(Vector2.ZERO)
 
 func _source_display_width(phase_row: Dictionary) -> float:
@@ -646,8 +728,18 @@ func _draw_overlay(actor_ok: bool, school: String, target_foot: Vector2) -> void
 	draw_string(_font, Vector2(35.0, 43.0), "VFX FACTORY · DATA REVIEW · 1× GAME SCALE", HORIZONTAL_ALIGNMENT_LEFT, 940.0, 22, fg)
 	draw_string(_font, Vector2(36.0, 72.0), id_line, HORIZONTAL_ALIGNMENT_LEFT, 930.0, 14, secondary)
 	draw_string(_font, Vector2(35.0, 116.0), "CASTER · " + school.to_upper() + " · " + str(_config.get("actor_action", "idle")).to_upper(), HORIZONTAL_ALIGNMENT_LEFT, 350.0, 12, secondary)
-	var target_label := "ALLY TARGET 01" if str(_config.get("preview_target_kind", "monster")) == "ally" else "MONSTER TARGET 01 · MOVING"
-	draw_string(_font, Vector2(target_foot.x - 110.0, target_foot.y - 95.0), target_label, HORIZONTAL_ALIGNMENT_CENTER, 220.0, 12, secondary)
+	if str(_config.get("preview_target_kind", "monster")) == "ally":
+		draw_string(_font, Vector2(target_foot.x - 110.0, target_foot.y - 95.0), "ALLY TARGET 01", HORIZONTAL_ALIGNMENT_CENTER, 220.0, 12, secondary)
+	else:
+		var configured_targets: Array = _config.get("preview_targets", [])
+		if configured_targets.is_empty():
+			draw_string(_font, Vector2(target_foot.x - 110.0, target_foot.y - 95.0), "MONSTER TARGET 01 · MOVING", HORIZONTAL_ALIGNMENT_CENTER, 220.0, 12, secondary)
+		else:
+			for target_index in range(configured_targets.size()):
+				var target_row: Dictionary = configured_targets[target_index]
+				var position := _preview_target_position(target_row, target_index)
+				var target_label := str(target_row.get("label", "MONSTER TARGET %02d · MOVING" % (target_index + 1)))
+				draw_string(_font, Vector2(position.x - 100.0, position.y - 82.0), target_label, HORIZONTAL_ALIGNMENT_CENTER, 200.0, 12, secondary)
 	if str(_config.get("preview_target_kind", "monster")) == "ally":
 		var moving_monster := _moving_monster_foot()
 		draw_string(_font, Vector2(moving_monster.x - 100.0, moving_monster.y - 95.0), "MONSTER MOVING", HORIZONTAL_ALIGNMENT_CENTER, 200.0, 12, secondary)

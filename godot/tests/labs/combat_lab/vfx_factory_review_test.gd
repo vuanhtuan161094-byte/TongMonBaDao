@@ -8,6 +8,8 @@ const FORMATION_MANIFEST_PATH := "res://labs/combat_lab/formation01/factory_batc
 const FORMATION_CATALOG_PATH := "res://data/combat/v63_formation_combat_catalog.json"
 const TALISMAN_CATALOG_PATH := "res://data/combat/v63_talisman_combat_catalog.json"
 const CURSE_CATALOG_PATH := "res://data/combat/v63_curse_combat_catalog.json"
+const PALM_CATALOG_PATH := "res://data/combat/v63_palm_combat_catalog.json"
+const SPEAR_CATALOG_PATH := "res://data/combat/v63_spear_combat_catalog.json"
 
 var failures := 0
 var checked := 0
@@ -27,9 +29,13 @@ func _run() -> void:
 	var catalog: Variant = JSON.parse_string(FileAccess.get_file_as_string(FORMATION_CATALOG_PATH))
 	var talisman_catalog: Variant = JSON.parse_string(FileAccess.get_file_as_string(TALISMAN_CATALOG_PATH))
 	var curse_catalog: Variant = JSON.parse_string(FileAccess.get_file_as_string(CURSE_CATALOG_PATH))
-	_check(registry is Dictionary and manifest is Dictionary and catalog is Dictionary and talisman_catalog is Dictionary and curse_catalog is Dictionary,
+	var palm_catalog: Variant = JSON.parse_string(FileAccess.get_file_as_string(PALM_CATALOG_PATH))
+	var spear_catalog: Variant = JSON.parse_string(FileAccess.get_file_as_string(SPEAR_CATALOG_PATH))
+	_check(registry is Dictionary and manifest is Dictionary and catalog is Dictionary and talisman_catalog is Dictionary
+		and curse_catalog is Dictionary and palm_catalog is Dictionary and spear_catalog is Dictionary,
 		"all source registries parse")
-	if not (registry is Dictionary and manifest is Dictionary and catalog is Dictionary and talisman_catalog is Dictionary and curse_catalog is Dictionary):
+	if not (registry is Dictionary and manifest is Dictionary and catalog is Dictionary and talisman_catalog is Dictionary
+		and curse_catalog is Dictionary and palm_catalog is Dictionary and spear_catalog is Dictionary):
 		_finish()
 		return
 	var formation_by_id: Dictionary = {}
@@ -42,14 +48,20 @@ func _run() -> void:
 		canonical_by_id[str(row.get("id", ""))] = row
 	for row in curse_catalog.get("skills", []):
 		canonical_by_id[str(row.get("id", ""))] = row
+	for row in palm_catalog.get("skills", []):
+		canonical_by_id[str(row.get("id", ""))] = row
+	for row in spear_catalog.get("skills", []):
+		canonical_by_id[str(row.get("id", ""))] = row
 	var cases: Array = registry.get("entries", [])
-	_check(cases.size() == 30, "shared registry retains existing cues, 17 Formation, 10 Talisman and one Curse storyboard candidate")
+	_check(cases.size() == 32, "shared registry retains existing cues, 17 Formation, 10 Talisman, Curse, Palm and Spear candidates")
 	_check(formation_by_id.size() == 17, "all 17 source atlas records remain available")
 	for entry in cases:
 		var skill_id := str(entry.get("skill_id", ""))
 		var is_formation := skill_id.begins_with("tmb.skill.formation.")
 		var is_talisman := skill_id.begins_with("tmb.skill.talisman.")
 		var is_curse := skill_id == "tmb.skill.curse.basic.human"
+		var is_palm := skill_id == "tmb.skill.palm.han_ngoc_chuong.active_01.human"
+		var is_spear := skill_id == "tmb.skill.spear.long_thuong.active_01.human"
 		var lab := FACTORY_SCENE.instantiate() as Node2D
 		lab.call("review_set_skill_id", skill_id)
 		root.add_child(lab)
@@ -168,6 +180,52 @@ func _run() -> void:
 			_check(str(contact_wait.get("receipt_state", "")) == "WAITING_FOR_REAL_RECEIPT"
 				and int(contact_wait.get("contact_receipt_target_count", -1)) == 0,
 				"contact stays hidden without a real Curse receipt " + skill_id)
+		elif is_palm or is_spear:
+			var canonical: Dictionary = canonical_by_id.get(skill_id, {})
+			_check(not canonical.is_empty(), "Palm/Spear canonical runtime catalogue join " + skill_id)
+			_check(str(state.get("canonical_effect", "")) == "damage"
+				and str(state.get("canonical_shape", "")) == str(canonical.get("shape", ""))
+				and int(state.get("canonical_target_limit", 0)) == int(canonical.get("target_limit", 0))
+				and float(canonical.get("projectile_speed", -1.0)) == 0.0,
+				"direct damage mechanic, target cap and no projectile remain canonical-data-owned " + skill_id)
+			var expected_actor_id := 60 if is_palm else 54
+			_check(int(state.get("actor_asset_id", -1)) == expected_actor_id,
+				"existing school-specific AS-CHAR cast/weapon source resolves " + skill_id)
+			var expected_targets := 1 if is_palm else 2
+			_check(int(state.get("preview_target_count", 0)) == expected_targets,
+				"configured real-target fixture matches the canonical cap " + skill_id)
+			_check(int(state.get("phase_sources_loaded", 0)) == 4 and int(state.get("frame_count", 0)) == 4,
+				"RGBA phase masters load through the shared renderer " + skill_id)
+			_check(str(entry.get("native_batch", "")) == ("palm" if is_palm else "spear"),
+				"batch capture uses the shared school runner " + skill_id)
+			var binding_types: Array[String] = []
+			for binding in entry.get("receipt_manifest", {}).get("bindings", []):
+				binding_types.append(str(binding.get("event_type", "")))
+			_check(binding_types.has("skill_cast") and binding_types.has("skill_release")
+				and binding_types.has("v63_skill_hit"),
+				"charge, release and contact use exact V63 cast/release/hit events " + skill_id)
+			if is_palm:
+				var palm_anchors: Dictionary = ASCHAR.resolve_preview_anchors("palm", "male", "cast",
+					Vector2.RIGHT, 0.2, Vector2(300.0, 492.0), ASCHAR.game_view_scale(), 0.32,
+					{"suppress_attachments":true})
+				_check(palm_anchors.get("slots", {}).has("hand_r"),
+					"Palm charge and release use the existing AS60 right-hand socket " + skill_id)
+			else:
+				var spear_anchors: Dictionary = ASCHAR.resolve_preview_anchors("spear", "male", "attack",
+					Vector2.RIGHT, 0.2, Vector2(300.0, 492.0), ASCHAR.game_view_scale(), 0.32, {})
+				_check(spear_anchors.get("slots", {}).has("weapon_tip"),
+					"Spear release originates from the candidate AS54 Weapon Library tip socket " + skill_id)
+				_check(str(entry.get("phase_spans", {}).get("release", {}).get("to_actor_id", ""))
+					== "factory_spear_target_02",
+					"Spear line release ends at the second configured target " + skill_id)
+			_check(str(state.get("owner_status", "")) == "OWNER_VISUAL_PENDING"
+				and not bool(entry.get("native_ready", true)),
+				"Factory integration remains a candidate pending owner approval " + skill_id)
+			lab.call("review_seek_phase", "contact")
+			var contact_wait: Dictionary = lab.call("review_state")
+			_check(str(contact_wait.get("receipt_state", "")) == "WAITING_FOR_REAL_RECEIPT"
+				and int(contact_wait.get("contact_receipt_target_count", -1)) == 0,
+				"contact remains hidden until the native runner supplies a real skill hit " + skill_id)
 		else:
 			_check(str(state.get("canonical_effect", "")) == "damage",
 				"existing candidate canonical effect preserved " + skill_id)
@@ -179,6 +237,6 @@ func _run() -> void:
 
 func _finish() -> void:
 	print("VFX_FACTORY_REVIEW_RESULT=" + ("PASS" if failures == 0 else "FAIL")
-		+ " cases=" + str(checked) + " skills=" + str(30)
-		+ " formation=17 AS68=resolved curse=AS66_storyboard contact_fixture=NONE failures=" + str(failures))
+		+ " cases=" + str(checked) + " skills=" + str(32)
+		+ " formation=17 AS68=resolved curse=AS66_storyboard palm=AS60 spear=AS54 contact_fixture=NONE failures=" + str(failures))
 	quit(0 if failures == 0 else 1)

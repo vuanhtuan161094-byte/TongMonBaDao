@@ -1391,6 +1391,53 @@
       "native_video": "labs/combat_lab/curse_factory_batch1_20261125/review/native/curse_batch1_native_1280x720.mp4",
       "native_contact_sheet": "labs/combat_lab/curse_factory_batch1_20261125/review/native/curse_batch1_native_contact_sheet.png",
       "native_capture_index": "labs/combat_lab/curse_factory_batch1_20261125/review/native/curse_batch1_capture_index.json"
+    },
+    {
+      "id": "tmb.skill.palm.han_ngoc_chuong.active_01.human",
+      "name_vi": "Hàn Ngọc Chấn Mạch — Palm R1 source / Factory candidate",
+      "school_vi": "Chưởng Tu",
+      "branch_vi": "Hàn Ngọc Chưởng",
+      "tier": "human",
+      "scene": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+      "directions": [
+        "front"
+      ],
+      "vfx_status": "CANDIDATE_G3",
+      "g3_art": "EXISTING_R1_RGBA_SOURCE_G3_SELF_PASS; FACTORY_INTEGRATION_PENDING_NATIVE_CAPTURE",
+      "owner_art": "OWNER_VISUAL_PENDING",
+      "review_stages": "4 phase cues · direct single-target Palm receipt",
+      "source_paths": [
+        "labs/combat_lab/palm01/han_ngoc_chan_mach_r1/source/charge_r2.png",
+        "labs/combat_lab/palm01/han_ngoc_chan_mach_r1/source/peak_r2.png",
+        "labs/combat_lab/palm01/han_ngoc_chan_mach_r1/source/contact_r1.png",
+        "labs/combat_lab/palm01/han_ngoc_chan_mach_r1/source/manifest.json"
+      ],
+      "art_source": "EXISTING_FIRST_PARTY_RGBA_PHASE_MASTERS_REUSED_WITH_AS60",
+      "review_note": "Shared VFX Factory scene; existing AS60 cast and hand_r socket. Canonical direct single-target damage has projectile_speed=0. Contact is hidden until the exact v63_skill_hit receipt. G3 source self-pass is inherited from R1 only; Factory native motion and owner visual review are pending. PvE HOLD."
+    },
+    {
+      "id": "tmb.skill.spear.long_thuong.active_01.human",
+      "name_vi": "Vân Long Điểm Thủy — Spear R1 source / Factory candidate",
+      "school_vi": "Thương Tu",
+      "branch_vi": "Long Thương",
+      "tier": "human",
+      "scene": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+      "directions": [
+        "front"
+      ],
+      "vfx_status": "CANDIDATE_G3",
+      "g3_art": "EXISTING_R1_RGBA_SOURCE_G3_SELF_PASS; FACTORY_INTEGRATION_PENDING_NATIVE_CAPTURE",
+      "owner_art": "OWNER_VISUAL_PENDING",
+      "review_stages": "4 phase cues · two-target V63 line receipt",
+      "source_paths": [
+        "labs/combat_lab/spear01/van_long_diem_thuy/r1/assets/source/charge_r1.png",
+        "labs/combat_lab/spear01/van_long_diem_thuy/r1/assets/source/peak_r2.png",
+        "labs/combat_lab/spear01/van_long_diem_thuy/r1/assets/source/contact_r1.png",
+        "labs/combat_lab/spear01/van_long_diem_thuy/r1/assets/source/fade_r1.png",
+        "labs/combat_lab/spear01/van_long_diem_thuy/r1/assets/source/manifest.json"
+      ],
+      "art_source": "EXISTING_FIRST_PARTY_RGBA_PHASE_MASTERS_REUSED_WITH_AS54_WEAPON_LIBRARY",
+      "review_note": "Shared VFX Factory scene; existing AS54 attack clip and candidate Weapon Library weapon_tip socket. Canonical direct line damage caps at two targets with projectile_speed=0. Release streak is anchored at the weapon tip; contact accents require exact v63_skill_hit receipts. G3 source self-pass is inherited from R1 only; Factory socket/motion and owner review remain pending. PvE HOLD."
     }
   ],
   "updated_at": "2026-11-25"

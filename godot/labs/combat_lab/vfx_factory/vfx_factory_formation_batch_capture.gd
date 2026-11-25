@@ -93,6 +93,24 @@ func _activate_skill(next_index: int) -> void:
 		var target_position: Vector2 = target_data.get("position", Vector2(5.0, 3.0))
 		_lab.call("review_set_target_screen_position", _world_to_screen(target_position))
 		_lab.call("review_record_actor_screen_position", target_id, _world_to_screen(target_position))
+	for raw_preview_target in entry.get("preview_targets", []):
+		if not (raw_preview_target is Dictionary):
+			continue
+		var preview_target_id := str(raw_preview_target.get("id", ""))
+		var preview_target_data: Dictionary = _battle.actors.get(preview_target_id, {})
+		if preview_target_data.is_empty():
+			continue
+		var preview_target_position: Vector2 = preview_target_data.get("position", Vector2(5.0, 3.0))
+		var preview_target_screen := _world_to_screen(preview_target_position)
+		_lab.call("review_record_actor_screen_position", preview_target_id, preview_target_screen)
+		if preview_target_id == str(entry.get("target_actor_id", "")):
+			_lab.call("review_set_target_screen_position", preview_target_screen)
+	var outside_preview: Dictionary = entry.get("preview_outside", {})
+	var outside_preview_id := str(outside_preview.get("id", ""))
+	var outside_preview_data: Dictionary = _battle.actors.get(outside_preview_id, {})
+	if not outside_preview_data.is_empty():
+		_lab.call("review_record_actor_screen_position", outside_preview_id,
+			_world_to_screen(outside_preview_data.get("position", Vector2(6.0, 5.0))))
 	_lab.call("review_record_actor_screen_position", _caster_id, _world_to_screen(capture_start_position))
 	var ally_id := str(fixture.get("ally_id", ""))
 	if _battle.actors.has(ally_id):
@@ -221,6 +239,13 @@ func _process(delta: float) -> void:
 			break
 		_feed_receipt(event)
 		_event_index += 1
+		# Preserve one render frame between receipts that share a combat tick, so
+		# cast, release and contact stages remain readable in the combined movie.
+		if _event_index < _events.size():
+			var next_event: Dictionary = _events[_event_index]
+			var next_due_at := maxf(0.0, float(next_event.get("time", _event_origin_time)) - _event_origin_time)
+			if next_due_at <= _segment_elapsed:
+				break
 	if _segment_elapsed >= _segment_duration:
 		call_deferred("_activate_skill", _index + 1)
 
@@ -306,24 +331,40 @@ func _make_battle_fixture(skill_id: String, fixture_index: int) -> Dictionary:
 	battle.encounter_id = "vfx_factory_%s_capture_%02d" % [_school, fixture_index]
 	battle.active = true
 	battle.outcome = "fighting"
+	var entry: Dictionary = _entries[fixture_index]
 	var caster := _actor("caster_%02d" % fixture_index, "disciple", Vector2(2.0, 3.0))
 	var caster_origin_position: Vector2 = caster.get("position", Vector2(2.0, 3.0))
 	caster["party_id"] = "vfx_factory_%s_party" % _school
 	caster["v63_combat_enabled"] = true
 	caster["v63_skill_loadout"] = [skill_id]
-	if _school == "formation":
-		caster["v63_formation_combat_enabled"] = true
-	else:
-		caster["v63_talisman_combat_enabled"] = true
+	match _school:
+		"formation": caster["v63_formation_combat_enabled"] = true
+		"talisman": caster["v63_talisman_combat_enabled"] = true
+		"palm": caster["v63_palm_combat_enabled"] = true
+		"spear": caster["v63_spear_combat_enabled"] = true
 	var ally := _actor("ally_%02d" % fixture_index, "disciple", Vector2(4.0, 3.0))
 	ally["party_id"] = "vfx_factory_%s_party" % _school
-	var foe := _actor("foe_%02d" % fixture_index, "monster", Vector2(5.0, 3.0))
-	if _school == "formation" and skill_id == "tmb.skill.formation.mobility.human":
-		foe["position"] = Vector2(9.0, 3.0)
-	elif _school == "formation" and skill_id == "tmb.skill.formation.basic.human":
-		foe["position"] = Vector2(3.8, 3.0)
-	var line_targets: Array[Dictionary] = [foe]
-	if _school == "talisman":
+	var line_targets: Array[Dictionary] = []
+	var preview_target_rows: Array = entry.get("preview_targets", [])
+	var foe: Dictionary
+	if not preview_target_rows.is_empty():
+		for raw_target_row in preview_target_rows:
+			if not (raw_target_row is Dictionary):
+				continue
+			var row_position: Array = raw_target_row.get("fixture_position", [5.0, 3.0])
+			var monster := _actor(str(raw_target_row.get("id", "factory_target")), "monster",
+				Vector2(float(row_position[0]), float(row_position[1])) if row_position.size() == 2 else Vector2(5.0, 3.0))
+			line_targets.append(monster)
+		if not line_targets.is_empty():
+			foe = line_targets[0]
+	else:
+		foe = _actor("foe_%02d" % fixture_index, "monster", Vector2(5.0, 3.0))
+		if _school == "formation" and skill_id == "tmb.skill.formation.mobility.human":
+			foe["position"] = Vector2(9.0, 3.0)
+		elif _school == "formation" and skill_id == "tmb.skill.formation.basic.human":
+			foe["position"] = Vector2(3.8, 3.0)
+		line_targets.append(foe)
+	if _school == "talisman" and preview_target_rows.is_empty():
 		for target_index in range(1, 3):
 			var line_foe := _actor("foe_%02d_%02d" % [fixture_index, target_index], "monster",
 				Vector2(5.0 + float(target_index), 3.0))
@@ -332,6 +373,12 @@ func _make_battle_fixture(skill_id: String, fixture_index: int) -> Dictionary:
 		battle.actors[str(actor.get("id", ""))] = actor
 	for line_foe in line_targets:
 		battle.actors[str(line_foe.get("id", ""))] = line_foe
+	var outside_row: Dictionary = entry.get("preview_outside", {})
+	if not outside_row.is_empty():
+		var outside_position: Array = outside_row.get("fixture_position", [6.0, 5.2])
+		var outside_actor := _actor(str(outside_row.get("id", "factory_outside")), "monster",
+			Vector2(float(outside_position[0]), float(outside_position[1])) if outside_position.size() == 2 else Vector2(6.0, 5.2))
+		battle.actors[str(outside_actor.get("id", ""))] = outside_actor
 	var started := false
 	if skill_id in ["tmb.skill.formation.basic.human", "tmb.skill.talisman.basic.human"]:
 		var basic_definition: Dictionary = HSC.skill_definition(skill_id)
@@ -352,6 +399,17 @@ func _make_battle_fixture(skill_id: String, fixture_index: int) -> Dictionary:
 		var pending: Dictionary = caster.get("v63_pending_cast", {})
 		if pending.is_empty():
 			return {"battle":null,"caster_id":str(caster.id),"target_id":str(foe.id),"ally_id":str(ally.id)}
+		for raw_target_row in preview_target_rows:
+			if not (raw_target_row is Dictionary):
+				continue
+			var target_actor: Dictionary = battle.actors.get(str(raw_target_row.get("id", "")), {})
+			var motion: Array = raw_target_row.get("fixture_motion_delta", [0.0, 0.0])
+			if not target_actor.is_empty() and motion.size() == 2:
+				target_actor["position"] = target_actor.get("position", Vector2.ZERO) + Vector2(float(motion[0]), float(motion[1]))
+		var outside_motion: Array = outside_row.get("fixture_motion_delta", [0.0, 0.0])
+		var outside_target: Dictionary = battle.actors.get(str(outside_row.get("id", "")), {})
+		if not outside_target.is_empty() and outside_motion.size() == 2:
+			outside_target["position"] = outside_target.get("position", Vector2.ZERO) + Vector2(float(outside_motion[0]), float(outside_motion[1]))
 		battle.now = float(pending.get("ready", battle.now))
 		battle._release_casts()
 	if _school == "formation" and skill_id.begins_with("tmb.skill.formation.sat_phat_tran.") and str(HSC.skill_definition(skill_id).get("effect", "")) == "formation_zone":
@@ -373,7 +431,9 @@ func _actor(actor_id: String, side: String, position: Vector2) -> Dictionary:
 		"stats":{"max_hp":200.0,"attack":40.0,"defense":0.0,"damage_reduction":0.0,"crit_chance":0.0,
 			"crit_damage":1.5,"crit_resistance":0.0,"defense_penetration":0.0,"lifesteal":0.0,"lifesteal_reduction":0.0},
 		"resistances":resistances,"status_effects":{},"context_sources":[],"v63_combat_enabled":true,
-		"v63_formation_combat_enabled":false,"v63_skill_ready":{},"v63_skill_loadout":[],"v63_passive_ids":[],
+		"v63_formation_combat_enabled":false,"v63_talisman_combat_enabled":false,
+		"v63_palm_combat_enabled":false,"v63_spear_combat_enabled":false,
+		"v63_skill_ready":{},"v63_skill_loadout":[],"v63_passive_ids":[],
 		"v63_combat_clock":-1.0,"next_skill":0.0,"next_basic":0.0,
 		"learned_guard_factor":1.0,"learned_guard_until":-1.0}
 	if side == "monster":
