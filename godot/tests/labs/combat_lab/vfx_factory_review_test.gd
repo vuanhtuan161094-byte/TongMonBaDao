@@ -57,7 +57,7 @@ func _run() -> void:
 	for row in blade_catalog.get("skills", []):
 		canonical_by_id[str(row.get("id", ""))] = row
 	var cases: Array = registry.get("entries", [])
-	_check(cases.size() == 33, "shared registry retains existing cues, 17 Formation, 10 Talisman, Curse, Blade, Palm and Spear candidates")
+	_check(cases.size() == 37, "shared registry retains existing cues, 17 Formation, 14 Talisman, Curse, Blade, Palm and Spear candidates")
 	_check(formation_by_id.size() == 17, "all 17 source atlas records remain available")
 	for entry in cases:
 		var skill_id := str(entry.get("skill_id", ""))
@@ -126,12 +126,27 @@ func _run() -> void:
 				"Talisman canonical effect, shape and cap remain data-owned " + skill_id)
 			_check(int(state.get("actor_asset_id", -1)) == 64,
 				"Talisman preview resolves existing AS64 source " + skill_id)
+			var minimum_frame_count := 8
+			if skill_id in ["tmb.skill.talisman.phong_an_phu.active_01.human",
+				"tmb.skill.talisman.phong_an_phu.active_02.human"]:
+				minimum_frame_count = 4
 			_check(int(state.get("phase_sources_loaded", 0)) == 4
-				and int(state.get("frame_count", 0)) >= 8,
-				"distinct existing RGBA atlas phases load in shared Factory " + skill_id)
-			_check(str(entry.get("native_batch", "")) == "talisman"
-				and str(entry.get("native_status", "")).begins_with("NATIVE_TECH_PASS_GODOT_4.7.2_1280x720"),
-				"Talisman native technical capture is recorded separately from art review " + skill_id)
+				and int(state.get("frame_count", 0)) >= minimum_frame_count,
+				"source-backed Factory phases load with explicit still-frame limits " + skill_id)
+			if skill_id in ["tmb.skill.talisman.phong_an_phu.active_01.human",
+				"tmb.skill.talisman.phong_an_phu.active_02.human"]:
+				_check(str(entry.get("motion_status", "")).contains("STATIC")
+					or str(entry.get("motion_status", "")).contains("TWO_SOURCE_STILLS"),
+					"limited PAF source motion is reported truthfully " + skill_id)
+			var talisman_native_status := str(entry.get("native_status", ""))
+			if talisman_native_status == "NATIVE_CAPTURE_PENDING":
+				_check(str(entry.get("native_batch", "")) == "talisman"
+					and not bool(entry.get("native_ready", true)),
+					"Talisman capture-pending candidate stays gated " + skill_id)
+			else:
+				_check(str(entry.get("native_batch", "")) == "talisman"
+					and talisman_native_status.begins_with("NATIVE_TECH_PASS_GODOT_4.7.2_1280x720"),
+					"Talisman native technical capture is recorded separately from art review " + skill_id)
 			var binding_types: Array[String] = []
 			for binding in entry.get("receipt_manifest", {}).get("bindings", []):
 				binding_types.append(str(binding.get("event_type", "")))
@@ -283,6 +298,6 @@ func _run() -> void:
 
 func _finish() -> void:
 	print("VFX_FACTORY_REVIEW_RESULT=" + ("PASS" if failures == 0 else "FAIL")
-		+ " cases=" + str(checked) + " skills=" + str(33)
-		+ " formation=17 AS68=resolved curse=AS66_storyboard blade=AS50 receipt palm=AS60 spear=AS54 failures=" + str(failures))
+		+ " cases=" + str(checked) + " skills=" + str(37)
+		+ " formation=17 talisman=14 AS64=resolved curse=AS66_storyboard blade=AS50 receipt palm=AS60 spear=AS54 failures=" + str(failures))
 	quit(0 if failures == 0 else 1)

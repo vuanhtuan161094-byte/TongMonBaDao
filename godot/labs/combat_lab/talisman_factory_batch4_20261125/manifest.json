@@ -1,0 +1,79 @@
+{
+  "schema": "tmb.vfx_factory_school_batch.v1",
+  "batch_id": "talisman_factory_batch4_20261125",
+  "school": "talisman",
+  "source_policy": "Reuse the existing first-party RGBA/WebP master files byte-for-byte. No gameplay or source artwork is modified.",
+  "shared_renderer": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+  "native_runner": "res://labs/combat_lab/vfx_factory/vfx_factory_formation_batch_capture.tscn",
+  "scope": "Four remaining Talisman Human cast masters with existing first-party assets: TAL01 lightning, TAL06 fire, PAF01 owner mark, PAF02 three-target line mark.",
+  "source_validation": "All configured source files exist; every atlas rectangle lies inside its image bounds.",
+  "skills": [
+    {
+      "skill_id": "tmb.skill.talisman.loi_phu.active_01.human",
+      "branch": "loi_phu",
+      "effect": "damage",
+      "shape": "single_target",
+      "target_limit": 1,
+      "source_g3": "EXISTING_FIRST_PARTY_R4_RGBA_ATLAS; 12 POSES; FACTORY_ART_REVIEW_PENDING",
+      "motion_status": "12_SOURCE_POSES_SHARED_FACTORY_ADAPTER; CONTINUOUS_MOTION_REVIEW_PENDING",
+      "source_paths": [
+        "labs/combat_lab/talisman01/ART_PROVENANCE_R4.md",
+        "labs/combat_lab/talisman01/assets/thunder_talisman_atlas.webp",
+        "labs/combat_lab/talisman01/assets/thunder_impact_burst.png"
+      ]
+    },
+    {
+      "skill_id": "tmb.skill.talisman.hoa_phu.active_01.human",
+      "branch": "hoa_phu",
+      "effect": "damage",
+      "shape": "single_target",
+      "target_limit": 1,
+      "source_g3": "EXISTING_FIRST_PARTY_RGBA_FIRE_TALISMAN_ATLASES; FRAME_REVIEW_PENDING",
+      "motion_status": "EXISTING_FIRE_SEAL_AND_COMET_FLIPBOOKS; FACTORY_MOTION_REVIEW_PENDING",
+      "source_paths": [
+        "labs/combat_lab/talisman06/README.md",
+        "labs/combat_lab/talisman06/assets/tal06_flame_seal_atlas.webp",
+        "labs/combat_lab/talisman06/assets/tal06_fire_comet_atlas.webp",
+        "labs/combat_lab/talisman06/assets/tal06_impact_atlas.webp",
+        "labs/combat_lab/talisman06/assets/tal06_foot_ember.webp"
+      ]
+    },
+    {
+      "skill_id": "tmb.skill.talisman.phong_an_phu.active_01.human",
+      "branch": "phong_an_phu",
+      "effect": "mark",
+      "shape": "single_target",
+      "target_limit": 1,
+      "source_g3": "EXISTING_FIRST_PARTY_PAF01_R6_180x216_CROPPED_SOURCE; LOW_RES_STATIC_STILL",
+      "motion_status": "STATIC_SOURCE_STILL; START_SUSTAIN_END_CLOCKED_BY_REAL_MARK_DURATION",
+      "source_paths": [
+        "docs/operations/vfx_packets/PAF01_R6_ILLUSTRATED_WIND_SEAL_20261116.md",
+        "godot/labs/combat_lab/talisman11/art_sources/paf01_r6_illustrated_source.webp"
+      ]
+    },
+    {
+      "skill_id": "tmb.skill.talisman.phong_an_phu.active_02.human",
+      "branch": "phong_an_phu",
+      "effect": "mark",
+      "shape": "line",
+      "target_limit": 3,
+      "source_g3": "EXISTING_FIRST_PARTY_PAF02_R2_LINE_AND_IMPACT_PAINT; TWO_STATIC_PHASE_STILLS",
+      "motion_status": "TWO_SOURCE_STILLS; MARK_START_SUSTAIN_END_RECEIPT_GATED",
+      "source_paths": [
+        "docs/operations/vfx_packets/PAF02_R1_NATIVE_20261116.md",
+        "godot/labs/combat_lab/talisman12/art_sources/paf02_r2_line_paint.webp",
+        "godot/labs/combat_lab/talisman12/art_sources/paf02_r2_impact_paint.webp"
+      ]
+    }
+  ],
+  "receipt_policy": "Only actual MapBattleV2 skill_cast, skill_release, v63_talisman_hit and owner-scoped v63_talisman_mark_applied events are bound. Contact/mark art has no preview fallback receipt.",
+  "source_limits": "PAF01 uses one existing 180x216 crop; PAF02 uses two existing stills. They remain static-source candidates. No replacement source was generated for missing TAL13–15 art.",
+  "native_capture": {
+    "status": "PENDING",
+    "expected_school_batch_count": 14,
+    "owner_approval": "PENDING",
+    "pve": "HOLD"
+  },
+  "owner_approval": "PENDING",
+  "pve": "HOLD"
+}

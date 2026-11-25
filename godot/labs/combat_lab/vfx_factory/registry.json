@@ -8104,6 +8104,1035 @@
         ]
       },
       "review_note": "Existing first-party R1 four-phase RGBA source integrated through the shared renderer. Reuses the existing AS50 candidate, its frame hand masks/socket manifest, and Weapon Library curved DAO; socket tip points right toward the target. The flight sprite interpolates only across the real MapBattleV2 skill_cast receipt deadline and contact art remains hidden until this exact skill emits a positive v63_skill_hit. G3 source self-pass; frame-by-frame motion, formal owner approval and the disabled production blade gate remain pending."
+    },
+    {
+      "skill_id": "tmb.skill.talisman.loi_phu.active_01.human",
+      "school": "talisman",
+      "branch": "loi_phu",
+      "name_vi": "Điện Quang Khai Phù",
+      "catalog_path": "res://data/combat/v63_talisman_combat_catalog.json",
+      "effect": "damage",
+      "shape": "single_target",
+      "target_limit": 1,
+      "mechanic_template": "projectile",
+      "mechanic_templates": [
+        "projectile"
+      ],
+      "target_mode": "single_target",
+      "preview_target_kind": "monster",
+      "target_actor_id": "talisman_factory_target_active_01_01",
+      "outside_actor_id": "talisman_factory_outside",
+      "preview_targets": [
+        {
+          "id": "talisman_factory_target_active_01_01",
+          "label": "TALISMAN TARGET 01 · MOVING",
+          "screen_position": [
+            690.0,
+            492.0
+          ],
+          "fixture_position": [
+            5.0,
+            3.0
+          ],
+          "fixture_motion_delta": [
+            0.0,
+            -0.1
+          ]
+        }
+      ],
+      "preview_outside": {
+        "id": "talisman_factory_outside",
+        "label": "OUTSIDE TARGET · UNCHANGED",
+        "screen_position": [
+          855.0,
+          590.0
+        ],
+        "fixture_position": [
+          6.3,
+          5.1
+        ]
+      },
+      "actor_sex": "male",
+      "actor_asset_id": 64,
+      "actor_action": "cast",
+      "facing_vector": [
+        1.0,
+        0.0
+      ],
+      "preview_attachment_override": {
+        "suppress_attachments": true
+      },
+      "source_anchor": "hand_r",
+      "phase_anchors": {
+        "charge": "hand_r",
+        "flight": "hand_r",
+        "contact": "target_chest",
+        "fade": "target_chest"
+      },
+      "phase_layers": {
+        "charge": "BEHIND",
+        "flight": "BEHIND",
+        "contact": "BEHIND",
+        "fade": "BEHIND"
+      },
+      "draw_layer": "BEHIND",
+      "phase_aliases": {
+        "release": "flight"
+      },
+      "source_g3": "EXISTING_FIRST_PARTY_R4_RGBA_ATLAS; 12 POSES; FACTORY_ART_REVIEW_PENDING",
+      "native_status": "NATIVE_CAPTURE_PENDING",
+      "owner_status": "OWNER_VISUAL_PENDING",
+      "native_ready": false,
+      "motion_status": "12_SOURCE_POSES_SHARED_FACTORY_ADAPTER; CONTINUOUS_MOTION_REVIEW_PENDING",
+      "showcase_moving_target": true,
+      "delivery_phase": "flight",
+      "phase_sources": {
+        "charge": {
+          "path": "res://labs/combat_lab/talisman01/assets/thunder_talisman_atlas.webp",
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/talisman01/assets/thunder_talisman_atlas.webp",
+              "region": [
+                0,
+                0,
+                300,
+                360
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman01/assets/thunder_talisman_atlas.webp",
+              "region": [
+                300,
+                0,
+                300,
+                360
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman01/assets/thunder_talisman_atlas.webp",
+              "region": [
+                600,
+                0,
+                300,
+                360
+              ]
+            }
+          ],
+          "display_width_px": 100,
+          "fps": 8,
+          "loop": false
+        },
+        "flight": {
+          "path": "res://labs/combat_lab/talisman01/assets/thunder_talisman_atlas.webp",
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/talisman01/assets/thunder_talisman_atlas.webp",
+              "region": [
+                0,
+                360,
+                300,
+                360
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman01/assets/thunder_talisman_atlas.webp",
+              "region": [
+                300,
+                360,
+                300,
+                360
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman01/assets/thunder_talisman_atlas.webp",
+              "region": [
+                600,
+                360,
+                300,
+                360
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman01/assets/thunder_talisman_atlas.webp",
+              "region": [
+                0,
+                720,
+                300,
+                360
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman01/assets/thunder_talisman_atlas.webp",
+              "region": [
+                300,
+                720,
+                300,
+                360
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman01/assets/thunder_talisman_atlas.webp",
+              "region": [
+                600,
+                720,
+                300,
+                360
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman01/assets/thunder_talisman_atlas.webp",
+              "region": [
+                0,
+                1080,
+                300,
+                360
+              ]
+            }
+          ],
+          "display_width_px": 100,
+          "fps": 12,
+          "loop": false
+        },
+        "contact": {
+          "path": "res://labs/combat_lab/talisman01/assets/thunder_impact_burst.png",
+          "display_width_px": 88,
+          "fps": 1,
+          "loop": false
+        },
+        "fade": {
+          "path": "res://labs/combat_lab/talisman01/assets/thunder_talisman_atlas.webp",
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/talisman01/assets/thunder_talisman_atlas.webp",
+              "region": [
+                300,
+                1080,
+                300,
+                360
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman01/assets/thunder_talisman_atlas.webp",
+              "region": [
+                600,
+                1080,
+                300,
+                360
+              ]
+            }
+          ],
+          "display_width_px": 100,
+          "fps": 8,
+          "loop": false
+        }
+      },
+      "review_timeline": {
+        "release_at": 0.5,
+        "flight_at": 0.5,
+        "contact_at": 1.43,
+        "fade_at": 1.76,
+        "loop_seconds": 2.66,
+        "charge_window_seconds": 0.5,
+        "release_window_seconds": 0.16,
+        "contact_window_seconds": 0.22,
+        "fade_window_seconds": 0.28,
+        "actor_action_seconds": 0.5
+      },
+      "receipt_manifest": {
+        "schema": "tmb.vfx_bindings.v1",
+        "skill_id": "tmb.skill.talisman.loi_phu.active_01.human",
+        "bindings": [
+          {
+            "event_type": "skill_cast",
+            "caster_slot": "hand_r",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "charge"
+          },
+          {
+            "event_type": "skill_release",
+            "caster_slot": "hand_r",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "release"
+          },
+          {
+            "event_type": "v63_talisman_hit",
+            "caster_slot": "hand_r",
+            "target_slot": "chest",
+            "actor_clip": "cast",
+            "visual_phase": "contact"
+          }
+        ]
+      },
+      "native_batch": "talisman",
+      "source_paths": [
+        "labs/combat_lab/talisman01/ART_PROVENANCE_R4.md",
+        "labs/combat_lab/talisman01/assets/thunder_talisman_atlas.webp",
+        "labs/combat_lab/talisman01/assets/thunder_impact_burst.png"
+      ],
+      "source_batch_manifest": "res://labs/combat_lab/talisman_factory_batch4_20261125/manifest.json",
+      "review_note": "Factory uses the existing first-party R4 lightning talisman atlas and impact texture. Projectile motion follows real MapBattle cast/release timing; contact requires the exact positive talisman hit receipt. Twelve source poses do not establish continuous-motion approval. Owner pending; PvE HOLD."
+    },
+    {
+      "skill_id": "tmb.skill.talisman.hoa_phu.active_01.human",
+      "school": "talisman",
+      "branch": "hoa_phu",
+      "name_vi": "Xích Diệm Khai Văn",
+      "catalog_path": "res://data/combat/v63_talisman_combat_catalog.json",
+      "effect": "damage",
+      "shape": "single_target",
+      "target_limit": 1,
+      "mechanic_template": "projectile",
+      "mechanic_templates": [
+        "projectile"
+      ],
+      "target_mode": "single_target",
+      "preview_target_kind": "monster",
+      "target_actor_id": "talisman_factory_target_active_01_01",
+      "outside_actor_id": "talisman_factory_outside",
+      "preview_targets": [
+        {
+          "id": "talisman_factory_target_active_01_01",
+          "label": "TALISMAN TARGET 01 · MOVING",
+          "screen_position": [
+            690.0,
+            492.0
+          ],
+          "fixture_position": [
+            5.0,
+            3.0
+          ],
+          "fixture_motion_delta": [
+            0.0,
+            -0.1
+          ]
+        }
+      ],
+      "preview_outside": {
+        "id": "talisman_factory_outside",
+        "label": "OUTSIDE TARGET · UNCHANGED",
+        "screen_position": [
+          855.0,
+          590.0
+        ],
+        "fixture_position": [
+          6.3,
+          5.1
+        ]
+      },
+      "actor_sex": "male",
+      "actor_asset_id": 64,
+      "actor_action": "cast",
+      "facing_vector": [
+        1.0,
+        0.0
+      ],
+      "preview_attachment_override": {
+        "suppress_attachments": true
+      },
+      "source_anchor": "hand_r",
+      "phase_anchors": {
+        "charge": "hand_r",
+        "flight": "hand_r",
+        "contact": "target_chest",
+        "fade": "target_foot"
+      },
+      "phase_layers": {
+        "charge": "BEHIND",
+        "flight": "BEHIND",
+        "contact": "BEHIND",
+        "fade": "BEHIND"
+      },
+      "draw_layer": "BEHIND",
+      "phase_aliases": {
+        "release": "flight"
+      },
+      "source_g3": "EXISTING_FIRST_PARTY_RGBA_FIRE_TALISMAN_ATLASES; FRAME_REVIEW_PENDING",
+      "native_status": "NATIVE_CAPTURE_PENDING",
+      "owner_status": "OWNER_VISUAL_PENDING",
+      "native_ready": false,
+      "motion_status": "EXISTING_FIRE_SEAL_AND_COMET_FLIPBOOKS; FACTORY_MOTION_REVIEW_PENDING",
+      "showcase_moving_target": true,
+      "delivery_phase": "flight",
+      "phase_sources": {
+        "charge": {
+          "path": "res://labs/combat_lab/talisman06/assets/tal06_flame_seal_atlas.webp",
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/talisman06/assets/tal06_flame_seal_atlas.webp",
+              "region": [
+                0,
+                0,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman06/assets/tal06_flame_seal_atlas.webp",
+              "region": [
+                256,
+                0,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman06/assets/tal06_flame_seal_atlas.webp",
+              "region": [
+                512,
+                0,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman06/assets/tal06_flame_seal_atlas.webp",
+              "region": [
+                768,
+                0,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman06/assets/tal06_flame_seal_atlas.webp",
+              "region": [
+                0,
+                256,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman06/assets/tal06_flame_seal_atlas.webp",
+              "region": [
+                256,
+                256,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman06/assets/tal06_flame_seal_atlas.webp",
+              "region": [
+                512,
+                256,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman06/assets/tal06_flame_seal_atlas.webp",
+              "region": [
+                768,
+                256,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman06/assets/tal06_flame_seal_atlas.webp",
+              "region": [
+                0,
+                512,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman06/assets/tal06_flame_seal_atlas.webp",
+              "region": [
+                256,
+                512,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman06/assets/tal06_flame_seal_atlas.webp",
+              "region": [
+                512,
+                512,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman06/assets/tal06_flame_seal_atlas.webp",
+              "region": [
+                768,
+                512,
+                256,
+                256
+              ]
+            }
+          ],
+          "display_width_px": 100,
+          "fps": 14,
+          "loop": false
+        },
+        "flight": {
+          "path": "res://labs/combat_lab/talisman06/assets/tal06_fire_comet_atlas.webp",
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/talisman06/assets/tal06_fire_comet_atlas.webp",
+              "region": [
+                0,
+                0,
+                384,
+                224
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman06/assets/tal06_fire_comet_atlas.webp",
+              "region": [
+                384,
+                0,
+                384,
+                224
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman06/assets/tal06_fire_comet_atlas.webp",
+              "region": [
+                768,
+                0,
+                384,
+                224
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman06/assets/tal06_fire_comet_atlas.webp",
+              "region": [
+                1152,
+                0,
+                384,
+                224
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman06/assets/tal06_fire_comet_atlas.webp",
+              "region": [
+                0,
+                224,
+                384,
+                224
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman06/assets/tal06_fire_comet_atlas.webp",
+              "region": [
+                384,
+                224,
+                384,
+                224
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman06/assets/tal06_fire_comet_atlas.webp",
+              "region": [
+                768,
+                224,
+                384,
+                224
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman06/assets/tal06_fire_comet_atlas.webp",
+              "region": [
+                1152,
+                224,
+                384,
+                224
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman06/assets/tal06_fire_comet_atlas.webp",
+              "region": [
+                0,
+                448,
+                384,
+                224
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman06/assets/tal06_fire_comet_atlas.webp",
+              "region": [
+                384,
+                448,
+                384,
+                224
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman06/assets/tal06_fire_comet_atlas.webp",
+              "region": [
+                768,
+                448,
+                384,
+                224
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman06/assets/tal06_fire_comet_atlas.webp",
+              "region": [
+                1152,
+                448,
+                384,
+                224
+              ]
+            }
+          ],
+          "display_width_px": 100,
+          "fps": 16,
+          "loop": false
+        },
+        "contact": {
+          "path": "res://labs/combat_lab/talisman06/assets/tal06_impact_atlas.webp",
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/talisman06/assets/tal06_impact_atlas.webp",
+              "region": [
+                0,
+                0,
+                384,
+                224
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman06/assets/tal06_impact_atlas.webp",
+              "region": [
+                384,
+                0,
+                384,
+                224
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman06/assets/tal06_impact_atlas.webp",
+              "region": [
+                768,
+                0,
+                384,
+                224
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman06/assets/tal06_impact_atlas.webp",
+              "region": [
+                0,
+                224,
+                384,
+                224
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman06/assets/tal06_impact_atlas.webp",
+              "region": [
+                384,
+                224,
+                384,
+                224
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman06/assets/tal06_impact_atlas.webp",
+              "region": [
+                768,
+                224,
+                384,
+                224
+              ]
+            }
+          ],
+          "display_width_px": 100,
+          "fps": 14,
+          "loop": false
+        },
+        "fade": {
+          "path": "res://labs/combat_lab/talisman06/assets/tal06_foot_ember.webp",
+          "display_width_px": 120,
+          "fps": 1,
+          "loop": false
+        }
+      },
+      "review_timeline": {
+        "release_at": 0.5,
+        "flight_at": 0.64,
+        "contact_at": 1.46,
+        "fade_at": 1.8,
+        "loop_seconds": 2.66,
+        "charge_window_seconds": 0.5,
+        "release_window_seconds": 0.14,
+        "contact_window_seconds": 0.24,
+        "fade_window_seconds": 0.3,
+        "actor_action_seconds": 0.5
+      },
+      "receipt_manifest": {
+        "schema": "tmb.vfx_bindings.v1",
+        "skill_id": "tmb.skill.talisman.hoa_phu.active_01.human",
+        "bindings": [
+          {
+            "event_type": "skill_cast",
+            "caster_slot": "hand_r",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "charge"
+          },
+          {
+            "event_type": "skill_release",
+            "caster_slot": "hand_r",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "release"
+          },
+          {
+            "event_type": "v63_talisman_hit",
+            "caster_slot": "hand_r",
+            "target_slot": "chest",
+            "actor_clip": "cast",
+            "visual_phase": "contact"
+          }
+        ]
+      },
+      "native_batch": "talisman",
+      "source_paths": [
+        "labs/combat_lab/talisman06/README.md",
+        "labs/combat_lab/talisman06/assets/tal06_flame_seal_atlas.webp",
+        "labs/combat_lab/talisman06/assets/tal06_fire_comet_atlas.webp",
+        "labs/combat_lab/talisman06/assets/tal06_impact_atlas.webp",
+        "labs/combat_lab/talisman06/assets/tal06_foot_ember.webp"
+      ],
+      "source_batch_manifest": "res://labs/combat_lab/talisman_factory_batch4_20261125/manifest.json",
+      "review_note": "Factory selects existing fire seal, comet, impact, and ember phases from TAL06. Canonical 8.5 projectile speed and one-target cap remain catalog-owned; exact hit receipt gates contact. Owner and full motion review pending; PvE HOLD."
+    },
+    {
+      "skill_id": "tmb.skill.talisman.phong_an_phu.active_01.human",
+      "school": "talisman",
+      "branch": "phong_an_phu",
+      "name_vi": "Phong Giới Truy Dấu",
+      "catalog_path": "res://data/combat/v63_talisman_combat_catalog.json",
+      "effect": "mark",
+      "shape": "single_target",
+      "target_limit": 1,
+      "mechanic_template": "debuff",
+      "mechanic_templates": [
+        "debuff",
+        "status"
+      ],
+      "target_mode": "single_target",
+      "preview_target_kind": "monster",
+      "target_actor_id": "talisman_factory_target_active_01_01",
+      "outside_actor_id": "talisman_factory_outside",
+      "preview_targets": [
+        {
+          "id": "talisman_factory_target_active_01_01",
+          "label": "TALISMAN TARGET 01 · MOVING",
+          "screen_position": [
+            690.0,
+            492.0
+          ],
+          "fixture_position": [
+            5.0,
+            3.0
+          ],
+          "fixture_motion_delta": [
+            0.0,
+            -0.1
+          ]
+        }
+      ],
+      "preview_outside": {
+        "id": "talisman_factory_outside",
+        "label": "OUTSIDE TARGET · UNCHANGED",
+        "screen_position": [
+          855.0,
+          590.0
+        ],
+        "fixture_position": [
+          6.3,
+          5.1
+        ]
+      },
+      "actor_sex": "male",
+      "actor_asset_id": 64,
+      "actor_action": "cast",
+      "facing_vector": [
+        1.0,
+        0.0
+      ],
+      "preview_attachment_override": {
+        "suppress_attachments": true
+      },
+      "source_anchor": "hand_r",
+      "phase_anchors": {
+        "charge": "hand_r",
+        "start": "target_chest",
+        "sustain": "target_chest",
+        "end": "target_chest"
+      },
+      "phase_layers": {
+        "charge": "BEHIND",
+        "start": "BEHIND",
+        "sustain": "BEHIND",
+        "end": "BEHIND"
+      },
+      "draw_layer": "BEHIND",
+      "phase_aliases": {},
+      "source_g3": "EXISTING_FIRST_PARTY_PAF01_R6_180x216_CROPPED_SOURCE; LOW_RES_STATIC_STILL",
+      "native_status": "NATIVE_CAPTURE_PENDING",
+      "owner_status": "OWNER_VISUAL_PENDING",
+      "native_ready": false,
+      "motion_status": "STATIC_SOURCE_STILL; START_SUSTAIN_END_CLOCKED_BY_REAL_MARK_DURATION",
+      "showcase_moving_target": true,
+      "delivery_phase": "start",
+      "phase_sources": {
+        "charge": {
+          "path": "res://labs/combat_lab/talisman11/art_sources/paf01_r6_illustrated_source.webp",
+          "display_width_px": 70,
+          "fps": 1,
+          "loop": false
+        },
+        "start": {
+          "path": "res://labs/combat_lab/talisman11/art_sources/paf01_r6_illustrated_source.webp",
+          "display_width_px": 56,
+          "fps": 1,
+          "loop": false
+        },
+        "sustain": {
+          "path": "res://labs/combat_lab/talisman11/art_sources/paf01_r6_illustrated_source.webp",
+          "display_width_px": 56,
+          "fps": 1,
+          "loop": true
+        },
+        "end": {
+          "path": "res://labs/combat_lab/talisman11/art_sources/paf01_r6_illustrated_source.webp",
+          "display_width_px": 56,
+          "fps": 1,
+          "loop": false
+        }
+      },
+      "review_timeline": {
+        "release_at": 0.5,
+        "flight_at": 0.5,
+        "contact_at": 0.7,
+        "fade_at": 6.7,
+        "loop_seconds": 7.2,
+        "charge_window_seconds": 0.5,
+        "release_window_seconds": 0.12,
+        "start_window_seconds": 0.2,
+        "end_window_seconds": 0.26,
+        "actor_action_seconds": 0.5
+      },
+      "receipt_manifest": {
+        "schema": "tmb.vfx_bindings.v1",
+        "skill_id": "tmb.skill.talisman.phong_an_phu.active_01.human",
+        "bindings": [
+          {
+            "event_type": "skill_cast",
+            "caster_slot": "hand_r",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "charge"
+          },
+          {
+            "event_type": "v63_talisman_mark_applied",
+            "caster_slot": "hand_r",
+            "target_slot": "chest",
+            "actor_clip": "cast",
+            "visual_phase": "start"
+          }
+        ]
+      },
+      "native_batch": "talisman",
+      "source_paths": [
+        "docs/operations/vfx_packets/PAF01_R6_ILLUSTRATED_WIND_SEAL_20261116.md",
+        "godot/labs/combat_lab/talisman11/art_sources/paf01_r6_illustrated_source.webp"
+      ],
+      "source_batch_manifest": "res://labs/combat_lab/talisman_factory_batch4_20261125/manifest.json",
+      "review_note": "Uses only the existing 180×216 first-party PAF01 crop as a small target mark; the missing TAL11 charge/stream/contact atlas is not invented. Start, six-second sustain, and end are gated to the real owner-scoped v63_talisman_mark_applied receipt and its until time. Low-resolution static source; owner review pending; PvE HOLD."
+    },
+    {
+      "skill_id": "tmb.skill.talisman.phong_an_phu.active_02.human",
+      "school": "talisman",
+      "branch": "phong_an_phu",
+      "name_vi": "Thái Huyền Khép Ấn",
+      "catalog_path": "res://data/combat/v63_talisman_combat_catalog.json",
+      "effect": "mark",
+      "shape": "line",
+      "target_limit": 3,
+      "mechanic_template": "line",
+      "mechanic_templates": [
+        "line",
+        "multi_target",
+        "debuff",
+        "status"
+      ],
+      "target_mode": "line",
+      "preview_target_kind": "monster",
+      "target_actor_id": "talisman_factory_target_active_02_01",
+      "outside_actor_id": "talisman_factory_outside",
+      "preview_targets": [
+        {
+          "id": "talisman_factory_target_active_02_01",
+          "label": "TALISMAN TARGET 01 · MOVING",
+          "screen_position": [
+            690.0,
+            492.0
+          ],
+          "fixture_position": [
+            5.0,
+            3.0
+          ],
+          "fixture_motion_delta": [
+            0.0,
+            -0.1
+          ]
+        },
+        {
+          "id": "talisman_factory_target_active_02_02",
+          "label": "TALISMAN TARGET 02 · MOVING",
+          "screen_position": [
+            820.0,
+            492.0
+          ],
+          "fixture_position": [
+            6.0,
+            3.0
+          ],
+          "fixture_motion_delta": [
+            0.0,
+            -0.1
+          ]
+        },
+        {
+          "id": "talisman_factory_target_active_02_03",
+          "label": "TALISMAN TARGET 03 · MOVING",
+          "screen_position": [
+            950.0,
+            492.0
+          ],
+          "fixture_position": [
+            7.0,
+            3.0
+          ],
+          "fixture_motion_delta": [
+            0.0,
+            -0.1
+          ]
+        }
+      ],
+      "preview_outside": {
+        "id": "talisman_factory_outside",
+        "label": "OUTSIDE TARGET · UNCHANGED",
+        "screen_position": [
+          855.0,
+          590.0
+        ],
+        "fixture_position": [
+          6.3,
+          5.1
+        ]
+      },
+      "actor_sex": "male",
+      "actor_asset_id": 64,
+      "actor_action": "cast",
+      "facing_vector": [
+        1.0,
+        0.0
+      ],
+      "preview_attachment_override": {
+        "suppress_attachments": true
+      },
+      "source_anchor": "hand_r",
+      "phase_anchors": {
+        "charge": "hand_r",
+        "start": "target_chest",
+        "sustain": "target_chest",
+        "end": "target_chest"
+      },
+      "phase_layers": {
+        "charge": "BEHIND",
+        "start": "BEHIND",
+        "sustain": "BEHIND",
+        "end": "BEHIND"
+      },
+      "draw_layer": "BEHIND",
+      "phase_aliases": {},
+      "source_g3": "EXISTING_FIRST_PARTY_PAF02_R2_LINE_AND_IMPACT_PAINT; TWO_STATIC_PHASE_STILLS",
+      "native_status": "NATIVE_CAPTURE_PENDING",
+      "owner_status": "OWNER_VISUAL_PENDING",
+      "native_ready": false,
+      "motion_status": "TWO_SOURCE_STILLS; MARK_START_SUSTAIN_END_RECEIPT_GATED",
+      "showcase_moving_target": true,
+      "delivery_phase": "start",
+      "phase_sources": {
+        "charge": {
+          "path": "res://labs/combat_lab/talisman12/art_sources/paf02_r2_line_paint.webp",
+          "display_width_px": 126,
+          "fps": 1,
+          "loop": false
+        },
+        "start": {
+          "path": "res://labs/combat_lab/talisman12/art_sources/paf02_r2_impact_paint.webp",
+          "display_width_px": 72,
+          "fps": 1,
+          "loop": false
+        },
+        "sustain": {
+          "path": "res://labs/combat_lab/talisman12/art_sources/paf02_r2_impact_paint.webp",
+          "display_width_px": 52,
+          "fps": 1,
+          "loop": true
+        },
+        "end": {
+          "path": "res://labs/combat_lab/talisman12/art_sources/paf02_r2_impact_paint.webp",
+          "display_width_px": 72,
+          "fps": 1,
+          "loop": false
+        }
+      },
+      "review_timeline": {
+        "release_at": 0.5,
+        "flight_at": 0.5,
+        "contact_at": 0.78,
+        "fade_at": 6.28,
+        "loop_seconds": 6.8,
+        "charge_window_seconds": 0.5,
+        "release_window_seconds": 0.12,
+        "start_window_seconds": 0.2,
+        "end_window_seconds": 0.26,
+        "actor_action_seconds": 0.5
+      },
+      "receipt_manifest": {
+        "schema": "tmb.vfx_bindings.v1",
+        "skill_id": "tmb.skill.talisman.phong_an_phu.active_02.human",
+        "bindings": [
+          {
+            "event_type": "skill_cast",
+            "caster_slot": "hand_r",
+            "target_slot": "ground",
+            "actor_clip": "cast",
+            "visual_phase": "charge"
+          },
+          {
+            "event_type": "v63_talisman_mark_applied",
+            "caster_slot": "hand_r",
+            "target_slot": "chest",
+            "actor_clip": "cast",
+            "visual_phase": "start"
+          }
+        ]
+      },
+      "native_batch": "talisman",
+      "source_paths": [
+        "docs/operations/vfx_packets/PAF02_R1_NATIVE_20261116.md",
+        "godot/labs/combat_lab/talisman12/art_sources/paf02_r2_line_paint.webp",
+        "godot/labs/combat_lab/talisman12/art_sources/paf02_r2_impact_paint.webp"
+      ],
+      "source_batch_manifest": "res://labs/combat_lab/talisman_factory_batch4_20261125/manifest.json",
+      "review_note": "Factory uses the existing jade wind-line and local impact paintings. Three-target line shape and 5.5-second owner mark duration remain canonical. The current adapter has two unique source stills; mark start/sustain/end are bound only to the actual owner-scoped receipt. Continuous motion and owner review pending; PvE HOLD."
     }
   ],
   "batch_status": {
@@ -8128,12 +9157,12 @@
       "pve": "HOLD"
     },
     "talisman": {
-      "expected_count": 10,
-      "technical_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_H264_FULL_DECODE",
+      "expected_count": 14,
+      "technical_status": "NATIVE_CAPTURE_PENDING",
       "last_capture_index": "res://labs/combat_lab/talisman_factory_batch3_20261125/review/native/talisman_batch3_capture_index.json",
       "video": "res://labs/combat_lab/talisman_factory_batch3_20261125/review/native/talisman_factory_native_1280x720.mp4",
       "contact_sheet": "res://labs/combat_lab/talisman_factory_batch3_20261125/review/native/talisman_factory_batch3_contact_sheet_1280x720.png",
-      "receipt_status": "REAL_MAPBATTLE_V2_FIXTURE_RECEIPTS_10_OF_10; SYNTHETIC_EVENTS=0",
+      "receipt_status": "FOUR_NEW_CANDIDATES_PENDING_NATIVE_CAPTURE; EXISTING_10_RECEIPT_RESULTS_PRESERVED; PvE=HOLD",
       "visual_review_status": "NATIVE_1X_PHASE_SAMPLES_REVIEWED; CONTINUOUS_MOTION_REVIEW_PENDING",
       "owner_approval": "PENDING",
       "pve": "HOLD"

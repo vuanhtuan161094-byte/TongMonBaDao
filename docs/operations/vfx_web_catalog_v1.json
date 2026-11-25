@@ -1466,6 +1466,97 @@
         "data/combat/v63_blade_combat_catalog.json"
       ],
       "review_note": "Shared Factory candidate using the existing AS50 candidate and curved DAO socket metadata. The projectile flight follows the real cast receipt deadline; contact and fade use the target chest anchor and contact requires the exact positive MapBattleV2 skill hit. Four RGBA stills are not frame-by-frame completion. Owner pending; production gate OFF; PVE HOLD."
+    },
+    {
+      "id": "tmb.skill.talisman.loi_phu.active_01.human",
+      "name_vi": "Điện Quang Khai Phù — VFX Factory candidate",
+      "school_vi": "Phù Tu",
+      "branch_vi": "loi_phu",
+      "tier": "human",
+      "scene": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+      "directions": [
+        "front"
+      ],
+      "vfx_status": "CANDIDATE_G3",
+      "g3_art": "EXISTING_FIRST_PARTY_R4_RGBA_ATLAS; 12 POSES; FACTORY_ART_REVIEW_PENDING",
+      "owner_art": "OWNER_VISUAL_PENDING",
+      "art_source": "EXISTING_FIRST_PARTY_OPENAI_IMAGEGEN_R4_RGBA_ATLAS_AND_LOCAL_IMPACT; NO_REBAKE",
+      "source_paths": [
+        "data/combat/v63_talisman_combat_catalog.json",
+        "labs/combat_lab/vfx_factory/registry.json",
+        "labs/combat_lab/talisman01/ART_PROVENANCE_R4.md",
+        "labs/combat_lab/talisman01/assets/thunder_talisman_atlas.webp",
+        "labs/combat_lab/talisman01/assets/thunder_impact_burst.png"
+      ],
+      "review_note": "Factory uses the existing first-party R4 lightning talisman atlas and impact texture. Projectile motion follows real MapBattle cast/release timing; contact requires the exact positive talisman hit receipt. Twelve source poses do not establish continuous-motion approval. Owner pending; PvE HOLD."
+    },
+    {
+      "id": "tmb.skill.talisman.hoa_phu.active_01.human",
+      "name_vi": "Xích Diệm Khai Văn — VFX Factory candidate",
+      "school_vi": "Phù Tu",
+      "branch_vi": "hoa_phu",
+      "tier": "human",
+      "scene": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+      "directions": [
+        "front"
+      ],
+      "vfx_status": "CANDIDATE_G3",
+      "g3_art": "EXISTING_FIRST_PARTY_RGBA_FIRE_TALISMAN_ATLASES; FRAME_REVIEW_PENDING",
+      "owner_art": "OWNER_VISUAL_PENDING",
+      "art_source": "EXISTING_FIRST_PARTY_HOA_PHU_SEAL_COMET_IMPACT_FLIPBOOKS; NO_REBAKE",
+      "source_paths": [
+        "data/combat/v63_talisman_combat_catalog.json",
+        "labs/combat_lab/vfx_factory/registry.json",
+        "labs/combat_lab/talisman06/README.md",
+        "labs/combat_lab/talisman06/assets/tal06_flame_seal_atlas.webp",
+        "labs/combat_lab/talisman06/assets/tal06_fire_comet_atlas.webp",
+        "labs/combat_lab/talisman06/assets/tal06_impact_atlas.webp",
+        "labs/combat_lab/talisman06/assets/tal06_foot_ember.webp"
+      ],
+      "review_note": "Factory selects existing fire seal, comet, impact, and ember phases from TAL06. Canonical 8.5 projectile speed and one-target cap remain catalog-owned; exact hit receipt gates contact. Owner and full motion review pending; PvE HOLD."
+    },
+    {
+      "id": "tmb.skill.talisman.phong_an_phu.active_01.human",
+      "name_vi": "Phong Giới Truy Dấu — VFX Factory candidate",
+      "school_vi": "Phù Tu",
+      "branch_vi": "phong_an_phu",
+      "tier": "human",
+      "scene": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+      "directions": [
+        "front"
+      ],
+      "vfx_status": "CANDIDATE_G3",
+      "g3_art": "EXISTING_FIRST_PARTY_PAF01_R6_180x216_CROPPED_SOURCE; LOW_RES_STATIC_STILL",
+      "owner_art": "OWNER_VISUAL_PENDING",
+      "art_source": "EXISTING_FIRST_PARTY_PAF01_R6_ILLUSTRATED_SOURCE; SINGLE_CROPPED_CUTOUT; STATIC_REVIEW_ONLY",
+      "source_paths": [
+        "data/combat/v63_talisman_combat_catalog.json",
+        "labs/combat_lab/vfx_factory/registry.json",
+        "labs/combat_lab/talisman11/art_sources/paf01_r6_illustrated_source.webp"
+      ],
+      "review_note": "Uses only the existing 180×216 first-party PAF01 crop as a small target mark; the missing TAL11 charge/stream/contact atlas is not invented. Start, six-second sustain, and end are gated to the real owner-scoped v63_talisman_mark_applied receipt and its until time. Low-resolution static source; owner review pending; PvE HOLD."
+    },
+    {
+      "id": "tmb.skill.talisman.phong_an_phu.active_02.human",
+      "name_vi": "Thái Huyền Khép Ấn — VFX Factory candidate",
+      "school_vi": "Phù Tu",
+      "branch_vi": "phong_an_phu",
+      "tier": "human",
+      "scene": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+      "directions": [
+        "front"
+      ],
+      "vfx_status": "CANDIDATE_G3",
+      "g3_art": "EXISTING_FIRST_PARTY_PAF02_R2_LINE_AND_IMPACT_PAINT; TWO_STATIC_PHASE_STILLS",
+      "owner_art": "OWNER_VISUAL_PENDING",
+      "art_source": "EXISTING_FIRST_PARTY_PAF02_R2_LINE_AND_IMPACT_PAINT; STATIC_PHASE_STILLS; NO_REBAKE",
+      "source_paths": [
+        "data/combat/v63_talisman_combat_catalog.json",
+        "labs/combat_lab/vfx_factory/registry.json",
+        "labs/combat_lab/talisman12/art_sources/paf02_r2_line_paint.webp",
+        "labs/combat_lab/talisman12/art_sources/paf02_r2_impact_paint.webp"
+      ],
+      "review_note": "Factory uses the existing jade wind-line and local impact paintings. Three-target line shape and 5.5-second owner mark duration remain canonical. The current adapter has two unique source stills; mark start/sustain/end are bound only to the actual owner-scoped receipt. Continuous motion and owner review pending; PvE HOLD."
     }
   ],
   "updated_at": "2026-11-25"
