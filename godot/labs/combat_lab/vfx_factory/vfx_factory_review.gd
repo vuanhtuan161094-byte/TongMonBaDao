@@ -407,8 +407,7 @@ func _draw() -> void:
 	var anchors: Dictionary = ASCHAR.resolve_preview_anchors(school, sex, action,
 		facing, actor_age, actor_foot, actor_scale, action_seconds, attachment_override)
 	_last_actor_asset_id = int(anchors.get("actor_id", -1))
-	var before_layer := str(_config.get("draw_layer", "FRONT")) == "BEHIND"
-	if before_layer and _show_vfx:
+	if _show_vfx:
 		_draw_phase_art(anchors, actor_foot, target_foot, false)
 	var actor_ok := ASCHAR.draw_actor(self, school, sex, action, actor_foot,
 		facing, actor_age, actor_scale, action_seconds, attachment_override)
@@ -427,7 +426,7 @@ func _draw() -> void:
 				Vector2.LEFT, _elapsed, 1.0)
 			_source_atlas.draw_actor(self, MONSTER_ID, "walk", OUTSIDE_BASE,
 				Vector2.LEFT, _elapsed + 0.23, 1.0)
-	if not before_layer and _show_vfx:
+	if _show_vfx:
 		_draw_phase_art(anchors, actor_foot, target_foot, true)
 	_draw_overlay(actor_ok, school, target_foot)
 
